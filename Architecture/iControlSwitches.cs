@@ -1,0 +1,6 @@
+﻿namespace ORArchitecture
+{
+    interface IControlSwitches
+    {
+    }
+}
