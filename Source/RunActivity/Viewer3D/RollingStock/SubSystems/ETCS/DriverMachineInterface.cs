@@ -114,9 +114,8 @@ namespace Orts.Viewer3D.RollingStock.Subsystems.ETCS
         }
         public Texture2D LoadTexture(string name)
         {
-//            if (MipMapScale == 2)
-                return SharedTextureManager.Get(Viewer.RenderProcess.GraphicsDevice, System.IO.Path.Combine(Viewer.ContentPath, "ETCS", "mipmap-2", name));
-//            else return SharedTextureManager.Get(Viewer.RenderProcess.GraphicsDevice, System.IO.Path.Combine(Viewer.ContentPath, "ETCS", name));
+            if (MipMapScale == 2) return SharedTextureManager.Get(Viewer.RenderProcess.GraphicsDevice, System.IO.Path.Combine(Viewer.ContentPath, "ETCS", "mipmap-2", name));
+            else return SharedTextureManager.Get(Viewer.RenderProcess.GraphicsDevice, System.IO.Path.Combine(Viewer.ContentPath, "ETCS", name));
         }
         public void PrepareFrame(float elapsedSeconds)
         {
@@ -808,7 +807,10 @@ namespace Orts.Viewer3D.RollingStock.Subsystems.ETCS
             }
             return "";
         }
-
+        public string GetControlLabel()
+        {
+            return GetControlName();
+        }
         public override void Draw(GraphicsDevice graphicsDevice)
         {
             DMI.Draw(CabShaderControlView.SpriteBatch, new Point(DrawPosition.X, DrawPosition.Y));

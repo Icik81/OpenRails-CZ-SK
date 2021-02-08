@@ -220,7 +220,11 @@ namespace Orts.Viewer3D.RollingStock
                 }
                 if (UserInput.RDState.Active)
                 {
-                    Locomotive.AlerterReset();
+                    if (UserInput.RDState.Changed)
+                    {
+                        Locomotive.AlerterReset();
+                        UserInput.RDState.Handled();
+                    }
 
                     Locomotive.SetThrottlePercentWithSound(UserInput.RDState.ThrottlePercent);
                     Locomotive.SetTrainBrakePercent(UserInput.RDState.TrainBrakePercent);
@@ -1459,6 +1463,7 @@ namespace Orts.Viewer3D.RollingStock
         {
             return Control.ControlType;
         }
+
         /// <summary>
         /// Gets the requested Locomotive data and returns it as a fraction (from 0 to 1) of the range between Min and Max values.
         /// </summary>
@@ -1502,7 +1507,7 @@ namespace Orts.Viewer3D.RollingStock
         bool IsMouseWithin();
         void HandleUserInput();
         string GetControlName();
-
+        string GetControlLabel();
     }
 
     /// <summary>
@@ -2092,6 +2097,10 @@ namespace Orts.Viewer3D.RollingStock
         {
             return (Locomotive as MSTSLocomotive).TrainControlSystem.GetDisplayString(GetControlType().ToString());
         }
+        public string GetControlLabel()
+        {
+            return Control.Label;
+        }
 
         /// <summary>
         /// Handles cabview mouse events, and changes the corresponding locomotive control values.
@@ -2170,6 +2179,9 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.ORTS_CIRCUIT_BREAKER_DRIVER_OPENING_ORDER: new CircuitBreakerOpeningOrderButtonCommand(Viewer.Log, ChangedValue(UserInput.IsMouseLeftButtonPressed ? 1 : 0) > 0); break;
                 case CABViewControlTypes.ORTS_CIRCUIT_BREAKER_DRIVER_CLOSING_AUTHORIZATION: new CircuitBreakerClosingAuthorizationCommand(Viewer.Log, ChangedValue((Locomotive as MSTSElectricLocomotive).PowerSupply.CircuitBreaker.DriverClosingAuthorization ? 1 : 0) > 0); break;
                 case CABViewControlTypes.EMERGENCY_BRAKE: if ((Locomotive.EmergencyButtonPressed ? 1 : 0) != ChangedValue(Locomotive.EmergencyButtonPressed ? 1 : 0)) new EmergencyPushButtonCommand(Viewer.Log); break;
+                case CABViewControlTypes.ORTS_BAILOFF: new BailOffCommand(Viewer.Log, ChangedValue(Locomotive.BailOff ? 1 : 0) > 0); break;
+                case CABViewControlTypes.ORTS_QUICKRELEASE: new QuickReleaseCommand(Viewer.Log, ChangedValue(Locomotive.TrainBrakeController.QuickReleaseButtonPressed ? 1 : 0) > 0); break;
+                case CABViewControlTypes.ORTS_OVERCHARGE: new BrakeOverchargeCommand(Viewer.Log, ChangedValue(Locomotive.TrainBrakeController.OverchargeButtonPressed ? 1 : 0) > 0); break;
                 case CABViewControlTypes.RESET: new AlerterCommand(Viewer.Log, ChangedValue(Locomotive.TrainControlSystem.AlerterButtonPressed ? 1 : 0) > 0); break;
                 case CABViewControlTypes.CP_HANDLE: Locomotive.SetCombinedHandleValue(ChangedValue(Locomotive.GetCombinedHandleValue(true))); break;
  
@@ -2444,11 +2456,13 @@ namespace Orts.Viewer3D.RollingStock
             else
                 Format = Format1;
             DrawFont = Viewer.WindowManager.TextManager.GetExact(digital.FontFamily, Viewer.CabHeightPixels * digital.FontSize / 480, digital.FontStyle == 0 ? System.Drawing.FontStyle.Regular : System.Drawing.FontStyle.Bold);
+            var xScale = Viewer.CabWidthPixels / 640f;
+            var yScale = Viewer.CabHeightPixels / 480f;
             // Cab view position adjusted to allow for letterboxing.
-            DrawPosition.X = (int)(Position.X * Viewer.CabWidthPixels / 640) + (Viewer.CabExceedsDisplayHorizontally > 0 ? DrawFont.Height / 4 : 0) - Viewer.CabXOffsetPixels + Viewer.CabXLetterboxPixels;
-            DrawPosition.Y = (int)((Position.Y + Control.Height / 2) * Viewer.CabHeightPixels / 480) - DrawFont.Height / 2 + Viewer.CabYOffsetPixels + Viewer.CabYLetterboxPixels;
-            DrawPosition.Width = (int)(Control.Width * Viewer.DisplaySize.X / 640);
-            DrawPosition.Height = (int)(Control.Height * Viewer.DisplaySize.Y / 480);
+            DrawPosition.X = (int)(Position.X * xScale) + (Viewer.CabExceedsDisplayHorizontally > 0 ? DrawFont.Height / 4 : 0) - Viewer.CabXOffsetPixels + Viewer.CabXLetterboxPixels;
+            DrawPosition.Y = (int)((Position.Y + Control.Height / 2) * yScale) - DrawFont.Height / 2 + Viewer.CabYOffsetPixels + Viewer.CabYLetterboxPixels;
+            DrawPosition.Width = (int)(Control.Width * xScale);
+            DrawPosition.Height = (int)(Control.Height * yScale);
             DrawRotation = digital.Rotation;
 
             if (Control.ControlType == CABViewControlTypes.CLOCK)

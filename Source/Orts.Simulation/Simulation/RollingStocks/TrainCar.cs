@@ -2616,7 +2616,7 @@ namespace Orts.Simulation.RollingStocks
                 int y = 20, y1 = 50;
                 switch (WagonNumAxles)
                 {
-                    case 2:
+                case 2:
                         y = 20; y1 = 31;
                         VibratioDampingCoefficient = 0.015f;
                     break;
@@ -2628,7 +2628,7 @@ namespace Orts.Simulation.RollingStocks
                         y = 20; y1 = 75;
                         VibratioDampingCoefficient = 0.025f;
                     break;
-                 }
+            }
 
                 force = Simulator.Random.Next(y, y1);
                 if (force > 25 && force < 31) force -= 25; // Nabývá od 1 do 5
@@ -2641,7 +2641,7 @@ namespace Orts.Simulation.RollingStocks
                     VibrationRotationVelocityRadpS.X += (factor * Simulator.Settings.CarVibratingLevel * VibrationIntroductionStrength * force * 0.05f);
                 else
                     VibrationRotationVelocityRadpS.X -= (factor * Simulator.Settings.CarVibratingLevel * VibrationIntroductionStrength * force * 0.05f);
-            }
+        }
 
             TypVibrace_1 = false;
             TypVibrace_2 = false;

@@ -62,7 +62,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
         protected float prevCylPressurePSI = 0;
         protected float prevBrakePipePressurePSI = 0;
         protected bool BailOffOn;
-       
+
         protected bool StartOn = true;
         protected bool Potrubi5bar = false;
         protected float RychlostZmenyTlakuPotrubi = 0;
@@ -98,7 +98,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             // taking into account very short (fake) cars to prevent NaNs in brake line pressures
             //DebugType = "1P";
             // Force graduated releasable brakes. Workaround for MSTS with bugs preventing to set eng/wag files correctly for this.
-            (Car as MSTSWagon).DistributorPresent = Car.Simulator.Settings.GraduatedRelease;
+            (Car as MSTSWagon).DistributorPresent |= Car.Simulator.Settings.GraduatedRelease;
 
             if (Car.Simulator.Settings.RetainersOnAllCars && !(Car is MSTSLocomotive))
                 (Car as MSTSWagon).RetainerPositions = 4;
@@ -407,7 +407,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
         {
             // reducing size of Emergency Reservoir for short (fake) cars
             if (Car.Simulator.Settings.CorrectQuestionableBrakingParams && Car.CarLengthM <= 1)
-                EmergResVolumeM3 = Math.Min(0.02f, EmergResVolumeM3);
+            EmergResVolumeM3 = Math.Min (0.02f, EmergResVolumeM3);
 
             // In simple brake mode set emergency reservoir volume, override high volume values to allow faster brake release.
             if (Car.Simulator.Settings.SimpleControlPhysics && EmergResVolumeM3 > 2.0)
@@ -434,9 +434,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             HandbrakePercent = handbrakeOn & (Car as MSTSWagon).HandBrakePresent ? 100 : 0;
             SetRetainer(RetainerSetting.Exhaust);
             MSTSLocomotive loco = Car as MSTSLocomotive;
-            if (loco != null)
+            if (loco != null) 
                 loco.MainResPressurePSI = loco.MaxMainResPressurePSI;
-        }
+            }
 
         /// <summary>
         /// Used when initial speed > 0
@@ -465,7 +465,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             // Emergency reservoir's second role (in OpenRails) is to act as a control reservoir,
             // maintaining a reference control pressure for graduated release brake actions.
             // Thus this pressure must be set even in brake systems ER not present otherwise. It just stays static in this case.
-            
+
             //float threshold = Math.Max(RetainerPressureThresholdPSI,
             //                (Car as MSTSWagon).DistributorPresent ? (PrevAuxResPressurePSI - BrakeLine1PressurePSI) * AuxCylVolumeRatio : 0);
             float threshold = (PrevAuxResPressurePSI - BrakeLine1PressurePSI) * AuxCylVolumeRatio;
@@ -576,22 +576,34 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             else
                 UpdateTripleValveState(threshold);
 
-            // Zjistí rychlost změny tlaku v potrubí
+             // Zjistí rychlost změny tlaku v potrubí
             if (cas0 >= 1.0f) cas0 = 0.0f;
             if (cas0 == 0.0f) prevBrakeLine1PressurePSI = BrakeLine1PressurePSI;
-            cas0 += elapsedClockSeconds;           
+            cas0 += elapsedClockSeconds;
             if (cas0 > 0.08f && cas0 < 0.12f)
             {
-                cas0 = 0.0f;
-                RychlostZmenyTlakuPotrubi = Math.Abs(prevBrakeLine1PressurePSI - BrakeLine1PressurePSI) * 15;
+               cas0 = 0.0f;
+               RychlostZmenyTlakuPotrubi = Math.Abs(prevBrakeLine1PressurePSI - BrakeLine1PressurePSI) * 15;
             }
 
             if (AutoCylPressurePSI0 < 1.0f) cas00 = 0;
+
             // triple valve is set to charge the brake cylinder
             if (TripleValveState == ValveState.Apply || TripleValveState == ValveState.Emergency)
             {
                 OdvetravaValce = false;
+
                 float dp = elapsedClockSeconds * MaxApplicationRatePSIpS;
+                //if (AuxResPressurePSI - dp / AuxCylVolumeRatio < AutoCylPressurePSI + dp)
+                //    dp = (AuxResPressurePSI - AutoCylPressurePSI) * AuxCylVolumeRatio / (1 + AuxCylVolumeRatio);
+                //if (TwoPipes && dp > threshold - AutoCylPressurePSI)
+                //    dp = threshold - AutoCylPressurePSI;
+                //if (AutoCylPressurePSI + dp > MaxCylPressurePSI)
+                //    dp = MaxCylPressurePSI - AutoCylPressurePSI;
+                //if (BrakeLine1PressurePSI > AuxResPressurePSI - dp / AuxCylVolumeRatio && !BleedOffValveOpen)
+                //    dp = (AuxResPressurePSI - BrakeLine1PressurePSI) * AuxCylVolumeRatio;
+                //if (dp < 0)
+                //    dp = 0;
 
                 // Zaznamená poslední stav pomocné jímky pro určení pracovního bodu pomocné jímky
                 if (cas00 == 0)
@@ -603,24 +615,27 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
 
                 if (AutoCylPressurePSI0 + dp > MaxCylPressurePSI)
                     dp = MaxCylPressurePSI - AutoCylPressurePSI0;
+
                 if (BrakeLine1PressurePSI > AuxResPressurePSI - dp / AuxCylVolumeRatio && !BleedOffValveOpen)
                     dp = (AuxResPressurePSI - BrakeLine1PressurePSI) * AuxCylVolumeRatio;
 
                 if (PlniValce) AutoCylPressurePSI0 += dp;
                 if (AutoCylPressurePSI0 >= threshold) PlniValce = false;
-
+                
                 // Otestuje citlivost brzdy 
                 if (BrakeSensitivityPSIpS == 0) BrakeSensitivityPSIpS = 0.07252f; // Výchozí nastavení 0.07252PSI/s ( 0.005bar/s)
-                if (RychlostZmenyTlakuPotrubi >= BrakeSensitivityPSIpS) 
-                    PlniValce = true;                    
-               
-                // Plní pomocnou jímku stále stejnou rychlostí 0.1bar/s
-                if (AuxResPressurePSI > maxPressurePSI0 && BrakeLine1PressurePSI > AuxResPressurePSI)
-                {
+                if (RychlostZmenyTlakuPotrubi >= BrakeSensitivityPSIpS)
+                    PlniValce = true;
+                
+                 // Plní pomocnou jímku stále stejnou rychlostí 0.1bar/s
+                 if (AuxResPressurePSI > maxPressurePSI0 && BrakeLine1PressurePSI > AuxResPressurePSI)
+                 {
                     dp = elapsedClockSeconds * MaxAuxilaryChargingRatePSIpS;
                     AuxResPressurePSI += dp;
-                }
+                 }
+
                 AuxResPressurePSI -= dp / AuxCylVolumeRatio;
+                //AutoCylPressurePSI += dp;
 
                 if (TripleValveState == ValveState.Emergency && (Car as MSTSWagon).EmergencyReservoirPresent)
                 {
@@ -896,11 +911,11 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 }
             }
             else
-            {
-                // approximate pressure gradient in train pipe line1
+            {   // approximate pressure gradient in train pipe line1
                 float serviceTimeFactor = lead != null ? lead.TrainBrakeController != null && lead.TrainBrakeController.EmergencyBraking ? lead.BrakeEmergencyTimeFactorS : lead.BrakeServiceTimeFactorS : 0;
                 for (int i = 0; i < nSteps; i++)
                 {
+
                     if (lead != null)
                     {
                         // Ohlídá hodnotu v hlavní jímce, aby nepodkročila 0bar
@@ -910,7 +925,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         if (lead.BrakeSystem.TrainBrakesControllerMaxOverchargePressurePSI == 0) lead.BrakeSystem.TrainBrakesControllerMaxOverchargePressurePSI = 5.4f * 14.50377f;
 
                         // Výchozí hodnota pro odvětrávání 3 minuty 0.00222bar/s, pokud není definována v sekci engine
-                        if (lead.BrakeSystem.OverchargeEliminationRatePSIpS == 0) lead.BrakeSystem.OverchargeEliminationRatePSIpS = 0.00222f * 14.50377f;                           
+                        if (lead.BrakeSystem.OverchargeEliminationRatePSIpS == 0) lead.BrakeSystem.OverchargeEliminationRatePSIpS = 0.00222f * 14.50377f;
 
                         // Pohlídá tlak v equalizéru, aby nebyl větší než tlak hlavní jímky
                         if (train.EqualReservoirPressurePSIorInHg > lead.MainResPressurePSI) train.EqualReservoirPressurePSIorInHg = lead.MainResPressurePSI;
@@ -918,13 +933,12 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         // Vyrovnává maximální tlak s tlakem v potrubí    
                         if (lead.TrainBrakeController.TrainBrakeControllerState == ControllerState.Lap) lead.TrainBrakeController.MaxPressurePSI = lead.BrakeSystem.BrakeLine1PressurePSI;
 
-
                         // Změna rychlosti plnění vzduchojemu při švihu
                         if (lead.TrainBrakeController.TrainBrakeControllerState == ControllerState.FullQuickRelease)
-                            {
-                                lead.BrakePipeChargingRatePSIorInHgpS = 200f;  // Rychlost plnění ve vysokotlakém švihu 200 PSI/s
-                                if (lead.TrainBrakeController.MaxPressurePSI < lead.MainResPressurePSI) lead.TrainBrakeController.MaxPressurePSI = lead.MainResPressurePSI;
-                            }
+                        {
+                            lead.BrakePipeChargingRatePSIorInHgpS = 200f;  // Rychlost plnění ve vysokotlakém švihu 200 PSI/s
+                            if (lead.TrainBrakeController.MaxPressurePSI < lead.MainResPressurePSI) lead.TrainBrakeController.MaxPressurePSI = lead.MainResPressurePSI;
+                        }
 
                         // Nízkotlaké přebití
                         else if (lead.TrainBrakeController.TrainBrakeControllerState == ControllerState.OverchargeStart)
@@ -945,46 +959,41 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         }
 
                             // Charge train brake pipe - adjust main reservoir pressure, and lead brake pressure line to maintain brake pipe equal to equalising resevoir pressure - release brakes
-                        if (lead.BrakeSystem.BrakeLine1PressurePSI < train.EqualReservoirPressurePSIorInHg)
-                        {
-                            // Calculate change in brake pipe pressure between equalising reservoir and lead brake pipe
+                            if (lead.BrakeSystem.BrakeLine1PressurePSI < train.EqualReservoirPressurePSIorInHg)
+                            {
+                                // Calculate change in brake pipe pressure between equalising reservoir and lead brake pipe
                             float PressureDiffEqualToPipePSI = TrainPipeTimeVariationS * lead.BrakePipeChargingRatePSIorInHgpS; // default condition - if EQ Res is higher then Brake Pipe Pressure
 
-                            if (lead.BrakeSystem.BrakeLine1PressurePSI + PressureDiffEqualToPipePSI > train.EqualReservoirPressurePSIorInHg) 
-                                PressureDiffEqualToPipePSI = train.EqualReservoirPressurePSIorInHg - lead.BrakeSystem.BrakeLine1PressurePSI;
+                                if (lead.BrakeSystem.BrakeLine1PressurePSI + PressureDiffEqualToPipePSI > train.EqualReservoirPressurePSIorInHg)
+                                    PressureDiffEqualToPipePSI = train.EqualReservoirPressurePSIorInHg - lead.BrakeSystem.BrakeLine1PressurePSI;
 
 
-                            if (lead.BrakeSystem.BrakeLine1PressurePSI + PressureDiffEqualToPipePSI > lead.MainResPressurePSI)
-                                PressureDiffEqualToPipePSI = lead.MainResPressurePSI - lead.BrakeSystem.BrakeLine1PressurePSI;
+                                if (lead.BrakeSystem.BrakeLine1PressurePSI + PressureDiffEqualToPipePSI > lead.MainResPressurePSI)
+                                    PressureDiffEqualToPipePSI = lead.MainResPressurePSI - lead.BrakeSystem.BrakeLine1PressurePSI;
 
-                            if (PressureDiffEqualToPipePSI < 0)
-                                PressureDiffEqualToPipePSI = 0;
-
-                            // Adjust brake pipe pressure based upon pressure differential
-                                // If pipe leakage and brake control valve is in LAP position then pipe is connected to main reservoir and maintained at equalising pressure from reservoir
-                                // All other brake states will have the brake pipe connected to the main reservoir, and therefore leakage will be compenstaed by air from main reservoir
-                                // Modern self lap brakes will maintain pipe pressure using air from main reservoir
+                                if (PressureDiffEqualToPipePSI < 0)
+                                    PressureDiffEqualToPipePSI = 0;
 
                             // U těchto funkcí se kompenzují ztráty vzduchu o netěsnosti
                             if (lead.TrainBrakeController.TrainBrakeControllerState == ControllerState.Release
-                                   || lead.TrainBrakeController.TrainBrakeControllerState == ControllerState.FullQuickRelease
-                                   || lead.TrainBrakeController.TrainBrakeControllerState == ControllerState.OverchargeStart
-                                   || lead.TrainBrakeController.TrainBrakeControllerState == ControllerState.Running
-                                   || lead.TrainBrakeController.TrainBrakeControllerState == ControllerState.Neutral       // Vyrovná ztráty vzduchu pro neutrální pozici kontroléru
-                                   || lead.TrainBrakeController.TrainBrakeControllerState == ControllerState.Suppression   // Klesne na tlak v potrubí snížený o FullServicePressureDrop 
-                                   || lead.TrainBrakeController.TrainBrakeControllerState == ControllerState.GSelfLapH)    // Postupné odbržďování pro BS2
+                               || lead.TrainBrakeController.TrainBrakeControllerState == ControllerState.FullQuickRelease
+                               || lead.TrainBrakeController.TrainBrakeControllerState == ControllerState.OverchargeStart
+                               || lead.TrainBrakeController.TrainBrakeControllerState == ControllerState.Running
+                               || lead.TrainBrakeController.TrainBrakeControllerState == ControllerState.Neutral       // Vyrovná ztráty vzduchu pro neutrální pozici kontroléru
+                               || lead.TrainBrakeController.TrainBrakeControllerState == ControllerState.Suppression   // Klesne na tlak v potrubí snížený o FullServicePressureDrop 
+                               || lead.TrainBrakeController.TrainBrakeControllerState == ControllerState.GSelfLapH)    // Postupné odbržďování pro BS2
                                 {
-                                    lead.BrakeSystem.BrakeLine1PressurePSI += PressureDiffEqualToPipePSI;  // Increase brake pipe pressure to cover loss
-                                    lead.MainResPressurePSI = lead.MainResPressurePSI - (PressureDiffEqualToPipePSI * lead.BrakeSystem.BrakePipeVolumeM3 / lead.MainResVolumeM3);   // Decrease main reservoir pressure
+                                        lead.BrakeSystem.BrakeLine1PressurePSI += PressureDiffEqualToPipePSI;  // Increase brake pipe pressure to cover loss
+                                        lead.MainResPressurePSI = lead.MainResPressurePSI - (PressureDiffEqualToPipePSI * lead.BrakeSystem.BrakePipeVolumeM3 / lead.MainResVolumeM3);   // Decrease main reservoir pressure
+                                    }
                                 }
-                            }
-                        // reduce pressure in lead brake line if brake pipe pressure is above equalising pressure - apply brakes
-                        else if (lead.BrakeSystem.BrakeLine1PressurePSI > train.EqualReservoirPressurePSIorInHg)
-                        {
+                            // reduce pressure in lead brake line if brake pipe pressure is above equalising pressure - apply brakes
+                            else if (lead.BrakeSystem.BrakeLine1PressurePSI > train.EqualReservoirPressurePSIorInHg)
+                            {
                             float ServiceVariationFactor = (1 - TrainPipeTimeVariationS / (serviceTimeFactor * 2));
-                            ServiceVariationFactor = MathHelper.Clamp(ServiceVariationFactor, 0.05f, 1.0f); // Keep factor within acceptable limits - prevent value from going negative
-                            lead.BrakeSystem.BrakeLine1PressurePSI *= ServiceVariationFactor;
-                        }
+                                ServiceVariationFactor = MathHelper.Clamp(ServiceVariationFactor, 0.05f, 1.0f); // Keep factor within acceptable limits - prevent value from going negative
+                                lead.BrakeSystem.BrakeLine1PressurePSI *= ServiceVariationFactor;
+                            }
 
                         train.LeadPipePressurePSI = lead.BrakeSystem.BrakeLine1PressurePSI;  // Keep a record of current train pipe pressure in lead locomotive
                     }
@@ -1139,9 +1148,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
 
             // Collect and propagate engine brake pipe (3) data
             // This appears to be calculating the engine brake cylinder pressure???
-            if (lead != null)
-            {
-               var prevState = lead.EngineBrakeState;
+                    if (lead != null)
+                    {
+                        var prevState = lead.EngineBrakeState;
 
                 if (train.BrakeLine3PressurePSI > lead.MainResPressurePSI) train.BrakeLine3PressurePSI = lead.MainResPressurePSI;
 
@@ -1151,7 +1160,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     && lead.BrakeSystem.AutoCylPressurePSI0 + lead.BrakeSystem.AutoCylPressurePSI1 < lead.BrakeSystem.BrakeCylinderMaxSystemPressurePSI
                     && lead.BrakeSystem.AutoCylPressurePSI0 + lead.BrakeSystem.AutoCylPressurePSI1 < lead.MainResPressurePSI
                     )  // Apply the engine brake as the pressure decreases
-                {
+                        {
                     BrakeSystem brakeSystem = train.Cars[0].BrakeSystem;
                     float dp = elapsedClockSeconds * lead.EngineBrakeApplyRatePSIpS;
 
@@ -1165,18 +1174,18 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         dp = lead.MainResPressurePSI - lead.BrakeSystem.AutoCylPressurePSI1 - lead.BrakeSystem.AutoCylPressurePSI0;
 
                     lead.BrakeSystem.AutoCylPressurePSI1 += dp;
-                    lead.EngineBrakeState = ValveState.Apply;
+                            lead.EngineBrakeState = ValveState.Apply;
                     
                     lead.MainResPressurePSI = lead.MainResPressurePSI - (dp * brakeSystem.GetCylVolumeM3() / lead.MainResVolumeM3);                         
-                }
+                        }
                 else if (lead.BrakeSystem.AutoCylPressurePSI1 > train.BrakeLine3PressurePSI)  // Release the engine brake as the pressure increases in the brake cylinder                
-                {
+                        {
                     float dp = elapsedClockSeconds * lead.EngineBrakeReleaseRatePSIpS;
                     if (lead.BrakeSystem.AutoCylPressurePSI1 - dp < train.BrakeLine3PressurePSI)
                         dp = lead.BrakeSystem.AutoCylPressurePSI1 - train.BrakeLine3PressurePSI;
                         lead.BrakeSystem.AutoCylPressurePSI1 -= dp;
-                        lead.EngineBrakeState = ValveState.Release;
-                }
+                            lead.EngineBrakeState = ValveState.Release;
+                        }
                         else  // Engine brake does not change
                             lead.EngineBrakeState = ValveState.Lap;
                         if (lead.EngineBrakeState != prevState)
@@ -1186,9 +1195,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                                 case ValveState.Apply: lead.SignalEvent(Event.EngineBrakePressureDecrease); break;
                                 case ValveState.Lap: lead.SignalEvent(Event.EngineBrakePressureStoppedChanging); break;
                             }
-            }
+                    }
 
-        }
+                }
 
         public override float InternalPressure(float realPressure)
         {

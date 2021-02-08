@@ -14526,27 +14526,34 @@ namespace Orts.Simulation.Physics
 
             float maxDistanceM = 7000.0f;
 
-            foreach (TrainObjectItem thisTrainItem in PlayerTrainSignals[0,0])
+            try
+            // needed for thread safety when called from web server
             {
-                thisInfo.ObjectInfoForward.Add(thisTrainItem);
-            }
-            foreach (TrainObjectItem thisTrainItem in PlayerTrainSpeedposts[0])
-            {
-                if (thisTrainItem.DistanceToTrainM <= maxDistanceM) thisInfo.ObjectInfoForward.Add(thisTrainItem);
-                else break;
-            }
+                foreach (TrainObjectItem thisTrainItem in PlayerTrainSignals[0, 0])
+                {
+                    thisInfo.ObjectInfoForward.Add(thisTrainItem);
+                }
+                foreach (TrainObjectItem thisTrainItem in PlayerTrainSpeedposts[0])
+                {
+                    if (thisTrainItem.DistanceToTrainM <= maxDistanceM) thisInfo.ObjectInfoForward.Add(thisTrainItem);
+                    else break;
+                }
 
-            foreach (TrainObjectItem thisTrainItem in PlayerTrainMileposts[0])
-            {
-                if (thisTrainItem.DistanceToTrainM <= maxDistanceM) thisInfo.ObjectInfoForward.Add(thisTrainItem);
-                else break;
+                foreach (TrainObjectItem thisTrainItem in PlayerTrainMileposts[0])
+                {
+                    if (thisTrainItem.DistanceToTrainM <= maxDistanceM) thisInfo.ObjectInfoForward.Add(thisTrainItem);
+                    else break;
+                }
+                foreach (TrainObjectItem thisTrainItem in PlayerTrainDivergingSwitches[0, 0])
+                {
+                    if (thisTrainItem.DistanceToTrainM <= maxDistanceM) thisInfo.ObjectInfoForward.Add(thisTrainItem);
+                    else break;
+                }
             }
-            foreach (TrainObjectItem thisTrainItem in PlayerTrainDivergingSwitches[0, 0])
+            catch
             {
-                if (thisTrainItem.DistanceToTrainM <= maxDistanceM) thisInfo.ObjectInfoForward.Add(thisTrainItem);
-                else break;
-            }
 
+            }
             if (StationStops != null && StationStops.Count > 0 &&
                 (!maxAuthSet || StationStops[0].DistanceToTrainM < DistanceToEndNodeAuthorityM[0]) &&
                 StationStops[0].SubrouteIndex == TCRoute.activeSubpath)
@@ -14707,24 +14714,32 @@ namespace Orts.Simulation.Physics
 
             if (ValidRoute[0] != null)
             {
-                foreach (TrainObjectItem thisTrainItem in PlayerTrainSignals[0, 0])
+                try
+                // needed for thread safety when called from web server
                 {
-                    thisInfo.ObjectInfoForward.Add(thisTrainItem);
+                    foreach (TrainObjectItem thisTrainItem in PlayerTrainSignals[0, 0])
+                    {
+                        thisInfo.ObjectInfoForward.Add(thisTrainItem);
+                    }
+                    foreach (TrainObjectItem thisTrainItem in PlayerTrainSpeedposts[0])
+                    {
+                        if (thisTrainItem.DistanceToTrainM <= maxDistanceM) thisInfo.ObjectInfoForward.Add(thisTrainItem);
+                        else break;
+                    }
+                    foreach (TrainObjectItem thisTrainItem in PlayerTrainMileposts[0])
+                    {
+                        if (thisTrainItem.DistanceToTrainM <= maxDistanceM) thisInfo.ObjectInfoForward.Add(thisTrainItem);
+                        else break;
+                    }
+                    foreach (TrainObjectItem thisTrainItem in PlayerTrainDivergingSwitches[0, 0])
+                    {
+                        if (thisTrainItem.DistanceToTrainM <= maxDistanceM) thisInfo.ObjectInfoForward.Add(thisTrainItem);
+                        else break;
+                    }
                 }
-                foreach (TrainObjectItem thisTrainItem in PlayerTrainSpeedposts[0])
+                catch
                 {
-                    if (thisTrainItem.DistanceToTrainM <= maxDistanceM) thisInfo.ObjectInfoForward.Add(thisTrainItem);
-                    else break;
-                }
-                foreach (TrainObjectItem thisTrainItem in PlayerTrainMileposts[0])
-                {
-                    if (thisTrainItem.DistanceToTrainM <= maxDistanceM) thisInfo.ObjectInfoForward.Add(thisTrainItem);
-                    else break;
-                }
-                foreach (TrainObjectItem thisTrainItem in PlayerTrainDivergingSwitches[0, 0])
-                {
-                    if (thisTrainItem.DistanceToTrainM <= maxDistanceM) thisInfo.ObjectInfoForward.Add(thisTrainItem);
-                    else break;
+
                 }
             }
 
@@ -14738,24 +14753,33 @@ namespace Orts.Simulation.Physics
 
             if (ValidRoute[1] != null)
             {
-                foreach (TrainObjectItem thisTrainItem in PlayerTrainSignals[1, 0])
+                try
+                // needed for thread safety when called from web server
                 {
-                    thisInfo.ObjectInfoBackward.Add(thisTrainItem);
+
+                    foreach (TrainObjectItem thisTrainItem in PlayerTrainSignals[1, 0])
+                    {
+                        thisInfo.ObjectInfoBackward.Add(thisTrainItem);
+                    }
+                    foreach (TrainObjectItem thisTrainItem in PlayerTrainSpeedposts[1])
+                    {
+                        if (thisTrainItem.DistanceToTrainM <= maxDistanceM) thisInfo.ObjectInfoBackward.Add(thisTrainItem);
+                        else break; ;
+                    }
+                    foreach (TrainObjectItem thisTrainItem in PlayerTrainMileposts[1])
+                    {
+                        if (thisTrainItem.DistanceToTrainM <= maxDistanceM) thisInfo.ObjectInfoBackward.Add(thisTrainItem);
+                        else break;
+                    }
+                    foreach (TrainObjectItem thisTrainItem in PlayerTrainDivergingSwitches[1, 0])
+                    {
+                        if (thisTrainItem.DistanceToTrainM <= maxDistanceM) thisInfo.ObjectInfoBackward.Add(thisTrainItem);
+                        else break;
+                    }
                 }
-                foreach (TrainObjectItem thisTrainItem in PlayerTrainSpeedposts[1])
+                catch
                 {
-                    if (thisTrainItem.DistanceToTrainM <= maxDistanceM) thisInfo.ObjectInfoBackward.Add(thisTrainItem);
-                    else break; ;
-                }
-                foreach (TrainObjectItem thisTrainItem in PlayerTrainMileposts[1])
-                {
-                    if (thisTrainItem.DistanceToTrainM <= maxDistanceM) thisInfo.ObjectInfoBackward.Add(thisTrainItem);
-                    else break;
-                }
-                foreach (TrainObjectItem thisTrainItem in PlayerTrainDivergingSwitches[1, 0])
-                {
-                    if (thisTrainItem.DistanceToTrainM <= maxDistanceM) thisInfo.ObjectInfoBackward.Add(thisTrainItem);
-                    else break;
+
                 }
             }
         }

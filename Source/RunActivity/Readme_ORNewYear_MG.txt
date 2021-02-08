@@ -1,5 +1,5 @@
-﻿Open Rails, Monogame version (unofficial) README - Release NewYear - Rev.87
-January 9th, 2021
+﻿Open Rails, Monogame version (unofficial) README - Release NewYear - Rev.89
+February 2nd, 2021
 
 Please note that the installation and use of Open Rails software, even of its unofficial versions, is governed by the Open Rails End User License Agreement. 
 
@@ -12,7 +12,7 @@ INSTALLATION
 you would return to the official OR version.
 
 RELEASE NOTES
-This unofficial version has been derived from the latest official OpenRails testing revision X1.3.1-279. 
+This unofficial version has been derived from the latest official OpenRails testing revision X1.3.1-290. 
 
 No Unstable releases are used to preserve the Monogame version of OR NewYear MG. 
 This version includes some features not (yet) available in the Open Rails testing official version, that is:
@@ -30,7 +30,6 @@ This version includes some features not (yet) available in the Open Rails testin
 - extended Raildriver setup (by perpetualKid)
 - analog clocks showing game time, see http://www.elvastower.com/forums/index.php?/topic/29546-station-clocks/ , by jonas
 - bug fix for bad mouse pointing in full screen mode and for issues with Fast full screen-Alt-Tab mode
-- Webserver operating also with IPv4 addresses, that is on external devices, by mbm_OR, cjakeman and BillC
 - panto commands and animations now swapped when in rear cab
 - correction to reduce transfer flickering at short distance
 - allow passing a red signal for shunting through dispatcher window, see https://trello.com/c/I19VVKlz/450-manual-callon-from-dispatcher-window , by césarbl
@@ -56,8 +55,10 @@ with the contribution of Paolo.
 - tentative support for RAIN textures for objects, terrain and transfers
 - dynamic terrain and scenery loading strategy (useful for slower computers)
 - American horn blow sequence for AI trains, see http://www.elvastower.com/forums/index.php?/topic/34721-ai-train-horn-honk-american-style/ 
-- NEW: bug fix for https://bugs.launchpad.net/or/+bug/1910684 Crash selecting height entry in altitude file
-- NEW: first thread hang is now logged even if watchdog disabled
+- bug fix for https://bugs.launchpad.net/or/+bug/1910684 Crash selecting height entry in altitude file
+- NEW: using webserver code of official OR testing version
+- NEW: enable customized tooltips for cabview controls, by adding a Label ( "string" ) line in the cabview control block in the .cvf file, by Jindrich
+
 
 Moreover some features present in the Unstable Monogame version by James Ross have been inserted.
 

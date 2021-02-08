@@ -165,6 +165,18 @@ namespace Orts.Viewer3D
 
                     if (IsPressed(EmergencyStopCommandUp) || IsPressed(EmergencyStopCommandDown))
                         Emergency = true;
+                    // check for alerter reset
+                    if (readBuffer?.Length >= 8 && readBufferHistory?.Length >= 8)
+                    {
+                        for (int i = 1; i <= 5; i++)
+                        {
+                            if (Math.Abs(readBuffer[i] - readBufferHistory[i]) > 1)
+                            {
+                                Changed = true;
+                                break;
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -184,6 +196,12 @@ namespace Orts.Viewer3D
                     railDriverInstance.SetLeds(RailDriverDisplaySign.Hyphen, RailDriverDisplaySign.Hyphen, RailDriverDisplaySign.Hyphen);
                 }
             }
+        }
+
+
+        public void Handled()
+        {
+            Changed = false;
         }
 
         private static float Percentage(float x, float x0, float x100)
@@ -249,6 +267,8 @@ namespace Orts.Viewer3D
         }
 
         public bool Active { get; private set; }
+
+        public bool Changed { get; private set; }
 
         /// <summary>
         /// Updates speed display on RailDriver LED
