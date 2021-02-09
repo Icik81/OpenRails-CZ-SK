@@ -416,7 +416,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             // Zjistí maximální pracovní tlak v systému
             if (StartOn) maxPressurePSI0 = Car.Train.EqualReservoirPressurePSIorInHg;
             
-            Car.Train.EqualReservoirPressurePSIorInHg = maxPressurePSI0;
+            Car.Train.EqualReservoirPressurePSIorInHg = maxPressurePSI = maxPressurePSI0 = 5.0f * 14.50377f ;
             BrakeLine1PressurePSI = maxPressurePSI0;
             BrakeLine2PressurePSI = Car.Train.BrakeLine2PressurePSI;
             BrakeLine3PressurePSI = 0;
