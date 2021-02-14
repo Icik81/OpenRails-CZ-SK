@@ -432,7 +432,7 @@ namespace Orts.Simulation.RollingStocks
             // Ensure Drive Axles is set to a default if no OR value added to WAG file
             if (WagonNumAxles == 0)
             {
-                if (MSTSWagonNumWheels != 0 && MSTSWagonNumWheels < 6)
+                if (MSTSWagonNumWheels != 0 && MSTSWagonNumWheels <= 6)
                 {
                     WagonNumAxles = (int) MSTSWagonNumWheels;
                 }

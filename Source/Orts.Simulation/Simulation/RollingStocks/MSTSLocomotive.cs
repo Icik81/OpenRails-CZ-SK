@@ -1250,7 +1250,7 @@ namespace Orts.Simulation.RollingStocks
             // Ensure Drive Axles is set with a default value if user doesn't supply an OR value in ENG file
             if (LocoNumDrvAxles == 0)
             {
-                if (MSTSLocoNumDrvWheels != 0 && MSTSLocoNumDrvWheels < 6)
+                if (MSTSLocoNumDrvWheels != 0 && MSTSLocoNumDrvWheels <= 6)
                 {
                     LocoNumDrvAxles = (int) MSTSLocoNumDrvWheels;
                 }
