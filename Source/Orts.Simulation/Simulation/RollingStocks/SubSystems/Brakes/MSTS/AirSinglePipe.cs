@@ -836,6 +836,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             var train = trainCar.Train;
             var lead = trainCar as MSTSLocomotive;
             var brakePipeTimeFactorS = lead == null ? 0.003f : lead.BrakePipeTimeFactorS; // Průrazná rychlost tlakové vlny 250m/s 0.003f
+            float brakePipeTimeFactorS0 = brakePipeTimeFactorS;           
+            float brakePipeTimeFactorS_Apply = brakePipeTimeFactorS * 10; // Vytvoří zpoždění náběhu brzdy vlaku kvůli průrazné tlakové vlně
+
             int nSteps = (int)(elapsedClockSeconds / brakePipeTimeFactorS + 1);
             float TrainPipeTimeVariationS = elapsedClockSeconds / nSteps;
             bool odpojen = false;
@@ -981,8 +984,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                                 || lead.TrainBrakeController.TrainBrakeControllerState == ControllerState.GSelfLapH)    // Postupné odbržďování pro BS2
                                 {
                                     lead.BrakeSystem.BrakeLine1PressurePSI += PressureDiffEqualToPipePSI;  // Increase brake pipe pressure to cover loss
-                                    lead.MainResPressurePSI = lead.MainResPressurePSI - (PressureDiffEqualToPipePSI * lead.BrakeSystem.BrakePipeVolumeM3 / lead.MainResVolumeM3);   // Decrease main reservoir pressure
-                                }
+                                    lead.MainResPressurePSI = lead.MainResPressurePSI - (PressureDiffEqualToPipePSI * lead.BrakeSystem.BrakePipeVolumeM3 / lead.MainResVolumeM3);   // Decrease main reservoir pressure                                    
+                                }                            
                             }
                             // reduce pressure in lead brake line if brake pipe pressure is above equalising pressure - apply brakes
                             else if (lead.BrakeSystem.BrakeLine1PressurePSI > train.EqualReservoirPressurePSIorInHg)
@@ -990,6 +993,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                                 float ServiceVariationFactor = (1 - TrainPipeTimeVariationS / (serviceTimeFactor * 2));
                                 ServiceVariationFactor = MathHelper.Clamp(ServiceVariationFactor, 0.05f, 1.0f); // Keep factor within acceptable limits - prevent value from going negative
                                 lead.BrakeSystem.BrakeLine1PressurePSI *= ServiceVariationFactor;
+                                brakePipeTimeFactorS0 = brakePipeTimeFactorS_Apply;
                             }
 
                         train.LeadPipePressurePSI = lead.BrakeSystem.BrakeLine1PressurePSI;  // Keep a record of current train pipe pressure in lead locomotive
@@ -1029,7 +1033,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                             // The sign in the equation determines the direction of air flow.
                             //float TrainPipePressureDiffPropogationPSI = (p0>p1 ? -1 : 1) * Math.Min(TrainPipeTimeVariationS * Math.Abs(p1 - p0) / brakePipeTimeFactorS, Math.Abs(p1 - p0));
 
-                            float TrainPipePressureDiffPropogationPSI = TrainPipeTimeVariationS * (p1 - p0) / (brakePipeTimeFactorS);
+                            float TrainPipePressureDiffPropogationPSI = TrainPipeTimeVariationS * (p1 - p0) / (brakePipeTimeFactorS0);
 
                             // Air flows from high pressure to low pressure, until pressure is equal in both cars.
                             // Brake pipe volumes of both cars are taken into account, so pressure increase/decrease is proportional to relative volumes.
