@@ -38,14 +38,14 @@ namespace Orts.Viewer3D.Popups
         }
 
         public CarOperationsWindow(WindowManager owner)
-            : base(owner, Window.DecorationSize.X + owner.TextFontDefault.Height * 19, Window.DecorationSize.Y + owner.TextFontDefault.Height * 10 + ControlLayout.SeparatorSize * 9, Viewer.Catalog.GetString("Car Operation Menu"))
+            : base(owner, Window.DecorationSize.X + owner.TextFontDefault.Height * 22, Window.DecorationSize.Y + owner.TextFontDefault.Height * 12 + ControlLayout.SeparatorSize * 9, Viewer.Catalog.GetString("Car Operation Menu"))
         {
             Viewer = owner.Viewer;
         }
 
         protected override ControlLayout Layout(ControlLayout layout)
         {
-            Label ID, buttonHandbrake, buttonTogglePower, buttonToggleMU, buttonToggleBrakeHose, buttonToggleAngleCockA, buttonToggleAngleCockB, buttonToggleBleedOffValve, buttonRezimVozu, buttonClose;
+            Label ID, buttonHandbrake, buttonTogglePower, buttonToggleMU, buttonToggleBrakeHose, buttonToggleAngleCockA, buttonToggleAngleCockB, buttonToggleBleedOffValve, buttonRezimVozu, buttonRezimVozuPL, buttonClose;
 
             var vbox = base.Layout(layout).AddLayoutVertical();
             vbox.Add(ID = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Car ID") + "  " + (CarPosition >= Viewer.PlayerTrain.Cars.Count? " " :Viewer.PlayerTrain.Cars[CarPosition].CarID), LabelAlignment.Center));
@@ -64,12 +64,26 @@ namespace Orts.Viewer3D.Popups
             vbox.Add(buttonToggleAngleCockB = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Open/Close Rear Angle Cock"), LabelAlignment.Center));
             vbox.AddHorizontalSeparator();
             vbox.Add(buttonToggleBleedOffValve = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Open/Close Bleed Off Valve"), LabelAlignment.Center));
-            vbox.AddHorizontalSeparator();
+            vbox.AddHorizontalSeparator();      
             vbox.Add(buttonRezimVozu = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Režim vozu G/P/R") + "     Nastaveno: " + (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.RezimVozuText, LabelAlignment.Center));
             buttonRezimVozu.Color = Color.Yellow;
+
+            if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.WagonType == 4)
+            {
+                vbox.AddHorizontalSeparator();
+                vbox.Add(buttonRezimVozuPL = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Režim vozu Prázdný/Ložený ") + "     Nastaveno: " + (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.RezimVozuTextPL, LabelAlignment.Center));
+                buttonRezimVozuPL.Color = Color.DarkOrange;
+                buttonRezimVozuPL.Click += new Action<Control, Point>(buttonRezimVozuPL_Click);
+            }
+            else
+            {
+                vbox.AddHorizontalSeparator();
+                vbox.Add(buttonRezimVozuPL = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("--------------------------"), LabelAlignment.Center));
+                buttonRezimVozuPL.Color = Color.DarkOrange;                
+            }
+
             vbox.AddHorizontalSeparator();
             vbox.Add(buttonClose = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Close window"), LabelAlignment.Center));
-
             buttonHandbrake.Click += new Action<Control, Point>(buttonHandbrake_Click);
             buttonTogglePower.Click += new Action<Control, Point>(buttonTogglePower_Click);
             buttonToggleMU.Click += new Action<Control, Point>(buttonToggleMU_Click);
@@ -77,7 +91,7 @@ namespace Orts.Viewer3D.Popups
             buttonToggleAngleCockA.Click += new Action<Control, Point>(buttonToggleAngleCockA_Click);
             buttonToggleAngleCockB.Click += new Action<Control, Point>(buttonToggleAngleCockB_Click);
             buttonToggleBleedOffValve.Click += new Action<Control, Point>(buttonToggleBleedOffValve_Click);
-            buttonRezimVozu.Click += new Action<Control, Point>(buttonRezimVozu_Click);
+            buttonRezimVozu.Click += new Action<Control, Point>(buttonRezimVozu_Click);            
             buttonClose.Click += new Action<Control, Point>(buttonClose_Click);
 
             return vbox;
@@ -210,6 +224,26 @@ namespace Orts.Viewer3D.Popups
             {
                 Viewer.Simulator.Confirmer.Information(Viewer.Catalog.GetString("Režim vozu R"));
                 (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.RezimVozuText = "R";
+            }
+        }
+        void buttonRezimVozuPL_Click(Control arg1, Point arg2)
+        {
+            if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem is SingleTransferPipe)
+                return;
+
+            new RezimVozuPLCommand(Viewer.Log, (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon), (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.RezimVozuPL += 1);
+
+            if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.RezimVozuPL > 1) (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.RezimVozuPL = 0;
+
+            if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.RezimVozuPL == 0)
+            {
+                Viewer.Simulator.Confirmer.Information(Viewer.Catalog.GetString("Prázdný vůz"));
+                (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.RezimVozuTextPL = "Prázdný";
+            }
+            if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.RezimVozuPL == 1)
+            {
+                Viewer.Simulator.Confirmer.Information(Viewer.Catalog.GetString("Ložený vůz"));
+                (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.RezimVozuTextPL = "Ložený";
             }
         }
     }

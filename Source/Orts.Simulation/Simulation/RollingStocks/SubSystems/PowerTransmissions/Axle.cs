@@ -264,6 +264,12 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerTransmissions
             }
         }
 
+        // Icik
+        /// <summary>
+        /// Umožňuje nastavení součinitele využití adheze (výchozí hodnota 0.95)
+        /// </summary>
+        public float AdhesionEfficiencyKoef { set; get; }
+
         /// <summary>
         /// Read/Write adhesion conditions parameter
         /// Should be set within the range of 0.3 to 1.2 but there is no restriction
@@ -769,7 +775,11 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerTransmissions
         public float SlipCharacteristics(float slipSpeed, float speed, float K, float conditions, float Adhesion2)
         {
             speed = Math.Abs(3.6f*speed);
-            float umax = (CurtiusKnifflerA / (speed + CurtiusKnifflerB) + CurtiusKnifflerC);// *Adhesion2 / 0.331455f; // Curtius - Kniffler equation
+            //float umax = (CurtiusKnifflerA / (speed + CurtiusKnifflerB) + CurtiusKnifflerC);// *Adhesion2 / 0.331455f; // Curtius - Kniffler equation
+            
+            // Icik
+            float umax = AdhesionEfficiencyKoef * (CurtiusKnifflerA / (speed + CurtiusKnifflerB) + CurtiusKnifflerC);// *Adhesion2 / 0.331455f; // Curtius - Kniffler equation
+
             umax *= conditions;
             if (K == 0.0)
                 K = 1;

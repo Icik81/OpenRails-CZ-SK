@@ -57,6 +57,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes
         public float BrakeMassG;
         public float BrakeMassP;
         public float BrakeMassR;
+        public float BrakeMassEmpty;
+        public float BrakeMassLoaded;
         public float BrakeMassKG;
         public float KoefRezim;
         public float DebugKoef;
@@ -93,6 +95,11 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes
         /// </summary>
         public float RezimVozu = 1;  // Default režim P
         public string RezimVozuText = "P";
+
+        public float RezimVozuPL = 0;  // Default režim Prázdný
+        public string RezimVozuTextPL = "Prázdný";
+
+        public int WagonType;
 
         public abstract void AISetPercent(float percent);
 

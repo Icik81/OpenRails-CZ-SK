@@ -136,6 +136,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             BrakeMassG = thiscopy.BrakeMassG;
             BrakeMassP = thiscopy.BrakeMassP;
             BrakeMassR = thiscopy.BrakeMassR;
+            BrakeMassEmpty = thiscopy.BrakeMassEmpty;
+            BrakeMassLoaded = thiscopy.BrakeMassLoaded;
             DebugKoef = thiscopy.DebugKoef;
             MaxReleaseRatePSIpSG = thiscopy.MaxReleaseRatePSIpSG;
             MaxApplicationRatePSIpSG = thiscopy.MaxApplicationRatePSIpSG;
@@ -310,10 +312,12 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 // Načte hodnotu citivosti brzdy lokomotivy i vozů
                 case "wagon(brakesensitivity": BrakeSensitivityPSIpS = stf.ReadFloatBlock(STFReader.UNITS.PressureRateDefaultPSIpS, null); break;
 
-                // Načte brzdící váhu lokomotivy i vozů v režimech G, P, R
+                // Načte brzdící váhu lokomotivy i vozů v režimech G, P, R, Prázdný, Ložený
                 case "wagon(brakemassg": BrakeMassG = stf.ReadFloatBlock(STFReader.UNITS.Mass, null); break;
                 case "wagon(brakemassp": BrakeMassP = stf.ReadFloatBlock(STFReader.UNITS.Mass, null); break;
                 case "wagon(brakemassr": BrakeMassR = stf.ReadFloatBlock(STFReader.UNITS.Mass, null); break;
+                case "wagon(brakemassempty": BrakeMassEmpty = stf.ReadFloatBlock(STFReader.UNITS.Mass, null); break;
+                case "wagon(brakemassloaded": BrakeMassLoaded = stf.ReadFloatBlock(STFReader.UNITS.Mass, null); break;
 
                 // Načte hodnoty napouštění a vypouštění brzdových válců lokomotivy i vozů v režimech G, P, R
                 case "wagon(maxapplicationrateg": MaxApplicationRatePSIpSG = stf.ReadFloatBlock(STFReader.UNITS.PressureRateDefaultPSIpS, null); break;
@@ -364,6 +368,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             outf.Write(AutoCylPressurePSI0);
             outf.Write(RezimVozu);
             outf.Write(RezimVozuText);
+            outf.Write(RezimVozuPL);
+            outf.Write(RezimVozuTextPL);
             outf.Write(MaxApplicationRatePSIpS0);
             outf.Write(MaxReleaseRatePSIpS0);
             outf.Write(maxPressurePSI0);
@@ -396,6 +402,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             AutoCylPressurePSI0 = inf.ReadSingle();
             RezimVozu = inf.ReadSingle();
             RezimVozuText = inf.ReadString();
+            RezimVozuPL = inf.ReadSingle();
+            RezimVozuTextPL = inf.ReadString();
             MaxApplicationRatePSIpS0 = inf.ReadSingle();
             MaxReleaseRatePSIpS0 = inf.ReadSingle();
             maxPressurePSI0 = inf.ReadSingle();

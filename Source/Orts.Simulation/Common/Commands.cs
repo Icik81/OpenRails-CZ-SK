@@ -1606,7 +1606,18 @@ namespace Orts.Common
             : base(log)
         {
             Receiver = car;
-}
+        }
+    }
+    [Serializable()]
+    public sealed class RezimVozuPLCommand : Command
+    {
+        public static MSTSWagon Receiver { get; set; }
+
+        public RezimVozuPLCommand(CommandLog log, MSTSWagon car, float RezimVozuPL)
+            : base(log)
+        {
+            Receiver = car;
+        }
     }
 
 }

@@ -53,6 +53,7 @@ using System.IO;
 using System.Linq;
 using Event = Orts.Common.Event;
 
+
 namespace Orts.Simulation.RollingStocks
 {
     public class ViewPoint
@@ -731,46 +732,57 @@ namespace Orts.Simulation.RollingStocks
 
         public virtual void BrakeMassKG()
         {
-            switch (BrakeSystem.RezimVozu)
-            {
-                case 0: // Režim G  
-                    if (BrakeSystem.BrakeMassG == 0) BrakeSystem.BrakeMassKG = BrakeSystem.KoefRezim * MassKG;
-                    else BrakeSystem.BrakeMassKG = BrakeSystem.BrakeMassG;
-                    break;
-                case 1: // Režim P  
-                    if (BrakeSystem.BrakeMassP == 0) BrakeSystem.BrakeMassKG = BrakeSystem.KoefRezim * MassKG;
-                    else BrakeSystem.BrakeMassKG = BrakeSystem.BrakeMassP;
-                    break;
-                case 2: // Režim R  
-                    if (BrakeSystem.BrakeMassR == 0) BrakeSystem.BrakeMassKG = BrakeSystem.KoefRezim * MassKG;
-                    else BrakeSystem.BrakeMassKG = BrakeSystem.BrakeMassR;
-                    break;
-            }
+            if (WagonType == WagonTypes.Passenger || WagonType == WagonTypes.Engine || WagonType == WagonTypes.Unknown)    //  Osobní vozy, lokomotivy a ostatní
+                switch (BrakeSystem.RezimVozu)
+                {
+                    case 0: // Režim G  
+                        if (BrakeSystem.BrakeMassG == 0) BrakeSystem.BrakeMassKG = BrakeSystem.KoefRezim * MassKG;
+                        else BrakeSystem.BrakeMassKG = BrakeSystem.BrakeMassG;
+                        break;
+                    case 1: // Režim P  
+                        if (BrakeSystem.BrakeMassP == 0) BrakeSystem.BrakeMassKG = BrakeSystem.KoefRezim * MassKG;
+                        else BrakeSystem.BrakeMassKG = BrakeSystem.BrakeMassP;
+                        break;
+                    case 2: // Režim R  
+                        if (BrakeSystem.BrakeMassR == 0) BrakeSystem.BrakeMassKG = BrakeSystem.KoefRezim * MassKG;
+                        else BrakeSystem.BrakeMassKG = BrakeSystem.BrakeMassR;
+                        break;
+                }
+            if (WagonType == WagonTypes.Freight || WagonType == WagonTypes.Tender)    //  Nákladní vozy a tendry            
+                switch (BrakeSystem.RezimVozuPL)
+                {
+                    case 0: // Režim Prázdný  
+                        if (BrakeSystem.BrakeMassEmpty == 0) BrakeSystem.BrakeMassKG = BrakeSystem.KoefRezim * MassKG;
+                        else BrakeSystem.BrakeMassKG = BrakeSystem.BrakeMassEmpty;
+                        break;
+                    case 1: // Režim Ložený  
+                        if (BrakeSystem.BrakeMassLoaded == 0) BrakeSystem.BrakeMassKG = BrakeSystem.KoefRezim * MassKG;
+                        else BrakeSystem.BrakeMassKG = BrakeSystem.BrakeMassLoaded;
+                        break;
+                }
         }
 
         // called when it's time to update the MotiveForce and FrictionForce
         public virtual void Update(float elapsedClockSeconds)
         {
-            // Výpočet max brzdné síly, zohlednění opotřebení a náhodná snížená funkčnost brzdy
+            // Výpočet max brzdné síly
             const float koefE = 0.84f; // Lokomotiva
             const float koefP = 0.80f; // Osobní vůz
             const float koefF = 0.90f; // Nákladní vůz
             const float koefHB = 0.50f; // Ruční brzda
 
-            if (WagonType == WagonTypes.Freight || WagonType == WagonTypes.Unknown || WagonType == WagonTypes.Tender)    //  Nákladní vozy a ostatní
+            BrakeSystem.WagonType = (int)WagonType;
+
+            if (WagonType == WagonTypes.Freight || WagonType == WagonTypes.Tender)    //  Nákladní vozy a tendry
             {
-                switch (BrakeSystem.RezimVozu)
+                switch (BrakeSystem.RezimVozuPL)
                 {
-                    case 0: // Režim G                     
-                        BrakeSystem.KoefRezim = 0.58f;
-                        BrakeMassKG();
-                        break;
-                    case 1: // Režim P                    
+                    case 0: // Režim Prázdný                     
                         BrakeSystem.KoefRezim = 0.36f;
                         BrakeMassKG();
                         break;
-                    case 2: // Režim R
-                        BrakeSystem.KoefRezim = 0.0f;
+                    case 1: // Režim Ložený                    
+                        BrakeSystem.KoefRezim = 0.58f;
                         BrakeMassKG();
                         break;
                 }
@@ -797,7 +809,7 @@ namespace Orts.Simulation.RollingStocks
                 if (BrakeSystem.DebugKoef == 0) MaxBrakeForceN = koefP * BrakeSystem.BrakeMassKG * 9.964016384f * 0.31f;
                 else MaxBrakeForceN = BrakeSystem.DebugKoef * BrakeSystem.BrakeMassKG * 9.964016384f * 0.31f;
             }
-            if (WagonType == WagonTypes.Engine)    //  Lokomotivy
+            if (WagonType == WagonTypes.Engine || WagonType == WagonTypes.Unknown)    //  Lokomotivy a ostatní
             {
                 switch (BrakeSystem.RezimVozu)
                 {

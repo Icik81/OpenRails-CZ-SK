@@ -406,6 +406,9 @@ namespace Orts.Simulation.RollingStocks
 
         public float PowerReduction = 0;
 
+        // Icik
+        public float AdhesionEfficiencyKoef = 0;
+
         public MSTSLocomotive(Simulator simulator, string wagPath)
             : base(simulator, wagPath)
         {
@@ -924,6 +927,8 @@ namespace Orts.Simulation.RollingStocks
                 case "engine(ortsmaxtracksanderboxcapacity": MaxTrackSandBoxCapacityM3 = stf.ReadFloatBlock(STFReader.UNITS.Volume, null); break;
                 case "engine(ortsmaxtracksandersandconsumption": TrackSanderSandConsumptionM3pS = stf.ReadFloatBlock(STFReader.UNITS.Volume, null); break;
                 case "engine(ortsmaxtracksanderairconsumption": TrackSanderAirComsumptionM3pS = stf.ReadFloatBlock(STFReader.UNITS.Volume, null); break;
+                // Icik
+                case "engine(adhesionefficiencykoef": AdhesionEfficiencyKoef = stf.ReadFloatBlock(STFReader.UNITS.None, null); break;
                 default: base.Parse(lowercasetoken, stf); break;
             }
         }
@@ -1026,6 +1031,8 @@ namespace Orts.Simulation.RollingStocks
             WaterScoopWidthM = locoCopy.WaterScoopWidthM;
             MoveParamsToAxle();
 
+            // Icik
+            AdhesionEfficiencyKoef = locoCopy.AdhesionEfficiencyKoef;
         }
 
         /// <summary>
@@ -2292,12 +2299,16 @@ namespace Orts.Simulation.RollingStocks
 
                 LocomotiveAxle.AxleRevolutionsInt.MinStep = LocomotiveAxle.InertiaKgm2 / MaxPowerW / 5.0f;
 
-
                 //Set axle model parameters
 
-               //LocomotiveAxle.BrakeForceN = FrictionForceN;
-              //  LocomotiveAxle.BrakeRetardForceN = BrakeForceN;
-                
+                //LocomotiveAxle.BrakeForceN = FrictionForceN;
+                //  LocomotiveAxle.BrakeRetardForceN = BrakeForceN;
+
+                // Icik
+                // Součinitel využití adheze (výchozí hodnota 0.95)
+                if (AdhesionEfficiencyKoef == 0) AdhesionEfficiencyKoef = 0.95f;
+                LocomotiveAxle.AdhesionEfficiencyKoef = AdhesionEfficiencyKoef;
+
                 // Upravuje chybu v adhezi pokud vůz brzdí (brzdí plnou vahou tzn. všemi koly)
                 LocomotiveAxle.BrakeRetardForceN = BrakeRetardForceN / ( MassKG / DrvWheelWeightKg );
 
@@ -2586,7 +2597,8 @@ namespace Orts.Simulation.RollingStocks
         /// </summary>
         public virtual void UpdateFrictionCoefficient(float elapsedClockSeconds)
         {
-            float BaseuMax = (Curtius_KnifflerA / (MpS.ToKpH(AbsSpeedMpS) + Curtius_KnifflerB) + Curtius_KnifflerC); // Base Curtius - Kniffler equation - u = 0.33, all other values are scaled off this formula
+            //float BaseuMax = AdhesionEfficiencyKoef * (Curtius_KnifflerA / (MpS.ToKpH(AbsSpeedMpS) + Curtius_KnifflerB) + Curtius_KnifflerC); // Base Curtius - Kniffler equation - u = 0.33, all other values are scaled off this formula
+            float BaseuMax = AdhesionEfficiencyKoef * (Curtius_KnifflerA / (MpS.ToKpH(AbsSpeedMpS) + Curtius_KnifflerB) + Curtius_KnifflerC); // Base Curtius - Kniffler equation - u = 0.33, all other values are scaled off this formula
             float SandingFrictionCoefficientFactor = 0.0f;
             //Set the friction coeff due to weather
             if (Simulator.WeatherType == WeatherType.Rain || Simulator.WeatherType == WeatherType.Snow)

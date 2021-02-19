@@ -1934,7 +1934,7 @@ namespace Orts.Simulation.RollingStocks
             else
             {   // probably fcalc, recover approximate davis equation
               
-    // Výpočet vozidlového odporu závislého na rychlosti                
+            // Výpočet vozidlového odporu závislého na rychlosti                
                 float mps1 = FrictionV2;
                 float mps2 = 80 * .44704f;
                 float s = mps2 - mps1;
@@ -1977,14 +1977,14 @@ namespace Orts.Simulation.RollingStocks
 
                 //Výpočet klidového jízdního odporu
                 if (WagonType == WagonTypes.Passenger)
-            {
+                {
                     if (WagonNumAxles <= 2)
                     {
                         if (MassKG < 10000) Friction0N = MassKG / 1000 * 9.81f * 1.50f;  //Vůz lehké stavby
                         else Friction0N = MassKG / 1000 * 9.81f * 1.90f;
-            }
+                    }
                     if (WagonNumAxles >= 4)
-            {
+                    {
                         if (MassKG < 10000) Friction0N = MassKG / 1000 * 9.81f * 1.80f;  //Vůz lehké stavby
                         else Friction0N = MassKG / 1000 * 9.81f * 1.35f;
                     }
