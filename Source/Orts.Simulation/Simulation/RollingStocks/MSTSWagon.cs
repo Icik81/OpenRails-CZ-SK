@@ -122,7 +122,8 @@ namespace Orts.Simulation.RollingStocks
         // Icik
         public float DavisAN0;           
         public float DavisBNSpM0;        
-        public float DavisCNSSpMM0;      
+        public float DavisCNSSpMM0;
+        public float G1 = 0;
 
         bool TenderWeightInitialize = true;
         float TenderWagonMaxCoalMassKG;
@@ -860,10 +861,125 @@ namespace Orts.Simulation.RollingStocks
             }
 
             // Determine whether or not to use the Davis friction model. Must come after freight animations are initialized.
+
+            // Icik
+            ORTSDavisSetUp();
+            ORTSWagonResistanceTypes();
+                        
             IsDavisFriction = DavisAN != 0 && DavisBNSpM != 0 && DavisCNSSpMM != 0;
 
             if (BrakeSystem == null)
                 BrakeSystem = MSTSBrakeSystem.Create(CarBrakeSystemType, this);
+        }
+
+        // Dynamicky nastavuje Davisovi konstanty A, B, C pro různé podvozky v závislosti na aktuální váze vozu
+        private void ORTSDavisSetUp()
+        {
+            float G = MassKG / 1000 * 9.81f;
+            float G0 = InitialMassKG / 1000 * 9.81f;
+
+            StandstillFrictionN = DavisAN0 * 1.5f;  // Definuje klidový jízdní odpor (odtrhový odpor) vozidla
+            if (MergeSpeedMpS == 0)
+                MergeSpeedMpS = 0.31f;
+
+            DavisAN0 = DavisAN;
+            DavisBNSpM0 = DavisBNSpM;
+            DavisCNSSpMM0 = DavisCNSSpMM;
+
+            switch (WagonNumAxles)
+            {
+                case 2:
+                    {
+                        if (DavisAN == 0)
+                            DavisAN = 1.79320f * G0;
+                        else
+                            if (G1 != G)
+                            DavisAN *= G / G0;
+                        
+                        if (DavisBNSpM == 0)
+                            DavisBNSpM = 0.06709f * G0;
+                        else
+                            if (G1 != G)
+                            DavisBNSpM *= G / G0;
+
+                        if (DavisCNSSpMM == 0)
+                            DavisCNSSpMM = 0.02599f * G0;
+                        else
+                            if (G1 != G)
+                            DavisCNSSpMM *= G / G0;
+                        G1 = G;
+                        break;
+                    }
+                case 4:  // B'o-B'o
+                    {
+                        if (DavisAN == 0)
+                            DavisAN = 2.8f * G0;
+                        else
+                            if (G1 != G)
+                                DavisAN *= G / G0;
+
+                        if (DavisBNSpM == 0) 
+                            DavisBNSpM = 0.00001f * G0;
+                        else
+                            if (G1 != G)
+                                DavisBNSpM *= G / G0;
+
+                        if (DavisCNSSpMM == 0) 
+                            DavisCNSSpMM = 0.00085f * G0;
+                        else
+                            if (G1 != G)
+                                DavisCNSSpMM *= G / G0;
+                        G1 = G;
+                        break;
+                    }
+                case 6:
+                    {
+                        if (DavisAN == 0)
+                            DavisAN = 1.35417f * G0;
+                        else
+                            if (G1 != G)
+                            DavisAN *= G / G0;
+
+                        if (DavisBNSpM == 0)
+                            DavisBNSpM = 0.03354f * G0;
+                        else
+                            if (G1 != G)
+                            DavisBNSpM *= G / G0;
+
+                        if (DavisCNSSpMM == 0)
+                            DavisCNSSpMM = 0.00785f * G0;
+                        else
+                            if (G1 != G)
+                            DavisCNSSpMM *= G / G0;
+                        G1 = G;
+                        break;
+                    }
+            }
+        }
+
+        // Stanovuje korekci Davisových konstant pro nápravové zatížení 
+        private void ORTSWagonResistanceTypes()
+        {
+            float AxleLoadKg = MassKG / WagonNumAxles;
+
+            //if (AxleLoadKg > 0 && AxleLoadKg <= 10000) // Odpor U4
+            //{
+            //    DavisAN0 = DavisAN * (2.0f / 1.9f);
+            //    DavisBNSpM0 = DavisBNSpM * (1.0f);
+            //    DavisCNSSpMM0 = DavisCNSSpMM * (0.0008f / 0.000465f);
+            //}
+            //if (AxleLoadKg > 10000 && AxleLoadKg <= 15000) // Odpor S
+            //{
+            //    DavisAN0 = DavisAN * (1.0f);
+            //    DavisBNSpM0 = DavisBNSpM * (1.0f);
+            //    DavisCNSSpMM0 = DavisCNSSpMM * (1.0f);
+            //}
+            //if (AxleLoadKg > 15000) // Odpor T4
+            //{
+            //    DavisAN0 = DavisAN * (1.3f / 1.9f);
+            //    DavisBNSpM0 = DavisBNSpM * (1.0f);
+            //    DavisCNSSpMM0 = DavisCNSSpMM * (0.00033f / 0.000465f);
+            //}
         }
 
         public void GetMeasurementUnits()
@@ -1890,6 +2006,9 @@ namespace Orts.Simulation.RollingStocks
 
         private void UpdateTrainBaseResistance()
         {
+            ORTSDavisSetUp();
+            ORTSWagonResistanceTypes();
+
             IsBelowMergeSpeed = AbsSpeedMpS < MergeSpeedMpS;
             IsStandStill = AbsSpeedMpS < 0.1f;
             bool isStartingFriction = StandstillFrictionN != 0;
@@ -1910,31 +2029,6 @@ namespace Orts.Simulation.RollingStocks
             else
             {
                 UpdateTrainBaseResistance_ORTS();
-            }
-        }
-
-        // Stanovuje korekci Davisových konstant pro nápravové zatížení 
-        private void ORTSWagonResistanceTypes()
-        {   
-            float AxleLoadKg = MassKG / WagonNumAxles;
-
-            if (AxleLoadKg > 0 && AxleLoadKg <= 10000) // Odpor U4
-            {
-                DavisAN0 = DavisAN * (2.0f / 1.9f);
-                DavisBNSpM0 = DavisBNSpM * (1.0f);
-                DavisCNSSpMM0 = DavisCNSSpMM * (0.0008f / 0.000465f);
-            }
-            if (AxleLoadKg > 10000 && AxleLoadKg <= 15000) // Odpor S
-            {
-                DavisAN0 = DavisAN * (1.0f);
-                DavisBNSpM0 = DavisBNSpM * (1.0f);
-                DavisCNSSpMM0 = DavisCNSSpMM * (1.0f);
-            }
-            if (AxleLoadKg > 15000) // Odpor T4
-            {
-                DavisAN0 = DavisAN * (1.3f / 1.9f);
-                DavisBNSpM0 = DavisBNSpM * (1.0f);
-                DavisCNSSpMM0 = DavisCNSSpMM * (0.00033f / 0.000465f);
             }
         }
 
@@ -1998,61 +2092,13 @@ namespace Orts.Simulation.RollingStocks
                 DavisBNSpM = (s1 + DavisCNSSpMM * s2) / s3;
                 DavisAN = ((sy - DavisBNSpM * sx - DavisCNSSpMM * sx2) / s);
 
-                FrictionC1 = Friction0N;
-
-                //Friction0N = FrictionC1;                                              
-                //if (FrictionE1 < 0)
-                //    Friction0N *= (float)Math.Pow(.0025 * .44704, FrictionE1);
+                Friction0N = FrictionC1;                                              
+                if (FrictionE1 < 0)
+                    Friction0N *= (float)Math.Pow(.0025 * .44704, FrictionE1);
             }
 
             if (IsStandStill)
                 FrictionForceN = Friction0N;
-
-            //Výpočet klidového jízdního odporu
-            if (WagonType == WagonTypes.Passenger)
-            {
-                if (WagonNumAxles <= 2)
-                {
-                    if (MassKG < 10000) Friction0N = MassKG / 1000 * 9.81f * 1.50f;  //Vůz lehké stavby
-                    else Friction0N = MassKG / 1000 * 9.81f * 1.90f;
-                }
-                if (WagonNumAxles >= 4)
-                {
-                    if (MassKG < 10000) Friction0N = MassKG / 1000 * 9.81f * 1.80f;  //Vůz lehké stavby
-                    else Friction0N = MassKG / 1000 * 9.81f * 1.35f;
-                }
-            }
-            if (WagonType == WagonTypes.Freight)
-            {
-                if (WagonNumAxles <= 2)
-                {
-                    if (MassKG < 20000) Friction0N = MassKG / 1000 * 9.81f * 2.00f;  //Prázdný vůz
-                    else Friction0N = MassKG / 1000 * 9.81f * 1.70f;  //Ložený vůz
-                }
-                if (WagonNumAxles >= 4)
-                {
-                    if (MassKG < 40000) Friction0N = MassKG / 1000 * 9.81f * 2.00f;  //Prázdný vůz
-                    else Friction0N = MassKG / 1000 * 9.81f * 1.30f;  //Ložený vůz
-                }
-            }
-            if (WagonType == WagonTypes.Engine)
-            {
-                if (WagonNumAxles <= 2) Friction0N = MassKG / 1000 * 9.81f * 1.70f;
-                if (WagonNumAxles >= 4) Friction0N = MassKG / 1000 * 9.81f * 1.30f;
-            }
-            if (WagonType == WagonTypes.Tender)
-            {
-                if (WagonNumAxles <= 2) Friction0N = MassKG / 1000 * 9.81f * 1.70f;
-                if (WagonNumAxles >= 4) Friction0N = MassKG / 1000 * 9.81f * 1.30f;
-            }
-            if (WagonType == WagonTypes.Unknown)
-            {
-                if (WagonNumAxles <= 2) Friction0N = MassKG / 1000 * 9.81f * 1.90f;
-                if (WagonNumAxles >= 4) Friction0N = MassKG / 1000 * 9.81f * 1.90f;
-            }
-
-            // Icik
-            ORTSWagonResistanceTypes();
 
             //FrictionForceN = DavisAN + AbsSpeedMpS * (DavisBNSpM + AbsSpeedMpS * DavisCNSSpMM);
             FrictionForceN = DavisAN0 + AbsSpeedMpS * (DavisBNSpM0 + AbsSpeedMpS * DavisCNSSpMM0);
@@ -2061,7 +2107,7 @@ namespace Orts.Simulation.RollingStocks
                 // Only the drag (C) factor changes if a trailing locomotive, so only running resistance, and not starting resistance needs to be corrected
                 if (WagonType == WagonTypes.Engine && Train.LeadLocomotive != this)
                     //FrictionForceN = DavisAN + AbsSpeedMpS * (DavisBNSpM + AbsSpeedMpS * (TrailLocoResistanceFactor * DavisCNSSpMM));
-                    FrictionForceN = DavisAN0 + AbsSpeedMpS * (DavisBNSpM0 + AbsSpeedMpS * (TrailLocoResistanceFactor * DavisCNSSpMM0));
+                    FrictionForceN = DavisAN0 + AbsSpeedMpS * (DavisBNSpM0 + AbsSpeedMpS * (TrailLocoResistanceFactor * DavisCNSSpMM0));                    
 
                 // Test to identify whether a tender is attached to the leading engine, if not then the resistance should also be derated as for the locomotive
                 bool IsLeadTender = false;
@@ -2084,7 +2130,7 @@ namespace Orts.Simulation.RollingStocks
                     if (!IsLeadTender)
                         //FrictionForceN = DavisAN + AbsSpeedMpS * (DavisBNSpM + AbsSpeedMpS * (TrailLocoResistanceFactor * DavisCNSSpMM));
                         FrictionForceN = DavisAN0 + AbsSpeedMpS * (DavisBNSpM0 + AbsSpeedMpS * (TrailLocoResistanceFactor * DavisCNSSpMM0));
-                }
+            }
             }
 
         /// <summary>
@@ -2132,13 +2178,11 @@ namespace Orts.Simulation.RollingStocks
                 WheelBearingTemperatureResistanceFactor = 2.0f;
                 StaticFrictionFactorN *= 2.0f;
             }
-            // Icik
-            ORTSWagonResistanceTypes();
-
+            
             // Calculation of resistance @ low speeds
             // Wind resistance is not included at low speeds, as it does not have a significant enough impact
-            //MergeSpeedFrictionN = DavisAN * WheelBearingTemperatureResistanceFactor + (MergeSpeedMpS) * (DavisBNSpM + (MergeSpeedMpS) * DavisCNSSpMM); // Calculate friction @ merge speed
-            MergeSpeedFrictionN = DavisAN0 * WheelBearingTemperatureResistanceFactor + (MergeSpeedMpS) * (DavisBNSpM0 + (MergeSpeedMpS) * DavisCNSSpMM0); // Calculate friction @ merge speed
+            //MergeSpeedFrictionN = DavisAN * WheelBearingTemperatureResistanceFactor + (MergeSpeedMpS) * (DavisBNSpM + (MergeSpeedMpS) * DavisCNSSpMM); // Calculate friction @ merge speed            
+            MergeSpeedFrictionN = DavisAN0 * WheelBearingTemperatureResistanceFactor + (MergeSpeedMpS) * (DavisBNSpM0 + (MergeSpeedMpS) * DavisCNSSpMM0); // Calculate friction @ merge speed            
             Friction0N = StandstillFrictionN * StaticFrictionFactorN; // Static friction x external resistance as this matches reference value
             FrictionBelowMergeSpeedN = ((1.0f - (AbsSpeedMpS / (MergeSpeedMpS))) * (Friction0N - MergeSpeedFrictionN)) + MergeSpeedFrictionN; // Calculate friction below merge speed - decreases linearly with speed
             FrictionForceN = FrictionBelowMergeSpeedN; // At low speed use this value
@@ -2386,10 +2430,7 @@ namespace Orts.Simulation.RollingStocks
             }
 
             Friction0N = ( Kg.ToTonne(MassKG) * StartFrictionInternalFactorN) + StartFrictionTrackN; // Static friction is journal or roller bearing friction x weight + track resistance. Mass value must be in tons uk to match reference used for starting resistance
-
-            // Icik
-            ORTSWagonResistanceTypes();
-
+            
             //float Friction0DavisN = DavisAN * WheelBearingTemperatureResistanceFactor; // Calculate the starting firction if Davis formula was extended to zero
             float Friction0DavisN = DavisAN0 * WheelBearingTemperatureResistanceFactor; // Calculate the starting firction if Davis formula was extended to zero
 
@@ -2402,8 +2443,8 @@ namespace Orts.Simulation.RollingStocks
             // Calculation of resistance @ low speeds
             // Wind resistance is not included at low speeds, as it does not have a significant enough impact
             float speed5 = MpS.FromMpH(5); // 5 mph
-            //Friction5N = DavisAN * WheelBearingTemperatureResistanceFactor + speed5 * (DavisBNSpM + speed5 * DavisCNSSpMM); // Calculate friction @ 5 mph using "running" Davis values
-            Friction5N = DavisAN0 * WheelBearingTemperatureResistanceFactor + speed5 * (DavisBNSpM0 + speed5 * DavisCNSSpMM0); // Calculate friction @ 5 mph using "running" Davis values
+            //Friction5N = DavisAN * WheelBearingTemperatureResistanceFactor + speed5 * (DavisBNSpM + speed5 * DavisCNSSpMM); // Calculate friction @ 5 mph using "running" Davis values            
+            Friction5N = DavisAN0 * WheelBearingTemperatureResistanceFactor + speed5 * (DavisBNSpM0 + speed5 * DavisCNSSpMM0); // Calculate friction @ 5 mph using "running" Davis values            
             FrictionLowSpeedN = ((1.0f - (AbsSpeedMpS / speed5)) * (Friction0N - Friction5N)) + Friction5N; // Calculate friction below 5mph - decreases linearly with speed
             FrictionForceN = FrictionLowSpeedN; // At low speed use this value
 
@@ -2466,18 +2507,15 @@ namespace Orts.Simulation.RollingStocks
                 WheelBearingTemperatureResistanceFactor = 2.0f;
             }
 
-            // Icik
-            ORTSWagonResistanceTypes();
-
             //FrictionForceN = DavisAN * WheelBearingTemperatureResistanceFactor + AbsSpeedMpS * (DavisBNSpM + AbsSpeedMpS * DavisCNSSpMM); // for normal speed operation
             FrictionForceN = DavisAN0 * WheelBearingTemperatureResistanceFactor + AbsSpeedMpS * (DavisBNSpM0 + AbsSpeedMpS * DavisCNSSpMM0); // for normal speed operation
-
+ 
             // if this car is a locomotive, but not the lead one then recalculate the resistance with lower value as drag will not be as high on trailing locomotives
             // Only the drag (C) factor changes if a trailing locomotive, so only running resistance, and not starting resistance needs to be corrected
             if (WagonType == WagonTypes.Engine && Train.LeadLocomotive != this)
             {
                 //FrictionForceN = DavisAN * WheelBearingTemperatureResistanceFactor + AbsSpeedMpS * (DavisBNSpM + AbsSpeedMpS * (TrailLocoResistanceFactor * DavisCNSSpMM));
-                FrictionForceN = DavisAN0 * WheelBearingTemperatureResistanceFactor + AbsSpeedMpS * (DavisBNSpM0 + AbsSpeedMpS * (TrailLocoResistanceFactor * DavisCNSSpMM0));
+                FrictionForceN = DavisAN0 * WheelBearingTemperatureResistanceFactor + AbsSpeedMpS * (DavisBNSpM0 + AbsSpeedMpS * (TrailLocoResistanceFactor * DavisCNSSpMM0));               
             }
 
             // Test to identify whether a tender is attached to the leading engine, if not then the resistance should also be derated as for the locomotive
@@ -2509,7 +2547,7 @@ namespace Orts.Simulation.RollingStocks
                 if (!IsLeadTender)
                 {
                     //FrictionForceN = DavisAN * WheelBearingTemperatureResistanceFactor + AbsSpeedMpS * (DavisBNSpM + AbsSpeedMpS * (TrailLocoResistanceFactor * DavisCNSSpMM));
-                    FrictionForceN = DavisAN0 * WheelBearingTemperatureResistanceFactor + AbsSpeedMpS * (DavisBNSpM0 + AbsSpeedMpS * (TrailLocoResistanceFactor * DavisCNSSpMM0));
+                    FrictionForceN = DavisAN0 * WheelBearingTemperatureResistanceFactor + AbsSpeedMpS * (DavisBNSpM0 + AbsSpeedMpS * (TrailLocoResistanceFactor * DavisCNSSpMM0));                   
                 }
             }
         }
