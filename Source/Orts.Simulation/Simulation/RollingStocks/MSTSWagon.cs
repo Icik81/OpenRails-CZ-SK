@@ -124,6 +124,21 @@ namespace Orts.Simulation.RollingStocks
         public float DavisBNSpM0;        
         public float DavisCNSSpMM0;
         public float G1 = 0;
+        public float AxleMassRangeL_1;
+        public float AxleMassRangeH_1;
+        public float AxleMassRangeL_2;
+        public float AxleMassRangeH_2;
+        public float AxleMassRangeL_3;
+        public float AxleMassRangeH_3;
+        public float DavisCoefficientA_1;
+        public float DavisCoefficientA_2;
+        public float DavisCoefficientA_3;
+        public float DavisCoefficientB_1;
+        public float DavisCoefficientB_2;
+        public float DavisCoefficientB_3;
+        public float DavisCoefficientC_1;
+        public float DavisCoefficientC_2;
+        public float DavisCoefficientC_3;
 
         bool TenderWeightInitialize = true;
         float TenderWagonMaxCoalMassKG;
@@ -878,7 +893,8 @@ namespace Orts.Simulation.RollingStocks
             float G = MassKG / 1000 * 9.81f;
             float G0 = InitialMassKG / 1000 * 9.81f;
 
-            StandstillFrictionN = DavisAN0 * 1.5f;  // Definuje klidový jízdní odpor (odtrhový odpor) vozidla
+            if (StandstillFrictionN == 0)
+                StandstillFrictionN = DavisAN0 * 1.3f;  // Definuje klidový jízdní odpor (odtrhový odpor) vozidla
             if (MergeSpeedMpS == 0)
                 MergeSpeedMpS = 0.31f;
 
@@ -897,13 +913,13 @@ namespace Orts.Simulation.RollingStocks
                             DavisAN *= G / G0;
                         
                         if (DavisBNSpM == 0)
-                            DavisBNSpM = 0.06709f * G0;
+                            DavisBNSpM = 0.00001f * G0;
                         else
                             if (G1 != G)
                             DavisBNSpM *= G / G0;
 
                         if (DavisCNSSpMM == 0)
-                            DavisCNSSpMM = 0.02599f * G0;
+                            DavisCNSSpMM = 0.00088f * G0;
                         else
                             if (G1 != G)
                             DavisCNSSpMM *= G / G0;
@@ -935,19 +951,19 @@ namespace Orts.Simulation.RollingStocks
                 case 6:
                     {
                         if (DavisAN == 0)
-                            DavisAN = 1.35417f * G0;
+                            DavisAN = 4.35f * G0;
                         else
                             if (G1 != G)
                             DavisAN *= G / G0;
 
                         if (DavisBNSpM == 0)
-                            DavisBNSpM = 0.03354f * G0;
+                            DavisBNSpM = 0.00001f * G0;
                         else
                             if (G1 != G)
                             DavisBNSpM *= G / G0;
 
                         if (DavisCNSSpMM == 0)
-                            DavisCNSSpMM = 0.00785f * G0;
+                            DavisCNSSpMM = 0.00081f * G0;
                         else
                             if (G1 != G)
                             DavisCNSSpMM *= G / G0;
@@ -961,25 +977,35 @@ namespace Orts.Simulation.RollingStocks
         private void ORTSWagonResistanceTypes()
         {
             float AxleLoadKg = MassKG / WagonNumAxles;
+            float G = MassKG / 1000 * 9.81f;
 
-            //if (AxleLoadKg > 0 && AxleLoadKg <= 10000) // Odpor U4
-            //{
-            //    DavisAN0 = DavisAN * (2.0f / 1.9f);
-            //    DavisBNSpM0 = DavisBNSpM * (1.0f);
-            //    DavisCNSSpMM0 = DavisCNSSpMM * (0.0008f / 0.000465f);
-            //}
-            //if (AxleLoadKg > 10000 && AxleLoadKg <= 15000) // Odpor S
-            //{
-            //    DavisAN0 = DavisAN * (1.0f);
-            //    DavisBNSpM0 = DavisBNSpM * (1.0f);
-            //    DavisCNSSpMM0 = DavisCNSSpMM * (1.0f);
-            //}
-            //if (AxleLoadKg > 15000) // Odpor T4
-            //{
-            //    DavisAN0 = DavisAN * (1.3f / 1.9f);
-            //    DavisBNSpM0 = DavisBNSpM * (1.0f);
-            //    DavisCNSSpMM0 = DavisCNSSpMM * (0.00033f / 0.000465f);
-            //}
+            if (DavisCoefficientA_1 + DavisCoefficientB_1 + DavisCoefficientC_1 != 0)
+            {
+                if (AxleLoadKg > AxleMassRangeL_1 && AxleLoadKg <= AxleMassRangeH_1)
+                {
+                    DavisAN0 = DavisCoefficientA_1 * G;
+                    DavisBNSpM0 = DavisCoefficientB_1 * G;
+                    DavisCNSSpMM0 = DavisCoefficientC_1 * G;
+                }
+            }
+            if (DavisCoefficientA_2 + DavisCoefficientB_2 + DavisCoefficientC_2 != 0)
+            {
+                if (AxleLoadKg > AxleMassRangeL_2 && AxleLoadKg <= AxleMassRangeH_2)
+                {
+                    DavisAN0 = DavisCoefficientA_2 * G;
+                    DavisBNSpM0 = DavisCoefficientB_2 * G;
+                    DavisCNSSpMM0 = DavisCoefficientC_2 * G;
+                }
+            }
+            if (DavisCoefficientA_3 + DavisCoefficientB_3 + DavisCoefficientC_3 != 0)
+            {
+                if (AxleLoadKg > AxleMassRangeL_3 && AxleLoadKg <= AxleMassRangeH_3)
+                {
+                    DavisAN0 = DavisCoefficientA_3 * G;
+                    DavisBNSpM0 = DavisCoefficientB_3 * G;
+                    DavisCNSSpMM0 = DavisCoefficientC_3 * G;
+                }
+            }
         }
 
         public void GetMeasurementUnits()
@@ -1371,6 +1397,71 @@ namespace Orts.Simulation.RollingStocks
                 default:
                     if (MSTSBrakeSystem != null)
                         MSTSBrakeSystem.Parse(lowercasetoken, stf);
+                    break;
+
+                // Icik
+                case "wagon(axlemassrange_1":
+                    stf.MustMatch("(");
+                    AxleMassRangeL_1 = stf.ReadFloat(STFReader.UNITS.Mass, null);
+                    AxleMassRangeH_1 = stf.ReadFloat(STFReader.UNITS.Mass, null);
+                    stf.SkipRestOfBlock();
+                    break;
+                case "wagon(axlemassrange_2":
+                    stf.MustMatch("(");
+                    AxleMassRangeL_2 = stf.ReadFloat(STFReader.UNITS.Mass, null);
+                    AxleMassRangeH_2 = stf.ReadFloat(STFReader.UNITS.Mass, null);
+                    stf.SkipRestOfBlock();
+                    break;
+                case "wagon(axlemassrange_3":
+                    stf.MustMatch("(");
+                    AxleMassRangeL_3 = stf.ReadFloat(STFReader.UNITS.Mass, null);
+                    AxleMassRangeH_3 = stf.ReadFloat(STFReader.UNITS.Mass, null);
+                    stf.SkipRestOfBlock();
+                    break;
+                case "wagon(daviscoefficienta_1":
+                    stf.MustMatch("(");
+                    DavisCoefficientA_1 = stf.ReadFloat(STFReader.UNITS.None, null);                    
+                    stf.SkipRestOfBlock();
+                    break;
+                case "wagon(daviscoefficienta_2":
+                    stf.MustMatch("(");
+                    DavisCoefficientA_2 = stf.ReadFloat(STFReader.UNITS.None, null);
+                    stf.SkipRestOfBlock();
+                    break;
+                case "wagon(daviscoefficienta_3":
+                    stf.MustMatch("(");
+                    DavisCoefficientA_3 = stf.ReadFloat(STFReader.UNITS.None, null);
+                    stf.SkipRestOfBlock();
+                    break;
+                case "wagon(daviscoefficientb_1":
+                    stf.MustMatch("(");
+                    DavisCoefficientB_1 = stf.ReadFloat(STFReader.UNITS.None, null);
+                    stf.SkipRestOfBlock();
+                    break;
+                case "wagon(daviscoefficientb_2":
+                    stf.MustMatch("(");
+                    DavisCoefficientB_2 = stf.ReadFloat(STFReader.UNITS.None, null);
+                    stf.SkipRestOfBlock();
+                    break;
+                case "wagon(daviscoefficientb_3":
+                    stf.MustMatch("(");
+                    DavisCoefficientB_3 = stf.ReadFloat(STFReader.UNITS.None, null);
+                    stf.SkipRestOfBlock();
+                    break;
+                case "wagon(daviscoefficientc_1":
+                    stf.MustMatch("(");
+                    DavisCoefficientC_1 = stf.ReadFloat(STFReader.UNITS.None, null);
+                    stf.SkipRestOfBlock();
+                    break;
+                case "wagon(daviscoefficientc_2":
+                    stf.MustMatch("(");
+                    DavisCoefficientC_2 = stf.ReadFloat(STFReader.UNITS.None, null);
+                    stf.SkipRestOfBlock();
+                    break;
+                case "wagon(daviscoefficientc_3":
+                    stf.MustMatch("(");
+                    DavisCoefficientC_3 = stf.ReadFloat(STFReader.UNITS.None, null);
+                    stf.SkipRestOfBlock();
                     break;
             }          
         }
