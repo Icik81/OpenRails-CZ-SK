@@ -123,6 +123,7 @@ namespace Orts.Simulation.RollingStocks
         public float DavisAN0;           
         public float DavisBNSpM0;        
         public float DavisCNSSpMM0;
+        public float StandstillFrictionN0;
         public float G1 = 0;
         public float AxleMassRangeL_1;
         public float AxleMassRangeH_1;
@@ -802,9 +803,9 @@ namespace Orts.Simulation.RollingStocks
                         MaxHandbrakeForceN = LoadFullMaxHandbrakeForceN;
 
                         // Update friction related parameters
-                        DavisAN = LoadFullORTSDavis_A;
-                        DavisBNSpM = LoadFullORTSDavis_B;
-                        DavisCNSSpMM = LoadFullORTSDavis_C;
+                        //DavisAN = LoadFullORTSDavis_A;
+                        //DavisBNSpM = LoadFullORTSDavis_B;
+                        //DavisCNSSpMM = LoadFullORTSDavis_C;
                         DavisDragConstant = LoadFullDavisDragConstant;
                         WagonFrontalAreaM2 = LoadFullWagonFrontalAreaM2;
 
@@ -826,9 +827,9 @@ namespace Orts.Simulation.RollingStocks
                     MaxHandbrakeForceN = ((LoadFullMaxHandbrakeForceN - LoadEmptyMaxHandbrakeForceN) * TempMassDiffRatio) + LoadEmptyMaxHandbrakeForceN;
 
                     // Update friction related parameters
-                    DavisAN = ((LoadFullORTSDavis_A - LoadEmptyORTSDavis_A) * TempMassDiffRatio) + LoadEmptyORTSDavis_A;
-                    DavisBNSpM = ((LoadFullORTSDavis_B - LoadEmptyORTSDavis_B) * TempMassDiffRatio) + LoadEmptyORTSDavis_B;
-                    DavisCNSSpMM = ((LoadFullORTSDavis_C - LoadEmptyORTSDavis_C) * TempMassDiffRatio) + LoadEmptyORTSDavis_C;
+                    //DavisAN = ((LoadFullORTSDavis_A - LoadEmptyORTSDavis_A) * TempMassDiffRatio) + LoadEmptyORTSDavis_A;
+                    //DavisBNSpM = ((LoadFullORTSDavis_B - LoadEmptyORTSDavis_B) * TempMassDiffRatio) + LoadEmptyORTSDavis_B;
+                    //DavisCNSSpMM = ((LoadFullORTSDavis_C - LoadEmptyORTSDavis_C) * TempMassDiffRatio) + LoadEmptyORTSDavis_C;
 
                     if (LoadEmptyDavisDragConstant > LoadFullDavisDragConstant) // Due to wind turbulence empty drag might be higher then loaded drag, and therefore both scenarios need to be covered.
                     {
@@ -854,9 +855,9 @@ namespace Orts.Simulation.RollingStocks
                         MaxHandbrakeForceN = LoadEmptyMaxHandbrakeForceN;
 
                         // Update friction related parameters
-                        DavisAN = LoadEmptyORTSDavis_A;
-                        DavisBNSpM = LoadEmptyORTSDavis_B;
-                        DavisCNSSpMM = LoadEmptyORTSDavis_C;
+                        //DavisAN = LoadEmptyORTSDavis_A;
+                        //DavisBNSpM = LoadEmptyORTSDavis_B;
+                        //DavisCNSSpMM = LoadEmptyORTSDavis_C;
 
                         // Update CoG related parameters
                         CentreOfGravityM.Y = LoadEmptyCentreOfGravityM_Y;
@@ -893,7 +894,7 @@ namespace Orts.Simulation.RollingStocks
             float G = MassKG / 1000 * 9.81f;
             float G0 = InitialMassKG / 1000 * 9.81f;
 
-            if (StandstillFrictionN == 0)
+            if (StandstillFrictionN0 == 0)
                 StandstillFrictionN = DavisAN0 * 1.3f;  // Definuje klidový jízdní odpor (odtrhový odpor) vozidla
             if (MergeSpeedMpS == 0)
                 MergeSpeedMpS = 0.31f;
@@ -932,19 +933,19 @@ namespace Orts.Simulation.RollingStocks
                             DavisAN = 2.8f * G0;
                         else
                             if (G1 != G)
-                                DavisAN *= G / G0;
+                            DavisAN *= G / G0;
 
-                        if (DavisBNSpM == 0) 
+                        if (DavisBNSpM == 0)
                             DavisBNSpM = 0.00001f * G0;
                         else
                             if (G1 != G)
-                                DavisBNSpM *= G / G0;
+                            DavisBNSpM *= G / G0;
 
-                        if (DavisCNSSpMM == 0) 
+                        if (DavisCNSSpMM == 0)
                             DavisCNSSpMM = 0.00085f * G0;
                         else
                             if (G1 != G)
-                                DavisCNSSpMM *= G / G0;
+                            DavisCNSSpMM *= G / G0;
                         G1 = G;
                         break;
                     }
@@ -1156,7 +1157,7 @@ namespace Orts.Simulation.RollingStocks
                 case "wagon(ortsdavisdragconstant": DavisDragConstant = stf.ReadFloatBlock(STFReader.UNITS.None, null); break;
                 case "wagon(ortswagonfrontalarea": WagonFrontalAreaM2 = stf.ReadFloatBlock(STFReader.UNITS.AreaDefaultFT2, null); break;
                 case "wagon(ortstraillocomotiveresistancefactor": TrailLocoResistanceFactor = stf.ReadFloatBlock(STFReader.UNITS.None, null); break;
-                case "wagon(ortsstandstillfriction": StandstillFrictionN = stf.ReadFloatBlock(STFReader.UNITS.Force, null); break;
+                case "wagon(ortsstandstillfriction": StandstillFrictionN = StandstillFrictionN0 = stf.ReadFloatBlock(STFReader.UNITS.Force, null); break;
                 case "wagon(ortsmergespeed": MergeSpeedMpS = stf.ReadFloatBlock(STFReader.UNITS.Speed, MergeSpeedMpS); break;
                 case "wagon(effects(specialeffects": ParseEffects(lowercasetoken, stf); break;
                 case "wagon(ortsbearingtype":
@@ -1548,7 +1549,7 @@ namespace Orts.Simulation.RollingStocks
             FrictionE2 = copy.FrictionE2;
             EffectData = copy.EffectData;
             IsBelowMergeSpeed = copy.IsBelowMergeSpeed;
-            StandstillFrictionN = copy.StandstillFrictionN;
+            StandstillFrictionN = copy.StandstillFrictionN;            
             MergeSpeedFrictionN = copy.MergeSpeedFrictionN;
             MergeSpeedMpS = copy.MergeSpeedMpS;
             IsDavisFriction = copy.IsDavisFriction;
@@ -1616,6 +1617,30 @@ namespace Orts.Simulation.RollingStocks
             LoadFullORTSDavis_C = copy.LoadFullORTSDavis_C;
             LoadFullDavisDragConstant = copy.LoadFullDavisDragConstant;
             LoadFullWagonFrontalAreaM2 = copy.LoadFullWagonFrontalAreaM2;
+
+            // Icik
+            DavisAN0 = copy.DavisAN0;
+            DavisBNSpM0 = copy.DavisBNSpM0;
+            DavisCNSSpMM0 = copy.DavisCNSSpMM0;
+            StandstillFrictionN0 = copy.StandstillFrictionN0;
+            AxleMassRangeL_1 = copy.AxleMassRangeL_1;
+            AxleMassRangeL_2 = copy.AxleMassRangeL_2;
+            AxleMassRangeL_3 = copy.AxleMassRangeL_3;
+            AxleMassRangeH_1 = copy.AxleMassRangeH_1;
+            AxleMassRangeH_2 = copy.AxleMassRangeH_2;
+            AxleMassRangeH_3 = copy.AxleMassRangeH_3;
+            DavisCoefficientA_1 = copy.DavisCoefficientA_1;
+            DavisCoefficientA_2 = copy.DavisCoefficientA_2;
+            DavisCoefficientA_3 = copy.DavisCoefficientA_3;
+            DavisCoefficientB_1 = copy.DavisCoefficientB_1;
+            DavisCoefficientB_2 = copy.DavisCoefficientB_2;
+            DavisCoefficientB_3 = copy.DavisCoefficientB_3;
+            DavisCoefficientC_1 = copy.DavisCoefficientC_1;
+            DavisCoefficientC_2 = copy.DavisCoefficientC_2;
+            DavisCoefficientC_3 = copy.DavisCoefficientC_3;
+
+
+
 
             if (copy.IntakePointList != null)
             {
@@ -1949,9 +1974,9 @@ namespace Orts.Simulation.RollingStocks
                         MaxBrakeForceN = ((LoadFullMaxBrakeForceN - LoadEmptyMaxBrakeForceN) * TempMassDiffRatio) + LoadEmptyMaxBrakeForceN;
                         MaxHandbrakeForceN = ((LoadFullMaxHandbrakeForceN - LoadEmptyMaxHandbrakeForceN) * TempMassDiffRatio) + LoadEmptyMaxHandbrakeForceN;
                         // Update friction related parameters
-                        DavisAN = ((LoadFullORTSDavis_A - LoadEmptyORTSDavis_A) * TempMassDiffRatio) + LoadEmptyORTSDavis_A;
-                        DavisBNSpM = ((LoadFullORTSDavis_B - LoadEmptyORTSDavis_B) * TempMassDiffRatio) + LoadEmptyORTSDavis_B;
-                        DavisCNSSpMM = ((LoadFullORTSDavis_C - LoadEmptyORTSDavis_C) * TempMassDiffRatio) + LoadEmptyORTSDavis_C;
+                        //DavisAN = ((LoadFullORTSDavis_A - LoadEmptyORTSDavis_A) * TempMassDiffRatio) + LoadEmptyORTSDavis_A;
+                        //DavisBNSpM = ((LoadFullORTSDavis_B - LoadEmptyORTSDavis_B) * TempMassDiffRatio) + LoadEmptyORTSDavis_B;
+                        //DavisCNSSpMM = ((LoadFullORTSDavis_C - LoadEmptyORTSDavis_C) * TempMassDiffRatio) + LoadEmptyORTSDavis_C;
 
                         if (LoadEmptyDavisDragConstant > LoadFullDavisDragConstant) // Due to wind turbulence empty drag might be higher then loaded drag, and therefore both scenarios need to be covered.
                         {
@@ -2027,9 +2052,9 @@ namespace Orts.Simulation.RollingStocks
                         MaxBrakeForceN = ((LoadFullMaxBrakeForceN - LoadEmptyMaxBrakeForceN) * TempMassDiffRatio) + LoadEmptyMaxBrakeForceN;
                         MaxHandbrakeForceN = ((LoadFullMaxHandbrakeForceN - LoadEmptyMaxHandbrakeForceN) * TempMassDiffRatio) + LoadEmptyMaxHandbrakeForceN;
                         // Update friction related parameters
-                        DavisAN = ((LoadFullORTSDavis_A - LoadEmptyORTSDavis_A) * TempMassDiffRatio) + LoadEmptyORTSDavis_A;
-                        DavisBNSpM = ((LoadFullORTSDavis_B - LoadEmptyORTSDavis_B) * TempMassDiffRatio) + LoadEmptyORTSDavis_B;
-                        DavisCNSSpMM = ((LoadFullORTSDavis_C - LoadEmptyORTSDavis_C) * TempMassDiffRatio) + LoadEmptyORTSDavis_C;
+                        //DavisAN = ((LoadFullORTSDavis_A - LoadEmptyORTSDavis_A) * TempMassDiffRatio) + LoadEmptyORTSDavis_A;
+                        //DavisBNSpM = ((LoadFullORTSDavis_B - LoadEmptyORTSDavis_B) * TempMassDiffRatio) + LoadEmptyORTSDavis_B;
+                        //DavisCNSSpMM = ((LoadFullORTSDavis_C - LoadEmptyORTSDavis_C) * TempMassDiffRatio) + LoadEmptyORTSDavis_C;
 
                         if (LoadEmptyDavisDragConstant > LoadFullDavisDragConstant) // Due to wind turbulence empty drag might be higher then loaded drag, and therefore both scenarios need to be covered.
                         {
@@ -2072,9 +2097,9 @@ namespace Orts.Simulation.RollingStocks
                         MaxBrakeForceN = ((LoadFullMaxBrakeForceN - LoadEmptyMaxBrakeForceN) * TempMassDiffRatio) + LoadEmptyMaxBrakeForceN;
                         MaxHandbrakeForceN = ((LoadFullMaxHandbrakeForceN - LoadEmptyMaxHandbrakeForceN) * TempMassDiffRatio) + LoadEmptyMaxHandbrakeForceN;
                         // Update friction related parameters
-                        DavisAN = ((LoadFullORTSDavis_A - LoadEmptyORTSDavis_A) * TempMassDiffRatio) + LoadEmptyORTSDavis_A;
-                        DavisBNSpM = ((LoadFullORTSDavis_B - LoadEmptyORTSDavis_B) * TempMassDiffRatio) + LoadEmptyORTSDavis_B;
-                        DavisCNSSpMM = ((LoadFullORTSDavis_C - LoadEmptyORTSDavis_C) * TempMassDiffRatio) + LoadEmptyORTSDavis_C;
+                        //DavisAN = ((LoadFullORTSDavis_A - LoadEmptyORTSDavis_A) * TempMassDiffRatio) + LoadEmptyORTSDavis_A;
+                        //DavisBNSpM = ((LoadFullORTSDavis_B - LoadEmptyORTSDavis_B) * TempMassDiffRatio) + LoadEmptyORTSDavis_B;
+                        //DavisCNSSpMM = ((LoadFullORTSDavis_C - LoadEmptyORTSDavis_C) * TempMassDiffRatio) + LoadEmptyORTSDavis_C;
 
                         if (LoadEmptyDavisDragConstant > LoadFullDavisDragConstant) // Due to wind turbulence empty drag might be higher then loaded drag, and therefore both scenarios need to be covered.
                         {
@@ -2141,9 +2166,9 @@ namespace Orts.Simulation.RollingStocks
                 //
                 // [2009-10-25 from http://www.arema.org/publications/pgre/ ]
                 //Friction0N = MassKG * 30f /* lb/ton */ // 4.84e-3f;  // convert lbs/short-ton to N/kg 
-                DavisAN = 6.3743f * MassKG / 1000 + 128.998f * 4;
-                DavisBNSpM = .49358f * MassKG / 1000;
-                DavisCNSSpMM = .11979f * 100 / 10.76f;
+                //DavisAN = 6.3743f * MassKG / 1000 + 128.998f * 4;
+                //DavisBNSpM = .49358f * MassKG / 1000;
+                //DavisCNSSpMM = .11979f * 100 / 10.76f;
                 Friction0N = DavisAN * 2.0f;            //More firendly to high load trains and the new physics
             }
             else
@@ -2179,9 +2204,9 @@ namespace Orts.Simulation.RollingStocks
                 float s4 = syx2 - sy * sx2 / s;
                 float s5 = sx2 * sx2 / s - sx4;
                 float s6 = sx3 - sx * sx2 / s;
-                DavisCNSSpMM = (s1 * s6 - s3 * s4) / (s3 * s5 - s2 * s6);
-                DavisBNSpM = (s1 + DavisCNSSpMM * s2) / s3;
-                DavisAN = ((sy - DavisBNSpM * sx - DavisCNSSpMM * sx2) / s);
+                //DavisCNSSpMM = (s1 * s6 - s3 * s4) / (s3 * s5 - s2 * s6);
+                //DavisBNSpM = (s1 + DavisCNSSpMM * s2) / s3;
+                //DavisAN = ((sy - DavisBNSpM * sx - DavisCNSSpMM * sx2) / s);
 
                 Friction0N = FrictionC1;                                              
                 if (FrictionE1 < 0)
@@ -2192,13 +2217,13 @@ namespace Orts.Simulation.RollingStocks
                 FrictionForceN = Friction0N;
 
             //FrictionForceN = DavisAN + AbsSpeedMpS * (DavisBNSpM + AbsSpeedMpS * DavisCNSSpMM);
-            FrictionForceN = DavisAN0 + AbsSpeedMpS * (DavisBNSpM0 + AbsSpeedMpS * DavisCNSSpMM0);
+            FrictionForceN = DavisAN0 + MpS.ToKpH(AbsSpeedMpS) * (DavisBNSpM0 + MpS.ToKpH(AbsSpeedMpS) * DavisCNSSpMM0);
 
                 // if this car is a locomotive, but not the lead one then recalculate the resistance with lower value as drag will not be as high on trailing locomotives
                 // Only the drag (C) factor changes if a trailing locomotive, so only running resistance, and not starting resistance needs to be corrected
                 if (WagonType == WagonTypes.Engine && Train.LeadLocomotive != this)
                     //FrictionForceN = DavisAN + AbsSpeedMpS * (DavisBNSpM + AbsSpeedMpS * (TrailLocoResistanceFactor * DavisCNSSpMM));
-                    FrictionForceN = DavisAN0 + AbsSpeedMpS * (DavisBNSpM0 + AbsSpeedMpS * (TrailLocoResistanceFactor * DavisCNSSpMM0));                    
+                    FrictionForceN = DavisAN0 + MpS.ToKpH(AbsSpeedMpS) * (DavisBNSpM0 + MpS.ToKpH(AbsSpeedMpS) * (TrailLocoResistanceFactor * DavisCNSSpMM0));                    
 
                 // Test to identify whether a tender is attached to the leading engine, if not then the resistance should also be derated as for the locomotive
                 bool IsLeadTender = false;
@@ -2220,7 +2245,7 @@ namespace Orts.Simulation.RollingStocks
                     // If tender is coupled to a trailing locomotive then reduce resistance
                     if (!IsLeadTender)
                         //FrictionForceN = DavisAN + AbsSpeedMpS * (DavisBNSpM + AbsSpeedMpS * (TrailLocoResistanceFactor * DavisCNSSpMM));
-                        FrictionForceN = DavisAN0 + AbsSpeedMpS * (DavisBNSpM0 + AbsSpeedMpS * (TrailLocoResistanceFactor * DavisCNSSpMM0));
+                        FrictionForceN = DavisAN0 + MpS.ToKpH(AbsSpeedMpS) * (DavisBNSpM0 + MpS.ToKpH(AbsSpeedMpS) * (TrailLocoResistanceFactor * DavisCNSSpMM0));
             }
             }
 
@@ -2273,9 +2298,9 @@ namespace Orts.Simulation.RollingStocks
             // Calculation of resistance @ low speeds
             // Wind resistance is not included at low speeds, as it does not have a significant enough impact
             //MergeSpeedFrictionN = DavisAN * WheelBearingTemperatureResistanceFactor + (MergeSpeedMpS) * (DavisBNSpM + (MergeSpeedMpS) * DavisCNSSpMM); // Calculate friction @ merge speed            
-            MergeSpeedFrictionN = DavisAN0 * WheelBearingTemperatureResistanceFactor + (MergeSpeedMpS) * (DavisBNSpM0 + (MergeSpeedMpS) * DavisCNSSpMM0); // Calculate friction @ merge speed            
+            MergeSpeedFrictionN = DavisAN0 * WheelBearingTemperatureResistanceFactor + MpS.ToKpH(MergeSpeedMpS) * (DavisBNSpM0 + MpS.ToKpH(MergeSpeedMpS) * DavisCNSSpMM0); // Calculate friction @ merge speed            
             Friction0N = StandstillFrictionN * StaticFrictionFactorN; // Static friction x external resistance as this matches reference value
-            FrictionBelowMergeSpeedN = ((1.0f - (AbsSpeedMpS / (MergeSpeedMpS))) * (Friction0N - MergeSpeedFrictionN)) + MergeSpeedFrictionN; // Calculate friction below merge speed - decreases linearly with speed
+            FrictionBelowMergeSpeedN = ((1.0f - (MpS.ToKpH(AbsSpeedMpS) / MpS.ToKpH(MergeSpeedMpS))) * (Friction0N - MergeSpeedFrictionN)) + MergeSpeedFrictionN; // Calculate friction below merge speed - decreases linearly with speed
             FrictionForceN = FrictionBelowMergeSpeedN; // At low speed use this value
         }
 
@@ -2533,10 +2558,11 @@ namespace Orts.Simulation.RollingStocks
 
             // Calculation of resistance @ low speeds
             // Wind resistance is not included at low speeds, as it does not have a significant enough impact
-            float speed5 = MpS.FromMpH(5); // 5 mph
+            //float speed5 = MpS.FromMpH(5); // 5 mph
+            float speed5 = 5; // 5 kph
             //Friction5N = DavisAN * WheelBearingTemperatureResistanceFactor + speed5 * (DavisBNSpM + speed5 * DavisCNSSpMM); // Calculate friction @ 5 mph using "running" Davis values            
             Friction5N = DavisAN0 * WheelBearingTemperatureResistanceFactor + speed5 * (DavisBNSpM0 + speed5 * DavisCNSSpMM0); // Calculate friction @ 5 mph using "running" Davis values            
-            FrictionLowSpeedN = ((1.0f - (AbsSpeedMpS / speed5)) * (Friction0N - Friction5N)) + Friction5N; // Calculate friction below 5mph - decreases linearly with speed
+            FrictionLowSpeedN = ((1.0f - (MpS.ToKpH(AbsSpeedMpS) / speed5)) * (Friction0N - Friction5N)) + Friction5N; // Calculate friction below 5mph - decreases linearly with speed
             FrictionForceN = FrictionLowSpeedN; // At low speed use this value
 
 #if DEBUG_FRICTION
@@ -2599,14 +2625,14 @@ namespace Orts.Simulation.RollingStocks
             }
 
             //FrictionForceN = DavisAN * WheelBearingTemperatureResistanceFactor + AbsSpeedMpS * (DavisBNSpM + AbsSpeedMpS * DavisCNSSpMM); // for normal speed operation
-            FrictionForceN = DavisAN0 * WheelBearingTemperatureResistanceFactor + AbsSpeedMpS * (DavisBNSpM0 + AbsSpeedMpS * DavisCNSSpMM0); // for normal speed operation
+            FrictionForceN = DavisAN0 * WheelBearingTemperatureResistanceFactor + MpS.ToKpH(AbsSpeedMpS) * (DavisBNSpM0 + MpS.ToKpH(AbsSpeedMpS) * DavisCNSSpMM0); // for normal speed operation
  
             // if this car is a locomotive, but not the lead one then recalculate the resistance with lower value as drag will not be as high on trailing locomotives
             // Only the drag (C) factor changes if a trailing locomotive, so only running resistance, and not starting resistance needs to be corrected
             if (WagonType == WagonTypes.Engine && Train.LeadLocomotive != this)
             {
                 //FrictionForceN = DavisAN * WheelBearingTemperatureResistanceFactor + AbsSpeedMpS * (DavisBNSpM + AbsSpeedMpS * (TrailLocoResistanceFactor * DavisCNSSpMM));
-                FrictionForceN = DavisAN0 * WheelBearingTemperatureResistanceFactor + AbsSpeedMpS * (DavisBNSpM0 + AbsSpeedMpS * (TrailLocoResistanceFactor * DavisCNSSpMM0));               
+                FrictionForceN = DavisAN0 * WheelBearingTemperatureResistanceFactor + MpS.ToKpH(AbsSpeedMpS) * (DavisBNSpM0 + MpS.ToKpH(AbsSpeedMpS) * (TrailLocoResistanceFactor * DavisCNSSpMM0));               
             }
 
             // Test to identify whether a tender is attached to the leading engine, if not then the resistance should also be derated as for the locomotive
@@ -2638,7 +2664,7 @@ namespace Orts.Simulation.RollingStocks
                 if (!IsLeadTender)
                 {
                     //FrictionForceN = DavisAN * WheelBearingTemperatureResistanceFactor + AbsSpeedMpS * (DavisBNSpM + AbsSpeedMpS * (TrailLocoResistanceFactor * DavisCNSSpMM));
-                    FrictionForceN = DavisAN0 * WheelBearingTemperatureResistanceFactor + AbsSpeedMpS * (DavisBNSpM0 + AbsSpeedMpS * (TrailLocoResistanceFactor * DavisCNSSpMM0));                   
+                    FrictionForceN = DavisAN0 * WheelBearingTemperatureResistanceFactor + MpS.ToKpH(AbsSpeedMpS) * (DavisBNSpM0 + MpS.ToKpH(AbsSpeedMpS) * (TrailLocoResistanceFactor * DavisCNSSpMM0));                   
                 }
             }
         }
@@ -3010,9 +3036,9 @@ namespace Orts.Simulation.RollingStocks
                     MaxBrakeForceN = ((LoadFullMaxBrakeForceN - LoadEmptyMaxBrakeForceN) * TempTenderMassDiffRatio) + LoadEmptyMaxBrakeForceN;
                     MaxHandbrakeForceN = ((LoadFullMaxHandbrakeForceN - LoadEmptyMaxHandbrakeForceN) * TempTenderMassDiffRatio) + LoadEmptyMaxHandbrakeForceN;
                     // Update friction related parameters
-                    DavisAN = ((LoadFullORTSDavis_A - LoadEmptyORTSDavis_A) * TempTenderMassDiffRatio) + LoadEmptyORTSDavis_A;
-                    DavisBNSpM = ((LoadFullORTSDavis_B - LoadEmptyORTSDavis_B) * TempTenderMassDiffRatio) + LoadEmptyORTSDavis_B;
-                    DavisCNSSpMM = ((LoadFullORTSDavis_C - LoadEmptyORTSDavis_C) * TempTenderMassDiffRatio) + LoadEmptyORTSDavis_C;
+                    //DavisAN = ((LoadFullORTSDavis_A - LoadEmptyORTSDavis_A) * TempTenderMassDiffRatio) + LoadEmptyORTSDavis_A;
+                    //DavisBNSpM = ((LoadFullORTSDavis_B - LoadEmptyORTSDavis_B) * TempTenderMassDiffRatio) + LoadEmptyORTSDavis_B;
+                    //DavisCNSSpMM = ((LoadFullORTSDavis_C - LoadEmptyORTSDavis_C) * TempTenderMassDiffRatio) + LoadEmptyORTSDavis_C;
 
                     if (LoadEmptyDavisDragConstant > LoadFullDavisDragConstant) // Due to wind turbulence empty drag might be higher then loaded drag, and therefore both scenarios need to be covered.
                     {
@@ -3043,9 +3069,9 @@ namespace Orts.Simulation.RollingStocks
                     MaxBrakeForceN = ((LoadFullMaxBrakeForceN - LoadEmptyMaxBrakeForceN) * TempTenderMassDiffRatio) + LoadEmptyMaxBrakeForceN;
                     MaxHandbrakeForceN = ((LoadFullMaxHandbrakeForceN - LoadEmptyMaxHandbrakeForceN) * TempTenderMassDiffRatio) + LoadEmptyMaxHandbrakeForceN;
                     // Update friction related parameters
-                    DavisAN = ((LoadFullORTSDavis_A - LoadEmptyORTSDavis_A) * TempTenderMassDiffRatio) + LoadEmptyORTSDavis_A;
-                    DavisBNSpM = ((LoadFullORTSDavis_B - LoadEmptyORTSDavis_B) * TempTenderMassDiffRatio) + LoadEmptyORTSDavis_B;
-                    DavisCNSSpMM = ((LoadFullORTSDavis_C - LoadEmptyORTSDavis_C) * TempTenderMassDiffRatio) + LoadEmptyORTSDavis_C;
+                    //DavisAN = ((LoadFullORTSDavis_A - LoadEmptyORTSDavis_A) * TempTenderMassDiffRatio) + LoadEmptyORTSDavis_A;
+                    //DavisBNSpM = ((LoadFullORTSDavis_B - LoadEmptyORTSDavis_B) * TempTenderMassDiffRatio) + LoadEmptyORTSDavis_B;
+                    //DavisCNSSpMM = ((LoadFullORTSDavis_C - LoadEmptyORTSDavis_C) * TempTenderMassDiffRatio) + LoadEmptyORTSDavis_C;
 
                     if (LoadEmptyDavisDragConstant > LoadFullDavisDragConstant) // Due to wind turbulence empty drag might be higher then loaded drag, and therefore both scenarios need to be covered.
                     {
