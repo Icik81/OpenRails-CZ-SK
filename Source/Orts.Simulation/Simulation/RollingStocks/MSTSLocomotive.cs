@@ -2610,7 +2610,8 @@ namespace Orts.Simulation.RollingStocks
                 }
                 if (Train.SlipperySpotDistanceM < Train.SlipperySpotLengthM)
                 {
-                    BaseFrictionCoefficientFactor = 0.8f;
+                    //BaseFrictionCoefficientFactor = 0.8f;
+                    BaseFrictionCoefficientFactor = 0.95f;
                 }
                 if (Simulator.WeatherType == WeatherType.Rain) // Wet weather
                 {
@@ -2622,19 +2623,21 @@ namespace Orts.Simulation.RollingStocks
                         // precipitation will calculate a value between 0.15 (light rain) and 0.2 (heavy rain) - this will be a factor that is used to adjust the base value - assume linear value between upper and lower precipitation values
                         if (pric >= 0.5)
                             //BaseFrictionCoefficientFactor = Math.Min((pric * 0.0078f + 0.45f), 0.8f); // should give a minimum value between 0.8 and 1.0
-                            BaseFrictionCoefficientFactor = Math.Min((pric * 0.0078f + 0.55f), 0.8f); // should give a minimum value between 0.8 and 1.0
+                            BaseFrictionCoefficientFactor = Math.Min((pric * 0.0078f + 0.75f), 0.95f); // should give a minimum value between 0.8 and 1.0
                         else
                             //BaseFrictionCoefficientFactor = Math.Min((0.4539f + 1.0922f * (0.5f - pric)), 0.8f); // should give a minimum value between 0.8 and 1.0
-                            BaseFrictionCoefficientFactor = Math.Min((0.4539f + 1.0922f * (0.6f - pric)), 0.8f); // should give a minimum value between 0.8 and 1.0
+                            BaseFrictionCoefficientFactor = Math.Min((0.4539f + 1.0922f * (0.75f - pric)), 0.95f); // should give a minimum value between 0.8 and 1.0
                     }
                     else // if not proportional to precipitation use fixed friction value of 0.8 x friction coefficient of 0.33
                     {
-                        BaseFrictionCoefficientFactor = 0.8f;
+                        //BaseFrictionCoefficientFactor = 0.8f;
+                        BaseFrictionCoefficientFactor = 0.95f;
                     }
                 }
                 else     // Snow weather
                 {
-                    BaseFrictionCoefficientFactor = 0.6f;
+                    //BaseFrictionCoefficientFactor = 0.6f;
+                    BaseFrictionCoefficientFactor = 0.90f;
                 }
 
                 //add sander - more effective in wet weather, so increases adhesion by more
@@ -2671,7 +2674,8 @@ namespace Orts.Simulation.RollingStocks
                     }
                     else
                     {
-                        BaseFrictionCoefficientFactor = Math.Min((fog * 2.75e-4f + 0.8f), 0.8f); // If fog is less then 2km then it will impact friction, decrease adhesion by up to 20% (same as clear to wet transition)
+                        //BaseFrictionCoefficientFactor = Math.Min((fog * 2.75e-4f + 0.8f), 0.8f); // If fog is less then 2km then it will impact friction, decrease adhesion by up to 20% (same as clear to wet transition)
+                        BaseFrictionCoefficientFactor = Math.Min((fog * 2.75e-4f + 0.9f), 0.95f); // If fog is less then 2km then it will impact friction, decrease adhesion by up to 20% (same as clear to wet transition)
                     }                                        
                 }
                 else // if not proportional to fog use fixed friction value approximately equal to 0.33, thus factor will be 1.0 x friction coefficient of 0.33
