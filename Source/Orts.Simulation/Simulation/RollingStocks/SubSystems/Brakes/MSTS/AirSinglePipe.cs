@@ -146,6 +146,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             MaxReleaseRatePSIpSR = thiscopy.MaxReleaseRatePSIpSR;
             MaxApplicationRatePSIpSR = thiscopy.MaxApplicationRatePSIpSR;
             maxPressurePSI0 = thiscopy.maxPressurePSI0;
+            AutoLoadRegulatorEquipped = thiscopy.AutoLoadRegulatorEquipped;
+            AutoLoadRegulatorMaxBrakeMass = thiscopy.AutoLoadRegulatorMaxBrakeMass;
         }
 
         // Get the brake BC & BP for EOT conditions
@@ -226,7 +228,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 string.Empty, // Spacer because the state above needs 2 columns.
                 string.Format("{0:F0}l", KapacitaHlJimkyAPotrubi * 1000 / 14.50377f),               
                 string.Format("{0:F0}", RezimVozuText),
-                string.Format("{0:F0}t", BrakeMassKG / 1000),              
+                string.Format("{0} {1:F0}t", AutoLoadRegulatorEquipped ? "Auto   " : "", BrakeMassKG / 1000),              
                                 
                 string.Empty, // Spacer because the state above needs 2 columns.              
                 string.Format("DebugKoef {0:F1}", DebugKoef),
@@ -326,6 +328,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 case "wagon(maxreleaseratep": MaxReleaseRatePSIpSP = ReleaseRatePSIpS = stf.ReadFloatBlock(STFReader.UNITS.PressureRateDefaultPSIpS, null); break;
                 case "wagon(maxapplicationrater": MaxApplicationRatePSIpSR = stf.ReadFloatBlock(STFReader.UNITS.PressureRateDefaultPSIpS, null); break;
                 case "wagon(maxreleaserater": MaxReleaseRatePSIpSR = ReleaseRatePSIpS = stf.ReadFloatBlock(STFReader.UNITS.PressureRateDefaultPSIpS, null); break;
+
+                // Automatický zátěžový regulátor pro vozy
+                case "wagon(autoloadregulatorequipped": AutoLoadRegulatorEquipped = stf.ReadBoolBlock(false); break;
+                case "wagon(autoloadregulatormaxbrakemass": AutoLoadRegulatorMaxBrakeMass = stf.ReadFloatBlock(STFReader.UNITS.Mass, null); break;
 
                 // Ladící koeficient pro ladiče brzd
                 case "wagon(debugkoef": DebugKoef = stf.ReadFloatBlock(STFReader.UNITS.None, null); break;

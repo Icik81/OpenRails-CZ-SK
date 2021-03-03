@@ -74,12 +74,14 @@ namespace Orts.Viewer3D.Popups
                 vbox.Add(buttonRezimVozuPL = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Režim vozu Prázdný/Ložený ") + "     Nastaveno: " + (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.RezimVozuTextPL, LabelAlignment.Center));
                 buttonRezimVozuPL.Color = Color.DarkOrange;
                 buttonRezimVozuPL.Click += new Action<Control, Point>(buttonRezimVozuPL_Click);
+                (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.PocetRezimuVozu = 2;
             }
             else
             {
                 vbox.AddHorizontalSeparator();
                 vbox.Add(buttonRezimVozuPL = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("--------------------------"), LabelAlignment.Center));
-                buttonRezimVozuPL.Color = Color.DarkOrange;                
+                buttonRezimVozuPL.Color = Color.DarkOrange;
+                (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.PocetRezimuVozu = 3;
             }
 
             vbox.AddHorizontalSeparator();
@@ -208,7 +210,8 @@ namespace Orts.Viewer3D.Popups
 
             new RezimVozuCommand(Viewer.Log, (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon), (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.RezimVozu += 1);
 
-            if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.RezimVozu > 2) (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.RezimVozu = 0;
+            if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.RezimVozu > (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.PocetRezimuVozu - 1)
+                (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.RezimVozu = 0;
 
             if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.RezimVozu == 0)
             {

@@ -775,17 +775,23 @@ namespace Orts.Simulation.RollingStocks
 
             if (WagonType == WagonTypes.Freight || WagonType == WagonTypes.Tender)    //  Nákladní vozy a tendry
             {
-                switch (BrakeSystem.RezimVozuPL)
-                {
-                    case 0: // Režim Prázdný                     
-                        BrakeSystem.KoefRezim = 0.36f;
-                        BrakeMassKG();
-                        break;
-                    case 1: // Režim Ložený                    
-                        BrakeSystem.KoefRezim = 0.58f;
-                        BrakeMassKG();
-                        break;
-                }
+                if (!BrakeSystem.AutoLoadRegulatorEquipped)              
+                    switch (BrakeSystem.RezimVozuPL)
+                    {
+                        case 0: // Režim Prázdný                     
+                            BrakeSystem.KoefRezim = 0.36f;
+                            BrakeMassKG();
+                            break;
+                        case 1: // Režim Ložený                    
+                            BrakeSystem.KoefRezim = 0.58f;
+                            BrakeMassKG();
+                            break;
+                    }
+                else
+                    if (MassKG < BrakeSystem.AutoLoadRegulatorMaxBrakeMass)
+                        BrakeSystem.BrakeMassKG = MassKG;
+                    else BrakeSystem.BrakeMassKG = BrakeSystem.AutoLoadRegulatorMaxBrakeMass;
+                
                 if (BrakeSystem.DebugKoef == 0) MaxBrakeForceN = koefF * BrakeSystem.BrakeMassKG * 9.964016384f * 0.31f;
                 else MaxBrakeForceN = BrakeSystem.DebugKoef * BrakeSystem.BrakeMassKG * 9.964016384f * 0.31f;
             }

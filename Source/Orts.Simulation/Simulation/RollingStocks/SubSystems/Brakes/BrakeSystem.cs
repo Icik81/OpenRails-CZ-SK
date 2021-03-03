@@ -68,6 +68,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes
         public float MaxApplicationRatePSIpSP;
         public float MaxReleaseRatePSIpSR;
         public float MaxApplicationRatePSIpSR;
+        public bool AutoLoadRegulatorEquipped;
+        public float AutoLoadRegulatorMaxBrakeMass;
 
         /// <summary>
         /// Front brake hoses connection status
@@ -95,6 +97,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes
         /// </summary>
         public float RezimVozu = 1;  // Default režim P
         public string RezimVozuText = "P";
+        public float PocetRezimuVozu = 3;  // Celkový počet režimů vozu
 
         public float RezimVozuPL = 0;  // Default režim Prázdný
         public string RezimVozuTextPL = "Prázdný";
