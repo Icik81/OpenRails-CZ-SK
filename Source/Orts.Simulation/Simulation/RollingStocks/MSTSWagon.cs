@@ -898,12 +898,11 @@ namespace Orts.Simulation.RollingStocks
                 StandstillFrictionN = DavisAN0 * 1.3f;  // Definuje klidový jízdní odpor (odtrhový odpor) vozidla
             if (MergeSpeedMpS == 0)
                 MergeSpeedMpS = 0.31f;
-
-            DavisAN0 = DavisAN;
-            DavisBNSpM0 = DavisBNSpM;
-            DavisCNSSpMM0 = DavisCNSSpMM;
-
-            switch (WagonNumAxles)
+          
+            if (DavisBNSpM / G0 > 0.00002f) // Pokud jsou zadány nesprávné Davis hodnoty, tak je resetuje do 0            
+                DavisAN = DavisBNSpM = DavisCNSSpMM = 0;
+            
+            switch (WagonNumAxles) // Definice Davis-default hodnot, pokud nejsou přesně definovány uživatelem 
             {
                 case 2:
                     {
@@ -972,9 +971,12 @@ namespace Orts.Simulation.RollingStocks
                         break;
                     }
             }
+            DavisAN0 = DavisAN;
+            DavisBNSpM0 = DavisBNSpM;
+            DavisCNSSpMM0 = DavisCNSSpMM;
         }
 
-        // Stanovuje korekci Davisových konstant pro nápravové zatížení 
+        // Stanovuje korekci Davisových konstant pro nápravové zatížení definované uživatelem
         private void ORTSWagonResistanceTypes()
         {
             float AxleLoadKg = MassKG / WagonNumAxles;
