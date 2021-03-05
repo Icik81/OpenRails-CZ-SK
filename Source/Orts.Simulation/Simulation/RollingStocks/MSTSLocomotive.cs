@@ -2305,8 +2305,8 @@ namespace Orts.Simulation.RollingStocks
                 //  LocomotiveAxle.BrakeRetardForceN = BrakeForceN;
 
                 // Icik
-                // Součinitel využití adheze (výchozí hodnota 0.95)
-                if (AdhesionEfficiencyKoef == 0) AdhesionEfficiencyKoef = 0.95f;
+                // Součinitel využití adheze (výchozí hodnota 0.75)
+                if (AdhesionEfficiencyKoef == 0) AdhesionEfficiencyKoef = 0.75f;
                 LocomotiveAxle.AdhesionEfficiencyKoef = AdhesionEfficiencyKoef;
 
                 // Upravuje chybu v adhezi pokud vůz brzdí (brzdí plnou vahou tzn. všemi koly)
@@ -2647,16 +2647,17 @@ namespace Orts.Simulation.RollingStocks
                     {
                         if ((Sander) && (AbsSpeedMpS < SanderSpeedEffectUpToMpS))
                         {
-                            SandingFrictionCoefficientFactor = (1.0f - 0.5f / SanderSpeedEffectUpToMpS * AbsSpeedMpS) * 1.75f;
-                            BaseFrictionCoefficientFactor *= SandingFrictionCoefficientFactor;
-                            
+                            //SandingFrictionCoefficientFactor = (1.0f - 0.5f / SanderSpeedEffectUpToMpS * AbsSpeedMpS) * 1.75f;
+                            SandingFrictionCoefficientFactor = (1.0f - 0.5f / SanderSpeedEffectUpToMpS * AbsSpeedMpS) * 1.25f;
+                            BaseFrictionCoefficientFactor *= SandingFrictionCoefficientFactor;                            
                         }
                     }
                     else
                     {
                         if (Sander)  // If sander is on, and train speed is greater then zero, then put sand on the track
                         {
-                            SandingFrictionCoefficientFactor = 1.75f;
+                            //SandingFrictionCoefficientFactor = 1.75f;
+                            SandingFrictionCoefficientFactor = 1.25f;
                             BaseFrictionCoefficientFactor *= SandingFrictionCoefficientFactor; // Sanding track adds approx 175% adhesion (best case)
                         }
                     }
