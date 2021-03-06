@@ -950,6 +950,10 @@ namespace Orts.Viewer3D.RollingStock
                             tmp = PDayTextures[FileName];
                     }
                 }
+                
+                // Osvětlení přístrojů v kabině
+                else tmp = PLightTextures[FileName];
+
                 // Both light and day textures should be used as-is in this situation.
                 isNightTexture = true;
             }
@@ -996,6 +1000,9 @@ namespace Orts.Viewer3D.RollingStock
                     if (retval == SharedMaterialManager.MissingTexture)
                         retval = hasCabLightDirectory ? NightTextures[FileName] : DayTextures[FileName];
                 }
+
+                // Osvětlení přístrojů v kabině
+                else retval = LightTextures[FileName];
 
                 // Both light and day textures should be used as-is in this situation.
                 isNightTexture = true;
