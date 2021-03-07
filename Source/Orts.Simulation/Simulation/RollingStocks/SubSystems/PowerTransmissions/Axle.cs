@@ -266,7 +266,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerTransmissions
 
         // Icik
         /// <summary>
-        /// Umožňuje nastavení součinitele využití adheze (výchozí hodnota 0.95)
+        /// Umožňuje nastavení součinitele využití adheze (výchozí hodnota 0.75)
         /// </summary>
         public float AdhesionEfficiencyKoef { set; get; }
 
@@ -518,14 +518,14 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerTransmissions
         public Axle()
         {
             transmissionEfficiency = 0.99f;
-            SlipWarningTresholdPercent = 70.0f;
+            //SlipWarningTresholdPercent = 70.0f;
             driveType = AxleDriveType.ForceDriven;
             AxleRevolutionsInt.IsLimited = true;
-            Adhesion2 = 0.331455f;
+            //Adhesion2 = 0.331455f;
 
-            CurtiusKnifflerA = 7.5f;
-            CurtiusKnifflerB = 44.0f;
-            CurtiusKnifflerC = 0.161f;
+            //CurtiusKnifflerA = 7.5f;
+            //CurtiusKnifflerB = 44.0f;
+            //CurtiusKnifflerC = 0.161f;
 
             switch (driveType)
             {
@@ -562,11 +562,11 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerTransmissions
             transmissionEfficiency = 0.99f;
             driveType = AxleDriveType.MotorDriven;
             AxleRevolutionsInt.IsLimited = true;
-            Adhesion2 = 0.331455f;
+            //Adhesion2 = 0.331455f;
 
-            CurtiusKnifflerA = 7.5f;
-            CurtiusKnifflerB = 44.0f;
-            CurtiusKnifflerC = 0.161f;
+            //CurtiusKnifflerA = 7.5f;
+            //CurtiusKnifflerB = 44.0f;
+            //CurtiusKnifflerC = 0.161f;
 
             switch (driveType)
             {
@@ -597,6 +597,18 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerTransmissions
         {
             previousSlipPercent = inf.ReadSingle();
             previousSlipSpeedMpS = inf.ReadSingle();
+
+            // Icik
+            CurtiusKnifflerA = inf.ReadSingle();
+            CurtiusKnifflerB = inf.ReadSingle();
+            CurtiusKnifflerC = inf.ReadSingle();
+            AdhesionK = inf.ReadSingle();
+            AdhesionConditions = inf.ReadSingle();
+            Adhesion2 = inf.ReadSingle();
+            SlipWarningTresholdPercent = inf.ReadSingle();
+            AxleSpeedMpS = inf.ReadSingle();
+            TrainSpeedMpS = inf.ReadSingle();
+            AxleWeightN = inf.ReadSingle();
         }
 
         /// <summary>
@@ -607,6 +619,18 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerTransmissions
         {
             outf.Write(previousSlipPercent);
             outf.Write(previousSlipSpeedMpS);
+
+            // Icik
+            outf.Write(CurtiusKnifflerA);
+            outf.Write(CurtiusKnifflerB);
+            outf.Write(CurtiusKnifflerC);
+            outf.Write(AdhesionK);
+            outf.Write(AdhesionConditions);
+            outf.Write(Adhesion2);
+            outf.Write(SlipWarningTresholdPercent);
+            outf.Write(AxleSpeedMpS);
+            outf.Write(TrainSpeedMpS);
+            outf.Write(AxleWeightN);
         }
 
         /// <summary>
@@ -775,8 +799,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerTransmissions
         public float SlipCharacteristics(float slipSpeed, float speed, float K, float conditions, float Adhesion2)
         {
             speed = Math.Abs(3.6f*speed);
+
             //float umax = (CurtiusKnifflerA / (speed + CurtiusKnifflerB) + CurtiusKnifflerC);// *Adhesion2 / 0.331455f; // Curtius - Kniffler equation
-            
+
             // Icik
             float umax = AdhesionEfficiencyKoef * (CurtiusKnifflerA / (speed + CurtiusKnifflerB) + CurtiusKnifflerC);// *Adhesion2 / 0.331455f; // Curtius - Kniffler equation
 
