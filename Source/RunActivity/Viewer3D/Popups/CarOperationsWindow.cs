@@ -38,7 +38,7 @@ namespace Orts.Viewer3D.Popups
         }
 
         public CarOperationsWindow(WindowManager owner)
-            : base(owner, Window.DecorationSize.X + owner.TextFontDefault.Height * 22, Window.DecorationSize.Y + owner.TextFontDefault.Height * 12 + ControlLayout.SeparatorSize * 9, Viewer.Catalog.GetString("Car Operation Menu"))
+            : base(owner, Window.DecorationSize.X + owner.TextFontDefault.Height * 22, Window.DecorationSize.Y + (owner.TextFontDefault.Height + 1) * 11 + ControlLayout.SeparatorSize * 9, Viewer.Catalog.GetString("*** Car Operation Menu ***"))
         {
             Viewer = owner.Viewer;
         }
@@ -49,7 +49,7 @@ namespace Orts.Viewer3D.Popups
 
             var vbox = base.Layout(layout).AddLayoutVertical();
             vbox.Add(ID = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Car ID") + "  " + (CarPosition >= Viewer.PlayerTrain.Cars.Count? " " :Viewer.PlayerTrain.Cars[CarPosition].CarID), LabelAlignment.Center));
-            ID.Color = Color.Red;
+            ID.Color = Color.Yellow;
             vbox.AddHorizontalSeparator();
             vbox.Add(buttonHandbrake = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Toggle Handbrake"), LabelAlignment.Center));
             vbox.AddHorizontalSeparator();
@@ -66,7 +66,7 @@ namespace Orts.Viewer3D.Popups
             vbox.Add(buttonToggleBleedOffValve = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Open/Close Bleed Off Valve"), LabelAlignment.Center));
             vbox.AddHorizontalSeparator();      
             vbox.Add(buttonRezimVozu = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Režim vozu G/P/R") + "     Nastaveno: " + (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.RezimVozuText, LabelAlignment.Center));
-            buttonRezimVozu.Color = Color.Yellow;
+            buttonRezimVozu.Color = Color.LightGreen;
 
             if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.WagonType == 4 && !(Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.AutoLoadRegulatorEquipped)
             {
@@ -79,7 +79,7 @@ namespace Orts.Viewer3D.Popups
             else
             {
                 vbox.AddHorizontalSeparator();
-                vbox.Add(buttonRezimVozuPL = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("--------------------------"), LabelAlignment.Center));
+                vbox.Add(buttonRezimVozuPL = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("N/A"), LabelAlignment.Center));
                 buttonRezimVozuPL.Color = Color.DarkOrange;
                 (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.PocetRezimuVozu = 3;
                 if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.AutoLoadRegulatorEquipped)
