@@ -73,7 +73,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
         protected float prevBrakeLine1PressurePSI = 0;
         protected bool odpojen = false;
         protected bool PlniValce = false;
-        protected bool OdvetravaValce = false;
+        protected bool OdvetravaValce = false;     
 
         /// <summary>
         /// EP brake holding valve. Needs to be closed (Lap) in case of brake application or holding.
@@ -126,8 +126,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             TwoPipes = thiscopy.TwoPipes;
             NoMRPAuxResCharging = thiscopy.NoMRPAuxResCharging;
             HoldingValve = thiscopy.HoldingValve;
-            TrainPipeLeakRatePSIpS = thiscopy.TrainPipeLeakRatePSIpS;
-            TrainPipeLeakRatePSIpS0 = thiscopy.TrainPipeLeakRatePSIpS0;
+            TrainPipeLeakRatePSIpS = thiscopy.TrainPipeLeakRatePSIpS;            
             TripleValveState = thiscopy.TripleValveState;
             BrakeSensitivityPSIpS = thiscopy.BrakeSensitivityPSIpS;
             OverchargeEliminationRatePSIpS = thiscopy.OverchargeEliminationRatePSIpS;
@@ -183,7 +182,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             s += string.Format("  Netěsnost potrubí {0:F5}bar/s", Car.Train.TotalTrainTrainPipeLeakRate / 14.50377f);
             s += string.Format("  Objem potrubí {0:F0}l", Car.Train.TotalTrainBrakePipeVolumeM3 * 1000);
             s += string.Format("  Kapacita hl.jímky a přilehlého potrubí {0:F0}l", Car.Train.TotalKapacitaHlJimkyAPotrubi * 1000 / 14.50377f);
-            
+          
             //s += string.Format("    maxPressurePSI {0:F1}bar", maxPressurePSI0 / 14.50377f);            
             //s += string.Format("    MaxCylPressurePSI {0:F1}bar", MaxCylPressurePSI / 14.50377f);
             //s += string.Format("    MCP {0:F1}bar", MCP / 14.50377f);
@@ -309,7 +308,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 //case "wagon(ortsbrakeinsensitivity": BrakeInsensitivityPSIpS = stf.ReadFloatBlock(STFReader.UNITS.PressureRateDefaultPSIpS, null); break;
 
                 // Načte hodnotu netěsnosti lokomotivy i vozů
-                case "wagon(trainpipeleakrate": TrainPipeLeakRatePSIpS = TrainPipeLeakRatePSIpS0 = stf.ReadFloatBlock(STFReader.UNITS.PressureRateDefaultPSIpS, null); break;
+                case "wagon(trainpipeleakrate": TrainPipeLeakRatePSIpS = stf.ReadFloatBlock(STFReader.UNITS.PressureRateDefaultPSIpS, null); break;
                 
                 // Načte hodnotu citivosti brzdy lokomotivy i vozů
                 case "wagon(brakesensitivity": BrakeSensitivityPSIpS = stf.ReadFloatBlock(STFReader.UNITS.PressureRateDefaultPSIpS, null); break;
@@ -848,10 +847,14 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
         {
             // Brake pressures are calculated on the lead locomotive first, and then propogated along each wagon in the consist.
             var train = trainCar.Train;
-            var lead = trainCar as MSTSLocomotive;
+            var lead = trainCar as MSTSLocomotive;            
             var brakePipeTimeFactorS = lead == null ? 0.003f : lead.BrakePipeTimeFactorS; // Průrazná rychlost tlakové vlny 250m/s 0.003f
+            var BrakePipeChargingRatePSIorInHgpS0 = lead.BrakePipeChargingRatePSIorInHgpS;
+
             float brakePipeTimeFactorS0 = brakePipeTimeFactorS;           
-            float brakePipeTimeFactorS_Apply = brakePipeTimeFactorS * 10; // Vytvoří zpoždění náběhu brzdy vlaku kvůli průrazné tlakové vlně
+            float brakePipeTimeFactorS_Apply = brakePipeTimeFactorS * 30; // Vytvoří zpoždění náběhu brzdy vlaku kvůli průrazné tlakové vlně            
+            float brakePipeChargingNormalPSIpS = BrakePipeChargingRatePSIorInHgpS0; // Rychlost plnění průběžného potrubí při normálním plnění 29 PSI/s
+            float brakePipeChargingQuickPSIpS = 200; // Rychlost plnění průběžného potrubí při švihu 200 PSI/s
 
             int nSteps = (int)(elapsedClockSeconds / brakePipeTimeFactorS + 1);
             float TrainPipeTimeVariationS = elapsedClockSeconds / nSteps;
@@ -861,17 +864,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             train.TotalTrainTrainPipeLeakRate = 0f;
             foreach (TrainCar car in train.Cars)
             {
-                if (car.BrakeSystem.TrainPipeLeakRatePSIpS0 == 0)
-                {
-                    // Náhodný výpočet netěsnosti vzduchu v potrubí pro vůz, u kterého chybí údaj netěsnosti  
-                    Random Leak0 = new Random();
-                    int Leak = Leak0.Next(1, 20);
-                    if (Leak > 15) Leak = Leak0.Next(1, 2);
-                    else Leak = 1;
-                    car.BrakeSystem.TrainPipeLeakRatePSIpS0 = 0.00010f * 14.50377f * Leak; // Vypočtená netěsnost (výchozí 0.00010bar/s)
-                }
-                car.BrakeSystem.TrainPipeLeakRatePSIpS = car.BrakeSystem.TrainPipeLeakRatePSIpS0;
-
+                //  Pokud není netěstnost vozu definována
+                if (car.BrakeSystem.TrainPipeLeakRatePSIpS == 0)                                 
+                    car.BrakeSystem.TrainPipeLeakRatePSIpS = 0.00010f * 14.50377f; // Výchozí netěsnost 0.00010bar/s                
+                
                 //  První vůz
                 if (car == train.Cars[0] && !car.BrakeSystem.AngleCockBOpen) odpojen = true;
 
@@ -951,21 +947,21 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         // Změna rychlosti plnění vzduchojemu při švihu
                         if (lead.TrainBrakeController.TrainBrakeControllerState == ControllerState.FullQuickRelease)
                         {
-                            lead.BrakePipeChargingRatePSIorInHgpS = 200f;  // Rychlost plnění ve vysokotlakém švihu 200 PSI/s
+                            BrakePipeChargingRatePSIorInHgpS0 = brakePipeChargingQuickPSIpS;  // Rychlost plnění ve vysokotlakém švihu 
                             if (lead.TrainBrakeController.MaxPressurePSI < lead.MainResPressurePSI) lead.TrainBrakeController.MaxPressurePSI = lead.MainResPressurePSI;
                         }
 
                         // Nízkotlaké přebití
                         else if (lead.TrainBrakeController.TrainBrakeControllerState == ControllerState.OverchargeStart)
                         {
-                            lead.BrakePipeChargingRatePSIorInHgpS = 42f;  // Standardní rychlost plnění 42 PSI/s
+                            BrakePipeChargingRatePSIorInHgpS0 = brakePipeChargingNormalPSIpS;  // Standardní rychlost plnění 
                             if (lead.TrainBrakeController.MaxPressurePSI > lead.BrakeSystem.TrainBrakesControllerMaxOverchargePressurePSI) lead.TrainBrakeController.MaxPressurePSI = lead.BrakeSystem.BrakeLine1PressurePSI - lead.TrainBrakeController.ReleaseRatePSIpS * (elapsedClockSeconds / 1.0f);
                             else lead.TrainBrakeController.MaxPressurePSI = lead.BrakeSystem.TrainBrakesControllerMaxOverchargePressurePSI;
                         }
 
                         else if (lead.TrainBrakeController.TrainBrakeControllerState != ControllerState.Lap)
                         {
-                            lead.BrakePipeChargingRatePSIorInHgpS = 42f;  // Standardní rychlost plnění 42 PSI/s
+                            BrakePipeChargingRatePSIorInHgpS0 = brakePipeChargingNormalPSIpS;  // Standardní rychlost plnění 
                             if (lead.TrainBrakeController.MaxPressurePSI > lead.BrakeSystem.TrainBrakesControllerMaxOverchargePressurePSI * 1.11f) lead.TrainBrakeController.MaxPressurePSI = lead.BrakeSystem.BrakeLine1PressurePSI - lead.TrainBrakeController.QuickReleaseRatePSIpS * (elapsedClockSeconds / 1.0f);
                             else if (lead.TrainBrakeController.MaxPressurePSI > lead.BrakeSystem.TrainBrakesControllerMaxOverchargePressurePSI) lead.TrainBrakeController.MaxPressurePSI = lead.BrakeSystem.BrakeLine1PressurePSI - 0.03f; // Zpomalí 
                             else if (lead.TrainBrakeController.MaxPressurePSI > lead.BrakeSystem.maxPressurePSI0) lead.TrainBrakeController.MaxPressurePSI -= lead.BrakeSystem.OverchargeEliminationRatePSIpS * (elapsedClockSeconds / 12.0f);
@@ -977,7 +973,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                             if (lead.BrakeSystem.BrakeLine1PressurePSI < train.EqualReservoirPressurePSIorInHg)
                             {
                                 // Calculate change in brake pipe pressure between equalising reservoir and lead brake pipe
-                                float PressureDiffEqualToPipePSI = TrainPipeTimeVariationS * lead.BrakePipeChargingRatePSIorInHgpS; // default condition - if EQ Res is higher then Brake Pipe Pressure
+                                float PressureDiffEqualToPipePSI = TrainPipeTimeVariationS * BrakePipeChargingRatePSIorInHgpS0; // default condition - if EQ Res is higher then Brake Pipe Pressure
 
                                 if (lead.BrakeSystem.BrakeLine1PressurePSI + PressureDiffEqualToPipePSI > train.EqualReservoirPressurePSIorInHg)
                                     PressureDiffEqualToPipePSI = train.EqualReservoirPressurePSIorInHg - lead.BrakeSystem.BrakeLine1PressurePSI;

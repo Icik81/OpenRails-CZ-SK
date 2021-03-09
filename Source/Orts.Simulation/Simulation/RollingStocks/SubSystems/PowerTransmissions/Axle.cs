@@ -266,7 +266,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerTransmissions
 
         // Icik
         /// <summary>
-        /// Umožňuje nastavení součinitele využití adheze (výchozí hodnota 0.75)
+        /// Umožňuje nastavení součinitele využití adheze (výchozí hodnota 1.00)
         /// </summary>
         public float AdhesionEfficiencyKoef { set; get; }
 

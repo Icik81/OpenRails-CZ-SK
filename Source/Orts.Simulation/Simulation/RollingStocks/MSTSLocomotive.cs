@@ -2305,8 +2305,8 @@ namespace Orts.Simulation.RollingStocks
                 //  LocomotiveAxle.BrakeRetardForceN = BrakeForceN;
 
                 // Icik
-                // Součinitel využití adheze (výchozí hodnota 0.75)
-                if (AdhesionEfficiencyKoef == 0) AdhesionEfficiencyKoef = 0.75f;
+                // Součinitel využití adheze (výchozí hodnota 1.00)
+                if (AdhesionEfficiencyKoef == 0) AdhesionEfficiencyKoef = 1.00f;
                 LocomotiveAxle.AdhesionEfficiencyKoef = AdhesionEfficiencyKoef;
 
                 // Upravuje chybu v adhezi pokud vůz brzdí (brzdí plnou vahou tzn. všemi koly)

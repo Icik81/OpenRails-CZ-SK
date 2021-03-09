@@ -41,7 +41,6 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes
         public bool ControllerRunningLock = false;  // Stops Running controller from becoming active until BP = EQ Res, used in EQ vacuum brakes
         public float BrakeCylFraction;
         public float TrainPipeLeakRatePSIpS = 0;
-        public float TrainPipeLeakRatePSIpS0 = 0;
         public float BrakeSensitivityPSIpS = 0;
         public float OverchargeEliminationRatePSIpS = 0;
         public float BrakeCylinderMaxSystemPressurePSI = 0;

@@ -181,7 +181,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                         case ControllerState.Suppression:
                         case ControllerState.GSelfLap:
                             x = MaxPressureBar() - MinReductionBar() * (1 - x) - FullServReductionBar() * x;
-                            if (pressureBar > MaxPressureBar() - MinReductionBar()) pressureBar = MaxPressureBar() - MinReductionBar();
+                            //if (pressureBar > MaxPressureBar() - MinReductionBar()) pressureBar = MaxPressureBar() - MinReductionBar();
                             DecreasePressure(ref pressureBar, x, ApplyRateBarpS(), elapsedClockSeconds);
                             if (ForceControllerReleaseGraduated || notch.Type == ControllerState.GSelfLap)
                                 IncreasePressure(ref pressureBar, x, ReleaseRateBarpS(), elapsedClockSeconds);
