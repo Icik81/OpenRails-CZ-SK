@@ -407,7 +407,12 @@ namespace Orts.Simulation.RollingStocks
         public float PowerReduction = 0;
 
         // Icik
-        public float AdhesionEfficiencyKoef = 0;
+        public float AdhesionEfficiencyKoef;
+        public bool OverCurrent = false;
+        public bool MultiSystemEngine;
+        public float MaxCurrentPower;
+        public float MaxCurrentBrake;
+        public ScriptedCircuitBreaker CircuitBreaker;
 
         public MSTSLocomotive(Simulator simulator, string wagPath)
             : base(simulator, wagPath)
@@ -929,7 +934,12 @@ namespace Orts.Simulation.RollingStocks
                 case "engine(ortsmaxtracksanderairconsumption": TrackSanderAirComsumptionM3pS = stf.ReadFloatBlock(STFReader.UNITS.Volume, null); break;
                 // Icik
                 case "engine(adhesionefficiencykoef": AdhesionEfficiencyKoef = stf.ReadFloatBlock(STFReader.UNITS.None, null); break;
+                case "engine(multisystemengine": MultiSystemEngine = stf.ReadBoolBlock(false); break;
+                case "engine(maxcurrentpower": MaxCurrentPower = stf.ReadFloatBlock(STFReader.UNITS.Current, null); break;
+                case "engine(maxcurrentbrake": MaxCurrentBrake = stf.ReadFloatBlock(STFReader.UNITS.Current, null); break;
+
                 default: base.Parse(lowercasetoken, stf); break;
+
             }
         }
 
@@ -1033,6 +1043,9 @@ namespace Orts.Simulation.RollingStocks
 
             // Icik
             AdhesionEfficiencyKoef = locoCopy.AdhesionEfficiencyKoef;
+            MultiSystemEngine = locoCopy.MultiSystemEngine;
+            MaxCurrentPower = locoCopy.MaxCurrentPower;
+            MaxCurrentBrake = locoCopy.MaxCurrentBrake;
         }
 
         /// <summary>
@@ -1553,13 +1566,74 @@ namespace Orts.Simulation.RollingStocks
             if (DynamicBrakeForceN <= 500) Odbrzdi = false;
         }
 
+        // Definice ochran lokomotiv
+        public void Locomotive_Protections(float elapsedClockSeconds) 
+        {
+            // Nadproudová ochrana            
+            if (MaxCurrentPower == 0) MaxCurrentPower = MaxCurrentA / 1.2f;
+            if (MaxCurrentBrake == 0) MaxCurrentBrake = MaxCurrentA / 2.3f;
+
+            float Current = (FilteredMotiveForceN + DynamicBrakeForceN) / MaxForceN * MaxCurrentA;
+
+            if (this is MSTSElectricLocomotive && DynamicBrakeForceN == 0) // Stanovení kritického proudu pro elektrické lokomotivy při výkonu
+                if (Current > MaxCurrentPower)
+                    OverCurrent = true;
+            if (this is MSTSElectricLocomotive && DynamicBrakeForceN > 0) // Stanovení kritického proudu pro elektrické lokomotivy při dynamickém brždění
+                if (Current > MaxCurrentBrake)
+                    OverCurrent = true;
+
+            if (this is MSTSDieselLocomotive && DynamicBrakeForceN == 0) // Stanovení kritického proudu pro diesel a dieselelektrické lokomotivy při výkonu
+                if (Current > MaxCurrentPower)
+                    OverCurrent = true;
+            if (this is MSTSDieselLocomotive && DynamicBrakeForceN > 0) // Stanovení kritického proudu pro diesel a dieselelektrické lokomotivy při dynamickém brždění
+                if (Current > MaxCurrentBrake)
+                    OverCurrent = true;
+
+            if (OverCurrent)
+            {
+                if (this is MSTSElectricLocomotive) // Elektrické lokomotivy
+                {
+                    switch (MultiSystemEngine)
+                    {
+                        case true: // Vícesystémová lokomotiva                            
+                            Train.SignalEvent(PowerSupplyEvent.OpenCircuitBreaker); // Vypnutí HV                                                        
+                            OverCurrent = false;
+                            break;
+                        case false: // Jednosystémová lokomotiva
+                            Train.SignalEvent(PowerSupplyEvent.OpenCircuitBreaker); // Vypnutí HV
+                            Train.SignalEvent(PowerSupplyEvent.LowerPantograph); // Pantografy dolů
+                            OverCurrent = false;
+                            break;
+                    }
+                    Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Zásah nadproudové ochrany!"));
+                }
+                else // Dieselové a dieselelektrické lokomotivy
+                {
+                    if (PowerReduction < 1)
+                        Train.SignalEvent(Event.PowerKeyOff); // Zvuk pro vypnutí TM
+                    PowerReduction = 1; // Vypnutí trakčních motorů                            
+                    Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Zásah nadproudové ochrany, klávesa Ctrl + K pro resetování ochrany!"));
+                }                                
+            }
+
+            if (OverCurrent && PowerKey) // Resetování nadproudové ochrany
+            {
+                Train.SignalEvent(Event.PowerKeyOn); // Zvuk pro zapnutí TM
+                OverCurrent = false;
+                PowerReduction = 0;
+                PowerKey = false;
+            }
+
+        }
+
         /// <summary>
         /// This function updates periodically the states and physical variables of the locomotive's subsystems.
         /// </summary>
         public override void Update(float elapsedClockSeconds)
         {
+            Locomotive_Protections(elapsedClockSeconds);
             TrainControlSystem.Update();
-
+            
             elapsedTime = elapsedClockSeconds;
 
             UpdatePowerSupply(elapsedClockSeconds);

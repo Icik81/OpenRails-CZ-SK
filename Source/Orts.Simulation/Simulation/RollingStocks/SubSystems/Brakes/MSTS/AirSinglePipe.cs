@@ -849,7 +849,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             var train = trainCar.Train;
             var lead = trainCar as MSTSLocomotive;            
             var brakePipeTimeFactorS = lead == null ? 0.003f : lead.BrakePipeTimeFactorS; // Průrazná rychlost tlakové vlny 250m/s 0.003f
-            var BrakePipeChargingRatePSIorInHgpS0 = lead.BrakePipeChargingRatePSIorInHgpS;
+            var BrakePipeChargingRatePSIorInHgpS0 = lead == null ? 29 : lead.BrakePipeChargingRatePSIorInHgpS;
 
             float brakePipeTimeFactorS0 = brakePipeTimeFactorS;           
             float brakePipeTimeFactorS_Apply = brakePipeTimeFactorS * 30; // Vytvoří zpoždění náběhu brzdy vlaku kvůli průrazné tlakové vlně            
