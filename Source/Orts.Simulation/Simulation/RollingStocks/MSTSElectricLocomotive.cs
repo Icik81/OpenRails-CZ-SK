@@ -337,11 +337,15 @@ namespace Orts.Simulation.RollingStocks
         public override float GetDataOf(CabViewControl cvc)
         {
             float data = 0;
-
+             
             switch (cvc.ControlType)
             {
                 case CABViewControlTypes.LINE_VOLTAGE:
-                    data = PowerSupply.PantographVoltageV;
+                    
+                    // Icik
+                    if (!SetDetectVoltageOn) data = 0;
+                        else data = PowerSupply.PantographVoltageV;
+
                     if (cvc.Units == CABViewControlUnits.KILOVOLTS)
                         data /= 1000;
                     break;

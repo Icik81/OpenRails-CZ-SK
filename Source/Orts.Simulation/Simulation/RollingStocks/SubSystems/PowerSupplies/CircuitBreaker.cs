@@ -41,6 +41,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
         public bool DriverClosingOrder { get; private set; }
         public bool DriverOpeningOrder { get; private set; }
         public bool DriverClosingAuthorization { get; private set; }
+        
         public bool TCSClosingOrder
         {
             get
@@ -316,7 +317,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
         }
     }
 
-    class ManualCircuitBreaker : CircuitBreaker
+    public class ManualCircuitBreaker : CircuitBreaker
     {
         private Timer ClosingTimer;
         private CircuitBreakerState PreviousState;
@@ -331,10 +332,12 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
 
         public override void Update(float elapsedSeconds)
         {
-            SetClosingAuthorization(TCSClosingAuthorization() && CurrentPantographState() == PantographState.Up);
+            //SetClosingAuthorization(TCSClosingAuthorization() && CurrentPantographState() == PantographState.Up);
+            // Icik
+            SetClosingAuthorization(TCSClosingAuthorization());
 
-            switch (CurrentState())
-            {
+                switch (CurrentState())
+                {
                 case CircuitBreakerState.Closed:
                     if (!ClosingAuthorization() || DriverOpeningOrder())
                     {

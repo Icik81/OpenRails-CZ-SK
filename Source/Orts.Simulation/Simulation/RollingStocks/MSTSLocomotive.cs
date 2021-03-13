@@ -406,13 +406,17 @@ namespace Orts.Simulation.RollingStocks
 
         public float PowerReduction = 0;
 
-        // Icik
+        // Icik        
+        public ScriptedCircuitBreaker CircuitBreaker;
         public float AdhesionEfficiencyKoef;
         public bool OverCurrent = false;
         public bool MultiSystemEngine;
         public float MaxCurrentPower;
-        public float MaxCurrentBrake;
-        public ScriptedCircuitBreaker CircuitBreaker;
+        public float MaxCurrentBrake;        
+        public double WheelSlipTime;
+        public double Time0;
+        public bool SetDetectVoltageOn = false;
+      
 
         public MSTSLocomotive(Simulator simulator, string wagPath)
             : base(simulator, wagPath)
@@ -1567,11 +1571,22 @@ namespace Orts.Simulation.RollingStocks
         }
 
         // Definice ochran lokomotiv
-        public void Locomotive_Protections(float elapsedClockSeconds) 
+        public void Locomotive_Protections(float elapsedClockSeconds)
         {
-            // Nadproudová ochrana            
+            // Nadproudová ochrana                        
             if (MaxCurrentPower == 0) MaxCurrentPower = MaxCurrentA / 1.2f;
             if (MaxCurrentBrake == 0) MaxCurrentBrake = MaxCurrentA / 2.3f;
+            float ETime = 5;  // Prodleva v sekundách mezi zásahem nadproudové ochrany při skluzu pro elektrické lokomotivy
+            float DTime = 5;  // Prodleva v sekundách mezi zásahem nadproudové ochrany při skluzu pro dieselelektrické lokomotivy
+            float AbsSlipSpeedMpS = Math.Abs(WheelSpeedMpS) - AbsSpeedMpS;  // Zjistí absolutní rychlost prokluzu 
+
+            if (AbsSlipSpeedMpS > 1.0f) WheelSlipTime = Simulator.GameTime - Time0;  // Počítání doby skluzu       
+                else
+                    {
+                        WheelSlipTime = 0;
+                        Time0 = Simulator.GameTime;
+                    }          
+            //Trace.TraceInformation("WheelSlipTime {0},  Simulator.GameTime {1},  Time0 {2},   SlipSpeed {3}", WheelSlipTime, Simulator.GameTime, Time0, SlipSpeed);
 
             float Current = (FilteredMotiveForceN + DynamicBrakeForceN) / MaxForceN * MaxCurrentA;
 
@@ -1581,13 +1596,17 @@ namespace Orts.Simulation.RollingStocks
             if (this is MSTSElectricLocomotive && DynamicBrakeForceN > 0) // Stanovení kritického proudu pro elektrické lokomotivy při dynamickém brždění
                 if (Current > MaxCurrentBrake)
                     OverCurrent = true;
+            if (this is MSTSElectricLocomotive && WheelSlipTime > ETime) // Nadproudová ochrana při skluzu po určité době 
+                OverCurrent = true;
 
-            if (this is MSTSDieselLocomotive && DynamicBrakeForceN == 0) // Stanovení kritického proudu pro diesel a dieselelektrické lokomotivy při výkonu
+            if (this is MSTSDieselLocomotive && DynamicBrakeForceN == 0) // Stanovení kritického proudu pro dieselelektrické lokomotivy při výkonu
                 if (Current > MaxCurrentPower)
                     OverCurrent = true;
-            if (this is MSTSDieselLocomotive && DynamicBrakeForceN > 0) // Stanovení kritického proudu pro diesel a dieselelektrické lokomotivy při dynamickém brždění
+            if (this is MSTSDieselLocomotive && DynamicBrakeForceN > 0) // Stanovení kritického proudu pro dieselelektrické lokomotivy při dynamickém brždění
                 if (Current > MaxCurrentBrake)
                     OverCurrent = true;
+            if (this is MSTSDieselLocomotive && WheelSlipTime > DTime) // Nadproudová ochrana při skluzu po určité době
+                OverCurrent = true;
 
             if (OverCurrent)
             {
@@ -1596,26 +1615,36 @@ namespace Orts.Simulation.RollingStocks
                     switch (MultiSystemEngine)
                     {
                         case true: // Vícesystémová lokomotiva                            
-                            Train.SignalEvent(PowerSupplyEvent.OpenCircuitBreaker); // Vypnutí HV                                                        
+                            Train.SignalEvent(PowerSupplyEvent.OpenCircuitBreaker); // Vypnutí HV    
+                            SetThrottlePercent(0);
                             OverCurrent = false;
                             break;
                         case false: // Jednosystémová lokomotiva
                             Train.SignalEvent(PowerSupplyEvent.OpenCircuitBreaker); // Vypnutí HV
                             Train.SignalEvent(PowerSupplyEvent.LowerPantograph); // Pantografy dolů
+                            SetThrottlePercent(0);                            
                             OverCurrent = false;
                             break;
                     }
                     Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Zásah nadproudové ochrany!"));
                 }
-                else // Dieselové a dieselelektrické lokomotivy
+                else // Dieselelektrické lokomotivy
                 {
                     if (PowerReduction < 1)
                         Train.SignalEvent(Event.PowerKeyOff); // Zvuk pro vypnutí TM
-                    PowerReduction = 1; // Vypnutí trakčních motorů                            
+                    PowerReduction = 1; // Vypnutí trakčních motorů          
+                    //SetThrottlePercent(0);
                     Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Zásah nadproudové ochrany, klávesa Ctrl + K pro resetování ochrany!"));
-                }                                
+                }                
             }
 
+            if (!MultiSystemEngine) // Blokování detekce napětí v troleji u jednonapěťovek
+            {
+                if (PowerOn) SetDetectVoltageOn = true;
+                if (!PowerOn) SetDetectVoltageOn = false;
+            }
+            else SetDetectVoltageOn = true;
+            
             if (OverCurrent && PowerKey) // Resetování nadproudové ochrany
             {
                 Train.SignalEvent(Event.PowerKeyOn); // Zvuk pro zapnutí TM
