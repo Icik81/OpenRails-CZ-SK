@@ -90,8 +90,8 @@ namespace Orts.Viewer3D.RollingStock.Subsystems.ETCS
             Viewer = viewer;
             Locomotive = locomotive;
             Scale = Math.Min(width / Width, height / Height);
-            /*if (Scale < 0.5) */MipMapScale = 2;
-            //else MipMapScale = 1;
+            if (Scale < 0.5) MipMapScale = 2;
+            else MipMapScale = 1;
             GaugeOnly = control is CVCDigital;
 
             Shader = new DriverMachineInterfaceShader(Viewer.GraphicsDevice);
@@ -141,8 +141,8 @@ namespace Orts.Viewer3D.RollingStock.Subsystems.ETCS
             if (Math.Abs(1f - PrevScale / Scale) > 0.1f)
             {
                 PrevScale = Scale;
-                /*if (Scale < 0.5) */MipMapScale = 2;
-                /*else MipMapScale = 1;*/
+                if (Scale < 0.5) MipMapScale = 2;
+                else MipMapScale = 1;
                 foreach (var area in Windows)
                 {
                     area.ScaleChanged();
@@ -749,16 +749,24 @@ namespace Orts.Viewer3D.RollingStock.Subsystems.ETCS
         {
             Position.X = (float)Control.PositionX;
             Position.Y = (float)Control.PositionY;
-            DMI = new DriverMachineInterface((int)Control.Width, (int)Control.Height, locomotive, viewer, control);
+            if ((int)Control.Height == 102 && (int)Control.Width == 136)
+            {
+                // Hack for ETR400 cab, which was built with a bugged size calculation of digital displays
+                Control.Height *= 0.75f;
+                Control.Width *= 0.75f;
+            }
+            DMI = new DriverMachineInterface((int)Control.Height, (int)Control.Width, locomotive, viewer, control);
         }
 
         public override void PrepareFrame(RenderFrame frame, ElapsedTime elapsedTime)
         {
             base.PrepareFrame(frame, elapsedTime);
-            DrawPosition.X = (int)(Position.X * Viewer.CabWidthPixels / 640) - Viewer.CabXOffsetPixels + Viewer.CabXLetterboxPixels;
-            DrawPosition.Y = (int)(Position.Y * Viewer.CabHeightPixels / 480) + Viewer.CabYOffsetPixels + Viewer.CabYLetterboxPixels;
-            DrawPosition.Width = (int)(Control.Width * Viewer.DisplaySize.X / 640);
-            DrawPosition.Height = (int)(Control.Height * Viewer.DisplaySize.Y / 480);
+            var xScale = Viewer.CabWidthPixels / 640f;
+            var yScale = Viewer.CabHeightPixels / 480f;
+            DrawPosition.X = (int)(Position.X * xScale) - Viewer.CabXOffsetPixels + Viewer.CabXLetterboxPixels;
+            DrawPosition.Y = (int)(Position.Y * yScale) + Viewer.CabYOffsetPixels + Viewer.CabYLetterboxPixels;
+            DrawPosition.Width = (int)(Control.Width * xScale);
+            DrawPosition.Height = (int)(Control.Height * yScale);
             if (Zoomed)
             {
                 DrawPosition.Width = 640;

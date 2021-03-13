@@ -64,7 +64,7 @@ namespace Orts.Viewer3D.Popups
             vbox.Add(buttonToggleAngleCockB = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Open/Close Rear Angle Cock"), LabelAlignment.Center));
             vbox.AddHorizontalSeparator();
             vbox.Add(buttonToggleBleedOffValve = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Open/Close Bleed Off Valve"), LabelAlignment.Center));
-            vbox.AddHorizontalSeparator();      
+            vbox.AddHorizontalSeparator();
             vbox.Add(buttonRezimVozu = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Režim vozu G/P/R") + "     Nastaveno: " + (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.RezimVozuText, LabelAlignment.Center));
             buttonRezimVozu.Color = Color.LightGreen;
 

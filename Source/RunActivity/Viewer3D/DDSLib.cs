@@ -1250,8 +1250,8 @@ namespace Orts.Viewer3D
 
                 texture = tex;
             }
-            
-        }	
+
+        }
 
         //detect if a texture is using a compressed format.
         private static bool IsXNATextureCompressed(Texture texture)

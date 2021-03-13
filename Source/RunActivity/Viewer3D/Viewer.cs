@@ -1846,7 +1846,7 @@ namespace Orts.Viewer3D
 
 
             graphicsDevice.GetBackBufferData(backBuffer);
-            //copy into a texture 
+            //copy into a texture
             Texture2D screenshot = new Texture2D(GraphicsDevice, w, h, false, GraphicsDevice.PresentationParameters.BackBufferFormat);
             screenshot.SetData(backBuffer);
             new Thread(() =>

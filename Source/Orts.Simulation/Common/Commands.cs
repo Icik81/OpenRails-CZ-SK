@@ -1606,7 +1606,7 @@ namespace Orts.Common
             : base(log)
         {
             Receiver = car;
-        }
+}
     }
     [Serializable()]
     public sealed class RezimVozuPLCommand : Command

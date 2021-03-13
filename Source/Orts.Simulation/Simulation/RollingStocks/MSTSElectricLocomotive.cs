@@ -337,7 +337,7 @@ namespace Orts.Simulation.RollingStocks
         public override float GetDataOf(CabViewControl cvc)
         {
             float data = 0;
-             
+
             switch (cvc.ControlType)
             {
                 case CABViewControlTypes.LINE_VOLTAGE:

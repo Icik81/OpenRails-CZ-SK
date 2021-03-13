@@ -66,6 +66,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
             CircuitBreaker = new ScriptedCircuitBreaker(Locomotive);
         }
 
+        public ScriptedElectricPowerSupply(MSTSLocomotive locomotive) : base(locomotive)
+        {
+        }
+
         public override void Parse(string lowercasetoken, STFReader stf)
         {
             switch (lowercasetoken)

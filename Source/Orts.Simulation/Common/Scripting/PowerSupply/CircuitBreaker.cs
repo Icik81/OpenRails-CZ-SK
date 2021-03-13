@@ -90,7 +90,6 @@ namespace ORTS.Scripting.Api
         /// Sets the circuit breaker closing authorization
         /// </summary>
         public Action<bool> SetClosingAuthorization;
-
         /// <summary>
         /// Called once at initialization time.
         /// </summary>

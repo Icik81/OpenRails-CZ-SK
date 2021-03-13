@@ -172,6 +172,7 @@ namespace Orts.Simulation.RollingStocks
         bool WaterScoopSlowSpeedFlag = false;
         bool WaterScoopDirectionFlag = false;
         public bool IsWaterScoopPlayerLocomotive = false;
+        bool WaterScoopSoundOn = false;
         public float MaxTotalCombinedWaterVolumeUKG;
         public MSTSNotchController WaterController = new MSTSNotchController(0, 1, 0.01f);
         public float CombinedTenderWaterVolumeUKG          // Decreased by running injectors and increased by refilling
@@ -237,7 +238,7 @@ namespace Orts.Simulation.RollingStocks
         public float SteamEjectorSmallPressurePSI = 0.0f;
         public float SteamEjectorLargePressurePSI = 0.0f;
         public bool VacuumPumpFitted;
-        public bool SmallEjectorFitted = false;
+        public bool SmallEjectorControllerFitted = false;
         public float VacuumPumpResistanceN;
         public float EjectorSmallSteamConsumptionLbpS;
         public float EjectorLargeSteamConsumptionLbpS;
@@ -246,7 +247,7 @@ namespace Orts.Simulation.RollingStocks
         public float MaxVaccuumMaxPressurePSI = 110.0f;  // Value for the boiler pressure when maximum vacuum will be produced for the steam ejector 
         public float SmallEjectorFeedFraction = 0.35f;
         public float LargeEjectorFeedFraction = 1.0f;
-        public bool LargeEjectorFitted = false;
+        public bool LargeEjectorControllerFitted = false;
         public float VacuumPumpChargingRateInHgpS = 0.0f;
         public bool VacuumBrakeEQFitted = false;  // Flag to indicate that equalising resevoir fitted to vacuum brakes
         public float HUDNetBPLossGainPSI;
@@ -255,6 +256,36 @@ namespace Orts.Simulation.RollingStocks
         public float ExhausterHighSBPChargingRatePSIorInHgpS;  // Rate for Exhauster in high speed mode
         public float ExhausterLowSBPChargingRatePSIorInHgpS;  // Rate for Exhauster in high speed mode
         public bool VacuumBrakeCutoffActivated = false;
+        public bool BrakeFlagDecrease = false;
+        public bool BrakeFlagIncrease = false;
+
+        private bool _SmallEjectorSoundOn = false;
+        public bool SmallEjectorSoundOn
+        {
+            get => _SmallEjectorSoundOn;
+            set
+            {
+                if (value != _SmallEjectorSoundOn)
+                {
+                    SignalEvent(value? Event.SmallEjectorOn : Event.SmallEjectorOff);
+                    _SmallEjectorSoundOn = value;
+                }
+            }
+        }
+
+        private bool _LargeEjectorSoundOn = false;
+        public bool LargeEjectorSoundOn
+        {
+            get => _LargeEjectorSoundOn;
+            set
+            {
+                if (value != _LargeEjectorSoundOn)
+                {
+                    SignalEvent(value? Event.LargeEjectorOn : Event.LargeEjectorOff);
+                    _LargeEjectorSoundOn = value;
+                }
+            }
+       }
 
         public bool SteamEngineBrakeFitted = false;
         public bool TrainBrakeFitted = false;
@@ -266,7 +297,6 @@ namespace Orts.Simulation.RollingStocks
         public float VacuumBrakesExhausterRestartVacuumPSIAorInHg = Vac.ToPress(21);
         public float VacuumBrakesMainResChargingRatePSIAorInHgpS = Bar.ToPSI(Bar.FromInHg(0.2f));
         public float VacuumMainResVacuumPSIAorInHg = Vac.ToPress(23); // Vacuum currently in Main Reservoir
-
 
         // Set values for display in HUD
         public float WagonCoefficientFrictionHUD;
@@ -943,7 +973,7 @@ namespace Orts.Simulation.RollingStocks
                 case "engine(maxcurrentbrake": MaxCurrentBrake = stf.ReadFloatBlock(STFReader.UNITS.Current, null); break;
 
                 default: base.Parse(lowercasetoken, stf); break;
-
+                    
             }
         }
 
@@ -1387,7 +1417,7 @@ namespace Orts.Simulation.RollingStocks
                     }
                     
                 }
-                else if (TrainBrakeController.MaxPressurePSI < 10 || TrainBrakeController.MaxPressurePSI > 13) // Outside an acceptable range, then convert to a fixed default
+                else if (TrainBrakeController.MaxPressurePSI < 7 || TrainBrakeController.MaxPressurePSI > 13) // Outside an acceptable range (Eqiv = 15InHg to 25InHg), then convert to a fixed default
                 {
                     if (Simulator.Settings.VerboseConfigurationMessages)
                     {
@@ -1395,6 +1425,7 @@ namespace Orts.Simulation.RollingStocks
                     }
                     TrainBrakeController.MaxPressurePSI = Bar.ToPSI(Bar.FromInHg(21.0f));
                 }
+
             }
 
             if (DoesBrakeCutPower && BrakeCutsPowerAtBrakePipePressurePSI > BrakeRestoresPowerAtBrakePipePressurePSI)
@@ -1662,7 +1693,7 @@ namespace Orts.Simulation.RollingStocks
         {
             Locomotive_Protections(elapsedClockSeconds);
             TrainControlSystem.Update();
-            
+
             elapsedTime = elapsedClockSeconds;
 
             UpdatePowerSupply(elapsedClockSeconds);
@@ -2215,44 +2246,70 @@ namespace Orts.Simulation.RollingStocks
         /// </summary>
         protected virtual void UpdateSteamEjector(float elapsedClockSeconds)
         {
-            if (Simulator.Settings.SimpleControlPhysics)
-            // Simple braking - control Ejector automatically based upon the brake control position
-            // Stop ejector operation if full vacuum pressure reached
-            {
+                 // Ejectors are controlled independently for the "straight_vacuum_single_pipe" brake type 
+                 // Ejectors are controlled by brake control valves in Simple Physics Control
+                if (Simulator.Settings.SimpleControlPhysics && CarBrakeSystemType != "straight_vacuum_single_pipe")
+                // Simple braking - control Ejector automatically based upon the brake control position
+                // Stop ejector operation if full vacuum pressure reached
+                {
                 if ((TrainBrakeController.TrainBrakeControllerState == ControllerState.Release || TrainBrakeController.TrainBrakeControllerState == ControllerState.FullQuickRelease || (TrainBrakeController.TrainBrakeControllerState == ControllerState.VacContServ)) && (this.BrakeSystem.BrakeLine1PressurePSI > Vac.ToPress(this.TrainBrakeController.MaxPressurePSI)))
                 {
                     LargeSteamEjectorIsOn = true;  // If brake is set to a release controller, then turn ejector on
+                    LargeEjectorSoundOn = true;
                 }
                 else
                 {
                     LargeSteamEjectorIsOn = false; // If brake is not set to a release controller, or full vacuum reached, then turn ejector off
+                    LargeEjectorSoundOn = false;
                 }
-            }
-            else if (!LargeEjectorFitted) // Use an "automatic" large ejector when using a dreadnought style brake controller - large ejector stays on until moved back to released position
-            {
-                if (TrainBrakeController.TrainBrakeControllerState == ControllerState.Release)
-                {
-                    LargeSteamEjectorIsOn = true;  // If brake is set to a release controller, then turn ejector on
                 }
-                else
+                else if (!LargeEjectorControllerFitted && CarBrakeSystemType != "straight_vacuum_single_pipe") // Use an "automatic" large ejector when using a dreadnought style brake controller - large ejector stays on until moved back to released position
                 {
-                    LargeSteamEjectorIsOn = false; // If brake is not set to a release controller, then turn ejector off
+                    if (TrainBrakeController.TrainBrakeControllerState == ControllerState.Release)
+                    {
+                        LargeSteamEjectorIsOn = true;  // If brake is set to a release controller, then turn ejector on
+                        LargeEjectorSoundOn = true;
+                    }
+                    else
+                    {
+                        LargeSteamEjectorIsOn = false; // If brake is not set to a release controller, then turn ejector off
+                        if (LargeEjectorSoundOn)
+                        {
+                            SignalEvent(Event.LargeEjectorOff);
+                            LargeEjectorSoundOn = false;
+                        }
+                    }
+
+                }
+                else  if (LargeEjectorControllerFitted)// Advanced braking - control ejector based upon using a "manual" large ejector control setting
+                {
+                    if (LargeEjectorFeedFraction > 0.05)
+                    {
+                        LargeSteamEjectorIsOn = true;  // turn ejector on
+                        LargeEjectorSoundOn = true;
+                    }
+                    else
+                    {
+                        LargeSteamEjectorIsOn = false; // turn ejector off
+                        LargeEjectorSoundOn = false;
+                    }
                 }
 
-            }
-            else  // Advanced braking - control ejector based upon using a "manual" large ejector control setting
-            {
-                if (LargeEjectorFeedFraction > 0.05)
-                {
-                    LargeSteamEjectorIsOn = true;  // turn ejector on
-                }
-                else
-                {
-                    LargeSteamEjectorIsOn = false; // turn ejector off
-                }
-            }
 
+                if (SmallEjectorControllerFitted && CarBrakeSystemType != "straight_vacuum_single_pipe")
+                // Turn small ejector on if controlled from drivers controller
+                if (SmallEjectorFeedFraction > 0.05)
+                {
+                    SmallSteamEjectorIsOn = true;  // turn ejector on
+                    SmallEjectorSoundOn = true;
+                }
+                else if (SmallEjectorControllerFitted)
+                {
+                    SmallSteamEjectorIsOn = false; // turn ejector off
+                    SmallEjectorSoundOn = false;
+                }
 
+            
             // If diesel or electric locomotive, assume vacuum pump (exhauster) is continually running.
             if (!(this is MSTSSteamLocomotive))
             {
@@ -2404,8 +2461,8 @@ namespace Orts.Simulation.RollingStocks
 
                 //Set axle model parameters
 
-                //LocomotiveAxle.BrakeForceN = FrictionForceN;
-                //  LocomotiveAxle.BrakeRetardForceN = BrakeForceN;
+               //LocomotiveAxle.BrakeForceN = FrictionForceN;
+              //  LocomotiveAxle.BrakeRetardForceN = BrakeForceN;
 
                 // Icik
                 // Součinitel využití adheze (výchozí hodnota 1.00)
@@ -2532,13 +2589,11 @@ namespace Orts.Simulation.RollingStocks
                         WaterScoopNotFittedFlag = true;
                     }
                     RefillingFromTrough = false;
-                    return;
                 }
                 else if (ScoopIsBroken)
                 {
                     Simulator.Confirmer.Message(ConfirmLevel.Error, Simulator.Catalog.GetString("Scoop is broken, can't refill"));
-                    RefillingFromTrough = false;
-                    return;
+                    RefillingFromTrough = false;       
                 }
                 else if (IsOverJunction())
                 {
@@ -2548,7 +2603,7 @@ namespace Orts.Simulation.RollingStocks
                     }
                     ScoopIsBroken = true;
                     RefillingFromTrough = false;
-                    return;
+                    SignalEvent(Event.WaterScoopBroken);       
                 }
                 else if (!IsOverTrough())
                 {
@@ -2560,7 +2615,6 @@ namespace Orts.Simulation.RollingStocks
                         MSTSWagon.RefillProcess.ActivePickupObjectUID = 0;
                     }
                     RefillingFromTrough = false;
-                    return;
                 }
                 else if (IsTenderRequired == 1 && Direction == Direction.Reverse) // Locomotives with tenders cannot go in reverse
                 {
@@ -2570,7 +2624,6 @@ namespace Orts.Simulation.RollingStocks
                         WaterScoopDirectionFlag = true;
                     }
                     RefillingFromTrough = false;
-                    return;
                 }
                 else if (absSpeedMpS < WaterScoopMinSpeedMpS)
                 {
@@ -2583,12 +2636,10 @@ namespace Orts.Simulation.RollingStocks
                         MSTSWagon.RefillProcess.ActivePickupObjectUID = 0;
                     }
                     RefillingFromTrough = false;
-                    return;
                 }
                 else if (fraction > 1.0)
                 {
                     Simulator.Confirmer.Message(ConfirmLevel.None, Simulator.Catalog.GetStringFmt("Refill: Water supply now replenished."));
-                    return;
                 }
                 else
                 {
@@ -2604,7 +2655,6 @@ namespace Orts.Simulation.RollingStocks
                 MSTSWagon.RefillProcess.OkToRefill = false;
                 MSTSWagon.RefillProcess.ActivePickupObjectUID = 0;
                 RefillingFromTrough = false;
-                return;
             }
 
 
@@ -2657,6 +2707,12 @@ namespace Orts.Simulation.RollingStocks
                 float ScoopFluidDensityKgpM3 = 998.2f; // Fuild density of water @ 20c
                 WaterScoopDragForceN = 0.5f * ScoopDragCoeff * ScoopFluidDensityKgpM3 * ScoopDragAreaM * absSpeedMpS * absSpeedMpS;
 
+                // Turn water scoop sound on
+                if (!WaterScoopSoundOn)
+                {
+                    WaterScoopSoundOn = true;
+                    SignalEvent(Event.WaterScoopDown);
+                }
             }
             else // Ensure water scoop values are zero if not taking water.
             {
@@ -2669,9 +2725,14 @@ namespace Orts.Simulation.RollingStocks
                 {
                     WaterScoopTotalWaterL = 0.0f; // Reset amount of water picked up by water sccop.
                 }
+
+                // Turn water scoop sound off
+                if (WaterScoopSoundOn)
+                {
+                    WaterScoopSoundOn = false;
+                    SignalEvent(Event.WaterScoopUp);
+                }
             }
-
-
         }
 
         #region Calculate Friction Coefficient
@@ -2752,7 +2813,7 @@ namespace Orts.Simulation.RollingStocks
                         {
                             //SandingFrictionCoefficientFactor = (1.0f - 0.5f / SanderSpeedEffectUpToMpS * AbsSpeedMpS) * 1.75f;
                             SandingFrictionCoefficientFactor = (1.0f - 0.5f / SanderSpeedEffectUpToMpS * AbsSpeedMpS) * 1.25f;
-                            BaseFrictionCoefficientFactor *= SandingFrictionCoefficientFactor;                            
+                            BaseFrictionCoefficientFactor *= SandingFrictionCoefficientFactor;
                         }
                     }
                     else
@@ -3116,16 +3177,14 @@ namespace Orts.Simulation.RollingStocks
             if (Simulator.PlayerLocomotive == this)
             {
                 WaterScoopDown = !WaterScoopDown;
-                SignalEvent(Event.WaterScoopDown);
+                SignalEvent(Event.WaterScoopRaiseLower);
                 if (WaterScoopDown)
                 {
                     IsWaterScoopDown = true; // Set flag to potentially fill from water trough
-                    SignalEvent(Event.WaterScoopDown);
                 }
                 else
                 {
                     IsWaterScoopDown = false;
-                    SignalEvent(Event.WaterScoopUp);
                     WaterScoopOverTroughFlag = false; // Reset flags so that message will come up again
                     WaterScoopNotFittedFlag = false;
                     WaterScoopSlowSpeedFlag = false;

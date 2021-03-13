@@ -334,8 +334,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
         {
             SetClosingAuthorization(TCSClosingAuthorization() && CurrentPantographState() == PantographState.Up);
 
-                switch (CurrentState())
-                {
+            switch (CurrentState())
+            {
                 case CircuitBreakerState.Closed:
                     if (!ClosingAuthorization() || DriverOpeningOrder())
                     {

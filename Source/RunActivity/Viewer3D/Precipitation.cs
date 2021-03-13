@@ -37,7 +37,7 @@ namespace Orts.Viewer3D
         public const float MaxIntensityPPSPM2_16 = 0.010f;
         // Default 32 bit version.
         public const float MaxIntensityPPSPM2 = 0.035f;
-                
+
         readonly Viewer Viewer;
         readonly WeatherControl WeatherControl;
         readonly Weather Weather;
