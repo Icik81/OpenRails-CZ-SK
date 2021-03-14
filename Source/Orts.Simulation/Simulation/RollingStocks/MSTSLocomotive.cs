@@ -442,10 +442,7 @@ namespace Orts.Simulation.RollingStocks
         public bool OverCurrent = false;
         public bool MultiSystemEngine;
         public float MaxCurrentPower;
-        public float MaxCurrentBrake;        
-        public double WheelSlipTime;
-        public double Time0;
-        public bool SetDetectVoltageOn = false;
+        public float MaxCurrentBrake;                        
         public float SlipSpeedCritical;
 
         public MSTSLocomotive(Simulator simulator, string wagPath)
@@ -1677,12 +1674,6 @@ namespace Orts.Simulation.RollingStocks
                     PowerKey = false;
                 }
 
-                if (!MultiSystemEngine) // Blokování detekce napětí v troleji u jednonapěťovek
-                {
-                    if (PowerOn) SetDetectVoltageOn = true;
-                    if (!PowerOn) SetDetectVoltageOn = false;
-                }
-                else SetDetectVoltageOn = true;
             }
         }
 

@@ -350,12 +350,8 @@ namespace Orts.Simulation.RollingStocks
 
             switch (cvc.ControlType)
             {
-                case CABViewControlTypes.LINE_VOLTAGE:
-                    
-                    // Icik
-                    if (!SetDetectVoltageOn) data = 0;
-                        else data = PowerSupply.PantographVoltageV;
-
+                case CABViewControlTypes.LINE_VOLTAGE:                                        
+                    data = PowerSupply.PantographVoltageV;
                     if (cvc.Units == CABViewControlUnits.KILOVOLTS)
                         data /= 1000;
                     break;
