@@ -332,8 +332,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
 
         public override void Update(float elapsedSeconds)
         {
-            SetClosingAuthorization(TCSClosingAuthorization() && CurrentPantographState() == PantographState.Up);
-
+            //SetClosingAuthorization(TCSClosingAuthorization() && CurrentPantographState() == PantographState.Up);
+            // Icik
+            SetClosingAuthorization(TCSClosingAuthorization());
+            
             switch (CurrentState())
             {
                 case CircuitBreakerState.Closed:

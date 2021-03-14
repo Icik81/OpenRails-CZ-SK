@@ -53,6 +53,9 @@ namespace Orts.Simulation.RollingStocks
     {
         public ScriptedElectricPowerSupply PowerSupply;
 
+        // Icik
+        public bool CircuitBreakerOn = false;
+
         public MSTSElectricLocomotive(Simulator simulator, string wagFile) :
             base(simulator, wagFile)
         {
@@ -172,6 +175,13 @@ namespace Orts.Simulation.RollingStocks
         protected override void UpdatePowerSupply(float elapsedClockSeconds)
         {
             PowerSupply.Update(elapsedClockSeconds);
+
+            // Icik
+            if (PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closed) CircuitBreakerOn = true;
+                else CircuitBreakerOn = false;
+
+            // Blokování pantografu u jednosystémových lokomotiv při vypnutém HV
+            if (!MultiSystemEngine && !CircuitBreakerOn) SignalEvent(PowerSupplyEvent.LowerPantograph);
         }
 
         /// <summary>
@@ -415,7 +425,7 @@ namespace Orts.Simulation.RollingStocks
                             data = 1;
                             break;
                         case CircuitBreakerState.Closed:
-                            data = 2;
+                            data = 2;                            
                             break;
                     }
                     break;
