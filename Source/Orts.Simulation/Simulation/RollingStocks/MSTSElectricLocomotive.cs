@@ -55,6 +55,7 @@ namespace Orts.Simulation.RollingStocks
 
         // Icik
         public bool CircuitBreakerOn = false;
+        public bool PantoDown = true;
 
         public MSTSElectricLocomotive(Simulator simulator, string wagFile) :
             base(simulator, wagFile)
@@ -109,6 +110,8 @@ namespace Orts.Simulation.RollingStocks
         {
             PowerSupply.Save(outf);
             outf.Write(CurrentLocomotiveSteamHeatBoilerWaterCapacityL);
+            outf.Write(PantoDown);
+            outf.Write(CircuitBreakerOn);
             base.Save(outf);
         }
 
@@ -120,6 +123,8 @@ namespace Orts.Simulation.RollingStocks
         {
             PowerSupply.Restore(inf);
             CurrentLocomotiveSteamHeatBoilerWaterCapacityL = inf.ReadSingle();
+            PantoDown = inf.ReadBoolean();
+            CircuitBreakerOn = inf.ReadBoolean();
             base.Restore(inf);
         }
 
@@ -181,7 +186,33 @@ namespace Orts.Simulation.RollingStocks
                 else CircuitBreakerOn = false;
 
             // Blokování pantografu u jednosystémových lokomotiv při vypnutém HV
-            if (!MultiSystemEngine && !CircuitBreakerOn) SignalEvent(PowerSupplyEvent.LowerPantograph);
+            if (!MultiSystemEngine)
+            {
+                if (!CircuitBreakerOn && PantoDown)
+                {
+                    Pantographs[1].PantographsBlocked = true;
+                    Pantographs[2].PantographsBlocked = true;                    
+                }
+                if (!CircuitBreakerOn && Pantographs[1].PantographsBlocked == false && Pantographs[2].PantographsBlocked == false)
+                {
+                    SignalEvent(PowerSupplyEvent.LowerPantograph);
+                    PantoDown = true;
+                }
+                if (CircuitBreakerOn)
+                {
+                    Pantographs[1].PantographsBlocked = false;
+                    Pantographs[2].PantographsBlocked = false;
+                    PantoDown = false;
+                }
+            }
+
+            // Blokování HV u vícesystémových lokomotiv při malém napětí
+            if (MultiSystemEngine)
+            {
+                Pantographs[1].PantographsBlocked = false;
+                Pantographs[2].PantographsBlocked = false;
+                if (PowerSupply.PantographVoltageV < 100) SignalEvent(PowerSupplyEvent.OpenCircuitBreaker);                
+            }
         }
 
         /// <summary>

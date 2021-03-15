@@ -1816,8 +1816,9 @@ namespace Orts.Simulation.RollingStocks
 
             base.Restore(inf);
 
+            // Icik
             // always set aux power on due to error in PowerSupplyClass
-            AuxPowerOn = true;
+            //AuxPowerOn = true;
         }
 
         /// <summary>

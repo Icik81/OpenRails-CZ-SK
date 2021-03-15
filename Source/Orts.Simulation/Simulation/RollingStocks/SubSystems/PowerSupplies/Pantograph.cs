@@ -191,6 +191,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
     {
         readonly MSTSWagon Wagon;
 
+        public bool PantographsBlocked;
+
         public PantographState State { get; private set; }
         public float DelayS { get; private set; }
         public float TimeS { get; private set; }
@@ -215,6 +217,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
 
                 return value;
             }
+            set { }
         }
         public int Id
         {
@@ -273,7 +276,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
         }
 
         public void Update(float elapsedClockSeconds)
-        {
+        {            
             switch (State)
             {
                 case PantographState.Lowering:
@@ -302,6 +305,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
         {
             Event soundEvent = Event.None;
 
+            // Icik
+            if (!PantographsBlocked)
             switch (evt)
             {
                 case PowerSupplyEvent.LowerPantograph:
