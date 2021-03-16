@@ -38,6 +38,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Text;
 using Event = Orts.Common.Event;
+using System;
 
 namespace Orts.Simulation.RollingStocks
 {
@@ -55,7 +56,15 @@ namespace Orts.Simulation.RollingStocks
 
         // Icik
         public bool CircuitBreakerOn = false;
-        public bool PantoDown = true;
+        public bool PantographDown = true;
+        public double PantographCriticalVoltage;
+        public double MaxLineVoltage0;
+        public float VoltageSprung = 1.0f;
+        public float TimeCriticalVoltage = 0;
+        public float TimeCriticalVoltage0 = 0;
+        public float Delta0 = 0;
+        public float Delta1 = 0;
+        public float Delta2 = 0;
 
         public MSTSElectricLocomotive(Simulator simulator, string wagFile) :
             base(simulator, wagFile)
@@ -110,8 +119,9 @@ namespace Orts.Simulation.RollingStocks
         {
             PowerSupply.Save(outf);
             outf.Write(CurrentLocomotiveSteamHeatBoilerWaterCapacityL);
-            outf.Write(PantoDown);
+            outf.Write(PantographDown);
             outf.Write(CircuitBreakerOn);
+            outf.Write(PantographCriticalVoltage);
             base.Save(outf);
         }
 
@@ -123,8 +133,9 @@ namespace Orts.Simulation.RollingStocks
         {
             PowerSupply.Restore(inf);
             CurrentLocomotiveSteamHeatBoilerWaterCapacityL = inf.ReadSingle();
-            PantoDown = inf.ReadBoolean();
+            PantographDown = inf.ReadBoolean();
             CircuitBreakerOn = inf.ReadBoolean();
+            PantographCriticalVoltage = inf.ReadSingle();
             base.Restore(inf);
         }
 
@@ -156,6 +167,12 @@ namespace Orts.Simulation.RollingStocks
                     CurrentLocomotiveSteamHeatBoilerWaterCapacityL = L.FromGUK(800.0f);
                 }
             }
+            
+            // Icik
+            MaxLineVoltage0 = Simulator.TRK.Tr_RouteFile.MaxLineVoltage;
+            //MaxLineVoltage0 = 25000;
+            if (MaxLineVoltage0 > 4000) Delta2 = 1000;
+                else Delta2 = 100;            
         }
 
         //================================================================================================//
@@ -174,12 +191,34 @@ namespace Orts.Simulation.RollingStocks
             PowerSupply.InitializeMoving();
         }
 
-        /// <summary>
-        /// This function updates periodically the states and physical variables of the locomotive's power supply.
-        /// </summary>
-        protected override void UpdatePowerSupply(float elapsedClockSeconds)
+        // Icik
+        // Podpěťová ochrana a blokace pantografů
+        protected void UnderVoltageProtection(float elapsedClockSeconds)
         {
-            PowerSupply.Update(elapsedClockSeconds);
+            // Kritická mez napětí pro podnapěťovku
+            PantographCriticalVoltage = 0.8f * MaxLineVoltage0;
+
+            // Zákmit na voltmetru            
+            if (PowerSupply.PantographVoltageV < 100) VoltageSprung = 1.5f;
+            if (VoltageSprung == 1.5f && PowerSupply.PantographVoltageV >= MaxLineVoltage0 * 1.2f) VoltageSprung = 1.0f;
+            //if (VoltageSprung == 1.0f && PowerSupply.PantographVoltageV <= MaxLineVoltage0) VoltageSprung = 1.05f;
+
+            // Simulace náhodného poklesu napětí            
+            if (Delta1 < 4 && TimeCriticalVoltage == 0) TimeCriticalVoltage0 = Simulator.Random.Next(100, 500);
+                else TimeCriticalVoltage0 = Simulator.Random.Next(1000, 2000);
+            TimeCriticalVoltage++;
+            if (TimeCriticalVoltage > TimeCriticalVoltage0)
+            {
+                Delta0 = Simulator.Random.Next(1, 50);
+                if (Delta0 > 48) Delta1 = 10;  // Kritická mez
+                    else Delta1 = Simulator.Random.Next(1, 30) / 10;
+                TimeCriticalVoltage = 0;
+            }
+            
+            // Výpočet napětí v systému lokomotivy a drátech
+            Simulator.TRK.Tr_RouteFile.MaxLineVoltage = MaxLineVoltage0 * VoltageSprung - (Delta1 * Delta2);
+
+            //Trace.TraceWarning("Napeti v dratech: {0}V a původní je {1}V", Simulator.TRK.Tr_RouteFile.MaxLineVoltage, MaxLineVoltage0);
 
             // Icik
             if (PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closed) CircuitBreakerOn = true;
@@ -188,21 +227,28 @@ namespace Orts.Simulation.RollingStocks
             // Blokování pantografu u jednosystémových lokomotiv při vypnutém HV
             if (!MultiSystemEngine)
             {
-                if (!CircuitBreakerOn && PantoDown)
+                if (!CircuitBreakerOn && PantographDown)
                 {
                     Pantographs[1].PantographsBlocked = true;
-                    Pantographs[2].PantographsBlocked = true;                    
+                    Pantographs[2].PantographsBlocked = true;
                 }
                 if (!CircuitBreakerOn && Pantographs[1].PantographsBlocked == false && Pantographs[2].PantographsBlocked == false)
                 {
                     SignalEvent(PowerSupplyEvent.LowerPantograph);
-                    PantoDown = true;
+                    PantographDown = true;
                 }
                 if (CircuitBreakerOn)
                 {
                     Pantographs[1].PantographsBlocked = false;
                     Pantographs[2].PantographsBlocked = false;
-                    PantoDown = false;
+                    PantographDown = false;
+                    // Shodí HV při poklesu napětí v troleji a nastaveném výkonu (podpěťová ochrana)
+                    if (PowerSupply.PantographVoltageV < PantographCriticalVoltage && LocalThrottlePercent > 0
+                        || PowerSupply.PantographVoltageV < PantographCriticalVoltage && LocalDynamicBrakePercent > 0)
+                    {
+                        SignalEvent(PowerSupplyEvent.OpenCircuitBreaker);
+                        Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Zásah podpěťové ochrany!"));
+                    }
                 }
             }
 
@@ -211,8 +257,31 @@ namespace Orts.Simulation.RollingStocks
             {
                 Pantographs[1].PantographsBlocked = false;
                 Pantographs[2].PantographsBlocked = false;
-                if (PowerSupply.PantographVoltageV < 100) SignalEvent(PowerSupplyEvent.OpenCircuitBreaker);                
+
+                // Blokuje zapnutí HV při staženém sběrači a nebo navoleném výkonu
+                if (PowerSupply.PantographVoltageV < PantographCriticalVoltage && PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closing
+                    || LocalThrottlePercent > 0 && PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closing
+                    || LocalDynamicBrakePercent > 0 && PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closing) 
+                    SignalEvent(PowerSupplyEvent.OpenCircuitBreaker);
+
+                // Shodí HV při poklesu napětí v troleji a nastaveném výkonu (podpěťová ochrana)
+                if (PowerSupply.PantographVoltageV < PantographCriticalVoltage && LocalThrottlePercent > 0
+                    || PowerSupply.PantographVoltageV < PantographCriticalVoltage && LocalDynamicBrakePercent > 0)
+                {
+                    SignalEvent(PowerSupplyEvent.OpenCircuitBreaker);
+                    Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Zásah podpěťové ochrany!"));
+                }
             }
+        }
+
+        /// <summary>
+        /// This function updates periodically the states and physical variables of the locomotive's power supply.
+        /// </summary>
+        protected override void UpdatePowerSupply(float elapsedClockSeconds)
+        {
+            PowerSupply.Update(elapsedClockSeconds);
+
+            UnderVoltageProtection(elapsedClockSeconds);           
         }
 
         /// <summary>

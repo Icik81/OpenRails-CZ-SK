@@ -367,7 +367,7 @@ namespace Orts.Simulation.RollingStocks
         public double DynamicBrakeCommandStartTime;
         protected bool DynamicBrakeBlendingOverride; // true when DB lever >0% should always override the blending. When false, the bigger command is applied.
         protected bool DynamicBrakeBlendingForceMatch = true; // if true, dynamic brake blending tries to achieve the same braking force as the airbrake would have.
-
+        
         public CombinedControl CombinedControlType;
         public float CombinedControlSplitPosition;
         public bool HasSmoothStruc;
@@ -1602,14 +1602,14 @@ namespace Orts.Simulation.RollingStocks
 
         
         // Definice ochran lokomotiv
-        public void Locomotive_Protections(float elapsedClockSeconds) 
+        public void Overcurrent_Protections(float elapsedClockSeconds) 
         {                    
             if (MaxCurrentA > 0)  // Zohlední jen elektrické a dieselelektrické lokomotivy 
             {
                 // Nadproudová ochrana                        
                 if (MaxCurrentPower == 0) MaxCurrentPower = MaxCurrentA / 1.2f;
                 if (MaxCurrentBrake == 0) MaxCurrentBrake = MaxCurrentA / 2.3f;
-                if (SlipSpeedCritical == 0) SlipSpeedCritical = 60 / 3.6f; // Výchozí hodnota 60 km/h               
+                if (SlipSpeedCritical == 0) SlipSpeedCritical = 40 / 3.6f; // Výchozí hodnota 40 km/h               
                 float AbsSlipSpeedMpS = Math.Abs(WheelSpeedMpS) - AbsSpeedMpS;  // Zjistí absolutní rychlost prokluzu 
 
                 //Trace.TraceInformation("WheelSlipTime {0},  Simulator.GameTime {1},  Time0 {2},   SlipSpeed {3}", WheelSlipTime, Simulator.GameTime, Time0, SlipSpeed);
@@ -1643,11 +1643,10 @@ namespace Orts.Simulation.RollingStocks
                                 Train.SignalEvent(PowerSupplyEvent.OpenCircuitBreaker); // Vypnutí HV    
                                 break;
                             case false: // Jednosystémová lokomotiva
-                                Train.SignalEvent(PowerSupplyEvent.OpenCircuitBreaker); // Vypnutí HV
-                                Train.SignalEvent(PowerSupplyEvent.LowerPantograph); // Pantografy dolů
+                                Train.SignalEvent(PowerSupplyEvent.OpenCircuitBreaker); // Vypnutí HV                                
                                 break;
                         }
-                        Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Zásah nadproudové ochrany!"));
+                        Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Zásah nadproudové ochrany!"));                      
                     }
                     if (this is MSTSDieselLocomotive) // Dieselelektrické lokomotivy
                     {
@@ -1658,10 +1657,10 @@ namespace Orts.Simulation.RollingStocks
                         Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Zásah nadproudové ochrany, Ctrl + K pro resetování ochrany!"));
                     }
                 }
-                
+
                 // Resetování nadproudové ochrany u elektrických lokomotiv
-                if (this is MSTSElectricLocomotive && OverCurrent && LocalThrottlePercent == 0 && LocalDynamicBrakePercent == 0) 
-                {                   
+                if (this is MSTSElectricLocomotive && OverCurrent && LocalThrottlePercent == 0 && LocalDynamicBrakePercent == 0)
+                {                    
                     OverCurrent = false;                                        
                 }
 
@@ -1682,7 +1681,7 @@ namespace Orts.Simulation.RollingStocks
         /// </summary>
         public override void Update(float elapsedClockSeconds)
         {
-            Locomotive_Protections(elapsedClockSeconds);
+            Overcurrent_Protections(elapsedClockSeconds);
             TrainControlSystem.Update();
 
             elapsedTime = elapsedClockSeconds;
