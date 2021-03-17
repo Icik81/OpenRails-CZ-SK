@@ -1030,11 +1030,11 @@ namespace Orts.Viewer3D
             {
                 if (!CabCamera.IsAvailable)
                 {
-                    Simulator.Confirmer.Warning(Viewer.Catalog.GetString("This car doesn't have a 2D cab"));
+                    //Simulator.Confirmer.Warning(Viewer.Catalog.GetString("This car doesn't have a 2D cab"));
                 }
                 else if (!ThreeDimCabCamera.IsAvailable)
                 {
-                    Simulator.Confirmer.Warning(Viewer.Catalog.GetString("This car doesn't have a 3D cab"));
+                    //Simulator.Confirmer.Warning(Viewer.Catalog.GetString("This car doesn't have a 3D cab"));
                 }
                 else
                 {

@@ -65,6 +65,7 @@ namespace Orts.Simulation.RollingStocks
         public float Delta0 = 0;
         public float Delta1 = 0;
         public float Delta2 = 0;
+        public float Step0;
 
         public MSTSElectricLocomotive(Simulator simulator, string wagFile) :
             base(simulator, wagFile)
@@ -194,9 +195,17 @@ namespace Orts.Simulation.RollingStocks
         // Icik
         // Podpěťová ochrana a blokace pantografů
         protected void UnderVoltageProtection(float elapsedClockSeconds)
-        {
+        {            
             // Kritická mez napětí pro podnapěťovku
             PantographCriticalVoltage = 0.8f * MaxLineVoltage0;
+
+            // Podpěťová ochrana deaktivovaná při pause hry
+            if (Simulator.Paused || Step0 > 0)
+            {
+                if (Simulator.Paused) Step0 = 2;
+                    else Step0--;
+                PantographCriticalVoltage = 0;
+            }
 
             // Zákmit na voltmetru            
             if (PowerSupply.PantographVoltageV < 100) VoltageSprung = 1.5f;
@@ -209,7 +218,8 @@ namespace Orts.Simulation.RollingStocks
             TimeCriticalVoltage++;
             if (TimeCriticalVoltage > TimeCriticalVoltage0)
             {
-                Delta0 = Simulator.Random.Next(1, 50);
+                if (FilteredMotiveForceN > 150) Delta0 = Simulator.Random.Next(30, 50);
+                    else Delta0 = Simulator.Random.Next(1, 50);                
                 if (Delta0 > 48) Delta1 = 10;  // Kritická mez
                     else Delta1 = Simulator.Random.Next(1, 30) / 10;
                 TimeCriticalVoltage = 0;
@@ -220,7 +230,6 @@ namespace Orts.Simulation.RollingStocks
 
             //Trace.TraceWarning("Napeti v dratech: {0}V a původní je {1}V", Simulator.TRK.Tr_RouteFile.MaxLineVoltage, MaxLineVoltage0);
 
-            // Icik
             if (PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closed) CircuitBreakerOn = true;
                 else CircuitBreakerOn = false;
 
