@@ -145,7 +145,7 @@ namespace Orts.Simulation.RollingStocks
         public string OnLineCabRadioURL;
         public bool Battery;
         public bool PowerKey;
-        public bool Odbrzdi = false;
+        public bool BrakeRelease = false;
         public bool Up = false;
         public bool Down = false;
 
@@ -177,7 +177,7 @@ namespace Orts.Simulation.RollingStocks
         public MSTSNotchController WaterController = new MSTSNotchController(0, 1, 0.01f);
         public float CombinedTenderWaterVolumeUKG          // Decreased by running injectors and increased by refilling
         {
-            get { return WaterController.CurrentValue* MaxTotalCombinedWaterVolumeUKG; }
+            get { return WaterController.CurrentValue * MaxTotalCombinedWaterVolumeUKG; }
             set { WaterController.CurrentValue = value / MaxTotalCombinedWaterVolumeUKG; }
         }
 
@@ -267,7 +267,7 @@ namespace Orts.Simulation.RollingStocks
             {
                 if (value != _SmallEjectorSoundOn)
                 {
-                    SignalEvent(value? Event.SmallEjectorOn : Event.SmallEjectorOff);
+                    SignalEvent(value ? Event.SmallEjectorOn : Event.SmallEjectorOff);
                     _SmallEjectorSoundOn = value;
                 }
             }
@@ -281,11 +281,11 @@ namespace Orts.Simulation.RollingStocks
             {
                 if (value != _LargeEjectorSoundOn)
                 {
-                    SignalEvent(value? Event.LargeEjectorOn : Event.LargeEjectorOff);
+                    SignalEvent(value ? Event.LargeEjectorOn : Event.LargeEjectorOff);
                     _LargeEjectorSoundOn = value;
                 }
             }
-       }
+        }
 
         public bool SteamEngineBrakeFitted = false;
         public bool TrainBrakeFitted = false;
@@ -367,7 +367,7 @@ namespace Orts.Simulation.RollingStocks
         public double DynamicBrakeCommandStartTime;
         protected bool DynamicBrakeBlendingOverride; // true when DB lever >0% should always override the blending. When false, the bigger command is applied.
         protected bool DynamicBrakeBlendingForceMatch = true; // if true, dynamic brake blending tries to achieve the same braking force as the airbrake would have.
-        
+
         public CombinedControl CombinedControlType;
         public float CombinedControlSplitPosition;
         public bool HasSmoothStruc;
@@ -442,14 +442,18 @@ namespace Orts.Simulation.RollingStocks
         public bool OverCurrent = false;
         public bool MultiSystemEngine;
         public float MaxCurrentPower;
-        public float MaxCurrentBrake;                        
+        public float MaxCurrentBrake;
         public float SlipSpeedCritical;
+        public bool EDBIndependent;
+        public float PowerOnFilter;
+        public float PowerOnFilterCapacity;
+        public float PowerOnFilterCapacityLimit;
 
         public MSTSLocomotive(Simulator simulator, string wagPath)
             : base(simulator, wagPath)
         {
-          //  BrakePipeChargingRatePSIpS = Simulator.Settings.BrakePipeChargingRate;
-                        
+            //  BrakePipeChargingRatePSIpS = Simulator.Settings.BrakePipeChargingRate;
+
             MilepostUnitsMetric = Simulator.TRK.Tr_RouteFile.MilepostUnitsMetric;
             BrakeCutsPowerAtBrakeCylinderPressurePSI = 4.0f;
 
@@ -865,7 +869,7 @@ namespace Orts.Simulation.RollingStocks
                 case "engine(ortsbrakepipechargingrate": BrakePipeChargingRatePSIorInHgpS = stf.ReadFloatBlock(STFReader.UNITS.PressureRateDefaultPSIpS, null); break;
                 case "engine(ortsbrakepipequickchargingrate": BrakePipeQuickChargingRatePSIpS = stf.ReadFloatBlock(STFReader.UNITS.PressureRateDefaultPSIpS, null); break;
                 case "engine(ortsbrakepipedischargetimemult": BrakePipeDischargeTimeFactor = stf.ReadFloatBlock(STFReader.UNITS.None, null); break;
-                case "engine(ortsmaxtractiveforcecurves": TractiveForceCurves = new InterpolatorDiesel2D(stf, false); TractiveForceCurves.HasNegativeValue();  break;
+                case "engine(ortsmaxtractiveforcecurves": TractiveForceCurves = new InterpolatorDiesel2D(stf, false); TractiveForceCurves.HasNegativeValue(); break;
                 case "engine(ortstractioncharacteristics": TractiveForceCurves = new InterpolatorDiesel2D(stf, true); break;
                 case "engine(ortsdynamicbrakeforcecurves": DynamicBrakeForceCurves = new InterpolatorDiesel2D(stf, false); break;
                 case "engine(ortscontinuousforcetimefactor": ContinuousForceTimeFactor = stf.ReadFloatBlock(STFReader.UNITS.None, null); break;
@@ -907,7 +911,7 @@ namespace Orts.Simulation.RollingStocks
                         {
                             switch (brakesenginecontrollers)
                             {
-                                case "blended":                              
+                                case "blended":
                                     DynamicBrakeBlendingEnabled = true;
                                     break;
                                 case "dynamic":
@@ -924,13 +928,13 @@ namespace Orts.Simulation.RollingStocks
                     foreach (var brakestrainbraketype in stf.ReadStringBlock("").ToLower().Replace(" ", "").Split(','))
                     {
                         switch (brakestrainbraketype)
-                            {
-                                case "vacuum_single_pipe_eq":
-                                    VacuumBrakeEQFitted = true;
-                                    break;
-                                 default:
-                                    break;
-                            }
+                        {
+                            case "vacuum_single_pipe_eq":
+                                VacuumBrakeEQFitted = true;
+                                break;
+                            default:
+                                break;
+                        }
                     }
                     break;
 
@@ -969,9 +973,10 @@ namespace Orts.Simulation.RollingStocks
                 case "engine(maxcurrentpower": MaxCurrentPower = stf.ReadFloatBlock(STFReader.UNITS.Current, null); break;
                 case "engine(maxcurrentbrake": MaxCurrentBrake = stf.ReadFloatBlock(STFReader.UNITS.Current, null); break;
                 case "engine(slipspeedcritical": SlipSpeedCritical = stf.ReadFloatBlock(STFReader.UNITS.Speed, null); break;
+                case "engine(edbindependent": EDBIndependent = stf.ReadBoolBlock(false); break;
 
                 default: base.Parse(lowercasetoken, stf); break;
-                    
+
             }
         }
 
@@ -1078,7 +1083,8 @@ namespace Orts.Simulation.RollingStocks
             MultiSystemEngine = locoCopy.MultiSystemEngine;
             MaxCurrentPower = locoCopy.MaxCurrentPower;
             MaxCurrentBrake = locoCopy.MaxCurrentBrake;
-            SlipSpeedCritical = locoCopy.SlipSpeedCritical;            
+            SlipSpeedCritical = locoCopy.SlipSpeedCritical;
+            EDBIndependent = locoCopy.EDBIndependent;
         }
 
         /// <summary>
@@ -1178,7 +1184,7 @@ namespace Orts.Simulation.RollingStocks
             ScoopIsBroken = inf.ReadBoolean();
             IsWaterScoopDown = inf.ReadBoolean();
             CurrentTrackSandBoxCapacityM3 = inf.ReadSingle();
-            
+
             AdhesionFilter.Reset(0.5f);
 
             base.Restore(inf);
@@ -1282,7 +1288,7 @@ namespace Orts.Simulation.RollingStocks
             if (WaterScoopFillElevationM == 0)
             {
                 WaterScoopFillElevationM = 2.7432f; // Set to default of 9 ft
-            } 
+            }
 
             if (WaterScoopDepthM == 0)
             {
@@ -1295,17 +1301,17 @@ namespace Orts.Simulation.RollingStocks
             }
 
             // Check if current sander has been set
-            if (CurrentTrackSandBoxCapacityM3 == 0 )
+            if (CurrentTrackSandBoxCapacityM3 == 0)
             {
                 CurrentTrackSandBoxCapacityM3 = MaxTrackSandBoxCapacityM3;
             }
-            
+
             // Ensure Drive Axles is set with a default value if user doesn't supply an OR value in ENG file
             if (LocoNumDrvAxles == 0)
             {
                 if (MSTSLocoNumDrvWheels != 0 && MSTSLocoNumDrvWheels <= 6)
                 {
-                    LocoNumDrvAxles = (int) MSTSLocoNumDrvWheels;
+                    LocoNumDrvAxles = (int)MSTSLocoNumDrvWheels;
                 }
                 else
                 {
@@ -1317,7 +1323,7 @@ namespace Orts.Simulation.RollingStocks
                     Trace.TraceInformation("Number of Locomotive Drive Axles set to default value of {0}", LocoNumDrvAxles);
                 }
             }
-               
+
 
             // Calculate minimum speed to pickup water
             const float Aconst = 2;
@@ -1364,7 +1370,7 @@ namespace Orts.Simulation.RollingStocks
                     BrakePipeDischargeTimeFactor = 1.5f; // Air brakes
                 }
             }
-            
+
             // Initialise the resistance of the vacuum pump
             if (VacuumPumpResistanceN == 0)
             {
@@ -1414,7 +1420,7 @@ namespace Orts.Simulation.RollingStocks
                     {
                         Trace.TraceInformation("TrainBrakeController.MaxPressurePSI is assumed to be {0} Inhg, - confirmed as a value of {1} InHg", TempMaxPressure, Bar.ToInHg(Bar.FromPSI(TrainBrakeController.MaxPressurePSI)));
                     }
-                    
+
                 }
                 else if (TrainBrakeController.MaxPressurePSI < 7 || TrainBrakeController.MaxPressurePSI > 13) // Outside an acceptable range (Eqiv = 15InHg to 25InHg), then convert to a fixed default
                 {
@@ -1551,7 +1557,7 @@ namespace Orts.Simulation.RollingStocks
             {
                 if (MaxDynamicBrakeForceN > 0 && MaxContinuousForceN > 0 &&
                 (MaxDynamicBrakeForceN / MaxContinuousForceN < 0.3f && MaxDynamicBrakeForceN == 20000))
-                    MaxDynamicBrakeForceN = Math.Min (MaxContinuousForceN * 0.5f, 150000); // 20000 is suggested as standard value in the MSTS documentation, but in general it is a too low value
+                    MaxDynamicBrakeForceN = Math.Min(MaxContinuousForceN * 0.5f, 150000); // 20000 is suggested as standard value in the MSTS documentation, but in general it is a too low value
             }
         }
 
@@ -1559,9 +1565,10 @@ namespace Orts.Simulation.RollingStocks
         /// Dynamic brake blending 
         /// </summary>
         public void DynamicBrakeBlending(float elapsedClockSeconds)
-        {
-            if (airPipeSystem != null && ((airPipeSystem is EPBrakeSystem && Train.BrakeLine4 > 0f) || airPipeSystem.BrakeLine1PressurePSI < TrainBrakeController.MaxPressurePSI - 1f || Odbrzdi == true)
-                && ThrottleController.CurrentValue == 0f && !(DynamicBrakeController != null && DynamicBrakeBlendingOverride && DynamicBrakeController.CurrentValue > 0f)
+        {            
+            if (BrakeRelease == true 
+                || airPipeSystem != null && ((airPipeSystem is EPBrakeSystem && Train.BrakeLine4 > 0f) || airPipeSystem.BrakeLine1PressurePSI > 0f && airPipeSystem.BrakeLine1PressurePSI < TrainBrakeController.MaxPressurePSI - 1f 
+                && ThrottleController.CurrentValue == 0f && !(DynamicBrakeController != null && DynamicBrakeBlendingOverride && DynamicBrakeController.CurrentValue > 0f))
                 /* && (!DynamicBrakeBlendingLeverOverride && DynamicBrakeController != null && DynamicBrakeIntervention < DynamicBrakeController.CurrentValue)*/)
             {
                 float threshold = DynamicBrakeBlendingForceMatch ? 100f : 0.01f;
@@ -1582,12 +1589,13 @@ namespace Orts.Simulation.RollingStocks
                 {
                     float diff = DynamicBrakeBlendingForceMatch ? targetDynamicBrakePercent * MaxBrakeForceN - DynamicBrakeForceN : targetDynamicBrakePercent - DynamicBrakeIntervention;
                     if (diff > threshold && DynamicBrakeIntervention <= 1)
-                        DynamicBrakeIntervention = Math.Min( DynamicBrakeIntervention + elapsedClockSeconds * (airPipeSystem.GetMaxApplicationRatePSIpS() / maxCylPressurePSI), 1.0f);
+                        //DynamicBrakeIntervention = Math.Min( DynamicBrakeIntervention + elapsedClockSeconds * (airPipeSystem.GetMaxApplicationRatePSIpS() / maxCylPressurePSI), 1.0f);
+                        DynamicBrakeIntervention += elapsedClockSeconds * (airPipeSystem.GetMaxApplicationRatePSIpS() / maxCylPressurePSI);
                     else if (diff < -threshold)
                     {
                         DynamicBrakeIntervention -= elapsedClockSeconds * (airPipeSystem.GetMaxReleaseRatePSIpS() / maxCylPressurePSI);
-                        Odbrzdi = true;
-                }
+                        BrakeRelease = true;                            
+                    }
                 }
                 if (DynamicBrakeController != null)
                     DynamicBrakeIntervention = Math.Max(DynamicBrakeIntervention, DynamicBrakeController.CurrentValue);
@@ -1597,13 +1605,13 @@ namespace Orts.Simulation.RollingStocks
                 DynamicBrakeIntervention = -1;
                 DynamicBrakeBlended = false;
             }
-            if (DynamicBrakeForceN <= 500) Odbrzdi = false;
+            if (DynamicBrakeForceN < 1000) BrakeRelease = false;
         }
 
-        
+
         // Definice ochran lokomotiv
-        public void Overcurrent_Protections(float elapsedClockSeconds) 
-        {                    
+        public void Overcurrent_Protections(float elapsedClockSeconds)
+        {
             if (MaxCurrentA > 0)  // Zohlední jen elektrické a dieselelektrické lokomotivy 
             {
                 // Nadproudová ochrana                        
@@ -1646,7 +1654,7 @@ namespace Orts.Simulation.RollingStocks
                                 Train.SignalEvent(PowerSupplyEvent.OpenCircuitBreaker); // Vypnutí HV                                
                                 break;
                         }
-                        Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Zásah nadproudové ochrany!"));                      
+                        Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Zásah nadproudové ochrany!"));
                     }
                     if (this is MSTSDieselLocomotive) // Dieselelektrické lokomotivy
                     {
@@ -1660,21 +1668,51 @@ namespace Orts.Simulation.RollingStocks
 
                 // Resetování nadproudové ochrany u elektrických lokomotiv
                 if (this is MSTSElectricLocomotive && OverCurrent && LocalThrottlePercent == 0 && LocalDynamicBrakePercent == 0)
-                {                    
-                    OverCurrent = false;                                        
+                {
+                    OverCurrent = false;
                 }
 
                 // Resetování nadproudové ochrany u dieselelektrických lokomotiv
-                if (this is MSTSDieselLocomotive && OverCurrent && PowerKey && LocalThrottlePercent == 0 && LocalDynamicBrakePercent == 0) 
+                if (this is MSTSDieselLocomotive && OverCurrent && PowerKey && LocalThrottlePercent == 0 && LocalDynamicBrakePercent == 0)
                 {
                     Train.SignalEvent(Event.PowerKeyOn); // Zvuk pro zapnutí TM
                     OverCurrent = false;
                     PowerReduction = 0;
                     PowerKey = false;
                 }
-
             }
         }
+
+        // Icik
+        // Napěťový filtr pro umožnění použití EDB bez pantografu        
+        public void PowerOn_Filter(float elapsedClockSeconds)
+        {
+            // Nabíjení a vybíjení napěťového filtru
+            if (EDBIndependent)
+            {
+                // Kapacita napěťového filtru
+                PowerOnFilterCapacity = 2400; // 5 min při brždění 80kN, plně nabito za 4 min
+                // Mezní kapacita napěťového filtru, při které začne deaktivace EDB 
+                PowerOnFilterCapacityLimit = 200;
+
+                // Nabíjení
+                if (PowerOn && PowerOnFilter < PowerOnFilterCapacity) PowerOnFilter = PowerOnFilter + (10 * elapsedClockSeconds); // 10 jednotek za sekundu
+                // Vybíjení
+                if (!PowerOn && DynamicBrakePercent > 0 && PowerOnFilter > 0) PowerOnFilter = PowerOnFilter - (DynamicBrakeForceN / 10000 * elapsedClockSeconds); 
+                // Pokles síly EDB při vybití filtru
+                if (!PowerOn && DynamicBrakePercent > 0 && PowerOnFilter < PowerOnFilterCapacityLimit)
+                {
+                    if (DynamicBrakePercent > 0) DynamicBrakePercent--;
+                    if (DynamicBrakePercent < 0) DynamicBrakePercent = 0;
+                    SetDynamicBrakePercent(DynamicBrakePercent);
+                    if (DynamicBrakeIntervention > 0) DynamicBrakeIntervention = DynamicBrakeIntervention - 0.01f;
+                    if (DynamicBrakeIntervention < 0) DynamicBrakeIntervention = 0;                    
+                }
+
+                Trace.TraceWarning("Hodnota PowerOnFilter {0}, DynamicBrakePercent {1}, čas simulace {2}", PowerOnFilter, DynamicBrakePercent, Simulator.GameTime);
+            }
+        }
+
 
         /// <summary>
         /// This function updates periodically the states and physical variables of the locomotive's subsystems.
@@ -1682,13 +1720,15 @@ namespace Orts.Simulation.RollingStocks
         public override void Update(float elapsedClockSeconds)
         {
             Overcurrent_Protections(elapsedClockSeconds);
+            PowerOn_Filter(elapsedClockSeconds);
+
             TrainControlSystem.Update();
 
             elapsedTime = elapsedClockSeconds;
 
             UpdatePowerSupply(elapsedClockSeconds);
             UpdateControllers(elapsedClockSeconds);
-            
+
             // Train Heading - only check the lead locomotive otherwise flipped locomotives further in consist will overwrite the train direction
             if (IsLeadLocomotive())
             {
@@ -1724,7 +1764,9 @@ namespace Orts.Simulation.RollingStocks
             if (DynamicBrakePercent > 0 && DynamicBrakeForceCurves != null && AbsSpeedMpS > 0)
             {
                 float f = DynamicBrakeForceCurves.Get(.01f * DynamicBrakePercent, AbsSpeedMpS);
-                if (f > 0 && PowerOn)
+                // Icik 
+                // EDB funguje z baterií
+                if (f > 0 && PowerOn || f > 0 && EDBIndependent && PowerOnFilter > 0)
                 {
                     DynamicBrakeForceN = f * (1 - PowerReduction);
                 }

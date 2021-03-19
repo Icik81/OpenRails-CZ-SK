@@ -727,7 +727,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 BrakeLine2PressurePSI -= dp * AuxBrakeLineVolumeRatio;
             }
 
-            if (Car is MSTSLocomotive && (Car as MSTSLocomotive).PowerOn)
+            if (Car is MSTSLocomotive && (Car as MSTSLocomotive).PowerOn
+                || Car is MSTSLocomotive && (Car as MSTSLocomotive).EDBIndependent && (Car as MSTSLocomotive).PowerOnFilter > 0)
             {
                 var loco = Car as MSTSLocomotive;
                 BailOffOn = false;
