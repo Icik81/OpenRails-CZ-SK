@@ -1567,7 +1567,7 @@ namespace Orts.Simulation.RollingStocks
         public void DynamicBrakeBlending(float elapsedClockSeconds)
         {            
             if (BrakeRelease == true 
-                || airPipeSystem != null && ((airPipeSystem is EPBrakeSystem && Train.BrakeLine4 > 0f) || airPipeSystem.BrakeLine1PressurePSI > 0f && airPipeSystem.BrakeLine1PressurePSI < TrainBrakeController.MaxPressurePSI - 1f 
+                || airPipeSystem != null && ((airPipeSystem is EPBrakeSystem && Train.BrakeLine4 > 0f) || airPipeSystem.KapacitaHlJimkyAPotrubi >= airPipeSystem.maxPressurePSI0 && airPipeSystem.BrakeLine1PressurePSI < TrainBrakeController.MaxPressurePSI - 1f 
                 && ThrottleController.CurrentValue == 0f && !(DynamicBrakeController != null && DynamicBrakeBlendingOverride && DynamicBrakeController.CurrentValue > 0f))
                 /* && (!DynamicBrakeBlendingLeverOverride && DynamicBrakeController != null && DynamicBrakeIntervention < DynamicBrakeController.CurrentValue)*/)
             {
@@ -1709,7 +1709,7 @@ namespace Orts.Simulation.RollingStocks
                     if (DynamicBrakeIntervention < 0) DynamicBrakeIntervention = 0;                    
                 }
 
-                Trace.TraceWarning("Hodnota PowerOnFilter {0}, DynamicBrakePercent {1}, čas simulace {2}", PowerOnFilter, DynamicBrakePercent, Simulator.GameTime);
+                //Trace.TraceWarning("Hodnota PowerOnFilter {0}, DynamicBrakePercent {1}, čas simulace {2}", PowerOnFilter, DynamicBrakePercent, Simulator.GameTime);
             }
         }
 

@@ -212,7 +212,7 @@ namespace Orts.Simulation.RollingStocks
 
             // Zákmit na voltmetru            
             if (PowerSupply.PantographVoltageV < 100) VoltageSprung = 1.5f;
-            if (VoltageSprung == 1.5f && PowerSupply.PantographVoltageV >= MaxLineVoltage0 * 1.2f) VoltageSprung = 1.0f;
+            if (PowerSupply.PantographVoltageV >= MaxLineVoltage0 * 1.2f) VoltageSprung = 1.0f;
             //if (VoltageSprung == 1.0f && PowerSupply.PantographVoltageV <= MaxLineVoltage0) VoltageSprung = 1.05f;
 
             // Simulace náhodného poklesu napětí            
@@ -253,12 +253,24 @@ namespace Orts.Simulation.RollingStocks
                     Pantographs[2].PantographsBlocked = false;
                     PantographDown = false;
 
-                    // Shodí HV při poklesu napětí v troleji a nastaveném výkonu (podpěťová ochrana)
-                    if (PowerSupply.PantographVoltageV < PantographCriticalVoltage && LocalThrottlePercent > 0
-                        || PowerSupply.PantographVoltageV < PantographCriticalVoltage && LocalDynamicBrakePercent > 0)
+                    if (!EDBIndependent)
                     {
-                        SignalEvent(PowerSupplyEvent.OpenCircuitBreaker);
-                        Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Zásah podpěťové ochrany!"));
+                        // Shodí HV při poklesu napětí v troleji a nastaveném výkonu (podpěťová ochrana)
+                        if (PowerSupply.PantographVoltageV < PantographCriticalVoltage && LocalThrottlePercent > 0
+                        || PowerSupply.PantographVoltageV < PantographCriticalVoltage && LocalDynamicBrakePercent > 0)
+                        {
+                            SignalEvent(PowerSupplyEvent.OpenCircuitBreaker);
+                            Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Zásah podpěťové ochrany!"));
+                        }
+                    }
+                    if (EDBIndependent)
+                    {
+                        // Shodí HV při poklesu napětí v troleji a nastaveném výkonu (podpěťová ochrana)
+                        if (PowerSupply.PantographVoltageV < PantographCriticalVoltage && LocalThrottlePercent > 0)
+                        {
+                            SignalEvent(PowerSupplyEvent.OpenCircuitBreaker);
+                            Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Zásah podpěťové ochrany!"));
+                        }
                     }
                 }
             }
