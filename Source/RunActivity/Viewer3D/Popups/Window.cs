@@ -269,9 +269,9 @@ namespace Orts.Viewer3D.Popups
             }
 
             graphicsDevice.SetVertexBuffer(WindowVertexBuffer);
-            graphicsDevice.Indices = WindowIndexBuffer;
-            graphicsDevice.DrawIndexedPrimitives(PrimitiveType.TriangleStrip, 0, 0, 20);
-        }
+			graphicsDevice.Indices = WindowIndexBuffer;
+			graphicsDevice.DrawIndexedPrimitives(PrimitiveType.TriangleStrip, baseVertex: 0, startIndex: 0, primitiveCount: 20);
+		}
 
         [CallOnThread("Updater")]
         public virtual void PrepareFrame(ElapsedTime elapsedTime, bool updateFull)

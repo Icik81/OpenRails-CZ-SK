@@ -490,7 +490,7 @@ namespace Orts.Simulation.RollingStocks
 
             switch (cvc.ControlType)
             {
-                case CABViewControlTypes.LINE_VOLTAGE:                                        
+                case CABViewControlTypes.LINE_VOLTAGE:
                     data = PowerSupply.PantographVoltageV;
                     if (cvc.Units == CABViewControlUnits.KILOVOLTS)
                         data /= 1000;
@@ -561,7 +561,7 @@ namespace Orts.Simulation.RollingStocks
                             data = 1;
                             break;
                         case CircuitBreakerState.Closed:
-                            data = 2;                            
+                            data = 2;
                             break;
                     }
                     break;

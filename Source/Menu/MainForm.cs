@@ -252,8 +252,8 @@ namespace ORTS
 
             ShowEnvironment();
             ShowTimetableEnvironment();
-
-            CheckForUpdate();
+            // CheckForUpdate disabled for OR NewYear MG
+            //           CheckForUpdate();
 
             if (!Initialized)
             {
@@ -577,7 +577,8 @@ namespace ORTS
                 {
                     case DialogResult.OK:
                         LoadFolderList();
-                        CheckForUpdate();
+                        // CheckForUpdate disabled for OR NewYear MG
+//                        CheckForUpdate();
                         break;
                     case DialogResult.Retry:
                         RestartMenu();

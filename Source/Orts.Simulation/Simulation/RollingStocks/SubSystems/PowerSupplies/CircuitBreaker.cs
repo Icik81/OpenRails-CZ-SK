@@ -335,7 +335,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
             //SetClosingAuthorization(TCSClosingAuthorization() && CurrentPantographState() == PantographState.Up);
             // Icik
             SetClosingAuthorization(TCSClosingAuthorization());
-            
+
             switch (CurrentState())
             {
                 case CircuitBreakerState.Closed:

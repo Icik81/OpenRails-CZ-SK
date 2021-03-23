@@ -126,7 +126,7 @@ namespace Orts.Simulation.RollingStocks
         public bool DynamicBrake;
         public float MaxPowerW;
         public float MaxForceN;
-        public float TractiveForceN = 0f; // Raw tractive force for electric sound variable2
+        public float AbsTractionSpeedMpS;
         public float MaxCurrentA = 0;
         public float MaxSpeedMpS = 1e3f;
         public float UnloadingSpeedMpS;
@@ -177,7 +177,7 @@ namespace Orts.Simulation.RollingStocks
         public MSTSNotchController WaterController = new MSTSNotchController(0, 1, 0.01f);
         public float CombinedTenderWaterVolumeUKG          // Decreased by running injectors and increased by refilling
         {
-            get { return WaterController.CurrentValue * MaxTotalCombinedWaterVolumeUKG; }
+            get { return WaterController.CurrentValue* MaxTotalCombinedWaterVolumeUKG; }
             set { WaterController.CurrentValue = value / MaxTotalCombinedWaterVolumeUKG; }
         }
 
@@ -267,7 +267,7 @@ namespace Orts.Simulation.RollingStocks
             {
                 if (value != _SmallEjectorSoundOn)
                 {
-                    SignalEvent(value ? Event.SmallEjectorOn : Event.SmallEjectorOff);
+                    SignalEvent(value? Event.SmallEjectorOn : Event.SmallEjectorOff);
                     _SmallEjectorSoundOn = value;
                 }
             }
@@ -281,11 +281,11 @@ namespace Orts.Simulation.RollingStocks
             {
                 if (value != _LargeEjectorSoundOn)
                 {
-                    SignalEvent(value ? Event.LargeEjectorOn : Event.LargeEjectorOff);
+                    SignalEvent(value? Event.LargeEjectorOn : Event.LargeEjectorOff);
                     _LargeEjectorSoundOn = value;
                 }
             }
-        }
+       }
 
         public bool SteamEngineBrakeFitted = false;
         public bool TrainBrakeFitted = false;
@@ -452,8 +452,8 @@ namespace Orts.Simulation.RollingStocks
         public MSTSLocomotive(Simulator simulator, string wagPath)
             : base(simulator, wagPath)
         {
-            //  BrakePipeChargingRatePSIpS = Simulator.Settings.BrakePipeChargingRate;
-
+          //  BrakePipeChargingRatePSIpS = Simulator.Settings.BrakePipeChargingRate;
+                        
             MilepostUnitsMetric = Simulator.TRK.Tr_RouteFile.MilepostUnitsMetric;
             BrakeCutsPowerAtBrakeCylinderPressurePSI = 4.0f;
 
@@ -869,7 +869,7 @@ namespace Orts.Simulation.RollingStocks
                 case "engine(ortsbrakepipechargingrate": BrakePipeChargingRatePSIorInHgpS = stf.ReadFloatBlock(STFReader.UNITS.PressureRateDefaultPSIpS, null); break;
                 case "engine(ortsbrakepipequickchargingrate": BrakePipeQuickChargingRatePSIpS = stf.ReadFloatBlock(STFReader.UNITS.PressureRateDefaultPSIpS, null); break;
                 case "engine(ortsbrakepipedischargetimemult": BrakePipeDischargeTimeFactor = stf.ReadFloatBlock(STFReader.UNITS.None, null); break;
-                case "engine(ortsmaxtractiveforcecurves": TractiveForceCurves = new InterpolatorDiesel2D(stf, false); TractiveForceCurves.HasNegativeValue(); break;
+                case "engine(ortsmaxtractiveforcecurves": TractiveForceCurves = new InterpolatorDiesel2D(stf, false); TractiveForceCurves.HasNegativeValue();  break;
                 case "engine(ortstractioncharacteristics": TractiveForceCurves = new InterpolatorDiesel2D(stf, true); break;
                 case "engine(ortsdynamicbrakeforcecurves": DynamicBrakeForceCurves = new InterpolatorDiesel2D(stf, false); break;
                 case "engine(ortscontinuousforcetimefactor": ContinuousForceTimeFactor = stf.ReadFloatBlock(STFReader.UNITS.None, null); break;
@@ -911,7 +911,7 @@ namespace Orts.Simulation.RollingStocks
                         {
                             switch (brakesenginecontrollers)
                             {
-                                case "blended":
+                                case "blended":                              
                                     DynamicBrakeBlendingEnabled = true;
                                     break;
                                 case "dynamic":
@@ -928,13 +928,13 @@ namespace Orts.Simulation.RollingStocks
                     foreach (var brakestrainbraketype in stf.ReadStringBlock("").ToLower().Replace(" ", "").Split(','))
                     {
                         switch (brakestrainbraketype)
-                        {
-                            case "vacuum_single_pipe_eq":
-                                VacuumBrakeEQFitted = true;
-                                break;
-                            default:
-                                break;
-                        }
+                            {
+                                case "vacuum_single_pipe_eq":
+                                    VacuumBrakeEQFitted = true;
+                                    break;
+                                 default:
+                                    break;
+                            }
                     }
                     break;
 
@@ -976,7 +976,7 @@ namespace Orts.Simulation.RollingStocks
                 case "engine(edbindependent": EDBIndependent = stf.ReadBoolBlock(false); break;
 
                 default: base.Parse(lowercasetoken, stf); break;
-
+                    
             }
         }
 
@@ -1184,7 +1184,7 @@ namespace Orts.Simulation.RollingStocks
             ScoopIsBroken = inf.ReadBoolean();
             IsWaterScoopDown = inf.ReadBoolean();
             CurrentTrackSandBoxCapacityM3 = inf.ReadSingle();
-
+            
             AdhesionFilter.Reset(0.5f);
 
             base.Restore(inf);
@@ -1288,7 +1288,7 @@ namespace Orts.Simulation.RollingStocks
             if (WaterScoopFillElevationM == 0)
             {
                 WaterScoopFillElevationM = 2.7432f; // Set to default of 9 ft
-            }
+            } 
 
             if (WaterScoopDepthM == 0)
             {
@@ -1301,17 +1301,17 @@ namespace Orts.Simulation.RollingStocks
             }
 
             // Check if current sander has been set
-            if (CurrentTrackSandBoxCapacityM3 == 0)
+            if (CurrentTrackSandBoxCapacityM3 == 0 )
             {
                 CurrentTrackSandBoxCapacityM3 = MaxTrackSandBoxCapacityM3;
             }
-
+            
             // Ensure Drive Axles is set with a default value if user doesn't supply an OR value in ENG file
             if (LocoNumDrvAxles == 0)
             {
                 if (MSTSLocoNumDrvWheels != 0 && MSTSLocoNumDrvWheels <= 6)
                 {
-                    LocoNumDrvAxles = (int)MSTSLocoNumDrvWheels;
+                    LocoNumDrvAxles = (int) MSTSLocoNumDrvWheels;
                 }
                 else
                 {
@@ -1323,7 +1323,7 @@ namespace Orts.Simulation.RollingStocks
                     Trace.TraceInformation("Number of Locomotive Drive Axles set to default value of {0}", LocoNumDrvAxles);
                 }
             }
-
+               
 
             // Calculate minimum speed to pickup water
             const float Aconst = 2;
@@ -1370,7 +1370,7 @@ namespace Orts.Simulation.RollingStocks
                     BrakePipeDischargeTimeFactor = 1.5f; // Air brakes
                 }
             }
-
+            
             // Initialise the resistance of the vacuum pump
             if (VacuumPumpResistanceN == 0)
             {
@@ -1420,7 +1420,7 @@ namespace Orts.Simulation.RollingStocks
                     {
                         Trace.TraceInformation("TrainBrakeController.MaxPressurePSI is assumed to be {0} Inhg, - confirmed as a value of {1} InHg", TempMaxPressure, Bar.ToInHg(Bar.FromPSI(TrainBrakeController.MaxPressurePSI)));
                     }
-
+                    
                 }
                 else if (TrainBrakeController.MaxPressurePSI < 7 || TrainBrakeController.MaxPressurePSI > 13) // Outside an acceptable range (Eqiv = 15InHg to 25InHg), then convert to a fixed default
                 {
@@ -1557,7 +1557,7 @@ namespace Orts.Simulation.RollingStocks
             {
                 if (MaxDynamicBrakeForceN > 0 && MaxContinuousForceN > 0 &&
                 (MaxDynamicBrakeForceN / MaxContinuousForceN < 0.3f && MaxDynamicBrakeForceN == 20000))
-                    MaxDynamicBrakeForceN = Math.Min(MaxContinuousForceN * 0.5f, 150000); // 20000 is suggested as standard value in the MSTS documentation, but in general it is a too low value
+                    MaxDynamicBrakeForceN = Math.Min (MaxContinuousForceN * 0.5f, 150000); // 20000 is suggested as standard value in the MSTS documentation, but in general it is a too low value
             }
         }
 
@@ -1565,7 +1565,7 @@ namespace Orts.Simulation.RollingStocks
         /// Dynamic brake blending 
         /// </summary>
         public void DynamicBrakeBlending(float elapsedClockSeconds)
-        {            
+        {
             if (BrakeRelease == true 
                 || airPipeSystem != null && ((airPipeSystem is EPBrakeSystem && Train.BrakeLine4 > 0f) || airPipeSystem.KapacitaHlJimkyAPotrubi >= airPipeSystem.maxPressurePSI0 && airPipeSystem.BrakeLine1PressurePSI < TrainBrakeController.MaxPressurePSI - 1f 
                 && ThrottleController.CurrentValue == 0f && !(DynamicBrakeController != null && DynamicBrakeBlendingOverride && DynamicBrakeController.CurrentValue > 0f))
@@ -1595,7 +1595,7 @@ namespace Orts.Simulation.RollingStocks
                     {
                         DynamicBrakeIntervention -= elapsedClockSeconds * (airPipeSystem.GetMaxReleaseRatePSIpS() / maxCylPressurePSI);
                         BrakeRelease = true;                            
-                    }
+                }
                 }
                 if (DynamicBrakeController != null)
                     DynamicBrakeIntervention = Math.Max(DynamicBrakeIntervention, DynamicBrakeController.CurrentValue);
@@ -1756,19 +1756,25 @@ namespace Orts.Simulation.RollingStocks
             if (!AdvancedAdhesionModel)  // Advanced adhesion model turned off.
                AbsWheelSpeedMpS = AbsSpeedMpS;
 
-            UpdateMotiveForce(elapsedClockSeconds, t, AbsSpeedMpS, AbsWheelSpeedMpS);
+            UpdateTractiveForce(elapsedClockSeconds, t, AbsSpeedMpS, AbsWheelSpeedMpS);
 
-            ApplyDirectionToMotiveForce();
+            ApplyDirectionToTractiveForce();
 
-            // Update dynamic brake force
+            // Calculate the total motive force for the locomotive - ie TractiveForce (driving force) + Dynamic Braking force.
+            // Note typically only one of the above will only ever be non-zero at the one time.
+            // For flipped locomotives the force is "flipped" elsewhere, whereas dynamic brake force is "flipped" below by the direction of the speed.
+            MotiveForceN = TractiveForceN;
+
             if (DynamicBrakePercent > 0 && DynamicBrakeForceCurves != null && AbsSpeedMpS > 0)
             {
-                float f = DynamicBrakeForceCurves.Get(.01f * DynamicBrakePercent, AbsSpeedMpS);
+                float f = DynamicBrakeForceCurves.Get(.01f * DynamicBrakePercent, AbsTractionSpeedMpS);
+                //if (f > 0 && PowerOn)
                 // Icik 
                 // EDB funguje z baterií
                 if (f > 0 && PowerOn || f > 0 && EDBIndependent && PowerOnFilter > 0)
                 {
                     DynamicBrakeForceN = f * (1 - PowerReduction);
+                    MotiveForceN -= (SpeedMpS > 0 ? 1 : SpeedMpS < 0 ? -1 : Direction == Direction.Reverse ? -1 : 1) * DynamicBrakeForceN;                 
                 }
                 else
                 {
@@ -1811,10 +1817,8 @@ namespace Orts.Simulation.RollingStocks
                         }
                     }
 
-
-
                     AntiSlip = true; // Always set AI trains to AntiSlip
-                    SimpleAdhesion();                         //let's call the basic physics instead for now
+                    SimpleAdhesion();   // Simple adhesion model used for AI trains
                     if (Train.IsActualPlayerTrain) FilteredMotiveForceN = CurrentFilter.Filter(MotiveForceN, elapsedClockSeconds);
                     WheelSpeedMpS = Flipped ? -AbsSpeedMpS : AbsSpeedMpS;            //make the wheels go round
                     break;
@@ -2133,52 +2137,68 @@ namespace Orts.Simulation.RollingStocks
         /// <summary>
         /// This function updates periodically the locomotive's motive force.
         /// </summary>
-        protected virtual void UpdateMotiveForce(float elapsedClockSeconds, float t, float AbsSpeedMpS, float AbsWheelSpeedMpS)
+        protected virtual void UpdateTractiveForce(float elapsedClockSeconds, float t, float AbsSpeedMpS, float AbsWheelSpeedMpS)
         {
             // Method to set force and power info
             // An alternative method in the steam locomotive will override this and input force and power info for it.
             if (PowerOn && Direction != Direction.N)
             {
+
+                // For the advanced adhesion model, a rudimentary form of slip control is incorporated by using the wheel speed to calculate tractive effort.
+                // As wheel speed is increased tractive effort is decreased. Hence wheel slip is "controlled" to a certain extent.
+                // This doesn't cover all types of locomotives, for example if DC traction motors and no slip control, then the tractive effort shouldn't be reduced.
+                // This won't eliminate slip, but limits its impact. 
+                // More modern locomotive have a more sophisticated system that eliminates slip in the majority (if not all circumstances).
+                // Simple adhesion control does not have any slip control feature built into it.
+                // TODO - a full review of slip/no slip control.
+                if (WheelSlip && AdvancedAdhesionModel)
+                {
+                    AbsTractionSpeedMpS = AbsWheelSpeedMpS;
+                }
+                else
+                {
+                    AbsTractionSpeedMpS = AbsSpeedMpS;
+                }
+
                 if (TractiveForceCurves == null)
                 {
                     float maxForceN = MaxForceN * t * (1 - PowerReduction);
                     float maxPowerW = MaxPowerW * t * t * (1 - PowerReduction);
 
-                    if (maxForceN * AbsWheelSpeedMpS > maxPowerW)
-                        maxForceN = maxPowerW / AbsWheelSpeedMpS;
+                    if (maxForceN * AbsTractionSpeedMpS > maxPowerW)
+                        maxForceN = maxPowerW / AbsTractionSpeedMpS;
                     //if (AbsSpeedMpS > MaxSpeedMpS)
                     //    maxForceN = 0;
-                    if (AbsSpeedMpS > MaxSpeedMpS - 0.05f)
-                        maxForceN = 20 * (MaxSpeedMpS - AbsSpeedMpS) * maxForceN;
+                    if (AbsTractionSpeedMpS > MaxSpeedMpS - 0.05f)
+                        maxForceN = 20 * (MaxSpeedMpS - AbsTractionSpeedMpS) * maxForceN;
                     if (AbsSpeedMpS > (MaxSpeedMpS))
                         maxForceN = 0;
-                    MotiveForceN = maxForceN;
+                    TractiveForceN = maxForceN;
                 }
                 else
                 {
-                    MotiveForceN = TractiveForceCurves.Get(t, AbsWheelSpeedMpS) * (1 - PowerReduction);
-                    if (MotiveForceN < 0 && !TractiveForceCurves.AcceptsNegativeValues())
-                        MotiveForceN = 0;
+                    TractiveForceN = TractiveForceCurves.Get(t, AbsTractionSpeedMpS) * (1 - PowerReduction);
+                    if (TractiveForceN < 0 && !TractiveForceCurves.AcceptsNegativeValues())
+                        TractiveForceN = 0;
                 }
-                TractiveForceN = MotiveForceN;
             }
             else
                 TractiveForceN = 0f;
 
             if (MaxForceN > 0 && MaxContinuousForceN > 0 && PowerReduction < 1)
             {
-                MotiveForceN *= 1 - (MaxForceN - MaxContinuousForceN) / (MaxForceN * MaxContinuousForceN) * AverageForceN * (1 - PowerReduction);
+                TractiveForceN *= 1 - (MaxForceN - MaxContinuousForceN) / (MaxForceN * MaxContinuousForceN) * AverageForceN * (1 - PowerReduction);
                 float w = (ContinuousForceTimeFactor - elapsedClockSeconds) / ContinuousForceTimeFactor;
                 if (w < 0)
                     w = 0;
-                AverageForceN = w * AverageForceN + (1 - w) * MotiveForceN;
+                AverageForceN = w * AverageForceN + (1 - w) * TractiveForceN;
             }
         }
 
         /// <summary>
         /// This function applies a sign to the motive force as a function of the direction of the train.
         /// </summary>
-        protected virtual void ApplyDirectionToMotiveForce()
+        protected virtual void ApplyDirectionToTractiveForce()
         {
             // Steam locomotives have their MotiveForceN already pre-inverted based on Direction
             if (!(this is MSTSSteamLocomotive))
@@ -2191,11 +2211,11 @@ namespace Orts.Simulation.RollingStocks
                             //MotiveForceN *= 1;     //Not necessary
                             break;
                         case Direction.Reverse:
-                            MotiveForceN *= -1;
+                            TractiveForceN *= -1;
                             break;
                         case Direction.N:
                         default:
-                            MotiveForceN *= 0;
+                            TractiveForceN *= 0;
                             break;
                     }
                 }
@@ -2204,7 +2224,7 @@ namespace Orts.Simulation.RollingStocks
                     switch (Direction)
                     {
                         case Direction.Reverse:
-                            MotiveForceN *= -1;
+                            TractiveForceN *= -1;
                             break;
                         default:
                             break;
@@ -2459,7 +2479,7 @@ namespace Orts.Simulation.RollingStocks
 
             if (EngineType == EngineTypes.Steam && SteamEngineType != MSTSSteamLocomotive.SteamEngineTypes.Geared )
              {
-                // Steam locomotive details updated in UpdateMotiveForce method, and inserted into adhesion module
+                // Steam locomotive details updated in UpdateTractiveForce method, and inserted into adhesion module
                 // ****************  NB WheelSpeed updated within Steam Locomotive module at the moment - to be fixed to prevent discrepancies ******************
             }
             
@@ -2491,21 +2511,23 @@ namespace Orts.Simulation.RollingStocks
 
                 LocomotiveAxle.AxleRevolutionsInt.MinStep = LocomotiveAxle.InertiaKgm2 / MaxPowerW / 5.0f;
 
+
                 //Set axle model parameters
 
-               //LocomotiveAxle.BrakeForceN = FrictionForceN;
-              //  LocomotiveAxle.BrakeRetardForceN = BrakeForceN;
+                //LocomotiveAxle.BrakeForceN = FrictionForceN;
+                //  LocomotiveAxle.BrakeRetardForceN = BrakeForceN;
 
+                //LocomotiveAxle.BrakeRetardForceN = BrakeRetardForceN;
                 // Icik
                 // Součinitel využití adheze (výchozí hodnota 1.00)
                 if (AdhesionEfficiencyKoef == 0) AdhesionEfficiencyKoef = 1.00f;
-                LocomotiveAxle.AdhesionEfficiencyKoef = AdhesionEfficiencyKoef;
-
+                LocomotiveAxle.AdhesionEfficiencyKoef = AdhesionEfficiencyKoef;               
+                
                 // Upravuje chybu v adhezi pokud vůz brzdí (brzdí plnou vahou tzn. všemi koly)
-                LocomotiveAxle.BrakeRetardForceN = BrakeRetardForceN / ( MassKG / DrvWheelWeightKg );
+                LocomotiveAxle.BrakeRetardForceN = BrakeRetardForceN / (MassKG / DrvWheelWeightKg);
 
                 LocomotiveAxle.AxleWeightN = 9.81f * DrvWheelWeightKg;   //will be computed each time considering the tilting
-                LocomotiveAxle.DriveForceN = MotiveForceN;           //Developed force
+                LocomotiveAxle.DriveForceN = MotiveForceN;  //Total force applied to wheels
                 LocomotiveAxle.TrainSpeedMpS = SpeedMpS;            //Set the train speed of the axle model
                 LocomotiveAxle.Update(elapsedClockSeconds);         //Main updater of the axle model
                 MotiveForceN = LocomotiveAxle.AxleForceN;           //Get the Axle force and use it for the motion

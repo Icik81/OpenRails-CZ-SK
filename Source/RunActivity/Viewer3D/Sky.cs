@@ -141,18 +141,6 @@ namespace Orts.Viewer3D
             // The rest of this increments/decrements the array indices and checks for overshoot/undershoot.
             while (Viewer.Simulator.ClockTime >= (oldClockTime + 1200)) // Plus key, or normal forward in time; <CSComment> better so in case of fast forward
             {
-                //step1++;
-                //step2++;
-                //oldClockTime = oldClockTime + 1200;
-                //diff = (float)(Viewer.Simulator.ClockTime - oldClockTime) / 1200;
-                //if (step2 >= maxSteps) // Midnight.
-                //{
-                //    step2 = 0;
-                //}
-                //if (step1 >= maxSteps) // Midnight.
-                //{
-                //    step1 = 0;
-                //}
                 oldClockTime = oldClockTime + 1200;
                 diff = GetCelestialDiff();
                 step1++;
@@ -192,7 +180,7 @@ namespace Orts.Viewer3D
         }
 
         /// <summary>
-        /// Returns the advance of time in seconds in units of 20 mins.
+        /// Returns the advance of time in seconds in units of 20 mins (1200 seconds).
         /// Allows for an offset in hours from a control in the DispatchViewer.
         /// This is a user convenience to reveal in daylight what might be hard to see at night.
         /// </summary>
@@ -200,8 +188,7 @@ namespace Orts.Viewer3D
         private float GetCelestialDiff()
         {
             var diffS = (Viewer.Simulator.ClockTime - oldClockTime);
-            if (Program.DebugViewer != null)
-                diffS += (double)Program.DebugViewer?.DaylightOffsetHrs * 60 * 60;
+            diffS += (double)(Program.DebugViewer?.DaylightOffsetHrs ?? 0) * 60 * 60;
             return (float)diffS / 1200;
         }
 
@@ -282,23 +269,23 @@ namespace Orts.Viewer3D
                 case 1: // Sky dome
                     graphicsDevice.DrawIndexedPrimitives(
                         PrimitiveType.TriangleList,
-                        0,
-                        0,
-                        (indexCount - 6) / 6);
+                        baseVertex: 0,
+                        startIndex: 0,
+                        primitiveCount: (indexCount - 6) / 6);
                     break;
                 case 2: // Moon
                     graphicsDevice.DrawIndexedPrimitives(
                     PrimitiveType.TriangleList,
-                    0,
-                    indexCount - 6,
-                    2);
+                    baseVertex: 0,
+                    startIndex: indexCount - 6,
+                    primitiveCount: 2);
                     break;
                 case 3: // Clouds Dome
                     graphicsDevice.DrawIndexedPrimitives(
                         PrimitiveType.TriangleList,
-                        0,
-                        (indexCount - 6) / 2,
-                        (indexCount - 6) / 6);
+                        baseVertex: 0,
+                        startIndex: (indexCount - 6) / 2,
+                        primitiveCount: (indexCount - 6) / 6);
                     break;
                 default:
                     break;

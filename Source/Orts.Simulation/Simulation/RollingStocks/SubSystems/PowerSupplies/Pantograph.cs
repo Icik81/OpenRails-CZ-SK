@@ -276,7 +276,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
         }
 
         public void Update(float elapsedClockSeconds)
-        {            
+        {
             switch (State)
             {
                 case PantographState.Lowering:
@@ -318,7 +318,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                         {
                             default:
                             case 1:
-                                soundEvent = Event.Pantograph1Down; 
+                                soundEvent = Event.Pantograph1Down;
                                 break;
 
                             case 2:

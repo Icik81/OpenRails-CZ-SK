@@ -1,4 +1,4 @@
-﻿// COPYRIGHT 2012, 2013, 2014 by the Open Rails project.
+// COPYRIGHT 2012, 2013, 2014 by the Open Rails project.
 // 
 // This file is part of Open Rails.
 // 
@@ -70,7 +70,6 @@ namespace Orts.Viewer3D
     {
         readonly VertexBuffer VertexBuffer;
         readonly IndexBuffer IndexBuffer;
-        readonly int VertexCount;
         readonly int PrimitiveCount;
 
         public TransferPrimitive(Viewer viewer, float width, float height, WorldPosition position)
@@ -131,7 +130,6 @@ namespace Orts.Viewer3D
 
             VertexBuffer = new VertexBuffer(viewer.GraphicsDevice, typeof(VertexPositionTexture), verticies.Length, BufferUsage.WriteOnly);
             VertexBuffer.SetData(verticies);
-            VertexCount = verticies.Length;
 
             IndexBuffer = new IndexBuffer(viewer.GraphicsDevice, typeof(short), indicies.Length, BufferUsage.WriteOnly);
             IndexBuffer.SetData(indicies);
