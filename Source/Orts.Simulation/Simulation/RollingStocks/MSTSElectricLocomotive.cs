@@ -205,7 +205,7 @@ namespace Orts.Simulation.RollingStocks
             // Podpěťová ochrana deaktivovaná při pause hry
             if (Simulator.Paused || Step0 > 0)
             {
-                if (Simulator.Paused) Step0 = 2;
+                if (Simulator.Paused) Step0 = 10;
                     else Step0--;
                 PantographCriticalVoltage = 0;
             }
