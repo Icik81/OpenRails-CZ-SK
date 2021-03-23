@@ -137,7 +137,7 @@ namespace Orts.Simulation.RollingStocks
             CurrentLocomotiveSteamHeatBoilerWaterCapacityL = inf.ReadSingle();
             PantographDown = inf.ReadBoolean();
             CircuitBreakerOn = inf.ReadBoolean();
-            PantographCriticalVoltage = inf.ReadSingle();
+            PantographCriticalVoltage = inf.ReadDouble();
             PowerOnFilter = inf.ReadSingle();
             base.Restore(inf);
         }
