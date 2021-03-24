@@ -65,7 +65,8 @@ namespace Orts.Simulation.RollingStocks
         public float Delta0 = 0;
         public float Delta1 = 0;
         public float Delta2 = 0;
-        public float Step0;        
+        public float Step0;
+        public float Step1;
 
         public MSTSElectricLocomotive(Simulator simulator, string wagFile) :
             base(simulator, wagFile)
@@ -206,14 +207,21 @@ namespace Orts.Simulation.RollingStocks
             if (Simulator.Paused || Step0 > 0)
             {
                 if (Simulator.Paused) Step0 = 10;
-                    else Step0--;
+                else Step0--;
                 PantographCriticalVoltage = 0;
             }
 
             // Zákmit na voltmetru            
-            if (PowerSupply.PantographVoltageV < 100) VoltageSprung = 1.5f;
-            if (PowerSupply.PantographVoltageV >= MaxLineVoltage0 * 1.2f) VoltageSprung = 1.0f;
-            //if (VoltageSprung == 1.0f && PowerSupply.PantographVoltageV <= MaxLineVoltage0) VoltageSprung = 1.05f;
+            if (PowerSupply.PantographVoltageV < 100)
+            {
+                VoltageSprung = 1.5f;
+                Step1 = 12;
+            }                     
+            Step1--;
+            if (Step1 < 0) Step1 = 0;
+            if (VoltageSprung == 1.5f && Step1 == 0) VoltageSprung = 1.0f;
+
+            //Simulator.Confirmer.Message(ConfirmLevel.Warning, "VoltageSprung  " + VoltageSprung + "  Simulator.TRK.Tr_RouteFile.MaxLineVoltage  " + Simulator.TRK.Tr_RouteFile.MaxLineVoltage + "  PowerSupply.PantographVoltageV  " + PowerSupply.PantographVoltageV);
 
             // Simulace náhodného poklesu napětí            
             if (Delta1 < 4 && TimeCriticalVoltage == 0) TimeCriticalVoltage0 = Simulator.Random.Next(100, 500);
