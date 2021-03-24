@@ -2555,15 +2555,22 @@ namespace Orts.Simulation.RollingStocks
 
             // Vibrace při prokluzu kol
             VibratioDampingCoefficient = 0.04f;
-            if (WheelSlip) VibrationRotationVelocityRadpS.X += (factor * Simulator.Settings.CarVibratingLevel * VibrationIntroductionStrength * 0.35f * VibrationMassKG) / x;
+            if (WheelSlip) VibrationRotationVelocityRadpS.X += (factor * Simulator.Settings.CarVibratingLevel * VibrationIntroductionStrength * 1.0f * VibrationMassKG) / x;
 
             // Vibrace při zrychlování a zpomalování
             VibratioDampingCoefficient = 0.05f;
-            if (IsDriveable && Train != null & Train.IsPlayerDriven && (this as MSTSLocomotive).UsingRearCab)
+            // Hráč
+            if (IsDriveable && Train != null && Train.IsPlayerDriven)
             {
-                VibrationRotationVelocityRadpS.X -= (VibrationIntroductionStrength * AccelerationMpSS * 2.5f * VibrationMassKG) / x;
+                if ((this as MSTSLocomotive).UsingRearCab)
+                {
+                    VibrationRotationVelocityRadpS.X -= (VibrationIntroductionStrength * AccelerationMpSS * 2.0f * VibrationMassKG) / x;
+                }
+                else VibrationRotationVelocityRadpS.X += (VibrationIntroductionStrength * AccelerationMpSS * 2.0f * VibrationMassKG) / x;
             }
-            else VibrationRotationVelocityRadpS.X += (VibrationIntroductionStrength * AccelerationMpSS * 2.5f * VibrationMassKG) / x;
+            // AI traffic
+            else VibrationRotationVelocityRadpS.X += (VibrationIntroductionStrength * AccelerationMpSS * 1.0f * VibrationMassKG) / x;
+
 
             // Vibrace náhodné nerovnosti
             if (TypVibrace_1 && Math.Abs(SpeedMpS) > 3)   //Vibrace na spojích, dle vzdálenosti
@@ -2647,7 +2654,7 @@ namespace Orts.Simulation.RollingStocks
                         y = 20; y1 = 75;
                         VibratioDampingCoefficient = 0.025f;
                     break;
-            }
+                }
 
                 force = Simulator.Random.Next(y, y1);
                 if (force > 25 && force < 31) force -= 25; // Nabývá od 1 do 5
@@ -2660,7 +2667,7 @@ namespace Orts.Simulation.RollingStocks
                     VibrationRotationVelocityRadpS.X += (factor * Simulator.Settings.CarVibratingLevel * VibrationIntroductionStrength * force * 0.05f);
                 else
                     VibrationRotationVelocityRadpS.X -= (factor * Simulator.Settings.CarVibratingLevel * VibrationIntroductionStrength * force * 0.05f);
-        }
+            }
 
             TypVibrace_1 = false;
             TypVibrace_2 = false;
@@ -2682,20 +2689,40 @@ namespace Orts.Simulation.RollingStocks
             }
 
             // Omezení vibrací
-            if (Train.IsActualPlayerTrain && Math.Abs(AccelerationMpSS) > 1)
+            if (IsDriveable && Train != null && Train.IsPlayerDriven)
             {
-                if (VibrationRotationVelocityRadpS.X > 0.01f) VibrationRotationVelocityRadpS.X = 0.01f;
-                if (VibrationRotationVelocityRadpS.X < -0.01f) VibrationRotationVelocityRadpS.X = -0.01f;
-            }
-            else if (Math.Abs(AccelerationMpSS) > 1)
-            {
-                if (VibrationRotationVelocityRadpS.X > 0.0015f) VibrationRotationVelocityRadpS.X = 0.0015f;
-                if (VibrationRotationVelocityRadpS.X < -0.0015f) VibrationRotationVelocityRadpS.X = -0.0015f;
+                if ((this as MSTSLocomotive).UsingRearCab)
+                {
+                    if (AccelerationMpSS > 1)
+                    {
+                        if (VibrationRotationVelocityRadpS.X > 0.05f) VibrationRotationVelocityRadpS.X = 0.05f;
+                        if (VibrationRotationVelocityRadpS.X < -0.05f) VibrationRotationVelocityRadpS.X = -0.05f;
+                    }
+                    if (AccelerationMpSS < -1)
+                    {
+                        if (VibrationRotationVelocityRadpS.X > 0.02f) VibrationRotationVelocityRadpS.X = 0.02f;
+                        if (VibrationRotationVelocityRadpS.X < -0.02f) VibrationRotationVelocityRadpS.X = -0.02f;
+                    }
+                }
             }
             else
             {
-                if (VibrationRotationVelocityRadpS.X > z1 - ((CarLengthM - 15) / 1000)) VibrationRotationVelocityRadpS.X = z1 - ((CarLengthM - 15) / 1000);
-                if (VibrationRotationVelocityRadpS.X < -z1 + ((CarLengthM - 15) / 1000)) VibrationRotationVelocityRadpS.X = -z1 + ((CarLengthM - 15) / 1000);
+                if (AccelerationMpSS > 1)
+                {
+                    if (VibrationRotationVelocityRadpS.X > 0.02f) VibrationRotationVelocityRadpS.X = 0.02f;
+                    if (VibrationRotationVelocityRadpS.X < -0.02f) VibrationRotationVelocityRadpS.X = -0.02f;
+                }
+                else
+                if (AccelerationMpSS < -1)
+                {
+                    if (VibrationRotationVelocityRadpS.X > 0.05f) VibrationRotationVelocityRadpS.X = 0.05f;
+                    if (VibrationRotationVelocityRadpS.X < -0.05f) VibrationRotationVelocityRadpS.X = -0.05f;
+                }
+                else
+                {
+                    if (VibrationRotationVelocityRadpS.X > z1 - ((CarLengthM - 15) / 1000)) VibrationRotationVelocityRadpS.X = z1 - ((CarLengthM - 15) / 1000);
+                    if (VibrationRotationVelocityRadpS.X < -z1 + ((CarLengthM - 15) / 1000)) VibrationRotationVelocityRadpS.X = -z1 + ((CarLengthM - 15) / 1000);
+                }
             }
 
             if (VibrationRotationVelocityRadpS.Y > z2) VibrationRotationVelocityRadpS.Y = z2;
