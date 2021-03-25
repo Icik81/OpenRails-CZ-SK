@@ -2555,9 +2555,10 @@ namespace Orts.Simulation.RollingStocks
 
             // Vibrace při prokluzu kol
             VibratioDampingCoefficient = 0.04f;
-            if (WheelSlip) VibrationRotationVelocityRadpS.X += (factor * Simulator.Settings.CarVibratingLevel * VibrationIntroductionStrength * 1.0f * VibrationMassKG) / x;
+            if (WheelSlip) VibrationRotationVelocityRadpS.X += (factor * Simulator.Settings.CarVibratingLevel * VibrationIntroductionStrength * 0.35f * VibrationMassKG) / x;
 
             // Vibrace při zrychlování a zpomalování
+            VibrationSpringConstantPrimepSpS = 14f / 0.2f;
             VibratioDampingCoefficient = 0.05f;
             // Hráč
             if (IsDriveable && Train != null && Train.IsPlayerDriven)
@@ -2569,12 +2570,13 @@ namespace Orts.Simulation.RollingStocks
                 else VibrationRotationVelocityRadpS.X += (VibrationIntroductionStrength * AccelerationMpSS * 2.0f * VibrationMassKG) / x;
             }
             // AI traffic
-            else VibrationRotationVelocityRadpS.X += (VibrationIntroductionStrength * AccelerationMpSS * 1.0f * VibrationMassKG) / x;
+            else VibrationRotationVelocityRadpS.X += (VibrationIntroductionStrength * AccelerationMpSS * 1.5f * VibrationMassKG) / x;
 
 
             // Vibrace náhodné nerovnosti
             if (TypVibrace_1 && Math.Abs(SpeedMpS) > 3)   //Vibrace na spojích, dle vzdálenosti
-            {                
+            {
+                VibrationSpringConstantPrimepSpS = 12f / 0.2f;
                 int y = 20, y1 = 100;
                 switch (WagonNumAxles)
                 {
@@ -2621,7 +2623,7 @@ namespace Orts.Simulation.RollingStocks
             if (TypVibrace_2 && Math.Abs(SpeedMpS) > 3)   //Vibrace v oblouku
             {
                 VibratioDampingCoefficient = 0.025f;
-                
+                VibrationSpringConstantPrimepSpS = 12f / 0.2f;
                 if (direction2 == 0)
                     VibrationRotationVelocityRadpS.Y += (factor * Simulator.Settings.CarVibratingLevel * VibrationIntroductionStrength * 2.50f * VibrationMassKG) / x;
                 else
@@ -2630,7 +2632,7 @@ namespace Orts.Simulation.RollingStocks
             if (TypVibrace_3 && Math.Abs(SpeedMpS) > 3)   //Vibrace na výhybce
             {
                 VibratioDampingCoefficient = 0.02f;
-                
+                VibrationSpringConstantPrimepSpS = 9.8f / 0.2f;
                 if (direction2 == 0)
                     VibrationRotationVelocityRadpS.Z += (factor * Simulator.Settings.CarVibratingLevel * VibrationIntroductionStrength * 2.50f * VibrationMassKG) / x;
                 else
@@ -2638,7 +2640,8 @@ namespace Orts.Simulation.RollingStocks
             }
 
             if (IsOverJunction() && Math.Abs(SpeedMpS) > 3)   //Vibrace na výhybce
-            {                
+            {
+                VibrationSpringConstantPrimepSpS = 12f / 0.2f;
                 int y = 20, y1 = 50;
                 switch (WagonNumAxles)
                 {
@@ -2695,13 +2698,13 @@ namespace Orts.Simulation.RollingStocks
                 {
                     if (AccelerationMpSS > 1)
                     {
-                        if (VibrationRotationVelocityRadpS.X > 0.05f) VibrationRotationVelocityRadpS.X = 0.05f;
-                        if (VibrationRotationVelocityRadpS.X < -0.05f) VibrationRotationVelocityRadpS.X = -0.05f;
+                        if (VibrationRotationVelocityRadpS.X > 0.02f) VibrationRotationVelocityRadpS.X = 0.02f;
+                        if (VibrationRotationVelocityRadpS.X < -0.02f) VibrationRotationVelocityRadpS.X = -0.02f;
                     }
                     if (AccelerationMpSS < -1)
                     {
-                        if (VibrationRotationVelocityRadpS.X > 0.02f) VibrationRotationVelocityRadpS.X = 0.02f;
-                        if (VibrationRotationVelocityRadpS.X < -0.02f) VibrationRotationVelocityRadpS.X = -0.02f;
+                        if (VibrationRotationVelocityRadpS.X > 0.05f) VibrationRotationVelocityRadpS.X = 0.05f;
+                        if (VibrationRotationVelocityRadpS.X < -0.05f) VibrationRotationVelocityRadpS.X = -0.05f;
                     }
                 }
             }
@@ -2709,14 +2712,14 @@ namespace Orts.Simulation.RollingStocks
             {
                 if (AccelerationMpSS > 1)
                 {
-                    if (VibrationRotationVelocityRadpS.X > 0.02f) VibrationRotationVelocityRadpS.X = 0.02f;
-                    if (VibrationRotationVelocityRadpS.X < -0.02f) VibrationRotationVelocityRadpS.X = -0.02f;
+                    if (VibrationRotationVelocityRadpS.X > 0.05f) VibrationRotationVelocityRadpS.X = 0.05f;
+                    if (VibrationRotationVelocityRadpS.X < -0.05f) VibrationRotationVelocityRadpS.X = -0.05f;
                 }
                 else
                 if (AccelerationMpSS < -1)
                 {
-                    if (VibrationRotationVelocityRadpS.X > 0.05f) VibrationRotationVelocityRadpS.X = 0.05f;
-                    if (VibrationRotationVelocityRadpS.X < -0.05f) VibrationRotationVelocityRadpS.X = -0.05f;
+                    if (VibrationRotationVelocityRadpS.X > 0.02f) VibrationRotationVelocityRadpS.X = 0.02f;
+                    if (VibrationRotationVelocityRadpS.X < -0.02f) VibrationRotationVelocityRadpS.X = -0.02f;
                 }
                 else
                 {
@@ -2730,13 +2733,13 @@ namespace Orts.Simulation.RollingStocks
             if (VibrationRotationVelocityRadpS.Z > z3) VibrationRotationVelocityRadpS.Z = z3;
             if (VibrationRotationVelocityRadpS.Z < -z3) VibrationRotationVelocityRadpS.Z = -z3;
 
-            if (Math.Abs(SpeedMpS) < 0.1f || Simulator.Paused)
+            if (Simulator.Paused)
             {
                 VibrationRotationVelocityRadpS.X = 0.0f;
                 VibrationRotationVelocityRadpS.Y = 0.0f;
-                VibrationRotationVelocityRadpS.Z = 0.0f;
+                VibrationRotationVelocityRadpS.Z = 0.0f;                
             }
-
+            
         }
         #endregion
 
