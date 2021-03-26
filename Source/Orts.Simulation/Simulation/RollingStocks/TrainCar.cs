@@ -2473,7 +2473,7 @@ namespace Orts.Simulation.RollingStocks
                 //   Let v be the velocity in m/s
                 //   Then F = -c * v
                 // We apply the acceleration (let t be time in s, then dv/dt = a * t) and damping (-c * v) to the velocities:
-                VibrationRotationVelocityRadpS += rotationAccelerationRadpSpS * elapsedTimeS - VibratioDampingCoefficient * VibrationRotationVelocityRadpS;
+                VibrationRotationVelocityRadpS += rotationAccelerationRadpSpS * elapsedTimeS * 2 - VibratioDampingCoefficient * VibrationRotationVelocityRadpS;
                 VibrationTranslationVelocityMpS += translationAccelerationMpSpS * elapsedTimeS - VibratioDampingCoefficient * VibrationTranslationVelocityMpS;
                 // Now apply the velocities (dx/dt = v * t):
                 VibrationRotationRad += VibrationRotationVelocityRadpS * elapsedTimeS;
@@ -2565,9 +2565,9 @@ namespace Orts.Simulation.RollingStocks
             {
                 if ((this as MSTSLocomotive).UsingRearCab)
                 {
-                    VibrationRotationVelocityRadpS.X -= (VibrationIntroductionStrength * AccelerationMpSS * 2.0f * VibrationMassKG) / x;
+                    VibrationRotationVelocityRadpS.X -= (VibrationIntroductionStrength * AccelerationMpSS * 2.5f * VibrationMassKG) / x;
                 }
-                else VibrationRotationVelocityRadpS.X += (VibrationIntroductionStrength * AccelerationMpSS * 2.0f * VibrationMassKG) / x;
+                else VibrationRotationVelocityRadpS.X += (VibrationIntroductionStrength * AccelerationMpSS * 2.5f * VibrationMassKG) / x;
             }
             // AI traffic
             else VibrationRotationVelocityRadpS.X += (VibrationIntroductionStrength * AccelerationMpSS * 1.5f * VibrationMassKG) / x;
@@ -2583,11 +2583,11 @@ namespace Orts.Simulation.RollingStocks
                     case 2:
                         y = 20; y1 = 40;
                         VibratioDampingCoefficient = 0.015f;
-                    break;
+                        break;
                     case 4:
                         y = 20; y1 = 100;
                         VibratioDampingCoefficient = 0.025f;
-                    break;
+                        break;
                     case 6:
                         y = 20; y1 = 100;
                         VibratioDampingCoefficient = 0.025f;
@@ -2610,7 +2610,7 @@ namespace Orts.Simulation.RollingStocks
                 force = Simulator.Random.Next(1, 50);
                 if (force > 25 && force < 28) force -= 25;
                 else force = 1;
-                
+
                 if (direction2 == 0)
                     VibrationRotationVelocityRadpS.Y += (factor * Simulator.Settings.CarVibratingLevel * VibrationIntroductionStrength * force * 0.50f * VibrationMassKG) / x;
                 else
