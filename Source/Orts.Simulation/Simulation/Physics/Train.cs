@@ -142,7 +142,7 @@ namespace Orts.Simulation.Physics
         public float PreviousCarCount;                  // Keeps track of the last number of cars in the train consist (for vacuum brakes)
         public bool TrainBPIntact = true;           // Flag to indicate that the train BP is not intact, ie due to disconnection or an open valve cock.
         public float TotalTrainTrainPipeLeakRate;
-        public float TotalKapacitaHlJimkyAPotrubi;
+        public float TotalCapacityMainResBrakePipe;
 
         public int FirstCarUiD;                          // UiD of first car in the train
         public float HUDWagonBrakeCylinderPSI;         // Display value for wagon HUD

@@ -1756,6 +1756,7 @@ namespace Orts.Viewer3D
             RotationYRadians = StartViewPointRotationYRadians;
             XRadians = StartViewPointRotationXRadians;
             YRadians = StartViewPointRotationYRadians;
+            FieldOfView = Viewer.Settings.ViewingFOV + 17.0f;
         }
     }
 
@@ -1844,6 +1845,7 @@ namespace Orts.Viewer3D
         public ThreeDimCabCamera(Viewer viewer)
             : base(viewer)
         {
+            FieldOfView = Viewer.Settings.ViewingFOV + 17.0f;
         }
 
         protected override List<TrainCar> GetCameraCars()

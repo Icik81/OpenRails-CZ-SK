@@ -440,6 +440,7 @@ namespace Orts.Simulation.RollingStocks
         public ScriptedCircuitBreaker CircuitBreaker;
         public float AdhesionEfficiencyKoef;
         public bool OverCurrent = false;
+        public bool OverVoltage = false;
         public bool MultiSystemEngine;
         public float MaxCurrentPower;
         public float MaxCurrentBrake;
@@ -1566,8 +1567,8 @@ namespace Orts.Simulation.RollingStocks
         /// </summary>
         public void DynamicBrakeBlending(float elapsedClockSeconds)
         {
-            if (BrakeRelease == true 
-                || airPipeSystem != null && ((airPipeSystem is EPBrakeSystem && Train.BrakeLine4 > 0f) || airPipeSystem.KapacitaHlJimkyAPotrubi >= airPipeSystem.maxPressurePSI0 && airPipeSystem.BrakeLine1PressurePSI < TrainBrakeController.MaxPressurePSI - 1f 
+            if (BrakeRelease == true
+                || airPipeSystem != null && ((airPipeSystem is EPBrakeSystem && Train.BrakeLine4 > 0f) || (airPipeSystem.TotalCapacityMainResBrakePipe >= airPipeSystem.maxPressurePSI0 && airPipeSystem.BrakeLine1PressurePSI < TrainBrakeController.MaxPressurePSI - 1f && AbsSpeedMpS > 1)
                 && ThrottleController.CurrentValue == 0f && !(DynamicBrakeController != null && DynamicBrakeBlendingOverride && DynamicBrakeController.CurrentValue > 0f))
                 /* && (!DynamicBrakeBlendingLeverOverride && DynamicBrakeController != null && DynamicBrakeIntervention < DynamicBrakeController.CurrentValue)*/)
             {
@@ -1610,15 +1611,13 @@ namespace Orts.Simulation.RollingStocks
 
 
         // Definice ochran lokomotiv
-        public void Overcurrent_Protections(float elapsedClockSeconds)
+        public void Overcurrent_Protection(float elapsedClockSeconds)
         {
-            if (MaxCurrentA > 0)  // Zohlední jen elektrické a dieselelektrické lokomotivy 
+            if (MaxCurrentA > 0 && IsPlayerTrain)  // Zohlední jen elektrické a dieselelektrické lokomotivy 
             {
                 // Nadproudová ochrana                        
                 if (MaxCurrentPower == 0) MaxCurrentPower = MaxCurrentA / 1.2f;
                 if (MaxCurrentBrake == 0) MaxCurrentBrake = MaxCurrentA / 2.3f;
-                if (SlipSpeedCritical == 0) SlipSpeedCritical = 40 / 3.6f; // Výchozí hodnota 40 km/h               
-                float AbsSlipSpeedMpS = Math.Abs(WheelSpeedMpS) - AbsSpeedMpS;  // Zjistí absolutní rychlost prokluzu 
 
                 //Trace.TraceInformation("WheelSlipTime {0},  Simulator.GameTime {1},  Time0 {2},   SlipSpeed {3}", WheelSlipTime, Simulator.GameTime, Time0, SlipSpeed);
 
@@ -1637,9 +1636,6 @@ namespace Orts.Simulation.RollingStocks
                 if (this is MSTSDieselLocomotive && DynamicBrakeForceN > 0) // Stanovení kritického proudu pro dieselelektrické lokomotivy při dynamickém brždění
                     if (Current > MaxCurrentBrake)
                         OverCurrent = true;
-
-                if (AbsSlipSpeedMpS > SlipSpeedCritical) // Nadproudová ochrana při skluzu 
-                    OverCurrent = true;
 
                 if (OverCurrent)
                 {
@@ -1683,6 +1679,60 @@ namespace Orts.Simulation.RollingStocks
             }
         }
 
+        public void AntiSlip_Protection(float elapsedClockSeconds)
+        {
+            if (MaxCurrentA > 0 && IsPlayerTrain)  // Zohlední jen elektrické a dieselelektrické lokomotivy 
+            {                
+                if (SlipSpeedCritical == 0) SlipSpeedCritical = 40 / 3.6f; // Výchozí hodnota 40 km/h               
+                float AbsSlipSpeedMpS = Math.Abs(WheelSpeedMpS) - AbsSpeedMpS;  // Zjistí absolutní rychlost prokluzu 
+
+                //Trace.TraceInformation("WheelSlipTime {0},  Simulator.GameTime {1},  Time0 {2},   SlipSpeed {3}", WheelSlipTime, Simulator.GameTime, Time0, SlipSpeed);
+                
+                if (AbsSlipSpeedMpS > SlipSpeedCritical) // Přepěťová ochrana při skluzu 
+                    OverVoltage = true;
+
+                if (OverVoltage)
+                {
+                    if (this is MSTSElectricLocomotive) // Elektrické lokomotivy
+                    {
+                        switch (MultiSystemEngine)
+                        {
+                            case true: // Vícesystémová lokomotiva                            
+                                Train.SignalEvent(PowerSupplyEvent.OpenCircuitBreaker); // Vypnutí HV    
+                                break;
+                            case false: // Jednosystémová lokomotiva
+                                Train.SignalEvent(PowerSupplyEvent.OpenCircuitBreaker); // Vypnutí HV                                
+                                break;
+                        }
+                        Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Zásah protiskluzové ochrany!"));
+                    }
+                    if (this is MSTSDieselLocomotive) // Dieselelektrické lokomotivy
+                    {
+                        if (PowerReduction < 0.8)
+                            Train.SignalEvent(Event.PowerKeyOff); // Zvuk pro vypnutí TM
+                        PowerReduction = 0.9f; // Omezení trakčních motorů  
+                        SetDynamicBrakePercent(0);
+                        Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Zásah protiskluzové ochrany, Ctrl + K pro resetování ochrany!"));
+                    }
+                }
+
+                // Resetování nadproudové ochrany u elektrických lokomotiv
+                if (this is MSTSElectricLocomotive && OverVoltage && LocalThrottlePercent == 0 && LocalDynamicBrakePercent == 0)
+                {
+                    OverVoltage = false;
+                }
+
+                // Resetování nadproudové ochrany u dieselelektrických lokomotiv
+                if (this is MSTSDieselLocomotive && OverVoltage && PowerKey && LocalThrottlePercent == 0 && LocalDynamicBrakePercent == 0)
+                {
+                    Train.SignalEvent(Event.PowerKeyOn); // Zvuk pro zapnutí TM
+                    OverVoltage = false;
+                    PowerReduction = 0;
+                    PowerKey = false;
+                }
+            }
+        }
+
         // Icik
         // Napěťový filtr pro umožnění použití EDB bez pantografu        
         public void PowerOn_Filter(float elapsedClockSeconds)
@@ -1719,7 +1769,8 @@ namespace Orts.Simulation.RollingStocks
         /// </summary>
         public override void Update(float elapsedClockSeconds)
         {
-            Overcurrent_Protections(elapsedClockSeconds);
+            Overcurrent_Protection(elapsedClockSeconds);
+            AntiSlip_Protection(elapsedClockSeconds);
             PowerOn_Filter(elapsedClockSeconds);
 
             TrainControlSystem.Update();

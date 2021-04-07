@@ -1598,22 +1598,22 @@ namespace Orts.Common
     }
 
     [Serializable()]
-    public sealed class RezimVozuCommand : Command
+    public sealed class BrakeCarModeCommand : Command
     {
         public static MSTSWagon Receiver { get; set; }
 
-        public RezimVozuCommand(CommandLog log, MSTSWagon car, float RezimVozu)
+        public BrakeCarModeCommand(CommandLog log, MSTSWagon car, float BrakeCarMode)
             : base(log)
         {
             Receiver = car;
 }
     }
     [Serializable()]
-    public sealed class RezimVozuPLCommand : Command
+    public sealed class BrakeCarModePLCommand : Command
     {
         public static MSTSWagon Receiver { get; set; }
 
-        public RezimVozuPLCommand(CommandLog log, MSTSWagon car, float RezimVozuPL)
+        public BrakeCarModePLCommand(CommandLog log, MSTSWagon car, float BrakeCarModePL)
             : base(log)
         {
             Receiver = car;

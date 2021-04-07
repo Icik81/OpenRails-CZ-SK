@@ -64,16 +64,16 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
         protected bool BailOffOn;
 
         protected bool StartOn = true;        
-        protected float RychlostZmenyTlakuPotrubi = 0;
-        protected float cas0 = 0;
-        protected float cas1 = 0;
-        protected int cas00 = 0;
+        protected float BrakePipeChangeRate = 0;
+        protected float T0 = 0;
+        protected float T1 = 0;
+        protected int T00 = 0;
         protected float PrevAuxResPressurePSI = 0;
         protected float Threshold = 0;
         protected float prevBrakeLine1PressurePSI = 0;
-        protected bool odpojen = false;
-        protected bool PlniValce = false;
-        protected bool OdvetravaValce = false;     
+        protected bool NotConnected = false;
+        protected bool BrakeCylApply = false;
+        protected bool BrakeCylRelease = false;     
 
         /// <summary>
         /// EP brake holding valve. Needs to be closed (Lap) in case of brake application or holding.
@@ -178,10 +178,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             if (HandbrakePercent > 0)
                 s += string.Format(" Handbrake {0:F0}%", HandbrakePercent);
 
-            s += string.Format("  Rychlost změny tlaku v potrubí {0:F5}bar/s", RychlostZmenyTlakuPotrubi / 14.50377f);
+            s += string.Format("  Rychlost změny tlaku v potrubí {0:F5}bar/s", BrakePipeChangeRate / 14.50377f);
             s += string.Format("  Netěsnost potrubí {0:F5}bar/s", Car.Train.TotalTrainTrainPipeLeakRate / 14.50377f);
             s += string.Format("  Objem potrubí {0:F0}l", Car.Train.TotalTrainBrakePipeVolumeM3 * 1000);
-            s += string.Format("  Kapacita hl.jímky a přilehlého potrubí {0:F0}l", Car.Train.TotalKapacitaHlJimkyAPotrubi * 1000 / 14.50377f);
+            s += string.Format("  Kapacita hl.jímky a přilehlého potrubí {0:F0}l", Car.Train.TotalCapacityMainResBrakePipe * 1000 / 14.50377f);
           
             //s += string.Format("    maxPressurePSI {0:F1}bar", maxPressurePSI0 / 14.50377f);            
             //s += string.Format("    MaxCylPressurePSI {0:F1}bar", MaxCylPressurePSI / 14.50377f);
@@ -197,7 +197,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             //s += string.Format("    TlakVálce {0:F0}", AutoCylPressurePSI);          
             //s += string.Format("    PrevAuxResPressure {0:F1} bar", PrevAuxResPressurePSI / 14.50377f);
             //s += string.Format("    threshold {0:F1} bar", Threshold / 14.50377f);
-            //s += string.Format("    cas0 {0:F0}", cas0);
+            //s += string.Format("    T0 {0:F0}", T0);
             return s;
         }
 
@@ -225,8 +225,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 string.Empty, // Spacer because the state above needs 2 columns.
                 string.Format("{0:F0}l", CylVolumeM3 * 1000),
                 string.Empty, // Spacer because the state above needs 2 columns.
-                string.Format("{0:F0}l", KapacitaHlJimkyAPotrubi * 1000 / 14.50377f),               
-                string.Format("{0:F0}", RezimVozuText),
+                string.Format("{0:F0}l", TotalCapacityMainResBrakePipe * 1000 / 14.50377f),               
+                string.Format("{0:F0}", BrakeCarModeText),
                 string.Format("{0} {1:F0}t", AutoLoadRegulatorEquipped ? "Auto   " : "", BrakeMassKG / 1000),              
                                 
                 string.Empty, // Spacer because the state above needs 2 columns.              
@@ -371,10 +371,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             outf.Write(TrainPipeLeakRatePSIpS);
             outf.Write(AutoCylPressurePSI1);
             outf.Write(AutoCylPressurePSI0);
-            outf.Write(RezimVozu);
-            outf.Write(RezimVozuText);
-            outf.Write(RezimVozuPL);
-            outf.Write(RezimVozuTextPL);
+            outf.Write(BrakeCarMode);
+            outf.Write(BrakeCarModeText);
+            outf.Write(BrakeCarModePL);
+            outf.Write(BrakeCarModeTextPL);
             outf.Write(MaxApplicationRatePSIpS0);
             outf.Write(MaxReleaseRatePSIpS0);
             outf.Write(maxPressurePSI0);
@@ -405,10 +405,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             TrainPipeLeakRatePSIpS = inf.ReadSingle();
             AutoCylPressurePSI1 = inf.ReadSingle();
             AutoCylPressurePSI0 = inf.ReadSingle();
-            RezimVozu = inf.ReadSingle();
-            RezimVozuText = inf.ReadString();
-            RezimVozuPL = inf.ReadSingle();
-            RezimVozuTextPL = inf.ReadString();
+            BrakeCarMode = inf.ReadSingle();
+            BrakeCarModeText = inf.ReadString();
+            BrakeCarModePL = inf.ReadSingle();
+            BrakeCarModeTextPL = inf.ReadString();
             MaxApplicationRatePSIpS0 = inf.ReadSingle();
             MaxReleaseRatePSIpS0 = inf.ReadSingle();
             maxPressurePSI0 = inf.ReadSingle();
@@ -503,23 +503,23 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             }
 
             // Časy pro napouštění a vypouštění brzdového válce v sekundách režimy G, P, R
-            float CasNapousteniG = 22.0f;
-            float CasVypousteniG = 50.0f;
+            float TimeApplyG = 22.0f;
+            float TimeReleaseG = 50.0f;
 
-            float CasNapousteniP = 5.3f;
-            float CasVypousteniP = 22.4f;
+            float TimeApplyP = 5.3f;
+            float TimeReleaseP = 22.4f;
 
-            float CasNapousteniR = 3.5f;
-            float CasVypousteniR = 22.4f;
+            float TimeApplyR = 3.5f;
+            float TimeReleaseR = 22.4f;
 
             // Vypočítá rychlost plnění/vyprazdňování brzdových válců s ohledem na režim
-            switch (RezimVozu)
+            switch (BrakeCarMode)
             {
                 case 0: // Režim G                     
-                    if (MaxApplicationRatePSIpSG == 0) MaxApplicationRatePSIpS = MaxApplicationRatePSIpS0 / (CasNapousteniG / CasNapousteniP);
+                    if (MaxApplicationRatePSIpSG == 0) MaxApplicationRatePSIpS = MaxApplicationRatePSIpS0 / (TimeApplyG / TimeApplyP);
                     else MaxApplicationRatePSIpS = MaxApplicationRatePSIpSG;
 
-                    if (MaxReleaseRatePSIpSG == 0) MaxReleaseRatePSIpS = ReleaseRatePSIpS = MaxReleaseRatePSIpS0 / (CasVypousteniG / CasVypousteniP);
+                    if (MaxReleaseRatePSIpSG == 0) MaxReleaseRatePSIpS = ReleaseRatePSIpS = MaxReleaseRatePSIpS0 / (TimeReleaseG / TimeReleaseP);
                     else MaxReleaseRatePSIpS = ReleaseRatePSIpS = MaxReleaseRatePSIpSG;
                     break;
                 case 1: // Režim P                    
@@ -530,10 +530,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     else MaxReleaseRatePSIpS = ReleaseRatePSIpS = MaxReleaseRatePSIpSP;
                     break;
                 case 2: // Režim R
-                    if (MaxApplicationRatePSIpSR == 0) MaxApplicationRatePSIpS = MaxApplicationRatePSIpS0 / (CasNapousteniR / CasNapousteniP);
+                    if (MaxApplicationRatePSIpSR == 0) MaxApplicationRatePSIpS = MaxApplicationRatePSIpS0 / (TimeApplyR / TimeApplyP);
                     else MaxApplicationRatePSIpS = MaxApplicationRatePSIpSR;
 
-                    if (MaxReleaseRatePSIpSR == 0) MaxReleaseRatePSIpS = ReleaseRatePSIpS = MaxReleaseRatePSIpS0 / (CasVypousteniR / CasVypousteniP);
+                    if (MaxReleaseRatePSIpSR == 0) MaxReleaseRatePSIpS = ReleaseRatePSIpS = MaxReleaseRatePSIpS0 / (TimeReleaseR / TimeReleaseP);
                     else MaxReleaseRatePSIpS = ReleaseRatePSIpS = MaxReleaseRatePSIpSR;
                     break;
             }
@@ -588,21 +588,21 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 UpdateTripleValveState(threshold);
 
              // Zjistí rychlost změny tlaku v potrubí
-            if (cas0 >= 1.0f) cas0 = 0.0f;
-            if (cas0 == 0.0f) prevBrakeLine1PressurePSI = BrakeLine1PressurePSI;
-            cas0 += elapsedClockSeconds;
-            if (cas0 > 0.08f && cas0 < 0.12f)
+            if (T0 >= 1.0f) T0 = 0.0f;
+            if (T0 == 0.0f) prevBrakeLine1PressurePSI = BrakeLine1PressurePSI;
+            T0 += elapsedClockSeconds;
+            if (T0 > 0.08f && T0 < 0.12f)
             {
-               cas0 = 0.0f;
-               RychlostZmenyTlakuPotrubi = Math.Abs(prevBrakeLine1PressurePSI - BrakeLine1PressurePSI) * 15;
+               T0 = 0.0f;
+               BrakePipeChangeRate = Math.Abs(prevBrakeLine1PressurePSI - BrakeLine1PressurePSI) * 15;
             }
 
-            if (AutoCylPressurePSI0 < 1.0f) cas00 = 0;
+            if (AutoCylPressurePSI0 < 1.0f) T00 = 0;
 
             // triple valve is set to charge the brake cylinder
             if (TripleValveState == ValveState.Apply || TripleValveState == ValveState.Emergency)
             {
-                OdvetravaValce = false;
+                BrakeCylRelease = false;
 
                 float dp = elapsedClockSeconds * MaxApplicationRatePSIpS;
                 //if (AuxResPressurePSI - dp / AuxCylVolumeRatio < AutoCylPressurePSI + dp)
@@ -617,9 +617,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 //    dp = 0;
 
                 // Zaznamená poslední stav pomocné jímky pro určení pracovního bodu pomocné jímky
-                if (cas00 == 0)
+                if (T00 == 0)
                     PrevAuxResPressurePSI = AuxResPressurePSI;
-                cas00++;
+                T00++;
 
                 if (TwoPipes && dp > threshold - AutoCylPressurePSI0)
                     dp = threshold - AutoCylPressurePSI0;
@@ -630,13 +630,13 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 if (BrakeLine1PressurePSI > AuxResPressurePSI - dp / AuxCylVolumeRatio && !BleedOffValveOpen)
                     dp = (AuxResPressurePSI - BrakeLine1PressurePSI) * AuxCylVolumeRatio;
 
-                if (PlniValce) AutoCylPressurePSI0 += dp;
-                if (AutoCylPressurePSI0 >= threshold) PlniValce = false;
+                if (BrakeCylApply) AutoCylPressurePSI0 += dp;
+                if (AutoCylPressurePSI0 >= threshold) BrakeCylApply = false;
                 
                 // Otestuje citlivost brzdy 
                 if (BrakeSensitivityPSIpS == 0) BrakeSensitivityPSIpS = 0.07252f; // Výchozí nastavení 0.07252PSI/s ( 0.005bar/s)
-                if (RychlostZmenyTlakuPotrubi >= BrakeSensitivityPSIpS)
-                    PlniValce = true;
+                if (BrakePipeChangeRate >= BrakeSensitivityPSIpS)
+                    BrakeCylApply = true;
                 
                  // Plní pomocnou jímku stále stejnou rychlostí 0.1bar/s
                  if (AuxResPressurePSI > maxPressurePSI0 && BrakeLine1PressurePSI > AuxResPressurePSI)
@@ -658,7 +658,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 }
             }
 
-            if (OdvetravaValce) 
+            if (BrakeCylRelease) 
             {
                 if (AutoCylPressurePSI0 > threshold)
                 {
@@ -666,14 +666,14 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     if (AutoCylPressurePSI0 < threshold)
                         AutoCylPressurePSI0 = threshold;
                 }
-                else OdvetravaValce = false;
+                else BrakeCylRelease = false;
             }
 
             // triple valve set to release pressure in brake cylinder and EP valve set
             if (TripleValveState == ValveState.Release && HoldingValve == ValveState.Release)
             {
-                OdvetravaValce = true;
-                PlniValce = false;
+                BrakeCylRelease = true;
+                BrakeCylApply = false;
 
                 if ((Car as MSTSWagon).EmergencyReservoirPresent)
 				{
@@ -859,7 +859,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
 
             int nSteps = (int)(elapsedClockSeconds / brakePipeTimeFactorS + 1);
             float TrainPipeTimeVariationS = elapsedClockSeconds / nSteps;
-            bool odpojen = false;
+            bool NotConnected = false;
 
             // Výpočet netěsnosti vzduchu v potrubí pro každý vůz
             train.TotalTrainTrainPipeLeakRate = 0f;
@@ -870,29 +870,29 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     car.BrakeSystem.TrainPipeLeakRatePSIpS = 0.00010f * 14.50377f; // Výchozí netěsnost 0.00010bar/s                
                 
                 //  První vůz
-                if (car == train.Cars[0] && !car.BrakeSystem.AngleCockBOpen) odpojen = true;
+                if (car == train.Cars[0] && !car.BrakeSystem.AngleCockBOpen) NotConnected = true;
 
                 //  Ostatní kromě prvního a posledního vozu
                 if (car != train.Cars[0] && car != train.Cars[train.Cars.Count - 1])
                 {
-                    if (odpojen)
+                    if (NotConnected)
                     {
                         car.BrakeSystem.TrainPipeLeakRatePSIpS = 0;
                         //car.BrakeSystem.KapacitaHlJimkyAPotrubi = 0;
                     }
                     if (!car.BrakeSystem.FrontBrakeHoseConnected || !car.BrakeSystem.AngleCockAOpen)
                     {
-                        odpojen = true;
+                        NotConnected = true;
                         car.BrakeSystem.TrainPipeLeakRatePSIpS = 0;
                         //car.BrakeSystem.KapacitaHlJimkyAPotrubi = 0;
                     }
-                    if (!car.BrakeSystem.AngleCockBOpen) odpojen = true;
+                    if (!car.BrakeSystem.AngleCockBOpen) NotConnected = true;
                 }
 
                 //  Poslední vůz
                 if (car != train.Cars[0] && car == train.Cars[train.Cars.Count - 1])
                 {
-                    if (odpojen)
+                    if (NotConnected)
                     {
                         car.BrakeSystem.TrainPipeLeakRatePSIpS = 0;
                         //car.BrakeSystem.KapacitaHlJimkyAPotrubi = 0;
@@ -1015,7 +1015,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     float p0 = car0.BrakeSystem.BrakeLine1PressurePSI;
                     float brakePipeVolumeM30 = car0.BrakeSystem.BrakePipeVolumeM3;
                     train.TotalTrainBrakePipeVolumeM3 = 0.0f; // initialise train brake pipe volume
-                    train.TotalKapacitaHlJimkyAPotrubi = 0.0f;
+                    train.TotalCapacityMainResBrakePipe = 0.0f;
 
 #if DEBUG_TRAIN_PIPE_LEAK
 
@@ -1034,7 +1034,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         train.TotalTrainBrakePipeVolumeM3 += car.BrakeSystem.BrakePipeVolumeM3;
 
                         // Výpočet celkové kapacity hlavních jímek
-                        train.TotalKapacitaHlJimkyAPotrubi += car.BrakeSystem.KapacitaHlJimkyAPotrubi;
+                        train.TotalCapacityMainResBrakePipe += car.BrakeSystem.TotalCapacityMainResBrakePipe;
 
                         float p1 = car.BrakeSystem.BrakeLine1PressurePSI;
                         if (car != train.Cars[0] && car.BrakeSystem.FrontBrakeHoseConnected && car.BrakeSystem.AngleCockAOpen && car0.BrakeSystem.AngleCockBOpen)
@@ -1125,7 +1125,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         sumpv += eng.MainResVolumeM3 * eng.MainResPressurePSI;
 
                         // Výpočet kapacity hlavní jímky a přilehlého potrubí
-                        brakeSystem.KapacitaHlJimkyAPotrubi = (brakeSystem.BrakePipeVolumeM3 * brakeSystem.BrakeLine1PressurePSI) + (eng.MainResVolumeM3 * eng.MainResPressurePSI);
+                        brakeSystem.TotalCapacityMainResBrakePipe = (brakeSystem.BrakePipeVolumeM3 * brakeSystem.BrakeLine1PressurePSI) + (eng.MainResVolumeM3 * eng.MainResPressurePSI);
                     }
                 }
             }

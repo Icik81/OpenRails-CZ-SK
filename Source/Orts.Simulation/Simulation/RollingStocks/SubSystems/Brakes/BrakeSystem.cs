@@ -48,7 +48,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes
         public float AutoCylPressurePSI1;
         public float AutoCylPressurePSI0;
         public float maxPressurePSI0;
-        public float KapacitaHlJimkyAPotrubi;        
+        public float TotalCapacityMainResBrakePipe;        
         public float EB; // Hodnota EngineBrake
         public float MCP;  // Hodnota MaxCylPressure
         public float MaxReleaseRatePSIpS0;
@@ -94,12 +94,12 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes
         /// <summary>
         /// Volba režimu vozu G, P, R
         /// </summary>
-        public float RezimVozu = 1;  // Default režim P
-        public string RezimVozuText = "P";
-        public float PocetRezimuVozu = 3;  // Celkový počet režimů vozu
+        public float BrakeCarMode = 1;  // Default režim P
+        public string BrakeCarModeText = "P";
+        public float NumberBrakeCarMode = 3;  // Celkový počet režimů vozu
 
-        public float RezimVozuPL = 0;  // Default režim Prázdný
-        public string RezimVozuTextPL = "Prázdný";
+        public float BrakeCarModePL = 0;  // Default režim Prázdný
+        public string BrakeCarModeTextPL = "Prázdný";
 
         public int WagonType;
 
