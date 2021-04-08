@@ -489,11 +489,13 @@ namespace ORTS.Settings
             Commands[(int)UserCommand.GameResetSignalForward] = new UserCommandKeyInput(0x0F, KeyModifiers.Control);
             Commands[(int)UserCommand.GameSave] = new UserCommandKeyInput(0x3C);
             Commands[(int)UserCommand.GameScreenshot] = new UserCommandKeyInput(Keys.PrintScreen);
-            Commands[(int)UserCommand.GameSignalPicked] = new UserCommandKeyInput(0x22, KeyModifiers.Control);
-            Commands[(int)UserCommand.GameSwitchAhead] = new UserCommandKeyInput(0x22);
-            Commands[(int)UserCommand.GameSwitchBehind] = new UserCommandKeyInput(0x22, KeyModifiers.Shift);
+            Commands[(int)UserCommand.GameSignalPicked] = new UserCommandKeyInput(0x22, KeyModifiers.Alt | KeyModifiers.Control);
+            Commands[(int)UserCommand.GameFacingSwitchAhead] = new UserCommandKeyInput(0x22);
+            Commands[(int)UserCommand.GameFacingSwitchBehind] = new UserCommandKeyInput(0x22, KeyModifiers.Shift);
             Commands[(int)UserCommand.GameSwitchManualMode] = new UserCommandKeyInput(0x32, KeyModifiers.Control);
             Commands[(int)UserCommand.GameSwitchPicked] = new UserCommandKeyInput(0x22, KeyModifiers.Alt);
+            Commands[(int)UserCommand.GameTrailingSwitchAhead] = new UserCommandKeyInput(0x22, KeyModifiers.Control);
+            Commands[(int)UserCommand.GameTrailingSwitchBehind] = new UserCommandKeyInput(0x22, KeyModifiers.Shift | KeyModifiers.Control);
             Commands[(int)UserCommand.GameUncoupleWithMouse] = new UserCommandKeyInput(0x16);
         }
 #endregion

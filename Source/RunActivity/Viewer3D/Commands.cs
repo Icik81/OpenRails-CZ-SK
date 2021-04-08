@@ -112,37 +112,41 @@ namespace Orts.Viewer3D
     public sealed class ToggleSwitchAheadCommand : Command
     {
         public static Viewer Receiver { get; set; }
+        public SwitchOrientation SwitchOrientation;
 
-        public ToggleSwitchAheadCommand(CommandLog log)
+        public ToggleSwitchAheadCommand(CommandLog log, SwitchOrientation switchOrientation = SwitchOrientation.Any)
             : base(log)
         {
+            SwitchOrientation = switchOrientation;
             Redo();
         }
 
         public override void Redo()
         {
-            Receiver.ToggleSwitchAhead();
+            Receiver.ToggleSwitchAhead(SwitchOrientation);
             // Report();
         }
-        }
+    }
 
     [Serializable()]
     public sealed class ToggleSwitchBehindCommand : Command
     {
         public static Viewer Receiver { get; set; }
+        public SwitchOrientation SwitchOrientation;
 
-        public ToggleSwitchBehindCommand(CommandLog log)
+        public ToggleSwitchBehindCommand(CommandLog log, SwitchOrientation switchOrientation = SwitchOrientation.Any)
             : base(log)
         {
+            SwitchOrientation = switchOrientation;
             Redo();
         }
 
         public override void Redo()
         {
-            Receiver.ToggleSwitchBehind();
+            Receiver.ToggleSwitchBehind(SwitchOrientation);
             // Report();
         }
-        }
+    }
 
     [Serializable()]
     public sealed class ToggleAnySwitchCommand : IndexCommand

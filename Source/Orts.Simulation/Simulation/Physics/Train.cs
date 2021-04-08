@@ -8410,7 +8410,7 @@ namespace Orts.Simulation.Physics
         /// Process request to set switch in manual mode
         /// Request may contain direction or actual node
         /// </summary>
-        public bool ProcessRequestManualSetSwitch(Direction direction)
+        public bool ProcessRequestManualSetSwitch(Direction direction, SwitchOrientation switchOrientation = SwitchOrientation.Any)
         {
             // find first switch in required direction
 
@@ -8423,10 +8423,24 @@ namespace Orts.Simulation.Physics
                 TrackCircuitSection thisSection = signalRef.TrackCircuitList[ValidRoute[routeDirectionIndex][iindex].TCSectionIndex];
                 if (thisSection.CircuitType == TrackCircuitSection.TrackCircuitType.Junction)
                 {
-                    reqSwitch = thisSection;
+                    TrJunctionNode junctionNode = Simulator.TDB.TrackDB.TrackNodes[thisSection.OriginalIndex].TrJunctionNode;
+                    switch (switchOrientation)
+                    {
+                        case SwitchOrientation.Any:
+                            reqSwitch = thisSection;
+                            break;
+                        case SwitchOrientation.Facing:
+                            if (thisSection.Pins[ValidRoute[routeDirectionIndex][iindex].Direction, 1].Link != -1)
+                                reqSwitch = thisSection;
+                            break;
+                        case SwitchOrientation.Trailing:
+                            if (thisSection.Pins[ValidRoute[routeDirectionIndex][iindex].Direction, 1].Link == -1)
+                                reqSwitch = thisSection;
+                            break;
+                    }
                 }
             }
-
+            // TODO da qui in avanti
             if (reqSwitch == null)
             {
                 // search beyond last section for switch using default pins (continue through normal sections only)
@@ -8461,9 +8475,24 @@ namespace Orts.Simulation.Physics
                         lastSection = signalRef.TrackCircuitList[nextSectionIndex];
                     }
 
-                    if (lastSection.CircuitType == TrackCircuitSection.TrackCircuitType.Junction)
+                    if (lastSection.CircuitType == TrackCircuitSection.TrackCircuitType.Junction) 
                     {
-                        reqSwitch = lastSection;
+                        switch (switchOrientation)
+                        {
+                            case SwitchOrientation.Any:
+                                reqSwitch = lastSection;
+                                break;
+                            case SwitchOrientation.Facing:
+                                if (lastSection.Pins[curDirection, 1].Link != -1)
+                                    reqSwitch = lastSection;
+                                else validRoute = false;
+                                break;
+                            case SwitchOrientation.Trailing:
+                                if (lastSection.Pins[curDirection, 1].Link == -1)
+                                    reqSwitch = lastSection;
+                                else validRoute = false;
+                                break;
+                        }
                     }
                     else if (lastSection.CircuitType != TrackCircuitSection.TrackCircuitType.Normal)
                     {
@@ -9529,7 +9558,7 @@ namespace Orts.Simulation.Physics
         /// Request may contain direction or actual node
         /// </summary>
 
-        public bool ProcessRequestExplorerSetSwitch(Direction direction)
+        public bool ProcessRequestExplorerSetSwitch(Direction direction, SwitchOrientation switchOrientation = SwitchOrientation.Any)
         {
             // find first switch in required direction
 
@@ -9542,7 +9571,21 @@ namespace Orts.Simulation.Physics
                 TrackCircuitSection thisSection = signalRef.TrackCircuitList[ValidRoute[routeDirectionIndex][iindex].TCSectionIndex];
                 if (thisSection.CircuitType == TrackCircuitSection.TrackCircuitType.Junction)
                 {
-                    reqSwitch = thisSection;
+                    TrJunctionNode junctionNode = Simulator.TDB.TrackDB.TrackNodes[thisSection.OriginalIndex].TrJunctionNode;
+                    switch (switchOrientation)
+                    {
+                        case SwitchOrientation.Any:
+                            reqSwitch = thisSection;
+                            break;
+                        case SwitchOrientation.Facing:
+                            if (thisSection.Pins[ValidRoute[routeDirectionIndex][iindex].Direction, 1].Link != -1)
+                                reqSwitch = thisSection;
+                            break;
+                        case SwitchOrientation.Trailing:
+                            if (thisSection.Pins[ValidRoute[routeDirectionIndex][iindex].Direction, 1].Link == -1)
+                                reqSwitch = thisSection;
+                            break;
+                    }
                 }
             }
 
@@ -9582,7 +9625,22 @@ namespace Orts.Simulation.Physics
 
                     if (lastSection.CircuitType == TrackCircuitSection.TrackCircuitType.Junction)
                     {
-                        reqSwitch = lastSection;
+                        switch (switchOrientation)
+                        {
+                            case SwitchOrientation.Any:
+                                reqSwitch = lastSection;
+                                break;
+                            case SwitchOrientation.Facing:
+                                if (lastSection.Pins[curDirection, 1].Link != -1)
+                                    reqSwitch = lastSection;
+                                else validRoute = false;
+                                break;
+                            case SwitchOrientation.Trailing:
+                                if (lastSection.Pins[curDirection, 1].Link == -1)
+                                    reqSwitch = lastSection;
+                                else validRoute = false;
+                                break;
+                        }
                     }
                     else if (lastSection.CircuitType != TrackCircuitSection.TrackCircuitType.Normal)
                     {

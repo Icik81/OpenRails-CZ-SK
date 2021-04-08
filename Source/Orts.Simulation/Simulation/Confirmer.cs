@@ -106,6 +106,10 @@ namespace Orts.Simulation
       // Track Devices
       , SwitchAhead
       , SwitchBehind
+      , FacingSwitchAhead
+      , FacingSwitchBehind
+      , TrailingSwitchAhead
+      , TrailingSwitchBehind
       // Simulation
       , SimulationSpeed
       , Uncouple
@@ -248,8 +252,12 @@ namespace Orts.Simulation
                 , new string [] { GetString("Doors Right"), GetString("close"), null, GetString("open") } 
                 , new string [] { GetString("Mirror"), GetString("retract"), null, GetString("extend") } 
                 // Track Devices
-                , new string [] { GetString("Switch Ahead"), null, null, GetParticularString("Switch", "change"), null, null, GetString("locked. Use Control+M to change signals to manual mode then re-try.") } 
-                , new string [] { GetString("Switch Behind"), null, null, GetParticularString("Switch", "change"), null, null, GetString("locked. Use Control+M to change signals to manual mode then re-try.") } 
+                , new string [] { GetString("Switch Ahead"), null, null, GetParticularString("Switch", "change"), null, null, GetString("locked. Use Control+M to change signals to manual mode then re-try.") }
+                , new string [] { GetString("Switch Behind"), null, null, GetParticularString("Switch", "change"), null, null, GetString("locked. Use Control+M to change signals to manual mode then re-try.") }
+                , new string [] { GetString("Facing Switch Ahead"), null, null, GetParticularString("Switch", "change"), null, null, GetString("locked. Use Control+M to change signals to manual mode then re-try.") } 
+                , new string [] { GetString("Facing Switch Behind"), null, null, GetParticularString("Switch", "change"), null, null, GetString("locked. Use Control+M to change signals to manual mode then re-try.") }
+                , new string [] { GetString("Trailing Switch Ahead"), null, null, GetParticularString("Switch", "change"), null, null, GetString("locked. Use Control+M to change signals to manual mode then re-try.") }
+                , new string [] { GetString("Trailing Switch Behind"), null, null, GetParticularString("Switch", "change"), null, null, GetString("locked. Use Control+M to change signals to manual mode then re-try.") }
                 // Simulation
                 , new string [] { GetString("Simulation Speed"), GetString("reset"), null, null, GetString("decrease"), GetString("increase") } 
                 , new string [] { GetString("Uncouple After") } 

@@ -60,4 +60,16 @@ namespace ORTS.Common
         /// </summary>
         US,
     }
+
+
+    /// <summary>
+    /// Defines the switch direction with respect to the train
+    /// </summary>
+    public enum SwitchOrientation
+    {
+        Any,
+        Facing,
+        Trailing
+    }
+
 }

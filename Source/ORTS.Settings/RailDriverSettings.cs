@@ -73,8 +73,8 @@ namespace ORTS.Settings
                                                                                     // Btn 09 Default Legend Ops Notebook
                                                                                     // Btn 10 Default Legend Hide Drive Aids
             DefaultUserCommands.Add(UserCommand.DisplayCompassWindow, 11);          // Btn 11 Default Legend Compass Window
-            DefaultUserCommands.Add(UserCommand.GameSwitchAhead, 12);               // Btn 12 Default Legend Switch Ahead
-            DefaultUserCommands.Add(UserCommand.GameSwitchBehind, 13);              // Btn 13 Default Legend Switch Behind
+            DefaultUserCommands.Add(UserCommand.GameFacingSwitchAhead, 12);         // Btn 12 Default Legend Switch Ahead
+            DefaultUserCommands.Add(UserCommand.GameFacingSwitchBehind, 13);        // Btn 13 Default Legend Switch Behind
 
             // bottom row of blue buttons left to right
             DefaultUserCommands.Add(UserCommand.GameExternalCabController, 14);     // Btn 14 Default Legend RailDriver Run/Stop

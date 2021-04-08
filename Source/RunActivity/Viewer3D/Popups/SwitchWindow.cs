@@ -34,16 +34,20 @@ namespace Orts.Viewer3D.Popups
     {
         const int SwitchImageSize = 32;
 
-        Image SwitchForwards;
-        Image SwitchBackwards;
+        Image FirstSwitchForwards;
+        Image FirstSwitchBackwards;
+        Image OppositeSwitchForwards;
+        Image OppositeSwitchBackwards;
         Image TrainDirection;
         Image ForwardEye;
         Image BackwardEye;
+        SwitchOrientation OppositeSwitchForwardsOrientation = SwitchOrientation.Any;
+        SwitchOrientation OppositeSwitchBackwardsOrientation = SwitchOrientation.Any;
 
         static Texture2D SwitchStates;
 
         public SwitchWindow(WindowManager owner)
-            : base(owner, Window.DecorationSize.X + (int)2.5 * SwitchImageSize, Window.DecorationSize.Y + 2 * SwitchImageSize, Viewer.Catalog.GetString("Switch"))
+            : base(owner, Window.DecorationSize.X + (int)3.5 * SwitchImageSize, Window.DecorationSize.Y + 2 * SwitchImageSize, Viewer.Catalog.GetString("Switch"))
         {
         }
 
@@ -64,25 +68,43 @@ namespace Orts.Viewer3D.Popups
                 vbox1.Add(TrainDirection = new Image(0, 0, SwitchImageSize, SwitchImageSize));
                 vbox1.Add(BackwardEye = new Image(0, 0, SwitchImageSize, SwitchImageSize / 2));
 
-                var vbox2 = hbox.AddLayoutVertical(hbox.RemainingWidth);
-                vbox2.Add(SwitchForwards = new Image(0, 0, SwitchImageSize, SwitchImageSize));
-                vbox2.Add(SwitchBackwards = new Image(0, 0, SwitchImageSize, SwitchImageSize));
-                SwitchForwards.Texture = SwitchBackwards.Texture = SwitchStates;
-                SwitchForwards.Click += new Action<Control, Point>(SwitchForwards_Click);
-                SwitchBackwards.Click += new Action<Control, Point>(SwitchBackwards_Click);
+                var vbox2 = hbox.AddLayoutVertical(SwitchImageSize);
+                vbox2.Add(FirstSwitchForwards = new Image(0, 0, SwitchImageSize, SwitchImageSize));
+                vbox2.Add(FirstSwitchBackwards = new Image(0, 0, SwitchImageSize, SwitchImageSize));
+                FirstSwitchForwards.Texture = FirstSwitchBackwards.Texture = SwitchStates;
+                FirstSwitchForwards.Click += new Action<Control, Point>(FirstSwitchForwards_Click);
+                FirstSwitchBackwards.Click += new Action<Control, Point>(FirstSwitchBackwards_Click);
+                TrainDirection.Texture = ForwardEye.Texture = BackwardEye.Texture = SwitchStates;
+
+                var vbox3 = hbox.AddLayoutVertical(hbox.RemainingWidth);
+                vbox3.Add(OppositeSwitchForwards = new Image(0, 0, SwitchImageSize, SwitchImageSize));
+                vbox3.Add(OppositeSwitchBackwards = new Image(0, 0, SwitchImageSize, SwitchImageSize));
+                OppositeSwitchForwards.Texture = OppositeSwitchBackwards.Texture = SwitchStates;
+                OppositeSwitchForwards.Click += new Action<Control, Point>(OppositeSwitchForwards_Click);
+                OppositeSwitchBackwards.Click += new Action<Control, Point>(OppositeSwitchBackwards_Click);
                 TrainDirection.Texture = ForwardEye.Texture = BackwardEye.Texture = SwitchStates;
             }
             return hbox;
         }
 
-        void SwitchForwards_Click(Control arg1, Point arg2)
+        void FirstSwitchForwards_Click(Control arg1, Point arg2)
         {
             new ToggleSwitchAheadCommand(Owner.Viewer.Log);
         }
 
-        void SwitchBackwards_Click(Control arg1, Point arg2)
+        void FirstSwitchBackwards_Click(Control arg1, Point arg2)
         {
             new ToggleSwitchBehindCommand(Owner.Viewer.Log);
+        }
+
+        void OppositeSwitchForwards_Click(Control arg1, Point arg2)
+        {
+            new ToggleSwitchAheadCommand(Owner.Viewer.Log, OppositeSwitchForwardsOrientation);
+        }
+
+        void OppositeSwitchBackwards_Click(Control arg1, Point arg2)
+        {
+            new ToggleSwitchBehindCommand(Owner.Viewer.Log, OppositeSwitchBackwardsOrientation);
         }
 
         public override void PrepareFrame(ElapsedTime elapsedTime, bool updateFull)
@@ -94,8 +116,20 @@ namespace Orts.Viewer3D.Popups
                 var train = Owner.Viewer.PlayerTrain;
                 try
                 {
-                    UpdateSwitch(SwitchForwards, train, true);
-                    UpdateSwitch(SwitchBackwards, train, false);
+                    var switchOrientation = SwitchOrientation.Any;
+                    // forward switches with both orientations
+                    var traveller = new Traveller(train.FrontTDBTraveller);
+                    switchOrientation = UpdateSwitch(FirstSwitchForwards, train, true, ref traveller);
+                    if (switchOrientation != SwitchOrientation.Any)
+                        OppositeSwitchForwardsOrientation = UpdateSwitch(OppositeSwitchForwards, train, true, ref traveller,
+                        switchOrientation: switchOrientation == SwitchOrientation.Facing ? SwitchOrientation.Trailing : SwitchOrientation.Facing);
+                    // backward switches with both orientations
+                    switchOrientation = SwitchOrientation.Any;
+                    traveller = new Traveller(train.RearTDBTraveller, Traveller.TravellerDirection.Backward);
+                    switchOrientation = UpdateSwitch(FirstSwitchBackwards, train, false, ref traveller);
+                    if (switchOrientation != SwitchOrientation.Any)
+                        OppositeSwitchBackwardsOrientation = UpdateSwitch(OppositeSwitchBackwards, train, false, ref traveller,
+                        switchOrientation: switchOrientation == SwitchOrientation.Facing ? SwitchOrientation.Trailing : SwitchOrientation.Facing);
                 }
                 catch (Exception) { }
 
@@ -105,25 +139,36 @@ namespace Orts.Viewer3D.Popups
             }
         }
 
-        void UpdateSwitch(Image image, Train train, bool front)
+        SwitchOrientation UpdateSwitch(Image image, Train train, bool front, ref Traveller traveller, SwitchOrientation switchOrientation = SwitchOrientation.Any)
         {
             image.Source = new Rectangle(0, 0, SwitchImageSize, SwitchImageSize);
 
-            var traveller = front ? new Traveller(train.FrontTDBTraveller) : new Traveller(train.RearTDBTraveller, Traveller.TravellerDirection.Backward);
-
             TrackNode SwitchPreviousNode = traveller.TN;
             TrackNode SwitchNode = null;
+
+            int switchPreviousNodeID;
+            bool switchBranchesAwayFromUs = false;
             while (traveller.NextSection())
             {
                 if (traveller.IsJunction)
                 {
                     SwitchNode = traveller.TN;
-                    break;
+                    switchPreviousNodeID = Owner.Viewer.Simulator.TDB.TrackDB.TrackNodesIndexOf(SwitchPreviousNode);
+                    switchBranchesAwayFromUs = SwitchNode.TrPins[0].Link == switchPreviousNodeID;
+                    if (switchOrientation == SwitchOrientation.Any)
+                    {
+                        switchOrientation = switchBranchesAwayFromUs ? SwitchOrientation.Facing : SwitchOrientation.Trailing;
+                        break;
+                    }
+                    else if (switchOrientation == SwitchOrientation.Facing && switchBranchesAwayFromUs)
+                        break;
+                    else if (switchOrientation == SwitchOrientation.Trailing && !switchBranchesAwayFromUs)
+                        break;
                 }
                 SwitchPreviousNode = traveller.TN;
             }
             if (SwitchNode == null)
-                return;
+                return switchOrientation;
 
             Debug.Assert(SwitchPreviousNode != null);
             Debug.Assert(SwitchNode.Inpins == 1);
@@ -132,8 +177,6 @@ namespace Orts.Viewer3D.Popups
             Debug.Assert(SwitchNode.TrJunctionNode != null);
             Debug.Assert(SwitchNode.TrJunctionNode.SelectedRoute == 0 || SwitchNode.TrJunctionNode.SelectedRoute == 1);
 
-            var switchPreviousNodeID = Owner.Viewer.Simulator.TDB.TrackDB.TrackNodesIndexOf(SwitchPreviousNode);
-            var switchBranchesAwayFromUs = SwitchNode.TrPins[0].Link == switchPreviousNodeID;
             var switchTrackSection = Owner.Viewer.Simulator.TSectionDat.TrackShapes.Get(SwitchNode.TrJunctionNode.ShapeIndex);  // TSECTION.DAT tells us which is the main route
             var switchMainRouteIsLeft = SwitchNode.TrJunctionNode.GetAngle(Owner.Viewer.Simulator.TSectionDat) > 0;  // align the switch
 
@@ -144,6 +187,7 @@ namespace Orts.Viewer3D.Popups
             if (switchSection.CircuitState.HasTrainsOccupying() || switchSection.CircuitState.SignalReserved >= 0 ||
                 (switchSection.CircuitState.TrainReserved != null && switchSection.CircuitState.TrainReserved.Train.ControlMode != Train.TRAIN_CONTROL.MANUAL))
                 image.Source.Y += 2 * SwitchImageSize;
+            return switchOrientation;
         }
 
         static void UpdateDirection(Image image, Train train)

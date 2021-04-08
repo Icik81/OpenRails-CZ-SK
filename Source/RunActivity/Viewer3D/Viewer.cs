@@ -1152,7 +1152,7 @@ namespace Orts.Viewer3D
                 CheckReplaying();
                 new UseHeadOutBackCameraCommand(Log);
             }
-            if (UserInput.IsPressed(UserCommand.GameSwitchAhead))
+/*            if (UserInput.IsPressed(UserCommand.GameSwitchAhead))
             {
                 if (PlayerTrain.ControlMode == Train.TRAIN_CONTROL.MANUAL || PlayerTrain.ControlMode == Train.TRAIN_CONTROL.EXPLORER)
                     new ToggleSwitchAheadCommand(Log);
@@ -1165,6 +1165,34 @@ namespace Orts.Viewer3D
                     new ToggleSwitchBehindCommand(Log);
                 else
                     Simulator.Confirmer.Warning(CabControl.SwitchBehind, CabSetting.Warn1);
+            }*/
+            if (UserInput.IsPressed(UserCommand.GameFacingSwitchAhead))
+            {
+                if (PlayerTrain.ControlMode == Train.TRAIN_CONTROL.MANUAL || PlayerTrain.ControlMode == Train.TRAIN_CONTROL.EXPLORER)
+                    new ToggleSwitchAheadCommand(Log, SwitchOrientation.Facing);
+                else
+                    Simulator.Confirmer.Warning(CabControl.FacingSwitchAhead, CabSetting.Warn1);
+            }
+            if (UserInput.IsPressed(UserCommand.GameFacingSwitchBehind))
+            {
+                if (PlayerTrain.ControlMode == Train.TRAIN_CONTROL.MANUAL || PlayerTrain.ControlMode == Train.TRAIN_CONTROL.EXPLORER)
+                    new ToggleSwitchBehindCommand(Log, SwitchOrientation.Facing);
+                else
+                    Simulator.Confirmer.Warning(CabControl.FacingSwitchBehind, CabSetting.Warn1);
+            }
+            if (UserInput.IsPressed(UserCommand.GameTrailingSwitchAhead))
+            {
+                if (PlayerTrain.ControlMode == Train.TRAIN_CONTROL.MANUAL || PlayerTrain.ControlMode == Train.TRAIN_CONTROL.EXPLORER)
+                    new ToggleSwitchAheadCommand(Log, SwitchOrientation.Trailing);
+                else
+                    Simulator.Confirmer.Warning(CabControl.TrailingSwitchAhead, CabSetting.Warn1);
+            }
+            if (UserInput.IsPressed(UserCommand.GameTrailingSwitchBehind))
+            {
+                if (PlayerTrain.ControlMode == Train.TRAIN_CONTROL.MANUAL || PlayerTrain.ControlMode == Train.TRAIN_CONTROL.EXPLORER)
+                    new ToggleSwitchBehindCommand(Log, SwitchOrientation.Trailing);
+                else
+                    Simulator.Confirmer.Warning(CabControl.TrailingSwitchBehind, CabSetting.Warn1);
             }
             if (UserInput.IsPressed(UserCommand.GameClearSignalForward)) PlayerTrain.RequestSignalPermission(Direction.Forward);
             if (UserInput.IsPressed(UserCommand.GameClearSignalBackward)) PlayerTrain.RequestSignalPermission(Direction.Reverse);
@@ -1776,27 +1804,28 @@ namespace Orts.Viewer3D
         {
             Simulator.Signals.RequestSetSwitch(index);
         }
-        public void ToggleSwitchAhead()
+
+        public void ToggleSwitchAhead(SwitchOrientation switchOrientation = SwitchOrientation.Any)
         {
             if (PlayerTrain.ControlMode == Train.TRAIN_CONTROL.MANUAL)
             {
-                PlayerTrain.ProcessRequestManualSetSwitch(Direction.Forward);
+                PlayerTrain.ProcessRequestManualSetSwitch(Direction.Forward, switchOrientation);
             }
             else if (PlayerTrain.ControlMode == Train.TRAIN_CONTROL.EXPLORER)
             {
-                PlayerTrain.ProcessRequestExplorerSetSwitch(Direction.Forward);
+                PlayerTrain.ProcessRequestExplorerSetSwitch(Direction.Forward, switchOrientation);
             }
         }
 
-        public void ToggleSwitchBehind()
+        public void ToggleSwitchBehind(SwitchOrientation switchOrientation = SwitchOrientation.Any)
         {
             if (PlayerTrain.ControlMode == Train.TRAIN_CONTROL.MANUAL)
             {
-                PlayerTrain.ProcessRequestManualSetSwitch(Direction.Reverse);
+                PlayerTrain.ProcessRequestManualSetSwitch(Direction.Reverse, switchOrientation);
             }
             else if (PlayerTrain.ControlMode == Train.TRAIN_CONTROL.EXPLORER)
             {
-                PlayerTrain.ProcessRequestExplorerSetSwitch(Direction.Reverse);
+                PlayerTrain.ProcessRequestExplorerSetSwitch(Direction.Reverse, switchOrientation);
             }
         }
 

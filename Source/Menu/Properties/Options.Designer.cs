@@ -646,7 +646,7 @@
             // checkEnableWebServer
             // 
             this.checkEnableWebServer.AutoSize = true;
-            this.checkEnableWebServer.Location = new System.Drawing.Point(6, 305);
+            this.checkEnableWebServer.Location = new System.Drawing.Point(6, 308);
             this.checkEnableWebServer.Name = "checkEnableWebServer";
             this.checkEnableWebServer.Size = new System.Drawing.Size(132, 17);
             this.checkEnableWebServer.TabIndex = 15;
