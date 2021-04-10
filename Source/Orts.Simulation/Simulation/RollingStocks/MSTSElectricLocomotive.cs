@@ -228,20 +228,21 @@ namespace Orts.Simulation.RollingStocks
                 //Simulator.Confirmer.Message(ConfirmLevel.Warning, "VoltageSprung  " + VoltageSprung + "  Simulator.TRK.Tr_RouteFile.MaxLineVoltage  " + Simulator.TRK.Tr_RouteFile.MaxLineVoltage + "  PowerSupply.PantographVoltageV  " + PowerSupply.PantographVoltageV);
 
                 // Simulace náhodného poklesu napětí            
-                if (Delta1 < 4 && TimeCriticalVoltage == 0) TimeCriticalVoltage0 = Simulator.Random.Next(100, 200);
+                if (Delta1 == 10 && TimeCriticalVoltage == 0) TimeCriticalVoltage0 = Simulator.Random.Next(100, 200);
                 else TimeCriticalVoltage0 = Simulator.Random.Next(1000, 2000);
                 TimeCriticalVoltage++;
                 if (TimeCriticalVoltage > TimeCriticalVoltage0 && PowerSupply.PantographVoltageV > 1000)
                 {
-                    if (FilteredMotiveForceN > 150000) Delta0 = Simulator.Random.Next(20, 50);
-                    else Delta0 = Simulator.Random.Next(1, 50);
-                    if (Delta0 > 48) Delta1 = 10;  // Kritická mez
-                    else Delta1 = Simulator.Random.Next(1, 20) / 10;
+                    if (FilteredMotiveForceN > 200000) Delta0 = Simulator.Random.Next(50, 100);
+                    else Delta0 = Simulator.Random.Next(1, 100);
+                    if (Delta0 == 75) Delta1 = 10;  // Kritická mez
+                    else Delta1 = Simulator.Random.Next(1, 40) / 10;
                     TimeCriticalVoltage = 0;
                 }
 
                 // Výpočet napětí v systému lokomotivy a drátech
                 Simulator.TRK.Tr_RouteFile.MaxLineVoltage = MaxLineVoltage0 * VoltageSprung - (Delta1 * Delta2);
+                //Simulator.TRK.Tr_RouteFile.MaxLineVoltage = MaxLineVoltage0 * VoltageSprung;
 
                 if (PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closed) CircuitBreakerOn = true;
                 else CircuitBreakerOn = false;

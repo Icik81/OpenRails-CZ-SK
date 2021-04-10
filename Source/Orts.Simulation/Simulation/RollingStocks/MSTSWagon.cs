@@ -933,6 +933,28 @@ namespace Orts.Simulation.RollingStocks
                         G1 = G;
                         break;
                     }
+                case 3:
+                    {
+                        if (DavisAN == 0)
+                            DavisAN = 1.79320f * G0;
+                        else
+                            if (G1 != G)
+                            DavisAN *= G / G0;
+
+                        if (DavisBNSpM == 0)
+                            DavisBNSpM = 0.00001f * G0;
+                        else
+                            if (G1 != G)
+                            DavisBNSpM *= G / G0;
+
+                        if (DavisCNSSpMM == 0)
+                            DavisCNSSpMM = 0.00088f * G0;
+                        else
+                            if (G1 != G)
+                            DavisCNSSpMM *= G / G0;
+                        G1 = G;
+                        break;
+                    }
                 case 4:  // B'o-B'o
                     {
                         if (DavisAN == 0)
