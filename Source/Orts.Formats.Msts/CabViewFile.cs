@@ -373,7 +373,8 @@ namespace Orts.Formats.Msts
         INCHES_OF_MERCURY,
         MILI_AMPS,
         RPM,
-        LBS
+        LBS,
+        KILOMETRES
     }
 
     public class CabViewControls : List<CabViewControl>

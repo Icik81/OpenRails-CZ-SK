@@ -211,6 +211,12 @@ namespace Orts.Common
         LargeEjectorOff,
         SmallEjectorOn,
         SmallEjectorOff,
+        // Jindrich
+        CruiseControlSpeedRegulator,
+        CruiseControlSpeedSelector,
+        CruiseControlMaxForce,
+        Alert,
+        Alert1,
 
     }
 
@@ -437,6 +443,13 @@ namespace Orts.Common
                         case 211: return Event.LargeEjectorOff;
                         case 212: return Event.SmallEjectorOn;
                         case 213: return Event.SmallEjectorOff;
+
+                        // Jindrich
+                        case 300: return Event.CruiseControlSpeedRegulator;
+                        case 301: return Event.CruiseControlSpeedSelector;
+                        case 302: return Event.CruiseControlMaxForce;
+                        case 303: return Event.Alert;
+                        case 304: return Event.Alert1;
 
                         default: return 0;
                     }
