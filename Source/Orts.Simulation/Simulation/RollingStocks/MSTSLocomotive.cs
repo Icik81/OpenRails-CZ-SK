@@ -1892,6 +1892,22 @@ namespace Orts.Simulation.RollingStocks
             if (!AdvancedAdhesionModel)  // Advanced adhesion model turned off.
                AbsWheelSpeedMpS = AbsSpeedMpS;
 
+            // For the advanced adhesion model, a rudimentary form of slip control is incorporated by using the wheel speed to calculate tractive effort.
+            // As wheel speed is increased tractive effort is decreased. Hence wheel slip is "controlled" to a certain extent.
+            // This doesn't cover all types of locomotives, for example if DC traction motors and no slip control, then the tractive effort shouldn't be reduced.
+            // This won't eliminate slip, but limits its impact. 
+            // More modern locomotive have a more sophisticated system that eliminates slip in the majority (if not all circumstances).
+            // Simple adhesion control does not have any slip control feature built into it.
+            // TODO - a full review of slip/no slip control.
+            if (WheelSlip && AdvancedAdhesionModel)
+            {
+                AbsTractionSpeedMpS = AbsWheelSpeedMpS;
+            }
+            else
+            {
+                AbsTractionSpeedMpS = AbsSpeedMpS;
+            }
+
             // Jindrich
             //UpdateMotiveForce(elapsedClockSeconds, t, AbsSpeedMpS, AbsWheelSpeedMpS);
             CheckAccelerationBits(elapsedClockSeconds, AbsWheelSpeedMpS);
@@ -2309,23 +2325,6 @@ namespace Orts.Simulation.RollingStocks
             // An alternative method in the steam locomotive will override this and input force and power info for it.
             if (PowerOn && Direction != Direction.N)
             {
-
-                // For the advanced adhesion model, a rudimentary form of slip control is incorporated by using the wheel speed to calculate tractive effort.
-                // As wheel speed is increased tractive effort is decreased. Hence wheel slip is "controlled" to a certain extent.
-                // This doesn't cover all types of locomotives, for example if DC traction motors and no slip control, then the tractive effort shouldn't be reduced.
-                // This won't eliminate slip, but limits its impact. 
-                // More modern locomotive have a more sophisticated system that eliminates slip in the majority (if not all circumstances).
-                // Simple adhesion control does not have any slip control feature built into it.
-                // TODO - a full review of slip/no slip control.
-                if (WheelSlip && AdvancedAdhesionModel)
-                {
-                    AbsTractionSpeedMpS = AbsWheelSpeedMpS;
-                }
-                else
-                {
-                    AbsTractionSpeedMpS = AbsSpeedMpS;
-                }
-
                 if (TractiveForceCurves == null)
                 {
                     float maxForceN = MaxForceN * t * (1 - PowerReduction);

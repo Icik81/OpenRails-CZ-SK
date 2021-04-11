@@ -758,7 +758,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
             if ((SelectedMaxAccelerationStep == 0 && SelectedMaxAccelerationPercent == 0) || SpeedSelMode == SpeedSelectorMode.Start)
                 WasForceReset = true;
 
-            if (SelectedMaxAccelerationPercent == 0 && SelectedMaxAccelerationStep == 0)
+            if (SelectedMaxAccelerationPercent == 0 || SelectedMaxAccelerationStep == 0)
             {
                 WasBraking = false;
                 Locomotive.SetThrottlePercent(0);
@@ -1402,7 +1402,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                     {
                         if (Locomotive.ThrottlePercent < 100 && SpeedSelMode != SpeedSelectorMode.Parking && !UseThrottle)
                         {
-                            if (SelectedMaxAccelerationPercent == 0 && SelectedMaxAccelerationStep == 0)
+                            if (SelectedMaxAccelerationPercent == 0 || SelectedMaxAccelerationStep == 0)
                             {
                                 Locomotive.ThrottleController.SetPercent(0);
                                 throttleIsZero = true;
