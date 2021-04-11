@@ -1081,6 +1081,7 @@ namespace Orts.Formats.Msts
                         Label = stf.ReadString();
                         stf.SkipRestOfBlock();
                     }),
+                    new STFReader.TokenProcessor("controlid", ()=> { ControlId = stf.ReadIntBlock(0); }),
                 });
 
                 // If no ACE, just don't need any fixup

@@ -2096,6 +2096,49 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.ORTS_TCS46:
                 case CABViewControlTypes.ORTS_TCS47:
                 case CABViewControlTypes.ORTS_TCS48:
+                // Jindrich
+                case CABViewControlTypes.ORTS_RESTRICTED_SPEED_ZONE_ACTIVE:
+                case CABViewControlTypes.ORTS_SELECTED_SPEED_MODE:
+                case CABViewControlTypes.ORTS_SELECTED_SPEED_REGULATOR_MODE:
+                case CABViewControlTypes.ORTS_SELECTED_SPEED_MAXIMUM_ACCELERATION:
+                case CABViewControlTypes.ORTS_NUMBER_OF_AXES_DISPLAY_UNITS:
+                case CABViewControlTypes.ORTS_NUMBER_OF_AXES_DISPLAY_TENS:
+                case CABViewControlTypes.ORTS_NUMBER_OF_AXES_DISPLAY_HUNDREDS:
+                case CABViewControlTypes.ORTS_TRAIN_LENGTH_METERS:
+                case CABViewControlTypes.ORTS_REMAINING_TRAIN_LENGHT_SPEED_RESTRICTED:
+                case CABViewControlTypes.ORTS_REMAINING_TRAIN_LENGTH_PERCENT:
+                case CABViewControlTypes.ORTS_MOTIVE_FORCE:
+                case CABViewControlTypes.ORTS_MOTIVE_FORCE_KILONEWTON:
+                case CABViewControlTypes.ORTS_MAXIMUM_FORCE:
+                case CABViewControlTypes.ORTS_SELECTED_SPEED:
+                case CABViewControlTypes.ORTS_FORCE_IN_PERCENT_THROTTLE_AND_DYNAMIC_BRAKE:
+                case CABViewControlTypes.ORTS_TRAIN_TYPE_PAX_OR_CARGO:
+                case CABViewControlTypes.ORTS_CONTROLLER_VOLTAGE:
+                case CABViewControlTypes.ORTS_AMPERS_BY_CONTROLLER_VOLTAGE:
+                case CABViewControlTypes.ORTS_CC_SELECT_SPEED:
+                case CABViewControlTypes.ORTS_MULTI_POSITION_CONTROLLER:
+                case CABViewControlTypes.ORTS_ACCELERATION_IN_TIME:
+                case CABViewControlTypes.ORTS_CC_SPEED_0:
+                case CABViewControlTypes.ORTS_CC_SPEED_10:
+                case CABViewControlTypes.ORTS_CC_SPEED_20:
+                case CABViewControlTypes.ORTS_CC_SPEED_30:
+                case CABViewControlTypes.ORTS_CC_SPEED_40:
+                case CABViewControlTypes.ORTS_CC_SPEED_50:
+                case CABViewControlTypes.ORTS_CC_SPEED_60:
+                case CABViewControlTypes.ORTS_CC_SPEED_70:
+                case CABViewControlTypes.ORTS_CC_SPEED_80:
+                case CABViewControlTypes.ORTS_CC_SPEED_90:
+                case CABViewControlTypes.ORTS_CC_SPEED_100:
+                case CABViewControlTypes.ORTS_CC_SPEED_110:
+                case CABViewControlTypes.ORTS_CC_SPEED_120:
+                case CABViewControlTypes.ORTS_CC_SPEED_130:
+                case CABViewControlTypes.ORTS_CC_SPEED_140:
+                case CABViewControlTypes.ORTS_CC_SPEED_150:
+                case CABViewControlTypes.ORTS_CC_SPEED_160:
+                case CABViewControlTypes.ORTS_CC_SPEED_170:
+                case CABViewControlTypes.ORTS_CC_SPEED_180:
+                case CABViewControlTypes.ORTS_CC_SPEED_190:
+                case CABViewControlTypes.ORTS_CC_SPEED_200:
                     index = (int)data;
                     break;
             }
