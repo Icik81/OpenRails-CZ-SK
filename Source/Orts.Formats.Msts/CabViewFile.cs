@@ -49,13 +49,13 @@ namespace Orts.Formats.Msts
                             List<Vector3> directionShift = new List<Vector3>();
                             directionShift.Add(stf.ReadVector3Block(STFReader.UNITS.None, new Vector3()));
                             int x = 0;
-                            foreach (Vector3 vector in Directions)
+                            for (int i = 0; i < Directions.Count; i++)
                             {
-                                Vector3 v3 = Directions[x];
+                                Vector3 v3 = Directions[i];
                                 v3.X += directionShift[x].X;
                                 v3.Y += directionShift[x].Y;
                                 v3.Z += directionShift[x].Z;
-                                Directions[x] = v3;
+                                Directions[i] = v3;
                                 x++;
                             }
                         }),
@@ -251,6 +251,53 @@ namespace Orts.Formats.Msts
         ORTS_TCS48,
         ORTS_ETCS,
 
+        // Jindřich
+        ORTS_SELECTED_SPEED,
+        ORTS_SELECTED_SPEED_DISPLAY,
+        ORTS_SELECTED_SPEED_MODE,
+        ORTS_SELECTED_SPEED_REGULATOR_MODE,
+        ORTS_SELECTED_SPEED_MAXIMUM_ACCELERATION,
+        ORTS_RESTRICTED_SPEED_ZONE_ACTIVE,
+        ORTS_NUMBER_OF_AXES_DISPLAY_UNITS,
+        ORTS_NUMBER_OF_AXES_DISPLAY_TENS,
+        ORTS_NUMBER_OF_AXES_DISPLAY_HUNDREDS,
+        ORTS_TRAIN_LENGTH_METERS,
+        ORTS_REMAINING_TRAIN_LENGHT_SPEED_RESTRICTED,
+        ORTS_REMAINING_TRAIN_LENGTH_PERCENT,
+        ORTS_MOTIVE_FORCE,
+        ORTS_MOTIVE_FORCE_KILONEWTON,
+        ORTS_MAXIMUM_FORCE,
+        ORTS_FORCE_IN_PERCENT_THROTTLE_AND_DYNAMIC_BRAKE,
+        ORTS_TRAIN_TYPE_PAX_OR_CARGO,
+        ORTS_CONTROLLER_VOLTAGE,
+        ORTS_AMPERS_BY_CONTROLLER_VOLTAGE,
+        ORTS_ACCELERATION_IN_TIME,
+        ORTS_ODOMETER,
+        ORTS_CC_SELECT_SPEED,
+        ORTS_NUMBER_OF_AXES_INCREASE,
+        ORTS_NUMBER_OF_AXES_DECREASE,
+        ORTS_MULTI_POSITION_CONTROLLER,
+        ORTS_CC_SPEED_0,
+        ORTS_CC_SPEED_10,
+        ORTS_CC_SPEED_20,
+        ORTS_CC_SPEED_30,
+        ORTS_CC_SPEED_40,
+        ORTS_CC_SPEED_50,
+        ORTS_CC_SPEED_60,
+        ORTS_CC_SPEED_70,
+        ORTS_CC_SPEED_80,
+        ORTS_CC_SPEED_90,
+        ORTS_CC_SPEED_100,
+        ORTS_CC_SPEED_110,
+        ORTS_CC_SPEED_120,
+        ORTS_CC_SPEED_130,
+        ORTS_CC_SPEED_140,
+        ORTS_CC_SPEED_150,
+        ORTS_CC_SPEED_160,
+        ORTS_CC_SPEED_170,
+        ORTS_CC_SPEED_180,
+        ORTS_CC_SPEED_190,
+        ORTS_CC_SPEED_200,
         // Further CabViewControlTypes must be added above this line, to avoid their malfunction in 3DCabs
         EXTERNALWIPERS,
         LEFTDOOR,
