@@ -50,10 +50,10 @@ namespace Orts.Simulation.AIs
         public int UiD;
         public AIPath Path;
 
-        public float MaxDecelMpSSP = 0.50f;               // maximum decelleration
-        public float MaxAccelMpSSP = 0.50f;               // maximum accelleration
-        public float MaxDecelMpSSF = 0.40f;               // maximum decelleration
-        public float MaxAccelMpSSF = 0.25f;               // maximum accelleration
+        public float MaxDecelMpSSP = 1.0f;               // maximum decelleration
+        public float MaxAccelMpSSP = 1.0f;               // maximum accelleration
+        public float MaxDecelMpSSF = 0.8f;               // maximum decelleration
+        public float MaxAccelMpSSF = 0.5f;               // maximum accelleration
         public float MaxDecelMpSS = 0.5f;                // maximum decelleration
         public float MaxAccelMpSS = 1.0f;                // maximum accelleration
         public float Efficiency = 1.0f;                  // train efficiency
