@@ -31,30 +31,47 @@ namespace Orts.Formats.Msts
 	public class CabViewFile
 	{
         public List<Vector3> Locations = new List<Vector3>();   // Head locations for front, left and right views
+        protected List<Vector3> locationShift = new List<Vector3>();
         public List<Vector3> Directions = new List<Vector3>();  // Head directions for each view
+        protected List<Vector3> directionShift = new List<Vector3>(); 
         public List<string> TwoDViews = new List<string>();     // 2D CAB Views - by GeorgeS
         public List<string> NightViews = new List<string>();    // Night CAB Views - by GeorgeS
         public List<string> LightViews = new List<string>();    // Light CAB Views - by GeorgeS
         public CabViewControls CabViewControls;                 // Controls in CAB - by GeorgeS
 
-        public CabViewFile(string filePath, string basePath)
+        public CabViewFile(string filePath, string basePath) 
 		{
             using (STFReader stf = new STFReader(filePath, false))
                 stf.ParseFile(new STFReader.TokenProcessor[] {
                     new STFReader.TokenProcessor("tr_cabviewfile", ()=>{ stf.MustMatch("("); stf.ParseBlock(new STFReader.TokenProcessor[] {
                         new STFReader.TokenProcessor("position", ()=>{ Locations.Add(stf.ReadVector3Block(STFReader.UNITS.None, new Vector3())); }),
+                        new STFReader.TokenProcessor("positionshift", ()=>
+                        {
+                            locationShift.Add(stf.ReadVector3Block(STFReader.UNITS.None, new Vector3()));
+                            int x = 0;
+                            for (int i = 0; i < Locations.Count; i++)
+                            {
+                                Vector3 v3 = Locations[i];
+                                v3.X = locationShift[x].X;
+                                v3.Y = locationShift[x].Y;
+                                v3.Z = locationShift[x].Z;
+                                Locations[i] = v3;
+                                x++;
+                                if (x + 1 > locationShift.Count)
+                                    break;
+                            }
+                        }),
                         new STFReader.TokenProcessor("direction", ()=>{ Directions.Add(stf.ReadVector3Block(STFReader.UNITS.None, new Vector3())); }),
                         new STFReader.TokenProcessor("directionshift", ()=>
                         {
-                            List<Vector3> directionShift = new List<Vector3>();
                             directionShift.Add(stf.ReadVector3Block(STFReader.UNITS.None, new Vector3()));
                             int x = 0;
                             for (int i = 0; i < Directions.Count; i++)
                             {
                                 Vector3 v3 = Directions[i];
-                                v3.X += directionShift[x].X;
-                                v3.Y += directionShift[x].Y;
-                                v3.Z += directionShift[x].Z;
+                                v3.X = directionShift[x].X;
+                                v3.Y = directionShift[x].Y;
+                                v3.Z = directionShift[x].Z;
                                 Directions[i] = v3;
                                 x++;
                                 if (x + 1 > directionShift.Count)
@@ -421,6 +438,9 @@ namespace Orts.Formats.Msts
         public float PreviousData;
         public float Precision;
         public float Vibration;
+
+        // Jindrich
+        public int ControlId = 0;
 
         public CABViewControlTypes ControlType = CABViewControlTypes.NONE;
         public CABViewControlStyles ControlStyle = CABViewControlStyles.NONE;
