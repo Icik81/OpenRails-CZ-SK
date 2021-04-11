@@ -44,6 +44,21 @@ namespace Orts.Formats.Msts
                     new STFReader.TokenProcessor("tr_cabviewfile", ()=>{ stf.MustMatch("("); stf.ParseBlock(new STFReader.TokenProcessor[] {
                         new STFReader.TokenProcessor("position", ()=>{ Locations.Add(stf.ReadVector3Block(STFReader.UNITS.None, new Vector3())); }),
                         new STFReader.TokenProcessor("direction", ()=>{ Directions.Add(stf.ReadVector3Block(STFReader.UNITS.None, new Vector3())); }),
+                        new STFReader.TokenProcessor("directionshift", ()=>
+                        {
+                            List<Vector3> directionShift = new List<Vector3>();
+                            directionShift.Add(stf.ReadVector3Block(STFReader.UNITS.None, new Vector3()));
+                            int x = 0;
+                            foreach (Vector3 vector in Directions)
+                            {
+                                Vector3 v3 = Directions[x];
+                                v3.X += directionShift[x].X;
+                                v3.Y += directionShift[x].Y;
+                                v3.Z += directionShift[x].Z;
+                                Directions[x] = v3;
+                                x++;
+                            }
+                        }),
                         new STFReader.TokenProcessor("cabviewfile", ()=>{
                             var fileName = stf.ReadStringBlock(null);
                             var path = Path.Combine(basePath, Path.GetDirectoryName(fileName));
