@@ -57,6 +57,8 @@ namespace Orts.Formats.Msts
                                 v3.Z += directionShift[x].Z;
                                 Directions[i] = v3;
                                 x++;
+                                if (x + 1 > directionShift.Count)
+                                    break;
                             }
                         }),
                         new STFReader.TokenProcessor("cabviewfile", ()=>{
