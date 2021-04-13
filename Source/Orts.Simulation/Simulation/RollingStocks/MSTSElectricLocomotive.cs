@@ -173,11 +173,7 @@ namespace Orts.Simulation.RollingStocks
             }
             
             // Icik
-            MaxLineVoltage0 = Simulator.TRK.Tr_RouteFile.MaxLineVoltage;
-            
-            //MaxLineVoltage0 = 25000;
-            if (MaxLineVoltage0 > 4000) Delta2 = 1000;
-                else Delta2 = 100;            
+            MaxLineVoltage0 = Simulator.TRK.Tr_RouteFile.MaxLineVoltage;                     
         }
 
         //================================================================================================//
@@ -200,8 +196,24 @@ namespace Orts.Simulation.RollingStocks
         // Podpěťová ochrana a blokace pantografů
         protected void UnderVoltageProtection(float elapsedClockSeconds)
         {
-            if (IsPlayerTrain)
+            // Zákmit na voltmetru            
+            if (PowerSupply.PantographVoltageV < 1)
             {
+                VoltageSprung = 1.5f;
+                Step1 = 0.40f;
+                TimeCriticalVoltage = 0;
+            }
+            Step1 = Step1 - elapsedClockSeconds;
+            if (Step1 < 0) Step1 = 0;
+            if ((VoltageSprung > 1.0f && Step1 == 0 && PowerSupply.PantographVoltageV > MaxLineVoltage0)) VoltageSprung = 1.0f;
+
+            //Simulator.Confirmer.Message(ConfirmLevel.Warning, "VoltageSprung  " + VoltageSprung + "  Simulator.TRK.Tr_RouteFile.MaxLineVoltage  " + Simulator.TRK.Tr_RouteFile.MaxLineVoltage + "  PowerSupply.PantographVoltageV  " + PowerSupply.PantographVoltageV);
+
+            if (IsPlayerTrain && PowerSupply.PantographVoltageV > 0)
+            {
+                // Určení velikosti kolísání napětí pro různá napětí v troleji
+                if (MaxLineVoltage0 > 20000) Delta2 = 1000;
+                else Delta2 = 100;
 
                 // Kritická mez napětí pro podnapěťovku
                 PantographCriticalVoltage = 0.8f * MaxLineVoltage0;
@@ -214,26 +226,14 @@ namespace Orts.Simulation.RollingStocks
                     PantographCriticalVoltage = 0;
                 }
 
-                // Zákmit na voltmetru            
-                if (PowerSupply.PantographVoltageV < 1)
-                {
-                    VoltageSprung = 1.5f;
-                    Step1 = 0.40f;
-                    TimeCriticalVoltage = 0;
-                }
-                Step1 = Step1 - elapsedClockSeconds;
-                if (Step1 < 0) Step1 = 0;
-                if ((VoltageSprung > 1.0f && Step1 == 0 && PowerSupply.PantographVoltageV > MaxLineVoltage0)) VoltageSprung = 1.0f;
-
-                //Simulator.Confirmer.Message(ConfirmLevel.Warning, "VoltageSprung  " + VoltageSprung + "  Simulator.TRK.Tr_RouteFile.MaxLineVoltage  " + Simulator.TRK.Tr_RouteFile.MaxLineVoltage + "  PowerSupply.PantographVoltageV  " + PowerSupply.PantographVoltageV);
-
                 // Simulace náhodného poklesu napětí            
                 if (Delta1 == 10 && TimeCriticalVoltage == 0) TimeCriticalVoltage0 = Simulator.Random.Next(100, 200);
-                else TimeCriticalVoltage0 = Simulator.Random.Next(1000, 2000);
+                else
+                    if (Delta1 != 10 && TimeCriticalVoltage == 0) TimeCriticalVoltage0 = Simulator.Random.Next(1000, 2000);
                 TimeCriticalVoltage++;
                 if (TimeCriticalVoltage > TimeCriticalVoltage0 && PowerSupply.PantographVoltageV > 1000)
                 {
-                    if (FilteredMotiveForceN > 200000) Delta0 = Simulator.Random.Next(50, 100);
+                    if (FilteredMotiveForceN > 200000) Delta0 = Simulator.Random.Next(25, 100);
                     else Delta0 = Simulator.Random.Next(1, 100);
                     if (Delta0 == 75) Delta1 = 10;  // Kritická mez
                     else Delta1 = Simulator.Random.Next(1, 40) / 10;
@@ -241,11 +241,11 @@ namespace Orts.Simulation.RollingStocks
                 }
 
                 // Výpočet napětí v systému lokomotivy a drátech
-                //Simulator.TRK.Tr_RouteFile.MaxLineVoltage = MaxLineVoltage0 * VoltageSprung - (Delta1 * Delta2);
-                Simulator.TRK.Tr_RouteFile.MaxLineVoltage = MaxLineVoltage0 * VoltageSprung;
+                Simulator.TRK.Tr_RouteFile.MaxLineVoltage = MaxLineVoltage0 * VoltageSprung - (Delta1 * Delta2);
+                //Simulator.TRK.Tr_RouteFile.MaxLineVoltage = MaxLineVoltage0 * VoltageSprung;
 
                 if (PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closed) CircuitBreakerOn = true;
-                else CircuitBreakerOn = false;
+                else CircuitBreakerOn = false;                
 
                 // Blokování pantografu u jednosystémových lokomotiv při vypnutém HV
                 if (!MultiSystemEngine)
@@ -269,21 +269,33 @@ namespace Orts.Simulation.RollingStocks
                         if (!EDBIndependent)
                         {
                             // Shodí HV při poklesu napětí v troleji a nastaveném výkonu (podpěťová ochrana)
-                            if (PowerSupply.PantographVoltageV < PantographCriticalVoltage && LocalThrottlePercent > 0
-                            || PowerSupply.PantographVoltageV < PantographCriticalVoltage && LocalDynamicBrakePercent > 0)
+                            if ((PowerSupply.PantographVoltageV < PantographCriticalVoltage && LocalThrottlePercent != 0)
+                            || (PowerSupply.PantographVoltageV < PantographCriticalVoltage && LocalDynamicBrakePercent != 0))
                             {
                                 SignalEvent(PowerSupplyEvent.OpenCircuitBreaker);
                                 Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Zásah podpěťové ochrany!"));
                             }
+                            if (CruiseControl != null)
+                                if (PowerSupply.PantographVoltageV < PantographCriticalVoltage && CruiseControl.ForceThrottleAndDynamicBrake != 0)                                
+                                {
+                                    SignalEvent(PowerSupplyEvent.OpenCircuitBreaker);
+                                    Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Zásah podpěťové ochrany!"));
+                                }
                         }
                         if (EDBIndependent)
                         {
                             // Shodí HV při poklesu napětí v troleji a nastaveném výkonu (podpěťová ochrana)
-                            if (PowerSupply.PantographVoltageV < PantographCriticalVoltage && LocalThrottlePercent > 0)
+                            if (PowerSupply.PantographVoltageV < PantographCriticalVoltage && LocalThrottlePercent != 0)
                             {
                                 SignalEvent(PowerSupplyEvent.OpenCircuitBreaker);
                                 Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Zásah podpěťové ochrany!"));
                             }
+                            if (CruiseControl != null)
+                                if (PowerSupply.PantographVoltageV < PantographCriticalVoltage && CruiseControl.ForceThrottleAndDynamicBrake != 0)
+                                {
+                                    SignalEvent(PowerSupplyEvent.OpenCircuitBreaker);
+                                    Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Zásah podpěťové ochrany!"));
+                                }
                         }
                     }
                 }
@@ -297,32 +309,58 @@ namespace Orts.Simulation.RollingStocks
                     if (!EDBIndependent)
                     {
                         // Blokuje zapnutí HV při staženém sběrači a nebo navoleném výkonu
-                        if (PowerSupply.PantographVoltageV < PantographCriticalVoltage && PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closing
-                        || LocalThrottlePercent > 0 && PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closing
-                        || LocalDynamicBrakePercent > 0 && PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closing)
+                        if ((PowerSupply.PantographVoltageV < PantographCriticalVoltage && PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closing)
+                        || (LocalThrottlePercent != 0 && PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closing)
+                        || (LocalDynamicBrakePercent != 0 && PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closing))
                             SignalEvent(PowerSupplyEvent.OpenCircuitBreaker);
 
-                        // Shodí HV při poklesu napětí v troleji a nastaveném výkonu (podpěťová ochrana)
-                        if (PowerSupply.PantographVoltageV < PantographCriticalVoltage && LocalThrottlePercent > 0
-                            || PowerSupply.PantographVoltageV < PantographCriticalVoltage && LocalDynamicBrakePercent > 0)
+                        if (CruiseControl != null)
+                            if ((PowerSupply.PantographVoltageV < PantographCriticalVoltage && PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closing)
+                            || (PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closing && CruiseControl.ForceThrottleAndDynamicBrake != 0))                            
+                                SignalEvent(PowerSupplyEvent.OpenCircuitBreaker);
+
+                        //Shodí HV při poklesu napětí v troleji a nastaveném výkonu(podpěťová ochrana)
+                        if ((PowerSupply.PantographVoltageV < PantographCriticalVoltage && LocalThrottlePercent != 0)
+                            || (PowerSupply.PantographVoltageV < PantographCriticalVoltage && LocalDynamicBrakePercent != 0))
                         {
                             SignalEvent(PowerSupplyEvent.OpenCircuitBreaker);
                             Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Zásah podpěťové ochrany!"));
                         }
+
+                        if (CruiseControl != null)
+                            if (PowerSupply.PantographVoltageV < PantographCriticalVoltage && CruiseControl.ForceThrottleAndDynamicBrake != 0)                            
+                            {
+                                SignalEvent(PowerSupplyEvent.OpenCircuitBreaker);
+                                Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Zásah podpěťové ochrany!"));
+                            }
+
                     }
                     if (EDBIndependent)
                     {
                         // Blokuje zapnutí HV při staženém sběrači a nebo navoleném výkonu
-                        if (PowerSupply.PantographVoltageV < PantographCriticalVoltage && PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closing
-                        || LocalThrottlePercent > 0 && PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closing)
+                        if ((PowerSupply.PantographVoltageV < PantographCriticalVoltage && PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closing)
+                        || (LocalThrottlePercent != 0 && PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closing))
                             SignalEvent(PowerSupplyEvent.OpenCircuitBreaker);
 
+                        if (CruiseControl != null)
+                            if ((PowerSupply.PantographVoltageV < PantographCriticalVoltage && PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closing)
+                            || (PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closing && CruiseControl.ForceThrottleAndDynamicBrake != 0))
+                                SignalEvent(PowerSupplyEvent.OpenCircuitBreaker);
+
+
                         // Shodí HV při poklesu napětí v troleji a nastaveném výkonu (podpěťová ochrana)
-                        if (PowerSupply.PantographVoltageV < PantographCriticalVoltage && LocalThrottlePercent > 0)
+                        if (PowerSupply.PantographVoltageV < PantographCriticalVoltage && LocalThrottlePercent != 0)
                         {
                             SignalEvent(PowerSupplyEvent.OpenCircuitBreaker);
                             Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Zásah podpěťové ochrany!"));
                         }
+
+                        if (CruiseControl != null)
+                            if (PowerSupply.PantographVoltageV < PantographCriticalVoltage && CruiseControl.ForceThrottleAndDynamicBrake != 0)
+                            {
+                                SignalEvent(PowerSupplyEvent.OpenCircuitBreaker);
+                                Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Zásah podpěťové ochrany!"));
+                            }
                     }
                 }
             }
