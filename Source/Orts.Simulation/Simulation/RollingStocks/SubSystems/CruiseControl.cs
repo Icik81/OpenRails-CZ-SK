@@ -756,7 +756,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems
 
 
             if ((SelectedMaxAccelerationStep == 0 && SelectedMaxAccelerationPercent == 0) || SpeedSelMode == SpeedSelectorMode.Start)
+            {
                 WasForceReset = true;
+                WasBraking = false;
+            }
 
             if (SelectedMaxAccelerationPercent == 0 && SelectedMaxAccelerationStep == 0)
             {
@@ -766,7 +769,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
             if (WasBraking)
                 if (SpeedSelMode == SpeedSelectorMode.Start)
                     WasBraking = false;
-            if (ResetForceAfterAnyBraking && WasBraking && (SelectedMaxAccelerationStep > 0 || SelectedMaxAccelerationPercent > 0))
+            if (ResetForceAfterAnyBraking && WasBraking && (SelectedMaxAccelerationStep > 0 || SelectedMaxAccelerationPercent > 0) && !DynamicBrakePriority)
             {
                 Locomotive.SetThrottlePercent(0);
                 controllerVolts = 0;
@@ -777,7 +780,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                 return;
             }
 
-            if (ResetForceAfterAnyBraking && !WasForceReset)
+            if (ResetForceAfterAnyBraking && !WasForceReset && !DynamicBrakePriority)
             {
                 Locomotive.SetThrottlePercent(0);
                 controllerVolts = 0;
@@ -785,7 +788,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                 if (SpeedSelMode == SpeedSelectorMode.Parking)
                     if (AbsWheelSpeedMpS < (SpeedIsMph ? MpS.FromMpH(ParkingBrakeEngageSpeed) : MpS.FromKpH(ParkingBrakeEngageSpeed)))
                         Locomotive.SetEngineBrakePercent(ParkingBrakePercent);
-                return;
+                if (!DynamicBrakePriority)
+                    return;
             }
 
 
@@ -858,8 +862,21 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                 CheckRestrictedSpeedZone();
             if (DynamicBrakePriority)
             {
-                Locomotive.ThrottleController.SetPercent(0);
-                ForceThrottleAndDynamicBrake = -Locomotive.DynamicBrakePercent;
+                controllerVolts = 0;
+                if (Locomotive.TractiveForceN > 0)
+                {
+                    float force = Locomotive.TractiveForceN - 1000;
+                    if (force < 0)
+                    {
+                        force = 0;
+                        Locomotive.SetThrottlePercent(0);
+                    }
+                    Locomotive.TractiveForceN = force;
+                    ForceThrottleAndDynamicBrake = ((Locomotive.MaxForceN - (Locomotive.MaxForceN - force)) / Locomotive.MaxForceN) * 100;
+                }
+                if (Locomotive.TractiveForceN == 0)
+                    ForceThrottleAndDynamicBrake = -Locomotive.DynamicBrakePercent;
+
                 return;
             }
 
