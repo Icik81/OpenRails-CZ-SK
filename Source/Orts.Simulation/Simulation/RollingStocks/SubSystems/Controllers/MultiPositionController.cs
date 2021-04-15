@@ -118,12 +118,17 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                         case "selectedspeed":
                             controllerBinding = ControllerBinding.SelectedSpeed;
                             break;
+                        case "dynamicbrake":
+                            controllerBinding = ControllerBinding.DynamicBrake;
+                            break;
                     }
                     break;
                 case "engine(ortsmultipositioncontroller(controllerid": ControllerId = stf.ReadIntBlock(0); break;
                 case "engine(ortsmultipositioncontrollercancontroltrainbrake": CanControlTrainBrake = stf.ReadBoolBlock(false); break;
             }
         }
+
+        protected bool dynBrakeEngaged = false;
         public void Update(float elapsedClockSeconds)
         {
             if (!initialized)
@@ -142,10 +147,71 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
             }
             if (!Locomotive.IsPlayerTrain) return;
 
-            if (haveCruiseControl)
-                if (Locomotive.CruiseControl.DynamicBrakePriority) return;
+            if (controllerPosition == ControllerPosition.DynamicBrakeIncreaseWithPriority)
+            {
+                dynBrakeEngaged = true;
+                bool skipBraking = false;
+                if (haveCruiseControl)
+                {
+                    if (Locomotive.CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.Manual)
+                    {
+                        if (Locomotive.ThrottlePercent > 0)
+                        {
+                            float pct = Locomotive.ThrottlePercent - 0.3f;
+                            if (pct < 0)
+                                pct = 0;
+                            Locomotive.ThrottleController.SetPercent(pct);
+                            skipBraking = true;
+                        }
+                    }
+                    else
+                    {
+                        Locomotive.CruiseControl.DynamicBrakePriority = true;
+                        if (Locomotive.TractiveForceN > 0)
+                            skipBraking = true;
+                    }
+                }
+                if (!skipBraking)
+                {
+                    if (Locomotive.DynamicBrakePercent < 0)
+                        Locomotive.DynamicBrakeChangeActiveState(true);
+                    Locomotive.DynamicBrakeController.StartIncrease();
+                }
+            }
+            else if (haveCruiseControl)
+            {
+                if (Locomotive.CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.Manual && dynBrakeEngaged && Locomotive.ThrottlePercent > 0)
+                {
+                    float pct = Locomotive.ThrottlePercent - 0.3f;
+                    if (pct < 0)
+                    {
+                        pct = 0;
+                        dynBrakeEngaged = false;
+                    }
+                    Locomotive.ThrottleController.SetPercent(pct);
+                }
+            }
+            if (controllerPosition == ControllerPosition.Neutral)
+            {
+                Locomotive.DynamicBrakeController.StopIncrease();
+                Locomotive.DynamicBrakeController.StopDecrease();
+            }
+            if (controllerPosition == ControllerPosition.DynamicBrakeDecrease)
+            {
+                Locomotive.DynamicBrakeController.StartDecrease();
+                if (Locomotive.DynamicBrakePercent == 0)
+                {
+                    if (haveCruiseControl)
+                        Locomotive.CruiseControl.DynamicBrakePriority = false;
+                    Locomotive.DynamicBrakeChangeActiveState(false);
+                }
+            }
 
             ReloadPositions();
+
+            if (haveCruiseControl)
+                if (Locomotive.CruiseControl.DynamicBrakePriority && Locomotive.DynamicBrakePercent > -1) return;
+
             if (Locomotive.AbsSpeedMpS > 0)
             {
                 if (emergencyBrake)
@@ -179,6 +245,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                 }
 
             }
+
             if (!haveCruiseControl || !ccAutoMode)
             {
                 if (controllerPosition == ControllerPosition.ThrottleIncrease)
@@ -298,14 +365,14 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                 }
                 if (controllerPosition == ControllerPosition.Drive || controllerPosition == ControllerPosition.ThrottleHold)
                 {
-                    if (Locomotive.DynamicBrakePercent < 2)
+                    /*if (Locomotive.DynamicBrakePercent < 2)
                     {
                         Locomotive.SetDynamicBrakePercent(-1);
                     }
                     if (Locomotive.DynamicBrakePercent > 1)
                     {
                         Locomotive.SetDynamicBrakePercent(Locomotive.DynamicBrakePercent - 1);
-                    }
+                    }*/
                 }
                 if (controllerPosition == ControllerPosition.TrainBrakeIncrease)
                 {
@@ -797,6 +864,11 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                         controllerPosition = ControllerPosition.SelectSpeedZero;
                         break;
                     }
+                case "DynamicBrakeIncreaseWithPriority":
+                    {
+                        controllerPosition = ControllerPosition.DynamicBrakeIncreaseWithPriority;
+                        break;
+                    }
             }
             if (!messageDisplayed)
             {
@@ -879,12 +951,14 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
             KeepCurrent,
             SelectedSpeedIncrease,
             SelectedSpeedDecrease,
-            SelectSpeedZero
+            SelectSpeedZero,
+            DynamicBrakeIncreaseWithPriority
         };
 
         public enum ControllerBinding
         {
             Throttle,
+            DynamicBrake,
             SelectedSpeed
         }
 
@@ -910,6 +984,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                                 data = 2;
                                 break;
                             case ControllerPosition.DynamicBrakeIncrease:
+                            case ControllerPosition.DynamicBrakeIncreaseWithPriority:
                                 data = 3;
                                 break;
                             case ControllerPosition.TrainBrakeIncrease:
@@ -936,6 +1011,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                                 break;
                             case ControllerPosition.SelectSpeedZero:
                                 data = 11;
+                                break;
+                            case ControllerPosition.DynamicBrakeDecrease:
+                                data = 12;
                                 break;
                         }
                         break;

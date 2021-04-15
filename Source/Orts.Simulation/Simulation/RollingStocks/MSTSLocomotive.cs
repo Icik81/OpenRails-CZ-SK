@@ -4221,14 +4221,31 @@ namespace Orts.Simulation.RollingStocks
     #endregion
 
     #region DynamicBrakeController
-    public void StartDynamicBrakeIncrease(float? target)
+        public void StartDynamicBrakeIncrease(float? target)
         {
             AlerterReset(TCSEvent.DynamicBrakeChanged);
+
+            if (MultiPositionControllers != null)
+            {
+                foreach (MultiPositionController mpc in MultiPositionControllers)
+                {
+                    if (mpc.controllerBinding == MultiPositionController.ControllerBinding.DynamicBrake)
+                    {
+                        if (!mpc.StateChanged)
+                        {
+                            mpc.StateChanged = true;
+                            mpc.DoMovement(MultiPositionController.Movement.Aft);
+                        }
+                        return;
+                    }
+                }
+            }
             if (CruiseControl != null)
             {
                 SetThrottlePercent(0);
                 CruiseControl.DynamicBrakePriority = true;
             }
+
             if (!CanUseDynamicBrake())
                 return;
 
@@ -4251,21 +4268,48 @@ namespace Orts.Simulation.RollingStocks
         public void StopDynamicBrakeIncrease()
         {
             AlerterReset(TCSEvent.DynamicBrakeChanged);
+            if (MultiPositionControllers != null)
+            {
+                foreach (MultiPositionController mpc in MultiPositionControllers)
+                {
+                    if (mpc.controllerBinding == MultiPositionController.ControllerBinding.DynamicBrake)
+                    {
+                        if (mpc.StateChanged)
+                        {
+                            mpc.StateChanged = false;
+                            mpc.DoMovement(MultiPositionController.Movement.Neutral);
+                        }
+                        return;
+                    }
+                }
+            }
             if (CanUseDynamicBrake())
             {
                 DynamicBrakeController.StopIncrease();
                 new DynamicBrakeCommand(Simulator.Log, true, DynamicBrakeController.CurrentValue, DynamicBrakeController.CommandStartTime);
-                if (CruiseControl != null)
-                {
-                    if (DynamicBrakePercent < 1)
-                        CruiseControl.DynamicBrakePriority = false;
-                }
             }
         }
 
         public void StartDynamicBrakeDecrease(float? target)
         {
             AlerterReset(TCSEvent.DynamicBrakeChanged);
+
+            if (MultiPositionControllers != null)
+            {
+                foreach (MultiPositionController mpc in MultiPositionControllers)
+                {
+                    if (mpc.controllerBinding == MultiPositionController.ControllerBinding.DynamicBrake)
+                    {
+                        if (!mpc.StateChanged)
+                        {
+                            mpc.StateChanged = true;
+                            mpc.DoMovement(MultiPositionController.Movement.Forward);
+                        }
+                        return;
+                    }
+                }
+            }
+
             if (!CanUseDynamicBrake())
                 return;
 
@@ -4288,6 +4332,21 @@ namespace Orts.Simulation.RollingStocks
         public void StopDynamicBrakeDecrease()
         {
             AlerterReset(TCSEvent.DynamicBrakeChanged);
+            if (MultiPositionControllers != null)
+            {
+                foreach (MultiPositionController mpc in MultiPositionControllers)
+                {
+                    if (mpc.controllerBinding == MultiPositionController.ControllerBinding.DynamicBrake)
+                    {
+                        if (mpc.StateChanged)
+                        {
+                            mpc.StateChanged = false;
+                            mpc.DoMovement(MultiPositionController.Movement.Neutral);
+                        }
+                        return;
+                    }
+                }
+            }
             if (CanUseDynamicBrake())
             {
                 DynamicBrakeController.StopDecrease();
@@ -5535,15 +5594,23 @@ namespace Orts.Simulation.RollingStocks
                 case CABViewControlTypes.ORTS_TCS48:
                     data = TrainControlSystem.CabDisplayControls[(int)cvc.ControlType - (int)CABViewControlTypes.ORTS_TCS1];
                     break;
+                case CABViewControlTypes.ORTS_MULTI_POSITION_CONTROLLER:
+                    if (MultiPositionControllers != null && data == 0)
+                    {
+                        foreach (MultiPositionController mpc in MultiPositionControllers)
+                        {
+                            if (mpc.ControllerId == cvc.ControlId)
+                            {
+                                data = mpc.GetDataOf(cvc);
+                            }
+                        }
+                    }
+                    break;
 
                 default:
                     if (CruiseControl != null)
                         data = CruiseControl.GetDataOf(cvc);
                     else
-                        data = 0;
-                    if (MultiPositionController != null && data == 0)
-                        data = MultiPositionController.GetDataOf(cvc);
-                    else if (data == 0)
                         data = 0;
                     break;
             }
