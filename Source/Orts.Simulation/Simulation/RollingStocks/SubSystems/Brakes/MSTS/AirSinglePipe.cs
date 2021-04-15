@@ -997,15 +997,15 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                                         lead.BrakeSystem.BrakeLine1PressurePSI += PressureDiffEqualToPipePSI;  // Increase brake pipe pressure to cover loss
                                         lead.MainResPressurePSI = lead.MainResPressurePSI - (PressureDiffEqualToPipePSI * lead.BrakeSystem.BrakePipeVolumeM3 / lead.MainResVolumeM3);   // Decrease main reservoir pressure
                                     }
-                                }
+                            }
                             // reduce pressure in lead brake line if brake pipe pressure is above equalising pressure - apply brakes
                             else if (lead.BrakeSystem.BrakeLine1PressurePSI > train.EqualReservoirPressurePSIorInHg)
                             {
                                 float ServiceVariationFactor = (1 - TrainPipeTimeVariationS / (serviceTimeFactor * 2));
                                 ServiceVariationFactor = MathHelper.Clamp(ServiceVariationFactor, 0.05f, 1.0f); // Keep factor within acceptable limits - prevent value from going negative
-                                lead.BrakeSystem.BrakeLine1PressurePSI *= ServiceVariationFactor;
-                                brakePipeTimeFactorS0 = brakePipeTimeFactorS_Apply;
-                            }
+                                lead.BrakeSystem.BrakeLine1PressurePSI *= ServiceVariationFactor;                                
+                                if (lead.TrainBrakeController.MaxPressurePSI <= lead.BrakeSystem.maxPressurePSI0) brakePipeTimeFactorS0 = brakePipeTimeFactorS_Apply;
+                            }                            
 
                         train.LeadPipePressurePSI = lead.BrakeSystem.BrakeLine1PressurePSI;  // Keep a record of current train pipe pressure in lead locomotive
                     }
