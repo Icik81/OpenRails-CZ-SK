@@ -1987,6 +1987,27 @@ namespace Orts.Viewer3D.RollingStock
                     }
                     index = (int)MpS.ToKpH(Locomotive.CruiseControl.SelectedSpeedMpS) / 10;
                     break;
+                case CABViewControlTypes.ORTS_RESTRICTED_SPEED_ZONE_ACTIVE:
+                    if (Locomotive.CruiseControl != null)
+                    {
+                        if (Locomotive.CruiseControl.SpeedRegMode == Simulation.RollingStocks.SubSystems.CruiseControl.SpeedRegulatorMode.Manual
+                            && Locomotive.DisableRestrictedSpeedWhenManualDriving)
+                        {
+                            Locomotive.CruiseControl.RestrictedSpeedActive = false;
+                            break;
+                        }
+                        else
+                        {
+                            index = (int)data;
+                            break;
+                        }
+                    }
+                    else
+                    {
+                        index = (int)data;
+                        break;
+                    }
+
                 case CABViewControlTypes.ALERTER_DISPLAY:
                 case CABViewControlTypes.RESET:
                 case CABViewControlTypes.WIPERS:
@@ -2097,7 +2118,6 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.ORTS_TCS47:
                 case CABViewControlTypes.ORTS_TCS48:
                 // Jindrich
-                case CABViewControlTypes.ORTS_RESTRICTED_SPEED_ZONE_ACTIVE:
                 case CABViewControlTypes.ORTS_SELECTED_SPEED_MODE:
                 case CABViewControlTypes.ORTS_SELECTED_SPEED_REGULATOR_MODE:
                 case CABViewControlTypes.ORTS_SELECTED_SPEED_MAXIMUM_ACCELERATION:
@@ -2423,6 +2443,14 @@ namespace Orts.Viewer3D.RollingStock
                     }
                     break;
                 case CABViewControlTypes.ORTS_RESTRICTED_SPEED_ZONE_ACTIVE:
+                    if (Locomotive.CruiseControl != null)
+                    {
+                        if (Locomotive.DisableRestrictedSpeedWhenManualDriving && Locomotive.CruiseControl.SpeedRegMode == Simulation.RollingStocks.SubSystems.CruiseControl.SpeedRegulatorMode.Manual)
+                        {
+                            Locomotive.CruiseControl.RestrictedSpeedActive = false;
+                            break;
+                        }
+                    }
                     if (ChangedValue(0) == 1)
                     {
                         Locomotive.CruiseControl.ActivateRestrictedSpeedZone();
