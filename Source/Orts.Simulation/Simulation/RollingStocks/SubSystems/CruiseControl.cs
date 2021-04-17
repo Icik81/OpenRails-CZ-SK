@@ -48,7 +48,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
         public float SelectedMaxAccelerationPercent = 0;
         public float SelectedMaxAccelerationStep = 0;
         public float SelectedSpeedMpS = 0;
-        public int SelectedNumberOfAxles = 0;
+        public int SelectedNumberOfAxles = 4;
         public float SpeedRegulatorNominalSpeedStepMpS = 0;
         public float MaxAccelerationMpSS = 0;
         public float MaxDecelerationMpSS = 0;
@@ -884,7 +884,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
 
            if (firstIteration) // if this is exetuted the first time, let's check all other than player engines in the consist, and record them for further throttle manipulation
             {
-                if (SelectedNumberOfAxles == 0) SelectedNumberOfAxles = (int)(Locomotive.Train.Length / 6.6f); // also set the axles, for better delta computing, if user omits to set it
+                if (SelectedNumberOfAxles == 0) SelectedNumberOfAxles = (int)(Locomotive.Train.Length / 6.6f) + 4; // also set the axles, for better delta computing, if user omits to set it
                 foreach (TrainCar tc in Locomotive.Train.Cars)
                 {
                     if (tc.GetType() == typeof(MSTSLocomotive) || tc.GetType() == typeof(MSTSDieselLocomotive) || tc.GetType() == typeof(MSTSElectricLocomotive))
