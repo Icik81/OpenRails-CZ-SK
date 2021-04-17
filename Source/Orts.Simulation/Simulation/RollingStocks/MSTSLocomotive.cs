@@ -460,6 +460,10 @@ namespace Orts.Simulation.RollingStocks
         public float ThrottleOverriden = 0;
         public int AccelerationBits = 0;
         public bool DisableRestrictedSpeedWhenManualDriving = false;
+        public bool AutomaticParkingBrake = false;
+        public float AutomaticParkingBrakeEngageSpeedKpH = 0;
+        public bool AutomaticParkingBrakeEngaged = false;
+
         public bool
       Speed0Pressed, Speed10Pressed, Speed20Pressed, Speed30Pressed, Speed40Pressed, Speed50Pressed
     , Speed60Pressed, Speed70Pressed, Speed80Pressed, Speed90Pressed, Speed100Pressed
@@ -1020,6 +1024,10 @@ namespace Orts.Simulation.RollingStocks
                 case "engine(ortscruisecontrol": SetUpCruiseControl(); break;
                 case "engine(ortsmultipositioncontroller": SetUpMPC(); break;
                 case "engine(disablerestrictedspeedwhenmanualdriving": DisableRestrictedSpeedWhenManualDriving = stf.ReadBoolBlock(false); break;
+                case "engine(ortscruisecontrol(parkingbrakeengagespeed": CruiseControl.ParkingBrakeEngageSpeed = stf.ReadFloatBlock(STFReader.UNITS.Speed, 0); break;
+                case "engine(ortscruisecontrol(parkingbrakepercent": CruiseControl.ParkingBrakePercent = stf.ReadFloatBlock(STFReader.UNITS.Any, 0); break;
+                case "engine(ortsautomaticparkingbrake": AutomaticParkingBrake = true; break;
+                case "engine(ortsautomaticparkingbrake(engagespeed": AutomaticParkingBrakeEngageSpeedKpH = stf.ReadFloatBlock(STFReader.UNITS.Speed, 0); break;
 
                 default:
                     base.Parse(lowercasetoken, stf);
@@ -1854,6 +1862,8 @@ namespace Orts.Simulation.RollingStocks
         /// <summary>
         /// This function updates periodically the states and physical variables of the locomotive's subsystems.
         /// </summary>
+        protected float EngineBrakePercentSet = 0;
+        public bool CanCheckEngineBrake = true;
         public override void Update(float elapsedClockSeconds)
         {
             Overcurrent_Protection(elapsedClockSeconds);
@@ -1887,9 +1897,60 @@ namespace Orts.Simulation.RollingStocks
             {
                 UpdateCarSteamHeat(elapsedClockSeconds);
             }
- 
+
+            if (AutomaticParkingBrake)
+            {
+                if (CruiseControl != null)
+                {
+                    if (CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.Auto || CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.AVV)
+                    {
+                        bool braking = false;
+                        if (MultiPositionControllers != null)
+                        {
+                            foreach (MultiPositionController mpc in MultiPositionControllers)
+                            {
+                                if (mpc.controllerBinding == MultiPositionController.ControllerBinding.Throttle
+                                    && mpc.controllerPosition != MultiPositionController.ControllerPosition.Drive
+                                    && mpc.controllerPosition != MultiPositionController.ControllerPosition.KeepCurrent
+                                    && mpc.controllerPosition != MultiPositionController.ControllerPosition.ThrottleIncrease
+                                    && mpc.controllerPosition != MultiPositionController.ControllerPosition.ThrottleIncreaseFast
+                                    && mpc.controllerPosition != MultiPositionController.ControllerPosition.ThrottleIncreaseOrDynamicBrakeDecrease
+                                    && mpc.controllerPosition != MultiPositionController.ControllerPosition.ThrottleIncreaseOrDynamicBrakeDecreaseFast
+                                    )
+                                {
+                                    braking = true;
+                                }
+                            }
+                        }
+                        if (CruiseControl.SpeedSelMode != CruiseControl.SpeedSelectorMode.Parking)
+                            braking = false;
+                        if (braking && ThrottlePercent == 0 && AbsSpeedMpS < MpS.FromKpH(AutomaticParkingBrakeEngageSpeedKpH))
+                        {
+                            Simulator.Confirmer.MSG(Bar.FromPSI(BrakeSystem.GetCylPressurePSI()).ToString());
+                            if (Bar.FromPSI(BrakeSystem.GetCylPressurePSI()) < 1.85f)
+                            {
+                                EngineBrakePercentSet += 0.5f;
+                                SetEngineBrakePercent(EngineBrakePercentSet);
+                            }
+                        }
+                        if (!braking && !EngineBrakePriority)
+                        {
+                            SetEngineBrakePercent(0);
+                            EngineBrakePercentSet = 0;
+                        }
+                        if (CanCheckEngineBrake && BrakeSystem.GetCylPressurePSI() < 0.01 || AbsSpeedMpS == 0)
+                        {
+                            if (EngineBrakeController.CurrentValue == 0.0f)
+                                EngineBrakePriority = false;
+                        }
+                        AutomaticParkingBrakeEngaged = braking;
+                    }
+                }
+            }
+
+
             // TODO  this is a wild simplification for electric and diesel electric
-                        float t = ThrottlePercent / 100f;
+            float t = ThrottlePercent / 100f;
 
             if (!AdvancedAdhesionModel)  // Advanced adhesion model turned off.
                AbsWheelSpeedMpS = AbsSpeedMpS;
@@ -3995,6 +4056,8 @@ namespace Orts.Simulation.RollingStocks
         #region EngineBrakeController
         public void StartEngineBrakeIncrease(float? target)
         {
+            CanCheckEngineBrake = false;
+            EngineBrakePriority = true;
             AlerterReset(TCSEvent.EngineBrakeChanged);
             if (EngineBrakeController == null)
                 return;
@@ -5214,6 +5277,7 @@ namespace Orts.Simulation.RollingStocks
                     }
                 case CABViewControlTypes.ENGINE_BRAKE:
                     {
+                        if ((AutomaticParkingBrakeEngaged || CruiseControl.SpeedSelMode == CruiseControl.SpeedSelectorMode.Parking) && !EngineBrakePriority) break;
                         data = (EngineBrakeController == null) ? 0.0f : EngineBrakeController.CurrentValue;
                         break;
                     }
