@@ -464,6 +464,8 @@ namespace Orts.Simulation.RollingStocks
         public bool AutomaticParkingBrake = false;
         public float AutomaticParkingBrakeEngageSpeedKpH = 0;
         public bool AutomaticParkingBrakeEngaged = false;
+        public List<CabViewControl> ActiveScreens = new List<CabViewControl>();
+        public List<CabViewControl> EditableItems = new List<CabViewControl>();
 
         public bool
       Speed0Pressed, Speed10Pressed, Speed20Pressed, Speed30Pressed, Speed40Pressed, Speed50Pressed
@@ -4910,7 +4912,7 @@ namespace Orts.Simulation.RollingStocks
 
         public virtual float GetDataOf(CabViewControl cvc)
         {
-            //CheckBlankDisplay(cvc);
+            CheckBlankDisplay(cvc);
             float data = 0;
             switch (cvc.ControlType)
             {
@@ -5760,6 +5762,61 @@ namespace Orts.Simulation.RollingStocks
                     break;
             }
             return data;
+        }
+
+        public virtual string GetDataOfS(CabViewControl crc, ElapsedTime elapsedClockSeconds)
+        {
+            if (crc.ControlType == CABViewControlTypes.ORTS_DIGITAL_STRING)
+            {
+                if (StringArray.StArray == null)
+                {
+                    if (String.IsNullOrEmpty(crc.PropertyName))
+                        return crc.Label;
+                }
+                foreach (StrArray strArray in StringArray.StArray)
+                {
+                    if (strArray.Index == crc.ArrayIndex)
+                    {
+                        return strArray.Strings.ElementAt(strArray.SelectedString).Key;
+                    }
+                }
+            }
+            if (crc.ControlType == CABViewControlTypes.ORTS_DATE)
+            {
+                return DateTime.Now.Date.ToString("dd.MM.yy");
+            }
+            string retVal = crc.StringValue;
+            if (crc.Length > 0)
+            {
+                if (retVal.Length > crc.Length) retVal = retVal.Substring(0, crc.Length);
+                while (retVal.Length < crc.Length) retVal = retVal + "0";
+            }
+            return retVal;
+        }
+
+        public void CheckBlankDisplay(CabViewControl cvc)
+        {
+            bool jumpOut = false;
+            if (cvc.DisplayID > -1)
+                cvc.BlankDisplay = true;
+            if (StringArray.StArray == null) return;
+            foreach (StrArray strArray in StringArray.StArray)
+            {
+                foreach (KeyValuePair<string, int> pair in strArray.Strings)
+                {
+                    int s = strArray.Strings.ElementAt(strArray.SelectedString).Value;
+                    if (s == cvc.DisplayID && s > -1)
+                    {
+                        if (cvc.DisplayID == pair.Value)
+                        {
+                            jumpOut = true;
+                            cvc.BlankDisplay = false;
+                            break;
+                        }
+                    }
+                }
+                if (jumpOut) break;
+            }
         }
 
         protected static float ConvertFromPSI(CabViewControl cvc, float data)

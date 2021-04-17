@@ -217,6 +217,9 @@ namespace Orts.Common
         CruiseControlMaxForce,
         Alert,
         Alert1,
+        KeyboardBeep,
+        KeyboardBeep1,
+
 
     }
 
@@ -450,6 +453,14 @@ namespace Orts.Common
                         case 302: return Event.CruiseControlMaxForce;
                         case 303: return Event.Alert;
                         case 304: return Event.Alert1;
+
+                        case 10187: return Event.KeyboardBeep;
+                        case 10189: return Event.KeyboardBeep1;
+                        case 10190: return Event.Alert;
+                        case 10191: return Event.Alert1;
+                        case 10192: return Event.CruiseControlSpeedRegulator;
+                        case 10193: return Event.CruiseControlSpeedSelector;
+                        case 10194: return Event.CruiseControlMaxForce;
 
                         default: return 0;
                     }
