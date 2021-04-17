@@ -379,6 +379,8 @@ namespace ORTS.Settings
             Commands[(int)UserCommand.ControlEmergencyPushButton] = new UserCommandKeyInput(0x0E);
             Commands[(int)UserCommand.ControlEngineBrakeDecrease] = new UserCommandKeyInput(0x1A);
             Commands[(int)UserCommand.ControlEngineBrakeIncrease] = new UserCommandKeyInput(0x1B);
+            Commands[(int)UserCommand.ControlEngineBrakeDecrease1] = new UserCommandKeyInput(0x1A, KeyModifiers.Control);
+            Commands[(int)UserCommand.ControlEngineBrakeIncrease1] = new UserCommandKeyInput(0x1B, KeyModifiers.Control);
             Commands[(int)UserCommand.ControlBrakemanBrakeDecrease] = new UserCommandKeyInput(0x1A, KeyModifiers.Alt);
             Commands[(int)UserCommand.ControlBrakemanBrakeIncrease] = new UserCommandKeyInput(0x1B, KeyModifiers.Alt);
             Commands[(int)UserCommand.ControlFireboxClose] = new UserCommandKeyInput(0x21, KeyModifiers.Shift);

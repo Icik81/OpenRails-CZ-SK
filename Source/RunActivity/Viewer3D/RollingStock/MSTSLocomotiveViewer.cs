@@ -154,6 +154,8 @@ namespace Orts.Viewer3D.RollingStock
             UserInputCommands.Add(UserCommand.ControlTrainBrakeZero, new Action[] { Noop, () => Locomotive.StartTrainBrakeDecrease(0, true) });
             UserInputCommands.Add(UserCommand.ControlEngineBrakeIncrease, new Action[] { () => Locomotive.StopEngineBrakeIncrease(), () => Locomotive.StartEngineBrakeIncrease(null) });
             UserInputCommands.Add(UserCommand.ControlEngineBrakeDecrease, new Action[] { () => Locomotive.StopEngineBrakeDecrease(), () => Locomotive.StartEngineBrakeDecrease(null) });
+            UserInputCommands.Add(UserCommand.ControlEngineBrakeIncrease1, new Action[] { () => Locomotive.StopEngineBrakeIncrease(), () => Locomotive.StartEngineBrakeIncrease(null) });
+            UserInputCommands.Add(UserCommand.ControlEngineBrakeDecrease1, new Action[] { () => Locomotive.StopEngineBrakeDecrease(), () => Locomotive.StartEngineBrakeDecrease(null) });
             UserInputCommands.Add(UserCommand.ControlBrakemanBrakeIncrease, new Action[] { () => Locomotive.StopBrakemanBrakeIncrease(), () => Locomotive.StartBrakemanBrakeIncrease(null) });
             UserInputCommands.Add(UserCommand.ControlBrakemanBrakeDecrease, new Action[] { () => Locomotive.StopBrakemanBrakeDecrease(), () => Locomotive.StartBrakemanBrakeDecrease(null) });
             UserInputCommands.Add(UserCommand.ControlDynamicBrakeIncrease, new Action[] { () => Locomotive.StopDynamicBrakeIncrease(), () => Locomotive.StartDynamicBrakeIncrease(null) });
@@ -1987,6 +1989,27 @@ namespace Orts.Viewer3D.RollingStock
                     }
                     index = (int)MpS.ToKpH(Locomotive.CruiseControl.SelectedSpeedMpS) / 10;
                     break;
+                case CABViewControlTypes.ORTS_RESTRICTED_SPEED_ZONE_ACTIVE:
+                    if (Locomotive.CruiseControl != null)
+                    {
+                        if (Locomotive.CruiseControl.SpeedRegMode == Simulation.RollingStocks.SubSystems.CruiseControl.SpeedRegulatorMode.Manual
+                            && Locomotive.DisableRestrictedSpeedWhenManualDriving)
+                        {
+                            Locomotive.CruiseControl.RestrictedSpeedActive = false;
+                            break;
+                        }
+                        else
+                        {
+                            index = (int)data;
+                            break;
+                        }
+                    }
+                    else
+                    {
+                        index = (int)data;
+                        break;
+                    }
+
                 case CABViewControlTypes.ALERTER_DISPLAY:
                 case CABViewControlTypes.RESET:
                 case CABViewControlTypes.WIPERS:
@@ -2097,7 +2120,6 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.ORTS_TCS47:
                 case CABViewControlTypes.ORTS_TCS48:
                 // Jindrich
-                case CABViewControlTypes.ORTS_RESTRICTED_SPEED_ZONE_ACTIVE:
                 case CABViewControlTypes.ORTS_SELECTED_SPEED_MODE:
                 case CABViewControlTypes.ORTS_SELECTED_SPEED_REGULATOR_MODE:
                 case CABViewControlTypes.ORTS_SELECTED_SPEED_MAXIMUM_ACCELERATION:
@@ -2423,6 +2445,14 @@ namespace Orts.Viewer3D.RollingStock
                     }
                     break;
                 case CABViewControlTypes.ORTS_RESTRICTED_SPEED_ZONE_ACTIVE:
+                    if (Locomotive.CruiseControl != null)
+                    {
+                        if (Locomotive.DisableRestrictedSpeedWhenManualDriving && Locomotive.CruiseControl.SpeedRegMode == Simulation.RollingStocks.SubSystems.CruiseControl.SpeedRegulatorMode.Manual)
+                        {
+                            Locomotive.CruiseControl.RestrictedSpeedActive = false;
+                            break;
+                        }
+                    }
                     if (ChangedValue(0) == 1)
                     {
                         Locomotive.CruiseControl.ActivateRestrictedSpeedZone();

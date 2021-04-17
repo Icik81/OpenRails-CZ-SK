@@ -914,7 +914,7 @@ namespace Orts.Simulation.RollingStocks
                 case 2:
                     {
                         if (DavisAN == 0)
-                            DavisAN = 1.79320f * G0;
+                            DavisAN = 0.9f * G0;
                         else
                             if (G1 != G)
                             DavisAN *= G / G0;
@@ -936,7 +936,7 @@ namespace Orts.Simulation.RollingStocks
                 case 3:
                     {
                         if (DavisAN == 0)
-                            DavisAN = 1.79320f * G0;
+                            DavisAN = 0.9f * G0;
                         else
                             if (G1 != G)
                             DavisAN *= G / G0;
@@ -958,7 +958,7 @@ namespace Orts.Simulation.RollingStocks
                 case 4:  // B'o-B'o
                     {
                         if (DavisAN == 0)
-                            DavisAN = 2.8f * G0;
+                            DavisAN = 1.4f * G0;
                         else
                             if (G1 != G)
                             DavisAN *= G / G0;
@@ -980,7 +980,7 @@ namespace Orts.Simulation.RollingStocks
                 case 6:
                     {
                         if (DavisAN == 0)
-                            DavisAN = 4.35f * G0;
+                            DavisAN = 2.17f * G0;
                         else
                             if (G1 != G)
                             DavisAN *= G / G0;

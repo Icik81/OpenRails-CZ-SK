@@ -48,7 +48,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
         public float SelectedMaxAccelerationPercent = 0;
         public float SelectedMaxAccelerationStep = 0;
         public float SelectedSpeedMpS = 0;
-        public int SelectedNumberOfAxles = 0;
+        public int SelectedNumberOfAxles = 4;
         public float SpeedRegulatorNominalSpeedStepMpS = 0;
         public float MaxAccelerationMpSS = 0;
         public float MaxDecelerationMpSS = 0;
@@ -692,6 +692,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems
 
         protected virtual void UpdateMotiveForce(float elapsedClockSeconds, float AbsWheelSpeedMpS)
         {
+            if (!Locomotive.PowerOn)
+                ForceThrottleAndDynamicBrake = 0;
             if (DynamicBrakeFullRangeIncreaseTimeSeconds == 0)
                 DynamicBrakeFullRangeIncreaseTimeSeconds = 4;
             if (DynamicBrakeFullRangeDecreaseTimeSeconds == 0)
@@ -882,7 +884,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
 
            if (firstIteration) // if this is exetuted the first time, let's check all other than player engines in the consist, and record them for further throttle manipulation
             {
-                SelectedNumberOfAxles = (int)(Locomotive.Train.Length / 6.6f); // also set the axles, for better delta computing, if user omits to set it
+                if (SelectedNumberOfAxles == 0) SelectedNumberOfAxles = (int)(Locomotive.Train.Length / 6.6f) + 4; // also set the axles, for better delta computing, if user omits to set it
                 foreach (TrainCar tc in Locomotive.Train.Cars)
                 {
                     if (tc.GetType() == typeof(MSTSLocomotive) || tc.GetType() == typeof(MSTSDieselLocomotive) || tc.GetType() == typeof(MSTSElectricLocomotive))
@@ -1553,14 +1555,6 @@ namespace Orts.Simulation.RollingStocks.SubSystems
             float data = 0;
             switch (cvc.ControlType)
             { 
-                case CABViewControlTypes.ORTS_SELECTED_SPEED:
-                case CABViewControlTypes.ORTS_SELECTED_SPEED_DISPLAY:
-                    bool metric = cvc.Units == CABViewControlUnits.KM_PER_HOUR;
-                    float temp = (float)Math.Round(RestrictedSpeedActive ? MpS.FromMpS(CurrentSelectedSpeedMpS, metric) : MpS.FromMpS(SelectedSpeedMpS, metric));
-                    if (previousSelectedSpeed < temp) previousSelectedSpeed += 1f;
-                    if (previousSelectedSpeed > temp) previousSelectedSpeed -= 1f;
-                    data = previousSelectedSpeed;
-                    break;
                 case CABViewControlTypes.ORTS_SELECTED_SPEED_MODE:
                     data = (float)SpeedSelMode;
                     break;
