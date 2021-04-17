@@ -459,6 +459,7 @@ namespace Orts.Simulation.RollingStocks
         public bool IsAPartOfPlayerTrain = false;
         public float ThrottleOverriden = 0;
         public int AccelerationBits = 0;
+        public bool DisableRestrictedSpeedWhenManualDriving = false;
         public bool
       Speed0Pressed, Speed10Pressed, Speed20Pressed, Speed30Pressed, Speed40Pressed, Speed50Pressed
     , Speed60Pressed, Speed70Pressed, Speed80Pressed, Speed90Pressed, Speed100Pressed
@@ -1018,6 +1019,7 @@ namespace Orts.Simulation.RollingStocks
                 // Jindrich
                 case "engine(ortscruisecontrol": SetUpCruiseControl(); break;
                 case "engine(ortsmultipositioncontroller": SetUpMPC(); break;
+                case "engine(disablerestrictedspeedwhenmanualdriving": DisableRestrictedSpeedWhenManualDriving = stf.ReadBoolBlock(false); break;
 
                 default:
                     base.Parse(lowercasetoken, stf);
