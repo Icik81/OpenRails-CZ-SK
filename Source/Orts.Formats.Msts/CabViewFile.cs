@@ -442,6 +442,23 @@ namespace Orts.Formats.Msts
 
         // Jindrich
         public int ControlId = 0;
+        public string StringValue = "";
+        public int Length = 0;
+        public int DisplayID = -1;
+        public bool BlankDisplay = false;
+        public float ArrayIndex;
+        public string PropertyName;
+        public string EditablePositionCharacter;
+        public string SendChar;
+        public float ItemIndex;
+        public string MouseHoverCursor = "Hand";
+        public int ScreenId = 0;
+        public int ContainerGroup = 0;
+        public int ActivateScreen = 0;
+        public bool IsActive = false;
+        public bool IsVisible = true;
+        public bool IsEditable = false;
+        public int ScreenContainer = 0;
 
         public CABViewControlTypes ControlType = CABViewControlTypes.NONE;
         public CABViewControlStyles ControlStyle = CABViewControlStyles.NONE;

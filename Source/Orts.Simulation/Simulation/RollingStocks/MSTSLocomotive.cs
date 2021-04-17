@@ -454,6 +454,7 @@ namespace Orts.Simulation.RollingStocks
         public CruiseControl CruiseControl;
         public MultiPositionController MultiPositionController;
         public List<MultiPositionController> MultiPositionControllers;
+        public StringArray StringArray = new StringArray();
         public bool SelectingSpeedPressed = false;
         public bool EngineBrakePriority = false;
         public bool IsAPartOfPlayerTrain = false;
@@ -1028,7 +1029,46 @@ namespace Orts.Simulation.RollingStocks
                 case "engine(ortscruisecontrol(parkingbrakepercent": CruiseControl.ParkingBrakePercent = stf.ReadFloatBlock(STFReader.UNITS.Any, 0); break;
                 case "engine(ortsautomaticparkingbrake": AutomaticParkingBrake = true; break;
                 case "engine(ortsautomaticparkingbrake(engagespeed": AutomaticParkingBrakeEngageSpeedKpH = stf.ReadFloatBlock(STFReader.UNITS.Speed, 0); break;
-
+                case "engine(stringarrays":
+                    stf.MustMatch("(");
+                    while (!stf.EndOfBlock())
+                    {
+                        stf.ParseBlock(new STFReader.TokenProcessor[] {
+                        new STFReader.TokenProcessor("stringarray", ()=>{
+                            stf.MustMatch("(");
+                            int index = (int)stf.ReadFloatBlock(STFReader.UNITS.None, 0);
+                            StrArray strArray = new StrArray();
+                            foreach (var array in stf.ReadStringBlock("").Split(','))
+                            {
+                                int displayID = -1;
+                                string updatedArray = "";
+                                if (array.Contains("{") && array.Contains("}"))
+                                {
+                                    string[] behaviors = array.Split('{');
+                                    updatedArray = behaviors[0];
+                                    displayID = int.Parse(behaviors[1].Replace("}", ""));
+                                }
+                                else
+                                {
+                                    updatedArray = array;
+                                }
+                                if (strArray.Strings == null)
+                                {
+                                    strArray.Strings = new Dictionary<string, int>();
+                                    strArray.Index = index;
+                                }
+                                else
+                                {
+                                    strArray.Index = index;
+                                }
+                                strArray.Strings.Add(updatedArray, displayID);
+                            }
+                            if (StringArray.StArray == null) StringArray.StArray = new List<StrArray>();
+                            StringArray.StArray.Add(strArray);
+                        }),
+                        });
+                    }
+                    break;
                 default:
                     base.Parse(lowercasetoken, stf);
                     // Jindrich
@@ -4866,9 +4906,11 @@ namespace Orts.Simulation.RollingStocks
         }*/
 
         private float elapsedTime;
+        private float previousSelectedSpeed = 0;
 
         public virtual float GetDataOf(CabViewControl cvc)
         {
+            //CheckBlankDisplay(cvc);
             float data = 0;
             switch (cvc.ControlType)
             {
@@ -5277,7 +5319,9 @@ namespace Orts.Simulation.RollingStocks
                     }
                 case CABViewControlTypes.ENGINE_BRAKE:
                     {
-                        if ((AutomaticParkingBrakeEngaged || CruiseControl.SpeedSelMode == CruiseControl.SpeedSelectorMode.Parking) && !EngineBrakePriority) break;
+                        if (CruiseControl != null)
+                            if ((AutomaticParkingBrakeEngaged || CruiseControl.SpeedSelMode == CruiseControl.SpeedSelectorMode.Parking) && !EngineBrakePriority)
+                                break;
                         data = (EngineBrakeController == null) ? 0.0f : EngineBrakeController.CurrentValue;
                         break;
                     }
@@ -5672,6 +5716,41 @@ namespace Orts.Simulation.RollingStocks
                         }
                     }
                     break;
+                case CABViewControlTypes.ORTS_SELECTED_SPEED:
+                case CABViewControlTypes.ORTS_SELECTED_SPEED_DISPLAY:
+                    {
+                        if (CruiseControl == null)
+                            break;
+                        bool jumpOut = false;
+                        if (cvc.DisplayID > -1)
+                            cvc.BlankDisplay = true;
+                        if (StringArray.StArray != null)
+                        {
+                            foreach (StrArray strArray in StringArray.StArray)
+                            {
+                                foreach (KeyValuePair<string, int> pair in strArray.Strings)
+                                {
+                                    int s = strArray.Strings.ElementAt(strArray.SelectedString).Value;
+                                    if (s == cvc.DisplayID && s > -1)
+                                    {
+                                        if (cvc.DisplayID == pair.Value)
+                                        {
+                                            jumpOut = true;
+                                            cvc.BlankDisplay = false;
+                                            break;
+                                        }
+                                    }
+                                }
+                                if (jumpOut) break;
+                            }
+                        }
+                        bool metric = cvc.Units == CABViewControlUnits.KM_PER_HOUR;
+                        float temp = CruiseControl.RestrictedSpeedActive ? MpS.FromMpS(CruiseControl.CurrentSelectedSpeedMpS, metric) : temp = MpS.FromMpS(CruiseControl.SelectedSpeedMpS, metric);
+                        if (previousSelectedSpeed < temp) previousSelectedSpeed += 1f;
+                        if (previousSelectedSpeed > temp) previousSelectedSpeed -= 1f;
+                        data = previousSelectedSpeed;
+                        break;
+                    }
 
                 default:
                     if (CruiseControl != null)
@@ -5739,6 +5818,18 @@ namespace Orts.Simulation.RollingStocks
         }
 
     } // End Class MSTSLocomotive
+
+    public class StringArray
+    {
+        public List<StrArray> StArray { get; set; }
+    }
+    public class StrArray
+    {
+        public Dictionary<string, int> Strings { get; set; }
+        public int Index { get; set; }
+        public int SelectedString { get; set; }
+        public int AffectedDisplayID { get; set; }
+    }
 
     public class CabView
     {
