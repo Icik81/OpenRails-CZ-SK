@@ -2202,6 +2202,8 @@ namespace Orts.Viewer3D.RollingStock
         /// <summary>
         /// Handles cabview mouse events, and changes the corresponding locomotive control values.
         /// </summary>
+        protected bool PlusKeyPressed = false;
+        protected bool MinusKeyPressed = false;
         public void HandleUserInput()
         {
             switch (Control.ControlType)
@@ -2445,6 +2447,8 @@ namespace Orts.Viewer3D.RollingStock
                     }
                     break;
                 case CABViewControlTypes.ORTS_RESTRICTED_SPEED_ZONE_ACTIVE:
+                    if (Locomotive.CruiseControl == null)
+                        break;
                     if (Locomotive.CruiseControl != null)
                     {
                         if (Locomotive.DisableRestrictedSpeedWhenManualDriving && Locomotive.CruiseControl.SpeedRegMode == Simulation.RollingStocks.SubSystems.CruiseControl.SpeedRegulatorMode.Manual)
@@ -2459,18 +2463,24 @@ namespace Orts.Viewer3D.RollingStock
                     }
                     break;
                 case CABViewControlTypes.ORTS_NUMBER_OF_AXES_INCREASE:
+                    if (Locomotive.CruiseControl == null)
+                        break;
                     if (ChangedValue(0) == 1)
                     {
                         Locomotive.CruiseControl.NumerOfAxlesIncrease();
                     }
                     break;
                 case CABViewControlTypes.ORTS_NUMBER_OF_AXES_DECREASE:
+                    if (Locomotive.CruiseControl == null)
+                        break;
                     if (ChangedValue(0) == 1)
                     {
                         Locomotive.CruiseControl.NumberOfAxlesDecrease();
                     }
                     break;
                 case CABViewControlTypes.ORTS_SELECTED_SPEED_MAXIMUM_ACCELERATION:
+                    if (Locomotive.CruiseControl == null)
+                        break;
                     if (ChangedValue(0) == 1)
                     {
                         Locomotive.CruiseControl.SelectedMaxAccelerationStep += 1;
@@ -2491,6 +2501,8 @@ namespace Orts.Viewer3D.RollingStock
                     break;
                 case CABViewControlTypes.ORTS_MULTI_POSITION_CONTROLLER:
                     {
+                        if (Locomotive.MultiPositionControllers == null)
+                            break;
                         foreach (MultiPositionController mpc in Locomotive.MultiPositionControllers)
                         {
                             if (mpc.ControllerId == Control.ControlId)
@@ -2515,6 +2527,56 @@ namespace Orts.Viewer3D.RollingStock
                                 }
 
                             }
+                        }
+                        break;
+                    }
+                case CABViewControlTypes.ORTS_DIGITAL_STRING_SELECTED_STRING_INCREASE:
+                    {
+                        p = ChangedValue(0);
+                        if (p == 1 && !PlusKeyPressed)
+                        {
+                            Locomotive.SignalEvent(Event.KeyboardBeep1);
+                            PlusKeyPressed = true;
+                            int selected = Locomotive.StringArray.StArray[(int)Control.ArrayIndex].SelectedString;
+                            selected++;
+                            if (selected > Locomotive.StringArray.StArray[(int)Control.ArrayIndex].Strings.Count - 1)
+                                Locomotive.StringArray.StArray[(int)Control.ArrayIndex].SelectedString = 0;
+                            else
+                                Locomotive.StringArray.StArray[(int)Control.ArrayIndex].SelectedString = selected;
+                        }
+                        else if (p == 0)
+                        {
+                            PlusKeyPressed = false;
+                        }
+                        break;
+                    }
+                case CABViewControlTypes.ORTS_DIGITAL_STRING_SELECTED_STRING_DECREASE:
+                    {
+                        p = ChangedValue(0);
+                        if (p == 1 && !MinusKeyPressed)
+                        {
+                            Locomotive.SignalEvent(Event.KeyboardBeep1);
+                            MinusKeyPressed = true;
+                            int selected = Locomotive.StringArray.StArray[(int)Control.ArrayIndex].SelectedString;
+                            selected--;
+                            if (selected < 0)
+                                Locomotive.StringArray.StArray[(int)Control.ArrayIndex].SelectedString = Locomotive.StringArray.StArray[(int)Control.ArrayIndex].Strings.Count - 1;
+                            else
+                                Locomotive.StringArray.StArray[(int)Control.ArrayIndex].SelectedString = selected;
+                        }
+                        else if (p == 0)
+                        {
+                            MinusKeyPressed = false;
+                        }
+                        break;
+                    }
+                case CABViewControlTypes.ORTS_DIGITAL_STRING_ACTION_BUTTON:
+                    {
+                        p = ChangedValue(0);
+                        if (p == 1)
+                        {
+                            Locomotive.SignalEvent(Event.KeyboardBeep1);
+                            Locomotive.StringArray.StArray[(int)Control.ArrayIndex].SelectedString = (int)Control.ItemIndex;
                         }
                         break;
                     }
@@ -2893,6 +2955,8 @@ namespace Orts.Viewer3D.RollingStock
             var digital = Control as CVCDigital;
 
             Num = Locomotive.GetDataOf(Control);
+            if (Control.BlankDisplay) return;
+
             if (digital.MinValue < digital.MaxValue) Num = MathHelper.Clamp(Num, (float)digital.MinValue, (float)digital.MaxValue);
             if (Math.Abs(Num) < digital.AccuracySwitch)
                 Format = Format2;
@@ -2910,6 +2974,30 @@ namespace Orts.Viewer3D.RollingStock
 
             if (Control.ControlType == CABViewControlTypes.CLOCK)
             {
+                if (Locomotive.StringArray != null && Locomotive.StringArray.StArray != null)
+                {
+                    bool jumpOut = true;
+                    if (Locomotive.StringArray.StArray != null)
+                    {
+                        foreach (StrArray strArray in Locomotive.StringArray.StArray)
+                        {
+                            foreach (KeyValuePair<string, int> pair in strArray.Strings)
+                            {
+                                int s = strArray.Strings.ElementAt(strArray.SelectedString).Value;
+                                if (s == Control.DisplayID)
+                                {
+                                    if (Control.DisplayID == pair.Value)
+                                    {
+                                        jumpOut = false;
+                                        break;
+                                    }
+                                }
+                            }
+                            if (!jumpOut) break;
+                        }
+                    }
+                    if (jumpOut) return;
+                }
                 // Clock is drawn specially.
                 var clockSeconds = Locomotive.Simulator.ClockTime;
                 var hour = (int)(clockSeconds / 3600) % 24;
@@ -2930,6 +3018,38 @@ namespace Orts.Viewer3D.RollingStock
                         hour = 12;
                 }
                 DrawText = String.Format(digital.Accuracy > 0 ? "{0:D2}:{1:D2}:{2:D2}" : "{0:D2}:{1:D2}", hour, minute, seconds);
+                DrawColor = new Color(digital.PositiveColor.R, digital.PositiveColor.G, digital.PositiveColor.B);
+            }
+            else if (
+    Control.ControlType == CABViewControlTypes.ORTS_DIGITAL_STRING ||
+    Control.ControlType == CABViewControlTypes.ORTS_DATE ||
+    Control.ControlType == CABViewControlTypes.BRAKE_PIPE
+    )
+            {
+                digital.StringValue = Num.ToString();
+                DrawText = Locomotive.GetDataOfS(digital, elapsedTime);
+                if (!String.IsNullOrEmpty(Control.EditablePositionCharacter))
+                {
+                    if (Locomotive.EditableItems.Count == 0)
+                    {
+                        Control.IsEditable = true;
+                        Locomotive.EditableItems.Add(Control);
+                    }
+                    else
+                    {
+                        bool toBeAdded = true;
+                        foreach (CabViewControl cvc in Locomotive.EditableItems)
+                        {
+                            if (cvc == Control)
+                                toBeAdded = false;
+                        }
+                        if (toBeAdded)
+                            Locomotive.EditableItems.Add(Control);
+                    }
+                }
+                if (Control.IsEditable)
+                    DrawText += Control.EditablePositionCharacter;
+
                 DrawColor = new Color(digital.PositiveColor.R, digital.PositiveColor.G, digital.PositiveColor.B);
             }
             else if (digital.OldValue != 0 && digital.OldValue > Num && digital.DecreaseColor.A != 0)

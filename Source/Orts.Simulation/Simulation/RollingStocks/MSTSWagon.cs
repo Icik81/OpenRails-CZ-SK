@@ -926,7 +926,7 @@ namespace Orts.Simulation.RollingStocks
                             DavisBNSpM *= G / G0;
 
                         if (DavisCNSSpMM == 0)
-                            DavisCNSSpMM = 0.00088f * G0;
+                            DavisCNSSpMM = 0.000148f * G0 / TrailLocoResistanceFactor;
                         else
                             if (G1 != G)
                             DavisCNSSpMM *= G / G0;
@@ -948,7 +948,7 @@ namespace Orts.Simulation.RollingStocks
                             DavisBNSpM *= G / G0;
 
                         if (DavisCNSSpMM == 0)
-                            DavisCNSSpMM = 0.00088f * G0;
+                            DavisCNSSpMM = 0.00015f * G0 / TrailLocoResistanceFactor;
                         else
                             if (G1 != G)
                             DavisCNSSpMM *= G / G0;
@@ -970,7 +970,7 @@ namespace Orts.Simulation.RollingStocks
                             DavisBNSpM *= G / G0;
 
                         if (DavisCNSSpMM == 0)
-                            DavisCNSSpMM = 0.00085f * G0;
+                            DavisCNSSpMM = 0.00015f * G0 / TrailLocoResistanceFactor;
                         else
                             if (G1 != G)
                             DavisCNSSpMM *= G / G0;
@@ -980,7 +980,7 @@ namespace Orts.Simulation.RollingStocks
                 case 6:
                     {
                         if (DavisAN == 0)
-                            DavisAN = 2.17f * G0;
+                            DavisAN = 1.7f * G0;
                         else
                             if (G1 != G)
                             DavisAN *= G / G0;
@@ -992,7 +992,7 @@ namespace Orts.Simulation.RollingStocks
                             DavisBNSpM *= G / G0;
 
                         if (DavisCNSSpMM == 0)
-                            DavisCNSSpMM = 0.00081f * G0;
+                            DavisCNSSpMM = 0.000136f * G0 / TrailLocoResistanceFactor;
                         else
                             if (G1 != G)
                             DavisCNSSpMM *= G / G0;

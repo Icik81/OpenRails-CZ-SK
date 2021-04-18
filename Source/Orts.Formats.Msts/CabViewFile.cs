@@ -317,6 +317,12 @@ namespace Orts.Formats.Msts
         ORTS_CC_SPEED_180,
         ORTS_CC_SPEED_190,
         ORTS_CC_SPEED_200,
+        ORTS_DIGITAL_STRING,
+        ORTS_DATE,
+        ORTS_DIGITAL_STRING_SELECTED_STRING_INCREASE,
+        ORTS_DIGITAL_STRING_SELECTED_STRING_DECREASE,
+        ORTS_DIGITAL_STRING_ACTION_BUTTON,
+
         // Further CabViewControlTypes must be added above this line, to avoid their malfunction in 3DCabs
         EXTERNALWIPERS,
         LEFTDOOR,
@@ -867,6 +873,26 @@ namespace Orts.Formats.Msts
                     Precision = stf.ReadFloat(STFReader.UNITS.None, null);
                     stf.SkipRestOfBlock();
                 }),
+                new STFReader.TokenProcessor("displayid", ()=>{
+                    stf.MustMatch("(");
+                    DisplayID = (int)stf.ReadFloat(STFReader.UNITS.None, 0);
+                    stf.SkipRestOfBlock();
+                }),
+                new STFReader.TokenProcessor("cursor", ()=>{
+                    stf.MustMatch("(");
+                    MouseHoverCursor = stf.ReadString();
+                    stf.SkipRestOfBlock();
+                }),
+                new STFReader.TokenProcessor("length", ()=>{
+                    stf.MustMatch("(");
+                    Length = (int)stf.ReadFloat(STFReader.UNITS.None, 0);
+                    stf.SkipRestOfBlock();
+                }),
+                new STFReader.TokenProcessor("screencontainer", ()=>{
+                    stf.MustMatch("(");
+                    ScreenContainer = (int)stf.ReadFloat(STFReader.UNITS.None, 0);
+                    stf.SkipRestOfBlock();
+                })
             });
         }
 
@@ -874,6 +900,13 @@ namespace Orts.Formats.Msts
         {
             stf.MustMatch("(");
             LeadingZeros = stf.ReadInt(0);
+            stf.SkipRestOfBlock();
+        }
+
+        protected virtual void ParseDisplayID(STFReader stf)
+        {
+            stf.MustMatch("(");
+            DisplayID = stf.ReadInt(0);
             stf.SkipRestOfBlock();
         }
 
@@ -925,7 +958,8 @@ namespace Orts.Formats.Msts
                 new STFReader.TokenProcessor("accuracy", ()=>{ ParseAccuracy(stf); }), 
                 new STFReader.TokenProcessor("controlcolour", ()=>{ PositiveColor = ParseControlColor(stf); }),
                 new STFReader.TokenProcessor("ortsfont", ()=>{ParseFont(stf); }),
-                new STFReader.TokenProcessor("ortsangle", () => { Rotation = ParseRotation(stf); })
+                new STFReader.TokenProcessor("ortsangle", () => { Rotation = ParseRotation(stf); }),
+                new STFReader.TokenProcessor("displayid", ()=>{ParseDisplayID(stf); })
             });
         }
 
