@@ -2349,8 +2349,8 @@ namespace Orts.Simulation.RollingStocks
                     if (DynamicBrakeController != null)
                     {
                         DynamicBrakeController.Update(elapsedClockSeconds);
-                        DynamicBrakePercent = (DynamicBrakeIntervention < 0 ? DynamicBrakeController.CurrentValue : DynamicBrakeIntervention) * 100f;
-                        LocalDynamicBrakePercent = (DynamicBrakeIntervention < 0 ? DynamicBrakeController.CurrentValue : DynamicBrakeIntervention) * 100f;
+                        DynamicBrakePercent = (DynamicBrakeIntervention < 0.1 ? DynamicBrakeController.CurrentValue : DynamicBrakeIntervention) * 100f;
+                        LocalDynamicBrakePercent = (DynamicBrakeIntervention < 0.1 ? DynamicBrakeController.CurrentValue : DynamicBrakeIntervention) * 100f;
                     }
                     else
                     {
