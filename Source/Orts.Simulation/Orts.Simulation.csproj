@@ -102,6 +102,7 @@
     <Compile Include="Simulation\RollingStocks\MSTSElectricLocomotive.cs" />
     <Compile Include="Simulation\RollingStocks\MSTSLocomotive.cs" />
     <Compile Include="Simulation\RollingStocks\MSTSSteamLocomotive.cs" />
+    <Compile Include="Simulation\RollingStocks\ExtendedPhysics.cs" />
     <Compile Include="Simulation\RollingStocks\MSTSWagon.cs" />
     <Compile Include="Simulation\RollingStocks\RollingStock.cs" />
     <Compile Include="Simulation\RollingStocks\SubSystems\Brakes\BrakeSystem.cs" />

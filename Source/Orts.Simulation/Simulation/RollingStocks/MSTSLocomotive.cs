@@ -466,6 +466,7 @@ namespace Orts.Simulation.RollingStocks
         public bool AutomaticParkingBrakeEngaged = false;
         public List<CabViewControl> ActiveScreens = new List<CabViewControl>();
         public List<CabViewControl> EditableItems = new List<CabViewControl>();
+        public ExtendedPhysics extendedPhysics;
 
         public bool
       Speed0Pressed, Speed10Pressed, Speed20Pressed, Speed30Pressed, Speed40Pressed, Speed50Pressed
@@ -829,6 +830,10 @@ namespace Orts.Simulation.RollingStocks
         {
             switch (lowercasetoken)
             {
+                case "engine(extendedphysics":
+                    extendedPhysics = new ExtendedPhysics(this);
+                    extendedPhysics.Parse(lowercasetoken, stf);
+                    break;
                 case "engine(sound": CabSoundFileName = stf.ReadStringBlock(null); break;
                 case "engine(cabview": CVFFileName = stf.ReadStringBlock(null); break;
                 case "engine(maxpower": MaxPowerW = stf.ReadFloatBlock(STFReader.UNITS.Power, null); break;
