@@ -1968,7 +1968,6 @@ namespace Orts.Simulation.RollingStocks
                             braking = false;
                         if (braking && ThrottlePercent == 0 && AbsSpeedMpS < MpS.FromKpH(AutomaticParkingBrakeEngageSpeedKpH))
                         {
-                            Simulator.Confirmer.MSG(Bar.FromPSI(BrakeSystem.GetCylPressurePSI()).ToString());
                             if (Bar.FromPSI(BrakeSystem.GetCylPressurePSI()) < 1.85f)
                             {
                                 EngineBrakePercentSet += 0.5f;
@@ -2349,8 +2348,8 @@ namespace Orts.Simulation.RollingStocks
                     if (DynamicBrakeController != null)
                     {
                         DynamicBrakeController.Update(elapsedClockSeconds);
-                        DynamicBrakePercent = (DynamicBrakeIntervention < 0 ? DynamicBrakeController.CurrentValue : DynamicBrakeIntervention) * 100f;
-                        LocalDynamicBrakePercent = (DynamicBrakeIntervention < 0 ? DynamicBrakeController.CurrentValue : DynamicBrakeIntervention) * 100f;
+                        DynamicBrakePercent = (DynamicBrakeIntervention < 0.1 ? DynamicBrakeController.CurrentValue : DynamicBrakeIntervention) * 100f;
+                        LocalDynamicBrakePercent = (DynamicBrakeIntervention < 0.1 ? DynamicBrakeController.CurrentValue : DynamicBrakeIntervention) * 100f;
                     }
                     else
                     {
@@ -2358,7 +2357,7 @@ namespace Orts.Simulation.RollingStocks
                         LocalDynamicBrakePercent = Math.Max(DynamicBrakeIntervention * 100f, 0f);
                     }
 
-                    if (DynamicBrakeIntervention < 0 && PreviousDynamicBrakeIntervention >= 0 && DynamicBrakePercent == 0)
+                    if (DynamicBrakeIntervention < 0.1 && PreviousDynamicBrakeIntervention >= 0 && DynamicBrakePercent == 0)
                     {
                         DynamicBrakePercent = -1;
                         LocalDynamicBrakePercent = -1;
