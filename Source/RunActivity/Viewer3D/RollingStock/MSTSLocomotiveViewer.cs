@@ -1933,6 +1933,41 @@ namespace Orts.Viewer3D.RollingStock
                     index = data > 0.001 ? 1 : 0;
                     break;
                 case CABViewControlTypes.DYNAMIC_BRAKE:
+                    if (Locomotive.DynamicBrakeIntervention != -1)
+                    {
+                        index = 0;
+                        break;
+                    }
+                    var dynBrakePercent0 = Locomotive.Train.TrainType == Train.TRAINTYPE.AI_PLAYERHOSTING ?
+                        Locomotive.DynamicBrakePercent : Locomotive.LocalDynamicBrakePercent;
+                    if (Locomotive.DynamicBrakeController != null)
+                    {
+                        if (dynBrakePercent0 == -1)
+                            break;
+                        if (!Locomotive.HasSmoothStruc)
+                        {
+                            index = Locomotive.DynamicBrakeController != null ? Locomotive.DynamicBrakeController.CurrentNotch : 0;
+                        }
+                        else
+                        {
+                            if (Locomotive.CruiseControl != null)
+                            {
+                                if ((Locomotive.CruiseControl.SpeedRegMode == Simulation.RollingStocks.SubSystems.CruiseControl.SpeedRegulatorMode.Auto && !Locomotive.CruiseControl.DynamicBrakePriority) || Locomotive.DynamicBrakeIntervention > 0)
+                                {
+                                    index = 0;
+                                }
+                                else
+                                    index = PercentToIndex(dynBrakePercent0);
+                            }
+                            else
+                                index = PercentToIndex(dynBrakePercent0);
+                        }
+                    }
+                    else
+                    {
+                        index = PercentToIndex(dynBrakePercent0);
+                    }
+                    break;
                 case CABViewControlTypes.DYNAMIC_BRAKE_DISPLAY:
                     var dynBrakePercent = Locomotive.Train.TrainType == Train.TRAINTYPE.AI_PLAYERHOSTING ?
                         Locomotive.DynamicBrakePercent : Locomotive.LocalDynamicBrakePercent;
