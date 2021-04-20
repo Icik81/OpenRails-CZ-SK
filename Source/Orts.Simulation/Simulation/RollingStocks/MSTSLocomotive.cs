@@ -830,10 +830,6 @@ namespace Orts.Simulation.RollingStocks
         {
             switch (lowercasetoken)
             {
-                case "engine(extendedphysics":
-                    extendedPhysics = new ExtendedPhysics(this);
-                    extendedPhysics.Parse(lowercasetoken, stf);
-                    break;
                 case "engine(sound": CabSoundFileName = stf.ReadStringBlock(null); break;
                 case "engine(cabview": CVFFileName = stf.ReadStringBlock(null); break;
                 case "engine(maxpower": MaxPowerW = stf.ReadFloatBlock(STFReader.UNITS.Power, null); break;
@@ -1743,6 +1739,7 @@ namespace Orts.Simulation.RollingStocks
                 if (DynamicBrakeController != null)
                     DynamicBrakeIntervention = Math.Max(DynamicBrakeIntervention, DynamicBrakeController.CurrentValue);
             }
+
             else if (DynamicBrakeBlended)
             {
                 DynamicBrakeIntervention = -1;
@@ -5372,6 +5369,8 @@ namespace Orts.Simulation.RollingStocks
                 case CABViewControlTypes.DYNAMIC_BRAKE_DISPLAY:
                     //case CABViewControlTypes.CP_HANDLE:
                     {
+                        if (DynamicBrakeIntervention >= 0)
+                            break;
                         data = DynamicBrakePercent / 100f;
                         break;
                     }
