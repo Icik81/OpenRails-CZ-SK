@@ -5755,6 +5755,13 @@ namespace Orts.Simulation.RollingStocks
                         if (previousSelectedSpeed < temp) previousSelectedSpeed += 1f;
                         if (previousSelectedSpeed > temp) previousSelectedSpeed -= 1f;
                         data = previousSelectedSpeed;
+                        if (cvc.Precision > 0)
+                        {
+                            data = data / cvc.Precision;
+                            data = (float)Math.Round(data, 0);
+                            data = data * cvc.Precision;
+                        }
+
                         break;
                     }
 

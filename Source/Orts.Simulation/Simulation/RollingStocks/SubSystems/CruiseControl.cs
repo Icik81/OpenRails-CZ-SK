@@ -1304,12 +1304,22 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                         }
                         float demandedVolts = t * 100;
                         float current = maxForceN / Locomotive.MaxForceN * Locomotive.MaxCurrentA;
-                        if (current < PowerBreakoutAmpers)
+                        if (!RestrictedSpeedActive)
+                            delta = SelectedSpeedMpS - Locomotive.AbsSpeedMpS;
+                        else
+                            delta = CurrentSelectedSpeedMpS - Locomotive.AbsSpeedMpS;
+
+                        if (current < PowerBreakoutAmpers && delta < PowerResumeSpeedDelta / 2)
                             breakout = true;
-                        if (breakout && delta > 0.2f)
+                        if (breakout && delta > PowerResumeSpeedDelta)
                             breakout = false;
                         if (UseThrottle) // not valid for diesel engines.
                             breakout = false;
+                        if (!RestrictedSpeedActive)
+                            delta = SelectedSpeedMpS - AbsWheelSpeedMpS;
+                        else
+                            delta = CurrentSelectedSpeedMpS - AbsWheelSpeedMpS;
+
                         if ((controllerVolts != demandedVolts) && delta > 0)
                         {
                             if (a > 0 && (SpeedIsMph ? MpS.ToMpH(Locomotive.WheelSpeedMpS) : MpS.ToKpH(Locomotive.WheelSpeedMpS)) > 5)
