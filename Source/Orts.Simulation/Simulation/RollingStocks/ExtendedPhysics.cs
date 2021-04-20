@@ -44,6 +44,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Xml;
 using Event = Orts.Common.Event;
 
 namespace Orts.Simulation.RollingStocks
@@ -66,15 +67,40 @@ namespace Orts.Simulation.RollingStocks
 
         }
 
-        public void Parse(string lowercasetoken, STFReader stf)
+        public void Parse(string path)
         {
-            stf.MustMatch("(");
-            stf.ParseBlock(new[] {
-                new STFReader.TokenProcessor("undercarriage", ()=>
+            XmlDocument document = new XmlDocument();
+            document.Load(path);
+            foreach (XmlNode node in document.ChildNodes)
+            {
+                if (node.Name == "ExtendedPhysics")
                 {
-                    Undercarriages.Add(new Undercarriage(stf));
-                }),
-            });
+                    foreach (XmlNode main in node.ChildNodes)
+                    {
+                        if (main.Name.ToLower() == "undercarriage")
+                        {
+                            Undercarriage undercarriage = new Undercarriage();
+                            foreach (XmlNode undercarriageNode in main.ChildNodes)
+                            {
+                                if (undercarriageNode.Name.ToLower() == "id")
+                                    undercarriage.Id = int.Parse(node.Value);
+                                if (undercarriageNode.Name.ToLower() == "pivoty")
+                                    undercarriage.PivotY = int.Parse(node.Value);
+                                if (undercarriageNode.Name.ToLower() == "pivotz")
+                                    undercarriage.PivotZ = int.Parse(node.Value);
+                                if (undercarriageNode.Name.ToLower() == "axle")
+                                {
+                                    ExtendedAxle extendedAxle = new ExtendedAxle();
+                                    foreach (XmlNode axleNode in undercarriageNode.ChildNodes)
+                                    {
+
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -84,16 +110,8 @@ namespace Orts.Simulation.RollingStocks
         public int PivotY = 0;
         public int PivotZ = 0;
         public List<ExtendedAxle> Axles = new List<ExtendedAxle>();
-        public Undercarriage(STFReader stf)
+        public Undercarriage()
         {
-            stf.MustMatch("(");
-            stf.ParseBlock(new STFReader.TokenProcessor[]
-                {
-                    new STFReader.TokenProcessor("id", ()=>{ Id = stf.ReadIntBlock(-1); }),
-                    new STFReader.TokenProcessor("pivoty", ()=>{ PivotY = stf.ReadIntBlock(0); }),
-                    new STFReader.TokenProcessor("pivotz", ()=>{ PivotZ = stf.ReadIntBlock(0); }),
-                    //new STFReader.TokenProcessor("axle", ()=> Axles.Add(new ExtendedAxle(stf));)
-                });
         }
     }
 
