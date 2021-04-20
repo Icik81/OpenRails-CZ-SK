@@ -5366,11 +5366,17 @@ namespace Orts.Simulation.RollingStocks
                         break;
                     }
                 case CABViewControlTypes.DYNAMIC_BRAKE:
+                    if (DynamicBrakeIntervention != -1)
+                    {
+                        data = 0;
+                        break;
+                    }
+                    data = DynamicBrakePercent / 100f;
+                    break;
+
                 case CABViewControlTypes.DYNAMIC_BRAKE_DISPLAY:
                     //case CABViewControlTypes.CP_HANDLE:
                     {
-                        if (DynamicBrakeIntervention >= 0)
-                            break;
                         data = DynamicBrakePercent / 100f;
                         break;
                     }
