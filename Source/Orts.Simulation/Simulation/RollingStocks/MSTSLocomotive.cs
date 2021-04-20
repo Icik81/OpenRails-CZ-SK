@@ -3997,6 +3997,18 @@ namespace Orts.Simulation.RollingStocks
             {
                 CruiseControl.TrainBrakePriority = true;
             }
+            if (TrainBrakeController.TrainBrakeControllerState == ControllerState.Apply
+                || TrainBrakeController.TrainBrakeControllerState == ControllerState.EPApply
+                || TrainBrakeController.TrainBrakeControllerState == ControllerState.EPFullServ
+                || TrainBrakeController.TrainBrakeControllerState == ControllerState.FullServ
+                || TrainBrakeController.TrainBrakeControllerState  == ControllerState.Emergency)
+            {
+                if (ThrottlePercent > 0)
+                {
+                    ThrottleController.SetPercent(0);
+                }
+            }
+
             Simulator.Confirmer.Confirm(CabControl.TrainBrake, CabSetting.Increase, GetTrainBrakeStatus());
             SignalEvent(Event.TrainBrakeChange);
         }
