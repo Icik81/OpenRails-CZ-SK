@@ -203,6 +203,16 @@ namespace Orts.Simulation.RollingStocks.SubSystems
             clockTime = Simulator.ClockTime * 100;
         }
 
+        public void Update()
+        {
+            if (SpeedRegMode != SpeedRegulatorMode.Manual)
+            {
+                return;
+            }
+            if (maxForceIncreasing) SpeedRegulatorMaxForceIncrease();
+            if (maxForceDecreasing) SpeedRegulatorMaxForceDecrease();
+        }
+
         public void Update(float elapsedClockSeconds, float AbsWheelSpeedMpS)
         {
             elapsedTime += elapsedClockSeconds;
@@ -425,6 +435,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
         public void SpeedRegulatorMaxForceStartIncrease()
         {
             maxForceIncreasing = true;
+            Update();
         }
         public void SpeedRegulatorMaxForceStopIncrease()
         {
@@ -458,6 +469,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
         public void SpeedRegulatorMaxForceStartDecrease()
         {
             maxForceDecreasing = true;
+            Update();
         }
         public void SpeedRegulatorMaxForceStopDecrease()
         {
