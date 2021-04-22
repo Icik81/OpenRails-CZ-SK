@@ -2519,19 +2519,29 @@ namespace Orts.Viewer3D.RollingStock
                     if (ChangedValue(0) == 1)
                     {
                         Locomotive.CruiseControl.SelectedMaxAccelerationStep += 1;
+                        if (Locomotive.CruiseControl.SelectedMaxAccelerationStep > Locomotive.CruiseControl.SpeedRegulatorMaxForceSteps)
+                            Locomotive.CruiseControl.SelectedMaxAccelerationStep = Locomotive.CruiseControl.SpeedRegulatorMaxForceSteps;
+                        if (Locomotive.CruiseControl.SelectedMaxAccelerationStep < 0)
+                            Locomotive.CruiseControl.SelectedMaxAccelerationStep = 0;
                     }
                     if (ChangedValue(0) == -1)
                     {
                         Locomotive.CruiseControl.SelectedMaxAccelerationStep -= 1;
+                        if (Locomotive.CruiseControl.SelectedMaxAccelerationStep == 0 && Locomotive.CruiseControl.DisableZeroForceStep)
+                            Locomotive.CruiseControl.SelectedMaxAccelerationStep = 1;
                     }
-                    if (ChangedValue(0) != 0)
+                    if (ChangedValue(0) != 0 && Locomotive.CruiseControl.SpeedRegulatorMaxForceSteps == 100)
                     {
                         Locomotive.CruiseControl.SelectedMaxAccelerationStep += ChangedValue(0) * (float)Control.MaxValue;
                         if (Locomotive.CruiseControl.SelectedMaxAccelerationStep > 100)
                             Locomotive.CruiseControl.SelectedMaxAccelerationStep = 100;
                         if (Locomotive.CruiseControl.SelectedMaxAccelerationStep < 0)
                             Locomotive.CruiseControl.SelectedMaxAccelerationStep = 0;
-                        Locomotive.Simulator.Confirmer.Information("Selected maximum acceleration was changed to " + Math.Round(Locomotive.CruiseControl.SelectedMaxAccelerationStep, 0).ToString() + " percent");
+                        Locomotive.Simulator.Confirmer.Information("Selected maximum acceleration was changed to " + Math.Round(Locomotive.CruiseControl.SelectedMaxAccelerationStep, 0).ToString() + " percent.");
+                    }
+                    else
+                    {
+                        Locomotive.Simulator.Confirmer.Information("Selected maximum acceleration was changed to " + Math.Round(Locomotive.CruiseControl.SelectedMaxAccelerationStep, 0).ToString());
                     }
                     break;
                 case CABViewControlTypes.ORTS_MULTI_POSITION_CONTROLLER:
