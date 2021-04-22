@@ -1933,6 +1933,41 @@ namespace Orts.Viewer3D.RollingStock
                     index = data > 0.001 ? 1 : 0;
                     break;
                 case CABViewControlTypes.DYNAMIC_BRAKE:
+                    if (Locomotive.DynamicBrakeIntervention != -1)
+                    {
+                        index = 0;
+                        break;
+                    }
+                    var dynBrakePercent0 = Locomotive.Train.TrainType == Train.TRAINTYPE.AI_PLAYERHOSTING ?
+                        Locomotive.DynamicBrakePercent : Locomotive.LocalDynamicBrakePercent;
+                    if (Locomotive.DynamicBrakeController != null)
+                    {
+                        if (dynBrakePercent0 == -1)
+                            break;
+                        if (!Locomotive.HasSmoothStruc)
+                        {
+                            index = Locomotive.DynamicBrakeController != null ? Locomotive.DynamicBrakeController.CurrentNotch : 0;
+                        }
+                        else
+                        {
+                            if (Locomotive.CruiseControl != null)
+                            {
+                                if ((Locomotive.CruiseControl.SpeedRegMode == Simulation.RollingStocks.SubSystems.CruiseControl.SpeedRegulatorMode.Auto && !Locomotive.CruiseControl.DynamicBrakePriority) || Locomotive.DynamicBrakeIntervention > 0)
+                                {
+                                    index = 0;
+                                }
+                                else
+                                    index = PercentToIndex(dynBrakePercent0);
+                            }
+                            else
+                                index = PercentToIndex(dynBrakePercent0);
+                        }
+                    }
+                    else
+                    {
+                        index = PercentToIndex(dynBrakePercent0);
+                    }
+                    break;
                 case CABViewControlTypes.DYNAMIC_BRAKE_DISPLAY:
                     var dynBrakePercent = Locomotive.Train.TrainType == Train.TRAINTYPE.AI_PLAYERHOSTING ?
                         Locomotive.DynamicBrakePercent : Locomotive.LocalDynamicBrakePercent;
@@ -2484,19 +2519,29 @@ namespace Orts.Viewer3D.RollingStock
                     if (ChangedValue(0) == 1)
                     {
                         Locomotive.CruiseControl.SelectedMaxAccelerationStep += 1;
+                        if (Locomotive.CruiseControl.SelectedMaxAccelerationStep > Locomotive.CruiseControl.SpeedRegulatorMaxForceSteps)
+                            Locomotive.CruiseControl.SelectedMaxAccelerationStep = Locomotive.CruiseControl.SpeedRegulatorMaxForceSteps;
+                        if (Locomotive.CruiseControl.SelectedMaxAccelerationStep < 0)
+                            Locomotive.CruiseControl.SelectedMaxAccelerationStep = 0;
                     }
                     if (ChangedValue(0) == -1)
                     {
                         Locomotive.CruiseControl.SelectedMaxAccelerationStep -= 1;
+                        if (Locomotive.CruiseControl.SelectedMaxAccelerationStep == 0 && Locomotive.CruiseControl.DisableZeroForceStep)
+                            Locomotive.CruiseControl.SelectedMaxAccelerationStep = 1;
                     }
-                    if (ChangedValue(0) != 0)
+                    if (ChangedValue(0) != 0 && Locomotive.CruiseControl.SpeedRegulatorMaxForceSteps == 100)
                     {
                         Locomotive.CruiseControl.SelectedMaxAccelerationStep += ChangedValue(0) * (float)Control.MaxValue;
                         if (Locomotive.CruiseControl.SelectedMaxAccelerationStep > 100)
                             Locomotive.CruiseControl.SelectedMaxAccelerationStep = 100;
                         if (Locomotive.CruiseControl.SelectedMaxAccelerationStep < 0)
                             Locomotive.CruiseControl.SelectedMaxAccelerationStep = 0;
-                        Locomotive.Simulator.Confirmer.Information("Selected maximum acceleration was changed to " + Math.Round(Locomotive.CruiseControl.SelectedMaxAccelerationStep, 0).ToString() + " percent");
+                        Locomotive.Simulator.Confirmer.Information("Selected maximum acceleration was changed to " + Math.Round(Locomotive.CruiseControl.SelectedMaxAccelerationStep, 0).ToString() + " percent.");
+                    }
+                    else
+                    {
+                        Locomotive.Simulator.Confirmer.Information("Selected maximum acceleration was changed to " + Math.Round(Locomotive.CruiseControl.SelectedMaxAccelerationStep, 0).ToString());
                     }
                     break;
                 case CABViewControlTypes.ORTS_MULTI_POSITION_CONTROLLER:

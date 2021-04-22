@@ -466,6 +466,7 @@ namespace Orts.Simulation.RollingStocks
         public bool AutomaticParkingBrakeEngaged = false;
         public List<CabViewControl> ActiveScreens = new List<CabViewControl>();
         public List<CabViewControl> EditableItems = new List<CabViewControl>();
+        public ExtendedPhysics extendedPhysics;
 
         public bool
       Speed0Pressed, Speed10Pressed, Speed20Pressed, Speed30Pressed, Speed40Pressed, Speed50Pressed
@@ -1738,6 +1739,7 @@ namespace Orts.Simulation.RollingStocks
                 if (DynamicBrakeController != null)
                     DynamicBrakeIntervention = Math.Max(DynamicBrakeIntervention, DynamicBrakeController.CurrentValue);
             }
+
             else if (DynamicBrakeBlended)
             {
                 DynamicBrakeIntervention = -1;
@@ -1968,7 +1970,6 @@ namespace Orts.Simulation.RollingStocks
                             braking = false;
                         if (braking && ThrottlePercent == 0 && AbsSpeedMpS < MpS.FromKpH(AutomaticParkingBrakeEngageSpeedKpH))
                         {
-                            Simulator.Confirmer.MSG(Bar.FromPSI(BrakeSystem.GetCylPressurePSI()).ToString());
                             if (Bar.FromPSI(BrakeSystem.GetCylPressurePSI()) < 1.85f)
                             {
                                 EngineBrakePercentSet += 0.5f;
@@ -2349,8 +2350,8 @@ namespace Orts.Simulation.RollingStocks
                     if (DynamicBrakeController != null)
                     {
                         DynamicBrakeController.Update(elapsedClockSeconds);
-                        DynamicBrakePercent = (DynamicBrakeIntervention < 0 ? DynamicBrakeController.CurrentValue : DynamicBrakeIntervention) * 100f;
-                        LocalDynamicBrakePercent = (DynamicBrakeIntervention < 0 ? DynamicBrakeController.CurrentValue : DynamicBrakeIntervention) * 100f;
+                        DynamicBrakePercent = (DynamicBrakeIntervention < 0.1 ? DynamicBrakeController.CurrentValue : DynamicBrakeIntervention) * 100f;
+                        LocalDynamicBrakePercent = (DynamicBrakeIntervention < 0.1 ? DynamicBrakeController.CurrentValue : DynamicBrakeIntervention) * 100f;
                     }
                     else
                     {
@@ -2358,7 +2359,7 @@ namespace Orts.Simulation.RollingStocks
                         LocalDynamicBrakePercent = Math.Max(DynamicBrakeIntervention * 100f, 0f);
                     }
 
-                    if (DynamicBrakeIntervention < 0 && PreviousDynamicBrakeIntervention >= 0 && DynamicBrakePercent == 0)
+                    if (DynamicBrakeIntervention < 0.1 && PreviousDynamicBrakeIntervention >= 0 && DynamicBrakePercent == 0)
                     {
                         DynamicBrakePercent = -1;
                         LocalDynamicBrakePercent = -1;
@@ -3993,6 +3994,18 @@ namespace Orts.Simulation.RollingStocks
             {
                 CruiseControl.TrainBrakePriority = true;
             }
+            if (TrainBrakeController.TrainBrakeControllerState == ControllerState.Apply
+                || TrainBrakeController.TrainBrakeControllerState == ControllerState.EPApply
+                || TrainBrakeController.TrainBrakeControllerState == ControllerState.EPFullServ
+                || TrainBrakeController.TrainBrakeControllerState == ControllerState.FullServ
+                || TrainBrakeController.TrainBrakeControllerState  == ControllerState.Emergency)
+            {
+                if (ThrottlePercent > 0)
+                {
+                    ThrottleController.SetPercent(0);
+                }
+            }
+
             Simulator.Confirmer.Confirm(CabControl.TrainBrake, CabSetting.Increase, GetTrainBrakeStatus());
             SignalEvent(Event.TrainBrakeChange);
         }
@@ -5353,6 +5366,14 @@ namespace Orts.Simulation.RollingStocks
                         break;
                     }
                 case CABViewControlTypes.DYNAMIC_BRAKE:
+                    if (DynamicBrakeIntervention != -1)
+                    {
+                        data = 0;
+                        break;
+                    }
+                    data = DynamicBrakePercent / 100f;
+                    break;
+
                 case CABViewControlTypes.DYNAMIC_BRAKE_DISPLAY:
                     //case CABViewControlTypes.CP_HANDLE:
                     {
@@ -5751,6 +5772,13 @@ namespace Orts.Simulation.RollingStocks
                         if (previousSelectedSpeed < temp) previousSelectedSpeed += 1f;
                         if (previousSelectedSpeed > temp) previousSelectedSpeed -= 1f;
                         data = previousSelectedSpeed;
+                        if (cvc.Precision > 0)
+                        {
+                            data = data / cvc.Precision;
+                            data = (float)Math.Round(data, 0);
+                            data = data * cvc.Precision;
+                        }
+
                         break;
                     }
 

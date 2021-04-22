@@ -207,16 +207,25 @@ namespace Orts.Simulation.RollingStocks
             if (Step1 < 0) Step1 = 0;
             if ((VoltageSprung > 1.0f && Step1 == 0 && PowerSupply.PantographVoltageV > MaxLineVoltage0)) VoltageSprung = 1.0f;
 
+            // Kritická mez napětí pro podnapěťovku
+            PantographCriticalVoltage = 0.8f * MaxLineVoltage0;
+
+            PantographCriticalVoltage = (int)PantographCriticalVoltage;
+            PowerSupply.PantographVoltageV = (int)PowerSupply.PantographVoltageV;
+            LocalThrottlePercent = (int)ThrottlePercent;
+            LocalDynamicBrakePercent = (int)DynamicBrakePercent;
+            if (PowerSupply.PantographVoltageV < 0) PowerSupply.PantographVoltageV = 0;
+            if (LocalThrottlePercent < 0) LocalThrottlePercent = 0;
+            if (LocalDynamicBrakePercent < 0) LocalDynamicBrakePercent = 0;
+
             //Simulator.Confirmer.Message(ConfirmLevel.Warning, "VoltageSprung  " + VoltageSprung + "  Simulator.TRK.Tr_RouteFile.MaxLineVoltage  " + Simulator.TRK.Tr_RouteFile.MaxLineVoltage + "  PowerSupply.PantographVoltageV  " + PowerSupply.PantographVoltageV);
+            //Simulator.Confirmer.Message(ConfirmLevel.Warning, "PantographCriticalVoltage  " + PantographCriticalVoltage + "  PowerSupply.PantographVoltageV  " + PowerSupply.PantographVoltageV + "  LocalThrottlePercent  " + LocalThrottlePercent + "  LocalDynamicBrakePercent  " + LocalDynamicBrakePercent);
 
             if (IsPlayerTrain)
             {
                 // Určení velikosti kolísání napětí pro různá napětí v troleji
                 if (MaxLineVoltage0 > 20000) Delta2 = 1000;
                 else Delta2 = 100;
-
-                // Kritická mez napětí pro podnapěťovku
-                PantographCriticalVoltage = 0.8f * MaxLineVoltage0;
 
                 // Podpěťová ochrana deaktivovaná při pause hry
                 if (Simulator.Paused || Step0 > 0)
@@ -343,7 +352,7 @@ namespace Orts.Simulation.RollingStocks
 
                     if (!EDBIndependent)
                     {
-                        // Blokuje zapnutí HV při staženém sběrači a nebo navoleném výkonu
+                        // Blokuje zapnutí HV při staženém sběrači a nebo navoleném výkonu a EDB
                         if ((PowerSupply.PantographVoltageV < PantographCriticalVoltage && PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closing)
                         || (LocalThrottlePercent != 0 && PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closing)
                         || (LocalDynamicBrakePercent != 0 && PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closing))
@@ -372,7 +381,7 @@ namespace Orts.Simulation.RollingStocks
                                 SignalEvent(PowerSupplyEvent.OpenCircuitBreaker);
                             }
 
-                        //Shodí HV při poklesu napětí v troleji a nastaveném výkonu(podpěťová ochrana)
+                        //Shodí HV při poklesu napětí v troleji a nastaveném výkonu a EDB(podpěťová ochrana)
                         if (PowerSupply.PantographVoltageV > 0)
                         {
                             if ((PowerSupply.PantographVoltageV < PantographCriticalVoltage && LocalThrottlePercent != 0)

@@ -60,6 +60,12 @@
       <HintPath>..\3rdPartyLibs\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.ReaderWriter, Version=4.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Xml.ReaderWriter.4.3.1\lib\net46\System.Xml.ReaderWriter.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Common\CommandLog.cs" />
@@ -102,6 +108,7 @@
     <Compile Include="Simulation\RollingStocks\MSTSElectricLocomotive.cs" />
     <Compile Include="Simulation\RollingStocks\MSTSLocomotive.cs" />
     <Compile Include="Simulation\RollingStocks\MSTSSteamLocomotive.cs" />
+    <Compile Include="Simulation\RollingStocks\ExtendedPhysics.cs" />
     <Compile Include="Simulation\RollingStocks\MSTSWagon.cs" />
     <Compile Include="Simulation\RollingStocks\RollingStock.cs" />
     <Compile Include="Simulation\RollingStocks\SubSystems\Brakes\BrakeSystem.cs" />
