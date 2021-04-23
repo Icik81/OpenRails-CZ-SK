@@ -81,7 +81,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
         public float DynamicBrakeIncreaseSpeed = 0;
         public float DynamicBrakeDecreaseSpeed = 0;
         public uint MinimumMetersToPass = 19;
-        protected float relativeAcceleration;
+//        protected float relativeAcceleration;
         public float AccelerationRampMaxMpSSS = 0.7f;
         public float AccelerationDemandMpSS;
         public float AccelerationRampMinMpSSS = 0.01f;
@@ -998,7 +998,6 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                                 else
                                     delta = (CurrentSelectedSpeedMpS + (TrainElevation < -0.01 ? TrainElevation * (SelectedNumberOfAxles / 12) : 0)) - AbsWheelSpeedMpS;
 
-                                relativeAcceleration = (float)-Math.Sqrt(-StartReducingSpeedDelta * delta);
                                 AccelerationDemandMpSS = (float)-Math.Sqrt(-StartReducingSpeedDelta * delta) * 5;
                                 if (maxForceN > 0)
                                 {
@@ -1012,7 +1011,6 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                                 if (maxForceN == 0)
                                 {
                                     if (!UseThrottle) Locomotive.ThrottleController.SetPercent(0);
-                                    if (relativeAcceleration < -1) relativeAcceleration = -1;
                                     if (Locomotive.DynamicBrakePercent < -(AccelerationDemandMpSS * 100) && AccelerationDemandMpSS < -0.05f)
                                     {
                                         if (DynamicBrakeIsSelectedForceDependant && SpeedRegulatorMaxForceSteps == 100)
@@ -1149,7 +1147,6 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                             Locomotive.SetDynamicBrakePercent(0);
                             Locomotive.DynamicBrakeChangeActiveState(false);
                         }
-                        relativeAcceleration = (float)Math.Sqrt(AccelerationRampMaxMpSSS * delta);
                     }
                     else // start braking
                     {
@@ -1172,7 +1169,6 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                                 else
                                     delta = (CurrentSelectedSpeedMpS + (TrainElevation < -0.01 ? TrainElevation * (SelectedNumberOfAxles / 12) : 0)) - AbsWheelSpeedMpS;
 
-                                relativeAcceleration = (float)-Math.Sqrt(-StartReducingSpeedDelta * delta);
                                 AccelerationDemandMpSS = (float)-Math.Sqrt(-StartReducingSpeedDelta * delta) * 5;
                                 if (maxForceN > 0)
                                 {
@@ -1186,7 +1182,6 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                                 if (maxForceN == 0)
                                 {
                                     if (!UseThrottle) Locomotive.ThrottleController.SetPercent(0);
-                                    if (relativeAcceleration < -1) relativeAcceleration = -1;
                                     if (Locomotive.DynamicBrakePercent < -(AccelerationDemandMpSS * 100) && AccelerationDemandMpSS < -0.05f)
                                     {
                                         if (DynamicBrakeIsSelectedForceDependant && SpeedRegulatorMaxForceSteps == 100)
@@ -1270,8 +1265,6 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                             }
                         }
                     }
-                    if (relativeAcceleration > 1.0f)
-                        relativeAcceleration = 1.0f;
 
                     if ((SpeedSelMode == SpeedSelectorMode.On || SpeedSelMode == SpeedSelectorMode.Start) && delta > 0)
                     {
@@ -1324,7 +1317,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                                 t = PowerReductionValue / 100;
                         }
                         float demandedVolts = t * 100;
-                        float current = maxForceN / Locomotive.MaxForceN * Locomotive.MaxCurrentA;
+                        float current = maxForceN / Locomotive.MaxForceN * 1400;// Locomotive.MaxCurrentA;
                         if (!RestrictedSpeedActive)
                             delta = SelectedSpeedMpS - Locomotive.AbsSpeedMpS;
                         else
@@ -1679,7 +1672,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                     else
                     {
                         if (Locomotive.DynamicBrakePercent > 0 && Locomotive.AbsSpeedMpS > 0) data = Locomotive.DynamicBrakePercent / 200 * (Locomotive.MaxCurrentA * 0.8f);
-                        else data = Locomotive.ThrottlePercent / 100 * (Locomotive.MaxCurrentA * 0.8f);
+                        else data = Locomotive.ThrottlePercent / 100 * (Locomotive.MaxCurrentA * 1.2f);
                     }
                     break;
                 case CABViewControlTypes.ORTS_ACCELERATION_IN_TIME:
