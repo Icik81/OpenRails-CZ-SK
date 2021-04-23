@@ -1703,8 +1703,19 @@ namespace Orts.Simulation.RollingStocks
         /// <summary>
         /// Dynamic brake blending 
         /// </summary>
+        protected bool disableDynamicBrakeIntervention = false; 
         public void DynamicBrakeBlending(float elapsedClockSeconds)
         {
+            if (!PowerOn)
+                disableDynamicBrakeIntervention = true;
+            if (Bar.FromPSI(BrakeSystem.BrakeLine1PressurePSI) > 4.9)
+                disableDynamicBrakeIntervention = false;
+            if (disableDynamicBrakeIntervention)
+            {
+                DynamicBrakeIntervention = -1;
+                DynamicBrakeBlended = false;
+                return;
+            }
             if (BrakeRelease == true
                 || airPipeSystem != null && ((airPipeSystem is EPBrakeSystem && Train.BrakeLine4 > 0f) || (airPipeSystem.TotalCapacityMainResBrakePipe >= airPipeSystem.maxPressurePSI0 && airPipeSystem.BrakeLine1PressurePSI < TrainBrakeController.MaxPressurePSI - 1f && AbsSpeedMpS > 1)
                 && ThrottleController.CurrentValue == 0f && !(DynamicBrakeController != null && DynamicBrakeBlendingOverride && DynamicBrakeController.CurrentValue > 0f))
@@ -4959,9 +4970,9 @@ namespace Orts.Simulation.RollingStocks
                         data = Math.Abs(data);
                         if (cvc.Precision > 0)
                         {
-                            data = data * cvc.Precision;
-                            data = (float)Math.Round(data, 0);
                             data = data / cvc.Precision;
+                            data = (float)Math.Round(data, 0);
+                            data = data * cvc.Precision;
                         }                        
                         if (data > cvc.PreviousData)
                         {
@@ -5767,11 +5778,16 @@ namespace Orts.Simulation.RollingStocks
                                 if (jumpOut) break;
                             }
                         }
-                        bool metric = cvc.Units == CABViewControlUnits.KM_PER_HOUR;
-                        float temp = CruiseControl.RestrictedSpeedActive ? MpS.FromMpS(CruiseControl.CurrentSelectedSpeedMpS, metric) : temp = MpS.FromMpS(CruiseControl.SelectedSpeedMpS, metric);
-                        if (previousSelectedSpeed < temp) previousSelectedSpeed += 1f;
-                        if (previousSelectedSpeed > temp) previousSelectedSpeed -= 1f;
-                        data = previousSelectedSpeed;
+                        float temp = CruiseControl.RestrictedSpeedActive ? MpS.ToKpH(CruiseControl.CurrentSelectedSpeedMpS) : temp = MpS.ToKpH(CruiseControl.SelectedSpeedMpS);
+                        if (cvc.ControlStyle == CABViewControlStyles.NEEDLE)
+                        {
+                            if (previousSelectedSpeed < temp) previousSelectedSpeed += 1f;
+                            if (previousSelectedSpeed > temp) previousSelectedSpeed -= 1f;
+                            data = previousSelectedSpeed;
+                        }
+                        else
+                            data = temp;
+
                         if (cvc.Precision > 0)
                         {
                             data = data / cvc.Precision;
