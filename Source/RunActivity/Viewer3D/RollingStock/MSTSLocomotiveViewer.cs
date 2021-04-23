@@ -2045,6 +2045,18 @@ namespace Orts.Viewer3D.RollingStock
                         break;
                     }
 
+                case CABViewControlTypes.ORTS_SELECTED_SPEED:
+                    {
+                        int test = (int)ControlDiscrete.MaxValue;
+                        int test1 = ControlDiscrete.FramesCount - 1;
+                        float multiplier = test / test1;
+                        if (multiplier <= 0)
+                            index = 0;
+                        else
+                            index = (int)data / (int)multiplier;
+                        break;
+                    }
+
                 case CABViewControlTypes.ALERTER_DISPLAY:
                 case CABViewControlTypes.RESET:
                 case CABViewControlTypes.WIPERS:
@@ -2167,7 +2179,6 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.ORTS_MOTIVE_FORCE:
                 case CABViewControlTypes.ORTS_MOTIVE_FORCE_KILONEWTON:
                 case CABViewControlTypes.ORTS_MAXIMUM_FORCE:
-                case CABViewControlTypes.ORTS_SELECTED_SPEED:
                 case CABViewControlTypes.ORTS_FORCE_IN_PERCENT_THROTTLE_AND_DYNAMIC_BRAKE:
                 case CABViewControlTypes.ORTS_TRAIN_TYPE_PAX_OR_CARGO:
                 case CABViewControlTypes.ORTS_CONTROLLER_VOLTAGE:

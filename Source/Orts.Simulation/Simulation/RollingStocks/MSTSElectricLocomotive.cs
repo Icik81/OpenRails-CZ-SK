@@ -219,7 +219,7 @@ namespace Orts.Simulation.RollingStocks
             if (LocalDynamicBrakePercent < 0) LocalDynamicBrakePercent = 0;
 
             //Simulator.Confirmer.Message(ConfirmLevel.Warning, "VoltageSprung  " + VoltageSprung + "  Simulator.TRK.Tr_RouteFile.MaxLineVoltage  " + Simulator.TRK.Tr_RouteFile.MaxLineVoltage + "  PowerSupply.PantographVoltageV  " + PowerSupply.PantographVoltageV);
-            //Simulator.Confirmer.Message(ConfirmLevel.Warning, "PantographCriticalVoltage  " + PantographCriticalVoltage + "  PowerSupply.PantographVoltageV  " + PowerSupply.PantographVoltageV + "  LocalThrottlePercent  " + LocalThrottlePercent + "  LocalDynamicBrakePercent  " + LocalDynamicBrakePercent);
+            Simulator.Confirmer.Message(ConfirmLevel.Warning, "PantographCriticalVoltage  " + PantographCriticalVoltage + "  PowerSupply.PantographVoltageV  " + PowerSupply.PantographVoltageV + "  LocalThrottlePercent  " + LocalThrottlePercent + "  LocalDynamicBrakePercent  " + LocalDynamicBrakePercent + "  Delta1  " + Delta1);
 
             if (IsPlayerTrain)
             {
@@ -238,7 +238,7 @@ namespace Orts.Simulation.RollingStocks
                 // Simulace náhodného poklesu napětí            
                 if (Delta1 == 10 && TimeCriticalVoltage == 0) TimeCriticalVoltage0 = Simulator.Random.Next(100, 200);
                 else
-                    if (Delta1 != 10 && TimeCriticalVoltage == 0) TimeCriticalVoltage0 = Simulator.Random.Next(1000, 2000);
+                    if (Delta1 != 10 && TimeCriticalVoltage == 0) TimeCriticalVoltage0 = Simulator.Random.Next(7500, 10000);
                 TimeCriticalVoltage++;
                 if (TimeCriticalVoltage > TimeCriticalVoltage0 && PowerSupply.PantographVoltageV > 1000)
                 {
