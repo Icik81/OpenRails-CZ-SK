@@ -83,6 +83,10 @@ namespace Orts.Viewer3D
         const int SpeedFactorFastSlow = 8;  // Use by GetSpeed
         protected const float SpeedAdjustmentForRotation = 0.25f;
 
+        // Icik
+        // Zvýší FOV pro pohled z kabiny
+        public float FieldOffViewOffset = 15.0f; 
+
         protected Camera(Viewer viewer)
         {
             Viewer = viewer;
@@ -1756,7 +1760,7 @@ namespace Orts.Viewer3D
             RotationYRadians = StartViewPointRotationYRadians;
             XRadians = StartViewPointRotationXRadians;
             YRadians = StartViewPointRotationYRadians;
-            FieldOfView = Viewer.Settings.ViewingFOV + 17.0f;
+            FieldOfView = Viewer.Settings.ViewingFOV + FieldOffViewOffset;
         }
     }
 
@@ -1845,7 +1849,7 @@ namespace Orts.Viewer3D
         public ThreeDimCabCamera(Viewer viewer)
             : base(viewer)
         {
-            FieldOfView = Viewer.Settings.ViewingFOV + 17.0f;
+            FieldOfView = Viewer.Settings.ViewingFOV + FieldOffViewOffset;
         }
 
         protected override List<TrainCar> GetCameraCars()
@@ -1942,7 +1946,7 @@ namespace Orts.Viewer3D
         public HeadOutCamera(Viewer viewer, HeadDirection headDirection)
             : base(viewer)
         {
-            FieldOfView = Viewer.Settings.ViewingFOV + 17.0f;            
+            FieldOfView = Viewer.Settings.ViewingFOV + FieldOffViewOffset;            
             Forwards = headDirection == HeadDirection.Forward;
             RotationYRadians = Forwards ? 0 : -MathHelper.Pi;
         }
@@ -2021,7 +2025,7 @@ namespace Orts.Viewer3D
 
         public override void Reset()
         {
-            FieldOfView = Viewer.Settings.ViewingFOV + 17.0f;
+            FieldOfView = Viewer.Settings.ViewingFOV + FieldOffViewOffset;
             RotationXRadians = RotationYRadians = XRadians = YRadians = ZRadians = 0;
             Viewer.CabYOffsetPixels = (Viewer.DisplaySize.Y - Viewer.CabHeightPixels) / 2;
             Viewer.CabXOffsetPixels = (Viewer.CabWidthPixels - Viewer.DisplaySize.X) / 2;
@@ -2045,7 +2049,7 @@ namespace Orts.Viewer3D
                 // We must modify FOV to get correct lookout
                     //FieldOfView = MathHelper.ToDegrees((float)(2 * Math.Atan((float)Viewer.DisplaySize.Y / Viewer.DisplaySize.X / Viewer.CabTextureInverseRatio * Math.Tan(MathHelper.ToRadians(Viewer.Settings.ViewingFOV / 2)))));
                     RotationRatio = (float)(0.962314f * 2 * Math.Tan(MathHelper.ToRadians(FieldOfView / 2)) / Viewer.DisplaySize.Y);
-                    FieldOfView = Viewer.Settings.ViewingFOV + 17.0f;
+                    FieldOfView = Viewer.Settings.ViewingFOV + FieldOffViewOffset;
             }
             else if (Viewer.CabExceedsDisplayHorizontally > 0)
             {
