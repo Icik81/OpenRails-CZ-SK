@@ -728,13 +728,13 @@ namespace Orts.Simulation.RollingStocks.SubSystems
             }
 
             int count = 0;
-            TrainElevation = 0;
+            /*TrainElevation = 0;
             foreach (TrainCar tc in Locomotive.Train.Cars)
             {
                 count++;
                 TrainElevation += tc.Flipped ? tc.CurrentElevationPercent : -tc.CurrentElevationPercent;
             }
-            TrainElevation = TrainElevation / count;
+            TrainElevation = TrainElevation / count;*/
 
             if (Locomotive.TrainBrakeController.TrainBrakeControllerState == ORTS.Scripting.Api.ControllerState.Release ||
                 Locomotive.TrainBrakeController.TrainBrakeControllerState == ORTS.Scripting.Api.ControllerState.Neutral)
@@ -994,9 +994,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                             {
                                 delta = 0;
                                 if (!RestrictedSpeedActive)
-                                    delta = (SelectedSpeedMpS + (TrainElevation < -0.01 ? TrainElevation * (SelectedNumberOfAxles / 12) : 0)) - AbsWheelSpeedMpS;
+                                    delta = SelectedSpeedMpS - AbsWheelSpeedMpS;
                                 else
-                                    delta = (CurrentSelectedSpeedMpS + (TrainElevation < -0.01 ? TrainElevation * (SelectedNumberOfAxles / 12) : 0)) - AbsWheelSpeedMpS;
+                                    delta = CurrentSelectedSpeedMpS - AbsWheelSpeedMpS;
 
                                 AccelerationDemandMpSS = (float)-Math.Sqrt(-StartReducingSpeedDelta * delta) * 5;
                                 if (maxForceN > 0)
@@ -1165,9 +1165,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                             {
                                 delta = 0;
                                 if (!RestrictedSpeedActive)
-                                    delta = (SelectedSpeedMpS + (TrainElevation < -0.01 ? TrainElevation * (SelectedNumberOfAxles / 12) : 0)) - AbsWheelSpeedMpS;
+                                    delta = SelectedSpeedMpS - AbsWheelSpeedMpS;
                                 else
-                                    delta = (CurrentSelectedSpeedMpS + (TrainElevation < -0.01 ? TrainElevation * (SelectedNumberOfAxles / 12) : 0)) - AbsWheelSpeedMpS;
+                                    delta = CurrentSelectedSpeedMpS - AbsWheelSpeedMpS;
 
                                 AccelerationDemandMpSS = (float)-Math.Sqrt(-StartReducingSpeedDelta * delta) * 5;
                                 if (maxForceN > 0)
