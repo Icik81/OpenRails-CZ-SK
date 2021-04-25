@@ -449,6 +449,7 @@ namespace Orts.Simulation.RollingStocks
         public float PowerOnFilter;
         public float PowerOnFilterCapacity;
         public float PowerOnFilterCapacityLimit;
+        public bool HVOffBrakeStatus = false;
 
         // Jindrich
         public CruiseControl CruiseControl;
@@ -1919,29 +1920,32 @@ namespace Orts.Simulation.RollingStocks
         {
             if (DoesBrakeCutPower)
             {
-                if (PowerOn && BrakeSystem.BrakeCylApply)
+                if (PowerOn && BrakeSystem.BrakeCylApply && LocalThrottlePercent > 0)
                 {
                     // Pokud stoupne tlak nad hraniční hodnotu tlaku v brzdovém válci
                     if (BrakeCutsPowerAtBrakeCylinderPressurePSI != 0)
                         if (BrakeSystem.GetCylPressurePSI() >= BrakeCutsPowerAtBrakeCylinderPressurePSI)
                         {
                             Train.SignalEvent(PowerSupplyEvent.OpenCircuitBreaker); // Vypnutí HV 
+                            HVOffBrakeStatus = true;
                         }
                     // Pokud klesne tlak pod hraniční hodnotu tlaku v brzdovém potrubí
                     if (BrakeCutsPowerAtBrakePipePressurePSI != 0)
                         if (BrakeSystem.BrakeLine1PressurePSI <= BrakeCutsPowerAtBrakePipePressurePSI)
                         {
                             Train.SignalEvent(PowerSupplyEvent.OpenCircuitBreaker); // Vypnutí HV 
+                            HVOffBrakeStatus = true;
                         }
-                    //Trace.TraceWarning("Hodnota BrakeSystem.BrakeLine1PressurePSI {0}, BrakeCutsPowerAtBrakePipePressurePSI {1}", BrakeSystem.BrakeLine1PressurePSI, BrakeCutsPowerAtBrakePipePressurePSI);
+                    //Trace.TraceWarning("Hodnota BrakeSystem.BrakeLine1PressurePSI {0}, BrakeCutsPowerAtBrakePipePressurePSI {1}", BrakeSystem.BrakeLine1PressurePSI, BrakeCutsPowerAtBrakePipePressurePSI);                    
                 }
-                if (!PowerOn && BrakeSystem.BrakeCylRelease)
+                if (!PowerOn && BrakeSystem.BrakeCylRelease && HVOffBrakeStatus)
                 {
                     // Pokud vystoupí tlak nad hraniční hodnotu tlaku v brzdovém potrubí
                     if (BrakeRestoresPowerAtBrakePipePressurePSI != 0)
                         if (BrakeSystem.BrakeLine1PressurePSI >= BrakeRestoresPowerAtBrakePipePressurePSI)
                         {
                             Train.SignalEvent(PowerSupplyEvent.CloseCircuitBreaker); // Zapnutí HV 
+                            HVOffBrakeStatus = false;
                         }
                 }
             }
