@@ -69,6 +69,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes
         public float MaxApplicationRatePSIpSR;
         public bool AutoLoadRegulatorEquipped;
         public float AutoLoadRegulatorMaxBrakeMass;
+        public bool BrakeCylRelease;
+        public bool BrakeCylApply;
 
         /// <summary>
         /// Front brake hoses connection status
