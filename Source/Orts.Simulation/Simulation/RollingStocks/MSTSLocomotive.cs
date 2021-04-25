@@ -388,8 +388,8 @@ namespace Orts.Simulation.RollingStocks
         public bool EmergencyEngagesHorn { get; private set; }
         public bool WheelslipCausesThrottleDown { get; private set; }
 
-        public float BrakeRestoresPowerAtBrakePipePressurePSI;
-        public float BrakeCutsPowerAtBrakePipePressurePSI;
+        public float BrakeRestoresPowerAtBrakePipePressurePSI { get; private set; }
+        public float BrakeCutsPowerAtBrakePipePressurePSI { get; private set; }
         public bool DoesVacuumBrakeCutPower { get; private set; }
         public bool DoesBrakeCutPower { get; private set; }
         public float BrakeCutsPowerAtBrakeCylinderPressurePSI { get; private set; }
@@ -480,7 +480,7 @@ namespace Orts.Simulation.RollingStocks
           //  BrakePipeChargingRatePSIpS = Simulator.Settings.BrakePipeChargingRate;
                         
             MilepostUnitsMetric = Simulator.TRK.Tr_RouteFile.MilepostUnitsMetric;
-            BrakeCutsPowerAtBrakeCylinderPressurePSI = 4.0f;
+            //BrakeCutsPowerAtBrakeCylinderPressurePSI = 4.0f;
 
             LocomotiveAxle = new Axle();
             LocomotiveAxle.DriveType = AxleDriveType.ForceDriven;
@@ -1549,15 +1549,15 @@ namespace Orts.Simulation.RollingStocks
 
             }
 
-            if (DoesBrakeCutPower && BrakeCutsPowerAtBrakePipePressurePSI > BrakeRestoresPowerAtBrakePipePressurePSI)
-            {
-                BrakeCutsPowerAtBrakePipePressurePSI = BrakeRestoresPowerAtBrakePipePressurePSI - 1.0f;
+            //if (DoesBrakeCutPower && BrakeCutsPowerAtBrakePipePressurePSI > BrakeRestoresPowerAtBrakePipePressurePSI)
+            //{
+            //    BrakeCutsPowerAtBrakePipePressurePSI = BrakeRestoresPowerAtBrakePipePressurePSI - 1.0f;
 
-                if (Simulator.Settings.VerboseConfigurationMessages)
-                {
-                    Trace.TraceInformation("BrakeCutsPowerAtBrakePipePressure is greater then BrakeRestoresPowerAtBrakePipePressurePSI, and has been set to value of {0} InHg", Bar.ToInHg(Bar.FromPSI(BrakeCutsPowerAtBrakePipePressurePSI)));
-                }
-            }
+            //    if (Simulator.Settings.VerboseConfigurationMessages)
+            //    {
+            //        Trace.TraceInformation("BrakeCutsPowerAtBrakePipePressure is greater then BrakeRestoresPowerAtBrakePipePressurePSI, and has been set to value of {0} InHg", Bar.ToInHg(Bar.FromPSI(BrakeCutsPowerAtBrakePipePressurePSI)));
+            //    }
+            //}
 
             if (DoesBrakeCutPower && (BrakeSystem is VacuumSinglePipe) && (BrakeRestoresPowerAtBrakePipePressurePSI == 0 || BrakeRestoresPowerAtBrakePipePressurePSI > OneAtmospherePSI))
             {
@@ -1913,6 +1913,39 @@ namespace Orts.Simulation.RollingStocks
             }
         }
 
+        // Icik
+        // Vypínání HV při určitém tlaku v potrubí
+        public void HVOffbyAirPressure()
+        {
+            if (DoesBrakeCutPower)
+            {
+                if (PowerOn && BrakeSystem.BrakeCylApply)
+                {
+                    // Pokud stoupne tlak nad hraniční hodnotu tlaku v brzdovém válci
+                    if (BrakeCutsPowerAtBrakeCylinderPressurePSI != 0)
+                        if (BrakeSystem.GetCylPressurePSI() >= BrakeCutsPowerAtBrakeCylinderPressurePSI)
+                        {
+                            Train.SignalEvent(PowerSupplyEvent.OpenCircuitBreaker); // Vypnutí HV 
+                        }
+                    // Pokud klesne tlak pod hraniční hodnotu tlaku v brzdovém potrubí
+                    if (BrakeCutsPowerAtBrakePipePressurePSI != 0)
+                        if (BrakeSystem.BrakeLine1PressurePSI <= BrakeCutsPowerAtBrakePipePressurePSI)
+                        {
+                            Train.SignalEvent(PowerSupplyEvent.OpenCircuitBreaker); // Vypnutí HV 
+                        }
+                    //Trace.TraceWarning("Hodnota BrakeSystem.BrakeLine1PressurePSI {0}, BrakeCutsPowerAtBrakePipePressurePSI {1}", BrakeSystem.BrakeLine1PressurePSI, BrakeCutsPowerAtBrakePipePressurePSI);
+                }
+                if (!PowerOn && BrakeSystem.BrakeCylRelease)
+                {
+                    // Pokud vystoupí tlak nad hraniční hodnotu tlaku v brzdovém potrubí
+                    if (BrakeRestoresPowerAtBrakePipePressurePSI != 0)
+                        if (BrakeSystem.BrakeLine1PressurePSI >= BrakeRestoresPowerAtBrakePipePressurePSI)
+                        {
+                            Train.SignalEvent(PowerSupplyEvent.CloseCircuitBreaker); // Zapnutí HV 
+                        }
+                }
+            }
+        }
 
         /// <summary>
         /// This function updates periodically the states and physical variables of the locomotive's subsystems.
@@ -1924,6 +1957,7 @@ namespace Orts.Simulation.RollingStocks
             Overcurrent_Protection(elapsedClockSeconds);
             AntiSlip_Protection(elapsedClockSeconds);
             PowerOn_Filter(elapsedClockSeconds);
+            HVOffbyAirPressure();
 
             TrainControlSystem.Update();
 

@@ -72,8 +72,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
         protected float Threshold = 0;
         protected float prevBrakeLine1PressurePSI = 0;
         protected bool NotConnected = false;
-        protected bool BrakeCylApply = false;
-        protected bool BrakeCylRelease = false;     
+        //protected bool BrakeCylApply = false;
+        //protected bool BrakeCylRelease = false;     
 
         /// <summary>
         /// EP brake holding valve. Needs to be closed (Lap) in case of brake application or holding.
