@@ -4049,7 +4049,7 @@ namespace Orts.Simulation.RollingStocks
                 || TrainBrakeController.TrainBrakeControllerState == ControllerState.FullServ
                 || TrainBrakeController.TrainBrakeControllerState  == ControllerState.Emergency)
             {
-                if (ThrottlePercent > 0)
+                if (ThrottlePercent > 0 && !DoesBrakeCutPower)
                 {
                     ThrottleController.SetPercent(0);
                 }

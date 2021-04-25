@@ -386,7 +386,7 @@ namespace Orts.Simulation.RollingStocks
                     {
                         // Blokuje zapnutí HV při staženém sběrači a nebo navoleném výkonu a EDB
                         if ((PowerSupply.PantographVoltageV == 0 && PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closing)
-                        || (LocalThrottlePercent != 0 && PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closing)
+                        || (LocalThrottlePercent != 0 && PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closing && !DoesBrakeCutPower)
                         || (LocalDynamicBrakePercent != 0 && PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closing)
                         || (PowerSupply.PantographVoltageV == 0 && LocalThrottlePercent != 0 && PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closed)
                         || (PowerSupply.PantographVoltageV == 0 && LocalDynamicBrakePercent != 0 && PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closed))
@@ -396,13 +396,13 @@ namespace Orts.Simulation.RollingStocks
                                 LocalDynamicBrakePercent = 0;
                                 SetDynamicBrakePercent(0);
                                 DynamicBrakeChangeActiveState(false);
-                            }
+                            }                            
                             SignalEvent(PowerSupplyEvent.OpenCircuitBreaker);
                         }
 
                         if (CruiseControl != null)
                             if ((PowerSupply.PantographVoltageV == 0 && PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closing)
-                            || (PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closing && CruiseControl.ForceThrottleAndDynamicBrake != 0 && CruiseControl.ForceThrottleAndDynamicBrake != 1)
+                            || (PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closing && CruiseControl.ForceThrottleAndDynamicBrake != 0 && CruiseControl.ForceThrottleAndDynamicBrake != 1 && !DoesBrakeCutPower)
                             || (PowerSupply.PantographVoltageV == 0 && CruiseControl.ForceThrottleAndDynamicBrake != 0 && CruiseControl.ForceThrottleAndDynamicBrake != 1 && PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closed))
                             {
                                 CruiseControl.ForceThrottleAndDynamicBrake = 0;
@@ -453,7 +453,7 @@ namespace Orts.Simulation.RollingStocks
                     {
                         // Blokuje zapnutí HV při staženém sběrači a nebo navoleném výkonu
                         if ((PowerSupply.PantographVoltageV == 0 && PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closing)
-                        || (LocalThrottlePercent != 0 && PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closing)
+                        || (LocalThrottlePercent != 0 && PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closing && !DoesBrakeCutPower)
                         || (PowerSupply.PantographVoltageV == 0 && LocalThrottlePercent != 0 && PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closed))
                         {
                             SignalEvent(PowerSupplyEvent.OpenCircuitBreaker);
@@ -461,7 +461,7 @@ namespace Orts.Simulation.RollingStocks
 
                         if (CruiseControl != null)
                             if ((PowerSupply.PantographVoltageV == 0 && PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closing)
-                            || (PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closing && CruiseControl.ForceThrottleAndDynamicBrake != 0 && CruiseControl.ForceThrottleAndDynamicBrake != 1)
+                            || (PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closing && CruiseControl.ForceThrottleAndDynamicBrake != 0 && CruiseControl.ForceThrottleAndDynamicBrake != 1 && !DoesBrakeCutPower)
                             || (PowerSupply.PantographVoltageV == 0 && CruiseControl.ForceThrottleAndDynamicBrake != 0 && CruiseControl.ForceThrottleAndDynamicBrake != 1 && PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closed))
                             {
                                 if (DynamicBrakePercent > 0)
