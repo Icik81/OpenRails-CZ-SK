@@ -451,6 +451,7 @@ namespace Orts.Simulation.RollingStocks
         public float PowerOnFilterCapacityLimit;
         public bool HVOffBrakeStatus = false;
         public bool DoesPowerLossResetControls = false;
+        public bool ThrottleZero = false;
 
         // Jindrich
         public CruiseControl CruiseControl;
@@ -4056,7 +4057,8 @@ namespace Orts.Simulation.RollingStocks
             {
                 if (ThrottlePercent > 0 && !DoesBrakeCutPower)
                 {
-                    ThrottleController.SetPercent(0);
+                    //ThrottleController.SetPercent(0);
+                    StartThrottleToZero(0.0f);
                 }
             }
 
