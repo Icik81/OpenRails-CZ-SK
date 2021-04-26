@@ -259,8 +259,7 @@ namespace Orts.Simulation.RollingStocks
                 // Plynulé klesání ručičky ampermetru při vynulování Throttle
                 if (PowerSupply.CircuitBreaker.State == CircuitBreakerState.Open && DoesPowerLossResetControls && LocalThrottlePercent > 0)
                 {
-                    LocalThrottlePercent--;
-                    SetThrottlePercent(LocalThrottlePercent);
+                    StartThrottleToZero(0.0f);
                 }
 
                 // Blokování pantografu u jednosystémových lokomotiv při vypnutém HV
