@@ -465,6 +465,9 @@ namespace Orts.Formats.Msts
         public bool IsVisible = true;
         public bool IsEditable = false;
         public int ScreenContainer = 0;
+        public string CurrentSource = "";
+        public string CurrentType = "";
+        public int CurrentSourceID = -1;
 
         public CABViewControlTypes ControlType = CABViewControlTypes.NONE;
         public CABViewControlStyles ControlStyle = CABViewControlStyles.NONE;
@@ -646,6 +649,25 @@ namespace Orts.Formats.Msts
                     Vibration = stf.ReadFloat(STFReader.UNITS.None, null);
                     stf.SkipRestOfBlock();
                 }),
+                new STFReader.TokenProcessor("currentsource", () =>
+                {
+                    stf.MustMatch("(");
+                    CurrentSource = stf.ReadString();
+                    stf.SkipRestOfBlock();
+                }),
+                new STFReader.TokenProcessor("currentsourceid", () =>
+                {
+                    stf.MustMatch("(");
+                    CurrentSourceID = stf.ReadInt(0);
+                    stf.SkipRestOfBlock();
+                }),
+                new STFReader.TokenProcessor("currenttype", () =>
+                {
+                    stf.MustMatch("(");
+                    CurrentType = stf.ReadString();
+                    stf.SkipRestOfBlock();
+                }),
+
             });
         }
     }
