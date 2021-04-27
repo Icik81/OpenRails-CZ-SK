@@ -448,8 +448,9 @@ namespace Orts.Simulation.RollingStocks
         public bool EDBIndependent;
         public float PowerOnFilter;
         public float PowerOnFilterCapacity;
-        public float PowerOnFilterCapacityLimit;
-        public bool HVOffBrakeStatus = false;
+        public float PowerOnFilterCapacityLimit;        
+        public bool HVOffStatusBrakeCyl = false;
+        public bool HVOffStatusBrakePipe = false;
         public bool DoesPowerLossResetControls = false;
         public bool ThrottleZero = false;
 
@@ -1255,6 +1256,10 @@ namespace Orts.Simulation.RollingStocks
             outf.Write(IsWaterScoopDown);
             outf.Write(CurrentTrackSandBoxCapacityM3);
 
+            // Icik
+            outf.Write(HVOffStatusBrakeCyl);
+            outf.Write(HVOffStatusBrakePipe);
+
             base.Save(outf);
 
             TrainControlSystem.Save(outf);
@@ -1303,6 +1308,10 @@ namespace Orts.Simulation.RollingStocks
             CurrentTrackSandBoxCapacityM3 = inf.ReadSingle();
             
             AdhesionFilter.Reset(0.5f);
+
+            // Icik
+            HVOffStatusBrakeCyl = inf.ReadBoolean();
+            HVOffStatusBrakePipe = inf.ReadBoolean();
 
             base.Restore(inf);
 
@@ -1927,31 +1936,37 @@ namespace Orts.Simulation.RollingStocks
             {
                 // Pokud stoupne tlak nad hraniční hodnotu tlaku v brzdovém válci
                 if (BrakeCutsPowerAtBrakeCylinderPressurePSI != 0)
-                    if (BrakeSystem.GetCylPressurePSI() >= BrakeCutsPowerAtBrakeCylinderPressurePSI)
+                {
+                    if (BrakeSystem.GetCylPressurePSI() >= BrakeCutsPowerAtBrakeCylinderPressurePSI && LocalThrottlePercent > 0
+                      || HVOffStatusBrakeCyl)
                     {
                         Train.SignalEvent(PowerSupplyEvent.OpenCircuitBreaker); // Vypnutí HV
+                        HVOffStatusBrakeCyl = true;
                     }
+                    if (BrakeSystem.GetCylPressurePSI() < BrakeCutsPowerAtBrakeCylinderPressurePSI)
+                        HVOffStatusBrakeCyl = false;
+                }
                 
                 if (PowerOn && BrakeSystem.BrakeCylApply && LocalThrottlePercent > 0
-                || HVOffBrakeStatus)
+                || HVOffStatusBrakePipe)
                 {
                     // Pokud klesne tlak pod hraniční hodnotu tlaku v brzdovém potrubí
                     if (BrakeCutsPowerAtBrakePipePressurePSI != 0)
                         if (BrakeSystem.BrakeLine1PressurePSI <= BrakeCutsPowerAtBrakePipePressurePSI)
                         {
                             Train.SignalEvent(PowerSupplyEvent.OpenCircuitBreaker); // Vypnutí HV                             
-                            HVOffBrakeStatus = true;
+                            HVOffStatusBrakePipe = true;
                         }
                     //Trace.TraceWarning("Hodnota BrakeSystem.BrakeLine1PressurePSI {0}, BrakeCutsPowerAtBrakePipePressurePSI {1}", BrakeSystem.BrakeLine1PressurePSI, BrakeCutsPowerAtBrakePipePressurePSI);                    
                 }
                 
-                if (!PowerOn && BrakeSystem.BrakeCylRelease && HVOffBrakeStatus)
+                if (!PowerOn && BrakeSystem.BrakeCylRelease && HVOffStatusBrakePipe)
                 {
                     // Pokud vystoupí tlak nad hraniční hodnotu tlaku v brzdovém potrubí
                     if (BrakeRestoresPowerAtBrakePipePressurePSI != 0)
                         if (BrakeSystem.BrakeLine1PressurePSI >= BrakeRestoresPowerAtBrakePipePressurePSI)
-                        {                                                      
-                            HVOffBrakeStatus = false;
+                        {
+                            HVOffStatusBrakePipe = false;
                         }
                 }
             }
