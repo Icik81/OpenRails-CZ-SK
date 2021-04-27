@@ -801,6 +801,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerTransmissions
         /// <returns>Relative force transmitted to the rail</returns>
         public float SlipCharacteristics(float slipSpeed, float speed, float K, float conditions, float Adhesion2)
         {
+            if (conditions == 0)
+                conditions = 0.75f;
             speed = Math.Abs(3.6f*speed);
 
             //float umax = (CurtiusKnifflerA / (speed + CurtiusKnifflerB) + CurtiusKnifflerC);// *Adhesion2 / 0.331455f; // Curtius - Kniffler equation
