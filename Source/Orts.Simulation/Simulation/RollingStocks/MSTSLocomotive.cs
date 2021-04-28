@@ -388,8 +388,8 @@ namespace Orts.Simulation.RollingStocks
         public bool EmergencyEngagesHorn { get; private set; }
         public bool WheelslipCausesThrottleDown { get; private set; }
 
-        public float BrakeRestoresPowerAtBrakePipePressurePSI;
-        public float BrakeCutsPowerAtBrakePipePressurePSI;
+        public float BrakeRestoresPowerAtBrakePipePressurePSI { get; private set; }
+        public float BrakeCutsPowerAtBrakePipePressurePSI { get; private set; }
         public bool DoesVacuumBrakeCutPower { get; private set; }
         public bool DoesBrakeCutPower { get; private set; }
         public float BrakeCutsPowerAtBrakeCylinderPressurePSI { get; private set; }
@@ -448,7 +448,11 @@ namespace Orts.Simulation.RollingStocks
         public bool EDBIndependent;
         public float PowerOnFilter;
         public float PowerOnFilterCapacity;
-        public float PowerOnFilterCapacityLimit;
+        public float PowerOnFilterCapacityLimit;        
+        public bool HVOffStatusBrakeCyl = false;
+        public bool HVOffStatusBrakePipe = false;
+        public bool DoesPowerLossResetControls = false;
+        public bool ThrottleZero = false;
 
         // Jindrich
         public CruiseControl CruiseControl;
@@ -485,7 +489,7 @@ namespace Orts.Simulation.RollingStocks
           //  BrakePipeChargingRatePSIpS = Simulator.Settings.BrakePipeChargingRate;
                         
             MilepostUnitsMetric = Simulator.TRK.Tr_RouteFile.MilepostUnitsMetric;
-            BrakeCutsPowerAtBrakeCylinderPressurePSI = 4.0f;
+            //BrakeCutsPowerAtBrakeCylinderPressurePSI = 4.0f;
 
             LocomotiveAxle = new Axle();
             LocomotiveAxle.DriveType = AxleDriveType.ForceDriven;
@@ -1029,6 +1033,8 @@ namespace Orts.Simulation.RollingStocks
                 case "engine(maxcurrentbrake": MaxCurrentBrake = stf.ReadFloatBlock(STFReader.UNITS.Current, null); break;
                 case "engine(slipspeedcritical": SlipSpeedCritical = stf.ReadFloatBlock(STFReader.UNITS.Speed, null); break;
                 case "engine(edbindependent": EDBIndependent = stf.ReadBoolBlock(false); break;
+                case "engine(doespowerlossresetcontrols": DoesPowerLossResetControls = stf.ReadBoolBlock(false); break;
+                    
                 // Jindrich
                 case "engine(throttlefullrangeincreasetimeseconds": ThrottleFullRangeIncreaseTimeSeconds = stf.ReadFloatBlock(STFReader.UNITS.Any, 5); break;
                 case "engine(throttlefullrangedecreasetimeseconds": ThrottleFullRangeDecreaseTimeSeconds = stf.ReadFloatBlock(STFReader.UNITS.Any, 5); break;
@@ -1197,6 +1203,7 @@ namespace Orts.Simulation.RollingStocks
             MaxCurrentBrake = locoCopy.MaxCurrentBrake;
             SlipSpeedCritical = locoCopy.SlipSpeedCritical;
             EDBIndependent = locoCopy.EDBIndependent;
+            DoesPowerLossResetControls = locoCopy.DoesPowerLossResetControls;
 
             // Jindrich
             if (locoCopy.CruiseControl != null)
@@ -1258,6 +1265,10 @@ namespace Orts.Simulation.RollingStocks
             outf.Write(IsWaterScoopDown);
             outf.Write(CurrentTrackSandBoxCapacityM3);
 
+            // Icik
+            outf.Write(HVOffStatusBrakeCyl);
+            outf.Write(HVOffStatusBrakePipe);
+
             base.Save(outf);
 
             TrainControlSystem.Save(outf);
@@ -1306,6 +1317,10 @@ namespace Orts.Simulation.RollingStocks
             CurrentTrackSandBoxCapacityM3 = inf.ReadSingle();
             
             AdhesionFilter.Reset(0.5f);
+
+            // Icik
+            HVOffStatusBrakeCyl = inf.ReadBoolean();
+            HVOffStatusBrakePipe = inf.ReadBoolean();
 
             base.Restore(inf);
 
@@ -1563,15 +1578,15 @@ namespace Orts.Simulation.RollingStocks
 
             }
 
-            if (DoesBrakeCutPower && BrakeCutsPowerAtBrakePipePressurePSI > BrakeRestoresPowerAtBrakePipePressurePSI)
-            {
-                BrakeCutsPowerAtBrakePipePressurePSI = BrakeRestoresPowerAtBrakePipePressurePSI - 1.0f;
+            //if (DoesBrakeCutPower && BrakeCutsPowerAtBrakePipePressurePSI > BrakeRestoresPowerAtBrakePipePressurePSI)
+            //{
+            //    BrakeCutsPowerAtBrakePipePressurePSI = BrakeRestoresPowerAtBrakePipePressurePSI - 1.0f;
 
-                if (Simulator.Settings.VerboseConfigurationMessages)
-                {
-                    Trace.TraceInformation("BrakeCutsPowerAtBrakePipePressure is greater then BrakeRestoresPowerAtBrakePipePressurePSI, and has been set to value of {0} InHg", Bar.ToInHg(Bar.FromPSI(BrakeCutsPowerAtBrakePipePressurePSI)));
-                }
-            }
+            //    if (Simulator.Settings.VerboseConfigurationMessages)
+            //    {
+            //        Trace.TraceInformation("BrakeCutsPowerAtBrakePipePressure is greater then BrakeRestoresPowerAtBrakePipePressurePSI, and has been set to value of {0} InHg", Bar.ToInHg(Bar.FromPSI(BrakeCutsPowerAtBrakePipePressurePSI)));
+            //    }
+            //}
 
             if (DoesBrakeCutPower && (BrakeSystem is VacuumSinglePipe) && (BrakeRestoresPowerAtBrakePipePressurePSI == 0 || BrakeRestoresPowerAtBrakePipePressurePSI > OneAtmospherePSI))
             {
@@ -1927,6 +1942,49 @@ namespace Orts.Simulation.RollingStocks
             }
         }
 
+        // Icik
+        // Vypínání HV při určitém tlaku v potrubí
+        public void HVOffbyAirPressure()
+        {
+            if (DoesBrakeCutPower)
+            {
+                // Pokud stoupne tlak nad hraniční hodnotu tlaku v brzdovém válci
+                if (BrakeCutsPowerAtBrakeCylinderPressurePSI != 0)
+                {
+                    if (BrakeSystem.GetCylPressurePSI() >= BrakeCutsPowerAtBrakeCylinderPressurePSI && LocalThrottlePercent > 0
+                      || HVOffStatusBrakeCyl)
+                    {
+                        Train.SignalEvent(PowerSupplyEvent.OpenCircuitBreaker); // Vypnutí HV
+                        HVOffStatusBrakeCyl = true;
+                    }
+                    if (BrakeSystem.GetCylPressurePSI() < BrakeCutsPowerAtBrakeCylinderPressurePSI)
+                        HVOffStatusBrakeCyl = false;
+                }
+                
+                if (PowerOn && BrakeSystem.BrakeCylApply && LocalThrottlePercent > 0
+                || HVOffStatusBrakePipe)
+                {
+                    // Pokud klesne tlak pod hraniční hodnotu tlaku v brzdovém potrubí
+                    if (BrakeCutsPowerAtBrakePipePressurePSI != 0)
+                        if (BrakeSystem.BrakeLine1PressurePSI <= BrakeCutsPowerAtBrakePipePressurePSI)
+                        {
+                            Train.SignalEvent(PowerSupplyEvent.OpenCircuitBreaker); // Vypnutí HV                             
+                            HVOffStatusBrakePipe = true;
+                        }
+                    //Trace.TraceWarning("Hodnota BrakeSystem.BrakeLine1PressurePSI {0}, BrakeCutsPowerAtBrakePipePressurePSI {1}", BrakeSystem.BrakeLine1PressurePSI, BrakeCutsPowerAtBrakePipePressurePSI);                    
+                }
+                
+                if (!PowerOn && BrakeSystem.BrakeCylRelease && HVOffStatusBrakePipe)
+                {
+                    // Pokud vystoupí tlak nad hraniční hodnotu tlaku v brzdovém potrubí
+                    if (BrakeRestoresPowerAtBrakePipePressurePSI != 0)
+                        if (BrakeSystem.BrakeLine1PressurePSI >= BrakeRestoresPowerAtBrakePipePressurePSI)
+                        {
+                            HVOffStatusBrakePipe = false;
+                        }
+                }
+            }
+        }
 
         /// <summary>
         /// This function updates periodically the states and physical variables of the locomotive's subsystems.
@@ -1948,6 +2006,7 @@ namespace Orts.Simulation.RollingStocks
             Overcurrent_Protection(elapsedClockSeconds);
             AntiSlip_Protection(elapsedClockSeconds);
             PowerOn_Filter(elapsedClockSeconds);
+            HVOffbyAirPressure();
 
             TrainControlSystem.Update();
 
@@ -4059,9 +4118,10 @@ namespace Orts.Simulation.RollingStocks
                 || TrainBrakeController.TrainBrakeControllerState == ControllerState.FullServ
                 || TrainBrakeController.TrainBrakeControllerState  == ControllerState.Emergency)
             {
-                if (ThrottlePercent > 0 && DoesBrakeCutPower)
+            if (ThrottlePercent > 0 && DoesBrakeCutPower)
                 {
-                    ThrottleController.SetPercent(0);
+                    //ThrottleController.SetPercent(0);
+                    StartThrottleToZero(0.0f);
                 }
             }
 

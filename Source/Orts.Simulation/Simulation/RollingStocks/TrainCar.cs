@@ -884,7 +884,8 @@ namespace Orts.Simulation.RollingStocks
             UpdateCurveForce(elapsedClockSeconds);
             UpdateTunnelForce();
             UpdateBrakeSlideCalculation();
-            UpdateTrainDerailmentRisk();
+            // Icik
+            //UpdateTrainDerailmentRisk();
 
             if (this is MSTSLocomotive) // Set train outside temperature the same as the locomotive - TO BE RECHECKED
             {
