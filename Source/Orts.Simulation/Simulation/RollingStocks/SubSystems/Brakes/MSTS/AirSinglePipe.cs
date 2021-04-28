@@ -152,52 +152,27 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
         // Get the brake BC & BP for EOT conditions
         public override string GetStatus(Dictionary<BrakeSystemComponent, PressureUnit> units)
         {
-            string s = string.Format(
-                " BC {0}",
-                FormatStrings.FormatPressure(CylPressurePSI, PressureUnit.PSI, units[BrakeSystemComponent.BrakeCylinder], true));
-                s += string.Format(" BP {0}", FormatStrings.FormatPressure(BrakeLine1PressurePSI, PressureUnit.PSI, units[BrakeSystemComponent.BrakePipe], true));
-            return s;
+            return $" {Simulator.Catalog.GetString("BC")} {FormatStrings.FormatPressure(CylPressurePSI, PressureUnit.PSI, units[BrakeSystemComponent.BrakeCylinder], true)}"
+                + $" {Simulator.Catalog.GetString("BP")} {FormatStrings.FormatPressure(BrakeLine1PressurePSI, PressureUnit.PSI, units[BrakeSystemComponent.BrakePipe], true)}";
         }
 
         // Get Brake information for train
         public override string GetFullStatus(BrakeSystem lastCarBrakeSystem, Dictionary<BrakeSystemComponent, PressureUnit> units)
         {
-            string s = string.Format(" EQ {0}", FormatStrings.FormatPressure(Car.Train.EqualReservoirPressurePSIorInHg, PressureUnit.PSI, units[BrakeSystemComponent.EqualizingReservoir], true));
-            s += string.Format(
-                " BC {0}",
-                FormatStrings.FormatPressure(AutoCylPressurePSI, PressureUnit.PSI, units[BrakeSystemComponent.BrakeCylinder], true)
-            );
-
-            s += string.Format(
-                " BP {0}",                
-                FormatStrings.FormatPressure(BrakeLine1PressurePSI, PressureUnit.PSI, units[BrakeSystemComponent.BrakePipe], true)
-            );
-
+            var s = $" {Simulator.Catalog.GetString("EQ")} {FormatStrings.FormatPressure(Car.Train.EqualReservoirPressurePSIorInHg, PressureUnit.PSI, units[BrakeSystemComponent.EqualizingReservoir], true)}"
+                + $" {Simulator.Catalog.GetString("BV")} {FormatStrings.FormatPressure(Car.Train.HUDWagonBrakeCylinderPSI, PressureUnit.PSI, units[BrakeSystemComponent.BrakeCylinder], true)}"
+                + $" {Simulator.Catalog.GetString("BP")} {FormatStrings.FormatPressure(BrakeLine1PressurePSI, PressureUnit.PSI, units[BrakeSystemComponent.BrakePipe], true)}";
             if (lastCarBrakeSystem != null && lastCarBrakeSystem != this)
-                s += "  Konec vlaku" + lastCarBrakeSystem.GetStatus(units);
+                s += $" {Simulator.Catalog.GetString("Konec vlaku")} {lastCarBrakeSystem.GetStatus(units)}";
             if (HandbrakePercent > 0)
-                s += string.Format(" Handbrake {0:F0}%", HandbrakePercent);
+                s += $" {Simulator.Catalog.GetString("Handbrake")} {HandbrakePercent:F0}%";
 
+            // Icik
             s += string.Format("  Rychlost změny tlaku v potrubí {0:F5}bar/s", BrakePipeChangeRate / 14.50377f);
             s += string.Format("  Netěsnost potrubí {0:F5}bar/s", Car.Train.TotalTrainTrainPipeLeakRate / 14.50377f);
             s += string.Format("  Objem potrubí {0:F0}l", Car.Train.TotalTrainBrakePipeVolumeM3 * 1000);
             s += string.Format("  Kapacita hl.jímky a přilehlého potrubí {0:F0}l", Car.Train.TotalCapacityMainResBrakePipe * 1000 / 14.50377f);
-          
-            //s += string.Format("    maxPressurePSI {0:F1}bar", maxPressurePSI0 / 14.50377f);            
-            //s += string.Format("    MaxCylPressurePSI {0:F1}bar", MaxCylPressurePSI / 14.50377f);
-            //s += string.Format("    MCP {0:F1}bar", MCP / 14.50377f);
-            //s += string.Format("    EngineBrakeStatus{0:F1}", Car.GetEngineBrakeStatus());
-            //s += string.Format("    Tlak nízkotlak.přebití {0:F1}bar", TrainBrakesControllerMaxOverchargePressurePSI / 14.50377f);           
-            //s += string.Format("    Max tlak do BV {0:F1}bar", BrakeCylinderMaxSystemPressurePSI / 14.50377f);
-            //s += string.Format("    Rychlost odvětrávání nízkotlakého přebití {0:F5}bar/s", Car.BrakeSystem.OverchargeEliminationRatePSIpS / 14.50377f);            
-            //s += string.Format("    BrakeLine1PressurePSI {0:F4}", BrakeLine1PressurePSI);
-            //s += string.Format("    prevBrakeLine1PressurePSI {0:F4}", prevBrakeLine1PressurePSI);
-            //s += string.Format("    Citlivost brzdiče {0} ", FormatStrings.FormatPressure(BrakeSensitivityPSIpS, PressureUnit.PSI, units[BrakeSystemComponent.EqualizingReservoir], true));            
-            //s += string.Format("    MaxTlakVálce {0:F0}", MaxCylPressurePSI);
-            //s += string.Format("    TlakVálce {0:F0}", AutoCylPressurePSI);          
-            //s += string.Format("    PrevAuxResPressure {0:F1} bar", PrevAuxResPressurePSI / 14.50377f);
-            //s += string.Format("    threshold {0:F1} bar", Threshold / 14.50377f);
-            //s += string.Format("    T0 {0:F0}", T0);
+
             return s;
         }
 
@@ -997,15 +972,15 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                                         lead.BrakeSystem.BrakeLine1PressurePSI += PressureDiffEqualToPipePSI;  // Increase brake pipe pressure to cover loss
                                         lead.MainResPressurePSI = lead.MainResPressurePSI - (PressureDiffEqualToPipePSI * lead.BrakeSystem.BrakePipeVolumeM3 / lead.MainResVolumeM3);   // Decrease main reservoir pressure
                                     }
-                            }
+                                }
                             // reduce pressure in lead brake line if brake pipe pressure is above equalising pressure - apply brakes
                             else if (lead.BrakeSystem.BrakeLine1PressurePSI > train.EqualReservoirPressurePSIorInHg)
                             {
                                 float ServiceVariationFactor = (1 - TrainPipeTimeVariationS / (serviceTimeFactor * 2));
                                 ServiceVariationFactor = MathHelper.Clamp(ServiceVariationFactor, 0.05f, 1.0f); // Keep factor within acceptable limits - prevent value from going negative
-                                lead.BrakeSystem.BrakeLine1PressurePSI *= ServiceVariationFactor;                                
+                                lead.BrakeSystem.BrakeLine1PressurePSI *= ServiceVariationFactor;
                                 if (lead.TrainBrakeController.MaxPressurePSI <= lead.BrakeSystem.maxPressurePSI0) brakePipeTimeFactorS0 = brakePipeTimeFactorS_Apply;
-                            }                            
+                            }
 
                         train.LeadPipePressurePSI = lead.BrakeSystem.BrakeLine1PressurePSI;  // Keep a record of current train pipe pressure in lead locomotive
                     }

@@ -367,6 +367,17 @@ Ambient daylight brightness
 
 With this slider you can set the daylight brightness.
 
+Anti-aliasing
+-------------
+
+Controls the anti-aliasing method used by Open Rails. Anti-aliasing is a
+computer graphics technique that smooths any harsh edges, otherwise known as
+"jaggies," present in the video image. Currently, Open Rails only supports the
+multisample anti-aliasing (MSAA) method. Higher applications of anti-aliasing
+will require exponentially more graphics computing power.
+
+The default setting is MSAA with 2x sampling.
+
 .. _options-simulation:
 
 Simulation Options
@@ -683,6 +694,18 @@ system ETCS.
             ScaleRange ( 0 250 )
             Units ( KM_PER_HOUR )
         )
+
+It is also possible to display the full ETCS display using the following block
+instead::
+
+		ScreenDisplay (
+			Type ( ORTS_ETCS SCREEN_DISPLAY )
+			Position ( 280 272 320 240 )
+			Units ( KM_PER_HOUR )
+		)
+
+The information displayed in the DMI is controlled via the TCS script. For more details,
+see :ref:`C# engine scripting - Train Control System <features-scripting-tcs>`.
 
 Load day/night textures only when needed
 ----------------------------------------
