@@ -160,7 +160,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
         public override string GetFullStatus(BrakeSystem lastCarBrakeSystem, Dictionary<BrakeSystemComponent, PressureUnit> units)
         {
             var s = $" {Simulator.Catalog.GetString("EQ")} {FormatStrings.FormatPressure(Car.Train.EqualReservoirPressurePSIorInHg, PressureUnit.PSI, units[BrakeSystemComponent.EqualizingReservoir], true)}"
-                + $" {Simulator.Catalog.GetString("BV")} {FormatStrings.FormatPressure(Car.Train.HUDWagonBrakeCylinderPSI, PressureUnit.PSI, units[BrakeSystemComponent.BrakeCylinder], true)}"
+                //+ $" {Simulator.Catalog.GetString("BV")} {FormatStrings.FormatPressure(Car.Train.HUDWagonBrakeCylinderPSI, PressureUnit.PSI, units[BrakeSystemComponent.BrakeCylinder], true)}"
+                + $" {Simulator.Catalog.GetString("BV")} {FormatStrings.FormatPressure(AutoCylPressurePSI, PressureUnit.PSI, units[BrakeSystemComponent.BrakeCylinder], true)}"
                 + $" {Simulator.Catalog.GetString("BP")} {FormatStrings.FormatPressure(BrakeLine1PressurePSI, PressureUnit.PSI, units[BrakeSystemComponent.BrakePipe], true)}";
             if (lastCarBrakeSystem != null && lastCarBrakeSystem != this)
                 s += $" {Simulator.Catalog.GetString("Konec vlaku")} {lastCarBrakeSystem.GetStatus(units)}";
@@ -517,7 +518,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             MCP = GetMaxCylPressurePSI();
 
             // Výsledný tlak v brzdovém válci - přičte tlak přímočinné brzdy k tlaku v BV průběžné brzdy
-            AutoCylPressurePSI = AutoCylPressurePSI0 + AutoCylPressurePSI1;
+            AutoCylPressurePSI = AutoCylPressurePSI0 + AutoCylPressurePSI1;            
 
             // Tlak v BV nepřekročí maximální tlak pro BV nadefinovaný v eng lokomotivy
             if (BrakeCylinderMaxSystemPressurePSI == 0) BrakeCylinderMaxSystemPressurePSI = MaxCylPressurePSI * 1.03f; // Výchozí hodnota pro maximální tlak přímočinné brzdy v BV 
@@ -732,7 +733,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             if (Car.WagonType == MSTSWagon.WagonTypes.Engine || Car.WagonType == MSTSWagon.WagonTypes.Tender)
             {
                 Car.Train.HUDLocomotiveBrakeCylinderPSI = CylPressurePSI;
-                Car.Train.HUDWagonBrakeCylinderPSI = Car.Train.HUDLocomotiveBrakeCylinderPSI;  // Initially set Wagon value same as locomotive, will be overwritten if a wagon is attached
+                Car.Train.HUDWagonBrakeCylinderPSI = Car.Train.HUDLocomotiveBrakeCylinderPSI;  // Initially set Wagon value same as locomotive, will be overwritten if a wagon is attached                
             }
             else
             {
@@ -741,15 +742,14 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 if (Car.UiD == Car.Train.FirstCarUiD)
                 {
                     Car.Train.HUDWagonBrakeCylinderPSI = CylPressurePSI;
-                }
-
-            }
+                }                
+            }            
 
             // If wagons are not attached to the locomotive, then set wagon BC pressure to same as locomotive in the Train brake line
             if (!Car.Train.WagonsAttached &&  (Car.WagonType == MSTSWagon.WagonTypes.Engine || Car.WagonType == MSTSWagon.WagonTypes.Tender) ) 
             {
                 Car.Train.HUDWagonBrakeCylinderPSI = CylPressurePSI;
-            }
+            }            
 
             float f;
             if (!Car.BrakesStuck)
