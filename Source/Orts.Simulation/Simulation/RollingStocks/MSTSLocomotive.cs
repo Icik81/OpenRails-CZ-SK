@@ -470,7 +470,12 @@ namespace Orts.Simulation.RollingStocks
         public bool AutomaticParkingBrakeEngaged = false;
         public List<CabViewControl> ActiveScreens = new List<CabViewControl>();
         public List<CabViewControl> EditableItems = new List<CabViewControl>();
-        public ExtendedPhysics extendedPhysics;
+        public ExtendedPhysics extendedPhysics = null;
+        public float ControllerVolts = 0;
+        public float ThrottleFullRangeIncreaseTimeSeconds = 0;
+        public float ThrottleFullRangeDecreaseTimeSeconds = 0;
+        public float DynamicBrakeFullRangeIncreaseTimeSeconds;
+        public float DynamicBrakeFullRangeDecreaseTimeSeconds;
 
         public bool
       Speed0Pressed, Speed10Pressed, Speed20Pressed, Speed30Pressed, Speed40Pressed, Speed50Pressed
@@ -1031,6 +1036,10 @@ namespace Orts.Simulation.RollingStocks
                 case "engine(doespowerlossresetcontrols": DoesPowerLossResetControls = stf.ReadBoolBlock(false); break;
                     
                 // Jindrich
+                case "engine(throttlefullrangeincreasetimeseconds": ThrottleFullRangeIncreaseTimeSeconds = stf.ReadFloatBlock(STFReader.UNITS.Any, 5); break;
+                case "engine(throttlefullrangedecreasetimeseconds": ThrottleFullRangeDecreaseTimeSeconds = stf.ReadFloatBlock(STFReader.UNITS.Any, 5); break;
+                case "engine(dynamicbrakefullrangeincreasetimeseconds": DynamicBrakeFullRangeIncreaseTimeSeconds = stf.ReadFloatBlock(STFReader.UNITS.Any, 5); break;
+                case "engine(dynamicbrakefullrangedecreasetimeseconds": DynamicBrakeFullRangeDecreaseTimeSeconds = stf.ReadFloatBlock(STFReader.UNITS.Any, 5); break;
                 case "engine(ortscruisecontrol": SetUpCruiseControl(); break;
                 case "engine(ortsmultipositioncontroller": SetUpMPC(); break;
                 case "engine(disablerestrictedspeedwhenmanualdriving": DisableRestrictedSpeedWhenManualDriving = stf.ReadBoolBlock(false); break;
@@ -1397,6 +1406,11 @@ namespace Orts.Simulation.RollingStocks
         /// </summary>
         public override void Initialize()
         {
+            if (File.Exists(WagFilePath + ".ExtendedPhysics.xml"))
+            {
+                extendedPhysics = new ExtendedPhysics(this);
+                extendedPhysics.Parse(WagFilePath + ".ExtendedPhysics.xml");
+            }
             TrainBrakeController.Initialize();
             EngineBrakeController.Initialize();
             BrakemanBrakeController.Initialize();
@@ -1979,6 +1993,16 @@ namespace Orts.Simulation.RollingStocks
         public bool CanCheckEngineBrake = true;
         public override void Update(float elapsedClockSeconds)
         {
+            if (extendedPhysics != null)
+                extendedPhysics.Update(elapsedClockSeconds);
+
+            if (DynamicBrakePercent > 0)
+            {
+                ControllerVolts = -(DynamicBrakePercent / 100) * extendedPhysics.MaxControllerVolts;
+            }
+            else if (DynamicBrakePercent <= 0 && ControllerVolts < 0)
+                ControllerVolts = 0;
+
             Overcurrent_Protection(elapsedClockSeconds);
             AntiSlip_Protection(elapsedClockSeconds);
             PowerOn_Filter(elapsedClockSeconds);
@@ -2096,7 +2120,11 @@ namespace Orts.Simulation.RollingStocks
                     UpdateTractiveForce(elapsedClockSeconds, t, AbsSpeedMpS, AbsWheelSpeedMpS);
                 }
                 else if (CruiseControl.SelectedSpeedMpS > 0)
+                {
                     CruiseControl.Update(elapsedClockSeconds, AbsWheelSpeedMpS);
+                    if (extendedPhysics != null)
+                        UpdateTractiveForce(elapsedClockSeconds, t, AbsSpeedMpS, AbsWheelSpeedMpS);
+                }
                 else if (CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.Auto)
                     CruiseControl.Update(elapsedClockSeconds, AbsWheelSpeedMpS);
                 else
@@ -2122,6 +2150,7 @@ namespace Orts.Simulation.RollingStocks
             // Note typically only one of the above will only ever be non-zero at the one time.
             // For flipped locomotives the force is "flipped" elsewhere, whereas dynamic brake force is "flipped" below by the direction of the speed.
             MotiveForceN = TractiveForceN;
+
 
             if (DynamicBrakePercent > 0 && DynamicBrakeForceCurves != null && AbsSpeedMpS > 0)
             {
@@ -2499,28 +2528,47 @@ namespace Orts.Simulation.RollingStocks
         {
             // Method to set force and power info
             // An alternative method in the steam locomotive will override this and input force and power info for it.
+            if (DynamicBrakeFullRangeIncreaseTimeSeconds == 0)
+                DynamicBrakeFullRangeIncreaseTimeSeconds = 4;
+            if (DynamicBrakeFullRangeDecreaseTimeSeconds == 0)
+                DynamicBrakeFullRangeDecreaseTimeSeconds = 6;
+
             if (PowerOn && Direction != Direction.N)
             {
-                if (TractiveForceCurves == null)
+                if (extendedPhysics == null)
                 {
-                    float maxForceN = MaxForceN * t * (1 - PowerReduction);
-                    float maxPowerW = MaxPowerW * t * t * (1 - PowerReduction);
+                    if (TractiveForceCurves == null)
+                    {
+                        float maxForceN = MaxForceN * t * (1 - PowerReduction);
+                        float maxPowerW = MaxPowerW * t * t * (1 - PowerReduction);
 
-                    if (maxForceN * AbsTractionSpeedMpS > maxPowerW)
-                        maxForceN = maxPowerW / AbsTractionSpeedMpS;
-                    //if (AbsSpeedMpS > MaxSpeedMpS)
-                    //    maxForceN = 0;
-                    if (AbsTractionSpeedMpS > MaxSpeedMpS - 0.05f)
-                        maxForceN = 20 * (MaxSpeedMpS - AbsTractionSpeedMpS) * maxForceN;
-                    if (AbsSpeedMpS > (MaxSpeedMpS))
-                        maxForceN = 0;
-                    TractiveForceN = maxForceN;
+                        if (maxForceN * AbsTractionSpeedMpS > maxPowerW)
+                            maxForceN = maxPowerW / AbsTractionSpeedMpS;
+                        //if (AbsSpeedMpS > MaxSpeedMpS)
+                        //    maxForceN = 0;
+                        if (AbsTractionSpeedMpS > MaxSpeedMpS - 0.05f)
+                            maxForceN = 20 * (MaxSpeedMpS - AbsTractionSpeedMpS) * maxForceN;
+                        if (AbsSpeedMpS > (MaxSpeedMpS))
+                            maxForceN = 0;
+                        TractiveForceN = maxForceN;
+                    }
+                    else
+                    {
+                        TractiveForceN = TractiveForceCurves.Get(t, AbsTractionSpeedMpS) * (1 - PowerReduction);
+                        if (TractiveForceN < 0 && !TractiveForceCurves.AcceptsNegativeValues())
+                            TractiveForceN = 0;
+                    }
                 }
                 else
                 {
-                    TractiveForceN = TractiveForceCurves.Get(t, AbsTractionSpeedMpS) * (1 - PowerReduction);
-                    if (TractiveForceN < 0 && !TractiveForceCurves.AcceptsNegativeValues())
-                        TractiveForceN = 0;
+                    TractiveForceN = 0;
+                    foreach (Undercarriage uc in extendedPhysics.Undercarriages)
+                    {
+                        foreach (ExtendedAxle ea in uc.Axles)
+                        {
+                            TractiveForceN += ea.ForceN;
+                        }
+                    }
                 }
             }
             else
@@ -4070,7 +4118,7 @@ namespace Orts.Simulation.RollingStocks
                 || TrainBrakeController.TrainBrakeControllerState == ControllerState.FullServ
                 || TrainBrakeController.TrainBrakeControllerState  == ControllerState.Emergency)
             {
-                if (ThrottlePercent > 0 && !DoesBrakeCutPower)
+            if (ThrottlePercent > 0 && DoesBrakeCutPower)
                 {
                     //ThrottleController.SetPercent(0);
                     StartThrottleToZero(0.0f);
@@ -5810,6 +5858,118 @@ namespace Orts.Simulation.RollingStocks
                         }
                     }
                     break;
+                case CABViewControlTypes.ORTS_AMPERS_BY_CONTROLLER_VOLTAGE:
+                    if (extendedPhysics != null)
+                    {
+                        if (string.IsNullOrEmpty(cvc.CurrentSource))
+                        {
+                            data = extendedPhysics.TotalCurrent;
+                            break;
+                        }
+                        else if (cvc.CurrentSource.ToLower() == "total")
+                        {
+                            if (string.IsNullOrEmpty(cvc.CurrentType))
+                            {
+                                data = extendedPhysics.TotalCurrent;
+                                break;
+                            }
+                            else if (cvc.CurrentType.ToLower() == "rotor")
+                            {
+                                data = extendedPhysics.RotorsCurrent;
+                                break;
+                            }
+                            else if (cvc.CurrentType.ToLower() == "stator")
+                            {
+                                data = extendedPhysics.StarorsCurrent;
+                                break;
+                            }
+                        }
+                        else if (cvc.CurrentSource.ToLower() == "undercarriage")
+                        {
+                            if (extendedPhysics.Undercarriages.Count == 0 || cvc.CurrentSourceID == -1)
+                            {
+                                data = extendedPhysics.TotalCurrent;
+                                break;
+                            }
+                            else
+                            {
+                                foreach (Undercarriage uc in extendedPhysics.Undercarriages)
+                                {
+                                    if (uc.Id == cvc.CurrentSourceID)
+                                    {
+                                        if (string.IsNullOrEmpty(cvc.CurrentType))
+                                        {
+                                            data = uc.StatorsCurrent + uc.RotorsCurrent;
+                                            break;
+                                        }
+                                        else if (cvc.CurrentType.ToLower() == "stator")
+                                        {
+                                            data = uc.StatorsCurrent;
+                                            break;
+                                        }
+                                        else if (cvc.CurrentType.ToLower() == "rotor")
+                                        {
+                                            data = uc.RotorsCurrent;
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+                            break;
+                        }
+                        else if (cvc.CurrentSource.ToLower() == "motor")
+                        {
+                            foreach (Undercarriage uc in extendedPhysics.Undercarriages)
+                            {
+                                foreach (ExtendedAxle ea in uc.Axles)
+                                {
+                                    foreach (ElectricMotor em in ea.ElectricMotors)
+                                    {
+                                        if (em.Id == cvc.CurrentSourceID)
+                                        {
+                                            if (string.IsNullOrEmpty(cvc.CurrentType))
+                                            {
+                                                data = em.RotorCurrent + em.StatorCurrent;
+                                                break;
+                                            }
+                                            else if (cvc.CurrentType.ToLower() == "stator")
+                                            {
+                                                data = em.StatorCurrent;
+                                                break;
+                                            }
+                                            else if (cvc.CurrentType.ToLower() == "rotor")
+                                            {
+                                                data = em.RotorCurrent;
+                                                break;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            break;
+                        }
+                    }
+                    if (CruiseControl != null)
+                    {
+                        if (CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.Auto)
+                        {
+                            if (CruiseControl.controllerVolts < 0) data = -CruiseControl.controllerVolts / 100 * (MaxCurrentA * 0.8f);
+                            else data = CruiseControl.controllerVolts / 100 * (MaxCurrentA * 0.8f);
+                            if (data == 0 && DynamicBrakePercent > 0 && AbsSpeedMpS > 0) data = DynamicBrakePercent / 100 * (MaxCurrentA * 0.8f);
+                        }
+                        else
+                        {
+                            if (DynamicBrakePercent > 0 && AbsSpeedMpS > 0) data = DynamicBrakePercent / 200 * (MaxCurrentA * 0.8f);
+                            else data = ThrottlePercent / 100 * (MaxCurrentA * 1.2f);
+                        }
+                    }
+                    else
+                    {
+                        if (DynamicBrakePercent > 0 && AbsSpeedMpS > 0) data = DynamicBrakePercent / 200 * (MaxCurrentA * 0.8f);
+                        else data = ThrottlePercent / 100 * (MaxCurrentA * 1.2f);
+                    }
+                    break;
+
                 case CABViewControlTypes.ORTS_SELECTED_SPEED:
                 case CABViewControlTypes.ORTS_SELECTED_SPEED_DISPLAY:
                     {
