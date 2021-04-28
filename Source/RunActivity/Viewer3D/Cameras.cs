@@ -31,6 +31,7 @@ using Orts.Simulation.RollingStocks;
 using Orts.Simulation.Signalling;
 using ORTS.Common;
 using ORTS.Common.Input;
+using ORTS.Settings;
 
 namespace Orts.Viewer3D
 {
@@ -1980,6 +1981,7 @@ namespace Orts.Viewer3D
 
     public class CabCamera : NonTrackingCamera
     {
+        private readonly SavingProperty<bool> LetterboxProperty;
         protected int sideLocation;
         public int SideLocation { get { return sideLocation; } }
         public override float NearPlane { get { return 1.0f; } }
@@ -2009,6 +2011,7 @@ namespace Orts.Viewer3D
         public CabCamera(Viewer viewer)
             : base(viewer)
         {
+            LetterboxProperty = viewer.Settings.GetSavingProperty<bool>("Letterbox2DCab");
         }
 
         protected internal override void Save(BinaryWriter outf)
@@ -2221,7 +2224,7 @@ namespace Orts.Viewer3D
                 ScrollRight(false, speed);
             if (UserInput.IsPressed(UserCommand.CameraToggleLetterboxCab))
             {
-                Viewer.Settings.Letterbox2DCab = !Viewer.Settings.Letterbox2DCab;
+                LetterboxProperty.Value = !LetterboxProperty.Value;
                 Viewer.AdjustCabHeight(Viewer.DisplaySize.X, Viewer.DisplaySize.Y);
                 if (attachedCar != null)
                     Initialize();

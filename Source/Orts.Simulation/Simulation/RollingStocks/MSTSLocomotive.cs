@@ -1065,11 +1065,11 @@ namespace Orts.Simulation.RollingStocks
                                     string[] behaviors = array.Split('{');
                                     updatedArray = behaviors[0];
                                     displayID = int.Parse(behaviors[1].Replace("}", ""));
-                                }
+            }
                                 else
                                 {
                                     updatedArray = array;
-                                }
+        }
                                 if (strArray.Strings == null)
                                 {
                                     strArray.Strings = new Dictionary<string, int>();
@@ -2035,7 +2035,7 @@ namespace Orts.Simulation.RollingStocks
             {
                 UpdateCarSteamHeat(elapsedClockSeconds);
             }
-
+ 
             if (AutomaticParkingBrake)
             {
                 if (CruiseControl != null)
@@ -2087,7 +2087,7 @@ namespace Orts.Simulation.RollingStocks
 
 
             // TODO  this is a wild simplification for electric and diesel electric
-            float t = ThrottlePercent / 100f;
+                        float t = ThrottlePercent / 100f;
 
             if (!AdvancedAdhesionModel)  // Advanced adhesion model turned off.
                AbsWheelSpeedMpS = AbsSpeedMpS;
@@ -2117,7 +2117,7 @@ namespace Orts.Simulation.RollingStocks
                 if (!IsPlayerTrain || CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.Manual || CruiseControl.UseThrottle)
                 {
                     CruiseControl.WasForceReset = false;
-                    UpdateTractiveForce(elapsedClockSeconds, t, AbsSpeedMpS, AbsWheelSpeedMpS);
+            UpdateTractiveForce(elapsedClockSeconds, t, AbsSpeedMpS, AbsWheelSpeedMpS);
                 }
                 else if (CruiseControl.SelectedSpeedMpS > 0)
                 {
@@ -2537,29 +2537,29 @@ namespace Orts.Simulation.RollingStocks
             {
                 if (extendedPhysics == null)
                 {
-                    if (TractiveForceCurves == null)
-                    {
-                        float maxForceN = MaxForceN * t * (1 - PowerReduction);
-                        float maxPowerW = MaxPowerW * t * t * (1 - PowerReduction);
+                if (TractiveForceCurves == null)
+                {
+                    float maxForceN = MaxForceN * t * (1 - PowerReduction);
+                    float maxPowerW = MaxPowerW * t * t * (1 - PowerReduction);
 
-                        if (maxForceN * AbsTractionSpeedMpS > maxPowerW)
-                            maxForceN = maxPowerW / AbsTractionSpeedMpS;
-                        //if (AbsSpeedMpS > MaxSpeedMpS)
-                        //    maxForceN = 0;
-                        if (AbsTractionSpeedMpS > MaxSpeedMpS - 0.05f)
-                            maxForceN = 20 * (MaxSpeedMpS - AbsTractionSpeedMpS) * maxForceN;
-                        if (AbsSpeedMpS > (MaxSpeedMpS))
-                            maxForceN = 0;
-                        TractiveForceN = maxForceN;
-                    }
-                    else
-                    {
-                        TractiveForceN = TractiveForceCurves.Get(t, AbsTractionSpeedMpS) * (1 - PowerReduction);
-                        if (TractiveForceN < 0 && !TractiveForceCurves.AcceptsNegativeValues())
-                            TractiveForceN = 0;
-                    }
+                    if (maxForceN * AbsTractionSpeedMpS > maxPowerW)
+                        maxForceN = maxPowerW / AbsTractionSpeedMpS;
+                    //if (AbsSpeedMpS > MaxSpeedMpS)
+                    //    maxForceN = 0;
+                    if (AbsTractionSpeedMpS > MaxSpeedMpS - 0.05f)
+                        maxForceN = 20 * (MaxSpeedMpS - AbsTractionSpeedMpS) * maxForceN;
+                    if (AbsSpeedMpS > (MaxSpeedMpS))
+                        maxForceN = 0;
+                    TractiveForceN = maxForceN;
                 }
                 else
+                {
+                    TractiveForceN = TractiveForceCurves.Get(t, AbsTractionSpeedMpS) * (1 - PowerReduction);
+                    if (TractiveForceN < 0 && !TractiveForceCurves.AcceptsNegativeValues())
+                        TractiveForceN = 0;
+                }
+            }
+            else
                 {
                     TractiveForceN = 0;
                     foreach (Undercarriage uc in extendedPhysics.Undercarriages)
@@ -3885,8 +3885,8 @@ namespace Orts.Simulation.RollingStocks
                     return;
                 }
                 else
-                    ThrottleController.SetPercent(percent);
-            }
+            ThrottleController.SetPercent(percent);
+        }
             else
                 ThrottleController.SetPercent(percent);
         }
@@ -3968,7 +3968,7 @@ namespace Orts.Simulation.RollingStocks
                     }
                     else
                     {
-                        return CombinedControlSplitPosition + (1 - CombinedControlSplitPosition) * (intermediateValue ? DynamicBrakeController.IntermediateValue : DynamicBrakeController.CurrentValue);
+                return CombinedControlSplitPosition + (1 - CombinedControlSplitPosition) * (intermediateValue ? DynamicBrakeController.IntermediateValue : DynamicBrakeController.CurrentValue);
                     }
                 }
                 else
@@ -4460,7 +4460,7 @@ namespace Orts.Simulation.RollingStocks
     #endregion
 
     #region DynamicBrakeController
-        public void StartDynamicBrakeIncrease(float? target)
+    public void StartDynamicBrakeIncrease(float? target)
         {
             AlerterReset(TCSEvent.DynamicBrakeChanged);
 
@@ -4594,8 +4594,8 @@ namespace Orts.Simulation.RollingStocks
                 {
                     if (DynamicBrakePercent < 1)
                         CruiseControl.DynamicBrakePriority = false;
-                }
             }
+        }
         }
 
         public void DynamicBrakeChangeTo(bool increase, float? target)
@@ -5776,6 +5776,9 @@ namespace Orts.Simulation.RollingStocks
                 case CABViewControlTypes.ORTS_POWERKEY:
                     data = PowerKey ? 1 : 0;
                     break;
+                case CABViewControlTypes.ORTS_2DEXTERNALWIPERS:
+                    data = Wiper ? 1 : 0;
+                    break;
                 case CABViewControlTypes.ORTS_HOURDIAL:
                     float hour = (float)(Simulator.ClockTime / 3600) % 12;
                     if (hour < 0)
@@ -6023,8 +6026,8 @@ namespace Orts.Simulation.RollingStocks
                         data = CruiseControl.GetDataOf(cvc);
                     else
                         data = 0;
-                    break;
-            }
+                        break;
+                    }
             return data;
         }
 
