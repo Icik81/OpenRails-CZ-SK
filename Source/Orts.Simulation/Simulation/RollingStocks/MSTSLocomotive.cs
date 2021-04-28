@@ -4118,7 +4118,7 @@ namespace Orts.Simulation.RollingStocks
                 || TrainBrakeController.TrainBrakeControllerState == ControllerState.FullServ
                 || TrainBrakeController.TrainBrakeControllerState  == ControllerState.Emergency)
             {
-            if (ThrottlePercent > 0 && DoesBrakeCutPower)
+            if (ThrottlePercent > 0 && DoesBrakeCutPower && DoesPowerLossResetControls)
                 {
                     //ThrottleController.SetPercent(0);
                     StartThrottleToZero(0.0f);
