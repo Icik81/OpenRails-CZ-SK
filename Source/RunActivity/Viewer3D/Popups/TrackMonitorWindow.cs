@@ -22,6 +22,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Orts.Simulation.Physics;
 using Orts.Simulation.RollingStocks;
 using ORTS.Common;
+using ORTS.Settings;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -1816,12 +1817,13 @@ namespace Orts.Viewer3D.Popups
 
         readonly Viewer Viewer;
         private bool metric => Viewer.MilepostUnitsMetric;
+        private readonly SavingProperty<int> StateProperty;
         private DisplayMode Mode
         {
-            get => (DisplayMode)Viewer.Settings.TrackMonitorDisplayMode;
+            get => (DisplayMode)StateProperty.Value;
             set
             {
-                Viewer.Settings.TrackMonitorDisplayMode = (int)value;
+                StateProperty.Value = (int)value;
             }
         }
 
@@ -1940,6 +1942,7 @@ namespace Orts.Viewer3D.Popups
                 TrackMonitorImages = SharedTextureManager.Get(owner.Viewer.RenderProcess.GraphicsDevice, System.IO.Path.Combine(owner.Viewer.ContentPath, "TrackMonitorImages.png"));
 
             Viewer = owner.Viewer;
+            StateProperty = Viewer.Settings.GetSavingProperty<int>("TrackMonitorDisplayMode");
             Font = owner.TextFontSmall;
 
             ScaleDesign(ref additionalInfoHeight);

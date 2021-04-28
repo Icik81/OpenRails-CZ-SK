@@ -24,6 +24,7 @@ using ORTS.Common;
 using System;
 using System.Diagnostics;
 using System.Windows.Forms;
+using static ORTS.Settings.UserSettings;
 
 namespace Orts.Viewer3D.Processes
 {
@@ -99,8 +100,10 @@ namespace Orts.Viewer3D.Processes
             GraphicsDeviceManager.SynchronizeWithVerticalRetrace = Game.Settings.VerticalSync;
             GraphicsDeviceManager.PreferredBackBufferFormat = SurfaceFormat.Color;
             GraphicsDeviceManager.PreferredDepthStencilFormat = DepthFormat.Depth24Stencil8;
+            //Icik
+            //GraphicsDeviceManager.IsFullScreen = false;
             GraphicsDeviceManager.IsFullScreen = true;
-            GraphicsDeviceManager.PreferMultiSampling = Game.Settings.MultisamplingCount > 1;
+            GraphicsDeviceManager.PreferMultiSampling = (AntiAliasingMethod)Game.Settings.AntiAliasing != AntiAliasingMethod.None;
             GraphicsDeviceManager.PreparingDeviceSettings += new EventHandler<PreparingDeviceSettingsEventArgs>(GDM_PreparingDeviceSettings);
             var screen = Game.Settings.FastFullScreenAltTab ? Screen.FromControl(GameForm) : Screen.PrimaryScreen;
             if (screen.Primary)
@@ -134,10 +137,34 @@ namespace Orts.Viewer3D.Processes
                 e.GraphicsDeviceInformation.GraphicsProfile = GraphicsProfile.HiDef;
             }
 
+
+            var pp = e.GraphicsDeviceInformation.PresentationParameters;
+            switch ((AntiAliasingMethod)Game.Settings.AntiAliasing)
+            {
+                case AntiAliasingMethod.None:
+                default:
+                    break;
+                case AntiAliasingMethod.MSAA2x:
+                    pp.MultiSampleCount = 2;
+                    break;
+                case AntiAliasingMethod.MSAA4x:
+                    pp.MultiSampleCount = 4;
+                    break;
+                case AntiAliasingMethod.MSAA8x:
+                    pp.MultiSampleCount = 8;
+                    break;
+                case AntiAliasingMethod.MSAA16x:
+                    pp.MultiSampleCount = 16;
+                    break;
+                case AntiAliasingMethod.MSAA32x:
+                    pp.MultiSampleCount = 32;
+                    break;
+            }
+
             // This stops ResolveBackBuffer() clearing the back buffer.
             e.GraphicsDeviceInformation.PresentationParameters.RenderTargetUsage = RenderTargetUsage.PreserveContents;
             e.GraphicsDeviceInformation.PresentationParameters.DepthStencilFormat = DepthFormat.Depth24Stencil8;
-            if (GraphicsDeviceManager.PreferMultiSampling) e.GraphicsDeviceInformation.PresentationParameters.MultiSampleCount = Game.Settings.MultisamplingCount;
+
         }
 
         internal void Start()
@@ -146,11 +173,13 @@ namespace Orts.Viewer3D.Processes
 
             DisplaySize = new Point(GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height);
 
-            if (Game.Settings.ShadowMapDistance == 0)
+             if (Game.Settings.ShadowMapDistance == 0)
                 Game.Settings.ShadowMapDistance = Game.Settings.ViewingDistance / 2;
 
             ShadowMapCount = Game.Settings.ShadowMapCount;
             if (!Game.Settings.DynamicShadows || ShadowMapCount < 0)
+                ShadowMapCount = 0;
+            else if (ShadowMapCount < 0)
                 ShadowMapCount = 0;
             else if (ShadowMapCount > ShadowMapCountMaximum)
                 ShadowMapCount = ShadowMapCountMaximum;

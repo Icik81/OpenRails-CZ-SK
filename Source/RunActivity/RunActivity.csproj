@@ -59,7 +59,7 @@
   <ItemGroup>
     <Reference Include="EmbedIO, Version=3.4.3.0, Culture=neutral, PublicKeyToken=5e5f048b6e04267e, processorArchitecture=MSIL">
       <HintPath>..\packages\EmbedIO.3.4.3\lib\netstandard2.0\EmbedIO.dll</HintPath>
-    </Reference>
+    </Reference>																																
     <Reference Include="GNU.Gettext, Version=1.1.5151.39896, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\3rdPartyLibs\GNU.Gettext.dll</HintPath>
@@ -785,6 +785,9 @@
     <Content Include="Viewer3D\WebServices\Web\index.css" />
     <Content Include="Viewer3D\WebServices\Web\index.html" />
     <Content Include="Viewer3D\WebServices\Web\or_logo.png" />
+    <Content Include="Viewer3D\WebServices\Web\Time\index.css" />
+    <Content Include="Viewer3D\WebServices\Web\Time\index.html" />
+    <Content Include="Viewer3D\WebServices\Web\Time\index.js" />
     <Content Include="Viewer3D\WebServices\Web\TrackMonitorTrainDriving\index.css" />
     <Content Include="Viewer3D\WebServices\Web\TrackMonitorTrainDriving\index.html" />
     <Content Include="Viewer3D\WebServices\Web\TrackMonitorTrainDriving\index.js" />
@@ -795,7 +798,7 @@
     <Content Include="Viewer3D\WebServices\Web\TrainDriving\index.js" />
     <Content Include="Viewer3D\WebServices\Web\TrackMonitor\index.css" />
     <Content Include="Viewer3D\WebServices\Web\TrackMonitor\index.html" />
-    <Content Include="Viewer3D\WebServices\Web\TrackMonitor\index.js" />
+    <Content Include="Viewer3D\WebServices\Web\TrackMonitor\index.js" />	
     <Content Include="Readme_ORNewYear_MG.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
