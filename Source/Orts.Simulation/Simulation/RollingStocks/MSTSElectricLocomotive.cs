@@ -287,6 +287,9 @@ namespace Orts.Simulation.RollingStocks
                             if ((PowerSupply.PantographVoltageV == 0 && LocalThrottlePercent != 0 && PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closed)
                             || (PowerSupply.PantographVoltageV == 0 && LocalDynamicBrakePercent != 0 && PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closed))
                             {
+
+                                // Shodí HV při poklesu napětí v troleji a nastaveném výkonu (podpěťová ochrana)
+                                if (PowerSupply.PantographVoltageV < PantographCriticalVoltage && LocalThrottlePercent > 0.1)
                                 SignalEvent(PowerSupplyEvent.OpenCircuitBreaker);
                             }
 
@@ -305,17 +308,11 @@ namespace Orts.Simulation.RollingStocks
                                 if ((PowerSupply.PantographVoltageV < PantographCriticalVoltage && LocalThrottlePercent != 0)
                                 || (PowerSupply.PantographVoltageV < PantographCriticalVoltage && LocalDynamicBrakePercent != 0))                            
                                 {
-                                    if (DynamicBrakePercent > 0)
-                                    {
-                                        LocalDynamicBrakePercent = 0;
-                                        SetDynamicBrakePercent(0);
-                                        DynamicBrakeChangeActiveState(false);
-                                    }
                                     SignalEvent(PowerSupplyEvent.OpenCircuitBreaker);
                                     Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Zásah podpěťové ochrany!"));
                                 }
                                 if (CruiseControl != null)
-                                    if (PowerSupply.PantographVoltageV < PantographCriticalVoltage && CruiseControl.ForceThrottleAndDynamicBrake != 1 && CruiseControl.ForceThrottleAndDynamicBrake != 0)
+                                    if (PowerSupply.PantographVoltageV < PantographCriticalVoltage && CruiseControl.ForceThrottleAndDynamicBrake > 0)
                                     {
                                         CruiseControl.ForceThrottleAndDynamicBrake = 0;
                                         CruiseControl.controllerVolts = 0;
@@ -337,6 +334,8 @@ namespace Orts.Simulation.RollingStocks
                             // Shodí HV při nulovém napětí a manipulaci s kontrolérem
                             if (PowerSupply.PantographVoltageV == 0 && LocalThrottlePercent != 0 && PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closed)                            
                             {
+                                // Shodí HV při poklesu napětí v troleji a nastaveném výkonu (podpěťová ochrana)
+                                if (PowerSupply.PantographVoltageV < PantographCriticalVoltage && LocalThrottlePercent > 0.1)
                                 SignalEvent(PowerSupplyEvent.OpenCircuitBreaker);
                             }
 
@@ -354,17 +353,11 @@ namespace Orts.Simulation.RollingStocks
                             {                                
                                 if (PowerSupply.PantographVoltageV < PantographCriticalVoltage && LocalThrottlePercent != 0)                                
                                 {
-                                    if (DynamicBrakePercent > 0)
-                                    {
-                                        LocalDynamicBrakePercent = 0;
-                                        SetDynamicBrakePercent(0);
-                                        DynamicBrakeChangeActiveState(false);
-                                    }
                                     SignalEvent(PowerSupplyEvent.OpenCircuitBreaker);
                                     Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Zásah podpěťové ochrany!"));
                                 }
                                 if (CruiseControl != null)
-                                    if (PowerSupply.PantographVoltageV < PantographCriticalVoltage && CruiseControl.ForceThrottleAndDynamicBrake != 0 && CruiseControl.ForceThrottleAndDynamicBrake != 1)
+                                    if (PowerSupply.PantographVoltageV < PantographCriticalVoltage && CruiseControl.ForceThrottleAndDynamicBrake > 0)
                                     {
                                         CruiseControl.ForceThrottleAndDynamicBrake = 0;
                                         CruiseControl.controllerVolts = 0;
