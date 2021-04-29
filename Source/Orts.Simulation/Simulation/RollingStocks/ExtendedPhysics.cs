@@ -62,7 +62,6 @@ namespace Orts.Simulation.RollingStocks
     public class ExtendedPhysics
     {
         public List<Undercarriage> Undercarriages = new List<Undercarriage>();
-        public float MaxControllerVolts = 10;
         public MSTSLocomotive Locomotive = null;
         public int NumMotors = 0;
         public int NumAxles = 0;
@@ -88,8 +87,6 @@ namespace Orts.Simulation.RollingStocks
                 {
                     foreach (XmlNode main in node.ChildNodes)
                     {
-                        if (main.Name.ToLower() == "maxcontrollervolts")
-                            MaxControllerVolts = float.Parse(main.InnerText);
                         if (main.Name.ToLower() == "couplerdistancefromtrack")
                             CouplerDistanceFromTrack = float.Parse(main.InnerText);
                         if (main.Name.ToLower() == "centerofgravitydistancefromtrack")
@@ -116,10 +113,14 @@ namespace Orts.Simulation.RollingStocks
                                             extendedAxle.PivotY = int.Parse(axleNode.InnerText);
                                         if (axleNode.Name.ToLower() == "wheeldiameter")
                                             extendedAxle.WheelDiameter = int.Parse(axleNode.InnerText);
+                                        if (axleNode.Name.ToLower() == "havespeedometersensor")
+                                            extendedAxle.HaveSpeedometerSensor = true;
+                                        if (axleNode.Name.ToLower() == "havetcssensor")
+                                            extendedAxle.HaveTcsSensor = true;
                                         if (axleNode.Name.ToLower() == "electricmotor")
                                         {
                                             ElectricMotor electricMotor = new ElectricMotor(Locomotive);
-                                            electricMotor.MaxControllerVolts = MaxControllerVolts;
+                                            electricMotor.MaxControllerVolts = Locomotive.MaxControllerVolts;
                                             NumMotors++;
                                             extendedAxle.NumMotors++;
                                             foreach (XmlNode motorNode in axleNode.ChildNodes)
@@ -162,6 +163,7 @@ namespace Orts.Simulation.RollingStocks
 
         public void Update(float elapsedClockSeconds)
         {
+            Locomotive.Simulator.Confirmer.MSG(Locomotive.ControllerVolts.ToString());
             if (Locomotive.ControllerVolts >= 0)
             {
                 Locomotive.SetThrottlePercent((TotalCurrent / TotalMaxCurrent) * 100);
@@ -225,6 +227,9 @@ namespace Orts.Simulation.RollingStocks
         public float WheelSpeedMpS = 0;
         MSTSLocomotive Locomotive = null;
         public SubSystems.PowerTransmissions.Axle LocomotiveAxle;
+        public bool HaveSpeedometerSensor = false;
+        public bool HaveTcsSensor = false;
+
         public ExtendedAxle(MSTSLocomotive loco)
         {
             Locomotive = loco;
