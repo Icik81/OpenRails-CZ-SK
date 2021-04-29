@@ -748,6 +748,10 @@ namespace Orts.Simulation.RollingStocks
                         if (BrakeSystem.BrakeMassR == 0) BrakeSystem.BrakeMassKG = BrakeSystem.KoefRezim * MassKG;
                         else BrakeSystem.BrakeMassKG = BrakeSystem.BrakeMassR;
                         break;
+                    case 3: // Režim R+Mg  
+                        if (BrakeSystem.BrakeMassRMg == 0) BrakeSystem.BrakeMassKG = BrakeSystem.KoefRezim * MassKG;
+                        else BrakeSystem.BrakeMassKG = BrakeSystem.BrakeMassRMg;
+                        break;
                 }
             if (WagonType == WagonTypes.Freight || WagonType == WagonTypes.Tender)    //  Nákladní vozy a tendry            
                 switch (BrakeSystem.BrakeCarModePL)
@@ -812,6 +816,10 @@ namespace Orts.Simulation.RollingStocks
                         BrakeSystem.KoefRezim = 1.49f;
                         BrakeMassKG();
                         break;
+                    case 3: // Režim R+Mg
+                        BrakeSystem.KoefRezim = 1.49f;
+                        BrakeMassKG();
+                        break;
                 }
                 if (BrakeSystem.DebugKoef == 0) MaxBrakeForceN = koefP * BrakeSystem.BrakeMassKG * 9.964016384f * 0.31f;
                 else MaxBrakeForceN = BrakeSystem.DebugKoef * BrakeSystem.BrakeMassKG * 9.964016384f * 0.31f;
@@ -829,6 +837,10 @@ namespace Orts.Simulation.RollingStocks
                         BrakeMassKG();
                         break;
                     case 2: // Režim R
+                        BrakeSystem.KoefRezim = 1.66f;
+                        BrakeMassKG();
+                        break;
+                    case 3: // Režim R+Mg
                         BrakeSystem.KoefRezim = 1.66f;
                         BrakeMassKG();
                         break;
