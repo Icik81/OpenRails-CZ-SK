@@ -476,6 +476,7 @@ namespace Orts.Simulation.RollingStocks
         public float ThrottleFullRangeDecreaseTimeSeconds = 0;
         public float DynamicBrakeFullRangeIncreaseTimeSeconds;
         public float DynamicBrakeFullRangeDecreaseTimeSeconds;
+        public float MaxControllerVolts = 10;
 
         public bool
       Speed0Pressed, Speed10Pressed, Speed20Pressed, Speed30Pressed, Speed40Pressed, Speed50Pressed
@@ -1040,6 +1041,7 @@ namespace Orts.Simulation.RollingStocks
                 case "engine(throttlefullrangedecreasetimeseconds": ThrottleFullRangeDecreaseTimeSeconds = stf.ReadFloatBlock(STFReader.UNITS.Any, 5); break;
                 case "engine(dynamicbrakefullrangeincreasetimeseconds": DynamicBrakeFullRangeIncreaseTimeSeconds = stf.ReadFloatBlock(STFReader.UNITS.Any, 5); break;
                 case "engine(dynamicbrakefullrangedecreasetimeseconds": DynamicBrakeFullRangeDecreaseTimeSeconds = stf.ReadFloatBlock(STFReader.UNITS.Any, 5); break;
+                case "engine(maxcontrollervolts": MaxControllerVolts = stf.ReadFloatBlock(STFReader.UNITS.Any, 5); break;
                 case "engine(ortscruisecontrol": SetUpCruiseControl(); break;
                 case "engine(ortsmultipositioncontroller": SetUpMPC(); break;
                 case "engine(disablerestrictedspeedwhenmanualdriving": DisableRestrictedSpeedWhenManualDriving = stf.ReadBoolBlock(false); break;
@@ -1996,9 +1998,24 @@ namespace Orts.Simulation.RollingStocks
             if (extendedPhysics != null)
                 extendedPhysics.Update(elapsedClockSeconds);
 
+            if (extendedPhysics == null)
+            {
+                if (CruiseControl == null)
+                {
+                    if (ThrottlePercent > 0)
+                    {
+                        ControllerVolts = ThrottlePercent / 10;
+                    }
+                }
+                else if (CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.Manual)
+                {
+                    ControllerVolts = ThrottlePercent / 10;
+                }
+            }
+
             if (DynamicBrakePercent > 0)
             {
-                ControllerVolts = -(DynamicBrakePercent / 100) * extendedPhysics.MaxControllerVolts;
+                ControllerVolts = -(DynamicBrakePercent / 100) * MaxControllerVolts;
             }
             else if (DynamicBrakePercent <= 0 && ControllerVolts < 0)
                 ControllerVolts = 0;
@@ -5050,10 +5067,22 @@ namespace Orts.Simulation.RollingStocks
             {
                 case CABViewControlTypes.SPEEDOMETER:
                     {
+                        float speed = WheelSpeedMpS;
+                        if (extendedPhysics != null)
+                        {
+                            foreach (Undercarriage uc in extendedPhysics.Undercarriages)
+                            {
+                                foreach (ExtendedAxle ea in uc.Axles)
+                                {
+                                    if (ea.HaveSpeedometerSensor)
+                                        speed = ea.WheelSpeedMpS;
+                                }
+                            }
+                        }
                         cvc.ElapsedTime += elapsedTime;
                         if (cvc.ElapsedTime < cvc.UpdateTime)
                         {
-                            if (cvc.ElapsedTime > cvc.UpdateTime / 2 && Math.Abs(WheelSpeedMpS) > 0.1f)
+                            if (cvc.ElapsedTime > cvc.UpdateTime / 2 && Math.Abs(speed) > 0.1f && cvc.Vibration > 0)
                             {
                                 if (Up)
                                     data = cvc.PreviousData - (cvc.Vibration / 3.6f);
@@ -5062,19 +5091,22 @@ namespace Orts.Simulation.RollingStocks
                                 break;
                             }
                             data = cvc.PreviousData;
+                            if (MpS.FromKpH(cvc.PreviousData) > speed)
+                                data = (float)Math.Round(MpS.ToKpH(speed) - 0.5d, 0);
                             break;
                         }
                         cvc.ElapsedTime = 0;
                         //data = SpeedMpS;
                         if (AdvancedAdhesionModel)
-                            data = WheelSpeedMpS;
+                            data = speed;
                         else
-                            data = SpeedMpS;
+                            data = speed;
 
                         if (cvc.Units == CABViewControlUnits.KM_PER_HOUR)
                             data *= 3.6f;
                         else // MPH
                             data *= 2.2369f;
+                        data = (float)Math.Round(data - 0.5d, 0);
                         data = Math.Abs(data);
                         if (cvc.Precision > 0)
                         {
