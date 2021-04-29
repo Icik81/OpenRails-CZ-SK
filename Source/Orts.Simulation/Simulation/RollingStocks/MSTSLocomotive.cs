@@ -5067,7 +5067,7 @@ namespace Orts.Simulation.RollingStocks
             {
                 case CABViewControlTypes.SPEEDOMETER:
                     {
-                        float speed = WheelSpeedMpS;
+                        float speed = Math.Abs(WheelSpeedMpS);
                         if (extendedPhysics != null)
                         {
                             foreach (Undercarriage uc in extendedPhysics.Undercarriages)
@@ -5075,7 +5075,7 @@ namespace Orts.Simulation.RollingStocks
                                 foreach (ExtendedAxle ea in uc.Axles)
                                 {
                                     if (ea.HaveSpeedometerSensor)
-                                        speed = ea.WheelSpeedMpS;
+                                        speed = Math.Abs(ea.WheelSpeedMpS);
                                 }
                             }
                         }
