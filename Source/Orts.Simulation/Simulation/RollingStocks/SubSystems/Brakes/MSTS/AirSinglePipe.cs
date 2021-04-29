@@ -135,8 +135,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             BrakeMassG = thiscopy.BrakeMassG;
             BrakeMassP = thiscopy.BrakeMassP;
             BrakeMassR = thiscopy.BrakeMassR;
+            BrakeMassRMg = thiscopy.BrakeMassRMg;
             BrakeMassEmpty = thiscopy.BrakeMassEmpty;
             BrakeMassLoaded = thiscopy.BrakeMassLoaded;
+            ForceWagonLoaded = thiscopy.ForceWagonLoaded;
             DebugKoef = thiscopy.DebugKoef;
             MaxReleaseRatePSIpSG = thiscopy.MaxReleaseRatePSIpSG;
             MaxApplicationRatePSIpSG = thiscopy.MaxApplicationRatePSIpSG;
@@ -287,8 +289,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 case "wagon(brakemassg": BrakeMassG = stf.ReadFloatBlock(STFReader.UNITS.Mass, null); break;
                 case "wagon(brakemassp": BrakeMassP = stf.ReadFloatBlock(STFReader.UNITS.Mass, null); break;
                 case "wagon(brakemassr": BrakeMassR = stf.ReadFloatBlock(STFReader.UNITS.Mass, null); break;
+                case "wagon(brakemassrmg": BrakeMassRMg = stf.ReadFloatBlock(STFReader.UNITS.Mass, null); break;
                 case "wagon(brakemassempty": BrakeMassEmpty = stf.ReadFloatBlock(STFReader.UNITS.Mass, null); break;
                 case "wagon(brakemassloaded": BrakeMassLoaded = stf.ReadFloatBlock(STFReader.UNITS.Mass, null); break;
+                case "wagon(forcewagonloaded": ForceWagonLoaded = stf.ReadBoolBlock(false); break;
 
                 // Načte hodnoty napouštění a vypouštění brzdových válců lokomotivy i vozů v režimech G, P, R
                 case "wagon(maxapplicationrateg": MaxApplicationRatePSIpSG = stf.ReadFloatBlock(STFReader.UNITS.PressureRateDefaultPSIpS, null); break;
@@ -470,6 +474,17 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 MaxReleaseRatePSIpS0 = MaxReleaseRatePSIpS;
                 MaxApplicationRatePSIpS0 = MaxApplicationRatePSIpS;
                 StartOn = false;
+
+                if (ForceWagonLoaded)
+                {
+                    BrakeCarModePL = 1;
+                    BrakeCarModeTextPL = "Ložený";
+                }
+                else
+                {
+                    BrakeCarModePL = 0; // Default režim Prázdný
+                    BrakeCarModeTextPL = "Prázdný";
+                }
             }
 
             // Časy pro napouštění a vypouštění brzdového válce v sekundách režimy G, P, R
@@ -505,6 +520,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
 
                     if (MaxReleaseRatePSIpSR == 0) MaxReleaseRatePSIpS = ReleaseRatePSIpS = MaxReleaseRatePSIpS0 / (TimeReleaseR / TimeReleaseP);
                     else MaxReleaseRatePSIpS = ReleaseRatePSIpS = MaxReleaseRatePSIpSR;
+                    break;
+                case 3: // Režim R+Mg
                     break;
             }
 
