@@ -160,19 +160,18 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
         public override string GetFullStatus(BrakeSystem lastCarBrakeSystem, Dictionary<BrakeSystemComponent, PressureUnit> units)
         {
             var s = $" {Simulator.Catalog.GetString("EQ")} {FormatStrings.FormatPressure(Car.Train.EqualReservoirPressurePSIorInHg, PressureUnit.PSI, units[BrakeSystemComponent.EqualizingReservoir], true)}"
-                //+ $" {Simulator.Catalog.GetString("BV")} {FormatStrings.FormatPressure(Car.Train.HUDWagonBrakeCylinderPSI, PressureUnit.PSI, units[BrakeSystemComponent.BrakeCylinder], true)}"
-                + $" {Simulator.Catalog.GetString("BV")} {FormatStrings.FormatPressure(AutoCylPressurePSI, PressureUnit.PSI, units[BrakeSystemComponent.BrakeCylinder], true)}"
+                //+ $" {Simulator.Catalog.GetString("BC")} {FormatStrings.FormatPressure(Car.Train.HUDWagonBrakeCylinderPSI, PressureUnit.PSI, units[BrakeSystemComponent.BrakeCylinder], true)}"
+                + $" {Simulator.Catalog.GetString("BC")} {FormatStrings.FormatPressure(AutoCylPressurePSI, PressureUnit.PSI, units[BrakeSystemComponent.BrakeCylinder], true)}"
                 + $" {Simulator.Catalog.GetString("BP")} {FormatStrings.FormatPressure(BrakeLine1PressurePSI, PressureUnit.PSI, units[BrakeSystemComponent.BrakePipe], true)}";
             if (lastCarBrakeSystem != null && lastCarBrakeSystem != this)
-                s += $" {Simulator.Catalog.GetString("Konec vlaku")} {lastCarBrakeSystem.GetStatus(units)}";
+                s += $" {Simulator.Catalog.GetString("EOT")} {lastCarBrakeSystem.GetStatus(units)}";
             if (HandbrakePercent > 0)
                 s += $" {Simulator.Catalog.GetString("Handbrake")} {HandbrakePercent:F0}%";
 
-            // Icik
-            s += string.Format("  Rychlost změny tlaku v potrubí {0:F5}bar/s", BrakePipeChangeRate / 14.50377f);
-            s += string.Format("  Netěsnost potrubí {0:F5}bar/s", Car.Train.TotalTrainTrainPipeLeakRate / 14.50377f);
-            s += string.Format("  Objem potrubí {0:F0}l", Car.Train.TotalTrainBrakePipeVolumeM3 * 1000);
-            s += string.Format("  Kapacita hl.jímky a přilehlého potrubí {0:F0}l", Car.Train.TotalCapacityMainResBrakePipe * 1000 / 14.50377f);
+            s += string.Format("  Rychlost změny tlaku v potrubí {0:F5} bar/s", BrakePipeChangeRate / 14.50377f);
+            s += string.Format("  Netěsnost potrubí {0:F5} bar/s", Car.Train.TotalTrainTrainPipeLeakRate / 14.50377f);
+            s += string.Format("  Objem potrubí {0:F0} L", Car.Train.TotalTrainBrakePipeVolumeM3 * 1000);
+            s += string.Format("  Kapacita hl.jímky a přilehlého potrubí {0:F0} L", Car.Train.TotalCapacityMainResBrakePipe * 1000 / 14.50377f);
 
             return s;
         }
@@ -195,23 +194,18 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 BleedOffValveOpen ? Simulator.Catalog.GetString("Open") : " ",//HudScroll feature requires for the last value, at least one space instead of string.Empty,
                 
                 string.Empty, // Spacer because the state above needs 2 columns.
-                string.Format("{0:F5}bar/s", TrainPipeLeakRatePSIpS / 14.50377f),
+                string.Format("{0:F5} bar/s", TrainPipeLeakRatePSIpS / 14.50377f),
                 string.Empty, // Spacer because the state above needs 2 columns.
-                string.Format("{0:F0}l", BrakePipeVolumeM3 * 1000),
+                string.Format("{0:F0} L", BrakePipeVolumeM3 * 1000),
                 string.Empty, // Spacer because the state above needs 2 columns.
-                string.Format("{0:F0}l", CylVolumeM3 * 1000),
+                string.Format("{0:F0} L", CylVolumeM3 * 1000),
                 string.Empty, // Spacer because the state above needs 2 columns.
-                string.Format("{0:F0}l", TotalCapacityMainResBrakePipe * 1000 / 14.50377f),               
+                string.Format("{0:F0} L", TotalCapacityMainResBrakePipe * 1000 / 14.50377f),               
                 string.Format("{0:F0}", BrakeCarModeText),
-                string.Format("{0} {1:F0}t", AutoLoadRegulatorEquipped ? "Auto   " : "", BrakeMassKG / 1000),              
-                                
+                string.Format("{0} {1:F0} t", AutoLoadRegulatorEquipped ? "Auto   " : "", BrakeMassKG / 1000),                                              
                 string.Empty, // Spacer because the state above needs 2 columns.              
                 string.Format("DebugKoef {0:F1}", DebugKoef),
-                string.Empty, // Spacer because the state above needs 2 columns.
-                
-                //string.Format("Napousteni {0:F3}bar/s", MaxApplicationRatePSIpS / 14.50377f),
-                //string.Empty, // Spacer because the state above needs 2 columns.
-                //string.Format("Vypousteni {0:F3}bar/s", ReleaseRatePSIpS / 14.50377f),                
+                string.Empty, // Spacer because the state above needs 2 columns.                           
             };
         }
 
