@@ -79,6 +79,7 @@ namespace Orts.Simulation.RollingStocks
 
         public void Parse(string path)
         {
+            TotalMaxCurrent = Locomotive.MaxCurrentA;
             XmlDocument document = new XmlDocument();
             document.Load(path);
             foreach (XmlNode node in document.ChildNodes)
@@ -134,7 +135,6 @@ namespace Orts.Simulation.RollingStocks
                                                 if (motorNode.Name.ToLower() == "maxrotorcurrenta")
                                                 {
                                                     electricMotor.MaxRotorCurrent = int.Parse(motorNode.InnerText);
-                                                    TotalMaxCurrent += electricMotor.MaxRotorCurrent;
                                                 }
                                                 if (motorNode.Name.ToLower() == "minrotorcurrenta")
                                                     electricMotor.MinRotorCurrent = int.Parse(motorNode.InnerText);
@@ -163,10 +163,9 @@ namespace Orts.Simulation.RollingStocks
 
         public void Update(float elapsedClockSeconds)
         {
-            Locomotive.Simulator.Confirmer.MSG(Locomotive.ControllerVolts.ToString());
             if (Locomotive.ControllerVolts >= 0)
             {
-                Locomotive.SetThrottlePercent((TotalCurrent / TotalMaxCurrent) * 100);
+                Locomotive.SetThrottlePercent((TotalCurrent / (TotalMaxCurrent * 4)) * 100);
             }
             else if (Locomotive.ControllerVolts < 0)
             {
@@ -260,7 +259,8 @@ namespace Orts.Simulation.RollingStocks
             }
             if (Locomotive.TractiveForceCurves != null)
             {
-                float t = (axleCurrent / maxCurrent) / totalMotors;
+                float t = (axleCurrent / (maxCurrent * 1.5f)) / totalMotors;
+                Locomotive.Simulator.Confirmer.MSG(t.ToString());
                 ForceN = Locomotive.TractiveForceCurves.Get(t, Locomotive.LocomotiveAxle.AxleSpeedMpS);
             }
             else // TODO bez tabulek!
