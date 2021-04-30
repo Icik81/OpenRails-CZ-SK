@@ -298,6 +298,7 @@ namespace Orts.Simulation.RollingStocks
         public float ActivityElapsedDurationS;
         public float HotBoxStartTimeS;
 
+        // Icik        
         public bool TypVibrace_1 = false;
         public bool TypVibrace_2 = false;
         public bool TypVibrace_3 = false;
@@ -731,6 +732,7 @@ namespace Orts.Simulation.RollingStocks
 
         }
 
+        // Icik
         public virtual void BrakeMassKG()
         {
             if (WagonType == WagonTypes.Passenger || WagonType == WagonTypes.Engine || WagonType == WagonTypes.Unknown)    //  Osobní vozy, lokomotivy a ostatní
@@ -749,10 +751,22 @@ namespace Orts.Simulation.RollingStocks
                         else BrakeSystem.BrakeMassKG = BrakeSystem.BrakeMassR;
                         break;
                     case 3: // Režim R+Mg  
-                        if (BrakeSystem.BrakeMassRMg == 0) BrakeSystem.BrakeMassKG = BrakeSystem.KoefRezim * MassKG;
-                        else BrakeSystem.BrakeMassKG = BrakeSystem.BrakeMassRMg;
+                        if (((Math.Abs(SpeedMpS) * 3.6f) > 50.0f && BrakeSystem.BrakeLine1PressurePSI > BrakeSystem.CriticalBrakePipePressureRMgPSI && BrakeSystem.PowerForRMg)
+                        || (BrakeSystem.EmergencyBrakeForRMg && BrakeSystem.PowerForRMg))
+                        {
+                            BrakeSystem.BrakeModeRMgActive = true;
+                            if (BrakeSystem.BrakeMassRMg == 0) BrakeSystem.BrakeMassKG = 1.44f * BrakeSystem.KoefRezim * MassKG;
+                            else BrakeSystem.BrakeMassKG = BrakeSystem.BrakeMassRMg;
+                        }
+                        else
+                        {
+                            BrakeSystem.BrakeModeRMgActive = false;
+                            if (BrakeSystem.BrakeMassRMg == 0) BrakeSystem.BrakeMassKG = BrakeSystem.KoefRezim * MassKG;
+                            else BrakeSystem.BrakeMassKG = BrakeSystem.BrakeMassR;
+                        }
                         break;
                 }
+
             if (WagonType == WagonTypes.Freight || WagonType == WagonTypes.Tender)    //  Nákladní vozy a tendry            
                 switch (BrakeSystem.BrakeCarModePL)
                 {
