@@ -964,20 +964,21 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                 }
                 else if (SpeedSelMode == SpeedSelectorMode.Neutral || SpeedSelMode < SpeedSelectorMode.Start && !SpeedRegulatorOptions.Contains("startfromzero") && wheelSpeedMpS < SafeSpeedForAutomaticOperationMpS)
                 {
-                    if (controllerVolts > 0)
-                    {
-                        float step = 100 / Locomotive.ThrottleFullRangeIncreaseTimeSeconds;
-                        step *= elapsedClockSeconds;
-                        controllerVolts -= step;
-                        if (controllerVolts < 0) controllerVolts = 0;
-                        if (controllerVolts > 0 && controllerVolts < 0.1) controllerVolts = 0;
-                    }
-
                     float delta = 0;
                     if (!RestrictedSpeedActive)
                         delta = SelectedSpeedMpS - wheelSpeedMpS;
                     else
                         delta = CurrentSelectedSpeedMpS - wheelSpeedMpS;
+
+                    if (controllerVolts > 0)
+                    {
+                        float step = 100 / Locomotive.ThrottleFullRangeIncreaseTimeSeconds;
+                        if (delta < 0.75f) step /= 10;
+                        step *= elapsedClockSeconds;
+                        controllerVolts -= step;
+                        if (controllerVolts < 0) controllerVolts = 0;
+                        if (controllerVolts > 0 && controllerVolts < 0.1) controllerVolts = 0;
+                    }
 
                     if (delta > 0)
                     {
@@ -991,6 +992,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                         {
 
                             float step = 100 / Locomotive.ThrottleFullRangeIncreaseTimeSeconds;
+                            if (delta < 0.75f) step /= 10;
                             step *= elapsedClockSeconds;
                             controllerVolts -= step;
                         }
@@ -1000,18 +1002,15 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                         }
                     }
 
-                    if (delta < -0.3f) // start braking
+                    if (delta < 0) // start braking
                     {
-                        if (maxForceN > 0)
+                        if (controllerVolts > 0)
                         {
-                            if (controllerVolts > 0)
-                            {
-                                float step = 100 / Locomotive.ThrottleFullRangeDecreaseTimeSeconds;
-                                step *= elapsedClockSeconds;
-                                controllerVolts -= step;
-                            }
+                            float step = 100 / Locomotive.ThrottleFullRangeDecreaseTimeSeconds;
+                            step *= elapsedClockSeconds;
+                            controllerVolts -= step;
                         }
-                        else
+                        else if (delta < -0.3f)
                         {
                             if (Locomotive.DynamicBrakeAvailable)
                             {
@@ -1148,6 +1147,14 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                 {
                     float delta = 0;
                     if (!RestrictedSpeedActive)
+                        delta = SelectedSpeedMpS - Locomotive.SpeedMpS;
+                    else
+                        delta = CurrentSelectedSpeedMpS - Locomotive.SpeedMpS;
+                    if (delta > PowerResumeSpeedDelta)
+                    {
+                        breakout = false;
+                    }
+                    if (!RestrictedSpeedActive)
                         delta = SelectedSpeedMpS - wheelSpeedMpS;
                     else
                         delta = CurrentSelectedSpeedMpS - wheelSpeedMpS;
@@ -1188,22 +1195,18 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                         }
                         if (Locomotive.DynamicBrakePercent < 1 && Locomotive.DynamicBrake)
                         {
-                            Locomotive.SetDynamicBrakePercent(0);
                             Locomotive.DynamicBrakeChangeActiveState(false);
                         }
                     }
-                    else if (delta < -0.3f) // start braking
+                    else if (delta < 0) // start braking
                     {
-                        if (maxForceN > 0 || controllerVolts > 0)
+                        if (controllerVolts > 0)
                         {
-                            if (controllerVolts > 0)
-                            {
-                                float step = 100 / Locomotive.ThrottleFullRangeDecreaseTimeSeconds;
-                                step *= elapsedClockSeconds;
-                                controllerVolts -= step;
-                            }
+                            float step = 100 / Locomotive.ThrottleFullRangeDecreaseTimeSeconds;
+                            step *= elapsedClockSeconds;
+                            controllerVolts -= step;
                         }
-                        else
+                        else if (delta < -0.3f)
                         {
                             if (Locomotive.DynamicBrakeAvailable)
                             {
@@ -1373,14 +1376,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                         float demandedVolts = t * 100;
                         float current = maxForceN / Locomotive.MaxForceN * 1400;// Locomotive.MaxCurrentA;
                         if (!RestrictedSpeedActive)
-                            delta = SelectedSpeedMpS - Locomotive.AbsSpeedMpS;
+                            delta = SelectedSpeedMpS - wheelSpeedMpS;
                         else
-                            delta = CurrentSelectedSpeedMpS - Locomotive.AbsSpeedMpS;
+                            delta = CurrentSelectedSpeedMpS - wheelSpeedMpS;
 
-                        if (current < PowerBreakoutAmpers && delta < PowerResumeSpeedDelta / 2)
-                            breakout = true;
-                        if (breakout && delta > PowerResumeSpeedDelta)
-                            breakout = false;
                         if (UseThrottle) // not valid for diesel engines.
                             breakout = false;
                         if (!RestrictedSpeedActive)
@@ -1395,6 +1394,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                                 if (controllerVolts < demandedVolts && Locomotive.AccelerationMpSS < a - 0.02)
                                 {
                                     float step = 100 / Locomotive.ThrottleFullRangeIncreaseTimeSeconds;
+                                    if (delta < 0.75f) step /= 10;
                                     step *= elapsedClockSeconds;
                                     controllerVolts += step;
                                 }
@@ -1404,6 +1404,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                                 if (controllerVolts < demandedVolts && controllerVolts >= 0)
                                 {
                                     float step = 100 / Locomotive.ThrottleFullRangeIncreaseTimeSeconds;
+                                    if (delta < 0.75f) step /= 10;
                                     step *= elapsedClockSeconds;
                                     float accelDiff = demand - Locomotive.AccelerationMpSS;
                                     if (step / 10 > accelDiff)
@@ -1416,6 +1417,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                                 if (controllerVolts > demandedVolts && Locomotive.AccelerationMpSS > a + 0.02)
                                 {
                                     float step = 100 / Locomotive.ThrottleFullRangeIncreaseTimeSeconds;
+                                    if (delta < 0.75f) step /= 10;
                                     step *= elapsedClockSeconds;
                                     controllerVolts -= step;
                                 }
@@ -1425,6 +1427,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                                 if (controllerVolts - 0.2f > demandedVolts)
                                 {
                                     float step = 100 / Locomotive.ThrottleFullRangeIncreaseTimeSeconds;
+                                    if (delta < 0.75f) step /= 10;
                                     step *= elapsedClockSeconds;
                                     controllerVolts -= step;
                                 }
@@ -1432,6 +1435,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                             if (controllerVolts > demandedVolts && delta < 0.8)
                             {
                                 float step = 100 / Locomotive.ThrottleFullRangeIncreaseTimeSeconds;
+                                if (delta < 0.75f) step /= 10;
                                 step *= elapsedClockSeconds;
                                 controllerVolts -= step;
                             }
@@ -1443,12 +1447,14 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                                 if (Locomotive.AccelerationMpSS < a + 0.02)
                                 {
                                     float step = 100 / Locomotive.ThrottleFullRangeIncreaseTimeSeconds;
+                                    if (delta < 0.75f) step /= 10;
                                     step *= elapsedClockSeconds;
                                     controllerVolts += step;
                                 }
                                 if (Locomotive.AccelerationMpSS > a - 0.02)
                                 {
                                     float step = 100 / Locomotive.ThrottleFullRangeIncreaseTimeSeconds;
+                                    if (delta < 0.75f) step /= 10;
                                     step *= elapsedClockSeconds;
                                     controllerVolts -= step;
                                 }
@@ -1515,7 +1521,6 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                         }
                         if (Locomotive.DynamicBrakePercent > -1)
                         {
-                            Locomotive.SetDynamicBrakePercent(0);
                             Locomotive.DynamicBrakeChangeActiveState(false);
                         }
 
@@ -1536,22 +1541,21 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                 {
                     if (maxForceN > 0) maxForceN = 0;
                     if (Locomotive.ThrottlePercent > 0) Locomotive.ThrottleController.SetPercent(0);
-                    if (Locomotive.DynamicBrakePercent <= 0)
+/*                    if (Locomotive.DynamicBrakePercent <= 0 && !breakout) TODO_JM!! Prověřit, kde to bude chybět
                     {
-                        string status = Locomotive.GetDynamicBrakeStatus();
                         Locomotive.DynamicBrakeChangeActiveState(true);
-                    }
+                    }*/
                     if (SelectedMaxAccelerationPercent == 0 && SelectedMaxAccelerationStep == 0)
                     {
                         Locomotive.SetDynamicBrakePercent(0);
                         Locomotive.DynamicBrakePercent = 0;
                         controllerVolts = 0;
                     }
-                    else
+/*                    else if ()
                     {
                         Locomotive.SetDynamicBrakePercent(-controllerVolts);
                         Locomotive.DynamicBrakePercent = -controllerVolts;
-                    }
+                    }*/
                 }
                 else if (controllerVolts == 0)
                 {
@@ -1568,7 +1572,6 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                         if (Locomotive.ThrottlePercent > 0 && !UseThrottle) Locomotive.ThrottleController.SetPercent(0);
                         if (Locomotive.DynamicBrakePercent > -1)
                         {
-                            Locomotive.SetDynamicBrakePercent(0);
                             Locomotive.DynamicBrakeChangeActiveState(false);
                         }
                     }
@@ -1579,8 +1582,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                     controllerVolts = 0;
                     Locomotive.ThrottleController.SetPercent(0);
                     if (Locomotive.DynamicBrakePercent > 0)
+                    {
                         Locomotive.SetDynamicBrakePercent(0);
-                    Locomotive.DynamicBrakeIntervention = -1;
+                        Locomotive.DynamicBrakeIntervention = -1;
+                    }
                     maxForceN = 0;
                     ForceThrottleAndDynamicBrake = 0;
                     Ampers = 0;
@@ -1592,9 +1597,29 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                     Locomotive.MotiveForceN = maxForceN;
                     Locomotive.TractiveForceN = maxForceN;
                 }
-                if (controllerVolts > 0)
+
+                if (!breakout)
                 {
-                    Locomotive.ControllerVolts = controllerVolts / 10;
+                    if (controllerVolts > 0)
+                    {
+                        Locomotive.ControllerVolts = controllerVolts / 10;
+                    }
+                    else
+                    {
+                        Locomotive.ControllerVolts = 0;
+                        breakout = true;
+                    }
+                }
+                else
+                {
+                    controllerVolts = 0;
+                    Locomotive.ControllerVolts = 0;
+                }
+
+                if (!Locomotive.PowerOn)
+                {
+                    controllerVolts = 0;
+                    Locomotive.ControllerVolts = 0;
                 }
             }
 
