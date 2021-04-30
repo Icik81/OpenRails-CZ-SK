@@ -149,6 +149,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             maxPressurePSI0 = thiscopy.maxPressurePSI0;
             AutoLoadRegulatorEquipped = thiscopy.AutoLoadRegulatorEquipped;
             AutoLoadRegulatorMaxBrakeMass = thiscopy.AutoLoadRegulatorMaxBrakeMass;
+            CriticalBrakePipePressureRMgPSI = thiscopy.CriticalBrakePipePressureRMgPSI;
         }
 
         // Get the brake BC & BP for EOT conditions
@@ -308,6 +309,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
 
                 // Ladící koeficient pro ladiče brzd
                 case "wagon(debugkoef": DebugKoef = stf.ReadFloatBlock(STFReader.UNITS.None, null); break;
+                
+                // Minimální tlak v brzdovém potrubí pro brzdu R+Mg
+                case "wagon(criticalbrakepipepressurermg": CriticalBrakePipePressureRMgPSI = stf.ReadFloatBlock(STFReader.UNITS.PressureDefaultPSI, null); break;                    
 
                 // Načte hodnotu rychlosti eliminace níkotlakého přebití                              
                 case "engine(overchargeeliminationrate": OverchargeEliminationRatePSIpS = stf.ReadFloatBlock(STFReader.UNITS.PressureRateDefaultPSIpS, null); break;
@@ -525,7 +529,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     break;
             }
 
-            // Načte hodnotu maximálního tlaku v BV
+            // Defaultní minimální tlak pro brzdu R+Mg
+            if (CriticalBrakePipePressureRMgPSI == 0) CriticalBrakePipePressureRMgPSI = 3.5f * 14.50377f;
+
+             // Načte hodnotu maximálního tlaku v BV
             MCP = GetMaxCylPressurePSI();
 
             // Výsledný tlak v brzdovém válci - přičte tlak přímočinné brzdy k tlaku v BV průběžné brzdy
@@ -718,6 +725,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 || Car is MSTSLocomotive && (Car as MSTSLocomotive).EDBIndependent && (Car as MSTSLocomotive).PowerOnFilter > 0)
             {
                 var loco = Car as MSTSLocomotive;
+                PowerForRMg = true;
+                if (((MSTSLocomotive)loco.Train.Cars[loco.Train.LeadLocomotiveIndex]).EmergencyButtonPressed) EmergencyBrakeForRMg = true;
+                else EmergencyBrakeForRMg = false;
+
                 BailOffOn = false;
                 if ((loco.Train.LeadLocomotiveIndex >= 0 && ((MSTSLocomotive)loco.Train.Cars[loco.Train.LeadLocomotiveIndex]).BailOff) || loco.DynamicBrakeAutoBailOff && loco.Train.MUDynamicBrakePercent > 0 && loco.DynamicBrakeForceCurves == null)
                 {
@@ -732,6 +743,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 if (BailOffOn)
                     AutoCylPressurePSI0 -= MaxReleaseRatePSIpS * elapsedClockSeconds;
             }
+            else PowerForRMg = false;
 
             if (AutoCylPressurePSI0 < 0)
                 AutoCylPressurePSI0 = 0;
@@ -931,13 +943,41 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         // Vyrovnává maximální tlak s tlakem v potrubí    
                         if (lead.TrainBrakeController.TrainBrakeControllerState == ControllerState.Lap) lead.TrainBrakeController.MaxPressurePSI = lead.BrakeSystem.BrakeLine1PressurePSI;
 
+                        // Aktivace možné R+Mg brzdy při rychlobrzdě 
+                        if (lead.TrainBrakeController.TrainBrakeControllerState == ControllerState.Emergency || lead.BrakeSystem.EmergencyBrakeForRMg)
+                        {
+                            foreach (TrainCar car in train.Cars)
+                            {
+                                car.BrakeSystem.EmergencyBrakeForRMg = true;
+                            }
+                        }
+                        else 
+                            foreach (TrainCar car in train.Cars)
+                            {
+                                car.BrakeSystem.EmergencyBrakeForRMg = false;
+                            }
+
+                        // Aktivace napájení pro R+Mg brzdu 
+                        if (lead.BrakeSystem.PowerForRMg)
+                        {
+                            foreach (TrainCar car in train.Cars)
+                            {
+                                car.BrakeSystem.PowerForRMg = true;
+                            }
+                        }
+                        else
+                            foreach (TrainCar car in train.Cars)
+                            {
+                                car.BrakeSystem.PowerForRMg = false;
+                            }
+
                         // Změna rychlosti plnění vzduchojemu při švihu
                         if (lead.TrainBrakeController.TrainBrakeControllerState == ControllerState.FullQuickRelease)
                         {
                             BrakePipeChargingRatePSIorInHgpS0 = brakePipeChargingQuickPSIpS;  // Rychlost plnění ve vysokotlakém švihu 
                             if (lead.TrainBrakeController.MaxPressurePSI < lead.MainResPressurePSI) lead.TrainBrakeController.MaxPressurePSI = lead.MainResPressurePSI;
                         }
-
+                        
                         // Nízkotlaké přebití
                         else if (lead.TrainBrakeController.TrainBrakeControllerState == ControllerState.OverchargeStart)
                         {

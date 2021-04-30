@@ -48,7 +48,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes
         public float AutoCylPressurePSI1;
         public float AutoCylPressurePSI0;
         public float maxPressurePSI0;
-        public float TotalCapacityMainResBrakePipe;        
+        public float TotalCapacityMainResBrakePipe;
         public float EB; // Hodnota EngineBrake
         public float MCP;  // Hodnota MaxCylPressure
         public float MaxReleaseRatePSIpS0;
@@ -73,6 +73,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes
         public float AutoLoadRegulatorMaxBrakeMass;
         public bool BrakeCylRelease;
         public bool BrakeCylApply;
+        public float CriticalBrakePipePressureRMgPSI;
+        public bool BrakeModeRMgActive;
+        public bool PowerForRMg;
+        public bool EmergencyBrakeForRMg;
 
         /// <summary>
         /// Front brake hoses connection status
@@ -102,7 +106,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes
         public string BrakeCarModeText = "P";
         public float NumberBrakeCarMode = 4;  // Celkový počet režimů vozu
 
-        public float BrakeCarModePL;  
+        public float BrakeCarModePL;
         public string BrakeCarModeTextPL;
 
         public int WagonType;
