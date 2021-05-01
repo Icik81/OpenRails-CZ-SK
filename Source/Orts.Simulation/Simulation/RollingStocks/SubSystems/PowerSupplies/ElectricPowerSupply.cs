@@ -214,6 +214,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
 
         public override void Update(float elapsedClockSeconds)
         {
+            if (elapsedClockSeconds == 0)
+                return;
             switch (CurrentPantographState())
             {
                 case PantographState.Down:

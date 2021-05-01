@@ -1545,10 +1545,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                 {
                     if (maxForceN > 0) maxForceN = 0;
                     if (Locomotive.ThrottlePercent > 0) Locomotive.ThrottleController.SetPercent(0);
-/*                    if (Locomotive.DynamicBrakePercent <= 0 && !breakout) TODO_JM!! Prověřit, kde to bude chybět
+                    if (Locomotive.DynamicBrakePercent <= 0 && !breakout) //TODO_JM!! Prověřit, kde to bude chybět
                     {
                         Locomotive.DynamicBrakeChangeActiveState(true);
-                    }*/
+                    }
                     if (SelectedMaxAccelerationPercent == 0 && SelectedMaxAccelerationStep == 0)
                     {
                         Locomotive.SetDynamicBrakePercent(0);
@@ -1626,7 +1626,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                     Locomotive.ControllerVolts = 0;
                 }
             }
-
+            Locomotive.Simulator.Confirmer.MSG(Locomotive.ControllerVolts.ToString());
             if (playerNotDriveableTrainLocomotives.Count > 0) // update any other than the player's locomotive in the consist throttles to percentage of the current force and the max force
             {
                 float locoPercent = Locomotive.MaxForceN - (Locomotive.MaxForceN - Locomotive.MotiveForceN);
