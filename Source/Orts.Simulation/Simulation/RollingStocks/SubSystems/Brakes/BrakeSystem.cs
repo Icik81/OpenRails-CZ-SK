@@ -73,7 +73,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes
         public float AutoLoadRegulatorMaxBrakeMass;
         public bool BrakeCylRelease;
         public bool BrakeCylApply;
-        public float CriticalBrakePipePressureRMgPSI;
+        public float CriticalMainResPressureRMgPSI;
         public bool BrakeModeRMgActive;
         public bool PowerForRMg;
         public bool EmergencyBrakeForRMg;
