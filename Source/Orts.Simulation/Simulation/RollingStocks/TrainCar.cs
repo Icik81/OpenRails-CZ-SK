@@ -752,8 +752,10 @@ namespace Orts.Simulation.RollingStocks
                         else BrakeSystem.BrakeMassKG = BrakeSystem.BrakeMassR;
                         break;
                     case 3: // Režim R+Mg  
-                        if (((Math.Abs(SpeedMpS) * 3.6f) > 50.0f && BrakeSystem.BrakeLine1PressurePSI > BrakeSystem.CriticalBrakePipePressureRMgPSI && BrakeSystem.PowerForRMg)
-                        || (BrakeSystem.EmergencyBrakeForRMg && BrakeSystem.PowerForRMg))
+                        if ((Math.Abs(SpeedMpS) * 3.6f) > 50.0f 
+                        && BrakeSystem.TotalCapacityMainResBrakePipe > BrakeSystem.CriticalMainResPressureRMgPSI 
+                        && BrakeSystem.PowerForRMg 
+                        && BrakeSystem.EmergencyBrakeForRMg)                        
                         {
                             BrakeSystem.BrakeModeRMgActive = true;
                             T0 = 10;
