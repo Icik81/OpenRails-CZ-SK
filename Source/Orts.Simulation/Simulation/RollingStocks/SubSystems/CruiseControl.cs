@@ -1639,7 +1639,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                     Locomotive.ControllerVolts = 0;
                 }
             }
-            Locomotive.Simulator.Confirmer.MSG(Locomotive.ControllerVolts.ToString());
+
             if (playerNotDriveableTrainLocomotives.Count > 0) // update any other than the player's locomotive in the consist throttles to percentage of the current force and the max force
             {
                 float locoPercent = Locomotive.MaxForceN - (Locomotive.MaxForceN - Locomotive.MotiveForceN);
