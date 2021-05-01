@@ -106,8 +106,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes
         public string BrakeCarModeText = "P";
         public float NumberBrakeCarMode = 4;  // Celkový počet režimů vozu
 
-        public float BrakeCarModePL;
-        public string BrakeCarModeTextPL;
+        public float BrakeCarModePL = 0;
+        public string BrakeCarModeTextPL = "Prázdný";
 
         public int WagonType;
 
