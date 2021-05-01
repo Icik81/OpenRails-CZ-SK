@@ -477,6 +477,8 @@ namespace Orts.Simulation.RollingStocks
         public float DynamicBrakeFullRangeIncreaseTimeSeconds;
         public float DynamicBrakeFullRangeDecreaseTimeSeconds;
         public float MaxControllerVolts = 10;
+        public CurrentDirectionEnum CurrentDirection = CurrentDirectionEnum.Braking;
+        public float AcceleratingToBrakingChangeTime = 0;
 
         public bool
       Speed0Pressed, Speed10Pressed, Speed20Pressed, Speed30Pressed, Speed40Pressed, Speed50Pressed
@@ -1041,6 +1043,7 @@ namespace Orts.Simulation.RollingStocks
                 case "engine(throttlefullrangedecreasetimeseconds": ThrottleFullRangeDecreaseTimeSeconds = stf.ReadFloatBlock(STFReader.UNITS.Any, 5); break;
                 case "engine(dynamicbrakefullrangeincreasetimeseconds": DynamicBrakeFullRangeIncreaseTimeSeconds = stf.ReadFloatBlock(STFReader.UNITS.Any, 5); break;
                 case "engine(dynamicbrakefullrangedecreasetimeseconds": DynamicBrakeFullRangeDecreaseTimeSeconds = stf.ReadFloatBlock(STFReader.UNITS.Any, 5); break;
+                case "engine(acceleratingtobrakingchangetime": AcceleratingToBrakingChangeTime = stf.ReadFloatBlock(STFReader.UNITS.Any, 2); break;
                 case "engine(maxcontrollervolts": MaxControllerVolts = stf.ReadFloatBlock(STFReader.UNITS.Any, 5); break;
                 case "engine(ortscruisecontrol": SetUpCruiseControl(); break;
                 case "engine(ortsmultipositioncontroller": SetUpMPC(); break;
@@ -2638,6 +2641,12 @@ namespace Orts.Simulation.RollingStocks
                 }// end AI locomotive
             }
         }
+
+        public enum CurrentDirectionEnum // used for drive or dynamic brake
+        {
+            Accelerating,
+            Braking
+        };
 
         protected enum Wheelslip
         {
@@ -4710,6 +4719,41 @@ namespace Orts.Simulation.RollingStocks
             return string.Format("{0}", DynamicBrakeController.GetStatus());
         }
         #endregion
+
+
+        public float CanAccelerateTime = 0;
+        public bool CanAccelerate(float elapsedClockTime, float controllerVolts)
+        {
+            bool ret = false;
+            if (CurrentDirection == CurrentDirectionEnum.Braking && CanAccelerateTime < AcceleratingToBrakingChangeTime)
+            {
+                CanAccelerateTime += elapsedClockTime;
+            }
+            if (CanAccelerateTime > AcceleratingToBrakingChangeTime)
+            {
+                CanBrakeTime = 0;
+                CurrentDirection = CurrentDirectionEnum.Accelerating;
+                ret = true;
+            }
+            return ret;
+        }
+
+        public float CanBrakeTime = 0;
+        public bool CanBrake(float elapsedClockTime, float controllerVolts)
+        {
+            bool ret = false;
+            if (CurrentDirection == CurrentDirectionEnum.Accelerating && CanBrakeTime < AcceleratingToBrakingChangeTime)
+            {
+                CanBrakeTime += elapsedClockTime;
+            }
+            if (CanBrakeTime > AcceleratingToBrakingChangeTime)
+            {
+                CanAccelerateTime = 0;
+                CurrentDirection = CurrentDirectionEnum.Braking;
+                ret = true;
+            }
+            return ret;
+        }
 
         public virtual void SetPower(bool ToState)
         {
