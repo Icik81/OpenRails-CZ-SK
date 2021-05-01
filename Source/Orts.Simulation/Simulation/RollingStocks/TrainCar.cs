@@ -106,7 +106,7 @@ namespace Orts.Simulation.RollingStocks
         static float dbfmaxsafecurvespeedmps;//Debrief eval
         public static int DbfEvalTrainOverturned;//Debrief eval
         public bool ldbfevaltrainoverturned = false;
-                                        
+
         // original consist of which car was part (used in timetable for couple/uncouple options)
         public string OrgConsist = string.Empty;
 
@@ -438,7 +438,7 @@ namespace Orts.Simulation.RollingStocks
             {
                 if (AcceptMUSignals && Train != null)
                 {
-                    if (Train.LeadLocomotive != null && ((MSTSLocomotive) Train.LeadLocomotive).TrainControlSystem.FullDynamicBrakingOrder)
+                    if (Train.LeadLocomotive != null && ((MSTSLocomotive)Train.LeadLocomotive).TrainControlSystem.FullDynamicBrakingOrder)
                     {
                         return 100;
                     }
@@ -446,7 +446,7 @@ namespace Orts.Simulation.RollingStocks
                     {
                         return Train.MUDynamicBrakePercent;
                     }
-}
+                }
                 else
                     return LocalDynamicBrakePercent;
             }
@@ -753,9 +753,10 @@ namespace Orts.Simulation.RollingStocks
                         break;
                     case 3: // Režim R+Mg  
                         if ((Math.Abs(SpeedMpS) * 3.6f) > 50.0f 
-                        && BrakeSystem.TotalCapacityMainResBrakePipe > BrakeSystem.CriticalMainResPressureRMgPSI 
-                        && BrakeSystem.PowerForRMg 
-                        && BrakeSystem.EmergencyBrakeForRMg)                        
+                        && BrakeSystem.TotalCapacityMainResBrakePipe > BrakeSystem.MainResMinimumPressureForMGbrakeActivationPSI
+                        && BrakeSystem.BrakeLine1PressurePSI < BrakeSystem.BrakePipePressureForMGbrakeActivationPSI)
+                        //&& BrakeSystem.PowerForRMg 
+                        //&& BrakeSystem.EmergencyBrakeForRMg)                        
                         {
                             BrakeSystem.BrakeModeRMgActive = true;
                             T0 = 10;
