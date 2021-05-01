@@ -149,7 +149,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             maxPressurePSI0 = thiscopy.maxPressurePSI0;
             AutoLoadRegulatorEquipped = thiscopy.AutoLoadRegulatorEquipped;
             AutoLoadRegulatorMaxBrakeMass = thiscopy.AutoLoadRegulatorMaxBrakeMass;
-            CriticalBrakePipePressureRMgPSI = thiscopy.CriticalBrakePipePressureRMgPSI;
+            CriticalMainResPressureRMgPSI = thiscopy.CriticalMainResPressureRMgPSI;
         }
 
         // Get the brake BC & BP for EOT conditions
@@ -311,7 +311,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 case "wagon(debugkoef": DebugKoef = stf.ReadFloatBlock(STFReader.UNITS.None, null); break;
                 
                 // Minimální tlak v brzdovém potrubí pro brzdu R+Mg
-                case "wagon(criticalbrakepipepressurermg": CriticalBrakePipePressureRMgPSI = stf.ReadFloatBlock(STFReader.UNITS.PressureDefaultPSI, null); break;                    
+                case "wagon(criticalmainrespressurermg": CriticalMainResPressureRMgPSI = stf.ReadFloatBlock(STFReader.UNITS.PressureDefaultPSI, null); break;                    
 
                 // Načte hodnotu rychlosti eliminace níkotlakého přebití                              
                 case "engine(overchargeeliminationrate": OverchargeEliminationRatePSIpS = stf.ReadFloatBlock(STFReader.UNITS.PressureRateDefaultPSIpS, null); break;
@@ -530,7 +530,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             }
 
             // Defaultní minimální tlak pro brzdu R+Mg
-            if (CriticalBrakePipePressureRMgPSI == 0) CriticalBrakePipePressureRMgPSI = 3.5f * 14.50377f;
+            if (CriticalMainResPressureRMgPSI == 0) CriticalMainResPressureRMgPSI = 3.5f * 14.50377f;
 
              // Načte hodnotu maximálního tlaku v BV
             MCP = GetMaxCylPressurePSI();
