@@ -2059,7 +2059,7 @@ namespace Orts.Viewer3D.RollingStock
                         if (multiplier <= 0)
                             index = 0;
                         else
-                            index = (int)data / (int)multiplier;
+                            index = (int)Math.Round(data, 0) / (int)multiplier;
                         break;
                     }
 
