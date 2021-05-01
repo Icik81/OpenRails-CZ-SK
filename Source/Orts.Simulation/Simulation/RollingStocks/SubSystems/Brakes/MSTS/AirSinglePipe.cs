@@ -208,7 +208,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 string.Format("{0} {1:F0} t", AutoLoadRegulatorEquipped ? "Auto   " : "", BrakeMassKG / 1000),                                              
                 string.Empty, // Spacer because the state above needs 2 columns.              
                 string.Format("DebugKoef {0:F1}", DebugKoef),
-                string.Empty, // Spacer because the state above needs 2 columns.                           
+                string.Empty, // Spacer because the state above needs 2 columns.                                     
             };
         }
 
@@ -726,10 +726,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             {
                 var loco = Car as MSTSLocomotive;
                 PowerForRMg = true;
-                if (loco.Train.LeadLocomotiveIndex < loco.Train.Cars.Count - 1 && loco.Train.LeadLocomotiveIndex > -1)
-                {
-                    if (((MSTSLocomotive)loco.Train.Cars[loco.Train.LeadLocomotiveIndex]).EmergencyButtonPressed) EmergencyBrakeForRMg = true;
-                }
+
+                if ((Car as MSTSLocomotive).EmergencyButtonPressed) EmergencyBrakeForRMg = true;
                 else EmergencyBrakeForRMg = false;
 
                 BailOffOn = false;
@@ -954,12 +952,13 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                                 car.BrakeSystem.EmergencyBrakeForRMg = true;
                             }
                         }
-                        else 
+                        else
+                        {
                             foreach (TrainCar car in train.Cars)
                             {
                                 car.BrakeSystem.EmergencyBrakeForRMg = false;
                             }
-
+                        }
                         // Aktivace napájení pro R+Mg brzdu 
                         if (lead.BrakeSystem.PowerForRMg)
                         {
