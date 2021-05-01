@@ -5080,9 +5080,9 @@ namespace Orts.Simulation.RollingStocks
                             }
                         }
                         cvc.ElapsedTime += elapsedTime;
-                        if (cvc.ElapsedTime < cvc.UpdateTime)
+                        if (cvc.ElapsedTime < cvc.UpdateTime && cvc.Vibration > 0)
                         {
-                            if (cvc.ElapsedTime > cvc.UpdateTime / 2 && Math.Abs(speed) > 0.1f && cvc.Vibration > 0)
+                            if (cvc.ElapsedTime > cvc.UpdateTime / 2 && Math.Abs(speed) > 0.1f)
                             {
                                 if (Up)
                                     data = cvc.PreviousData - (cvc.Vibration / 3.6f);
@@ -5091,8 +5091,6 @@ namespace Orts.Simulation.RollingStocks
                                 break;
                             }
                             data = cvc.PreviousData;
-                            if (MpS.FromKpH(cvc.PreviousData) > speed)
-                                data = (float)Math.Round(MpS.ToKpH(speed) - 0.5d, 0);
                             break;
                         }
                         cvc.ElapsedTime = 0;
@@ -5106,7 +5104,6 @@ namespace Orts.Simulation.RollingStocks
                             data *= 3.6f;
                         else // MPH
                             data *= 2.2369f;
-                        data = (float)Math.Round(data - 0.5d, 0);
                         data = Math.Abs(data);
                         if (cvc.Precision > 0)
                         {
