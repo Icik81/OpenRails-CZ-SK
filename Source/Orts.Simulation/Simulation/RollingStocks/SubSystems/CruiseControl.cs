@@ -659,6 +659,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems
 
         public void SetSpeed(float Speed)
         {
+            if (MpS.FromKpH(Speed) >  Locomotive.MaxSpeedMpS)
+            {
+                Speed = MpS.ToKpH(Locomotive.MaxSpeedMpS);
+            }
             if (!Equipped) return;
             if (SpeedRegMode == SpeedRegulatorMode.Manual && ForceRegulatorAutoWhenNonZeroSpeedSelected)
                 SpeedRegMode = SpeedRegulatorMode.Auto;

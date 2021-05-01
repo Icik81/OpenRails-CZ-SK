@@ -1018,7 +1018,11 @@ namespace Orts.Simulation.RollingStocks
                 // Při aktivním R+Mg sníží brzdící sílu vozu na kola, aby se nezablokovaly kola
                 if (BrakeSystem.BrakeModeRMgActive || T0 > 0)
                 {
-                    BrakeRetardForceN = BrakeRetardForceN / 1.44f;
+                    if (BrakeSystem.BrakeMassR != 0 && BrakeSystem.BrakeMassRMg != 0)
+                    {
+                        BrakeRetardForceN = BrakeRetardForceN / (BrakeSystem.BrakeMassRMg / BrakeSystem.BrakeMassR); 
+                    }
+                    else BrakeRetardForceN = BrakeRetardForceN / 1.44f;
                     T0--;                    
                 }
 

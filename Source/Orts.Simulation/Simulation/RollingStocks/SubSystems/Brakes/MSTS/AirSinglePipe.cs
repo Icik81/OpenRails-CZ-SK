@@ -726,7 +726,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             {
                 var loco = Car as MSTSLocomotive;
                 PowerForRMg = true;
-                if (((MSTSLocomotive)loco.Train.Cars[loco.Train.LeadLocomotiveIndex]).EmergencyButtonPressed) EmergencyBrakeForRMg = true;
+                if (loco.Train.LeadLocomotiveIndex < loco.Train.Cars.Count - 1 && loco.Train.LeadLocomotiveIndex > -1)
+                {
+                    if (((MSTSLocomotive)loco.Train.Cars[loco.Train.LeadLocomotiveIndex]).EmergencyButtonPressed) EmergencyBrakeForRMg = true;
+                }
                 else EmergencyBrakeForRMg = false;
 
                 BailOffOn = false;
