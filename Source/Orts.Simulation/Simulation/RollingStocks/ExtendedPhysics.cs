@@ -260,7 +260,7 @@ namespace Orts.Simulation.RollingStocks
             if (Locomotive.TractiveForceCurves != null)
             {
                 float t = (axleCurrent / (maxCurrent * 1.5f)) / totalMotors;
-                Locomotive.Simulator.Confirmer.MSG(t.ToString());
+                //Locomotive.Simulator.Confirmer.MSG(t.ToString());
                 ForceN = Locomotive.TractiveForceCurves.Get(t, Locomotive.LocomotiveAxle.AxleSpeedMpS);
             }
             else // TODO bez tabulek!

@@ -700,7 +700,6 @@ namespace Orts.Simulation.RollingStocks.SubSystems
         public bool WasForceReset = true;
         protected int speedSensorAxleIndex = -1;
         protected int speedSensorUndercarriageIndex = -1;
-        protected List<float> accelerationDemandFifo = new List<float>();
 
         protected virtual void UpdateMotiveForce(float elapsedClockSeconds, float AbsWheelSpeedMps)
         {
@@ -1025,15 +1024,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                                     delta = CurrentSelectedSpeedMpS - wheelSpeedMpS;
 
                                 AccelerationDemandMpSS = (float)-Math.Sqrt(-StartReducingSpeedDelta * delta) * 5;
-                                if (!float.IsNaN(AccelerationDemandMpSS))
-                                {
-                                    if (accelerationDemandFifo.Count == 5)
-                                    {
-                                        accelerationDemandFifo.RemoveAt(0);
-                                    }
-                                    accelerationDemandFifo.Add(AccelerationDemandMpSS);
-                                }
-                                float demand = accelerationDemandFifo.Average();
+                                float demand = AccelerationDemandMpSS;
 
                                 if (maxForceN > 0)
                                 {
@@ -1174,15 +1165,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                     }
 
                     AccelerationDemandMpSS = (float)Math.Sqrt((StartReducingSpeedDelta) * coeff * (delta));
-                    if (!float.IsNaN(AccelerationDemandMpSS))
-                    {
-                        if (accelerationDemandFifo.Count == 5)
-                        {
-                            accelerationDemandFifo.RemoveAt(0);
-                        }
-                        accelerationDemandFifo.Add(AccelerationDemandMpSS);
-                    }
-                    float demand = accelerationDemandFifo.Average();
+                    float demand = AccelerationDemandMpSS;
                     float tempAccDemand = demand;
 
                     if (float.IsNaN(demand))
@@ -1221,15 +1204,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                                     delta = CurrentSelectedSpeedMpS - wheelSpeedMpS;
 
                                 AccelerationDemandMpSS = (float)-Math.Sqrt(-StartReducingSpeedDelta * delta) * 5;
-                                if (!float.IsNaN(AccelerationDemandMpSS))
-                                {
-                                    if (accelerationDemandFifo.Count == 5)
-                                    {
-                                        accelerationDemandFifo.RemoveAt(0);
-                                    }
-                                    accelerationDemandFifo.Add(AccelerationDemandMpSS);
-                                }
-                                demand = accelerationDemandFifo.Average();
+                                demand = AccelerationDemandMpSS;
 
                                 if (maxForceN > 0)
                                 {
