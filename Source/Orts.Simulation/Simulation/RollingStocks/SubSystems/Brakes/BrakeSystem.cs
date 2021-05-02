@@ -80,6 +80,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes
         public bool EmergencyBrakeForWagon;
         public bool AirForWagon;
         public bool AntiSlipSystemForWagonEquipped;
+        public bool BailOffOnAntiSlip;
 
         /// <summary>
         /// Front brake hoses connection status
