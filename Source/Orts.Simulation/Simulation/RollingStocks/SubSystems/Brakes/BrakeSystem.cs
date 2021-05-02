@@ -76,8 +76,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes
         public float MainResMinimumPressureForMGbrakeActivationPSI;
         public float BrakePipePressureForMGbrakeActivationPSI;
         public bool BrakeModeRMgActive;
-        public bool PowerForRMg;
-        public bool EmergencyBrakeForRMg;
+        public bool PowerForWagon;
+        public bool EmergencyBrakeForWagon;
+        public bool AirForWagon;
 
         /// <summary>
         /// Front brake hoses connection status

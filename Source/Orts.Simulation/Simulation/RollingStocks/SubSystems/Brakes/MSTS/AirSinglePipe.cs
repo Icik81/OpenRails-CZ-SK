@@ -72,8 +72,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
         protected float Threshold = 0;
         protected float prevBrakeLine1PressurePSI = 0;
         protected bool NotConnected = false;
-        //protected bool BrakeCylApply = false;
-        //protected bool BrakeCylRelease = false;     
+        
 
         /// <summary>
         /// EP brake holding valve. Needs to be closed (Lap) in case of brake application or holding.
@@ -533,8 +532,14 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
 
             // Defaultní minimální tlaky pro brzdu R+Mg
             if (MainResMinimumPressureForMGbrakeActivationPSI == 0) MainResMinimumPressureForMGbrakeActivationPSI = 3.5f * 14.50377f;
-            if (BrakePipePressureForMGbrakeActivationPSI == 0) BrakePipePressureForMGbrakeActivationPSI = 2.0f * 14.50377f;
-            
+            if (BrakePipePressureForMGbrakeActivationPSI == 0) BrakePipePressureForMGbrakeActivationPSI = 3.0f * 14.50377f;
+
+            // Příznak pro dostatek vzduchu v hlavní jímce (virtuální napájecím potrubí)
+            if (TotalCapacityMainResBrakePipe > MainResMinimumPressureForMGbrakeActivationPSI)
+                AirForWagon = true;
+            else
+                AirForWagon = false;
+
             // Načte hodnotu maximálního tlaku v BV
             MCP = GetMaxCylPressurePSI();
 
@@ -728,10 +733,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 || Car is MSTSLocomotive && (Car as MSTSLocomotive).EDBIndependent && (Car as MSTSLocomotive).PowerOnFilter > 0)
             {
                 var loco = Car as MSTSLocomotive;
-                PowerForRMg = true;
+                PowerForWagon = true;
 
-                if ((Car as MSTSLocomotive).EmergencyButtonPressed) EmergencyBrakeForRMg = true;
-                else EmergencyBrakeForRMg = false;
+                if ((Car as MSTSLocomotive).EmergencyButtonPressed) EmergencyBrakeForWagon = true;
+                else EmergencyBrakeForWagon = false;
 
                 BailOffOn = false;
                 if ((loco.Train.LeadLocomotiveIndex >= 0 && ((MSTSLocomotive)loco.Train.Cars[loco.Train.LeadLocomotiveIndex]).BailOff) || loco.DynamicBrakeAutoBailOff && loco.Train.MUDynamicBrakePercent > 0 && loco.DynamicBrakeForceCurves == null)
@@ -747,7 +752,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 if (BailOffOn)
                     AutoCylPressurePSI0 -= MaxReleaseRatePSIpS * elapsedClockSeconds;
             }
-            else PowerForRMg = false;
+            else PowerForWagon = false;
 
             if (AutoCylPressurePSI0 < 0)
                 AutoCylPressurePSI0 = 0;
@@ -947,33 +952,38 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         // Vyrovnává maximální tlak s tlakem v potrubí    
                         if (lead.TrainBrakeController.TrainBrakeControllerState == ControllerState.Lap) lead.TrainBrakeController.MaxPressurePSI = lead.BrakeSystem.BrakeLine1PressurePSI;
 
-                        // Aktivace možné R+Mg brzdy při rychlobrzdě 
-                        if (lead.TrainBrakeController.TrainBrakeControllerState == ControllerState.Emergency || lead.BrakeSystem.EmergencyBrakeForRMg)
-                        {
+                        // Aktivace příznaku rychlobrzdy pro vozy 
+                        if (lead.TrainBrakeController.TrainBrakeControllerState == ControllerState.Emergency || lead.BrakeSystem.EmergencyBrakeForWagon)                        
                             foreach (TrainCar car in train.Cars)
                             {
-                                car.BrakeSystem.EmergencyBrakeForRMg = true;
-                            }
-                        }
-                        else
-                        {
-                            foreach (TrainCar car in train.Cars)
-                            {
-                                car.BrakeSystem.EmergencyBrakeForRMg = false;
-                            }
-                        }
-                        // Aktivace napájení pro R+Mg brzdu 
-                        if (lead.BrakeSystem.PowerForRMg)
-                        {
-                            foreach (TrainCar car in train.Cars)
-                            {
-                                car.BrakeSystem.PowerForRMg = true;
-                            }
-                        }
+                                car.BrakeSystem.EmergencyBrakeForWagon = true;
+                            }        
                         else
                             foreach (TrainCar car in train.Cars)
                             {
-                                car.BrakeSystem.PowerForRMg = false;
+                                car.BrakeSystem.EmergencyBrakeForWagon = false;
+                            }
+                        // Aktivace napájení pro vozy 
+                        if (lead.BrakeSystem.PowerForWagon)
+                            foreach (TrainCar car in train.Cars)
+                            {
+                                car.BrakeSystem.PowerForWagon = true;
+                            }
+                        else
+                            foreach (TrainCar car in train.Cars)
+                            {
+                                car.BrakeSystem.PowerForWagon = false;
+                            }
+                        // Aktivace napájení vzduchem pro vozy 
+                        if (lead.BrakeSystem.AirForWagon)
+                            foreach (TrainCar car in train.Cars)
+                            {
+                                car.BrakeSystem.AirForWagon = true;
+                            }
+                        else
+                            foreach (TrainCar car in train.Cars)
+                            {
+                                car.BrakeSystem.AirForWagon = false;
                             }
 
                         // Změna rychlosti plnění vzduchojemu při švihu
