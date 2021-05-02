@@ -73,7 +73,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes
         public float AutoLoadRegulatorMaxBrakeMass;
         public bool BrakeCylRelease;
         public bool BrakeCylApply;
-        public float CriticalBrakePipePressureRMgPSI;
+        public float MainResMinimumPressureForMGbrakeActivationPSI;
+        public float BrakePipePressureForMGbrakeActivationPSI;
         public bool BrakeModeRMgActive;
         public bool PowerForRMg;
         public bool EmergencyBrakeForRMg;
@@ -107,7 +108,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes
         public float NumberBrakeCarMode = 4;  // Celkový počet režimů vozu
 
         public float BrakeCarModePL = 0;
-        public string BrakeCarModeTextPL = "";
+        public string BrakeCarModeTextPL = "Prázdný";
 
         public int WagonType;
 

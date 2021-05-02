@@ -106,7 +106,7 @@ namespace Orts.Simulation.RollingStocks
         static float dbfmaxsafecurvespeedmps;//Debrief eval
         public static int DbfEvalTrainOverturned;//Debrief eval
         public bool ldbfevaltrainoverturned = false;
-                                        
+
         // original consist of which car was part (used in timetable for couple/uncouple options)
         public string OrgConsist = string.Empty;
 
@@ -305,6 +305,7 @@ namespace Orts.Simulation.RollingStocks
         public float Factor_vibration;
         public int direction1 = 0;
         public int direction2 = 0;
+        public int T0 = 0;
 
         // Setup for ambient temperature dependency
         Interpolator OutsideWinterTempbyLatitudeC;
@@ -437,7 +438,7 @@ namespace Orts.Simulation.RollingStocks
             {
                 if (AcceptMUSignals && Train != null)
                 {
-                    if (Train.LeadLocomotive != null && ((MSTSLocomotive) Train.LeadLocomotive).TrainControlSystem.FullDynamicBrakingOrder)
+                    if (Train.LeadLocomotive != null && ((MSTSLocomotive)Train.LeadLocomotive).TrainControlSystem.FullDynamicBrakingOrder)
                     {
                         return 100;
                     }
@@ -445,7 +446,7 @@ namespace Orts.Simulation.RollingStocks
                     {
                         return Train.MUDynamicBrakePercent;
                     }
-}
+                }
                 else
                     return LocalDynamicBrakePercent;
             }
@@ -751,18 +752,28 @@ namespace Orts.Simulation.RollingStocks
                         else BrakeSystem.BrakeMassKG = BrakeSystem.BrakeMassR;
                         break;
                     case 3: // Režim R+Mg  
-                        if (((Math.Abs(SpeedMpS) * 3.6f) > 50.0f && BrakeSystem.BrakeLine1PressurePSI > BrakeSystem.CriticalBrakePipePressureRMgPSI && BrakeSystem.PowerForRMg)
-                        || (BrakeSystem.EmergencyBrakeForRMg && BrakeSystem.PowerForRMg))
+                        if ((Math.Abs(SpeedMpS) * 3.6f) > 50.0f 
+                        && BrakeSystem.TotalCapacityMainResBrakePipe > BrakeSystem.MainResMinimumPressureForMGbrakeActivationPSI
+                        && BrakeSystem.BrakeLine1PressurePSI < BrakeSystem.BrakePipePressureForMGbrakeActivationPSI)
+                        //&& BrakeSystem.PowerForRMg 
+                        //&& BrakeSystem.EmergencyBrakeForRMg)                        
                         {
                             BrakeSystem.BrakeModeRMgActive = true;
-                            if (BrakeSystem.BrakeMassRMg == 0) BrakeSystem.BrakeMassKG = 1.44f * BrakeSystem.KoefRezim * MassKG;
-                            else BrakeSystem.BrakeMassKG = BrakeSystem.BrakeMassRMg;
+                            T0 = 10;
+                            if (BrakeSystem.BrakeMassRMg != 0) BrakeSystem.BrakeMassKG = BrakeSystem.BrakeMassRMg;
+                            else                            
+                                if (BrakeSystem.BrakeMassR != 0) BrakeSystem.BrakeMassKG = 1.44f * BrakeSystem.BrakeMassR;
+                                else 
+                                    BrakeSystem.BrakeMassKG = 1.44f * BrakeSystem.KoefRezim * MassKG;                            
                         }
                         else
                         {
                             BrakeSystem.BrakeModeRMgActive = false;
-                            if (BrakeSystem.BrakeMassRMg == 0) BrakeSystem.BrakeMassKG = BrakeSystem.KoefRezim * MassKG;
-                            else BrakeSystem.BrakeMassKG = BrakeSystem.BrakeMassR;
+                            if (BrakeSystem.BrakeMassRMg != 0) BrakeSystem.BrakeMassKG = BrakeSystem.BrakeMassR;
+                            else
+                                if (BrakeSystem.BrakeMassR != 0) BrakeSystem.BrakeMassKG = BrakeSystem.BrakeMassR;
+                            else
+                                BrakeSystem.BrakeMassKG = BrakeSystem.KoefRezim * MassKG;
                         }
                         break;
                 }
@@ -1003,8 +1014,20 @@ namespace Orts.Simulation.RollingStocks
 
                 // Get user defined brake shoe coefficient if defined in WAG file
                 float UserFriction = GetUserBrakeShoeFrictionFactor();
-                float ZeroUserFriction = GetZeroUserBrakeShoeFrictionFactor();
+                float ZeroUserFriction = GetZeroUserBrakeShoeFrictionFactor();              
                 float AdhesionMultiplier = Simulator.Settings.AdhesionFactor / 100.0f; // User set adjustment factor - convert to a factor where 100% = no change to adhesion
+
+                // Icik
+                // Při aktivním R+Mg sníží brzdící sílu vozu na kola, aby se nezablokovaly kola
+                if (BrakeSystem.BrakeModeRMgActive || T0 > 0)
+                {
+                    if (BrakeSystem.BrakeMassR != 0 && BrakeSystem.BrakeMassRMg != 0)
+                    {
+                        BrakeRetardForceN = BrakeRetardForceN / (BrakeSystem.BrakeMassRMg / BrakeSystem.BrakeMassR); 
+                    }
+                    else BrakeRetardForceN = BrakeRetardForceN / 1.44f;
+                    T0--;                    
+                }
 
                 // This section calculates an adjustment factor for the brake force dependent upon the "base" (zero speed) friction value. 
                 //For a user defined case the base value is the zero speed value from the curve entered by the user.
@@ -1068,8 +1091,8 @@ namespace Orts.Simulation.RollingStocks
                         if (BrakeWheelTreadForceN > WagonBrakeAdhesiveForceN)
                         {
                             BrakeSkid = true; 	// wagon wheel is slipping
-                            //var message = "Car ID: " + CarID + " - experiencing braking force wheel skid.";                           
-                            //Simulator.Confirmer.Message(ConfirmLevel.Warning, message);
+                            var message = "Car ID: " + CarID + " - experiencing braking force wheel skid.";                           
+                            Simulator.Confirmer.Message(ConfirmLevel.Warning, message);
                         }
                     }
                     else if (BrakeSkid && AbsSpeedMpS > 0.01)
