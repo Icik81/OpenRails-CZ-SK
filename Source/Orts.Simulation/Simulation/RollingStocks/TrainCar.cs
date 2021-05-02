@@ -734,6 +734,20 @@ namespace Orts.Simulation.RollingStocks
         }
 
         // Icik
+        public virtual void AntiSlipSystemForWagon()
+        {
+            if (BrakeSystem.AntiSlipSystemForWagonEquipped)
+            {
+                if (BrakeWheelTreadForceN > WagonBrakeAdhesiveForceN * 0.95f)
+                {
+                    //var message = "BrakeRetardForceN: " + BrakeRetardForceN;
+                    //Simulator.Confirmer.Message(ConfirmLevel.Warning, message);
+                    BrakeSystem.BleedOffValveOpen = true;
+                }
+                else BrakeSystem.BleedOffValveOpen = false;
+            }
+        }
+
         public virtual void BrakeMassKG()
         {
             if (WagonType == WagonTypes.Passenger || WagonType == WagonTypes.Engine || WagonType == WagonTypes.Unknown)    //  Osobní vozy, lokomotivy a ostatní
@@ -801,6 +815,7 @@ namespace Orts.Simulation.RollingStocks
             const float koefF = 0.90f; // Nákladní vůz
             const float koefHB = 0.50f; // Ruční brzda
 
+            AntiSlipSystemForWagon();
             BrakeSystem.WagonType = (int)WagonType;
 
             if (WagonType == WagonTypes.Freight || WagonType == WagonTypes.Tender)    //  Nákladní vozy a tendry

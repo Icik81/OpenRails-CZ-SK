@@ -150,6 +150,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             AutoLoadRegulatorMaxBrakeMass = thiscopy.AutoLoadRegulatorMaxBrakeMass;
             MainResMinimumPressureForMGbrakeActivationPSI = thiscopy.MainResMinimumPressureForMGbrakeActivationPSI;
             BrakePipePressureForMGbrakeActivationPSI = thiscopy.BrakePipePressureForMGbrakeActivationPSI;
+            AntiSlipSystemForWagonEquipped = thiscopy.AntiSlipSystemForWagonEquipped;
         }
 
         // Get the brake BC & BP for EOT conditions
@@ -209,6 +210,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 string.Empty, // Spacer because the state above needs 2 columns.              
                 string.Format("DebugKoef {0:F1}", DebugKoef),
                 string.Empty, // Spacer because the state above needs 2 columns.                                     
+                
+                //string.Format("BrakeRetardForceN {0:F0}", Car.BrakeRetardForceN),
             };
         }
 
@@ -312,8 +315,11 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 
                 // Minimální tlak v hlavní jímce a brzdovém potrubí pro brzdu R+Mg
                 case "wagon(mainresminimumpressureformgbrakeactivation": MainResMinimumPressureForMGbrakeActivationPSI = stf.ReadFloatBlock(STFReader.UNITS.PressureDefaultPSI, null); break;
-                case "wagon(brakepipepressureformgbrakeactivation": BrakePipePressureForMGbrakeActivationPSI = stf.ReadFloatBlock(STFReader.UNITS.PressureDefaultPSI, null); break;                    
-                    
+                case "wagon(brakepipepressureformgbrakeactivation": BrakePipePressureForMGbrakeActivationPSI = stf.ReadFloatBlock(STFReader.UNITS.PressureDefaultPSI, null); break;
+                
+                // Antiblokovací systém pro vozy
+                case "wagon(antislipsystemforwagonequipped": AntiSlipSystemForWagonEquipped = stf.ReadBoolBlock(false); break;
+
                 // Načte hodnotu rychlosti eliminace níkotlakého přebití                              
                 case "engine(overchargeeliminationrate": OverchargeEliminationRatePSIpS = stf.ReadFloatBlock(STFReader.UNITS.PressureRateDefaultPSIpS, null); break;
                 
