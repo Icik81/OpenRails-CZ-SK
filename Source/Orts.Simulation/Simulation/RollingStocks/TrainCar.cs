@@ -753,7 +753,7 @@ namespace Orts.Simulation.RollingStocks
                         break;
                     case 3: // Režim R+Mg  
                         if ((Math.Abs(SpeedMpS) * 3.6f) > 50.0f 
-                        && BrakeSystem.TotalCapacityMainResBrakePipe > BrakeSystem.MainResMinimumPressureForMGbrakeActivationPSI
+                        && BrakeSystem.AirForWagon
                         && BrakeSystem.BrakeLine1PressurePSI < BrakeSystem.BrakePipePressureForMGbrakeActivationPSI)
                         //&& BrakeSystem.PowerForRMg 
                         //&& BrakeSystem.EmergencyBrakeForRMg)                        
