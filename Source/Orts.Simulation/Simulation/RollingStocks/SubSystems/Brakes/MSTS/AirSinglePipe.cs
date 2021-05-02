@@ -149,7 +149,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             maxPressurePSI0 = thiscopy.maxPressurePSI0;
             AutoLoadRegulatorEquipped = thiscopy.AutoLoadRegulatorEquipped;
             AutoLoadRegulatorMaxBrakeMass = thiscopy.AutoLoadRegulatorMaxBrakeMass;
-            CriticalBrakePipePressureRMgPSI = thiscopy.CriticalBrakePipePressureRMgPSI;
+            MainResMinimumPressureForMGbrakeActivationPSI = thiscopy.MainResMinimumPressureForMGbrakeActivationPSI;
+            BrakePipePressureForMGbrakeActivationPSI = thiscopy.BrakePipePressureForMGbrakeActivationPSI;
         }
 
         // Get the brake BC & BP for EOT conditions
@@ -208,7 +209,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 string.Format("{0} {1:F0} t", AutoLoadRegulatorEquipped ? "Auto   " : "", BrakeMassKG / 1000),                                              
                 string.Empty, // Spacer because the state above needs 2 columns.              
                 string.Format("DebugKoef {0:F1}", DebugKoef),
-                string.Empty, // Spacer because the state above needs 2 columns.                           
+                string.Empty, // Spacer because the state above needs 2 columns.                                     
             };
         }
 
@@ -310,9 +311,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 // Ladící koeficient pro ladiče brzd
                 case "wagon(debugkoef": DebugKoef = stf.ReadFloatBlock(STFReader.UNITS.None, null); break;
                 
-                // Minimální tlak v brzdovém potrubí pro brzdu R+Mg
-                case "wagon(criticalbrakepipepressurermg": CriticalBrakePipePressureRMgPSI = stf.ReadFloatBlock(STFReader.UNITS.PressureDefaultPSI, null); break;                    
-
+                // Minimální tlak v hlavní jímce a brzdovém potrubí pro brzdu R+Mg
+                case "wagon(mainresminimumpressureformgbrakeactivation": MainResMinimumPressureForMGbrakeActivationPSI = stf.ReadFloatBlock(STFReader.UNITS.PressureDefaultPSI, null); break;
+                case "wagon(brakepipepressureformgbrakeactivation": BrakePipePressureForMGbrakeActivationPSI = stf.ReadFloatBlock(STFReader.UNITS.PressureDefaultPSI, null); break;                    
+                    
                 // Načte hodnotu rychlosti eliminace níkotlakého přebití                              
                 case "engine(overchargeeliminationrate": OverchargeEliminationRatePSIpS = stf.ReadFloatBlock(STFReader.UNITS.PressureRateDefaultPSIpS, null); break;
                 
@@ -529,10 +531,11 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     break;
             }
 
-            // Defaultní minimální tlak pro brzdu R+Mg
-            if (CriticalBrakePipePressureRMgPSI == 0) CriticalBrakePipePressureRMgPSI = 3.5f * 14.50377f;
-
-             // Načte hodnotu maximálního tlaku v BV
+            // Defaultní minimální tlaky pro brzdu R+Mg
+            if (MainResMinimumPressureForMGbrakeActivationPSI == 0) MainResMinimumPressureForMGbrakeActivationPSI = 3.5f * 14.50377f;
+            if (BrakePipePressureForMGbrakeActivationPSI == 0) BrakePipePressureForMGbrakeActivationPSI = 2.0f * 14.50377f;
+            
+            // Načte hodnotu maximálního tlaku v BV
             MCP = GetMaxCylPressurePSI();
 
             // Výsledný tlak v brzdovém válci - přičte tlak přímočinné brzdy k tlaku v BV průběžné brzdy
@@ -726,10 +729,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             {
                 var loco = Car as MSTSLocomotive;
                 PowerForRMg = true;
-                if (loco.Train.LeadLocomotiveIndex < loco.Train.Cars.Count - 1 && loco.Train.LeadLocomotiveIndex > -1)
-                {
-                    if (((MSTSLocomotive)loco.Train.Cars[loco.Train.LeadLocomotiveIndex]).EmergencyButtonPressed) EmergencyBrakeForRMg = true;
-                }
+
+                if ((Car as MSTSLocomotive).EmergencyButtonPressed) EmergencyBrakeForRMg = true;
                 else EmergencyBrakeForRMg = false;
 
                 BailOffOn = false;
@@ -954,12 +955,13 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                                 car.BrakeSystem.EmergencyBrakeForRMg = true;
                             }
                         }
-                        else 
+                        else
+                        {
                             foreach (TrainCar car in train.Cars)
                             {
                                 car.BrakeSystem.EmergencyBrakeForRMg = false;
                             }
-
+                        }
                         // Aktivace napájení pro R+Mg brzdu 
                         if (lead.BrakeSystem.PowerForRMg)
                         {
