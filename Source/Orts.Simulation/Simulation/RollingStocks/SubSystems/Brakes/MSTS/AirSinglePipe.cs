@@ -195,8 +195,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 (Car as MSTSWagon).HandBrakePresent ? string.Format("{0:F0}%", HandbrakePercent) : string.Empty,
                 FrontBrakeHoseConnected ? "I" : "T",
                 string.Format("A{0} B{1}", AngleCockAOpen ? "+" : "-", AngleCockBOpen ? "+" : "-"),
-                BleedOffValveOpen ? Simulator.Catalog.GetString("Open") : " ",//HudScroll feature requires for the last value, at least one space instead of string.Empty,
-                
+                BleedOffValveOpen || BailOffOnAntiSlip ? Simulator.Catalog.GetString("Open") : " ",//HudScroll feature requires for the last value, at least one space instead of string.Empty,                
+
                 string.Empty, // Spacer because the state above needs 2 columns.
                 string.Format("{0:F5} bar/s", TrainPipeLeakRatePSIpS / 14.50377f),
                 string.Empty, // Spacer because the state above needs 2 columns.
@@ -363,6 +363,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             outf.Write(MaxApplicationRatePSIpS0);
             outf.Write(MaxReleaseRatePSIpS0);
             outf.Write(maxPressurePSI0);
+            outf.Write(BailOffOnAntiSlip);
         }
 
         public override void Restore(BinaryReader inf)
@@ -397,6 +398,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             MaxApplicationRatePSIpS0 = inf.ReadSingle();
             MaxReleaseRatePSIpS0 = inf.ReadSingle();
             maxPressurePSI0 = inf.ReadSingle();
+            BailOffOnAntiSlip = inf.ReadBoolean();
         }
 
         public override void Initialize(bool handbrakeOn, float maxPressurePSI, float fullServPressurePSI, bool immediateRelease)
@@ -579,7 +581,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     if (AuxResPressurePSI < 0)
                         AuxResPressurePSI = 0;
                     
-                    AutoCylPressurePSI0 -= elapsedClockSeconds * MaxReleaseRatePSIpS;                  
+                    AutoCylPressurePSI0 -= elapsedClockSeconds * (2.0f * 14.50377f); // Rychlost odvětrání 2 bar/s                 
                     if (AutoCylPressurePSI0 < 0)
                         AutoCylPressurePSI0 = 0;
                     
@@ -595,7 +597,36 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             else
                 UpdateTripleValveState(threshold);
 
-             // Zjistí rychlost změny tlaku v potrubí
+            // Vypouštění brzdového válce při aktivaci protiskluzového systému
+            if (BailOffOnAntiSlip)
+            {
+                if (AuxResPressurePSI < 0.01f && AutoCylPressurePSI < 0.01f && BrakeLine1PressurePSI < 0.01f && (EmergResPressurePSI < 0.01f || !(Car as MSTSWagon).EmergencyReservoirPresent))
+                {
+                    BailOffOnAntiSlip = false;
+                }
+                else
+                {
+                    AuxResPressurePSI -= elapsedClockSeconds * MaxApplicationRatePSIpS;
+                    if (AuxResPressurePSI < 0)
+                        AuxResPressurePSI = 0;
+
+                    AutoCylPressurePSI0 -= elapsedClockSeconds * (2.0f * 14.50377f); // Rychlost odvětrání 2 bar/s
+                    if (AutoCylPressurePSI0 < 0)
+                        AutoCylPressurePSI0 = 0;
+
+                    if ((Car as MSTSWagon).EmergencyReservoirPresent)
+                    {
+                        EmergResPressurePSI -= elapsedClockSeconds * EmergResChargingRatePSIpS;
+                        if (EmergResPressurePSI < 0)
+                            EmergResPressurePSI = 0;
+                    }
+                    TripleValveState = ValveState.Release;
+                }
+            }
+            else
+                UpdateTripleValveState(threshold);
+
+            // Zjistí rychlost změny tlaku v potrubí
             if (T0 >= 1.0f) T0 = 0.0f;
             if (T0 == 0.0f) prevBrakeLine1PressurePSI = BrakeLine1PressurePSI;
             T0 += elapsedClockSeconds;
@@ -755,8 +786,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     if ((loco.MaxDynamicBrakeForceN == 0 && dynforce > 0) || dynforce > loco.MaxDynamicBrakeForceN * 0.6)
                         BailOffOn = true;
                 }
-                if (BailOffOn)
+                if (BailOffOn || BailOffOnAntiSlip)
+                {
                     AutoCylPressurePSI0 -= MaxReleaseRatePSIpS * elapsedClockSeconds;
+                }
             }
             else PowerForWagon = false;
 

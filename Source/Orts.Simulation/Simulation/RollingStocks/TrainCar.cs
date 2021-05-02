@@ -742,9 +742,9 @@ namespace Orts.Simulation.RollingStocks
                 {
                     //var message = "BrakeRetardForceN: " + BrakeRetardForceN;
                     //Simulator.Confirmer.Message(ConfirmLevel.Warning, message);
-                    BrakeSystem.BleedOffValveOpen = true;
+                    BrakeSystem.BailOffOnAntiSlip = true;
                 }
-                else BrakeSystem.BleedOffValveOpen = false;
+                else BrakeSystem.BailOffOnAntiSlip = false;
             }
         }
 
