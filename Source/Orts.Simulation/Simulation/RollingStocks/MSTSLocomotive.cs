@@ -1867,9 +1867,13 @@ namespace Orts.Simulation.RollingStocks
         {
             if (MaxCurrentA > 0 && IsPlayerTrain)  // Zohlední jen elektrické a dieselelektrické lokomotivy 
             {                
-                if (SlipSpeedCritical == 0) SlipSpeedCritical = 40 / 3.6f; // Výchozí hodnota 40 km/h               
+                if (SlipSpeedCritical == 0) SlipSpeedCritical = 40 / 3.6f; // Výchozí hodnota 40 km/h     
                 float AbsSlipSpeedMpS = Math.Abs(WheelSpeedMpS) - AbsSpeedMpS;  // Zjistí absolutní rychlost prokluzu 
-
+                if (extendedPhysics != null)
+                {
+                    SlipSpeedCritical = 5 / 3.6f;
+                    AbsSlipSpeedMpS = extendedPhysics.FastestAxleSpeedMpS - extendedPhysics.AverageAxleSpeedMpS;
+                }
                 //Trace.TraceInformation("WheelSlipTime {0},  Simulator.GameTime {1},  Time0 {2},   SlipSpeed {3}", WheelSlipTime, Simulator.GameTime, Time0, SlipSpeed);
                 
                 if (AbsSlipSpeedMpS > SlipSpeedCritical) // Přepěťová ochrana při skluzu 
@@ -1877,6 +1881,8 @@ namespace Orts.Simulation.RollingStocks
 
                 if (OverVoltage)
                 {
+                    SetThrottlePercent(0);
+                    ControllerVolts = 0;
                     if (this is MSTSElectricLocomotive) // Elektrické lokomotivy
                     {
                         switch (MultiSystemEngine)
@@ -2659,6 +2665,11 @@ namespace Orts.Simulation.RollingStocks
 
         public void ConfirmWheelslip(float elapsedClockSeconds)
         {
+            if (extendedPhysics != null) // extended physics calculates its own wheelslip parametres
+            {
+                WheelSlip = false;
+                return;
+            }
             if (elapsedClockSeconds > 0 && Simulator.GameTime - LocomotiveAxle.ResetTime > 5)
             {
                 if (AdvancedAdhesionModel)
@@ -5940,6 +5951,8 @@ namespace Orts.Simulation.RollingStocks
                         if (string.IsNullOrEmpty(cvc.CurrentSource))
                         {
                             data = extendedPhysics.TotalCurrent;
+                            if (data < 0)
+                                data = -data;
                             break;
                         }
                         else if (cvc.CurrentSource.ToLower() == "total")
@@ -5947,16 +5960,22 @@ namespace Orts.Simulation.RollingStocks
                             if (string.IsNullOrEmpty(cvc.CurrentType))
                             {
                                 data = extendedPhysics.TotalCurrent;
+                                if (data < 0)
+                                    data = -data;
                                 break;
                             }
                             else if (cvc.CurrentType.ToLower() == "rotor")
                             {
                                 data = extendedPhysics.RotorsCurrent;
+                                if (data < 0)
+                                    data = -data;
                                 break;
                             }
                             else if (cvc.CurrentType.ToLower() == "stator")
                             {
                                 data = extendedPhysics.StarorsCurrent;
+                                if (data < 0)
+                                    data = -data;
                                 break;
                             }
                         }
@@ -5965,6 +5984,8 @@ namespace Orts.Simulation.RollingStocks
                             if (extendedPhysics.Undercarriages.Count == 0 || cvc.CurrentSourceID == -1)
                             {
                                 data = extendedPhysics.TotalCurrent;
+                                if (data < 0)
+                                    data = -data;
                                 break;
                             }
                             else
@@ -5976,16 +5997,22 @@ namespace Orts.Simulation.RollingStocks
                                         if (string.IsNullOrEmpty(cvc.CurrentType))
                                         {
                                             data = uc.StatorsCurrent + uc.RotorsCurrent;
+                                            if (data < 0)
+                                                data = -data;
                                             break;
                                         }
                                         else if (cvc.CurrentType.ToLower() == "stator")
                                         {
                                             data = uc.StatorsCurrent;
+                                            if (data < 0)
+                                                data = -data;
                                             break;
                                         }
                                         else if (cvc.CurrentType.ToLower() == "rotor")
                                         {
                                             data = uc.RotorsCurrent;
+                                            if (data < 0)
+                                                data = -data;
                                             break;
                                         }
                                     }
@@ -6006,16 +6033,22 @@ namespace Orts.Simulation.RollingStocks
                                             if (string.IsNullOrEmpty(cvc.CurrentType))
                                             {
                                                 data = em.RotorCurrent + em.StatorCurrent;
+                                                if (data < 0)
+                                                    data = -data;
                                                 break;
                                             }
                                             else if (cvc.CurrentType.ToLower() == "stator")
                                             {
                                                 data = em.StatorCurrent;
+                                                if (data < 0)
+                                                    data = -data;
                                                 break;
                                             }
                                             else if (cvc.CurrentType.ToLower() == "rotor")
                                             {
                                                 data = em.RotorCurrent;
+                                                if (data < 0)
+                                                    data = -data;
                                                 break;
                                             }
                                         }
