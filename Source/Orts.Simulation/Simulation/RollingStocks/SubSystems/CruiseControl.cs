@@ -737,6 +737,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems
             if (!Locomotive.PowerOn)
                 ForceThrottleAndDynamicBrake = 0;
             float speedDiff = wheelSpeedMpS - Locomotive.AbsSpeedMpS;
+            if (Locomotive.extendedPhysics != null)
+            {
+                speedDiff = Locomotive.extendedPhysics.FastestAxleSpeedMpS - Locomotive.extendedPhysics.AverageAxleSpeedMpS;
+            }
             foreach (MSTSLocomotive loco in playerNotDriveableTrainLocomotives)
             {
                 if ((loco.AbsWheelSpeedMpS - loco.AbsSpeedMpS) > speedDiff)
