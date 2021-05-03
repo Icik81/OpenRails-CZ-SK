@@ -306,6 +306,7 @@ namespace Orts.Simulation.RollingStocks
         public int direction1 = 0;
         public int direction2 = 0;
         public int T0 = 0;
+        public float LocoBrakeAdhesiveForceN;
 
         // Setup for ambient temperature dependency
         Interpolator OutsideWinterTempbyLatitudeC;
@@ -734,17 +735,36 @@ namespace Orts.Simulation.RollingStocks
         }
 
         // Icik
-        public virtual void AntiSlipSystemForWagon()
+        public virtual void AntiSkidSystem()
         {
-            if (BrakeSystem.AntiSlipSystemForWagonEquipped)
+            if (BrakeSystem.AntiSkidSystemEquipped)
             {
-                if (BrakeWheelTreadForceN > WagonBrakeAdhesiveForceN * 0.95f)
+                // Lokomotiva
+                if ((this is MSTSDieselLocomotive || this is MSTSElectricLocomotive) && AbsSpeedMpS > 0.01)
                 {
-                    //var message = "BrakeRetardForceN: " + BrakeRetardForceN;
-                    //Simulator.Confirmer.Message(ConfirmLevel.Warning, message);
-                    BrakeSystem.BailOffOnAntiSlip = true;
+                    LocoBrakeAdhesiveForceN = MassKG * GravitationalAccelerationMpS2 * Train.LocomotiveCoefficientFriction;
+                    if (BrakeRetardForceN > LocoBrakeAdhesiveForceN * 0.75f)
+                    {
+                        //var message = "BrakeRetardForceN: " + BrakeRetardForceN;
+                        //Simulator.Confirmer.Message(ConfirmLevel.Warning, message);
+                        BrakeSystem.BailOffOnAntiSkid = true;
+                    }
+                    else 
+                        BrakeSystem.BailOffOnAntiSkid = false;
                 }
-                else BrakeSystem.BailOffOnAntiSlip = false;
+
+                // Vagón
+                if ((!(this is MSTSDieselLocomotive) && !(this is MSTSElectricLocomotive)) && AbsSpeedMpS > 0.01)
+                    if (BrakeRetardForceN > WagonBrakeAdhesiveForceN * 0.75f)
+                    {
+                        //var message = "BrakeRetardForceN: " + BrakeRetardForceN;
+                        //Simulator.Confirmer.Message(ConfirmLevel.Warning, message);
+                        BrakeSystem.BailOffOnAntiSkid = true;
+                    }
+                else
+                    BrakeSystem.BailOffOnAntiSkid = false;
+
+                if (AbsSpeedMpS < 0.01) BrakeSystem.BailOffOnAntiSkid = false;
             }
         }
 
@@ -815,7 +835,7 @@ namespace Orts.Simulation.RollingStocks
             const float koefF = 0.90f; // Nákladní vůz
             const float koefHB = 0.50f; // Ruční brzda
 
-            AntiSlipSystemForWagon();
+            AntiSkidSystem();
             BrakeSystem.WagonType = (int)WagonType;
 
             if (WagonType == WagonTypes.Freight || WagonType == WagonTypes.Tender)    //  Nákladní vozy a tendry
