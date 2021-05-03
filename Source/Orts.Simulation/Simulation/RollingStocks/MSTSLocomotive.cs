@@ -5165,7 +5165,7 @@ namespace Orts.Simulation.RollingStocks
                             data = data / cvc.Precision;
                             data = (float)Math.Round(data, 0);
                             data = data * cvc.Precision;
-                        }                        
+                        }
                         if (data > cvc.PreviousData)
                         {
                             Up = true;
@@ -5228,14 +5228,14 @@ namespace Orts.Simulation.RollingStocks
                         break;
                     }
 
-                 case CABViewControlTypes.ORTS_WATER_SCOOP:
+                case CABViewControlTypes.ORTS_WATER_SCOOP:
                     data = WaterScoopDown ? 1 : 0;
                     break;
 
                 case CABViewControlTypes.STEAM_HEAT:
                     data = SteamHeatController.CurrentValue;
                     break;
-                
+
                 case CABViewControlTypes.AMMETER: // Current not modelled yet to ammeter shows tractive effort until then.
                 case CABViewControlTypes.AMMETER_ABS:
                     {
@@ -5337,25 +5337,25 @@ namespace Orts.Simulation.RollingStocks
                                 if (ThrottlePercent > 0)
                                 {
                                     data = (data / MaxForceN) * MaxCurrentA;
-                                 }
+                                }
                                 if (DynamicBrakePercent > 0)
                                 {
                                     data = (DynamicBrakeForceN / MaxDynamicBrakeForceN) * DynamicBrakeMaxCurrentA;
                                 }
                                 data = Math.Abs(data);
                                 break;
-                    
+
                             case CABViewControlUnits.NEWTONS:
                                 break;
-                    
+
                             case CABViewControlUnits.KILO_NEWTONS:
                                 data = data / 1000.0f;
                                 break;
-                    
+
                             case CABViewControlUnits.KILO_LBS:
                                 data = N.ToLbf(data) * 0.001f;
                                 break;
-                        }                   
+                        }
                         if (direction == 1 && !(cvc is CVCGauge))
                             data = -data;
                         break;
@@ -5402,11 +5402,11 @@ namespace Orts.Simulation.RollingStocks
                                 data = N.ToLbf(data) * 0.001f;
                                 break;
                         }
- //                       if (direction == 1 && !(cvc is CVCGauge))
- //                           data = -data;
+                        //                       if (direction == 1 && !(cvc is CVCGauge))
+                        //                           data = -data;
                         break;
                     }
-                    // this considers both the dynamic as well as the train braking
+                // this considers both the dynamic as well as the train braking
                 case CABViewControlTypes.ORTS_SIGNED_TRACTION_TOTAL_BRAKING:
                     {
                         var direction = 0; // Forwards
@@ -5532,7 +5532,7 @@ namespace Orts.Simulation.RollingStocks
                     {
                         if (CruiseControl != null)
                             if (CruiseControl.SkipThrottleDisplay) break;
-                        data = Train.TrainType == Train.TRAINTYPE.AI_PLAYERHOSTING? ThrottlePercent / 100f : LocalThrottlePercent / 100f;
+                        data = Train.TrainType == Train.TRAINTYPE.AI_PLAYERHOSTING ? ThrottlePercent / 100f : LocalThrottlePercent / 100f;
                         break;
                     }
                 case CABViewControlTypes.ENGINE_BRAKE:
@@ -5808,7 +5808,7 @@ namespace Orts.Simulation.RollingStocks
                                         dieselLoco.DieselEngines[0].EngineStatus == DieselEngine.Status.Starting) ? 1 : 0;
                                     break;
                                 }
-                             }
+                            }
                         }
                         break;
                     }
@@ -6132,8 +6132,24 @@ namespace Orts.Simulation.RollingStocks
                         data = CruiseControl.GetDataOf(cvc);
                     else
                         data = 0;
-                        break;
-                    }
+                    break;
+            }
+            // max needle speed
+            if (cvc.MaxNeedleSpeed > 0 && elapsedTime > 0)
+            {
+                double fullRange = cvc.MaxValue - cvc.MinValue;
+                float step = (float)fullRange / (cvc.MaxNeedleSpeed / elapsedTime);
+                if (data - step > cvc.PreviousData)
+                {
+                    data = cvc.PreviousData + step;
+                }
+                if (data + step < cvc.PreviousData)
+                {
+                    data = cvc.PreviousData - step;
+                }
+                cvc.PreviousData = data;
+            }
+
             return data;
         }
 

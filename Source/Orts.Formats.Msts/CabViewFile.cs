@@ -468,6 +468,7 @@ namespace Orts.Formats.Msts
         public string CurrentSource = "";
         public string CurrentType = "";
         public int CurrentSourceID = -1;
+        public float MaxNeedleSpeed = 0; // time in seconds from max to min and vice versa
 
         public CABViewControlTypes ControlType = CABViewControlTypes.NONE;
         public CABViewControlStyles ControlStyle = CABViewControlStyles.NONE;
@@ -665,6 +666,12 @@ namespace Orts.Formats.Msts
                 {
                     stf.MustMatch("(");
                     CurrentType = stf.ReadString();
+                    stf.SkipRestOfBlock();
+                }),
+                new STFReader.TokenProcessor("maxneedlespeed", () =>
+                {
+                    stf.MustMatch("(");
+                    MaxNeedleSpeed = stf.ReadFloat(STFReader.UNITS.None, 0);
                     stf.SkipRestOfBlock();
                 }),
 
