@@ -150,7 +150,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             AutoLoadRegulatorMaxBrakeMass = thiscopy.AutoLoadRegulatorMaxBrakeMass;
             MainResMinimumPressureForMGbrakeActivationPSI = thiscopy.MainResMinimumPressureForMGbrakeActivationPSI;
             BrakePipePressureForMGbrakeActivationPSI = thiscopy.BrakePipePressureForMGbrakeActivationPSI;
-            AntiSlipSystemForWagonEquipped = thiscopy.AntiSlipSystemForWagonEquipped;
+            AntiSkidSystemEquipped = thiscopy.AntiSkidSystemEquipped;
         }
 
         // Get the brake BC & BP for EOT conditions
@@ -195,7 +195,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 (Car as MSTSWagon).HandBrakePresent ? string.Format("{0:F0}%", HandbrakePercent) : string.Empty,
                 FrontBrakeHoseConnected ? "I" : "T",
                 string.Format("A{0} B{1}", AngleCockAOpen ? "+" : "-", AngleCockBOpen ? "+" : "-"),
-                BleedOffValveOpen || BailOffOnAntiSlip ? Simulator.Catalog.GetString("Open") : " ",//HudScroll feature requires for the last value, at least one space instead of string.Empty,                
+                BleedOffValveOpen || BailOffOnAntiSkid ? Simulator.Catalog.GetString("Open") : " ",//HudScroll feature requires for the last value, at least one space instead of string.Empty,                
 
                 string.Empty, // Spacer because the state above needs 2 columns.
                 string.Format("{0:F5} bar/s", TrainPipeLeakRatePSIpS / 14.50377f),
@@ -211,7 +211,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 string.Format("DebugKoef {0:F1}", DebugKoef),
                 string.Empty, // Spacer because the state above needs 2 columns.                                     
                 
-                //string.Format("BrakeRetardForceN {0:F0}", Car.BrakeRetardForceN),
+                //string.Format("BrakeRetardForceN {0:F0}", Car.BrakeRetardForceN),               
             };
         }
 
@@ -317,8 +317,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 case "wagon(mainresminimumpressureformgbrakeactivation": MainResMinimumPressureForMGbrakeActivationPSI = stf.ReadFloatBlock(STFReader.UNITS.PressureDefaultPSI, null); break;
                 case "wagon(brakepipepressureformgbrakeactivation": BrakePipePressureForMGbrakeActivationPSI = stf.ReadFloatBlock(STFReader.UNITS.PressureDefaultPSI, null); break;
                 
-                // Antiblokovací systém pro vozy
-                case "wagon(antislipsystemforwagonequipped": AntiSlipSystemForWagonEquipped = stf.ReadBoolBlock(false); break;
+                // Antismykový systém
+                case "wagon(antiskidsystemequipped": AntiSkidSystemEquipped = stf.ReadBoolBlock(false); break;
 
                 // Načte hodnotu rychlosti eliminace níkotlakého přebití                              
                 case "engine(overchargeeliminationrate": OverchargeEliminationRatePSIpS = stf.ReadFloatBlock(STFReader.UNITS.PressureRateDefaultPSIpS, null); break;
@@ -363,7 +363,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             outf.Write(MaxApplicationRatePSIpS0);
             outf.Write(MaxReleaseRatePSIpS0);
             outf.Write(maxPressurePSI0);
-            outf.Write(BailOffOnAntiSlip);
+            outf.Write(BailOffOnAntiSkid);
         }
 
         public override void Restore(BinaryReader inf)
@@ -398,7 +398,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             MaxApplicationRatePSIpS0 = inf.ReadSingle();
             MaxReleaseRatePSIpS0 = inf.ReadSingle();
             maxPressurePSI0 = inf.ReadSingle();
-            BailOffOnAntiSlip = inf.ReadBoolean();
+            BailOffOnAntiSkid = inf.ReadBoolean();
         }
 
         public override void Initialize(bool handbrakeOn, float maxPressurePSI, float fullServPressurePSI, bool immediateRelease)
@@ -597,12 +597,12 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             else
                 UpdateTripleValveState(threshold);
 
-            // Vypouštění brzdového válce při aktivaci protiskluzového systému
-            if (BailOffOnAntiSlip)
+            // Vypouštění brzdového válce při aktivaci protismykového systému
+            if (BailOffOnAntiSkid)
             {
                 if (AuxResPressurePSI < 0.01f && AutoCylPressurePSI < 0.01f && BrakeLine1PressurePSI < 0.01f && (EmergResPressurePSI < 0.01f || !(Car as MSTSWagon).EmergencyReservoirPresent))
                 {
-                    BailOffOnAntiSlip = false;
+                    BailOffOnAntiSkid = false;
                 }
                 else
                 {
@@ -786,7 +786,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     if ((loco.MaxDynamicBrakeForceN == 0 && dynforce > 0) || dynforce > loco.MaxDynamicBrakeForceN * 0.6)
                         BailOffOn = true;
                 }
-                if (BailOffOn || BailOffOnAntiSlip)
+                if (BailOffOn || BailOffOnAntiSkid)
                 {
                     AutoCylPressurePSI0 -= MaxReleaseRatePSIpS * elapsedClockSeconds;
                 }
