@@ -252,12 +252,12 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                 {
                     if (Locomotive.extendedPhysics != null)
                     {
-                        float step = Locomotive.extendedPhysics.MaxControllerVolts / Locomotive.ThrottleFullRangeIncreaseTimeSeconds;
+                        float step = Locomotive.MaxControllerVolts / Locomotive.ThrottleFullRangeIncreaseTimeSeconds;
                         step *= elapsedClockSeconds;
                         if (Locomotive.ControllerVolts >= 0)
                             Locomotive.ControllerVolts += step;
-                        if (Locomotive.ControllerVolts > Locomotive.extendedPhysics.MaxControllerVolts)
-                            Locomotive.ControllerVolts = Locomotive.extendedPhysics.MaxControllerVolts;
+                        if (Locomotive.ControllerVolts > Locomotive.MaxControllerVolts)
+                            Locomotive.ControllerVolts = Locomotive.MaxControllerVolts;
                     }
                     else
                     {
@@ -276,12 +276,12 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                 {
                     if (Locomotive.extendedPhysics != null)
                     {
-                        float step = Locomotive.extendedPhysics.MaxControllerVolts / (Locomotive.ThrottleFullRangeIncreaseTimeSeconds / 2);
+                        float step = Locomotive.MaxControllerVolts / (Locomotive.ThrottleFullRangeIncreaseTimeSeconds / 2);
                         step *= elapsedClockSeconds;
                         if (Locomotive.ControllerVolts >= 0)
                             Locomotive.ControllerVolts += step;
-                        if (Locomotive.ControllerVolts > Locomotive.extendedPhysics.MaxControllerVolts)
-                            Locomotive.ControllerVolts = Locomotive.extendedPhysics.MaxControllerVolts;
+                        if (Locomotive.ControllerVolts > Locomotive.MaxControllerVolts)
+                            Locomotive.ControllerVolts = Locomotive.MaxControllerVolts;
                     }
                     else
                     {
@@ -300,7 +300,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                 {
                     if (Locomotive.extendedPhysics != null && Locomotive.ControllerVolts >= 0)
                     {
-                        float step = Locomotive.extendedPhysics.MaxControllerVolts / Locomotive.ThrottleFullRangeDecreaseTimeSeconds;
+                        float step = Locomotive.MaxControllerVolts / Locomotive.ThrottleFullRangeDecreaseTimeSeconds;
                         step *= elapsedClockSeconds;
                         Locomotive.ControllerVolts -= step;
                         if (Locomotive.ControllerVolts < 0)
@@ -320,7 +320,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                 {
                     if (Locomotive.extendedPhysics != null)
                     {
-                        float step = Locomotive.extendedPhysics.MaxControllerVolts / Locomotive.ThrottleFullRangeDecreaseTimeSeconds * 2;
+                        float step = Locomotive.MaxControllerVolts / Locomotive.ThrottleFullRangeDecreaseTimeSeconds * 2;
                         step *= elapsedClockSeconds;
                         Locomotive.ControllerVolts -= step;
                         if (Locomotive.ControllerVolts < 0)
@@ -328,7 +328,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                     }
                     else if (Locomotive.ThrottlePercent > 0)
                     {
-                        float step = 100 / Locomotive.ThrottleFullRangeDecreaseTimeSeconds / 2;
+                        float step = 100 / Locomotive.ThrottleFullRangeDecreaseTimeSeconds * 2;
                         step *= elapsedClockSeconds;
                         Locomotive.SetThrottlePercent(Locomotive.ThrottlePercent - step);
                     }
@@ -403,7 +403,14 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                 {
                     if (Locomotive.DynamicBrakePercent > 0)
                     {
-                        Locomotive.SetDynamicBrakePercent(Locomotive.DynamicBrakePercent - 1);
+                        float step = Locomotive.MaxControllerVolts / Locomotive.DynamicBrakeFullRangeDecreaseTimeSeconds;
+                        step *= elapsedClockSeconds;
+                        Locomotive.DynamicBrakePercent -= step;
+                        if (Locomotive.DynamicBrakePercent < 1)
+                        {
+                            Locomotive.SetDynamicBrakePercent(0);
+                            Locomotive.DynamicBrakeChangeActiveState(false);
+                        }
                     }
                 }
                 if (controllerPosition == ControllerPosition.Drive || controllerPosition == ControllerPosition.ThrottleHold)

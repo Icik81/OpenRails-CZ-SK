@@ -48,7 +48,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes
         public float AutoCylPressurePSI1;
         public float AutoCylPressurePSI0;
         public float maxPressurePSI0;
-        public float TotalCapacityMainResBrakePipe;        
+        public float TotalCapacityMainResBrakePipe;
         public float EB; // Hodnota EngineBrake
         public float MCP;  // Hodnota MaxCylPressure
         public float MaxReleaseRatePSIpS0;
@@ -56,8 +56,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes
         public float BrakeMassG;
         public float BrakeMassP;
         public float BrakeMassR;
+        public float BrakeMassRMg;
         public float BrakeMassEmpty;
         public float BrakeMassLoaded;
+        public bool ForceWagonLoaded;
         public float BrakeMassKG;
         public float KoefRezim;
         public float DebugKoef;
@@ -69,6 +71,16 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes
         public float MaxApplicationRatePSIpSR;
         public bool AutoLoadRegulatorEquipped;
         public float AutoLoadRegulatorMaxBrakeMass;
+        public bool BrakeCylRelease;
+        public bool BrakeCylApply;
+        public float MainResMinimumPressureForMGbrakeActivationPSI;
+        public float BrakePipePressureForMGbrakeActivationPSI;
+        public bool BrakeModeRMgActive;
+        public bool PowerForWagon;
+        public bool EmergencyBrakeForWagon;
+        public bool AirForWagon;
+        public bool AntiSkidSystemEquipped;
+        public bool BailOffOnAntiSkid;
 
         /// <summary>
         /// Front brake hoses connection status
@@ -92,13 +104,13 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes
         public bool TwoPipes { get; protected set; }
 
         /// <summary>
-        /// Volba režimu vozu G, P, R
+        /// Volba režimu vozu G, P, R, MG+R
         /// </summary>
         public float BrakeCarMode = 1;  // Default režim P
         public string BrakeCarModeText = "P";
-        public float NumberBrakeCarMode = 3;  // Celkový počet režimů vozu
+        public float NumberBrakeCarMode = 4;  // Celkový počet režimů vozu
 
-        public float BrakeCarModePL = 0;  // Default režim Prázdný
+        public float BrakeCarModePL = 0;
         public string BrakeCarModeTextPL = "Prázdný";
 
         public int WagonType;

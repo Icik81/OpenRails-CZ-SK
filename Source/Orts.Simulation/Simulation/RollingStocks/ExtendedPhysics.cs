@@ -62,7 +62,6 @@ namespace Orts.Simulation.RollingStocks
     public class ExtendedPhysics
     {
         public List<Undercarriage> Undercarriages = new List<Undercarriage>();
-        public float MaxControllerVolts = 10;
         public MSTSLocomotive Locomotive = null;
         public int NumMotors = 0;
         public int NumAxles = 0;
@@ -73,6 +72,8 @@ namespace Orts.Simulation.RollingStocks
         public float UndercarriageDistance = 0;
         public float CouplerDistanceFromTrack = 0;
         public float CenterOfGravityDistanceFromTrack = 0;
+        public float AverageAxleSpeedMpS = 0;
+        public float FastestAxleSpeedMpS = 0;
         public ExtendedPhysics(MSTSLocomotive loco)
         {
             Locomotive = loco;
@@ -80,6 +81,17 @@ namespace Orts.Simulation.RollingStocks
 
         public void Parse(string path)
         {
+            string delimiter = "";
+            try
+            {
+                float test = float.Parse("0.0");
+            }
+            catch
+            {
+                delimiter = ",";
+            }
+            string innerText = "";
+            TotalMaxCurrent = Locomotive.MaxCurrentA;
             XmlDocument document = new XmlDocument();
             document.Load(path);
             foreach (XmlNode node in document.ChildNodes)
@@ -88,61 +100,74 @@ namespace Orts.Simulation.RollingStocks
                 {
                     foreach (XmlNode main in node.ChildNodes)
                     {
-                        if (main.Name.ToLower() == "maxcontrollervolts")
-                            MaxControllerVolts = float.Parse(main.InnerText);
+                        innerText = main.InnerText;
+                        if (!string.IsNullOrEmpty(delimiter))
+                            innerText = innerText.Replace(".", delimiter);
                         if (main.Name.ToLower() == "couplerdistancefromtrack")
-                            CouplerDistanceFromTrack = float.Parse(main.InnerText);
+                            CouplerDistanceFromTrack = float.Parse(innerText);
                         if (main.Name.ToLower() == "centerofgravitydistancefromtrack")
-                            CenterOfGravityDistanceFromTrack = float.Parse(main.InnerText);
+                            CenterOfGravityDistanceFromTrack = float.Parse(innerText);
                         if (main.Name.ToLower() == "undercarriage")
                         {
                             Undercarriage undercarriage = new Undercarriage();
                             foreach (XmlNode undercarriageNode in main.ChildNodes)
                             {
+                                innerText = undercarriageNode.InnerText;
+                                if (!string.IsNullOrEmpty(delimiter))
+                                    innerText = innerText.Replace(".", delimiter);
                                 if (undercarriageNode.Name.ToLower() == "id")
-                                    undercarriage.Id = int.Parse(undercarriageNode.InnerText);
+                                    undercarriage.Id = int.Parse(innerText);
                                 if (undercarriageNode.Name.ToLower() == "pivoty")
-                                    undercarriage.PivotY = int.Parse(undercarriageNode.InnerText);
+                                    undercarriage.PivotY = int.Parse(innerText);
                                 if (undercarriageNode.Name.ToLower() == "pivotz")
-                                    undercarriage.PivotZ = int.Parse(undercarriageNode.InnerText);
+                                    undercarriage.PivotZ = int.Parse(innerText);
                                 if (undercarriageNode.Name.ToLower() == "axle")
                                 {
                                     ExtendedAxle extendedAxle = new ExtendedAxle(Locomotive);
                                     foreach (XmlNode axleNode in undercarriageNode.ChildNodes)
                                     {
+                                        innerText = axleNode.InnerText;
+                                        if (!string.IsNullOrEmpty(delimiter))
+                                            innerText = innerText.Replace(".", delimiter);
                                         if (axleNode.Name.ToLower() == "id")
-                                            extendedAxle.Id = int.Parse(axleNode.InnerText);
+                                            extendedAxle.Id = int.Parse(innerText);
                                         if (axleNode.Name.ToLower() == "pivoty")
-                                            extendedAxle.PivotY = int.Parse(axleNode.InnerText);
+                                            extendedAxle.PivotY = int.Parse(innerText);
                                         if (axleNode.Name.ToLower() == "wheeldiameter")
-                                            extendedAxle.WheelDiameter = int.Parse(axleNode.InnerText);
+                                            extendedAxle.WheelDiameter = int.Parse(innerText);
+                                        if (axleNode.Name.ToLower() == "havespeedometersensor")
+                                            extendedAxle.HaveSpeedometerSensor = true;
+                                        if (axleNode.Name.ToLower() == "havetcssensor")
+                                            extendedAxle.HaveTcsSensor = true;
                                         if (axleNode.Name.ToLower() == "electricmotor")
                                         {
                                             ElectricMotor electricMotor = new ElectricMotor(Locomotive);
-                                            electricMotor.MaxControllerVolts = MaxControllerVolts;
+                                            electricMotor.MaxControllerVolts = Locomotive.MaxControllerVolts;
                                             NumMotors++;
                                             extendedAxle.NumMotors++;
                                             foreach (XmlNode motorNode in axleNode.ChildNodes)
                                             {
+                                                innerText = motorNode.InnerText;
+                                                if (!string.IsNullOrEmpty(delimiter))
+                                                    innerText = innerText.Replace(".", delimiter);
                                                 if (motorNode.Name.ToLower() == "id")
-                                                    electricMotor.Id = int.Parse(motorNode.InnerText);
+                                                    electricMotor.Id = int.Parse(innerText);
                                                 if (motorNode.Name.ToLower() == "statorinserieswith")
-                                                    electricMotor.InSeriesWith = int.Parse(motorNode.InnerText);
+                                                    electricMotor.InSeriesWith = int.Parse(innerText);
                                                 if (motorNode.Name.ToLower() == "maxstatorcurrenta")
-                                                    electricMotor.MaxStatorCurrent = float.Parse(motorNode.InnerText);
+                                                    electricMotor.MaxStatorCurrent = float.Parse(innerText);
                                                 if (motorNode.Name.ToLower() == "maxrotorcurrenta")
                                                 {
-                                                    electricMotor.MaxRotorCurrent = int.Parse(motorNode.InnerText);
-                                                    TotalMaxCurrent += electricMotor.MaxRotorCurrent;
+                                                    electricMotor.MaxRotorCurrent = int.Parse(innerText);
                                                 }
                                                 if (motorNode.Name.ToLower() == "minrotorcurrenta")
-                                                    electricMotor.MinRotorCurrent = int.Parse(motorNode.InnerText);
+                                                    electricMotor.MinRotorCurrent = int.Parse(innerText);
                                                 if (motorNode.Name.ToLower() == "errorcoefficient")
-                                                    electricMotor.ErrorCoefficient = float.Parse(motorNode.InnerText);
+                                                    electricMotor.ErrorCoefficient = float.Parse(innerText);
                                                 if (motorNode.Name.ToLower() == "gearratio")
-                                                    electricMotor.GearRatio = float.Parse(motorNode.InnerText);
+                                                    electricMotor.GearRatio = float.Parse(innerText);
                                                 if (motorNode.Name.ToLower() == "fullspeedrangecurrentdrop")
-                                                    electricMotor.FullSpeedRangeCurrentDrop = int.Parse(motorNode.InnerText);
+                                                    electricMotor.FullSpeedRangeCurrentDrop = int.Parse(innerText);
                                             }
                                             extendedAxle.ElectricMotors.Add(electricMotor);
                                         }
@@ -162,18 +187,19 @@ namespace Orts.Simulation.RollingStocks
 
         public void Update(float elapsedClockSeconds)
         {
-            if (Locomotive.ControllerVolts >= 0)
+            if (Locomotive.ControllerVolts > 0)
             {
-                Locomotive.SetThrottlePercent((TotalCurrent / TotalMaxCurrent) * 100);
+                Locomotive.SetThrottlePercent((TotalCurrent / (TotalMaxCurrent * 4)) * 150);
             }
             else if (Locomotive.ControllerVolts < 0)
             {
                 Locomotive.SetThrottlePercent(0);
-                Locomotive.ControllerVolts = 0;
             }
             TotalCurrent = 0;
             StarorsCurrent = 0;
             RotorsCurrent = 0;
+            FastestAxleSpeedMpS = 0;
+            AverageAxleSpeedMpS = 0;
             foreach (Undercarriage uc in Undercarriages)
             {
                 uc.StatorsCurrent = 0;
@@ -181,6 +207,9 @@ namespace Orts.Simulation.RollingStocks
                 uc.Mass = Locomotive.MassKG / Undercarriages.Count;
                 foreach (ExtendedAxle ea in uc.Axles)
                 {
+                    AverageAxleSpeedMpS += ea.WheelSpeedMpS;
+                    if (FastestAxleSpeedMpS < ea.WheelSpeedMpS)
+                        FastestAxleSpeedMpS = ea.WheelSpeedMpS;
                     ea.Mass = uc.Mass / uc.Axles.Count;
                     foreach (ElectricMotor em in ea.ElectricMotors)
                     {
@@ -194,6 +223,8 @@ namespace Orts.Simulation.RollingStocks
                     }
                 }
             }
+            AverageAxleSpeedMpS /= NumAxles;
+            //Locomotive.Simulator.Confirmer.MSG(MpS.ToKpH(AverageAxleSpeedMpS).ToString() + "  " + MpS.ToKpH(FastestAxleSpeedMpS).ToString());
             //Locomotive.Simulator.Confirmer.MSG(Undercarriages[0].Axles[0].WheelSpeedMpS.ToString() + " " + Undercarriages[0].Axles[1].WheelSpeedMpS.ToString() + " " + Undercarriages[1].Axles[0].WheelSpeedMpS.ToString() + " " + Undercarriages[1].Axles[1].WheelSpeedMpS.ToString());
         }
     }
@@ -225,6 +256,9 @@ namespace Orts.Simulation.RollingStocks
         public float WheelSpeedMpS = 0;
         MSTSLocomotive Locomotive = null;
         public SubSystems.PowerTransmissions.Axle LocomotiveAxle;
+        public bool HaveSpeedometerSensor = false;
+        public bool HaveTcsSensor = false;
+
         public ExtendedAxle(MSTSLocomotive loco)
         {
             Locomotive = loco;
@@ -255,7 +289,8 @@ namespace Orts.Simulation.RollingStocks
             }
             if (Locomotive.TractiveForceCurves != null)
             {
-                float t = (axleCurrent / maxCurrent) / totalMotors;
+                float t = (axleCurrent / (maxCurrent)) / totalMotors;
+                //Locomotive.Simulator.Confirmer.MSG(t.ToString());
                 ForceN = Locomotive.TractiveForceCurves.Get(t, Locomotive.LocomotiveAxle.AxleSpeedMpS);
             }
             else // TODO bez tabulek!

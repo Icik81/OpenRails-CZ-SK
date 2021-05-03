@@ -388,8 +388,8 @@ namespace Orts.Simulation.RollingStocks
         public bool EmergencyEngagesHorn { get; private set; }
         public bool WheelslipCausesThrottleDown { get; private set; }
 
-        public float BrakeRestoresPowerAtBrakePipePressurePSI;
-        public float BrakeCutsPowerAtBrakePipePressurePSI;
+        public float BrakeRestoresPowerAtBrakePipePressurePSI { get; private set; }
+        public float BrakeCutsPowerAtBrakePipePressurePSI { get; private set; }
         public bool DoesVacuumBrakeCutPower { get; private set; }
         public bool DoesBrakeCutPower { get; private set; }
         public float BrakeCutsPowerAtBrakeCylinderPressurePSI { get; private set; }
@@ -448,7 +448,11 @@ namespace Orts.Simulation.RollingStocks
         public bool EDBIndependent;
         public float PowerOnFilter;
         public float PowerOnFilterCapacity;
-        public float PowerOnFilterCapacityLimit;
+        public float PowerOnFilterCapacityLimit;        
+        public bool HVOffStatusBrakeCyl = false;
+        public bool HVOffStatusBrakePipe = false;
+        public bool DoesPowerLossResetControls = false;
+        public bool ThrottleZero = false;
 
         // Jindrich
         public CruiseControl CruiseControl;
@@ -472,6 +476,9 @@ namespace Orts.Simulation.RollingStocks
         public float ThrottleFullRangeDecreaseTimeSeconds = 0;
         public float DynamicBrakeFullRangeIncreaseTimeSeconds;
         public float DynamicBrakeFullRangeDecreaseTimeSeconds;
+        public float MaxControllerVolts = 10;
+        public CurrentDirectionEnum CurrentDirection = CurrentDirectionEnum.Braking;
+        public float AcceleratingToBrakingChangeTime = 0;
 
         public bool
       Speed0Pressed, Speed10Pressed, Speed20Pressed, Speed30Pressed, Speed40Pressed, Speed50Pressed
@@ -485,7 +492,7 @@ namespace Orts.Simulation.RollingStocks
           //  BrakePipeChargingRatePSIpS = Simulator.Settings.BrakePipeChargingRate;
                         
             MilepostUnitsMetric = Simulator.TRK.Tr_RouteFile.MilepostUnitsMetric;
-            BrakeCutsPowerAtBrakeCylinderPressurePSI = 4.0f;
+            //BrakeCutsPowerAtBrakeCylinderPressurePSI = 4.0f;
 
             LocomotiveAxle = new Axle();
             LocomotiveAxle.DriveType = AxleDriveType.ForceDriven;
@@ -1029,11 +1036,15 @@ namespace Orts.Simulation.RollingStocks
                 case "engine(maxcurrentbrake": MaxCurrentBrake = stf.ReadFloatBlock(STFReader.UNITS.Current, null); break;
                 case "engine(slipspeedcritical": SlipSpeedCritical = stf.ReadFloatBlock(STFReader.UNITS.Speed, null); break;
                 case "engine(edbindependent": EDBIndependent = stf.ReadBoolBlock(false); break;
+                case "engine(doespowerlossresetcontrols": DoesPowerLossResetControls = stf.ReadBoolBlock(false); break;
+                    
                 // Jindrich
                 case "engine(throttlefullrangeincreasetimeseconds": ThrottleFullRangeIncreaseTimeSeconds = stf.ReadFloatBlock(STFReader.UNITS.Any, 5); break;
                 case "engine(throttlefullrangedecreasetimeseconds": ThrottleFullRangeDecreaseTimeSeconds = stf.ReadFloatBlock(STFReader.UNITS.Any, 5); break;
                 case "engine(dynamicbrakefullrangeincreasetimeseconds": DynamicBrakeFullRangeIncreaseTimeSeconds = stf.ReadFloatBlock(STFReader.UNITS.Any, 5); break;
                 case "engine(dynamicbrakefullrangedecreasetimeseconds": DynamicBrakeFullRangeDecreaseTimeSeconds = stf.ReadFloatBlock(STFReader.UNITS.Any, 5); break;
+                case "engine(acceleratingtobrakingchangetime": AcceleratingToBrakingChangeTime = stf.ReadFloatBlock(STFReader.UNITS.Any, 2); break;
+                case "engine(maxcontrollervolts": MaxControllerVolts = stf.ReadFloatBlock(STFReader.UNITS.Any, 5); break;
                 case "engine(ortscruisecontrol": SetUpCruiseControl(); break;
                 case "engine(ortsmultipositioncontroller": SetUpMPC(); break;
                 case "engine(disablerestrictedspeedwhenmanualdriving": DisableRestrictedSpeedWhenManualDriving = stf.ReadBoolBlock(false); break;
@@ -1059,11 +1070,11 @@ namespace Orts.Simulation.RollingStocks
                                     string[] behaviors = array.Split('{');
                                     updatedArray = behaviors[0];
                                     displayID = int.Parse(behaviors[1].Replace("}", ""));
-                                }
+            }
                                 else
                                 {
                                     updatedArray = array;
-                                }
+        }
                                 if (strArray.Strings == null)
                                 {
                                     strArray.Strings = new Dictionary<string, int>();
@@ -1197,6 +1208,7 @@ namespace Orts.Simulation.RollingStocks
             MaxCurrentBrake = locoCopy.MaxCurrentBrake;
             SlipSpeedCritical = locoCopy.SlipSpeedCritical;
             EDBIndependent = locoCopy.EDBIndependent;
+            DoesPowerLossResetControls = locoCopy.DoesPowerLossResetControls;
 
             // Jindrich
             if (locoCopy.CruiseControl != null)
@@ -1258,6 +1270,10 @@ namespace Orts.Simulation.RollingStocks
             outf.Write(IsWaterScoopDown);
             outf.Write(CurrentTrackSandBoxCapacityM3);
 
+            // Icik
+            outf.Write(HVOffStatusBrakeCyl);
+            outf.Write(HVOffStatusBrakePipe);
+
             base.Save(outf);
 
             TrainControlSystem.Save(outf);
@@ -1306,6 +1322,10 @@ namespace Orts.Simulation.RollingStocks
             CurrentTrackSandBoxCapacityM3 = inf.ReadSingle();
             
             AdhesionFilter.Reset(0.5f);
+
+            // Icik
+            HVOffStatusBrakeCyl = inf.ReadBoolean();
+            HVOffStatusBrakePipe = inf.ReadBoolean();
 
             base.Restore(inf);
 
@@ -1563,15 +1583,15 @@ namespace Orts.Simulation.RollingStocks
 
             }
 
-            if (DoesBrakeCutPower && BrakeCutsPowerAtBrakePipePressurePSI > BrakeRestoresPowerAtBrakePipePressurePSI)
-            {
-                BrakeCutsPowerAtBrakePipePressurePSI = BrakeRestoresPowerAtBrakePipePressurePSI - 1.0f;
+            //if (DoesBrakeCutPower && BrakeCutsPowerAtBrakePipePressurePSI > BrakeRestoresPowerAtBrakePipePressurePSI)
+            //{
+            //    BrakeCutsPowerAtBrakePipePressurePSI = BrakeRestoresPowerAtBrakePipePressurePSI - 1.0f;
 
-                if (Simulator.Settings.VerboseConfigurationMessages)
-                {
-                    Trace.TraceInformation("BrakeCutsPowerAtBrakePipePressure is greater then BrakeRestoresPowerAtBrakePipePressurePSI, and has been set to value of {0} InHg", Bar.ToInHg(Bar.FromPSI(BrakeCutsPowerAtBrakePipePressurePSI)));
-                }
-            }
+            //    if (Simulator.Settings.VerboseConfigurationMessages)
+            //    {
+            //        Trace.TraceInformation("BrakeCutsPowerAtBrakePipePressure is greater then BrakeRestoresPowerAtBrakePipePressurePSI, and has been set to value of {0} InHg", Bar.ToInHg(Bar.FromPSI(BrakeCutsPowerAtBrakePipePressurePSI)));
+            //    }
+            //}
 
             if (DoesBrakeCutPower && (BrakeSystem is VacuumSinglePipe) && (BrakeRestoresPowerAtBrakePipePressurePSI == 0 || BrakeRestoresPowerAtBrakePipePressurePSI > OneAtmospherePSI))
             {
@@ -1847,9 +1867,13 @@ namespace Orts.Simulation.RollingStocks
         {
             if (MaxCurrentA > 0 && IsPlayerTrain)  // Zohlední jen elektrické a dieselelektrické lokomotivy 
             {                
-                if (SlipSpeedCritical == 0) SlipSpeedCritical = 40 / 3.6f; // Výchozí hodnota 40 km/h               
+                if (SlipSpeedCritical == 0) SlipSpeedCritical = 40 / 3.6f; // Výchozí hodnota 40 km/h     
                 float AbsSlipSpeedMpS = Math.Abs(WheelSpeedMpS) - AbsSpeedMpS;  // Zjistí absolutní rychlost prokluzu 
-
+                if (extendedPhysics != null)
+                {
+                    SlipSpeedCritical = 5 / 3.6f;
+                    AbsSlipSpeedMpS = extendedPhysics.FastestAxleSpeedMpS - extendedPhysics.AverageAxleSpeedMpS;
+                }
                 //Trace.TraceInformation("WheelSlipTime {0},  Simulator.GameTime {1},  Time0 {2},   SlipSpeed {3}", WheelSlipTime, Simulator.GameTime, Time0, SlipSpeed);
                 
                 if (AbsSlipSpeedMpS > SlipSpeedCritical) // Přepěťová ochrana při skluzu 
@@ -1857,6 +1881,8 @@ namespace Orts.Simulation.RollingStocks
 
                 if (OverVoltage)
                 {
+                    SetThrottlePercent(0);
+                    ControllerVolts = 0;
                     if (this is MSTSElectricLocomotive) // Elektrické lokomotivy
                     {
                         switch (MultiSystemEngine)
@@ -1927,6 +1953,49 @@ namespace Orts.Simulation.RollingStocks
             }
         }
 
+        // Icik
+        // Vypínání HV při určitém tlaku v potrubí
+        public void HVOffbyAirPressure()
+        {
+            if (DoesBrakeCutPower)
+            {
+                // Pokud stoupne tlak nad hraniční hodnotu tlaku v brzdovém válci
+                if (BrakeCutsPowerAtBrakeCylinderPressurePSI != 0)
+                {
+                    if (BrakeSystem.GetCylPressurePSI() >= BrakeCutsPowerAtBrakeCylinderPressurePSI && LocalThrottlePercent > 0
+                      || HVOffStatusBrakeCyl)
+                    {
+                        Train.SignalEvent(PowerSupplyEvent.OpenCircuitBreaker); // Vypnutí HV
+                        HVOffStatusBrakeCyl = true;
+                    }
+                    if (BrakeSystem.GetCylPressurePSI() < BrakeCutsPowerAtBrakeCylinderPressurePSI)
+                        HVOffStatusBrakeCyl = false;
+                }
+                
+                if (PowerOn && BrakeSystem.BrakeCylApply && LocalThrottlePercent > 0
+                || HVOffStatusBrakePipe)
+                {
+                    // Pokud klesne tlak pod hraniční hodnotu tlaku v brzdovém potrubí
+                    if (BrakeCutsPowerAtBrakePipePressurePSI != 0)
+                        if (BrakeSystem.BrakeLine1PressurePSI <= BrakeCutsPowerAtBrakePipePressurePSI)
+                        {
+                            Train.SignalEvent(PowerSupplyEvent.OpenCircuitBreaker); // Vypnutí HV                             
+                            HVOffStatusBrakePipe = true;
+                        }
+                    //Trace.TraceWarning("Hodnota BrakeSystem.BrakeLine1PressurePSI {0}, BrakeCutsPowerAtBrakePipePressurePSI {1}", BrakeSystem.BrakeLine1PressurePSI, BrakeCutsPowerAtBrakePipePressurePSI);                    
+                }
+                
+                if (!PowerOn && BrakeSystem.BrakeCylRelease && HVOffStatusBrakePipe)
+                {
+                    // Pokud vystoupí tlak nad hraniční hodnotu tlaku v brzdovém potrubí
+                    if (BrakeRestoresPowerAtBrakePipePressurePSI != 0)
+                        if (BrakeSystem.BrakeLine1PressurePSI >= BrakeRestoresPowerAtBrakePipePressurePSI)
+                        {
+                            HVOffStatusBrakePipe = false;
+                        }
+                }
+            }
+        }
 
         /// <summary>
         /// This function updates periodically the states and physical variables of the locomotive's subsystems.
@@ -1938,9 +2007,24 @@ namespace Orts.Simulation.RollingStocks
             if (extendedPhysics != null)
                 extendedPhysics.Update(elapsedClockSeconds);
 
+            if (extendedPhysics == null)
+            {
+                if (CruiseControl == null)
+                {
+                    if (ThrottlePercent > 0)
+                    {
+                        ControllerVolts = ThrottlePercent / 10;
+                    }
+                }
+                else if (CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.Manual)
+                {
+                    ControllerVolts = ThrottlePercent / 10;
+                }
+            }
+
             if (DynamicBrakePercent > 0)
             {
-                ControllerVolts = -(DynamicBrakePercent / 100) * extendedPhysics.MaxControllerVolts;
+                ControllerVolts = -(DynamicBrakePercent / 100) * MaxControllerVolts;
             }
             else if (DynamicBrakePercent <= 0 && ControllerVolts < 0)
                 ControllerVolts = 0;
@@ -1948,6 +2032,7 @@ namespace Orts.Simulation.RollingStocks
             Overcurrent_Protection(elapsedClockSeconds);
             AntiSlip_Protection(elapsedClockSeconds);
             PowerOn_Filter(elapsedClockSeconds);
+            HVOffbyAirPressure();
 
             TrainControlSystem.Update();
 
@@ -1976,7 +2061,7 @@ namespace Orts.Simulation.RollingStocks
             {
                 UpdateCarSteamHeat(elapsedClockSeconds);
             }
-
+ 
             if (AutomaticParkingBrake)
             {
                 if (CruiseControl != null)
@@ -2028,7 +2113,7 @@ namespace Orts.Simulation.RollingStocks
 
 
             // TODO  this is a wild simplification for electric and diesel electric
-            float t = ThrottlePercent / 100f;
+                        float t = ThrottlePercent / 100f;
 
             if (!AdvancedAdhesionModel)  // Advanced adhesion model turned off.
                AbsWheelSpeedMpS = AbsSpeedMpS;
@@ -2058,7 +2143,7 @@ namespace Orts.Simulation.RollingStocks
                 if (!IsPlayerTrain || CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.Manual || CruiseControl.UseThrottle)
                 {
                     CruiseControl.WasForceReset = false;
-                    UpdateTractiveForce(elapsedClockSeconds, t, AbsSpeedMpS, AbsWheelSpeedMpS);
+            UpdateTractiveForce(elapsedClockSeconds, t, AbsSpeedMpS, AbsWheelSpeedMpS);
                 }
                 else if (CruiseControl.SelectedSpeedMpS > 0)
                 {
@@ -2478,29 +2563,29 @@ namespace Orts.Simulation.RollingStocks
             {
                 if (extendedPhysics == null)
                 {
-                    if (TractiveForceCurves == null)
-                    {
-                        float maxForceN = MaxForceN * t * (1 - PowerReduction);
-                        float maxPowerW = MaxPowerW * t * t * (1 - PowerReduction);
+                if (TractiveForceCurves == null)
+                {
+                    float maxForceN = MaxForceN * t * (1 - PowerReduction);
+                    float maxPowerW = MaxPowerW * t * t * (1 - PowerReduction);
 
-                        if (maxForceN * AbsTractionSpeedMpS > maxPowerW)
-                            maxForceN = maxPowerW / AbsTractionSpeedMpS;
-                        //if (AbsSpeedMpS > MaxSpeedMpS)
-                        //    maxForceN = 0;
-                        if (AbsTractionSpeedMpS > MaxSpeedMpS - 0.05f)
-                            maxForceN = 20 * (MaxSpeedMpS - AbsTractionSpeedMpS) * maxForceN;
-                        if (AbsSpeedMpS > (MaxSpeedMpS))
-                            maxForceN = 0;
-                        TractiveForceN = maxForceN;
-                    }
-                    else
-                    {
-                        TractiveForceN = TractiveForceCurves.Get(t, AbsTractionSpeedMpS) * (1 - PowerReduction);
-                        if (TractiveForceN < 0 && !TractiveForceCurves.AcceptsNegativeValues())
-                            TractiveForceN = 0;
-                    }
+                    if (maxForceN * AbsTractionSpeedMpS > maxPowerW)
+                        maxForceN = maxPowerW / AbsTractionSpeedMpS;
+                    //if (AbsSpeedMpS > MaxSpeedMpS)
+                    //    maxForceN = 0;
+                    if (AbsTractionSpeedMpS > MaxSpeedMpS - 0.05f)
+                        maxForceN = 20 * (MaxSpeedMpS - AbsTractionSpeedMpS) * maxForceN;
+                    if (AbsSpeedMpS > (MaxSpeedMpS))
+                        maxForceN = 0;
+                    TractiveForceN = maxForceN;
                 }
                 else
+                {
+                    TractiveForceN = TractiveForceCurves.Get(t, AbsTractionSpeedMpS) * (1 - PowerReduction);
+                    if (TractiveForceN < 0 && !TractiveForceCurves.AcceptsNegativeValues())
+                        TractiveForceN = 0;
+                }
+            }
+            else
                 {
                     TractiveForceN = 0;
                     foreach (Undercarriage uc in extendedPhysics.Undercarriages)
@@ -2563,6 +2648,12 @@ namespace Orts.Simulation.RollingStocks
             }
         }
 
+        public enum CurrentDirectionEnum // used for drive or dynamic brake
+        {
+            Accelerating,
+            Braking
+        };
+
         protected enum Wheelslip
         {
             None,
@@ -2574,6 +2665,11 @@ namespace Orts.Simulation.RollingStocks
 
         public void ConfirmWheelslip(float elapsedClockSeconds)
         {
+            if (extendedPhysics != null) // extended physics calculates its own wheelslip parametres
+            {
+                WheelSlip = false;
+                return;
+            }
             if (elapsedClockSeconds > 0 && Simulator.GameTime - LocomotiveAxle.ResetTime > 5)
             {
                 if (AdvancedAdhesionModel)
@@ -3826,8 +3922,8 @@ namespace Orts.Simulation.RollingStocks
                     return;
                 }
                 else
-                    ThrottleController.SetPercent(percent);
-            }
+            ThrottleController.SetPercent(percent);
+        }
             else
                 ThrottleController.SetPercent(percent);
         }
@@ -3909,7 +4005,7 @@ namespace Orts.Simulation.RollingStocks
                     }
                     else
                     {
-                        return CombinedControlSplitPosition + (1 - CombinedControlSplitPosition) * (intermediateValue ? DynamicBrakeController.IntermediateValue : DynamicBrakeController.CurrentValue);
+                return CombinedControlSplitPosition + (1 - CombinedControlSplitPosition) * (intermediateValue ? DynamicBrakeController.IntermediateValue : DynamicBrakeController.CurrentValue);
                     }
                 }
                 else
@@ -4059,9 +4155,10 @@ namespace Orts.Simulation.RollingStocks
                 || TrainBrakeController.TrainBrakeControllerState == ControllerState.FullServ
                 || TrainBrakeController.TrainBrakeControllerState  == ControllerState.Emergency)
             {
-                if (ThrottlePercent > 0 && DoesBrakeCutPower)
+            if (ThrottlePercent > 0 && DoesBrakeCutPower && DoesPowerLossResetControls)
                 {
-                    ThrottleController.SetPercent(0);
+                    //ThrottleController.SetPercent(0);
+                    StartThrottleToZero(0.0f);
                 }
             }
 
@@ -4400,7 +4497,7 @@ namespace Orts.Simulation.RollingStocks
     #endregion
 
     #region DynamicBrakeController
-        public void StartDynamicBrakeIncrease(float? target)
+    public void StartDynamicBrakeIncrease(float? target)
         {
             AlerterReset(TCSEvent.DynamicBrakeChanged);
 
@@ -4534,8 +4631,8 @@ namespace Orts.Simulation.RollingStocks
                 {
                     if (DynamicBrakePercent < 1)
                         CruiseControl.DynamicBrakePriority = false;
-                }
             }
+        }
         }
 
         public void DynamicBrakeChangeTo(bool increase, float? target)
@@ -4633,6 +4730,41 @@ namespace Orts.Simulation.RollingStocks
             return string.Format("{0}", DynamicBrakeController.GetStatus());
         }
         #endregion
+
+
+        public float CanAccelerateTime = 0;
+        public bool CanAccelerate(float elapsedClockTime, float controllerVolts)
+        {
+            bool ret = false;
+            if (CurrentDirection == CurrentDirectionEnum.Braking && CanAccelerateTime < AcceleratingToBrakingChangeTime)
+            {
+                CanAccelerateTime += elapsedClockTime;
+            }
+            if (CanAccelerateTime > AcceleratingToBrakingChangeTime)
+            {
+                CanBrakeTime = 0;
+                CurrentDirection = CurrentDirectionEnum.Accelerating;
+                ret = true;
+            }
+            return ret;
+        }
+
+        public float CanBrakeTime = 0;
+        public bool CanBrake(float elapsedClockTime, float controllerVolts)
+        {
+            bool ret = false;
+            if (CurrentDirection == CurrentDirectionEnum.Accelerating && CanBrakeTime < AcceleratingToBrakingChangeTime)
+            {
+                CanBrakeTime += elapsedClockTime;
+            }
+            if (CanBrakeTime > AcceleratingToBrakingChangeTime)
+            {
+                CanAccelerateTime = 0;
+                CurrentDirection = CurrentDirectionEnum.Braking;
+                ret = true;
+            }
+            return ret;
+        }
 
         public virtual void SetPower(bool ToState)
         {
@@ -4990,10 +5122,22 @@ namespace Orts.Simulation.RollingStocks
             {
                 case CABViewControlTypes.SPEEDOMETER:
                     {
-                        cvc.ElapsedTime += elapsedTime;
-                        if (cvc.ElapsedTime < cvc.UpdateTime)
+                        float speed = Math.Abs(WheelSpeedMpS);
+                        if (extendedPhysics != null)
                         {
-                            if (cvc.ElapsedTime > cvc.UpdateTime / 2 && Math.Abs(WheelSpeedMpS) > 0.1f)
+                            foreach (Undercarriage uc in extendedPhysics.Undercarriages)
+                            {
+                                foreach (ExtendedAxle ea in uc.Axles)
+                                {
+                                    if (ea.HaveSpeedometerSensor)
+                                        speed = Math.Abs(ea.WheelSpeedMpS);
+                                }
+                            }
+                        }
+                        cvc.ElapsedTime += elapsedTime;
+                        if (cvc.ElapsedTime < cvc.UpdateTime && cvc.Vibration > 0)
+                        {
+                            if (cvc.ElapsedTime > cvc.UpdateTime / 2 && Math.Abs(speed) > 0.1f)
                             {
                                 if (Up)
                                     data = cvc.PreviousData - (cvc.Vibration / 3.6f);
@@ -5007,9 +5151,9 @@ namespace Orts.Simulation.RollingStocks
                         cvc.ElapsedTime = 0;
                         //data = SpeedMpS;
                         if (AdvancedAdhesionModel)
-                            data = WheelSpeedMpS;
+                            data = speed;
                         else
-                            data = SpeedMpS;
+                            data = speed;
 
                         if (cvc.Units == CABViewControlUnits.KM_PER_HOUR)
                             data *= 3.6f;
@@ -5716,6 +5860,9 @@ namespace Orts.Simulation.RollingStocks
                 case CABViewControlTypes.ORTS_POWERKEY:
                     data = PowerKey ? 1 : 0;
                     break;
+                case CABViewControlTypes.ORTS_2DEXTERNALWIPERS:
+                    data = Wiper ? 1 : 0;
+                    break;
                 case CABViewControlTypes.ORTS_HOURDIAL:
                     float hour = (float)(Simulator.ClockTime / 3600) % 12;
                     if (hour < 0)
@@ -5804,6 +5951,8 @@ namespace Orts.Simulation.RollingStocks
                         if (string.IsNullOrEmpty(cvc.CurrentSource))
                         {
                             data = extendedPhysics.TotalCurrent;
+                            if (data < 0)
+                                data = -data;
                             break;
                         }
                         else if (cvc.CurrentSource.ToLower() == "total")
@@ -5811,16 +5960,22 @@ namespace Orts.Simulation.RollingStocks
                             if (string.IsNullOrEmpty(cvc.CurrentType))
                             {
                                 data = extendedPhysics.TotalCurrent;
+                                if (data < 0)
+                                    data = -data;
                                 break;
                             }
                             else if (cvc.CurrentType.ToLower() == "rotor")
                             {
                                 data = extendedPhysics.RotorsCurrent;
+                                if (data < 0)
+                                    data = -data;
                                 break;
                             }
                             else if (cvc.CurrentType.ToLower() == "stator")
                             {
                                 data = extendedPhysics.StarorsCurrent;
+                                if (data < 0)
+                                    data = -data;
                                 break;
                             }
                         }
@@ -5829,6 +5984,8 @@ namespace Orts.Simulation.RollingStocks
                             if (extendedPhysics.Undercarriages.Count == 0 || cvc.CurrentSourceID == -1)
                             {
                                 data = extendedPhysics.TotalCurrent;
+                                if (data < 0)
+                                    data = -data;
                                 break;
                             }
                             else
@@ -5840,16 +5997,22 @@ namespace Orts.Simulation.RollingStocks
                                         if (string.IsNullOrEmpty(cvc.CurrentType))
                                         {
                                             data = uc.StatorsCurrent + uc.RotorsCurrent;
+                                            if (data < 0)
+                                                data = -data;
                                             break;
                                         }
                                         else if (cvc.CurrentType.ToLower() == "stator")
                                         {
                                             data = uc.StatorsCurrent;
+                                            if (data < 0)
+                                                data = -data;
                                             break;
                                         }
                                         else if (cvc.CurrentType.ToLower() == "rotor")
                                         {
                                             data = uc.RotorsCurrent;
+                                            if (data < 0)
+                                                data = -data;
                                             break;
                                         }
                                     }
@@ -5870,16 +6033,22 @@ namespace Orts.Simulation.RollingStocks
                                             if (string.IsNullOrEmpty(cvc.CurrentType))
                                             {
                                                 data = em.RotorCurrent + em.StatorCurrent;
+                                                if (data < 0)
+                                                    data = -data;
                                                 break;
                                             }
                                             else if (cvc.CurrentType.ToLower() == "stator")
                                             {
                                                 data = em.StatorCurrent;
+                                                if (data < 0)
+                                                    data = -data;
                                                 break;
                                             }
                                             else if (cvc.CurrentType.ToLower() == "rotor")
                                             {
                                                 data = em.RotorCurrent;
+                                                if (data < 0)
+                                                    data = -data;
                                                 break;
                                             }
                                         }
@@ -5963,8 +6132,8 @@ namespace Orts.Simulation.RollingStocks
                         data = CruiseControl.GetDataOf(cvc);
                     else
                         data = 0;
-                    break;
-            }
+                        break;
+                    }
             return data;
         }
 

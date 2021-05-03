@@ -98,7 +98,9 @@ namespace ORTS.Common
             {
                 var datetime = new DateTime(2000, 1, 1, 0, 0, 0, DateTimeKind.Utc);
                 var timespan = builds.Keys.OrderBy(ts => ts).Last();
-                return String.Format("{0} ({1:u})", builds[timespan], datetime + timespan);
+                // Icik
+                //return String.Format("{0} ({1:u})", builds[timespan], datetime + timespan);
+                return String.Format("CZ/SK  {0}", datetime + timespan);
             }
             return "";
         }
