@@ -201,7 +201,7 @@ namespace Orts.Viewer3D.Processes
 
         void InitializeShadowMapLocations()
         {
-            var ratio = (float)DisplaySize.X / DisplaySize.Y;
+            var ratio = (float)DisplaySize.X / DisplaySize.Y * 1.3333f;
             var fov = MathHelper.ToRadians(Game.Settings.ViewingFOV);
             var n = (float)0.5;
             var f = (float)Game.Settings.ShadowMapDistance;
@@ -232,11 +232,8 @@ namespace Orts.Viewer3D.Processes
                 var Cuniform = n + (f - n) * i / m;
                 var C = (3 * Clog + Cuniform) / 4;
 
-                // This shadow map goes from LastC to C; calculate the correct center and diameter for the sphere from the view frustum.
-                // Icik
-                //var height1 = (float)Math.Tan(fov / 2) * LastC;
-                var height1 = (float)Math.Tan(fov + 5 / 2) * LastC;
-
+                // This shadow map goes from LastC to C; calculate the correct center and diameter for the sphere from the view frustum.                
+                var height1 = (float)Math.Tan(fov / 2) * LastC;                
                 var height2 = (float)Math.Tan(fov / 2) * C;
                 var width1 = height1 * ratio;
                 var width2 = height2 * ratio;
