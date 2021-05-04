@@ -641,8 +641,13 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                 restrictedRegionTravelledDistance = Simulator.PlayerLocomotive.Train.DistanceTravelledM;
                 CurrentSelectedSpeedMpS = SelectedSpeedMpS;
                 RestrictedSpeedActive = true;
+                Simulator.Confirmer.Message(ConfirmLevel.Information, Simulator.Catalog.GetString("Speed restricted zone active."));
             }
-            Simulator.Confirmer.Message(ConfirmLevel.Information, Simulator.Catalog.GetString("Speed restricted zone active."));
+            else if (RestrictedSpeedActive)
+            {
+                RestrictedSpeedActive = false;
+                Simulator.Confirmer.Message(ConfirmLevel.Information, Simulator.Catalog.GetString("Speed restricted zone off."));
+            }
         }
 
         public virtual void CheckRestrictedSpeedZone()
