@@ -166,8 +166,6 @@ namespace Orts.Simulation.RollingStocks
                                                     electricMotor.ErrorCoefficient = float.Parse(innerText);
                                                 if (motorNode.Name.ToLower() == "gearratio")
                                                     electricMotor.GearRatio = float.Parse(innerText);
-                                                if (motorNode.Name.ToLower() == "fullspeedrangecurrentdrop")
-                                                    electricMotor.FullSpeedRangeCurrentDrop = int.Parse(innerText);
                                             }
                                             extendedAxle.ElectricMotors.Add(electricMotor);
                                         }
@@ -387,7 +385,6 @@ namespace Orts.Simulation.RollingStocks
         public float MinRotorCurrent = 0;
         public float MaxRotorCurrent = 0;
         public float MaxStatorCurrent = 0;
-        public float FullSpeedRangeCurrentDrop = 0;
         public int InSeriesWith = 1;
         public float MaxRpm = 0;
         public float GearRatio = 1;
@@ -403,12 +400,19 @@ namespace Orts.Simulation.RollingStocks
         {
             float currentRotor = Motor.MaxRotorCurrent - Motor.MinRotorCurrent;
             Motor.RotorCurrent = (((Locomotive.ControllerVolts / MaxControllerVolts) * currentRotor) + Motor.MinRotorCurrent) * Motor.ErrorCoefficient;
-            Motor.RotorCurrent = Motor.RotorCurrent - ((axleSpeed / Locomotive.MaxSpeedMpS) * Motor.FullSpeedRangeCurrentDrop);
+            Motor.RotorCurrent = Motor.RotorCurrent - (axleSpeed / Locomotive.MaxSpeedMpS);
             if (Locomotive.ControllerVolts == 0)
                 Motor.RotorCurrent = 0;
             Motor.StatorCurrent = Motor.RotorCurrent / Motor.MaxStatorCurrent;
             //Locomotive.Simulator.Confirmer.MSG("R: " + Motor.RotorCurrent.ToString() + " S: " + Motor.StatorCurrent.ToString());
         }
+    }
 
+    public class RotorCurrentTable
+    {
+        public RotorCurrentTable()
+        {
+
+        }
     }
 }
