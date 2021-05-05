@@ -305,8 +305,8 @@ namespace Orts.Simulation.RollingStocks
         public float Factor_vibration;
         public int direction1 = 0;
         public int direction2 = 0;
-        public int T0 = 0;
         public float LocoBrakeAdhesiveForceN;
+        public float MaxBrakeForceNRMg;
 
         // Setup for ambient temperature dependency
         Interpolator OutsideWinterTempbyLatitudeC;
@@ -738,12 +738,12 @@ namespace Orts.Simulation.RollingStocks
         public virtual void AntiSkidSystem()
         {
             if (BrakeSystem.AntiSkidSystemEquipped)
-            {
+            {                
                 // Lokomotiva
                 if ((this is MSTSDieselLocomotive || this is MSTSElectricLocomotive) && AbsSpeedMpS > 0.01)
                 {
                     LocoBrakeAdhesiveForceN = MassKG * GravitationalAccelerationMpS2 * Train.LocomotiveCoefficientFriction;
-                    if (BrakeRetardForceN > LocoBrakeAdhesiveForceN * 0.75f)
+                    if (BrakeRetardForceN > LocoBrakeAdhesiveForceN * 0.95f)
                     {
                         //var message = "BrakeRetardForceN: " + BrakeRetardForceN;
                         //Simulator.Confirmer.Message(ConfirmLevel.Warning, message);
@@ -755,7 +755,7 @@ namespace Orts.Simulation.RollingStocks
 
                 // Vagón
                 if ((!(this is MSTSDieselLocomotive) && !(this is MSTSElectricLocomotive)) && AbsSpeedMpS > 0.01)
-                    if (BrakeRetardForceN > WagonBrakeAdhesiveForceN * 0.75f)
+                    if (BrakeRetardForceN > WagonBrakeAdhesiveForceN * 0.95f)
                     {
                         //var message = "BrakeRetardForceN: " + BrakeRetardForceN;
                         //Simulator.Confirmer.Message(ConfirmLevel.Warning, message);
@@ -770,19 +770,22 @@ namespace Orts.Simulation.RollingStocks
 
         public virtual void BrakeMassKG()
         {
+            BrakeSystem.BrakeMassKG = 0;
+            BrakeSystem.BrakeMassKGRMg = 0;
+
             if (WagonType == WagonTypes.Passenger || WagonType == WagonTypes.Engine || WagonType == WagonTypes.Unknown)    //  Osobní vozy, lokomotivy a ostatní
                 switch (BrakeSystem.BrakeCarMode)
                 {
                     case 0: // Režim G  
-                        if (BrakeSystem.BrakeMassG == 0) BrakeSystem.BrakeMassKG = BrakeSystem.KoefRezim * MassKG;
+                        if (BrakeSystem.BrakeMassG == 0) BrakeSystem.BrakeMassKG = BrakeSystem.CoefMode * MassKG;
                         else BrakeSystem.BrakeMassKG = BrakeSystem.BrakeMassG;
                         break;
                     case 1: // Režim P  
-                        if (BrakeSystem.BrakeMassP == 0) BrakeSystem.BrakeMassKG = BrakeSystem.KoefRezim * MassKG;
+                        if (BrakeSystem.BrakeMassP == 0) BrakeSystem.BrakeMassKG = BrakeSystem.CoefMode * MassKG;
                         else BrakeSystem.BrakeMassKG = BrakeSystem.BrakeMassP;
                         break;
                     case 2: // Režim R  
-                        if (BrakeSystem.BrakeMassR == 0) BrakeSystem.BrakeMassKG = BrakeSystem.KoefRezim * MassKG;
+                        if (BrakeSystem.BrakeMassR == 0) BrakeSystem.BrakeMassKG = BrakeSystem.CoefMode * MassKG;
                         else BrakeSystem.BrakeMassKG = BrakeSystem.BrakeMassR;
                         break;
                     case 3: // Režim R+Mg  
@@ -793,21 +796,29 @@ namespace Orts.Simulation.RollingStocks
                         //&& BrakeSystem.EmergencyBrakeForRMg)                        
                         {
                             BrakeSystem.BrakeModeRMgActive = true;
-                            T0 = 10;
-                            if (BrakeSystem.BrakeMassRMg != 0) BrakeSystem.BrakeMassKG = BrakeSystem.BrakeMassRMg;
-                            else                            
-                                if (BrakeSystem.BrakeMassR != 0) BrakeSystem.BrakeMassKG = 1.44f * BrakeSystem.BrakeMassR;
-                                else 
-                                    BrakeSystem.BrakeMassKG = 1.44f * BrakeSystem.KoefRezim * MassKG;                            
+                            if (BrakeSystem.BrakeMassRMg != 0)
+                            {
+                                BrakeSystem.BrakeMassKG = BrakeSystem.BrakeMassR;
+                                BrakeSystem.BrakeMassKGRMg = BrakeSystem.BrakeMassRMg - BrakeSystem.BrakeMassR;
+                            }
+                            else
+                            if (BrakeSystem.BrakeMassR != 0)
+                            {
+                                BrakeSystem.BrakeMassKG = BrakeSystem.BrakeMassR;
+                                BrakeSystem.BrakeMassKGRMg = (1.44f * BrakeSystem.BrakeMassR) - BrakeSystem.BrakeMassR;
+                            }
+
+                            else
+                            {
+                                BrakeSystem.BrakeMassKG = BrakeSystem.CoefMode * MassKG;
+                                BrakeSystem.BrakeMassKGRMg = (1.44f * BrakeSystem.CoefMode * MassKG) - (BrakeSystem.CoefMode * MassKG);
+                            }
                         }
                         else
                         {
                             BrakeSystem.BrakeModeRMgActive = false;
-                            if (BrakeSystem.BrakeMassRMg != 0) BrakeSystem.BrakeMassKG = BrakeSystem.BrakeMassR;
-                            else
-                                if (BrakeSystem.BrakeMassR != 0) BrakeSystem.BrakeMassKG = BrakeSystem.BrakeMassR;
-                            else
-                                BrakeSystem.BrakeMassKG = BrakeSystem.KoefRezim * MassKG;
+                            if (BrakeSystem.BrakeMassR == 0) BrakeSystem.BrakeMassKG = BrakeSystem.CoefMode * MassKG;
+                            else BrakeSystem.BrakeMassKG = BrakeSystem.BrakeMassR;
                         }
                         break;
                 }
@@ -816,11 +827,11 @@ namespace Orts.Simulation.RollingStocks
                 switch (BrakeSystem.BrakeCarModePL)
                 {
                     case 0: // Režim Prázdný  
-                        if (BrakeSystem.BrakeMassEmpty == 0) BrakeSystem.BrakeMassKG = BrakeSystem.KoefRezim * MassKG;
+                        if (BrakeSystem.BrakeMassEmpty == 0) BrakeSystem.BrakeMassKG = BrakeSystem.CoefMode * MassKG;
                         else BrakeSystem.BrakeMassKG = BrakeSystem.BrakeMassEmpty;
                         break;
                     case 1: // Režim Ložený  
-                        if (BrakeSystem.BrakeMassLoaded == 0) BrakeSystem.BrakeMassKG = BrakeSystem.KoefRezim * MassKG;
+                        if (BrakeSystem.BrakeMassLoaded == 0) BrakeSystem.BrakeMassKG = BrakeSystem.CoefMode * MassKG;
                         else BrakeSystem.BrakeMassKG = BrakeSystem.BrakeMassLoaded;
                         break;
                 }
@@ -830,10 +841,10 @@ namespace Orts.Simulation.RollingStocks
         public virtual void Update(float elapsedClockSeconds)
         {
             // Výpočet max brzdné síly
-            const float koefE = 0.84f; // Lokomotiva
-            const float koefP = 0.80f; // Osobní vůz
-            const float koefF = 0.90f; // Nákladní vůz
-            const float koefHB = 0.50f; // Ruční brzda
+            const float CoefE = 0.84f; // Lokomotiva
+            const float CoefP = 0.80f; // Osobní vůz
+            const float CoefF = 0.90f; // Nákladní vůz
+            const float CoefHB = 0.50f; // Ruční brzda
 
             AntiSkidSystem();
             BrakeSystem.WagonType = (int)WagonType;
@@ -844,11 +855,11 @@ namespace Orts.Simulation.RollingStocks
                     switch (BrakeSystem.BrakeCarModePL)
                     {
                         case 0: // Režim Prázdný                     
-                            BrakeSystem.KoefRezim = 0.36f;
+                            BrakeSystem.CoefMode = 0.36f;
                             BrakeMassKG();
                             break;
                         case 1: // Režim Ložený                    
-                            BrakeSystem.KoefRezim = 0.58f;
+                            BrakeSystem.CoefMode = 0.58f;
                             BrakeMassKG();
                             break;
                     }
@@ -857,7 +868,7 @@ namespace Orts.Simulation.RollingStocks
                         BrakeSystem.BrakeMassKG = MassKG;
                     else BrakeSystem.BrakeMassKG = BrakeSystem.AutoLoadRegulatorMaxBrakeMass;
                 
-                if (BrakeSystem.DebugKoef == 0) MaxBrakeForceN = koefF * BrakeSystem.BrakeMassKG * 9.964016384f * 0.31f;
+                if (BrakeSystem.DebugKoef == 0) MaxBrakeForceN = CoefF * BrakeSystem.BrakeMassKG * 9.964016384f * 0.31f;
                 else MaxBrakeForceN = BrakeSystem.DebugKoef * BrakeSystem.BrakeMassKG * 9.964016384f * 0.31f;
             }
             if (WagonType == WagonTypes.Passenger)    //  Osobní vozy
@@ -865,52 +876,68 @@ namespace Orts.Simulation.RollingStocks
                 switch (BrakeSystem.BrakeCarMode)
                 {
                     case 0: // Režim G                     
-                        BrakeSystem.KoefRezim = 0.0f;
+                        BrakeSystem.CoefMode = 0.0f;
                         BrakeMassKG();
                         break;
                     case 1: // Režim P                    
-                        BrakeSystem.KoefRezim = 1.05f;
+                        BrakeSystem.CoefMode = 1.05f;
                         BrakeMassKG();
                         break;
                     case 2: // Režim R
-                        BrakeSystem.KoefRezim = 1.49f;
+                        BrakeSystem.CoefMode = 1.49f;
                         BrakeMassKG();
                         break;
                     case 3: // Režim R+Mg
-                        BrakeSystem.KoefRezim = 1.49f;
+                        BrakeSystem.CoefMode = 1.49f;
                         BrakeMassKG();
                         break;
                 }
-                if (BrakeSystem.DebugKoef == 0) MaxBrakeForceN = koefP * BrakeSystem.BrakeMassKG * 9.964016384f * 0.31f;
-                else MaxBrakeForceN = BrakeSystem.DebugKoef * BrakeSystem.BrakeMassKG * 9.964016384f * 0.31f;
+                if (BrakeSystem.DebugKoef == 0)
+                {
+                    MaxBrakeForceN = CoefP * BrakeSystem.BrakeMassKG * 9.964016384f * 0.31f;
+                    MaxBrakeForceNRMg = CoefP * BrakeSystem.BrakeMassKGRMg * 9.964016384f * 0.31f;
+                }
+                else
+                {
+                    MaxBrakeForceN = BrakeSystem.DebugKoef * BrakeSystem.BrakeMassKG * 9.964016384f * 0.31f;
+                    MaxBrakeForceNRMg = BrakeSystem.DebugKoef * BrakeSystem.BrakeMassKGRMg * 9.964016384f * 0.31f;
+                }
             }
             if (WagonType == WagonTypes.Engine || WagonType == WagonTypes.Unknown)    //  Lokomotivy a ostatní
             {
                 switch (BrakeSystem.BrakeCarMode)
                 {
                     case 0: // Režim G                     
-                        BrakeSystem.KoefRezim = 0.5f;
+                        BrakeSystem.CoefMode = 0.5f;
                         BrakeMassKG();
                         break;
                     case 1: // Režim P                    
-                        BrakeSystem.KoefRezim = 0.65f;
+                        BrakeSystem.CoefMode = 0.65f;
                         BrakeMassKG();
                         break;
                     case 2: // Režim R
-                        BrakeSystem.KoefRezim = 1.66f;
+                        BrakeSystem.CoefMode = 1.66f;
                         BrakeMassKG();
                         break;
                     case 3: // Režim R+Mg
-                        BrakeSystem.KoefRezim = 1.66f;
+                        BrakeSystem.CoefMode = 1.66f;
                         BrakeMassKG();
                         break;
                 }
-                if (BrakeSystem.DebugKoef == 0) MaxBrakeForceN = koefE * BrakeSystem.BrakeMassKG * 9.964016384f * 0.31f;
-                else MaxBrakeForceN = BrakeSystem.DebugKoef * BrakeSystem.BrakeMassKG * 9.964016384f * 0.31f;
+                if (BrakeSystem.DebugKoef == 0)
+                {
+                    MaxBrakeForceN = CoefE * BrakeSystem.BrakeMassKG * 9.964016384f * 0.31f;
+                    MaxBrakeForceNRMg = CoefE * BrakeSystem.BrakeMassKGRMg * 9.964016384f * 0.31f;
+                }
+                else
+                {
+                    MaxBrakeForceN = BrakeSystem.DebugKoef * BrakeSystem.BrakeMassKG * 9.964016384f * 0.31f;
+                    MaxBrakeForceNRMg = BrakeSystem.DebugKoef * BrakeSystem.BrakeMassKGRMg * 9.964016384f * 0.31f;
+                }
             }
 
             // Výpočet pro ruční brzdu
-            MaxHandbrakeForceN = koefHB * (MassKG / 6.4f) * 9.964016384f * 0.31f;
+            MaxHandbrakeForceN = CoefHB * (MassKG / 6.4f) * 9.964016384f * 0.31f;
 
             // Initialise ambient temperatures on first initial loop, then ignore
             if (!AmbientTemperatureInitialised)
@@ -1046,24 +1073,11 @@ namespace Orts.Simulation.RollingStocks
             // Only apply slide, and advanced brake friction, if advanced adhesion is selected, and it is a Player train
             if (Simulator.UseAdvancedAdhesion && IsPlayerTrain)
             {
-
                 // Get user defined brake shoe coefficient if defined in WAG file
                 float UserFriction = GetUserBrakeShoeFrictionFactor();
                 float ZeroUserFriction = GetZeroUserBrakeShoeFrictionFactor();              
                 float AdhesionMultiplier = Simulator.Settings.AdhesionFactor / 100.0f; // User set adjustment factor - convert to a factor where 100% = no change to adhesion
-
-                // Icik
-                // Při aktivním R+Mg sníží brzdící sílu vozu na kola, aby se nezablokovaly kola
-                if (BrakeSystem.BrakeModeRMgActive || T0 > 0)
-                {
-                    if (BrakeSystem.BrakeMassR != 0 && BrakeSystem.BrakeMassRMg != 0)
-                    {
-                        BrakeRetardForceN = BrakeRetardForceN / (BrakeSystem.BrakeMassRMg / BrakeSystem.BrakeMassR); 
-                    }
-                    else BrakeRetardForceN = BrakeRetardForceN / 1.44f;
-                    T0--;                    
-                }
-
+                                                                                        
                 // This section calculates an adjustment factor for the brake force dependent upon the "base" (zero speed) friction value. 
                 //For a user defined case the base value is the zero speed value from the curve entered by the user.
                 // For a "default" case where no user data has been added to the WAG file, the base friction value has been assumed to be 0.2, thus maximum value of 20% applied.
