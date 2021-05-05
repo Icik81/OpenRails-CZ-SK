@@ -4736,7 +4736,7 @@ namespace Orts.Simulation.RollingStocks
         public bool CanAccelerate(float elapsedClockTime, float controllerVolts)
         {
             bool ret = false;
-            if (CurrentDirection == CurrentDirectionEnum.Braking && CanAccelerateTime < AcceleratingToBrakingChangeTime)
+            if (CurrentDirection == CurrentDirectionEnum.Braking && CanAccelerateTime < AcceleratingToBrakingChangeTime + 0.01f)
             {
                 CanAccelerateTime += elapsedClockTime;
             }
@@ -4753,7 +4753,7 @@ namespace Orts.Simulation.RollingStocks
         public bool CanBrake(float elapsedClockTime, float controllerVolts)
         {
             bool ret = false;
-            if (CurrentDirection == CurrentDirectionEnum.Accelerating && CanBrakeTime < AcceleratingToBrakingChangeTime)
+            if (CurrentDirection == CurrentDirectionEnum.Accelerating && CanBrakeTime < AcceleratingToBrakingChangeTime + 0.01f)
             {
                 CanBrakeTime += elapsedClockTime;
             }
