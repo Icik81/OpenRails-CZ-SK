@@ -68,6 +68,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
         protected float T0 = 0;
         protected float T1 = 0;
         protected int T00 = 0;
+        protected float TRMg = 0;
         protected float PrevAuxResPressurePSI = 0;
         protected float Threshold = 0;
         protected float prevBrakeLine1PressurePSI = 0;
@@ -204,14 +205,16 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 string.Empty, // Spacer because the state above needs 2 columns.
                 string.Format("{0:F0} L", CylVolumeM3 * 1000),
                 string.Empty, // Spacer because the state above needs 2 columns.
-                string.Format("{0:F0} L", TotalCapacityMainResBrakePipe * 1000 / 14.50377f),               
+                string.Format("{0:F0} L", TotalCapacityMainResBrakePipe * 1000 / 14.50377f),
                 string.Format("{0:F0}", BrakeCarModeText),
-                string.Format("{0} {1:F0} t", AutoLoadRegulatorEquipped ? "Auto   " : "", BrakeMassKG / 1000),                                              
+                string.Format("{0} {1:F0} t", AutoLoadRegulatorEquipped ? "Auto   " : "", (BrakeMassKG + BrakeMassKGRMg) / 1000),                                              
                 string.Empty, // Spacer because the state above needs 2 columns.              
                 string.Format("DebugKoef {0:F1}", DebugKoef),
                 string.Empty, // Spacer because the state above needs 2 columns.                                     
                 
-                //string.Format("BrakeRetardForceN {0:F0}", Car.BrakeRetardForceN),               
+                //string.Format("BrakeRetardForceN {0:F0}", Car.BrakeRetardForceN),
+                //string.Empty, // Spacer because the state above needs 2 columns.                                     
+                //string.Format("BrakeForceN {0:F0}", Car.BrakeForceN),
             };
         }
 
@@ -600,27 +603,22 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             // Vypouštění brzdového válce při aktivaci protismykového systému
             if (BailOffOnAntiSkid)
             {
-                if (AuxResPressurePSI < 0.01f && AutoCylPressurePSI < 0.01f && BrakeLine1PressurePSI < 0.01f && (EmergResPressurePSI < 0.01f || !(Car as MSTSWagon).EmergencyReservoirPresent))
+                TRMg += elapsedClockSeconds;
+                if (TRMg > 0.5f)
                 {
-                    BailOffOnAntiSkid = false;
-                }
-                else
-                {
-                    AuxResPressurePSI -= elapsedClockSeconds * MaxApplicationRatePSIpS;
-                    if (AuxResPressurePSI < 0)
-                        AuxResPressurePSI = 0;
-
-                    AutoCylPressurePSI0 -= elapsedClockSeconds * (2.0f * 14.50377f); // Rychlost odvětrání 2 bar/s
-                    if (AutoCylPressurePSI0 < 0)
-                        AutoCylPressurePSI0 = 0;
-
-                    if ((Car as MSTSWagon).EmergencyReservoirPresent)
+                    if (AutoCylPressurePSI < 0.01f)
                     {
-                        EmergResPressurePSI -= elapsedClockSeconds * EmergResChargingRatePSIpS;
-                        if (EmergResPressurePSI < 0)
-                            EmergResPressurePSI = 0;
+                        BailOffOnAntiSkid = false;
                     }
-                    TripleValveState = ValveState.Release;
+                    else
+                    {
+                        AutoCylPressurePSI0 -= elapsedClockSeconds * (2.0f * 14.50377f); // Rychlost odvětrání 2 bar/s
+                        if (AutoCylPressurePSI0 < 0)
+                            AutoCylPressurePSI0 = 0;
+
+                        TripleValveState = ValveState.Release;
+                    }
+                    if (TRMg > 0.95f) TRMg = 0;
                 }
             }
             else
@@ -823,21 +821,28 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             }            
 
             float f;
+            float fRMg;
+            // Konstantní síla magnetických bačkor fRMg
+            fRMg = Car.MaxBrakeForceNRMg;
             if (!Car.BrakesStuck)
             {
-                f = Car.MaxBrakeForceN * Math.Min(CylPressurePSI / MaxCylPressurePSI, 1);
+                f = Car.MaxBrakeForceN * Math.Min(CylPressurePSI / MaxCylPressurePSI, 1);                
                 if (f < Car.MaxHandbrakeForceN * HandbrakePercent / 100)
                     f = Car.MaxHandbrakeForceN * HandbrakePercent / 100;
             }
-            else f = Math.Max(Car.MaxBrakeForceN, Car.MaxHandbrakeForceN / 2); 
+            else     
+                f = Math.Max(Car.MaxBrakeForceN, Car.MaxHandbrakeForceN / 2);
+
+            // fRMg není zohledněna v síle na brzdící nápravy
             Car.BrakeRetardForceN = f * Car.BrakeShoeRetardCoefficientFrictionAdjFactor; // calculates value of force applied to wheel, independent of wheel skid
+            
             if (Car.BrakeSkid) // Test to see if wheels are skiding to excessive brake force
             {
-                Car.BrakeForceN = f * Car.SkidFriction;   // if excessive brakeforce, wheel skids, and loses adhesion
+                Car.BrakeForceN = fRMg + (f * Car.SkidFriction);   // if excessive brakeforce, wheel skids, and loses adhesion
             }
             else
             {
-                Car.BrakeForceN = f * Car.BrakeShoeCoefficientFrictionAdjFactor; // In advanced adhesion model brake shoe coefficient varies with speed, in simple model constant force applied as per value in WAG file, will vary with wheel skid.
+                Car.BrakeForceN = fRMg + (f * Car.BrakeShoeCoefficientFrictionAdjFactor); // In advanced adhesion model brake shoe coefficient varies with speed, in simple model constant force applied as per value in WAG file, will vary with wheel skid.
             }
 
             // sound trigger checking runs every half second, to avoid the problems caused by the jumping BrakeLine1PressurePSI value, and also saves cpu time :)
