@@ -1075,7 +1075,7 @@ namespace Orts.Viewer3D.Popups
                 }
                 else // default air braked
                 {
-                    statusHeader.Add(string.Format("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\t{9}\t{10}\t{11}\t{12}\t{13}\t{14}\t{15}\t{16}\t{17}\t{18}\t{19}\t{20}\t{21}\t{22}\t{23}",
+                    statusHeader.Add(string.Format("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\t{9}\t{10}\t{11}\t{12}\t{13}\t{14}\t{15}\t{16}\t{17}",
                     //0
                     Viewer.Catalog.GetString("Car"),
                     //1
@@ -1087,43 +1087,39 @@ namespace Orts.Viewer3D.Popups
                     //4
                     Viewer.Catalog.GetString("AuxRes"),
                     //5
-                    Viewer.Catalog.GetString("ErgRes"),
+                    //Viewer.Catalog.GetString("ErgRes"),
                     //6
-                    Viewer.Catalog.GetString("MRPipe"),
+                    //Viewer.Catalog.GetString("MRPipe"),
                     //7
-                    Viewer.Catalog.GetString("RetValve"),
-                    //8
+                    //Viewer.Catalog.GetString("RetValve"),
+                    //5
                     Viewer.Catalog.GetString("TripleValve"),
                     //9
-                    Viewer.Catalog.GetString(""),
-                    //10
+                    //Viewer.Catalog.GetString(""),
+                    //6
                     Viewer.Catalog.GetString("Handbrk"),
-                    //11
-                    Viewer.Catalog.GetString("Conn"),
-                    //12
+                    //7
+                    Viewer.Catalog.GetString("VzdHadice"),
+                    //8
                     Viewer.Catalog.GetString("AnglCock"),
-                    //13
+                    //9
                     Viewer.Catalog.GetString("BleedOff"),
+                    //10
+                    Viewer.Catalog.GetString("Protismyk"),
+                    //11                  
+                    Viewer.Catalog.GetString("NetěsnostBrzPotr"),
+                    //12
+                    Viewer.Catalog.GetString(""),
+                    //13
+                    Viewer.Catalog.GetString("ObjBrzPotr"),
                     //14
-                    Viewer.Catalog.GetString(""),
-                    //15                  
-                    Viewer.Catalog.GetString("Netěsnost"),
+                    Viewer.Catalog.GetString("ObjBrzVál"),
+                    //15
+                    Viewer.Catalog.GetString("ObjHlJímka"),
                     //16
-                    Viewer.Catalog.GetString(""),
+                    Viewer.Catalog.GetString("BrzRežim"),
                     //17
-                    Viewer.Catalog.GetString("Objem potrubi"),
-                    //18
-                    Viewer.Catalog.GetString(""),
-                    //19
-                    Viewer.Catalog.GetString("Objem brzd.válců"),
-                    //20
-                    Viewer.Catalog.GetString(""),
-                    //21
-                    Viewer.Catalog.GetString("Kapacita"),
-                    //22
-                    Viewer.Catalog.GetString("Režim"),
-                    //23
-                    Viewer.Catalog.GetString("Brzdící váha")
+                    Viewer.Catalog.GetString("BrzVáha")
                     //Add new header data here, if addining additional column.
                     ));
                 }
