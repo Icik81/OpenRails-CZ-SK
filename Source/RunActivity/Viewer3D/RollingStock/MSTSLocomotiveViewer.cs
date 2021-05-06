@@ -2031,23 +2031,33 @@ namespace Orts.Viewer3D.RollingStock
                     index = (int)MpS.ToKpH(Locomotive.CruiseControl.SelectedSpeedMpS) / 10;
                     break;
                 case CABViewControlTypes.ORTS_RESTRICTED_SPEED_ZONE_ACTIVE:
-                    if (Locomotive.CruiseControl != null)
                     {
-                        if (Locomotive.CruiseControl.SpeedRegMode == Simulation.RollingStocks.SubSystems.CruiseControl.SpeedRegulatorMode.Manual
+                        if (Locomotive.CruiseControl == null)
+                        {
+                            if (Control.IsActive)
+                                index = 1;
+                            else
+                                index = 0;
+                        }
+                        else if (Locomotive.CruiseControl.SpeedRegMode == Simulation.RollingStocks.SubSystems.CruiseControl.SpeedRegulatorMode.Manual
                             && Locomotive.DisableRestrictedSpeedWhenManualDriving)
                         {
-                            Locomotive.CruiseControl.RestrictedSpeedActive = false;
-                            break;
+                            if (Control.IsActive)
+                                index = 1;
+                            else
+                                index = 0;
                         }
                         else
                         {
-                            index = (int)data;
-                            break;
+                            if (Locomotive.CruiseControl.RestrictedSpeedActive && !Control.IsActive)
+                                index = 2;
+                            if (Locomotive.CruiseControl.RestrictedSpeedActive && Control.IsActive)
+                                index = 3;
+                            if (!Locomotive.CruiseControl.RestrictedSpeedActive && !Control.IsActive)
+                                index = 0;
+                            if (!Locomotive.CruiseControl.RestrictedSpeedActive && Control.IsActive)
+                                index = 1;
                         }
-                    }
-                    else
-                    {
-                        index = (int)data;
                         break;
                     }
 
@@ -2282,7 +2292,7 @@ namespace Orts.Viewer3D.RollingStock
                     break;
                 case CABViewControlTypes.PANTOGRAPH2:
                     var p2 = Locomotive.UsingRearCab ? 1 : 2;
-                    new PantographCommand(Viewer.Log, p2 , ChangedValue(Locomotive.Pantographs[p2].CommandUp ? 1 : 0) > 0);
+                    new PantographCommand(Viewer.Log, p2, ChangedValue(Locomotive.Pantographs[p2].CommandUp ? 1 : 0) > 0);
                     break;
                 case CABViewControlTypes.ORTS_PANTOGRAPH3:
                     var p3 = Locomotive.UsingRearCab && Locomotive.Pantographs.List.Count > 3 ? 4 : 3;
@@ -2336,8 +2346,8 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.ORTS_OVERCHARGE: new BrakeOverchargeCommand(Viewer.Log, ChangedValue(Locomotive.TrainBrakeController.OverchargeButtonPressed ? 1 : 0) > 0); break;
                 case CABViewControlTypes.RESET: new AlerterCommand(Viewer.Log, ChangedValue(Locomotive.TrainControlSystem.AlerterButtonPressed ? 1 : 0) > 0); break;
                 case CABViewControlTypes.CP_HANDLE: Locomotive.SetCombinedHandleValue(ChangedValue(Locomotive.GetCombinedHandleValue(true))); break;
- 
-             // Steam locomotives only:
+
+                // Steam locomotives only:
                 case CABViewControlTypes.CUTOFF: (Locomotive as MSTSSteamLocomotive).SetCutoffValue(ChangedValue((Locomotive as MSTSSteamLocomotive).CutoffController.IntermediateValue)); break;
                 case CABViewControlTypes.BLOWER: (Locomotive as MSTSSteamLocomotive).SetBlowerValue(ChangedValue((Locomotive as MSTSSteamLocomotive).BlowerController.IntermediateValue)); break;
                 case CABViewControlTypes.DAMPERS_FRONT: (Locomotive as MSTSSteamLocomotive).SetDamperValue(ChangedValue((Locomotive as MSTSSteamLocomotive).DamperController.IntermediateValue)); break;
@@ -2467,7 +2477,7 @@ namespace Orts.Viewer3D.RollingStock
                     {
                         Locomotive.CruiseControl.SetSpeed((float)Control.MaxValue);
                         Locomotive.SelectingSpeedPressed = true;
-            }
+                    }
                     else if (p == 0) Locomotive.SelectingSpeedPressed = false;
                     break;
                 case CABViewControlTypes.ORTS_SELECTED_SPEED_REGULATOR_MODE:
@@ -2501,18 +2511,35 @@ namespace Orts.Viewer3D.RollingStock
                     break;
                 case CABViewControlTypes.ORTS_RESTRICTED_SPEED_ZONE_ACTIVE:
                     if (Locomotive.CruiseControl == null)
+                    {
+                        if (ChangedValue(0) == 1 && !Control.IsActive)
+                            Control.IsActive = true;
+                        else if (ChangedValue(0) == 0 && Control.IsActive)
+                            Control.IsActive = false;
                         break;
+                    }
                     if (Locomotive.CruiseControl != null)
                     {
                         if (Locomotive.DisableRestrictedSpeedWhenManualDriving && Locomotive.CruiseControl.SpeedRegMode == Simulation.RollingStocks.SubSystems.CruiseControl.SpeedRegulatorMode.Manual)
                         {
-                            Locomotive.CruiseControl.RestrictedSpeedActive = false;
+                            if (ChangedValue(0) == 1 && !Control.IsActive)
+                                Control.IsActive = true;
+                            else if (ChangedValue(0) == 0 && Control.IsActive)
+                                Control.IsActive = false;
                             break;
                         }
                     }
-                    if (ChangedValue(0) == 1)
+                    if (ChangedValue(0) == 1 && !Control.IsActive)
                     {
-                        Locomotive.CruiseControl.ActivateRestrictedSpeedZone();
+                        if (!Locomotive.CruiseControl.RestrictedSpeedActive)
+                            Locomotive.CruiseControl.ActivateRestrictedSpeedZone();
+                        else if (Locomotive.CruiseControl.RestrictedSpeedActive)
+                            Locomotive.CruiseControl.RestrictedSpeedActive = false;
+                        Control.IsActive = true;
+                    }
+                    if (ChangedValue(0) == 0 && Control.IsActive)
+                    {
+                        Control.IsActive = false;
                     }
                     break;
                 case CABViewControlTypes.ORTS_NUMBER_OF_AXES_INCREASE:
