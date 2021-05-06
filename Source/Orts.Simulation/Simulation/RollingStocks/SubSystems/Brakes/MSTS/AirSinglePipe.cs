@@ -173,10 +173,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             if (HandbrakePercent > 0)
                 s += $" {Simulator.Catalog.GetString("Handbrake")} {HandbrakePercent:F0}%";
 
-            s += string.Format("  Rychlost změny tlaku v potrubí {0:F5} bar/s", BrakePipeChangeRate / 14.50377f);
-            s += string.Format("  Netěsnost potrubí {0:F5} bar/s", Car.Train.TotalTrainTrainPipeLeakRate / 14.50377f);
-            s += string.Format("  Objem potrubí {0:F0} L", Car.Train.TotalTrainBrakePipeVolumeM3 * 1000);
-            s += string.Format("  Kapacita hl.jímky a přilehlého potrubí {0:F0} L", Car.Train.TotalCapacityMainResBrakePipe * 1000 / 14.50377f);
+            s += string.Format("  Změna tlaku v potrubí {0:F5} bar/s", BrakePipeChangeRate / 14.50377f);
+            s += string.Format("  Netěsnost {0:F5} bar/s", Car.Train.TotalTrainTrainPipeLeakRate / 14.50377f);
+            //s += string.Format("  Objem potrubí {0:F0} L", Car.Train.TotalTrainBrakePipeVolumeM3 * 1000);
+            s += string.Format("  Objem hl.jímka a potrubí {0:F0} L", Car.Train.TotalCapacityMainResBrakePipe * 1000 / 14.50377f);
 
             return s;
         }
@@ -188,31 +188,28 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 FormatStrings.FormatPressure(CylPressurePSI, PressureUnit.PSI, units[BrakeSystemComponent.BrakeCylinder], true),
                 FormatStrings.FormatPressure(BrakeLine1PressurePSI, PressureUnit.PSI, units[BrakeSystemComponent.BrakePipe], true),
                 FormatStrings.FormatPressure(AuxResPressurePSI, PressureUnit.PSI, units[BrakeSystemComponent.AuxiliaryReservoir], true),
-                (Car as MSTSWagon).EmergencyReservoirPresent ? FormatStrings.FormatPressure(EmergResPressurePSI, PressureUnit.PSI, units[BrakeSystemComponent.EmergencyReservoir], true) : string.Empty,
-                TwoPipes ? FormatStrings.FormatPressure(BrakeLine2PressurePSI, PressureUnit.PSI, units[BrakeSystemComponent.MainPipe], true) : string.Empty,
-                (Car as MSTSWagon).RetainerPositions == 0 ? string.Empty : RetainerDebugState,
+                //(Car as MSTSWagon).EmergencyReservoirPresent ? FormatStrings.FormatPressure(EmergResPressurePSI, PressureUnit.PSI, units[BrakeSystemComponent.EmergencyReservoir], true) : string.Empty,
+                //TwoPipes ? FormatStrings.FormatPressure(BrakeLine2PressurePSI, PressureUnit.PSI, units[BrakeSystemComponent.MainPipe], true) : string.Empty,
+                //(Car as MSTSWagon).RetainerPositions == 0 ? string.Empty : RetainerDebugState,
                 Simulator.Catalog.GetString(GetStringAttribute.GetPrettyName(TripleValveState)),
-                string.Empty, // Spacer because the state above needs 2 columns.
-                (Car as MSTSWagon).HandBrakePresent ? string.Format("{0:F0}%", HandbrakePercent) : string.Empty,
+                //string.Empty, // Spacer because the state above needs 2 columns.
+                (Car as MSTSWagon).HandBrakePresent ? string.Format("{0:F0} %", HandbrakePercent) : string.Empty,
                 FrontBrakeHoseConnected ? "I" : "T",
                 string.Format("A{0} B{1}", AngleCockAOpen ? "+" : "-", AngleCockBOpen ? "+" : "-"),
-                BleedOffValveOpen || BailOffOnAntiSkid ? Simulator.Catalog.GetString("Open") : " ",//HudScroll feature requires for the last value, at least one space instead of string.Empty,                
-
-                string.Empty, // Spacer because the state above needs 2 columns.
+                BleedOffValveOpen ? Simulator.Catalog.GetString("Open") : " ",//HudScroll feature requires for the last value, at least one space instead of string.Empty,                
+                                
+                BailOffOnAntiSkid ? Simulator.Catalog.GetString("Aktivní") : "",                
                 string.Format("{0:F5} bar/s", TrainPipeLeakRatePSIpS / 14.50377f),
-                string.Empty, // Spacer because the state above needs 2 columns.
+                string.Empty, // Spacer because the state above needs 2 columns.                                     
                 string.Format("{0:F0} L", BrakePipeVolumeM3 * 1000),
-                string.Empty, // Spacer because the state above needs 2 columns.
                 string.Format("{0:F0} L", CylVolumeM3 * 1000),
-                string.Empty, // Spacer because the state above needs 2 columns.
                 string.Format("{0:F0} L", TotalCapacityMainResBrakePipe * 1000 / 14.50377f),
                 string.Format("{0:F0}", BrakeCarModeText),
-                string.Format("{0} {1:F0} t", AutoLoadRegulatorEquipped ? "Auto   " : "", (BrakeMassKG + BrakeMassKGRMg) / 1000),                                              
-                string.Empty, // Spacer because the state above needs 2 columns.              
-                string.Format("DebugKoef {0:F1}", DebugKoef),
-                string.Empty, // Spacer because the state above needs 2 columns.                                     
-                
-                //string.Format("BrakeRetardForceN {0:F0}", Car.BrakeRetardForceN),
+                string.Format("{0}{1:F0} t", AutoLoadRegulatorEquipped ? "Auto " : "", (BrakeMassKG + BrakeMassKGRMg) / 1000),                                              
+                string.Format("DebKoef {0:F1}", DebugKoef),
+
+                //string.Empty, // Spacer because the state above needs 2 columns.                                                     
+                //string.Format("RMgShoeCoefficientFrictionAdjFactor {0:F3}", Car.RMgShoeCoefficientFrictionAdjFactor),
                 //string.Empty, // Spacer because the state above needs 2 columns.                                     
                 //string.Format("BrakeForceN {0:F0}", Car.BrakeForceN),
             };
@@ -604,7 +601,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             if (BailOffOnAntiSkid)
             {
                 TRMg += elapsedClockSeconds;
-                if (TRMg > 0.5f)
+                if (TRMg < 0.2f)
                 {
                     if (AutoCylPressurePSI < 0.01f)
                     {
@@ -617,9 +614,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                             AutoCylPressurePSI0 = 0;
 
                         TripleValveState = ValveState.Release;
-                    }
-                    if (TRMg > 0.95f) TRMg = 0;
+                    }                    
                 }
+                if (TRMg > 0.99f) TRMg = 0;
             }
             else
                 UpdateTripleValveState(threshold);
@@ -838,11 +835,11 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             
             if (Car.BrakeSkid) // Test to see if wheels are skiding to excessive brake force
             {
-                Car.BrakeForceN = fRMg + (f * Car.SkidFriction);   // if excessive brakeforce, wheel skids, and loses adhesion
+                Car.BrakeForceN = (fRMg * Car.RMgShoeCoefficientFrictionAdjFactor) + (f * Car.SkidFriction);   // if excessive brakeforce, wheel skids, and loses adhesion
             }
             else
             {
-                Car.BrakeForceN = fRMg + (f * Car.BrakeShoeCoefficientFrictionAdjFactor); // In advanced adhesion model brake shoe coefficient varies with speed, in simple model constant force applied as per value in WAG file, will vary with wheel skid.
+                Car.BrakeForceN = (fRMg * Car.RMgShoeCoefficientFrictionAdjFactor) + (f * Car.BrakeShoeCoefficientFrictionAdjFactor); // In advanced adhesion model brake shoe coefficient varies with speed, in simple model constant force applied as per value in WAG file, will vary with wheel skid.
             }
 
             // sound trigger checking runs every half second, to avoid the problems caused by the jumping BrakeLine1PressurePSI value, and also saves cpu time :)

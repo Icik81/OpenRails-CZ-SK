@@ -307,6 +307,8 @@ namespace Orts.Simulation.RollingStocks
         public int direction2 = 0;
         public float LocoBrakeAdhesiveForceN;
         public float MaxBrakeForceNRMg;
+        public float RMgShoeCoefficientFrictionAdjFactor;
+        public float DefaultRMgShoeCoefficientFriction;
 
         // Setup for ambient temperature dependency
         Interpolator OutsideWinterTempbyLatitudeC;
@@ -1075,13 +1077,12 @@ namespace Orts.Simulation.RollingStocks
             {
                 // Get user defined brake shoe coefficient if defined in WAG file
                 float UserFriction = GetUserBrakeShoeFrictionFactor();
-                float ZeroUserFriction = GetZeroUserBrakeShoeFrictionFactor();              
+                float ZeroUserFriction = GetZeroUserBrakeShoeFrictionFactor();
                 float AdhesionMultiplier = Simulator.Settings.AdhesionFactor / 100.0f; // User set adjustment factor - convert to a factor where 100% = no change to adhesion
-                                                                                        
+
                 // This section calculates an adjustment factor for the brake force dependent upon the "base" (zero speed) friction value. 
                 //For a user defined case the base value is the zero speed value from the curve entered by the user.
                 // For a "default" case where no user data has been added to the WAG file, the base friction value has been assumed to be 0.2, thus maximum value of 20% applied.
-
                 if (UserFriction != 0)  // User defined friction has been applied in WAG file - Assume MaxBrakeForce is correctly set in the WAG, so no adjustment required 
                 {
                     BrakeShoeCoefficientFrictionAdjFactor = UserFriction / ZeroUserFriction * AdhesionMultiplier; // Factor calculated by normalising zero speed value on friction curve applied in WAG file
@@ -1098,10 +1099,26 @@ namespace Orts.Simulation.RollingStocks
                     BrakeShoeCoefficientFriction = DefaultBrakeShoeCoefficientFriction * AdhesionMultiplier;  // For display purposes on HUD
                 }
 
-                // Clamp adjustment factor to a value of 1.0 - i.e. the brakeforce can never exceed the Brake Force value defined in the WAG file
+                // Icik
+                if (BrakeSystem.BrakeModeRMgActive)
+                {
+                    float UserFrictionRMg = GetUserRMgShoeFrictionFactor();
+                    float ZeroUserFrictionRMg = GetZeroUserRMgShoeFrictionFactor();
+                    if (UserFrictionRMg != 0)  // User defined friction has been applied in WAG file - Assume MaxBrakeForce is correctly set in the WAG, so no adjustment required 
+                    {
+                        RMgShoeCoefficientFrictionAdjFactor = UserFrictionRMg / ZeroUserFrictionRMg * AdhesionMultiplier;
+                    }
+                    else
+                    {
+                        DefaultRMgShoeCoefficientFriction = (7.6f / (MpS.ToKpH(AbsSpeedMpS) + 17.5f) + 0.07f) * AdhesionMultiplier;
+                        RMgShoeCoefficientFrictionAdjFactor = DefaultRMgShoeCoefficientFriction / 0.18f * AdhesionMultiplier;
+                    }
+                    RMgShoeCoefficientFrictionAdjFactor = MathHelper.Clamp(RMgShoeCoefficientFrictionAdjFactor, 0.01f, 1.0f);
+                }
+
+                // Clamp adjustment factor to a value of 1.0 - i.e. the brakeforce can never exceed the Brake Force value defined in the WAG file                
                 BrakeShoeCoefficientFrictionAdjFactor = MathHelper.Clamp(BrakeShoeCoefficientFrictionAdjFactor, 0.01f, 1.0f);
                 BrakeShoeRetardCoefficientFrictionAdjFactor = MathHelper.Clamp(BrakeShoeRetardCoefficientFrictionAdjFactor, 0.01f, 1.0f);
-
 
                 // ************  Check if diesel or electric - assumed already be cover by advanced adhesion model *********
 
@@ -3007,6 +3024,15 @@ namespace Orts.Simulation.RollingStocks
             return 0f;
         }
 
+        public virtual float GetUserRMgShoeFrictionFactor()
+        {
+            return 0f;
+        }
+
+        public virtual float GetZeroUserRMgShoeFrictionFactor()
+        {
+            return 0f;
+        }
     }
 
     public class WheelAxle : IComparer<WheelAxle>

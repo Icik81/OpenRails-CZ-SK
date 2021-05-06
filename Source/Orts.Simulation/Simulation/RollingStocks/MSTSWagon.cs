@@ -140,6 +140,7 @@ namespace Orts.Simulation.RollingStocks
         public float DavisCoefficientC_1;
         public float DavisCoefficientC_2;
         public float DavisCoefficientC_3;
+        Interpolator RMgShoeFrictionFactor;
 
         bool TenderWeightInitialize = true;
         float TenderWagonMaxCoalMassKG;
@@ -1496,6 +1497,7 @@ namespace Orts.Simulation.RollingStocks
                     DavisCoefficientC_3 = stf.ReadFloat(STFReader.UNITS.None, null);
                     stf.SkipRestOfBlock();
                     break;
+                case "wagon(rmgshoefriction": RMgShoeFrictionFactor = new Interpolator(stf); break;
             }
         }
 
@@ -1671,6 +1673,7 @@ namespace Orts.Simulation.RollingStocks
             DavisCoefficientC_1 = copy.DavisCoefficientC_1;
             DavisCoefficientC_2 = copy.DavisCoefficientC_2;
             DavisCoefficientC_3 = copy.DavisCoefficientC_3;
+            RMgShoeFrictionFactor = copy.RMgShoeFrictionFactor;
 
 
 
@@ -4047,10 +4050,43 @@ namespace Orts.Simulation.RollingStocks
             }
 
             return frictionfraction;
-        }       
-      
-        
-        
+        }
+
+        public override float GetUserRMgShoeFrictionFactor()
+        {
+            var RMgfrictionfraction = 0.0f;
+            if (RMgShoeFrictionFactor == null)
+            {
+                RMgfrictionfraction = 0.0f;
+            }
+            else
+            {
+                RMgfrictionfraction = RMgShoeFrictionFactor[MpS.ToKpH(AbsSpeedMpS)];
+            }
+
+            return RMgfrictionfraction;
+        }
+
+        /// <summary>
+        /// Returns the Brake shoe coefficient at zero speed.
+        /// </summary>
+
+        public override float GetZeroUserRMgShoeFrictionFactor()
+        {
+            var RMgfrictionfraction = 0.0f;
+            if (RMgShoeFrictionFactor == null)
+            {
+                RMgfrictionfraction = 0.0f;
+            }
+            else
+            {
+                RMgfrictionfraction = RMgShoeFrictionFactor[0.0f];
+            }
+
+            return RMgfrictionfraction;
+        }
+
+
         /// <summary>
         /// Starts a continuous increase in controlled value.
         /// </summary>
