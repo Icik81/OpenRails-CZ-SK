@@ -72,8 +72,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
         protected float PrevAuxResPressurePSI = 0;
         protected float Threshold = 0;
         protected float prevBrakeLine1PressurePSI = 0;
-        protected bool NotConnected = false;
-        
+        protected bool NotConnected = false;        
 
         /// <summary>
         /// EP brake holding valve. Needs to be closed (Lap) in case of brake application or holding.
@@ -600,10 +599,11 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             // Vypouštění brzdového válce při aktivaci protismykového systému
             if (BailOffOnAntiSkid)
             {
+                TripleValveState = ValveState.Lap;                
                 TRMg += elapsedClockSeconds;
                 if (TRMg < 0.2f)
                 {
-                    if (AutoCylPressurePSI < 0.01f)
+                    if (AutoCylPressurePSI < 1.5f * 14.50377f)
                     {
                         BailOffOnAntiSkid = false;
                     }
@@ -611,9 +611,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     {
                         AutoCylPressurePSI0 -= elapsedClockSeconds * (2.0f * 14.50377f); // Rychlost odvětrání 2 bar/s
                         if (AutoCylPressurePSI0 < 0)
-                            AutoCylPressurePSI0 = 0;
-
-                        TripleValveState = ValveState.Release;
+                            AutoCylPressurePSI0 = 0;                                             
                     }                    
                 }
                 if (TRMg > 0.99f) TRMg = 0;
@@ -1078,8 +1076,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                                 {
                                         lead.BrakeSystem.BrakeLine1PressurePSI += PressureDiffEqualToPipePSI;  // Increase brake pipe pressure to cover loss
                                         lead.MainResPressurePSI = lead.MainResPressurePSI - (PressureDiffEqualToPipePSI * lead.BrakeSystem.BrakePipeVolumeM3 / lead.MainResVolumeM3);   // Decrease main reservoir pressure
-                                    }
                                 }
+                            }
                             // reduce pressure in lead brake line if brake pipe pressure is above equalising pressure - apply brakes
                             else if (lead.BrakeSystem.BrakeLine1PressurePSI > train.EqualReservoirPressurePSIorInHg)
                             {

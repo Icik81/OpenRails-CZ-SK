@@ -745,7 +745,7 @@ namespace Orts.Simulation.RollingStocks
                 if ((this is MSTSDieselLocomotive || this is MSTSElectricLocomotive) && AbsSpeedMpS > 0.01)
                 {
                     LocoBrakeAdhesiveForceN = MassKG * GravitationalAccelerationMpS2 * Train.LocomotiveCoefficientFriction;
-                    if (BrakeRetardForceN > LocoBrakeAdhesiveForceN * 0.95f)
+                    if (BrakeRetardForceN > LocoBrakeAdhesiveForceN * 1.0f)
                     {
                         //var message = "BrakeRetardForceN: " + BrakeRetardForceN;
                         //Simulator.Confirmer.Message(ConfirmLevel.Warning, message);
@@ -757,7 +757,7 @@ namespace Orts.Simulation.RollingStocks
 
                 // Vagón
                 if ((!(this is MSTSDieselLocomotive) && !(this is MSTSElectricLocomotive)) && AbsSpeedMpS > 0.01)
-                    if (BrakeRetardForceN > WagonBrakeAdhesiveForceN * 0.95f)
+                    if (BrakeRetardForceN > WagonBrakeAdhesiveForceN * 1.0f)
                     {
                         //var message = "BrakeRetardForceN: " + BrakeRetardForceN;
                         //Simulator.Confirmer.Message(ConfirmLevel.Warning, message);
@@ -1144,7 +1144,8 @@ namespace Orts.Simulation.RollingStocks
                     // Calculate adhesive force based upon whether in skid or not
                     if (BrakeSkid)
                     {
-                        WagonBrakeAdhesiveForceN = MassKG * GravitationalAccelerationMpS2 * SkidFriction;  // Adhesive force if wheel skidding
+                        //WagonBrakeAdhesiveForceN = MassKG * GravitationalAccelerationMpS2 * SkidFriction;  // Adhesive force if wheel skidding
+                        WagonBrakeAdhesiveForceN = MassKG * GravitationalAccelerationMpS2 * Train.WagonCoefficientFriction;  
                     }
                     else
                     {
