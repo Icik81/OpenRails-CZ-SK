@@ -369,6 +369,7 @@ namespace Orts.Viewer3D
         protected LookAtCamera(Viewer viewer)
             : base(viewer)
         {
+            FieldOfView = Viewer.Settings.ViewingFOV;
         }
 
         protected internal override void Save(BinaryWriter outf)
@@ -411,6 +412,7 @@ namespace Orts.Viewer3D
         protected RotatingCamera(Viewer viewer)
             : base(viewer)
         {
+            FieldOfView = Viewer.Settings.ViewingFOV;
         }
 
         protected RotatingCamera(Viewer viewer, Camera previousCamera)
@@ -607,6 +609,7 @@ namespace Orts.Viewer3D
         public FreeRoamCamera(Viewer viewer, Camera previousCamera)
             : base(viewer, previousCamera)
         {
+            FieldOfView = Viewer.Settings.ViewingFOV;
         }
 
         public void SetLocation(WorldLocation location)
@@ -786,6 +789,7 @@ namespace Orts.Viewer3D
         protected AttachedCamera(Viewer viewer)
             : base(viewer)
         {
+            FieldOfView = Viewer.Settings.ViewingFOV;
         }
 
         protected internal override void Save(BinaryWriter outf)
@@ -1005,6 +1009,7 @@ namespace Orts.Viewer3D
         public TrackingCamera(Viewer viewer, AttachedTo attachedTo)
             : base(viewer)
         {
+            FieldOfView = Viewer.Settings.ViewingFOV;
             Front = attachedTo == AttachedTo.Front;
             PositionYRadians = StartPositionYRadians + (Front ? 0 : MathHelper.Pi);
             RotationXRadians = PositionXRadians;
@@ -1477,6 +1482,7 @@ namespace Orts.Viewer3D
         public NonTrackingCamera(Viewer viewer)
             : base(viewer)
         {
+            FieldOfView = Viewer.Settings.ViewingFOV;
         }
 
         public override void HandleUserInput(ElapsedTime elapsedTime)
@@ -1523,6 +1529,7 @@ namespace Orts.Viewer3D
         public BrakemanCamera(Viewer viewer)
             : base(viewer)
         {
+            FieldOfView = Viewer.Settings.ViewingFOV;
         }
 
         protected override List<TrainCar> GetCameraCars()
@@ -1569,6 +1576,7 @@ namespace Orts.Viewer3D
         public InsideThreeDimCamera(Viewer viewer)
             : base(viewer)
         {
+            FieldOfView = Viewer.Settings.ViewingFOV;
         }
 
         protected Vector3 viewPointLocation;
@@ -1774,6 +1782,7 @@ namespace Orts.Viewer3D
         public PassengerCamera(Viewer viewer)
             : base(viewer)
         {
+            FieldOfView = Viewer.Settings.ViewingFOV;
         }
 
         protected override List<TrainCar> GetCameraCars()
@@ -2268,6 +2277,7 @@ namespace Orts.Viewer3D
         public TracksideCamera(Viewer viewer)
             : base(viewer)
         {
+            FieldOfView = Viewer.Settings.ViewingFOV;
         }
 
         public override void Reset()
@@ -2445,6 +2455,7 @@ namespace Orts.Viewer3D
         public SpecialTracksideCamera(Viewer viewer)
             : base(viewer)
         {
+            FieldOfView = Viewer.Settings.ViewingFOV;
         }
 
         protected override void OnActivate(bool sameCamera)
