@@ -323,6 +323,9 @@ namespace Orts.Formats.Msts
         ORTS_DIGITAL_STRING_SELECTED_STRING_DECREASE,
         ORTS_DIGITAL_STRING_ACTION_BUTTON,
 
+        // Icik
+        COMPRESSOR,
+
         // Further CabViewControlTypes must be added above this line, to avoid their malfunction in 3DCabs
         EXTERNALWIPERS,
         LEFTDOOR,
@@ -440,6 +443,7 @@ namespace Orts.Formats.Msts
         public string ACEFile = "";
         public string Label = "";
 
+        // Icik
         public double UpdateTime;
         public float ElapsedTime;
         public float PreviousData;
@@ -1360,6 +1364,12 @@ namespace Orts.Formats.Msts
                 new STFReader.TokenProcessor("scalerange", ()=>{ ParseScaleRange(stf); }),
                 new STFReader.TokenProcessor("graphic", ()=>{ ParseGraphic(stf, basepath); }),
                 new STFReader.TokenProcessor("units", ()=>{ ParseUnits(stf); }),
+                new STFReader.TokenProcessor("updatetime", () =>
+                {
+                    stf.MustMatch("(");
+                    UpdateTime = stf.ReadFloat(STFReader.UNITS.None, null);
+                    stf.SkipRestOfBlock();
+                }),
 
                 new STFReader.TokenProcessor("states", ()=>{
                     stf.MustMatch("(");

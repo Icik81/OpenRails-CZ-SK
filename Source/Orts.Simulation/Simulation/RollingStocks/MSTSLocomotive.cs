@@ -452,7 +452,7 @@ namespace Orts.Simulation.RollingStocks
         public bool HVOffStatusBrakeCyl = false;
         public bool HVOffStatusBrakePipe = false;
         public bool DoesPowerLossResetControls = false;
-        public bool ThrottleZero = false;
+        public bool ThrottleZero = false;        
 
         // Jindrich
         public CruiseControl CruiseControl;
@@ -6126,6 +6126,20 @@ namespace Orts.Simulation.RollingStocks
                             data = data * cvc.Precision;
                         }
 
+                        break;
+                    }
+
+                // Icik
+                case CABViewControlTypes.COMPRESSOR:
+                    {
+                        data = 1;
+                        cvc.ElapsedTime += elapsedTime;
+                        if (CompressorIsOn && cvc.ElapsedTime < cvc.UpdateTime)
+                        {
+                            data = 0;                            
+                        }
+                        if (!CompressorIsOn)
+                            cvc.ElapsedTime = 0;
                         break;
                     }
 

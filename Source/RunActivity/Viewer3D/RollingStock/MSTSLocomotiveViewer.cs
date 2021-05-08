@@ -2223,6 +2223,10 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.ORTS_CC_SPEED_180:
                 case CABViewControlTypes.ORTS_CC_SPEED_190:
                 case CABViewControlTypes.ORTS_CC_SPEED_200:
+
+                // Icik
+                case CABViewControlTypes.COMPRESSOR:
+
                     index = (int)data;
                     break;
             }
