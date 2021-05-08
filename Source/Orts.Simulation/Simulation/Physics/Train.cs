@@ -74,7 +74,7 @@ using Event = Orts.Common.Event;
 
 namespace Orts.Simulation.Physics
 {
-    public class Train
+    public class Train  
     {
         public List<TrainCar> Cars = new List<TrainCar>();           // listed front to back
         public int Number;
@@ -94,6 +94,10 @@ namespace Orts.Simulation.Physics
                 return Cars[Cars.Count - 1];
             }
         }
+
+        // Icik
+        public bool LocoIsAirEmpty;
+
         public Traveller RearTDBTraveller;               // positioned at the back of the last car in the train
         public Traveller FrontTDBTraveller;              // positioned at the front of the train by CalculatePositionOfCars
         public float Length;                             // length of train from FrontTDBTraveller to RearTDBTraveller
@@ -201,7 +205,7 @@ namespace Orts.Simulation.Physics
         {
             get
             {
-               return Simulator.Settings.WindResistanceDependent;
+                return Simulator.Settings.WindResistanceDependent;
             }
         }
 
@@ -243,7 +247,7 @@ namespace Orts.Simulation.Physics
         // Local max speed independently from signal and speedpost speed;
         // depends from various parameters like route max speed, overall or section efficiency of service,
         // max speed of player locomotive, max speed of consist (MaxVelocityA)
-        public float TrainMaxSpeedMpS;                  
+        public float TrainMaxSpeedMpS;
         public float AllowedMaxSpeedMpS;                 // Max speed as allowed
         public float allowedMaxSpeedSignalMpS;           // Max speed as set by signal
         public float allowedMaxSpeedLimitMpS;            // Max speed as set by limit
