@@ -473,6 +473,8 @@ namespace Orts.Formats.Msts
         public string CurrentType = "";
         public int CurrentSourceID = -1;
         public float MaxNeedleSpeed = 0; // time in seconds from max to min and vice versa
+        public double MinValueExtendedPhysics = 0;
+        public double MaxValueExtendedPhysics = 0;
 
         public CABViewControlTypes ControlType = CABViewControlTypes.NONE;
         public CABViewControlStyles ControlStyle = CABViewControlStyles.NONE;
@@ -515,6 +517,13 @@ namespace Orts.Formats.Msts
             stf.MustMatch("(");
             MinValue = stf.ReadDouble(null);
             MaxValue = stf.ReadDouble(null);
+            stf.SkipRestOfBlock();
+        }
+        protected void ParseScaleRangeExtendedPhysics(STFReader stf)
+        {
+            stf.MustMatch("(");
+            MinValueExtendedPhysics = stf.ReadDouble(null);
+            MaxValueExtendedPhysics = stf.ReadDouble(null);
             stf.SkipRestOfBlock();
         }
         protected void ParseGraphic(STFReader stf, string basepath)
@@ -619,6 +628,7 @@ namespace Orts.Formats.Msts
                 new STFReader.TokenProcessor("type", ()=>{ ParseType(stf); }),
                 new STFReader.TokenProcessor("position", ()=>{ ParsePosition(stf);  }),
                 new STFReader.TokenProcessor("scalerange", ()=>{ ParseScaleRange(stf); }),
+                new STFReader.TokenProcessor("scalerangeextendedphysics", ()=>{ ParseScaleRangeExtendedPhysics(stf); }),
                 new STFReader.TokenProcessor("graphic", ()=>{ ParseGraphic(stf, basepath); }),
                 new STFReader.TokenProcessor("style", ()=>{ ParseStyle(stf); }),
                 new STFReader.TokenProcessor("units", ()=>{ ParseUnits(stf); }),
@@ -711,6 +721,7 @@ namespace Orts.Formats.Msts
                 new STFReader.TokenProcessor("type", ()=>{ ParseType(stf); }),
                 new STFReader.TokenProcessor("position", ()=>{ ParsePosition(stf);  }),
                 new STFReader.TokenProcessor("scalerange", ()=>{ ParseScaleRange(stf); }),
+                new STFReader.TokenProcessor("scalerangeextendedphysics", ()=>{ ParseScaleRangeExtendedPhysics(stf); }),
                 new STFReader.TokenProcessor("graphic", ()=>{ ParseGraphic(stf, basepath); }),
                 new STFReader.TokenProcessor("style", ()=>{ ParseStyle(stf); }),
                 new STFReader.TokenProcessor("units", ()=>{ ParseUnits(stf); }),
@@ -845,6 +856,7 @@ namespace Orts.Formats.Msts
                 new STFReader.TokenProcessor("type", ()=>{ ParseType(stf); }),
                 new STFReader.TokenProcessor("position", ()=>{ ParsePosition(stf);  }),
                 new STFReader.TokenProcessor("scalerange", ()=>{ ParseScaleRange(stf); }),
+                new STFReader.TokenProcessor("scalerangeextendedphysics", ()=>{ ParseScaleRangeExtendedPhysics(stf); }),
                 new STFReader.TokenProcessor("graphic", ()=>{ ParseGraphic(stf, basepath); }),
                 new STFReader.TokenProcessor("style", ()=>{ ParseStyle(stf); }),
                 new STFReader.TokenProcessor("units", ()=>{ ParseUnits(stf); }),
@@ -1038,6 +1050,7 @@ namespace Orts.Formats.Msts
                     new STFReader.TokenProcessor("type", ()=>{ ParseType(stf); }),
                     new STFReader.TokenProcessor("position", ()=>{ ParsePosition(stf);  }),
                     new STFReader.TokenProcessor("scalerange", ()=>{ ParseScaleRange(stf); }),
+                    new STFReader.TokenProcessor("scalerangeextendedphysics", ()=>{ ParseScaleRangeExtendedPhysics(stf); }),
                     new STFReader.TokenProcessor("graphic", ()=>{ ParseGraphic(stf, basepath); }),
                     new STFReader.TokenProcessor("style", ()=>{ ParseStyle(stf); }),
                     new STFReader.TokenProcessor("units", ()=>{ ParseUnits(stf); }),
@@ -1362,6 +1375,7 @@ namespace Orts.Formats.Msts
                 new STFReader.TokenProcessor("type", ()=>{ ParseType(stf); }),
                 new STFReader.TokenProcessor("position", ()=>{ ParsePosition(stf);  }),
                 new STFReader.TokenProcessor("scalerange", ()=>{ ParseScaleRange(stf); }),
+                new STFReader.TokenProcessor("scalerangeextendedphysics", ()=>{ ParseScaleRangeExtendedPhysics(stf); }),
                 new STFReader.TokenProcessor("graphic", ()=>{ ParseGraphic(stf, basepath); }),
                 new STFReader.TokenProcessor("units", ()=>{ ParseUnits(stf); }),
                 new STFReader.TokenProcessor("updatetime", () =>
@@ -1414,6 +1428,7 @@ namespace Orts.Formats.Msts
                 new STFReader.TokenProcessor("type", ()=>{ ParseType(stf); }),
                 new STFReader.TokenProcessor("position", ()=>{ ParsePosition(stf);  }),
                 new STFReader.TokenProcessor("scalerange", ()=>{ ParseScaleRange(stf); }),
+                new STFReader.TokenProcessor("scalerangeextendedphysics", ()=>{ ParseScaleRangeExtendedPhysics(stf); }),
                 new STFReader.TokenProcessor("graphic", ()=>{ ParseGraphic(stf, basepath); }),
                 new STFReader.TokenProcessor("units", ()=>{ ParseUnits(stf); }),
                 new STFReader.TokenProcessor("ortscycletime", ()=>{
