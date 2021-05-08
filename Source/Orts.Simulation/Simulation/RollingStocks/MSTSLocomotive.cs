@@ -6153,7 +6153,11 @@ namespace Orts.Simulation.RollingStocks
             // max needle speed
             if (cvc.MaxNeedleSpeed > 0 && elapsedTime > 0)
             {
-                double fullRange = cvc.MaxValue - cvc.MinValue;
+                double fullRange = 0;
+                if (cvc.MinValueExtendedPhysics != 0 || cvc.MaxValueExtendedPhysics != 0)
+                    fullRange = cvc.MaxValueExtendedPhysics - cvc.MinValueExtendedPhysics;
+                else
+                    fullRange = cvc.MaxValue - cvc.MinValue;
                 float step = (float)fullRange / (cvc.MaxNeedleSpeed / elapsedTime);
                 if (data - step > cvc.PreviousData)
                 {
