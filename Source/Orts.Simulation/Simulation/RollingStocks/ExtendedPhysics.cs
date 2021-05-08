@@ -157,9 +157,11 @@ namespace Orts.Simulation.RollingStocks
                                                 if (motorNode.Name.ToLower() == "maxstatorcurrenta")
                                                     electricMotor.MaxStatorCurrent = float.Parse(innerText);
                                                 if (motorNode.Name.ToLower() == "maxrotorcurrenta")
-                                                {
                                                     electricMotor.MaxRotorCurrent = int.Parse(innerText);
-                                                }
+                                                if (motorNode.Name.ToLower() == "maxnegativestatorcurrenta")
+                                                    electricMotor.MaxNegativeStatorCurrent = float.Parse(innerText);
+                                                if (motorNode.Name.ToLower() == "maxnegativerotorcurrenta")
+                                                    electricMotor.MaxNegativeRotorCurrent = int.Parse(innerText);
                                                 if (motorNode.Name.ToLower() == "minrotorcurrenta")
                                                     electricMotor.MinRotorCurrent = int.Parse(innerText);
                                                 if (motorNode.Name.ToLower() == "errorcoefficient")
@@ -192,6 +194,17 @@ namespace Orts.Simulation.RollingStocks
             else if (Locomotive.ControllerVolts < 0)
             {
                 Locomotive.SetThrottlePercent(0);
+            }
+            if (Locomotive.ControllerVolts == 0)
+            {
+                Locomotive.SetThrottlePercent(0);
+                foreach (Undercarriage uc in Undercarriages)
+                {
+                    foreach (ExtendedAxle ea in uc.Axles)
+                    {
+                        ea.ForceN = 0;
+                    }
+                }
             }
             TotalCurrent = 0;
             StarorsCurrent = 0;
@@ -285,17 +298,26 @@ namespace Orts.Simulation.RollingStocks
                 axleCurrent = axleCurrent + em.RotorCurrent;
                 maxCurrent = maxCurrent + em.MaxRotorCurrent;
             }
-            if (Locomotive.TractiveForceCurves != null)
+            if (Locomotive.TractiveForceCurves != null && Locomotive.ControllerVolts > 0)
             {
                 float t = (axleCurrent / (maxCurrent)) / totalMotors;
                 //Locomotive.Simulator.Confirmer.MSG(t.ToString());
                 ForceN = Locomotive.TractiveForceCurves.Get(t, Locomotive.LocomotiveAxle.AxleSpeedMpS);
             }
-            else // TODO bez tabulek!
+            else if (Locomotive.ControllerVolts > 0) // TODO bez tabulek!
             {
 
             }
+            else if (Locomotive.DynamicBrakeForceCurves != null && Locomotive.ControllerVolts < 0)
+            {
+                float t = (axleCurrent / (maxCurrent)) / totalMotors;
+                if (t < 0) t = -t;
+                ForceN = -Locomotive.DynamicBrakeForceCurves.Get(t, Locomotive.LocomotiveAxle.AxleSpeedMpS);
+            }
+            else if (Locomotive.ControllerVolts < 0) // TOTO bez tabulek
+            {
 
+            }
             LocomotiveAxle.InertiaKgm2 = 10000;
             LocomotiveAxle.AxleRevolutionsInt.MinStep = LocomotiveAxle.InertiaKgm2 / (Locomotive.MaxPowerW / totalMotors) / 5.0f;
 
@@ -385,6 +407,8 @@ namespace Orts.Simulation.RollingStocks
         public float MinRotorCurrent = 0;
         public float MaxRotorCurrent = 0;
         public float MaxStatorCurrent = 0;
+        public float MaxNegativeRotorCurrent = 0;
+        public float MaxNegativeStatorCurrent = 0;
         public int InSeriesWith = 1;
         public float MaxRpm = 0;
         public float GearRatio = 1;
@@ -398,12 +422,24 @@ namespace Orts.Simulation.RollingStocks
         }
         public void Update(ElectricMotor Motor, float axleSpeed)
         {
-            float currentRotor = Motor.MaxRotorCurrent - Motor.MinRotorCurrent;
-            Motor.RotorCurrent = (((Locomotive.ControllerVolts / MaxControllerVolts) * currentRotor) + Motor.MinRotorCurrent) * Motor.ErrorCoefficient;
-            Motor.RotorCurrent = Motor.RotorCurrent - (axleSpeed / Locomotive.MaxSpeedMpS);
-            if (Locomotive.ControllerVolts == 0)
-                Motor.RotorCurrent = 0;
-            Motor.StatorCurrent = Motor.RotorCurrent / Motor.MaxStatorCurrent;
+            if (Locomotive.ControllerVolts > 0)
+            {
+                float currentRotor = Motor.MaxRotorCurrent - Motor.MinRotorCurrent;
+                Motor.RotorCurrent = (((Locomotive.ControllerVolts / MaxControllerVolts) * currentRotor) + Motor.MinRotorCurrent) * Motor.ErrorCoefficient;
+                Motor.RotorCurrent = Motor.RotorCurrent - (axleSpeed / Locomotive.MaxSpeedMpS);
+                if (Locomotive.ControllerVolts == 0)
+                    Motor.RotorCurrent = 0;
+                Motor.StatorCurrent = Motor.RotorCurrent / Motor.MaxStatorCurrent;
+            } 
+            else if (Locomotive.ControllerVolts < 0)
+            {
+                float currentRotor = Motor.MaxNegativeRotorCurrent - Motor.MinRotorCurrent;
+                Motor.RotorCurrent = (((Locomotive.ControllerVolts / MaxControllerVolts) * currentRotor) + Motor.MinRotorCurrent) * Motor.ErrorCoefficient;
+                Motor.RotorCurrent = Motor.RotorCurrent - (axleSpeed / Locomotive.MaxSpeedMpS);
+                if (Locomotive.ControllerVolts == 0)
+                    Motor.RotorCurrent = 0;
+                Motor.StatorCurrent = Motor.RotorCurrent / Motor.MaxNegativeStatorCurrent;
+            }
             //Locomotive.Simulator.Confirmer.MSG("R: " + Motor.RotorCurrent.ToString() + " S: " + Motor.StatorCurrent.ToString());
         }
     }
