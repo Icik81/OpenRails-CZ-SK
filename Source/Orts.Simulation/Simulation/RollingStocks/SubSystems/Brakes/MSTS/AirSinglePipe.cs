@@ -72,7 +72,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
         protected float PrevAuxResPressurePSI = 0;
         protected float Threshold = 0;
         protected float prevBrakeLine1PressurePSI = 0;
-        protected bool NotConnected = false;        
+        protected bool NotConnected = false;
 
         /// <summary>
         /// EP brake holding valve. Needs to be closed (Lap) in case of brake application or holding.
@@ -467,22 +467,36 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             //                (Car as MSTSWagon).DistributorPresent ? (PrevAuxResPressurePSI - BrakeLine1PressurePSI) * AuxCylVolumeRatio : 0);
             float threshold = (PrevAuxResPressurePSI - BrakeLine1PressurePSI) * AuxCylVolumeRatio;
             Threshold = threshold;
-
-            // Studeny start lokomotivy (vzduchojemy na 0)            
+                      
             if (StartOn)
-            {
+            {                
                 MSTSLocomotive loco = Car as MSTSLocomotive;
-                if (loco != null) loco.MainResPressurePSI = 0;
-                FullServPressurePSI = 0;
-                AutoCylPressurePSI = 0;
-                AutoCylPressurePSI0 = 0;
-                AuxResPressurePSI = 0;
-                PrevAuxResPressurePSI = 0;
-                BrakeLine1PressurePSI = 0;
-                BrakeLine2PressurePSI = 0;
-                BrakeLine3PressurePSI = 0;
-                prevBrakeLine1PressurePSI = 0;
-                HandbrakePercent = (Car as MSTSWagon).HandBrakePresent ? 100 : 100;                
+                // Studeny start lokomotivy (vzduchojemy na 0)
+                if (IsAirEmpty)
+                {
+                    if (loco != null)
+                    {
+                        loco.MainResPressurePSI = 0;
+                        HandbrakePercent = loco.HandBrakePresent ? 100 : 100;
+                    }
+                    FullServPressurePSI = 0;
+                    AutoCylPressurePSI = 0;
+                    AutoCylPressurePSI0 = 0;
+                    AuxResPressurePSI = 0;
+                    PrevAuxResPressurePSI = 0;
+                    BrakeLine1PressurePSI = 0;
+                    BrakeLine2PressurePSI = 0;
+                    BrakeLine3PressurePSI = 0;
+                    prevBrakeLine1PressurePSI = 0;                    
+                }
+                // Normální start lokomotivy se vzduchem
+                else
+                {
+                    if (loco != null)
+                    {
+                        HandbrakePercent = loco.HandBrakePresent ? 0 : 0;
+                    }
+                }
                 MaxReleaseRatePSIpS0 = MaxReleaseRatePSIpS;
                 MaxApplicationRatePSIpS0 = MaxApplicationRatePSIpS;
                 StartOn = false;
@@ -907,6 +921,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             float TrainPipeTimeVariationS = elapsedClockSeconds / nSteps;
             bool NotConnected = false;
 
+            // Start se vzduchem nebo bez vzduchu podle prefixu v názvu consistu
+            if (train.LocoIsAirEmpty) lead.BrakeSystem.IsAirEmpty = true;
+
             // Výpočet netěsnosti vzduchu v potrubí pro každý vůz
             train.TotalTrainTrainPipeLeakRate = 0f;
             foreach (TrainCar car in train.Cars)
@@ -949,7 +966,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         //car.BrakeSystem.KapacitaHlJimkyAPotrubi = 0;
                     }
                 }
-
+                
                 // Spočítá celkovou netěsnost vlaku 
                 train.TotalTrainTrainPipeLeakRate += car.BrakeSystem.TrainPipeLeakRatePSIpS;
             }
@@ -1096,7 +1113,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     float brakePipeVolumeM30 = car0.BrakeSystem.BrakePipeVolumeM3;
                     train.TotalTrainBrakePipeVolumeM3 = 0.0f; // initialise train brake pipe volume
                     train.TotalCapacityMainResBrakePipe = 0.0f;
-
+                    
 #if DEBUG_TRAIN_PIPE_LEAK
 
                     Trace.TraceInformation("======================================= Train Pipe Leak (AirSinglePipe) ===============================================");
