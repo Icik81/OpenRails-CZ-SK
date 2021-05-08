@@ -1325,7 +1325,7 @@ namespace Orts.Simulation.RollingStocks
 
             // Icik
             HVOffStatusBrakeCyl = inf.ReadBoolean();
-            HVOffStatusBrakePipe = inf.ReadBoolean();
+            HVOffStatusBrakePipe = inf.ReadBoolean();                        
 
             base.Restore(inf);
 
@@ -2257,7 +2257,9 @@ namespace Orts.Simulation.RollingStocks
                             DynamicBrakeController.CurrentValue * 100);
                     }
 
-                    if (Simulator.UseAdvancedAdhesion && !Simulator.Paused) 
+                    // Icik
+                    //if (Simulator.UseAdvancedAdhesion && !Simulator.Paused) 
+                    if (Simulator.UseAdvancedAdhesion) 
                     {
                         AdvancedAdhesion(elapsedClockSeconds); // Use advanced adhesion model
                         AdvancedAdhesionModel = true;  // Set flag to advise advanced adhesion model is in use
