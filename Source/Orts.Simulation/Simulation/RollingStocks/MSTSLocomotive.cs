@@ -349,6 +349,8 @@ namespace Orts.Simulation.RollingStocks
         public float BrakePipeQuickChargingRatePSIpS;
         public InterpolatorDiesel2D TractiveForceCurves;
         public InterpolatorDiesel2D DynamicBrakeForceCurves;
+        public InterpolatorDiesel2D ExtendedExcitationCurrent;
+        public InterpolatorDiesel2D ExtendedArmCurrent;
         public float DynamicBrakeSpeed1MpS = MpS.FromKpH(5);
         public float DynamicBrakeSpeed2MpS = MpS.FromKpH(30);
         public float DynamicBrakeSpeed3MpS = MpS.FromKpH(999);
@@ -934,6 +936,8 @@ namespace Orts.Simulation.RollingStocks
                 case "engine(ortsmaxtractiveforcecurves": TractiveForceCurves = new InterpolatorDiesel2D(stf, false); TractiveForceCurves.HasNegativeValue();  break;
                 case "engine(ortstractioncharacteristics": TractiveForceCurves = new InterpolatorDiesel2D(stf, true); break;
                 case "engine(ortsdynamicbrakeforcecurves": DynamicBrakeForceCurves = new InterpolatorDiesel2D(stf, false); break;
+                case "engine(ortsextendedexcitationcurrent": ExtendedExcitationCurrent = new InterpolatorDiesel2D(stf, true); break;
+                case "engine(ortsextendedarmcurrent": ExtendedArmCurrent = new InterpolatorDiesel2D(stf, true); break;
                 case "engine(ortscontinuousforcetimefactor": ContinuousForceTimeFactor = stf.ReadFloatBlock(STFReader.UNITS.None, null); break;
                 case "engine(orts(ortssanderspeedeffectupto": SanderSpeedEffectUpToMpS = stf.ReadFloatBlock(STFReader.UNITS.Speed, null); break;
                 case "engine(orts(ortsemergencycausespowerdown": EmergencyCausesPowerDown = stf.ReadBoolBlock(false); break;
@@ -1125,6 +1129,7 @@ namespace Orts.Simulation.RollingStocks
             EngineType = locoCopy.EngineType;
             TractiveForceCurves = locoCopy.TractiveForceCurves;
             MaxContinuousForceN = locoCopy.MaxContinuousForceN;
+            ExtendedExcitationCurrent = locoCopy.ExtendedExcitationCurrent;
             SpeedOfMaxContinuousForceMpS = locoCopy.SpeedOfMaxContinuousForceMpS;
             MSTSSpeedOfMaxContinuousForceMpS = locoCopy.MSTSSpeedOfMaxContinuousForceMpS;
             ContinuousForceTimeFactor = locoCopy.ContinuousForceTimeFactor;
@@ -1420,6 +1425,8 @@ namespace Orts.Simulation.RollingStocks
             EngineBrakeController.Initialize();
             BrakemanBrakeController.Initialize();
             TrainControlSystem.Initialize();
+
+            DynamicBrakeChangeActiveState(false);
 
             if (MaxSteamHeatPressurePSI == 0)       // Check to see if steam heating is fitted to locomotive
             {
@@ -2008,6 +2015,9 @@ namespace Orts.Simulation.RollingStocks
         {
             if (extendedPhysics != null)
                 extendedPhysics.Update(elapsedClockSeconds);
+
+            if (ControllerVolts > 0 && DynamicBrakePercent > -1)
+                DynamicBrakeChangeActiveState(false);
 
             if (extendedPhysics == null)
             {

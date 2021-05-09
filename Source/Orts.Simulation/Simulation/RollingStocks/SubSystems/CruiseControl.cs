@@ -705,6 +705,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems
         public bool WasForceReset = true;
         protected int speedSensorAxleIndex = -1;
         protected int speedSensorUndercarriageIndex = -1;
+        protected float tempAccDemand = 0;
+
 
         protected virtual void UpdateMotiveForce(float elapsedClockSeconds, float AbsWheelSpeedMps)
         {
@@ -1060,20 +1062,26 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                                         }
                                         else
                                         {
+                                            float maxVolts = -100;
                                             if (controllerVolts > -100 && (DynamicBrakeMaxForceAtSelectorStep == 0 || SelectedMaxAccelerationStep >= DynamicBrakeMaxForceAtSelectorStep))
                                             {
                                                 float step = 100 / Locomotive.DynamicBrakeFullRangeIncreaseTimeSeconds;
                                                 step *= elapsedClockSeconds;
                                                 controllerVolts -= step;
                                             }
-                                            float maxVolts = -100;
-                                            if (DynamicBrakeMaxForceAtSelectorStep != 0)
+                                            else
                                             {
-                                                if (SelectedMaxAccelerationStep < DynamicBrakeMaxForceAtSelectorStep)
+                                                if (DynamicBrakeMaxForceAtSelectorStep != 0)
                                                 {
-                                                    float difference = 100 / DynamicBrakeMaxForceAtSelectorStep;
-                                                    maxVolts = -difference * SelectedMaxAccelerationStep;
+                                                    if (SelectedMaxAccelerationStep < DynamicBrakeMaxForceAtSelectorStep)
+                                                    {
+                                                        float difference = 100 / DynamicBrakeMaxForceAtSelectorStep;
+                                                        maxVolts = -difference * SelectedMaxAccelerationStep;
+                                                    }
                                                 }
+                                                float step = 100 / Locomotive.DynamicBrakeFullRangeIncreaseTimeSeconds;
+                                                step *= elapsedClockSeconds;
+                                                controllerVolts -= step;
                                             }
                                             if (controllerVolts < -100)
                                                 controllerVolts = -100;
@@ -1175,12 +1183,12 @@ namespace Orts.Simulation.RollingStocks.SubSystems
 
                     AccelerationDemandMpSS = (float)Math.Sqrt((StartReducingSpeedDelta) * coeff * (delta));
                     float demand = AccelerationDemandMpSS;
-                    float tempAccDemand = demand;
 
                     if (float.IsNaN(demand))
                     {
                         demand = tempAccDemand;
                     }
+                    tempAccDemand = demand;
                     if (delta > 0.0f && Locomotive.DynamicBrakePercent < 1)
                     {
                         if (Locomotive.DynamicBrakePercent > 0)
@@ -1341,19 +1349,24 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                     {
                         if (Locomotive.DynamicBrakePercent < 0)
                         {
-                            if (Locomotive.AccelerationMpSS < demand)
+                            if (demand < 0.05f)
+                                t = 0.1f;
+                            else
                             {
-                                if (ForceStepsThrottleTable.Count > 0)
+                                if (Locomotive.AccelerationMpSS < demand)
                                 {
-                                    t = ForceStepsThrottleTable[(int)SelectedMaxAccelerationStep - 1];
-                                    if (AccelerationTable.Count > 0)
-                                        a = AccelerationTable[(int)SelectedMaxAccelerationStep - 1];
+                                    if (ForceStepsThrottleTable.Count > 0)
+                                    {
+                                        t = ForceStepsThrottleTable[(int)SelectedMaxAccelerationStep - 1];
+                                        if (AccelerationTable.Count > 0)
+                                            a = AccelerationTable[(int)SelectedMaxAccelerationStep - 1];
+                                    }
+                                    else
+                                        t = SelectedMaxAccelerationStep;
+                                    if (t < newThrotte)
+                                        t = newThrotte;
+                                    t /= 100;
                                 }
-                                else
-                                    t = SelectedMaxAccelerationStep;
-                                if (t < newThrotte)
-                                    t = newThrotte;
-                                t /= 100;
                             }
                         }
                         if (reducingForce)

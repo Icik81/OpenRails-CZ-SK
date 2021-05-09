@@ -432,20 +432,42 @@ namespace Orts.Simulation.RollingStocks
             if (Locomotive.ControllerVolts > 0)
             {
                 float currentRotor = Motor.MaxRotorCurrent - Motor.MinRotorCurrent;
-                Motor.RotorCurrent = (((Locomotive.ControllerVolts / MaxControllerVolts) * currentRotor) + Motor.MinRotorCurrent) * Motor.ErrorCoefficient;
-                Motor.RotorCurrent = Motor.RotorCurrent - (axleSpeed / Locomotive.MaxSpeedMpS);
+                if (Locomotive.ExtendedArmCurrent != null)
+                {
+                    Motor.RotorCurrent = Locomotive.ExtendedArmCurrent.Get(Locomotive.ControllerVolts / MaxControllerVolts, axleSpeed) / 2 * Motor.ErrorCoefficient;
+                }
+                else
+                {
+                    Motor.RotorCurrent = (((Locomotive.ControllerVolts / MaxControllerVolts) * currentRotor) + Motor.MinRotorCurrent) * Motor.ErrorCoefficient;
+                    Motor.RotorCurrent = Motor.RotorCurrent - (axleSpeed / Locomotive.MaxSpeedMpS);
+                }
                 if (Locomotive.ControllerVolts == 0)
                     Motor.RotorCurrent = 0;
-                Motor.StatorCurrent = Motor.RotorCurrent / Motor.MaxStatorCurrent;
-            } 
+                if (Locomotive.ExtendedExcitationCurrent != null)
+                    Motor.StatorCurrent = Locomotive.ExtendedExcitationCurrent.Get(Locomotive.ControllerVolts / MaxControllerVolts, axleSpeed) / 4;
+                else
+                    Motor.StatorCurrent = Motor.RotorCurrent / Motor.MaxStatorCurrent;
+            }
             else if (Locomotive.ControllerVolts < 0)
             {
+                if (Locomotive.ControllerVolts < 0.05)
+                    Locomotive.ControllerVolts = 0;
                 float currentRotor = Motor.MaxNegativeRotorCurrent;
-                Motor.RotorCurrent = (((Locomotive.ControllerVolts / MaxControllerVolts) * currentRotor) + Motor.MinRotorCurrent) * Motor.ErrorCoefficient;
-                Motor.RotorCurrent = Motor.RotorCurrent - (axleSpeed / Locomotive.MaxSpeedMpS);
+                if (Locomotive.ExtendedArmCurrent != null)
+                {
+                    Motor.RotorCurrent = Locomotive.ExtendedArmCurrent.Get(-Locomotive.ControllerVolts / MaxControllerVolts, axleSpeed) / 2;
+                }
+                else
+                {
+                    Motor.RotorCurrent = (((Locomotive.ControllerVolts / MaxControllerVolts) * currentRotor) + Motor.MinRotorCurrent) * Motor.ErrorCoefficient;
+                    Motor.RotorCurrent = Motor.RotorCurrent - (axleSpeed / Locomotive.MaxSpeedMpS);
+                }
                 if (Locomotive.ControllerVolts == 0)
                     Motor.RotorCurrent = 0;
-                Motor.StatorCurrent = Motor.RotorCurrent / Motor.MaxNegativeStatorCurrent;
+                if (Locomotive.ExtendedExcitationCurrent != null)
+                    Motor.StatorCurrent = Locomotive.ExtendedExcitationCurrent.Get(-Locomotive.ControllerVolts / MaxControllerVolts, axleSpeed) / 4;
+                else
+                    Motor.StatorCurrent = Motor.RotorCurrent / Motor.MaxNegativeStatorCurrent;
             }
             else if (Locomotive.ControllerVolts == 0)
             {
