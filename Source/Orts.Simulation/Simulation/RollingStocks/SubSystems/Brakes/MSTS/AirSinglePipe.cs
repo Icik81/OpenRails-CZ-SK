@@ -62,8 +62,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
         protected float prevCylPressurePSI = 0;
         protected float prevBrakePipePressurePSI = 0;
         protected bool BailOffOn;
-
-        protected bool StartOn = true;        
+     
         protected float BrakePipeChangeRate = 0;
         protected float T0 = 0;
         protected float T1 = 0;
@@ -934,7 +933,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             bool NotConnected = false;
 
             // Start se vzduchem nebo bez vzduchu podle klíčového slova v názvu consistu
-            if (train.LocoIsAirEmpty || trainCar.Simulator.Settings.AirEmpty)
+            if (lead.BrakeSystem.StartOn && (train.LocoIsAirEmpty || trainCar.Simulator.Settings.AirEmpty))
             {
                 lead.BrakeSystem.IsAirEmpty = true;
                 foreach (TrainCar car in train.Cars)
