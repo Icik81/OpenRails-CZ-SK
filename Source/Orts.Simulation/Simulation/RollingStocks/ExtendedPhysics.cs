@@ -427,6 +427,8 @@ namespace Orts.Simulation.RollingStocks
         }
         public void Update(ElectricMotor Motor, float axleSpeed)
         {
+            if (!Locomotive.PowerOn && Locomotive.ControllerVolts > 0)
+                Locomotive.ControllerVolts = 0;
             if (Locomotive.ControllerVolts > 0)
             {
                 float currentRotor = Motor.MaxRotorCurrent - Motor.MinRotorCurrent;
