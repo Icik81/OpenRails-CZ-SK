@@ -306,8 +306,7 @@ namespace Orts.Simulation.RollingStocks
                             // Shodí HV při poklesu napětí v troleji a nastaveném výkonu (podpěťová ochrana)
                             if (PowerSupply.PantographVoltageV > 0)
                             {                                
-                                if ((PowerSupply.PantographVoltageV < PantographCriticalVoltage && LocalThrottlePercent != 0)
-                                || (PowerSupply.PantographVoltageV < PantographCriticalVoltage && LocalDynamicBrakePercent != 0))                            
+                                if (PowerSupply.PantographVoltageV < PantographCriticalVoltage && LocalThrottlePercent != 0)                            
                                 {
                                     SignalEvent(PowerSupplyEvent.OpenCircuitBreaker);
                                     Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Zásah podpěťové ochrany!"));
@@ -514,6 +513,15 @@ namespace Orts.Simulation.RollingStocks
         protected override void UpdatePowerSupply(float elapsedClockSeconds)
         {
             PowerSupply.Update(elapsedClockSeconds);
+            if (PowerSupply.CircuitBreaker != null && IsPlayerTrain)
+            {
+                if (PowerSupply.CircuitBreaker.State == CircuitBreakerState.Open)
+                {
+                    ControllerVolts = 0;
+                    ThrottleController.SetPercent(0);
+                    SetDynamicBrakePercent(0);
+                }
+            }
 
             UnderVoltageProtection(elapsedClockSeconds);           
         }
