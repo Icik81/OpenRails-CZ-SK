@@ -519,7 +519,11 @@ namespace Orts.Simulation.RollingStocks
                 {
                     ControllerVolts = 0;
                     ThrottleController.SetPercent(0);
-                    SetDynamicBrakePercent(0);
+                    if (SpeedMpS > 0)
+                    {
+                        DynamicBrakePercent = 0;
+                        DynamicBrakeChangeActiveState(false);
+                    }
                 }
             }
 
