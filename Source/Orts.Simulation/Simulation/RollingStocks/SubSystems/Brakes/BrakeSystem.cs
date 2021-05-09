@@ -84,6 +84,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes
         public bool BailOffOnAntiSkid;
         public bool IsAirEmpty;
         public bool HandBrakeActive;
+        public bool StartOn = true;
 
         /// <summary>
         /// Front brake hoses connection status
