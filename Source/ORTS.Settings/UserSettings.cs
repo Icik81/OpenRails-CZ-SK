@@ -191,6 +191,10 @@ namespace ORTS.Settings
         [Default(false)]
         public bool ReduceMemory { get; set; }
 
+        // Icik
+        [Default(false)]
+        public bool AirEmpty { get; set; }
+
         // Audio settings:
         [Default(true)]
         public bool MSTSBINSound { get; set; }

@@ -428,12 +428,17 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 : Math.Max(maxPressurePSI - AutoCylPressurePSI / AuxCylVolumeRatio, BrakeLine1PressurePSI);
             TripleValveState = ValveState.Lap;
             HoldingValve = ValveState.Release;
-            HandbrakePercent = handbrakeOn & (Car as MSTSWagon).HandBrakePresent ? 100 : 0;
+            if ((Car as MSTSWagon).HandBrakePresent)
+                HandbrakePercent = 0;
             SetRetainer(RetainerSetting.Exhaust);
             MSTSLocomotive loco = Car as MSTSLocomotive;
-            if (loco != null) 
+            if (loco != null)
+            {
                 loco.MainResPressurePSI = loco.MaxMainResPressurePSI;
+                if (loco.HandBrakePresent)
+                    HandbrakePercent = 0;
             }
+        }
 
         /// <summary>
         /// Used when initial speed > 0
@@ -477,7 +482,14 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     if (loco != null)
                     {
                         loco.MainResPressurePSI = 0;
-                        HandbrakePercent = loco.HandBrakePresent ? 100 : 100;
+                        if (loco.HandBrakePresent)
+                        {
+                            HandbrakePercent = Simulator.Random.Next(80, 101);
+                        }
+                    }
+                    if (HandBrakeActive && (Car as MSTSWagon).HandBrakePresent)
+                    {
+                        HandbrakePercent = Simulator.Random.Next(80, 101);
                     }
                     FullServPressurePSI = 0;
                     AutoCylPressurePSI = 0;
@@ -901,7 +913,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
 
         public override void PropagateBrakePressure(float elapsedClockSeconds)
         {
-            PropagateBrakeLinePressures(elapsedClockSeconds, Car, TwoPipes);
+            PropagateBrakeLinePressures(elapsedClockSeconds, Car, TwoPipes);            
         }
 
         protected static void PropagateBrakeLinePressures(float elapsedClockSeconds, TrainCar trainCar, bool twoPipes)
@@ -921,8 +933,47 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             float TrainPipeTimeVariationS = elapsedClockSeconds / nSteps;
             bool NotConnected = false;
 
-            // Start se vzduchem nebo bez vzduchu podle prefixu v názvu consistu
-            if (train.LocoIsAirEmpty) lead.BrakeSystem.IsAirEmpty = true;
+            // Start se vzduchem nebo bez vzduchu podle klíčového slova v názvu consistu
+            if (train.LocoIsAirEmpty || trainCar.Simulator.Settings.AirEmpty)
+            {
+                lead.BrakeSystem.IsAirEmpty = true;
+                foreach (TrainCar car in train.Cars)
+                {
+                    car.BrakeSystem.IsAirEmpty = true;                  
+                    int x = 0;
+                    int y = train.Cars.Count - 1;
+                    if (y > 1 && y <= 10)
+                        x = 2;
+                    if (y > 10 && y <= 15)
+                        x = 3;
+                    if (y > 15 && y <= 20)
+                        x = 4;
+                    if (y > 20 && y <= 25)
+                        x = 5;
+                    if (y > 25 && y <= 30)
+                        x = 6;
+                    if (y > 30 && y <= 35)
+                        x = 7;
+                    if (y > 35 && y <= 40)
+                        x = 8;
+                    if (y > 40 && y <= 45)
+                        x = 9;
+                    if (y > 45 && y <= 50)
+                        x = 10;
+                    if (y > 50 && y <= 55)
+                        x = 11;
+                    if (y > 55 && y <= 60)
+                        x = 12;
+                    if (y > 60 && y <= 65)
+                        x = 13;
+
+                    for (int i = 1; i < x + 1; i++)
+                    {
+                        if (car == train.Cars[i])
+                            car.BrakeSystem.HandBrakeActive = true;
+                    }
+                }                
+            }
 
             // Výpočet netěsnosti vzduchu v potrubí pro každý vůz
             train.TotalTrainTrainPipeLeakRate = 0f;
