@@ -1485,15 +1485,30 @@ namespace Orts.Viewer3D.RollingStock
         public float GetRangeFraction()
         {
             var data = Locomotive.GetDataOf(Control);
-            if (data < Control.MinValue)
-                return 0;
-            if (data > Control.MaxValue)
-                return 1;
+            if (Control.MinValueExtendedPhysics != 0 || Control.MaxValueExtendedPhysics != 0)
+            {
+                if (data < Control.MinValueExtendedPhysics)
+                    return 0;
+                if (data > Control.MaxValueExtendedPhysics)
+                    return 1;
 
-            if (Control.MaxValue == Control.MinValue)
-                return 0;
+                if (Control.MaxValueExtendedPhysics == Control.MinValueExtendedPhysics)
+                    return 0;
 
-            return (float)((data - Control.MinValue) / (Control.MaxValue - Control.MinValue));
+                return (float)((data - Control.MinValueExtendedPhysics) / (Control.MaxValueExtendedPhysics - Control.MinValueExtendedPhysics));
+            }
+            else
+            {
+                if (data < Control.MinValue)
+                    return 0;
+                if (data > Control.MaxValue)
+                    return 1;
+
+                if (Control.MaxValue == Control.MinValue)
+                    return 0;
+
+                return (float)((data - Control.MinValue) / (Control.MaxValue - Control.MinValue));
+            }
         }
 
         public CABViewControlStyles GetStyle()
