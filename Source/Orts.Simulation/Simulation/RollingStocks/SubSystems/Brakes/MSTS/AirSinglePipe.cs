@@ -933,7 +933,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             bool NotConnected = false;
 
             // Start se vzduchem nebo bez vzduchu podle klíčového slova v názvu consistu
-            if (lead.BrakeSystem.StartOn && (train.LocoIsAirEmpty || trainCar.Simulator.Settings.AirEmpty))
+            if (lead != null && lead.BrakeSystem.StartOn && (train.LocoIsAirEmpty || trainCar.Simulator.Settings.AirEmpty))
             {
                 lead.BrakeSystem.IsAirEmpty = true;
                 foreach (TrainCar car in train.Cars)
