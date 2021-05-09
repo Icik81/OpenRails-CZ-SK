@@ -1927,18 +1927,20 @@ namespace Orts.Simulation.RollingStocks
         // Napěťový filtr pro umožnění použití EDB bez pantografu        
         public void PowerOn_Filter(float elapsedClockSeconds)
         {
+            if (!IsPlayerTrain)
+                return;
             // Nabíjení a vybíjení napěťového filtru
             if (EDBIndependent)
             {
                 // Kapacita napěťového filtru
                 PowerOnFilterCapacity = 2400; // 5 min při brždění 80kN, plně nabito za 4 min
-                // Mezní kapacita napěťového filtru, při které začne deaktivace EDB 
+                                              // Mezní kapacita napěťového filtru, při které začne deaktivace EDB 
                 PowerOnFilterCapacityLimit = 200;
 
                 // Nabíjení
                 if (PowerOn && PowerOnFilter < PowerOnFilterCapacity) PowerOnFilter = PowerOnFilter + (10 * elapsedClockSeconds); // 10 jednotek za sekundu
-                // Vybíjení
-                if (!PowerOn && DynamicBrakePercent > 0 && PowerOnFilter > 0) PowerOnFilter = PowerOnFilter - (DynamicBrakeForceN / 10000 * elapsedClockSeconds); 
+                                                                                                                                  // Vybíjení
+                if (!PowerOn && DynamicBrakePercent > 0 && PowerOnFilter > 0) PowerOnFilter = PowerOnFilter - (DynamicBrakeForceN / 1000 * elapsedClockSeconds);
                 // Pokles síly EDB při vybití filtru
                 if (!PowerOn && DynamicBrakePercent > 0 && PowerOnFilter < PowerOnFilterCapacityLimit)
                 {
@@ -1946,7 +1948,7 @@ namespace Orts.Simulation.RollingStocks
                     if (DynamicBrakePercent < 0) DynamicBrakePercent = 0;
                     SetDynamicBrakePercent(DynamicBrakePercent);
                     if (DynamicBrakeIntervention > 0) DynamicBrakeIntervention = DynamicBrakeIntervention - 0.01f;
-                    if (DynamicBrakeIntervention < 0) DynamicBrakeIntervention = 0;                    
+                    if (DynamicBrakeIntervention < 0) DynamicBrakeIntervention = 0;
                 }
 
                 //Trace.TraceWarning("Hodnota PowerOnFilter {0}, DynamicBrakePercent {1}, čas simulace {2}", PowerOnFilter, DynamicBrakePercent, Simulator.GameTime);
@@ -2024,7 +2026,17 @@ namespace Orts.Simulation.RollingStocks
 
             if (DynamicBrakePercent > 0)
             {
-                ControllerVolts = -(DynamicBrakePercent / 100) * MaxControllerVolts;
+                if (PowerOn)
+                {
+                    ControllerVolts = -(DynamicBrakePercent / 100) * MaxControllerVolts;
+                }
+                else
+                {
+                    if (PowerOnFilter > 0)
+                    {
+                        ControllerVolts = -(DynamicBrakePercent / 100) * MaxControllerVolts;
+                    }
+                }
             }
             else if (DynamicBrakePercent <= 0 && ControllerVolts < 0)
                 ControllerVolts = 0;
@@ -2184,7 +2196,7 @@ namespace Orts.Simulation.RollingStocks
                 //if (f > 0 && PowerOn)
                 // Icik 
                 // EDB funguje z baterií
-                if (f > 0 && PowerOn || f > 0 && EDBIndependent && PowerOnFilter > 0)
+                if (f > 0 && PowerOn || f > 0 && PowerOnFilter > 0)
                 {
                     DynamicBrakeForceN = f * (1 - PowerReduction);
                     MotiveForceN -= (SpeedMpS > 0 ? 1 : SpeedMpS < 0 ? -1 : Direction == Direction.Reverse ? -1 : 1) * DynamicBrakeForceN;                 
