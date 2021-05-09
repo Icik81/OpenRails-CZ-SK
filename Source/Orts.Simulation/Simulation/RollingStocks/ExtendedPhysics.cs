@@ -189,7 +189,7 @@ namespace Orts.Simulation.RollingStocks
         {
             if (Locomotive.ControllerVolts > 0)
             {
-                Locomotive.SetThrottlePercent((TotalCurrent / (TotalMaxCurrent * 4)) * 150);
+                Locomotive.SetThrottlePercent(Locomotive.ControllerVolts * 10);
             }
             else if (Locomotive.ControllerVolts < 0)
             {
@@ -313,8 +313,13 @@ namespace Orts.Simulation.RollingStocks
                 float t = (axleCurrent / (maxCurrent)) / totalMotors;
                 if (t < 0) t = -t;
                 ForceN = -Locomotive.DynamicBrakeForceCurves.Get(t, Locomotive.LocomotiveAxle.AxleSpeedMpS);
+                if (ForceN == 0)
+                {
+                    this.ElectricMotors[0].RotorCurrent = 0;
+                    this.ElectricMotors[0].StatorCurrent = 0;
+                }
             }
-            else if (Locomotive.ControllerVolts < 0) // TOTO bez tabulek
+            else if (Locomotive.ControllerVolts < 0) // TODO bez tabulek
             {
 
             }
@@ -433,12 +438,17 @@ namespace Orts.Simulation.RollingStocks
             } 
             else if (Locomotive.ControllerVolts < 0)
             {
-                float currentRotor = Motor.MaxNegativeRotorCurrent - Motor.MinRotorCurrent;
+                float currentRotor = Motor.MaxNegativeRotorCurrent;
                 Motor.RotorCurrent = (((Locomotive.ControllerVolts / MaxControllerVolts) * currentRotor) + Motor.MinRotorCurrent) * Motor.ErrorCoefficient;
                 Motor.RotorCurrent = Motor.RotorCurrent - (axleSpeed / Locomotive.MaxSpeedMpS);
                 if (Locomotive.ControllerVolts == 0)
                     Motor.RotorCurrent = 0;
                 Motor.StatorCurrent = Motor.RotorCurrent / Motor.MaxNegativeStatorCurrent;
+            }
+            else if (Locomotive.ControllerVolts == 0)
+            {
+                Motor.RotorCurrent = 0;
+                Motor.StatorCurrent = 0;
             }
             //Locomotive.Simulator.Confirmer.MSG("R: " + Motor.RotorCurrent.ToString() + " S: " + Motor.StatorCurrent.ToString());
         }
