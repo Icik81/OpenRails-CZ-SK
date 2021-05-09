@@ -158,6 +158,9 @@ namespace ORTS
             checkSaveCommands.Checked = Settings.SaveCommands;
             checkReduceMemory.Checked = Settings.ReduceMemory;
 
+            // Icik
+            checkAirEmpty.Checked = Settings.AirEmpty;
+
             // Audio tab
             checkMSTSBINSound.Checked = Settings.MSTSBINSound;
             numericSoundVolumePercent.Value = Settings.SoundVolumePercent;
@@ -465,6 +468,9 @@ private async void OptionsForm_Shown(object sender, EventArgs e)
             Settings.RunAt32bit = checkRunAt32bit.Checked;
             Settings.SaveCommands = checkSaveCommands.Checked;
             Settings.ReduceMemory = checkReduceMemory.Checked;
+
+            // Icik
+            Settings.AirEmpty = checkAirEmpty.Checked;
 
             // Audio tab
             Settings.MSTSBINSound = checkMSTSBINSound.Checked;
