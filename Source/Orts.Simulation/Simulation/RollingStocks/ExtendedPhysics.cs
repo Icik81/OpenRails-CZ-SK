@@ -310,7 +310,7 @@ namespace Orts.Simulation.RollingStocks
             }
             else if (Locomotive.DynamicBrakeForceCurves != null && Locomotive.ControllerVolts < 0)
             {
-                float t = (axleCurrent / (maxCurrent)) / totalMotors;
+                float t = (axleCurrent / (maxCurrent)) / totalMotors / 50;
                 if (t < 0) t = -t;
                 ForceN = -Locomotive.DynamicBrakeForceCurves.Get(t, Locomotive.LocomotiveAxle.AxleSpeedMpS);
                 if (ForceN == 0)
@@ -450,8 +450,6 @@ namespace Orts.Simulation.RollingStocks
             }
             else if (Locomotive.ControllerVolts < 0)
             {
-                if (Locomotive.ControllerVolts < 0.05)
-                    Locomotive.ControllerVolts = 0;
                 float currentRotor = Motor.MaxNegativeRotorCurrent;
                 if (Locomotive.ExtendedArmCurrent != null)
                 {
