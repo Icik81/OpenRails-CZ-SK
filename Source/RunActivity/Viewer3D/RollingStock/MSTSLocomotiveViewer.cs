@@ -1485,7 +1485,7 @@ namespace Orts.Viewer3D.RollingStock
         public float GetRangeFraction()
         {
             var data = Locomotive.GetDataOf(Control);
-            if (Control.MinValueExtendedPhysics != 0 || Control.MaxValueExtendedPhysics != 0)
+            if (Control.MinValueExtendedPhysics != 0 || Control.MaxValueExtendedPhysics != 0 && Locomotive.extendedPhysics != null)
             {
                 if (data < Control.MinValueExtendedPhysics)
                     return 0;
