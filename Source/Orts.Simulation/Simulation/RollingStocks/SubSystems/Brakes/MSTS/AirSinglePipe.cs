@@ -471,12 +471,12 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             //                (Car as MSTSWagon).DistributorPresent ? (PrevAuxResPressurePSI - BrakeLine1PressurePSI) * AuxCylVolumeRatio : 0);
             float threshold = (PrevAuxResPressurePSI - BrakeLine1PressurePSI) * AuxCylVolumeRatio;
             Threshold = threshold;
-                      
+
             if (StartOn)
-            {                
+            {
                 MSTSLocomotive loco = Car as MSTSLocomotive;
                 // Studeny start lokomotivy (vzduchojemy na 0)
-                if (IsAirEmpty)
+                if (IsAirEmpty || !(Car as MSTSWagon).IsDriveable)
                 {
                     if (loco != null)
                     {
@@ -486,7 +486,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                             HandbrakePercent = Simulator.Random.Next(80, 101);
                         }
                     }
-                    if (HandBrakeActive && (Car as MSTSWagon).HandBrakePresent)
+                    if ( (!(Car as MSTSWagon).IsDriveable || HandBrakeActive) && (Car as MSTSWagon).HandBrakePresent)
                     {
                         HandbrakePercent = Simulator.Random.Next(80, 101);
                     }
@@ -508,6 +508,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         HandbrakePercent = loco.HandBrakePresent ? 0 : 0;
                     }
                 }
+
                 MaxReleaseRatePSIpS0 = MaxReleaseRatePSIpS;
                 MaxApplicationRatePSIpS0 = MaxApplicationRatePSIpS;
                 StartOn = false;
