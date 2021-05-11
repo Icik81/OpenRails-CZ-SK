@@ -486,10 +486,22 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                             HandbrakePercent = Simulator.Random.Next(80, 101);
                         }
                     }
-                    if ( (!(Car as MSTSWagon).IsDriveable || HandBrakeActive) && (Car as MSTSWagon).HandBrakePresent)
+
+                    if (!(Car as MSTSWagon).IsDriveable && (Car as MSTSWagon).HandBrakePresent)
                     {
                         HandbrakePercent = Simulator.Random.Next(80, 101);
                     }
+
+                    if (HandBrakeDeactive && (Car as MSTSWagon).HandBrakePresent)
+                    {
+                        HandbrakePercent = 0;
+                    }
+
+                    if (HandBrakeActive && (Car as MSTSWagon).HandBrakePresent)
+                    {
+                        HandbrakePercent = Simulator.Random.Next(80, 101);
+                    }
+                    
                     FullServPressurePSI = 0;
                     AutoCylPressurePSI = 0;
                     AutoCylPressurePSI0 = 0;
@@ -971,6 +983,11 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     {
                         if (car == train.Cars[i])
                             car.BrakeSystem.HandBrakeActive = true;
+                    }
+                    for (int i = x + 1; i < train.Cars.Count; i++)
+                    {
+                        if (car == train.Cars[i])
+                            car.BrakeSystem.HandBrakeDeactive = true;
                     }
                 }                
             }
