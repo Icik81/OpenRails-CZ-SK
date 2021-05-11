@@ -691,6 +691,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerTransmissions
                         {
                             axleSpeedMpS = 0.0f;
                             axleForceN = -brakeRetardForceN + driveForceN;
+                            Reset();
                         }
                     }
                     else if (TrainSpeedMpS < -0.01f)
@@ -710,6 +711,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerTransmissions
                         {
                             axleSpeedMpS = 0.0f;
                             axleForceN = brakeRetardForceN - driveForceN;
+                            Reset();
                         }
                     }
                     else
