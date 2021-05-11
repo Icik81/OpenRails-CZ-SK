@@ -674,7 +674,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems
             if (SpeedRegMode == SpeedRegulatorMode.Manual)
                 return;
             Locomotive.SignalEvent(Common.Event.Alert1);
+            float prevSpeed = SelectedSpeedMpS;
             SelectedSpeedMpS = SpeedIsMph ? MpS.FromMpH(Speed) : MpS.FromKpH(Speed);
+            if (SelectedSpeedMpS < prevSpeed)
+                RestrictedSpeedActive = false;
             if (SelectedSpeedMpS > Locomotive.MaxSpeedMpS)
                 SelectedSpeedMpS = Locomotive.MaxSpeedMpS;
             Simulator.Confirmer.Message(ConfirmLevel.Information, Simulator.Catalog.GetString("Selected speed set to ") + Speed.ToString() + (SpeedIsMph? "mph" : "kmh"));

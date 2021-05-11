@@ -552,6 +552,11 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                 {
                     if (controllerPosition == ControllerPosition.ThrottleIncrease)
                     {
+                        if (Locomotive.CruiseControl.RestrictedSpeedActive)
+                        {
+                            Locomotive.CruiseControl.SelectedSpeedMpS = Locomotive.CruiseControl.CurrentSelectedSpeedMpS;
+                            Locomotive.CruiseControl.RestrictedSpeedActive = false;
+                        }
                         if (!Locomotive.CruiseControl.ContinuousSpeedIncreasing && movedForward) return;
                         movedForward = true;
                         Locomotive.CruiseControl.SelectedSpeedMpS = Locomotive.CruiseControl.SelectedSpeedMpS + Locomotive.CruiseControl.SpeedRegulatorNominalSpeedStepMpS;
@@ -559,6 +564,11 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                     }
                     if (controllerPosition == ControllerPosition.ThrottleIncreaseFast)
                     {
+                        if (Locomotive.CruiseControl.RestrictedSpeedActive)
+                        {
+                            Locomotive.CruiseControl.SelectedSpeedMpS = Locomotive.CruiseControl.CurrentSelectedSpeedMpS;
+                            Locomotive.CruiseControl.RestrictedSpeedActive = false;
+                        }
                         if (!Locomotive.CruiseControl.ContinuousSpeedIncreasing && movedForward) return;
                         movedForward = true;
                         Locomotive.CruiseControl.SelectedSpeedMpS = Locomotive.CruiseControl.SelectedSpeedMpS + Locomotive.CruiseControl.SpeedRegulatorNominalSpeedStepMpS * 2;
@@ -566,6 +576,11 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                     }
                     if (controllerPosition == ControllerPosition.ThrottleDecrease)
                     {
+                        if (Locomotive.CruiseControl.RestrictedSpeedActive)
+                        {
+                            Locomotive.CruiseControl.SelectedSpeedMpS = Locomotive.CruiseControl.CurrentSelectedSpeedMpS;
+                            Locomotive.CruiseControl.RestrictedSpeedActive = false;
+                        }
                         if (!Locomotive.CruiseControl.ContinuousSpeedDecreasing && movedAft) return;
                         movedAft = true;
                         Locomotive.CruiseControl.SelectedSpeedMpS = Locomotive.CruiseControl.SelectedSpeedMpS - Locomotive.CruiseControl.SpeedRegulatorNominalSpeedStepMpS;
@@ -573,6 +588,11 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                     }
                     if (controllerPosition == ControllerPosition.ThrottleDecreaseFast)
                     {
+                        if (Locomotive.CruiseControl.RestrictedSpeedActive)
+                        {
+                            Locomotive.CruiseControl.SelectedSpeedMpS = Locomotive.CruiseControl.CurrentSelectedSpeedMpS;
+                            Locomotive.CruiseControl.RestrictedSpeedActive = false;
+                        }
                         if (!Locomotive.CruiseControl.ContinuousSpeedDecreasing && movedAft) return;
                         movedAft = true;
                         Locomotive.CruiseControl.SelectedSpeedMpS = Locomotive.CruiseControl.SelectedSpeedMpS - Locomotive.CruiseControl.SpeedRegulatorNominalSpeedStepMpS * 2;
