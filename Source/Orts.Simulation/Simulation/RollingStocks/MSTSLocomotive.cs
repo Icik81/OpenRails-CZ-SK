@@ -2016,6 +2016,12 @@ namespace Orts.Simulation.RollingStocks
             if (extendedPhysics != null)
                 extendedPhysics.Update(elapsedClockSeconds);
 
+            if (CruiseControl != null)
+            {
+                if (CruiseControl.RestrictedSpeedActive)
+                    CruiseControl.CheckRestrictedSpeedZone();
+            }
+
             if (ControllerVolts > 0 && DynamicBrakePercent > -1)
                 DynamicBrakeChangeActiveState(false);
 

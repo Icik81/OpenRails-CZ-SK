@@ -911,8 +911,6 @@ namespace Orts.Simulation.RollingStocks.SubSystems
             float t = 0;
             if (SpeedRegMode == SpeedRegulatorMode.Manual) DynamicBrakePriority = false;
 
-            if (RestrictedSpeedActive)
-                CheckRestrictedSpeedZone();
             if (DynamicBrakePriority)
             {
                 controllerVolts = 0;
