@@ -220,6 +220,26 @@ namespace Orts.Common
         KeyboardBeep,
         KeyboardBeep1,
 
+        MirelOn,
+        MirelOff,
+        MirelTestBegin,
+        MirelOverspeedOn,
+        MirelOverspeedOff,
+        MirelClearSignalAhead,
+        MirelZS1B,
+        MirelZS3,
+        MirelZS3Off,
+        ActiveCabSelectorChange,
+        MirelBrakeReleasingPipePressure,
+        MirelBrakeFillingPipePressure,
+        MirelBrakeReleasingPipePressureFast,
+        MirelBrakeFillingPipePressureFast,
+        MirekBrakeStopReleaseSound,
+        MirekBrakeStopFillSound,
+        MirekBrakeStopReleaseFastSound,
+        MirekBrakeStopFillFastSound,
+        MirelUnwantedVigilancy,
+        LS90TestComplete,
 
     }
 
@@ -457,6 +477,26 @@ namespace Orts.Common
                         case 305: return Event.KeyboardBeep;
                         case 306: return Event.KeyboardBeep1;
 
+                        case 10169: return Event.MirelOn;
+                        case 10170: return Event.MirelOff;
+                        case 10171: return Event.MirelTestBegin;
+                        case 10172: return Event.MirelOverspeedOn;
+                        case 10173: return Event.MirelOverspeedOff;
+                        case 10174: return Event.MirelClearSignalAhead;
+                        case 10175: return Event.MirelZS1B;
+                        case 10176: return Event.MirelBrakeReleasingPipePressure;
+                        case 10177: return Event.MirekBrakeStopReleaseSound;
+                        case 10178: return Event.MirelBrakeFillingPipePressure;
+                        case 10179: return Event.MirekBrakeStopFillSound;
+                        case 10180: return Event.MirelBrakeReleasingPipePressureFast;
+                        case 10181: return Event.MirekBrakeStopReleaseFastSound;
+                        case 10182: return Event.MirelBrakeFillingPipePressureFast;
+                        case 10183: return Event.MirekBrakeStopFillFastSound;
+                        case 10184: return Event.MirelUnwantedVigilancy;
+                        case 10185: return Event.MirelZS3;
+                        case 10186: return Event.MirelZS3Off;
+                        case 10188: return Event.ActiveCabSelectorChange;
+                        case 10195: return Event.LS90TestComplete;
                         default: return 0;
                     }
                 case Source.MSTSCrossing:
