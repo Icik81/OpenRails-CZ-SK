@@ -207,9 +207,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 string.Format("DebKoef {0:F1}", DebugKoef),
 
                 //string.Empty, // Spacer because the state above needs 2 columns.                                                     
-                //string.Format("RMgShoeCoefficientFrictionAdjFactor {0:F3}", Car.RMgShoeCoefficientFrictionAdjFactor),
+                //string.Format("IsAirFull {0:F0}", IsAirFull),
                 //string.Empty, // Spacer because the state above needs 2 columns.                                     
-                //string.Format("BrakeForceN {0:F0}", Car.BrakeForceN),
+                //string.Format("IsAirEmpty {0:F0}", IsAirEmpty),
             };
         }
 
@@ -475,33 +475,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             if (StartOn)
             {
                 MSTSLocomotive loco = Car as MSTSLocomotive;
-                // Studeny start lokomotivy (vzduchojemy na 0)
-                if (IsAirEmpty || !(Car as MSTSWagon).IsDriveable)
+                // Vyfouká všechny vozy
+                if (!(Car as MSTSWagon).IsDriveable)
                 {
-                    if (loco != null)
-                    {
-                        loco.MainResPressurePSI = 0;
-                        if (loco.HandBrakePresent)
-                        {
-                            HandbrakePercent = Simulator.Random.Next(80, 101);
-                        }
-                    }
-
-                    if (!(Car as MSTSWagon).IsDriveable && (Car as MSTSWagon).HandBrakePresent)
-                    {
-                        HandbrakePercent = Simulator.Random.Next(80, 101);
-                    }
-
-                    if (HandBrakeDeactive && (Car as MSTSWagon).HandBrakePresent)
-                    {
-                        HandbrakePercent = 0;
-                    }
-
-                    if (HandBrakeActive && (Car as MSTSWagon).HandBrakePresent)
-                    {
-                        HandbrakePercent = Simulator.Random.Next(80, 101);
-                    }
-                    
                     FullServPressurePSI = 0;
                     AutoCylPressurePSI = 0;
                     AutoCylPressurePSI0 = 0;
@@ -510,15 +486,50 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     BrakeLine1PressurePSI = 0;
                     BrakeLine2PressurePSI = 0;
                     BrakeLine3PressurePSI = 0;
-                    prevBrakeLine1PressurePSI = 0;                    
+                    prevBrakeLine1PressurePSI = 0;
                 }
-                // Normální start lokomotivy se vzduchem
+                // Vyfouká lokomotivu při AirEmpty a nastaví ruční brzdy
+                if (IsAirEmpty || !IsAirFull)
+                {
+                    if (loco != null)
+                    {
+                        loco.MainResPressurePSI = 0;
+                        if (loco.HandBrakePresent)
+                        {
+                            HandbrakePercent = Simulator.Random.Next(80, 101);
+                        }
+                        FullServPressurePSI = 0;
+                        AutoCylPressurePSI = 0;
+                        AutoCylPressurePSI0 = 0;
+                        AuxResPressurePSI = 0;
+                        PrevAuxResPressurePSI = 0;
+                        BrakeLine1PressurePSI = 0;
+                        BrakeLine2PressurePSI = 0;
+                        BrakeLine3PressurePSI = 0;
+                        prevBrakeLine1PressurePSI = 0;
+                    }
+                    if ((Car as MSTSWagon).HandBrakePresent)
+                    {
+                        if (!(Car as MSTSWagon).IsDriveable)                        
+                            HandbrakePercent = Simulator.Random.Next(80, 101);                       
+                        if (HandBrakeDeactive)                        
+                            HandbrakePercent = 0;                        
+                        if (HandBrakeActive)                        
+                            HandbrakePercent = Simulator.Random.Next(80, 101);                        
+                    }
+                }
+                //Start vlaku se vzduchem
                 else
+                if (IsAirFull)
                 {
                     if (loco != null)
                     {
                         HandbrakePercent = loco.HandBrakePresent ? 0 : 0;
                     }
+                    HandbrakePercent = (Car as MSTSWagon).HandBrakePresent ? 0 : 0;
+                    BrakeLine1PressurePSI = maxPressurePSI0;
+                    BrakeLine2PressurePSI = Car.Train.BrakeLine2PressurePSI;
+                    AuxResPressurePSI = maxPressurePSI0;
                 }
 
                 MaxReleaseRatePSIpS0 = MaxReleaseRatePSIpS;
@@ -936,7 +947,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             var brakePipeTimeFactorS = lead == null ? 0.003f : lead.BrakePipeTimeFactorS; // Průrazná rychlost tlakové vlny 250m/s 0.003f
             var BrakePipeChargingRatePSIorInHgpS0 = lead == null ? 29 : lead.BrakePipeChargingRatePSIorInHgpS;
 
-            float brakePipeTimeFactorS0 = brakePipeTimeFactorS;           
+            float brakePipeTimeFactorS0 = brakePipeTimeFactorS;
             float brakePipeTimeFactorS_Apply = brakePipeTimeFactorS * 30; // Vytvoří zpoždění náběhu brzdy vlaku kvůli průrazné tlakové vlně            
             float brakePipeChargingNormalPSIpS = BrakePipeChargingRatePSIorInHgpS0; // Rychlost plnění průběžného potrubí při normálním plnění 29 PSI/s
             float brakePipeChargingQuickPSIpS = 200; // Rychlost plnění průběžného potrubí při švihu 200 PSI/s
@@ -945,51 +956,71 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             float TrainPipeTimeVariationS = elapsedClockSeconds / nSteps;
             bool NotConnected = false;
 
-            // Start se vzduchem nebo bez vzduchu podle klíčového slova v názvu consistu
-            if (lead != null && lead.BrakeSystem.StartOn && (train.LocoIsAirEmpty || trainCar.Simulator.Settings.AirEmpty))
+            // Start se vzduchem nebo bez vzduchu podle klíčového slova v názvu consistu nebo volby v menu OR
+            if (lead != null && lead.BrakeSystem.StartOn)
             {
-                lead.BrakeSystem.IsAirEmpty = true;
-                foreach (TrainCar car in train.Cars)
+                if (train.LocoIsAirEmpty || trainCar.Simulator.Settings.AirEmpty)
                 {
-                    car.BrakeSystem.IsAirEmpty = true;                  
-                    int x = 0;
-                    int y = train.Cars.Count - 1;
-                    if (y > 1 && y <= 10)
-                        x = 2;
-                    if (y > 10 && y <= 15)
-                        x = 3;
-                    if (y > 15 && y <= 20)
-                        x = 4;
-                    if (y > 20 && y <= 25)
-                        x = 5;
-                    if (y > 25 && y <= 30)
-                        x = 6;
-                    if (y > 30 && y <= 35)
-                        x = 7;
-                    if (y > 35 && y <= 40)
-                        x = 8;
-                    if (y > 40 && y <= 45)
-                        x = 9;
-                    if (y > 45 && y <= 50)
-                        x = 10;
-                    if (y > 50 && y <= 55)
-                        x = 11;
-                    if (y > 55 && y <= 60)
-                        x = 12;
-                    if (y > 60 && y <= 65)
-                        x = 13;
+                    lead.BrakeSystem.IsAirEmpty = true;
+                    foreach (TrainCar car in train.Cars)
+                    {
+                        car.BrakeSystem.IsAirEmpty = true;
+                        int x = 0;
+                        int y = train.Cars.Count - 1;
+                        if (y > 1 && y <= 10)
+                            x = 2;
+                        if (y > 10 && y <= 15)
+                            x = 3;
+                        if (y > 15 && y <= 20)
+                            x = 4;
+                        if (y > 20 && y <= 25)
+                            x = 5;
+                        if (y > 25 && y <= 30)
+                            x = 6;
+                        if (y > 30 && y <= 35)
+                            x = 7;
+                        if (y > 35 && y <= 40)
+                            x = 8;
+                        if (y > 40 && y <= 45)
+                            x = 9;
+                        if (y > 45 && y <= 50)
+                            x = 10;
+                        if (y > 50 && y <= 55)
+                            x = 11;
+                        if (y > 55 && y <= 60)
+                            x = 12;
+                        if (y > 60 && y <= 65)
+                            x = 13;
 
-                    for (int i = 1; i < x + 1; i++)
-                    {
-                        if (car == train.Cars[i])
-                            car.BrakeSystem.HandBrakeActive = true;
+                        for (int i = 1; i < x + 1; i++)
+                        {
+                            if (car == train.Cars[i])
+                                car.BrakeSystem.HandBrakeActive = true;
+                        }
+                        for (int i = x + 1; i < train.Cars.Count; i++)
+                        {
+                            if (car == train.Cars[i])
+                                car.BrakeSystem.HandBrakeDeactive = true;
+                        }
                     }
-                    for (int i = x + 1; i < train.Cars.Count; i++)
-                    {
-                        if (car == train.Cars[i])
-                            car.BrakeSystem.HandBrakeDeactive = true;
+                }
+                else
+                if (!train.LocoIsAirEmpty && !trainCar.Simulator.Settings.AirEmpty)
+                {
+                    lead.BrakeSystem.IsAirEmpty = false;
+                    lead.BrakeSystem.IsAirFull = true;
+                    foreach (TrainCar car in train.Cars)
+                    {                        
+                        for (int i = 1; i < train.Cars.Count; i++)
+                        {
+                            if (car == train.Cars[i])
+                            {
+                                car.BrakeSystem.IsAirEmpty = false;
+                                car.BrakeSystem.IsAirFull = true;
+                            }
+                        }
                     }
-                }                
+                }
             }
 
             // Výpočet netěsnosti vzduchu v potrubí pro každý vůz
