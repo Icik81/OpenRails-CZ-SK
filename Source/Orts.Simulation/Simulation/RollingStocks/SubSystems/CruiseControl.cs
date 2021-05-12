@@ -864,6 +864,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
             }
             if (Bar.FromPSI(Locomotive.BrakeSystem.BrakeLine1PressurePSI) < 4.98)
             {
+                Locomotive.ControllerVolts = 0;
                 canAddForce = false;
                 reducingForce = true;
                 timeFromEngineMoved = 0;

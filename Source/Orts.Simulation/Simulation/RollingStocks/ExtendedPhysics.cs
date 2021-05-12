@@ -206,6 +206,12 @@ namespace Orts.Simulation.RollingStocks
                     }
                 }
             }
+            if (Locomotive.DynamicBrakePercent < 0.7 && Locomotive.ControllerVolts < 0)
+            {
+                Locomotive.DynamicBrakePercent = 0;
+                Locomotive.DynamicBrakeChangeActiveState(false);
+                Locomotive.ControllerVolts = 0;
+            }
             TotalCurrent = 0;
             StarorsCurrent = 0;
             RotorsCurrent = 0;
