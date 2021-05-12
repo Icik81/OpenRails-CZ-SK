@@ -133,6 +133,7 @@ namespace Orts.Formats.Msts
             if (Description == null) throw new STFException(stf, "Missing Description");
             if (RouteStart == null) throw new STFException(stf, "Missing RouteStart");
             if (ForestClearDistance == 0 && RemoveForestTreesFromRoads) Trace.TraceWarning("You must define also ORTSUserPreferenceForestClearDistance to avoid trees on roads");
+            FullFileName = stf.FileName;
         }
 
         public string RouteID;  // ie JAPAN1  - used for TRK file and route folder name
@@ -182,6 +183,7 @@ namespace Orts.Formats.Msts
         public int CurveSMSNumber = -1; // defines the number of the curve SMS files in file ttype.dat
         public int CurveSwitchSMSNumber = -1; // defines the number of the curve-switch SMS files in file ttype.dat
 
+        public string FullFileName;
     }
 
 

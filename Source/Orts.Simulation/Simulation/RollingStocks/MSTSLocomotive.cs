@@ -481,6 +481,11 @@ namespace Orts.Simulation.RollingStocks
         public float MaxControllerVolts = 10;
         public CurrentDirectionEnum CurrentDirection = CurrentDirectionEnum.Braking;
         public float AcceleratingToBrakingChangeTime = 0;
+        public enum DriverStation { None, Station1, Station2 };
+        public DriverStation ActiveStation = DriverStation.None;
+        public enum KeyPosition { Pocket, Station1, Station2 };
+        public KeyPosition CurrentKeyPosition = KeyPosition.Pocket;
+        public Mirel Mirel;
 
         public bool
       Speed0Pressed, Speed10Pressed, Speed20Pressed, Speed30Pressed, Speed40Pressed, Speed50Pressed
@@ -511,6 +516,7 @@ namespace Orts.Simulation.RollingStocks
             ThrottleController = new MSTSNotchController();
             DynamicBrakeController = new MSTSNotchController();
             TrainControlSystem = new ScriptedTrainControlSystem(this);
+            Mirel = new Mirel(this);
         }
 
         /// <summary>
@@ -1050,6 +1056,33 @@ namespace Orts.Simulation.RollingStocks
                 case "engine(acceleratingtobrakingchangetime": AcceleratingToBrakingChangeTime = stf.ReadFloatBlock(STFReader.UNITS.Any, 2); break;
                 case "engine(maxcontrollervolts": MaxControllerVolts = stf.ReadFloatBlock(STFReader.UNITS.Any, 5); break;
                 case "engine(ortscruisecontrol": SetUpCruiseControl(); break;
+                case "engine(ortsmirel": SetUpMirel(); break;
+                case "engine(ortsmirel(enableupdates": Mirel.EnableMirelUpdates = stf.ReadBoolBlock(false); break;
+                case "engine(ortsmirel(defaultmaxspeedkph": Mirel.MaxSelectedSpeed = stf.ReadFloatBlock(STFReader.UNITS.Speed, 80); break;
+                case "engine(ortsmirel(lvztype":
+                    {
+                        String type = stf.ReadStringBlock(String.Empty).ToLower();
+                        switch (type)
+                        {
+                            case "full":
+                                {
+                                    Mirel.MirelType = Mirel.Type.Full;
+                                    break;
+                                }
+                            case "ls90":
+                                {
+                                    Mirel.MirelType = Mirel.Type.LS90;
+                                    break;
+                                }
+                            default:
+                                {
+                                    Mirel.MirelType = Mirel.Type.Full;
+                                    break;
+                                }
+                        }
+                        break;
+                    }
+                case "engine(ortsmirel(noalertonrestrictedsignal": Mirel.NoAlertOnRestrictedSignal = stf.ReadBoolBlock(false); break;
                 case "engine(ortsmultipositioncontroller": SetUpMPC(); break;
                 case "engine(disablerestrictedspeedwhenmanualdriving": DisableRestrictedSpeedWhenManualDriving = stf.ReadBoolBlock(false); break;
                 case "engine(ortscruisecontrol(parkingbrakeengagespeed": CruiseControl.ParkingBrakeEngageSpeed = stf.ReadFloatBlock(STFReader.UNITS.Speed, 0); break;
@@ -1218,7 +1251,62 @@ namespace Orts.Simulation.RollingStocks
             // Jindrich
             if (locoCopy.CruiseControl != null)
                 CruiseControl = locoCopy.CruiseControl;
+            if (locoCopy.Mirel != null)
+                Mirel = locoCopy.Mirel;
+        }
 
+        public void ActiveStationIncrease()
+        {
+            if (!Mirel.Equipped) return;
+            SignalEvent(Event.ActiveCabSelectorChange);
+            if (ActiveStation == DriverStation.None && !UsingRearCab)
+                ActiveStation = DriverStation.Station1;
+            else if (ActiveStation == DriverStation.None && UsingRearCab)
+                ActiveStation = DriverStation.Station2;
+
+            switch (ActiveStation)
+            {
+                case DriverStation.None:
+                    {
+                        Simulator.Confirmer.Information("No active cab selected");
+                        break;
+                    }
+                case DriverStation.Station1:
+                    {
+                        Simulator.Confirmer.Information("Cab 1 selected");
+                        break;
+                    }
+                case DriverStation.Station2:
+                    {
+                        Simulator.Confirmer.Information("Cab 2 selected");
+                        break;
+                    }
+            }
+        }
+        public void ActiveStationDecrease()
+        {
+            if (!Mirel.Equipped) return;
+            SignalEvent(Event.ActiveCabSelectorChange);
+            ActiveStation = DriverStation.None;
+
+            switch (ActiveStation)
+            {
+                case DriverStation.None:
+                    {
+                        Simulator.Confirmer.Information("No active cab selected");
+                        break;
+                    }
+                case DriverStation.Station1:
+                    {
+                        Simulator.Confirmer.Information("Cab 1 selected");
+                        break;
+                    }
+                case DriverStation.Station2:
+                    {
+                        Simulator.Confirmer.Information("Cab 2 selected");
+                        break;
+                    }
+            }
         }
 
         /// <summary>
@@ -1285,7 +1373,9 @@ namespace Orts.Simulation.RollingStocks
             LocomotiveAxle.Save(outf);
             if (CruiseControl != null)
                 CruiseControl.Save(outf);
-
+            if (Mirel != null)
+                Mirel.Save(outf);
+            outf.Write((int)ActiveStation);
         }
 
         /// <summary>
@@ -1340,6 +1430,10 @@ namespace Orts.Simulation.RollingStocks
             // Jindrich
             if (CruiseControl != null)
                 CruiseControl.Restore(inf);
+            if (Mirel != null)
+                Mirel.Restore(inf);
+            int fActiveStation = inf.ReadInt32();
+            ActiveStation = (DriverStation)fActiveStation;
 
         }
 
@@ -1666,6 +1760,12 @@ namespace Orts.Simulation.RollingStocks
                 MultiPositionControllers = new List<MultiPositionController>();
             }
             MultiPositionControllers.Add(MultiPositionController);
+        }
+
+        public void SetUpMirel()
+        {
+            Mirel.Initialize();
+            Mirel.Equipped = true;
         }
 
         //================================================================================================//
@@ -2009,6 +2109,8 @@ namespace Orts.Simulation.RollingStocks
         /// <summary>
         /// This function updates periodically the states and physical variables of the locomotive's subsystems.
         /// </summary>
+        private bool trainBrakeApply = false;
+        private bool trainBrakeRelease = false;
         protected float EngineBrakePercentSet = 0;
         public bool CanCheckEngineBrake = true;
         public override void Update(float elapsedClockSeconds)
@@ -2139,9 +2241,43 @@ namespace Orts.Simulation.RollingStocks
                 }
             }
 
+            if (GetTrainBrakeStatus().Contains("Apply") || GetTrainBrakeStatus().Contains("Emergency"))
+            {
+                if (Mirel.initTest != Mirel.InitTest.Passed)
+                {
+                    if (!trainBrakeApply)
+                    {
+                        trainBrakeApply = !trainBrakeApply;
+                        SignalEvent(Event.MirelBrakeReleasingPipePressure);
+                    }
+                }
+            }
+            else if (trainBrakeApply)
+            {
+                SignalEvent(Event.MirekBrakeStopReleaseSound);
+                trainBrakeApply = !trainBrakeApply;
+            }
+
+            if (GetTrainBrakeStatus().Contains("Release"))
+            {
+                if (Mirel.initTest != Mirel.InitTest.Passed)
+                {
+                    if (!trainBrakeRelease)
+                    {
+                        trainBrakeRelease = !trainBrakeRelease;
+                        SignalEvent(Event.MirelBrakeFillingPipePressure);
+                    }
+                }
+            }
+            else if (trainBrakeRelease)
+            {
+                SignalEvent(Event.MirekBrakeStopFillSound);
+                trainBrakeRelease = !trainBrakeRelease;
+            }
+
 
             // TODO  this is a wild simplification for electric and diesel electric
-                        float t = ThrottlePercent / 100f;
+            float t = ThrottlePercent / 100f;
 
             if (!AdvancedAdhesionModel)  // Advanced adhesion model turned off.
                AbsWheelSpeedMpS = AbsSpeedMpS;
@@ -6170,6 +6306,198 @@ namespace Orts.Simulation.RollingStocks
                             cvc.ElapsedTime = 0;
                         break;
                     }
+
+                case CABViewControlTypes.ORTS_DISPLAY_BLUE_LIGHT:
+                    {
+                        data = (float)(Mirel.BlueLight ? 0 : 1);
+                        break;
+                    }
+                case CABViewControlTypes.ORTS_MIREL_DRIVE_MODE:
+                    {
+                        if (Mirel.DriveModeHideModes)
+                            data = 0;
+                        else
+                            data = (float)Mirel.mainMode;
+                        break;
+                    }
+                case CABViewControlTypes.ORTS_MIREL_DRIVE_MODE_OPTIONS:
+                    {
+                        data = (float)Mirel.driveMode;
+                        break;
+                    }
+                case CABViewControlTypes.ORTS_MIREL_DISPLAY_FLASH_MASK:
+                    {
+                        data = Mirel.DisplayFlashMask ? 1 : 0;
+                        break;
+                    }
+                case CABViewControlTypes.ORTS_MIREL_FULL_DISPLAY:
+                    {
+                        data = Mirel.FullDisplay ? 1 : 0;
+                        break;
+                    }
+                case CABViewControlTypes.ORTS_MIREL_DISPLAY_NUM_1:
+                    {
+                        data = Mirel.MirelSpeedNum1;
+                        break;
+                    }
+                case CABViewControlTypes.ORTS_MIREL_DISPLAY_NUM_2:
+                    {
+                        data = Mirel.MirelSpeedNum2;
+                        break;
+                    }
+                case CABViewControlTypes.ORTS_MIREL_DISPLAY_NUM_3:
+                    {
+                        data = Mirel.MirelSpeedNum3;
+                        break;
+                    }
+                case CABViewControlTypes.ORTS_MIREL_DISPLAY_D1:
+                    {
+                        data = Mirel.initTest == Mirel.InitTest.Running ? 0 : 1;
+                        break;
+                    }
+                case CABViewControlTypes.ORTS_MIREL_DISPLAY_TEST1:
+                    {
+                        data = Mirel.Test1 ? 1 : 0;
+                        break;
+                    }
+                case CABViewControlTypes.ORTS_MIREL_DISPLAY_TEST2:
+                    {
+                        data = Mirel.Test2 ? 1 : 0;
+                        break;
+                    }
+                case CABViewControlTypes.ORTS_MIREL_DISPLAY_TEST3:
+                    {
+                        data = Mirel.Test3 ? 1 : 0;
+                        break;
+                    }
+                case CABViewControlTypes.ORTS_MIREL_DISPLAY_TEST4:
+                    {
+                        data = Mirel.Test4 ? 1 : 0;
+                        break;
+                    }
+                case CABViewControlTypes.ORTS_MIREL_DISPLAY_TEST5:
+                    {
+                        data = Mirel.Test5 ? 1 : 0;
+                        break;
+                    }
+                case CABViewControlTypes.ORTS_MIREL_DISPLAY_TEST6:
+                    {
+                        data = Mirel.Test6 ? 1 : 0;
+                        break;
+                    }
+                case CABViewControlTypes.ORTS_MIREL_DISPLAY_TEST7:
+                    {
+                        data = Mirel.Test7 ? 1 : 0;
+                        break;
+                    }
+
+                case CABViewControlTypes.ORTS_ACTIVE_CAB:
+                    {
+                        if (!UsingRearCab && CurrentKeyPosition == KeyPosition.Station1)
+                        {
+                            data = (int)ActiveStation + 1;
+                        }
+                        else if (UsingRearCab && CurrentKeyPosition == KeyPosition.Station2)
+                        {
+                            data = (int)ActiveStation + 1;
+                        }
+                        else
+                        {
+                            data = 0;
+                        }
+                        break;
+                    }
+                case CABViewControlTypes.ORTS_MIREL_NZOK:
+                    {
+                        data = Mirel.NZOK ? 1 : 0;
+                        break;
+                    }
+                case CABViewControlTypes.ORTS_MIREL_NZ1:
+                    {
+                        data = Mirel.NZ1 ? 1 : 0;
+                        break;
+                    }
+                case CABViewControlTypes.ORTS_MIREL_NZ2:
+                    {
+                        data = Mirel.NZ2 ? 1 : 0;
+                        break;
+                    }
+                case CABViewControlTypes.ORTS_MIREL_NZ3:
+                    {
+                        data = Mirel.NZ3 ? 1 : 0;
+                        break;
+                    }
+                case CABViewControlTypes.ORTS_MIREL_NZ4:
+                    {
+                        data = Mirel.NZ4 ? 1 : 0;
+                        break;
+                    }
+                case CABViewControlTypes.ORTS_MIREL_NZ5:
+                    {
+                        data = Mirel.NZ5 ? 1 : 0;
+                        break;
+                    }
+                case CABViewControlTypes.ORTS_MIREL_MAN:
+                    {
+                        data = Mirel.ManualModeDisplay ? 1 : 0;
+                        break;
+                    }
+                case CABViewControlTypes.ORTS_MIREL_ZAP:
+                    {
+                        data = Mirel.ZAP ? 1 : 0;
+                        break;
+                    }
+                case CABViewControlTypes.ORTS_MIREL_VYP:
+                    {
+                        data = Mirel.VYP ? 1 : 0;
+                        break;
+                    }
+                case CABViewControlTypes.ORTS_MIREL_TOP_LEFT_DOT:
+                    {
+                        data = Mirel.ReducedSpeed ? 1 : 0;
+                        break;
+                    }
+                case CABViewControlTypes.ORTS_MIREL_TRANS_FRQ:
+                    {
+                        if (Mirel.transmittionSignalFreq == Mirel.TransmittionSignalFreq.None) data = 0;
+                        if (Mirel.transmittionSignalFreq == Mirel.TransmittionSignalFreq.Freq50Hz) data = 1;
+                        if (Mirel.transmittionSignalFreq == Mirel.TransmittionSignalFreq.Freq75Hz) data = 2;
+                        break;
+                    }
+                case CABViewControlTypes.ORTS_MIREL_M:
+                    {
+                        data = Mirel.ManualMode ? 1 : 0;
+                        break;
+                    }
+                case CABViewControlTypes.ORTS_MIREL_START_REDUCE_SPEED:
+                    {
+                        data = Mirel.StartReducingSpeed ? 1 : 0;
+                        break;
+                    }
+                case CABViewControlTypes.ORTS_REPEATER_LIGHTS_MASK:
+                    {
+                        // data 1 = hide mask and display aspect
+                        data = 1;
+                        if ((Mirel.selectedDriveMode == Mirel.DriveMode.Normal || Mirel.selectedDriveMode == Mirel.DriveMode.Trailing) && !Mirel.flashFullDisplayInProggress && Mirel.RecievingRepeaterSignal)
+                            data = 1;
+                        else
+                            data = 0;
+                        if (Mirel.MirelType != Mirel.Type.Full && (Mirel.Ls90power == Mirel.LS90power.Off || Mirel.Ls90power == Mirel.LS90power.Start))
+                            data = 0;
+                        break;
+                    }
+                case CABViewControlTypes.ORTS_STATION:
+                    {
+                        data = 0;
+                        if (Mirel.initTest == Mirel.InitTest.Passed && ActiveStation == DriverStation.None)
+                            data = 1;
+                        if (Mirel.initTest == Mirel.InitTest.Passed && ActiveStation == DriverStation.Station2 && !UsingRearCab)
+                            data = 3;
+                        if (Mirel.initTest == Mirel.InitTest.Passed && ActiveStation == DriverStation.Station1 && UsingRearCab)
+                            data = 2;
+                        break;
+                    }
+
 
                 default:
                     if (CruiseControl != null)

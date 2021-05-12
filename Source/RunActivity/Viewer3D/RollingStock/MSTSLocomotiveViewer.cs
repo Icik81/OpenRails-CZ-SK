@@ -2286,6 +2286,9 @@ namespace Orts.Viewer3D.RollingStock
         /// </summary>
         protected bool PlusKeyPressed = false;
         protected bool MinusKeyPressed = false;
+        protected bool MirelPlusKeyPressed = false;
+        protected bool MirelMinusKeyPressed = false;
+        protected bool MirelEnterKeyPressed = false;
         public void HandleUserInput()
         {
             switch (Control.ControlType)
@@ -2528,6 +2531,64 @@ namespace Orts.Viewer3D.RollingStock
                         Locomotive.CruiseControl.SpeedSelectorModeDecrease();
                     }
                     break;
+                case CABViewControlTypes.ORTS_ACTIVE_CAB:
+                    {
+                        p = ChangedValue(0);
+                        if (p == 1)
+                        {
+                            Locomotive.SignalEvent(Event.PowerKeyOn);
+                            if (Locomotive.UsingRearCab) Locomotive.ActiveStation = MSTSLocomotive.DriverStation.Station2;
+                            else Locomotive.ActiveStation = MSTSLocomotive.DriverStation.Station1;
+                        }
+                        else if (p == -1)
+                        {
+                            Locomotive.SignalEvent(Event.ActiveCabSelectorChange);
+                            Locomotive.ActiveStation = MSTSLocomotive.DriverStation.None;
+                        }
+                        break;
+                    }
+                case CABViewControlTypes.ORTS_MIREL_PLUS:
+                    {
+                        p = ChangedValue(0);
+                        if (p == 1 && !MirelPlusKeyPressed)
+                        {
+                            MirelPlusKeyPressed = true;
+                            Locomotive.Mirel.PlusKeyPressed();
+                        }
+                        else if (p == 0 && MirelPlusKeyPressed)
+                        {
+                            MirelPlusKeyPressed = false;
+                        }
+                        break;
+                    }
+                case CABViewControlTypes.ORTS_MIREL_MINUS:
+                    {
+                        p = ChangedValue(0);
+                        if (p == 1 && !MirelMinusKeyPressed)
+                        {
+                            MirelMinusKeyPressed = true;
+                            Locomotive.Mirel.MinusKeyPressed();
+                        }
+                        else if (p == 0 && MirelMinusKeyPressed)
+                        {
+                            MirelMinusKeyPressed = false;
+                        }
+                        break;
+                    }
+                case CABViewControlTypes.ORTS_MIREL_ENTER:
+                    {
+                        p = ChangedValue(0);
+                        if (p == 1 && !MirelEnterKeyPressed)
+                        {
+                            MirelEnterKeyPressed = true;
+                            Locomotive.Mirel.EnterKeyPressed();
+                        }
+                        else if (p == 0 && MirelEnterKeyPressed)
+                        {
+                            MirelEnterKeyPressed = false;
+                        }
+                        break;
+                    }
                 case CABViewControlTypes.ORTS_RESTRICTED_SPEED_ZONE_ACTIVE:
                     if (Locomotive.CruiseControl == null)
                     {
