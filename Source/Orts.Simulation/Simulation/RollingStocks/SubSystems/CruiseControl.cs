@@ -664,6 +664,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
 
         public void SetSpeed(float Speed)
         {
+            Locomotive.SignalEvent(Common.Event.Alert1);
             if (MpS.FromKpH(Speed) >  Locomotive.MaxSpeedMpS)
             {
                 Speed = MpS.ToKpH(Locomotive.MaxSpeedMpS);
@@ -673,7 +674,6 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                 SpeedRegMode = SpeedRegulatorMode.Auto;
             if (SpeedRegMode == SpeedRegulatorMode.Manual)
                 return;
-            Locomotive.SignalEvent(Common.Event.Alert1);
             float prevSpeed = SelectedSpeedMpS;
             SelectedSpeedMpS = SpeedIsMph ? MpS.FromMpH(Speed) : MpS.FromKpH(Speed);
             if (SelectedSpeedMpS < prevSpeed)
@@ -864,7 +864,6 @@ namespace Orts.Simulation.RollingStocks.SubSystems
             }
             if (Bar.FromPSI(Locomotive.BrakeSystem.BrakeLine1PressurePSI) < 4.98)
             {
-                Locomotive.ControllerVolts = 0;
                 canAddForce = false;
                 reducingForce = true;
                 timeFromEngineMoved = 0;
@@ -1723,15 +1722,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                     data = Locomotive.MaxForceN;
                     break;
                 case CABViewControlTypes.ORTS_FORCE_IN_PERCENT_THROTTLE_AND_DYNAMIC_BRAKE:
-                    if (SpeedRegMode == CruiseControl.SpeedRegulatorMode.Auto)
-                    {
-                        data = ForceThrottleAndDynamicBrake;
-                        if (Locomotive.DynamicBrakePercent > 0 && data > -Locomotive.DynamicBrakePercent) data = -Locomotive.DynamicBrakePercent;
-                    }
-                    else
-                    {
                         data = Locomotive.ControllerVolts * 10;
-                    }
                     break;
                 case CABViewControlTypes.ORTS_TRAIN_TYPE_PAX_OR_CARGO:
                     data = (int)Locomotive.SelectedTrainType;
