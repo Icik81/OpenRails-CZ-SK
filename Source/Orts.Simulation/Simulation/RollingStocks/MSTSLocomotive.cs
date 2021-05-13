@@ -351,6 +351,8 @@ namespace Orts.Simulation.RollingStocks
         public InterpolatorDiesel2D DynamicBrakeForceCurves;
         public InterpolatorDiesel2D ExtendedExcitationCurrent;
         public InterpolatorDiesel2D ExtendedArmCurrent;
+        public InterpolatorDiesel2D ExtendedExcitationEDBCurrent; // buzení
+        public InterpolatorDiesel2D ExtendedArmEDBCurrent; // kotvy
         public float DynamicBrakeSpeed1MpS = MpS.FromKpH(5);
         public float DynamicBrakeSpeed2MpS = MpS.FromKpH(30);
         public float DynamicBrakeSpeed3MpS = MpS.FromKpH(999);
@@ -944,6 +946,8 @@ namespace Orts.Simulation.RollingStocks
                 case "engine(ortsdynamicbrakeforcecurves": DynamicBrakeForceCurves = new InterpolatorDiesel2D(stf, false); break;
                 case "engine(ortsextendedexcitationcurrent": ExtendedExcitationCurrent = new InterpolatorDiesel2D(stf, true); break;
                 case "engine(ortsextendedarmcurrent": ExtendedArmCurrent = new InterpolatorDiesel2D(stf, true); break;
+                case "engine(ortsextendedexcitationedbcurrent": ExtendedExcitationEDBCurrent = new InterpolatorDiesel2D(stf, true); break;
+                case "engine(ortsextendedarmedbcurrent": ExtendedArmEDBCurrent = new InterpolatorDiesel2D(stf, true); break;
                 case "engine(ortscontinuousforcetimefactor": ContinuousForceTimeFactor = stf.ReadFloatBlock(STFReader.UNITS.None, null); break;
                 case "engine(orts(ortssanderspeedeffectupto": SanderSpeedEffectUpToMpS = stf.ReadFloatBlock(STFReader.UNITS.Speed, null); break;
                 case "engine(orts(ortsemergencycausespowerdown": EmergencyCausesPowerDown = stf.ReadBoolBlock(false); break;
@@ -2120,6 +2124,10 @@ namespace Orts.Simulation.RollingStocks
 
             if (CruiseControl != null)
             {
+                if (CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.Manual)
+                {
+                    CruiseControl.controllerVolts = ControllerVolts;
+                }
                 if (CruiseControl.RestrictedSpeedActive)
                     CruiseControl.CheckRestrictedSpeedZone();
             }

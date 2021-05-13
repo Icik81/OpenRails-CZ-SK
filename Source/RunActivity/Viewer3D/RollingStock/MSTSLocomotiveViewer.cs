@@ -2753,7 +2753,7 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.ORTS_CC_SPEED_0:
                     {
                         p = ChangedValue(0);
-                        if (p == 1)
+                        if (p == 1 && !Locomotive.Speed0Pressed)
                         {
                             Locomotive.CruiseControl.SetSpeed(0);
                             Locomotive.Speed0Pressed = true;
@@ -2765,7 +2765,7 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.ORTS_CC_SPEED_10:
                     {
                         p = ChangedValue(0);
-                        if (p == 1)
+                        if (p == 1 && !Locomotive.Speed10Pressed)
                         {
                             Locomotive.CruiseControl.SetSpeed(10);
                             Locomotive.Speed10Pressed = true;
@@ -2776,7 +2776,7 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.ORTS_CC_SPEED_20:
                     {
                         p = ChangedValue(0);
-                        if (p == 1)
+                        if (p == 1 && !Locomotive.Speed20Pressed)
                         {
                             Locomotive.CruiseControl.SetSpeed(20);
                             Locomotive.Speed20Pressed = true;
@@ -2787,7 +2787,7 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.ORTS_CC_SPEED_30:
                     {
                         p = ChangedValue(0);
-                        if (p == 1)
+                        if (p == 1 && !Locomotive.Speed30Pressed)
                         {
                             Locomotive.CruiseControl.SetSpeed(30);
                             Locomotive.Speed30Pressed = true;
@@ -2798,7 +2798,7 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.ORTS_CC_SPEED_40:
                     {
                         p = ChangedValue(0);
-                        if (p == 1)
+                        if (p == 1 && !Locomotive.Speed40Pressed)
                         {
                             Locomotive.CruiseControl.SetSpeed(40);
                             Locomotive.Speed40Pressed = true;
@@ -2809,7 +2809,7 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.ORTS_CC_SPEED_50:
                     {
                         p = ChangedValue(0);
-                        if (p == 1)
+                        if (p == 1 && !Locomotive.Speed50Pressed)
                         {
                             Locomotive.CruiseControl.SetSpeed(50);
                             Locomotive.Speed50Pressed = true;
@@ -2820,7 +2820,7 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.ORTS_CC_SPEED_60:
                     {
                         p = ChangedValue(0);
-                        if (p == 1)
+                        if (p == 1 && !Locomotive.Speed60Pressed)
                         {
                             Locomotive.CruiseControl.SetSpeed(60);
                             Locomotive.Speed60Pressed = true;
@@ -2831,7 +2831,7 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.ORTS_CC_SPEED_70:
                     {
                         p = ChangedValue(0);
-                        if (p == 1)
+                        if (p == 1 && !Locomotive.Speed70Pressed)
                         {
                             Locomotive.CruiseControl.SetSpeed(70);
                             Locomotive.Speed70Pressed = true;
@@ -2842,7 +2842,7 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.ORTS_CC_SPEED_80:
                     {
                         p = ChangedValue(0);
-                        if (p == 1)
+                        if (p == 1 && !Locomotive.Speed80Pressed)
                         {
                             Locomotive.CruiseControl.SetSpeed(80);
                             Locomotive.Speed80Pressed = true;
@@ -2853,7 +2853,7 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.ORTS_CC_SPEED_90:
                     {
                         p = ChangedValue(0);
-                        if (p == 1)
+                        if (p == 1 && !Locomotive.Speed90Pressed)
                         {
                             Locomotive.CruiseControl.SetSpeed(90);
                             Locomotive.Speed90Pressed = true;
@@ -2864,7 +2864,7 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.ORTS_CC_SPEED_100:
                     {
                         p = ChangedValue(0);
-                        if (p == 1)
+                        if (p == 1 && !Locomotive.Speed100Pressed)
                         {
                             Locomotive.CruiseControl.SetSpeed(100);
                             Locomotive.Speed100Pressed = true;
@@ -2875,7 +2875,7 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.ORTS_CC_SPEED_110:
                     {
                         p = ChangedValue(0);
-                        if (p == 1)
+                        if (p == 1 && !Locomotive.Speed110Pressed)
                         {
                             Locomotive.CruiseControl.SetSpeed(110);
                             Locomotive.Speed110Pressed = true;
@@ -2886,7 +2886,7 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.ORTS_CC_SPEED_120:
                     {
                         p = ChangedValue(0);
-                        if (p == 1)
+                        if (p == 1 && !Locomotive.Speed120Pressed)
                         {
                             Locomotive.CruiseControl.SetSpeed(120);
                             Locomotive.Speed120Pressed = true;
@@ -2897,7 +2897,7 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.ORTS_CC_SPEED_130:
                     {
                         p = ChangedValue(0);
-                        if (p == 1)
+                        if (p == 1 && !Locomotive.Speed130Pressed)
                         {
                             Locomotive.CruiseControl.SetSpeed(130);
                             Locomotive.Speed130Pressed = true;
@@ -2908,7 +2908,7 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.ORTS_CC_SPEED_140:
                     {
                         p = ChangedValue(0);
-                        if (p == 1)
+                        if (p == 1 && !Locomotive.Speed140Pressed)
                         {
                             Locomotive.CruiseControl.SetSpeed(140);
                             Locomotive.Speed140Pressed = true;
@@ -2919,7 +2919,7 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.ORTS_CC_SPEED_150:
                     {
                         p = ChangedValue(0);
-                        if (p == 1)
+                        if (p == 1 && !Locomotive.Speed150Pressed)
                         {
                             Locomotive.CruiseControl.SetSpeed(150);
                             Locomotive.Speed150Pressed = true;
@@ -2930,7 +2930,7 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.ORTS_CC_SPEED_160:
                     {
                         p = ChangedValue(0);
-                        if (p == 1)
+                        if (p == 1 && !Locomotive.Speed160Pressed)
                         {
                             Locomotive.CruiseControl.SetSpeed(160);
                             Locomotive.Speed160Pressed = true;
@@ -2941,7 +2941,7 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.ORTS_CC_SPEED_170:
                     {
                         p = ChangedValue(0);
-                        if (p == 1)
+                        if (p == 1 && !Locomotive.Speed170Pressed)
                         {
                             Locomotive.CruiseControl.SetSpeed(170);
                             Locomotive.Speed170Pressed = true;
@@ -2952,7 +2952,7 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.ORTS_CC_SPEED_180:
                     {
                         p = ChangedValue(0);
-                        if (p == 1)
+                        if (p == 1 && !Locomotive.Speed180Pressed)
                         {
                             Locomotive.CruiseControl.SetSpeed(180);
                             Locomotive.Speed180Pressed = true;
@@ -2963,7 +2963,7 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.ORTS_CC_SPEED_190:
                     {
                         p = ChangedValue(0);
-                        if (p == 1)
+                        if (p == 1 && !Locomotive.Speed190Pressed)
                         {
                             Locomotive.CruiseControl.SetSpeed(190);
                             Locomotive.Speed190Pressed = true;
@@ -2974,7 +2974,7 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.ORTS_CC_SPEED_200:
                     {
                         p = ChangedValue(0);
-                        if (p == 1)
+                        if (p == 1 && !Locomotive.Speed200Pressed)
                         {
                             Locomotive.CruiseControl.SetSpeed(200);
                             Locomotive.Speed200Pressed = true;
