@@ -187,6 +187,12 @@ namespace Orts.Simulation.RollingStocks
 
         public void Update(float elapsedClockSeconds)
         {
+            if (!Locomotive.IsPlayerTrain)
+                return;
+
+            if (Bar.FromPSI(Locomotive.BrakeSystem.BrakeLine1PressurePSI) < 4.98 && Locomotive.DynamicBrakePercent < 0.1f)
+                Locomotive.ControllerVolts = 0;
+
             if (Locomotive.ControllerVolts > 0)
             {
                 Locomotive.SetThrottlePercent(Locomotive.ControllerVolts * 10);
@@ -197,6 +203,8 @@ namespace Orts.Simulation.RollingStocks
             }
             if (Locomotive.ControllerVolts == 0)
             {
+                if (Locomotive.DynamicBrakePercent > 0)
+                    Locomotive.ControllerVolts = -Locomotive.DynamicBrakePercent / 10;
                 Locomotive.SetThrottlePercent(0);
                 foreach (Undercarriage uc in Undercarriages)
                 {
