@@ -93,6 +93,10 @@ namespace ORTS.Scripting.Api
         /// </summary>
         public Func<float> CurrentValue;
         /// <summary>
+        /// Current value of the brake controller
+        /// </summary>
+        public Func<float> DefaultValue;
+        /// <summary>
         /// Minimum value of the brake controller
         /// </summary>
         public Func<float> MinimumValue;
@@ -117,6 +121,10 @@ namespace ORTS.Scripting.Api
         /// Sets the current value of the brake controller lever
         /// </summary>
         public Action<float> SetCurrentValue;
+        /// <summary>
+        /// Sets the default value of the brake controller lever
+        /// </summary>
+        public Action<float> SetDefaultValue;
         /// <summary>
         /// Sets the state of the brake pressure (1 = increasing, -1 = decreasing)
         /// </summary>
