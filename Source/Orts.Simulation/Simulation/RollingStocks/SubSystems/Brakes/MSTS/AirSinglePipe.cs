@@ -464,7 +464,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             if (TripleValveRelease) TripleValveState = ValveState.Release;            
             if (TripleValveLap) TripleValveState = ValveState.Lap;
             
-            if (TripleValveEmergency || (Car as MSTSLocomotive).EmergencyButtonPressed)
+            MSTSLocomotive loco = Car as MSTSLocomotive;
+            if (TripleValveEmergency || (loco != null && loco.EmergencyButtonPressed))
                 TripleValveState = ValveState.Emergency;
         }
 
