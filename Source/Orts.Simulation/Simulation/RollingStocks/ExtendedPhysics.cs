@@ -327,11 +327,6 @@ namespace Orts.Simulation.RollingStocks
                 float t = (axleCurrent / (maxCurrent)) / totalMotors / 50;
                 if (t < 0) t = -t;
                 ForceN = -Locomotive.DynamicBrakeForceCurves.Get(t, Locomotive.LocomotiveAxle.AxleSpeedMpS);
-                if (ForceN == 0)
-                {
-                    this.ElectricMotors[0].RotorCurrent = 0;
-                    this.ElectricMotors[0].StatorCurrent = 0;
-                }
             }
             else if (Locomotive.ControllerVolts < 0) // TODO bez tabulek
             {
@@ -465,9 +460,9 @@ namespace Orts.Simulation.RollingStocks
             else if (Locomotive.ControllerVolts < 0)
             {
                 float currentRotor = Motor.MaxNegativeRotorCurrent;
-                if (Locomotive.ExtendedArmCurrent != null)
+                if (Locomotive.ExtendedArmEDBCurrent != null)
                 {
-                    Motor.RotorCurrent = Locomotive.ExtendedArmCurrent.Get(-Locomotive.ControllerVolts / MaxControllerVolts, axleSpeed) / 2;
+                    Motor.RotorCurrent = Locomotive.ExtendedArmEDBCurrent.Get(-Locomotive.ControllerVolts / MaxControllerVolts, axleSpeed) / 2;
                 }
                 else
                 {
@@ -476,8 +471,8 @@ namespace Orts.Simulation.RollingStocks
                 }
                 if (Locomotive.ControllerVolts == 0)
                     Motor.RotorCurrent = 0;
-                if (Locomotive.ExtendedExcitationCurrent != null)
-                    Motor.StatorCurrent = Locomotive.ExtendedExcitationCurrent.Get(-Locomotive.ControllerVolts / MaxControllerVolts, axleSpeed) / 4;
+                if (Locomotive.ExtendedExcitationEDBCurrent != null)
+                    Motor.StatorCurrent = Locomotive.ExtendedExcitationEDBCurrent.Get(-Locomotive.ControllerVolts / MaxControllerVolts, axleSpeed) / 4;
                 else
                     Motor.StatorCurrent = Motor.RotorCurrent / Motor.MaxNegativeStatorCurrent;
             }
