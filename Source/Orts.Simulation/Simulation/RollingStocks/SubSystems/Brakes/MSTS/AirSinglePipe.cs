@@ -465,7 +465,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             if (TripleValveLap) TripleValveState = ValveState.Lap;
             
             MSTSLocomotive loco = Car as MSTSLocomotive;
-            if (TripleValveEmergency || (loco != null && loco.EmergencyButtonPressed))
+            if (TripleValveEmergency || (loco != null && (loco.EmergencyButtonPressed || loco.TrainBrakeController.TCSEmergencyBraking)))
                 TripleValveState = ValveState.Emergency;
         }
 
@@ -1339,7 +1339,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 var engine = train.Cars[i] as MSTSLocomotive;
                 if (engine != null)
                 {
-                    if (engine.BrakeSystem.NextLocoEmergency || (engine as MSTSLocomotive).EmergencyButtonPressed)
+                    if (engine.BrakeSystem.NextLocoEmergency || (engine as MSTSLocomotive).EmergencyButtonPressed || (engine as MSTSLocomotive).TrainBrakeController.TCSEmergencyBraking)
                         foreach (TrainCar car in train.Cars)
                         {
                             car.BrakeSystem.TripleValveApply = false;
