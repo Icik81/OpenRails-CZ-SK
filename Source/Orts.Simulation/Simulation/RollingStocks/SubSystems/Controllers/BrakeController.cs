@@ -179,6 +179,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
         float OldValue;
 
         public float CurrentValue { get; set; }
+        public float DefaultValue { get; set; }
         public float MinimumValue { get; set; }
         public float MaximumValue { get; set; }
         public float StepSize { get; set; }
@@ -226,6 +227,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
             RunningReleaseRatePSIpS = controller.RunningReleaseRatePSIpS;
 
             CurrentValue = controller.CurrentValue;
+            DefaultValue = controller.DefaultValue;
             MinimumValue = controller.MinimumValue;
             MaximumValue = controller.MaximumValue;
             StepSize = controller.StepSize;
@@ -311,7 +313,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                     MinimumValue = stf.ReadFloat(STFReader.UNITS.None, null);
                     MaximumValue = stf.ReadFloat(STFReader.UNITS.None, null);
                     StepSize = stf.ReadFloat(STFReader.UNITS.None, null);
-                    CurrentValue = stf.ReadFloat(STFReader.UNITS.None, null);
+                    CurrentValue = DefaultValue = stf.ReadFloat(STFReader.UNITS.None, null);
                     string token = stf.ReadItem(); // s/b numnotches
                     if (string.Compare(token, "NumNotches", true) != 0) // handle error in gp38.eng where extra parameter provided before NumNotches statement 
                         stf.ReadItem();
@@ -385,6 +387,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                 Script.FullServReductionBar = () => Bar.FromPSI(FullServReductionPSI);
                 Script.MinReductionBar = () => Bar.FromPSI(MinReductionPSI);
                 Script.CurrentValue = () => CurrentValue;
+                Script.DefaultValue = () => DefaultValue;
                 Script.MinimumValue = () => MinimumValue;
                 Script.MaximumValue = () => MaximumValue;
                 Script.StepSize = () => StepSize;
@@ -395,6 +398,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                 Script.RunningReleaseRateBarpS = () => BarpS.FromPSIpS(RunningReleaseRatePSIpS);
 
                 Script.SetCurrentValue = (value) => CurrentValue = value;
+                Script.SetDefaultValue = (value) => DefaultValue = value;
                 Script.SetUpdateValue = (value) => UpdateValue = value;
 
                 Script.SetDynamicBrakeIntervention = (value) =>
@@ -564,6 +568,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
             outf.Write((int)ControllerTypes.BrakeController);
 
             outf.Write(CurrentValue);
+            outf.Write(DefaultValue);
 
             outf.Write(EmergencyBrakingPushButton);
             outf.Write(TCSEmergencyBraking);
@@ -573,7 +578,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
         public void Restore(BinaryReader inf)
         {
             SignalEvent(BrakeControllerEvent.SetCurrentValue, inf.ReadSingle());
-
+            DefaultValue = inf.ReadSingle();
             EmergencyBrakingPushButton = inf.ReadBoolean();
             TCSEmergencyBraking = inf.ReadBoolean();
             TCSFullServiceBraking = inf.ReadBoolean();

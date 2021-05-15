@@ -1328,8 +1328,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                             {
                                 float step = 100 / Locomotive.DynamicBrakeFullRangeDecreaseTimeSeconds;
                                 step *= elapsedClockSeconds;
-                                if (step > (demand - Locomotive.Train.AccelerationMpSpS.SmoothedValue) * 2)
-                                    step = (demand - Locomotive.Train.AccelerationMpSpS.SmoothedValue) * 2;
+                                if (step > (demand - Locomotive.AccelerationMpSS) * 2)
+                                    step = (demand - Locomotive.AccelerationMpSS) * 2;
                                 controllerVolts += step;
                             }
                         }
@@ -1337,10 +1337,14 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                         {
                             if (!UseThrottle)
                             {
-                                if (SelectedMaxAccelerationPercent == 0 && SelectedMaxAccelerationStep == 0)
-                                    Locomotive.ThrottleController.SetPercent(0);
-                                else
-                                    Locomotive.ThrottleController.SetPercent(100);
+                                if (controllerVolts < 10)
+                                {
+                                    float step = 100 / Locomotive.ThrottleFullRangeIncreaseTimeSeconds;
+                                    step *= elapsedClockSeconds;
+                                    if (step > (demand - Locomotive.AccelerationMpSS) * 2)
+                                        step = (demand - Locomotive.AccelerationMpSS) * 2;
+                                    controllerVolts += step;
+                                }
                             }
                             throttleIsZero = false;
                         }
@@ -1350,7 +1354,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                     {
                         if (Locomotive.DynamicBrakePercent < 0)
                         {
-                            if (Locomotive.Train.AccelerationMpSpS.SmoothedValue < demand)
+                            if (controllerVolts < delta * 50)
                             {
                                 if (ForceStepsThrottleTable.Count > 0)
                                 {
@@ -1389,7 +1393,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                         {
                             if (a > 0 && (SpeedIsMph ? MpS.ToMpH(Locomotive.WheelSpeedMpS) : MpS.ToKpH(Locomotive.WheelSpeedMpS)) > 5)
                             {
-                                if (controllerVolts < demandedVolts && Locomotive.Train.AccelerationMpSpS.SmoothedValue < a)
+                                if (controllerVolts < demandedVolts && Locomotive.AccelerationMpSS < a)
                                 {
                                     float step = 100 / Locomotive.ThrottleFullRangeIncreaseTimeSeconds;
                                     
@@ -1409,7 +1413,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                             }
                             if (a > 0 && (SpeedIsMph ? MpS.ToMpH(Locomotive.WheelSpeedMpS) : MpS.ToKpH(Locomotive.WheelSpeedMpS)) > 5)
                             {
-                                if (controllerVolts > demandedVolts && Locomotive.Train.AccelerationMpSpS.SmoothedValue > a)
+                                if (controllerVolts > demandedVolts && Locomotive.AccelerationMpSS > a)
                                 {
                                     float step = 100 / Locomotive.ThrottleFullRangeIncreaseTimeSeconds;
                                     
@@ -1437,16 +1441,16 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                         }
                         if (a > 0 && (SpeedIsMph ? MpS.ToMpH(Locomotive.WheelSpeedMpS) : MpS.ToKpH(Locomotive.WheelSpeedMpS)) > 5)
                         {
-                            if ((a != Locomotive.Train.AccelerationMpSpS.SmoothedValue) && delta > 0.8)
+                            if ((a != Locomotive.AccelerationMpSS) && delta > 0.8)
                             {
-                                if (Locomotive.Train.AccelerationMpSpS.SmoothedValue < a)
+                                if (Locomotive.AccelerationMpSS < a)
                                 {
                                     float step = 100 / Locomotive.ThrottleFullRangeIncreaseTimeSeconds;
                                     
                                     step *= elapsedClockSeconds;
                                     controllerVolts += step;
                                 }
-                                if (Locomotive.Train.AccelerationMpSpS.SmoothedValue > a)
+                                if (Locomotive.AccelerationMpSS > a)
                                 {
                                     float step = 100 / Locomotive.ThrottleFullRangeIncreaseTimeSeconds;
                                     

@@ -669,6 +669,9 @@ namespace Orts.Simulation
                 if (!OnQueryCarViewerLoaded(PlayerLocomotive))
                     return;
                 CompleteSwitchPlayerTrain();
+                MSTSLocomotive loco = (MSTSLocomotive)PlayerLocomotive;
+                loco.TrainBrakeController.CurrentValue = loco.TrainBrakeController.DefaultValue;
+                loco.TrainBrakeController.SetValue(loco.TrainBrakeController.DefaultValue);
             }
 
             // Must be done before trains so that during turntable rotation train follows it
