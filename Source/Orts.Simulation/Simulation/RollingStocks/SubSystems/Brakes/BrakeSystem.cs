@@ -87,6 +87,21 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes
         public bool HandBrakeActive;
         public bool HandBrakeDeactive;
         public bool StartOn = true;
+        public string NextLocoBrakeState;
+        public bool NextLocoRelease;
+        public bool NextLocoApply;
+        public bool NextLocoQuickRelease;
+        public bool NextLocoEmergency;      
+        public bool NextLocoOvercharge;
+        public bool NextLocoLap;
+        public bool NextLocoRunning;
+        public bool NextLocoNeutral;
+        public bool NextLocoSuppression;
+        public bool NextLocoGSelfLapH;
+        public bool TripleValveRelease;
+        public bool TripleValveApply;
+        public bool TripleValveLap;
+        public bool TripleValveEmergency;
 
         /// <summary>
         /// Front brake hoses connection status

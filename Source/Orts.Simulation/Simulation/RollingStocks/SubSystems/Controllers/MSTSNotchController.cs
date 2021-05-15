@@ -253,9 +253,15 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
         /// <returns>1 or -1 if there was a significant change in controller position, otherwise 0.
         /// Needed for hinting whether a serializable command is to be issued for repeatability.
         /// Sign is indicating the direction of change, being displayed by confirmer text.</returns>
+        int i;
         public int SetValue(float value)
         {
-            CurrentValue = IntermediateValue = MathHelper.Clamp(value, MinimumValue, MaximumValue);
+            // Icik
+            //CurrentValue = IntermediateValue = MathHelper.Clamp(value, MinimumValue, MaximumValue);
+            if (CurrentValue == 0 && i == 0)
+                CurrentValue = IntermediateValue = MathHelper.Clamp(value, MinimumValue, MaximumValue);
+            i = 1;
+
             var oldNotch = CurrentNotch;
 
             for (CurrentNotch = Notches.Count - 1; CurrentNotch > 0; CurrentNotch--)
