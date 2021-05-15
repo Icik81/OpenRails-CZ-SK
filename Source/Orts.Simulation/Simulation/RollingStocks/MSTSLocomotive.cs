@@ -946,8 +946,8 @@ namespace Orts.Simulation.RollingStocks
                 case "engine(ortsdynamicbrakeforcecurves": DynamicBrakeForceCurves = new InterpolatorDiesel2D(stf, false); break;
                 case "engine(ortsextendedexcitationcurrent": ExtendedExcitationCurrent = new InterpolatorDiesel2D(stf, true); break;
                 case "engine(ortsextendedarmcurrent": ExtendedArmCurrent = new InterpolatorDiesel2D(stf, true); break;
-                case "engine(ortsextendedexcitationedbcurrent": ExtendedExcitationEDBCurrent = new InterpolatorDiesel2D(stf, true); break;
-                case "engine(ortsextendedarmedbcurrent": ExtendedArmEDBCurrent = new InterpolatorDiesel2D(stf, true); break;
+                case "engine(ortsextendededbextcurrent": ExtendedExcitationEDBCurrent = new InterpolatorDiesel2D(stf, true); break;
+                case "engine(ortsextendededbarmcurrent": ExtendedArmEDBCurrent = new InterpolatorDiesel2D(stf, true); break;
                 case "engine(ortscontinuousforcetimefactor": ContinuousForceTimeFactor = stf.ReadFloatBlock(STFReader.UNITS.None, null); break;
                 case "engine(orts(ortssanderspeedeffectupto": SanderSpeedEffectUpToMpS = stf.ReadFloatBlock(STFReader.UNITS.Speed, null); break;
                 case "engine(orts(ortsemergencycausespowerdown": EmergencyCausesPowerDown = stf.ReadBoolBlock(false); break;
