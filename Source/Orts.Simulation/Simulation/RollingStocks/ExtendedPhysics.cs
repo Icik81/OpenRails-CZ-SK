@@ -327,11 +327,6 @@ namespace Orts.Simulation.RollingStocks
                 float t = (axleCurrent / (maxCurrent)) / totalMotors / 50;
                 if (t < 0) t = -t;
                 ForceN = -Locomotive.DynamicBrakeForceCurves.Get(t, Locomotive.LocomotiveAxle.AxleSpeedMpS);
-                if (ForceN == 0)
-                {
-                    this.ElectricMotors[0].RotorCurrent = 0;
-                    this.ElectricMotors[0].StatorCurrent = 0;
-                }
             }
             else if (Locomotive.ControllerVolts < 0) // TODO bez tabulek
             {
