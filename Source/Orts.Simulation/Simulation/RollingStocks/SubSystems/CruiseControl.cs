@@ -740,13 +740,16 @@ namespace Orts.Simulation.RollingStocks.SubSystems
 
             if (Locomotive.extendedPhysics != null && speedSensorAxleIndex > -1 && speedSensorUndercarriageIndex > -1)
             {
-                //wheelSpeedMpS = Locomotive.extendedPhysics.Undercarriages[speedSensorUndercarriageIndex].Axles[speedSensorAxleIndex].WheelSpeedMpS;
-                wheelSpeedMpS = Locomotive.Train.SpeedMpS;
+                wheelSpeedMpS = Locomotive.extendedPhysics.Undercarriages[speedSensorUndercarriageIndex].Axles[speedSensorAxleIndex].WheelSpeedMpS;
             }
 
             if (!Locomotive.PowerOn)
                 ForceThrottleAndDynamicBrake = 0;
-            float speedDiff = Locomotive.extendedPhysics.AverageAxleSpeedMpS - Locomotive.AbsSpeedMpS;
+            float speedDiff = 0;
+            if (Locomotive.extendedPhysics == null)
+            {
+                speedDiff = Locomotive.AbsWheelSpeedMpS - Locomotive.AbsSpeedMpS;
+            }
             if (Locomotive.extendedPhysics != null)
             {
                 speedDiff = Locomotive.extendedPhysics.FastestAxleSpeedMpS - Locomotive.extendedPhysics.AverageAxleSpeedMpS;
