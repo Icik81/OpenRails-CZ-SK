@@ -445,7 +445,7 @@ namespace Orts.Simulation.RollingStocks
                 Locomotive.ControllerVolts = 0;
             if (Locomotive.ControllerVolts > 0)
             {
-                float currentRotor = Motor.MaxRotorCurrent - Motor.MinRotorCurrent;
+                float currentRotor = Motor.MaxRotorCurrent;
                 if (Locomotive.ExtendedArmCurrent != null)
                 {
                     Motor.RotorCurrent = Locomotive.ExtendedArmCurrent.Get(Locomotive.ControllerVolts / MaxControllerVolts, axleSpeed) / 2 * Motor.ErrorCoefficient;
