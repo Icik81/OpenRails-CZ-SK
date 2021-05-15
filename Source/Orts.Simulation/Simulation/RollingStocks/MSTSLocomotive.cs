@@ -2131,10 +2131,10 @@ namespace Orts.Simulation.RollingStocks
                 if (CruiseControl.RestrictedSpeedActive)
                     CruiseControl.CheckRestrictedSpeedZone();
             }
-
-            if (ControllerVolts > 0 && DynamicBrakePercent > -1)
-                DynamicBrakeChangeActiveState(false);
-
+            
+            if (CruiseControl != null && ControllerVolts > 0 && DynamicBrakePercent > -1)
+                 DynamicBrakeChangeActiveState(false);
+            
             if (extendedPhysics == null)
             {
                 if (CruiseControl == null)
