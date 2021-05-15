@@ -371,7 +371,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems
         public void SpeedSelectorModeStopIncrease()
         {
             Locomotive.SignalEvent(Common.Event.CruiseControlSpeedSelector);
-            //Locomotive.Mirel.ResetVigilance();
+            if (Locomotive.Mirel != null)
+                Locomotive.Mirel.ResetVigilance();
             if (!Equipped) return;
             if (SpeedSelMode == SpeedSelectorMode.Start)
             {
@@ -740,7 +741,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems
 
             if (Locomotive.extendedPhysics != null && speedSensorAxleIndex > -1 && speedSensorUndercarriageIndex > -1)
             {
-                wheelSpeedMpS = Locomotive.extendedPhysics.Undercarriages[speedSensorUndercarriageIndex].Axles[speedSensorAxleIndex].WheelSpeedMpS;
+                // wheelSpeedMpS = Locomotive.extendedPhysics.Undercarriages[speedSensorUndercarriageIndex].Axles[speedSensorAxleIndex].WheelSpeedMpS;
+                wheelSpeedMpS = Locomotive.Train.SpeedMpS;
             }
 
             if (!Locomotive.PowerOn)
@@ -1585,7 +1587,25 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                     }
                 }
 
-                if (!Locomotive.PowerOn) // || Locomotive.Mirel.NZ1 || Locomotive.Mirel.NZ2 || Locomotive.Mirel.NZ3 || Locomotive.Mirel.NZ4 || Locomotive.Mirel.NZ5)
+                if (Locomotive.Mirel != null)
+                {
+                    if (!Locomotive.PowerOn || Locomotive.Mirel.NZ1 || Locomotive.Mirel.NZ2 || Locomotive.Mirel.NZ3 || Locomotive.Mirel.NZ4 || Locomotive.Mirel.NZ5)
+                    {
+                        controllerVolts = 0;
+                        Locomotive.ThrottleController.SetPercent(0);
+                        if (Locomotive.DynamicBrakePercent > 0)
+                        {
+                            Locomotive.SetDynamicBrakePercent(0);
+                            Locomotive.DynamicBrakeIntervention = -1;
+                        }
+                        maxForceN = 0;
+                        ForceThrottleAndDynamicBrake = 0;
+                        Ampers = 0;
+                    }
+                    else
+                        ForceThrottleAndDynamicBrake = controllerVolts;
+                }
+                else if (!Locomotive.PowerOn)
                 {
                     controllerVolts = 0;
                     Locomotive.ThrottleController.SetPercent(0);

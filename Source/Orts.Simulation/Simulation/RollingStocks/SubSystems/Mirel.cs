@@ -234,7 +234,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
         protected bool mirelUnsetSignlEventBeeped = false;
         protected bool ls90tested = false;
         protected float ls90testTime = 0;
-        public void Update(float elapsedClockSeconds, float t, float AbsSpeedMpS, float AbsWheelSpeedMpS)
+        public void Update(float elapsedClockSeconds, float AbsSpeedMpS, float AbsWheelSpeedMpS)
         {
             if (Locomotive.Battery && initTest == InitTest.Off)
             {

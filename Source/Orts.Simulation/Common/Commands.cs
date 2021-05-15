@@ -856,6 +856,7 @@ namespace Orts.Common
 
         public override void Redo() {
             Receiver.ManualHorn = ToState;
+            Receiver.Mirel.ResetVigilance();
             if (ToState)
             {
                 Receiver.AlerterReset(TCSEvent.HornActivated);
@@ -880,6 +881,7 @@ namespace Orts.Common
         public override void Redo()
         {
             Receiver.ManualBell = ToState;
+            Receiver.Mirel.ResetVigilance();
         }
 
         public override string ToString() {

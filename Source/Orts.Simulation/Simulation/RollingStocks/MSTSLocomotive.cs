@@ -2131,6 +2131,11 @@ namespace Orts.Simulation.RollingStocks
                 if (CruiseControl.RestrictedSpeedActive)
                     CruiseControl.CheckRestrictedSpeedZone();
             }
+            if (Mirel != null)
+            {
+                if (IsPlayerTrain && Mirel.Equipped)
+                    Mirel.Update(elapsedClockSeconds, AbsSpeedMpS, AbsWheelSpeedMpS);
+            }
 
             if (ControllerVolts > 0 && DynamicBrakePercent > -1)
                 DynamicBrakeChangeActiveState(false);
@@ -2178,6 +2183,40 @@ namespace Orts.Simulation.RollingStocks
 
             UpdatePowerSupply(elapsedClockSeconds);
             UpdateControllers(elapsedClockSeconds);
+
+            if (GetTrainBrakeStatus().Contains("Apply") || GetTrainBrakeStatus().Contains("Emergency"))
+            {
+                if (Mirel.initTest != Mirel.InitTest.Passed)
+                {
+                    if (!trainBrakeApply)
+                    {
+                        trainBrakeApply = !trainBrakeApply;
+                        SignalEvent(Event.MirelBrakeReleasingPipePressure);
+                    }
+                }
+            }
+            else if (trainBrakeApply)
+            {
+                SignalEvent(Event.MirekBrakeStopReleaseSound);
+                trainBrakeApply = !trainBrakeApply;
+            }
+
+            if (GetTrainBrakeStatus().Contains("Release"))
+            {
+                if (Mirel.initTest != Mirel.InitTest.Passed)
+                {
+                    if (!trainBrakeRelease)
+                    {
+                        trainBrakeRelease = !trainBrakeRelease;
+                        SignalEvent(Event.MirelBrakeFillingPipePressure);
+                    }
+                }
+            }
+            else if (trainBrakeRelease)
+            {
+                SignalEvent(Event.MirekBrakeStopFillSound);
+                trainBrakeRelease = !trainBrakeRelease;
+            }
 
             // Train Heading - only check the lead locomotive otherwise flipped locomotives further in consist will overwrite the train direction
             if (IsLeadLocomotive())
@@ -3682,6 +3721,7 @@ namespace Orts.Simulation.RollingStocks
         #region ThrottleController
         public void StartThrottleIncrease(float? target)
         {
+            Mirel.ResetVigilance();
             if (CruiseControl != null && target != null)
             {
                 if (CruiseControl.DisableCruiseControlOnThrottleAndZeroSpeed && AbsSpeedMpS == 0 && CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.Auto)
@@ -3713,6 +3753,7 @@ namespace Orts.Simulation.RollingStocks
 
         public void StartThrottleIncrease()
         {
+            Mirel.ResetVigilance();
             if (MultiPositionControllers != null)
             {
                 foreach (MultiPositionController mpc in MultiPositionControllers)
@@ -3772,6 +3813,7 @@ namespace Orts.Simulation.RollingStocks
 
         public void StopThrottleIncrease()
         {
+            Mirel.ResetVigilance();
             if (MultiPositionControllers != null)
             {
                 foreach (MultiPositionController mpc in MultiPositionControllers)
@@ -3817,6 +3859,7 @@ namespace Orts.Simulation.RollingStocks
 
         public void StartThrottleDecrease(float? target)
         {
+            Mirel.ResetVigilance();
             if (CruiseControl != null)
             {
                 if (CruiseControl.UseThrottleAsSpeedSelector && CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.Auto && CruiseControl.SelectedSpeedMpS > 0)
@@ -3839,6 +3882,7 @@ namespace Orts.Simulation.RollingStocks
         protected bool speedSelectorModeDecreasing = false;
         public void StartThrottleDecrease()
         {
+            Mirel.ResetVigilance();
             if (MultiPositionControllers != null)
             {
                 foreach (MultiPositionController mpc in MultiPositionControllers)
@@ -3886,6 +3930,7 @@ namespace Orts.Simulation.RollingStocks
 
         public void StopThrottleDecrease()
         {
+            Mirel.ResetVigilance();
             if (MultiPositionControllers != null)
             {
                 foreach (MultiPositionController mpc in MultiPositionControllers)
@@ -4313,6 +4358,7 @@ namespace Orts.Simulation.RollingStocks
         #region TrainBrakeController
         public void StartTrainBrakeIncrease(float? target)
         {
+            if (Mirel.Equipped && !Mirel.BlueLight && Mirel.initTest == Mirel.InitTest.Passed && SpeedMpS > 0) Mirel.AlerterPressed(true);
             if (CombinedControlType == CombinedControl.ThrottleAir)
                 ThrottleController.SetValue(0);
 
@@ -4342,6 +4388,7 @@ namespace Orts.Simulation.RollingStocks
 
         public void StopTrainBrakeIncrease()
         {
+            if (Mirel.Equipped && !Mirel.BlueLight && Mirel.initTest == Mirel.InitTest.Passed && SpeedMpS > 0) Mirel.AlerterPressed(true);
             AlerterReset(TCSEvent.TrainBrakeChanged);
             TrainBrakeController.StopIncrease();
             new TrainBrakeCommand(Simulator.Log, true, TrainBrakeController.CurrentValue, TrainBrakeController.CommandStartTime);
@@ -4349,6 +4396,7 @@ namespace Orts.Simulation.RollingStocks
 
         public void StartTrainBrakeDecrease(float? target, bool toZero = false)
         {
+            if (Mirel.Equipped && !Mirel.BlueLight && Mirel.initTest == Mirel.InitTest.Passed && SpeedMpS > 0) Mirel.AlerterPressed(true);
             AlerterReset(TCSEvent.TrainBrakeChanged);
             TrainBrakeController.StartDecrease(target, toZero);
             TrainBrakeController.CommandStartTime = Simulator.ClockTime;
@@ -4358,6 +4406,12 @@ namespace Orts.Simulation.RollingStocks
 
         public void StopTrainBrakeDecrease()
         {
+            if (CruiseControl != null)
+                if (Mirel.Equipped && !Mirel.BlueLight && Mirel.initTest == Mirel.InitTest.Passed && SpeedMpS > 0 && CruiseControl.SpeedRegMode != CruiseControl.SpeedRegulatorMode.Manual)
+                    Mirel.AlerterPressed(true);
+            else
+                if (Mirel.Equipped && !Mirel.BlueLight && Mirel.initTest == Mirel.InitTest.Passed && SpeedMpS > 0)
+                    Mirel.AlerterPressed(true);
             AlerterReset(TCSEvent.TrainBrakeChanged);
             TrainBrakeController.StopDecrease();
             new TrainBrakeCommand(Simulator.Log, false, TrainBrakeController.CurrentValue, TrainBrakeController.CommandStartTime);
@@ -5109,6 +5163,7 @@ namespace Orts.Simulation.RollingStocks
         public void AlerterPressed(bool pressed)
         {
             TrainControlSystem.AlerterPressed(pressed);
+            Mirel.AlerterPressed(pressed);
         }
 
         public enum TrainType { Pax, Cargo };
@@ -6506,7 +6561,21 @@ namespace Orts.Simulation.RollingStocks
                         break;
                     }
 
-
+                case CABViewControlTypes.ORTS_LS90_POWER:
+                    {
+                        data = (float)Mirel.Ls90power;
+                        break;
+                    }
+                case CABViewControlTypes.ORTS_LS90_LED: 
+                    {
+                        data = (float)Mirel.Ls90led;
+                        break;
+                    }
+                case CABViewControlTypes.ORTS_AVV_SIGNAL:
+                    {
+                        data = (float)CruiseControl.avvSignal;
+                        break;
+                    }
                 default:
                     if (CruiseControl != null)
                         data = CruiseControl.GetDataOf(cvc);

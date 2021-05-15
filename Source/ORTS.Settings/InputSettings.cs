@@ -472,8 +472,6 @@ namespace ORTS.Settings
             Commands[(int)UserCommand.ControlSelectSpeed190] = new UserCommandKeyInput(0x0A, KeyModifiers.Control | KeyModifiers.Shift);
             Commands[(int)UserCommand.ControlSelectSpeed200] = new UserCommandKeyInput(0x0B, KeyModifiers.Control | KeyModifiers.Shift);
 
-            Commands[(int)UserCommand.DebugClockBackwards] = new UserCommandKeyInput(0x0C);
-            Commands[(int)UserCommand.DebugClockForwards] = new UserCommandKeyInput(0x0D);
             Commands[(int)UserCommand.DebugDumpKeymap] = new UserCommandKeyInput(0x3B, KeyModifiers.Alt);
             Commands[(int)UserCommand.DebugFogDecrease] = new UserCommandKeyInput(0x0C, KeyModifiers.Shift);
             Commands[(int)UserCommand.DebugFogIncrease] = new UserCommandKeyInput(0x0D, KeyModifiers.Shift);
@@ -497,6 +495,16 @@ namespace ORTS.Settings
             Commands[(int)UserCommand.DebugTracks] = new UserCommandKeyInput(0x40, KeyModifiers.Control | KeyModifiers.Alt);
             Commands[(int)UserCommand.DebugWeatherChange] = new UserCommandKeyInput(0x19, KeyModifiers.Alt);
             Commands[(int)UserCommand.DebugToggleConfirmations] = new UserCommandKeyInput(0x44, KeyModifiers.Control | KeyModifiers.Alt);
+
+            Commands[(int)UserCommand.MirelKeyPlus] = new UserCommandKeyInput(0x0D);
+            Commands[(int)UserCommand.MirelKeyMinus] = new UserCommandKeyInput(0x0C);
+            Commands[(int)UserCommand.MirelKeyEnter] = new UserCommandKeyInput(0x1C);
+            Commands[(int)UserCommand.CabSelectDecrease] = new UserCommandKeyInput(0x33, KeyModifiers.Control);
+            Commands[(int)UserCommand.CabSelectIncrease] = new UserCommandKeyInput(0x34, KeyModifiers.Control);
+            Commands[(int)UserCommand.DisplayKeyPosition] = new UserCommandKeyInput(0x25, KeyModifiers.Alt);
+            Commands[(int)UserCommand.ChangeKeyPosition] = new UserCommandKeyInput(0x25, KeyModifiers.Control);
+            Commands[(int)UserCommand.SetMirelOn] = new UserCommandKeyInput(0x1B, KeyModifiers.Control | KeyModifiers.Shift);
+            Commands[(int)UserCommand.SetMirelOff] = new UserCommandKeyInput(0x1A, KeyModifiers.Control | KeyModifiers.Shift);
 
             Commands[(int)UserCommand.DisplayTrainListWindow] = new UserCommandKeyInput(0x43, KeyModifiers.Alt);
             Commands[(int)UserCommand.DisplayBasicHUDToggle] = new UserCommandKeyInput(0x3F, KeyModifiers.Alt);
