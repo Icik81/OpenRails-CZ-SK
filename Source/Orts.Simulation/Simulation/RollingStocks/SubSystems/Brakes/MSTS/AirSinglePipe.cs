@@ -464,7 +464,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             if (TripleValveRelease) TripleValveState = ValveState.Release;            
             if (TripleValveLap) TripleValveState = ValveState.Lap;
             
-            if (TripleValveEmergency || EmergencyBrakeForWagon)
+            if (TripleValveEmergency || (Car as MSTSLocomotive).EmergencyButtonPressed)
                 TripleValveState = ValveState.Emergency;
         }
 
@@ -1257,13 +1257,19 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             if (!lead.BrakeSystem.NextLocoNeutral)
             {
                 if (lead.BrakeSystem.TripleValveEmergency)
+                {
                     train.EqualReservoirPressurePSIorInHg -= (lead.TrainBrakeController.EmergencyRatePSIpS) * (elapsedClockSeconds);
+                    if (train.EqualReservoirPressurePSIorInHg < 0) train.EqualReservoirPressurePSIorInHg = 0;
+                }
                 else
-                if (lead.BrakeSystem.TripleValveRelease )               
-                    train.EqualReservoirPressurePSIorInHg += (lead.TrainBrakeController.ReleaseRatePSIpS) * (elapsedClockSeconds);                                    
+                if (lead.BrakeSystem.TripleValveRelease)
+                    train.EqualReservoirPressurePSIorInHg += (lead.TrainBrakeController.ReleaseRatePSIpS) * (elapsedClockSeconds);
                 else
-                if (lead.BrakeSystem.TripleValveApply)                
+                if (lead.BrakeSystem.TripleValveApply)
+                {
                     train.EqualReservoirPressurePSIorInHg -= (lead.TrainBrakeController.ApplyRatePSIpS) * (elapsedClockSeconds);
+                    if (train.EqualReservoirPressurePSIorInHg < 0) train.EqualReservoirPressurePSIorInHg = 0;
+                }
             }
 
             foreach (TrainCar car in train.Cars)
@@ -1325,14 +1331,14 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                             car.BrakeSystem.TripleValveEmergency = false;                            
                         }  
                 }
-            }
+            }                        
             // Emergency
             for (int i  = 0; i < train.Cars.Count; i++)
             {
                 var engine = train.Cars[i] as MSTSLocomotive;
                 if (engine != null)
                 {
-                    if (engine.BrakeSystem.NextLocoEmergency || lead.BrakeSystem.EmergencyBrakeForWagon)
+                    if (engine.BrakeSystem.NextLocoEmergency || (engine as MSTSLocomotive).EmergencyButtonPressed)
                         foreach (TrainCar car in train.Cars)
                         {
                             car.BrakeSystem.TripleValveApply = false;
