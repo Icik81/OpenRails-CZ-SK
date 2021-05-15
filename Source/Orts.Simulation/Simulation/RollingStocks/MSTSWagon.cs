@@ -3034,7 +3034,7 @@ namespace Orts.Simulation.RollingStocks
 
                 }
 
-                    WindForceN = LateralWindResistanceForceN + WindDragResistanceForceN;
+                 WindForceN = (LateralWindResistanceForceN + WindDragResistanceForceN) * 2;
 
             }
             else
