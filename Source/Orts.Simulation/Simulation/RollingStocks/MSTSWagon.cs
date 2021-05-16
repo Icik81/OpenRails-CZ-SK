@@ -2914,7 +2914,7 @@ namespace Orts.Simulation.RollingStocks
             // Lateral resistance - due to wheel flange being pushed against rail due to side wind.
             // Calculation based upon information provided in AREA 1942 Proceedings - https://archive.org/details/proceedingsofann431942amer - pg 56
 
-            if (Train.TrainWindResistanceDependent && !CarTunnelData.FrontPositionBeyondStartOfTunnel.HasValue && AbsSpeedMpS > 2.2352) // Only calculate wind resistance if option selected in options menu, and not in a tunnel, and speed is sufficient for wind effects (>5mph)
+            if (Train.TrainWindResistanceDependent) // Only calculate wind resistance if option selected in options menu
             {
 
                 // Wagon Direction
@@ -3034,8 +3034,20 @@ namespace Orts.Simulation.RollingStocks
 
                 }
 
-                 WindForceN = (LateralWindResistanceForceN + WindDragResistanceForceN) * 2;
-
+                WindForceN = LateralWindResistanceForceN + WindDragResistanceForceN;
+                if (float.IsNaN(WindForceN))
+                    WindForceN = 0;
+                if (IsPlayerTrain && this is MSTSLocomotive)
+                {
+                    MSTSLocomotive loco = (MSTSLocomotive)this;
+                    if (loco.extendedPhysics != null)
+                    {
+                        if (Train.Cars[0].WindForceN < SpeedMpS * 500)
+                        {
+                            Train.Cars[0].WindForceN = SpeedMpS * 500;
+                        }
+                    }
+                }
             }
             else
             {
