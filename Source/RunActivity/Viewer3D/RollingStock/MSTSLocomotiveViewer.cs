@@ -205,6 +205,14 @@ namespace Orts.Viewer3D.RollingStock
                     new TCSSwitchCommand(Viewer.Log, !Locomotive.TrainControlSystem.TCSCommandSwitchOn[1], 1);
                 }
             });
+            UserInputCommands.Add(UserCommand.MirelKeyPlus, new Action[] { Noop, () => Locomotive.Mirel.PlusKeyPressed() });
+            UserInputCommands.Add(UserCommand.MirelKeyMinus, new Action[] { Noop, () => Locomotive.Mirel.MinusKeyPressed() });
+            UserInputCommands.Add(UserCommand.MirelKeyEnter, new Action[] { Noop, () => Locomotive.Mirel.EnterKeyPressed() });
+            UserInputCommands.Add(UserCommand.CabSelectDecrease, new Action[] { Noop, () => Locomotive.ActiveStationDecrease() });
+            UserInputCommands.Add(UserCommand.CabSelectIncrease, new Action[] { Noop, () => Locomotive.ActiveStationIncrease() });
+            UserInputCommands.Add(UserCommand.SetMirelOn, new Action[] { Noop, () => Locomotive.Mirel.SetMirelSignal(true) });
+            UserInputCommands.Add(UserCommand.SetMirelOff, new Action[] { Noop, () => Locomotive.Mirel.SetMirelSignal(false) });
+
             base.InitializeUserInputCommands();
         }
 
@@ -2238,7 +2246,41 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.ORTS_CC_SPEED_180:
                 case CABViewControlTypes.ORTS_CC_SPEED_190:
                 case CABViewControlTypes.ORTS_CC_SPEED_200:
-
+                case CABViewControlTypes.ORTS_DISPLAY_BLUE_LIGHT:
+                case CABViewControlTypes.ORTS_MIREL_DRIVE_MODE:
+                case CABViewControlTypes.ORTS_MIREL_DRIVE_MODE_OPTIONS:
+                case CABViewControlTypes.ORTS_MIREL_DISPLAY_FLASH_MASK:
+                case CABViewControlTypes.ORTS_MIREL_FULL_DISPLAY:
+                case CABViewControlTypes.ORTS_MIREL_DISPLAY_NUM_1:
+                case CABViewControlTypes.ORTS_MIREL_DISPLAY_NUM_2:
+                case CABViewControlTypes.ORTS_MIREL_DISPLAY_NUM_3:
+                case CABViewControlTypes.ORTS_MIREL_DISPLAY_D1:
+                case CABViewControlTypes.ORTS_MIREL_DISPLAY_TEST1:
+                case CABViewControlTypes.ORTS_MIREL_DISPLAY_TEST2:
+                case CABViewControlTypes.ORTS_MIREL_DISPLAY_TEST3:
+                case CABViewControlTypes.ORTS_MIREL_DISPLAY_TEST4:
+                case CABViewControlTypes.ORTS_MIREL_DISPLAY_TEST5:
+                case CABViewControlTypes.ORTS_MIREL_DISPLAY_TEST6:
+                case CABViewControlTypes.ORTS_MIREL_DISPLAY_TEST7:
+                case CABViewControlTypes.ORTS_ACTIVE_CAB:
+                case CABViewControlTypes.ORTS_MIREL_NZOK:
+                case CABViewControlTypes.ORTS_MIREL_NZ1:
+                case CABViewControlTypes.ORTS_MIREL_NZ2:
+                case CABViewControlTypes.ORTS_MIREL_NZ3:
+                case CABViewControlTypes.ORTS_MIREL_NZ4:
+                case CABViewControlTypes.ORTS_MIREL_NZ5:
+                case CABViewControlTypes.ORTS_MIREL_MAN:
+                case CABViewControlTypes.ORTS_MIREL_VYP:
+                case CABViewControlTypes.ORTS_MIREL_ZAP:
+                case CABViewControlTypes.ORTS_MIREL_TOP_LEFT_DOT:
+                case CABViewControlTypes.ORTS_MIREL_TRANS_FRQ:
+                case CABViewControlTypes.ORTS_MIREL_M:
+                case CABViewControlTypes.ORTS_MIREL_START_REDUCE_SPEED:
+                case CABViewControlTypes.ORTS_REPEATER_LIGHTS_MASK:
+                case CABViewControlTypes.ORTS_STATION:
+                case CABViewControlTypes.ORTS_LS90_POWER:
+                case CABViewControlTypes.ORTS_LS90_LED:
+                case CABViewControlTypes.ORTS_AVV_SIGNAL:
                 // Icik
                 case CABViewControlTypes.COMPRESSOR:
 
