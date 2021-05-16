@@ -494,7 +494,8 @@ namespace Orts.Common
         }
 
         public override void Redo() {
-            Receiver.DynamicBrakeChangeTo( ToState, Target );
+            if (Receiver != null)
+                Receiver.DynamicBrakeChangeTo( ToState, Target );
             // Report();
         }
     }

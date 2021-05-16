@@ -2136,10 +2136,10 @@ namespace Orts.Simulation.RollingStocks
                 if (IsPlayerTrain && Mirel.Equipped)
                     Mirel.Update(elapsedClockSeconds, AbsSpeedMpS, AbsWheelSpeedMpS);
             }
-
-            if (ControllerVolts > 0 && DynamicBrakePercent > -1)
-                DynamicBrakeChangeActiveState(false);
-
+          
+            if (CruiseControl != null && ControllerVolts > 0 && DynamicBrakePercent > -1)
+                 DynamicBrakeChangeActiveState(false);
+            
             if (extendedPhysics == null)
             {
                 if (CruiseControl == null)
