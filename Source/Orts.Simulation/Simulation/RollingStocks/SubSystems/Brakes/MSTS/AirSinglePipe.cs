@@ -1287,19 +1287,27 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             // Kompenzuje ztráty
             int x0 = 0;
             int y0 = 0;
+            int Sum = 0;
             for (int i = 0; i < train.Cars.Count; i++)
             {
                 var engine = train.Cars[i] as MSTSLocomotive;
                 if (engine != null)
                 {
                     if (engine.BrakeSystem.NextLocoApply || engine.BrakeSystem.NextLocoGSelfLapH || engine.BrakeSystem.NextLocoSuppression || engine.BrakeSystem.NextLocoEmergency)
+                    {
                         x0 = 1;
+                        Sum++;
+                    }
                     if (engine.BrakeSystem.NextLocoRelease || engine.BrakeSystem.NextLocoOvercharge || engine.BrakeSystem.NextLocoQuickRelease || engine.BrakeSystem.NextLocoRunning)
-                        y0 = 1; 
-                    if (x0 + y0 == 2)
-                        engine.MainResPressurePSI = engine.MainResPressurePSI - (engine.TrainBrakeController.ApplyRatePSIpS * elapsedClockSeconds * engine.BrakeSystem.BrakePipeVolumeM3 / engine.MainResVolumeM3);                    
+                    {
+                        y0 = 1;
+                    }
                 }
             }
+            if (x0 + y0 == 2)
+                lead.BrakeSystem.BrakeLine1PressurePSI -= Sum * lead.TrainBrakeController.ApplyRatePSIpS * elapsedClockSeconds;
+            if (lead.BrakeSystem.BrakeLine1PressurePSI < 0) lead.BrakeSystem.BrakeLine1PressurePSI = 0;
+
 
             // Apply
             for (int i = 0; i < train.Cars.Count; i++)
@@ -1513,7 +1521,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             float sumv = 0;
             int continuousFromInclusive = 0;
             int continuousToExclusive = train.Cars.Count;
-
+                                     
             for (int i = 0; i < train.Cars.Count; i++)
             {
                 BrakeSystem brakeSystem = train.Cars[i].BrakeSystem;
