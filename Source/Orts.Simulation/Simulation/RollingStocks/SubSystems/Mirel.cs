@@ -117,7 +117,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
             initTest = InitTest.Off;
             operationalState = OperationalState.Off;
             FileInfo fi = new FileInfo(Simulator.TRK.Tr_RouteFile.FullFileName);
-            DatabaseVersion = int.Parse(File.ReadAllText(fi.DirectoryName + "\\MirelDbVersion.ini"));
+            DatabaseVersion = 1000;
         }
 
         public void SetMirelSignal(bool ToState)
@@ -1188,7 +1188,6 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                 emergency = false;
                 interventionTimer = 0;
                 EmergencyBrakes(false);
-                Locomotive.BrakeSystem.BrakeLine1PressurePSI = Bar.ToPSI(5);
                 BlueLight = true;
                 NZOK = true;
             }
@@ -1475,7 +1474,11 @@ namespace Orts.Simulation.RollingStocks.SubSystems
         {
             if (Brakes)
             {
-                Locomotive.BrakeSystem.BrakeLine1PressurePSI = 0;
+                Locomotive.TrainBrakeController.TCSEmergencyBraking = true;
+            }
+            else
+            {
+                Locomotive.TrainBrakeController.TCSEmergencyBraking = false;
             }
         }
 
