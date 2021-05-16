@@ -1259,16 +1259,16 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             {
                 if (lead.BrakeSystem.TripleValveEmergency)
                 {
-                    train.EqualReservoirPressurePSIorInHg -= (lead.TrainBrakeController.EmergencyRatePSIpS) * (elapsedClockSeconds);
+                    train.EqualReservoirPressurePSIorInHg -= (lead.TrainBrakeController.EmergencyRatePSIpS) * (elapsedClockSeconds / 6);
                     if (train.EqualReservoirPressurePSIorInHg < 0) train.EqualReservoirPressurePSIorInHg = 0;
                 }
                 else
                 if (lead.BrakeSystem.TripleValveRelease)
-                    train.EqualReservoirPressurePSIorInHg += (lead.TrainBrakeController.ReleaseRatePSIpS) * (elapsedClockSeconds);
+                    train.EqualReservoirPressurePSIorInHg += (lead.TrainBrakeController.ReleaseRatePSIpS) * (elapsedClockSeconds / 6);
                 else
                 if (lead.BrakeSystem.TripleValveApply)
                 {
-                    train.EqualReservoirPressurePSIorInHg -= (lead.TrainBrakeController.ApplyRatePSIpS) * (elapsedClockSeconds);
+                    train.EqualReservoirPressurePSIorInHg -= (lead.TrainBrakeController.ApplyRatePSIpS) * (elapsedClockSeconds / 6);
                     if (train.EqualReservoirPressurePSIorInHg < 0) train.EqualReservoirPressurePSIorInHg = 0;
                 }
             }
