@@ -3042,9 +3042,9 @@ namespace Orts.Simulation.RollingStocks
                     MSTSLocomotive loco = (MSTSLocomotive)this;
                     if (loco.extendedPhysics != null)
                     {
-                        if (Train.Cars[0].WindForceN < SpeedMpS * 500)
+                        if (Train.Cars[0].WindForceN < SpeedMpS * 300)
                         {
-                            Train.Cars[0].WindForceN = SpeedMpS * 500;
+                            Train.Cars[0].WindForceN = SpeedMpS * 300;
                         }
                     }
                 }
