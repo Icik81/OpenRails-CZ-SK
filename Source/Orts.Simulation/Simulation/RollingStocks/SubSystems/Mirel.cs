@@ -1472,13 +1472,17 @@ namespace Orts.Simulation.RollingStocks.SubSystems
 
         protected void EmergencyBrakes(bool Brakes)
         {
+            if (Locomotive.ControllerVolts > 0)
+                Locomotive.ControllerVolts = 0;
             if (Brakes)
             {
-                Locomotive.TrainBrakeController.TCSEmergencyBraking = true;
+                Locomotive.EmergencyButtonPressed = true;
+                Locomotive.TrainBrakeController.EmergencyBrakingPushButton = true;
             }
             else
             {
-                Locomotive.TrainBrakeController.TCSEmergencyBraking = false;
+                Locomotive.EmergencyButtonPressed = false;
+                Locomotive.TrainBrakeController.EmergencyBrakingPushButton = false;
             }
         }
 
@@ -1792,17 +1796,17 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                             if (!NZ2)
                                 flashing = true;
                         }
-                        if (diff > 5 && !mirelBeeping && !emergency)
+                        if (diff > 5 && !mirelBeeping && !emergency && Locomotive.EmergencyButtonPressed == false)
                         {
                             Locomotive.SignalEvent(Common.Event.MirelOverspeedOn);
                             mirelBeeping = true;
                         }
-                        if (diff <= 5 && mirelBeeping)
+                        if (diff <= 5 && mirelBeeping || Locomotive.EmergencyButtonPressed == true)
                         {
                             Locomotive.SignalEvent(Common.Event.MirelOverspeedOff);
                             mirelBeeping = false;
                         }
-                        if (diff > 7)
+                        if (diff > 7 && Locomotive.EmergencyButtonPressed == false)
                         {
                             if (!NZ2) ApplyNZ2();
                         }
