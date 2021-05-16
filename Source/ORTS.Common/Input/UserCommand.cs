@@ -63,6 +63,8 @@
         [GetString("Debug Precipitation Liquidity Increase")] DebugPrecipitationLiquidityIncrease,
         [GetString("Debug Precipitation Liquidity Decrease")] DebugPrecipitationLiquidityDecrease,
         [GetString("Debug Weather Change")] DebugWeatherChange,
+        [GetString("Debug Clock Forwards")] DebugClockForwards,
+        [GetString("Debug Clock Backwards")] DebugClockBackwards,
         [GetString("Debug Logger")] DebugLogger,
         [GetString("Debug Lock Shadows")] DebugLockShadows,
         [GetString("Debug Dump Keyboard Map")] DebugDumpKeymap,

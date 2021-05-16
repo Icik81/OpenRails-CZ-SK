@@ -472,6 +472,8 @@ namespace ORTS.Settings
             Commands[(int)UserCommand.ControlSelectSpeed190] = new UserCommandKeyInput(0x0A, KeyModifiers.Control | KeyModifiers.Shift);
             Commands[(int)UserCommand.ControlSelectSpeed200] = new UserCommandKeyInput(0x0B, KeyModifiers.Control | KeyModifiers.Shift);
 
+            Commands[(int)UserCommand.DebugClockBackwards] = new UserCommandKeyInput(0x0C, KeyModifiers.Control | KeyModifiers.Shift);
+            Commands[(int)UserCommand.DebugClockForwards] = new UserCommandKeyInput(0x0D, KeyModifiers.Control | KeyModifiers.Shift);
             Commands[(int)UserCommand.DebugDumpKeymap] = new UserCommandKeyInput(0x3B, KeyModifiers.Alt);
             Commands[(int)UserCommand.DebugFogDecrease] = new UserCommandKeyInput(0x0C, KeyModifiers.Shift);
             Commands[(int)UserCommand.DebugFogIncrease] = new UserCommandKeyInput(0x0D, KeyModifiers.Shift);
