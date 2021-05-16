@@ -357,6 +357,9 @@ namespace Orts.Formats.Msts
         ORTS_ACTIVE_CAB,
         ORTS_REPEATER_LIGHTS_MASK,
         ORTS_STATION,
+        ORTS_LS90_POWER,
+        ORTS_LS90_LED,
+        ORTS_AVV_SIGNAL,
 
         // Icik
         COMPRESSOR,

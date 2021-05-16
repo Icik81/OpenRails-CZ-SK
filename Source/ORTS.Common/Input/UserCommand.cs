@@ -63,8 +63,6 @@
         [GetString("Debug Precipitation Liquidity Increase")] DebugPrecipitationLiquidityIncrease,
         [GetString("Debug Precipitation Liquidity Decrease")] DebugPrecipitationLiquidityDecrease,
         [GetString("Debug Weather Change")] DebugWeatherChange,
-        [GetString("Debug Clock Forwards")] DebugClockForwards,
-        [GetString("Debug Clock Backwards")] DebugClockBackwards,
         [GetString("Debug Logger")] DebugLogger,
         [GetString("Debug Lock Shadows")] DebugLockShadows,
         [GetString("Debug Dump Keyboard Map")] DebugDumpKeymap,
@@ -241,5 +239,14 @@
         [GetString("Control Select Speed 180 kph/mph")] ControlSelectSpeed180,
         [GetString("Control Select Speed 190 kph/mph")] ControlSelectSpeed190,
         [GetString("Control Select Speed 200 kph/mph")] ControlSelectSpeed200,
+        [GetString("Control Mirel Key Plus")] MirelKeyPlus,
+        [GetString("Control Mirel Key Minus")] MirelKeyMinus,
+        [GetString("Control Mirel Key Enter")] MirelKeyEnter,
+        [GetString("Control Cab Select Increase")] CabSelectIncrease,
+        [GetString("Control Cab Select Decrease")] CabSelectDecrease,
+        [GetString("Control Display Key Position")] DisplayKeyPosition,
+        [GetString("Control Change Key Position")] ChangeKeyPosition,
+        [GetString("Set Mirel Off")] SetMirelOff,
+        [GetString("Set Mirel On")] SetMirelOn,
     }
 }
