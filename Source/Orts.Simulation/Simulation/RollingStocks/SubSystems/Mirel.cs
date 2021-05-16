@@ -1474,11 +1474,11 @@ namespace Orts.Simulation.RollingStocks.SubSystems
         {
             if (Brakes)
             {
-                Locomotive.TrainBrakeController.TCSEmergencyBraking = true;
+                Locomotive.TrainBrakeController.EmergencyBrakingPushButton = true;
             }
             else
             {
-                Locomotive.TrainBrakeController.TCSEmergencyBraking = false;
+                Locomotive.TrainBrakeController.EmergencyBrakingPushButton = false;
             }
         }
 
