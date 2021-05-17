@@ -30,6 +30,7 @@ using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Net.NetworkInformation;
 using System.Resources;
 using System.Runtime.InteropServices;
@@ -391,16 +392,38 @@ namespace ORTS
             PingReply pingReply = ping.Send("lkpr.aspone.cz", 1000);
             if (pingReply != null)
             {
+                SplashWindow sw = new SplashWindow();
+                sw.Show();
+                sw.UpdateProgress();
                 if (pingReply.Status == IPStatus.Success)
                 {
                     FileInfo fileInfo = new FileInfo(SelectedRoute.Path + "\\MirelDbVersion.ini");
-                    if (!fileInfo.Exists) File.WriteAllText(SelectedRoute.Path + "\\MirelDbVersion.ini", "0");
+                    if (!fileInfo.Exists)
+                    {
+                        File.WriteAllText(SelectedRoute.Path + "\\MirelDbVersion.ini", "0");
+                        if (SelectedRoute.Name == "Trat 321")
+                        {
+                            File.WriteAllText(SelectedRoute.Path + "\\MirelDbVersion.ini", "134");
+                            File.Copy(SelectedRoute.Path + "\\" + SelectedRoute.Name + ".tdb", SelectedRoute.Path + "\\" + SelectedRoute.Name + ".tdb.mirel.bak", true);
+                            File.Delete(SelectedRoute.Path + "\\" + SelectedRoute.Name + ".tdb");
+                            ServicePointManager.Expect100Continue = true;
+                            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+
+                            ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
+                            using (var client = new WebClient())
+                            {
+                                try
+                                {
+                                    client.DownloadFile("https://www.msts-rw.cz/ORIC/ORCZ-SK/dat321/Trat 321.tdb", SelectedRoute.Path + "\\" + SelectedRoute.Name + ".tdb");
+                                }
+                                catch { }
+                            }
+                        }
+                    }
                     string version = File.ReadAllText(SelectedRoute.Path + "\\MirelDbVersion.ini");
                     if (string.IsNullOrEmpty(version)) version = "0";
                     cz.aspone.lkpr.WebService ws = new cz.aspone.lkpr.WebService();
                     DataTable dt = ws.GetMirelSignals(comboBoxRoute.Text, version);
-                    SplashWindow sw = new SplashWindow();
-                    sw.Show();
                     int currentRow = 0;
                     foreach (DataRow dr in dt.Rows)
                     {
