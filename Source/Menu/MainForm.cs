@@ -24,11 +24,13 @@ using ORTS.Settings;
 using ORTS.Updater;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Net.NetworkInformation;
 using System.Resources;
 using System.Runtime.InteropServices;
 using System.Threading;
@@ -379,8 +381,115 @@ namespace ORTS
             LoadStartAtList();
             LoadTimetableSetList();
             ShowDetails();
+            LoadMirelDatabase();
         }
         #endregion
+
+        void LoadMirelDatabase()
+        {
+            Ping ping = new Ping();
+            PingReply pingReply = ping.Send("lkpr.aspone.cz", 1000);
+            if (pingReply != null)
+            {
+                if (pingReply.Status == IPStatus.Success)
+                {
+                    FileInfo fileInfo = new FileInfo(SelectedRoute.Path + "\\MirelDbVersion.ini");
+                    if (!fileInfo.Exists) File.WriteAllText(SelectedRoute.Path + "\\MirelDbVersion.ini", "0");
+                    string version = File.ReadAllText(SelectedRoute.Path + "\\MirelDbVersion.ini");
+                    if (string.IsNullOrEmpty(version)) version = "0";
+                    cz.aspone.lkpr.WebService ws = new cz.aspone.lkpr.WebService();
+                    DataTable dt = ws.GetMirelSignals(comboBoxRoute.Text, version);
+                    SplashWindow sw = new SplashWindow();
+                    sw.Show();
+                    int currentRow = 0;
+                    foreach (DataRow dr in dt.Rows)
+                    {
+                        currentRow++;
+                        double calc = 100 / (double)dt.Rows.Count;
+                        calc = calc * currentRow;
+                        calc = Math.Round(calc, 0) + 1;
+                        sw.Progress = int.Parse(calc.ToString());
+                        sw.UpdateProgress();
+                        ReplaceFile(SelectedRoute.Path + "\\" + SelectedRoute.Name + ".tdb", SelectedRoute.Path + "\\" + SelectedRoute.Name + ".tdb1", dr["SignalID"].ToString(), dr["MirelState"].ToString());
+                    }
+                    File.WriteAllText(SelectedRoute.Path + "\\MirelDbVersion.ini", ws.GetLastVersion(SelectedRoute.Name));
+                    sw.Close();
+                }
+            }
+        }
+        protected void ReplaceFile(string FilePath, string NewFilePath, string concern, string newValue)
+        {
+            bool foundLine = false;
+            using (StreamReader vReader = new StreamReader(FilePath))
+            {
+                using (StreamWriter vWriter = new StreamWriter(NewFilePath, false, System.Text.Encoding.BigEndianUnicode))
+                {
+                    int vLineNumber = 0;
+                    while (!vReader.EndOfStream)
+                    {
+                        string vLine = vReader.ReadLine();
+                        if (vLine.Contains("TrItemId ( " + concern + " )"))
+                        {
+                            vWriter.WriteLine(ReplaceLine(vLine, vLineNumber++));
+                            vLine = vReader.ReadLine();
+                            vWriter.WriteLine(ReplaceLine(vLine, vLineNumber++));
+                            vLine = vReader.ReadLine();
+                            if (vLine.Contains("TrSignalType"))
+                            {
+                                foundLine = true;
+                            }
+                            else
+                            {
+                                vWriter.WriteLine(ReplaceLine(vLine, vLineNumber++));
+                                vLine = vReader.ReadLine();
+                                if (vLine.Contains("TrSignalType"))
+                                {
+                                    foundLine = true;
+                                }
+                            }
+                        }
+                        if (foundLine)
+                        {
+                            foundLine = false;
+                            int replaceAt = vLine.IndexOf("0");
+                            int test = vLine.IndexOf("a", replaceAt - 1);
+                            if (test < 0) test = replaceAt + 1;
+                            String newLine;
+                            if (test < replaceAt)
+                            {
+                                newLine = vLine.Remove(test, 1);
+                                newLine = newLine.Insert(test, newValue);
+                                vLine = newLine;
+                                goto write;
+                            }
+                            test = vLine.IndexOf("b", replaceAt - 1);
+                            if (test < 0) test = replaceAt + 1;
+                            if (test < replaceAt)
+                            {
+                                newLine = vLine.Remove(test, 1);
+                                newLine = newLine.Insert(test, newValue);
+                                vLine = newLine;
+                                goto write;
+                            }
+                            newLine = vLine.Remove(replaceAt, 1);
+                            newLine = newLine.Insert(replaceAt, newValue);
+                            vLine = newLine;
+                        write:
+                            vWriter.WriteLine(ReplaceLine(vLine, vLineNumber++));
+                        }
+                        else
+                            vWriter.WriteLine(ReplaceLine(vLine, vLineNumber++));
+                    }
+                }
+            }
+            File.Copy(NewFilePath, FilePath, true);
+        }
+        protected string ReplaceLine(string Line, int LineNumber)
+        {
+            //Do your string replacement and 
+            //return either the original string or the modified one
+            return Line;
+        }
 
         #region Mode
         void radioButtonMode_CheckedChanged(object sender, EventArgs e)
@@ -1486,6 +1595,11 @@ namespace ORTS
                 }
             }
             //TO DO: Debrief Eval TTActivity
+        }
+
+        private void MainForm_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }
