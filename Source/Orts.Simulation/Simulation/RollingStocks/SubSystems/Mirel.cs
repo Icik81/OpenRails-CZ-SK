@@ -117,7 +117,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems
             initTest = InitTest.Off;
             operationalState = OperationalState.Off;
             FileInfo fi = new FileInfo(Simulator.TRK.Tr_RouteFile.FullFileName);
-            DatabaseVersion = 1000;
+            if (File.Exists(fi.DirectoryName + "\\MirelDbVersion.ini"))
+                DatabaseVersion = int.Parse(File.ReadAllText(fi.DirectoryName + "\\MirelDbVersion.ini"));
+            else
+                DatabaseVersion = 1000;
         }
 
         public void SetMirelSignal(bool ToState)
@@ -127,12 +130,12 @@ namespace Orts.Simulation.RollingStocks.SubSystems
             if (!Locomotive.IsPlayerTrain) return;
             if (!DatabaseVersionUpdated)
             {
-               /* cz.aspone.lkpr.WebService ws = new cz.aspone.lkpr.WebService();
+                cz.aspone.lkpr.WebService ws = new cz.aspone.lkpr.WebService();
                 int v = int.Parse(ws.GetLastVersion(Simulator.TRK.Tr_RouteFile.FileName));
                 if (DatabaseVersion != v) return;
                 DatabaseVersion = v + 1;
                 ws.UpdateMirelVersion(DatabaseVersion, Simulator.TRK.Tr_RouteFile.FileName);
-                DatabaseVersionUpdated = true;*/
+                DatabaseVersionUpdated = true;
             }
             mirelUnsetSignlEventBeeped = false;
             UpdateMirelSignal(ToState ? "b" : "a");
@@ -144,7 +147,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
             bool foudLine = false;
             using (StreamReader vReader = new StreamReader(FilePath))
             {
-                using (StreamWriter vWriter = new StreamWriter(NewFilePath))
+                using (StreamWriter vWriter = new StreamWriter(NewFilePath, false, System.Text.Encoding.BigEndianUnicode))
                 {
                     int vLineNumber = 0;
                     while (!vReader.EndOfStream)
@@ -227,8 +230,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems
 
         protected void SaveMirelStateToWorld(int SectionID, String NewState)
         {
-           // cz.aspone.lkpr.WebService ws = new cz.aspone.lkpr.WebService();
-            //ws.SaveMirelSignal(Simulator.TRK.Tr_RouteFile.Name, SectionID, NewState, DatabaseVersion);
+            cz.aspone.lkpr.WebService ws = new cz.aspone.lkpr.WebService();
+            ws.SaveMirelSignal(Simulator.TRK.Tr_RouteFile.Name, SectionID, NewState, DatabaseVersion);
         }
 
         protected bool mirelUnsetSignlEventBeeped = false;

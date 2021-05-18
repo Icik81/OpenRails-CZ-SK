@@ -1,0 +1,9 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Orts.Simulation.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="Orts_Simulation_cz_aspone_lkpr_WebService" Type="(Web Service URL)" Scope="Application">
+      <Value Profile="(Default)">http://lkpr.aspone.cz/WebService.asmx</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>
