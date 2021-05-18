@@ -785,6 +785,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                 Locomotive.TrainBrakeController.TrainBrakeControllerState == ORTS.Scripting.Api.ControllerState.Neutral)
                 TrainBrakePriority = false;
 
+            if (Locomotive.DynamicBrakePercent < 0)
+            {
+                DynamicBrakePriority = false;
+            }
             if (TrainBrakePriority || DynamicBrakePriority)
             {
                 WasForceReset = false;
