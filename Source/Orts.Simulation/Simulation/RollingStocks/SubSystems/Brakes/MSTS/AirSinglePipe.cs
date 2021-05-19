@@ -209,7 +209,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 string.Empty, // Spacer because the state above needs 2 columns.                                                     
                 string.Format("{0}", NextLocoBrakeState),
                 //string.Empty, // Spacer because the state above needs 2 columns.                                     
-                //string.Format("IsAirEmpty {0:F0}", IsAirEmpty),
+                //string.Format("CompressorActiveInLoco {0:F0}", CompressorActiveInLoco),
             };
         }
 
@@ -515,6 +515,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         BrakeLine2PressurePSI = 0;
                         BrakeLine3PressurePSI = 0;
                         prevBrakeLine1PressurePSI = 0;
+                        TotalCapacityMainResBrakePipe = 0;
+                        loco.MainResPressurePSI = 0;
                     }
                     if ((Car as MSTSWagon).HandBrakePresent)
                     {
@@ -1347,7 +1349,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 if (train.EqualReservoirPressurePSIorInHg > lead.BrakeSystem.maxPressurePSI0)
                     train.EqualReservoirPressurePSIorInHg = lead.BrakeSystem.maxPressurePSI0;
             }            
-            if (Release && Lap || Release && Release)
+            if (Release && Lap)
             {
                 if (train.EqualReservoirPressurePSIorInHg < lead.BrakeSystem.maxPressurePSI0)
                     train.EqualReservoirPressurePSIorInHg += lead.TrainBrakeController.ReleaseRatePSIpS * elapsedClockSeconds;
@@ -1449,7 +1451,6 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         }  
                 }
             }
-
             // Lap
             foreach (TrainCar car in train.Cars)
             {
@@ -1461,7 +1462,6 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     car.BrakeSystem.TripleValveEmergency = false;
                 }
             }
-
             // Emergency
             for (int i  = 0; i < train.Cars.Count; i++)
             {
@@ -1671,10 +1671,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     if (eng != null)
                     {
                         sumv += eng.MainResVolumeM3;
-                        sumpv += eng.MainResVolumeM3 * eng.MainResPressurePSI;
-
-                        // Výpočet kapacity hlavní jímky a přilehlého potrubí
-                        brakeSystem.TotalCapacityMainResBrakePipe = (brakeSystem.BrakePipeVolumeM3 * brakeSystem.BrakeLine1PressurePSI) + (eng.MainResVolumeM3 * eng.MainResPressurePSI);
+                        sumpv += eng.MainResVolumeM3 * eng.MainResPressurePSI;                       
                     }
                 }
             }
@@ -1688,17 +1685,47 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 sumpv = 0;
 
             // Propagate main reservoir pipe (2) data
-            train.BrakeLine2PressurePSI = sumpv;
+
+            // Počítání hlavních jímek
+            // Spouštění kompresoru na obsazených nebo propojených lokomotivách
+            train.BrakeLine2PressurePSI = sumpv;                                    
             for (int i = 0; i < train.Cars.Count; i++)
                 {
+                var loco = (train.Cars[i] as MSTSLocomotive);
                 if (first <= i && i <= last || twoPipes && continuousFromInclusive <= i && i < continuousToExclusive)
                 {
                     train.Cars[i].BrakeSystem.BrakeLine2PressurePSI = sumpv;
-                    if (sumpv != 0 && train.Cars[i] is MSTSLocomotive)
-                        (train.Cars[i] as MSTSLocomotive).MainResPressurePSI = sumpv;
+                    if (loco != null)
+                    {
+                        //(train.Cars[i] as MSTSLocomotive).MainResPressurePSI = sumpv;
+                        // Výpočet kapacity hlavní jímky a přilehlého potrubí
+                        train.Cars[i].BrakeSystem.TotalCapacityMainResBrakePipe = (train.Cars[i].BrakeSystem.BrakePipeVolumeM3 * train.Cars[i].BrakeSystem.BrakeLine1PressurePSI) + (loco.MainResVolumeM3 * loco.MainResPressurePSI);
+
+                        if (loco.MainResPressurePSI < loco.CompressorRestartPressurePSI
+                            && loco.AuxPowerOn
+                            && loco.PowerKey
+                            && !loco.CompressorIsOn)
+                            loco.SignalEvent(Event.CompressorOn);
+
+                        if ((loco.MainResPressurePSI > loco.MaxMainResPressurePSI
+                            || !loco.AuxPowerOn
+                            || !loco.PowerKey)
+                            && loco.CompressorIsOn)
+                            loco.SignalEvent(Event.CompressorOff);
+                    }
                 }
                 else
-                    train.Cars[i].BrakeSystem.BrakeLine2PressurePSI = train.Cars[i] is MSTSLocomotive ? (train.Cars[i] as MSTSLocomotive).MainResPressurePSI : 0;
+                {
+                    train.Cars[i].BrakeSystem.BrakeLine2PressurePSI = train.Cars[i] is MSTSLocomotive ? loco.MainResPressurePSI : 0;
+                    train.Cars[i].BrakeSystem.TotalCapacityMainResBrakePipe = 0;
+
+                    if (loco != null)
+                        if ((loco.MainResPressurePSI > loco.MaxMainResPressurePSI
+                           || !loco.AuxPowerOn
+                           || !loco.PowerKey)
+                           && loco.CompressorIsOn)
+                              loco.SignalEvent(Event.CompressorOff);
+                }
             }
 
             // Samostatná přímočinná brzda pro každou lokomotivu
