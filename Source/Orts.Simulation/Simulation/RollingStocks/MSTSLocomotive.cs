@@ -6623,6 +6623,10 @@ namespace Orts.Simulation.RollingStocks
 
         public virtual string GetDataOfS(CabViewControl crc, ElapsedTime elapsedClockSeconds)
         {
+            if (crc.ControlType == CABViewControlTypes.ORTS_MIREL_DISPLAY)
+            {
+                return Mirel.Display;
+            }
             if (crc.ControlType == CABViewControlTypes.ORTS_DIGITAL_STRING)
             {
                 if (StringArray.StArray == null)

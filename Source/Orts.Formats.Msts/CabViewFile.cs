@@ -322,6 +322,7 @@ namespace Orts.Formats.Msts
         ORTS_DIGITAL_STRING_SELECTED_STRING_INCREASE,
         ORTS_DIGITAL_STRING_SELECTED_STRING_DECREASE,
         ORTS_DIGITAL_STRING_ACTION_BUTTON,
+        ORTS_MIREL_DISPLAY,
         ORTS_DISPLAY_BLUE_LIGHT,
         ORTS_MIREL_DRIVE_MODE,
         ORTS_MIREL_DRIVE_MODE_OPTIONS,
@@ -630,6 +631,15 @@ namespace Orts.Formats.Msts
             stf.SkipRestOfBlock();
             return rotation;
         }
+
+        protected virtual Point ParseSkew(STFReader stf)
+        {
+            Point point = new Point(0, 0);
+            stf.MustMatch("(");
+            point = new Point { X = stf.ReadInt(0), Y = stf.ReadInt(0) };
+            stf.SkipRestOfBlock();
+            return point;
+        }
     }
     #endregion
 
@@ -856,6 +866,7 @@ namespace Orts.Formats.Msts
     #region Digital controls
     public class CVCDigital : CabViewControl
     {
+        public Point Skew { get; set; }
         public int LeadingZeros { get; set; }
         public double Accuracy { get; set; }
         public double AccuracySwitch { get; set; }
@@ -940,6 +951,7 @@ namespace Orts.Formats.Msts
                 }),
                 new STFReader.TokenProcessor("ortsfont", ()=>{ParseFont(stf); }),
                 new STFReader.TokenProcessor("ortsangle", () => {Rotation = ParseRotation(stf); }),
+                new STFReader.TokenProcessor("skew", () => { Skew = ParseSkew(stf); }),
                 new STFReader.TokenProcessor("label", ()=>{
                     stf.MustMatch("(");
                     Label = stf.ReadString();

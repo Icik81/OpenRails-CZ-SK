@@ -41,6 +41,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
         public bool RecievingRepeaterSignal = false;
         public enum RecieverState { Off, Signal50, Signal75 };
         public RecieverState recieverState = RecieverState.Signal75;
+        public string Display = "";
         public bool BlueLight = false;
         public bool DisplayFlashMask = false;
         public float MirelSpeedNum1 = 0;
@@ -239,6 +240,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
         protected float ls90testTime = 0;
         public void Update(float elapsedClockSeconds, float AbsSpeedMpS, float AbsWheelSpeedMpS)
         {
+            UpdateDisplay();
             if (Locomotive.Battery && initTest == InitTest.Off)
             {
                 defaultStateSet = false;
@@ -702,6 +704,52 @@ namespace Orts.Simulation.RollingStocks.SubSystems
             {
                 
             }
+        }
+
+        protected void UpdateDisplay()
+        {
+            if (initTest == InitTest.Off)
+                Display = "   ";
+            else if (initTest == InitTest.Running)
+                Display = "=D1";
+            else if (MirelMaximumSpeed > 99)
+            {
+                Display = MirelMaximumSpeed.ToString();
+                Display = Display.Replace("1", "l");
+            }
+            else
+                Display = MirelMaximumSpeed.ToString();
+            if (NZ1) Display = "NZ1";
+            if (NZ2) Display = "NZ2";
+            if (NZ3) Display = "NZ3";
+            if (NZ4) Display = "NZ4";
+            if (NZ5) Display = "NZ5";
+            if (NZOK) Display = "NZk";
+            if (ManualModeDisplay) Display = "MAN";
+            if (DriveModeHideModes)
+            {
+                if (driveMode == DriveMode.Shunting)
+                    Display = "POS";
+                if (driveMode == DriveMode.Normal)
+                    Display = "PRE";
+                if (driveMode == DriveMode.Lockout)
+                    Display = "VYL";
+                if (driveMode == DriveMode.Trailing)
+                    Display = "ZAV";
+            }
+            if (!DriveModeHideModes)
+            {
+                if (mainMode == MainMode.DriveMode)
+                    Display = "REZ";
+                if (mainMode == MainMode.MaxSpeed)
+                    Display = "MAX";
+            }
+            if (FullDisplay)
+            {
+                Display = "$$$";
+            }
+            if (ZAP) Display = "ZAP";
+            if (VYP) Display = "VYP";
         }
 
         protected bool canChangeSelectedApproachSpeed = true;

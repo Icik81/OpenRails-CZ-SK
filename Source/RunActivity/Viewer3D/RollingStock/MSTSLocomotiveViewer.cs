@@ -3137,6 +3137,7 @@ namespace Orts.Viewer3D.RollingStock
         string DrawText;
         Color DrawColor;
         float DrawRotation;
+        Point DrawSkew;
 
         [CallOnThread("Loader")]
         public CabViewDigitalRenderer(Viewer viewer, MSTSLocomotive car, CVCDigital digital, CabShader shader)
@@ -3175,6 +3176,7 @@ namespace Orts.Viewer3D.RollingStock
             DrawPosition.Width = (int)(Control.Width * xScale);
             DrawPosition.Height = (int)(Control.Height * yScale);
             DrawRotation = digital.Rotation;
+            DrawSkew = new Point(digital.Skew.X, digital.Skew.Y);
 
             if (Control.ControlType == CABViewControlTypes.CLOCK)
             {
@@ -3254,6 +3256,13 @@ namespace Orts.Viewer3D.RollingStock
                 if (Control.IsEditable)
                     DrawText += Control.EditablePositionCharacter;
 
+                DrawColor = new Color(digital.PositiveColor.R, digital.PositiveColor.G, digital.PositiveColor.B);
+            }
+            else if (Control.ControlType == CABViewControlTypes.ORTS_MIREL_DISPLAY)
+            {
+                DrawText = Locomotive.GetDataOfS(digital, elapsedTime);
+                while (DrawText.Length < 3)
+                    DrawText = " " + DrawText;
                 DrawColor = new Color(digital.PositiveColor.R, digital.PositiveColor.G, digital.PositiveColor.B);
             }
             else if (digital.OldValue != 0 && digital.OldValue > Num && digital.DecreaseColor.A != 0)
