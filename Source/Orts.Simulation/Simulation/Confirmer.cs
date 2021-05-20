@@ -120,6 +120,9 @@ namespace Orts.Simulation
       // Freight Load
       , FreightLoad
       , CabRadio
+
+    // Icik
+    , CompressorOffAuto
     }
 
     public enum CabSetting {
@@ -247,6 +250,7 @@ namespace Orts.Simulation
                 , new string [] { GetString("Odometer"), null, null, GetParticularString("Odometer", "reset"), GetParticularString("Odometer", "counting down"), GetParticularString("Odometer", "counting up") }
                 , new string [] { GetString("Battery"), GetString("off"), null, GetString("on") }
                 , new string [] { GetString("PowerKey"), GetString("off"), null, GetString("on")}
+               
                 // Train Devices
                 , new string [] { GetString("Doors Left"), GetString("close"), null, GetString("open") } 
                 , new string [] { GetString("Doors Right"), GetString("close"), null, GetString("open") } 
@@ -269,6 +273,9 @@ namespace Orts.Simulation
                 , new string [] { GetString("Wagon"), GetString("Wagon fully unloaded"), null, GetString("Wagon fully loaded"), null, GetString("Freight load") }
 
                 , new string [] { GetString("Cab Radio"), GetString("off"), null, GetString("on") }
+
+                // Icik
+                , new string [] { GetString("Compressor"), GetString("off"), null, GetString("Auto")}
 
             };
             Debug.Assert(ConfirmText.Length == Enum.GetNames(typeof(CabControl)).Length, "Number of entries indexer ConfirmText must match values in CabControl enum.");

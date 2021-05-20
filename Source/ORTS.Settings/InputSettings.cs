@@ -431,11 +431,11 @@ namespace ORTS.Settings
             Commands[(int)UserCommand.ControlTrainBrakeZero] = new UserCommandKeyInput(0x27, KeyModifiers.Control);
 
             Commands[(int)UserCommand.ControlTurntableClockwise] = new UserCommandKeyInput(0x2E, KeyModifiers.Alt);
-            Commands[(int)UserCommand.ControlTurntableCounterclockwise] = new UserCommandKeyInput(0x2E, KeyModifiers.Control);
+            Commands[(int)UserCommand.ControlTurntableCounterclockwise] = new UserCommandKeyInput(0x2E, KeyModifiers.Control | KeyModifiers.Shift);
 
             Commands[(int)UserCommand.ControlWaterScoop] = new UserCommandKeyInput(0x15);
             Commands[(int)UserCommand.ControlWiper] = new UserCommandKeyInput(0x2F);
-
+            
             // Jindrich
             Commands[(int)UserCommand.ControlSpeedRegulatorModeIncrease] = new UserCommandKeyInput(0x11, KeyModifiers.Shift);
             Commands[(int)UserCommand.ControlSpeedRegulatorModeDecrease] = new UserCommandKeyInput(0x1F, KeyModifiers.Shift);
@@ -545,6 +545,9 @@ namespace ORTS.Settings
             Commands[(int)UserCommand.GameTrailingSwitchAhead] = new UserCommandKeyInput(0x22, KeyModifiers.Control);
             Commands[(int)UserCommand.GameTrailingSwitchBehind] = new UserCommandKeyInput(0x22, KeyModifiers.Shift | KeyModifiers.Control);
             Commands[(int)UserCommand.GameUncoupleWithMouse] = new UserCommandKeyInput(0x16);
+
+            // Icik
+            Commands[(int)UserCommand.ControlCompressorOffAuto] = new UserCommandKeyInput(0x2E, KeyModifiers.Control);
         }
 #endregion
 

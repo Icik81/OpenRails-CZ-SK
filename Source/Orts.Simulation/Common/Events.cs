@@ -241,6 +241,9 @@ namespace Orts.Common
         MirelUnwantedVigilancy,
         LS90TestComplete,
 
+        // Icik
+        CompressorOffAutoOn,
+        CompressorOffAutoOff,
     }
 
     public static class Events
@@ -497,6 +500,10 @@ namespace Orts.Common
                         case 10186: return Event.MirelZS3Off;
                         case 10188: return Event.ActiveCabSelectorChange;
                         case 10195: return Event.LS90TestComplete;
+
+                        // Icik
+                        case 20001: return Event.CompressorOffAutoOn;
+                        case 20002: return Event.CompressorOffAutoOff;
                         default: return 0;
                     }
                 case Source.MSTSCrossing:

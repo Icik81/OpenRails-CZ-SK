@@ -213,6 +213,9 @@ namespace Orts.Viewer3D.RollingStock
             UserInputCommands.Add(UserCommand.SetMirelOn, new Action[] { Noop, () => Locomotive.Mirel.SetMirelSignal(true) });
             UserInputCommands.Add(UserCommand.SetMirelOff, new Action[] { Noop, () => Locomotive.Mirel.SetMirelSignal(false) });
 
+            // Icik
+            UserInputCommands.Add(UserCommand.ControlCompressorOffAuto, new Action[] { Noop, () => new ToggleCompressorOffAutoCommand(Viewer.Log) });
+
             base.InitializeUserInputCommands();
         }
 
@@ -2152,7 +2155,7 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.ORTS_RIGHTDOOR:
                 case CABViewControlTypes.ORTS_MIRRORS:
                 case CABViewControlTypes.ORTS_BATTERY:
-                case CABViewControlTypes.ORTS_POWERKEY:
+                case CABViewControlTypes.ORTS_POWERKEY:                
                     index = (int)data;
                     break;
 
@@ -2281,8 +2284,9 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.ORTS_LS90_POWER:
                 case CABViewControlTypes.ORTS_LS90_LED:
                 case CABViewControlTypes.ORTS_AVV_SIGNAL:
+
                 // Icik
-                case CABViewControlTypes.COMPRESSOR:
+                case CABViewControlTypes.COMPRESSOROFFAUTO:
 
                     index = (int)data;
                     break;
@@ -2478,6 +2482,10 @@ namespace Orts.Viewer3D.RollingStock
                     if ((Locomotive.Battery ? 1 : 0) != ChangedValue(Locomotive.Battery ? 1 : 0)) new ToggleBatteryCommand(Viewer.Log); break;
                 case CABViewControlTypes.ORTS_POWERKEY:
                     if ((Locomotive.PowerKey ? 1 : 0) != ChangedValue(Locomotive.PowerKey ? 1 : 0)) new TogglePowerKeyCommand(Viewer.Log); break;
+
+                // Icik
+                case CABViewControlTypes.COMPRESSOROFFAUTO:
+                    if ((Locomotive.CompressorOffAuto ? 1 : 0) != ChangedValue(Locomotive.CompressorOffAuto ? 1 : 0)) new ToggleCompressorOffAutoCommand(Viewer.Log); break;
 
                 // Train Control System controls
                 case CABViewControlTypes.ORTS_TCS1:
