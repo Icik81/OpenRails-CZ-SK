@@ -363,6 +363,7 @@ namespace Orts.Formats.Msts
 
         // Icik
         COMPRESSOR,
+        COMPRESSOROFFAUTO,
 
         // Further CabViewControlTypes must be added above this line, to avoid their malfunction in 3DCabs
         EXTERNALWIPERS,

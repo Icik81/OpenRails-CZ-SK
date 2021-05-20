@@ -1033,7 +1033,7 @@ namespace Orts.Common
             // Report();
         }
     }
-    // Steam controls
+     // Steam controls
     [Serializable()]
     public sealed class ContinuousSteamHeatCommand : ContinuousCommand
     {
@@ -1599,7 +1599,8 @@ namespace Orts.Common
             return base.ToString() + " " + "Counterclockwise with target";
         }
     }
-
+    
+    // Icik
     [Serializable()]
     public sealed class BrakeCarModeCommand : Command
     {
@@ -1609,7 +1610,7 @@ namespace Orts.Common
             : base(log)
         {
             Receiver = car;
-}
+        }
     }
     [Serializable()]
     public sealed class BrakeCarModePLCommand : Command
@@ -1622,5 +1623,21 @@ namespace Orts.Common
             Receiver = car;
         }
     }
+    [Serializable()]
+    public sealed class ToggleCompressorOffAutoCommand : Command
+    {
+        public static MSTSLocomotive Receiver { get; set; }
 
+        public ToggleCompressorOffAutoCommand(CommandLog log)
+            : base(log)
+        {
+            Redo();
+        }
+
+        public override void Redo()
+        {
+            Receiver.ToggleCompressorOffAuto();
+            // Report();
+        }
+    }
 }

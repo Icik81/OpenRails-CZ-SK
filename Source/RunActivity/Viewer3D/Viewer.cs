@@ -594,6 +594,9 @@ namespace Orts.Viewer3D
             TCSSwitchCommand.Receiver = ((MSTSLocomotive)PlayerLocomotive).TrainControlSystem;
             ToggleBatteryCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
             TogglePowerKeyCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
+
+            // Icik
+            ToggleCompressorOffAutoCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
         }
 
         public void ChangeToPreviousFreeRoamCamera()

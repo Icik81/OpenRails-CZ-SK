@@ -250,5 +250,8 @@
         [GetString("Control Change Key Position")] ChangeKeyPosition,
         [GetString("Set Mirel Off")] SetMirelOff,
         [GetString("Set Mirel On")] SetMirelOn,
+
+        // Icik
+        [GetString("Control Compressor Off/Auto")] ControlCompressorOffAuto,
     }
 }

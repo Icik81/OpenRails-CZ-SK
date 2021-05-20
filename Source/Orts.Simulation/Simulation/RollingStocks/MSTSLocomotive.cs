@@ -456,7 +456,8 @@ namespace Orts.Simulation.RollingStocks
         public bool HVOffStatusBrakeCyl = false;
         public bool HVOffStatusBrakePipe = false;
         public bool DoesPowerLossResetControls = false;
-        public bool ThrottleZero = false;        
+        public bool ThrottleZero = false;
+        public bool CompressorOffAuto;
 
         // Jindrich
         public CruiseControl CruiseControl;
@@ -1370,6 +1371,7 @@ namespace Orts.Simulation.RollingStocks
             // Icik
             outf.Write(HVOffStatusBrakeCyl);
             outf.Write(HVOffStatusBrakePipe);
+            outf.Write(CompressorOffAuto);
 
             base.Save(outf);
 
@@ -1424,7 +1426,8 @@ namespace Orts.Simulation.RollingStocks
 
             // Icik
             HVOffStatusBrakeCyl = inf.ReadBoolean();
-            HVOffStatusBrakePipe = inf.ReadBoolean();                        
+            HVOffStatusBrakePipe = inf.ReadBoolean();
+            CompressorOffAuto = inf.ReadBoolean();
 
             base.Restore(inf);
 
@@ -1949,11 +1952,11 @@ namespace Orts.Simulation.RollingStocks
                     }
                     if (this is MSTSDieselLocomotive) // Dieselelektrické lokomotivy
                     {
-                        if (PowerReduction < 0.8)
-                            Train.SignalEvent(Event.PowerKeyOff); // Zvuk pro vypnutí TM
+                        //if (PowerReduction < 0.8)
+                        //    Train.SignalEvent(Event.PowerKeyOff); // Zvuk pro vypnutí TM
                         PowerReduction = 0.9f; // Omezení trakčních motorů  
                         SetDynamicBrakePercent(0);
-                        Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Zásah nadproudové ochrany, Ctrl + K pro resetování ochrany!"));
+                        Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Zásah nadproudové ochrany!"));
                     }
                 }
 
@@ -1964,12 +1967,12 @@ namespace Orts.Simulation.RollingStocks
                 }
 
                 // Resetování nadproudové ochrany u dieselelektrických lokomotiv
-                if (this is MSTSDieselLocomotive && OverCurrent && PowerKey && LocalThrottlePercent == 0 && LocalDynamicBrakePercent == 0)
+                if (this is MSTSDieselLocomotive && OverCurrent && LocalThrottlePercent == 0 && LocalDynamicBrakePercent == 0)
                 {
-                    Train.SignalEvent(Event.PowerKeyOn); // Zvuk pro zapnutí TM
+                    //Train.SignalEvent(Event.PowerKeyOn); // Zvuk pro zapnutí TM
                     OverCurrent = false;
                     PowerReduction = 0;
-                    PowerKey = false;
+                    //PowerKey = false;
                 }
             }
         }
@@ -2009,11 +2012,11 @@ namespace Orts.Simulation.RollingStocks
                     }
                     if (this is MSTSDieselLocomotive) // Dieselelektrické lokomotivy
                     {
-                        if (PowerReduction < 0.8)
-                            Train.SignalEvent(Event.PowerKeyOff); // Zvuk pro vypnutí TM
+                        //if (PowerReduction < 0.8)
+                        //    Train.SignalEvent(Event.PowerKeyOff); // Zvuk pro vypnutí TM
                         PowerReduction = 0.9f; // Omezení trakčních motorů  
                         SetDynamicBrakePercent(0);
-                        Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Zásah protiskluzové ochrany, Ctrl + K pro resetování ochrany!"));
+                        Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Zásah protiskluzové ochrany!"));
                     }
                 }
 
@@ -2024,12 +2027,11 @@ namespace Orts.Simulation.RollingStocks
                 }
 
                 // Resetování nadproudové ochrany u dieselelektrických lokomotiv
-                if (this is MSTSDieselLocomotive && OverVoltage && PowerKey && LocalThrottlePercent == 0 && LocalDynamicBrakePercent == 0)
+                if (this is MSTSDieselLocomotive && OverVoltage && LocalThrottlePercent == 0 && LocalDynamicBrakePercent == 0)
                 {
-                    Train.SignalEvent(Event.PowerKeyOn); // Zvuk pro zapnutí TM
+                    //Train.SignalEvent(Event.PowerKeyOn); // Zvuk pro zapnutí TM
                     OverVoltage = false;
-                    PowerReduction = 0;
-                    PowerKey = false;
+                    PowerReduction = 0;                    
                 }
             }
         }
@@ -5062,6 +5064,15 @@ namespace Orts.Simulation.RollingStocks
             else SignalEvent(Event.PowerKeyOff);
             if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.PowerKey, PowerKey ? CabSetting.On : CabSetting.Off);
         }
+
+        // Icik
+        public void ToggleCompressorOffAuto()
+        {
+            CompressorOffAuto = !CompressorOffAuto;
+            if (CompressorOffAuto) SignalEvent(Event.CompressorOffAutoOn);
+            else SignalEvent(Event.CompressorOffAutoOff);
+            if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.CompressorOffAuto, CompressorOffAuto ? CabSetting.On : CabSetting.Off);
+        }
         public void ToggleCabRadio( bool newState)
         {
             CabRadioOn = newState;
@@ -6110,7 +6121,7 @@ namespace Orts.Simulation.RollingStocks
                         seconds += 60;
                     data = seconds;
                     break;
-
+              
                 // Train Control System controls
                 case CABViewControlTypes.ORTS_TCS1:
                 case CABViewControlTypes.ORTS_TCS2:
@@ -6355,21 +6366,7 @@ namespace Orts.Simulation.RollingStocks
 
                         break;
                     }
-
-                // Icik
-                case CABViewControlTypes.COMPRESSOR:
-                    {
-                        data = 1;
-                        cvc.ElapsedTime += elapsedTime;
-                        if (CompressorIsOn && cvc.ElapsedTime < cvc.UpdateTime)
-                        {
-                            data = 0;                            
-                        }
-                        if (!CompressorIsOn)
-                            cvc.ElapsedTime = 0;
-                        break;
-                    }
-
+                
                 case CABViewControlTypes.ORTS_DISPLAY_BLUE_LIGHT:
                     {
                         data = (float)(Mirel.BlueLight ? 0 : 1);
@@ -6576,6 +6573,24 @@ namespace Orts.Simulation.RollingStocks
                         data = (float)CruiseControl.avvSignal;
                         break;
                     }
+
+                // Icik
+                case CABViewControlTypes.COMPRESSOR:
+                    {
+                        data = 1;
+                        cvc.ElapsedTime += elapsedTime;
+                        if (CompressorIsOn && cvc.ElapsedTime < cvc.UpdateTime)
+                        {
+                            data = 0;
+                        }
+                        if (!CompressorIsOn)
+                            cvc.ElapsedTime = 0;
+                        break;
+                    }
+                case CABViewControlTypes.COMPRESSOROFFAUTO:
+                    data = CompressorOffAuto ? 1 : 0;
+                    break;
+
                 default:
                     if (CruiseControl != null)
                         data = CruiseControl.GetDataOf(cvc);

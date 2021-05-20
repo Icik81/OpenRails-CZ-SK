@@ -1703,13 +1703,13 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
 
                         if (loco.MainResPressurePSI < loco.CompressorRestartPressurePSI
                             && loco.AuxPowerOn
-                            && loco.PowerKey
+                            && loco.CompressorOffAuto
                             && !loco.CompressorIsOn)
                             loco.SignalEvent(Event.CompressorOn);
 
                         if ((loco.MainResPressurePSI > loco.MaxMainResPressurePSI
                             || !loco.AuxPowerOn
-                            || !loco.PowerKey)
+                            || !loco.CompressorOffAuto)
                             && loco.CompressorIsOn)
                             loco.SignalEvent(Event.CompressorOff);
                     }
@@ -1722,7 +1722,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     if (loco != null)
                         if ((loco.MainResPressurePSI > loco.MaxMainResPressurePSI
                            || !loco.AuxPowerOn
-                           || !loco.PowerKey)
+                           || !loco.CompressorOffAuto)
                            && loco.CompressorIsOn)
                               loco.SignalEvent(Event.CompressorOff);
                 }
