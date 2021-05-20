@@ -3035,24 +3035,14 @@ namespace Orts.Simulation.RollingStocks
                 }
 
                 WindForceN = LateralWindResistanceForceN + WindDragResistanceForceN;
-                if (float.IsNaN(WindForceN))
-                    WindForceN = 0;
-                if (IsPlayerTrain && this is MSTSLocomotive)
-                {
-                    MSTSLocomotive loco = (MSTSLocomotive)this;
-                    if (loco.extendedPhysics != null)
-                    {
-                        if (Train.Cars[0].WindForceN < SpeedMpS * 300)
-                        {
-                            Train.Cars[0].WindForceN = SpeedMpS * 300;
-                        }
-                    }
-                }
+
             }
             else
             {
                 WindForceN = 0.0f; // Set to zero if wind resistance is not to be calculated
             }
+            if (float.IsNaN(WindForceN))
+                WindForceN = 0;
 
         }
 
