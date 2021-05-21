@@ -1300,7 +1300,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 if (lead.BrakeSystem.BrakeLine1PressurePSI < 0)
                     lead.BrakeSystem.BrakeLine1PressurePSI = 0;
                 if (train.EqualReservoirPressurePSIorInHg < lead.BrakeSystem.maxPressurePSI0)
-                    train.EqualReservoirPressurePSIorInHg += (lead.TrainBrakeController.RunningReleaseRatePSIpS) * (elapsedClockSeconds);
+                    train.EqualReservoirPressurePSIorInHg += (lead.TrainBrakeController.RunningReleaseRatePSIpS) * (elapsedClockSeconds) / 6;
                 if (train.EqualReservoirPressurePSIorInHg > lead.BrakeSystem.maxPressurePSI0)
                     train.EqualReservoirPressurePSIorInHg = lead.BrakeSystem.maxPressurePSI0;
             }
@@ -1310,21 +1310,21 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 if (lead.BrakeSystem.BrakeLine1PressurePSI < 0)
                     lead.BrakeSystem.BrakeLine1PressurePSI = 0;
                 if (train.EqualReservoirPressurePSIorInHg < lead.BrakeSystem.maxPressurePSI0)
-                    train.EqualReservoirPressurePSIorInHg += (lead.TrainBrakeController.RunningReleaseRatePSIpS) * (elapsedClockSeconds);
+                    train.EqualReservoirPressurePSIorInHg += (lead.TrainBrakeController.RunningReleaseRatePSIpS) * (elapsedClockSeconds) / 6;
                 if (train.EqualReservoirPressurePSIorInHg > lead.BrakeSystem.maxPressurePSI0)
                     train.EqualReservoirPressurePSIorInHg = lead.BrakeSystem.maxPressurePSI0;
             }
             if (Running && Lap)
             {
                 if (train.EqualReservoirPressurePSIorInHg < lead.BrakeSystem.maxPressurePSI0)
-                    train.EqualReservoirPressurePSIorInHg += lead.TrainBrakeController.RunningReleaseRatePSIpS * elapsedClockSeconds;
+                    train.EqualReservoirPressurePSIorInHg += lead.TrainBrakeController.RunningReleaseRatePSIpS * elapsedClockSeconds / 6;
                 if (train.EqualReservoirPressurePSIorInHg > lead.BrakeSystem.maxPressurePSI0)
                     train.EqualReservoirPressurePSIorInHg = lead.BrakeSystem.maxPressurePSI0;
             }
             if (Running && Release && Lap)
             {
                 if (train.EqualReservoirPressurePSIorInHg < lead.BrakeSystem.maxPressurePSI0)
-                    train.EqualReservoirPressurePSIorInHg += lead.TrainBrakeController.ReleaseRatePSIpS * elapsedClockSeconds;
+                    train.EqualReservoirPressurePSIorInHg += lead.TrainBrakeController.ReleaseRatePSIpS * elapsedClockSeconds / 6;
                 if (train.EqualReservoirPressurePSIorInHg > lead.BrakeSystem.maxPressurePSI0)
                     train.EqualReservoirPressurePSIorInHg = lead.BrakeSystem.maxPressurePSI0;
             }
@@ -1335,7 +1335,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 if (lead.BrakeSystem.BrakeLine1PressurePSI < 0)
                     lead.BrakeSystem.BrakeLine1PressurePSI = 0;
                 if (train.EqualReservoirPressurePSIorInHg < lead.BrakeSystem.maxPressurePSI0)
-                    train.EqualReservoirPressurePSIorInHg += (lead.TrainBrakeController.ReleaseRatePSIpS) * (elapsedClockSeconds);
+                    train.EqualReservoirPressurePSIorInHg += (lead.TrainBrakeController.ReleaseRatePSIpS) * (elapsedClockSeconds) / 6;
                 if (train.EqualReservoirPressurePSIorInHg > lead.BrakeSystem.maxPressurePSI0)
                     train.EqualReservoirPressurePSIorInHg = lead.BrakeSystem.maxPressurePSI0;
             }
@@ -1345,14 +1345,14 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 if (lead.BrakeSystem.BrakeLine1PressurePSI < 0)
                     lead.BrakeSystem.BrakeLine1PressurePSI = 0;
                 if (train.EqualReservoirPressurePSIorInHg < lead.BrakeSystem.maxPressurePSI0)
-                    train.EqualReservoirPressurePSIorInHg += (lead.TrainBrakeController.ReleaseRatePSIpS) * (elapsedClockSeconds);
+                    train.EqualReservoirPressurePSIorInHg += (lead.TrainBrakeController.ReleaseRatePSIpS) * (elapsedClockSeconds) / 6;
                 if (train.EqualReservoirPressurePSIorInHg > lead.BrakeSystem.maxPressurePSI0)
                     train.EqualReservoirPressurePSIorInHg = lead.BrakeSystem.maxPressurePSI0;
             }
             if (Release && Lap)
             {
                 if (train.EqualReservoirPressurePSIorInHg < lead.BrakeSystem.maxPressurePSI0)
-                    train.EqualReservoirPressurePSIorInHg += lead.TrainBrakeController.ReleaseRatePSIpS * elapsedClockSeconds;                
+                    train.EqualReservoirPressurePSIorInHg += lead.TrainBrakeController.ReleaseRatePSIpS * elapsedClockSeconds / 6;
             }
 
             if (Apply && Lap)
@@ -1373,7 +1373,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 if (lead.BrakeSystem.BrakeLine1PressurePSI < 0)
                     lead.BrakeSystem.BrakeLine1PressurePSI = 0;
                 if (train.EqualReservoirPressurePSIorInHg < lead.BrakeSystem.TrainBrakesControllerMaxOverchargePressurePSI)
-                    train.EqualReservoirPressurePSIorInHg += (lead.TrainBrakeController.ReleaseRatePSIpS) * (elapsedClockSeconds);
+                    train.EqualReservoirPressurePSIorInHg += (lead.TrainBrakeController.ReleaseRatePSIpS) * (elapsedClockSeconds) / 6;
                 if (train.EqualReservoirPressurePSIorInHg > lead.BrakeSystem.TrainBrakesControllerMaxOverchargePressurePSI)
                     train.EqualReservoirPressurePSIorInHg = lead.BrakeSystem.TrainBrakesControllerMaxOverchargePressurePSI;
             }
@@ -1383,14 +1383,14 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 if (lead.BrakeSystem.BrakeLine1PressurePSI < 0)
                     lead.BrakeSystem.BrakeLine1PressurePSI = 0;
                 if (train.EqualReservoirPressurePSIorInHg < lead.BrakeSystem.TrainBrakesControllerMaxOverchargePressurePSI)
-                    train.EqualReservoirPressurePSIorInHg += (lead.TrainBrakeController.ReleaseRatePSIpS) * (elapsedClockSeconds);
+                    train.EqualReservoirPressurePSIorInHg += (lead.TrainBrakeController.ReleaseRatePSIpS) * (elapsedClockSeconds) / 6;
                 if (train.EqualReservoirPressurePSIorInHg > lead.BrakeSystem.TrainBrakesControllerMaxOverchargePressurePSI)
                     train.EqualReservoirPressurePSIorInHg = lead.BrakeSystem.TrainBrakesControllerMaxOverchargePressurePSI;
             }
             if (Overcharge && Lap || Overcharge && Release)
             {
                 if (train.EqualReservoirPressurePSIorInHg < lead.BrakeSystem.TrainBrakesControllerMaxOverchargePressurePSI)
-                    train.EqualReservoirPressurePSIorInHg += lead.TrainBrakeController.ReleaseRatePSIpS * elapsedClockSeconds;                
+                    train.EqualReservoirPressurePSIorInHg += lead.TrainBrakeController.ReleaseRatePSIpS * elapsedClockSeconds / 6;
             }
             
             if (Apply && QuickRelease)
@@ -1399,7 +1399,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 if (lead.BrakeSystem.BrakeLine1PressurePSI < 0)
                     lead.BrakeSystem.BrakeLine1PressurePSI = 0;
                 if (train.EqualReservoirPressurePSIorInHg < lead.MainResPressurePSI)
-                    train.EqualReservoirPressurePSIorInHg += (lead.TrainBrakeController.QuickReleaseRatePSIpS) * (elapsedClockSeconds);
+                    train.EqualReservoirPressurePSIorInHg += (lead.TrainBrakeController.QuickReleaseRatePSIpS) * (elapsedClockSeconds) / 6;
                 if (train.EqualReservoirPressurePSIorInHg > lead.MainResPressurePSI)
                     train.EqualReservoirPressurePSIorInHg = lead.MainResPressurePSI;
             }
@@ -1409,14 +1409,14 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 if (lead.BrakeSystem.BrakeLine1PressurePSI < 0)
                     lead.BrakeSystem.BrakeLine1PressurePSI = 0;
                 if (train.EqualReservoirPressurePSIorInHg < lead.MainResPressurePSI)
-                    train.EqualReservoirPressurePSIorInHg += (lead.TrainBrakeController.QuickReleaseRatePSIpS) * (elapsedClockSeconds);
+                    train.EqualReservoirPressurePSIorInHg += (lead.TrainBrakeController.QuickReleaseRatePSIpS) * (elapsedClockSeconds) / 6;
                 if (train.EqualReservoirPressurePSIorInHg > lead.MainResPressurePSI)
                     train.EqualReservoirPressurePSIorInHg = lead.MainResPressurePSI;
             }
             if (QuickRelease && Lap || QuickRelease && Release)
             {
                 if (train.EqualReservoirPressurePSIorInHg < lead.MainResPressurePSI)
-                    train.EqualReservoirPressurePSIorInHg += lead.TrainBrakeController.QuickReleaseRatePSIpS * elapsedClockSeconds;
+                    train.EqualReservoirPressurePSIorInHg += lead.TrainBrakeController.QuickReleaseRatePSIpS * elapsedClockSeconds / 6;
             }
           
 
