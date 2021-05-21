@@ -547,7 +547,7 @@ namespace ORTS.Settings
             Commands[(int)UserCommand.GameUncoupleWithMouse] = new UserCommandKeyInput(0x16);
 
             // Icik
-            Commands[(int)UserCommand.ControlCompressorOffAuto] = new UserCommandKeyInput(0x2E, KeyModifiers.Control);
+            Commands[(int)UserCommand.ControlCompressorMode_OffAuto] = new UserCommandKeyInput(0x2E, KeyModifiers.Control);
         }
 #endregion
 

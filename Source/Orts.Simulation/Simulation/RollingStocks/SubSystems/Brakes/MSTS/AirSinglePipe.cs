@@ -456,17 +456,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
         public virtual void UpdateTripleValveState(float controlPressurePSI)
         {
             // Funkční 3-cestný ventil
-            //if (BrakeLine1PressurePSI < AuxResPressurePSI - 0.1f) TripleValveState = ValveState.Apply;
-            //else TripleValveState = ValveState.Lap;
-            //if (BrakeLine1PressurePSI > AuxResPressurePSI + 0.1f) TripleValveState = ValveState.Release;
-
-            if (TripleValveRelease) TripleValveState = ValveState.Release;
-            if (TripleValveLap) TripleValveState = ValveState.Lap;
-            if (TripleValveApply) TripleValveState = ValveState.Apply;
-
-            MSTSLocomotive loco = Car as MSTSLocomotive;
-            if (TripleValveEmergency || (loco != null && (loco.EmergencyButtonPressed || loco.TrainBrakeController.TCSEmergencyBraking)))
-                TripleValveState = ValveState.Emergency;
+            if (BrakeLine1PressurePSI < AuxResPressurePSI - 0.1f) TripleValveState = ValveState.Apply;
+            else TripleValveState = ValveState.Lap;
+            if (BrakeLine1PressurePSI > AuxResPressurePSI + 0.1f) TripleValveState = ValveState.Release; 
         }
 
         public override void Update(float elapsedClockSeconds)
@@ -1256,26 +1248,6 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 }
             }
 
-            // Nastavení řídícího vzduchového ventilu brzdy dle nastavení poloh brzdičů v lokomotivách                
-            if (!lead.BrakeSystem.NextLocoNeutral)
-            {
-                if (lead.BrakeSystem.TripleValveEmergency)
-                {
-                    train.EqualReservoirPressurePSIorInHg -= (lead.TrainBrakeController.EmergencyRatePSIpS) * (elapsedClockSeconds / 6);
-                    if (train.EqualReservoirPressurePSIorInHg < 0) train.EqualReservoirPressurePSIorInHg = 0;
-                }
-                else
-                if (lead.BrakeSystem.TripleValveRelease)
-                    train.EqualReservoirPressurePSIorInHg += (lead.TrainBrakeController.ReleaseRatePSIpS) * (elapsedClockSeconds / 6);
-                else
-                if (lead.BrakeSystem.TripleValveApply)
-                {
-                    train.EqualReservoirPressurePSIorInHg -= (lead.TrainBrakeController.ApplyRatePSIpS) * (elapsedClockSeconds / 6);
-                    if (train.EqualReservoirPressurePSIorInHg < 0) train.EqualReservoirPressurePSIorInHg = 0;
-                }
-            }
-
-
             // Upravuje chování a kompenzuje ztráty
             bool Apply = false;
             bool Release = false;
@@ -1283,6 +1255,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             bool Overcharge = false;
             bool QuickRelease = false;
             bool Running = false;
+            bool SlowApplyStart = false;
             int Sum = 0;
             for (int i = 0; i < train.Cars.Count; i++)
             {
@@ -1314,6 +1287,11 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     {
                         Running = true;
                     }
+                    if (engine.BrakeSystem.NextLocoSlowApplyStart)
+                    {
+                        SlowApplyStart = true;
+                        Sum++;
+                    }                    
                 }
             }             
             if (Apply && Running)
@@ -1322,21 +1300,33 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 if (lead.BrakeSystem.BrakeLine1PressurePSI < 0)
                     lead.BrakeSystem.BrakeLine1PressurePSI = 0;
                 if (train.EqualReservoirPressurePSIorInHg < lead.BrakeSystem.maxPressurePSI0)
-                    train.EqualReservoirPressurePSIorInHg += (lead.TrainBrakeController.ReleaseRatePSIpS / 2) * (elapsedClockSeconds);
+                    train.EqualReservoirPressurePSIorInHg += (lead.TrainBrakeController.RunningReleaseRatePSIpS) * (elapsedClockSeconds);
                 if (train.EqualReservoirPressurePSIorInHg > lead.BrakeSystem.maxPressurePSI0)
                     train.EqualReservoirPressurePSIorInHg = lead.BrakeSystem.maxPressurePSI0;
-            }            
+            }
+            if (SlowApplyStart && Running)
+            {
+                lead.BrakeSystem.BrakeLine1PressurePSI -= Sum * lead.TrainBrakeController.SlowApplicationRatePSIpS * elapsedClockSeconds;
+                if (lead.BrakeSystem.BrakeLine1PressurePSI < 0)
+                    lead.BrakeSystem.BrakeLine1PressurePSI = 0;
+                if (train.EqualReservoirPressurePSIorInHg < lead.BrakeSystem.maxPressurePSI0)
+                    train.EqualReservoirPressurePSIorInHg += (lead.TrainBrakeController.RunningReleaseRatePSIpS) * (elapsedClockSeconds);
+                if (train.EqualReservoirPressurePSIorInHg > lead.BrakeSystem.maxPressurePSI0)
+                    train.EqualReservoirPressurePSIorInHg = lead.BrakeSystem.maxPressurePSI0;
+            }
             if (Running && Lap)
             {
                 if (train.EqualReservoirPressurePSIorInHg < lead.BrakeSystem.maxPressurePSI0)
                     train.EqualReservoirPressurePSIorInHg += lead.TrainBrakeController.RunningReleaseRatePSIpS * elapsedClockSeconds;
-                if (lead.BrakeSystem.BrakeLine1PressurePSI < train.EqualReservoirPressurePSIorInHg)
-                    lead.BrakeSystem.BrakeLine1PressurePSI += lead.TrainBrakeController.RunningReleaseRatePSIpS * elapsedClockSeconds;
+                if (train.EqualReservoirPressurePSIorInHg > lead.BrakeSystem.maxPressurePSI0)
+                    train.EqualReservoirPressurePSIorInHg = lead.BrakeSystem.maxPressurePSI0;
             }
             if (Running && Release && Lap)
             {
-                if (lead.BrakeSystem.BrakeLine1PressurePSI < train.EqualReservoirPressurePSIorInHg)
-                    lead.BrakeSystem.BrakeLine1PressurePSI += lead.TrainBrakeController.RunningReleaseRatePSIpS * elapsedClockSeconds;
+                if (train.EqualReservoirPressurePSIorInHg < lead.BrakeSystem.maxPressurePSI0)
+                    train.EqualReservoirPressurePSIorInHg += lead.TrainBrakeController.ReleaseRatePSIpS * elapsedClockSeconds;
+                if (train.EqualReservoirPressurePSIorInHg > lead.BrakeSystem.maxPressurePSI0)
+                    train.EqualReservoirPressurePSIorInHg = lead.BrakeSystem.maxPressurePSI0;
             }
 
             if (Apply && Release)
@@ -1348,18 +1338,33 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     train.EqualReservoirPressurePSIorInHg += (lead.TrainBrakeController.ReleaseRatePSIpS) * (elapsedClockSeconds);
                 if (train.EqualReservoirPressurePSIorInHg > lead.BrakeSystem.maxPressurePSI0)
                     train.EqualReservoirPressurePSIorInHg = lead.BrakeSystem.maxPressurePSI0;
-            }            
+            }
+            if (SlowApplyStart && Release)
+            {
+                lead.BrakeSystem.BrakeLine1PressurePSI -= Sum * lead.TrainBrakeController.SlowApplicationRatePSIpS * elapsedClockSeconds;
+                if (lead.BrakeSystem.BrakeLine1PressurePSI < 0)
+                    lead.BrakeSystem.BrakeLine1PressurePSI = 0;
+                if (train.EqualReservoirPressurePSIorInHg < lead.BrakeSystem.maxPressurePSI0)
+                    train.EqualReservoirPressurePSIorInHg += (lead.TrainBrakeController.ReleaseRatePSIpS) * (elapsedClockSeconds);
+                if (train.EqualReservoirPressurePSIorInHg > lead.BrakeSystem.maxPressurePSI0)
+                    train.EqualReservoirPressurePSIorInHg = lead.BrakeSystem.maxPressurePSI0;
+            }
             if (Release && Lap)
             {
                 if (train.EqualReservoirPressurePSIorInHg < lead.BrakeSystem.maxPressurePSI0)
-                    train.EqualReservoirPressurePSIorInHg += lead.TrainBrakeController.ReleaseRatePSIpS * elapsedClockSeconds;
-                if (lead.BrakeSystem.BrakeLine1PressurePSI < train.EqualReservoirPressurePSIorInHg)
-                    lead.BrakeSystem.BrakeLine1PressurePSI += lead.TrainBrakeController.ReleaseRatePSIpS * elapsedClockSeconds;
+                    train.EqualReservoirPressurePSIorInHg += lead.TrainBrakeController.ReleaseRatePSIpS * elapsedClockSeconds;                
             }
-            if (Apply && Release && Lap)
+
+            if (Apply && Lap)
             {
-                if (lead.BrakeSystem.BrakeLine1PressurePSI < train.EqualReservoirPressurePSIorInHg)
-                    lead.BrakeSystem.BrakeLine1PressurePSI += lead.TrainBrakeController.ReleaseRatePSIpS * elapsedClockSeconds;
+                if (lead.BrakeSystem.BrakeLine1PressurePSI > 0)
+                    lead.BrakeSystem.BrakeLine1PressurePSI -= Sum * lead.TrainBrakeController.ApplyRatePSIpS * elapsedClockSeconds;
+            }
+
+            if (SlowApplyStart && Lap)
+            {
+                if (lead.BrakeSystem.BrakeLine1PressurePSI > 0)
+                    lead.BrakeSystem.BrakeLine1PressurePSI -= Sum * lead.TrainBrakeController.SlowApplicationRatePSIpS * elapsedClockSeconds;
             }
 
             if (Apply && Overcharge)
@@ -1372,22 +1377,35 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 if (train.EqualReservoirPressurePSIorInHg > lead.BrakeSystem.TrainBrakesControllerMaxOverchargePressurePSI)
                     train.EqualReservoirPressurePSIorInHg = lead.BrakeSystem.TrainBrakesControllerMaxOverchargePressurePSI;
             }
+            if (SlowApplyStart && Overcharge)
+            {
+                lead.BrakeSystem.BrakeLine1PressurePSI -= Sum * lead.TrainBrakeController.SlowApplicationRatePSIpS * elapsedClockSeconds;
+                if (lead.BrakeSystem.BrakeLine1PressurePSI < 0)
+                    lead.BrakeSystem.BrakeLine1PressurePSI = 0;
+                if (train.EqualReservoirPressurePSIorInHg < lead.BrakeSystem.TrainBrakesControllerMaxOverchargePressurePSI)
+                    train.EqualReservoirPressurePSIorInHg += (lead.TrainBrakeController.ReleaseRatePSIpS) * (elapsedClockSeconds);
+                if (train.EqualReservoirPressurePSIorInHg > lead.BrakeSystem.TrainBrakesControllerMaxOverchargePressurePSI)
+                    train.EqualReservoirPressurePSIorInHg = lead.BrakeSystem.TrainBrakesControllerMaxOverchargePressurePSI;
+            }
             if (Overcharge && Lap || Overcharge && Release)
             {
                 if (train.EqualReservoirPressurePSIorInHg < lead.BrakeSystem.TrainBrakesControllerMaxOverchargePressurePSI)
-                    train.EqualReservoirPressurePSIorInHg += lead.TrainBrakeController.ReleaseRatePSIpS * elapsedClockSeconds;
-                if (lead.BrakeSystem.BrakeLine1PressurePSI < train.EqualReservoirPressurePSIorInHg)
-                    lead.BrakeSystem.BrakeLine1PressurePSI += lead.TrainBrakeController.ReleaseRatePSIpS * elapsedClockSeconds;
+                    train.EqualReservoirPressurePSIorInHg += lead.TrainBrakeController.ReleaseRatePSIpS * elapsedClockSeconds;                
             }
-            if (Overcharge && Release && Lap)
-            {
-                if (lead.BrakeSystem.BrakeLine1PressurePSI < train.EqualReservoirPressurePSIorInHg)
-                    lead.BrakeSystem.BrakeLine1PressurePSI += lead.TrainBrakeController.ReleaseRatePSIpS * elapsedClockSeconds;
-            }
-
+            
             if (Apply && QuickRelease)
             {
                 lead.BrakeSystem.BrakeLine1PressurePSI -= Sum * lead.TrainBrakeController.ApplyRatePSIpS * elapsedClockSeconds;
+                if (lead.BrakeSystem.BrakeLine1PressurePSI < 0)
+                    lead.BrakeSystem.BrakeLine1PressurePSI = 0;
+                if (train.EqualReservoirPressurePSIorInHg < lead.MainResPressurePSI)
+                    train.EqualReservoirPressurePSIorInHg += (lead.TrainBrakeController.QuickReleaseRatePSIpS) * (elapsedClockSeconds);
+                if (train.EqualReservoirPressurePSIorInHg > lead.MainResPressurePSI)
+                    train.EqualReservoirPressurePSIorInHg = lead.MainResPressurePSI;
+            }
+            if (SlowApplyStart && QuickRelease)
+            {
+                lead.BrakeSystem.BrakeLine1PressurePSI -= Sum * lead.TrainBrakeController.SlowApplicationRatePSIpS * elapsedClockSeconds;
                 if (lead.BrakeSystem.BrakeLine1PressurePSI < 0)
                     lead.BrakeSystem.BrakeLine1PressurePSI = 0;
                 if (train.EqualReservoirPressurePSIorInHg < lead.MainResPressurePSI)
@@ -1399,87 +1417,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             {
                 if (train.EqualReservoirPressurePSIorInHg < lead.MainResPressurePSI)
                     train.EqualReservoirPressurePSIorInHg += lead.TrainBrakeController.QuickReleaseRatePSIpS * elapsedClockSeconds;
-                if (lead.BrakeSystem.BrakeLine1PressurePSI < train.EqualReservoirPressurePSIorInHg)
-                    lead.BrakeSystem.BrakeLine1PressurePSI += lead.TrainBrakeController.QuickReleaseRatePSIpS * elapsedClockSeconds;
             }
-            if (QuickRelease && Release && Lap)
-            {
-                if (lead.BrakeSystem.BrakeLine1PressurePSI < train.EqualReservoirPressurePSIorInHg)
-                    lead.BrakeSystem.BrakeLine1PressurePSI += lead.TrainBrakeController.QuickReleaseRatePSIpS * elapsedClockSeconds;
-            }
-
-            // Ostatní polohy
-            foreach (TrainCar car in train.Cars)
-            {
-                if (!lead.BrakeSystem.NextLocoNeutral)
-                {
-                    car.BrakeSystem.TripleValveApply = false;
-                    car.BrakeSystem.TripleValveRelease = false;
-                    car.BrakeSystem.TripleValveLap = true;
-                    car.BrakeSystem.TripleValveEmergency = false;
-                }
-            }
-            // Apply
-            for (int i = 0; i < train.Cars.Count; i++)
-            {
-                var engine = train.Cars[i] as MSTSLocomotive;
-                if (engine != null)
-                {
-                    if (engine.BrakeSystem.NextLocoApply || engine.BrakeSystem.NextLocoSuppression || engine.BrakeSystem.NextLocoGSelfLapH)
-                        foreach (TrainCar car in train.Cars)
-                        {
-                            car.BrakeSystem.TripleValveApply = true;
-                            car.BrakeSystem.TripleValveRelease = false;
-                            car.BrakeSystem.TripleValveLap = false;
-                            car.BrakeSystem.TripleValveEmergency = false;                            
-                        }
-                }
-            }
-            // Release            
-            for (int i = 0; i < train.Cars.Count; i++)
-            {
-                var engine = train.Cars[i] as MSTSLocomotive;
-                if (engine != null)
-                {
-                    if (engine.BrakeSystem.NextLocoRelease || engine.BrakeSystem.NextLocoQuickRelease || engine.BrakeSystem.NextLocoOvercharge || engine.BrakeSystem.NextLocoRunning)
-                        foreach (TrainCar car in train.Cars)
-                        {                            
-                            car.BrakeSystem.TripleValveApply = false;
-                            car.BrakeSystem.TripleValveRelease = true;
-                            car.BrakeSystem.TripleValveLap = false;
-                            car.BrakeSystem.TripleValveEmergency = false;                            
-                        }  
-                }
-            }
-            // Lap
-            foreach (TrainCar car in train.Cars)
-            {
-                if (lead.BrakeSystem.NextLocoLap)
-                {
-                    car.BrakeSystem.TripleValveApply = false;
-                    car.BrakeSystem.TripleValveRelease = false;
-                    car.BrakeSystem.TripleValveLap = true;
-                    car.BrakeSystem.TripleValveEmergency = false;
-                }
-            }
-            // Emergency
-            for (int i  = 0; i < train.Cars.Count; i++)
-            {
-                var engine = train.Cars[i] as MSTSLocomotive;
-                if (engine != null)
-                {
-                    if (engine.BrakeSystem.NextLocoEmergency || (engine as MSTSLocomotive).EmergencyButtonPressed || (engine as MSTSLocomotive).TrainBrakeController.TCSEmergencyBraking)
-                        foreach (TrainCar car in train.Cars)
-                        {
-                            car.BrakeSystem.TripleValveApply = false;
-                            car.BrakeSystem.TripleValveRelease = false;
-                            car.BrakeSystem.TripleValveLap = false;
-                            car.BrakeSystem.TripleValveEmergency = true;
-                        }
-                }
-            }
-
-            
+          
 
             // Aktivace příznaku rychlobrzdy pro vozy 
             if (lead.TrainBrakeController.TrainBrakeControllerState == ControllerState.Emergency || lead.BrakeSystem.EmergencyBrakeForWagon)
@@ -1631,6 +1570,17 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     {
                         engine.BrakeSystem.NextLocoGSelfLapH = false;
                     }
+
+                    if (engine.TrainBrakeController.TrainBrakeControllerState == ControllerState.SlowApplyStart)
+                    {
+                        engine.BrakeSystem.NextLocoSlowApplyStart = true;
+                        engine.BrakeSystem.NextLocoBrakeState = "SlowApplyStart";
+                    }
+                    else
+                    if (engine.TrainBrakeController.TrainBrakeControllerState != ControllerState.SlowApplyStart)
+                    {
+                        engine.BrakeSystem.NextLocoSlowApplyStart = false;
+                    }
                 }
             }
 
@@ -1703,13 +1653,13 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
 
                         if (loco.MainResPressurePSI < loco.CompressorRestartPressurePSI
                             && loco.AuxPowerOn
-                            && loco.CompressorOffAuto
+                            && loco.CompressorMode_OffAuto
                             && !loco.CompressorIsOn)
                             loco.SignalEvent(Event.CompressorOn);
 
                         if ((loco.MainResPressurePSI > loco.MaxMainResPressurePSI
                             || !loco.AuxPowerOn
-                            || !loco.CompressorOffAuto)
+                            || !loco.CompressorMode_OffAuto)
                             && loco.CompressorIsOn)
                             loco.SignalEvent(Event.CompressorOff);
                     }
@@ -1722,7 +1672,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     if (loco != null)
                         if ((loco.MainResPressurePSI > loco.MaxMainResPressurePSI
                            || !loco.AuxPowerOn
-                           || !loco.CompressorOffAuto)
+                           || !loco.CompressorMode_OffAuto)
                            && loco.CompressorIsOn)
                               loco.SignalEvent(Event.CompressorOff);
                 }

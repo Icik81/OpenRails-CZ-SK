@@ -596,7 +596,7 @@ namespace Orts.Viewer3D
             TogglePowerKeyCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
 
             // Icik
-            ToggleCompressorOffAutoCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
+            ToggleCompressorMode_OffAutoCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
         }
 
         public void ChangeToPreviousFreeRoamCamera()
