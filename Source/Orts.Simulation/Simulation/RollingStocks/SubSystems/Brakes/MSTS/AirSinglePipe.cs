@@ -1411,7 +1411,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             // Ostatní polohy
             foreach (TrainCar car in train.Cars)
             {
-                if (!car.BrakeSystem.NextLocoNeutral)
+                if (!lead.BrakeSystem.NextLocoNeutral)
                 {
                     car.BrakeSystem.TripleValveApply = false;
                     car.BrakeSystem.TripleValveRelease = false;
