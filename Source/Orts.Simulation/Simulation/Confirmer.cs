@@ -122,7 +122,7 @@ namespace Orts.Simulation
       , CabRadio
 
     // Icik
-    , CompressorOffAuto
+    , CompressorMode_OffAuto
     }
 
     public enum CabSetting {
@@ -275,7 +275,7 @@ namespace Orts.Simulation
                 , new string [] { GetString("Cab Radio"), GetString("off"), null, GetString("on") }
 
                 // Icik
-                , new string [] { GetString("Compressor"), GetString("off"), null, GetString("Auto")}
+                , new string [] { GetString("Mód kompresoru"), GetString("off"), null, GetString("Auto")}
 
             };
             Debug.Assert(ConfirmText.Length == Enum.GetNames(typeof(CabControl)).Length, "Number of entries indexer ConfirmText must match values in CabControl enum.");

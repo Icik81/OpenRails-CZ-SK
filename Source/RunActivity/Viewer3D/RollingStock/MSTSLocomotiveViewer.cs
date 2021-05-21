@@ -214,7 +214,7 @@ namespace Orts.Viewer3D.RollingStock
             UserInputCommands.Add(UserCommand.SetMirelOff, new Action[] { Noop, () => Locomotive.Mirel.SetMirelSignal(false) });
 
             // Icik
-            UserInputCommands.Add(UserCommand.ControlCompressorOffAuto, new Action[] { Noop, () => new ToggleCompressorOffAutoCommand(Viewer.Log) });
+            UserInputCommands.Add(UserCommand.ControlCompressorMode_OffAuto, new Action[] { Noop, () => new ToggleCompressorMode_OffAutoCommand(Viewer.Log) });
 
             base.InitializeUserInputCommands();
         }
@@ -2286,7 +2286,8 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.ORTS_AVV_SIGNAL:
 
                 // Icik
-                case CABViewControlTypes.COMPRESSOROFFAUTO:
+                case CABViewControlTypes.COMPRESSOR_START:
+                case CABViewControlTypes.COMPRESSOR_MODE_OFFAUTO:
 
                     index = (int)data;
                     break;
@@ -2484,8 +2485,8 @@ namespace Orts.Viewer3D.RollingStock
                     if ((Locomotive.PowerKey ? 1 : 0) != ChangedValue(Locomotive.PowerKey ? 1 : 0)) new TogglePowerKeyCommand(Viewer.Log); break;
 
                 // Icik
-                case CABViewControlTypes.COMPRESSOROFFAUTO:
-                    if ((Locomotive.CompressorOffAuto ? 1 : 0) != ChangedValue(Locomotive.CompressorOffAuto ? 1 : 0)) new ToggleCompressorOffAutoCommand(Viewer.Log); break;
+                case CABViewControlTypes.COMPRESSOR_MODE_OFFAUTO:
+                    if ((Locomotive.CompressorMode_OffAuto ? 1 : 0) != ChangedValue(Locomotive.CompressorMode_OffAuto ? 1 : 0)) new ToggleCompressorMode_OffAutoCommand(Viewer.Log); break;
 
                 // Train Control System controls
                 case CABViewControlTypes.ORTS_TCS1:

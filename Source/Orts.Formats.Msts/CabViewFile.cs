@@ -363,8 +363,8 @@ namespace Orts.Formats.Msts
         ORTS_AVV_SIGNAL,
 
         // Icik
-        COMPRESSOR,
-        COMPRESSOROFFAUTO,
+        COMPRESSOR_START,
+        COMPRESSOR_MODE_OFFAUTO,
 
         // Further CabViewControlTypes must be added above this line, to avoid their malfunction in 3DCabs
         EXTERNALWIPERS,

@@ -457,7 +457,7 @@ namespace Orts.Simulation.RollingStocks
         public bool HVOffStatusBrakePipe = false;
         public bool DoesPowerLossResetControls = false;
         public bool ThrottleZero = false;
-        public bool CompressorOffAuto;
+        public bool CompressorMode_OffAuto;
 
         // Jindrich
         public CruiseControl CruiseControl;
@@ -1371,7 +1371,7 @@ namespace Orts.Simulation.RollingStocks
             // Icik
             outf.Write(HVOffStatusBrakeCyl);
             outf.Write(HVOffStatusBrakePipe);
-            outf.Write(CompressorOffAuto);
+            outf.Write(CompressorMode_OffAuto);
 
             base.Save(outf);
 
@@ -1427,7 +1427,7 @@ namespace Orts.Simulation.RollingStocks
             // Icik
             HVOffStatusBrakeCyl = inf.ReadBoolean();
             HVOffStatusBrakePipe = inf.ReadBoolean();
-            CompressorOffAuto = inf.ReadBoolean();
+            CompressorMode_OffAuto = inf.ReadBoolean();
 
             base.Restore(inf);
 
@@ -5066,12 +5066,12 @@ namespace Orts.Simulation.RollingStocks
         }
 
         // Icik
-        public void ToggleCompressorOffAuto()
+        public void ToggleCompressorMode_OffAuto()
         {
-            CompressorOffAuto = !CompressorOffAuto;
-            if (CompressorOffAuto) SignalEvent(Event.CompressorOffAutoOn);
-            else SignalEvent(Event.CompressorOffAutoOff);
-            if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.CompressorOffAuto, CompressorOffAuto ? CabSetting.On : CabSetting.Off);
+            CompressorMode_OffAuto = !CompressorMode_OffAuto;
+            if (CompressorMode_OffAuto) SignalEvent(Event.CompressorMode_OffAutoOn);
+            else SignalEvent(Event.CompressorMode_OffAutoOff);
+            if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.CompressorMode_OffAuto, CompressorMode_OffAuto ? CabSetting.On : CabSetting.Off);
         }
         public void ToggleCabRadio( bool newState)
         {
@@ -6121,7 +6121,7 @@ namespace Orts.Simulation.RollingStocks
                         seconds += 60;
                     data = seconds;
                     break;
-              
+
                 // Train Control System controls
                 case CABViewControlTypes.ORTS_TCS1:
                 case CABViewControlTypes.ORTS_TCS2:
@@ -6173,6 +6173,8 @@ namespace Orts.Simulation.RollingStocks
                 case CABViewControlTypes.ORTS_TCS48:
                     data = TrainControlSystem.CabDisplayControls[(int)cvc.ControlType - (int)CABViewControlTypes.ORTS_TCS1];
                     break;
+
+                // Jindřich
                 case CABViewControlTypes.ORTS_MULTI_POSITION_CONTROLLER:
                     if (MultiPositionControllers != null && data == 0)
                     {
@@ -6184,7 +6186,7 @@ namespace Orts.Simulation.RollingStocks
                             }
                         }
                     }
-                    break;
+                    break;                 
                 case CABViewControlTypes.ORTS_AMPERS_BY_CONTROLLER_VOLTAGE:
                     if (extendedPhysics != null)
                     {
@@ -6574,8 +6576,15 @@ namespace Orts.Simulation.RollingStocks
                         break;
                     }
 
+                default:
+                    if (CruiseControl != null)
+                        data = CruiseControl.GetDataOf(cvc);
+                    else
+                        data = 0;
+                    break;
+
                 // Icik
-                case CABViewControlTypes.COMPRESSOR:
+                case CABViewControlTypes.COMPRESSOR_START:
                     {
                         data = 1;
                         cvc.ElapsedTime += elapsedTime;
@@ -6587,16 +6596,11 @@ namespace Orts.Simulation.RollingStocks
                             cvc.ElapsedTime = 0;
                         break;
                     }
-                case CABViewControlTypes.COMPRESSOROFFAUTO:
-                    data = CompressorOffAuto ? 1 : 0;
-                    break;
-
-                default:
-                    if (CruiseControl != null)
-                        data = CruiseControl.GetDataOf(cvc);
-                    else
-                        data = 0;
-                    break;
+                case CABViewControlTypes.COMPRESSOR_MODE_OFFAUTO:
+                    {
+                        data = CompressorMode_OffAuto ? 1 : 0;
+                        break;
+                    }
             }
             // max needle speed
             if (cvc.MaxNeedleSpeed > 0 && elapsedTime > 0)

@@ -242,8 +242,8 @@ namespace Orts.Common
         LS90TestComplete,
 
         // Icik
-        CompressorOffAutoOn,
-        CompressorOffAutoOff,
+        CompressorMode_OffAutoOn,
+        CompressorMode_OffAutoOff,
     }
 
     public static class Events
@@ -502,8 +502,8 @@ namespace Orts.Common
                         case 10195: return Event.LS90TestComplete;
 
                         // Icik
-                        case 20001: return Event.CompressorOffAutoOn;
-                        case 20002: return Event.CompressorOffAutoOff;
+                        case 20001: return Event.CompressorMode_OffAutoOn;
+                        case 20002: return Event.CompressorMode_OffAutoOff;
                         default: return 0;
                     }
                 case Source.MSTSCrossing:
