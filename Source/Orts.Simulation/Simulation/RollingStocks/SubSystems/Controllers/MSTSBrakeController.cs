@@ -425,7 +425,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
         {
             if (pressurePSI < targetPSI)
             {
-                pressurePSI += ratePSIpS * elapsedSeconds;
+                pressurePSI += ratePSIpS * elapsedSeconds * 1/6;
                 if (pressurePSI > targetPSI)
                     pressurePSI = targetPSI;
             }
@@ -435,7 +435,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
         {
             if (pressurePSI > targetPSI)
             {
-                pressurePSI -= ratePSIpS * elapsedSeconds;
+                pressurePSI -= ratePSIpS * elapsedSeconds * 1/6;
                 if (pressurePSI < targetPSI)
                     pressurePSI = targetPSI;
             }
