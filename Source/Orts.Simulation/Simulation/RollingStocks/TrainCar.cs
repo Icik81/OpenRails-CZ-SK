@@ -2754,9 +2754,9 @@ namespace Orts.Simulation.RollingStocks
                     VibratioDampingCoefficient = 0.02f;
                     VibrationSpringConstantPrimepSpS = 9.8f / 0.2f;
                     if (direction2 == 0)
-                        VibrationRotationVelocityRadpS.Z += (factor * Simulator.Settings.CarVibratingLevel * VibrationIntroductionStrength * 2.50f * VibrationMassKG) / x;
+                        VibrationRotationVelocityRadpS.Z += (factor * Simulator.Settings.CarVibratingLevel * VibrationIntroductionStrength * 3.50f * VibrationMassKG) / x;
                     else
-                        VibrationRotationVelocityRadpS.Z -= (factor * Simulator.Settings.CarVibratingLevel * VibrationIntroductionStrength * 2.50f * VibrationMassKG) / x;
+                        VibrationRotationVelocityRadpS.Z -= (factor * Simulator.Settings.CarVibratingLevel * VibrationIntroductionStrength * 3.50f * VibrationMassKG) / x;
 
                     VibrationSpringConstantPrimepSpS = 12f / 0.2f;
                     int y = 10, y1 = 50;
