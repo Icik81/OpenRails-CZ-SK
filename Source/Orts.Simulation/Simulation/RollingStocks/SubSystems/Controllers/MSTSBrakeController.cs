@@ -210,9 +210,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                         case ControllerState.GSelfLap:
                             EnforceMinimalReduction = true;
                             x = MaxPressureBar() - MinReductionBar() * (1 - x) - FullServReductionBar() * x;
-                            DecreasePressure(ref pressureBar, x, ApplyRateBarpS(), elapsedClockSeconds);
+                            DecreasePressure(ref pressureBar, x, ApplyRateBarpS(), elapsedClockSeconds * 1/6 );
                             if (ForceControllerReleaseGraduated || notch.Type == ControllerState.GSelfLap)
-                                IncreasePressure(ref pressureBar, x, ReleaseRateBarpS(), elapsedClockSeconds);
+                                IncreasePressure(ref pressureBar, x, ReleaseRateBarpS(), elapsedClockSeconds * 1/6);
                             break;
                         case ControllerState.Emergency:
                             pressureBar -= EmergencyRateBarpS() * elapsedClockSeconds;
@@ -425,7 +425,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
         {
             if (pressurePSI < targetPSI)
             {
-                pressurePSI += ratePSIpS * elapsedSeconds * 1/6;
+                pressurePSI += ratePSIpS * elapsedSeconds;
                 if (pressurePSI > targetPSI)
                     pressurePSI = targetPSI;
             }
@@ -435,7 +435,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
         {
             if (pressurePSI > targetPSI)
             {
-                pressurePSI -= ratePSIpS * elapsedSeconds * 1/6;
+                pressurePSI -= ratePSIpS * elapsedSeconds;
                 if (pressurePSI < targetPSI)
                     pressurePSI = targetPSI;
             }
