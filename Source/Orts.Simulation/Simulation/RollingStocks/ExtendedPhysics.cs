@@ -235,7 +235,6 @@ namespace Orts.Simulation.RollingStocks
                     AverageAxleSpeedMpS += ea.WheelSpeedMpS;
                     if (FastestAxleSpeedMpS < ea.WheelSpeedMpS)
                         FastestAxleSpeedMpS = ea.WheelSpeedMpS;
-                    ea.Mass = uc.Mass / uc.Axles.Count;
                     foreach (ElectricMotor em in ea.ElectricMotors)
                     {
                         ea.GetCorrectedMass(this);
@@ -314,27 +313,19 @@ namespace Orts.Simulation.RollingStocks
             }
             if (Locomotive.TractiveForceCurves != null && Locomotive.ControllerVolts > 0)
             {
-                float t = Locomotive.ControllerVolts / 10;
-                if (t < 0.15f)
-                    t = 0.15f;
-                float speedCoeff = MpS.ToKpH(WheelSpeedMpS) / 3000;
-                float speedCoeff2 = (MpS.ToKpH(WheelSpeedMpS) - 100) / 420;
-                if (speedCoeff2 > 0)
-                    speedCoeff = speedCoeff + speedCoeff2;
-                float test = t + speedCoeff;
-                ForceN = Locomotive.TractiveForceCurves.Get(t, WheelSpeedMpS) / totalMotors;
+                ForceN = Locomotive.TractiveForceCurves.Get(Locomotive.ControllerVolts / Locomotive.MaxControllerVolts, WheelSpeedMpS) / totalMotors;
             }
-            else if (Locomotive.ControllerVolts > 0) // TODO bez tabulek!
+            else if (Locomotive.ControllerVolts > 0)
             {
-
+                ForceN = Locomotive.MaxForceN * (Locomotive.ControllerVolts / Locomotive.MaxControllerVolts) / 4;
             }
             else if (Locomotive.DynamicBrakeForceCurves != null && Locomotive.ControllerVolts < 0)
             {
-                ForceN = -Locomotive.DynamicBrakeForceCurves.Get(-Locomotive.ControllerVolts / 10, WheelSpeedMpS) / totalMotors;
+                ForceN = -Locomotive.DynamicBrakeForceCurves.Get(-Locomotive.ControllerVolts / Locomotive.MaxControllerVolts, WheelSpeedMpS) / totalMotors;
             }
-            else if (Locomotive.ControllerVolts < 0) // TODO bez tabulek
+            else if (Locomotive.ControllerVolts < 0)
             {
-
+                ForceN = -Locomotive.MaxForceN * (-Locomotive.ControllerVolts / Locomotive.MaxControllerVolts) / 4;
             }
             LocomotiveAxle.InertiaKgm2 = 10000;
             LocomotiveAxle.AxleRevolutionsInt.MinStep = LocomotiveAxle.InertiaKgm2 / (Locomotive.MaxPowerW / totalMotors) / 5.0f;
@@ -373,6 +364,8 @@ namespace Orts.Simulation.RollingStocks
                 }
             }
             float Fo = Locomotive.FrictionForceN / 1000;
+            if (WheelSpeedMpS == 0)
+                Fo = 0;
             float Fok = Fo + Fh;
             float T1, T2, T3, T4;
             T1 = T2 = T3 = T4 = Fok / 4;
