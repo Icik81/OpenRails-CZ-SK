@@ -590,14 +590,24 @@ namespace Orts.Viewer3D.Popups
                 ));
 
             //Car information
-            statusConsist.Add(string.Format("\n{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}",
+            statusConsist.Add(string.Format("\n{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\t{9}\t{10}\t{11}\t{12}\t{13}\t{14}\t{15}",
                 Viewer.Catalog.GetString("Car"),
                 Viewer.Catalog.GetString("Flipped"),
                 Viewer.Catalog.GetString("Type"),
                 Viewer.Catalog.GetString("Length"),
                 Viewer.Catalog.GetString("Weight"),
                 Viewer.Catalog.GetString("Drv/Cabs"),
-                Viewer.Catalog.GetString("Wheels")
+                Viewer.Catalog.GetString("Wheels"),
+                Viewer.Catalog.GetString("A1 Mass"),
+                Viewer.Catalog.GetString("A2 Mass"),
+                Viewer.Catalog.GetString("A3 Mass"),
+                Viewer.Catalog.GetString("A4 Mass"),
+                Viewer.Catalog.GetString("A1 Speed"),
+                Viewer.Catalog.GetString("A2 Speed"),
+                Viewer.Catalog.GetString("A3 Speed"),
+                Viewer.Catalog.GetString("A4 Speed"),
+                Viewer.Catalog.GetString("A5 Speed")
+
                 //Add new header data here, if adding additional column.
                 ));
 
@@ -616,11 +626,39 @@ namespace Orts.Viewer3D.Popups
                     FormatStrings.FormatShortDistanceDisplay(car.CarLengthM, locomotive.IsMetric) + "\t" +
                     FormatStrings.FormatLargeMass(car.MassKG, locomotive.IsMetric, locomotive.IsUK) + "\t" +
                     (car.IsDriveable ? Viewer.Catalog.GetParticularString("Cab", "D") : "") + (car.HasFrontCab || car.HasFront3DCab ? Viewer.Catalog.GetParticularString("Cab", "F") : "") + (car.HasRearCab || car.HasRear3DCab ? Viewer.Catalog.GetParticularString("Cab", "R") : "") + "\t" +
-                    GetCarWhyteLikeNotation(car) + "\t");
+                    GetCarWhyteLikeNotation(car) + "\t" +
+                    GetAxleParamsEP(car) + "\t");
                     //Add new data here, if adding additional column.
             }
 
             DrawScrollArrows(statusConsist, table, false);
+        }
+
+        static string GetAxleParamsEP(TrainCar car)
+        {
+            string ret = "";
+            MSTSLocomotive loco = null;
+            if (car is MSTSLocomotive)
+            {
+                loco = (MSTSLocomotive)car;
+            }
+            else
+            {
+                return "";
+            }
+            if (loco.extendedPhysics != null)
+            {
+                ret = Math.Round(loco.extendedPhysics.Undercarriages[0].Axles[0].Mass, 2).ToString() + "t\t";
+                ret += Math.Round(loco.extendedPhysics.Undercarriages[0].Axles[1].Mass, 2).ToString() + "t\t";
+                ret += Math.Round(loco.extendedPhysics.Undercarriages[1].Axles[0].Mass, 2).ToString() + "t\t";
+                ret += Math.Round(loco.extendedPhysics.Undercarriages[1].Axles[1].Mass, 2).ToString() + "t\t";
+                ret += Math.Round(MpS.ToKpH(loco.extendedPhysics.Undercarriages[0].Axles[0].WheelSpeedMpS), 1) + "kmh\t";
+                ret += Math.Round(MpS.ToKpH(loco.extendedPhysics.Undercarriages[0].Axles[1].WheelSpeedMpS), 1) + "kmh\t";
+                ret += Math.Round(MpS.ToKpH(loco.extendedPhysics.Undercarriages[1].Axles[0].WheelSpeedMpS), 1) + "kmh\t";
+                ret += Math.Round(MpS.ToKpH(loco.extendedPhysics.Undercarriages[1].Axles[1].WheelSpeedMpS), 1) + "kmh\t";
+                ret += Math.Round(MpS.ToKpH(loco.extendedPhysics.AverageAxleSpeedMpS), 1) + "kmh\t";
+            }
+            return ret;
         }
 
         static string GetCarWhyteLikeNotation(TrainCar car)
@@ -1441,7 +1479,6 @@ namespace Orts.Viewer3D.Popups
                     TableSetCell(table, 15, "{0:F0}%", car.BrakeShoeCoefficientFriction * 100.0f);
                     TableSetCell(table, 16, car.HUDBrakeSkid ? Viewer.Catalog.GetString("Yes") : Viewer.Catalog.GetString("No"));
                     TableSetCell(table, 17, "{0} {1}", FormatStrings.FormatTemperature(car.WheelBearingTemperatureDegC, car.IsMetric, false), car.DisplayWheelBearingTemperatureStatus);
-
                     TableSetCell(table, 18, car.Flipped ? Viewer.Catalog.GetString("Flipped") : "");
 
                     TableAddLine(table);
