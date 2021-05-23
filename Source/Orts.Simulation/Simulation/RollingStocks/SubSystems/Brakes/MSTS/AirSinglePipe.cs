@@ -71,7 +71,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
         protected float PrevAuxResPressurePSI = 0;
         protected float Threshold = 0;
         protected float prevBrakeLine1PressurePSI = 0;
-        protected bool NotConnected = false;
+        protected bool NotConnected = false;        
 
         /// <summary>
         /// EP brake holding valve. Needs to be closed (Lap) in case of brake application or holding.
@@ -631,7 +631,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     if (AuxResPressurePSI < 0)
                         AuxResPressurePSI = 0;
 
-                    AutoCylPressurePSI0 -= elapsedClockSeconds * (0.5f * 14.50377f); // Rychlost odvětrání 0.5 bar/s                 
+                    AutoCylPressurePSI0 -= elapsedClockSeconds * (1.0f * 14.50377f); // Rychlost odvětrání 1 bar/s                 
                     if (AutoCylPressurePSI0 < 0)
                         AutoCylPressurePSI0 = 0;
 
@@ -660,7 +660,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     }
                     else
                     {
-                        AutoCylPressurePSI0 -= elapsedClockSeconds * (0.5f * 14.50377f); // Rychlost odvětrání 0.5 bar/s
+                        AutoCylPressurePSI0 -= elapsedClockSeconds * (1.0f * 14.50377f); // Rychlost odvětrání 1 bar/s
                         if (AutoCylPressurePSI0 < 0)
                             AutoCylPressurePSI0 = 0;
                     }
@@ -832,7 +832,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 if (BailOffOn || BailOffOnAntiSkid)
                 {
                     //AutoCylPressurePSI0 -= MaxReleaseRatePSIpS * elapsedClockSeconds;
-                    AutoCylPressurePSI0 -= elapsedClockSeconds * ( 0.5f * 14.50377f); // Rychlost odvětrání při EDB nastavena na 0.5 bar/s
+                    AutoCylPressurePSI0 -= elapsedClockSeconds * ( 1.0f * 14.50377f); // Rychlost odvětrání při EDB nastavena na 1 bar/s
                 }
             }
             else PowerForWagon = false;
@@ -1248,10 +1248,22 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         //(train.Cars[i] as MSTSLocomotive).MainResPressurePSI = sumpv;
                         // Výpočet kapacity hlavní jímky a přilehlého potrubí
                         train.Cars[i].BrakeSystem.TotalCapacityMainResBrakePipe = (train.Cars[i].BrakeSystem.BrakePipeVolumeM3 * train.Cars[i].BrakeSystem.BrakeLine1PressurePSI) + (loco.MainResVolumeM3 * loco.MainResPressurePSI);
+                                                
+                        // Zpoždění náběhu kompresoru
+                        if (loco.CompressorMode_OffAuto && !loco.CompressorIsOn)
+                        {
+                            loco.BrakeSystem.CompressorT0 += elapsedClockSeconds;
+                            if (loco.BrakeSystem.CompressorT0 > 2) // 2s
+                            {
+                                loco.BrakeSystem.CompressorOnDelay = true;
+                                loco.BrakeSystem.CompressorT0 = 0;
+                            }
+                            else loco.BrakeSystem.CompressorOnDelay = false;
+                        }                        
 
                         if (loco.MainResPressurePSI < loco.CompressorRestartPressurePSI
                             && loco.AuxPowerOn
-                            && loco.CompressorMode_OffAuto
+                            && loco.BrakeSystem.CompressorOnDelay
                             && !loco.CompressorIsOn)
                             loco.SignalEvent(Event.CompressorOn);
 
