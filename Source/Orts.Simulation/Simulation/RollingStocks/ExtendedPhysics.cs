@@ -314,7 +314,15 @@ namespace Orts.Simulation.RollingStocks
             }
             if (Locomotive.TractiveForceCurves != null && Locomotive.ControllerVolts > 0)
             {
-                ForceN = Locomotive.TractiveForceCurves.Get(Locomotive.ControllerVolts / 10, WheelSpeedMpS) / NumMotors;
+                float t = Locomotive.ControllerVolts / 10;
+                if (t < 0.15f)
+                    t = 0.15f;
+                float speedCoeff = MpS.ToKpH(WheelSpeedMpS) / 3000;
+                float speedCoeff2 = (MpS.ToKpH(WheelSpeedMpS) - 100) / 420;
+                if (speedCoeff2 > 0)
+                    speedCoeff = speedCoeff + speedCoeff2;
+                float test = t + speedCoeff;
+                ForceN = Locomotive.TractiveForceCurves.Get(t, WheelSpeedMpS) / totalMotors;
             }
             else if (Locomotive.ControllerVolts > 0) // TODO bez tabulek!
             {
@@ -322,7 +330,7 @@ namespace Orts.Simulation.RollingStocks
             }
             else if (Locomotive.DynamicBrakeForceCurves != null && Locomotive.ControllerVolts < 0)
             {
-                ForceN = -Locomotive.DynamicBrakeForceCurves.Get(-Locomotive.ControllerVolts / 10, WheelSpeedMpS) / NumMotors;
+                ForceN = -Locomotive.DynamicBrakeForceCurves.Get(-Locomotive.ControllerVolts / 10, WheelSpeedMpS) / totalMotors;
             }
             else if (Locomotive.ControllerVolts < 0) // TODO bez tabulek
             {

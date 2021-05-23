@@ -713,7 +713,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
 
         protected virtual void UpdateMotiveForce(float elapsedClockSeconds, float AbsWheelSpeedMps)
         {
-            float wheelSpeedMpS = AbsWheelSpeedMps;
+            float wheelSpeedMpS = Locomotive.SpeedMpS;
 
             if (firstIteration)
             {
