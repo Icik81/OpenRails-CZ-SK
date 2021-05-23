@@ -71,7 +71,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
         protected float PrevAuxResPressurePSI = 0;
         protected float Threshold = 0;
         protected float prevBrakeLine1PressurePSI = 0;
-        protected bool NotConnected = false;        
+        protected bool NotConnected = false;
+        protected float ThresholdBailOffOn = 0;
 
         /// <summary>
         /// EP brake holding valve. Needs to be closed (Lap) in case of brake application or holding.
@@ -209,7 +210,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 string.Empty, // Spacer because the state above needs 2 columns.                                                     
                 string.Format("{0}", NextLocoBrakeState),
                 //string.Empty, // Spacer because the state above needs 2 columns.                                     
-                //string.Format("ApplyRatePSIpS {0:F0}", (Car as MSTSLocomotive).TrainBrakeController.ApplyRatePSIpS),
+                //string.Format("ThresholdBailOffOn {0:F0}", ThresholdBailOffOn),
             };
         }
 
@@ -468,10 +469,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             // Thus this pressure must be set even in brake systems ER not present otherwise. It just stays static in this case.
 
             //float threshold = Math.Max(RetainerPressureThresholdPSI,
-            //                (Car as MSTSWagon).DistributorPresent ? (PrevAuxResPressurePSI - BrakeLine1PressurePSI) * AuxCylVolumeRatio : 0);
+            //                (Car as MSTSWagon).DistributorPresent ? (PrevAuxResPressurePSI - BrakeLine1PressurePSI) * AuxCylVolumeRatio : 0);        
             float threshold = (PrevAuxResPressurePSI - BrakeLine1PressurePSI) * AuxCylVolumeRatio;
-            Threshold = threshold;
-
+            
             if (StartOn)
             {
                 MSTSLocomotive loco = Car as MSTSLocomotive;
@@ -829,10 +829,30 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     if ((loco.MaxDynamicBrakeForceN == 0 && dynforce > 0) || dynforce > loco.MaxDynamicBrakeForceN * 0.6)
                         BailOffOn = true;
                 }
-                if (BailOffOn || BailOffOnAntiSkid)
+                if (BailOffOnAntiSkid)
+                {                    
+                    AutoCylPressurePSI0 -= MaxReleaseRatePSIpS * elapsedClockSeconds;                    
+                }
+                if (BailOffOn)
                 {
+                    ThresholdBailOffOn = (maxPressurePSI0 - BrakeLine1PressurePSI) * AuxCylVolumeRatio; 
                     //AutoCylPressurePSI0 -= MaxReleaseRatePSIpS * elapsedClockSeconds;
-                    AutoCylPressurePSI0 -= elapsedClockSeconds * ( 1.0f * 14.50377f); // Rychlost odvětrání při EDB nastavena na 1 bar/s
+                    AutoCylPressurePSI0 -= elapsedClockSeconds * (1.0f * 14.50377f); // Rychlost odvětrání při EDB nastavena na 1 bar/s
+                }
+
+                // Automatické napuštění brzdového válce po uvadnutí EDB
+                if (ThresholdBailOffOn > 0 && loco.DynamicBrakeForceCurves.Get(1.0f, loco.AbsSpeedMpS) < 1)
+                {
+                    if (AutoCylPressurePSI0 < ThresholdBailOffOn)
+                    {
+                        AutoCylPressurePSI0 += elapsedClockSeconds * (1.0f * 14.50377f);
+                    }
+                    else
+                    if (AutoCylPressurePSI0 >= ThresholdBailOffOn)
+                    {
+                        threshold = ThresholdBailOffOn;
+                        ThresholdBailOffOn = 0;
+                    }
                 }
             }
             else PowerForWagon = false;
