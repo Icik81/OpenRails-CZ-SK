@@ -631,7 +631,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     if (AuxResPressurePSI < 0)
                         AuxResPressurePSI = 0;
 
-                    AutoCylPressurePSI0 -= elapsedClockSeconds * (2.0f * 14.50377f); // Rychlost odvětrání 2 bar/s                 
+                    AutoCylPressurePSI0 -= elapsedClockSeconds * (0.5f * 14.50377f); // Rychlost odvětrání 0.5 bar/s                 
                     if (AutoCylPressurePSI0 < 0)
                         AutoCylPressurePSI0 = 0;
 
@@ -660,7 +660,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     }
                     else
                     {
-                        AutoCylPressurePSI0 -= elapsedClockSeconds * (2.0f * 14.50377f); // Rychlost odvětrání 2 bar/s
+                        AutoCylPressurePSI0 -= elapsedClockSeconds * (0.5f * 14.50377f); // Rychlost odvětrání 0.5 bar/s
                         if (AutoCylPressurePSI0 < 0)
                             AutoCylPressurePSI0 = 0;
                     }
@@ -831,7 +831,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 }
                 if (BailOffOn || BailOffOnAntiSkid)
                 {
-                    AutoCylPressurePSI0 -= MaxReleaseRatePSIpS * elapsedClockSeconds;
+                    //AutoCylPressurePSI0 -= MaxReleaseRatePSIpS * elapsedClockSeconds;
+                    AutoCylPressurePSI0 -= elapsedClockSeconds * ( 0.5f * 14.50377f); // Rychlost odvětrání při EDB nastavena na 0.5 bar/s
                 }
             }
             else PowerForWagon = false;
