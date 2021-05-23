@@ -100,7 +100,7 @@ namespace ORTS.Common
                 var timespan = builds.Keys.OrderBy(ts => ts).Last();
                 // Icik
                 //return String.Format("{0} ({1:u})", builds[timespan], datetime + timespan);
-                return String.Format("CZ/SK  {0}", datetime + timespan);
+                return String.Format("CZ/SK v1.2    {0}", datetime + timespan);
             }
             return "";
         }
