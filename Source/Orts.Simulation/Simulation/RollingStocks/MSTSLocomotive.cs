@@ -1441,7 +1441,6 @@ namespace Orts.Simulation.RollingStocks
                 Mirel.Restore(inf);
             int fActiveStation = inf.ReadInt32();
             ActiveStation = (DriverStation)fActiveStation;
-
         }
 
         public bool IsLeadLocomotive()

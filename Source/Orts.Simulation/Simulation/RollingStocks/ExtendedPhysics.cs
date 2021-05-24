@@ -185,6 +185,23 @@ namespace Orts.Simulation.RollingStocks
             }
         }
 
+        public void Save(BinaryWriter outf)
+        {
+            outf.Write(StarorsCurrent);
+            outf.Write(RotorsCurrent);
+            outf.Write(AverageAxleSpeedMpS);
+            outf.Write(FastestAxleSpeedMpS);
+        }
+
+        public void Restore(BinaryReader inf)
+        {
+            StarorsCurrent = inf.ReadSingle();
+            RotorsCurrent = inf.ReadSingle();
+            AverageAxleSpeedMpS = inf.ReadSingle();
+            FastestAxleSpeedMpS = inf.ReadSingle();
+        }
+
+
         public void Update(float elapsedClockSeconds)
         {
             if (!Locomotive.IsPlayerTrain)

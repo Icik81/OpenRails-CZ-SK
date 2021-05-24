@@ -382,7 +382,7 @@ namespace ORTS
             LoadStartAtList();
             LoadTimetableSetList();
             ShowDetails();
-            LoadMirelDatabase();
+            // LoadMirelDatabase();
         }
         #endregion
 
