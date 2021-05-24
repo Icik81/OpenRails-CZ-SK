@@ -743,6 +743,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems
             {
                 // wheelSpeedMpS = Locomotive.extendedPhysics.Undercarriages[speedSensorUndercarriageIndex].Axles[speedSensorAxleIndex].WheelSpeedMpS;
                 wheelSpeedMpS = Locomotive.Train.SpeedMpS;
+                if (Locomotive.UsingRearCab)
+                    wheelSpeedMpS = -wheelSpeedMpS;
             }
 
             if (!Locomotive.PowerOn)
