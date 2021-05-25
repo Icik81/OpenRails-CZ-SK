@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: 2021-05-25 18:24:43+0200\n"
-"PO-Revision-Date: 2021-05-25 20:57+0200\n"
+"PO-Revision-Date: 2021-05-25 21:10+0200\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -364,7 +364,7 @@ msgstr "Konec trasy:"
 
 #: ../../Menu/MainForm.Designer.cs:599
 msgid "Duration:"
-msgstr "Dobra trvání:"
+msgstr "Doba trvání:"
 
 #: ../../Menu/MainForm.Designer.cs:609
 msgid "Time:"
@@ -380,7 +380,7 @@ msgstr "Obtížnost:"
 
 #: ../../Menu/MainForm.Designer.cs:702 ../../Menu/MainForm.Designer.cs:848
 msgid "Season:"
-msgstr "Roční doba:"
+msgstr "Období:"
 
 #: ../../Menu/MainForm.Designer.cs:736
 msgid "Weather File:"
