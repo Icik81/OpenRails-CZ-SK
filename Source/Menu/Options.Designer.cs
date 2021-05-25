@@ -29,8 +29,8 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
             this.buttonOK = new System.Windows.Forms.Button();
             this.numericBrakePipeChargingRate = new System.Windows.Forms.NumericUpDown();
             this.lBrakePipeChargingRate = new System.Windows.Forms.Label();
@@ -327,9 +327,9 @@
             this.lBrakePipeChargingRate.Location = new System.Drawing.Point(119, 208);
             this.lBrakePipeChargingRate.Margin = new System.Windows.Forms.Padding(4);
             this.lBrakePipeChargingRate.Name = "lBrakePipeChargingRate";
-            this.lBrakePipeChargingRate.Size = new System.Drawing.Size(262, 17);
+            this.lBrakePipeChargingRate.Size = new System.Drawing.Size(210, 17);
             this.lBrakePipeChargingRate.TabIndex = 8;
-            this.lBrakePipeChargingRate.Text = "Brake pipe charging rate (PSI/s)             ";
+            this.lBrakePipeChargingRate.Text = "Brake pipe charging rate (PSI/s)";
             this.lBrakePipeChargingRate.MouseEnter += new System.EventHandler(this.HelpIcon_MouseEnter);
             this.lBrakePipeChargingRate.MouseLeave += new System.EventHandler(this.HelpIcon_MouseLeave);
             // 
@@ -339,9 +339,9 @@
             this.checkGraduatedRelease.Location = new System.Drawing.Point(43, 177);
             this.checkGraduatedRelease.Margin = new System.Windows.Forms.Padding(4);
             this.checkGraduatedRelease.Name = "checkGraduatedRelease";
-            this.checkGraduatedRelease.Size = new System.Drawing.Size(344, 21);
+            this.checkGraduatedRelease.Size = new System.Drawing.Size(216, 21);
             this.checkGraduatedRelease.TabIndex = 6;
-            this.checkGraduatedRelease.Text = "Graduated release air brakes                                ";
+            this.checkGraduatedRelease.Text = "Graduated release air brakes";
             this.checkGraduatedRelease.UseVisualStyleBackColor = true;
             this.checkGraduatedRelease.MouseEnter += new System.EventHandler(this.HelpIcon_MouseEnter);
             this.checkGraduatedRelease.MouseLeave += new System.EventHandler(this.HelpIcon_MouseLeave);
@@ -364,9 +364,9 @@
             this.checkAlerter.Location = new System.Drawing.Point(43, 7);
             this.checkAlerter.Margin = new System.Windows.Forms.Padding(4);
             this.checkAlerter.Name = "checkAlerter";
-            this.checkAlerter.Size = new System.Drawing.Size(338, 21);
+            this.checkAlerter.Size = new System.Drawing.Size(114, 21);
             this.checkAlerter.TabIndex = 0;
-            this.checkAlerter.Text = "Alerter in cab                                                        ";
+            this.checkAlerter.Text = "Alerter in cab";
             this.checkAlerter.UseVisualStyleBackColor = true;
             this.checkAlerter.CheckedChanged += new System.EventHandler(this.checkAlerter_CheckedChanged);
             this.checkAlerter.MouseEnter += new System.EventHandler(this.HelpIcon_MouseEnter);
@@ -378,9 +378,9 @@
             this.checkControlConfirmations.Location = new System.Drawing.Point(43, 64);
             this.checkControlConfirmations.Margin = new System.Windows.Forms.Padding(4);
             this.checkControlConfirmations.Name = "checkControlConfirmations";
-            this.checkControlConfirmations.Size = new System.Drawing.Size(339, 21);
+            this.checkControlConfirmations.Size = new System.Drawing.Size(163, 21);
             this.checkControlConfirmations.TabIndex = 4;
-            this.checkControlConfirmations.Text = "Control confirmations                                            ";
+            this.checkControlConfirmations.Text = "Control confirmations";
             this.checkControlConfirmations.UseVisualStyleBackColor = true;
             this.checkControlConfirmations.MouseEnter += new System.EventHandler(this.HelpIcon_MouseEnter);
             this.checkControlConfirmations.MouseLeave += new System.EventHandler(this.HelpIcon_MouseLeave);
@@ -391,9 +391,9 @@
             this.checkViewMapWindow.Location = new System.Drawing.Point(43, 92);
             this.checkViewMapWindow.Margin = new System.Windows.Forms.Padding(4);
             this.checkViewMapWindow.Name = "checkViewMapWindow";
-            this.checkViewMapWindow.Size = new System.Drawing.Size(330, 21);
+            this.checkViewMapWindow.Size = new System.Drawing.Size(106, 21);
             this.checkViewMapWindow.TabIndex = 2;
-            this.checkViewMapWindow.Text = "Map window                                                        ";
+            this.checkViewMapWindow.Text = "Map window";
             this.checkViewMapWindow.UseVisualStyleBackColor = true;
             this.checkViewMapWindow.MouseEnter += new System.EventHandler(this.HelpIcon_MouseEnter);
             this.checkViewMapWindow.MouseLeave += new System.EventHandler(this.HelpIcon_MouseLeave);
@@ -471,18 +471,18 @@
             // checkAirEmpty
             // 
             this.checkAirEmpty.AutoSize = true;
-            this.checkAirEmpty.Location = new System.Drawing.Point(405, 179);
+            this.checkAirEmpty.Location = new System.Drawing.Point(405, 177);
             this.checkAirEmpty.Margin = new System.Windows.Forms.Padding(4);
             this.checkAirEmpty.Name = "checkAirEmpty";
-            this.checkAirEmpty.Size = new System.Drawing.Size(259, 21);
+            this.checkAirEmpty.Size = new System.Drawing.Size(276, 21);
             this.checkAirEmpty.TabIndex = 31;
-            this.checkAirEmpty.Text = "Lokomotiva na začátku bez vzduchu";
+            this.checkAirEmpty.Text = "Locomotive without air at the beginning";
             this.checkAirEmpty.UseVisualStyleBackColor = true;
             // 
             // checkReduceMemory
             // 
             this.checkReduceMemory.AutoSize = true;
-            this.checkReduceMemory.Location = new System.Drawing.Point(405, 121);
+            this.checkReduceMemory.Location = new System.Drawing.Point(405, 131);
             this.checkReduceMemory.Margin = new System.Windows.Forms.Padding(4);
             this.checkReduceMemory.Name = "checkReduceMemory";
             this.checkReduceMemory.Size = new System.Drawing.Size(176, 21);
@@ -665,9 +665,9 @@
             this.labelPortNumber.Location = new System.Drawing.Point(140, 410);
             this.labelPortNumber.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.labelPortNumber.Name = "labelPortNumber";
-            this.labelPortNumber.Size = new System.Drawing.Size(242, 17);
+            this.labelPortNumber.Size = new System.Drawing.Size(86, 17);
             this.labelPortNumber.TabIndex = 17;
-            this.labelPortNumber.Text = "Port number                                       ";
+            this.labelPortNumber.Text = "Port number";
             // 
             // numericWebServerPort
             // 
@@ -698,9 +698,9 @@
             this.checkEnableWebServer.Location = new System.Drawing.Point(43, 379);
             this.checkEnableWebServer.Margin = new System.Windows.Forms.Padding(4);
             this.checkEnableWebServer.Name = "checkEnableWebServer";
-            this.checkEnableWebServer.Size = new System.Drawing.Size(335, 21);
+            this.checkEnableWebServer.Size = new System.Drawing.Size(143, 21);
             this.checkEnableWebServer.TabIndex = 15;
-            this.checkEnableWebServer.Text = "Enable webserver                                                ";
+            this.checkEnableWebServer.Text = "Enable webserver";
             this.checkEnableWebServer.UseVisualStyleBackColor = true;
             this.checkEnableWebServer.MouseEnter += new System.EventHandler(this.HelpIcon_MouseEnter);
             this.checkEnableWebServer.MouseLeave += new System.EventHandler(this.HelpIcon_MouseLeave);
@@ -735,9 +735,9 @@
             this.checkOverspeedMonitor.Location = new System.Drawing.Point(429, 7);
             this.checkOverspeedMonitor.Margin = new System.Windows.Forms.Padding(4);
             this.checkOverspeedMonitor.Name = "checkOverspeedMonitor";
-            this.checkOverspeedMonitor.Size = new System.Drawing.Size(363, 21);
+            this.checkOverspeedMonitor.Size = new System.Drawing.Size(151, 21);
             this.checkOverspeedMonitor.TabIndex = 14;
-            this.checkOverspeedMonitor.Text = "Overspeed monitor                                                     ";
+            this.checkOverspeedMonitor.Text = "Overspeed monitor";
             this.checkOverspeedMonitor.UseVisualStyleBackColor = true;
             this.checkOverspeedMonitor.MouseEnter += new System.EventHandler(this.HelpIcon_MouseEnter);
             this.checkOverspeedMonitor.MouseLeave += new System.EventHandler(this.HelpIcon_MouseLeave);
@@ -748,9 +748,9 @@
             this.checkDisableTCSScripts.Location = new System.Drawing.Point(43, 351);
             this.checkDisableTCSScripts.Margin = new System.Windows.Forms.Padding(4);
             this.checkDisableTCSScripts.Name = "checkDisableTCSScripts";
-            this.checkDisableTCSScripts.Size = new System.Drawing.Size(337, 21);
+            this.checkDisableTCSScripts.Size = new System.Drawing.Size(153, 21);
             this.checkDisableTCSScripts.TabIndex = 13;
-            this.checkDisableTCSScripts.Text = "Disable TCS scripts                                              ";
+            this.checkDisableTCSScripts.Text = "Disable TCS scripts";
             this.checkDisableTCSScripts.UseVisualStyleBackColor = true;
             this.checkDisableTCSScripts.MouseEnter += new System.EventHandler(this.HelpIcon_MouseEnter);
             this.checkDisableTCSScripts.MouseLeave += new System.EventHandler(this.HelpIcon_MouseLeave);
@@ -761,9 +761,9 @@
             this.labelOtherUnits.Location = new System.Drawing.Point(208, 316);
             this.labelOtherUnits.Margin = new System.Windows.Forms.Padding(4);
             this.labelOtherUnits.Name = "labelOtherUnits";
-            this.labelOtherUnits.Size = new System.Drawing.Size(174, 17);
+            this.labelOtherUnits.Size = new System.Drawing.Size(78, 17);
             this.labelOtherUnits.TabIndex = 9;
-            this.labelOtherUnits.Text = "Other units                        ";
+            this.labelOtherUnits.Text = "Other units";
             this.labelOtherUnits.MouseEnter += new System.EventHandler(this.HelpIcon_MouseEnter);
             this.labelOtherUnits.MouseLeave += new System.EventHandler(this.HelpIcon_MouseLeave);
             // 
@@ -773,9 +773,9 @@
             this.labelPressureUnit.Location = new System.Drawing.Point(208, 283);
             this.labelPressureUnit.Margin = new System.Windows.Forms.Padding(4);
             this.labelPressureUnit.Name = "labelPressureUnit";
-            this.labelPressureUnit.Size = new System.Drawing.Size(176, 17);
+            this.labelPressureUnit.Size = new System.Drawing.Size(92, 17);
             this.labelPressureUnit.TabIndex = 12;
-            this.labelPressureUnit.Text = "Pressure unit                     ";
+            this.labelPressureUnit.Text = "Pressure unit";
             this.labelPressureUnit.MouseEnter += new System.EventHandler(this.HelpIcon_MouseEnter);
             this.labelPressureUnit.MouseLeave += new System.EventHandler(this.HelpIcon_MouseLeave);
             // 
@@ -805,9 +805,9 @@
             this.labelLanguage.Location = new System.Drawing.Point(208, 250);
             this.labelLanguage.Margin = new System.Windows.Forms.Padding(4);
             this.labelLanguage.Name = "labelLanguage";
-            this.labelLanguage.Size = new System.Drawing.Size(172, 17);
+            this.labelLanguage.Size = new System.Drawing.Size(72, 17);
             this.labelLanguage.TabIndex = 10;
-            this.labelLanguage.Text = "Language                         ";
+            this.labelLanguage.Text = "Language";
             this.labelLanguage.MouseEnter += new System.EventHandler(this.HelpIcon_MouseEnter);
             this.labelLanguage.MouseLeave += new System.EventHandler(this.HelpIcon_MouseLeave);
             // 
@@ -827,9 +827,9 @@
             this.checkAlerterExternal.Location = new System.Drawing.Point(69, 36);
             this.checkAlerterExternal.Margin = new System.Windows.Forms.Padding(31, 4, 4, 4);
             this.checkAlerterExternal.Name = "checkAlerterExternal";
-            this.checkAlerterExternal.Size = new System.Drawing.Size(308, 21);
+            this.checkAlerterExternal.Size = new System.Drawing.Size(164, 21);
             this.checkAlerterExternal.TabIndex = 1;
-            this.checkAlerterExternal.Text = "Also in external views                                    ";
+            this.checkAlerterExternal.Text = "Also in external views";
             this.checkAlerterExternal.UseVisualStyleBackColor = true;
             // 
             // checkRetainers
@@ -838,9 +838,9 @@
             this.checkRetainers.Location = new System.Drawing.Point(43, 149);
             this.checkRetainers.Margin = new System.Windows.Forms.Padding(4);
             this.checkRetainers.Name = "checkRetainers";
-            this.checkRetainers.Size = new System.Drawing.Size(338, 21);
+            this.checkRetainers.Size = new System.Drawing.Size(190, 21);
             this.checkRetainers.TabIndex = 5;
-            this.checkRetainers.Text = "Retainer valve on all cars                                     ";
+            this.checkRetainers.Text = "Retainer valve on all cars";
             this.checkRetainers.UseVisualStyleBackColor = true;
             this.checkRetainers.MouseEnter += new System.EventHandler(this.HelpIcon_MouseEnter);
             this.checkRetainers.MouseLeave += new System.EventHandler(this.HelpIcon_MouseLeave);
@@ -2209,28 +2209,28 @@
             this.dataGridViewContent.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.dataGridViewContent.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None;
             this.dataGridViewContent.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None;
-            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dataGridViewContent.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle7.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle7.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle7.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle7.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle7.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle7.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle7.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dataGridViewContent.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle7;
             this.dataGridViewContent.ColumnHeadersHeight = 29;
             this.dataGridViewContent.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
             this.dataGridViewContent.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.nameDataGridViewTextBoxColumn,
             this.pathDataGridViewTextBoxColumn});
             this.dataGridViewContent.DataSource = this.bindingSourceContent;
-            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dataGridViewContent.DefaultCellStyle = dataGridViewCellStyle4;
+            dataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle8.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle8.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle8.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle8.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle8.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle8.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dataGridViewContent.DefaultCellStyle = dataGridViewCellStyle8;
             this.dataGridViewContent.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dataGridViewContent.Location = new System.Drawing.Point(0, 0);
             this.dataGridViewContent.Margin = new System.Windows.Forms.Padding(4);
@@ -2370,7 +2370,7 @@
             // label26
             // 
             this.label26.AutoSize = true;
-            this.label26.Location = new System.Drawing.Point(584, 118);
+            this.label26.Location = new System.Drawing.Point(594, 118);
             this.label26.Margin = new System.Windows.Forms.Padding(4);
             this.label26.Name = "label26";
             this.label26.Size = new System.Drawing.Size(199, 17);
