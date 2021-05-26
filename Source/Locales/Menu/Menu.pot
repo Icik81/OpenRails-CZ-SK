@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2021-05-25 18:24:43+0200\n"
-"PO-Revision-Date: 2021-05-25 18:24:43+0200\n"
+"POT-Creation-Date: 2021-05-26 16:48:08+0200\n"
+"PO-Revision-Date: 2021-05-26 16:48:08+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -247,167 +247,167 @@ msgstr ""
 msgid "Consist: {0}"
 msgstr ""
 
-#: ../../Menu/MainForm.Designer.cs:124
+#: ../../Menu/MainForm.Designer.cs:125
 msgid "Windowed"
 msgstr ""
 
-#: ../../Menu/MainForm.Designer.cs:134
+#: ../../Menu/MainForm.Designer.cs:136
 msgid "Start"
 msgstr ""
 
-#: ../../Menu/MainForm.Designer.cs:146
-#: ../../Menu/MainForm.Designer.cs:956
+#: ../../Menu/MainForm.Designer.cs:149
+#: ../../Menu/MainForm.Designer.cs:1001
 msgid "Open Rails"
 msgstr ""
 
-#: ../../Menu/MainForm.Designer.cs:164
+#: ../../Menu/MainForm.Designer.cs:168
 msgid "Logging"
 msgstr ""
 
-#: ../../Menu/MainForm.Designer.cs:173
+#: ../../Menu/MainForm.Designer.cs:178
 #: ../../Menu/Options.Designer.cs:2949
 #: ../../Menu/Properties/Options.Designer.cs:2763
 msgid "Options"
 msgstr ""
 
-#: ../../Menu/MainForm.Designer.cs:183
+#: ../../Menu/MainForm.Designer.cs:189
 msgid "Resume/ Replay..."
 msgstr ""
 
-#: ../../Menu/MainForm.Designer.cs:192
+#: ../../Menu/MainForm.Designer.cs:199
 msgid "Tools ▼"
 msgstr ""
 
-#: ../../Menu/MainForm.Designer.cs:227
+#: ../../Menu/MainForm.Designer.cs:236
 msgid "Route:"
 msgstr ""
 
-#: ../../Menu/MainForm.Designer.cs:246
+#: ../../Menu/MainForm.Designer.cs:256
 msgid "Host/port:"
 msgstr ""
 
-#: ../../Menu/MainForm.Designer.cs:257
+#: ../../Menu/MainForm.Designer.cs:267
 msgid "User name:"
 msgstr ""
 
-#: ../../Menu/MainForm.Designer.cs:284
+#: ../../Menu/MainForm.Designer.cs:297
 msgid "Multiplayer"
 msgstr ""
 
-#: ../../Menu/MainForm.Designer.cs:292
+#: ../../Menu/MainForm.Designer.cs:306
 msgid "Server"
 msgstr ""
 
-#: ../../Menu/MainForm.Designer.cs:304
+#: ../../Menu/MainForm.Designer.cs:319
 msgid "Client"
 msgstr ""
 
-#: ../../Menu/MainForm.Designer.cs:315
+#: ../../Menu/MainForm.Designer.cs:331
 msgid "Start MP"
 msgstr ""
 
-#: ../../Menu/MainForm.Designer.cs:325
+#: ../../Menu/MainForm.Designer.cs:342
 msgid "Resume MP"
 msgstr ""
 
-#: ../../Menu/MainForm.Designer.cs:338
+#: ../../Menu/MainForm.Designer.cs:357
 msgid "Singleplayer"
 msgstr ""
 
-#: ../../Menu/MainForm.Designer.cs:348
+#: ../../Menu/MainForm.Designer.cs:367
 msgid "Installation profile:"
 msgstr ""
 
-#: ../../Menu/MainForm.Designer.cs:395
+#: ../../Menu/MainForm.Designer.cs:418
 msgid "Documents ▼"
 msgstr ""
 
-#: ../../Menu/MainForm.Designer.cs:407
+#: ../../Menu/MainForm.Designer.cs:430
 msgid "Mode:"
 msgstr ""
 
-#: ../../Menu/MainForm.Designer.cs:418
+#: ../../Menu/MainForm.Designer.cs:442
 #: ../../Menu/TestingForm.Designer.cs:192
 msgid "Activity"
 msgstr ""
 
-#: ../../Menu/MainForm.Designer.cs:428
+#: ../../Menu/MainForm.Designer.cs:453
 msgid "Timetable"
 msgstr ""
 
-#: ../../Menu/MainForm.Designer.cs:469
+#: ../../Menu/MainForm.Designer.cs:494
 msgid "Debrief evaluation:"
 msgstr ""
 
-#: ../../Menu/MainForm.Designer.cs:481
+#: ../../Menu/MainForm.Designer.cs:506
 msgid "Activity:"
 msgstr ""
 
-#: ../../Menu/MainForm.Designer.cs:504
+#: ../../Menu/MainForm.Designer.cs:530
 msgid "Locomotive:"
 msgstr ""
 
-#: ../../Menu/MainForm.Designer.cs:541
+#: ../../Menu/MainForm.Designer.cs:569
 msgid "Consist:"
 msgstr ""
 
-#: ../../Menu/MainForm.Designer.cs:552
+#: ../../Menu/MainForm.Designer.cs:580
 msgid "Starting at:"
 msgstr ""
 
-#: ../../Menu/MainForm.Designer.cs:576
+#: ../../Menu/MainForm.Designer.cs:605
 msgid "Heading to:"
 msgstr ""
 
-#: ../../Menu/MainForm.Designer.cs:599
+#: ../../Menu/MainForm.Designer.cs:629
 msgid "Duration:"
 msgstr ""
 
-#: ../../Menu/MainForm.Designer.cs:609
+#: ../../Menu/MainForm.Designer.cs:639
 msgid "Time:"
 msgstr ""
 
-#: ../../Menu/MainForm.Designer.cs:657
-#: ../../Menu/MainForm.Designer.cs:825
+#: ../../Menu/MainForm.Designer.cs:690
+#: ../../Menu/MainForm.Designer.cs:864
 msgid "Weather:"
 msgstr ""
 
-#: ../../Menu/MainForm.Designer.cs:680
+#: ../../Menu/MainForm.Designer.cs:714
 msgid "Difficulty:"
 msgstr ""
 
-#: ../../Menu/MainForm.Designer.cs:702
-#: ../../Menu/MainForm.Designer.cs:848
+#: ../../Menu/MainForm.Designer.cs:737
+#: ../../Menu/MainForm.Designer.cs:888
 msgid "Season:"
 msgstr ""
 
-#: ../../Menu/MainForm.Designer.cs:736
+#: ../../Menu/MainForm.Designer.cs:771
 msgid "Weather File:"
 msgstr ""
 
-#: ../../Menu/MainForm.Designer.cs:757
+#: ../../Menu/MainForm.Designer.cs:793
 msgid "Train:"
 msgstr ""
 
-#: ../../Menu/MainForm.Designer.cs:778
+#: ../../Menu/MainForm.Designer.cs:815
 msgid "Timetable:"
 msgstr ""
 
-#: ../../Menu/MainForm.Designer.cs:801
+#: ../../Menu/MainForm.Designer.cs:839
 msgid "Day:"
 msgstr ""
 
-#: ../../Menu/MainForm.Designer.cs:880
+#: ../../Menu/MainForm.Designer.cs:922
 msgid "Timetable set:"
 msgstr ""
 
-#: ../../Menu/MainForm.Designer.cs:900
+#: ../../Menu/MainForm.Designer.cs:943
 #: ../../Menu/Options.cs:284
 #: ../../Menu/TestingForm.Designer.cs:314
 msgid "Testing"
 msgstr ""
 
-#: ../../Menu/MainForm.Designer.cs:918
+#: ../../Menu/MainForm.Designer.cs:962
 msgid "What's new?"
 msgstr ""
 

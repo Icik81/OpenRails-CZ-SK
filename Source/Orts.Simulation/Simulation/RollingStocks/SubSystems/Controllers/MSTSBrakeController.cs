@@ -123,27 +123,17 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                     switch (type)
                     {
                         case ControllerState.Release:
-                            //IncreasePressure(ref pressureBar, MaxPressureBar(), ReleaseRateBarpS(), elapsedClockSeconds);
-                            //DecreasePressure(ref pressureBar, MaxPressureBar(), OverchargeEliminationRateBarpS(), elapsedClockSeconds);
-
                             // Iciks
-                            IncreasePressure(ref pressureBar, MaxPressureBar(), x * ReleaseRateBarpS(), elapsedClockSeconds);
-                            DecreasePressure(ref pressureBar, MaxPressureBar(), x * QuickReleaseRateBarpS(), elapsedClockSeconds);
+                            //IncreasePressure(ref pressureBar, MaxPressureBar(), x * ReleaseRateBarpS(), elapsedClockSeconds);
+                            //DecreasePressure(ref pressureBar, MaxPressureBar(), x * QuickReleaseRateBarpS(), elapsedClockSeconds);
                             epState = -1;
                             break;
                         case ControllerState.FullQuickRelease:
-                            //IncreasePressure(ref pressureBar, MaxPressureBar(), QuickReleaseRateBarpS(), elapsedClockSeconds);
-                            //DecreasePressure(ref pressureBar, MaxPressureBar(), OverchargeEliminationRateBarpS(), elapsedClockSeconds);
-
                             // Iciks
-                            IncreasePressure(ref pressureBar, MaxPressureBar(), x * QuickReleaseRateBarpS(), elapsedClockSeconds);
-                            DecreasePressure(ref pressureBar, MaxPressureBar(), x * QuickReleaseRateBarpS(), elapsedClockSeconds);
+                            //IncreasePressure(ref pressureBar, MaxPressureBar(), x * QuickReleaseRateBarpS(), elapsedClockSeconds);
+                            //DecreasePressure(ref pressureBar, MaxPressureBar(), x * QuickReleaseRateBarpS(), elapsedClockSeconds);
                             epState = -1;
                             break;
-                        //case ControllerState.Overcharge:
-                            //IncreasePressure(ref pressureBar, Math.Min(MaxOverchargePressureBar(), MainReservoirPressureBar()), QuickReleaseRateBarpS(), elapsedClockSeconds);
-                            //epState = -1;
-                            //break;
                         case ControllerState.SlowService:
                             DecreasePressure(ref pressureBar, MaxPressureBar() - FullServReductionBar(), SlowApplicationRateBarpS(), elapsedClockSeconds);
                             break;
@@ -160,7 +150,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                             break;
                         case ControllerState.StrBrkReleaseOff: //(reversed due to vacuum brake operation)
                         case ControllerState.Apply:
-                            pressureBar -= x * ApplyRateBarpS() * elapsedClockSeconds;
+                            // Icik
+                            //pressureBar -= x * ApplyRateBarpS() * elapsedClockSeconds;
                             break;
                         case ControllerState.FullServ:
                             epState = x;
@@ -210,12 +201,12 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                         case ControllerState.GSelfLap:
                             EnforceMinimalReduction = true;
                             x = MaxPressureBar() - MinReductionBar() * (1 - x) - FullServReductionBar() * x;
-                            DecreasePressure(ref pressureBar, x, ApplyRateBarpS(), elapsedClockSeconds * 1/6 );
+                            DecreasePressure(ref pressureBar, x, ApplyRateBarpS(), elapsedClockSeconds);
                             if (ForceControllerReleaseGraduated || notch.Type == ControllerState.GSelfLap)
-                                IncreasePressure(ref pressureBar, x, ReleaseRateBarpS(), elapsedClockSeconds * 1/6);
+                                IncreasePressure(ref pressureBar, x, ReleaseRateBarpS(), elapsedClockSeconds);
                             break;
                         case ControllerState.Emergency:
-                            pressureBar -= EmergencyRateBarpS() * elapsedClockSeconds;
+                            //pressureBar -= EmergencyRateBarpS() * elapsedClockSeconds;
                             epState = 1;
                             break;
                         case ControllerState.Dummy:
@@ -227,17 +218,17 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                         
                         // Iciks
                         case ControllerState.OverchargeStart:
-                            IncreasePressure(ref pressureBar, MaxPressureBar(), ReleaseRateBarpS(), elapsedClockSeconds);
-                            DecreasePressure(ref pressureBar, MaxPressureBar(), QuickReleaseRateBarpS(), elapsedClockSeconds);
+                            //IncreasePressure(ref pressureBar, MaxPressureBar(), ReleaseRateBarpS(), elapsedClockSeconds);
+                            //DecreasePressure(ref pressureBar, MaxPressureBar(), QuickReleaseRateBarpS(), elapsedClockSeconds);
                             epState = -1;
                             break;
                         case ControllerState.Running:
-                            IncreasePressure(ref pressureBar, MaxPressureBar(), ReleaseRateBarpS() / 10, elapsedClockSeconds);
-                            DecreasePressure(ref pressureBar, MaxPressureBar(), QuickReleaseRateBarpS(), elapsedClockSeconds);
+                            //IncreasePressure(ref pressureBar, MaxPressureBar(), ReleaseRateBarpS() / 10, elapsedClockSeconds);
+                            //DecreasePressure(ref pressureBar, MaxPressureBar(), QuickReleaseRateBarpS(), elapsedClockSeconds);
                             epState = -1;
                             break;
                         case ControllerState.SlowApplyStart:
-                            pressureBar -= x * ApplyRateBarpS() / 3 * elapsedClockSeconds;
+                            //pressureBar -= x * ApplyRateBarpS() / 3 * elapsedClockSeconds;
                             break;
                         case ControllerState.Neutral:
                             DecreasePressure(ref pressureBar, MaxPressureBar(), QuickReleaseRateBarpS(), elapsedClockSeconds);

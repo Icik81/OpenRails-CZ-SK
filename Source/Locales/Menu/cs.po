@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: 2021-05-25 18:24:43+0200\n"
-"PO-Revision-Date: 2021-05-25 21:39+0200\n"
+"PO-Revision-Date: 2021-05-26 16:29+0200\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -997,7 +997,7 @@ msgstr "Legenda"
 #: ../../Menu/Options.Designer.cs:1768
 #: ../../Menu/Properties/Options.Designer.cs:1641
 msgid "Reverse Levers"
-msgstr "Reverzní páky "
+msgstr "Reverzní páky"
 
 #: ../../Menu/Options.Designer.cs:1779
 #: ../../Menu/Properties/Options.Designer.cs:1651
@@ -1569,7 +1569,7 @@ msgstr "Vyhodnocení"
 
 #: ../../Menu/ResumeForm.Designer.cs:156
 msgid "Deletes the currently selected save or saves."
-msgstr "Odstraní aktuálně vybranou uloženou hru nebo uložené hry. "
+msgstr "Odstraní aktuálně vybranou uloženou hru nebo uložené hry."
 
 #: ../../Menu/ResumeForm.Designer.cs:169 ../../Menu/ResumeForm.Designer.cs:205
 msgid "Restores all saves deleted in this session."
