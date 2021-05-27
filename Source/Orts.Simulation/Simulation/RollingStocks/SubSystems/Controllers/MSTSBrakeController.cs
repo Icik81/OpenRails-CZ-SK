@@ -109,8 +109,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
 
                     switch (type)
                     {
-                        case ControllerState.Hold:
-                        case ControllerState.Lap:
+                        // Icik
+                        //case ControllerState.Hold:
+                        //case ControllerState.Lap:
                         case ControllerState.MinimalReduction:
                             if (EnforceMinimalReduction)
                                 DecreasePressure(ref pressureBar, MaxPressureBar() - MinReductionBar(), ApplyRateBarpS(), elapsedClockSeconds);
@@ -159,6 +160,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                             DecreasePressure(ref pressureBar, MaxPressureBar()-FullServReductionBar(), ApplyRateBarpS(), elapsedClockSeconds);
                             break;
                         case ControllerState.Lap:
+                            // Icik
                             // Lap position applies min service reduction when first selected, and previous contoller position was Running, then no change in pressure occurs 
                             //if (PreviousNotchPosition.Type == ControllerState.Running)
                             //{
@@ -168,6 +170,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                             break;
                         case ControllerState.MinimalReduction:
                             // Lap position applies min service reduction when first selected, and previous contoller position was Running or Release, then no change in pressure occurs                             
+                            // Icik
                             //if (PreviousNotchPosition.Type == ControllerState.Running || PreviousNotchPosition.Type == ControllerState.Release || PreviousNotchPosition.Type == ControllerState.FullQuickRelease)
                             if (PreviousNotchPosition.Type == ControllerState.Release || PreviousNotchPosition.Type == ControllerState.FullQuickRelease)
                             {
@@ -206,6 +209,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                                 IncreasePressure(ref pressureBar, x, ReleaseRateBarpS(), elapsedClockSeconds);
                             break;
                         case ControllerState.Emergency:
+                            // Icik
                             //pressureBar -= EmergencyRateBarpS() * elapsedClockSeconds;
                             epState = 1;
                             break;
