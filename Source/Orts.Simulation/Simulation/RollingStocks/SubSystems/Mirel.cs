@@ -750,6 +750,15 @@ namespace Orts.Simulation.RollingStocks.SubSystems
             }
             if (ZAP) Display = "ZAP";
             if (VYP) Display = "VYP";
+            if (initTest == InitTest.Passed)
+            {
+                if (Locomotive.ActiveStation == MSTSLocomotive.DriverStation.None)
+                    Display = "ST-";
+                if (!Locomotive.UsingRearCab && Locomotive.ActiveStation == MSTSLocomotive.DriverStation.Station2)
+                    Display = "ST2";
+                if (Locomotive.UsingRearCab && Locomotive.ActiveStation == MSTSLocomotive.DriverStation.Station1)
+                    Display = "ST1";
+            }
         }
 
         protected bool canChangeSelectedApproachSpeed = true;
