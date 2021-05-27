@@ -441,22 +441,11 @@ namespace Orts.Simulation.RollingStocks.SubSystems
             if (MaxForceSetSingleStep) maxForceIncreasing = false;
             if (SelectedMaxAccelerationStep == 0.5f) SelectedMaxAccelerationStep = 0;
             if (!Equipped) return;
-            if (SpeedRegulatorMaxForcePercentUnits)
-            {
-                if (SelectedMaxAccelerationPercent == 100)
-                    return;
-                SelectedMaxAccelerationPercent += 1f;
-                SelectedMaxAccelerationPercent = (float)Math.Round(SelectedMaxAccelerationStep, 0);
-                Simulator.Confirmer.Message(ConfirmLevel.Information, Simulator.Catalog.GetString("Speed regulator max acceleration percent changed to") + " " + Simulator.Catalog.GetString(SelectedMaxAccelerationPercent.ToString()) + "%");
-            }
-            else
-            {
-                if (SelectedMaxAccelerationStep == SpeedRegulatorMaxForceSteps)
-                    return;
-                SelectedMaxAccelerationStep++;
-                SelectedMaxAccelerationStep = (float)Math.Round(SelectedMaxAccelerationStep, 0);
-                Simulator.Confirmer.Message(ConfirmLevel.Information, Simulator.Catalog.GetString("Speed regulator max acceleration changed to") + " " + Simulator.Catalog.GetString(SelectedMaxAccelerationStep.ToString()));
-            }
+            if (SelectedMaxAccelerationStep == SpeedRegulatorMaxForceSteps)
+                return;
+            SelectedMaxAccelerationStep++;
+            SelectedMaxAccelerationStep = (float)Math.Round(SelectedMaxAccelerationStep, 0);
+            Simulator.Confirmer.Message(ConfirmLevel.Information, Simulator.Catalog.GetString("Speed regulator max acceleration changed to") + " " + Simulator.Catalog.GetString(SelectedMaxAccelerationStep.ToString()));
         }
 
         protected bool maxForceDecreasing = false;
