@@ -1984,7 +1984,7 @@ namespace Orts.Simulation.RollingStocks
                 float AbsSlipSpeedMpS = Math.Abs(WheelSpeedMpS) - AbsSpeedMpS;  // Zjistí absolutní rychlost prokluzu 
                 if (extendedPhysics != null)
                 {
-                    SlipSpeedCritical = 5 / 3.6f;
+                    SlipSpeedCritical = 10 / 3.6f; // 10kmh pokud počítáme pátou osu
                     AbsSlipSpeedMpS = extendedPhysics.FastestAxleSpeedMpS - extendedPhysics.AverageAxleSpeedMpS;
                 }
                 //Trace.TraceInformation("WheelSlipTime {0},  Simulator.GameTime {1},  Time0 {2},   SlipSpeed {3}", WheelSlipTime, Simulator.GameTime, Time0, SlipSpeed);
