@@ -2396,10 +2396,13 @@ namespace Orts.Simulation.RollingStocks
                 //if (f > 0 && PowerOn)
                 // Icik 
                 // EDB funguje z baterií
-                if (f > 0 && PowerOn || f > 0 && PowerOnFilter > 0)
+                if (f > 0 && (PowerOn || PowerOnFilter > 0))
                 {
-                    DynamicBrakeForceN = f * (1 - PowerReduction);
-                    MotiveForceN -= (SpeedMpS > 0 ? 1 : SpeedMpS < 0 ? -1 : Direction == Direction.Reverse ? -1 : 1) * DynamicBrakeForceN;                 
+                    if (extendedPhysics == null)
+                    {
+                        DynamicBrakeForceN = f * (1 - PowerReduction);
+                        MotiveForceN = -(SpeedMpS > 0 ? 1 : SpeedMpS < 0 ? -1 : Direction == Direction.Reverse ? -1 : 1) * DynamicBrakeForceN;
+                    }
                 }
                 else
                 {
@@ -6418,36 +6421,50 @@ namespace Orts.Simulation.RollingStocks
                 case CABViewControlTypes.ORTS_MIREL_DISPLAY_TEST1:
                     {
                         data = Mirel.Test1 ? 1 : 0;
+                        if (Mirel.initTest == Mirel.InitTest.Passed)
+                            data = 0;
                         break;
                     }
                 case CABViewControlTypes.ORTS_MIREL_DISPLAY_TEST2:
                     {
                         data = Mirel.Test2 ? 1 : 0;
+                        if (Mirel.initTest == Mirel.InitTest.Passed)
+                            data = 0;
                         break;
                     }
                 case CABViewControlTypes.ORTS_MIREL_DISPLAY_TEST3:
                     {
                         data = Mirel.Test3 ? 1 : 0;
+                        if (Mirel.initTest == Mirel.InitTest.Passed)
+                            data = 0;
                         break;
                     }
                 case CABViewControlTypes.ORTS_MIREL_DISPLAY_TEST4:
                     {
                         data = Mirel.Test4 ? 1 : 0;
+                        if (Mirel.initTest == Mirel.InitTest.Passed)
+                            data = 0;
                         break;
                     }
                 case CABViewControlTypes.ORTS_MIREL_DISPLAY_TEST5:
                     {
                         data = Mirel.Test5 ? 1 : 0;
+                        if (Mirel.initTest == Mirel.InitTest.Passed)
+                            data = 0;
                         break;
                     }
                 case CABViewControlTypes.ORTS_MIREL_DISPLAY_TEST6:
                     {
                         data = Mirel.Test6 ? 1 : 0;
+                        if (Mirel.initTest == Mirel.InitTest.Passed)
+                            data = 0;
                         break;
                     }
                 case CABViewControlTypes.ORTS_MIREL_DISPLAY_TEST7:
                     {
                         data = Mirel.Test7 ? 1 : 0;
+                        if (Mirel.initTest == Mirel.InitTest.Passed)
+                            data = 0;
                         break;
                     }
 
