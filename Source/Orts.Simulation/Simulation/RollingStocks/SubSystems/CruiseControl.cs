@@ -54,8 +54,6 @@ namespace Orts.Simulation.RollingStocks.SubSystems
         public float MaxAccelerationMpSS = 0;
         public float MaxDecelerationMpSS = 0;
         public bool UseThrottle = false;
-        public bool AntiWheelSpinEquipped = false;
-        public float AntiWheelSpinSpeedDiffThreshold = 0.5f;
         public float DynamicBrakeMaxForceAtSelectorStep = 0;
         public float ForceThrottleAndDynamicBrake = 0;
         protected float maxForceN = 0;
@@ -156,8 +154,6 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                 case "engine(ortscruisecontrol(startreducingspeeddelta": StartReducingSpeedDelta = (stf.ReadFloatBlock(STFReader.UNITS.Any, 1.0f) / 10); break;
                 case "engine(ortscruisecontrol(maxacceleration": MaxAccelerationMpSS = stf.ReadFloatBlock(STFReader.UNITS.Any, 1); break;
                 case "engine(ortscruisecontrol(maxdeceleration": MaxDecelerationMpSS = stf.ReadFloatBlock(STFReader.UNITS.Any, 0.5f); break;
-                case "engine(ortscruisecontrol(antiwheelspinequipped": AntiWheelSpinEquipped = stf.ReadBoolBlock(false); break;
-                case "engine(ortscruisecontrol(antiwheelspinspeeddiffthreshold": AntiWheelSpinSpeedDiffThreshold = stf.ReadFloatBlock(STFReader.UNITS.None, 0.5f); break;
                 case "engine(ortscruisecontrol(nominalspeedstep": SpeedRegulatorNominalSpeedStepMpS = SpeedIsMph ? MpS.FromMpH(stf.ReadFloatBlock(STFReader.UNITS.Speed, 0)) : MpS.FromKpH(stf.ReadFloatBlock(STFReader.UNITS.Speed, 0)); break;
                 case "engine(ortscruisecontrol(usethrottleasspeedselector": UseThrottleAsSpeedSelector = stf.ReadBoolBlock(false); break;
                 case "engine(ortscruisecontrol(usethrottleasforceselector": UseThrottleAsForceSelector = stf.ReadBoolBlock(false); break;
@@ -334,7 +330,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                             currentThrottlePercent = 0;
                             if (SpeedRegulatorOptions.Contains("regulatormanual")) test = true;
                             SelectedSpeedMpS = 0;
-                            foreach (MSTSLocomotive lc in playerNotDriveableTrainLocomotives)
+                            foreach (MSTSLocomotive lc in PlayerNotDriveableTrainLocomotives)
                             {
                                 lc.ThrottleOverriden = 0;
                                 lc.IsAPartOfPlayerTrain = false; // in case we uncouple the loco later
@@ -673,7 +669,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
             Simulator.Confirmer.Message(ConfirmLevel.Information, Simulator.Catalog.GetString("Selected speed set to ") + Speed.ToString() + (SpeedIsMph? "mph" : "kmh"));
         }
 
-        protected List<MSTSLocomotive> playerNotDriveableTrainLocomotives = new List<MSTSLocomotive>();
+        public List<MSTSLocomotive> PlayerNotDriveableTrainLocomotives = new List<MSTSLocomotive>();
         protected float _AccelerationMpSS = 0;
         protected bool throttleIsZero = false;
         protected bool brakeIncreasing = false;
@@ -690,7 +686,6 @@ namespace Orts.Simulation.RollingStocks.SubSystems
         protected bool canAddForce = true;
         protected List<float> concurrentAccelerationList = new List<float>();
         public float TrainElevation = 0;
-        protected float skidSpeedDegratation = 0;
         protected float previousAccelerationDemand = 0;
         public bool TrainBrakePriority = false;
         public bool WasBraking = false;
@@ -730,28 +725,15 @@ namespace Orts.Simulation.RollingStocks.SubSystems
 
             if (Locomotive.extendedPhysics != null && speedSensorAxleIndex > -1 && speedSensorUndercarriageIndex > -1)
             {
-                // wheelSpeedMpS = Locomotive.extendedPhysics.Undercarriages[speedSensorUndercarriageIndex].Axles[speedSensorAxleIndex].WheelSpeedMpS;
-                wheelSpeedMpS = Locomotive.Train.SpeedMpS;
+                wheelSpeedMpS = Locomotive.extendedPhysics.Undercarriages[speedSensorUndercarriageIndex].Axles[speedSensorAxleIndex].WheelSpeedMpS;
+                // wheelSpeedMpS = Locomotive.Train.SpeedMpS;
                 if (Locomotive.UsingRearCab)
                     wheelSpeedMpS = -wheelSpeedMpS;
             }
 
             if (!Locomotive.PowerOn)
                 ForceThrottleAndDynamicBrake = 0;
-            float speedDiff = 0;
-            if (Locomotive.extendedPhysics == null)
-            {
-                speedDiff = Locomotive.AbsWheelSpeedMpS - Locomotive.AbsSpeedMpS;
-            }
-            if (Locomotive.extendedPhysics != null)
-            {
-                speedDiff = Locomotive.extendedPhysics.FastestAxleSpeedMpS - Locomotive.extendedPhysics.AverageAxleSpeedMpS;
-            }
-            foreach (MSTSLocomotive loco in playerNotDriveableTrainLocomotives)
-            {
-                if ((loco.AbsWheelSpeedMpS - loco.AbsSpeedMpS) > speedDiff)
-                    speedDiff = loco.AbsWheelSpeedMpS - loco.AbsSpeedMpS;
-            }
+
             float newThrotte = 0;
             // calculate new max force if MaxPowerThreshold is set
             if (MaxPowerThreshold > 0)
@@ -889,9 +871,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems
             }
             if (SpeedRegulatorOptions.Contains("engageforceonnonzerospeed") && SelectedSpeedMpS == 0)
             {
-                if (playerNotDriveableTrainLocomotives.Count > 0) // update any other than the player's locomotive in the consist throttles to percentage of the current force and the max force
+                if (PlayerNotDriveableTrainLocomotives.Count > 0) // update any other than the player's locomotive in the consist throttles to percentage of the current force and the max force
                 {
-                    foreach (MSTSLocomotive lc in playerNotDriveableTrainLocomotives)
+                    foreach (MSTSLocomotive lc in PlayerNotDriveableTrainLocomotives)
                     {
                         if (UseThrottle)
                         {
@@ -943,7 +925,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                         {
                             try
                             {
-                                playerNotDriveableTrainLocomotives.Add((MSTSLocomotive)tc);
+                                PlayerNotDriveableTrainLocomotives.Add((MSTSLocomotive)tc);
                             }
                             catch { }
                         }
@@ -1497,18 +1479,6 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                 }
                 if (controllerVolts > 0)
                 {
-                    if (speedDiff > AntiWheelSpinSpeedDiffThreshold)
-                    {
-                        skidSpeedDegratation += 0.05f;
-                    }
-                    else if (skidSpeedDegratation > 0)
-                    {
-                        skidSpeedDegratation -= 0.1f;
-                    }
-                    if (speedDiff < AntiWheelSpinSpeedDiffThreshold - 0.05f)
-                        skidSpeedDegratation = 0;
-                    if (AntiWheelSpinEquipped)
-                        controllerVolts -= skidSpeedDegratation;
                     if (breakout || Bar.FromPSI(Locomotive.BrakeSystem.BrakeLine1PressurePSI) < 4.98)
                     {
                         maxForceN = 0;
@@ -1645,12 +1615,12 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                 }
             }
 
-            if (playerNotDriveableTrainLocomotives.Count > 0) // update any other than the player's locomotive in the consist throttles to percentage of the current force and the max force
+            if (PlayerNotDriveableTrainLocomotives.Count > 0) // update any other than the player's locomotive in the consist throttles to percentage of the current force and the max force
             {
                 float locoPercent = Locomotive.MaxForceN - (Locomotive.MaxForceN - Locomotive.MotiveForceN);
                 locoPercent = (locoPercent / Locomotive.MaxForceN) * 100;
                 //Simulator.Confirmer.MSG(locoPercent.ToString());
-                foreach (MSTSLocomotive lc in playerNotDriveableTrainLocomotives)
+                foreach (MSTSLocomotive lc in PlayerNotDriveableTrainLocomotives)
                 {
                     if (Locomotive.PowerOn)
                     {
