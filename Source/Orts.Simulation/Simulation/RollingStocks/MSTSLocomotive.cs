@@ -2398,11 +2398,8 @@ namespace Orts.Simulation.RollingStocks
                 // EDB funguje z baterií
                 if (f > 0 && (PowerOn || PowerOnFilter > 0))
                 {
-                    if (extendedPhysics == null)
-                    {
-                        DynamicBrakeForceN = f * (1 - PowerReduction);
-                        MotiveForceN = -(SpeedMpS > 0 ? 1 : SpeedMpS < 0 ? -1 : Direction == Direction.Reverse ? -1 : 1) * DynamicBrakeForceN;
-                    }
+                    DynamicBrakeForceN = f * (1 - PowerReduction);
+                    MotiveForceN = -(SpeedMpS > 0 ? 1 : SpeedMpS < 0 ? -1 : Direction == Direction.Reverse ? -1 : 1) * DynamicBrakeForceN;
                 }
                 else
                 {
