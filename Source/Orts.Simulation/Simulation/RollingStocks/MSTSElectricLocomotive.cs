@@ -515,8 +515,8 @@ namespace Orts.Simulation.RollingStocks
             PowerSupply.Update(elapsedClockSeconds);
             if (PowerSupply.CircuitBreaker != null && IsPlayerTrain)
             {
-                if (PowerSupply.CircuitBreaker.State == CircuitBreakerState.Open)
-                {
+                if (PowerSupply.CircuitBreaker.State == CircuitBreakerState.Open && DoesPowerLossResetControls)
+                {                    
                     ControllerVolts = 0;
                     ThrottleController.SetPercent(0);
                     if (SpeedMpS > 0)
