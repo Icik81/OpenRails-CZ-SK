@@ -1936,6 +1936,11 @@ namespace Orts.Simulation.RollingStocks
 
                 if (OverCurrent)
                 {
+                    if (DoesPowerLossResetControls)
+                    {
+                        SetThrottlePercent(0);
+                        ControllerVolts = 0;
+                    }
                     if (this is MSTSElectricLocomotive) // Elektrické lokomotivy
                     {
                         switch (MultiSystemEngine)
@@ -1951,8 +1956,8 @@ namespace Orts.Simulation.RollingStocks
                     }
                     if (this is MSTSDieselLocomotive) // Dieselelektrické lokomotivy
                     {
-                        //if (PowerReduction < 0.8)
-                        //    Train.SignalEvent(Event.PowerKeyOff); // Zvuk pro vypnutí TM
+                        if (PowerReduction < 0.8)
+                            Train.SignalEvent(Event.PowerKeyOff); // Zvuk pro vypnutí TM
                         PowerReduction = 0.9f; // Omezení trakčních motorů  
                         SetDynamicBrakePercent(0);
                         Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Zásah nadproudové ochrany!"));
@@ -1968,10 +1973,9 @@ namespace Orts.Simulation.RollingStocks
                 // Resetování nadproudové ochrany u dieselelektrických lokomotiv
                 if (this is MSTSDieselLocomotive && OverCurrent && LocalThrottlePercent == 0 && LocalDynamicBrakePercent == 0)
                 {
-                    //Train.SignalEvent(Event.PowerKeyOn); // Zvuk pro zapnutí TM
+                    Train.SignalEvent(Event.PowerKeyOn); // Zvuk pro zapnutí TM
                     OverCurrent = false;
                     PowerReduction = 0;
-                    //PowerKey = false;
                 }
             }
         }
@@ -1994,10 +1998,13 @@ namespace Orts.Simulation.RollingStocks
 
                 if (OverVoltage)
                 {
-                    SetThrottlePercent(0);
-                    ControllerVolts = 0;
-                    if (this is MSTSElectricLocomotive) // Elektrické lokomotivy
+                    if (DoesPowerLossResetControls)
                     {
+                        SetThrottlePercent(0);
+                        ControllerVolts = 0;
+                    }
+                    if (this is MSTSElectricLocomotive) // Elektrické lokomotivy
+                    {                        
                         switch (MultiSystemEngine)
                         {
                             case true: // Vícesystémová lokomotiva                            
@@ -2011,8 +2018,8 @@ namespace Orts.Simulation.RollingStocks
                     }
                     if (this is MSTSDieselLocomotive) // Dieselelektrické lokomotivy
                     {
-                        //if (PowerReduction < 0.8)
-                        //    Train.SignalEvent(Event.PowerKeyOff); // Zvuk pro vypnutí TM
+                        if (PowerReduction < 0.8)
+                            Train.SignalEvent(Event.PowerKeyOff); // Zvuk pro vypnutí TM
                         PowerReduction = 0.9f; // Omezení trakčních motorů  
                         SetDynamicBrakePercent(0);
                         Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Zásah protiskluzové ochrany!"));
@@ -2028,7 +2035,7 @@ namespace Orts.Simulation.RollingStocks
                 // Resetování nadproudové ochrany u dieselelektrických lokomotiv
                 if (this is MSTSDieselLocomotive && OverVoltage && LocalThrottlePercent == 0 && LocalDynamicBrakePercent == 0)
                 {
-                    //Train.SignalEvent(Event.PowerKeyOn); // Zvuk pro zapnutí TM
+                    Train.SignalEvent(Event.PowerKeyOn); // Zvuk pro zapnutí TM
                     OverVoltage = false;
                     PowerReduction = 0;                    
                 }

@@ -984,7 +984,18 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
             //            }
             // Deleted to see what impact it has - was holding rpm artificialy high - http://www.elvastower.com/forums/index.php?/topic/33739-throttle-bug-in-recent-or-builds/page__gopid__256086#entry256086
 
-            RealRPM = Math.Max(RealRPM + dRPM * elapsedClockSeconds, 0);
+            
+            // Icik
+            // Sníží otáčky motoru kvůli ochraně TM 
+            if (locomotive.OverVoltage || locomotive.OverCurrent)
+            {
+                if (RealRPM > IdleRPM)
+                    RealRPM -= ChangeDownRPMpS * elapsedClockSeconds;
+                if (RealRPM < IdleRPM) RealRPM = IdleRPM;
+            }
+            else
+                RealRPM = Math.Max(RealRPM + dRPM * elapsedClockSeconds, 0);
+
 
             // Calculate the apparent throttle setting based upon the current rpm of the diesel prime mover. This allows the Tractive effort to increase with rpm to the throttle setting selected.
             // This uses the reverse Tab of the Throttle vs rpm Tab.
