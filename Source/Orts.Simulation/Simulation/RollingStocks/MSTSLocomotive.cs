@@ -489,6 +489,10 @@ namespace Orts.Simulation.RollingStocks
         public enum KeyPosition { Pocket, Station1, Station2 };
         public KeyPosition CurrentKeyPosition = KeyPosition.Pocket;
         public Mirel Mirel;
+        public bool AntiWheelSpinEquipped = false;
+        public float AntiWheelSpinSpeedDiffThreshold = 0.5f;
+        protected float skidSpeedDegratation = 0;
+
 
         public bool
       Speed0Pressed, Speed10Pressed, Speed20Pressed, Speed30Pressed, Speed40Pressed, Speed50Pressed
@@ -1094,6 +1098,8 @@ namespace Orts.Simulation.RollingStocks
                 case "engine(ortscruisecontrol(parkingbrakepercent": CruiseControl.ParkingBrakePercent = stf.ReadFloatBlock(STFReader.UNITS.Any, 0); break;
                 case "engine(ortsautomaticparkingbrake": AutomaticParkingBrake = true; break;
                 case "engine(ortsautomaticparkingbrake(engagespeed": AutomaticParkingBrakeEngageSpeedKpH = stf.ReadFloatBlock(STFReader.UNITS.Speed, 0); break;
+                case "engine(antiwheelspinequipped": AntiWheelSpinEquipped = stf.ReadBoolBlock(false); break;
+                case "engine(antiwheelspinspeeddiffthreshold": AntiWheelSpinSpeedDiffThreshold = stf.ReadFloatBlock(STFReader.UNITS.None, 0.5f); break;
                 case "engine(stringarrays":
                     stf.MustMatch("(");
                     while (!stf.EndOfBlock())
@@ -2382,6 +2388,43 @@ namespace Orts.Simulation.RollingStocks
                     mpc.Update(elapsedClockSeconds);
             }
 
+            float speedDiff = 0;
+            if (IsPlayerTrain)
+            {
+                if (extendedPhysics == null)
+                {
+                    speedDiff = AbsWheelSpeedMpS - AbsSpeedMpS;
+                }
+                if (extendedPhysics != null)
+                {
+                    speedDiff = extendedPhysics.FastestAxleSpeedMpS - extendedPhysics.AverageAxleSpeedMpS;
+                }
+                if (CruiseControl != null)
+                {
+                    foreach (MSTSLocomotive loco in CruiseControl.PlayerNotDriveableTrainLocomotives)
+                    {
+                        if ((loco.AbsWheelSpeedMpS - loco.AbsSpeedMpS) > speedDiff)
+                            speedDiff = loco.AbsWheelSpeedMpS - loco.AbsSpeedMpS;
+                    }
+                }
+                if (speedDiff > AntiWheelSpinSpeedDiffThreshold)
+                {
+                    skidSpeedDegratation += 0.05f;
+                }
+                else if (skidSpeedDegratation > 0)
+                {
+                    skidSpeedDegratation -= 0.1f;
+                }
+                if (extendedPhysics != null)
+                    extendedPhysics.OverridenControllerVolts = ControllerVolts;
+                if (AntiWheelSpinEquipped)
+                {
+                    if (extendedPhysics == null)
+                        TractiveForceN /= skidSpeedDegratation * 10;
+                    else
+                        extendedPhysics.OverridenControllerVolts = ControllerVolts - skidSpeedDegratation;
+                }
+            }
             ApplyDirectionToTractiveForce();
 
             // Calculate the total motive force for the locomotive - ie TractiveForce (driving force) + Dynamic Braking force.
