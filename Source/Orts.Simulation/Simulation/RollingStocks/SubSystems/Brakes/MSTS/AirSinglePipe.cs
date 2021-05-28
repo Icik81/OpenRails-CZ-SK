@@ -818,24 +818,24 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 if (BailOffOn)
                 {
                     ThresholdBailOffOn = (maxPressurePSI0 - BrakeLine1PressurePSI) * AuxCylVolumeRatio; 
-                    //AutoCylPressurePSI0 -= MaxReleaseRatePSIpS * elapsedClockSeconds;
                     AutoCylPressurePSI0 -= elapsedClockSeconds * (1.0f * 14.50377f); // Rychlost odvětrání při EDB nastavena na 1 bar/s
                 }
 
                 // Automatické napuštění brzdového válce po uvadnutí EDB
-                if (ThresholdBailOffOn > 0 && loco.DynamicBrakeForceCurves.Get(1.0f, loco.AbsSpeedMpS) < 1)
-                {
-                    if (AutoCylPressurePSI0 < ThresholdBailOffOn)
+                if (loco.DynamicBrakeForceCurves != null)
+                    if (ThresholdBailOffOn > 0 && loco.DynamicBrakeForceCurves.Get(1.0f, loco.AbsSpeedMpS) < 1)
                     {
-                        AutoCylPressurePSI0 += elapsedClockSeconds * (1.0f * 14.50377f);
+                        if (AutoCylPressurePSI0 < ThresholdBailOffOn)
+                        {
+                            AutoCylPressurePSI0 += elapsedClockSeconds * (1.0f * 14.50377f);
+                        }
+                        else
+                        if (AutoCylPressurePSI0 >= ThresholdBailOffOn)
+                        {
+                            threshold = ThresholdBailOffOn;
+                            ThresholdBailOffOn = 0;
+                        }
                     }
-                    else
-                    if (AutoCylPressurePSI0 >= ThresholdBailOffOn)
-                    {
-                        threshold = ThresholdBailOffOn;
-                        ThresholdBailOffOn = 0;
-                    }
-                }
             }
             else PowerForWagon = false;
 
@@ -1250,6 +1250,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         //(train.Cars[i] as MSTSLocomotive).MainResPressurePSI = sumpv;
                         // Výpočet kapacity hlavní jímky a přilehlého potrubí
                         train.Cars[i].BrakeSystem.TotalCapacityMainResBrakePipe = (train.Cars[i].BrakeSystem.BrakePipeVolumeM3 * train.Cars[i].BrakeSystem.BrakeLine1PressurePSI) + (loco.MainResVolumeM3 * loco.MainResPressurePSI);
+
+                        // Automatický náběh kompresoru u dieselelektrické trakce
+                        if (loco is MSTSDieselLocomotive)
+                            loco.CompressorMode_OffAuto = true;
 
                         // Zpoždění náběhu kompresoru
                         if (loco.CompressorMode_OffAuto && !loco.CompressorIsOn)
