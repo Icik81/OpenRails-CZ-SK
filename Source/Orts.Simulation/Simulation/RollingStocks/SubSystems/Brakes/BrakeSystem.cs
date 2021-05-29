@@ -105,6 +105,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes
         public bool TripleValveEmergency;
         public bool CompressorOnDelay;
         public float CompressorT0 = 0;
+        public float AutoBailOffOnRatePSIpS;
 
         /// <summary>
         /// Front brake hoses connection status
