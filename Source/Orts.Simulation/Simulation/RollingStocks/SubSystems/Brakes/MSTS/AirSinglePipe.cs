@@ -73,6 +73,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
         protected float prevBrakeLine1PressurePSI = 0;
         protected bool NotConnected = false;
         protected float ThresholdBailOffOn = 0;
+        protected ValveState PrevTripleValveStateState;
 
         /// <summary>
         /// EP brake holding valve. Needs to be closed (Lap) in case of brake application or holding.
@@ -151,6 +152,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             MainResMinimumPressureForMGbrakeActivationPSI = thiscopy.MainResMinimumPressureForMGbrakeActivationPSI;
             BrakePipePressureForMGbrakeActivationPSI = thiscopy.BrakePipePressureForMGbrakeActivationPSI;
             AntiSkidSystemEquipped = thiscopy.AntiSkidSystemEquipped;
+            AutoBailOffOnRatePSIpS = thiscopy.AutoBailOffOnRatePSIpS;
         }
 
         // Get the brake BC & BP for EOT conditions
@@ -327,6 +329,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 
                 // Načte hodnotu tlaku při nízkotlakém přebití
                 case "engine(trainbrakescontrollermaxoverchargepressure": TrainBrakesControllerMaxOverchargePressurePSI = stf.ReadFloatBlock(STFReader.UNITS.PressureDefaultPSI, null); break;
+
+                // Načte hodnotu rychlosti AutoBailOffOn                              
+                case "engine(autobailoffonrate": AutoBailOffOnRatePSIpS = stf.ReadFloatBlock(STFReader.UNITS.PressureRateDefaultPSIpS, null); break;
             }
         }
 
@@ -456,10 +461,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
 
         public virtual void UpdateTripleValveState(float controlPressurePSI)
         {
-            // Funkční 3-cestný ventil
-            if (BrakeLine1PressurePSI < AuxResPressurePSI - 0.1f) TripleValveState = ValveState.Apply;
+            // Funkční 3-cestný ventil          
+            if (!BailOffOn && BrakeLine1PressurePSI < AuxResPressurePSI - 0.1f) TripleValveState = ValveState.Apply;
             else TripleValveState = ValveState.Lap;
-            if (BrakeLine1PressurePSI > AuxResPressurePSI + 0.1f) TripleValveState = ValveState.Release; 
+            if (!BailOffOn && BrakeLine1PressurePSI > AuxResPressurePSI + 0.1f) TripleValveState = ValveState.Release;
         }
 
         public override void Update(float elapsedClockSeconds)
@@ -587,6 +592,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 case 3: // Režim R+Mg
                     break;
             }
+
+            // Defaultní hodnota pro AutoBailOffOnRatePSIpS
+            if (AutoBailOffOnRatePSIpS == 0) AutoBailOffOnRatePSIpS = 1.0f * 14.50377f;
 
             // Defaultní minimální tlaky pro brzdu R+Mg
             if (MainResMinimumPressureForMGbrakeActivationPSI == 0) MainResMinimumPressureForMGbrakeActivationPSI = 3.5f * 14.50377f;
@@ -817,23 +825,28 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 }
                 if (BailOffOn)
                 {
-                    ThresholdBailOffOn = (maxPressurePSI0 - BrakeLine1PressurePSI) * AuxCylVolumeRatio; 
-                    AutoCylPressurePSI0 -= elapsedClockSeconds * (1.0f * 14.50377f); // Rychlost odvětrání při EDB nastavena na 1 bar/s
+                    ThresholdBailOffOn = (maxPressurePSI0 - BrakeLine1PressurePSI) * AuxCylVolumeRatio;
+                    if (ThresholdBailOffOn > MCP) ThresholdBailOffOn = MCP;                    
+                    
+                    //if (NextLocoEmergency)
+                    //    AutoCylPressurePSI0 -= elapsedClockSeconds * AutoBailOffOnRatePSIpS * 2; // Rychlost odvětrání Emergency při EDB                     
+                    //else 
+                        AutoCylPressurePSI0 -= elapsedClockSeconds * AutoBailOffOnRatePSIpS; // Rychlost odvětrání při EDB                     
                 }
 
                 // Automatické napuštění brzdového válce po uvadnutí EDB
                 if (loco.DynamicBrakeForceCurves != null)
                     if (ThresholdBailOffOn > 0 && loco.DynamicBrakeForceCurves.Get(1.0f, loco.AbsSpeedMpS) < 1)
-                    {
+                    {                        
                         if (AutoCylPressurePSI0 < ThresholdBailOffOn)
                         {
-                            AutoCylPressurePSI0 += elapsedClockSeconds * (1.0f * 14.50377f);
+                            AutoCylPressurePSI0 += elapsedClockSeconds * AutoBailOffOnRatePSIpS; // Rychlost napouštění po uvadnutí EDB
                         }
                         else
                         if (AutoCylPressurePSI0 >= ThresholdBailOffOn)
                         {
                             threshold = ThresholdBailOffOn;
-                            ThresholdBailOffOn = 0;
+                            ThresholdBailOffOn = 0;                            
                         }
                     }
             }
