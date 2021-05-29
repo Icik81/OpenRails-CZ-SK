@@ -596,7 +596,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             }
 
             // Defaultní zpoždění náběhu brzdiče
-            if (BrakeDelayToEngage == 0) BrakeDelayToEngage = 2.0f; // sekundy            
+            if (BrakeDelayToEngage == 0) BrakeDelayToEngage = 1.0f; // sekundy            
 
             // Defaultní hodnota pro AutoBailOffOnRatePSIpS
             if (AutoBailOffOnRatePSIpS == 0) AutoBailOffOnRatePSIpS = 1.0f * 14.50377f;
