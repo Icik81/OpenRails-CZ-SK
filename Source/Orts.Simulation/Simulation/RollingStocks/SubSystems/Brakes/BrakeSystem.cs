@@ -108,6 +108,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes
         public float AutoBailOffOnRatePSIpS;
         public float BrakeDelayToEngage;
         public bool AutoOverchargePressure;
+        public float BrakePipeMinPressureDropToEngage;
 
         /// <summary>
         /// Front brake hoses connection status

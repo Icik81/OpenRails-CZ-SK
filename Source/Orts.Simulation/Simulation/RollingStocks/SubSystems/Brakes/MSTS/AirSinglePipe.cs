@@ -157,6 +157,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             AutoBailOffOnRatePSIpS = thiscopy.AutoBailOffOnRatePSIpS;
             BrakeDelayToEngage = thiscopy.BrakeDelayToEngage;
             AutoOverchargePressure = thiscopy.AutoOverchargePressure;
+            BrakePipeMinPressureDropToEngage = thiscopy.BrakePipeMinPressureDropToEngage;
         }
 
         // Get the brake BC & BP for EOT conditions
@@ -215,8 +216,13 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
 
                 string.Empty, // Spacer because the state above needs 2 columns.                                                     
                 string.Format("{0}", NextLocoBrakeState),
-                string.Empty, // Spacer because the state above needs 2 columns.                                     
-                string.Format("threshold {0:F0}", threshold),
+                
+                //string.Empty, // Spacer because the state above needs 2 columns.                                     
+                //string.Format("threshold {0:F0}", threshold),
+                //string.Empty, // Spacer because the state above needs 2 columns.                                     
+                //string.Format("T2 {0:F0}", T2),
+                //string.Empty, // Spacer because the state above needs 2 columns.                                     
+                //string.Format("PrevAuxResPressurePSI {0:F0}", PrevAuxResPressurePSI),                
             };
         }
 
@@ -328,6 +334,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 // Načte hodnotu zpoždění náběhu brzdy                              
                 case "wagon(brakedelaytoengage": BrakeDelayToEngage = stf.ReadFloatBlock(STFReader.UNITS.Time, null); break;
 
+                // Načte hodnotu úbytku tlaku pro pohyb ústrojí                              
+                case "wagon(brakepipeminpressuredroptoengage": BrakePipeMinPressureDropToEngage = stf.ReadFloatBlock(STFReader.UNITS.PressureDefaultPSI, null); break;
+                    
                 // Načte hodnotu rychlosti eliminace níkotlakého přebití                              
                 case "engine(overchargeeliminationrate": OverchargeEliminationRatePSIpS = stf.ReadFloatBlock(STFReader.UNITS.PressureRateDefaultPSIpS, null); break;
                 
@@ -474,13 +483,15 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
         public virtual void UpdateTripleValveState(float controlPressurePSI)
         {
             // Funkční 3-cestný ventil          
-            if (!BailOffOn && BrakeLine1PressurePSI < AuxResPressurePSI - 0.1f) TripleValveState = ValveState.Apply;
-            else TripleValveState = ValveState.Lap;
-            if (!BailOffOn && BrakeLine1PressurePSI > AuxResPressurePSI + 0.1f) TripleValveState = ValveState.Release;
+            if (!BailOffOn && BrakeLine1PressurePSI < AuxResPressurePSI - 0.5f) TripleValveState = ValveState.Apply;
+            else
+                TripleValveState = ValveState.Lap;
+
+            if (!BailOffOn && BrakeLine1PressurePSI > AuxResPressurePSI + 0.5f) TripleValveState = ValveState.Release;
         }
 
         public override void Update(float elapsedClockSeconds)
-        {   
+        {
             // Výpočet cílového tlaku v brzdovém válci
             threshold = (PrevAuxResPressurePSI - BrakeLine1PressurePSI) * AuxCylVolumeRatio;
             threshold = MathHelper.Clamp(threshold, 0, MCP);
@@ -600,7 +611,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 case 3: // Režim R+Mg
                     break;
             }
-           
+
+            // Defaultní úbytek tlaku, při kterém dojde k pohnutí brzdícího ústrojí
+            if (BrakePipeMinPressureDropToEngage == 0) BrakePipeMinPressureDropToEngage = 0.3f * 14.50377f;
+
             // Defaultní zpoždění náběhu brzdiče
             if (BrakeDelayToEngage == 0) BrakeDelayToEngage = 1.0f; // sekundy            
 
@@ -703,9 +717,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             }
 
             // Zaznamená poslední stav pomocné jímky pro určení pracovního bodu pomocné jímky
-            if (AutoCylPressurePSI0 < 1)
+            if (AutoCylPressurePSI0 < 1 && T3 == 0)
                 PrevAuxResPressurePSI = AuxResPressurePSI;
-                                     
+
             // triple valve is set to charge the brake cylinder
             if (TripleValveState == ValveState.Apply || TripleValveState == ValveState.Emergency)
             {
@@ -723,20 +737,21 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 if (dp < 0) dp = 0;
                 if (BrakeLine1PressurePSI > AuxResPressurePSI - dp / AuxCylVolumeRatio && !BleedOffValveOpen)
                     dp = (AuxResPressurePSI - BrakeLine1PressurePSI) * AuxCylVolumeRatio;
-              
+
                 // Otestuje citlivost brzdy a nastaví příznak pro start časovače zpoždění náběhu brzdy                
                 if (BrakePipeChangeRate >= BrakeSensitivityPSIpS)
-                {
-                    T2 += elapsedClockSeconds;
+                {                                        
                     BrakeCylApply = true;
+                    T2 += elapsedClockSeconds;
+                    T3 = 1;
                 }
-              
+
                 // Plní pomocnou jímku stále stejnou rychlostí 0.1bar/s
                 if (AuxResPressurePSI > maxPressurePSI0 && BrakeLine1PressurePSI > AuxResPressurePSI)
-                 {
+                {
                     dp = elapsedClockSeconds * MaxAuxilaryChargingRatePSIpS;
                     AuxResPressurePSI += dp;
-                 }
+                }
 
                 if (dp < 0) dp = 0;
                 AuxResPressurePSI -= dp / AuxCylVolumeRatio;
@@ -754,10 +769,13 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             // Spuštění časovače pro zpoždění náběhu brzdy
             if (T2 > 0)
                 T2 += elapsedClockSeconds;
+            
+            if (BrakeCylApply && BrakeLine1PressurePSI > PrevAuxResPressurePSI - BrakePipeMinPressureDropToEngage)
+                T2 = 0;
 
             // Napouští brzdový válec
-            if (BrakeCylApply && T2 > BrakeDelayToEngage * 2)
-            {
+            if (BrakeCylApply && T2 > BrakeDelayToEngage * 2 && BrakeLine1PressurePSI < PrevAuxResPressurePSI - BrakePipeMinPressureDropToEngage)
+            {                
                 if (AutoCylPressurePSI0 < threshold)
                 {
                     AutoCylPressurePSI0 += elapsedClockSeconds * MaxApplicationRatePSIpS;
@@ -769,7 +787,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
 
             // Vypouští brzdový válec
             if (BrakeCylRelease) 
-            {
+            {                
                 if (AutoCylPressurePSI0 > threshold)
                 {
                     AutoCylPressurePSI0 -= elapsedClockSeconds * ReleaseRatePSIpS;
@@ -784,8 +802,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             {
                 BrakeCylRelease = true;
                 BrakeCylApply = false;
-                T2 = 0;
-
+                T3 = 0;
+                
                 if ((Car as MSTSWagon).EmergencyReservoirPresent)
 				{
                     if (!(Car as MSTSWagon).DistributorPresent && AuxResPressurePSI < EmergResPressurePSI && AuxResPressurePSI < BrakeLine1PressurePSI)
@@ -858,7 +876,6 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 {
                     ThresholdBailOffOn = (maxPressurePSI0 - BrakeLine1PressurePSI) * AuxCylVolumeRatio;
                     ThresholdBailOffOn = MathHelper.Clamp(ThresholdBailOffOn, 0, MCP);
-                    T2 = 0;
                     AutoCylPressurePSI0 -= elapsedClockSeconds * AutoBailOffOnRatePSIpS; // Rychlost odvětrání při EDB                     
                 }
 
