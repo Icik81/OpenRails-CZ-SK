@@ -492,6 +492,8 @@ namespace Orts.Simulation.RollingStocks
         public bool AntiWheelSpinEquipped = false;
         public float AntiWheelSpinSpeedDiffThreshold = 0.5f;
         protected float skidSpeedDegratation = 0;
+        public float DynamicBrakeMaxForceAtSelectorStep = 0;
+        public float SelectedMaxAccelerationStep = 0;
 
 
         public bool
@@ -1100,6 +1102,8 @@ namespace Orts.Simulation.RollingStocks
                 case "engine(ortsautomaticparkingbrake(engagespeed": AutomaticParkingBrakeEngageSpeedKpH = stf.ReadFloatBlock(STFReader.UNITS.Speed, 0); break;
                 case "engine(antiwheelspinequipped": AntiWheelSpinEquipped = stf.ReadBoolBlock(false); break;
                 case "engine(antiwheelspinspeeddiffthreshold": AntiWheelSpinSpeedDiffThreshold = stf.ReadFloatBlock(STFReader.UNITS.None, 0.5f); break;
+                case "engine(dynamicbrakemaxforceatselectorstep": DynamicBrakeMaxForceAtSelectorStep = stf.ReadFloatBlock(STFReader.UNITS.Any, 1.0f); break;
+                case "engine(defaultforcestep": SelectedMaxAccelerationStep = stf.ReadFloatBlock(STFReader.UNITS.Any, 1.0f); break;
                 case "engine(stringarrays":
                     stf.MustMatch("(");
                     while (!stf.EndOfBlock())
@@ -3772,7 +3776,7 @@ namespace Orts.Simulation.RollingStocks
                 {
                     CruiseControl.SpeedRegMode = CruiseControl.SpeedRegulatorMode.Manual;
                 }
-                if (CruiseControl.DisableCruiseControlOnThrottleAndZeroForce && CruiseControl.SelectedMaxAccelerationPercent == 0 && CruiseControl.SelectedMaxAccelerationStep == 0 && CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.Auto)
+                if (CruiseControl.DisableCruiseControlOnThrottleAndZeroForce && CruiseControl.SelectedMaxAccelerationPercent == 0 && SelectedMaxAccelerationStep == 0 && CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.Auto)
                 {
                     CruiseControl.SetSpeed(0);
                     CruiseControl.SpeedRegMode = CruiseControl.SpeedRegulatorMode.Manual;
