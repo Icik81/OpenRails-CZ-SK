@@ -156,6 +156,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             AntiSkidSystemEquipped = thiscopy.AntiSkidSystemEquipped;
             AutoBailOffOnRatePSIpS = thiscopy.AutoBailOffOnRatePSIpS;
             BrakeDelayToEngage = thiscopy.BrakeDelayToEngage;
+            AutoOverchargePressure = thiscopy.AutoOverchargePressure;
         }
 
         // Get the brake BC & BP for EOT conditions
@@ -337,7 +338,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 case "engine(trainbrakescontrollermaxoverchargepressure": TrainBrakesControllerMaxOverchargePressurePSI = stf.ReadFloatBlock(STFReader.UNITS.PressureDefaultPSI, null); break;
 
                 // Načte hodnotu rychlosti AutoBailOffOn                              
-                case "engine(autobailoffonrate": AutoBailOffOnRatePSIpS = stf.ReadFloatBlock(STFReader.UNITS.PressureRateDefaultPSIpS, null); break;                                
+                case "engine(autobailoffonrate": AutoBailOffOnRatePSIpS = stf.ReadFloatBlock(STFReader.UNITS.PressureRateDefaultPSIpS, null); break;
+
+                // Automatické nízkotlaké přebití                              
+                case "engine(autooverchargepressure": AutoOverchargePressure = stf.ReadBoolBlock(false); break;
             }
         }
 
@@ -594,12 +598,12 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 case 3: // Režim R+Mg
                     break;
             }
-
+           
             // Defaultní zpoždění náběhu brzdiče
             if (BrakeDelayToEngage == 0) BrakeDelayToEngage = 1.0f; // sekundy            
 
             // Defaultní hodnota pro AutoBailOffOnRatePSIpS
-            if (AutoBailOffOnRatePSIpS == 0) AutoBailOffOnRatePSIpS = 1.0f * 14.50377f;
+            if (AutoBailOffOnRatePSIpS == 0) AutoBailOffOnRatePSIpS = 1.0f * 14.50377f; // 1bar/s
 
             // Defaultní citlivost brzd
             if (BrakeSensitivityPSIpS == 0) BrakeSensitivityPSIpS = 0.07252f; // Výchozí nastavení 0.07252PSI/s ( 0.005bar/s)
@@ -749,6 +753,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             if (T2 > 0)
                 T2 += elapsedClockSeconds;
 
+            // Napouští brzdový válec
             if (BrakeCylApply && T2 > BrakeDelayToEngage * 2)
             {
                 if (AutoCylPressurePSI0 < threshold)
@@ -760,6 +765,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 else BrakeCylApply = false;
             }
 
+            // Vypouští brzdový válec
             if (BrakeCylRelease) 
             {
                 if (AutoCylPressurePSI0 > threshold)
@@ -1091,16 +1097,22 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         else if (lead.TrainBrakeController.TrainBrakeControllerState == ControllerState.OverchargeStart)
                         {
                             BrakePipeChargingRatePSIorInHgpS0 = brakePipeChargingNormalPSIpS;  // Standardní rychlost plnění 
-                            if (lead.TrainBrakeController.MaxPressurePSI > lead.BrakeSystem.TrainBrakesControllerMaxOverchargePressurePSI) lead.TrainBrakeController.MaxPressurePSI = lead.BrakeSystem.BrakeLine1PressurePSI - lead.TrainBrakeController.ReleaseRatePSIpS * (elapsedClockSeconds / 1.0f);
+                            if (lead.TrainBrakeController.MaxPressurePSI > lead.BrakeSystem.TrainBrakesControllerMaxOverchargePressurePSI) lead.TrainBrakeController.MaxPressurePSI -= lead.TrainBrakeController.QuickReleaseRatePSIpS * elapsedClockSeconds;
                             else lead.TrainBrakeController.MaxPressurePSI = lead.BrakeSystem.TrainBrakesControllerMaxOverchargePressurePSI;
                         }
 
                         else if (lead.TrainBrakeController.TrainBrakeControllerState != ControllerState.Lap)
                         {
                             BrakePipeChargingRatePSIorInHgpS0 = brakePipeChargingNormalPSIpS;  // Standardní rychlost plnění 
-                            if (lead.TrainBrakeController.MaxPressurePSI > lead.BrakeSystem.TrainBrakesControllerMaxOverchargePressurePSI * 1.11f) lead.TrainBrakeController.MaxPressurePSI = lead.BrakeSystem.BrakeLine1PressurePSI - lead.TrainBrakeController.QuickReleaseRatePSIpS * (elapsedClockSeconds / 1.0f);
-                            else if (lead.TrainBrakeController.MaxPressurePSI > lead.BrakeSystem.TrainBrakesControllerMaxOverchargePressurePSI) lead.TrainBrakeController.MaxPressurePSI = lead.BrakeSystem.BrakeLine1PressurePSI - 0.03f; // Zpomalí 
-                            else if (lead.TrainBrakeController.MaxPressurePSI > lead.BrakeSystem.maxPressurePSI0) lead.TrainBrakeController.MaxPressurePSI -= lead.BrakeSystem.OverchargeEliminationRatePSIpS * (elapsedClockSeconds / 12.0f);
+
+                            // Zavádí automatické nízkotlaké přebití pokud je povoleno
+                            if (lead.BrakeSystem.AutoOverchargePressure)
+                            {
+                                if (lead.TrainBrakeController.MaxPressurePSI > lead.BrakeSystem.TrainBrakesControllerMaxOverchargePressurePSI * 1.11f) lead.TrainBrakeController.MaxPressurePSI -= lead.TrainBrakeController.QuickReleaseRatePSIpS * elapsedClockSeconds;
+                                else if (lead.TrainBrakeController.MaxPressurePSI > lead.BrakeSystem.TrainBrakesControllerMaxOverchargePressurePSI) lead.TrainBrakeController.MaxPressurePSI = lead.BrakeSystem.BrakeLine1PressurePSI - 0.03f; // Zpomalí 
+                                else if (lead.TrainBrakeController.MaxPressurePSI > lead.BrakeSystem.maxPressurePSI0) lead.TrainBrakeController.MaxPressurePSI -= lead.BrakeSystem.OverchargeEliminationRatePSIpS * (elapsedClockSeconds / 12.0f);
+                            }
+                            else if (lead.TrainBrakeController.MaxPressurePSI > lead.BrakeSystem.maxPressurePSI0) lead.TrainBrakeController.MaxPressurePSI -= lead.TrainBrakeController.QuickReleaseRatePSIpS * elapsedClockSeconds;
 
                             if (lead.BrakeSystem.BrakeLine1PressurePSI < lead.BrakeSystem.maxPressurePSI0) lead.TrainBrakeController.MaxPressurePSI = lead.BrakeSystem.maxPressurePSI0;
                         }
@@ -1652,8 +1664,6 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 }
             }
             
-
-
 
             // Samostatná přímočinná brzda pro každou lokomotivu
             if (lead != null)
