@@ -215,8 +215,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
 
                 string.Empty, // Spacer because the state above needs 2 columns.                                                     
                 string.Format("{0}", NextLocoBrakeState),
-                //string.Empty, // Spacer because the state above needs 2 columns.                                     
-                //string.Format("threshold {0:F0}", threshold),
+                string.Empty, // Spacer because the state above needs 2 columns.                                     
+                string.Format("threshold {0:F0}", threshold),
             };
         }
 
@@ -434,6 +434,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             BrakeLine3PressurePSI = 0;
             PrevAuxResPressurePSI = 0;
             prevBrakeLine1PressurePSI = 0;
+            T2 = 0;
+            threshold = 0;
             
             if ((Car as MSTSWagon).EmergencyReservoirPresent || maxPressurePSI > 0)
                 EmergResPressurePSI = maxPressurePSI;
@@ -701,9 +703,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             }
 
             // Zaznamená poslední stav pomocné jímky pro určení pracovního bodu pomocné jímky
-            if (T2 == 0 && AutoCylPressurePSI0 < 1)
+            if (AutoCylPressurePSI0 < 1)
                 PrevAuxResPressurePSI = AuxResPressurePSI;
-
+                                     
             // triple valve is set to charge the brake cylinder
             if (TripleValveState == ValveState.Apply || TripleValveState == ValveState.Emergency)
             {
@@ -845,7 +847,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 else if (loco.DynamicBrakeAutoBailOff && loco.Train.MUDynamicBrakePercent > 0 && loco.DynamicBrakeForceCurves != null)
                 {
                     var dynforce = loco.DynamicBrakeForceCurves.Get(1.0f, loco.AbsSpeedMpS);  // max dynforce at that speed
-                    if ((loco.MaxDynamicBrakeForceN == 0 && dynforce > 0) || dynforce > loco.MaxDynamicBrakeForceN * 0.6)
+                    if ((loco.MaxDynamicBrakeForceN == 0 && dynforce > 0) || dynforce > loco.MaxDynamicBrakeForceN * 0.6)                        
                         BailOffOn = true;
                 }
                 if (BailOffOnAntiSkid)
@@ -855,12 +857,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 if (BailOffOn)
                 {
                     ThresholdBailOffOn = (maxPressurePSI0 - BrakeLine1PressurePSI) * AuxCylVolumeRatio;
-                    if (ThresholdBailOffOn > MCP) ThresholdBailOffOn = MCP;                    
-                    
-                    //if (NextLocoEmergency)
-                    //    AutoCylPressurePSI0 -= elapsedClockSeconds * AutoBailOffOnRatePSIpS * 2; // Rychlost odvětrání Emergency při EDB                     
-                    //else 
-                        AutoCylPressurePSI0 -= elapsedClockSeconds * AutoBailOffOnRatePSIpS; // Rychlost odvětrání při EDB                     
+                    ThresholdBailOffOn = MathHelper.Clamp(ThresholdBailOffOn, 0, MCP);
+                    T2 = 0;
+                    AutoCylPressurePSI0 -= elapsedClockSeconds * AutoBailOffOnRatePSIpS; // Rychlost odvětrání při EDB                     
                 }
 
                 // Automatické napuštění brzdového válce po uvadnutí EDB
