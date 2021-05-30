@@ -107,6 +107,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes
         public float CompressorT0 = 0;
         public float AutoBailOffOnRatePSIpS;
         public float BrakeDelayToEngage;
+        public bool AutoOverchargePressure;
 
         /// <summary>
         /// Front brake hoses connection status
