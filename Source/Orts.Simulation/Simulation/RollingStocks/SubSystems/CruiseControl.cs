@@ -365,7 +365,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
             Locomotive.SignalEvent(Common.Event.CruiseControlSpeedSelector);
             if (Locomotive.Mirel != null)
                 Locomotive.Mirel.ResetVigilance();
-            if (!Locomotive.Mirel.Equipped)
+            if (!Locomotive.Mirel.Equipped && SpeedSelMode == SpeedSelectorMode.Start)
                 Locomotive.AlerterPressed(true);
             if (!Equipped) return;
             if (SpeedSelMode == SpeedSelectorMode.Start)
