@@ -481,7 +481,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
         {   
             // Výpočet cílového tlaku v brzdovém válci
             threshold = (PrevAuxResPressurePSI - BrakeLine1PressurePSI) * AuxCylVolumeRatio;
-            if (threshold < 0) threshold = 0;
+            threshold = MathHelper.Clamp(threshold, 0, MCP);
 
             if (StartOn)
             {
