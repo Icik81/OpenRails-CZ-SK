@@ -1099,6 +1099,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                             BrakePipeChargingRatePSIorInHgpS0 = brakePipeChargingNormalPSIpS;  // Standardní rychlost plnění 
                             if (lead.TrainBrakeController.MaxPressurePSI > lead.BrakeSystem.TrainBrakesControllerMaxOverchargePressurePSI) lead.TrainBrakeController.MaxPressurePSI -= lead.TrainBrakeController.QuickReleaseRatePSIpS * elapsedClockSeconds;
                             else lead.TrainBrakeController.MaxPressurePSI = lead.BrakeSystem.TrainBrakesControllerMaxOverchargePressurePSI;
+                            lead.BrakeSystem.AutoOverchargePressure = true;
                         }
 
                         else if (lead.TrainBrakeController.TrainBrakeControllerState != ControllerState.Lap)
