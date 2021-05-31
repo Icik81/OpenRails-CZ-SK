@@ -2694,30 +2694,30 @@ namespace Orts.Viewer3D.RollingStock
                         break;
                     if (ChangedValue(0) == 1)
                     {
-                        Locomotive.CruiseControl.SelectedMaxAccelerationStep += 1;
-                        if (Locomotive.CruiseControl.SelectedMaxAccelerationStep > Locomotive.CruiseControl.SpeedRegulatorMaxForceSteps)
-                            Locomotive.CruiseControl.SelectedMaxAccelerationStep = Locomotive.CruiseControl.SpeedRegulatorMaxForceSteps;
-                        if (Locomotive.CruiseControl.SelectedMaxAccelerationStep < 0)
-                            Locomotive.CruiseControl.SelectedMaxAccelerationStep = 0;
+                        Locomotive.SelectedMaxAccelerationStep += 1;
+                        if (Locomotive.SelectedMaxAccelerationStep > Locomotive.CruiseControl.SpeedRegulatorMaxForceSteps)
+                            Locomotive.SelectedMaxAccelerationStep = Locomotive.CruiseControl.SpeedRegulatorMaxForceSteps;
+                        if (Locomotive.SelectedMaxAccelerationStep < 0)
+                            Locomotive.SelectedMaxAccelerationStep = 0;
                     }
                     if (ChangedValue(0) == -1)
                     {
-                        Locomotive.CruiseControl.SelectedMaxAccelerationStep -= 1;
-                        if (Locomotive.CruiseControl.SelectedMaxAccelerationStep == 0 && Locomotive.CruiseControl.DisableZeroForceStep)
-                            Locomotive.CruiseControl.SelectedMaxAccelerationStep = 1;
+                        Locomotive.SelectedMaxAccelerationStep -= 1;
+                        if (Locomotive.SelectedMaxAccelerationStep == 0 && Locomotive.CruiseControl.DisableZeroForceStep)
+                            Locomotive.SelectedMaxAccelerationStep = 1;
                     }
                     if (ChangedValue(0) != 0 && Locomotive.CruiseControl.SpeedRegulatorMaxForceSteps == 100)
                     {
-                        Locomotive.CruiseControl.SelectedMaxAccelerationStep += ChangedValue(0) * (float)Control.MaxValue;
-                        if (Locomotive.CruiseControl.SelectedMaxAccelerationStep > 100)
-                            Locomotive.CruiseControl.SelectedMaxAccelerationStep = 100;
-                        if (Locomotive.CruiseControl.SelectedMaxAccelerationStep < 0)
-                            Locomotive.CruiseControl.SelectedMaxAccelerationStep = 0;
-                        Locomotive.Simulator.Confirmer.Information("Selected maximum acceleration was changed to " + Math.Round(Locomotive.CruiseControl.SelectedMaxAccelerationStep, 0).ToString() + " percent.");
+                        Locomotive.SelectedMaxAccelerationStep += ChangedValue(0) * (float)Control.MaxValue;
+                        if (Locomotive.SelectedMaxAccelerationStep > 100)
+                            Locomotive.SelectedMaxAccelerationStep = 100;
+                        if (Locomotive.SelectedMaxAccelerationStep < 0)
+                            Locomotive.SelectedMaxAccelerationStep = 0;
+                        Locomotive.Simulator.Confirmer.Information("Selected maximum acceleration was changed to " + Math.Round(Locomotive.SelectedMaxAccelerationStep, 0).ToString() + " percent.");
                     }
                     else
                     {
-                        Locomotive.Simulator.Confirmer.Information("Selected maximum acceleration was changed to " + Math.Round(Locomotive.CruiseControl.SelectedMaxAccelerationStep, 0).ToString());
+                        Locomotive.Simulator.Confirmer.Information("Selected maximum acceleration was changed to " + Math.Round(Locomotive.SelectedMaxAccelerationStep, 0).ToString());
                     }
                     break;
                 case CABViewControlTypes.ORTS_MULTI_POSITION_CONTROLLER:
