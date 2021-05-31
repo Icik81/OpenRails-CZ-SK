@@ -211,9 +211,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 string.Format("{0:F0} L", CylVolumeM3 * 1000),
                 string.Format("{0:F0} L", TotalCapacityMainResBrakePipe * 1000 / 14.50377f),
                 string.Format("{0:F0}", BrakeCarModeText),
-                string.Format("{0}{1:F0} t", AutoLoadRegulatorEquipped ? "Auto " : "", (BrakeMassKG + BrakeMassKGRMg) / 1000),                                              
+                string.Format("{0}{1:F0} t", AutoLoadRegulatorEquipped ? "Auto " : "", (BrakeMassKG + BrakeMassKGRMg) / 1000),                                                              
+                
                 string.Format("DebKoef {0:F1}", DebugKoef),
-
                 string.Empty, // Spacer because the state above needs 2 columns.                                                     
                 string.Format("{0}", NextLocoBrakeState),
                 
@@ -222,7 +222,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 //string.Empty, // Spacer because the state above needs 2 columns.                                     
                 //string.Format("T2 {0:F0}", T2),
                 //string.Empty, // Spacer because the state above needs 2 columns.                                     
-                //string.Format("PrevAuxResPressurePSI {0:F0}", PrevAuxResPressurePSI),                
+                //string.Format("PrevAux {0:F0}", PrevAuxResPressurePSI),
             };
         }
 
@@ -444,6 +444,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             PrevAuxResPressurePSI = 0;
             prevBrakeLine1PressurePSI = 0;
             T2 = 0;
+            T3 = 0;
             threshold = 0;
             
             if ((Car as MSTSWagon).EmergencyReservoirPresent || maxPressurePSI > 0)
@@ -738,7 +739,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 if (BrakeLine1PressurePSI > AuxResPressurePSI - dp / AuxCylVolumeRatio && !BleedOffValveOpen)
                     dp = (AuxResPressurePSI - BrakeLine1PressurePSI) * AuxCylVolumeRatio;
 
-                // Otestuje citlivost brzdy a nastaví příznak pro start časovače zpoždění náběhu brzdy                
+                // Otestuje citlivost brzdy, nastartuje časovač zpoždění náběhu brzdy a nastaví příznak pro neukládání threshold                
                 if (BrakePipeChangeRate >= BrakeSensitivityPSIpS)
                 {                                        
                     BrakeCylApply = true;
@@ -766,10 +767,11 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 }
             }
 
-            // Spuštění časovače pro zpoždění náběhu brzdy
+            // Pokračování časovače pro zpoždění náběhu brzdy
             if (T2 > 0)
                 T2 += elapsedClockSeconds;
             
+            // Vynulování časovače při brzdění a tlaku v potrubí menším než je drop brzdícího ústrojí
             if (BrakeCylApply && BrakeLine1PressurePSI > PrevAuxResPressurePSI - BrakePipeMinPressureDropToEngage)
                 T2 = 0;
 
