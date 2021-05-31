@@ -109,6 +109,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes
         public float BrakeDelayToEngage;
         public bool AutoOverchargePressure;
         public float BrakePipeMinPressureDropToEngage;
+        public int T4 = 0;
+        public int T5 = 0;
+        public float EngineBrakeControllerPositionNoApply;
 
         /// <summary>
         /// Front brake hoses connection status
