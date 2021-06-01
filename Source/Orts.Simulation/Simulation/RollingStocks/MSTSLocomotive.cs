@@ -472,6 +472,8 @@ namespace Orts.Simulation.RollingStocks
         public bool DisableRestrictedSpeedWhenManualDriving = false;
         public bool AutomaticParkingBrake = false;
         public float AutomaticParkingBrakeEngageSpeedKpH = 0;
+        public float ParkingBrakeTargetPressurePSI = 0;
+        public float ParkingBrakeInitialPercentage = 0;
         public bool AutomaticParkingBrakeEngaged = false;
         public List<CabViewControl> ActiveScreens = new List<CabViewControl>();
         public List<CabViewControl> EditableItems = new List<CabViewControl>();
@@ -1096,10 +1098,10 @@ namespace Orts.Simulation.RollingStocks
                 case "engine(ortsmirel(noalertonrestrictedsignal": Mirel.NoAlertOnRestrictedSignal = stf.ReadBoolBlock(false); break;
                 case "engine(ortsmultipositioncontroller": SetUpMPC(); break;
                 case "engine(disablerestrictedspeedwhenmanualdriving": DisableRestrictedSpeedWhenManualDriving = stf.ReadBoolBlock(false); break;
-                case "engine(ortscruisecontrol(parkingbrakeengagespeed": CruiseControl.ParkingBrakeEngageSpeed = stf.ReadFloatBlock(STFReader.UNITS.Speed, 0); break;
-                case "engine(ortscruisecontrol(parkingbrakepercent": CruiseControl.ParkingBrakePercent = stf.ReadFloatBlock(STFReader.UNITS.Any, 0); break;
                 case "engine(ortsautomaticparkingbrake": AutomaticParkingBrake = true; break;
                 case "engine(ortsautomaticparkingbrake(engagespeed": AutomaticParkingBrakeEngageSpeedKpH = stf.ReadFloatBlock(STFReader.UNITS.Speed, 0); break;
+                case "engine(ortsautomaticparkingbrake(targetpressurepsi": ParkingBrakeTargetPressurePSI = stf.ReadFloatBlock(STFReader.UNITS.PressureDefaultPSI, 30); break;
+                case "engine(ortsautomaticparkingbrake(initialpercentage": ParkingBrakeInitialPercentage = stf.ReadFloatBlock(STFReader.UNITS.None, 50); break;
                 case "engine(antiwheelspinequipped": AntiWheelSpinEquipped = stf.ReadBoolBlock(false); break;
                 case "engine(antiwheelspinspeeddiffthreshold": AntiWheelSpinSpeedDiffThreshold = stf.ReadFloatBlock(STFReader.UNITS.None, 0.5f); break;
                 case "engine(dynamicbrakemaxforceatselectorstep": DynamicBrakeMaxForceAtSelectorStep = stf.ReadFloatBlock(STFReader.UNITS.Any, 1.0f); break;
@@ -2135,6 +2137,7 @@ namespace Orts.Simulation.RollingStocks
         private bool trainBrakeRelease = false;
         protected float EngineBrakePercentSet = 0;
         public bool CanCheckEngineBrake = true;
+        protected float prevParkingBrakePercent = 0;
         public override void Update(float elapsedClockSeconds)
         {
             if (extendedPhysics != null)
@@ -2285,10 +2288,9 @@ namespace Orts.Simulation.RollingStocks
                             braking = false;
                         if (braking && ThrottlePercent == 0 && AbsSpeedMpS < MpS.FromKpH(AutomaticParkingBrakeEngageSpeedKpH))
                         {
-                            if (Bar.FromPSI(BrakeSystem.GetCylPressurePSI()) < 1.85f)
+                            if (BrakeSystem.GetCylPressurePSI() < ParkingBrakeTargetPressurePSI)
                             {
-                                EngineBrakePercentSet += 0.5f;
-                                SetEngineBrakePercent(EngineBrakePercentSet);
+                                //BrakeSystem.GetCylPressurePSI += 1;
                             }
                         }
                         if (!braking && !EngineBrakePriority)

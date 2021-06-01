@@ -34,7 +34,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
     {
         protected TrainCar Car;
         protected float HandbrakePercent;
-        protected float CylPressurePSI = 64;
+        public float CylPressurePSI = 64;
         protected float AutoCylPressurePSI = 64;
         protected float AuxResPressurePSI = 64;
         protected float EmergResPressurePSI = 64;
@@ -805,6 +805,31 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         AutoCylPressurePSI0 = threshold;
                 }
                 else BrakeCylRelease = false;
+            }
+
+            // parkovací brzda
+            if (Car is MSTSLocomotive)
+            {
+                MSTSLocomotive loco = (MSTSLocomotive)Car;
+                if (loco.IsPlayerTrain)
+                {
+                    if (loco.AutomaticParkingBrakeEngaged)
+                    {
+                        if (CylPressurePSI + 2 < loco.ParkingBrakeTargetPressurePSI)
+                        {
+                            CylPressurePSI += 1;
+                            loco.SignalEvent(Event.EngineBrakePressureIncrease);
+                        }
+                        else if (CylPressurePSI - 2 > loco.ParkingBrakeTargetPressurePSI)
+                        {
+                            CylPressurePSI -= 1;
+                            loco.SignalEvent(Event.EngineBrakePressureDecrease);
+                        }
+
+                        if (loco.EngineBrakeController.CurrentValue == 0)
+                        return;
+                    }
+                }
             }
 
             // triple valve set to release pressure in brake cylinder and EP valve set
