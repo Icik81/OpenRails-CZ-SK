@@ -2293,6 +2293,8 @@ namespace Orts.Simulation.RollingStocks
                                 //BrakeSystem.GetCylPressurePSI += 1;
                             }
                         }
+                        if (AbsSpeedMpS > MpS.FromKpH(AutomaticParkingBrakeEngageSpeedKpH))
+                            braking = false;
                         if (!braking && !EngineBrakePriority)
                         {
                             SetEngineBrakePercent(0);
