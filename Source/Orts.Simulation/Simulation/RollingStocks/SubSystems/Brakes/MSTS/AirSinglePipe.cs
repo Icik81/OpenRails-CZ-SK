@@ -219,9 +219,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 string.Format("{0}", NextLocoBrakeState),
                 
                 //string.Empty, // Spacer because the state above needs 2 columns.                                     
-                //string.Format("threshold {0:F0}", threshold),
+                //string.Format("PrevAuto {0:F0}", PrevAutoCylPressurePSI1),
                 //string.Empty, // Spacer because the state above needs 2 columns.                                     
-                //string.Format("T2 {0:F0}", T2),
+                //string.Format("Parking {0:F0}", ParkingBrakeAutoCylPressurePSI1),
                 //string.Empty, // Spacer because the state above needs 2 columns.                                     
                 //string.Format("PrevAux {0:F0}", PrevAuxResPressurePSI),
             };
@@ -382,6 +382,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             outf.Write(StartOn);
             outf.Write(PrevAuxResPressurePSI);
             outf.Write(TrainPipeLeakRatePSIpS);
+            outf.Write(AutoCylPressurePSI2);
             outf.Write(AutoCylPressurePSI1);
             outf.Write(AutoCylPressurePSI0);
             outf.Write(BrakeCarMode);
@@ -417,6 +418,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             StartOn = inf.ReadBoolean();
             PrevAuxResPressurePSI = inf.ReadSingle();
             TrainPipeLeakRatePSIpS = inf.ReadSingle();
+            AutoCylPressurePSI2 = inf.ReadSingle();
             AutoCylPressurePSI1 = inf.ReadSingle();
             AutoCylPressurePSI0 = inf.ReadSingle();
             BrakeCarMode = inf.ReadSingle();
@@ -647,7 +649,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             MCP = GetMaxCylPressurePSI();
 
             // Výsledný tlak v brzdovém válci - přičte tlak přímočinné brzdy k tlaku v BV průběžné brzdy
-            AutoCylPressurePSI = AutoCylPressurePSI0 + AutoCylPressurePSI1;
+            AutoCylPressurePSI = AutoCylPressurePSI0 + AutoCylPressurePSI1 + AutoCylPressurePSI2;
 
             // Tlak v BV nepřekročí maximální tlak pro BV nadefinovaný v eng lokomotivy
             if (BrakeCylinderMaxSystemPressurePSI == 0) BrakeCylinderMaxSystemPressurePSI = MaxCylPressurePSI * 1.03f; // Výchozí hodnota pro maximální tlak přímočinné brzdy v BV 
@@ -806,32 +808,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 }
                 else BrakeCylRelease = false;
             }
-
-            // parkovací brzda
-            if (Car is MSTSLocomotive)
-            {
-                MSTSLocomotive loco = (MSTSLocomotive)Car;
-                if (loco.IsPlayerTrain)
-                {
-                    if (loco.AutomaticParkingBrakeEngaged)
-                    {
-                        if (CylPressurePSI + 2 < loco.ParkingBrakeTargetPressurePSI)
-                        {
-                            CylPressurePSI += 1;
-                            loco.SignalEvent(Event.EngineBrakePressureIncrease);
-                        }
-                        else if (CylPressurePSI - 2 > loco.ParkingBrakeTargetPressurePSI)
-                        {
-                            CylPressurePSI -= 1;
-                            loco.SignalEvent(Event.EngineBrakePressureDecrease);
-                        }
-
-                        if (loco.EngineBrakeController.CurrentValue == 0)
-                        return;
-                    }
-                }
-            }
-
+            
             // triple valve set to release pressure in brake cylinder and EP valve set
             if (TripleValveState == ValveState.Release && HoldingValve == ValveState.Release)
             {
@@ -1715,7 +1692,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     }
                 }
             }
-            
+
 
             // Samostatná přímočinná brzda pro každou lokomotivu
             if (lead != null)
@@ -1731,36 +1708,71 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 // Definování mrtvé zóny brzdiče
                 float EngineBrakeControllerNeutralPositionApply = brakeSystem.EngineBrakeControllerNeutralPosition + (brakeSystem.EngineBrakeControllerNeutralPosition * 0.1f);
                 float EngineBrakeControllerNeutralPositionRelease = brakeSystem.EngineBrakeControllerNeutralPosition - (brakeSystem.EngineBrakeControllerNeutralPosition * 0.1f);
-                
+
                 if (EngineBrakeControllerRate > EngineBrakeControllerNeutralPositionRelease
                     && EngineBrakeControllerRate < EngineBrakeControllerNeutralPositionApply)
-                        lead.EngineBrakeState = ValveState.Lap;
+                    lead.EngineBrakeState = ValveState.Lap;
                 else
-                {                 
+                {
                     // Apply
                     if (train.BrakeLine3PressurePSI > EngineBrakeControllerNeutralPositionApply * lead.BrakeSystem.BrakeCylinderMaxSystemPressurePSI
-                    && lead.MainResPressurePSI > 0
-                    && lead.BrakeSystem.AutoCylPressurePSI0 + lead.BrakeSystem.AutoCylPressurePSI1 < lead.BrakeSystem.BrakeCylinderMaxSystemPressurePSI
-                    && lead.BrakeSystem.AutoCylPressurePSI0 + lead.BrakeSystem.AutoCylPressurePSI1 < lead.MainResPressurePSI)  
-                    {                        
-                        float dp = elapsedClockSeconds * lead.EngineBrakeApplyRatePSIpS;                       
+                        && lead.MainResPressurePSI > 0
+                        && lead.BrakeSystem.AutoCylPressurePSI0 + lead.BrakeSystem.AutoCylPressurePSI1 + lead.BrakeSystem.AutoCylPressurePSI2 < lead.BrakeSystem.BrakeCylinderMaxSystemPressurePSI
+                        && lead.BrakeSystem.AutoCylPressurePSI0 + lead.BrakeSystem.AutoCylPressurePSI1 + lead.BrakeSystem.AutoCylPressurePSI2 < lead.MainResPressurePSI)
+                    {
+                        float dp = elapsedClockSeconds * lead.EngineBrakeApplyRatePSIpS;
                         lead.BrakeSystem.AutoCylPressurePSI1 += dp * ((EngineBrakeControllerRate - EngineBrakeControllerNeutralPositionApply) / EngineBrakeControllerNeutralPositionApply);
                         lead.BrakeSystem.AutoCylPressurePSI1 = MathHelper.Clamp(lead.BrakeSystem.AutoCylPressurePSI1, 0, lead.BrakeSystem.BrakeCylinderMaxSystemPressurePSI);
                         lead.MainResPressurePSI = lead.MainResPressurePSI - (dp * ((EngineBrakeControllerRate - EngineBrakeControllerNeutralPositionApply) / EngineBrakeControllerNeutralPositionApply) * brakeSystem.GetCylVolumeM3() / lead.MainResVolumeM3);
-                        lead.EngineBrakeState = ValveState.Apply;                            
-                    }                    
+                        lead.EngineBrakeState = ValveState.Apply;
+                    }
                     // Release
-                    else if (lead.BrakeSystem.AutoCylPressurePSI1> 0 && train.BrakeLine3PressurePSI < EngineBrakeControllerNeutralPositionRelease * lead.BrakeSystem.BrakeCylinderMaxSystemPressurePSI)
+                    else if (lead.BrakeSystem.AutoCylPressurePSI1 > lead.BrakeSystem.ParkingBrakeAutoCylPressurePSI1 && train.BrakeLine3PressurePSI < EngineBrakeControllerNeutralPositionRelease * lead.BrakeSystem.BrakeCylinderMaxSystemPressurePSI)
                     {
                         float dp = elapsedClockSeconds * lead.EngineBrakeReleaseRatePSIpS;
                         lead.BrakeSystem.AutoCylPressurePSI1 -= dp * 1 - (1 + ((EngineBrakeControllerRate - EngineBrakeControllerNeutralPositionRelease) / EngineBrakeControllerNeutralPositionRelease));
                         lead.BrakeSystem.AutoCylPressurePSI1 = MathHelper.Clamp(lead.BrakeSystem.AutoCylPressurePSI1, 0, lead.BrakeSystem.BrakeCylinderMaxSystemPressurePSI);
-                        lead.EngineBrakeState = ValveState.Release;
+                        lead.EngineBrakeState = ValveState.Release;                        
                     }
-                }                
+                }
 
                 if (Math.Round(train.BrakeLine3PressurePSI) == Math.Round(lead.BrakeSystem.AutoCylPressurePSI1))
+                {
                     lead.EngineBrakeState = ValveState.Lap;
+                }
+
+
+                //lead.ParkingBrakeTargetPressurePSI = 2 * 14.50377f;
+                
+                // Parkovací brzda
+                if (lead.AutomaticParkingBrakeEngaged 
+                    && lead.MainResPressurePSI > 0
+                    && lead.BrakeSystem.AutoCylPressurePSI0 + lead.BrakeSystem.AutoCylPressurePSI1 + lead.BrakeSystem.AutoCylPressurePSI2 < lead.BrakeSystem.BrakeCylinderMaxSystemPressurePSI
+                    && lead.BrakeSystem.AutoCylPressurePSI0 + lead.BrakeSystem.AutoCylPressurePSI1 + lead.BrakeSystem.AutoCylPressurePSI2 < lead.MainResPressurePSI)
+                {
+                    if (lead.BrakeSystem.AutoCylPressurePSI2 < lead.ParkingBrakeTargetPressurePSI)
+                    {
+                        float dp = elapsedClockSeconds * lead.EngineBrakeApplyRatePSIpS;
+                        lead.BrakeSystem.AutoCylPressurePSI2 += dp;
+                        lead.MainResPressurePSI = lead.MainResPressurePSI - (dp * brakeSystem.GetCylVolumeM3() / lead.MainResVolumeM3);
+                        lead.EngineBrakeState = ValveState.Apply;
+                        lead.BrakeSystem.T4_ParkingkBrake = 1;
+                        lead.BrakeSystem.AutoCylPressurePSI2 = MathHelper.Clamp(lead.BrakeSystem.AutoCylPressurePSI2, 0, lead.ParkingBrakeTargetPressurePSI);                                              
+                    }
+                }
+                else if (!lead.AutomaticParkingBrakeEngaged && lead.BrakeSystem.T4_ParkingkBrake == 1)
+                {
+                    if (lead.BrakeSystem.AutoCylPressurePSI2 > 0)
+                    {
+                        float dp = elapsedClockSeconds * lead.EngineBrakeReleaseRatePSIpS;
+                        lead.BrakeSystem.AutoCylPressurePSI2 -= dp;
+                        lead.EngineBrakeState = ValveState.Release;
+                        lead.BrakeSystem.AutoCylPressurePSI2 = MathHelper.Clamp(lead.BrakeSystem.AutoCylPressurePSI2, 0, lead.ParkingBrakeTargetPressurePSI);
+                    }
+                    else
+                        lead.BrakeSystem.T4_ParkingkBrake = 0;                        
+                }
+                
 
                 if (lead.EngineBrakeState != prevState)
                     switch (lead.EngineBrakeState)
