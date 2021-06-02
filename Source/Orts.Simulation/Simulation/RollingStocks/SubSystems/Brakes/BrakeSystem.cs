@@ -45,6 +45,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes
         public float OverchargeEliminationRatePSIpS = 0;
         public float BrakeCylinderMaxSystemPressurePSI = 0;
         public float TrainBrakesControllerMaxOverchargePressurePSI = 0;
+        public float AutoCylPressurePSI2;
         public float AutoCylPressurePSI1;
         public float AutoCylPressurePSI0;
         public float maxPressurePSI0;
@@ -110,6 +111,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes
         public bool AutoOverchargePressure;
         public float BrakePipeMinPressureDropToEngage;
         public float EngineBrakeControllerNeutralPosition;
+        public int T4_ParkingkBrake = 0;
+        public float PrevAutoCylPressurePSI1 = 0;
+        public float ParkingBrakeAutoCylPressurePSI1 = 0;
 
         /// <summary>
         /// Front brake hoses connection status
