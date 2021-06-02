@@ -83,8 +83,6 @@ namespace Orts.Simulation.RollingStocks.SubSystems
         public float AccelerationDemandMpSS;
         public float AccelerationRampMinMpSSS = 0.01f;
         public bool ResetForceAfterAnyBraking = false;
-        public float ParkingBrakeEngageSpeed = 0;
-        public float ParkingBrakePercent = 0;
         public bool SkipThrottleDisplay = false;
         public bool DisableZeroForceStep = false;
         public bool DynamicBrakeIsSelectedForceDependant = false;
@@ -114,8 +112,6 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                 case "engine(ortscruisecontrol(usethrottle": UseThrottle = stf.ReadBoolBlock(false); break;
                 case "engine(ortscruisecontrol(speedselectorsteptimeseconds": SpeedSelectorStepTimeSeconds = stf.ReadFloatBlock(STFReader.UNITS.Any, 0.1f); break;
                 case "engine(ortscruisecontrol(resetforceafteranybraking": ResetForceAfterAnyBraking = stf.ReadBoolBlock(false); break;
-                case "engine(ortscruisecontrol(parkingbrakeengagespeed": ParkingBrakeEngageSpeed = stf.ReadFloatBlock(STFReader.UNITS.Speed, 0); break;
-                case "engine(ortscruisecontrol(parkingbrakepercent": ParkingBrakePercent = stf.ReadFloatBlock(STFReader.UNITS.Any, 0); break;
                 case "engine(ortscruisecontrol(maxpowerthreshold": MaxPowerThreshold = stf.ReadFloatBlock(STFReader.UNITS.Any, 0); break;
                 case "engine(ortscruisecontrol(safespeedforautomaticoperationmps": SafeSpeedForAutomaticOperationMpS = stf.ReadFloatBlock(STFReader.UNITS.Any, 0); break;
                 case "engine(ortscruisecontrol(maxforcepercentunits": SpeedRegulatorMaxForcePercentUnits = stf.ReadBoolBlock(false); break;
@@ -778,9 +774,6 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                 Locomotive.TractiveForceN = 0;
                 if (TrainBrakePriority)
                 {
-                    if (SpeedSelMode == SpeedSelectorMode.Parking)
-                        if (wheelSpeedMpS < (SpeedIsMph ? MpS.FromMpH(ParkingBrakeEngageSpeed) : MpS.FromKpH(ParkingBrakeEngageSpeed)))
-                            Locomotive.SetEngineBrakePercent(ParkingBrakePercent);
                     if (Locomotive.DynamicBrakePercent > 0 && SelectedSpeedMpS > 0)
                         Locomotive.SetDynamicBrakePercent(0);
                     controllerVolts = 0;
@@ -808,9 +801,6 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                 Locomotive.SetThrottlePercent(0);
                 controllerVolts = 0;
                 maxForceN = 0;
-                if (SpeedSelMode == SpeedSelectorMode.Parking)
-                    if (wheelSpeedMpS < (SpeedIsMph ? MpS.FromMpH(ParkingBrakeEngageSpeed) : MpS.FromKpH(ParkingBrakeEngageSpeed)))
-                        Locomotive.SetEngineBrakePercent(ParkingBrakePercent);
                 return;
             }
 
@@ -819,9 +809,6 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                 Locomotive.SetThrottlePercent(0);
                 controllerVolts = 0;
                 maxForceN = 0;
-                if (SpeedSelMode == SpeedSelectorMode.Parking)
-                    if (wheelSpeedMpS < (SpeedIsMph ? MpS.FromMpH(ParkingBrakeEngageSpeed) : MpS.FromKpH(ParkingBrakeEngageSpeed)))
-                        Locomotive.SetEngineBrakePercent(ParkingBrakePercent);
                 if (!DynamicBrakePriority)
                     return;
             }
@@ -953,9 +940,6 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                     }
                     if (!UseThrottle) Locomotive.ThrottleController.SetPercent(0);
                     throttleIsZero = true;
-
-                    if (wheelSpeedMpS < (SpeedIsMph ? MpS.FromMpH(ParkingBrakeEngageSpeed) : MpS.FromKpH(ParkingBrakeEngageSpeed)))
-                        Locomotive.SetEngineBrakePercent(ParkingBrakePercent);
                 }
                 else if (SpeedSelMode == SpeedSelectorMode.Neutral || SpeedSelMode < SpeedSelectorMode.Start && !SpeedRegulatorOptions.Contains("startfromzero") && wheelSpeedMpS < SafeSpeedForAutomaticOperationMpS)
                 {
