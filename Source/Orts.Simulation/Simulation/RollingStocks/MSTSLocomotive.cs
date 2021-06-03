@@ -473,7 +473,6 @@ namespace Orts.Simulation.RollingStocks
         public bool AutomaticParkingBrake = false;
         public float AutomaticParkingBrakeEngageSpeedKpH = 0;
         public float ParkingBrakeTargetPressurePSI = 0;
-        public float ParkingBrakeInitialPercentage = 0;
         public bool AutomaticParkingBrakeEngaged = false;
         public List<CabViewControl> ActiveScreens = new List<CabViewControl>();
         public List<CabViewControl> EditableItems = new List<CabViewControl>();
@@ -528,6 +527,7 @@ namespace Orts.Simulation.RollingStocks
             DynamicBrakeController = new MSTSNotchController();
             TrainControlSystem = new ScriptedTrainControlSystem(this);
             Mirel = new Mirel(this);
+            extendedPhysics = new ExtendedPhysics(this);
         }
 
         /// <summary>
@@ -1101,7 +1101,6 @@ namespace Orts.Simulation.RollingStocks
                 case "engine(ortsautomaticparkingbrake": AutomaticParkingBrake = true; break;
                 case "engine(ortsautomaticparkingbrake(engagespeed": AutomaticParkingBrakeEngageSpeedKpH = stf.ReadFloatBlock(STFReader.UNITS.Speed, 0); break;
                 case "engine(ortsautomaticparkingbrake(targetpressurepsi": ParkingBrakeTargetPressurePSI = stf.ReadFloatBlock(STFReader.UNITS.PressureDefaultPSI, 30); break;
-                case "engine(ortsautomaticparkingbrake(initialpercentage": ParkingBrakeInitialPercentage = stf.ReadFloatBlock(STFReader.UNITS.None, 50); break;
                 case "engine(antiwheelspinequipped": AntiWheelSpinEquipped = stf.ReadBoolBlock(false); break;
                 case "engine(antiwheelspinspeeddiffthreshold": AntiWheelSpinSpeedDiffThreshold = stf.ReadFloatBlock(STFReader.UNITS.None, 0.5f); break;
                 case "engine(dynamicbrakemaxforceatselectorstep": DynamicBrakeMaxForceAtSelectorStep = stf.ReadFloatBlock(STFReader.UNITS.Any, 1.0f); break;
@@ -1394,6 +1393,8 @@ namespace Orts.Simulation.RollingStocks
             if (Mirel != null)
                 Mirel.Save(outf);
             outf.Write((int)ActiveStation);
+            if (extendedPhysics.Equipped)
+                extendedPhysics.Save(outf);
         }
 
         /// <summary>
@@ -1453,6 +1454,14 @@ namespace Orts.Simulation.RollingStocks
                 Mirel.Restore(inf);
             int fActiveStation = inf.ReadInt32();
             ActiveStation = (DriverStation)fActiveStation;
+            if (this is MSTSLocomotive)
+            {
+                if (File.Exists(WagFilePath + ".ExtendedPhysics.xml"))
+                {
+                    extendedPhysics.Parse(WagFilePath + ".ExtendedPhysics.xml");
+                    extendedPhysics.Restore(inf);
+                }
+            }
         }
 
         public bool IsLeadLocomotive()
@@ -1530,7 +1539,6 @@ namespace Orts.Simulation.RollingStocks
         {
             if (File.Exists(WagFilePath + ".ExtendedPhysics.xml"))
             {
-                extendedPhysics = new ExtendedPhysics(this);
                 extendedPhysics.Parse(WagFilePath + ".ExtendedPhysics.xml");
             }
             TrainBrakeController.Initialize();
@@ -1998,7 +2006,7 @@ namespace Orts.Simulation.RollingStocks
             {                
                 if (SlipSpeedCritical == 0) SlipSpeedCritical = 40 / 3.6f; // Výchozí hodnota 40 km/h     
                 float AbsSlipSpeedMpS = Math.Abs(WheelSpeedMpS) - AbsSpeedMpS;  // Zjistí absolutní rychlost prokluzu 
-                if (extendedPhysics != null)
+                if (extendedPhysics.Equipped)
                 {
                     SlipSpeedCritical = 10 / 3.6f; // 10kmh pokud počítáme pátou osu
                     AbsSlipSpeedMpS = extendedPhysics.FastestAxleSpeedMpS - extendedPhysics.AverageAxleSpeedMpS;
@@ -2137,10 +2145,9 @@ namespace Orts.Simulation.RollingStocks
         private bool trainBrakeRelease = false;
         protected float EngineBrakePercentSet = 0;
         public bool CanCheckEngineBrake = true;
-        protected float prevParkingBrakePercent = 0;
         public override void Update(float elapsedClockSeconds)
         {
-            if (extendedPhysics != null)
+            if (extendedPhysics.Equipped)
                 extendedPhysics.Update(elapsedClockSeconds);
 
             if (CruiseControl != null)
@@ -2286,13 +2293,6 @@ namespace Orts.Simulation.RollingStocks
                         }
                         if (CruiseControl.SpeedSelMode != CruiseControl.SpeedSelectorMode.Parking)
                             braking = false;
-                        if (braking && ThrottlePercent == 0 && AbsSpeedMpS < MpS.FromKpH(AutomaticParkingBrakeEngageSpeedKpH))
-                        {
-                            if (BrakeSystem.GetCylPressurePSI() < ParkingBrakeTargetPressurePSI)
-                            {
-                                //BrakeSystem.GetCylPressurePSI += 1;
-                            }
-                        }
                         if (AbsSpeedMpS > MpS.FromKpH(AutomaticParkingBrakeEngageSpeedKpH))
                             braking = false;
                         if (!braking && !EngineBrakePriority)
@@ -2381,7 +2381,7 @@ namespace Orts.Simulation.RollingStocks
                 else if (CruiseControl.SelectedSpeedMpS > 0)
                 {
                     CruiseControl.Update(elapsedClockSeconds, AbsWheelSpeedMpS);
-                    if (extendedPhysics != null)
+                    if (extendedPhysics.Equipped)
                         UpdateTractiveForce(elapsedClockSeconds, t, AbsSpeedMpS, AbsWheelSpeedMpS);
                 }
                 else if (CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.Auto)
@@ -2410,7 +2410,7 @@ namespace Orts.Simulation.RollingStocks
                 {
                     speedDiff = AbsWheelSpeedMpS - AbsSpeedMpS;
                 }
-                if (extendedPhysics != null)
+                if (extendedPhysics.Equipped)
                 {
                     speedDiff = extendedPhysics.FastestAxleSpeedMpS - extendedPhysics.AverageAxleSpeedMpS;
                 }
@@ -2430,7 +2430,7 @@ namespace Orts.Simulation.RollingStocks
                 {
                     skidSpeedDegratation -= 0.1f;
                 }
-                if (extendedPhysics != null)
+                if (extendedPhysics.Equipped)
                     extendedPhysics.OverridenControllerVolts = ControllerVolts;
                 if (AntiWheelSpinEquipped)
                 {
@@ -2937,7 +2937,7 @@ namespace Orts.Simulation.RollingStocks
 
         public void ConfirmWheelslip(float elapsedClockSeconds)
         {
-            if (extendedPhysics != null) // extended physics calculates its own wheelslip parametres
+            if (extendedPhysics.Equipped) // extended physics calculates its own wheelslip parametres
             {
                 WheelSlip = false;
                 return;
@@ -5419,7 +5419,7 @@ namespace Orts.Simulation.RollingStocks
                 case CABViewControlTypes.SPEEDOMETER:
                     {
                         float speed = Math.Abs(WheelSpeedMpS);
-                        if (extendedPhysics != null)
+                        if (extendedPhysics.Equipped)
                         {
                             foreach (Undercarriage uc in extendedPhysics.Undercarriages)
                             {
@@ -5833,9 +5833,6 @@ namespace Orts.Simulation.RollingStocks
                     }
                 case CABViewControlTypes.ENGINE_BRAKE:
                     {
-                        if (CruiseControl != null)
-                            if ((AutomaticParkingBrakeEngaged || CruiseControl.SpeedSelMode == CruiseControl.SpeedSelectorMode.Parking) && !EngineBrakePriority)
-                                break;
                         data = (EngineBrakeController == null) ? 0.0f : EngineBrakeController.CurrentValue;
                         break;
                     }
@@ -6244,7 +6241,7 @@ namespace Orts.Simulation.RollingStocks
                     }
                     break;                 
                 case CABViewControlTypes.ORTS_AMPERS_BY_CONTROLLER_VOLTAGE:
-                    if (extendedPhysics != null)
+                    if (extendedPhysics.Equipped)
                     {
                         if (string.IsNullOrEmpty(cvc.CurrentSource))
                         {

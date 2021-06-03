@@ -265,6 +265,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
             SelectedMaxAccelerationPercent = inf.ReadSingle();
             Locomotive.SelectedMaxAccelerationStep = inf.ReadSingle();
             SelectedNumberOfAxles = inf.ReadInt32();
+            trainLength = SelectedNumberOfAxles * 6.6f;
             SelectedSpeedMpS = inf.ReadSingle();
             int fSpeedRegMode = inf.ReadInt32();
             SpeedRegMode = (SpeedRegulatorMode)fSpeedRegMode;
@@ -697,7 +698,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
             {
                 int ucIndex = 0;
                 int eaIndex = 0;
-                if (Locomotive.extendedPhysics != null)
+                if (Locomotive.extendedPhysics.Equipped)
                 {
                     foreach (Undercarriage uc in Locomotive.extendedPhysics.Undercarriages)
                     {
@@ -717,7 +718,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                 }
             }
 
-            if (Locomotive.extendedPhysics != null && speedSensorAxleIndex > -1 && speedSensorUndercarriageIndex > -1)
+            if (Locomotive.extendedPhysics.Equipped && speedSensorAxleIndex > -1 && speedSensorUndercarriageIndex > -1)
             {
                 wheelSpeedMpS = Locomotive.extendedPhysics.Undercarriages[speedSensorUndercarriageIndex].Axles[speedSensorAxleIndex].WheelSpeedMpS;
                 // wheelSpeedMpS = Locomotive.Train.SpeedMpS;
