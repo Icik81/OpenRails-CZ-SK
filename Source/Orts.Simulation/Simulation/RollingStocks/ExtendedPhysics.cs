@@ -75,6 +75,7 @@ namespace Orts.Simulation.RollingStocks
         public float AverageAxleSpeedMpS = 0;
         public float FastestAxleSpeedMpS = 0;
         public float OverridenControllerVolts = 0;
+        public bool Equipped = false;
         public ExtendedPhysics(MSTSLocomotive loco)
         {
             Locomotive = loco;
@@ -82,6 +83,7 @@ namespace Orts.Simulation.RollingStocks
 
         public void Parse(string path)
         {
+            Equipped = true;
             string delimiter = "";
             try
             {
@@ -192,14 +194,50 @@ namespace Orts.Simulation.RollingStocks
             outf.Write(RotorsCurrent);
             outf.Write(AverageAxleSpeedMpS);
             outf.Write(FastestAxleSpeedMpS);
+            foreach (Undercarriage uc in Undercarriages)
+            {
+                outf.Write(uc.Mass);
+                outf.Write(uc.RotorsCurrent);
+                outf.Write(uc.StatorsCurrent);
+                foreach (ExtendedAxle ea in uc.Axles)
+                {
+                    foreach (ElectricMotor em in ea.ElectricMotors)
+                    {
+                        outf.Write(em.RotorCurrent);
+                        outf.Write(em.StatorCurrent);
+                    }
+                    outf.Write(ea.ForceN);
+                    outf.Write(ea.Mass);
+                    outf.Write(ea.WheelSpeedMpS);
+                }
+            }
         }
 
         public void Restore(BinaryReader inf)
         {
+            if (!Locomotive.IsPlayerTrain)
+                return;
             StarorsCurrent = inf.ReadSingle();
             RotorsCurrent = inf.ReadSingle();
             AverageAxleSpeedMpS = inf.ReadSingle();
             FastestAxleSpeedMpS = inf.ReadSingle();
+            foreach (Undercarriage uc in Undercarriages)
+            {
+                uc.Mass = inf.ReadSingle();
+                uc.RotorsCurrent = inf.ReadSingle();
+                uc.StatorsCurrent = inf.ReadSingle();
+                foreach (ExtendedAxle ea in uc.Axles)
+                {
+                    foreach (ElectricMotor em in ea.ElectricMotors)
+                    {
+                        em.RotorCurrent = inf.ReadSingle();
+                        em.StatorCurrent = inf.ReadSingle();
+                    }
+                    ea.ForceN = inf.ReadSingle();
+                    ea.Mass = inf.ReadSingle();
+                    ea.WheelSpeedMpS = inf.ReadSingle();
+                }
+            }
         }
 
 
