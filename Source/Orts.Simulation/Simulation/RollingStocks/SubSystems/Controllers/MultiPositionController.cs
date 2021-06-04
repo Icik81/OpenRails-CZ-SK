@@ -250,7 +250,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
             {
                 if (controllerPosition == ControllerPosition.ThrottleIncrease)
                 {
-                    if (Locomotive.extendedPhysics.Equipped)
+                    if (Locomotive.extendedPhysics != null)
                     {
                         float step = Locomotive.MaxControllerVolts / Locomotive.ThrottleFullRangeIncreaseTimeSeconds;
                         step *= elapsedClockSeconds;
@@ -274,7 +274,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                 }
                 if (controllerPosition == ControllerPosition.ThrottleIncreaseFast)
                 {
-                    if (Locomotive.extendedPhysics.Equipped)
+                    if (Locomotive.extendedPhysics != null)
                     {
                         float step = Locomotive.MaxControllerVolts / (Locomotive.ThrottleFullRangeIncreaseTimeSeconds / 2);
                         step *= elapsedClockSeconds;
@@ -298,7 +298,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                 }
                 if (controllerPosition == ControllerPosition.ThrottleDecrease)
                 {
-                    if (Locomotive.extendedPhysics.Equipped && Locomotive.ControllerVolts >= 0)
+                    if (Locomotive.extendedPhysics != null && Locomotive.ControllerVolts >= 0)
                     {
                         float step = Locomotive.MaxControllerVolts / Locomotive.ThrottleFullRangeDecreaseTimeSeconds;
                         step *= elapsedClockSeconds;
@@ -318,7 +318,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                 }
                 if (controllerPosition == ControllerPosition.ThrottleDecreaseFast && Locomotive.ControllerVolts >= 0)
                 {
-                    if (Locomotive.extendedPhysics.Equipped)
+                    if (Locomotive.extendedPhysics != null)
                     {
                         float step = Locomotive.MaxControllerVolts / Locomotive.ThrottleFullRangeDecreaseTimeSeconds * 2;
                         step *= elapsedClockSeconds;
