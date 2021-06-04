@@ -898,9 +898,13 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 if (loco.DynamicBrakeForceCurves != null)
                     if (ThresholdBailOffOn > 0 && loco.DynamicBrakeForceCurves.Get(1.0f, loco.AbsSpeedMpS) < 1)
                     {                        
-                        if (AutoCylPressurePSI0 < ThresholdBailOffOn)
+                        if (AutoCylPressurePSI0 < ThresholdBailOffOn
+                            && loco.MainResPressurePSI > 0
+                            && loco.BrakeSystem.AutoCylPressurePSI0 + loco.BrakeSystem.AutoCylPressurePSI1 + loco.BrakeSystem.AutoCylPressurePSI2 < loco.BrakeSystem.BrakeCylinderMaxSystemPressurePSI
+                            && loco.BrakeSystem.AutoCylPressurePSI0 + loco.BrakeSystem.AutoCylPressurePSI1 + loco.BrakeSystem.AutoCylPressurePSI2 < loco.MainResPressurePSI)
                         {
                             AutoCylPressurePSI0 += elapsedClockSeconds * AutoBailOffOnRatePSIpS; // Rychlost napouštění po uvadnutí EDB
+                            loco.MainResPressurePSI -= elapsedClockSeconds * AutoBailOffOnRatePSIpS * loco.BrakeSystem.BrakePipeVolumeM3 / loco.MainResVolumeM3;
                         }
                         else
                         if (AutoCylPressurePSI0 >= ThresholdBailOffOn)
@@ -1776,8 +1780,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     {
                         float dp = elapsedClockSeconds * lead.EngineBrakeApplyRatePSIpS;
                         lead.BrakeSystem.AutoCylPressurePSI2 += dp;
-                        lead.MainResPressurePSI = lead.MainResPressurePSI - (dp * brakeSystem.GetCylVolumeM3() / lead.MainResVolumeM3);
-                        lead.EngineBrakeState = ValveState.Apply;
+                        lead.MainResPressurePSI -= dp * brakeSystem.GetCylVolumeM3() / lead.MainResVolumeM3;
+                        //lead.EngineBrakeState = ValveState.Apply;
                         lead.BrakeSystem.T4_ParkingkBrake = 1;
                         lead.BrakeSystem.AutoCylPressurePSI2 = MathHelper.Clamp(lead.BrakeSystem.AutoCylPressurePSI2, 0, lead.ParkingBrakeTargetPressurePSI);                                              
                     }
@@ -1788,7 +1792,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     {
                         float dp = elapsedClockSeconds * lead.EngineBrakeReleaseRatePSIpS;
                         lead.BrakeSystem.AutoCylPressurePSI2 -= dp;
-                        lead.EngineBrakeState = ValveState.Release;
+                        //lead.EngineBrakeState = ValveState.Release;
                         lead.BrakeSystem.AutoCylPressurePSI2 = MathHelper.Clamp(lead.BrakeSystem.AutoCylPressurePSI2, 0, lead.ParkingBrakeTargetPressurePSI);
                     }
                     else
