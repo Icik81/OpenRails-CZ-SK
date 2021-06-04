@@ -75,7 +75,6 @@ namespace Orts.Simulation.RollingStocks
         public float AverageAxleSpeedMpS = 0;
         public float FastestAxleSpeedMpS = 0;
         public float OverridenControllerVolts = 0;
-        public bool Equipped = false;
         public ExtendedPhysics(MSTSLocomotive loco)
         {
             Locomotive = loco;
@@ -83,7 +82,6 @@ namespace Orts.Simulation.RollingStocks
 
         public void Parse(string path)
         {
-            Equipped = true;
             string delimiter = "";
             try
             {

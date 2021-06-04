@@ -646,7 +646,7 @@ namespace Orts.Viewer3D.Popups
             {
                 return "";
             }
-            if (loco.extendedPhysics.Equipped)
+            if (loco.extendedPhysics != null)
             {
                 ret = Math.Round(loco.extendedPhysics.Undercarriages[0].Axles[0].Mass, 2).ToString() + "t\t";
                 ret += Math.Round(loco.extendedPhysics.Undercarriages[0].Axles[1].Mass, 2).ToString() + "t\t";
