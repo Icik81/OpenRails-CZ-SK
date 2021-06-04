@@ -112,6 +112,12 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes
         public float BrakePipeMinPressureDropToEngage;
         public float EngineBrakeControllerApplyDeadZone;
         public float EngineBrakeControllerReleaseDeadZone;
+        public float BP1_EngineBrakeControllerRatePSIpS;
+        public float BP2_EngineBrakeControllerRatePSIpS;
+        public float LEKOV_EngineBrakeControllerRatePSIpS;
+        public bool BP1_EngineBrakeController;
+        public bool BP2_EngineBrakeController;
+        public bool LEKOV_EngineBrakeController;
         public float PrevEngineBrakeControllerRateApply = 0;
         public float PrevEngineBrakeControllerRateRelease = 0;
         public int T4_ParkingkBrake = 0;
