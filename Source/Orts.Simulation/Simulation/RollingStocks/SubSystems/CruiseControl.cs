@@ -698,7 +698,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
             {
                 int ucIndex = 0;
                 int eaIndex = 0;
-                if (Locomotive.extendedPhysics.Equipped)
+                if (Locomotive.extendedPhysics != null)
                 {
                     foreach (Undercarriage uc in Locomotive.extendedPhysics.Undercarriages)
                     {
@@ -718,7 +718,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                 }
             }
 
-            if (Locomotive.extendedPhysics.Equipped && speedSensorAxleIndex > -1 && speedSensorUndercarriageIndex > -1)
+            if (Locomotive.extendedPhysics != null && speedSensorAxleIndex > -1 && speedSensorUndercarriageIndex > -1)
             {
                 wheelSpeedMpS = Locomotive.extendedPhysics.Undercarriages[speedSensorUndercarriageIndex].Axles[speedSensorAxleIndex].WheelSpeedMpS;
                 // wheelSpeedMpS = Locomotive.Train.SpeedMpS;

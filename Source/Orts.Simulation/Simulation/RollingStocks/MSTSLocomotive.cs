@@ -527,7 +527,6 @@ namespace Orts.Simulation.RollingStocks
             DynamicBrakeController = new MSTSNotchController();
             TrainControlSystem = new ScriptedTrainControlSystem(this);
             Mirel = new Mirel(this);
-            extendedPhysics = new ExtendedPhysics(this);
         }
 
         /// <summary>
@@ -1393,8 +1392,6 @@ namespace Orts.Simulation.RollingStocks
             if (Mirel != null)
                 Mirel.Save(outf);
             outf.Write((int)ActiveStation);
-            if (extendedPhysics.Equipped)
-                extendedPhysics.Save(outf);
         }
 
         /// <summary>
@@ -1454,14 +1451,6 @@ namespace Orts.Simulation.RollingStocks
                 Mirel.Restore(inf);
             int fActiveStation = inf.ReadInt32();
             ActiveStation = (DriverStation)fActiveStation;
-            if (this is MSTSLocomotive)
-            {
-                if (File.Exists(WagFilePath + ".ExtendedPhysics.xml"))
-                {
-                    extendedPhysics.Parse(WagFilePath + ".ExtendedPhysics.xml");
-                    extendedPhysics.Restore(inf);
-                }
-            }
         }
 
         public bool IsLeadLocomotive()
@@ -1539,6 +1528,7 @@ namespace Orts.Simulation.RollingStocks
         {
             if (File.Exists(WagFilePath + ".ExtendedPhysics.xml"))
             {
+                extendedPhysics = new ExtendedPhysics(this);
                 extendedPhysics.Parse(WagFilePath + ".ExtendedPhysics.xml");
             }
             TrainBrakeController.Initialize();
@@ -2006,7 +1996,7 @@ namespace Orts.Simulation.RollingStocks
             {                
                 if (SlipSpeedCritical == 0) SlipSpeedCritical = 40 / 3.6f; // Výchozí hodnota 40 km/h     
                 float AbsSlipSpeedMpS = Math.Abs(WheelSpeedMpS) - AbsSpeedMpS;  // Zjistí absolutní rychlost prokluzu 
-                if (extendedPhysics.Equipped)
+                if (extendedPhysics != null)
                 {
                     SlipSpeedCritical = 10 / 3.6f; // 10kmh pokud počítáme pátou osu
                     AbsSlipSpeedMpS = extendedPhysics.FastestAxleSpeedMpS - extendedPhysics.AverageAxleSpeedMpS;
@@ -2147,9 +2137,8 @@ namespace Orts.Simulation.RollingStocks
         public bool CanCheckEngineBrake = true;
         public override void Update(float elapsedClockSeconds)
         {
-            if (extendedPhysics.Equipped)
+            if (extendedPhysics != null)
                 extendedPhysics.Update(elapsedClockSeconds);
-
             if (CruiseControl != null)
             {
                 if (CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.Manual)
@@ -2381,7 +2370,7 @@ namespace Orts.Simulation.RollingStocks
                 else if (CruiseControl.SelectedSpeedMpS > 0)
                 {
                     CruiseControl.Update(elapsedClockSeconds, AbsWheelSpeedMpS);
-                    if (extendedPhysics.Equipped)
+                    if (extendedPhysics != null)
                         UpdateTractiveForce(elapsedClockSeconds, t, AbsSpeedMpS, AbsWheelSpeedMpS);
                 }
                 else if (CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.Auto)
@@ -2410,7 +2399,7 @@ namespace Orts.Simulation.RollingStocks
                 {
                     speedDiff = AbsWheelSpeedMpS - AbsSpeedMpS;
                 }
-                if (extendedPhysics.Equipped)
+                if (extendedPhysics != null)
                 {
                     speedDiff = extendedPhysics.FastestAxleSpeedMpS - extendedPhysics.AverageAxleSpeedMpS;
                 }
@@ -2430,7 +2419,7 @@ namespace Orts.Simulation.RollingStocks
                 {
                     skidSpeedDegratation -= 0.1f;
                 }
-                if (extendedPhysics.Equipped)
+                if (extendedPhysics != null)
                     extendedPhysics.OverridenControllerVolts = ControllerVolts;
                 if (AntiWheelSpinEquipped)
                 {
@@ -2830,34 +2819,33 @@ namespace Orts.Simulation.RollingStocks
                 DynamicBrakeFullRangeIncreaseTimeSeconds = 4;
             if (DynamicBrakeFullRangeDecreaseTimeSeconds == 0)
                 DynamicBrakeFullRangeDecreaseTimeSeconds = 6;
-
             if (PowerOn && Direction != Direction.N)
             {
                 if (extendedPhysics == null)
                 {
-                if (TractiveForceCurves == null)
-                {
-                    float maxForceN = MaxForceN * t * (1 - PowerReduction);
-                    float maxPowerW = MaxPowerW * t * t * (1 - PowerReduction);
+                    if (TractiveForceCurves == null)
+                    {
+                        float maxForceN = MaxForceN * t * (1 - PowerReduction);
+                        float maxPowerW = MaxPowerW * t * t * (1 - PowerReduction);
 
-                    if (maxForceN * AbsTractionSpeedMpS > maxPowerW)
-                        maxForceN = maxPowerW / AbsTractionSpeedMpS;
-                    //if (AbsSpeedMpS > MaxSpeedMpS)
-                    //    maxForceN = 0;
-                    if (AbsTractionSpeedMpS > MaxSpeedMpS - 0.05f)
-                        maxForceN = 20 * (MaxSpeedMpS - AbsTractionSpeedMpS) * maxForceN;
-                    if (AbsSpeedMpS > (MaxSpeedMpS))
-                        maxForceN = 0;
-                    TractiveForceN = maxForceN;
+                        if (maxForceN * AbsTractionSpeedMpS > maxPowerW)
+                            maxForceN = maxPowerW / AbsTractionSpeedMpS;
+                        //if (AbsSpeedMpS > MaxSpeedMpS)
+                        //    maxForceN = 0;
+                        if (AbsTractionSpeedMpS > MaxSpeedMpS - 0.05f)
+                            maxForceN = 20 * (MaxSpeedMpS - AbsTractionSpeedMpS) * maxForceN;
+                        if (AbsSpeedMpS > (MaxSpeedMpS))
+                            maxForceN = 0;
+                        TractiveForceN = maxForceN;
+                    }
+                    else
+                    {
+                        TractiveForceN = TractiveForceCurves.Get(t, AbsTractionSpeedMpS) * (1 - PowerReduction);
+                        if (TractiveForceN < 0 && !TractiveForceCurves.AcceptsNegativeValues())
+                            TractiveForceN = 0;
+                    }
                 }
                 else
-                {
-                    TractiveForceN = TractiveForceCurves.Get(t, AbsTractionSpeedMpS) * (1 - PowerReduction);
-                    if (TractiveForceN < 0 && !TractiveForceCurves.AcceptsNegativeValues())
-                        TractiveForceN = 0;
-                }
-            }
-            else
                 {
                     TractiveForceN = 0;
                     foreach (Undercarriage uc in extendedPhysics.Undercarriages)
@@ -2937,7 +2925,7 @@ namespace Orts.Simulation.RollingStocks
 
         public void ConfirmWheelslip(float elapsedClockSeconds)
         {
-            if (extendedPhysics.Equipped) // extended physics calculates its own wheelslip parametres
+            if (extendedPhysics != null) // extended physics calculates its own wheelslip parametres
             {
                 WheelSlip = false;
                 return;
@@ -5419,7 +5407,7 @@ namespace Orts.Simulation.RollingStocks
                 case CABViewControlTypes.SPEEDOMETER:
                     {
                         float speed = Math.Abs(WheelSpeedMpS);
-                        if (extendedPhysics.Equipped)
+                        if (extendedPhysics != null)
                         {
                             foreach (Undercarriage uc in extendedPhysics.Undercarriages)
                             {
@@ -6241,7 +6229,7 @@ namespace Orts.Simulation.RollingStocks
                     }
                     break;                 
                 case CABViewControlTypes.ORTS_AMPERS_BY_CONTROLLER_VOLTAGE:
-                    if (extendedPhysics.Equipped)
+                    if (extendedPhysics != null)
                     {
                         if (string.IsNullOrEmpty(cvc.CurrentSource))
                         {
