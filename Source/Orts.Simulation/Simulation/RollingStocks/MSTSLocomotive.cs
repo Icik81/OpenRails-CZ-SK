@@ -1377,7 +1377,12 @@ namespace Orts.Simulation.RollingStocks
             outf.Write(ScoopIsBroken);
             outf.Write(IsWaterScoopDown);
             outf.Write(CurrentTrackSandBoxCapacityM3);
-
+            outf.Write(SpeedMpS);
+            outf.Write(_SpeedMpS);
+            outf.Write(WheelSpeedMpS);
+            outf.Write(AbsSpeedMpS);
+            outf.Write(AbsTractionSpeedMpS);
+            outf.Write(AbsWheelSpeedMpS);
             // Icik
             outf.Write(HVOffStatusBrakeCyl);
             outf.Write(HVOffStatusBrakePipe);
@@ -1392,6 +1397,9 @@ namespace Orts.Simulation.RollingStocks
             if (Mirel != null)
                 Mirel.Save(outf);
             outf.Write((int)ActiveStation);
+            if (extendedPhysics != null)
+                extendedPhysics.Save(outf);
+            Mirel.Save(outf);
         }
 
         /// <summary>
@@ -1434,6 +1442,13 @@ namespace Orts.Simulation.RollingStocks
             
             AdhesionFilter.Reset(0.5f);
 
+            SpeedMpS = inf.ReadSingle();
+            _SpeedMpS = inf.ReadSingle();
+            WheelSpeedMpS = inf.ReadSingle();
+            AbsSpeedMpS = inf.ReadSingle();
+            AbsTractionSpeedMpS = inf.ReadSingle();
+            AbsWheelSpeedMpS = inf.ReadSingle();
+
             // Icik
             HVOffStatusBrakeCyl = inf.ReadBoolean();
             HVOffStatusBrakePipe = inf.ReadBoolean();
@@ -1451,6 +1466,13 @@ namespace Orts.Simulation.RollingStocks
                 Mirel.Restore(inf);
             int fActiveStation = inf.ReadInt32();
             ActiveStation = (DriverStation)fActiveStation;
+            if (File.Exists(WagFilePath + ".ExtendedPhysics.xml"))
+            {
+                extendedPhysics = new ExtendedPhysics(this);
+                extendedPhysics.Parse(WagFilePath + ".ExtendedPhysics.xml");
+                extendedPhysics.Restore(inf);
+            }
+            Mirel.Restore(inf);
         }
 
         public bool IsLeadLocomotive()
