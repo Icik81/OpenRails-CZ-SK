@@ -818,7 +818,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 TrainBrakeDelay = 0;
 
             // Napouští brzdový válec            
-            if (BrakeCylApply && BrakeLine1PressurePSI < PrevAuxResPressurePSI - BrakePipeMinPressureDropToEngage)
+            if (BrakeCylApply && BrakeLine1PressurePSI < PrevAuxResPressurePSI - BrakePipeMinPressureDropToEngage && ThresholdBailOffOn == 0)
             {
                 if (TrainBrakeDelay > BrakeDelayToEngage * 2 - 0.1f && TrainBrakeDelay < BrakeDelayToEngage * 2 && AutoCylPressurePSI < 1)
                     AutoCylPressurePSI0 = 0.1f * 14.50377f;
@@ -921,21 +921,21 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 {                    
                     AutoCylPressurePSI0 -= MaxReleaseRatePSIpS * elapsedClockSeconds;                    
                 }
-                if (BailOffOn)
+                if (BailOffOn && AutoCylPressurePSI0 > 0)
                 {
                     ThresholdBailOffOn = (maxPressurePSI0 - BrakeLine1PressurePSI) * AuxCylVolumeRatio;
                     ThresholdBailOffOn = MathHelper.Clamp(ThresholdBailOffOn, 0, MCP);
-                    AutoCylPressurePSI0 -= elapsedClockSeconds * AutoBailOffOnRatePSIpS; // Rychlost odvětrání při EDB                     
+                    AutoCylPressurePSI0 -= elapsedClockSeconds * AutoBailOffOnRatePSIpS; // Rychlost odvětrání při EDB                                         
                 }
 
                 // Automatické napuštění brzdového válce po uvadnutí EDB
                 if (loco.DynamicBrakeForceCurves != null)
-                    if (ThresholdBailOffOn > 0 && loco.DynamicBrakeForceCurves.Get(1.0f, loco.AbsSpeedMpS) < 1)
-                    {                        
+                    if (ThresholdBailOffOn > 0 && loco.DynamicBrakeForceN < 50000 && !BailOffOn)
+                    {                                                
                         if (AutoCylPressurePSI0 < ThresholdBailOffOn
                             && loco.MainResPressurePSI > 0
-                            && loco.BrakeSystem.AutoCylPressurePSI0 + loco.BrakeSystem.AutoCylPressurePSI1 + loco.BrakeSystem.AutoCylPressurePSI2 < loco.BrakeSystem.BrakeCylinderMaxSystemPressurePSI
-                            && loco.BrakeSystem.AutoCylPressurePSI0 + loco.BrakeSystem.AutoCylPressurePSI1 + loco.BrakeSystem.AutoCylPressurePSI2 < loco.MainResPressurePSI)
+                            && AutoCylPressurePSI < loco.BrakeSystem.BrakeCylinderMaxSystemPressurePSI
+                            && AutoCylPressurePSI < loco.MainResPressurePSI)
                         {
                             EDBEngineBrakeDelay += elapsedClockSeconds; 
                             if (EDBEngineBrakeDelay > BrakeDelayToEngage * 2 - 0.1f && EDBEngineBrakeDelay < BrakeDelayToEngage * 2 && AutoCylPressurePSI < 1)
