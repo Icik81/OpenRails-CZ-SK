@@ -122,6 +122,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes
         public float PrevEngineBrakeControllerRateRelease = 0;
         public int T4_ParkingkBrake = 0;
         public float EngineBrakeDelay = 0;
+        public float AutoEngineBrakeDelay = 0;
         public int ReleaseTr = 0;
 
         /// <summary>
