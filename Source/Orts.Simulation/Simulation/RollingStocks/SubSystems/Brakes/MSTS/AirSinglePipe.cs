@@ -1059,7 +1059,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             var BrakePipeChargingRatePSIorInHgpS0 = lead == null ? 29 : lead.BrakePipeChargingRatePSIorInHgpS;
 
             float brakePipeTimeFactorS0 = brakePipeTimeFactorS;
-            float brakePipeTimeFactorS_Apply = brakePipeTimeFactorS * 30; // Vytvoří zpoždění náběhu brzdy vlaku kvůli průrazné tlakové vlně            
+            float brakePipeTimeFactorS_Apply = brakePipeTimeFactorS * 3.0f; // Vytvoří zpoždění náběhu brzdy vlaku kvůli průrazné tlakové vlně            
             float brakePipeChargingNormalPSIpS = BrakePipeChargingRatePSIorInHgpS0; // Rychlost plnění průběžného potrubí při normálním plnění 29 PSI/s
             float brakePipeChargingQuickPSIpS = 200; // Rychlost plnění průběžného potrubí při švihu 200 PSI/s
 
