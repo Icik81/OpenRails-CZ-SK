@@ -2296,6 +2296,7 @@ namespace Orts.Simulation.RollingStocks
                         }
                         AutomaticParkingBrakeEngaged = braking;
                     }
+                    else AutomaticParkingBrakeEngaged = false;
                 }
             }
 
