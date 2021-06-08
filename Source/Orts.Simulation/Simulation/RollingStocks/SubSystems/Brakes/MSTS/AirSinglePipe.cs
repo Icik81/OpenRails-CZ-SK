@@ -421,6 +421,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             outf.Write(MaxReleaseRatePSIpS0);
             outf.Write(maxPressurePSI0);
             outf.Write(BailOffOnAntiSkid);
+            outf.Write(PrevEngineBrakeControllerRateApply);
+            outf.Write(PrevEngineBrakeControllerRateRelease);
+            outf.Write(EngineBrakeDelay);
+            outf.Write(TrainBrakeDelay);
         }
 
         public override void Restore(BinaryReader inf)
@@ -457,6 +461,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             MaxReleaseRatePSIpS0 = inf.ReadSingle();
             maxPressurePSI0 = inf.ReadSingle();
             BailOffOnAntiSkid = inf.ReadBoolean();
+            PrevEngineBrakeControllerRateApply = inf.ReadSingle();
+            PrevEngineBrakeControllerRateRelease = inf.ReadSingle();
+            EngineBrakeDelay = inf.ReadSingle();
+            TrainBrakeDelay = inf.ReadSingle(); 
         }
 
         public override void Initialize(bool handbrakeOn, float maxPressurePSI, float fullServPressurePSI, bool immediateRelease)
@@ -484,6 +492,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             EngineBrakeDelay = 0;
             AutoEngineBrakeDelay = 0;
             threshold = 0;
+            ThresholdBailOffOn = 0;
             
             if ((Car as MSTSWagon).EmergencyReservoirPresent || maxPressurePSI > 0)
                 EmergResPressurePSI = maxPressurePSI;
@@ -530,7 +539,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
         }
 
         public override void Update(float elapsedClockSeconds)
-        {
+        {            
             // Výpočet cílového tlaku v brzdovém válci
             threshold = (PrevAuxResPressurePSI - BrakeLine1PressurePSI) * AuxCylVolumeRatio;
             threshold = MathHelper.Clamp(threshold, 0, MCP);
@@ -651,16 +660,27 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     break;
             }
 
+            // Definice default zpoždění náskoku brzdy pro nenaladěné vozy
+            switch ((Car as MSTSWagon).WagonType)
+            {
+                case MSTSWagon.WagonTypes.Freight:
+                    if (BrakeDelayToEngage == 0) BrakeDelayToEngage = 1.0f; // 1s u nákladních vozů
+                    break;
+                case MSTSWagon.WagonTypes.Passenger:
+                    if (BrakeDelayToEngage == 0) BrakeDelayToEngage = 0.5f; // 0.5s u osobních vozů 
+                    break;
+            }
+            // Defaultní zpoždění náběhu brzdiče pro lokomotivy
+            if (BrakeDelayToEngage == 0) BrakeDelayToEngage = 1.0f; // sekundy
+
+
             // Nastavení výchozího brzdiče přímočinné brzdy pro zpětnou kompatibilitu
             if (!BP1_EngineBrakeController && !BP2_EngineBrakeController && !LEKOV_EngineBrakeController)
                 BP2_EngineBrakeController = true;
 
             // Defaultní úbytek tlaku, při kterém dojde k pohnutí brzdícího ústrojí
             if (BrakePipeMinPressureDropToEngage == 0) BrakePipeMinPressureDropToEngage = 0.3f * 14.50377f;
-
-            // Defaultní zpoždění náběhu brzdiče
-            if (BrakeDelayToEngage == 0) BrakeDelayToEngage = 1.0f; // sekundy            
-
+                        
             // Defaultní hodnota pro AutoBailOffOnRatePSIpS
             if (AutoBailOffOnRatePSIpS == 0) AutoBailOffOnRatePSIpS = 1.0f * 14.50377f; // 1bar/s
 
@@ -1759,7 +1779,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             {
                 BrakeSystem brakeSystem = train.Cars[0].BrakeSystem;
                 var prevState = lead.EngineBrakeState;
-                train.BrakeLine3PressurePSI = MathHelper.Clamp(train.BrakeLine3PressurePSI, 0, lead.MainResPressurePSI);
+                train.BrakeLine3PressurePSI = MathHelper.Clamp(train.BrakeLine3PressurePSI, 0, lead.MainResPressurePSI);                
 
                 float AutoCylPressurePSI = lead.BrakeSystem.AutoCylPressurePSI0 + lead.BrakeSystem.AutoCylPressurePSI1 + lead.BrakeSystem.AutoCylPressurePSI2;
 
@@ -1808,7 +1828,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         if (lead.BrakeSystem.BP1_EngineBrakeControllerRatePSIpS == 0) lead.BrakeSystem.BP1_EngineBrakeControllerRatePSIpS = lead.EngineBrakeApplyRatePSIpS;
                         float dp = elapsedClockSeconds * lead.BrakeSystem.BP1_EngineBrakeControllerRatePSIpS;
 
-                        lead.BrakeSystem.AutoCylPressurePSI1 -= dp * 1 - (1 + ((EngineBrakeControllerRate - EngineBrakeControllerRelease) / EngineBrakeControllerRelease));
+                        lead.BrakeSystem.AutoCylPressurePSI1 -= dp * (1 - (1 + ((EngineBrakeControllerRate - EngineBrakeControllerRelease) / EngineBrakeControllerRelease)));
                         lead.BrakeSystem.AutoCylPressurePSI1 = MathHelper.Clamp(lead.BrakeSystem.AutoCylPressurePSI1, 0, lead.BrakeSystem.BrakeCylinderMaxSystemPressurePSI);
                         lead.EngineBrakeState = ValveState.Release;
                         if (lead.BrakeSystem.AutoCylPressurePSI1 < 1) brakeSystem.EngineBrakeDelay = 0;
