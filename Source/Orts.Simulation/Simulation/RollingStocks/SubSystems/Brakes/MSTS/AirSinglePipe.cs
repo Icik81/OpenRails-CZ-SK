@@ -950,7 +950,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
 
                 // Automatické napuštění brzdového válce po uvadnutí EDB
                 if (loco.DynamicBrakeForceCurves != null)
-                    if (ThresholdBailOffOn > 0 && loco.DynamicBrakeForceN < 50000 && !BailOffOn)
+                    if (ThresholdBailOffOn > 0 && loco.DynamicBrakeForceCurves.Get(1.0f, loco.AbsSpeedMpS) < 1)
                     {                                                
                         if (AutoCylPressurePSI0 < ThresholdBailOffOn
                             && loco.MainResPressurePSI > 0
