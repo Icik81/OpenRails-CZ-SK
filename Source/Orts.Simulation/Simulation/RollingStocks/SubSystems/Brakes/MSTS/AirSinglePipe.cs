@@ -838,12 +838,12 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             if (BrakeCylApply && BrakeLine1PressurePSI > PrevAuxResPressurePSI - BrakePipeMinPressureDropToEngage)
                 TrainBrakeDelay = 0;
 
+            
             // Napouští brzdový válec            
             if (BrakeCylApply 
                 && BrakeLine1PressurePSI < PrevAuxResPressurePSI - BrakePipeMinPressureDropToEngage 
                 && ThresholdBailOffOn == 0
-                && AutoCylPressurePSI < BrakeCylinderMaxSystemPressurePSI
-                && ((Car as MSTSLocomotive) != null && AutoCylPressurePSI < (Car as MSTSLocomotive).MainResPressurePSI))
+                && BrakeCylApplyMainResPressureOK)                
             {
                 if (TrainBrakeDelay > BrakeDelayToEngage * 2 - 0.1f && TrainBrakeDelay < BrakeDelayToEngage * 2 && AutoCylPressurePSI < 1)
                     AutoCylPressurePSI0 = 0.1f * 14.50377f;
@@ -1102,6 +1102,15 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             int nSteps = (int)(elapsedClockSeconds / brakePipeTimeFactorS + 1);
             float TrainPipeTimeVariationS = elapsedClockSeconds / nSteps;
             bool NotConnected = false;
+            float AutoCylPressurePSI = lead.BrakeSystem.AutoCylPressurePSI0 + lead.BrakeSystem.AutoCylPressurePSI1 + lead.BrakeSystem.AutoCylPressurePSI2;
+            
+            // Ohlídá tlak ve válci, aby nebyl vyšší než tlak hlavní jímky
+            if (AutoCylPressurePSI < lead.MainResPressurePSI)
+                foreach (TrainCar car in train.Cars)
+                    car.BrakeSystem.BrakeCylApplyMainResPressureOK = true;
+            else
+                foreach (TrainCar car in train.Cars)
+                    car.BrakeSystem.BrakeCylApplyMainResPressureOK = false;
 
             // Výpočet netěsnosti vzduchu v potrubí pro každý vůz
             train.TotalTrainTrainPipeLeakRate = 0f;
@@ -1786,9 +1795,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 BrakeSystem brakeSystem = train.Cars[0].BrakeSystem;
                 var prevState = lead.EngineBrakeState;
                 train.BrakeLine3PressurePSI = MathHelper.Clamp(train.BrakeLine3PressurePSI, 0, lead.MainResPressurePSI);
-
-                float AutoCylPressurePSI = lead.BrakeSystem.AutoCylPressurePSI0 + lead.BrakeSystem.AutoCylPressurePSI1 + lead.BrakeSystem.AutoCylPressurePSI2;
-
+                
                 // Definice pro brzdič BP1
                 if (brakeSystem.BP1_EngineBrakeController)
                 {
