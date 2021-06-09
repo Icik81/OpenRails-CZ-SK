@@ -124,6 +124,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes
         public float EngineBrakeDelay = 0;
         public float AutoEngineBrakeDelay = 0;
         public int ReleaseTr = 0;
+        public bool BrakeCylApplyMainResPressureOK = false;
 
         /// <summary>
         /// Front brake hoses connection status
