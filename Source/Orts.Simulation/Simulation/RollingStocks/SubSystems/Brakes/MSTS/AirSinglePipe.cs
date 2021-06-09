@@ -803,7 +803,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     dp = (AuxResPressurePSI - BrakeLine1PressurePSI) * AuxCylVolumeRatio;
 
                 // Otestuje citlivost brzdy, nastartuje časovač zpoždění náběhu brzdy a nastaví příznak pro neukládání threshold                
-                if (BrakePipeChangeRate >= BrakeSensitivityPSIpS)
+                if (BrakePipeChangeRate >= BrakeSensitivityPSIpS)                    
                 {                                        
                     BrakeCylApply = true;
                     TrainBrakeDelay += elapsedClockSeconds;
@@ -839,7 +839,11 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 TrainBrakeDelay = 0;
 
             // Napouští brzdový válec            
-            if (BrakeCylApply && BrakeLine1PressurePSI < PrevAuxResPressurePSI - BrakePipeMinPressureDropToEngage && ThresholdBailOffOn == 0)
+            if (BrakeCylApply 
+                && BrakeLine1PressurePSI < PrevAuxResPressurePSI - BrakePipeMinPressureDropToEngage 
+                && ThresholdBailOffOn == 0
+                && AutoCylPressurePSI < BrakeCylinderMaxSystemPressurePSI
+                && ((Car as MSTSLocomotive) != null && AutoCylPressurePSI < (Car as MSTSLocomotive).MainResPressurePSI))
             {
                 if (TrainBrakeDelay > BrakeDelayToEngage * 2 - 0.1f && TrainBrakeDelay < BrakeDelayToEngage * 2 && AutoCylPressurePSI < 1)
                     AutoCylPressurePSI0 = 0.1f * 14.50377f;
@@ -1415,6 +1419,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
 
                         if (loco.MainResPressurePSI < loco.CompressorRestartPressurePSI
                             && loco.AuxPowerOn
+                            && loco.CompressorMode_OffAuto
                             && loco.BrakeSystem.CompressorOnDelay
                             && !loco.CompressorIsOn)
                             loco.SignalEvent(Event.CompressorOn);
@@ -1423,7 +1428,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                             || !loco.AuxPowerOn
                             || !loco.CompressorMode_OffAuto)
                             && loco.CompressorIsOn)
-                            loco.SignalEvent(Event.CompressorOff);
+                            loco.SignalEvent(Event.CompressorOff);                        
                     }
                 }
                 else
