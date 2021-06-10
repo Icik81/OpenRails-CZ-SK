@@ -939,35 +939,35 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 else if (loco.DynamicBrakeAutoBailOff && loco.Train.MUDynamicBrakePercent > 0 && loco.DynamicBrakeForceCurves != null)
                 {
                     var dynforce = loco.DynamicBrakeForceCurves.Get(1.0f, loco.AbsSpeedMpS);  // max dynforce at that speed
-                    if ((loco.MaxDynamicBrakeForceN == 0 && dynforce > 0) || dynforce > loco.MaxDynamicBrakeForceN * 0.6)                        
+                    if ((loco.MaxDynamicBrakeForceN == 0 && dynforce > 0) || dynforce > loco.MaxDynamicBrakeForceN * 0.6)
                         BailOffOn = true;
                 }
                 if (BailOffOnAntiSkid)
-                {                    
-                    AutoCylPressurePSI0 -= MaxReleaseRatePSIpS * elapsedClockSeconds;                    
+                {
+                    AutoCylPressurePSI0 -= MaxReleaseRatePSIpS * elapsedClockSeconds;
                 }
                 if (BailOffOn && AutoCylPressurePSI0 > 0)
                 {
                     ThresholdBailOffOn = (maxPressurePSI0 - BrakeLine1PressurePSI) * AuxCylVolumeRatio;
                     ThresholdBailOffOn = MathHelper.Clamp(ThresholdBailOffOn, 0, MCP);
-                    AutoCylPressurePSI0 -= elapsedClockSeconds * AutoBailOffOnRatePSIpS; // Rychlost odvětrání při EDB                                         
+                    AutoCylPressurePSI0 -= elapsedClockSeconds * AutoBailOffOnRatePSIpS; // Rychlost odvětrání při EDB                    
                 }
 
                 // Automatické napuštění brzdového válce po uvadnutí EDB
                 if (loco.DynamicBrakeForceCurves != null)
                     if (ThresholdBailOffOn > 0 && loco.DynamicBrakeForceCurves.Get(1.0f, loco.AbsSpeedMpS) < 1)
-                    {                                                
+                    {
                         if (AutoCylPressurePSI0 < ThresholdBailOffOn
                             && loco.MainResPressurePSI > 0
                             && AutoCylPressurePSI < loco.BrakeSystem.BrakeCylinderMaxSystemPressurePSI
                             && AutoCylPressurePSI < loco.MainResPressurePSI)
                         {
-                            EDBEngineBrakeDelay += elapsedClockSeconds; 
+                            EDBEngineBrakeDelay += elapsedClockSeconds;
                             if (EDBEngineBrakeDelay > BrakeDelayToEngage * 2 - 0.1f && EDBEngineBrakeDelay < BrakeDelayToEngage * 2 && AutoCylPressurePSI < 1)
                                 AutoCylPressurePSI0 = 0.1f * 14.50377f;
                             if (EDBEngineBrakeDelay > BrakeDelayToEngage * 2 + 0.5f)
                             {
-                                AutoCylPressurePSI0 += elapsedClockSeconds * AutoBailOffOnRatePSIpS; // Rychlost napouštění po uvadnutí EDB                                
+                                AutoCylPressurePSI0 += elapsedClockSeconds * AutoBailOffOnRatePSIpS; // Rychlost napouštění po uvadnutí EDB
                             }
                             loco.MainResPressurePSI -= elapsedClockSeconds * AutoBailOffOnRatePSIpS * loco.BrakeSystem.BrakePipeVolumeM3 / loco.MainResVolumeM3;
                         }
@@ -980,7 +980,14 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         }
                     }
             }
-            else PowerForWagon = false;
+            else
+            {
+                if (ThresholdBailOffOn > 0)
+                    threshold = ThresholdBailOffOn;
+                PowerForWagon = false;
+                BailOffOn = false;
+                ThresholdBailOffOn = 0;
+            }
 
             if (AutoCylPressurePSI0 < 0)
                 AutoCylPressurePSI0 = 0;
@@ -1102,15 +1109,20 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             int nSteps = (int)(elapsedClockSeconds / brakePipeTimeFactorS + 1);
             float TrainPipeTimeVariationS = elapsedClockSeconds / nSteps;
             bool NotConnected = false;
-            float AutoCylPressurePSI = lead.BrakeSystem.AutoCylPressurePSI0 + lead.BrakeSystem.AutoCylPressurePSI1 + lead.BrakeSystem.AutoCylPressurePSI2;
-            
-            // Ohlídá tlak ve válci, aby nebyl vyšší než tlak hlavní jímky
-            if (AutoCylPressurePSI < lead.MainResPressurePSI)
-                foreach (TrainCar car in train.Cars)
-                    car.BrakeSystem.BrakeCylApplyMainResPressureOK = true;
-            else
-                foreach (TrainCar car in train.Cars)
-                    car.BrakeSystem.BrakeCylApplyMainResPressureOK = false;
+
+            float AutoCylPressurePSI = 0;
+            if (lead != null)
+            {
+                AutoCylPressurePSI = lead.BrakeSystem.AutoCylPressurePSI0 + lead.BrakeSystem.AutoCylPressurePSI1 + lead.BrakeSystem.AutoCylPressurePSI2;
+
+                // Ohlídá tlak ve válci, aby nebyl vyšší než tlak hlavní jímky
+                if (AutoCylPressurePSI < lead.MainResPressurePSI)
+                    foreach (TrainCar car in train.Cars)
+                        car.BrakeSystem.BrakeCylApplyMainResPressureOK = true;
+                else
+                    foreach (TrainCar car in train.Cars)
+                        car.BrakeSystem.BrakeCylApplyMainResPressureOK = false;
+            }
 
             // Výpočet netěsnosti vzduchu v potrubí pro každý vůz
             train.TotalTrainTrainPipeLeakRate = 0f;
