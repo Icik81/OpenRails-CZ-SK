@@ -132,6 +132,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes
         public bool BrakePipeChargeRate = false;
         public Interpolator PressureRateFactor;
 
+        public float BrakeCylinderMaxPressureForLowState;
+        public float LowStateOnSpeedEngageLevel;
+        public bool TwoStateBrake = false;
 
         public float GetBrakePipeDischargeRate()
         {
