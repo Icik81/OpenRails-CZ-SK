@@ -166,6 +166,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             BP2_EngineBrakeControllerRatePSIpS = thiscopy.BP2_EngineBrakeControllerRatePSIpS;
             LEKOV_EngineBrakeControllerRatePSIpS = thiscopy.LEKOV_EngineBrakeControllerRatePSIpS;
             PressureRateFactor = thiscopy.PressureRateFactor;
+            BrakeCylinderMaxPressureForLowState = thiscopy.BrakeCylinderMaxPressureForLowState;
+            LowStateOnSpeedEngageLevel = thiscopy.LowStateOnSpeedEngageLevel;
         }
 
         // Get the brake BC & BP for EOT conditions
@@ -344,7 +346,20 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
 
                 // Načte hodnotu úbytku tlaku pro pohyb ústrojí                              
                 case "wagon(brakepipeminpressuredroptoengage": BrakePipeMinPressureDropToEngage = stf.ReadFloatBlock(STFReader.UNITS.PressureDefaultPSI, null); break;
-                    
+
+                // Omezení tlaku do válce po překročení rychlosti                              
+                case "wagon(twostatebrake(brakecylindermaxpressureforlowstate":
+                    stf.MustMatch("(");
+                    BrakeCylinderMaxPressureForLowState = stf.ReadFloat(STFReader.UNITS.PressureDefaultPSI, null);                    
+                    //TwoStateBrake = true;
+                    break;
+
+                case "wagon(twostatebrake(lowstateonspeedengagelevel":
+                    stf.MustMatch("(");
+                    LowStateOnSpeedEngageLevel = stf.ReadFloat(STFReader.UNITS.Speed, null);
+                    TwoStateBrake = true;
+                    break;
+
                 // Načte hodnotu rychlosti eliminace níkotlakého přebití                              
                 case "engine(overchargeeliminationrate": OverchargeEliminationRatePSIpS = stf.ReadFloatBlock(STFReader.UNITS.PressureRateDefaultPSIpS, null); break;
                 
@@ -671,6 +686,21 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     break;
             }
 
+            // Načte hodnotu maximálního tlaku v BV
+            if (TwoStateBrake && BrakeCarMode > 1) // Vozy v R, Mg mají nad určitou rychlost plný tlak do válců
+            {
+                if ((Car as MSTSWagon) != null && (Car as MSTSWagon).AbsSpeedMpS < LowStateOnSpeedEngageLevel)
+                    MCP = BrakeCylinderMaxPressureForLowState;
+               
+                if ((Car as MSTSLocomotive) != null && (Car as MSTSLocomotive).AbsSpeedMpS < LowStateOnSpeedEngageLevel)
+                    MCP = BrakeCylinderMaxPressureForLowState;
+            }
+            else 
+            if (TwoStateBrake && BrakeCarMode < 2) // Vozy v G, P mají omezený tlak do válců
+                MCP = BrakeCylinderMaxPressureForLowState;
+            else
+                MCP = GetMaxCylPressurePSI();
+
             // Definice default zpoždění náskoku brzdy pro nenaladěné vozy
             switch ((Car as MSTSWagon).WagonType)
             {
@@ -706,10 +736,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             if (TotalCapacityMainResBrakePipe > MainResMinimumPressureForMGbrakeActivationPSI)
                 AirForWagon = true;
             else
-                AirForWagon = false;
-
-            // Načte hodnotu maximálního tlaku v BV
-            MCP = GetMaxCylPressurePSI();
+                AirForWagon = false;            
 
             // Výsledný tlak v brzdovém válci            
             AutoCylPressurePSI = 0;
