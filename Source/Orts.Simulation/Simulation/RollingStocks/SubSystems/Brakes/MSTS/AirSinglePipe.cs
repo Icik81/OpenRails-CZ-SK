@@ -451,6 +451,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             outf.Write(PrevEngineBrakeControllerRateRelease);
             outf.Write(EngineBrakeDelay);
             outf.Write(TrainBrakeDelay);
+            outf.Write(T4_ParkingkBrake);
         }
 
         public override void Restore(BinaryReader inf)
@@ -490,7 +491,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             PrevEngineBrakeControllerRateApply = inf.ReadSingle();
             PrevEngineBrakeControllerRateRelease = inf.ReadSingle();
             EngineBrakeDelay = inf.ReadSingle();
-            TrainBrakeDelay = inf.ReadSingle(); 
+            TrainBrakeDelay = inf.ReadSingle();
+            T4_ParkingkBrake = inf.ReadInt32();
         }
         
         public override void Initialize(bool handbrakeOn, float maxPressurePSI, float fullServPressurePSI, bool immediateRelease)
@@ -2079,6 +2081,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     }
                     else
                         lead.BrakeSystem.T4_ParkingkBrake = 0;                        
+                }
+                if (!lead.AutomaticParkingBrakeEngaged && lead.BrakeSystem.GetCylPressurePSI() > 0)
+                {
+                    lead.BrakeSystem.AutoCylPressurePSI0 = 0;
                 }
                 
 
