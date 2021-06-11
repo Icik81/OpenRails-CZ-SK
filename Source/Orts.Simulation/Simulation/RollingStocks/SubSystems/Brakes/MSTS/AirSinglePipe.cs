@@ -34,12 +34,12 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
     {
         protected TrainCar Car;
         protected float HandbrakePercent;
-        public float CylPressurePSI = 64;
-        protected float AutoCylPressurePSI = 64;
-        protected float AuxResPressurePSI = 64;
+        public float CylPressurePSI = 0;
+        protected float AutoCylPressurePSI = 0;
+        protected float AuxResPressurePSI = 0;
         protected float EmergResPressurePSI = 64;
         protected float FullServPressurePSI = 50;
-        protected float MaxCylPressurePSI = 64;
+        protected float MaxCylPressurePSI = 0;
         protected float AuxCylVolumeRatio = 2.5f;
         protected float AuxBrakeLineVolumeRatio;
         protected float EmergResVolumeM3 = 0.07f;
@@ -701,8 +701,14 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             // Načte hodnotu maximálního tlaku v BV
             MCP = GetMaxCylPressurePSI();
 
-            // Výsledný tlak v brzdovém válci - přičte tlak přímočinné brzdy k tlaku v BV průběžné brzdy
-            AutoCylPressurePSI = AutoCylPressurePSI0 + AutoCylPressurePSI1 + AutoCylPressurePSI2;
+            // Výsledný tlak v brzdovém válci            
+            AutoCylPressurePSI = 0;
+            if (AutoCylPressurePSI < AutoCylPressurePSI0)
+                AutoCylPressurePSI = AutoCylPressurePSI0;           
+            if (AutoCylPressurePSI < AutoCylPressurePSI1)
+                AutoCylPressurePSI = AutoCylPressurePSI1;            
+            if (AutoCylPressurePSI < AutoCylPressurePSI2)
+                AutoCylPressurePSI = AutoCylPressurePSI2;
 
             // Tlak v BV nepřekročí maximální tlak pro BV nadefinovaný v eng lokomotivy
             if (BrakeCylinderMaxSystemPressurePSI == 0) BrakeCylinderMaxSystemPressurePSI = MaxCylPressurePSI * 1.0f; // Výchozí hodnota pro maximální tlak přímočinné brzdy v BV 
@@ -1113,7 +1119,12 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             float AutoCylPressurePSI = 0;
             if (lead != null)
             {
-                AutoCylPressurePSI = lead.BrakeSystem.AutoCylPressurePSI0 + lead.BrakeSystem.AutoCylPressurePSI1 + lead.BrakeSystem.AutoCylPressurePSI2;
+                if (AutoCylPressurePSI < lead.BrakeSystem.AutoCylPressurePSI0)
+                    AutoCylPressurePSI = lead.BrakeSystem.AutoCylPressurePSI0;              
+                if (AutoCylPressurePSI < lead.BrakeSystem.AutoCylPressurePSI1)
+                    AutoCylPressurePSI = lead.BrakeSystem.AutoCylPressurePSI1;               
+                if (AutoCylPressurePSI < lead.BrakeSystem.AutoCylPressurePSI2)
+                    AutoCylPressurePSI = lead.BrakeSystem.AutoCylPressurePSI2;
 
                 // Ohlídá tlak ve válci, aby nebyl vyšší než tlak hlavní jímky
                 if (AutoCylPressurePSI < lead.MainResPressurePSI)
