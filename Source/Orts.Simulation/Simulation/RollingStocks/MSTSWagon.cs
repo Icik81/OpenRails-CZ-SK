@@ -1987,6 +1987,13 @@ namespace Orts.Simulation.RollingStocks
                 }
             }
 
+            if (this is MSTSLocomotive)
+            {
+                MSTSLocomotive loco = (MSTSLocomotive)this;
+                if (!loco.Battery)
+                    foreach (Pantograph p in Pantographs.List)
+                        p.PantographsBlocked = true;
+            }
             Pantographs.Update(elapsedClockSeconds);
             
             MSTSBrakeSystem.Update(elapsedClockSeconds);

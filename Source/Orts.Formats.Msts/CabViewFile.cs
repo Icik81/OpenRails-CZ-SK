@@ -515,6 +515,7 @@ namespace Orts.Formats.Msts
         public float MaxNeedleSpeed = 0; // time in seconds from max to min and vice versa
         public double MinValueExtendedPhysics = 0;
         public double MaxValueExtendedPhysics = 0;
+        public string DateFormat = "dd.MM.yy";
 
         public CABViewControlTypes ControlType = CABViewControlTypes.NONE;
         public CABViewControlStyles ControlStyle = CABViewControlStyles.NONE;
@@ -735,6 +736,12 @@ namespace Orts.Formats.Msts
                 {
                     stf.MustMatch("(");
                     MaxNeedleSpeed = stf.ReadFloat(STFReader.UNITS.None, 0);
+                    stf.SkipRestOfBlock();
+                }),
+                new STFReader.TokenProcessor("dateformat", () =>
+                {
+                    stf.MustMatch("(");
+                    DateFormat = stf.ReadString();
                     stf.SkipRestOfBlock();
                 }),
 
@@ -988,7 +995,13 @@ namespace Orts.Formats.Msts
                     stf.MustMatch("(");
                     ScreenContainer = (int)stf.ReadFloat(STFReader.UNITS.None, 0);
                     stf.SkipRestOfBlock();
-                })
+                }),
+                new STFReader.TokenProcessor("dateformat", () =>
+                {
+                    stf.MustMatch("(");
+                    DateFormat = stf.ReadString();
+                    stf.SkipRestOfBlock();
+                }),
             });
         }
 

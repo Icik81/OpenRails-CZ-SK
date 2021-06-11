@@ -28,7 +28,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
 
     public class ScriptedCircuitBreaker
     {
-        readonly MSTSElectricLocomotive Locomotive;
+        public readonly MSTSElectricLocomotive Locomotive;
         readonly Simulator Simulator;
 
         public bool Activated = false;
@@ -197,8 +197,12 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
             {
                 if (Script != null)
                 {
-                    Script.Update(elapsedSeconds);
+                    Script.Update(elapsedSeconds, Locomotive.Battery);
                 }
+            }
+            if (!Locomotive.Battery && State != CircuitBreakerState.Open)
+            {
+                HandleEvent(PowerSupplyEvent.OpenCircuitBreaker);
             }
         }
 
@@ -248,7 +252,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
             SetDriverClosingAuthorization(true);
         }
 
-        public override void Update(float elapsedSeconds)
+        public override void Update(float elapsedSeconds, bool battery)
         {
             SetClosingAuthorization(TCSClosingAuthorization() && CurrentPantographState() == PantographState.Up);
 
@@ -290,7 +294,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                     break;
             }
 
-            if (PreviousState != CurrentState())
+            if (PreviousState != CurrentState() && battery)
             {
                 switch (CurrentState())
                 {
@@ -330,7 +334,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
             SetDriverClosingAuthorization(true);
         }
 
-        public override void Update(float elapsedSeconds)
+        public override void Update(float elapsedSeconds, bool battery)
         {
             //SetClosingAuthorization(TCSClosingAuthorization() && CurrentPantographState() == PantographState.Up);
             // Icik
@@ -379,7 +383,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                 switch (CurrentState())
                 {
                     case CircuitBreakerState.Open:
-                        SignalEvent(Event.CircuitBreakerOpen);
+                        if (battery) SignalEvent(Event.CircuitBreakerOpen);
                         break;
 
                     case CircuitBreakerState.Closing:

@@ -143,7 +143,7 @@ namespace Orts.Simulation.RollingStocks
         public bool CabRadioOn;
         public bool OnLineCabRadio;
         public string OnLineCabRadioURL;
-        public bool Battery;
+        public bool Battery = true;
         public bool PowerKey;
         public bool BrakeRelease = false;
         public bool Up = false;
@@ -1059,8 +1059,9 @@ namespace Orts.Simulation.RollingStocks
                 case "engine(slipspeedcritical": SlipSpeedCritical = stf.ReadFloatBlock(STFReader.UNITS.Speed, null); break;
                 case "engine(edbindependent": EDBIndependent = stf.ReadBoolBlock(false); break;
                 case "engine(doespowerlossresetcontrols": DoesPowerLossResetControls = stf.ReadBoolBlock(false); break;
-                    
+
                 // Jindrich
+                case "engine(batterydefaultoff": Battery = !stf.ReadBoolBlock(false); break;
                 case "engine(throttlefullrangeincreasetimeseconds": ThrottleFullRangeIncreaseTimeSeconds = stf.ReadFloatBlock(STFReader.UNITS.Any, 5); break;
                 case "engine(throttlefullrangedecreasetimeseconds": ThrottleFullRangeDecreaseTimeSeconds = stf.ReadFloatBlock(STFReader.UNITS.Any, 5); break;
                 case "engine(dynamicbrakefullrangeincreasetimeseconds": DynamicBrakeFullRangeIncreaseTimeSeconds = stf.ReadFloatBlock(STFReader.UNITS.Any, 5); break;
@@ -1284,15 +1285,18 @@ namespace Orts.Simulation.RollingStocks
                 case DriverStation.None:
                     {
                         Simulator.Confirmer.Information("No active cab selected");
+                        PowerKey = false;
                         break;
                     }
                 case DriverStation.Station1:
                     {
+                        PowerKey = true;
                         Simulator.Confirmer.Information("Cab 1 selected");
                         break;
                     }
                 case DriverStation.Station2:
                     {
+                        PowerKey = true;
                         Simulator.Confirmer.Information("Cab 2 selected");
                         break;
                     }
@@ -1309,16 +1313,19 @@ namespace Orts.Simulation.RollingStocks
                 case DriverStation.None:
                     {
                         Simulator.Confirmer.Information("No active cab selected");
+                        PowerKey = false;
                         break;
                     }
                 case DriverStation.Station1:
                     {
                         Simulator.Confirmer.Information("Cab 1 selected");
+                        PowerKey = true;
                         break;
                     }
                 case DriverStation.Station2:
                     {
                         Simulator.Confirmer.Information("Cab 2 selected");
+                        PowerKey = true;
                         break;
                     }
             }
@@ -5130,6 +5137,14 @@ namespace Orts.Simulation.RollingStocks
             if (PowerKey) SignalEvent(Event.PowerKeyOn);
             else SignalEvent(Event.PowerKeyOff);
             if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.PowerKey, PowerKey ? CabSetting.On : CabSetting.Off);
+            if (ActiveStation == DriverStation.None && PowerKey)
+            {
+                ActiveStation = UsingRearCab ? DriverStation.Station2 : DriverStation.Station1;
+            }
+            if ((ActiveStation == DriverStation.Station1 || ActiveStation == DriverStation.Station2) && !PowerKey)
+            {
+                ActiveStation = DriverStation.None;
+            }
         }
 
         // Icik
@@ -6726,7 +6741,7 @@ namespace Orts.Simulation.RollingStocks
             }
             if (crc.ControlType == CABViewControlTypes.ORTS_DATE)
             {
-                return DateTime.Now.Date.ToString("dd.MM.yy");
+                return DateTime.Now.Date.ToString(crc.DateFormat);
             }
             string retVal = crc.StringValue;
             if (crc.Length > 0)

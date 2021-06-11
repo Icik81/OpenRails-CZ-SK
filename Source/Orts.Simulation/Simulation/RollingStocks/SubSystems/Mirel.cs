@@ -1628,7 +1628,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                     Locomotive.SignalEvent(Common.Event.MirelOverspeedOff);
                     mirelBeeping = false;
                 }
-                if (diff > 7)
+                if (diff > 7 && Bar.FromPSI(Locomotive.BrakeSystem.BrakeLine1PressurePSI) > 4.98f)
                 {
                     ApplyNZ2();
                 }
@@ -1653,7 +1653,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                     Locomotive.SignalEvent(Common.Event.MirelOverspeedOff);
                     mirelBeeping = false;
                 }
-                if (diff > 7)
+                if (diff > 7 && Bar.FromPSI(Locomotive.BrakeSystem.BrakeLine1PressurePSI) > 4.98f)
                 {
                     ApplyNZ2();
                 }
@@ -1708,7 +1708,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                         Locomotive.SignalEvent(Common.Event.MirelOverspeedOff);
                         mirelBeeping = false;
                     }
-                    if (diff > 7)
+                    if (diff > 7 && Bar.FromPSI(Locomotive.BrakeSystem.BrakeLine1PressurePSI) > 4.98f)
                     {
                         ApplyNZ2();
                     }
@@ -1760,7 +1760,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                     BlueLight = true;
                 }
             }
-            if ((selectedDriveMode == DriveMode.Normal || recieverState == RecieverState.Off) && selectedDriveMode != DriveMode.Trailing) 
+            if ((selectedDriveMode == DriveMode.Normal || recieverState == RecieverState.Off) && selectedDriveMode != DriveMode.Trailing && selectedDriveMode != DriveMode.Shunting) 
             {
                 // Cyklická kontrola bdělosti
                 bool vigilanceActive = true;
@@ -1866,7 +1866,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                             Locomotive.SignalEvent(Common.Event.MirelOverspeedOff);
                             mirelBeeping = false;
                         }
-                        if (diff > 7 && Locomotive.EmergencyButtonPressed == false)
+                        if (diff > 7 && Locomotive.EmergencyButtonPressed == false && Bar.FromPSI(Locomotive.BrakeSystem.BrakeLine1PressurePSI) > 4.98f)
                         {
                             if (!NZ2) ApplyNZ2();
                         }
@@ -2029,7 +2029,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                                     MirelMaximumSpeed = selectedApproachSpeed;
                             }
 
-                            if (MpS.ToKpH(Locomotive.AbsSpeedMpS) > MirelMaximumSpeed + 0.5f && !emergency)
+                            if (MpS.ToKpH(Locomotive.AbsSpeedMpS) > MirelMaximumSpeed + 0.5f && !emergency && Bar.FromPSI(Locomotive.BrakeSystem.BrakeLine1PressurePSI) > 4.98f)
                             {
                                 ApplyNZ2();
                             }
@@ -2279,7 +2279,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                                     MirelMaximumSpeed = selectedApproachSpeed;
                             }
 
-                            if (MpS.ToKpH(Locomotive.AbsSpeedMpS) > MirelMaximumSpeed + 0.5f && !emergency)
+                            if (MpS.ToKpH(Locomotive.AbsSpeedMpS) > MirelMaximumSpeed + 0.5f && !emergency && Bar.FromPSI(Locomotive.BrakeSystem.BrakeLine1PressurePSI) > 4.98f)
                             {
                                 ApplyNZ2();
                             }
@@ -2396,7 +2396,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                             Locomotive.SignalEvent(Common.Event.MirelOverspeedOff);
                             mirelBeeping = false;
                         }
-                        if (diff > 7)
+                        if (diff > 7 && Bar.FromPSI(Locomotive.BrakeSystem.BrakeLine1PressurePSI) > 4.98f)
                         {
                             if (!NZ2) ApplyNZ2();
                         }
@@ -2431,7 +2431,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                             Locomotive.SignalEvent(Common.Event.MirelOverspeedOff);
                             mirelBeeping = false;
                         }
-                        if (diff > 7)
+                        if (diff > 7 && Bar.FromPSI(Locomotive.BrakeSystem.BrakeLine1PressurePSI) > 4.98f)
                         {
                             if (!NZ2) ApplyNZ2();
                         }
@@ -2682,7 +2682,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
         {
             if (NZOK) NZ5timer = 0;
 
-            if ((Locomotive.EngineBrakeController.CurrentValue > 0 || Bar.FromPSI(Locomotive.BrakeSystem.BrakeLine1PressurePSI) < 4.5 || Locomotive.AbsSpeedMpS > 0) && !NZ5)
+            if ((Locomotive.AutomaticParkingBrakeEngaged || Locomotive.EngineBrakeController.CurrentValue > 0 || Bar.FromPSI(Locomotive.BrakeSystem.BrakeLine1PressurePSI) < 4.5 || Locomotive.AbsSpeedMpS > 0) && !NZ5)
             {
                 if (!zs3 && nz5zs3) Locomotive.SignalEvent(Common.Event.MirelZS3Off);
                 nz5zs3 = false;
