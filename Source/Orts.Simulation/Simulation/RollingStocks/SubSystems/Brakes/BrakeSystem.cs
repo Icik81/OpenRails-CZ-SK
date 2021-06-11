@@ -18,6 +18,8 @@
 using ORTS.Common;
 using System.Collections.Generic;
 using System.IO;
+using Orts.Parsers.Msts;
+using System;
 
 namespace Orts.Simulation.RollingStocks.SubSystems.Brakes
 {
@@ -125,6 +127,42 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes
         public float AutoEngineBrakeDelay = 0;
         public int ReleaseTr = 0;
         public bool BrakeCylApplyMainResPressureOK = false;
+
+        public bool BrakePipeDischargeRate = false;
+        public bool BrakePipeChargeRate = false;
+        public Interpolator PressureRateFactor;
+
+        public float BrakeCylinderMaxPressureForLowState;
+        public float LowStateOnSpeedEngageLevel;
+        public bool TwoStateBrake = false;
+
+        public float GetBrakePipeDischargeRate()
+        {
+            var PressureRate = 0.0f;
+            if (PressureRateFactor == null)
+            {
+                PressureRate = 0.0f;
+            }
+            else
+            {
+                PressureRate = PressureRateFactor[BrakeLine1PressurePSI];
+            }
+            return PressureRate;
+        }
+
+        public float GetBrakePipeChargeRate()
+        {
+            var PressureRate = 0.0f;
+            if (PressureRateFactor == null)
+            {
+                PressureRate = 0.0f;
+            }
+            else
+            {
+                PressureRate = PressureRateFactor[BrakeLine1PressurePSI];
+            }
+            return PressureRate;
+        }
 
         /// <summary>
         /// Front brake hoses connection status
