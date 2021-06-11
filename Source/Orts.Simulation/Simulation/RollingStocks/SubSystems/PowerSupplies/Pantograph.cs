@@ -304,7 +304,6 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
         public void HandleEvent(PowerSupplyEvent evt)
         {
             Event soundEvent = Event.None;
-
             // Icik
             if (!PantographsBlocked)
             switch (evt)
