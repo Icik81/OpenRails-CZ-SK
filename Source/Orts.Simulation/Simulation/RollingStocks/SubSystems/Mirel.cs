@@ -759,6 +759,31 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                 if (Locomotive.UsingRearCab && Locomotive.ActiveStation == MSTSLocomotive.DriverStation.Station1)
                     Display = "ST1";
             }
+            if (showingSelectedApproachSpeed)
+            {
+                Display = selectedApproachSpeed.ToString();
+            }
+            if (Display == "ll0")
+                Display = "l10";
+            if (Display == "ll1")
+                Display = "l11";
+            if (Display == "ll2")
+                Display = "l12";
+            if (Display == "ll3")
+                Display = "l13";
+            if (Display == "ll4")
+                Display = "l14";
+            if (Display == "ll5")
+                Display = "l15";
+            if (Display == "ll6")
+                Display = "l16";
+            if (Display == "ll7")
+                Display = "l17";
+            if (Display == "ll8")
+                Display = "l18";
+            if (Display == "ll9")
+                Display = "l19";
+
         }
 
         protected bool canChangeSelectedApproachSpeed = true;
@@ -1802,7 +1827,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                 {
                     if (MpS.ToKpH(Locomotive.AbsSpeedMpS) < 15 && Locomotive.EngineBrakeController.CurrentValue > 0)
                         vigilanceActive = false;
-                    if (Locomotive.TrainControlSystem.CabSignalAspect == TrackMonitorSignalAspect.Clear_2)
+                    if (Locomotive.TrainControlSystem.CabSignalAspect == TrackMonitorSignalAspect.Clear_2 || Locomotive.TrainControlSystem.CabSignalAspect == TrackMonitorSignalAspect.Restricted)
                         vigilanceActive = false;
                     if (NoAlertOnRestrictedSignal && Locomotive.TrainControlSystem.CabSignalAspect == TrackMonitorSignalAspect.Restricted)
                         vigilanceActive = false;
@@ -1908,7 +1933,6 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                 switch (Locomotive.TrainControlSystem.CabSignalAspect)
                 {
                     case TrackMonitorSignalAspect.Clear_2:
-                    case TrackMonitorSignalAspect.Restricted:
                     case TrackMonitorSignalAspect.None:
                         {
                             if (recieverState == RecieverState.Off)
@@ -2041,7 +2065,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                             }
                             break;
                         }
-                    /*case TrackMonitorSignalAspect.Restricted:
+                    case TrackMonitorSignalAspect.Restricted:
                         {
                             selectedApproachSpeed = 120;
                             if (recieverState == RecieverState.Off)
@@ -2165,7 +2189,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                                 emergency = false;
                             }
                             break;
-                        }*/
+                        }
                     case TrackMonitorSignalAspect.Stop:
                     case TrackMonitorSignalAspect.StopAndProceed:
                         {
@@ -2682,7 +2706,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
         {
             if (NZOK) NZ5timer = 0;
 
-            if ((Locomotive.AutomaticParkingBrakeEngaged || Locomotive.EngineBrakeController.CurrentValue > 0 || Bar.FromPSI(Locomotive.BrakeSystem.BrakeLine1PressurePSI) < 4.5 || Locomotive.AbsSpeedMpS > 0) && !NZ5)
+            if (Bar.FromPSI(Locomotive.BrakeSystem.GetCylPressurePSI()) < 1.5f && !NZ5)
             {
                 if (!zs3 && nz5zs3) Locomotive.SignalEvent(Common.Event.MirelZS3Off);
                 nz5zs3 = false;
