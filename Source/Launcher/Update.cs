@@ -41,11 +41,11 @@ namespace ORTS
                     webClient.DownloadFile("http://lkpr.aspone.cz/or/update.zip", Application.StartupPath + "\\Update.zip");
                     ZipFile zip = new ZipFile(Application.StartupPath + "\\Update.zip");
                     zip.ExtractAll(Application.StartupPath, ExtractExistingFileAction.OverwriteSilently);
+                    MessageBox.Show(s, "Aktualizace", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
                 File.WriteAllText(versionPath, s);
             }
             catch (Exception ex) { MessageBox.Show("Chyba aktualizace." + Environment.NewLine + ex.Message, "Chyba", MessageBoxButtons.OK, MessageBoxIcon.Exclamation); }
-            MessageBox.Show("Aktualizován patch " + s);
             Close();
         }
     }
