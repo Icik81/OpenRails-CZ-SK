@@ -39,7 +39,7 @@ namespace ORTS
                     File.Delete(Application.StartupPath + "\\Update.zip");
                     webClient.DownloadFile("http://lkpr.aspone.cz/or/update.zip", Application.StartupPath + "\\Update.zip");
                     ZipFile zip = new ZipFile(Application.StartupPath + "\\Update.zip");
-                    zip.ExtractAll(Application.StartupPath);
+                    zip.ExtractAll(Application.StartupPath, ExtractExistingFileAction.OverwriteSilently);
                 }
                 File.WriteAllText(versionPath, s);
             }
