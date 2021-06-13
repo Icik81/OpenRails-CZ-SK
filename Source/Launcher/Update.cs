@@ -26,6 +26,10 @@ namespace ORTS
                     Close();
                     return;
                 }
+            }
+            catch { Close(); return; }
+            try
+            {
                 string versionPath = Application.StartupPath;
                 versionPath = versionPath + "\\version.ini";
                 if (!File.Exists(versionPath))
