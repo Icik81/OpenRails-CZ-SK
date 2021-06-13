@@ -83,6 +83,13 @@ namespace ORTS
                 MessageBox.Show($"{Application.ProductName} is missing the following:\n\n{string.Join("\n", missingORFiles.ToArray())}\n\nPlease re-install the software.", Application.ProductName);
                 return;
             }
+
+            if (!File.Exists(Application.StartupPath + "\\SkipAuto.ini"))
+            {
+                Update up = new Update();
+                up.ShowDialog();
+            }
+
             // Default menu
             var process = Process.Start(Path.Combine(path, "Menu.exe"));
             process.WaitForInputIdle();
