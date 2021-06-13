@@ -16,6 +16,7 @@ namespace ORTS
 
         private void Update_Load(object sender, EventArgs e)
         {
+            string s = "";
             try
             {
                 Ping ping = new Ping();
@@ -33,7 +34,7 @@ namespace ORTS
                 }
                 string version = File.ReadAllText(versionPath);
                 WebClient webClient = new WebClient();
-                string s = webClient.DownloadString("http://lkpr.aspone.cz/or/version.txt");
+                s = webClient.DownloadString("http://lkpr.aspone.cz/or/version.txt");
                 if (version != s) // new version available
                 {
                     File.Delete(Application.StartupPath + "\\Update.zip");
@@ -44,6 +45,7 @@ namespace ORTS
                 File.WriteAllText(versionPath, s);
             }
             catch (Exception ex) { MessageBox.Show("Chyba aktualizace." + Environment.NewLine + ex.Message, "Chyba", MessageBoxButtons.OK, MessageBoxIcon.Exclamation); }
+            MessageBox.Show("Aktualizován patch " + s);
             Close();
         }
     }
