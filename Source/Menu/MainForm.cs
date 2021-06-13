@@ -1622,7 +1622,6 @@ namespace ORTS
 
         private void MainForm_Load(object sender, EventArgs e)
         {
-
         }
     }
 }
