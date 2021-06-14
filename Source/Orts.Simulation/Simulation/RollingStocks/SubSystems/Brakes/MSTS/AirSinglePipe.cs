@@ -229,7 +229,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 string.Format("{0}", NextLocoBrakeState),
                 
                 //string.Empty, // Spacer because the state above needs 2 columns.                                     
-                //string.Format("PressureRate {0:F0}", GetBrakePipeDischargeRate()),
+                //string.Format("T_HighPressure {0:F0}", T_HighPressure),
                 //string.Empty, // Spacer because the state above needs 2 columns.                                     
                 //string.Format("Parking {0:F0}", ParkingBrakeAutoCylPressurePSI1),
                 //string.Empty, // Spacer because the state above needs 2 columns.                                     
@@ -711,12 +711,21 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     MCP = MaxCylPressurePSI;
                     T_HighPressure = 0;
                 }
-                // Po 12s přepne na nižší stupeň brzdění
+                // Po dobu 12s se brzdící válce odvětrávají na nižší stupeň brzdění 
                 if ((Car as MSTSWagon) != null && (Car as MSTSWagon).AbsSpeedMpS < LowStateOnSpeedEngageLevel && HighPressure 
                     || (Car as MSTSLocomotive) != null && (Car as MSTSLocomotive).AbsSpeedMpS < LowStateOnSpeedEngageLevel && HighPressure)
                 {
-                    T_HighPressure += elapsedClockSeconds;
-                    if (T_HighPressure > 12) 
+                    MCP = BrakeCylinderMaxPressureForLowState;
+                    if (T_HighPressure == 0)                    
+                        FromHighToLowPressureRate = (AutoCylPressurePSI0 - MCP) / 12;
+                                           
+                    T_HighPressure += elapsedClockSeconds;                    
+                    if (T_HighPressure < 12) 
+                    {                        
+                        if (AutoCylPressurePSI0 > MCP)
+                            AutoCylPressurePSI0 -= elapsedClockSeconds * FromHighToLowPressureRate; // Rychlost odvětrání po dobu 12s na 1.9bar                                                
+                    }
+                    else
                     {
                         HighPressure = false;
                         LowPressure = true;
