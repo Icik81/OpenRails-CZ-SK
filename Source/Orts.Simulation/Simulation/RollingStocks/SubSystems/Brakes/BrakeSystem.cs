@@ -139,6 +139,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes
         public bool HighPressure = false;
         public bool LowPressure = true;
         public float T_HighPressure;
+        public float FromHighToLowPressureRate;
 
         public float GetBrakePipeDischargeRate()
         {
