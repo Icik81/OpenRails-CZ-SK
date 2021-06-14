@@ -4435,6 +4435,17 @@ namespace Orts.Simulation.RollingStocks
         public void StartTrainBrakeIncrease(float? target)
         {
             if (Mirel.Equipped && !Mirel.BlueLight && Mirel.initTest == Mirel.InitTest.Passed && SpeedMpS > 0) Mirel.AlerterPressed(true);
+            if (MultiPositionControllers != null)
+            {
+                foreach (MultiPositionController mpc in MultiPositionControllers)
+                {
+                    if (mpc.controllerBinding == MultiPositionController.ControllerBinding.TrainBrake)
+                    {
+                        mpc.DoMovement(MultiPositionController.Movement.Aft);
+                        return;
+                    }
+                }
+            }
             if (CombinedControlType == CombinedControl.ThrottleAir)
                 ThrottleController.SetValue(0);
 
@@ -4465,6 +4476,17 @@ namespace Orts.Simulation.RollingStocks
         public void StopTrainBrakeIncrease()
         {
             if (Mirel.Equipped && !Mirel.BlueLight && Mirel.initTest == Mirel.InitTest.Passed && SpeedMpS > 0) Mirel.AlerterPressed(true);
+            if (MultiPositionControllers != null)
+            {
+                foreach (MultiPositionController mpc in MultiPositionControllers)
+                {
+                    if (mpc.controllerBinding == MultiPositionController.ControllerBinding.TrainBrake)
+                    {
+                        mpc.DoMovement(MultiPositionController.Movement.Neutral);
+                        return;
+                    }
+                }
+            }
             AlerterReset(TCSEvent.TrainBrakeChanged);
             TrainBrakeController.StopIncrease();
             new TrainBrakeCommand(Simulator.Log, true, TrainBrakeController.CurrentValue, TrainBrakeController.CommandStartTime);
@@ -4473,6 +4495,17 @@ namespace Orts.Simulation.RollingStocks
         public void StartTrainBrakeDecrease(float? target, bool toZero = false)
         {
             if (Mirel.Equipped && !Mirel.BlueLight && Mirel.initTest == Mirel.InitTest.Passed && SpeedMpS > 0) Mirel.AlerterPressed(true);
+            if (MultiPositionControllers != null)
+            {
+                foreach (MultiPositionController mpc in MultiPositionControllers)
+                {
+                    if (mpc.controllerBinding == MultiPositionController.ControllerBinding.TrainBrake)
+                    {
+                        mpc.DoMovement(MultiPositionController.Movement.Forward);
+                        return;
+                    }
+                }
+            }
             AlerterReset(TCSEvent.TrainBrakeChanged);
             TrainBrakeController.StartDecrease(target, toZero);
             TrainBrakeController.CommandStartTime = Simulator.ClockTime;
@@ -4488,6 +4521,14 @@ namespace Orts.Simulation.RollingStocks
             else
                 if (Mirel.Equipped && !Mirel.BlueLight && Mirel.initTest == Mirel.InitTest.Passed && SpeedMpS > 0)
                     Mirel.AlerterPressed(true);
+            foreach (MultiPositionController mpc in MultiPositionControllers)
+            {
+                if (mpc.controllerBinding == MultiPositionController.ControllerBinding.TrainBrake)
+                {
+                    mpc.DoMovement(MultiPositionController.Movement.Neutral);
+                    return;
+                }
+            }
             AlerterReset(TCSEvent.TrainBrakeChanged);
             TrainBrakeController.StopDecrease();
             new TrainBrakeCommand(Simulator.Log, false, TrainBrakeController.CurrentValue, TrainBrakeController.CommandStartTime);
