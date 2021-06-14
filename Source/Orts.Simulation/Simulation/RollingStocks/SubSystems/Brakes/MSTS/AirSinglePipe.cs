@@ -702,6 +702,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             // Načte hodnotu maximálního tlaku v BV
             if (TwoStateBrake && BrakeCarMode > 1) // Vozy v R, Mg mají nad určitou rychlost plný tlak do válců
             {                
+                // Nad zadanou rychlost aktivuje vyšší stupeň brzdění
                 if ((Car as MSTSWagon) != null && (Car as MSTSWagon).AbsSpeedMpS > LowStateOnSpeedEngageLevel
                     || (Car as MSTSLocomotive) != null && (Car as MSTSLocomotive).AbsSpeedMpS > LowStateOnSpeedEngageLevel)
                 {
@@ -709,23 +710,29 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     LowPressure = false;
                     MCP = MaxCylPressurePSI;
                     T_HighPressure = 0;
-                }                
-                if ((Car as MSTSWagon) != null && (Car as MSTSWagon).AbsSpeedMpS < LowStateOnSpeedEngageLevel && HighPressure
+                }
+                // Po 12s přepne na nižší stupeň brzdění
+                if ((Car as MSTSWagon) != null && (Car as MSTSWagon).AbsSpeedMpS < LowStateOnSpeedEngageLevel && HighPressure 
                     || (Car as MSTSLocomotive) != null && (Car as MSTSLocomotive).AbsSpeedMpS < LowStateOnSpeedEngageLevel && HighPressure)
                 {
                     T_HighPressure += elapsedClockSeconds;
-                    if (T_HighPressure > 12)
+                    if (T_HighPressure > 12) 
                     {
                         HighPressure = false;
                         LowPressure = true;
                     }
                 }                
+                // Pod 50km/h přepne na nižší stupeň brzdění
                 if ((Car as MSTSWagon) != null && (Car as MSTSWagon).AbsSpeedMpS < 50 / 3.6f && HighPressure
                     || (Car as MSTSLocomotive) != null && (Car as MSTSLocomotive).AbsSpeedMpS < 50 / 3.6f && HighPressure)                
                     LowPressure = true;
-                                
+
                 if (LowPressure)
+                {
+                    if (AutoCylPressurePSI0 > MCP)
+                        AutoCylPressurePSI0 -= elapsedClockSeconds * (1.0f * 14.50377f); // Rychlost odvětrání 1 bar/s
                     MCP = BrakeCylinderMaxPressureForLowState;
+                }
             }
             else 
             if (TwoStateBrake && BrakeCarMode < 2) // Vozy v G, P mají omezený tlak do válců
