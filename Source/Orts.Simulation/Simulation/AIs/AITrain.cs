@@ -6783,15 +6783,20 @@ namespace Orts.Simulation.AIs
                 durationS = (DateTime.Now.Millisecond % 10) / 3 + 2;
             }
 
-            locomotive.ManualHorn = true;
+            if (locomotive != null)
+                locomotive.ManualHorn = true;
             yield return durationS.Value;
 
-            locomotive.ManualHorn = false;
+            if (locomotive != null)
+                locomotive.ManualHorn = false;
 
-            if (locomotive.DoesHornTriggerBell)
+            if (locomotive != null)
             {
-                yield return 30 - durationS.Value;
-                locomotive.BellState = MSTSLocomotive.SoundState.Stopped;
+                if (locomotive.DoesHornTriggerBell)
+                {
+                    yield return 30 - durationS.Value;
+                    locomotive.BellState = MSTSLocomotive.SoundState.Stopped;
+                }
             }
         }
     }
