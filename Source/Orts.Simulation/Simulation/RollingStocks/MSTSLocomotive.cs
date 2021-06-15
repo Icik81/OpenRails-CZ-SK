@@ -4521,12 +4521,15 @@ namespace Orts.Simulation.RollingStocks
             else
                 if (Mirel.Equipped && !Mirel.BlueLight && Mirel.initTest == Mirel.InitTest.Passed && SpeedMpS > 0)
                     Mirel.AlerterPressed(true);
-            foreach (MultiPositionController mpc in MultiPositionControllers)
+            if (MultiPositionControllers != null)
             {
-                if (mpc.controllerBinding == MultiPositionController.ControllerBinding.TrainBrake)
+                foreach (MultiPositionController mpc in MultiPositionControllers)
                 {
-                    mpc.DoMovement(MultiPositionController.Movement.Neutral);
-                    return;
+                    if (mpc.controllerBinding == MultiPositionController.ControllerBinding.TrainBrake)
+                    {
+                        mpc.DoMovement(MultiPositionController.Movement.Neutral);
+                        return;
+                    }
                 }
             }
             AlerterReset(TCSEvent.TrainBrakeChanged);
