@@ -259,8 +259,14 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
             // Icik
             //CurrentValue = IntermediateValue = MathHelper.Clamp(value, MinimumValue, MaximumValue);
             if (CurrentValue == 0 && i == 0)
+            {
                 CurrentValue = IntermediateValue = MathHelper.Clamp(value, MinimumValue, MaximumValue);
-            i = 1;
+                i = 1;
+            }
+            else
+            {
+                CurrentValue = IntermediateValue = MathHelper.Clamp(value, MinimumValue, MaximumValue);
+            }
 
             var oldNotch = CurrentNotch;
 
@@ -277,7 +283,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                 ? 1 : CurrentNotch < oldNotch || CurrentValue < OldValue - 0.1f || CurrentValue == 0 && OldValue > 0 ? -1 : 0;
             if (change != 0)
                 OldValue = CurrentValue;
-
+            i = 0;
             return change;
         }
 

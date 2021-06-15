@@ -121,6 +121,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                         case "dynamicbrake":
                             controllerBinding = ControllerBinding.DynamicBrake;
                             break;
+                        case "trainbrake":
+                            controllerBinding = ControllerBinding.TrainBrake;
+                            break;
                     }
                     break;
                 case "engine(ortsmultipositioncontroller(controllerid": ControllerId = stf.ReadIntBlock(0); break;
@@ -244,6 +247,63 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                     ccAutoMode = true;
                 }
 
+            }
+
+            if (controllerBinding == ControllerBinding.TrainBrake)
+            {
+                foreach (MSTSNotch notch in Locomotive.TrainBrakeController.Notches)
+                {
+                    if (controllerPosition == ControllerPosition.TrainBrakesControllerFullQuickReleaseStart)
+                    {
+                        if (notch.Type == ORTS.Scripting.Api.ControllerState.FullQuickRelease && Locomotive.TrainBrakeController.CurrentValue != notch.Value)
+                        {
+                            Locomotive.SetTrainBrakeValue(notch.Value);
+                        }
+                    }
+                    if (controllerPosition == ControllerPosition.TrainBrakesControllerOverchargeStart)
+                    {
+                        if (notch.Type == ORTS.Scripting.Api.ControllerState.OverchargeStart && Locomotive.TrainBrakeController.CurrentValue != notch.Value)
+                        {
+                            Locomotive.SetTrainBrakeValue(notch.Value);
+                        }
+                    }
+                    if (controllerPosition == ControllerPosition.TrainBrakesControllerHoldLappedStart)
+                    {
+                        if (notch.Type == ORTS.Scripting.Api.ControllerState.Lap && Locomotive.TrainBrakeController.CurrentValue != notch.Value)
+                        {
+                            Locomotive.SetTrainBrakeValue(notch.Value);
+                        }
+                    }
+                    if (controllerPosition == ControllerPosition.TrainBrakesControllerReleaseStart)
+                    {
+                        if (notch.Type == ORTS.Scripting.Api.ControllerState.Release && Locomotive.TrainBrakeController.CurrentValue != notch.Value)
+                        {
+                            Locomotive.SetTrainBrakeValue(notch.Value);
+                        }
+                    }
+                    if (controllerPosition == ControllerPosition.TrainBrakesControllerNeutralhandleOffStart)
+                    {
+                        if (notch.Type == ORTS.Scripting.Api.ControllerState.Neutral && Locomotive.TrainBrakeController.CurrentValue != notch.Value)
+                        {
+                            Locomotive.SetTrainBrakeValue(notch.Value);
+                        }
+                    }
+                    if (controllerPosition == ControllerPosition.TrainBrakesControllerApplyStart)
+                    {
+                        if (notch.Type == ORTS.Scripting.Api.ControllerState.Apply && Locomotive.TrainBrakeController.CurrentValue != notch.Value)
+                        {
+                            Locomotive.SetTrainBrakeValue(notch.Value);
+                        }
+                    }
+                    if (controllerPosition == ControllerPosition.TrainBrakesControllerEmergencyStart)
+                    {
+                        if (notch.Type == ORTS.Scripting.Api.ControllerState.Emergency && Locomotive.TrainBrakeController.CurrentValue != notch.Value)
+                        {
+                            Locomotive.SetTrainBrakeValue(notch.Value);
+                        }
+                    }
+                }
+                return;
             }
 
             if (!haveCruiseControl || !ccAutoMode)
@@ -939,6 +999,41 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                         controllerPosition = ControllerPosition.DynamicBrakeIncreaseWithPriority;
                         break;
                     }
+                case "TrainBrakesControllerFullQuickReleaseStart":
+                    {
+                        controllerPosition = ControllerPosition.TrainBrakesControllerFullQuickReleaseStart;
+                        break;
+                    }
+                case "TrainBrakesControllerOverchargeStart":
+                    {
+                        controllerPosition = ControllerPosition.TrainBrakesControllerOverchargeStart;
+                        break;
+                    }
+                case "TrainBrakesControllerHoldLappedStart":
+                    {
+                        controllerPosition = ControllerPosition.TrainBrakesControllerHoldLappedStart;
+                        break;
+                    }
+                case "TrainBrakesControllerReleaseStart":
+                    {
+                        controllerPosition = ControllerPosition.TrainBrakesControllerReleaseStart;
+                        break;
+                    }
+                case "TrainBrakesControllerNeutralhandleOffStart":
+                    {
+                        controllerPosition = ControllerPosition.TrainBrakesControllerNeutralhandleOffStart;
+                        break;
+                    }
+                case "TrainBrakesControllerApplyStart":
+                    {
+                        controllerPosition = ControllerPosition.TrainBrakesControllerApplyStart;
+                        break;
+                    }
+                case "TrainBrakesControllerEmergencyStart":
+                    {
+                        controllerPosition = ControllerPosition.TrainBrakesControllerEmergencyStart;
+                        break;
+                    }
             }
             if (!messageDisplayed)
             {
@@ -1022,14 +1117,22 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
             SelectedSpeedIncrease,
             SelectedSpeedDecrease,
             SelectSpeedZero,
-            DynamicBrakeIncreaseWithPriority
+            DynamicBrakeIncreaseWithPriority,
+            TrainBrakesControllerFullQuickReleaseStart,
+            TrainBrakesControllerOverchargeStart,
+            TrainBrakesControllerHoldLappedStart,
+            TrainBrakesControllerReleaseStart,
+            TrainBrakesControllerNeutralhandleOffStart,
+            TrainBrakesControllerApplyStart,
+            TrainBrakesControllerEmergencyStart
         };
 
         public enum ControllerBinding
         {
             Throttle,
             DynamicBrake,
-            SelectedSpeed
+            SelectedSpeed,
+            TrainBrake
         }
 
         public float GetDataOf(CabViewControl cvc)
@@ -1044,27 +1147,34 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                         switch (controllerPosition)
                         {
                             case ControllerPosition.ThrottleIncrease:
+                            case ControllerPosition.TrainBrakesControllerFullQuickReleaseStart:
                                 data = 0;
                                 break;
                             case ControllerPosition.Drive:
                             case ControllerPosition.ThrottleHold:
+                            case ControllerPosition.TrainBrakesControllerOverchargeStart:
                                 data = 1;
                                 break;
                             case ControllerPosition.Neutral:
+                            case ControllerPosition.TrainBrakesControllerHoldLappedStart:
                                 data = 2;
                                 break;
                             case ControllerPosition.DynamicBrakeIncrease:
                             case ControllerPosition.DynamicBrakeIncreaseWithPriority:
+                            case ControllerPosition.TrainBrakesControllerReleaseStart:
                                 data = 3;
                                 break;
                             case ControllerPosition.TrainBrakeIncrease:
+                            case ControllerPosition.TrainBrakesControllerNeutralhandleOffStart:
                                 data = 4;
                                 break;
                             case ControllerPosition.EmergencyBrake:
                             case ControllerPosition.DynamicBrakeIncreaseFast:
+                            case ControllerPosition.TrainBrakesControllerApplyStart:
                                 data = 5;
                                 break;
                             case ControllerPosition.ThrottleIncreaseFast:
+                            case ControllerPosition.TrainBrakesControllerEmergencyStart:
                                 data = 6;
                                 break;
                             case ControllerPosition.ThrottleDecrease:
