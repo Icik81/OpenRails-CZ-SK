@@ -111,7 +111,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes
         public float AutoBailOffOnRatePSIpS;
         public float BrakeDelayToEngage;
         public bool AutoOverchargePressure;
-        public float BrakePipeMinPressureDropToEngage;
+        public float BrakePipeMinPressureDropToEngage;        
         public float EngineBrakeControllerApplyDeadZone;
         public float EngineBrakeControllerReleaseDeadZone;
         public float BP1_EngineBrakeControllerRatePSIpS;
@@ -132,6 +132,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes
         public bool BrakePipeDischargeRate = false;
         public bool BrakePipeChargeRate = false;
         public Interpolator PressureRateFactor;
+        public Interpolator DebugKoefFactor;
 
         public float BrakeCylinderMaxPressureForLowState;
         public float LowStateOnSpeedEngageLevel;
@@ -140,6 +141,21 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes
         public bool LowPressure = true;
         public float T_HighPressure;
         public float FromHighToLowPressureRate;
+
+
+        public float GetDebugKoef()
+        {
+            var DebugKoef = 1.0f;
+            if (DebugKoefFactor == null)
+            {
+                DebugKoef = 1.0f;
+            }
+            else
+            {
+                DebugKoef = DebugKoefFactor[AutoCylPressurePSI0 + AutoCylPressurePSI1 + AutoCylPressurePSI2];
+            }
+            return DebugKoef;
+        }
 
         public float GetBrakePipeDischargeRate()
         {
