@@ -2166,6 +2166,7 @@ namespace Orts.Simulation.RollingStocks
         public bool CanCheckEngineBrake = true;
         public override void Update(float elapsedClockSeconds)
         {
+
             if (extendedPhysics != null)
                 extendedPhysics.Update(elapsedClockSeconds);
             if (CruiseControl != null)
@@ -2453,9 +2454,9 @@ namespace Orts.Simulation.RollingStocks
                     extendedPhysics.OverridenControllerVolts = ControllerVolts;
                 if (AntiWheelSpinEquipped)
                 {
-                    if (extendedPhysics == null)
+                    if (extendedPhysics == null && skidSpeedDegratation > 0)
                         TractiveForceN /= skidSpeedDegratation * 10;
-                    else
+                    else if (extendedPhysics != null)
                         extendedPhysics.OverridenControllerVolts = ControllerVolts - skidSpeedDegratation;
                 }
             }
@@ -2870,9 +2871,12 @@ namespace Orts.Simulation.RollingStocks
                     }
                     else
                     {
-                        TractiveForceN = TractiveForceCurves.Get(t, AbsTractionSpeedMpS) * (1 - PowerReduction);
-                        if (TractiveForceN < 0 && !TractiveForceCurves.AcceptsNegativeValues())
-                            TractiveForceN = 0;
+                        if (t > 0)
+                        {
+                            TractiveForceN = TractiveForceCurves.Get(t, AbsTractionSpeedMpS) * (1 - PowerReduction);
+                            if (TractiveForceN < 0 && !TractiveForceCurves.AcceptsNegativeValues())
+                                TractiveForceN = 0;
+                        }
                     }
                 }
                 else
@@ -2890,14 +2894,15 @@ namespace Orts.Simulation.RollingStocks
             else
                 TractiveForceN = 0f;
 
-            if (MaxForceN > 0 && MaxContinuousForceN > 0 && PowerReduction < 1)
+            /*if (MaxForceN > 0 && MaxContinuousForceN > 0 && PowerReduction < 1)
             {
-                TractiveForceN *= 1 - (MaxForceN - MaxContinuousForceN) / (MaxForceN * MaxContinuousForceN) * AverageForceN * (1 - PowerReduction);
+                if (!float.IsNaN(AverageForceN))
+                    TractiveForceN *= 1 - (MaxForceN - MaxContinuousForceN) / (MaxForceN * MaxContinuousForceN) * AverageForceN * (1 - PowerReduction);
                 float w = (ContinuousForceTimeFactor - elapsedClockSeconds) / ContinuousForceTimeFactor;
                 if (w < 0)
                     w = 0;
                 AverageForceN = w * AverageForceN + (1 - w) * TractiveForceN;
-            }
+            }*/
         }
 
         /// <summary>

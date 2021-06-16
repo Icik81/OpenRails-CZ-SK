@@ -146,7 +146,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes
         public float GetDebugKoef()
         {
             var DebugKoef = 1.0f;
-            if (DebugKoefFactor == null)
+            if (DebugKoefFactor == null || DebugKoefFactor.GetSize() == 0)
             {
                 DebugKoef = 1.0f;
             }
