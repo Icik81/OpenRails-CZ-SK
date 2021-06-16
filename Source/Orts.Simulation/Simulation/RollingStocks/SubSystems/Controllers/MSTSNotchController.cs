@@ -263,10 +263,6 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                 CurrentValue = IntermediateValue = MathHelper.Clamp(value, MinimumValue, MaximumValue);
                 i = 1;
             }
-            else
-            {
-                CurrentValue = IntermediateValue = MathHelper.Clamp(value, MinimumValue, MaximumValue);
-            }
 
             var oldNotch = CurrentNotch;
 

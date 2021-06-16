@@ -257,49 +257,49 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                     {
                         if (notch.Type == ORTS.Scripting.Api.ControllerState.FullQuickRelease && Locomotive.TrainBrakeController.CurrentValue != notch.Value)
                         {
-                            Locomotive.SetTrainBrakeValue(notch.Value);
+                            Locomotive.SetTrainBrakePercent(notch.Value * 100);
                         }
                     }
                     if (controllerPosition == ControllerPosition.TrainBrakesControllerOverchargeStart)
                     {
                         if (notch.Type == ORTS.Scripting.Api.ControllerState.OverchargeStart && Locomotive.TrainBrakeController.CurrentValue != notch.Value)
                         {
-                            Locomotive.SetTrainBrakeValue(notch.Value);
+                            Locomotive.SetTrainBrakePercent(notch.Value * 100);
                         }
                     }
                     if (controllerPosition == ControllerPosition.TrainBrakesControllerHoldLappedStart)
                     {
                         if (notch.Type == ORTS.Scripting.Api.ControllerState.Lap && Locomotive.TrainBrakeController.CurrentValue != notch.Value)
                         {
-                            Locomotive.SetTrainBrakeValue(notch.Value);
+                            Locomotive.SetTrainBrakePercent(notch.Value * 100);
                         }
                     }
                     if (controllerPosition == ControllerPosition.TrainBrakesControllerReleaseStart)
                     {
                         if (notch.Type == ORTS.Scripting.Api.ControllerState.Release && Locomotive.TrainBrakeController.CurrentValue != notch.Value)
                         {
-                            Locomotive.SetTrainBrakeValue(notch.Value);
+                            Locomotive.SetTrainBrakePercent(notch.Value * 100);
                         }
                     }
                     if (controllerPosition == ControllerPosition.TrainBrakesControllerNeutralhandleOffStart)
                     {
                         if (notch.Type == ORTS.Scripting.Api.ControllerState.Neutral && Locomotive.TrainBrakeController.CurrentValue != notch.Value)
                         {
-                            Locomotive.SetTrainBrakeValue(notch.Value);
+                            Locomotive.SetTrainBrakePercent(notch.Value * 100);
                         }
                     }
                     if (controllerPosition == ControllerPosition.TrainBrakesControllerApplyStart)
                     {
                         if (notch.Type == ORTS.Scripting.Api.ControllerState.Apply && Locomotive.TrainBrakeController.CurrentValue != notch.Value)
                         {
-                            Locomotive.SetTrainBrakeValue(notch.Value);
+                            Locomotive.SetTrainBrakePercent(notch.Value * 100);
                         }
                     }
                     if (controllerPosition == ControllerPosition.TrainBrakesControllerEmergencyStart)
                     {
                         if (notch.Type == ORTS.Scripting.Api.ControllerState.Emergency && Locomotive.TrainBrakeController.CurrentValue != notch.Value)
                         {
-                            Locomotive.SetTrainBrakeValue(notch.Value);
+                            Locomotive.SetTrainBrakePercent(notch.Value * 100);
                         }
                     }
                 }
