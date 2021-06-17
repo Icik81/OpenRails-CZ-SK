@@ -279,7 +279,6 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                 ? 1 : CurrentNotch < oldNotch || CurrentValue < OldValue - 0.1f || CurrentValue == 0 && OldValue > 0 ? -1 : 0;
             if (change != 0)
                 OldValue = CurrentValue;
-            i = 0;
             return change;
         }
 

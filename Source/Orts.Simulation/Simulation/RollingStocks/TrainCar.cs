@@ -785,6 +785,8 @@ namespace Orts.Simulation.RollingStocks
                     case 1: // Režim P  
                         if (BrakeSystem.BrakeMassP == 0) BrakeSystem.BrakeMassKG = BrakeSystem.CoefMode * MassKG;
                         else BrakeSystem.BrakeMassKG = BrakeSystem.BrakeMassP;
+                        if (BrakeSystem.TwoStateBrake)  // Pokud bude TwoState brzda, použije se brzdící váha pro režim R
+                            BrakeSystem.BrakeMassKG = BrakeSystem.BrakeMassR;
                         break;
                     case 2: // Režim R  
                         if (BrakeSystem.BrakeMassR == 0) BrakeSystem.BrakeMassKG = BrakeSystem.CoefMode * MassKG;
