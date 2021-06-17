@@ -141,7 +141,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes
         public bool LowPressure = true;
         public float T_HighPressure;
         public float FromHighToLowPressureRate;
-
+        public float BrakeMassKG_TwoStateBrake;
 
         public float GetDebugKoef()
         {

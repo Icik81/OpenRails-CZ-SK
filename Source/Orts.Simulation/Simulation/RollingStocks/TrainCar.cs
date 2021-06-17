@@ -786,7 +786,7 @@ namespace Orts.Simulation.RollingStocks
                         if (BrakeSystem.BrakeMassP == 0) BrakeSystem.BrakeMassKG = BrakeSystem.CoefMode * MassKG;
                         else BrakeSystem.BrakeMassKG = BrakeSystem.BrakeMassP;
                         if (BrakeSystem.TwoStateBrake)  // Pokud bude TwoState brzda, použije se brzdící váha pro režim R
-                            BrakeSystem.BrakeMassKG = BrakeSystem.BrakeMassR;
+                            BrakeSystem.BrakeMassKG_TwoStateBrake = BrakeSystem.BrakeMassR;
                         break;
                     case 2: // Režim R  
                         if (BrakeSystem.BrakeMassR == 0) BrakeSystem.BrakeMassKG = BrakeSystem.CoefMode * MassKG;
@@ -905,6 +905,8 @@ namespace Orts.Simulation.RollingStocks
                 {
                     MaxBrakeForceN = BrakeSystem.DebugKoef * BrakeSystem.BrakeMassKG * 9.964016384f * 0.31f;
                     MaxBrakeForceNRMg = BrakeSystem.DebugKoef * BrakeSystem.BrakeMassKGRMg * 9.964016384f * 0.31f;
+                    if (BrakeSystem.TwoStateBrake)
+                        MaxBrakeForceN = BrakeSystem.DebugKoef * BrakeSystem.BrakeMassKG_TwoStateBrake * 9.964016384f * 0.31f;
                 }
             }
             if (WagonType == WagonTypes.Engine || WagonType == WagonTypes.Unknown)    //  Lokomotivy a ostatní
@@ -937,6 +939,8 @@ namespace Orts.Simulation.RollingStocks
                 {
                     MaxBrakeForceN = BrakeSystem.DebugKoef * BrakeSystem.BrakeMassKG * 9.964016384f * 0.31f;
                     MaxBrakeForceNRMg = BrakeSystem.DebugKoef * BrakeSystem.BrakeMassKGRMg * 9.964016384f * 0.31f;
+                    if (BrakeSystem.TwoStateBrake)
+                        MaxBrakeForceN = BrakeSystem.DebugKoef * BrakeSystem.BrakeMassKG_TwoStateBrake * 9.964016384f * 0.31f;
                 }
             }
 
