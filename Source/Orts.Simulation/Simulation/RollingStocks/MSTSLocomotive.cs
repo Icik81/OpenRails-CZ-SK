@@ -4447,6 +4447,7 @@ namespace Orts.Simulation.RollingStocks
                     if (mpc.controllerBinding == MultiPositionController.ControllerBinding.TrainBrake)
                     {
                         mpc.DoMovement(MultiPositionController.Movement.Aft);
+                        SignalEvent(Event.TrainBrakeChange);
                         return;
                     }
                 }
@@ -4488,6 +4489,7 @@ namespace Orts.Simulation.RollingStocks
                     if (mpc.controllerBinding == MultiPositionController.ControllerBinding.TrainBrake)
                     {
                         mpc.DoMovement(MultiPositionController.Movement.Neutral);
+                        SignalEvent(Event.TrainBrakeChange);
                         return;
                     }
                 }
@@ -4507,6 +4509,7 @@ namespace Orts.Simulation.RollingStocks
                     if (mpc.controllerBinding == MultiPositionController.ControllerBinding.TrainBrake)
                     {
                         mpc.DoMovement(MultiPositionController.Movement.Forward);
+                        SignalEvent(Event.TrainBrakeChange);
                         return;
                     }
                 }
@@ -4533,6 +4536,7 @@ namespace Orts.Simulation.RollingStocks
                     if (mpc.controllerBinding == MultiPositionController.ControllerBinding.TrainBrake)
                     {
                         mpc.DoMovement(MultiPositionController.Movement.Neutral);
+                        SignalEvent(Event.TrainBrakeChange);
                         return;
                     }
                 }
