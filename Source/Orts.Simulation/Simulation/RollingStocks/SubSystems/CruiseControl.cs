@@ -143,7 +143,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                 case "engine(ortscruisecontrol(powerreductionvalue": PowerReductionValue = stf.ReadFloatBlock(STFReader.UNITS.Any, 100.0f); break;
                 case "engine(ortscruisecontrol(disablezeroforcestep": DisableZeroForceStep = stf.ReadBoolBlock(false); break;
                 case "engine(ortscruisecontrol(dynamicbrakeisselectedforcedependant": DynamicBrakeIsSelectedForceDependant = stf.ReadBoolBlock(false); break;                    
-                case "engine(ortscruisecontrol(startreducingspeeddelta": StartReducingSpeedDelta = (stf.ReadFloatBlock(STFReader.UNITS.Any, 1.0f) / 10); break;
+                case "engine(ortscruisecontrol(startreducingspeeddelta": StartReducingSpeedDelta = (stf.ReadFloatBlock(STFReader.UNITS.Any, 0.15f) / 10) * 4.6666f; break;
                 case "engine(ortscruisecontrol(maxacceleration": MaxAccelerationMpSS = stf.ReadFloatBlock(STFReader.UNITS.Any, 1); break;
                 case "engine(ortscruisecontrol(maxdeceleration": MaxDecelerationMpSS = stf.ReadFloatBlock(STFReader.UNITS.Any, 0.5f); break;
                 case "engine(ortscruisecontrol(nominalspeedstep": SpeedRegulatorNominalSpeedStepMpS = SpeedIsMph ? MpS.FromMpH(stf.ReadFloatBlock(STFReader.UNITS.Speed, 0)) : MpS.FromKpH(stf.ReadFloatBlock(STFReader.UNITS.Speed, 0)); break;
@@ -1374,13 +1374,28 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                             }
                             else
                             {
-                                if (controllerVolts < demandedVolts && controllerVolts >= 0)
+                                if (demand > Locomotive.AccelerationMpSS)
                                 {
-                                    float step = 100 / Locomotive.ThrottleFullRangeIncreaseTimeSeconds;
-                                    
-                                    step *= elapsedClockSeconds;
-                                    controllerVolts += step;
+                                    if (controllerVolts < demandedVolts && controllerVolts >= 0)
+                                    {
+                                        float step = 100 / Locomotive.ThrottleFullRangeIncreaseTimeSeconds;
+
+                                        step *= elapsedClockSeconds;
+                                        if (step > demand -Locomotive.AccelerationMpSS)
+                                            step = demand -Locomotive.AccelerationMpSS;
+
+                                        controllerVolts += step;
+                                    }
                                 }
+                                if (demand < Locomotive.AccelerationMpSS && controllerVolts > 0)
+                                {
+                                    float step = 100 / Locomotive.ThrottleFullRangeDecreaseTimeSeconds;
+                                    step *= elapsedClockSeconds;
+                                    if (step > Locomotive.AccelerationMpSS - demand)
+                                        step = Locomotive.AccelerationMpSS - demand;
+                                    controllerVolts -= step;
+                                }
+
                             }
                             if (a > 0 && (SpeedIsMph ? MpS.ToMpH(Locomotive.WheelSpeedMpS) : MpS.ToKpH(Locomotive.WheelSpeedMpS)) > 5)
                             {
