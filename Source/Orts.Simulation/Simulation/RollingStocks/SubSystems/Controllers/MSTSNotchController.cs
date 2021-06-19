@@ -305,15 +305,12 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                     if (CurrentNotch < Notches.Count - 1)
                     {
                         MSTSNotch next = Notches[CurrentNotch + 1];
-                        if (next.Type != ControllerState.Emergency)
-                        {
-                            if ((notch.Smooth || next.Smooth) && v < next.Value)
-                                break;
-                            if (!notch.Smooth && !next.Smooth && v - notch.Value < .55 * (next.Value - notch.Value))
-                                break;
-                            CurrentNotch++;
-                            continue;
-                        }
+                        if ((notch.Smooth || next.Smooth) && v < next.Value)
+                            break;
+                        if (!notch.Smooth && !next.Smooth && v - notch.Value < .55 * (next.Value - notch.Value))
+                            break;
+                        CurrentNotch++;
+                        continue;
                     }
                     break;
                 }
