@@ -67,6 +67,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes
         public float BrakeMassKGRMg;
         public float CoefMode;
         public float DebugKoef;
+        public float DebugKoef1;
+        public float DebugKoef2;
         public float MaxReleaseRatePSIpSG;
         public float MaxApplicationRatePSIpSG;
         public float MaxReleaseRatePSIpSP;
@@ -132,7 +134,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes
         public bool BrakePipeDischargeRate = false;
         public bool BrakePipeChargeRate = false;
         public Interpolator PressureRateFactor;
-        public Interpolator DebugKoefFactor;
+        public Interpolator DebugKoef2Factor;
 
         public float BrakeCylinderMaxPressureForLowState;
         public float LowStateOnSpeedEngageLevel;
@@ -143,18 +145,15 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes
         public float FromHighToLowPressureRate;
         public float BrakeMassKG_TwoStateBrake;
 
-        public float GetDebugKoef()
+        public float GetDebugKoef2()
         {
-            var DebugKoef = 1.0f;
-            if (DebugKoefFactor == null || DebugKoefFactor.GetSize() == 0)
+            if (DebugKoef2Factor == null || DebugKoef2Factor.GetSize() == 0)
             {
-                DebugKoef = 1.0f;
+                DebugKoef2 = 1.0f;
             }
             else
-            {
-                DebugKoef = DebugKoefFactor[AutoCylPressurePSI0 + AutoCylPressurePSI1 + AutoCylPressurePSI2];
-            }
-            return DebugKoef;
+                DebugKoef2 = DebugKoef2Factor[AutoCylPressurePSI0 + AutoCylPressurePSI1 + AutoCylPressurePSI2];            
+            return DebugKoef2;
         }
 
         public float GetBrakePipeDischargeRate()
