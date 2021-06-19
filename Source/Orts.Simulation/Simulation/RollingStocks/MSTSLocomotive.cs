@@ -2455,7 +2455,11 @@ namespace Orts.Simulation.RollingStocks
                 if (AntiWheelSpinEquipped)
                 {
                     if (extendedPhysics == null && skidSpeedDegratation > 0)
+                    {
                         TractiveForceN /= skidSpeedDegratation * 10;
+                        if (TractiveForceN > MaxForceN)
+                            TractiveForceN = MaxForceN;
+                    }
                     else if (extendedPhysics != null)
                         extendedPhysics.OverridenControllerVolts = ControllerVolts - skidSpeedDegratation;
                 }
@@ -2876,6 +2880,10 @@ namespace Orts.Simulation.RollingStocks
                             TractiveForceN = TractiveForceCurves.Get(t, AbsTractionSpeedMpS) * (1 - PowerReduction);
                             if (TractiveForceN < 0 && !TractiveForceCurves.AcceptsNegativeValues())
                                 TractiveForceN = 0;
+                        }
+                        else
+                        {
+                            TractiveForceN = 0;
                         }
                     }
                 }
