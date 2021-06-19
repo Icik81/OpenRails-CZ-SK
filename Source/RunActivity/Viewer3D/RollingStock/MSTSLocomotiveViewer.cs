@@ -2250,6 +2250,7 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.ORTS_CC_SPEED_190:
                 case CABViewControlTypes.ORTS_CC_SPEED_200:
                 case CABViewControlTypes.ORTS_DISPLAY_BLUE_LIGHT:
+                case CABViewControlTypes.ORTS_MIREL_SPEED:
                 case CABViewControlTypes.ORTS_MIREL_DRIVE_MODE:
                 case CABViewControlTypes.ORTS_MIREL_DRIVE_MODE_OPTIONS:
                 case CABViewControlTypes.ORTS_MIREL_DISPLAY_FLASH_MASK:
