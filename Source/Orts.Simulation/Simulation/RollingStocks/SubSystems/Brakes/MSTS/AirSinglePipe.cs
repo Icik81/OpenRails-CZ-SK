@@ -332,8 +332,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 case "wagon(autoloadregulatorequipped": AutoLoadRegulatorEquipped = stf.ReadBoolBlock(false); break;
                 case "wagon(autoloadregulatormaxbrakemass": AutoLoadRegulatorMaxBrakeMass = stf.ReadFloatBlock(STFReader.UNITS.Mass, null); break;
 
-                // Ladící koeficient pro ladiče brzd
-                case "wagon(debugkoef": DebugKoefFactor = new Interpolator(stf); break;
+                // Ladící koeficient pro ladiče brzd                
+                case "wagon(debugkoef": DebugKoef1 = stf.ReadFloatBlock(STFReader.UNITS.None, null); break;
+                case "wagon(debugkoef2": DebugKoef2Factor = new Interpolator(stf); break;
                 
                 // Minimální tlak v hlavní jímce a brzdovém potrubí pro brzdu R+Mg
                 case "wagon(mainresminimumpressureformgbrakeactivation": MainResMinimumPressureForMGbrakeActivationPSI = stf.ReadFloatBlock(STFReader.UNITS.PressureDefaultPSI, null); break;
@@ -578,7 +579,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
         }
 
         public override void Update(float elapsedClockSeconds)
-        {            
+        {
             // Výpočet cílového tlaku v brzdovém válci
             threshold = (PrevAuxResPressurePSI - BrakeLine1PressurePSI) * AuxCylVolumeRatio;
             threshold = MathHelper.Clamp(threshold, 0, MCP);
@@ -662,7 +663,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             }
 
             // DebugKoef pro doladění MaxBrakeForce
-            DebugKoef = GetDebugKoef();
+            if (DebugKoef1 == 0) DebugKoef1 = 1.0f;
+            DebugKoef = DebugKoef1 * GetDebugKoef2();
 
             // Časy pro napouštění a vypouštění brzdového válce v sekundách režimy G, P, R
             float TimeApplyG = 22.0f;
