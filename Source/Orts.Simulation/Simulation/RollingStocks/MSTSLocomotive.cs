@@ -6508,7 +6508,19 @@ namespace Orts.Simulation.RollingStocks
 
                         break;
                     }
-                
+
+                case CABViewControlTypes.ORTS_MIREL_SPEED:
+                    {
+                        float val = Mirel.MirelMaximumSpeed;
+                        val = val - (float)cvc.MinValue;
+                        CVCWithFrames cVCWithFrames = (CVCWithFrames)cvc;
+                        int frames = cVCWithFrames.FramesCount - 1;
+                        double howMany = (cvc.MaxValue - cvc.MinValue) / frames;
+
+                        data = val / (float)howMany;
+                        break;
+                    }
+
                 case CABViewControlTypes.ORTS_DISPLAY_BLUE_LIGHT:
                     {
                         data = (float)(Mirel.BlueLight ? 0 : 1);
