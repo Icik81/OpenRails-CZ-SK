@@ -291,35 +291,7 @@ namespace ORTS
                 { "unstable", catalog.GetString("Daily updates which may contain serious defects. For developers only.") },
                 { "", catalog.GetString("No updates.") },
             };
-            var spacing = labelUpdateChannel.Margin.Size;
-            var indent = 20;
-            var top = labelUpdateChannel.Bottom + spacing.Height;
-            foreach (var channel in UpdateManager.GetChannels())
-            {
-                var radio = new RadioButton()
-                {
-                    Text = updateChannelNames[channel.ToLowerInvariant()],
-                    Margin = labelUpdateChannel.Margin,
-                    Left = spacing.Width,
-                    Top = top,
-                    Checked = updateManager.ChannelName.Equals(channel, StringComparison.InvariantCultureIgnoreCase),
-                    AutoSize = true,
-                    Tag = channel,
-                };
-                tabPageUpdater.Controls.Add(radio);
-                top += radio.Height + spacing.Height;
-                var label = new Label()
-                {
-                    Text = updateChannelDescriptions[channel.ToLowerInvariant()],
-                    Margin = labelUpdateChannel.Margin,
-                    Left = spacing.Width + indent,
-                    Top = top,
-                    Width = tabPageUpdater.ClientSize.Width - indent - spacing.Width * 2,
-                    AutoSize = true,
-                };
-                tabPageUpdater.Controls.Add(label);
-                top += label.Height + spacing.Height;
-            }
+
 
             // Experimental tab
             numericUseSuperElevation.Value = Settings.UseSuperElevation;
@@ -539,11 +511,6 @@ private async void OptionsForm_Shown(object sender, EventArgs e)
             Settings.Folders.Folders.Clear();
             foreach (var folder in bindingSourceContent.DataSource as List<ContentFolder>)
                 Settings.Folders.Folders.Add(folder.Name, folder.Path);
-
-            // Updater tab
-            foreach (Control control in tabPageUpdater.Controls)
-                if ((control is RadioButton) && (control as RadioButton).Checked)
-                    UpdateManager.SetChannel((string)control.Tag);
 
             // Experimental tab
             Settings.UseSuperElevation = (int)numericUseSuperElevation.Value;
