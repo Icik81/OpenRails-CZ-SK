@@ -35,7 +35,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
         string ScriptName = "Automatic";
         CircuitBreaker Script;
 
-        private float DelayS = 0f;
+        private float DelayS = 0.5f;
 
         public CircuitBreakerState State { get; private set; }
         public bool DriverClosingOrder { get; private set; }
@@ -97,12 +97,12 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                 case "engine(ortscircuitbreaker":
                     if (Locomotive.Train as AITrain == null)
                     {
-                        ScriptName = stf.ReadStringBlock(null);
+                        ScriptName = stf.ReadStringBlock("Automatic");
                     }
                     break;
 
                 case "engine(ortscircuitbreakerclosingdelay":
-                    DelayS = stf.ReadFloatBlock(STFReader.UNITS.Time, null);
+                    DelayS = stf.ReadFloatBlock(STFReader.UNITS.Time, 0.5f);
                     break;
             }
         }
