@@ -445,7 +445,7 @@ namespace Orts.Simulation.RollingStocks
         public float AdhesionEfficiencyKoef;
         public bool OverCurrent = false;
         public bool OverVoltage = false;
-        public bool MultiSystemEngine;
+        public bool MultiSystemEngine = true;
         public float MaxCurrentPower;
         public float MaxCurrentBrake;
         public float SlipSpeedCritical;

@@ -339,6 +339,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                 ++CurrentNotch;
                 IntermediateValue = CurrentValue = Notches[CurrentNotch].Value;
             }
+            else
+                IntermediateValue = CurrentValue;
 		}
 
         public void StopIncrease()
