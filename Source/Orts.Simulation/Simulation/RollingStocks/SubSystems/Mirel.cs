@@ -84,7 +84,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
         public bool flashFullDisplayInProggress = false;
         protected float flashFullDisplayTimeElapsed = 0;
         protected int flashFullDisplayFlashedTimes = 0;
-        protected bool maxSpeedSetup = false;
+        public bool MaxSpeedSetup = false;
         public float MaxSelectedSpeed = 80;
         protected float distanceTravelledWithoutInitTest = 0;
         protected bool mirelBeep = false;
@@ -557,7 +557,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                                     }
                             }
                         }
-                        if (maxSpeedSetup)
+                        if (MaxSpeedSetup)
                         {
                             confirming = Confirming.Speed;
                             return;
@@ -637,7 +637,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                     else
                         UpdateSpeedNumbers(0, true);
                     driveModeSetup = false;
-                    maxSpeedSetup = false;
+                    MaxSpeedSetup = false;
                 }
                 else if (MirelType == Type.LS90)
                 {
@@ -656,7 +656,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                             {
                                 flashing = true;
                             }*/
-                if (driveModeSetup || maxSpeedSetup)
+                if (driveModeSetup || MaxSpeedSetup)
                 {
                     flashing = true;
                 }
@@ -830,7 +830,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
             outf.Write(this.maxReducedSpeed);
             outf.Write(this.MaxSelectedSpeed);
             outf.Write(this.maxSpeedNeverSet);
-            outf.Write(this.maxSpeedSetup);
+            outf.Write(this.MaxSpeedSetup);
             outf.Write(this.metersWrongDirection);
             outf.Write(this.mirelBeep);
             outf.Write(this.mirelBeeping);
@@ -940,7 +940,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
             maxReducedSpeed = inf.ReadSingle();
             MaxSelectedSpeed = inf.ReadSingle();
             maxSpeedNeverSet = inf.ReadBoolean();
-            maxSpeedSetup = inf.ReadBoolean();
+            MaxSpeedSetup = inf.ReadBoolean();
             metersWrongDirection = inf.ReadSingle();
             mirelBeep = inf.ReadBoolean();
             mirelBeeping = inf.ReadBoolean();
@@ -1143,7 +1143,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                     driveMode++;
                 return;
             }
-            if (maxSpeedSetup)
+            if (MaxSpeedSetup)
             {
                 displayResetTime = 0;
                 MirelMaximumSpeed += 5;
@@ -1238,7 +1238,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                     driveMode--;
                 return;
             }
-            if (maxSpeedSetup)
+            if (MaxSpeedSetup)
             {
                 displayResetTime = 0;
                 MirelMaximumSpeed -= 5;
@@ -1261,8 +1261,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems
 
         public bool ManualMode = false;
         public bool ManualModeDisplay = false;
+        public bool SpeedSetupConfirmed = false;
         public void EnterKeyPressed()
         {
+            SpeedSetupConfirmed = false;
             if (Locomotive.Battery)
             {
                 Locomotive.SignalEvent(Common.Event.KeyboardBeep);
@@ -1289,8 +1291,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                     flashFullDisplayInProggress = true;
                 }
 
-                if (maxSpeedSetup)
+                if (MaxSpeedSetup)
                 {
+                    SpeedSetupConfirmed = true;
                     flashFullDisplayInProggress = true;
                     if (MaxSelectedSpeed > MpS.ToKpH(Locomotive.MaxSpeedMpS) || MirelMaximumSpeed > MpS.ToKpH(Locomotive.MaxSpeedMpS))
                     {
@@ -1316,7 +1319,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                     flashing = false;
                     DisplayFlashMask = false;
                     displayResetTime = 0;
-                    maxSpeedSetup = true;
+                    MaxSpeedSetup = true;
                     DriveModeHideModes = true;
                     MirelMaximumSpeed = MaxSelectedSpeed;
                     UpdateSpeedNumbers((int)MaxSelectedSpeed, false);
@@ -1405,7 +1408,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
             flashFullDisplayInProggress = false;
             flashFullDisplayTimeElapsed = 0;
             flashFullDisplayFlashedTimes = 0;
-            maxSpeedSetup = false;
+            MaxSpeedSetup = false;
             MaxSelectedSpeed = 80;
             mirelBeep = false;
             mirelBeeping = false;
@@ -1428,7 +1431,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                 return;
             }
 
-            if (maxSpeedSetup)
+            if (MaxSpeedSetup)
                 return;
 
             if (selectedDriveMode == DriveMode.Trailing) return;
@@ -1684,7 +1687,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                 }
             }
 
-            if (driveModeSetup || maxSpeedSetup)
+            if (driveModeSetup || MaxSpeedSetup)
                 return;
             if (selectedDriveMode != DriveMode.Normal && selectedDriveMode != DriveMode.Trailing)
             {
