@@ -648,6 +648,41 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
 
                 MaxReleaseRatePSIpS0 = MaxReleaseRatePSIpS;
                 MaxApplicationRatePSIpS0 = MaxApplicationRatePSIpS;
+
+                // Definice limitů proměnných pro chod nenaladěných vozidel
+                if (loco != null) // Lokomotiva
+                {
+                    MaxCylPressurePSI = AutoCylPressurePSI = MathHelper.Clamp(MaxCylPressurePSI, 1.0f * 14.50377f, 7.0f * 14.50377f);
+                    AuxCylVolumeRatio = MathHelper.Clamp(AuxCylVolumeRatio, 1.5f, 4.0f);
+
+                    MaxReleaseRatePSIpS = ReleaseRatePSIpS = MathHelper.Clamp(MaxReleaseRatePSIpS, 0.15f * 14.50377f, 0.5f * 14.50377f);
+                    MaxApplicationRatePSIpS = MathHelper.Clamp(MaxApplicationRatePSIpS, 0.5f * 14.50377f, 1.0f * 14.50377f);
+
+                    MaxAuxilaryChargingRatePSIpS = MathHelper.Clamp(MaxAuxilaryChargingRatePSIpS, 0.1f * 14.50377f, 0.5f * 14.50377f);
+                    EmergResChargingRatePSIpS = MathHelper.Clamp(EmergResChargingRatePSIpS, 0.1f * 14.50377f, 0.5f * 14.50377f);
+
+                    EmergAuxVolumeRatio = MathHelper.Clamp(EmergAuxVolumeRatio, 5.0f, 7.0f);
+                    EmergResVolumeM3 = MathHelper.Clamp(EmergResVolumeM3, 0.20f, 0.30f);
+
+                    BrakePipeVolumeM3 = MathHelper.Clamp(BrakePipeVolumeM3, 0.0f, 0.020f);
+                }
+                else // Vagón
+                {
+                    MaxCylPressurePSI = AutoCylPressurePSI = MathHelper.Clamp(MaxCylPressurePSI, 1.0f * 14.50377f, 4.0f * 14.50377f);
+                    AuxCylVolumeRatio = MathHelper.Clamp(AuxCylVolumeRatio, 1.5f, 4.0f);
+
+                    MaxReleaseRatePSIpS = ReleaseRatePSIpS = MathHelper.Clamp(MaxReleaseRatePSIpS, 0.15f * 14.50377f, 0.5f * 14.50377f);
+                    MaxApplicationRatePSIpS = MathHelper.Clamp(MaxApplicationRatePSIpS, 0.5f * 14.50377f, 1.0f * 14.50377f);
+
+                    MaxAuxilaryChargingRatePSIpS = MathHelper.Clamp(MaxAuxilaryChargingRatePSIpS, 0.1f * 14.50377f, 0.5f * 14.50377f);
+                    EmergResChargingRatePSIpS = MathHelper.Clamp(EmergResChargingRatePSIpS, 0.1f * 14.50377f, 0.5f * 14.50377f);
+                    
+                    EmergAuxVolumeRatio = MathHelper.Clamp(EmergAuxVolumeRatio, 0.5f, 1.5f);
+                    EmergResVolumeM3 = MathHelper.Clamp(EmergResVolumeM3, 0.050f, 0.100f);
+
+                    BrakePipeVolumeM3 = MathHelper.Clamp(BrakePipeVolumeM3, 0.0f, 0.030f);
+                }
+                
                 StartOn = false;
 
                 if (ForceWagonLoaded)
@@ -661,6 +696,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     BrakeCarModeTextPL = "Prázdný";
                 }
             }
+            
 
             // DebugKoef pro doladění MaxBrakeForce
             if (DebugKoef1 == 0) DebugKoef1 = 1.0f;
@@ -1207,6 +1243,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             var brakePipeTimeFactorS = lead == null ? 0.003f : lead.BrakePipeTimeFactorS; // Průrazná rychlost tlakové vlny 250m/s 0.003f
             var BrakePipeChargingRatePSIorInHgpS0 = lead == null ? 29 : lead.BrakePipeChargingRatePSIorInHgpS;
 
+            brakePipeTimeFactorS = MathHelper.Clamp(brakePipeTimeFactorS, 0.001f, 0.01f);
+            BrakePipeChargingRatePSIorInHgpS0 = MathHelper.Clamp(BrakePipeChargingRatePSIorInHgpS0, 21, 50);
+            
             float brakePipeTimeFactorS0 = brakePipeTimeFactorS;
             float brakePipeTimeFactorS_Apply = brakePipeTimeFactorS * 3.0f; // Vytvoří zpoždění náběhu brzdy vlaku kvůli průrazné tlakové vlně            
             float brakePipeChargingNormalPSIpS = BrakePipeChargingRatePSIorInHgpS0; // Rychlost plnění průběžného potrubí při normálním plnění 29 PSI/s
@@ -1283,27 +1322,21 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             }
 
             // Propagate brake line (1) data if pressure gradient disabled
-            if (lead != null && lead.BrakePipeChargingRatePSIorInHgpS >= 1000)
-            {   // pressure gradient disabled
-                if (lead.BrakeSystem.BrakeLine1PressurePSI < train.EqualReservoirPressurePSIorInHg)
-                {
-                    var dp1 = train.EqualReservoirPressurePSIorInHg - lead.BrakeSystem.BrakeLine1PressurePSI;
-                    lead.MainResPressurePSI -= dp1 * lead.BrakeSystem.BrakePipeVolumeM3 / lead.MainResVolumeM3;
-                }
-                foreach (TrainCar car in train.Cars)
-                {
-                    if (car.BrakeSystem.BrakeLine1PressurePSI >= 0)
-                        car.BrakeSystem.BrakeLine1PressurePSI = train.EqualReservoirPressurePSIorInHg;
-                }
-            }
-            else
+            if (lead != null) 
             {   // approximate pressure gradient in train pipe line1
                 float serviceTimeFactor = lead != null ? lead.TrainBrakeController != null && lead.TrainBrakeController.EmergencyBraking ? lead.BrakeEmergencyTimeFactorS : lead.BrakeServiceTimeFactorS : 0;
+
+                // Definice limitů pro proměnné
+                serviceTimeFactor = MathHelper.Clamp(serviceTimeFactor, 1.009f, 2.0f);                
+                lead.TrainBrakeController.QuickReleaseRatePSIpS = MathHelper.Clamp(lead.TrainBrakeController.QuickReleaseRatePSIpS, 2.0f * 14.50377f, 3.0f * 14.50377f);
+                lead.TrainBrakeController.ReleaseRatePSIpS = MathHelper.Clamp(lead.TrainBrakeController.ReleaseRatePSIpS, 0.25f * 14.50377f, 0.5f * 14.50377f);
+                lead.TrainBrakeController.ApplyRatePSIpS = MathHelper.Clamp(lead.TrainBrakeController.ApplyRatePSIpS, 0.25f * 14.50377f, 0.5f * 14.50377f);
+                lead.TrainBrakeController.EmergencyRatePSIpS = MathHelper.Clamp(lead.TrainBrakeController.EmergencyRatePSIpS, 3.0f * 14.50377f, 4.0f * 14.50377f);                
+                lead.EngineBrakeController.ReleaseRatePSIpS = MathHelper.Clamp(lead.EngineBrakeController.ReleaseRatePSIpS, 1.0f * 14.50377f, 2.5f * 14.50377f);
+                lead.EngineBrakeController.ApplyRatePSIpS = MathHelper.Clamp(lead.EngineBrakeController.ApplyRatePSIpS, 1.0f * 14.50377f, 2.5f * 14.50377f);
+
                 for (int i = 0; i < nSteps; i++)
                 {
-
-                    if (lead != null)
-                    {
                         // Ohlídá hodnotu v hlavní jímce, aby nepodkročila 0bar
                         if (lead.MainResPressurePSI < 0) lead.MainResPressurePSI = 0;
 
@@ -1352,7 +1385,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         }
 
                         // Charge train brake pipe - adjust main reservoir pressure, and lead brake pressure line to maintain brake pipe equal to equalising resevoir pressure - release brakes
-                        if (lead.BrakeSystem.BrakeLine1PressurePSI < train.EqualReservoirPressurePSIorInHg)
+                        if (lead.BrakeSystem.BrakeLine1PressurePSI < train.EqualReservoirPressurePSIorInHg && lead.TrainBrakeController.TrainBrakeControllerState != ControllerState.Lap
+                            || lead.BrakeSystem.BrakeLine1PressurePSI < train.EqualReservoirPressurePSIorInHg && lead.EmergencyButtonPressed)
                         {
                             // Calculate change in brake pipe pressure between equalising reservoir and lead brake pipe
                             float PressureDiffEqualToPipePSI = TrainPipeTimeVariationS * BrakePipeChargingRatePSIorInHgpS0; // default condition - if EQ Res is higher then Brake Pipe Pressure
@@ -1380,7 +1414,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                             }
                         }
                         // reduce pressure in lead brake line if brake pipe pressure is above equalising pressure - apply brakes
-                        else if (lead.BrakeSystem.BrakeLine1PressurePSI > train.EqualReservoirPressurePSIorInHg)
+                        else if (lead.BrakeSystem.BrakeLine1PressurePSI > train.EqualReservoirPressurePSIorInHg && lead.TrainBrakeController.TrainBrakeControllerState != ControllerState.Lap
+                            || lead.BrakeSystem.BrakeLine1PressurePSI > train.EqualReservoirPressurePSIorInHg && lead.EmergencyButtonPressed)
                         {
                             float ServiceVariationFactor = (1 - TrainPipeTimeVariationS / serviceTimeFactor);
                             ServiceVariationFactor = MathHelper.Clamp(ServiceVariationFactor, 0.05f, 1.0f); // Keep factor within acceptable limits - prevent value from going negative
@@ -1389,7 +1424,6 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         }
 
                         train.LeadPipePressurePSI = lead.BrakeSystem.BrakeLine1PressurePSI;  // Keep a record of current train pipe pressure in lead locomotive
-                    }
 
                     // Propogate lead brake line pressure from lead locomotive along the train to each car
                     TrainCar car0 = train.Cars[0];
