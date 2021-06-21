@@ -244,6 +244,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
         protected bool mirelUnsetSignlEventBeeped = false;
         protected bool ls90tested = false;
         protected float ls90testTime = 0;
+        protected int prevNextSignalId = 0;
         public void Update(float elapsedClockSeconds, float AbsSpeedMpS, float AbsWheelSpeedMpS)
         {
             UpdateDisplay();
@@ -348,19 +349,23 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                 }
                 else
                 {
-                    foreach (MirelSignal ms in MirelSignals)
+                    if (prevNextSignalId != nextSignalTrId)
                     {
-                        if (ms.SignalId == nextSignalTrId)
+                        foreach (MirelSignal ms in MirelSignals)
                         {
-                            if (ms.Value == "a")
+                            if (ms.SignalId == nextSignalTrId)
                             {
-                                recieverState = RecieverState.Off;
-                            }
-                            if (ms.Value == "b")
-                            {
-                                recieverState = RecieverState.Signal50;
+                                if (ms.Value == "a")
+                                {
+                                    recieverState = RecieverState.Off;
+                                }
+                                if (ms.Value == "b")
+                                {
+                                    recieverState = RecieverState.Signal50;
+                                }
                             }
                         }
+                        prevNextSignalId = nextSignalTrId;
                     }
                 }
 
