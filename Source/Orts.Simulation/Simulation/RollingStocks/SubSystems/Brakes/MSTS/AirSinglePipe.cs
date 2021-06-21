@@ -143,6 +143,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             BrakeMassEmpty = thiscopy.BrakeMassEmpty;
             BrakeMassLoaded = thiscopy.BrakeMassLoaded;
             ForceWagonLoaded = thiscopy.ForceWagonLoaded;
+            DebugKoef1 = thiscopy.DebugKoef1;
+            DebugKoef2Factor = thiscopy.DebugKoef2Factor;
             DebugKoef = thiscopy.DebugKoef;
             MaxReleaseRatePSIpSG = thiscopy.MaxReleaseRatePSIpSG;
             MaxApplicationRatePSIpSG = thiscopy.MaxApplicationRatePSIpSG;
@@ -584,9 +586,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             threshold = (PrevAuxResPressurePSI - BrakeLine1PressurePSI) * AuxCylVolumeRatio;
             threshold = MathHelper.Clamp(threshold, 0, MCP);
 
+            MSTSLocomotive loco = Car as MSTSLocomotive;
             if (StartOn)
-            {
-                MSTSLocomotive loco = Car as MSTSLocomotive;
+            {                
                 // Vyfouká všechny vozy
                 if (!(Car as MSTSWagon).IsDriveable)
                 {
@@ -645,44 +647,22 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     BrakeLine2PressurePSI = Car.Train.BrakeLine2PressurePSI;
                     AuxResPressurePSI = maxPressurePSI0;
                 }
+                
+                // Definice limitů proměnných pro chod nenaladěných vozidel
+                if (loco != null) // Lokomotiva
+                {
+                    MaxReleaseRatePSIpS = ReleaseRatePSIpS = MathHelper.Clamp(MaxReleaseRatePSIpS, 0.15f * 14.50377f, 0.5f * 14.50377f);
+                    MaxApplicationRatePSIpS = MathHelper.Clamp(MaxApplicationRatePSIpS, 0.5f * 14.50377f, 1.0f * 14.50377f);
+                }
+                else // Vagón
+                {
+                    MaxReleaseRatePSIpS = ReleaseRatePSIpS = MathHelper.Clamp(MaxReleaseRatePSIpS, 0.15f * 14.50377f, 0.5f * 14.50377f);
+                    MaxApplicationRatePSIpS = MathHelper.Clamp(MaxApplicationRatePSIpS, 0.5f * 14.50377f, 1.0f * 14.50377f);
+                }
 
                 MaxReleaseRatePSIpS0 = MaxReleaseRatePSIpS;
                 MaxApplicationRatePSIpS0 = MaxApplicationRatePSIpS;
 
-                // Definice limitů proměnných pro chod nenaladěných vozidel
-                if (loco != null) // Lokomotiva
-                {
-                    MaxCylPressurePSI = AutoCylPressurePSI = MathHelper.Clamp(MaxCylPressurePSI, 1.0f * 14.50377f, 7.0f * 14.50377f);
-                    AuxCylVolumeRatio = MathHelper.Clamp(AuxCylVolumeRatio, 1.5f, 4.0f);
-
-                    MaxReleaseRatePSIpS = ReleaseRatePSIpS = MathHelper.Clamp(MaxReleaseRatePSIpS, 0.15f * 14.50377f, 0.5f * 14.50377f);
-                    MaxApplicationRatePSIpS = MathHelper.Clamp(MaxApplicationRatePSIpS, 0.5f * 14.50377f, 1.0f * 14.50377f);
-
-                    MaxAuxilaryChargingRatePSIpS = MathHelper.Clamp(MaxAuxilaryChargingRatePSIpS, 0.1f * 14.50377f, 0.5f * 14.50377f);
-                    EmergResChargingRatePSIpS = MathHelper.Clamp(EmergResChargingRatePSIpS, 0.1f * 14.50377f, 0.5f * 14.50377f);
-
-                    EmergAuxVolumeRatio = MathHelper.Clamp(EmergAuxVolumeRatio, 5.0f, 7.0f);
-                    EmergResVolumeM3 = MathHelper.Clamp(EmergResVolumeM3, 0.20f, 0.30f);
-
-                    BrakePipeVolumeM3 = MathHelper.Clamp(BrakePipeVolumeM3, 0.0f, 0.020f);
-                }
-                else // Vagón
-                {
-                    MaxCylPressurePSI = AutoCylPressurePSI = MathHelper.Clamp(MaxCylPressurePSI, 1.0f * 14.50377f, 4.0f * 14.50377f);
-                    AuxCylVolumeRatio = MathHelper.Clamp(AuxCylVolumeRatio, 1.5f, 4.0f);
-
-                    MaxReleaseRatePSIpS = ReleaseRatePSIpS = MathHelper.Clamp(MaxReleaseRatePSIpS, 0.15f * 14.50377f, 0.5f * 14.50377f);
-                    MaxApplicationRatePSIpS = MathHelper.Clamp(MaxApplicationRatePSIpS, 0.5f * 14.50377f, 1.0f * 14.50377f);
-
-                    MaxAuxilaryChargingRatePSIpS = MathHelper.Clamp(MaxAuxilaryChargingRatePSIpS, 0.1f * 14.50377f, 0.5f * 14.50377f);
-                    EmergResChargingRatePSIpS = MathHelper.Clamp(EmergResChargingRatePSIpS, 0.1f * 14.50377f, 0.5f * 14.50377f);
-                    
-                    EmergAuxVolumeRatio = MathHelper.Clamp(EmergAuxVolumeRatio, 0.5f, 1.5f);
-                    EmergResVolumeM3 = MathHelper.Clamp(EmergResVolumeM3, 0.050f, 0.100f);
-
-                    BrakePipeVolumeM3 = MathHelper.Clamp(BrakePipeVolumeM3, 0.0f, 0.030f);
-                }
-                
                 StartOn = false;
 
                 if (ForceWagonLoaded)
@@ -696,7 +676,29 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     BrakeCarModeTextPL = "Prázdný";
                 }
             }
-            
+
+            // Definice limitů proměnných pro chod nenaladěných vozidel
+            if (loco != null) // Lokomotiva
+            {
+                MaxCylPressurePSI = AutoCylPressurePSI = MathHelper.Clamp(MaxCylPressurePSI, 0.0f * 14.50377f, 7.0f * 14.50377f);
+                AuxCylVolumeRatio = MathHelper.Clamp(AuxCylVolumeRatio, 1.5f, 4.0f);
+                MaxAuxilaryChargingRatePSIpS = MathHelper.Clamp(MaxAuxilaryChargingRatePSIpS, 0.1f * 14.50377f, 0.5f * 14.50377f);
+                EmergResChargingRatePSIpS = MathHelper.Clamp(EmergResChargingRatePSIpS, 0.1f * 14.50377f, 0.5f * 14.50377f);
+                EmergAuxVolumeRatio = MathHelper.Clamp(EmergAuxVolumeRatio, 5.0f, 7.0f);
+                EmergResVolumeM3 = MathHelper.Clamp(EmergResVolumeM3, 0.20f, 0.30f);
+                BrakePipeVolumeM3 = MathHelper.Clamp(BrakePipeVolumeM3, 0.0f, 0.020f);
+            }
+            else // Vagón
+            {
+                MaxCylPressurePSI = AutoCylPressurePSI = MathHelper.Clamp(MaxCylPressurePSI, 0.0f * 14.50377f, 4.0f * 14.50377f);
+                AuxCylVolumeRatio = MathHelper.Clamp(AuxCylVolumeRatio, 1.5f, 4.0f);
+                MaxAuxilaryChargingRatePSIpS = MathHelper.Clamp(MaxAuxilaryChargingRatePSIpS, 0.1f * 14.50377f, 0.5f * 14.50377f);
+                EmergResChargingRatePSIpS = MathHelper.Clamp(EmergResChargingRatePSIpS, 0.1f * 14.50377f, 0.5f * 14.50377f);
+                EmergAuxVolumeRatio = MathHelper.Clamp(EmergAuxVolumeRatio, 0.5f, 1.5f);
+                EmergResVolumeM3 = MathHelper.Clamp(EmergResVolumeM3, 0.050f, 0.100f);
+                BrakePipeVolumeM3 = MathHelper.Clamp(BrakePipeVolumeM3, 0.0f, 0.030f);
+            }
+
 
             // DebugKoef pro doladění MaxBrakeForce
             if (DebugKoef1 == 0) DebugKoef1 = 1.0f;
@@ -1059,8 +1061,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
 
             if (Car is MSTSLocomotive && (Car as MSTSLocomotive).PowerOn
                 || Car is MSTSLocomotive && (Car as MSTSLocomotive).EDBIndependent && (Car as MSTSLocomotive).PowerOnFilter > 0)
-            {
-                var loco = Car as MSTSLocomotive;
+            {                
                 PowerForWagon = true;
 
                 if ((Car as MSTSLocomotive).EmergencyButtonPressed) EmergencyBrakeForWagon = true;
