@@ -5496,6 +5496,7 @@ namespace Orts.Simulation.RollingStocks
 
         private float elapsedTime;
         private float previousSelectedSpeed = 0;
+        private float previousMaxMirelSpeed = 0;
 
         public virtual float GetDataOf(CabViewControl cvc)
         {
@@ -6511,13 +6512,21 @@ namespace Orts.Simulation.RollingStocks
 
                 case CABViewControlTypes.ORTS_MIREL_SPEED:
                     {
-                        float val = Mirel.MirelMaximumSpeed;
+                        float val = Mirel.MirelMaximumSpeed; 
                         val = val - (float)cvc.MinValue;
                         CVCWithFrames cVCWithFrames = (CVCWithFrames)cvc;
                         int frames = cVCWithFrames.FramesCount - 1;
                         double howMany = (cvc.MaxValue - cvc.MinValue) / frames;
 
                         data = val / (float)howMany;
+                        if (Mirel.MaxSpeedSetup && !Mirel.SpeedSetupConfirmed)
+                        {
+                            data = previousMaxMirelSpeed;
+                        }
+                        else
+                        {
+                            previousMaxMirelSpeed = data;
+                        }
                         break;
                     }
 
