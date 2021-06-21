@@ -714,11 +714,11 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                 Display = "=D1";
             else if (MirelMaximumSpeed > 99)
             {
-                Display = MirelMaximumSpeed.ToString();
+                Display = Math.Round(MirelMaximumSpeed, 0).ToString();
                 Display = Display.Replace("1", "l");
             }
             else
-                Display = MirelMaximumSpeed.ToString();
+                Display = Math.Round(MirelMaximumSpeed, 0).ToString();
             if (NZ1) Display = "NZ1";
             if (NZ2) Display = "NZ2";
             if (NZ3) Display = "NZ3";
