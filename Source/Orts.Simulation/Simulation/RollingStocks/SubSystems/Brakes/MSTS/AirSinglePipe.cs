@@ -1387,6 +1387,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
 
                         // Charge train brake pipe - adjust main reservoir pressure, and lead brake pressure line to maintain brake pipe equal to equalising resevoir pressure - release brakes
                         if (lead.BrakeSystem.BrakeLine1PressurePSI < train.EqualReservoirPressurePSIorInHg && lead.TrainBrakeController.TrainBrakeControllerState != ControllerState.Lap
+                            || lead.BrakeSystem.BrakeLine1PressurePSI < train.EqualReservoirPressurePSIorInHg && lead.TrainBrakeController.TCSEmergencyBraking
                             || lead.BrakeSystem.BrakeLine1PressurePSI < train.EqualReservoirPressurePSIorInHg && lead.EmergencyButtonPressed)
                         {
                             // Calculate change in brake pipe pressure between equalising reservoir and lead brake pipe
@@ -1415,7 +1416,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                             }
                         }
                         // reduce pressure in lead brake line if brake pipe pressure is above equalising pressure - apply brakes
-                        else if (lead.BrakeSystem.BrakeLine1PressurePSI > train.EqualReservoirPressurePSIorInHg && lead.TrainBrakeController.TrainBrakeControllerState != ControllerState.Lap
+                        else
+                        if (lead.BrakeSystem.BrakeLine1PressurePSI > train.EqualReservoirPressurePSIorInHg && lead.TrainBrakeController.TrainBrakeControllerState != ControllerState.Lap
+                            || lead.BrakeSystem.BrakeLine1PressurePSI > train.EqualReservoirPressurePSIorInHg && lead.TrainBrakeController.TCSEmergencyBraking
                             || lead.BrakeSystem.BrakeLine1PressurePSI > train.EqualReservoirPressurePSIorInHg && lead.EmergencyButtonPressed)
                         {
                             float ServiceVariationFactor = (1 - TrainPipeTimeVariationS / serviceTimeFactor);
