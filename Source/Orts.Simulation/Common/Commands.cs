@@ -882,7 +882,6 @@ namespace Orts.Common
         public override void Redo()
         {
             Receiver.ManualBell = ToState;
-            Receiver.Mirel.ResetVigilance();
         }
 
         public override string ToString() {
