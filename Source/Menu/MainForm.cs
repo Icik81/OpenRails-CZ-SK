@@ -401,6 +401,8 @@ namespace ORTS
                     sw.UpdateProgress();
                     if (pingReply.Status == IPStatus.Success)
                     {
+                        if (!File.Exists(SelectedRoute.Path + "\\MirelDb.xml") && File.Exists(SelectedRoute.Path + "\\MirelDbVersion.ini"))
+                            File.Delete(SelectedRoute.Path + "\\MirelDbVersion.ini");
                         FileInfo fileInfo = new FileInfo(SelectedRoute.Path + "\\MirelDbVersion.ini");
                         if (!fileInfo.Exists)
                         {
