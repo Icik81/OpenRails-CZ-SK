@@ -36,6 +36,7 @@ using System.Resources;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows.Forms;
+using System.Xml;
 using Path = ORTS.Menu.Path;
 
 namespace ORTS
@@ -382,137 +383,84 @@ namespace ORTS
             LoadStartAtList();
             LoadTimetableSetList();
             ShowDetails();
-            // LoadMirelDatabase();
+            LoadMirelDatabase();
         }
         #endregion
 
+        #region MirelDatabase
         void LoadMirelDatabase()
         {
             Ping ping = new Ping();
             PingReply pingReply = ping.Send("lkpr.aspone.cz", 1000);
             if (pingReply != null)
             {
-                SplashWindow sw = new SplashWindow();
-                sw.Show();
-                sw.UpdateProgress();
                 if (pingReply.Status == IPStatus.Success)
                 {
-                    FileInfo fileInfo = new FileInfo(SelectedRoute.Path + "\\MirelDbVersion.ini");
-                    if (!fileInfo.Exists)
+                    SplashWindow sw = new SplashWindow();
+                    sw.Show();
+                    sw.UpdateProgress();
+                    if (pingReply.Status == IPStatus.Success)
                     {
-                        File.WriteAllText(SelectedRoute.Path + "\\MirelDbVersion.ini", "0");
-                        if (SelectedRoute.Name == "Trat 321")
+                        FileInfo fileInfo = new FileInfo(SelectedRoute.Path + "\\MirelDbVersion.ini");
+                        if (!fileInfo.Exists)
                         {
-                            File.WriteAllText(SelectedRoute.Path + "\\MirelDbVersion.ini", "134");
-                            File.Copy(SelectedRoute.Path + "\\" + SelectedRoute.Name + ".tdb", SelectedRoute.Path + "\\" + SelectedRoute.Name + ".tdb.mirel.bak", true);
-                            File.Delete(SelectedRoute.Path + "\\" + SelectedRoute.Name + ".tdb");
-                            ServicePointManager.Expect100Continue = true;
-                            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+                            File.WriteAllText(SelectedRoute.Path + "\\MirelDbVersion.ini", "0");
+                        }
+                        string version = File.ReadAllText(SelectedRoute.Path + "\\MirelDbVersion.ini");
+                        if (string.IsNullOrEmpty(version)) version = "0";
+                        cz.aspone.lkpr.WebService ws = new cz.aspone.lkpr.WebService();
+                        string verRemote = ws.GetLastVersion(SelectedRoute.ToString());
+                        if (verRemote == version)
+                        {
+                            sw.Close();
+                            return;
+                        }
 
-                            ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
-                            using (var client = new WebClient())
-                            {
-                                try
-                                {
-                                    client.DownloadFile("https://www.msts-rw.cz/ORIC/ORCZ-SK/dat321/Trat 321.tdb", SelectedRoute.Path + "\\" + SelectedRoute.Name + ".tdb");
-                                }
-                                catch { }
-                            }
-                        }
-                    }
-                    string version = File.ReadAllText(SelectedRoute.Path + "\\MirelDbVersion.ini");
-                    if (string.IsNullOrEmpty(version)) version = "0";
-                    cz.aspone.lkpr.WebService ws = new cz.aspone.lkpr.WebService();
-                    DataTable dt = ws.GetMirelSignals(comboBoxRoute.Text, version);
-                    int currentRow = 0;
-                    foreach (DataRow dr in dt.Rows)
-                    {
-                        currentRow++;
-                        double calc = 100 / (double)dt.Rows.Count;
-                        calc = calc * currentRow;
-                        calc = Math.Round(calc, 0) + 1;
-                        sw.Progress = int.Parse(calc.ToString());
-                        sw.UpdateProgress();
-                        ReplaceFile(SelectedRoute.Path + "\\" + SelectedRoute.Name + ".tdb", SelectedRoute.Path + "\\" + SelectedRoute.Name + ".tdb1", dr["SignalID"].ToString(), dr["MirelState"].ToString());
-                    }
-                    File.WriteAllText(SelectedRoute.Path + "\\MirelDbVersion.ini", ws.GetLastVersion(SelectedRoute.Name));
-                    sw.Close();
-                }
-            }
-        }
-        protected void ReplaceFile(string FilePath, string NewFilePath, string concern, string newValue)
-        {
-            bool foundLine = false;
-            using (StreamReader vReader = new StreamReader(FilePath))
-            {
-                using (StreamWriter vWriter = new StreamWriter(NewFilePath, false, System.Text.Encoding.BigEndianUnicode))
-                {
-                    int vLineNumber = 0;
-                    while (!vReader.EndOfStream)
-                    {
-                        string vLine = vReader.ReadLine();
-                        if (vLine.Contains("TrItemId ( " + concern + " )"))
+                        DataTable dt = ws.GetMirelSignals(comboBoxRoute.Text, version);
+                        int currentRow = 0;
+
+                        if (!File.Exists(SelectedRoute.Path + "\\MirelDb.xml"))
                         {
-                            vWriter.WriteLine(ReplaceLine(vLine, vLineNumber++));
-                            vLine = vReader.ReadLine();
-                            vWriter.WriteLine(ReplaceLine(vLine, vLineNumber++));
-                            vLine = vReader.ReadLine();
-                            if (vLine.Contains("TrSignalType"))
+                            WebClient webClient = new WebClient();
+                            webClient.DownloadFile("http://lkpr.aspone.cz/or/MirelDb.xml", SelectedRoute.Path + "\\MirelDb.xml");
+                        }
+                        XmlDocument doc = new XmlDocument();
+                        doc.Load(SelectedRoute.Path + "\\MirelDb.xml");
+
+                        foreach (DataRow dr in dt.Rows)
+                        {
+                            currentRow++;
+                            double calc = 100 / (double)dt.Rows.Count;
+                            calc = calc * currentRow;
+                            calc = Math.Round(calc, 0) + 1;
+                            sw.Progress = int.Parse(calc.ToString());
+                            sw.UpdateProgress();
+                            if (dr[3].ToString() == SelectedRoute.ToString())
                             {
-                                foundLine = true;
-                            }
-                            else
-                            {
-                                vWriter.WriteLine(ReplaceLine(vLine, vLineNumber++));
-                                vLine = vReader.ReadLine();
-                                if (vLine.Contains("TrSignalType"))
+                                foreach (XmlNode node in doc.ChildNodes)
                                 {
-                                    foundLine = true;
+                                    if (node.Name == "MirelDb")
+                                    {
+                                        XmlNode node1 = doc.CreateElement("Signal");
+                                        XmlNode node2 = doc.CreateElement("Id");
+                                        node2.InnerText = dr[1].ToString();
+                                        XmlNode node3 = doc.CreateElement("Value");
+                                        node3.InnerText = dr[2].ToString();
+                                        node1.AppendChild(node2);
+                                        node1.AppendChild(node3);
+                                        node.AppendChild(node1);
+                                    }
                                 }
                             }
                         }
-                        if (foundLine)
-                        {
-                            foundLine = false;
-                            int replaceAt = vLine.IndexOf("0");
-                            int test = vLine.IndexOf("a", replaceAt - 1);
-                            if (test < 0) test = replaceAt + 1;
-                            String newLine;
-                            if (test < replaceAt)
-                            {
-                                newLine = vLine.Remove(test, 1);
-                                newLine = newLine.Insert(test, newValue);
-                                vLine = newLine;
-                                goto write;
-                            }
-                            test = vLine.IndexOf("b", replaceAt - 1);
-                            if (test < 0) test = replaceAt + 1;
-                            if (test < replaceAt)
-                            {
-                                newLine = vLine.Remove(test, 1);
-                                newLine = newLine.Insert(test, newValue);
-                                vLine = newLine;
-                                goto write;
-                            }
-                            newLine = vLine.Remove(replaceAt, 1);
-                            newLine = newLine.Insert(replaceAt, newValue);
-                            vLine = newLine;
-                        write:
-                            vWriter.WriteLine(ReplaceLine(vLine, vLineNumber++));
-                        }
-                        else
-                            vWriter.WriteLine(ReplaceLine(vLine, vLineNumber++));
+                        doc.Save(SelectedRoute.Path + "\\MirelDb.xml");
+                        File.WriteAllText(SelectedRoute.Path + "\\MirelDbVersion.ini", ws.GetLastVersion(SelectedRoute.Name));
+                        sw.Close();
                     }
                 }
             }
-            File.Copy(NewFilePath, FilePath, true);
         }
-        protected string ReplaceLine(string Line, int LineNumber)
-        {
-            //Do your string replacement and 
-            //return either the original string or the modified one
-            return Line;
-        }
+        #endregion
 
         #region Mode
         void radioButtonMode_CheckedChanged(object sender, EventArgs e)

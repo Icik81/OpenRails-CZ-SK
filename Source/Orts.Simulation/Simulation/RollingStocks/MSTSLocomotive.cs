@@ -6512,7 +6512,7 @@ namespace Orts.Simulation.RollingStocks
 
                 case CABViewControlTypes.ORTS_MIREL_SPEED:
                     {
-                        float val = Mirel.MirelMaximumSpeed; 
+                        float val = (float)Math.Round(Mirel.MirelMaximumSpeed, 0); 
                         val = val - (float)cvc.MinValue;
                         CVCWithFrames cVCWithFrames = (CVCWithFrames)cvc;
                         int frames = cVCWithFrames.FramesCount - 1;
