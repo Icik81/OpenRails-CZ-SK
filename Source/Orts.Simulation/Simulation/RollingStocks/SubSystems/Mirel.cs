@@ -21,6 +21,7 @@ using ORTS.Settings;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Xml;
 
 namespace Orts.Simulation.RollingStocks.SubSystems
 {
@@ -111,6 +112,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
         public enum LS90led { Off, Red, Green };
         public LS90led Ls90led = LS90led.Off;
         public bool NoAlertOnRestrictedSignal = false;
+        public List<MirelSignal> MirelSignals = new List<MirelSignal>();
 
         public void Initialize()
         {
@@ -122,6 +124,39 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                 DatabaseVersion = int.Parse(File.ReadAllText(fi.DirectoryName + "\\MirelDbVersion.ini"));
             else
                 DatabaseVersion = 1000;
+            PopulateMirelSignalList();
+        }
+
+        public void PopulateMirelSignalList()
+        {
+            MirelSignals.Clear();
+            if (!File.Exists(Simulator.RoutePath + "\\MirelDb.xml"))
+                return;
+            XmlDocument doc = new XmlDocument();
+            doc.Load(Simulator.RoutePath + "\\MirelDb.xml");
+            foreach (XmlNode node in doc.ChildNodes)
+            {
+                if (node.Name == "MirelDb")
+                {
+                    foreach (XmlNode nodeSignal in node.ChildNodes)
+                    {
+                        int nextNodeId = 0;
+                        string nextNodeValue = "";
+
+                        foreach (XmlNode nodeId in nodeSignal.ChildNodes)
+                        {
+                            if (nodeId.Name == "Id")
+                                nextNodeId = int.Parse(nodeId.InnerText);
+                            if (nodeId.Name == "Value")
+                                nextNodeValue = nodeId.InnerText;
+                        }
+                        MirelSignal ms = new MirelSignal();
+                        ms.SignalId = nextNodeId;
+                        ms.Value = nextNodeValue;
+                        MirelSignals.Add(ms);
+                    }
+                }
+            }
         }
 
         public void SetMirelSignal(bool ToState)
@@ -145,85 +180,56 @@ namespace Orts.Simulation.RollingStocks.SubSystems
 
         protected void ReplaceFile(string FilePath, string NewFilePath, string concern, string newValue)
         {
-            bool foudLine = false;
-            using (StreamReader vReader = new StreamReader(FilePath))
-            {
-                using (StreamWriter vWriter = new StreamWriter(NewFilePath, false, System.Text.Encoding.BigEndianUnicode))
-                {
-                    int vLineNumber = 0;
-                    while (!vReader.EndOfStream)
-                    {
-                        string vLine = vReader.ReadLine();
-                        if (vLine.Contains(concern))
-                            foudLine = true;
-                        if (foudLine && vLine.Contains("TrSignalType"))
-                        {
-                            foudLine = false;
-                            int replaceAt = vLine.IndexOf("0");
-                            int test = vLine.IndexOf("a", replaceAt - 1);
-                            if (test < 0) test = replaceAt + 1;
-                            String newLine;
-                            if (test < replaceAt)
-                            {
-                                newLine = vLine.Remove(test, 1);
-                                newLine = newLine.Insert(test, newValue);
-                                vLine = newLine;
-                                goto write;
-                            }
-                            test = vLine.IndexOf("b", replaceAt - 1);
-                            if (test < 0) test = replaceAt + 1;
-                            if (test < replaceAt)
-                            {
-                                newLine = vLine.Remove(test, 1);
-                                newLine = newLine.Insert(test, newValue);
-                                vLine = newLine;
-                                goto write;
-                            }
-                            newLine = vLine.Remove(replaceAt, 1);
-                            newLine = newLine.Insert(replaceAt, newValue);
-                            vLine = newLine;
-                            write:
-                            vWriter.WriteLine(ReplaceLine(vLine, vLineNumber++));
-                        }
-                        else
-                            vWriter.WriteLine(ReplaceLine(vLine, vLineNumber++));
-                    }
-                }
-            }
-            File.Copy(NewFilePath, FilePath, true);
+
             if (newValue == "a")
                 Simulator.Confirmer.Information("Mirel on signal ahead is now switched to OFF. Data was saved to route tdb file.");
             else
                 Simulator.Confirmer.Information("Mirel on signal ahead is now switched to ON. Data was saved to route tdb file.");
         }
-        protected string ReplaceLine(string Line, int LineNumber)
-        {
-            //Do your string replacement and 
-            //return either the original string or the modified one
-            return Line;
-        }
 
+        XmlDocument MirelXml;
         protected void UpdateMirelSignal(string newFlag)
         {
             if (!EnableMirelUpdates) return;
-            Physics.Train train = Locomotive.Train;
-            Signalling.SignalObject[] signals = train.NextSignalObject;
-            int nextSignalTrId = nextSignalId = signals[0].trItem;
 
-            foreach (Orts.Formats.Msts.TrItem item in Simulator.TDB.TrackDB.TrItemTable)
+            if (MirelXml == null)
             {
-                if (item.GetType() == typeof(Orts.Formats.Msts.SignalItem))
+                MirelXml = new XmlDocument();
+                MirelXml.Load(Simulator.RoutePath + "\\MirelDb.xml");
+            }
+
+            foreach (XmlNode node in MirelXml.ChildNodes)
+            {
+                if (node.Name == "MirelDb")
                 {
-                    Orts.Formats.Msts.SignalItem mirelItem = (Orts.Formats.Msts.SignalItem)item;
-                    if (mirelItem == null) continue;
-                    if (mirelItem.TrItemId == nextSignalTrId)
+                    foreach (XmlNode nodeSignal in node.ChildNodes)
                     {
-                        mirelItem.Flags1 = mirelItem.Flags1.Remove(0, 1);
-                        mirelItem.Flags1 = mirelItem.Flags1.Insert(0, newFlag);
-                        break;
+                        bool updateNode = false;
+                        foreach (XmlNode nodeId in nodeSignal.ChildNodes)
+                        {
+                            if (nodeId.Name == "Id" && nodeId.InnerText == nextSignalId.ToString())
+                            {
+                                updateNode = true;
+                            }
+                            if (nodeId.Name == "Value" && updateNode)
+                            {
+                                nodeId.InnerText = newFlag;
+                                goto Save;
+                            }
+                        }
                     }
+                    XmlNode node1 = MirelXml.CreateElement("Signal");
+                    XmlNode node2 = MirelXml.CreateElement("Id");
+                    node2.InnerText = nextSignalId.ToString();
+                    XmlNode node3 = MirelXml.CreateElement("Value");
+                    node3.InnerText = newFlag;
+                    node1.AppendChild(node2);
+                    node1.AppendChild(node3);
+                    node.AppendChild(node1);
                 }
             }
+            Save:
+            MirelXml.Save(Simulator.RoutePath + "\\MirelDb.xml");
             SaveMirelStateToWorld(nextSignalId, newFlag);
             FileInfo fi = new FileInfo(Simulator.TRK.Tr_RouteFile.FullFileName);
             File.WriteAllText(fi.DirectoryName + "\\MirelDbVersion.ini", DatabaseVersion.ToString());
@@ -238,6 +244,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
         protected bool mirelUnsetSignlEventBeeped = false;
         protected bool ls90tested = false;
         protected float ls90testTime = 0;
+        protected int prevNextSignalId = 0;
         public void Update(float elapsedClockSeconds, float AbsSpeedMpS, float AbsWheelSpeedMpS)
         {
             UpdateDisplay();
@@ -313,60 +320,52 @@ namespace Orts.Simulation.RollingStocks.SubSystems
 
                 if (EnableMirelUpdates)
                 {
-                    foreach (Orts.Formats.Msts.TrItem item in Simulator.TDB.TrackDB.TrItemTable)
+                    bool found = false;
+                    foreach (MirelSignal ms in MirelSignals)
                     {
-                        if (item.GetType() == typeof(Orts.Formats.Msts.SignalItem))
+                        if (ms.SignalId == nextSignalTrId)
                         {
-                            Orts.Formats.Msts.SignalItem mirelItem = (Orts.Formats.Msts.SignalItem)item;
-                            if (mirelItem == null) continue;
-                            if (mirelItem.TrItemId == nextSignalTrId)
+                            if (ms.Value == "a")
                             {
-                                if (mirelItem.Flags1.Substring(0, 1) == "a")
-                                {
-                                    recieverState = RecieverState.Off;
-                                    Simulator.Confirmer.MSG(nextSignalTrId.ToString() + " (" + item.ItemName + ")" + " - Mirel OFF");
-
-                                }
-                                if (mirelItem.Flags1.Substring(0, 1) == "b")
-                                {
-                                    recieverState = RecieverState.Signal50;
-                                    Simulator.Confirmer.MSG(nextSignalTrId.ToString() + " (" + item.ItemName + ")" + " - Mirel ON");
-                                }
-                                if (mirelItem.Flags1.Substring(0, 1) == "0")
-                                {
-                                    if (!mirelUnsetSignlEventBeeped)
-                                    {
-                                        Locomotive.SignalEvent(Common.Event.MirelUnwantedVigilancy);
-                                        mirelUnsetSignlEventBeeped = true;
-                                    }
-                                    Simulator.Confirmer.MSG(nextSignalTrId.ToString() + " (" + item.ItemName + ")" + " - Mirel NOT SET!");
-                                }
+                                recieverState = RecieverState.Off;
+                                Simulator.Confirmer.MSG(nextSignalTrId.ToString() + " - Mirel OFF");
+                                found = true;
+                                break;
+                            }
+                            if (ms.Value == "b")
+                            {
+                                recieverState = RecieverState.Signal50;
+                                Simulator.Confirmer.MSG(nextSignalTrId.ToString() + " - Mirel ON");
+                                found = true;
                                 break;
                             }
                         }
                     }
+                    if (!found)
+                    {
+                        recieverState = RecieverState.Signal50;
+                        Simulator.Confirmer.MSG(nextSignalTrId.ToString() + " - NOT SET");
+                    }
                 }
                 else
                 {
-                    foreach (Orts.Formats.Msts.TrItem item in Simulator.TDB.TrackDB.TrItemTable)
+                    if (prevNextSignalId != nextSignalTrId)
                     {
-                        if (item.GetType() == typeof(Orts.Formats.Msts.SignalItem))
+                        foreach (MirelSignal ms in MirelSignals)
                         {
-                            Orts.Formats.Msts.SignalItem mirelItem = (Orts.Formats.Msts.SignalItem)item;
-                            if (mirelItem == null) continue;
-                            if (mirelItem.TrItemId == nextSignalTrId)
+                            if (ms.SignalId == nextSignalTrId)
                             {
-                                if (mirelItem.Flags1.Substring(0, 1) == "a")
+                                if (ms.Value == "a")
                                 {
                                     recieverState = RecieverState.Off;
                                 }
-                                if (mirelItem.Flags1.Substring(0, 1) == "b")
+                                if (ms.Value == "b")
                                 {
                                     recieverState = RecieverState.Signal50;
                                 }
-                                break;
                             }
                         }
+                        prevNextSignalId = nextSignalTrId;
                     }
                 }
 
@@ -714,11 +713,11 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                 Display = "=D1";
             else if (MirelMaximumSpeed > 99)
             {
-                Display = MirelMaximumSpeed.ToString();
+                Display = Math.Round(MirelMaximumSpeed, 0).ToString();
                 Display = Display.Replace("1", "l");
             }
             else
-                Display = MirelMaximumSpeed.ToString();
+                Display = Math.Round(MirelMaximumSpeed, 0).ToString();
             if (NZ1) Display = "NZ1";
             if (NZ2) Display = "NZ2";
             if (NZ3) Display = "NZ3";
@@ -2738,5 +2737,11 @@ namespace Orts.Simulation.RollingStocks.SubSystems
             if (Equipped && !BlueLight && initTest == InitTest.Passed && Locomotive.SpeedMpS > 0) AlerterPressed(true);
             interventionTimer = 0;
         }
+    }
+
+    public class MirelSignal
+    {
+        public int SignalId { get; set; }
+        public string Value { get; set; }
     }
 }
