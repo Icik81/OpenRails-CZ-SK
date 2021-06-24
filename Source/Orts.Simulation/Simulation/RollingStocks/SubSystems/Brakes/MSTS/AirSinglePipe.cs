@@ -1984,9 +1984,11 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     if (brakeSystem.PrevEngineBrakeControllerRateApply < brakeSystem.EngineBrakeControllerApplyDeadZone)
                         EngineBrakeControllerApply = brakeSystem.EngineBrakeControllerApplyDeadZone;
 
+                    float EngineBrakeCylOffset = train.BrakeLine3PressurePSI - (brakeSystem.EngineBrakeControllerApplyDeadZone * lead.BrakeSystem.BrakeCylinderMaxSystemPressurePSI - (EngineBrakeControllerRate * brakeSystem.EngineBrakeControllerApplyDeadZone * lead.BrakeSystem.BrakeCylinderMaxSystemPressurePSI));
+
                     // Apply
                     if (train.BrakeLine3PressurePSI > EngineBrakeControllerApply * lead.BrakeSystem.BrakeCylinderMaxSystemPressurePSI
-                        && lead.BrakeSystem.AutoCylPressurePSI1 < train.BrakeLine3PressurePSI + 0
+                        && lead.BrakeSystem.AutoCylPressurePSI1 < EngineBrakeCylOffset
                         && lead.MainResPressurePSI > 0
                         && AutoCylPressurePSI < lead.BrakeSystem.BrakeCylinderMaxSystemPressurePSI
                         && AutoCylPressurePSI < lead.MainResPressurePSI)
@@ -2003,8 +2005,11 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
 
                         lead.BrakeSystem.AutoCylPressurePSI1 = MathHelper.Clamp(lead.BrakeSystem.AutoCylPressurePSI1, 0, lead.BrakeSystem.BrakeCylinderMaxSystemPressurePSI);
                         lead.MainResPressurePSI -= dp * ((EngineBrakeControllerRate - EngineBrakeControllerApply) / EngineBrakeControllerApply) * brakeSystem.GetCylVolumeM3() / lead.MainResVolumeM3;
-                        if (train.BrakeLine3PressurePSI < lead.BrakeSystem.AutoCylPressurePSI1)
+                        if (EngineBrakeCylOffset < lead.BrakeSystem.AutoCylPressurePSI1)
+                        {
                             lead.SignalEvent(Event.EngineBrakePressureStoppedChanging);
+                            lead.EngineBrakeState = ValveState.Lap;
+                        }
                         else lead.EngineBrakeState = ValveState.Apply;
                         brakeSystem.PrevEngineBrakeControllerRateRelease = EngineBrakeControllerRate;
                     }
@@ -2135,9 +2140,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     }
                 }
 
-                if (Math.Round(train.BrakeLine3PressurePSI) == Math.Round(lead.BrakeSystem.AutoCylPressurePSI1))                    
+                if (Math.Round(train.BrakeLine3PressurePSI) == Math.Round(lead.BrakeSystem.AutoCylPressurePSI1))
                 {
-                    lead.EngineBrakeState = ValveState.Lap;                    
+                    lead.EngineBrakeState = ValveState.Lap;
                 }
 
 
