@@ -175,10 +175,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
             }
             mirelUnsetSignlEventBeeped = false;
             UpdateMirelSignal(ToState ? "b" : "a");
-            if (!ToState)
-                Simulator.Confirmer.Information("Mirel on signal ahead is now switched to OFF. Data was saved to route tdb file.");
-            else
-                Simulator.Confirmer.Information("Mirel on signal ahead is now switched to ON. Data was saved to route tdb file.");
+            Simulator.Confirmer.Information("Nové kódování bylo nastaveno a uloženo do externí databáze.");
         }
 
 
@@ -223,19 +220,12 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                     node.AppendChild(node1);
                 }
             }
-            Save:
-            foreach (MirelSignal ms in MirelSignals)
-            {
-                if (ms.SignalId == nextSignalId)
-                {
-                    ms.Value = newFlag;
-                    break;
-                }
-            }
+        Save:
             MirelXml.Save(Simulator.RoutePath + "\\MirelDb.xml");
             SaveMirelStateToWorld(nextSignalId, newFlag);
             FileInfo fi = new FileInfo(Simulator.TRK.Tr_RouteFile.FullFileName);
             File.WriteAllText(fi.DirectoryName + "\\MirelDbVersion.ini", DatabaseVersion.ToString());
+            PopulateMirelSignalList();
         }
 
         protected void SaveMirelStateToWorld(int SectionID, String NewState)
@@ -331,14 +321,14 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                             if (ms.Value == "a")
                             {
                                 recieverState = RecieverState.Off;
-                                Simulator.Confirmer.MSG(nextSignalTrId.ToString() + " - Mirel OFF");
+                                Simulator.Confirmer.MSG(nextSignalTrId.ToString() + " - kódováni Mirel na příštím návěstidle je VYPNUTO");
                                 found = true;
                                 break;
                             }
                             if (ms.Value == "b")
                             {
                                 recieverState = RecieverState.Signal50;
-                                Simulator.Confirmer.MSG(nextSignalTrId.ToString() + " - Mirel ON");
+                                Simulator.Confirmer.MSG(nextSignalTrId.ToString() + " - kódování Mirel na příštím návěstidle je ZAPNUTO");
                                 found = true;
                                 break;
                             }
@@ -346,8 +336,12 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                     }
                     if (!found)
                     {
-                        recieverState = RecieverState.Signal50;
-                        Simulator.Confirmer.MSG(nextSignalTrId.ToString() + " - NOT SET");
+                        if (prevNextSignalId != nextSignalTrId)
+                        {
+                            Locomotive.SignalEvent(Common.Event.MirelUnwantedVigilancy);
+                            prevNextSignalId = nextSignalTrId;
+                        }
+                        Simulator.Confirmer.MSG(nextSignalTrId.ToString() + " - kódování Mirel na příštím návěstidle je NENASTAVENO");
                     }
                 }
                 else
