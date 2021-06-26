@@ -310,6 +310,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                     if (randomNum == 1) RecievingRepeaterSignal = false;
                 }
                 int nextSignalTrId = nextSignalId = signals[0].trItem;
+                float? distance = train.DistanceToSignal;
+                if (distance == null)
+                    distance = 2000;
 
                 if (EnableMirelUpdates)
                 {
@@ -365,7 +368,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                         prevNextSignalId = nextSignalTrId;
                     }
                 }
-
+                if (distance > 1250)
+                    recieverState = RecieverState.Off;
             }
             catch { recieverState = RecieverState.Off; }
 
