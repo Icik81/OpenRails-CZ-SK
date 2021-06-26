@@ -238,6 +238,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems
         protected bool ls90tested = false;
         protected float ls90testTime = 0;
         protected int prevNextSignalId = 0;
+        protected RecieverState prevRecieverState = RecieverState.Signal50;
+        protected int minimalSignalDistance = 0;
+        protected bool noAutoblock = false;
         public void Update(float elapsedClockSeconds, float AbsSpeedMpS, float AbsWheelSpeedMpS)
         {
             UpdateDisplay();
@@ -317,21 +320,30 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                 if (EnableMirelUpdates)
                 {
                     bool found = false;
+                    if (prevNextSignalId != nextSignalTrId)
+                    {
+                        prevNextSignalId = nextSignalTrId;
+                        Random rnd = new Random();
+                        minimalSignalDistance = rnd.Next(1250, 2000);
+                        noAutoblock = false;
+                        if (distance > 2500)
+                            noAutoblock = true;
+                    }
                     foreach (MirelSignal ms in MirelSignals)
                     {
                         if (ms.SignalId == nextSignalTrId)
                         {
                             if (ms.Value == "a")
                             {
-                                recieverState = RecieverState.Off;
-                                Simulator.Confirmer.MSG(nextSignalTrId.ToString() + " - kódováni Mirel na příštím návěstidle je VYPNUTO");
+                                prevRecieverState = recieverState = RecieverState.Off;
+                                Simulator.Confirmer.MSG(nextSignalTrId.ToString() + " - kódováni Mirel na příštím návěstidle je VYPNUTO (D: " + Math.Round((double)distance , 0).ToString() + ") -- AutoBlock? " + (noAutoblock ? "false" : "true"));
                                 found = true;
                                 break;
                             }
                             if (ms.Value == "b")
                             {
-                                recieverState = RecieverState.Signal50;
-                                Simulator.Confirmer.MSG(nextSignalTrId.ToString() + " - kódování Mirel na příštím návěstidle je ZAPNUTO");
+                                prevRecieverState = recieverState = RecieverState.Signal50;
+                                Simulator.Confirmer.MSG(nextSignalTrId.ToString() + " - kódování Mirel na příštím návěstidle je ZAPNUTO (D: " + Math.Round((double)distance, 0).ToString() + ") -- AutoBlock? " + (noAutoblock ? "false" : "true"));
                                 found = true;
                                 break;
                             }
@@ -344,31 +356,45 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                             Locomotive.SignalEvent(Common.Event.MirelUnwantedVigilancy);
                             prevNextSignalId = nextSignalTrId;
                         }
-                        Simulator.Confirmer.MSG(nextSignalTrId.ToString() + " - kódování Mirel na příštím návěstidle je NENASTAVENO");
+                        Simulator.Confirmer.MSG(nextSignalTrId.ToString() + " - kódování Mirel na příštím návěstidle je NENASTAVENO (D: " + Math.Round((double)distance, 0).ToString() + ") -- AutoBlock? " + (noAutoblock ? "false" : "true"));
                     }
                 }
                 else
                 {
                     if (prevNextSignalId != nextSignalTrId)
                     {
+                        noAutoblock = false;
+                        if (distance > 2500)
+                            noAutoblock = true;
+                        Random rnd = new Random();
+                        minimalSignalDistance = rnd.Next(1250, 2000);
                         foreach (MirelSignal ms in MirelSignals)
                         {
                             if (ms.SignalId == nextSignalTrId)
                             {
                                 if (ms.Value == "a")
                                 {
-                                    recieverState = RecieverState.Off;
+                                    prevRecieverState = recieverState = RecieverState.Off;
                                 }
                                 if (ms.Value == "b")
                                 {
-                                    recieverState = RecieverState.Signal50;
+                                    prevRecieverState = recieverState = RecieverState.Signal50;
                                 }
+                                break;
                             }
                         }
                         prevNextSignalId = nextSignalTrId;
                     }
                 }
-                if (distance > 1250)
+                if (distance > minimalSignalDistance)
+                {
+                    recieverState = RecieverState.Off;
+                }
+                else
+                {
+                    recieverState = prevRecieverState;
+                }
+                if (noAutoblock)
                     recieverState = RecieverState.Off;
             }
             catch { recieverState = RecieverState.Off; }
