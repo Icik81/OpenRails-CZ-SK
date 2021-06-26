@@ -14436,7 +14436,7 @@ namespace Orts.Simulation.Physics
                             }
                             if (isDiverging)
                             {
-                                thisItem = new TrainObjectItem(isRightSwitch, sectionDistanceToTrainM, TrainObjectItem.TRAINOBJECTTYPE.FACING_SWITCH);
+                                thisItem = new TrainObjectItem(isRightSwitch, sectionDistanceToTrainM, TrainObjectItem.TRAINOBJECTTYPE.FACING_SWITCH, thisSection.Index);
                                 PlayerTrainDivergingSwitches[dir, 0].Add(thisItem);
                             }
                         }
@@ -14450,7 +14450,7 @@ namespace Orts.Simulation.Physics
                                 var junctionAngle = junctionNode.GetAngle(Simulator.TSectionDat);
                                 if (junctionAngle < 0) isRightSwitch = false; // FIXME: or the opposite? untested...
 
-                                thisItem = new TrainObjectItem(isRightSwitch, sectionDistanceToTrainM, TrainObjectItem.TRAINOBJECTTYPE.TRAILING_SWITCH);
+                                thisItem = new TrainObjectItem(isRightSwitch, sectionDistanceToTrainM, TrainObjectItem.TRAINOBJECTTYPE.TRAILING_SWITCH, thisSection.Index);
                                 PlayerTrainDivergingSwitches[dir, 1].Add(thisItem);
                             }
                         }
@@ -20908,6 +20908,7 @@ namespace Orts.Simulation.Physics
             public string ThisMile;
             public bool IsRightSwitch;
             public SignalObject SignalObject;
+            public int Index;
 
             // field validity :
             // if ItemType == SIGNAL :
@@ -21028,11 +21029,12 @@ namespace Orts.Simulation.Physics
             }
 
             // Constructor for facing or trailing Switch
-            public TrainObjectItem(bool isRightSwitch, float thisDistanceM, TRAINOBJECTTYPE type)
+            public TrainObjectItem(bool isRightSwitch, float thisDistanceM, TRAINOBJECTTYPE type, int index)
             {
                 ItemType = type;
                 DistanceToTrainM = thisDistanceM;
                 IsRightSwitch = isRightSwitch;
+                Index = index;
             }
 
             /// <summary>
