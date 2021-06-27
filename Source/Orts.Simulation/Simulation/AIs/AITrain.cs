@@ -150,11 +150,15 @@ namespace Orts.Simulation.AIs
             Path = path;
             TrainType = TRAINTYPE.AI_NOTSTARTED;
             StartTime = ServiceDefinition.Time;
-            Efficiency = efficiency;
+            Efficiency = efficiency;          
             if (Simulator.Settings.ActRandomizationLevel > 0 && Simulator.ActivityRun != null) // randomize efficiency
             {
                 RandomizeEfficiency(ref Efficiency);
             }
+
+            // Icik
+            Efficiency = MathHelper.Clamp(Efficiency, 0.3f, 1.0f);
+
             Name = String.Copy(name);
             TrafficService = trafficService;
             MaxVelocityA = maxVelocityA;
