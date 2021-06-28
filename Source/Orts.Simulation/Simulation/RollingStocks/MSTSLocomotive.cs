@@ -2330,23 +2330,6 @@ namespace Orts.Simulation.RollingStocks
                 }
             }
 
-            if (GetTrainBrakeStatus().Contains("Apply") || GetTrainBrakeStatus().Contains("Emergency"))
-            {
-                if (Mirel.initTest != Mirel.InitTest.Passed)
-                {
-                    if (!trainBrakeApply)
-                    {
-                        trainBrakeApply = !trainBrakeApply;
-                        SignalEvent(Event.MirelBrakeReleasingPipePressure);
-                    }
-                }
-            }
-            else if (trainBrakeApply)
-            {
-                SignalEvent(Event.MirekBrakeStopReleaseSound);
-                trainBrakeApply = !trainBrakeApply;
-            }
-
             if (GetTrainBrakeStatus().Contains("Release"))
             {
                 if (Mirel.initTest != Mirel.InitTest.Passed)
