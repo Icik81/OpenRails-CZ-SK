@@ -1250,7 +1250,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             float brakePipeTimeFactorS0 = brakePipeTimeFactorS;
             float brakePipeTimeFactorS_Apply = brakePipeTimeFactorS * 3.0f; // Vytvoří zpoždění náběhu brzdy vlaku kvůli průrazné tlakové vlně            
             float brakePipeChargingNormalPSIpS = BrakePipeChargingRatePSIorInHgpS0; // Rychlost plnění průběžného potrubí při normálním plnění 29 PSI/s
-            float brakePipeChargingQuickPSIpS = 200; // Rychlost plnění průběžného potrubí při švihu 200 PSI/s
+            float brakePipeChargingQuickPSIpS = 1000; // Rychlost plnění průběžného potrubí při švihu 1000 PSI/s
 
             int nSteps = (int)(elapsedClockSeconds / brakePipeTimeFactorS + 1);
             float TrainPipeTimeVariationS = elapsedClockSeconds / nSteps;
@@ -1425,12 +1425,22 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     if (lead.BrakeSystem.BrakeLine1PressurePSI > train.EqualReservoirPressurePSIorInHg && lead.TrainBrakeController.TrainBrakeControllerState != ControllerState.Lap
                         || lead.BrakeSystem.BrakeLine1PressurePSI > train.EqualReservoirPressurePSIorInHg && lead.TrainBrakeController.TCSEmergencyBraking
                         || lead.BrakeSystem.BrakeLine1PressurePSI > train.EqualReservoirPressurePSIorInHg && lead.EmergencyButtonPressed
-                        || lead.BrakeSystem.BrakeLine1PressurePSI > train.EqualReservoirPressurePSIorInHg && !lead.Battery)
+                        || lead.BrakeSystem.BrakeLine1PressurePSI > train.EqualReservoirPressurePSIorInHg && lead.TrainBrakeController.EmergencyBrakingPushButton)
                     {
-                        float ServiceVariationFactor = (1 - TrainPipeTimeVariationS / serviceTimeFactor);
-                        ServiceVariationFactor = MathHelper.Clamp(ServiceVariationFactor, 0.05f, 1.0f); // Keep factor within acceptable limits - prevent value from going negative
-                        lead.BrakeSystem.BrakeLine1PressurePSI *= ServiceVariationFactor;
-                        if (lead.TrainBrakeController.MaxPressurePSI <= lead.BrakeSystem.maxPressurePSI0) brakePipeTimeFactorS0 = brakePipeTimeFactorS_Apply;
+                        if (lead.BrakeSystem.BrakeLine1PressurePSI < lead.MainResPressurePSI)
+                        {
+                            float ServiceVariationFactor = (1 - TrainPipeTimeVariationS / serviceTimeFactor);
+                            ServiceVariationFactor = MathHelper.Clamp(ServiceVariationFactor, 0.05f, 1.0f); // Keep factor within acceptable limits - prevent value from going negative
+                            
+                            if (lead.TrainBrakeController.TrainBrakeControllerState == ControllerState.Emergency
+                                || lead.TrainBrakeController.TCSEmergencyBraking
+                                || lead.EmergencyButtonPressed
+                                || lead.TrainBrakeController.EmergencyBrakingPushButton)
+                                    lead.BrakeSystem.BrakeLine1PressurePSI *= ServiceVariationFactor / serviceTimeFactor;
+                            else lead.BrakeSystem.BrakeLine1PressurePSI *= ServiceVariationFactor;
+
+                            if (lead.TrainBrakeController.MaxPressurePSI <= lead.BrakeSystem.maxPressurePSI0) brakePipeTimeFactorS0 = brakePipeTimeFactorS_Apply;
+                        }
                     }
 
                     train.LeadPipePressurePSI = lead.BrakeSystem.BrakeLine1PressurePSI;  // Keep a record of current train pipe pressure in lead locomotive
