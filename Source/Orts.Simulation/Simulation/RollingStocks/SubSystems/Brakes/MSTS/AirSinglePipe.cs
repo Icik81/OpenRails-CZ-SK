@@ -34,12 +34,12 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
     {
         protected TrainCar Car;
         protected float HandbrakePercent;
-        public float CylPressurePSI = 0;
-        protected float AutoCylPressurePSI = 0;
-        protected float AuxResPressurePSI = 0;
-        protected float EmergResPressurePSI = 64;
+        public float CylPressurePSI = 55;
+        protected float AutoCylPressurePSI = 55;
+        protected float AuxResPressurePSI = 72;
+        protected float EmergResPressurePSI = 72;
         protected float FullServPressurePSI = 50;
-        protected float MaxCylPressurePSI = 0;
+        protected float MaxCylPressurePSI = 55;
         protected float AuxCylVolumeRatio = 2.5f;
         protected float AuxBrakeLineVolumeRatio;
         protected float EmergResVolumeM3 = 0.07f;
