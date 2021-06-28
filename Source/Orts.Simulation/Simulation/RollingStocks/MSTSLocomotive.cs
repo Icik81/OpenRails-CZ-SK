@@ -2330,21 +2330,29 @@ namespace Orts.Simulation.RollingStocks
                 }
             }
 
-            if (GetTrainBrakeStatus().Contains("Release"))
+            if (IsPlayerTrain)
             {
-                if (Mirel.initTest != Mirel.InitTest.Passed)
+                string test = GetTrainBrakeStatus();
+                if (GetTrainBrakeStatus().Contains("Release") || GetTrainBrakeStatus().Contains("Jízdní"))
                 {
-                    if (!trainBrakeRelease)
+                    if (Mirel.initTest != Mirel.InitTest.Passed)
                     {
-                        trainBrakeRelease = !trainBrakeRelease;
-                        SignalEvent(Event.MirelBrakeFillingPipePressure);
+                        if (!trainBrakeRelease)
+                        {
+                            trainBrakeRelease = !trainBrakeRelease;
+                            SignalEvent(Event.MirelBrakeFillingPipePressure);
+                        }
+                    }
+                    else
+                    {
+                        trainBrakeRelease = true;
                     }
                 }
-            }
-            else if (trainBrakeRelease)
-            {
-                SignalEvent(Event.MirekBrakeStopFillSound);
-                trainBrakeRelease = !trainBrakeRelease;
+                else if (trainBrakeRelease)
+                {
+                    SignalEvent(Event.MirekBrakeStopFillSound);
+                    trainBrakeRelease = !trainBrakeRelease;
+                }
             }
 
 
