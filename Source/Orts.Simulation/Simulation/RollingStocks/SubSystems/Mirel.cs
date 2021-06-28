@@ -99,7 +99,6 @@ namespace Orts.Simulation.RollingStocks.SubSystems
         protected bool maxSpeedNeverSet = true;
         protected float selectedApproachSpeed = 40;
         protected bool modelingSpeedCurve = false;
-        protected bool firstRun = true;
         protected bool anyStationSet = false;
         protected bool stableRecieveCode = false;
         protected float recievingTimer = 0;
@@ -298,81 +297,45 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                 initTest = InitTest.Passed;
                 selectedDriveMode = DriveMode.Normal;
             }
-            Physics.Train train = Locomotive.Train;
-            Signalling.SignalObject[] signals = train.NextSignalObject;
-            if (nextSignalId != signals[0].trItem)
-            {
-                mirelUnsetSignlEventBeeped = false;
-                Random rnd = new Random();
-                int randomNum = rnd.Next(0, 3);
-                if (randomNum == 1) RecievingRepeaterSignal = false;
-            }
-            int nextSignalTrId = nextSignalId = signals[0].trItem;
 
-            var validInfo = Locomotive.Train.GetTrainInfo();
-            float? distance = null;
-            foreach (Physics.Train.TrainObjectItem thisItem in validInfo.ObjectInfoForward)
+            try
             {
-                if (thisItem.ItemType == Physics.Train.TrainObjectItem.TRAINOBJECTTYPE.SIGNAL)
+                Physics.Train train = Locomotive.Train;
+                Signalling.SignalObject[] signals = train.NextSignalObject;
+                if (nextSignalId != signals[0].trItem)
                 {
-                    distance = thisItem.DistanceToTrainM;
-                    break;
-                }
-            }
-            if (distance == null)
-                distance = 2000;
-
-            if (EnableMirelUpdates)
-            {
-                bool found = false;
-                if (prevNextSignalId != nextSignalTrId)
-                {
-                    prevNextSignalId = nextSignalTrId;
+                    mirelUnsetSignlEventBeeped = false;
                     Random rnd = new Random();
-                    minimalSignalDistance = rnd.Next(1250, 2000);
-                    noAutoblock = false;
-                    if (distance > 2500)
-                        noAutoblock = true;
+                    int randomNum = rnd.Next(0, 3);
+                    if (randomNum == 1) RecievingRepeaterSignal = false;
                 }
-                foreach (MirelSignal ms in MirelSignals)
+                int nextSignalTrId = nextSignalId = signals[0].trItem;
+
+                var validInfo = Locomotive.Train.GetTrainInfo();
+                float? distance = null;
+                foreach (Physics.Train.TrainObjectItem thisItem in validInfo.ObjectInfoForward)
                 {
-                    if (ms.SignalId == nextSignalTrId)
+                    if (thisItem.ItemType == Physics.Train.TrainObjectItem.TRAINOBJECTTYPE.SIGNAL)
                     {
-                        if (ms.Value == "a")
-                        {
-                            prevRecieverState = recieverState = RecieverState.Off;
-                            Simulator.Confirmer.MSG(nextSignalTrId.ToString() + " - kódováni Mirel na příštím návěstidle je VYPNUTO (D: " + Math.Round((double)distance, 0).ToString() + ") -- AutoBlock? " + (noAutoblock ? "false" : "true"));
-                            found = true;
-                            break;
-                        }
-                        if (ms.Value == "b")
-                        {
-                            prevRecieverState = recieverState = RecieverState.Signal50;
-                            Simulator.Confirmer.MSG(nextSignalTrId.ToString() + " - kódování Mirel na příštím návěstidle je ZAPNUTO (D: " + Math.Round((double)distance, 0).ToString() + ") -- AutoBlock? " + (noAutoblock ? "false" : "true"));
-                            found = true;
-                            break;
-                        }
+                        distance = thisItem.DistanceToTrainM;
+                        break;
                     }
                 }
-                if (!found)
+                if (distance == null)
+                    distance = 2000;
+
+                if (EnableMirelUpdates)
                 {
+                    bool found = false;
                     if (prevNextSignalId != nextSignalTrId)
                     {
-                        Locomotive.SignalEvent(Common.Event.MirelUnwantedVigilancy);
                         prevNextSignalId = nextSignalTrId;
+                        Random rnd = new Random();
+                        minimalSignalDistance = rnd.Next(1250, 2000);
+                        noAutoblock = false;
+                        if (distance > 2500)
+                            noAutoblock = true;
                     }
-                    Simulator.Confirmer.MSG(nextSignalTrId.ToString() + " - kódování Mirel na příštím návěstidle je NENASTAVENO (D: " + Math.Round((double)distance, 0).ToString() + ") -- AutoBlock? " + (noAutoblock ? "false" : "true"));
-                }
-            }
-            else
-            {
-                if (prevNextSignalId != nextSignalTrId)
-                {
-                    noAutoblock = false;
-                    if (distance > 2500)
-                        noAutoblock = true;
-                    Random rnd = new Random();
-                    minimalSignalDistance = rnd.Next(1250, 2000);
                     foreach (MirelSignal ms in MirelSignals)
                     {
                         if (ms.SignalId == nextSignalTrId)
@@ -380,28 +343,68 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                             if (ms.Value == "a")
                             {
                                 prevRecieverState = recieverState = RecieverState.Off;
+                                Simulator.Confirmer.MSG(nextSignalTrId.ToString() + " - kódováni Mirel na příštím návěstidle je VYPNUTO (D: " + Math.Round((double)distance, 0).ToString() + ") -- AutoBlock? " + (noAutoblock ? "false" : "true"));
+                                found = true;
+                                break;
                             }
                             if (ms.Value == "b")
                             {
                                 prevRecieverState = recieverState = RecieverState.Signal50;
+                                Simulator.Confirmer.MSG(nextSignalTrId.ToString() + " - kódování Mirel na příštím návěstidle je ZAPNUTO (D: " + Math.Round((double)distance, 0).ToString() + ") -- AutoBlock? " + (noAutoblock ? "false" : "true"));
+                                found = true;
+                                break;
                             }
-                            break;
                         }
                     }
-                    prevNextSignalId = nextSignalTrId;
+                    if (!found)
+                    {
+                        if (prevNextSignalId != nextSignalTrId)
+                        {
+                            Locomotive.SignalEvent(Common.Event.MirelUnwantedVigilancy);
+                            prevNextSignalId = nextSignalTrId;
+                        }
+                        Simulator.Confirmer.MSG(nextSignalTrId.ToString() + " - kódování Mirel na příštím návěstidle je NENASTAVENO (D: " + Math.Round((double)distance, 0).ToString() + ") -- AutoBlock? " + (noAutoblock ? "false" : "true"));
+                    }
                 }
+                else
+                {
+                    if (prevNextSignalId != nextSignalTrId)
+                    {
+                        noAutoblock = false;
+                        if (distance > 2500)
+                            noAutoblock = true;
+                        Random rnd = new Random();
+                        minimalSignalDistance = rnd.Next(1250, 2000);
+                        foreach (MirelSignal ms in MirelSignals)
+                        {
+                            if (ms.SignalId == nextSignalTrId)
+                            {
+                                if (ms.Value == "a")
+                                {
+                                    prevRecieverState = recieverState = RecieverState.Off;
+                                }
+                                if (ms.Value == "b")
+                                {
+                                    prevRecieverState = recieverState = RecieverState.Signal50;
+                                }
+                                break;
+                            }
+                        }
+                        prevNextSignalId = nextSignalTrId;
+                    }
+                }
+                if (distance > minimalSignalDistance)
+                {
+                    recieverState = RecieverState.Off;
+                }
+                else
+                {
+                    recieverState = prevRecieverState;
+                }
+                if (noAutoblock)
+                    recieverState = RecieverState.Off;
             }
-            if (distance > minimalSignalDistance)
-            {
-                recieverState = RecieverState.Off;
-            }
-            else
-            {
-                recieverState = prevRecieverState;
-            }
-            if (noAutoblock)
-                recieverState = RecieverState.Off;
-
+            catch { recieverState = RecieverState.Off; }
             try
             {
                 if (recieverState != RecieverState.Off)
@@ -431,12 +434,6 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                 }
                 if (Locomotive.CarID != Locomotive.Train.Cars[0].CarID) return;
                 if (!Locomotive.Train.IsPlayerDriven) return;
-
-                if (firstRun && MirelType == Type.Full)
-                {
-                    Locomotive.SignalEvent(Common.Event.MirelBrakeReleasingPipePressure);
-                    firstRun = false;
-                }
 
                 if (Locomotive.AbsSpeedMpS == 0 && initTest == InitTest.Passed && MirelType == Type.Full)
                 {
@@ -842,7 +839,6 @@ namespace Orts.Simulation.RollingStocks.SubSystems
             outf.Write(this.engineBrakeReleased);
             outf.Write(this.Equipped);
             outf.Write(this.firstPress);
-            outf.Write(this.firstRun);
             outf.Write(this.flashFullDisplayFlashedTimes);
             outf.Write(this.flashFullDisplayInProggress);
             outf.Write(this.flashFullDisplayTimeElapsed);
@@ -950,7 +946,6 @@ namespace Orts.Simulation.RollingStocks.SubSystems
             engineBrakeReleased = inf.ReadBoolean();
             Equipped = inf.ReadBoolean();
             firstPress = inf.ReadBoolean();
-            firstRun = inf.ReadBoolean();
             flashFullDisplayFlashedTimes = inf.ReadInt32();
             flashFullDisplayInProggress = inf.ReadBoolean();
             flashFullDisplayTimeElapsed = inf.ReadSingle();
@@ -1448,7 +1443,6 @@ namespace Orts.Simulation.RollingStocks.SubSystems
             maxSpeedNeverSet = true;
             selectedApproachSpeed = 40;
             modelingSpeedCurve = false;
-            firstRun = true;
         }
 
         TrackMonitorSignalAspect previousTrackMonitorSignalAspect = TrackMonitorSignalAspect.None;

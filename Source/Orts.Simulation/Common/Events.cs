@@ -487,7 +487,6 @@ namespace Orts.Common
                         case 10173: return Event.MirelOverspeedOff;
                         case 10174: return Event.MirelClearSignalAhead;
                         case 10175: return Event.MirelZS1B;
-                        case 10176: return Event.MirelBrakeReleasingPipePressure;
                         case 10177: return Event.MirekBrakeStopReleaseSound;
                         case 10178: return Event.MirelBrakeFillingPipePressure;
                         case 10179: return Event.MirekBrakeStopFillSound;
