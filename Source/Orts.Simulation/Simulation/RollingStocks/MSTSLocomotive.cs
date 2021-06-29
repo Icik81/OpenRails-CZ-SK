@@ -458,6 +458,7 @@ namespace Orts.Simulation.RollingStocks
         public bool DoesPowerLossResetControls = false;
         public bool ThrottleZero = false;
         public bool CompressorMode_OffAuto;
+        public bool EngineBrakeEngageEDB = false;
 
         // Jindrich
         public CruiseControl CruiseControl;
@@ -1263,6 +1264,7 @@ namespace Orts.Simulation.RollingStocks
             SlipSpeedCritical = locoCopy.SlipSpeedCritical;
             EDBIndependent = locoCopy.EDBIndependent;
             DoesPowerLossResetControls = locoCopy.DoesPowerLossResetControls;
+            EngineBrakeEngageEDB = locoCopy.EngineBrakeEngageEDB;
 
             // Jindrich
             if (locoCopy.CruiseControl != null)
@@ -1394,6 +1396,7 @@ namespace Orts.Simulation.RollingStocks
             outf.Write(HVOffStatusBrakeCyl);
             outf.Write(HVOffStatusBrakePipe);
             outf.Write(CompressorMode_OffAuto);
+            outf.Write(EngineBrakeEngageEDB);
 
             base.Save(outf);
 
@@ -1460,6 +1463,7 @@ namespace Orts.Simulation.RollingStocks
             HVOffStatusBrakeCyl = inf.ReadBoolean();
             HVOffStatusBrakePipe = inf.ReadBoolean();
             CompressorMode_OffAuto = inf.ReadBoolean();
+            EngineBrakeEngageEDB = inf.ReadBoolean();
 
             base.Restore(inf);
 
@@ -1902,7 +1906,7 @@ namespace Orts.Simulation.RollingStocks
                 DynamicBrakeBlended = false;
                 return;
             }
-            if (BrakeRelease == true
+            if (BrakeRelease == true 
                 || airPipeSystem != null && ((airPipeSystem is EPBrakeSystem && Train.BrakeLine4 > 0f) || (airPipeSystem.TotalCapacityMainResBrakePipe >= airPipeSystem.maxPressurePSI0 && airPipeSystem.BrakeLine1PressurePSI < TrainBrakeController.MaxPressurePSI - 1f && AbsSpeedMpS > 1)
                 && ThrottleController.CurrentValue == 0f && !(DynamicBrakeController != null && DynamicBrakeBlendingOverride && DynamicBrakeController.CurrentValue > 0f))
                 /* && (!DynamicBrakeBlendingLeverOverride && DynamicBrakeController != null && DynamicBrakeIntervention < DynamicBrakeController.CurrentValue)*/)
@@ -2100,17 +2104,33 @@ namespace Orts.Simulation.RollingStocks
                                                                                                                                   // Vybíjení
                 if (!PowerOn && DynamicBrakePercent > 0 && PowerOnFilter > 0) PowerOnFilter = PowerOnFilter - (DynamicBrakeForceN / 1000 * elapsedClockSeconds);
                 // Pokles síly EDB při vybití filtru
-                if (!PowerOn && DynamicBrakePercent > 0 && PowerOnFilter < PowerOnFilterCapacityLimit)
+                if (!PowerOn && DynamicBrakePercent > 0 && PowerOnFilter < PowerOnFilterCapacityLimit)                    
                 {
-                    if (DynamicBrakePercent > 0) DynamicBrakePercent--;
-                    if (DynamicBrakePercent < 0) DynamicBrakePercent = 0;
-                    SetDynamicBrakePercent(DynamicBrakePercent);
                     if (DynamicBrakeIntervention > 0) DynamicBrakeIntervention = DynamicBrakeIntervention - 0.01f;
                     if (DynamicBrakeIntervention < 0) DynamicBrakeIntervention = 0;
+                    DynamicBrakePercent--;
+                    if (DynamicBrakePercent < 0) DynamicBrakePercent = 0;
+                    SetDynamicBrakePercent(DynamicBrakePercent);
                 }
 
                 //Trace.TraceWarning("Hodnota PowerOnFilter {0}, DynamicBrakePercent {1}, čas simulace {2}", PowerOnFilter, DynamicBrakePercent, Simulator.GameTime);
             }
+        }
+
+        // Icik
+        // Při aktivní EDB a použití přímočinné brzdy zruší účinek EDB      
+        public void EDBCancelByEngineBrake()
+        {
+            if (EngineBrakeEngageEDB)
+            {
+                if (DynamicBrakeIntervention > 0) DynamicBrakeIntervention = DynamicBrakeIntervention - 0.01f;
+                if (DynamicBrakeIntervention < 0) DynamicBrakeIntervention = 0;
+                DynamicBrakePercent--;
+                if (DynamicBrakePercent < 0) DynamicBrakePercent = 0;
+                SetDynamicBrakePercent(DynamicBrakePercent);
+                if (BrakeSystem.AutoCylPressurePSI1 < 1 && DynamicBrakeIntervention == 0)
+                    EngineBrakeEngageEDB = false;
+            }          
         }
 
         // Icik
@@ -2222,6 +2242,7 @@ namespace Orts.Simulation.RollingStocks
             Overcurrent_Protection(elapsedClockSeconds);
             AntiSlip_Protection(elapsedClockSeconds);
             PowerOn_Filter(elapsedClockSeconds);
+            EDBCancelByEngineBrake();
             HVOffbyAirPressure();
 
             TrainControlSystem.Update();

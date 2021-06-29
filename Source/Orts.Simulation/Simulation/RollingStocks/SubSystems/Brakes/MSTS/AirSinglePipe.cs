@@ -1984,6 +1984,11 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 var prevState = lead.EngineBrakeState;
                 train.BrakeLine3PressurePSI = MathHelper.Clamp(train.BrakeLine3PressurePSI, 0, lead.MainResPressurePSI);
                 
+                // Při aktivní EDB a použití přímočinné brzdy zruší účinek EDB
+                if (lead.BrakeSystem.AutoCylPressurePSI1 > 0 && lead.DynamicBrakePercent > 0)
+                    lead.EngineBrakeEngageEDB = true;
+                
+
                 // Definice pro brzdič BP1
                 if (brakeSystem.BP1_EngineBrakeController)
                 {
