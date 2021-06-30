@@ -1632,6 +1632,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         // Automatický náběh kompresoru u dieselelektrické trakce
                         if (loco is MSTSDieselLocomotive || loco is MSTSSteamLocomotive)
                         {
+                            if (loco.BrakeSystem.AuxPowerOnDelayS == 0) loco.BrakeSystem.AuxPowerOnDelayS = 10; // Default 10s
                             loco.CompressorMode_OffAuto = true;
                             if (!loco.PowerOn) 
                                 loco.BrakeSystem.CompressorT0 = 0;
