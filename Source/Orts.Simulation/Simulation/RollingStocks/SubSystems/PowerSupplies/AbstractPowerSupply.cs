@@ -104,7 +104,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
         }
 
         public float PowerOnDelayS { get; private set; }
-        public float AuxPowerOnDelayS { get; private set; }
+        public float AuxPowerOnDelayS { get; set; }
         
         public AbstractPowerSupply(MSTSLocomotive locomotive)
         {

@@ -112,7 +112,7 @@ namespace Orts.Simulation.RollingStocks
         public MSTSDieselLocomotive(Simulator simulator, string wagFile)
             : base(simulator, wagFile)
         {
-            PowerOn = true;
+            PowerOn = false;
             RefillImmediately();
         }
 
