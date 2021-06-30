@@ -171,6 +171,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             BrakeCylinderMaxPressureForLowState = thiscopy.BrakeCylinderMaxPressureForLowState;
             LowStateOnSpeedEngageLevel = thiscopy.LowStateOnSpeedEngageLevel;
             TwoStateBrake = thiscopy.TwoStateBrake;
+            AuxPowerOnDelayS = thiscopy.AuxPowerOnDelayS;
         }
 
         // Get the brake BC & BP for EOT conditions
@@ -414,6 +415,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     PressureRateFactor = new Interpolator(stf);
                     break;
 
+                case "engine(ortsauxpowerondelay": AuxPowerOnDelayS = stf.ReadFloatBlock(STFReader.UNITS.Time, 10); break;
             }
         }
 
@@ -1626,21 +1628,38 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         //(train.Cars[i] as MSTSLocomotive).MainResPressurePSI = sumpv;
                         // Výpočet kapacity hlavní jímky a přilehlého potrubí
                         train.Cars[i].BrakeSystem.TotalCapacityMainResBrakePipe = (train.Cars[i].BrakeSystem.BrakePipeVolumeM3 * train.Cars[i].BrakeSystem.BrakeLine1PressurePSI) + (loco.MainResVolumeM3 * loco.MainResPressurePSI);
-
+                        
                         // Automatický náběh kompresoru u dieselelektrické trakce
-                        if (loco is MSTSDieselLocomotive)
-                            loco.CompressorMode_OffAuto = true;
-
-                        // Zpoždění náběhu kompresoru
-                        if (loco.CompressorMode_OffAuto && !loco.CompressorIsOn)
+                        if (loco is MSTSDieselLocomotive || loco is MSTSSteamLocomotive)
                         {
-                            loco.BrakeSystem.CompressorT0 += elapsedClockSeconds;
-                            if (loco.BrakeSystem.CompressorT0 > 2) // 2s
-                            {
-                                loco.BrakeSystem.CompressorOnDelay = true;
+                            loco.CompressorMode_OffAuto = true;
+                            if (!loco.PowerOn) 
                                 loco.BrakeSystem.CompressorT0 = 0;
+                            // Zpoždění náběhu kompresoru
+                            if (loco.CompressorMode_OffAuto && !loco.CompressorIsOn)
+                            {
+                                loco.BrakeSystem.CompressorT0 += elapsedClockSeconds;
+                                if (loco.BrakeSystem.CompressorT0 > loco.BrakeSystem.AuxPowerOnDelayS)  
+                                {
+                                    loco.BrakeSystem.CompressorOnDelay = true;
+                                }
+                                else loco.BrakeSystem.CompressorOnDelay = false;
                             }
-                            else loco.BrakeSystem.CompressorOnDelay = false;
+                        }
+
+                        if (loco is MSTSElectricLocomotive)
+                        {
+                            // Zpoždění náběhu kompresoru
+                            if (loco.CompressorMode_OffAuto && !loco.CompressorIsOn)
+                            {
+                                loco.BrakeSystem.CompressorT0 += elapsedClockSeconds;
+                                if (loco.BrakeSystem.CompressorT0 > 2) // 2s
+                                {
+                                    loco.BrakeSystem.CompressorOnDelay = true;
+                                    loco.BrakeSystem.CompressorT0 = 0;
+                                }
+                                else loco.BrakeSystem.CompressorOnDelay = false;
+                            }
                         }
 
                         if (loco.MainResPressurePSI < loco.CompressorRestartPressurePSI
