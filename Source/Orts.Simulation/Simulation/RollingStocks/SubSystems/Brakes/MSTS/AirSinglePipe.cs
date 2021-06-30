@@ -231,7 +231,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 string.Format("{0}", NextLocoBrakeState),
                 
                 //string.Empty, // Spacer because the state above needs 2 columns.                                     
-                //string.Format("T_HighPressure {0:F0}", T_HighPressure),
+                //string.Format("PowerForWagon {0:F0}", PowerForWagon),
                 //string.Empty, // Spacer because the state above needs 2 columns.                                     
                 //string.Format("Parking {0:F0}", ParkingBrakeAutoCylPressurePSI1),
                 //string.Empty, // Spacer because the state above needs 2 columns.                                     
@@ -1059,6 +1059,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 BrakeLine2PressurePSI -= dp * AuxBrakeLineVolumeRatio;
             }
 
+            if (Car is MSTSLocomotive && !(Car as MSTSLocomotive).PowerOn) PowerForWagon = false;
+
             if (Car is MSTSLocomotive && (Car as MSTSLocomotive).PowerOn
                 || Car is MSTSLocomotive && (Car as MSTSLocomotive).EDBIndependent && (Car as MSTSLocomotive).PowerOnFilter > 0)
             {                
@@ -1127,7 +1129,6 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             {
                 if (ThresholdBailOffOn > 0)
                     threshold = ThresholdBailOffOn;
-                PowerForWagon = false;
                 BailOffOn = false;
                 ThresholdBailOffOn = 0;                
             }
@@ -1273,6 +1274,45 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 else
                     foreach (TrainCar car in train.Cars)
                         car.BrakeSystem.BrakeCylApplyMainResPressureOK = false;
+
+                // Aktivace příznaku rychlobrzdy pro vozy 
+                if (lead.TrainBrakeController.TrainBrakeControllerState == ControllerState.Emergency
+                    || lead.BrakeSystem.EmergencyBrakeForWagon
+                    || lead.TrainBrakeController.TCSEmergencyBraking
+                    || lead.TrainBrakeController.EmergencyBrakingPushButton)
+                    foreach (TrainCar car in train.Cars)
+                        car.BrakeSystem.EmergencyBrakeForWagon = true;
+                else
+                    foreach (TrainCar car in train.Cars)
+                        car.BrakeSystem.EmergencyBrakeForWagon = false;
+
+                // Aktivace napájení pro vozy, trigger 23 a 24 
+                if (lead.BrakeSystem.PowerForWagon)
+                    foreach (TrainCar car in train.Cars)
+                    {
+                        if (car as MSTSLocomotive == null)
+                        {
+                            car.BrakeSystem.PowerForWagon = true;
+                            car.SignalEvent(Event.EnginePowerOn);
+                        }
+                    }
+                else
+                    foreach (TrainCar car in train.Cars)
+                    {
+                        if (car as MSTSLocomotive == null)
+                        {
+                            car.BrakeSystem.PowerForWagon = false;
+                            car.SignalEvent(Event.EnginePowerOff);
+                        }
+                    }
+
+                // Aktivace napájení vzduchem pro vozy 
+                if (lead.BrakeSystem.AirForWagon)
+                    foreach (TrainCar car in train.Cars)
+                        car.BrakeSystem.AirForWagon = true;
+                else
+                    foreach (TrainCar car in train.Cars)
+                        car.BrakeSystem.AirForWagon = false;
             }
 
             // Výpočet netěsnosti vzduchu v potrubí pro každý vůz
@@ -1393,7 +1433,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     if (lead.BrakeSystem.BrakeLine1PressurePSI < train.EqualReservoirPressurePSIorInHg && lead.TrainBrakeController.TrainBrakeControllerState != ControllerState.Lap
                         || lead.BrakeSystem.BrakeLine1PressurePSI < train.EqualReservoirPressurePSIorInHg && lead.TrainBrakeController.TCSEmergencyBraking
                         || lead.BrakeSystem.BrakeLine1PressurePSI < train.EqualReservoirPressurePSIorInHg && lead.EmergencyButtonPressed
-                        || lead.BrakeSystem.BrakeLine1PressurePSI < train.EqualReservoirPressurePSIorInHg && !lead.Battery)
+                        || lead.BrakeSystem.BrakeLine1PressurePSI < train.EqualReservoirPressurePSIorInHg && lead.TrainBrakeController.EmergencyBrakingPushButton)
                     {
                         // Calculate change in brake pipe pressure between equalising reservoir and lead brake pipe
                         float PressureDiffEqualToPipePSI = TrainPipeTimeVariationS * BrakePipeChargingRatePSIorInHgpS0; // default condition - if EQ Res is higher then Brake Pipe Pressure
@@ -1631,7 +1671,6 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 }
             }
 
-
             bool Apply = false;
             bool ApplyGA = false;
             bool Release = false;
@@ -1654,30 +1693,6 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             for (int i = 0; i < train.Cars.Count; i++)
             {
                 var engine = train.Cars[i] as MSTSLocomotive;
-                if (first <= i && i <= last || twoPipes && continuousFromInclusive <= i && i < continuousToExclusive)
-                {
-                    // Aktivace příznaku rychlobrzdy pro vozy 
-                    if (lead.TrainBrakeController.TrainBrakeControllerState == ControllerState.Emergency || lead.BrakeSystem.EmergencyBrakeForWagon)
-                        foreach (TrainCar car in train.Cars)
-                            car.BrakeSystem.EmergencyBrakeForWagon = true;
-                    else
-                        foreach (TrainCar car in train.Cars)
-                            car.BrakeSystem.EmergencyBrakeForWagon = false;
-                    // Aktivace napájení pro vozy 
-                    if (lead.BrakeSystem.PowerForWagon)
-                        foreach (TrainCar car in train.Cars)
-                            car.BrakeSystem.PowerForWagon = true;
-                    else
-                        foreach (TrainCar car in train.Cars)
-                            car.BrakeSystem.PowerForWagon = false;
-                    // Aktivace napájení vzduchem pro vozy 
-                    if (lead.BrakeSystem.AirForWagon)
-                        foreach (TrainCar car in train.Cars)
-                            car.BrakeSystem.AirForWagon = true;
-                    else
-                        foreach (TrainCar car in train.Cars)
-                            car.BrakeSystem.AirForWagon = false;
-                }
                                 
                 // Detekce nastavení polohy brzdiče průběžné brzdy                
                 if (engine != null)
