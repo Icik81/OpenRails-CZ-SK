@@ -2123,9 +2123,9 @@ namespace Orts.Simulation.RollingStocks
         {
             if (EngineBrakeEngageEDB)
             {
-                if (DynamicBrakeIntervention > 0) DynamicBrakeIntervention = DynamicBrakeIntervention - 0.01f;
+                if (DynamicBrakeIntervention > 0) DynamicBrakeIntervention = DynamicBrakeIntervention - 0.5f;
                 if (DynamicBrakeIntervention < 0) DynamicBrakeIntervention = 0;
-                DynamicBrakePercent--;
+                DynamicBrakePercent = DynamicBrakePercent - 5;
                 if (DynamicBrakePercent < 0) DynamicBrakePercent = 0;
                 SetDynamicBrakePercent(DynamicBrakePercent);
                 if (BrakeSystem.AutoCylPressurePSI1 < 1 && DynamicBrakeIntervention == 0)
