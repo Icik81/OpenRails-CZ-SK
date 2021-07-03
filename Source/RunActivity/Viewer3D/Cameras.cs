@@ -1948,6 +1948,9 @@ namespace Orts.Viewer3D
         protected int CurrentViewpointIndex;
         protected bool PrevCabWasRear;
 
+        protected int sideLocation;
+        public int SideLocation { get { return sideLocation; } }
+
         // Head-out camera is only possible on the player train.
         public override bool IsAvailable { get { return Viewer.PlayerTrain != null && Viewer.PlayerTrain.Cars.Any(c => c.HeadOutViewpoints.Count > 0); } }
         public override float NearPlane { get { return 0.25f; } }
@@ -1975,6 +1978,16 @@ namespace Orts.Viewer3D
 
             if (!Forwards)
                 attachedLocation.X *= -1;
+
+            // Icik    
+            if (car != null)
+            {
+                var loco = car as MSTSLocomotive;
+                var viewpoints = (loco.UsingRearCab)
+                ? loco.CabViewList[(int)CabViewType.Rear].ViewPointList
+                : loco.CabViewList[(int)CabViewType.Front].ViewPointList;
+                attachedLocation.Z = viewpoints[sideLocation].Location.Z;
+            }
         }
 
         public void ChangeCab(TrainCar newCar)
