@@ -49,8 +49,8 @@ namespace Orts.Common
         int ul_y = 8673000; // +90 deg lat in Goode projection
 
         // Offsets to convert Goode raster coordinates to MSTS world tile coordinates
-        int wt_ew_offset = -16000;  // -16385
-        int wt_ns_offset = 16550;   // 16385
+        int wt_ew_offset = -16385;
+        int wt_ns_offset = 16385;
 
         /// <summary>
         /// Entry point to this series of methods
@@ -66,7 +66,7 @@ namespace Orts.Common
             int X = (ul_x + ((Gsamp - 1) * tileSize) + (int)locOnTile.X);   // Actual Goode Y
 
             // Return error code: 1 = success; -1 = math error; -2 = XY is in interrupted area of projection
-            // Return latitude and longitude by reference
+            // Return latitude and longitude by reference        
             return Goode_Inverse(X, Y, ref latitude, ref longitude);
         }
 
@@ -89,9 +89,6 @@ namespace Orts.Common
             Lon_Center[10] = 0.349065850399; //  20.0 degrees
             Lon_Center[11] = 2.44346095279;   // 140.0 degrees
 
-            for (int i = 0; i < 12; i++) Lon_Center[i] = -2.79252680319;
-
-
             // Initialize false easting for each of the 12 regions
             F_East[0] = earthRadius * -1.74532925199;
             F_East[1] = earthRadius * -1.74532925199;
@@ -105,8 +102,6 @@ namespace Orts.Common
             F_East[9] = earthRadius * 2.44346095279;
             F_East[10] = earthRadius * 0.349065850399;
             F_East[11] = earthRadius * 2.44346095279;
-
-            for (int i = 0; i < 12; i++) F_East[i] = earthRadius * -2.79252680319;
         }
 
         /// <summary>
@@ -118,7 +113,6 @@ namespace Orts.Common
             // Mapping GX, GY to Lat, Lon
             // GX and GY must be offset in order to be in raw Goode coordinates.
             // This may alter lon and lat values.
-
             int region;
 
             // Inverse equations
@@ -158,9 +152,7 @@ namespace Orts.Common
                 else
                     region = 11;                                 // Between 80 and 180
             }
-
-            //GX = GX - F_East[region];
-            GX = GX - F_East[0];
+            GX = GX - F_East[region];
 
             switch (region)
             {
