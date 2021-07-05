@@ -817,7 +817,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
             }
 
 
-             if (canAddForce)
+            if (canAddForce)
             {
                 if (Locomotive.AbsSpeedMpS == 0)
                 {
@@ -826,12 +826,16 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                 }
                 else if (reducingForce)
                 {
-                    
+
                     timeFromEngineMoved += elapsedClockSeconds;
                     float timeToReduce = Locomotive.SelectedTrainType == MSTSLocomotive.TrainType.Pax ? PowerReductionDelayPaxTrain : PowerReductionDelayCargoTrain;
                     if (timeFromEngineMoved > timeToReduce)
                         reducingForce = false;
                 }
+            }
+            else
+            {
+                Locomotive.ControllerVolts = controllerVolts;
             }
             if (Bar.FromPSI(Locomotive.BrakeSystem.BrakeLine1PressurePSI) < 4.98)
             {

@@ -1425,8 +1425,10 @@ namespace Orts.Simulation.RollingStocks
         /// We are restoring a saved game.  The TrainCar class has already
         /// been initialized.   Restore the game state.
         /// </summary>
+        protected bool wasRestored = false;
         public override void Restore(BinaryReader inf)
         {
+            wasRestored = true;
             if (inf.ReadBoolean()) SignalEvent(Event.BellOn);
             if (inf.ReadBoolean()) SignalEvent(Event.SanderOn);
             if (inf.ReadBoolean()) SignalEvent(Event.VacuumExhausterOn);
@@ -2482,8 +2484,11 @@ namespace Orts.Simulation.RollingStocks
                 }
                 if (extendedPhysics != null)
                 {
-                    if (extendedPhysics.OverridenControllerVolts > ControllerVolts && ControllerVolts == 0)
+                    if (extendedPhysics.OverridenControllerVolts > ControllerVolts && ControllerVolts == 0 && wasRestored)
+                    {
+                        wasRestored = false;
                         ControllerVolts = extendedPhysics.OverridenControllerVolts;
+                    }
                     extendedPhysics.OverridenControllerVolts = ControllerVolts;
                 }
                 if (AntiWheelSpinEquipped)
