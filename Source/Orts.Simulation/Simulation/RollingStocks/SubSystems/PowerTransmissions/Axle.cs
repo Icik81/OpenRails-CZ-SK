@@ -596,10 +596,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerTransmissions
         /// A constructor that restores the game state.
         /// </summary>
         /// <param name="inf">The save stream to read from.</param>
-        protected bool wasRestored = false;
         public Axle(BinaryReader inf) : this()
         {
-            wasRestored = true;
             previousSlipPercent = inf.ReadSingle();
             previousSlipSpeedMpS = inf.ReadSingle();
 
@@ -676,8 +674,6 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerTransmissions
                     break;
                 case AxleDriveType.ForceDriven:
                     //Axle revolutions integration
-                    if (TrainSpeedMpS == 0)
-                        wasRestored = false;
                     if (TrainSpeedMpS > 0.01f)
                     {
                         axleSpeedMpS = AxleRevolutionsInt.Integrate(timeSpan,
@@ -690,17 +686,6 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerTransmissions
                             )
                             / totalInertiaKgm2
                         );
-                        if (timeSpan == 0 || wasRestored)
-                        {
-                            if (axleSpeedMpS != TrainSpeedMpS)
-                            {
-                                axleSpeedMpS = TrainSpeedMpS;
-                            }
-                            else
-                            {
-                                wasRestored = false;
-                            }
-                        }
 
                         if (brakeRetardForceN > driveForceN && AxleSpeedMpS < 0.1f)
                         {
