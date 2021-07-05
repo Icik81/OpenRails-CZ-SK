@@ -210,6 +210,7 @@ namespace Orts.Simulation.RollingStocks
                     outf.Write(ea.WheelSpeedMpS);
                 }
             }
+            outf.Write(OverridenControllerVolts);
         }
 
         protected bool wasRestored = false;
@@ -240,6 +241,7 @@ namespace Orts.Simulation.RollingStocks
                     ea.WheelSpeedMpS = inf.ReadSingle();
                 }
             }
+            OverridenControllerVolts = inf.ReadSingle();
         }
 
         public void Update(float elapsedClockSeconds)

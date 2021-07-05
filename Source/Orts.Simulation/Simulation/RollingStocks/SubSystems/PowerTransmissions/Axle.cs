@@ -686,6 +686,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerTransmissions
                             )
                             / totalInertiaKgm2
                         );
+                        if (timeSpan == 0)
+                            axleSpeedMpS = TrainSpeedMpS;
 
                         if (brakeRetardForceN > driveForceN && AxleSpeedMpS < 0.1f)
                         {
