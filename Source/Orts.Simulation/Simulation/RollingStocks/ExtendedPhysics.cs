@@ -199,6 +199,7 @@ namespace Orts.Simulation.RollingStocks
                 outf.Write(uc.StatorsCurrent);
                 foreach (ExtendedAxle ea in uc.Axles)
                 {
+                    ea.LocomotiveAxle.Save(outf);
                     foreach (ElectricMotor em in ea.ElectricMotors)
                     {
                         outf.Write(em.RotorCurrent);
@@ -211,8 +212,10 @@ namespace Orts.Simulation.RollingStocks
             }
         }
 
+        protected bool wasRestored = false;
         public void Restore(BinaryReader inf)
         {
+            wasRestored = true;
             if (!Locomotive.IsPlayerTrain)
                 return;
             StarorsCurrent = inf.ReadSingle();
@@ -226,6 +229,7 @@ namespace Orts.Simulation.RollingStocks
                 uc.StatorsCurrent = inf.ReadSingle();
                 foreach (ExtendedAxle ea in uc.Axles)
                 {
+                    ea.LocomotiveAxle = new SubSystems.PowerTransmissions.Axle(inf);
                     foreach (ElectricMotor em in ea.ElectricMotors)
                     {
                         em.RotorCurrent = inf.ReadSingle();
@@ -238,12 +242,10 @@ namespace Orts.Simulation.RollingStocks
             }
         }
 
-
         public void Update(float elapsedClockSeconds)
         {
             if (!Locomotive.IsPlayerTrain)
                 return;
-
             if (Bar.FromPSI(Locomotive.BrakeSystem.BrakeLine1PressurePSI) < 4.98 && Locomotive.DynamicBrakePercent < 0.1f)
                 Locomotive.ControllerVolts = 0;
 
@@ -286,6 +288,8 @@ namespace Orts.Simulation.RollingStocks
                 uc.Mass = Locomotive.MassKG / Undercarriages.Count;
                 foreach (ExtendedAxle ea in uc.Axles)
                 {
+                    if (ea.WheelSpeedMpS == 0)
+                        ea.WheelSpeedMpS = Locomotive.WheelSpeedMpS;
                     AverageAxleSpeedMpS += ea.WheelSpeedMpS;
                     if (FastestAxleSpeedMpS < ea.WheelSpeedMpS)
                         FastestAxleSpeedMpS = ea.WheelSpeedMpS;
@@ -301,6 +305,7 @@ namespace Orts.Simulation.RollingStocks
                     }
                 }
             }
+            wasRestored = false;
             AverageAxleSpeedMpS /= NumAxles;
             //Locomotive.Simulator.Confirmer.MSG(MpS.ToKpH(AverageAxleSpeedMpS).ToString() + "  " + MpS.ToKpH(FastestAxleSpeedMpS).ToString());
             //Locomotive.Simulator.Confirmer.MSG(Undercarriages[0].Axles[0].WheelSpeedMpS.ToString() + " " + Undercarriages[0].Axles[1].WheelSpeedMpS.ToString() + " " + Undercarriages[1].Axles[0].WheelSpeedMpS.ToString() + " " + Undercarriages[1].Axles[1].WheelSpeedMpS.ToString());
@@ -359,6 +364,8 @@ namespace Orts.Simulation.RollingStocks
             float axleCurrent = 0;
             float maxCurrent = 0;
             float motorMultiplier = totalMotors / ElectricMotors.Count;
+            if (WheelSpeedMpS == 0 && Locomotive.WheelSpeedMpS > 0)
+                WheelSpeedMpS = Locomotive.WheelSpeedMpS;
             foreach (ElectricMotor em in ElectricMotors)
             {
                 em.Update(em, WheelSpeedMpS, overridenControllerVolts);
@@ -401,6 +408,8 @@ namespace Orts.Simulation.RollingStocks
             LocomotiveAxle.AdhesionConditions = Locomotive.LocomotiveAxle.AdhesionConditions;//Set the train speed of the axle model
             LocomotiveAxle.Update(elapsedClockSeconds);         //Main updater of the axle model
             WheelSpeedMpS = LocomotiveAxle.AxleSpeedMpS;
+            if (WheelSpeedMpS == 0 && Locomotive.WheelSpeedMpS > 0)
+                WheelSpeedMpS = Locomotive.WheelSpeedMpS;
         }
 
         public void GetCorrectedMass(ExtendedPhysics extendedPhysics)

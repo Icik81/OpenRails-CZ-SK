@@ -1410,6 +1410,15 @@ namespace Orts.Simulation.RollingStocks
             if (extendedPhysics != null)
                 extendedPhysics.Save(outf);
             Mirel.Save(outf);
+            if (MultiPositionControllers != null)
+            {
+                if (MultiPositionControllers.Count > 0)
+                {
+                    foreach (MultiPositionController mpc in MultiPositionControllers)
+                        mpc.Save(outf);
+                }
+            }
+            outf.Write(ControllerVolts);
         }
 
         /// <summary>
@@ -1484,6 +1493,15 @@ namespace Orts.Simulation.RollingStocks
                 extendedPhysics.Restore(inf);
             }
             Mirel.Restore(inf);
+            if (MultiPositionControllers != null)
+            {
+                if (MultiPositionControllers.Count > 0)
+                {
+                    foreach (MultiPositionController mpc in MultiPositionControllers)
+                        mpc.Restore(inf);
+                }
+            }
+            ControllerVolts = inf.ReadSingle();
         }
 
         public bool IsLeadLocomotive()

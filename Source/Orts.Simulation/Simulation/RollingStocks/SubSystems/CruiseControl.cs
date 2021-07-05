@@ -243,6 +243,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
             outf.Write(this.throttleIsZero);
             outf.Write(this.trainBrakePercent);
             outf.Write(this.TrainLengthMeters);
+            outf.Write(controllerVolts);
         }
 
         public void Restore(BinaryReader inf)
@@ -274,6 +275,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
             throttleIsZero = inf.ReadBoolean();
             trainBrakePercent = inf.ReadSingle();
             TrainLengthMeters = inf.ReadInt32();
+            controllerVolts = inf.ReadSingle();
         }
 
         public void SpeedRegulatorModeIncrease()
