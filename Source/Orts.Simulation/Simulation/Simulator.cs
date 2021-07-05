@@ -1121,6 +1121,9 @@ namespace Orts.Simulation
             if (conFileName.Contains("AirEmpty")) train.LocoIsAirEmpty = true;
             if (conFileName.Contains("airEmpty")) train.LocoIsAirEmpty = true;
             if (conFileName.Contains("Airempty")) train.LocoIsAirEmpty = true;
+            if (conFileName.Contains("AirE")) train.LocoIsAirEmpty = true;
+            if (conFileName.Contains("airE")) train.LocoIsAirEmpty = true;
+            if (conFileName.Contains("Aire")) train.LocoIsAirEmpty = true;
 
 #if ACTIVITY_EDITOR
             AIPath aiPath = new AIPath(TDB, TSectionDat, patFileName, TimetableMode, orRouteConfig);
