@@ -2481,9 +2481,11 @@ namespace Orts.Simulation.RollingStocks
                     skidSpeedDegratation -= 0.01f;
                 }
                 if (extendedPhysics != null)
+                {
                     if (extendedPhysics.OverridenControllerVolts > ControllerVolts && ControllerVolts == 0)
                         ControllerVolts = extendedPhysics.OverridenControllerVolts;
                     extendedPhysics.OverridenControllerVolts = ControllerVolts;
+                }
                 if (AntiWheelSpinEquipped)
                 {
                     if (extendedPhysics == null && skidSpeedDegratation > 0)
