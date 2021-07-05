@@ -205,7 +205,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                             EnforceMinimalReduction = true;
                             x = MaxPressureBar() - MinReductionBar() * (1 - x) - FullServReductionBar() * x;
                             DecreasePressure(ref pressureBar, x, ApplyRateBarpS(), elapsedClockSeconds);
-                            if (ForceControllerReleaseGraduated || notch.Type == ControllerState.GSelfLap)
+                            // Icik
+                            //if (ForceControllerReleaseGraduated || notch.Type == ControllerState.GSelfLap)
+                            if (notch.Type == ControllerState.GSelfLapH)
                                 IncreasePressure(ref pressureBar, x, ReleaseRateBarpS(), elapsedClockSeconds);
                             break;
                         case ControllerState.Emergency:
