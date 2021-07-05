@@ -478,7 +478,7 @@ namespace Orts.Simulation.RollingStocks
         public List<CabViewControl> ActiveScreens = new List<CabViewControl>();
         public List<CabViewControl> EditableItems = new List<CabViewControl>();
         public ExtendedPhysics extendedPhysics = null;
-        public float ControllerVolts = 0;
+        public float ControllerVolts;
         public float ThrottleFullRangeIncreaseTimeSeconds = 0;
         public float ThrottleFullRangeDecreaseTimeSeconds = 0;
         public float DynamicBrakeFullRangeIncreaseTimeSeconds;
@@ -1577,7 +1577,7 @@ namespace Orts.Simulation.RollingStocks
         /// </summary>
         public override void Initialize()
         {
-            if (File.Exists(WagFilePath + ".ExtendedPhysics.xml"))
+            if (File.Exists(WagFilePath + ".ExtendedPhysics.xml") && extendedPhysics == null)
             {
                 extendedPhysics = new ExtendedPhysics(this);
                 extendedPhysics.Parse(WagFilePath + ".ExtendedPhysics.xml");
@@ -2481,6 +2481,8 @@ namespace Orts.Simulation.RollingStocks
                     skidSpeedDegratation -= 0.01f;
                 }
                 if (extendedPhysics != null)
+                    if (extendedPhysics.OverridenControllerVolts > ControllerVolts && ControllerVolts == 0)
+                        ControllerVolts = extendedPhysics.OverridenControllerVolts;
                     extendedPhysics.OverridenControllerVolts = ControllerVolts;
                 if (AntiWheelSpinEquipped)
                 {
