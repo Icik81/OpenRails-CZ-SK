@@ -944,5 +944,10 @@ private async void OptionsForm_Shown(object sender, EventArgs e)
                 hover.Leave();
         }
         #endregion
+
+        private void OptionsForm_Load(object sender, EventArgs e)
+        {
+
+        }
     }
 }
