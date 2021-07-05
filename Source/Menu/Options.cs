@@ -145,7 +145,7 @@ namespace ORTS
             checkControlConfirmations.Checked = !Settings.SuppressConfirmations;
             checkViewMapWindow.Checked = Settings.ViewDispatcher;
             checkRetainers.Checked = Settings.RetainersOnAllCars;
-            checkGraduatedRelease.Checked = Settings.GraduatedRelease;
+            //checkGraduatedRelease.Checked = Settings.GraduatedRelease;
             numericBrakePipeChargingRate.Value = Settings.BrakePipeChargingRate;
             comboLanguage.Text = Settings.Language;
             comboPressureUnit.Text = Settings.PressureUnit;
@@ -429,7 +429,7 @@ private async void OptionsForm_Shown(object sender, EventArgs e)
             Settings.SuppressConfirmations = !checkControlConfirmations.Checked;
             Settings.ViewDispatcher = checkViewMapWindow.Checked;
             Settings.RetainersOnAllCars = checkRetainers.Checked;
-            Settings.GraduatedRelease = checkGraduatedRelease.Checked;
+            //Settings.GraduatedRelease = checkGraduatedRelease.Checked;
             Settings.BrakePipeChargingRate = (int)numericBrakePipeChargingRate.Value;
             Settings.Language = comboLanguage.SelectedValue.ToString();
             Settings.PressureUnit = comboPressureUnit.SelectedValue.ToString();
@@ -834,7 +834,7 @@ private async void OptionsForm_Shown(object sender, EventArgs e)
                 (pbControlConfirmations, new[] { checkControlConfirmations }),
                 (pbMapWindow, new[] { checkViewMapWindow }),
                 (pbRetainers, new[] { checkRetainers }),
-                (pbGraduatedRelease, new[] { checkGraduatedRelease }),
+                //(pbGraduatedRelease, new[] { checkGraduatedRelease }),
                 (pbBrakePipeChargingRate, new[] { lBrakePipeChargingRate }),
                 (pbLanguage, new Control[] { labelLanguage, comboLanguage }),
                 (pbPressureUnit, new Control[] { labelPressureUnit, comboPressureUnit }),
@@ -883,10 +883,10 @@ private async void OptionsForm_Shown(object sender, EventArgs e)
                     pbRetainers,
                     baseUrl + "/options.html#retainer-valve-on-all-cars"
                 },
-                {
-                    pbGraduatedRelease,
-                    baseUrl + "/options.html#graduated-release-air-brakes"
-                },
+                //{
+                //    pbGraduatedRelease,
+                //    baseUrl + "/options.html#graduated-release-air-brakes"
+                //},
                 {
                     pbBrakePipeChargingRate,
                     baseUrl + "/options.html#brake-pipe-charging-rate"
