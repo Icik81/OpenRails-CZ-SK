@@ -1637,6 +1637,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
         protected bool vigilanceAfterZeroSpeedConfirmed = false;
         protected float previousDistanceToSignal = 0;
         protected float manualModeTime = 0;
+        protected bool flashingByMaxSpeed = false;
         protected void MirelCheck(float elapsedTimeSeconds)
         {
             if (MirelType == Type.LS90)
@@ -1698,6 +1699,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                 {
                     Locomotive.SignalEvent(Common.Event.MirelOverspeedOn);
                     mirelBeeping = true;
+                    flashingByMaxSpeed = true;
                 }
                 if (diff <= 5 && mirelBeeping)
                 {
@@ -1708,6 +1710,13 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                 {
                     ApplyNZ2();
                 }
+            }
+            else if (flashingByMaxSpeed)
+            {
+                flashing = false;
+                mirelBeeping = false;
+                flashingByMaxSpeed = false;
+                Locomotive.SignalEvent(Common.Event.MirelOverspeedOff);
             }
 
             if (driveModeSetup || MaxSpeedSetup)
@@ -1993,7 +2002,6 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                             if (Locomotive.AbsSpeedMpS == 0)
                             {
                                 stopInterventingUntilNextSignal = true;
-                                MirelMaximumSpeed = 40;
                             }
                             if (stopInterventingUntilNextSignal)
                             {
@@ -2236,7 +2244,6 @@ namespace Orts.Simulation.RollingStocks.SubSystems
 
                             if (Locomotive.AbsSpeedMpS == 0)
                             {
-                                MirelMaximumSpeed = 40;
                                 stopInterventingUntilNextSignal = true;
                             }
                             if (MaxSelectedSpeed > MpS.ToKpH(Locomotive.MaxSpeedMpS)) MaxSelectedSpeed = MpS.ToKpH(Locomotive.MaxSpeedMpS);

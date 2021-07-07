@@ -503,7 +503,7 @@ namespace Orts.Viewer3D.Processes
                         // Rethrow the existing error if it is already an IncompatibleSaveException.
                         if (error is IncompatibleSaveException)
                             throw;
-                        throw new IncompatibleSaveException(saveFile, versionOrBuild, error);
+                        //throw new IncompatibleSaveException(saveFile, versionOrBuild, error);
                     }
                 }
 
