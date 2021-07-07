@@ -302,7 +302,7 @@ namespace Orts.Simulation.RollingStocks
         public bool TypVibrace_1 = false;
         public bool TypVibrace_2 = false;
         public bool TypVibrace_3 = false;
-        public float Factor_vibration;
+        public int Factor_vibration;
         public int direction1 = 0;
         public int direction2 = 0;
         public float LocoBrakeAdhesiveForceN;
@@ -2601,8 +2601,7 @@ namespace Orts.Simulation.RollingStocks
                     AddVibrations(VibrationFactorDistance);
                     TypVibrace_1 = true;
                 }
-                else if (Factor_vibration > 0) Factor_vibration = Factor_vibration - 0.1f;
-
+                
                 // Add new vibrations every track vector section which changes the curve radius.
                 if (VibrationTrackVectorSection != traveler.TrackVectorSectionIndex)
                 {
@@ -2626,7 +2625,9 @@ namespace Orts.Simulation.RollingStocks
                     TypVibrace_3 = true;
                 }
                            
-                AddVibrations(VibrationFactorDistance);         
+                AddVibrations(VibrationFactorDistance);
+                               
+                if (Factor_vibration > 0) Factor_vibration--;
             }
             //if (Train != null && Train.IsTilting)
             if (Train != null )
@@ -2718,7 +2719,10 @@ namespace Orts.Simulation.RollingStocks
                     else force = 0;
 
                     if (force != 0)
-                        for (float i = 0; i < force * 10 + 5; i++) Factor_vibration = i;
+                    {
+                        for (int i = 0; i < force * 10 + 5; i++) Factor_vibration = i;
+                        //Trace.TraceInformation(" Factor_vibration {0}", Factor_vibration);
+                    }                    
 
                     if (direction1 == 0)
                         VibrationRotationVelocityRadpS.X += (factor * Simulator.Settings.CarVibratingLevel * VibrationIntroductionStrength * force * 0.75f * VibrationMassKG) / x;
@@ -2780,7 +2784,7 @@ namespace Orts.Simulation.RollingStocks
                     else force = 0;
 
                     if (force != 0)
-                        for (float i = 0; i < force * 10 + 5; i++) Factor_vibration = i;
+                        for (int i = 0; i < force * 10 + 5; i++) Factor_vibration = i;
 
                     if (direction1 == 0)
                         VibrationRotationVelocityRadpS.X += factor * Simulator.Settings.CarVibratingLevel * VibrationIntroductionStrength * force * 0.05f;

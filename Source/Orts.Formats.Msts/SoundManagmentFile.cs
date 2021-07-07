@@ -341,8 +341,17 @@ namespace Orts.Formats.Msts
 
     public class Variable_Trigger : Trigger
     {
-        public enum Events { Speed_Inc_Past, Speed_Dec_Past, WheelSpeed_Inc_Past, WheelSpeed_Dec_Past, SlipSpeed_Inc_Past, SlipSpeed_Dec_Past, Vibration_Inc_Past, Vibration_Dec_Past, Distance_Inc_Past, Distance_Dec_Past,
-        Variable1_Inc_Past, Variable1_Dec_Past, Variable2_Inc_Past, Variable2_Dec_Past, Variable3_Inc_Past, Variable3_Dec_Past, BrakeCyl_Inc_Past, BrakeCyl_Dec_Past, CurveForce_Inc_Past, CurveForce_Dec_Past
+        public enum Events { 
+            Speed_Inc_Past, Speed_Dec_Past, Speed_Equals_To,
+            WheelSpeed_Inc_Past, WheelSpeed_Dec_Past, WheelSpeed_Equals_To,
+            SlipSpeed_Inc_Past, SlipSpeed_Dec_Past, SlipSpeed_Equals_To,
+            Vibration_Inc_Past, Vibration_Dec_Past, Vibration_Equals_To,
+            Distance_Inc_Past, Distance_Dec_Past, Distance_Equals_To,
+            Variable1_Inc_Past, Variable1_Dec_Past, Variable1_Equals_To,
+            Variable2_Inc_Past, Variable2_Dec_Past, Variable2_Equals_To,
+            Variable3_Inc_Past, Variable3_Dec_Past, Variable3_Equals_To,
+            BrakeCyl_Inc_Past, BrakeCyl_Dec_Past, BrakeCyl_Equals_To,
+            CurveForce_Inc_Past, CurveForce_Dec_Past, CurveForce_Equals_To
         };
 
         public Events Event;
@@ -360,12 +369,16 @@ namespace Orts.Formats.Msts
             {
                 case "speed_inc_past": Event = Events.Speed_Inc_Past; break;
                 case "speed_dec_past": Event = Events.Speed_Dec_Past; break;
+                case "speed_equals_to": Event = Events.Speed_Equals_To; break;
                 case "wheelspeed_inc_past": Event = Events.WheelSpeed_Inc_Past; break;
                 case "wheelspeed_dec_past": Event = Events.WheelSpeed_Dec_Past; break;
+                case "wheelspeed_equals_to": Event = Events.WheelSpeed_Equals_To; break;
                 case "slipspeed_inc_past": Event = Events.SlipSpeed_Inc_Past; break;
                 case "slipspeed_dec_past": Event = Events.SlipSpeed_Dec_Past; break;
+                case "slipspeed_equals_to": Event = Events.SlipSpeed_Equals_To; break;
                 case "vibration_inc_past": Event = Events.Vibration_Inc_Past; break;
                 case "vibration_dec_past": Event = Events.Vibration_Dec_Past; break;
+                case "vibration_equals_to": Event = Events.Vibration_Equals_To; break;
                 case "distance_inc_past":
                     {
                         Event = Events.Distance_Inc_Past;
@@ -378,16 +391,27 @@ namespace Orts.Formats.Msts
                         Threshold = Threshold * Threshold;
                         break;
                     }
+                case "distance_equals_to":
+                    {
+                        Event = Events.Distance_Equals_To;
+                        Threshold = Threshold * Threshold;
+                        break;
+                    }
                 case "variable1_inc_past": Event = Events.Variable1_Inc_Past; break;
                 case "variable1_dec_past": Event = Events.Variable1_Dec_Past; break;
+                case "variable1_equals_to": Event = Events.Variable1_Equals_To; break;
                 case "variable2_inc_past": Event = Events.Variable2_Inc_Past; break;
                 case "variable2_dec_past": Event = Events.Variable2_Dec_Past; break;
+                case "variable2_equals_to": Event = Events.Variable2_Equals_To; break;
                 case "variable3_inc_past": Event = Events.Variable3_Inc_Past; break;
                 case "variable3_dec_past": Event = Events.Variable3_Dec_Past; break;
+                case "variable3_equals_to": Event = Events.Variable3_Equals_To; break;
                 case "brakecyl_inc_past": Event = Events.BrakeCyl_Inc_Past; break;
                 case "brakecyl_dec_past": Event = Events.BrakeCyl_Dec_Past; break;
+                case "brakecyl_equals_to": Event = Events.BrakeCyl_Equals_To; break;
                 case "curveforce_inc_past": Event = Events.CurveForce_Inc_Past; break;
                 case "curveforce_dec_past": Event = Events.CurveForce_Dec_Past; break;
+                case "curveforce_equals_to": Event = Events.CurveForce_Equals_To; break;
             }
 
            
