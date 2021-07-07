@@ -1948,6 +1948,23 @@ namespace Orts.Viewer3D
                             triggered = true;
                     }
                     break;
+                case Orts.Formats.Msts.Variable_Trigger.Events.Distance_NEquals_To:
+                case Orts.Formats.Msts.Variable_Trigger.Events.Speed_NEquals_To:
+                case Orts.Formats.Msts.Variable_Trigger.Events.WheelSpeed_NEquals_To:
+                case Orts.Formats.Msts.Variable_Trigger.Events.SlipSpeed_NEquals_To:
+                case Orts.Formats.Msts.Variable_Trigger.Events.Vibration_NEquals_To:
+                case Orts.Formats.Msts.Variable_Trigger.Events.Variable1_NEquals_To:
+                case Orts.Formats.Msts.Variable_Trigger.Events.Variable2_NEquals_To:
+                case Orts.Formats.Msts.Variable_Trigger.Events.Variable3_NEquals_To:
+                case Orts.Formats.Msts.Variable_Trigger.Events.BrakeCyl_NEquals_To:
+                case Orts.Formats.Msts.Variable_Trigger.Events.CurveForce_NEquals_To:
+                    if (newValue != SMS.Threshold)
+                    {
+                        Signaled = true;
+                        if (SMS.Threshold != StartValue)
+                            triggered = true;
+                    }
+                    break;
             }
 
             //Signaled = triggered;
@@ -1997,42 +2014,52 @@ namespace Orts.Viewer3D
                 case Orts.Formats.Msts.Variable_Trigger.Events.Distance_Dec_Past:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Distance_Inc_Past:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Distance_Equals_To:
+                case Orts.Formats.Msts.Variable_Trigger.Events.Distance_NEquals_To:
                     return SoundStream.SoundSource.DistanceSquared;
                 case Orts.Formats.Msts.Variable_Trigger.Events.Speed_Dec_Past:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Speed_Inc_Past:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Speed_Equals_To:
+                case Orts.Formats.Msts.Variable_Trigger.Events.Speed_NEquals_To:
                     return car.AbsSpeedMpS;
                 case Orts.Formats.Msts.Variable_Trigger.Events.WheelSpeed_Dec_Past:
                 case Orts.Formats.Msts.Variable_Trigger.Events.WheelSpeed_Inc_Past:
                 case Orts.Formats.Msts.Variable_Trigger.Events.WheelSpeed_Equals_To:
+                case Orts.Formats.Msts.Variable_Trigger.Events.WheelSpeed_NEquals_To:
                     return car.AbsWheelSpeedMpS;
                 case Orts.Formats.Msts.Variable_Trigger.Events.SlipSpeed_Dec_Past:
                 case Orts.Formats.Msts.Variable_Trigger.Events.SlipSpeed_Inc_Past:
                 case Orts.Formats.Msts.Variable_Trigger.Events.SlipSpeed_Equals_To:
+                case Orts.Formats.Msts.Variable_Trigger.Events.SlipSpeed_NEquals_To:
                     return car.AbsWheelSpeedMpS - car.AbsSpeedMpS;
                 case Orts.Formats.Msts.Variable_Trigger.Events.Vibration_Dec_Past:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Vibration_Inc_Past:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Vibration_Equals_To:
+                case Orts.Formats.Msts.Variable_Trigger.Events.Vibration_NEquals_To:
                     return car.Factor_vibration;
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable1_Dec_Past:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable1_Inc_Past:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable1_Equals_To:
+                case Orts.Formats.Msts.Variable_Trigger.Events.Variable1_NEquals_To:
                     return car.Variable1;
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable2_Dec_Past:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable2_Inc_Past:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable2_Equals_To:
+                case Orts.Formats.Msts.Variable_Trigger.Events.Variable2_NEquals_To:
                     return car.Variable2;
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable3_Dec_Past:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable3_Inc_Past:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable3_Equals_To:
+                case Orts.Formats.Msts.Variable_Trigger.Events.Variable3_NEquals_To:
                     return car.Variable3;
                 case Orts.Formats.Msts.Variable_Trigger.Events.BrakeCyl_Dec_Past:
                 case Orts.Formats.Msts.Variable_Trigger.Events.BrakeCyl_Inc_Past:
                 case Orts.Formats.Msts.Variable_Trigger.Events.BrakeCyl_Equals_To:
+                case Orts.Formats.Msts.Variable_Trigger.Events.BrakeCyl_NEquals_To:
                     return car.BrakeSystem.GetCylPressurePSI();
                 case Orts.Formats.Msts.Variable_Trigger.Events.CurveForce_Dec_Past:
                 case Orts.Formats.Msts.Variable_Trigger.Events.CurveForce_Inc_Past:
                 case Orts.Formats.Msts.Variable_Trigger.Events.CurveForce_Equals_To:
+                case Orts.Formats.Msts.Variable_Trigger.Events.CurveForce_NEquals_To:
                     return car.CurveForceNFiltered;
                 default:
                     return 0;
