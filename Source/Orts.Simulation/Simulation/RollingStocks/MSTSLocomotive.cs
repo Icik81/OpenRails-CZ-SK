@@ -459,6 +459,14 @@ namespace Orts.Simulation.RollingStocks
         public bool ThrottleZero = false;
         public bool CompressorMode_OffAuto;
         public bool EngineBrakeEngageEDB = false;
+        public bool Heating_OffOn;
+        public bool SwitchingVoltageMode_OffAC;
+        public bool SwitchingVoltageMode_OffDC;
+        public int SwitchingVoltageMode = 1;
+        public float PowerReductionByHeating;
+        public float PowerReduction0;
+        public float THeating = 0;
+
 
         // Jindrich
         public CruiseControl CruiseControl;
@@ -1060,6 +1068,7 @@ namespace Orts.Simulation.RollingStocks
                 case "engine(slipspeedcritical": SlipSpeedCritical = stf.ReadFloatBlock(STFReader.UNITS.Speed, null); break;
                 case "engine(edbindependent": EDBIndependent = stf.ReadBoolBlock(false); break;
                 case "engine(doespowerlossresetcontrols": DoesPowerLossResetControls = stf.ReadBoolBlock(false); break;
+                case "engine(powerreductionbyheating": PowerReductionByHeating = stf.ReadFloatBlock(STFReader.UNITS.None, null); break;
 
                 // Jindrich
                 case "engine(batterydefaultoff": Battery = !stf.ReadBoolBlock(false); break;
@@ -1265,6 +1274,8 @@ namespace Orts.Simulation.RollingStocks
             EDBIndependent = locoCopy.EDBIndependent;
             DoesPowerLossResetControls = locoCopy.DoesPowerLossResetControls;
             EngineBrakeEngageEDB = locoCopy.EngineBrakeEngageEDB;
+            SwitchingVoltageMode = locoCopy.SwitchingVoltageMode;
+            PowerReductionByHeating = locoCopy.PowerReductionByHeating;
 
             // Jindrich
             if (locoCopy.CruiseControl != null)
@@ -1397,6 +1408,11 @@ namespace Orts.Simulation.RollingStocks
             outf.Write(HVOffStatusBrakePipe);
             outf.Write(CompressorMode_OffAuto);
             outf.Write(EngineBrakeEngageEDB);
+            outf.Write(Heating_OffOn);
+            outf.Write(SwitchingVoltageMode_OffAC);
+            outf.Write(SwitchingVoltageMode_OffDC);
+            outf.Write(SwitchingVoltageMode);
+            outf.Write(THeating);
 
             base.Save(outf);
 
@@ -1460,7 +1476,7 @@ namespace Orts.Simulation.RollingStocks
             ScoopIsBroken = inf.ReadBoolean();
             IsWaterScoopDown = inf.ReadBoolean();
             CurrentTrackSandBoxCapacityM3 = inf.ReadSingle();
-            
+
             AdhesionFilter.Reset(0.5f);
 
             SpeedMpS = inf.ReadSingle();
@@ -1475,6 +1491,11 @@ namespace Orts.Simulation.RollingStocks
             HVOffStatusBrakePipe = inf.ReadBoolean();
             CompressorMode_OffAuto = inf.ReadBoolean();
             EngineBrakeEngageEDB = inf.ReadBoolean();
+            Heating_OffOn = inf.ReadBoolean();
+            SwitchingVoltageMode_OffAC = inf.ReadBoolean();
+            SwitchingVoltageMode_OffDC = inf.ReadBoolean();
+            SwitchingVoltageMode = inf.ReadInt16();
+            THeating = inf.ReadSingle();
 
             base.Restore(inf);
 
@@ -1969,7 +1990,7 @@ namespace Orts.Simulation.RollingStocks
             if (DynamicBrakeForceN < 1000) BrakeRelease = false;
         }
 
-
+        // Icik
         // Definice ochran lokomotiv
         public void Overcurrent_Protection(float elapsedClockSeconds)
         {
@@ -2043,6 +2064,8 @@ namespace Orts.Simulation.RollingStocks
             }
         }
 
+        // Icik
+        // Protiskluzová ochrana
         public void AntiSlip_Protection(float elapsedClockSeconds)
         {
             if (MaxCurrentA > 0 && IsPlayerTrain)  // Zohlední jen elektrické a dieselelektrické lokomotivy 
@@ -2197,6 +2220,49 @@ namespace Orts.Simulation.RollingStocks
             }
         }
 
+        // Icik
+        // Topení na lokomotivě
+        public void HeatingOnLocomotive()
+        {            
+            if (!Heating_OffOn && THeating == 0)
+            {                
+                PowerReduction0 = PowerReduction;                
+            }
+
+            if (Heating_OffOn)
+            {
+                THeating = 1;
+                if (this is MSTSElectricLocomotive) // Elektrické lokomotivy
+                {
+                    switch (MultiSystemEngine)
+                    {
+                        case true: // Vícesystémová lokomotiva                            
+                            if (PowerReductionByHeating == 0) PowerReductionByHeating = 0.1f;  // Default
+                            PowerReduction = PowerReductionByHeating; // Omezení výkonu trakčních motorů    
+                            break;
+                        case false: // Jednosystémová lokomotiva
+                            if (PowerReductionByHeating == 0) PowerReductionByHeating = 0.1f;  // Default
+                            PowerReduction = PowerReductionByHeating; // Omezení výkonu trakčních motorů                                 
+                            break;
+                    }
+                    //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Zapnuté topení, výkon zredukován! " + PowerReduction0));
+                }
+                if (this is MSTSDieselLocomotive) // Dieselelektrické lokomotivy
+                {
+                    if (PowerReductionByHeating == 0) PowerReductionByHeating = 0.15f;  // Default
+                    PowerReduction = PowerReductionByHeating; // Omezení výkonu trakčních motorů 
+                    //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Zapnuté topení, výkon zredukován!"));
+                }
+            }
+            else
+            {
+                PowerReduction = PowerReduction0;
+                //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Už je to v pohodě! " + PowerReduction0));
+                THeating = 0;
+            }
+        }
+
+
         /// <summary>
         /// This function updates periodically the states and physical variables of the locomotive's subsystems.
         /// </summary>
@@ -2264,6 +2330,7 @@ namespace Orts.Simulation.RollingStocks
             PowerOn_Filter(elapsedClockSeconds);
             EDBCancelByEngineBrake();
             HVOffbyAirPressure();
+            HeatingOnLocomotive();
 
             TrainControlSystem.Update();
 
@@ -5245,16 +5312,7 @@ namespace Orts.Simulation.RollingStocks
             {
                 ActiveStation = DriverStation.None;
             }
-        }
-
-        // Icik
-        public void ToggleCompressorMode_OffAuto()
-        {
-            CompressorMode_OffAuto = !CompressorMode_OffAuto;
-            if (CompressorMode_OffAuto) SignalEvent(Event.CompressorMode_OffAutoOn);
-            else SignalEvent(Event.CompressorMode_OffAutoOff);
-            if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.CompressorMode_OffAuto, CompressorMode_OffAuto ? CabSetting.On : CabSetting.Off);
-        }
+        }       
         public void ToggleCabRadio( bool newState)
         {
             CabRadioOn = newState;
@@ -5358,6 +5416,53 @@ namespace Orts.Simulation.RollingStocks
             TrainControlSystem.AlerterPressed(pressed);
             Mirel.AlerterPressed(pressed);
         }
+
+        // Icik
+        public void ToggleCompressorMode_OffAuto()
+        {
+            CompressorMode_OffAuto = !CompressorMode_OffAuto;
+            if (CompressorMode_OffAuto) SignalEvent(Event.CompressorMode_OffAutoOn);
+            else SignalEvent(Event.CompressorMode_OffAutoOff);
+            if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.CompressorMode_OffAuto, CompressorMode_OffAuto ? CabSetting.On : CabSetting.Off);
+        }
+        public void ToggleHeating_OffOn()
+        {
+            Heating_OffOn = !Heating_OffOn;
+            if (Heating_OffOn) SignalEvent(Event.Heating_OffOnOn);
+            else SignalEvent(Event.Heating_OffOnOff);
+            if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.Heating_OffOn, Heating_OffOn ? CabSetting.On : CabSetting.Off);
+        }
+        public void ToggleSwitchingVoltageMode_OffDC()
+        {
+            if (SwitchingVoltageMode > 0) SwitchingVoltageMode--;
+            if (SwitchingVoltageMode_OffAC)
+            {
+                SwitchingVoltageMode_OffAC = false;
+                SignalEvent(Event.SwitchingVoltageMode_OffACOff);
+            }
+            if (!SwitchingVoltageMode_OffDC && SwitchingVoltageMode == 0)
+            {
+                SwitchingVoltageMode_OffDC = true;
+                SignalEvent(Event.SwitchingVoltageMode_OffDCOn);
+            }
+            if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.SwitchingVoltageMode_OffDC, SwitchingVoltageMode_OffDC ? CabSetting.On : CabSetting.Off);
+        }
+        public void ToggleSwitchingVoltageMode_OffAC()
+        {
+            if (SwitchingVoltageMode < 2) SwitchingVoltageMode++;
+            if (SwitchingVoltageMode_OffDC)
+            {
+                SwitchingVoltageMode_OffDC = false;
+                SignalEvent(Event.SwitchingVoltageMode_OffDCOff);
+            }
+            if (!SwitchingVoltageMode_OffAC && SwitchingVoltageMode == 2)
+            {
+                SwitchingVoltageMode_OffAC = true;
+                SignalEvent(Event.SwitchingVoltageMode_OffACOn);
+            }           
+            if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.SwitchingVoltageMode_OffAC, SwitchingVoltageMode_OffAC ? CabSetting.On : CabSetting.Off);                        
+        }
+       
 
         public enum TrainType { Pax, Cargo };
         public TrainType SelectedTrainType = TrainType.Pax;
@@ -6813,6 +6918,29 @@ namespace Orts.Simulation.RollingStocks
                 case CABViewControlTypes.COMPRESSOR_MODE_OFFAUTO:
                     {
                         data = CompressorMode_OffAuto ? 1 : 0;
+                        break;
+                    }
+                case CABViewControlTypes.HEATING_OFFON:
+                    {
+                        data = Heating_OffOn ? 1 : 0;
+                        break;
+                    }
+                case CABViewControlTypes.SWITCHINGVOLTAGEMODE_OFF_DC:
+                    {
+                        SwitchingVoltageMode = MathHelper.Clamp(SwitchingVoltageMode, 0, 1);
+                        data = SwitchingVoltageMode;
+                        break;
+                    }
+                case CABViewControlTypes.SWITCHINGVOLTAGEMODE_OFF_AC:
+                    {
+                        SwitchingVoltageMode = MathHelper.Clamp(SwitchingVoltageMode, 1, 2);
+                        data = SwitchingVoltageMode; 
+                        break;
+                    }                
+                case CABViewControlTypes.SWITCHINGVOLTAGEMODE_DC_OFF_AC:
+                    {
+                        SwitchingVoltageMode = MathHelper.Clamp(SwitchingVoltageMode, 0, 2);
+                        data = SwitchingVoltageMode;
                         break;
                     }
             }

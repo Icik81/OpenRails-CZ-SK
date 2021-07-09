@@ -215,6 +215,9 @@ namespace Orts.Viewer3D.RollingStock
 
             // Icik
             UserInputCommands.Add(UserCommand.ControlCompressorMode_OffAuto, new Action[] { Noop, () => new ToggleCompressorMode_OffAutoCommand(Viewer.Log) });
+            UserInputCommands.Add(UserCommand.ControlHeating_OffOn, new Action[] { Noop, () => new ToggleHeating_OffOnCommand(Viewer.Log) });
+            UserInputCommands.Add(UserCommand.ControlSwitchingVoltageMode_OffAC, new Action[] { Noop, () => new ToggleSwitchingVoltageMode_OffACCommand(Viewer.Log) });
+            UserInputCommands.Add(UserCommand.ControlSwitchingVoltageMode_OffDC, new Action[] { Noop, () => new ToggleSwitchingVoltageMode_OffDCCommand(Viewer.Log) });
 
             base.InitializeUserInputCommands();
         }
@@ -1097,7 +1100,7 @@ namespace Orts.Viewer3D.RollingStock
 
             #region Create Control renderers
             ControlMap = new Dictionary<int, CabViewControlRenderer>();
-            int[] count = new int[256];//enough to hold all types, count the occurence of each type
+            int[] count = new int[512];//enough to hold all types, count the occurence of each type
             var i = 0;
             bool firstOne = true;
             foreach (var cabView in car.CabViewList)
@@ -2155,7 +2158,16 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.ORTS_RIGHTDOOR:
                 case CABViewControlTypes.ORTS_MIRRORS:
                 case CABViewControlTypes.ORTS_BATTERY:
-                case CABViewControlTypes.ORTS_POWERKEY:                
+                case CABViewControlTypes.ORTS_POWERKEY:
+
+                // Icik
+                case CABViewControlTypes.COMPRESSOR_START:
+                case CABViewControlTypes.COMPRESSOR_MODE_OFFAUTO:
+                case CABViewControlTypes.HEATING_OFFON:
+                case CABViewControlTypes.SWITCHINGVOLTAGEMODE_OFF_DC:
+                case CABViewControlTypes.SWITCHINGVOLTAGEMODE_OFF_AC:                
+                case CABViewControlTypes.SWITCHINGVOLTAGEMODE_DC_OFF_AC:
+
                     index = (int)data;
                     break;
 
@@ -2286,9 +2298,7 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.ORTS_LS90_LED:
                 case CABViewControlTypes.ORTS_AVV_SIGNAL:
 
-                // Icik
-                case CABViewControlTypes.COMPRESSOR_START:
-                case CABViewControlTypes.COMPRESSOR_MODE_OFFAUTO:
+                
 
                     index = (int)data;
                     break;
@@ -2488,6 +2498,12 @@ namespace Orts.Viewer3D.RollingStock
                 // Icik
                 case CABViewControlTypes.COMPRESSOR_MODE_OFFAUTO:
                     if ((Locomotive.CompressorMode_OffAuto ? 1 : 0) != ChangedValue(Locomotive.CompressorMode_OffAuto ? 1 : 0)) new ToggleCompressorMode_OffAutoCommand(Viewer.Log); break;
+                case CABViewControlTypes.HEATING_OFFON:
+                    if ((Locomotive.Heating_OffOn ? 1 : 0) != ChangedValue(Locomotive.Heating_OffOn ? 1 : 0)) new ToggleHeating_OffOnCommand(Viewer.Log); break;                
+                case CABViewControlTypes.SWITCHINGVOLTAGEMODE_OFF_DC:
+                    if ((Locomotive.SwitchingVoltageMode_OffDC ? 1 : 0) != ChangedValue(Locomotive.SwitchingVoltageMode_OffDC ? 1 : 0)) new ToggleSwitchingVoltageMode_OffDCCommand(Viewer.Log); break;
+                case CABViewControlTypes.SWITCHINGVOLTAGEMODE_OFF_AC:
+                    if ((Locomotive.SwitchingVoltageMode_OffAC ? 1 : 0) != ChangedValue(Locomotive.SwitchingVoltageMode_OffAC ? 1 : 0)) new ToggleSwitchingVoltageMode_OffACCommand(Viewer.Log); break;
 
                 // Train Control System controls
                 case CABViewControlTypes.ORTS_TCS1:

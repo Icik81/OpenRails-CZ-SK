@@ -244,6 +244,14 @@ namespace Orts.Common
         // Icik
         CompressorMode_OffAutoOn,
         CompressorMode_OffAutoOff,
+
+        Heating_OffOnOn,
+        Heating_OffOnOff,
+        
+        SwitchingVoltageMode_OffDCOn,
+        SwitchingVoltageMode_OffDCOff,
+        SwitchingVoltageMode_OffACOn,
+        SwitchingVoltageMode_OffACOff,
     }
 
     public static class Events
@@ -503,6 +511,16 @@ namespace Orts.Common
                         // Icik
                         case 20001: return Event.CompressorMode_OffAutoOn;
                         case 20002: return Event.CompressorMode_OffAutoOff;
+
+                        case 20003: return Event.Heating_OffOnOn;
+                        case 20004: return Event.Heating_OffOnOff;
+
+                        case 20005: return Event.SwitchingVoltageMode_OffDCOn;
+                        case 20006: return Event.SwitchingVoltageMode_OffDCOff;
+                        case 20007: return Event.SwitchingVoltageMode_OffACOn;
+                        case 20008: return Event.SwitchingVoltageMode_OffACOff;
+                        
+
                         default: return 0;
                     }
                 case Source.MSTSCrossing:

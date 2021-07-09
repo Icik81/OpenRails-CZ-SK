@@ -597,6 +597,9 @@ namespace Orts.Viewer3D
 
             // Icik
             ToggleCompressorMode_OffAutoCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
+            ToggleHeating_OffOnCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;            
+            ToggleSwitchingVoltageMode_OffDCCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
+            ToggleSwitchingVoltageMode_OffACCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
         }
 
         public void ChangeToPreviousFreeRoamCamera()

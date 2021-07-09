@@ -123,6 +123,9 @@ namespace Orts.Simulation
 
     // Icik
     , CompressorMode_OffAuto
+    , Heating_OffOn
+    , SwitchingVoltageMode_OffAC
+    , SwitchingVoltageMode_OffDC
     }
 
     public enum CabSetting {
@@ -276,6 +279,10 @@ namespace Orts.Simulation
 
                 // Icik
                 , new string [] { GetString("Mód kompresoru"), GetString("off"), null, GetString("Auto")}
+                , new string [] { GetString("Topení"), GetString("off"), null, GetString("on")}
+                , new string [] { GetString("Přepnutí napěťového systému"), GetString("off"), null, GetString("AC")}
+                , new string [] { GetString("Přepnutí napěťového systému"), GetString("off"), null, GetString("DC")}
+                
 
             };
             Debug.Assert(ConfirmText.Length == Enum.GetNames(typeof(CabControl)).Length, "Number of entries indexer ConfirmText must match values in CabControl enum.");

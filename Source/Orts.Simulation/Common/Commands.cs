@@ -1639,4 +1639,55 @@ namespace Orts.Common
             // Report();
         }
     }
+    [Serializable()]
+    public sealed class ToggleHeating_OffOnCommand : Command
+    {
+        public static MSTSLocomotive Receiver { get; set; }
+
+        public ToggleHeating_OffOnCommand(CommandLog log)
+            : base(log)
+        {
+            Redo();
+        }
+
+        public override void Redo()
+        {
+            Receiver.ToggleHeating_OffOn();
+            // Report();
+        }
+    }
+    [Serializable()]
+    public sealed class ToggleSwitchingVoltageMode_OffDCCommand : Command
+    {
+        public static MSTSLocomotive Receiver { get; set; }
+
+        public ToggleSwitchingVoltageMode_OffDCCommand(CommandLog log)
+            : base(log)
+        {
+            Redo();
+        }
+
+        public override void Redo()
+        {
+            Receiver.ToggleSwitchingVoltageMode_OffDC();
+            // Report();
+        }
+    }
+    [Serializable()]
+    public sealed class ToggleSwitchingVoltageMode_OffACCommand : Command
+    {
+        public static MSTSLocomotive Receiver { get; set; }
+
+        public ToggleSwitchingVoltageMode_OffACCommand(CommandLog log)
+            : base(log)
+        {
+            Redo();
+        }
+
+        public override void Redo()
+        {
+            Receiver.ToggleSwitchingVoltageMode_OffAC();
+            // Report();
+        }
+    }    
 }

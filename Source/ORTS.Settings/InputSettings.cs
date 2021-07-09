@@ -548,6 +548,9 @@ namespace ORTS.Settings
 
             // Icik
             Commands[(int)UserCommand.ControlCompressorMode_OffAuto] = new UserCommandKeyInput(0x2E, KeyModifiers.Control);
+            Commands[(int)UserCommand.ControlHeating_OffOn] = new UserCommandKeyInput(0x23, KeyModifiers.Control);
+            Commands[(int)UserCommand.ControlSwitchingVoltageMode_OffDC] = new UserCommandKeyInput(0x1F, KeyModifiers.Shift);
+            Commands[(int)UserCommand.ControlSwitchingVoltageMode_OffAC] = new UserCommandKeyInput(0x1F, KeyModifiers.Control);
         }
 #endregion
 
