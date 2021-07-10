@@ -30,7 +30,7 @@ using System.Diagnostics;
 namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
 {
     public class DieselEngines : IEnumerable
-    {
+    {                        
         /// <summary>
         /// A list of auxiliaries
         /// </summary>
@@ -553,7 +553,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
             locomotive = loco;
         }
 
-#region Parameters and variables
+#region Parameters and variables      
         float dRPM;
         /// <summary>
         /// Actual change rate of the engine's RPM - useful for exhaust effects
@@ -984,18 +984,37 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
             //            }
             // Deleted to see what impact it has - was holding rpm artificialy high - http://www.elvastower.com/forums/index.php?/topic/33739-throttle-bug-in-recent-or-builds/page__gopid__256086#entry256086
 
-            
+
+            // Icik
+            // Zvýší otáčky motoru při větším odběru proudu         
+            float ElevatedConsumptionRPM = 0;
+            if (locomotive.PowerReduction > 0.1f)
+            {
+                ElevatedConsumptionRPM = IdleRPM * 0.25f / 60;
+            }
+
             // Icik
             // Sníží otáčky motoru kvůli ochraně TM 
             if (locomotive.OverVoltage || locomotive.OverCurrent)
-            {
+            {                
                 if (RealRPM > IdleRPM)
                     RealRPM -= ChangeDownRPMpS * elapsedClockSeconds;
-                if (RealRPM < IdleRPM) RealRPM = IdleRPM;
+                if (RealRPM < IdleRPM + ElevatedConsumptionRPM) RealRPM = IdleRPM + ElevatedConsumptionRPM;
             }
             else
-                RealRPM = Math.Max(RealRPM + dRPM * elapsedClockSeconds, 0);
+            { 
+                if (RealRPM > IdleRPM * 1.1f)
+                    RealRPM = Math.Max(RealRPM + dRPM * elapsedClockSeconds, 0);
+                else
+                    RealRPM = Math.Max(ElevatedConsumptionRPM + RealRPM + dRPM * elapsedClockSeconds, 0);
+            }
 
+            // Icik
+            // Při vyšších otáčkách fouká kompresor rychleji
+            float CompressorChangeRateByRPMChange = RealRPM / IdleRPM;
+            CompressorChangeRateByRPMChange = MathHelper.Clamp(CompressorChangeRateByRPMChange, 1, 1.75f);
+            locomotive.CompressorChargingRateM3pS = CompressorChangeRateByRPMChange * locomotive.CompressorChargingRateM3pS0;
+            
 
             // Calculate the apparent throttle setting based upon the current rpm of the diesel prime mover. This allows the Tractive effort to increase with rpm to the throttle setting selected.
             // This uses the reverse Tab of the Throttle vs rpm Tab.

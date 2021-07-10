@@ -309,6 +309,8 @@ namespace Orts.Simulation.RollingStocks
         public float MaxBrakeForceNRMg;
         public float RMgShoeCoefficientFrictionAdjFactor;
         public float DefaultRMgShoeCoefficientFriction;
+        public float PowerReductionByHeating = 0;
+        public float PowerReductionByAuxEquipment = 0;
 
         // Setup for ambient temperature dependency
         Interpolator OutsideWinterTempbyLatitudeC;

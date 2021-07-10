@@ -1498,6 +1498,8 @@ namespace Orts.Simulation.RollingStocks
                     stf.SkipRestOfBlock();
                     break;
                 case "wagon(rmgshoefriction": RMgShoeFrictionFactor = new Interpolator(stf); break;
+                case "wagon(powerreductionbyheating": PowerReductionByHeating = stf.ReadFloatBlock(STFReader.UNITS.Power, null); break;
+                case "wagon(powerreductionbyauxequipment": PowerReductionByAuxEquipment = stf.ReadFloatBlock(STFReader.UNITS.Power, null); break;
             }
         }
 
@@ -1674,8 +1676,8 @@ namespace Orts.Simulation.RollingStocks
             DavisCoefficientC_2 = copy.DavisCoefficientC_2;
             DavisCoefficientC_3 = copy.DavisCoefficientC_3;
             RMgShoeFrictionFactor = copy.RMgShoeFrictionFactor;
-
-
+            PowerReductionByHeating = copy.PowerReductionByHeating;
+            PowerReductionByAuxEquipment = copy.PowerReductionByAuxEquipment;
 
 
             if (copy.IntakePointList != null)
