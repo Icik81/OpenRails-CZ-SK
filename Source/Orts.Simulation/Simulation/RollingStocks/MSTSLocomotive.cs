@@ -1497,7 +1497,7 @@ namespace Orts.Simulation.RollingStocks
             Heating_OffOn = inf.ReadBoolean();
             SwitchingVoltageMode_OffAC = inf.ReadBoolean();
             SwitchingVoltageMode_OffDC = inf.ReadBoolean();
-            SwitchingVoltageMode = inf.ReadInt16();
+            SwitchingVoltageMode = inf.ReadInt32();
             TElevatedConsumption = inf.ReadSingle();
 
             base.Restore(inf);

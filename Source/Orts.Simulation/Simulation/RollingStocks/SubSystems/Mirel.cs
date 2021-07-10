@@ -343,14 +343,14 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                             if (ms.Value == "a")
                             {
                                 prevRecieverState = recieverState = RecieverState.Off;
-                                Simulator.Confirmer.MSG(nextSignalTrId.ToString() + " - kódováni Mirel na příštím návěstidle je VYPNUTO (D: " + Math.Round((double)distance, 0).ToString() + ") -- AutoBlock? " + (noAutoblock ? "false" : "true"));
+                                Simulator.Confirmer.MSG(nextSignalTrId.ToString() + " - kódováni Mirel na příštím návěstidle je VYPNUTO (vzdálenost: " + Math.Round((double)distance, 0).ToString() + "m) -- AutoBlock? " + (noAutoblock ? "false" : "true"));
                                 found = true;
                                 break;
                             }
                             if (ms.Value == "b")
                             {
                                 prevRecieverState = recieverState = RecieverState.Signal50;
-                                Simulator.Confirmer.MSG(nextSignalTrId.ToString() + " - kódování Mirel na příštím návěstidle je ZAPNUTO (D: " + Math.Round((double)distance, 0).ToString() + ") -- AutoBlock? " + (noAutoblock ? "false" : "true"));
+                                Simulator.Confirmer.MSG(nextSignalTrId.ToString() + " - kódování Mirel na příštím návěstidle je ZAPNUTO (vzdálenost: " + Math.Round((double)distance, 0).ToString() + "m) -- AutoBlock? " + (noAutoblock ? "false" : "true"));
                                 found = true;
                                 break;
                             }
@@ -363,7 +363,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                             Locomotive.SignalEvent(Common.Event.MirelUnwantedVigilancy);
                             prevNextSignalId = nextSignalTrId;
                         }
-                        Simulator.Confirmer.MSG(nextSignalTrId.ToString() + " - kódování Mirel na příštím návěstidle je NENASTAVENO (D: " + Math.Round((double)distance, 0).ToString() + ") -- AutoBlock? " + (noAutoblock ? "false" : "true"));
+                        Simulator.Confirmer.MSG(nextSignalTrId.ToString() + " - kódování Mirel na příštím návěstidle je NENASTAVENO (vzdálenost: " + Math.Round((double)distance, 0).ToString() + "m) -- AutoBlock? " + (noAutoblock ? "false" : "true"));
                     }
                 }
                 else
@@ -1774,14 +1774,14 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                     }
                 }
 
-                if (MpS.ToKpH(Locomotive.AbsSpeedMpS) < 20 && !emergency)
+                if (MpS.ToKpH(Locomotive.AbsSpeedMpS) < 20.5f && !emergency)
                 {
                     if (vigilanceAfterZeroSpeedConfirmed)
                     {
                         BlueLight = true;
                     }
                 }
-                if (MpS.ToKpH(Locomotive.AbsSpeedMpS) >= 20 && MpS.ToKpH(Locomotive.AbsSpeedMpS) < 30 && !emergency)
+                if (MpS.ToKpH(Locomotive.AbsSpeedMpS) >= 20.5f && MpS.ToKpH(Locomotive.AbsSpeedMpS) < 30 && !emergency)
                 {
                     interventionTimer += elapsedTimeSeconds;
                     if (interventionTimer > 6)
@@ -1996,12 +1996,17 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                             operationalState = OperationalState.Restricting;
                             if (ManualMode)
                             {
-                                MirelMaximumSpeed = selectedApproachSpeed;
+                                if (selectedApproachSpeed > 0)
+                                    MirelMaximumSpeed = selectedApproachSpeed;
+                                else
+                                    MirelMaximumSpeed = 40;
                                 stopInterventingUntilNextSignal = true;
                             }
                             if (Locomotive.AbsSpeedMpS == 0)
                             {
                                 stopInterventingUntilNextSignal = true;
+                                if (selectedApproachSpeed == 40)
+                                    MirelMaximumSpeed = 40;
                             }
                             if (stopInterventingUntilNextSignal)
                             {
@@ -2244,6 +2249,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
 
                             if (Locomotive.AbsSpeedMpS == 0)
                             {
+                                MirelMaximumSpeed = 40;
                                 stopInterventingUntilNextSignal = true;
                             }
                             if (MaxSelectedSpeed > MpS.ToKpH(Locomotive.MaxSpeedMpS)) MaxSelectedSpeed = MpS.ToKpH(Locomotive.MaxSpeedMpS);
