@@ -51,6 +51,8 @@ namespace Orts
         [ThreadName("Render")]
         static void Main(string[] args)
         {
+            //System.Diagnostics.Process.GetCurrentProcess().ProcessorAffinity = new IntPtr(4);
+
             var options = args.Where(a => a.StartsWith("-") || a.StartsWith("/")).Select(a => a.Substring(1));
             var settings = new UserSettings(options);
 
