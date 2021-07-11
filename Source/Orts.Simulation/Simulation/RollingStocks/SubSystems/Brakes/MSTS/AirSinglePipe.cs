@@ -1297,6 +1297,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                             car.BrakeSystem.PowerForWagon = true;
                             if (lead.Heating_OffOn)
                                 car.SignalEvent(Event.EnginePowerOn);
+                            if (!lead.Heating_OffOn)
+                                car.SignalEvent(Event.EnginePowerOff);
                         }
                     }
                 else
@@ -1305,8 +1307,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         if (car as MSTSLocomotive == null)
                         {
                             car.BrakeSystem.PowerForWagon = false;
-                            if (!lead.Heating_OffOn)
-                                car.SignalEvent(Event.EnginePowerOff);
+                            car.SignalEvent(Event.EnginePowerOff);
                         }
                     }
 
