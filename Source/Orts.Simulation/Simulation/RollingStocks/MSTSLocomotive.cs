@@ -469,7 +469,7 @@ namespace Orts.Simulation.RollingStocks
         public float PowerReductionByAuxEquipmentWag;
         public float PowerReduction0;
         public float TElevatedConsumption = 0;
-        public float CompressorChargingRateM3pS0;
+        public float MainResChargingRatePSIpS0;
         public bool AirBrakesIsCompressorElectricOrMechanical;
         public float AirBrakesAirCompressorWattage = 30000;
 
@@ -1610,7 +1610,7 @@ namespace Orts.Simulation.RollingStocks
         public override void Initialize()
         {
             // Icik
-            CompressorChargingRateM3pS0 = CompressorChargingRateM3pS;
+            MainResChargingRatePSIpS0 = MainResChargingRatePSIpS;            
 
             if (File.Exists(WagFilePath + ".ExtendedPhysics.xml") && extendedPhysics == null)
             {

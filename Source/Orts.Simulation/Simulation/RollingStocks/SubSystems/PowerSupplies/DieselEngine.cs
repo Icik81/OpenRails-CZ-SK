@@ -1022,7 +1022,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
             {
                 float CompressorChangeRateByRPMChange = RealRPM / IdleRPM;
                 CompressorChangeRateByRPMChange = MathHelper.Clamp(CompressorChangeRateByRPMChange, 1, 1.75f);
-                locomotive.CompressorChargingRateM3pS = CompressorChangeRateByRPMChange * locomotive.CompressorChargingRateM3pS0;
+                locomotive.MainResChargingRatePSIpS = CompressorChangeRateByRPMChange * locomotive.MainResChargingRatePSIpS0;
             }
 
             // Icik
