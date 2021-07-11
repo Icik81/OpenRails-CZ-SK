@@ -144,7 +144,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes
         public float T_HighPressure;
         public float FromHighToLowPressureRate;
         public float BrakeMassKG_TwoStateBrake;
-        
+
         public float AuxPowerOnDelayS { get; set; }
 
         public float GetDebugKoef2()

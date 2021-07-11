@@ -469,7 +469,9 @@ namespace Orts.Simulation.RollingStocks
         public float PowerReductionByAuxEquipmentWag;
         public float PowerReduction0;
         public float TElevatedConsumption = 0;
-        public float CompressorChargingRateM3pS0;
+        public float MainResChargingRatePSIpS0;
+        public bool AirBrakesIsCompressorElectricOrMechanical;
+        public float AirBrakesAirCompressorWattage = 30000;
 
         // Jindrich
         public CruiseControl CruiseControl;
@@ -1070,8 +1072,11 @@ namespace Orts.Simulation.RollingStocks
                 case "engine(maxcurrentbrake": MaxCurrentBrake = stf.ReadFloatBlock(STFReader.UNITS.Current, null); break;
                 case "engine(slipspeedcritical": SlipSpeedCritical = stf.ReadFloatBlock(STFReader.UNITS.Speed, null); break;
                 case "engine(edbindependent": EDBIndependent = stf.ReadBoolBlock(false); break;
-                case "engine(doespowerlossresetcontrols": DoesPowerLossResetControls = stf.ReadBoolBlock(false); break;                                
-                
+                case "engine(doespowerlossresetcontrols": DoesPowerLossResetControls = stf.ReadBoolBlock(false); break;
+                case "engine(airbrakesiscompressorelectricormechanical": AirBrakesIsCompressorElectricOrMechanical = stf.ReadBoolBlock(false); break;
+                case "engine(airbrakesaircompressorwattage": AirBrakesAirCompressorWattage = stf.ReadFloatBlock(STFReader.UNITS.Power, null); break;
+
+
                 // Jindrich
                 case "engine(batterydefaultoff": Battery = !stf.ReadBoolBlock(false); break;
                 case "engine(throttlefullrangeincreasetimeseconds": ThrottleFullRangeIncreaseTimeSeconds = stf.ReadFloatBlock(STFReader.UNITS.Any, 5); break;
@@ -1278,6 +1283,8 @@ namespace Orts.Simulation.RollingStocks
             EngineBrakeEngageEDB = locoCopy.EngineBrakeEngageEDB;
             SwitchingVoltageMode = locoCopy.SwitchingVoltageMode;            
             PowerReductionByAuxEquipment = locoCopy.PowerReductionByAuxEquipment;
+            AirBrakesIsCompressorElectricOrMechanical = locoCopy.AirBrakesIsCompressorElectricOrMechanical;
+            AirBrakesAirCompressorWattage = locoCopy.AirBrakesAirCompressorWattage;
 
             // Jindrich
             if (locoCopy.CruiseControl != null)
@@ -1603,7 +1610,7 @@ namespace Orts.Simulation.RollingStocks
         public override void Initialize()
         {
             // Icik
-            CompressorChargingRateM3pS0 = CompressorChargingRateM3pS;
+            MainResChargingRatePSIpS0 = MainResChargingRatePSIpS;            
 
             if (File.Exists(WagFilePath + ".ExtendedPhysics.xml") && extendedPhysics == null)
             {
@@ -2250,23 +2257,7 @@ namespace Orts.Simulation.RollingStocks
                             if (car.CarLengthM > 20) car.PowerReductionByHeating = 80.0f * 1000;   // 80kW    
                         }
                         PowerReductionByHeatingWag += car.PowerReductionByHeating;
-                    }
-                    if (car.WagonType == WagonTypes.Engine && this is MSTSElectricLocomotive) // Elektrické lokomotivy
-                    {
-                        if (car.PowerReductionByHeating == 0) // Default
-                        {
-                            if (car.CarLengthM <= 10) car.PowerReductionByHeating = 5.0f * 1000;   // 5kW                    
-                            if (car.CarLengthM > 10) car.PowerReductionByHeating = 10.0f * 1000;   // 10kW                                                
-                        }
-                        switch (MultiSystemEngine)
-                        {
-                            case true: // Vícesystémová lokomotiva                                                            
-                                break;
-                            case false: // Jednosystémová lokomotiva                                                         
-                                break;
-                        }
-                        PowerReductionByHeatingEng += car.PowerReductionByHeating;
-                    }
+                    }                    
                     if (car.WagonType == WagonTypes.Engine && this is MSTSDieselLocomotive) // Dieselelektrické lokomotivy
                     {
                         if (car.PowerReductionByHeating == 0) // Default
@@ -2295,31 +2286,18 @@ namespace Orts.Simulation.RollingStocks
                     {
                         PowerReductionByAuxEquipmentWag += car.PowerReductionByAuxEquipment;
                     }
-                    if (car.WagonType == WagonTypes.Engine && this is MSTSElectricLocomotive && CompressorIsOn) // Elektrické lokomotivy
+                    if (car.WagonType == WagonTypes.Engine) // Lokomotivy
                     {
-                        if (car.PowerReductionByAuxEquipment == 0) // Default
-                        {
-                            if (car.CarLengthM <= 10) car.PowerReductionByAuxEquipment = 30.0f * 1000;   // 30kW                    
-                            if (car.CarLengthM > 10) car.PowerReductionByAuxEquipment = 40.0f * 1000;   // 40kW                                                
-                        }
-                        switch (MultiSystemEngine)
-                        {
-                            case true: // Vícesystémová lokomotiva                                                            
-                                break;
-                            case false: // Jednosystémová lokomotiva                                                         
-                                break;
-                        }
                         PowerReductionByAuxEquipmentEng += car.PowerReductionByAuxEquipment;
                     }
-                    if (car.WagonType == WagonTypes.Engine && this is MSTSDieselLocomotive && CompressorIsOn) // Dieselelektrické lokomotivy
-                    {
-                        if (car.PowerReductionByAuxEquipment == 0) // Default
-                        {
-                            if (car.CarLengthM <= 10) car.PowerReductionByAuxEquipment = 30.0f * 1000;   // 30kW                    
-                            if (car.CarLengthM > 10) car.PowerReductionByAuxEquipment = 40.0f * 1000;   // 40kW                                                
-                        }
-                        PowerReductionByAuxEquipmentEng += car.PowerReductionByAuxEquipment;
-                    }
+                }                
+                if (WagonType == WagonTypes.Engine && this is MSTSDieselLocomotive && CompressorIsOn) // Dieselelektrické lokomotivy
+                {
+                    if (AirBrakesIsCompressorElectricOrMechanical) 
+                        if (AirBrakesAirCompressorWattage == 0) AirBrakesAirCompressorWattage = 35000f; // 35kW Mechanický kompresor
+                        else 
+                        if (AirBrakesAirCompressorWattage == 0) AirBrakesAirCompressorWattage = 25000f; // 25kW Elektrický kompresor
+                    PowerReductionByAuxEquipmentEng = AirBrakesAirCompressorWattage;
                 }
             }
             PowerReductionByAuxEquipment0 = PowerReductionByAuxEquipmentWag + PowerReductionByAuxEquipmentEng;
@@ -2334,9 +2312,12 @@ namespace Orts.Simulation.RollingStocks
                 PowerReduction = PowerReduction + 0.025f;
             else PowerReduction = PowerReductionResult;
 
-            Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Celková ztráta výkonu "+ PowerReduction * MaxPowerW/1000 + " kW!"));
-            //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("PowerReduction " + PowerReduction));
+            if (WagonType == WagonTypes.Engine && this is MSTSElectricLocomotive) // Elektrické lokomotivy
+                PowerReduction = PowerReduction0;
 
+            //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Celková ztráta výkonu "+ PowerReduction * MaxPowerW/1000 + " kW!"));
+            //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("PowerReduction " + PowerReduction));
+            
             if (PowerReductionResult == 0)
             {
                 if (PowerReduction > PowerReduction0)
@@ -2346,7 +2327,7 @@ namespace Orts.Simulation.RollingStocks
                     PowerReduction = PowerReduction0;
                     TElevatedConsumption = 0;
                 }                
-            }
+            }            
         }
         
 
