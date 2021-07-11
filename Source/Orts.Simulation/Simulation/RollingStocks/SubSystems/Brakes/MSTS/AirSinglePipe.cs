@@ -415,7 +415,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     PressureRateFactor = new Interpolator(stf);
                     break;
 
-                case "engine(ortsauxpowerondelay": AuxPowerOnDelayS = stf.ReadFloatBlock(STFReader.UNITS.Time, 10); break;
+                case "engine(ortsauxpowerondelay": AuxPowerOnDelayS = stf.ReadFloatBlock(STFReader.UNITS.Time, 10); break;                                    
             }
         }
 

@@ -995,7 +995,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
             // Icik
             // Zvýší otáčky motoru při větším odběru proudu         
             float ElevatedConsumptionRPM = 0;
-            if (locomotive.PowerReduction > 0.2f)
+            if (locomotive.Heating_OffOn || (locomotive.CompressorIsOn && locomotive.AirBrakesIsCompressorElectricOrMechanical))
             {
                 ElevatedConsumptionRPM = IdleRPM * 0.25f / 60;
             }
@@ -1018,9 +1018,12 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
 
             // Icik
             // Při vyšších otáčkách fouká kompresor rychleji
-            float CompressorChangeRateByRPMChange = RealRPM / IdleRPM;
-            CompressorChangeRateByRPMChange = MathHelper.Clamp(CompressorChangeRateByRPMChange, 1, 1.75f);
-            locomotive.CompressorChargingRateM3pS = CompressorChangeRateByRPMChange * locomotive.CompressorChargingRateM3pS0;
+            if (locomotive.CompressorIsOn && locomotive.AirBrakesIsCompressorElectricOrMechanical) // Jen pokud je mechanický kompresor
+            {
+                float CompressorChangeRateByRPMChange = RealRPM / IdleRPM;
+                CompressorChangeRateByRPMChange = MathHelper.Clamp(CompressorChangeRateByRPMChange, 1, 1.75f);
+                locomotive.CompressorChargingRateM3pS = CompressorChangeRateByRPMChange * locomotive.CompressorChargingRateM3pS0;
+            }
 
             // Icik
             // Vstupní výkon dieselu

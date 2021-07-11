@@ -470,6 +470,8 @@ namespace Orts.Simulation.RollingStocks
         public float PowerReduction0;
         public float TElevatedConsumption = 0;
         public float CompressorChargingRateM3pS0;
+        public bool AirBrakesIsCompressorElectricOrMechanical;
+        public float AirBrakesAirCompressorWattage = 30000;
 
         // Jindrich
         public CruiseControl CruiseControl;
@@ -1070,8 +1072,11 @@ namespace Orts.Simulation.RollingStocks
                 case "engine(maxcurrentbrake": MaxCurrentBrake = stf.ReadFloatBlock(STFReader.UNITS.Current, null); break;
                 case "engine(slipspeedcritical": SlipSpeedCritical = stf.ReadFloatBlock(STFReader.UNITS.Speed, null); break;
                 case "engine(edbindependent": EDBIndependent = stf.ReadBoolBlock(false); break;
-                case "engine(doespowerlossresetcontrols": DoesPowerLossResetControls = stf.ReadBoolBlock(false); break;                                
-                
+                case "engine(doespowerlossresetcontrols": DoesPowerLossResetControls = stf.ReadBoolBlock(false); break;
+                case "engine(airbrakesiscompressorelectricormechanical": AirBrakesIsCompressorElectricOrMechanical = stf.ReadBoolBlock(false); break;
+                case "engine(airbrakesaircompressorwattage": AirBrakesAirCompressorWattage = stf.ReadFloatBlock(STFReader.UNITS.Power, null); break;
+
+
                 // Jindrich
                 case "engine(batterydefaultoff": Battery = !stf.ReadBoolBlock(false); break;
                 case "engine(throttlefullrangeincreasetimeseconds": ThrottleFullRangeIncreaseTimeSeconds = stf.ReadFloatBlock(STFReader.UNITS.Any, 5); break;
@@ -1278,6 +1283,8 @@ namespace Orts.Simulation.RollingStocks
             EngineBrakeEngageEDB = locoCopy.EngineBrakeEngageEDB;
             SwitchingVoltageMode = locoCopy.SwitchingVoltageMode;            
             PowerReductionByAuxEquipment = locoCopy.PowerReductionByAuxEquipment;
+            AirBrakesIsCompressorElectricOrMechanical = locoCopy.AirBrakesIsCompressorElectricOrMechanical;
+            AirBrakesAirCompressorWattage = locoCopy.AirBrakesAirCompressorWattage;
 
             // Jindrich
             if (locoCopy.CruiseControl != null)
@@ -2294,32 +2301,27 @@ namespace Orts.Simulation.RollingStocks
                     if (car.WagonType == WagonTypes.Passenger) // Osobní vozy
                     {
                         PowerReductionByAuxEquipmentWag += car.PowerReductionByAuxEquipment;
-                    }
-                    if (car.WagonType == WagonTypes.Engine && this is MSTSElectricLocomotive && CompressorIsOn) // Elektrické lokomotivy
+                    }                    
+                }
+                if (WagonType == WagonTypes.Engine && this is MSTSElectricLocomotive && CompressorIsOn) // Elektrické lokomotivy
+                {
+                    if (AirBrakesAirCompressorWattage == 0) AirBrakesAirCompressorWattage = 0f; // 0kW
+                    switch (MultiSystemEngine)
                     {
-                        if (car.PowerReductionByAuxEquipment == 0) // Default
-                        {
-                            if (car.CarLengthM <= 10) car.PowerReductionByAuxEquipment = 30.0f * 1000;   // 30kW                    
-                            if (car.CarLengthM > 10) car.PowerReductionByAuxEquipment = 40.0f * 1000;   // 40kW                                                
-                        }
-                        switch (MultiSystemEngine)
-                        {
-                            case true: // Vícesystémová lokomotiva                                                            
-                                break;
-                            case false: // Jednosystémová lokomotiva                                                         
-                                break;
-                        }
-                        PowerReductionByAuxEquipmentEng += car.PowerReductionByAuxEquipment;
+                        case true: // Vícesystémová lokomotiva                                                            
+                            break;
+                        case false: // Jednosystémová lokomotiva                                                         
+                            break;
                     }
-                    if (car.WagonType == WagonTypes.Engine && this is MSTSDieselLocomotive && CompressorIsOn) // Dieselelektrické lokomotivy
-                    {
-                        if (car.PowerReductionByAuxEquipment == 0) // Default
-                        {
-                            if (car.CarLengthM <= 10) car.PowerReductionByAuxEquipment = 30.0f * 1000;   // 30kW                    
-                            if (car.CarLengthM > 10) car.PowerReductionByAuxEquipment = 40.0f * 1000;   // 40kW                                                
-                        }
-                        PowerReductionByAuxEquipmentEng += car.PowerReductionByAuxEquipment;
-                    }
+                    PowerReductionByAuxEquipmentEng = AirBrakesAirCompressorWattage;
+                }
+                if (WagonType == WagonTypes.Engine && this is MSTSDieselLocomotive && CompressorIsOn) // Dieselelektrické lokomotivy
+                {
+                    if (AirBrakesIsCompressorElectricOrMechanical) 
+                        if (AirBrakesAirCompressorWattage == 0) AirBrakesAirCompressorWattage = 35000f; // 35kW Mechanický kompresor
+                        else 
+                        if (AirBrakesAirCompressorWattage == 0) AirBrakesAirCompressorWattage = 25000f; // 25kW Elektrický kompresor
+                    PowerReductionByAuxEquipmentEng = AirBrakesAirCompressorWattage;
                 }
             }
             PowerReductionByAuxEquipment0 = PowerReductionByAuxEquipmentWag + PowerReductionByAuxEquipmentEng;
