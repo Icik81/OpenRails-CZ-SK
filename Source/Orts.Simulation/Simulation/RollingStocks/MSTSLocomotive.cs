@@ -2315,7 +2315,7 @@ namespace Orts.Simulation.RollingStocks
             if (WagonType == WagonTypes.Engine && this is MSTSElectricLocomotive) // Elektrické lokomotivy
                 PowerReduction = PowerReduction0;
 
-            Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Celková ztráta výkonu "+ PowerReduction * MaxPowerW/1000 + " kW!"));
+            //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Celková ztráta výkonu "+ PowerReduction * MaxPowerW/1000 + " kW!"));
             //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("PowerReduction " + PowerReduction));
             
             if (PowerReductionResult == 0)
