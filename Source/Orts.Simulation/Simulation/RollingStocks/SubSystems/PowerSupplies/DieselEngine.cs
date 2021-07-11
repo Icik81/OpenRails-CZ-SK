@@ -353,7 +353,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
 
             //result.AppendFormat("\t{0}\t{1}", Simulator.Catalog.GetParticularString("HUD", "Power"), FormatStrings.FormatPower(MaxOutputPowerW, Locomotive.IsMetric, false, false));
             foreach (var eng in DEList)
-                result.AppendFormat("\t{0}", FormatStrings.FormatPower(eng.CurrentDieselOutputPowerW, Locomotive.IsMetric, false, false));
+                result.AppendFormat("\t{0}", FormatStrings.FormatPower(eng.CurrentDieselInputPowerW, Locomotive.IsMetric, false, false));
 
             //result.AppendFormat("\t{0}", Simulator.Catalog.GetString("Load"));
             foreach (var eng in DEList)
@@ -817,6 +817,13 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
         /// The engine is connected to the gearbox
         /// </summary>
         public bool HasGearBox { get { return GearBox != null; } }
+
+        // Icik
+        /// <summary>
+        /// Current power available to the Input traction motors
+        /// </summary>
+        public float CurrentDieselInputPowerW;
+
 #endregion
 
         /// <summary>
@@ -988,7 +995,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
             // Icik
             // Zvýší otáčky motoru při větším odběru proudu         
             float ElevatedConsumptionRPM = 0;
-            if (locomotive.PowerReduction > 0.1f)
+            if (locomotive.PowerReduction > 0.2f)
             {
                 ElevatedConsumptionRPM = IdleRPM * 0.25f / 60;
             }
@@ -1004,9 +1011,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
             else
             { 
                 if (RealRPM > IdleRPM * 1.1f)
-                    RealRPM = Math.Max(RealRPM + dRPM * elapsedClockSeconds, 0);
+                    RealRPM = Math.Max(RealRPM + (dRPM * elapsedClockSeconds), 0);
                 else
-                    RealRPM = Math.Max(ElevatedConsumptionRPM + RealRPM + dRPM * elapsedClockSeconds, 0);
+                    RealRPM = Math.Max(ElevatedConsumptionRPM + (RealRPM + dRPM * elapsedClockSeconds), 0);
             }
 
             // Icik
@@ -1014,7 +1021,12 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
             float CompressorChangeRateByRPMChange = RealRPM / IdleRPM;
             CompressorChangeRateByRPMChange = MathHelper.Clamp(CompressorChangeRateByRPMChange, 1, 1.75f);
             locomotive.CompressorChargingRateM3pS = CompressorChangeRateByRPMChange * locomotive.CompressorChargingRateM3pS0;
-            
+
+            // Icik
+            // Vstupní výkon dieselu
+            CurrentDieselInputPowerW = CurrentDieselOutputPowerW / (1 - locomotive.PowerReduction);
+
+
 
             // Calculate the apparent throttle setting based upon the current rpm of the diesel prime mover. This allows the Tractive effort to increase with rpm to the throttle setting selected.
             // This uses the reverse Tab of the Throttle vs rpm Tab.

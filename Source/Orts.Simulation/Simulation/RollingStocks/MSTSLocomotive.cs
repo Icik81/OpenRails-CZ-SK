@@ -1070,8 +1070,7 @@ namespace Orts.Simulation.RollingStocks
                 case "engine(maxcurrentbrake": MaxCurrentBrake = stf.ReadFloatBlock(STFReader.UNITS.Current, null); break;
                 case "engine(slipspeedcritical": SlipSpeedCritical = stf.ReadFloatBlock(STFReader.UNITS.Speed, null); break;
                 case "engine(edbindependent": EDBIndependent = stf.ReadBoolBlock(false); break;
-                case "engine(doespowerlossresetcontrols": DoesPowerLossResetControls = stf.ReadBoolBlock(false); break;                
-                case "engine(powerreductionbycompressor": PowerReductionByAuxEquipment = stf.ReadFloatBlock(STFReader.UNITS.None, null); break;
+                case "engine(doespowerlossresetcontrols": DoesPowerLossResetControls = stf.ReadBoolBlock(false); break;                                
                 
                 // Jindrich
                 case "engine(batterydefaultoff": Battery = !stf.ReadBoolBlock(false); break;
@@ -2233,7 +2232,7 @@ namespace Orts.Simulation.RollingStocks
             if (TElevatedConsumption == 0)         
                 PowerReduction0 = PowerReduction;                            
 
-            // Topení
+            // Topení a klimatizace
             float PowerReductionByHeating0 = 0;
             if (Heating_OffOn && PowerOn)
             {
@@ -2280,10 +2279,10 @@ namespace Orts.Simulation.RollingStocks
                 }                
                 
                 PowerReductionByHeating0 = PowerReductionByHeatingWag + PowerReductionByHeatingEng;                
-                Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Zapnuté topení, výkon zredukován "+ PowerReductionByHeating0 * MaxPowerW/1000) + " kW!");
+                //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Zapnuté topení, výkon zredukován "+ PowerReductionByHeating0 * MaxPowerW/1000) + " kW!");
             }
 
-            // Kompresory, klimatizace
+            // Pomocné pohony, kompresory, dobíjení, ...
             float PowerReductionByAuxEquipment0;
             TElevatedConsumption = 1;
             PowerReductionByAuxEquipmentWag = 0;
@@ -2324,17 +2323,19 @@ namespace Orts.Simulation.RollingStocks
                 }
             }
             PowerReductionByAuxEquipment0 = PowerReductionByAuxEquipmentWag + PowerReductionByAuxEquipmentEng;
-            Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Zvýšený odběr proudu, výkon zredukován "+ PowerReductionByAuxEquipment0 * MaxPowerW/1000) + " kW!");            
+            //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Zvýšený odběr proudu, výkon zredukován "+ PowerReductionByAuxEquipment0 * MaxPowerW/1000) + " kW!");            
             
             // Výpočet celkového úbytku výkonu 
             float PowerReductionResult = (PowerReductionByHeating0 + PowerReductionByAuxEquipment0) * (1000000 / MaxPowerW);
             PowerReductionResult = PowerReductionResult / 1000000;
             PowerReductionResult = MathHelper.Clamp(PowerReductionResult, 0, 1);
-            
+                        
             if (PowerReduction < PowerReductionResult)
                 PowerReduction = PowerReduction + 0.025f;
             else PowerReduction = PowerReductionResult;
+
             Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Celková ztráta výkonu "+ PowerReduction * MaxPowerW/1000 + " kW!"));
+            //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("PowerReduction " + PowerReduction));
 
             if (PowerReductionResult == 0)
             {
@@ -2347,7 +2348,7 @@ namespace Orts.Simulation.RollingStocks
                 }                
             }
         }
-
+        
 
         /// <summary>
         /// This function updates periodically the states and physical variables of the locomotive's subsystems.
@@ -2357,8 +2358,7 @@ namespace Orts.Simulation.RollingStocks
         protected float EngineBrakePercentSet = 0;
         public bool CanCheckEngineBrake = true;
         public override void Update(float elapsedClockSeconds)
-        {
-
+        {            
             if (extendedPhysics != null)
                 extendedPhysics.Update(elapsedClockSeconds);
             if (CruiseControl != null)
@@ -3448,7 +3448,7 @@ namespace Orts.Simulation.RollingStocks
                 LocomotiveAxle.BrakeRetardForceN = BrakeRetardForceN / (MassKG / DrvWheelWeightKg);
 
                 LocomotiveAxle.AxleWeightN = 9.81f * DrvWheelWeightKg;   //will be computed each time considering the tilting
-                LocomotiveAxle.DriveForceN = MotiveForceN;  //Total force applied to wheels
+                LocomotiveAxle.DriveForceN = MotiveForceN * (1 - PowerReduction);  //Total force applied to wheels
                 LocomotiveAxle.TrainSpeedMpS = SpeedMpS;            //Set the train speed of the axle model
                 LocomotiveAxle.Update(elapsedClockSeconds);         //Main updater of the axle model
                 MotiveForceN = LocomotiveAxle.AxleForceN;           //Get the Axle force and use it for the motion
