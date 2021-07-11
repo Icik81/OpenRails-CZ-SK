@@ -2579,6 +2579,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems
         {
             if (MirelType == Type.LS90)
                 return;
+            if (recieverState == RecieverState.Off && MpS.ToKpH(Locomotive.AbsSpeedMpS) > 119)
+                return;
             emergency = true;
             Locomotive.SignalEvent(Common.Event.MirelOverspeedOff);
             mirelBeeping = false;
