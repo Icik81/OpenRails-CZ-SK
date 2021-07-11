@@ -2257,23 +2257,7 @@ namespace Orts.Simulation.RollingStocks
                             if (car.CarLengthM > 20) car.PowerReductionByHeating = 80.0f * 1000;   // 80kW    
                         }
                         PowerReductionByHeatingWag += car.PowerReductionByHeating;
-                    }
-                    if (car.WagonType == WagonTypes.Engine && this is MSTSElectricLocomotive) // Elektrické lokomotivy
-                    {
-                        if (car.PowerReductionByHeating == 0) // Default
-                        {
-                            if (car.CarLengthM <= 10) car.PowerReductionByHeating = 5.0f * 1000;   // 5kW                    
-                            if (car.CarLengthM > 10) car.PowerReductionByHeating = 10.0f * 1000;   // 10kW                                                
-                        }
-                        switch (MultiSystemEngine)
-                        {
-                            case true: // Vícesystémová lokomotiva                                                            
-                                break;
-                            case false: // Jednosystémová lokomotiva                                                         
-                                break;
-                        }
-                        PowerReductionByHeatingEng += car.PowerReductionByHeating;
-                    }
+                    }                    
                     if (car.WagonType == WagonTypes.Engine && this is MSTSDieselLocomotive) // Dieselelektrické lokomotivy
                     {
                         if (car.PowerReductionByHeating == 0) // Default
@@ -2301,20 +2285,12 @@ namespace Orts.Simulation.RollingStocks
                     if (car.WagonType == WagonTypes.Passenger) // Osobní vozy
                     {
                         PowerReductionByAuxEquipmentWag += car.PowerReductionByAuxEquipment;
-                    }                    
-                }
-                if (WagonType == WagonTypes.Engine && this is MSTSElectricLocomotive && CompressorIsOn) // Elektrické lokomotivy
-                {
-                    if (AirBrakesAirCompressorWattage == 0) AirBrakesAirCompressorWattage = 0f; // 0kW
-                    switch (MultiSystemEngine)
-                    {
-                        case true: // Vícesystémová lokomotiva                                                            
-                            break;
-                        case false: // Jednosystémová lokomotiva                                                         
-                            break;
                     }
-                    PowerReductionByAuxEquipmentEng = AirBrakesAirCompressorWattage;
-                }
+                    if (car.WagonType == WagonTypes.Engine) // Lokomotivy
+                    {
+                        PowerReductionByAuxEquipmentEng += car.PowerReductionByAuxEquipment;
+                    }
+                }                
                 if (WagonType == WagonTypes.Engine && this is MSTSDieselLocomotive && CompressorIsOn) // Dieselelektrické lokomotivy
                 {
                     if (AirBrakesIsCompressorElectricOrMechanical) 
@@ -2336,9 +2312,12 @@ namespace Orts.Simulation.RollingStocks
                 PowerReduction = PowerReduction + 0.025f;
             else PowerReduction = PowerReductionResult;
 
+            if (WagonType == WagonTypes.Engine && this is MSTSElectricLocomotive) // Elektrické lokomotivy
+                PowerReduction = PowerReduction0;
+
             Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Celková ztráta výkonu "+ PowerReduction * MaxPowerW/1000 + " kW!"));
             //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("PowerReduction " + PowerReduction));
-
+            
             if (PowerReductionResult == 0)
             {
                 if (PowerReduction > PowerReduction0)
@@ -2348,7 +2327,7 @@ namespace Orts.Simulation.RollingStocks
                     PowerReduction = PowerReduction0;
                     TElevatedConsumption = 0;
                 }                
-            }
+            }            
         }
         
 
