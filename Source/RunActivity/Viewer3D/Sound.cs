@@ -1905,6 +1905,7 @@ namespace Orts.Viewer3D
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable1_Dec_Past:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable2_Dec_Past:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable3_Dec_Past:
+                case Orts.Formats.Msts.Variable_Trigger.Events.Variable4_Dec_Past:
                 case Orts.Formats.Msts.Variable_Trigger.Events.BrakeCyl_Dec_Past:
                 case Orts.Formats.Msts.Variable_Trigger.Events.CurveForce_Dec_Past:
                     if (newValue < SMS.Threshold)
@@ -1922,6 +1923,7 @@ namespace Orts.Viewer3D
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable1_Inc_Past:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable2_Inc_Past:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable3_Inc_Past:
+                case Orts.Formats.Msts.Variable_Trigger.Events.Variable4_Inc_Past:
                 case Orts.Formats.Msts.Variable_Trigger.Events.BrakeCyl_Inc_Past:
                 case Orts.Formats.Msts.Variable_Trigger.Events.CurveForce_Inc_Past:
                     if (newValue > SMS.Threshold)
@@ -1939,6 +1941,7 @@ namespace Orts.Viewer3D
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable1_Equals_To:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable2_Equals_To:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable3_Equals_To:
+                case Orts.Formats.Msts.Variable_Trigger.Events.Variable4_Equals_To:
                 case Orts.Formats.Msts.Variable_Trigger.Events.BrakeCyl_Equals_To:
                 case Orts.Formats.Msts.Variable_Trigger.Events.CurveForce_Equals_To:
                     if (newValue == SMS.Threshold)
@@ -1956,6 +1959,7 @@ namespace Orts.Viewer3D
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable1_NEquals_To:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable2_NEquals_To:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable3_NEquals_To:
+                case Orts.Formats.Msts.Variable_Trigger.Events.Variable4_NEquals_To:
                 case Orts.Formats.Msts.Variable_Trigger.Events.BrakeCyl_NEquals_To:
                 case Orts.Formats.Msts.Variable_Trigger.Events.CurveForce_NEquals_To:
                     if (newValue != SMS.Threshold)
@@ -2051,6 +2055,11 @@ namespace Orts.Viewer3D
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable3_Equals_To:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable3_NEquals_To:
                     return car.Variable3;
+                case Orts.Formats.Msts.Variable_Trigger.Events.Variable4_Dec_Past:
+                case Orts.Formats.Msts.Variable_Trigger.Events.Variable4_Inc_Past:
+                case Orts.Formats.Msts.Variable_Trigger.Events.Variable4_Equals_To:
+                case Orts.Formats.Msts.Variable_Trigger.Events.Variable4_NEquals_To:
+                    return car.Variable4;
                 case Orts.Formats.Msts.Variable_Trigger.Events.BrakeCyl_Dec_Past:
                 case Orts.Formats.Msts.Variable_Trigger.Events.BrakeCyl_Inc_Past:
                 case Orts.Formats.Msts.Variable_Trigger.Events.BrakeCyl_Equals_To:
