@@ -193,7 +193,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                 bool temp = false;
                 foreach (DieselEngine de in DEList)
                 {
-                    temp |= (de.EngineStatus == DieselEngine.Status.Running) || (de.EngineStatus == DieselEngine.Status.Starting);
+                    // Icik
+                    //temp |= (de.EngineStatus == DieselEngine.Status.Running) || (de.EngineStatus == DieselEngine.Status.Starting);
+                    temp |= (de.EngineStatus == DieselEngine.Status.Running);
                 }
                 return temp;
             }
