@@ -133,7 +133,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes
 
         public bool BrakePipeDischargeRate = false;
         public bool BrakePipeChargeRate = false;
-        public Interpolator PressureRateFactor;
+        public Interpolator PressureRateFactorDischarge;
+        public Interpolator PressureRateFactorCharge;
         public Interpolator DebugKoef2Factor;
 
         public float BrakeCylinderMaxPressureForLowState;
@@ -161,13 +162,13 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes
         public float GetBrakePipeDischargeRate()
         {
             var PressureRate = 0.0f;
-            if (PressureRateFactor == null)
+            if (PressureRateFactorDischarge == null)
             {
                 PressureRate = 0.0f;
             }
             else
             {
-                PressureRate = PressureRateFactor[BrakeLine1PressurePSI];
+                PressureRate = PressureRateFactorDischarge[BrakeLine1PressurePSI];
             }
             return PressureRate;
         }
@@ -175,13 +176,13 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes
         public float GetBrakePipeChargeRate()
         {
             var PressureRate = 0.0f;
-            if (PressureRateFactor == null)
+            if (PressureRateFactorCharge == null)
             {
                 PressureRate = 0.0f;
             }
             else
             {
-                PressureRate = PressureRateFactor[BrakeLine1PressurePSI];
+                PressureRate = PressureRateFactorCharge[BrakeLine1PressurePSI];
             }
             return PressureRate;
         }

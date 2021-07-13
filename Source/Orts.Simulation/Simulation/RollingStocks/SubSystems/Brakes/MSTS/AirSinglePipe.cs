@@ -167,7 +167,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             BP1_EngineBrakeControllerRatePSIpS = thiscopy.BP1_EngineBrakeControllerRatePSIpS;
             BP2_EngineBrakeControllerRatePSIpS = thiscopy.BP2_EngineBrakeControllerRatePSIpS;
             LEKOV_EngineBrakeControllerRatePSIpS = thiscopy.LEKOV_EngineBrakeControllerRatePSIpS;
-            PressureRateFactor = thiscopy.PressureRateFactor;
+            PressureRateFactorDischarge = thiscopy.PressureRateFactorDischarge;
+            PressureRateFactorCharge = thiscopy.PressureRateFactorCharge;
             BrakeCylinderMaxPressureForLowState = thiscopy.BrakeCylinderMaxPressureForLowState;
             LowStateOnSpeedEngageLevel = thiscopy.LowStateOnSpeedEngageLevel;
             TwoStateBrake = thiscopy.TwoStateBrake;
@@ -408,11 +409,11 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
 
                 case "engine(brakepipedischargerate":
                     BrakePipeDischargeRate = true;
-                    PressureRateFactor = new Interpolator(stf); 
+                    PressureRateFactorDischarge = new Interpolator(stf); 
                     break;
                 case "engine(brakepipechargerate":
                     BrakePipeChargeRate = true;
-                    PressureRateFactor = new Interpolator(stf);
+                    PressureRateFactorCharge = new Interpolator(stf);
                     break;
 
                 case "engine(ortsauxpowerondelay": AuxPowerOnDelayS = stf.ReadFloatBlock(STFReader.UNITS.Time, 10); break;                                    
@@ -1856,7 +1857,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     lead.TrainBrakeController.ReleaseRatePSIpS = lead.BrakeSystem.GetBrakePipeChargeRate();
                 }
 
-
+                // Zpětné automatické dofouknutí při nechtěné manipulace s brzdičem
                 if (Neutral && lead.BrakeSystem.ReleaseTr != 1)
                 {
                     if (lead.TrainBrakeController.MaxPressurePSI - train.EqualReservoirPressurePSIorInHg < lead.BrakeSystem.BrakePipeMinPressureDropToEngage)
