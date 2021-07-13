@@ -348,8 +348,9 @@ namespace Orts.Formats.Msts
             Vibration_Inc_Past, Vibration_Dec_Past, Vibration_Equals_To, Vibration_NEquals_To,
             Distance_Inc_Past, Distance_Dec_Past, Distance_Equals_To, Distance_NEquals_To,
             Variable1_Inc_Past, Variable1_Dec_Past, Variable1_Equals_To, Variable1_NEquals_To,
-            Variable2_Inc_Past, Variable2_Dec_Past, Variable2_Equals_To, Variable2_NEquals_To,
+            Variable2_Inc_Past, Variable2_Dec_Past, Variable2_Equals_To, Variable2_NEquals_To,            
             Variable3_Inc_Past, Variable3_Dec_Past, Variable3_Equals_To, Variable3_NEquals_To,
+            Variable4_Inc_Past, Variable4_Dec_Past, Variable4_Equals_To, Variable4_NEquals_To, // DieselMotor RPM
             BrakeCyl_Inc_Past, BrakeCyl_Dec_Past, BrakeCyl_Equals_To, BrakeCyl_NEquals_To,
             CurveForce_Inc_Past, CurveForce_Dec_Past, CurveForce_Equals_To, CurveForce_NEquals_To
         };
@@ -419,6 +420,10 @@ namespace Orts.Formats.Msts
                 case "variable3_dec_past": Event = Events.Variable3_Dec_Past; break;
                 case "variable3_equals_to": Event = Events.Variable3_Equals_To; break;
                 case "variable3_nequals_to": Event = Events.Variable3_NEquals_To; break;
+                case "variable4_inc_past": Event = Events.Variable4_Inc_Past; break;
+                case "variable4_dec_past": Event = Events.Variable4_Dec_Past; break;
+                case "variable4_equals_to": Event = Events.Variable4_Equals_To; break;
+                case "variable4_nequals_to": Event = Events.Variable4_NEquals_To; break;
                 case "brakecyl_inc_past": Event = Events.BrakeCyl_Inc_Past; break;
                 case "brakecyl_dec_past": Event = Events.BrakeCyl_Dec_Past; break;
                 case "brakecyl_equals_to": Event = Events.BrakeCyl_Equals_To; break;

@@ -141,6 +141,8 @@ namespace Orts.Simulation.RollingStocks
         public float DavisCoefficientC_2;
         public float DavisCoefficientC_3;
         Interpolator RMgShoeFrictionFactor;
+        public float Variable4;
+
 
         bool TenderWeightInitialize = true;
         float TenderWagonMaxCoalMassKG;
@@ -1798,6 +1800,9 @@ namespace Orts.Simulation.RollingStocks
             outf.Write(CarCurrentCarriageHeatTempC);
             outf.Write(CurrentCarSteamHeatBoilerWaterCapacityL);
 
+            // Icik
+            outf.Write(Variable4);
+
             base.Save(outf);
         }
 
@@ -1840,6 +1845,9 @@ namespace Orts.Simulation.RollingStocks
             CurrentSteamHeatBoilerFuelCapacityL = inf.ReadSingle();
             CarCurrentCarriageHeatTempC = inf.ReadSingle();
             CurrentCarSteamHeatBoilerWaterCapacityL = inf.ReadSingle();
+
+            // Icik
+            Variable4 = inf.ReadSingle();
 
             base.Restore(inf);
 
