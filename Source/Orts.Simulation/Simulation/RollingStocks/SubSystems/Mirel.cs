@@ -251,7 +251,6 @@ namespace Orts.Simulation.RollingStocks.SubSystems
 
             if (!Locomotive.Battery)
             {
-                //Locomotive.SetTrainBrakePercent(100);
                 ToDefaultState();
                 return;
             }
@@ -272,12 +271,11 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                 }
                 if (Ls90power == LS90power.Start && !ls90tested)
                 {
-                    if (ls90testTime > 1.5)
+                    if (ls90testTime > 1.5 && Bar.FromPSI(Locomotive.BrakeSystem.GetCylPressurePSI()) > 2)
                     {
                         Ls90led = LS90led.Green;
                         Locomotive.SignalEvent(Common.Event.LS90TestComplete);
                         ls90tested = true;
-                        BlueLight = true;
                         if (MpS.ToKpH(Locomotive.AbsWheelSpeedMpS) > 1)
                             Locomotive.TrainBrakeController.EmergencyBrakingPushButton = true;
                         else
@@ -288,6 +286,16 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                     Ls90led = LS90led.Red;
                     ls90testTime += elapsedClockSeconds;
                     return;
+                }
+                if (Ls90power == LS90power.On && ls90tested)
+                {
+                    BlueLight = true;
+                    Ls90led = LS90led.Off;
+                }
+                else if (!ls90tested)
+                {
+                    BlueLight = false;
+                    Ls90led = LS90led.Red;
                 }
                 if (Ls90power != LS90power.On)
                 {
@@ -1833,19 +1841,24 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                     if (RecievingRepeaterSignal)
                         vigilanceActive = false;
                 }
+                if (MirelType == Type.LS90 && (operationalState == OperationalState.Restricting || recieverState == RecieverState.Off) && Locomotive.AbsSpeedMpS > 0)
+                    vigilanceActive = true;
                 if (vigilanceActive)
                 {
                     interventionTimer += elapsedTimeSeconds;
                     //Simulator.Confirmer.MSG(interventionTimer.ToString());
-                    if (interventionTimer > 6)
+                    float time1 = MirelType == Type.Full ? 6 : 4;
+                    float time2 = MirelType == Type.Full ? 12.5f : 15;
+                    float time3 = MirelType == Type.Full ? 16 : 19;
+                    if (interventionTimer > time1)
                     {
                         BlueLight = false;
                     }
-                    if (interventionTimer > 12.5f)
+                    if (interventionTimer > time2)
                     {
                         Locomotive.SignalEvent(Common.Event.MirelOn);
                     }
-                    if (interventionTimer > 16)
+                    if (interventionTimer > time3)
                     {
                         if (MirelType == Type.Full)
                             ApplyNZ1();
@@ -1855,7 +1868,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                 }
 
                 // Zvýšená cyklická kontrola bdělosti
-                vigilanceActive = true;
+                if (MirelType == Type.Full)
+                    vigilanceActive = true;
+                else
+                    vigilanceActive = false;
                 if (Locomotive.AbsSpeedMpS == 0)
                     vigilanceActive = false;
                 if (Locomotive.AbsSpeedMpS > 0)
@@ -1965,11 +1981,18 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                 {
                         MirelMaximumSpeed = 40;
                 }
+                CheckSignal:
                 switch (Locomotive.TrainControlSystem.CabSignalAspect)
                 {
                     case TrackMonitorSignalAspect.Clear_2:
                     case TrackMonitorSignalAspect.None:
                         {
+                            if (MirelType == Type.LS90)
+                            {
+                                operationalState = OperationalState.Normal;
+                                BlueLight = false;
+                                return;
+                            }
                             if (recieverState == RecieverState.Off)
                             {
                                 CheckSpeed(elapsedTimeSeconds);
@@ -2106,6 +2129,11 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                         }
                     case TrackMonitorSignalAspect.Restricted:
                         {
+                            if (MirelType == Type.LS90)
+                            {
+                                BlueLight = false;
+                                return;
+                            }
                             selectedApproachSpeed = 120;
                             if (recieverState == RecieverState.Off)
                             {
