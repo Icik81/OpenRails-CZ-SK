@@ -2302,8 +2302,9 @@ namespace Orts.Simulation.RollingStocks
             }
             PowerReductionByAuxEquipment0 = PowerReductionByAuxEquipmentWag + PowerReductionByAuxEquipmentEng;
             //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Zvýšený odběr proudu, výkon zredukován "+ PowerReductionByAuxEquipment0 * MaxPowerW/1000) + " kW!");            
-            
+
             // Výpočet celkového úbytku výkonu 
+            if (MaxPowerW == 0) MaxPowerW = 1000000; // Default pro výkon, který nesmí být 0kW
             float PowerReductionResult = (PowerReductionByHeating0 + PowerReductionByAuxEquipment0) * (1000000 / MaxPowerW);
             PowerReductionResult = PowerReductionResult / 1000000;
             PowerReductionResult = MathHelper.Clamp(PowerReductionResult, 0, 1);
