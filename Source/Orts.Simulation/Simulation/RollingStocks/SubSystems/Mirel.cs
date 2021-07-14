@@ -1885,6 +1885,11 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                     if (!RecievingRepeaterSignal)
                         vigilanceActive = false;
                 }
+                if (!RecievingRepeaterSignal)
+                {
+                    ManualMode = false;
+                    flashing = false;
+                }
                 if (ManualMode) vigilanceActive = true;
                 if (vigilanceActive)
                 {
