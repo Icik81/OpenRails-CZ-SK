@@ -1979,8 +1979,8 @@ namespace Orts.Viewer3D
             if (!Forwards)
                 attachedLocation.X *= -1;
 
-            // Icik    
-            if (car != null)
+            // Icik                
+            if (car != null && (!Viewer.PlayerLocomotive.HasFront3DCab || !Viewer.PlayerLocomotive.HasRear3DCab))
             {
                 var loco = car as MSTSLocomotive;
                 var viewpoints = (loco.UsingRearCab)
