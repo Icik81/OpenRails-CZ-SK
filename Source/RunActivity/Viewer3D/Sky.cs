@@ -47,6 +47,9 @@ namespace Orts.Viewer3D
         WorldLatLon worldLoc; // Access to latitude and longitude calcs (MSTS routes only)
         SunMoonPos skyVectors;
 
+        // Icik
+        public double TimeOffset; 
+
         int seasonType; //still need to remember it as MP now can change it.
         // Latitude of current route in radians. -pi/2 = south pole, 0 = equator, pi/2 = north pole.
         // Longitude of current route in radians. -pi = west of prime, 0 = prime, pi = east of prime.
@@ -137,12 +140,29 @@ namespace Orts.Viewer3D
             // Current solar and lunar position are calculated by interpolation in the lookup arrays.
             // The arrays have intervals of 1200 secs or 20 mins.
             // Using the Lerp() function, so need to calculate the in-between differential
+            switch ((int)Viewer.Simulator.Season)
+            {
+                case 0:
+                    TimeOffset = 0.0;
+                    break;
+                case 1:
+                    TimeOffset = -1.5;
+                    break;
+                case 2:
+                    TimeOffset = -1.5;
+                    break;
+                case 3:
+                    TimeOffset = 0.0;
+                    break;
+            }
+
             float diff = GetCelestialDiff();
+
             // The rest of this increments/decrements the array indices and checks for overshoot/undershoot.
             while (Viewer.Simulator.ClockTime >= (oldClockTime + 1200)) // Plus key, or normal forward in time; <CSComment> better so in case of fast forward
             {
                 oldClockTime = oldClockTime + 1200;
-                diff = GetCelestialDiff();
+                diff = GetCelestialDiff();                
                 step1++;
                 step2++;
                 if (step2 >= maxSteps) // Midnight.
@@ -157,7 +177,7 @@ namespace Orts.Viewer3D
             if (Viewer.Simulator.ClockTime <= (oldClockTime - 1200)) // Minus key
             {
                 oldClockTime = Viewer.Simulator.ClockTime;
-                diff = 0;
+                diff = GetCelestialDiff(); 
                 step1--;
                 step2--;
                 if (step1 < 0) // Midnight.
@@ -188,7 +208,9 @@ namespace Orts.Viewer3D
         private float GetCelestialDiff()
         {
             var diffS = (Viewer.Simulator.ClockTime - oldClockTime);
-            diffS += (double)(Program.DebugViewer?.DaylightOffsetHrs ?? 0) * 60 * 60;
+            //diffS += (double)(Program.DebugViewer?.DaylightOffsetHrs ?? 0) * 60 * 60;
+            if (TimeOffset != 0)
+                diffS += TimeOffset * 60 * 60;
             return (float)diffS / 1200;
         }
 
@@ -447,6 +469,7 @@ namespace Orts.Viewer3D
     {
         SkyShader SkyShader;
         Texture2D SkyTexture;
+
         Texture2D StarTextureN;
         Texture2D StarTextureS;
         Texture2D MoonTexture;
