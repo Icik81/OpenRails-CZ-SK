@@ -36,7 +36,9 @@ namespace Orts.Viewer3D
         // 16 bit version.
         public const float MaxIntensityPPSPM2_16 = 0.010f;
         // Default 32 bit version.
-        public const float MaxIntensityPPSPM2 = 0.035f;
+        //public const float MaxIntensityPPSPM2 = 0.035f;
+        // Icik
+        public const float MaxIntensityPPSPM2 = 0.35f;
 
         readonly Viewer Viewer;
         readonly WeatherControl WeatherControl;
