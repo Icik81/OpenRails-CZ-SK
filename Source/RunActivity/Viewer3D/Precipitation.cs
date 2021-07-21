@@ -167,9 +167,14 @@ namespace Orts.Viewer3D
             // Setting the precipitaton box size based on GraphicsDeviceCapabilities.
             if (graphicsDevice.GraphicsProfile == GraphicsProfile.HiDef)
             {
-                ParticleBoxLengthM = (float)Program.Simulator.Settings.PrecipitationBoxLength;
-                ParticleBoxWidthM = (float)Program.Simulator.Settings.PrecipitationBoxWidth;
-                ParticleBoxHeightM = (float)Program.Simulator.Settings.PrecipitationBoxHeight;
+                // Icik
+                //ParticleBoxLengthM = (float)Program.Simulator.Settings.PrecipitationBoxLength;
+                //ParticleBoxWidthM = (float)Program.Simulator.Settings.PrecipitationBoxWidth;
+                //ParticleBoxHeightM = (float)Program.Simulator.Settings.PrecipitationBoxHeight;
+
+                ParticleBoxLengthM = 500;
+                ParticleBoxWidthM = 500;
+                ParticleBoxHeightM = 100;
             }
             else
             {
