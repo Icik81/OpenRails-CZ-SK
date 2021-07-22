@@ -287,7 +287,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
             float v = (MinimumValue < 0 && percent < 0 ? -MinimumValue : MaximumValue) * percent / 100;
             CurrentValue = MathHelper.Clamp(v, MinimumValue, MaximumValue);
 
-            if (CurrentNotch >= 0)
+            if (CurrentNotch >= 0 && Notches.Count > 0)
             {
                 if (Notches[Notches.Count - 1].Type == ControllerState.Emergency)
                     v = Notches[Notches.Count - 1].Value * percent / 100;

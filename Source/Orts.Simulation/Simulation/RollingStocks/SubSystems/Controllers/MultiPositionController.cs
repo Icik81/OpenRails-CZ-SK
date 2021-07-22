@@ -196,8 +196,11 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
             }
             if (controllerPosition == ControllerPosition.Neutral)
             {
-                Locomotive.DynamicBrakeController.StopIncrease();
-                Locomotive.DynamicBrakeController.StopDecrease();
+                if (Locomotive.DynamicBrakeController != null)
+                {
+                    Locomotive.DynamicBrakeController.StopIncrease();
+                    Locomotive.DynamicBrakeController.StopDecrease();
+                }
             }
             if (controllerPosition == ControllerPosition.DynamicBrakeDecrease)
             {

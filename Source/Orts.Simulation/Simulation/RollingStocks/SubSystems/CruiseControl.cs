@@ -833,7 +833,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                         reducingForce = false;
                 }
             }
-            if (Bar.FromPSI(Locomotive.BrakeSystem.BrakeLine1PressurePSI) < 4.98)
+            if (Bar.FromPSI(Locomotive.BrakeSystem.BrakeLine1PressurePSI) < 4.8)
             {
                 canAddForce = false;
                 reducingForce = true;
@@ -1314,8 +1314,6 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                                 {
                                     float step = 100 / Locomotive.ThrottleFullRangeIncreaseTimeSeconds;
                                     step *= elapsedClockSeconds;
-                                    if (step > (demand - Locomotive.AccelerationMpSS) * 2)
-                                        step = (demand - Locomotive.AccelerationMpSS) * 2;
                                     controllerVolts += step;
                                 }
                             }
@@ -1336,7 +1334,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                                     t = ForceStepsThrottleTable[(int)Locomotive.SelectedMaxAccelerationStep - 1];
                                 }
                                 else
-                                    t = Locomotive.SelectedMaxAccelerationStep;
+                                    t = (Locomotive.SelectedMaxAccelerationStep);
                                 if (t < newThrotte)
                                     t = newThrotte;
                                 t /= 100;
@@ -1354,7 +1352,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                         else
                             delta = CurrentSelectedSpeedMpS - wheelSpeedMpS;
 
-                        if (UseThrottle) // not valid for diesel engines.
+                        if (Locomotive is MSTSDieselLocomotive) // not valid for diesel engines.
                             breakout = false;
 
                         if (!RestrictedSpeedActive)
@@ -1602,6 +1600,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                     Locomotive.ControllerVolts = 0;
                 }
             }
+
+            if (Locomotive.extendedPhysics == null)
+                Locomotive.SetThrottlePercent(controllerVolts);
 
             if (PlayerNotDriveableTrainLocomotives.Count > 0) // update any other than the player's locomotive in the consist throttles to percentage of the current force and the max force
             {
