@@ -38,7 +38,7 @@ namespace Orts.Viewer3D
         // Default 32 bit version.
         //public const float MaxIntensityPPSPM2 = 0.035f;
         // Icik
-        public const float MaxIntensityPPSPM2 = 0.35f;
+        public const float MaxIntensityPPSPM2 = 1.00f;
 
         readonly Viewer Viewer;
         readonly WeatherControl WeatherControl;
@@ -110,6 +110,10 @@ namespace Orts.Viewer3D
         readonly float ParticleBoxLengthM;
         readonly float ParticleBoxWidthM;
         readonly float ParticleBoxHeightM;
+        
+        // Icik
+        float ParticleBoxHeightMDynamic;
+        float ParticleBoxHeightMDynamicMinimum = 25;
 
         // 16bit Box Parameters
         const float ParticleBoxLengthM_16 = 500;
@@ -167,12 +171,12 @@ namespace Orts.Viewer3D
             // Setting the precipitaton box size based on GraphicsDeviceCapabilities.
             if (graphicsDevice.GraphicsProfile == GraphicsProfile.HiDef)
             {
-                // Icik
                 //ParticleBoxLengthM = (float)Program.Simulator.Settings.PrecipitationBoxLength;
                 //ParticleBoxWidthM = (float)Program.Simulator.Settings.PrecipitationBoxWidth;
                 //ParticleBoxHeightM = (float)Program.Simulator.Settings.PrecipitationBoxHeight;
 
-                ParticleBoxLengthM = 500;
+                // Icik
+                ParticleBoxLengthM = 300;
                 ParticleBoxWidthM = 500;
                 ParticleBoxHeightM = 100;
             }
@@ -295,7 +299,8 @@ namespace Orts.Viewer3D
 
         public void Initialize(Orts.Formats.Msts.WeatherType weather, Vector3 wind)
         {
-            ParticleDuration = ParticleBoxHeightM / (weather == Orts.Formats.Msts.WeatherType.Snow ? SnowVelocityMpS : RainVelocityMpS) / ParticleVelocityFactor;
+            //ParticleDuration = ParticleBoxHeightM / (weather == Orts.Formats.Msts.WeatherType.Snow ? SnowVelocityMpS : RainVelocityMpS) / ParticleVelocityFactor;
+            ParticleDuration = ParticleBoxHeightMDynamicMinimum / (weather == Orts.Formats.Msts.WeatherType.Snow ? SnowVelocityMpS : RainVelocityMpS) / ParticleVelocityFactor;
             ParticleDirection = wind;
             FirstActiveParticle = FirstNewParticle = FirstFreeParticle = FirstRetiredParticle = 0;
             ParticlesToEmit = TimeParticlesLastEmitted = 0;
@@ -305,7 +310,7 @@ namespace Orts.Viewer3D
         public void DynamicUpdate(WeatherControl weatherControl, Weather weather, Viewer viewer, ref Vector3 wind)
         {
             if (weather.PrecipitationLiquidity == 0 || weather.PrecipitationLiquidity == 1) return;
-            ParticleDuration = ParticleBoxHeightM / ((RainVelocityMpS-SnowVelocityMpS) *  weather.PrecipitationLiquidity + SnowVelocityMpS)/ ParticleVelocityFactor;
+            ParticleDuration = ParticleBoxHeightMDynamic / ((RainVelocityMpS-SnowVelocityMpS) *  weather.PrecipitationLiquidity + SnowVelocityMpS)/ ParticleVelocityFactor;
             wind.X = 18 * weather.PrecipitationLiquidity + 2;
             ParticleDirection = wind;
         }
@@ -316,6 +321,10 @@ namespace Orts.Viewer3D
             var scenery = viewer.World.Scenery;
             var worldLocation = viewer.Camera.CameraWorldLocation;
             //var worldLocation = Program.Viewer.PlayerLocomotive.WorldPosition.WorldLocation;  // This is used to test overall precipitation position.
+            
+            // Icik
+            ParticleBoxHeightMDynamic = ParticleBoxHeightM / particlesPerSecondPerM2 / 4;
+            ParticleBoxHeightMDynamic = MathHelper.Clamp(ParticleBoxHeightMDynamic, ParticleBoxHeightMDynamicMinimum, ParticleBoxHeightM);
 
             if (TimeParticlesLastEmitted == 0)
             {
@@ -335,27 +344,30 @@ namespace Orts.Viewer3D
             var numCanBeEmitted = GetCountFreeParticles();
             var numToEmit = Math.Min(numToBeEmitted, numCanBeEmitted);
 
-            for (var i = 0; i < numToEmit; i++)
+            if (!viewer.Simulator.Paused)
             {
-                var temp = new WorldLocation(worldLocation.TileX, worldLocation.TileZ, worldLocation.Location.X + (float)((Viewer.Random.NextDouble() - 0.5) * ParticleBoxWidthM), 0, worldLocation.Location.Z + (float)((Viewer.Random.NextDouble() - 0.5) * ParticleBoxLengthM));
-                temp.Location.Y = Heights.GetHeight(temp, tiles, scenery);
-                var position = new WorldPosition(temp);
-
-                var time = MathHelper.Lerp(TimeParticlesLastEmitted, currentTime, (float)i / numToEmit);
-                var particle = (FirstFreeParticle + 1) % MaxParticles;
-                var vertex = particle * VerticiesPerParticle;
-
-                for (var j = 0; j < VerticiesPerParticle; j++)
+                for (var i = 0; i < numToEmit; i++)
                 {
-                    Vertices[vertex + j].StartPosition_StartTime = new Vector4(position.XNAMatrix.Translation - ParticleDirection * ParticleDuration, time);
-                    Vertices[vertex + j].StartPosition_StartTime.Y += ParticleBoxHeightM;
-                    Vertices[vertex + j].EndPosition_EndTime = new Vector4(position.XNAMatrix.Translation, time + ParticleDuration);
-                    Vertices[vertex + j].TileXZ_Vertex = new Vector4(position.TileX, position.TileZ, j, 0);
-                }
+                    var temp = new WorldLocation(worldLocation.TileX, worldLocation.TileZ, worldLocation.Location.X + (float)((Viewer.Random.NextDouble() - 0.5) * ParticleBoxWidthM), 0, worldLocation.Location.Z + (float)((Viewer.Random.NextDouble() - 0.5) * ParticleBoxLengthM));
+                    temp.Location.Y = Heights.GetHeight(temp, tiles, scenery);
+                    var position = new WorldPosition(temp);
 
-                FirstFreeParticle = particle;
-                ParticlesToEmit--;
-                numParticlesAdded++;
+                    var time = MathHelper.Lerp(TimeParticlesLastEmitted, currentTime, (float)i / numToEmit);
+                    var particle = (FirstFreeParticle + 1) % MaxParticles;
+                    var vertex = particle * VerticiesPerParticle;
+
+                    for (var j = 0; j < VerticiesPerParticle; j++)
+                    {
+                        Vertices[vertex + j].StartPosition_StartTime = new Vector4(position.XNAMatrix.Translation - ParticleDirection * ParticleDuration, time);
+                        Vertices[vertex + j].StartPosition_StartTime.Y += ParticleBoxHeightMDynamic;
+                        Vertices[vertex + j].EndPosition_EndTime = new Vector4(position.XNAMatrix.Translation, time + ParticleDuration);
+                        Vertices[vertex + j].TileXZ_Vertex = new Vector4(position.TileX, position.TileZ, j, 0);
+                    }
+
+                    FirstFreeParticle = particle;
+                    ParticlesToEmit--;
+                    numParticlesAdded++;
+                }
             }
 
             if (numParticlesAdded > 0)
