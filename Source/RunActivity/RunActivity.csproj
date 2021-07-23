@@ -715,6 +715,14 @@
     <Content Include="Content\SceneryShader.fx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Content\Season\AutumnClouds.png" />
+    <Content Include="Content\Season\AutumnSkyDome.png" />
+    <Content Include="Content\Season\SpringClouds.png" />
+    <Content Include="Content\Season\SpringSkyDome.png" />
+    <Content Include="Content\Season\SummerClouds.png" />
+    <Content Include="Content\Season\SummerSkyDome.png" />
+    <Content Include="Content\Season\WinterClouds.png" />
+    <Content Include="Content\Season\WinterSkyDome.png" />
     <Content Include="Content\ShadowMap.fx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
