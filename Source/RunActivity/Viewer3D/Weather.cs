@@ -93,7 +93,7 @@ namespace Orts.Viewer3D
             WeatherSounds.AddRange(ClearSound);
             WeatherSounds.AddRange(RainSound);
             WeatherSounds.AddRange(SnowSound);
-
+            
             SetInitialWeatherParameters();
             UpdateWeatherParameters();
 
@@ -176,8 +176,8 @@ namespace Orts.Viewer3D
             switch (Viewer.Simulator.WeatherType)
             {
                 case Orts.Formats.Msts.WeatherType.Clear: Weather.PrecipitationLiquidity = 1; Weather.PricipitationIntensityPPSPM2 = 0; Viewer.SoundProcess.AddSoundSources(this, ClearSound); break;
-                case Orts.Formats.Msts.WeatherType.Rain: Weather.PrecipitationLiquidity = 1; Weather.PricipitationIntensityPPSPM2 = 0.010f; Viewer.SoundProcess.AddSoundSources(this, RainSound); break;
-                case Orts.Formats.Msts.WeatherType.Snow: Weather.PrecipitationLiquidity = 0; Weather.PricipitationIntensityPPSPM2 = 0.0050f; Viewer.SoundProcess.AddSoundSources(this, SnowSound); break;
+                case Orts.Formats.Msts.WeatherType.Rain: Weather.PrecipitationLiquidity = 1; Weather.PricipitationIntensityPPSPM2 = 0.500f; Viewer.SoundProcess.AddSoundSources(this, RainSound); break;
+                case Orts.Formats.Msts.WeatherType.Snow: Weather.PrecipitationLiquidity = 0; Weather.PricipitationIntensityPPSPM2 = 0.500f; Viewer.SoundProcess.AddSoundSources(this, SnowSound); break;
             }
 
         }
@@ -269,12 +269,12 @@ namespace Orts.Viewer3D
             // Then check if we are in precipitation zone
             if (Weather.OvercastFactor > 0.5)
             {
-                randValue = Simulator.Random.Next(75);
+                randValue = Simulator.Random.Next(73);
                 if (randValue > 40)
                 {
-                    Weather.PricipitationIntensityPPSPM2 = (float)(randValue - 40f) / 1000f;
+                    Weather.PricipitationIntensityPPSPM2 = (float)(randValue - 40f) / 100f * 3;
                     if (Viewer.GraphicsDevice.GraphicsProfile != GraphicsProfile.HiDef)
-                        Weather.PricipitationIntensityPPSPM2 = Math.Min(Weather.PricipitationIntensityPPSPM2, 0.010f);
+                        Weather.PricipitationIntensityPPSPM2 = Math.Min(Weather.PricipitationIntensityPPSPM2, 1.0f);
                     if (Viewer.Simulator.Season == SeasonType.Winter)
                     {
                         Viewer.Simulator.WeatherType = Orts.Formats.Msts.WeatherType.Snow;
