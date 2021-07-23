@@ -3746,11 +3746,11 @@ namespace Orts.Simulation.RollingStocks
                         // precipitation will calculate a value between 0.15 (light rain) and 0.2 (heavy rain) - this will be a factor that is used to adjust the base value - assume linear value between upper and lower precipitation values
                         if (pric >= 0.50f)
                         {   //BaseFrictionCoefficientFactor = Math.Min((pric * 0.0078f + 0.45f), 0.8f); // should give a minimum value between 0.8 and 1.0
-                            BaseFrictionCoefficientFactor = pric - (0.1f * pric);                            
+                            BaseFrictionCoefficientFactor = Math.Min(pric - (0.1f * pric), 0.86f);                            
                         }
                         else
                         {   //BaseFrictionCoefficientFactor = Math.Min((0.4539f + 1.0922f * (0.5f - pric)), 0.8f); // should give a minimum value between 0.8 and 1.0
-                            BaseFrictionCoefficientFactor = BaseFrictionCoefficientFactor0 - (pric * 0.5f);                            
+                            BaseFrictionCoefficientFactor = Math.Min(1 - (pric * 0.5f), BaseFrictionCoefficientFactor0);                            
                         }
                         if (BaseFrictionCoefficientFactor < 0.68f) BaseFrictionCoefficientFactor = 0.68f;
                     }
@@ -3764,13 +3764,13 @@ namespace Orts.Simulation.RollingStocks
                     //BaseFrictionCoefficientFactor = 0.6f;
                     // Icik
                     float pric = Simulator.Weather.PricipitationIntensityPPSPM2; // Nabývá max 1                               
-                    if (pric >= 0.70f)
+                    if (pric >= 0.60f)
                     {   
-                        BaseFrictionCoefficientFactor = BaseFrictionCoefficientFactor0 - (pric * 0.15f);                        
+                        BaseFrictionCoefficientFactor = Math.Min(1 - (pric * 0.28f), BaseFrictionCoefficientFactor0);                        
                     }
                     else
                     {   
-                        BaseFrictionCoefficientFactor = BaseFrictionCoefficientFactor0 - (pric * 0.05f);                        
+                        BaseFrictionCoefficientFactor = Math.Min(1 - (pric * 0.05f), BaseFrictionCoefficientFactor0);
                     }
                     if (BaseFrictionCoefficientFactor < 0.72f) BaseFrictionCoefficientFactor = 0.72f;
                 }
@@ -3778,12 +3778,14 @@ namespace Orts.Simulation.RollingStocks
                 //add sander - more effective in wet weather, so increases adhesion by more
                 if (AbsSpeedMpS < SanderSpeedOfMpS && CurrentTrackSandBoxCapacityM3 > 0.0 && MainResPressurePSI > 80.0 && (AbsSpeedMpS > 0))
                 {
+                    // Icik
+                    if (SanderSpeedEffectUpToMpS == 0) SanderSpeedEffectUpToMpS = 72 / 3.6f; // 72km/h
                     if (SanderSpeedEffectUpToMpS > 0.0f)
                     {
                         if ((Sander) && (AbsSpeedMpS < SanderSpeedEffectUpToMpS))
                         {
-                            //SandingFrictionCoefficientFactor = (1.0f - 0.5f / SanderSpeedEffectUpToMpS * AbsSpeedMpS) * 1.75f;
-                            SandingFrictionCoefficientFactor = (1.0f - 0.5f / SanderSpeedEffectUpToMpS * AbsSpeedMpS) * 1.25f;
+                            // Icik
+                            SandingFrictionCoefficientFactor = 1 + (0.75f * ((SanderSpeedEffectUpToMpS - AbsSpeedMpS) / SanderSpeedEffectUpToMpS));
                             BaseFrictionCoefficientFactor *= SandingFrictionCoefficientFactor;
                         }
                     }
@@ -3791,8 +3793,7 @@ namespace Orts.Simulation.RollingStocks
                     {
                         if (Sander)  // If sander is on, and train speed is greater then zero, then put sand on the track
                         {
-                            //SandingFrictionCoefficientFactor = 1.75f;
-                            SandingFrictionCoefficientFactor = 1.25f;
+                            SandingFrictionCoefficientFactor = 1.75f;                            
                             BaseFrictionCoefficientFactor *= SandingFrictionCoefficientFactor; // Sanding track adds approx 175% adhesion (best case)
                         }
                     }
@@ -3812,8 +3813,7 @@ namespace Orts.Simulation.RollingStocks
                     {
                         //BaseFrictionCoefficientFactor = Math.Min((fog * 2.75e-4f + 0.8f), 0.8f); // If fog is less then 2km then it will impact friction, decrease adhesion by up to 20% (same as clear to wet transition)
                         BaseFrictionCoefficientFactor = Math.Min((fog * 2.75e-4f + 0.9f), 0.95f); // If fog is less then 2km then it will impact friction, decrease adhesion by up to 20% (same as clear to wet transition)
-                    }
-                    BaseFrictionCoefficientFactor0 = BaseFrictionCoefficientFactor;
+                    }                    
                 }
                 else // if not proportional to fog use fixed friction value approximately equal to 0.33, thus factor will be 1.0 x friction coefficient of 0.33
                 {
@@ -3823,11 +3823,14 @@ namespace Orts.Simulation.RollingStocks
                 //add sander - not as effective in dry weather
                 if (AbsSpeedMpS < SanderSpeedOfMpS && CurrentTrackSandBoxCapacityM3 > 0.0 && MainResPressurePSI > 80.0 && (AbsSpeedMpS > 0))
                 {
+                    // Icik
+                    if (SanderSpeedEffectUpToMpS == 0) SanderSpeedEffectUpToMpS = 72 / 3.6f; // 72km/h
                     if (SanderSpeedEffectUpToMpS > 0.0f)
                     {
                         if ((Sander) && (AbsSpeedMpS < SanderSpeedEffectUpToMpS))
                         {
-                            SandingFrictionCoefficientFactor = (1.0f - 0.5f / SanderSpeedEffectUpToMpS * AbsSpeedMpS) * 1.25f;
+                            // Icik
+                            SandingFrictionCoefficientFactor = 1 + (0.25f * ((SanderSpeedEffectUpToMpS - AbsSpeedMpS) / SanderSpeedEffectUpToMpS));
                             BaseFrictionCoefficientFactor *= SandingFrictionCoefficientFactor;
                         }
                     }
@@ -3840,6 +3843,7 @@ namespace Orts.Simulation.RollingStocks
                         }
                     }
                 }
+                BaseFrictionCoefficientFactor0 = BaseFrictionCoefficientFactor;
             }
 
             // For wagons use base Curtius-Kniffler adhesion factor - u = 0.33
