@@ -910,11 +910,12 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             // Zjistí rychlost změny tlaku v potrubí
             if (T0 >= 1.0f) T0 = 0.0f;
             if (T0 == 0.0f) prevBrakeLine1PressurePSI = BrakeLine1PressurePSI;
+            
             T0 += elapsedClockSeconds;
-            if (T0 > 0.08f && T0 < 0.12f)
+            if (T0 > 0.33f && T0 < 0.43f)
             {
                 T0 = 0.0f;
-                BrakePipeChangeRate = Math.Abs(prevBrakeLine1PressurePSI - BrakeLine1PressurePSI) * 15;
+                BrakePipeChangeRate = Math.Abs(prevBrakeLine1PressurePSI - BrakeLine1PressurePSI) * 3.33f;
             }
 
             // Zaznamená poslední stav pomocné jímky pro určení pracovního bodu pomocné jímky
@@ -998,7 +999,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             }
 
             // Vypouští brzdový válec
-            if (BrakeCylRelease) 
+            if (BrakeCylRelease || BrakeLine1PressurePSI > 4.84f * 14.50377f) 
             {                
                 if (AutoCylPressurePSI0 > threshold)
                 {
@@ -1008,7 +1009,13 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 }
                 else BrakeCylRelease = false;
             }
-            
+            // Vypouští brzdový válec pokud je tlak v potrubí vyšší než 4.84bar
+            if (BrakeLine1PressurePSI > 4.84f * 14.50377f)
+            {
+                if (AutoCylPressurePSI0 > 0)                
+                    AutoCylPressurePSI0 -= elapsedClockSeconds * ReleaseRatePSIpS;                                                    
+            }
+
             // triple valve set to release pressure in brake cylinder and EP valve set
             if (TripleValveState == ValveState.Release && HoldingValve == ValveState.Release)
             {
@@ -1856,9 +1863,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 {
                     lead.TrainBrakeController.ReleaseRatePSIpS = lead.BrakeSystem.GetBrakePipeChargeRate();
                 }
-
+                
                 // Zpětné automatické dofouknutí při nechtěné manipulace s brzdičem
-                if (train.EqualReservoirPressurePSIorInHg > 4.84f * 14.50377f) lead.BrakeSystem.ReleaseTr = 0; // Automatické napouštění při tlaku větším než 4.84bar
                 if (Neutral && lead.BrakeSystem.ReleaseTr != 1)
                 {
                     if (lead.TrainBrakeController.MaxPressurePSI - train.EqualReservoirPressurePSIorInHg < lead.BrakeSystem.BrakePipeMinPressureDropToEngage)
