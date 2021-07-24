@@ -1858,6 +1858,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 }
 
                 // Zpětné automatické dofouknutí při nechtěné manipulace s brzdičem
+                if (train.EqualReservoirPressurePSIorInHg > 4.84f * 14.50377f) lead.BrakeSystem.ReleaseTr = 0; // Automatické napouštění při tlaku větším než 4.84bar
                 if (Neutral && lead.BrakeSystem.ReleaseTr != 1)
                 {
                     if (lead.TrainBrakeController.MaxPressurePSI - train.EqualReservoirPressurePSIorInHg < lead.BrakeSystem.BrakePipeMinPressureDropToEngage)
