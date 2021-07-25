@@ -889,7 +889,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             {
                 TripleValveState = ValveState.Lap;
                 TRMg += elapsedClockSeconds;
-                if (TRMg < 0.2f)
+                if (TRMg < 0.5f)
                 {
                     if (AutoCylPressurePSI < 1.5f * 14.50377f)
                     {
@@ -999,7 +999,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             }
 
             // Vypouští brzdový válec
-            if (BrakeCylRelease || BrakeLine1PressurePSI > 4.84f * 14.50377f) 
+            if (BrakeCylRelease) 
             {                
                 if (AutoCylPressurePSI0 > threshold)
                 {
@@ -1009,8 +1009,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 }
                 else BrakeCylRelease = false;
             }
-            // Vypouští brzdový válec pokud je tlak v potrubí vyšší než 4.84bar
-            if (BrakeLine1PressurePSI > 4.84f * 14.50377f)
+            // Vypouští brzdový válec, pokud je tlak v potrubí vyšší než 4.84bar            
+            if (BrakeLine1PressurePSI > 4.84f * 14.50377f && threshold < (maxPressurePSI0 - (4.84f * 14.50377f)) * AuxCylVolumeRatio)
             {
                 if (AutoCylPressurePSI0 > 0)                
                     AutoCylPressurePSI0 -= elapsedClockSeconds * ReleaseRatePSIpS;                                                    
