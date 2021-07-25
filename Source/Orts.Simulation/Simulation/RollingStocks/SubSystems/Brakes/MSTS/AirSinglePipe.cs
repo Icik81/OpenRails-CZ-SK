@@ -1863,7 +1863,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 {
                     lead.TrainBrakeController.ReleaseRatePSIpS = lead.BrakeSystem.GetBrakePipeChargeRate();
                 }
-                
+
+                // Automatické napouštění při tlaku větším než 4.84bar
+                if (train.EqualReservoirPressurePSIorInHg > 4.84f * 14.50377f) lead.BrakeSystem.ReleaseTr = 0; 
+
                 // Zpětné automatické dofouknutí při nechtěné manipulace s brzdičem
                 if (Neutral && lead.BrakeSystem.ReleaseTr != 1)
                 {

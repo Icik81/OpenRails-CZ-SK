@@ -37,9 +37,10 @@ namespace Orts.Viewer3D
         public const float MaxIntensityPPSPM2_16 = 0.010f;
         // Default 32 bit version.
         //public const float MaxIntensityPPSPM2 = 0.035f;
+        
         // Icik
         public const float MaxIntensityPPSPM2 = 1.00f;
-
+        
         readonly Viewer Viewer;
         readonly WeatherControl WeatherControl;
         readonly Weather Weather;
@@ -56,7 +57,9 @@ namespace Orts.Viewer3D
             Weather = viewer.Simulator.Weather;
 
             Material = viewer.MaterialManager.Load("Precipitation");
-            Pricipitation = new PrecipitationPrimitive(Viewer.GraphicsDevice);
+            Pricipitation = new PrecipitationPrimitive(Viewer.GraphicsDevice, viewer);
+
+            
 
             Wind = new Vector3(0, 0, 0);
             Reset();
@@ -114,6 +117,7 @@ namespace Orts.Viewer3D
         // Icik
         float ParticleBoxHeightMDynamic;
         float ParticleBoxHeightMDynamicMinimum = 25;
+        public float MaxIntensityKoef = 1;
 
         // 16bit Box Parameters
         const float ParticleBoxLengthM_16 = 500;
@@ -165,10 +169,15 @@ namespace Orts.Viewer3D
         float TimeParticlesLastEmitted;
         int DrawCounter;
 
-        public PrecipitationPrimitive(GraphicsDevice graphicsDevice)
+        public PrecipitationPrimitive(GraphicsDevice graphicsDevice, Viewer viewer)
         {
             // Snow is the slower particle, hence longer duration, hence more particles in total.
-            // Setting the precipitaton box size based on GraphicsDeviceCapabilities.
+            // Setting the precipitaton box size based on GraphicsDeviceCapabilities.                      
+
+            // Icik
+            float VRAMGPU = viewer.AdapterMemory / 1024 / 1024; // Grafick· pamÏù v MB
+            if (VRAMGPU < 2048) MaxIntensityKoef = 10;
+
             if (graphicsDevice.GraphicsProfile == GraphicsProfile.HiDef)
             {
                 //ParticleBoxLengthM = (float)Program.Simulator.Settings.PrecipitationBoxLength;
@@ -187,7 +196,7 @@ namespace Orts.Viewer3D
                 ParticleBoxHeightM = ParticleBoxHeightM_16;
             }
             if (graphicsDevice.GraphicsProfile == GraphicsProfile.HiDef)
-                MaxParticles = (int)(PrecipitationViewer.MaxIntensityPPSPM2 * ParticleBoxLengthM * ParticleBoxWidthM * ParticleBoxHeightM / SnowVelocityMpS / ParticleVelocityFactor);
+                MaxParticles = (int)(PrecipitationViewer.MaxIntensityPPSPM2 / MaxIntensityKoef * ParticleBoxLengthM * ParticleBoxWidthM * ParticleBoxHeightM / SnowVelocityMpS / ParticleVelocityFactor);
             // Processing 16bit device
             else
                 MaxParticles = (int)(PrecipitationViewer.MaxIntensityPPSPM2_16 * ParticleBoxLengthM * ParticleBoxWidthM * ParticleBoxHeightM / SnowVelocityMpS / ParticleVelocityFactor);
@@ -325,7 +334,7 @@ namespace Orts.Viewer3D
             // Icik
             ParticleBoxHeightMDynamic = ParticleBoxHeightM / particlesPerSecondPerM2 / 4;
             ParticleBoxHeightMDynamic = MathHelper.Clamp(ParticleBoxHeightMDynamic, ParticleBoxHeightMDynamicMinimum, ParticleBoxHeightM);
-
+            
             if (TimeParticlesLastEmitted == 0)
             {
                 TimeParticlesLastEmitted = currentTime - ParticleDuration;
