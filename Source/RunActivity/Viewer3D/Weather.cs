@@ -164,7 +164,7 @@ namespace Orts.Viewer3D
             // These values are defaults only; subsequent changes to the weather via debugging only change the components (weather, overcastFactor and fogDistance) individually.
             switch (Viewer.Simulator.WeatherType)
             {
-                case Orts.Formats.Msts.WeatherType.Clear: Weather.OvercastFactor = 0.35f; Weather.FogDistance = 20000; break;
+                case Orts.Formats.Msts.WeatherType.Clear: Weather.OvercastFactor = 0.05f; Weather.FogDistance = 20000; break;
                 case Orts.Formats.Msts.WeatherType.Rain: Weather.OvercastFactor = 0.7f; Weather.FogDistance = 1000; break;
                 case Orts.Formats.Msts.WeatherType.Snow: Weather.OvercastFactor = 0.6f; Weather.FogDistance = 500; break;
             }
