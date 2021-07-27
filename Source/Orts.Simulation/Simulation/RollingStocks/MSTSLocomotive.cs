@@ -1950,18 +1950,20 @@ namespace Orts.Simulation.RollingStocks
         protected bool disableDynamicBrakeIntervention = false; 
         public void DynamicBrakeBlending(float elapsedClockSeconds)
         {
-            if (!PowerOn)
-                disableDynamicBrakeIntervention = true;
-            if (Bar.FromPSI(BrakeSystem.BrakeLine1PressurePSI) > 4.9)
-                disableDynamicBrakeIntervention = false;
-            if (disableDynamicBrakeIntervention)
+            if (IsPlayerTrain)
             {
-                DynamicBrakeIntervention = -1;
-                DynamicBrakeBlended = false;
-                return;
+                if (!PowerOn)
+                    disableDynamicBrakeIntervention = true;
+                if (Bar.FromPSI(BrakeSystem.BrakeLine1PressurePSI) > 4.9)
+                    disableDynamicBrakeIntervention = false;
+                if (disableDynamicBrakeIntervention)
+                {
+                    DynamicBrakeIntervention = -1;
+                    DynamicBrakeBlended = false;
+                    return;
+                }
             }
-            if (BrakeRelease == true 
-                || airPipeSystem != null && ((airPipeSystem is EPBrakeSystem && Train.BrakeLine4 > 0f) || (airPipeSystem.TotalCapacityMainResBrakePipe >= airPipeSystem.maxPressurePSI0 && airPipeSystem.BrakeLine1PressurePSI < TrainBrakeController.MaxPressurePSI - 1f && AbsSpeedMpS > 1)
+            if (airPipeSystem != null && ((airPipeSystem is EPBrakeSystem && Train.BrakeLine4 > 0f) || (airPipeSystem.TotalCapacityMainResBrakePipe >= airPipeSystem.maxPressurePSI0 && airPipeSystem.BrakeLine1PressurePSI < TrainBrakeController.MaxPressurePSI - 1f && AbsSpeedMpS > 1)
                 && ThrottleController.CurrentValue == 0f && !(DynamicBrakeController != null && DynamicBrakeBlendingOverride && DynamicBrakeController.CurrentValue > 0f))
                 /* && (!DynamicBrakeBlendingLeverOverride && DynamicBrakeController != null && DynamicBrakeIntervention < DynamicBrakeController.CurrentValue)*/)
             {
@@ -1987,9 +1989,8 @@ namespace Orts.Simulation.RollingStocks
                         DynamicBrakeIntervention += elapsedClockSeconds * (airPipeSystem.GetMaxApplicationRatePSIpS() / maxCylPressurePSI);
                     else if (diff < -threshold)
                     {
-                        DynamicBrakeIntervention -= elapsedClockSeconds * (airPipeSystem.GetMaxReleaseRatePSIpS() / maxCylPressurePSI);
-                        BrakeRelease = true;                            
-                }
+                        DynamicBrakeIntervention -= elapsedClockSeconds * (airPipeSystem.GetMaxReleaseRatePSIpS() / maxCylPressurePSI);                         
+                    }
                 }
                 if (DynamicBrakeController != null)
                     DynamicBrakeIntervention = Math.Max(DynamicBrakeIntervention, DynamicBrakeController.CurrentValue);
@@ -1997,17 +1998,21 @@ namespace Orts.Simulation.RollingStocks
 
             else if (DynamicBrakeBlended)
             {
-                DynamicBrakeIntervention = -1;
-                DynamicBrakeBlended = false;
+                if (DynamicBrakeIntervention > -1) 
+                    DynamicBrakeIntervention -= 0.01f;
+                else DynamicBrakeBlended = false;
+                if (DynamicBrakeIntervention < 0)
+                    DynamicBrakeIntervention = -1;
             }
-            if (DynamicBrakeForceN < 1000) BrakeRelease = false;
         }
 
         // Icik
         // Definice ochran lokomotiv
         public void Overcurrent_Protection(float elapsedClockSeconds)
         {
-            if (MaxCurrentA > 0 && IsPlayerTrain)  // Zohlední jen elektrické a dieselelektrické lokomotivy 
+            if (!IsPlayerTrain)
+                return;
+            if (MaxCurrentA > 0)  // Zohlední jen elektrické a dieselelektrické lokomotivy 
             {
                 // Nadproudová ochrana                        
                 if (MaxCurrentPower == 0) MaxCurrentPower = MaxCurrentA / 1.2f;
@@ -2081,7 +2086,9 @@ namespace Orts.Simulation.RollingStocks
         // Protiskluzová ochrana
         public void AntiSlip_Protection(float elapsedClockSeconds)
         {
-            if (MaxCurrentA > 0 && IsPlayerTrain)  // Zohlední jen elektrické a dieselelektrické lokomotivy 
+            if (!IsPlayerTrain)
+                return;
+            if (MaxCurrentA > 0)  // Zohlední jen elektrické a dieselelektrické lokomotivy 
             {                
                 if (SlipSpeedCritical == 0) SlipSpeedCritical = 40 / 3.6f; // Výchozí hodnota 40 km/h     
                 float AbsSlipSpeedMpS = Math.Abs(WheelSpeedMpS) - AbsSpeedMpS;  // Zjistí absolutní rychlost prokluzu 
@@ -2156,16 +2163,21 @@ namespace Orts.Simulation.RollingStocks
                 PowerOnFilterCapacityLimit = 200;
 
                 // Nabíjení
-                if (PowerOn && PowerOnFilter < PowerOnFilterCapacity) PowerOnFilter = PowerOnFilter + (10 * elapsedClockSeconds); // 10 jednotek za sekundu
-                                                                                                                                  // Vybíjení
-                if (!PowerOn && DynamicBrakePercent > 0 && PowerOnFilter > 0) PowerOnFilter = PowerOnFilter - (DynamicBrakeForceN / 1000 * elapsedClockSeconds);
+                if (PowerOn && PowerOnFilter < PowerOnFilterCapacity)
+                    PowerOnFilter = PowerOnFilter + (10 * elapsedClockSeconds); // 10 jednotek za sekundu
+                // Vybíjení
+                if (!PowerOn && DynamicBrakePercent > 0 && PowerOnFilter > 0)
+                    PowerOnFilter = PowerOnFilter - (DynamicBrakeForceN / 1000 * elapsedClockSeconds);
                 // Pokles síly EDB při vybití filtru
                 if (!PowerOn && DynamicBrakePercent > 0 && PowerOnFilter < PowerOnFilterCapacityLimit)                    
                 {
-                    if (DynamicBrakeIntervention > 0) DynamicBrakeIntervention = DynamicBrakeIntervention - 0.01f;
-                    if (DynamicBrakeIntervention < 0) DynamicBrakeIntervention = 0;
+                    if (DynamicBrakeIntervention > -1)
+                        DynamicBrakeIntervention -= 0.01f;
+                    if (DynamicBrakeIntervention < 0)
+                        DynamicBrakeIntervention = -1;
                     DynamicBrakePercent--;
-                    if (DynamicBrakePercent < 0) DynamicBrakePercent = 0;
+                    if (DynamicBrakePercent < 0)
+                        DynamicBrakePercent = 0;
                     SetDynamicBrakePercent(DynamicBrakePercent);
                 }
 
@@ -2177,15 +2189,23 @@ namespace Orts.Simulation.RollingStocks
         // Při aktivní EDB a použití přímočinné brzdy zruší účinek EDB      
         public void EDBCancelByEngineBrake()
         {
+            if (!IsPlayerTrain)
+                return;
             if (EngineBrakeEngageEDB)
             {
-                if (DynamicBrakeIntervention > 0) DynamicBrakeIntervention = DynamicBrakeIntervention - 0.5f;
-                if (DynamicBrakeIntervention < 0) DynamicBrakeIntervention = 0;
-                DynamicBrakePercent = DynamicBrakePercent - 5;
-                if (DynamicBrakePercent < 0) DynamicBrakePercent = 0;
+                if (DynamicBrakeIntervention > -1) 
+                    DynamicBrakeIntervention -= 0.5f;
+                if (DynamicBrakeIntervention < 0)
+                    DynamicBrakeIntervention = -1;
+                DynamicBrakePercent -= 5;
+                if (DynamicBrakePercent < 0) 
+                    DynamicBrakePercent = 0;
                 SetDynamicBrakePercent(DynamicBrakePercent);
-                if (BrakeSystem.AutoCylPressurePSI1 < 1 && DynamicBrakeIntervention == 0)
+                if (BrakeSystem.AutoCylPressurePSI1 < 1 && DynamicBrakeIntervention == -1)
+                {
                     EngineBrakeEngageEDB = false;
+                    DynamicBrakePercent = -1;
+                }
             }          
         }
 
@@ -2193,6 +2213,8 @@ namespace Orts.Simulation.RollingStocks
         // Vypínání HV při určitém tlaku v potrubí
         public void HVOffbyAirPressure()
         {
+            if (!IsPlayerTrain)
+                return;
             if (DoesBrakeCutPower)
             {
                 // Pokud stoupne tlak nad hraniční hodnotu tlaku v brzdovém válci
@@ -2236,7 +2258,9 @@ namespace Orts.Simulation.RollingStocks
         // Icik
         // Snížení výkonu při zvýšeném odběru na lokomotivě
         public void ElevatedConsumptionOnLocomotive()
-        {            
+        {
+            if (!IsPlayerTrain)
+                return;
             if (TElevatedConsumption == 0)         
                 PowerReduction0 = PowerReduction;                            
 
@@ -2341,59 +2365,62 @@ namespace Orts.Simulation.RollingStocks
         protected float EngineBrakePercentSet = 0;
         public bool CanCheckEngineBrake = true;
         public override void Update(float elapsedClockSeconds)
-        {            
-            if (extendedPhysics != null)
-                extendedPhysics.Update(elapsedClockSeconds);
-            if (CruiseControl != null)
+        {
+            if (IsPlayerTrain)
             {
-                if (CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.Manual)
+                if (extendedPhysics != null)
+                    extendedPhysics.Update(elapsedClockSeconds);
+                if (CruiseControl != null)
                 {
-                    CruiseControl.controllerVolts = ControllerVolts;
+                    if (CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.Manual)
+                    {
+                        CruiseControl.controllerVolts = ControllerVolts;
+                    }
+                    if (CruiseControl.RestrictedSpeedActive)
+                        CruiseControl.CheckRestrictedSpeedZone();
                 }
-                if (CruiseControl.RestrictedSpeedActive)
-                    CruiseControl.CheckRestrictedSpeedZone();
-            }
-            if (Mirel != null)
-            {
-                if (IsPlayerTrain && Mirel.Equipped)
-                    Mirel.Update(elapsedClockSeconds, AbsSpeedMpS, AbsWheelSpeedMpS);
-            }
-          
-            if (CruiseControl != null && ControllerVolts > 0 && DynamicBrakePercent > -1)
-                 DynamicBrakeChangeActiveState(false);
-            
-            if (extendedPhysics == null)
-            {
-                if (CruiseControl == null)
+                if (Mirel != null)
                 {
-                    if (ThrottlePercent > 0)
+                    if (IsPlayerTrain && Mirel.Equipped)
+                        Mirel.Update(elapsedClockSeconds, AbsSpeedMpS, AbsWheelSpeedMpS);
+                }
+
+                if (CruiseControl != null && ControllerVolts > 0 && DynamicBrakePercent > -1)
+                    DynamicBrakeChangeActiveState(false);
+
+                if (extendedPhysics == null)
+                {
+                    if (CruiseControl == null)
+                    {
+                        if (ThrottlePercent > 0)
+                        {
+                            ControllerVolts = ThrottlePercent / 10;
+                        }
+                    }
+                    else if (CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.Manual)
                     {
                         ControllerVolts = ThrottlePercent / 10;
                     }
                 }
-                else if (CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.Manual)
-                {
-                    ControllerVolts = ThrottlePercent / 10;
-                }
-            }
 
-            if (DynamicBrakePercent > 0)
-            {
-                if (PowerOn)
+                if (DynamicBrakePercent > 0)
                 {
-                    ControllerVolts = -(DynamicBrakePercent / 100) * MaxControllerVolts;
-                }
-                else
-                {
-                    if (PowerOnFilter > 0)
+                    if (PowerOn)
                     {
                         ControllerVolts = -(DynamicBrakePercent / 100) * MaxControllerVolts;
                     }
+                    else
+                    {
+                        if (PowerOnFilter > 0)
+                        {
+                            ControllerVolts = -(DynamicBrakePercent / 100) * MaxControllerVolts;
+                        }
+                    }
                 }
+                else if (DynamicBrakePercent <= 0 && ControllerVolts < 0)
+                    ControllerVolts = 0;
             }
-            else if (DynamicBrakePercent <= 0 && ControllerVolts < 0)
-                ControllerVolts = 0;
-
+            
             Overcurrent_Protection(elapsedClockSeconds);
             AntiSlip_Protection(elapsedClockSeconds);
             PowerOn_Filter(elapsedClockSeconds);
@@ -2463,7 +2490,7 @@ namespace Orts.Simulation.RollingStocks
                 UpdateCarSteamHeat(elapsedClockSeconds);
             }
  
-            if (AutomaticParkingBrake)
+            if (AutomaticParkingBrake && IsPlayerTrain)
             {
                 if (CruiseControl != null)
                 {
