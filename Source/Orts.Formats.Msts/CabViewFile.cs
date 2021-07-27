@@ -367,9 +367,10 @@ namespace Orts.Formats.Msts
         COMPRESSOR_START,
         COMPRESSOR_MODE_OFFAUTO,
         HEATING_OFFON,
+        HEATING_POWER,
         SWITCHINGVOLTAGEMODE_OFF_DC,
         SWITCHINGVOLTAGEMODE_OFF_AC,        
-        SWITCHINGVOLTAGEMODE_DC_OFF_AC,
+        SWITCHINGVOLTAGEMODE_DC_OFF_AC,        
 
         // Further CabViewControlTypes must be added above this line, to avoid their malfunction in 3DCabs
         EXTERNALWIPERS,

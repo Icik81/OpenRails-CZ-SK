@@ -2164,9 +2164,10 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.COMPRESSOR_START:
                 case CABViewControlTypes.COMPRESSOR_MODE_OFFAUTO:
                 case CABViewControlTypes.HEATING_OFFON:
+                case CABViewControlTypes.HEATING_POWER:
                 case CABViewControlTypes.SWITCHINGVOLTAGEMODE_OFF_DC:
                 case CABViewControlTypes.SWITCHINGVOLTAGEMODE_OFF_AC:                
-                case CABViewControlTypes.SWITCHINGVOLTAGEMODE_DC_OFF_AC:
+                case CABViewControlTypes.SWITCHINGVOLTAGEMODE_DC_OFF_AC:                
 
                     index = (int)data;
                     break;

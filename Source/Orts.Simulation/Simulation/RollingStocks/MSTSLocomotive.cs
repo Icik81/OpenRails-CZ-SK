@@ -7038,6 +7038,13 @@ namespace Orts.Simulation.RollingStocks
                         data = Heating_OffOn ? 1 : 0;
                         break;
                     }
+                case CABViewControlTypes.HEATING_POWER:
+                    {
+                        if (Heating_OffOn && PowerOn)
+                            data = 1;
+                        else data = 0;
+                        break;
+                    }
                 case CABViewControlTypes.SWITCHINGVOLTAGEMODE_OFF_DC:
                     {
                         SwitchingVoltageMode = MathHelper.Clamp(SwitchingVoltageMode, 0, 1);
@@ -7055,7 +7062,7 @@ namespace Orts.Simulation.RollingStocks
                         SwitchingVoltageMode = MathHelper.Clamp(SwitchingVoltageMode, 0, 2);
                         data = SwitchingVoltageMode;
                         break;
-                    }
+                    }                
             }
             // max needle speed
             if (cvc.MaxNeedleSpeed > 0 && elapsedTime > 0)
