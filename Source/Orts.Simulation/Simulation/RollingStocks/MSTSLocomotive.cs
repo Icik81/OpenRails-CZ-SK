@@ -1963,7 +1963,8 @@ namespace Orts.Simulation.RollingStocks
                     return;
                 }
             }
-            if (airPipeSystem != null && ((airPipeSystem is EPBrakeSystem && Train.BrakeLine4 > 0f) || (airPipeSystem.TotalCapacityMainResBrakePipe >= airPipeSystem.maxPressurePSI0 && airPipeSystem.BrakeLine1PressurePSI < TrainBrakeController.MaxPressurePSI - 1f && AbsSpeedMpS > 1)
+            if (airPipeSystem != null
+                && ((airPipeSystem is EPBrakeSystem && Train.BrakeLine4 > 0f) || (MainResPressurePSI >= airPipeSystem.maxPressurePSI0 && airPipeSystem.BrakeLine1PressurePSI < TrainBrakeController.MaxPressurePSI - 1f && AbsSpeedMpS > 1)
                 && ThrottleController.CurrentValue == 0f && !(DynamicBrakeController != null && DynamicBrakeBlendingOverride && DynamicBrakeController.CurrentValue > 0f))
                 /* && (!DynamicBrakeBlendingLeverOverride && DynamicBrakeController != null && DynamicBrakeIntervention < DynamicBrakeController.CurrentValue)*/)
             {
