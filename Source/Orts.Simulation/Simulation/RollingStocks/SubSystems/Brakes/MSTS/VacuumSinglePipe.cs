@@ -615,7 +615,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
 
         public override void PropagateBrakePressure(float elapsedClockSeconds)
         {
-            PropagateBrakeLinePressures(elapsedClockSeconds, Car, TwoPipes);
+            PropagateBrakeLinePressures(elapsedClockSeconds, Car, TwoPipesConnection);
         }
 
 

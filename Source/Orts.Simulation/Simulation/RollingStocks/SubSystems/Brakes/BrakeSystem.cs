@@ -206,7 +206,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes
         /// <summary>
         /// Indicates whether the main reservoir pipe is available
         /// </summary>
-        public bool TwoPipes { get; protected set; }
+        public bool TwoPipesConnection { get; protected set; }
 
         /// <summary>
         /// Volba režimu vozu G, P, R, MG+R

@@ -127,7 +127,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             BrakeInsensitivityPSIpS = thiscopy.BrakeInsensitivityPSIpS;
             EmergResChargingRatePSIpS = thiscopy.EmergResChargingRatePSIpS;
             EmergAuxVolumeRatio = thiscopy.EmergAuxVolumeRatio;
-            TwoPipes = thiscopy.TwoPipes;
+            TwoPipesConnection = thiscopy.TwoPipesConnection;
             NoMRPAuxResCharging = thiscopy.NoMRPAuxResCharging;
             HoldingValve = thiscopy.HoldingValve;
             TrainPipeLeakRatePSIpS = thiscopy.TrainPipeLeakRatePSIpS;            
@@ -928,10 +928,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 BrakeCylRelease = false;
 
                 float dp = elapsedClockSeconds * MaxApplicationRatePSIpS;
-
-                if (TwoPipes && dp > threshold - AutoCylPressurePSI0)
-                    dp = threshold - AutoCylPressurePSI0;
-
+                
                 if (dp < 0) dp = 0;
                 if (AutoCylPressurePSI0 + dp > MCP)
                     dp = MCP - AutoCylPressurePSI0;
@@ -1046,7 +1043,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
 						AuxResPressurePSI -= dp * EmergAuxVolumeRatio;
 					}
 				}
-                if (AuxResPressurePSI < BrakeLine1PressurePSI && (!TwoPipes || NoMRPAuxResCharging || BrakeLine2PressurePSI < BrakeLine1PressurePSI) && !BleedOffValveOpen)
+                if (AuxResPressurePSI < BrakeLine1PressurePSI && !BleedOffValveOpen)
                 {
                     float dp = elapsedClockSeconds * MaxAuxilaryChargingRatePSIpS; // Change in pressure for train brake pipe.
                     if (AuxResPressurePSI + dp > BrakeLine1PressurePSI - dp * AuxBrakeLineVolumeRatio)
@@ -1055,20 +1052,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     BrakeLine1PressurePSI -= dp * AuxBrakeLineVolumeRatio;  // Adjust the train brake pipe pressure
                 }
             }
-
-            if (TwoPipes
-                && !NoMRPAuxResCharging
-                && AuxResPressurePSI < BrakeLine2PressurePSI
-                && AuxResPressurePSI < EmergResPressurePSI
-                && (BrakeLine2PressurePSI > BrakeLine1PressurePSI || TripleValveState != ValveState.Release) && !BleedOffValveOpen)
-            {
-                float dp = elapsedClockSeconds * MaxAuxilaryChargingRatePSIpS;
-                if (AuxResPressurePSI + dp > BrakeLine2PressurePSI - dp * AuxBrakeLineVolumeRatio)
-                    dp = (BrakeLine2PressurePSI - AuxResPressurePSI) / (1 + AuxBrakeLineVolumeRatio);
-                AuxResPressurePSI += dp;
-                BrakeLine2PressurePSI -= dp * AuxBrakeLineVolumeRatio;
-            }
-
+            
             if (Car is MSTSLocomotive && !(Car as MSTSLocomotive).PowerOn) PowerForWagon = false;
 
             if (Car is MSTSLocomotive && (Car as MSTSLocomotive).PowerOn
@@ -1244,10 +1228,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
 
         public override void PropagateBrakePressure(float elapsedClockSeconds)
         {
-            PropagateBrakeLinePressures(elapsedClockSeconds, Car, TwoPipes);            
+            PropagateBrakeLinePressures(elapsedClockSeconds, Car, TwoPipesConnection);            
         }
 
-        protected static void PropagateBrakeLinePressures(float elapsedClockSeconds, TrainCar trainCar, bool twoPipes)
+        protected static void PropagateBrakeLinePressures(float elapsedClockSeconds, TrainCar trainCar, bool TwoPipesConnection)
         {
             // Brake pressures are calculated on the lead locomotive first, and then propogated along each wagon in the consist.
             var train = trainCar.Train;
@@ -1586,7 +1570,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             for (int i = 0; i < train.Cars.Count; i++)
             {
                 BrakeSystem brakeSystem = train.Cars[i].BrakeSystem;
-                if (i < first && (!train.Cars[i + 1].BrakeSystem.FrontBrakeHoseConnected || !brakeSystem.AngleCockBOpen || !train.Cars[i + 1].BrakeSystem.AngleCockAOpen || !train.Cars[i].BrakeSystem.TwoPipes))
+                if (i < first && (!train.Cars[i + 1].BrakeSystem.FrontBrakeHoseConnected || !brakeSystem.AngleCockBOpen || !train.Cars[i + 1].BrakeSystem.AngleCockAOpen || !train.Cars[i].BrakeSystem.TwoPipesConnection))
                 {
                     if (continuousFromInclusive < i + 1)
                     {
@@ -1595,7 +1579,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     }
                     continue;
                 }
-                if (i > last && i > 0 && (!brakeSystem.FrontBrakeHoseConnected || !brakeSystem.AngleCockAOpen || !train.Cars[i - 1].BrakeSystem.AngleCockBOpen || !train.Cars[i].BrakeSystem.TwoPipes))
+                if (i > last && i > 0 && (!brakeSystem.FrontBrakeHoseConnected || !brakeSystem.AngleCockAOpen || !train.Cars[i - 1].BrakeSystem.AngleCockBOpen || !train.Cars[i].BrakeSystem.TwoPipesConnection))
                 {
                     if (continuousToExclusive > i)
                         continuousToExclusive = i;
@@ -1603,7 +1587,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 }
 
                 // Collect main reservoir pipe (2) data
-                if (first <= i && i <= last || twoPipes && continuousFromInclusive <= i && i < continuousToExclusive)
+                if (first <= i && i <= last || TwoPipesConnection && continuousFromInclusive <= i && i < continuousToExclusive)
                 {
                     sumv += brakeSystem.BrakePipeVolumeM3;
                     sumpv += brakeSystem.BrakePipeVolumeM3 * brakeSystem.BrakeLine2PressurePSI;
@@ -1619,10 +1603,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             if (sumv > 0)
                 sumpv /= sumv;
 
-            if (!train.Cars[continuousFromInclusive].BrakeSystem.FrontBrakeHoseConnected && train.Cars[continuousFromInclusive].BrakeSystem.AngleCockAOpen
-                || (continuousToExclusive == train.Cars.Count || !train.Cars[continuousToExclusive].BrakeSystem.FrontBrakeHoseConnected) && train.Cars[continuousToExclusive - 1].BrakeSystem.AngleCockBOpen
-                 )
-                sumpv = 0;
+            //if (!train.Cars[continuousFromInclusive].BrakeSystem.FrontBrakeHoseConnected && train.Cars[continuousFromInclusive].BrakeSystem.AngleCockAOpen
+            //    || (continuousToExclusive == train.Cars.Count || !train.Cars[continuousToExclusive].BrakeSystem.FrontBrakeHoseConnected) && train.Cars[continuousToExclusive - 1].BrakeSystem.AngleCockBOpen
+            //     )
+            //    sumpv = 0;
 
             // Propagate main reservoir pipe (2) data
 
@@ -1632,12 +1616,14 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             for (int i = 0; i < train.Cars.Count; i++)
             {
                 var loco = (train.Cars[i] as MSTSLocomotive);
-                if (first <= i && i <= last || twoPipes && continuousFromInclusive <= i && i < continuousToExclusive)
+                if (first <= i && i <= last || TwoPipesConnection && continuousFromInclusive <= i && i < continuousToExclusive)
                 {
                     train.Cars[i].BrakeSystem.BrakeLine2PressurePSI = sumpv;
                     if (loco != null)
                     {
-                        //(train.Cars[i] as MSTSLocomotive).MainResPressurePSI = sumpv;
+                        // Výpočet hodnoty tlaku pro jednotlivé jímky
+                        (train.Cars[i] as MSTSLocomotive).MainResPressurePSI = sumpv;
+
                         // Výpočet kapacity hlavní jímky a přilehlého potrubí
                         train.Cars[i].BrakeSystem.TotalCapacityMainResBrakePipe = (train.Cars[i].BrakeSystem.BrakePipeVolumeM3 * train.Cars[i].BrakeSystem.BrakeLine1PressurePSI) + (loco.MainResVolumeM3 * loco.MainResPressurePSI);
                         
