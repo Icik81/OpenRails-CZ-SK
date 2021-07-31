@@ -233,7 +233,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 string.Format("{0}", NextLocoBrakeState),
                 
                 //string.Empty, // Spacer because the state above needs 2 columns.                                     
-                //string.Format("PowerForWagon {0:F0}", PowerForWagon),
+                //string.Format("train.TotalAirLoss {0:F0}", Car.Train.TotalAirLoss),
                 //string.Empty, // Spacer because the state above needs 2 columns.                                     
                 //string.Format("Parking {0:F0}", ParkingBrakeAutoCylPressurePSI1),
                 //string.Empty, // Spacer because the state above needs 2 columns.                                     
@@ -1356,8 +1356,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 }
 
                 // Spočítá celkovou netěsnost vlaku 
-                train.TotalTrainTrainPipeLeakRate += car.BrakeSystem.TrainPipeLeakRatePSIpS;
+                train.TotalTrainTrainPipeLeakRate += car.BrakeSystem.TrainPipeLeakRatePSIpS;                
             }
+            
 
             // Propagate brake line (1) data if pressure gradient disabled
             if (lead != null) 
@@ -1372,7 +1373,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 lead.TrainBrakeController.EmergencyRatePSIpS = MathHelper.Clamp(lead.TrainBrakeController.EmergencyRatePSIpS, 3.0f * 14.50377f, 4.0f * 14.50377f);                
                 lead.EngineBrakeController.ReleaseRatePSIpS = MathHelper.Clamp(lead.EngineBrakeController.ReleaseRatePSIpS, 1.0f * 14.50377f, 2.5f * 14.50377f);
                 lead.EngineBrakeController.ApplyRatePSIpS = MathHelper.Clamp(lead.EngineBrakeController.ApplyRatePSIpS, 1.0f * 14.50377f, 2.5f * 14.50377f);
-
+                
                 for (int i = 0; i < nSteps; i++)
                 {
                     // Ohlídá hodnotu v hlavní jímce, aby nepodkročila 0bar
@@ -1623,6 +1624,20 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     {
                         // Výpočet hodnoty tlaku pro jednotlivé jímky
                         (train.Cars[i] as MSTSLocomotive).MainResPressurePSI = sumpv;
+
+                        // Testuje tlak v hlavní jímce pro manipulaci s dveřmi                
+                        BrakeSystem brakeSystem = lead.BrakeSystem;
+                        if ((train.Cars[i] as MSTSLocomotive).MainResPressurePSI > 5 * 14.50377f) // 5bar default
+                            brakeSystem.AirOK_DoorCanManipulate = true;
+                        else brakeSystem.AirOK_DoorCanManipulate = false;
+
+                        // Snižuje tlak v hlavní jímce kvůli spotřebě vzduchu při otevírání/zavírání dveří 
+                        if (brakeSystem.AirOK_DoorCanManipulate)
+                        {
+                            (train.Cars[i] as MSTSLocomotive).MainResPressurePSI -= train.TotalAirLoss * elapsedClockSeconds;
+                        }
+                        if ((train.Cars[i] as MSTSLocomotive).MainResPressurePSI < 0) (train.Cars[i] as MSTSLocomotive).MainResPressurePSI = 0;
+
 
                         // Výpočet kapacity hlavní jímky a přilehlého potrubí
                         train.Cars[i].BrakeSystem.TotalCapacityMainResBrakePipe = (train.Cars[i].BrakeSystem.BrakePipeVolumeM3 * train.Cars[i].BrakeSystem.BrakeLine1PressurePSI) + (loco.MainResVolumeM3 * loco.MainResPressurePSI);
@@ -2011,12 +2026,93 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     }
                 }
             }
+            
+
+            // Úbytky vzduchu při spotřebě vzduchu otevírání a zavírání dvěří            
+            train.TotalAirLoss = 0;
+            float TotalAirLoss0 = 0;            
+            foreach (TrainCar car in train.Cars)
+            {
+                float AirLossDoorL;
+                float AirLossDoorR;
+
+                if ((car as MSTSWagon).DoorLeftOpen)
+                    AirLossDoorL = (car as MSTSWagon).AirlossByHandlingDoorsPSIpS;     
+                else AirLossDoorL = (car as MSTSWagon).AirlossByHandlingDoorsPSIpS;
+
+                if ((car as MSTSWagon).DoorRightOpen)
+                   AirLossDoorR = (car as MSTSWagon).AirlossByHandlingDoorsPSIpS;
+                else AirLossDoorR = (car as MSTSWagon).AirlossByHandlingDoorsPSIpS;
+
+                TotalAirLoss0 += AirLossDoorL + AirLossDoorR;                
+            }
+
+            // Levé dveře
+            var loco0 = (train.Cars[0] as MSTSLocomotive);
+            if (loco0.DoorLeftOpen && !loco0.OpenedLeftDoor)
+            {
+                BrakeSystem brakeSystem = loco0.BrakeSystem;
+                if (brakeSystem.T1AirLoss < 0.5f)
+                {
+                    train.TotalAirLoss = TotalAirLoss0 / 2;
+                    brakeSystem.T1AirLoss += elapsedClockSeconds;
+                }
+                else
+                {
+                    loco0.OpenedLeftDoor = true;
+                    brakeSystem.T1AirLoss = 0;
+                }
+            }
+            if (!loco0.DoorLeftOpen && loco0.OpenedLeftDoor)
+            {
+                BrakeSystem brakeSystem = loco0.BrakeSystem;
+                if (brakeSystem.T1AirLoss < 0.5f)
+                {
+                    train.TotalAirLoss = TotalAirLoss0 / 2;
+                    brakeSystem.T1AirLoss += elapsedClockSeconds;
+                }
+                else
+                {
+                    loco0.OpenedLeftDoor = false;
+                    brakeSystem.T1AirLoss = 0;
+                }
+            }
+
+            // Pravé dveře
+            if (loco0.DoorRightOpen && !loco0.OpenedRightDoor)
+            {
+                BrakeSystem brakeSystem = loco0.BrakeSystem;
+                if (brakeSystem.T2AirLoss < 0.5f)
+                {
+                    train.TotalAirLoss = TotalAirLoss0 / 2;
+                    brakeSystem.T2AirLoss += elapsedClockSeconds;
+                }
+                else
+                {
+                    loco0.OpenedRightDoor = true;
+                    brakeSystem.T2AirLoss = 0;
+                }
+            }
+            if (!loco0.DoorRightOpen && loco0.OpenedRightDoor)
+            {
+                BrakeSystem brakeSystem = loco0.BrakeSystem;
+                if (brakeSystem.T2AirLoss < 0.5f)
+                {
+                    train.TotalAirLoss = TotalAirLoss0 / 2;
+                    brakeSystem.T2AirLoss += elapsedClockSeconds;
+                }
+                else
+                {
+                    loco0.OpenedRightDoor = false;
+                    brakeSystem.T2AirLoss = 0;
+                }
+            }
 
 
             // Samostatná přímočinná brzda pro každou lokomotivu
             if (lead != null)
             {
-                BrakeSystem brakeSystem = train.Cars[0].BrakeSystem;
+                BrakeSystem brakeSystem = lead.BrakeSystem;
                 var prevState = lead.EngineBrakeState;
                 train.BrakeLine3PressurePSI = MathHelper.Clamp(train.BrakeLine3PressurePSI, 0, lead.MainResPressurePSI);
                 

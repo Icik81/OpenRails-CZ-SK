@@ -97,6 +97,9 @@ namespace Orts.Simulation.Physics
 
         // Icik
         public bool LocoIsAirEmpty;
+        public float TotalTrainTrainPipeLeakRate;
+        public float TotalCapacityMainResBrakePipe;
+        public float TotalAirLoss;
 
         public Traveller RearTDBTraveller;               // positioned at the back of the last car in the train
         public Traveller FrontTDBTraveller;              // positioned at the front of the train by CalculatePositionOfCars
@@ -145,9 +148,7 @@ namespace Orts.Simulation.Physics
         public bool EQEquippedVacLoco = false;          // Flag for locomotives fitted with vacuum brakes that have an Equalising reservoir fitted
         public float PreviousCarCount;                  // Keeps track of the last number of cars in the train consist (for vacuum brakes)
         public bool TrainBPIntact = true;           // Flag to indicate that the train BP is not intact, ie due to disconnection or an open valve cock.
-        public float TotalTrainTrainPipeLeakRate;
-        public float TotalCapacityMainResBrakePipe;
-
+                
         public int FirstCarUiD;                          // UiD of first car in the train
         public float HUDWagonBrakeCylinderPSI;         // Display value for wagon HUD
         public float HUDLocomotiveBrakeCylinderPSI;    // Display value for locomotive HUD
