@@ -1403,7 +1403,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 for (int i = 0; i < nSteps; i++)
                 {
                     // Ohlídá hodnotu v hlavní jímce, aby nepřekročila limity
-                    lead.MainResPressurePSI = MathHelper.Clamp(lead.MainResPressurePSI, 0, lead.MaxMainResPressurePSI);
+                    lead.MainResPressurePSI = MathHelper.Clamp(lead.MainResPressurePSI, 0, lead.MaxMainResPressurePSI + 1);
 
                     // Výchozí hodnota pro nízkotlaké přebití je 5.4 barů, pokud není definována v sekci engine
                     if (lead.BrakeSystem.TrainBrakesControllerMaxOverchargePressurePSI == 0) lead.BrakeSystem.TrainBrakesControllerMaxOverchargePressurePSI = 5.4f * 14.50377f;
@@ -1733,24 +1733,12 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                             && !loco.CompressorIsOn)
                             loco.SignalEvent(Event.CompressorOn);
 
-                        if ((loco.MainResPressurePSI > loco.MaxMainResPressurePSI
+                        if ((loco.MainResPressurePSI >= loco.MaxMainResPressurePSI
                             || !loco.AuxPowerOn
                             || !loco.CompressorMode_OffAuto)
                             && loco.CompressorIsOn)
                             loco.SignalEvent(Event.CompressorOff);                        
                     }
-                }
-                else
-                {
-                    train.Cars[i].BrakeSystem.BrakeLine2PressurePSI = train.Cars[i] is MSTSLocomotive ? loco.MainResPressurePSI : 0;
-                    train.Cars[i].BrakeSystem.TotalCapacityMainResBrakePipe = 0;
-
-                    if (loco != null)
-                        if ((loco.MainResPressurePSI > loco.MaxMainResPressurePSI
-                           || !loco.AuxPowerOn
-                           || !loco.CompressorMode_OffAuto)
-                           && loco.CompressorIsOn)
-                            loco.SignalEvent(Event.CompressorOff);
                 }
             }
 

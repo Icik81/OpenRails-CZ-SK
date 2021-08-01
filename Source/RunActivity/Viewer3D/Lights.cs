@@ -315,6 +315,8 @@ namespace Orts.Viewer3D
         {
             Light = light;
             StateCount = Light.Cycle ? 2 * Light.States.Count - 2 : Light.States.Count;
+            if (StateCount == 0)
+                StateCount = 1;
             UpdateStates(State, (State + 1) % StateCount);
         }
 
