@@ -23,8 +23,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
         public AirTwinPipe(TrainCar car)
             : base(car)
         {
-            TwoPipesConnection = true;
-            DebugType = "2P";
+            ForceTwoPipesConnection = true;
+            //DebugType = "2P";
             //(Car as MSTSWagon).DistributorPresent = true;
             //(Car as MSTSWagon).EmergencyReservoirPresent = false;
         }

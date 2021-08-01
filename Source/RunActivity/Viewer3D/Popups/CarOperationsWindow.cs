@@ -38,14 +38,14 @@ namespace Orts.Viewer3D.Popups
         }
 
         public CarOperationsWindow(WindowManager owner)
-            : base(owner, Window.DecorationSize.X + owner.TextFontDefault.Height * 22, Window.DecorationSize.Y + (owner.TextFontDefault.Height + 1) * 11 + ControlLayout.SeparatorSize * 9, Viewer.Catalog.GetString("*** Car Operation Menu ***"))
+            : base(owner, Window.DecorationSize.X + owner.TextFontDefault.Height * 22, Window.DecorationSize.Y + (owner.TextFontDefault.Height + 1) * 12 + ControlLayout.SeparatorSize * 9, Viewer.Catalog.GetString("*** Car Operation Menu ***"))
         {
             Viewer = owner.Viewer;
         }
 
         protected override ControlLayout Layout(ControlLayout layout)
         {
-            Label ID, buttonHandbrake, buttonTogglePower, buttonToggleMU, buttonToggleBrakeHose, buttonToggleAngleCockA, buttonToggleAngleCockB, buttonToggleBleedOffValve, buttonBrakeCarMode, buttonBrakeCarModePL, buttonClose;
+            Label ID, buttonHandbrake, buttonTogglePower, buttonToggleMU, buttonToggleBrakeHose, buttonToggleAngleCockA, buttonToggleAngleCockB, buttonToggleBleedOffValve, buttonBrakeCarMode, buttonBrakeCarModePL, buttonTwoPipesConnection, buttonClose;
 
             var vbox = base.Layout(layout).AddLayoutVertical();
             vbox.Add(ID = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Car ID") + "  " + (CarPosition >= Viewer.PlayerTrain.Cars.Count? " " :Viewer.PlayerTrain.Cars[CarPosition].CarID), LabelAlignment.Center));
@@ -89,6 +89,9 @@ namespace Orts.Viewer3D.Popups
             }
 
             vbox.AddHorizontalSeparator();
+            vbox.Add(buttonTwoPipesConnection = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Napájecí hadice") + "   " + (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.TwoPipesConnectionText, LabelAlignment.Center));
+
+            vbox.AddHorizontalSeparator();
             vbox.Add(buttonClose = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Close window"), LabelAlignment.Center));
             buttonHandbrake.Click += new Action<Control, Point>(buttonHandbrake_Click);
             buttonTogglePower.Click += new Action<Control, Point>(buttonTogglePower_Click);
@@ -97,7 +100,8 @@ namespace Orts.Viewer3D.Popups
             buttonToggleAngleCockA.Click += new Action<Control, Point>(buttonToggleAngleCockA_Click);
             buttonToggleAngleCockB.Click += new Action<Control, Point>(buttonToggleAngleCockB_Click);
             buttonToggleBleedOffValve.Click += new Action<Control, Point>(buttonToggleBleedOffValve_Click);
-            buttonBrakeCarMode.Click += new Action<Control, Point>(buttonBrakeCarMode_Click);            
+            buttonBrakeCarMode.Click += new Action<Control, Point>(buttonBrakeCarMode_Click);
+            buttonTwoPipesConnection.Click += new Action<Control, Point>(buttonTwoPipesConnection_Click);
             buttonClose.Click += new Action<Control, Point>(buttonClose_Click);
 
             return vbox;
@@ -258,5 +262,28 @@ namespace Orts.Viewer3D.Popups
                 (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.BrakeCarModeTextPL = "Ložený";
             }
         }
+
+        void buttonTwoPipesConnection_Click(Control arg1, Point arg2)
+        {
+            if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem is SingleTransferPipe)
+                return;
+
+            new TwoPipesConnectionCommand(Viewer.Log, (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon), (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.TwoPipesConnectionMenu += 1);
+
+            if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.TwoPipesConnectionMenu > 1) (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.TwoPipesConnectionMenu = 0;
+
+            if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.TwoPipesConnectionMenu == 0)
+            {
+                Viewer.Simulator.Confirmer.Information(Viewer.Catalog.GetString("Napájecí hadice odpojeny"));
+                (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.TwoPipesConnectionText = "odpojeny";                
+            }
+            if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.TwoPipesConnectionMenu == 1)
+            {
+                Viewer.Simulator.Confirmer.Information(Viewer.Catalog.GetString("Napájecí hadice zapojeny"));
+                (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.TwoPipesConnectionText = "zapojeny";
+            }
+        }
+
+
     }
 }

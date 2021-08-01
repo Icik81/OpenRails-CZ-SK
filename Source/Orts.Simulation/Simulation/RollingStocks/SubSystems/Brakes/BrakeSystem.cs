@@ -149,6 +149,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes
         public float T1AirLoss = 0;
         public float T2AirLoss = 0;
         public bool AirOK_DoorCanManipulate;
+        
 
         public float AuxPowerOnDelayS { get; set; }
 
@@ -210,7 +211,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes
         /// <summary>
         /// Indicates whether the main reservoir pipe is available
         /// </summary>
-        public bool TwoPipesConnection { get; protected set; }
+        public bool TwoPipesConnection;
 
         /// <summary>
         /// Volba režimu vozu G, P, R, MG+R
@@ -219,8 +220,13 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes
         public string BrakeCarModeText = "P";
         public float NumberBrakeCarMode = 4;  // Celkový počet režimů vozu
 
-        public float BrakeCarModePL = 0;
-        public string BrakeCarModeTextPL = "Prázdný";
+        public float BrakeCarModePL;
+        public string BrakeCarModeTextPL;
+
+        public float TwoPipesConnectionMenu;
+        public string TwoPipesConnectionText;
+        public bool ForceTwoPipesConnection;
+
 
         public int WagonType;
 

@@ -1623,6 +1623,17 @@ namespace Orts.Common
         }
     }
     [Serializable()]
+    public sealed class TwoPipesConnectionCommand : Command
+    {
+        public static MSTSWagon Receiver { get; set; }
+
+        public TwoPipesConnectionCommand(CommandLog log, MSTSWagon car, float TwoPipesConnection)
+            : base(log)
+        {
+            Receiver = car;
+        }
+    }
+    [Serializable()]
     public sealed class ToggleCompressorMode_OffAutoCommand : Command
     {
         public static MSTSLocomotive Receiver { get; set; }
