@@ -19,6 +19,7 @@ using Microsoft.Xna.Framework;
 using Orts.Formats.Msts;
 using Orts.Simulation.AIs;
 using Orts.Simulation.Physics;
+using Orts.Simulation.RollingStocks;
 using Orts.Simulation.Signalling;
 using ORTS.Common;
 using System;
@@ -848,7 +849,7 @@ namespace Orts.Simulation
             // The train is stopped.
             if (EventType == ActivityEventType.TrainStop)
             {
-                if (MyPlayerTrain.TrainType != Train.TRAINTYPE.AI_PLAYERHOSTING && IsAtStation(MyPlayerTrain)  ||
+                if (MyPlayerTrain.TrainType != Train.TRAINTYPE.AI_PLAYERHOSTING && IsAtStation(MyPlayerTrain) ||
                     MyPlayerTrain.TrainType == Train.TRAINTYPE.AI_PLAYERHOSTING && (MyPlayerTrain as AITrain).MovementState == AITrain.AI_MOVEMENT_STATE.STATION_STOP)
                 {
                     if (Simulator.TimetableMode || MyPlayerTrain.StationStops.Count == 0)
@@ -889,7 +890,7 @@ namespace Orts.Simulation
                     }
                     else
                     {
-                    // <CSComment> MSTS mode - player
+                        // <CSComment> MSTS mode - player
                         if (Simulator.GameTime < 2)
                         {
                             // If the simulation starts with a scheduled arrive in the past, assume the train arrived on time.
@@ -900,30 +901,30 @@ namespace Orts.Simulation
                         }
                         BoardingS = (double)MyPlayerTrain.StationStops[0].ComputeStationBoardingTime(Simulator.PlayerLocomotive.Train);
                         if (BoardingS > 0 || ((double)(SchDepart - SchArrive).TotalSeconds > 0 &&
-                            MyPlayerTrain.PassengerCarsNumber == 1 && MyPlayerTrain.Cars.Count > 10 ))
+                            MyPlayerTrain.PassengerCarsNumber == 1 && MyPlayerTrain.Cars.Count > 10))
                         {
-                        // accepted station stop because either freight train or passenger train or fake passenger train with passenger car on platform or fake passenger train
+                            // accepted station stop because either freight train or passenger train or fake passenger train with passenger car on platform or fake passenger train
                             // with Scheduled Depart > Scheduled Arrive
-                                // ActArrive is usually same as ClockTime
-                                BoardingEndS = Simulator.ClockTime + BoardingS;
+                            // ActArrive is usually same as ClockTime
+                            BoardingEndS = Simulator.ClockTime + BoardingS;
 
-                                if (ActArrive == null)
-                                {
-                                    ActArrive = new DateTime().Add(TimeSpan.FromSeconds(Simulator.ClockTime));
-                                }
-
-                                arrived = true;
-                                // But not if game starts after scheduled arrival. In which case actual arrival is assumed to be same as schedule arrival.
-                                double sinceActArriveS = (new DateTime().Add(TimeSpan.FromSeconds(Simulator.ClockTime))
-                                                        - ActArrive).Value.TotalSeconds;
-                                BoardingEndS -= sinceActArriveS;
-                                double SchDepartS = SchDepart.Subtract(new DateTime()).TotalSeconds;
-                                BoardingEndS = CompareTimes.LatestTime((int)SchDepartS, (int)BoardingEndS);
-
+                            if (ActArrive == null)
+                            {
+                                ActArrive = new DateTime().Add(TimeSpan.FromSeconds(Simulator.ClockTime));
                             }
+
+                            arrived = true;
+                            // But not if game starts after scheduled arrival. In which case actual arrival is assumed to be same as schedule arrival.
+                            double sinceActArriveS = (new DateTime().Add(TimeSpan.FromSeconds(Simulator.ClockTime))
+                                                    - ActArrive).Value.TotalSeconds;
+                            BoardingEndS -= sinceActArriveS;
+                            double SchDepartS = SchDepart.Subtract(new DateTime()).TotalSeconds;
+                            BoardingEndS = CompareTimes.LatestTime((int)SchDepartS, (int)BoardingEndS);
+
                         }
-                    if  (MyPlayerTrain.NextSignalObject[0] != null)
-                           distanceToNextSignal =  MyPlayerTrain.NextSignalObject[0].DistanceTo(MyPlayerTrain.FrontTDBTraveller);
+                    }
+                    if (MyPlayerTrain.NextSignalObject[0] != null)
+                        distanceToNextSignal = MyPlayerTrain.NextSignalObject[0].DistanceTo(MyPlayerTrain.FrontTDBTraveller);
 
                 }
             }
@@ -937,7 +938,7 @@ namespace Orts.Simulation
                     // Completeness depends on the elapsed waiting time
                     IsCompleted = maydepart;
                     if (MyPlayerTrain.TrainType != Train.TRAINTYPE.AI_PLAYERHOSTING)
-                       MyPlayerTrain.ClearStation(PlatformEnd1.LinkedPlatformItemId, PlatformEnd2.LinkedPlatformItemId, true);
+                        MyPlayerTrain.ClearStation(PlatformEnd1.LinkedPlatformItemId, PlatformEnd2.LinkedPlatformItemId, true);
 
                     if (LogStationStops)
                     {
@@ -961,95 +962,107 @@ namespace Orts.Simulation
                         stringBuild.Append("\n");
                         File.AppendAllText(LogStationLogFile, stringBuild.ToString());
                     }
-                }
+                }                
             }
             else if (EventType == ActivityEventType.Timer)
-            {
-                // Waiting at a station
-                if (arrived)
-                {
-                    var remaining = (int)Math.Ceiling(BoardingEndS - Simulator.ClockTime);
-                    if (remaining < 1) DisplayColor = Color.LightGreen;
-                    else if (remaining < 11) DisplayColor = new Color(255, 255, 128);
-                    else DisplayColor = Color.White;
-
-                    if (remaining < 120 && (MyPlayerTrain.TrainType != Train.TRAINTYPE.AI_PLAYERHOSTING))
+            {                
+                // Icik
+                var loco = MyPlayerTrain.LeadLocomotive as MSTSLocomotive;                
+                if (loco != null)
+                {                    
+                    if (!maydepart && arrived && (!loco.OpenedLeftDoor && !loco.OpenedRightDoor))
                     {
-                        MyPlayerTrain.ClearStation(PlatformEnd1.LinkedPlatformItemId, PlatformEnd2.LinkedPlatformItemId, false);
+                        BoardingEndS = Simulator.ClockTime + BoardingS;
+                        DisplayColor = Color.Yellow;
+                        DisplayMessage = Simulator.Catalog.GetString("Lidé čekají na otevření dveří...");
+                        return;
                     }
-
-                    // Still have to wait
-                    if (remaining > 0)
+                    // Waiting at a station
+                    if (arrived && (loco.OpenedLeftDoor || loco.OpenedRightDoor))
                     {
-                        DisplayMessage = Simulator.Catalog.GetStringFmt("Passenger boarding completes in {0:D2}:{1:D2}",
-                            remaining / 60, remaining % 60);
+                        var remaining = (int)Math.Ceiling(BoardingEndS - Simulator.ClockTime);                                                
+                        if (remaining < 1) DisplayColor = Color.LightGreen;
+                        else if (remaining < 11) DisplayColor = new Color(255, 255, 128);
+                        else DisplayColor = Color.White;
 
-                        //Debrief Eval
-                        if (Simulator.PlayerLocomotive.SpeedMpS > 0 && !ldbfevaldepartbeforeboarding)
+                        if (remaining < 120 && (MyPlayerTrain.TrainType != Train.TRAINTYPE.AI_PLAYERHOSTING))
                         {
-                            var train = Simulator.PlayerLocomotive.Train;
-                            ldbfevaldepartbeforeboarding = true;
-                            DbfEvalDepartBeforeBoarding.Add(PlatformEnd1.Station);
-                            train.DbfEvalValueChanged = true;
-                        }
-                    }
-                    // May depart
-                    else if (!maydepart)
-                    {
-                        // check if signal ahead is cleared - if not, do not allow depart
-                        if (distanceToNextSignal >= 0 && distanceToNextSignal< 300 && MyPlayerTrain.NextSignalObject[0] != null &&
-                            MyPlayerTrain.NextSignalObject[0].this_sig_lr(MstsSignalFunction.NORMAL) == MstsSignalAspect.STOP
-                            && MyPlayerTrain.NextSignalObject[0].hasPermission != SignalObject.Permission.Granted)
-                        {
-                            DisplayMessage = Simulator.Catalog.GetString("Passenger boarding completed. Waiting for signal ahead to clear.");
-                        }
-                        else
-                        {
-                            maydepart = true;
-                            DisplayMessage = Simulator.Catalog.GetString("Passenger boarding completed. You may depart now.");
-                            Simulator.SoundNotify = Event.PermissionToDepart;
+                            MyPlayerTrain.ClearStation(PlatformEnd1.LinkedPlatformItemId, PlatformEnd2.LinkedPlatformItemId, false);
                         }
 
-                        ldbfevaldepartbeforeboarding = false;//reset flag. Debrief Eval
-
-                        // if last task, show closure window
-                        // also set times in logfile
-
-                        if (NextTask == null)
+                        // Still have to wait
+                        if (remaining > 0)
                         {
-                            if (LogStationStops)
+                            DisplayMessage = Simulator.Catalog.GetStringFmt("Passenger boarding completes in {0:D2}:{1:D2}",
+                                remaining / 60, remaining % 60);
+
+                            //Debrief Eval
+                            if (Simulator.PlayerLocomotive.SpeedMpS > 0 && !ldbfevaldepartbeforeboarding)
                             {
-                                StringBuilder stringBuild = new StringBuilder();
-                                char separator = (char)(DataLogger.Separators)Enum.Parse(typeof(DataLogger.Separators), Simulator.Settings.DataLoggerSeparator);
-                                stringBuild.Append(PlatformEnd1.Station);
-                                stringBuild.Append(separator);
-                                stringBuild.Append(SchArrive.ToString("HH:mm:ss"));
-                                stringBuild.Append(separator);
-                                stringBuild.Append("-");
-                                stringBuild.Append(separator);
-                                stringBuild.Append(ActArrive.HasValue ? ActArrive.Value.ToString("HH:mm:ss") : "-");
-                                stringBuild.Append(separator);
-                                stringBuild.Append("-");
-                                stringBuild.Append(separator);
-
-                                TimeSpan delay = ActArrive.HasValue ? (ActArrive - SchArrive).Value : TimeSpan.Zero;
-                                if (delay.CompareTo(TimeSpan.Zero) < 0)
-                                {
-                                    delay = TimeSpan.Zero - delay;
-                                    stringBuild.AppendFormat("-{0}:{1}:{2}", delay.Hours.ToString("00"), delay.Minutes.ToString("00"), delay.Seconds.ToString("00"));
-                                }
-                                else
-                                {
-                                    stringBuild.AppendFormat("{0}:{1}:{2}", delay.Hours.ToString("00"), delay.Minutes.ToString("00"), delay.Seconds.ToString("00"));
-                                }
-
-                                stringBuild.Append(separator);
-                                stringBuild.Append("Final stop");
-                                stringBuild.Append("\n");
-                                File.AppendAllText(LogStationLogFile, stringBuild.ToString());
+                                var train = Simulator.PlayerLocomotive.Train;
+                                ldbfevaldepartbeforeboarding = true;
+                                DbfEvalDepartBeforeBoarding.Add(PlatformEnd1.Station);
+                                train.DbfEvalValueChanged = true;
+                            }
+                        }
+                        // May depart
+                        else if (!maydepart)
+                        {
+                            // check if signal ahead is cleared - if not, do not allow depart
+                            if (distanceToNextSignal >= 0 && distanceToNextSignal < 300 && MyPlayerTrain.NextSignalObject[0] != null &&
+                                MyPlayerTrain.NextSignalObject[0].this_sig_lr(MstsSignalFunction.NORMAL) == MstsSignalAspect.STOP
+                                && MyPlayerTrain.NextSignalObject[0].hasPermission != SignalObject.Permission.Granted)
+                            {
+                                DisplayMessage = Simulator.Catalog.GetString("Passenger boarding completed. Waiting for signal ahead to clear.");
+                            }
+                            else
+                            {
+                                maydepart = true;
+                                DisplayMessage = Simulator.Catalog.GetString("Passenger boarding completed. You may depart now.");
+                                Simulator.SoundNotify = Event.PermissionToDepart;
                             }
 
-                            IsCompleted = true;
+                            ldbfevaldepartbeforeboarding = false;//reset flag. Debrief Eval
+
+                            // if last task, show closure window
+                            // also set times in logfile
+
+                            if (NextTask == null)
+                            {
+                                if (LogStationStops)
+                                {
+                                    StringBuilder stringBuild = new StringBuilder();
+                                    char separator = (char)(DataLogger.Separators)Enum.Parse(typeof(DataLogger.Separators), Simulator.Settings.DataLoggerSeparator);
+                                    stringBuild.Append(PlatformEnd1.Station);
+                                    stringBuild.Append(separator);
+                                    stringBuild.Append(SchArrive.ToString("HH:mm:ss"));
+                                    stringBuild.Append(separator);
+                                    stringBuild.Append("-");
+                                    stringBuild.Append(separator);
+                                    stringBuild.Append(ActArrive.HasValue ? ActArrive.Value.ToString("HH:mm:ss") : "-");
+                                    stringBuild.Append(separator);
+                                    stringBuild.Append("-");
+                                    stringBuild.Append(separator);
+
+                                    TimeSpan delay = ActArrive.HasValue ? (ActArrive - SchArrive).Value : TimeSpan.Zero;
+                                    if (delay.CompareTo(TimeSpan.Zero) < 0)
+                                    {
+                                        delay = TimeSpan.Zero - delay;
+                                        stringBuild.AppendFormat("-{0}:{1}:{2}", delay.Hours.ToString("00"), delay.Minutes.ToString("00"), delay.Seconds.ToString("00"));
+                                    }
+                                    else
+                                    {
+                                        stringBuild.AppendFormat("{0}:{1}:{2}", delay.Hours.ToString("00"), delay.Minutes.ToString("00"), delay.Seconds.ToString("00"));
+                                    }
+
+                                    stringBuild.Append(separator);
+                                    stringBuild.Append("Final stop");
+                                    stringBuild.Append("\n");
+                                    File.AppendAllText(LogStationLogFile, stringBuild.ToString());
+                                }
+
+                                IsCompleted = true;
+                            }
                         }
                     }
                 }
