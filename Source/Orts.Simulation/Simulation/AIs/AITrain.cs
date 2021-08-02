@@ -6786,13 +6786,28 @@ namespace Orts.Simulation.AIs
                 // Sound the horn for a pseudorandom period of seconds between 2 and 5.
                 durationS = (DateTime.Now.Millisecond % 10) / 3 + 2;
             }
+            
+            // Icik
+            // Pískání pokud je doba 2s a méně
+            if (durationS <= 2)
+            {
+                if (locomotive != null)
+                    locomotive.ManualBell = true;
+                yield return durationS.Value;                
 
-            if (locomotive != null)
-                locomotive.ManualHorn = true;
-            yield return durationS.Value;
+                if (locomotive != null)
+                    locomotive.ManualBell = false;
+            }
+            // Houkání pokud je doba větší než 2s
+            else
+            {
+                if (locomotive != null)
+                    locomotive.ManualHorn = true;
+                yield return durationS.Value;
 
-            if (locomotive != null)
-                locomotive.ManualHorn = false;
+                if (locomotive != null)
+                    locomotive.ManualHorn = false;
+            }
 
             if (locomotive != null)
             {

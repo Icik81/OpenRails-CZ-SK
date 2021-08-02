@@ -1637,11 +1637,14 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
 
 
             // Počítání hlavních jímek
+            // Úbytky vzduchu při manipulaci s dveřmi
             // Spouštění kompresoru na obsazených nebo propojených lokomotivách
             train.BrakeLine2PressurePSI = sumpv;
             for (int i = 0; i < train.Cars.Count; i++)
             {
                 var loco = (train.Cars[i] as MSTSLocomotive);
+                train.Cars[i].BrakeSystem.TotalCapacityMainResBrakePipe = 0;
+                
                 if (i >= first && i <= last || TwoPipesConnection && continuousFromInclusive <= i && i < continuousToExclusive)
                 {
                     if (!TwoPipesConnectionBreak)
@@ -1653,45 +1656,32 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         {
                             // Použití všech hlavních jímek při propojení napájecího potrubí                             
                             (train.Cars[i] as MSTSLocomotive).MainResPressurePSI = sumpv;
-
-                            // Testuje tlak v hlavní jímce pro manipulaci s dveřmi                
-                            BrakeSystem brakeSystem = (train.Cars[i] as MSTSLocomotive).BrakeSystem;
-                            if ((train.Cars[i] as MSTSLocomotive).MainResPressurePSI > 5 * 14.50377f) // 5bar default
-                                brakeSystem.AirOK_DoorCanManipulate = true;
-                            else 
-                                brakeSystem.AirOK_DoorCanManipulate = false;
-
-                            // Snižuje tlak v hlavní jímce kvůli spotřebě vzduchu při otevírání/zavírání dveří
-                            if (brakeSystem.AirOK_DoorCanManipulate)
-                            {
-                                (train.Cars[i] as MSTSLocomotive).MainResPressurePSI -= train.TotalAirLoss * elapsedClockSeconds;
-                            }
-                            if ((train.Cars[i] as MSTSLocomotive).MainResPressurePSI < 0) (train.Cars[i] as MSTSLocomotive).MainResPressurePSI = 0;
-
-                            // Výpočet kapacity hlavní jímky a přilehlého potrubí
                             train.Cars[i].BrakeSystem.TotalCapacityMainResBrakePipe = (train.Cars[i].BrakeSystem.BrakePipeVolumeM3 * train.Cars[i].BrakeSystem.BrakeLine1PressurePSI) + (loco.MainResVolumeM3 * loco.MainResPressurePSI);
                         }
                         else
                         {
-                            // Testuje tlak v hlavní jímce pro manipulaci s dveřmi                
-                            BrakeSystem brakeSystem = lead.BrakeSystem;
-                            if (lead.MainResPressurePSI > 5 * 14.50377f) // 5bar default
-                                brakeSystem.AirOK_DoorCanManipulate = true;
-                            else 
-                                brakeSystem.AirOK_DoorCanManipulate = false;
-
-                            // Snižuje tlak v hlavní jímce kvůli spotřebě vzduchu při otevírání/zavírání dveří
-                            if (brakeSystem.AirOK_DoorCanManipulate)
-                            {
-                                lead.MainResPressurePSI -= train.TotalAirLoss * elapsedClockSeconds;
-                            }
-                            if (lead.MainResPressurePSI < 0) lead.MainResPressurePSI = 0;
-
-                            // Výpočet kapacity hlavní jímky a přilehlého potrubí
-                            train.Cars[i].BrakeSystem.TotalCapacityMainResBrakePipe = 0;
+                            // Výpočet kapacity hlavní jímky a přilehlého potrubí                            
                             lead.BrakeSystem.TotalCapacityMainResBrakePipe = (lead.BrakeSystem.BrakePipeVolumeM3 * lead.BrakeSystem.BrakeLine1PressurePSI) + (lead.MainResVolumeM3 * lead.MainResPressurePSI);
                         }
 
+                        // *** Manipulace s dveřmi ***
+                        BrakeSystem brakeSystem = lead.BrakeSystem;
+                        // Testuje tlak v hlavní jímce pro manipulaci s dveřmi
+                        if (lead.MainResPressurePSI > 5 * 14.50377f) // 5bar default
+                            brakeSystem.AirOK_DoorCanManipulate = true;
+                        else
+                            brakeSystem.AirOK_DoorCanManipulate = false;
+
+                        // Snižuje tlak v hlavní jímce kvůli spotřebě vzduchu při otevírání/zavírání dveří
+                        if (brakeSystem.AirOK_DoorCanManipulate)
+                        {
+                            if (sumv > 0)
+                                lead.MainResPressurePSI -= train.TotalAirLoss / sumv * elapsedClockSeconds;
+                            else
+                                lead.MainResPressurePSI -= train.TotalAirLoss * elapsedClockSeconds;
+                        }
+
+                        // *** Kompresory ***
                         // Automatický náběh kompresoru u dieselelektrické trakce
                         if (loco is MSTSDieselLocomotive || loco is MSTSSteamLocomotive)
                         {
@@ -1726,7 +1716,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                             }
                         }
 
-                        if (loco.MainResPressurePSI < loco.CompressorRestartPressurePSI
+                        if (loco.MainResPressurePSI <= loco.CompressorRestartPressurePSI
                             && loco.AuxPowerOn
                             && loco.CompressorMode_OffAuto
                             && loco.BrakeSystem.CompressorOnDelay
