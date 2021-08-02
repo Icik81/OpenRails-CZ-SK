@@ -973,6 +973,8 @@ namespace Orts.Simulation
                     if (!maydepart && arrived && (!loco.OpenedLeftDoor && !loco.OpenedRightDoor))
                     {
                         BoardingEndS = Simulator.ClockTime + BoardingS;
+                        double SchDepartS = SchDepart.Subtract(new DateTime()).TotalSeconds;
+                        BoardingEndS = CompareTimes.LatestTime((int)SchDepartS, (int)BoardingEndS);
                         DisplayColor = Color.Yellow;
                         DisplayMessage = Simulator.Catalog.GetString("Lidé čekají na otevření dveří...");
                         return;
