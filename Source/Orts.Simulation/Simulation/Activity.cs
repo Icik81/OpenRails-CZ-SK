@@ -254,7 +254,7 @@ namespace Orts.Simulation
                 }
                 else
                 {
-                    if (Math.Abs(prevTrainSpeed) < 0.2f && Math.Abs(Simulator.OriginalPlayerTrain.SpeedMpS) >= 0.2f)
+                    if (Math.Abs(prevTrainSpeed) < 0.2f && Math.Abs(Simulator.OriginalPlayerTrain.SpeedMpS) >= 1.0f)
                     {
                         prevTrainSpeed = Simulator.OriginalPlayerTrain.SpeedMpS;
                         Current.NotifyEvent(ActivityEventType.TrainStart);
@@ -281,7 +281,7 @@ namespace Orts.Simulation
                 }
                 else
                 {
-                    if (prevTrainSpeed == 0 && Math.Abs(Simulator.OriginalPlayerTrain.SpeedMpS) > 0.2f)
+                    if (prevTrainSpeed == 0 && Math.Abs(Simulator.OriginalPlayerTrain.SpeedMpS) > 1.0f)
                     {
                         prevTrainSpeed = Simulator.OriginalPlayerTrain.SpeedMpS;
                         Current.NotifyEvent(ActivityEventType.TrainStart);
@@ -509,15 +509,15 @@ namespace Orts.Simulation
         /// <param name="zones">List of speed restriction zones</param>
         public void AddRestrictZones(Tr_RouteFile routeFile, TrackSectionsFile tsectionDat, TrackDB trackDB, ActivityRestrictedSpeedZones zones)
         {
+            // Icik 
+            // Pomalá jízda oběma směry
             if (zones.ActivityRestrictedSpeedZoneList.Count < 1) return;
 
             TempSpeedPostItems = new List<TempSpeedPostItem>();
-
-            TrItem[] newSpeedPostItems = new TempSpeedPostItem[2];
-
+            TrItem[] newSpeedPostItems = new TempSpeedPostItem[4];
             Traveller traveller;
 
-            const float MaxDistanceOfWarningPost = 2000;
+            const float MaxDistanceOfWarningPost = 700;
 
             for (int idxZone = 0; idxZone < zones.ActivityRestrictedSpeedZoneList.Count; idxZone++)
 			{
@@ -527,40 +527,79 @@ namespace Orts.Simulation
                 var worldPosition2 = new WorldPosition();
                 newSpeedPostItems[1] = new TempSpeedPostItem(routeFile,
                     zones.ActivityRestrictedSpeedZoneList[idxZone].EndPosition, false, worldPosition2, false);
-			
-            // Add the speedposts to the track database. This will set the TrItemId's of all speedposts
-            trackDB.AddTrItems(newSpeedPostItems);
+
+                var worldPosition11 = new WorldPosition();
+                newSpeedPostItems[2] = new TempSpeedPostItem(routeFile,
+                    zones.ActivityRestrictedSpeedZoneList[idxZone].EndPosition, true, worldPosition11, false);
+                var worldPosition22 = new WorldPosition();
+                newSpeedPostItems[3] = new TempSpeedPostItem(routeFile,
+                    zones.ActivityRestrictedSpeedZoneList[idxZone].StartPosition, false, worldPosition22, false);
+
+                // Add the speedposts to the track database. This will set the TrItemId's of all speedposts
+                trackDB.AddTrItems(newSpeedPostItems);
 
             // And now update the various (vector) tracknodes (this needs the TrItemIds.
                 var endOffset = AddItemIdToTrackNode(ref zones.ActivityRestrictedSpeedZoneList[idxZone].EndPosition,
                     tsectionDat, trackDB, newSpeedPostItems[1], out traveller);
                 var startOffset = AddItemIdToTrackNode(ref zones.ActivityRestrictedSpeedZoneList[idxZone].StartPosition,
                     tsectionDat, trackDB, newSpeedPostItems[0], out traveller);
+
+                var endOffset_back = AddItemIdToTrackNode(ref zones.ActivityRestrictedSpeedZoneList[idxZone].EndPosition,
+                    tsectionDat, trackDB, newSpeedPostItems[2], out traveller);
+                var startOffset_back = AddItemIdToTrackNode(ref zones.ActivityRestrictedSpeedZoneList[idxZone].StartPosition,
+                    tsectionDat, trackDB, newSpeedPostItems[3], out traveller);
+
                 float distanceOfWarningPost = 0;
+                float distanceOfWarningPost_back = 0;
                 TrackNode trackNode = trackDB.TrackNodes[traveller.TrackNodeIndex];
-                if (startOffset != null && endOffset != null && startOffset > endOffset)
-			{
-                    FlipRestrSpeedPost((TempSpeedPostItem)newSpeedPostItems[0]);
-                    FlipRestrSpeedPost((TempSpeedPostItem)newSpeedPostItems[1]);
-                    distanceOfWarningPost = (float)Math.Min(MaxDistanceOfWarningPost, traveller.TrackNodeLength - (double)startOffset);
-            }
-                else if (startOffset != null && endOffset != null && startOffset <= endOffset)
-                    distanceOfWarningPost = (float)Math.Max(-MaxDistanceOfWarningPost, -(double)startOffset);
-                traveller.Move(distanceOfWarningPost);
+       //         if (startOffset != null && endOffset != null && startOffset > endOffset)
+	   //	      {
+       //             FlipRestrSpeedPost((TempSpeedPostItem)newSpeedPostItems[0]);
+       //             FlipRestrSpeedPost((TempSpeedPostItem)newSpeedPostItems[1]);
+       //             distanceOfWarningPost = (float)Math.Min(MaxDistanceOfWarningPost, traveller.TrackNodeLength - (double)startOffset);
+       //         }
+                //if (startOffset != null && endOffset != null && startOffset <= endOffset)
+                
+                distanceOfWarningPost = -MaxDistanceOfWarningPost;
+                distanceOfWarningPost_back = 2 * MaxDistanceOfWarningPost + (float)(endOffset_back - startOffset_back);
+
+                FlipRestrSpeedPost((TempSpeedPostItem)newSpeedPostItems[2]);
+                FlipRestrSpeedPost((TempSpeedPostItem)newSpeedPostItems[3]);
+                                
                 var worldPosition3 = new WorldPosition();
                 var speedWarningPostItem = new TempSpeedPostItem(routeFile,
                     zones.ActivityRestrictedSpeedZoneList[idxZone].StartPosition, false, worldPosition3, true);
+                
+                var worldPosition33 = new WorldPosition();
+                var speedWarningPostItem_back = new TempSpeedPostItem(routeFile,
+                    zones.ActivityRestrictedSpeedZoneList[idxZone].StartPosition, false, worldPosition33, true);
+
+                traveller.Move(distanceOfWarningPost);
                 SpeedPostPosition(speedWarningPostItem, ref traveller);
-                if (startOffset != null && endOffset != null && startOffset > endOffset)
-                {
-                    FlipRestrSpeedPost((TempSpeedPostItem)speedWarningPostItem);
-        }
+
+                traveller.Move(distanceOfWarningPost_back);
+                SpeedPostPosition(speedWarningPostItem_back, ref traveller);
+
+                FlipRestrSpeedPost((TempSpeedPostItem)speedWarningPostItem_back);
+
+                //if (startOffset != null && endOffset != null && startOffset > endOffset)
+                //{
+                //    FlipRestrSpeedPost((TempSpeedPostItem)speedWarningPostItem);
+
+                //}
                 ComputeTablePosition((TempSpeedPostItem)newSpeedPostItems[0]); 
                 TempSpeedPostItems.Add((TempSpeedPostItem)newSpeedPostItems[0]);
                 ComputeTablePosition((TempSpeedPostItem)newSpeedPostItems[1]); 
                 TempSpeedPostItems.Add((TempSpeedPostItem)newSpeedPostItems[1]);
+                ComputeTablePosition((TempSpeedPostItem)newSpeedPostItems[2]);
+                TempSpeedPostItems.Add((TempSpeedPostItem)newSpeedPostItems[2]);
+                ComputeTablePosition((TempSpeedPostItem)newSpeedPostItems[3]);
+                TempSpeedPostItems.Add((TempSpeedPostItem)newSpeedPostItems[3]);
+
                 ComputeTablePosition((TempSpeedPostItem)speedWarningPostItem); 
                 TempSpeedPostItems.Add((TempSpeedPostItem)speedWarningPostItem);
+                ComputeTablePosition((TempSpeedPostItem)speedWarningPostItem_back);
+                TempSpeedPostItems.Add((TempSpeedPostItem)speedWarningPostItem_back);
             }
         }
         
