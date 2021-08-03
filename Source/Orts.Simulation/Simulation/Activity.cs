@@ -1006,9 +1006,9 @@ namespace Orts.Simulation
             else if (EventType == ActivityEventType.Timer)
             {                
                 // Icik
-                var loco = MyPlayerTrain.LeadLocomotive as MSTSLocomotive;                
+                var loco = MyPlayerTrain.LeadLocomotive as MSTSLocomotive;
                 if (loco != null)
-                {                    
+                {
                     if (!maydepart && arrived && (!loco.OpenedLeftDoor && !loco.OpenedRightDoor))
                     {
                         BoardingEndS = Simulator.ClockTime + BoardingS;
@@ -1021,7 +1021,7 @@ namespace Orts.Simulation
                     // Waiting at a station
                     if (arrived && (loco.OpenedLeftDoor || loco.OpenedRightDoor))
                     {
-                        var remaining = (int)Math.Ceiling(BoardingEndS - Simulator.ClockTime);                                                
+                        var remaining = (int)Math.Ceiling(BoardingEndS - Simulator.ClockTime);
                         if (remaining < 1) DisplayColor = Color.LightGreen;
                         else if (remaining < 11) DisplayColor = new Color(255, 255, 128);
                         else DisplayColor = Color.White;
@@ -1106,37 +1106,38 @@ namespace Orts.Simulation
                             }
                         }
                     }
-                }
-                else
-                {
-                    // Checking missed station
-                    int tmp = (int)(Simulator.ClockTime % 10);
-                    if (tmp != TimerChk)
-                    {
-                        if (IsMissedStation() && (MyPlayerTrain.TrainType != Train.TRAINTYPE.AI_PLAYERHOSTING))
-                        {
-                            MyPlayerTrain.ClearStation(PlatformEnd1.LinkedPlatformItemId, PlatformEnd2.LinkedPlatformItemId, true);
-                            IsCompleted = false;
 
-                            if (LogStationStops)
+                    else
+                    {
+                        // Checking missed station
+                        int tmp = (int)(Simulator.ClockTime % 10);
+                        if (tmp != TimerChk)
+                        {
+                            if (IsMissedStation() && (MyPlayerTrain.TrainType != Train.TRAINTYPE.AI_PLAYERHOSTING))
                             {
-                                StringBuilder stringBuild = new StringBuilder();
-                                char separator = (char)(DataLogger.Separators)Enum.Parse(typeof(DataLogger.Separators), Simulator.Settings.DataLoggerSeparator);
-                                stringBuild.Append(PlatformEnd1.Station);
-                                stringBuild.Append(separator);
-                                stringBuild.Append(SchArrive.ToString("HH:mm:ss"));
-                                stringBuild.Append(separator);
-                                stringBuild.Append(SchDepart.ToString("HH:mm:ss"));
-                                stringBuild.Append(separator);
-                                stringBuild.Append("-");
-                                stringBuild.Append(separator);
-                                stringBuild.Append("-");
-                                stringBuild.Append(separator);
-                                stringBuild.Append("-");
-                                stringBuild.Append(separator);
-                                stringBuild.Append("Missed");
-                                stringBuild.Append("\n");
-                                File.AppendAllText(LogStationLogFile, stringBuild.ToString());
+                                MyPlayerTrain.ClearStation(PlatformEnd1.LinkedPlatformItemId, PlatformEnd2.LinkedPlatformItemId, true);
+                                IsCompleted = false;
+
+                                if (LogStationStops)
+                                {
+                                    StringBuilder stringBuild = new StringBuilder();
+                                    char separator = (char)(DataLogger.Separators)Enum.Parse(typeof(DataLogger.Separators), Simulator.Settings.DataLoggerSeparator);
+                                    stringBuild.Append(PlatformEnd1.Station);
+                                    stringBuild.Append(separator);
+                                    stringBuild.Append(SchArrive.ToString("HH:mm:ss"));
+                                    stringBuild.Append(separator);
+                                    stringBuild.Append(SchDepart.ToString("HH:mm:ss"));
+                                    stringBuild.Append(separator);
+                                    stringBuild.Append("-");
+                                    stringBuild.Append(separator);
+                                    stringBuild.Append("-");
+                                    stringBuild.Append(separator);
+                                    stringBuild.Append("-");
+                                    stringBuild.Append(separator);
+                                    stringBuild.Append("Missed");
+                                    stringBuild.Append("\n");
+                                    File.AppendAllText(LogStationLogFile, stringBuild.ToString());
+                                }
                             }
                         }
                     }
