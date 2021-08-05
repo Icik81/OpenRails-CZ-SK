@@ -770,6 +770,9 @@ namespace Orts.Simulation.RollingStocks
             BrakeSystem.BrakeMassKG = 0;
             BrakeSystem.BrakeMassKGRMg = 0;
 
+            if (BrakeSystem.TwoStateBrake)  // Pokud bude TwoState brzda, použije se brzdící váha pro režim R
+                BrakeSystem.BrakeMassKG_TwoStateBrake = BrakeSystem.BrakeMassR;
+
             if (WagonType == WagonTypes.Passenger || WagonType == WagonTypes.Engine || WagonType == WagonTypes.Unknown)    //  Osobní vozy, lokomotivy a ostatní
                 switch (BrakeSystem.BrakeCarMode)
                 {
@@ -780,8 +783,6 @@ namespace Orts.Simulation.RollingStocks
                     case 1: // Režim P  
                         if (BrakeSystem.BrakeMassP == 0) BrakeSystem.BrakeMassKG = BrakeSystem.CoefMode * MassKG;
                         else BrakeSystem.BrakeMassKG = BrakeSystem.BrakeMassP;
-                        if (BrakeSystem.TwoStateBrake)  // Pokud bude TwoState brzda, použije se brzdící váha pro režim R
-                            BrakeSystem.BrakeMassKG_TwoStateBrake = BrakeSystem.BrakeMassR;
                         break;
                     case 2: // Režim R  
                         if (BrakeSystem.BrakeMassR == 0) BrakeSystem.BrakeMassKG = BrakeSystem.CoefMode * MassKG;
