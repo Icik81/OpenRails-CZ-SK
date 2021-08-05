@@ -1665,20 +1665,23 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         }
 
                         // *** Manipulace s dveřmi ***
-                        BrakeSystem brakeSystem = lead.BrakeSystem;
-                        // Testuje tlak v hlavní jímce pro manipulaci s dveřmi
-                        if (lead.MainResPressurePSI > 5 * 14.50377f) // 5bar default
-                            brakeSystem.AirOK_DoorCanManipulate = true;
-                        else
-                            brakeSystem.AirOK_DoorCanManipulate = false;
-
-                        // Snižuje tlak v hlavní jímce kvůli spotřebě vzduchu při otevírání/zavírání dveří
-                        if (brakeSystem.AirOK_DoorCanManipulate)
+                        if (loco.CentralHandlingDoors)
                         {
-                            if (sumv > 0)
-                                lead.MainResPressurePSI -= train.TotalAirLoss / sumv * elapsedClockSeconds;
+                            BrakeSystem brakeSystem = lead.BrakeSystem;
+                            // Testuje tlak v hlavní jímce pro manipulaci s dveřmi
+                            if (lead.MainResPressurePSI > 5 * 14.50377f) // 5bar default
+                                brakeSystem.AirOK_DoorCanManipulate = true;
                             else
-                                lead.MainResPressurePSI -= train.TotalAirLoss * elapsedClockSeconds;
+                                brakeSystem.AirOK_DoorCanManipulate = false;
+
+                            // Snižuje tlak v hlavní jímce kvůli spotřebě vzduchu při otevírání/zavírání dveří
+                            if (brakeSystem.AirOK_DoorCanManipulate)
+                            {
+                                if (sumv > 0)
+                                    lead.MainResPressurePSI -= train.TotalAirLoss / sumv * elapsedClockSeconds;
+                                else
+                                    lead.MainResPressurePSI -= train.TotalAirLoss * elapsedClockSeconds;
+                            }
                         }
 
                         // *** Kompresory ***
@@ -2072,7 +2075,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                    AirLossDoorR = (car as MSTSWagon).AirlossByHandlingDoorsPSIpS;
                 else AirLossDoorR = (car as MSTSWagon).AirlossByHandlingDoorsPSIpS;
 
-                TotalAirLoss0 += AirLossDoorL + AirLossDoorR;                
+                //if ((car as MSTSWagon).AutomaticDoors)
+                    TotalAirLoss0 += AirLossDoorL + AirLossDoorR;                
             }
 
             // Levé dveře
@@ -2193,6 +2197,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         }
                         else lead.EngineBrakeState = ValveState.Apply;
                         brakeSystem.PrevEngineBrakeControllerRateRelease = EngineBrakeControllerRate;
+                        if (lead.BrakeSystem.AutoCylPressurePSI1 > train.BrakeLine3PressurePSI * 0.95f)
+                        {
+                            lead.EngineBrakeState = ValveState.Lap;
+                        }
                     }
                     // Release
                     else

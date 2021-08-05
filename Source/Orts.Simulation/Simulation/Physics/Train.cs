@@ -16127,6 +16127,34 @@ namespace Orts.Simulation.Physics
             }
         }
 
+        // Icik
+        public void ToggleDoorsPeople(bool right, bool open)
+        {            
+            for (int i = 0; i < Cars.Count; i++)
+            {
+                var wagon = (Cars[i] as MSTSWagon);
+                if (!(wagon is MSTSLocomotive))
+                {
+                    bool ChanceToOpenDoor = false;
+                    if (Simulator.Random.Next(0, 2) == 0)
+                        ChanceToOpenDoor = true;
+                    else
+                        ChanceToOpenDoor = false;
+                    
+                    if (!wagon.Flipped && right || wagon.Flipped && !right)
+                    {
+                        if (ChanceToOpenDoor)
+                            wagon.DoorRightOpen = open;
+                    }
+                    else
+                    {
+                        if (ChanceToOpenDoor)
+                            wagon.DoorLeftOpen = open;
+                    }
+                    wagon.SignalEvent(open ? Event.DoorOpen : Event.DoorClose); // hook for sound trigger
+                }
+            }
+        }
         //================================================================================================//
         /// <summary>
         /// Check if it's time to have a failed car or locomotive

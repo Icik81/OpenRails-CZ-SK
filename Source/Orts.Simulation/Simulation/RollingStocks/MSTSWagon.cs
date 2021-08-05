@@ -145,7 +145,7 @@ namespace Orts.Simulation.RollingStocks
         public bool OpenedLeftDoor = false;
         public bool OpenedRightDoor = false;
         public float AirlossByHandlingDoorsPSIpS;
-
+        public bool AutomaticDoors;
 
         bool TenderWeightInitialize = true;
         float TenderWagonMaxCoalMassKG;
@@ -1506,6 +1506,7 @@ namespace Orts.Simulation.RollingStocks
                 case "wagon(powerreductionbyheating": PowerReductionByHeating = stf.ReadFloatBlock(STFReader.UNITS.Power, null); break;
                 case "wagon(powerreductionbyauxequipment": PowerReductionByAuxEquipment = stf.ReadFloatBlock(STFReader.UNITS.Power, null); break;
                 case "wagon(airlossbyhandlingdoors": AirlossByHandlingDoorsPSIpS = stf.ReadFloatBlock(STFReader.UNITS.PressureRateDefaultPSIpS, null); break;
+                case "wagon(automaticdoors": AutomaticDoors = stf.ReadBoolBlock(false); break;
             }
         }
 
@@ -1685,7 +1686,7 @@ namespace Orts.Simulation.RollingStocks
             PowerReductionByHeating = copy.PowerReductionByHeating;
             PowerReductionByAuxEquipment = copy.PowerReductionByAuxEquipment;
             AirlossByHandlingDoorsPSIpS = copy.AirlossByHandlingDoorsPSIpS;
-
+            AutomaticDoors = copy.AutomaticDoors;
 
             if (copy.IntakePointList != null)
             {

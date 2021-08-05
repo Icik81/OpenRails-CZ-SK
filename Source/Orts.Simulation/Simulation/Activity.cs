@@ -29,6 +29,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Text;
+using static Orts.Simulation.Physics.Train;
 using Event = Orts.Common.Event;
 
 namespace Orts.Simulation
@@ -45,7 +46,7 @@ namespace Orts.Simulation
 
     public class Activity
     {
-        Simulator Simulator;
+        Simulator Simulator;        
 
         // Passenger tasks
         public DateTime StartTime;
@@ -813,6 +814,12 @@ namespace Orts.Simulation
     {
         readonly Simulator Simulator;
 
+        // Icik
+        public List<StationStop> StationStops = new List<StationStop>();
+        public List<TrainCar> Cars = new List<TrainCar>();
+        public int TimeForOpenDoors = 0;
+        public int CycleTime = 0;
+
         public DateTime SchArrive;
         public DateTime SchDepart;
         public DateTime? ActArrive;
@@ -880,7 +887,7 @@ namespace Orts.Simulation
 
             return MyPlayerTrain.IsMissedPlatform(200.0f);
         }
-
+        
         public override void NotifyEvent(ActivityEventType EventType)
         {
 
@@ -972,6 +979,7 @@ namespace Orts.Simulation
                 // Train has started, we have things to do if we arrived before
                 if (arrived)
                 {
+                    TimeForOpenDoors = 0;
                     ActDepart = new DateTime().Add(TimeSpan.FromSeconds(Simulator.ClockTime));
                     CompletedAt = ActDepart.Value;
                     // Completeness depends on the elapsed waiting time
@@ -1009,7 +1017,8 @@ namespace Orts.Simulation
                 var loco = MyPlayerTrain.LeadLocomotive as MSTSLocomotive;
                 if (loco != null)
                 {
-                    if (!maydepart && arrived && (!loco.OpenedLeftDoor && !loco.OpenedRightDoor))
+                    // Automatické centrální dveře
+                    if (!maydepart && arrived && loco.CentralHandlingDoors && (!loco.OpenedLeftDoor && !loco.OpenedRightDoor))
                     {
                         BoardingEndS = Simulator.ClockTime + BoardingS;
                         double SchDepartS = SchDepart.Subtract(new DateTime()).TotalSeconds;
@@ -1018,13 +1027,69 @@ namespace Orts.Simulation
                         DisplayMessage = Simulator.Catalog.GetString("Lidé čekají na otevření dveří...");
                         return;
                     }
+
+                    // Dveře se neotevřou hned
+                    if (arrived && !loco.CentralHandlingDoors)
+                    {
+                        if (TimeForOpenDoors == 0)
+                            TimeForOpenDoors = Simulator.Random.Next(50, 100);
+                        TimeForOpenDoors--;
+                        if (TimeForOpenDoors < 1) TimeForOpenDoors = 1;
+                    }
                     // Waiting at a station
-                    if (arrived && (loco.OpenedLeftDoor || loco.OpenedRightDoor))
+                    if (arrived && TimeForOpenDoors == 1 || arrived && loco.CentralHandlingDoors)
                     {
                         var remaining = (int)Math.Ceiling(BoardingEndS - Simulator.ClockTime);
                         if (remaining < 1) DisplayColor = Color.LightGreen;
                         else if (remaining < 11) DisplayColor = new Color(255, 255, 128);
                         else DisplayColor = Color.White;
+
+                        if (!loco.CentralHandlingDoors)
+                        {
+                            // Lidé si sami otevírají dveře                      
+                            if (remaining > 5 && CycleTime == 0)
+                            {
+                                if (!loco.CentralHandlingDoors && MyPlayerTrain.StationStops.Count > 0)
+                                {
+                                    StationStop thisStation = MyPlayerTrain.StationStops[0];
+                                    var frontIsFront = thisStation.PlatformReference == thisStation.PlatformItem.PlatformFrontUiD;
+
+                                    if (thisStation.PlatformItem.PlatformSide[0])
+                                    {
+                                        //Levé dveře
+                                        MyPlayerTrain.ToggleDoorsPeople(frontIsFront, true);
+                                    }
+                                    if (thisStation.PlatformItem.PlatformSide[1])
+                                    {
+                                        //Pravé dveře
+                                        MyPlayerTrain.ToggleDoorsPeople(!frontIsFront, true);
+                                    }
+                                }
+                                CycleTime = 1;
+                            }
+                            else
+                            if (remaining <= 5 || MyPlayerTrain.SpeedMpS > 1.0f)
+                            {
+                                CycleTime = 0;
+                                // Lidé si sami zavřou dveře
+                                if (!loco.CentralHandlingDoors && MyPlayerTrain.StationStops.Count > 0)
+                                {
+                                    StationStop thisStation = MyPlayerTrain.StationStops[0];
+                                    var frontIsFront = thisStation.PlatformReference == thisStation.PlatformItem.PlatformFrontUiD;
+
+                                    if (thisStation.PlatformItem.PlatformSide[0])
+                                    {
+                                        //Levé dveře
+                                        MyPlayerTrain.ToggleDoorsPeople(frontIsFront, false);
+                                    }
+                                    if (thisStation.PlatformItem.PlatformSide[1])
+                                    {
+                                        //Pravé dveře
+                                        MyPlayerTrain.ToggleDoorsPeople(!frontIsFront, false);
+                                    }
+                                }
+                            }
+                        }
 
                         if (remaining < 120 && (MyPlayerTrain.TrainType != Train.TRAINTYPE.AI_PLAYERHOSTING))
                         {
@@ -1033,7 +1098,7 @@ namespace Orts.Simulation
 
                         // Still have to wait
                         if (remaining > 0)
-                        {
+                        {                            
                             DisplayMessage = Simulator.Catalog.GetStringFmt("Passenger boarding completes in {0:D2}:{1:D2}",
                                 remaining / 60, remaining % 60);
 
@@ -1048,19 +1113,19 @@ namespace Orts.Simulation
                         }
                         // May depart
                         else if (!maydepart)
-                        {
+                        {                            
                             // check if signal ahead is cleared - if not, do not allow depart
                             if (distanceToNextSignal >= 0 && distanceToNextSignal < 300 && MyPlayerTrain.NextSignalObject[0] != null &&
                                 MyPlayerTrain.NextSignalObject[0].this_sig_lr(MstsSignalFunction.NORMAL) == MstsSignalAspect.STOP
                                 && MyPlayerTrain.NextSignalObject[0].hasPermission != SignalObject.Permission.Granted)
-                            {
+                            {                                
                                 DisplayMessage = Simulator.Catalog.GetString("Passenger boarding completed. Waiting for signal ahead to clear.");
                             }
                             else
                             {
                                 maydepart = true;
                                 DisplayMessage = Simulator.Catalog.GetString("Passenger boarding completed. You may depart now.");
-                                Simulator.SoundNotify = Event.PermissionToDepart;
+                                Simulator.SoundNotify = Event.PermissionToDepart;                                
                             }
 
                             ldbfevaldepartbeforeboarding = false;//reset flag. Debrief Eval

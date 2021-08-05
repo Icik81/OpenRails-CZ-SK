@@ -6781,29 +6781,29 @@ namespace Orts.Simulation.AIs
 
         public override IEnumerator<int> Execute(MSTSLocomotive locomotive, int? durationS)
         {
-            if (!durationS.HasValue)
-            {
-                // Sound the horn for a pseudorandom period of seconds between 2 and 5.
-                durationS = (DateTime.Now.Millisecond % 10) / 3 + 2;
-            }
-            
+            //if (!durationS.HasValue)
+            //{
+            //    // Sound the horn for a pseudorandom period of seconds between 2 and 5.
+            //    durationS = (DateTime.Now.Millisecond % 10) / 3 + 2;
+            //}
+
             // Icik
-            // Pískání pokud je doba 2s a méně
-            if (durationS <= 2)
+            // Pískání pokud je doba 1s
+            if (durationS < 2)
             {
                 if (locomotive != null)
                     locomotive.ManualBell = true;
-                yield return durationS.Value;                
+                yield return 1 - durationS.Value;                
 
                 if (locomotive != null)
                     locomotive.ManualBell = false;
             }
-            // Houkání pokud je doba větší než 2s
+            // Houkání pokud je doba větší než 1s
             else
             {
                 if (locomotive != null)
-                    locomotive.ManualHorn = true;
-                yield return durationS.Value;
+                    locomotive.ManualHorn = true;                
+                yield return 2 - durationS.Value;
 
                 if (locomotive != null)
                     locomotive.ManualHorn = false;
