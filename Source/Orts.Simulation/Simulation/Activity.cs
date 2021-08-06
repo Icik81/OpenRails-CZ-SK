@@ -818,7 +818,8 @@ namespace Orts.Simulation
         public List<StationStop> StationStops = new List<StationStop>();
         public List<TrainCar> Cars = new List<TrainCar>();
         public int TimeForOpenDoors = 0;
-        public int CycleTime = 0;
+        public int CycleTimeOpen = 0;
+        public int CycleTimeClosed = 0;
 
         public DateTime SchArrive;
         public DateTime SchDepart;
@@ -1047,10 +1048,11 @@ namespace Orts.Simulation
                         if (!loco.CentralHandlingDoors)
                         {
                             // Lidé si sami otevírají dveře                      
-                            if (remaining > 5 && CycleTime == 0)
+                            if (remaining > 5 && CycleTimeOpen == 0)
                             {
                                 if (!loco.CentralHandlingDoors && MyPlayerTrain.StationStops.Count > 0)
                                 {
+                                    CycleTimeClosed = 0;
                                     StationStop thisStation = MyPlayerTrain.StationStops[0];
                                     var frontIsFront = thisStation.PlatformReference == thisStation.PlatformItem.PlatformFrontUiD;
 
@@ -1065,12 +1067,12 @@ namespace Orts.Simulation
                                         MyPlayerTrain.ToggleDoorsPeople(!frontIsFront, true);
                                     }
                                 }
-                                CycleTime = 1;
+                                CycleTimeOpen = 1;
                             }
                             else
-                            if (remaining <= 5 || MyPlayerTrain.SpeedMpS > 1.0f)
+                            if (remaining <= 5 && CycleTimeClosed == 0 || MyPlayerTrain.SpeedMpS > 1.0f && CycleTimeClosed == 0)
                             {
-                                CycleTime = 0;
+                                CycleTimeOpen = 0;
                                 // Lidé si sami zavřou dveře
                                 if (!loco.CentralHandlingDoors && MyPlayerTrain.StationStops.Count > 0)
                                 {
@@ -1080,14 +1082,15 @@ namespace Orts.Simulation
                                     if (thisStation.PlatformItem.PlatformSide[0])
                                     {
                                         //Levé dveře
-                                        MyPlayerTrain.ToggleDoorsPeople(frontIsFront, false);
+                                        MyPlayerTrain.ToggleDoors(frontIsFront, false);
                                     }
                                     if (thisStation.PlatformItem.PlatformSide[1])
                                     {
                                         //Pravé dveře
-                                        MyPlayerTrain.ToggleDoorsPeople(!frontIsFront, false);
+                                        MyPlayerTrain.ToggleDoors(!frontIsFront, false);
                                     }
                                 }
+                                CycleTimeClosed = 1;
                             }
                         }
 
