@@ -474,6 +474,7 @@ namespace Orts.Simulation.RollingStocks
         public float AirBrakesAirCompressorWattage = 30000;
         float BaseFrictionCoefficientFactor0 = 1;
         public bool CentralHandlingDoors;
+        public bool VoltageFilter;
 
         // Jindrich
         public CruiseControl CruiseControl;
@@ -1078,6 +1079,7 @@ namespace Orts.Simulation.RollingStocks
                 case "engine(airbrakesiscompressorelectricormechanical": AirBrakesIsCompressorElectricOrMechanical = stf.ReadBoolBlock(false); break;
                 case "engine(airbrakesaircompressorwattage": AirBrakesAirCompressorWattage = stf.ReadFloatBlock(STFReader.UNITS.Power, null); break;
                 case "engine(centralhandlingdoors": CentralHandlingDoors = stf.ReadBoolBlock(false); break;
+                case "engine(voltagefilter": VoltageFilter = stf.ReadBoolBlock(false); break;
 
 
                 // Jindrich
@@ -1289,6 +1291,7 @@ namespace Orts.Simulation.RollingStocks
             AirBrakesIsCompressorElectricOrMechanical = locoCopy.AirBrakesIsCompressorElectricOrMechanical;
             AirBrakesAirCompressorWattage = locoCopy.AirBrakesAirCompressorWattage;
             CentralHandlingDoors = locoCopy.CentralHandlingDoors;
+            VoltageFilter = locoCopy.VoltageFilter;
 
             // Jindrich
             if (locoCopy.CruiseControl != null)

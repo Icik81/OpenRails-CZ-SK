@@ -70,6 +70,7 @@ namespace Orts.Simulation.RollingStocks
         public double MaxLineVoltage0;
         public double MaxLineVoltage1;
         public float PantographVoltageV;
+        int T = 0;
 
         public MSTSElectricLocomotive(Simulator simulator, string wagFile) :
             base(simulator, wagFile)
@@ -202,28 +203,34 @@ namespace Orts.Simulation.RollingStocks
             if (IsPlayerTrain)
             {
                 // Pokud má lokomotiva napěťový filtr
-                if (EDBIndependent && PowerOnFilter > PowerOnFilterCapacityLimit)
-                {
-                    // Uchová informaci o napětí pro filtr
-                    if (PowerOn)
-                        MaxLineVoltage1 = PowerSupply.PantographVoltageV;
-                    
+                if (VoltageFilter)
+                {                                        
                     // Rychlost padání napětí při vypnutém HV
                     if (!CircuitBreakerOn && PantographVoltageV > PowerSupply.PantographVoltageV && MaxLineVoltage1 > 0)
                     {
                         PantographVoltageV = (float)MaxLineVoltage1;
-                        MaxLineVoltage1 -= 25000 * elapsedClockSeconds; // 25000V za 1s
-                        if (MaxLineVoltage1 < 0) MaxLineVoltage1 = 0;
+                        MaxLineVoltage1 -= MaxLineVoltage0 * 1.5f * elapsedClockSeconds; 
+                        if (MaxLineVoltage1 < 0) MaxLineVoltage1 = 0;                        
+                    }                    
+                    else if (CircuitBreakerOn && PowerSupply.PantographVoltageV > PantographVoltageV && MaxLineVoltage1 > 0)
+                    {
+                        PantographVoltageV = (float)MaxLineVoltage1;
+                        MaxLineVoltage1 += MaxLineVoltage0 * 1.5f * elapsedClockSeconds; 
+                        if (MaxLineVoltage1 > MaxLineVoltage0) MaxLineVoltage1 = MaxLineVoltage0;                                                
                     }
                     // Rychlost padání napětí při vypnutém sběrači
-                    else if (CircuitBreakerOn && PowerSupply.PantographVoltageV < MaxLineVoltage0 && MaxLineVoltage1 > 0)
+                    else if (CircuitBreakerOn && PowerSupply.PantographVoltageV < PantographVoltageV && MaxLineVoltage1 > 0)
                     {
                         PantographVoltageV = (float)MaxLineVoltage1;
                         MaxLineVoltage1 -= 500 * elapsedClockSeconds; // 500V za 1s
-                        if (MaxLineVoltage1 < 2150) MaxLineVoltage1 = 2150;
+                        if (MaxLineVoltage1 < 2150) MaxLineVoltage1 = 2150;                      
                     }
                     else 
-                        PantographVoltageV = PowerSupply.PantographVoltageV;                    
+                        PantographVoltageV = PowerSupply.PantographVoltageV;
+
+                    // Uchová informaci o napětí pro filtr
+                    if (PowerOn && MaxLineVoltage1 == 0)
+                        MaxLineVoltage1 = PowerSupply.PantographVoltageV;
                 }
                 else
                     PantographVoltageV = PowerSupply.PantographVoltageV;
