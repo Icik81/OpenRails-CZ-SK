@@ -69,6 +69,7 @@ namespace Orts.Simulation.RollingStocks
         public float Step1;
         public double MaxLineVoltage0;
         public double MaxLineVoltage1;
+        public double MaxLineVoltage2;
         public float PantographVoltageV;
         int T = 0;
 
@@ -204,36 +205,49 @@ namespace Orts.Simulation.RollingStocks
             {
                 // Pokud má lokomotiva napěťový filtr
                 if (VoltageFilter)
-                {                                        
+                {
+                    // Zákmit ručky do plna
+                    if (CircuitBreakerOn && PowerSupply.PantographVoltageV > PantographVoltageV && MaxLineVoltage1 > 0)
+                    {
+                        MaxLineVoltage1 = PowerSupply.PantographVoltageV;
+                        PantographVoltageV = PowerSupply.PantographVoltageV;
+                        T = 0;
+                    }
                     // Rychlost padání napětí při vypnutém HV
-                    if (!CircuitBreakerOn && PantographVoltageV > PowerSupply.PantographVoltageV && MaxLineVoltage1 > 0)
+                    else if (!CircuitBreakerOn && PantographVoltageV > PowerSupply.PantographVoltageV && PowerSupply.PantographVoltageV < MaxLineVoltage0 && MaxLineVoltage1 > 0)
                     {
-                        PantographVoltageV = (float)MaxLineVoltage1;
-                        MaxLineVoltage1 -= MaxLineVoltage0 * 1.5f * elapsedClockSeconds; 
-                        if (MaxLineVoltage1 < 0) MaxLineVoltage1 = 0;                        
-                    }                    
-                    else if (CircuitBreakerOn && PowerSupply.PantographVoltageV > PantographVoltageV && MaxLineVoltage1 > 0)
-                    {
-                        PantographVoltageV = (float)MaxLineVoltage1;
-                        MaxLineVoltage1 += MaxLineVoltage0 * 1.5f * elapsedClockSeconds; 
-                        if (MaxLineVoltage1 > MaxLineVoltage0) MaxLineVoltage1 = MaxLineVoltage0;                                                
+                        if (T == 0)
+                            MaxLineVoltage2 = PantographVoltageV;
+                        T = 1;
+                        PantographVoltageV = (float)MaxLineVoltage2;
+                        MaxLineVoltage2 -= MaxLineVoltage0 * 1.5f * elapsedClockSeconds;
+                        if (MaxLineVoltage2 < 0)
+                        {
+                            MaxLineVoltage1 = 0;
+                            MaxLineVoltage2 = 0;
+                            T = 0;
+                        }
                     }
                     // Rychlost padání napětí při vypnutém sběrači
-                    else if (CircuitBreakerOn && PowerSupply.PantographVoltageV < PantographVoltageV && MaxLineVoltage1 > 0)
+                    else if (CircuitBreakerOn && PowerSupply.PantographVoltageV < PantographVoltageV && PowerSupply.PantographVoltageV < MaxLineVoltage0 && MaxLineVoltage1 > 0)
                     {
-                        PantographVoltageV = (float)MaxLineVoltage1;
-                        MaxLineVoltage1 -= 500 * elapsedClockSeconds; // 500V za 1s
-                        if (MaxLineVoltage1 < 2150) MaxLineVoltage1 = 2150;                      
+                        if (T == 0)
+                            MaxLineVoltage2 = PantographVoltageV;
+                        T = 1;
+                        PantographVoltageV = (float)MaxLineVoltage2;
+                        MaxLineVoltage2 -= 500 * elapsedClockSeconds; // 500V za 1s
+                        if (MaxLineVoltage2 < 2150) MaxLineVoltage2 = 2150;
                     }
-                    else 
+                    else
                         PantographVoltageV = PowerSupply.PantographVoltageV;
 
                     // Uchová informaci o napětí pro filtr
                     if (PowerOn && MaxLineVoltage1 == 0)
-                        MaxLineVoltage1 = PowerSupply.PantographVoltageV;
+                        MaxLineVoltage1 = PowerSupply.PantographVoltageV;                                           
                 }
                 else
                     PantographVoltageV = PowerSupply.PantographVoltageV;
+
 
                 // Zákmit na voltmetru            
                 if (PowerSupply.PantographVoltageV < 1)
