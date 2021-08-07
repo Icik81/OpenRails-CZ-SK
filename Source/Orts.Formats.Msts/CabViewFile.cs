@@ -371,6 +371,7 @@ namespace Orts.Formats.Msts
         SWITCHINGVOLTAGEMODE_OFF_DC,
         SWITCHINGVOLTAGEMODE_OFF_AC,        
         SWITCHINGVOLTAGEMODE_DC_OFF_AC,        
+        WARNING_NEUTRAL,
 
         // Further CabViewControlTypes must be added above this line, to avoid their malfunction in 3DCabs
         EXTERNALWIPERS,

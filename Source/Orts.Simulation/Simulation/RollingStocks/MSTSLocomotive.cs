@@ -7066,7 +7066,16 @@ namespace Orts.Simulation.RollingStocks
                         SwitchingVoltageMode = MathHelper.Clamp(SwitchingVoltageMode, 0, 2);
                         data = SwitchingVoltageMode;
                         break;
-                    }                
+                    }
+                case CABViewControlTypes.WARNING_NEUTRAL:
+                    {
+                        data = 1;                        
+                        if (PowerOn && Direction == Direction.N)
+                        {
+                            data = 0;
+                        }                        
+                        break;
+                    }
             }
             // max needle speed
             if (cvc.MaxNeedleSpeed > 0 && elapsedTime > 0)

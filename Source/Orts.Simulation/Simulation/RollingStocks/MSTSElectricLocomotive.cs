@@ -58,8 +58,7 @@ namespace Orts.Simulation.RollingStocks
         // Icik
         public bool CircuitBreakerOn = false;
         public bool PantographDown = true;
-        public double PantographCriticalVoltage;
-        public double MaxLineVoltage0;
+        public double PantographCriticalVoltage;       
         public float VoltageSprung = 1.0f;
         public float TimeCriticalVoltage = 0;
         public float TimeCriticalVoltage0 = 0;
@@ -68,6 +67,9 @@ namespace Orts.Simulation.RollingStocks
         public float Delta2 = 0;
         public float Step0;
         public float Step1;
+        public double MaxLineVoltage0;
+        public double MaxLineVoltage1;
+        public float PantographVoltageV;
 
         public MSTSElectricLocomotive(Simulator simulator, string wagFile) :
             base(simulator, wagFile)
@@ -199,6 +201,33 @@ namespace Orts.Simulation.RollingStocks
         {
             if (IsPlayerTrain)
             {
+                // Pokud má lokomotiva napěťový filtr
+                if (EDBIndependent && PowerOnFilter > PowerOnFilterCapacityLimit)
+                {
+                    // Uchová informaci o napětí pro filtr
+                    if (PowerOn)
+                        MaxLineVoltage1 = PowerSupply.PantographVoltageV;
+                    
+                    // Rychlost padání napětí při vypnutém HV
+                    if (!CircuitBreakerOn && PantographVoltageV > PowerSupply.PantographVoltageV && MaxLineVoltage1 > 0)
+                    {
+                        PantographVoltageV = (float)MaxLineVoltage1;
+                        MaxLineVoltage1 -= 25000 * elapsedClockSeconds; // 25000V za 1s
+                        if (MaxLineVoltage1 < 0) MaxLineVoltage1 = 0;
+                    }
+                    // Rychlost padání napětí při vypnutém sběrači
+                    else if (CircuitBreakerOn && PowerSupply.PantographVoltageV < MaxLineVoltage0 && MaxLineVoltage1 > 0)
+                    {
+                        PantographVoltageV = (float)MaxLineVoltage1;
+                        MaxLineVoltage1 -= 500 * elapsedClockSeconds; // 500V za 1s
+                        if (MaxLineVoltage1 < 2150) MaxLineVoltage1 = 2150;
+                    }
+                    else 
+                        PantographVoltageV = PowerSupply.PantographVoltageV;                    
+                }
+                else
+                    PantographVoltageV = PowerSupply.PantographVoltageV;
+
                 // Zákmit na voltmetru            
                 if (PowerSupply.PantographVoltageV < 1)
                 {
@@ -255,7 +284,7 @@ namespace Orts.Simulation.RollingStocks
                 // Výpočet napětí v systému lokomotivy a drátech
                 Simulator.TRK.Tr_RouteFile.MaxLineVoltage = MaxLineVoltage0 * VoltageSprung - (Delta1 * Delta2);
                 //Simulator.TRK.Tr_RouteFile.MaxLineVoltage = MaxLineVoltage0 * VoltageSprung;
-
+                
                 if (PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closed) CircuitBreakerOn = true;
                 else CircuitBreakerOn = false;
 
@@ -699,7 +728,7 @@ namespace Orts.Simulation.RollingStocks
             switch (cvc.ControlType)
             {
                 case CABViewControlTypes.LINE_VOLTAGE:
-                    data = PowerSupply.PantographVoltageV;
+                    data = PantographVoltageV;
                     if (cvc.Units == CABViewControlUnits.KILOVOLTS)
                         data /= 1000;
                     break;
