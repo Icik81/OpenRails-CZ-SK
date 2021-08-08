@@ -448,6 +448,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                 if (Locomotive.AbsSpeedMpS == 0 && initTest == InitTest.Passed && MirelType == Type.Full)
                 {
                     StartReducingSpeed = true;
+                    modelingSpeedCurve = false;
                 }
                 if (Locomotive.AbsSpeedMpS > 0 && !modelingSpeedCurve)
                 {
@@ -1650,7 +1651,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
         protected bool flashingByMaxSpeed = false;
         protected void MirelCheck(float elapsedTimeSeconds)
         {
-            if (flashing && MpS.ToKpH(Locomotive.AbsSpeedMpS) < MirelMaximumSpeed)
+            if (flashing && MpS.ToKpH(Locomotive.AbsSpeedMpS) < MirelMaximumSpeed && !driveModeSetup && !MaxSpeedSetup)
             {
                 flashing = false;
                 mirelBeeping = false;
