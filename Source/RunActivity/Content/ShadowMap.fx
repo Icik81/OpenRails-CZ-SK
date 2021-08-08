@@ -31,9 +31,9 @@ texture  ImageTexture;
 sampler ImageSampler = sampler_state
 {
 	Texture = (ImageTexture);
-	MagFilter = Linear;
+	MagFilter = Anisotropic;
 	MinFilter = Anisotropic;
-	MipFilter = Linear;
+	MipFilter = Anisotropic;
 	MaxAnisotropy = 16;
 };
 
@@ -41,9 +41,9 @@ texture  BlurTexture;
 sampler ShadowMapSampler = sampler_state
 {
 	Texture = (BlurTexture);
-	MagFilter = Linear;
-	MinFilter = Linear;
-	MipFilter = Point;
+	MagFilter = Anisotropic;
+	MinFilter = Anisotropic;
+	MipFilter = Anisotropic;
 };
 
 ////////////////////    V E R T E X   I N P U T S    ///////////////////////////
@@ -132,10 +132,10 @@ VERTEX_OUTPUT_BLUR VSShadowMapBlur(in VERTEX_INPUT_BLUR In)
 
 	Out.Position = mul(In.Position, WorldViewProjection);
 	Out.SampleCentre = offsetTexCoord * ImageBlurStep;
-	Out.Sample_03.xy = (offsetTexCoord - float2(1.5, 0)) * ImageBlurStep;
-	Out.Sample_03.zw = (offsetTexCoord + float2(1.5, 0)) * ImageBlurStep;
-	Out.Sample_47.xy = (offsetTexCoord - float2(0, 1.5)) * ImageBlurStep;
-	Out.Sample_47.zw = (offsetTexCoord + float2(0, 1.5)) * ImageBlurStep;
+	Out.Sample_03.xy = (offsetTexCoord - float2(1.7, 0)) * ImageBlurStep;
+	Out.Sample_03.zw = (offsetTexCoord + float2(1.7, 0)) * ImageBlurStep;
+	Out.Sample_47.xy = (offsetTexCoord - float2(0, 1.7)) * ImageBlurStep;
+	Out.Sample_47.zw = (offsetTexCoord + float2(0, 1.7)) * ImageBlurStep;
 
 	return Out;
 }
@@ -160,10 +160,10 @@ float4 PSShadowMapBlocker() : COLOR0
 float4 PSShadowMapBlur(in VERTEX_OUTPUT_BLUR In) : COLOR0
 {
 	float2 centreTap =	tex2D(ShadowMapSampler, In.SampleCentre).rg	* 0.4430448;
-	float2 tap01 =		tex2D(ShadowMapSampler, In.Sample_03.xy).rg * 0.1392388;
-	float2 tap23 =		tex2D(ShadowMapSampler, In.Sample_03.zw).rg * 0.1392388;
-	float2 tap45 =		tex2D(ShadowMapSampler, In.Sample_47.xy).rg * 0.1392388;
-	float2 tap67 =		tex2D(ShadowMapSampler, In.Sample_47.zw).rg * 0.1392388;
+	float2 tap01 =		tex2D(ShadowMapSampler, In.Sample_03.xy).rg * 0.1392088;
+	float2 tap23 =		tex2D(ShadowMapSampler, In.Sample_03.zw).rg * 0.1392088;
+	float2 tap45 =		tex2D(ShadowMapSampler, In.Sample_47.xy).rg * 0.1392088;
+	float2 tap67 =		tex2D(ShadowMapSampler, In.Sample_47.zw).rg * 0.1392088;
 		
 	return float4(centreTap + tap01 + tap23 + tap45 + tap67, 0, 0);
 }

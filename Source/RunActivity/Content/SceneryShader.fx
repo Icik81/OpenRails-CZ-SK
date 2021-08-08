@@ -55,57 +55,64 @@ float    ReferenceAlpha;
 texture  ImageTexture;
 texture  OverlayTexture;
 float	 OverlayScale;
+float	 MaxShadowBrightnes;
+
 
 sampler Image = sampler_state
 {
 	Texture = (ImageTexture);
-	MagFilter = Linear;
+	MagFilter = Anisotropic;
 	MinFilter = Anisotropic;
-	MipFilter = Linear;
+	MipFilter = Anisotropic;
 	MaxAnisotropy = 16;
 };
 
 sampler Overlay = sampler_state
 {
 	Texture = (OverlayTexture);
-	MagFilter = Linear;
-	MinFilter = Linear;
-	MipFilter = Linear;
+	MagFilter = Anisotropic;
+	MinFilter = Anisotropic;
+	MipFilter = Anisotropic;
 	MipLodBias = 0;
 	AddressU = Wrap;
 	AddressV = Wrap;
+	MaxAnisotropy = 16;
 };
 
 sampler ShadowMap0 = sampler_state
 {
 	Texture = (ShadowMapTexture0);
-	MagFilter = Linear;
-	MinFilter = Linear;
-	MipFilter = Linear;
+	MagFilter = Anisotropic;
+	MinFilter = Anisotropic;
+	MipFilter = Anisotropic;
+	MaxAnisotropy = 16;
 };
 
 sampler ShadowMap1 = sampler_state
 {
 	Texture = (ShadowMapTexture1);
-	MagFilter = Linear;
-	MinFilter = Linear;
-	MipFilter = Linear;
+	MagFilter = Anisotropic;
+	MinFilter = Anisotropic;
+	MipFilter = Anisotropic;
+	MaxAnisotropy = 16;
 };
 
 sampler ShadowMap2 = sampler_state
 {
 	Texture = (ShadowMapTexture2);
-	MagFilter = Linear;
-	MinFilter = Linear;
-	MipFilter = Linear;
+	MagFilter = Anisotropic;
+	MinFilter = Anisotropic;
+	MipFilter = Anisotropic;
+	MaxAnisotropy = 16;
 };
 
 sampler ShadowMap3 = sampler_state
 {
 	Texture = (ShadowMapTexture3);
-	MagFilter = Linear;
-	MinFilter = Linear;
-	MipFilter = Linear;
+	MagFilter = Anisotropic;
+	MinFilter = Anisotropic;
+	MipFilter = Anisotropic;
+	MaxAnisotropy = 16;
 };
 
 ////////////////////    V E R T E X   I N P U T S    ///////////////////////////
@@ -170,19 +177,21 @@ void _VSNormalProjection(in VERTEX_INPUT In, inout VERTEX_OUTPUT Out)
 void _VSSignalProjection(uniform bool Glow, in VERTEX_INPUT_SIGNAL In, inout VERTEX_OUTPUT Out)
 {
 	// Project position, normal and copy texture coords
+	In.Position.z = 0.05;
 	float3 relPos = (float3)mul(In.Position, World) - ViewerPos;
-	// Position 1.5cm in front of signal.
-	In.Position.z += 0.015;
+	// Position 5cm in front of signal.
 	if (Glow) {
-		// Position glow a further 1.5cm in front of the light.
-		In.Position.z += 0.015;
+	// Position glow a further 1cm in front of the light.
+		In.Position.z = 0.06;
 		// The glow around signal lights scales according to distance; there is a cut-off which controls when the glow
 		// starts, a scaling factor which determines how quickly it expands (logarithmically), and ZBias_Lighting.x is
 		// an overall "glow power" control which determines the effectiveness of glow on any individual light. This is
 		// used to have different glows in the day and night, and to prevent theatre boxes from glowing!
-		const float GlowCutOffM = 100;
-		const float GlowScalingFactor = 40;
-		In.Position.xyz *= log(1 + max(0, length(relPos) - GlowCutOffM) / GlowScalingFactor) * ZBias_Lighting.x;
+		
+		const float GlowCutOffM = 0;
+		const float GlowScalingFactor = 50;  
+		
+		In.Position.xy *= log(1.6 + max(0, length(relPos) - GlowCutOffM) / GlowScalingFactor) * ZBias_Lighting.x * 0.4;	
 	}
 	Out.Position = mul(In.Position, WorldViewProjection);
 	Out.RelPosition.xyz = relPos;
@@ -207,7 +216,27 @@ void _VSLightsAndShadows(in float4 InPosition, inout VERTEX_OUTPUT Out)
 	Out.LightDir_Fog.xyz = mul(InPosition, World).xyz - HeadlightPosition.xyz;
 
 	// Fog fading
-	Out.LightDir_Fog.w = (2.0 / (1.0 + exp(length(Out.Position.xyz) * Fog.a * -2.0))) - 1.0;
+	float Opar_scena = 2.05; 
+	float Opar_horizont = 2.35;
+	float MaxDim;
+	
+	//Přidá opar do světa, pokud je jasno
+	if (Overcast.x < 0.40)
+		{
+			MaxDim = (1.40 - Overcast.x);
+			Opar_scena = Opar_scena * MaxDim;
+			if (Opar_scena > 2.15) Opar_scena = 2.15;
+		}	
+	else
+	if (Overcast.x > 0.60)
+		{
+			MaxDim = (1.60 - Overcast.x);
+			Opar_scena = Opar_scena * MaxDim;
+			if (Opar_scena < 2.0) Opar_scena = 2.0;
+		}	
+	
+	Out.LightDir_Fog.w = (Opar_scena / (1.0 + exp(length(Out.Position.xyz) * Opar_horizont * Fog.a * -2.0))) - 1.0;
+	if (Out.LightDir_Fog.w > 1.025) Out.LightDir_Fog.w = 1.025;
 
 	// Absolute position for shadow mapping
 	Out.Shadow = mul(InPosition, World);
@@ -366,14 +395,14 @@ float _PSGetShadowEffect(uniform bool NormalLighting, in VERTEX_OUTPUT In)
 	float3 moments;
 	moments = _PSGetShadowEffect(In);
 
-	bool not_shadowed = moments.z - moments.x < 0.00005;
+	bool not_shadowed = moments.z - moments.x < 0.00001;
 	float E_x2 = moments.y;
 	float Ex_2 = moments.x * moments.x;
-	float variance = clamp(E_x2 - Ex_2, 0.00005, 1.0);
+	float variance = clamp(E_x2 - Ex_2, 0.00001, 1.0);
 	float m_d = moments.z - moments.x;
-	float p = pow(variance / (variance + m_d * m_d), 50);
+	float p = pow(variance / (variance + m_d * m_d), 2000);
 	if (NormalLighting)
-		return saturate(not_shadowed + p) * saturate(In.Normal_Light.w * 5 - 2);
+		return saturate(not_shadowed + p) * saturate(In.Normal_Light.w * 5 - 2 );
 	return saturate(not_shadowed + p);
 }
 
@@ -382,9 +411,9 @@ float3 _PSGetOvercastColor(in float4 Color, in VERTEX_OUTPUT In)
 {
 	// Value used to determine equivalent grayscale color.
 	const float3 LumCoeff = float3(0.2125, 0.7154, 0.0721);
-
 	float intensity = dot((float3)Color, LumCoeff);
-	return lerp(intensity, Color.rgb, 0.8) * 0.5;
+
+	return lerp(intensity, Color.rgb, 1.0);	
 }
 
 // Applies the lighting effect of the train's headlights, including
@@ -414,11 +443,12 @@ void _PSSceneryFade(inout float4 Color, in VERTEX_OUTPUT In)
 	Color.a *= saturate((LightVector_ZFar.w - length(In.RelPosition.xyz)) / 50);
 }
 
+
 float4 PSImageTransfer(uniform bool ClampTexCoords, in VERTEX_OUTPUT In) : COLOR0
 {
 	const float FullBrightness = 1.0;
-	const float ShadowBrightness = 0.5;
-
+	const float ShadowBrightness = 0.50;
+ 
 	float4 Color = tex2D(Image, In.TexCoords.xy);
 	if (ClampTexCoords) {
 		// We need to clamp the rendering to within the [0..1] range only.
@@ -426,25 +456,57 @@ float4 PSImageTransfer(uniform bool ClampTexCoords, in VERTEX_OUTPUT In) : COLOR
 			Color.a = 0;
 		}
 	}
-
 	// Alpha testing:
 	clip(Color.a - ReferenceAlpha);
+
 	// Ambient and shadow effects apply first; night-time textures cancel out all normal lighting.
-	float3 litColor = Color.rgb * lerp(ShadowBrightness, FullBrightness, saturate(_PSGetAmbientEffect(In) * _PSGetShadowEffect(true, In) + ImageTextureIsNight));
+	if (Fog.a != 0) MaxShadowBrightnes = Fog.a * 1000 * 3.0;
+	if (Fog.a < 0.0001) MaxShadowBrightnes = 0.0001 * 1000 * 3.0;
+	if (MaxShadowBrightnes > 1.0) MaxShadowBrightnes = 1.0;
+
+	float3 litColor = Color.rgb * lerp(MaxShadowBrightnes * 0.9, FullBrightness, saturate(_PSGetAmbientEffect(In) * _PSGetShadowEffect(true, In) + ImageTextureIsNight));
+
 	// Specular effect next.
-	litColor += _PSGetSpecularEffect(In) * _PSGetShadowEffect(true, In);
+	litColor += _PSGetSpecularEffect(In) * _PSGetShadowEffect(true, In) * 1.0f;
+	
 	// Overcast blanks out ambient, shadow and specular effects (so use original Color).
-	litColor = lerp(litColor, _PSGetOvercastColor(Color, In), Overcast.x);
+	if (Overcast.x != 0) MaxShadowBrightnes = Overcast.x * 1.0;
+	if (Overcast.x < 0.01) MaxShadowBrightnes = 0.01 * 1.0;
+	if (MaxShadowBrightnes > 1.0) MaxShadowBrightnes = 1.0;
+		
+	litColor = lerp(litColor, _PSGetOvercastColor(Color, In), MaxShadowBrightnes);
+
 	// Night-time darkens everything, except night-time textures.
 	litColor *= NightColorModifier;
+	
+	//Ubere světlo, pokud je mlha 
+	float MaxDim1 = 0;
+	if (Fog.a > 0) MaxDim1 = Fog.a * 1000 * 2.5;
+	if (MaxDim1 > 1.0) MaxDim1 = 1.0;
+	
+	float MaxDim2 = 0;
+	if (Overcast.x > 0.0) MaxDim2 = Overcast.x * 1.5;
+	if (MaxDim2 > 1.2) MaxDim2 = 1.2;	
+
+	float MaxDim3;
+	MaxDim3 = MaxDim1 + MaxDim2;
+	if (MaxDim3 > 2.6) MaxDim3 = 2.6;
+
+	//Přidá světlo, pokud není mlha
+	litColor.rgb *= 0.6 * (3.0 - MaxDim3);
+	
 	// Headlights effect use original Color.
 	_PSApplyHeadlights(litColor, Color, In);
+
 	// And fogging is last.
 	_PSApplyFog(litColor, In);
 	_PSSceneryFade(Color, In);
+
 	//_PSApplyShadowColor(litColor, In);
 	return float4(litColor, Color.a);
 }
+
+
 
 float4 PSImage(in VERTEX_OUTPUT In) : COLOR0
 {
@@ -458,45 +520,111 @@ float4 PSTransfer(in VERTEX_OUTPUT In) : COLOR0
 
 float4 PSVegetation(in VERTEX_OUTPUT In) : COLOR0
 {
+	const float FullBrightness = 1.0;
+	const float ShadowBrightness = 0.5;
+
 	float4 Color = tex2D(Image, In.TexCoords.xy);
+	
 	// Alpha testing:
 	clip(Color.a - ReferenceAlpha);
-	// Ambient effect applies first; no shadow effect for vegetation; night-time textures cancel out all normal lighting.
-	float3 litColor = Color.rgb * VegetationAmbientModifier;
-	// No specular effect for vegetation.
-	// Overcast blanks out ambient, shadow and specular effects (so use original Color).
-	litColor = lerp(litColor, _PSGetOvercastColor(Color, In), Overcast.x);
+	
+	// Ambient effect applies first; night-time textures cancel out all normal lighting.
+	if (Fog.a != 0) MaxShadowBrightnes = Fog.a * 1000 * 4.5;
+	if (Fog.a < 0.0001) MaxShadowBrightnes = 0.0001 * 1000 * 4.5;
+	if (MaxShadowBrightnes > 1.0) MaxShadowBrightnes = 1.0;
+	
+	float3 litColor = Color.rgb * lerp(MaxShadowBrightnes, FullBrightness, saturate(_PSGetAmbientEffect(In) * _PSGetShadowEffect(true, In) + ImageTextureIsNight));
+	
+	// Specular effect next.
+	litColor += _PSGetSpecularEffect(In) * _PSGetShadowEffect(true, In);
+	
+	// Overcast blanks out ambient, shadow effects (so use original Color).
+	if (Overcast.x != 0) MaxShadowBrightnes = Overcast.x * 1.0;
+	if (Overcast.x < 0.01) MaxShadowBrightnes = 0.01 * 1.0;
+	if (MaxShadowBrightnes > 1.0) MaxShadowBrightnes = 1.0;
+	
+	litColor = lerp(litColor, _PSGetOvercastColor(Color, In), MaxShadowBrightnes);
+
 	// Night-time darkens everything, except night-time textures.
 	litColor *= NightColorModifier;
+	
+	//Ubere světlo, pokud je mlha 
+	float MaxDim1 = 0;
+	if (Fog.a > 0) MaxDim1 = Fog.a * 1000 * 2.5;
+	if (MaxDim1 > 1.0) MaxDim1 = 1.0;
+	
+	float MaxDim2 = 0;
+	if (Overcast.x > 0.0) MaxDim2 = Overcast.x * 1.5;
+	if (MaxDim2 > 1.2) MaxDim2 = 1.2;	
+
+	float MaxDim3;
+	MaxDim3 = MaxDim1 + MaxDim2;
+	if (MaxDim3 > 2.6) MaxDim3 = 2.6;
+
+	//Přidá světlo, pokud není mlha
+	litColor.rgb *= 0.6 * (3.0 - MaxDim3);
+
 	// Headlights effect use original Color.
 	_PSApplyHeadlights(litColor, Color, In);
+
 	// And fogging is last.
 	_PSApplyFog(litColor, In);
 	_PSSceneryFade(Color, In);
+
+	//_PSApplyShadowColor(litColor, In);
 	return float4(litColor, Color.a);
 }
 
 float4 PSTerrain(in VERTEX_OUTPUT In) : COLOR0
 {
 	const float FullBrightness = 1.0;
-	const float ShadowBrightness = 0.5;
+	const float ShadowBrightness = 0.50;
 
 	float4 Color = tex2D(Image, In.TexCoords.xy);
+
 	// Ambient and shadow effects apply first; night-time textures cancel out all normal lighting.
-	float3 litColor = Color.rgb * lerp(ShadowBrightness, FullBrightness, saturate(_PSGetAmbientEffect(In) * _PSGetShadowEffect(true, In) + ImageTextureIsNight));
+	if (Fog.a != 0) MaxShadowBrightnes = Fog.a * 1000 * 3.0;
+	if (Fog.a < 0.0001) MaxShadowBrightnes = 0.0001 * 1000 * 3.0;
+	if (MaxShadowBrightnes > 1.0) MaxShadowBrightnes = 1.0;
+	
+	float3 litColor = Color.rgb * lerp(MaxShadowBrightnes, FullBrightness, saturate(_PSGetAmbientEffect(In) * _PSGetShadowEffect(true, In) + ImageTextureIsNight));
+
 	// No specular effect for terrain.
+
 	// Overcast blanks out ambient, shadow and specular effects (so use original Color).
-	litColor = lerp(litColor, _PSGetOvercastColor(Color, In), Overcast.x);
+	if (Overcast.x != 0) MaxShadowBrightnes = Overcast.x * 1.00;
+	if (Overcast.x < 0.01) MaxShadowBrightnes = 0.01 * 1.00;
+	if (MaxShadowBrightnes > 1.0) MaxShadowBrightnes = 1.0;
+	
+	litColor = lerp(litColor, _PSGetOvercastColor(Color, In), MaxShadowBrightnes);
+
 	// Night-time darkens everything, except night-time textures.
 	litColor *= NightColorModifier;
-	// Overlay image for terrain.
-	litColor.rgb *= (float3)tex2D(Overlay, In.TexCoords.xy * OverlayScale) * 2;
+
+	//Ubere světlo, pokud je mlha 
+	float MaxDim1 = 0;
+	if (Fog.a > 0) MaxDim1 = Fog.a * 1000 * 2.5;
+	if (MaxDim1 > 1.0) MaxDim1 = 1.0;
+	
+	float MaxDim2 = 0;
+	if (Overcast.x > 0.0) MaxDim2 = Overcast.x * 1.5;
+	if (MaxDim2 > 1.2) MaxDim2 = 1.2;	
+
+	float MaxDim3;
+	MaxDim3 = MaxDim1 + MaxDim2;
+	if (MaxDim3 > 2.6) MaxDim3 = 2.6;
+
+	//Přidá světlo, pokud není mlha
+	litColor.rgb *= (float3)tex2D(Overlay, In.TexCoords.xy * OverlayScale) * (3.0 - MaxDim3);
+
 	// Headlights effect use original Color.
 	_PSApplyHeadlights(litColor, Color, In);
+
 	// And fogging is last.
 	_PSApplyFog(litColor, In);
 	_PSSceneryFade(Color, In);
-	//if _PSApplyShadowColor(litColor, In);
+
+	//_PSApplyShadowColor(litColor, In);
 	return float4(litColor, Color.a);
 }
 
@@ -505,17 +633,27 @@ float4 PSDarkShade(in VERTEX_OUTPUT In) : COLOR0
 	const float ShadowBrightness = 0.5;
 
 	float4 Color = tex2D(Image, In.TexCoords.xy);
+
 	// Alpha testing:
 	clip(Color.a - ReferenceAlpha);
+
 	// Fixed ambient and shadow effects at darkest level.
 	float3 litColor = Color.rgb * ShadowBrightness;
+
 	// No specular effect for dark shade.
+
 	// Overcast blanks out ambient, shadow and specular effects (so use original Color).
-	litColor = lerp(litColor, _PSGetOvercastColor(Color, In), Overcast.x);
+	if (Overcast.x != 0) MaxShadowBrightnes = Overcast.x * 1.50;
+	if (MaxShadowBrightnes > 0.5) MaxShadowBrightnes = 0.5;
+
+	litColor = lerp(litColor, _PSGetOvercastColor(Color, In), MaxShadowBrightnes);
+
 	// Night-time darkens everything, except night-time textures.
 	litColor *= NightColorModifier;
+
 	// Headlights effect use original Color.
 	_PSApplyHeadlights(litColor, Color, In);
+
 	// And fogging is last.
 	_PSApplyFog(litColor, In);
 	_PSSceneryFade(Color, In);
@@ -527,17 +665,27 @@ float4 PSHalfBright(in VERTEX_OUTPUT In) : COLOR0
 	const float HalfShadowBrightness = 0.75;
 
 	float4 Color = tex2D(Image, In.TexCoords.xy);
+
 	// Alpha testing:
 	clip(Color.a - ReferenceAlpha);
+
 	// Fixed ambient and shadow effects at mid-dark level.
 	float3 litColor = Color.rgb * HalfShadowBrightness;
+
 	// No specular effect for half-bright.
+
 	// Overcast blanks out ambient, shadow and specular effects (so use original Color).
-	litColor = lerp(litColor, _PSGetOvercastColor(Color, In), Overcast.y);
+	if (Overcast.y != 0) MaxShadowBrightnes = Overcast.y * 1.50;
+	if (MaxShadowBrightnes > 0.75) MaxShadowBrightnes = 0.75;
+
+	litColor = lerp(litColor, _PSGetOvercastColor(Color, In), MaxShadowBrightnes);
+
 	// Night-time darkens everything, except night-time textures.
 	litColor *= HalfNightColorModifier;
+
 	// Headlights effect use original Color.
 	_PSApplyHeadlights(litColor, Color, In);
+
 	// And fogging is last.
 	_PSApplyFog(litColor, In);
 	_PSSceneryFade(Color, In);
@@ -547,15 +695,20 @@ float4 PSHalfBright(in VERTEX_OUTPUT In) : COLOR0
 float4 PSFullBright(in VERTEX_OUTPUT In) : COLOR0
 {
 	float4 Color = tex2D(Image, In.TexCoords.xy);
+
 	// Alpha testing:
 	clip(Color.a - ReferenceAlpha);
+
 	// Fixed ambient and shadow effects at brightest level.
 	float3 litColor = Color.rgb;
+
 	// No specular effect for full-bright.
 	// No overcast effect for full-bright.
 	// No night-time effect for full-bright.
+
 	// Headlights effect use original Color.
 	_PSApplyHeadlights(litColor, Color, In);
+
 	// And fogging is last.
 	_PSApplyFog(litColor, In);
 	_PSSceneryFade(Color, In);
@@ -565,11 +718,15 @@ float4 PSFullBright(in VERTEX_OUTPUT In) : COLOR0
 float4 PSSignalLight(in VERTEX_OUTPUT In) : COLOR0
 {
 	float4 Color = tex2D(Image, In.TexCoords.xy);
+
 	// Alpha testing:
 	clip(Color.a - ReferenceAlpha);
+
 	// No ambient and shadow effects for signal lights.
+
 	// Apply signal coloring effect.
-	float3 litColor = lerp(Color.rgb, In.Color.rgb, Color.r);
+	float3 litColor = lerp(Color.rgb * 0.25, In.Color.rgb, Color.r);
+
 	// No specular effect, overcast effect, night-time darkening, headlights or fogging effect for signal lights.
 	return float4(litColor, Color.a * SignalLightIntensity);
 }
@@ -588,6 +745,7 @@ technique ImagePS {
 		PixelShader = compile ps_4_0_level_9_3 PSImage();
 	}
 }
+
 
 technique TransferPS {
 	pass Pass_0 {

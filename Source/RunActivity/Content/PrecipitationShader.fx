@@ -34,7 +34,7 @@ float2 cameraTileXZ;
 float currentTime;
 
 static float2 texCoords[4] = { float2(0, 0), float2(1, 0), float2(1, 1), float2(0, 1) };
-static float2 offsets[4] = { float2(-0.5f, 0.5f), float2(0.5f, 0.5f), float2(0.5f, -0.5f), float2(-0.5f, -0.5f) };
+static float2 offsets[4] = { float2(-5.0f, 5.0f), float2(5.0f, 5.0f), float2(5.0f, -5.0f), float2(-5.0f, -5.0f) };
 
 texture precipitation_Tex;
 
@@ -78,10 +78,10 @@ VERTEX_OUTPUT VSPrecipitation(in VERTEX_INPUT In)
 	float3 right = invView[0].xyz;
 	float3 up = normalize(In.StartPosition_StartTime.xyz - In.EndPosition_EndTime.xyz);
 	
-	In.StartPosition_StartTime.xyz = lerp(In.StartPosition_StartTime.xyz, In.EndPosition_EndTime.xyz, age);
+	In.StartPosition_StartTime.xyz = lerp(In.StartPosition_StartTime.xyz, In.EndPosition_EndTime.xyz - 5, age );
 	In.StartPosition_StartTime.xz += (cameraTileXZ - In.TileXZ_Vertex.xy) * float2(-2048, 2048);
-	In.StartPosition_StartTime.xyz += right * offsets[vertIdx].x * particleSize;
-	In.StartPosition_StartTime.xyz += up * offsets[vertIdx].y * particleSize;
+	In.StartPosition_StartTime.xyz += right * offsets[vertIdx].x * particleSize * 0.03;
+	In.StartPosition_StartTime.xyz += up * offsets[vertIdx].y * particleSize * 0.3;
 	
 	Out.Position = mul(float4(In.StartPosition_StartTime.xyz, 1), worldViewProjection);
 	Out.TexCoord = texCoords[vertIdx];
