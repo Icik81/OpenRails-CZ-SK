@@ -32,6 +32,7 @@ float3   Light2Col;     // Light 2 color
 float2   TexPos;        // Texture bounding rectangle
 float2   TexSize;       // Texture bounding rectangle
 texture  ImageTexture;
+float 	 MaxDim = 1.0;
 
 sampler ImageSampler = sampler_state
 {
@@ -56,10 +57,13 @@ struct PIXEL_INPUT
 
 float4 PSCabShader(PIXEL_INPUT In) : COLOR0
 {
-	float4 origColor = tex2D(ImageSampler, In.TexCoords) * In.Color;
-	float3 shadColor = origColor.rgb * NightColorModifier;
+	if (NightColorModifier < 0.5) MaxDim = (0.5 + NightColorModifier);	
+	if (MaxDim < 0.1) MaxDim = 0.1;
 
-	if (LightOn)
+	float4 origColor = tex2D(ImageSampler, In.TexCoords) * In.Color * 1.05;
+	float3 shadColor = 0.9 * origColor.rgb * NightColorModifier * MaxDim * MaxDim * MaxDim;
+	
+ 	if (LightOn)
 	{
 		float2 orig = In.TexCoords * TexSize + TexPos;
 
@@ -75,7 +79,7 @@ float4 PSCabShader(PIXEL_INPUT In) : COLOR0
 		shadColor += origColor.rgb * lightEffect;
 	}
 
-	return float4(min(shadColor, origColor.rgb * 1.2), origColor.a);
+	return float4(min(shadColor, origColor.rgb), origColor.a - 0.001);
 }
 
 ////////////////////    T E C H N I Q U E S    /////////////////////////////////

@@ -173,7 +173,7 @@ float4 PSSky(VERTEX_OUTPUT In) : COLOR
 	float4 starColor = tex2D(StarMapSampler, TexCoord);
 	
 	// Adjust sky color brightness for time of day
-	skyColor *= SkyColor.x;
+	skyColor *= SkyColor.x * 0.85;
 	
 	// Stars
 	skyColor = lerp(starColor, skyColor, SkyColor.y);
@@ -192,8 +192,8 @@ float4 PSSky(VERTEX_OUTPUT In) : COLOR
 	// increase orange at sunset - fog limits the effect
 	if (LightVector.x < 0)
 	{
-		skyColor.r += SkyColor.z * angleRcp * Fog.z;
-		skyColor.g += skyColor.r * Fog.w;
+		skyColor.r += SkyColor.z * angleRcp * Fog.z * 0.01;
+		skyColor.g += skyColor.r * Fog.w * 0.01;
 	}
 	
 	// Keep alpha opague
@@ -223,11 +223,11 @@ float4 PSMoon(VERTEX_OUTPUT In) : COLOR
 float4 PSClouds(VERTEX_OUTPUT In) : COLOR
 {
 	// Get the color information for the current pixel
-	// Cloud map is tiled. Tiling factor: 4
+	// Cloud map is tiled. Tiling factor: 2
 	// Move cloud map to suit wind conditions
 	float2 TexCoord = float2(In.TexCoord.x * 4 + WindDisplacement.x, In.TexCoord.y * 4 + WindDisplacement.y);
 	float4 cloudColor = tex2D(CloudMapSampler, TexCoord);
-	float alpha = cloudColor.a;
+	float alpha = cloudColor.a * 0.1;
 	
     // Fogging
     cloudColor.rgb = lerp(cloudColor.rgb, FogColor.rgb, saturate((1 - In.Normal.y) * Fog.x));
@@ -238,7 +238,7 @@ float4 PSClouds(VERTEX_OUTPUT In) : COLOR
 		alpha += Overcast.x;
 		// Reduce contrast and brightness
 		float3 color = ContrastSaturationBrightness(cloudColor.xyz, 1.0, Overcast.z, Overcast.y); // Brightness and saturation are really need to be exchanged?
-		cloudColor = float4(color, alpha);
+		cloudColor = float4(color * 1.0, alpha);
 	}
 	else
 	{
@@ -257,21 +257,21 @@ float4 PSClouds(VERTEX_OUTPUT In) : COLOR
 
 technique Sky {
    pass Pass_0 {
-	  VertexShader = compile vs_4_0_level_9_3 VSSky();
-	  PixelShader = compile ps_4_0_level_9_3 PSSky();
+	  VertexShader = compile vs_4_0_level_9_1 VSSky();
+	  PixelShader = compile ps_4_0_level_9_1 PSSky();
    }
 }
 
 technique Moon {
    pass Pass_0 {
-	  VertexShader = compile vs_4_0_level_9_3 VSMoon();
-	  PixelShader = compile ps_4_0_level_9_3 PSMoon();
+	  VertexShader = compile vs_4_0_level_9_1 VSMoon();
+	  PixelShader = compile ps_4_0_level_9_1 PSMoon();
    }
 }
 
 technique Clouds {
    pass Pass_0 {
-	  VertexShader = compile vs_4_0_level_9_3 VSSky();
-	  PixelShader = compile ps_4_0_level_9_3 PSClouds();
+	  VertexShader = compile vs_4_0_level_9_1 VSSky();
+	  PixelShader = compile ps_4_0_level_9_1 PSClouds();
    }
 }
