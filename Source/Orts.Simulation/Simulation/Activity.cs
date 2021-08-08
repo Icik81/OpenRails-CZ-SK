@@ -592,10 +592,10 @@ namespace Orts.Simulation
                 TempSpeedPostItems.Add((TempSpeedPostItem)newSpeedPostItems[0]);
                 ComputeTablePosition((TempSpeedPostItem)newSpeedPostItems[1]); 
                 TempSpeedPostItems.Add((TempSpeedPostItem)newSpeedPostItems[1]);
-                ComputeTablePosition((TempSpeedPostItem)newSpeedPostItems[2]);
-                TempSpeedPostItems.Add((TempSpeedPostItem)newSpeedPostItems[2]);
-                ComputeTablePosition((TempSpeedPostItem)newSpeedPostItems[3]);
-                TempSpeedPostItems.Add((TempSpeedPostItem)newSpeedPostItems[3]);
+                //ComputeTablePosition((TempSpeedPostItem)newSpeedPostItems[2]);
+                //TempSpeedPostItems.Add((TempSpeedPostItem)newSpeedPostItems[2]);
+                //ComputeTablePosition((TempSpeedPostItem)newSpeedPostItems[3]);
+                //TempSpeedPostItems.Add((TempSpeedPostItem)newSpeedPostItems[3]);
 
                 ComputeTablePosition((TempSpeedPostItem)speedWarningPostItem); 
                 TempSpeedPostItems.Add((TempSpeedPostItem)speedWarningPostItem);
