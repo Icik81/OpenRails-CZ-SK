@@ -1050,7 +1050,7 @@ namespace Orts.Simulation
                             // Lidé si sami otevírají dveře                      
                             if (remaining > 5 && CycleTimeOpen == 0)
                             {
-                                if (!loco.CentralHandlingDoors && MyPlayerTrain.StationStops.Count > 0)
+                                if (MyPlayerTrain.StationStops.Count > 0)
                                 {
                                     CycleTimeClosed = 0;
                                     StationStop thisStation = MyPlayerTrain.StationStops[0];

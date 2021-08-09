@@ -16115,15 +16115,18 @@ namespace Orts.Simulation.Physics
             foreach (TrainCar car in Cars)
             {
                 var mstsWagon = car as MSTSWagon;
-                if (!car.Flipped && right || car.Flipped && !right)
+                if (!mstsWagon.FreightDoors)
                 {
-                    mstsWagon.DoorRightOpen = open;
+                    if (!car.Flipped && right || car.Flipped && !right)
+                    {
+                        mstsWagon.DoorRightOpen = open;
+                    }
+                    else
+                    {
+                        mstsWagon.DoorLeftOpen = open;
+                    }
+                    mstsWagon.SignalEvent(open ? Event.DoorOpen : Event.DoorClose); // hook for sound trigger
                 }
-                else
-                {
-                    mstsWagon.DoorLeftOpen = open;
-                }
-                mstsWagon.SignalEvent(open ? Event.DoorOpen : Event.DoorClose); // hook for sound trigger
             }
         }
 
@@ -16133,7 +16136,7 @@ namespace Orts.Simulation.Physics
             for (int i = 0; i < Cars.Count; i++)
             {
                 var wagon = (Cars[i] as MSTSWagon);
-                if (!(wagon is MSTSLocomotive))
+                if (!(wagon is MSTSLocomotive) && !wagon.FreightDoors)
                 {
                     bool ChanceToOpenDoor = false;
                     if (Simulator.Random.Next(0, 2) == 0)

@@ -146,6 +146,7 @@ namespace Orts.Simulation.RollingStocks
         public bool OpenedRightDoor = false;
         public float AirlossByHandlingDoorsPSIpS;
         public bool AutomaticDoors;
+        public bool FreightDoors;
 
         bool TenderWeightInitialize = true;
         float TenderWagonMaxCoalMassKG;
@@ -1507,6 +1508,7 @@ namespace Orts.Simulation.RollingStocks
                 case "wagon(powerreductionbyauxequipment": PowerReductionByAuxEquipment = stf.ReadFloatBlock(STFReader.UNITS.Power, null); break;
                 case "wagon(airlossbyhandlingdoors": AirlossByHandlingDoorsPSIpS = stf.ReadFloatBlock(STFReader.UNITS.PressureRateDefaultPSIpS, null); break;
                 case "wagon(automaticdoors": AutomaticDoors = stf.ReadBoolBlock(false); break;
+                case "wagon(freightdoors": FreightDoors = stf.ReadBoolBlock(false); break;
             }
         }
 
@@ -1687,6 +1689,7 @@ namespace Orts.Simulation.RollingStocks
             PowerReductionByAuxEquipment = copy.PowerReductionByAuxEquipment;
             AirlossByHandlingDoorsPSIpS = copy.AirlossByHandlingDoorsPSIpS;
             AutomaticDoors = copy.AutomaticDoors;
+            FreightDoors = copy.FreightDoors;
 
             if (copy.IntakePointList != null)
             {
@@ -3469,14 +3472,31 @@ namespace Orts.Simulation.RollingStocks
 
         public void ToggleDoorsLeft()
         {
-            if (BrakeSystem.AirOK_DoorCanManipulate)
+            // Icik
+            DoorLeftOpen = !DoorLeftOpen;
+            if (SpeedMpS > 0)
             {
-                DoorLeftOpen = !DoorLeftOpen;
-                if (Simulator.PlayerLocomotive == this || Train.LeadLocomotive == this) // second part for remote trains
-                {//inform everyone else in the train
+                if (DoorLeftOpen)
+                {
                     foreach (var car in Train.Cars)
                     {
                         var mstsWagon = car as MSTSWagon;
+                        if (mstsWagon.AutomaticDoors)
+                        {
+                            mstsWagon.DoorLeftOpen = false;
+                            SignalEvent(Event.DoorClose);
+                        }
+                    }
+                }
+                return;
+            }
+            if (Simulator.PlayerLocomotive == this || Train.LeadLocomotive == this) // second part for remote trains
+            {//inform everyone else in the train
+                foreach (var car in Train.Cars)
+                {
+                    var mstsWagon = car as MSTSWagon;
+                    if (BrakeSystem.AirOK_DoorCanManipulate && mstsWagon.AutomaticDoors || mstsWagon.FreightDoors)
+                    {
                         if (car != this && mstsWagon != null)
                         {
                             if (!car.Flipped ^ Flipped)
@@ -3491,30 +3511,46 @@ namespace Orts.Simulation.RollingStocks
                             }
                         }
                     }
-                    if (DoorLeftOpen) SignalEvent(Event.DoorOpen); // hook for sound trigger
-                    else SignalEvent(Event.DoorClose);
-                    if (Simulator.PlayerLocomotive == this)
-                    {
-                        if (!GetCabFlipped()) Simulator.Confirmer.Confirm(CabControl.DoorsLeft, DoorLeftOpen ? CabSetting.On : CabSetting.Off);
-                        else Simulator.Confirmer.Confirm(CabControl.DoorsRight, DoorLeftOpen ? CabSetting.On : CabSetting.Off);
-                    }
+                }
+                if (DoorLeftOpen) SignalEvent(Event.DoorOpen); // hook for sound trigger
+                else SignalEvent(Event.DoorClose);
+                if (Simulator.PlayerLocomotive == this)
+                {
+                    if (!GetCabFlipped()) Simulator.Confirmer.Confirm(CabControl.DoorsLeft, DoorLeftOpen ? CabSetting.On : CabSetting.Off);
+                    else Simulator.Confirmer.Confirm(CabControl.DoorsRight, DoorLeftOpen ? CabSetting.On : CabSetting.Off);
                 }
             }
         }
-
         public void ToggleDoorsRight()
         {
-            if (BrakeSystem.AirOK_DoorCanManipulate)
+            // Icik
+            DoorRightOpen = !DoorRightOpen;
+            if (SpeedMpS > 0)
             {
-                DoorRightOpen = !DoorRightOpen;
-                if (Simulator.PlayerLocomotive == this || Train.LeadLocomotive == this) // second part for remote trains
-                { //inform everyone else in the train
-                    foreach (TrainCar car in Train.Cars)
+                if (DoorRightOpen)
+                {
+                    foreach (var car in Train.Cars)
                     {
                         var mstsWagon = car as MSTSWagon;
+                        if (mstsWagon.AutomaticDoors)
+                        {
+                            mstsWagon.DoorRightOpen = false;
+                            SignalEvent(Event.DoorClose);
+                        }
+                    }
+                }
+                return;
+            }
+            if (Simulator.PlayerLocomotive == this || Train.LeadLocomotive == this) // second part for remote trains
+            { //inform everyone else in the train
+                foreach (TrainCar car in Train.Cars)
+                {
+                    var mstsWagon = car as MSTSWagon;
+                    if (BrakeSystem.AirOK_DoorCanManipulate && mstsWagon.AutomaticDoors || mstsWagon.FreightDoors)
+                    {
                         if (car != this && mstsWagon != null)
                         {
-                            if (!car.Flipped ^ Flipped)
+                            if (!car.Flipped ^ Flipped && SpeedMpS == 0)
                             {
                                 mstsWagon.DoorRightOpen = DoorRightOpen;
                                 mstsWagon.SignalEvent(DoorRightOpen ? Event.DoorOpen : Event.DoorClose); // hook for sound trigger
@@ -3526,16 +3562,17 @@ namespace Orts.Simulation.RollingStocks
                             }
                         }
                     }
-                    if (DoorRightOpen) SignalEvent(Event.DoorOpen); // hook for sound trigger
-                    else SignalEvent(Event.DoorClose);
-                    if (Simulator.PlayerLocomotive == this)
-                    {
-                        if (!GetCabFlipped()) Simulator.Confirmer.Confirm(CabControl.DoorsRight, DoorRightOpen ? CabSetting.On : CabSetting.Off);
-                        else Simulator.Confirmer.Confirm(CabControl.DoorsLeft, DoorRightOpen ? CabSetting.On : CabSetting.Off);
-                    }
+                }
+                if (DoorRightOpen) SignalEvent(Event.DoorOpen); // hook for sound trigger
+                else SignalEvent(Event.DoorClose);
+                if (Simulator.PlayerLocomotive == this)
+                {
+                    if (!GetCabFlipped()) Simulator.Confirmer.Confirm(CabControl.DoorsRight, DoorRightOpen ? CabSetting.On : CabSetting.Off);
+                    else Simulator.Confirmer.Confirm(CabControl.DoorsLeft, DoorRightOpen ? CabSetting.On : CabSetting.Off);
                 }
             }
         }
+        
 
         public void ToggleMirrors()
         {

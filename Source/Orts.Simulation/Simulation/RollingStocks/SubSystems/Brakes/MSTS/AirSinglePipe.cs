@@ -1625,12 +1625,12 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         sumpv += eng.MainResVolumeM3 * eng.MainResPressurePSI;
                     }
                 }
-                // Testuje propojení napájecích hadic
+                // Testuje propojení napájecích hadic mezi vozy s tlakovými jímkami
                 if (i >= first && i <= last)
                 {
                     if (!brakeSystem.TwoPipesConnection)
                         TwoPipesConnectionBreak = true;
-                }
+                }              
             }
             if (sumv > 0)
                 sumpv /= sumv;
@@ -2066,17 +2066,33 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             {
                 float AirLossDoorL;
                 float AirLossDoorR;
+                var wagon = car as MSTSWagon;
 
-                if ((car as MSTSWagon).DoorLeftOpen)
-                    AirLossDoorL = (car as MSTSWagon).AirlossByHandlingDoorsPSIpS;     
-                else AirLossDoorL = (car as MSTSWagon).AirlossByHandlingDoorsPSIpS;
+                if (lead != null && lead.CentralHandlingDoors && wagon.AutomaticDoors)
+                {
+                    if (wagon.AirlossByHandlingDoorsPSIpS == 0)
+                        wagon.AirlossByHandlingDoorsPSIpS = 0.1f * 14.50377f; // Default 0.1bar/s    
 
-                if ((car as MSTSWagon).DoorRightOpen)
-                   AirLossDoorR = (car as MSTSWagon).AirlossByHandlingDoorsPSIpS;
-                else AirLossDoorR = (car as MSTSWagon).AirlossByHandlingDoorsPSIpS;
+                    if (wagon.DoorLeftOpen)
+                        AirLossDoorL = wagon.AirlossByHandlingDoorsPSIpS; // otevření
+                    else AirLossDoorL = wagon.AirlossByHandlingDoorsPSIpS; // zavření
 
-                //if ((car as MSTSWagon).AutomaticDoors)
-                    TotalAirLoss0 += AirLossDoorL + AirLossDoorR;                
+                    if (wagon.DoorRightOpen)
+                        AirLossDoorR = wagon.AirlossByHandlingDoorsPSIpS; // otevření
+                    else AirLossDoorR = wagon.AirlossByHandlingDoorsPSIpS; // zavření
+
+                    //if (wagon.AutomaticDoors)
+                    TotalAirLoss0 += AirLossDoorL + AirLossDoorR;
+
+                    // Automaticky zavře dveře při vyšší rychlosti než 15km/h
+                    if (lead.SpeedMpS > 15.0f / 3.6f && (wagon.DoorLeftOpen || wagon.DoorRightOpen))
+                    {
+                        wagon.DoorRightOpen = false;                        
+                        wagon.DoorLeftOpen = false;
+                        wagon.SignalEvent(Event.DoorClose); 
+                    }
+
+                }
             }
 
             // Levé dveře
