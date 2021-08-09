@@ -491,7 +491,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                     distanceTravelledWithoutInitTest = Locomotive.DistanceM;
                 }
 
-                if (MirelMaximumSpeed > (MpS.ToKpH(Locomotive.MaxSpeedMpS))) MirelMaximumSpeed = MaxSelectedSpeed = MpS.ToKpH(Locomotive.MaxSpeedMpS);
+                if (MirelMaximumSpeed > (MpS.ToKpH(Locomotive.MaxSpeedMpS))) MirelMaximumSpeed = MaxSelectedSpeed = (float)Math.Round(MpS.ToKpH(Locomotive.MaxSpeedMpS), 0);
 
                 if (confirming != Confirming.None)
                 {
@@ -1184,7 +1184,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                 MirelMaximumSpeed += 5;
                 MaxSelectedSpeed = MirelMaximumSpeed;
                 if (MirelMaximumSpeed > MpS.ToKpH(Locomotive.MaxSpeedMpS))
-                    MirelMaximumSpeed = MpS.ToKpH(Locomotive.MaxSpeedMpS);
+                    MirelMaximumSpeed = (float)Math.Round(MpS.ToKpH(Locomotive.MaxSpeedMpS), 0);
                 UpdateSpeedNumbers((int)MirelMaximumSpeed, false);
                 return;
             }
@@ -1250,7 +1250,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                 {
                     flashing = false;
                     MirelMaximumSpeed = MaxSelectedSpeed;
-                    maxReducedSpeed = MpS.ToKpH(Locomotive.MaxSpeedMpS);
+                    maxReducedSpeed = (float)Math.Round(MpS.ToKpH(Locomotive.MaxSpeedMpS), 0);
                     VYP = true;
                     if (ZAP)
                     {
@@ -1332,7 +1332,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                     flashFullDisplayInProggress = true;
                     if (MaxSelectedSpeed > MpS.ToKpH(Locomotive.MaxSpeedMpS) || MirelMaximumSpeed > MpS.ToKpH(Locomotive.MaxSpeedMpS))
                     {
-                        MaxSelectedSpeed = MirelMaximumSpeed = MpS.ToKpH(Locomotive.MaxSpeedMpS);
+                        MaxSelectedSpeed = MirelMaximumSpeed = (float)Math.Round(MpS.ToKpH(Locomotive.MaxSpeedMpS), 0);
                     }
                 }
 
@@ -2127,6 +2127,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                     case TrackMonitorSignalAspect.Approach_3:
                     case TrackMonitorSignalAspect.Clear_1:
                         {
+                            MirelMaximumSpeed = (float)Math.Round(MirelMaximumSpeed, 0);
+                            if ((MirelMaximumSpeed.ToString().Contains("9") || MirelMaximumSpeed.ToString().Contains("4")) && !(MirelMaximumSpeed == 40 || MirelMaximumSpeed == 90))
+                                MirelMaximumSpeed += 1;
                             if (recieverState == RecieverState.Off)
                             {
                                 CheckSpeed(elapsedTimeSeconds);
@@ -2180,6 +2183,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                             bool fast = false;
                             float timeBeforeCountDown = 1500 - fullDistance;
                             timeBeforeCountDown = timeBeforeCountDown / Locomotive.MaxSpeedMpS;
+                            MaxSelectedSpeed = (float)Math.Round(MaxSelectedSpeed, 0);
                             if (MaxSelectedSpeed <= 120)
                             {
                                 if (timeBeforeIntervetion > timeBeforeCountDown - 10 && !ZS1BConfirmed && !ZS1B)
@@ -2223,7 +2227,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                                 }
                             }
 
-                            if (MaxSelectedSpeed > MpS.ToKpH(Locomotive.MaxSpeedMpS)) MaxSelectedSpeed = MpS.ToKpH(Locomotive.MaxSpeedMpS);
+                            if (MaxSelectedSpeed > MpS.ToKpH(Locomotive.MaxSpeedMpS)) MaxSelectedSpeed = (float)Math.Round(MpS.ToKpH(Locomotive.MaxSpeedMpS), 0);
                             if (MirelMaximumSpeed > MaxSelectedSpeed) MirelMaximumSpeed = MaxSelectedSpeed;
                             if (requiredSpeed > 0)
                             {
@@ -2247,6 +2251,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                         }
                     case TrackMonitorSignalAspect.Restricted:
                         {
+                            MirelMaximumSpeed = (float)Math.Round(MirelMaximumSpeed, 0);
+                            if ((MirelMaximumSpeed.ToString().Contains("9") || MirelMaximumSpeed.ToString().Contains("4")) && !(MirelMaximumSpeed == 40 || MirelMaximumSpeed == 90))
+                                MirelMaximumSpeed += 1;
+
                             if (MirelType == Type.LS90)
                             {
                                 BlueLight = false;
@@ -2273,8 +2281,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                                 MirelMaximumSpeed = 120;
                                 stopInterventingUntilNextSignal = true;
                             }
-                            if (MaxSelectedSpeed > MpS.ToKpH(Locomotive.MaxSpeedMpS)) MaxSelectedSpeed = MpS.ToKpH(Locomotive.MaxSpeedMpS);
-                            if (MirelMaximumSpeed > MaxSelectedSpeed) MirelMaximumSpeed = MaxSelectedSpeed;
+                            if (MaxSelectedSpeed > MpS.ToKpH(Locomotive.MaxSpeedMpS)) MaxSelectedSpeed = (float)Math.Round(MpS.ToKpH(Locomotive.MaxSpeedMpS));
+                            MaxSelectedSpeed = (float)Math.Round(MaxSelectedSpeed, 0);
                             if (MirelMaximumSpeed > MaxSelectedSpeed)
                                 MirelMaximumSpeed = MaxSelectedSpeed;
                             if (stopInterventingUntilNextSignal)
@@ -2353,7 +2361,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                                 }
                             }
 
-                            if (MaxSelectedSpeed > MpS.ToKpH(Locomotive.MaxSpeedMpS)) MaxSelectedSpeed = MpS.ToKpH(Locomotive.MaxSpeedMpS);
+                            if (MaxSelectedSpeed > MpS.ToKpH(Locomotive.MaxSpeedMpS)) MaxSelectedSpeed = (float)Math.Round(MpS.ToKpH(Locomotive.MaxSpeedMpS), 0);
                             if (MirelMaximumSpeed > MaxSelectedSpeed) MirelMaximumSpeed = MaxSelectedSpeed;
                             if (requiredSpeed > 0)
                             {
@@ -2378,6 +2386,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                     case TrackMonitorSignalAspect.Stop:
                     case TrackMonitorSignalAspect.StopAndProceed:
                         {
+                            MirelMaximumSpeed = (float)Math.Round(MirelMaximumSpeed, 0);
+                            if ((MirelMaximumSpeed.ToString().Contains("9") || MirelMaximumSpeed.ToString().Contains("4")) && !(MirelMaximumSpeed == 40 || MirelMaximumSpeed == 90))
+                                MirelMaximumSpeed += 1;
                             if (recieverState == RecieverState.Off)
                             {
                                 CheckSpeed(elapsedTimeSeconds);
@@ -2398,10 +2409,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                                 MirelMaximumSpeed = 40;
                                 stopInterventingUntilNextSignal = true;
                             }
-                            if (MaxSelectedSpeed > MpS.ToKpH(Locomotive.MaxSpeedMpS)) MaxSelectedSpeed = MpS.ToKpH(Locomotive.MaxSpeedMpS);
+                            if (MaxSelectedSpeed > MpS.ToKpH(Locomotive.MaxSpeedMpS)) MaxSelectedSpeed = (float)Math.Round(MpS.ToKpH(Locomotive.MaxSpeedMpS), 0);
+                            MaxSelectedSpeed = (float)Math.Round(MaxSelectedSpeed, 0);
                             if (MirelMaximumSpeed > MaxSelectedSpeed) MirelMaximumSpeed = MaxSelectedSpeed;
-                            if (MirelMaximumSpeed > MaxSelectedSpeed)
-                                MirelMaximumSpeed = MaxSelectedSpeed;
                             if (stopInterventingUntilNextSignal)
                             {
                                 if (Locomotive.AbsSpeedMpS == 0)
@@ -2478,7 +2488,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                                 }
                             }
 
-                            if (MaxSelectedSpeed > MpS.ToKpH(Locomotive.MaxSpeedMpS)) MaxSelectedSpeed = MpS.ToKpH(Locomotive.MaxSpeedMpS);
+                            if (MaxSelectedSpeed > MpS.ToKpH(Locomotive.MaxSpeedMpS)) MaxSelectedSpeed = (float)Math.Round(MpS.ToKpH(Locomotive.MaxSpeedMpS), 0);
                             if (MirelMaximumSpeed > MaxSelectedSpeed) MirelMaximumSpeed = MaxSelectedSpeed;
                             if (requiredSpeed > 0)
                             {
@@ -2509,7 +2519,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                 // Cyklická kontrola bdělosti
                 float maxSpeed = 120;
                 if (maxSpeed > MaxSelectedSpeed) maxSpeed = MaxSelectedSpeed;
-                if (maxSpeed > MpS.ToKpH(Locomotive.MaxSpeedMpS)) maxSpeed = MpS.ToKpH(Locomotive.MaxSpeedMpS);
+                if (maxSpeed > MpS.ToKpH(Locomotive.MaxSpeedMpS)) maxSpeed = (float)Math.Round(MpS.ToKpH(Locomotive.MaxSpeedMpS), 0);
 
                 MirelMaximumSpeed = maxSpeed;
 
@@ -2617,7 +2627,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
             {
                 RecievingRepeaterSignal = false;
                 interventionTimer = 0;
-                float maxSpeed = MpS.ToKpH(Locomotive.MaxSpeedMpS);
+                float maxSpeed = (float)Math.Round(MpS.ToKpH(Locomotive.MaxSpeedMpS), 0);
                 MirelMaximumSpeed = MaxSelectedSpeed = maxSpeed;
                 if (MpS.ToKpH(Locomotive.AbsSpeedMpS) > MirelMaximumSpeed)
                 {
