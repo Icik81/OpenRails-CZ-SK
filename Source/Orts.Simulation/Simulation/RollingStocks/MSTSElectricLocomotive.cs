@@ -201,6 +201,9 @@ namespace Orts.Simulation.RollingStocks
         // Podpěťová ochrana a blokace pantografů
         protected void UnderVoltageProtection(float elapsedClockSeconds)
         {
+            PantographVoltageV = (float)Math.Round(PantographVoltageV);
+            PowerSupply.PantographVoltageV = (float)Math.Round(PowerSupply.PantographVoltageV);
+
             if (IsPlayerTrain)
             {
                 // Pokud má lokomotiva napěťový filtr
