@@ -38,14 +38,14 @@ namespace Orts.Viewer3D.Popups
         }
 
         public CarOperationsWindow(WindowManager owner)
-            : base(owner, Window.DecorationSize.X + owner.TextFontDefault.Height * 22, Window.DecorationSize.Y + (owner.TextFontDefault.Height + 1) * 12 + ControlLayout.SeparatorSize * 9, Viewer.Catalog.GetString("*** Car Operation Menu ***"))
+            : base(owner, Window.DecorationSize.X + owner.TextFontDefault.Height * 22, Window.DecorationSize.Y + (owner.TextFontDefault.Height + 2) * 14 + ControlLayout.SeparatorSize * 9, Viewer.Catalog.GetString("*** Car Operation Menu ***"))
         {
             Viewer = owner.Viewer;
         }
 
         protected override ControlLayout Layout(ControlLayout layout)
         {
-            Label ID, buttonHandbrake, buttonTogglePower, buttonToggleMU, buttonToggleBrakeHose, buttonToggleAngleCockA, buttonToggleAngleCockB, buttonToggleBleedOffValve, buttonBrakeCarMode, buttonBrakeCarModePL, buttonTwoPipesConnection, buttonClose;
+            Label ID, buttonHandbrake, buttonTogglePower, buttonToggleMU, buttonToggleBrakeHose, buttonToggleAngleCockA, buttonToggleAngleCockB, buttonToggleBleedOffValve, buttonBrakeCarMode, buttonBrakeCarModePL, buttonTwoPipesConnection, buttonLeftDoor, buttonRightDoor, buttonClose;
 
             var vbox = base.Layout(layout).AddLayoutVertical();
             vbox.Add(ID = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Car ID") + "  " + (CarPosition >= Viewer.PlayerTrain.Cars.Count? " " :Viewer.PlayerTrain.Cars[CarPosition].CarID), LabelAlignment.Center));
@@ -89,7 +89,13 @@ namespace Orts.Viewer3D.Popups
             }
 
             vbox.AddHorizontalSeparator();
-            vbox.Add(buttonTwoPipesConnection = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Napájecí hadice") + "   " + (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.TwoPipesConnectionText, LabelAlignment.Center));
+            vbox.Add(buttonTwoPipesConnection = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Napájecí hadice") + "     Nastaveno: " + (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.TwoPipesConnectionText, LabelAlignment.Center));
+
+            vbox.AddHorizontalSeparator();
+            vbox.Add(buttonLeftDoor = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Levé dveře") + "     Nastaveno: " + (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.LeftDoorText, LabelAlignment.Center));
+
+            vbox.AddHorizontalSeparator();
+            vbox.Add(buttonRightDoor = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Pravé dveře") + "     Nastaveno: " + (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.RightDoorText, LabelAlignment.Center));
 
             vbox.AddHorizontalSeparator();
             vbox.Add(buttonClose = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Close window"), LabelAlignment.Center));
@@ -102,6 +108,8 @@ namespace Orts.Viewer3D.Popups
             buttonToggleBleedOffValve.Click += new Action<Control, Point>(buttonToggleBleedOffValve_Click);
             buttonBrakeCarMode.Click += new Action<Control, Point>(buttonBrakeCarMode_Click);
             buttonTwoPipesConnection.Click += new Action<Control, Point>(buttonTwoPipesConnection_Click);
+            buttonLeftDoor.Click += new Action<Control, Point>(buttonLeftDoor_Click);
+            buttonRightDoor.Click += new Action<Control, Point>(buttonRightDoor_Click);
             buttonClose.Click += new Action<Control, Point>(buttonClose_Click);
 
             return vbox;
@@ -284,6 +292,43 @@ namespace Orts.Viewer3D.Popups
             }
         }
 
+        void buttonLeftDoor_Click(Control arg1, Point arg2)
+        {
+            new LeftDoorCommand(Viewer.Log, (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon), (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.LeftDoorMenu += 1);
+
+            if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.LeftDoorMenu > 1) (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.LeftDoorMenu = 0;
+
+            if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.LeftDoorMenu == 0)
+            {
+                Viewer.Simulator.Confirmer.Information(Viewer.Catalog.GetString("Levé dveře zavřeno"));
+                (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.LeftDoorText = "zavřeno";
+            }
+            if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.LeftDoorMenu == 1)
+            {
+                Viewer.Simulator.Confirmer.Information(Viewer.Catalog.GetString("Levé dveře otevřeno"));
+                (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.LeftDoorText = "otevřeno";
+            }
+            (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.LeftDoorCycle = 0;
+        }
+
+        void buttonRightDoor_Click(Control arg1, Point arg2)
+        {
+            new RightDoorCommand(Viewer.Log, (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon), (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.RightDoorMenu += 1);
+            
+            if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.RightDoorMenu > 1) (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.RightDoorMenu = 0;
+
+            if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.RightDoorMenu == 0)
+            {
+                Viewer.Simulator.Confirmer.Information(Viewer.Catalog.GetString("Pravé dveře zavřeno"));
+                //(Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.RightDoorText = "zavřeno";
+            }
+            if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.RightDoorMenu == 1)
+            {
+                Viewer.Simulator.Confirmer.Information(Viewer.Catalog.GetString("Pravé dveře otevřeno"));
+                //(Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.RightDoorText = "otevřeno";
+            }
+            (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.RightDoorCycle = 0;
+        }
 
     }
 }

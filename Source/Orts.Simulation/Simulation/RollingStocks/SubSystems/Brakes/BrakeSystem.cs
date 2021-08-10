@@ -148,8 +148,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes
 
         public float T1AirLoss = 0;
         public float T2AirLoss = 0;
-        public bool AirOK_DoorCanManipulate;        
-
+        public bool AirOK_DoorCanManipulate;
+        
 
         public float AuxPowerOnDelayS { get; set; }
 
@@ -227,6 +227,12 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes
         public string TwoPipesConnectionText = "odpojeny";
         public bool ForceTwoPipesConnection = false;
 
+        public float LeftDoorMenu = 0;
+        public string LeftDoorText = "zavřeno";
+        public float RightDoorMenu = 0;
+        public string RightDoorText = "zavřeno";
+        public int LeftDoorCycle = 1;
+        public int RightDoorCycle = 1;
 
         public int WagonType;
 

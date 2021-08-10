@@ -600,6 +600,8 @@ namespace Orts.Viewer3D
             ToggleHeating_OffOnCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;            
             ToggleSwitchingVoltageMode_OffDCCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
             ToggleSwitchingVoltageMode_OffACCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
+            LeftDoorCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
+            RightDoorCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
         }
 
         public void ChangeToPreviousFreeRoamCamera()
