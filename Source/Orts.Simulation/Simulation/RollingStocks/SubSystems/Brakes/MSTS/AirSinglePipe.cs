@@ -233,7 +233,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 string.Format("{0}", NextLocoBrakeState),
                 
                 //string.Empty, // Spacer because the state above needs 2 columns.                                     
-                //string.Format("TwoPipesConnection {0:F0}", TwoPipesConnection),
+                //string.Format("AirOK_DoorCanManipulate {0:F0}", AirOK_DoorCanManipulate),
                 //string.Empty, // Spacer because the state above needs 2 columns.                                     
                 //string.Format("Parking {0:F0}", ParkingBrakeAutoCylPressurePSI1),
                 //string.Empty, // Spacer because the state above needs 2 columns.                                     
@@ -1516,15 +1516,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     float brakePipeVolumeM30 = car0.BrakeSystem.BrakePipeVolumeM3;
                     train.TotalTrainBrakePipeVolumeM3 = 0.0f; // initialise train brake pipe volume
                     train.TotalCapacityMainResBrakePipe = 0.0f;
-
-#if DEBUG_TRAIN_PIPE_LEAK
-
-                    Trace.TraceInformation("======================================= Train Pipe Leak (AirSinglePipe) ===============================================");
-                    Trace.TraceInformation("Before:  CarID {0}  TrainPipeLeak {1} Lead BrakePipe Pressure {2}", trainCar.CarID, lead.TrainBrakePipeLeakPSIpS, lead.BrakeSystem.BrakeLine1PressurePSI);
-                    Trace.TraceInformation("Brake State {0}", lead.TrainBrakeController.TrainBrakeControllerState);
-                    Trace.TraceInformation("Main Resevoir {0} Compressor running {1}", lead.MainResPressurePSI, lead.CompressorIsOn);
-
-#endif
+                    
                     foreach (TrainCar car in train.Cars)
                     {
                         // Výpočet objemu potrubí pro každý vůz
@@ -1577,11 +1569,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         }
                         p0 = car.BrakeSystem.BrakeLine1PressurePSI;
                         car0 = car;
-                        brakePipeVolumeM30 = car0.BrakeSystem.BrakePipeVolumeM3;
+                        brakePipeVolumeM30 = car0.BrakeSystem.BrakePipeVolumeM3;                        
                     }
-#if DEBUG_TRAIN_PIPE_LEAK
-                    Trace.TraceInformation("After: Lead Brake Pressure {0}", lead.BrakeSystem.BrakeLine1PressurePSI);
-#endif
                 }
             }
 
@@ -1630,10 +1619,34 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 {
                     if (!brakeSystem.TwoPipesConnection)
                         TwoPipesConnectionBreak = true;
-                }              
+                }            
             }
             if (sumv > 0)
                 sumpv /= sumv;
+
+
+            // Testuje propojení napájecích hadic v celém vlaku
+            int T = 0;
+            if (lead != null)
+            {
+                for (int i = 0; i < train.Cars.Count; i++)
+                {
+                    BrakeSystem MSTSWagon = train.Cars[i].BrakeSystem;
+                    if (!MSTSWagon.TwoPipesConnection)
+                    {
+                        MSTSWagon.AirOK_DoorCanManipulate = false;
+                        T = 1;
+                    }
+                    else
+                    if (lead.MainResPressurePSI > 5 * 14.50377f && T == 0) // 5bar default
+                        MSTSWagon.AirOK_DoorCanManipulate = true;
+                    else
+                        MSTSWagon.AirOK_DoorCanManipulate = false;
+
+                    if (lead.MainResPressurePSI > 5 * 14.50377f)
+                        lead.BrakeSystem.AirOK_DoorCanManipulate = true;
+                }
+            }
 
 
             // Počítání hlavních jímek
@@ -1667,15 +1680,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         // *** Manipulace s dveřmi ***
                         if (loco.CentralHandlingDoors)
                         {
-                            BrakeSystem brakeSystem = lead.BrakeSystem;
-                            // Testuje tlak v hlavní jímce pro manipulaci s dveřmi
-                            if (lead.MainResPressurePSI > 5 * 14.50377f) // 5bar default
-                                brakeSystem.AirOK_DoorCanManipulate = true;
-                            else
-                                brakeSystem.AirOK_DoorCanManipulate = false;
-
+                            BrakeSystem MSTSWagon = train.Cars[i].BrakeSystem;
                             // Snižuje tlak v hlavní jímce kvůli spotřebě vzduchu při otevírání/zavírání dveří
-                            if (brakeSystem.AirOK_DoorCanManipulate)
+                            if (MSTSWagon.AirOK_DoorCanManipulate)
                             {
                                 if (sumv > 0)
                                     lead.MainResPressurePSI -= train.TotalAirLoss / sumv * elapsedClockSeconds;

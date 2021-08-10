@@ -3481,7 +3481,7 @@ namespace Orts.Simulation.RollingStocks
                     foreach (var car in Train.Cars)
                     {
                         var mstsWagon = car as MSTSWagon;
-                        if (mstsWagon.AutomaticDoors)
+                        if (mstsWagon.AutomaticDoors && mstsWagon.BrakeSystem.AirOK_DoorCanManipulate)
                         {
                             mstsWagon.DoorLeftOpen = false;
                             SignalEvent(Event.DoorClose);
@@ -3495,7 +3495,7 @@ namespace Orts.Simulation.RollingStocks
                 foreach (var car in Train.Cars)
                 {
                     var mstsWagon = car as MSTSWagon;
-                    if (BrakeSystem.AirOK_DoorCanManipulate && mstsWagon.AutomaticDoors || mstsWagon.FreightDoors)
+                    if (mstsWagon.BrakeSystem.AirOK_DoorCanManipulate && mstsWagon.AutomaticDoors || mstsWagon.FreightDoors)
                     {
                         if (car != this && mstsWagon != null)
                         {
@@ -3532,7 +3532,7 @@ namespace Orts.Simulation.RollingStocks
                     foreach (var car in Train.Cars)
                     {
                         var mstsWagon = car as MSTSWagon;
-                        if (mstsWagon.AutomaticDoors)
+                        if (mstsWagon.AutomaticDoors && mstsWagon.BrakeSystem.AirOK_DoorCanManipulate)
                         {
                             mstsWagon.DoorRightOpen = false;
                             SignalEvent(Event.DoorClose);
@@ -3546,7 +3546,7 @@ namespace Orts.Simulation.RollingStocks
                 foreach (TrainCar car in Train.Cars)
                 {
                     var mstsWagon = car as MSTSWagon;
-                    if (BrakeSystem.AirOK_DoorCanManipulate && mstsWagon.AutomaticDoors || mstsWagon.FreightDoors)
+                    if (mstsWagon.BrakeSystem.AirOK_DoorCanManipulate && mstsWagon.AutomaticDoors || mstsWagon.FreightDoors)
                     {
                         if (car != this && mstsWagon != null)
                         {

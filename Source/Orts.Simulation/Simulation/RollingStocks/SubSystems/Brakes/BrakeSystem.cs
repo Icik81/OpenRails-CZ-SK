@@ -148,8 +148,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes
 
         public float T1AirLoss = 0;
         public float T2AirLoss = 0;
-        public bool AirOK_DoorCanManipulate;
-        
+        public bool AirOK_DoorCanManipulate;        
+
 
         public float AuxPowerOnDelayS { get; set; }
 
