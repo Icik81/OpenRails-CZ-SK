@@ -1693,6 +1693,9 @@ namespace Orts.Simulation.RollingStocks
             AirlossByHandlingDoorsPSIpS = copy.AirlossByHandlingDoorsPSIpS;
             AutomaticDoors = copy.AutomaticDoors;
             FreightDoors = copy.FreightDoors;
+            DoorLeftOpen = copy.DoorLeftOpen;
+            DoorRightOpen = copy.DoorRightOpen;
+
 
             if (copy.IntakePointList != null)
             {
@@ -1814,6 +1817,8 @@ namespace Orts.Simulation.RollingStocks
 
             // Icik
             outf.Write(Variable4);
+            outf.Write(DoorLeftOpen);
+            outf.Write(DoorRightOpen);
 
             base.Save(outf);
         }
@@ -1860,6 +1865,8 @@ namespace Orts.Simulation.RollingStocks
 
             // Icik
             Variable4 = inf.ReadSingle();
+            DoorLeftOpen = inf.ReadBoolean();
+            DoorRightOpen = inf.ReadBoolean();
 
             base.Restore(inf);
 
@@ -1890,6 +1897,9 @@ namespace Orts.Simulation.RollingStocks
         public override void Update(float elapsedClockSeconds)
         {
             base.Update(elapsedClockSeconds);
+
+            // Icik
+            TogleDoorsByCarOperationsWindow();
 
             ConfirmSteamLocomotiveTender(); // Confirms that a tender is connected to the steam locomotive
 
@@ -3471,6 +3481,69 @@ namespace Orts.Simulation.RollingStocks
             }
 
             base.SignalEvent(evt, id);
+        }
+
+        // Icik
+        public void TogleDoorsByCarOperationsWindow()
+        {
+            foreach (var car in Train.Cars)
+            {
+                var mstsWagon = car as MSTSWagon;
+
+                if (mstsWagon.DoorLeftOpen)
+                {
+                    car.BrakeSystem.LeftDoorMenu = 0;
+                    car.BrakeSystem.LeftDoorText = "otevřeno";
+                }
+                else
+                {
+                    car.BrakeSystem.LeftDoorMenu = 1;
+                    car.BrakeSystem.LeftDoorText = "zavřeno";
+                }
+
+                if (mstsWagon.DoorRightOpen)
+                {
+                    car.BrakeSystem.RightDoorMenu = 0;
+                    car.BrakeSystem.RightDoorText = "otevřeno";
+                }
+                else
+                {
+                    car.BrakeSystem.RightDoorMenu = 1;
+                    car.BrakeSystem.RightDoorText = "zavřeno";
+                }
+
+                if (car.BrakeSystem.LeftDoorCycle == 0)
+                {
+                    switch (car.BrakeSystem.LeftDoorMenu)
+                    {
+                        case 0:
+                            mstsWagon.DoorLeftOpen = false;
+                            mstsWagon.SignalEvent(Event.DoorClose);
+                            break;
+                        case 1:
+                            mstsWagon.DoorLeftOpen = true;
+                            mstsWagon.SignalEvent(Event.DoorOpen);
+                            break;
+                    }
+                }
+
+                if (car.BrakeSystem.RightDoorCycle == 0)
+                {
+                    switch (car.BrakeSystem.RightDoorMenu)
+                    {
+                        case 0:
+                            mstsWagon.DoorRightOpen = false;
+                            mstsWagon.SignalEvent(Event.DoorClose);
+                            break;
+                        case 1:
+                            mstsWagon.DoorRightOpen = true;
+                            mstsWagon.SignalEvent(Event.DoorOpen);
+                            break;
+                    }
+                }
+                car.BrakeSystem.LeftDoorCycle = 1;
+                car.BrakeSystem.RightDoorCycle = 1;
+            }
         }
 
         public void ToggleDoorsLeft()

@@ -1700,5 +1700,28 @@ namespace Orts.Common
             Receiver.ToggleSwitchingVoltageMode_OffAC();
             // Report();
         }
-    }    
+    }
+    [Serializable()]
+    public sealed class LeftDoorCommand : Command
+    {
+        public static MSTSWagon Receiver { get; set; }
+
+        public LeftDoorCommand(CommandLog log, MSTSWagon car, float LeftDoor)
+            : base(log)
+        {
+            Receiver = car;
+        }
+    }
+    [Serializable()]
+    public sealed class RightDoorCommand : Command
+    {
+        public static MSTSWagon Receiver { get; set; }
+
+        public RightDoorCommand(CommandLog log, MSTSWagon car, float RightDoor)
+            : base(log)
+        {
+            Receiver = car;
+        }
+    }
+
 }

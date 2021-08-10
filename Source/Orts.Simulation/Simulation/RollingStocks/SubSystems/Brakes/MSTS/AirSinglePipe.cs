@@ -771,6 +771,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     break;
             }
 
+            
+
             // Načte hodnotu maximálního tlaku v BV
             if (TwoStateBrake && BrakeCarMode > 1) // Vozy v R, Mg mají nad určitou rychlost plný tlak do válců
             {                
@@ -1648,6 +1650,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 }
             }
 
+            
 
             // Počítání hlavních jímek
             // Úbytky vzduchu při manipulaci s dveřmi
@@ -2479,7 +2482,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 }
             }
         }
-
+        
         public override float InternalPressure(float realPressure)
         {
             return realPressure;
@@ -2565,6 +2568,6 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             //{
             //    MaxCylPressurePSI = loco.TrainBrakeController.MaxPressurePSI * AuxCylVolumeRatio / (1 + AuxCylVolumeRatio);
             //}
-            }
-        }
-    }
+        }        
+    }   
+}
