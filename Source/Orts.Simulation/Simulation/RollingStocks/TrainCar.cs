@@ -190,6 +190,13 @@ namespace Orts.Simulation.RollingStocks
         public bool IsDriveable;
         public bool HasFreightAnim = false;
         public bool HasPassengerCapacity = false;
+        public int PassengerCapacity = 0;
+        public int PassengerLoad = 0;
+        public int ExitQueue = 0;
+        public int EnterQueue = 0;
+        public List<Passenger> PassengerList = new List<Passenger>();
+        public bool UnboardingComplete = false;
+        public bool BoardingComplete = false;
         public bool HasInsideView = false;
         public float CarHeightAboveSeaLevelM;
 
@@ -499,7 +506,7 @@ namespace Orts.Simulation.RollingStocks
         public float TotalWagonLateralDerailForceN;
         public float LateralWindForceN;
         public float WagonFrontCouplerAngleRad;
-//        public float WagonVerticalForceN; // Vertical force of wagon/car - essentially determined by the weight
+        //        public float WagonVerticalForceN; // Vertical force of wagon/car - essentially determined by the weight
 
         public bool BuffForceExceeded;
 
@@ -610,7 +617,7 @@ namespace Orts.Simulation.RollingStocks
         }
         public WagonSpecialTypes WagonSpecialType;
 
-    protected float CurveResistanceZeroSpeedFactor = 0.5f; // Based upon research (Russian experiments - 1960) the older formula might be about 2x actual value
+        protected float CurveResistanceZeroSpeedFactor = 0.5f; // Based upon research (Russian experiments - 1960) the older formula might be about 2x actual value
         protected float RigidWheelBaseM;   // Vehicle rigid wheelbase, read from MSTS Wagon file
         protected float TrainCrossSectionAreaM2; // Cross sectional area of the train
         protected float DoubleTunnelCrossSectAreaM2;
@@ -636,7 +643,7 @@ namespace Orts.Simulation.RollingStocks
             CurveResistanceDependent = Simulator.Settings.CurveResistanceDependent;
             CurveSpeedDependent = Simulator.Settings.CurveSpeedDependent;
             TunnelResistanceDependent = Simulator.Settings.TunnelResistanceDependent;
-            
+
             //CurveForceFilter.Initialize();
             // Initialize tunnel resistance values
 
@@ -735,7 +742,7 @@ namespace Orts.Simulation.RollingStocks
         public virtual void AntiSkidSystem()
         {
             if (BrakeSystem.AntiSkidSystemEquipped)
-            {                
+            {
                 // Lokomotiva
                 if ((this is MSTSDieselLocomotive || this is MSTSElectricLocomotive) && AbsSpeedMpS > 0.01)
                 {
@@ -746,7 +753,7 @@ namespace Orts.Simulation.RollingStocks
                         //Simulator.Confirmer.Message(ConfirmLevel.Warning, message);
                         BrakeSystem.BailOffOnAntiSkid = true;
                     }
-                    else 
+                    else
                         BrakeSystem.BailOffOnAntiSkid = false;
                 }
 
@@ -758,8 +765,8 @@ namespace Orts.Simulation.RollingStocks
                         //Simulator.Confirmer.Message(ConfirmLevel.Warning, message);
                         BrakeSystem.BailOffOnAntiSkid = true;
                     }
-                else
-                    BrakeSystem.BailOffOnAntiSkid = false;
+                    else
+                        BrakeSystem.BailOffOnAntiSkid = false;
 
                 if (AbsSpeedMpS < 0.01) BrakeSystem.BailOffOnAntiSkid = false;
             }
@@ -789,7 +796,7 @@ namespace Orts.Simulation.RollingStocks
                         else BrakeSystem.BrakeMassKG = BrakeSystem.BrakeMassR;
                         break;
                     case 3: // Režim R+Mg  
-                        if ((Math.Abs(SpeedMpS) * 3.6f) > 50.0f 
+                        if ((Math.Abs(SpeedMpS) * 3.6f) > 50.0f
                         && BrakeSystem.AirForWagon
                         && BrakeSystem.BrakeLine1PressurePSI < BrakeSystem.BrakePipePressureForMGbrakeActivationPSI)
                         //&& BrakeSystem.PowerForRMg 
@@ -851,7 +858,7 @@ namespace Orts.Simulation.RollingStocks
 
             if (WagonType == WagonTypes.Freight || WagonType == WagonTypes.Tender)    //  Nákladní vozy a tendry
             {
-                if (!BrakeSystem.AutoLoadRegulatorEquipped)              
+                if (!BrakeSystem.AutoLoadRegulatorEquipped)
                     switch (BrakeSystem.BrakeCarModePL)
                     {
                         case 0: // Režim Prázdný                     
@@ -865,9 +872,9 @@ namespace Orts.Simulation.RollingStocks
                     }
                 else
                     if (MassKG < BrakeSystem.AutoLoadRegulatorMaxBrakeMass)
-                        BrakeSystem.BrakeMassKG = MassKG;
-                    else BrakeSystem.BrakeMassKG = BrakeSystem.AutoLoadRegulatorMaxBrakeMass;
-                
+                    BrakeSystem.BrakeMassKG = MassKG;
+                else BrakeSystem.BrakeMassKG = BrakeSystem.AutoLoadRegulatorMaxBrakeMass;
+
                 if (BrakeSystem.DebugKoef == 0) MaxBrakeForceN = CoefF * BrakeSystem.BrakeMassKG * 9.964016384f * 0.31f;
                 else MaxBrakeForceN = BrakeSystem.DebugKoef * BrakeSystem.BrakeMassKG * 9.964016384f * 0.31f;
             }
@@ -949,7 +956,7 @@ namespace Orts.Simulation.RollingStocks
                 InitializeCarTemperatures();
                 AmbientTemperatureInitialised = true;
             }
-            
+
             // Update temperature variation for height of car above sea level
             // Typically in clear conditions there is a 9.8 DegC variation for every 1000m (1km) rise, in snow/rain there is approx 5.5 DegC variation for every 1000m (1km) rise
             float TemperatureHeightVariationDegC = 0;
@@ -964,9 +971,9 @@ namespace Orts.Simulation.RollingStocks
             {
                 TemperatureHeightVariationDegC = Me.ToKiloM(CarHeightAboveSeaLevelM) * DryLapseTemperatureC;
             }
-            
+
             TemperatureHeightVariationDegC = MathHelper.Clamp(TemperatureHeightVariationDegC, 0.00f, 30.0f);
-            
+
             CarOutsideTempC = InitialCarOutsideTempC - TemperatureHeightVariationDegC;
 
             // gravity force, M32 is up component of forward vector
@@ -1022,9 +1029,9 @@ namespace Orts.Simulation.RollingStocks
             double longitude = 0;
 
             new Orts.Common.WorldLatLon().ConvertWTC(WorldPosition.TileX, WorldPosition.TileZ, WorldPosition.Location, ref latitude, ref longitude);
-            
+
             float LatitudeDeg = MathHelper.ToDegrees((float)latitude);
-                      
+
 
             // Sets outside temperature dependent upon the season
             if (Simulator.Season == SeasonType.Winter)
@@ -1126,14 +1133,14 @@ namespace Orts.Simulation.RollingStocks
 
                 if (this is MSTSDieselLocomotive || this is MSTSElectricLocomotive)
                 {
-                   if (WheelSlip && ThrottlePercent < 0.1f && BrakeRetardForceN > 25.0) // If advanced adhesion model indicates wheel slip, then check other conditiond (throttle and brake force) to determine whether it is a wheel slip or brake skid
+                    if (WheelSlip && ThrottlePercent < 0.1f && BrakeRetardForceN > 25.0) // If advanced adhesion model indicates wheel slip, then check other conditiond (throttle and brake force) to determine whether it is a wheel slip or brake skid
                     {
-                       BrakeSkid = true;  // set brake skid flag true
-                    } 
-                   else
-                   {
-                       BrakeSkid = false;
-                   }
+                        BrakeSkid = true;  // set brake skid flag true
+                    }
+                    else
+                    {
+                        BrakeSkid = false;
+                    }
                 }
 
                 else if (!(this is MSTSDieselLocomotive) || !(this is MSTSElectricLocomotive))
@@ -1147,7 +1154,7 @@ namespace Orts.Simulation.RollingStocks
                     if (BrakeSkid)
                     {
                         //WagonBrakeAdhesiveForceN = MassKG * GravitationalAccelerationMpS2 * SkidFriction;  // Adhesive force if wheel skidding
-                        WagonBrakeAdhesiveForceN = MassKG * GravitationalAccelerationMpS2 * Train.WagonCoefficientFriction;  
+                        WagonBrakeAdhesiveForceN = MassKG * GravitationalAccelerationMpS2 * Train.WagonCoefficientFriction;
                     }
                     else
                     {
@@ -1160,7 +1167,7 @@ namespace Orts.Simulation.RollingStocks
                         if (BrakeWheelTreadForceN > WagonBrakeAdhesiveForceN)
                         {
                             BrakeSkid = true; 	// wagon wheel is slipping
-                            var message = "Car ID: " + CarID + " - experiencing braking force wheel skid.";                           
+                            var message = "Car ID: " + CarID + " - experiencing braking force wheel skid.";
                             Simulator.Confirmer.Message(ConfirmLevel.Warning, message);
                         }
                     }
@@ -1170,7 +1177,7 @@ namespace Orts.Simulation.RollingStocks
                         {
                             BrakeSkid = false; 	// wagon wheel is not slipping
                         }
-                        
+
                     }
                     else
                     {
@@ -1299,14 +1306,14 @@ namespace Orts.Simulation.RollingStocks
 
             foreach (var w in WheelAxles)
             {
- //               Trace.TraceInformation("Car ID {0} Length {1} Bogie {2} Offset {3} MAtrix {4}", CarID, CarLengthM,  w.BogieIndex, w.OffsetM, w.BogieMatrix);
+                //               Trace.TraceInformation("Car ID {0} Length {1} Bogie {2} Offset {3} MAtrix {4}", CarID, CarLengthM,  w.BogieIndex, w.OffsetM, w.BogieMatrix);
 
             }
 
             // Calculate the vertival force on the wheel of the car, to determine whether wagon derails or not
             WagonVerticalDerailForceN = MassKG * GravitationalAccelerationMpS2 * Train.WagonCoefficientFriction;
 
- 
+
 
             // Calculate coupler angle when travelling around curve
 
@@ -1330,9 +1337,9 @@ namespace Orts.Simulation.RollingStocks
 
                 float AngleBetweenCarbodies = CouplerAlphaAngleRad + CouplerBetaAngleRad + 2.0f * CouplerGammaAngleRad;
 
-                WagonFrontCouplerAngleRad = (BogieCentresAdjVehiclesM* (CouplerGammaAngleRad + CouplerAlphaAngleRad) - OverhangCarI1M* AngleBetweenCarbodies) / CouplerDistanceM;
+                WagonFrontCouplerAngleRad = (BogieCentresAdjVehiclesM * (CouplerGammaAngleRad + CouplerAlphaAngleRad) - OverhangCarI1M * AngleBetweenCarbodies) / CouplerDistanceM;
 
-          //      Trace.TraceInformation("Centre {0} Gamma {1} Alpha {2} Between {3} CouplerDist {4}", BogieCentresAdjVehiclesM, CouplerGammaAngleRad, CouplerAlphaAngleRad, AngleBetweenCarbodies, CouplerDistanceM);
+                //      Trace.TraceInformation("Centre {0} Gamma {1} Alpha {2} Between {3} CouplerDist {4}", BogieCentresAdjVehiclesM, CouplerGammaAngleRad, CouplerAlphaAngleRad, AngleBetweenCarbodies, CouplerDistanceM);
             }
             else
             {
@@ -1380,8 +1387,8 @@ namespace Orts.Simulation.RollingStocks
 
                 if (CurrentCurveRadius > 0)  // only check curve speed if it is a curve
                 {
-                    float SpeedToleranceMpS =  Me.FromMi( pS.FrompH(2.5f));  // Set bandwidth tolerance for resetting notifications
-                    
+                    float SpeedToleranceMpS = Me.FromMi(pS.FrompH(2.5f));  // Set bandwidth tolerance for resetting notifications
+
                     // If super elevation set in Route (TRK) file
                     if (Simulator.TRK.Tr_RouteFile.SuperElevationHgtpRadiusM != null)
                     {
@@ -1480,7 +1487,7 @@ namespace Orts.Simulation.RollingStocks
 
                     if (CurveSpeedDependent)
                     {
-                        
+
                         // This section not required any more???????????
                         // This section tests for the durability value of the consist. Durability value will non-zero if read from consist files. 
                         // Timetable mode does not read consistent durability values for consists, and therefore value will be zero at this time. 
@@ -1505,7 +1512,7 @@ namespace Orts.Simulation.RollingStocks
                                 {
                                     if (Train.IsFreight)
                                     {
-                                        Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetStringFmt("You are travelling too fast for this curve. Slow down, your freight car {0} may be damaged. The recommended speed for this curve is {1}", CarID, FormatStrings.FormatSpeedDisplay(MaxSafeCurveSpeedMps, IsMetric) ));
+                                        Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetStringFmt("You are travelling too fast for this curve. Slow down, your freight car {0} may be damaged. The recommended speed for this curve is {1}", CarID, FormatStrings.FormatSpeedDisplay(MaxSafeCurveSpeedMps, IsMetric)));
                                     }
                                     else
                                     {
@@ -1523,7 +1530,7 @@ namespace Orts.Simulation.RollingStocks
 
                             }
                         }
-                        else if ( s < MaxSafeCurveSpeedMps - SpeedToleranceMpS)  // Reset notification once spped drops
+                        else if (s < MaxSafeCurveSpeedMps - SpeedToleranceMpS)  // Reset notification once spped drops
                         {
                             if (IsMaxSafeCurveSpeed)
                             {
@@ -1557,7 +1564,7 @@ namespace Orts.Simulation.RollingStocks
                             }
 
                         }
-                        else if ( s < CriticalMaxSpeedMpS - SpeedToleranceMpS) // Reset notification once speed drops
+                        else if (s < CriticalMaxSpeedMpS - SpeedToleranceMpS) // Reset notification once speed drops
                         {
                             if (IsCriticalMaxSpeed)
                             {
@@ -1579,27 +1586,27 @@ namespace Orts.Simulation.RollingStocks
                         // Code is disabled until a bteer way is determined to work out whether track piees are superelevated or not.
 
                         // if speed doesn't reach minimum speed required around the curve then set notification
-                       // Breaking of brake hose will not apply to TT mode or AI trains or if on a curve less then 150m to cover operation in shunting yards, where track would mostly have no superelevation
-//                        if (s < CriticalMinSpeedMpS && Train.GetType() != typeof(AITrain) && Train.GetType() != typeof(TTTrain) && CurrentCurveRadius > 150 ) 
-//                       {
-//                            if (!IsCriticalMinSpeed)
-//                            {
-//                                IsCriticalMinSpeed = true; // set flag for IsCriticalSpeed not reached
-//
-//                                if (Train.IsPlayerDriven && !Simulator.TimetableMode)  // Warning messages will only apply if this is player train and not running in TT mode
-//                                {
-//                                      Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("You were travelling too slow for this curve, and Car " + CarID + "may topple over."));
-//                                }
-//                            }
-//
-//                        }
-//                        else if (s > CriticalMinSpeedMpS + SpeedToleranceMpS) // Reset notification once speed increases
-//                        {
-//                            if (IsCriticalMinSpeed)
-//                            {
-//                                IsCriticalMinSpeed = false; // reset flag for IsCriticalSpeed reached - if speed on curve decreases
-//                            }
-//                        }
+                        // Breaking of brake hose will not apply to TT mode or AI trains or if on a curve less then 150m to cover operation in shunting yards, where track would mostly have no superelevation
+                        //                        if (s < CriticalMinSpeedMpS && Train.GetType() != typeof(AITrain) && Train.GetType() != typeof(TTTrain) && CurrentCurveRadius > 150 ) 
+                        //                       {
+                        //                            if (!IsCriticalMinSpeed)
+                        //                            {
+                        //                                IsCriticalMinSpeed = true; // set flag for IsCriticalSpeed not reached
+                        //
+                        //                                if (Train.IsPlayerDriven && !Simulator.TimetableMode)  // Warning messages will only apply if this is player train and not running in TT mode
+                        //                                {
+                        //                                      Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("You were travelling too slow for this curve, and Car " + CarID + "may topple over."));
+                        //                                }
+                        //                            }
+                        //
+                        //                        }
+                        //                        else if (s > CriticalMinSpeedMpS + SpeedToleranceMpS) // Reset notification once speed increases
+                        //                        {
+                        //                            if (IsCriticalMinSpeed)
+                        //                            {
+                        //                                IsCriticalMinSpeed = false; // reset flag for IsCriticalSpeed reached - if speed on curve decreases
+                        //                            }
+                        //                        }
 
 #if DEBUG_CURVE_SPEED
                    Trace.TraceInformation("================================== TrainCar.cs - DEBUG_CURVE_SPEED ==============================================================");
@@ -1623,7 +1630,7 @@ namespace Orts.Simulation.RollingStocks
 
         #endregion
 
-    
+
         #region Calculate friction force in curves
 
         /// <summary>
@@ -1642,7 +1649,7 @@ namespace Orts.Simulation.RollingStocks
                     if (RigidWheelBaseM == 0)   // Calculate default values if no value in Wag File
                     {
 
-                        
+
                         float Axles = WheelAxles.Count;
                         float Bogies = Parts.Count - 1;
                         float BogieSize = Axles / Bogies;
@@ -1711,7 +1718,7 @@ namespace Orts.Simulation.RollingStocks
                                 // Wheelbase = 1.25 x (Loco Drive Axles - 1.0) x Drive Wheel diameter
 
                                 RigidWheelBaseM = 1.25f * (LocoNumDrvAxles - 1.0f) * (DriverWheelRadiusM * 2.0f);
- 
+
                             }
 
                         }
@@ -1933,7 +1940,7 @@ namespace Orts.Simulation.RollingStocks
         {
             return 0.03f;
         }
-        
+
         public virtual float GetMaximumSimpleCouplerSlack2M()
         {
             return 0.07f;
@@ -1975,12 +1982,12 @@ namespace Orts.Simulation.RollingStocks
         {
             return 0.1f;
         }
- 
+
         public virtual float GetCouplerCompressionSlackAM()
         {
             return 0;
         }
- 
+
         public virtual float GetCouplerCompressionSlackBM()
         {
             return 0.1f;
@@ -1990,12 +1997,12 @@ namespace Orts.Simulation.RollingStocks
         {
             return 0.05f;
         }
-         
+
         public virtual float GetMaximumCouplerTensionSlack2M()
         {
             return 0.1f;
         }
- 
+
         public virtual float GetMaximumCouplerTensionSlack3M()
         {
             return 0.13f;
@@ -2010,7 +2017,7 @@ namespace Orts.Simulation.RollingStocks
         {
             return 0.1f;
         }
- 
+
         public virtual float GetMaximumCouplerCompressionSlack3M()
         {
             return 0.13f;
@@ -2423,7 +2430,7 @@ namespace Orts.Simulation.RollingStocks
             WorldPosition.XNAMatrix = m;
             WorldPosition.TileX = tileX;
             WorldPosition.TileZ = tileZ;
-            
+
             UpdatedTraveler(traveler, elapsedTimeS, distance, speed);
 
             // calculate truck angles
@@ -2478,7 +2485,7 @@ namespace Orts.Simulation.RollingStocks
         #endregion
 
         #region Super-elevation
-        void UpdateSuperElevation(Traveller traveler,  float elapsedTimeS)
+        void UpdateSuperElevation(Traveller traveler, float elapsedTimeS)
         {
             if (Simulator.Settings.UseSuperElevation == 0)
                 return;
@@ -2604,7 +2611,7 @@ namespace Orts.Simulation.RollingStocks
                     AddVibrations(VibrationFactorDistance);
                     TypVibrace_1 = true;
                 }
-                
+
                 // Add new vibrations every track vector section which changes the curve radius.
                 if (VibrationTrackVectorSection != traveler.TrackVectorSectionIndex)
                 {
@@ -2627,13 +2634,13 @@ namespace Orts.Simulation.RollingStocks
                     VibrationTrackNode = traveler.TrackNodeIndex;
                     TypVibrace_3 = true;
                 }
-                           
+
                 AddVibrations(VibrationFactorDistance);
-                               
+
                 if (Factor_vibration > 0) Factor_vibration--;
             }
             //if (Train != null && Train.IsTilting)
-            if (Train != null )
+            if (Train != null)
             {
                 TiltingZRot = traveler.FindTiltedZ(speedMpS);//rotation if tilted, an indication of centrifugal force
                 TiltingZRot = PrevTiltingZRot + (TiltingZRot - PrevTiltingZRot) * elapsedTimeS;//smooth rotation
@@ -2641,7 +2648,7 @@ namespace Orts.Simulation.RollingStocks
                 if (this.Flipped) TiltingZRot *= -1f;
             }
             //if (Simulator.Settings.CarVibratingLevel != 0 || Train.IsTilting)
-            if (Simulator.Settings.CarVibratingLevel != 0 )
+            if (Simulator.Settings.CarVibratingLevel != 0)
             {
                 var rotation = Matrix.CreateFromYawPitchRoll(VibrationRotationRad.Y, VibrationRotationRad.X, VibrationRotationRad.Z + TiltingZRot * 0.3f);
                 if (Train.IsTilting) rotation = Matrix.CreateFromYawPitchRoll(VibrationRotationRad.Y, VibrationRotationRad.X, VibrationRotationRad.Z + TiltingZRot * 0.5f);
@@ -2725,7 +2732,7 @@ namespace Orts.Simulation.RollingStocks
                     {
                         for (int i = 0; i < force * 10 + 5; i++) Factor_vibration = i;
                         //Trace.TraceInformation(" Factor_vibration {0}", Factor_vibration);
-                    }                    
+                    }
 
                     if (direction1 == 0)
                         VibrationRotationVelocityRadpS.X += (factor * Simulator.Settings.CarVibratingLevel * VibrationIntroductionStrength * force * 0.75f * VibrationMassKG) / x;
@@ -3132,6 +3139,60 @@ namespace Orts.Simulation.RollingStocks
                 {
                     A[i] = (float)(SumX[i] / SumWgt);
                     B[i] = 0;
+                }
+            }
+        }
+    }
+
+    public class Passenger
+    {
+        public float Weight { get; set; }
+        public float Age { get; set; }
+        public enum Genders { Male, Female };
+        public Genders Gender;
+        public Passenger()
+        {
+            Random rnd = new Random();
+            int test = rnd.Next(0, 1);
+            if (test == 0)
+                Gender = Genders.Male;
+            Age = rnd.Next(1, 100);
+            if (Gender == Genders.Male)
+            {
+                if (Age < 20)
+                {
+                    int aduldWeight = rnd.Next(60, 100);
+                    int fat = rnd.Next(0, 19);
+                    if (fat == 0)
+                        aduldWeight = rnd.Next(100, 200);
+                    Weight = aduldWeight / 20 - Age;
+                }
+                else
+                {
+                    int aduldWeight = rnd.Next(60, 100);
+                    int fat = rnd.Next(0, 19);
+                    if (fat == 0)
+                        aduldWeight = rnd.Next(100, 200);
+                    Weight = aduldWeight;
+                }
+            }
+            if (Gender == Genders.Female)
+            {
+                if (Age < 20)
+                {
+                    int aduldWeight = rnd.Next(40, 90);
+                    int fat = rnd.Next(0, 17);
+                    if (fat == 0)
+                        aduldWeight = rnd.Next(100, 200);
+                    Weight = aduldWeight / 20 - Age;
+                }
+                else
+                {
+                    int aduldWeight = rnd.Next(40, 90);
+                    int fat = rnd.Next(0, 17);
+                    if (fat == 0)
+                        aduldWeight = rnd.Next(100, 200);
+                    Weight = aduldWeight;
                 }
             }
         }

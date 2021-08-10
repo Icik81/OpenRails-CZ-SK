@@ -1586,9 +1586,10 @@ namespace Orts.Simulation.Physics
         /// <summary>
         /// Update train 
         /// <\summary>
-
         public virtual void Update(float elapsedClockSeconds, bool auxiliaryUpdate = true)
         {
+
+            
             if (!auxiliaryUpdate)
                 FormationReversed = false;
             if (IsActualPlayerTrain && Simulator.ActiveMovingTable != null)
@@ -16158,6 +16159,112 @@ namespace Orts.Simulation.Physics
                 }
             }
         }
+
+        public bool BoardingComplete = true;
+        private double timeForPax = 3;
+        private double currentTimeForPax = 3;
+        public int TotalOnBoard = 0;
+        public void UpdatePassengerCountAndWeight(Train train, int numOfPaxOnPlatform, double gameClock)
+        {
+            if (BoardingComplete)
+            {
+                currentTimeForPax = gameClock;
+                for (int i = 0; i < train.Cars.Count; i++)
+                {
+                    var wagon = (train.Cars[i] as MSTSWagon);
+                    if (!(wagon is MSTSLocomotive) && !wagon.FreightDoors)
+                    {
+                        wagon.BoardingComplete = false;
+                        wagon.UnboardingComplete = false;
+                    }
+                }
+                return;
+            }
+            if (currentTimeForPax > gameClock)
+                return;
+            else
+            {
+                currentTimeForPax += timeForPax;
+            }
+            int totalCapacity = 0;
+            int numOfWagons = 0;
+            for (int i = 0; i < train.Cars.Count; i++)
+            {
+                var wagon = (train.Cars[i] as MSTSWagon);
+                if (!(wagon is MSTSLocomotive) && !wagon.FreightDoors)
+                {
+                    if (wagon.PassengerCapacity == 0)
+                        wagon.PassengerCapacity = 80;
+                    totalCapacity += wagon.PassengerCapacity;
+                    numOfWagons++;
+                }
+            }
+            Random rnd = new Random();
+            int enterCount = 0;
+            int exitCount = 0;
+
+            for (int i = 0; i < train.Cars.Count; i++)
+            {
+                var wagon = (train.Cars[i] as MSTSWagon);
+                if (!(wagon is MSTSLocomotive) && !wagon.FreightDoors)
+                {
+                    exitCount = (numOfPaxOnPlatform - rnd.Next(-(numOfPaxOnPlatform), (numOfPaxOnPlatform))) / numOfWagons;
+                    enterCount = (numOfPaxOnPlatform - rnd.Next(-(numOfPaxOnPlatform), (numOfPaxOnPlatform))) / numOfWagons;
+                    if (exitCount < 0)
+                        exitCount = 0;
+                    if (exitCount > wagon.PassengerLoad)
+                        exitCount = wagon.PassengerLoad;
+                    if (enterCount < 0)
+                        enterCount = 0;
+                    if (enterCount + wagon.PassengerLoad > wagon.PassengerCapacity)
+                        enterCount = wagon.PassengerCapacity - wagon.PassengerLoad;
+                    if (wagon.ExitQueue == 0)
+                        wagon.ExitQueue = exitCount;
+                    if (wagon.EnterQueue == 0)
+                        wagon.EnterQueue = enterCount;
+                }
+            }
+
+            for (int i = 0; i < train.Cars.Count; i++)
+            {
+                var wagon = (train.Cars[i] as MSTSWagon);
+                if (!(wagon is MSTSLocomotive) && !wagon.FreightDoors)
+                {
+                    if (wagon.DoorLeftOpen || wagon.DoorRightOpen)
+                    {
+                        // exit first
+                        int paxIndex = 0;
+                        if (wagon.PassengerList.Count > 0)
+                            paxIndex = rnd.Next(0, wagon.PassengerList.Count - 1);
+                        if (wagon.ExitQueue > 0 && wagon.PassengerList.Count > 0 && !wagon.UnboardingComplete)
+                        {
+                            Passenger pax = wagon.PassengerList[paxIndex];
+                            wagon.MassKG -= pax.Weight;
+                            wagon.PassengerList.RemoveAt(paxIndex);
+                            wagon.ExitQueue -= 1;
+                            TotalOnBoard--;
+                            if (wagon.ExitQueue == 0)
+                                wagon.UnboardingComplete = true;
+                            wagon.PassengerLoad = wagon.PassengerList.Count;
+                        }
+                        else if (wagon.EnterQueue > 0 && !wagon.BoardingComplete) // then enter new pax
+                        {
+                            Passenger pax = new Passenger();
+                            wagon.PassengerList.Add(pax);
+                            wagon.MassKG += pax.Weight;
+                            wagon.EnterQueue -= 1;
+                            TotalOnBoard++;
+                            wagon.PassengerLoad = wagon.PassengerList.Count;
+                            if (wagon.EnterQueue == 0)
+                                wagon.BoardingComplete = true;
+                        }
+                    }
+                }
+            }
+            if (enterCount == 0)
+                BoardingComplete = true;
+        }
+
         //================================================================================================//
         /// <summary>
         /// Check if it's time to have a failed car or locomotive

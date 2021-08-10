@@ -1991,7 +1991,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                 {
                     if (MpS.ToKpH(Locomotive.AbsSpeedMpS) < 15 && Locomotive.EngineBrakeController.CurrentValue > 0)
                         vigilanceActive = false;
-                    if (Locomotive.TrainControlSystem.CabSignalAspect == TrackMonitorSignalAspect.Clear_2 || Locomotive.TrainControlSystem.CabSignalAspect == TrackMonitorSignalAspect.Restricted)
+                    if (Locomotive.TrainControlSystem.CabSignalAspect == TrackMonitorSignalAspect.Clear_2 || (Locomotive.TrainControlSystem.CabSignalAspect == TrackMonitorSignalAspect.Restricted && MpS.ToKpH(Locomotive.AbsSpeedMpS) < 90))
                         vigilanceActive = false;
                     if (NoAlertOnRestrictedSignal && Locomotive.TrainControlSystem.CabSignalAspect == TrackMonitorSignalAspect.Restricted)
                         vigilanceActive = false;

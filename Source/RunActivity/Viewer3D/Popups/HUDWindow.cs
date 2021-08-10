@@ -588,7 +588,16 @@ namespace Orts.Viewer3D.Popups
                 mstsLocomotive.TrainControlSystem.CabSignalAspect.ToString()
                 //Add new data here, if adding additional column.
                 ));
-
+            string message = "";
+            for (int i = 0; i < train.Cars.Count; i++)
+            {
+                var wagon = (train.Cars[i] as MSTSWagon);
+                if (!(wagon is MSTSLocomotive) && !wagon.FreightDoors)
+                {
+                    message += wagon.MassKG.ToString() + " ";
+                }
+            }
+            // locomotive.Simulator.Confirmer.MSG(message + train.TotalOnBoard.ToString());
             //Car information
             statusConsist.Add(string.Format("\n{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\t{9}\t{10}\t{11}\t{12}\t{13}\t{14}\t{15}",
                 Viewer.Catalog.GetString("Car"),

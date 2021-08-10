@@ -1423,6 +1423,8 @@ namespace Orts.Simulation.RollingStocks
                     break;
                 case "wagon(intakepoint": IntakePointList.Add(new IntakePoint(stf)); break;
                 case "wagon(passengercapacity": HasPassengerCapacity = true; break;
+                case "wagon(maxpassengercapacity": PassengerCapacity = stf.ReadIntBlock(0); break;
+
                 case "wagon(ortsfreightanims":
                     FreightAnimations = new FreightAnimations(stf, this);
                     break;
@@ -1523,6 +1525,7 @@ namespace Orts.Simulation.RollingStocks
         {
             MainShapeFileName = copy.MainShapeFileName;
             HasPassengerCapacity = copy.HasPassengerCapacity;
+            PassengerCapacity = copy.PassengerCapacity;
             WagonType = copy.WagonType;
             WagonSpecialType = copy.WagonSpecialType;
             FreightShapeFileName = copy.FreightShapeFileName;

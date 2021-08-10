@@ -888,7 +888,9 @@ namespace Orts.Simulation
 
             return MyPlayerTrain.IsMissedPlatform(200.0f);
         }
-        
+
+        ElapsedTime et = new ElapsedTime();
+
         public override void NotifyEvent(ActivityEventType EventType)
         {
 
@@ -1013,8 +1015,15 @@ namespace Orts.Simulation
                 }                
             }
             else if (EventType == ActivityEventType.Timer)
-            {                
+            {
                 // Icik
+                if (arrived && MyPlayerTrain.BoardingComplete)
+                {
+                    MyPlayerTrain.BoardingComplete = false;
+                }
+                double clock = MyPlayerTrain.Simulator.GameTime;
+                // prozatím vypnuto
+                // MyPlayerTrain.UpdatePassengerCountAndWeight(MyPlayerTrain, 100, clock);
                 var loco = MyPlayerTrain.LeadLocomotive as MSTSLocomotive;
                 if (loco != null)
                 {
