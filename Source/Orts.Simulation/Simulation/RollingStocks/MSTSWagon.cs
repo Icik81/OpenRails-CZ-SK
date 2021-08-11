@@ -3600,10 +3600,10 @@ namespace Orts.Simulation.RollingStocks
                                 mstsWagon.SignalEvent(DoorLeftOpen ? Event.DoorOpen : Event.DoorClose); // hook for sound trigger
                             }
                         }
-                    }
-                    if (DoorLeftOpen)
-                        car.BrakeSystem.LeftDoorIsOpened = true;
-                    else car.BrakeSystem.LeftDoorIsOpened = false;
+                        if (DoorLeftOpen)
+                            car.BrakeSystem.LeftDoorIsOpened = true;
+                        else car.BrakeSystem.LeftDoorIsOpened = false;
+                    }                    
                 }
                 if (DoorLeftOpen) SignalEvent(Event.DoorOpen); // hook for sound trigger
                 else SignalEvent(Event.DoorClose);
@@ -3657,10 +3657,10 @@ namespace Orts.Simulation.RollingStocks
                                 mstsWagon.SignalEvent(DoorRightOpen ? Event.DoorOpen : Event.DoorClose); // hook for sound trigger
                             }                            
                         }
-                    }
-                    if (DoorRightOpen)
-                        car.BrakeSystem.RightDoorIsOpened = true;
-                    else car.BrakeSystem.RightDoorIsOpened = false;
+                        if (DoorRightOpen)
+                            car.BrakeSystem.RightDoorIsOpened = true;
+                        else car.BrakeSystem.RightDoorIsOpened = false;
+                    }                   
                 }
                 if (DoorRightOpen) SignalEvent(Event.DoorOpen); // hook for sound trigger
                 else SignalEvent(Event.DoorClose);
