@@ -16121,12 +16121,20 @@ namespace Orts.Simulation.Physics
                     if (!car.Flipped && right || car.Flipped && !right)
                     {
                         mstsWagon.DoorRightOpen = open;
+                        // Icik
+                        if (open)
+                            car.BrakeSystem.LeftDoorIsOpened = true;
+                        else car.BrakeSystem.LeftDoorIsOpened = false;
                     }
                     else
                     {
                         mstsWagon.DoorLeftOpen = open;
+                        // Icik
+                        if (open)
+                            car.BrakeSystem.RightDoorIsOpened = true;
+                        else car.BrakeSystem.RightDoorIsOpened = false;
                     }
-                    mstsWagon.SignalEvent(open ? Event.DoorOpen : Event.DoorClose); // hook for sound trigger
+                    mstsWagon.SignalEvent(open ? Event.DoorOpen : Event.DoorClose); // hook for sound trigger                    
                 }
             }
         }
@@ -16148,12 +16156,22 @@ namespace Orts.Simulation.Physics
                     if (!wagon.Flipped && right || wagon.Flipped && !right)
                     {
                         if (ChanceToOpenDoor)
+                        {
                             wagon.DoorRightOpen = open;
+                            if (open)
+                                wagon.BrakeSystem.LeftDoorIsOpened = true;
+                            else wagon.BrakeSystem.LeftDoorIsOpened = false;
+                        }
                     }
                     else
                     {
                         if (ChanceToOpenDoor)
+                        {
                             wagon.DoorLeftOpen = open;
+                            if (open)
+                                wagon.BrakeSystem.RightDoorIsOpened = true;
+                            else wagon.BrakeSystem.RightDoorIsOpened = false;
+                        }
                     }
                     wagon.SignalEvent(open ? Event.DoorOpen : Event.DoorClose); // hook for sound trigger
                 }

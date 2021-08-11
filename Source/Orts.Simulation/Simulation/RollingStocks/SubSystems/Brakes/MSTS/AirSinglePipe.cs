@@ -2099,9 +2099,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     {
                         wagon.DoorRightOpen = false;                        
                         wagon.DoorLeftOpen = false;
-                        wagon.SignalEvent(Event.DoorClose); 
-                    }
-
+                        wagon.SignalEvent(Event.DoorClose);
+                        car.BrakeSystem.LeftDoorIsOpened = false;
+                        car.BrakeSystem.RightDoorIsOpened = false;
+                     }
                 }
             }
 

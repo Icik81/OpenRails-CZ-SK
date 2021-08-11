@@ -1899,7 +1899,7 @@ namespace Orts.Simulation.RollingStocks
             base.Update(elapsedClockSeconds);
 
             // Icik
-            TogleDoorsByCarOperationsWindow();
+            ToggleDoorsCarOperationsWindow();
 
             ConfirmSteamLocomotiveTender(); // Confirms that a tender is connected to the steam locomotive
 
@@ -3484,13 +3484,12 @@ namespace Orts.Simulation.RollingStocks
         }
 
         // Icik
-        public void TogleDoorsByCarOperationsWindow()
+        public void ToggleDoorsCarOperationsWindow()
         {
             foreach (var car in Train.Cars)
             {
-                var mstsWagon = car as MSTSWagon;
-
-                if (mstsWagon.DoorLeftOpen)
+                var mstsWagon = car as MSTSWagon;                              
+                if (car.BrakeSystem.LeftDoorIsOpened)
                 {
                     car.BrakeSystem.LeftDoorMenu = 0;
                     car.BrakeSystem.LeftDoorText = "otevřeno";
@@ -3501,7 +3500,7 @@ namespace Orts.Simulation.RollingStocks
                     car.BrakeSystem.LeftDoorText = "zavřeno";
                 }
 
-                if (mstsWagon.DoorRightOpen)
+                if (car.BrakeSystem.RightDoorIsOpened)
                 {
                     car.BrakeSystem.RightDoorMenu = 0;
                     car.BrakeSystem.RightDoorText = "otevřeno";
@@ -3517,11 +3516,17 @@ namespace Orts.Simulation.RollingStocks
                     switch (car.BrakeSystem.LeftDoorMenu)
                     {
                         case 0:
-                            mstsWagon.DoorLeftOpen = false;
-                            mstsWagon.SignalEvent(Event.DoorClose);
+                            if (!car.Flipped ^ Flipped)
+                                mstsWagon.DoorLeftOpen = false;
+                            else mstsWagon.DoorRightOpen = false;
+                            car.BrakeSystem.LeftDoorIsOpened = false;
+                            mstsWagon.SignalEvent(Event.DoorClose);                            
                             break;
                         case 1:
-                            mstsWagon.DoorLeftOpen = true;
+                            if (!car.Flipped ^ Flipped)
+                                mstsWagon.DoorLeftOpen = true;
+                            else mstsWagon.DoorRightOpen = true;
+                            car.BrakeSystem.LeftDoorIsOpened = true;
                             mstsWagon.SignalEvent(Event.DoorOpen);
                             break;
                     }
@@ -3532,11 +3537,17 @@ namespace Orts.Simulation.RollingStocks
                     switch (car.BrakeSystem.RightDoorMenu)
                     {
                         case 0:
-                            mstsWagon.DoorRightOpen = false;
+                            if (!car.Flipped ^ Flipped)                            
+                                mstsWagon.DoorRightOpen = false;
+                            else mstsWagon.DoorLeftOpen = false;
+                            car.BrakeSystem.RightDoorIsOpened = false;
                             mstsWagon.SignalEvent(Event.DoorClose);
                             break;
                         case 1:
-                            mstsWagon.DoorRightOpen = true;
+                            if (!car.Flipped ^ Flipped)
+                                mstsWagon.DoorRightOpen = true;
+                            else mstsWagon.DoorLeftOpen = true;
+                            car.BrakeSystem.RightDoorIsOpened = true;
                             mstsWagon.SignalEvent(Event.DoorOpen);
                             break;
                     }
@@ -3548,8 +3559,7 @@ namespace Orts.Simulation.RollingStocks
 
         public void ToggleDoorsLeft()
         {
-            // Icik
-            DoorLeftOpen = !DoorLeftOpen;
+            // Icik            
             if (SpeedMpS > 0)
             {
                 if (DoorLeftOpen)
@@ -3561,11 +3571,15 @@ namespace Orts.Simulation.RollingStocks
                         {
                             mstsWagon.DoorLeftOpen = false;
                             SignalEvent(Event.DoorClose);
+                            if (DoorLeftOpen)
+                                car.BrakeSystem.LeftDoorIsOpened = true;
+                            else car.BrakeSystem.LeftDoorIsOpened = false;                            
                         }
                     }
                 }
                 return;
             }
+            DoorLeftOpen = !DoorLeftOpen;
             if (Simulator.PlayerLocomotive == this || Train.LeadLocomotive == this) // second part for remote trains
             {//inform everyone else in the train
                 foreach (var car in Train.Cars)
@@ -3587,6 +3601,9 @@ namespace Orts.Simulation.RollingStocks
                             }
                         }
                     }
+                    if (DoorLeftOpen)
+                        car.BrakeSystem.LeftDoorIsOpened = true;
+                    else car.BrakeSystem.LeftDoorIsOpened = false;
                 }
                 if (DoorLeftOpen) SignalEvent(Event.DoorOpen); // hook for sound trigger
                 else SignalEvent(Event.DoorClose);
@@ -3599,8 +3616,7 @@ namespace Orts.Simulation.RollingStocks
         }
         public void ToggleDoorsRight()
         {
-            // Icik
-            DoorRightOpen = !DoorRightOpen;
+            // Icik            
             if (SpeedMpS > 0)
             {
                 if (DoorRightOpen)
@@ -3612,11 +3628,15 @@ namespace Orts.Simulation.RollingStocks
                         {
                             mstsWagon.DoorRightOpen = false;
                             SignalEvent(Event.DoorClose);
+                            if (DoorRightOpen)
+                                car.BrakeSystem.RightDoorIsOpened = true;
+                            else car.BrakeSystem.RightDoorIsOpened = false;                            
                         }
                     }
                 }
                 return;
             }
+            DoorRightOpen = !DoorRightOpen;
             if (Simulator.PlayerLocomotive == this || Train.LeadLocomotive == this) // second part for remote trains
             { //inform everyone else in the train
                 foreach (TrainCar car in Train.Cars)
@@ -3626,7 +3646,7 @@ namespace Orts.Simulation.RollingStocks
                     {
                         if (car != this && mstsWagon != null)
                         {
-                            if (!car.Flipped ^ Flipped && SpeedMpS == 0)
+                            if (!car.Flipped ^ Flipped)
                             {
                                 mstsWagon.DoorRightOpen = DoorRightOpen;
                                 mstsWagon.SignalEvent(DoorRightOpen ? Event.DoorOpen : Event.DoorClose); // hook for sound trigger
@@ -3635,9 +3655,12 @@ namespace Orts.Simulation.RollingStocks
                             {
                                 mstsWagon.DoorLeftOpen = DoorRightOpen;
                                 mstsWagon.SignalEvent(DoorRightOpen ? Event.DoorOpen : Event.DoorClose); // hook for sound trigger
-                            }
+                            }                            
                         }
                     }
+                    if (DoorRightOpen)
+                        car.BrakeSystem.RightDoorIsOpened = true;
+                    else car.BrakeSystem.RightDoorIsOpened = false;
                 }
                 if (DoorRightOpen) SignalEvent(Event.DoorOpen); // hook for sound trigger
                 else SignalEvent(Event.DoorClose);

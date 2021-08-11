@@ -233,6 +233,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes
         public string RightDoorText = "zavřeno";
         public int LeftDoorCycle = 1;
         public int RightDoorCycle = 1;
+        public bool LeftDoorIsOpened;
+        public bool RightDoorIsOpened;
 
         public int WagonType;
 
