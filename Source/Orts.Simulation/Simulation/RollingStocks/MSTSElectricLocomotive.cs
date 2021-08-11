@@ -73,7 +73,10 @@ namespace Orts.Simulation.RollingStocks
         public float PantographVoltageV;
         public float VoltageAC;
         public float VoltageDC;
+        public float preVoltageAC;
+        public float preVoltageDC;
         int T = 0;
+        int T_CB = 0;
 
         public MSTSElectricLocomotive(Simulator simulator, string wagFile) :
             base(simulator, wagFile)
@@ -435,16 +438,53 @@ namespace Orts.Simulation.RollingStocks
                 // Blokování HV u vícesystémových lokomotiv při malém napětí
                 if (MultiSystemEngine)
                 {
-                    if (SwitchingVoltageMode == 1)
+                    if (SwitchingVoltageMode == 1 
+                        && (PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closing 
+                        || PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closed))
                         SignalEvent(PowerSupplyEvent.OpenCircuitBreaker); // Musí se ještě vyřešit!!!                        
 
-                    if (SwitchingVoltageMode_OffAC)
-                        VoltageAC = PantographVoltageV;
-                    else VoltageAC = 0;
                     
-                    if (SwitchingVoltageMode_OffDC)
+                    if (PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closed)
+                        T_CB = 1;
+                                      
+                    if (PowerSupply.CircuitBreaker.State == CircuitBreakerState.Open && T_CB == 1)
+                        SwitchingVoltageMode = 1;
+
+                    if (PowerSupply.CircuitBreaker.State == CircuitBreakerState.Open)
+                        T_CB = 0;
+
+                                        
+                    if (SwitchingVoltageMode_OffAC) // Výběr AC napěťového systému
+                        VoltageAC = PantographVoltageV;
+                    else
+                    {
+                        if (VoltageAC > 0)
+                            VoltageAC -= VoltageAC * 1.5f * elapsedClockSeconds;
+                        if (VoltageAC < 0) VoltageAC = 0;
+                    }
+                    
+                    if (SwitchingVoltageMode_OffDC) // Výběr DC napěťového systému
                         VoltageDC = PantographVoltageV;
-                    else VoltageDC = 0;
+                    else
+                    {
+                        if (VoltageDC > 0)
+                            VoltageDC -= VoltageDC * 1.5f * elapsedClockSeconds;
+                        if (VoltageDC < 0) VoltageDC = 0;
+                    }
+
+                    if (SwitchingVoltageMode == 1) // Středová poloha
+                    {
+                        if (VoltageAC > 0)
+                            VoltageAC -= VoltageAC * 1.5f * elapsedClockSeconds;
+                        if (VoltageAC < 0) VoltageAC = 0;
+                        if (VoltageDC > 0)
+                            VoltageDC -= VoltageDC * 1.5f * elapsedClockSeconds;
+                        if (VoltageDC < 0) VoltageDC = 0;
+                    }
+
+                    preVoltageAC = VoltageAC;
+                    preVoltageDC = VoltageDC;
+                   
 
                     Pantographs[1].PantographsBlocked = false;
                     Pantographs[2].PantographsBlocked = false;
@@ -906,7 +946,7 @@ namespace Orts.Simulation.RollingStocks
 
                 case CABViewControlTypes.LINE_VOLTAGE_AC:
                     if (SwitchingVoltageMode == 1)
-                        data = 0; 
+                        data = preVoltageAC; 
                     else data = VoltageAC;
                     if (cvc.Units == CABViewControlUnits.KILOVOLTS)
                         data /= 1000;
@@ -914,7 +954,7 @@ namespace Orts.Simulation.RollingStocks
 
                 case CABViewControlTypes.LINE_VOLTAGE_DC:
                     if (SwitchingVoltageMode == 1)
-                        data = 0; 
+                        data = preVoltageDC; 
                     else data = VoltageDC;
                     if (cvc.Units == CABViewControlUnits.KILOVOLTS)
                         data /= 1000;
