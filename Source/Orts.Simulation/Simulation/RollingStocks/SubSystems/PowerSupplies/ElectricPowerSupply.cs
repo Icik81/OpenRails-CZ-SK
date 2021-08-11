@@ -172,7 +172,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
         }
 
         public void Update(float elapsedClockSeconds)
-        {
+        {                        
             CircuitBreaker.Update(elapsedClockSeconds);
 
             if (Script != null)

@@ -71,6 +71,8 @@ namespace Orts.Simulation.RollingStocks
         public double MaxLineVoltage1;
         public double MaxLineVoltage2;
         public float PantographVoltageV;
+        public float VoltageAC;
+        public float VoltageDC;
         int T = 0;
 
         public MSTSElectricLocomotive(Simulator simulator, string wagFile) :
@@ -433,6 +435,17 @@ namespace Orts.Simulation.RollingStocks
                 // Blokování HV u vícesystémových lokomotiv při malém napětí
                 if (MultiSystemEngine)
                 {
+                    if (SwitchingVoltageMode == 1)
+                        SignalEvent(PowerSupplyEvent.OpenCircuitBreaker); // Musí se ještě vyřešit!!!                        
+
+                    if (SwitchingVoltageMode_OffAC)
+                        VoltageAC = PantographVoltageV;
+                    else VoltageAC = 0;
+                    
+                    if (SwitchingVoltageMode_OffDC)
+                        VoltageDC = PantographVoltageV;
+                    else VoltageDC = 0;
+
                     Pantographs[1].PantographsBlocked = false;
                     Pantographs[2].PantographsBlocked = false;
 
@@ -568,6 +581,7 @@ namespace Orts.Simulation.RollingStocks
         protected override void UpdatePowerSupply(float elapsedClockSeconds)
         {
             PowerSupply.Update(elapsedClockSeconds);
+                      
             if (PowerSupply.CircuitBreaker != null && IsPlayerTrain)
             {
                 if (PowerSupply.CircuitBreaker.State == CircuitBreakerState.Open && DoesPowerLossResetControls)
@@ -751,11 +765,11 @@ namespace Orts.Simulation.RollingStocks
 
             switch (cvc.ControlType)
             {
-                case CABViewControlTypes.LINE_VOLTAGE:
+                case CABViewControlTypes.LINE_VOLTAGE:                                        
                     data = PantographVoltageV;
                     if (cvc.Units == CABViewControlUnits.KILOVOLTS)
                         data /= 1000;
-                    break;
+                    break;               
 
                 case CABViewControlTypes.PANTO_DISPLAY:
                     data = Pantographs.State == PantographState.Up ? 1 : 0;
@@ -825,7 +839,7 @@ namespace Orts.Simulation.RollingStocks
                             data = 2;
                             break;
                     }
-                    break;
+                    break;                
 
                 case CABViewControlTypes.ORTS_CIRCUIT_BREAKER_CLOSED:
                     switch (PowerSupply.CircuitBreaker.State)
@@ -859,6 +873,51 @@ namespace Orts.Simulation.RollingStocks
 
                 case CABViewControlTypes.ORTS_CIRCUIT_BREAKER_OPEN_AND_AUTHORIZED:
                     data = (PowerSupply.CircuitBreaker.State < CircuitBreakerState.Closed && PowerSupply.CircuitBreaker.ClosingAuthorization) ? 1 : 0;
+                    break;
+
+                // Icik
+                case CABViewControlTypes.ORTS_CIRCUIT_BREAKER_STATE_MULTISYSTEM:
+                    switch (PowerSupply.CircuitBreaker.State)
+                    {
+                        case CircuitBreakerState.Open:                            
+                            if (SwitchingVoltageMode == 1) // Střed                          
+                                data = 0;
+                            if (SwitchingVoltageMode == 0) // levá strana - DC
+                                data = 6;
+                            if (SwitchingVoltageMode == 2) // pravá strana - AC
+                                data = 2;                                                        
+                            break;
+
+                        case CircuitBreakerState.Closing:
+                            if (SwitchingVoltageMode_OffAC)
+                                data = 1;                            
+                            if (SwitchingVoltageMode_OffDC)
+                                data = 5;                            
+                            break;
+
+                        case CircuitBreakerState.Closed:
+                            if (SwitchingVoltageMode_OffAC)
+                                data = 2;
+                            if (SwitchingVoltageMode_OffDC)
+                                data = 6;                            
+                            break;
+                    }
+                    break;
+
+                case CABViewControlTypes.LINE_VOLTAGE_AC:
+                    if (SwitchingVoltageMode == 1)
+                        data = 0; 
+                    else data = VoltageAC;
+                    if (cvc.Units == CABViewControlUnits.KILOVOLTS)
+                        data /= 1000;
+                    break;
+
+                case CABViewControlTypes.LINE_VOLTAGE_DC:
+                    if (SwitchingVoltageMode == 1)
+                        data = 0; 
+                    else data = VoltageDC;
+                    if (cvc.Units == CABViewControlUnits.KILOVOLTS)
+                        data /= 1000;
                     break;
 
                 default:
