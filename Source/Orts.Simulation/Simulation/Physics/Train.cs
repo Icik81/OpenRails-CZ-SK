@@ -16182,8 +16182,42 @@ namespace Orts.Simulation.Physics
         private double timeForPax = 0.75;
         private double currentTimeForPax = 0.75;
         public int TotalOnBoard = 0;
+        private bool namesFilled = false;
+        private List<string> testNamesM;
+        private List<string> testNamesF;
+        private List<string> testSurNamesM;
+        private List<string> testSurNamesF;
+
         public void UpdatePassengerCountAndWeight(Train train, int numOfPaxOnPlatform, double gameClock)
         {
+            return;
+            if (!namesFilled)
+            {
+                if (testNamesM == null)
+                {
+                    testNamesM = new List<string>();
+                    testNamesF = new List<string>();
+                    testSurNamesM = new List<string>();
+                    testSurNamesF = new List<string>();
+                }
+                Passenger pax = new Passenger(testNamesM, testSurNamesM);
+                testNamesM = pax.MaleNames;
+                testSurNamesM = pax.MaleSurnames;
+                testSurNamesF = pax.FemaleSurames;
+                testNamesF = pax.FemaleNames;
+                foreach (StationStop ss in train.StationStops)
+                {
+                    int numPax = ss.PlatformItem.NumPassengersWaiting;
+                    {
+                        for (int i = 1; i < numPax; i++)
+                        {
+                            ss.PlatformItem.PassengerList.Add(new Passenger(testNamesM, testSurNamesM));
+                        }
+                    }
+                }
+                namesFilled = true;
+            }
+            
             if (BoardingComplete)
             {
                 currentTimeForPax = gameClock;
@@ -16267,10 +16301,20 @@ namespace Orts.Simulation.Physics
                         }
                         else if (wagon.EnterQueue > 0 && !wagon.BoardingComplete) // then enter new pax
                         {
-                            Passenger pax = new Passenger();
+                            Passenger pax = null;
+                            foreach (Passenger p in StationStops[0].PlatformItem.PassengerList)
+                            {
+                                if (!p.Boarded)
+                                {
+                                    pax = p;
+                                    p.Boarded = pax.Boarded = true;
+                                }
+                            }
                             wagon.PassengerList.Add(pax);
                             wagon.MassKG += pax.Weight;
                             wagon.EnterQueue -= 1;
+                            if (StationStops[0].PlatformItem.NumPassengersWaiting > 0)
+                                StationStops[0].PlatformItem.NumPassengersWaiting--;
                             TotalOnBoard++;
                             wagon.PassengerLoad = wagon.PassengerList.Count;
                             if (wagon.EnterQueue == 0)

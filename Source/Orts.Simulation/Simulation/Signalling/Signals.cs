@@ -13660,8 +13660,7 @@ namespace Orts.Simulation.Signalling
         public int NumPassengersWaiting;
         public bool[] PlatformSide = new bool[2] { false, false };
         public int PlatformFrontUiD = -1;
-
-
+        public List<object> PassengerList = new List<object>();
         //================================================================================================//
         /// <summary>
         /// Constructor

@@ -100,6 +100,8 @@ namespace Orts.Viewer3D
         public ComposeMessage ComposeMessageWindow { get; private set; } // ??? window
         public TrainListWindow TrainListWindow { get; private set; } // for switching driven train
         public TTDetachWindow TTDetachWindow { get; private set; } // for detaching player train in timetable mode
+        public PaxWindow PaxWindow { get; private set; }
+
         // Route Information
         public TileManager Tiles { get; private set; }
         public TileManager LoTiles { get; private set; }
@@ -461,6 +463,7 @@ namespace Orts.Viewer3D
             ComposeMessageWindow = new ComposeMessage(WindowManager);
             TrainListWindow = new TrainListWindow(WindowManager);
             TTDetachWindow = new TTDetachWindow(WindowManager);
+            PaxWindow = new PaxWindow(WindowManager);
             WindowManager.Initialize();
 
             InfoDisplay = new InfoDisplay(this);
@@ -1033,7 +1036,7 @@ namespace Orts.Viewer3D
             if (UserInput.IsPressed(UserCommand.DebugSignalling)) if (UserInput.IsDown(UserCommand.DisplayNextWindowTab)) SignallingDebugWindow.TabAction(); else SignallingDebugWindow.Visible = !SignallingDebugWindow.Visible;
             if (UserInput.IsPressed(UserCommand.DisplayBasicHUDToggle)) HUDWindow.ToggleBasicHUD();
             if (UserInput.IsPressed(UserCommand.DisplayTrainListWindow)) TrainListWindow.Visible = !TrainListWindow.Visible;
-
+            if (UserInput.IsPressed(UserCommand.DisplayPassengerListWindow)) PaxWindow.Visible = !PaxWindow.Visible;
 
             if (UserInput.IsPressed(UserCommand.GameChangeCab))
             {
