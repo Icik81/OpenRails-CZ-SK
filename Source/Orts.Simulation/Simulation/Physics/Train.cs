@@ -16161,8 +16161,8 @@ namespace Orts.Simulation.Physics
         }
 
         public bool BoardingComplete = true;
-        private double timeForPax = 3;
-        private double currentTimeForPax = 3;
+        private double timeForPax = 0.75;
+        private double currentTimeForPax = 0.75;
         public int TotalOnBoard = 0;
         public void UpdatePassengerCountAndWeight(Train train, int numOfPaxOnPlatform, double gameClock)
         {
