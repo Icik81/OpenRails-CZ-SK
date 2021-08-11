@@ -1023,7 +1023,7 @@ namespace Orts.Simulation
                 }
                 double clock = MyPlayerTrain.Simulator.GameTime;
                 // prozatím vypnuto
-                // MyPlayerTrain.UpdatePassengerCountAndWeight(MyPlayerTrain, 100, clock);
+                MyPlayerTrain.UpdatePassengerCountAndWeight(MyPlayerTrain, 100, clock);
                 var loco = MyPlayerTrain.LeadLocomotive as MSTSLocomotive;
                 if (loco != null)
                 {
