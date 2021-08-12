@@ -75,6 +75,7 @@ namespace Orts.Simulation.RollingStocks
         public float VoltageDC;
         public float preVoltageAC;
         public float preVoltageDC;
+        public bool LocoSwitchACDC;
         int T = 0;
         int T_CB = 0;
 
@@ -439,6 +440,7 @@ namespace Orts.Simulation.RollingStocks
                 if (MultiSystemEngine)
                 {
                     if (SwitchingVoltageMode == 1 
+                        && LocoSwitchACDC
                         && (PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closing 
                         || PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closed))
                         SignalEvent(PowerSupplyEvent.OpenCircuitBreaker); // Musí se ještě vyřešit!!!                        
@@ -805,7 +807,7 @@ namespace Orts.Simulation.RollingStocks
 
             switch (cvc.ControlType)
             {
-                case CABViewControlTypes.LINE_VOLTAGE:                                        
+                case CABViewControlTypes.LINE_VOLTAGE:
                     data = PantographVoltageV;
                     if (cvc.Units == CABViewControlUnits.KILOVOLTS)
                         data /= 1000;
@@ -878,6 +880,7 @@ namespace Orts.Simulation.RollingStocks
                         case CircuitBreakerState.Closed:
                             data = 2;
                             break;
+                            LocoSwitchACDC = false;
                     }
                     break;                
 
@@ -942,6 +945,7 @@ namespace Orts.Simulation.RollingStocks
                                 data = 6;                            
                             break;
                     }
+                    LocoSwitchACDC = true;
                     break;
 
                 case CABViewControlTypes.LINE_VOLTAGE_AC:
