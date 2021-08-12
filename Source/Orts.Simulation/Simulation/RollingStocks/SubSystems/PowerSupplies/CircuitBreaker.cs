@@ -188,6 +188,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
 
         public void Update(float elapsedSeconds)
         {
+            // Icik
+            if (Locomotive.IsPlayerTrain && Locomotive.LocoSwitchACDC && Locomotive.SwitchingVoltageMode == 1)
+                return;
+
             if (Locomotive.Train.TrainType == Train.TRAINTYPE.AI || Locomotive.Train.TrainType == Train.TRAINTYPE.AI_AUTOGENERATE
                 || Locomotive.Train.TrainType == Train.TRAINTYPE.AI_PLAYERHOSTING)
             {
