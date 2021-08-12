@@ -50,6 +50,7 @@
         [GetString("Display Compass Window")] DisplayCompassWindow,
         [GetString("Display Basic HUD Toggle")] DisplayBasicHUDToggle,
         [GetString("Display Train List Window")] DisplayTrainListWindow,
+        [GetString("Display Passenger List Window")] DisplayPassengerListWindow,
 
         [GetString("Debug Speed Up")] DebugSpeedUp,
         [GetString("Debug Speed Down")] DebugSpeedDown,

@@ -53,6 +53,8 @@ namespace Orts.Viewer3D.Popups
 
         Label StationNextArriveScheduled;
         Label StationNextDepartScheduled;
+        Label PassengersWaiting;
+        Label PassengersCurrentWaiting;
 
         Label Message;
 
@@ -68,50 +70,54 @@ namespace Orts.Viewer3D.Popups
             {
                 var hbox = vbox.AddLayoutHorizontalLineOfText();
                 hbox.Add(StationPlatform = new Label(boxWidth * 3, hbox.RemainingHeight, "", LabelAlignment.Left));
-                hbox.Add(CurrentDelay = new Label(boxWidth * 4, hbox.RemainingHeight, ""));
+                hbox.Add(CurrentDelay = new Label(boxWidth * 3, hbox.RemainingHeight, ""));
                 hbox.Add(CurrentTime = new Label(boxWidth, hbox.RemainingHeight, "", LabelAlignment.Center));
             }
             vbox.AddHorizontalSeparator();
             {
                 var hbox = vbox.AddLayoutHorizontalLineOfText();
-                hbox.Add(new Label(boxWidth * 3, hbox.RemainingHeight, Viewer.Catalog.GetString("Station")));
+                hbox.Add(new Label(boxWidth * 2, hbox.RemainingHeight, Viewer.Catalog.GetString("Station")));
                 hbox.Add(new Label(boxWidth, hbox.RemainingHeight, Viewer.Catalog.GetString("Distance"), LabelAlignment.Center));
                 hbox.Add(new Label(boxWidth, hbox.RemainingHeight, Viewer.Catalog.GetString("Arrive"), LabelAlignment.Center));
                 hbox.Add(new Label(boxWidth, hbox.RemainingHeight, Viewer.Catalog.GetString("Actual"), LabelAlignment.Center));
                 hbox.Add(new Label(boxWidth, hbox.RemainingHeight, Viewer.Catalog.GetString("Depart"), LabelAlignment.Center));
                 hbox.Add(new Label(boxWidth, hbox.RemainingHeight, Viewer.Catalog.GetString("Actual"), LabelAlignment.Center));
+                hbox.Add(new Label(boxWidth, hbox.RemainingHeight, Viewer.Catalog.GetString("Pax"), LabelAlignment.Center));
             }
             {
                 var hbox = vbox.AddLayoutHorizontalLineOfText();
-                hbox.Add(StationPreviousName = new Label(boxWidth * 3, hbox.RemainingHeight, ""));
+                hbox.Add(StationPreviousName = new Label(boxWidth * 2, hbox.RemainingHeight, ""));
                 hbox.Add(StationPreviousDistance = new Label(boxWidth, hbox.RemainingHeight, "", LabelAlignment.Center));
                 hbox.Add(StationPreviousArriveScheduled = new Label(boxWidth, hbox.RemainingHeight, "", LabelAlignment.Center));
                 hbox.Add(StationPreviousArriveActual = new Label(boxWidth, hbox.RemainingHeight, "", LabelAlignment.Center));
                 hbox.Add(StationPreviousDepartScheduled = new Label(boxWidth, hbox.RemainingHeight, "", LabelAlignment.Center));
                 hbox.Add(StationPreviousDepartActual = new Label(boxWidth, hbox.RemainingHeight, "", LabelAlignment.Center));
+                hbox.AddSpace(boxWidth, hbox.RemainingHeight);
             }
             {
                 var hbox = vbox.AddLayoutHorizontalLineOfText();
-                hbox.Add(StationCurrentName = new Label(boxWidth * 3, hbox.RemainingHeight, ""));
+                hbox.Add(StationCurrentName = new Label(boxWidth * 2, hbox.RemainingHeight, ""));
                 hbox.Add(StationCurrentDistance = new Label(boxWidth, hbox.RemainingHeight, "", LabelAlignment.Center));
                 hbox.Add(StationCurrentArriveScheduled = new Label(boxWidth, hbox.RemainingHeight, "", LabelAlignment.Center));
                 hbox.Add(StationCurrentArriveActual = new Label(boxWidth, hbox.RemainingHeight, "", LabelAlignment.Center));
                 hbox.Add(StationCurrentDepartScheduled = new Label(boxWidth, hbox.RemainingHeight, "", LabelAlignment.Center));
                 hbox.AddSpace(boxWidth, hbox.RemainingHeight);
+                hbox.Add(PassengersCurrentWaiting = new Label(boxWidth, hbox.RemainingHeight, "", LabelAlignment.Center));
             }
             {
                 var hbox = vbox.AddLayoutHorizontalLineOfText();
-                hbox.Add(StationNextName = new Label(boxWidth * 3, hbox.RemainingHeight, ""));
+                hbox.Add(StationNextName = new Label(boxWidth * 2, hbox.RemainingHeight, ""));
                 hbox.Add(StationNextDistance = new Label(boxWidth, hbox.RemainingHeight, "", LabelAlignment.Center));
                 hbox.Add(StationNextArriveScheduled = new Label(boxWidth, hbox.RemainingHeight, "", LabelAlignment.Center));
                 hbox.AddSpace(boxWidth, hbox.RemainingHeight);
                 hbox.Add(StationNextDepartScheduled = new Label(boxWidth, hbox.RemainingHeight, "", LabelAlignment.Center));
                 hbox.AddSpace(boxWidth, hbox.RemainingHeight);
+                hbox.Add(PassengersWaiting = new Label(boxWidth, hbox.RemainingHeight, "", LabelAlignment.Center));
             }
             vbox.AddHorizontalSeparator();
             {
                 var hbox = vbox.AddLayoutHorizontalLineOfText();
-                hbox.Add(Message = new Label(boxWidth * 7, hbox.RemainingHeight, ""));
+                hbox.Add(Message = new Label(boxWidth * 6, hbox.RemainingHeight, ""));
             }
             return vbox;
         }
@@ -168,6 +174,7 @@ namespace Orts.Viewer3D.Popups
                         StationNextArriveScheduled.Text = "";
                         StationNextDepartScheduled.Text = "";
                         StationNextDistance.Text = "";
+                        PassengersWaiting.Text = "";
 
                         bool validMessage = false;
 
@@ -294,6 +301,7 @@ namespace Orts.Viewer3D.Popups
                             StationNextArriveScheduled.Text = "";
                             StationNextDepartScheduled.Text = "";
                             StationNextDistance.Text = "";
+                            PassengersWaiting.Text = "";
 
                             Message.Text = Viewer.Catalog.GetString("No more stations.");
                             Message.Color = Color.White;
@@ -301,6 +309,7 @@ namespace Orts.Viewer3D.Popups
                         else
                         {
                             StationCurrentName.Text = playerTimetableTrain.StationStops[0].PlatformItem.Name;
+                            PassengersWaiting.Text = playerTimetableTrain.StationStops[0].PlatformItem.NumPassengersWaiting.ToString();
                             StationCurrentArriveScheduled.Text = playerTimetableTrain.StationStops[0].arrivalDT.ToString("HH:mm:ss");
                             if (playerTimetableTrain.StationStops[0].ActualArrival >= 0)
                             {
@@ -450,6 +459,7 @@ namespace Orts.Viewer3D.Popups
                         StationNextArriveScheduled.Text = "";
                         StationNextDepartScheduled.Text = "";
                         StationNextDistance.Text = "";
+                        PassengersWaiting.Text = "";
 
                         Message.Text = Viewer.Catalog.GetString("Train not active.");
                         Message.Color = Color.White;
@@ -511,12 +521,14 @@ namespace Orts.Viewer3D.Popups
                             StationNextArriveScheduled.Text = "";
                             StationNextDepartScheduled.Text = "";
                             StationNextDistance.Text = "";
+                            PassengersWaiting.Text = "";
 
                             Message.Text = Viewer.Catalog.GetString("No more stations.");
                         }
                         else
                         {
                             StationCurrentName.Text = playerTrain.StationStops[0].PlatformItem.Name;
+                            PassengersWaiting.Text = playerTrain.StationStops[0].PlatformItem.NumPassengersWaiting.ToString();
                             StationCurrentArriveScheduled.Text = playerTrain.StationStops[0].arrivalDT.ToString("HH:mm:ss");
                             if (playerTrain.StationStops[0].ActualArrival >= 0)
                             {
@@ -596,6 +608,7 @@ namespace Orts.Viewer3D.Popups
                     {
                         StationPlatform.Text = at.PlatformEnd1.ItemName;
                         StationCurrentName.Text = at.PlatformEnd1.Station;
+                        PassengersCurrentWaiting.Text = at.PlatformEnd1.PlatformNumPassengersWaiting.ToString();
                         StationCurrentArriveScheduled.Text = at.SchArrive.ToString("HH:mm:ss");
                         StationCurrentArriveActual.Text = at.ActArrive.HasValue ? at.ActArrive.Value.ToString("HH:mm:ss") : "";
                         StationCurrentArriveActual.Color = GetArrivalColor(at.SchArrive, at.ActArrive);
@@ -628,6 +641,7 @@ namespace Orts.Viewer3D.Popups
                         StationNextName.Text = at.PlatformEnd1.Station;
                         StationNextArriveScheduled.Text = at.SchArrive.ToString("HH:mm:ss");
                         StationNextDepartScheduled.Text = at.SchDepart.ToString("HH:mm:ss");
+                        PassengersWaiting.Text = at.PlatformEnd1.PlatformNumPassengersWaiting.ToString();
 
                         StationNextDistance.Text = "";
                         if (playerTrain.StationStops.Count > 0 && playerTrain.StationStops[0].PlatformItem != null &&
