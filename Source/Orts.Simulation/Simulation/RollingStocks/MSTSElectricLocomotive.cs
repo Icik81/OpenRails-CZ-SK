@@ -964,10 +964,75 @@ namespace Orts.Simulation.RollingStocks
                         data /= 1000;
                     break;
 
+                case CABViewControlTypes.ORTS_CIRCUIT_BREAKER_CLOSED_AC:
+                    if (SwitchingVoltageMode_OffAC)
+                    {
+                        switch (PowerSupply.CircuitBreaker.State)
+                        {
+                            case CircuitBreakerState.Open:
+                            case CircuitBreakerState.Closing:
+                                data = 0;
+                                break;
+                            case CircuitBreakerState.Closed:
+                                data = 1;
+                                break;
+                        }
+                    }
+                    break;
+                
+                case CABViewControlTypes.ORTS_CIRCUIT_BREAKER_CLOSED_DC:
+                    if (SwitchingVoltageMode_OffDC)
+                    {
+                        switch (PowerSupply.CircuitBreaker.State)
+                        {
+                            case CircuitBreakerState.Open:
+                            case CircuitBreakerState.Closing:
+                                data = 0;
+                                break;
+                            case CircuitBreakerState.Closed:
+                                data = 1;
+                                break;
+                        }
+                    }
+                    break;
+
+                case CABViewControlTypes.ORTS_CIRCUIT_BREAKER_OPEN_AC:
+                    if (SwitchingVoltageMode_OffAC)
+                    {
+                        switch (PowerSupply.CircuitBreaker.State)
+                        {
+                            case CircuitBreakerState.Open:
+                            case CircuitBreakerState.Closing:
+                                data = 1;
+                                break;
+                            case CircuitBreakerState.Closed:
+                                data = 0;
+                                break;
+                        }
+                    }
+                    break;
+
+                case CABViewControlTypes.ORTS_CIRCUIT_BREAKER_OPEN_DC:
+                    if (SwitchingVoltageMode_OffDC)
+                    {
+                        switch (PowerSupply.CircuitBreaker.State)
+                        {
+                            case CircuitBreakerState.Open:
+                            case CircuitBreakerState.Closing:
+                                data = 1;
+                                break;
+                            case CircuitBreakerState.Closed:
+                                data = 0;
+                                break;
+                        }
+                    }
+                    break;
+
                 default:
                     data = base.GetDataOf(cvc);
                     break;
             }
+
 
             return data;
         }

@@ -375,6 +375,10 @@ namespace Orts.Formats.Msts
         ORTS_CIRCUIT_BREAKER_STATE_MULTISYSTEM,
         LINE_VOLTAGE_AC,
         LINE_VOLTAGE_DC,
+        ORTS_CIRCUIT_BREAKER_CLOSED_AC,
+        ORTS_CIRCUIT_BREAKER_CLOSED_DC,
+        ORTS_CIRCUIT_BREAKER_OPEN_AC,
+        ORTS_CIRCUIT_BREAKER_OPEN_DC,
 
         // Further CabViewControlTypes must be added above this line, to avoid their malfunction in 3DCabs
         EXTERNALWIPERS,

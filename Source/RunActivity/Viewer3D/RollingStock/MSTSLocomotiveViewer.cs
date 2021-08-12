@@ -2172,6 +2172,10 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.ORTS_CIRCUIT_BREAKER_STATE_MULTISYSTEM:
                 case CABViewControlTypes.LINE_VOLTAGE_AC:
                 case CABViewControlTypes.LINE_VOLTAGE_DC:
+                case CABViewControlTypes.ORTS_CIRCUIT_BREAKER_CLOSED_AC:
+                case CABViewControlTypes.ORTS_CIRCUIT_BREAKER_CLOSED_DC:
+                case CABViewControlTypes.ORTS_CIRCUIT_BREAKER_OPEN_AC:
+                case CABViewControlTypes.ORTS_CIRCUIT_BREAKER_OPEN_DC:
 
                     index = (int)data;
                     break;
