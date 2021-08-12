@@ -3858,7 +3858,7 @@ namespace Orts.Simulation.RollingStocks
                 if (AbsSpeedMpS < SanderSpeedOfMpS && CurrentTrackSandBoxCapacityM3 > 0.0 && MainResPressurePSI > 80.0 && (AbsSpeedMpS > 0))
                 {
                     // Icik
-                    if (SanderSpeedEffectUpToMpS == 0) SanderSpeedEffectUpToMpS = 72 / 3.6f; // 72km/h
+                    if (SanderSpeedEffectUpToMpS == 0) SanderSpeedEffectUpToMpS = 112 / 3.6f; // 112km/h
                     if (SanderSpeedEffectUpToMpS > 0.0f)
                     {
                         if ((Sander) && (AbsSpeedMpS < SanderSpeedEffectUpToMpS))
