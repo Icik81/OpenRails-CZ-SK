@@ -16178,7 +16178,7 @@ namespace Orts.Simulation.Physics
             }
         }
 
-        public bool BoardingComplete = true;
+        public bool BoardingComplete = false;
         private double timeForPax = 0.75;
         private double currentTimeForPax = 0.75;
         public int TotalOnBoard = 0;
@@ -16190,7 +16190,6 @@ namespace Orts.Simulation.Physics
 
         public void UpdatePassengerCountAndWeight(Train train, int numOfPaxOnPlatform, double gameClock)
         {
-            return;
             if (!namesFilled)
             {
                 if (testNamesM == null)
@@ -16277,12 +16276,17 @@ namespace Orts.Simulation.Physics
                 }
             }
 
+            MSTSWagon locoWag = null;
+
             for (int i = 0; i < train.Cars.Count; i++)
             {
                 var wagon = (train.Cars[i] as MSTSWagon);
+                if (wagon is MSTSLocomotive)
+                    locoWag = wagon;
                 if (!(wagon is MSTSLocomotive) && !wagon.FreightDoors)
                 {
-                    if (wagon.DoorLeftOpen || wagon.DoorRightOpen)
+                    
+                    if (wagon.DoorLeftOpen || wagon.DoorRightOpen || locoWag.DoorLeftOpen || locoWag.DoorRightOpen)
                     {
                         // exit first
                         int paxIndex = 0;
@@ -16308,17 +16312,19 @@ namespace Orts.Simulation.Physics
                                 {
                                     pax = p;
                                     p.Boarded = pax.Boarded = true;
+                                    break;
                                 }
                             }
-                            wagon.PassengerList.Add(pax);
-                            wagon.MassKG += pax.Weight;
-                            wagon.EnterQueue -= 1;
-                            if (StationStops[0].PlatformItem.NumPassengersWaiting > 0)
-                                StationStops[0].PlatformItem.NumPassengersWaiting--;
-                            TotalOnBoard++;
+                            if (pax != null)
+                            {
+                                wagon.PassengerList.Add(pax);
+                                wagon.MassKG += pax.Weight;
+                                wagon.EnterQueue -= 1;
+                                if (StationStops[0].PlatformItem.NumPassengersWaiting > 0)
+                                    StationStops[0].PlatformItem.NumPassengersWaiting--;
+                                TotalOnBoard++;
+                            }
                             wagon.PassengerLoad = wagon.PassengerList.Count;
-                            if (wagon.EnterQueue == 0)
-                                wagon.BoardingComplete = true;
                         }
                     }
                 }

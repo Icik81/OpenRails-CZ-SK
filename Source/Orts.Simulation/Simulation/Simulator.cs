@@ -1258,6 +1258,10 @@ namespace Orts.Simulation
 
             AI AI = new AI(this);
             AITrain train = AI.CreateAITrainDetail(aPPlayer_Service_Definition, aPPlayer_Traffic_Definition, srvFile, TimetableMode, true);
+            if (train == null)
+            {
+                throw new Exception("Error loading player train.");
+            }
             AI = null;
             train.Name = "PLAYER";
             train.Cars[0].Headlight = 0;
