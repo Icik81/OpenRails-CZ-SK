@@ -38,6 +38,7 @@ using System.Threading;
 using System.Windows.Forms;
 using System.Xml;
 using Path = ORTS.Menu.Path;
+using Ionic.Zip;
 
 namespace ORTS
 {
@@ -391,6 +392,7 @@ namespace ORTS
             LoadTimetableSetList();
             ShowDetails();
             LoadMirelDatabase();
+            LoadNames();
         }
         #endregion
 
@@ -471,8 +473,29 @@ namespace ORTS
         }
         #endregion
 
-        #region Mode
-        void radioButtonMode_CheckedChanged(object sender, EventArgs e)
+        #region Names
+        public void LoadNames()
+        {
+            Ping ping = new Ping();
+            PingReply pingReply = ping.Send("lkpr.aspone.cz", 1000);
+            if (pingReply != null)
+            {
+                if (pingReply.Status == IPStatus.Success)
+                {
+                    if (!File.Exists(Application.StartupPath + "\\krestni_muzi.csv") || !File.Exists(Application.StartupPath + "\\krestni_zeny.csv") || !File.Exists(Application.StartupPath + "\\prijmeni_muzi_1.csv") || !File.Exists(Application.StartupPath + "\\prijmeni_zeny_1.csv"))
+                    {
+                        WebClient webClient = new WebClient();
+                        webClient.DownloadFile("http://lkpr.aspone.cz/or/Names.zip", Application.StartupPath + "\\Names.zip");
+                        ZipFile zFile = new ZipFile(Application.StartupPath + "\\Names.zip");
+                        zFile.ExtractAll(Application.StartupPath, ExtractExistingFileAction.OverwriteSilently);
+                    }
+                }
+            }
+        }
+        #endregion
+
+         #region Mode
+                void radioButtonMode_CheckedChanged(object sender, EventArgs e)
         {
             panelModeActivity.Visible = radioButtonModeActivity.Checked;
             panelModeTimetable.Visible = radioButtonModeTimetable.Checked;

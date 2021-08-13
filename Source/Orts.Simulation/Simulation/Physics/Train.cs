@@ -16180,14 +16180,14 @@ namespace Orts.Simulation.Physics
 
         public bool BoardingComplete = false;
         private double timeForPax = 0.75;
-        private double currentTimeForPax = 0.75;
+        private double currentTimeForPax = 3;
         public int TotalOnBoard = 0;
         private bool namesFilled = false;
         private List<string> testNamesM;
         private List<string> testNamesF;
         private List<string> testSurNamesM;
         private List<string> testSurNamesF;
-
+        public Random random = new Random();
         public void UpdatePassengerCountAndWeight(Train train, int numOfPaxOnPlatform, double gameClock)
         {
             if (!namesFilled)
@@ -16199,20 +16199,32 @@ namespace Orts.Simulation.Physics
                     testSurNamesM = new List<string>();
                     testSurNamesF = new List<string>();
                 }
-                Passenger pax = new Passenger(testNamesM, testSurNamesM);
+                Passenger pax = new Passenger(testNamesM, testSurNamesM, testNamesF, testSurNamesF, random);
                 testNamesM = pax.MaleNames;
                 testSurNamesM = pax.MaleSurnames;
                 testSurNamesF = pax.FemaleSurames;
                 testNamesF = pax.FemaleNames;
+                int station = 0;
+                int maxStation = train.StationStops.Count;
+                Random rndStation = new Random();
                 foreach (StationStop ss in train.StationStops)
                 {
+                    if (station + 1 == maxStation)
+                        break;
                     int numPax = ss.PlatformItem.NumPassengersWaiting;
                     {
-                        for (int i = 1; i < numPax; i++)
+                        for (int i = 0; i < numPax; i++)
                         {
-                            ss.PlatformItem.PassengerList.Add(new Passenger(testNamesM, testSurNamesM));
+                            pax = new Passenger(testNamesM, testSurNamesM, testNamesF, testSurNamesF, random);
+                            pax.DepartureStation = ss.PlatformItem.PlatformFrontUiD; // departure is current iterated platform
+                            pax.DepartureStationName = ss.PlatformItem.Name;
+                            int arrivalStation = rndStation.Next(station + 1, maxStation);
+                            pax.ArrivalStation = train.StationStops[arrivalStation].PlatformItem.PlatformFrontUiD; // arrival is any station in front of this station
+                            pax.ArrivalStationName = train.StationStops[arrivalStation].PlatformItem.Name;
+                            ss.PlatformItem.PassengerList.Add(pax);
                         }
                     }
+                    station++;
                 }
                 namesFilled = true;
             }
@@ -16251,31 +16263,6 @@ namespace Orts.Simulation.Physics
                 }
             }
             Random rnd = new Random();
-            int enterCount = 0;
-            int exitCount = 0;
-
-            for (int i = 0; i < train.Cars.Count; i++)
-            {
-                var wagon = (train.Cars[i] as MSTSWagon);
-                if (!(wagon is MSTSLocomotive) && !wagon.FreightDoors)
-                {
-                    exitCount = (numOfPaxOnPlatform - rnd.Next(-(numOfPaxOnPlatform), (numOfPaxOnPlatform))) / numOfWagons;
-                    enterCount = (numOfPaxOnPlatform - rnd.Next(-(numOfPaxOnPlatform), (numOfPaxOnPlatform))) / numOfWagons;
-                    if (exitCount < 0)
-                        exitCount = 0;
-                    if (exitCount > wagon.PassengerLoad)
-                        exitCount = wagon.PassengerLoad;
-                    if (enterCount < 0)
-                        enterCount = 0;
-                    if (enterCount + wagon.PassengerLoad > wagon.PassengerCapacity)
-                        enterCount = wagon.PassengerCapacity - wagon.PassengerLoad;
-                    if (wagon.ExitQueue == 0)
-                        wagon.ExitQueue = exitCount;
-                    if (wagon.EnterQueue == 0)
-                        wagon.EnterQueue = enterCount;
-                }
-            }
-
             MSTSWagon locoWag = null;
 
             for (int i = 0; i < train.Cars.Count; i++)
@@ -16289,48 +16276,41 @@ namespace Orts.Simulation.Physics
                     if (wagon.DoorLeftOpen || wagon.DoorRightOpen || locoWag.DoorLeftOpen || locoWag.DoorRightOpen)
                     {
                         // exit first
-                        int paxIndex = 0;
-                        if (wagon.PassengerList.Count > 0)
-                            paxIndex = rnd.Next(0, wagon.PassengerList.Count - 1);
-                        if (wagon.ExitQueue > 0 && wagon.PassengerList.Count > 0 && !wagon.UnboardingComplete)
+                        bool paxExited = false;
+                        foreach (Passenger pax in wagon.PassengerList)
                         {
-                            Passenger pax = wagon.PassengerList[paxIndex];
-                            wagon.MassKG -= pax.Weight;
-                            wagon.PassengerList.RemoveAt(paxIndex);
-                            wagon.ExitQueue -= 1;
-                            TotalOnBoard--;
-                            if (wagon.ExitQueue == 0)
-                                wagon.UnboardingComplete = true;
-                            wagon.PassengerLoad = wagon.PassengerList.Count;
+                            if (pax.ArrivalStation == train.StationStops[0].PlatformItem.PlatformFrontUiD)
+                            {
+                                paxExited = true;
+                                wagon.PassengerList.Remove(pax);
+                                wagon.MassKG -= pax.Weight;
+                                train.TotalOnBoard--;
+                                break;
+                            }
                         }
-                        else if (wagon.EnterQueue > 0 && !wagon.BoardingComplete) // then enter new pax
+                        if (!paxExited)
                         {
-                            Passenger pax = null;
-                            foreach (Passenger p in StationStops[0].PlatformItem.PassengerList)
+                            if (wagon.PassengerList.Count >= wagon.PassengerCapacity) // unable to board more than capacity ...
                             {
-                                if (!p.Boarded)
+                                // nothing
+                            }
+                            else
+                            {
+                                if (train.StationStops[0].PlatformItem.PassengerList.Count > 0)
                                 {
-                                    pax = p;
-                                    p.Boarded = pax.Boarded = true;
-                                    break;
+                                    Passenger pax = (Passenger)train.StationStops[0].PlatformItem.PassengerList[0];
+                                    train.StationStops[0].PlatformItem.PassengerList.Remove(pax);
+                                    wagon.PassengerList.Add(pax);
+                                    wagon.MassKG += pax.Weight < 0? -pax.Weight : pax.Weight;
+                                    train.TotalOnBoard++;
                                 }
+                                else
+                                    BoardingComplete = true;
                             }
-                            if (pax != null)
-                            {
-                                wagon.PassengerList.Add(pax);
-                                wagon.MassKG += pax.Weight;
-                                wagon.EnterQueue -= 1;
-                                if (StationStops[0].PlatformItem.NumPassengersWaiting > 0)
-                                    StationStops[0].PlatformItem.NumPassengersWaiting--;
-                                TotalOnBoard++;
-                            }
-                            wagon.PassengerLoad = wagon.PassengerList.Count;
                         }
                     }
                 }
             }
-            if (enterCount == 0)
-                BoardingComplete = true;
         }
 
         //================================================================================================//
