@@ -1022,8 +1022,9 @@ namespace Orts.Simulation
                     MyPlayerTrain.BoardingComplete = false;
                 }
                 double clock = MyPlayerTrain.Simulator.GameTime;
-                // prozatím vypnuto
-                MyPlayerTrain.UpdatePassengerCountAndWeight(MyPlayerTrain, MyPlayerTrain.StationStops[0].PlatformItem.NumPassengersWaiting, clock);
+
+                if (arrived)
+                    MyPlayerTrain.UpdatePassengerCountAndWeight(MyPlayerTrain, MyPlayerTrain.StationStops[0].PlatformItem.NumPassengersWaiting, clock);
                 var loco = MyPlayerTrain.LeadLocomotive as MSTSLocomotive;
                 if (loco != null)
                 {

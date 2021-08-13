@@ -197,6 +197,7 @@ namespace Orts.Simulation.RollingStocks
         public List<Passenger> PassengerList = new List<Passenger>();
         public bool UnboardingComplete = false;
         public bool BoardingComplete = false;
+        public float FirstPaxActionDelay = 0;
         public bool HasInsideView = false;
         public float CarHeightAboveSeaLevelM;
 
@@ -3161,6 +3162,11 @@ namespace Orts.Simulation.RollingStocks
         public int ArrivalStation { get; set; }
         public string DepartureStationName { get; set; }
         public string ArrivalStationName { get; set; }
+        public int DoorsToEnterAndExit { get; set; }
+        public float TimeToEnterAndExit { get; set; }
+        public double TimeToStartExiting { get; set; }
+        public double TimeToStartBoarding { get; set; }
+        public int WagonIndex { get; set; }
 
         public Passenger(List<string> MaleNames_, List<string> MaleSurnames_, List<string> FemaleNames_, List<string> FemaleSurnames_, Random random)
         {
@@ -3186,6 +3192,10 @@ namespace Orts.Simulation.RollingStocks
                 Gender = Genders.Male;
             else if (test == 1)
                 Gender = Genders.Female;
+
+            DoorsToEnterAndExit = rnd.Next(0, 2);
+            float timeToExit = rnd.Next(20, 50);
+            TimeToEnterAndExit = timeToExit / 10;
 
             int nameIndex = 0;
             if (Gender == Genders.Male)
