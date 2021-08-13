@@ -257,5 +257,6 @@
         [GetString("Control Heating Off/Auto")] ControlHeating_OffOn,        
         [GetString("Control Switching Voltage Mode Off/DC")] ControlSwitchingVoltageMode_OffDC,
         [GetString("Control Switching Voltage Mode Off/AC")] ControlSwitchingVoltageMode_OffAC,
+        [GetString("Control Route Voltage 25kV / 3kV")] ControlRouteVoltage,
     }
 }

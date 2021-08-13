@@ -136,6 +136,7 @@ namespace Orts.Simulation.RollingStocks
             outf.Write(CircuitBreakerOn);
             outf.Write(PantographCriticalVoltage);
             outf.Write(PowerOnFilter);
+            outf.Write(RouteVoltageV);
             base.Save(outf);
         }
 
@@ -151,6 +152,7 @@ namespace Orts.Simulation.RollingStocks
             CircuitBreakerOn = inf.ReadBoolean();
             PantographCriticalVoltage = inf.ReadDouble();
             PowerOnFilter = inf.ReadSingle();
+            RouteVoltageV = inf.ReadSingle();
             base.Restore(inf);
         }
 
@@ -182,9 +184,10 @@ namespace Orts.Simulation.RollingStocks
                     CurrentLocomotiveSteamHeatBoilerWaterCapacityL = L.FromGUK(800.0f);
                 }
             }
-            
+
             // Icik
-            MaxLineVoltage0 = Simulator.TRK.Tr_RouteFile.MaxLineVoltage;                     
+            if (RouteVoltageV == 0)
+                RouteVoltageV = (float)Simulator.TRK.Tr_RouteFile.MaxLineVoltage;                     
         }
 
         //================================================================================================//
@@ -244,8 +247,8 @@ namespace Orts.Simulation.RollingStocks
                             MaxLineVoltage2 = PantographVoltageV;
                         T = 1;
                         PantographVoltageV = (float)MaxLineVoltage2;
-                        MaxLineVoltage2 -= 500 * elapsedClockSeconds; // 500V za 1s
-                        if (MaxLineVoltage2 < 2150) MaxLineVoltage2 = 2150;
+                        MaxLineVoltage2 -= (0.02f * MaxLineVoltage0) * elapsedClockSeconds; // 2% z napětí v troleji za 1s
+                        if (MaxLineVoltage2 < (0.1f * MaxLineVoltage0)) MaxLineVoltage2 = (0.1f * MaxLineVoltage0);
                     }
                     else
                         PantographVoltageV = PowerSupply.PantographVoltageV;
@@ -327,6 +330,18 @@ namespace Orts.Simulation.RollingStocks
                 // Blokování pantografu u jednosystémových lokomotiv při vypnutém HV
                 if (!MultiSystemEngine)
                 {
+                    if (LocomotivePowerVoltage == 0) LocomotivePowerVoltage = 25000; //Default pro lokomotivy bez udání napětí
+
+                    // Test napětí v troleji pro jednosystémové lokomotivy
+                    if (PantographVoltageV == MaxLineVoltage0)
+                    {
+                        if (PantographVoltageV > 1.5f * LocomotivePowerVoltage)
+                            SignalEvent(PowerSupplyEvent.OpenCircuitBreaker);
+                        else
+                            if (PantographVoltageV < 0.5f * LocomotivePowerVoltage)
+                                SignalEvent(PowerSupplyEvent.OpenCircuitBreaker);
+                    }
+
                     if (!CircuitBreakerOn && PantographDown)
                     {
                         Pantographs[1].PantographsBlocked = true;
@@ -453,38 +468,39 @@ namespace Orts.Simulation.RollingStocks
                     if (PowerSupply.CircuitBreaker.State == CircuitBreakerState.Open)
                         T_CB = 0;
 
+
+                    if (SwitchingVoltageMode_OffAC && VoltageDC > 500 && PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closed) // Výběr AC napěťového systému
+                    {
+                        SignalEvent(PowerSupplyEvent.OpenCircuitBreaker);
+                    }
+
+                    if (SwitchingVoltageMode_OffDC && VoltageAC > 500 && PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closed) // Výběr AC napěťového systému
+                    {
+                        SignalEvent(PowerSupplyEvent.OpenCircuitBreaker);
+                    }
+
+                    if (SwitchingVoltageMode == 1)
+                    {
+                        SwitchingVoltageMode_OffAC = false;
+                        SwitchingVoltageMode_OffDC = false;
+                    }
+
+                    // Test napětí v troleji stanoví napěťovou soustavu
+                    if (MaxLineVoltage0 > 3000)
+                    {
+                        VoltageAC = PantographVoltageV; // Střídavá napěťová soustava 25kV
+                        if (VoltageDC > 0)
+                            VoltageDC -= VoltageDC * 1.5f * elapsedClockSeconds;
+                        if (VoltageDC < 0) VoltageDC = 0;
+                    }
+                    else
+                    {
+                        VoltageDC = PantographVoltageV; // Stejnosměrná napěťová soustava 3kV
+                        if (VoltageAC > 0)
+                            VoltageAC -= VoltageAC * 1.5f * elapsedClockSeconds;
+                        if (VoltageAC < 0) VoltageAC = 0;
+                    }
                                         
-                    if (SwitchingVoltageMode_OffAC) // Výběr AC napěťového systému
-                        VoltageAC = PantographVoltageV;
-                    else
-                    {
-                        if (VoltageAC > 0)
-                            VoltageAC -= VoltageAC * 1.5f * elapsedClockSeconds;
-                        if (VoltageAC < 0) VoltageAC = 0;
-                    }
-                    
-                    if (SwitchingVoltageMode_OffDC) // Výběr DC napěťového systému
-                        VoltageDC = PantographVoltageV;
-                    else
-                    {
-                        if (VoltageDC > 0)
-                            VoltageDC -= VoltageDC * 1.5f * elapsedClockSeconds;
-                        if (VoltageDC < 0) VoltageDC = 0;
-                    }
-
-                    if (SwitchingVoltageMode == 1) // Středová poloha
-                    {
-                        if (VoltageAC > 0)
-                            VoltageAC -= VoltageAC * 1.5f * elapsedClockSeconds;
-                        if (VoltageAC < 0) VoltageAC = 0;
-                        if (VoltageDC > 0)
-                            VoltageDC -= VoltageDC * 1.5f * elapsedClockSeconds;
-                        if (VoltageDC < 0) VoltageDC = 0;
-                    }
-
-                    preVoltageAC = VoltageAC;
-                    preVoltageDC = VoltageDC;
-                   
 
                     Pantographs[1].PantographsBlocked = false;
                     Pantographs[2].PantographsBlocked = false;
@@ -620,6 +636,13 @@ namespace Orts.Simulation.RollingStocks
         /// </summary>
         protected override void UpdatePowerSupply(float elapsedClockSeconds)
         {
+            // Icik
+            MaxLineVoltage0 = RouteVoltageV;
+            //if (RouteVoltageChange)
+            //    RouteVoltageV = 3000;
+            //else
+            //    RouteVoltageV = 25000;
+
             PowerSupply.Update(elapsedClockSeconds);
                       
             if (PowerSupply.CircuitBreaker != null && IsPlayerTrain)
@@ -809,7 +832,7 @@ namespace Orts.Simulation.RollingStocks
                     data = PantographVoltageV;
                     if (cvc.Units == CABViewControlUnits.KILOVOLTS)
                         data /= 1000;
-                    break;               
+                    break;
 
                 case CABViewControlTypes.PANTO_DISPLAY:
                     data = Pantographs.State == PantographState.Up ? 1 : 0;
@@ -880,7 +903,7 @@ namespace Orts.Simulation.RollingStocks
                             break;
                             LocoSwitchACDC = false;
                     }
-                    break;                
+                    break;
 
                 case CABViewControlTypes.ORTS_CIRCUIT_BREAKER_CLOSED:
                     switch (PowerSupply.CircuitBreaker.State)
@@ -917,47 +940,72 @@ namespace Orts.Simulation.RollingStocks
                     break;
 
                 // Icik
+                case CABViewControlTypes.SWITCHINGVOLTAGEMODE_OFF_DC:
+                    {
+                        SwitchingVoltageMode = MathHelper.Clamp(SwitchingVoltageMode, 0, 1);
+                        data = SwitchingVoltageMode;
+                        break;
+                    }
+
+                case CABViewControlTypes.SWITCHINGVOLTAGEMODE_OFF_AC:
+                    {
+                        SwitchingVoltageMode = MathHelper.Clamp(SwitchingVoltageMode, 1, 2);
+                        data = SwitchingVoltageMode;
+                        break;
+                    }
+
+                case CABViewControlTypes.SWITCHINGVOLTAGEMODE_DC_OFF_AC:
+                    {
+                        if (VoltageDC > 2000 && VoltageDC < 4000)
+                            data = 0;
+                        else 
+                        if (VoltageAC > 20000)
+                            data = 2;
+                        else
+                            data = 1;
+
+                        if (PantographVoltageV == 0)
+                            data = 1;
+                        break;
+                    }
+
                 case CABViewControlTypes.ORTS_CIRCUIT_BREAKER_STATE_MULTISYSTEM:
                     switch (PowerSupply.CircuitBreaker.State)
                     {
-                        case CircuitBreakerState.Open:                            
+                        case CircuitBreakerState.Open:
                             if (SwitchingVoltageMode == 1) // Střed                          
                                 data = 0;
                             if (SwitchingVoltageMode == 0) // levá strana - DC
                                 data = 6;
                             if (SwitchingVoltageMode == 2) // pravá strana - AC
-                                data = 2;                                                        
+                                data = 2;
                             break;
 
                         case CircuitBreakerState.Closing:
                             if (SwitchingVoltageMode_OffAC)
-                                data = 1;                            
+                                data = 1;
                             if (SwitchingVoltageMode_OffDC)
-                                data = 5;                            
+                                data = 5;
                             break;
 
                         case CircuitBreakerState.Closed:
                             if (SwitchingVoltageMode_OffAC)
                                 data = 2;
                             if (SwitchingVoltageMode_OffDC)
-                                data = 6;                            
+                                data = 6;
                             break;
                     }
                     LocoSwitchACDC = true;
                     break;
 
-                case CABViewControlTypes.LINE_VOLTAGE_AC:
-                    if (SwitchingVoltageMode == 1)
-                        data = preVoltageAC; 
-                    else data = VoltageAC;
+                case CABViewControlTypes.LINE_VOLTAGE_AC:                    
+                    data = VoltageAC;
                     if (cvc.Units == CABViewControlUnits.KILOVOLTS)
                         data /= 1000;
                     break;
 
                 case CABViewControlTypes.LINE_VOLTAGE_DC:
-                    if (SwitchingVoltageMode == 1)
-                        data = preVoltageDC; 
-                    else data = VoltageDC;
+                    data = VoltageDC;
                     if (cvc.Units == CABViewControlUnits.KILOVOLTS)
                         data /= 1000;
                     break;

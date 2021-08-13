@@ -218,6 +218,7 @@ namespace Orts.Viewer3D.RollingStock
             UserInputCommands.Add(UserCommand.ControlHeating_OffOn, new Action[] { Noop, () => new ToggleHeating_OffOnCommand(Viewer.Log) });
             UserInputCommands.Add(UserCommand.ControlSwitchingVoltageMode_OffAC, new Action[] { Noop, () => new ToggleSwitchingVoltageMode_OffACCommand(Viewer.Log) });
             UserInputCommands.Add(UserCommand.ControlSwitchingVoltageMode_OffDC, new Action[] { Noop, () => new ToggleSwitchingVoltageMode_OffDCCommand(Viewer.Log) });
+            UserInputCommands.Add(UserCommand.ControlRouteVoltage, new Action[] { Noop, () => new ToggleControlRouteVoltageCommand(Viewer.Log) });
 
             base.InitializeUserInputCommands();
         }
@@ -2513,6 +2514,7 @@ namespace Orts.Viewer3D.RollingStock
                     if ((Locomotive.SwitchingVoltageMode_OffDC ? 1 : 0) != ChangedValue(Locomotive.SwitchingVoltageMode_OffDC ? 1 : 0)) new ToggleSwitchingVoltageMode_OffDCCommand(Viewer.Log); break;
                 case CABViewControlTypes.SWITCHINGVOLTAGEMODE_OFF_AC:
                     if ((Locomotive.SwitchingVoltageMode_OffAC ? 1 : 0) != ChangedValue(Locomotive.SwitchingVoltageMode_OffAC ? 1 : 0)) new ToggleSwitchingVoltageMode_OffACCommand(Viewer.Log); break;
+                
 
                 // Train Control System controls
                 case CABViewControlTypes.ORTS_TCS1:
