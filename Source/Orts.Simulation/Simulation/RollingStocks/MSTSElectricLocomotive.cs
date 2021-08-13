@@ -635,6 +635,10 @@ namespace Orts.Simulation.RollingStocks
         {
             // Icik
             MaxLineVoltage0 = RouteVoltageV;
+            if (RouteVoltageChange)
+                RouteVoltageV = 3000;
+            else
+                RouteVoltageV = 25000;
 
             PowerSupply.Update(elapsedClockSeconds);
                       

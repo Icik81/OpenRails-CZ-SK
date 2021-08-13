@@ -5595,10 +5595,10 @@ namespace Orts.Simulation.RollingStocks
         {
             RouteVoltageChange = !RouteVoltageChange;
 
-            if (RouteVoltageChange)
-                RouteVoltageV = 3000;
-            else
-                RouteVoltageV = 25000;
+            //if (RouteVoltageChange)
+            //    RouteVoltageV = 3000;
+            //else
+            //    RouteVoltageV = 25000;
 
             if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.RouteVoltage, RouteVoltageChange ? CabSetting.On : CabSetting.Off);
         }
