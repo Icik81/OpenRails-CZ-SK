@@ -477,7 +477,7 @@ namespace ORTS.Settings
             Commands[(int)UserCommand.DebugDumpKeymap] = new UserCommandKeyInput(0x3B, KeyModifiers.Alt);
             Commands[(int)UserCommand.DebugFogDecrease] = new UserCommandKeyInput(0x0C, KeyModifiers.Shift);
             Commands[(int)UserCommand.DebugFogIncrease] = new UserCommandKeyInput(0x0D, KeyModifiers.Shift);
-            Commands[(int)UserCommand.DebugLockShadows] = new UserCommandKeyInput(0x1F, KeyModifiers.Control | KeyModifiers.Alt);
+            Commands[(int)UserCommand.DebugLockShadows] = new UserCommandKeyInput(0x1F, KeyModifiers.Control | KeyModifiers.Alt | KeyModifiers.Shift);
             Commands[(int)UserCommand.DebugLogger] = new UserCommandKeyInput(0x58);
             Commands[(int)UserCommand.DebugLogRenderFrame] = new UserCommandKeyInput(0x58, KeyModifiers.Alt);
             Commands[(int)UserCommand.DebugOvercastDecrease] = new UserCommandKeyInput(0x0C, KeyModifiers.Control);
@@ -489,7 +489,7 @@ namespace ORTS.Settings
             Commands[(int)UserCommand.DebugPrecipitationLiquidityIncrease] = new UserCommandKeyInput(0x0D, KeyModifiers.Control | KeyModifiers.Alt);
             Commands[(int)UserCommand.DebugResetWheelSlip] = new UserCommandKeyInput(0x2D, KeyModifiers.Alt);
             Commands[(int)UserCommand.DebugSignalling] = new UserCommandKeyInput(0x57, KeyModifiers.Control | KeyModifiers.Alt);
-            Commands[(int)UserCommand.DebugSoundForm] = new UserCommandKeyInput(0x1F, KeyModifiers.Alt);
+            Commands[(int)UserCommand.DebugSoundForm] = new UserCommandKeyInput(0x1F, KeyModifiers.Control | KeyModifiers.Alt);
             Commands[(int)UserCommand.DebugSpeedDown] = new UserCommandKeyInput(0x51, KeyModifiers.Control | KeyModifiers.Alt);
             Commands[(int)UserCommand.DebugSpeedReset] = new UserCommandKeyInput(0x47, KeyModifiers.Control | KeyModifiers.Alt);
             Commands[(int)UserCommand.DebugSpeedUp] = new UserCommandKeyInput(0x49, KeyModifiers.Control | KeyModifiers.Alt);
@@ -552,6 +552,7 @@ namespace ORTS.Settings
             Commands[(int)UserCommand.ControlHeating_OffOn] = new UserCommandKeyInput(0x23, KeyModifiers.Control);
             Commands[(int)UserCommand.ControlSwitchingVoltageMode_OffDC] = new UserCommandKeyInput(0x1F, KeyModifiers.Shift | KeyModifiers.Control);
             Commands[(int)UserCommand.ControlSwitchingVoltageMode_OffAC] = new UserCommandKeyInput(0x1F, KeyModifiers.Control);
+            Commands[(int)UserCommand.ControlRouteVoltage] = new UserCommandKeyInput(0x1F, KeyModifiers.Alt);
         }
 #endregion
 

@@ -1723,5 +1723,20 @@ namespace Orts.Common
             Receiver = car;
         }
     }
+    [Serializable()]
+    public sealed class ToggleControlRouteVoltageCommand : Command
+    {
+        public static MSTSLocomotive Receiver { get; set; }
 
+        public ToggleControlRouteVoltageCommand(CommandLog log)
+            : base(log)
+        {
+            Redo();
+        }
+
+        public override void Redo()
+        {
+            Receiver.ToggleControlRouteVoltage();
+        }
+    }
 }

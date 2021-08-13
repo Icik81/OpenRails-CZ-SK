@@ -126,6 +126,7 @@ namespace Orts.Simulation
     , Heating_OffOn
     , SwitchingVoltageMode_OffAC
     , SwitchingVoltageMode_OffDC
+    , RouteVoltage
     }
 
     public enum CabSetting {
@@ -282,7 +283,8 @@ namespace Orts.Simulation
                 , new string [] { GetString("Topení"), GetString("off"), null, GetString("on")}
                 , new string [] { GetString("Přepnutí napěťového systému"), GetString("off"), null, GetString("AC")}
                 , new string [] { GetString("Přepnutí napěťového systému"), GetString("off"), null, GetString("DC")}
-                
+                , new string [] { GetString("Napětí v soustavě změněno"), GetString("25kV"), null, GetString("3kV")}
+
 
             };
             Debug.Assert(ConfirmText.Length == Enum.GetNames(typeof(CabControl)).Length, "Number of entries indexer ConfirmText must match values in CabControl enum.");

@@ -475,6 +475,9 @@ namespace Orts.Simulation.RollingStocks
         float BaseFrictionCoefficientFactor0 = 1;
         public bool CentralHandlingDoors;
         public bool VoltageFilter;
+        public bool RouteVoltageChange;
+        public float RouteVoltageV;
+        public float LocomotivePowerVoltage;
 
         // Jindrich
         public CruiseControl CruiseControl;
@@ -1080,6 +1083,7 @@ namespace Orts.Simulation.RollingStocks
                 case "engine(airbrakesaircompressorwattage": AirBrakesAirCompressorWattage = stf.ReadFloatBlock(STFReader.UNITS.Power, null); break;
                 case "engine(centralhandlingdoors": CentralHandlingDoors = stf.ReadBoolBlock(false); break;
                 case "engine(voltagefilter": VoltageFilter = stf.ReadBoolBlock(false); break;
+                case "engine(locomotivepowervoltage": LocomotivePowerVoltage = stf.ReadFloatBlock(STFReader.UNITS.Voltage, null); break;
 
 
                 // Jindrich
@@ -1292,6 +1296,8 @@ namespace Orts.Simulation.RollingStocks
             AirBrakesAirCompressorWattage = locoCopy.AirBrakesAirCompressorWattage;
             CentralHandlingDoors = locoCopy.CentralHandlingDoors;
             VoltageFilter = locoCopy.VoltageFilter;
+            RouteVoltageChange = locoCopy.RouteVoltageChange;
+            LocomotivePowerVoltage = locoCopy.LocomotivePowerVoltage;
 
             // Jindrich
             if (locoCopy.CruiseControl != null)
@@ -1429,6 +1435,7 @@ namespace Orts.Simulation.RollingStocks
             outf.Write(SwitchingVoltageMode_OffDC);
             outf.Write(SwitchingVoltageMode);
             outf.Write(TElevatedConsumption);
+            outf.Write(RouteVoltageChange);
 
             base.Save(outf);
 
@@ -1512,6 +1519,7 @@ namespace Orts.Simulation.RollingStocks
             SwitchingVoltageMode_OffDC = inf.ReadBoolean();
             SwitchingVoltageMode = inf.ReadInt32();
             TElevatedConsumption = inf.ReadSingle();
+            RouteVoltageChange = inf.ReadBoolean();
 
             base.Restore(inf);
 
@@ -5582,7 +5590,18 @@ namespace Orts.Simulation.RollingStocks
             }           
             if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.SwitchingVoltageMode_OffAC, SwitchingVoltageMode_OffAC ? CabSetting.On : CabSetting.Off);                        
         }
-       
+
+        public void ToggleControlRouteVoltage()
+        {
+            RouteVoltageChange = !RouteVoltageChange;
+
+            if (RouteVoltageChange)
+                RouteVoltageV = 3000;
+            else
+                RouteVoltageV = 25000;
+
+            if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.RouteVoltage, RouteVoltageChange ? CabSetting.On : CabSetting.Off);
+        }
 
         public enum TrainType { Pax, Cargo };
         public TrainType SelectedTrainType = TrainType.Pax;
@@ -7051,25 +7070,7 @@ namespace Orts.Simulation.RollingStocks
                             data = 1;
                         else data = 0;
                         break;
-                    }
-                case CABViewControlTypes.SWITCHINGVOLTAGEMODE_OFF_DC:
-                    {
-                        SwitchingVoltageMode = MathHelper.Clamp(SwitchingVoltageMode, 0, 1);
-                        data = SwitchingVoltageMode;
-                        break;
-                    }
-                case CABViewControlTypes.SWITCHINGVOLTAGEMODE_OFF_AC:
-                    {
-                        SwitchingVoltageMode = MathHelper.Clamp(SwitchingVoltageMode, 1, 2);
-                        data = SwitchingVoltageMode; 
-                        break;
                     }                
-                case CABViewControlTypes.SWITCHINGVOLTAGEMODE_DC_OFF_AC:
-                    {
-                        SwitchingVoltageMode = MathHelper.Clamp(SwitchingVoltageMode, 0, 2);
-                        data = SwitchingVoltageMode;
-                        break;
-                    }
                 case CABViewControlTypes.WARNING_NEUTRAL:
                     {
                         data = 1;                        
