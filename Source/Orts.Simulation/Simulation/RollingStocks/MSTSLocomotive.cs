@@ -1295,8 +1295,7 @@ namespace Orts.Simulation.RollingStocks
             AirBrakesIsCompressorElectricOrMechanical = locoCopy.AirBrakesIsCompressorElectricOrMechanical;
             AirBrakesAirCompressorWattage = locoCopy.AirBrakesAirCompressorWattage;
             CentralHandlingDoors = locoCopy.CentralHandlingDoors;
-            VoltageFilter = locoCopy.VoltageFilter;
-            RouteVoltageChange = locoCopy.RouteVoltageChange;
+            VoltageFilter = locoCopy.VoltageFilter;            
             LocomotivePowerVoltage = locoCopy.LocomotivePowerVoltage;
 
             // Jindrich
@@ -1435,7 +1434,6 @@ namespace Orts.Simulation.RollingStocks
             outf.Write(SwitchingVoltageMode_OffDC);
             outf.Write(SwitchingVoltageMode);
             outf.Write(TElevatedConsumption);
-            outf.Write(RouteVoltageChange);
 
             base.Save(outf);
 
@@ -1519,7 +1517,6 @@ namespace Orts.Simulation.RollingStocks
             SwitchingVoltageMode_OffDC = inf.ReadBoolean();
             SwitchingVoltageMode = inf.ReadInt32();
             TElevatedConsumption = inf.ReadSingle();
-            RouteVoltageChange = inf.ReadBoolean();
 
             base.Restore(inf);
 
@@ -5595,10 +5592,10 @@ namespace Orts.Simulation.RollingStocks
         {
             RouteVoltageChange = !RouteVoltageChange;
 
-            //if (RouteVoltageChange)
-            //    RouteVoltageV = 3000;
-            //else
-            //    RouteVoltageV = 25000;
+            if (RouteVoltageChange)
+                RouteVoltageV = 3000;
+            else
+                RouteVoltageV = 25000;
 
             if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.RouteVoltage, RouteVoltageChange ? CabSetting.On : CabSetting.Off);
         }

@@ -136,6 +136,7 @@ namespace Orts.Simulation.RollingStocks
             outf.Write(CircuitBreakerOn);
             outf.Write(PantographCriticalVoltage);
             outf.Write(PowerOnFilter);
+            outf.Write(RouteVoltageV);
             base.Save(outf);
         }
 
@@ -151,6 +152,7 @@ namespace Orts.Simulation.RollingStocks
             CircuitBreakerOn = inf.ReadBoolean();
             PantographCriticalVoltage = inf.ReadDouble();
             PowerOnFilter = inf.ReadSingle();
+            RouteVoltageV = inf.ReadSingle();
             base.Restore(inf);
         }
 
@@ -184,7 +186,8 @@ namespace Orts.Simulation.RollingStocks
             }
 
             // Icik
-            RouteVoltageV = (float)Simulator.TRK.Tr_RouteFile.MaxLineVoltage;                     
+            if (RouteVoltageV == 0)
+                RouteVoltageV = (float)Simulator.TRK.Tr_RouteFile.MaxLineVoltage;                     
         }
 
         //================================================================================================//
@@ -635,10 +638,10 @@ namespace Orts.Simulation.RollingStocks
         {
             // Icik
             MaxLineVoltage0 = RouteVoltageV;
-            if (RouteVoltageChange)
-                RouteVoltageV = 3000;
-            else
-                RouteVoltageV = 25000;
+            //if (RouteVoltageChange)
+            //    RouteVoltageV = 3000;
+            //else
+            //    RouteVoltageV = 25000;
 
             PowerSupply.Update(elapsedClockSeconds);
                       
