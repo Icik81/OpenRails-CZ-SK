@@ -75,7 +75,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                     return false;
             }
         }
-        public bool ClosingAuthorization { get; private set; }
+        public bool ClosingAuthorization { get;  set; }
 
         public ScriptedCircuitBreaker(MSTSElectricLocomotive locomotive)
         {
@@ -188,6 +188,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
 
         public void Update(float elapsedSeconds)
         {
+            // Icik
+            if (Locomotive.IsPlayerTrain && Locomotive.LocoSwitchACDC && Locomotive.SwitchingVoltageMode == 1 && State == CircuitBreakerState.Open)
+                HandleEvent(PowerSupplyEvent.OpenCircuitBreaker);
+
             if (Locomotive.Train.TrainType == Train.TRAINTYPE.AI || Locomotive.Train.TrainType == Train.TRAINTYPE.AI_AUTOGENERATE
                 || Locomotive.Train.TrainType == Train.TRAINTYPE.AI_PLAYERHOSTING)
             {
@@ -422,7 +426,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                     SetDriverOpeningOrder(true);
                     SignalEvent(Event.CircuitBreakerClosingOrderOff);
 
-                    Confirm(CabControl.CircuitBreakerClosingOrder, CabSetting.Off);
+                    //Confirm(CabControl.CircuitBreakerClosingOrder, CabSetting.Off);
                     break;
             }
         }

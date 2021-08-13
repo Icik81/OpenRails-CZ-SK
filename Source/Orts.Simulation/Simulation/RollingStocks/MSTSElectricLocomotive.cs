@@ -439,13 +439,11 @@ namespace Orts.Simulation.RollingStocks
                 // Blokování HV u vícesystémových lokomotiv při malém napětí
                 if (MultiSystemEngine)
                 {
-                    if (SwitchingVoltageMode == 1 
-                        && LocoSwitchACDC
-                        && (PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closing 
-                        || PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closed))
-                        SignalEvent(PowerSupplyEvent.OpenCircuitBreaker); // Musí se ještě vyřešit!!!                        
+                    if (LocoSwitchACDC 
+                        && (SwitchingVoltageMode == 1) 
+                        && (PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closed || PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closing))
+                            SignalEvent(PowerSupplyEvent.OpenCircuitBreaker);
 
-                    
                     if (PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closed)
                         T_CB = 1;
                                       
