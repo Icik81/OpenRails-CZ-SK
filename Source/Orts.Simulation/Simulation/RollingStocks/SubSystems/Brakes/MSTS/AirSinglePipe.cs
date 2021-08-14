@@ -1645,7 +1645,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     else
                         MSTSWagon.AirOK_DoorCanManipulate = false;
 
-                    if (lead.MainResPressurePSI > 5 * 14.50377f)
+                    if (lead.MainResPressurePSI > 5 * 14.50377f && lead.AutomaticDoors)
                         lead.BrakeSystem.AirOK_DoorCanManipulate = true;
                 }
             }
@@ -2078,7 +2078,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 float AirLossDoorR;
                 var wagon = car as MSTSWagon;
 
-                if (lead != null && lead.CentralHandlingDoors && wagon.AutomaticDoors)
+                if (lead != null && lead.CentralHandlingDoors && wagon.AutomaticDoors && wagon.BrakeSystem.AirOK_DoorCanManipulate)
                 {
                     if (wagon.AirlossByHandlingDoorsPSIpS == 0)
                         wagon.AirlossByHandlingDoorsPSIpS = 0.1f * 14.50377f; // Default 0.1bar/s    
