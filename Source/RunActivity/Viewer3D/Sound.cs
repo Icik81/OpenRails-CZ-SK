@@ -500,14 +500,21 @@ namespace Orts.Viewer3D
         /// Max distance for OpenAL inverse distance model. Equals to Math.Sqrt(CUTOFFDISTANCE)
         /// </summary>
         public const float MaxDistanceM = 2000f;
+        
+        // Icik
         /// <summary>
         /// Desired max gain at max distance for OpenAL inverse distance model
         /// </summary>
-        public const float GainAtMaxDistance = 0.025f;
+        //public const float GainAtMaxDistance = 0.025f;
+        public const float GainAtMaxDistance = 0.005f;
+
+        // Icik
         /// <summary>
         /// Below this distance there is no attenuation. Used by OpenAL inverse distance model
         /// </summary>
-        public const float ReferenceDistanceM = 8f;
+        //public const float ReferenceDistanceM = 8f;
+        public const float ReferenceDistanceM = 1f;
+
         /// <summary>
         /// Sound attenuation factor. Calculated to achieve goal set by <see cref="GainAtMaxDistance"/>
         /// </summary>
@@ -516,10 +523,13 @@ namespace Orts.Viewer3D
         /// Used for InGame sounds and activity sounds of type "Overall"
         /// </summary>
         public bool IsUnattenuated = false;
+        
+        // Icik
         /// <summary>
         /// Used for Horns
         /// </summary>
-        public float HornRolloffFactor = 0.05f;
+        //public float HornRolloffFactor = 0.05f;
+        public float HornRolloffFactor = 0.04f;
 
         /// <summary>
         /// Construct a SoundSource attached to a train car.

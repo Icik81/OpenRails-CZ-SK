@@ -118,7 +118,11 @@ namespace Orts.Formats.Msts
         public bool ExternalCam;
         public bool CabCam;
         public bool PassengerCam;
-        public float Distance = 1000;  // by default we are 'in range' to hear this
+        
+        // Icik
+        //public float Distance = 1000;  // by default we are 'in range' to hear this
+        public float Distance = 1000;
+
         public int TrackType = -1;
 
         public Activation(STFReader stf)
@@ -128,7 +132,10 @@ namespace Orts.Formats.Msts
                 new STFReader.TokenProcessor("externalcam", ()=>{ ExternalCam = stf.ReadBoolBlock(true); }),
                 new STFReader.TokenProcessor("cabcam", ()=>{ CabCam = stf.ReadBoolBlock(true); }),
                 new STFReader.TokenProcessor("passengercam", ()=>{ PassengerCam = stf.ReadBoolBlock(true); }),
-                new STFReader.TokenProcessor("distance", ()=>{ Distance = stf.ReadFloatBlock(STFReader.UNITS.Distance, Distance); }),
+                
+                // Icik
+                //new STFReader.TokenProcessor("distance", ()=>{ Distance = stf.ReadFloatBlock(STFReader.UNITS.Distance, Distance); }),
+                
                 new STFReader.TokenProcessor("tracktype", ()=>{ TrackType = stf.ReadIntBlock(null); }),
             });
         }
