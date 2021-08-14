@@ -553,20 +553,28 @@ namespace Orts.Simulation
                 float distanceOfWarningPost = 0;
                 float distanceOfWarningPost_back = 0;
                 TrackNode trackNode = trackDB.TrackNodes[traveller.TrackNodeIndex];
-       //         if (startOffset != null && endOffset != null && startOffset > endOffset)
-	   //	      {
-       //             FlipRestrSpeedPost((TempSpeedPostItem)newSpeedPostItems[0]);
-       //             FlipRestrSpeedPost((TempSpeedPostItem)newSpeedPostItems[1]);
-       //             distanceOfWarningPost = (float)Math.Min(MaxDistanceOfWarningPost, traveller.TrackNodeLength - (double)startOffset);
-       //         }
-                //if (startOffset != null && endOffset != null && startOffset <= endOffset)
-                
-                distanceOfWarningPost = -MaxDistanceOfWarningPost;
-                distanceOfWarningPost_back = 2 * MaxDistanceOfWarningPost + (float)(endOffset_back - startOffset_back);
 
                 FlipRestrSpeedPost((TempSpeedPostItem)newSpeedPostItems[2]);
                 FlipRestrSpeedPost((TempSpeedPostItem)newSpeedPostItems[3]);
-                                
+
+                distanceOfWarningPost = -MaxDistanceOfWarningPost;
+                distanceOfWarningPost_back = 2 * MaxDistanceOfWarningPost + (float)(endOffset_back - startOffset_back);
+
+                // Obrátí body pomalé jízdy, pokud se osadí obráceně
+                if (startOffset != null && endOffset != null && startOffset > endOffset)
+                {
+                    FlipRestrSpeedPost((TempSpeedPostItem)newSpeedPostItems[0]);
+                    FlipRestrSpeedPost((TempSpeedPostItem)newSpeedPostItems[1]);
+                    distanceOfWarningPost = MaxDistanceOfWarningPost;
+                }
+                if (startOffset_back != null && endOffset_back != null && startOffset_back > endOffset_back)
+                {
+                    FlipRestrSpeedPost((TempSpeedPostItem)newSpeedPostItems[2]);
+                    FlipRestrSpeedPost((TempSpeedPostItem)newSpeedPostItems[3]);
+                    distanceOfWarningPost_back = -(2 * MaxDistanceOfWarningPost + (float)(startOffset - endOffset));
+                }
+
+                // Upozornění pomalé jízdy
                 var worldPosition3 = new WorldPosition();
                 var speedWarningPostItem = new TempSpeedPostItem(routeFile,
                     zones.ActivityRestrictedSpeedZoneList[idxZone].StartPosition, false, worldPosition3, true);
@@ -574,24 +582,28 @@ namespace Orts.Simulation
                 var worldPosition33 = new WorldPosition();
                 var speedWarningPostItem_back = new TempSpeedPostItem(routeFile,
                     zones.ActivityRestrictedSpeedZoneList[idxZone].StartPosition, false, worldPosition33, true);
-
+                 
                 traveller.Move(distanceOfWarningPost);
                 SpeedPostPosition(speedWarningPostItem, ref traveller);
-
                 traveller.Move(distanceOfWarningPost_back);
                 SpeedPostPosition(speedWarningPostItem_back, ref traveller);
-
                 FlipRestrSpeedPost((TempSpeedPostItem)speedWarningPostItem_back);
 
-                //if (startOffset != null && endOffset != null && startOffset > endOffset)
-                //{
-                //    FlipRestrSpeedPost((TempSpeedPostItem)speedWarningPostItem);
-
-                //}
+                // Obrátí body upozornění pomalé jízdy, pokud se osadí obráceně
+                if (startOffset != null && endOffset != null && startOffset > endOffset)
+                {
+                    FlipRestrSpeedPost((TempSpeedPostItem)speedWarningPostItem);
+                }
+                if (startOffset_back != null && endOffset_back != null && startOffset_back > endOffset_back)
+                {
+                    FlipRestrSpeedPost((TempSpeedPostItem)speedWarningPostItem_back);
+                }
+                                
                 ComputeTablePosition((TempSpeedPostItem)newSpeedPostItems[0]); 
                 TempSpeedPostItems.Add((TempSpeedPostItem)newSpeedPostItems[0]);
                 ComputeTablePosition((TempSpeedPostItem)newSpeedPostItems[1]); 
                 TempSpeedPostItems.Add((TempSpeedPostItem)newSpeedPostItems[1]);
+                
                 //ComputeTablePosition((TempSpeedPostItem)newSpeedPostItems[2]);
                 //TempSpeedPostItems.Add((TempSpeedPostItem)newSpeedPostItems[2]);
                 //ComputeTablePosition((TempSpeedPostItem)newSpeedPostItems[3]);
