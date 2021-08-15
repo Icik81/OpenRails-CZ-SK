@@ -42,9 +42,9 @@ namespace Orts.Viewer3D.Popups
                 var colWidth = (vbox.RemainingWidth - vbox.TextHeight * 2) / 3;
                 {
                     var line = vbox.AddLayoutHorizontalLineOfText();
-                    line.Add(new Label(colWidth, line.RemainingHeight, Viewer.Catalog.GetString("Inside")));
-                    line.Add(new Label(colWidth, line.RemainingHeight, Viewer.Catalog.GetString("Exit Queue"), LabelAlignment.Left));
-                    line.Add(new Label(colWidth, line.RemainingHeight, Viewer.Catalog.GetString("Enter Queue"), LabelAlignment.Right));
+                    line.Add(new Label(colWidth, line.RemainingHeight, Viewer.Catalog.GetString("Jméno")));
+                    line.Add(new Label(colWidth, line.RemainingHeight, Viewer.Catalog.GetString("Ze stanice"), LabelAlignment.Left));
+                    line.Add(new Label(colWidth, line.RemainingHeight, Viewer.Catalog.GetString("Do stanice"), LabelAlignment.Right));
                 }
                 vbox.AddHorizontalSeparator();
                 var scrollbox = vbox.AddLayoutScrollboxVertical(vbox.RemainingWidth);

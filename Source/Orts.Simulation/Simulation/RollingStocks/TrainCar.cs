@@ -195,7 +195,8 @@ namespace Orts.Simulation.RollingStocks
         public int ExitQueue = 0;
         public int EnterQueue = 0;
         public List<Passenger> PassengerList = new List<Passenger>();
-        public bool UnboardingComplete = false;
+        
+        public bool UnboardingComplete = true;
         public bool BoardingComplete = false;
         public float FirstPaxActionDelay = 0;
         public bool HasInsideView = false;
@@ -3194,8 +3195,8 @@ namespace Orts.Simulation.RollingStocks
                 Gender = Genders.Female;
 
             DoorsToEnterAndExit = rnd.Next(0, 2);
-            float timeToExit = rnd.Next(20, 50);
-            TimeToEnterAndExit = timeToExit / 10;
+            float timeToExit = rnd.Next(100, 500);
+            TimeToEnterAndExit = timeToExit / 100;
 
             int nameIndex = 0;
             if (Gender == Genders.Male)
@@ -3221,7 +3222,7 @@ namespace Orts.Simulation.RollingStocks
                     int fat = rnd.Next(0, 19);
                     if (fat == 0)
                         aduldWeight = rnd.Next(100, 200);
-                    Weight = aduldWeight / 20 - Age;
+                    Weight = (aduldWeight / 20 - Age) + 5;
                 }
                 else
                 {
@@ -3240,7 +3241,7 @@ namespace Orts.Simulation.RollingStocks
                     int fat = rnd.Next(0, 17);
                     if (fat == 0)
                         aduldWeight = rnd.Next(100, 200);
-                    Weight = aduldWeight / 20 - Age;
+                    Weight = (aduldWeight / 20 - Age) + 4;
                 }
                 else
                 {
