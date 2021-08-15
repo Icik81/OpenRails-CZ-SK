@@ -513,7 +513,7 @@ namespace Orts.Viewer3D
         /// Below this distance there is no attenuation. Used by OpenAL inverse distance model
         /// </summary>
         //public const float ReferenceDistanceM = 8f;
-        public const float ReferenceDistanceM = 8f;
+        public const float ReferenceDistanceM = 20f;
 
         /// <summary>
         /// Sound attenuation factor. Calculated to achieve goal set by <see cref="GainAtMaxDistance"/>
@@ -529,7 +529,7 @@ namespace Orts.Viewer3D
         /// Used for Horns
         /// </summary>
         //public float HornRolloffFactor = 0.05f;
-        public float HornRolloffFactor = 0.25f;
+        public float HornRolloffFactor = 0.60f;
 
         /// <summary>
         /// Construct a SoundSource attached to a train car.
@@ -1226,11 +1226,22 @@ namespace Orts.Viewer3D
             if (mstsStream.Triggers != null)
             {
                 foreach (Orts.Formats.Msts.Trigger trigger in mstsStream.Triggers)
-                    if (trigger.GetType() == typeof(Orts.Formats.Msts.Discrete_Trigger) && soundSource.Car != null && (trigger as Discrete_Trigger).TriggerID == 8)
+                {
+                    if (trigger.GetType() == typeof(Orts.Formats.Msts.Discrete_Trigger)
+                        && soundSource.Car != null && (trigger as Discrete_Trigger).TriggerID == 8)
                     {
                         rolloffFactor = SoundSource.HornRolloffFactor;
                         break;
                     }
+                    
+                    // Icik
+                    if (trigger.GetType() == typeof(Orts.Formats.Msts.Discrete_Trigger)
+                        && soundSource.Car != null && (trigger as Discrete_Trigger).TriggerID == 10)
+                    {
+                        rolloffFactor = SoundSource.HornRolloffFactor * 1.5f;
+                        break;
+                    }
+                }
             }
 
             ALSoundSource = new ALSoundSource(soundSource.IsEnvSound, rolloffFactor);
