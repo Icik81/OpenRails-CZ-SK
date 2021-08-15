@@ -3427,7 +3427,7 @@ namespace Orts.Simulation.RollingStocks
             {
                 // Compatibility layer for MSTS events
                 case Event.Pantograph1Up:
-                    SignalEvent(PowerSupplyEvent.RaisePantograph, 1);
+                    SignalEvent(PowerSupplyEvent.RaisePantograph, 1);                  
                     break;
                 case Event.Pantograph1Down:
                     SignalEvent(PowerSupplyEvent.LowerPantograph, 1);

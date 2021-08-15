@@ -252,6 +252,24 @@ namespace Orts.Common
         SwitchingVoltageMode_OffDCOff,
         SwitchingVoltageMode_OffACOn,
         SwitchingVoltageMode_OffACOff,
+        PowerOnAC,
+        PowerOffAC,
+        PowerOnDC,
+        PowerOffDC,
+        CircuitBreakerOpenAC,
+        CircuitBreakerClosingAC,
+        CircuitBreakerClosedAC,
+        CircuitBreakerOpenDC,
+        CircuitBreakerClosingDC,
+        CircuitBreakerClosedDC,
+        Pantograph1UpAC,
+        Pantograph1DownAC,        
+        Pantograph2UpAC,
+        Pantograph2DownAC,
+        Pantograph1UpDC,
+        Pantograph1DownDC,        
+        Pantograph2UpDC,
+        Pantograph2DownDC
     }
 
     public static class Events
@@ -519,7 +537,29 @@ namespace Orts.Common
                         case 20006: return Event.SwitchingVoltageMode_OffDCOff;
                         case 20007: return Event.SwitchingVoltageMode_OffACOn;
                         case 20008: return Event.SwitchingVoltageMode_OffACOff;
-                        
+
+                        case 20009: return Event.PowerOnAC; // 23
+                        case 20010: return Event.PowerOffAC; // 24
+                        case 20011: return Event.PowerOnDC; // 23
+                        case 20012: return Event.PowerOffDC; // 24
+
+                        case 20013: return Event.CircuitBreakerOpenAC; // 150
+                        case 20014: return Event.CircuitBreakerClosingAC; // 151
+                        case 20015: return Event.CircuitBreakerClosedAC; // 152
+
+                        case 20016: return Event.CircuitBreakerOpenDC; // 150
+                        case 20017: return Event.CircuitBreakerClosingDC; // 151
+                        case 20018: return Event.CircuitBreakerClosedDC; // 152
+
+                        case 20019: return Event.Pantograph1UpAC; // 45
+                        case 20020: return Event.Pantograph1DownAC; // 46
+                        case 20021: return Event.Pantograph2UpAC; // 66
+                        case 20022: return Event.Pantograph2DownAC; // 67
+
+                        case 20023: return Event.Pantograph1UpDC; // 45
+                        case 20024: return Event.Pantograph1DownDC; // 46
+                        case 20025: return Event.Pantograph2UpDC; // 66
+                        case 20026: return Event.Pantograph2DownDC; // 67
 
                         default: return 0;
                     }

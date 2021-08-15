@@ -78,6 +78,15 @@ namespace Orts.Simulation.RollingStocks
         public bool LocoSwitchACDC;
         int T = 0;
         int T_CB = 0;
+        
+        float TPowerOnAC = 0;
+        float TPowerOnDC = 0;
+        float TCircuitBreakerAC = 0;
+        float TCircuitBreakerDC = 0;
+        float TPanto1AC = 0;
+        float TPanto2AC = 0;
+        float TPanto1DC = 0;
+        float TPanto2DC = 0;
 
         public MSTSElectricLocomotive(Simulator simulator, string wagFile) :
             base(simulator, wagFile)
@@ -137,6 +146,14 @@ namespace Orts.Simulation.RollingStocks
             outf.Write(PantographCriticalVoltage);
             outf.Write(PowerOnFilter);
             outf.Write(RouteVoltageV);
+            outf.Write(TPowerOnAC);
+            outf.Write(TPowerOnDC);
+            outf.Write(TCircuitBreakerAC);
+            outf.Write(TCircuitBreakerDC);
+            outf.Write(TPanto1AC);
+            outf.Write(TPanto2AC);
+            outf.Write(TPanto1DC);
+            outf.Write(TPanto2DC);
             base.Save(outf);
         }
 
@@ -153,6 +170,14 @@ namespace Orts.Simulation.RollingStocks
             PantographCriticalVoltage = inf.ReadDouble();
             PowerOnFilter = inf.ReadSingle();
             RouteVoltageV = inf.ReadSingle();
+            TPowerOnAC = inf.ReadSingle();
+            TPowerOnDC = inf.ReadSingle();
+            TCircuitBreakerAC = inf.ReadSingle();
+            TCircuitBreakerDC = inf.ReadSingle();
+            TPanto1AC = inf.ReadSingle();
+            TPanto2AC = inf.ReadSingle();
+            TPanto1DC = inf.ReadSingle();
+            TPanto2DC = inf.ReadSingle();
             base.Restore(inf);
         }
 
@@ -734,54 +759,179 @@ namespace Orts.Simulation.RollingStocks
             // Multisystémová lokomotiva
             if (MultiSystemEngine)
             {
-                if (SwitchingVoltageMode_OffAC)
+                // **** AC ****
+                if (SwitchingVoltageMode_OffAC || TPowerOnAC == 1 || TCircuitBreakerAC == 2)
                 {
-                    Variable1AC = ThrottlePercent;
-                    Variable1DC = 0;
-
-                    if (ThrottlePercent == 0f) Variable2AC = 0;
-                    else
-                    {
-                        float dV2;
-                        dV2 = Math.Abs(TractiveForceN) / MaxForceN * 100f - Variable2AC;
-                        float max = 2f;
-                        if (dV2 > max) dV2 = max;
-                        else if (dV2 < -max) dV2 = -max;
-                        Variable2AC += dV2;
-                    }
-                    Variable2DC = 0;
-
-                    if (DynamicBrakePercent > 0)
-                        Variable3AC = MaxDynamicBrakeForceN == 0 ? DynamicBrakePercent / 100f : DynamicBrakeForceN / MaxDynamicBrakeForceN;
-                    else
-                        Variable3AC = 0;
-                    Variable3DC = 0;
+                    AC_Triggers();                   
                 }
-                else if (SwitchingVoltageMode_OffDC)
+                else
+
+                // **** DC ****
+                if (SwitchingVoltageMode_OffDC || TPowerOnDC == 1 || TCircuitBreakerDC == 2)
                 {
-                    Variable1DC = ThrottlePercent;
-                    Variable1AC = 0;
+                    DC_Triggers();                    
+                }
 
-                    if (ThrottlePercent == 0f) Variable2DC = 0;
-                    else
+                // Pantografy
+                if (MaxLineVoltage0 > 5000)
+                {                    
+                    if (Pantographs[1].State == PantographState.Raising && TPanto1AC == 0) // Zadní panto
                     {
-                        float dV2;
-                        dV2 = Math.Abs(TractiveForceN) / MaxForceN * 100f - Variable2DC;
-                        float max = 2f;
-                        if (dV2 > max) dV2 = max;
-                        else if (dV2 < -max) dV2 = -max;
-                        Variable2DC += dV2;
+                        SignalEvent(Event.Pantograph1UpAC); 
+                         TPanto1AC = 1;
                     }
-                    Variable2AC = 0;
+                    if (Pantographs[1].State == PantographState.Lowering && TPanto1AC == 1) // Zadní panto
+                    {
+                        SignalEvent(Event.Pantograph1DownAC);
+                        TPanto1AC = 0;
+                    }
 
-                    if (DynamicBrakePercent > 0)
-                        Variable3DC = MaxDynamicBrakeForceN == 0 ? DynamicBrakePercent / 100f : DynamicBrakeForceN / MaxDynamicBrakeForceN;
-                    else
-                        Variable3DC = 0;
-                    Variable3AC = 0;
+                    if (Pantographs[2].State == PantographState.Raising && TPanto2AC == 0) // Přední panto
+                    {
+                        SignalEvent(Event.Pantograph2UpAC);
+                        TPanto2AC = 1;
+                    }
+                    if (Pantographs[2].State == PantographState.Lowering && TPanto2AC == 1) // Přední panto
+                    {
+                        SignalEvent(Event.Pantograph2DownAC); 
+                         TPanto2AC = 0;
+                    }
+                }
+                else
+                {
+                    if (Pantographs[1].State == PantographState.Raising && TPanto1DC == 0) // Zadní panto
+                    {
+                        SignalEvent(Event.Pantograph1UpDC);
+                        TPanto1DC = 1;
+                    }
+                    if (Pantographs[1].State == PantographState.Lowering && TPanto1DC == 1) // Zadní panto
+                    {
+                        SignalEvent(Event.Pantograph1DownDC);
+                        TPanto1DC = 0;
+                    }
+
+                    if (Pantographs[2].State == PantographState.Raising && TPanto2DC == 0) // Přední panto
+                    {
+                        SignalEvent(Event.Pantograph2UpDC);
+                        TPanto2DC = 1;
+                    }
+                    if (Pantographs[2].State == PantographState.Lowering && TPanto2DC == 1) // Přední panto
+                    {
+                        SignalEvent(Event.Pantograph2DownDC);
+                        TPanto2DC = 0;
+                    }
                 }
             }
+        }
 
+        public void AC_Triggers()
+        {
+            // **** Discrette Triggers ****
+            // Power
+            if (PowerOn && TPowerOnAC == 0)
+            {
+                SignalEvent(Event.PowerOnAC);
+                TPowerOnAC = 1;
+            }
+            if (!PowerOn && TPowerOnAC == 1)
+            {
+                SignalEvent(Event.PowerOffAC);
+                TPowerOnAC = 0;
+            }
+
+            // CircuitBreaker
+            if (PowerSupply.CircuitBreaker.State == CircuitBreakerState.Open && TCircuitBreakerAC == 2)
+            {
+                SignalEvent(Event.CircuitBreakerOpenAC);
+                TCircuitBreakerAC = 0;
+            }
+            if (PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closing && TCircuitBreakerAC == 0)
+            {
+                SignalEvent(Event.CircuitBreakerClosingAC);
+                TCircuitBreakerAC = 1;
+            }
+            if (PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closed && TCircuitBreakerAC == 1)
+            {
+                SignalEvent(Event.CircuitBreakerClosedAC);
+                TCircuitBreakerAC = 2;
+            }
+                                    
+            // **** Variable Triggers ****
+            Variable1AC = ThrottlePercent;
+            Variable1DC = 0;
+
+            if (ThrottlePercent == 0f) Variable2AC = 0;
+            else
+            {
+                float dV2;
+                dV2 = Math.Abs(TractiveForceN) / MaxForceN * 100f - Variable2AC;
+                float max = 2f;
+                if (dV2 > max) dV2 = max;
+                else if (dV2 < -max) dV2 = -max;
+                Variable2AC += dV2;
+            }
+            Variable2DC = 0;
+
+            if (DynamicBrakePercent > 0)
+                Variable3AC = MaxDynamicBrakeForceN == 0 ? DynamicBrakePercent / 100f : DynamicBrakeForceN / MaxDynamicBrakeForceN;
+            else
+                Variable3AC = 0;
+            Variable3DC = 0;
+        }
+
+        public void DC_Triggers()
+        {
+            // **** Discrette Triggers ****
+            // Power
+            if (PowerOn && TPowerOnDC == 0)
+            {
+                SignalEvent(Event.PowerOnDC);
+                TPowerOnDC = 1;
+            }
+            if (!PowerOn && TPowerOnDC == 1)
+            {
+                SignalEvent(Event.PowerOffDC);
+                TPowerOnDC = 0;
+            }
+
+            // CircuitBreaker
+            if (PowerSupply.CircuitBreaker.State == CircuitBreakerState.Open && TCircuitBreakerDC == 2)
+            {
+                SignalEvent(Event.CircuitBreakerOpenDC);
+                TCircuitBreakerDC = 0;
+            }
+            if (PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closing && TCircuitBreakerDC == 0)
+            {
+                SignalEvent(Event.CircuitBreakerClosingDC);
+                TCircuitBreakerDC = 1;
+            }
+            if (PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closed && TCircuitBreakerDC == 1)
+            {
+                SignalEvent(Event.CircuitBreakerClosedDC);
+                TCircuitBreakerDC = 2;
+            }
+
+            // **** Variable Triggers ****
+            Variable1DC = ThrottlePercent;
+            Variable1AC = 0;
+
+            if (ThrottlePercent == 0f) Variable2DC = 0;
+            else
+            {
+                float dV2;
+                dV2 = Math.Abs(TractiveForceN) / MaxForceN * 100f - Variable2DC;
+                float max = 2f;
+                if (dV2 > max) dV2 = max;
+                else if (dV2 < -max) dV2 = -max;
+                Variable2DC += dV2;
+            }
+            Variable2AC = 0;
+
+            if (DynamicBrakePercent > 0)
+                Variable3DC = MaxDynamicBrakeForceN == 0 ? DynamicBrakePercent / 100f : DynamicBrakeForceN / MaxDynamicBrakeForceN;
+            else
+                Variable3DC = 0;
+            Variable3AC = 0;
         }
 
         /// <summary>
