@@ -1634,6 +1634,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 for (int i = 0; i < train.Cars.Count; i++)
                 {
                     BrakeSystem MSTSWagon = train.Cars[i].BrakeSystem;
+                    MSTSWagon.AirOK_DoorCanManipulate = true;
+                    
+                    // Jindřich - dávám pryč, dokud se to nedořeší
+                    /*
                     if (!MSTSWagon.TwoPipesConnection)
                     {
                         MSTSWagon.AirOK_DoorCanManipulate = false;
@@ -1647,6 +1651,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
 
                     if (lead.MainResPressurePSI > 5 * 14.50377f && lead.AutomaticDoors)
                         lead.BrakeSystem.AirOK_DoorCanManipulate = true;
+                        */
                 }
             }
 

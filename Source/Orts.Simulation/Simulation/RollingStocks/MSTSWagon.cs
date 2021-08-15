@@ -145,7 +145,7 @@ namespace Orts.Simulation.RollingStocks
         public bool OpenedLeftDoor = false;
         public bool OpenedRightDoor = false;
         public float AirlossByHandlingDoorsPSIpS;
-        public bool AutomaticDoors;
+        public bool AutomaticDoors = true;
         public bool FreightDoors;
         public float AbsWheelSpeedMpSAC;
         public float AbsWheelSpeedMpSDC;

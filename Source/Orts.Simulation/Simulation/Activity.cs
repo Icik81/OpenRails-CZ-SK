@@ -1035,8 +1035,9 @@ namespace Orts.Simulation
                 }
                 double clock = MyPlayerTrain.Simulator.GameTime;
 
-                if (arrived)
-                    MyPlayerTrain.UpdatePassengerCountAndWeight(MyPlayerTrain, MyPlayerTrain.StationStops[0].PlatformItem.NumPassengersWaiting, clock);
+                MyPlayerTrain.FillNames(MyPlayerTrain);
+
+                MyPlayerTrain.UpdatePassengerCountAndWeight(MyPlayerTrain, MyPlayerTrain.StationStops[0].PlatformItem.NumPassengersWaiting, clock);
                 var loco = MyPlayerTrain.LeadLocomotive as MSTSLocomotive;
                 if (loco != null)
                 {
@@ -1124,7 +1125,7 @@ namespace Orts.Simulation
                         // Still have to wait
                         if (remaining > 0)
                         {                            
-                            DisplayMessage = Simulator.Catalog.GetStringFmt("Passenger boarding completes in {0:D2}:{1:D2}",
+                            DisplayMessage = Simulator.Catalog.GetStringFmt("Čas do odjezdu: {0:D2}:{1:D2}",
                                 remaining / 60, remaining % 60);
 
                             //Debrief Eval
@@ -1139,17 +1140,15 @@ namespace Orts.Simulation
                         // May depart
                         else if (!maydepart)
                         {                            
-                            // check if signal ahead is cleared - if not, do not allow depart
-                            if (distanceToNextSignal >= 0 && distanceToNextSignal < 300 && MyPlayerTrain.NextSignalObject[0] != null &&
-                                MyPlayerTrain.NextSignalObject[0].this_sig_lr(MstsSignalFunction.NORMAL) == MstsSignalAspect.STOP
-                                && MyPlayerTrain.NextSignalObject[0].hasPermission != SignalObject.Permission.Granted)
+                            // check if passenger on board - if not, do not allow depart
+                            if (MyPlayerTrain.StationStops[0].PlatformItem.PassengerList.Count > 0)
                             {                                
-                                DisplayMessage = Simulator.Catalog.GetString("Passenger boarding completed. Waiting for signal ahead to clear.");
+                                DisplayMessage = Simulator.Catalog.GetString("Čeká se na nástup cestujících....");
                             }
                             else
                             {
                                 maydepart = true;
-                                DisplayMessage = Simulator.Catalog.GetString("Passenger boarding completed. You may depart now.");
+                                DisplayMessage = Simulator.Catalog.GetString("Volno k odjezdu!");
                                 Simulator.SoundNotify = Event.PermissionToDepart;                                
                             }
 
