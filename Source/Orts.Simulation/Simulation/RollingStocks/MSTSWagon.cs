@@ -147,6 +147,14 @@ namespace Orts.Simulation.RollingStocks
         public float AirlossByHandlingDoorsPSIpS;
         public bool AutomaticDoors;
         public bool FreightDoors;
+        public float AbsWheelSpeedMpSAC;
+        public float AbsWheelSpeedMpSDC;
+        public float Variable1AC;
+        public float Variable1DC;
+        public float Variable2AC;
+        public float Variable2DC;
+        public float Variable3AC;
+        public float Variable3DC;
 
         bool TenderWeightInitialize = true;
         float TenderWagonMaxCoalMassKG;
@@ -1962,9 +1970,7 @@ namespace Orts.Simulation.RollingStocks
             Trace.TraceInformation("***************************************** DEBUG_AUXTENDER (MSTSWagon.cs) ***************************************************************");
             Trace.TraceInformation("Car ID {0} Aux Tender Water Mass {1} Wagon Type {2}", CarID, AuxTenderWaterMassKG, AuxWagonType);
 #endif
-
-            AbsWheelSpeedMpS = Math.Abs(WheelSpeedMpS);
-
+            
             UpdateTrainBaseResistance();
 
             UpdateWindForce();
@@ -2018,6 +2024,8 @@ namespace Orts.Simulation.RollingStocks
                     CouplerExceedBreakLimit = false;
                 }
             }
+            
+            AbsWheelSpeedMpS = Math.Abs(WheelSpeedMpS);
 
             if (this is MSTSLocomotive)
             {
@@ -2025,6 +2033,21 @@ namespace Orts.Simulation.RollingStocks
                 if (!loco.Battery)
                     foreach (Pantograph p in Pantographs.List)
                         p.PantographsBlocked = true;
+
+                if (loco.MultiSystemEngine)
+                {
+                    if (loco.SwitchingVoltageMode_OffAC)
+                    {
+                        AbsWheelSpeedMpSAC = Math.Abs(WheelSpeedMpS);
+                        AbsWheelSpeedMpSDC = 0;
+                    }
+                    else if (loco.SwitchingVoltageMode_OffDC)
+                    {
+                        AbsWheelSpeedMpSDC = Math.Abs(WheelSpeedMpS);
+                        AbsWheelSpeedMpSAC = 0;
+                    }
+                }
+
             }
             Pantographs.Update(elapsedClockSeconds);
             

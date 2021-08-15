@@ -205,7 +205,15 @@ namespace Orts.Formats.Msts
 
     public class VolumeCurve
     {
-        public enum Controls { None, DistanceControlled, SpeedControlled, WheelSpeedControlled, SlipSpeedControlled, VibrationControlled, Variable1Controlled, Variable2Controlled, Variable3Controlled, BrakeCylControlled, CurveForceControlled };
+        public enum Controls { None, DistanceControlled, SpeedControlled,
+            WheelSpeedControlled, WheelSpeedACControlled, WheelSpeedDCControlled,
+            SlipSpeedControlled,
+            VibrationControlled,
+            Variable1Controlled, Variable1ACControlled, Variable1DCControlled,
+            Variable2Controlled, Variable2ACControlled, Variable2DCControlled,
+            Variable3Controlled, Variable3ACControlled, Variable3DCControlled,
+            BrakeCylControlled,
+            CurveForceControlled };
 
         public Controls Control = Controls.None;
         public float Granularity = 1.0f;
@@ -221,11 +229,19 @@ namespace Orts.Formats.Msts
                 case "distancecontrolled": Control = Controls.DistanceControlled; break;
                 case "speedcontrolled": Control = Controls.SpeedControlled; break;
                 case "wheelspeedcontrolled": Control = Controls.WheelSpeedControlled; break;
+                case "wheelspeedaccontrolled": Control = Controls.WheelSpeedACControlled; break;
+                case "wheelspeeddccontrolled": Control = Controls.WheelSpeedDCControlled; break;
                 case "slipspeedcontrolled": Control = Controls.SlipSpeedControlled; break;
                 case "vibrationcontrolled": Control = Controls.VibrationControlled; break;
                 case "variable1controlled": Control = Controls.Variable1Controlled; break;
+                case "variable1accontrolled": Control = Controls.Variable1ACControlled; break;
+                case "variable1dccontrolled": Control = Controls.Variable1DCControlled; break;
                 case "variable2controlled": Control = Controls.Variable2Controlled; break;
+                case "variable2accontrolled": Control = Controls.Variable2ACControlled; break;
+                case "variable2dccontrolled": Control = Controls.Variable2DCControlled; break;
                 case "variable3controlled": Control = Controls.Variable3Controlled; break;
+                case "variable3accontrolled": Control = Controls.Variable3ACControlled; break;
+                case "variable3dccontrolled": Control = Controls.Variable3DCControlled; break;
                 case "brakecylcontrolled": Control = Controls.BrakeCylControlled; break;
                 case "curveforcecontrolled": Control = Controls.CurveForceControlled; break;
                 default: STFException.TraceWarning(stf, "Crash expected: Skipped unknown VolumeCurve/Frequencycurve type " + type); stf.SkipRestOfBlock(); return;
@@ -351,12 +367,22 @@ namespace Orts.Formats.Msts
         public enum Events { 
             Speed_Inc_Past, Speed_Dec_Past, Speed_Equals_To, Speed_NEquals_To,
             WheelSpeed_Inc_Past, WheelSpeed_Dec_Past, WheelSpeed_Equals_To, WheelSpeed_NEquals_To,
+
+            WheelSpeedAC_Inc_Past, WheelSpeedAC_Dec_Past, WheelSpeedAC_Equals_To, WheelSpeedAC_NEquals_To,
+            WheelSpeedDC_Inc_Past, WheelSpeedDC_Dec_Past, WheelSpeedDC_Equals_To, WheelSpeedDC_NEquals_To,
+
             SlipSpeed_Inc_Past, SlipSpeed_Dec_Past, SlipSpeed_Equals_To, SlipSpeed_NEquals_To,
             Vibration_Inc_Past, Vibration_Dec_Past, Vibration_Equals_To, Vibration_NEquals_To,
             Distance_Inc_Past, Distance_Dec_Past, Distance_Equals_To, Distance_NEquals_To,
             Variable1_Inc_Past, Variable1_Dec_Past, Variable1_Equals_To, Variable1_NEquals_To,
-            Variable2_Inc_Past, Variable2_Dec_Past, Variable2_Equals_To, Variable2_NEquals_To,            
+            Variable1AC_Inc_Past, Variable1AC_Dec_Past, Variable1AC_Equals_To, Variable1AC_NEquals_To,
+            Variable1DC_Inc_Past, Variable1DC_Dec_Past, Variable1DC_Equals_To, Variable1DC_NEquals_To,
+            Variable2_Inc_Past, Variable2_Dec_Past, Variable2_Equals_To, Variable2_NEquals_To,
+            Variable2AC_Inc_Past, Variable2AC_Dec_Past, Variable2AC_Equals_To, Variable2AC_NEquals_To,
+            Variable2DC_Inc_Past, Variable2DC_Dec_Past, Variable2DC_Equals_To, Variable2DC_NEquals_To,
             Variable3_Inc_Past, Variable3_Dec_Past, Variable3_Equals_To, Variable3_NEquals_To,
+            Variable3AC_Inc_Past, Variable3AC_Dec_Past, Variable3AC_Equals_To, Variable3AC_NEquals_To,
+            Variable3DC_Inc_Past, Variable3DC_Dec_Past, Variable3DC_Equals_To, Variable3DC_NEquals_To,
             Variable4_Inc_Past, Variable4_Dec_Past, Variable4_Equals_To, Variable4_NEquals_To, // DieselMotor RPM
             BrakeCyl_Inc_Past, BrakeCyl_Dec_Past, BrakeCyl_Equals_To, BrakeCyl_NEquals_To,
             CurveForce_Inc_Past, CurveForce_Dec_Past, CurveForce_Equals_To, CurveForce_NEquals_To
@@ -383,6 +409,14 @@ namespace Orts.Formats.Msts
                 case "wheelspeed_dec_past": Event = Events.WheelSpeed_Dec_Past; break;
                 case "wheelspeed_equals_to": Event = Events.WheelSpeed_Equals_To; break;
                 case "wheelspeed_nequals_to": Event = Events.WheelSpeed_NEquals_To; break;
+                case "wheelspeedac_inc_past": Event = Events.WheelSpeedAC_Inc_Past; break;
+                case "wheelspeedac_dec_past": Event = Events.WheelSpeedAC_Dec_Past; break;
+                case "wheelspeedac_equals_to": Event = Events.WheelSpeedAC_Equals_To; break;
+                case "wheelspeedac_nequals_to": Event = Events.WheelSpeedAC_NEquals_To; break;
+                case "wheelspeeddc_inc_past": Event = Events.WheelSpeedDC_Inc_Past; break;
+                case "wheelspeeddc_dec_past": Event = Events.WheelSpeedDC_Dec_Past; break;
+                case "wheelspeeddc_equals_to": Event = Events.WheelSpeedDC_Equals_To; break;
+                case "wheelspeeddc_nequals_to": Event = Events.WheelSpeedDC_NEquals_To; break;
                 case "slipspeed_inc_past": Event = Events.SlipSpeed_Inc_Past; break;
                 case "slipspeed_dec_past": Event = Events.SlipSpeed_Dec_Past; break;
                 case "slipspeed_equals_to": Event = Events.SlipSpeed_Equals_To; break;
@@ -419,14 +453,38 @@ namespace Orts.Formats.Msts
                 case "variable1_dec_past": Event = Events.Variable1_Dec_Past; break;
                 case "variable1_equals_to": Event = Events.Variable1_Equals_To; break;
                 case "variable1_nequals_to": Event = Events.Variable1_NEquals_To; break;
+                case "variable1ac_inc_past": Event = Events.Variable1AC_Inc_Past; break;
+                case "variable1ac_dec_past": Event = Events.Variable1AC_Dec_Past; break;
+                case "variable1ac_equals_to": Event = Events.Variable1AC_Equals_To; break;
+                case "variable1ac_nequals_to": Event = Events.Variable1AC_NEquals_To; break;
+                case "variable1dc_inc_past": Event = Events.Variable1DC_Inc_Past; break;
+                case "variable1dc_dec_past": Event = Events.Variable1DC_Dec_Past; break;
+                case "variable1dc_equals_to": Event = Events.Variable1DC_Equals_To; break;
+                case "variable1dc_nequals_to": Event = Events.Variable1DC_NEquals_To; break;
                 case "variable2_inc_past": Event = Events.Variable2_Inc_Past; break;
                 case "variable2_dec_past": Event = Events.Variable2_Dec_Past; break;
                 case "variable2_equals_to": Event = Events.Variable2_Equals_To; break;
-                case "variable2_nequals_to": Event = Events.Variable2_NEquals_To; break;
+                case "variable2_nequals_to": Event = Events.Variable2_NEquals_To; break;                
+                case "variable2ac_inc_past": Event = Events.Variable2AC_Inc_Past; break;
+                case "variable2ac_dec_past": Event = Events.Variable2AC_Dec_Past; break;
+                case "variable2ac_equals_to": Event = Events.Variable2AC_Equals_To; break;
+                case "variable2ac_nequals_to": Event = Events.Variable2AC_NEquals_To; break;
+                case "variable2dc_inc_past": Event = Events.Variable2DC_Inc_Past; break;
+                case "variable2dc_dec_past": Event = Events.Variable2DC_Dec_Past; break;
+                case "variable2dc_equals_to": Event = Events.Variable2DC_Equals_To; break;
+                case "variable2dc_nequals_to": Event = Events.Variable2DC_NEquals_To; break;
                 case "variable3_inc_past": Event = Events.Variable3_Inc_Past; break;
                 case "variable3_dec_past": Event = Events.Variable3_Dec_Past; break;
                 case "variable3_equals_to": Event = Events.Variable3_Equals_To; break;
                 case "variable3_nequals_to": Event = Events.Variable3_NEquals_To; break;
+                case "variable3ac_inc_past": Event = Events.Variable3AC_Inc_Past; break;
+                case "variable3ac_dec_past": Event = Events.Variable3AC_Dec_Past; break;
+                case "variable3ac_equals_to": Event = Events.Variable3AC_Equals_To; break;
+                case "variable3ac_nequals_to": Event = Events.Variable3AC_NEquals_To; break;
+                case "variable3dc_inc_past": Event = Events.Variable3DC_Inc_Past; break;
+                case "variable3dc_dec_past": Event = Events.Variable3DC_Dec_Past; break;
+                case "variable3dc_equals_to": Event = Events.Variable3DC_Equals_To; break;
+                case "variable3dc_nequals_to": Event = Events.Variable3DC_NEquals_To; break;
                 case "variable4_inc_past": Event = Events.Variable4_Inc_Past; break;
                 case "variable4_dec_past": Event = Events.Variable4_Dec_Past; break;
                 case "variable4_equals_to": Event = Events.Variable4_Equals_To; break;

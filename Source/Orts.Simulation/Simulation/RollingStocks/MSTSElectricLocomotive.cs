@@ -730,6 +730,58 @@ namespace Orts.Simulation.RollingStocks
                 Variable3 = MaxDynamicBrakeForceN == 0 ? DynamicBrakePercent / 100f : DynamicBrakeForceN / MaxDynamicBrakeForceN;
             else
                 Variable3 = 0;
+
+            // Multisystémová lokomotiva
+            if (MultiSystemEngine)
+            {
+                if (SwitchingVoltageMode_OffAC)
+                {
+                    Variable1AC = ThrottlePercent;
+                    Variable1DC = 0;
+
+                    if (ThrottlePercent == 0f) Variable2AC = 0;
+                    else
+                    {
+                        float dV2;
+                        dV2 = Math.Abs(TractiveForceN) / MaxForceN * 100f - Variable2AC;
+                        float max = 2f;
+                        if (dV2 > max) dV2 = max;
+                        else if (dV2 < -max) dV2 = -max;
+                        Variable2AC += dV2;
+                    }
+                    Variable2DC = 0;
+
+                    if (DynamicBrakePercent > 0)
+                        Variable3AC = MaxDynamicBrakeForceN == 0 ? DynamicBrakePercent / 100f : DynamicBrakeForceN / MaxDynamicBrakeForceN;
+                    else
+                        Variable3AC = 0;
+                    Variable3DC = 0;
+                }
+                else if (SwitchingVoltageMode_OffDC)
+                {
+                    Variable1DC = ThrottlePercent;
+                    Variable1AC = 0;
+
+                    if (ThrottlePercent == 0f) Variable2DC = 0;
+                    else
+                    {
+                        float dV2;
+                        dV2 = Math.Abs(TractiveForceN) / MaxForceN * 100f - Variable2DC;
+                        float max = 2f;
+                        if (dV2 > max) dV2 = max;
+                        else if (dV2 < -max) dV2 = -max;
+                        Variable2DC += dV2;
+                    }
+                    Variable2AC = 0;
+
+                    if (DynamicBrakePercent > 0)
+                        Variable3DC = MaxDynamicBrakeForceN == 0 ? DynamicBrakePercent / 100f : DynamicBrakeForceN / MaxDynamicBrakeForceN;
+                    else
+                        Variable3DC = 0;
+                    Variable3AC = 0;
+                }
+            }
+
         }
 
         /// <summary>
