@@ -269,7 +269,11 @@ namespace Orts.Common
         Pantograph1UpDC,
         Pantograph1DownDC,        
         Pantograph2UpDC,
-        Pantograph2DownDC
+        Pantograph2DownDC,
+        CompressorOffAC,
+        CompressorOnAC,
+        CompressorOffDC,
+        CompressorOnDC
     }
 
     public static class Events
@@ -560,6 +564,11 @@ namespace Orts.Common
                         case 20024: return Event.Pantograph1DownDC; // 46
                         case 20025: return Event.Pantograph2UpDC; // 66
                         case 20026: return Event.Pantograph2DownDC; // 67
+
+                        case 20027: return Event.CompressorOnAC; // 12
+                        case 20028: return Event.CompressorOffAC; // 13
+                        case 20029: return Event.CompressorOnDC; // 12
+                        case 20030: return Event.CompressorOffDC; // 13
 
                         default: return 0;
                     }

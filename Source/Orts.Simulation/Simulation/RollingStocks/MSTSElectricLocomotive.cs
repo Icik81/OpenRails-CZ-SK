@@ -87,6 +87,8 @@ namespace Orts.Simulation.RollingStocks
         float TPanto2AC = 0;
         float TPanto1DC = 0;
         float TPanto2DC = 0;
+        float TCompressorAC = 0;
+        float TCompressorDC = 0;
 
         public MSTSElectricLocomotive(Simulator simulator, string wagFile) :
             base(simulator, wagFile)
@@ -154,6 +156,8 @@ namespace Orts.Simulation.RollingStocks
             outf.Write(TPanto2AC);
             outf.Write(TPanto1DC);
             outf.Write(TPanto2DC);
+            outf.Write(TCompressorAC);
+            outf.Write(TCompressorDC);
             base.Save(outf);
         }
 
@@ -178,6 +182,8 @@ namespace Orts.Simulation.RollingStocks
             TPanto2AC = inf.ReadSingle();
             TPanto1DC = inf.ReadSingle();
             TPanto2DC = inf.ReadSingle();
+            TCompressorAC = inf.ReadSingle();
+            TCompressorDC = inf.ReadSingle();
             base.Restore(inf);
         }
 
@@ -760,14 +766,14 @@ namespace Orts.Simulation.RollingStocks
             if (MultiSystemEngine)
             {
                 // **** AC ****
-                if (SwitchingVoltageMode_OffAC || TPowerOnAC == 1 || TCircuitBreakerAC == 2)
+                if (SwitchingVoltageMode_OffAC || TPowerOnAC == 1 || TCircuitBreakerAC == 2 || TCompressorAC == 1)
                 {
                     AC_Triggers();                   
                 }
                 else
 
                 // **** DC ****
-                if (SwitchingVoltageMode_OffDC || TPowerOnDC == 1 || TCircuitBreakerDC == 2)
+                if (SwitchingVoltageMode_OffDC || TPowerOnDC == 1 || TCircuitBreakerDC == 2 || TCompressorDC == 1)
                 {
                     DC_Triggers();                    
                 }
@@ -855,7 +861,19 @@ namespace Orts.Simulation.RollingStocks
                 SignalEvent(Event.CircuitBreakerClosedAC);
                 TCircuitBreakerAC = 2;
             }
-                                    
+
+            // Compressor
+            if (CompressorIsOn && TCompressorAC == 0)
+            {
+                SignalEvent(Event.CompressorOnAC);
+                TCompressorAC = 1;
+            }
+            if (!CompressorIsOn && TCompressorAC == 1)
+            {
+                SignalEvent(Event.CompressorOffAC);
+                TCompressorAC = 0;
+            }
+
             // **** Variable Triggers ****
             Variable1AC = ThrottlePercent;
             Variable1DC = 0;
@@ -909,6 +927,18 @@ namespace Orts.Simulation.RollingStocks
             {
                 SignalEvent(Event.CircuitBreakerClosedDC);
                 TCircuitBreakerDC = 2;
+            }
+
+            // Compressor
+            if (CompressorIsOn && TCompressorDC == 0)
+            {
+                SignalEvent(Event.CompressorOnDC);
+                TCompressorDC = 1;
+            }
+            if (!CompressorIsOn && TCompressorDC == 1)
+            {
+                SignalEvent(Event.CompressorOffDC);
+                TCompressorDC = 0;
             }
 
             // **** Variable Triggers ****
