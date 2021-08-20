@@ -764,8 +764,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     break;
             }
 
-            // Pokud bude v sekci Wagon AutomaticDoors, nastaví napájecí hadice jako aktivní
-            if ((Car as MSTSWagon) != null && (Car as MSTSWagon).AutomaticDoors && AutomaticDoorsCycle < 100)
+            // Pokud bude v sekci Wagon "AutomaticDoors" nebo v sekci Engine "CentralHandlingDoors", nastaví napájecí hadice jako aktivní
+            if (AutomaticDoorsCycle < 100 
+                && ((Car as MSTSWagon) != null && (Car as MSTSWagon).AutomaticDoors || (Car as MSTSLocomotive) != null && (Car as MSTSLocomotive).CentralHandlingDoors))
             {
                 TwoPipesConnectionMenu = 1;
                 TwoPipesConnectionText = "zapojeny";
