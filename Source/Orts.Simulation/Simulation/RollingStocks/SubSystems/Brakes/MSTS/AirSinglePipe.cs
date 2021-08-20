@@ -78,6 +78,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
         protected bool NotConnected = false;
         protected float ThresholdBailOffOn = 0;
         protected ValveState PrevTripleValveStateState;
+        protected float AutomaticDoorsCycle = 0;
 
         /// <summary>
         /// EP brake holding valve. Needs to be closed (Lap) in case of brake application or holding.
@@ -465,6 +466,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             outf.Write(T_HighPressure);
             outf.Write(TwoPipesConnectionMenu);
             outf.Write(TwoPipesConnectionText);
+            outf.Write(AutomaticDoorsCycle);
         }
 
         public override void Restore(BinaryReader inf)
@@ -512,6 +514,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             T_HighPressure = inf.ReadSingle();
             TwoPipesConnectionMenu = inf.ReadSingle();
             TwoPipesConnectionText = inf.ReadString();
+            AutomaticDoorsCycle = inf.ReadSingle();
         }
         
         public override void Initialize(bool handbrakeOn, float maxPressurePSI, float fullServPressurePSI, bool immediateRelease)
@@ -595,7 +598,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
 
             MSTSLocomotive loco = Car as MSTSLocomotive;
             if (StartOn)
-            {                
+            {
                 // Vyfouká všechny vozy
                 if (!(Car as MSTSWagon).IsDriveable)
                 {
@@ -654,7 +657,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     BrakeLine2PressurePSI = Car.Train.BrakeLine2PressurePSI;
                     AuxResPressurePSI = maxPressurePSI0;
                 }
-                
+
                 // Definice limitů proměnných pro chod nenaladěných vozidel
                 if (loco != null) // Lokomotiva
                 {
@@ -760,7 +763,15 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 case 3: // Režim R+Mg
                     break;
             }
-            
+
+            // Pokud bude v sekci Wagon AutomaticDoors, nastaví napájecí hadice jako aktivní
+            if ((Car as MSTSWagon) != null && (Car as MSTSWagon).AutomaticDoors && AutomaticDoorsCycle < 100)
+            {
+                TwoPipesConnectionMenu = 1;
+                TwoPipesConnectionText = "zapojeny";
+                AutomaticDoorsCycle++;
+            }
+
             switch (TwoPipesConnectionMenu)
             {
                 case 0: TwoPipesConnection = false;
@@ -1635,9 +1646,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 {
                     BrakeSystem MSTSWagon = train.Cars[i].BrakeSystem;
                     MSTSWagon.AirOK_DoorCanManipulate = true;
-                    
-                    // Jindřich - dávám pryč, dokud se to nedořeší
-                    /*
+                                                            
                     if (!MSTSWagon.TwoPipesConnection)
                     {
                         MSTSWagon.AirOK_DoorCanManipulate = false;
@@ -1650,8 +1659,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         MSTSWagon.AirOK_DoorCanManipulate = false;
 
                     if (lead.MainResPressurePSI > 5 * 14.50377f && lead.AutomaticDoors)
-                        lead.BrakeSystem.AirOK_DoorCanManipulate = true;
-                        */
+                        lead.BrakeSystem.AirOK_DoorCanManipulate = true;                        
                 }
             }
 
@@ -2086,7 +2094,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 if (lead != null && lead.CentralHandlingDoors && wagon.AutomaticDoors && wagon.BrakeSystem.AirOK_DoorCanManipulate)
                 {
                     if (wagon.AirlossByHandlingDoorsPSIpS == 0)
-                        wagon.AirlossByHandlingDoorsPSIpS = 0.1f * 14.50377f; // Default 0.1bar/s    
+                        wagon.AirlossByHandlingDoorsPSIpS = 0.01f * 14.50377f; // Default 0.01bar/s    
 
                     if (wagon.DoorLeftOpen)
                         AirLossDoorL = wagon.AirlossByHandlingDoorsPSIpS; // otevření
