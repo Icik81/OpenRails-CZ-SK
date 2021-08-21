@@ -172,6 +172,10 @@
             this.buttonContentAdd = new System.Windows.Forms.Button();
             this.panelContent = new System.Windows.Forms.Panel();
             this.dataGridViewContent = new System.Windows.Forms.DataGridView();
+
+            this.nameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.pathDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+
             this.bindingSourceContent = new System.Windows.Forms.BindingSource(this.components);
             this.tabPageExperimental = new System.Windows.Forms.TabPage();
             this.label27 = new System.Windows.Forms.Label();
@@ -2182,6 +2186,11 @@
             this.dataGridViewContent.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             this.dataGridViewContent.ColumnHeadersHeight = 29;
             this.dataGridViewContent.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
+
+            this.dataGridViewContent.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.nameDataGridViewTextBoxColumn,
+            this.pathDataGridViewTextBoxColumn});
+
             this.dataGridViewContent.DataSource = this.bindingSourceContent;
             dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
@@ -2204,6 +2213,30 @@
             this.dataGridViewContent.Size = new System.Drawing.Size(784, 334);
             this.dataGridViewContent.TabIndex = 0;
             this.dataGridViewContent.SelectionChanged += new System.EventHandler(this.dataGridViewContent_SelectionChanged);
+
+            // 
+            // nameDataGridViewTextBoxColumn
+            // 
+            this.nameDataGridViewTextBoxColumn.DataPropertyName = "Name";
+            this.nameDataGridViewTextBoxColumn.HeaderText = "Name";
+            this.nameDataGridViewTextBoxColumn.MinimumWidth = 6;
+            this.nameDataGridViewTextBoxColumn.Name = "nameDataGridViewTextBoxColumn";
+            this.nameDataGridViewTextBoxColumn.ReadOnly = true;
+            this.nameDataGridViewTextBoxColumn.Width = 60;
+            // 
+            // pathDataGridViewTextBoxColumn
+            // 
+            this.pathDataGridViewTextBoxColumn.DataPropertyName = "Path";
+            this.pathDataGridViewTextBoxColumn.HeaderText = "Path";
+            this.pathDataGridViewTextBoxColumn.MinimumWidth = 6;
+            this.pathDataGridViewTextBoxColumn.Name = "pathDataGridViewTextBoxColumn";
+            this.pathDataGridViewTextBoxColumn.ReadOnly = true;
+            this.pathDataGridViewTextBoxColumn.Width = 54;
+            // 
+            // bindingSourceContent
+            // 
+            //            this.bindingSourceContent.DataSource = typeof(ORTS.OptionsForm.ContentFolder);
+
             // 
             // tabPageExperimental
             // 
