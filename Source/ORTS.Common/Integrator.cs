@@ -181,6 +181,15 @@ namespace ORTS.Common
             oldTime = 0.0f;
             Error = copy.Error;
         }
+
+        public void SetState(float state)
+        {
+            integralValue = state;
+            prevDerivation = 0f;
+            for (int i = 0; i < 4; i++)
+                previousValues[i] = integralValue;
+        }
+
         /// <summary>
         /// Resets the Value to its InitialCondition
         /// </summary>
@@ -196,7 +205,7 @@ namespace ORTS.Common
         /// <returns>Value of integration in the next step (t + timeSpan)</returns>
         public float Integrate(float timeSpan, float value)
         {
-            float step = 0.0f;
+            float step = 0.0f; float dt = 0.0f;
             float end = timeSpan;
             int count = 0;
 
@@ -236,7 +245,7 @@ namespace ORTS.Common
                 //IsStepDividing = false;
             }
 
-            timeSpan = timeSpan / (float)count;
+            dt = timeSpan / (float)count;
             IsStepDividing = true;
             numOfSubstepsPS = count;
 
@@ -248,15 +257,15 @@ namespace ORTS.Common
 
             #region SOLVERS
             //while ((step += timeSpan) <= end)
-            for (step = timeSpan; step <= end; step += timeSpan)
+            for (step = dt; step <= end; step += dt)
             {
                 switch (Method)
                 {
                     case IntegratorMethods.EulerBackward:
-                        integralValue += (derivation = timeSpan * value);
+                        integralValue += (derivation = dt * value);
                         break;
                     case IntegratorMethods.EulerBackMod:
-                        integralValue += (derivation = timeSpan / 2.0f * (previousValues[0] + value));
+                        integralValue += (derivation = dt / 2.0f * (previousValues[0] + value));
                         previousValues[0] = value;
                         break;
                     case IntegratorMethods.EulerForward:
@@ -264,16 +273,16 @@ namespace ORTS.Common
 
                     case IntegratorMethods.RungeKutta2:
                         //throw new NotImplementedException("Not implemented yet!");
-                        k1 = integralValue + timeSpan / 2 * value;
-                        k2 = 2 * (k1 - integralValue) / timeSpan;
-                        integralValue += (derivation = timeSpan * k2);
+                        k1 = integralValue + dt / 2 * value;
+                        k2 = 2 * (k1 - integralValue) / dt;
+                        integralValue += (derivation = dt * k2);
                         break;
                     case IntegratorMethods.RungeKutta4:
                         //throw new NotImplementedException("Not implemented yet!");
-                        k1 = timeSpan * value;
-                        k2 = k1 + timeSpan / 2.0f * value;
-                        k3 = k1 + timeSpan / 2.0f * k2;
-                        k4 = timeSpan * k3;
+                        k1 = dt * value;
+                        k2 = k1 + dt / 2.0f * value;
+                        k3 = k1 + dt / 2.0f * k2;
+                        k4 = dt * k3;
                         integralValue += (derivation = (k1 + 2.0f * k2 + 2.0f * k3 + k4) / 6.0f);
                         break;
                     case IntegratorMethods.NewtonRhapson:
@@ -281,16 +290,16 @@ namespace ORTS.Common
 
                     case IntegratorMethods.AdamsMoulton:
                         //prediction
-                        float predicted = integralValue + timeSpan / 24.0f * (55.0f * previousValues[0] - 59.0f * previousValues[1] + 37.0f * previousValues[2] - 9.0f * previousValues[3]);
+                        float predicted = integralValue + dt / 24.0f * (55.0f * previousValues[0] - 59.0f * previousValues[1] + 37.0f * previousValues[2] - 9.0f * previousValues[3]);
                         //correction
-                        integralValue = integralValue + timeSpan / 24.0f * (9.0f * predicted + 19.0f * previousValues[0] - 5.0f * previousValues[1] + previousValues[2]);
+                        integralValue = integralValue + dt / 24.0f * (9.0f * predicted + 19.0f * previousValues[0] - 5.0f * previousValues[1] + previousValues[2]);
                         for (int i = previousStep.Length - 1; i > 0; i--)
                         {
                             previousStep[i] = previousStep[i - 1];
                             previousValues[i] = previousValues[i - 1];
                         }
                         previousValues[0] = value;
-                        previousStep[0] = timeSpan;
+                        previousStep[0] = dt;
                         break;
                     default:
                         throw new NotImplementedException("Not implemented yet!");
@@ -335,11 +344,18 @@ namespace ORTS.Common
         public void Save(BinaryWriter outf)
         {
             outf.Write(integralValue);
+            outf.Write(prevDerivation);
+            outf.Write(numOfSubstepsPS);
+            outf.Write(waitBeforeSpeedingUp);
+
         }
 
         public void Restore(BinaryReader inf)
         {
             integralValue = inf.ReadSingle();
+            prevDerivation = inf.ReadSingle();
+            numOfSubstepsPS = (int)inf.ReadUInt32();
+            waitBeforeSpeedingUp = (int)inf.ReadUInt32();
 
             for (int i = 0; i < 4; i++)
                 previousValues[i] = integralValue;

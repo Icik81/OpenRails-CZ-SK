@@ -524,6 +524,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerTransmissions
             //SlipWarningTresholdPercent = 70.0f;
             driveType = AxleDriveType.ForceDriven;
             AxleRevolutionsInt.IsLimited = true;
+            AxleRevolutionsInt.Reset();
             //Adhesion2 = 0.331455f;
 
             //CurtiusKnifflerA = 7.5f;
@@ -612,6 +613,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerTransmissions
             AxleSpeedMpS = inf.ReadSingle();
             TrainSpeedMpS = inf.ReadSingle();
             AxleWeightN = inf.ReadSingle();
+
+            AxleRevolutionsInt.SetState(AxleSpeedMpS);
         }
 
         /// <summary>
@@ -634,6 +637,29 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerTransmissions
             outf.Write(AxleSpeedMpS);
             outf.Write(TrainSpeedMpS);
             outf.Write(AxleWeightN);
+        }
+
+
+        /// <summary>
+        /// Restore the game state.
+        /// </summary>
+        /// <param name="inf">The save stream to read from.</param>
+        public void Restore(BinaryReader inf)
+        {
+            previousSlipPercent = inf.ReadSingle();
+            previousSlipSpeedMpS = inf.ReadSingle();
+
+            // Icik
+            CurtiusKnifflerA = inf.ReadSingle();
+            CurtiusKnifflerB = inf.ReadSingle();
+            CurtiusKnifflerC = inf.ReadSingle();
+            AdhesionK = inf.ReadSingle();
+            AdhesionConditions = inf.ReadSingle();
+            Adhesion2 = inf.ReadSingle();
+            SlipWarningTresholdPercent = inf.ReadSingle();
+            AxleSpeedMpS = inf.ReadSingle();
+            TrainSpeedMpS = inf.ReadSingle();
+            AxleWeightN = inf.ReadSingle();
         }
 
         /// <summary>
