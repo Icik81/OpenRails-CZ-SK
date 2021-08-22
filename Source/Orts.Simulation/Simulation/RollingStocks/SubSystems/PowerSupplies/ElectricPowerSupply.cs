@@ -116,7 +116,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                 }
                 if (Script == null)
                 {
-                    Script = new DefaultElectricPowerSupply() as ElectricPowerSupply;
+                    Script = new DefaultElectricPowerSupply(Locomotive) as ElectricPowerSupply;
                 }
 
                 // AbstractScriptClass
@@ -200,6 +200,15 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
         private Timer PowerOnTimer;
         private Timer AuxPowerOnTimer;
 
+        // Icik
+        private readonly MSTSElectricLocomotive Locomotive;
+        public DefaultElectricPowerSupply(MSTSElectricLocomotive locomotive) :
+            base(locomotive)
+        {
+            Locomotive = locomotive;
+        }
+
+
         public override void Initialize()
         {
             PantographFilter = new IIRFilter(IIRFilter.FilterTypes.Butterworth, 1, IIRFilter.HzToRad(0.7f), 0.001f);
@@ -218,7 +227,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                 return;
             switch (CurrentPantographState())
             {
-                case PantographState.Down:
+                case PantographState.Down:                    
                 case PantographState.Lowering:
                 case PantographState.Raising:
                     if (PowerOnTimer.Started)
@@ -233,7 +242,26 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                     break;
 
                 case PantographState.Up:
-                    SetPantographVoltageV(PantographFilter.Filter(LineVoltageV(), elapsedClockSeconds));
+                    
+                    // Icik
+                    // Trakce na 25kV
+                    if (Locomotive.RouteVoltageV == 25000)
+                        SetPantographVoltageV(PantographFilter.Filter(LineVoltageV(), elapsedClockSeconds));
+
+                    // Trakce na 3kV po zapnutí HV naběhne napětí
+                    if (Locomotive.RouteVoltageV == 3000 && Locomotive.PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closed)
+                        SetPantographVoltageV(PantographFilter.Filter(LineVoltageV(), elapsedClockSeconds));
+
+                    // Trakce na 3kV spadne napětí po odpadu HV
+                    if (!Locomotive.MultiSystemEngine && Locomotive.RouteVoltageV == 3000 && Locomotive.PowerSupply.CircuitBreaker.State == CircuitBreakerState.Open && Locomotive.PantographVoltageV == 0
+                        || Locomotive.MultiSystemEngine && Locomotive.RouteVoltageV == 3000 && Locomotive.PowerSupply.CircuitBreaker.State == CircuitBreakerState.Open && Locomotive.VoltageDC == 0)
+                    {
+                        SetCurrentState(PowerSupplyState.PowerOff);
+                        SetCurrentAuxiliaryState(PowerSupplyState.PowerOff);
+                        SetPantographVoltageV(PantographFilter.Filter(0.0f, elapsedClockSeconds));
+                        SetFilterVoltageV(VoltageFilter.Filter(0.0f, elapsedClockSeconds));
+                    }
+                   
 
                     switch (CurrentCircuitBreakerState())
                     {

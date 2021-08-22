@@ -78,7 +78,9 @@ namespace Orts.Simulation.RollingStocks
         public bool LocoSwitchACDC;
         int T = 0;
         int T_CB = 0;
-        
+        float Induktion = 0;
+        float TInduktion = 0;
+
         float TPowerOnAC = 0;
         float TPowerOnDC = 0;
         float TCircuitBreakerAC = 0;
@@ -245,9 +247,9 @@ namespace Orts.Simulation.RollingStocks
             PowerSupply.PantographVoltageV = (float)Math.Round(PowerSupply.PantographVoltageV);
 
             if (IsPlayerTrain)
-            {
-                // Pokud má lokomotiva napěťový filtr
-                if (VoltageFilter)
+            {                
+                // Pokud má lokomotiva napěťový filtr a napětí tratě je stejnosměrné 3kV
+                if (VoltageFilter && RouteVoltageV == 3000)
                 {
                     // Zákmit ručky do plna
                     if (CircuitBreakerOn && PowerSupply.PantographVoltageV > PantographVoltageV && MaxLineVoltage1 > 0)
@@ -257,7 +259,9 @@ namespace Orts.Simulation.RollingStocks
                         T = 0;
                     }
                     // Rychlost padání napětí při vypnutém HV
-                    else if (!CircuitBreakerOn && PantographVoltageV > PowerSupply.PantographVoltageV && PowerSupply.PantographVoltageV < MaxLineVoltage0 && MaxLineVoltage1 > 0)
+                    else 
+                    if (!CircuitBreakerOn && PantographVoltageV > PowerSupply.PantographVoltageV && PowerSupply.PantographVoltageV < MaxLineVoltage0 && MaxLineVoltage1 > 0
+                        || !CircuitBreakerOn && RouteVoltageV == 3000)
                     {
                         if (T == 0)
                             MaxLineVoltage2 = PantographVoltageV;
@@ -268,11 +272,13 @@ namespace Orts.Simulation.RollingStocks
                         {
                             MaxLineVoltage1 = 0;
                             MaxLineVoltage2 = 0;
+                            PantographVoltageV = 0;
                             T = 0;
                         }
                     }
                     // Rychlost padání napětí při vypnutém sběrači
-                    else if (CircuitBreakerOn && PowerSupply.PantographVoltageV < PantographVoltageV && PowerSupply.PantographVoltageV < MaxLineVoltage0 && MaxLineVoltage1 > 0)
+                    else
+                    if (CircuitBreakerOn && PowerSupply.PantographVoltageV < PantographVoltageV && PowerSupply.PantographVoltageV < MaxLineVoltage0 && MaxLineVoltage1 > 0)
                     {
                         if (T == 0)
                             MaxLineVoltage2 = PantographVoltageV;
@@ -289,7 +295,23 @@ namespace Orts.Simulation.RollingStocks
                         MaxLineVoltage1 = PowerSupply.PantographVoltageV;                                           
                 }
                 else
+                if (PowerSupply.PantographVoltageV > Induktion * 1000)
                     PantographVoltageV = PowerSupply.PantographVoltageV;
+
+
+                // Indukce z trolejového vedení pro střídavé napájení 25kV
+                if (RouteVoltageV == 25000 && LocomotivePowerVoltage != 3000
+                    && (Pantographs[1].State == PantographState.Down || Pantographs[1].State == PantographState.Raising || Pantographs[1].State == PantographState.Lowering)
+                    && (Pantographs[2].State == PantographState.Down || Pantographs[2].State == PantographState.Raising) || Pantographs[2].State == PantographState.Lowering)
+                {
+                    if (TInduktion == 0)
+                        Induktion = Simulator.Random.Next(1, 3);
+                    TInduktion = 1;
+                    if (PantographVoltageV < Induktion * 1000)
+                        PantographVoltageV += 10;
+                }                
+                if (RouteVoltageChange)
+                    TInduktion = 0;
 
 
                 // Zákmit na voltmetru            
@@ -343,6 +365,7 @@ namespace Orts.Simulation.RollingStocks
                     if (Delta0 == 75) Delta1 = 10;  // Kritická mez
                     else Delta1 = Simulator.Random.Next(1, 40) / 10;
                     TimeCriticalVoltage = 0;
+                    TInduktion = 0;
                 }
 
                 // Výpočet napětí v systému lokomotivy a drátech
@@ -357,7 +380,7 @@ namespace Orts.Simulation.RollingStocks
                 {
                     StartThrottleToZero(0.0f);
                 }
-
+                
                 // Blokování pantografu u jednosystémových lokomotiv při vypnutém HV
                 if (!MultiSystemEngine)
                 {
@@ -551,7 +574,8 @@ namespace Orts.Simulation.RollingStocks
                                 SetDynamicBrakePercent(0);
                                 DynamicBrakeChangeActiveState(false);
                             }
-                            SignalEvent(PowerSupplyEvent.OpenCircuitBreaker);
+                            if (RouteVoltageV != 3000 && !SwitchingVoltageMode_OffDC)
+                                SignalEvent(PowerSupplyEvent.OpenCircuitBreaker);
                         }
 
                         if (CruiseControl != null)
@@ -567,7 +591,8 @@ namespace Orts.Simulation.RollingStocks
                                 CruiseControl.SpeedSelMode = prevMode;
                                 CruiseControl.DynamicBrakePriority = false;
                                 TractiveForceN = 0;
-                                SignalEvent(PowerSupplyEvent.OpenCircuitBreaker);
+                                if (RouteVoltageV != 3000 && !SwitchingVoltageMode_OffDC)
+                                    SignalEvent(PowerSupplyEvent.OpenCircuitBreaker);
                             }
 
                         //Shodí HV při poklesu napětí v troleji a nastaveném výkonu a EDB(podpěťová ochrana)
@@ -610,7 +635,8 @@ namespace Orts.Simulation.RollingStocks
                         || (LocalThrottlePercent != 0 && PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closing)
                         || (PowerSupply.PantographVoltageV == 0 && LocalThrottlePercent != 0 && PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closed))
                         {
-                            SignalEvent(PowerSupplyEvent.OpenCircuitBreaker);
+                            if (RouteVoltageV != 3000 && !SwitchingVoltageMode_OffDC)
+                                SignalEvent(PowerSupplyEvent.OpenCircuitBreaker);
                         }
 
                         if (CruiseControl != null)
@@ -624,7 +650,8 @@ namespace Orts.Simulation.RollingStocks
                                     SetDynamicBrakePercent(0);
                                     DynamicBrakeChangeActiveState(false);
                                 }
-                                SignalEvent(PowerSupplyEvent.OpenCircuitBreaker);
+                                if (RouteVoltageV != 3000 && !SwitchingVoltageMode_OffDC)
+                                    SignalEvent(PowerSupplyEvent.OpenCircuitBreaker);
                             }
 
                         if (PowerSupply.PantographVoltageV > 0)
@@ -1236,7 +1263,7 @@ namespace Orts.Simulation.RollingStocks
                         data /= 1000;
                     break;
 
-                case CABViewControlTypes.LINE_VOLTAGE_DC:
+                case CABViewControlTypes.LINE_VOLTAGE_DC:                    
                     data = VoltageDC;
                     if (cvc.Units == CABViewControlUnits.KILOVOLTS)
                         data /= 1000;

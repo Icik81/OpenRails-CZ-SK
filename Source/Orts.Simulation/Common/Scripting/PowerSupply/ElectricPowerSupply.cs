@@ -15,6 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Open Rails.  If not, see <http://www.gnu.org/licenses/>.
 
+using Orts.Simulation.RollingStocks;
 using System;
 
 namespace ORTS.Scripting.Api
@@ -53,5 +54,12 @@ namespace ORTS.Scripting.Api
         /// Sets the voltage of the filter
         /// </summary>
         public Action<float> SetFilterVoltageV;
+
+        protected ElectricPowerSupply(MSTSElectricLocomotive locomotive)
+        {
+            Locomotive = locomotive;
+        }
+
+        public MSTSElectricLocomotive Locomotive { get; }
     }
 }
