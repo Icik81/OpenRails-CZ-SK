@@ -1215,7 +1215,7 @@ namespace Orts.Simulation.RollingStocks
 
                 case CABViewControlTypes.SWITCHINGVOLTAGEMODE_DC_OFF_AC:
                     {
-                        if (VoltageDC > 2000 && VoltageDC < 4000)
+                        if (preVoltageDC > 2000 && preVoltageDC < 4000)
                             data = 0;
                         else 
                         if (VoltageAC > 20000)
@@ -1223,7 +1223,7 @@ namespace Orts.Simulation.RollingStocks
                         else
                             data = 1;
 
-                        if (PantographVoltageV == 0)
+                        if (PantographVoltageV == 0 && preVoltageDC == 0)
                             data = 1;
                         break;
                     }

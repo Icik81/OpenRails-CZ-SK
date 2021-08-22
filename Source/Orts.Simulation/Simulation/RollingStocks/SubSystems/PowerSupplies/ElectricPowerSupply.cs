@@ -239,6 +239,11 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                     SetCurrentAuxiliaryState(PowerSupplyState.PowerOff);
                     SetPantographVoltageV(PantographFilter.Filter(0.0f, elapsedClockSeconds));
                     SetFilterVoltageV(VoltageFilter.Filter(0.0f, elapsedClockSeconds));
+
+                    // Napětí po složení pantografu na filtru DC
+                    if (Locomotive.RouteVoltageV == 3000 && Locomotive.preVoltageDC > 0)
+                        Locomotive.preVoltageDC -= 100;
+
                     break;
 
                 case PantographState.Up:
@@ -251,6 +256,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                     // Trakce na 3kV po zapnutí HV naběhne napětí
                     if (Locomotive.RouteVoltageV == 3000 && Locomotive.PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closed)
                         SetPantographVoltageV(PantographFilter.Filter(LineVoltageV(), elapsedClockSeconds));
+
+                    // Napětí po zdvihu pantografu na filtru DC
+                    if (Locomotive.RouteVoltageV == 3000 && Locomotive.preVoltageDC < Locomotive.RouteVoltageV)                       
+                        Locomotive.preVoltageDC += 100;
 
                     // Trakce na 3kV spadne napětí po odpadu HV
                     if (!Locomotive.MultiSystemEngine && Locomotive.RouteVoltageV == 3000 && Locomotive.PowerSupply.CircuitBreaker.State == CircuitBreakerState.Open && Locomotive.PantographVoltageV == 0
