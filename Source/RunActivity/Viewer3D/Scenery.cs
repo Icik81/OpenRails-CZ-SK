@@ -437,7 +437,11 @@ namespace Orts.Viewer3D
                     }
                     else if (worldObject.GetType() == typeof(DyntrackObj))
                     {
-                        if (viewer.Simulator.Settings.Wire == true && viewer.Simulator.TRK.Tr_RouteFile.Electrified == true)
+                        if (viewer.Simulator.Settings.Wire == true && viewer.Simulator.TRK.Tr_RouteFile.Electrified == true
+                            // Icik
+                            && worldObject.StaticDetailLevel != 2   // Make it compatible with routes that use 'HideWire', a workaround for MSTS that 
+                            && worldObject.StaticDetailLevel != 3   // allowed a mix of electrified and non electrified track see http://msts.steam4me.net/tutorials/hidewire.html
+                            )
                             Wire.DecomposeDynamicWire(viewer, dTrackList, (DyntrackObj)worldObject, worldMatrix);
                         // Add DyntrackDrawers for individual subsections
                         if ((viewer.Simulator.UseSuperElevation > 0 || viewer.Simulator.TRK.Tr_RouteFile.ChangeTrackGauge ) && SuperElevationManager.UseSuperElevationDyn(viewer, dTrackList, (DyntrackObj)worldObject, worldMatrix))
