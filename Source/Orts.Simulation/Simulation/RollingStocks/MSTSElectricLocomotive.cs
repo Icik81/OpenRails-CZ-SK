@@ -260,8 +260,7 @@ namespace Orts.Simulation.RollingStocks
                     }
                     // Rychlost padání napětí při vypnutém HV
                     else 
-                    if (!CircuitBreakerOn && PantographVoltageV > PowerSupply.PantographVoltageV && PowerSupply.PantographVoltageV < MaxLineVoltage0 && MaxLineVoltage1 > 0
-                        || !CircuitBreakerOn && RouteVoltageV == 3000)
+                    if (!CircuitBreakerOn && PantographVoltageV > PowerSupply.PantographVoltageV && PowerSupply.PantographVoltageV < MaxLineVoltage0 && MaxLineVoltage1 > 0)
                     {
                         if (T == 0)
                             MaxLineVoltage2 = PantographVoltageV;
@@ -513,7 +512,7 @@ namespace Orts.Simulation.RollingStocks
                         && (PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closed || PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closing))
                             SignalEvent(PowerSupplyEvent.OpenCircuitBreaker);
 
-                    if (PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closed)
+                    if (PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closed && PowerOn)
                         T_CB = 1;
                                       
                     if (PowerSupply.CircuitBreaker.State == CircuitBreakerState.Open && T_CB == 1)
@@ -522,16 +521,20 @@ namespace Orts.Simulation.RollingStocks
                     if (PowerSupply.CircuitBreaker.State == CircuitBreakerState.Open)
                         T_CB = 0;
 
-
-                    if (SwitchingVoltageMode_OffAC && VoltageDC > 500 && PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closed) // Výběr AC napěťového systému
-                    {
+                    if (RouteVoltageV == 3000 && PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closing && VoltageDC < 2000)
                         SignalEvent(PowerSupplyEvent.OpenCircuitBreaker);
-                    }
 
-                    if (SwitchingVoltageMode_OffDC && VoltageAC > 500 && PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closed) // Výběr AC napěťového systému
-                    {
+                    if (RouteVoltageV == 25000 && PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closing && VoltageAC < 20000)
                         SignalEvent(PowerSupplyEvent.OpenCircuitBreaker);
-                    }
+
+                    if (SwitchingVoltageMode_OffAC && VoltageDC > 500 
+                        && (PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closing || PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closed)) 
+                        SignalEvent(PowerSupplyEvent.OpenCircuitBreaker);
+
+                    if (SwitchingVoltageMode_OffDC && VoltageAC > 500
+                        && (PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closing || PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closed)) 
+                        SignalEvent(PowerSupplyEvent.OpenCircuitBreaker);
+
 
                     if (SwitchingVoltageMode == 1)
                     {
@@ -793,14 +796,14 @@ namespace Orts.Simulation.RollingStocks
             if (MultiSystemEngine)
             {
                 // **** AC ****
-                if (SwitchingVoltageMode_OffAC || TPowerOnAC == 1 || TCircuitBreakerAC == 2 || TCompressorAC == 1)
+                if (VoltageAC > 20000 && SwitchingVoltageMode_OffAC || (TPowerOnAC == 1 || TCircuitBreakerAC == 2 || TCompressorAC == 1))
                 {
                     AC_Triggers();                   
                 }
                 else
 
                 // **** DC ****
-                if (SwitchingVoltageMode_OffDC || TPowerOnDC == 1 || TCircuitBreakerDC == 2 || TCompressorDC == 1)
+                if (VoltageDC > 2500 && SwitchingVoltageMode_OffDC || (TPowerOnDC == 1 || TCircuitBreakerDC == 2 || TCompressorDC == 1))
                 {
                     DC_Triggers();                    
                 }
