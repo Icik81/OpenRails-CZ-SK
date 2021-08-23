@@ -240,7 +240,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                     SetPantographVoltageV(PantographFilter.Filter(0.0f, elapsedClockSeconds));
                     SetFilterVoltageV(VoltageFilter.Filter(0.0f, elapsedClockSeconds));
 
-                    // Napětí po složení pantografu na filtru DC
+                    // Napětí po složení pantografu na filtru DC 3kV
                     if (Locomotive.RouteVoltageV == 3000 && Locomotive.preVoltageDC > 0)
                         Locomotive.preVoltageDC -= 100;
 
@@ -249,15 +249,15 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                 case PantographState.Up:
                     
                     // Icik
-                    // Trakce na 25kV
+                    // Trakce na 25kV naměří napětí hned
                     if (Locomotive.RouteVoltageV == 25000)
                         SetPantographVoltageV(PantographFilter.Filter(LineVoltageV(), elapsedClockSeconds));
 
-                    // Trakce na 3kV po přepnutí na DC naběhne napětí
-                    if (Locomotive.RouteVoltageV == 3000 && Locomotive.SwitchingVoltageMode_OffDC)
+                    // Trakce na 3kV po přepnutí na DC naběhne napětí, jednosystémová lokomotiva naměří napětí hned
+                    if (Locomotive.RouteVoltageV == 3000 && (Locomotive.SwitchingVoltageMode_OffDC || !Locomotive.MultiSystemEngine))
                         SetPantographVoltageV(PantographFilter.Filter(LineVoltageV(), elapsedClockSeconds));
 
-                    // Napětí po zdvihu pantografu na filtru DC
+                    // Napětí po zdvihu pantografu na filtru DC 3kV
                     if (Locomotive.RouteVoltageV == 3000 && Locomotive.preVoltageDC < Locomotive.RouteVoltageV)                       
                         Locomotive.preVoltageDC += 100;
 
