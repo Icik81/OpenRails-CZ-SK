@@ -16185,21 +16185,48 @@ namespace Orts.Simulation.Physics
 
         public void ToggleDoorsPeople(bool right, bool open, MSTSWagon wagon)
         {
+            StationStop thisStation = StationStops[0];
+
+            if (open && !wagon.BrakeSystem.LeftDoorIsOpened && !wagon.BrakeSystem.RightDoorIsOpened)
+                wagon.SignalEvent(open ? Event.DoorOpen : Event.DoorClose); // hook for sound trigger
+
+            if (!open && (wagon.BrakeSystem.LeftDoorIsOpened || wagon.BrakeSystem.RightDoorIsOpened))
+                wagon.SignalEvent(open ? Event.DoorOpen : Event.DoorClose); // hook for sound trigger
+
             if (!wagon.Flipped && right || wagon.Flipped && !right)
             {
-                wagon.DoorRightOpen = open;
-                if (open)
-                    wagon.BrakeSystem.LeftDoorIsOpened = true;
-                else wagon.BrakeSystem.LeftDoorIsOpened = false;
+                if (thisStation.PlatformItem.PlatformSide[1])
+                {
+                    wagon.DoorLeftOpen = open;
+                    if (open)
+                        wagon.BrakeSystem.LeftDoorIsOpened = true;
+                    else wagon.BrakeSystem.LeftDoorIsOpened = false;
+                }
+                if (thisStation.PlatformItem.PlatformSide[0])
+                {
+                    wagon.DoorRightOpen = open;                    
+                    if (open)
+                        wagon.BrakeSystem.RightDoorIsOpened = true;
+                    else wagon.BrakeSystem.RightDoorIsOpened = false;
+                }
             }
             else
-            {
-                wagon.DoorLeftOpen = open;
-                if (open)
-                    wagon.BrakeSystem.RightDoorIsOpened = true;
-                else wagon.BrakeSystem.RightDoorIsOpened = false;
-            }
-            wagon.SignalEvent(open ? Event.DoorOpen : Event.DoorClose); // hook for sound trigger
+            {                
+                if (thisStation.PlatformItem.PlatformSide[0])
+                {
+                    wagon.DoorLeftOpen = open;
+                    if (open)
+                        wagon.BrakeSystem.LeftDoorIsOpened = true;
+                    else wagon.BrakeSystem.LeftDoorIsOpened = false;
+                }
+                if (thisStation.PlatformItem.PlatformSide[1])
+                {
+                    wagon.DoorRightOpen = open;                    
+                    if (open)
+                        wagon.BrakeSystem.RightDoorIsOpened = true;
+                    else wagon.BrakeSystem.RightDoorIsOpened = false;
+                }
+            }                                    
         }
         public bool BoardingComplete = false;
         public int TotalOnBoard = 0;
@@ -16239,11 +16266,11 @@ namespace Orts.Simulation.Physics
                 for (int i = 0; i < train.Cars.Count; i++)
                 {
                     var wagon = (train.Cars[i] as MSTSWagon);
-                    if (!wagon.BrakeSystem.ForceTwoPipesConnection)
-                        wagon.BrakeSystem.ForceTwoPipesConnection = true;
+                    //if (!wagon.BrakeSystem.ForceTwoPipesConnection)
+                    //    wagon.BrakeSystem.ForceTwoPipesConnection = true;
                     if (wagon is MSTSLocomotive)
                         locoWag = wagon;
-                    if (!(wagon is MSTSLocomotive) && !wagon.FreightDoors)
+                    if (wagon.HasPassengerCapacity && !wagon.FreightDoors)
                     {
                         numUsableWagons++;
                         if (wagon.FirstPaxActionDelay == 0)
@@ -16306,7 +16333,7 @@ namespace Orts.Simulation.Physics
                 for (int i = 0; i < train.Cars.Count; i++)
                 {
                     var wagon = (train.Cars[i] as MSTSWagon);
-                    if (!(wagon is MSTSLocomotive) && !wagon.FreightDoors)
+                    if (wagon.HasPassengerCapacity && !wagon.FreightDoors)
                     {
                         wagon.BoardingComplete = false;
                         wagon.UnboardingComplete = false;
@@ -16320,7 +16347,7 @@ namespace Orts.Simulation.Physics
             for (int i = 0; i < train.Cars.Count; i++)
             {
                 var wagon = (train.Cars[i] as MSTSWagon);
-                if (!(wagon is MSTSLocomotive) && !wagon.FreightDoors)
+                if (wagon.HasPassengerCapacity && !wagon.FreightDoors)
                 {
                     if (wagon.PassengerCapacity == 0)
                         wagon.PassengerCapacity = 80;
@@ -16339,7 +16366,7 @@ namespace Orts.Simulation.Physics
                     var wagon = (train.Cars[i] as MSTSWagon);
                     if (wagon is MSTSLocomotive)
                         locoWag = wagon;
-                    if (!(wagon is MSTSLocomotive) && !wagon.FreightDoors)
+                    if (wagon.HasPassengerCapacity && !wagon.FreightDoors)
                     {
                         nextTimeExitDoors1 = gameClock + 1;
                         foreach (Passenger pax in wagon.PassengerList)
@@ -16372,7 +16399,7 @@ namespace Orts.Simulation.Physics
                     var wagon = (train.Cars[i] as MSTSWagon);
                     if (wagon is MSTSLocomotive)
                         locoWag = wagon;
-                    if (!(wagon is MSTSLocomotive) && !wagon.FreightDoors)
+                    if (wagon.HasPassengerCapacity && !wagon.FreightDoors)
                     {
                         nextTimeExitDoors1 = gameClock + 1;
                         foreach (Passenger pax in train.StationStops[0].PlatformItem.PassengerList)
@@ -16419,7 +16446,7 @@ namespace Orts.Simulation.Physics
                     locoWag = wagon;
                     loco = (MSTSLocomotive)wagon;
                 }
-                if (!(wagon is MSTSLocomotive) && !wagon.FreightDoors)
+                if (wagon.HasPassengerCapacity && !wagon.FreightDoors)
                 {
                     if (exitPaxList.Count == 0)
                     {
@@ -16482,7 +16509,7 @@ namespace Orts.Simulation.Physics
                         if (wagon is MSTSLocomotive)
                             locoWag = (MSTSLocomotive)wagon;
 
-                        if (!(wagon is MSTSLocomotive) && !wagon.FreightDoors)
+                        if (wagon.HasPassengerCapacity && !wagon.FreightDoors)
                         {
                             if (wagon.UnboardingComplete)
                             {

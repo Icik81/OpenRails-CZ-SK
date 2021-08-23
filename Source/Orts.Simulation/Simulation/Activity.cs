@@ -1042,7 +1042,7 @@ namespace Orts.Simulation
                 if (loco != null)
                 {
                     // Automatické centrální dveře
-                    if (!maydepart && arrived && loco.CentralHandlingDoors && (!loco.OpenedLeftDoor && !loco.OpenedRightDoor))
+                    if (!maydepart && arrived && loco.CentralHandlingDoors && !loco.OpenedLeftDoor && !loco.OpenedRightDoor && MyPlayerTrain.StationStops[0].PlatformItem.PassengerList.Count > 0)
                     {
                         BoardingEndS = Simulator.ClockTime + BoardingS;
                         double SchDepartS = SchDepart.Subtract(new DateTime()).TotalSeconds;
