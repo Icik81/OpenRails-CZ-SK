@@ -26,7 +26,8 @@ namespace Orts.Simulation
 {
     public class HazzardManager
 	{
-		readonly int hornDist = 200;
+		readonly int hornDist = 250;
+		readonly int bellDist = 200;
 		readonly int approachDist = 160;
         readonly int scaredDist = 147;
 		readonly Simulator Simulator;
@@ -118,6 +119,17 @@ namespace Orts.Simulation
 			foreach (var haz in Hazzards)
 			{
 				if (WorldLocation.Within(haz.Value.Location, playerLocation, hornDist))
+				{
+					haz.Value.state = Hazzard.State.LookLeft;
+				}
+			}
+		}
+		public void Bell()
+		{
+			var playerLocation = Simulator.PlayerLocomotive.WorldPosition.WorldLocation;
+			foreach (var haz in Hazzards)
+			{
+				if (WorldLocation.Within(haz.Value.Location, playerLocation, bellDist))
 				{
 					haz.Value.state = Hazzard.State.LookLeft;
 				}

@@ -882,6 +882,7 @@ namespace Orts.Common
         public override void Redo()
         {
             Receiver.ManualBell = ToState;
+            Receiver.Simulator.HazzardManager.Bell();
         }
 
         public override string ToString() {
