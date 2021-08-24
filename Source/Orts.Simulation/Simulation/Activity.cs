@@ -1034,10 +1034,7 @@ namespace Orts.Simulation
                     MyPlayerTrain.BoardingComplete = false;
                 }
                 double clock = MyPlayerTrain.Simulator.GameTime;
-
-                MyPlayerTrain.FillNames(MyPlayerTrain);
-
-                MyPlayerTrain.UpdatePassengerCountAndWeight(MyPlayerTrain, MyPlayerTrain.StationStops[0].PlatformItem.NumPassengersWaiting, clock);
+                
                 var loco = MyPlayerTrain.LeadLocomotive as MSTSLocomotive;
                 if (loco != null)
                 {
@@ -1052,70 +1049,16 @@ namespace Orts.Simulation
                         return;
                     }
 
-                    // Dveře se neotevřou hned
-                    if (arrived && !loco.CentralHandlingDoors)
-                    {
-                        if (TimeForOpenDoors == 0)
-                            TimeForOpenDoors = Simulator.Random.Next(50, 100);
-                        TimeForOpenDoors--;
-                        if (TimeForOpenDoors < 1) TimeForOpenDoors = 1;
-                    }
                     // Waiting at a station
-                    if (arrived && TimeForOpenDoors == 1 || arrived && loco.CentralHandlingDoors)
+                    if (arrived)
                     {
                         var remaining = (int)Math.Ceiling(BoardingEndS - Simulator.ClockTime);
                         if (remaining < 1) DisplayColor = Color.LightGreen;
                         else if (remaining < 11) DisplayColor = new Color(255, 255, 128);
                         else DisplayColor = Color.White;
-
-                        if (!loco.CentralHandlingDoors)
-                        {
-                            // Lidé si sami otevírají dveře                      
-                            if (remaining > 5 && CycleTimeOpen == 0)
-                            {
-                                if (MyPlayerTrain.StationStops.Count > 0)
-                                {
-                                    CycleTimeClosed = 0;
-                                    StationStop thisStation = MyPlayerTrain.StationStops[0];
-                                    var frontIsFront = thisStation.PlatformReference == thisStation.PlatformItem.PlatformFrontUiD;
-
-                                    if (thisStation.PlatformItem.PlatformSide[0])
-                                    {
-                                        //Levé dveře
-                                        MyPlayerTrain.ToggleDoorsPeople(frontIsFront, true);
-                                    }
-                                    if (thisStation.PlatformItem.PlatformSide[1])
-                                    {
-                                        //Pravé dveře
-                                        MyPlayerTrain.ToggleDoorsPeople(!frontIsFront, true);
-                                    }
-                                }
-                                CycleTimeOpen = 1;
-                            }
-                            else
-                            if (remaining <= 5 && CycleTimeClosed == 0 || MyPlayerTrain.SpeedMpS > 1.0f && CycleTimeClosed == 0)
-                            {
-                                CycleTimeOpen = 0;
-                                // Lidé si sami zavřou dveře
-                                if (!loco.CentralHandlingDoors && MyPlayerTrain.StationStops.Count > 0)
-                                {
-                                    StationStop thisStation = MyPlayerTrain.StationStops[0];
-                                    var frontIsFront = thisStation.PlatformReference == thisStation.PlatformItem.PlatformFrontUiD;
-
-                                    if (thisStation.PlatformItem.PlatformSide[0])
-                                    {
-                                        //Levé dveře
-                                        MyPlayerTrain.ToggleDoors(frontIsFront, false);
-                                    }
-                                    if (thisStation.PlatformItem.PlatformSide[1])
-                                    {
-                                        //Pravé dveře
-                                        MyPlayerTrain.ToggleDoors(!frontIsFront, false);
-                                    }
-                                }
-                                CycleTimeClosed = 1;
-                            }
-                        }
+                        
+                        MyPlayerTrain.FillNames(MyPlayerTrain);
+                        MyPlayerTrain.UpdatePassengerCountAndWeight(MyPlayerTrain, MyPlayerTrain.StationStops[0].PlatformItem.NumPassengersWaiting, clock);
 
                         if (remaining < 120 && (MyPlayerTrain.TrainType != Train.TRAINTYPE.AI_PLAYERHOSTING))
                         {

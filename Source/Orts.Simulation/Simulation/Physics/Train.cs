@@ -16145,7 +16145,7 @@ namespace Orts.Simulation.Physics
             for (int i = 0; i < Cars.Count; i++)
             {
                 var wagon = (Cars[i] as MSTSWagon);
-                if (!(wagon is MSTSLocomotive) && !wagon.FreightDoors)
+                if (wagon.HasPassengerCapacity && !wagon.FreightDoors)
                 {
                     bool ChanceToOpenDoor = false;
                     if (Simulator.Random.Next(0, 2) == 0)
