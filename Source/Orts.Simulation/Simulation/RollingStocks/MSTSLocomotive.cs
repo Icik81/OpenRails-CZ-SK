@@ -478,6 +478,10 @@ namespace Orts.Simulation.RollingStocks
         public bool RouteVoltageChange;
         public float RouteVoltageV;
         public float LocomotivePowerVoltage;
+        public float MaxPowerWAC;
+        public float MaxForceNAC;
+        public float MaxPowerWDC;
+        public float MaxForceNDC;
 
         // Jindrich
         public CruiseControl CruiseControl;
@@ -1084,6 +1088,10 @@ namespace Orts.Simulation.RollingStocks
                 case "engine(centralhandlingdoors": CentralHandlingDoors = stf.ReadBoolBlock(false); break;
                 case "engine(voltagefilter": VoltageFilter = stf.ReadBoolBlock(false); break;
                 case "engine(locomotivepowervoltage": LocomotivePowerVoltage = stf.ReadFloatBlock(STFReader.UNITS.Voltage, null); break;
+                case "engine(maxpowerac": MaxPowerWAC = stf.ReadFloatBlock(STFReader.UNITS.Power, null); break;
+                case "engine(maxforceac": MaxForceNAC = stf.ReadFloatBlock(STFReader.UNITS.Force, null); break;
+                case "engine(maxpowerdc": MaxPowerWDC = stf.ReadFloatBlock(STFReader.UNITS.Power, null); break;
+                case "engine(maxforcedc": MaxForceNDC = stf.ReadFloatBlock(STFReader.UNITS.Force, null); break;
 
 
                 // Jindrich
@@ -2368,6 +2376,27 @@ namespace Orts.Simulation.RollingStocks
             }            
         }
         
+        // Stanovení hodnot výkonů a síly pro AC-DC systém
+        public void MaxPower_MaxForce_ACDC()
+        {
+            switch (SwitchingVoltageMode)
+            {
+                case 0:
+                    if (MaxPowerWDC != 0)
+                        MaxPowerW = MaxPowerWDC;
+                    if (MaxForceNDC != 0)
+                        MaxForceN = MaxForceNDC;
+                    break;
+                case 1:
+                    break;
+                case 2:
+                    if (MaxPowerWAC != 0)
+                        MaxPowerW = MaxPowerWAC;
+                    if (MaxForceNAC != 0)
+                        MaxForceN = MaxForceNAC;
+                    break;
+            }
+        }
 
         /// <summary>
         /// This function updates periodically the states and physical variables of the locomotive's subsystems.
@@ -2433,11 +2462,13 @@ namespace Orts.Simulation.RollingStocks
                     ControllerVolts = 0;
             }
             
+            // Icik
             Overcurrent_Protection(elapsedClockSeconds);
             AntiSlip_Protection(elapsedClockSeconds);
             PowerOn_Filter(elapsedClockSeconds);
             EDBCancelByEngineBrake();
             HVOffbyAirPressure();
+            MaxPower_MaxForce_ACDC();
             ElevatedConsumptionOnLocomotive();
 
             TrainControlSystem.Update();
