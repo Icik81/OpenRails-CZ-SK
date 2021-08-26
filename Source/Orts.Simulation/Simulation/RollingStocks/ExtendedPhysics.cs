@@ -374,12 +374,39 @@ namespace Orts.Simulation.RollingStocks
                 axleCurrent = axleCurrent + em.RotorCurrent;
                 maxCurrent = maxCurrent + em.MaxRotorCurrent;
             }
-            if (Locomotive.TractiveForceCurves != null && Locomotive.ControllerVolts > 0)
+            if ((Locomotive.TractiveForceCurves != null || Locomotive.TractiveForceCurvesAC != null || Locomotive.TractiveForceCurvesDC != null) && Locomotive.ControllerVolts > 0)
             {
-                if (overridenControllerVolts != Locomotive.ControllerVolts)
-                    ForceN = Locomotive.TractiveForceCurves.Get(overridenControllerVolts / Locomotive.MaxControllerVolts, WheelSpeedMpS) / totalMotors;
-                else
-                    ForceN = Locomotive.TractiveForceCurves.Get(Locomotive.ControllerVolts / Locomotive.MaxControllerVolts, WheelSpeedMpS) / totalMotors;
+                // Icik
+                switch (Locomotive.SwitchingVoltageMode)
+                {
+                    case 0:
+                        if (Locomotive.TractiveForceCurvesDC != null)
+                        {
+                            if (overridenControllerVolts != Locomotive.ControllerVolts)
+                                ForceN = Locomotive.TractiveForceCurvesDC.Get(overridenControllerVolts / Locomotive.MaxControllerVolts, WheelSpeedMpS) / totalMotors;
+                            else
+                                ForceN = Locomotive.TractiveForceCurvesDC.Get(Locomotive.ControllerVolts / Locomotive.MaxControllerVolts, WheelSpeedMpS) / totalMotors;
+                        }
+                        break;
+                    case 1:
+                        if (Locomotive.TractiveForceCurves != null)
+                        {
+                            if (overridenControllerVolts != Locomotive.ControllerVolts)
+                                ForceN = Locomotive.TractiveForceCurves.Get(overridenControllerVolts / Locomotive.MaxControllerVolts, WheelSpeedMpS) / totalMotors;
+                            else
+                                ForceN = Locomotive.TractiveForceCurves.Get(Locomotive.ControllerVolts / Locomotive.MaxControllerVolts, WheelSpeedMpS) / totalMotors;
+                        }
+                        break;
+                    case 2:
+                        if (Locomotive.TractiveForceCurvesAC != null)
+                        {
+                            if (overridenControllerVolts != Locomotive.ControllerVolts)
+                                ForceN = Locomotive.TractiveForceCurvesAC.Get(overridenControllerVolts / Locomotive.MaxControllerVolts, WheelSpeedMpS) / totalMotors;
+                            else
+                                ForceN = Locomotive.TractiveForceCurvesAC.Get(Locomotive.ControllerVolts / Locomotive.MaxControllerVolts, WheelSpeedMpS) / totalMotors;
+                        }
+                        break;
+                }                
             }
             else if (Locomotive.ControllerVolts > 0)
             {
@@ -388,9 +415,30 @@ namespace Orts.Simulation.RollingStocks
                 else
                     ForceN = Locomotive.MaxForceN * (Locomotive.ControllerVolts / Locomotive.MaxControllerVolts) / 4;
             }
-            else if (Locomotive.DynamicBrakeForceCurves != null && Locomotive.ControllerVolts < 0)
-            {
-                ForceN = -Locomotive.DynamicBrakeForceCurves.Get(-Locomotive.ControllerVolts / Locomotive.MaxControllerVolts, WheelSpeedMpS) / totalMotors;
+            else if ((Locomotive.DynamicBrakeForceCurves != null || Locomotive.DynamicBrakeForceCurvesAC != null || Locomotive.DynamicBrakeForceCurvesDC != null) && Locomotive.ControllerVolts < 0)
+            {                
+                // Icik
+                switch (Locomotive.SwitchingVoltageMode)
+                {
+                    case 0:
+                        if (Locomotive.DynamicBrakeForceCurvesDC != null)
+                        {
+                            ForceN = -Locomotive.DynamicBrakeForceCurvesDC.Get(-Locomotive.ControllerVolts / Locomotive.MaxControllerVolts, WheelSpeedMpS) / totalMotors;
+                        }
+                        break;
+                    case 1:
+                        if (Locomotive.DynamicBrakeForceCurves != null)
+                        {
+                            ForceN = -Locomotive.DynamicBrakeForceCurves.Get(-Locomotive.ControllerVolts / Locomotive.MaxControllerVolts, WheelSpeedMpS) / totalMotors;
+                        }
+                        break;
+                    case 2:
+                        if (Locomotive.DynamicBrakeForceCurvesAC != null)
+                        {
+                            ForceN = -Locomotive.DynamicBrakeForceCurvesAC.Get(-Locomotive.ControllerVolts / Locomotive.MaxControllerVolts, WheelSpeedMpS) / totalMotors;
+                        }
+                        break;
+                }
             }
             else if (Locomotive.ControllerVolts < 0)
             {

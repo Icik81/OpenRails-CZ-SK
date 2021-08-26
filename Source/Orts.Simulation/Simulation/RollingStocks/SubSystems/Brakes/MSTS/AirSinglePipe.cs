@@ -2295,6 +2295,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         if (train.BrakeLine3PressurePSI < lead.BrakeSystem.AutoCylPressurePSI1)
                             lead.SignalEvent(Event.EngineBrakePressureStoppedChanging);
                         else lead.EngineBrakeState = ValveState.Apply;
+                        if (lead.BrakeSystem.AutoCylPressurePSI1 > train.BrakeLine3PressurePSI * 0.95f)
+                        {
+                            lead.EngineBrakeState = ValveState.Lap;
+                        }
                     }
                     // Release
                     else
@@ -2349,6 +2353,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         if (train.BrakeLine3PressurePSI < lead.BrakeSystem.AutoCylPressurePSI1)
                             lead.SignalEvent(Event.EngineBrakePressureStoppedChanging);
                         else lead.EngineBrakeState = ValveState.Apply;
+                        if (lead.BrakeSystem.AutoCylPressurePSI1 > train.BrakeLine3PressurePSI * 0.95f)
+                        {
+                            lead.EngineBrakeState = ValveState.Lap;
+                        }
                     }
                     // Release
                     else

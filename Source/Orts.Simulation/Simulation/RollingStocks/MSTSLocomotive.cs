@@ -482,6 +482,10 @@ namespace Orts.Simulation.RollingStocks
         public float MaxForceNAC;
         public float MaxPowerWDC;
         public float MaxForceNDC;
+        public InterpolatorDiesel2D TractiveForceCurvesAC;
+        public InterpolatorDiesel2D TractiveForceCurvesDC;
+        public InterpolatorDiesel2D DynamicBrakeForceCurvesAC;
+        public InterpolatorDiesel2D DynamicBrakeForceCurvesDC;
 
         // Jindrich
         public CruiseControl CruiseControl;
@@ -637,7 +641,7 @@ namespace Orts.Simulation.RollingStocks
             else
                 DynamicBrakeController = null;
 
-            if (DynamicBrakeForceCurves == null && MaxDynamicBrakeForceN > 0)
+            if ((DynamicBrakeForceCurves == null && DynamicBrakeForceCurvesAC == null && DynamicBrakeForceCurvesDC == null) && MaxDynamicBrakeForceN > 0)
             {
                 DynamicBrakeForceCurves = new InterpolatorDiesel2D(2);
                 Interpolator interp = new Interpolator(2);
@@ -1092,6 +1096,10 @@ namespace Orts.Simulation.RollingStocks
                 case "engine(maxforceac": MaxForceNAC = stf.ReadFloatBlock(STFReader.UNITS.Force, null); break;
                 case "engine(maxpowerdc": MaxPowerWDC = stf.ReadFloatBlock(STFReader.UNITS.Power, null); break;
                 case "engine(maxforcedc": MaxForceNDC = stf.ReadFloatBlock(STFReader.UNITS.Force, null); break;
+                case "engine(ortstractioncharacteristicsac": TractiveForceCurvesAC = new InterpolatorDiesel2D(stf, true); break;
+                case "engine(ortstractioncharacteristicsdc": TractiveForceCurvesDC = new InterpolatorDiesel2D(stf, true); break;
+                case "engine(ortsdynamicbrakeforcecurvesac": DynamicBrakeForceCurvesAC = new InterpolatorDiesel2D(stf, false); break;
+                case "engine(ortsdynamicbrakeforcecurvesdc": DynamicBrakeForceCurvesDC = new InterpolatorDiesel2D(stf, false); break;
 
 
                 // Jindrich
@@ -1305,6 +1313,10 @@ namespace Orts.Simulation.RollingStocks
             CentralHandlingDoors = locoCopy.CentralHandlingDoors;
             VoltageFilter = locoCopy.VoltageFilter;            
             LocomotivePowerVoltage = locoCopy.LocomotivePowerVoltage;
+            TractiveForceCurvesAC = locoCopy.TractiveForceCurvesAC;
+            TractiveForceCurvesDC = locoCopy.TractiveForceCurvesDC;
+            DynamicBrakeForceCurvesAC = locoCopy.DynamicBrakeForceCurvesAC;
+            DynamicBrakeForceCurvesDC = locoCopy.DynamicBrakeForceCurvesDC;
 
             // Jindrich
             if (locoCopy.CruiseControl != null)
@@ -2385,7 +2397,7 @@ namespace Orts.Simulation.RollingStocks
                     if (MaxPowerWDC != 0)
                         MaxPowerW = MaxPowerWDC;
                     if (MaxForceNDC != 0)
-                        MaxForceN = MaxForceNDC;
+                        MaxForceN = MaxForceNDC;                    
                     break;
                 case 1:
                     break;
@@ -2393,7 +2405,7 @@ namespace Orts.Simulation.RollingStocks
                     if (MaxPowerWAC != 0)
                         MaxPowerW = MaxPowerWAC;
                     if (MaxForceNAC != 0)
-                        MaxForceN = MaxForceNAC;
+                        MaxForceN = MaxForceNAC;                    
                     break;
             }
         }
@@ -2716,10 +2728,26 @@ namespace Orts.Simulation.RollingStocks
             // For flipped locomotives the force is "flipped" elsewhere, whereas dynamic brake force is "flipped" below by the direction of the speed.
             MotiveForceN = TractiveForceN;
 
+            // Icik
+            if (DynamicBrakePercent > 0 && (DynamicBrakeForceCurves != null || DynamicBrakeForceCurvesAC != null || DynamicBrakeForceCurvesDC != null) && AbsSpeedMpS > 0)
+            {                
+                float f = 0;
+                switch (SwitchingVoltageMode)
+                {
+                    case 0:                        
+                        if (DynamicBrakeForceCurvesDC != null)
+                            f = DynamicBrakeForceCurvesDC.Get(.01f * DynamicBrakePercent, AbsTractionSpeedMpS);
+                        break;
+                    case 1:
+                        if (DynamicBrakeForceCurves != null)
+                            f = DynamicBrakeForceCurves.Get(.01f * DynamicBrakePercent, AbsTractionSpeedMpS);
+                        break;
+                    case 2:
+                        if (DynamicBrakeForceCurvesAC != null)
+                            f = DynamicBrakeForceCurvesAC.Get(.01f * DynamicBrakePercent, AbsTractionSpeedMpS);
+                        break;
+                }
 
-            if (DynamicBrakePercent > 0 && DynamicBrakeForceCurves != null && AbsSpeedMpS > 0)
-            {
-                float f = DynamicBrakeForceCurves.Get(.01f * DynamicBrakePercent, AbsTractionSpeedMpS);
                 //if (f > 0 && PowerOn)
                 // Icik 
                 // EDB funguje z baterií
@@ -3103,7 +3131,7 @@ namespace Orts.Simulation.RollingStocks
             {
                 if (extendedPhysics == null)
                 {
-                    if (TractiveForceCurves == null)
+                    if (TractiveForceCurves == null && TractiveForceCurvesAC == null && TractiveForceCurvesDC == null)
                     {
                         float maxForceN = MaxForceN * t * (1 - PowerReduction);
                         float maxPowerW = MaxPowerW * t * t * (1 - PowerReduction);
@@ -3122,9 +3150,34 @@ namespace Orts.Simulation.RollingStocks
                     {
                         if (t > 0)
                         {
-                            TractiveForceN = TractiveForceCurves.Get(t, AbsTractionSpeedMpS) * (1 - PowerReduction);
-                            if (TractiveForceN < 0 && !TractiveForceCurves.AcceptsNegativeValues())
-                                TractiveForceN = 0;
+                            // Icik
+                            switch (SwitchingVoltageMode)
+                            {
+                                case 0:
+                                    if (TractiveForceCurvesDC != null)
+                                    {
+                                        TractiveForceN = TractiveForceCurvesDC.Get(t, AbsTractionSpeedMpS) * (1 - PowerReduction);
+                                        if (TractiveForceN < 0 && !TractiveForceCurvesDC.AcceptsNegativeValues())
+                                            TractiveForceN = 0;
+                                    }
+                                    break;
+                                case 1:
+                                    if (TractiveForceCurves != null)
+                                    {
+                                        TractiveForceN = TractiveForceCurves.Get(t, AbsTractionSpeedMpS) * (1 - PowerReduction);
+                                        if (TractiveForceN < 0 && !TractiveForceCurves.AcceptsNegativeValues())
+                                            TractiveForceN = 0;
+                                    }
+                                    break;
+                                case 2:
+                                    if (TractiveForceCurvesAC != null)
+                                    {
+                                        TractiveForceN = TractiveForceCurvesAC.Get(t, AbsTractionSpeedMpS) * (1 - PowerReduction);
+                                        if (TractiveForceN < 0 && !TractiveForceCurvesAC.AcceptsNegativeValues())
+                                            TractiveForceN = 0;
+                                    }
+                                    break;
+                            }                            
                         }
                         else
                         {
