@@ -406,7 +406,8 @@ namespace Orts.Simulation.RollingStocks
                                 ForceN = Locomotive.TractiveForceCurvesAC.Get(Locomotive.ControllerVolts / Locomotive.MaxControllerVolts, WheelSpeedMpS) / totalMotors;
                         }
                         break;
-                }                
+                }
+                ForceN = ForceN * Locomotive.UiPowerLose;
             }
             else if (Locomotive.ControllerVolts > 0)
             {
@@ -414,6 +415,7 @@ namespace Orts.Simulation.RollingStocks
                     ForceN = Locomotive.MaxForceN * (overridenControllerVolts / Locomotive.MaxControllerVolts) / 4;
                 else
                     ForceN = Locomotive.MaxForceN * (Locomotive.ControllerVolts / Locomotive.MaxControllerVolts) / 4;
+                ForceN = ForceN * Locomotive.UiPowerLose;
             }
             else if ((Locomotive.DynamicBrakeForceCurves != null || Locomotive.DynamicBrakeForceCurvesAC != null || Locomotive.DynamicBrakeForceCurvesDC != null) && Locomotive.ControllerVolts < 0)
             {                
@@ -439,10 +441,12 @@ namespace Orts.Simulation.RollingStocks
                         }
                         break;
                 }
+                ForceN = ForceN * Locomotive.UiPowerLose;
             }
             else if (Locomotive.ControllerVolts < 0)
             {
                 ForceN = -Locomotive.MaxForceN * (-Locomotive.ControllerVolts / Locomotive.MaxControllerVolts) / 4;
+                ForceN = ForceN * Locomotive.UiPowerLose;
             }
             LocomotiveAxle.InertiaKgm2 = 10000;
             LocomotiveAxle.AxleRevolutionsInt.MinStep = LocomotiveAxle.InertiaKgm2 / (Locomotive.MaxPowerW / totalMotors) / 5.0f;

@@ -486,6 +486,7 @@ namespace Orts.Simulation.RollingStocks
         public InterpolatorDiesel2D TractiveForceCurvesDC;
         public InterpolatorDiesel2D DynamicBrakeForceCurvesAC;
         public InterpolatorDiesel2D DynamicBrakeForceCurvesDC;
+        public float UiPowerLose = 1;
 
         // Jindrich
         public CruiseControl CruiseControl;
@@ -2390,7 +2391,7 @@ namespace Orts.Simulation.RollingStocks
         
         // Stanovení hodnot výkonů a síly pro AC-DC systém
         public void MaxPower_MaxForce_ACDC()
-        {
+        {            
             switch (SwitchingVoltageMode)
             {
                 case 0:
@@ -2409,6 +2410,7 @@ namespace Orts.Simulation.RollingStocks
                     break;
             }
         }
+
 
         /// <summary>
         /// This function updates periodically the states and physical variables of the locomotive's subsystems.
@@ -2747,6 +2749,7 @@ namespace Orts.Simulation.RollingStocks
                             f = DynamicBrakeForceCurvesAC.Get(.01f * DynamicBrakePercent, AbsTractionSpeedMpS);
                         break;
                 }
+                f = f * UiPowerLose;
 
                 //if (f > 0 && PowerOn)
                 // Icik 
@@ -3144,6 +3147,8 @@ namespace Orts.Simulation.RollingStocks
                             maxForceN = 20 * (MaxSpeedMpS - AbsTractionSpeedMpS) * maxForceN;
                         if (AbsSpeedMpS > (MaxSpeedMpS))
                             maxForceN = 0;
+
+                        maxForceN = maxForceN * UiPowerLose;
                         TractiveForceN = maxForceN;
                     }
                     else
@@ -3177,7 +3182,8 @@ namespace Orts.Simulation.RollingStocks
                                             TractiveForceN = 0;
                                     }
                                     break;
-                            }                            
+                            }
+                            TractiveForceN = TractiveForceN * UiPowerLose;
                         }
                         else
                         {

@@ -325,7 +325,16 @@ namespace Orts.Simulation.RollingStocks
                 if ((VoltageSprung > 1.0f && Step1 == 0 && PowerSupply.PantographVoltageV > MaxLineVoltage0)) VoltageSprung = 1.0f;
 
                 // Kritická mez napětí pro podnapěťovku
-                PantographCriticalVoltage = 0.8f * MaxLineVoltage0;
+                if (RouteVoltageV == 25000)
+                {
+                    PantographCriticalVoltage = 19000;
+                    Delta2 = 500;
+                }
+                if (RouteVoltageV == 3000)
+                {
+                    PantographCriticalVoltage = 1900;
+                    Delta2 = 100;
+                }
 
                 PantographCriticalVoltage = (int)PantographCriticalVoltage;
                 PowerSupply.PantographVoltageV = (int)PowerSupply.PantographVoltageV;
@@ -339,10 +348,7 @@ namespace Orts.Simulation.RollingStocks
                 //Simulator.Confirmer.Message(ConfirmLevel.Warning, "PantographCriticalVoltage  " + PantographCriticalVoltage + "  PowerSupply.PantographVoltageV  " + PowerSupply.PantographVoltageV + "  LocalThrottlePercent  " + LocalThrottlePercent + "  LocalDynamicBrakePercent  " + LocalDynamicBrakePercent + "  Delta1  " + Delta1);
 
                 //if (IsPlayerTrain)
-                //{
-                // Určení velikosti kolísání napětí pro různá napětí v troleji
-                if (MaxLineVoltage0 > 20000) Delta2 = 1000;
-                else Delta2 = 100;
+                //{                
 
                 // Podpěťová ochrana deaktivovaná při pause hry
                 if (Simulator.Paused || Step0 > 0)
@@ -355,14 +361,14 @@ namespace Orts.Simulation.RollingStocks
                 // Simulace náhodného poklesu napětí            
                 if (Delta1 == 10 && TimeCriticalVoltage == 0) TimeCriticalVoltage0 = Simulator.Random.Next(100, 200);
                 else
-                    if (Delta1 != 10 && TimeCriticalVoltage == 0) TimeCriticalVoltage0 = Simulator.Random.Next(7500, 10000);
+                    if (Delta1 != 10 && TimeCriticalVoltage == 0) TimeCriticalVoltage0 = Simulator.Random.Next(5000, 7500);
                 TimeCriticalVoltage++;
                 if (TimeCriticalVoltage > TimeCriticalVoltage0 && PowerSupply.PantographVoltageV > 1000)
                 {
-                    if (FilteredMotiveForceN > 200000) Delta0 = Simulator.Random.Next(25, 100);
+                    if (FilteredMotiveForceN > 150000) Delta0 = Simulator.Random.Next(25, 100);
                     else Delta0 = Simulator.Random.Next(1, 100);
-                    if (Delta0 == 75) Delta1 = 10;  // Kritická mez
-                    else Delta1 = Simulator.Random.Next(1, 40) / 10;
+                    if (Delta0 == 75) Delta1 = 13;  // Kritická mez
+                    else Delta1 = Simulator.Random.Next(1, 12);
                     TimeCriticalVoltage = 0;
                     TInduktion = 0;
                 }
@@ -379,7 +385,10 @@ namespace Orts.Simulation.RollingStocks
                 {
                     StartThrottleToZero(0.0f);
                 }
-                
+
+                // Úbytek výkonu v závislosti na napětí
+                UiPowerLose = PantographVoltageV / RouteVoltageV;
+
                 // Blokování pantografu u jednosystémových lokomotiv při vypnutém HV
                 if (!MultiSystemEngine)
                 {
@@ -1218,10 +1227,10 @@ namespace Orts.Simulation.RollingStocks
 
                 case CABViewControlTypes.SWITCHINGVOLTAGEMODE_DC_OFF_AC:
                     {
-                        if (preVoltageDC > 2000 && preVoltageDC < 4000)
+                        if (preVoltageDC > 500 && preVoltageDC < 4000)
                             data = 0;
                         else 
-                        if (VoltageAC > 20000)
+                        if (VoltageAC > 5000)
                             data = 2;
                         else
                             data = 1;
