@@ -1034,7 +1034,9 @@ namespace Orts.Simulation
                     MyPlayerTrain.BoardingComplete = false;
                 }
                 double clock = MyPlayerTrain.Simulator.GameTime;
-                
+
+                MyPlayerTrain.FillNames(MyPlayerTrain);
+
                 var loco = MyPlayerTrain.LeadLocomotive as MSTSLocomotive;
                 if (loco != null)
                 {
@@ -1056,8 +1058,7 @@ namespace Orts.Simulation
                         if (remaining < 1) DisplayColor = Color.LightGreen;
                         else if (remaining < 11) DisplayColor = new Color(255, 255, 128);
                         else DisplayColor = Color.White;
-                        
-                        MyPlayerTrain.FillNames(MyPlayerTrain);
+                                                
                         MyPlayerTrain.UpdatePassengerCountAndWeight(MyPlayerTrain, MyPlayerTrain.StationStops[0].PlatformItem.NumPassengersWaiting, clock);
 
                         if (remaining < 120 && (MyPlayerTrain.TrainType != Train.TRAINTYPE.AI_PLAYERHOSTING))

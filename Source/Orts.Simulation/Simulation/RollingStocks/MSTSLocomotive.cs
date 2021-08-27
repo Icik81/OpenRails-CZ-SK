@@ -2156,8 +2156,8 @@ namespace Orts.Simulation.RollingStocks
                     }
                     if (this is MSTSDieselLocomotive) // Dieselelektrické lokomotivy
                     {
-                        if (PowerReduction < 0.8)
-                            Train.SignalEvent(Event.PowerKeyOff); // Zvuk pro vypnutí TM
+                        //if (PowerReduction < 0.8)
+                        //    Train.SignalEvent(Event.PowerKeyOff); // Zvuk pro vypnutí TM
                         PowerReduction = 0.9f; // Omezení trakčních motorů  
                         SetDynamicBrakePercent(0);
                         Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Zásah protiskluzové ochrany!"));
@@ -2173,7 +2173,7 @@ namespace Orts.Simulation.RollingStocks
                 // Resetování nadproudové ochrany u dieselelektrických lokomotiv
                 if (this is MSTSDieselLocomotive && OverVoltage && LocalThrottlePercent == 0 && LocalDynamicBrakePercent == 0)
                 {
-                    Train.SignalEvent(Event.PowerKeyOn); // Zvuk pro zapnutí TM
+                    //Train.SignalEvent(Event.PowerKeyOn); // Zvuk pro zapnutí TM
                     OverVoltage = false;
                     PowerReduction = 0;                    
                 }
