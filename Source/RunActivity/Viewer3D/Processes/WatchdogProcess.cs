@@ -103,6 +103,7 @@ namespace Orts.Viewer3D.Processes
         [ThreadName("Watchdog")]
         void WatchdogThread()
         {
+            return;
             Profiler.SetThread();
             Game.SetThreadLanguage();
 

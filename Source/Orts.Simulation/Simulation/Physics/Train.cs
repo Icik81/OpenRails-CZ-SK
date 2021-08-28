@@ -16270,7 +16270,7 @@ namespace Orts.Simulation.Physics
                     //    wagon.BrakeSystem.ForceTwoPipesConnection = true;
                     if (wagon is MSTSLocomotive)
                         locoWag = wagon;
-                    if (wagon.HasPassengerCapacity && !wagon.FreightDoors)
+                    if ((wagon.HasPassengerCapacity && !wagon.FreightDoors) || wagon.WagonType == TrainCar.WagonTypes.Passenger)
                     {
                         numUsableWagons++;
                         if (wagon.FirstPaxActionDelay == 0)
@@ -16347,7 +16347,7 @@ namespace Orts.Simulation.Physics
             for (int i = 0; i < train.Cars.Count; i++)
             {
                 var wagon = (train.Cars[i] as MSTSWagon);
-                if (wagon.HasPassengerCapacity && !wagon.FreightDoors)
+                if ((wagon.HasPassengerCapacity && !wagon.FreightDoors) || wagon.WagonType == TrainCar.WagonTypes.Passenger)
                 {
                     if (wagon.PassengerCapacity == 0)
                         wagon.PassengerCapacity = 80;
@@ -16446,7 +16446,7 @@ namespace Orts.Simulation.Physics
                     locoWag = wagon;
                     loco = (MSTSLocomotive)wagon;
                 }
-                if (wagon.HasPassengerCapacity && !wagon.FreightDoors)
+                if ((wagon.HasPassengerCapacity && !wagon.FreightDoors) || wagon.WagonType == TrainCar.WagonTypes.Passenger)
                 {
                     if (exitPaxList.Count == 0)
                     {
@@ -16509,7 +16509,7 @@ namespace Orts.Simulation.Physics
                         if (wagon is MSTSLocomotive)
                             locoWag = (MSTSLocomotive)wagon;
 
-                        if (wagon.HasPassengerCapacity && !wagon.FreightDoors)
+                        if ((wagon.HasPassengerCapacity && !wagon.FreightDoors) || wagon.WagonType == TrainCar.WagonTypes.Passenger)
                         {
                             if (wagon.UnboardingComplete)
                             {
@@ -16546,7 +16546,7 @@ namespace Orts.Simulation.Physics
                 break;
             }
 
-            if (train.StationStops[0].PlatformItem.PassengerList.Count == 0)
+            if (train.StationStops[0].PlatformItem.PassengerList.Count == 0 && !train.BoardingComplete && true == false)
             {
                 bool closeDoor = false;
                 bool haveCentralDoors = false;
