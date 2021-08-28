@@ -207,7 +207,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
         {
             Locomotive = locomotive;
         }
-
+        float TDC = 0;
 
         public override void Initialize()
         {
@@ -225,6 +225,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
         {
             if (elapsedClockSeconds == 0)
                 return;
+            
+            if (Locomotive.SwitchingVoltageMode == 1 && Locomotive.LocoSwitchACDC)
+                TDC = 0;
+
             switch (CurrentPantographState())
             {
                 case PantographState.Down:                    
@@ -243,6 +247,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                     // Napětí po složení pantografu na filtru DC 3kV
                     if (Locomotive.RouteVoltageV == 3000 && Locomotive.preVoltageDC > 0)
                         Locomotive.preVoltageDC -= 100;
+                    TDC = 0;
 
                     break;
 
@@ -255,7 +260,11 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
 
                     // Trakce na 3kV po přepnutí na DC naběhne napětí, jednosystémová lokomotiva naměří napětí hned
                     if (Locomotive.RouteVoltageV == 3000 && (Locomotive.SwitchingVoltageMode_OffDC || !Locomotive.MultiSystemEngine))
-                        SetPantographVoltageV(PantographFilter.Filter(LineVoltageV(), elapsedClockSeconds));
+                    {
+                        TDC += elapsedClockSeconds;
+                        if (TDC > 0.5f)
+                            SetPantographVoltageV(PantographFilter.Filter(LineVoltageV(), elapsedClockSeconds));
+                    }                    
 
                     // Napětí po zdvihu pantografu na filtru DC 3kV
                     if (Locomotive.RouteVoltageV == 3000 && Locomotive.preVoltageDC < Locomotive.RouteVoltageV)                       
