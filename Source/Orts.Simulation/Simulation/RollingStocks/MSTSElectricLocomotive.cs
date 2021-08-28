@@ -361,11 +361,11 @@ namespace Orts.Simulation.RollingStocks
                 // Simulace náhodného poklesu napětí            
                 if (Delta1 == 10 && TimeCriticalVoltage == 0) TimeCriticalVoltage0 = Simulator.Random.Next(100, 200);
                 else
-                    if (Delta1 != 10 && TimeCriticalVoltage == 0) TimeCriticalVoltage0 = Simulator.Random.Next(5000, 7500);
+                    if (Delta1 != 10 && TimeCriticalVoltage == 0) TimeCriticalVoltage0 = Simulator.Random.Next(7500, 10000);
                 TimeCriticalVoltage++;
                 if (TimeCriticalVoltage > TimeCriticalVoltage0 && PowerSupply.PantographVoltageV > 1000)
                 {
-                    if (FilteredMotiveForceN > 150000) Delta0 = Simulator.Random.Next(25, 100);
+                    if (FilteredMotiveForceN > 200000) Delta0 = Simulator.Random.Next(25, 100);
                     else Delta0 = Simulator.Random.Next(1, 100);
                     if (Delta0 == 75) Delta1 = 13;  // Kritická mez
                     else Delta1 = Simulator.Random.Next(1, 12);
