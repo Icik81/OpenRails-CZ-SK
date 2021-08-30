@@ -328,12 +328,12 @@ namespace Orts.Simulation.RollingStocks
                 if (RouteVoltageV == 25000)
                 {
                     PantographCriticalVoltage = 19000;
-                    Delta2 = 500;
+                    Delta2 = 400;
                 }
                 if (RouteVoltageV == 3000)
                 {
                     PantographCriticalVoltage = 1900;
-                    Delta2 = 100;
+                    Delta2 = 90;
                 }
 
                 PantographCriticalVoltage = (int)PantographCriticalVoltage;
@@ -530,10 +530,10 @@ namespace Orts.Simulation.RollingStocks
                     if (PowerSupply.CircuitBreaker.State == CircuitBreakerState.Open)
                         T_CB = 0;
 
-                    if (RouteVoltageV == 3000 && PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closing && VoltageDC < 2000)
+                    if (RouteVoltageV == 3000 && PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closing && VoltageDC < 1500)
                         SignalEvent(PowerSupplyEvent.OpenCircuitBreaker);
 
-                    if (RouteVoltageV == 25000 && PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closing && VoltageAC < 20000)
+                    if (RouteVoltageV == 25000 && PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closing && VoltageAC < 15000)
                         SignalEvent(PowerSupplyEvent.OpenCircuitBreaker);
 
                     if (SwitchingVoltageMode_OffAC && VoltageDC > 500 
