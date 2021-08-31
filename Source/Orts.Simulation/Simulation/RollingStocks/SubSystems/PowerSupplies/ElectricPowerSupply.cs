@@ -245,7 +245,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                     SetFilterVoltageV(VoltageFilter.Filter(0.0f, elapsedClockSeconds));
 
                     // Napětí po složení pantografu na filtru DC 3kV
-                    if (Locomotive.RouteVoltageV == 3000 && Locomotive.preVoltageDC > 0)
+                    if (Locomotive.preVoltageDC > 0)
                         Locomotive.preVoltageDC -= 100;
                     TDC = 0;
 
@@ -269,6 +269,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                     // Napětí po zdvihu pantografu na filtru DC 3kV
                     if (Locomotive.RouteVoltageV == 3000 && Locomotive.preVoltageDC < Locomotive.RouteVoltageV)                       
                         Locomotive.preVoltageDC += 100;
+                    else
+                    if (Locomotive.preVoltageDC > 0)
+                        Locomotive.preVoltageDC -= 100;
 
                     // Trakce na 3kV spadne napětí po odpadu HV
                     if (!Locomotive.MultiSystemEngine && Locomotive.RouteVoltageV == 3000 && Locomotive.PowerSupply.CircuitBreaker.State == CircuitBreakerState.Open && Locomotive.PantographVoltageV == 0
