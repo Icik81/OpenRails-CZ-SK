@@ -301,7 +301,7 @@ namespace Orts.Simulation.RollingStocks
                 // Indukce z trolejového vedení pro střídavé napájení 25kV
                 if (RouteVoltageV == 25000 && LocomotivePowerVoltage != 3000
                     && (Pantographs[1].State == PantographState.Down || Pantographs[1].State == PantographState.Raising || Pantographs[1].State == PantographState.Lowering)
-                    && (Pantographs[2].State == PantographState.Down || Pantographs[2].State == PantographState.Raising) || Pantographs[2].State == PantographState.Lowering)
+                    && (Pantographs[2].State == PantographState.Down || Pantographs[2].State == PantographState.Raising || Pantographs[2].State == PantographState.Lowering))
                 {
                     if (TInduktion == 0)
                         Induktion = Simulator.Random.Next(1, 3);
@@ -534,13 +534,15 @@ namespace Orts.Simulation.RollingStocks
                     if (RouteVoltageV == 25000 && PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closing && VoltageAC < 15000)
                         SignalEvent(PowerSupplyEvent.OpenCircuitBreaker);
 
-                    if (SwitchingVoltageMode_OffAC && VoltageDC > 500 
-                        && (PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closing || PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closed)) 
-                        SignalEvent(PowerSupplyEvent.OpenCircuitBreaker);
+                    if (SwitchingVoltageMode_OffAC && RouteVoltageV == 3000 
+                        && (PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closing || PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closed)
+                        && (Pantographs[1].State == PantographState.Up || Pantographs[2].State == PantographState.Up)) 
+                            SignalEvent(PowerSupplyEvent.OpenCircuitBreaker);
 
-                    if (SwitchingVoltageMode_OffDC && VoltageAC > 500
-                        && (PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closing || PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closed)) 
-                        SignalEvent(PowerSupplyEvent.OpenCircuitBreaker);
+                    if (SwitchingVoltageMode_OffDC && RouteVoltageV == 25000
+                        && (PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closing || PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closed)
+                        && (Pantographs[1].State == PantographState.Up || Pantographs[2].State == PantographState.Up))
+                            SignalEvent(PowerSupplyEvent.OpenCircuitBreaker);
 
 
                     if (SwitchingVoltageMode == 1)

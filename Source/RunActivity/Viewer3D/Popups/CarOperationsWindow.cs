@@ -298,12 +298,12 @@ namespace Orts.Viewer3D.Popups
 
             if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.LeftDoorMenu > 1) (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.LeftDoorMenu = 0;
 
-            if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.LeftDoorMenu == 0)
+            if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.LeftDoorMenu == 1)
             {
                 Viewer.Simulator.Confirmer.Information(Viewer.Catalog.GetString("Levé dveře zavřeno"));
                 (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.LeftDoorText = "zavřeno";
             }
-            if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.LeftDoorMenu == 1)
+            if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.LeftDoorMenu == 0)
             {
                 Viewer.Simulator.Confirmer.Information(Viewer.Catalog.GetString("Levé dveře otevřeno"));
                 (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.LeftDoorText = "otevřeno";
@@ -317,12 +317,12 @@ namespace Orts.Viewer3D.Popups
             
             if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.RightDoorMenu > 1) (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.RightDoorMenu = 0;
 
-            if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.RightDoorMenu == 0)
+            if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.RightDoorMenu == 1)
             {
                 Viewer.Simulator.Confirmer.Information(Viewer.Catalog.GetString("Pravé dveře zavřeno"));
                 //(Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.RightDoorText = "zavřeno";
             }
-            if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.RightDoorMenu == 1)
+            if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.RightDoorMenu == 0)
             {
                 Viewer.Simulator.Confirmer.Information(Viewer.Catalog.GetString("Pravé dveře otevřeno"));
                 //(Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.RightDoorText = "otevřeno";
