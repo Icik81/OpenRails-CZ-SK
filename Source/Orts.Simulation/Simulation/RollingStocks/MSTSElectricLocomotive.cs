@@ -805,14 +805,14 @@ namespace Orts.Simulation.RollingStocks
             if (MultiSystemEngine)
             {
                 // **** AC ****
-                if (VoltageAC > 20000 && SwitchingVoltageMode_OffAC || (TPowerOnAC == 1 || TCircuitBreakerAC == 2 || TCompressorAC == 1))
+                if (VoltageAC > 5000 && SwitchingVoltageMode_OffAC || (TPowerOnAC == 1 || TCircuitBreakerAC == 2 || TCompressorAC == 1))
                 {
                     AC_Triggers();                   
                 }
                 else
 
                 // **** DC ****
-                if (VoltageDC > 2500 && SwitchingVoltageMode_OffDC || (TPowerOnDC == 1 || TCircuitBreakerDC == 2 || TCompressorDC == 1))
+                if (VoltageDC > 500 && SwitchingVoltageMode_OffDC || (TPowerOnDC == 1 || TCircuitBreakerDC == 2 || TCompressorDC == 1))
                 {
                     DC_Triggers();                    
                 }
