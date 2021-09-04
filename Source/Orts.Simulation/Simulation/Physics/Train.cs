@@ -16242,9 +16242,25 @@ namespace Orts.Simulation.Physics
         private double nextTimeExitDoors2 = 0;
         private int numUsableWagons = 0;
         private bool firtWagonActionComputed = false;
+        private int numCars = 0;
 
         public void FillNames(Train train)
         {
+            if (numCars == 0)
+            {
+                numCars = train.Cars.Count;
+            }
+            else if (numCars != train.Cars.Count) // car was added or removed, calculate new passengers
+            {
+                numUsableWagons = 0;
+                numCars = train.Cars.Count;
+                namesFilled = false;
+                foreach (StationStop ss in train.StationStops)
+                {
+                    ss.PlatformItem.PassengerList.Clear();
+                }
+            }
+
             MSTSWagon locoWag = null;
             if (!namesFilled)
             {
@@ -16526,6 +16542,7 @@ namespace Orts.Simulation.Physics
                                     if (!loco.DoorLeftOpen && !loco.DoorRightOpen && loco.CentralHandlingDoors)
                                         continue;
                                     wagon.PassengerList.Add(pax);
+                                    pax.Boarded = true;
                                     train.StationStops[0].PlatformItem.PassengerList.Remove(pax);
                                     wagon.MassKG += pax.Weight < 0 ? -pax.Weight : pax.Weight;
                                     train.TotalOnBoard++;
@@ -16541,6 +16558,27 @@ namespace Orts.Simulation.Physics
                             currentWagIndex++;
                         }
                     }
+                }
+                if (pax.TimeToStartBoarding < gameClock && !pax.Boarded)
+                {
+                    try
+                    {
+                        var wagon = train.Cars[1];
+                        wagon.PassengerList.Add(pax);
+                        train.StationStops[0].PlatformItem.PassengerList.Remove(pax);
+                        wagon.MassKG += pax.Weight < 0 ? -pax.Weight : pax.Weight;
+                        train.TotalOnBoard++;
+                        string a = "";
+                        if (pax.Gender == Passenger.Genders.Female)
+                            a = "a";
+                        train.Simulator.Confirmer.Information("Nastoupil" + a + " cestujíci " + pax.FirstName.Replace("\"", "") + " " + pax.Surname.Replace("\"", ""));
+                        goto boarded;
+                    }
+                    catch
+                    {
+                        train.StationStops[0].PlatformItem.PassengerList.Remove(pax);
+                    }
+
                 }
             boarded:
                 break;
