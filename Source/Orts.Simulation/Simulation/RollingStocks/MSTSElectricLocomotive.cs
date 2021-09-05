@@ -246,7 +246,7 @@ namespace Orts.Simulation.RollingStocks
             PantographVoltageV = (float)Math.Round(PantographVoltageV);
             PowerSupply.PantographVoltageV = (float)Math.Round(PowerSupply.PantographVoltageV);
 
-            if (IsPlayerTrain)
+            if (IsPlayerTrain && !Simulator.Paused)
             {                
                 // Pokud má lokomotiva napěťový filtr a napětí tratě je stejnosměrné 3kV
                 if (VoltageFilter && RouteVoltageV == 3000)
@@ -349,12 +349,12 @@ namespace Orts.Simulation.RollingStocks
            
 
                 // Podpěťová ochrana deaktivovaná při pause hry
-                if (Simulator.Paused || Step0 > 0)
-                {
-                    if (Simulator.Paused) Step0 = 10;
-                    else Step0--;
-                    PantographCriticalVoltage = 0;
-                }
+                //if (Simulator.Paused || Step0 > 0)
+                //{
+                //    if (Simulator.Paused) Step0 = 10;
+                //    else Step0--;
+                //    PantographCriticalVoltage = 0;
+                //}
 
                 // Simulace náhodného poklesu napětí            
                 if (Delta1 == 13 && TimeCriticalVoltage == 0) TimeCriticalVoltage0 = Simulator.Random.Next(100, 200);
