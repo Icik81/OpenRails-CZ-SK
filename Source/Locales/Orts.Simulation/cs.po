@@ -2,14 +2,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Orts.Simulation\n"
 "POT-Creation-Date: 2015-10-25 09:21+0100\n"
-"PO-Revision-Date: 2015-10-25 10:36+0100\n"
+"PO-Revision-Date: 2021-09-11 13:29+0200\n"
 "Last-Translator: Altmann <altmann@bk.ru>\n"
 "Language-Team: Open Rails Dev Team\n"
 "Language: cs\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.8.4\n"
+"X-Generator: Poedit 2.4.3\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 
 #: ../../RunActivity/AI/AITrain.cs:6100
@@ -560,7 +560,7 @@ msgstr "Pantografy"
 
 #: ../../RunActivity/RollingStock/MSTSElectricLocomotive.cs:331
 msgid "Circuit breaker"
-msgstr "Ochranný vypínač"
+msgstr "Hlavní vypínač"
 
 #: ../../RunActivity/RollingStock/MSTSElectricLocomotive.cs:332
 msgid "TCS"
@@ -582,13 +582,13 @@ msgstr "Strojvedoucí"
 
 #: ../../RunActivity/RollingStock/MSTSElectricLocomotive.cs:334
 msgid "Auxiliary power"
-msgstr "Pomocný výkon"
+msgstr "Pomocné pohony"
 
 #. Context: PowerSupply
 #: ../../RunActivity/RollingStock/MSTSElectricLocomotive.cs:322
 msgctxt "PowerSupply"
 msgid "Power"
-msgstr "Výkon"
+msgstr "Hlavní napájení"
 
 #: ../../RunActivity/RollingStock/MSTSSteamLocomotive.cs:1573
 #: ../../RunActivity/Viewer3D/RollingStock/MSTSSteamLocomotiveViewer.cs:203
