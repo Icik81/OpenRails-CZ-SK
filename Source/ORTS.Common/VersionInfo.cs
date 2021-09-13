@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 
 namespace ORTS.Common
 {
@@ -100,7 +101,10 @@ namespace ORTS.Common
                 var timespan = builds.Keys.OrderBy(ts => ts).Last();
                 // Icik
                 //return String.Format("{0} ({1:u})", builds[timespan], datetime + timespan);
-                return String.Format("CZ/SK v1.4    {0}", datetime + timespan);
+                if (File.Exists(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + @"\Version14.ini"))
+                    return "Open Rails CZ/SK v" + File.ReadAllText(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + @"\Version14.ini").Replace("Aktualizován patch ", "").Replace("Aktualizována verze ", "");
+                else
+                    return "Open Rails CZ/SK v1.4";
             }
             return "";
         }
