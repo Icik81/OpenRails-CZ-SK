@@ -2666,12 +2666,12 @@ namespace Orts.Simulation.RollingStocks
         {
             // NOTE: For low angles (as our vibration rotations are), sin(angle) ~= angle, and since the displacement at the end of the car is sin(angle) = displacement/half-length, sin(displacement/half-length) * half-length ~= displacement.
 
-            if (Simulator.Paused || Simulator.GameSpeed != 1 || SpeedMpS == 0)
-            {
-                VibrationRotationVelocityRadpS.X = 0;
-                VibrationRotationVelocityRadpS.Y = 0;
-                VibrationRotationVelocityRadpS.Z = 0;
-            }
+            //if (Simulator.Paused || Simulator.GameSpeed != 1 || SpeedMpS == 0)
+            //{
+            //    VibrationRotationVelocityRadpS.X = 0;
+            //    VibrationRotationVelocityRadpS.Y = 0;
+            //    VibrationRotationVelocityRadpS.Z = 0;
+            //}
 
             if (CarLengthM < 25.0f && !Simulator.Paused && Simulator.GameSpeed == 1)
             {

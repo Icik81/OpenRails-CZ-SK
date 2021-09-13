@@ -487,6 +487,8 @@ namespace Orts.Simulation.RollingStocks
         public InterpolatorDiesel2D DynamicBrakeForceCurvesAC;
         public InterpolatorDiesel2D DynamicBrakeForceCurvesDC;
         public float UiPowerLose = 1;
+        public bool QuickReleaseButton = false;
+        public bool LowPressureReleaseButton = false;
 
         // Jindrich
         public CruiseControl CruiseControl;
@@ -5690,6 +5692,22 @@ namespace Orts.Simulation.RollingStocks
             if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.RouteVoltage, RouteVoltageChange ? CabSetting.On : CabSetting.Off);
         }
 
+        public void ToggleQuickReleaseButton(bool quickReleaseButton)
+        {
+            QuickReleaseButton = quickReleaseButton;
+            if (QuickReleaseButton)
+                SignalEvent(Event.QuickReleaseButton);
+            if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.QuickReleaseButton, quickReleaseButton ? CabSetting.On : CabSetting.Off);
+        }
+
+        public void ToggleLowPressureReleaseButton(bool lowPressureReleaseButton)
+        {
+            LowPressureReleaseButton = lowPressureReleaseButton;
+            if (LowPressureReleaseButton)
+                SignalEvent(Event.LowPressureReleaseButton);
+            if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.LowPressureReleaseButton, lowPressureReleaseButton ? CabSetting.On : CabSetting.Off);
+        }
+
         public enum TrainType { Pax, Cargo };
         public TrainType SelectedTrainType = TrainType.Pax;
         public void ChangeTrainTypePaxCargo()
@@ -7165,6 +7183,20 @@ namespace Orts.Simulation.RollingStocks
                         {
                             data = 0;
                         }                        
+                        break;
+                    }
+                case CABViewControlTypes.QUICK_RELEASE_BUTTON:
+                    {
+                        if (QuickReleaseButton)
+                            data = 1;
+                        else data = 0;                        
+                        break;
+                    }
+                case CABViewControlTypes.LOWPRESSURE_RELEASE_BUTTON:
+                    {
+                        if (LowPressureReleaseButton)
+                            data = 1;
+                        else data = 0;
                         break;
                     }
             }

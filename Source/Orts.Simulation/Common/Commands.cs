@@ -1740,4 +1740,36 @@ namespace Orts.Common
             Receiver.ToggleControlRouteVoltage();
         }
     }
+    [Serializable()]
+    public sealed class ToggleQuickReleaseButtonCommand : Command
+    {
+        public static MSTSLocomotive Receiver { get; set; }
+
+        public ToggleQuickReleaseButtonCommand(CommandLog log)
+            : base(log)
+        {
+            Redo();
+        }
+
+        public override void Redo()
+        {
+            Receiver.ToggleQuickReleaseButton(true);
+        }
+    }
+    [Serializable()]
+    public sealed class ToggleLowPressureReleaseButtonCommand : Command
+    {
+        public static MSTSLocomotive Receiver { get; set; }
+
+        public ToggleLowPressureReleaseButtonCommand(CommandLog log)
+            : base(log)
+        {
+            Redo();
+        }
+
+        public override void Redo()
+        {
+            Receiver.ToggleLowPressureReleaseButton(true);
+        }
+    }
 }
