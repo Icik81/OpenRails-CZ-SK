@@ -489,6 +489,8 @@ namespace Orts.Simulation.RollingStocks
         public float UiPowerLose = 1;
         public bool QuickReleaseButton = false;
         public bool LowPressureReleaseButton = false;
+        public bool QuickReleaseButtonEnable = false;
+        public bool LowPressureReleaseButtonEnable = false;
 
         // Jindrich
         public CruiseControl CruiseControl;
@@ -5694,18 +5696,24 @@ namespace Orts.Simulation.RollingStocks
 
         public void ToggleQuickReleaseButton(bool quickReleaseButton)
         {
-            QuickReleaseButton = quickReleaseButton;
-            if (QuickReleaseButton)
-                SignalEvent(Event.QuickReleaseButton);
-            if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.QuickReleaseButton, quickReleaseButton ? CabSetting.On : CabSetting.Off);
+            if (QuickReleaseButtonEnable)
+            {
+                QuickReleaseButton = quickReleaseButton;
+                if (QuickReleaseButton)
+                    SignalEvent(Event.QuickReleaseButton);
+                if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.QuickReleaseButton, quickReleaseButton ? CabSetting.On : CabSetting.Off);
+            }
         }
 
         public void ToggleLowPressureReleaseButton(bool lowPressureReleaseButton)
         {
-            LowPressureReleaseButton = lowPressureReleaseButton;
-            if (LowPressureReleaseButton)
-                SignalEvent(Event.LowPressureReleaseButton);
-            if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.LowPressureReleaseButton, lowPressureReleaseButton ? CabSetting.On : CabSetting.Off);
+            if (LowPressureReleaseButtonEnable)
+            {
+                LowPressureReleaseButton = lowPressureReleaseButton;
+                if (LowPressureReleaseButton)
+                    SignalEvent(Event.LowPressureReleaseButton);
+                if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.LowPressureReleaseButton, lowPressureReleaseButton ? CabSetting.On : CabSetting.Off);
+            }
         }
 
         public enum TrainType { Pax, Cargo };
@@ -7187,6 +7195,7 @@ namespace Orts.Simulation.RollingStocks
                     }
                 case CABViewControlTypes.QUICK_RELEASE_BUTTON:
                     {
+                        QuickReleaseButtonEnable = true;
                         if (QuickReleaseButton)
                             data = 1;
                         else data = 0;                        
@@ -7194,6 +7203,7 @@ namespace Orts.Simulation.RollingStocks
                     }
                 case CABViewControlTypes.LOWPRESSURE_RELEASE_BUTTON:
                     {
+                        LowPressureReleaseButtonEnable = true;
                         if (LowPressureReleaseButton)
                             data = 1;
                         else data = 0;
