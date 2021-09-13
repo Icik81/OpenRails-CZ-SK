@@ -606,6 +606,8 @@ namespace Orts.Viewer3D
             LeftDoorCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
             RightDoorCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
             ToggleControlRouteVoltageCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
+            ToggleQuickReleaseButtonCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
+            ToggleLowPressureReleaseButtonCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
         }
 
         public void ChangeToPreviousFreeRoamCamera()

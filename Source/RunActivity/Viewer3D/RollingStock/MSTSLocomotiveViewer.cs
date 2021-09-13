@@ -219,6 +219,8 @@ namespace Orts.Viewer3D.RollingStock
             UserInputCommands.Add(UserCommand.ControlSwitchingVoltageMode_OffAC, new Action[] { Noop, () => new ToggleSwitchingVoltageMode_OffACCommand(Viewer.Log) });
             UserInputCommands.Add(UserCommand.ControlSwitchingVoltageMode_OffDC, new Action[] { Noop, () => new ToggleSwitchingVoltageMode_OffDCCommand(Viewer.Log) });
             UserInputCommands.Add(UserCommand.ControlRouteVoltage, new Action[] { Noop, () => new ToggleControlRouteVoltageCommand(Viewer.Log) });
+            UserInputCommands.Add(UserCommand.ControlQuickReleaseButton, new Action[] { Noop, () => new ToggleQuickReleaseButtonCommand(Viewer.Log) });
+            UserInputCommands.Add(UserCommand.ControlLowPressureReleaseButton, new Action[] { Noop, () => new ToggleLowPressureReleaseButtonCommand(Viewer.Log) });
 
             base.InitializeUserInputCommands();
         }
@@ -229,6 +231,26 @@ namespace Orts.Viewer3D.RollingStock
         /// </summary>
         public override void HandleUserInput(ElapsedTime elapsedTime)
         {
+            // Icik
+            if (UserInput.IsPressed(UserCommand.ControlQuickReleaseButton))
+            {
+                Locomotive.ToggleQuickReleaseButton(true);
+            }
+            if (UserInput.IsReleased(UserCommand.ControlQuickReleaseButton))
+            {
+                Locomotive.ToggleQuickReleaseButton(false);
+            }
+
+            if (UserInput.IsPressed(UserCommand.ControlLowPressureReleaseButton))
+            {
+                Locomotive.ToggleLowPressureReleaseButton(true);
+            }
+            if (UserInput.IsReleased(UserCommand.ControlLowPressureReleaseButton))
+            {
+                Locomotive.ToggleLowPressureReleaseButton(false);
+            }
+
+
             if (UserInput.IsPressed(UserCommand.CameraToggleShowCab))
                 Locomotive.ShowCab = !Locomotive.ShowCab;
 

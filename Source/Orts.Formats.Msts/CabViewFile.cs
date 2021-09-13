@@ -413,6 +413,8 @@ namespace Orts.Formats.Msts
         ORTS_CIRCUIT_BREAKER_CLOSED_DC,
         ORTS_CIRCUIT_BREAKER_OPEN_AC,
         ORTS_CIRCUIT_BREAKER_OPEN_DC,
+        QUICK_RELEASE_BUTTON,
+        LOWPRESSURE_RELEASE_BUTTON,
 
         // Further CabViewControlTypes must be added above this line, to avoid their malfunction in 3DCabs
         EXTERNALWIPERS,

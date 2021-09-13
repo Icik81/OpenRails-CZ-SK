@@ -1413,7 +1413,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 lead.TrainBrakeController.EmergencyRatePSIpS = MathHelper.Clamp(lead.TrainBrakeController.EmergencyRatePSIpS, 3.0f * 14.50377f, 4.0f * 14.50377f);                
                 lead.EngineBrakeController.ReleaseRatePSIpS = MathHelper.Clamp(lead.EngineBrakeController.ReleaseRatePSIpS, 1.0f * 14.50377f, 2.5f * 14.50377f);
                 lead.EngineBrakeController.ApplyRatePSIpS = MathHelper.Clamp(lead.EngineBrakeController.ApplyRatePSIpS, 1.0f * 14.50377f, 2.5f * 14.50377f);
-                
+
                 for (int i = 0; i < nSteps; i++)
                 {
                     // Ohlídá hodnotu v hlavní jímce, aby nepřekročila limity
@@ -1432,13 +1432,13 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     if (lead.TrainBrakeController.TrainBrakeControllerState == ControllerState.Lap) lead.TrainBrakeController.MaxPressurePSI = lead.BrakeSystem.BrakeLine1PressurePSI;
 
                     // Změna rychlosti plnění vzduchojemu při švihu
-                    if (lead.TrainBrakeController.TrainBrakeControllerState == ControllerState.FullQuickRelease)
+                    if (lead.TrainBrakeController.TrainBrakeControllerState == ControllerState.FullQuickRelease || lead.QuickReleaseButton)
                     {
                         BrakePipeChargingRatePSIorInHgpS0 = brakePipeChargingQuickPSIpS;  // Rychlost plnění ve vysokotlakém švihu 
                         if (lead.TrainBrakeController.MaxPressurePSI < lead.MainResPressurePSI) lead.TrainBrakeController.MaxPressurePSI = lead.MainResPressurePSI;
                     }
 
-                    else if (lead.TrainBrakeController.TrainBrakeControllerState == ControllerState.OverchargeStart)
+                    else if (lead.TrainBrakeController.TrainBrakeControllerState == ControllerState.OverchargeStart || lead.LowPressureReleaseButton) 
                     {
                         BrakePipeChargingRatePSIorInHgpS0 = brakePipeChargingQuickPSIpS;  // Rychlost plnění ve vysokotlakém švihu 
                         if (lead.TrainBrakeController.MaxPressurePSI > lead.BrakeSystem.TrainBrakesControllerMaxOverchargePressurePSI * 1.11f) lead.TrainBrakeController.MaxPressurePSI -= lead.TrainBrakeController.QuickReleaseRatePSIpS * elapsedClockSeconds / 12;
@@ -1488,7 +1488,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         // U těchto funkcí se kompenzují ztráty vzduchu o netěsnosti
                         if (lead.TrainBrakeController.TrainBrakeControllerState == ControllerState.Release
                         || lead.TrainBrakeController.TrainBrakeControllerState == ControllerState.FullQuickRelease
+                        || lead.QuickReleaseButton
                         || lead.TrainBrakeController.TrainBrakeControllerState == ControllerState.OverchargeStart
+                        || lead.LowPressureReleaseButton
                         || lead.TrainBrakeController.TrainBrakeControllerState == ControllerState.Running
                         || lead.TrainBrakeController.TrainBrakeControllerState == ControllerState.Neutral       // Vyrovná ztráty vzduchu pro neutrální pozici kontroléru
                         || lead.TrainBrakeController.TrainBrakeControllerState == ControllerState.Suppression   // Klesne na tlak v potrubí snížený o FullServicePressureDrop 
@@ -1809,7 +1811,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     if (engine.TrainBrakeController.TrainBrakeControllerState != ControllerState.Apply)
                         engine.BrakeSystem.NextLocoApply = false;
 
-                    if (engine.TrainBrakeController.TrainBrakeControllerState == ControllerState.FullQuickRelease)
+                    if (engine.TrainBrakeController.TrainBrakeControllerState == ControllerState.FullQuickRelease || engine.QuickReleaseButton)
                     {
                         engine.BrakeSystem.NextLocoQuickRelease = true;
                         engine.BrakeSystem.NextLocoBrakeState = "Vysokotlaký švih";
@@ -1817,7 +1819,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         SumQRe++;
                     }
                     else
-                    if (engine.TrainBrakeController.TrainBrakeControllerState != ControllerState.FullQuickRelease)
+                    if (engine.TrainBrakeController.TrainBrakeControllerState != ControllerState.FullQuickRelease && !engine.QuickReleaseButton)
                         engine.BrakeSystem.NextLocoQuickRelease = false;
 
                     if (engine.TrainBrakeController.TrainBrakeControllerState == ControllerState.Emergency)
@@ -1830,7 +1832,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     if (engine.TrainBrakeController.TrainBrakeControllerState != ControllerState.Emergency)
                         engine.BrakeSystem.NextLocoEmergency = false;
 
-                    if (engine.TrainBrakeController.TrainBrakeControllerState == ControllerState.OverchargeStart)
+                    if (engine.TrainBrakeController.TrainBrakeControllerState == ControllerState.OverchargeStart || engine.LowPressureReleaseButton)
                     {
                         engine.BrakeSystem.NextLocoOvercharge = true;
                         engine.BrakeSystem.NextLocoBrakeState = "Nízkotlaké přebití";
@@ -1838,7 +1840,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         SumO++;
                     }
                     else
-                    if (engine.TrainBrakeController.TrainBrakeControllerState != ControllerState.OverchargeStart)
+                    if (engine.TrainBrakeController.TrainBrakeControllerState != ControllerState.OverchargeStart && !engine.LowPressureReleaseButton)
                         engine.BrakeSystem.NextLocoOvercharge = false;
 
                     if (engine.TrainBrakeController.TrainBrakeControllerState == ControllerState.Lap)

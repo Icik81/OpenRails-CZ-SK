@@ -127,6 +127,8 @@ namespace Orts.Simulation
     , SwitchingVoltageMode_OffAC
     , SwitchingVoltageMode_OffDC
     , RouteVoltage
+    , QuickReleaseButton
+    , LowPressureReleaseButton
     }
 
     public enum CabSetting {
@@ -284,6 +286,8 @@ namespace Orts.Simulation
                 , new string [] { GetString("Přepnutí napěťového systému"), GetString("off"), null, GetString("AC")}
                 , new string [] { GetString("Přepnutí napěťového systému"), GetString("off"), null, GetString("DC")}
                 , new string [] { GetString("Napětí v soustavě změněno"), GetString("25kV"), null, GetString("3kV")}
+                , new string [] { GetString("Vysokotlaký švih"), GetString("off"), null, GetString("on")}
+                , new string [] { GetString("Nízkotlaké přebití"), GetString("off"), null, GetString("on")}
 
 
             };
