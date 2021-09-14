@@ -2199,6 +2199,8 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.ORTS_CIRCUIT_BREAKER_CLOSED_DC:
                 case CABViewControlTypes.ORTS_CIRCUIT_BREAKER_OPEN_AC:
                 case CABViewControlTypes.ORTS_CIRCUIT_BREAKER_OPEN_DC:
+                case CABViewControlTypes.QUICK_RELEASE_BUTTON:
+                case CABViewControlTypes.LOWPRESSURE_RELEASE_BUTTON:
 
                     index = (int)data;
                     break;
@@ -2536,7 +2538,18 @@ namespace Orts.Viewer3D.RollingStock
                     if ((Locomotive.SwitchingVoltageMode_OffDC ? 1 : 0) != ChangedValue(Locomotive.SwitchingVoltageMode_OffDC ? 1 : 0)) new ToggleSwitchingVoltageMode_OffDCCommand(Viewer.Log); break;
                 case CABViewControlTypes.SWITCHINGVOLTAGEMODE_OFF_AC:
                     if ((Locomotive.SwitchingVoltageMode_OffAC ? 1 : 0) != ChangedValue(Locomotive.SwitchingVoltageMode_OffAC ? 1 : 0)) new ToggleSwitchingVoltageMode_OffACCommand(Viewer.Log); break;
-                
+                case CABViewControlTypes.QUICK_RELEASE_BUTTON:                    
+                        if (ChangedValue(Locomotive.QuickReleaseButton ? 1 : 0) > 0)
+                            Locomotive.ToggleQuickReleaseButton(true);
+                        else
+                            Locomotive.ToggleQuickReleaseButton(false);                    
+                    break;
+                case CABViewControlTypes.LOWPRESSURE_RELEASE_BUTTON:
+                    if (ChangedValue(Locomotive.LowPressureReleaseButton ? 1 : 0) > 0)
+                        Locomotive.ToggleLowPressureReleaseButton(true);
+                    else
+                        Locomotive.ToggleLowPressureReleaseButton(false);
+                    break;
 
                 // Train Control System controls
                 case CABViewControlTypes.ORTS_TCS1:
