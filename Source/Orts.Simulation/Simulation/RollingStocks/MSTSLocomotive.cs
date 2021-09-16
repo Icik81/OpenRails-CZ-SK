@@ -61,9 +61,11 @@ using ORTS.Common;
 using ORTS.Scripting.Api;
 using System;
 using System.Collections.Generic;
+using System.Device.Location;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Xml;
 using Event = Orts.Common.Event;
 
 namespace Orts.Simulation.RollingStocks
@@ -1640,12 +1642,16 @@ namespace Orts.Simulation.RollingStocks
 
         public bool controlUpdated;
         public bool notificationReceived;
-
+        public List<PowerSupplyStation> powerSupplyStations;
         /// <summary>
         /// Called just after the InitializeFromWagFile
         /// </summary>
         public override void Initialize()
         {
+            // Jindřich - napaječky
+            powerSupplyStations = new List<PowerSupplyStation>();
+            SetUpPowerSupplyStations();
+
             // Icik
             MainResChargingRatePSIpS0 = MainResChargingRatePSIpS;            
 
@@ -1876,6 +1882,83 @@ namespace Orts.Simulation.RollingStocks
             if (DynamicBrakeBlendingEnabled) airPipeSystem = BrakeSystem as AirSinglePipe;
 
             DrvWheelWeightKg = InitialDrvWheelWeightKg;
+        }
+
+        public int DistanceToPowerSupplyStationM(int PowerSystem)
+        {
+            double distance = 100000;
+            double currentLat = 0;
+            double currentLon = 0;
+            new WorldLatLon().ConvertWTC(WorldPosition.TileX, WorldPosition.TileZ, WorldPosition.WorldLocation.Location, ref currentLat, ref currentLon);
+            var currentLoc = new GeoCoordinate(currentLat, currentLon);
+            foreach (PowerSupplyStation pss in powerSupplyStations)
+            {
+                var stationLoc = new GeoCoordinate(pss.Latitude, pss.Longitude);
+                double currdistance = currentLoc.GetDistanceTo(stationLoc);
+                if (currdistance < distance)
+                    distance = currdistance;
+            }
+
+            int ret = 0;
+            return ret;
+        }
+
+        public void SetUpPowerSupplyStations()
+        {
+            try
+            {
+                if (!File.Exists(Simulator.RoutePath + "\\PowerSupplyStations.xml"))
+                    return;
+                XmlDocument doc = new XmlDocument();
+                doc.Load(Simulator.RoutePath + "\\PowerSupplyStations.xml");
+                foreach (XmlNode node in doc.ChildNodes)
+                {
+                    if (node.Name == "PowerSupplyStations")
+                    {
+                        foreach (XmlNode nodeSupply in node.ChildNodes)
+                        {
+                            double nextNodeLon = 0;
+                            double nextNodeLat = 0;
+                            int nextNodePowerSystem = 0;
+
+                            foreach (XmlNode nodeId in nodeSupply.ChildNodes)
+                            {
+                                if (nodeId.Name == "Longitude")
+                                {
+                                    try
+                                    {
+                                        nextNodeLon = double.Parse(nodeId.InnerText);
+                                    }
+                                    catch
+                                    {
+                                        nextNodeLon = double.Parse(nodeId.InnerText.Replace(".", ","));
+                                    }
+
+                                }
+                                if (nodeId.Name == "Latitude")
+                                {
+                                    try
+                                    {
+                                        nextNodeLat = double.Parse(nodeId.InnerText);
+                                    }
+                                    catch
+                                    {
+                                        nextNodeLat = double.Parse(nodeId.InnerText.Replace(".", ","));
+                                    }
+                                }
+                                if (nodeId.Name == "PowerSystem")
+                                    nextNodePowerSystem = int.Parse(nodeId.InnerText);
+                            }
+                            PowerSupplyStation pss = new PowerSupplyStation();
+                            pss.Latitude = nextNodeLat;
+                            pss.Longitude = nextNodeLon;
+                            pss.PowerSystem = nextNodePowerSystem;
+                            powerSupplyStations.Add(pss);
+                        }
+                    }
+                }
+            }
+            catch { }
         }
 
         /// <summary>
@@ -2425,6 +2508,7 @@ namespace Orts.Simulation.RollingStocks
         public bool CanCheckEngineBrake = true;
         public override void Update(float elapsedClockSeconds)
         {
+            int dist = DistanceToPowerSupplyStationM(0); // change 0 to actual selecter system
             if (IsPlayerTrain)
             {
                 if (extendedPhysics != null)
@@ -5723,6 +5807,14 @@ namespace Orts.Simulation.RollingStocks
             SelectedTrainType = SelectedTrainType == TrainType.Pax ? SelectedTrainType = TrainType.Cargo : TrainType.Pax;
         }
 
+        public void SetPowerSupplyStationLocation()
+        {
+            double latitude = 0;
+            double longitude = 0;
+            new WorldLatLon().ConvertWTC(WorldPosition.TileX, WorldPosition.TileZ, WorldPosition.WorldLocation.Location, ref latitude, ref longitude);
+            Simulator.Confirmer.MSG(latitude.ToString() + " " + longitude.ToString());
+        }
+
         //put here because you can have diesel helpers and electric player locomotive
         public void ToggleHelpersEngine()
         {
@@ -7348,6 +7440,13 @@ namespace Orts.Simulation.RollingStocks
         }
 
     } // End Class MSTSLocomotive
+
+    public class PowerSupplyStation
+    {
+        public double Longitude { get; set; }
+        public double Latitude { get; set; }
+        public int PowerSystem { get; set; }
+    }
 
     public class StringArray
     {

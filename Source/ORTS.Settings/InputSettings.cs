@@ -430,13 +430,21 @@ namespace ORTS.Settings
             Commands[(int)UserCommand.ControlTrainBrakeIncrease] = new UserCommandKeyInput(0x28);
             Commands[(int)UserCommand.ControlTrainBrakeZero] = new UserCommandKeyInput(0x27, KeyModifiers.Control);
 
-            Commands[(int)UserCommand.ControlTurntableClockwise] = new UserCommandKeyInput(0x2E, KeyModifiers.Alt);
+            Commands[(int)UserCommand.ControlTurntableClockwise] = new UserCommandKeyInput(0x2E, KeyModifiers.Alt | KeyModifiers.Shift);
             Commands[(int)UserCommand.ControlTurntableCounterclockwise] = new UserCommandKeyInput(0x2E, KeyModifiers.Control | KeyModifiers.Shift);
 
             Commands[(int)UserCommand.ControlWaterScoop] = new UserCommandKeyInput(0x15);
             Commands[(int)UserCommand.ControlWiper] = new UserCommandKeyInput(0x2F);
-            
+
             // Jindrich
+            // special
+            // set position of power supply station
+            Commands[(int)UserCommand.ControlPowerStationLocation] = new UserCommandKeyInput(0x31, KeyModifiers.Alt);
+            Commands[(int)UserCommand.ControlPowerVypniProud] = new UserCommandKeyInput(0x2F, KeyModifiers.Alt);
+            Commands[(int)UserCommand.ControlPowerZapniProud] = new UserCommandKeyInput(0x15, KeyModifiers.Alt);
+            Commands[(int)UserCommand.ControlPowerStahovacka] = new UserCommandKeyInput(0x2E, KeyModifiers.Alt);
+
+            // normal
             Commands[(int)UserCommand.ControlSpeedRegulatorModeIncrease] = new UserCommandKeyInput(0x11, KeyModifiers.Shift);
             Commands[(int)UserCommand.ControlSpeedRegulatorModeDecrease] = new UserCommandKeyInput(0x1F, KeyModifiers.Shift);
             Commands[(int)UserCommand.ControlSpeedRegulatorMaxAccelerationIncrease] = new UserCommandKeyInput(0x20, KeyModifiers.Control | KeyModifiers.Shift);
