@@ -1884,23 +1884,60 @@ namespace Orts.Simulation.RollingStocks
             DrvWheelWeightKg = InitialDrvWheelWeightKg;
         }
 
-        public int DistanceToPowerSupplyStationM(int PowerSystem)
+        public double DistanceToPowerSupplyStationM(int PowerSystem)
         {
             double distance = 100000;
             double currentLat = 0;
             double currentLon = 0;
             new WorldLatLon().ConvertWTC(WorldPosition.TileX, WorldPosition.TileZ, WorldPosition.WorldLocation.Location, ref currentLat, ref currentLon);
-            var currentLoc = new GeoCoordinate(currentLat, currentLon);
+            currentLat = MathHelper.ToDegrees((float)currentLat);
+            currentLon = MathHelper.ToDegrees((float)currentLon);
             foreach (PowerSupplyStation pss in powerSupplyStations)
             {
-                var stationLoc = new GeoCoordinate(pss.Latitude, pss.Longitude);
-                double currdistance = currentLoc.GetDistanceTo(stationLoc);
-                if (currdistance < distance)
-                    distance = currdistance;
+                if (pss.PowerSystem == PowerSystem)
+                {
+                    double psiLat = MathHelper.ToDegrees((float)pss.Longitude);
+                    double psiLon = MathHelper.ToDegrees((float)pss.Latitude);
+                    double currdistance = getDistance(currentLat, currentLon, psiLat, psiLon) * 1138.8261851015801354401805869074;
+                    if (currdistance < distance)
+                        distance = currdistance;
+                }
             }
+            return distance;
+        }
 
-            int ret = 0;
-            return ret;
+        private double getDistance(double lat1, double lon1, double lat2, double lon2)
+        {
+            if ((lat1 == lat2) && (lon1 == lon2))
+            {
+                return 0;
+            }
+            else
+            {
+                double theta = lon1 - lon2;
+                double dist = Math.Sin(deg2rad(lat1)) * Math.Sin(deg2rad(lat2)) + Math.Cos(deg2rad(lat1)) * Math.Cos(deg2rad(lat2)) * Math.Cos(deg2rad(theta));
+                dist = Math.Acos(dist);
+                dist = rad2deg(dist);
+                dist = dist * 60 * 1.1515;
+                    dist = dist * 1.609344;
+                return (dist);
+            }
+        }
+
+        //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+        //::  This function converts decimal degrees to radians             :::
+        //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+        private double deg2rad(double deg)
+        {
+            return (deg * Math.PI / 180.0);
+        }
+
+        //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+        //::  This function converts radians to decimal degrees             :::
+        //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+        private double rad2deg(double rad)
+        {
+            return (rad / Math.PI * 180.0);
         }
 
         public void SetUpPowerSupplyStations()
@@ -2508,7 +2545,8 @@ namespace Orts.Simulation.RollingStocks
         public bool CanCheckEngineBrake = true;
         public override void Update(float elapsedClockSeconds)
         {
-            int dist = DistanceToPowerSupplyStationM(0); // change 0 to actual selecter system
+            double dist = DistanceToPowerSupplyStationM(0); // change 0 to actual selected system
+            //Simulator.Confirmer.MSG(dist.ToString());
             if (IsPlayerTrain)
             {
                 if (extendedPhysics != null)
@@ -5807,12 +5845,43 @@ namespace Orts.Simulation.RollingStocks
             SelectedTrainType = SelectedTrainType == TrainType.Pax ? SelectedTrainType = TrainType.Cargo : TrainType.Pax;
         }
 
+        XmlDocument powerStationXml;
         public void SetPowerSupplyStationLocation()
         {
             double latitude = 0;
             double longitude = 0;
             new WorldLatLon().ConvertWTC(WorldPosition.TileX, WorldPosition.TileZ, WorldPosition.WorldLocation.Location, ref latitude, ref longitude);
             Simulator.Confirmer.MSG(latitude.ToString() + " " + longitude.ToString());
+
+            if (powerStationXml == null)
+            {
+                powerStationXml = new XmlDocument();
+                powerStationXml.Load(Simulator.RoutePath + "\\PowerSupplyStations.xml");
+            }
+
+            foreach (XmlNode node in powerStationXml.ChildNodes)
+            {
+                if (node.Name == "PowerSupplyStations")
+                {
+                    XmlNode stationNode = powerStationXml.CreateElement("SupplyStation");
+                    XmlNode node1 = powerStationXml.CreateElement("Longitude");
+                    node1.InnerText = latitude.ToString().Replace(",", ".");
+                    XmlNode node2 = powerStationXml.CreateElement("Latitude");
+                    node2.InnerText = longitude.ToString().Replace(",", ".");
+                    XmlNode node3 = powerStationXml.CreateElement("PowerSystem");
+                    node3.InnerText = "0"; // TODO change to active voltage
+                    stationNode.AppendChild(node1);
+                    stationNode.AppendChild(node2);
+                    stationNode.AppendChild(node3);
+                    node.AppendChild(stationNode);
+                }
+            }
+            powerStationXml.Save(Simulator.RoutePath + "\\PowerSupplyStations.xml");
+/*            SaveMirelStateToWorld(nextSignalId, newFlag);
+            FileInfo fi = new FileInfo(Simulator.TRK.Tr_RouteFile.FullFileName);
+            File.WriteAllText(fi.DirectoryName + "\\MirelDbVersion.ini", DatabaseVersion.ToString());
+            PopulateMirelSignalList();*/
+
         }
 
         //put here because you can have diesel helpers and electric player locomotive
@@ -7446,6 +7515,8 @@ namespace Orts.Simulation.RollingStocks
         public double Longitude { get; set; }
         public double Latitude { get; set; }
         public int PowerSystem { get; set; }
+        public bool Failure { get; set; }
+        public int TotalAmps { get; set; }
     }
 
     public class StringArray

@@ -346,7 +346,7 @@ namespace Orts.Simulation.RollingStocks
 
                 //Simulator.Confirmer.Message(ConfirmLevel.Warning, "VoltageSprung  " + VoltageSprung + "  Simulator.TRK.Tr_RouteFile.MaxLineVoltage  " + Simulator.TRK.Tr_RouteFile.MaxLineVoltage + "  PowerSupply.PantographVoltageV  " + PowerSupply.PantographVoltageV);
                 //Simulator.Confirmer.Message(ConfirmLevel.Warning, "PantographCriticalVoltage  " + PantographCriticalVoltage + "  PowerSupply.PantographVoltageV  " + PowerSupply.PantographVoltageV + "  LocalThrottlePercent  " + LocalThrottlePercent + "  LocalDynamicBrakePercent  " + LocalDynamicBrakePercent + "  Delta1  " + Delta1);
-           
+
 
                 // Podpěťová ochrana deaktivovaná při pause hry
                 //if (Simulator.Paused || Step0 > 0)
@@ -356,7 +356,10 @@ namespace Orts.Simulation.RollingStocks
                 //    PantographCriticalVoltage = 0;
                 //}
 
-                // Simulace náhodného poklesu napětí            
+                // Jindřich
+                // vypnuto, napětí se počítá dle zátěže/vzálenosti
+
+                /*/ Simulace náhodného poklesu napětí            
                 if (Delta1 == 13 && TimeCriticalVoltage == 0) TimeCriticalVoltage0 = Simulator.Random.Next(100, 200);
                 else
                     if (Delta1 != 13 && TimeCriticalVoltage == 0) TimeCriticalVoltage0 = Simulator.Random.Next(7500, 10000);
@@ -371,8 +374,8 @@ namespace Orts.Simulation.RollingStocks
                     TInduktion = 0;
                 }
 
-                // Výpočet napětí v systému lokomotivy a drátech
-                Simulator.TRK.Tr_RouteFile.MaxLineVoltage = MaxLineVoltage0 * VoltageSprung - (Delta1 * Delta2);
+                // Výpočet napětí v systému lokomotivy a drátech*/
+                Simulator.TRK.Tr_RouteFile.MaxLineVoltage = MaxLineVoltage0 * VoltageSprung;// - (Delta1 * Delta2);
                 //Simulator.TRK.Tr_RouteFile.MaxLineVoltage = MaxLineVoltage0 * VoltageSprung;
                 
                 if (PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closed) CircuitBreakerOn = true;

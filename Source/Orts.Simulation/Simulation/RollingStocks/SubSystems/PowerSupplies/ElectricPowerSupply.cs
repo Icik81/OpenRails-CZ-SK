@@ -46,6 +46,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
         public float LineVoltageV {
             get
             {
+                // TODO change to actual voltage calculated by power station location
                 return (float)Simulator.TRK.Tr_RouteFile.MaxLineVoltage;
             }
         }
