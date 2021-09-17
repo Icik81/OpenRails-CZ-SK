@@ -104,7 +104,7 @@ namespace ORTS.Common
                 if (File.Exists(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + @"\Version14.ini"))
                     return "Open Rails CZ/SK v" + File.ReadAllText(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + @"\Version14.ini").Replace("Aktualizován patch ", "").Replace("Aktualizována verze ", "");
                 else
-                    return "Open Rails CZ/SK v1.4";
+                    return "Open Rails CZ/SK v1.4.?";
             }
             return "";
         }
