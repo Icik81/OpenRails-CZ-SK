@@ -2252,7 +2252,7 @@ namespace Orts.Simulation.RollingStocks
                 if (extendedPhysics != null)
                 {
                     SlipSpeedCritical = 10 / 3.6f; // 10kmh pokud počítáme pátou osu
-                    AbsSlipSpeedMpS = extendedPhysics.FastestAxleSpeedMpS - extendedPhysics.AverageAxleSpeedMpS;
+                    AbsSlipSpeedMpS = Math.Abs(extendedPhysics.FastestAxleSpeedMpS) - Math.Abs(extendedPhysics.AverageAxleSpeedMpS);
                 }
                 //Trace.TraceInformation("WheelSlipTime {0},  Simulator.GameTime {1},  Time0 {2},   SlipSpeed {3}", WheelSlipTime, Simulator.GameTime, Time0, SlipSpeed);
                 
@@ -2547,7 +2547,7 @@ namespace Orts.Simulation.RollingStocks
         {
             double dist = DistanceToPowerSupplyStationM(0); // change 0 to actual selected system
             //Simulator.Confirmer.MSG(dist.ToString());
-            if (IsPlayerTrain)
+            if (IsPlayerTrain && !Simulator.Paused)
             {
                 if (extendedPhysics != null)
                     extendedPhysics.Update(elapsedClockSeconds);
@@ -2802,7 +2802,7 @@ namespace Orts.Simulation.RollingStocks
             }
 
             float speedDiff = 0;
-            if (IsPlayerTrain)
+            if (IsPlayerTrain && !Simulator.Paused)
             {
                 if (extendedPhysics == null)
                 {
@@ -2810,7 +2810,7 @@ namespace Orts.Simulation.RollingStocks
                 }
                 if (extendedPhysics != null)
                 {
-                    speedDiff = extendedPhysics.FastestAxleSpeedMpS - extendedPhysics.AverageAxleSpeedMpS;
+                    speedDiff = Math.Abs(extendedPhysics.FastestAxleSpeedMpS) - Math.Abs(extendedPhysics.AverageAxleSpeedMpS);
                 }
                 if (CruiseControl != null)
                 {
@@ -2826,7 +2826,7 @@ namespace Orts.Simulation.RollingStocks
                 }
                 else if (skidSpeedDegratation > 0)
                 {
-                    skidSpeedDegratation -= 0.01f;
+                    skidSpeedDegratation -= 0.05f; // původně 0.01
                 }
                 if (extendedPhysics != null)
                 {

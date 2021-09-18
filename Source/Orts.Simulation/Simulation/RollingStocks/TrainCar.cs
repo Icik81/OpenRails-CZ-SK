@@ -2559,8 +2559,6 @@ namespace Orts.Simulation.RollingStocks
         float PrevTiltingZRot; // previous tilting angle
         float TiltingZRot; // actual tilting angle
 
-        public bool Rozjezd;
-
         internal void UpdateVibrationAndTilting(Traveller traveler, float elapsedTimeS, float distanceM, float speedMpS)
         {
             // NOTE: Traveller is at the FRONT of the TrainCar!

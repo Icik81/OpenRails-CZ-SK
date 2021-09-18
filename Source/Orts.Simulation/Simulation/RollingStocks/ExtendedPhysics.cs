@@ -291,10 +291,10 @@ namespace Orts.Simulation.RollingStocks
                 foreach (ExtendedAxle ea in uc.Axles)
                 {
                     if (ea.WheelSpeedMpS == 0)
-                        ea.WheelSpeedMpS = Locomotive.WheelSpeedMpS;
-                    AverageAxleSpeedMpS += ea.WheelSpeedMpS;
-                    if (FastestAxleSpeedMpS < ea.WheelSpeedMpS)
-                        FastestAxleSpeedMpS = ea.WheelSpeedMpS;
+                        ea.WheelSpeedMpS = Math.Abs(Locomotive.WheelSpeedMpS);
+                    AverageAxleSpeedMpS += Math.Abs(ea.WheelSpeedMpS);
+                    if (Math.Abs(FastestAxleSpeedMpS) < Math.Abs(ea.WheelSpeedMpS))
+                        FastestAxleSpeedMpS = Math.Abs(ea.WheelSpeedMpS);
                     foreach (ElectricMotor em in ea.ElectricMotors)
                     {
                         ea.GetCorrectedMass(this);
