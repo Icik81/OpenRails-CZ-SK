@@ -215,6 +215,7 @@ namespace Orts.Viewer3D.RollingStock
 
             // Icik
             UserInputCommands.Add(UserCommand.ControlCompressorMode_OffAuto, new Action[] { Noop, () => new ToggleCompressorMode_OffAutoCommand(Viewer.Log) });
+            UserInputCommands.Add(UserCommand.ControlCompressorMode2_OffAuto, new Action[] { Noop, () => new ToggleCompressorMode2_OffAutoCommand(Viewer.Log) });
             UserInputCommands.Add(UserCommand.ControlHeating_OffOn, new Action[] { Noop, () => new ToggleHeating_OffOnCommand(Viewer.Log) });
             UserInputCommands.Add(UserCommand.ControlSwitchingVoltageMode_OffAC, new Action[] { Noop, () => new ToggleSwitchingVoltageMode_OffACCommand(Viewer.Log) });
             UserInputCommands.Add(UserCommand.ControlSwitchingVoltageMode_OffDC, new Action[] { Noop, () => new ToggleSwitchingVoltageMode_OffDCCommand(Viewer.Log) });
@@ -2186,6 +2187,7 @@ namespace Orts.Viewer3D.RollingStock
                 // Icik
                 case CABViewControlTypes.COMPRESSOR_START:
                 case CABViewControlTypes.COMPRESSOR_MODE_OFFAUTO:
+                case CABViewControlTypes.COMPRESSOR_MODE2_OFFAUTO:
                 case CABViewControlTypes.HEATING_OFFON:
                 case CABViewControlTypes.HEATING_POWER:
                 case CABViewControlTypes.SWITCHINGVOLTAGEMODE_OFF_DC:
@@ -2531,19 +2533,88 @@ namespace Orts.Viewer3D.RollingStock
 
                 // Icik
                 case CABViewControlTypes.COMPRESSOR_MODE_OFFAUTO:
-                    if ((Locomotive.CompressorMode_OffAuto ? 1 : 0) != ChangedValue(Locomotive.CompressorMode_OffAuto ? 1 : 0)) new ToggleCompressorMode_OffAutoCommand(Viewer.Log); break;
-                case CABViewControlTypes.HEATING_OFFON:
-                    if ((Locomotive.Heating_OffOn ? 1 : 0) != ChangedValue(Locomotive.Heating_OffOn ? 1 : 0)) new ToggleHeating_OffOnCommand(Viewer.Log); break;                
+                    Locomotive.Compressor_I = true;
+                    if (ChangedValue(Locomotive.CompressorMode_OffAuto ? 1 : 0) > 0)
+                    {
+                        Locomotive.CompressorMode_OffAuto = true;
+                        new ToggleCompressorMode_OffAutoCommand(Viewer.Log);
+                    }
+                    else
+                    if (ChangedValue(Locomotive.CompressorMode_OffAuto ? 1 : 0) < 0)
+                    {
+                        Locomotive.CompressorMode_OffAuto = false;
+                        new ToggleCompressorMode_OffAutoCommand(Viewer.Log);
+                    }
+                    break;
+
+                case CABViewControlTypes.COMPRESSOR_MODE2_OFFAUTO:                    
+                    Locomotive.Compressor_II = true;
+                    if (ChangedValue(Locomotive.CompressorMode2_OffAuto ? 1 : 0) > 0)
+                    {
+                        Locomotive.CompressorMode2_OffAuto = true;
+                        new ToggleCompressorMode2_OffAutoCommand(Viewer.Log);
+                    }
+                    else
+                    if (ChangedValue(Locomotive.CompressorMode2_OffAuto ? 1 : 0) < 0)
+                    {
+                        Locomotive.CompressorMode2_OffAuto = false;
+                        new ToggleCompressorMode2_OffAutoCommand(Viewer.Log);
+                    }
+                    break;
+
+                case CABViewControlTypes.HEATING_OFFON:                    
+                    if (ChangedValue(Locomotive.Heating_OffOn ? 1 : 0) > 0)
+                    {
+                        Locomotive.Heating_OffOn = true;
+                        new ToggleHeating_OffOnCommand(Viewer.Log);
+                    }
+                    else
+                    if (ChangedValue(Locomotive.Heating_OffOn ? 1 : 0) < 0)
+                    {
+                        Locomotive.Heating_OffOn = false;
+                        new ToggleHeating_OffOnCommand(Viewer.Log);
+                    }
+                    break;
+
                 case CABViewControlTypes.SWITCHINGVOLTAGEMODE_OFF_DC:
-                    if ((Locomotive.SwitchingVoltageMode_OffDC ? 1 : 0) != ChangedValue(Locomotive.SwitchingVoltageMode_OffDC ? 1 : 0)) new ToggleSwitchingVoltageMode_OffDCCommand(Viewer.Log); break;
+                    //if ((Locomotive.SwitchingVoltageMode_OffDC ? 1 : 0) != ChangedValue(Locomotive.SwitchingVoltageMode_OffDC ? 1 : 0)) new ToggleSwitchingVoltageMode_OffDCCommand(Viewer.Log); break;
+                    if (ChangedValue(Locomotive.SwitchingVoltageMode_OffDC ? 1 : 0) > 0)
+                    {
+                        Locomotive.SwitchingVoltageMode_OffDC = true;
+                        new ToggleSwitchingVoltageMode_OffDCCommand(Viewer.Log);
+                    }
+                    else
+                    if (ChangedValue(Locomotive.SwitchingVoltageMode_OffDC ? 1 : 0) < 0)
+                    {
+                        Locomotive.SwitchingVoltageMode_OffDC = false;
+                        new ToggleSwitchingVoltageMode_OffDCCommand(Viewer.Log);
+                    }
+                    break;
+
+
                 case CABViewControlTypes.SWITCHINGVOLTAGEMODE_OFF_AC:
-                    if ((Locomotive.SwitchingVoltageMode_OffAC ? 1 : 0) != ChangedValue(Locomotive.SwitchingVoltageMode_OffAC ? 1 : 0)) new ToggleSwitchingVoltageMode_OffACCommand(Viewer.Log); break;
+                    //if ((Locomotive.SwitchingVoltageMode_OffAC ? 1 : 0) != ChangedValue(Locomotive.SwitchingVoltageMode_OffAC ? 1 : 0)) new ToggleSwitchingVoltageMode_OffACCommand(Viewer.Log); break;
+                    if (ChangedValue(Locomotive.SwitchingVoltageMode_OffAC ? 1 : 0) > 0)
+                    {
+                        Locomotive.SwitchingVoltageMode_OffAC = true;
+                        new ToggleSwitchingVoltageMode_OffACCommand(Viewer.Log);
+                    }
+                    else
+                    if (ChangedValue(Locomotive.SwitchingVoltageMode_OffAC ? 1 : 0) < 0)
+                    {
+                        Locomotive.SwitchingVoltageMode_OffAC = false;
+                        new ToggleSwitchingVoltageMode_OffACCommand(Viewer.Log);
+                    }
+                    break;
+
+
                 case CABViewControlTypes.QUICK_RELEASE_BUTTON:                    
                         if (ChangedValue(Locomotive.QuickReleaseButton ? 1 : 0) > 0)
                             Locomotive.ToggleQuickReleaseButton(true);
                         else
                             Locomotive.ToggleQuickReleaseButton(false);                    
                     break;
+                
                 case CABViewControlTypes.LOWPRESSURE_RELEASE_BUTTON:
                     if (ChangedValue(Locomotive.LowPressureReleaseButton ? 1 : 0) > 0)
                         Locomotive.ToggleLowPressureReleaseButton(true);

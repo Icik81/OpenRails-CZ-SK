@@ -257,7 +257,8 @@
         [GetString("Set Mirel On")] SetMirelOn,
 
         // Icik
-        [GetString("Control Compressor Mode Off/Auto")] ControlCompressorMode_OffAuto,
+        [GetString("Control Compressor I Mode Off/Auto")] ControlCompressorMode_OffAuto,
+        [GetString("Control Compressor II Mode Off/Auto")] ControlCompressorMode2_OffAuto,
         [GetString("Control Heating Off/Auto")] ControlHeating_OffOn,        
         [GetString("Control Switching Voltage Mode Off/DC")] ControlSwitchingVoltageMode_OffDC,
         [GetString("Control Switching Voltage Mode Off/AC")] ControlSwitchingVoltageMode_OffAC,

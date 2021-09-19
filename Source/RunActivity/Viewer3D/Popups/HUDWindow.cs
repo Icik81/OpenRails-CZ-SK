@@ -1025,12 +1025,14 @@ namespace Orts.Viewer3D.Popups
                 }
                 else  // Default to air or electronically braked, use this display
                 {
-                    TableAddLines(table, String.Format("{0}\t\t{1}\t\t{2}\t{3}\t\t{4}",
+                    TableAddLines(table, String.Format("{0}\t\t{1}\t\t{2}\t{3}\t\t{4}\t{5}\t\t{6}",
                     Viewer.Catalog.GetString("PlayerLoco"),
                     Viewer.Catalog.GetString("Main reservoir"),
                     FormatStrings.FormatPressure((Viewer.PlayerLocomotive as MSTSLocomotive).MainResPressurePSI, PressureUnit.PSI, (Viewer.PlayerLocomotive as MSTSLocomotive).BrakeSystemPressureUnits[BrakeSystemComponent.MainReservoir], true),
-                    Viewer.Catalog.GetString("Compressor"),
-                    (Viewer.PlayerLocomotive as MSTSLocomotive).CompressorIsOn ? Viewer.Catalog.GetString("on") : Viewer.Catalog.GetString("off")));
+                    Viewer.Catalog.GetString("Kompresor I"),
+                    (Viewer.PlayerLocomotive as MSTSLocomotive).CompressorIsOn ? Viewer.Catalog.GetString("on") : Viewer.Catalog.GetString("off"),
+                    Viewer.Catalog.GetString("Kompresor II"),
+                    (Viewer.PlayerLocomotive as MSTSLocomotive).Compressor2IsOn ? Viewer.Catalog.GetString("on") : Viewer.Catalog.GetString("off")));
                 }
 
                 // Display data for other locomotives
@@ -1039,13 +1041,15 @@ namespace Orts.Viewer3D.Popups
                     var car = train.Cars[i];
                     if (car is MSTSLocomotive && car != Viewer.PlayerLocomotive)
                     {
-                        TableAddLines(table, String.Format("{0}\t{1}\t{2}\t\t{3}\t{4}\t\t{5}",
+                        TableAddLines(table, String.Format("{0}\t{1}\t{2}\t\t{3}\t{4}\t\t{5}\t\t{6}",
                             Viewer.Catalog.GetString("Loco"),
                             car.CarID,
                             Viewer.Catalog.GetString("Main reservoir"),
                             FormatStrings.FormatPressure((car as MSTSLocomotive).MainResPressurePSI, PressureUnit.PSI, (car as MSTSLocomotive).BrakeSystemPressureUnits[BrakeSystemComponent.MainReservoir], true),
-                            Viewer.Catalog.GetString("Compressor"),
-                            (car as MSTSLocomotive).CompressorIsOn ? Viewer.Catalog.GetString("on") : Viewer.Catalog.GetString("off")));
+                            Viewer.Catalog.GetString("Kompresor I"),
+                            (car as MSTSLocomotive).CompressorIsOn ? Viewer.Catalog.GetString("on") : Viewer.Catalog.GetString("off"),
+                            Viewer.Catalog.GetString("Kompresor II"),
+                            (car as MSTSLocomotive).Compressor2IsOn ? Viewer.Catalog.GetString("on") : Viewer.Catalog.GetString("off")));
                     }
                 }
                 TableAddLine(table);

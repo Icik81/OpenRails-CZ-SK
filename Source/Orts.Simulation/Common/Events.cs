@@ -275,7 +275,9 @@ namespace Orts.Common
         CompressorOffDC,
         CompressorOnDC,
         QuickReleaseButton,
-        LowPressureReleaseButton
+        LowPressureReleaseButton,
+        Compressor2Off,
+        Compressor2On
     }
 
     public static class Events
@@ -574,6 +576,9 @@ namespace Orts.Common
 
                         case 20031: return Event.QuickReleaseButton;
                         case 20032: return Event.LowPressureReleaseButton;
+
+                        case 20033: return Event.Compressor2On;
+                        case 20034: return Event.Compressor2Off;
 
                         default: return 0;
                     }

@@ -400,6 +400,7 @@ namespace Orts.Formats.Msts
         // Icik
         COMPRESSOR_START,
         COMPRESSOR_MODE_OFFAUTO,
+        COMPRESSOR_MODE2_OFFAUTO,
         HEATING_OFFON,
         HEATING_POWER,
         SWITCHINGVOLTAGEMODE_OFF_DC,

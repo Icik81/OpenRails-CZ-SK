@@ -315,6 +315,7 @@ namespace Orts.Viewer3D
                         Logger.Data(Viewer.PlayerLocomotive.BrakeSystem.GetCylPressurePSI().ToString("F0"));
                         Logger.Data((Viewer.PlayerLocomotive as MSTSLocomotive).MainResPressurePSI.ToString("F0"));
                         Logger.Data((Viewer.PlayerLocomotive as MSTSLocomotive).CompressorIsOn.ToString());
+                        Logger.Data((Viewer.PlayerLocomotive as MSTSLocomotive).Compressor2IsOn.ToString());
 #if GEARBOX_DEBUG_LOG
                         if (Viewer.PlayerLocomotive.GetType() == typeof(MSTSDieselLocomotive))
                         {

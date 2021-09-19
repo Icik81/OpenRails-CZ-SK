@@ -460,6 +460,7 @@ namespace Orts.Simulation.RollingStocks
         public bool DoesPowerLossResetControls = false;
         public bool ThrottleZero = false;
         public bool CompressorMode_OffAuto;
+        public bool CompressorMode2_OffAuto;
         public bool EngineBrakeEngageEDB = false;
         public bool Heating_OffOn;
         public bool SwitchingVoltageMode_OffAC;
@@ -493,6 +494,10 @@ namespace Orts.Simulation.RollingStocks
         public bool LowPressureReleaseButton = false;
         public bool QuickReleaseButtonEnable = false;
         public bool LowPressureReleaseButtonEnable = false;
+        public bool Compressor_I = false;
+        public bool Compressor_II = false;
+        public bool Compressor2IsOn;
+        public float MainResChargingRatePSIpS_2;
 
         // Jindrich
         public CruiseControl CruiseControl;
@@ -1107,6 +1112,7 @@ namespace Orts.Simulation.RollingStocks
                 case "engine(ortstractioncharacteristicsdc": TractiveForceCurvesDC = new InterpolatorDiesel2D(stf, true); break;
                 case "engine(ortsdynamicbrakeforcecurvesac": DynamicBrakeForceCurvesAC = new InterpolatorDiesel2D(stf, false); break;
                 case "engine(ortsdynamicbrakeforcecurvesdc": DynamicBrakeForceCurvesDC = new InterpolatorDiesel2D(stf, false); break;
+                case "engine(ortsmainreschargingrate2": MainResChargingRatePSIpS_2 = stf.ReadFloatBlock(STFReader.UNITS.PressureRateDefaultPSIpS, null); break;
 
 
                 // Jindrich
@@ -1324,6 +1330,7 @@ namespace Orts.Simulation.RollingStocks
             TractiveForceCurvesDC = locoCopy.TractiveForceCurvesDC;
             DynamicBrakeForceCurvesAC = locoCopy.DynamicBrakeForceCurvesAC;
             DynamicBrakeForceCurvesDC = locoCopy.DynamicBrakeForceCurvesDC;
+            MainResChargingRatePSIpS_2 = locoCopy.MainResChargingRatePSIpS_2;
 
             // Jindrich
             if (locoCopy.CruiseControl != null)
@@ -1455,12 +1462,14 @@ namespace Orts.Simulation.RollingStocks
             outf.Write(HVOffStatusBrakeCyl);
             outf.Write(HVOffStatusBrakePipe);
             outf.Write(CompressorMode_OffAuto);
+            outf.Write(CompressorMode2_OffAuto);
             outf.Write(EngineBrakeEngageEDB);
             outf.Write(Heating_OffOn);
             outf.Write(SwitchingVoltageMode_OffAC);
             outf.Write(SwitchingVoltageMode_OffDC);
             outf.Write(SwitchingVoltageMode);
             outf.Write(TElevatedConsumption);
+            outf.Write(Compressor2IsOn);
 
             base.Save(outf);
 
@@ -1538,12 +1547,14 @@ namespace Orts.Simulation.RollingStocks
             HVOffStatusBrakeCyl = inf.ReadBoolean();
             HVOffStatusBrakePipe = inf.ReadBoolean();
             CompressorMode_OffAuto = inf.ReadBoolean();
+            CompressorMode2_OffAuto = inf.ReadBoolean();
             EngineBrakeEngageEDB = inf.ReadBoolean();
             Heating_OffOn = inf.ReadBoolean();
             SwitchingVoltageMode_OffAC = inf.ReadBoolean();
             SwitchingVoltageMode_OffDC = inf.ReadBoolean();
             SwitchingVoltageMode = inf.ReadInt32();
             TElevatedConsumption = inf.ReadSingle();
+            Compressor2IsOn = inf.ReadBoolean();
 
             base.Restore(inf);
 
@@ -1653,7 +1664,17 @@ namespace Orts.Simulation.RollingStocks
             SetUpPowerSupplyStations();
 
             // Icik
-            MainResChargingRatePSIpS0 = MainResChargingRatePSIpS;            
+            MainResChargingRatePSIpS0 = MainResChargingRatePSIpS;
+
+            if (Compressor_I && Compressor_II && MainResChargingRatePSIpS_2 == 0)
+            {
+                MainResChargingRatePSIpS0 = MainResChargingRatePSIpS / 2;
+                MainResChargingRatePSIpS = MainResChargingRatePSIpS0;
+            }
+
+            if (MainResChargingRatePSIpS_2 == 0)
+                MainResChargingRatePSIpS_2 = MainResChargingRatePSIpS;
+
 
             if (File.Exists(WagFilePath + ".ExtendedPhysics.xml") && extendedPhysics == null)
             {
@@ -2473,11 +2494,21 @@ namespace Orts.Simulation.RollingStocks
                         PowerReductionByAuxEquipmentEng += car.PowerReductionByAuxEquipment;
                     }
                 }                
+                // I.Compressor
                 if (WagonType == WagonTypes.Engine && this is MSTSDieselLocomotive && CompressorIsOn) // Dieselelektrické lokomotivy
                 {
                     if (AirBrakesIsCompressorElectricOrMechanical) 
                         if (AirBrakesAirCompressorWattage == 0) AirBrakesAirCompressorWattage = 35000f; // 35kW Mechanický kompresor
                         else 
+                        if (AirBrakesAirCompressorWattage == 0) AirBrakesAirCompressorWattage = 25000f; // 25kW Elektrický kompresor
+                    PowerReductionByAuxEquipmentEng = AirBrakesAirCompressorWattage;
+                }
+                // II.Compressor
+                if (WagonType == WagonTypes.Engine && this is MSTSDieselLocomotive && Compressor2IsOn) // Dieselelektrické lokomotivy
+                {
+                    if (AirBrakesIsCompressorElectricOrMechanical)
+                        if (AirBrakesAirCompressorWattage == 0) AirBrakesAirCompressorWattage = 35000f; // 35kW Mechanický kompresor
+                        else
                         if (AirBrakesAirCompressorWattage == 0) AirBrakesAirCompressorWattage = 25000f; // 25kW Elektrický kompresor
                     PowerReductionByAuxEquipmentEng = AirBrakesAirCompressorWattage;
                 }
@@ -3553,9 +3584,12 @@ namespace Orts.Simulation.RollingStocks
             //    SignalEvent(Event.CompressorOn);
             //else if ((MainResPressurePSI > MaxMainResPressurePSI || !AuxPowerOn) && CompressorIsOn)
             //    SignalEvent(Event.CompressorOff);
-
+                        
             if (CompressorIsOn)
                 MainResPressurePSI += elapsedClockSeconds * MainResChargingRatePSIpS;
+           
+            if (Compressor2IsOn)
+                MainResPressurePSI += elapsedClockSeconds * MainResChargingRatePSIpS_2;
         }
 
         /// <summary>
@@ -5763,10 +5797,23 @@ namespace Orts.Simulation.RollingStocks
         // Icik
         public void ToggleCompressorMode_OffAuto()
         {
-            CompressorMode_OffAuto = !CompressorMode_OffAuto;
-            if (CompressorMode_OffAuto) SignalEvent(Event.CompressorMode_OffAutoOn);
-            else SignalEvent(Event.CompressorMode_OffAutoOff);
-            if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.CompressorMode_OffAuto, CompressorMode_OffAuto ? CabSetting.On : CabSetting.Off);
+            if (Compressor_I)
+            {
+                CompressorMode_OffAuto = !CompressorMode_OffAuto;
+                if (CompressorMode_OffAuto) SignalEvent(Event.CompressorMode_OffAutoOn);
+                else SignalEvent(Event.CompressorMode_OffAutoOff);
+                if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.CompressorMode_OffAuto, CompressorMode_OffAuto ? CabSetting.On : CabSetting.Off);
+            }
+        }
+        public void ToggleCompressorMode2_OffAuto()
+        {
+            if (Compressor_II)
+            {
+                CompressorMode2_OffAuto = !CompressorMode2_OffAuto;
+                if (CompressorMode2_OffAuto) SignalEvent(Event.CompressorMode_OffAutoOn);
+                else SignalEvent(Event.CompressorMode_OffAutoOff);
+                if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.CompressorMode2_OffAuto, CompressorMode2_OffAuto ? CabSetting.On : CabSetting.Off);
+            }
         }
         public void ToggleHeating_OffOn()
         {
@@ -6043,6 +6090,10 @@ namespace Orts.Simulation.RollingStocks
                         }
                         break;
                     }
+                
+                // Icik
+                case Event.Compressor2On: { Compressor2IsOn = true; break; }
+                case Event.Compressor2Off: { Compressor2IsOn = false; break; }
             }
 
             base.SignalEvent(evt);
@@ -7322,17 +7373,22 @@ namespace Orts.Simulation.RollingStocks
                     {
                         data = 1;
                         cvc.ElapsedTime += elapsedTime;
-                        if (CompressorIsOn && cvc.ElapsedTime < cvc.UpdateTime)
+                        if ((CompressorIsOn || Compressor2IsOn) && cvc.ElapsedTime < cvc.UpdateTime)
                         {
                             data = 0;
                         }
-                        if (!CompressorIsOn)
+                        if (!CompressorIsOn && !Compressor2IsOn)
                             cvc.ElapsedTime = 0;
                         break;
                     }
                 case CABViewControlTypes.COMPRESSOR_MODE_OFFAUTO:
                     {
                         data = CompressorMode_OffAuto ? 1 : 0;
+                        break;
+                    }
+                case CABViewControlTypes.COMPRESSOR_MODE2_OFFAUTO:
+                    {
+                        data = CompressorMode2_OffAuto ? 1 : 0;
                         break;
                     }
                 case CABViewControlTypes.HEATING_OFFON:
