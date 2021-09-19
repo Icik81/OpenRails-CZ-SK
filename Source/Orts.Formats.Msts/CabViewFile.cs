@@ -537,6 +537,7 @@ namespace Orts.Formats.Msts
         // Icik
         public double UpdateTime;
         public float ElapsedTime;
+        public float ElapsedTime2;
         public float PreviousData;
         public float Precision;
         public float Vibration;

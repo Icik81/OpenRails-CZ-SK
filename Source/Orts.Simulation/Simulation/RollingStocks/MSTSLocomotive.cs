@@ -7373,12 +7373,19 @@ namespace Orts.Simulation.RollingStocks
                     {
                         data = 1;
                         cvc.ElapsedTime += elapsedTime;
-                        if ((CompressorIsOn || Compressor2IsOn) && cvc.ElapsedTime < cvc.UpdateTime)
+                        if (CompressorIsOn && cvc.ElapsedTime < cvc.UpdateTime)
                         {
                             data = 0;
                         }
-                        if (!CompressorIsOn && !Compressor2IsOn)
+                        if (!CompressorIsOn)
                             cvc.ElapsedTime = 0;
+                        cvc.ElapsedTime2 += elapsedTime;
+                        if (Compressor2IsOn && cvc.ElapsedTime2 < cvc.UpdateTime)
+                        {
+                            data = 0;
+                        }
+                        if (!Compressor2IsOn)
+                            cvc.ElapsedTime2 = 0;
                         break;
                     }
                 case CABViewControlTypes.COMPRESSOR_MODE_OFFAUTO:
