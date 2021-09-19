@@ -2533,7 +2533,6 @@ namespace Orts.Viewer3D.RollingStock
 
                 // Icik
                 case CABViewControlTypes.COMPRESSOR_MODE_OFFAUTO:
-                    Locomotive.Compressor_I = true;
                     if (ChangedValue(Locomotive.CompressorMode_OffAuto ? 1 : 0) > 0)
                     {
                         Locomotive.CompressorMode_OffAuto = true;
@@ -2548,7 +2547,6 @@ namespace Orts.Viewer3D.RollingStock
                     break;
 
                 case CABViewControlTypes.COMPRESSOR_MODE2_OFFAUTO:                    
-                    Locomotive.Compressor_II = true;
                     if (ChangedValue(Locomotive.CompressorMode2_OffAuto ? 1 : 0) > 0)
                     {
                         Locomotive.CompressorMode2_OffAuto = true;

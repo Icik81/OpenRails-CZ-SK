@@ -1763,7 +1763,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                                 if (loco.CompressorMode_OffAuto && !loco.CompressorIsOn)
                                 {
                                     loco.BrakeSystem.CompressorT0 += elapsedClockSeconds;
-                                    if (loco.BrakeSystem.CompressorT0 > 2) // 2s
+                                    if (loco.BrakeSystem.CompressorT0 > 1) // 1s
                                     {
                                         loco.BrakeSystem.CompressorOnDelay = true;
                                         loco.BrakeSystem.CompressorT0 = 0;
@@ -1776,7 +1776,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                                 if (loco.CompressorMode2_OffAuto && !loco.Compressor2IsOn)
                                 {
                                     loco.BrakeSystem.Compressor2T0 += elapsedClockSeconds;
-                                    if (loco.BrakeSystem.Compressor2T0 > 2) // 2s
+                                    if (loco.BrakeSystem.Compressor2T0 > 1) // 1s
                                     {
                                         loco.BrakeSystem.Compressor2OnDelay = true;
                                         loco.BrakeSystem.Compressor2T0 = 0;

@@ -7383,11 +7383,13 @@ namespace Orts.Simulation.RollingStocks
                     }
                 case CABViewControlTypes.COMPRESSOR_MODE_OFFAUTO:
                     {
+                        Compressor_I = true;
                         data = CompressorMode_OffAuto ? 1 : 0;
                         break;
                     }
                 case CABViewControlTypes.COMPRESSOR_MODE2_OFFAUTO:
                     {
+                        Compressor_II = true;
                         data = CompressorMode2_OffAuto ? 1 : 0;
                         break;
                     }
