@@ -289,12 +289,17 @@ namespace Orts.Simulation.RollingStocks
                 uc.RotorsCurrent = 0;
                 uc.Mass = Locomotive.MassKG / Undercarriages.Count;
                 foreach (ExtendedAxle ea in uc.Axles)
-                {
+                {                    
                     if (ea.WheelSpeedMpS == 0)
-                        ea.WheelSpeedMpS = Math.Abs(Locomotive.WheelSpeedMpS);
-                    AverageAxleSpeedMpS += Math.Abs(ea.WheelSpeedMpS);
-                    if (Math.Abs(FastestAxleSpeedMpS) < Math.Abs(ea.WheelSpeedMpS))
-                        FastestAxleSpeedMpS = Math.Abs(ea.WheelSpeedMpS);
+                        ea.WheelSpeedMpS = Locomotive.WheelSpeedMpS;
+
+                    ea.WheelSpeedMpS = Math.Abs(ea.WheelSpeedMpS);
+
+                    AverageAxleSpeedMpS += ea.WheelSpeedMpS;
+
+                    if (FastestAxleSpeedMpS < ea.WheelSpeedMpS)
+                        FastestAxleSpeedMpS = ea.WheelSpeedMpS;
+
                     foreach (ElectricMotor em in ea.ElectricMotors)
                     {
                         ea.GetCorrectedMass(this);
@@ -366,8 +371,11 @@ namespace Orts.Simulation.RollingStocks
             float axleCurrent = 0;
             float maxCurrent = 0;
             float motorMultiplier = totalMotors / ElectricMotors.Count;
-            if (WheelSpeedMpS == 0 && Locomotive.WheelSpeedMpS > 0)
+            if (WheelSpeedMpS == 0 && Locomotive.WheelSpeedMpS != 0)
                 WheelSpeedMpS = Locomotive.WheelSpeedMpS;
+
+            WheelSpeedMpS = Math.Abs(WheelSpeedMpS);
+
             foreach (ElectricMotor em in ElectricMotors)
             {
                 em.Update(em, WheelSpeedMpS, overridenControllerVolts);
@@ -462,8 +470,8 @@ namespace Orts.Simulation.RollingStocks
             LocomotiveAxle.AdhesionConditions = Locomotive.LocomotiveAxle.AdhesionConditions;//Set the train speed of the axle model
             LocomotiveAxle.Update(elapsedClockSeconds);         //Main updater of the axle model
             WheelSpeedMpS = LocomotiveAxle.AxleSpeedMpS;
-            if (WheelSpeedMpS == 0 && Locomotive.WheelSpeedMpS > 0)
-                WheelSpeedMpS = Locomotive.WheelSpeedMpS;
+            //if (WheelSpeedMpS == 0 && Locomotive.WheelSpeedMpS > 0)
+            //    WheelSpeedMpS = Locomotive.WheelSpeedMpS;
         }
 
         public void GetCorrectedMass(ExtendedPhysics extendedPhysics)

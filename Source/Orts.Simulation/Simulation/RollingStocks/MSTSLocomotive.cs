@@ -2252,7 +2252,7 @@ namespace Orts.Simulation.RollingStocks
                 if (extendedPhysics != null)
                 {
                     SlipSpeedCritical = 10 / 3.6f; // 10kmh pokud počítáme pátou osu
-                    AbsSlipSpeedMpS = Math.Abs(extendedPhysics.FastestAxleSpeedMpS) - Math.Abs(extendedPhysics.AverageAxleSpeedMpS);
+                    AbsSlipSpeedMpS = extendedPhysics.FastestAxleSpeedMpS - extendedPhysics.AverageAxleSpeedMpS;
                 }
                 //Trace.TraceInformation("WheelSlipTime {0},  Simulator.GameTime {1},  Time0 {2},   SlipSpeed {3}", WheelSlipTime, Simulator.GameTime, Time0, SlipSpeed);
                 
@@ -2810,8 +2810,10 @@ namespace Orts.Simulation.RollingStocks
                 }
                 if (extendedPhysics != null)
                 {
-                    speedDiff = Math.Abs(extendedPhysics.FastestAxleSpeedMpS) - Math.Abs(extendedPhysics.AverageAxleSpeedMpS);
+                    speedDiff = extendedPhysics.FastestAxleSpeedMpS - extendedPhysics.AverageAxleSpeedMpS;                    
                 }
+                speedDiff = Math.Abs(speedDiff);
+
                 if (CruiseControl != null)
                 {
                     foreach (MSTSLocomotive loco in CruiseControl.PlayerNotDriveableTrainLocomotives)
