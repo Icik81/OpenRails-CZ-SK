@@ -1721,7 +1721,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         if (loco is MSTSDieselLocomotive || loco is MSTSSteamLocomotive)
                         {
                             if (loco.BrakeSystem.AuxPowerOnDelayS == 0) loco.BrakeSystem.AuxPowerOnDelayS = 10; // Default 10s
-                            if (loco.Compressor_I)
+                            if (loco.Compressor_I || !loco.Compressor_II)
                             {
                                 loco.CompressorMode_OffAuto = true;
                                 if (!loco.PowerOn)
@@ -1758,7 +1758,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         if (loco is MSTSElectricLocomotive)
                         {
                             // Zpoždění náběhu kompresoru
-                            if (loco.Compressor_I)
+                            if (loco.Compressor_I || !loco.Compressor_II)
                             {
                                 if (loco.CompressorMode_OffAuto && !loco.CompressorIsOn)
                                 {
