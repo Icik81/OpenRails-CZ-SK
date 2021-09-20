@@ -478,7 +478,6 @@ namespace Orts.Simulation.RollingStocks
         float BaseFrictionCoefficientFactor0 = 1;
         public bool CentralHandlingDoors;
         public bool VoltageFilter;
-        public bool RouteVoltageChange;
         public float RouteVoltageV;
         public float LocomotivePowerVoltage;
         public float MaxPowerWAC;
@@ -1662,6 +1661,9 @@ namespace Orts.Simulation.RollingStocks
             // Jindřich - napaječky
             powerSupplyStations = new List<PowerSupplyStation>();
             SetUpPowerSupplyStations();
+            // elektrifikované úseky a jejich napětí
+            electrifiedSections = new List<ElectrifiedSection>();
+            InitializeElectrifiedSections();
 
             // Icik
             MainResChargingRatePSIpS0 = MainResChargingRatePSIpS;
@@ -1959,6 +1961,41 @@ namespace Orts.Simulation.RollingStocks
         private double rad2deg(double rad)
         {
             return (rad / Math.PI * 180.0);
+        }
+
+        public XmlDocument ElSectionXml;
+        public void InitializeElectrifiedSections()
+        {
+            if (!File.Exists(Simulator.RoutePath + "\\ElectrifiedSections.xml"))
+                return;
+            ElSectionXml = new XmlDocument();
+            ElSectionXml.Load(Simulator.RoutePath + "\\ElectrifiedSections.xml");
+            foreach (XmlNode node in ElSectionXml.ChildNodes)
+            {
+                if (node.Name == "ElectrifiedSections")
+                {
+                    foreach (XmlNode nodeSection in node.ChildNodes)
+                    {
+                        int sectionId = 0;
+                        int voltage = 0;
+                        foreach (XmlNode nodeVoltage in nodeSection.ChildNodes)
+                        {
+                            if (nodeVoltage.Name == "SectionId")
+                            {
+                                sectionId = int.Parse(nodeVoltage.InnerText);
+                            }
+                            if (nodeVoltage.Name == "Voltage")
+                            {
+                                voltage = int.Parse(nodeVoltage.InnerText);
+                            }
+                        }
+                        ElectrifiedSection es = new ElectrifiedSection();
+                        es.TrackSectionID = sectionId;
+                        es.Voltage = voltage;
+                        electrifiedSections.Add(es);
+                    }
+                }
+            }
         }
 
         public void SetUpPowerSupplyStations()
@@ -2566,6 +2603,41 @@ namespace Orts.Simulation.RollingStocks
             }
         }
 
+        public void SaveElectrifiedSection(int sectionId, int voltage)
+        {
+            foreach (XmlNode node in ElSectionXml.ChildNodes)
+            {
+                if (node.Name == "ElectrifiedSections")
+                {
+                    foreach (XmlNode nodeSignal in node.ChildNodes)
+                    {
+                        bool updateNode = false;
+                        foreach (XmlNode nodeId in nodeSignal.ChildNodes)
+                        {
+                            if (nodeId.Name == "Id" && nodeId.InnerText == sectionId.ToString())
+                            {
+                                updateNode = true;
+                            }
+                            if (nodeId.Name == "Voltage" && updateNode)
+                            {
+                                nodeId.InnerText = voltage.ToString();
+                                goto Save;
+                            }
+                        }
+                    }
+                    XmlNode node1 = ElSectionXml.CreateElement("Section");
+                    XmlNode node2 = ElSectionXml.CreateElement("Id");
+                    node2.InnerText = sectionId.ToString();
+                    XmlNode node3 = ElSectionXml.CreateElement("Voltage");
+                    node3.InnerText = voltage.ToString();
+                    node1.AppendChild(node2);
+                    node1.AppendChild(node3);
+                    node.AppendChild(node1);
+                }
+            }
+        Save:
+            ElSectionXml.Save(Simulator.RoutePath + "\\ElectrifiedSections.xml");
+        }
 
         /// <summary>
         /// This function updates periodically the states and physical variables of the locomotive's subsystems.
@@ -2574,8 +2646,37 @@ namespace Orts.Simulation.RollingStocks
         private bool trainBrakeRelease = false;
         protected float EngineBrakePercentSet = 0;
         public bool CanCheckEngineBrake = true;
+        public List<ElectrifiedSection> electrifiedSections;
+        protected bool sectionSet = false;
+        protected int currentSectionSetId = 0;
         public override void Update(float elapsedClockSeconds)
         {
+            if (IsPlayerTrain && Train.FrontTDBTraveller.TrackNodeIndex != currentSectionSetId)
+                sectionSet = false;
+            if (IsPlayerTrain && !sectionSet)
+            {
+                Simulator.Confirmer.MSG(this.Train.FrontTDBTraveller.TrackNodeIndex.ToString());
+                bool found = false;
+                foreach (ElectrifiedSection es in electrifiedSections)
+                {
+                    if (es.TrackSectionID == Train.FrontTDBTraveller.TrackNodeIndex)
+                    {
+                        found = true;
+                        RouteVoltageV = es.Voltage;
+                        break;
+
+                    }
+                }
+                if (!found)
+                {
+                    SaveElectrifiedSection(Train.FrontTDBTraveller.TrackNodeIndex, (int)RouteVoltageV);
+                    ElectrifiedSection newEs = new ElectrifiedSection();
+                    newEs.TrackSectionID = currentSectionSetId = Train.FrontTDBTraveller.TrackNodeIndex;
+                    newEs.Voltage = (int)RouteVoltageV;
+                    electrifiedSections.Add(newEs);
+                }
+                sectionSet = true;
+            }
             double dist = DistanceToPowerSupplyStationM(0); // change 0 to actual selected system
             //Simulator.Confirmer.MSG(dist.ToString());
             if (IsPlayerTrain && !Simulator.Paused)
@@ -7584,6 +7685,12 @@ namespace Orts.Simulation.RollingStocks
         public int PowerSystem { get; set; }
         public bool Failure { get; set; }
         public int TotalAmps { get; set; }
+    }
+
+    public class ElectrifiedSection
+    {
+        public int TrackSectionID { get; set; }
+        public int Voltage { get; set; }
     }
 
     public class StringArray
