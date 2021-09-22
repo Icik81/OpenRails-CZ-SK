@@ -2652,42 +2652,6 @@ namespace Orts.Simulation.RollingStocks
             }
         }
 
-        public void SaveElectrifiedSection(int sectionId, int voltage)
-        {
-            foreach (XmlNode node in ElSectionXml.ChildNodes)
-            {
-                if (node.Name == "ElectrifiedSections")
-                {
-                    foreach (XmlNode nodeSignal in node.ChildNodes)
-                    {
-                        bool updateNode = false;
-                        foreach (XmlNode nodeId in nodeSignal.ChildNodes)
-                        {
-                            if (nodeId.Name == "Id" && nodeId.InnerText == sectionId.ToString())
-                            {
-                                updateNode = true;
-                            }
-                            if (nodeId.Name == "Voltage" && updateNode)
-                            {
-                                nodeId.InnerText = voltage.ToString();
-                                goto Save;
-                            }
-                        }
-                    }
-                    XmlNode node1 = ElSectionXml.CreateElement("Section");
-                    XmlNode node2 = ElSectionXml.CreateElement("Id");
-                    node2.InnerText = sectionId.ToString();
-                    XmlNode node3 = ElSectionXml.CreateElement("Voltage");
-                    node3.InnerText = voltage.ToString();
-                    node1.AppendChild(node2);
-                    node1.AppendChild(node3);
-                    node.AppendChild(node1);
-                }
-            }
-        Save:
-            ElSectionXml.Save(Simulator.RoutePath + "\\ElectrifiedSections.xml");
-        }
-
         public void SetDefault_AuxCompressor()
         {
             // Vícesystémové lokomotivy
@@ -2727,7 +2691,7 @@ namespace Orts.Simulation.RollingStocks
                     // Spotřeba HV při AC
                     if (HVConsumptionVolumeM3_On == 0)
                         HVConsumptionVolumeM3_On = 30.0f / 1000f; // 30 L
-                                        
+
                     if (HVConsumptionVolumeM3_Off == 0)
                         HVConsumptionVolumeM3_Off = 55.0f / 1000f; // 55 L
                 }
@@ -2737,7 +2701,7 @@ namespace Orts.Simulation.RollingStocks
                     // Spotřeba HV při DC
                     if (HVConsumptionVolumeM3_On == 0)
                         HVConsumptionVolumeM3_On = 20.0f / 1000f; // 20 L
-                    
+
                     if (HVConsumptionVolumeM3_Off == 0)
                         HVConsumptionVolumeM3_Off = 20.0f / 1000f; // 20 L
                 }
@@ -2788,7 +2752,7 @@ namespace Orts.Simulation.RollingStocks
                     // Maximální tlak v jímce pomocného kompresoru 
                     if (MaxAuxResPressurePSI == 0)
                         MaxAuxResPressurePSI = 7.0f * 14.50377f; // 7 barů
-                     
+
                     // Hodnota pro restart pomocného kompresoru
                     if (AuxCompressorRestartPressurePSI == 0)
                         AuxCompressorRestartPressurePSI = 5.5f * 14.50377f; // 5.5 barů
@@ -2807,11 +2771,48 @@ namespace Orts.Simulation.RollingStocks
 
                     if (HVConsumptionVolumeM3_Off == 0)
                         HVConsumptionVolumeM3_Off = 55.0f / 1000f; // 55 L
-                }                                                                               
+                }
             }
         }
 
 
+        public void SaveElectrifiedSection(int sectionId, int voltage)
+        {
+            foreach (XmlNode node in ElSectionXml.ChildNodes)
+            {
+                if (node.Name == "ElectrifiedSections")
+                {
+                    foreach (XmlNode nodeSignal in node.ChildNodes)
+                    {
+                        bool updateNode = false;
+                        foreach (XmlNode nodeId in nodeSignal.ChildNodes)
+                        {
+                            if (nodeId.Name == "Id" && nodeId.InnerText == sectionId.ToString())
+                            {
+                                updateNode = true;
+                            }
+                            if (nodeId.Name == "Voltage" && updateNode)
+                            {
+                                nodeId.InnerText = voltage.ToString();
+                                goto Save;
+                            }
+                        }
+                    }
+                    XmlNode node1 = ElSectionXml.CreateElement("Section");
+                    XmlNode node2 = ElSectionXml.CreateElement("Id");
+                    node2.InnerText = sectionId.ToString();
+                    XmlNode node3 = ElSectionXml.CreateElement("Voltage");
+                    node3.InnerText = voltage.ToString();
+                    node1.AppendChild(node2);
+                    node1.AppendChild(node3);
+                    node.AppendChild(node1);
+                }
+            }
+        Save:
+            ElSectionXml.Save(Simulator.RoutePath + "\\ElectrifiedSections.xml");
+        }
+
+        
         /// <summary>
         /// This function updates periodically the states and physical variables of the locomotive's subsystems.
         /// </summary>
@@ -6142,14 +6143,14 @@ namespace Orts.Simulation.RollingStocks
 
         public void ToggleControlRouteVoltage()
         {
-            RouteVoltageChange = !RouteVoltageChange;
+            //RouteVoltageChange = !RouteVoltageChange;
 
-            if (RouteVoltageChange)
-                RouteVoltageV = 3000;
-            else
-                RouteVoltageV = 25000;
+            //if (RouteVoltageChange)
+            //    RouteVoltageV = 3000;
+            //else
+            //    RouteVoltageV = 25000;
 
-            if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.RouteVoltage, RouteVoltageChange ? CabSetting.On : CabSetting.Off);
+            //if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.RouteVoltage, RouteVoltageChange ? CabSetting.On : CabSetting.Off);
         }
 
         public void ToggleQuickReleaseButton(bool quickReleaseButton)

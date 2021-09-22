@@ -316,7 +316,7 @@ namespace Orts.Simulation.RollingStocks
                     if (PantographVoltageV < Induktion * 1000)
                         PantographVoltageV += 10;
                 }                
-                if (RouteVoltageChange)
+                if (RouteVoltageV != 25000)
                     TInduktion = 0;
 
 
