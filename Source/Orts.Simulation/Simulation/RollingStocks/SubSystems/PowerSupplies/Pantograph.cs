@@ -187,15 +187,17 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
         }
     }
 
-    public class Pantograph
+    public class Pantograph 
     {
         readonly MSTSWagon Wagon;
 
         public bool PantographsBlocked;
+        public bool PantographsUpBlocked;
 
         public PantographState State { get; private set; }
         public float DelayS { get; private set; }
         public float TimeS { get; private set; }
+
         public bool CommandUp {
             get
             {
@@ -337,7 +339,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                     break;
 
                 case PowerSupplyEvent.RaisePantograph:
-                    if (State == PantographState.Down || State == PantographState.Lowering)
+                    if ((State == PantographState.Down || State == PantographState.Lowering) && !PantographsUpBlocked)
                     {
                         State = PantographState.Raising;
 

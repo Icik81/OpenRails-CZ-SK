@@ -110,8 +110,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes
         public bool TripleValveEmergency;
         public bool CompressorOnDelay;
         public bool Compressor2OnDelay;
+        public bool AuxCompressorOnDelay;
         public float CompressorT0 = 0;
         public float Compressor2T0 = 0;
+        public float AuxCompressorT0 = 0;
         public float AutoBailOffOnRatePSIpS;
         public float BrakeDelayToEngage;
         public bool AutoOverchargePressure;

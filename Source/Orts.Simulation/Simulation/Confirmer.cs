@@ -122,6 +122,7 @@ namespace Orts.Simulation
       , CabRadio
 
     // Icik
+    , AuxCompressorMode_OffOn
     , CompressorMode_OffAuto
     , CompressorMode2_OffAuto
     , Heating_OffOn
@@ -282,6 +283,7 @@ namespace Orts.Simulation
                 , new string [] { GetString("Cab Radio"), GetString("off"), null, GetString("on") }
 
                 // Icik
+                , new string [] { GetString("Pomocný kompresor"), GetString("off"), null, GetString("on")}
                 , new string [] { GetString("Mód kompresoru I"), GetString("off"), null, GetString("Auto")}
                 , new string [] { GetString("Mód kompresoru II"), GetString("off"), null, GetString("Auto")}
                 , new string [] { GetString("Topení"), GetString("off"), null, GetString("on")}

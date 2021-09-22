@@ -214,6 +214,7 @@ namespace Orts.Viewer3D.RollingStock
             UserInputCommands.Add(UserCommand.SetMirelOff, new Action[] { Noop, () => Locomotive.Mirel.SetMirelSignal(false) });
 
             // Icik
+            UserInputCommands.Add(UserCommand.ControlAuxCompressorMode_OffOn, new Action[] { Noop, () => new ToggleAuxCompressorMode_OffOnCommand(Viewer.Log) });
             UserInputCommands.Add(UserCommand.ControlCompressorMode_OffAuto, new Action[] { Noop, () => new ToggleCompressorMode_OffAutoCommand(Viewer.Log) });
             UserInputCommands.Add(UserCommand.ControlCompressorMode2_OffAuto, new Action[] { Noop, () => new ToggleCompressorMode2_OffAutoCommand(Viewer.Log) });
             UserInputCommands.Add(UserCommand.ControlHeating_OffOn, new Action[] { Noop, () => new ToggleHeating_OffOnCommand(Viewer.Log) });
@@ -2532,6 +2533,20 @@ namespace Orts.Viewer3D.RollingStock
                     if ((Locomotive.PowerKey ? 1 : 0) != ChangedValue(Locomotive.PowerKey ? 1 : 0)) new TogglePowerKeyCommand(Viewer.Log); break;
 
                 // Icik
+                case CABViewControlTypes.AUXCOMPRESSOR_MODE_OFFON:
+                    if (ChangedValue(Locomotive.AuxCompressorMode_OffOn ? 1 : 0) > 0)
+                    {
+                        Locomotive.AuxCompressorMode_OffOn = true;
+                        new ToggleAuxCompressorMode_OffOnCommand(Viewer.Log);
+                    }
+                    else
+                    if (ChangedValue(Locomotive.AuxCompressorMode_OffOn ? 1 : 0) < 0)
+                    {
+                        Locomotive.AuxCompressorMode_OffOn = false;
+                        new ToggleAuxCompressorMode_OffOnCommand(Viewer.Log);
+                    }
+                    break;
+
                 case CABViewControlTypes.COMPRESSOR_MODE_OFFAUTO:
                     if (ChangedValue(Locomotive.CompressorMode_OffAuto ? 1 : 0) > 0)
                     {

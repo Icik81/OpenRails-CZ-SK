@@ -92,6 +92,11 @@ namespace Orts.Simulation.RollingStocks
         float TCompressorAC = 0;
         float TCompressorDC = 0;
 
+        bool HVClosed = false;
+        float T_HVOpen = 0;
+        float T_HVClosed = 0;
+        float T_PantoUp = 0;
+
         public MSTSElectricLocomotive(Simulator simulator, string wagFile) :
             base(simulator, wagFile)
         {
@@ -160,6 +165,7 @@ namespace Orts.Simulation.RollingStocks
             outf.Write(TPanto2DC);
             outf.Write(TCompressorAC);
             outf.Write(TCompressorDC);
+            outf.Write(HVClosed);
             base.Save(outf);
         }
 
@@ -186,6 +192,7 @@ namespace Orts.Simulation.RollingStocks
             TPanto2DC = inf.ReadSingle();
             TCompressorAC = inf.ReadSingle();
             TCompressorDC = inf.ReadSingle();
+            HVClosed = inf.ReadBoolean();
             base.Restore(inf);
         }
 
@@ -732,7 +739,72 @@ namespace Orts.Simulation.RollingStocks
                 }
             }
 
-            UnderVoltageProtection(elapsedClockSeconds);           
+            UnderVoltageProtection(elapsedClockSeconds);
+
+            AuxAirConsumption(elapsedClockSeconds);
+        }
+
+        // Icik
+        // Výpočet spotřeby vzduchu, jímka pomocného kompresoru
+        protected void AuxAirConsumption(float elapsedClockSeconds)
+        {
+            if (AuxCompressor)
+            {
+                foreach (Pantograph panto in Pantographs.List)
+                    switch (panto.State)
+                    {
+                        case PantographState.Raising:
+                            {
+                                T_PantoUp += elapsedClockSeconds;
+                                if (AuxResPressurePSI > 0 && T_PantoUp < 1)
+                                    AuxResPressurePSI -= 14.50377f * (MaxAuxResPressurePSI / (AuxResVolumeM3 * MaxAuxResPressurePSI / PantoConsumptionVolumeM3)) * elapsedClockSeconds;
+                                return;
+                            }
+                        case PantographState.Lowering:
+                        case PantographState.Down:
+                            {
+                                T_PantoUp = 0;
+                                if (!AirForPantograph)
+                                    panto.PantographsUpBlocked = true;
+                                else panto.PantographsUpBlocked = false;
+                                break;
+                            }
+                    }
+
+                switch (PowerSupply.CircuitBreaker.State)
+                {
+                    case CircuitBreakerState.Closing:
+                        {
+                            if (!AirForHV)
+                                SignalEvent(PowerSupplyEvent.OpenCircuitBreaker);                            
+                            break;
+                        }
+
+                    case CircuitBreakerState.Closed:
+                        {
+                            HVClosed = true;
+                            T_HVOpen = 0;
+                            T_HVClosed += elapsedClockSeconds;
+                            if (AuxResPressurePSI > 0 && T_HVClosed < 1)
+                                AuxResPressurePSI -= 14.50377f * (MaxAuxResPressurePSI / (AuxResVolumeM3 * MaxAuxResPressurePSI / HVConsumptionVolumeM3_On)) * elapsedClockSeconds;
+                            break;
+                        }
+
+                    case CircuitBreakerState.Open:
+                        {
+                            if (HVClosed)
+                            {                                
+                                T_HVClosed = 0;
+                                T_HVOpen += elapsedClockSeconds;
+                                if (AuxResPressurePSI > 0 && T_HVOpen < 1)
+                                    AuxResPressurePSI -= 14.50377f * (MaxAuxResPressurePSI / (AuxResVolumeM3 * MaxAuxResPressurePSI / HVConsumptionVolumeM3_Off)) * elapsedClockSeconds;
+                                else
+                                    HVClosed = false;
+                            }
+                            break;
+                        }
+                }
+            }
         }
 
         /// <summary>

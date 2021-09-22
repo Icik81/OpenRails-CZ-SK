@@ -561,6 +561,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             if (loco != null)
             {
                 loco.MainResPressurePSI = loco.MaxMainResPressurePSI;
+                loco.AuxResPressurePSI = loco.MaxAuxResPressurePSI;
                 if (loco.HandBrakePresent)
                     HandbrakePercent = 0;
             }
@@ -633,6 +634,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         prevBrakeLine1PressurePSI = 0;
                         TotalCapacityMainResBrakePipe = 0;
                         loco.MainResPressurePSI = 0;
+                        loco.AuxResPressurePSI = 0;
                     }
                     if ((Car as MSTSWagon).HandBrakePresent)
                     {
@@ -1716,7 +1718,19 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                             }
                         }
 
+
                         // *** Kompresory ***
+                        
+                        // Minimální mez pro dostatek vzduchu pro pantografy
+                        if (loco.AuxResPressurePSI >= loco.MinAuxPressurePantoPSI || !loco.AuxCompressor) 
+                            loco.AirForPantograph = true;
+                        else loco.AirForPantograph = false;
+
+                        // Minimální mez pro dostatek vzduchu pro HV
+                        if (loco.AuxResPressurePSI >= loco.MinAuxPressureHVPSI || !loco.AuxCompressor)
+                            loco.AirForHV = true;
+                        else loco.AirForHV = false;
+
                         // Automatický náběh kompresoru u dieselelektrické trakce
                         if (loco is MSTSDieselLocomotive || loco is MSTSSteamLocomotive)
                         {
@@ -1753,6 +1767,21 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                                     else loco.BrakeSystem.Compressor2OnDelay = false;
                                 }
                             }
+                            if (loco.AuxCompressor)
+                            {
+                                //loco.AuxCompressorMode_OffOn = true;  // Vždy ruční spuštění
+                                // Zpoždění náběhu kompresoru
+                                if (loco.AuxCompressorMode_OffOn && !loco.AuxCompressorIsOn)
+                                {
+                                    loco.BrakeSystem.AuxCompressorT0 += elapsedClockSeconds;
+                                    if (loco.BrakeSystem.AuxCompressorT0 > 1)
+                                    {
+                                        loco.BrakeSystem.AuxCompressorOnDelay = true;
+                                        loco.BrakeSystem.AuxCompressorT0 = 0;
+                                    }
+                                    else loco.BrakeSystem.AuxCompressorOnDelay = false;
+                                }
+                            }
                         }
 
                         if (loco is MSTSElectricLocomotive)
@@ -1784,7 +1813,27 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                                     else loco.BrakeSystem.Compressor2OnDelay = false;
                                 }
                             }
+                            if (loco.AuxCompressor)
+                            {
+                                if (loco.AuxCompressorMode_OffOn && !loco.AuxCompressorIsOn)
+                                {
+                                    loco.BrakeSystem.AuxCompressorT0 += elapsedClockSeconds;
+                                    if (loco.BrakeSystem.AuxCompressorT0 > 1) // 1s
+                                    {
+                                        loco.BrakeSystem.AuxCompressorOnDelay = true;
+                                        loco.BrakeSystem.AuxCompressorT0 = 0;
+                                    }
+                                    else loco.BrakeSystem.AuxCompressorOnDelay = false;
+                                }
+                            }
                         }
+
+                        if (loco.AuxResPressurePSI <= loco.AuxCompressorRestartPressurePSI
+                            && loco.Battery 
+                            && loco.AuxCompressorMode_OffOn
+                            && loco.BrakeSystem.AuxCompressorOnDelay
+                            && !loco.AuxCompressorIsOn)
+                            loco.SignalEvent(Event.AuxCompressorOn);
 
                         if (loco.MainResPressurePSI <= loco.CompressorRestartPressurePSI
                             && loco.AuxPowerOn
@@ -1792,6 +1841,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                             && loco.BrakeSystem.CompressorOnDelay
                             && !loco.CompressorIsOn)
                             loco.SignalEvent(Event.CompressorOn);
+
                         if (loco.MainResPressurePSI <= loco.CompressorRestartPressurePSI
                             && loco.AuxPowerOn
                             && loco.CompressorMode2_OffAuto
@@ -1799,11 +1849,19 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                             && !loco.Compressor2IsOn)
                             loco.SignalEvent(Event.Compressor2On);
 
+
+                        if ((loco.AuxResPressurePSI >= loco.MaxAuxResPressurePSI
+                            || !loco.Battery
+                            || !loco.AuxCompressorMode_OffOn)
+                            && loco.AuxCompressorIsOn)
+                            loco.SignalEvent(Event.AuxCompressorOff);
+
                         if ((loco.MainResPressurePSI >= loco.MaxMainResPressurePSI
                             || !loco.AuxPowerOn
                             || !loco.CompressorMode_OffAuto)
                             && loco.CompressorIsOn)
                             loco.SignalEvent(Event.CompressorOff);
+                        
                         if ((loco.MainResPressurePSI >= loco.MaxMainResPressurePSI
                             || !loco.AuxPowerOn
                             || !loco.CompressorMode2_OffAuto)

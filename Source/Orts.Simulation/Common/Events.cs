@@ -242,6 +242,8 @@ namespace Orts.Common
         LS90TestComplete,
 
         // Icik
+        AuxCompressorMode_OffOnOn,
+        AuxCompressorMode_OffOnOff,
         CompressorMode_OffAutoOn,
         CompressorMode_OffAutoOff,
 
@@ -277,7 +279,9 @@ namespace Orts.Common
         QuickReleaseButton,
         LowPressureReleaseButton,
         Compressor2Off,
-        Compressor2On
+        Compressor2On,
+        AuxCompressorOff,
+        AuxCompressorOn
     }
 
     public static class Events
@@ -579,6 +583,9 @@ namespace Orts.Common
 
                         case 20033: return Event.Compressor2On;
                         case 20034: return Event.Compressor2Off;
+
+                        case 20035: return Event.AuxCompressorMode_OffOnOn;
+                        case 20036: return Event.AuxCompressorMode_OffOnOff;
 
                         default: return 0;
                     }

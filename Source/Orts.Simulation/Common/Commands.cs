@@ -1635,6 +1635,23 @@ namespace Orts.Common
         }
     }
     [Serializable()]
+    public sealed class ToggleAuxCompressorMode_OffOnCommand : Command
+    {
+        public static MSTSLocomotive Receiver { get; set; }
+
+        public ToggleAuxCompressorMode_OffOnCommand(CommandLog log)
+            : base(log)
+        {
+            Redo();
+        }
+
+        public override void Redo()
+        {
+            Receiver.ToggleAuxCompressorMode_OffOn();
+            // Report();
+        }
+    }
+    [Serializable()]
     public sealed class ToggleCompressorMode_OffAutoCommand : Command
     {
         public static MSTSLocomotive Receiver { get; set; }

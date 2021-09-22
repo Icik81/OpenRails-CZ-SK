@@ -459,6 +459,7 @@ namespace Orts.Simulation.RollingStocks
         public bool HVOffStatusBrakePipe = false;
         public bool DoesPowerLossResetControls = false;
         public bool ThrottleZero = false;
+        public bool AuxCompressorMode_OffOn;
         public bool CompressorMode_OffAuto;
         public bool CompressorMode2_OffAuto;
         public bool EngineBrakeEngageEDB = false;
@@ -494,10 +495,24 @@ namespace Orts.Simulation.RollingStocks
         public bool LowPressureReleaseButton = false;
         public bool QuickReleaseButtonEnable = false;
         public bool LowPressureReleaseButtonEnable = false;
+        public bool AuxCompressor = false;
         public bool Compressor_I = false;
         public bool Compressor_II = false;
         public bool Compressor2IsOn;
         public float MainResChargingRatePSIpS_2;
+        public float AuxResChargingRatePSIpS;
+        public bool AuxCompressorIsOn;
+        public float AuxResPressurePSI;
+        public float MaxAuxResPressurePSI;
+        public float AuxResVolumeM3;
+        public float AuxCompressorRestartPressurePSI;
+        public float MinAuxPressurePantoPSI;
+        public float MinAuxPressureHVPSI;
+        public bool AirForPantograph;
+        public bool AirForHV;
+        public float PantoConsumptionVolumeM3;
+        public float HVConsumptionVolumeM3_On;
+        public float HVConsumptionVolumeM3_Off;
 
         // Jindrich
         public CruiseControl CruiseControl;
@@ -1113,7 +1128,15 @@ namespace Orts.Simulation.RollingStocks
                 case "engine(ortsdynamicbrakeforcecurvesac": DynamicBrakeForceCurvesAC = new InterpolatorDiesel2D(stf, false); break;
                 case "engine(ortsdynamicbrakeforcecurvesdc": DynamicBrakeForceCurvesDC = new InterpolatorDiesel2D(stf, false); break;
                 case "engine(ortsmainreschargingrate2": MainResChargingRatePSIpS_2 = stf.ReadFloatBlock(STFReader.UNITS.PressureRateDefaultPSIpS, null); break;
-
+                case "engine(ortsauxreschargingrate": AuxResChargingRatePSIpS = stf.ReadFloatBlock(STFReader.UNITS.PressureRateDefaultPSIpS, null); break;
+                case "engine(maxauxrespressure": MaxAuxResPressurePSI = stf.ReadFloatBlock(STFReader.UNITS.PressureDefaultPSI, null); break;
+                case "engine(auxresvolume": AuxResVolumeM3 = Me3.FromFt3(stf.ReadFloatBlock(STFReader.UNITS.VolumeDefaultFT3, null)); break;
+                case "engine(auxcompressorrestartpressure": AuxCompressorRestartPressurePSI = stf.ReadFloatBlock(STFReader.UNITS.PressureDefaultPSI, null); break;
+                case "engine(minauxpressurepanto": MinAuxPressurePantoPSI = stf.ReadFloatBlock(STFReader.UNITS.PressureDefaultPSI, null); break;
+                case "engine(minauxpressurehv": MinAuxPressureHVPSI = stf.ReadFloatBlock(STFReader.UNITS.PressureDefaultPSI, null); break;
+                case "engine(pantoconsumptionvolume": PantoConsumptionVolumeM3 = Me3.FromFt3(stf.ReadFloatBlock(STFReader.UNITS.VolumeDefaultFT3, null)); break;
+                case "engine(hvconsumptionvolumeon": HVConsumptionVolumeM3_On = Me3.FromFt3(stf.ReadFloatBlock(STFReader.UNITS.VolumeDefaultFT3, null)); break;
+                case "engine(hvconsumptionvolumeoff": HVConsumptionVolumeM3_Off = Me3.FromFt3(stf.ReadFloatBlock(STFReader.UNITS.VolumeDefaultFT3, null)); break;
 
                 // Jindrich
                 case "engine(batterydefaultoff": Battery = !stf.ReadBoolBlock(false); break;
@@ -1331,6 +1354,15 @@ namespace Orts.Simulation.RollingStocks
             DynamicBrakeForceCurvesAC = locoCopy.DynamicBrakeForceCurvesAC;
             DynamicBrakeForceCurvesDC = locoCopy.DynamicBrakeForceCurvesDC;
             MainResChargingRatePSIpS_2 = locoCopy.MainResChargingRatePSIpS_2;
+            AuxResChargingRatePSIpS = locoCopy.AuxResChargingRatePSIpS;
+            MaxAuxResPressurePSI = locoCopy.MaxAuxResPressurePSI;
+            AuxResVolumeM3 = locoCopy.AuxResVolumeM3;
+            AuxCompressorRestartPressurePSI = locoCopy.AuxCompressorRestartPressurePSI;
+            MinAuxPressurePantoPSI = locoCopy.MinAuxPressurePantoPSI;
+            MinAuxPressureHVPSI = locoCopy.MinAuxPressureHVPSI;
+            PantoConsumptionVolumeM3 = locoCopy.PantoConsumptionVolumeM3;
+            HVConsumptionVolumeM3_On = locoCopy.HVConsumptionVolumeM3_On;
+            HVConsumptionVolumeM3_Off = locoCopy.HVConsumptionVolumeM3_Off;
 
             // Jindrich
             if (locoCopy.CruiseControl != null)
@@ -1461,6 +1493,7 @@ namespace Orts.Simulation.RollingStocks
             // Icik
             outf.Write(HVOffStatusBrakeCyl);
             outf.Write(HVOffStatusBrakePipe);
+            outf.Write(AuxCompressorMode_OffOn);
             outf.Write(CompressorMode_OffAuto);
             outf.Write(CompressorMode2_OffAuto);
             outf.Write(EngineBrakeEngageEDB);
@@ -1470,6 +1503,8 @@ namespace Orts.Simulation.RollingStocks
             outf.Write(SwitchingVoltageMode);
             outf.Write(TElevatedConsumption);
             outf.Write(Compressor2IsOn);
+            outf.Write(AuxCompressorIsOn);
+            outf.Write(AuxResPressurePSI);
 
             base.Save(outf);
 
@@ -1546,6 +1581,7 @@ namespace Orts.Simulation.RollingStocks
             // Icik
             HVOffStatusBrakeCyl = inf.ReadBoolean();
             HVOffStatusBrakePipe = inf.ReadBoolean();
+            AuxCompressorMode_OffOn = inf.ReadBoolean();
             CompressorMode_OffAuto = inf.ReadBoolean();
             CompressorMode2_OffAuto = inf.ReadBoolean();
             EngineBrakeEngageEDB = inf.ReadBoolean();
@@ -1555,6 +1591,8 @@ namespace Orts.Simulation.RollingStocks
             SwitchingVoltageMode = inf.ReadInt32();
             TElevatedConsumption = inf.ReadSingle();
             Compressor2IsOn = inf.ReadBoolean();
+            AuxCompressorIsOn = inf.ReadBoolean();
+            AuxResPressurePSI = inf.ReadSingle();
 
             base.Restore(inf);
 
@@ -1665,6 +1703,8 @@ namespace Orts.Simulation.RollingStocks
 
             // Icik
             MainResChargingRatePSIpS0 = MainResChargingRatePSIpS;
+            if (!Compressor_I && !Compressor_II)
+                Compressor_I = true;
 
             if (Compressor_I && Compressor_II && MainResChargingRatePSIpS_2 == 0)
             {
@@ -1674,6 +1714,8 @@ namespace Orts.Simulation.RollingStocks
 
             if (MainResChargingRatePSIpS_2 == 0)
                 MainResChargingRatePSIpS_2 = MainResChargingRatePSIpS;
+
+            SetDefault_AuxCompressor();
 
 
             if (File.Exists(WagFilePath + ".ExtendedPhysics.xml") && extendedPhysics == null)
@@ -2481,6 +2523,7 @@ namespace Orts.Simulation.RollingStocks
             TElevatedConsumption = 1;
             PowerReductionByAuxEquipmentWag = 0;
             PowerReductionByAuxEquipmentEng = 0;
+
             if (PowerOn)
             {
                 foreach (TrainCar car in Train.Cars)
@@ -2501,7 +2544,7 @@ namespace Orts.Simulation.RollingStocks
                         if (AirBrakesAirCompressorWattage == 0) AirBrakesAirCompressorWattage = 35000f; // 35kW Mechanický kompresor
                         else 
                         if (AirBrakesAirCompressorWattage == 0) AirBrakesAirCompressorWattage = 25000f; // 25kW Elektrický kompresor
-                    PowerReductionByAuxEquipmentEng = AirBrakesAirCompressorWattage;
+                    PowerReductionByAuxEquipmentEng += AirBrakesAirCompressorWattage;
                 }
                 // II.Compressor
                 if (WagonType == WagonTypes.Engine && this is MSTSDieselLocomotive && Compressor2IsOn) // Dieselelektrické lokomotivy
@@ -2510,7 +2553,13 @@ namespace Orts.Simulation.RollingStocks
                         if (AirBrakesAirCompressorWattage == 0) AirBrakesAirCompressorWattage = 35000f; // 35kW Mechanický kompresor
                         else
                         if (AirBrakesAirCompressorWattage == 0) AirBrakesAirCompressorWattage = 25000f; // 25kW Elektrický kompresor
-                    PowerReductionByAuxEquipmentEng = AirBrakesAirCompressorWattage;
+                    PowerReductionByAuxEquipmentEng += AirBrakesAirCompressorWattage;
+                }
+                // Pomocný kompresor
+                if (WagonType == WagonTypes.Engine && this is MSTSDieselLocomotive && AuxCompressorIsOn) // Dieselelektrické lokomotivy
+                {
+                    AirBrakesAirCompressorWattage = 5000f; // 5kW Elektrický kompresor
+                    PowerReductionByAuxEquipmentEng += AirBrakesAirCompressorWattage;
                 }
             }
             PowerReductionByAuxEquipment0 = PowerReductionByAuxEquipmentWag + PowerReductionByAuxEquipmentEng;
@@ -2563,6 +2612,129 @@ namespace Orts.Simulation.RollingStocks
                     if (MaxForceNAC != 0)
                         MaxForceN = MaxForceNAC;                    
                     break;
+            }
+        }
+
+        public void SetDefault_AuxCompressor()
+        {
+            // Vícesystémové lokomotivy
+            if (MultiSystemEngine)
+            {
+                // Maximální rychlost plnění jímky pomocným kompresorem
+                if (AuxResChargingRatePSIpS == 0)
+                    AuxResChargingRatePSIpS = 0.027f * 14.50377f; // 0.027 bar/s
+
+                // Maximální tlak v jímce pomocného kompresoru 
+                if (MaxAuxResPressurePSI == 0)
+                    MaxAuxResPressurePSI = 5.0f * 14.50377f; // 5 barů                        
+
+                // Velikost jímky pomocného kompresoru
+                if (AuxResVolumeM3 == 0)
+                    AuxResVolumeM3 = 50.0f / 1000f; // 50 L
+
+                // Hodnota pro restart pomocného kompresoru
+                if (AuxCompressorRestartPressurePSI == 0)
+                    AuxCompressorRestartPressurePSI = 4.5f * 14.50377f; // 4.5 barů
+
+                // Minimální hodnota tlaku pro chod pantografu
+                if (MinAuxPressurePantoPSI == 0)
+                    MinAuxPressurePantoPSI = 4.4f * 14.50377f; // 4.4 barů
+
+                // Minimální hodnota tlaku pro chod HV
+                if (MinAuxPressureHVPSI == 0)
+                    MinAuxPressureHVPSI = 4.2f * 14.50377f; // 4.2 barů
+
+                // Spotřeba pantografu
+                if (PantoConsumptionVolumeM3 == 0)
+                    PantoConsumptionVolumeM3 = 35.0f / 1000f; // 35 L
+
+                // AC    
+                if (SwitchingVoltageMode_OffAC)
+                {
+                    // Spotřeba HV při AC
+                    if (HVConsumptionVolumeM3_On == 0)
+                        HVConsumptionVolumeM3_On = 30.0f / 1000f; // 30 L
+                                        
+                    if (HVConsumptionVolumeM3_Off == 0)
+                        HVConsumptionVolumeM3_Off = 55.0f / 1000f; // 55 L
+                }
+                //DC
+                if (SwitchingVoltageMode_OffDC)
+                {
+                    // Spotřeba HV při DC
+                    if (HVConsumptionVolumeM3_On == 0)
+                        HVConsumptionVolumeM3_On = 20.0f / 1000f; // 20 L
+                    
+                    if (HVConsumptionVolumeM3_Off == 0)
+                        HVConsumptionVolumeM3_Off = 20.0f / 1000f; // 20 L
+                }
+            }
+
+            else
+            // Jednosystémové lokomotivy
+            {
+                // Maximální rychlost plnění jímky pomocným kompresorem
+                if (AuxResChargingRatePSIpS == 0)
+                    AuxResChargingRatePSIpS = 0.027f * 14.50377f; // 0.027 bar/s
+
+                // Velikost jímky pomocného kompresoru
+                if (AuxResVolumeM3 == 0)
+                    AuxResVolumeM3 = 50.0f / 1000f; // 50 L
+
+                // Spotřeba pantografu
+                if (PantoConsumptionVolumeM3 == 0)
+                    PantoConsumptionVolumeM3 = 35.0f / 1000f; // 35 L 
+
+                if (LocomotivePowerVoltage == 3000)
+                {
+                    // Maximální tlak v jímce pomocného kompresoru 
+                    if (MaxAuxResPressurePSI == 0)
+                        MaxAuxResPressurePSI = 5.0f * 14.50377f; // 5 barů                        
+
+                    // Hodnota pro restart pomocného kompresoru
+                    if (AuxCompressorRestartPressurePSI == 0)
+                        AuxCompressorRestartPressurePSI = 4.5f * 14.50377f; // 4.5 barů
+
+                    // Minimální hodnota tlaku pro chod pantografu
+                    if (MinAuxPressurePantoPSI == 0)
+                        MinAuxPressurePantoPSI = 4.4f * 14.50377f; // 4.4 barů
+
+                    // Minimální hodnota tlaku pro chod HV
+                    if (MinAuxPressureHVPSI == 0)
+                        MinAuxPressureHVPSI = 4.2f * 14.50377f; // 4.2 barů
+
+                    // Spotřeba HV
+                    if (HVConsumptionVolumeM3_On == 0)
+                        HVConsumptionVolumeM3_On = 20.0f / 1000f; // 20 L
+
+                    if (HVConsumptionVolumeM3_Off == 0)
+                        HVConsumptionVolumeM3_Off = 20.0f / 1000f; // 20 L
+                }
+                if (LocomotivePowerVoltage == 25000)
+                {
+                    // Maximální tlak v jímce pomocného kompresoru 
+                    if (MaxAuxResPressurePSI == 0)
+                        MaxAuxResPressurePSI = 7.0f * 14.50377f; // 7 barů
+                     
+                    // Hodnota pro restart pomocného kompresoru
+                    if (AuxCompressorRestartPressurePSI == 0)
+                        AuxCompressorRestartPressurePSI = 5.5f * 14.50377f; // 5.5 barů
+
+                    // Minimální hodnota tlaku pro chod pantografu
+                    if (MinAuxPressurePantoPSI == 0)
+                        MinAuxPressurePantoPSI = 5.8f * 14.50377f; // 5.8 barů
+
+                    // Minimální hodnota tlaku pro chod HV
+                    if (MinAuxPressureHVPSI == 0)
+                        MinAuxPressureHVPSI = 5.0f * 14.50377f; // 5.0 barů
+
+                    // Spotřeba HV
+                    if (HVConsumptionVolumeM3_On == 0)
+                        HVConsumptionVolumeM3_On = 30.0f / 1000f; // 30 L
+
+                    if (HVConsumptionVolumeM3_Off == 0)
+                        HVConsumptionVolumeM3_Off = 55.0f / 1000f; // 55 L
+                }                                                                               
             }
         }
 
@@ -2641,7 +2813,7 @@ namespace Orts.Simulation.RollingStocks
             HVOffbyAirPressure();
             MaxPower_MaxForce_ACDC();
             ElevatedConsumptionOnLocomotive();
-
+            
             TrainControlSystem.Update();
 
             elapsedTime = elapsedClockSeconds;
@@ -3590,6 +3762,9 @@ namespace Orts.Simulation.RollingStocks
            
             if (Compressor2IsOn)
                 MainResPressurePSI += elapsedClockSeconds * MainResChargingRatePSIpS_2;
+
+            if (AuxCompressorIsOn)
+                AuxResPressurePSI += elapsedClockSeconds * AuxResChargingRatePSIpS;            
         }
 
         /// <summary>
@@ -5794,7 +5969,17 @@ namespace Orts.Simulation.RollingStocks
             Mirel.AlerterPressed(pressed);
         }
 
-        // Icik
+        // Icik        
+        public void ToggleAuxCompressorMode_OffOn()
+        {
+            if (AuxCompressor)
+            {
+                AuxCompressorMode_OffOn = !AuxCompressorMode_OffOn;
+                if (AuxCompressorMode_OffOn) SignalEvent(Event.AuxCompressorMode_OffOnOn);
+                else SignalEvent(Event.AuxCompressorMode_OffOnOff);
+                if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.AuxCompressorMode_OffOn, AuxCompressorMode_OffOn ? CabSetting.On : CabSetting.Off);
+            }
+        }
         public void ToggleCompressorMode_OffAuto()
         {
             if (Compressor_I)
@@ -6094,6 +6279,8 @@ namespace Orts.Simulation.RollingStocks
                 // Icik
                 case Event.Compressor2On: { Compressor2IsOn = true; break; }
                 case Event.Compressor2Off: { Compressor2IsOn = false; break; }
+                case Event.AuxCompressorOn: { AuxCompressorIsOn = true; break; }
+                case Event.AuxCompressorOff: { AuxCompressorIsOn = false; break; }
             }
 
             base.SignalEvent(evt);
@@ -7386,6 +7573,12 @@ namespace Orts.Simulation.RollingStocks
                         }
                         if (!Compressor2IsOn)
                             cvc.ElapsedTime2 = 0;
+                        break;
+                    }
+                case CABViewControlTypes.AUXCOMPRESSOR_MODE_OFFON:
+                    {
+                        AuxCompressor = true;
+                        data = AuxCompressorMode_OffOn ? 1 : 0;
                         break;
                     }
                 case CABViewControlTypes.COMPRESSOR_MODE_OFFAUTO:
