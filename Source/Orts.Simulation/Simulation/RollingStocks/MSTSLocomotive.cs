@@ -512,6 +512,9 @@ namespace Orts.Simulation.RollingStocks
         public float PantoConsumptionVolumeM3;
         public float HVConsumptionVolumeM3_On;
         public float HVConsumptionVolumeM3_Off;
+        public bool HVElectric;
+        public float AuxResPipeLeak;
+
 
         // Jindrich
         public CruiseControl CruiseControl;
@@ -630,7 +633,7 @@ namespace Orts.Simulation.RollingStocks
                     Trace.TraceWarning("{0} locomotive's CabView references non-existent {1}", wagFilePath, CVFFileName);
             }
 
-            CorrectBrakingParams();
+            //CorrectBrakingParams();
             CheckCoherence();
             GetPressureUnit();
             IsDriveable = true;
@@ -1136,6 +1139,8 @@ namespace Orts.Simulation.RollingStocks
                 case "engine(pantoconsumptionvolume": PantoConsumptionVolumeM3 = Me3.FromFt3(stf.ReadFloatBlock(STFReader.UNITS.VolumeDefaultFT3, null)); break;
                 case "engine(hvconsumptionvolumeon": HVConsumptionVolumeM3_On = Me3.FromFt3(stf.ReadFloatBlock(STFReader.UNITS.VolumeDefaultFT3, null)); break;
                 case "engine(hvconsumptionvolumeoff": HVConsumptionVolumeM3_Off = Me3.FromFt3(stf.ReadFloatBlock(STFReader.UNITS.VolumeDefaultFT3, null)); break;
+                case "engine(hvelectric": HVElectric = stf.ReadBoolBlock(false); break;
+                case "engine(auxrespipeleak": AuxResPipeLeak = stf.ReadFloatBlock(STFReader.UNITS.PressureRateDefaultPSIpS, null); break;
 
                 // Jindrich
                 case "engine(batterydefaultoff": Battery = !stf.ReadBoolBlock(false); break;
@@ -1362,6 +1367,8 @@ namespace Orts.Simulation.RollingStocks
             PantoConsumptionVolumeM3 = locoCopy.PantoConsumptionVolumeM3;
             HVConsumptionVolumeM3_On = locoCopy.HVConsumptionVolumeM3_On;
             HVConsumptionVolumeM3_Off = locoCopy.HVConsumptionVolumeM3_Off;
+            HVElectric = locoCopy.HVElectric;
+            AuxResPipeLeak = locoCopy.AuxResPipeLeak;
 
             // Jindrich
             if (locoCopy.CruiseControl != null)
@@ -1704,7 +1711,10 @@ namespace Orts.Simulation.RollingStocks
             InitializeElectrifiedSections();
 
             // Icik
+            SetDefault_AuxCompressor();
+
             MainResChargingRatePSIpS0 = MainResChargingRatePSIpS;
+            
             if (!Compressor_I && !Compressor_II)
                 Compressor_I = true;
 
@@ -1716,8 +1726,7 @@ namespace Orts.Simulation.RollingStocks
 
             if (MainResChargingRatePSIpS_2 == 0)
                 MainResChargingRatePSIpS_2 = MainResChargingRatePSIpS;
-
-            SetDefault_AuxCompressor();
+            
 
 
             if (File.Exists(WagFilePath + ".ExtendedPhysics.xml") && extendedPhysics == null)
@@ -2157,48 +2166,48 @@ namespace Orts.Simulation.RollingStocks
         /// Correct braking parameters if needed or required 
         /// </summary>
         /// 
-        protected void CorrectBrakingParams()
-        {
-            if (Simulator.Settings.CorrectQuestionableBrakingParams || Simulator.Settings.SimpleControlPhysics)
-            {
-                if (!(BrakeSystem is EPBrakeSystem) && !(BrakeSystem is VacuumSinglePipe) && !(BrakeSystem is AirTwinPipe))
-                {
-                    if (CompressorRestartPressurePSI - TrainBrakeController.MaxPressurePSI < DefaultCompressorRestartToMaxSysPressureDiff - 10)
-                    {
-                        CompressorRestartPressurePSI = Math.Max(CompressorRestartPressurePSI, Math.Min(TrainBrakeController.MaxPressurePSI + DefaultCompressorRestartToMaxSysPressureDiff, DefaultMaxCompressorRestartPressure));
-                        MainResPressurePSI = MaxMainResPressurePSI = Math.Max(MaxMainResPressurePSI, Math.Min(CompressorRestartPressurePSI + DefaultMaxMainResToCompressorRestartPressureDiff, DefaultMaxMainResPressure));
+        //protected void CorrectBrakingParams()
+        //{
+        //    if (Simulator.Settings.CorrectQuestionableBrakingParams || Simulator.Settings.SimpleControlPhysics)
+        //    {
+        //        if (!(BrakeSystem is EPBrakeSystem) && !(BrakeSystem is VacuumSinglePipe) && !(BrakeSystem is AirTwinPipe))
+        //        {
+        //            if (CompressorRestartPressurePSI - TrainBrakeController.MaxPressurePSI < DefaultCompressorRestartToMaxSysPressureDiff - 10)
+        //            {
+        //                CompressorRestartPressurePSI = Math.Max(CompressorRestartPressurePSI, Math.Min(TrainBrakeController.MaxPressurePSI + DefaultCompressorRestartToMaxSysPressureDiff, DefaultMaxCompressorRestartPressure));
+        //                MainResPressurePSI = MaxMainResPressurePSI = Math.Max(MaxMainResPressurePSI, Math.Min(CompressorRestartPressurePSI + DefaultMaxMainResToCompressorRestartPressureDiff, DefaultMaxMainResPressure));
 
-                    }
-                    if (MainResVolumeM3 < 0.3f && MassKG > 20000) MainResVolumeM3 = DefaultMainResVolume;
+        //            }
+        //            if (MainResVolumeM3 < 0.3f && MassKG > 20000) MainResVolumeM3 = DefaultMainResVolume;
 
-                    // correct questionable MaxCylPressurePSI
-                    BrakeSystem.CorrectMaxCylPressurePSI(this);
-                }
-                if (MainResChargingRatePSIpS <= 0)
-                {
-                    MainResChargingRatePSIpS = Math.Max(0.5f, (CompressorChargingRateM3pS * Bar.ToPSI(1)) / MainResVolumeM3);
-                }
-            }
-            else if (MainResChargingRatePSIpS <= 0) MainResChargingRatePSIpS = 0.4f;
+        //            // correct questionable MaxCylPressurePSI
+        //            BrakeSystem.CorrectMaxCylPressurePSI(this);
+        //        }
+        //        if (MainResChargingRatePSIpS <= 0)
+        //        {
+        //            MainResChargingRatePSIpS = Math.Max(0.5f, (CompressorChargingRateM3pS * Bar.ToPSI(1)) / MainResVolumeM3);
+        //        }
+        //    }
+        //    else if (MainResChargingRatePSIpS <= 0) MainResChargingRatePSIpS = 0.4f;
 
-            // Corrections for dynamic braking parameters
+        //    // Corrections for dynamic braking parameters
 
-            if (this is MSTSElectricLocomotive && DynamicBrakeDelayS > 4) DynamicBrakeDelayS = 2; // Electric locomotives have short engaging delays
-            if (DynamicBrakeSpeed2MpS > 0 && DynamicBrakeSpeed3MpS > 0 && DynamicBrakeSpeed2MpS > DynamicBrakeSpeed3MpS)
-            {
-                // also exchanging DynamicBrakesMaximumEffectiveSpeed with DynamicBrakesFadingSpeed is a frequent error that upsets operation of
-                // dynamic brakes
-                var temp = DynamicBrakeSpeed2MpS;
-                DynamicBrakeSpeed2MpS = DynamicBrakeSpeed3MpS;
-                DynamicBrakeSpeed3MpS = temp;
-            }
-            if (Simulator.Settings.CorrectQuestionableBrakingParams)
-            {
-                if (MaxDynamicBrakeForceN > 0 && MaxContinuousForceN > 0 &&
-                (MaxDynamicBrakeForceN / MaxContinuousForceN < 0.3f && MaxDynamicBrakeForceN == 20000))
-                    MaxDynamicBrakeForceN = Math.Min (MaxContinuousForceN * 0.5f, 150000); // 20000 is suggested as standard value in the MSTS documentation, but in general it is a too low value
-            }
-        }
+        //    if (this is MSTSElectricLocomotive && DynamicBrakeDelayS > 4) DynamicBrakeDelayS = 2; // Electric locomotives have short engaging delays
+        //    if (DynamicBrakeSpeed2MpS > 0 && DynamicBrakeSpeed3MpS > 0 && DynamicBrakeSpeed2MpS > DynamicBrakeSpeed3MpS)
+        //    {
+        //        // also exchanging DynamicBrakesMaximumEffectiveSpeed with DynamicBrakesFadingSpeed is a frequent error that upsets operation of
+        //        // dynamic brakes
+        //        var temp = DynamicBrakeSpeed2MpS;
+        //        DynamicBrakeSpeed2MpS = DynamicBrakeSpeed3MpS;
+        //        DynamicBrakeSpeed3MpS = temp;
+        //    }
+        //    if (Simulator.Settings.CorrectQuestionableBrakingParams)
+        //    {
+        //        if (MaxDynamicBrakeForceN > 0 && MaxContinuousForceN > 0 &&
+        //        (MaxDynamicBrakeForceN / MaxContinuousForceN < 0.3f && MaxDynamicBrakeForceN == 20000))
+        //            MaxDynamicBrakeForceN = Math.Min (MaxContinuousForceN * 0.5f, 150000); // 20000 is suggested as standard value in the MSTS documentation, but in general it is a too low value
+        //    }
+        //}
 
         /// <summary>
         /// Dynamic brake blending 
@@ -2654,6 +2663,10 @@ namespace Orts.Simulation.RollingStocks
 
         public void SetDefault_AuxCompressor()
         {
+            // Netěsnost pomocné jímky pomocného kompresoru 0.005 bar/s
+            if (AuxResPipeLeak == 0)
+                AuxResPipeLeak = 0.005f * 14.50377f;   
+
             // Vícesystémové lokomotivy
             if (MultiSystemEngine)
             {
@@ -2679,32 +2692,7 @@ namespace Orts.Simulation.RollingStocks
 
                 // Minimální hodnota tlaku pro chod HV
                 if (MinAuxPressureHVPSI == 0)
-                    MinAuxPressureHVPSI = 4.2f * 14.50377f; // 4.2 barů
-
-                // Spotřeba pantografu
-                if (PantoConsumptionVolumeM3 == 0)
-                    PantoConsumptionVolumeM3 = 35.0f / 1000f; // 35 L
-
-                // AC    
-                if (SwitchingVoltageMode_OffAC)
-                {
-                    // Spotřeba HV při AC
-                    if (HVConsumptionVolumeM3_On == 0)
-                        HVConsumptionVolumeM3_On = 30.0f / 1000f; // 30 L
-
-                    if (HVConsumptionVolumeM3_Off == 0)
-                        HVConsumptionVolumeM3_Off = 55.0f / 1000f; // 55 L
-                }
-                //DC
-                if (SwitchingVoltageMode_OffDC)
-                {
-                    // Spotřeba HV při DC
-                    if (HVConsumptionVolumeM3_On == 0)
-                        HVConsumptionVolumeM3_On = 20.0f / 1000f; // 20 L
-
-                    if (HVConsumptionVolumeM3_Off == 0)
-                        HVConsumptionVolumeM3_Off = 20.0f / 1000f; // 20 L
-                }
+                    MinAuxPressureHVPSI = 4.2f * 14.50377f; // 4.2 barů                               
             }
 
             else
@@ -2717,10 +2705,6 @@ namespace Orts.Simulation.RollingStocks
                 // Velikost jímky pomocného kompresoru
                 if (AuxResVolumeM3 == 0)
                     AuxResVolumeM3 = 50.0f / 1000f; // 50 L
-
-                // Spotřeba pantografu
-                if (PantoConsumptionVolumeM3 == 0)
-                    PantoConsumptionVolumeM3 = 35.0f / 1000f; // 35 L 
 
                 if (LocomotivePowerVoltage == 3000)
                 {
@@ -2738,14 +2722,7 @@ namespace Orts.Simulation.RollingStocks
 
                     // Minimální hodnota tlaku pro chod HV
                     if (MinAuxPressureHVPSI == 0)
-                        MinAuxPressureHVPSI = 4.2f * 14.50377f; // 4.2 barů
-
-                    // Spotřeba HV
-                    if (HVConsumptionVolumeM3_On == 0)
-                        HVConsumptionVolumeM3_On = 20.0f / 1000f; // 20 L
-
-                    if (HVConsumptionVolumeM3_Off == 0)
-                        HVConsumptionVolumeM3_Off = 20.0f / 1000f; // 20 L
+                        MinAuxPressureHVPSI = 4.2f * 14.50377f; // 4.2 barů                    
                 }
                 if (LocomotivePowerVoltage == 25000)
                 {
@@ -2763,14 +2740,7 @@ namespace Orts.Simulation.RollingStocks
 
                     // Minimální hodnota tlaku pro chod HV
                     if (MinAuxPressureHVPSI == 0)
-                        MinAuxPressureHVPSI = 5.0f * 14.50377f; // 5.0 barů
-
-                    // Spotřeba HV
-                    if (HVConsumptionVolumeM3_On == 0)
-                        HVConsumptionVolumeM3_On = 30.0f / 1000f; // 30 L
-
-                    if (HVConsumptionVolumeM3_Off == 0)
-                        HVConsumptionVolumeM3_Off = 55.0f / 1000f; // 55 L
+                        MinAuxPressureHVPSI = 5.0f * 14.50377f; // 5.0 barů                    
                 }
             }
         }
@@ -2778,38 +2748,38 @@ namespace Orts.Simulation.RollingStocks
 
         public void SaveElectrifiedSection(int sectionId, int voltage)
         {
-            foreach (XmlNode node in ElSectionXml.ChildNodes)
-            {
-                if (node.Name == "ElectrifiedSections")
-                {
-                    foreach (XmlNode nodeSignal in node.ChildNodes)
-                    {
-                        bool updateNode = false;
-                        foreach (XmlNode nodeId in nodeSignal.ChildNodes)
-                        {
-                            if (nodeId.Name == "Id" && nodeId.InnerText == sectionId.ToString())
-                            {
-                                updateNode = true;
-                            }
-                            if (nodeId.Name == "Voltage" && updateNode)
-                            {
-                                nodeId.InnerText = voltage.ToString();
-                                goto Save;
-                            }
-                        }
-                    }
-                    XmlNode node1 = ElSectionXml.CreateElement("Section");
-                    XmlNode node2 = ElSectionXml.CreateElement("Id");
-                    node2.InnerText = sectionId.ToString();
-                    XmlNode node3 = ElSectionXml.CreateElement("Voltage");
-                    node3.InnerText = voltage.ToString();
-                    node1.AppendChild(node2);
-                    node1.AppendChild(node3);
-                    node.AppendChild(node1);
-                }
-            }
-        Save:
-            ElSectionXml.Save(Simulator.RoutePath + "\\ElectrifiedSections.xml");
+        //    foreach (XmlNode node in ElSectionXml.ChildNodes)
+        //    {
+        //        if (node.Name == "ElectrifiedSections")
+        //        {
+        //            foreach (XmlNode nodeSignal in node.ChildNodes)
+        //            {
+        //                bool updateNode = false;
+        //                foreach (XmlNode nodeId in nodeSignal.ChildNodes)
+        //                {
+        //                    if (nodeId.Name == "Id" && nodeId.InnerText == sectionId.ToString())
+        //                    {
+        //                        updateNode = true;
+        //                    }
+        //                    if (nodeId.Name == "Voltage" && updateNode)
+        //                    {
+        //                        nodeId.InnerText = voltage.ToString();
+        //                        goto Save;
+        //                    }
+        //                }
+        //            }
+        //            XmlNode node1 = ElSectionXml.CreateElement("Section");
+        //            XmlNode node2 = ElSectionXml.CreateElement("Id");
+        //            node2.InnerText = sectionId.ToString();
+        //            XmlNode node3 = ElSectionXml.CreateElement("Voltage");
+        //            node3.InnerText = voltage.ToString();
+        //            node1.AppendChild(node2);
+        //            node1.AppendChild(node3);
+        //            node.AppendChild(node1);
+        //        }
+        //    }
+        //Save:
+        //    ElSectionXml.Save(Simulator.RoutePath + "\\ElectrifiedSections.xml");
         }
 
         
@@ -3855,14 +3825,9 @@ namespace Orts.Simulation.RollingStocks
         /// </summary>
         protected virtual void UpdateCompressor(float elapsedClockSeconds)
         {
-            //if (MainResPressurePSI < CompressorRestartPressurePSI && AuxPowerOn && !CompressorIsOn)
-            //    SignalEvent(Event.CompressorOn);
-            //else if ((MainResPressurePSI > MaxMainResPressurePSI || !AuxPowerOn) && CompressorIsOn)
-            //    SignalEvent(Event.CompressorOff);
-                        
             if (CompressorIsOn)
                 MainResPressurePSI += elapsedClockSeconds * MainResChargingRatePSIpS;
-           
+
             if (Compressor2IsOn)
                 MainResPressurePSI += elapsedClockSeconds * MainResChargingRatePSIpS_2;
 

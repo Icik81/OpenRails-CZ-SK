@@ -2187,6 +2187,7 @@ namespace Orts.Viewer3D.RollingStock
 
                 // Icik
                 case CABViewControlTypes.COMPRESSOR_START:
+                case CABViewControlTypes.AUXCOMPRESSOR_MODE_OFFON:
                 case CABViewControlTypes.COMPRESSOR_MODE_OFFAUTO:
                 case CABViewControlTypes.COMPRESSOR_MODE2_OFFAUTO:
                 case CABViewControlTypes.HEATING_OFFON:

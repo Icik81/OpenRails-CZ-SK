@@ -561,7 +561,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             if (loco != null)
             {
                 loco.MainResPressurePSI = loco.MaxMainResPressurePSI;
-                loco.AuxResPressurePSI = loco.MaxAuxResPressurePSI;
+                
+                if (loco.AuxCompressor)
+                    loco.AuxResPressurePSI = loco.MaxAuxResPressurePSI;
+                
                 if (loco.HandBrakePresent)
                     HandbrakePercent = 0;
             }
@@ -651,7 +654,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 if (IsAirFull)
                 {
                     if (loco != null)
-                    {
+                    {                        
+                        loco.AuxResPressurePSI = loco.MaxAuxResPressurePSI;                     
                         HandbrakePercent = loco.HandBrakePresent ? 0 : 0;
                     }
                     HandbrakePercent = (Car as MSTSWagon).HandBrakePresent ? 0 : 0;
@@ -1720,7 +1724,22 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
 
 
                         // *** Kompresory ***
-                        
+
+                        // Pokud není pomocný kompresor, bude hodnota 0bar v jímce
+                        if (!loco.AuxCompressor)
+                            loco.AuxResPressurePSI = 0;
+
+                        // Propojení hlavní jímky s pomocnou jímkou pomocného kompresoru
+                        if (loco.MainResPressurePSI > loco.AuxResPressurePSI && loco.AuxResPressurePSI < loco.MaxAuxResPressurePSI)
+                        {
+                            loco.MainResPressurePSI -= 2 * (loco.AuxResVolumeM3 * loco.MaxAuxResPressurePSI / (loco.MainResVolumeM3 * loco.MaxMainResPressurePSI)) * 2 * elapsedClockSeconds;
+                            loco.AuxResPressurePSI += 2 * elapsedClockSeconds;
+                        }
+
+                        // Netěsnosti jímky pomocného kompresoru
+                        if (loco.AuxResPressurePSI > 0)
+                            loco.AuxResPressurePSI -= loco.AuxResPipeLeak * elapsedClockSeconds * 1;
+
                         // Minimální mez pro dostatek vzduchu pro pantografy
                         if (loco.AuxResPressurePSI >= loco.MinAuxPressurePantoPSI || !loco.AuxCompressor) 
                             loco.AirForPantograph = true;
@@ -1829,7 +1848,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         }
 
                         if (loco.AuxResPressurePSI <= loco.AuxCompressorRestartPressurePSI
-                            && loco.Battery 
+                            && loco.Battery && loco.PowerKey
                             && loco.AuxCompressorMode_OffOn
                             && loco.BrakeSystem.AuxCompressorOnDelay
                             && !loco.AuxCompressorIsOn)
@@ -1851,7 +1870,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
 
 
                         if ((loco.AuxResPressurePSI >= loco.MaxAuxResPressurePSI
-                            || !loco.Battery
+                            || (!loco.Battery || !loco.PowerKey)
                             || !loco.AuxCompressorMode_OffOn)
                             && loco.AuxCompressorIsOn)
                             loco.SignalEvent(Event.AuxCompressorOff);

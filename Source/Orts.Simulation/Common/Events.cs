@@ -246,10 +246,8 @@ namespace Orts.Common
         AuxCompressorMode_OffOnOff,
         CompressorMode_OffAutoOn,
         CompressorMode_OffAutoOff,
-
         Heating_OffOnOn,
-        Heating_OffOnOff,
-        
+        Heating_OffOnOff,        
         SwitchingVoltageMode_OffDCOn,
         SwitchingVoltageMode_OffDCOff,
         SwitchingVoltageMode_OffACOn,
@@ -586,6 +584,8 @@ namespace Orts.Common
 
                         case 20035: return Event.AuxCompressorMode_OffOnOn;
                         case 20036: return Event.AuxCompressorMode_OffOnOff;
+                        case 20037: return Event.AuxCompressorOn;
+                        case 20038: return Event.AuxCompressorOff;
 
                         default: return 0;
                     }

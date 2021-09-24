@@ -95,7 +95,7 @@ namespace Orts.Simulation.RollingStocks
         bool HVClosed = false;
         float T_HVOpen = 0;
         float T_HVClosed = 0;
-        float T_PantoUp = 0;
+        float[] T_PantoUp = new float[4];
 
         public MSTSElectricLocomotive(Simulator simulator, string wagFile) :
             base(simulator, wagFile)
@@ -748,61 +748,100 @@ namespace Orts.Simulation.RollingStocks
         // Výpočet spotřeby vzduchu, jímka pomocného kompresoru
         protected void AuxAirConsumption(float elapsedClockSeconds)
         {
+            // Spotřeba pantografu
+            if (PantoConsumptionVolumeM3 == 0)
+                PantoConsumptionVolumeM3 = 35.0f / 1000f; // 35 L 
+            // AC    
+            if (SwitchingVoltageMode_OffAC || LocomotivePowerVoltage == 25000)
+            {
+                // Spotřeba HV při AC
+                if (HVConsumptionVolumeM3_On == 0)
+                    HVConsumptionVolumeM3_On = 30.0f / 1000f; // 30 L
+
+                if (HVConsumptionVolumeM3_Off == 0)
+                    HVConsumptionVolumeM3_Off = 55.0f / 1000f; // 55 L
+            }
+            //DC
+            if (SwitchingVoltageMode_OffDC || LocomotivePowerVoltage == 3000)
+            {
+                // Spotřeba HV při DC
+                if (HVConsumptionVolumeM3_On == 0)
+                    HVConsumptionVolumeM3_On = 20.0f / 1000f; // 20 L
+
+                if (HVConsumptionVolumeM3_Off == 0)
+                    HVConsumptionVolumeM3_Off = 20.0f / 1000f; // 20 L
+            }
+
             if (AuxCompressor)
             {
-                foreach (Pantograph panto in Pantographs.List)
-                    switch (panto.State)
+                for (int i = 1; i <= Pantographs.Count; i++)
+                {
+                    switch (Pantographs[i].State)
                     {
                         case PantographState.Raising:
                             {
-                                T_PantoUp += elapsedClockSeconds;
-                                if (AuxResPressurePSI > 0 && T_PantoUp < 1)
+                                T_PantoUp[i] += elapsedClockSeconds;
+                                if (AuxResPressurePSI > 0 && T_PantoUp[i] < 1)
                                     AuxResPressurePSI -= 14.50377f * (MaxAuxResPressurePSI / (AuxResVolumeM3 * MaxAuxResPressurePSI / PantoConsumptionVolumeM3)) * elapsedClockSeconds;
-                                return;
+                                break;
                             }
                         case PantographState.Lowering:
                         case PantographState.Down:
                             {
-                                T_PantoUp = 0;
                                 if (!AirForPantograph)
-                                    panto.PantographsUpBlocked = true;
-                                else panto.PantographsUpBlocked = false;
+                                    Pantographs[i].PantographsUpBlocked = true;
+                                else Pantographs[i].PantographsUpBlocked = false;
+                                break;
+                            }
+                        case PantographState.Up:
+                            {
+                                T_PantoUp[i] = 0;
+                                if (!AirForPantograph)
+                                    SignalEvent(PowerSupplyEvent.LowerPantograph);
                                 break;
                             }
                     }
-
-                switch (PowerSupply.CircuitBreaker.State)
+                }
+                
+                if (!HVElectric)
                 {
-                    case CircuitBreakerState.Closing:
-                        {
-                            if (!AirForHV)
-                                SignalEvent(PowerSupplyEvent.OpenCircuitBreaker);                            
-                            break;
-                        }
-
-                    case CircuitBreakerState.Closed:
-                        {
-                            HVClosed = true;
-                            T_HVOpen = 0;
-                            T_HVClosed += elapsedClockSeconds;
-                            if (AuxResPressurePSI > 0 && T_HVClosed < 1)
-                                AuxResPressurePSI -= 14.50377f * (MaxAuxResPressurePSI / (AuxResVolumeM3 * MaxAuxResPressurePSI / HVConsumptionVolumeM3_On)) * elapsedClockSeconds;
-                            break;
-                        }
-
-                    case CircuitBreakerState.Open:
-                        {
-                            if (HVClosed)
-                            {                                
-                                T_HVClosed = 0;
-                                T_HVOpen += elapsedClockSeconds;
-                                if (AuxResPressurePSI > 0 && T_HVOpen < 1)
-                                    AuxResPressurePSI -= 14.50377f * (MaxAuxResPressurePSI / (AuxResVolumeM3 * MaxAuxResPressurePSI / HVConsumptionVolumeM3_Off)) * elapsedClockSeconds;
-                                else
-                                    HVClosed = false;
+                    switch (PowerSupply.CircuitBreaker.State)
+                    {
+                        case CircuitBreakerState.Closing:
+                            {
+                                if (!AirForHV)
+                                    SignalEvent(PowerSupplyEvent.OpenCircuitBreaker);
+                                break;
                             }
-                            break;
-                        }
+
+                        case CircuitBreakerState.Closed:
+                            {
+                                HVClosed = true;
+                                T_HVOpen = 0;
+                                T_HVClosed += elapsedClockSeconds;
+                                if (AuxResPressurePSI > 0 && T_HVClosed < 1)
+                                    AuxResPressurePSI -= 14.50377f * (MaxAuxResPressurePSI / (AuxResVolumeM3 * MaxAuxResPressurePSI / HVConsumptionVolumeM3_On)) * elapsedClockSeconds;
+
+                                if (!AirForHV)
+                                    SignalEvent(PowerSupplyEvent.OpenCircuitBreaker);
+
+                                break;
+                            }
+
+                        case CircuitBreakerState.Open:
+                            {
+                                if (HVClosed)
+                                {
+                                    T_HVClosed = 0;
+                                    T_HVOpen += elapsedClockSeconds;
+                                    if (AuxResPressurePSI > 0 && T_HVOpen < 1)
+                                        AuxResPressurePSI -= 14.50377f * (MaxAuxResPressurePSI / (AuxResVolumeM3 * MaxAuxResPressurePSI / HVConsumptionVolumeM3_Off)) * elapsedClockSeconds;
+                                    else
+                                        HVClosed = false;
+                                }
+                                break;
+                            }
+                    }
                 }
             }
         }
