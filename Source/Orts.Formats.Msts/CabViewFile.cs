@@ -399,6 +399,7 @@ namespace Orts.Formats.Msts
 
         // Icik
         COMPRESSOR_START,
+        COMPRESSOR_COMBINED,
         AUXCOMPRESSOR_MODE_OFFON,
         COMPRESSOR_MODE_OFFAUTO,
         COMPRESSOR_MODE2_OFFAUTO,

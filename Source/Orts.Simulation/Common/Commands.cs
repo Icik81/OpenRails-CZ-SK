@@ -1635,6 +1635,56 @@ namespace Orts.Common
         }
     }
     [Serializable()]
+    public sealed class ToggleCompressorCombinedCommand : Command
+    {
+        public static MSTSLocomotive Receiver { get; set; }
+
+        public ToggleCompressorCombinedCommand(CommandLog log)
+            : base(log)
+        {
+            Redo();
+        }
+
+        public override void Redo()
+        {
+            Receiver.ToggleCompressorCombined();
+            // Report();
+        }
+    }
+    [Serializable()]
+    public sealed class ToggleCompressorCombinedSwitchUpCommand : Command
+    {
+        public static MSTSLocomotive Receiver { get; set; }
+
+        public ToggleCompressorCombinedSwitchUpCommand(CommandLog log)
+            : base(log)
+        {
+            Redo();
+        }
+
+        public override void Redo()
+        {
+            
+            Receiver.ToggleCompressorCombinedSwitchUp();
+        }
+    }
+    [Serializable()]
+    public sealed class ToggleCompressorCombinedSwitchDownCommand : Command
+    {
+        public static MSTSLocomotive Receiver { get; set; }
+
+        public ToggleCompressorCombinedSwitchDownCommand(CommandLog log)
+            : base(log)
+        {
+            Redo();
+        }
+
+        public override void Redo()
+        {
+            Receiver.ToggleCompressorCombinedSwitchDown();
+        }
+    }
+    [Serializable()]
     public sealed class ToggleAuxCompressorMode_OffOnCommand : Command
     {
         public static MSTSLocomotive Receiver { get; set; }

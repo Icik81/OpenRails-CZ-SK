@@ -461,7 +461,7 @@ namespace Orts.Simulation.RollingStocks
         public bool ThrottleZero = false;
         public bool AuxCompressorMode_OffOn;
         public bool CompressorMode_OffAuto;
-        public bool CompressorMode2_OffAuto;
+        public bool CompressorMode2_OffAuto;        
         public bool EngineBrakeEngageEDB = false;
         public bool Heating_OffOn;
         public bool SwitchingVoltageMode_OffAC;
@@ -495,6 +495,7 @@ namespace Orts.Simulation.RollingStocks
         public bool QuickReleaseButtonEnable = false;
         public bool LowPressureReleaseButtonEnable = false;
         public bool AuxCompressor = false;
+        public bool CompressorCombined = false;
         public bool Compressor_I = false;
         public bool Compressor_II = false;
         public bool Compressor2IsOn;
@@ -514,6 +515,11 @@ namespace Orts.Simulation.RollingStocks
         public float HVConsumptionVolumeM3_Off;
         public bool HVElectric;
         public float AuxResPipeLeak;
+        public float CompressorSwitch = 1;
+        public bool Compressor_I_HandMode;
+
+        // Zatím opět povoleno
+        public bool RouteVoltageChange;
 
 
         // Jindrich
@@ -1511,6 +1517,8 @@ namespace Orts.Simulation.RollingStocks
             outf.Write(Compressor2IsOn);
             outf.Write(AuxCompressorIsOn);
             outf.Write(AuxResPressurePSI);
+            outf.Write(CompressorSwitch);
+            outf.Write(Compressor_I_HandMode);
 
             base.Save(outf);
 
@@ -1599,6 +1607,8 @@ namespace Orts.Simulation.RollingStocks
             Compressor2IsOn = inf.ReadBoolean();
             AuxCompressorIsOn = inf.ReadBoolean();
             AuxResPressurePSI = inf.ReadSingle();
+            CompressorSwitch = inf.ReadSingle();
+            Compressor_I_HandMode = inf.ReadBoolean();
 
             base.Restore(inf);
 
@@ -2663,9 +2673,9 @@ namespace Orts.Simulation.RollingStocks
 
         public void SetDefault_AuxCompressor()
         {
-            // Netěsnost pomocné jímky pomocného kompresoru 0.005 bar/s
+            // Netěsnost pomocné jímky pomocného kompresoru 0.002 bar/s
             if (AuxResPipeLeak == 0)
-                AuxResPipeLeak = 0.005f * 14.50377f;   
+                AuxResPipeLeak = 0.002f * 14.50377f;   
 
             // Vícesystémové lokomotivy
             if (MultiSystemEngine)
@@ -6037,10 +6047,63 @@ namespace Orts.Simulation.RollingStocks
             Mirel.AlerterPressed(pressed);
         }
 
-        // Icik        
+        // Icik      
+        public void ToggleCompressorCombinedSwitchUp()
+        {
+            if (CompressorSwitch < 4)
+                CompressorSwitch++;
+            if (CompressorSwitch <= 3)
+                ToggleCompressorCombined();
+            CompressorSwitch = MathHelper.Clamp(CompressorSwitch, 0, 3);
+        }
+        public void ToggleCompressorCombinedSwitchDown()
+        {
+            if (CompressorSwitch > -1)
+                CompressorSwitch--;
+            if (CompressorSwitch >= 0)
+                ToggleCompressorCombined();
+            CompressorSwitch = MathHelper.Clamp(CompressorSwitch, 0, 3);
+        }          
+        public void ToggleCompressorCombined()
+        {                       
+            if (CompressorCombined)
+            {
+                Compressor_I_HandMode = false;
+                switch (CompressorSwitch)
+                {
+                    case 0:
+                        {
+                            AuxCompressorMode_OffOn = true;
+                            if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.AuxCompressorMode_OffOn, AuxCompressorMode_OffOn ? CabSetting.On : CabSetting.Off);                            
+                        }
+                        break;
+                    case 1:
+                        {
+                            AuxCompressorMode_OffOn = false;
+                            CompressorMode_OffAuto = false;                            
+                        }
+                        break;
+                    case 2:
+                        {
+                            CompressorMode_OffAuto = true;
+                            Compressor_I_HandMode = false;
+                            if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.CompressorMode_OffAuto, CompressorMode_OffAuto ? CabSetting.On : CabSetting.Off);                            
+                        }
+                        break;
+                    case 3:
+                        {
+                            CompressorMode_OffAuto = false;
+                            Compressor_I_HandMode = true;
+                            if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.Compressor_I_HandMode, Compressor_I_HandMode ? CabSetting.On : CabSetting.Off);
+                        }
+                        break;
+                }
+                SignalEvent(Event.CompressorMode_OffAutoOn);
+            }
+        }
         public void ToggleAuxCompressorMode_OffOn()
         {
-            if (AuxCompressor)
+            if (AuxCompressor && !CompressorCombined)
             {
                 AuxCompressorMode_OffOn = !AuxCompressorMode_OffOn;
                 if (AuxCompressorMode_OffOn) SignalEvent(Event.AuxCompressorMode_OffOnOn);
@@ -6050,7 +6113,7 @@ namespace Orts.Simulation.RollingStocks
         }
         public void ToggleCompressorMode_OffAuto()
         {
-            if (Compressor_I)
+            if (Compressor_I && !CompressorCombined)
             {
                 CompressorMode_OffAuto = !CompressorMode_OffAuto;
                 if (CompressorMode_OffAuto) SignalEvent(Event.CompressorMode_OffAutoOn);
@@ -6106,16 +6169,15 @@ namespace Orts.Simulation.RollingStocks
             if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.SwitchingVoltageMode_OffAC, SwitchingVoltageMode_OffAC ? CabSetting.On : CabSetting.Off);                        
         }
 
+        // Zatím povoleno kvůli kompatibilitě
         public void ToggleControlRouteVoltage()
         {
-            //RouteVoltageChange = !RouteVoltageChange;
-
-            //if (RouteVoltageChange)
-            //    RouteVoltageV = 3000;
-            //else
-            //    RouteVoltageV = 25000;
-
-            //if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.RouteVoltage, RouteVoltageChange ? CabSetting.On : CabSetting.Off);
+            RouteVoltageChange = !RouteVoltageChange;
+            if (RouteVoltageChange)
+                RouteVoltageV = 3000;
+            else
+                RouteVoltageV = 25000;
+            if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.RouteVoltage, RouteVoltageChange ? CabSetting.On : CabSetting.Off);
         }
 
         public void ToggleQuickReleaseButton(bool quickReleaseButton)
@@ -7643,10 +7705,18 @@ namespace Orts.Simulation.RollingStocks
                             cvc.ElapsedTime2 = 0;
                         break;
                     }
+                case CABViewControlTypes.COMPRESSOR_COMBINED:
+                    {
+                        CompressorCombined = true;
+                        AuxCompressor = true;
+                        Compressor_I = true;
+                        data = CompressorSwitch;
+                        break;
+                    }
                 case CABViewControlTypes.AUXCOMPRESSOR_MODE_OFFON:
                     {
                         AuxCompressor = true;
-                        data = AuxCompressorMode_OffOn ? 1 : 0;
+                        data = AuxCompressorMode_OffOn ? 1 : 0;                        
                         break;
                     }
                 case CABViewControlTypes.COMPRESSOR_MODE_OFFAUTO:

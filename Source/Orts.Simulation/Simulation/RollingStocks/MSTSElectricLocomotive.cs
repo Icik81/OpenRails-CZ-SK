@@ -750,7 +750,7 @@ namespace Orts.Simulation.RollingStocks
         {
             // Spotřeba pantografu
             if (PantoConsumptionVolumeM3 == 0)
-                PantoConsumptionVolumeM3 = 35.0f / 1000f; // 35 L 
+                PantoConsumptionVolumeM3 = 25.0f / 1000f; // 25 L 
             // AC    
             if (SwitchingVoltageMode_OffAC || LocomotivePowerVoltage == 25000)
             {
@@ -772,7 +772,7 @@ namespace Orts.Simulation.RollingStocks
                     HVConsumptionVolumeM3_Off = 20.0f / 1000f; // 20 L
             }
 
-            if (AuxCompressor)
+            if (AuxCompressor || CompressorCombined)
             {
                 for (int i = 1; i <= Pantographs.Count; i++)
                 {

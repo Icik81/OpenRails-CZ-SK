@@ -125,6 +125,7 @@ namespace Orts.Simulation
     , AuxCompressorMode_OffOn
     , CompressorMode_OffAuto
     , CompressorMode2_OffAuto
+    , Compressor_I_HandMode
     , Heating_OffOn
     , SwitchingVoltageMode_OffAC
     , SwitchingVoltageMode_OffDC
@@ -286,6 +287,7 @@ namespace Orts.Simulation
                 , new string [] { GetString("Pomocný kompresor"), GetString("off"), null, GetString("on")}
                 , new string [] { GetString("Mód kompresoru I"), GetString("off"), null, GetString("Auto")}
                 , new string [] { GetString("Mód kompresoru II"), GetString("off"), null, GetString("Auto")}
+                , new string [] { GetString("Ruční zapnutí kompresoru I"), GetString("off"), null, GetString("on")}
                 , new string [] { GetString("Topení"), GetString("off"), null, GetString("on")}
                 , new string [] { GetString("Přepnutí napěťového systému"), GetString("off"), null, GetString("AC")}
                 , new string [] { GetString("Přepnutí napěťového systému"), GetString("off"), null, GetString("DC")}

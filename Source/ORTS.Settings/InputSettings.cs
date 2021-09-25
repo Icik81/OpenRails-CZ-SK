@@ -556,6 +556,8 @@ namespace ORTS.Settings
             Commands[(int)UserCommand.GameUncoupleWithMouse] = new UserCommandKeyInput(0x16);
 
             // Icik
+            Commands[(int)UserCommand.ControlCompressorCombinedUp] = new UserCommandKeyInput(0x2E);
+            Commands[(int)UserCommand.ControlCompressorCombinedDown] = new UserCommandKeyInput(0x2E, KeyModifiers.Control | KeyModifiers.Shift);
             Commands[(int)UserCommand.ControlAuxCompressorMode_OffOn] = new UserCommandKeyInput(0x2E, KeyModifiers.Control | KeyModifiers.Shift);
             Commands[(int)UserCommand.ControlCompressorMode_OffAuto] = new UserCommandKeyInput(0x2E);
             Commands[(int)UserCommand.ControlCompressorMode2_OffAuto] = new UserCommandKeyInput(0x2E, KeyModifiers.Control);

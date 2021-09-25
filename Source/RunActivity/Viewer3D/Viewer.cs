@@ -599,6 +599,9 @@ namespace Orts.Viewer3D
             TogglePowerKeyCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
 
             // Icik
+            ToggleCompressorCombinedSwitchUpCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
+            ToggleCompressorCombinedSwitchDownCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
+            ToggleCompressorCombinedCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
             ToggleAuxCompressorMode_OffOnCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
             ToggleCompressorMode_OffAutoCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
             ToggleCompressorMode2_OffAutoCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
