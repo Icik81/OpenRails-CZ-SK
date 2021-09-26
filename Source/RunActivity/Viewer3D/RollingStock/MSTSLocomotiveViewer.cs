@@ -2612,38 +2612,6 @@ namespace Orts.Viewer3D.RollingStock
                     }
                     break;
 
-                case CABViewControlTypes.SWITCHINGVOLTAGEMODE_OFF_DC:
-                    //if ((Locomotive.SwitchingVoltageMode_OffDC ? 1 : 0) != ChangedValue(Locomotive.SwitchingVoltageMode_OffDC ? 1 : 0)) new ToggleSwitchingVoltageMode_OffDCCommand(Viewer.Log); break;
-                    if (ChangedValue(Locomotive.SwitchingVoltageMode_OffDC ? 1 : 0) > 0)
-                    {
-                        Locomotive.SwitchingVoltageMode_OffDC = true;
-                        new ToggleSwitchingVoltageMode_OffDCCommand(Viewer.Log);
-                    }
-                    else
-                    if (ChangedValue(Locomotive.SwitchingVoltageMode_OffDC ? 1 : 0) < 0)
-                    {
-                        Locomotive.SwitchingVoltageMode_OffDC = false;
-                        new ToggleSwitchingVoltageMode_OffDCCommand(Viewer.Log);
-                    }
-                    break;
-
-
-                case CABViewControlTypes.SWITCHINGVOLTAGEMODE_OFF_AC:
-                    //if ((Locomotive.SwitchingVoltageMode_OffAC ? 1 : 0) != ChangedValue(Locomotive.SwitchingVoltageMode_OffAC ? 1 : 0)) new ToggleSwitchingVoltageMode_OffACCommand(Viewer.Log); break;
-                    if (ChangedValue(Locomotive.SwitchingVoltageMode_OffAC ? 1 : 0) > 0)
-                    {
-                        Locomotive.SwitchingVoltageMode_OffAC = true;
-                        new ToggleSwitchingVoltageMode_OffACCommand(Viewer.Log);
-                    }
-                    else
-                    if (ChangedValue(Locomotive.SwitchingVoltageMode_OffAC ? 1 : 0) < 0)
-                    {
-                        Locomotive.SwitchingVoltageMode_OffAC = false;
-                        new ToggleSwitchingVoltageMode_OffACCommand(Viewer.Log);
-                    }
-                    break;
-
-
                 case CABViewControlTypes.QUICK_RELEASE_BUTTON:                    
                         if (ChangedValue(Locomotive.QuickReleaseButton ? 1 : 0) > 0)
                             Locomotive.ToggleQuickReleaseButton(true);

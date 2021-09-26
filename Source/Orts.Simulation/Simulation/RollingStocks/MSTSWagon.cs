@@ -2000,10 +2000,14 @@ namespace Orts.Simulation.RollingStocks
                 // Test to see if coupler forces have been exceeded, and coupler has broken. Exceeding this limit will break the coupler
                 if (IsPlayerTrain) // Only break couplers on player trains
                 {
-                    if (Math.Abs(CouplerForceU) > GetCouplerBreak2N() || Math.Abs(ImpulseCouplerForceUN) > GetCouplerBreak2N())  // break couplers if either static or impulse forces exceeded
+                    // Icik
+                    //Simulator.Confirmer.Information("ImpulseCouplerForceUN = " + Math.Abs(ImpulseCouplerForceUN));
+                    float MaxImpulseCouplerForceUN = 30000; // Maximální síla impulzu při nárazu pro spojení vozů 30kN
+
+                    if (Math.Abs(CouplerForceU) > GetCouplerBreak2N() || Math.Abs(ImpulseCouplerForceUN) > MaxImpulseCouplerForceUN)  // break couplers if either static or impulse forces exceeded
                     {
                         CouplerExceedBreakLimit = true;
-
+                        
                         if (Math.Abs(CouplerForceU) > GetCouplerBreak2N())
                         {
                             Trace.TraceInformation("Coupler on CarID {0} has broken due to excessive static coupler force {1}", CarID, CouplerForceU);
