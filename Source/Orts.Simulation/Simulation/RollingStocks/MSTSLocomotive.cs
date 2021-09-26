@@ -2805,32 +2805,33 @@ namespace Orts.Simulation.RollingStocks
         protected int currentSectionSetId = 0;
         public override void Update(float elapsedClockSeconds)
         {
-            if (IsPlayerTrain && Train.FrontTDBTraveller.TrackNodeIndex != currentSectionSetId)
-                sectionSet = false;
-            if (IsPlayerTrain && !sectionSet)
-            {
-                Simulator.Confirmer.MSG(this.Train.FrontTDBTraveller.TrackNodeIndex.ToString());
-                bool found = false;
-                foreach (ElectrifiedSection es in electrifiedSections)
-                {
-                    if (es.TrackSectionID == Train.FrontTDBTraveller.TrackNodeIndex)
-                    {
-                        found = true;
-                        RouteVoltageV = es.Voltage;
-                        break;
+            // Zakomentováno kvůli kompatibilitě
+            //if (IsPlayerTrain && Train.FrontTDBTraveller.TrackNodeIndex != currentSectionSetId)
+            //    sectionSet = false;
+            //if (IsPlayerTrain && !sectionSet)
+            //{
+            //    Simulator.Confirmer.MSG(this.Train.FrontTDBTraveller.TrackNodeIndex.ToString());
+            //    bool found = false;
+            //    foreach (ElectrifiedSection es in electrifiedSections)
+            //    {
+            //        if (es.TrackSectionID == Train.FrontTDBTraveller.TrackNodeIndex)
+            //        {
+            //            found = true;
+            //            RouteVoltageV = es.Voltage;
+            //            break;
 
-                    }
-                }
-                if (!found)
-                {
-                    SaveElectrifiedSection(Train.FrontTDBTraveller.TrackNodeIndex, (int)RouteVoltageV);
-                    ElectrifiedSection newEs = new ElectrifiedSection();
-                    newEs.TrackSectionID = currentSectionSetId = Train.FrontTDBTraveller.TrackNodeIndex;
-                    newEs.Voltage = (int)RouteVoltageV;
-                    electrifiedSections.Add(newEs);
-                }
-                sectionSet = true;
-            }
+            //        }
+            //    }
+            //    if (!found)
+            //    {
+            //        SaveElectrifiedSection(Train.FrontTDBTraveller.TrackNodeIndex, (int)RouteVoltageV);
+            //        ElectrifiedSection newEs = new ElectrifiedSection();
+            //        newEs.TrackSectionID = currentSectionSetId = Train.FrontTDBTraveller.TrackNodeIndex;
+            //        newEs.Voltage = (int)RouteVoltageV;
+            //        electrifiedSections.Add(newEs);
+            //    }
+            //    sectionSet = true;
+            //}
             double dist = DistanceToPowerSupplyStationM(0); // change 0 to actual selected system
             //Simulator.Confirmer.MSG(dist.ToString());
             if (IsPlayerTrain && !Simulator.Paused)
