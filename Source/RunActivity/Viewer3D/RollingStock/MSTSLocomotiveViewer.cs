@@ -214,6 +214,8 @@ namespace Orts.Viewer3D.RollingStock
             UserInputCommands.Add(UserCommand.SetMirelOff, new Action[] { Noop, () => Locomotive.Mirel.SetMirelSignal(false) });
 
             // Icik            
+            UserInputCommands.Add(UserCommand.ControlPantograph4SwitchUp, new Action[] { Noop, () => new TogglePantograph4SwitchUpCommand(Viewer.Log) });
+            UserInputCommands.Add(UserCommand.ControlPantograph4SwitchDown, new Action[] { Noop, () => new TogglePantograph4SwitchDownCommand(Viewer.Log) });
             UserInputCommands.Add(UserCommand.ControlCompressorCombinedUp, new Action[] { Noop, () => new ToggleCompressorCombinedSwitchUpCommand(Viewer.Log) });
             UserInputCommands.Add(UserCommand.ControlCompressorCombinedDown, new Action[] { Noop, () => new ToggleCompressorCombinedSwitchDownCommand(Viewer.Log) });
             UserInputCommands.Add(UserCommand.ControlCompressorCombined2Up, new Action[] { Noop, () => new ToggleCompressorCombinedSwitch2UpCommand(Viewer.Log) });
@@ -2190,6 +2192,7 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.ORTS_POWERKEY:
 
                 // Icik
+                case CABViewControlTypes.PANTOGRAPH_4_SWITCH:
                 case CABViewControlTypes.COMPRESSOR_START:
                 case CABViewControlTypes.COMPRESSOR_COMBINED:
                 case CABViewControlTypes.COMPRESSOR_COMBINED2:
@@ -2427,35 +2430,37 @@ namespace Orts.Viewer3D.RollingStock
                     var p4 = Locomotive.UsingRearCab ? 3 : 4;
                     new PantographCommand(Viewer.Log, p4, ChangedValue(Locomotive.Pantographs[p4].CommandUp ? 1 : 0) > 0);
                     break;
-                case CABViewControlTypes.PANTOGRAPHS_4C:
-                case CABViewControlTypes.PANTOGRAPHS_4:
-                    var pantos = ChangedValue(0);
-                    if (pantos != 0)
-                    {
-                        var pp1 = Locomotive.UsingRearCab && Locomotive.Pantographs.List.Count > 1 ? 2 : 1;
-                        var pp2 = Locomotive.UsingRearCab ? 1 : 2;
-                        if (Locomotive.Pantographs[pp1].State == PantographState.Down && Locomotive.Pantographs[pp2].State == PantographState.Down)
-                        {
-                            if (pantos > 0) new PantographCommand(Viewer.Log, pp1, true);
-                            else if (Control.ControlType == CABViewControlTypes.PANTOGRAPHS_4C) new PantographCommand(Viewer.Log, pp2, true);
-                        }
-                        else if (Locomotive.Pantographs[pp1].State == PantographState.Up && Locomotive.Pantographs[pp2].State == PantographState.Down)
-                        {
-                            if (pantos > 0) new PantographCommand(Viewer.Log, pp2, true);
-                            else new PantographCommand(Viewer.Log, pp1, false);
-                        }
-                        else if (Locomotive.Pantographs[pp1].State == PantographState.Up && Locomotive.Pantographs[pp2].State == PantographState.Up)
-                        {
-                            if (pantos > 0) new PantographCommand(Viewer.Log, pp1, false);
-                            else new PantographCommand(Viewer.Log, pp2, false);
-                        }
-                        else if (Locomotive.Pantographs[pp1].State == PantographState.Down && Locomotive.Pantographs[pp2].State == PantographState.Up)
-                        {
-                            if (pantos < 0) new PantographCommand(Viewer.Log, pp1, true);
-                            else if (Control.ControlType == CABViewControlTypes.PANTOGRAPHS_4C) new PantographCommand(Viewer.Log, pp2, false);
-                        }
-                    }
-                    break;
+                // Icik
+                // Nahrazeno za novější variantu
+                //case CABViewControlTypes.PANTOGRAPHS_4C:
+                //case CABViewControlTypes.PANTOGRAPHS_4:
+                //    var pantos = ChangedValue(0);
+                //    if (pantos != 0)
+                //    {
+                //        var pp1 = Locomotive.UsingRearCab && Locomotive.Pantographs.List.Count > 1 ? 2 : 1;
+                //        var pp2 = Locomotive.UsingRearCab ? 1 : 2;
+                //        if (Locomotive.Pantographs[pp1].State == PantographState.Down && Locomotive.Pantographs[pp2].State == PantographState.Down)
+                //        {
+                //            if (pantos > 0) new PantographCommand(Viewer.Log, pp1, true);
+                //            else if (Control.ControlType == CABViewControlTypes.PANTOGRAPHS_4C) new PantographCommand(Viewer.Log, pp2, true);
+                //        }
+                //        else if (Locomotive.Pantographs[pp1].State == PantographState.Up && Locomotive.Pantographs[pp2].State == PantographState.Down)
+                //        {
+                //            if (pantos > 0) new PantographCommand(Viewer.Log, pp2, true);
+                //            else new PantographCommand(Viewer.Log, pp1, false);
+                //        }
+                //        else if (Locomotive.Pantographs[pp1].State == PantographState.Up && Locomotive.Pantographs[pp2].State == PantographState.Up)
+                //        {
+                //            if (pantos > 0) new PantographCommand(Viewer.Log, pp1, false);
+                //            else new PantographCommand(Viewer.Log, pp2, false);
+                //        }
+                //        else if (Locomotive.Pantographs[pp1].State == PantographState.Down && Locomotive.Pantographs[pp2].State == PantographState.Up)
+                //        {
+                //            if (pantos < 0) new PantographCommand(Viewer.Log, pp1, true);
+                //            else if (Control.ControlType == CABViewControlTypes.PANTOGRAPHS_4C) new PantographCommand(Viewer.Log, pp2, false);
+                //        }
+                //    }
+                //    break;
                 case CABViewControlTypes.STEAM_HEAT: Locomotive.SetSteamHeatValue(ChangedValue(Locomotive.SteamHeatController.IntermediateValue)); break;
                 case CABViewControlTypes.ORTS_WATER_SCOOP: if (((Locomotive as MSTSSteamLocomotive).WaterScoopDown ? 1 : 0) != ChangedValue(Locomotive.WaterScoopDown ? 1 : 0)) new ToggleWaterScoopCommand(Viewer.Log); break;
                 case CABViewControlTypes.ORTS_CIRCUIT_BREAKER_DRIVER_CLOSING_ORDER:
@@ -2534,9 +2539,30 @@ namespace Orts.Viewer3D.RollingStock
                          != ChangedValue(Locomotive.GetCabFlipped() ? (Locomotive.DoorLeftOpen ? 1 : 0) : Locomotive.DoorRightOpen ? 1 : 0)) new ToggleDoorsRightCommand(Viewer.Log); break;
                 case CABViewControlTypes.ORTS_MIRRORS:
                     if ((Locomotive.MirrorOpen ? 1 : 0) != ChangedValue(Locomotive.MirrorOpen ? 1 : 0)) new ToggleMirrorsCommand(Viewer.Log); break;
-             
-                
+
+
                 // Icik
+                case CABViewControlTypes.PANTOGRAPHS_4C:
+                case CABViewControlTypes.PANTOGRAPHS_4:
+                case CABViewControlTypes.PANTOGRAPH_4_SWITCH:
+                    if (ChangedValue(0) < 0)
+                    {
+                        if (Locomotive.Pantograph4Switch < 4)
+                            Locomotive.Pantograph4Switch++;
+                        if (Locomotive.Pantograph4Switch == 4)
+                            Locomotive.Pantograph4Switch = 0;                        
+                        new TogglePantograph4SwitchCommand(Viewer.Log);                        
+                    }
+                    if (ChangedValue(0) > 0)
+                    {
+                        if (Locomotive.Pantograph4Switch > -1)
+                            Locomotive.Pantograph4Switch--;
+                        if (Locomotive.Pantograph4Switch == -1)
+                            Locomotive.Pantograph4Switch = 3;
+                        new TogglePantograph4SwitchCommand(Viewer.Log);
+                    }
+                    break;
+
                 case CABViewControlTypes.ORTS_BATTERY:
                     if (ChangedValue(Locomotive.Battery ? 1 : 0) > 0)
                     {

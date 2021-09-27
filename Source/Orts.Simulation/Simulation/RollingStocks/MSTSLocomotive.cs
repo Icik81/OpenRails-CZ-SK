@@ -518,12 +518,15 @@ namespace Orts.Simulation.RollingStocks
         public float AuxResPipeLeak;
         public float CompressorSwitch = 1;
         public float CompressorSwitch2 = 0;
+        public float Pantograph4Switch = 0;
+        public bool Pantograph4 = false;
         public bool Compressor_I_HandMode;
         public bool Compressor_II_HandMode;
         public bool MainResOverPressure = false;
         public bool AuxResOverPressure = false;
         public float MaxMainResOverPressurePSI;
         public float MaxAuxResOverPressurePSI;
+        
 
         // Zatím opět povoleno
         public bool RouteVoltageChange;
@@ -1534,6 +1537,7 @@ namespace Orts.Simulation.RollingStocks
             outf.Write(Compressor_II_HandMode);
             outf.Write(MainResOverPressure);
             outf.Write(AuxResOverPressure);
+            outf.Write(Pantograph4Switch);
 
             base.Save(outf);
 
@@ -1628,6 +1632,7 @@ namespace Orts.Simulation.RollingStocks
             Compressor_II_HandMode = inf.ReadBoolean();
             MainResOverPressure = inf.ReadBoolean();
             AuxResOverPressure = inf.ReadBoolean();
+            Pantograph4Switch = inf.ReadSingle();
 
             base.Restore(inf);
 
@@ -6068,6 +6073,66 @@ namespace Orts.Simulation.RollingStocks
         }
 
         // Icik      
+        public void TogglePantograph4SwitchUp()
+        {
+            if (Pantograph4Switch < 4)
+                Pantograph4Switch++;
+            if (Pantograph4Switch == 4)
+                Pantograph4Switch = 0;
+        }
+        public void TogglePantograph4SwitchDown()
+        {
+            if (Pantograph4Switch > -1)
+                Pantograph4Switch--;
+            if (Pantograph4Switch == -1)
+                Pantograph4Switch = 3;
+        }
+        public void TogglePantograph4Switch()
+        {
+            if (Pantograph4)
+            {
+                int p1 = 1; int p2 = 2;
+                if (UsingRearCab) { p1 = 2; p2 = 1; }
+                switch (Pantograph4Switch)
+                {
+                    case 0:
+                        {
+                            if (Pantographs[p1].State == PantographState.Up || Pantographs[p1].State == PantographState.Raising) // Zadní panto                            
+                                SignalEvent(PowerSupplyEvent.LowerPantograph, p1);
+                            if (Pantographs[p2].State == PantographState.Up || Pantographs[p2].State == PantographState.Raising) // Přední panto
+                                SignalEvent(PowerSupplyEvent.LowerPantograph, p2);                            
+                        }
+                        break;
+                    case 1:
+                        {
+                            if (AirForPantograph && Pantographs[p1].State == PantographState.Down || Pantographs[p1].State == PantographState.Lowering) // Zadní panto
+                                SignalEvent(PowerSupplyEvent.RaisePantograph, p1);
+                            if (Pantographs[p2].State == PantographState.Up || Pantographs[p2].State == PantographState.Raising) // Přední panto
+                                SignalEvent(PowerSupplyEvent.LowerPantograph, p2);                            
+                        }
+                        break;
+                    case 2:
+                        {
+                            if (AirForPantograph && Pantographs[p1].State == PantographState.Down || Pantographs[p1].State == PantographState.Lowering) // Zadní panto
+                                SignalEvent(PowerSupplyEvent.RaisePantograph, p1);
+                            if (AirForPantograph && Pantographs[p2].State == PantographState.Down || Pantographs[p2].State == PantographState.Lowering) // Přední panto
+                                SignalEvent(PowerSupplyEvent.RaisePantograph, p2);
+                        }
+                        break;
+                    case 3:
+                        {
+                            if (Pantographs[p1].State == PantographState.Up || Pantographs[p1].State == PantographState.Raising) // Zadní panto                            
+                                SignalEvent(PowerSupplyEvent.LowerPantograph, p1);
+                            if (AirForPantograph && Pantographs[p2].State == PantographState.Down || Pantographs[p2].State == PantographState.Lowering) // Přední panto
+                                SignalEvent(PowerSupplyEvent.RaisePantograph, p2);
+                        }
+                        break;
+                }                
+            }
+        }
+
+
+
         public void ToggleCompressorCombinedSwitchUp()
         {
             if (CompressorSwitch < 4)
@@ -7754,6 +7819,14 @@ namespace Orts.Simulation.RollingStocks
                     break;
 
                 // Icik
+                case CABViewControlTypes.PANTOGRAPHS_4:
+                case CABViewControlTypes.PANTOGRAPHS_4C:
+                case CABViewControlTypes.PANTOGRAPH_4_SWITCH:
+                    {
+                        Pantograph4 = true;
+                        data = Pantograph4Switch;
+                        break;
+                    }
                 case CABViewControlTypes.COMPRESSOR_START:
                     {
                         data = 1;

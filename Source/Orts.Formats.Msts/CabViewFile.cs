@@ -398,6 +398,7 @@ namespace Orts.Formats.Msts
         ORTS_AVV_SIGNAL,
 
         // Icik
+        PANTOGRAPH_4_SWITCH,
         COMPRESSOR_START,
         COMPRESSOR_COMBINED,
         COMPRESSOR_COMBINED2,

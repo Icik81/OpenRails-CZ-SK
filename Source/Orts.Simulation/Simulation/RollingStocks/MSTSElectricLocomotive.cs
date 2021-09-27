@@ -1239,17 +1239,19 @@ namespace Orts.Simulation.RollingStocks
                     data = Pantographs.List.Count > 3 && Pantographs[UsingRearCab ? 3 : 4].CommandUp ? 1 : 0;
                     break;
 
-                case CABViewControlTypes.PANTOGRAPHS_4:
-                case CABViewControlTypes.PANTOGRAPHS_4C:
-                    if (Pantographs[1].CommandUp && Pantographs[2].CommandUp)
-                        data = 2;
-                    else if (Pantographs[UsingRearCab ? 2 : 1].CommandUp)
-                        data = 1;
-                    else if (Pantographs[UsingRearCab ? 1 : 2].CommandUp)
-                        data = 3;
-                    else
-                        data = 0;
-                    break;
+                // Icik
+                // Nahrazeno novější variantou
+                //case CABViewControlTypes.PANTOGRAPHS_4:
+                //case CABViewControlTypes.PANTOGRAPHS_4C:
+                //    if (Pantographs[1].CommandUp && Pantographs[2].CommandUp)
+                //        data = 2;
+                //    else if (Pantographs[UsingRearCab ? 2 : 1].CommandUp)
+                //        data = 1;
+                //    else if (Pantographs[UsingRearCab ? 1 : 2].CommandUp)
+                //        data = 3;
+                //    else
+                //        data = 0;
+                //    break;
 
                 case CABViewControlTypes.PANTOGRAPHS_5:
                     if (Pantographs[1].CommandUp && Pantographs[2].CommandUp)

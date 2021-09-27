@@ -238,7 +238,9 @@ namespace Orts.Common
         public override void Redo() {
             if (Receiver != null && Receiver.Train != null)
             {
-                Receiver.Train.SignalEvent(ToState ? PowerSupplyEvent.RaisePantograph : PowerSupplyEvent.LowerPantograph, item);
+                // Nahrazeno novější variantou
+                //Receiver.Train.SignalEvent(ToState ? PowerSupplyEvent.RaisePantograph : PowerSupplyEvent.LowerPantograph, item);
+                Receiver.TogglePantograph4Switch();
             }
         }
 
@@ -1634,6 +1636,60 @@ namespace Orts.Common
             Receiver = car;
         }
     }
+
+    [Serializable()]
+    public sealed class TogglePantograph4SwitchCommand : Command
+    {
+        public static MSTSLocomotive Receiver { get; set; }
+
+        public TogglePantograph4SwitchCommand(CommandLog log)
+            : base(log)
+        {
+            Redo();
+        }
+
+        public override void Redo()
+        {
+            Receiver.TogglePantograph4Switch();
+            // Report();
+        }
+    }
+    [Serializable()]
+    public sealed class TogglePantograph4SwitchUpCommand : Command
+    {
+        public static MSTSLocomotive Receiver { get; set; }
+
+        public TogglePantograph4SwitchUpCommand(CommandLog log)
+            : base(log)
+        {
+            Redo();
+        }
+
+        public override void Redo()
+        {
+
+            Receiver.TogglePantograph4SwitchUp();
+        }
+    }
+    [Serializable()]
+    public sealed class TogglePantograph4SwitchDownCommand : Command
+    {
+        public static MSTSLocomotive Receiver { get; set; }
+
+        public TogglePantograph4SwitchDownCommand(CommandLog log)
+            : base(log)
+        {
+            Redo();
+        }
+
+        public override void Redo()
+        {
+            Receiver.TogglePantograph4SwitchDown();
+        }
+    }
+
+
+
     [Serializable()]
     public sealed class ToggleCompressorCombinedCommand : Command
     {
