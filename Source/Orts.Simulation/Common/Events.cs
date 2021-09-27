@@ -279,7 +279,11 @@ namespace Orts.Common
         Compressor2Off,
         Compressor2On,
         AuxCompressorOff,
-        AuxCompressorOn
+        AuxCompressorOn,
+        MaxMainResOverPressureValveOpen,
+        MaxMainResOverPressureValveClosed,
+        MaxAuxResOverPressureValveOpen,
+        MaxAuxResOverPressureValveClosed
     }
 
     public static class Events
@@ -586,6 +590,10 @@ namespace Orts.Common
                         case 20036: return Event.AuxCompressorMode_OffOnOff;
                         case 20037: return Event.AuxCompressorOn;
                         case 20038: return Event.AuxCompressorOff;
+                        case 20039: return Event.MaxMainResOverPressureValveOpen;
+                        case 20040: return Event.MaxMainResOverPressureValveClosed;
+                        case 20041: return Event.MaxAuxResOverPressureValveOpen;
+                        case 20042: return Event.MaxAuxResOverPressureValveClosed;
 
                         default: return 0;
                     }

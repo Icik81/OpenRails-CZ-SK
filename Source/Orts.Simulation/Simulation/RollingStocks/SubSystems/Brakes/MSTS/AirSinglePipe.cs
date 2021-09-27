@@ -1869,9 +1869,12 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                             loco.AuxResPressurePSI -= 0.1f * 14.50377f * elapsedClockSeconds;
                         else loco.AuxResOverPressure = false;
 
+                        // Automatický restart pomocného kompresoru, pokud je zadáno
+                        bool AuxResRestart = false;
+                        if (loco.AuxCompressorRestartPressurePSI != 0) AuxResRestart = true;
 
-                        if (//loco.AuxResPressurePSI <= loco.AuxCompressorRestartPressurePSI
-                            loco.Battery && loco.PowerKey
+                        if ((loco.AuxResPressurePSI <= loco.AuxCompressorRestartPressurePSI && AuxResRestart || !AuxResRestart)
+                            && loco.Battery && loco.PowerKey
                             && loco.AuxCompressorMode_OffOn
                             && loco.BrakeSystem.AuxCompressorOnDelay
                             && !loco.AuxCompressorIsOn)
@@ -1892,8 +1895,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                             loco.SignalEvent(Event.Compressor2On);
 
 
-                        if (//(loco.AuxResPressurePSI >= loco.MaxAuxResPressurePSI
-                            ((!loco.Battery || !loco.PowerKey)
+                        if ((loco.AuxResPressurePSI >= loco.MaxAuxResPressurePSI && AuxResRestart
+                            || (!loco.Battery || !loco.PowerKey)
                             || !loco.AuxCompressorMode_OffOn)
                             && loco.AuxCompressorIsOn)
                             loco.SignalEvent(Event.AuxCompressorOff);

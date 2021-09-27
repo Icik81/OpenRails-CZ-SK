@@ -2717,8 +2717,8 @@ namespace Orts.Simulation.RollingStocks
                     AuxResVolumeM3 = 50.0f / 1000f; // 50 L
 
                 // Hodnota pro restart pomocného kompresoru
-                if (AuxCompressorRestartPressurePSI == 0)
-                    AuxCompressorRestartPressurePSI = 4.5f * 14.50377f; // 4.5 barů
+                //if (AuxCompressorRestartPressurePSI == 0)
+                //    AuxCompressorRestartPressurePSI = 4.5f * 14.50377f; // 4.5 barů
 
                 // Minimální hodnota tlaku pro chod pantografu
                 if (MinAuxPressurePantoPSI == 0)
@@ -2747,8 +2747,8 @@ namespace Orts.Simulation.RollingStocks
                         MaxAuxResPressurePSI = 5.0f * 14.50377f; // 5 barů                        
 
                     // Hodnota pro restart pomocného kompresoru
-                    if (AuxCompressorRestartPressurePSI == 0)
-                        AuxCompressorRestartPressurePSI = 4.5f * 14.50377f; // 4.5 barů
+                    //if (AuxCompressorRestartPressurePSI == 0)
+                    //    AuxCompressorRestartPressurePSI = 4.5f * 14.50377f; // 4.5 barů
 
                     // Minimální hodnota tlaku pro chod pantografu
                     if (MinAuxPressurePantoPSI == 0)
@@ -2765,8 +2765,8 @@ namespace Orts.Simulation.RollingStocks
                         MaxAuxResPressurePSI = 7.0f * 14.50377f; // 7 barů
 
                     // Hodnota pro restart pomocného kompresoru
-                    if (AuxCompressorRestartPressurePSI == 0)
-                        AuxCompressorRestartPressurePSI = 5.5f * 14.50377f; // 5.5 barů
+                    //if (AuxCompressorRestartPressurePSI == 0)
+                    //    AuxCompressorRestartPressurePSI = 5.5f * 14.50377f; // 5.5 barů
 
                     // Minimální hodnota tlaku pro chod pantografu
                     if (MinAuxPressurePantoPSI == 0)
