@@ -2002,7 +2002,7 @@ namespace Orts.Simulation.RollingStocks
                 {
                     // Icik
                     //Simulator.Confirmer.Information("ImpulseCouplerForceUN = " + Math.Abs(ImpulseCouplerForceUN));
-                    float MaxImpulseCouplerForceUN = 30000; // Maximální síla impulzu při nárazu pro spojení vozů 30kN
+                    float MaxImpulseCouplerForceUN = 20000; // Maximální síla impulzu při nárazu pro spojení vozů 20kN
 
                     if (Math.Abs(CouplerForceU) > GetCouplerBreak2N() || Math.Abs(ImpulseCouplerForceUN) > MaxImpulseCouplerForceUN)  // break couplers if either static or impulse forces exceeded
                     {
