@@ -6127,7 +6127,8 @@ namespace Orts.Simulation.RollingStocks
                                 SignalEvent(PowerSupplyEvent.RaisePantograph, p2);
                         }
                         break;
-                }                
+                }
+                SignalEvent(Event.PantographToggle);
             }
         }
 
