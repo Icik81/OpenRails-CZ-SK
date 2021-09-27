@@ -216,6 +216,8 @@ namespace Orts.Viewer3D.RollingStock
             // Icik            
             UserInputCommands.Add(UserCommand.ControlCompressorCombinedUp, new Action[] { Noop, () => new ToggleCompressorCombinedSwitchUpCommand(Viewer.Log) });
             UserInputCommands.Add(UserCommand.ControlCompressorCombinedDown, new Action[] { Noop, () => new ToggleCompressorCombinedSwitchDownCommand(Viewer.Log) });
+            UserInputCommands.Add(UserCommand.ControlCompressorCombined2Up, new Action[] { Noop, () => new ToggleCompressorCombinedSwitch2UpCommand(Viewer.Log) });
+            UserInputCommands.Add(UserCommand.ControlCompressorCombined2Down, new Action[] { Noop, () => new ToggleCompressorCombinedSwitch2DownCommand(Viewer.Log) });
             UserInputCommands.Add(UserCommand.ControlAuxCompressorMode_OffOn, new Action[] { Noop, () => new ToggleAuxCompressorMode_OffOnCommand(Viewer.Log) });
             UserInputCommands.Add(UserCommand.ControlCompressorMode_OffAuto, new Action[] { Noop, () => new ToggleCompressorMode_OffAutoCommand(Viewer.Log) });
             UserInputCommands.Add(UserCommand.ControlCompressorMode2_OffAuto, new Action[] { Noop, () => new ToggleCompressorMode2_OffAutoCommand(Viewer.Log) });
@@ -2190,6 +2192,7 @@ namespace Orts.Viewer3D.RollingStock
                 // Icik
                 case CABViewControlTypes.COMPRESSOR_START:
                 case CABViewControlTypes.COMPRESSOR_COMBINED:
+                case CABViewControlTypes.COMPRESSOR_COMBINED2:
                 case CABViewControlTypes.AUXCOMPRESSOR_MODE_OFFON:
                 case CABViewControlTypes.COMPRESSOR_MODE_OFFAUTO:
                 case CABViewControlTypes.COMPRESSOR_MODE2_OFFAUTO:
@@ -2531,12 +2534,37 @@ namespace Orts.Viewer3D.RollingStock
                          != ChangedValue(Locomotive.GetCabFlipped() ? (Locomotive.DoorLeftOpen ? 1 : 0) : Locomotive.DoorRightOpen ? 1 : 0)) new ToggleDoorsRightCommand(Viewer.Log); break;
                 case CABViewControlTypes.ORTS_MIRRORS:
                     if ((Locomotive.MirrorOpen ? 1 : 0) != ChangedValue(Locomotive.MirrorOpen ? 1 : 0)) new ToggleMirrorsCommand(Viewer.Log); break;
-                case CABViewControlTypes.ORTS_BATTERY:
-                    if ((Locomotive.Battery ? 1 : 0) != ChangedValue(Locomotive.Battery ? 1 : 0)) new ToggleBatteryCommand(Viewer.Log); break;
-                case CABViewControlTypes.ORTS_POWERKEY:
-                    if ((Locomotive.PowerKey ? 1 : 0) != ChangedValue(Locomotive.PowerKey ? 1 : 0)) new TogglePowerKeyCommand(Viewer.Log); break;
-
+             
+                
                 // Icik
+                case CABViewControlTypes.ORTS_BATTERY:
+                    if (ChangedValue(Locomotive.Battery ? 1 : 0) > 0)
+                    {
+                        Locomotive.Battery = false;
+                        new ToggleBatteryCommand(Viewer.Log);
+                    }
+                    else
+                    if (ChangedValue(Locomotive.Battery ? 1 : 0) < 0)
+                    {
+                        Locomotive.Battery = true;
+                        new ToggleBatteryCommand(Viewer.Log);
+                    }
+                    break;
+
+                case CABViewControlTypes.ORTS_POWERKEY:
+                    if (ChangedValue(Locomotive.PowerKey ? 1 : 0) > 0)
+                    {
+                        Locomotive.PowerKey = false;
+                        new TogglePowerKeyCommand(Viewer.Log);
+                    }
+                    else
+                    if (ChangedValue(Locomotive.PowerKey ? 1 : 0) < 0)
+                    {
+                        Locomotive.PowerKey = true;
+                        new TogglePowerKeyCommand(Viewer.Log);
+                    }
+                    break;
+
                 case CABViewControlTypes.COMPRESSOR_COMBINED:
                     if (ChangedValue(0) < 0)
                     {
@@ -2554,6 +2582,25 @@ namespace Orts.Viewer3D.RollingStock
                             new ToggleCompressorCombinedCommand(Viewer.Log);
                         Locomotive.CompressorSwitch = MathHelper.Clamp(Locomotive.CompressorSwitch, 0, 3);
                     }                   
+                    break;
+
+                case CABViewControlTypes.COMPRESSOR_COMBINED2:
+                    if (ChangedValue(0) < 0)
+                    {
+                        if (Locomotive.CompressorSwitch2 < 3)
+                            Locomotive.CompressorSwitch2++;
+                        if (Locomotive.CompressorSwitch2 <= 2)
+                            new ToggleCompressorCombined2Command(Viewer.Log);
+                        Locomotive.CompressorSwitch2 = MathHelper.Clamp(Locomotive.CompressorSwitch2, 0, 2);
+                    }
+                    if (ChangedValue(0) > 0)
+                    {
+                        if (Locomotive.CompressorSwitch2 > -1)
+                            Locomotive.CompressorSwitch2--;
+                        if (Locomotive.CompressorSwitch2 >= 0)
+                            new ToggleCompressorCombined2Command(Viewer.Log);
+                        Locomotive.CompressorSwitch2 = MathHelper.Clamp(Locomotive.CompressorSwitch2, 0, 2);
+                    }
                     break;
 
                 case CABViewControlTypes.AUXCOMPRESSOR_MODE_OFFON:

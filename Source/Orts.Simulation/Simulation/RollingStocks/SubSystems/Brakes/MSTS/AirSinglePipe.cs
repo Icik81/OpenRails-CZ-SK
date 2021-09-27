@@ -78,7 +78,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
         protected bool NotConnected = false;
         protected float ThresholdBailOffOn = 0;
         protected ValveState PrevTripleValveStateState;
-        protected float AutomaticDoorsCycle = 0;
+        protected float AutomaticDoorsCycle = 0;        
 
         /// <summary>
         /// EP brake holding valve. Needs to be closed (Lap) in case of brake application or holding.
@@ -1423,7 +1423,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 for (int i = 0; i < nSteps; i++)
                 {
                     // Ohlídá hodnotu v hlavní jímce, aby nepřekročila limity
-                    lead.MainResPressurePSI = MathHelper.Clamp(lead.MainResPressurePSI, 0, lead.MaxMainResPressurePSI + 1);
+                    lead.MainResPressurePSI = MathHelper.Clamp(lead.MainResPressurePSI, 0, lead.MaxMainResPressurePSI + 1.0f * 14.50377f);
 
                     // Výchozí hodnota pro nízkotlaké přebití je 5.4 barů, pokud není definována v sekci engine
                     if (lead.BrakeSystem.TrainBrakesControllerMaxOverchargePressurePSI == 0) lead.BrakeSystem.TrainBrakesControllerMaxOverchargePressurePSI = 5.4f * 14.50377f;
@@ -1821,7 +1821,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                             }
                             if (loco.Compressor_II)
                             {
-                                if (loco.CompressorMode2_OffAuto && !loco.Compressor2IsOn)
+                                if ((loco.CompressorMode2_OffAuto || loco.Compressor_II_HandMode) && !loco.Compressor2IsOn)
                                 {
                                     loco.BrakeSystem.Compressor2T0 += elapsedClockSeconds;
                                     if (loco.BrakeSystem.Compressor2T0 > 1) // 1s
@@ -1847,45 +1847,69 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                             }
                         }
 
-                        if (loco.AuxResPressurePSI <= loco.AuxCompressorRestartPressurePSI
-                            && loco.Battery && loco.PowerKey
+                        // Tlakový ventil při ručním provozu kompresorů
+                        if (loco.MaxMainResOverPressurePSI == 0)
+                            loco.MaxMainResOverPressurePSI = loco.MaxMainResPressurePSI + (0.45f * 14.50377f);
+                        
+                        if (loco.MainResPressurePSI > loco.MaxMainResOverPressurePSI)
+                            loco.MainResOverPressure = true;
+
+                        if (loco.MainResPressurePSI > loco.MaxMainResPressurePSI && loco.MainResOverPressure)
+                            loco.MainResPressurePSI -= 0.1f * 14.50377f * elapsedClockSeconds;
+                        else loco.MainResOverPressure = false;
+
+                        // Tlakový ventil při provozu pomocného kompresoru  
+                        if (loco.MaxAuxResOverPressurePSI == 0)
+                            loco.MaxAuxResOverPressurePSI = loco.MaxAuxResPressurePSI + (0.25f * 14.50377f);
+
+                        if (loco.AuxResPressurePSI > loco.MaxAuxResOverPressurePSI)
+                            loco.AuxResOverPressure = true;
+
+                        if (loco.AuxResPressurePSI > loco.MaxAuxResPressurePSI && loco.AuxResOverPressure)
+                            loco.AuxResPressurePSI -= 0.1f * 14.50377f * elapsedClockSeconds;
+                        else loco.AuxResOverPressure = false;
+
+
+                        if (//loco.AuxResPressurePSI <= loco.AuxCompressorRestartPressurePSI
+                            loco.Battery && loco.PowerKey
                             && loco.AuxCompressorMode_OffOn
                             && loco.BrakeSystem.AuxCompressorOnDelay
                             && !loco.AuxCompressorIsOn)
                             loco.SignalEvent(Event.AuxCompressorOn);
 
-                        if ((loco.MainResPressurePSI <= loco.CompressorRestartPressurePSI || (loco.MainResPressurePSI <= loco.MaxMainResPressurePSI - 5 && loco.Compressor_I_HandMode))
+                        if ((loco.MainResPressurePSI <= loco.CompressorRestartPressurePSI || loco.Compressor_I_HandMode)
                             && loco.AuxPowerOn
                             && (loco.CompressorMode_OffAuto || loco.Compressor_I_HandMode)
                             && loco.BrakeSystem.CompressorOnDelay
                             && !loco.CompressorIsOn)
                             loco.SignalEvent(Event.CompressorOn);
 
-                        if (loco.MainResPressurePSI <= loco.CompressorRestartPressurePSI
+                        if ((loco.MainResPressurePSI <= loco.CompressorRestartPressurePSI || loco.Compressor_II_HandMode)
                             && loco.AuxPowerOn
-                            && loco.CompressorMode2_OffAuto
+                            && (loco.CompressorMode2_OffAuto || loco.Compressor_II_HandMode)
                             && loco.BrakeSystem.Compressor2OnDelay
                             && !loco.Compressor2IsOn)
                             loco.SignalEvent(Event.Compressor2On);
 
 
-                        if ((loco.AuxResPressurePSI >= loco.MaxAuxResPressurePSI
-                            || (!loco.Battery || !loco.PowerKey)
+                        if (//(loco.AuxResPressurePSI >= loco.MaxAuxResPressurePSI
+                            ((!loco.Battery || !loco.PowerKey)
                             || !loco.AuxCompressorMode_OffOn)
                             && loco.AuxCompressorIsOn)
                             loco.SignalEvent(Event.AuxCompressorOff);
 
-                        if ((loco.MainResPressurePSI >= loco.MaxMainResPressurePSI
+                        if (((loco.MainResPressurePSI >= loco.MaxMainResPressurePSI && !loco.Compressor_I_HandMode)
+                            //|| (loco.MainResPressurePSI >= loco.MaxMainResOverPressurePSI && loco.Compressor_I_HandMode)
                             || !loco.AuxPowerOn
-                            || (!loco.CompressorMode_OffAuto && !loco.Compressor_I_HandMode)) 
-                            //|| (loco.MainResPressurePSI > loco.CompressorRestartPressurePSI && !loco.Compressor_I_HandMode && loco.CompressorMode_OffAuto)
+                            || (!loco.CompressorMode_OffAuto && !loco.Compressor_I_HandMode))                             
                             && loco.CompressorIsOn)                        
                             loco.SignalEvent(Event.CompressorOff);
 
 
-                        if ((loco.MainResPressurePSI >= loco.MaxMainResPressurePSI
+                        if (((loco.MainResPressurePSI >= loco.MaxMainResPressurePSI && !loco.Compressor_II_HandMode)
+                            //|| (loco.MainResPressurePSI >= loco.MaxMainResOverPressurePSI && loco.Compressor_II_HandMode)
                             || !loco.AuxPowerOn
-                            || !loco.CompressorMode2_OffAuto)
+                            || (!loco.CompressorMode2_OffAuto && !loco.Compressor_II_HandMode))
                             && loco.Compressor2IsOn)
                             loco.SignalEvent(Event.Compressor2Off);
                     }

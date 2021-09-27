@@ -602,6 +602,9 @@ namespace Orts.Viewer3D
             ToggleCompressorCombinedSwitchUpCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
             ToggleCompressorCombinedSwitchDownCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
             ToggleCompressorCombinedCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
+            ToggleCompressorCombinedSwitch2UpCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
+            ToggleCompressorCombinedSwitch2DownCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
+            ToggleCompressorCombined2Command.Receiver = (MSTSLocomotive)PlayerLocomotive;
             ToggleAuxCompressorMode_OffOnCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
             ToggleCompressorMode_OffAutoCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
             ToggleCompressorMode2_OffAutoCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;

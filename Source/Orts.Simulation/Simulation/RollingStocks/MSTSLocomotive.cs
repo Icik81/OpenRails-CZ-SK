@@ -496,6 +496,7 @@ namespace Orts.Simulation.RollingStocks
         public bool LowPressureReleaseButtonEnable = false;
         public bool AuxCompressor = false;
         public bool CompressorCombined = false;
+        public bool CompressorCombined2 = false;
         public bool Compressor_I = false;
         public bool Compressor_II = false;
         public bool Compressor2IsOn;
@@ -516,7 +517,13 @@ namespace Orts.Simulation.RollingStocks
         public bool HVElectric;
         public float AuxResPipeLeak;
         public float CompressorSwitch = 1;
+        public float CompressorSwitch2 = 0;
         public bool Compressor_I_HandMode;
+        public bool Compressor_II_HandMode;
+        public bool MainResOverPressure = false;
+        public bool AuxResOverPressure = false;
+        public float MaxMainResOverPressurePSI;
+        public float MaxAuxResOverPressurePSI;
 
         // Zatím opět povoleno
         public bool RouteVoltageChange;
@@ -1147,6 +1154,8 @@ namespace Orts.Simulation.RollingStocks
                 case "engine(hvconsumptionvolumeoff": HVConsumptionVolumeM3_Off = Me3.FromFt3(stf.ReadFloatBlock(STFReader.UNITS.VolumeDefaultFT3, null)); break;
                 case "engine(hvelectric": HVElectric = stf.ReadBoolBlock(false); break;
                 case "engine(auxrespipeleak": AuxResPipeLeak = stf.ReadFloatBlock(STFReader.UNITS.PressureRateDefaultPSIpS, null); break;
+                case "engine(maxmainresoverpressure": MaxMainResOverPressurePSI = stf.ReadFloatBlock(STFReader.UNITS.PressureDefaultPSI, null); break;
+                case "engine(maxauxresoverpressure": MaxAuxResOverPressurePSI = stf.ReadFloatBlock(STFReader.UNITS.PressureDefaultPSI, null); break;
 
                 // Jindrich
                 case "engine(batterydefaultoff": Battery = !stf.ReadBoolBlock(false); break;
@@ -1375,6 +1384,8 @@ namespace Orts.Simulation.RollingStocks
             HVConsumptionVolumeM3_Off = locoCopy.HVConsumptionVolumeM3_Off;
             HVElectric = locoCopy.HVElectric;
             AuxResPipeLeak = locoCopy.AuxResPipeLeak;
+            MaxMainResOverPressurePSI = locoCopy.MaxMainResOverPressurePSI;
+            MaxAuxResOverPressurePSI = locoCopy.MaxAuxResOverPressurePSI;
 
             // Jindrich
             if (locoCopy.CruiseControl != null)
@@ -1519,6 +1530,10 @@ namespace Orts.Simulation.RollingStocks
             outf.Write(AuxResPressurePSI);
             outf.Write(CompressorSwitch);
             outf.Write(Compressor_I_HandMode);
+            outf.Write(CompressorSwitch2);
+            outf.Write(Compressor_II_HandMode);
+            outf.Write(MainResOverPressure);
+            outf.Write(AuxResOverPressure);
 
             base.Save(outf);
 
@@ -1609,6 +1624,10 @@ namespace Orts.Simulation.RollingStocks
             AuxResPressurePSI = inf.ReadSingle();
             CompressorSwitch = inf.ReadSingle();
             Compressor_I_HandMode = inf.ReadBoolean();
+            CompressorSwitch2 = inf.ReadSingle();
+            Compressor_II_HandMode = inf.ReadBoolean();
+            MainResOverPressure = inf.ReadBoolean();
+            AuxResOverPressure = inf.ReadBoolean();
 
             base.Restore(inf);
 
@@ -6102,6 +6121,54 @@ namespace Orts.Simulation.RollingStocks
                 SignalEvent(Event.CompressorMode_OffAutoOn);
             }
         }
+
+        public void ToggleCompressorCombinedSwitch2Up()
+        {
+            if (CompressorSwitch2 < 3)
+                CompressorSwitch2++;
+            if (CompressorSwitch2 <= 2)
+                ToggleCompressorCombined2();
+            CompressorSwitch2 = MathHelper.Clamp(CompressorSwitch2, 0, 2);
+        }
+        public void ToggleCompressorCombinedSwitch2Down()
+        {
+            if (CompressorSwitch2 > -1)
+                CompressorSwitch2--;
+            if (CompressorSwitch2 >= 0)
+                ToggleCompressorCombined2();
+            CompressorSwitch2 = MathHelper.Clamp(CompressorSwitch2, 0, 2);
+        }
+        public void ToggleCompressorCombined2()
+        {
+            if (CompressorCombined2)
+            {
+                Compressor_II_HandMode = false;
+                switch (CompressorSwitch2)
+                {                   
+                    case 0:
+                        {                            
+                            CompressorMode2_OffAuto = false;
+                        }
+                        break;
+                    case 1:
+                        {
+                            CompressorMode2_OffAuto = true;
+                            Compressor_II_HandMode = false;
+                            if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.CompressorMode2_OffAuto, CompressorMode2_OffAuto ? CabSetting.On : CabSetting.Off);
+                        }
+                        break;
+                    case 2:
+                        {
+                            CompressorMode2_OffAuto = false;
+                            Compressor_II_HandMode = true;
+                            if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.Compressor_II_HandMode, Compressor_II_HandMode ? CabSetting.On : CabSetting.Off);
+                        }
+                        break;
+                }
+                SignalEvent(Event.CompressorMode_OffAutoOn);
+            }
+        }
+
         public void ToggleAuxCompressorMode_OffOn()
         {
             if (AuxCompressor && !CompressorCombined)
@@ -6124,7 +6191,7 @@ namespace Orts.Simulation.RollingStocks
         }
         public void ToggleCompressorMode2_OffAuto()
         {
-            if (Compressor_II)
+            if (Compressor_II && !CompressorCombined2)
             {
                 CompressorMode2_OffAuto = !CompressorMode2_OffAuto;
                 if (CompressorMode2_OffAuto) SignalEvent(Event.CompressorMode_OffAutoOn);
@@ -7712,6 +7779,13 @@ namespace Orts.Simulation.RollingStocks
                         AuxCompressor = true;
                         Compressor_I = true;
                         data = CompressorSwitch;
+                        break;
+                    }
+                case CABViewControlTypes.COMPRESSOR_COMBINED2:
+                    {
+                        CompressorCombined2 = true;                        
+                        Compressor_II = true;
+                        data = CompressorSwitch2;
                         break;
                     }
                 case CABViewControlTypes.AUXCOMPRESSOR_MODE_OFFON:
