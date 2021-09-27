@@ -192,8 +192,8 @@ float4 PSSky(VERTEX_OUTPUT In) : COLOR
 	// increase orange at sunset - fog limits the effect
 	if (LightVector.x < 0)
 	{
-		skyColor.r += SkyColor.z * angleRcp * Fog.z * 0.01;
-		skyColor.g += skyColor.r * Fog.w * 0.01;
+		skyColor.r += SkyColor.z * angleRcp * Fog.z * 0.000001;
+		skyColor.g += skyColor.r * Fog.w * 0.000001;
 	}
 	
 	// Keep alpha opague
