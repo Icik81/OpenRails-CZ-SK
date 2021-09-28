@@ -283,7 +283,8 @@ namespace Orts.Common
         MaxMainResOverPressureValveOpen,
         MaxMainResOverPressureValveClosed,
         MaxAuxResOverPressureValveOpen,
-        MaxAuxResOverPressureValveClosed
+        MaxAuxResOverPressureValveClosed,
+        CompressorBeep
     }
 
     public static class Events
@@ -594,6 +595,8 @@ namespace Orts.Common
                         case 20040: return Event.MaxMainResOverPressureValveClosed;
                         case 20041: return Event.MaxAuxResOverPressureValveOpen;
                         case 20042: return Event.MaxAuxResOverPressureValveClosed;
+
+                        case 20043: return Event.CompressorBeep;
 
                         default: return 0;
                     }

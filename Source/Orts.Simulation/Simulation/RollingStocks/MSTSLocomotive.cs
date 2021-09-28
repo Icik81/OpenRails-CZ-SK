@@ -7914,6 +7914,7 @@ namespace Orts.Simulation.RollingStocks
                         if (CompressorIsOn && cvc.ElapsedTime < cvc.UpdateTime)
                         {
                             data = 0;
+                            SignalEvent(Event.CompressorBeep);
                         }
                         if (!CompressorIsOn)
                             cvc.ElapsedTime = 0;
@@ -7921,6 +7922,7 @@ namespace Orts.Simulation.RollingStocks
                         if (Compressor2IsOn && cvc.ElapsedTime2 < cvc.UpdateTime)
                         {
                             data = 0;
+                            SignalEvent(Event.CompressorBeep);
                         }
                         if (!Compressor2IsOn)
                             cvc.ElapsedTime2 = 0;
