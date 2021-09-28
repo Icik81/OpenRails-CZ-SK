@@ -518,8 +518,7 @@ namespace Orts.Simulation.RollingStocks
         public float AuxResPipeLeak;
         public float CompressorSwitch = 1;
         public float CompressorSwitch2 = 0;
-        public float Pantograph4Switch = 0;
-        public float HV5Switch = 3;
+        public float Pantograph4Switch = 0;        
         public bool Pantograph4 = false;
         public bool Compressor_I_HandMode;
         public bool Compressor_II_HandMode;
@@ -527,6 +526,9 @@ namespace Orts.Simulation.RollingStocks
         public bool AuxResOverPressure = false;
         public float MaxMainResOverPressurePSI;
         public float MaxAuxResOverPressurePSI;
+
+        public bool HV5Enable = false;
+        public float HV5Switch = 3;
         public bool HVPressedTestDC = false;
         public bool HVPressedTestAC = false;
         public float HVPressedTime = 0;
@@ -1542,6 +1544,7 @@ namespace Orts.Simulation.RollingStocks
             outf.Write(MainResOverPressure);
             outf.Write(AuxResOverPressure);
             outf.Write(Pantograph4Switch);
+            outf.Write(HV5Switch);
 
             base.Save(outf);
 
@@ -1637,6 +1640,7 @@ namespace Orts.Simulation.RollingStocks
             MainResOverPressure = inf.ReadBoolean();
             AuxResOverPressure = inf.ReadBoolean();
             Pantograph4Switch = inf.ReadSingle();
+            HV5Switch = inf.ReadSingle();
 
             base.Restore(inf);
 
@@ -2361,9 +2365,7 @@ namespace Orts.Simulation.RollingStocks
                         Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Zásah nadproudové ochrany!"));
                     }
                     if (this is MSTSDieselLocomotive) // Dieselelektrické lokomotivy
-                    {
-                        if (PowerReduction < 0.8)
-                            Train.SignalEvent(Event.PowerKeyOff); // Zvuk pro vypnutí TM
+                    {                        
                         PowerReduction = 0.9f; // Omezení trakčních motorů  
                         SetDynamicBrakePercent(0);
                         Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Zásah nadproudové ochrany!"));
@@ -2378,8 +2380,7 @@ namespace Orts.Simulation.RollingStocks
 
                 // Resetování nadproudové ochrany u dieselelektrických lokomotiv
                 if (this is MSTSDieselLocomotive && OverCurrent && LocalThrottlePercent == 0 && LocalDynamicBrakePercent == 0)
-                {
-                    Train.SignalEvent(Event.PowerKeyOn); // Zvuk pro zapnutí TM
+                {                    
                     OverCurrent = false;
                     PowerReduction = 0;
                 }
@@ -2427,9 +2428,7 @@ namespace Orts.Simulation.RollingStocks
                         Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Zásah protiskluzové ochrany!"));
                     }
                     if (this is MSTSDieselLocomotive) // Dieselelektrické lokomotivy
-                    {
-                        //if (PowerReduction < 0.8)
-                        //    Train.SignalEvent(Event.PowerKeyOff); // Zvuk pro vypnutí TM
+                    {             
                         PowerReduction = 0.9f; // Omezení trakčních motorů  
                         SetDynamicBrakePercent(0);
                         Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Zásah protiskluzové ochrany!"));
@@ -2444,8 +2443,7 @@ namespace Orts.Simulation.RollingStocks
 
                 // Resetování nadproudové ochrany u dieselelektrických lokomotiv
                 if (this is MSTSDieselLocomotive && OverVoltage && LocalThrottlePercent == 0 && LocalDynamicBrakePercent == 0)
-                {
-                    //Train.SignalEvent(Event.PowerKeyOn); // Zvuk pro zapnutí TM
+                {                    
                     OverVoltage = false;
                     PowerReduction = 0;                    
                 }
@@ -2924,8 +2922,8 @@ namespace Orts.Simulation.RollingStocks
             EDBCancelByEngineBrake();
             HVOffbyAirPressure();
             MaxPower_MaxForce_ACDC();
-            ElevatedConsumptionOnLocomotive();
-            TogglePantograph4Switch();
+            ElevatedConsumptionOnLocomotive();            
+            if (MultiSystemEngine) TogglePantograph4Switch();
             ToggleHV5Switch();
 
             TrainControlSystem.Update();
@@ -6081,43 +6079,57 @@ namespace Orts.Simulation.RollingStocks
         // Icik      
         public void ToggleHV5SwitchUp()
         {
-            if (HV5Switch < 5)
-                HV5Switch++;                        
-            SignalEvent(Event.PantographToggle); // Zvuk přepínače
-            ToggleHV5Switch();
-            Simulator.Confirmer.Confirm(CabControl.SwitchingVoltageMode_OffAC, SwitchingVoltageMode_OffAC ? CabSetting.On : CabSetting.Off);
+            if (HV5Enable)
+            {
+                if (HV5Switch < 5)
+                    HV5Switch++;
+                SignalEvent(Event.PantographToggle); // Zvuk přepínače
+                ToggleHV5Switch();
+                Simulator.Confirmer.Confirm(CabControl.SwitchingVoltageMode_OffAC, SwitchingVoltageMode_OffAC ? CabSetting.On : CabSetting.Off);
+            }
         }
         public void ToggleHV5SwitchDown()
         {
-            if (HV5Switch > 1)
-                HV5Switch--;            
-            SignalEvent(Event.PantographToggle); // Zvuk přepínače
-            ToggleHV5Switch();
-            Simulator.Confirmer.Confirm(CabControl.SwitchingVoltageMode_OffDC, SwitchingVoltageMode_OffDC ? CabSetting.On : CabSetting.Off);
+            if (HV5Enable)
+            {
+                if (HV5Switch > 1)
+                    HV5Switch--;
+                SignalEvent(Event.PantographToggle); // Zvuk přepínače
+                ToggleHV5Switch();
+                Simulator.Confirmer.Confirm(CabControl.SwitchingVoltageMode_OffDC, SwitchingVoltageMode_OffDC ? CabSetting.On : CabSetting.Off);
+            }
         }
         public void ToggleHV5Switch()
         {
-            if (HVCanOn)
-                SignalEvent(PowerSupplyEvent.CloseCircuitBreaker);
-            //Simulator.Confirmer.Information("HV can On");
-
-            switch (HV5Switch)
+            if (HV5Enable)
             {
-                case 1:
-                    break;
-                case 2: // DC
-                    SwitchingVoltageMode = 0;
-                    SwitchingVoltageMode_OffDC = true;
-                    break;
-                case 3: // střed
-                    SwitchingVoltageMode = 1;
-                    break;
-                case 4: // AC
-                    SwitchingVoltageMode = 2;
-                    SwitchingVoltageMode_OffAC = true;
-                    break;
-                case 5:
-                    break;
+                if (HVCanOn)
+                    SignalEvent(PowerSupplyEvent.CloseCircuitBreaker);
+                //Simulator.Confirmer.Information("HV can On");
+
+                switch (HV5Switch)
+                {
+                    case 1:
+                        //Simulator.Confirmer.Information("Switch 1");
+                        break;
+                    case 2: // DC
+                        SwitchingVoltageMode = 0;
+                        SwitchingVoltageMode_OffDC = true;
+                        //Simulator.Confirmer.Information("Switch 2");
+                        break;
+                    case 3: // střed
+                        SwitchingVoltageMode = 1;
+                        //Simulator.Confirmer.Information("Switch 3");
+                        break;
+                    case 4: // AC
+                        SwitchingVoltageMode = 2;
+                        SwitchingVoltageMode_OffAC = true;
+                        //Simulator.Confirmer.Information("Switch 4");
+                        break;
+                    case 5:
+                        //Simulator.Confirmer.Information("Switch 5");
+                        break;
+                }
             }
         }
 
@@ -6141,7 +6153,7 @@ namespace Orts.Simulation.RollingStocks
         }
         public void TogglePantograph4Switch()
         {
-            if (Pantograph4 && Battery && PowerKey)
+            if (Pantograph4 && Battery) // Zatím bez PowerKey kvůli kompatibilitě
             {
                 int p1 = 1; int p2 = 2;
                 if (UsingRearCab) { p1 = 2; p2 = 1; }

@@ -745,7 +745,7 @@ namespace Orts.Simulation.RollingStocks
         // Testování času stiknutého HV
         protected void HVPressedTesting(float elapsedClockSeconds)
         {
-            if (!HVPressedTestDC && !HVPressedTestAC)
+            if (!HVPressedTestDC && !HVPressedTestAC || HV5Switch != 1 && HV5Switch != 5)
                 HVPressedTime = 0;
        
             if (HVPressedTestDC)
@@ -1370,7 +1370,8 @@ namespace Orts.Simulation.RollingStocks
                     }
 
                 case CABViewControlTypes.HV5:
-                    {                        
+                    {
+                        HV5Enable = true;
                         switch (HV5Switch)
                         {
                             case 1:
