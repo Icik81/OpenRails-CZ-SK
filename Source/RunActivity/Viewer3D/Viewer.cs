@@ -599,16 +599,14 @@ namespace Orts.Viewer3D
             TogglePowerKeyCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
 
             // Icik
+            ToggleHV5SwitchUpCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
+            ToggleHV5SwitchDownCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
             TogglePantograph4SwitchUpCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
-            TogglePantograph4SwitchDownCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
-            TogglePantograph4SwitchCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
-
+            TogglePantograph4SwitchDownCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;            
             ToggleCompressorCombinedSwitchUpCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
-            ToggleCompressorCombinedSwitchDownCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
-            ToggleCompressorCombinedCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
+            ToggleCompressorCombinedSwitchDownCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;            
             ToggleCompressorCombinedSwitch2UpCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
-            ToggleCompressorCombinedSwitch2DownCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
-            ToggleCompressorCombined2Command.Receiver = (MSTSLocomotive)PlayerLocomotive;
+            ToggleCompressorCombinedSwitch2DownCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;           
             ToggleAuxCompressorMode_OffOnCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
             ToggleCompressorMode_OffAutoCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
             ToggleCompressorMode2_OffAutoCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;

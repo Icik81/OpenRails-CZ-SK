@@ -214,6 +214,8 @@ namespace Orts.Viewer3D.RollingStock
             UserInputCommands.Add(UserCommand.SetMirelOff, new Action[] { Noop, () => Locomotive.Mirel.SetMirelSignal(false) });
 
             // Icik            
+            UserInputCommands.Add(UserCommand.ControlHV5SwitchUp, new Action[] { Noop, () => new ToggleHV5SwitchUpCommand(Viewer.Log) });
+            UserInputCommands.Add(UserCommand.ControlHV5SwitchDown, new Action[] { Noop, () => new ToggleHV5SwitchDownCommand(Viewer.Log) });
             UserInputCommands.Add(UserCommand.ControlPantograph4SwitchUp, new Action[] { Noop, () => new TogglePantograph4SwitchUpCommand(Viewer.Log) });
             UserInputCommands.Add(UserCommand.ControlPantograph4SwitchDown, new Action[] { Noop, () => new TogglePantograph4SwitchDownCommand(Viewer.Log) });
             UserInputCommands.Add(UserCommand.ControlCompressorCombinedUp, new Action[] { Noop, () => new ToggleCompressorCombinedSwitchUpCommand(Viewer.Log) });
@@ -240,6 +242,27 @@ namespace Orts.Viewer3D.RollingStock
         public override void HandleUserInput(ElapsedTime elapsedTime)
         {
             // Icik
+            // Ovládání HV nearetované pozice
+            if (Locomotive.HV5Switch == 5)
+            {                
+                Locomotive.HVPressedTestAC = true;
+            }
+            if (Locomotive.HV5Switch == 5 && UserInput.IsReleased(UserCommand.ControlHV5SwitchUp))
+            {
+                Locomotive.HV5Switch = 4;
+                Locomotive.HVPressedTestAC = false;
+            }
+            if (Locomotive.HV5Switch == 1)
+            {             
+                Locomotive.HVPressedTestDC = true;
+            }
+            if (Locomotive.HV5Switch == 1 && UserInput.IsReleased(UserCommand.ControlHV5SwitchDown))
+            {
+                Locomotive.HV5Switch = 2;
+                Locomotive.HVPressedTestDC = false;
+            }
+
+            // Ovládání tlačítka vysokotlakého švihu
             if (UserInput.IsPressed(UserCommand.ControlQuickReleaseButton))
             {
                 Locomotive.ToggleQuickReleaseButton(true);
@@ -248,7 +271,8 @@ namespace Orts.Viewer3D.RollingStock
             {
                 Locomotive.ToggleQuickReleaseButton(false);
             }
-
+            
+            // Ovládání tlačítka nízkotlakého přebití
             if (UserInput.IsPressed(UserCommand.ControlLowPressureReleaseButton))
             {
                 Locomotive.ToggleLowPressureReleaseButton(true);
@@ -2192,6 +2216,7 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.ORTS_POWERKEY:
 
                 // Icik
+                case CABViewControlTypes.HV5:
                 case CABViewControlTypes.PANTOGRAPH_4_SWITCH:
                 case CABViewControlTypes.COMPRESSOR_START:
                 case CABViewControlTypes.COMPRESSOR_COMBINED:
@@ -2542,24 +2567,50 @@ namespace Orts.Viewer3D.RollingStock
 
 
                 // Icik
+                case CABViewControlTypes.HV5:
+                    {
+                        // Ovládání HV nearetované pozice
+                        if (Locomotive.HV5Switch == 5)
+                        {                            
+                            Locomotive.HVPressedTestAC = true;
+                        }
+                        if (Locomotive.HV5Switch == 5 && UserInput.IsMouseLeftButtonReleased)
+                        {
+                            Locomotive.HV5Switch = 4;
+                            Locomotive.HVPressedTestAC = false;
+                        }                                                
+                        if (Locomotive.HV5Switch == 1)
+                        {                            
+                            Locomotive.HVPressedTestDC = true;
+                        }
+                        if (Locomotive.HV5Switch == 1 && UserInput.IsMouseLeftButtonReleased)
+                        {
+                            Locomotive.HV5Switch = 2;
+                            Locomotive.HVPressedTestDC = false;
+                        }
+
+                        if (ChangedValue(0) < 0)
+                        {
+                            new ToggleHV5SwitchUpCommand(Viewer.Log);
+                        }
+                        if (ChangedValue(0) > 0)
+                        {
+                            new ToggleHV5SwitchDownCommand(Viewer.Log);
+                        }
+
+                        break;
+                    }
+
                 case CABViewControlTypes.PANTOGRAPHS_4C:
                 case CABViewControlTypes.PANTOGRAPHS_4:
                 case CABViewControlTypes.PANTOGRAPH_4_SWITCH:
                     if (ChangedValue(0) < 0)
-                    {
-                        if (Locomotive.Pantograph4Switch < 4)
-                            Locomotive.Pantograph4Switch++;
-                        if (Locomotive.Pantograph4Switch == 4)
-                            Locomotive.Pantograph4Switch = 0;                        
-                        new TogglePantograph4SwitchCommand(Viewer.Log);                        
+                    {                      
+                        new TogglePantograph4SwitchUpCommand(Viewer.Log);
                     }
                     if (ChangedValue(0) > 0)
                     {
-                        if (Locomotive.Pantograph4Switch > -1)
-                            Locomotive.Pantograph4Switch--;
-                        if (Locomotive.Pantograph4Switch == -1)
-                            Locomotive.Pantograph4Switch = 3;
-                        new TogglePantograph4SwitchCommand(Viewer.Log);
+                        new TogglePantograph4SwitchDownCommand(Viewer.Log);
                     }
                     break;
 
@@ -2594,38 +2645,22 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.COMPRESSOR_COMBINED:
                     if (ChangedValue(0) < 0)
                     {
-                        if (Locomotive.CompressorSwitch < 4)
-                            Locomotive.CompressorSwitch++;
-                        if (Locomotive.CompressorSwitch <= 3)
-                            new ToggleCompressorCombinedCommand(Viewer.Log);
-                        Locomotive.CompressorSwitch = MathHelper.Clamp(Locomotive.CompressorSwitch, 0, 3);
+                        new ToggleCompressorCombinedSwitchUpCommand(Viewer.Log);
                     }
                     if (ChangedValue(0) > 0)
                     {
-                        if (Locomotive.CompressorSwitch > -1)
-                            Locomotive.CompressorSwitch--;
-                        if (Locomotive.CompressorSwitch >= 0)
-                            new ToggleCompressorCombinedCommand(Viewer.Log);
-                        Locomotive.CompressorSwitch = MathHelper.Clamp(Locomotive.CompressorSwitch, 0, 3);
+                        new ToggleCompressorCombinedSwitchDownCommand(Viewer.Log);
                     }                   
                     break;
 
                 case CABViewControlTypes.COMPRESSOR_COMBINED2:
                     if (ChangedValue(0) < 0)
                     {
-                        if (Locomotive.CompressorSwitch2 < 3)
-                            Locomotive.CompressorSwitch2++;
-                        if (Locomotive.CompressorSwitch2 <= 2)
-                            new ToggleCompressorCombined2Command(Viewer.Log);
-                        Locomotive.CompressorSwitch2 = MathHelper.Clamp(Locomotive.CompressorSwitch2, 0, 2);
+                        new ToggleCompressorCombinedSwitch2UpCommand(Viewer.Log);
                     }
                     if (ChangedValue(0) > 0)
                     {
-                        if (Locomotive.CompressorSwitch2 > -1)
-                            Locomotive.CompressorSwitch2--;
-                        if (Locomotive.CompressorSwitch2 >= 0)
-                            new ToggleCompressorCombined2Command(Viewer.Log);
-                        Locomotive.CompressorSwitch2 = MathHelper.Clamp(Locomotive.CompressorSwitch2, 0, 2);
+                        new ToggleCompressorCombinedSwitch2DownCommand(Viewer.Log);
                     }
                     break;
 

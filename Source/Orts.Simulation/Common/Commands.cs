@@ -1636,13 +1636,12 @@ namespace Orts.Common
             Receiver = car;
         }
     }
-
     [Serializable()]
-    public sealed class TogglePantograph4SwitchCommand : Command
+    public sealed class ToggleHV5SwitchUpCommand : Command
     {
         public static MSTSLocomotive Receiver { get; set; }
 
-        public TogglePantograph4SwitchCommand(CommandLog log)
+        public ToggleHV5SwitchUpCommand(CommandLog log)
             : base(log)
         {
             Redo();
@@ -1650,8 +1649,24 @@ namespace Orts.Common
 
         public override void Redo()
         {
-            Receiver.TogglePantograph4Switch();
-            // Report();
+
+            Receiver.ToggleHV5SwitchUp();
+        }
+    }
+    [Serializable()]
+    public sealed class ToggleHV5SwitchDownCommand : Command
+    {
+        public static MSTSLocomotive Receiver { get; set; }
+
+        public ToggleHV5SwitchDownCommand(CommandLog log)
+            : base(log)
+        {
+            Redo();
+        }
+
+        public override void Redo()
+        {
+            Receiver.ToggleHV5SwitchDown();
         }
     }
     [Serializable()]
@@ -1687,26 +1702,6 @@ namespace Orts.Common
             Receiver.TogglePantograph4SwitchDown();
         }
     }
-
-
-
-    [Serializable()]
-    public sealed class ToggleCompressorCombinedCommand : Command
-    {
-        public static MSTSLocomotive Receiver { get; set; }
-
-        public ToggleCompressorCombinedCommand(CommandLog log)
-            : base(log)
-        {
-            Redo();
-        }
-
-        public override void Redo()
-        {
-            Receiver.ToggleCompressorCombined();
-            // Report();
-        }
-    }
     [Serializable()]
     public sealed class ToggleCompressorCombinedSwitchUpCommand : Command
     {
@@ -1738,23 +1733,6 @@ namespace Orts.Common
         public override void Redo()
         {
             Receiver.ToggleCompressorCombinedSwitchDown();
-        }
-    }
-    [Serializable()]
-    public sealed class ToggleCompressorCombined2Command : Command
-    {
-        public static MSTSLocomotive Receiver { get; set; }
-
-        public ToggleCompressorCombined2Command(CommandLog log)
-            : base(log)
-        {
-            Redo();
-        }
-
-        public override void Redo()
-        {
-            Receiver.ToggleCompressorCombined2();
-            // Report();
         }
     }
     [Serializable()]

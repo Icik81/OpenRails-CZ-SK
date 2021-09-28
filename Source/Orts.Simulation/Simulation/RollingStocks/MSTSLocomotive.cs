@@ -519,6 +519,7 @@ namespace Orts.Simulation.RollingStocks
         public float CompressorSwitch = 1;
         public float CompressorSwitch2 = 0;
         public float Pantograph4Switch = 0;
+        public float HV5Switch = 3;
         public bool Pantograph4 = false;
         public bool Compressor_I_HandMode;
         public bool Compressor_II_HandMode;
@@ -526,7 +527,10 @@ namespace Orts.Simulation.RollingStocks
         public bool AuxResOverPressure = false;
         public float MaxMainResOverPressurePSI;
         public float MaxAuxResOverPressurePSI;
-        
+        public bool HVPressedTestDC = false;
+        public bool HVPressedTestAC = false;
+        public float HVPressedTime = 0;
+        public bool HVCanOn = false;
 
         // Zatím opět povoleno
         public bool RouteVoltageChange;
@@ -2921,7 +2925,9 @@ namespace Orts.Simulation.RollingStocks
             HVOffbyAirPressure();
             MaxPower_MaxForce_ACDC();
             ElevatedConsumptionOnLocomotive();
-            
+            TogglePantograph4Switch();
+            ToggleHV5Switch();
+
             TrainControlSystem.Update();
 
             elapsedTime = elapsedClockSeconds;
@@ -6073,12 +6079,56 @@ namespace Orts.Simulation.RollingStocks
         }
 
         // Icik      
+        public void ToggleHV5SwitchUp()
+        {
+            if (HV5Switch < 5)
+                HV5Switch++;                        
+            SignalEvent(Event.PantographToggle); // Zvuk přepínače
+            ToggleHV5Switch();
+            Simulator.Confirmer.Confirm(CabControl.SwitchingVoltageMode_OffAC, SwitchingVoltageMode_OffAC ? CabSetting.On : CabSetting.Off);
+        }
+        public void ToggleHV5SwitchDown()
+        {
+            if (HV5Switch > 1)
+                HV5Switch--;            
+            SignalEvent(Event.PantographToggle); // Zvuk přepínače
+            ToggleHV5Switch();
+            Simulator.Confirmer.Confirm(CabControl.SwitchingVoltageMode_OffDC, SwitchingVoltageMode_OffDC ? CabSetting.On : CabSetting.Off);
+        }
+        public void ToggleHV5Switch()
+        {
+            if (HVCanOn)
+                SignalEvent(PowerSupplyEvent.CloseCircuitBreaker);
+            //Simulator.Confirmer.Information("HV can On");
+
+            switch (HV5Switch)
+            {
+                case 1:
+                    break;
+                case 2: // DC
+                    SwitchingVoltageMode = 0;
+                    SwitchingVoltageMode_OffDC = true;
+                    break;
+                case 3: // střed
+                    SwitchingVoltageMode = 1;
+                    break;
+                case 4: // AC
+                    SwitchingVoltageMode = 2;
+                    SwitchingVoltageMode_OffAC = true;
+                    break;
+                case 5:
+                    break;
+            }
+        }
+
         public void TogglePantograph4SwitchUp()
         {
             if (Pantograph4Switch < 4)
                 Pantograph4Switch++;
             if (Pantograph4Switch == 4)
                 Pantograph4Switch = 0;
+            SignalEvent(Event.PantographToggle);
+            TogglePantograph4Switch();
         }
         public void TogglePantograph4SwitchDown()
         {
@@ -6086,10 +6136,12 @@ namespace Orts.Simulation.RollingStocks
                 Pantograph4Switch--;
             if (Pantograph4Switch == -1)
                 Pantograph4Switch = 3;
+            SignalEvent(Event.PantographToggle);
+            TogglePantograph4Switch();            
         }
         public void TogglePantograph4Switch()
         {
-            if (Pantograph4)
+            if (Pantograph4 && Battery && PowerKey)
             {
                 int p1 = 1; int p2 = 2;
                 if (UsingRearCab) { p1 = 2; p2 = 1; }
@@ -6105,7 +6157,7 @@ namespace Orts.Simulation.RollingStocks
                         break;
                     case 1:
                         {
-                            if (AirForPantograph && Pantographs[p1].State == PantographState.Down || Pantographs[p1].State == PantographState.Lowering) // Zadní panto
+                            if (AirForPantograph && Pantographs[p1].State == PantographState.Down || AirForPantograph && Pantographs[p1].State == PantographState.Lowering) // Zadní panto
                                 SignalEvent(PowerSupplyEvent.RaisePantograph, p1);
                             if (Pantographs[p2].State == PantographState.Up || Pantographs[p2].State == PantographState.Raising) // Přední panto
                                 SignalEvent(PowerSupplyEvent.LowerPantograph, p2);                            
@@ -6113,9 +6165,9 @@ namespace Orts.Simulation.RollingStocks
                         break;
                     case 2:
                         {
-                            if (AirForPantograph && Pantographs[p1].State == PantographState.Down || Pantographs[p1].State == PantographState.Lowering) // Zadní panto
+                            if (AirForPantograph && Pantographs[p1].State == PantographState.Down || AirForPantograph && Pantographs[p1].State == PantographState.Lowering) // Zadní panto
                                 SignalEvent(PowerSupplyEvent.RaisePantograph, p1);
-                            if (AirForPantograph && Pantographs[p2].State == PantographState.Down || Pantographs[p2].State == PantographState.Lowering) // Přední panto
+                            if (AirForPantograph && Pantographs[p2].State == PantographState.Down || AirForPantograph && Pantographs[p2].State == PantographState.Lowering) // Přední panto
                                 SignalEvent(PowerSupplyEvent.RaisePantograph, p2);
                         }
                         break;
@@ -6123,32 +6175,35 @@ namespace Orts.Simulation.RollingStocks
                         {
                             if (Pantographs[p1].State == PantographState.Up || Pantographs[p1].State == PantographState.Raising) // Zadní panto                            
                                 SignalEvent(PowerSupplyEvent.LowerPantograph, p1);
-                            if (AirForPantograph && Pantographs[p2].State == PantographState.Down || Pantographs[p2].State == PantographState.Lowering) // Přední panto
+                            if (AirForPantograph && Pantographs[p2].State == PantographState.Down || AirForPantograph && Pantographs[p2].State == PantographState.Lowering) // Přední panto
                                 SignalEvent(PowerSupplyEvent.RaisePantograph, p2);
                         }
                         break;
                 }
-                SignalEvent(Event.PantographToggle);
             }
         }
-
-
 
         public void ToggleCompressorCombinedSwitchUp()
         {
             if (CompressorSwitch < 4)
                 CompressorSwitch++;
             if (CompressorSwitch <= 3)
+            {
+                SignalEvent(Event.CompressorMode_OffAutoOn);
                 ToggleCompressorCombined();
-            CompressorSwitch = MathHelper.Clamp(CompressorSwitch, 0, 3);
+            }
+            CompressorSwitch = MathHelper.Clamp(CompressorSwitch, 0, 3);            
         }
         public void ToggleCompressorCombinedSwitchDown()
         {
             if (CompressorSwitch > -1)
                 CompressorSwitch--;
             if (CompressorSwitch >= 0)
+            {
+                SignalEvent(Event.CompressorMode_OffAutoOn);
                 ToggleCompressorCombined();
-            CompressorSwitch = MathHelper.Clamp(CompressorSwitch, 0, 3);
+            }
+            CompressorSwitch = MathHelper.Clamp(CompressorSwitch, 0, 3);            
         }          
         public void ToggleCompressorCombined()
         {                       
@@ -6183,8 +6238,7 @@ namespace Orts.Simulation.RollingStocks
                             if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.Compressor_I_HandMode, Compressor_I_HandMode ? CabSetting.On : CabSetting.Off);
                         }
                         break;
-                }
-                SignalEvent(Event.CompressorMode_OffAutoOn);
+                }                
             }
         }
 
@@ -6193,15 +6247,21 @@ namespace Orts.Simulation.RollingStocks
             if (CompressorSwitch2 < 3)
                 CompressorSwitch2++;
             if (CompressorSwitch2 <= 2)
+            {
+                SignalEvent(Event.CompressorMode_OffAutoOn);
                 ToggleCompressorCombined2();
-            CompressorSwitch2 = MathHelper.Clamp(CompressorSwitch2, 0, 2);
+            }
+            CompressorSwitch2 = MathHelper.Clamp(CompressorSwitch2, 0, 2);            
         }
         public void ToggleCompressorCombinedSwitch2Down()
         {
             if (CompressorSwitch2 > -1)
                 CompressorSwitch2--;
             if (CompressorSwitch2 >= 0)
+            {
+                SignalEvent(Event.CompressorMode_OffAutoOn);
                 ToggleCompressorCombined2();
+            }
             CompressorSwitch2 = MathHelper.Clamp(CompressorSwitch2, 0, 2);
         }
         public void ToggleCompressorCombined2()
@@ -6230,8 +6290,7 @@ namespace Orts.Simulation.RollingStocks
                             if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.Compressor_II_HandMode, Compressor_II_HandMode ? CabSetting.On : CabSetting.Off);
                         }
                         break;
-                }
-                SignalEvent(Event.CompressorMode_OffAutoOn);
+                }                
             }
         }
 
@@ -7819,7 +7878,7 @@ namespace Orts.Simulation.RollingStocks
                         data = 0;
                     break;
 
-                // Icik
+                // Icik                
                 case CABViewControlTypes.PANTOGRAPHS_4:
                 case CABViewControlTypes.PANTOGRAPHS_4C:
                 case CABViewControlTypes.PANTOGRAPH_4_SWITCH:

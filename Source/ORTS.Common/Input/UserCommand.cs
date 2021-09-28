@@ -257,6 +257,8 @@
         [GetString("Set Mirel On")] SetMirelOn,
 
         // Icik
+        [GetString("Control HV +")] ControlHV5SwitchUp,
+        [GetString("Control HV -")] ControlHV5SwitchDown,
         [GetString("Control Pantograph +")] ControlPantograph4SwitchUp,
         [GetString("Control Pantograph -")] ControlPantograph4SwitchDown,
         [GetString("Control Compressor I Combined +")] ControlCompressorCombinedUp,

@@ -718,10 +718,6 @@ namespace Orts.Simulation.RollingStocks
         {
             // Icik
             MaxLineVoltage0 = RouteVoltageV;
-            //if (RouteVoltageChange)
-            //    RouteVoltageV = 3000;
-            //else
-            //    RouteVoltageV = 25000;
 
             PowerSupply.Update(elapsedClockSeconds);
                       
@@ -741,10 +737,27 @@ namespace Orts.Simulation.RollingStocks
 
             UnderVoltageProtection(elapsedClockSeconds);
 
+            HVPressedTesting(elapsedClockSeconds);
             AuxAirConsumption(elapsedClockSeconds);
         }
 
         // Icik
+        // Testování času stiknutého HV
+        protected void HVPressedTesting(float elapsedClockSeconds)
+        {
+            if (!HVPressedTestDC && !HVPressedTestAC)
+                HVPressedTime = 0;
+       
+            if (HVPressedTestDC)
+                HVPressedTime += elapsedClockSeconds;                        
+            if (HVPressedTestAC)
+                HVPressedTime += elapsedClockSeconds;            
+
+            if (HVPressedTime > 0.9f && HVPressedTime < 1.1f) // 1s na podržení polohy pro zapnutí HV
+                HVCanOn = true;
+            else HVCanOn = false;
+        }
+
         // Výpočet spotřeby vzduchu, jímka pomocného kompresoru
         protected void AuxAirConsumption(float elapsedClockSeconds)
         {
@@ -1353,6 +1366,30 @@ namespace Orts.Simulation.RollingStocks
 
                         if (PantographVoltageV == 0 && preVoltageDC == 0)
                             data = 1;
+                        break;
+                    }
+
+                case CABViewControlTypes.HV5:
+                    {                        
+                        switch (HV5Switch)
+                        {
+                            case 1:
+                                data = 5;
+                                break;
+                            case 2: // DC
+                                data = 6;
+                                break;
+                            case 3: // střed
+                                data = 0;
+                                break;
+                            case 4: // AC
+                                data = 2;
+                                break;
+                            case 5:
+                                data = 1;
+                                break;
+                        }
+                        LocoSwitchACDC = true;
                         break;
                     }
 
