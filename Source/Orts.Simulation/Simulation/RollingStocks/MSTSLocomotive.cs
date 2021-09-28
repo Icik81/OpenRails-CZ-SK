@@ -6081,29 +6081,37 @@ namespace Orts.Simulation.RollingStocks
         {
             if (HV5Enable)
             {
-                if (HV5Switch < 5)
+                if (HV5Switch < 6)
                     HV5Switch++;
-                SignalEvent(Event.PantographToggle); // Zvuk přepínače
-                ToggleHV5Switch();
-                Simulator.Confirmer.Confirm(CabControl.SwitchingVoltageMode_OffAC, SwitchingVoltageMode_OffAC ? CabSetting.On : CabSetting.Off);
+                if (HV5Switch < 6)
+                {
+                    SignalEvent(Event.PantographToggle); // Zvuk přepínače
+                    ToggleHV5Switch();
+                    Simulator.Confirmer.Confirm(CabControl.SwitchingVoltageMode_OffAC, SwitchingVoltageMode_OffAC ? CabSetting.On : CabSetting.Off);
+                }
+                HV5Switch = MathHelper.Clamp(HV5Switch, 1, 5);                
             }
         }
         public void ToggleHV5SwitchDown()
         {
             if (HV5Enable)
             {
-                if (HV5Switch > 1)
+                if (HV5Switch > 0)
                     HV5Switch--;
-                SignalEvent(Event.PantographToggle); // Zvuk přepínače
-                ToggleHV5Switch();
-                Simulator.Confirmer.Confirm(CabControl.SwitchingVoltageMode_OffDC, SwitchingVoltageMode_OffDC ? CabSetting.On : CabSetting.Off);
+                if (HV5Switch > 0)
+                {
+                    SignalEvent(Event.PantographToggle); // Zvuk přepínače
+                    ToggleHV5Switch();
+                    Simulator.Confirmer.Confirm(CabControl.SwitchingVoltageMode_OffDC, SwitchingVoltageMode_OffDC ? CabSetting.On : CabSetting.Off);
+                }
+                HV5Switch = MathHelper.Clamp(HV5Switch, 1, 5);                
             }
         }
         public void ToggleHV5Switch()
         {
             if (HV5Enable)
             {
-                if (HVCanOn)
+                if (HVCanOn && Battery && PowerKey && Pantograph4Switch != 0)
                     SignalEvent(PowerSupplyEvent.CloseCircuitBreaker);
                 //Simulator.Confirmer.Information("HV can On");
 

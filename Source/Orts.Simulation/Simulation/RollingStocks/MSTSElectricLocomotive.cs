@@ -419,7 +419,8 @@ namespace Orts.Simulation.RollingStocks
                     }
                     if (!CircuitBreakerOn && Pantographs[1].PantographsBlocked == false && Pantographs[2].PantographsBlocked == false)
                     {
-                        SignalEvent(PowerSupplyEvent.LowerPantograph);
+                        if (Pantograph4Switch != 0)
+                            SignalEvent(PowerSupplyEvent.LowerPantograph);
                         PantographDown = true;
                     }
                     if (CircuitBreakerOn)
@@ -1375,19 +1376,19 @@ namespace Orts.Simulation.RollingStocks
                         switch (HV5Switch)
                         {
                             case 1:
-                                data = 5;
-                                break;
-                            case 2: // DC
-                                data = 6;
-                                break;
-                            case 3: // střed
                                 data = 0;
                                 break;
-                            case 4: // AC
+                            case 2: // DC
+                                data = 1;
+                                break;
+                            case 3: // střed
                                 data = 2;
                                 break;
+                            case 4: // AC
+                                data = 3;
+                                break;
                             case 5:
-                                data = 1;
+                                data = 4;
                                 break;
                         }
                         LocoSwitchACDC = true;

@@ -2589,11 +2589,11 @@ namespace Orts.Viewer3D.RollingStock
                             Locomotive.HVPressedTestDC = false;
                         }
 
-                        if (ChangedValue(0) < 0)
-                        {
+                        if (ChangedValue(0) < 0 && UserInput.IsMouseLeftButtonDown)
+                        {                            
                             new ToggleHV5SwitchUpCommand(Viewer.Log);
                         }
-                        if (ChangedValue(0) > 0)
+                        if (ChangedValue(0) > 0 && UserInput.IsMouseLeftButtonDown)
                         {
                             new ToggleHV5SwitchDownCommand(Viewer.Log);
                         }
