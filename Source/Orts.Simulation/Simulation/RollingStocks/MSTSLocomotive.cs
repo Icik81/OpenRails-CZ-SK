@@ -526,13 +526,15 @@ namespace Orts.Simulation.RollingStocks
         public bool AuxResOverPressure = false;
         public float MaxMainResOverPressurePSI;
         public float MaxAuxResOverPressurePSI;
-
         public bool HV5Enable = false;
         public float HV5Switch = 3;
         public bool HVPressedTestDC = false;
         public bool HVPressedTestAC = false;
         public float HVPressedTime = 0;
         public bool HVCanOn = false;
+        public float CompressorBeep = 0;
+        public float Compressor2Beep = 0;
+        public float LastStateHV5 = 3;
 
         // Zatím opět povoleno
         public bool RouteVoltageChange;
@@ -2701,22 +2703,22 @@ namespace Orts.Simulation.RollingStocks
         {
             // Netěsnost pomocné jímky pomocného kompresoru 0.002 bar/s
             if (AuxResPipeLeak == 0)
-                AuxResPipeLeak = 0.002f * 14.50377f;   
+                AuxResPipeLeak = 0.002f * 14.50377f;
+
+            // Velikost jímky pomocného kompresoru
+            if (AuxResVolumeM3 == 0)
+                AuxResVolumeM3 = 60.0f / 1000f; // 60 L
+
+            // Maximální rychlost plnění jímky pomocným kompresorem
+            if (AuxResChargingRatePSIpS == 0)
+                AuxResChargingRatePSIpS = 0.027f * 14.50377f; // 0.027 bar/s 
 
             // Vícesystémové lokomotivy
             if (MultiSystemEngine)
-            {
-                // Maximální rychlost plnění jímky pomocným kompresorem
-                if (AuxResChargingRatePSIpS == 0)
-                    AuxResChargingRatePSIpS = 0.027f * 14.50377f; // 0.027 bar/s
-
+            {                
                 // Maximální tlak v jímce pomocného kompresoru 
                 if (MaxAuxResPressurePSI == 0)
-                    MaxAuxResPressurePSI = 5.0f * 14.50377f; // 5 barů                        
-
-                // Velikost jímky pomocného kompresoru
-                if (AuxResVolumeM3 == 0)
-                    AuxResVolumeM3 = 50.0f / 1000f; // 50 L
+                    MaxAuxResPressurePSI = 5.0f * 14.50377f; // 5 barů                                        
 
                 // Hodnota pro restart pomocného kompresoru
                 //if (AuxCompressorRestartPressurePSI == 0)
@@ -2733,15 +2735,7 @@ namespace Orts.Simulation.RollingStocks
 
             else
             // Jednosystémové lokomotivy
-            {
-                // Maximální rychlost plnění jímky pomocným kompresorem
-                if (AuxResChargingRatePSIpS == 0)
-                    AuxResChargingRatePSIpS = 0.027f * 14.50377f; // 0.027 bar/s
-
-                // Velikost jímky pomocného kompresoru
-                if (AuxResVolumeM3 == 0)
-                    AuxResVolumeM3 = 50.0f / 1000f; // 50 L
-
+            {             
                 if (LocomotivePowerVoltage == 3000)
                 {
                     // Maximální tlak v jímce pomocného kompresoru 
@@ -6078,14 +6072,13 @@ namespace Orts.Simulation.RollingStocks
 
         // Icik      
         public void ToggleHV5SwitchUp()
-        {
+        {            
             if (HV5Enable)
             {
                 if (HV5Switch < 6)
                     HV5Switch++;
                 if (HV5Switch < 6)
-                {
-                    SignalEvent(Event.PantographToggle); // Zvuk přepínače
+                {                    
                     ToggleHV5Switch();
                     Simulator.Confirmer.Confirm(CabControl.SwitchingVoltageMode_OffAC, SwitchingVoltageMode_OffAC ? CabSetting.On : CabSetting.Off);
                 }
@@ -6099,8 +6092,7 @@ namespace Orts.Simulation.RollingStocks
                 if (HV5Switch > 0)
                     HV5Switch--;
                 if (HV5Switch > 0)
-                {
-                    SignalEvent(Event.PantographToggle); // Zvuk přepínače
+                {                    
                     ToggleHV5Switch();
                     Simulator.Confirmer.Confirm(CabControl.SwitchingVoltageMode_OffDC, SwitchingVoltageMode_OffDC ? CabSetting.On : CabSetting.Off);
                 }
@@ -6111,6 +6103,9 @@ namespace Orts.Simulation.RollingStocks
         {
             if (HV5Enable)
             {
+                if (LastStateHV5 != HV5Switch)                
+                    SignalEvent(Event.PantographToggle); // Zvuk přepínače                
+
                 if (HVCanOn && Battery && PowerKey && Pantograph4Switch != 0)
                     SignalEvent(PowerSupplyEvent.CloseCircuitBreaker);
                 //Simulator.Confirmer.Information("HV can On");
@@ -6138,6 +6133,7 @@ namespace Orts.Simulation.RollingStocks
                         //Simulator.Confirmer.Information("Switch 5");
                         break;
                 }
+                LastStateHV5 = HV5Switch;
             }
         }
 
@@ -7908,24 +7904,34 @@ namespace Orts.Simulation.RollingStocks
                         break;
                     }
                 case CABViewControlTypes.COMPRESSOR_START:
-                    {
+                    {                        
                         data = 1;
                         cvc.ElapsedTime += elapsedTime;
                         if (CompressorIsOn && cvc.ElapsedTime < cvc.UpdateTime)
                         {
                             data = 0;
-                            SignalEvent(Event.CompressorBeep);
+                            CompressorBeep++;
+                            if (CompressorBeep == 1)
+                                SignalEvent(Event.CompressorBeep);                            
                         }
                         if (!CompressorIsOn)
+                        {
                             cvc.ElapsedTime = 0;
+                            CompressorBeep = 0;
+                        }
                         cvc.ElapsedTime2 += elapsedTime;
                         if (Compressor2IsOn && cvc.ElapsedTime2 < cvc.UpdateTime)
                         {
                             data = 0;
-                            SignalEvent(Event.CompressorBeep);
+                            Compressor2Beep++;
+                            if (Compressor2Beep == 1)
+                                SignalEvent(Event.CompressorBeep);
                         }
                         if (!Compressor2IsOn)
+                        {
                             cvc.ElapsedTime2 = 0;
+                            Compressor2Beep = 0;
+                        }
                         break;
                     }
                 case CABViewControlTypes.COMPRESSOR_COMBINED:

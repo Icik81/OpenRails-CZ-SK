@@ -1732,8 +1732,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         // Propojení hlavní jímky s pomocnou jímkou pomocného kompresoru
                         if (loco.MainResPressurePSI > loco.AuxResPressurePSI && loco.AuxResPressurePSI < loco.MaxAuxResPressurePSI)
                         {
-                            loco.MainResPressurePSI -= 2 * (loco.AuxResVolumeM3 * loco.MaxAuxResPressurePSI / (loco.MainResVolumeM3 * loco.MaxMainResPressurePSI)) * 2 * elapsedClockSeconds;
-                            loco.AuxResPressurePSI += 2 * elapsedClockSeconds;
+                            loco.MainResPressurePSI -= 2 * (loco.AuxResVolumeM3 * loco.MaxAuxResPressurePSI / (loco.MainResVolumeM3 * loco.MaxMainResPressurePSI)) * 5 * elapsedClockSeconds;
+                            loco.AuxResPressurePSI += 5 * elapsedClockSeconds;
                         }
 
                         // Netěsnosti jímky pomocného kompresoru
@@ -1849,14 +1849,14 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
 
                         // Tlakový ventil při ručním provozu kompresorů
                         if (loco.MaxMainResOverPressurePSI == 0)
-                            loco.MaxMainResOverPressurePSI = loco.MaxMainResPressurePSI + (0.45f * 14.50377f);
+                            loco.MaxMainResOverPressurePSI = loco.MaxMainResPressurePSI + (0.60f * 14.50377f);
                         
                         if (loco.MainResPressurePSI > loco.MaxMainResOverPressurePSI)
                             loco.MainResOverPressure = true;
 
                         if (loco.MainResPressurePSI > loco.MaxMainResPressurePSI && loco.MainResOverPressure)
                         {
-                            loco.MainResPressurePSI -= 0.1f * 14.50377f * elapsedClockSeconds;
+                            loco.MainResPressurePSI -= 0.25f * 14.50377f * elapsedClockSeconds;
                             loco.SignalEvent(Event.MaxMainResOverPressureValveOpen);
                         }
                         else
@@ -1867,14 +1867,14 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
 
                         // Tlakový ventil při provozu pomocného kompresoru  
                         if (loco.MaxAuxResOverPressurePSI == 0)
-                            loco.MaxAuxResOverPressurePSI = loco.MaxAuxResPressurePSI + (0.25f * 14.50377f);
+                            loco.MaxAuxResOverPressurePSI = loco.MaxAuxResPressurePSI + (0.50f * 14.50377f);
 
                         if (loco.AuxResPressurePSI > loco.MaxAuxResOverPressurePSI)
                             loco.AuxResOverPressure = true;
 
                         if (loco.AuxResPressurePSI > loco.MaxAuxResPressurePSI && loco.AuxResOverPressure)
                         {
-                            loco.AuxResPressurePSI -= 0.1f * 14.50377f * elapsedClockSeconds;
+                            loco.AuxResPressurePSI -= 0.25f * 14.50377f * elapsedClockSeconds;
                             loco.SignalEvent(Event.MaxAuxResOverPressureValveOpen);
                         }
                         else
