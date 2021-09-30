@@ -2377,9 +2377,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     float EngineBrakeControllerRate = train.BrakeLine3PressurePSI / lead.BrakeSystem.BrakeCylinderMaxSystemPressurePSI;
                     EngineBrakeControllerRate = MathHelper.Clamp(EngineBrakeControllerRate, 0, 1);
 
-                    // Definování mrtvé zóny brzdiče
-                    float EngineBrakeControllerApply = brakeSystem.PrevEngineBrakeControllerRateApply + (brakeSystem.PrevEngineBrakeControllerRateApply * brakeSystem.EngineBrakeControllerApplyDeadZone);
-                    float EngineBrakeControllerRelease = brakeSystem.PrevEngineBrakeControllerRateRelease - (brakeSystem.PrevEngineBrakeControllerRateRelease * brakeSystem.EngineBrakeControllerReleaseDeadZone);
+                    // Definování mrtvé zóny brzdiče                    
+                    float EngineBrakeControllerApply = (1 - brakeSystem.EngineBrakeControllerApplyDeadZone) * EngineBrakeControllerRate;
+                    float EngineBrakeControllerRelease = brakeSystem.PrevEngineBrakeControllerRateRelease - (brakeSystem.PrevEngineBrakeControllerRateRelease * brakeSystem.EngineBrakeControllerReleaseDeadZone);                    
 
                     if (brakeSystem.PrevEngineBrakeControllerRateApply < brakeSystem.EngineBrakeControllerApplyDeadZone)
                         EngineBrakeControllerApply = brakeSystem.EngineBrakeControllerApplyDeadZone;
