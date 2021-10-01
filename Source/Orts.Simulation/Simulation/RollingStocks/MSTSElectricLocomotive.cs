@@ -786,7 +786,7 @@ namespace Orts.Simulation.RollingStocks
                     HVConsumptionVolumeM3_Off = 20.0f / 1000f; // 20 L
             }
 
-            if (AuxCompressor || CompressorCombined)
+            if (AuxCompressor)
             {
                 for (int i = 1; i <= Pantographs.Count; i++)
                 {

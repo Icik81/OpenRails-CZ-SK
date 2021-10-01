@@ -1730,7 +1730,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                             loco.AuxResPressurePSI = 0;
 
                         // Propojení hlavní jímky s pomocnou jímkou pomocného kompresoru
-                        if (loco.MainResPressurePSI > loco.AuxResPressurePSI && loco.AuxResPressurePSI < loco.MaxAuxResPressurePSI)
+                        if (loco.AuxCompressor && loco.MainResPressurePSI > loco.AuxResPressurePSI && loco.AuxResPressurePSI < loco.MaxAuxResPressurePSI)
                         {
                             loco.MainResPressurePSI -= 2 * (loco.AuxResVolumeM3 * loco.MaxAuxResPressurePSI / (loco.MainResVolumeM3 * loco.MaxMainResPressurePSI)) * 5 * elapsedClockSeconds;
                             loco.AuxResPressurePSI += 5 * elapsedClockSeconds;
