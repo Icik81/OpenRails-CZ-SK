@@ -568,8 +568,8 @@ namespace ORTS.Settings
             Commands[(int)UserCommand.ControlCompressorMode_OffAuto] = new UserCommandKeyInput(0x2E);
             Commands[(int)UserCommand.ControlCompressorMode2_OffAuto] = new UserCommandKeyInput(0x2E, KeyModifiers.Shift);
             Commands[(int)UserCommand.ControlHeating_OffOn] = new UserCommandKeyInput(0x23, KeyModifiers.Control);
-            Commands[(int)UserCommand.ControlSwitchingVoltageMode_OffDC] = new UserCommandKeyInput(0x1F, KeyModifiers.Shift | KeyModifiers.Control);
-            Commands[(int)UserCommand.ControlSwitchingVoltageMode_OffAC] = new UserCommandKeyInput(0x1F, KeyModifiers.Control);
+            //Commands[(int)UserCommand.ControlSwitchingVoltageMode_OffDC] = new UserCommandKeyInput(0x1F, KeyModifiers.Shift | KeyModifiers.Control);
+            //Commands[(int)UserCommand.ControlSwitchingVoltageMode_OffAC] = new UserCommandKeyInput(0x1F, KeyModifiers.Control);
             Commands[(int)UserCommand.ControlRouteVoltage] = new UserCommandKeyInput(0x1F, KeyModifiers.Alt);
             Commands[(int)UserCommand.ControlQuickReleaseButton] = new UserCommandKeyInput(0x52);
             Commands[(int)UserCommand.ControlLowPressureReleaseButton] = new UserCommandKeyInput(0x53);

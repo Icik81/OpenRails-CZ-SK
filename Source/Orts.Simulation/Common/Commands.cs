@@ -1836,40 +1836,40 @@ namespace Orts.Common
             // Report();
         }
     }
-    [Serializable()]
-    public sealed class ToggleSwitchingVoltageMode_OffDCCommand : Command
-    {
-        public static MSTSLocomotive Receiver { get; set; }
+    //[Serializable()]
+    //public sealed class ToggleSwitchingVoltageMode_OffDCCommand : Command
+    //{
+    //    public static MSTSLocomotive Receiver { get; set; }
 
-        public ToggleSwitchingVoltageMode_OffDCCommand(CommandLog log)
-            : base(log)
-        {
-            Redo();
-        }
+    //    public ToggleSwitchingVoltageMode_OffDCCommand(CommandLog log)
+    //        : base(log)
+    //    {
+    //        Redo();
+    //    }
 
-        public override void Redo()
-        {
-            Receiver.ToggleSwitchingVoltageMode_OffDC();
-            // Report();
-        }
-    }
-    [Serializable()]
-    public sealed class ToggleSwitchingVoltageMode_OffACCommand : Command
-    {
-        public static MSTSLocomotive Receiver { get; set; }
+    //    public override void Redo()
+    //    {
+    //        Receiver.ToggleSwitchingVoltageMode_OffDC();
+    //        // Report();
+    //    }
+    //}
+    //[Serializable()]
+    //public sealed class ToggleSwitchingVoltageMode_OffACCommand : Command
+    //{
+    //    public static MSTSLocomotive Receiver { get; set; }
 
-        public ToggleSwitchingVoltageMode_OffACCommand(CommandLog log)
-            : base(log)
-        {
-            Redo();
-        }
+    //    public ToggleSwitchingVoltageMode_OffACCommand(CommandLog log)
+    //        : base(log)
+    //    {
+    //        Redo();
+    //    }
 
-        public override void Redo()
-        {
-            Receiver.ToggleSwitchingVoltageMode_OffAC();
-            // Report();
-        }
-    }
+    //    public override void Redo()
+    //    {
+    //        Receiver.ToggleSwitchingVoltageMode_OffAC();
+    //        // Report();
+    //    }
+    //}
     [Serializable()]
     public sealed class LeftDoorCommand : Command
     {

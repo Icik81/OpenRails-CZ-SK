@@ -6347,36 +6347,36 @@ namespace Orts.Simulation.RollingStocks
             else SignalEvent(Event.Heating_OffOnOff);
             if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.Heating_OffOn, Heating_OffOn ? CabSetting.On : CabSetting.Off);
         }
-        public void ToggleSwitchingVoltageMode_OffDC()
-        {
-            if (SwitchingVoltageMode > 0) SwitchingVoltageMode--;
-            if (SwitchingVoltageMode_OffAC)
-            {
-                SwitchingVoltageMode_OffAC = false;
-                SignalEvent(Event.SwitchingVoltageMode_OffACOff);
-            }
-            if (!SwitchingVoltageMode_OffDC && SwitchingVoltageMode == 0)
-            {
-                SwitchingVoltageMode_OffDC = true;
-                SignalEvent(Event.SwitchingVoltageMode_OffDCOn);
-            }
-            if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.SwitchingVoltageMode_OffDC, SwitchingVoltageMode_OffDC ? CabSetting.On : CabSetting.Off);
-        }
-        public void ToggleSwitchingVoltageMode_OffAC()
-        {
-            if (SwitchingVoltageMode < 2) SwitchingVoltageMode++;
-            if (SwitchingVoltageMode_OffDC)
-            {
-                SwitchingVoltageMode_OffDC = false;
-                SignalEvent(Event.SwitchingVoltageMode_OffDCOff);
-            }
-            if (!SwitchingVoltageMode_OffAC && SwitchingVoltageMode == 2)
-            {
-                SwitchingVoltageMode_OffAC = true;
-                SignalEvent(Event.SwitchingVoltageMode_OffACOn);
-            }           
-            if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.SwitchingVoltageMode_OffAC, SwitchingVoltageMode_OffAC ? CabSetting.On : CabSetting.Off);                        
-        }
+        //public void ToggleSwitchingVoltageMode_OffDC()
+        //{
+        //    if (SwitchingVoltageMode > 0) SwitchingVoltageMode--;
+        //    if (SwitchingVoltageMode_OffAC)
+        //    {
+        //        SwitchingVoltageMode_OffAC = false;
+        //        SignalEvent(Event.SwitchingVoltageMode_OffACOff);
+        //    }
+        //    if (!SwitchingVoltageMode_OffDC && SwitchingVoltageMode == 0)
+        //    {
+        //        SwitchingVoltageMode_OffDC = true;
+        //        SignalEvent(Event.SwitchingVoltageMode_OffDCOn);
+        //    }
+        //    if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.SwitchingVoltageMode_OffDC, SwitchingVoltageMode_OffDC ? CabSetting.On : CabSetting.Off);
+        //}
+        //public void ToggleSwitchingVoltageMode_OffAC()
+        //{
+        //    if (SwitchingVoltageMode < 2) SwitchingVoltageMode++;
+        //    if (SwitchingVoltageMode_OffDC)
+        //    {
+        //        SwitchingVoltageMode_OffDC = false;
+        //        SignalEvent(Event.SwitchingVoltageMode_OffDCOff);
+        //    }
+        //    if (!SwitchingVoltageMode_OffAC && SwitchingVoltageMode == 2)
+        //    {
+        //        SwitchingVoltageMode_OffAC = true;
+        //        SignalEvent(Event.SwitchingVoltageMode_OffACOn);
+        //    }           
+        //    if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.SwitchingVoltageMode_OffAC, SwitchingVoltageMode_OffAC ? CabSetting.On : CabSetting.Off);                        
+        //}
 
         // Zatím povoleno kvůli kompatibilitě
         public void ToggleControlRouteVoltage()

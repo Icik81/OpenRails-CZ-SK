@@ -226,8 +226,8 @@ namespace Orts.Viewer3D.RollingStock
             UserInputCommands.Add(UserCommand.ControlCompressorMode_OffAuto, new Action[] { Noop, () => new ToggleCompressorMode_OffAutoCommand(Viewer.Log) });
             UserInputCommands.Add(UserCommand.ControlCompressorMode2_OffAuto, new Action[] { Noop, () => new ToggleCompressorMode2_OffAutoCommand(Viewer.Log) });
             UserInputCommands.Add(UserCommand.ControlHeating_OffOn, new Action[] { Noop, () => new ToggleHeating_OffOnCommand(Viewer.Log) });
-            UserInputCommands.Add(UserCommand.ControlSwitchingVoltageMode_OffAC, new Action[] { Noop, () => new ToggleSwitchingVoltageMode_OffACCommand(Viewer.Log) });
-            UserInputCommands.Add(UserCommand.ControlSwitchingVoltageMode_OffDC, new Action[] { Noop, () => new ToggleSwitchingVoltageMode_OffDCCommand(Viewer.Log) });
+            //UserInputCommands.Add(UserCommand.ControlSwitchingVoltageMode_OffAC, new Action[] { Noop, () => new ToggleSwitchingVoltageMode_OffACCommand(Viewer.Log) });
+            //UserInputCommands.Add(UserCommand.ControlSwitchingVoltageMode_OffDC, new Action[] { Noop, () => new ToggleSwitchingVoltageMode_OffDCCommand(Viewer.Log) });
             UserInputCommands.Add(UserCommand.ControlRouteVoltage, new Action[] { Noop, () => new ToggleControlRouteVoltageCommand(Viewer.Log) });
             UserInputCommands.Add(UserCommand.ControlQuickReleaseButton, new Action[] { Noop, () => new ToggleQuickReleaseButtonCommand(Viewer.Log) });
             UserInputCommands.Add(UserCommand.ControlLowPressureReleaseButton, new Action[] { Noop, () => new ToggleLowPressureReleaseButtonCommand(Viewer.Log) });
