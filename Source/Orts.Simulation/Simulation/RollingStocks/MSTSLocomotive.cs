@@ -535,6 +535,7 @@ namespace Orts.Simulation.RollingStocks
         public float CompressorBeep = 0;
         public float Compressor2Beep = 0;
         public float LastStateHV5 = 3;
+        public bool LocoReadyToGo = true;
 
         // Zatím opět povoleno
         public bool RouteVoltageChange;
@@ -1754,20 +1755,16 @@ namespace Orts.Simulation.RollingStocks
             electrifiedSections = new List<ElectrifiedSection>();
             InitializeElectrifiedSections();
 
-            // Icik
+            // Icik            
             SetDefault_AuxCompressor();
-
-            MainResChargingRatePSIpS0 = MainResChargingRatePSIpS;
-            
+            MainResChargingRatePSIpS0 = MainResChargingRatePSIpS;           
             if (!Compressor_I && !Compressor_II)
                 Compressor_I = true;
-
             if (Compressor_I && Compressor_II && MainResChargingRatePSIpS_2 == 0)
             {
                 MainResChargingRatePSIpS0 = MainResChargingRatePSIpS / 2;
                 MainResChargingRatePSIpS = MainResChargingRatePSIpS0;
             }
-
             if (MainResChargingRatePSIpS_2 == 0)
                 MainResChargingRatePSIpS_2 = MainResChargingRatePSIpS;
             
@@ -4346,7 +4343,7 @@ namespace Orts.Simulation.RollingStocks
                 if (AbsSpeedMpS < SanderSpeedOfMpS && CurrentTrackSandBoxCapacityM3 > 0.0 && MainResPressurePSI > 80.0 && (AbsSpeedMpS > 0))
                 {
                     // Icik
-                    if (SanderSpeedEffectUpToMpS == 0) SanderSpeedEffectUpToMpS = 72 / 3.6f; // 72km/h
+                    if (SanderSpeedEffectUpToMpS == 0) SanderSpeedEffectUpToMpS = 112 / 3.6f; // 112km/h
                     if (SanderSpeedEffectUpToMpS > 0.0f)
                     {
                         if ((Sander) && (AbsSpeedMpS < SanderSpeedEffectUpToMpS))

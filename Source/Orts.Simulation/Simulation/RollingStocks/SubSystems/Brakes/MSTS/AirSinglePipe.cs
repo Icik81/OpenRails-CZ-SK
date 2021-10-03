@@ -602,7 +602,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
 
             MSTSLocomotive loco = Car as MSTSLocomotive;
             if (StartOn)
-            {
+            {               
                 // Vyfouká všechny vozy
                 if (!(Car as MSTSWagon).IsDriveable)
                 {
@@ -657,11 +657,13 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     {                        
                         loco.AuxResPressurePSI = loco.MaxAuxResPressurePSI;                     
                         HandbrakePercent = loco.HandBrakePresent ? 0 : 0;
+                        loco.SetEngineBrakePercent(100);
                     }
                     HandbrakePercent = (Car as MSTSWagon).HandBrakePresent ? 0 : 0;
                     BrakeLine1PressurePSI = maxPressurePSI0;
                     BrakeLine2PressurePSI = Car.Train.BrakeLine2PressurePSI;
                     AuxResPressurePSI = maxPressurePSI0;
+                    AutoCylPressurePSI0 = MaxCylPressurePSI;
                 }
 
                 // Definice limitů proměnných pro chod nenaladěných vozidel

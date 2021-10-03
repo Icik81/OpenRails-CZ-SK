@@ -201,7 +201,7 @@ namespace Orts.Simulation.RollingStocks
             if (!PowerSupply.RouteElectrified)
                 Trace.WriteLine("Warning: The route is not electrified. Electric driven trains will not run!");
 
-            PowerSupply.Initialize();
+            //PowerSupply.Initialize();
 
             base.Initialize();
 
@@ -227,7 +227,8 @@ namespace Orts.Simulation.RollingStocks
 
             // Icik
             if (RouteVoltageV == 0)
-                RouteVoltageV = (float)Simulator.TRK.Tr_RouteFile.MaxLineVoltage;                     
+                RouteVoltageV = (float)Simulator.TRK.Tr_RouteFile.MaxLineVoltage;    
+                        
         }
 
         //================================================================================================//
@@ -736,10 +737,52 @@ namespace Orts.Simulation.RollingStocks
                 }
             }
 
+            // Icik
             UnderVoltageProtection(elapsedClockSeconds);
+            
+            if (IsPlayerTrain)
+            {                
+                HVPressedTesting(elapsedClockSeconds);
+                AuxAirConsumption(elapsedClockSeconds);
 
-            HVPressedTesting(elapsedClockSeconds);
-            AuxAirConsumption(elapsedClockSeconds);
+                if (PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closed && PowerOn)
+                    LocoReadyToGo = false;
+
+                // Nastavení pro plně oživenou lokomotivu
+                if (LocoReadyToGo && BrakeSystem.IsAirFull)
+                {                    
+                    Battery = true;
+                    PowerKey = true;
+                    CompressorSwitch = 2;
+                    CompressorSwitch2 = 1;
+                    CompressorMode_OffAuto = true;
+                    CompressorMode2_OffAuto = true;
+                    Pantograph4Switch = 1;
+                    if (MultiSystemEngine)
+                    {
+                        if (RouteVoltageV > 4000)
+                        {
+                            HV5Switch = 4; VoltageAC = RouteVoltageV;
+                        }
+                        else
+                        {
+                            HV5Switch = 2; VoltageDC = RouteVoltageV;
+                        }
+                    }
+                    else
+                    {
+                        if (LocomotivePowerVoltage != RouteVoltageV)
+                            LocoReadyToGo = false;
+                    }
+                    if (LocoReadyToGo)
+                    {
+                        PowerSupply.PantographVoltageV = RouteVoltageV;
+                        PantographVoltageV = RouteVoltageV;
+                        SignalEvent(PowerSupplyEvent.CloseCircuitBreaker);
+                        PowerSupply.Initialize();
+                    }
+                }
+            }
         }
 
         // Icik

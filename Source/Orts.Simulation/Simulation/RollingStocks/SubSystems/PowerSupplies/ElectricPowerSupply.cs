@@ -224,15 +224,22 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
 
         public override void Update(float elapsedClockSeconds)
         {
-            if (elapsedClockSeconds == 0)
+            if (elapsedClockSeconds == 0) 
                 return;
-            
+
+            if (Locomotive.LocoReadyToGo)
+            {
+                SetCurrentState(PowerSupplyState.PowerOn);
+                SetCurrentAuxiliaryState(PowerSupplyState.PowerOn);                
+                return;
+            }
+
             if (Locomotive.SwitchingVoltageMode == 1 && Locomotive.LocoSwitchACDC)
                 TDC = 0;
 
             switch (CurrentPantographState())
             {
-                case PantographState.Down:                    
+                case PantographState.Down:
                 case PantographState.Lowering:
                 case PantographState.Raising:
                     if (PowerOnTimer.Started)
@@ -253,9 +260,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                     break;
 
                 case PantographState.Up:
-                    
+
                     // Icik
-                    // Trakce na 25kV naměří napětí hned
+                    // Trakce na 25kV naměří napětí hned                                           
                     if (Locomotive.RouteVoltageV == 25000)
                         SetPantographVoltageV(PantographFilter.Filter(LineVoltageV(), elapsedClockSeconds));
 
@@ -283,8 +290,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                         SetPantographVoltageV(PantographFilter.Filter(0.0f, elapsedClockSeconds));
                         SetFilterVoltageV(VoltageFilter.Filter(0.0f, elapsedClockSeconds));
                     }
-                   
-
+                                        
                     switch (CurrentCircuitBreakerState())
                     {
                         case CircuitBreakerState.Open:
