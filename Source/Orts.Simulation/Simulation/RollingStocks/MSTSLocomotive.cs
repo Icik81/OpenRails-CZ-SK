@@ -6154,7 +6154,7 @@ namespace Orts.Simulation.RollingStocks
         }
         public void TogglePantograph4Switch()
         {
-            if (Pantograph4 && Battery) // Zatím bez PowerKey kvůli kompatibilitě
+            if (Battery) // Zatím bez PowerKey kvůli kompatibilitě
             {
                 int p1 = 1; int p2 = 2;
                 if (UsingRearCab) { p1 = 2; p2 = 1; }
