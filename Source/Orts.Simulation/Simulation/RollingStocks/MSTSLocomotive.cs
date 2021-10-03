@@ -535,7 +535,7 @@ namespace Orts.Simulation.RollingStocks
         public float CompressorBeep = 0;
         public float Compressor2Beep = 0;
         public float LastStateHV5 = 3;
-        public bool LocoReadyToGo = true;
+        public bool LocoReadyToGo = false;
 
         // Zatím opět povoleno
         public bool RouteVoltageChange;

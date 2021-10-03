@@ -201,7 +201,7 @@ namespace Orts.Simulation.RollingStocks
             if (!PowerSupply.RouteElectrified)
                 Trace.WriteLine("Warning: The route is not electrified. Electric driven trains will not run!");
 
-            //PowerSupply.Initialize();
+            PowerSupply.Initialize();
 
             base.Initialize();
 
@@ -227,8 +227,8 @@ namespace Orts.Simulation.RollingStocks
 
             // Icik
             if (RouteVoltageV == 0)
-                RouteVoltageV = (float)Simulator.TRK.Tr_RouteFile.MaxLineVoltage;    
-                        
+                RouteVoltageV = (float)Simulator.TRK.Tr_RouteFile.MaxLineVoltage;
+
         }
 
         //================================================================================================//
@@ -778,9 +778,9 @@ namespace Orts.Simulation.RollingStocks
                     {
                         PowerSupply.PantographVoltageV = RouteVoltageV;
                         PantographVoltageV = RouteVoltageV;
-                        SignalEvent(PowerSupplyEvent.CloseCircuitBreaker);                        
-                    }
-                    PowerSupply.Initialize();
+                        SignalEvent(PowerSupplyEvent.CloseCircuitBreaker);
+                        PowerSupply.Initialize();
+                    }                    
                 }
             }
         }
