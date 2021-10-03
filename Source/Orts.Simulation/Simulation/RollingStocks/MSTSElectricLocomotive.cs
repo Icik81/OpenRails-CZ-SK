@@ -778,9 +778,9 @@ namespace Orts.Simulation.RollingStocks
                     {
                         PowerSupply.PantographVoltageV = RouteVoltageV;
                         PantographVoltageV = RouteVoltageV;
-                        SignalEvent(PowerSupplyEvent.CloseCircuitBreaker);
-                        PowerSupply.Initialize();
+                        SignalEvent(PowerSupplyEvent.CloseCircuitBreaker);                        
                     }
+                    PowerSupply.Initialize();
                 }
             }
         }
