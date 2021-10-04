@@ -2008,6 +2008,9 @@ namespace Orts.Simulation.RollingStocks
                     if (BrakeSystem.AutoCylPressurePSI0 > 5)
                         MaxImpulseCouplerForceUN = MassKG / 80000 * 100000; // Pří brždění se použije větší síla max impulzu 100kN                    
 
+                    // Zatím neřešitelné pro různé vůle spřáhel
+                    MaxImpulseCouplerForceUN = GetCouplerBreak1N();
+
                     if (Math.Abs(CouplerForceU) > GetCouplerBreak2N() || Math.Abs(ImpulseCouplerForceUN) > MaxImpulseCouplerForceUN)  // break couplers if either static or impulse forces exceeded
                     {
                         CouplerExceedBreakLimit = true;

@@ -447,7 +447,7 @@ namespace Orts.Simulation.RollingStocks
         public float AdhesionEfficiencyKoef;
         public bool OverCurrent = false;
         public bool OverVoltage = false;
-        public bool MultiSystemEngine = true;
+        public bool MultiSystemEngine = false;
         public float MaxCurrentPower;
         public float MaxCurrentBrake;
         public float SlipSpeedCritical;
@@ -536,6 +536,7 @@ namespace Orts.Simulation.RollingStocks
         public float Compressor2Beep = 0;
         public float LastStateHV5 = 3;
         public bool LocoReadyToGo = false;
+        public bool CircuitBreakerOn = false;
 
         // Zatím opět povoleno
         public bool RouteVoltageChange;
@@ -2914,7 +2915,7 @@ namespace Orts.Simulation.RollingStocks
             HVOffbyAirPressure();
             MaxPower_MaxForce_ACDC();
             ElevatedConsumptionOnLocomotive();            
-            if (MultiSystemEngine) TogglePantograph4Switch();
+            TogglePantograph4Switch();
             ToggleHV5Switch();
 
             TrainControlSystem.Update();
@@ -6154,6 +6155,9 @@ namespace Orts.Simulation.RollingStocks
         }
         public void TogglePantograph4Switch()
         {
+            if (!MultiSystemEngine && !CircuitBreakerOn)
+                return;
+            
             if (Battery) // Zatím bez PowerKey kvůli kompatibilitě
             {
                 int p1 = 1; int p2 = 2;

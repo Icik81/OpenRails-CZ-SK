@@ -55,8 +55,7 @@ namespace Orts.Simulation.RollingStocks
     {
         public ScriptedElectricPowerSupply PowerSupply;
 
-        // Icik
-        public bool CircuitBreakerOn = false;
+        // Icik        
         public bool PantographDown = true;
         public double PantographCriticalVoltage;       
         public float VoltageSprung = 1.0f;
@@ -744,10 +743,7 @@ namespace Orts.Simulation.RollingStocks
             {                
                 HVPressedTesting(elapsedClockSeconds);
                 AuxAirConsumption(elapsedClockSeconds);
-
-                if (PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closed && PowerOn)
-                    LocoReadyToGo = false;
-
+                
                 // Nastavení pro plně oživenou lokomotivu
                 if (LocoReadyToGo && BrakeSystem.IsAirFull)
                 {                    
@@ -757,9 +753,10 @@ namespace Orts.Simulation.RollingStocks
                     CompressorSwitch2 = 1;
                     CompressorMode_OffAuto = true;
                     CompressorMode2_OffAuto = true;
-                    Pantograph4Switch = 1;
+
                     if (MultiSystemEngine)
                     {
+                        Pantograph4Switch = 1;
                         if (RouteVoltageV > 4000)
                         {
                             HV5Switch = 4; VoltageAC = RouteVoltageV;
@@ -768,19 +765,23 @@ namespace Orts.Simulation.RollingStocks
                         {
                             HV5Switch = 2; VoltageDC = RouteVoltageV;
                         }
-                    }
-                    else
-                    {
-                        if (LocomotivePowerVoltage != RouteVoltageV)
-                            LocoReadyToGo = false;
-                    }
-                    if (LocoReadyToGo)
-                    {
                         PowerSupply.PantographVoltageV = RouteVoltageV;
                         PantographVoltageV = RouteVoltageV;
                         SignalEvent(PowerSupplyEvent.CloseCircuitBreaker);
-                        PowerSupply.Initialize();
-                    }                    
+                        if (PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closed)
+                            LocoReadyToGo = false;
+                    }
+                    else
+                    {
+                        SignalEvent(PowerSupplyEvent.CloseCircuitBreaker);                      
+                        PowerSupply.PantographVoltageV = RouteVoltageV;
+                        PantographVoltageV = RouteVoltageV;
+                        if (PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closed)
+                        {
+                            Pantograph4Switch = 1;
+                            LocoReadyToGo = false;
+                        }
+                    }
                 }
             }
         }

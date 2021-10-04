@@ -456,7 +456,8 @@
             this.checkAirEmpty.Name = "checkAirEmpty";
             this.checkAirEmpty.Size = new System.Drawing.Size(276, 21);
             this.checkAirEmpty.TabIndex = 31;
-            this.checkAirEmpty.Text = "Locomotive without air at the beginning";
+            this.checkAirEmpty.Text = "Odstavená lokomotiva (lokomotivu je nutné oživit)";
+            //this.checkAirEmpty.Text = "Locomotive without air at the beginning";
             this.checkAirEmpty.UseVisualStyleBackColor = true;
             // 
             // checkReduceMemory
