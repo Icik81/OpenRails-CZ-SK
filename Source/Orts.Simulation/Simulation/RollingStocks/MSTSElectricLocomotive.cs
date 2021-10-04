@@ -749,6 +749,7 @@ namespace Orts.Simulation.RollingStocks
                 {                    
                     Battery = true;
                     PowerKey = true;
+                    ActiveStation = UsingRearCab ? DriverStation.Station2 : DriverStation.Station1;
                     CompressorSwitch = 2;
                     CompressorSwitch2 = 1;
                     CompressorMode_OffAuto = true;
@@ -781,8 +782,8 @@ namespace Orts.Simulation.RollingStocks
                             Pantograph4Switch = 1;
                             LocoReadyToGo = false;
                         }
-                    }
-                }
+                    }                    
+                }                   
             }
         }
 
