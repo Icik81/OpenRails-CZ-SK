@@ -397,6 +397,10 @@ namespace Orts.Simulation.RollingStocks
                 // Úbytek výkonu v závislosti na napětí
                 UiPowerLose = PantographVoltageV / RouteVoltageV;
 
+                // Shodí HV při stažení sběračů při navoleném výkonu
+                if (LocalThrottlePercent != 0 && Pantograph4Switch == 0)                    
+                    HVOff = true;
+
                 // Blokování pantografu u jednosystémových lokomotiv při vypnutém HV
                 if (!MultiSystemEngine)
                 {
@@ -406,10 +410,10 @@ namespace Orts.Simulation.RollingStocks
                     if (PantographVoltageV == MaxLineVoltage0)
                     {
                         if (PantographVoltageV > 1.5f * LocomotivePowerVoltage)
-                            SignalEvent(PowerSupplyEvent.OpenCircuitBreaker);
+                            HVOff = true;
                         else
                             if (PantographVoltageV < 0.5f * LocomotivePowerVoltage)
-                                SignalEvent(PowerSupplyEvent.OpenCircuitBreaker);
+                                HVOff = true;
                     }
 
                     if (!CircuitBreakerOn && PantographDown)
@@ -438,7 +442,7 @@ namespace Orts.Simulation.RollingStocks
 
                                 // Shodí HV při poklesu napětí v troleji a nastaveném výkonu (podpěťová ochrana)
                                 if (PowerSupply.PantographVoltageV < PantographCriticalVoltage && LocalThrottlePercent > 0.1)
-                                    SignalEvent(PowerSupplyEvent.OpenCircuitBreaker);
+                                    HVOff = true;
                             }
 
                             if (CruiseControl != null)
@@ -447,7 +451,7 @@ namespace Orts.Simulation.RollingStocks
                                     && CruiseControl.ForceThrottleAndDynamicBrake != 1
                                     && PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closed)
                                 {
-                                    SignalEvent(PowerSupplyEvent.OpenCircuitBreaker);
+                                    HVOff = true;
                                 }
 
                             // Shodí HV při poklesu napětí v troleji a nastaveném výkonu (podpěťová ochrana)
@@ -455,7 +459,7 @@ namespace Orts.Simulation.RollingStocks
                             {
                                 if (PowerSupply.PantographVoltageV < PantographCriticalVoltage && LocalThrottlePercent != 0)
                                 {
-                                    SignalEvent(PowerSupplyEvent.OpenCircuitBreaker);
+                                    HVOff = true;
                                     Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Zásah podpěťové ochrany!"));
                                 }
                                 if (CruiseControl != null)
@@ -470,7 +474,7 @@ namespace Orts.Simulation.RollingStocks
                                         CruiseControl.DynamicBrakePriority = false;
                                         TractiveForceN = 0;
 
-                                        SignalEvent(PowerSupplyEvent.OpenCircuitBreaker);
+                                        HVOff = true;
                                         Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Zásah podpěťové ochrany!"));
                                     }
                             }
@@ -483,7 +487,7 @@ namespace Orts.Simulation.RollingStocks
                             {
                                 // Shodí HV při poklesu napětí v troleji a nastaveném výkonu (podpěťová ochrana)
                                 if (PowerSupply.PantographVoltageV < PantographCriticalVoltage && LocalThrottlePercent > 0.1)
-                                    SignalEvent(PowerSupplyEvent.OpenCircuitBreaker);
+                                    HVOff = true;
                             }
 
                             if (CruiseControl != null)
@@ -492,7 +496,7 @@ namespace Orts.Simulation.RollingStocks
                                     && CruiseControl.ForceThrottleAndDynamicBrake != 1
                                     && PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closed)
                                 {
-                                    SignalEvent(PowerSupplyEvent.OpenCircuitBreaker);
+                                    HVOff = true;
                                 }
 
                             // Shodí HV při poklesu napětí v troleji a nastaveném výkonu (podpěťová ochrana)
@@ -500,7 +504,7 @@ namespace Orts.Simulation.RollingStocks
                             {
                                 if (PowerSupply.PantographVoltageV < PantographCriticalVoltage && LocalThrottlePercent != 0)
                                 {
-                                    SignalEvent(PowerSupplyEvent.OpenCircuitBreaker);
+                                    HVOff = true;
                                     Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Zásah podpěťové ochrany!"));
                                 }
                                 if (CruiseControl != null)
@@ -514,7 +518,7 @@ namespace Orts.Simulation.RollingStocks
                                         CruiseControl.SpeedSelMode = prevMode;
                                         CruiseControl.DynamicBrakePriority = false;
                                         TractiveForceN = 0;
-                                        SignalEvent(PowerSupplyEvent.OpenCircuitBreaker);
+                                        HVOff = true;
                                         Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Zásah podpěťové ochrany!"));
                                     }
                             }
@@ -528,7 +532,7 @@ namespace Orts.Simulation.RollingStocks
                     if (LocoSwitchACDC 
                         && (SwitchingVoltageMode == 1) 
                         && (PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closed || PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closing))
-                            SignalEvent(PowerSupplyEvent.OpenCircuitBreaker);
+                            HVOff = true;
 
                     if (PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closed && PowerOn)
                         T_CB = 1;
@@ -540,22 +544,21 @@ namespace Orts.Simulation.RollingStocks
                         T_CB = 0;
 
                     if (RouteVoltageV == 3000 && PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closing && VoltageDC < 1500)
-                        SignalEvent(PowerSupplyEvent.OpenCircuitBreaker);
+                        HVOff = true;
 
                     if (RouteVoltageV == 25000 && PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closing && VoltageAC < 15000)
-                        SignalEvent(PowerSupplyEvent.OpenCircuitBreaker);
+                        HVOff = true;
 
                     if (SwitchingVoltageMode_OffAC && RouteVoltageV == 3000 
                         && (PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closing || PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closed)
                         && (Pantographs[1].State == PantographState.Up || Pantographs[2].State == PantographState.Up)) 
-                            SignalEvent(PowerSupplyEvent.OpenCircuitBreaker);
+                            HVOff = true;
 
                     if (SwitchingVoltageMode_OffDC && RouteVoltageV == 25000
                         && (PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closing || PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closed)
                         && (Pantographs[1].State == PantographState.Up || Pantographs[2].State == PantographState.Up))
-                            SignalEvent(PowerSupplyEvent.OpenCircuitBreaker);
-
-
+                            HVOff = true;
+                    
                     if (SwitchingVoltageMode == 1)
                     {
                         SwitchingVoltageMode_OffAC = false;
@@ -598,7 +601,7 @@ namespace Orts.Simulation.RollingStocks
                                 DynamicBrakeChangeActiveState(false);
                             }
                             if (RouteVoltageV != 3000 && !SwitchingVoltageMode_OffDC)
-                                SignalEvent(PowerSupplyEvent.OpenCircuitBreaker);
+                                HVOff = true;
                         }
 
                         if (CruiseControl != null)
@@ -615,7 +618,7 @@ namespace Orts.Simulation.RollingStocks
                                 CruiseControl.DynamicBrakePriority = false;
                                 TractiveForceN = 0;
                                 if (RouteVoltageV != 3000 && !SwitchingVoltageMode_OffDC)
-                                    SignalEvent(PowerSupplyEvent.OpenCircuitBreaker);
+                                    HVOff = true;
                             }
 
                         //Shodí HV při poklesu napětí v troleji a nastaveném výkonu a EDB(podpěťová ochrana)
@@ -630,7 +633,7 @@ namespace Orts.Simulation.RollingStocks
                                     SetDynamicBrakePercent(0);
                                     DynamicBrakeChangeActiveState(false);
                                 }
-                                SignalEvent(PowerSupplyEvent.OpenCircuitBreaker);
+                                HVOff = true;
                                 Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Zásah podpěťové ochrany!"));
                             }
 
@@ -645,7 +648,7 @@ namespace Orts.Simulation.RollingStocks
                                     CruiseControl.SpeedSelMode = prevMode;
                                     CruiseControl.DynamicBrakePriority = false;
                                     TractiveForceN = 0;
-                                    SignalEvent(PowerSupplyEvent.OpenCircuitBreaker);
+                                    HVOff = true;
                                     Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Zásah podpěťové ochrany!"));
                                 }
                         }
@@ -659,7 +662,7 @@ namespace Orts.Simulation.RollingStocks
                         || (PowerSupply.PantographVoltageV == 0 && LocalThrottlePercent != 0 && PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closed))
                         {
                             if (RouteVoltageV != 3000 && !SwitchingVoltageMode_OffDC)
-                                SignalEvent(PowerSupplyEvent.OpenCircuitBreaker);
+                                HVOff = true;
                         }
 
                         if (CruiseControl != null)
@@ -674,7 +677,7 @@ namespace Orts.Simulation.RollingStocks
                                     DynamicBrakeChangeActiveState(false);
                                 }
                                 if (RouteVoltageV != 3000 && !SwitchingVoltageMode_OffDC)
-                                    SignalEvent(PowerSupplyEvent.OpenCircuitBreaker);
+                                    HVOff = true;
                             }
 
                         if (PowerSupply.PantographVoltageV > 0)
@@ -688,7 +691,7 @@ namespace Orts.Simulation.RollingStocks
                                     SetDynamicBrakePercent(0);
                                     DynamicBrakeChangeActiveState(false);
                                 }
-                                SignalEvent(PowerSupplyEvent.OpenCircuitBreaker);
+                                HVOff = true;
                                 Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Zásah podpěťové ochrany!"));
                             }
 
@@ -703,7 +706,7 @@ namespace Orts.Simulation.RollingStocks
                                     CruiseControl.SpeedSelMode = prevMode;
                                     CruiseControl.DynamicBrakePriority = false;
                                     TractiveForceN = 0;
-                                    SignalEvent(PowerSupplyEvent.OpenCircuitBreaker);
+                                    HVOff = true;
                                     Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Zásah podpěťové ochrany!"));
                                 }
                         }
@@ -719,6 +722,16 @@ namespace Orts.Simulation.RollingStocks
         {
             // Icik
             MaxLineVoltage0 = RouteVoltageV;
+            if (HVOff)
+            {
+                HVOff = false;
+                SignalEvent(PowerSupplyEvent.OpenCircuitBreaker);
+            }
+            if (HVOn)
+            {
+                HVOn = false;
+                SignalEvent(PowerSupplyEvent.CloseCircuitBreaker);
+            }
 
             PowerSupply.Update(elapsedClockSeconds);
                       
@@ -768,13 +781,13 @@ namespace Orts.Simulation.RollingStocks
                         }
                         PowerSupply.PantographVoltageV = RouteVoltageV;
                         PantographVoltageV = RouteVoltageV;
-                        SignalEvent(PowerSupplyEvent.CloseCircuitBreaker);
+                        HVOn = true;
                         if (PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closed)
                             LocoReadyToGo = false;
                     }
                     else
                     {
-                        SignalEvent(PowerSupplyEvent.CloseCircuitBreaker);                      
+                        HVOn = true;                      
                         PowerSupply.PantographVoltageV = RouteVoltageV;
                         PantographVoltageV = RouteVoltageV;
                         if (PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closed)
@@ -791,6 +804,7 @@ namespace Orts.Simulation.RollingStocks
         // Testování času stiknutého HV
         protected void HVPressedTesting(float elapsedClockSeconds)
         {
+            HVCanOn = false;
             if (!HVPressedTestDC && !HVPressedTestAC || HV5Switch != 1 && HV5Switch != 5)
                 HVPressedTime = 0;
        
@@ -800,8 +814,7 @@ namespace Orts.Simulation.RollingStocks
                 HVPressedTime += elapsedClockSeconds;            
 
             if (HVPressedTime > 0.9f && HVPressedTime < 1.1f) // 1s na podržení polohy pro zapnutí HV
-                HVCanOn = true;
-            else HVCanOn = false;
+                HVCanOn = true;            
         }
 
         // Výpočet spotřeby vzduchu, jímka pomocného kompresoru
@@ -869,7 +882,7 @@ namespace Orts.Simulation.RollingStocks
                         case CircuitBreakerState.Closing:
                             {
                                 if (!AirForHV)
-                                    SignalEvent(PowerSupplyEvent.OpenCircuitBreaker);
+                                    HVOff = true;
                                 break;
                             }
 
@@ -882,7 +895,7 @@ namespace Orts.Simulation.RollingStocks
                                     AuxResPressurePSI -= 14.50377f * (MaxAuxResPressurePSI / (AuxResVolumeM3 * MaxAuxResPressurePSI / HVConsumptionVolumeM3_On)) * elapsedClockSeconds;
 
                                 if (!AirForHV)
-                                    SignalEvent(PowerSupplyEvent.OpenCircuitBreaker);
+                                    HVOff = true;
 
                                 break;
                             }

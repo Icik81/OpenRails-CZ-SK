@@ -537,6 +537,8 @@ namespace Orts.Simulation.RollingStocks
         public float LastStateHV5 = 3;
         public bool LocoReadyToGo = false;
         public bool CircuitBreakerOn = false;
+        public bool HVOff = false;
+        public bool HVOn = false;
 
         // Zatím opět povoleno
         public bool RouteVoltageChange;
@@ -2356,10 +2358,10 @@ namespace Orts.Simulation.RollingStocks
                         switch (MultiSystemEngine)
                         {
                             case true: // Vícesystémová lokomotiva                            
-                                Train.SignalEvent(PowerSupplyEvent.OpenCircuitBreaker); // Vypnutí HV    
+                                HVOff = true; // Vypnutí HV    
                                 break;
                             case false: // Jednosystémová lokomotiva
-                                Train.SignalEvent(PowerSupplyEvent.OpenCircuitBreaker); // Vypnutí HV                                
+                                HVOff = true; // Vypnutí HV                                
                                 break;
                         }
                         Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Zásah nadproudové ochrany!"));
@@ -2419,10 +2421,10 @@ namespace Orts.Simulation.RollingStocks
                         switch (MultiSystemEngine)
                         {
                             case true: // Vícesystémová lokomotiva                            
-                                Train.SignalEvent(PowerSupplyEvent.OpenCircuitBreaker); // Vypnutí HV    
+                                HVOff = true; // Vypnutí HV    
                                 break;
                             case false: // Jednosystémová lokomotiva
-                                Train.SignalEvent(PowerSupplyEvent.OpenCircuitBreaker); // Vypnutí HV                                
+                                HVOff = true; // Vypnutí HV                                
                                 break;
                         }
                         Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Zásah protiskluzové ochrany!"));
@@ -2525,7 +2527,7 @@ namespace Orts.Simulation.RollingStocks
                     if (BrakeSystem.GetCylPressurePSI() >= BrakeCutsPowerAtBrakeCylinderPressurePSI && LocalThrottlePercent > 0
                       || HVOffStatusBrakeCyl)
                     {
-                        Train.SignalEvent(PowerSupplyEvent.OpenCircuitBreaker); // Vypnutí HV
+                        HVOff = true; // Vypnutí HV
                         HVOffStatusBrakeCyl = true;
                     }
                     if (BrakeSystem.GetCylPressurePSI() < BrakeCutsPowerAtBrakeCylinderPressurePSI)
@@ -2539,7 +2541,7 @@ namespace Orts.Simulation.RollingStocks
                     if (BrakeCutsPowerAtBrakePipePressurePSI != 0)
                         if (BrakeSystem.BrakeLine1PressurePSI <= BrakeCutsPowerAtBrakePipePressurePSI)
                         {
-                            Train.SignalEvent(PowerSupplyEvent.OpenCircuitBreaker); // Vypnutí HV                             
+                            HVOff = true; // Vypnutí HV                             
                             HVOffStatusBrakePipe = true;
                         }
                     //Trace.TraceWarning("Hodnota BrakeSystem.BrakeLine1PressurePSI {0}, BrakeCutsPowerAtBrakePipePressurePSI {1}", BrakeSystem.BrakeLine1PressurePSI, BrakeCutsPowerAtBrakePipePressurePSI);                    
@@ -6105,7 +6107,7 @@ namespace Orts.Simulation.RollingStocks
                     SignalEvent(Event.PantographToggle); // Zvuk přepínače                
 
                 if (HVCanOn && Battery && PowerKey && Pantograph4Switch != 0)
-                    SignalEvent(PowerSupplyEvent.CloseCircuitBreaker);
+                    HVOn = true;
                 //Simulator.Confirmer.Information("HV can On");
 
                 switch (HV5Switch)
