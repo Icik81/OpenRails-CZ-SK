@@ -541,10 +541,6 @@ namespace Orts.Simulation.RollingStocks
         public bool HVOff = false;
         public bool HVOn = false;
 
-        // Zatím opět povoleno
-        public bool RouteVoltageChange;
-
-
         // Jindrich
         public CruiseControl CruiseControl;
         public MultiPositionController MultiPositionController;
@@ -2766,7 +2762,6 @@ namespace Orts.Simulation.RollingStocks
             }
         }
 
-<<<<<<< Updated upstream
         public void SetDefault_AuxCompressor()
         {
             // Netěsnost pomocné jímky pomocného kompresoru 0.002 bar/s
@@ -2842,8 +2837,6 @@ namespace Orts.Simulation.RollingStocks
                 }
             }
         }
-=======
->>>>>>> Stashed changes
 
 
         public void SaveElectrifiedSection(int sectionId, int voltage)
@@ -2892,38 +2885,6 @@ namespace Orts.Simulation.RollingStocks
         public bool CanCheckEngineBrake = true;
         public override void Update(float elapsedClockSeconds)
         {
-<<<<<<< Updated upstream
-            // Zakomentováno kvůli kompatibilitě
-            //if (IsPlayerTrain && Train.FrontTDBTraveller.TrackNodeIndex != currentSectionSetId)
-            //    sectionSet = false;
-            //if (IsPlayerTrain && !sectionSet)
-            //{
-            //    Simulator.Confirmer.MSG(this.Train.FrontTDBTraveller.TrackNodeIndex.ToString());
-            //    bool found = false;
-            //    foreach (ElectrifiedSection es in electrifiedSections)
-            //    {
-            //        if (es.TrackSectionID == Train.FrontTDBTraveller.TrackNodeIndex)
-            //        {
-            //            found = true;
-            //            RouteVoltageV = es.Voltage;
-            //            break;
-
-            //        }
-            //    }
-            //    if (!found)
-            //    {
-            //        SaveElectrifiedSection(Train.FrontTDBTraveller.TrackNodeIndex, (int)RouteVoltageV);
-            //        ElectrifiedSection newEs = new ElectrifiedSection();
-            //        newEs.TrackSectionID = currentSectionSetId = Train.FrontTDBTraveller.TrackNodeIndex;
-            //        newEs.Voltage = (int)RouteVoltageV;
-            //        electrifiedSections.Add(newEs);
-            //    }
-            //    sectionSet = true;
-            //}
-            double dist = DistanceToPowerSupplyStationM(0); // change 0 to actual selected system
-            //Simulator.Confirmer.MSG(dist.ToString());
-=======
->>>>>>> Stashed changes
             if (IsPlayerTrain && !Simulator.Paused)
             {
                 if (extendedPhysics != null)
