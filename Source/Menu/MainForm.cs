@@ -393,6 +393,8 @@ namespace ORTS
             ShowDetails();
             LoadMirelDatabase();
             LoadNames();
+            LoadPowerSupplyStations();
+            LoadPowerSupplyMarkers();
         }
         #endregion
 
@@ -472,6 +474,170 @@ namespace ORTS
             }
         }
         #endregion
+
+        void LoadPowerSupplyStations()
+        {
+            Ping ping = new Ping();
+            PingReply pingReply = ping.Send("lkpr.aspone.cz", 1000);
+            if (pingReply != null)
+            {
+                if (pingReply.Status == IPStatus.Success)
+                {
+                    SplashWindow sw = new SplashWindow();
+                    sw.Show();
+                    sw.Message = "Aktualizace napaječek. Zabere to jen pár vteřin..";
+                    sw.UpdateProgress();
+                    if (pingReply.Status == IPStatus.Success)
+                    {
+                        if (!File.Exists(SelectedRoute.Path + "\\PowerSupplyStations.xml") && File.Exists(SelectedRoute.Path + "\\PowerSupplyStationsDbVersion.ini"))
+                            File.Delete(SelectedRoute.Path + "\\PowerSupplyStationsDbVersion.ini");
+                        FileInfo fileInfo = new FileInfo(SelectedRoute.Path + "\\PowerSupplyStationsDbVersion.ini");
+                        if (!fileInfo.Exists)
+                        {
+                            File.WriteAllText(SelectedRoute.Path + "\\PowerSupplyStationsDbVersion.ini", "0");
+                        }
+                        string version = File.ReadAllText(SelectedRoute.Path + "\\PowerSupplyStationsDbVersion.ini");
+                        if (string.IsNullOrEmpty(version)) version = "0";
+                        cz.aspone.lkpr.WebService ws = new cz.aspone.lkpr.WebService();
+                        string verRemote = ws.GetPowerSuplyStationVersion(SelectedRoute.ToString());
+                        if (verRemote == version)
+                        {
+                            sw.Close();
+                            return;
+                        }
+
+                        DataTable dt = ws.GetPowerSupplyStations(comboBoxRoute.Text, version);
+                        int currentRow = 0;
+
+                        if (!File.Exists(SelectedRoute.Path + "\\PowerSupplyStations.xml"))
+                        {
+                            WebClient webClient = new WebClient();
+                            webClient.DownloadFile("http://lkpr.aspone.cz/or/PowerSupplyStations.xml", SelectedRoute.Path + "\\PowerSupplyStations.xml");
+                        }
+                        XmlDocument doc = new XmlDocument();
+                        doc.Load(SelectedRoute.Path + "\\PowerSupplyStations.xml");
+
+                        foreach (DataRow dr in dt.Rows)
+                        {
+                            currentRow++;
+                            double calc = 100 / (double)dt.Rows.Count;
+                            calc = calc * currentRow;
+                            calc = Math.Round(calc, 0) + 1;
+                            sw.Progress = int.Parse(calc.ToString());
+                            sw.UpdateProgress();
+                            if (dr[1].ToString() == SelectedRoute.ToString())
+                            {
+                                foreach (XmlNode node in doc.ChildNodes)
+                                {
+                                    if (node.Name == "PowerSupplyStations")
+                                    {
+                                        XmlNode node1 = doc.CreateElement("SupplyStation");
+                                        XmlNode node2 = doc.CreateElement("Id");
+                                        node2.InnerText = dr[0].ToString();
+                                        XmlNode node3 = doc.CreateElement("Longitude");
+                                        node3.InnerText = dr[3].ToString();
+                                        XmlNode node4 = doc.CreateElement("Latitude");
+                                        node4.InnerText = dr[4].ToString();
+                                        XmlNode node5 = doc.CreateElement("PowerSystem");
+                                        node5.InnerText = dr[5].ToString();
+                                        node1.AppendChild(node2);
+                                        node1.AppendChild(node3);
+                                        node1.AppendChild(node4);
+                                        node1.AppendChild(node5);
+                                        node.AppendChild(node1);
+                                    }
+                                }
+                            }
+                        }
+                        doc.Save(SelectedRoute.Path + "\\PowerSupplyStations.xml");
+                        File.WriteAllText(SelectedRoute.Path + "\\PowerSupplyStationsDbVersion.ini", ws.GetPowerSuplyStationVersion(SelectedRoute.Name));
+                        sw.Close();
+                    }
+                }
+            }
+        }
+
+        void LoadPowerSupplyMarkers()
+        {
+            Ping ping = new Ping();
+            PingReply pingReply = ping.Send("lkpr.aspone.cz", 1000);
+            if (pingReply != null)
+            {
+                if (pingReply.Status == IPStatus.Success)
+                {
+                    SplashWindow sw = new SplashWindow();
+                    sw.Show();
+                    sw.Message = "Aktualizace stahovaček. Zabere to jen pár vteřin..";
+                    sw.UpdateProgress();
+                    if (pingReply.Status == IPStatus.Success)
+                    {
+                        if (!File.Exists(SelectedRoute.Path + "\\VoltageChangeMarkers.xml") && File.Exists(SelectedRoute.Path + "\\VoltageChangeMarkersDbVersion.ini"))
+                            File.Delete(SelectedRoute.Path + "\\VoltageChangeMarkersDbVersion.ini");
+                        FileInfo fileInfo = new FileInfo(SelectedRoute.Path + "\\VoltageChangeMarkersDbVersion.ini");
+                        if (!fileInfo.Exists)
+                        {
+                            File.WriteAllText(SelectedRoute.Path + "\\VoltageChangeMarkersDbVersion.ini", "0");
+                        }
+                        string version = File.ReadAllText(SelectedRoute.Path + "\\VoltageChangeMarkersDbVersion.ini");
+                        if (string.IsNullOrEmpty(version)) version = "0";
+                        cz.aspone.lkpr.WebService ws = new cz.aspone.lkpr.WebService();
+                        string verRemote = ws.GetPowerSuplyMarkerVersion(SelectedRoute.ToString());
+                        if (verRemote == version)
+                        {
+                            sw.Close();
+                            return;
+                        }
+
+                        DataTable dt = ws.GetPowerSupplyMarkers(comboBoxRoute.Text, version);
+                        int currentRow = 0;
+
+                        if (!File.Exists(SelectedRoute.Path + "\\VoltageChangeMarkers.xml"))
+                        {
+                            WebClient webClient = new WebClient();
+                            webClient.DownloadFile("http://lkpr.aspone.cz/or/VoltageChangeMarkers.xml", SelectedRoute.Path + "\\VoltageChangeMarkers.xml");
+                        }
+                        XmlDocument doc = new XmlDocument();
+                        doc.Load(SelectedRoute.Path + "\\VoltageChangeMarkers.xml");
+
+                        foreach (DataRow dr in dt.Rows)
+                        {
+                            currentRow++;
+                            double calc = 100 / (double)dt.Rows.Count;
+                            calc = calc * currentRow;
+                            calc = Math.Round(calc, 0) + 1;
+                            sw.Progress = int.Parse(calc.ToString());
+                            sw.UpdateProgress();
+                            if (dr[1].ToString() == SelectedRoute.ToString())
+                            {
+                                foreach (XmlNode node in doc.ChildNodes)
+                                {
+                                    if (node.Name == "VoltageChangeMarkers")
+                                    {
+                                        XmlNode node1 = doc.CreateElement("Marker");
+                                        XmlNode node2 = doc.CreateElement("Id");
+                                        node2.InnerText = dr[0].ToString();
+                                        XmlNode node3 = doc.CreateElement("Longitude");
+                                        node3.InnerText = dr[3].ToString();
+                                        XmlNode node4 = doc.CreateElement("Latitude");
+                                        node4.InnerText = dr[4].ToString();
+                                        XmlNode node5 = doc.CreateElement("Voltage");
+                                        node5.InnerText = dr[5].ToString();
+                                        node1.AppendChild(node2);
+                                        node1.AppendChild(node3);
+                                        node1.AppendChild(node4);
+                                        node1.AppendChild(node5);
+                                        node.AppendChild(node1);
+                                    }
+                                }
+                            }
+                        }
+                        doc.Save(SelectedRoute.Path + "\\VoltageChangeMarkers.xml");
+                        File.WriteAllText(SelectedRoute.Path + "\\VoltageChangeMarkersDbVersion.ini", ws.GetPowerSuplyStationVersion(SelectedRoute.Name));
+                        sw.Close();
+                    }
+                }
+            }
+        }
 
         #region Names
         public void LoadNames()

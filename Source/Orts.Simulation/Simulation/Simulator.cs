@@ -170,6 +170,11 @@ namespace Orts.Simulation
         public readonly bool MilepostUnitsMetric;
         public bool OpenDoorsInAITrains;
 
+        public bool SuperUser = File.Exists(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location + "\\SuperUser.iam")) ? true : false;
+
+        public List<PowerSupplyStation> powerSupplyStations;
+        public List<VoltageChangeMarker> voltageChangeMarkers;
+
         public int ActiveMovingTableIndex = -1;
         public MovingTable ActiveMovingTable
         {
@@ -2179,4 +2184,35 @@ namespace Orts.Simulation
         }
 
     } // Simulator
+
+    public class PowerSupplyStation
+    {
+        public double Longitude { get; set; }
+        public double Latitude { get; set; }
+        public int PowerSystem { get; set; }
+        public bool Failure { get; set; }
+        public float TotalAmps { get; set; }
+        public List<MSTSElectricLocomotive> Consuptors;
+        public PowerSupplyStation()
+        {
+            Consuptors = new List<MSTSElectricLocomotive>();
+        }
+
+        public void Update()
+        {
+            TotalAmps = 0;
+            foreach (MSTSElectricLocomotive loco in Consuptors)
+            {
+                TotalAmps += loco.Amps;
+            }
+        }
+    }
+
+    public class VoltageChangeMarker
+    {
+        public double Longitude { get; set; }
+        public double Latitude { get; set; }
+        public int Voltage { get; set; }
+    }
+
 }

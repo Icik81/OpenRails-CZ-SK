@@ -14020,7 +14020,8 @@ namespace Orts.Simulation.Physics
                 circuitString = String.Concat(circuitString, forwardstring);
             }
 
-            statusString[iColumn] = String.Copy(circuitString);
+            //statusString[iColumn] = String.Copy(circuitString);
+            statusString[iColumn] = this.AITrainThrottlePercent.ToString();
 
             return (statusString);
         }

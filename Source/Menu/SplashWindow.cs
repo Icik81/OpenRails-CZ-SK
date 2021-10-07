@@ -12,6 +12,7 @@ namespace ORTS
     public partial class SplashWindow : Form
     {
         public int Progress = 0;
+        public string Message = "Aktualizace databáze Mirelu. Zabere to jen pár vteřin..";
         public SplashWindow()
         {
             InitializeComponent();
@@ -31,6 +32,8 @@ namespace ORTS
             progressBar.Update();
             this.Refresh();
             progressBar.Refresh();
+            label1.Text = Message;
+            label1.Refresh();
         }
     }
 }

@@ -3739,6 +3739,29 @@ namespace Orts.Simulation.AIs
 
         public void AdjustControlsAccelMore(float reqAccelMpSS, float timeS, int stepSize)
         {
+            float step = stepSize;
+            if (!Simulator.Paused)
+                step = 0.1f;
+            foreach (TrainCar car in Cars)
+            {
+                if (car is MSTSElectricLocomotive)
+                {
+                    MSTSElectricLocomotive loco = (MSTSElectricLocomotive)car;
+                    foreach(PowerSupplyStation pss in Simulator.powerSupplyStations)
+                    {
+                        if (pss.TotalAmps > 5000)
+                        {
+                            foreach (MSTSElectricLocomotive eloc in pss.Consuptors)
+                            {
+                                if (eloc == loco)
+                                {
+                                    return;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
             if (AITrainBrakePercent > 0)
             {
                 AdjustControlsBrakeOff();
@@ -3746,7 +3769,7 @@ namespace Orts.Simulation.AIs
 
             if (AITrainThrottlePercent < 100)
             {
-                AITrainThrottlePercent += stepSize;
+                AITrainThrottlePercent += step;
                 if (AITrainThrottlePercent > 100)
                     AITrainThrottlePercent = 100;
             }
@@ -3782,7 +3805,7 @@ namespace Orts.Simulation.AIs
 
             if (AITrainThrottlePercent > 0)
             {
-                AITrainThrottlePercent -= stepSize;
+                AITrainThrottlePercent -= 0.1f;
                 if (AITrainThrottlePercent < 0)
                     AITrainThrottlePercent = 0;
             }

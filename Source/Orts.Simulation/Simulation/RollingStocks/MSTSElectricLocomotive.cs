@@ -30,6 +30,7 @@
 using Microsoft.Xna.Framework;
 using Orts.Formats.Msts;
 using Orts.Parsers.Msts;
+using Orts.Simulation.AIs;
 using Orts.Simulation.RollingStocks.SubSystems.Controllers;
 using Orts.Simulation.RollingStocks.SubSystems.PowerSupplies;
 using ORTS.Common;
@@ -248,10 +249,158 @@ namespace Orts.Simulation.RollingStocks
 
         // Icik
         // Podpěťová ochrana a blokace pantografů
+        protected PowerSupplyStation prevPss = null;
+        protected float prevDist = 0;
+        protected float distSinceLastCheck = 0;
+        public float Amps;
         protected void UnderVoltageProtection(float elapsedClockSeconds)
         {
+            if (Simulator.Paused)
+                return;
             PantographVoltageV = (float)Math.Round(PantographVoltageV);
             PowerSupply.PantographVoltageV = (float)Math.Round(PowerSupply.PantographVoltageV);
+
+            // výpočet napětí dle proudu a odporu k napaječce
+            float watts = TractiveForceN * 10;
+            if (Flipped && watts < 0)
+                watts = -watts; 
+
+            if (watts < 0 && !RecuperationAvailable)
+                watts = 0;
+            Amps = watts / PantographVoltageV;
+            if (float.IsNaN(Amps))
+                Amps = 0;
+            if (RouteVoltageV == 25000)
+                Amps *= 1.3f; //přidáme malinko jalovinu
+            if (float.IsInfinity(Amps))
+                Amps = 0;
+            if (Amps < 0)
+                Amps = 0;
+            float dist = 0;
+            int powerSys = -1;
+            PowerSupplyStation myStation = null;
+            if (prevDist == 0)
+                dist = DistanceToPowerSupplyStationM(out powerSys, out myStation);
+            int markerVoltage = 0;
+            VoltageChangeMarker marker;
+            float distToMarker = DistanceToVoltageMarkerM(out markerVoltage, out marker);
+
+            /*            if (prevDist >= 1000) // více než kilometr, updatujeme co 100m
+                        {
+                            if (distSinceLastCheck + 100 > DistanceM)
+                            {
+                                dist = prevDist = DistanceToPowerSupplyStationM(out powerSys, out myStation);
+                                distSinceLastCheck = DistanceM;
+                            }
+                            if (distSinceLastCheck < DistanceM - 100)
+                            {
+                                dist = prevDist = DistanceToPowerSupplyStationM(out powerSys, out myStation);
+                                distSinceLastCheck = DistanceM;
+                            }
+                        }
+                        else if (prevDist < 1000 && prevDist >= 100) // méně než km, ale více než 100 m, každých 10m
+                        {
+                            if (distSinceLastCheck + 10 > DistanceM)
+                            {
+                                dist = prevDist = DistanceToPowerSupplyStationM(out powerSys, out myStation);
+                                distSinceLastCheck = DistanceM;
+                            }
+                            if (distSinceLastCheck - 10 < DistanceM)
+                            {
+                                dist = prevDist = DistanceToPowerSupplyStationM(out powerSys, out myStation);
+                                distSinceLastCheck = DistanceM;
+                            }
+                        }
+                        if (distSinceLastCheck < DistanceM)
+                            distSinceLastCheck = DistanceM;
+                        else if (prevDist < 100) // méně než 100m, vypočti vždy*/
+            /*            {
+                            dist = prevDist = DistanceToPowerSupplyStationM(out powerSys, out myStation);
+                        }*/
+            dist = prevDist = DistanceToPowerSupplyStationM(out powerSys, out myStation);
+            if (myStation == null && prevPss != null)
+            {
+                myStation = prevPss;
+                powerSys = myStation.PowerSystem;
+            }
+            else
+                powerSys = myStation.PowerSystem;
+            if (powerSys == 0)
+            {
+                RouteVoltageV = 3000;
+            }
+            else if (powerSys == 1)
+            {
+                RouteVoltageV = 25000;
+            }
+            if (powerSys == -1)
+            {
+                RouteVoltageV = 0;
+            }
+            if (distToMarker < dist)
+            {
+                RouteVoltageV = markerVoltage;
+            }
+
+            if (RouteVoltageV == 0)
+            {
+                RouteVoltageV = 1;
+                Amps = 0;
+            }
+
+            foreach (PowerSupplyStation pss in Simulator.powerSupplyStations)
+            {
+                if (pss.Longitude == myStation.Longitude)
+                    myStation = pss;
+            }
+            if (prevPss == null)
+            {
+                if (myStation == null)
+                {
+                    myStation = new PowerSupplyStation();
+                    myStation.PowerSystem = 1;
+                }
+                    
+                prevPss = myStation;
+                myStation.Consuptors.Add(this);
+                myStation.Update();
+            }
+            if (prevPss != myStation)
+            {
+                prevPss.Consuptors.Remove(this);
+                prevPss.Update();
+                myStation.Consuptors.Add(this);
+                myStation.Update();
+                prevPss = myStation;
+            }
+            else
+                myStation.Update();
+            float wireResistance = RouteVoltageV == 3000 ? dist / 50000 : dist / 5000;
+
+            float newVoltage = wireResistance * myStation.TotalAmps;
+            float distDrop = RouteVoltageV == 3000 ? dist / 50 : dist / 20;
+            float volts = -newVoltage - distDrop;
+
+            if (!PantographDown)
+            {
+                if (RouteVoltageV == 3000)
+                    volts += 400; // max 3.4kV poblíž měničky
+                if (RouteVoltageV == 25000)
+                    volts += 2000; // max 27kV poblíž napaječky
+            }
+            // TODO icik: změnit volts dle filtrace (zamezení skokové změny), plus další, třeba se podívat co nefunguje
+            PowerSupply.PantographVoltageV += volts;
+
+            if (PantographVoltageV < 1)
+                PantographVoltageV = 1;
+            if (PowerSupply.PantographVoltageV < 1)
+                PowerSupply.PantographVoltageV = 1;
+
+            if (IsPlayerTrain && Simulator.SuperUser)
+                Simulator.Confirmer.MSG("Mark U: " + markerVoltage.ToString() + "; Mark dist: " + Math.Round(distToMarker, 0).ToString() + "; Supl dist: " + Math.Round(dist, 0).ToString() + "; My panto U: " + Math.Round(PantographVoltageV, 0).ToString() + "; Supl I: " + Math.Round(myStation.TotalAmps, 0).ToString() + "; Supl #locos: " + myStation.Consuptors.Count.ToString());
+
+            /*if (PantographVoltageV < 2000)
+                Debugger.Break();*/
 
             if (IsPlayerTrain && !Simulator.Paused)
             {                
@@ -266,8 +415,8 @@ namespace Orts.Simulation.RollingStocks
                         T = 0;
                     }
                     // Rychlost padání napětí při vypnutém HV
-                    else 
-                    if (!CircuitBreakerOn && PantographVoltageV > PowerSupply.PantographVoltageV && PowerSupply.PantographVoltageV < MaxLineVoltage0 && MaxLineVoltage1 > 0)
+                    else
+                    if ((!CircuitBreakerOn && PantographVoltageV > PowerSupply.PantographVoltageV && PowerSupply.PantographVoltageV < MaxLineVoltage0 && MaxLineVoltage1 > 0) || RouteVoltageV == 0)
                     {
                         if (T == 0)
                             MaxLineVoltage2 = PantographVoltageV;
@@ -284,7 +433,7 @@ namespace Orts.Simulation.RollingStocks
                     }
                     // Rychlost padání napětí při vypnutém sběrači
                     else
-                    if (CircuitBreakerOn && PowerSupply.PantographVoltageV < PantographVoltageV && PowerSupply.PantographVoltageV < MaxLineVoltage0 && MaxLineVoltage1 > 0)
+                    if ((CircuitBreakerOn && PowerSupply.PantographVoltageV < PantographVoltageV && PowerSupply.PantographVoltageV < MaxLineVoltage0 && MaxLineVoltage1 > 0) || RouteVoltageV == 0)
                     {
                         if (T == 0)
                             MaxLineVoltage2 = PantographVoltageV;
@@ -293,8 +442,10 @@ namespace Orts.Simulation.RollingStocks
                         MaxLineVoltage2 -= (0.02f * MaxLineVoltage0) * elapsedClockSeconds; // 2% z napětí v troleji za 1s
                         if (MaxLineVoltage2 < (0.1f * MaxLineVoltage0)) MaxLineVoltage2 = (0.1f * MaxLineVoltage0);
                     }
-                    else
+                    else if (RouteVoltageV > 0)
                         PantographVoltageV = PowerSupply.PantographVoltageV;
+                    else if (RouteVoltageV == 0)
+                        PantographVoltageV = PowerSupply.PantographVoltageV = 0;
 
                     // Uchová informaci o napětí pro filtr
                     if (PowerOn && MaxLineVoltage1 == 0)

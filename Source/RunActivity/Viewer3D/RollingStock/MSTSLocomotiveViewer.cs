@@ -232,6 +232,12 @@ namespace Orts.Viewer3D.RollingStock
             UserInputCommands.Add(UserCommand.ControlQuickReleaseButton, new Action[] { Noop, () => new ToggleQuickReleaseButtonCommand(Viewer.Log) });
             UserInputCommands.Add(UserCommand.ControlLowPressureReleaseButton, new Action[] { Noop, () => new ToggleLowPressureReleaseButtonCommand(Viewer.Log) });
 
+            // Jindřich
+            UserInputCommands.Add(UserCommand.ControlPowerStationLocation, new Action[] { Noop, () => Locomotive.SetPowerSupplyStationLocation() });
+            UserInputCommands.Add(UserCommand.ControlSetVoltage25k, new Action[] { Noop, () => Locomotive.SetVoltageMarker(25000) });
+            UserInputCommands.Add(UserCommand.ControlSetVoltage3k, new Action[] { Noop, () => Locomotive.SetVoltageMarker(3000) });
+            UserInputCommands.Add(UserCommand.ControlSetVoltage0, new Action[] { Noop, () => Locomotive.SetVoltageMarker(0) });
+
             base.InitializeUserInputCommands();
         }
 

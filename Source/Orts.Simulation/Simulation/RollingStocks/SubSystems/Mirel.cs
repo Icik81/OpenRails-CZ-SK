@@ -103,7 +103,6 @@ namespace Orts.Simulation.RollingStocks.SubSystems
         protected bool stableRecieveCode = false;
         protected float recievingTimer = 0;
         protected int nextSignalId = 0;
-        public bool EnableMirelUpdates = false;
         protected int DatabaseVersion = 0;
         protected bool DatabaseVersionUpdated = false;
         public enum LS90power { Off, Start, On };
@@ -158,8 +157,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
 
         public void SetMirelSignal(bool ToState)
         {
-            
-            if (!EnableMirelUpdates) return;
+            if (!Simulator.SuperUser) return;
             if (!Locomotive.IsPlayerTrain) return;
             if (!DatabaseVersionUpdated)
             {
@@ -178,7 +176,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
         XmlDocument MirelXml;
         protected void UpdateMirelSignal(string newFlag)
         {
-            if (!EnableMirelUpdates) return;
+            if (!Simulator.SuperUser) return;
 
             if (MirelXml == null)
             {
@@ -332,7 +330,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                 if (distance == null)
                     distance = 2000;
 
-                if (EnableMirelUpdates)
+                if (Simulator.SuperUser)
                 {
                     bool found = false;
                     if (prevNextSignalId != nextSignalTrId)
@@ -352,14 +350,14 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                             if (ms.Value == "a")
                             {
                                 prevRecieverState = recieverState = RecieverState.Off;
-                                Simulator.Confirmer.MSG(nextSignalTrId.ToString() + " - kódováni Mirel na příštím návěstidle je VYPNUTO (vzdálenost: " + Math.Round((double)distance, 0).ToString() + "m) -- AutoBlock? " + (noAutoblock ? "false" : "true"));
+                                Simulator.Confirmer.Warning(nextSignalTrId.ToString() + " - kódováni Mirel na příštím návěstidle je VYPNUTO (vzdálenost: " + Math.Round((double)distance, 0).ToString() + "m) -- AutoBlock? " + (noAutoblock ? "false" : "true"));
                                 found = true;
                                 break;
                             }
                             if (ms.Value == "b")
                             {
                                 prevRecieverState = recieverState = RecieverState.Signal50;
-                                Simulator.Confirmer.MSG(nextSignalTrId.ToString() + " - kódování Mirel na příštím návěstidle je ZAPNUTO (vzdálenost: " + Math.Round((double)distance, 0).ToString() + "m) -- AutoBlock? " + (noAutoblock ? "false" : "true"));
+                                Simulator.Confirmer.Warning(nextSignalTrId.ToString() + " - kódování Mirel na příštím návěstidle je ZAPNUTO (vzdálenost: " + Math.Round((double)distance, 0).ToString() + "m) -- AutoBlock? " + (noAutoblock ? "false" : "true"));
                                 found = true;
                                 break;
                             }
@@ -372,7 +370,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                             Locomotive.SignalEvent(Common.Event.MirelUnwantedVigilancy);
                             prevNextSignalId = nextSignalTrId;
                         }
-                        Simulator.Confirmer.MSG(nextSignalTrId.ToString() + " - kódování Mirel na příštím návěstidle je NENASTAVENO (vzdálenost: " + Math.Round((double)distance, 0).ToString() + "m) -- AutoBlock? " + (noAutoblock ? "false" : "true"));
+                        Simulator.Confirmer.Warning(nextSignalTrId.ToString() + " - kódování Mirel na příštím návěstidle je NENASTAVENO (vzdálenost: " + Math.Round((double)distance, 0).ToString() + "m) -- AutoBlock? " + (noAutoblock ? "false" : "true"));
                     }
                 }
                 else

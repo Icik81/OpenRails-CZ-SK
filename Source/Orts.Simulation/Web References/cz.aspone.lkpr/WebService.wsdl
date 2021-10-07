@@ -24,6 +24,50 @@
           </s:sequence>
         </s:complexType>
       </s:element>
+      <s:element name="GetPowerSupplyStations">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="TrackName" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Version" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetPowerSupplyStationsResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetPowerSupplyStationsResult">
+              <s:complexType>
+                <s:sequence>
+                  <s:any minOccurs="0" maxOccurs="unbounded" namespace="http://www.w3.org/2001/XMLSchema" processContents="lax" />
+                  <s:any minOccurs="1" namespace="urn:schemas-microsoft-com:xml-diffgram-v1" processContents="lax" />
+                </s:sequence>
+              </s:complexType>
+            </s:element>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetPowerSupplyMarkers">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="TrackName" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Version" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetPowerSupplyMarkersResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetPowerSupplyMarkersResult">
+              <s:complexType>
+                <s:sequence>
+                  <s:any minOccurs="0" maxOccurs="unbounded" namespace="http://www.w3.org/2001/XMLSchema" processContents="lax" />
+                  <s:any minOccurs="1" namespace="urn:schemas-microsoft-com:xml-diffgram-v1" processContents="lax" />
+                </s:sequence>
+              </s:complexType>
+            </s:element>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
       <s:element name="GetLastVersion">
         <s:complexType>
           <s:sequence>
@@ -35,6 +79,34 @@
         <s:complexType>
           <s:sequence>
             <s:element minOccurs="0" maxOccurs="1" name="GetLastVersionResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetPowerSuplyStationVersion">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="Track" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetPowerSuplyStationVersionResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetPowerSuplyStationVersionResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetPowerSuplyMarkerVersion">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="Track" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetPowerSuplyMarkerVersionResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetPowerSuplyMarkerVersionResult" type="s:string" />
           </s:sequence>
         </s:complexType>
       </s:element>
@@ -51,6 +123,44 @@
       <s:element name="SaveMirelSignalResponse">
         <s:complexType />
       </s:element>
+      <s:element name="SavePowerSupplyStation">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="Id" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="TrackName" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Lat" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Lon" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="PowerSystem" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="DatabaseVersion" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="SavePowerSupplyStationResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="SavePowerSupplyStationResult" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="SavePowerSupplyMarker">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="Id" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="TrackName" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Lat" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Lon" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="Voltage" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="DatabaseVersion" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="SavePowerSupplyMarkerResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="SavePowerSupplyMarkerResult" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
       <s:element name="UpdateMirelVersion">
         <s:complexType>
           <s:sequence>
@@ -62,6 +172,28 @@
       <s:element name="UpdateMirelVersionResponse">
         <s:complexType />
       </s:element>
+      <s:element name="UpdatePowerSuplyStationVersion">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="Version" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="Track" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="UpdatePowerSuplyStationVersionResponse">
+        <s:complexType />
+      </s:element>
+      <s:element name="UpdatePowerSupplyMarkerVersion">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="Version" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="Track" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="UpdatePowerSupplyMarkerVersionResponse">
+        <s:complexType />
+      </s:element>
     </s:schema>
   </wsdl:types>
   <wsdl:message name="GetMirelSignalsSoapIn">
@@ -70,11 +202,35 @@
   <wsdl:message name="GetMirelSignalsSoapOut">
     <wsdl:part name="parameters" element="tns:GetMirelSignalsResponse" />
   </wsdl:message>
+  <wsdl:message name="GetPowerSupplyStationsSoapIn">
+    <wsdl:part name="parameters" element="tns:GetPowerSupplyStations" />
+  </wsdl:message>
+  <wsdl:message name="GetPowerSupplyStationsSoapOut">
+    <wsdl:part name="parameters" element="tns:GetPowerSupplyStationsResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetPowerSupplyMarkersSoapIn">
+    <wsdl:part name="parameters" element="tns:GetPowerSupplyMarkers" />
+  </wsdl:message>
+  <wsdl:message name="GetPowerSupplyMarkersSoapOut">
+    <wsdl:part name="parameters" element="tns:GetPowerSupplyMarkersResponse" />
+  </wsdl:message>
   <wsdl:message name="GetLastVersionSoapIn">
     <wsdl:part name="parameters" element="tns:GetLastVersion" />
   </wsdl:message>
   <wsdl:message name="GetLastVersionSoapOut">
     <wsdl:part name="parameters" element="tns:GetLastVersionResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetPowerSuplyStationVersionSoapIn">
+    <wsdl:part name="parameters" element="tns:GetPowerSuplyStationVersion" />
+  </wsdl:message>
+  <wsdl:message name="GetPowerSuplyStationVersionSoapOut">
+    <wsdl:part name="parameters" element="tns:GetPowerSuplyStationVersionResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetPowerSuplyMarkerVersionSoapIn">
+    <wsdl:part name="parameters" element="tns:GetPowerSuplyMarkerVersion" />
+  </wsdl:message>
+  <wsdl:message name="GetPowerSuplyMarkerVersionSoapOut">
+    <wsdl:part name="parameters" element="tns:GetPowerSuplyMarkerVersionResponse" />
   </wsdl:message>
   <wsdl:message name="SaveMirelSignalSoapIn">
     <wsdl:part name="parameters" element="tns:SaveMirelSignal" />
@@ -82,34 +238,108 @@
   <wsdl:message name="SaveMirelSignalSoapOut">
     <wsdl:part name="parameters" element="tns:SaveMirelSignalResponse" />
   </wsdl:message>
+  <wsdl:message name="SavePowerSupplyStationSoapIn">
+    <wsdl:part name="parameters" element="tns:SavePowerSupplyStation" />
+  </wsdl:message>
+  <wsdl:message name="SavePowerSupplyStationSoapOut">
+    <wsdl:part name="parameters" element="tns:SavePowerSupplyStationResponse" />
+  </wsdl:message>
+  <wsdl:message name="SavePowerSupplyMarkerSoapIn">
+    <wsdl:part name="parameters" element="tns:SavePowerSupplyMarker" />
+  </wsdl:message>
+  <wsdl:message name="SavePowerSupplyMarkerSoapOut">
+    <wsdl:part name="parameters" element="tns:SavePowerSupplyMarkerResponse" />
+  </wsdl:message>
   <wsdl:message name="UpdateMirelVersionSoapIn">
     <wsdl:part name="parameters" element="tns:UpdateMirelVersion" />
   </wsdl:message>
   <wsdl:message name="UpdateMirelVersionSoapOut">
     <wsdl:part name="parameters" element="tns:UpdateMirelVersionResponse" />
   </wsdl:message>
+  <wsdl:message name="UpdatePowerSuplyStationVersionSoapIn">
+    <wsdl:part name="parameters" element="tns:UpdatePowerSuplyStationVersion" />
+  </wsdl:message>
+  <wsdl:message name="UpdatePowerSuplyStationVersionSoapOut">
+    <wsdl:part name="parameters" element="tns:UpdatePowerSuplyStationVersionResponse" />
+  </wsdl:message>
+  <wsdl:message name="UpdatePowerSupplyMarkerVersionSoapIn">
+    <wsdl:part name="parameters" element="tns:UpdatePowerSupplyMarkerVersion" />
+  </wsdl:message>
+  <wsdl:message name="UpdatePowerSupplyMarkerVersionSoapOut">
+    <wsdl:part name="parameters" element="tns:UpdatePowerSupplyMarkerVersionResponse" />
+  </wsdl:message>
   <wsdl:portType name="WebServiceSoap">
     <wsdl:operation name="GetMirelSignals">
       <wsdl:input message="tns:GetMirelSignalsSoapIn" />
       <wsdl:output message="tns:GetMirelSignalsSoapOut" />
     </wsdl:operation>
+    <wsdl:operation name="GetPowerSupplyStations">
+      <wsdl:input message="tns:GetPowerSupplyStationsSoapIn" />
+      <wsdl:output message="tns:GetPowerSupplyStationsSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetPowerSupplyMarkers">
+      <wsdl:input message="tns:GetPowerSupplyMarkersSoapIn" />
+      <wsdl:output message="tns:GetPowerSupplyMarkersSoapOut" />
+    </wsdl:operation>
     <wsdl:operation name="GetLastVersion">
       <wsdl:input message="tns:GetLastVersionSoapIn" />
       <wsdl:output message="tns:GetLastVersionSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetPowerSuplyStationVersion">
+      <wsdl:input message="tns:GetPowerSuplyStationVersionSoapIn" />
+      <wsdl:output message="tns:GetPowerSuplyStationVersionSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetPowerSuplyMarkerVersion">
+      <wsdl:input message="tns:GetPowerSuplyMarkerVersionSoapIn" />
+      <wsdl:output message="tns:GetPowerSuplyMarkerVersionSoapOut" />
     </wsdl:operation>
     <wsdl:operation name="SaveMirelSignal">
       <wsdl:input message="tns:SaveMirelSignalSoapIn" />
       <wsdl:output message="tns:SaveMirelSignalSoapOut" />
     </wsdl:operation>
+    <wsdl:operation name="SavePowerSupplyStation">
+      <wsdl:input message="tns:SavePowerSupplyStationSoapIn" />
+      <wsdl:output message="tns:SavePowerSupplyStationSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="SavePowerSupplyMarker">
+      <wsdl:input message="tns:SavePowerSupplyMarkerSoapIn" />
+      <wsdl:output message="tns:SavePowerSupplyMarkerSoapOut" />
+    </wsdl:operation>
     <wsdl:operation name="UpdateMirelVersion">
       <wsdl:input message="tns:UpdateMirelVersionSoapIn" />
       <wsdl:output message="tns:UpdateMirelVersionSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="UpdatePowerSuplyStationVersion">
+      <wsdl:input message="tns:UpdatePowerSuplyStationVersionSoapIn" />
+      <wsdl:output message="tns:UpdatePowerSuplyStationVersionSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="UpdatePowerSupplyMarkerVersion">
+      <wsdl:input message="tns:UpdatePowerSupplyMarkerVersionSoapIn" />
+      <wsdl:output message="tns:UpdatePowerSupplyMarkerVersionSoapOut" />
     </wsdl:operation>
   </wsdl:portType>
   <wsdl:binding name="WebServiceSoap" type="tns:WebServiceSoap">
     <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
     <wsdl:operation name="GetMirelSignals">
       <soap:operation soapAction="http://tempuri.org/GetMirelSignals" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetPowerSupplyStations">
+      <soap:operation soapAction="http://tempuri.org/GetPowerSupplyStations" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetPowerSupplyMarkers">
+      <soap:operation soapAction="http://tempuri.org/GetPowerSupplyMarkers" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -126,6 +356,24 @@
         <soap:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
+    <wsdl:operation name="GetPowerSuplyStationVersion">
+      <soap:operation soapAction="http://tempuri.org/GetPowerSuplyStationVersion" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetPowerSuplyMarkerVersion">
+      <soap:operation soapAction="http://tempuri.org/GetPowerSuplyMarkerVersion" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
     <wsdl:operation name="SaveMirelSignal">
       <soap:operation soapAction="http://tempuri.org/SaveMirelSignal" style="document" />
       <wsdl:input>
@@ -135,8 +383,44 @@
         <soap:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
+    <wsdl:operation name="SavePowerSupplyStation">
+      <soap:operation soapAction="http://tempuri.org/SavePowerSupplyStation" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SavePowerSupplyMarker">
+      <soap:operation soapAction="http://tempuri.org/SavePowerSupplyMarker" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
     <wsdl:operation name="UpdateMirelVersion">
       <soap:operation soapAction="http://tempuri.org/UpdateMirelVersion" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="UpdatePowerSuplyStationVersion">
+      <soap:operation soapAction="http://tempuri.org/UpdatePowerSuplyStationVersion" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="UpdatePowerSupplyMarkerVersion">
+      <soap:operation soapAction="http://tempuri.org/UpdatePowerSupplyMarkerVersion" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -156,8 +440,44 @@
         <soap12:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
+    <wsdl:operation name="GetPowerSupplyStations">
+      <soap12:operation soapAction="http://tempuri.org/GetPowerSupplyStations" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetPowerSupplyMarkers">
+      <soap12:operation soapAction="http://tempuri.org/GetPowerSupplyMarkers" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
     <wsdl:operation name="GetLastVersion">
       <soap12:operation soapAction="http://tempuri.org/GetLastVersion" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetPowerSuplyStationVersion">
+      <soap12:operation soapAction="http://tempuri.org/GetPowerSuplyStationVersion" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetPowerSuplyMarkerVersion">
+      <soap12:operation soapAction="http://tempuri.org/GetPowerSuplyMarkerVersion" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -174,8 +494,44 @@
         <soap12:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
+    <wsdl:operation name="SavePowerSupplyStation">
+      <soap12:operation soapAction="http://tempuri.org/SavePowerSupplyStation" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SavePowerSupplyMarker">
+      <soap12:operation soapAction="http://tempuri.org/SavePowerSupplyMarker" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
     <wsdl:operation name="UpdateMirelVersion">
       <soap12:operation soapAction="http://tempuri.org/UpdateMirelVersion" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="UpdatePowerSuplyStationVersion">
+      <soap12:operation soapAction="http://tempuri.org/UpdatePowerSuplyStationVersion" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="UpdatePowerSupplyMarkerVersion">
+      <soap12:operation soapAction="http://tempuri.org/UpdatePowerSupplyMarkerVersion" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>

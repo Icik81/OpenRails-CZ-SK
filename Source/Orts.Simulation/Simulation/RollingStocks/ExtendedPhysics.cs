@@ -415,6 +415,13 @@ namespace Orts.Simulation.RollingStocks
                         }
                         break;
                 }
+                if (Locomotive.ControllerVolts > 0 && Locomotive.TractiveForceCurvesAC == null && Locomotive.TractiveForceCurvesDC == null && Locomotive.TractiveForceCurves != null)
+                {
+                    if (overridenControllerVolts != Locomotive.ControllerVolts)
+                        ForceN = Locomotive.TractiveForceCurves.Get(overridenControllerVolts / Locomotive.MaxControllerVolts, WheelSpeedMpS) / totalMotors;
+                    else
+                        ForceN = Locomotive.TractiveForceCurves.Get(Locomotive.ControllerVolts / Locomotive.MaxControllerVolts, WheelSpeedMpS) / totalMotors;
+                }
                 ForceN = ForceN * Locomotive.UiPowerLose;
             }
             else if (Locomotive.ControllerVolts > 0)

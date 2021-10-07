@@ -436,13 +436,13 @@ namespace ORTS.Settings
             Commands[(int)UserCommand.ControlWaterScoop] = new UserCommandKeyInput(0x15);
             Commands[(int)UserCommand.ControlWiper] = new UserCommandKeyInput(0x2F);
 
-            // Jindrich
-            // special
+            // Jindřich
             // set position of power supply station
             Commands[(int)UserCommand.ControlPowerStationLocation] = new UserCommandKeyInput(0x31, KeyModifiers.Alt);
-            Commands[(int)UserCommand.ControlPowerVypniProud] = new UserCommandKeyInput(0x2F, KeyModifiers.Alt);
-            Commands[(int)UserCommand.ControlPowerZapniProud] = new UserCommandKeyInput(0x15, KeyModifiers.Alt);
-            Commands[(int)UserCommand.ControlPowerStahovacka] = new UserCommandKeyInput(0x2E, KeyModifiers.Alt);
+            // voltage markers
+            Commands[(int)UserCommand.ControlSetVoltage25k] = new UserCommandKeyInput(0x03, KeyModifiers.Alt);
+            Commands[(int)UserCommand.ControlSetVoltage3k] = new UserCommandKeyInput(0x04, KeyModifiers.Alt);
+            Commands[(int)UserCommand.ControlSetVoltage0] = new UserCommandKeyInput(0x0B, KeyModifiers.Alt);
 
             // normal
             Commands[(int)UserCommand.ControlSpeedRegulatorModeIncrease] = new UserCommandKeyInput(0x11, KeyModifiers.Shift);

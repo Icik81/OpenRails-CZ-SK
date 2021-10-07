@@ -480,6 +480,7 @@ namespace Orts.Simulation.RollingStocks
         public bool CentralHandlingDoors;
         public bool VoltageFilter;
         public float RouteVoltageV;
+        public bool RouteVoltageChange;
         public float LocomotivePowerVoltage;
         public float MaxPowerWAC;
         public float MaxForceNAC;
@@ -580,6 +581,7 @@ namespace Orts.Simulation.RollingStocks
         protected float skidSpeedDegratation = 0;
         public float DynamicBrakeMaxForceAtSelectorStep = 0;
         public float SelectedMaxAccelerationStep = 0;
+        public bool RecuperationAvailable = false;
 
 
         public bool
@@ -1182,7 +1184,6 @@ namespace Orts.Simulation.RollingStocks
                 case "engine(maxcontrollervolts": MaxControllerVolts = stf.ReadFloatBlock(STFReader.UNITS.Any, 5); break;
                 case "engine(ortscruisecontrol": SetUpCruiseControl(); break;
                 case "engine(ortsmirel": SetUpMirel(); break;
-                case "engine(ortsmirel(enableupdates": Mirel.EnableMirelUpdates = stf.ReadBoolBlock(false); break;
                 case "engine(ortsmirel(defaultmaxspeedkph": Mirel.MaxSelectedSpeed = stf.ReadFloatBlock(STFReader.UNITS.Speed, 80); break;
                 case "engine(ortsmirel(lvztype":
                     {
@@ -1745,18 +1746,16 @@ namespace Orts.Simulation.RollingStocks
 
         public bool controlUpdated;
         public bool notificationReceived;
-        public List<PowerSupplyStation> powerSupplyStations;
         /// <summary>
         /// Called just after the InitializeFromWagFile
         /// </summary>
         public override void Initialize()
         {
-            // Jindřich - napaječky
-            powerSupplyStations = new List<PowerSupplyStation>();
+            // Jindřich - napaječky a voltage markery
+            Simulator.powerSupplyStations = new List<PowerSupplyStation>();
             SetUpPowerSupplyStations();
-            // elektrifikované úseky a jejich napětí
-            electrifiedSections = new List<ElectrifiedSection>();
-            InitializeElectrifiedSections();
+            Simulator.voltageChangeMarkers = new List<VoltageChangeMarker>();
+            SetUpVoltageChangeMarkers();
 
             // Icik            
             SetDefault_AuxCompressor();
@@ -2002,26 +2001,63 @@ namespace Orts.Simulation.RollingStocks
             DrvWheelWeightKg = InitialDrvWheelWeightKg;
         }
 
-        public double DistanceToPowerSupplyStationM(int PowerSystem)
+        public float DistanceToPowerSupplyStationM(out int PowerSystem, out PowerSupplyStation myStation)
         {
             double distance = 100000;
             double currentLat = 0;
             double currentLon = 0;
+            myStation = null;
+            PowerSystem = -1;
             new WorldLatLon().ConvertWTC(WorldPosition.TileX, WorldPosition.TileZ, WorldPosition.WorldLocation.Location, ref currentLat, ref currentLon);
             currentLat = MathHelper.ToDegrees((float)currentLat);
             currentLon = MathHelper.ToDegrees((float)currentLon);
-            foreach (PowerSupplyStation pss in powerSupplyStations)
+            foreach (PowerSupplyStation pss in Simulator.powerSupplyStations)
             {
-                if (pss.PowerSystem == PowerSystem)
+                if (myStation == null)
+                    myStation = pss;
+                PowerSystem = myStation.PowerSystem;
+                double psiLat = MathHelper.ToDegrees((float)pss.Longitude);
+                double psiLon = MathHelper.ToDegrees((float)pss.Latitude);
+                double currdistance = getDistance(currentLat, currentLon, psiLat, psiLon) * 1138.8261851015801354401805869074;
+                if (currdistance < distance)
                 {
-                    double psiLat = MathHelper.ToDegrees((float)pss.Longitude);
-                    double psiLon = MathHelper.ToDegrees((float)pss.Latitude);
-                    double currdistance = getDistance(currentLat, currentLon, psiLat, psiLon) * 1138.8261851015801354401805869074;
-                    if (currdistance < distance)
-                        distance = currdistance;
+                    distance = currdistance;
+                    myStation = pss;
+                    RouteVoltageV = myStation.PowerSystem == 0 ? 3000 : 25000;
                 }
             }
-            return distance;
+            if (RouteVoltageV == 3000)
+                if (distance > 14000)
+                    distance = 14000;
+            if (RouteVoltageV == 25000)
+                if (distance > 28000)
+                    distance = 28000;
+            return (float)distance;
+        }
+
+        public float DistanceToVoltageMarkerM(out int Voltage, out VoltageChangeMarker myMarker)
+        {
+            double distance = 100000;
+            double currentLat = 0;
+            double currentLon = 0;
+            myMarker = new VoltageChangeMarker();
+            Voltage = 0;
+            new WorldLatLon().ConvertWTC(WorldPosition.TileX, WorldPosition.TileZ, WorldPosition.WorldLocation.Location, ref currentLat, ref currentLon);
+            currentLat = MathHelper.ToDegrees((float)currentLat);
+            currentLon = MathHelper.ToDegrees((float)currentLon);
+            foreach (VoltageChangeMarker vcm in Simulator.voltageChangeMarkers)
+            {
+                double psiLat = MathHelper.ToDegrees((float)vcm.Longitude);
+                double psiLon = MathHelper.ToDegrees((float)vcm.Latitude);
+                double currdistance = getDistance(currentLat, currentLon, psiLat, psiLon) * 1138.8261851015801354401805869074;
+                if (currdistance < distance)
+                {
+                    distance = currdistance;
+                    myMarker = vcm;
+                    Voltage = vcm.Voltage;
+                }
+            }
+            return (float)distance;
         }
 
         private double getDistance(double lat1, double lon1, double lat2, double lon2)
@@ -2058,45 +2094,70 @@ namespace Orts.Simulation.RollingStocks
             return (rad / Math.PI * 180.0);
         }
 
-        public XmlDocument ElSectionXml;
-        public void InitializeElectrifiedSections()
+        public void SetUpVoltageChangeMarkers()
         {
-            if (!File.Exists(Simulator.RoutePath + "\\ElectrifiedSections.xml"))
-                return;
-            ElSectionXml = new XmlDocument();
-            ElSectionXml.Load(Simulator.RoutePath + "\\ElectrifiedSections.xml");
-            foreach (XmlNode node in ElSectionXml.ChildNodes)
+            try
             {
-                if (node.Name == "ElectrifiedSections")
+                Simulator.voltageChangeMarkers.Clear();
+                if (!File.Exists(Simulator.RoutePath + "\\VoltageChangeMarkers.xml"))
+                    return;
+                XmlDocument doc = new XmlDocument();
+                doc.Load(Simulator.RoutePath + "\\VoltageChangeMarkers.xml");
+                foreach (XmlNode node in doc.ChildNodes)
                 {
-                    foreach (XmlNode nodeSection in node.ChildNodes)
+                    if (node.Name == "VoltageChangeMarkers")
                     {
-                        int sectionId = 0;
-                        int voltage = 0;
-                        foreach (XmlNode nodeVoltage in nodeSection.ChildNodes)
+                        foreach (XmlNode nodeSupply in node.ChildNodes)
                         {
-                            if (nodeVoltage.Name == "SectionId")
+                            double nextNodeLon = 0;
+                            double nextNodeLat = 0;
+                            int nextNodeVoltage = 0;
+
+                            foreach (XmlNode nodeId in nodeSupply.ChildNodes)
                             {
-                                sectionId = int.Parse(nodeVoltage.InnerText);
+                                if (nodeId.Name == "Longitude")
+                                {
+                                    try
+                                    {
+                                        nextNodeLon = double.Parse(nodeId.InnerText);
+                                    }
+                                    catch
+                                    {
+                                        nextNodeLon = double.Parse(nodeId.InnerText.Replace(".", ","));
+                                    }
+
+                                }
+                                if (nodeId.Name == "Latitude")
+                                {
+                                    try
+                                    {
+                                        nextNodeLat = double.Parse(nodeId.InnerText);
+                                    }
+                                    catch
+                                    {
+                                        nextNodeLat = double.Parse(nodeId.InnerText.Replace(".", ","));
+                                    }
+                                }
+                                if (nodeId.Name == "Voltage")
+                                    nextNodeVoltage = int.Parse(nodeId.InnerText);
                             }
-                            if (nodeVoltage.Name == "Voltage")
-                            {
-                                voltage = int.Parse(nodeVoltage.InnerText);
-                            }
+                            VoltageChangeMarker vcm = new VoltageChangeMarker();
+                            vcm.Latitude = nextNodeLat;
+                            vcm.Longitude = nextNodeLon;
+                            vcm.Voltage = nextNodeVoltage;
+                            Simulator.voltageChangeMarkers.Add(vcm);
                         }
-                        ElectrifiedSection es = new ElectrifiedSection();
-                        es.TrackSectionID = sectionId;
-                        es.Voltage = voltage;
-                        electrifiedSections.Add(es);
                     }
                 }
             }
+            catch { }
         }
 
         public void SetUpPowerSupplyStations()
         {
             try
             {
+                Simulator.powerSupplyStations.Clear();
                 if (!File.Exists(Simulator.RoutePath + "\\PowerSupplyStations.xml"))
                     return;
                 XmlDocument doc = new XmlDocument();
@@ -2143,12 +2204,18 @@ namespace Orts.Simulation.RollingStocks
                             pss.Latitude = nextNodeLat;
                             pss.Longitude = nextNodeLon;
                             pss.PowerSystem = nextNodePowerSystem;
-                            powerSupplyStations.Add(pss);
+                            Simulator.powerSupplyStations.Add(pss);
                         }
                     }
                 }
             }
             catch { }
+            if (Simulator.powerSupplyStations.Count == 0)
+            {
+                PowerSupplyStation pss = new PowerSupplyStation();
+                pss.PowerSystem = 1;
+                Simulator.powerSupplyStations.Add(pss);
+            }
         }
 
         /// <summary>
@@ -2699,6 +2766,7 @@ namespace Orts.Simulation.RollingStocks
             }
         }
 
+<<<<<<< Updated upstream
         public void SetDefault_AuxCompressor()
         {
             // Netěsnost pomocné jímky pomocného kompresoru 0.002 bar/s
@@ -2774,6 +2842,8 @@ namespace Orts.Simulation.RollingStocks
                 }
             }
         }
+=======
+>>>>>>> Stashed changes
 
 
         public void SaveElectrifiedSection(int sectionId, int voltage)
@@ -2820,11 +2890,9 @@ namespace Orts.Simulation.RollingStocks
         private bool trainBrakeRelease = false;
         protected float EngineBrakePercentSet = 0;
         public bool CanCheckEngineBrake = true;
-        public List<ElectrifiedSection> electrifiedSections;
-        protected bool sectionSet = false;
-        protected int currentSectionSetId = 0;
         public override void Update(float elapsedClockSeconds)
         {
+<<<<<<< Updated upstream
             // Zakomentováno kvůli kompatibilitě
             //if (IsPlayerTrain && Train.FrontTDBTraveller.TrackNodeIndex != currentSectionSetId)
             //    sectionSet = false;
@@ -2854,6 +2922,8 @@ namespace Orts.Simulation.RollingStocks
             //}
             double dist = DistanceToPowerSupplyStationM(0); // change 0 to actual selected system
             //Simulator.Confirmer.MSG(dist.ToString());
+=======
+>>>>>>> Stashed changes
             if (IsPlayerTrain && !Simulator.Paused)
             {
                 if (extendedPhysics != null)
@@ -2923,7 +2993,7 @@ namespace Orts.Simulation.RollingStocks
             TrainControlSystem.Update();
 
             elapsedTime = elapsedClockSeconds;
-
+            string s = this.LocomotiveName;
             UpdatePowerSupply(elapsedClockSeconds);
             UpdateControllers(elapsedClockSeconds);
 
@@ -6392,6 +6462,27 @@ namespace Orts.Simulation.RollingStocks
             if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.RouteVoltage, RouteVoltageChange ? CabSetting.On : CabSetting.Off);
         }
 
+        public void SetVoltageMarker(int newVoltage)
+        {
+            if (!Simulator.SuperUser)
+                return;
+            // uložím marker
+            SetVoltageMarkerPosition(newVoltage);
+            if (newVoltage == 3000)
+            {
+                RouteVoltageChange = true;
+                RouteVoltageV = 3000;
+            }
+            else if (newVoltage == 25000)
+            {
+                RouteVoltageChange = false;
+                RouteVoltageV = 25000;
+            }
+            else if (newVoltage == 0)
+                RouteVoltageV = 0;
+        }
+
+
         public void ToggleQuickReleaseButton(bool quickReleaseButton)
         {
             if (QuickReleaseButtonEnable)
@@ -6422,12 +6513,27 @@ namespace Orts.Simulation.RollingStocks
         }
 
         XmlDocument powerStationXml;
+        int PowerSuplyStationDbVersion = 0;
+        bool PowerSuplyStationDbVersionUpdated = false;
         public void SetPowerSupplyStationLocation()
         {
+            if (!Simulator.SuperUser)
+                return;
+
+            cz.aspone.lkpr.WebService webService = new cz.aspone.lkpr.WebService();
+            if (!PowerSuplyStationDbVersionUpdated)
+            {
+                int v = int.Parse(webService.GetPowerSuplyStationVersion(Simulator.TRK.Tr_RouteFile.FileName));
+                PowerSuplyStationDbVersion = v + 1;
+                webService.UpdatePowerSuplyStationVersion(PowerSuplyStationDbVersion, Simulator.TRK.Tr_RouteFile.FileName);
+                PowerSuplyStationDbVersionUpdated = true;
+            }
+            FileInfo fi = new FileInfo(Simulator.TRK.Tr_RouteFile.FullFileName);
+            File.WriteAllText(fi.DirectoryName + "\\PowerSupplyStationsDbVersion.ini", PowerSuplyStationDbVersion.ToString());
+
             double latitude = 0;
             double longitude = 0;
             new WorldLatLon().ConvertWTC(WorldPosition.TileX, WorldPosition.TileZ, WorldPosition.WorldLocation.Location, ref latitude, ref longitude);
-            Simulator.Confirmer.MSG(latitude.ToString() + " " + longitude.ToString());
 
             if (powerStationXml == null)
             {
@@ -6435,17 +6541,22 @@ namespace Orts.Simulation.RollingStocks
                 powerStationXml.Load(Simulator.RoutePath + "\\PowerSupplyStations.xml");
             }
 
+            int id = webService.SavePowerSupplyStation(-1, Simulator.TRK.Tr_RouteFile.Name, longitude.ToString(), latitude.ToString(), RouteVoltageV == 3000 ? "0" : "1", PowerSuplyStationDbVersion);
+
             foreach (XmlNode node in powerStationXml.ChildNodes)
             {
                 if (node.Name == "PowerSupplyStations")
                 {
                     XmlNode stationNode = powerStationXml.CreateElement("SupplyStation");
+                    XmlNode node0 = powerStationXml.CreateElement("Id");
+                    node0.InnerText = id.ToString();
                     XmlNode node1 = powerStationXml.CreateElement("Longitude");
                     node1.InnerText = latitude.ToString().Replace(",", ".");
                     XmlNode node2 = powerStationXml.CreateElement("Latitude");
                     node2.InnerText = longitude.ToString().Replace(",", ".");
                     XmlNode node3 = powerStationXml.CreateElement("PowerSystem");
-                    node3.InnerText = "0"; // TODO change to active voltage
+                    node3.InnerText = RouteVoltageV == 3000? "0" : "1";
+                    stationNode.AppendChild(node0);
                     stationNode.AppendChild(node1);
                     stationNode.AppendChild(node2);
                     stationNode.AppendChild(node3);
@@ -6453,11 +6564,66 @@ namespace Orts.Simulation.RollingStocks
                 }
             }
             powerStationXml.Save(Simulator.RoutePath + "\\PowerSupplyStations.xml");
-/*            SaveMirelStateToWorld(nextSignalId, newFlag);
-            FileInfo fi = new FileInfo(Simulator.TRK.Tr_RouteFile.FullFileName);
-            File.WriteAllText(fi.DirectoryName + "\\MirelDbVersion.ini", DatabaseVersion.ToString());
-            PopulateMirelSignalList();*/
+            SetUpPowerSupplyStations();
+            Simulator.Confirmer.Information("Napaječka uložena do externí databáze.");
+        }
 
+        XmlDocument voltageMarkersXml;
+        int VoltageMarkersDbVersion = 0;
+        bool VoltageMarkersDbVersionUpdated = false;
+        public void SetVoltageMarkerPosition(int Voltage)
+        {
+            if (!Simulator.SuperUser)
+                return;
+
+            cz.aspone.lkpr.WebService ws = new cz.aspone.lkpr.WebService();
+
+            if (!VoltageMarkersDbVersionUpdated)
+            {
+                string result = ws.GetPowerSuplyMarkerVersion(Simulator.TRK.Tr_RouteFile.FileName);
+                int v = int.Parse(result);
+                VoltageMarkersDbVersion = v + 1;
+                ws.UpdatePowerSupplyMarkerVersion(VoltageMarkersDbVersion, Simulator.TRK.Tr_RouteFile.FileName);
+                VoltageMarkersDbVersionUpdated = true;
+            }
+            FileInfo fi = new FileInfo(Simulator.TRK.Tr_RouteFile.FullFileName);
+            File.WriteAllText(fi.DirectoryName + "\\VoltageChangeMarkersDbVersion.ini", VoltageMarkersDbVersion.ToString());
+
+            double latitude = 0;
+            double longitude = 0;
+            new WorldLatLon().ConvertWTC(WorldPosition.TileX, WorldPosition.TileZ, WorldPosition.WorldLocation.Location, ref latitude, ref longitude);
+
+            int id = ws.SavePowerSupplyMarker(-1, Simulator.TRK.Tr_RouteFile.FileName, longitude.ToString(), latitude.ToString(), Voltage, VoltageMarkersDbVersion);
+
+            if (voltageMarkersXml == null)
+            {
+                voltageMarkersXml = new XmlDocument();
+                voltageMarkersXml.Load(Simulator.RoutePath + "\\VoltageChangeMarkers.xml");
+            }
+
+            foreach (XmlNode node in voltageMarkersXml.ChildNodes)
+            {
+                if (node.Name == "VoltageChangeMarkers")
+                {
+                    XmlNode stationNode = voltageMarkersXml.CreateElement("Marker");
+                    XmlNode node0 = voltageMarkersXml.CreateElement("Id");
+                    node0.InnerText = id.ToString();
+                    XmlNode node1 = voltageMarkersXml.CreateElement("Longitude");
+                    node1.InnerText = latitude.ToString().Replace(",", ".");
+                    XmlNode node2 = voltageMarkersXml.CreateElement("Latitude");
+                    node2.InnerText = longitude.ToString().Replace(",", ".");
+                    XmlNode node3 = voltageMarkersXml.CreateElement("Voltage");
+                    node3.InnerText = Voltage.ToString();
+                    stationNode.AppendChild(node0);
+                    stationNode.AppendChild(node1);
+                    stationNode.AppendChild(node2);
+                    stationNode.AppendChild(node3);
+                    node.AppendChild(stationNode);
+                }
+            }
+            voltageMarkersXml.Save(Simulator.RoutePath + "\\VoltageChangeMarkers.xml");
+            SetUpVoltageChangeMarkers();
+            Simulator.Confirmer.Information("Nastaveno " + Voltage.ToString() + "V a uloženo do externí databáze.");
         }
 
         //put here because you can have diesel helpers and electric player locomotive
@@ -8146,21 +8312,6 @@ namespace Orts.Simulation.RollingStocks
         }
 
     } // End Class MSTSLocomotive
-
-    public class PowerSupplyStation
-    {
-        public double Longitude { get; set; }
-        public double Latitude { get; set; }
-        public int PowerSystem { get; set; }
-        public bool Failure { get; set; }
-        public int TotalAmps { get; set; }
-    }
-
-    public class ElectrifiedSection
-    {
-        public int TrackSectionID { get; set; }
-        public int Voltage { get; set; }
-    }
 
     public class StringArray
     {
