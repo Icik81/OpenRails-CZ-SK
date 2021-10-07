@@ -959,6 +959,14 @@ namespace Orts.Simulation.RollingStocks
                     Mirel.BlueLight = true;
                     Mirel.driveMode = Mirel.selectedDriveMode = SubSystems.Mirel.DriveMode.Normal;
                     Mirel.MaxSelectedSpeed = Mirel.MirelMaximumSpeed = MpS.ToKpH(MaxSpeedMpS);
+                    // tohle tam taky chybělo
+                    Direction = Direction.Forward;
+                    if (CruiseControl.Equipped)
+                    {
+                        CruiseControl.SpeedRegMode = SubSystems.CruiseControl.SpeedRegulatorMode.Auto;
+                        CruiseControl.SelectedSpeedMpS = MpS.FromKpH(40);
+                        CruiseControl.SpeedSelMode = SubSystems.CruiseControl.SpeedSelectorMode.Parking;
+                    }
                 }                   
             }
         }
