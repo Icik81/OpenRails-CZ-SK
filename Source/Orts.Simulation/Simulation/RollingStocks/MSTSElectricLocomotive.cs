@@ -261,13 +261,17 @@ namespace Orts.Simulation.RollingStocks
             PowerSupply.PantographVoltageV = (float)Math.Round(PowerSupply.PantographVoltageV);
 
             // výpočet napětí dle proudu a odporu k napaječce
-            float watts = TractiveForceN * 10;
+            float watts = TractiveForceN * 10; // no prostě jen tak, z něčeho ten proud je prostě potřeba vypočítat :D
             if (Flipped && watts < 0)
                 watts = -watts; 
 
             if (watts < 0 && !RecuperationAvailable)
                 watts = 0;
-            Amps = watts / PantographVoltageV;
+            if (PantographVoltageV > 1)
+                Amps = watts / PantographVoltageV;
+            else
+                Amps = 0;
+
             if (float.IsNaN(Amps))
                 Amps = 0;
             if (RouteVoltageV == 25000)
@@ -284,7 +288,7 @@ namespace Orts.Simulation.RollingStocks
             int markerVoltage = 0;
             VoltageChangeMarker marker;
             float distToMarker = DistanceToVoltageMarkerM(out markerVoltage, out marker);
-
+            // toto nefunguje, ještě prověřím
             /*            if (prevDist >= 1000) // více než kilometr, updatujeme co 100m
                         {
                             if (distSinceLastCheck + 100 > DistanceM)
@@ -398,9 +402,6 @@ namespace Orts.Simulation.RollingStocks
 
             if (IsPlayerTrain && Simulator.SuperUser)
                 Simulator.Confirmer.MSG("Mark U: " + markerVoltage.ToString() + "; Mark dist: " + Math.Round(distToMarker, 0).ToString() + "; Supl dist: " + Math.Round(dist, 0).ToString() + "; My panto U: " + Math.Round(PantographVoltageV, 0).ToString() + "; Supl I: " + Math.Round(myStation.TotalAmps, 0).ToString() + "; Supl #locos: " + myStation.Consuptors.Count.ToString());
-
-            /*if (PantographVoltageV < 2000)
-                Debugger.Break();*/
 
             if (IsPlayerTrain && !Simulator.Paused)
             {                
