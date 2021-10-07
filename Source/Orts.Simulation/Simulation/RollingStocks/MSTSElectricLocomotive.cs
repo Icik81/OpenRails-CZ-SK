@@ -947,7 +947,18 @@ namespace Orts.Simulation.RollingStocks
                             Pantograph4Switch = 1;
                             LocoReadyToGo = false;
                         }
-                    }                    
+                    }
+                    Mirel.Test1 = true;
+                    Mirel.Test2 = true;
+                    Mirel.Test3 = true;
+                    Mirel.Test4 = true;
+                    Mirel.Test5 = true;
+                    Mirel.Test6 = true;
+                    Mirel.Test7 = true;
+                    Mirel.initTest = SubSystems.Mirel.InitTest.Passed;
+                    Mirel.BlueLight = true;
+                    Mirel.driveMode = Mirel.selectedDriveMode = SubSystems.Mirel.DriveMode.Normal;
+                    Mirel.MaxSelectedSpeed = Mirel.MirelMaximumSpeed = MpS.ToKpH(MaxSpeedMpS);
                 }                   
             }
         }
