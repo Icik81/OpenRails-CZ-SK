@@ -14030,7 +14030,10 @@ namespace Orts.Simulation.Physics
             }
             if (elloco != null && Simulator.SuperUser)
             {
-                statusString[iColumn] = "Thr: " + AITrainThrottlePercent.ToString() + ", SupId: " + elloco.myStation.Id.ToString() + ", myAmps: " + (elloco.Amps * 2).ToString();
+                if (IsPlayerDriven)
+                    statusString[iColumn] = "Thr: " + AITrainThrottlePercent.ToString() + ", SupId: " + elloco.myStation.Id.ToString() + ", myAmps: " + elloco.Amps.ToString();
+                else
+                    statusString[iColumn] = "Thr: " + AITrainThrottlePercent.ToString() + ", SupId: " + elloco.myStation.Id.ToString() + ", myAmps: " + (elloco.Amps * 2).ToString();
             }
             else
             {
