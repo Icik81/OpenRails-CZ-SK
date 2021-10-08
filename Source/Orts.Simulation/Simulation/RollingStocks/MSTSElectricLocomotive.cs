@@ -253,10 +253,14 @@ namespace Orts.Simulation.RollingStocks
         protected float prevDist = 0;
         protected float distSinceLastCheck = 0;
         public float Amps;
+        public PowerSupplyStation myStation = null;
+
         protected void UnderVoltageProtection(float elapsedClockSeconds)
         {
             if (Simulator.Paused)
                 return;
+            if (!IsPlayerTrain)
+                PantographVoltageV = PowerSupply.PantographVoltageV = RouteVoltageV;
             PantographVoltageV = (float)Math.Round(PantographVoltageV);
             PowerSupply.PantographVoltageV = (float)Math.Round(PowerSupply.PantographVoltageV);
 
@@ -282,7 +286,6 @@ namespace Orts.Simulation.RollingStocks
                 Amps = 0;
             float dist = 0;
             int powerSys = -1;
-            PowerSupplyStation myStation = null;
             if (prevDist == 0)
                 dist = DistanceToPowerSupplyStationM(out powerSys, out myStation);
             int markerVoltage = 0;

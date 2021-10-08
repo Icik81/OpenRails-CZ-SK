@@ -2164,6 +2164,7 @@ namespace Orts.Simulation.RollingStocks
                     {
                         foreach (XmlNode nodeSupply in node.ChildNodes)
                         {
+                            int nextNodeId = -1;
                             double nextNodeLon = 0;
                             double nextNodeLat = 0;
                             int nextNodePowerSystem = 0;
@@ -2195,8 +2196,12 @@ namespace Orts.Simulation.RollingStocks
                                 }
                                 if (nodeId.Name == "PowerSystem")
                                     nextNodePowerSystem = int.Parse(nodeId.InnerText);
+                                if (nodeId.Name == "Id")
+                                    nextNodeId = int.Parse(nodeId.InnerText);
+
                             }
                             PowerSupplyStation pss = new PowerSupplyStation();
+                            pss.Id = nextNodeId;
                             pss.Latitude = nextNodeLat;
                             pss.Longitude = nextNodeLon;
                             pss.PowerSystem = nextNodePowerSystem;

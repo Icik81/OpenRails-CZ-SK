@@ -14020,8 +14020,22 @@ namespace Orts.Simulation.Physics
                 circuitString = String.Concat(circuitString, forwardstring);
             }
 
-            //statusString[iColumn] = String.Copy(circuitString);
-            statusString[iColumn] = this.AITrainThrottlePercent.ToString();
+            MSTSElectricLocomotive elloco = null;
+            foreach (TrainCar tc in Cars)
+            {
+                if (tc.GetType() == typeof(MSTSElectricLocomotive))
+                {
+                    elloco = (MSTSElectricLocomotive)tc;
+                }
+            }
+            if (elloco != null && Simulator.SuperUser)
+            {
+                statusString[iColumn] = "Thr: " + AITrainThrottlePercent.ToString() + ", SupId: " + elloco.myStation.Id.ToString() + ", myAmps: " + elloco.Amps.ToString();
+            }
+            else
+            {
+                statusString[iColumn] = String.Copy(circuitString);
+            }
 
             return (statusString);
         }
