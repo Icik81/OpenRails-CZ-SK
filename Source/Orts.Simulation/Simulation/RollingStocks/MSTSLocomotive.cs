@@ -1751,7 +1751,7 @@ namespace Orts.Simulation.RollingStocks
             Simulator.powerSupplyStations = new List<PowerSupplyStation>();
             SetUpPowerSupplyStations();
             Simulator.voltageChangeMarkers = new List<VoltageChangeMarker>();
-            SetUpVoltageChangeMarkers();
+            SetUpVoltageChangeMarkers();            
 
             // Icik            
             SetDefault_AuxCompressor();
@@ -2842,45 +2842,7 @@ namespace Orts.Simulation.RollingStocks
                 }
             }
         }
-
-
-        public void SaveElectrifiedSection(int sectionId, int voltage)
-        {
-        //    foreach (XmlNode node in ElSectionXml.ChildNodes)
-        //    {
-        //        if (node.Name == "ElectrifiedSections")
-        //        {
-        //            foreach (XmlNode nodeSignal in node.ChildNodes)
-        //            {
-        //                bool updateNode = false;
-        //                foreach (XmlNode nodeId in nodeSignal.ChildNodes)
-        //                {
-        //                    if (nodeId.Name == "Id" && nodeId.InnerText == sectionId.ToString())
-        //                    {
-        //                        updateNode = true;
-        //                    }
-        //                    if (nodeId.Name == "Voltage" && updateNode)
-        //                    {
-        //                        nodeId.InnerText = voltage.ToString();
-        //                        goto Save;
-        //                    }
-        //                }
-        //            }
-        //            XmlNode node1 = ElSectionXml.CreateElement("Section");
-        //            XmlNode node2 = ElSectionXml.CreateElement("Id");
-        //            node2.InnerText = sectionId.ToString();
-        //            XmlNode node3 = ElSectionXml.CreateElement("Voltage");
-        //            node3.InnerText = voltage.ToString();
-        //            node1.AppendChild(node2);
-        //            node1.AppendChild(node3);
-        //            node.AppendChild(node1);
-        //        }
-        //    }
-        //Save:
-        //    ElSectionXml.Save(Simulator.RoutePath + "\\ElectrifiedSections.xml");
-        }
-
-        
+       
         /// <summary>
         /// This function updates periodically the states and physical variables of the locomotive's subsystems.
         /// </summary>
@@ -6154,15 +6116,19 @@ namespace Orts.Simulation.RollingStocks
                     case 2: // DC
                         SwitchingVoltageMode = 0;
                         SwitchingVoltageMode_OffDC = true;
+                        SwitchingVoltageMode_OffAC = false;
                         //Simulator.Confirmer.Information("Switch 2");
                         break;
                     case 3: // střed
                         SwitchingVoltageMode = 1;
+                        SwitchingVoltageMode_OffDC = false;
+                        SwitchingVoltageMode_OffAC = false;
                         //Simulator.Confirmer.Information("Switch 3");
                         break;
                     case 4: // AC
                         SwitchingVoltageMode = 2;
                         SwitchingVoltageMode_OffAC = true;
+                        SwitchingVoltageMode_OffDC = false;
                         //Simulator.Confirmer.Information("Switch 4");
                         break;
                     case 5:

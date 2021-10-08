@@ -395,7 +395,7 @@ namespace Orts.Simulation.RollingStocks
                 if (RouteVoltageV == 25000)
                     volts += 2000; // max 27kV poblíž napaječky
             }
-            // TODO icik: změnit volts dle filtrace (zamezení skokové změny), plus další, třeba se podívat co nefunguje
+            // TODO icik: změnit volts dle filtrace (zamezení skokové změny), plus další, třeba se podívat co nefunguje - ok hotovo
             PowerSupply.PantographVoltageV += volts;
 
             if (PantographVoltageV < 1)
@@ -476,7 +476,7 @@ namespace Orts.Simulation.RollingStocks
 
 
                 // Zákmit na voltmetru            
-                if (PowerSupply.PantographVoltageV < 1)
+                if (PowerSupply.PantographVoltageV < 2)
                 {
                     VoltageSprung = 1.5f;
                     Step1 = 0.40f;
@@ -488,15 +488,9 @@ namespace Orts.Simulation.RollingStocks
 
                 // Kritická mez napětí pro podnapěťovku
                 if (RouteVoltageV == 25000)
-                {
                     PantographCriticalVoltage = 19000;
-                    Delta2 = 400;
-                }
                 if (RouteVoltageV == 3000)
-                {
                     PantographCriticalVoltage = 1900;
-                    Delta2 = 90;
-                }
 
                 PantographCriticalVoltage = (int)PantographCriticalVoltage;
                 PowerSupply.PantographVoltageV = (int)PowerSupply.PantographVoltageV;
@@ -539,7 +533,7 @@ namespace Orts.Simulation.RollingStocks
                 // Výpočet napětí v systému lokomotivy a drátech*/
                 Simulator.TRK.Tr_RouteFile.MaxLineVoltage = MaxLineVoltage0 * VoltageSprung;// - (Delta1 * Delta2);
                 //Simulator.TRK.Tr_RouteFile.MaxLineVoltage = MaxLineVoltage0 * VoltageSprung;
-                
+
                 if (PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closed) CircuitBreakerOn = true;
                 else CircuitBreakerOn = false;
 
@@ -714,14 +708,9 @@ namespace Orts.Simulation.RollingStocks
                         && (Pantographs[1].State == PantographState.Up || Pantographs[2].State == PantographState.Up))
                             HVOff = true;
                     
-                    if (SwitchingVoltageMode == 1)
-                    {
-                        SwitchingVoltageMode_OffAC = false;
-                        SwitchingVoltageMode_OffDC = false;
-                    }
 
                     // Test napětí v troleji stanoví napěťovou soustavu
-                    if (MaxLineVoltage0 > 3000)
+                    if (MaxLineVoltage0 > 4000)
                     {
                         VoltageAC = PantographVoltageV; // Střídavá napěťová soustava 25kV
                         if (VoltageDC > 0)
@@ -906,7 +895,7 @@ namespace Orts.Simulation.RollingStocks
 
             // Icik
             UnderVoltageProtection(elapsedClockSeconds);
-            
+
             if (IsPlayerTrain)
             {                
                 HVPressedTesting(elapsedClockSeconds);
