@@ -940,6 +940,7 @@ namespace Orts.Simulation.RollingStocks
                             LocoReadyToGo = false;
                         }
                     }
+                    // Mirel
                     Mirel.Test1 = true;
                     Mirel.Test2 = true;
                     Mirel.Test3 = true;
@@ -951,7 +952,11 @@ namespace Orts.Simulation.RollingStocks
                     Mirel.BlueLight = true;
                     Mirel.driveMode = Mirel.selectedDriveMode = SubSystems.Mirel.DriveMode.Normal;
                     Mirel.MaxSelectedSpeed = Mirel.MirelMaximumSpeed = MpS.ToKpH(MaxSpeedMpS);
-                    // tohle tam taky chybělo
+                    // LS90
+                    Mirel.ls90tested = true;
+                    Mirel.Ls90power = SubSystems.Mirel.LS90power.On;                    
+
+                    // Směr + ARR
                     Direction = Direction.Forward;
                     if (CruiseControl.Equipped)
                     {

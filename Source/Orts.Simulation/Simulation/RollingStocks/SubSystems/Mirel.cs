@@ -229,7 +229,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
         }
 
         protected bool mirelUnsetSignlEventBeeped = false;
-        protected bool ls90tested = false;
+        public bool ls90tested = false;
         protected float ls90testTime = 0;
         protected int prevNextSignalId = 0;
         protected RecieverState prevRecieverState = RecieverState.Signal50;
