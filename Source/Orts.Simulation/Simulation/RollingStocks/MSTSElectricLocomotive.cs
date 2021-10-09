@@ -388,15 +388,16 @@ namespace Orts.Simulation.RollingStocks
             float distDrop = RouteVoltageV == 3000 ? dist / 50 : dist / 20;
             float volts = -newVoltage - distDrop;
 
-            if (!PantographDown)
-            {
-                if (RouteVoltageV == 3000)
-                    volts += 400; // max 3.4kV poblíž měničky
-                if (RouteVoltageV == 25000)
-                    volts += 2000; // max 27kV poblíž napaječky
-            }
+            if (RouteVoltageV == 3000)
+                volts += 400; // max 3.4kV poblíž měničky
+            if (RouteVoltageV == 25000)
+                volts += 2000; // max 27kV poblíž napaječky
             // TODO icik: změnit volts dle filtrace (zamezení skokové změny), plus další, třeba se podívat co nefunguje - ok hotovo
-            PowerSupply.PantographVoltageV += volts;
+            //PowerSupply.PantographVoltageV += volts;
+            
+            // Výpočet napětí v drátech
+            Simulator.TRK.Tr_RouteFile.MaxLineVoltage = RouteVoltageV * VoltageSprung + volts;
+            MaxLineVoltage0 = RouteVoltageV + volts; 
 
             if (PantographVoltageV < 1)
                 PantographVoltageV = 1;
@@ -448,6 +449,7 @@ namespace Orts.Simulation.RollingStocks
                     }
                     else if (RouteVoltageV > 0)
                         PantographVoltageV = PowerSupply.PantographVoltageV;
+
                     else if (RouteVoltageV == 0)
                         PantographVoltageV = PowerSupply.PantographVoltageV = 0;
 
@@ -529,10 +531,9 @@ namespace Orts.Simulation.RollingStocks
                     TimeCriticalVoltage = 0;
                     TInduktion = 0;
                 }
-
-                // Výpočet napětí v systému lokomotivy a drátech*/
-                Simulator.TRK.Tr_RouteFile.MaxLineVoltage = MaxLineVoltage0 * VoltageSprung;// - (Delta1 * Delta2);
-                //Simulator.TRK.Tr_RouteFile.MaxLineVoltage = MaxLineVoltage0 * VoltageSprung;
+                */
+                // Výpočet napětí v systému lokomotivy a drátech
+                //Simulator.TRK.Tr_RouteFile.MaxLineVoltage = MaxLineVoltage0 * VoltageSprung;// - (Delta1 * Delta2);               
 
                 if (PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closed) CircuitBreakerOn = true;
                 else CircuitBreakerOn = false;
@@ -864,8 +865,7 @@ namespace Orts.Simulation.RollingStocks
         /// </summary>
         protected override void UpdatePowerSupply(float elapsedClockSeconds)
         {
-            // Icik
-            MaxLineVoltage0 = RouteVoltageV;
+            // Icik            
             if (HVOff)
             {
                 HVOff = false;
