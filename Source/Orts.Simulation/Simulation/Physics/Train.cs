@@ -16154,16 +16154,16 @@ namespace Orts.Simulation.Physics
                         wagon.DoorRightOpen = open;
                         // Icik
                         if (open)
-                            car.BrakeSystem.LeftDoorIsOpened = true;
-                        else car.BrakeSystem.LeftDoorIsOpened = false;
+                            car.BrakeSystem.RightDoorIsOpened = true;
+                        else car.BrakeSystem.RightDoorIsOpened = false;
                     }
                     else
                     {
                         wagon.DoorLeftOpen = open;
                         // Icik
                         if (open)
-                            car.BrakeSystem.RightDoorIsOpened = true;
-                        else car.BrakeSystem.RightDoorIsOpened = false;
+                            car.BrakeSystem.LeftDoorIsOpened = true;
+                        else car.BrakeSystem.LeftDoorIsOpened = false;
                     }                    
                 }
             }
