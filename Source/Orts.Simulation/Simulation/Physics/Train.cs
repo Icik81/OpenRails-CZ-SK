@@ -16137,15 +16137,21 @@ namespace Orts.Simulation.Physics
         /// Parameters: right = true if right doors; open = true if opening
         /// <\summary>
         public void ToggleDoors(bool right, bool open)
-        {
+        {            
             foreach (TrainCar car in Cars)
             {
-                var mstsWagon = car as MSTSWagon;
-                if (!mstsWagon.FreightDoors)
+                var wagon = car as MSTSWagon;
+                if (open && !wagon.BrakeSystem.LeftDoorIsOpened && !wagon.BrakeSystem.RightDoorIsOpened)
+                    wagon.SignalEvent(open ? Event.DoorOpen : Event.DoorClose); // hook for sound trigger
+
+                if (!open && (wagon.BrakeSystem.LeftDoorIsOpened || wagon.BrakeSystem.RightDoorIsOpened))
+                    wagon.SignalEvent(open ? Event.DoorOpen : Event.DoorClose); // hook for sound trigger
+
+                if (!wagon.FreightDoors)
                 {
                     if (!car.Flipped && right || car.Flipped && !right)
                     {
-                        mstsWagon.DoorRightOpen = open;
+                        wagon.DoorRightOpen = open;
                         // Icik
                         if (open)
                             car.BrakeSystem.LeftDoorIsOpened = true;
@@ -16153,106 +16159,39 @@ namespace Orts.Simulation.Physics
                     }
                     else
                     {
-                        mstsWagon.DoorLeftOpen = open;
+                        wagon.DoorLeftOpen = open;
                         // Icik
                         if (open)
                             car.BrakeSystem.RightDoorIsOpened = true;
                         else car.BrakeSystem.RightDoorIsOpened = false;
-                    }
-                    mstsWagon.SignalEvent(open ? Event.DoorOpen : Event.DoorClose); // hook for sound trigger                    
+                    }                    
                 }
             }
         }
-
-        // Icik
-        //public void ToggleDoorsPeople(bool right, bool open, bool openAll)
-        //{
-        //    for (int i = 0; i < Cars.Count; i++)
-        //    {
-        //        var wagon = (Cars[i] as MSTSWagon);
-        //        if ((wagon.HasPassengerCapacity || wagon.WagonType == TrainCar.WagonTypes.Passenger) && !wagon.FreightDoors)
-        //        {
-        //            bool ChanceToOpenDoor = false;
-        //            if (Simulator.Random.Next(0, 2) == 0)
-        //                ChanceToOpenDoor = true;
-        //            else
-        //                ChanceToOpenDoor = false;
-        //            if (openAll)
-        //                ChanceToOpenDoor = true;
-        //            if (!wagon.Flipped && right || wagon.Flipped && !right)
-        //            {
-        //                if (ChanceToOpenDoor)
-        //                {
-        //                    wagon.DoorRightOpen = open;
-        //                    if (open)
-        //                        wagon.BrakeSystem.LeftDoorIsOpened = true;
-        //                    else wagon.BrakeSystem.LeftDoorIsOpened = false;
-        //                }
-        //            }
-        //            else
-        //            {
-        //                if (ChanceToOpenDoor)
-        //                {
-        //                    wagon.DoorLeftOpen = open;
-        //                    if (open)
-        //                        wagon.BrakeSystem.RightDoorIsOpened = true;
-        //                    else wagon.BrakeSystem.RightDoorIsOpened = false;
-        //                }
-        //            }
-        //            wagon.SignalEvent(open ? Event.DoorOpen : Event.DoorClose); // hook for sound trigger
-        //        }
-        //    }
-        //}
-        //public void ToggleDoorsPeople(bool right, bool open)
-        //{
-        //    ToggleDoorsPeople(right, false);
-        //}
 
         public void ToggleDoorsPeople(bool right, bool open, MSTSWagon wagon)
         {
-            StationStop thisStation = StationStops[0];
-
-            if (open && !wagon.BrakeSystem.LeftDoorIsOpened && !wagon.BrakeSystem.RightDoorIsOpened)
-                wagon.SignalEvent(open ? Event.DoorOpen : Event.DoorClose); // hook for sound trigger
-
-            if (!open && (wagon.BrakeSystem.LeftDoorIsOpened || wagon.BrakeSystem.RightDoorIsOpened))
-                wagon.SignalEvent(open ? Event.DoorOpen : Event.DoorClose); // hook for sound trigger
-
-            if (!wagon.Flipped && right || wagon.Flipped && !right)
+            StationStop thisStation = StationStops[0];                        
+            var frontIsFront = thisStation.PlatformReference == thisStation.PlatformItem.PlatformFrontUiD;
+            if (thisStation.PlatformItem.PlatformSide[0])
             {
-                if (thisStation.PlatformItem.PlatformSide[1])
-                {
-                    wagon.DoorLeftOpen = open;
-                    if (open)
-                        wagon.BrakeSystem.LeftDoorIsOpened = true;
-                    else wagon.BrakeSystem.LeftDoorIsOpened = false;
-                }
-                if (thisStation.PlatformItem.PlatformSide[0])
-                {
-                    wagon.DoorRightOpen = open;                    
-                    if (open)
-                        wagon.BrakeSystem.RightDoorIsOpened = true;
-                    else wagon.BrakeSystem.RightDoorIsOpened = false;
-                }
+                //open left doors
+                ToggleDoors(frontIsFront, true);
             }
-            else
-            {                
-                if (thisStation.PlatformItem.PlatformSide[0])
-                {
-                    wagon.DoorLeftOpen = open;
-                    if (open)
-                        wagon.BrakeSystem.LeftDoorIsOpened = true;
-                    else wagon.BrakeSystem.LeftDoorIsOpened = false;
-                }
-                if (thisStation.PlatformItem.PlatformSide[1])
-                {
-                    wagon.DoorRightOpen = open;                    
-                    if (open)
-                        wagon.BrakeSystem.RightDoorIsOpened = true;
-                    else wagon.BrakeSystem.RightDoorIsOpened = false;
-                }
-            }                                    
-        }
+
+            if (thisStation.PlatformItem.PlatformSide[1])
+            {
+                //open right doors
+                ToggleDoors(!frontIsFront, true);
+            }
+            if (!open)
+            {
+                ToggleDoors(!frontIsFront, false);
+                ToggleDoors(frontIsFront, false);
+            }
+         }
+
+
         public bool BoardingComplete = false;
         public int TotalOnBoard = 0;
         private bool namesFilled = false;
