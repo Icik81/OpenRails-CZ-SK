@@ -958,7 +958,7 @@ namespace Orts.Simulation.RollingStocks
 
                     // Směr + ARR
                     Direction = Direction.Forward;
-                    if (CruiseControl.Equipped)
+                    if (CruiseControl != null && CruiseControl.Equipped)
                     {
                         CruiseControl.SpeedRegMode = SubSystems.CruiseControl.SpeedRegulatorMode.Auto;
                         CruiseControl.SelectedSpeedMpS = MpS.FromKpH(40);
