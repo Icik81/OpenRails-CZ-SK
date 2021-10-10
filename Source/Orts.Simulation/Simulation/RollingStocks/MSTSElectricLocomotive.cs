@@ -254,7 +254,6 @@ namespace Orts.Simulation.RollingStocks
         protected float distSinceLastCheck = 0;
         public float Amps;
         public PowerSupplyStation myStation = null;
-
         protected void UnderVoltageProtection(float elapsedClockSeconds)
         {
             if (Simulator.Paused)
@@ -392,12 +391,19 @@ namespace Orts.Simulation.RollingStocks
                 volts += 400; // max 3.4kV poblíž měničky
             if (RouteVoltageV == 25000)
                 volts += 2000; // max 27kV poblíž napaječky
-            // TODO icik: změnit volts dle filtrace (zamezení skokové změny), plus další, třeba se podívat co nefunguje - ok hotovo
-            //PowerSupply.PantographVoltageV += volts;
-            
+                               // TODO icik: změnit volts dle filtrace (zamezení skokové změny), plus další, třeba se podívat co nefunguje - ok hotovo
+                               //PowerSupply.PantographVoltageV += volts;
+
             // Výpočet napětí v drátech
-            Simulator.TRK.Tr_RouteFile.MaxLineVoltage = RouteVoltageV * VoltageSprung + volts;
-            MaxLineVoltage0 = RouteVoltageV + volts; 
+            if (RouteVoltageV > 1)
+            {
+                Simulator.TRK.Tr_RouteFile.MaxLineVoltage = RouteVoltageV * VoltageSprung + volts;
+                MaxLineVoltage0 = RouteVoltageV + volts;
+            }
+            if (RouteVoltageV == 1)
+            {
+                PowerSupply.PantographVoltageV = PantographVoltageV = 1;
+            }
 
             if (PantographVoltageV < 1)
                 PantographVoltageV = 1;
