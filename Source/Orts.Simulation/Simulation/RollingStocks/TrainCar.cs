@@ -2663,6 +2663,11 @@ namespace Orts.Simulation.RollingStocks
         private void AddVibrations(float factor)
         {
             // NOTE: For low angles (as our vibration rotations are), sin(angle) ~= angle, and since the displacement at the end of the car is sin(angle) = displacement/half-length, sin(displacement/half-length) * half-length ~= displacement.
+            if (CarLengthM >= 25.0f || Simulator.Paused || Simulator.GameSpeed != 1)
+            {
+                VibrationSpringConstantPrimepSpS = 9.8f / 0.2f;
+                VibratioDampingCoefficient = 0.02f;
+            }
 
             if (CarLengthM < 25.0f && !Simulator.Paused && Simulator.GameSpeed == 1)
             {

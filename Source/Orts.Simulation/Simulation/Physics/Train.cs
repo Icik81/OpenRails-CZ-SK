@@ -16171,18 +16171,20 @@ namespace Orts.Simulation.Physics
 
         public void ToggleDoorsPeople(bool right, bool open, MSTSWagon wagon)
         {
-            StationStop thisStation = StationStops[0];                        
+            StationStop thisStation = StationStops[0];
             var frontIsFront = thisStation.PlatformReference == thisStation.PlatformItem.PlatformFrontUiD;
-            if (thisStation.PlatformItem.PlatformSide[0])
+            if (open)
             {
-                //open left doors
-                ToggleDoors(frontIsFront, true);
-            }
-
-            if (thisStation.PlatformItem.PlatformSide[1])
-            {
-                //open right doors
-                ToggleDoors(!frontIsFront, true);
+                if (thisStation.PlatformItem.PlatformSide[0])
+                {
+                    //open left doors
+                    ToggleDoors(frontIsFront, true);
+                }
+                if (thisStation.PlatformItem.PlatformSide[1])
+                {
+                    //open right doors
+                    ToggleDoors(!frontIsFront, true);
+                }
             }
             if (!open)
             {
