@@ -170,7 +170,7 @@ namespace Orts.Simulation
         public readonly bool MilepostUnitsMetric;
         public bool OpenDoorsInAITrains;
 
-        public bool SuperUser = File.Exists(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location + "\\SuperUser.iam")) ? true : false;
+        public bool SuperUser = false;
 
         public List<PowerSupplyStation> powerSupplyStations;
         public List<VoltageChangeMarker> voltageChangeMarkers;
@@ -259,6 +259,9 @@ namespace Orts.Simulation
 
         public Simulator(UserSettings settings, string activityPath, bool useOpenRailsDirectory)
         {
+            String location = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+            location += "\\SuperUser.iam";
+            SuperUser = File.Exists(location);
             Catalog = new GettextResourceManager("Orts.Simulation");
             Random = new Random();
 

@@ -1304,7 +1304,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
             }
             if (NZ1 || NZ2 || NZ3 || NZ5)
             {
-                NZ1 = NZ2 = false;
+                NZ1 = NZ2 = NZ3 = NZ5 = false;
                 emergency = false;
                 interventionTimer = 0;
                 EmergencyBrakes(false);

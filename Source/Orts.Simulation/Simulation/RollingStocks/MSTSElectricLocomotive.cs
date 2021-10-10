@@ -266,7 +266,7 @@ namespace Orts.Simulation.RollingStocks
 
             // výpočet napětí dle proudu a odporu k napaječce
             float watts = TractiveForceN * 10; // no prostě jen tak, z něčeho ten proud je prostě potřeba vypočítat :D
-            if (Flipped && watts < 0)
+            if ((Flipped || Direction == Direction.Reverse) && watts < 0)
                 watts = -watts; 
 
             if (watts < 0 && !RecuperationAvailable)
