@@ -142,7 +142,6 @@ namespace Orts.Simulation
         public List<CarSpawnerList> CarSpawnerLists;
         public ExtClockFile ExtClockFile;            // External file of OR-Clocks
         public List<ClockList> ClockLists;           // List of OR-Clocks given by externe file "openrails\clocks.dat"
-
         // timetable pools
         public Poolholder PoolHolder;
 

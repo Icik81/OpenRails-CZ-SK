@@ -481,7 +481,7 @@ namespace Orts.Simulation.RollingStocks
         public bool VoltageFilter;
         public float RouteVoltageV;
         public bool RouteVoltageChange;
-        public float LocomotivePowerVoltage;
+        public float LocomotivePowerVoltage = 3000;
         public float MaxPowerWAC;
         public float MaxForceNAC;
         public float MaxPowerWDC;
@@ -542,6 +542,7 @@ namespace Orts.Simulation.RollingStocks
         public bool HVOn = false;
 
         // Jindrich
+        public bool EnableControlVoltageChange = true;
         public CruiseControl CruiseControl;
         public MultiPositionController MultiPositionController;
         public List<MultiPositionController> MultiPositionControllers;
@@ -1146,7 +1147,7 @@ namespace Orts.Simulation.RollingStocks
                 case "engine(airbrakesaircompressorwattage": AirBrakesAirCompressorWattage = stf.ReadFloatBlock(STFReader.UNITS.Power, null); break;
                 case "engine(centralhandlingdoors": CentralHandlingDoors = stf.ReadBoolBlock(false); break;
                 case "engine(voltagefilter": VoltageFilter = stf.ReadBoolBlock(false); break;
-                case "engine(locomotivepowervoltage": LocomotivePowerVoltage = stf.ReadFloatBlock(STFReader.UNITS.Voltage, null); break;
+                case "engine(locomotivepowervoltage": EnableControlVoltageChange = false; LocomotivePowerVoltage = stf.ReadFloatBlock(STFReader.UNITS.Voltage, null); break;
                 case "engine(maxpowerac": MaxPowerWAC = stf.ReadFloatBlock(STFReader.UNITS.Power, null); break;
                 case "engine(maxforceac": MaxForceNAC = stf.ReadFloatBlock(STFReader.UNITS.Force, null); break;
                 case "engine(maxpowerdc": MaxPowerWDC = stf.ReadFloatBlock(STFReader.UNITS.Power, null); break;
@@ -6386,12 +6387,27 @@ namespace Orts.Simulation.RollingStocks
         // Zatím povoleno kvůli kompatibilitě
         public void ToggleControlRouteVoltage()
         {
-            RouteVoltageChange = !RouteVoltageChange;
-            if (RouteVoltageChange)
-                RouteVoltageV = 3000;
-            else
-                RouteVoltageV = 25000;
-            if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.RouteVoltage, RouteVoltageChange ? CabSetting.On : CabSetting.Off);
+            if (!IsPlayerTrain)
+                return;
+            if (!EnableControlVoltageChange)
+                return;
+            if (LocomotivePowerVoltage == 3000)
+            {
+                LocomotivePowerVoltage = 25000;
+                MultiSystemEngine = false;
+                Simulator.Confirmer.Information("Systém napájení změněn na 25kV.");
+            }
+            else if (LocomotivePowerVoltage == 25000 && !MultiSystemEngine)
+            {
+                MultiSystemEngine = true;
+                Simulator.Confirmer.Information("Systém napájení změněn na 3kV + 25kV.");
+            }
+            else if (LocomotivePowerVoltage == 25000 && MultiSystemEngine)
+            {
+                LocomotivePowerVoltage = 3000;
+                MultiSystemEngine = false;
+                Simulator.Confirmer.Information("Systém napájení byl změněn na 3kV.");
+            }
         }
 
         public void SetVoltageMarker(int newVoltage)
