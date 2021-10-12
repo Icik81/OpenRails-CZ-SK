@@ -513,7 +513,7 @@ namespace Orts.Viewer3D
         /// Below this distance there is no attenuation. Used by OpenAL inverse distance model
         /// </summary>
         //public const float ReferenceDistanceM = 8f;
-        public const float ReferenceDistanceM = 20f;
+        public const float ReferenceDistanceM = 8f;
 
         /// <summary>
         /// Sound attenuation factor. Calculated to achieve goal set by <see cref="GainAtMaxDistance"/>
@@ -529,7 +529,7 @@ namespace Orts.Viewer3D
         /// Used for Horns
         /// </summary>
         //public float HornRolloffFactor = 0.05f;
-        public float HornRolloffFactor = 0.60f;
+        public float HornRolloffFactor = 0.25f;
 
         /// <summary>
         /// Construct a SoundSource attached to a train car.
