@@ -481,7 +481,7 @@ namespace Orts.Simulation.RollingStocks
         public bool VoltageFilter;
         public float RouteVoltageV;
         public bool RouteVoltageChange;
-        public float LocomotivePowerVoltage = 3000;
+        public float LocomotivePowerVoltage;
         public float MaxPowerWAC;
         public float MaxForceNAC;
         public float MaxPowerWDC;
@@ -2656,7 +2656,7 @@ namespace Orts.Simulation.RollingStocks
                         }
                         PowerReductionByHeatingWag += car.PowerReductionByHeating;
                     }                    
-                    if (car.WagonType == WagonTypes.Engine && this is MSTSDieselLocomotive) // Dieselelektrické lokomotivy
+                    if (car.WagonType == WagonTypes.Engine /*&& this is MSTSDieselLocomotive*/) // Lokomotivy
                     {
                         if (car.PowerReductionByHeating == 0) // Default
                         {
@@ -2667,8 +2667,8 @@ namespace Orts.Simulation.RollingStocks
                     }
                 }                
                 
-                PowerReductionByHeating0 = PowerReductionByHeatingWag + PowerReductionByHeatingEng;                
-                //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Zapnuté topení, výkon zredukován "+ PowerReductionByHeating0 * MaxPowerW/1000) + " kW!");
+                PowerReductionByHeating0 = PowerReductionByHeatingWag + PowerReductionByHeatingEng;
+                //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Zapnuté topení, výkon zredukován "+ PowerReductionByHeating0 * MaxPowerW/1000) + " kW!");                
             }
 
             // Pomocné pohony, kompresory, dobíjení, ...
@@ -2691,7 +2691,7 @@ namespace Orts.Simulation.RollingStocks
                     }
                 }                
                 // I.Compressor
-                if (WagonType == WagonTypes.Engine && this is MSTSDieselLocomotive && CompressorIsOn) // Dieselelektrické lokomotivy
+                if (/*WagonType == WagonTypes.Engine && this is MSTSDieselLocomotive &&*/ CompressorIsOn) // Lokomotivy
                 {
                     if (AirBrakesIsCompressorElectricOrMechanical) 
                         if (AirBrakesAirCompressorWattage == 0) AirBrakesAirCompressorWattage = 35000f; // 35kW Mechanický kompresor
@@ -2700,7 +2700,7 @@ namespace Orts.Simulation.RollingStocks
                     PowerReductionByAuxEquipmentEng += AirBrakesAirCompressorWattage;
                 }
                 // II.Compressor
-                if (WagonType == WagonTypes.Engine && this is MSTSDieselLocomotive && Compressor2IsOn) // Dieselelektrické lokomotivy
+                if (/*WagonType == WagonTypes.Engine && this is MSTSDieselLocomotive &&*/ Compressor2IsOn) // Lokomotivy
                 {
                     if (AirBrakesIsCompressorElectricOrMechanical)
                         if (AirBrakesAirCompressorWattage == 0) AirBrakesAirCompressorWattage = 35000f; // 35kW Mechanický kompresor
@@ -2709,14 +2709,14 @@ namespace Orts.Simulation.RollingStocks
                     PowerReductionByAuxEquipmentEng += AirBrakesAirCompressorWattage;
                 }
                 // Pomocný kompresor
-                if (WagonType == WagonTypes.Engine && this is MSTSDieselLocomotive && AuxCompressorIsOn) // Dieselelektrické lokomotivy
+                if (/*WagonType == WagonTypes.Engine && this is MSTSDieselLocomotive &&*/ AuxCompressorIsOn) // Lokomotivy
                 {
                     AirBrakesAirCompressorWattage = 5000f; // 5kW Elektrický kompresor
                     PowerReductionByAuxEquipmentEng += AirBrakesAirCompressorWattage;
                 }
             }
             PowerReductionByAuxEquipment0 = PowerReductionByAuxEquipmentWag + PowerReductionByAuxEquipmentEng;
-            //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Zvýšený odběr proudu, výkon zredukován "+ PowerReductionByAuxEquipment0 * MaxPowerW/1000) + " kW!");            
+            //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Zvýšený odběr proudu, výkon zredukován "+ PowerReductionByAuxEquipment0 * MaxPowerW/1000) + " kW!");                        
 
             // Výpočet celkového úbytku výkonu 
             if (MaxPowerW == 0) MaxPowerW = 1000000; // Default pro výkon, který nesmí být 0kW
@@ -2743,7 +2743,10 @@ namespace Orts.Simulation.RollingStocks
                     PowerReduction = PowerReduction0;
                     TElevatedConsumption = 0;
                 }                
-            }            
+            }
+
+            //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Příkon topení " + PowerReductionByHeating0 / 1000) + " kW!");
+            //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Příkon pom.obvodů " + PowerReductionByAuxEquipment0 / 1000) + " kW!");
         }
         
         // Stanovení hodnot výkonů a síly pro AC-DC systém

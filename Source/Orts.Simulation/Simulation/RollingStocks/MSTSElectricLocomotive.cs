@@ -80,6 +80,7 @@ namespace Orts.Simulation.RollingStocks
         int T_CB = 0;
         float Induktion = 0;
         float TInduktion = 0;
+        float TRouteVoltageV_1 = 0;
 
         float TPowerOnAC = 0;
         float TPowerOnDC = 0;
@@ -387,12 +388,17 @@ namespace Orts.Simulation.RollingStocks
             float volts = -newVoltage - distDrop;
 
             if (RouteVoltageV == 3000)
+            {
                 volts += 400; // max 3.4kV poblíž měničky
+                Induktion = 0;
+            }
             if (RouteVoltageV == 25000)
                 volts += 2000; // max 27kV poblíž napaječky
 
-
+            //VoltageFilter = false;
             //RouteVoltageV = 1;
+            //Induktion = 0;
+            //LocomotivePowerVoltage = 25000;
 
             // Výpočet napětí v drátech
             if (RouteVoltageV > 1)
@@ -403,7 +409,7 @@ namespace Orts.Simulation.RollingStocks
             if (RouteVoltageV == 1)                 
             {
                 //PowerSupply.PantographVoltageV = PantographVoltageV = 1;
-                PowerSupply.PantographVoltageV -= (float)MaxLineVoltage0 * 1.5f * elapsedClockSeconds;
+                PowerSupply.PantographVoltageV -= (float)MaxLineVoltage0 * 1.5f * elapsedClockSeconds;                
             }
 
             PantographVoltageV = (float)Math.Round(PantographVoltageV);
@@ -421,11 +427,35 @@ namespace Orts.Simulation.RollingStocks
             if (IsPlayerTrain)
             {
                 // Pokud je loko AC tak napětí pantografu sleduje napětí v drátech
-                if ((SwitchingVoltageMode_OffAC || LocomotivePowerVoltage == 25000) && (RouteVoltageV == 25000 || RouteVoltageV == 1))
+                if ((SwitchingVoltageMode_OffAC || LocomotivePowerVoltage == 25000) && RouteVoltageV == 25000) // zohlednění indukce
                 {
-                    PantographVoltageV = PowerSupply.PantographVoltageV;                   
+                    if (Pantographs[1].State == PantographState.Up || Pantographs[2].State == PantographState.Up)
+                        PantographVoltageV = PowerSupply.PantographVoltageV;
                 }
-                
+                if ((SwitchingVoltageMode_OffAC || LocomotivePowerVoltage == 25000) && RouteVoltageV == 1) // bez indukce
+                {
+                    if (PantographVoltageV > PowerSupply.PantographVoltageV && Induktion > 0) // pokud je indukce, klesne pozvolna než se dorovná
+                        PantographVoltageV -= 100;
+                    else
+                    {
+                        PantographVoltageV = PowerSupply.PantographVoltageV;
+                        Induktion = 0;
+                    }
+                }
+
+                if ((SwitchingVoltageMode_OffDC || LocomotivePowerVoltage == 3000) && VoltageFilter && RouteVoltageV == 25000)
+                {
+                    if (CircuitBreakerOn && PowerSupply.PantographVoltageV < PantographVoltageV && PowerSupply.PantographVoltageV < MaxLineVoltage0 && MaxLineVoltage1 > 1)
+                    {
+                        if (T == 0)
+                            MaxLineVoltage2 = PantographVoltageV;
+                        T = 1;
+                        PantographVoltageV = (float)MaxLineVoltage2;
+                        MaxLineVoltage2 -= (0.02f * MaxLineVoltage0) * elapsedClockSeconds; // 2% z napětí v troleji za 1s
+                        if (MaxLineVoltage2 < (0.1f * MaxLineVoltage0)) MaxLineVoltage2 = (0.1f * MaxLineVoltage0);
+                    }
+                }
+
                 // Pokud má lokomotiva napěťový filtr a napětí tratě je stejnosměrné 3kV
                 if (VoltageFilter && (RouteVoltageV == 3000 || RouteVoltageV == 1))
                 {
@@ -482,7 +512,7 @@ namespace Orts.Simulation.RollingStocks
 
 
                 // Indukce z trolejového vedení pro střídavé napájení 25kV
-                if (RouteVoltageV == 25000 && LocomotivePowerVoltage != 3000
+                if (RouteVoltageV == 25000 && LocomotivePowerVoltage != 3000 
                     && (Pantographs[1].State == PantographState.Down || Pantographs[1].State == PantographState.Raising || Pantographs[1].State == PantographState.Lowering)
                     && (Pantographs[2].State == PantographState.Down || Pantographs[2].State == PantographState.Raising || Pantographs[2].State == PantographState.Lowering))
                 {
@@ -577,17 +607,32 @@ namespace Orts.Simulation.RollingStocks
                     if (RouteVoltageV == 1 && PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closing)
                         HVOff = true;
 
-                    // Střídavá loko při zapnutém HV přejede do úseku změny napětí - shodí HV
-                    if (CircuitBreakerOn && SwitchingVoltageMode_OffAC && (RouteVoltageV == 1 || RouteVoltageV == 3000))
+                    // Nastavení AC při zapnutém HV  a pantografy nahoře přejede do úseku 3kV - shodí HV
+                    if (CircuitBreakerOn && SwitchingVoltageMode_OffAC && RouteVoltageV == 3000
+                        && (Pantographs[1].State == PantographState.Up || Pantographs[2].State == PantographState.Up))                        
                         HVOff = true;
 
-                    // Stejnosměrná loko při zapnutém HV přejede do úseku změny napětí a nemá napěťový filtr - shodí HV
-                    if (CircuitBreakerOn && !VoltageFilter && SwitchingVoltageMode_OffDC && (RouteVoltageV == 1 || RouteVoltageV == 25000))
-                        HVOff = true;
+                    // Při zapnutém HV přejede do beznapěťového úseku - shodí HV po pár sekundách
+                    if (CircuitBreakerOn && (RouteVoltageV == 1 || (Pantographs[1].State == PantographState.Down && Pantographs[2].State == PantographState.Down)))
+                    {
+                        TRouteVoltageV_1 += elapsedClockSeconds;                                                
+                        if (!VoltageFilter && TRouteVoltageV_1 > Simulator.Random.Next(2, 4))
+                        {
+                            HVOff = true;
+                            TRouteVoltageV_1 = 0;
+                        }
+                        if (VoltageFilter && TRouteVoltageV_1 > Simulator.Random.Next(20, 40))
+                        {
+                            HVOff = true;
+                            TRouteVoltageV_1 = 0;
+                        }
+                    }
 
-                    // Stejnosměrná loko při zapnutém HV přejede do úseku změny napětí a má napěťový filtr - shodí HV
-                    if (CircuitBreakerOn && VoltageFilter && SwitchingVoltageMode_OffDC && RouteVoltageV == 25000)
-                        HVOff = true;
+                   
+                    // Nastavení DC při zapnutém HV a pantografy nahoře přejede do úseku 25kV - shodí HV
+                    if (CircuitBreakerOn && SwitchingVoltageMode_OffDC && RouteVoltageV == 25000
+                        && (Pantographs[1].State == PantographState.Up || Pantographs[2].State == PantographState.Up))
+                        HVOff = true;                    
                 }
                 
 
