@@ -259,7 +259,7 @@ namespace Orts.Simulation.RollingStocks
             if (Simulator.Paused)
                 return;
             if (!IsPlayerTrain)
-                PantographVoltageV = PowerSupply.PantographVoltageV = RouteVoltageV;
+                return;
             
 
             // výpočet napětí dle proudu a odporu k napaječce
@@ -751,7 +751,7 @@ namespace Orts.Simulation.RollingStocks
                     
 
                     // Test napětí v troleji stanoví napěťovou soustavu
-                    if (MaxLineVoltage0 > 4000)
+                    if (MaxLineVoltage0 > 3500)
                     {
                         VoltageAC = PantographVoltageV; // Střídavá napěťová soustava 25kV
                         if (VoltageDC > 0)
@@ -1212,7 +1212,7 @@ namespace Orts.Simulation.RollingStocks
                 }
 
                 // Pantografy
-                if (MaxLineVoltage0 > 5000)
+                if (MaxLineVoltage0 > 15000)
                 {                    
                     if (Pantographs[1].State == PantographState.Raising && TPanto1AC == 0) // Zadní panto
                     {
