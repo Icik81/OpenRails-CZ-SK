@@ -14031,9 +14031,17 @@ namespace Orts.Simulation.Physics
             if (elloco != null && Simulator.SuperUser)
             {
                 if (IsPlayerDriven)
+                {
+                    if (elloco.myStation == null)
+                        elloco.myStation = new PowerSupplyStation();
                     statusString[iColumn] = "Thr: " + AITrainThrottlePercent.ToString() + ", SupId: " + elloco.myStation.Id.ToString() + ", myAmps: " + elloco.Amps.ToString();
+                }
                 else
+                {
+                    if (elloco.myStation == null)
+                        elloco.myStation = new PowerSupplyStation();
                     statusString[iColumn] = "Thr: " + AITrainThrottlePercent.ToString() + ", SupId: " + elloco.myStation.Id.ToString() + ", myAmps: " + (elloco.Amps * 2).ToString();
+                }
             }
             else
             {
