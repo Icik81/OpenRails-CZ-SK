@@ -16149,30 +16149,34 @@ namespace Orts.Simulation.Physics
             foreach (TrainCar car in Cars)
             {
                 var wagon = car as MSTSWagon;
-                if (open && !wagon.BrakeSystem.LeftDoorIsOpened && !wagon.BrakeSystem.RightDoorIsOpened)
-                    wagon.SignalEvent(open ? Event.DoorOpen : Event.DoorClose); // hook for sound trigger
 
-                if (!open && (wagon.BrakeSystem.LeftDoorIsOpened || wagon.BrakeSystem.RightDoorIsOpened))
-                    wagon.SignalEvent(open ? Event.DoorOpen : Event.DoorClose); // hook for sound trigger
-
-                if (!wagon.FreightDoors)
+                if (!wagon.LeftDoorOpenOverride && !wagon.RightDoorOpenOverride)
                 {
-                    if (!car.Flipped && right || car.Flipped && !right)
+                    if (open && !wagon.BrakeSystem.LeftDoorIsOpened && !wagon.BrakeSystem.RightDoorIsOpened)
+                        wagon.SignalEvent(open ? Event.DoorOpen : Event.DoorClose); // hook for sound trigger
+
+                    if (!open && (wagon.BrakeSystem.LeftDoorIsOpened || wagon.BrakeSystem.RightDoorIsOpened))
+                        wagon.SignalEvent(open ? Event.DoorOpen : Event.DoorClose); // hook for sound trigger
+
+                    if (!wagon.FreightDoors)
                     {
-                        wagon.DoorRightOpen = open;
-                        // Icik
-                        if (open)
-                            car.BrakeSystem.RightDoorIsOpened = true;
-                        else car.BrakeSystem.RightDoorIsOpened = false;
+                        if (!car.Flipped && right || car.Flipped && !right)
+                        {
+                            wagon.DoorRightOpen = open;
+                            // Icik
+                            if (open)
+                                car.BrakeSystem.RightDoorIsOpened = true;
+                            else car.BrakeSystem.RightDoorIsOpened = false;
+                        }
+                        else
+                        {
+                            wagon.DoorLeftOpen = open;
+                            // Icik
+                            if (open)
+                                car.BrakeSystem.LeftDoorIsOpened = true;
+                            else car.BrakeSystem.LeftDoorIsOpened = false;
+                        }
                     }
-                    else
-                    {
-                        wagon.DoorLeftOpen = open;
-                        // Icik
-                        if (open)
-                            car.BrakeSystem.LeftDoorIsOpened = true;
-                        else car.BrakeSystem.LeftDoorIsOpened = false;
-                    }                    
                 }
             }
         }

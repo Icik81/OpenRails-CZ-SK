@@ -155,6 +155,9 @@ namespace Orts.Simulation.RollingStocks
         public float Variable2DC;
         public float Variable3AC;
         public float Variable3DC;
+        public bool LeftDoorOpenOverride;
+        public bool RightDoorOpenOverride;
+
 
         bool TenderWeightInitialize = true;
         float TenderWagonMaxCoalMassKG;
@@ -3554,7 +3557,8 @@ namespace Orts.Simulation.RollingStocks
                                 mstsWagon.DoorLeftOpen = false;
                             else mstsWagon.DoorRightOpen = false;
                             car.BrakeSystem.LeftDoorIsOpened = false;
-                            mstsWagon.SignalEvent(Event.DoorClose);                            
+                            mstsWagon.SignalEvent(Event.DoorClose);
+                            mstsWagon.LeftDoorOpenOverride = false;
                             break;
                         case 1:
                             if (!car.Flipped ^ Flipped)
@@ -3562,6 +3566,7 @@ namespace Orts.Simulation.RollingStocks
                             else mstsWagon.DoorRightOpen = true;
                             car.BrakeSystem.LeftDoorIsOpened = true;
                             mstsWagon.SignalEvent(Event.DoorOpen);
+                            mstsWagon.LeftDoorOpenOverride = true;
                             break;
                     }
                 }
@@ -3576,6 +3581,7 @@ namespace Orts.Simulation.RollingStocks
                             else mstsWagon.DoorLeftOpen = false;
                             car.BrakeSystem.RightDoorIsOpened = false;
                             mstsWagon.SignalEvent(Event.DoorClose);
+                            mstsWagon.RightDoorOpenOverride = false;
                             break;
                         case 1:
                             if (!car.Flipped ^ Flipped)
@@ -3583,6 +3589,7 @@ namespace Orts.Simulation.RollingStocks
                             else mstsWagon.DoorLeftOpen = true;
                             car.BrakeSystem.RightDoorIsOpened = true;
                             mstsWagon.SignalEvent(Event.DoorOpen);
+                            mstsWagon.RightDoorOpenOverride = true;
                             break;
                     }
                 }
