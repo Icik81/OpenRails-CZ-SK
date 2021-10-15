@@ -272,7 +272,8 @@
         //[GetString("Control Switching Voltage Mode Off/DC")] ControlSwitchingVoltageMode_OffDC,
         //[GetString("Control Switching Voltage Mode Off/AC")] ControlSwitchingVoltageMode_OffAC,
         [GetString("Control Route Voltage 25kV / 3kV")] ControlRouteVoltage,
-        [GetString("Control Vysokotlaký švih")] ControlQuickReleaseButton,
-        [GetString("Control Nízkotlaké přebití")] ControlLowPressureReleaseButton,
+        [GetString("Control Quickrelease button")] ControlQuickReleaseButton,
+        [GetString("Control Lowpressurerelease button")] ControlLowPressureReleaseButton,
+        [GetString("Control Breakpower button")] ControlBreakPowerButton,
     }
 }

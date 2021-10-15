@@ -231,6 +231,7 @@ namespace Orts.Viewer3D.RollingStock
             UserInputCommands.Add(UserCommand.ControlRouteVoltage, new Action[] { Noop, () => new ToggleControlRouteVoltageCommand(Viewer.Log) });
             UserInputCommands.Add(UserCommand.ControlQuickReleaseButton, new Action[] { Noop, () => new ToggleQuickReleaseButtonCommand(Viewer.Log) });
             UserInputCommands.Add(UserCommand.ControlLowPressureReleaseButton, new Action[] { Noop, () => new ToggleLowPressureReleaseButtonCommand(Viewer.Log) });
+            UserInputCommands.Add(UserCommand.ControlBreakPowerButton, new Action[] { Noop, () => new ToggleBreakPowerButtonCommand(Viewer.Log) });
 
             // Jindřich
             UserInputCommands.Add(UserCommand.ControlPowerStationLocation, new Action[] { Noop, () => Locomotive.SetPowerSupplyStationLocation() });
@@ -288,6 +289,15 @@ namespace Orts.Viewer3D.RollingStock
                 Locomotive.ToggleLowPressureReleaseButton(false);
             }
 
+            // Ovládání tlačítka přerušení napájení
+            if (UserInput.IsPressed(UserCommand.ControlBreakPowerButton))
+            {
+                Locomotive.ToggleBreakPowerButton(true);
+            }
+            if (UserInput.IsReleased(UserCommand.ControlBreakPowerButton))
+            {
+                Locomotive.ToggleBreakPowerButton(false);
+            }
 
             if (UserInput.IsPressed(UserCommand.CameraToggleShowCab))
                 Locomotive.ShowCab = !Locomotive.ShowCab;
@@ -1939,9 +1949,9 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlStyles.NONE:
                     ChangedValue = (value) =>
                     {
-                        IntermediateValue %= 0.5f;
+                        IntermediateValue %= 0.75f;
                         IntermediateValue += NormalizedMouseMovement();
-                        return IntermediateValue > 0.5f ? 1 : IntermediateValue < -0.5f ? -1 : 0;
+                        return IntermediateValue > 0.75f ? 1 : IntermediateValue < -0.75f ? -1 : 0;
                     };
                     break;
                 default: ChangedValue = (value) => value + NormalizedMouseMovement(); break;
@@ -2245,6 +2255,8 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.ORTS_CIRCUIT_BREAKER_OPEN_DC:
                 case CABViewControlTypes.QUICK_RELEASE_BUTTON:
                 case CABViewControlTypes.LOWPRESSURE_RELEASE_BUTTON:
+                case CABViewControlTypes.BRAKE_PIPE_FLOW:
+                case CABViewControlTypes.BREAK_POWER_BUTTON:
 
                     index = (int)data;
                     break;
@@ -2738,6 +2750,13 @@ namespace Orts.Viewer3D.RollingStock
                         Locomotive.ToggleLowPressureReleaseButton(true);
                     else
                         Locomotive.ToggleLowPressureReleaseButton(false);
+                    break;
+
+                case CABViewControlTypes.BREAK_POWER_BUTTON:
+                    if (ChangedValue(Locomotive.BreakPowerButton ? 1 : 0) > 0)
+                        Locomotive.ToggleBreakPowerButton(true);
+                    else
+                        Locomotive.ToggleBreakPowerButton(false);
                     break;
 
                 // Train Control System controls

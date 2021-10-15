@@ -540,6 +540,9 @@ namespace Orts.Simulation.RollingStocks
         public bool CircuitBreakerOn = false;
         public bool HVOff = false;
         public bool HVOn = false;
+        public bool BreakPowerButtonEnable = false;
+        public bool BreakPowerButton;
+        public bool BreakPowerButton_Activated;
 
         // Jindrich
         public bool EnableControlVoltageChange = true;
@@ -1549,6 +1552,7 @@ namespace Orts.Simulation.RollingStocks
             outf.Write(AuxResOverPressure);
             outf.Write(Pantograph4Switch);
             outf.Write(HV5Switch);
+            outf.Write(BreakPowerButton_Activated);
 
             base.Save(outf);
 
@@ -1645,6 +1649,7 @@ namespace Orts.Simulation.RollingStocks
             AuxResOverPressure = inf.ReadBoolean();
             Pantograph4Switch = inf.ReadSingle();
             HV5Switch = inf.ReadSingle();
+            BreakPowerButton_Activated = inf.ReadBoolean();
 
             base.Restore(inf);
 
@@ -6166,7 +6171,13 @@ namespace Orts.Simulation.RollingStocks
             if (!MultiSystemEngine && !CircuitBreakerOn)
                 return;
             
-            if (Battery) // Zatím bez PowerKey kvůli kompatibilitě
+            // Zabrání zvednutí pantografu po stlačení tlačítka přerušení napájení
+            if (BreakPowerButton)
+                BreakPowerButton_Activated = true;
+            if (Pantograph4Switch == 0)
+                BreakPowerButton_Activated = false;
+
+            if (Battery && !BreakPowerButton_Activated) // Zatím bez PowerKey kvůli kompatibilitě
             {
                 int p1 = 1; int p2 = 2;
                 if (UsingRearCab) { p1 = 2; p2 = 1; }
@@ -6453,6 +6464,17 @@ namespace Orts.Simulation.RollingStocks
                 if (LowPressureReleaseButton)
                     SignalEvent(Event.LowPressureReleaseButton);
                 if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.LowPressureReleaseButton, lowPressureReleaseButton ? CabSetting.On : CabSetting.Off);
+            }
+        }
+
+        public void ToggleBreakPowerButton(bool breakPowerButton)
+        {
+            if (BreakPowerButtonEnable)
+            {
+                BreakPowerButton = breakPowerButton;
+                if (BreakPowerButton)
+                    SignalEvent(Event.BreakPowerButton);
+                if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.BreakPowerButton, breakPowerButton ? CabSetting.On : CabSetting.Off);
             }
         }
 
@@ -8120,6 +8142,24 @@ namespace Orts.Simulation.RollingStocks
                     {
                         LowPressureReleaseButtonEnable = true;
                         if (LowPressureReleaseButton)
+                            data = 1;
+                        else data = 0;
+                        break;
+                    }
+                case CABViewControlTypes.BRAKE_PIPE_FLOW:
+                    {
+                        if (BrakeSystem.BrakePipeFlow)
+                        {
+                            data = 1;
+                            SignalEvent(Event.BrakePipeFlow);
+                        }
+                        else data = 0;
+                        break;
+                    }
+                case CABViewControlTypes.BREAK_POWER_BUTTON:
+                    {
+                        BreakPowerButtonEnable = true;
+                        if (BreakPowerButton)
                             data = 1;
                         else data = 0;
                         break;

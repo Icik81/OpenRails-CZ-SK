@@ -134,7 +134,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes
         public int ReleaseTr = 0;
         public bool BrakeCylApplyMainResPressureOK = false;
         public bool BrakeCylReleaseEDBOn = false;
-        public bool OverChargeRunning = false;        
+        public bool OverChargeRunning = false;
+        public bool BrakePipeFlow;
+        public float BrakePipeChangeRate;
 
         public bool BrakePipeDischargeRate = false;
         public bool BrakePipeChargeRate = false;

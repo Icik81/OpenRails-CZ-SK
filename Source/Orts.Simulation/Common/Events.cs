@@ -284,7 +284,9 @@ namespace Orts.Common
         MaxMainResOverPressureValveClosed,
         MaxAuxResOverPressureValveOpen,
         MaxAuxResOverPressureValveClosed,
-        CompressorBeep
+        CompressorBeep,
+        BrakePipeFlow,
+        BreakPowerButton
     }
 
     public static class Events
@@ -597,6 +599,9 @@ namespace Orts.Common
                         case 20042: return Event.MaxAuxResOverPressureValveClosed;
 
                         case 20043: return Event.CompressorBeep;
+
+                        case 20044: return Event.BrakePipeFlow;
+                        case 20045: return Event.BreakPowerButton;
 
                         default: return 0;
                     }

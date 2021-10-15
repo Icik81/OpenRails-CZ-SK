@@ -573,6 +573,7 @@ namespace ORTS.Settings
             Commands[(int)UserCommand.ControlRouteVoltage] = new UserCommandKeyInput(0x1F, KeyModifiers.Alt);
             Commands[(int)UserCommand.ControlQuickReleaseButton] = new UserCommandKeyInput(0x52);
             Commands[(int)UserCommand.ControlLowPressureReleaseButton] = new UserCommandKeyInput(0x53);
+            Commands[(int)UserCommand.ControlBreakPowerButton] = new UserCommandKeyInput(0x18, KeyModifiers.Control);
         }
 #endregion
 

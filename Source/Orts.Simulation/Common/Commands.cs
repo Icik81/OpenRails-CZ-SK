@@ -1940,4 +1940,20 @@ namespace Orts.Common
             Receiver.ToggleLowPressureReleaseButton(true);
         }
     }
+    [Serializable()]
+    public sealed class ToggleBreakPowerButtonCommand : Command
+    {
+        public static MSTSLocomotive Receiver { get; set; }
+
+        public ToggleBreakPowerButtonCommand(CommandLog log)
+            : base(log)
+        {
+            Redo();
+        }
+
+        public override void Redo()
+        {
+            Receiver.ToggleBreakPowerButton(true);
+        }
+    }
 }

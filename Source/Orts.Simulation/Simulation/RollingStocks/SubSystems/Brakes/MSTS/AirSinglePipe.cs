@@ -63,8 +63,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
         protected float prevCylPressurePSI = 0;
         protected float prevBrakePipePressurePSI = 0;
         protected bool BailOffOn;
-     
-        protected float BrakePipeChangeRate = 0;
+             
         protected float T0 = 0;
         protected float T1 = 0;
         protected float TrainBrakeDelay = 0;
@@ -964,7 +963,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             if (T0 > 0.33f && T0 < 0.43f)
             {
                 T0 = 0.0f;
-                BrakePipeChangeRate = Math.Abs(prevBrakeLine1PressurePSI - BrakeLine1PressurePSI) * 3.33f;
+                BrakePipeChangeRate = Math.Abs(prevBrakeLine1PressurePSI - BrakeLine1PressurePSI) * 3.33f;                
             }
 
             // Zaznamená poslední stav pomocné jímky pro určení pracovního bodu pomocné jímky
@@ -1436,6 +1435,14 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
 
                     // Pohlídá tlak v equalizéru, aby nebyl větší než tlak hlavní jímky
                     if (train.EqualReservoirPressurePSIorInHg > lead.MainResPressurePSI) train.EqualReservoirPressurePSIorInHg = lead.MainResPressurePSI;
+
+                    // Rozsvítí kontrolku průtoku vzduchu v jízdní poloze, pokud je změna tlaku v potrubí vyšší než 0.05bar/s
+                    if (lead.TrainBrakeController.TrainBrakeControllerState == ControllerState.Neutral)
+                    {
+                        if (lead.BrakeSystem.BrakePipeChangeRate > 0.05f * 14.50377f)
+                            lead.BrakeSystem.BrakePipeFlow = true;
+                        else lead.BrakeSystem.BrakePipeFlow = false;
+                    }
 
                     // Vyrovnává maximální tlak s tlakem v potrubí    
                     if (lead.TrainBrakeController.TrainBrakeControllerState == ControllerState.Lap) lead.TrainBrakeController.MaxPressurePSI = lead.BrakeSystem.BrakeLine1PressurePSI;

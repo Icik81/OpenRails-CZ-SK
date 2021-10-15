@@ -133,6 +133,7 @@ namespace Orts.Simulation
     , RouteVoltage
     , QuickReleaseButton
     , LowPressureReleaseButton
+    , BreakPowerButton
     }
 
     public enum CabSetting {
@@ -296,6 +297,7 @@ namespace Orts.Simulation
                 , new string [] { GetString("Napětí v soustavě změněno"), GetString("25kV"), null, GetString("3kV")}
                 , new string [] { GetString("Vysokotlaký švih"), GetString("off"), null, GetString("on")}
                 , new string [] { GetString("Nízkotlaké přebití"), GetString("off"), null, GetString("on")}
+                , new string [] { GetString("Přerušení napájení"), GetString("off"), null, GetString("on")}
 
 
             };
