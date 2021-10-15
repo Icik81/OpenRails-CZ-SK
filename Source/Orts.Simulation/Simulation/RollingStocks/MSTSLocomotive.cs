@@ -6174,7 +6174,7 @@ namespace Orts.Simulation.RollingStocks
             // Zabrání zvednutí pantografu po stlačení tlačítka přerušení napájení
             if (BreakPowerButton)
                 BreakPowerButton_Activated = true;
-            if (Pantograph4Switch == 0)
+            if (BreakPowerButton_Activated && Pantograph4Switch == 0)
                 BreakPowerButton_Activated = false;
 
             if (Battery && !BreakPowerButton_Activated) // Zatím bez PowerKey kvůli kompatibilitě

@@ -98,6 +98,8 @@ namespace Orts.Simulation.RollingStocks
         float T_HVClosed = 0;
         float[] T_PantoUp = new float[4];
 
+        float GameTimeFlow = 0;
+
         public MSTSElectricLocomotive(Simulator simulator, string wagFile) :
             base(simulator, wagFile)
         {
@@ -752,7 +754,8 @@ namespace Orts.Simulation.RollingStocks
                     if (BreakPowerButton)
                     {
                         HVOff = true;
-                        SignalEvent(PowerSupplyEvent.LowerPantograph);
+                        if (Pantographs[1].State == PantographState.Up || Pantographs[2].State == PantographState.Up)
+                            SignalEvent(PowerSupplyEvent.LowerPantograph);
                     }
 
                     // Test napětí v troleji pro jednosystémové lokomotivy
@@ -875,14 +878,15 @@ namespace Orts.Simulation.RollingStocks
                     }
                 }
 
-                // Blokování HV u vícesystémových lokomotiv při malém napětí
+                // Blokování HV u vícesystémových lokomotiv při malém napětí                
                 if (MultiSystemEngine)
                 {
                     // Stisknutí hříbku pro přerušení napájení, vypne HV a shodí sběrače
                     if (BreakPowerButton)
                     {
                         HVOff = true;
-                        SignalEvent(PowerSupplyEvent.LowerPantograph);
+                        if (Pantographs[1].State == PantographState.Up || Pantographs[2].State == PantographState.Up)
+                            SignalEvent(PowerSupplyEvent.LowerPantograph);
                     }
 
                     // Nedovolí zapnout HV, pokud není napětí v drátech 
@@ -1102,7 +1106,7 @@ namespace Orts.Simulation.RollingStocks
         /// </summary>
         protected override void UpdatePowerSupply(float elapsedClockSeconds)
         {
-            // Icik            
+            // Icik                      
             if (HVOff)
             {
                 HVOff = false;
@@ -1113,7 +1117,7 @@ namespace Orts.Simulation.RollingStocks
                 HVOn = false;
                 SignalEvent(PowerSupplyEvent.CloseCircuitBreaker);
             }
-
+            
             PowerSupply.Update(elapsedClockSeconds);
                       
             if (PowerSupply.CircuitBreaker != null && IsPlayerTrain)
@@ -1131,8 +1135,10 @@ namespace Orts.Simulation.RollingStocks
             }
 
             // Icik
-            UnderVoltageProtection(elapsedClockSeconds);
-
+            GameTimeFlow += elapsedClockSeconds;
+            if (GameTimeFlow > 1)
+                UnderVoltageProtection(elapsedClockSeconds);
+            
             if (IsPlayerTrain)
             {                
                 HVPressedTesting(elapsedClockSeconds);

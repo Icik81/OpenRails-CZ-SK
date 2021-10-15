@@ -1436,10 +1436,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     // Pohlídá tlak v equalizéru, aby nebyl větší než tlak hlavní jímky
                     if (train.EqualReservoirPressurePSIorInHg > lead.MainResPressurePSI) train.EqualReservoirPressurePSIorInHg = lead.MainResPressurePSI;
 
-                    // Rozsvítí kontrolku průtoku vzduchu v jízdní poloze, pokud je změna tlaku v potrubí vyšší než 0.05bar/s
+                    // Rozsvítí kontrolku průtoku vzduchu v jízdní poloze, pokud je změna tlaku v potrubí vyšší než 0.01bar/s
                     if (lead.TrainBrakeController.TrainBrakeControllerState == ControllerState.Neutral)
                     {
-                        if (lead.BrakeSystem.BrakePipeChangeRate > 0.05f * 14.50377f)
+                        if (lead.BrakeSystem.BrakePipeChangeRate > 0.01f * 14.50377f)
                             lead.BrakeSystem.BrakePipeFlow = true;
                         else lead.BrakeSystem.BrakePipeFlow = false;
                     }
@@ -1734,10 +1734,6 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
 
 
                         // *** Kompresory ***
-
-                        // Pokud není pomocný kompresor, bude hodnota 0bar v jímce
-                        if (!loco.AuxCompressor)
-                            loco.AuxResPressurePSI = 0;
 
                         // Propojení hlavní jímky s pomocnou jímkou pomocného kompresoru
                         if (loco.AuxCompressor && loco.MainResPressurePSI > loco.AuxResPressurePSI && loco.AuxResPressurePSI < loco.MaxAuxResPressurePSI)
