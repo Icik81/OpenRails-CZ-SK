@@ -1437,7 +1437,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     if (train.EqualReservoirPressurePSIorInHg > lead.MainResPressurePSI) train.EqualReservoirPressurePSIorInHg = lead.MainResPressurePSI;
 
                     // Rozsvítí kontrolku průtoku vzduchu, pokud je změna tlaku v potrubí vyšší než 0.01bar/s
-                    if (lead.TrainBrakeController.TrainBrakeControllerState != ControllerState.Emergency)
+                    if (lead.TrainBrakeController.TrainBrakeControllerState != ControllerState.Emergency
+                        && !lead.TrainBrakeController.TCSEmergencyBraking
+                        && !lead.EmergencyButtonPressed)
                     {
                         if (lead.BrakeSystem.BrakePipeChangeRate > 0.01f * 14.50377f)
                             lead.BrakeSystem.BrakePipeFlow = true;
