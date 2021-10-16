@@ -227,13 +227,6 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
             if (elapsedClockSeconds == 0) 
                 return;
 
-            if (Locomotive.MultiSystemEngine && Locomotive.LocoReadyToGo)
-            {
-                SetCurrentState(PowerSupplyState.PowerOn);
-                SetCurrentAuxiliaryState(PowerSupplyState.PowerOn);                
-                return;
-            }
-
             if (Locomotive.SwitchingVoltageMode == 1 && Locomotive.LocoSwitchACDC)
                 TDC = 0;
 

@@ -543,6 +543,9 @@ namespace Orts.Simulation.RollingStocks
         public bool BreakPowerButtonEnable = false;
         public bool BreakPowerButton;
         public bool BreakPowerButton_Activated;
+        public float GameTimeFlow = 0;
+        float PantoStatus = 0;
+        float PrePantoStatus = 0;
 
         // Jindrich
         public bool EnableControlVoltageChange = true;
@@ -6180,46 +6183,51 @@ namespace Orts.Simulation.RollingStocks
                 BreakPowerButton_Activated = true;
             if (BreakPowerButton_Activated && Pantograph4Switch == 0)
                 BreakPowerButton_Activated = false;
-
-            if (Battery && !BreakPowerButton_Activated) // Zatím bez PowerKey kvůli kompatibilitě
+                        
+            if (Battery && !BreakPowerButton_Activated && GameTimeFlow > 1) // Zatím bez PowerKey kvůli kompatibilitě
             {
+                PantoStatus = Pantograph4Switch;
                 int p1 = 1; int p2 = 2;
                 if (UsingRearCab) { p1 = 2; p2 = 1; }
-                switch (Pantograph4Switch)
+                if (PantoStatus != PrePantoStatus)
                 {
-                    case 0:
-                        {
-                            if (Pantographs[p1].State == PantographState.Up || Pantographs[p1].State == PantographState.Raising) // Zadní panto                            
-                                SignalEvent(PowerSupplyEvent.LowerPantograph, p1);
-                            if (Pantographs[p2].State == PantographState.Up || Pantographs[p2].State == PantographState.Raising) // Přední panto
-                                SignalEvent(PowerSupplyEvent.LowerPantograph, p2);                            
-                        }
-                        break;
-                    case 1:
-                        {
-                            if (AirForPantograph && Pantographs[p1].State == PantographState.Down || AirForPantograph && Pantographs[p1].State == PantographState.Lowering) // Zadní panto
-                                SignalEvent(PowerSupplyEvent.RaisePantograph, p1);
-                            if (Pantographs[p2].State == PantographState.Up || Pantographs[p2].State == PantographState.Raising) // Přední panto
-                                SignalEvent(PowerSupplyEvent.LowerPantograph, p2);                            
-                        }
-                        break;
-                    case 2:
-                        {
-                            if (AirForPantograph && Pantographs[p1].State == PantographState.Down || AirForPantograph && Pantographs[p1].State == PantographState.Lowering) // Zadní panto
-                                SignalEvent(PowerSupplyEvent.RaisePantograph, p1);
-                            if (AirForPantograph && Pantographs[p2].State == PantographState.Down || AirForPantograph && Pantographs[p2].State == PantographState.Lowering) // Přední panto
-                                SignalEvent(PowerSupplyEvent.RaisePantograph, p2);
-                        }
-                        break;
-                    case 3:
-                        {
-                            if (Pantographs[p1].State == PantographState.Up || Pantographs[p1].State == PantographState.Raising) // Zadní panto                            
-                                SignalEvent(PowerSupplyEvent.LowerPantograph, p1);
-                            if (AirForPantograph && Pantographs[p2].State == PantographState.Down || AirForPantograph && Pantographs[p2].State == PantographState.Lowering) // Přední panto
-                                SignalEvent(PowerSupplyEvent.RaisePantograph, p2);
-                        }
-                        break;
+                    switch (Pantograph4Switch)
+                    {
+                        case 0:
+                            {
+                                if (Pantographs[p1].State == PantographState.Up || Pantographs[p1].State == PantographState.Raising) // Zadní panto                            
+                                    SignalEvent(PowerSupplyEvent.LowerPantograph, p1);
+                                if (Pantographs[p2].State == PantographState.Up || Pantographs[p2].State == PantographState.Raising) // Přední panto
+                                    SignalEvent(PowerSupplyEvent.LowerPantograph, p2);
+                            }
+                            break;
+                        case 1:
+                            {
+                                if (AirForPantograph && Pantographs[p1].State == PantographState.Down || AirForPantograph && Pantographs[p1].State == PantographState.Lowering) // Zadní panto
+                                    SignalEvent(PowerSupplyEvent.RaisePantograph, p1);
+                                if (Pantographs[p2].State == PantographState.Up || Pantographs[p2].State == PantographState.Raising) // Přední panto
+                                    SignalEvent(PowerSupplyEvent.LowerPantograph, p2);
+                            }
+                            break;
+                        case 2:
+                            {
+                                if (AirForPantograph && Pantographs[p1].State == PantographState.Down || AirForPantograph && Pantographs[p1].State == PantographState.Lowering) // Zadní panto
+                                    SignalEvent(PowerSupplyEvent.RaisePantograph, p1);
+                                if (AirForPantograph && Pantographs[p2].State == PantographState.Down || AirForPantograph && Pantographs[p2].State == PantographState.Lowering) // Přední panto
+                                    SignalEvent(PowerSupplyEvent.RaisePantograph, p2);
+                            }
+                            break;
+                        case 3:
+                            {
+                                if (Pantographs[p1].State == PantographState.Up || Pantographs[p1].State == PantographState.Raising) // Zadní panto                            
+                                    SignalEvent(PowerSupplyEvent.LowerPantograph, p1);
+                                if (AirForPantograph && Pantographs[p2].State == PantographState.Down || AirForPantograph && Pantographs[p2].State == PantographState.Lowering) // Přední panto
+                                    SignalEvent(PowerSupplyEvent.RaisePantograph, p2);
+                            }
+                            break;
+                    }
                 }
+                PrePantoStatus = Pantograph4Switch;
             }
         }
 

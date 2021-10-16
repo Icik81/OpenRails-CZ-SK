@@ -97,8 +97,7 @@ namespace Orts.Simulation.RollingStocks
         float T_HVOpen = 0;
         float T_HVClosed = 0;
         float[] T_PantoUp = new float[4];
-
-        float GameTimeFlow = 0;
+        
 
         public MSTSElectricLocomotive(Simulator simulator, string wagFile) :
             base(simulator, wagFile)
@@ -573,7 +572,7 @@ namespace Orts.Simulation.RollingStocks
                 PowerSupply.PantographVoltageV = 1;
 
             decimal kW = Math.Round((decimal)((RouteVoltageV * myStation.TotalAmps) / 1000), 2);
-            if (IsPlayerTrain && Simulator.SuperUser)
+            if (IsPlayerTrain /*&& Simulator.SuperUser*/)
                 Simulator.Confirmer.MSG("Mark U: " + markerVoltage.ToString() + "; Mark dist: " + Math.Round(distToMarker, 0).ToString() + "; Supl dist: " + Math.Round(dist, 0).ToString() + "; My panto U: " + Math.Round(PantographVoltageV, 0).ToString() + "; Supl I: " + Math.Round(myStation.TotalAmps, 0).ToString() + "; Supl #locos: " + myStation.Consuptors.Count.ToString() + "; Supl kW: " + kW.ToString());
 
             if (IsPlayerTrain)
@@ -720,7 +719,7 @@ namespace Orts.Simulation.RollingStocks
                 GameTimeFlow += elapsedClockSeconds;
 
                 // Blokování pantografu u jednosystémových lokomotiv při vypnutém HV
-                if (!MultiSystemEngine && GameTimeFlow > 1)
+                if (!MultiSystemEngine)
                 {
                     // Definice default provozního napájení lokomotivy 25kV
                     if (LocomotivePowerVoltage == 0) LocomotivePowerVoltage = 25000; //Default pro lokomotivy bez udání napětí
@@ -854,7 +853,7 @@ namespace Orts.Simulation.RollingStocks
                 }
 
                 // Blokování HV u vícesystémových lokomotiv při malém napětí                                                
-                if (MultiSystemEngine && GameTimeFlow > 1)
+                if (MultiSystemEngine)
                 {
                     // Stisknutí hříbku pro přerušení napájení, vypne HV a shodí sběrače
                     if (BreakPowerButton)
@@ -1131,11 +1130,12 @@ namespace Orts.Simulation.RollingStocks
                     if (MultiSystemEngine)
                     {
                         Pantograph4Switch = 1;
-                        if (RouteVoltageV == 3000)                        
+                        if (RouteVoltageV == 3000)
                             HV5Switch = 2;
-                        if (RouteVoltageV == 25000)                                                
+                        if (RouteVoltageV == 25000)
                             HV5Switch = 4;
-                        HVOn = true;
+                        if (GameTimeFlow > 5)
+                            HVOn = true;
                         if (PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closed)
                             LocoReadyToGo = false;
                     }
