@@ -254,16 +254,22 @@ namespace Orts.Simulation.RollingStocks
         // výpočet odběru pro AI
         protected void AIConsumption()
         {
-            float watts = TractiveForceN * 1f + TractiveForceN * AbsSpeedMpS;
+            MultiSystemEngine = true;
+            float watts = MaxForceN * (ThrottlePercent / 100)  * 1f + (MaxForceN * (ThrottlePercent / 100)) * AbsSpeedMpS;
+            watts += PowerReductionByHeating0 + PowerReductionByAuxEquipment0;
             if ((Flipped || Direction == Direction.Reverse) && watts < 0)
                 watts = -watts;
-
+            if (PantographVoltageV < 10)
+                PantographVoltageV = RouteVoltageV;
             if (watts < 0 && !RecuperationAvailable)
                 watts = 0;
             if (PantographVoltageV > 1)
                 Amps = watts / PantographVoltageV;
             else
                 Amps = 0;
+
+            if (Amps > 1500)
+                Amps = 1500;
 
             if (float.IsNaN(Amps))
                 Amps = 0;
@@ -275,11 +281,11 @@ namespace Orts.Simulation.RollingStocks
                 Amps = 0;
             float dist = 0;
             int powerSys = -1;
-            if (prevDist == 0)
-                dist = DistanceToPowerSupplyStationM(out powerSys, out myStation);
             int markerVoltage = 0;
             VoltageChangeMarker marker;
             float distToMarker = DistanceToVoltageMarkerM(out markerVoltage, out marker);
+            if (prevDist == 0)
+                dist = DistanceToPowerSupplyStationM(markerVoltage == 3000 ? 0 : 1, out myStation);
             // toto nefunguje, ještě prověřím
             /*            if (prevDist >= 1000) // více než kilometr, updatujeme co 100m
                         {
@@ -313,7 +319,7 @@ namespace Orts.Simulation.RollingStocks
             /*            {
                             dist = prevDist = DistanceToPowerSupplyStationM(out powerSys, out myStation);
                         }*/
-            dist = prevDist = DistanceToPowerSupplyStationM(out powerSys, out myStation);
+            dist = prevDist = DistanceToPowerSupplyStationM(markerVoltage == 3000 ? 0 : 1, out myStation);
             if (myStation == null && prevPss != null)
             {
                 myStation = prevPss;
@@ -399,11 +405,18 @@ namespace Orts.Simulation.RollingStocks
                 return;
 
             bool my = IsPlayerTrain;
+            if (!my)
+            {
+                AIConsumption();
+                return;
+            }
 
             // výpočet napětí dle proudu a odporu k napaječce
-            float watts = TractiveForceN * 1f + TractiveForceN * AbsSpeedMpS;
+            float watts = TractiveForceN > 0 ? (TractiveForceN * 1f + TractiveForceN * AbsSpeedMpS) : 0;
             if ((Flipped || Direction == Direction.Reverse) && watts < 0)
                 watts = -watts;
+
+            watts += PowerReductionByHeating0 + PowerReductionByAuxEquipment0;            
 
             if (watts < 0 && !RecuperationAvailable)
                 watts = 0;
@@ -425,7 +438,7 @@ namespace Orts.Simulation.RollingStocks
             float dist = 0;
             int powerSys = -1;
             if (prevDist == 0)
-                dist = DistanceToPowerSupplyStationM(out powerSys, out myStation);
+                dist = DistanceToPowerSupplyStationM(RouteVoltageV == 3000 ? 0 : 1, out myStation);
             int markerVoltage = 0;
             VoltageChangeMarker marker;
             float distToMarker = DistanceToVoltageMarkerM(out markerVoltage, out marker);
@@ -462,7 +475,7 @@ namespace Orts.Simulation.RollingStocks
             /*            {
                             dist = prevDist = DistanceToPowerSupplyStationM(out powerSys, out myStation);
                         }*/
-            dist = prevDist = DistanceToPowerSupplyStationM(out powerSys, out myStation);
+            dist = prevDist = DistanceToPowerSupplyStationM(markerVoltage == 3000 ? 0 : 1, out myStation);
             if (myStation == null && prevPss != null)
             {
                 myStation = prevPss;
@@ -562,8 +575,9 @@ namespace Orts.Simulation.RollingStocks
             if (PowerSupply.PantographVoltageV < 1)
                 PowerSupply.PantographVoltageV = 1;
 
+            decimal kW = Math.Round((decimal)((RouteVoltageV * myStation.TotalAmps) / 1000), 2);
             if (IsPlayerTrain && Simulator.SuperUser)
-                Simulator.Confirmer.MSG("Mark U: " + markerVoltage.ToString() + "; Mark dist: " + Math.Round(distToMarker, 0).ToString() + "; Supl dist: " + Math.Round(dist, 0).ToString() + "; My panto U: " + Math.Round(PantographVoltageV, 0).ToString() + "; Supl I: " + Math.Round(myStation.TotalAmps, 0).ToString() + "; Supl #locos: " + myStation.Consuptors.Count.ToString());
+                Simulator.Confirmer.MSG("Mark U: " + markerVoltage.ToString() + "; Mark dist: " + Math.Round(distToMarker, 0).ToString() + "; Supl dist: " + Math.Round(dist, 0).ToString() + "; My panto U: " + Math.Round(PantographVoltageV, 0).ToString() + "; Supl I: " + Math.Round(myStation.TotalAmps, 0).ToString() + "; Supl #locos: " + myStation.Consuptors.Count.ToString() + "; Supl kW: " + kW.ToString());
 
             if (IsPlayerTrain)
             {

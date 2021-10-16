@@ -2003,29 +2003,31 @@ namespace Orts.Simulation.RollingStocks
             DrvWheelWeightKg = InitialDrvWheelWeightKg;
         }
 
-        public float DistanceToPowerSupplyStationM(out int PowerSystem, out PowerSupplyStation myStation)
+        public float DistanceToPowerSupplyStationM(int PowerSystem, out PowerSupplyStation myStation)
         {
             double distance = 100000;
             double currentLat = 0;
             double currentLon = 0;
             myStation = null;
-            PowerSystem = -1;
             new WorldLatLon().ConvertWTC(WorldPosition.TileX, WorldPosition.TileZ, WorldPosition.WorldLocation.Location, ref currentLat, ref currentLon);
             currentLat = MathHelper.ToDegrees((float)currentLat);
             currentLon = MathHelper.ToDegrees((float)currentLon);
             foreach (PowerSupplyStation pss in Simulator.powerSupplyStations)
             {
-                if (myStation == null)
-                    myStation = pss;
-                PowerSystem = myStation.PowerSystem;
-                double psiLat = MathHelper.ToDegrees((float)pss.Longitude);
-                double psiLon = MathHelper.ToDegrees((float)pss.Latitude);
-                double currdistance = getDistance(currentLat, currentLon, psiLat, psiLon) * 1138.8261851015801354401805869074;
-                if (currdistance < distance)
+                if (pss.PowerSystem == PowerSystem)
                 {
-                    distance = currdistance;
-                    myStation = pss;
-                    RouteVoltageV = myStation.PowerSystem == 0 ? 3000 : 25000;
+                    if (myStation == null)
+                        myStation = pss;
+                    PowerSystem = myStation.PowerSystem;
+                    double psiLat = MathHelper.ToDegrees((float)pss.Longitude);
+                    double psiLon = MathHelper.ToDegrees((float)pss.Latitude);
+                    double currdistance = getDistance(currentLat, currentLon, psiLat, psiLon) * 1138.8261851015801354401805869074;
+                    if (currdistance < distance)
+                    {
+                        distance = currdistance;
+                        myStation = pss;
+                        RouteVoltageV = myStation.PowerSystem == 0 ? 3000 : 25000;
+                    }
                 }
             }
             if (RouteVoltageV == 3000)
@@ -2635,22 +2637,24 @@ namespace Orts.Simulation.RollingStocks
 
         // Icik
         // Snížení výkonu při zvýšeném odběru na lokomotivě
+        public float PowerReductionByHeating0 = 0;
+        // Pomocné pohony, kompresory, dobíjení, ...
+        public float PowerReductionByAuxEquipment0;
         public void ElevatedConsumptionOnLocomotive()
         {
             if (!IsPlayerTrain)
-                return;
+                Heating_OffOn = true;
             if (TElevatedConsumption == 0)         
-                PowerReduction0 = PowerReduction;                            
+                PowerReduction0 = PowerReduction;
 
             // Topení a klimatizace
-            float PowerReductionByHeating0 = 0;
             if (Heating_OffOn && PowerOn)
             {
                 TElevatedConsumption = 1;
                 PowerReductionByHeatingWag = 0;
                 PowerReductionByHeatingEng = 0;
                 foreach (TrainCar car in Train.Cars)
-                {                    
+                {
                     if (car.WagonType == WagonTypes.Passenger) // Osobní vozy
                     {
                         if (car.PowerReductionByHeating == 0) // Default
@@ -2660,7 +2664,7 @@ namespace Orts.Simulation.RollingStocks
                             if (car.CarLengthM > 20) car.PowerReductionByHeating = 80.0f * 1000;   // 80kW    
                         }
                         PowerReductionByHeatingWag += car.PowerReductionByHeating;
-                    }                    
+                    }
                     if (car.WagonType == WagonTypes.Engine /*&& this is MSTSDieselLocomotive*/) // Lokomotivy
                     {
                         if (car.PowerReductionByHeating == 0) // Default
@@ -2670,14 +2674,14 @@ namespace Orts.Simulation.RollingStocks
                         }
                         PowerReductionByHeatingEng += car.PowerReductionByHeating;
                     }
-                }                
-                
+                }
+
                 PowerReductionByHeating0 = PowerReductionByHeatingWag + PowerReductionByHeatingEng;
                 //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Zapnuté topení, výkon zredukován "+ PowerReductionByHeating0 * MaxPowerW/1000) + " kW!");                
             }
+            else
+                PowerReductionByHeating0 = 0;
 
-            // Pomocné pohony, kompresory, dobíjení, ...
-            float PowerReductionByAuxEquipment0;
             TElevatedConsumption = 1;
             PowerReductionByAuxEquipmentWag = 0;
             PowerReductionByAuxEquipmentEng = 0;
