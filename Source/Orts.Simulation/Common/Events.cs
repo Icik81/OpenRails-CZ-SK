@@ -164,7 +164,8 @@ namespace Orts.Common
         VacuumExhausterOff,
         VigilanceAlarmOff,
         VigilanceAlarmOn,
-        VigilanceAlarmReset,
+        VigilanceAlarmResetPush,
+        VigilanceAlarmResetRelease,
         WaterScoopDown,
         WaterScoopUp,
         WiperOff,
@@ -374,8 +375,8 @@ namespace Orts.Common
                         case 45: return Event.Pantograph1Up;
                         case 46: return Event.Pantograph1Down;
                         case 47: return Event.PantographToggle;
-                        case 48: return Event.VigilanceAlarmReset;
-                        // Event 49 is unused in MSTS.
+                        case 48: return Event.VigilanceAlarmResetPush;
+                        case 49: return Event.VigilanceAlarmResetRelease;
                         // Event 50 is unused in MSTS.
                         // Event 51 is an engine brake of some kind in MSTS sound files but is never used.
                         // Event 52 is unused in MSTS.

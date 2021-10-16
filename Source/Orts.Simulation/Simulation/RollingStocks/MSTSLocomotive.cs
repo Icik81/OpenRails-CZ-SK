@@ -2686,7 +2686,7 @@ namespace Orts.Simulation.RollingStocks
             PowerReductionByAuxEquipmentWag = 0;
             PowerReductionByAuxEquipmentEng = 0;
 
-            if (PowerOn)
+            if (PowerOn && AuxPowerOn)
             {
                 foreach (TrainCar car in Train.Cars)
                 {                    
@@ -2928,7 +2928,7 @@ namespace Orts.Simulation.RollingStocks
             HVOffbyAirPressure();
             MaxPower_MaxForce_ACDC();
             ElevatedConsumptionOnLocomotive();            
-            TogglePantograph4Switch();
+            if (IsPlayerTrain) TogglePantograph4Switch();
             ToggleHV5Switch();
 
             TrainControlSystem.Update();

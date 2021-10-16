@@ -812,7 +812,8 @@ namespace Orts.Common
         }
 
         public override void Redo() {
-            if (ToState) Receiver.SignalEvent(Event.VigilanceAlarmReset); // There is no Event.VigilanceAlarmResetReleased
+            if (ToState) Receiver.SignalEvent(Event.VigilanceAlarmResetPush); // There is no Event.VigilanceAlarmResetReleased
+            else Receiver.SignalEvent(Event.VigilanceAlarmResetRelease); 
             Receiver.AlerterPressed(ToState);
             // Report();
         }
