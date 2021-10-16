@@ -551,15 +551,7 @@ namespace Orts.Simulation.RollingStocks
             //RouteVoltageV = 1;
             //Induktion = 0;
             //LocomotivePowerVoltage = 25000;
-
-            //PantographCriticalVoltage = (int)PantographCriticalVoltage;
-            //PowerSupply.PantographVoltageV = (int)PowerSupply.PantographVoltageV;
-            //LocalThrottlePercent = (int)ThrottlePercent;
-            //LocalDynamicBrakePercent = (int)DynamicBrakePercent;
-            //if (PowerSupply.PantographVoltageV < 1) PowerSupply.PantographVoltageV = 1;
-            //if (LocalThrottlePercent < 0) LocalThrottlePercent = 0;
-            //if (LocalDynamicBrakePercent < 0) LocalDynamicBrakePercent = 0;
-
+            
             // Výpočet napětí v drátech
             if (IsPlayerTrain)
             {
@@ -710,6 +702,14 @@ namespace Orts.Simulation.RollingStocks
 
                 // Úbytek výkonu v závislosti na napětí
                 UiPowerLose = MathHelper.Clamp(PantographVoltageV / RouteVoltageV, 0, 2);
+
+                PantographCriticalVoltage = (int)PantographCriticalVoltage;
+                PowerSupply.PantographVoltageV = (int)PowerSupply.PantographVoltageV;
+                LocalThrottlePercent = (int)ThrottlePercent;
+                LocalDynamicBrakePercent = (int)DynamicBrakePercent;
+                if (PowerSupply.PantographVoltageV < 1) PowerSupply.PantographVoltageV = 1;
+                if (LocalThrottlePercent < 0) LocalThrottlePercent = 0;
+                if (LocalDynamicBrakePercent < 0) LocalDynamicBrakePercent = 0;
 
 
                 // Shodí HV při stažení sběračů při navoleném výkonu
