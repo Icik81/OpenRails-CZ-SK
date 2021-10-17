@@ -287,7 +287,10 @@ namespace Orts.Common
         MaxAuxResOverPressureValveClosed,
         CompressorBeep,
         BrakePipeFlow,
-        BreakPowerButton
+        BreakPowerButton,
+        BreakPowerButtonRelease,
+        QuickReleaseButtonRelease,
+        LowPressureReleaseButtonRelease
     }
 
     public static class Events
@@ -603,6 +606,10 @@ namespace Orts.Common
 
                         case 20044: return Event.BrakePipeFlow;
                         case 20045: return Event.BreakPowerButton;
+                        case 20046: return Event.BreakPowerButtonRelease;
+
+                        case 20047: return Event.QuickReleaseButtonRelease;
+                        case 20048: return Event.LowPressureReleaseButtonRelease;
 
                         default: return 0;
                     }

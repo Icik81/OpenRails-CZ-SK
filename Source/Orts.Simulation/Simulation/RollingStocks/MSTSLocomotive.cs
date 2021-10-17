@@ -492,8 +492,10 @@ namespace Orts.Simulation.RollingStocks
         public InterpolatorDiesel2D DynamicBrakeForceCurvesDC;
         public float UiPowerLose = 1;
         public bool QuickReleaseButton = false;
+        bool QuickReleaseButtonPressed = false;
         public bool LowPressureReleaseButton = false;
-        public bool QuickReleaseButtonEnable = false;
+        bool LowPressureReleaseButtonPressed = false;
+        public bool QuickReleaseButtonEnable = false;        
         public bool LowPressureReleaseButtonEnable = false;
         public bool AuxCompressor = false;
         public bool CompressorCombined = false;
@@ -542,6 +544,7 @@ namespace Orts.Simulation.RollingStocks
         public bool HVOn = false;
         public bool BreakPowerButtonEnable = false;
         public bool BreakPowerButton;
+        bool BreakPowerButtonPressed = false;
         public bool BreakPowerButton_Activated;
         public float GameTimeFlow = 0;
         float PantoStatus = 0;
@@ -6462,8 +6465,16 @@ namespace Orts.Simulation.RollingStocks
             if (QuickReleaseButtonEnable)
             {
                 QuickReleaseButton = quickReleaseButton;
-                if (QuickReleaseButton)
+                if (QuickReleaseButton && !QuickReleaseButtonPressed)
+                {
                     SignalEvent(Event.QuickReleaseButton);
+                    QuickReleaseButtonPressed = true;
+                }
+                if (!QuickReleaseButton && QuickReleaseButtonPressed)
+                {
+                    SignalEvent(Event.QuickReleaseButtonRelease);
+                    QuickReleaseButtonPressed = false;
+                }
                 if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.QuickReleaseButton, quickReleaseButton ? CabSetting.On : CabSetting.Off);
             }
         }
@@ -6473,8 +6484,16 @@ namespace Orts.Simulation.RollingStocks
             if (LowPressureReleaseButtonEnable)
             {
                 LowPressureReleaseButton = lowPressureReleaseButton;
-                if (LowPressureReleaseButton)
+                if (LowPressureReleaseButton && !LowPressureReleaseButtonPressed)
+                {
                     SignalEvent(Event.LowPressureReleaseButton);
+                    LowPressureReleaseButtonPressed = true;
+                }
+                if (!LowPressureReleaseButton && LowPressureReleaseButtonPressed)
+                {
+                    SignalEvent(Event.LowPressureReleaseButtonRelease);
+                    LowPressureReleaseButtonPressed = false;
+                }
                 if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.LowPressureReleaseButton, lowPressureReleaseButton ? CabSetting.On : CabSetting.Off);
             }
         }
@@ -6484,8 +6503,16 @@ namespace Orts.Simulation.RollingStocks
             if (BreakPowerButtonEnable)
             {
                 BreakPowerButton = breakPowerButton;
-                if (BreakPowerButton)
+                if (BreakPowerButton && !BreakPowerButtonPressed)
+                {
                     SignalEvent(Event.BreakPowerButton);
+                    BreakPowerButtonPressed = true;
+                }
+                if (!BreakPowerButton && BreakPowerButtonPressed)
+                {
+                    SignalEvent(Event.BreakPowerButtonRelease);
+                    BreakPowerButtonPressed = false;
+                }
                 if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.BreakPowerButton, breakPowerButton ? CabSetting.On : CabSetting.Off);
             }
         }
