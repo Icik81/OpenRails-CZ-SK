@@ -531,13 +531,17 @@ namespace Orts.Simulation.RollingStocks
         public float MaxAuxResOverPressurePSI;
         public bool HV5Enable = false;
         public float HV5Switch = 3;
+        public float LastStateHV5 = 3;
+        public bool HV2Enable = false;
+        public float HV2Switch = 0;
+        public float LastStateHV2 = 0;
         public bool HVPressedTestDC = false;
         public bool HVPressedTestAC = false;
+        public bool HVPressedTest = false;
         public float HVPressedTime = 0;
         public bool HVCanOn = false;
         public float CompressorBeep = 0;
-        public float Compressor2Beep = 0;
-        public float LastStateHV5 = 3;
+        public float Compressor2Beep = 0;        
         public bool LocoReadyToGo = false;
         public bool CircuitBreakerOn = false;
         public bool HVOff = false;
@@ -2935,6 +2939,7 @@ namespace Orts.Simulation.RollingStocks
             MaxPower_MaxForce_ACDC();
             ElevatedConsumptionOnLocomotive();            
             if (IsPlayerTrain) TogglePantograph4Switch();
+            ToggleHV2Switch();
             ToggleHV5Switch();
 
             TrainControlSystem.Update();
@@ -6088,6 +6093,44 @@ namespace Orts.Simulation.RollingStocks
         }
 
         // Icik      
+        public void ToggleHV2SwitchUp()
+        {
+            if (HV2Enable)
+            {
+                if (HV2Switch < 1)
+                    HV2Switch++;
+                if (HV2Switch < 1)
+                {
+                    ToggleHV2Switch();
+                }
+                HV2Switch = MathHelper.Clamp(HV2Switch, 0, 1);
+            }
+        }
+
+        public void ToggleHV2Switch()
+        {
+            if (HV2Enable)
+            {
+                if (LastStateHV2 != HV2Switch)
+                    SignalEvent(Event.PantographToggle); // Zvuk přepínače                
+
+                if (HVCanOn && Battery && PowerKey)
+                    HVOn = true;
+                //Simulator.Confirmer.Information("HV can On");
+
+                switch (HV2Switch)
+                {
+                    case 0:
+                        //Simulator.Confirmer.Information("Switch 0");
+                        break;
+                    case 1:
+                        //Simulator.Confirmer.Information("Switch 1");
+                        break;
+                }
+                LastStateHV2 = HV2Switch;
+            }
+        }
+
         public void ToggleHV5SwitchUp()
         {            
             if (HV5Enable)
@@ -6157,7 +6200,7 @@ namespace Orts.Simulation.RollingStocks
                 LastStateHV5 = HV5Switch;
             }
         }
-
+        
         public void TogglePantograph4SwitchUp()
         {
             if (Pantograph4Switch < 4)

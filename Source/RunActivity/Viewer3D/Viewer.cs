@@ -599,6 +599,7 @@ namespace Orts.Viewer3D
             TogglePowerKeyCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
 
             // Icik
+            ToggleHV2SwitchUpCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
             ToggleHV5SwitchUpCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
             ToggleHV5SwitchDownCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
             TogglePantograph4SwitchUpCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;

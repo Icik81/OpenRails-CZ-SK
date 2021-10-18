@@ -1517,7 +1517,7 @@ namespace Orts.Simulation.Physics
             // Icik
             // Obejde volání signálu, pokud je aktivován HV5
             MSTSLocomotive lead = (MSTSLocomotive)Cars[LeadLocomotiveIndex];
-            if (IsActualPlayerTrain && !lead.HV5Enable || !IsActualPlayerTrain)
+            if (IsActualPlayerTrain && !lead.HV5Enable && !lead.HV2Enable || !IsActualPlayerTrain)
             {
                 foreach (TrainCar car in Cars)
                     car.SignalEvent(evt);

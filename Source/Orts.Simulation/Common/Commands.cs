@@ -1638,6 +1638,23 @@ namespace Orts.Common
         }
     }
     [Serializable()]
+    public sealed class ToggleHV2SwitchUpCommand : Command
+    {
+        public static MSTSLocomotive Receiver { get; set; }
+
+        public ToggleHV2SwitchUpCommand(CommandLog log)
+            : base(log)
+        {
+            Redo();
+        }
+
+        public override void Redo()
+        {
+
+            Receiver.ToggleHV2SwitchUp();
+        }
+    }
+    [Serializable()]
     public sealed class ToggleHV5SwitchUpCommand : Command
     {
         public static MSTSLocomotive Receiver { get; set; }

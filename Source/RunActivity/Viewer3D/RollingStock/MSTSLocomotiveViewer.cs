@@ -214,6 +214,7 @@ namespace Orts.Viewer3D.RollingStock
             UserInputCommands.Add(UserCommand.SetMirelOff, new Action[] { Noop, () => Locomotive.Mirel.SetMirelSignal(false) });
 
             // Icik            
+            UserInputCommands.Add(UserCommand.ControlHV2SwitchUp, new Action[] { Noop, () => new ToggleHV2SwitchUpCommand(Viewer.Log) });
             UserInputCommands.Add(UserCommand.ControlHV5SwitchUp, new Action[] { Noop, () => new ToggleHV5SwitchUpCommand(Viewer.Log) });
             UserInputCommands.Add(UserCommand.ControlHV5SwitchDown, new Action[] { Noop, () => new ToggleHV5SwitchDownCommand(Viewer.Log) });
             UserInputCommands.Add(UserCommand.ControlPantograph4SwitchUp, new Action[] { Noop, () => new TogglePantograph4SwitchUpCommand(Viewer.Log) });
@@ -249,7 +250,19 @@ namespace Orts.Viewer3D.RollingStock
         public override void HandleUserInput(ElapsedTime elapsedTime)
         {
             // Icik
-            // Ovládání HV nearetované pozice
+            
+            // Ovládání HV2 nearetované pozice
+            if (Locomotive.HV2Switch == 1)
+            {
+                Locomotive.HVPressedTest = true;
+            }
+            if (Locomotive.HV2Switch == 1 && UserInput.IsReleased(UserCommand.ControlHV2SwitchUp))
+            {
+                Locomotive.HV2Switch = 0;
+                Locomotive.HVPressedTest = false;
+            }
+
+            // Ovládání HV5 nearetované pozice
             if (Locomotive.HV5Switch == 5)
             {                
                 Locomotive.HVPressedTestAC = true;
@@ -2232,6 +2245,7 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.ORTS_POWERKEY:
 
                 // Icik
+                case CABViewControlTypes.HV2:
                 case CABViewControlTypes.HV5:
                 case CABViewControlTypes.PANTOGRAPH_4_SWITCH:
                 case CABViewControlTypes.COMPRESSOR_START:
@@ -2585,6 +2599,25 @@ namespace Orts.Viewer3D.RollingStock
 
 
                 // Icik
+                case CABViewControlTypes.HV2:
+                    {
+                        // Ovládání HV nearetované pozice
+                        if (Locomotive.HV2Switch == 1)
+                        {
+                            Locomotive.HVPressedTest = true;
+                        }
+                        if (Locomotive.HV2Switch == 1 && UserInput.IsMouseLeftButtonReleased)
+                        {
+                            Locomotive.HV2Switch = 0;
+                            Locomotive.HVPressedTest = false;
+                        }
+                        
+                        if (ChangedValue(0) < 0 && UserInput.IsMouseLeftButtonDown)
+                        {
+                            new ToggleHV2SwitchUpCommand(Viewer.Log);
+                        }                        
+                        break;
+                    }
                 case CABViewControlTypes.HV5:
                     {
                         // Ovládání HV nearetované pozice
@@ -2615,7 +2648,6 @@ namespace Orts.Viewer3D.RollingStock
                         {
                             new ToggleHV5SwitchDownCommand(Viewer.Log);
                         }
-
                         break;
                     }
 

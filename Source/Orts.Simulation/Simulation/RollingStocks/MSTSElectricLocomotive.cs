@@ -1180,10 +1180,15 @@ namespace Orts.Simulation.RollingStocks
         // Testování času stiknutého HV
         protected void HVPressedTesting(float elapsedClockSeconds)
         {
-            HVCanOn = false;
-            if (!HVPressedTestDC && !HVPressedTestAC || HV5Switch != 1 && HV5Switch != 5)
+            HVCanOn = false;            
+            if (HV2Enable && !HVPressedTest)
                 HVPressedTime = 0;
-       
+
+            if (HV5Enable && (!HVPressedTestDC && !HVPressedTestAC || HV5Switch != 1 && HV5Switch != 5))
+                HVPressedTime = 0;
+
+            if (HVPressedTest)
+                HVPressedTime += elapsedClockSeconds;
             if (HVPressedTestDC)
                 HVPressedTime += elapsedClockSeconds;                        
             if (HVPressedTestAC)
@@ -1801,6 +1806,21 @@ namespace Orts.Simulation.RollingStocks
 
                         if (PantographVoltageV == 1 && preVoltageDC == 1)
                             data = 1;
+                        break;
+                    }
+                
+                case CABViewControlTypes.HV2:
+                    {
+                        HV2Enable = true;
+                        switch (HV2Switch)
+                        {
+                            case 0:
+                                data = 0;
+                                break;
+                            case 1: 
+                                data = 1;
+                                break;                            
+                        }                        
                         break;
                     }
 
