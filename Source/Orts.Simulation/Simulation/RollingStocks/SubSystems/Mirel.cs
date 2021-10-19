@@ -261,23 +261,15 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                     ls90tested = false;
                     ls90testTime = 0;
                     BlueLight = false;
-                    if (MpS.ToKpH(Locomotive.AbsWheelSpeedMpS) > 1)
-                        Locomotive.TrainBrakeController.EmergencyBrakingPushButton = true;
-                    else
-                        Locomotive.TrainBrakeController.EmergencyBrakingPushButton = false;
                     return;
                 }
                 if (Ls90power == LS90power.Start && !ls90tested)
                 {
-                    if (ls90testTime > 1.5 && Bar.FromPSI(Locomotive.BrakeSystem.GetCylPressurePSI()) > 2)
+                    if (ls90testTime > 1.5 && Bar.FromPSI(Locomotive.BrakeSystem.GetCylPressurePSI()) > 1.5f && AbsSpeedMpS == 0)
                     {
                         Ls90led = LS90led.Green;
                         Locomotive.SignalEvent(Common.Event.LS90TestComplete);
                         ls90tested = true;
-                        if (MpS.ToKpH(Locomotive.AbsWheelSpeedMpS) > 1)
-                            Locomotive.TrainBrakeController.EmergencyBrakingPushButton = true;
-                        else
-                            Locomotive.TrainBrakeController.EmergencyBrakingPushButton = false;
                         return;
                     }
                     BlueLight = false;
@@ -440,7 +432,6 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                         RecievingRepeaterSignal = false;
                     }
                 }
-                if (Locomotive.CarID != Locomotive.Train.Cars[0].CarID) return;
                 if (!Locomotive.Train.IsPlayerDriven) return;
 
                 if (Locomotive.AbsSpeedMpS == 0 && initTest == InitTest.Passed && MirelType == Type.Full)
