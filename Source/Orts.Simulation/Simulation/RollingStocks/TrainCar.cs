@@ -322,6 +322,12 @@ namespace Orts.Simulation.RollingStocks
         public float PowerReductionByAuxEquipment = 0;
         public float VibrationSpringConstantPrimepSpS = 0;
         public float VibratioDampingCoefficient = 0;
+        public float WagonTemperature;
+        public float TempCDelta;
+        public bool ThermostatOn = false;
+        public float ThermostatCoef;
+        public float SetTempCThreshold;
+        public float SetTemperatureC;
 
         // Setup for ambient temperature dependency
         Interpolator OutsideWinterTempbyLatitudeC;
@@ -354,7 +360,7 @@ namespace Orts.Simulation.RollingStocks
 
         static float[] WorldTemperatureSummer = new float[]
         {
-            13.4f, 18.3f, 22.8f, 24.3f, 24.4f, 25.0f, 25.2f, 22.5f, 26.6f, 24.8f, 19.4f, 14.3f
+            23.4f, 28.3f, 32.8f, 34.3f, 34.4f, 35.0f, 35.2f, 32.5f, 36.6f, 34.8f, 29.4f, 24.3f
          };
 
         public static Interpolator WorldWinterLatitudetoTemperatureC()
