@@ -600,7 +600,7 @@ namespace Orts.Viewer3D.Popups
             if (locomotive.Simulator.SuperUser)
                 locomotive.Simulator.Confirmer.Information(message + train.TotalOnBoard.ToString());
             //Car information
-            statusConsist.Add(string.Format("\n{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\t{9}\t{10}\t{11}\t{12}\t{13}\t{14}\t{15}",
+            statusConsist.Add(string.Format("\n{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\t{9}\t{10}\t{11}\t{12}\t{13}\t{14}\t{15}\t{16}",
                 Viewer.Catalog.GetString("Car"),
                 Viewer.Catalog.GetString("Flipped"),
                 Viewer.Catalog.GetString("Type"),
@@ -608,6 +608,7 @@ namespace Orts.Viewer3D.Popups
                 Viewer.Catalog.GetString("Weight"),
                 Viewer.Catalog.GetString("Drv/Cabs"),
                 Viewer.Catalog.GetString("Wheels"),
+                Viewer.Catalog.GetString("Inter.Temp"),
                 Viewer.Catalog.GetString("A1 Mass"),
                 Viewer.Catalog.GetString("A2 Mass"),
                 Viewer.Catalog.GetString("A3 Mass"),
@@ -628,6 +629,7 @@ namespace Orts.Viewer3D.Popups
 
             for (var i = (hudWindowLinesActualPage * nLinesShow) - nLinesShow; i < (train.Cars.Count > hudWindowLinesActualPage * nLinesShow ? hudWindowLinesActualPage * nLinesShow : train.Cars.Count); i++)
             {
+                string NoTemp = "";
                 var j = (i == 0) ? 0 : i;
                 var car = train.Cars[j];
                 statusConsist.Add(car.CarID + "\t" +
@@ -637,6 +639,7 @@ namespace Orts.Viewer3D.Popups
                     FormatStrings.FormatLargeMass(car.MassKG, locomotive.IsMetric, locomotive.IsUK) + "\t" +
                     (car.IsDriveable ? Viewer.Catalog.GetParticularString("Cab", "D") : "") + (car.HasFrontCab || car.HasFront3DCab ? Viewer.Catalog.GetParticularString("Cab", "F") : "") + (car.HasRearCab || car.HasRear3DCab ? Viewer.Catalog.GetParticularString("Cab", "R") : "") + "\t" +
                     GetCarWhyteLikeNotation(car) + "\t" +
+                    (car.HasPassengerCapacity ? Math.Round(car.WagonTemperature).ToString() + " °C" : NoTemp) + "\t" +
                     GetAxleParamsEP(car) + "\t");
                     //Add new data here, if adding additional column.
             }

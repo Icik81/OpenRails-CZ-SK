@@ -553,6 +553,7 @@ namespace Orts.Simulation.RollingStocks
         public float GameTimeFlow = 0;
         float PantoStatus = 0;
         float PrePantoStatus = 0;
+        bool TTemperatureCycle = true;
 
         // Jindrich
         public bool EnableControlVoltageChange = true;
@@ -2650,21 +2651,109 @@ namespace Orts.Simulation.RollingStocks
         public float PowerReductionByHeating0 = 0;
         // Pomocné pohony, kompresory, dobíjení, ...
         public float PowerReductionByAuxEquipment0;
-        public void ElevatedConsumptionOnLocomotive()
+        public void ElevatedConsumptionOnLocomotive(float elapsedClockSeconds)
         {
             if (!IsPlayerTrain)
                 Heating_OffOn = true;
             if (TElevatedConsumption == 0)         
                 PowerReduction0 = PowerReduction;
 
+            foreach (TrainCar car in Train.Cars)
+            {
+                if (car.HasPassengerCapacity)
+                {
+                    if (car.WagonTemperature == 0)
+                        car.WagonTemperature = car.CarOutsideTempC;
+                                                                                
+                    float TempStepUp = 100000;
+                    float TempStepDown = 200000;
+                    float TempStepDownSlow = 500000;
+
+                    // Topení
+                    if (Simulator.Season == SeasonType.Spring || Simulator.Season == SeasonType.Autumn || Simulator.Season == SeasonType.Winter)
+                    {
+                        float SetTempCHyst = 2.5f;
+                        if (car.SetTemperatureC == 0)
+                        {
+                            car.SetTemperatureC = Simulator.Random.Next(21, 29);
+                            car.SetTempCThreshold = car.SetTemperatureC;
+                        }
+
+                        // Termostat vypnutý, topení aktivní
+                        if (Heating_OffOn && PowerOn && car.WagonTemperature < car.SetTempCThreshold && !car.ThermostatOn)
+                        {
+                            car.TempCDelta = +car.PowerReductionByHeating / TempStepUp / car.CarLengthM * (car.CarOutsideTempC / car.WagonTemperature) * (1 - (car.AbsSpeedMpS / (300 / 3.6f))) * elapsedClockSeconds;
+                            if (car.WagonTemperature > car.SetTempCThreshold - 0.1f)
+                                car.ThermostatOn = true;
+                        }
+                        else
+                        {
+                            // Termostat zapnutý, topení neaktivní
+                            if (car.WagonTemperature > car.CarOutsideTempC)
+                                car.TempCDelta = -car.PowerReductionByHeating / TempStepDown / car.CarLengthM * (car.CarOutsideTempC / car.WagonTemperature) * (1 + (car.AbsSpeedMpS / (300 / 3.6f))) * elapsedClockSeconds;
+                            else
+                            // Teplota je stejná jako teplota okolí
+                            if (car.AbsSpeedMpS > 0 && car.WagonTemperature > car.CarOutsideTempC * 0.75f)
+                                car.TempCDelta = -car.PowerReductionByHeating / TempStepDownSlow / car.CarLengthM * (car.CarOutsideTempC / car.WagonTemperature) * (1 + (car.AbsSpeedMpS / (300 / 3.6f))) * elapsedClockSeconds;
+                            else
+                                car.TempCDelta = 0;
+
+                            if (car.WagonTemperature < car.SetTempCThreshold - SetTempCHyst)
+                                car.ThermostatOn = false;
+                        }
+                    }
+
+                    // Klimatizace
+                    if (Simulator.Season == SeasonType.Summer)
+                    {
+                        float SetTempCHyst = 1.5f;
+                        if (car.SetTemperatureC == 0)
+                        {
+                            car.SetTemperatureC = Simulator.Random.Next(17, 25);
+                            car.SetTempCThreshold = car.SetTemperatureC;
+                        }
+
+                        // Termostat vypnutý, klimatizace aktivní
+                        if (Heating_OffOn && PowerOn && car.WagonTemperature > car.SetTempCThreshold && !car.ThermostatOn)
+                        {
+                            car.TempCDelta = -car.PowerReductionByHeating / TempStepUp / car.CarLengthM * (car.WagonTemperature / car.CarOutsideTempC) * (1 + (car.AbsSpeedMpS / (300 / 3.6f))) * elapsedClockSeconds;
+                            if (car.WagonTemperature < car.SetTempCThreshold + 0.1f)
+                                car.ThermostatOn = true;
+                        }
+                        else
+                        {
+                            // Termostat zapnutý, klimatizace neaktivní
+                            if (car.WagonTemperature < car.CarOutsideTempC)
+                                car.TempCDelta = +car.PowerReductionByHeating / TempStepDown / car.CarLengthM * (car.WagonTemperature / car.CarOutsideTempC) * (1 - (car.AbsSpeedMpS / (300 / 3.6f))) * elapsedClockSeconds;
+                            else
+                            // Teplota je stejná jako teplota okolí
+                            if (car.AbsSpeedMpS > 0 && car.WagonTemperature < car.CarOutsideTempC * 1.25f)
+                                car.TempCDelta = +car.PowerReductionByHeating / TempStepDownSlow / car.CarLengthM * (car.WagonTemperature / car.CarOutsideTempC) * (1 - (car.AbsSpeedMpS / (300 / 3.6f))) * elapsedClockSeconds;
+                            else
+                                car.TempCDelta = 0;
+
+                            if (car.WagonTemperature > car.SetTempCThreshold + SetTempCHyst)
+                                car.ThermostatOn = false;
+                        }
+                    }
+
+                    car.WagonTemperature += car.TempCDelta;
+                }
+                Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Teplota " + car.WagonTemperature));
+            }    
+            
             // Topení a klimatizace
             if (Heating_OffOn && PowerOn)
             {
                 TElevatedConsumption = 1;
                 PowerReductionByHeatingWag = 0;
-                PowerReductionByHeatingEng = 0;
+                PowerReductionByHeatingEng = 0;                
+
                 foreach (TrainCar car in Train.Cars)
                 {
+                    car.ThermostatCoef = 1;
+                    if (car.ThermostatOn) car.ThermostatCoef = 0;
+
                     if (car.WagonType == WagonTypes.Passenger) // Osobní vozy
                     {
                         if (car.PowerReductionByHeating == 0) // Default
@@ -2673,7 +2762,7 @@ namespace Orts.Simulation.RollingStocks
                             if (car.CarLengthM > 10) car.PowerReductionByHeating = 30.0f * 1000;   // 30kW                    
                             if (car.CarLengthM > 20) car.PowerReductionByHeating = 80.0f * 1000;   // 80kW    
                         }
-                        PowerReductionByHeatingWag += car.PowerReductionByHeating;
+                        PowerReductionByHeatingWag += car.PowerReductionByHeating * car.ThermostatCoef;
                     }
                     if (car.WagonType == WagonTypes.Engine /*&& this is MSTSDieselLocomotive*/) // Lokomotivy
                     {
@@ -2682,12 +2771,13 @@ namespace Orts.Simulation.RollingStocks
                             if (car.CarLengthM <= 10) car.PowerReductionByHeating = 20.0f * 1000;   // 20kW                    
                             if (car.CarLengthM > 10) car.PowerReductionByHeating = 30.0f * 1000;   // 30kW                                                 
                         }
-                        PowerReductionByHeatingEng += car.PowerReductionByHeating;
-                    }
+                        PowerReductionByHeatingEng += car.PowerReductionByHeating * car.ThermostatCoef;
+                    }                                        
                 }
 
                 PowerReductionByHeating0 = PowerReductionByHeatingWag + PowerReductionByHeatingEng;
-                //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Zapnuté topení, výkon zredukován "+ PowerReductionByHeating0 * MaxPowerW/1000) + " kW!");                
+                Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Příkon topení "+ PowerReductionByHeating0 / 1000) + " kW!");
+                //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Zapnuté topení, výkon zredukován " + PowerReductionByHeating0 * MaxPowerW / 1000) + " kW!");
             }
             else
                 PowerReductionByHeating0 = 0;
@@ -2937,7 +3027,7 @@ namespace Orts.Simulation.RollingStocks
             EDBCancelByEngineBrake();
             HVOffbyAirPressure();
             MaxPower_MaxForce_ACDC();
-            ElevatedConsumptionOnLocomotive();            
+            ElevatedConsumptionOnLocomotive(elapsedClockSeconds);            
             if (IsPlayerTrain) TogglePantograph4Switch();
             ToggleHV2Switch();
             ToggleHV5Switch();
@@ -6425,36 +6515,7 @@ namespace Orts.Simulation.RollingStocks
             else SignalEvent(Event.Heating_OffOnOff);
             if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.Heating_OffOn, Heating_OffOn ? CabSetting.On : CabSetting.Off);
         }
-        //public void ToggleSwitchingVoltageMode_OffDC()
-        //{
-        //    if (SwitchingVoltageMode > 0) SwitchingVoltageMode--;
-        //    if (SwitchingVoltageMode_OffAC)
-        //    {
-        //        SwitchingVoltageMode_OffAC = false;
-        //        SignalEvent(Event.SwitchingVoltageMode_OffACOff);
-        //    }
-        //    if (!SwitchingVoltageMode_OffDC && SwitchingVoltageMode == 0)
-        //    {
-        //        SwitchingVoltageMode_OffDC = true;
-        //        SignalEvent(Event.SwitchingVoltageMode_OffDCOn);
-        //    }
-        //    if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.SwitchingVoltageMode_OffDC, SwitchingVoltageMode_OffDC ? CabSetting.On : CabSetting.Off);
-        //}
-        //public void ToggleSwitchingVoltageMode_OffAC()
-        //{
-        //    if (SwitchingVoltageMode < 2) SwitchingVoltageMode++;
-        //    if (SwitchingVoltageMode_OffDC)
-        //    {
-        //        SwitchingVoltageMode_OffDC = false;
-        //        SignalEvent(Event.SwitchingVoltageMode_OffDCOff);
-        //    }
-        //    if (!SwitchingVoltageMode_OffAC && SwitchingVoltageMode == 2)
-        //    {
-        //        SwitchingVoltageMode_OffAC = true;
-        //        SignalEvent(Event.SwitchingVoltageMode_OffACOn);
-        //    }           
-        //    if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.SwitchingVoltageMode_OffAC, SwitchingVoltageMode_OffAC ? CabSetting.On : CabSetting.Off);                        
-        //}
+        
 
         // Zatím povoleno kvůli kompatibilitě
         public void ToggleControlRouteVoltage()
