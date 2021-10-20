@@ -325,6 +325,7 @@ namespace Orts.Simulation.RollingStocks
         public float VibratioDampingCoefficient = 0;
         public float WagonTemperature;
         public float TempCDelta;
+        public float TempCDeltaAir;
         public bool ThermostatOn = false;
         public float ThermostatCoef;
         public float SetTempCThreshold;
