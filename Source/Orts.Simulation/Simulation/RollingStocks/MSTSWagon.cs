@@ -1518,6 +1518,7 @@ namespace Orts.Simulation.RollingStocks
                     break;
                 case "wagon(rmgshoefriction": RMgShoeFrictionFactor = new Interpolator(stf); break;
                 case "wagon(powerreductionbyheating": PowerReductionByHeating = stf.ReadFloatBlock(STFReader.UNITS.Power, null); break;
+                case "wagon(powerreductionbyaircondition": PowerReductionByAirCondition = stf.ReadFloatBlock(STFReader.UNITS.Power, null); break;
                 case "wagon(powerreductionbyauxequipment": PowerReductionByAuxEquipment = stf.ReadFloatBlock(STFReader.UNITS.Power, null); break;
                 case "wagon(airlossbyhandlingdoors": AirlossByHandlingDoorsPSIpS = stf.ReadFloatBlock(STFReader.UNITS.PressureRateDefaultPSIpS, null); break;
                 case "wagon(automaticdoors": AutomaticDoors = stf.ReadBoolBlock(false); break;
@@ -1700,6 +1701,7 @@ namespace Orts.Simulation.RollingStocks
             DavisCoefficientC_3 = copy.DavisCoefficientC_3;
             RMgShoeFrictionFactor = copy.RMgShoeFrictionFactor;
             PowerReductionByHeating = copy.PowerReductionByHeating;
+            PowerReductionByAirCondition = copy.PowerReductionByAirCondition;
             PowerReductionByAuxEquipment = copy.PowerReductionByAuxEquipment;
             AirlossByHandlingDoorsPSIpS = copy.AirlossByHandlingDoorsPSIpS;
             AutomaticDoors = copy.AutomaticDoors;

@@ -319,6 +319,7 @@ namespace Orts.Simulation.RollingStocks
         public float RMgShoeCoefficientFrictionAdjFactor;
         public float DefaultRMgShoeCoefficientFriction;
         public float PowerReductionByHeating = 0;
+        public float PowerReductionByAirCondition = 0;
         public float PowerReductionByAuxEquipment = 0;
         public float VibrationSpringConstantPrimepSpS = 0;
         public float VibratioDampingCoefficient = 0;
@@ -328,6 +329,9 @@ namespace Orts.Simulation.RollingStocks
         public float ThermostatCoef;
         public float SetTempCThreshold;
         public float SetTemperatureC;
+        public bool WagonHasTemperature = false;
+        public float CarOutsideTempC0;
+
 
         // Setup for ambient temperature dependency
         Interpolator OutsideWinterTempbyLatitudeC;
@@ -1816,6 +1820,9 @@ namespace Orts.Simulation.RollingStocks
             outf.Write(CarHeatCurrentCompartmentHeatW);
             outf.Write(CarSteamHeatMainPipeSteamPressurePSI);
             outf.Write(CarHeatCompartmentHeaterOn);
+            outf.Write(WagonHasTemperature);
+            outf.Write(CarOutsideTempC0);
+            outf.Write(WagonTemperature);
         }
 
         // Game restore
@@ -1839,6 +1846,9 @@ namespace Orts.Simulation.RollingStocks
             CarHeatCurrentCompartmentHeatW = inf.ReadSingle();
             CarSteamHeatMainPipeSteamPressurePSI = inf.ReadSingle();
             CarHeatCompartmentHeaterOn = inf.ReadBoolean();
+            WagonHasTemperature = inf.ReadBoolean();
+            CarOutsideTempC0 = inf.ReadSingle();
+            WagonTemperature = inf.ReadSingle();
         }
 
         //================================================================================================//
