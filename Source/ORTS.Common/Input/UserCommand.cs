@@ -160,6 +160,7 @@
         [GetString("Control Door Right")] ControlDoorRight,
         [GetString("Control Mirror")] ControlMirror,
         [GetString("Control Light")] ControlLight,
+        [GetString("Control Flood Light")] ControlFloodLight,
         [GetString("Control Pantograph 1")] ControlPantograph1,
         [GetString("Control Pantograph 2")] ControlPantograph2,
         [GetString("Control Pantograph 3")] ControlPantograph3,

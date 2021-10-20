@@ -77,6 +77,9 @@ namespace ORTS
                 s = webClient.DownloadString("http://lkpr.aspone.cz/or/version14.txt");
                 if (version != s) // new version available
                 {
+                    DialogResult dr = MessageBox.Show("Nalezena aktualizace. Chcete program aktualizovat?", "Aktualizace", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                    if (dr == DialogResult.No)
+                        return;
                     state = "Stahuji novou verzi";
                     File.Delete(Application.StartupPath + "\\Update14.zip");
                     webClient.DownloadFile("http://lkpr.aspone.cz/or/update14.zip", Application.StartupPath + "\\Update14.zip");

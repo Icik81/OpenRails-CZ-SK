@@ -913,6 +913,29 @@ namespace Orts.Common
     }
 
     [Serializable()]
+    public sealed class ToggleCabFloodLightCommand : Command
+    {
+        public static MSTSLocomotive Receiver { get; set; }
+
+        public ToggleCabFloodLightCommand(CommandLog log)
+            : base(log)
+        {
+            Redo();
+        }
+
+        public override void Redo()
+        {
+            Receiver.ToggleCabFloodLight();
+            // Report();
+        }
+
+        public override string ToString()
+        {
+            return base.ToString();
+        }
+    }
+
+    [Serializable()]
     public sealed class HeadlightCommand : BooleanCommand {
         public static MSTSLocomotive Receiver { get; set; }
 

@@ -134,6 +134,7 @@ namespace Orts.Simulation
     , QuickReleaseButton
     , LowPressureReleaseButton
     , BreakPowerButton
+    , CabFloodLight
     }
 
     public enum CabSetting {
@@ -298,7 +299,7 @@ namespace Orts.Simulation
                 , new string [] { GetString("Vysokotlaký švih"), GetString("off"), null, GetString("on")}
                 , new string [] { GetString("Nízkotlaké přebití"), GetString("off"), null, GetString("on")}
                 , new string [] { GetString("Přerušení napájení"), GetString("off"), null, GetString("on")}
-
+                , new string [] { GetString("Plné osvětlení kabiny"), GetString("off"), null, GetString("on")}
 
             };
             Debug.Assert(ConfirmText.Length == Enum.GetNames(typeof(CabControl)).Length, "Number of entries indexer ConfirmText must match values in CabControl enum.");

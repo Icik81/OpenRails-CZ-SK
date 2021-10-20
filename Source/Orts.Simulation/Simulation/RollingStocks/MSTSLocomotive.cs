@@ -138,6 +138,7 @@ namespace Orts.Simulation.RollingStocks
         public bool PowerOn;
         public float PowerOnDelayS;
         public bool CabLightOn;
+        public bool CabFloodLightOn;
         public bool ShowCab = true;
         public bool MilepostUnitsMetric;
         public float DrvWheelWeightKg; // current weight on locomotive drive wheels, includes drag factor (changes as mass changes)
@@ -6046,14 +6047,32 @@ namespace Orts.Simulation.RollingStocks
             }
         }
 
+        public bool wasCabLightSetOn = false;
         public void ToggleCabLight()
         {
             if (this is MSTSSteamLocomotive)
                 return;
-
             CabLightOn = !CabLightOn;
+            wasCabLightSetOn = CabLightOn;
+            if (CabFloodLightOn)
+                CabLightOn = false;
+
             SignalEvent(Event.CabLightSwitchToggle);
             Simulator.Confirmer.Confirm(CabControl.CabLight, CabLightOn ? CabSetting.On : CabSetting.Off);
+        }
+
+        public void ToggleCabFloodLight()
+        {
+            if (this is MSTSSteamLocomotive)
+                return;
+
+            CabFloodLightOn = !CabFloodLightOn;
+            if (CabFloodLightOn)
+                CabLightOn = false;
+            else
+                CabLightOn = wasCabLightSetOn;
+            SignalEvent(Event.CabLightSwitchToggle);
+            Simulator.Confirmer.Confirm(CabControl.CabFloodLight, CabFloodLightOn ? CabSetting.On : CabSetting.Off);
         }
 
         public void ToggleBattery()

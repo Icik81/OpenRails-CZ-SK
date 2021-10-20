@@ -283,6 +283,7 @@ namespace Orts.Simulation.RollingStocks
             int markerVoltage = 0;
             VoltageChangeMarker marker;
             float distToMarker = DistanceToVoltageMarkerM(out markerVoltage, out marker);
+
             if (prevDist == 0)
                 dist = DistanceToPowerSupplyStationM(markerVoltage == 3000 ? 0 : 1, out myStation);
             // toto nefunguje, ještě prověřím

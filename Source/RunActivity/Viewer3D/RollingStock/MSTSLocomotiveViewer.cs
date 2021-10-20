@@ -181,6 +181,7 @@ namespace Orts.Viewer3D.RollingStock
             UserInputCommands.Add(UserCommand.ControlHeadlightIncrease, new Action[] { Noop, () => new HeadlightCommand(Viewer.Log, true) });
             UserInputCommands.Add(UserCommand.ControlHeadlightDecrease, new Action[] { Noop, () => new HeadlightCommand(Viewer.Log, false) });
             UserInputCommands.Add(UserCommand.ControlLight, new Action[] { Noop, () => new ToggleCabLightCommand(Viewer.Log) });
+            UserInputCommands.Add(UserCommand.ControlFloodLight, new Action[] { Noop, () => new ToggleCabFloodLightCommand(Viewer.Log) });
             UserInputCommands.Add(UserCommand.ControlRefill, new Action[] { () => StopRefillingOrUnloading(Viewer.Log), () => AttemptToRefillOrUnload() });
             UserInputCommands.Add(UserCommand.ControlImmediateRefill, new Action[] { () => StopImmediateRefilling(Viewer.Log), () => ImmediateRefill() });
             UserInputCommands.Add(UserCommand.ControlWaterScoop, new Action[] { Noop, () => new ToggleWaterScoopCommand(Viewer.Log) });
@@ -1090,38 +1091,47 @@ namespace Orts.Viewer3D.RollingStock
         /// <param name="isLight">Is Cab Light on?</param>
         /// <param name="isNightTexture"></param>
         /// <returns>The Texture</returns>
-        public static Texture2D GetTexture(string FileName, bool isDark, bool isLight, out bool isNightTexture, bool hasCabLightDirectory)
+        public static Texture2D GetTexture(string FileName, bool isDark, bool isFloodLight, bool isLight, out bool isNightTexture, bool hasCabLightDirectory)
         {
+            if (isLight && isFloodLight)
+                isLight = false;
+
             Texture2D retval = SharedMaterialManager.MissingTexture;
             isNightTexture = false;
 
             if (string.IsNullOrEmpty(FileName) || !DayTextures.Keys.Contains(FileName))
                 return retval;
-
-            if (isLight)
+            if (isFloodLight)
             {
-                // Light on: use light texture when dark, if available; else check if CabLightDirectory available to decide.
-                if (isDark)
-                {
-                    retval = LightTextures[FileName];
-                    if (retval == SharedMaterialManager.MissingTexture)
-                        retval = hasCabLightDirectory ? NightTextures[FileName] : DayTextures[FileName];
-                }
-
-                // Osvětlení přístrojů v kabině
-                else retval = LightTextures[FileName];
-
-                // Both light and day textures should be used as-is in this situation.
                 isNightTexture = true;
+                return DayTextures[FileName];
             }
-            else if (isDark)
+            else
             {
-                // Darkness: use night texture, if available.
-                retval = NightTextures[FileName];
-                // Only use night texture as-is in this situation.
-                isNightTexture = retval != SharedMaterialManager.MissingTexture;
-            }
+                if (isLight)
+                {
+                    // Light on: use light texture when dark, if available; else check if CabLightDirectory available to decide.
+                    if (isDark)
+                    {
+                        retval = LightTextures[FileName];
+                        if (retval == SharedMaterialManager.MissingTexture)
+                            retval = hasCabLightDirectory ? NightTextures[FileName] : DayTextures[FileName];
+                    }
 
+                    // Osvětlení přístrojů v kabině
+                    else retval = LightTextures[FileName];
+
+                    // Both light and day textures should be used as-is in this situation.
+                    isNightTexture = true;
+                }
+                else if (isDark)
+                {
+                    // Darkness: use night texture, if available.
+                    retval = NightTextures[FileName];
+                    // Only use night texture as-is in this situation.
+                    isNightTexture = retval != SharedMaterialManager.MissingTexture;
+                }
+            }
             // No light or dark texture selected/available? Use day texture instead.
             if (retval == SharedMaterialManager.MissingTexture)
                 retval = DayTextures[FileName];
@@ -1442,6 +1452,7 @@ namespace Orts.Viewer3D.RollingStock
 
             bool Dark = _Viewer.MaterialManager.sunDirection.Y <= -0.085f || _Viewer.Camera.IsUnderground;
             bool CabLight = _Locomotive.CabLightOn;
+            bool FloodLight = _Locomotive.CabFloodLightOn;
 
             CabCamera cbc = _Viewer.Camera as CabCamera;
             if (cbc != null)
@@ -1454,7 +1465,7 @@ namespace Orts.Viewer3D.RollingStock
             }
 
             var i = (_Locomotive.UsingRearCab) ? 1 : 0;
-            _CabTexture = CABTextureManager.GetTexture(_Locomotive.CabViewList[i].CVFFile.TwoDViews[_Location], Dark, CabLight, out _isNightTexture, HasCabLightDirectory);
+            _CabTexture = CABTextureManager.GetTexture(_Locomotive.CabViewList[i].CVFFile.TwoDViews[_Location], Dark, FloodLight, CabLight, out _isNightTexture, HasCabLightDirectory);
             if (_CabTexture == SharedMaterialManager.MissingTexture)
                 return;
 
@@ -1663,7 +1674,7 @@ namespace Orts.Viewer3D.RollingStock
         {
             ControlDial = control;
 
-            Texture = CABTextureManager.GetTexture(Control.ACEFile, false, false, out IsNightTexture, HasCabLightDirectory);
+            Texture = CABTextureManager.GetTexture(Control.ACEFile, false, false, false, out IsNightTexture, HasCabLightDirectory);
             if (ControlDial.Height < Texture.Height)
                 Scale = (float)(ControlDial.Height / Texture.Height);
             Origin = new Vector2((float)Texture.Width / 2, ControlDial.Center / Scale);
@@ -1673,7 +1684,7 @@ namespace Orts.Viewer3D.RollingStock
         {
             var dark = Viewer.MaterialManager.sunDirection.Y <= -0.085f || Viewer.Camera.IsUnderground;
 
-            Texture = CABTextureManager.GetTexture(Control.ACEFile, dark, Locomotive.CabLightOn, out IsNightTexture, HasCabLightDirectory);
+            Texture = CABTextureManager.GetTexture(Control.ACEFile, dark, Locomotive.CabFloodLightOn, Locomotive.CabLightOn, out IsNightTexture, HasCabLightDirectory);
             if (Texture == SharedMaterialManager.MissingTexture)
                 return;
 
@@ -1727,7 +1738,7 @@ namespace Orts.Viewer3D.RollingStock
             if ((Control.ControlType == CABViewControlTypes.REVERSER_PLATE) || (Gauge.ControlStyle == CABViewControlStyles.POINTER))
             {
                 DrawColor = Color.White;
-                Texture = CABTextureManager.GetTexture(Control.ACEFile, false, Locomotive.CabLightOn, out IsNightTexture, HasCabLightDirectory);
+                Texture = CABTextureManager.GetTexture(Control.ACEFile, false, Locomotive.CabFloodLightOn, Locomotive.CabLightOn, out IsNightTexture, HasCabLightDirectory);
                 SourceRectangle.Width = (int)Texture.Width;
                 SourceRectangle.Height = (int)Texture.Height;
             }
@@ -1743,7 +1754,7 @@ namespace Orts.Viewer3D.RollingStock
         {
             Gauge = control;
             HasCabLightDirectory = CABTextureManager.LoadTextures(Viewer, control.FireACEFile);
-            Texture = CABTextureManager.GetTexture(control.FireACEFile, false, Locomotive.CabLightOn, out IsNightTexture, HasCabLightDirectory);
+            Texture = CABTextureManager.GetTexture(control.FireACEFile, false, Locomotive.CabFloodLightOn, Locomotive.CabLightOn, out IsNightTexture, HasCabLightDirectory);
             DrawColor = Color.White;
             SourceRectangle.Width = (int)Texture.Width;
             SourceRectangle.Height = (int)Texture.Height;
@@ -1763,7 +1774,7 @@ namespace Orts.Viewer3D.RollingStock
             if (!(Gauge is CVCFirebox))
             {
                 var dark = Viewer.MaterialManager.sunDirection.Y <= -0.085f || Viewer.Camera.IsUnderground;
-                Texture = CABTextureManager.GetTexture(Control.ACEFile, dark, Locomotive.CabLightOn, out IsNightTexture, HasCabLightDirectory);
+                Texture = CABTextureManager.GetTexture(Control.ACEFile, dark, Locomotive.CabFloodLightOn, Locomotive.CabLightOn, out IsNightTexture, HasCabLightDirectory);
             }
             if (Texture == SharedMaterialManager.MissingTexture)
                 return;
@@ -1992,7 +2003,7 @@ namespace Orts.Viewer3D.RollingStock
         {
             var dark = Viewer.MaterialManager.sunDirection.Y <= -0.085f || Viewer.Camera.IsUnderground;
 
-            Texture = CABTextureManager.GetTextureByIndexes(Control.ACEFile, index, dark, Locomotive.CabLightOn, out IsNightTexture, HasCabLightDirectory);
+            Texture = CABTextureManager.GetTextureByIndexes(Control.ACEFile, index, Locomotive.CabFloodLightOn ? false : dark, Locomotive.CabLightOn, out IsNightTexture, HasCabLightDirectory);
             if (Texture == SharedMaterialManager.MissingTexture)
                 return;
 
