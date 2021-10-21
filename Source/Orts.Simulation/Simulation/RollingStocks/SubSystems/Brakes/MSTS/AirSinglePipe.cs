@@ -1436,12 +1436,18 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     // Pohlídá tlak v equalizéru, aby nebyl větší než tlak hlavní jímky
                     if (train.EqualReservoirPressurePSIorInHg > lead.MainResPressurePSI) train.EqualReservoirPressurePSIorInHg = lead.MainResPressurePSI;
 
-                    // Rozsvítí kontrolku průtoku vzduchu, pokud je změna tlaku v potrubí vyšší než 0.01bar/s
+                    // Rozsvítí kontrolku průtoku vzduchu, pokud je změna tlaku v potrubí vyšší než 0.001bar/s
+                    if (lead.TrainBrakeController.TrainBrakeControllerState == ControllerState.Release)
+                        lead.BrakeSystem.BrakeCylReleaseFlow = true;
+                    if (lead.TrainBrakeController.TrainBrakeControllerState == ControllerState.Apply)
+                        lead.BrakeSystem.BrakeCylReleaseFlow = false;
+
                     if (lead.TrainBrakeController.TrainBrakeControllerState != ControllerState.Emergency
                         && !lead.TrainBrakeController.TCSEmergencyBraking
-                        && !lead.EmergencyButtonPressed)
+                        && !lead.EmergencyButtonPressed
+                        && lead.BrakeSystem.BrakeCylReleaseFlow)
                     {
-                        if (lead.BrakeSystem.BrakePipeChangeRate > 0.01f * 14.50377f)
+                        if (lead.BrakeSystem.BrakePipeChangeRate > 0.001f * 14.50377f)
                             lead.BrakeSystem.BrakePipeFlow = true;
                         else lead.BrakeSystem.BrakePipeFlow = false;
                     }

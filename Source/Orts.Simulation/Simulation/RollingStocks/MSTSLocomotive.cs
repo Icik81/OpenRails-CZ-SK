@@ -465,6 +465,7 @@ namespace Orts.Simulation.RollingStocks
         public bool CompressorMode2_OffAuto;        
         public bool EngineBrakeEngageEDB = false;
         public bool Heating_OffOn;
+        public bool HeatingEnable = false;
         public bool SwitchingVoltageMode_OffAC;
         public bool SwitchingVoltageMode_OffDC;
         public int SwitchingVoltageMode = 1;
@@ -2689,7 +2690,7 @@ namespace Orts.Simulation.RollingStocks
                         car.WagonHasTemperature = true;
                     }
                                                                                 
-                    float TempStepUp = 50000;
+                    float TempStepUp = 25000;
                     float TempStepUpSlow = 100000;
                     float TempStepDown = 100000;
                     float TempStepDownSlow = 250000;
@@ -2698,7 +2699,7 @@ namespace Orts.Simulation.RollingStocks
                     // Ochlazování vlivem protékajícího vzduchu
                     TempCDeltaOutside = car.CarOutsideTempC0 / car.WagonTemperature;
                     if (car.AbsSpeedMpS > 0 && car.WagonTemperature > car.CarOutsideTempC0 * 0.75f)
-                        car.TempCDeltaAir = -car.PowerReductionByHeating / TempStepDown / car.CarLengthM * TempCDeltaOutside * (1 + (car.AbsSpeedMpS / (300 / 3.6f))) * elapsedClockSeconds;
+                        car.TempCDeltaAir = -car.PowerReductionByHeating / TempStepDownSlow / car.CarLengthM * TempCDeltaOutside * (1 + (car.AbsSpeedMpS / (300 / 3.6f))) * elapsedClockSeconds;
                     else
                     if (car.AbsSpeedMpS == 0 && car.WagonTemperature < car.CarOutsideTempC0 * 1.10f)
                         car.TempCDeltaAir = +car.PowerReductionByHeating / TempStepUpSlow / car.CarLengthM * TempCDeltaOutside * (1 + (car.AbsSpeedMpS / (300 / 3.6f))) * elapsedClockSeconds;
@@ -2726,15 +2727,8 @@ namespace Orts.Simulation.RollingStocks
                         }
                         else
                         {
-                            // Termostat zapnutý, topení neaktivní
-                            if (car.WagonTemperature > car.CarOutsideTempC0)
-                                car.TempCDelta = -car.PowerReductionByHeating / TempStepDown / car.CarLengthM * TempCDeltaOutside * (1 + (car.AbsSpeedMpS / (300 / 3.6f))) * elapsedClockSeconds;
-                            else
-                            // Teplota je stejná jako teplota okolí
-                            if (car.AbsSpeedMpS > 0 && car.WagonTemperature > car.CarOutsideTempC0 * 0.75f)
-                                car.TempCDelta = -car.PowerReductionByHeating / TempStepDownSlow / car.CarLengthM * TempCDeltaOutside * (1 + (car.AbsSpeedMpS / (300 / 3.6f))) * elapsedClockSeconds;
-                            else
-                                car.TempCDelta = 0;
+                            // Termostat zapnutý, topení neaktivní                        
+                            car.TempCDelta = 0;
 
                             if (car.WagonTemperature < car.SetTempCThreshold - SetTempCHyst)
                                 car.ThermostatOn = false;
@@ -2800,7 +2794,7 @@ namespace Orts.Simulation.RollingStocks
                         {
                             if (car.CarLengthM <= 10) car.PowerReductionByHeating = 20.0f * 1000;   // 20kW                    
                             if (car.CarLengthM > 10) car.PowerReductionByHeating = 30.0f * 1000;   // 30kW                    
-                            if (car.CarLengthM > 20) car.PowerReductionByHeating = 80.0f * 1000;   // 80kW    
+                            if (car.CarLengthM > 20) car.PowerReductionByHeating = 50.0f * 1000;   // 50kW    
                         }
                         if (Simulator.Season == SeasonType.Summer)
                             PowerReductionByHeatingWag += car.PowerReductionByAirCondition * car.ThermostatCoef; // Klimatizace
@@ -2811,8 +2805,8 @@ namespace Orts.Simulation.RollingStocks
                     {
                         if (car.PowerReductionByHeating == 0) // Default
                         {
-                            if (car.CarLengthM <= 10) car.PowerReductionByHeating = 20.0f * 1000;   // 20kW                    
-                            if (car.CarLengthM > 10) car.PowerReductionByHeating = 30.0f * 1000;   // 30kW                                                 
+                            if (car.CarLengthM <= 10) car.PowerReductionByHeating = 5.0f * 1000;   // 5kW                    
+                            if (car.CarLengthM > 10) car.PowerReductionByHeating = 10.0f * 1000;   // 10kW                                                 
                         }
                         if (Simulator.Season == SeasonType.Summer)
                             PowerReductionByHeatingEng += car.PowerReductionByAirCondition * car.ThermostatCoef; // Klimatizace
@@ -3065,8 +3059,10 @@ namespace Orts.Simulation.RollingStocks
                 else if (DynamicBrakePercent <= 0 && ControllerVolts < 0)
                     ControllerVolts = 0;
             }
-            
+
             // Icik
+            // Zpoždění pro inicializaci systémů ochran lokomotivy
+            GameTimeFlow += elapsedClockSeconds;
             Overcurrent_Protection(elapsedClockSeconds);
             AntiSlip_Protection(elapsedClockSeconds);
             PowerOn_Filter(elapsedClockSeconds);
@@ -6574,10 +6570,13 @@ namespace Orts.Simulation.RollingStocks
         }
         public void ToggleHeating_OffOn()
         {
-            Heating_OffOn = !Heating_OffOn;
-            if (Heating_OffOn) SignalEvent(Event.Heating_OffOnOn);
-            else SignalEvent(Event.Heating_OffOnOff);
-            if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.Heating_OffOn, Heating_OffOn ? CabSetting.On : CabSetting.Off);
+            if (HeatingEnable)
+            {
+                Heating_OffOn = !Heating_OffOn;
+                if (Heating_OffOn) SignalEvent(Event.Heating_OffOnOn);
+                else SignalEvent(Event.Heating_OffOnOff);
+                if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.Heating_OffOn, Heating_OffOn ? CabSetting.On : CabSetting.Off);
+            }
         }
         
 
@@ -8318,6 +8317,7 @@ namespace Orts.Simulation.RollingStocks
                     }
                 case CABViewControlTypes.HEATING_OFFON:
                     {
+                        HeatingEnable = true;
                         data = Heating_OffOn ? 1 : 0;
                         break;
                     }

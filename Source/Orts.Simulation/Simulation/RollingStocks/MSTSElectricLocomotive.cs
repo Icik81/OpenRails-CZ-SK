@@ -715,10 +715,7 @@ namespace Orts.Simulation.RollingStocks
                 // Shodí HV při stažení sběračů při navoleném výkonu
                 if (LocalThrottlePercent != 0 && Pantograph4Switch == 0)                    
                     HVOff = true;
-
-                // Zpoždění pro inicializaci systémů ochran lokomotivy
-                GameTimeFlow += elapsedClockSeconds;
-
+                
                 // Blokování pantografu u jednosystémových lokomotiv při vypnutém HV
                 if (!MultiSystemEngine)
                 {
