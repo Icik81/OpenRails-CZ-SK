@@ -1912,6 +1912,8 @@ namespace Orts.Simulation.RollingStocks
             base.Update(elapsedClockSeconds);
 
             // Icik
+            ToggleHeatingCarOperationsWindow();
+
             ToggleDoorsCarOperationsWindow();
 
             ConfirmSteamLocomotiveTender(); // Confirms that a tender is connected to the steam locomotive
@@ -3523,6 +3525,28 @@ namespace Orts.Simulation.RollingStocks
         }
 
         // Icik
+        public void ToggleHeatingCarOperationsWindow()
+        {
+            foreach (var car in Train.Cars)
+            {
+                var mstsWagon = car as MSTSWagon;
+                bool StatusChange = false;
+                if (car.BrakeSystem.HeatingIsOn)
+                {
+                    if (Simulator.Season == SeasonType.Summer && car.PowerReductionByAirCondition == 0)
+                    {
+                        car.BrakeSystem.HeatingIsOn = false;
+                        car.BrakeSystem.HeatingMenu = 0;
+                    }
+                    car.BrakeSystem.HeatingText = "zapnuto";                    
+                }
+                if (!car.BrakeSystem.HeatingIsOn)
+                {                 
+                    car.BrakeSystem.HeatingText = "vypnuto";
+                }                
+            }
+        }
+
         public void ToggleDoorsCarOperationsWindow()
         {
             foreach (var car in Train.Cars)

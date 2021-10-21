@@ -320,6 +320,8 @@ namespace Orts.Simulation.RollingStocks
         public float DefaultRMgShoeCoefficientFriction;
         public float PowerReductionByHeating = 0;
         public float PowerReductionByAirCondition = 0;
+        public float PowerReductionByHeating0 = 0;
+        public float PowerReductionByAirCondition0 = 0;
         public float PowerReductionByAuxEquipment = 0;
         public float VibrationSpringConstantPrimepSpS = 0;
         public float VibratioDampingCoefficient = 0;

@@ -612,9 +612,8 @@ namespace Orts.Viewer3D
             ToggleAuxCompressorMode_OffOnCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
             ToggleCompressorMode_OffAutoCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
             ToggleCompressorMode2_OffAutoCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
-            ToggleHeating_OffOnCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;            
-            //ToggleSwitchingVoltageMode_OffDCCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
-            //ToggleSwitchingVoltageMode_OffACCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
+            ToggleHeating_OffOnCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
+            HeatingCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
             LeftDoorCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
             RightDoorCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
             ToggleControlRouteVoltageCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;

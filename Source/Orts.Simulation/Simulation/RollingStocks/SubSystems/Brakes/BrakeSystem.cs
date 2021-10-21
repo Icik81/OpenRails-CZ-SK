@@ -244,6 +244,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes
         public bool LeftDoorIsOpened;
         public bool RightDoorIsOpened;
 
+        public float HeatingMenu = 0;
+        public string HeatingText = "vypnuto";
+        public bool HeatingIsOn;
+
         public int WagonType;
 
         public abstract void AISetPercent(float percent);

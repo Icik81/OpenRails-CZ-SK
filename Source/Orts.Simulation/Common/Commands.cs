@@ -1876,41 +1876,18 @@ namespace Orts.Common
             Receiver.ToggleHeating_OffOn();
             // Report();
         }
+    }    
+    [Serializable()]
+    public sealed class HeatingCommand : Command
+    {
+        public static MSTSWagon Receiver { get; set; }
+
+        public HeatingCommand(CommandLog log, MSTSWagon car, float Heating)
+            : base(log)
+        {
+            Receiver = car;
+        }
     }
-    //[Serializable()]
-    //public sealed class ToggleSwitchingVoltageMode_OffDCCommand : Command
-    //{
-    //    public static MSTSLocomotive Receiver { get; set; }
-
-    //    public ToggleSwitchingVoltageMode_OffDCCommand(CommandLog log)
-    //        : base(log)
-    //    {
-    //        Redo();
-    //    }
-
-    //    public override void Redo()
-    //    {
-    //        Receiver.ToggleSwitchingVoltageMode_OffDC();
-    //        // Report();
-    //    }
-    //}
-    //[Serializable()]
-    //public sealed class ToggleSwitchingVoltageMode_OffACCommand : Command
-    //{
-    //    public static MSTSLocomotive Receiver { get; set; }
-
-    //    public ToggleSwitchingVoltageMode_OffACCommand(CommandLog log)
-    //        : base(log)
-    //    {
-    //        Redo();
-    //    }
-
-    //    public override void Redo()
-    //    {
-    //        Receiver.ToggleSwitchingVoltageMode_OffAC();
-    //        // Report();
-    //    }
-    //}
     [Serializable()]
     public sealed class LeftDoorCommand : Command
     {

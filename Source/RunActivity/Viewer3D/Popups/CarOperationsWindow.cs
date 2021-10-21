@@ -38,14 +38,14 @@ namespace Orts.Viewer3D.Popups
         }
 
         public CarOperationsWindow(WindowManager owner)
-            : base(owner, Window.DecorationSize.X + owner.TextFontDefault.Height * 22, Window.DecorationSize.Y + (owner.TextFontDefault.Height + 2) * 14 + ControlLayout.SeparatorSize * 9, Viewer.Catalog.GetString("*** Car Operation Menu ***"))
+            : base(owner, Window.DecorationSize.X + owner.TextFontDefault.Height * 22, Window.DecorationSize.Y + (owner.TextFontDefault.Height + 2) * 15 + ControlLayout.SeparatorSize * 9, Viewer.Catalog.GetString("*** Car Operation Menu ***"))
         {
             Viewer = owner.Viewer;
         }
 
         protected override ControlLayout Layout(ControlLayout layout)
         {
-            Label ID, buttonHandbrake, buttonTogglePower, buttonToggleMU, buttonToggleBrakeHose, buttonToggleAngleCockA, buttonToggleAngleCockB, buttonToggleBleedOffValve, buttonBrakeCarMode, buttonBrakeCarModePL, buttonTwoPipesConnection, buttonLeftDoor, buttonRightDoor, buttonClose;
+            Label ID, buttonHandbrake, buttonTogglePower, buttonToggleMU, buttonToggleBrakeHose, buttonToggleAngleCockA, buttonToggleAngleCockB, buttonToggleBleedOffValve, buttonBrakeCarMode, buttonBrakeCarModePL, buttonTwoPipesConnection, buttonLeftDoor, buttonRightDoor, buttonHeating, buttonClose;
 
             var vbox = base.Layout(layout).AddLayoutVertical();
             vbox.Add(ID = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Car ID") + "  " + (CarPosition >= Viewer.PlayerTrain.Cars.Count? " " :Viewer.PlayerTrain.Cars[CarPosition].CarID), LabelAlignment.Center));
@@ -98,6 +98,9 @@ namespace Orts.Viewer3D.Popups
             vbox.Add(buttonRightDoor = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Pravé dveře") + "     Nastaveno: " + (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.RightDoorText, LabelAlignment.Center));
 
             vbox.AddHorizontalSeparator();
+            vbox.Add(buttonHeating = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Topení/klimatizace") + "     Nastaveno: " + (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.HeatingText, LabelAlignment.Center));
+
+            vbox.AddHorizontalSeparator();
             vbox.Add(buttonClose = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Close window"), LabelAlignment.Center));
             buttonHandbrake.Click += new Action<Control, Point>(buttonHandbrake_Click);
             buttonTogglePower.Click += new Action<Control, Point>(buttonTogglePower_Click);
@@ -110,6 +113,7 @@ namespace Orts.Viewer3D.Popups
             buttonTwoPipesConnection.Click += new Action<Control, Point>(buttonTwoPipesConnection_Click);
             buttonLeftDoor.Click += new Action<Control, Point>(buttonLeftDoor_Click);
             buttonRightDoor.Click += new Action<Control, Point>(buttonRightDoor_Click);
+            buttonHeating.Click += new Action<Control, Point>(buttonHeating_Click);
             buttonClose.Click += new Action<Control, Point>(buttonClose_Click);
 
             return vbox;
@@ -328,6 +332,24 @@ namespace Orts.Viewer3D.Popups
                 //(Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.RightDoorText = "otevřeno";
             }
             (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.RightDoorCycle = 0;
+        }
+
+        void buttonHeating_Click(Control arg1, Point arg2)
+        {
+            new HeatingCommand(Viewer.Log, (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon), (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.HeatingMenu += 1);
+
+            if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.HeatingMenu > 1) (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.HeatingMenu = 0;
+
+            if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.HeatingMenu == 0)
+            {
+                //Viewer.Simulator.Confirmer.Information(Viewer.Catalog.GetString("Topení/klimatizace zapnuto"));
+                (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.HeatingIsOn = true;
+            }
+            if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.HeatingMenu == 1)
+            {
+                //Viewer.Simulator.Confirmer.Information(Viewer.Catalog.GetString("Topení/klimatizace vypnuto"));
+                (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.HeatingIsOn = false;
+            }
         }
 
     }
