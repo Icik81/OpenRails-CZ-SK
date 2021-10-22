@@ -425,6 +425,7 @@ namespace Orts.Formats.Msts
         BRAKE_PIPE_FLOW,
         BREAK_POWER_BUTTON,
         HEATING_CURRENT,
+        HEATING_OVERCURRENT,
 
         // Further CabViewControlTypes must be added above this line, to avoid their malfunction in 3DCabs
         EXTERNALWIPERS,

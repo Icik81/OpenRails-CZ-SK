@@ -290,7 +290,9 @@ namespace Orts.Common
         BreakPowerButton,
         BreakPowerButtonRelease,
         QuickReleaseButtonRelease,
-        LowPressureReleaseButtonRelease
+        LowPressureReleaseButtonRelease,
+        HeatingOverCurrentOn,
+        HeatingOverCurrentOff,
     }
 
     public static class Events
@@ -610,6 +612,9 @@ namespace Orts.Common
 
                         case 20047: return Event.QuickReleaseButtonRelease;
                         case 20048: return Event.LowPressureReleaseButtonRelease;
+
+                        case 20049: return Event.HeatingOverCurrentOn;
+                        case 20050: return Event.HeatingOverCurrentOff;
 
                         default: return 0;
                     }
