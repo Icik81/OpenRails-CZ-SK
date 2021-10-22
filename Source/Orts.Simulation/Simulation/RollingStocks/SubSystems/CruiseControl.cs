@@ -1364,14 +1364,21 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                         {
                             if (a > 0 && demand > Locomotive.AccelerationMpSS)
                             {
-                                if (Locomotive.AccelerationMpSS < a - 0.015f)
+                                if (controllerVolts > demandedVolts && delta < 0.8)
                                 {
-                                    float step = 100 / Locomotive.ThrottleFullRangeIncreaseTimeSeconds;
+                                    // nix
+                                }
+                                else
+                                {
+                                    if (Locomotive.AccelerationMpSS < a - 0.015f)
+                                    {
+                                        float step = 100 / Locomotive.ThrottleFullRangeIncreaseTimeSeconds;
 
-                                    step *= elapsedClockSeconds;
-                                    controllerVolts += step;
-                                    if (controllerVolts > 100)
-                                        controllerVolts = 100;
+                                        step *= elapsedClockSeconds;
+                                        controllerVolts += step;
+                                        if (controllerVolts > 100)
+                                            controllerVolts = 100;
+                                    }
                                 }
                             }
                             else

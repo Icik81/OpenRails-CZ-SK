@@ -2841,7 +2841,7 @@ namespace Orts.Simulation.RollingStocks
                     }
                     car.WagonTemperature += car.TempCDelta + car.TempCDeltaAir;
                 }
-                Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Teplota " + car.WagonTemperature));
+                // Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Teplota " + car.WagonTemperature));
             }
             
             // Topení a klimatizace
@@ -2897,7 +2897,7 @@ namespace Orts.Simulation.RollingStocks
                 I_HeatingData = MathHelper.Clamp(I_HeatingData, 0, 1000);
                 I_HeatingData0 = (float)Math.Round(I_HeatingData0);
 
-                Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Příkon topení/klimatizace "+ PowerReductionByHeating0 / 1000 + " kW" + "   Proud " + I_HeatingData0 + " A!"));
+                // Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Příkon topení/klimatizace "+ PowerReductionByHeating0 / 1000 + " kW" + "   Proud " + I_HeatingData0 + " A!"));
                 //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Zapnuté topení, výkon zredukován " + PowerReductionByHeating0 * MaxPowerW / 1000) + " kW!");
             }
             else

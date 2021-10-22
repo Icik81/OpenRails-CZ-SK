@@ -730,6 +730,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems
             {
 
             }
+            if (MpS.ToKpH(AbsSpeedMpS) < 3 && MirelType == Type.LS90 && ls90tested)
+            {
+                BlueLight = true;
+            }
         }
 
         protected void UpdateDisplay()
