@@ -632,7 +632,7 @@ namespace ORTS
                             }
                         }
                         doc.Save(SelectedRoute.Path + "\\VoltageChangeMarkers.xml");
-                        File.WriteAllText(SelectedRoute.Path + "\\VoltageChangeMarkersDbVersion.ini", ws.GetPowerSuplyStationVersion(SelectedRoute.Name));
+                        File.WriteAllText(SelectedRoute.Path + "\\VoltageChangeMarkersDbVersion.ini", ws.GetPowerSuplyMarkerVersion(SelectedRoute.Name));
                         sw.Close();
                     }
                 }
