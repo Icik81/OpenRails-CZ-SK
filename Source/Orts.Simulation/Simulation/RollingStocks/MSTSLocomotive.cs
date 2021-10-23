@@ -2658,6 +2658,7 @@ namespace Orts.Simulation.RollingStocks
         public float U_Heating = 3000;
         public bool HeatingOverCurrent = false;
         public bool HeatingIsOn = false;
+        public float MSGHeatingCycle;
 
         // Snížení výkonu při zvýšeném odběru na lokomotivě
         public float PowerReductionByHeating0 = 0;        
@@ -2786,6 +2787,13 @@ namespace Orts.Simulation.RollingStocks
                             car.SetTempCThreshold = car.SetTemperatureC;
                         }
 
+                        MSGHeatingCycle++;
+                        if (MSGHeatingCycle > 5000 && car.WagonTemperature < 18)
+                        {
+                            Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Cestujícím je zima!"));
+                            MSGHeatingCycle = 0; 
+                        }
+
                         // Termostat vypnutý, topení aktivní
                         if (HeatingIsOn && car.WagonTemperature < car.SetTempCThreshold && !car.ThermostatOn)
                         {
@@ -2813,6 +2821,13 @@ namespace Orts.Simulation.RollingStocks
                         {
                             car.SetTemperatureC = Simulator.Random.Next(17, 25);
                             car.SetTempCThreshold = car.SetTemperatureC;
+                        }
+
+                        MSGHeatingCycle++;
+                        if (MSGHeatingCycle > 5000 && car.WagonTemperature > 30)
+                        {
+                            Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Cestujícím je příliš horko!"));
+                            MSGHeatingCycle = 0;
                         }
 
                         // Termostat vypnutý, klimatizace aktivní
@@ -2877,11 +2892,13 @@ namespace Orts.Simulation.RollingStocks
                         {
                             PowerReduction = 0.9f;
                             HeatingOverCurrent = true;
+                            Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Vybavení nadproudové ochrany topení/klimatizace!"));
                         }
                         if (car.WagonType == WagonTypes.Engine && this is MSTSElectricLocomotive)
                         {
                             HVOff = true;
                             HeatingOverCurrent = true;
+                            Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Vybavení nadproudové ochrany topení/klimatizace!"));
                         }
                     }
                 }
