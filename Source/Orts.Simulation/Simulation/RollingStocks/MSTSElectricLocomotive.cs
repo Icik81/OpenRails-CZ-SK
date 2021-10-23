@@ -716,11 +716,12 @@ namespace Orts.Simulation.RollingStocks
                 if (LocalThrottlePercent != 0 && Pantograph4Switch == 0)                    
                     HVOff = true;
 
-                // Použije se pro kontrolku při stažení všech pantografů
-                if ((Pantographs[1].State == PantographState.Down && Pantographs[2].State == PantographState.Down)
-                    || (Pantographs[1].State == PantographState.Lowering && Pantographs[2].State == PantographState.Lowering))
-                    PantographsDown = true;
-                else PantographsDown = false;
+                // Použije se pro kontrolku při ztrátě napětí v pantografech
+                if (RouteVoltageV == 25000 && PantographVoltageV < 19000
+                    || RouteVoltageV == 3000 && PantographVoltageV < 1900
+                    || RouteVoltageV == 1 && PantographVoltageV < 1900)
+                    CheckPowerLoss = true;
+                else CheckPowerLoss = false;
 
                 // Blokování pantografu u jednosystémových lokomotiv při vypnutém HV
                 if (!MultiSystemEngine)

@@ -556,7 +556,7 @@ namespace Orts.Simulation.RollingStocks
         float PantoStatus = 0;
         float PrePantoStatus = 0;
         public float HeatingMaxCurrentA;
-        public bool PantographsDown;
+        public bool CheckPowerLoss;
 
         // Jindrich
         public bool EnableControlVoltageChange = true;
@@ -8323,15 +8323,7 @@ namespace Orts.Simulation.RollingStocks
                         data = 0;
                     break;
 
-                // Icik                
-                case CABViewControlTypes.PANTOGRAPHS_DOWN:
-                    {
-                        if (PantographsDown && Battery && PowerKey)
-                            data = 0;
-                        else
-                            data = 1;
-                        break;
-                    }
+                // Icik                                
                 case CABViewControlTypes.PANTOGRAPHS_4:
                 case CABViewControlTypes.PANTOGRAPHS_4C:
                 case CABViewControlTypes.PANTOGRAPH_4_SWITCH:
@@ -8473,7 +8465,14 @@ namespace Orts.Simulation.RollingStocks
                             data = 0;
                         break;
                     }
-                
+                case CABViewControlTypes.CHECK_POWERLOSS:
+                    {
+                        if (CheckPowerLoss && Battery && PowerKey)
+                            data = 1;
+                        else
+                            data = 0;
+                        break;
+                    }
             }
             // max needle speed
             if (cvc.MaxNeedleSpeed > 0 && elapsedTime > 0)
