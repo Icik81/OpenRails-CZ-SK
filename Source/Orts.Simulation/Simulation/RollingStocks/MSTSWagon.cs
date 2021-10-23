@@ -1832,6 +1832,8 @@ namespace Orts.Simulation.RollingStocks
             outf.Write(Variable4);
             outf.Write(DoorLeftOpen);
             outf.Write(DoorRightOpen);
+            outf.Write(BrakeSystem.HeatingIsOn);
+            outf.Write(BrakeSystem.HeatingMenu);
 
             base.Save(outf);
         }
@@ -1880,6 +1882,8 @@ namespace Orts.Simulation.RollingStocks
             Variable4 = inf.ReadSingle();
             DoorLeftOpen = inf.ReadBoolean();
             DoorRightOpen = inf.ReadBoolean();
+            BrakeSystem.HeatingIsOn = inf.ReadBoolean();
+            BrakeSystem.HeatingMenu = inf.ReadSingle();
 
             base.Restore(inf);
 

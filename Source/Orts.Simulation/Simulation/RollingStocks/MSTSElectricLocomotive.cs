@@ -952,7 +952,7 @@ namespace Orts.Simulation.RollingStocks
                     Pantographs[1].PantographsBlocked = false;
                     Pantographs[2].PantographsBlocked = false;
 
-                    if (!EDBIndependent)
+                    if (!EDBIndependent && GameTimeFlow > 1)
                     {
                         // Blokuje zapnutí HV při staženém sběrači a nebo navoleném výkonu a EDB
                         if ((PowerSupply.PantographVoltageV == 1 && PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closing)
@@ -1021,7 +1021,7 @@ namespace Orts.Simulation.RollingStocks
                         }
                     }
 
-                    if (EDBIndependent)
+                    if (EDBIndependent && GameTimeFlow > 1)
                     {
                         // Blokuje zapnutí HV při staženém sběrači a nebo navoleném výkonu
                         if ((PowerSupply.PantographVoltageV == 1 && PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closing)

@@ -334,6 +334,7 @@ namespace Orts.Simulation.RollingStocks
         public float SetTemperatureC;
         public bool WagonHasTemperature = false;
         public float CarOutsideTempC0;
+        public bool StatusHeatIsOn = false;
 
 
         // Setup for ambient temperature dependency
