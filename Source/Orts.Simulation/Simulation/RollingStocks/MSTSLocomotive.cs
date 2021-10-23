@@ -2710,7 +2710,7 @@ namespace Orts.Simulation.RollingStocks
 
             foreach (TrainCar car in Train.Cars)
             {
-                if (car.WagonType == WagonTypes.Passenger)
+                if (car.WagonType == WagonTypes.Passenger || car.HasPassengerCapacity)
                 {
                     //car.CarOutsideTempC = -11;
 
