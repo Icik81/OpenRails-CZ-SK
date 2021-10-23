@@ -2282,7 +2282,9 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.LOWPRESSURE_RELEASE_BUTTON:
                 case CABViewControlTypes.BRAKE_PIPE_FLOW:
                 case CABViewControlTypes.BREAK_POWER_BUTTON:
+                case CABViewControlTypes.HEATING_OVERCURRENT:
                 case CABViewControlTypes.CHECK_POWERLOSS:
+                    
 
                     index = (int)data;
                     break;

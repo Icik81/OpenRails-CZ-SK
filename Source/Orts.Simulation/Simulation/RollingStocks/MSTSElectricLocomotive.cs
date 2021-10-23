@@ -717,9 +717,9 @@ namespace Orts.Simulation.RollingStocks
                     HVOff = true;
 
                 // Použije se pro kontrolku při ztrátě napětí v pantografech
-                if (RouteVoltageV == 25000 && PantographVoltageV < 19000
-                    || RouteVoltageV == 3000 && PantographVoltageV < 1900
-                    || RouteVoltageV == 1 && PantographVoltageV < 1900)
+                if (PowerSupply.PantographVoltageV < 19000
+                    || RouteVoltageV == 3000 && PowerSupply.PantographVoltageV < 1900
+                    || RouteVoltageV == 1 && PowerSupply.PantographVoltageV < 1900)
                     CheckPowerLoss = true;
                 else CheckPowerLoss = false;
 
@@ -876,19 +876,21 @@ namespace Orts.Simulation.RollingStocks
                     if (CircuitBreakerOn && SwitchingVoltageMode_OffAC && RouteVoltageV == 3000
                         && (Pantographs[1].State == PantographState.Up || Pantographs[2].State == PantographState.Up))
                         HVOff = true;
-
+                    
                     // Při zapnutém HV přejede do beznapěťového úseku - shodí HV po pár sekundách
                     if (CircuitBreakerOn && (RouteVoltageV == 1 || (Pantographs[1].State == PantographState.Down && Pantographs[2].State == PantographState.Down)))
                     {
                         TRouteVoltageV_1 += elapsedClockSeconds;
                         if (!VoltageFilter && TRouteVoltageV_1 > Simulator.Random.Next(2, 4))
                         {
-                            HVOff = true;
+                            if (PowerReductionByHeating0 + PowerReductionByAuxEquipment0 > 0)
+                                HVOff = true;
                             TRouteVoltageV_1 = 0;
                         }
-                        if (VoltageFilter && TRouteVoltageV_1 > Simulator.Random.Next(20, 40))
+                        if (VoltageFilter && TRouteVoltageV_1 > Simulator.Random.Next(2, 4))
                         {
-                            HVOff = true;
+                            if (PowerReductionByHeating0 + PowerReductionByAuxEquipment0 > 0)
+                                HVOff = true;
                             TRouteVoltageV_1 = 0;
                         }
                     }
