@@ -2710,9 +2710,12 @@ namespace Orts.Simulation.RollingStocks
 
             foreach (TrainCar car in Train.Cars)
             {
-                if (car.HasPassengerCapacity)
+                if (car.WagonType == WagonTypes.Passenger)
                 {
                     //car.CarOutsideTempC = -11;
+
+                    if (car.WagonType == WagonTypes.Passenger)
+                        car.HasPassengerCapacity = true;
 
                     if (!car.WagonHasTemperature && GameTimeFlow > 1)
                     {
@@ -2767,7 +2770,7 @@ namespace Orts.Simulation.RollingStocks
                     if (car.AbsSpeedMpS > 0 && car.WagonTemperature > car.CarOutsideTempC0 * 0.75f)
                         car.TempCDeltaAir = -car.PowerReductionByHeating0 / TempStepDownSlow / car.CarLengthM * TempCDeltaOutside * (1 + (car.AbsSpeedMpS / (300 / 3.6f))) * elapsedClockSeconds;
                     else
-                    if (car.AbsSpeedMpS == 0 && car.WagonTemperature < car.CarOutsideTempC0 * 1.10f)
+                    if (car.AbsSpeedMpS == 0 && car.WagonTemperature < car.CarOutsideTempC0 * 1.05f)
                         car.TempCDeltaAir = +car.PowerReductionByHeating0 / TempStepUpSlow / car.CarLengthM * TempCDeltaOutside * (1 + (car.AbsSpeedMpS / (300 / 3.6f))) * elapsedClockSeconds;
                     else
                     if (car.AbsSpeedMpS == 0 && car.WagonTemperature > car.CarOutsideTempC0)
