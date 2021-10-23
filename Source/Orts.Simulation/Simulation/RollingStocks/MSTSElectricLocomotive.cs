@@ -717,7 +717,7 @@ namespace Orts.Simulation.RollingStocks
                     HVOff = true;
 
                 // Použije se pro kontrolku při ztrátě napětí v pantografech
-                if (PowerSupply.PantographVoltageV < 19000
+                if (RouteVoltageV == 25000 && PowerSupply.PantographVoltageV < 19000
                     || RouteVoltageV == 3000 && PowerSupply.PantographVoltageV < 1900
                     || RouteVoltageV == 1 && PowerSupply.PantographVoltageV < 1900)
                     CheckPowerLoss = true;
@@ -883,13 +883,13 @@ namespace Orts.Simulation.RollingStocks
                         TRouteVoltageV_1 += elapsedClockSeconds;
                         if (!VoltageFilter && TRouteVoltageV_1 > Simulator.Random.Next(2, 4))
                         {
-                            if (PowerReductionByHeating0 + PowerReductionByAuxEquipment0 > 0)
+                            if (PowerReductionByHeating0 + PowerReductionByAuxEquipmentEng > 0)
                                 HVOff = true;
                             TRouteVoltageV_1 = 0;
                         }
                         if (VoltageFilter && TRouteVoltageV_1 > Simulator.Random.Next(2, 4))
                         {
-                            if (PowerReductionByHeating0 + PowerReductionByAuxEquipment0 > 0)
+                            if (PowerReductionByHeating0 + PowerReductionByAuxEquipmentEng > 0)
                                 HVOff = true;
                             TRouteVoltageV_1 = 0;
                         }
