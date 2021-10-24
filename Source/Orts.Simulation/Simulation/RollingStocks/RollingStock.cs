@@ -30,6 +30,8 @@ namespace Orts.Simulation.RollingStocks
     {
         public static TrainCar Load(Simulator simulator, string wagFilePath, bool initialize = true)
         {
+            if (String.IsNullOrEmpty(wagFilePath))
+                return null;
             GenericWAGFile wagFile = SharedGenericWAGFileManager.Get(wagFilePath);
             TrainCar car;
             if (wagFile.OpenRails != null
@@ -96,6 +98,8 @@ namespace Orts.Simulation.RollingStocks
         public static TrainCar Restore(Simulator simulator, BinaryReader inf, Train train)
         {
             TrainCar car = Load(simulator, inf.ReadString(), false);
+            if (car == null)
+                return null;
             car.Train = train;
             car.Restore(inf);
             car.Initialize();

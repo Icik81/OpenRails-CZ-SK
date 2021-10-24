@@ -943,7 +943,11 @@ namespace Orts.Simulation.Physics
             if (count > 0)
             {
                 for (int i = 0; i < count; ++i)
-                    Cars.Add(RollingStock.Restore(simulator, inf, this));
+                {
+                    TrainCar tc = RollingStock.Restore(simulator, inf, this);
+                    if (tc != null)
+                        Cars.Add(tc);
+                }
             }
         }
 

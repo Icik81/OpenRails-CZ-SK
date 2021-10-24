@@ -412,8 +412,12 @@ namespace Orts.Viewer3D.Processes
         /// <summary>
         /// Resume a saved game.
         /// </summary>
+        protected bool resumeCalled = false;
         void Resume(UserSettings settings, string[] args)
         {
+            if (resumeCalled)
+                return;
+            resumeCalled = true;
             // If "-resume" also specifies a save file then use it
             // E.g. RunActivity.exe -resume "yard_two 2012-03-20 22.07.36"
             // else use most recently changed *.save

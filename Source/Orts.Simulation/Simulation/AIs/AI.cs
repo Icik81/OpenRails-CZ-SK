@@ -195,19 +195,23 @@ namespace Orts.Simulation.AIs
 
             for (int iStarting = 0; iStarting < totalStarting; iStarting++)
             {
-                string trainType = inf.ReadString();
-                if (String.Equals(trainType, "AI"))
+                try
                 {
-                    AITrain aiTrain = new AITrain(Simulator, inf, this);
-                    StartList.InsertTrain(aiTrain);
-                    Simulator.StartReference.Add(aiTrain.Number);
+                    string trainType = inf.ReadString();
+                    if (String.Equals(trainType, "AI"))
+                    {
+                        AITrain aiTrain = new AITrain(Simulator, inf, this);
+                        StartList.InsertTrain(aiTrain);
+                        Simulator.StartReference.Add(aiTrain.Number);
+                    }
+                    else
+                    {
+                        TTTrain aiTrain = new TTTrain(Simulator, inf, this);
+                        StartList.InsertTrain(aiTrain);
+                        Simulator.StartReference.Add(aiTrain.Number);
+                    }
                 }
-                else
-                {
-                    TTTrain aiTrain = new TTTrain(Simulator, inf, this);
-                    StartList.InsertTrain(aiTrain);
-                    Simulator.StartReference.Add(aiTrain.Number);
-                }
+                catch { }
             }
 
             int totalAutoGen = inf.ReadInt32();
