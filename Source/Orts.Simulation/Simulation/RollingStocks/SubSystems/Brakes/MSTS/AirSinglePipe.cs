@@ -129,8 +129,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             EmergAuxVolumeRatio = thiscopy.EmergAuxVolumeRatio;
             TwoPipesConnection = thiscopy.TwoPipesConnection;
             NoMRPAuxResCharging = thiscopy.NoMRPAuxResCharging;
-            HoldingValve = thiscopy.HoldingValve;
-            TrainPipeLeakRatePSIpS = thiscopy.TrainPipeLeakRatePSIpS;            
+            HoldingValve = thiscopy.HoldingValve;        
             TripleValveState = thiscopy.TripleValveState;
             BrakeSensitivityPSIpS = thiscopy.BrakeSensitivityPSIpS;
             OverchargeEliminationRatePSIpS = thiscopy.OverchargeEliminationRatePSIpS;
@@ -220,7 +219,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 BleedOffValveOpen ? Simulator.Catalog.GetString("Open") : " ",//HudScroll feature requires for the last value, at least one space instead of string.Empty,                
                                 
                 BailOffOnAntiSkid ? Simulator.Catalog.GetString("Aktivní") : "",                
-                string.Format("{0:F5} bar/s", TrainPipeLeakRatePSIpS / 14.50377f),
+                string.Format("{0:F5} bar/s", (Car as MSTSWagon).TrainPipeLeakRatePSIpS / 14.50377f),
                 string.Empty, // Spacer because the state above needs 2 columns.                                     
                 string.Format("{0:F0} L", BrakePipeVolumeM3 * 1000),
                 string.Format("{0:F0} L", CylVolumeM3 * 1000),
@@ -308,10 +307,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 // OpenRails specific parameters
                 case "wagon(brakepipevolume": BrakePipeVolumeM3 = Me3.FromFt3(stf.ReadFloatBlock(STFReader.UNITS.VolumeDefaultFT3, null)); break;
                 //case "wagon(ortsbrakeinsensitivity": BrakeInsensitivityPSIpS = stf.ReadFloatBlock(STFReader.UNITS.PressureRateDefaultPSIpS, null); break;
-
-                // Načte hodnotu netěsnosti lokomotivy i vozů
-                case "wagon(trainpipeleakrate": TrainPipeLeakRatePSIpS = stf.ReadFloatBlock(STFReader.UNITS.PressureRateDefaultPSIpS, null); break;
-                
+               
                 // Načte hodnotu citivosti brzdy lokomotivy i vozů
                 case "wagon(brakesensitivity": BrakeSensitivityPSIpS = stf.ReadFloatBlock(STFReader.UNITS.PressureRateDefaultPSIpS, null); break;
 
@@ -441,8 +437,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             outf.Write(CylVolumeM3);
             outf.Write(BailOffOn);
             outf.Write(StartOn);
-            outf.Write(PrevAuxResPressurePSI);
-            outf.Write(TrainPipeLeakRatePSIpS);
+            outf.Write(PrevAuxResPressurePSI);            
             outf.Write(AutoCylPressurePSI2);
             outf.Write(AutoCylPressurePSI1);
             outf.Write(AutoCylPressurePSI0);
@@ -489,8 +484,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             CylVolumeM3 = inf.ReadSingle();
             BailOffOn = inf.ReadBoolean();
             StartOn = inf.ReadBoolean();
-            PrevAuxResPressurePSI = inf.ReadSingle();
-            TrainPipeLeakRatePSIpS = inf.ReadSingle();
+            PrevAuxResPressurePSI = inf.ReadSingle();            
             AutoCylPressurePSI2 = inf.ReadSingle();
             AutoCylPressurePSI1 = inf.ReadSingle();
             AutoCylPressurePSI0 = inf.ReadSingle();
@@ -1364,9 +1358,11 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             train.TotalTrainTrainPipeLeakRate = 0f;
             foreach (TrainCar car in train.Cars)
             {
+                (car as MSTSWagon).TrainPipeLeakRatePSIpS = (car as MSTSWagon).TrainPipeLeakRatePSIpS0;
+
                 //  Pokud není netěstnost vozu definována
-                if (car.BrakeSystem.TrainPipeLeakRatePSIpS == 0)
-                    car.BrakeSystem.TrainPipeLeakRatePSIpS = 0.00010f * 14.50377f; // Výchozí netěsnost 0.00010bar/s                
+                if ((car as MSTSWagon).TrainPipeLeakRatePSIpS == 0)
+                    (car as MSTSWagon).TrainPipeLeakRatePSIpS = 0.00010f * 14.50377f; // Výchozí netěsnost 0.00010bar/s                
 
                 //  První vůz
                 if (car == train.Cars[0] && !car.BrakeSystem.AngleCockBOpen) NotConnected = true;
@@ -1376,13 +1372,13 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 {
                     if (NotConnected)
                     {
-                        car.BrakeSystem.TrainPipeLeakRatePSIpS = 0;
+                        (car as MSTSWagon).TrainPipeLeakRatePSIpS = 0;
                         //car.BrakeSystem.KapacitaHlJimkyAPotrubi = 0;
                     }
                     if (!car.BrakeSystem.FrontBrakeHoseConnected || !car.BrakeSystem.AngleCockAOpen)
                     {
                         NotConnected = true;
-                        car.BrakeSystem.TrainPipeLeakRatePSIpS = 0;
+                        (car as MSTSWagon).TrainPipeLeakRatePSIpS = 0;
                         //car.BrakeSystem.KapacitaHlJimkyAPotrubi = 0;
                     }
                     if (!car.BrakeSystem.AngleCockBOpen) NotConnected = true;
@@ -1393,18 +1389,18 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 {
                     if (NotConnected)
                     {
-                        car.BrakeSystem.TrainPipeLeakRatePSIpS = 0;
+                        (car as MSTSWagon).TrainPipeLeakRatePSIpS = 0;
                         //car.BrakeSystem.KapacitaHlJimkyAPotrubi = 0;
                     }
                     if (!car.BrakeSystem.FrontBrakeHoseConnected || !car.BrakeSystem.AngleCockAOpen)
                     {
-                        car.BrakeSystem.TrainPipeLeakRatePSIpS = 0;
+                        (car as MSTSWagon).TrainPipeLeakRatePSIpS = 0;
                         //car.BrakeSystem.KapacitaHlJimkyAPotrubi = 0;
                     }
                 }
 
                 // Spočítá celkovou netěsnost vlaku 
-                train.TotalTrainTrainPipeLeakRate += car.BrakeSystem.TrainPipeLeakRatePSIpS;                
+                train.TotalTrainTrainPipeLeakRate += (car as MSTSWagon).TrainPipeLeakRatePSIpS;                
             }
             
 

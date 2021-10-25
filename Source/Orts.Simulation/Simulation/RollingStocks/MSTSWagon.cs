@@ -157,6 +157,8 @@ namespace Orts.Simulation.RollingStocks
         public float Variable3DC;
         public bool LeftDoorOpenOverride;
         public bool RightDoorOpenOverride;
+        public float TrainPipeLeakRatePSIpS0;
+        public float TrainPipeLeakRatePSIpS;
 
 
         bool TenderWeightInitialize = true;
@@ -1523,6 +1525,7 @@ namespace Orts.Simulation.RollingStocks
                 case "wagon(airlossbyhandlingdoors": AirlossByHandlingDoorsPSIpS = stf.ReadFloatBlock(STFReader.UNITS.PressureRateDefaultPSIpS, null); break;
                 case "wagon(automaticdoors": AutomaticDoors = stf.ReadBoolBlock(false); break;
                 case "wagon(freightdoors": FreightDoors = stf.ReadBoolBlock(false); break;
+                case "wagon(trainpipeleakrate": TrainPipeLeakRatePSIpS0 = stf.ReadFloatBlock(STFReader.UNITS.PressureRateDefaultPSIpS, null); break;
             }
         }
 
@@ -1708,7 +1711,7 @@ namespace Orts.Simulation.RollingStocks
             FreightDoors = copy.FreightDoors;
             DoorLeftOpen = copy.DoorLeftOpen;
             DoorRightOpen = copy.DoorRightOpen;
-
+            TrainPipeLeakRatePSIpS0 = copy.TrainPipeLeakRatePSIpS0;
 
             if (copy.IntakePointList != null)
             {
