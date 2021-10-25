@@ -2725,13 +2725,13 @@ namespace Orts.Simulation.RollingStocks
                             if (car.CarLengthM > 10) car.PowerReductionByHeating = 30.0f * 1000;   // 30kW                    
                             if (car.CarLengthM > 20) car.PowerReductionByHeating = 50.0f * 1000;   // 50kW                                                                                          
                         }
-                        car.PowerReductionByHeating = MathHelper.Clamp(car.PowerReductionByHeating, 0, 100.0f * 1000);
-                        car.PowerReductionByAirCondition = MathHelper.Clamp(car.PowerReductionByAirCondition, 0, 100.0f * 1000);
+                        car.PowerReductionByHeating = MathHelper.Clamp(car.PowerReductionByHeating, 0, 50.0f * 1000);
+                        car.PowerReductionByAirCondition = MathHelper.Clamp(car.PowerReductionByAirCondition, 0, 50.0f * 1000);
 
                         // Klimatizace
                         if (Simulator.Season == SeasonType.Summer && car.PowerReductionByAirCondition != 0)
-                        car.BrakeSystem.HeatingIsOn = true;
-                        else
+                            car.BrakeSystem.HeatingIsOn = true;                        
+                        if (Simulator.Season == SeasonType.Summer && car.PowerReductionByAirCondition == 0)
                             car.BrakeSystem.HeatingIsOn = false;
 
                         // Topení
@@ -2804,8 +2804,7 @@ namespace Orts.Simulation.RollingStocks
                             car.TempCDelta = +car.PowerReductionByHeating0 / TempStepUp / car.CarLengthM * TempCDeltaOutside * (1 - (car.AbsSpeedMpS / (300 / 3.6f))) * elapsedClockSeconds;                            
                             if (car.WagonTemperature > car.SetTempCThreshold - 0.1f)
                                 car.ThermostatOn = true;
-                            if (car.TempCDelta != 0)
-                                car.StatusHeatIsOn = true;
+                            car.StatusHeatIsOn = true;
                         }
                         else
                         {
@@ -2842,8 +2841,7 @@ namespace Orts.Simulation.RollingStocks
                             car.TempCDelta = -car.PowerReductionByAirCondition0 / TempStepUp / car.CarLengthM * TempCDeltaOutside * (1 + (car.AbsSpeedMpS / (300 / 3.6f))) * elapsedClockSeconds;                            
                             if (car.WagonTemperature < car.SetTempCThreshold + 0.1f)
                                 car.ThermostatOn = true;
-                            if (car.TempCDelta != 0)
-                                car.StatusHeatIsOn = true;
+                            car.StatusHeatIsOn = true;
                         }
                         else
                         {
@@ -2863,6 +2861,8 @@ namespace Orts.Simulation.RollingStocks
                         }
                         
                     }
+                    
+
                     car.WagonTemperature += car.TempCDelta + car.TempCDeltaAir;
                 }
                 // Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Teplota " + car.WagonTemperature));
@@ -2876,27 +2876,30 @@ namespace Orts.Simulation.RollingStocks
 
                 foreach (TrainCar car in Train.Cars)
                 {
-                    car.ThermostatCoef = 1;
-                    if (car.ThermostatOn) car.ThermostatCoef = 0;
-
                     if (!car.BrakeSystem.HeatingIsOn) // Pokud má vůz vypnuté topení nebo klimatizaci
                     {
                         car.PowerReductionByHeating0 = 0;
                         car.PowerReductionByAirCondition0 = 0;
                         car.StatusHeatIsOn = false;
                     }
-                    else
-                    {
+                    else                    
+                    {   // Jednotka je zapnutá a aktivní (termostat vypnutý)
                         car.PowerReductionByHeating0 = car.PowerReductionByHeating;
                         car.PowerReductionByAirCondition0 = car.PowerReductionByAirCondition;
                     }
 
-                    if (Simulator.Season == SeasonType.Summer)
-                        PowerReductionByHeatingWag += car.PowerReductionByAirCondition0 * car.ThermostatCoef; // Klimatizace
-                    else
-                        PowerReductionByHeatingWag += car.PowerReductionByHeating0 * car.ThermostatCoef; // Topení                        
+                    if (!car.StatusHeatIsOn) // Pokud je jednotka neaktivní (termostat zapnutý)
+                    {
+                        car.PowerReductionByHeating0 = 0;
+                        car.PowerReductionByAirCondition0 = 0;
+                    }
 
-                    if (I_HeatingData > HeatingMaxCurrentA)
+                    if (Simulator.Season == SeasonType.Summer)
+                        PowerReductionByHeatingWag += car.PowerReductionByAirCondition0; // Klimatizace
+                    else
+                        PowerReductionByHeatingWag += car.PowerReductionByHeating0; // Topení                        
+
+                    if (I_HeatingData > HeatingMaxCurrentA && IsPlayerTrain)
                     {
                         if (car.WagonType == WagonTypes.Engine && this is MSTSDieselLocomotive)
                         {
@@ -2914,18 +2917,21 @@ namespace Orts.Simulation.RollingStocks
                 }
 
                 PowerReductionByHeating0 = PowerReductionByHeatingWag;
-                
-                // Výpočet proudu při zapnutí topení nebo klimatizace
-                I_Heating = (float)Math.Round(PowerReductionByHeating0 / U_Heating);
-                if (I_HeatingData > I_Heating)                
-                    I_HeatingData -= 20 * elapsedClockSeconds; // 20A/s               
-                if (I_HeatingData < I_Heating)                
-                    I_HeatingData += 10 * elapsedClockSeconds; // 10A/s                                
-                I_HeatingData = MathHelper.Clamp(I_HeatingData, 0, 1000);
-                I_HeatingData0 = (float)Math.Round(I_HeatingData0);
 
-                //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Příkon topení/klimatizace "+ PowerReductionByHeating0 / 1000 + " kW" + "   Proud " + I_HeatingData0 + " A!"));
-                //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Zapnuté topení, výkon zredukován " + PowerReductionByHeating0 * MaxPowerW / 1000) + " kW!");
+                if (IsPlayerTrain)
+                {
+                    // Výpočet proudu při zapnutí topení nebo klimatizace
+                    I_Heating = (float)Math.Round(PowerReductionByHeating0 / U_Heating);
+                    if (I_HeatingData > I_Heating)
+                        I_HeatingData -= 20 * elapsedClockSeconds; // 20A/s               
+                    if (I_HeatingData < I_Heating)
+                        I_HeatingData += 10 * elapsedClockSeconds; // 10A/s                                
+                    I_HeatingData = MathHelper.Clamp(I_HeatingData, 0, 1000);
+                    I_HeatingData0 = (float)Math.Round(I_HeatingData0);
+
+                    //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Příkon topení/klimatizace " + PowerReductionByHeating0 / 1000 + " kW" + "   Proud " + I_HeatingData0 + " A!"));
+                    //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Zapnuté topení, výkon zredukován " + PowerReductionByHeating0 * MaxPowerW / 1000) + " kW!");
+                }
             }
             else
                 PowerReductionByHeating0 = 0;
