@@ -2723,9 +2723,10 @@ namespace Orts.Simulation.RollingStocks
                         {
                             if (car.CarLengthM <= 10) car.PowerReductionByHeating = 20.0f * 1000;   // 20kW                    
                             if (car.CarLengthM > 10) car.PowerReductionByHeating = 30.0f * 1000;   // 30kW                    
-                            if (car.CarLengthM > 20) car.PowerReductionByHeating = 50.0f * 1000;   // 50kW                            
+                            if (car.CarLengthM > 20) car.PowerReductionByHeating = 50.0f * 1000;   // 50kW                                                                                          
                         }
-                        car.PowerReductionByHeating0 = car.PowerReductionByHeating;
+                        car.PowerReductionByHeating = MathHelper.Clamp(car.PowerReductionByHeating, 0, 100.0f * 1000);
+                        car.PowerReductionByAirCondition = MathHelper.Clamp(car.PowerReductionByAirCondition, 0, 100.0f * 1000);
 
                         // Klimatizace
                         if (Simulator.Season == SeasonType.Summer && car.PowerReductionByAirCondition != 0)
@@ -2763,18 +2764,18 @@ namespace Orts.Simulation.RollingStocks
                     float TempStepUpSlow = 100000;
                     float TempStepDown = 100000;
                     float TempStepDownSlow = 250000;
-                    float TempCDeltaOutside;
+                    float TempCDeltaOutside;                    
 
                     // Ochlazování vlivem protékajícího vzduchu
                     TempCDeltaOutside = car.CarOutsideTempC0 / car.WagonTemperature;
                     if (car.AbsSpeedMpS > 0 && car.WagonTemperature > car.CarOutsideTempC0 * 0.75f)
-                        car.TempCDeltaAir = -car.PowerReductionByHeating0 / TempStepDownSlow / car.CarLengthM * TempCDeltaOutside * (1 + (car.AbsSpeedMpS / (300 / 3.6f))) * elapsedClockSeconds;
+                        car.TempCDeltaAir = -car.PowerReductionByHeating / TempStepDownSlow / car.CarLengthM * TempCDeltaOutside * (1 + (car.AbsSpeedMpS / (300 / 3.6f))) * elapsedClockSeconds;
                     else
                     if (car.AbsSpeedMpS == 0 && car.WagonTemperature < car.CarOutsideTempC0 * 1.05f)
-                        car.TempCDeltaAir = +car.PowerReductionByHeating0 / TempStepUpSlow / car.CarLengthM * TempCDeltaOutside * (1 + (car.AbsSpeedMpS / (300 / 3.6f))) * elapsedClockSeconds;
+                        car.TempCDeltaAir = +car.PowerReductionByHeating / TempStepUpSlow / car.CarLengthM * TempCDeltaOutside * (1 + (car.AbsSpeedMpS / (300 / 3.6f))) * elapsedClockSeconds;
                     else
                     if (car.AbsSpeedMpS == 0 && car.WagonTemperature > car.CarOutsideTempC0)
-                        car.TempCDeltaAir = -car.PowerReductionByHeating0 / TempStepDownSlow / car.CarLengthM * TempCDeltaOutside * (1 + (car.AbsSpeedMpS / (300 / 3.6f))) * elapsedClockSeconds;
+                        car.TempCDeltaAir = -car.PowerReductionByHeating / TempStepDownSlow / car.CarLengthM * TempCDeltaOutside * (1 + (car.AbsSpeedMpS / (300 / 3.6f))) * elapsedClockSeconds;
                     else
                         car.TempCDeltaAir = 0;
 
@@ -2923,7 +2924,7 @@ namespace Orts.Simulation.RollingStocks
                 I_HeatingData = MathHelper.Clamp(I_HeatingData, 0, 1000);
                 I_HeatingData0 = (float)Math.Round(I_HeatingData0);
 
-                // Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Příkon topení/klimatizace "+ PowerReductionByHeating0 / 1000 + " kW" + "   Proud " + I_HeatingData0 + " A!"));
+                //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Příkon topení/klimatizace "+ PowerReductionByHeating0 / 1000 + " kW" + "   Proud " + I_HeatingData0 + " A!"));
                 //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Zapnuté topení, výkon zredukován " + PowerReductionByHeating0 * MaxPowerW / 1000) + " kW!");
             }
             else
