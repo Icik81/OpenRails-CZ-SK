@@ -552,7 +552,7 @@ namespace Orts.Simulation.RollingStocks
         public bool BreakPowerButton;
         bool BreakPowerButtonPressed = false;
         public bool BreakPowerButton_Activated;
-        public float GameTimeFlow = 0;
+        public float GameTimeFlow;
         float PantoStatus = 0;
         float PrePantoStatus = 0;
         public float HeatingMaxCurrentA;
@@ -2660,10 +2660,6 @@ namespace Orts.Simulation.RollingStocks
         public bool HeatingIsOn = false;
         public float MSGHeatingCycle;
 
-        // Snížení výkonu při zvýšeném odběru na lokomotivě
-        public float PowerReductionByHeating0 = 0;        
-        // Pomocné pohony, kompresory, dobíjení, ...
-        public float PowerReductionByAuxEquipment0;
         public void ElevatedConsumptionOnLocomotive(float elapsedClockSeconds)
         {
             if (TElevatedConsumption == 0)
@@ -2860,9 +2856,7 @@ namespace Orts.Simulation.RollingStocks
                             car.StatusHeatIsOn = false;
                         }
                         
-                    }
-                    
-
+                    }                    
                     car.WagonTemperature += car.TempCDelta + car.TempCDeltaAir;
                 }
                 // Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Teplota " + car.WagonTemperature));
@@ -2981,40 +2975,48 @@ namespace Orts.Simulation.RollingStocks
             PowerReductionByAuxEquipment0 = PowerReductionByAuxEquipmentWag + PowerReductionByAuxEquipmentEng;
             //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Zvýšený odběr proudu, výkon zredukován "+ PowerReductionByAuxEquipment0 * MaxPowerW/1000) + " kW!");                        
 
-            // Výpočet celkového úbytku výkonu 
-            if (MaxPowerW == 0) MaxPowerW = 1000000; // Default pro výkon, který nesmí být 0kW
-            float PowerReductionResult = (PowerReductionByHeating0 + PowerReductionByAuxEquipment0) * (1000000 / MaxPowerW);
-            PowerReductionResult = PowerReductionResult / 1000000;
-            PowerReductionResult = MathHelper.Clamp(PowerReductionResult, 0, 1);
-                        
-            if (PowerReduction < PowerReductionResult)
-                PowerReduction = PowerReduction + 0.025f;
-            else PowerReduction = PowerReductionResult;
-
-            if (WagonType == WagonTypes.Engine && this is MSTSElectricLocomotive) // Elektrické lokomotivy
-                PowerReduction = PowerReduction0;
-
-            //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Celková ztráta výkonu "+ PowerReduction * MaxPowerW/1000 + " kW!"));
-            //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("PowerReduction " + PowerReduction));
-            
-            if (PowerReductionResult == 0)
+            if (IsPlayerTrain)
             {
-                if (PowerReduction > PowerReduction0)
-                    PowerReduction = PowerReduction - 0.05f;
-                if (PowerReduction < PowerReduction0)
+                if (WagonType == WagonTypes.Engine && this is MSTSElectricLocomotive) // Elektrické lokomotivy
                 {
-                    PowerReduction = PowerReduction0;
-                    TElevatedConsumption = 0;
-                }                
-            }
+                    //PowerReduction = PowerReduction0;
+                    return;
+                }
 
-            //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Příkon topení " + PowerReductionByHeating0 / 1000) + " kW!");
-            //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Příkon pom.obvodů " + PowerReductionByAuxEquipment0 / 1000) + " kW!");
+                // Výpočet celkového úbytku výkonu 
+                if (MaxPowerW == 0) MaxPowerW = 1000000; // Default pro výkon, který nesmí být 0kW
+                float PowerReductionResult = (PowerReductionByHeating0 + PowerReductionByAuxEquipment0) * (1000000 / MaxPowerW);
+                PowerReductionResult = PowerReductionResult / 1000000;
+                PowerReductionResult = MathHelper.Clamp(PowerReductionResult, 0, 1);
+
+                if (PowerReduction < PowerReductionResult)
+                    PowerReduction = PowerReduction + 0.025f;
+                else PowerReduction = PowerReductionResult;
+               
+                //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Celková ztráta výkonu "+ PowerReduction * MaxPowerW/1000 + " kW!"));
+                //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("PowerReduction " + PowerReduction));
+
+                if (PowerReductionResult == 0)
+                {
+                    if (PowerReduction > PowerReduction0)
+                        PowerReduction = PowerReduction - 0.05f;
+                    if (PowerReduction < PowerReduction0)
+                    {
+                        PowerReduction = PowerReduction0;
+                        TElevatedConsumption = 0;
+                    }
+                }
+
+                //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Příkon topení " + PowerReductionByHeating0 / 1000) + " kW!");
+                //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Příkon pom.obvodů " + PowerReductionByAuxEquipment0 / 1000) + " kW!");
+            }
         }
         
         // Stanovení hodnot výkonů a síly pro AC-DC systém
         public void MaxPower_MaxForce_ACDC()
-        {            
+        {
+            if (!IsPlayerTrain)
+                return;
             switch (SwitchingVoltageMode)
             {
                 case 0:
@@ -3183,8 +3185,8 @@ namespace Orts.Simulation.RollingStocks
             EDBCancelByEngineBrake();
             HVOffbyAirPressure();
             MaxPower_MaxForce_ACDC();
-            ElevatedConsumptionOnLocomotive(elapsedClockSeconds);            
-            if (IsPlayerTrain) TogglePantograph4Switch();
+            ElevatedConsumptionOnLocomotive(elapsedClockSeconds);
+            if (IsPlayerTrain) TogglePantograph4Switch();                
             ToggleHV2Switch();
             ToggleHV5Switch();
 
