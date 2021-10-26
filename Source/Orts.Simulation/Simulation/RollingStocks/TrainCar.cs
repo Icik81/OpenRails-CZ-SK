@@ -1018,7 +1018,7 @@ namespace Orts.Simulation.RollingStocks
             if (TClock > 21 && TClock <= 24)
                 TempCClockDelta = -3;
 
-            Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("TClock " + TClock));
+            // Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("TClock " + TClock));
 
             //CarOutsideTempC = InitialCarOutsideTempC - TemperatureHeightVariationDegC;
             CarOutsideTempCBase = InitialCarOutsideTempC - TemperatureHeightVariationDegC + TempCClockDelta;

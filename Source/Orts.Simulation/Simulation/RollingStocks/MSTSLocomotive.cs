@@ -735,8 +735,13 @@ namespace Orts.Simulation.RollingStocks
 
         protected float checkAccBitsPreviousSpeed = 0;
         protected float checkAccBitsOffTime = 0;
+        protected int checkBitsCount = 0;
         protected void CheckAccelerationBits(float elapsedSeconds, float speed)
         {
+            checkBitsCount++;
+            if (checkBitsCount < 10)
+                return;
+            checkBitsCount = 0;
             float delta = MpS.ToKpH(speed) - checkAccBitsPreviousSpeed;
             if (delta > 0.5) // increased, blink the increasing speed sign
             {
@@ -3129,6 +3134,7 @@ namespace Orts.Simulation.RollingStocks
         private bool trainBrakeRelease = false;
         protected float EngineBrakePercentSet = 0;
         public bool CanCheckEngineBrake = true;
+        protected int checkParkingBrakeCount = 0;
         public override void Update(float elapsedClockSeconds)
         {
             if (IsPlayerTrain && !Simulator.Paused)
@@ -3261,9 +3267,10 @@ namespace Orts.Simulation.RollingStocks
             {
                 UpdateCarSteamHeat(elapsedClockSeconds);
             }
- 
-            if (AutomaticParkingBrake && IsPlayerTrain)
+            checkParkingBrakeCount++;
+            if (AutomaticParkingBrake && IsPlayerTrain && checkParkingBrakeCount == 10)
             {
+                checkParkingBrakeCount = 0;
                 if (CruiseControl != null)
                 {
                     if (CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.Auto || CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.AVV)

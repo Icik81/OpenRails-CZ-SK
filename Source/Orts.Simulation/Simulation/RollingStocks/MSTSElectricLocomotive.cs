@@ -289,44 +289,81 @@ namespace Orts.Simulation.RollingStocks
             int powerSys = -1;
             int markerVoltage = 0;
             VoltageChangeMarker marker;
-            float distToMarker = DistanceToVoltageMarkerM(out markerVoltage, out marker);
-
             if (prevDist == 0)
-                dist = DistanceToPowerSupplyStationM(markerVoltage == 3000 ? 0 : 1, out myStation);
-            // toto nefunguje, ještě prověřím
-            /*            if (prevDist >= 1000) // více než kilometr, updatujeme co 100m
-                        {
-                            if (distSinceLastCheck + 100 > DistanceM)
-                            {
-                                dist = prevDist = DistanceToPowerSupplyStationM(out powerSys, out myStation);
-                                distSinceLastCheck = DistanceM;
-                            }
-                            if (distSinceLastCheck < DistanceM - 100)
-                            {
-                                dist = prevDist = DistanceToPowerSupplyStationM(out powerSys, out myStation);
-                                distSinceLastCheck = DistanceM;
-                            }
-                        }
-                        else if (prevDist < 1000 && prevDist >= 100) // méně než km, ale více než 100 m, každých 10m
-                        {
-                            if (distSinceLastCheck + 10 > DistanceM)
-                            {
-                                dist = prevDist = DistanceToPowerSupplyStationM(out powerSys, out myStation);
-                                distSinceLastCheck = DistanceM;
-                            }
-                            if (distSinceLastCheck - 10 < DistanceM)
-                            {
-                                dist = prevDist = DistanceToPowerSupplyStationM(out powerSys, out myStation);
-                                distSinceLastCheck = DistanceM;
-                            }
-                        }
-                        if (distSinceLastCheck < DistanceM)
-                            distSinceLastCheck = DistanceM;
-                        else if (prevDist < 100) // méně než 100m, vypočti vždy*/
-            /*            {
-                            dist = prevDist = DistanceToPowerSupplyStationM(out powerSys, out myStation);
-                        }*/
-            dist = prevDist = DistanceToPowerSupplyStationM(markerVoltage == 3000 ? 0 : 1, out myStation);
+                dist = DistanceToPowerSupplyStationM(RouteVoltageV == 3000 ? 0 : 1, out myStation);
+            if (prevDistMarker == 0)
+                distToMarker = DistanceToVoltageMarkerM(out markerVoltage, out marker);
+
+            // ***************************** napaječky **************************************************************
+            if (prevDist >= 1000) // více než kilometr, updatujeme co 100m
+            {
+                if (distSinceLastCheck - 100 > DistanceM)
+                {
+                    dist = prevDist = DistanceToPowerSupplyStationM(RouteVoltageV == 3000 ? 0 : 1, out myStation);
+                    distSinceLastCheck = DistanceM;
+                }
+                else if (distSinceLastCheck < DistanceM - 100)
+                {
+                    dist = prevDist = DistanceToPowerSupplyStationM(RouteVoltageV == 3000 ? 0 : 1, out myStation);
+                    distSinceLastCheck = DistanceM;
+                }
+                else
+                    goto CheckMarkers;
+            }
+            else if (prevDist < 1000 && prevDist >= 100) // méně než km, ale více než 100 m, každých 10m
+            {
+                if (distSinceLastCheck + 10 < DistanceM)
+                {
+                    dist = prevDist = DistanceToPowerSupplyStationM(RouteVoltageV == 3000 ? 0 : 1, out myStation);
+                    distSinceLastCheck = DistanceM;
+                }
+            }
+            else if (distSinceLastCheck < DistanceM)
+                distSinceLastCheck = DistanceM;
+            if (prevDist < 100) // méně než 100m, vypočti vžd
+            {
+                dist = prevDist = DistanceToPowerSupplyStationM(RouteVoltageV == 3000 ? 0 : 1, out myStation);
+            }
+
+        // ***************************************************************************************************************
+
+        // ***************************** markery **************************************************************
+        CheckMarkers:
+            if (prevDistMarker >= 1000) // více než kilometr, updatujeme co 100m
+            {
+                if (distSinceLastCheckMarker - 100 > DistanceM)
+                {
+                    distToMarker = prevDistMarker = DistanceToVoltageMarkerM(out markerVoltage, out marker);
+                    distSinceLastCheckMarker = DistanceM;
+                }
+                else if (distSinceLastCheckMarker < DistanceM - 100)
+                {
+                    distToMarker = prevDistMarker = DistanceToVoltageMarkerM(out markerVoltage, out marker);
+                    distSinceLastCheckMarker = DistanceM;
+                }
+                else
+                    goto CountPower;
+            }
+            else if (prevDistMarker < 1000 && prevDistMarker >= 100) // méně než km, ale více než 100 m, každých 10m
+            {
+                if (distSinceLastCheckMarker + 10 < DistanceM)
+                {
+                    distToMarker = prevDistMarker = DistanceToVoltageMarkerM(out markerVoltage, out marker);
+                    distSinceLastCheckMarker = DistanceM;
+                }
+            }
+            else if (distSinceLastCheckMarker < DistanceM)
+                distSinceLastCheckMarker = DistanceM;
+            if (prevDistMarker < 100) // méně než 100m, vypočti vžd
+            {
+                distToMarker = prevDistMarker = DistanceToVoltageMarkerM(out markerVoltage, out marker);
+            }
+
+        // ***************************************************************************************************************
+
+        CountPower:
+            if (dist == 0)
+                dist = prevDist;
             if (myStation == null && prevPss != null)
             {
                 myStation = prevPss;
@@ -404,8 +441,14 @@ namespace Orts.Simulation.RollingStocks
         protected PowerSupplyStation prevPss = null;
         protected float prevDist = 0;
         protected float distSinceLastCheck = 0;
+        protected float prevDistMarker = 0;
+        protected float distSinceLastCheckMarker = 0;
         public float Amps;
         public PowerSupplyStation myStation = null;
+        protected int markerVoltage = 0;
+        protected float dist = 0;
+        protected float distToMarker = 0;
+
         protected void UnderVoltageProtection(float elapsedClockSeconds)
         {
             if (Simulator.Paused)
@@ -442,14 +485,14 @@ namespace Orts.Simulation.RollingStocks
                 Amps = 0;
             if (Amps < 0)
                 Amps = 0;
-            float dist = 0;
             int powerSys = -1;
+            VoltageChangeMarker marker;
             if (prevDist == 0)
                 dist = DistanceToPowerSupplyStationM(RouteVoltageV == 3000 ? 0 : 1, out myStation);
-            int markerVoltage = 0;
-            VoltageChangeMarker marker;
-            float distToMarker = DistanceToVoltageMarkerM(out markerVoltage, out marker);
-            /* toto nefunguje, ještě prověřím
+            if (prevDistMarker == 0)
+                distToMarker = DistanceToVoltageMarkerM(out markerVoltage, out marker);
+
+            // ***************************** napaječky **************************************************************
             if (prevDist >= 1000) // více než kilometr, updatujeme co 100m
             {
                 if (distSinceLastCheck - 100 > DistanceM)
@@ -463,28 +506,62 @@ namespace Orts.Simulation.RollingStocks
                     distSinceLastCheck = DistanceM;
                 }
                 else
-                    return;
+                    goto CheckMarkers;
             }
             else if (prevDist < 1000 && prevDist >= 100) // méně než km, ale více než 100 m, každých 10m
             {
-                if (distSinceLastCheck + 10 > DistanceM)
-                {
-                    dist = prevDist = DistanceToPowerSupplyStationM(RouteVoltageV == 3000 ? 0 : 1, out myStation);
-                    distSinceLastCheck = DistanceM;
-                }
-                if (distSinceLastCheck - 10 < DistanceM)
+                if (distSinceLastCheck + 10 < DistanceM)
                 {
                     dist = prevDist = DistanceToPowerSupplyStationM(RouteVoltageV == 3000 ? 0 : 1, out myStation);
                     distSinceLastCheck = DistanceM;
                 }
             }
-            if (distSinceLastCheck < DistanceM)
+            else if (distSinceLastCheck < DistanceM)
                 distSinceLastCheck = DistanceM;
-            else if (prevDist < 100) // méně než 100m, vypočti vžd
+            if (prevDist < 100) // méně než 100m, vypočti vžd
             {
                 dist = prevDist = DistanceToPowerSupplyStationM(RouteVoltageV == 3000 ? 0 : 1, out myStation);
-            }*/
-            dist = prevDist = DistanceToPowerSupplyStationM(markerVoltage == 3000 ? 0 : 1, out myStation);
+            }
+
+            // ***************************************************************************************************************
+
+            // ***************************** markery **************************************************************
+            CheckMarkers:
+            if (prevDistMarker >= 1000) // více než kilometr, updatujeme co 100m
+            {
+                if (distSinceLastCheckMarker - 100 > DistanceM)
+                {
+                    distToMarker = prevDistMarker = DistanceToVoltageMarkerM(out markerVoltage, out marker);
+                    distSinceLastCheckMarker = DistanceM;
+                }
+                else if (distSinceLastCheckMarker < DistanceM - 100)
+                {
+                    distToMarker = prevDistMarker = DistanceToVoltageMarkerM(out markerVoltage, out marker);
+                    distSinceLastCheckMarker = DistanceM;
+                }
+                else
+                    goto CountPower;
+            }
+            else if (prevDistMarker < 1000 && prevDistMarker >= 100) // méně než km, ale více než 100 m, každých 10m
+            {
+                if (distSinceLastCheckMarker + 10 < DistanceM)
+                {
+                    distToMarker = prevDistMarker = DistanceToVoltageMarkerM(out markerVoltage, out marker);
+                    distSinceLastCheckMarker = DistanceM;
+                }
+            }
+            else if (distSinceLastCheckMarker < DistanceM)
+                distSinceLastCheckMarker = DistanceM;
+            if (prevDistMarker < 100) // méně než 100m, vypočti vžd
+            {
+                distToMarker = prevDistMarker = DistanceToVoltageMarkerM(out markerVoltage, out marker);
+            }
+
+        // ***************************************************************************************************************
+
+        CountPower:
+            if (dist == 0)
+                dist = prevDist;
             if (myStation == null && prevPss != null)
             {
                 myStation = prevPss;

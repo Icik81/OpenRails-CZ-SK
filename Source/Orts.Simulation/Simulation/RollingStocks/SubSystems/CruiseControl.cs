@@ -634,8 +634,13 @@ namespace Orts.Simulation.RollingStocks.SubSystems
             }
         }
 
+        protected int checkRestrictedZoneCount = 0;
         public virtual void CheckRestrictedSpeedZone()
         {
+            checkRestrictedZoneCount++;
+            if (checkRestrictedZoneCount < 10)
+                return;
+            checkRestrictedZoneCount = 0;
             RemainingTrainLengthToPassRestrictedZone = (int)Math.Round((Simulator.PlayerLocomotive.Train.DistanceTravelledM - restrictedRegionTravelledDistance));
             if (RemainingTrainLengthToPassRestrictedZone < 0) RemainingTrainLengthToPassRestrictedZone = 0;
             if ((Simulator.PlayerLocomotive.Train.DistanceTravelledM - restrictedRegionTravelledDistance) >= trainLength)

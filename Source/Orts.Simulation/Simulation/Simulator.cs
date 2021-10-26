@@ -2201,8 +2201,13 @@ namespace Orts.Simulation
             Consuptors = new List<MSTSElectricLocomotive>();
         }
 
+        protected int stationUpdateCount = 0;
         public void Update()
         {
+            stationUpdateCount++;
+            if (stationUpdateCount < 10) // do each 10-th frame only for performance
+                return;
+            stationUpdateCount = 0;
             TotalAmps = 0;
             foreach (MSTSElectricLocomotive loco in Consuptors)
             {

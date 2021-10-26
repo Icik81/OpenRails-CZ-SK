@@ -235,8 +235,13 @@ namespace Orts.Simulation.RollingStocks.SubSystems
         protected RecieverState prevRecieverState = RecieverState.Signal50;
         protected int minimalSignalDistance = 0;
         protected bool noAutoblock = false;
+        protected int updateCount = 0;
         public void Update(float elapsedClockSeconds, float AbsSpeedMpS, float AbsWheelSpeedMpS)
         {
+            updateCount++;
+            if (updateCount < 10)
+                return;
+            updateCount = 0;
             UpdateDisplay();
             if (Locomotive.Battery && initTest == InitTest.Off)
             {
