@@ -2713,7 +2713,7 @@ namespace Orts.Simulation.RollingStocks
                     if (car.WagonType == WagonTypes.Passenger)
                         car.HasPassengerCapacity = true;
 
-                    if (!car.WagonHasTemperature && GameTimeFlow > 1)
+                    if (!car.WagonHasTemperature && GameTimeFlow > 1 || car.CarOutsideTempCLastStatus != car.CarOutsideTempC)
                     {
                         if (car.PowerReductionByHeating == 0) // Default
                         {
@@ -2735,18 +2735,24 @@ namespace Orts.Simulation.RollingStocks
                             car.BrakeSystem.HeatingIsOn = true;
 
                         // Vozy nikdy nebudou startovat podchlazené pod 5°C
-                        if (car.CarOutsideTempC < 5)
+                        if (car.CarOutsideTempC < 5 && !car.WagonHasTemperature)
                         {
                             car.WagonTemperature = Simulator.Random.Next(5, 10);
                             car.CarOutsideTempC0 = car.WagonTemperature;
                         }
                         else
-                        {
-                            car.WagonTemperature = Simulator.Random.Next((int)car.CarOutsideTempC - 2, (int)car.CarOutsideTempC + 2);
+                        if (!car.WagonHasTemperature)
+                        {                            
+                            car.WagonTemperature = Simulator.Random.Next((int)car.CarOutsideTempC - 2, (int)car.CarOutsideTempC + 2);                            
                             car.CarOutsideTempC0 = car.WagonTemperature;
                         }
+                        else
+                            car.CarOutsideTempC0 = car.CarOutsideTempC;
+
+                        car.CarOutsideTempC0 = MathHelper.Clamp(car.CarOutsideTempC0, 5, 40);
+
                         // Natopené vozy, oživená loko
-                        if (BrakeSystem.IsAirFull)
+                        if (BrakeSystem.IsAirFull && !car.WagonHasTemperature)
                         {
                             if (Simulator.Season == SeasonType.Summer)
                                 car.WagonTemperature = Simulator.Random.Next(24, 29);
@@ -2754,8 +2760,12 @@ namespace Orts.Simulation.RollingStocks
                                 car.WagonTemperature = Simulator.Random.Next(18, 23);
                         }
                         car.WagonHasTemperature = true;
+                        car.CarOutsideTempCLastStatus = car.CarOutsideTempC;
                     }
-                                                                                
+
+                    //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Teplota " + car.CarOutsideTempC0));
+
+
                     float TempStepUp = 25000;
                     float TempStepUpSlow = 100000;
                     float TempStepDown = 100000;

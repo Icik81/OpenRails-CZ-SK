@@ -336,7 +336,9 @@ namespace Orts.Simulation.RollingStocks
         public bool WagonHasTemperature = false;
         public float CarOutsideTempC0;
         public bool StatusHeatIsOn = false;
-
+        public float CarOutsideTempCBase;
+        public float CarOutsideTempCLastStatus;
+        public float TempCClockDelta;
 
         // Setup for ambient temperature dependency
         Interpolator OutsideWinterTempbyLatitudeC;
@@ -354,7 +356,7 @@ namespace Orts.Simulation.RollingStocks
         // Temperature in deg Celcius
         static float[] WorldTemperatureWinter = new float[]
         {
-            0.9f, 8.7f, 12.4f, 17.2f, 20.9f, 25.9f, 22.8f, 18.2f, 11.1f, 1.1f, -10.2f, -18.7f
+            0.9f, 8.7f, 12.4f, 17.2f, 20.9f, 25.9f, 22.8f, 18.2f, 11.1f, 1.1f, 0.2f, -5.7f
          };
 
         static float[] WorldTemperatureAutumn = new float[]
@@ -993,7 +995,51 @@ namespace Orts.Simulation.RollingStocks
 
             TemperatureHeightVariationDegC = MathHelper.Clamp(TemperatureHeightVariationDegC, 0.00f, 30.0f);
 
-            CarOutsideTempC = InitialCarOutsideTempC - TemperatureHeightVariationDegC;
+            float TClock = (float)Simulator.ClockTime / 60 / 60;
+            if (Simulator.ClockTime > 24 * 60 * 60)
+                TClock = ((float)Simulator.ClockTime - (24 * 60 * 60)) / 60 / 60;
+
+            // Icik
+            // Přírůstek teploty v závislosti na denním čase
+            if (TClock > 0 && TClock <= 3)
+                TempCClockDelta = -5;
+            if (TClock > 3  && TClock <= 6)
+                TempCClockDelta = -7;
+            if (TClock > 6 && TClock <= 9)
+                TempCClockDelta = 0;
+            if (TClock > 9 && TClock <= 12)
+                TempCClockDelta = +3;
+            if (TClock > 12 && TClock <= 15)
+                TempCClockDelta = +5;
+            if (TClock > 15 && TClock <= 18)
+                TempCClockDelta = +3;
+            if (TClock > 18 && TClock <= 21)
+                TempCClockDelta = 0;
+            if (TClock > 21 && TClock <= 24)
+                TempCClockDelta = -3;
+
+            Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("TClock " + TClock));
+
+            //CarOutsideTempC = InitialCarOutsideTempC - TemperatureHeightVariationDegC;
+            CarOutsideTempCBase = InitialCarOutsideTempC - TemperatureHeightVariationDegC + TempCClockDelta;
+            CarOutsideTempCBase = MathHelper.Clamp(CarOutsideTempCBase, -25, 40);
+
+            // Okolní teplota závisí na podmínkách (oblačno, déšť, mlha)
+            switch (Simulator.Season)
+            {
+                case SeasonType.Spring:
+                    CarOutsideTempC = CarOutsideTempCBase - (Simulator.Weather.PricipitationIntensityPPSPM2 * 4) - (Simulator.Weather.OvercastFactor * 4) - (3 - (Simulator.Weather.FogDistance / 100000 * 15));
+                    break;
+                case SeasonType.Summer:
+                    CarOutsideTempC = CarOutsideTempCBase - (Simulator.Weather.PricipitationIntensityPPSPM2 * 5) - (Simulator.Weather.OvercastFactor * 5) - (3 - (Simulator.Weather.FogDistance / 100000 * 15)); 
+                    break;
+                case SeasonType.Autumn:
+                    CarOutsideTempC = CarOutsideTempCBase - (Simulator.Weather.PricipitationIntensityPPSPM2 * 3) - (Simulator.Weather.OvercastFactor * 3) - (3 - (Simulator.Weather.FogDistance / 100000 * 15)); 
+                    break;
+                case SeasonType.Winter:
+                    CarOutsideTempC = CarOutsideTempCBase - (Simulator.Weather.PricipitationIntensityPPSPM2 * 2) - (Simulator.Weather.OvercastFactor * 2) - (3 - (Simulator.Weather.FogDistance / 100000 * 15)); 
+                    break;
+            }            
 
             // gravity force, M32 is up component of forward vector
             GravityForceN = MassKG * GravitationalAccelerationMpS2 * WorldPosition.XNAMatrix.M32;
