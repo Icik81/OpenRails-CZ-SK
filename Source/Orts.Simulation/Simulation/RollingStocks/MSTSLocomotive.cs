@@ -736,13 +736,8 @@ namespace Orts.Simulation.RollingStocks
 
         protected float checkAccBitsPreviousSpeed = 0;
         protected float checkAccBitsOffTime = 0;
-        protected int checkBitsCount = 0;
         protected void CheckAccelerationBits(float elapsedSeconds, float speed)
         {
-            checkBitsCount++;
-            if (checkBitsCount < 10)
-                return;
-            checkBitsCount = 0;
             float delta = MpS.ToKpH(speed) - checkAccBitsPreviousSpeed;
             if (delta > 0.5) // increased, blink the increasing speed sign
             {
@@ -2666,8 +2661,17 @@ namespace Orts.Simulation.RollingStocks
         public bool HeatingIsOn = false;
         public float MSGHeatingCycle;
 
-        public void ElevatedConsumptionOnLocomotive(float elapsedClockSeconds)
+        protected int consumptionCalcCount = 0;
+        protected float elapsedClockSeconds;
+        public void ElevatedConsumptionOnLocomotive(float clockSeconds)
         {
+
+            elapsedClockSeconds += clockSeconds;
+            consumptionCalcCount++;
+            if (consumptionCalcCount < 100)
+                return;
+            consumptionCalcCount = 0;
+
             if (TElevatedConsumption == 0)
                 PowerReduction0 = PowerReduction;
             
@@ -3026,6 +3030,7 @@ namespace Orts.Simulation.RollingStocks
                 //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Příkon topení " + PowerReductionByHeating0 / 1000) + " kW!");
                 //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Příkon pom.obvodů " + PowerReductionByAuxEquipment0 / 1000) + " kW!");
             }
+            elapsedClockSeconds = clockSeconds;
         }
         
         // Stanovení hodnot výkonů a síly pro AC-DC systém
