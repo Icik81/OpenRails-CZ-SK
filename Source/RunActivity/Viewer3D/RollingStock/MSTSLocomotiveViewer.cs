@@ -2284,7 +2284,8 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.BREAK_POWER_BUTTON:
                 case CABViewControlTypes.HEATING_OVERCURRENT:
                 case CABViewControlTypes.CHECK_POWERLOSS:
-                    
+                case CABViewControlTypes.DONT_RAISE_PANTO:
+
 
                     index = (int)data;
                     break;

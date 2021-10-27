@@ -97,7 +97,12 @@ namespace Orts.Simulation.RollingStocks
         float T_HVOpen = 0;
         float T_HVClosed = 0;
         float[] T_PantoUp = new float[4];
-        
+
+        float PreDataVoltageAC;
+        float PreDataVoltageDC;
+        bool UpdateTimeEnable;
+                
+
 
         public MSTSElectricLocomotive(Simulator simulator, string wagFile) :
             base(simulator, wagFile)
@@ -611,16 +616,19 @@ namespace Orts.Simulation.RollingStocks
                     TInduktion = 0;
 
 
-                // Zákmit na voltmetru            
-                if (PowerSupply.PantographVoltageV < 2)
+                if (!UpdateTimeEnable)
                 {
-                    VoltageSprung = 1.5f;
-                    Step1 = 0.40f;
-                    TimeCriticalVoltage = 0;
+                    // Zákmit na voltmetru            
+                    if (PowerSupply.PantographVoltageV < 2)
+                    {
+                        VoltageSprung = 1.5f;
+                        Step1 = 0.40f;
+                        TimeCriticalVoltage = 0;
+                    }
+                    Step1 = Step1 - elapsedClockSeconds;
+                    if (Step1 < 0) Step1 = 0;
+                    if ((VoltageSprung > 1.0f && Step1 == 0 && PowerSupply.PantographVoltageV > MaxLineVoltage0)) VoltageSprung = 1.0f;
                 }
-                Step1 = Step1 - elapsedClockSeconds;
-                if (Step1 < 0) Step1 = 0;
-                if ((VoltageSprung > 1.0f && Step1 == 0 && PowerSupply.PantographVoltageV > MaxLineVoltage0)) VoltageSprung = 1.0f;
 
                 // Kritická mez napětí pro podnapěťovku
                 if (RouteVoltageV == 25000)
@@ -658,6 +666,13 @@ namespace Orts.Simulation.RollingStocks
                     || RouteVoltageV == 1 && PowerSupply.PantographVoltageV < 1900)
                     CheckPowerLoss = true;
                 else CheckPowerLoss = false;
+
+                // Použije se pro text na displeji "NEDVIHAJ ZBERAČ"
+                if (Pantograph4Switch == 0 && PantographVoltageV >= 2000)                
+                    DontRaisePanto = true;                
+                else 
+                if (Pantograph4Switch != 0 || PantographVoltageV < 2000)                
+                    DontRaisePanto = false;                
 
                 // Blokování pantografu u jednosystémových lokomotiv při vypnutém HV
                 if (!MultiSystemEngine)
@@ -1609,8 +1624,8 @@ namespace Orts.Simulation.RollingStocks
 
             switch (cvc.ControlType)
             {
-                case CABViewControlTypes.LINE_VOLTAGE:
-                    data = PantographVoltageV;
+                case CABViewControlTypes.LINE_VOLTAGE:                    
+                    data = PantographVoltageV;                 
                     if (cvc.Units == CABViewControlUnits.KILOVOLTS)
                         data /= 1000;
                     break;
@@ -1820,15 +1835,35 @@ namespace Orts.Simulation.RollingStocks
                     }
                     LocoSwitchACDC = true;
                     break;
-
-                case CABViewControlTypes.LINE_VOLTAGE_AC:                    
-                    data = VoltageAC;
+              
+                case CABViewControlTypes.LINE_VOLTAGE_AC:
+                    if (cvc.UpdateTime != 0)
+                        UpdateTimeEnable = true;
+                    cvc.ElapsedTime += elapsedTime;
+                    if (cvc.ElapsedTime > cvc.UpdateTime)
+                    {
+                        data = VoltageAC;
+                        cvc.ElapsedTime = 0;
+                        PreDataVoltageAC = data;
+                    }
+                    else
+                        data = PreDataVoltageAC;
                     if (cvc.Units == CABViewControlUnits.KILOVOLTS)
                         data /= 1000;
                     break;
 
-                case CABViewControlTypes.LINE_VOLTAGE_DC:                    
-                    data = VoltageDC;
+                case CABViewControlTypes.LINE_VOLTAGE_DC:
+                    if (cvc.UpdateTime != 0)
+                        UpdateTimeEnable = true;
+                    cvc.ElapsedTime += elapsedTime;
+                    if (cvc.ElapsedTime > cvc.UpdateTime)
+                    {
+                        data = VoltageDC;
+                        cvc.ElapsedTime = 0;
+                        PreDataVoltageDC = data;
+                    }
+                    else
+                        data = PreDataVoltageDC;
                     if (cvc.Units == CABViewControlUnits.KILOVOLTS)
                         data /= 1000;
                     break;

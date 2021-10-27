@@ -557,6 +557,7 @@ namespace Orts.Simulation.RollingStocks
         float PrePantoStatus = 0;
         public float HeatingMaxCurrentA;
         public bool CheckPowerLoss;
+        public bool DontRaisePanto;
 
         // Jindrich
         public bool EnableControlVoltageChange = true;
@@ -7111,7 +7112,7 @@ namespace Orts.Simulation.RollingStocks
         {
         }*/
 
-        private float elapsedTime;
+        public float elapsedTime;
         private float previousSelectedSpeed = 0;
         private float previousMaxMirelSpeed = 0;
 
@@ -8520,6 +8521,14 @@ namespace Orts.Simulation.RollingStocks
                 case CABViewControlTypes.CHECK_POWERLOSS:
                     {
                         if (CheckPowerLoss && Battery && PowerKey)
+                            data = 1;
+                        else
+                            data = 0;
+                        break;
+                    }
+                case CABViewControlTypes.DONT_RAISE_PANTO:
+                    {
+                        if (DontRaisePanto && Battery && PowerKey)
                             data = 1;
                         else
                             data = 0;
