@@ -100,6 +100,7 @@ namespace Orts.Simulation.RollingStocks
 
         float PreDataVoltageAC;
         float PreDataVoltageDC;
+        float PreDataVoltage;
         bool UpdateTimeEnable;
                 
 
@@ -1624,8 +1625,18 @@ namespace Orts.Simulation.RollingStocks
 
             switch (cvc.ControlType)
             {
-                case CABViewControlTypes.LINE_VOLTAGE:                    
-                    data = PantographVoltageV;                 
+                case CABViewControlTypes.LINE_VOLTAGE:
+                    if (cvc.UpdateTime != 0)
+                        UpdateTimeEnable = true;
+                    cvc.ElapsedTime += elapsedTime;
+                    if (cvc.ElapsedTime > cvc.UpdateTime)
+                    {
+                        data = PantographVoltageV;
+                        cvc.ElapsedTime = 0;
+                        PreDataVoltage = data;
+                    }
+                    else
+                        data = PreDataVoltage;                                     
                     if (cvc.Units == CABViewControlUnits.KILOVOLTS)
                         data /= 1000;
                     break;
