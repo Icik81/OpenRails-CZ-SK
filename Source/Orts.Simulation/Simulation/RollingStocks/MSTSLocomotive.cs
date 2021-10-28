@@ -558,6 +558,9 @@ namespace Orts.Simulation.RollingStocks
         public float HeatingMaxCurrentA;
         public bool CheckPowerLoss;
         public bool DontRaisePanto;
+        float PreDataAmmeter;
+        float PreDataAmps;
+        float PreDataAmpVolts;
 
         // Jindrich
         public bool EnableControlVoltageChange = true;
@@ -7236,50 +7239,58 @@ namespace Orts.Simulation.RollingStocks
                 case CABViewControlTypes.AMMETER: // Current not modelled yet to ammeter shows tractive effort until then.
                 case CABViewControlTypes.AMMETER_ABS:
                     {
-                        var direction = 0; // Forwards
-                        if (cvc is CVCGauge && ((CVCGauge)cvc).Orientation == 0)
-                            direction = ((CVCGauge)cvc).Direction;
-                        if (MaxCurrentA == 0)
-                            MaxCurrentA = (float)cvc.MaxValue;
-                        if (LocomotiveAxle != null)
+                        cvc.ElapsedTime += elapsedTime;
+                        if (cvc.ElapsedTime > cvc.UpdateTime)
                         {
-                            data = 0.0f;
-                            if (ThrottlePercent > 0)
+                            var direction = 0; // Forwards
+                            if (cvc is CVCGauge && ((CVCGauge)cvc).Orientation == 0)
+                                direction = ((CVCGauge)cvc).Direction;
+                            if (MaxCurrentA == 0)
+                                MaxCurrentA = (float)cvc.MaxValue;
+                            if (LocomotiveAxle != null)
                             {
-                                //float rangeFactor = direction == 0 ? (float)cvc.MaxValue : (float)cvc.MinValue;
-                                float rangeFactor = direction == 0 ? MaxCurrentA : (float)cvc.MinValue;
-                                if (FilteredMotiveForceN != 0)
-                                    data = this.FilteredMotiveForceN / MaxForceN * rangeFactor;
-                                else
-                                    data = this.LocomotiveAxle.AxleForceN / MaxForceN * rangeFactor;
-                                data = Math.Abs(data);
-                            }
-                            if (DynamicBrakePercent > 0 && MaxDynamicBrakeForceN > 0)
-                            {
-                                float rangeFactor;
-                                if (cvc.ControlType == CABViewControlTypes.AMMETER_ABS)
+                                data = 0.0f;
+                                if (ThrottlePercent > 0)
                                 {
-                                    if (DynamicBrakeMaxCurrentA == 0)
-                                        rangeFactor = direction == 0 ? (float)cvc.MaxValue : (float)cvc.MinValue;
+                                    //float rangeFactor = direction == 0 ? (float)cvc.MaxValue : (float)cvc.MinValue;
+                                    float rangeFactor = direction == 0 ? MaxCurrentA : (float)cvc.MinValue;
+                                    if (FilteredMotiveForceN != 0)
+                                        data = this.FilteredMotiveForceN / MaxForceN * rangeFactor;
                                     else
-                                        rangeFactor = direction == 0 ? DynamicBrakeMaxCurrentA : (float)cvc.MinValue;
+                                        data = this.LocomotiveAxle.AxleForceN / MaxForceN * rangeFactor;
+                                    data = Math.Abs(data);
                                 }
-                                else
+                                if (DynamicBrakePercent > 0 && MaxDynamicBrakeForceN > 0)
                                 {
-                                    if (DynamicBrakeMaxCurrentA == 0)
-                                        rangeFactor = direction == 0 ? (float)cvc.MinValue : (float)cvc.MaxValue;
+                                    float rangeFactor;
+                                    if (cvc.ControlType == CABViewControlTypes.AMMETER_ABS)
+                                    {
+                                        if (DynamicBrakeMaxCurrentA == 0)
+                                            rangeFactor = direction == 0 ? (float)cvc.MaxValue : (float)cvc.MinValue;
+                                        else
+                                            rangeFactor = direction == 0 ? DynamicBrakeMaxCurrentA : (float)cvc.MinValue;
+                                    }
                                     else
-                                        rangeFactor = direction == 0 ? -DynamicBrakeMaxCurrentA : (float)cvc.MaxValue;
+                                    {
+                                        if (DynamicBrakeMaxCurrentA == 0)
+                                            rangeFactor = direction == 0 ? (float)cvc.MinValue : (float)cvc.MaxValue;
+                                        else
+                                            rangeFactor = direction == 0 ? -DynamicBrakeMaxCurrentA : (float)cvc.MaxValue;
+                                    }
+                                    data = DynamicBrakeForceN / MaxDynamicBrakeForceN * rangeFactor;
                                 }
-                                data = DynamicBrakeForceN / MaxDynamicBrakeForceN * rangeFactor;
+                                if (direction == 1)
+                                    data = -data;
+                                if (cvc.ControlType == CABViewControlTypes.AMMETER_ABS) data = Math.Abs(data);
+                                break;
                             }
-                            if (direction == 1)
-                                data = -data;
+                            data = this.MotiveForceN / MaxForceN * MaxCurrentA;
                             if (cvc.ControlType == CABViewControlTypes.AMMETER_ABS) data = Math.Abs(data);
-                            break;
+                            cvc.ElapsedTime = 0;
+                            PreDataAmmeter = data;
                         }
-                        data = this.MotiveForceN / MaxForceN * MaxCurrentA;
-                        if (cvc.ControlType == CABViewControlTypes.AMMETER_ABS) data = Math.Abs(data);
+                        else
+                            data = PreDataAmmeter;
                         break;
                     }
                 case CABViewControlTypes.LOAD_METER:
@@ -7447,19 +7458,27 @@ namespace Orts.Simulation.RollingStocks
                         switch (cvc.Units)
                         {
                             case CABViewControlUnits.AMPS:
-                                if (MaxCurrentA == 0)
-                                    MaxCurrentA = (float)cvc.MaxValue;
-                                if (DynamicBrakeMaxCurrentA == 0)
-                                    DynamicBrakeMaxCurrentA = (float)cvc.MinValue;
-                                if (ThrottlePercent > 0)
+                                cvc.ElapsedTime += elapsedTime;
+                                if (cvc.ElapsedTime > cvc.UpdateTime)
                                 {
-                                    data = 0;
+                                    if (MaxCurrentA == 0)
+                                        MaxCurrentA = (float)cvc.MaxValue;
+                                    if (DynamicBrakeMaxCurrentA == 0)
+                                        DynamicBrakeMaxCurrentA = (float)cvc.MinValue;
+                                    if (ThrottlePercent > 0)
+                                    {
+                                        data = 0;
+                                    }
+                                    if (DynamicBrakePercent > 0)
+                                    {
+                                        data = (DynamicBrakeForceN / MaxDynamicBrakeForceN) * DynamicBrakeMaxCurrentA;
+                                    }
+                                    data = Math.Abs(data);
+                                    cvc.ElapsedTime = 0;
+                                    PreDataAmps = data;                                    
                                 }
-                                if (DynamicBrakePercent > 0)
-                                {
-                                    data = (DynamicBrakeForceN / MaxDynamicBrakeForceN) * DynamicBrakeMaxCurrentA;
-                                }
-                                data = Math.Abs(data);
+                                else
+                                    data = PreDataAmps;
                                 break;
 
                             case CABViewControlUnits.NEWTONS:
