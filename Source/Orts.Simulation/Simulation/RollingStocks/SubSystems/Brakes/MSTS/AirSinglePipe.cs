@@ -118,7 +118,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             AuxCylVolumeRatio = thiscopy.AuxCylVolumeRatio;
             AuxBrakeLineVolumeRatio = thiscopy.AuxBrakeLineVolumeRatio;
             EmergResVolumeM3 = thiscopy.EmergResVolumeM3;
-            BrakePipeVolumeM3 = thiscopy.BrakePipeVolumeM3;
+            BrakePipeVolumeM3Base = thiscopy.BrakePipeVolumeM3Base;
             RetainerPressureThresholdPSI = thiscopy.RetainerPressureThresholdPSI;
             ReleaseRatePSIpS = thiscopy.ReleaseRatePSIpS;
             MaxReleaseRatePSIpS = thiscopy.MaxReleaseRatePSIpS;
@@ -219,9 +219,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 BleedOffValveOpen ? Simulator.Catalog.GetString("Open") : " ",//HudScroll feature requires for the last value, at least one space instead of string.Empty,                
                                 
                 BailOffOnAntiSkid ? Simulator.Catalog.GetString("Aktivní") : "",                
-                string.Format("{0:F5} bar/s", (Car as MSTSWagon).TrainPipeLeakRatePSIpS / 14.50377f),
+                string.Format("{0:F5} bar/s", (Car as MSTSWagon).TrainPipeLeakRatePSIpSBase / 14.50377f),
                 string.Empty, // Spacer because the state above needs 2 columns.                                     
-                string.Format("{0:F0} L", BrakePipeVolumeM3 * 1000),
+                string.Format("{0:F0} L", BrakePipeVolumeM3Base * 1000),
                 string.Format("{0:F0} L", CylVolumeM3 * 1000),
                 string.Format("{0:F0} L", TotalCapacityMainResBrakePipe * 1000 / 14.50377f),
                 string.Format("{0:F0}", BrakeCarModeText),
@@ -305,7 +305,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 case "wagon(emergencyrescapacity": EmergResVolumeM3 = Me3.FromFt3(stf.ReadFloatBlock(STFReader.UNITS.VolumeDefaultFT3, null)); break;
                 
                 // OpenRails specific parameters
-                case "wagon(brakepipevolume": BrakePipeVolumeM3 = Me3.FromFt3(stf.ReadFloatBlock(STFReader.UNITS.VolumeDefaultFT3, null)); break;
+                case "wagon(brakepipevolume": BrakePipeVolumeM3Base = Me3.FromFt3(stf.ReadFloatBlock(STFReader.UNITS.VolumeDefaultFT3, null)); break;
                 //case "wagon(ortsbrakeinsensitivity": BrakeInsensitivityPSIpS = stf.ReadFloatBlock(STFReader.UNITS.PressureRateDefaultPSIpS, null); break;
                
                 // Načte hodnotu citivosti brzdy lokomotivy i vozů
@@ -1358,11 +1358,12 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             train.TotalTrainTrainPipeLeakRate = 0f;
             foreach (TrainCar car in train.Cars)
             {
-                (car as MSTSWagon).TrainPipeLeakRatePSIpS = (car as MSTSWagon).TrainPipeLeakRatePSIpS0;
-
                 //  Pokud není netěstnost vozu definována
-                if ((car as MSTSWagon).TrainPipeLeakRatePSIpS == 0)
-                    (car as MSTSWagon).TrainPipeLeakRatePSIpS = 0.00010f * 14.50377f; // Výchozí netěsnost 0.00010bar/s                
+                if ((car as MSTSWagon).TrainPipeLeakRatePSIpSBase == 0)
+                    (car as MSTSWagon).TrainPipeLeakRatePSIpSBase = 0.00010f * 14.50377f; // Výchozí netěsnost 0.00010bar/s                
+
+                (car as MSTSWagon).TrainPipeLeakRatePSIpS = (car as MSTSWagon).TrainPipeLeakRatePSIpSBase * (car as MSTSWagon).BrakeSystem.BrakePipeVolumeM3 / train.TotalTrainBrakePipeVolumeM3;
+                (car as MSTSWagon).BrakeSystem.BrakePipeVolumeM3 = (car as MSTSWagon).BrakeSystem.BrakePipeVolumeM3Base;
 
                 //  První vůz
                 if (car == train.Cars[0] && !car.BrakeSystem.AngleCockBOpen) NotConnected = true;
@@ -1373,12 +1374,14 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     if (NotConnected)
                     {
                         (car as MSTSWagon).TrainPipeLeakRatePSIpS = 0;
+                        (car as MSTSWagon).BrakeSystem.BrakePipeVolumeM3 = 0.00001f;
                         //car.BrakeSystem.KapacitaHlJimkyAPotrubi = 0;
                     }
                     if (!car.BrakeSystem.FrontBrakeHoseConnected || !car.BrakeSystem.AngleCockAOpen)
                     {
                         NotConnected = true;
                         (car as MSTSWagon).TrainPipeLeakRatePSIpS = 0;
+                        (car as MSTSWagon).BrakeSystem.BrakePipeVolumeM3 = 0.00001f;
                         //car.BrakeSystem.KapacitaHlJimkyAPotrubi = 0;
                     }
                     if (!car.BrakeSystem.AngleCockBOpen) NotConnected = true;
@@ -1390,11 +1393,13 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     if (NotConnected)
                     {
                         (car as MSTSWagon).TrainPipeLeakRatePSIpS = 0;
+                        (car as MSTSWagon).BrakeSystem.BrakePipeVolumeM3 = 0.00001f;
                         //car.BrakeSystem.KapacitaHlJimkyAPotrubi = 0;
                     }
                     if (!car.BrakeSystem.FrontBrakeHoseConnected || !car.BrakeSystem.AngleCockAOpen)
                     {
                         (car as MSTSWagon).TrainPipeLeakRatePSIpS = 0;
+                        (car as MSTSWagon).BrakeSystem.BrakePipeVolumeM3 = 0.00001f;
                         //car.BrakeSystem.KapacitaHlJimkyAPotrubi = 0;
                     }
                 }
@@ -1564,7 +1569,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     foreach (TrainCar car in train.Cars)
                     {
                         // Výpočet objemu potrubí pro každý vůz
-                        if (car.BrakeSystem.BrakePipeVolumeM3 == 0) car.BrakeSystem.BrakePipeVolumeM3 = ((0.032f / 2) * (0.032f / 2) * (float)Math.PI) * (2 + car.CarLengthM);
+                        if (car.BrakeSystem.BrakePipeVolumeM3Base == 0) car.BrakeSystem.BrakePipeVolumeM3Base = ((0.032f / 2) * (0.032f / 2) * (float)Math.PI) * (2 + car.CarLengthM);
 
                         // Výpočet celkového objemu potrubí
                         train.TotalTrainBrakePipeVolumeM3 += car.BrakeSystem.BrakePipeVolumeM3;
