@@ -2660,25 +2660,19 @@ namespace Orts.Simulation.RollingStocks
         public bool HeatingOverCurrent = false;
         public bool HeatingIsOn = false;
         public float MSGHeatingCycle;
+        public float GameTimeCyklus;
 
-        protected int consumptionCalcCount = 0;
-        protected float elapsedClockSeconds;
-        public void ElevatedConsumptionOnLocomotive(float clockSeconds)
+        public void ElevatedConsumptionOnLocomotive(float elapsedClockSeconds)
         {
-
-            elapsedClockSeconds += clockSeconds;
-            consumptionCalcCount++;
-            if (consumptionCalcCount < 100)
-                return;
-            consumptionCalcCount = 0;
+            GameTimeCyklus++;
+            if (GameTimeCyklus > 10)
+                GameTimeCyklus = 0;
 
             if (TElevatedConsumption == 0)
                 PowerReduction0 = PowerReduction;
             
             if (!IsPlayerTrain)
                 HeatingIsOn = true;
-
-            //HeatingEnable = true;
 
             // Ochrana při nadproudu topení/klimatizace jen pro hráče
             if (IsPlayerTrain)
@@ -2713,173 +2707,170 @@ namespace Orts.Simulation.RollingStocks
 
                 I_HeatingData0 = (float)Math.Round(I_HeatingData);
             }
-
-            foreach (TrainCar car in Train.Cars)
+            
+            // Počítání teplot proběhne každý desátý cyklus 
+            if (GameTimeCyklus == 10)
             {
-                if (car.WagonType == WagonTypes.Passenger || car.HasPassengerCapacity)
+                foreach (TrainCar car in Train.Cars)
                 {
-                    //car.CarOutsideTempC = -11;
-
-                    if (car.WagonType == WagonTypes.Passenger)
-                        car.HasPassengerCapacity = true;
-
-                    if (!car.WagonHasTemperature && GameTimeFlow > 1 || car.CarOutsideTempCLastStatus != car.CarOutsideTempC)
+                    if (car.WagonType == WagonTypes.Passenger || car.HasPassengerCapacity)
                     {
-                        if (car.PowerReductionByHeating == 0) // Default
-                        {
-                            if (car.CarLengthM <= 10) car.PowerReductionByHeating = 20.0f * 1000;   // 20kW                    
-                            if (car.CarLengthM > 10) car.PowerReductionByHeating = 30.0f * 1000;   // 30kW                    
-                            if (car.CarLengthM > 20) car.PowerReductionByHeating = 50.0f * 1000;   // 50kW                                                                                          
-                        }
-                        car.PowerReductionByHeating = MathHelper.Clamp(car.PowerReductionByHeating, 0, 50.0f * 1000);
-                        car.PowerReductionByAirCondition = MathHelper.Clamp(car.PowerReductionByAirCondition, 0, 50.0f * 1000);
+                        if (car.WagonType == WagonTypes.Passenger)
+                            car.HasPassengerCapacity = true;
 
-                        // Klimatizace
-                        if (Simulator.Season == SeasonType.Summer && car.PowerReductionByAirCondition != 0)
-                            car.BrakeSystem.HeatingIsOn = true;                        
-                        if (Simulator.Season == SeasonType.Summer && car.PowerReductionByAirCondition == 0)
-                            car.BrakeSystem.HeatingIsOn = false;
+                        if (!car.WagonHasTemperature && GameTimeFlow > 1 || car.CarOutsideTempCLastStatus != car.CarOutsideTempC)
+                        {
+                            if (car.PowerReductionByHeating == 0) // Default
+                            {
+                                if (car.CarLengthM <= 10) car.PowerReductionByHeating = 20.0f * 1000;   // 20kW                    
+                                if (car.CarLengthM > 10) car.PowerReductionByHeating = 30.0f * 1000;   // 30kW                    
+                                if (car.CarLengthM > 20) car.PowerReductionByHeating = 50.0f * 1000;   // 50kW                                                                                          
+                            }
+                            car.PowerReductionByHeating = MathHelper.Clamp(car.PowerReductionByHeating, 0, 50.0f * 1000);
+                            car.PowerReductionByAirCondition = MathHelper.Clamp(car.PowerReductionByAirCondition, 0, 50.0f * 1000);
+
+                            // Klimatizace
+                            if (Simulator.Season == SeasonType.Summer && car.PowerReductionByAirCondition != 0)
+                                car.BrakeSystem.HeatingIsOn = true;
+                            if (Simulator.Season == SeasonType.Summer && car.PowerReductionByAirCondition == 0)
+                                car.BrakeSystem.HeatingIsOn = false;
+
+                            // Topení
+                            if (Simulator.Season != SeasonType.Summer)
+                                car.BrakeSystem.HeatingIsOn = true;
+
+                            // Vozy nikdy nebudou startovat podchlazené pod 5°C
+                            if (car.CarOutsideTempC < 5 && !car.WagonHasTemperature)
+                            {
+                                car.WagonTemperature = Simulator.Random.Next(5, 10);
+                                car.CarOutsideTempC0 = car.WagonTemperature;
+                            }
+                            else
+                            if (!car.WagonHasTemperature)
+                            {
+                                car.WagonTemperature = Simulator.Random.Next((int)car.CarOutsideTempC - 2, (int)car.CarOutsideTempC + 2);
+                                car.CarOutsideTempC0 = car.WagonTemperature;
+                            }
+                            else
+                                car.CarOutsideTempC0 = car.CarOutsideTempC;
+
+                            car.CarOutsideTempC0 = MathHelper.Clamp(car.CarOutsideTempC0, 5, 40);
+
+                            // Natopené vozy, oživená loko
+                            if (BrakeSystem.IsAirFull && !car.WagonHasTemperature)
+                            {
+                                if (Simulator.Season == SeasonType.Summer)
+                                    car.WagonTemperature = Simulator.Random.Next(24, 29);
+                                else
+                                    car.WagonTemperature = Simulator.Random.Next(18, 23);
+                            }
+                            car.WagonHasTemperature = true;
+                            car.CarOutsideTempCLastStatus = car.CarOutsideTempC;
+                        }
+
+                        //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Teplota " + car.CarOutsideTempC0));
+
+
+                        float TempStepUp = 1000;
+                        float TempStepDown = 1000;                        
+                        float TempStepUpSlow = 7500;                        
+                        float TempStepDownSlow = 7500;
+                        float TempCDeltaOutside;
+
+                        // Ochlazování a oteplování vlivem protékajícího vzduchu a okolní teploty
+                        TempCDeltaOutside = car.WagonTemperature / car.CarOutsideTempC0 / 5;
+                        if (car.AbsSpeedMpS > 0 && car.WagonTemperature > car.CarOutsideTempC0 * (1 - (car.AbsSpeedMpS / (400 / 3.6f))))
+                            car.TempCDeltaAir = -car.PowerReductionByHeating / TempStepDownSlow / car.CarLengthM * TempCDeltaOutside * (1 + (1 - (car.AbsSpeedMpS / (400 / 3.6f)))) * elapsedClockSeconds;
+                        else
+                        if (car.AbsSpeedMpS > 0 && car.WagonTemperature < car.CarOutsideTempC0 * (1 - (car.AbsSpeedMpS / (400 / 3.6f))))
+                            car.TempCDeltaAir = +car.PowerReductionByHeating / TempStepUpSlow / car.CarLengthM * TempCDeltaOutside * (1 - (car.AbsSpeedMpS / (400 / 3.6f))) * elapsedClockSeconds;
+                        else
+                        if (car.AbsSpeedMpS == 0 && car.WagonTemperature < car.CarOutsideTempC0 * 1.05f)
+                            car.TempCDeltaAir = +car.PowerReductionByHeating / TempStepUpSlow / car.CarLengthM * TempCDeltaOutside * elapsedClockSeconds;
+                        else
+                        if (car.AbsSpeedMpS == 0 && car.WagonTemperature > car.CarOutsideTempC0)
+                            car.TempCDeltaAir = -car.PowerReductionByHeating / TempStepDownSlow / car.CarLengthM * TempCDeltaOutside * elapsedClockSeconds;
+                        else
+                            car.TempCDeltaAir = 0;
 
                         // Topení
-                        if (Simulator.Season != SeasonType.Summer)
-                            car.BrakeSystem.HeatingIsOn = true;
-
-                        // Vozy nikdy nebudou startovat podchlazené pod 5°C
-                        if (car.CarOutsideTempC < 5 && !car.WagonHasTemperature)
+                        if (Simulator.Season == SeasonType.Spring || Simulator.Season == SeasonType.Autumn || Simulator.Season == SeasonType.Winter)
                         {
-                            car.WagonTemperature = Simulator.Random.Next(5, 10);
-                            car.CarOutsideTempC0 = car.WagonTemperature;
-                        }
-                        else
-                        if (!car.WagonHasTemperature)
-                        {                            
-                            car.WagonTemperature = Simulator.Random.Next((int)car.CarOutsideTempC - 2, (int)car.CarOutsideTempC + 2);                            
-                            car.CarOutsideTempC0 = car.WagonTemperature;
-                        }
-                        else
-                            car.CarOutsideTempC0 = car.CarOutsideTempC;
+                            float SetTempCHyst = 2.5f;
+                            TempCDeltaOutside = car.CarOutsideTempC0 / car.WagonTemperature;
 
-                        car.CarOutsideTempC0 = MathHelper.Clamp(car.CarOutsideTempC0, 5, 40);
+                            if (car.SetTemperatureC == 0)
+                            {
+                                car.SetTemperatureC = Simulator.Random.Next(19, 27);
+                                car.SetTempCThreshold = car.SetTemperatureC;
+                            }
 
-                        // Natopené vozy, oživená loko
-                        if (BrakeSystem.IsAirFull && !car.WagonHasTemperature)
-                        {
-                            if (Simulator.Season == SeasonType.Summer)
-                                car.WagonTemperature = Simulator.Random.Next(24, 29);
+                            MSGHeatingCycle++;
+                            if (MSGHeatingCycle > 1000 && car.WagonTemperature < 14)
+                            {
+                                Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Cestujícím je zima!"));
+                                MSGHeatingCycle = 0;
+                            }
+
+                            // Termostat vypnutý, topení aktivní
+                            if (HeatingIsOn && car.WagonTemperature < car.SetTempCThreshold && !car.ThermostatOn)
+                            {
+                                car.TempCDelta = +car.PowerReductionByHeating0 / TempStepUp / car.CarLengthM * TempCDeltaOutside * elapsedClockSeconds;
+                                if (car.WagonTemperature > car.SetTempCThreshold - 0.1f)
+                                    car.ThermostatOn = true;
+                                car.StatusHeatIsOn = true;
+                            }
                             else
-                                car.WagonTemperature = Simulator.Random.Next(18, 23);
-                        }
-                        car.WagonHasTemperature = true;
-                        car.CarOutsideTempCLastStatus = car.CarOutsideTempC;
-                    }
-
-                    //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Teplota " + car.CarOutsideTempC0));
-
-
-                    float TempStepUp = 25000;
-                    float TempStepUpSlow = 100000;
-                    float TempStepDown = 100000;
-                    float TempStepDownSlow = 250000;
-                    float TempCDeltaOutside;                    
-
-                    // Ochlazování vlivem protékajícího vzduchu
-                    TempCDeltaOutside = car.CarOutsideTempC0 / car.WagonTemperature;
-                    if (car.AbsSpeedMpS > 0 && car.WagonTemperature > car.CarOutsideTempC0 * 0.75f)
-                        car.TempCDeltaAir = -car.PowerReductionByHeating / TempStepDownSlow / car.CarLengthM * TempCDeltaOutside * (1 + (car.AbsSpeedMpS / (300 / 3.6f))) * elapsedClockSeconds;
-                    else
-                    if (car.AbsSpeedMpS == 0 && car.WagonTemperature < car.CarOutsideTempC0 * 1.05f)
-                        car.TempCDeltaAir = +car.PowerReductionByHeating / TempStepUpSlow / car.CarLengthM * TempCDeltaOutside * (1 + (car.AbsSpeedMpS / (300 / 3.6f))) * elapsedClockSeconds;
-                    else
-                    if (car.AbsSpeedMpS == 0 && car.WagonTemperature > car.CarOutsideTempC0)
-                        car.TempCDeltaAir = -car.PowerReductionByHeating / TempStepDownSlow / car.CarLengthM * TempCDeltaOutside * (1 + (car.AbsSpeedMpS / (300 / 3.6f))) * elapsedClockSeconds;
-                    else
-                        car.TempCDeltaAir = 0;
-
-                    // Topení
-                    if (Simulator.Season == SeasonType.Spring || Simulator.Season == SeasonType.Autumn || Simulator.Season == SeasonType.Winter)
-                    {
-                        float SetTempCHyst = 1.5f;                        
-                        TempCDeltaOutside = car.CarOutsideTempC0 / car.WagonTemperature;
-
-                        if (car.SetTemperatureC == 0)
-                        {
-                            car.SetTemperatureC = Simulator.Random.Next(19, 27);
-                            car.SetTempCThreshold = car.SetTemperatureC;
-                        }
-
-                        MSGHeatingCycle++;
-                        if (MSGHeatingCycle > 10000 && car.WagonTemperature < 14)
-                        {
-                            Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Cestujícím je zima!"));
-                            MSGHeatingCycle = 0; 
-                        }
-
-                        // Termostat vypnutý, topení aktivní
-                        if (HeatingIsOn && car.WagonTemperature < car.SetTempCThreshold && !car.ThermostatOn)
-                        {
-                            car.TempCDelta = +car.PowerReductionByHeating0 / TempStepUp / car.CarLengthM * TempCDeltaOutside * (1 - (car.AbsSpeedMpS / (300 / 3.6f))) * elapsedClockSeconds;                            
-                            if (car.WagonTemperature > car.SetTempCThreshold - 0.1f)
-                                car.ThermostatOn = true;
-                            car.StatusHeatIsOn = true;
-                        }
-                        else
-                        {
-                            // Termostat zapnutý, topení neaktivní                        
-                            car.TempCDelta = 0;                            
-                            if (car.WagonTemperature < car.SetTempCThreshold - SetTempCHyst)
-                                car.ThermostatOn = false;
-                            car.StatusHeatIsOn = false;
-                        }
-                    }
-
-                    // Klimatizace
-                    if (Simulator.Season == SeasonType.Summer)
-                    {
-                        float SetTempCHyst = 1.5f;
-                        TempCDeltaOutside = car.WagonTemperature / car.CarOutsideTempC;
-
-                        if (car.SetTemperatureC == 0)
-                        {
-                            car.SetTemperatureC = Simulator.Random.Next(17, 25);
-                            car.SetTempCThreshold = car.SetTemperatureC;
-                        }
-
-                        MSGHeatingCycle++;
-                        if (MSGHeatingCycle > 10000 && car.WagonTemperature > 30)
-                        {
-                            Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Cestujícím je příliš horko!"));
-                            MSGHeatingCycle = 0;
-                        }
-
-                        // Termostat vypnutý, klimatizace aktivní
-                        if (HeatingIsOn && car.WagonTemperature > car.SetTempCThreshold && !car.ThermostatOn)
-                        {
-                            car.TempCDelta = -car.PowerReductionByAirCondition0 / TempStepUp / car.CarLengthM * TempCDeltaOutside * (1 + (car.AbsSpeedMpS / (300 / 3.6f))) * elapsedClockSeconds;                            
-                            if (car.WagonTemperature < car.SetTempCThreshold + 0.1f)
-                                car.ThermostatOn = true;
-                            car.StatusHeatIsOn = true;
-                        }
-                        else
-                        {
-                            // Termostat zapnutý, klimatizace neaktivní
-                            if (car.WagonTemperature < car.CarOutsideTempC)
-                                car.TempCDelta = +car.PowerReductionByAirCondition0 / TempStepDown / car.CarLengthM * TempCDeltaOutside * (1 - (car.AbsSpeedMpS / (300 / 3.6f))) * elapsedClockSeconds;
-                            else
-                            // Teplota je stejná jako teplota okolí
-                            if (car.AbsSpeedMpS > 0 && car.WagonTemperature < car.CarOutsideTempC * 1.25f)
-                                car.TempCDelta = +car.PowerReductionByAirCondition0 / TempStepDownSlow / car.CarLengthM * TempCDeltaOutside * (1 - (car.AbsSpeedMpS / (300 / 3.6f))) * elapsedClockSeconds;
-                            else
+                            {
+                                // Termostat zapnutý, topení neaktivní                        
                                 car.TempCDelta = 0;
-
-                            if (car.WagonTemperature > car.SetTempCThreshold + SetTempCHyst)
-                                car.ThermostatOn = false;
-                            car.StatusHeatIsOn = false;
+                                if (car.WagonTemperature < car.SetTempCThreshold - SetTempCHyst)
+                                    car.ThermostatOn = false;
+                                car.StatusHeatIsOn = false;
+                            }
                         }
-                        
-                    }                    
-                    car.WagonTemperature += car.TempCDelta + car.TempCDeltaAir;
+
+                        // Klimatizace
+                        if (Simulator.Season == SeasonType.Summer)
+                        {
+                            float SetTempCHyst = 1.5f;
+                            TempCDeltaOutside = car.WagonTemperature / car.CarOutsideTempC;
+
+                            if (car.SetTemperatureC == 0)
+                            {
+                                car.SetTemperatureC = Simulator.Random.Next(17, 25);
+                                car.SetTempCThreshold = car.SetTemperatureC;
+                            }
+
+                            MSGHeatingCycle++;
+                            if (MSGHeatingCycle > 1000 && car.WagonTemperature > 30)
+                            {
+                                Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Cestujícím je příliš horko!"));
+                                MSGHeatingCycle = 0;
+                            }
+
+                            // Termostat vypnutý, klimatizace aktivní
+                            if (HeatingIsOn && car.WagonTemperature > car.SetTempCThreshold && !car.ThermostatOn)
+                            {
+                                car.TempCDelta = -car.PowerReductionByAirCondition0 / TempStepDown / car.CarLengthM * TempCDeltaOutside * elapsedClockSeconds;
+                                if (car.WagonTemperature < car.SetTempCThreshold + 0.1f)
+                                    car.ThermostatOn = true;
+                                car.StatusHeatIsOn = true;
+                            }
+                            else
+                            {
+                                // Termostat zapnutý, klimatizace neaktivní  
+                                car.TempCDelta = 0;
+                                if (car.WagonTemperature > car.SetTempCThreshold + SetTempCHyst)
+                                    car.ThermostatOn = false;
+                                car.StatusHeatIsOn = false;
+                            }
+
+                        }
+                        car.WagonTemperature += car.TempCDelta + car.TempCDeltaAir;
+                    }
+                     //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Teplota " + car.WagonTemperature));
                 }
-                // Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Teplota " + car.WagonTemperature));
             }
             
             // Topení a klimatizace
@@ -3030,7 +3021,6 @@ namespace Orts.Simulation.RollingStocks
                 //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Příkon topení " + PowerReductionByHeating0 / 1000) + " kW!");
                 //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Příkon pom.obvodů " + PowerReductionByAuxEquipment0 / 1000) + " kW!");
             }
-            elapsedClockSeconds = clockSeconds;
         }
         
         // Stanovení hodnot výkonů a síly pro AC-DC systém
