@@ -2239,7 +2239,7 @@ namespace Orts.Simulation.RollingStocks
             if (Simulator.powerSupplyStations.Count == 0)
             {
                 PowerSupplyStation pss = new PowerSupplyStation();
-                pss.PowerSystem = 1;
+                pss.IsDefault = true;
                 Simulator.powerSupplyStations.Add(pss);
             }
         }

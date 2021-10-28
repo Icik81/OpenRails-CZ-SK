@@ -2195,6 +2195,7 @@ namespace Orts.Simulation
         public int PowerSystem { get; set; }
         public bool Failure { get; set; }
         public float TotalAmps { get; set; }
+        public bool IsDefault { get; set; }
         public List<MSTSElectricLocomotive> Consuptors;
         public PowerSupplyStation()
         {
