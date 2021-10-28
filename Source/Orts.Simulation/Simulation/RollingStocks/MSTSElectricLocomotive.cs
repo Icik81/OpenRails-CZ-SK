@@ -381,6 +381,9 @@ namespace Orts.Simulation.RollingStocks
             if (Simulator.Paused)
                 return;
 
+            if (RouteVoltageV == 0)
+                RouteVoltageV = 25000;
+
             bool my = IsPlayerTrain;
             if (!my)
             {
@@ -418,13 +421,31 @@ namespace Orts.Simulation.RollingStocks
             float dist = DistanceToPowerSupplyStationM(RouteVoltageV == 3000 ? 0 : 1, out myStation);
             float distToMarker = DistanceToVoltageMarkerM(out markerVoltage, out marker);
 
+            if (dist < 200)
+                dist = 200;
+
+            if (Simulator.powerSupplyStations.Count == 1)
+            {
+                if (Simulator.powerSupplyStations[0].IsDefault)
+                {
+                    Simulator.powerSupplyStations[0].PowerSystem = RouteVoltageV == 25000 ? 1 : 0;
+                    myStation = new PowerSupplyStation();
+                    myStation.PowerSystem = RouteVoltageV == 25000 ? 1 : 0;
+                }
+            }
+
             if (myStation == null && prevPss != null)
             {
                 myStation = prevPss;
                 powerSys = myStation.PowerSystem;
             }
-            else
+            else if (myStation != null)
                 powerSys = myStation.PowerSystem;
+            else
+            {
+                myStation = Simulator.powerSupplyStations[0];
+                powerSys = RouteVoltageV == 3000 ? 0 : 1;
+            }
             if (powerSys == 0)
             {
                 RouteVoltageV = 3000;
