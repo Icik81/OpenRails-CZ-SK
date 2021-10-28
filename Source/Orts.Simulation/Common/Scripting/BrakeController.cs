@@ -242,6 +242,7 @@ namespace ORTS.Scripting.Api
         ContServ,           // TrainBrakesControllerContinuousServiceStart 
         FullServ,           // TrainBrakesControllerFullServiceStart 
         Emergency,          // TrainBrakesControllerEmergencyStart
+        MatrosovRelease,
 
         // Extra MSTS values
         MinimalReduction,  // TrainBrakesControllerMinimalReductionStart,
@@ -314,7 +315,8 @@ namespace ORTS.Scripting.Api
             {ControllerState.EPFullServ, Catalog.GetString("EP Full Service")},
             {ControllerState.SlowService, Catalog.GetString("Slow service")},
             {ControllerState.OverchargeStart, Catalog.GetString("Nízkotlaké přebití")},
-            {ControllerState.SlowApplyStart, Catalog.GetString("Pomalé brzdění")}
+            {ControllerState.SlowApplyStart, Catalog.GetString("Pomalé brzdění")},
+            {ControllerState.MatrosovRelease, Catalog.GetString("Postupné rychloodbrždění")}
         };
     }
 }

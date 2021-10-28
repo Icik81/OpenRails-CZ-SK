@@ -2729,12 +2729,12 @@ namespace Orts.Simulation.RollingStocks
                                 if (car.CarLengthM > 10) car.PowerReductionByHeating = 30.0f * 1000;   // 30kW                    
                                 if (car.CarLengthM > 20) car.PowerReductionByHeating = 50.0f * 1000;   // 50kW
                             }
-                            if (car.PowerReductionByAirCondition == 0)
-                            { 
-                                if (car.CarLengthM <= 10) car.PowerReductionByAirCondition = 10.0f * 1000;   // 10kW                    
-                                if (car.CarLengthM > 10) car.PowerReductionByAirCondition = 20.0f * 1000;   // 20kW                    
-                                if (car.CarLengthM > 20) car.PowerReductionByAirCondition = 30.0f * 1000;   // 30kW                                                                                          
-                            }
+                            //if (car.PowerReductionByAirCondition == 0)
+                            //{ 
+                            //    if (car.CarLengthM <= 10) car.PowerReductionByAirCondition = 10.0f * 1000;   // 10kW                    
+                            //    if (car.CarLengthM > 10) car.PowerReductionByAirCondition = 20.0f * 1000;   // 20kW                    
+                            //    if (car.CarLengthM > 20) car.PowerReductionByAirCondition = 30.0f * 1000;   // 30kW                                                                                          
+                            //}
                             car.PowerReductionByHeating = MathHelper.Clamp(car.PowerReductionByHeating, 0, 50.0f * 1000);
                             car.PowerReductionByAirCondition = MathHelper.Clamp(car.PowerReductionByAirCondition, 0, 50.0f * 1000);
 
