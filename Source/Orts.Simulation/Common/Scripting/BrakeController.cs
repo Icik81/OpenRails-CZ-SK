@@ -242,7 +242,7 @@ namespace ORTS.Scripting.Api
         ContServ,           // TrainBrakesControllerContinuousServiceStart 
         FullServ,           // TrainBrakesControllerFullServiceStart 
         Emergency,          // TrainBrakesControllerEmergencyStart
-        MatrosovRelease,
+        
 
         // Extra MSTS values
         MinimalReduction,  // TrainBrakesControllerMinimalReductionStart,
@@ -270,7 +270,9 @@ namespace ORTS.Scripting.Api
 
         // Iciks
         OverchargeStart,
-        SlowApplyStart
+        SlowApplyStart,
+        MatrosovRelease,
+        WestingHouseRelease
     };
 
     public static class ControllerStateDictionary
@@ -316,7 +318,8 @@ namespace ORTS.Scripting.Api
             {ControllerState.SlowService, Catalog.GetString("Slow service")},
             {ControllerState.OverchargeStart, Catalog.GetString("Nízkotlaké přebití")},
             {ControllerState.SlowApplyStart, Catalog.GetString("Pomalé brzdění")},
-            {ControllerState.MatrosovRelease, Catalog.GetString("Postupné rychloodbrždění")}
+            {ControllerState.MatrosovRelease, Catalog.GetString("Odbrzďovací poloha")},
+            {ControllerState.WestingHouseRelease, Catalog.GetString("Odbrzďovací poloha")}
         };
     }
 }

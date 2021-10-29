@@ -241,8 +241,13 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                             epState = -1;
                             break;
                         case ControllerState.MatrosovRelease:                            
+                            IncreasePressure(ref pressureBar, MaxPressureBar(), QuickReleaseRateBarpS(), elapsedClockSeconds);
+                            DecreasePressure(ref pressureBar, MaxPressureBar(), QuickReleaseRateBarpS(), elapsedClockSeconds);                            
+                            epState = -1;
+                            break;
+                        case ControllerState.WestingHouseRelease:
                             IncreasePressure(ref pressureBar, MaxPressureBar(), x * QuickReleaseRateBarpS(), elapsedClockSeconds);
-                            DecreasePressure(ref pressureBar, MaxPressureBar(), x * QuickReleaseRateBarpS(), elapsedClockSeconds);                            
+                            DecreasePressure(ref pressureBar, MaxPressureBar(), x * QuickReleaseRateBarpS(), elapsedClockSeconds);
                             epState = -1;
                             break;
                     }

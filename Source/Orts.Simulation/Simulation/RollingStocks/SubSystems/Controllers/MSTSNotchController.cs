@@ -80,6 +80,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                 case "overchargestart": Type = ControllerState.OverchargeStart; break;
                 case "slowapplystart": Type = ControllerState.SlowApplyStart; break;
                 case "matrosovreleasestart": Type = ControllerState.MatrosovRelease; break;
+                case "westinghousereleasestart": Type = ControllerState.WestingHouseRelease; break;
 
                 default:
                     STFException.TraceInformation(stf, "Skipped unknown notch type " + type);
@@ -474,7 +475,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
             if (CurrentNotch + 1 < Notches.Count)
                 x = Notches[CurrentNotch + 1].Value;
             x = (CurrentValue - notch.Value) / (x - notch.Value);
-            if (notch.Type == ControllerState.Release || notch.Type == ControllerState.FullQuickRelease || notch.Type == ControllerState.MatrosovRelease)
+            if (notch.Type == ControllerState.Release || notch.Type == ControllerState.WestingHouseRelease)
                 x = 1 - x;
             return x;
         }

@@ -1416,7 +1416,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
 
                 // Definice limitů pro základní proměnné vzduchařiny
                 serviceTimeFactor = MathHelper.Clamp(serviceTimeFactor, 1.009f, 2.0f);                
-                lead.TrainBrakeController.QuickReleaseRatePSIpS = MathHelper.Clamp(lead.TrainBrakeController.QuickReleaseRatePSIpS, 2.0f * 14.50377f, 7.0f * 14.50377f);
+                lead.TrainBrakeController.QuickReleaseRatePSIpS = MathHelper.Clamp(lead.TrainBrakeController.QuickReleaseRatePSIpS, 0.0f, 7.0f * 14.50377f);
                 lead.TrainBrakeController.ReleaseRatePSIpS = MathHelper.Clamp(lead.TrainBrakeController.ReleaseRatePSIpS, 0.25f * 14.50377f, 0.5f * 14.50377f);
                 lead.TrainBrakeController.ApplyRatePSIpS = MathHelper.Clamp(lead.TrainBrakeController.ApplyRatePSIpS, 0.25f * 14.50377f, 0.5f * 14.50377f);
                 lead.TrainBrakeController.EmergencyRatePSIpS = MathHelper.Clamp(lead.TrainBrakeController.EmergencyRatePSIpS, 3.0f * 14.50377f, 4.0f * 14.50377f);                
@@ -1461,7 +1461,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     // Změna rychlosti plnění vzduchojemu při švihu
                     if (lead.TrainBrakeController.TrainBrakeControllerState == ControllerState.FullQuickRelease 
                         || lead.QuickReleaseButton && lead.QuickReleaseButtonEnable
-                        || lead.TrainBrakeController.TrainBrakeControllerState == ControllerState.MatrosovRelease)
+                        || lead.TrainBrakeController.TrainBrakeControllerState == ControllerState.MatrosovRelease
+                        || lead.TrainBrakeController.TrainBrakeControllerState == ControllerState.WestingHouseRelease)
                     {
                         BrakePipeChargingRatePSIorInHgpS0 = brakePipeChargingQuickPSIpS;  // Rychlost plnění ve vysokotlakém švihu 
                         if (lead.TrainBrakeController.MaxPressurePSI < lead.MainResPressurePSI) lead.TrainBrakeController.MaxPressurePSI = lead.MainResPressurePSI;
@@ -1523,6 +1524,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         if (lead.TrainBrakeController.TrainBrakeControllerState == ControllerState.Release
                         || lead.TrainBrakeController.TrainBrakeControllerState == ControllerState.FullQuickRelease
                         || lead.TrainBrakeController.TrainBrakeControllerState == ControllerState.MatrosovRelease
+                        || lead.TrainBrakeController.TrainBrakeControllerState == ControllerState.WestingHouseRelease
                         || (lead.QuickReleaseButton && lead.QuickReleaseButtonEnable)
                         || lead.TrainBrakeController.TrainBrakeControllerState == ControllerState.OverchargeStart
                         || (lead.LowPressureReleaseButton && lead.LowPressureReleaseButtonEnable)
@@ -1963,6 +1965,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             bool Emergency = false;
             bool Neutral = false;
             bool MatrosovRelease = false;
+            bool WestingHouseRelease = false;
             int SumSA = 0;
             int SumA = 0;
             int SumGA = 0;
@@ -1971,6 +1974,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             int SumQRe = 0;
             int SumO = 0;
             int SumMaRe = 0;
+            int SumWHRe = 0;
 
             // Nastavení příznaků pro vozy
             for (int i = 0; i < train.Cars.Count; i++)
@@ -2103,13 +2107,24 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     if (engine.TrainBrakeController.TrainBrakeControllerState == ControllerState.MatrosovRelease)
                     {
                         engine.BrakeSystem.NextLocoMatrosovRelease = true;
-                        engine.BrakeSystem.NextLocoBrakeState = "Postupné rychloodbrždění";
+                        engine.BrakeSystem.NextLocoBrakeState = "Odbrzďovací poloha";
                         MatrosovRelease = true;
                         SumMaRe++;
                     }
                     else
                     if (engine.TrainBrakeController.TrainBrakeControllerState != ControllerState.MatrosovRelease)
                         engine.BrakeSystem.NextLocoMatrosovRelease = false;
+                    
+                    if (engine.TrainBrakeController.TrainBrakeControllerState == ControllerState.WestingHouseRelease)
+                    {
+                        engine.BrakeSystem.NextLocoWestingHouseRelease = true;
+                        engine.BrakeSystem.NextLocoBrakeState = "Odbrzďovací poloha";
+                        WestingHouseRelease = true;
+                        SumWHRe++;
+                    }
+                    else
+                    if (engine.TrainBrakeController.TrainBrakeControllerState != ControllerState.WestingHouseRelease)
+                        engine.BrakeSystem.NextLocoWestingHouseRelease = false;
                 }
             }
 
@@ -2193,7 +2208,11 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 }
                 if (MatrosovRelease)
                 {
-                    // Postupné rychloodbrždění
+                    // Matrosov odbrzdění
+                }
+                if (WestingHouseRelease)
+                {
+                    // WestingHouse odbrzdění
                 }
             }
 
