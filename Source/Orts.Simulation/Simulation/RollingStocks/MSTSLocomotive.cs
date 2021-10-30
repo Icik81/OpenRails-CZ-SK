@@ -2815,7 +2815,7 @@ namespace Orts.Simulation.RollingStocks
                             }
 
                             MSGHeatingCycle++;
-                            if (MSGHeatingCycle > 1000 && car.WagonTemperature < 14)
+                            if (MSGHeatingCycle > 1000 && car.WagonTemperature < 14 && IsPlayerTrain)
                             {
                                 Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Cestujícím je zima!"));
                                 MSGHeatingCycle = 0;
@@ -2852,7 +2852,7 @@ namespace Orts.Simulation.RollingStocks
                             }
 
                             MSGHeatingCycle++;
-                            if (MSGHeatingCycle > 1000 && car.WagonTemperature > 30)
+                            if (MSGHeatingCycle > 1000 && car.WagonTemperature > 30 && IsPlayerTrain)
                             {
                                 Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Cestujícím je příliš horko!"));
                                 MSGHeatingCycle = 0;
