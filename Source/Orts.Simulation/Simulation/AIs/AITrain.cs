@@ -1536,7 +1536,7 @@ namespace Orts.Simulation.AIs
         /// </summary>
         /// <param name="presentTime"></param>
 
-        public override void UpdateAIStaticState(int presentTime)
+        public override void UpdateAIStaticState(double presentTime)
         {
             // start if start time is reached
 

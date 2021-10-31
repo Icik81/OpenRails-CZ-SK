@@ -1631,7 +1631,7 @@ namespace Orts.Simulation.Physics
 
             if (GetAIMovementState() == AITrain.AI_MOVEMENT_STATE.AI_STATIC)
             {
-                int presentTime = Convert.ToInt32(Math.Floor(Simulator.ClockTime));
+                double presentTime = Math.Floor(Simulator.ClockTime);
                 UpdateAIStaticState(presentTime);
             }
 
@@ -6359,7 +6359,7 @@ namespace Orts.Simulation.Physics
         /// Input is backward movement counter
         /// </summary>
 
-        public void UpdateSectionState(int backward)
+        public void UpdateSectionState(double backward)
         {
 
             List<int[]> sectionList = new List<int[]>();
@@ -16000,7 +16000,7 @@ namespace Orts.Simulation.Physics
         /// Update AI Static state - dummy method to allow virtualization by child classes
         /// </summary>
 
-        public virtual void UpdateAIStaticState(int presentTime)
+        public virtual void UpdateAIStaticState(double presentTime)
         {
         }
 

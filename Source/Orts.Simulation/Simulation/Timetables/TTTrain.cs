@@ -2908,7 +2908,7 @@ namespace Orts.Simulation.Timetables
         /// </summary>
         /// <param name="presentTime"></param>
 
-        public override void UpdateAIStaticState(int presentTime)
+        public override void UpdateAIStaticState(double presentTime)
         {
 #if DEBUG_CHECKTRAIN
             if (!CheckTrain)
