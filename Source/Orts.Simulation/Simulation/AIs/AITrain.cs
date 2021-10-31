@@ -4141,6 +4141,11 @@ namespace Orts.Simulation.AIs
             int directionNow = ValidRoute[0][PresentPosition[0].RouteListIndex].Direction;
             int positionNow = ValidRoute[0][PresentPosition[0].RouteListIndex].TCSectionIndex;
 
+            // Icik
+            int directionNowBack = PresentPosition[1].TCDirection;
+            int positionNowBack = PresentPosition[1].TCSectionIndex;
+
+
             bool[] nextPart = UpdateRouteActions(0, checkLoop);
 
             if (!nextPart[0]) return (returnValue);   // not at end and not to attach to anything
@@ -4158,7 +4163,9 @@ namespace Orts.Simulation.AIs
                          Number.ToString() + " continued, part : " + TCRoute.activeSubpath.ToString() + "\n");
                 }
 
-                if (positionNow == PresentPosition[0].TCSectionIndex && directionNow != PresentPosition[0].TCDirection)
+                // Icik
+                //if (positionNow == PresentPosition[0].TCSectionIndex && directionNow != PresentPosition[0].TCDirection)
+                if (positionNowBack == PresentPosition[0].TCSectionIndex && directionNowBack != PresentPosition[0].TCDirection)
                 {
                     ReverseFormation(false);
                     // active subpath must be incremented in parallel in incorporated train if present
