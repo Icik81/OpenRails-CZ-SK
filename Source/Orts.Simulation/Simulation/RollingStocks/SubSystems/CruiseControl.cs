@@ -1385,7 +1385,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                                 }
                                 else
                                 {
-                                    if (Locomotive.AccelerationMpSS < a - 0.015f && controllerVolts < demandedVolts)
+                                    if ((Locomotive.AccelerationMpSS < a - 0.015f || controllerVolts < demandedVolts) && demandedVolts > 0)
                                     {
                                         float step = 100 / Locomotive.ThrottleFullRangeIncreaseTimeSeconds;
 
@@ -1429,9 +1429,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                                 }
 
                             }
-                            if ((a > 0 || (demand < Locomotive.AccelerationMpSS && controllerVolts > 0)) && controllerVolts < demandedVolts)
+                            if ((a > 0 || (demand < Locomotive.AccelerationMpSS && controllerVolts > 0)) && demandedVolts > 0)
                             {
-                                if (Locomotive.AccelerationMpSS > a + 0.015f || (demand < Locomotive.AccelerationMpSS && controllerVolts > 0))
+                                if ((Locomotive.AccelerationMpSS > a + 0.015f || (demand < Locomotive.AccelerationMpSS && controllerVolts > 0)) && demandedVolts == 0)
                                 {
                                     float step = 100 / Locomotive.ThrottleFullRangeIncreaseTimeSeconds;
 
