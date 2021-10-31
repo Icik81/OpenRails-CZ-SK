@@ -300,6 +300,11 @@ namespace Orts.Simulation.RollingStocks.SubSystems
             {
                 Physics.Train train = Locomotive.Train;
                 Signalling.SignalObject[] signals = train.NextSignalObject;
+                if (signals[0] == null)
+                {
+                    MirelCheck(elapsedClockSeconds);
+                    return;
+                }
                 if (nextSignalId != signals[0].trItem)
                 {
                     mirelUnsetSignlEventBeeped = false;

@@ -1300,7 +1300,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
 
                     if ((SpeedSelMode == SpeedSelectorMode.On || SpeedSelMode == SpeedSelectorMode.Start) && delta > 0 && AccelerationTable.Count == 0)
                     {
-                        if (Locomotive.DynamicBrakePercent > 0)
+                        if (Locomotive.DynamicBrakePercent > 0) // RegioJet
                         {
                             if (controllerVolts <= 0)
                             {
@@ -1332,7 +1332,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                             a = AccelerationTable[(int)Locomotive.SelectedMaxAccelerationStep - 1];
                         if (Locomotive.DynamicBrakePercent < 0)
                         {
-                            if (controllerVolts < delta * 50)
+                            if (controllerVolts < delta * 50) // regiojet
                             {
                                 if (ForceStepsThrottleTable.Count > 0)
                                 {
@@ -1351,6 +1351,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                                 t = PowerReductionValue / 100;
                         }
                         float demandedVolts = t * 100;
+
                         float current = maxForceN / Locomotive.MaxForceN * 1400;// Locomotive.MaxCurrentA;
                         if (!RestrictedSpeedActive)
                             delta = SelectedSpeedMpS - wheelSpeedMpS;
@@ -1375,7 +1376,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                                 }
                                 else
                                 {
-                                    if (Locomotive.AccelerationMpSS < a - 0.015f)
+                                    if (Locomotive.AccelerationMpSS < a - 0.015f || controllerVolts < demandedVolts)
                                     {
                                         float step = 100 / Locomotive.ThrottleFullRangeIncreaseTimeSeconds;
 
@@ -1385,10 +1386,18 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                                             controllerVolts = 100;
                                     }
                                 }
+                                if (demand < Locomotive.AccelerationMpSS && controllerVolts > 0)
+                                {
+                                    float step = 100 / Locomotive.ThrottleFullRangeDecreaseTimeSeconds;
+                                    step *= elapsedClockSeconds;
+                                    if (step > Locomotive.AccelerationMpSS - demand)
+                                        step = Locomotive.AccelerationMpSS - demand;
+                                    controllerVolts -= step;
+                                }
                             }
                             else
                             {
-                                if (demand > Locomotive.AccelerationMpSS)
+                                if (demand > Locomotive.AccelerationMpSS) // RegioJet
                                 {
                                     if (controllerVolts < demandedVolts && controllerVolts >= 0)
                                     {
