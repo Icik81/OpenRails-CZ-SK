@@ -424,7 +424,20 @@ namespace Orts.Simulation.RollingStocks
             if (dist < 200)
                 dist = 200;
 
-            if (Simulator.powerSupplyStations.Count == 1)
+            if (Simulator.powerSupplyStations.Count == 0)
+            {
+                PowerSupplyStation pss = new PowerSupplyStation();
+                pss.IsDefault = true;
+
+                Simulator.powerSupplyStations.Add(pss);
+                if (Simulator.powerSupplyStations[0].IsDefault)
+                {
+                    Simulator.powerSupplyStations[0].PowerSystem = RouteVoltageV == 25000 ? 1 : 0;
+                    myStation = new PowerSupplyStation();
+                    myStation.PowerSystem = RouteVoltageV == 25000 ? 1 : 0;
+                }
+            }
+            else if (Simulator.powerSupplyStations.Count == 1)
             {
                 if (Simulator.powerSupplyStations[0].IsDefault)
                 {
