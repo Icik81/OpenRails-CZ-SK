@@ -2244,6 +2244,9 @@ namespace Orts.Simulation.RollingStocks
                 PowerSupplyStation pss = new PowerSupplyStation();
                 pss.IsDefault = true;
                 Simulator.powerSupplyStations.Add(pss);
+                pss = new PowerSupplyStation();
+                pss.PowerSystem = 1;
+                Simulator.powerSupplyStations.Add(pss);
             }
         }
 

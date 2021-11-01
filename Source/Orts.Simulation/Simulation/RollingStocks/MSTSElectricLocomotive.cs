@@ -267,6 +267,12 @@ namespace Orts.Simulation.RollingStocks
             }
             AICalculatedSteps = 0;
             MultiSystemEngine = true;
+            if (Simulator.powerSupplyStations.Count == 0)
+            {
+                PowerSupplyStation pss = new PowerSupplyStation();
+                pss.PowerSystem = RouteVoltageV == 25000 ? 1 : 0;
+                Simulator.powerSupplyStations.Add(pss);
+            }    
             float watts = MaxForceN * (ThrottlePercent / 100)  * 1f + (MaxForceN * (ThrottlePercent / 100)) * AbsSpeedMpS;
             watts += PowerReductionByHeating0 + PowerReductionByAuxEquipment0;
             if ((Flipped || Direction == Direction.Reverse) && watts < 0)
