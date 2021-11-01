@@ -16150,7 +16150,7 @@ namespace Orts.Simulation.Physics
         /// Parameters: right = true if right doors; open = true if opening
         /// <\summary>
         public void ToggleDoors(bool right, bool open)
-        {            
+        {
             foreach (TrainCar car in Cars)
             {
                 var wagon = car as MSTSWagon;
@@ -16165,25 +16165,57 @@ namespace Orts.Simulation.Physics
 
                     if (!wagon.FreightDoors)
                     {
-                        if (!car.Flipped && right || car.Flipped && !right)
+                        if (!wagon.Flipped && right || wagon.Flipped && !right)
                         {
                             wagon.DoorRightOpen = open;
                             // Icik
                             if (open)
-                                car.BrakeSystem.RightDoorIsOpened = true;
-                            else car.BrakeSystem.RightDoorIsOpened = false;
+                                wagon.BrakeSystem.RightDoorIsOpened = true;
+                            else wagon.BrakeSystem.RightDoorIsOpened = false;
                         }
                         else
                         {
                             wagon.DoorLeftOpen = open;
                             // Icik
                             if (open)
-                                car.BrakeSystem.LeftDoorIsOpened = true;
-                            else car.BrakeSystem.LeftDoorIsOpened = false;
+                                wagon.BrakeSystem.LeftDoorIsOpened = true;
+                            else wagon.BrakeSystem.LeftDoorIsOpened = false;
                         }
                     }
                 }
             }
+        }
+
+        public void ToggleDoorsWagon(bool right, bool open, MSTSWagon wagon)
+        {
+            if (!wagon.LeftDoorOpenOverride && !wagon.RightDoorOpenOverride)
+            {
+                if (open && !wagon.BrakeSystem.LeftDoorIsOpened && !wagon.BrakeSystem.RightDoorIsOpened)
+                    wagon.SignalEvent(open ? Event.DoorOpen : Event.DoorClose); // hook for sound trigger
+
+                if (!open && (wagon.BrakeSystem.LeftDoorIsOpened || wagon.BrakeSystem.RightDoorIsOpened))
+                    wagon.SignalEvent(open ? Event.DoorOpen : Event.DoorClose); // hook for sound trigger
+
+                if (!wagon.FreightDoors)
+                {
+                    if (!wagon.Flipped && right || wagon.Flipped && !right)
+                    {
+                        wagon.DoorRightOpen = open;
+                        // Icik
+                        if (open)
+                            wagon.BrakeSystem.RightDoorIsOpened = true;
+                        else wagon.BrakeSystem.RightDoorIsOpened = false;
+                    }
+                    else
+                    {
+                        wagon.DoorLeftOpen = open;
+                        // Icik
+                        if (open)
+                            wagon.BrakeSystem.LeftDoorIsOpened = true;
+                        else wagon.BrakeSystem.LeftDoorIsOpened = false;
+                    }
+                }
+            }     
         }
 
         public void ToggleDoorsPeople(bool right, bool open, MSTSWagon wagon)
@@ -16195,18 +16227,18 @@ namespace Orts.Simulation.Physics
                 if (thisStation.PlatformItem.PlatformSide[0])
                 {
                     //open left doors
-                    ToggleDoors(frontIsFront, true);
+                    ToggleDoorsWagon(frontIsFront, true, wagon);
                 }
                 if (thisStation.PlatformItem.PlatformSide[1])
                 {
                     //open right doors
-                    ToggleDoors(!frontIsFront, true);
+                    ToggleDoorsWagon(!frontIsFront, true, wagon);
                 }
             }
             if (!open)
             {
-                ToggleDoors(!frontIsFront, false);
-                ToggleDoors(frontIsFront, false);
+                ToggleDoorsWagon(!frontIsFront, false, wagon);
+                ToggleDoorsWagon(frontIsFront, false, wagon);
             }
          }
 
