@@ -159,7 +159,8 @@ namespace Orts.Simulation.RollingStocks
         public bool RightDoorOpenOverride;
         public float TrainPipeLeakRatePSIpSBase;
         public float TrainPipeLeakRatePSIpS;
-
+        public float TimeToCloseDoor;
+        public float TimeToCloseDoorGenerate;
 
         bool TenderWeightInitialize = true;
         float TenderWagonMaxCoalMassKG;

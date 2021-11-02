@@ -245,6 +245,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes
         public int RightDoorCycle = 1;
         public bool LeftDoorIsOpened;
         public bool RightDoorIsOpened;
+        public bool DoorsOpen;
 
         public float HeatingMenu = 0;
         public string HeatingText = "vypnuto";

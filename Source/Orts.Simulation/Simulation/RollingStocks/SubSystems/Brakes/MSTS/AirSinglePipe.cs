@@ -2321,6 +2321,11 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 float AirLossDoorR;
                 var wagon = car as MSTSWagon;
 
+                if (wagon.DoorLeftOpen || wagon.DoorRightOpen)
+                    wagon.BrakeSystem.DoorsOpen = true;
+                else
+                    wagon.BrakeSystem.DoorsOpen = false;
+
                 if (lead != null && lead.CentralHandlingDoors && wagon.AutomaticDoors && wagon.BrakeSystem.AirOK_DoorCanManipulate)
                 {
                     if (wagon.AirlossByHandlingDoorsPSIpS == 0)

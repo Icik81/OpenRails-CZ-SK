@@ -100,7 +100,6 @@ namespace Orts.Simulation.Physics
         public float TotalTrainTrainPipeLeakRate;
         public float TotalCapacityMainResBrakePipe;
         public float TotalAirLoss;
-        public float TimeToCloseDoor;
 
         public Traveller RearTDBTraveller;               // positioned at the back of the last car in the train
         public Traveller FrontTDBTraveller;              // positioned at the front of the train by CalculatePositionOfCars
@@ -16612,17 +16611,22 @@ namespace Orts.Simulation.Physics
                         loco = (MSTSLocomotive)wagon;
                         haveCentralDoors = loco.CentralHandlingDoors;
                     }
+                    
+                    if (wagon.TimeToCloseDoorGenerate == 0)
+                        wagon.TimeToCloseDoorGenerate = Simulator.Random.Next(5, 11) * 100;
+                    
                     if (wagon.DoorLeftOpen || wagon.DoorRightOpen)
                     {
                         closeDoor = true;
-                        TimeToCloseDoor++;
+                        wagon.TimeToCloseDoor++;
                     }
                                        
-                    if (closeDoor && !haveCentralDoors && TimeToCloseDoor == 1000)
+                    if (closeDoor && !haveCentralDoors && wagon.TimeToCloseDoor == wagon.TimeToCloseDoorGenerate)
                     {
                         train.ToggleDoorsPeople(true, false, wagon);
                         train.ToggleDoorsPeople(false, false, wagon);
-                        TimeToCloseDoor = 0;
+                        wagon.TimeToCloseDoor = 0;
+                        wagon.TimeToCloseDoorGenerate = 0;
                     }
                 }                
                 train.BoardingComplete = true;

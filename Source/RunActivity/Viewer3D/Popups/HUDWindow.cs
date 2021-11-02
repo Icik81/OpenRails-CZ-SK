@@ -600,13 +600,14 @@ namespace Orts.Viewer3D.Popups
             if (locomotive.Simulator.SuperUser)
                 locomotive.Simulator.Confirmer.Information(message + train.TotalOnBoard.ToString());
             //Car information
-            statusConsist.Add(string.Format("\n{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\t{9}\t{10}\t{11}\t{12}\t{13}\t{14}\t{15}\t{16}\t{17}\t{18}",
+            statusConsist.Add(string.Format("\n{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\t{9}\t{10}\t{11}\t{12}\t{13}\t{14}\t{15}\t{16}\t{17}\t{18}\t{19}",
                 Viewer.Catalog.GetString("Car"),
                 Viewer.Catalog.GetString("Flipped"),
                 Viewer.Catalog.GetString("Type"),
-                Viewer.Catalog.GetString("Inter.Temp"),
+                Viewer.Catalog.GetString("InterT"),
                 Viewer.Catalog.GetString("Status"),
-                Viewer.Catalog.GetString("Heat/Air"),
+                Viewer.Catalog.GetString("H/AUnit"),
+                Viewer.Catalog.GetString("Doors"),
                 Viewer.Catalog.GetString("Length"),
                 Viewer.Catalog.GetString("Weight"),
                 Viewer.Catalog.GetString("Drv/Cabs"),
@@ -640,6 +641,7 @@ namespace Orts.Viewer3D.Popups
                     (car.HasPassengerCapacity ? Math.Round(car.WagonTemperature).ToString() + " °C" : NoText) + "\t" +
                     (car.HasPassengerCapacity && car.StatusHeatIsOn ? Viewer.Catalog.GetString("Aktivní") : NoText) + "\t" +
                     (car.HasPassengerCapacity && car.BrakeSystem.HeatingIsOn ? Viewer.Catalog.GetString("On") : NoText) + "\t" +
+                    (car.BrakeSystem.DoorsOpen ? Viewer.Catalog.GetString("Open") : NoText) + "\t" +
                     FormatStrings.FormatShortDistanceDisplay(car.CarLengthM, locomotive.IsMetric) + "\t" +
                     FormatStrings.FormatLargeMass(car.MassKG, locomotive.IsMetric, locomotive.IsUK) + "\t" +
                     (car.IsDriveable ? Viewer.Catalog.GetParticularString("Cab", "D") : "") + (car.HasFrontCab || car.HasFront3DCab ? Viewer.Catalog.GetParticularString("Cab", "F") : "") + (car.HasRearCab || car.HasRear3DCab ? Viewer.Catalog.GetParticularString("Cab", "R") : "") + "\t" +
