@@ -100,6 +100,7 @@ namespace Orts.Simulation.Physics
         public float TotalTrainTrainPipeLeakRate;
         public float TotalCapacityMainResBrakePipe;
         public float TotalAirLoss;
+        public bool TrainDoorsOpen;
 
         public Traveller RearTDBTraveller;               // positioned at the back of the last car in the train
         public Traveller FrontTDBTraveller;              // positioned at the front of the train by CalculatePositionOfCars
@@ -16242,7 +16243,7 @@ namespace Orts.Simulation.Physics
          }
 
 
-        public bool BoardingComplete = false;
+        public bool BoardingComplete;
         public int TotalOnBoard = 0;
         private bool namesFilled = false;
         private List<string> testNamesM;
@@ -16613,7 +16614,7 @@ namespace Orts.Simulation.Physics
                     }
                     
                     if (wagon.TimeToCloseDoorGenerate == 0)
-                        wagon.TimeToCloseDoorGenerate = Simulator.Random.Next(5, 11) * 100;
+                        wagon.TimeToCloseDoorGenerate = Simulator.Random.Next(3, 7) * 100;
                     
                     if (wagon.DoorLeftOpen || wagon.DoorRightOpen)
                     {

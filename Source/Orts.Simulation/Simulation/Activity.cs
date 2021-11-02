@@ -832,6 +832,8 @@ namespace Orts.Simulation
         public int TimeForOpenDoors = 0;
         public int CycleTimeOpen = 0;
         public int CycleTimeClosed = 0;
+        public bool BoardingCompleted;
+        public int RestOfPax;
 
         public DateTime SchArrive;
         public DateTime SchDepart;
@@ -1028,12 +1030,18 @@ namespace Orts.Simulation
             }
             else if (EventType == ActivityEventType.Timer)
             {
-                // Icik
                 if (arrived && MyPlayerTrain.BoardingComplete)
                 {
-                    MyPlayerTrain.BoardingComplete = false;
+                    MyPlayerTrain.BoardingComplete = false;                   
                 }
+
                 double clock = MyPlayerTrain.Simulator.GameTime;
+
+                if (BoardingCompleted)
+                    MyPlayerTrain.StationStops[0].PlatformItem.NumPassengersWaiting = 0;
+
+                if (RestOfPax != 0)
+                    MyPlayerTrain.StationStops[0].PlatformItem.NumPassengersWaiting = RestOfPax;
 
                 MyPlayerTrain.FillNames(MyPlayerTrain);
 
@@ -1058,13 +1066,19 @@ namespace Orts.Simulation
                         if (remaining < 1) DisplayColor = Color.LightGreen;
                         else if (remaining < 11) DisplayColor = new Color(255, 255, 128);
                         else DisplayColor = Color.White;
-                                                
-                        MyPlayerTrain.UpdatePassengerCountAndWeight(MyPlayerTrain, MyPlayerTrain.StationStops[0].PlatformItem.NumPassengersWaiting, clock);
+
+                        if (!BoardingCompleted)                                                                        
+                            MyPlayerTrain.UpdatePassengerCountAndWeight(MyPlayerTrain, MyPlayerTrain.StationStops[0].PlatformItem.NumPassengersWaiting, clock);
 
                         if (remaining < 120 && (MyPlayerTrain.TrainType != Train.TRAINTYPE.AI_PLAYERHOSTING))
                         {
                             MyPlayerTrain.ClearStation(PlatformEnd1.LinkedPlatformItemId, PlatformEnd2.LinkedPlatformItemId, false);
                         }
+
+                        if (MyPlayerTrain.StationStops[0].PlatformItem.PassengerList.Count == 0 && !MyPlayerTrain.TrainDoorsOpen)
+                            BoardingCompleted = true;
+
+                        RestOfPax = MyPlayerTrain.StationStops[0].PlatformItem.PassengerList.Count;
 
                         // Still have to wait
                         if (remaining > 0)
@@ -1079,7 +1093,7 @@ namespace Orts.Simulation
                                 ldbfevaldepartbeforeboarding = true;
                                 DbfEvalDepartBeforeBoarding.Add(PlatformEnd1.Station);
                                 train.DbfEvalValueChanged = true;
-                            }
+                            }                            
                         }
                         // May depart
                         else if (!maydepart)
@@ -1090,10 +1104,12 @@ namespace Orts.Simulation
                                 DisplayMessage = Simulator.Catalog.GetString("Čeká se na nástup cestujících....");
                             }
                             else
+                            if (MyPlayerTrain.StationStops[0].PlatformItem.PassengerList.Count == 0 && !MyPlayerTrain.TrainDoorsOpen)
                             {
                                 maydepart = true;
                                 DisplayMessage = Simulator.Catalog.GetString("Volno k odjezdu!");
-                                Simulator.SoundNotify = Event.PermissionToDepart;                                
+                                Simulator.SoundNotify = Event.PermissionToDepart;
+                                BoardingCompleted = false;
                             }
 
                             ldbfevaldepartbeforeboarding = false;//reset flag. Debrief Eval
@@ -1137,7 +1153,7 @@ namespace Orts.Simulation
 
                                 IsCompleted = true;
                             }
-                        }
+                        }                        
                     }
 
                     else
@@ -1197,6 +1213,10 @@ namespace Orts.Simulation
             outf.Write(arrived);
             outf.Write(maydepart);
             outf.Write(distanceToNextSignal);
+            
+            // Icik
+            outf.Write(BoardingCompleted);
+            outf.Write(RestOfPax);
         }
 
         public override void Restore(BinaryReader inf)
@@ -1219,6 +1239,10 @@ namespace Orts.Simulation
             arrived = inf.ReadBoolean();
             maydepart = inf.ReadBoolean();
             distanceToNextSignal = inf.ReadSingle();
+
+            // Icik
+            BoardingCompleted = inf.ReadBoolean();
+            RestOfPax = inf.ReadInt32();
         }
     }
 

@@ -461,6 +461,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             outf.Write(TwoPipesConnectionMenu);
             outf.Write(TwoPipesConnectionText);
             outf.Write(AutomaticDoorsCycle);
+            outf.Write(LeftDoorIsOpened);
+            outf.Write(RightDoorIsOpened);
         }
 
         public override void Restore(BinaryReader inf)
@@ -508,6 +510,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             TwoPipesConnectionMenu = inf.ReadSingle();
             TwoPipesConnectionText = inf.ReadString();
             AutomaticDoorsCycle = inf.ReadSingle();
+            LeftDoorIsOpened = inf.ReadBoolean();
+            RightDoorIsOpened = inf.ReadBoolean();
         }
         
         public override void Initialize(bool handbrakeOn, float maxPressurePSI, float fullServPressurePSI, bool immediateRelease)
@@ -2314,7 +2318,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
 
             // Úbytky vzduchu při spotřebě vzduchu otevírání a zavírání dvěří            
             train.TotalAirLoss = 0;
-            float TotalAirLoss0 = 0;            
+            float TotalAirLoss0 = 0;
+            train.TrainDoorsOpen = false;
             foreach (TrainCar car in train.Cars)
             {
                 float AirLossDoorL;
@@ -2322,10 +2327,13 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 var wagon = car as MSTSWagon;
 
                 if (wagon.DoorLeftOpen || wagon.DoorRightOpen)
+                {
                     wagon.BrakeSystem.DoorsOpen = true;
+                    train.TrainDoorsOpen = true;
+                }
                 else
                     wagon.BrakeSystem.DoorsOpen = false;
-
+                                    
                 if (lead != null && lead.CentralHandlingDoors && wagon.AutomaticDoors && wagon.BrakeSystem.AirOK_DoorCanManipulate)
                 {
                     if (wagon.AirlossByHandlingDoorsPSIpS == 0)

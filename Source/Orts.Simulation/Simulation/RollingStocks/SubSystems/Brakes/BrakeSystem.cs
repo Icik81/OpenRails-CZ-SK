@@ -97,7 +97,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes
         public bool NextLocoRelease;
         public bool NextLocoApply;
         public bool NextLocoQuickRelease;
-        public bool NextLocoEmergency;      
+        public bool NextLocoEmergency;
         public bool NextLocoOvercharge;
         public bool NextLocoLap;
         public bool NextLocoRunning;
@@ -120,7 +120,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes
         public float AutoBailOffOnRatePSIpS;
         public float BrakeDelayToEngage;
         public bool AutoOverchargePressure;
-        public float BrakePipeMinPressureDropToEngage;        
+        public float BrakePipeMinPressureDropToEngage;
         public float EngineBrakeControllerApplyDeadZone;
         public float EngineBrakeControllerReleaseDeadZone;
         public float BP1_EngineBrakeControllerRatePSIpS;
@@ -159,7 +159,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes
         public float T1AirLoss = 0;
         public float T2AirLoss = 0;
         public bool AirOK_DoorCanManipulate;
-        
+
 
         public float AuxPowerOnDelayS { get; set; }
 
@@ -170,7 +170,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes
                 DebugKoef2 = 1.0f;
             }
             else
-                DebugKoef2 = DebugKoef2Factor[AutoCylPressurePSI0 + AutoCylPressurePSI1 + AutoCylPressurePSI2];            
+                DebugKoef2 = DebugKoef2Factor[AutoCylPressurePSI0 + AutoCylPressurePSI1 + AutoCylPressurePSI2];
             return DebugKoef2;
         }
 
