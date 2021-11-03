@@ -1111,6 +1111,8 @@ namespace Orts.Simulation
                                 Simulator.SoundNotify = Event.PermissionToDepart;
                                 BoardingCompleted = false;
                             }
+                            else
+                                MyPlayerTrain.UpdatePassengerCountAndWeight(MyPlayerTrain, MyPlayerTrain.StationStops[0].PlatformItem.NumPassengersWaiting, clock);
 
                             ldbfevaldepartbeforeboarding = false;//reset flag. Debrief Eval
 

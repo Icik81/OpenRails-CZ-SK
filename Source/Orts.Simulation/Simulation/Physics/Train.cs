@@ -16614,7 +16614,7 @@ namespace Orts.Simulation.Physics
                     }
                     
                     if (wagon.TimeToCloseDoorGenerate == 0)
-                        wagon.TimeToCloseDoorGenerate = Simulator.Random.Next(3, 7) * 100;
+                        wagon.TimeToCloseDoorGenerate = Simulator.Random.Next(2, 7) * 100;
                     
                     if (wagon.DoorLeftOpen || wagon.DoorRightOpen)
                     {

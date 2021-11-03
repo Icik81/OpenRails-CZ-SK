@@ -1446,6 +1446,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         lead.BrakeSystem.BrakeCylReleaseFlow = true;
                     if (lead.TrainBrakeController.TrainBrakeControllerState == ControllerState.Apply)
                         lead.BrakeSystem.BrakeCylReleaseFlow = false;
+                    if (lead.TrainBrakeController.TrainBrakeControllerState == ControllerState.Neutral && lead.BrakeSystem.BrakePipeChangeRate < 0.01f)
+                        lead.BrakeSystem.BrakeCylReleaseFlow = true;
 
                     if (lead.TrainBrakeController.TrainBrakeControllerState != ControllerState.Lap
                         && lead.TrainBrakeController.TrainBrakeControllerState != ControllerState.Emergency
