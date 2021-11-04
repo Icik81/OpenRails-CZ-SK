@@ -687,6 +687,8 @@ namespace Orts.Simulation.RollingStocks
 
                 // Úbytek výkonu v závislosti na napětí
                 UiPowerLose = MathHelper.Clamp(PantographVoltageV / RouteVoltageV, 0, 2);
+                if (!PowerOn && EDBIndependent && PowerOnFilter > 1)
+                    UiPowerLose = 1;
 
                 PantographCriticalVoltage = (int)PantographCriticalVoltage;
                 PowerSupply.PantographVoltageV = (int)PowerSupply.PantographVoltageV;
