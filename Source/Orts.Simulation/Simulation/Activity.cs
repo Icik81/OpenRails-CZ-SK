@@ -834,6 +834,8 @@ namespace Orts.Simulation
         public int CycleTimeClosed = 0;
         public bool BoardingCompleted;
         public int RestOfPax;
+        int ClearForDepartGenerate;
+        int TimeToClearForDepart;
 
         public DateTime SchArrive;
         public DateTime SchDepart;
@@ -1099,20 +1101,35 @@ namespace Orts.Simulation
                         else if (!maydepart)
                         {                            
                             // check if passenger on board - if not, do not allow depart
-                            if (MyPlayerTrain.StationStops[0].PlatformItem.PassengerList.Count > 0)
+                            if (MyPlayerTrain.StationStops[0].PlatformItem.PassengerList.Count > 0
+                                || MyPlayerTrain.StationStops[0].PlatformItem.PassengerList.Count == 0 && MyPlayerTrain.TrainDoorsOpen)
                             {                                
                                 DisplayMessage = Simulator.Catalog.GetString("Čeká se na nástup cestujících....");
+                                MyPlayerTrain.UpdatePassengerCountAndWeight(MyPlayerTrain, MyPlayerTrain.StationStops[0].PlatformItem.NumPassengersWaiting, clock);
                             }
-                            else
+                            else                            
                             if (MyPlayerTrain.StationStops[0].PlatformItem.PassengerList.Count == 0 && !MyPlayerTrain.TrainDoorsOpen)
                             {
-                                maydepart = true;
-                                DisplayMessage = Simulator.Catalog.GetString("Volno k odjezdu!");
-                                Simulator.SoundNotify = Event.PermissionToDepart;
-                                BoardingCompleted = false;
-                            }
-                            else
-                                MyPlayerTrain.UpdatePassengerCountAndWeight(MyPlayerTrain, MyPlayerTrain.StationStops[0].PlatformItem.NumPassengersWaiting, clock);
+                                if (ClearForDepartGenerate == 0)
+                                    ClearForDepartGenerate = Simulator.Random.Next(2, 6);
+                                TimeToClearForDepart++;
+                                if (TimeToClearForDepart == ClearForDepartGenerate * 100)
+                                {
+                                    maydepart = true;
+                                    DisplayColor = Color.LightGreen;
+                                    DisplayMessage = Simulator.Catalog.GetString("Volno k odjezdu!");
+                                    Simulator.SoundNotify = Event.PermissionToDepart;
+                                    BoardingCompleted = false;
+                                    TimeToClearForDepart = 0;
+                                    ClearForDepartGenerate = 0;
+                                }
+                                else
+                                {
+                                    DisplayColor = Color.Yellow;
+                                    DisplayMessage = Simulator.Catalog.GetString("Čeká se na povolení výpravčího....");
+                                    return;
+                                }
+                            }                               
 
                             ldbfevaldepartbeforeboarding = false;//reset flag. Debrief Eval
 

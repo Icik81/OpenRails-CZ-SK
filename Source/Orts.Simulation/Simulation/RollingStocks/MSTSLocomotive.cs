@@ -2360,7 +2360,7 @@ namespace Orts.Simulation.RollingStocks
         {
             if (IsPlayerTrain)
             {
-                if (!PowerOn)
+                if (!PowerOn && !EDBIndependent)
                     disableDynamicBrakeIntervention = true;
                 if (Bar.FromPSI(BrakeSystem.BrakeLine1PressurePSI) > 4.9)
                     disableDynamicBrakeIntervention = false;
@@ -2570,7 +2570,7 @@ namespace Orts.Simulation.RollingStocks
                     PowerOnFilter = PowerOnFilter + (10 * elapsedClockSeconds); // 10 jednotek za sekundu
                 // Vybíjení
                 if (!PowerOn && DynamicBrakePercent > 0 && PowerOnFilter > 0)
-                    PowerOnFilter = PowerOnFilter - (DynamicBrakeForceN / 1000 * elapsedClockSeconds);
+                    PowerOnFilter = PowerOnFilter - (DynamicBrakeForceN / 10000 * elapsedClockSeconds);
                 // Pokles síly EDB při vybití filtru
                 if (!PowerOn && DynamicBrakePercent > 0 && PowerOnFilter < PowerOnFilterCapacityLimit)                    
                 {
