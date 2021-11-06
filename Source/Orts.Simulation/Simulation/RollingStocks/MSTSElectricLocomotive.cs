@@ -1237,12 +1237,9 @@ namespace Orts.Simulation.RollingStocks
                 {
                     if (((AuxActionWPItem)(Train as AITrain).nextActionInfo).ActualDepart > 0)
                     {
-                        double TimeToGo = ((AuxActionWPItem)(Train as AITrain).nextActionInfo).ActualDepart - Simulator.ClockTime;
-                        if (TimeToGo > 120)
-                        {
-                            Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("AI ceka!"));
+                        double AITimeToGo = ((AuxActionWPItem)(Train as AITrain).nextActionInfo).ActualDepart - Simulator.ClockTime;
+                        if (AITimeToGo > 120)                        
                             AIPantoDownStop = true;
-                        }
                         else
                             AIPantoDownStop = false;
                     }                    
