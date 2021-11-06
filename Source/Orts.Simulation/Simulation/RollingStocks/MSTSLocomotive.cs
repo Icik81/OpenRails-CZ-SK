@@ -561,6 +561,7 @@ namespace Orts.Simulation.RollingStocks
         float PreDataAmmeter;
         float PreDataAmps;
         float PreDataAmpVolts;
+        public bool AIPantoDown;
 
         // Jindrich
         public bool EnableControlVoltageChange = true;
@@ -6187,7 +6188,7 @@ namespace Orts.Simulation.RollingStocks
 
         public virtual void SetPower(bool ToState)
         {
-
+            
         }
 
         internal void ToggleMUCommand(bool ToState)

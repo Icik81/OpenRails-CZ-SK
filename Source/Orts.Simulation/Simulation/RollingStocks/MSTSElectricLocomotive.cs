@@ -102,8 +102,14 @@ namespace Orts.Simulation.RollingStocks
         float PreDataVoltageDC;
         float PreDataVoltage;
         bool UpdateTimeEnable;
-                
 
+        public bool PantographFaultByVoltageChange;
+        public bool PantographFaultByNotLowering;
+        float FaultByPlayerPenaltyTime;
+        float AIPantoUPTime;
+        float AIPantoDownGenerate;
+        bool AIPantoDown;
+        bool AIPantoDownStop;
 
         public MSTSElectricLocomotive(Simulator simulator, string wagFile) :
             base(simulator, wagFile)
@@ -174,6 +180,12 @@ namespace Orts.Simulation.RollingStocks
             outf.Write(TCompressorAC);
             outf.Write(TCompressorDC);
             outf.Write(HVClosed);
+            outf.Write(PantographFaultByVoltageChange);
+            outf.Write(PantographFaultByNotLowering);
+            outf.Write(AIPantoUPTime);
+            outf.Write(AIPantoDown);
+            outf.Write(AIPantoDownGenerate);
+            outf.Write(FaultByPlayerPenaltyTime);
             base.Save(outf);
         }
 
@@ -201,6 +213,12 @@ namespace Orts.Simulation.RollingStocks
             TCompressorAC = inf.ReadSingle();
             TCompressorDC = inf.ReadSingle();
             HVClosed = inf.ReadBoolean();
+            PantographFaultByVoltageChange = inf.ReadBoolean();
+            PantographFaultByNotLowering = inf.ReadBoolean();
+            AIPantoUPTime = inf.ReadSingle();
+            AIPantoDown = inf.ReadBoolean();
+            AIPantoDownGenerate = inf.ReadSingle();
+            FaultByPlayerPenaltyTime = inf.ReadSingle();
             base.Restore(inf);
         }
 
@@ -402,7 +420,7 @@ namespace Orts.Simulation.RollingStocks
             if ((Flipped || Direction == Direction.Reverse) && watts < 0)
                 watts = -watts;
 
-            watts += PowerReductionByHeating0 + PowerReductionByAuxEquipment0;            
+            watts += PowerReductionByHeating0 + PowerReductionByAuxEquipment0;
 
             if (watts < 0 && !RecuperationAvailable)
                 watts = 0;
@@ -533,6 +551,9 @@ namespace Orts.Simulation.RollingStocks
             //RouteVoltageV = 1;
             //Induktion = 0;
             //LocomotivePowerVoltage = 25000;
+
+            // Penalizace hráče při chybě přes přechody a změně voltáže na trati
+            FaultByPlayer_RouteVoltage(elapsedClockSeconds);
             
             // Výpočet napětí v drátech
             if (IsPlayerTrain)
@@ -698,6 +719,11 @@ namespace Orts.Simulation.RollingStocks
                 if (LocalThrottlePercent < 0) LocalThrottlePercent = 0;
                 if (LocalDynamicBrakePercent < 0) LocalDynamicBrakePercent = 0;
 
+                // Vyvolání penalizace hráče při nestažení pantografu na úseku s 0V
+                if (RouteVoltageV == 1 && (Pantographs[1].State == PantographState.Up || Pantographs[2].State == PantographState.Up))
+                {
+                    PantographFaultByNotLowering = true;
+                }
 
                 // Shodí HV při stažení sběračů při navoleném výkonu
                 if (LocalThrottlePercent != 0 && Pantograph4Switch == 0)                    
@@ -735,10 +761,16 @@ namespace Orts.Simulation.RollingStocks
                     if (PantographVoltageV == MaxLineVoltage0)
                     {
                         if (PantographVoltageV > 1.5f * LocomotivePowerVoltage)
+                        {
                             HVOff = true;
+                            PantographFaultByVoltageChange = true;
+                        }
                         else
-                            if (PantographVoltageV < 0.5f * LocomotivePowerVoltage)
-                                HVOff = true;
+                        if (PantographVoltageV < 0.5f * LocomotivePowerVoltage)
+                        {
+                            HVOff = true;
+                            PantographFaultByVoltageChange = true;
+                        }
                     }
 
                     if (!CircuitBreakerOn && PantographDown)
@@ -869,8 +901,11 @@ namespace Orts.Simulation.RollingStocks
                     // Nastavení AC při zapnutém HV  a pantografy nahoře přejede do úseku 3kV - shodí HV
                     if (CircuitBreakerOn && SwitchingVoltageMode_OffAC && RouteVoltageV == 3000
                         && (Pantographs[1].State == PantographState.Up || Pantographs[2].State == PantographState.Up))
+                    {
                         HVOff = true;
-                    
+                        PantographFaultByVoltageChange = true;
+                    }
+
                     // Při zapnutém HV přejede do beznapěťového úseku - shodí HV po pár sekundách
                     if (CircuitBreakerOn && (RouteVoltageV == 1 || (Pantographs[1].State == PantographState.Down && Pantographs[2].State == PantographState.Down)))
                     {
@@ -892,7 +927,10 @@ namespace Orts.Simulation.RollingStocks
                     // Nastavení DC při zapnutém HV a pantografy nahoře přejede do úseku 25kV - shodí HV
                     if (CircuitBreakerOn && SwitchingVoltageMode_OffDC && RouteVoltageV == 25000
                         && (Pantographs[1].State == PantographState.Up || Pantographs[2].State == PantographState.Up))
+                    {
                         HVOff = true;
+                        PantographFaultByVoltageChange = true;
+                    }
 
 
                     if (LocoSwitchACDC
@@ -1092,9 +1130,9 @@ namespace Orts.Simulation.RollingStocks
                 HVOn = false;
                 SignalEvent(PowerSupplyEvent.CloseCircuitBreaker);
             }
-            
+          
             PowerSupply.Update(elapsedClockSeconds);
-                      
+            
             if (PowerSupply.CircuitBreaker != null && IsPlayerTrain)
             {
                 if (PowerSupply.CircuitBreaker.State == CircuitBreakerState.Open && DoesPowerLossResetControls)
@@ -1110,6 +1148,8 @@ namespace Orts.Simulation.RollingStocks
             }
 
             // Icik            
+            SetAIPantoDown(elapsedClockSeconds);
+
             UnderVoltageProtection(elapsedClockSeconds);
             
             if (IsPlayerTrain)
@@ -1128,7 +1168,7 @@ namespace Orts.Simulation.RollingStocks
                     CompressorMode_OffAuto = true;
                     CompressorMode2_OffAuto = true;
 
-                    if (MultiSystemEngine)
+                    if (MultiSystemEngine && RouteVoltageV != 1)
                     {
                         Pantograph4Switch = 1;
                         if (RouteVoltageV == 3000)
@@ -1178,6 +1218,92 @@ namespace Orts.Simulation.RollingStocks
         }
 
         // Icik
+        // AI stahuje pantografy na úseku bez napětí a když nemá akci
+        protected void SetAIPantoDown(float elapsedClockSeconds)
+        {
+            // Po zastavení AI vlaku složí pantograf
+            if (!IsPlayerTrain && GameTimeCyklus == 10)
+            {
+                if ((Train as AITrain).MovementState == AITrain.AI_MOVEMENT_STATE.AI_STATIC
+                || (Train as AITrain).MovementState == AITrain.AI_MOVEMENT_STATE.STOPPED
+                || (Train as AITrain).MovementState == AITrain.AI_MOVEMENT_STATE.SUSPENDED
+                || (Train as AITrain).MovementState == AITrain.AI_MOVEMENT_STATE.HANDLE_ACTION)
+                    AIPantoDownStop = true;
+                else
+                    AIPantoDownStop = false;
+            }
+
+            // AI stahuje pantografy a nechá je dole minimálně 20s
+            if (AIPantoDown)
+            {
+                if (AIPantoDownGenerate == 0)
+                    AIPantoDownGenerate = Simulator.Random.Next(20, 30);
+                AIPantoUPTime += elapsedClockSeconds;
+                if (AIPantoUPTime > AIPantoDownGenerate)
+                {
+                    AIPantoDown = false;
+                    AIPantoUPTime = 0;
+                    AIPantoDownGenerate = 0;
+                }
+            }
+
+            if (!IsPlayerTrain && GameTimeCyklus == 10)
+            {
+                for (int i = 1; i <= Pantographs.Count; i++)
+                {
+                    switch (Pantographs[i].State)
+                    {
+                        case PantographState.Raising:
+                        case PantographState.Lowering:
+                        case PantographState.Down:
+                            if (RouteVoltageV != 1 && !AIPantoDown && !AIPantoDownStop)
+                            {
+                                Pantographs[i].PantographsUpBlocked = false;
+                            }
+                            break;
+                        case PantographState.Up:
+                            if (RouteVoltageV == 1 || AIPantoDownStop)
+                            {
+                                Pantographs[i].PantographsUpBlocked = true;
+                                SignalEvent(PowerSupplyEvent.LowerPantograph);
+                                if (!AIPantoDownStop)
+                                    AIPantoDown = true;
+                            }
+                            break;
+                    }
+                }
+            }
+        }
+
+        // Penalizace hráče
+        protected void FaultByPlayer_RouteVoltage(float elapsedClockSeconds)
+        {
+            if (PantographFaultByNotLowering)
+            {
+                RouteVoltageV = 1;
+                FaultByPlayerPenaltyTime += elapsedClockSeconds;
+                Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Urval si zdvihnutým pantografem trolej!"));
+                if (FaultByPlayerPenaltyTime > 30) // Potrestání hráče čekáním 30s
+                {
+                    PantographFaultByNotLowering = false;
+                    FaultByPlayerPenaltyTime = 0;
+                }
+            }
+
+            if (PantographFaultByVoltageChange)
+            {
+                RouteVoltageV = 1;
+                FaultByPlayerPenaltyTime += elapsedClockSeconds;
+                Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Poškodil si zdvihnutým pantografem lokomotivu!"));
+                if (FaultByPlayerPenaltyTime > 30) // Potrestání hráče čekáním 30s
+                {
+                    PantographFaultByNotLowering = false;
+                    FaultByPlayerPenaltyTime = 0;
+                }
+            }
+        }
+
+
         // Testování času stiknutého HV
         protected void HVPressedTesting(float elapsedClockSeconds)
         {

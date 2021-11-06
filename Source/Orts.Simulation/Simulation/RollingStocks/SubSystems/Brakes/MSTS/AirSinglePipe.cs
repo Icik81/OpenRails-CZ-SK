@@ -656,12 +656,12 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         HandbrakePercent = loco.HandBrakePresent ? 0 : 0;
                         loco.SetEngineBrakePercent(100);
                         loco.LocoReadyToGo = true;
+                        AutoCylPressurePSI0 = MaxCylPressurePSI;
                     }
                     HandbrakePercent = (Car as MSTSWagon).HandBrakePresent ? 0 : 0;
                     BrakeLine1PressurePSI = maxPressurePSI0;
                     BrakeLine2PressurePSI = Car.Train.BrakeLine2PressurePSI;
-                    AuxResPressurePSI = maxPressurePSI0;
-                    AutoCylPressurePSI0 = MaxCylPressurePSI;                    
+                    AuxResPressurePSI = maxPressurePSI0;                                       
                 }
 
                 // Definice limitů proměnných pro chod nenaladěných vozidel
