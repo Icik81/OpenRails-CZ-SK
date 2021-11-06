@@ -5518,7 +5518,13 @@ namespace Orts.Simulation.RollingStocks
             if (CombinedControlType == CombinedControl.ThrottleAir)
                 ThrottleController.SetValue(0);
 
-            AlerterReset(TCSEvent.TrainBrakeChanged);
+            bool alertChange = true;
+            if (CruiseControl != null)
+                if (CruiseControl.arrIsBraking)
+                    alertChange = false;
+
+            if (alertChange)
+                AlerterReset(TCSEvent.TrainBrakeChanged);
             TrainBrakeController.StartIncrease(target);
             TrainBrakeController.CommandStartTime = Simulator.ClockTime;
             if (CruiseControl != null)
@@ -5538,8 +5544,11 @@ namespace Orts.Simulation.RollingStocks
                 }
             }
 
-            Simulator.Confirmer.Confirm(CabControl.TrainBrake, CabSetting.Increase, GetTrainBrakeStatus());
-            SignalEvent(Event.TrainBrakeChange);
+            if (alertChange)
+            {
+                Simulator.Confirmer.Confirm(CabControl.TrainBrake, CabSetting.Increase, GetTrainBrakeStatus());
+                SignalEvent(Event.TrainBrakeChange);
+            }
         }
 
         public void StopTrainBrakeIncrease()
@@ -5577,11 +5586,19 @@ namespace Orts.Simulation.RollingStocks
                     }
                 }
             }
-            AlerterReset(TCSEvent.TrainBrakeChanged);
+            bool alertChange = true;
+            if (CruiseControl != null)
+                if (CruiseControl.arrIsBraking)
+                    alertChange = false;
+            if (alertChange)
+                AlerterReset(TCSEvent.TrainBrakeChanged);
             TrainBrakeController.StartDecrease(target, toZero);
             TrainBrakeController.CommandStartTime = Simulator.ClockTime;
-            Simulator.Confirmer.Confirm(CabControl.TrainBrake, CabSetting.Decrease, GetTrainBrakeStatus());
-            SignalEvent(Event.TrainBrakeChange);
+            if (alertChange)
+            {
+                Simulator.Confirmer.Confirm(CabControl.TrainBrake, CabSetting.Decrease, GetTrainBrakeStatus());
+                SignalEvent(Event.TrainBrakeChange);
+            }
         }
 
         public void StopTrainBrakeDecrease()
@@ -5664,13 +5681,22 @@ namespace Orts.Simulation.RollingStocks
             var controller = TrainBrakeController;
             var oldValue = controller.IntermediateValue;
             var change = controller.SetValue(value);
+            bool alertChange = true;
+
+            if (CruiseControl != null)
+                if (CruiseControl.arrIsBraking)
+                    alertChange = false;
+
             if (change != 0)
             {
                 new TrainBrakeCommand(Simulator.Log, change > 0, value, Simulator.ClockTime);
-                SignalEvent(Event.TrainBrakeChange);
-                AlerterReset(TCSEvent.TrainBrakeChanged);
+                if (alertChange)
+                {
+                    SignalEvent(Event.TrainBrakeChange);
+                    AlerterReset(TCSEvent.TrainBrakeChanged);
+                }
             }
-            if (oldValue != controller.IntermediateValue)
+            if (oldValue != controller.IntermediateValue && alertChange)
                 Simulator.Confirmer.Update(CabControl.TrainBrake, oldValue < controller.IntermediateValue ? CabSetting.Increase : CabSetting.Decrease, GetTrainBrakeStatus());
         }
 
@@ -7125,7 +7151,7 @@ namespace Orts.Simulation.RollingStocks
         public float elapsedTime;
         private float previousSelectedSpeed = 0;
         private float previousMaxMirelSpeed = 0;
-
+        private float previousTrainBrakeData = 0;
         public virtual float GetDataOf(CabViewControl cvc)
         {
             CheckBlankDisplay(cvc);
@@ -7570,7 +7596,15 @@ namespace Orts.Simulation.RollingStocks
                     }
                 case CABViewControlTypes.TRAIN_BRAKE:
                     {
-                        data = (TrainBrakeController == null) ? 0.0f : TrainBrakeController.CurrentValue;
+                        if (CruiseControl != null)
+                        {
+                            if (CruiseControl.arrIsBraking)
+                            {
+                                data = previousTrainBrakeData;
+                                break;
+                            }
+                        }
+                        data = previousTrainBrakeData = (TrainBrakeController == null) ? 0.0f : TrainBrakeController.CurrentValue;
                         break;
                     }
                 case CABViewControlTypes.ORTS_BAILOFF:

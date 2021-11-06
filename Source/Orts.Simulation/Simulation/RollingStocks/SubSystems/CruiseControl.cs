@@ -701,7 +701,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
         protected float brakingNotchValue = 0;
         protected float neutralNotchValue = 0;
         protected float releaseNotchValue = 0;
-        protected bool arrIsBraking = false;
+        public bool arrIsBraking = false;
 
         protected virtual void UpdateMotiveForce(float elapsedClockSeconds, float AbsWheelSpeedMps)
         {
@@ -1281,7 +1281,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                             step *= elapsedClockSeconds;
                             controllerVolts -= step;
                         }
-                        else if (delta < -0.3f)
+                        else if (delta < -0.05f)
                         {
                             if (Locomotive.DynamicBrakeAvailable)
                             {
@@ -1392,12 +1392,12 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                                     if (brakePercent > 100)
                                         brakePercent = 100;
                                 }
-                                if (Locomotive.AbsWheelSpeedMpS - 1 > SelectedSpeedMpS)
+                                if (Locomotive.AbsWheelSpeedMpS > SelectedSpeedMpS)
                                 {
                                     arrIsBraking = true;
-                                    float minBraking = 0.15f;
+                                    float minBraking = 0.3f;
                                     String testb = Locomotive.TrainBrakeController.GetStatus().ToLower();
-                                    minBraking += (MpS.ToKpH(Locomotive.AbsWheelSpeedMpS) - MpS.ToKpH(SelectedSpeedMpS)) / 120;
+                                    minBraking += (MpS.ToKpH(Locomotive.AbsWheelSpeedMpS) - MpS.ToKpH(SelectedSpeedMpS)) / 30;
                                     if (Locomotive.DynamicBrakeController == null || Locomotive.DynamicBrakePercent > 95)
                                     {
                                         if (Locomotive.BrakeSystem.BrakeLine1PressurePSI > Bar.ToPSI(5 - minBraking))
@@ -1413,6 +1413,13 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                                             {
                                                 String test = Locomotive.TrainBrakeController.GetStatus().ToLower();
                                                 Locomotive.SetTrainBrakeValue(neutralNotchValue);
+                                            }
+                                        }
+                                        if (Locomotive.BrakeSystem.BrakeLine1PressurePSI < Bar.ToPSI(5 - minBraking))
+                                        {
+                                            if (Locomotive.TrainBrakeController.GetStatus().ToLower() != "odbrzďovací poloha")
+                                            {
+                                                Locomotive.SetTrainBrakeValue(releaseNotchValue);
                                             }
                                         }
                                     }
