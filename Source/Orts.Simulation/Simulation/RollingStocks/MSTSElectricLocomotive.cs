@@ -41,6 +41,7 @@ using System.IO;
 using System.Text;
 using Event = Orts.Common.Event;
 using System;
+using Orts.Formats.OR;
 
 namespace Orts.Simulation.RollingStocks
 {
@@ -1231,6 +1232,21 @@ namespace Orts.Simulation.RollingStocks
                     AIPantoDownStop = true;
                 else
                     AIPantoDownStop = false;
+
+                if ((Train as AITrain).AuxActionsContain[0] != null && ((AIAuxActionsRef)(Train as AITrain).AuxActionsContain[0]).NextAction == AuxActionRef.AUX_ACTION.WAITING_POINT)
+                {
+                    if (((AuxActionWPItem)(Train as AITrain).nextActionInfo).ActualDepart > 0)
+                    {
+                        double TimeToGo = ((AuxActionWPItem)(Train as AITrain).nextActionInfo).ActualDepart - Simulator.ClockTime;
+                        if (TimeToGo > 120)
+                        {
+                            Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("AI ceka!"));
+                            AIPantoDownStop = true;
+                        }
+                        else
+                            AIPantoDownStop = false;
+                    }                    
+                }
             }
 
             // AI stahuje pantografy a nechá je dole minimálně 20s
