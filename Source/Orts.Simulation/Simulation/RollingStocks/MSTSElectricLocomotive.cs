@@ -1233,16 +1233,19 @@ namespace Orts.Simulation.RollingStocks
                 else
                     AIPantoDownStop = false;
 
-                if ((Train as AITrain).AuxActionsContain[0] != null && ((AIAuxActionsRef)(Train as AITrain).AuxActionsContain[0]).NextAction == AuxActionRef.AUX_ACTION.WAITING_POINT)
+                if ((Train as AITrain).nextActionInfo != null && (Train as AITrain).nextActionInfo.GetType().IsSubclassOf(typeof(AuxActionItem)))
                 {
-                    if (((AuxActionWPItem)(Train as AITrain).nextActionInfo).ActualDepart > 0)
+                    if ((Train as AITrain).AuxActionsContain[0] != null && ((AIAuxActionsRef)(Train as AITrain).AuxActionsContain[0]).NextAction == AuxActionRef.AUX_ACTION.WAITING_POINT)
                     {
-                        double AITimeToGo = ((AuxActionWPItem)(Train as AITrain).nextActionInfo).ActualDepart - Simulator.ClockTime;
-                        if (AITimeToGo > 120)                        
-                            AIPantoDownStop = true;
-                        else
-                            AIPantoDownStop = false;
-                    }                    
+                        if (((AuxActionWPItem)(Train as AITrain).nextActionInfo).ActualDepart > 0)
+                        {
+                            double AITimeToGo = ((AuxActionWPItem)(Train as AITrain).nextActionInfo).ActualDepart - Simulator.ClockTime;
+                            if (AITimeToGo > 120)
+                                AIPantoDownStop = true;
+                            else
+                                AIPantoDownStop = false;
+                        }
+                    }
                 }
             }
 
