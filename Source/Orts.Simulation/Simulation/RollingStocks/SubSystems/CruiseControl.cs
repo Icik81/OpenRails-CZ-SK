@@ -574,6 +574,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
         public void SpeedRegulatorSelectedSpeedDecrease()
         {
             if (!Equipped) return;
+            if (UseThrottle) return;
 
             if (selectedSpeedLeverHoldTime + SpeedSelectorStepTimeSeconds > elapsedTime)
                 return;
@@ -697,9 +698,15 @@ namespace Orts.Simulation.RollingStocks.SubSystems
         protected int speedSensorUndercarriageIndex = -1;
         protected float tempAccDemand = 0;
         protected bool breakout = false;
+        protected float brakingNotchValue = 0;
+        protected float neutralNotchValue = 0;
+        protected float releaseNotchValue = 0;
+        protected bool arrIsBraking = false;
 
         protected virtual void UpdateMotiveForce(float elapsedClockSeconds, float AbsWheelSpeedMps)
         {
+            if (!Locomotive.DynamicBrakeAvailable)
+                Locomotive.DynamicBrakePercent = -1;
             float wheelSpeedMpS = Locomotive.SpeedMpS;
             if (firstIteration)
             {
@@ -722,6 +729,16 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                         }
                         ucIndex++;
                     }
+                }
+
+                foreach (Controllers.MSTSNotch notch in Locomotive.TrainBrakeController.Notches)
+                {
+                    if (notch.Type == ORTS.Scripting.Api.ControllerState.Apply)
+                        brakingNotchValue = notch.Value;
+                    if (notch.Type == ORTS.Scripting.Api.ControllerState.Neutral)
+                        neutralNotchValue = notch.Value;
+                    if (notch.Type == ORTS.Scripting.Api.ControllerState.Release)
+                        releaseNotchValue = notch.Value;
                 }
             }
 
@@ -757,7 +774,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
             TrainElevation = TrainElevation / count;*/
 
             if (Locomotive.TrainBrakeController.TrainBrakeControllerState == ORTS.Scripting.Api.ControllerState.Release ||
-                Locomotive.TrainBrakeController.TrainBrakeControllerState == ORTS.Scripting.Api.ControllerState.Neutral)
+                Locomotive.TrainBrakeController.TrainBrakeControllerState == ORTS.Scripting.Api.ControllerState.Neutral || arrIsBraking)
                 TrainBrakePriority = false;
 
             if (Locomotive.DynamicBrakePercent < 0)
@@ -838,7 +855,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                         reducingForce = false;
                 }
             }
-            if (Bar.FromPSI(Locomotive.BrakeSystem.BrakeLine1PressurePSI) < 4.8)
+            if (Bar.FromPSI(Locomotive.BrakeSystem.BrakeLine1PressurePSI) < 4.8 && !arrIsBraking)
             {
                 canAddForce = false;
                 reducingForce = true;
@@ -1108,6 +1125,54 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                                     if (brakePercent > 100)
                                         brakePercent = 100;
                                 }
+                                if (Locomotive.AbsWheelSpeedMpS - 1 > SelectedSpeedMpS)
+                                {
+                                    arrIsBraking = true;
+                                    float minBraking = 0.15f;
+                                    minBraking += (MpS.ToKpH(Locomotive.AbsWheelSpeedMpS) - MpS.ToKpH(SelectedSpeedMpS)) / 120;
+                                    if (Locomotive.DynamicBrakeController == null || Locomotive.DynamicBrakePercent > 95)
+                                    {
+                                        if (Locomotive.BrakeSystem.BrakeLine1PressurePSI > Bar.ToPSI(5 - minBraking))
+                                        {
+                                            if (Locomotive.TrainBrakeController.GetStatus().ToLower() != "brzdící poloha")
+                                            {
+                                                String test = Locomotive.TrainBrakeController.GetStatus().ToLower();
+                                                Locomotive.SetTrainBrakeValue(brakingNotchValue);
+                                            }
+                                        }
+                                        else
+                                        {
+                                            if (Locomotive.TrainBrakeController.GetStatus().ToLower() != "jízní poloha")
+                                            {
+                                                String test = Locomotive.TrainBrakeController.GetStatus().ToLower();
+                                                Locomotive.SetTrainBrakeValue(neutralNotchValue);
+                                            }
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    if (!TrainBrakePriority)
+                                    {
+                                        if (Locomotive.BrakeSystem.BrakeLine1PressurePSI < Bar.ToPSI(5))
+                                        {
+                                            if (Locomotive.TrainBrakeController.GetStatus().ToLower() != "odbržďovací poloha")
+                                            {
+                                                String test = Locomotive.TrainBrakeController.GetStatus().ToLower();
+                                                Locomotive.SetTrainBrakeValue(releaseNotchValue);
+                                            }
+                                        }
+                                        else
+                                        {
+                                            if (Locomotive.TrainBrakeController.GetStatus().ToLower() != "jízní poloha")
+                                            {
+                                                String test = Locomotive.TrainBrakeController.GetStatus().ToLower();
+                                                Locomotive.SetTrainBrakeValue(neutralNotchValue);
+                                                arrIsBraking = false;
+                                            }
+                                        }
+                                    }
+                                }
                             }
                         }
                     }
@@ -1131,10 +1196,31 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                 if ((wheelSpeedMpS > SafeSpeedForAutomaticOperationMpS || SpeedSelMode == SpeedSelectorMode.Start || SpeedRegulatorOptions.Contains("startfromzero")) && (SpeedSelMode != SpeedSelectorMode.Neutral && SpeedSelMode != SpeedSelectorMode.Parking))
                 {
                     float delta = 0;
+
                     if (!RestrictedSpeedActive)
-                        delta = SelectedSpeedMpS - Locomotive.SpeedMpS;
+                        delta = SelectedSpeedMpS - Locomotive.AbsSpeedMpS;
                     else
-                        delta = CurrentSelectedSpeedMpS - Locomotive.SpeedMpS;
+                        delta = CurrentSelectedSpeedMpS - Locomotive.AbsSpeedMpS;
+                    if (delta > 0 && arrIsBraking)
+                    {
+                        if (Locomotive.BrakeSystem.BrakeLine1PressurePSI < Bar.ToPSI(4.98f))
+                        {
+                            if (Locomotive.TrainBrakeController.GetStatus().ToLower() != "odbrzďovací poloha")
+                            {
+                                String test = Locomotive.TrainBrakeController.GetStatus().ToLower();
+                                Locomotive.SetTrainBrakeValue(releaseNotchValue);
+                            }
+                        }
+                        else
+                        {
+                            if (Locomotive.TrainBrakeController.GetStatus().ToLower() != "jízdní poloha")
+                            {
+                                String test = Locomotive.TrainBrakeController.GetStatus().ToLower();
+                                Locomotive.SetTrainBrakeValue(neutralNotchValue);
+                                arrIsBraking = false;
+                            }
+                        }
+                    }
                     if (delta > PowerResumeSpeedDelta)
                     {
                         breakout = false;
@@ -1306,6 +1392,54 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                                     if (brakePercent > 100)
                                         brakePercent = 100;
                                 }
+                                if (Locomotive.AbsWheelSpeedMpS - 1 > SelectedSpeedMpS)
+                                {
+                                    arrIsBraking = true;
+                                    float minBraking = 0.15f;
+                                    String testb = Locomotive.TrainBrakeController.GetStatus().ToLower();
+                                    minBraking += (MpS.ToKpH(Locomotive.AbsWheelSpeedMpS) - MpS.ToKpH(SelectedSpeedMpS)) / 120;
+                                    if (Locomotive.DynamicBrakeController == null || Locomotive.DynamicBrakePercent > 95)
+                                    {
+                                        if (Locomotive.BrakeSystem.BrakeLine1PressurePSI > Bar.ToPSI(5 - minBraking))
+                                        {
+                                            if (Locomotive.TrainBrakeController.GetStatus().ToLower() != "brzdící poloha")
+                                            {
+                                                Locomotive.SetTrainBrakeValue(brakingNotchValue);
+                                            }
+                                        }
+                                        else
+                                        {
+                                            if (Locomotive.TrainBrakeController.GetStatus().ToLower() != "jízdní poloha")
+                                            {
+                                                String test = Locomotive.TrainBrakeController.GetStatus().ToLower();
+                                                Locomotive.SetTrainBrakeValue(neutralNotchValue);
+                                            }
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    if (!TrainBrakePriority)
+                                    {
+                                        if (Locomotive.BrakeSystem.BrakeLine1PressurePSI < Bar.ToPSI(5))
+                                        {
+                                            if (Locomotive.TrainBrakeController.GetStatus().ToLower() != "odbrzďovací poloha")
+                                            {
+                                                String test = Locomotive.TrainBrakeController.GetStatus().ToLower();
+                                                Locomotive.SetTrainBrakeValue(releaseNotchValue);
+                                            }
+                                        }
+                                        else
+                                        {
+                                            if (Locomotive.TrainBrakeController.GetStatus().ToLower() != "jízdní poloha")
+                                            {
+                                                String test = Locomotive.TrainBrakeController.GetStatus().ToLower();
+                                                Locomotive.SetTrainBrakeValue(neutralNotchValue);
+                                                arrIsBraking = false;
+                                            }
+                                        }
+                                    }
+                                }
                             }
                         }
                     }
@@ -1348,6 +1482,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                             {
                                 if (ForceStepsThrottleTable.Count > 0)
                                 {
+                                    if (Locomotive.SelectedMaxAccelerationStep == 0)
+                                        Locomotive.SelectedMaxAccelerationStep = 1;
                                     t = ForceStepsThrottleTable[(int)Locomotive.SelectedMaxAccelerationStep - 1];
                                 }
                                 else
@@ -1465,6 +1601,13 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                                     step *= elapsedClockSeconds;
                                     controllerVolts -= step;
                                 }
+                                if (controllerVolts + 0.2f < demandedVolts)
+                                {
+                                    float step = 100 / Locomotive.ThrottleFullRangeIncreaseTimeSeconds;
+
+                                    step *= elapsedClockSeconds;
+                                    controllerVolts += step;
+                                }
                             }
                             if (controllerVolts > demandedVolts && delta < 0.8)
                             {
@@ -1478,7 +1621,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                         if (UseThrottle)
                         {
                             if (controllerVolts > 0)
-                                Locomotive.ThrottleController.SetPercent(controllerVolts);
+                                Locomotive.ControllerVolts = controllerVolts;
                         }
                     }
                 }

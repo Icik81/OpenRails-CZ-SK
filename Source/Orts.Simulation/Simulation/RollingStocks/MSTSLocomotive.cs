@@ -3376,7 +3376,7 @@ namespace Orts.Simulation.RollingStocks
 
             if (CruiseControl != null && !TrainBrakeController.TCSEmergencyBraking)
             {
-                if (!IsPlayerTrain || CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.Manual || CruiseControl.UseThrottle)
+                if (!IsPlayerTrain || CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.Manual)
                 {
                     CruiseControl.WasForceReset = false;
             UpdateTractiveForce(elapsedClockSeconds, t, AbsSpeedMpS, AbsWheelSpeedMpS);
@@ -5666,7 +5666,7 @@ namespace Orts.Simulation.RollingStocks
             var change = controller.SetValue(value);
             if (change != 0)
             {
-                new TrainBrakeCommand(Simulator.Log, change > 0, controller.CurrentValue, Simulator.ClockTime);
+                new TrainBrakeCommand(Simulator.Log, change > 0, value, Simulator.ClockTime);
                 SignalEvent(Event.TrainBrakeChange);
                 AlerterReset(TCSEvent.TrainBrakeChanged);
             }
@@ -6118,6 +6118,8 @@ namespace Orts.Simulation.RollingStocks
 
         public void DynamicBrakeChangeActiveState(bool toState)
         {
+            if (DynamicBrakeController == null)
+                return;
             if (toState && !DynamicBrake && DynamicBrakePercent < 0)
             {
                 DynamicBrakePercent = 0;
