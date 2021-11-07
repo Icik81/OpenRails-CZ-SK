@@ -932,12 +932,12 @@ namespace Orts.Simulation.AIs
                             mstsSteamLocomotive.CombinedTenderWaterVolumeUKG = (ORTS.Common.Kg.ToLb(mstsSteamLocomotive.MaxLocoTenderWaterMassKG) / 10.0f) * Simulator.Activity.Tr_Activity.Tr_Activity_Header.FuelWater / 100.0f;
                             mstsSteamLocomotive.TenderCoalMassKG = mstsSteamLocomotive.MaxTenderCoalMassKG * Simulator.Activity.Tr_Activity.Tr_Activity_Header.FuelCoal / 100.0f;
                         }
-                        if (train.InitialSpeed != 0)
-                            car.SignalEvent(PowerSupplyEvent.RaisePantograph, 1);
+                        //if (train.InitialSpeed != 0)
+                        //    car.SignalEvent(PowerSupplyEvent.RaisePantograph, 1);
                     }
                     else
                     {
-                        car.SignalEvent(PowerSupplyEvent.RaisePantograph, 1);
+                        //car.SignalEvent(PowerSupplyEvent.RaisePantograph, 1);
                         car.CarID = "AI" + train.Number.ToString() + " - " + (train.Cars.Count - 1).ToString();
                     }
 
