@@ -601,7 +601,7 @@ namespace Orts.Simulation.RollingStocks
         public float DynamicBrakeMaxForceAtSelectorStep = 0;
         public float SelectedMaxAccelerationStep = 0;
         public bool RecuperationAvailable = false;
-
+        public bool MoveThrottle = true;
 
         public bool
       Speed0Pressed, Speed10Pressed, Speed20Pressed, Speed30Pressed, Speed40Pressed, Speed50Pressed
@@ -5004,7 +5004,7 @@ namespace Orts.Simulation.RollingStocks
             if (CombinedControlType == CombinedControl.ThrottleDynamic)
                 StopDynamicBrakeDecrease();
             else if (CombinedControlType == CombinedControl.ThrottleAir)
-                StopTrainBrakeDecrease();
+                StopTrainBrakeDecrease(0);
             else if (ThrottleController.SmoothMax() != null)
                 new ContinuousThrottleCommand(Simulator.Log, true, ThrottleController.CurrentValue, CommandStartTime);
         }
@@ -5075,7 +5075,7 @@ namespace Orts.Simulation.RollingStocks
             if (CombinedControlType == CombinedControl.ThrottleDynamic && ThrottleController.CurrentValue <= 0)
                 StartDynamicBrakeIncrease(null);
             else if (CombinedControlType == CombinedControl.ThrottleAir && ThrottleController.CurrentValue <= 0)
-                StartTrainBrakeIncrease(null);
+                StartTrainBrakeIncrease(null, 0);
             else
                 StartThrottleDecrease(ThrottleController.SmoothMin());
         }
@@ -5119,7 +5119,7 @@ namespace Orts.Simulation.RollingStocks
             if (CombinedControlType == CombinedControl.ThrottleDynamic)
                 StopDynamicBrakeIncrease();
             else if (CombinedControlType == CombinedControl.ThrottleAir)
-                StopTrainBrakeIncrease();
+                StopTrainBrakeIncrease(0);
             if (ThrottleController.SmoothMin() != null)
                 new ContinuousThrottleCommand(Simulator.Log, false, ThrottleController.CurrentValue, CommandStartTime);
         }
@@ -5312,7 +5312,7 @@ namespace Orts.Simulation.RollingStocks
             if (CombinedControlType == CombinedControl.ThrottleDynamic && ThrottleController.CurrentValue <= 0)
                 StartDynamicBrakeIncrease(null);
             else if (CombinedControlType == CombinedControl.ThrottleAir && ThrottleController.CurrentValue <= 0)
-                StartTrainBrakeIncrease(null);
+                StartTrainBrakeIncrease(null, 0);
             else
                 StartThrottleToZero(0.0f);
 
@@ -5347,7 +5347,7 @@ namespace Orts.Simulation.RollingStocks
             }
             else if (CombinedControlType == CombinedControl.ThrottleAir && TrainBrakeController.CurrentValue > 0)
             {
-                SetTrainBrakeValue((MathHelper.Clamp(value, CombinedControlSplitPosition, 1) - CombinedControlSplitPosition) / (1 - CombinedControlSplitPosition));
+                SetTrainBrakeValue((MathHelper.Clamp(value, CombinedControlSplitPosition, 1) - CombinedControlSplitPosition) / (1 - CombinedControlSplitPosition), 0);
             }
             else
             {
@@ -5508,7 +5508,7 @@ namespace Orts.Simulation.RollingStocks
         #endregion
 
         #region TrainBrakeController
-        public void StartTrainBrakeIncrease(float? target)
+        public void StartTrainBrakeIncrease(float? target, int from) // from 0 = keyboard, 1 = CruiseControl
         {
             if (Mirel.Equipped && !Mirel.BlueLight && Mirel.initTest == Mirel.InitTest.Passed && SpeedMpS > 0) Mirel.AlerterPressed(true);
             if (MultiPositionControllers != null)
@@ -5528,7 +5528,7 @@ namespace Orts.Simulation.RollingStocks
 
             bool alertChange = true;
             if (CruiseControl != null)
-                if (CruiseControl.arrIsBraking)
+                if (CruiseControl.arrIsBraking && from == 1)
                     alertChange = false;
 
             if (alertChange)
@@ -5538,6 +5538,8 @@ namespace Orts.Simulation.RollingStocks
             if (CruiseControl != null)
             {
                 CruiseControl.TrainBrakePriority = true;
+                if (from == 0)
+                    CruiseControl.IReallyWantToBrake = true;
             }
             if (TrainBrakeController.TrainBrakeControllerState == ControllerState.Apply
                 || TrainBrakeController.TrainBrakeControllerState == ControllerState.EPApply
@@ -5559,7 +5561,7 @@ namespace Orts.Simulation.RollingStocks
             }
         }
 
-        public void StopTrainBrakeIncrease()
+        public void StopTrainBrakeIncrease(int from)
         {
             if (Mirel.Equipped && !Mirel.BlueLight && Mirel.initTest == Mirel.InitTest.Passed && SpeedMpS > 0) Mirel.AlerterPressed(true);
             if (MultiPositionControllers != null)
@@ -5576,7 +5578,7 @@ namespace Orts.Simulation.RollingStocks
             }
             AlerterReset(TCSEvent.TrainBrakeChanged);
             TrainBrakeController.StopIncrease();
-            new TrainBrakeCommand(Simulator.Log, true, TrainBrakeController.CurrentValue, TrainBrakeController.CommandStartTime);
+            new TrainBrakeCommand(Simulator.Log, true, TrainBrakeController.CurrentValue, TrainBrakeController.CommandStartTime, from);
         }
 
         public void StartTrainBrakeDecrease(float? target, bool toZero = false)
@@ -5609,7 +5611,7 @@ namespace Orts.Simulation.RollingStocks
             }
         }
 
-        public void StopTrainBrakeDecrease()
+        public void StopTrainBrakeDecrease(int from)
         {
             if (CruiseControl != null)
                 if (Mirel.Equipped && !Mirel.BlueLight && Mirel.initTest == Mirel.InitTest.Passed && SpeedMpS > 0 && CruiseControl.SpeedRegMode != CruiseControl.SpeedRegulatorMode.Manual)
@@ -5631,7 +5633,7 @@ namespace Orts.Simulation.RollingStocks
             }
             AlerterReset(TCSEvent.TrainBrakeChanged);
             TrainBrakeController.StopDecrease();
-            new TrainBrakeCommand(Simulator.Log, false, TrainBrakeController.CurrentValue, TrainBrakeController.CommandStartTime);
+            new TrainBrakeCommand(Simulator.Log, false, TrainBrakeController.CurrentValue, TrainBrakeController.CommandStartTime, from);
         }
 
         /// <summary>
@@ -5639,13 +5641,13 @@ namespace Orts.Simulation.RollingStocks
         /// </summary>
         /// <param name="increase"></param>
         /// <param name="target"></param>
-        public void TrainBrakeChangeTo(bool increase, float? target)
+        public void TrainBrakeChangeTo(bool increase, float? target, int from)
         {  // Need a better way to express brake as a single number?
             if (increase)
             {
                 if (target > TrainBrakeController.CurrentValue)
                 {
-                    StartTrainBrakeIncrease(target);
+                    StartTrainBrakeIncrease(target, from);
                 }
             }
             else
@@ -5684,7 +5686,7 @@ namespace Orts.Simulation.RollingStocks
             return s;
         }
 
-        public void SetTrainBrakeValue(float value)
+        public void SetTrainBrakeValue(float value, int from)
         {
             var controller = TrainBrakeController;
             var oldValue = controller.IntermediateValue;
@@ -5697,7 +5699,7 @@ namespace Orts.Simulation.RollingStocks
 
             if (change != 0)
             {
-                new TrainBrakeCommand(Simulator.Log, change > 0, value, Simulator.ClockTime);
+                new TrainBrakeCommand(Simulator.Log, change > 0, value, Simulator.ClockTime, from);
                 if (alertChange)
                 {
                     SignalEvent(Event.TrainBrakeChange);

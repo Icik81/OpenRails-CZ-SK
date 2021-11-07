@@ -1113,7 +1113,7 @@ namespace Orts.Simulation
                                 if (ClearForDepartGenerate == 0)
                                     ClearForDepartGenerate = Simulator.Random.Next(2, 6);
                                 TimeToClearForDepart++;
-                                if (TimeToClearForDepart == ClearForDepartGenerate * 100)
+                                if (TimeToClearForDepart == ClearForDepartGenerate * 30)
                                 {
                                     maydepart = true;
                                     DisplayColor = Color.LightGreen;

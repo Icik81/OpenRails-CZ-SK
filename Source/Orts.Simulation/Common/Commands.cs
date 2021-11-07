@@ -85,6 +85,7 @@ namespace Orts.Common
 
         // Method required by ICommand
         public virtual void Redo() { Trace.TraceWarning( "Dummy method" ); }
+        public virtual void Redo(int from) { Trace.TraceWarning("Dummy method"); }
 
         public override string ToString() {
             return this.GetType().ToString();
@@ -443,13 +444,13 @@ namespace Orts.Common
     public sealed class TrainBrakeCommand : ContinuousCommand {
         public static MSTSLocomotive Receiver { get; set; }
 
-        public TrainBrakeCommand( CommandLog log, bool toState, float? target, double startTime ) 
+        public TrainBrakeCommand( CommandLog log, bool toState, float? target, double startTime, int from ) 
             : base( log, toState, target, startTime ) {
-            Redo();
+            Redo(from);
         }
 
-        public override void Redo() {
-            Receiver.TrainBrakeChangeTo( ToState, Target );
+        public override void Redo(int from) {
+            Receiver.TrainBrakeChangeTo( ToState, Target, from );
             // Report();
         }
     }
