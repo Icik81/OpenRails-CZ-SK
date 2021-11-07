@@ -2371,6 +2371,14 @@ namespace Orts.Simulation.RollingStocks
                     DynamicBrakeBlended = false;
                     return;
                 }
+
+                // Povolí EDB pro AI vlaky
+                if (!IsPlayerTrain)
+                {
+                    airPipeSystem = BrakeSystem as AirSinglePipe;
+                    DynamicBrake = true;
+                }
+
             }
             if (airPipeSystem != null
                 && ((airPipeSystem is EPBrakeSystem && Train.BrakeLine4 > 0f) || (MainResPressurePSI >= airPipeSystem.maxPressurePSI0 && airPipeSystem.BrakeLine1PressurePSI < TrainBrakeController.MaxPressurePSI - 1f && AbsSpeedMpS > 1)

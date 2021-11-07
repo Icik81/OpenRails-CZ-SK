@@ -1228,7 +1228,7 @@ namespace Orts.Simulation.RollingStocks
                 if ((Train as AITrain).MovementState == AITrain.AI_MOVEMENT_STATE.AI_STATIC
                 || (Train as AITrain).MovementState == AITrain.AI_MOVEMENT_STATE.STOPPED
                 || (Train as AITrain).MovementState == AITrain.AI_MOVEMENT_STATE.SUSPENDED
-                || (Train as AITrain).MovementState == AITrain.AI_MOVEMENT_STATE.HANDLE_ACTION)
+                )
                     AIPantoDownStop = true;
                 else
                     AIPantoDownStop = false;
