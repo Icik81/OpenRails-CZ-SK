@@ -112,6 +112,9 @@ namespace Orts.Simulation.RollingStocks
         bool AIPantoDown;
         bool AIPantoDownStop;
 
+        bool AIPantoChangeCyklus;
+        float AIPantoChangeCyklusTime;
+
         public MSTSElectricLocomotive(Simulator simulator, string wagFile) :
             base(simulator, wagFile)
         {
@@ -187,6 +190,12 @@ namespace Orts.Simulation.RollingStocks
             outf.Write(AIPantoDown);
             outf.Write(AIPantoDownGenerate);
             outf.Write(FaultByPlayerPenaltyTime);
+
+            // Icik
+            outf.Write(Train.TrainHasFirstPantoMarker);
+            outf.Write(Train.TrainPantoMarker);
+            outf.Write(Train.AIPantoChange);
+
             base.Save(outf);
         }
 
@@ -220,6 +229,11 @@ namespace Orts.Simulation.RollingStocks
             AIPantoDown = inf.ReadBoolean();
             AIPantoDownGenerate = inf.ReadSingle();
             FaultByPlayerPenaltyTime = inf.ReadSingle();
+            // Icik
+            Train.TrainHasFirstPantoMarker = inf.ReadBoolean();
+            Train.TrainPantoMarker = inf.ReadInt32();
+            Train.AIPantoChange = inf.ReadBoolean();
+
             base.Restore(inf);
         }
 
@@ -1227,26 +1241,34 @@ namespace Orts.Simulation.RollingStocks
             {
                 if ((Train as AITrain).MovementState == AITrain.AI_MOVEMENT_STATE.AI_STATIC
                 || (Train as AITrain).MovementState == AITrain.AI_MOVEMENT_STATE.STOPPED
-                || (Train as AITrain).MovementState == AITrain.AI_MOVEMENT_STATE.SUSPENDED
+                || (Train as AITrain).MovementState == AITrain.AI_MOVEMENT_STATE.SUSPENDED                
                 )
                     AIPantoDownStop = true;
                 else
                     AIPantoDownStop = false;
 
-                if ((Train as AITrain).nextActionInfo != null && (Train as AITrain).nextActionInfo.GetType().IsSubclassOf(typeof(AuxActionItem)))
+                if ((Train as AITrain).nextActionInfo != null)
                 {
-                    if ((Train as AITrain).AuxActionsContain[0] != null && ((AIAuxActionsRef)(Train as AITrain).AuxActionsContain[0]).NextAction == AuxActionRef.AUX_ACTION.WAITING_POINT)
+                    if ((Train as AITrain).nextActionInfo.GetType().IsSubclassOf(typeof(AuxActionItem)))
                     {
-                        if (((AuxActionWPItem)(Train as AITrain).nextActionInfo).ActualDepart > 0)
+                        if ((Train as AITrain).AuxActionsContain[0] != null && ((AIAuxActionsRef)(Train as AITrain).AuxActionsContain[0]).NextAction == AuxActionRef.AUX_ACTION.WAITING_POINT)
                         {
-                            double AITimeToGo = ((AuxActionWPItem)(Train as AITrain).nextActionInfo).ActualDepart - Simulator.ClockTime;
-                            if (AITimeToGo > 120)
-                                AIPantoDownStop = true;
-                            else
-                                AIPantoDownStop = false;
+                            if (((AuxActionWPItem)(Train as AITrain).nextActionInfo).ActualDepart > 0)
+                            {
+                                double AITimeToGo = ((AuxActionWPItem)(Train as AITrain).nextActionInfo).ActualDepart - Simulator.ClockTime;
+                                if (AITimeToGo > 120)
+                                    AIPantoDownStop = true;
+                                else
+                                    AIPantoDownStop = false;
+                            }
                         }
                     }
-                }
+                    else
+                    if ((Train as AITrain).nextActionInfo.NextAction != AIActionItem.AI_ACTION_TYPE.REVERSAL && (Train as AITrain).SpeedMpS == 0 && !AIPantoChangeCyklus)
+                    {
+                        Train.AIPantoChange = true;
+                    }                    
+                }                
             }
 
             // AI stahuje pantografy a nechá je dole minimálně 20s
@@ -1263,7 +1285,38 @@ namespace Orts.Simulation.RollingStocks
                 }
             }
 
-            if (!IsPlayerTrain && GameTimeCyklus == 10)
+            // AI mění pantografy na revers bodu pro lokomotivy s výkonem nad 1200kW, cyklus trvá 30s
+            if (!IsPlayerTrain && Train.AIPantoChange && (Train as AITrain).MovementState == AITrain.AI_MOVEMENT_STATE.HANDLE_ACTION && MaxPowerW > 1200 * 1000)
+            {
+                SignalEvent(PowerSupplyEvent.LowerPantograph);
+                if (Train.TrainPantoMarker == 1)
+                    Train.TrainPantoMarker = 2;
+                else
+                if (Train.TrainPantoMarker == 2)
+                    Train.TrainPantoMarker = 1;                    
+                Train.AIPantoChange = false;
+                AIPantoChangeCyklus = true;
+            }
+            if (AIPantoChangeCyklus)
+            {
+                AIPantoChangeCyklusTime += elapsedClockSeconds;
+                if (AIPantoChangeCyklusTime > 30)
+                {
+                    AIPantoChangeCyklus = false;
+                    AIPantoChangeCyklusTime = 0;
+                }
+            }
+
+            // Inicializace pantografů na AI loko
+            if (!IsPlayerTrain && !Train.TrainHasFirstPantoMarker)
+            {
+                Train.TrainHasFirstPantoMarker = true;
+                Train.TrainPantoMarker = 1;
+                Train.SignalEvent(PowerSupplyEvent.RaisePantograph, Train.TrainPantoMarker);
+            }
+
+
+            if (!IsPlayerTrain && GameTimeCyklus == 10 && GameTimeFlow > 1)
             {
                 for (int i = 1; i <= Pantographs.Count; i++)
                 {
@@ -1275,6 +1328,7 @@ namespace Orts.Simulation.RollingStocks
                             if (RouteVoltageV != 1 && !AIPantoDown && !AIPantoDownStop)
                             {
                                 Pantographs[i].PantographsUpBlocked = false;
+                                Train.SignalEvent(PowerSupplyEvent.RaisePantograph, Train.TrainPantoMarker);
                             }
                             break;
                         case PantographState.Up:

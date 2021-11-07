@@ -101,6 +101,9 @@ namespace Orts.Simulation.Physics
         public float TotalCapacityMainResBrakePipe;
         public float TotalAirLoss;
         public bool TrainDoorsOpen;
+        public bool TrainHasFirstPantoMarker;
+        public int TrainPantoMarker;
+        public bool AIPantoChange;
 
         public Traveller RearTDBTraveller;               // positioned at the back of the last car in the train
         public Traveller FrontTDBTraveller;              // positioned at the front of the train by CalculatePositionOfCars
@@ -668,8 +671,7 @@ namespace Orts.Simulation.Physics
 
         public Train(Simulator simulator, BinaryReader inf)
         {
-            Init(simulator);
-
+            Init(simulator);            
             routedForward = new TrainRouted(this, 0);
             routedBackward = new TrainRouted(this, 1);
             ColdStart = false;
@@ -1016,7 +1018,7 @@ namespace Orts.Simulation.Physics
 
         public virtual void Save(BinaryWriter outf)
         {
-            SaveCars(outf);
+            SaveCars(outf);            
             outf.Write(Number);
             outf.Write(Name);
             outf.Write(SpeedMpS);

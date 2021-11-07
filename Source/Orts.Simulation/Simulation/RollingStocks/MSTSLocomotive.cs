@@ -3520,7 +3520,7 @@ namespace Orts.Simulation.RollingStocks
                     {
                         if (!PowerOn)
                         {
-                            Train.SignalEvent(PowerSupplyEvent.RaisePantograph, 1);
+                            //Train.SignalEvent(PowerSupplyEvent.RaisePantograph, 1);
 
                             if (this is MSTSDieselLocomotive)
                             {
