@@ -583,7 +583,6 @@ namespace Orts.Simulation.RollingStocks.SubSystems
         public void SpeedRegulatorSelectedSpeedDecrease()
         {
             if (!Equipped) return;
-            if (UseThrottle) return;
 
             if (selectedSpeedLeverHoldTime + SpeedSelectorStepTimeSeconds > elapsedTime)
                 return;

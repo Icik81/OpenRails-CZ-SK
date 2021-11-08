@@ -5059,6 +5059,11 @@ namespace Orts.Simulation.RollingStocks
                 }
                 else
                 {
+                    if (CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.Auto && CruiseControl.UseThrottleAsSpeedSelector)
+                    {
+                        CruiseControl.SpeedRegulatorSelectedSpeedStartDecrease();
+                        return;
+                    }
                     if (CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.Auto && !CruiseControl.UseThrottleAsSpeedSelector)
                     {
                         return;
@@ -7596,6 +7601,14 @@ namespace Orts.Simulation.RollingStocks
                     {
                         if (CruiseControl != null)
                             if (CruiseControl.SkipThrottleDisplay) break;
+                        if (CruiseControl != null)
+                        {
+                            if (CruiseControl.UseThrottleAsSpeedSelector && CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.Auto)
+                            {
+                                data = (MaxSpeedMpS + (CruiseControl.SelectedSpeedMpS - MaxSpeedMpS)) / MaxSpeedMpS;
+                                break;
+                            }
+                        }
                         data = Train.TrainType == Train.TRAINTYPE.AI_PLAYERHOSTING ? ThrottlePercent / 100f : LocalThrottlePercent / 100f;
                         break;
                     }
