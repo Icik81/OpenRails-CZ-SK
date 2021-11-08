@@ -339,7 +339,13 @@ namespace Orts.Simulation.RollingStocks
         public float CarOutsideTempCBase;
         public float CarOutsideTempCLastStatus;
         public float TempCClockDelta;
-        
+
+        public float DieselHeaterPower;
+        public float DieselHeaterPower0;
+        public float DieselHeaterConsumptionPerHour;
+        public float DieselHeaterConsumptionPerHour0;
+        public float DieselHeaterTankCapacity;
+        public float DieselHeaterTankCapacityMark;
 
         // Setup for ambient temperature dependency
         Interpolator OutsideWinterTempbyLatitudeC;

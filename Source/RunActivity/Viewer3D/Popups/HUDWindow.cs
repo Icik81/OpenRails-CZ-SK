@@ -600,13 +600,15 @@ namespace Orts.Viewer3D.Popups
             if (locomotive.Simulator.SuperUser)
                 locomotive.Simulator.Confirmer.Information(message + train.TotalOnBoard.ToString());
             //Car information
-            statusConsist.Add(string.Format("\n{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\t{9}\t{10}\t{11}\t{12}\t{13}\t{14}\t{15}\t{16}\t{17}\t{18}\t{19}",
+            statusConsist.Add(string.Format("\n{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\t{9}\t{10}\t{11}\t{12}\t{13}\t{14}\t{15}\t{16}\t{17}\t{18}\t{19}\t{20}\t{21}",
                 Viewer.Catalog.GetString("Car"),
                 Viewer.Catalog.GetString("Flipped"),
                 Viewer.Catalog.GetString("Type"),
                 Viewer.Catalog.GetString("InterT"),
                 Viewer.Catalog.GetString("Status"),
                 Viewer.Catalog.GetString("H/AUnit"),
+                Viewer.Catalog.GetString("HeatType"),
+                Viewer.Catalog.GetString("DieselVol"),
                 Viewer.Catalog.GetString("Doors"),
                 Viewer.Catalog.GetString("Length"),
                 Viewer.Catalog.GetString("Weight"),
@@ -638,9 +640,11 @@ namespace Orts.Viewer3D.Popups
                 statusConsist.Add(car.CarID + "\t" +
                     (car.Flipped ? Viewer.Catalog.GetString("Yes") : Viewer.Catalog.GetString("No")) + "\t" +
                     (train.IsFreight ? Viewer.Catalog.GetString("Freight") : Viewer.Catalog.GetString("Pass")) + "\t" +
-                    (car.HasPassengerCapacity ? Math.Round(car.WagonTemperature).ToString() + " °C" : NoText) + "\t" +
-                    (car.HasPassengerCapacity && car.StatusHeatIsOn ? Viewer.Catalog.GetString("Aktivní") : NoText) + "\t" +
-                    (car.HasPassengerCapacity && car.BrakeSystem.HeatingIsOn ? Viewer.Catalog.GetString("On") : NoText) + "\t" +
+                    (car.WagonHasTemperature ? Math.Round(car.WagonTemperature).ToString() + " °C" : NoText) + "\t" +
+                    (car.WagonHasTemperature && car.StatusHeatIsOn ? Viewer.Catalog.GetString("Aktivní") : NoText) + "\t" +
+                    (car.WagonHasTemperature && car.BrakeSystem.HeatingIsOn ? Viewer.Catalog.GetString("On") : NoText) + "\t" +
+                    (car.WagonHasTemperature && car.DieselHeaterPower > 0 ? Viewer.Catalog.GetString("Bufík") : Viewer.Catalog.GetString("El.topení")) + "\t" +
+                    (car.WagonHasTemperature && car.DieselHeaterPower > 0 ? FormatStrings.FormatFuelVolume(car.DieselHeaterTankCapacityMark, true, false) : NoText) + "\t" +
                     (car.BrakeSystem.DoorsOpen ? Viewer.Catalog.GetString("Open") : NoText) + "\t" +
                     FormatStrings.FormatShortDistanceDisplay(car.CarLengthM, locomotive.IsMetric) + "\t" +
                     FormatStrings.FormatLargeMass(car.MassKG, locomotive.IsMetric, locomotive.IsUK) + "\t" +

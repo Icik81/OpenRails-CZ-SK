@@ -561,7 +561,7 @@ namespace Orts.Simulation.RollingStocks
         float PreDataAmmeter;
         float PreDataAmps;
         float PreDataAmpVolts;
-        public bool AIPantoDown;
+        public bool AIPantoDown;       
 
         // Jindrich
         public bool EnableControlVoltageChange = true;
@@ -1192,7 +1192,7 @@ namespace Orts.Simulation.RollingStocks
                 case "engine(auxrespipeleak": AuxResPipeLeak = stf.ReadFloatBlock(STFReader.UNITS.PressureRateDefaultPSIpS, null); break;
                 case "engine(maxmainresoverpressure": MaxMainResOverPressurePSI = stf.ReadFloatBlock(STFReader.UNITS.PressureDefaultPSI, null); break;
                 case "engine(maxauxresoverpressure": MaxAuxResOverPressurePSI = stf.ReadFloatBlock(STFReader.UNITS.PressureDefaultPSI, null); break;
-                case "engine(heatingmaxcurrent": HeatingMaxCurrentA = stf.ReadFloatBlock(STFReader.UNITS.Current, null); break;
+                case "engine(heatingmaxcurrent": HeatingMaxCurrentA = stf.ReadFloatBlock(STFReader.UNITS.Current, null); break;                
 
                 // Jindrich
                 case "engine(batterydefaultoff": Battery = !stf.ReadBoolBlock(false); break;
@@ -2728,19 +2728,73 @@ namespace Orts.Simulation.RollingStocks
             {
                 foreach (TrainCar car in Train.Cars)
                 {
-                    if (car.WagonType == WagonTypes.Passenger || car.HasPassengerCapacity)
+                    if (car.WagonType == WagonTypes.Passenger || car.HasPassengerCapacity || car.WagonType == WagonTypes.Engine)
                     {
                         if (car.WagonType == WagonTypes.Passenger)
                             car.HasPassengerCapacity = true;
 
+                        // Defaulty
                         if (!car.WagonHasTemperature && GameTimeFlow > 1 || car.CarOutsideTempCLastStatus != car.CarOutsideTempC)
                         {
-                            if (car.PowerReductionByHeating == 0) // Default
+                            if (car.WagonType == WagonTypes.Engine)
                             {
-                                if (car.CarLengthM <= 10) car.PowerReductionByHeating = 20.0f * 1000;   // 20kW                    
-                                if (car.CarLengthM > 10) car.PowerReductionByHeating = 30.0f * 1000;   // 30kW                    
-                                if (car.CarLengthM > 20) car.PowerReductionByHeating = 50.0f * 1000;   // 50kW
+                                // Motorové vozy
+                                if (car.HasPassengerCapacity)
+                                {
+                                    if (car.CarLengthM <= 10)
+                                    {
+                                        if (car.PowerReductionByHeating == 0) car.PowerReductionByHeating = 20.0f * 1000;   // 20kW                    
+                                        if (car.DieselHeaterConsumptionPerHour == 0) car.DieselHeaterConsumptionPerHour = 5; // 10l/h                                            
+                                    }
+                                    if (car.CarLengthM > 10 && car.CarLengthM <= 20)
+                                    {
+                                        if (car.PowerReductionByHeating == 0) car.PowerReductionByHeating = 30.0f * 1000;   // 30kW
+                                        if (car.DieselHeaterConsumptionPerHour == 0) car.DieselHeaterConsumptionPerHour = 10; // 10l/h
+                                    }
+                                    if (car.CarLengthM > 20)
+                                    {
+                                        if (car.PowerReductionByHeating == 0) car.PowerReductionByHeating = 50.0f * 1000;   // 50kW
+                                        if (car.DieselHeaterConsumptionPerHour == 0) car.DieselHeaterConsumptionPerHour = 14; // 14l/h                                            
+                                    }
+                                }
+                                else
+                                // Lokomotivy
+                                {
+                                    if (car.CarLengthM <= 10)
+                                    {
+                                        if (car.PowerReductionByHeating == 0) car.PowerReductionByHeating = 30.0f * 1000;   // 30kW                    
+                                        if (car.DieselHeaterConsumptionPerHour == 0) car.DieselHeaterConsumptionPerHour = 2; // 2l/h
+                                    }
+                                    if (car.CarLengthM > 10)
+                                    {
+                                        if (car.PowerReductionByHeating == 0) car.PowerReductionByHeating = 40.0f * 1000;   // 40kW
+                                        if (car.DieselHeaterConsumptionPerHour == 0) car.DieselHeaterConsumptionPerHour = 3; // 3l/h
+                                    }
+                                }
                             }
+                            else
+                            {
+                                // Vozy
+                                if (car.CarLengthM <= 10)
+                                {
+                                    if (car.PowerReductionByHeating == 0) car.PowerReductionByHeating = 20.0f * 1000;   // 20kW
+                                    if (car.DieselHeaterConsumptionPerHour == 0) car.DieselHeaterConsumptionPerHour = 5; // 7l/h
+                                    if (car.DieselHeaterTankCapacity == 0) car.DieselHeaterTankCapacity = 30; // 30l
+                                }
+                                if (car.CarLengthM > 10 && car.CarLengthM <= 20)
+                                {
+                                    if (car.PowerReductionByHeating == 0) car.PowerReductionByHeating = 30.0f * 1000;   // 30kW
+                                    if (car.DieselHeaterConsumptionPerHour == 0) car.DieselHeaterConsumptionPerHour = 10; // 10l/h
+                                    if (car.DieselHeaterTankCapacity == 0) car.DieselHeaterTankCapacity = 50; // 50l
+                                }
+                                if (car.CarLengthM > 20)
+                                {
+                                    if (car.PowerReductionByHeating == 0) car.PowerReductionByHeating = 50.0f * 1000;   // 50kW
+                                    if (car.DieselHeaterConsumptionPerHour == 0) car.DieselHeaterConsumptionPerHour = 14; // 14l/h
+                                    if (car.DieselHeaterTankCapacity == 0) car.DieselHeaterTankCapacity = 70; // 70l
+                                }
+                            }       
+                            
                             //if (car.PowerReductionByAirCondition == 0)
                             //{ 
                             //    if (car.CarLengthM <= 10) car.PowerReductionByAirCondition = 10.0f * 1000;   // 10kW                    
@@ -2829,14 +2883,18 @@ namespace Orts.Simulation.RollingStocks
                             MSGHeatingCycle++;
                             if (MSGHeatingCycle > 1000 && car.WagonTemperature < 14 && IsPlayerTrain)
                             {
-                                Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Cestujícím je zima!"));
+                                if (car.WagonType == WagonTypes.Engine)
+                                    Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Je ti zima!"));
+                                else
+                                    Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Cestujícím je zima!"));
                                 MSGHeatingCycle = 0;
                             }
 
                             // Termostat vypnutý, topení aktivní
-                            if (HeatingIsOn && car.WagonTemperature < car.SetTempCThreshold && !car.ThermostatOn)
+                            if ((HeatingIsOn || car.DieselHeaterPower > 0) && car.WagonTemperature < car.SetTempCThreshold && !car.ThermostatOn)
                             {
                                 car.TempCDelta = +car.PowerReductionByHeating0 / TempStepUp / car.CarLengthM * TempCDeltaOutside * elapsedClockSeconds;
+                                car.TempCDelta = +car.DieselHeaterPower0 / TempStepUp / car.CarLengthM * TempCDeltaOutside * elapsedClockSeconds;
                                 if (car.WagonTemperature > car.SetTempCThreshold - 0.1f)
                                     car.ThermostatOn = true;
                                 car.StatusHeatIsOn = true;
@@ -2866,7 +2924,10 @@ namespace Orts.Simulation.RollingStocks
                             MSGHeatingCycle++;
                             if (MSGHeatingCycle > 1000 && car.WagonTemperature > 30 && IsPlayerTrain)
                             {
-                                Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Cestujícím je příliš horko!"));
+                                if (car.WagonType == WagonTypes.Engine)
+                                    Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Je ti horko!"));
+                                else
+                                    Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Cestujícím je příliš horko!"));
                                 MSGHeatingCycle = 0;
                             }
 
@@ -2894,7 +2955,58 @@ namespace Orts.Simulation.RollingStocks
                 }
             }
             
-            // Topení a klimatizace
+            // Bufík
+            if (IsPlayerTrain && GameTimeCyklus == 10)
+            {
+                foreach (TrainCar car in Train.Cars)
+                {
+                    var mstsDieselLocomotive = car as MSTSDieselLocomotive;
+                    if (car.DieselHeaterPower > 0 && (car.DieselHeaterTankCapacity > 2 || mstsDieselLocomotive != null && mstsDieselLocomotive.DieselLevelL > 0))
+                    {      
+                        if (car.DieselHeaterTankCapacity == 0 && mstsDieselLocomotive != null)
+                            car.DieselHeaterTankCapacityMark = mstsDieselLocomotive.DieselLevelL;
+                        else
+                            car.DieselHeaterTankCapacityMark = car.DieselHeaterTankCapacity;
+
+                        car.PowerReductionByHeating0 = 0;
+                        car.PowerReductionByAirCondition0 = 0;
+                        if (!car.BrakeSystem.HeatingIsOn) // Pokud má vůz vypnutý bufík
+                        {
+                            car.DieselHeaterPower0 = 0;
+                            car.DieselHeaterConsumptionPerHour0 = 0;
+                            car.StatusHeatIsOn = false;
+                        }
+                        else
+                        {   // Bufík je zapnutý a aktivní (termostat vypnutý)                            
+                            if (car.StatusHeatIsOn)
+                            {
+                                car.DieselHeaterPower0 = car.DieselHeaterPower;
+                                car.DieselHeaterConsumptionPerHour0 = car.DieselHeaterConsumptionPerHour;
+                                // Motorové vozy a lokomotivy
+                                if (car.DieselHeaterTankCapacity == 0 && mstsDieselLocomotive != null)
+                                {
+                                    mstsDieselLocomotive.DieselLevelL -= car.DieselHeaterConsumptionPerHour0 * elapsedClockSeconds / 3600;
+                                    if (mstsDieselLocomotive.DieselLevelL < 0f) mstsDieselLocomotive.DieselLevelL = 0f;                                                                        
+                                }
+                                else
+                                // Vozy                                
+                                {
+                                    car.DieselHeaterTankCapacity -= car.DieselHeaterConsumptionPerHour0 * elapsedClockSeconds / 3600;
+                                    if (car.DieselHeaterTankCapacity < 2f) car.DieselHeaterTankCapacity = 2f;                                    
+                                }
+                            }
+                        }
+
+                        if (!car.StatusHeatIsOn) // Pokud je bufík neaktivní (termostat zapnutý)
+                        {
+                            car.DieselHeaterPower0 = 0;
+                            car.DieselHeaterConsumptionPerHour0 = 0;
+                        }
+                    }                   
+                }
+            }
+
+            // Elektrické topení a klimatizace
             if (HeatingIsOn)
             {                
                 TElevatedConsumption = 1;
@@ -3015,27 +3127,30 @@ namespace Orts.Simulation.RollingStocks
                     return;
                 }
 
-                // Výpočet celkového úbytku výkonu 
-                if (MaxPowerW == 0) MaxPowerW = 1000000; // Default pro výkon, který nesmí být 0kW
-                float PowerReductionResult = (PowerReductionByHeating0 + PowerReductionByAuxEquipment0) * (1000000 / MaxPowerW);
-                PowerReductionResult = PowerReductionResult / 1000000;
-                PowerReductionResult = MathHelper.Clamp(PowerReductionResult, 0, 1);
-
-                if (PowerReduction < PowerReductionResult)
-                    PowerReduction = PowerReduction + 0.025f;
-                else PowerReduction = PowerReductionResult;
-               
-                //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Celková ztráta výkonu "+ PowerReduction * MaxPowerW/1000 + " kW!"));
-                //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("PowerReduction " + PowerReduction));
-
-                if (PowerReductionResult == 0)
+                if (WagonType == WagonTypes.Engine && this is MSTSDieselLocomotive) // Diesel lokomotivy
                 {
-                    if (PowerReduction > PowerReduction0)
-                        PowerReduction = PowerReduction - 0.05f;
-                    if (PowerReduction < PowerReduction0)
+                    // Výpočet celkového úbytku výkonu 
+                    if (MaxPowerW == 0) MaxPowerW = 1000000; // Default pro výkon, který nesmí být 0kW
+                    float PowerReductionResult = (PowerReductionByHeating0 + PowerReductionByAuxEquipment0) * (1000000 / MaxPowerW);
+                    PowerReductionResult = PowerReductionResult / 1000000;
+                    PowerReductionResult = MathHelper.Clamp(PowerReductionResult, 0, 1);
+
+                    if (PowerReduction < PowerReductionResult)
+                        PowerReduction = PowerReduction + 0.025f;
+                    else PowerReduction = PowerReductionResult;
+
+                    //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Celková ztráta výkonu "+ PowerReduction * MaxPowerW/1000 + " kW!"));
+                    //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("PowerReduction " + PowerReduction));
+
+                    if (PowerReductionResult == 0)
                     {
-                        PowerReduction = PowerReduction0;
-                        TElevatedConsumption = 0;
+                        if (PowerReduction > PowerReduction0)
+                            PowerReduction = PowerReduction - 0.05f;
+                        if (PowerReduction < PowerReduction0)
+                        {
+                            PowerReduction = PowerReduction0;
+                            TElevatedConsumption = 0;
+                        }
                     }
                 }
 
