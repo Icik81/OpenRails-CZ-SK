@@ -481,7 +481,7 @@ namespace Orts.Simulation.RollingStocks
         float BaseFrictionCoefficientFactor0 = 1;
         public bool CentralHandlingDoors;
         public bool VoltageFilter;
-        public float RouteVoltageV;
+        public float RouteVoltageV;        
         public bool RouteVoltageChange;
         public float LocomotivePowerVoltage;
         public float MaxPowerWAC;
@@ -1573,7 +1573,9 @@ namespace Orts.Simulation.RollingStocks
             outf.Write(AuxResOverPressure);
             outf.Write(Pantograph4Switch);
             outf.Write(HV5Switch);
-            outf.Write(BreakPowerButton_Activated);        
+            outf.Write(BreakPowerButton_Activated);
+            outf.Write(MultiSystemEngine);
+            outf.Write(LocomotivePowerVoltage);
 
             base.Save(outf);
 
@@ -1671,6 +1673,8 @@ namespace Orts.Simulation.RollingStocks
             Pantograph4Switch = inf.ReadSingle();
             HV5Switch = inf.ReadSingle();
             BreakPowerButton_Activated = inf.ReadBoolean();
+            MultiSystemEngine = inf.ReadBoolean();
+            LocomotivePowerVoltage = inf.ReadSingle();
 
             base.Restore(inf);
 

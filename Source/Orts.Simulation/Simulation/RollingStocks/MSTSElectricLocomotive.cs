@@ -1367,7 +1367,7 @@ namespace Orts.Simulation.RollingStocks
                 Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Poškodil si zdvihnutým pantografem lokomotivu!"));
                 if (FaultByPlayerPenaltyTime > 30) // Potrestání hráče čekáním 30s
                 {
-                    PantographFaultByNotLowering = false;
+                    PantographFaultByVoltageChange = false;
                     FaultByPlayerPenaltyTime = 0;
                 }
             }
