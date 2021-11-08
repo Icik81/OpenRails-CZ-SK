@@ -1102,13 +1102,14 @@ namespace Orts.Simulation
                         {                            
                             // check if passenger on board - if not, do not allow depart
                             if (MyPlayerTrain.StationStops[0].PlatformItem.PassengerList.Count > 0
-                                || MyPlayerTrain.StationStops[0].PlatformItem.PassengerList.Count == 0 && MyPlayerTrain.TrainDoorsOpen)
+                                || (MyPlayerTrain.StationStops[0].PlatformItem.PassengerList.Count == 0 && MyPlayerTrain.TrainDoorsOpen && !loco.CentralHandlingDoors))                                
                             {                                
                                 DisplayMessage = Simulator.Catalog.GetString("Čeká se na nástup cestujících....");
                                 MyPlayerTrain.UpdatePassengerCountAndWeight(MyPlayerTrain, MyPlayerTrain.StationStops[0].PlatformItem.NumPassengersWaiting, clock);
                             }
                             else                            
-                            if (MyPlayerTrain.StationStops[0].PlatformItem.PassengerList.Count == 0 && !MyPlayerTrain.TrainDoorsOpen)
+                            if ((MyPlayerTrain.StationStops[0].PlatformItem.PassengerList.Count == 0 && !MyPlayerTrain.TrainDoorsOpen && !loco.CentralHandlingDoors)
+                                || (MyPlayerTrain.StationStops[0].PlatformItem.PassengerList.Count == 0 && loco.CentralHandlingDoors))
                             {
                                 if (ClearForDepartGenerate == 0)
                                     ClearForDepartGenerate = Simulator.Random.Next(2, 6);
