@@ -735,7 +735,7 @@ namespace Orts.Simulation.RollingStocks
                 if (LocalDynamicBrakePercent < 0) LocalDynamicBrakePercent = 0;
 
                 // Vyvolání penalizace hráče při nestažení pantografu na úseku s 0V
-                if (RouteVoltageV == 1 && (Pantographs[1].State == PantographState.Up || Pantographs[2].State == PantographState.Up))
+                if (RouteVoltageV == 1 && (Pantographs[1].State == PantographState.Up || Pantographs[2].State == PantographState.Up) && AbsSpeedMpS > 0.1f)
                 {
                     PantographFaultByNotLowering = true;
                 }
@@ -1350,6 +1350,7 @@ namespace Orts.Simulation.RollingStocks
         {
             if (PantographFaultByNotLowering)
             {
+                PantographVoltageV = PowerSupply.PantographVoltageV;
                 RouteVoltageV = 1;
                 FaultByPlayerPenaltyTime += elapsedClockSeconds;
                 Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Urval si zdvihnutým pantografem trolej!"));
@@ -1359,9 +1360,10 @@ namespace Orts.Simulation.RollingStocks
                     FaultByPlayerPenaltyTime = 0;
                 }
             }
-
+            else
             if (PantographFaultByVoltageChange)
             {
+                PantographVoltageV = PowerSupply.PantographVoltageV;
                 RouteVoltageV = 1;
                 FaultByPlayerPenaltyTime += elapsedClockSeconds;
                 Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Poškodil si zdvihnutým pantografem lokomotivu!"));
