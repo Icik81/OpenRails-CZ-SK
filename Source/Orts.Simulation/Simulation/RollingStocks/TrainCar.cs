@@ -321,9 +321,11 @@ namespace Orts.Simulation.RollingStocks
         public float PowerReductionByHeating;
         public float PowerReductionByAirCondition;
         public float PowerReductionByHeating0;
+        public float PowerReductionByHeatingSum;
         public float PowerReductionByAirCondition0;
         public float PowerReductionByAuxEquipment;
         public float PowerReductionByAuxEquipment0;
+        public float PowerReductionByAuxEquipmentSum;
         public float VibrationSpringConstantPrimepSpS = 0;
         public float VibratioDampingCoefficient = 0;
         public float WagonTemperature;

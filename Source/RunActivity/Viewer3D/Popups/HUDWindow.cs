@@ -635,15 +635,25 @@ namespace Orts.Viewer3D.Popups
             for (var i = (hudWindowLinesActualPage * nLinesShow) - nLinesShow; i < (train.Cars.Count > hudWindowLinesActualPage * nLinesShow ? hudWindowLinesActualPage * nLinesShow : train.Cars.Count); i++)
             {
                 string NoText = "";
+                string TypeHeatText;
                 var j = (i == 0) ? 0 : i;
                 var car = train.Cars[j];
+                
+                if (car.WagonHasTemperature && car.DieselHeaterPower > 0)
+                    TypeHeatText = "Bufík";
+                else
+                if (car.WagonHasTemperature && car.DieselHeaterPower == 0)
+                    TypeHeatText = "El.topení";
+                else
+                    TypeHeatText = "";
+
                 statusConsist.Add(car.CarID + "\t" +
                     (car.Flipped ? Viewer.Catalog.GetString("Yes") : Viewer.Catalog.GetString("No")) + "\t" +
                     (train.IsFreight ? Viewer.Catalog.GetString("Freight") : Viewer.Catalog.GetString("Pass")) + "\t" +
                     (car.WagonHasTemperature ? Math.Round(car.WagonTemperature).ToString() + " °C" : NoText) + "\t" +
                     (car.WagonHasTemperature && car.StatusHeatIsOn ? Viewer.Catalog.GetString("Aktivní") : NoText) + "\t" +
                     (car.WagonHasTemperature && car.BrakeSystem.HeatingIsOn ? Viewer.Catalog.GetString("On") : NoText) + "\t" +
-                    (car.WagonHasTemperature && car.DieselHeaterPower > 0 ? Viewer.Catalog.GetString("Bufík") : Viewer.Catalog.GetString("El.topení")) + "\t" +
+                    (TypeHeatText) + "\t" +
                     (car.WagonHasTemperature && car.DieselHeaterPower > 0 ? FormatStrings.FormatFuelVolume(car.DieselHeaterTankCapacityMark, true, false) : NoText) + "\t" +
                     (car.BrakeSystem.DoorsOpen ? Viewer.Catalog.GetString("Open") : NoText) + "\t" +
                     FormatStrings.FormatShortDistanceDisplay(car.CarLengthM, locomotive.IsMetric) + "\t" +

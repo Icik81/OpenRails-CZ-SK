@@ -3550,11 +3550,11 @@ namespace Orts.Simulation.RollingStocks
                 bool StatusChange = false;
                 if (car.BrakeSystem.HeatingIsOn)
                 {
-                    if (Simulator.Season == SeasonType.Summer && car.PowerReductionByAirCondition == 0)
-                    {
-                        car.BrakeSystem.HeatingIsOn = false;
-                        car.BrakeSystem.HeatingMenu = 0;
-                    }
+                    //if (Simulator.Season == SeasonType.Summer && car.PowerReductionByAirCondition == 0)
+                    //{
+                    //    car.BrakeSystem.HeatingIsOn = false;
+                    //    car.BrakeSystem.HeatingMenu = 0;
+                    //}
                     car.BrakeSystem.HeatingText = "zapnuto";                    
                 }
                 if (!car.BrakeSystem.HeatingIsOn)

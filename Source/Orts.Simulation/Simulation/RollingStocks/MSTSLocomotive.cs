@@ -2808,15 +2808,8 @@ namespace Orts.Simulation.RollingStocks
                             car.PowerReductionByHeating = MathHelper.Clamp(car.PowerReductionByHeating, 0, 50.0f * 1000);
                             car.PowerReductionByAirCondition = MathHelper.Clamp(car.PowerReductionByAirCondition, 0, 50.0f * 1000);
 
-                            // Klimatizace
-                            if (Simulator.Season == SeasonType.Summer && car.PowerReductionByAirCondition != 0)
-                                car.BrakeSystem.HeatingIsOn = true;
-                            if (Simulator.Season == SeasonType.Summer && car.PowerReductionByAirCondition == 0)
-                                car.BrakeSystem.HeatingIsOn = false;
-
-                            // Topení
-                            if (Simulator.Season != SeasonType.Summer)
-                                car.BrakeSystem.HeatingIsOn = true;
+                            // Zapne jednotky topení/klimy 
+                            car.BrakeSystem.HeatingIsOn = true;
 
                             // Vozy nikdy nebudou startovat podchlazené pod 5°C
                             if (car.CarOutsideTempC < 5 && !car.WagonHasTemperature)
@@ -2884,21 +2877,24 @@ namespace Orts.Simulation.RollingStocks
                                 car.SetTempCThreshold = car.SetTemperatureC;
                             }
 
-                            MSGHeatingCycle++;
-                            if (MSGHeatingCycle > 1000 && car.WagonTemperature < 14 && IsPlayerTrain)
+                            if (IsPlayerTrain)
                             {
-                                if (car.WagonType == WagonTypes.Engine)
-                                    Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Je ti zima!"));
-                                else
-                                    Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Cestujícím je zima!"));
-                                MSGHeatingCycle = 0;
+                                MSGHeatingCycle++;
+                                if (MSGHeatingCycle > 300 && car.WagonTemperature < 14)
+                                {
+                                    if (car.WagonType == WagonTypes.Engine && !car.HasPassengerCapacity)
+                                        Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Je ti zima!"));
+                                    else
+                                        Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Cestujícím je zima!"));
+                                    MSGHeatingCycle = 0;
+                                }
                             }
-
                             // Termostat vypnutý, topení aktivní
                             if ((HeatingIsOn || car.DieselHeaterPower > 0) && car.WagonTemperature < car.SetTempCThreshold && !car.ThermostatOn)
                             {
                                 car.TempCDelta = +car.PowerReductionByHeating0 / TempStepUp / car.CarLengthM * TempCDeltaOutside * elapsedClockSeconds;
-                                car.TempCDelta = +car.DieselHeaterPower0 / TempStepUp / car.CarLengthM * TempCDeltaOutside * elapsedClockSeconds;
+                                if (car.DieselHeaterPower > 0)
+                                    car.TempCDelta = +car.DieselHeaterPower0 / TempStepUp / car.CarLengthM * TempCDeltaOutside * elapsedClockSeconds;
                                 if (car.WagonTemperature > car.SetTempCThreshold - 0.1f)
                                     car.ThermostatOn = true;
                                 car.StatusHeatIsOn = true;
@@ -2925,16 +2921,18 @@ namespace Orts.Simulation.RollingStocks
                                 car.SetTempCThreshold = car.SetTemperatureC;
                             }
 
-                            MSGHeatingCycle++;
-                            if (MSGHeatingCycle > 1000 && car.WagonTemperature > 30 && IsPlayerTrain)
+                            if (IsPlayerTrain)
                             {
-                                if (car.WagonType == WagonTypes.Engine)
-                                    Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Je ti horko!"));
-                                else
-                                    Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Cestujícím je příliš horko!"));
-                                MSGHeatingCycle = 0;
+                                MSGHeatingCycle++;
+                                if (MSGHeatingCycle > 300 && car.WagonTemperature > 32)
+                                {
+                                    if (car.WagonType == WagonTypes.Engine && !car.HasPassengerCapacity)
+                                        Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Je ti horko!"));
+                                    else
+                                        Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Cestujícím je příliš horko!"));
+                                    MSGHeatingCycle = 0;
+                                }
                             }
-
                             // Termostat vypnutý, klimatizace aktivní
                             if (HeatingIsOn && car.WagonTemperature > car.SetTempCThreshold && !car.ThermostatOn)
                             {
@@ -3058,7 +3056,7 @@ namespace Orts.Simulation.RollingStocks
                     }
                 }
 
-                PowerReductionByHeating0 = PowerReductionByHeatingWag;
+                PowerReductionByHeatingSum = PowerReductionByHeatingWag;
 
                 if (IsPlayerTrain)
                 {
@@ -3076,7 +3074,7 @@ namespace Orts.Simulation.RollingStocks
                 }
             }
             else
-                PowerReductionByHeating0 = 0;
+                PowerReductionByHeatingSum = 0;
 
             TElevatedConsumption = 1;
             PowerReductionByAuxEquipmentWag = 0;
@@ -3120,7 +3118,7 @@ namespace Orts.Simulation.RollingStocks
                     PowerReductionByAuxEquipmentEng += AirBrakesAirCompressorWattage;
                 }
             }
-            PowerReductionByAuxEquipment0 = PowerReductionByAuxEquipmentWag + PowerReductionByAuxEquipmentEng;
+            PowerReductionByAuxEquipmentSum = PowerReductionByAuxEquipmentWag + PowerReductionByAuxEquipmentEng;
             //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Zvýšený odběr proudu, výkon zredukován "+ PowerReductionByAuxEquipment0 * MaxPowerW/1000) + " kW!");                        
 
             if (IsPlayerTrain)
@@ -3135,7 +3133,7 @@ namespace Orts.Simulation.RollingStocks
                 {
                     // Výpočet celkového úbytku výkonu 
                     if (MaxPowerW == 0) MaxPowerW = 1000000; // Default pro výkon, který nesmí být 0kW
-                    float PowerReductionResult = (PowerReductionByHeating0 + PowerReductionByAuxEquipment0) * (1000000 / MaxPowerW);
+                    float PowerReductionResult = (PowerReductionByHeatingSum + PowerReductionByAuxEquipmentSum) * (1000000 / MaxPowerW);
                     PowerReductionResult = PowerReductionResult / 1000000;
                     PowerReductionResult = MathHelper.Clamp(PowerReductionResult, 0, 1);
 

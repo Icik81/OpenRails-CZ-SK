@@ -1348,19 +1348,19 @@ namespace Orts.Simulation.RollingStocks
         // Penalizace hráče
         protected void FaultByPlayer_RouteVoltage(float elapsedClockSeconds)
         {
-            if (PantographFaultByNotLowering)
-            {
-                PantographVoltageV = PowerSupply.PantographVoltageV;
-                RouteVoltageV = 1;
-                FaultByPlayerPenaltyTime += elapsedClockSeconds;
-                Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Urval si zdvihnutým pantografem trolej!"));
-                if (FaultByPlayerPenaltyTime > 30) // Potrestání hráče čekáním 30s
-                {
-                    PantographFaultByNotLowering = false;
-                    FaultByPlayerPenaltyTime = 0;
-                }
-            }
-            else
+            //if (PantographFaultByNotLowering)
+            //{
+            //    PantographVoltageV = PowerSupply.PantographVoltageV;
+            //    RouteVoltageV = 1;
+            //    FaultByPlayerPenaltyTime += elapsedClockSeconds;
+            //    Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Nedal si dolu pantograf a došlo k jeho poškození!"));
+            //    if (FaultByPlayerPenaltyTime > 30) // Potrestání hráče čekáním 30s
+            //    {
+            //        PantographFaultByNotLowering = false;
+            //        FaultByPlayerPenaltyTime = 0;
+            //    }
+            //}
+            //else
             if (PantographFaultByVoltageChange)
             {
                 PantographVoltageV = PowerSupply.PantographVoltageV;

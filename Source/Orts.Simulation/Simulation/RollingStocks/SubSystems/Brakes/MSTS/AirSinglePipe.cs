@@ -1364,7 +1364,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             {
                 //  Pokud není netěstnost vozu definována
                 if ((car as MSTSWagon).TrainPipeLeakRatePSIpSBase == 0)
-                    (car as MSTSWagon).TrainPipeLeakRatePSIpSBase = 0.00010f * 14.50377f; // Výchozí netěsnost 0.00010bar/s                
+                    (car as MSTSWagon).TrainPipeLeakRatePSIpSBase = 0.0010f * 14.50377f; // Výchozí netěsnost 0.0010bar/s                
 
                 (car as MSTSWagon).TrainPipeLeakRatePSIpS = (car as MSTSWagon).TrainPipeLeakRatePSIpSBase * (car as MSTSWagon).BrakeSystem.BrakePipeVolumeM3 / train.TotalTrainBrakePipeVolumeM3;
                 (car as MSTSWagon).BrakeSystem.BrakePipeVolumeM3 = (car as MSTSWagon).BrakeSystem.BrakePipeVolumeM3Base;
@@ -1411,23 +1411,26 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 // Spočítá celkovou netěsnost vlaku 
                 train.TotalTrainTrainPipeLeakRate += (car as MSTSWagon).TrainPipeLeakRatePSIpS;                
             }
-            
+                        
+            // Propagate brake line (1) data if pressure gradient disabled            
+            // approximate pressure gradient in train pipe line1
+            float serviceTimeFactor = lead != null ? lead.TrainBrakeController != null && lead.TrainBrakeController.EmergencyBraking ? lead.BrakeEmergencyTimeFactorS : lead.BrakeServiceTimeFactorS : 0;
 
-            // Propagate brake line (1) data if pressure gradient disabled
-            if (lead != null) 
-            {   // approximate pressure gradient in train pipe line1
-                float serviceTimeFactor = lead != null ? lead.TrainBrakeController != null && lead.TrainBrakeController.EmergencyBraking ? lead.BrakeEmergencyTimeFactorS : lead.BrakeServiceTimeFactorS : 0;
-
-                // Definice limitů pro základní proměnné vzduchařiny
-                serviceTimeFactor = MathHelper.Clamp(serviceTimeFactor, 1.009f, 2.0f);                
+            // Definice limitů pro základní proměnné vzduchařiny
+            serviceTimeFactor = MathHelper.Clamp(serviceTimeFactor, 1.009f, 2.0f);
+            if (lead != null)
+            {
                 lead.TrainBrakeController.QuickReleaseRatePSIpS = MathHelper.Clamp(lead.TrainBrakeController.QuickReleaseRatePSIpS, 0.0f, 7.0f * 14.50377f);
                 lead.TrainBrakeController.ReleaseRatePSIpS = MathHelper.Clamp(lead.TrainBrakeController.ReleaseRatePSIpS, 0.25f * 14.50377f, 0.5f * 14.50377f);
                 lead.TrainBrakeController.ApplyRatePSIpS = MathHelper.Clamp(lead.TrainBrakeController.ApplyRatePSIpS, 0.25f * 14.50377f, 0.5f * 14.50377f);
-                lead.TrainBrakeController.EmergencyRatePSIpS = MathHelper.Clamp(lead.TrainBrakeController.EmergencyRatePSIpS, 3.0f * 14.50377f, 4.0f * 14.50377f);                
+                lead.TrainBrakeController.EmergencyRatePSIpS = MathHelper.Clamp(lead.TrainBrakeController.EmergencyRatePSIpS, 3.0f * 14.50377f, 4.0f * 14.50377f);
                 lead.EngineBrakeController.ReleaseRatePSIpS = MathHelper.Clamp(lead.EngineBrakeController.ReleaseRatePSIpS, 1.0f * 14.50377f, 2.5f * 14.50377f);
                 lead.EngineBrakeController.ApplyRatePSIpS = MathHelper.Clamp(lead.EngineBrakeController.ApplyRatePSIpS, 1.0f * 14.50377f, 2.5f * 14.50377f);
+            }
 
-                for (int i = 0; i < nSteps; i++)
+            for (int i = 0; i < nSteps; i++)
+            {
+                if (lead != null)
                 {
                     // Ohlídá hodnotu v hlavní jímce, aby nepřekročila limity
                     lead.MainResPressurePSI = MathHelper.Clamp(lead.MainResPressurePSI, 0, lead.MaxMainResPressurePSI + 1.0f * 14.50377f);
@@ -1452,7 +1455,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     if (lead.TrainBrakeController.TrainBrakeControllerState != ControllerState.Lap
                         && lead.TrainBrakeController.TrainBrakeControllerState != ControllerState.Emergency
                         && !lead.TrainBrakeController.TCSEmergencyBraking
-                        && !lead.EmergencyButtonPressed                        
+                        && !lead.EmergencyButtonPressed
                         && lead.BrakeSystem.BrakeCylReleaseFlow)
                     {
                         if (lead.BrakeSystem.BrakePipeChangeRate > 0.01f * 14.50377f)
@@ -1465,7 +1468,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     if (lead.TrainBrakeController.TrainBrakeControllerState == ControllerState.Lap) lead.TrainBrakeController.MaxPressurePSI = lead.BrakeSystem.BrakeLine1PressurePSI;
 
                     // Změna rychlosti plnění vzduchojemu při švihu
-                    if (lead.TrainBrakeController.TrainBrakeControllerState == ControllerState.FullQuickRelease 
+                    if (lead.TrainBrakeController.TrainBrakeControllerState == ControllerState.FullQuickRelease
                         || lead.QuickReleaseButton && lead.QuickReleaseButtonEnable
                         || lead.TrainBrakeController.TrainBrakeControllerState == ControllerState.MatrosovRelease
                         || lead.TrainBrakeController.TrainBrakeControllerState == ControllerState.WestingHouseRelease)
@@ -1474,9 +1477,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         if (lead.TrainBrakeController.MaxPressurePSI < lead.MainResPressurePSI) lead.TrainBrakeController.MaxPressurePSI = lead.MainResPressurePSI;
                     }
 
-                    else 
-                    if (lead.TrainBrakeController.TrainBrakeControllerState == ControllerState.OverchargeStart 
-                        || lead.LowPressureReleaseButton && lead.LowPressureReleaseButtonEnable) 
+                    else
+                    if (lead.TrainBrakeController.TrainBrakeControllerState == ControllerState.OverchargeStart
+                        || lead.LowPressureReleaseButton && lead.LowPressureReleaseButtonEnable)
                     {
                         BrakePipeChargingRatePSIorInHgpS0 = brakePipeChargingQuickPSIpS;  // Rychlost plnění ve vysokotlakém švihu 
                         if (lead.TrainBrakeController.MaxPressurePSI > lead.BrakeSystem.TrainBrakesControllerMaxOverchargePressurePSI * 1.11f) lead.TrainBrakeController.MaxPressurePSI -= lead.TrainBrakeController.QuickReleaseRatePSIpS * elapsedClockSeconds / 12;
@@ -1555,12 +1558,12 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         {
                             float ServiceVariationFactor = (1 - TrainPipeTimeVariationS / serviceTimeFactor);
                             ServiceVariationFactor = MathHelper.Clamp(ServiceVariationFactor, 0.05f, 1.0f); // Keep factor within acceptable limits - prevent value from going negative
-                            
+
                             if (lead.TrainBrakeController.TrainBrakeControllerState == ControllerState.Emergency
                                 || lead.TrainBrakeController.TCSEmergencyBraking
                                 || lead.EmergencyButtonPressed
                                 || lead.TrainBrakeController.EmergencyBrakingPushButton)
-                                    lead.BrakeSystem.BrakeLine1PressurePSI *= ServiceVariationFactor / serviceTimeFactor;
+                                lead.BrakeSystem.BrakeLine1PressurePSI *= ServiceVariationFactor / serviceTimeFactor;
                             else lead.BrakeSystem.BrakeLine1PressurePSI *= ServiceVariationFactor;
 
                             if (lead.TrainBrakeController.MaxPressurePSI <= lead.BrakeSystem.maxPressurePSI0) brakePipeTimeFactorS0 = brakePipeTimeFactorS_Apply;
@@ -1568,70 +1571,71 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     }
 
                     train.LeadPipePressurePSI = lead.BrakeSystem.BrakeLine1PressurePSI;  // Keep a record of current train pipe pressure in lead locomotive
+                }
 
-                    // Propogate lead brake line pressure from lead locomotive along the train to each car
-                    TrainCar car0 = train.Cars[0];
-                    float p0 = car0.BrakeSystem.BrakeLine1PressurePSI;
-                    float brakePipeVolumeM30 = car0.BrakeSystem.BrakePipeVolumeM3;
-                    train.TotalTrainBrakePipeVolumeM3 = 0.0f; // initialise train brake pipe volume
-                    train.TotalCapacityMainResBrakePipe = 0.0f;
-                    
-                    foreach (TrainCar car in train.Cars)
+                // Propogate lead brake line pressure from lead locomotive along the train to each car
+                TrainCar car0 = train.Cars[0];
+                float p0 = car0.BrakeSystem.BrakeLine1PressurePSI;
+                float brakePipeVolumeM30 = car0.BrakeSystem.BrakePipeVolumeM3;
+                train.TotalTrainBrakePipeVolumeM3 = 0.0f; // initialise train brake pipe volume
+                train.TotalCapacityMainResBrakePipe = 0.0f;
+
+                foreach (TrainCar car in train.Cars)
+                {
+                    // Výpočet objemu potrubí pro každý vůz
+                    if (car.BrakeSystem.BrakePipeVolumeM3Base == 0) car.BrakeSystem.BrakePipeVolumeM3Base = ((0.032f / 2) * (0.032f / 2) * (float)Math.PI) * (2 + car.CarLengthM);
+
+                    // Výpočet celkového objemu potrubí
+                    train.TotalTrainBrakePipeVolumeM3 += car.BrakeSystem.BrakePipeVolumeM3;
+
+                    // Výpočet celkové kapacity hlavních jímek
+                    train.TotalCapacityMainResBrakePipe += car.BrakeSystem.TotalCapacityMainResBrakePipe;
+
+                    float p1 = car.BrakeSystem.BrakeLine1PressurePSI;
+                    if (car != train.Cars[0] && car.BrakeSystem.FrontBrakeHoseConnected && car.BrakeSystem.AngleCockAOpen && car0.BrakeSystem.AngleCockBOpen)
                     {
-                        // Výpočet objemu potrubí pro každý vůz
-                        if (car.BrakeSystem.BrakePipeVolumeM3Base == 0) car.BrakeSystem.BrakePipeVolumeM3Base = ((0.032f / 2) * (0.032f / 2) * (float)Math.PI) * (2 + car.CarLengthM);
+                        // Based on the principle of pressure equualization between adjacent cars
+                        // First, we define a variable storing the pressure diff between cars, but limited to a maximum flow rate depending on pipe characteristics
+                        // The sign in the equation determines the direction of air flow.
+                        //float TrainPipePressureDiffPropogationPSI = (p0>p1 ? -1 : 1) * Math.Min(TrainPipeTimeVariationS * Math.Abs(p1 - p0) / brakePipeTimeFactorS, Math.Abs(p1 - p0));
 
-                        // Výpočet celkového objemu potrubí
-                        train.TotalTrainBrakePipeVolumeM3 += car.BrakeSystem.BrakePipeVolumeM3;
+                        float TrainPipePressureDiffPropogationPSI = TrainPipeTimeVariationS * (p1 - p0) / (brakePipeTimeFactorS0);
 
-                        // Výpočet celkové kapacity hlavních jímek
-                        train.TotalCapacityMainResBrakePipe += car.BrakeSystem.TotalCapacityMainResBrakePipe;
+                        // Air flows from high pressure to low pressure, until pressure is equal in both cars.
+                        // Brake pipe volumes of both cars are taken into account, so pressure increase/decrease is proportional to relative volumes.
+                        // If TrainPipePressureDiffPropagationPSI equals to p1-p0 the equalization is achieved in one step.
+                        car.BrakeSystem.BrakeLine1PressurePSI -= TrainPipePressureDiffPropogationPSI * brakePipeVolumeM30 / (brakePipeVolumeM30 + car.BrakeSystem.BrakePipeVolumeM3);
+                        car0.BrakeSystem.BrakeLine1PressurePSI += TrainPipePressureDiffPropogationPSI * car.BrakeSystem.BrakePipeVolumeM3 / (brakePipeVolumeM30 + car.BrakeSystem.BrakePipeVolumeM3);
+                    }
 
-                        float p1 = car.BrakeSystem.BrakeLine1PressurePSI;
-                        if (car != train.Cars[0] && car.BrakeSystem.FrontBrakeHoseConnected && car.BrakeSystem.AngleCockAOpen && car0.BrakeSystem.AngleCockBOpen)
-                        {
-                            // Based on the principle of pressure equualization between adjacent cars
-                            // First, we define a variable storing the pressure diff between cars, but limited to a maximum flow rate depending on pipe characteristics
-                            // The sign in the equation determines the direction of air flow.
-                            //float TrainPipePressureDiffPropogationPSI = (p0>p1 ? -1 : 1) * Math.Min(TrainPipeTimeVariationS * Math.Abs(p1 - p0) / brakePipeTimeFactorS, Math.Abs(p1 - p0));
-
-                            float TrainPipePressureDiffPropogationPSI = TrainPipeTimeVariationS * (p1 - p0) / (brakePipeTimeFactorS0);
-
-                            // Air flows from high pressure to low pressure, until pressure is equal in both cars.
-                            // Brake pipe volumes of both cars are taken into account, so pressure increase/decrease is proportional to relative volumes.
-                            // If TrainPipePressureDiffPropagationPSI equals to p1-p0 the equalization is achieved in one step.
-                            car.BrakeSystem.BrakeLine1PressurePSI -= TrainPipePressureDiffPropogationPSI * brakePipeVolumeM30 / (brakePipeVolumeM30 + car.BrakeSystem.BrakePipeVolumeM3);
-                            car0.BrakeSystem.BrakeLine1PressurePSI += TrainPipePressureDiffPropogationPSI * car.BrakeSystem.BrakePipeVolumeM3 / (brakePipeVolumeM30 + car.BrakeSystem.BrakePipeVolumeM3);
-                        }
-
-                        if (!car.BrakeSystem.FrontBrakeHoseConnected)  // Car front brake hose not connected
-                        {
-                            if (car.BrakeSystem.AngleCockAOpen) //  AND Front brake cock opened
-                            {
-                                car.BrakeSystem.BrakeLine1PressurePSI -= TrainPipeTimeVariationS * p1 / (brakePipeTimeFactorS * 300);
-                                if (car.BrakeSystem.BrakeLine1PressurePSI < 0)
-                                    car.BrakeSystem.BrakeLine1PressurePSI = 0;
-                            }
-
-                            if (car0.BrakeSystem.AngleCockBOpen && car != car0) //  AND Rear cock of wagon opened, and car is not the first wagon
-                            {
-                                car0.BrakeSystem.BrakeLine1PressurePSI -= TrainPipeTimeVariationS * p0 / (brakePipeTimeFactorS * 300);
-                                if (car.BrakeSystem.BrakeLine1PressurePSI < 0)
-                                    car.BrakeSystem.BrakeLine1PressurePSI = 0;
-                            }
-                        }
-                        if (car == train.Cars[train.Cars.Count - 1] && car.BrakeSystem.AngleCockBOpen) // Last car in train and rear cock of wagon open
+                    if (!car.BrakeSystem.FrontBrakeHoseConnected)  // Car front brake hose not connected
+                    {
+                        if (car.BrakeSystem.AngleCockAOpen) //  AND Front brake cock opened
                         {
                             car.BrakeSystem.BrakeLine1PressurePSI -= TrainPipeTimeVariationS * p1 / (brakePipeTimeFactorS * 300);
                             if (car.BrakeSystem.BrakeLine1PressurePSI < 0)
                                 car.BrakeSystem.BrakeLine1PressurePSI = 0;
                         }
-                        p0 = car.BrakeSystem.BrakeLine1PressurePSI;
-                        car0 = car;
-                        brakePipeVolumeM30 = car0.BrakeSystem.BrakePipeVolumeM3;                        
+
+                        if (car0.BrakeSystem.AngleCockBOpen && car != car0) //  AND Rear cock of wagon opened, and car is not the first wagon
+                        {
+                            car0.BrakeSystem.BrakeLine1PressurePSI -= TrainPipeTimeVariationS * p0 / (brakePipeTimeFactorS * 300);
+                            if (car.BrakeSystem.BrakeLine1PressurePSI < 0)
+                                car.BrakeSystem.BrakeLine1PressurePSI = 0;
+                        }
                     }
+                    if (car == train.Cars[train.Cars.Count - 1] && car.BrakeSystem.AngleCockBOpen) // Last car in train and rear cock of wagon open
+                    {
+                        car.BrakeSystem.BrakeLine1PressurePSI -= TrainPipeTimeVariationS * p1 / (brakePipeTimeFactorS * 300);
+                        if (car.BrakeSystem.BrakeLine1PressurePSI < 0)
+                            car.BrakeSystem.BrakeLine1PressurePSI = 0;
+                    }
+                    p0 = car.BrakeSystem.BrakeLine1PressurePSI;
+                    car0 = car;
+                    brakePipeVolumeM30 = car0.BrakeSystem.BrakePipeVolumeM3;
                 }
             }
+            
 
             // Propagate main reservoir pipe (2) and engine brake pipe (3) data
             int first = -1;
