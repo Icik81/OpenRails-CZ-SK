@@ -2934,7 +2934,7 @@ namespace Orts.Simulation.RollingStocks
                                 }
                             }
                             // Termostat vypnutý, klimatizace aktivní
-                            if (HeatingIsOn && car.WagonTemperature > car.SetTempCThreshold && !car.ThermostatOn)
+                            if (HeatingIsOn && car.WagonTemperature > car.SetTempCThreshold && !car.ThermostatOn && car.PowerReductionByAirCondition0 > 0)
                             {
                                 car.TempCDelta = -car.PowerReductionByAirCondition0 / TempStepDown / car.CarLengthM * TempCDeltaOutside * elapsedClockSeconds;
                                 if (car.WagonTemperature < car.SetTempCThreshold + 0.1f)
