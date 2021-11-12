@@ -2880,7 +2880,7 @@ namespace Orts.Simulation.RollingStocks
                             if (IsPlayerTrain)
                             {
                                 MSGHeatingCycle++;
-                                if (MSGHeatingCycle > 300 && car.WagonTemperature < 14)
+                                if (MSGHeatingCycle > 1000 && car.WagonTemperature < 14)
                                 {
                                     if (car.WagonType == WagonTypes.Engine && !car.HasPassengerCapacity)
                                         Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Je ti zima!"));
@@ -2924,7 +2924,7 @@ namespace Orts.Simulation.RollingStocks
                             if (IsPlayerTrain)
                             {
                                 MSGHeatingCycle++;
-                                if (MSGHeatingCycle > 300 && car.WagonTemperature > 32)
+                                if (MSGHeatingCycle > 1000 && car.WagonTemperature > 32)
                                 {
                                     if (car.WagonType == WagonTypes.Engine && !car.HasPassengerCapacity)
                                         Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Je ti horko!"));

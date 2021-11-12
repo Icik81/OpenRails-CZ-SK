@@ -525,9 +525,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 EmergResVolumeM3 = 0.7f;
 
             // Zjistí maximální pracovní tlak v systému
-            if (StartOn) maxPressurePSI0 = Car.Train.EqualReservoirPressurePSIorInHg;
-            
             Car.Train.EqualReservoirPressurePSIorInHg = maxPressurePSI = maxPressurePSI0 = 5.0f * 14.50377f;
+            if (StartOn) maxPressurePSI0 = Car.Train.EqualReservoirPressurePSIorInHg;
+                        
             BrakeLine1PressurePSI = maxPressurePSI0;
             BrakeLine2PressurePSI = Car.Train.BrakeLine2PressurePSI;
             BrakeLine3PressurePSI = 0;
@@ -593,6 +593,14 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
 
         public override void Update(float elapsedClockSeconds)
         {
+            // Ochrana proti NaN
+            if (float.IsNaN(BrakeLine1PressurePSI))
+            {
+                BrakeLine1PressurePSI = 0;
+                AutoCylPressurePSI0 = GetCylPressurePSI();
+                AuxResPressurePSI = 0;
+            }
+
             // Výpočet cílového tlaku v brzdovém válci
             threshold = (PrevAuxResPressurePSI - BrakeLine1PressurePSI) * AuxCylVolumeRatio;
             threshold = MathHelper.Clamp(threshold, 0, MCP);

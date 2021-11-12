@@ -136,7 +136,7 @@ namespace Orts.Simulation.Physics
         public int MUGearboxGearIndex;                   // set by player locomotive to control MU'd locomotives
         public float MUReverserPercent = 100;            // steam engine direction/cutoff control for MU'd locomotives
         public float MUDynamicBrakePercent = -1;         // dynamic brake control for MU'd locomotives, <0 for off
-        public float EqualReservoirPressurePSIorInHg = 90;   // Pressure in equalising reservoir - set by player locomotive - train brake pipe use this as a reference to set brake pressure levels
+        public float EqualReservoirPressurePSIorInHg = 72;   // Pressure in equalising reservoir - set by player locomotive - train brake pipe use this as a reference to set brake pressure levels
 
         // Class AirSinglePipe etc. use this property for pressure in PSI, 
         // but Class VacuumSinglePipe uses it for vacuum in InHg.
@@ -4181,7 +4181,7 @@ namespace Orts.Simulation.Physics
             {
                 // Propagate brake pressure of AI trains simplified
                 AISetUniformBrakePressures();
-            }
+            }            
         }
 
         /// <summary>
@@ -4191,7 +4191,7 @@ namespace Orts.Simulation.Physics
         private void AISetUniformBrakePressures()
         {
             foreach (TrainCar car in Cars)
-            {
+            {                
                 car.BrakeSystem.BrakeLine1PressurePSI = car.BrakeSystem.InternalPressure(EqualReservoirPressurePSIorInHg);
                 car.BrakeSystem.BrakeLine2PressurePSI = BrakeLine2PressurePSI;
                 car.BrakeSystem.BrakeLine3PressurePSI = 0;
