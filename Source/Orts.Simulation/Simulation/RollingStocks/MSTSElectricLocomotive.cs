@@ -307,7 +307,7 @@ namespace Orts.Simulation.RollingStocks
                 Simulator.powerSupplyStations.Add(pss);
             }    
             float watts = MaxForceN * (ThrottlePercent / 100)  * 1f + (MaxForceN * (ThrottlePercent / 100)) * AbsSpeedMpS;
-            watts += PowerReductionByHeating0 + PowerReductionByAuxEquipment0;
+            watts += PowerReductionByHeatingSum + PowerReductionByAuxEquipmentSum;
             if ((Flipped || Direction == Direction.Reverse) && watts < 0)
                 watts = -watts;
             if (PantographVoltageV < 10)
@@ -435,7 +435,7 @@ namespace Orts.Simulation.RollingStocks
             if ((Flipped || Direction == Direction.Reverse) && watts < 0)
                 watts = -watts;
 
-            watts += PowerReductionByHeating0 + PowerReductionByAuxEquipment0;
+            watts += PowerReductionByHeatingSum + PowerReductionByAuxEquipmentSum;
 
             if (watts < 0 && !RecuperationAvailable)
                 watts = 0;
