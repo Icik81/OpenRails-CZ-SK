@@ -3079,7 +3079,7 @@ namespace Orts.Simulation.RollingStocks
                 if (IsPlayerTrain)
                 {
                     // Výpočet proudu při zapnutí topení nebo klimatizace
-                    I_Heating = (float)Math.Round(PowerReductionByHeating0 / U_Heating);
+                    I_Heating = (float)Math.Round(PowerReductionByHeatingSum / U_Heating);
                     if (I_HeatingData > I_Heating)
                         I_HeatingData -= 20 * elapsedClockSeconds; // 20A/s               
                     if (I_HeatingData < I_Heating)
