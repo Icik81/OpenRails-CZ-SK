@@ -558,8 +558,12 @@ namespace ORTS.Settings
 
             // Icik
             Commands[(int)UserCommand.ControlHV2SwitchUp] = new UserCommandKeyInput(0x18);
+            Commands[(int)UserCommand.ControlHV3SwitchUp] = new UserCommandKeyInput(0x18);
+            Commands[(int)UserCommand.ControlHV3SwitchDown] = new UserCommandKeyInput(0x18, KeyModifiers.Shift);
             Commands[(int)UserCommand.ControlHV5SwitchUp] = new UserCommandKeyInput(0x18);
             Commands[(int)UserCommand.ControlHV5SwitchDown] = new UserCommandKeyInput(0x18, KeyModifiers.Shift);
+            Commands[(int)UserCommand.ControlPantograph3SwitchUp] = new UserCommandKeyInput(0x19);
+            Commands[(int)UserCommand.ControlPantograph3SwitchDown] = new UserCommandKeyInput(0x19, KeyModifiers.Shift);
             Commands[(int)UserCommand.ControlPantograph4SwitchUp] = new UserCommandKeyInput(0x19);
             Commands[(int)UserCommand.ControlPantograph4SwitchDown] = new UserCommandKeyInput(0x19, KeyModifiers.Shift);
             Commands[(int)UserCommand.ControlCompressorCombinedUp] = new UserCommandKeyInput(0x2E);

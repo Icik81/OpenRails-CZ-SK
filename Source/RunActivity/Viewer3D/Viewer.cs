@@ -601,8 +601,12 @@ namespace Orts.Viewer3D
 
             // Icik
             ToggleHV2SwitchUpCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
+            ToggleHV3SwitchUpCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
+            ToggleHV3SwitchDownCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
             ToggleHV5SwitchUpCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
             ToggleHV5SwitchDownCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
+            TogglePantograph3SwitchUpCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
+            TogglePantograph3SwitchDownCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
             TogglePantograph4SwitchUpCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
             TogglePantograph4SwitchDownCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;            
             ToggleCompressorCombinedSwitchUpCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;

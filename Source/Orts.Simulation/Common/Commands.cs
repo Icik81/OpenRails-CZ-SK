@@ -1678,6 +1678,41 @@ namespace Orts.Common
             Receiver.ToggleHV2SwitchUp();
         }
     }
+
+    [Serializable()]
+    public sealed class ToggleHV3SwitchUpCommand : Command
+    {
+        public static MSTSLocomotive Receiver { get; set; }
+
+        public ToggleHV3SwitchUpCommand(CommandLog log)
+            : base(log)
+        {
+            Redo();
+        }
+
+        public override void Redo()
+        {
+
+            Receiver.ToggleHV3SwitchUp();
+        }
+    }
+    [Serializable()]
+    public sealed class ToggleHV3SwitchDownCommand : Command
+    {
+        public static MSTSLocomotive Receiver { get; set; }
+
+        public ToggleHV3SwitchDownCommand(CommandLog log)
+            : base(log)
+        {
+            Redo();
+        }
+
+        public override void Redo()
+        {
+            Receiver.ToggleHV3SwitchDown();
+        }
+    }
+
     [Serializable()]
     public sealed class ToggleHV5SwitchUpCommand : Command
     {
@@ -1711,6 +1746,43 @@ namespace Orts.Common
             Receiver.ToggleHV5SwitchDown();
         }
     }
+
+
+    [Serializable()]
+    public sealed class TogglePantograph3SwitchUpCommand : Command
+    {
+        public static MSTSLocomotive Receiver { get; set; }
+
+        public TogglePantograph3SwitchUpCommand(CommandLog log)
+            : base(log)
+        {
+            Redo();
+        }
+
+        public override void Redo()
+        {
+
+            Receiver.TogglePantograph3SwitchUp();
+        }
+    }
+    [Serializable()]
+    public sealed class TogglePantograph3SwitchDownCommand : Command
+    {
+        public static MSTSLocomotive Receiver { get; set; }
+
+        public TogglePantograph3SwitchDownCommand(CommandLog log)
+            : base(log)
+        {
+            Redo();
+        }
+
+        public override void Redo()
+        {
+            Receiver.TogglePantograph3SwitchDown();
+        }
+    }
+
+
     [Serializable()]
     public sealed class TogglePantograph4SwitchUpCommand : Command
     {

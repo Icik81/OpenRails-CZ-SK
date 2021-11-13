@@ -399,7 +399,9 @@ namespace Orts.Formats.Msts
 
         // Icik
         HV2,
+        HV3,
         HV5,
+        PANTOGRAPH_3_SWITCH,
         PANTOGRAPH_4_SWITCH,
         COMPRESSOR_START,
         COMPRESSOR_COMBINED,

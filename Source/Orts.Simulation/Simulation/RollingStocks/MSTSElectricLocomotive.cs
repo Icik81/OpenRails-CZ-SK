@@ -1168,7 +1168,8 @@ namespace Orts.Simulation.RollingStocks
             UnderVoltageProtection(elapsedClockSeconds);
             
             if (IsPlayerTrain)
-            {                
+            {
+                PantographPressedTesting(elapsedClockSeconds);
                 HVPressedTesting(elapsedClockSeconds);
                 AuxAirConsumption(elapsedClockSeconds);
                 
@@ -1185,11 +1186,20 @@ namespace Orts.Simulation.RollingStocks
 
                     if (MultiSystemEngine && RouteVoltageV != 1)
                     {
-                        Pantograph4Switch = 1;
-                        if (RouteVoltageV == 3000)
-                            HV5Switch = 2;
-                        if (RouteVoltageV == 25000)
-                            HV5Switch = 4;
+                        if (!Pantograph3Enable)
+                        {
+                            Pantograph4Switch = 1;
+                            if (RouteVoltageV == 3000)
+                                HV5Switch = 2;
+                            if (RouteVoltageV == 25000)
+                                HV5Switch = 4;
+                        }
+                        else
+                        {
+                            Pantograph3Switch = 2;
+                            Pantograph3CanOn = true;
+                        }
+
                         if (GameTimeFlow > 5)
                             HVOn = true;
                         if (PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closed)
@@ -1200,7 +1210,15 @@ namespace Orts.Simulation.RollingStocks
                         HVOn = true;                                              
                         if (PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closed)
                         {
-                            Pantograph4Switch = 1;
+                            if (!Pantograph3Enable)
+                            {
+                                Pantograph4Switch = 1;
+                            }
+                            else
+                            {
+                                Pantograph3Switch = 2;
+                                Pantograph3CanOn = true;
+                            }
                             LocoReadyToGo = false;
                         }
                     }
@@ -1380,21 +1398,77 @@ namespace Orts.Simulation.RollingStocks
         protected void HVPressedTesting(float elapsedClockSeconds)
         {
             HVCanOn = false;            
+                                    
+            // HV2
             if (HV2Enable && !HVPressedTest)
                 HVPressedTime = 0;
-
+            if (HVPressedTest)
+                HVPressedTime += elapsedClockSeconds;
+            
+            // HV5
             if (HV5Enable && (!HVPressedTestDC && !HVPressedTestAC || HV5Switch != 1 && HV5Switch != 5))
                 HVPressedTime = 0;
 
-            if (HVPressedTest)
-                HVPressedTime += elapsedClockSeconds;
             if (HVPressedTestDC)
                 HVPressedTime += elapsedClockSeconds;                        
             if (HVPressedTestAC)
                 HVPressedTime += elapsedClockSeconds;            
 
+            // HV2 + HV5
             if (HVPressedTime > 0.9f && HVPressedTime < 1.1f) // 1s na podržení polohy pro zapnutí HV
-                HVCanOn = true;            
+                HVCanOn = true;
+
+
+            // HV3
+            if (HV3Enable && !HVOffPressedTest && !HVOnPressedTest)
+            {
+                HVOnPressedTime = 0;
+                HVOffPressedTime = 0;
+            }
+            if (HVOnPressedTest)
+                HVOnPressedTime += elapsedClockSeconds;
+            if (HVOffPressedTest)
+                HVOffPressedTime += elapsedClockSeconds;
+            
+            if (HVOnPressedTime > 0.9f && HVOnPressedTime < 1.1f) // 1s na podržení polohy pro zapnutí HV
+                HV3CanOn = true;
+            if (HVOffPressedTime > 0.4f && HVOffPressedTime < 0.6f) // 0.5s na podržení polohy pro vypnutí HV
+            {
+                HVOff = true;
+                HV3CanOn = false;
+            }
+            
+            if (HV3CanOn && Battery && PowerKey && PantographVoltageV > 1)
+            {
+                HV3TimeToOn += elapsedClockSeconds;
+                if (HV3TimeToOn > PowerSupply.PowerOnDelayS)
+                {
+                    HVOn = true;
+                    HV3TimeToOn = 0;
+                    HV3CanOn = false;
+                }
+            }
+        }
+
+        // Testování času stiknutého panto
+        protected void PantographPressedTesting(float elapsedClockSeconds)
+        {
+            Pantograph3CanOn = false;
+            
+            if (Pantograph3Enable && !PantographOffPressedTest && !PantographOnPressedTest)
+            {
+                PantographOnPressedTime = 0;
+                PantographOffPressedTime = 0;
+            }
+            if (PantographOnPressedTest)
+                PantographOnPressedTime += elapsedClockSeconds;
+            if (PantographOffPressedTest)
+                PantographOffPressedTime += elapsedClockSeconds;
+
+            if (PantographOnPressedTime > 0.9f && PantographOnPressedTime < 1.1f) // 1s na podržení polohy pro zvednutí panto
+                Pantograph3CanOn = true;
+            if (PantographOffPressedTime > 0.4f && PantographOffPressedTime < 0.6f) // 0.5s na podržení polohy pro složení panto
+                Pantograph3CanOn = true;
         }
 
         // Výpočet spotřeby vzduchu, jímka pomocného kompresoru
@@ -2018,6 +2092,24 @@ namespace Orts.Simulation.RollingStocks
                         break;
                     }
                 
+                case CABViewControlTypes.PANTOGRAPH_3_SWITCH:
+                    {
+                        Pantograph3Enable = true;
+                        switch (Pantograph3Switch)
+                        {
+                            case 0: // Panto vypnout 
+                                data = 0;
+                                break;
+                            case 1: // střed
+                                data = 1;
+                                break;
+                            case 2: // Panto zapnout
+                                data = 2;
+                                break;
+                        }
+                        break;
+                    }
+
                 case CABViewControlTypes.HV2:
                     {
                         HV2Enable = true;
@@ -2030,6 +2122,25 @@ namespace Orts.Simulation.RollingStocks
                                 data = 1;
                                 break;                            
                         }                        
+                        break;
+                    }
+
+                case CABViewControlTypes.HV3:
+                    {
+                        HV3Enable = true;
+                        switch (HV3Switch)
+                        {                            
+                            case 0: // HV vypnout 
+                                data = 0;
+                                break;
+                            case 1: // střed
+                                data = 1;
+                                break;
+                            case 2: // HV zapnout
+                                data = 2;
+                                break;                            
+                        }
+                        LocoSwitchACDC = true;
                         break;
                     }
 
