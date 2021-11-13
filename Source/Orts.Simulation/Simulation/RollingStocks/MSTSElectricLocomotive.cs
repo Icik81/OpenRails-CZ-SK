@@ -741,7 +741,7 @@ namespace Orts.Simulation.RollingStocks
                 }
 
                 // Shodí HV při stažení sběračů při navoleném výkonu
-                if (LocalThrottlePercent != 0 && Pantograph4Switch == 0)                    
+                if (LocalThrottlePercent != 0 && PantographVoltageV < PantographCriticalVoltage)                    
                     HVOff = true;
 
                 // Použije se pro kontrolku při ztrátě napětí v pantografech
@@ -752,11 +752,11 @@ namespace Orts.Simulation.RollingStocks
                 else CheckPowerLoss = false;
 
                 // Použije se pro text na displeji "NEDVIHAJ ZBERAČ"
-                if (Pantograph4Switch == 0 && PantographVoltageV >= 2000)                
-                    DontRaisePanto = true;                
-                else 
-                if (Pantograph4Switch != 0 || PantographVoltageV < 2000)                
-                    DontRaisePanto = false;                
+                if (PantographDown && PantographVoltageV >= 2000)
+                    DontRaisePanto = true;
+                else
+                if (PantographDown || PantographVoltageV < 2000)
+                    DontRaisePanto = false;
 
                 // Blokování pantografu u jednosystémových lokomotiv při vypnutém HV
                 if (!MultiSystemEngine)
@@ -900,7 +900,7 @@ namespace Orts.Simulation.RollingStocks
 
                 // Blokování HV u vícesystémových lokomotiv při malém napětí                                                
                 if (MultiSystemEngine)
-                {
+                {                    
                     // Stisknutí hříbku pro přerušení napájení, vypne HV a shodí sběrače
                     if (BreakPowerButton)
                     {
@@ -1195,15 +1195,18 @@ namespace Orts.Simulation.RollingStocks
                                 HV5Switch = 4;
                         }
                         else
-                        {
-                            Pantograph3Switch = 2;
-                            Pantograph3CanOn = true;
-                        }
+                            Pantograph3Switch = 2;                        
 
-                        if (GameTimeFlow > 5)
+                        if (GameTimeFlow > 5 && !HV3Enable)
                             HVOn = true;
+                        if (PantographVoltageV > PantographCriticalVoltage && HV3Enable)
+                            HV3CanOn = true;
+                        
                         if (PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closed)
+                        {
                             LocoReadyToGo = false;
+                            Pantograph3Switch = 1;
+                        }
                     }
                     if (!MultiSystemEngine)
                     {

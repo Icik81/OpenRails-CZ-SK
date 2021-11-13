@@ -6633,6 +6633,21 @@ namespace Orts.Simulation.RollingStocks
         {
             if (HV3Enable)
             {
+                // Výběr napájecího systému při HV3 (zde bude výběr dle obrazovky)
+                switch (RouteVoltageV)
+                {
+                    case 3000:
+                        SwitchingVoltageMode = 0;
+                        SwitchingVoltageMode_OffDC = true;
+                        SwitchingVoltageMode_OffAC = false;
+                        break;
+                    case 25000:
+                        SwitchingVoltageMode = 2;
+                        SwitchingVoltageMode_OffDC = false;
+                        SwitchingVoltageMode_OffAC = true;
+                        break;
+                }
+                
                 if (LastStateHV3 != HV3Switch)
                     SignalEvent(Event.PantographToggle); // Zvuk přepínače                
 
@@ -6765,7 +6780,7 @@ namespace Orts.Simulation.RollingStocks
                 if (BreakPowerButton_Activated && Pantograph3Switch == 1)
                     BreakPowerButton_Activated = false;
 
-                if (Pantograph3CanOn && Battery && !BreakPowerButton_Activated && GameTimeFlow > 1) // Zatím bez PowerKey kvůli kompatibilitě
+                if (Pantograph3CanOn && Battery && PowerKey && !BreakPowerButton_Activated && GameTimeFlow > 1) 
                 {
                     PantoStatus = Pantograph3Switch;
                     int p1 = 1; int p2 = 2;
