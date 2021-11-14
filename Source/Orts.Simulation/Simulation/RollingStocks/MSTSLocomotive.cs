@@ -2855,7 +2855,7 @@ namespace Orts.Simulation.RollingStocks
                         //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Teplota " + car.CarOutsideTempC0));
 
 
-                        float TempStepUp = 300;
+                        float TempStepUp = 200;
                         float TempStepDown = 300;                        
                         float TempStepUpSlow = 200;                        
                         float TempStepDownSlow = 200;
@@ -2897,7 +2897,7 @@ namespace Orts.Simulation.RollingStocks
                         if (Simulator.Season == SeasonType.Spring || Simulator.Season == SeasonType.Autumn || Simulator.Season == SeasonType.Winter)
                         {
                             float SetTempCHyst = 2.5f;
-                            TempCDeltaOutside = car.CarOutsideTempC0 / car.WagonTemperature;
+                            //TempCDeltaOutside = car.CarOutsideTempC0 / car.WagonTemperature;
 
                             if (car.SetTemperatureC == 0)
                             {
@@ -2920,9 +2920,9 @@ namespace Orts.Simulation.RollingStocks
                             // Termostat vypnutý, topení aktivní
                             if ((HeatingIsOn || car.DieselHeaterPower > 0) && car.WagonTemperature < car.SetTempCThreshold && !car.ThermostatOn)
                             {
-                                car.TempCDelta = +car.PowerReductionByHeating0 / TempStepUp / CarAirVolumeM3 * TempCDeltaOutside * elapsedClockSeconds;
+                                car.TempCDelta = +car.PowerReductionByHeating0 / TempStepUp / CarAirVolumeM3 * elapsedClockSeconds;
                                 if (car.DieselHeaterPower > 0)
-                                    car.TempCDelta = +car.DieselHeaterPower0 / TempStepUp / CarAirVolumeM3 * TempCDeltaOutside * elapsedClockSeconds;
+                                    car.TempCDelta = +car.DieselHeaterPower0 / TempStepUp / CarAirVolumeM3 * elapsedClockSeconds;
                                 if (car.WagonTemperature > car.SetTempCThreshold - 0.1f)
                                     car.ThermostatOn = true;
                                 car.StatusHeatIsOn = true;
@@ -2964,7 +2964,7 @@ namespace Orts.Simulation.RollingStocks
                             // Termostat vypnutý, klimatizace aktivní
                             if (HeatingIsOn && car.WagonTemperature > car.SetTempCThreshold && !car.ThermostatOn && car.PowerReductionByAirCondition > 0)
                             {
-                                car.TempCDelta = -car.PowerReductionByAirCondition0 / TempStepDown / CarAirVolumeM3 * TempCDeltaOutside * elapsedClockSeconds;
+                                car.TempCDelta = -car.PowerReductionByAirCondition0 / TempStepDown / CarAirVolumeM3 * elapsedClockSeconds;
                                 if (car.WagonTemperature < car.SetTempCThreshold + 0.1f)
                                     car.ThermostatOn = true;
                                 car.StatusHeatIsOn = true;

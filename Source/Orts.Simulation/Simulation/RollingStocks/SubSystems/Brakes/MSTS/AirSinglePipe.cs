@@ -2347,8 +2347,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
 
                 if (wagon.DoorLeftOpen || wagon.DoorRightOpen)
                 {
-                    wagon.BrakeSystem.DoorsOpen = true;
-                    train.TrainDoorsOpen = true;
+                    wagon.BrakeSystem.DoorsOpen = true;                    
+                    if (!wagon.LeftDoorOpenOverride && !wagon.RightDoorOpenOverride)
+                        train.TrainDoorsOpen = true;
                 }
                 else
                     wagon.BrakeSystem.DoorsOpen = false;
