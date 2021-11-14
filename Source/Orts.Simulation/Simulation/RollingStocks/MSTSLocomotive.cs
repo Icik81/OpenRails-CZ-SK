@@ -2746,7 +2746,7 @@ namespace Orts.Simulation.RollingStocks
             }
             
             // Počítání teplot proběhne každý desátý cyklus 
-            if (GameTimeCyklus == 10)
+            if (GameTimeCyklus == 10 && (!Train.HeatingBoilerCarAttached || !Train.HeatedCarAttached))
             {
                 foreach (TrainCar car in Train.Cars)
                 {
@@ -2817,12 +2817,6 @@ namespace Orts.Simulation.RollingStocks
                                 }
                             }       
                             
-                            //if (car.PowerReductionByAirCondition == 0)
-                            //{ 
-                            //    if (car.CarLengthM <= 10) car.PowerReductionByAirCondition = 10.0f * 1000;   // 10kW                    
-                            //    if (car.CarLengthM > 10) car.PowerReductionByAirCondition = 20.0f * 1000;   // 20kW                    
-                            //    if (car.CarLengthM > 20) car.PowerReductionByAirCondition = 30.0f * 1000;   // 30kW                                                                                          
-                            //}
                             car.PowerReductionByHeating = MathHelper.Clamp(car.PowerReductionByHeating, 0, 50.0f * 1000);
                             car.PowerReductionByAirCondition = MathHelper.Clamp(car.PowerReductionByAirCondition, 0, 50.0f * 1000);
 
@@ -2861,25 +2855,41 @@ namespace Orts.Simulation.RollingStocks
                         //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Teplota " + car.CarOutsideTempC0));
 
 
-                        float TempStepUp = 1000;
-                        float TempStepDown = 1000;                        
-                        float TempStepUpSlow = 7500;                        
-                        float TempStepDownSlow = 7500;
+                        float TempStepUp = 300;
+                        float TempStepDown = 300;                        
+                        float TempStepUpSlow = 200;                        
+                        float TempStepDownSlow = 200;
                         float TempCDeltaOutside;
+                        float CarAirVolumeM3;                       
+
+                        // Výpočet objemu vzduchu ve vozech
+                        CarAirVolumeM3 = car.CarWidthM * car.CarLengthM * (car.CarHeightM - 1.06f);
+
+                        // Vliv otevření dveří u vozů
+                        if (car.BrakeSystem.LeftDoorIsOpened)
+                        {
+                            TempStepUpSlow += 75;
+                            TempStepDownSlow += 75;
+                        }
+                        if (car.BrakeSystem.RightDoorIsOpened)
+                        {
+                            TempStepUpSlow += 75;
+                            TempStepDownSlow += 75;
+                        }
 
                         // Ochlazování a oteplování vlivem protékajícího vzduchu a okolní teploty
                         TempCDeltaOutside = car.WagonTemperature / car.CarOutsideTempC0 / 5;
                         if (car.AbsSpeedMpS > 0 && car.WagonTemperature > car.CarOutsideTempC0 * (1 - (car.AbsSpeedMpS / (400 / 3.6f))))
-                            car.TempCDeltaAir = -car.PowerReductionByHeating / TempStepDownSlow / car.CarLengthM * TempCDeltaOutside * (1 + (1 - (car.AbsSpeedMpS / (400 / 3.6f)))) * elapsedClockSeconds;
+                            car.TempCDeltaAir = -TempStepDownSlow / CarAirVolumeM3 * TempCDeltaOutside * (1 + (1 - (car.AbsSpeedMpS / (400 / 3.6f)))) * elapsedClockSeconds;
                         else
                         if (car.AbsSpeedMpS > 0 && car.WagonTemperature < car.CarOutsideTempC0 * (1 - (car.AbsSpeedMpS / (400 / 3.6f))))
-                            car.TempCDeltaAir = +car.PowerReductionByHeating / TempStepUpSlow / car.CarLengthM * TempCDeltaOutside * (1 - (car.AbsSpeedMpS / (400 / 3.6f))) * elapsedClockSeconds;
+                            car.TempCDeltaAir = +TempStepUpSlow / CarAirVolumeM3 * TempCDeltaOutside * (1 - (car.AbsSpeedMpS / (400 / 3.6f))) * elapsedClockSeconds;
                         else
                         if (car.AbsSpeedMpS == 0 && car.WagonTemperature < car.CarOutsideTempC0 * 1.05f)
-                            car.TempCDeltaAir = +car.PowerReductionByHeating / TempStepUpSlow / car.CarLengthM * TempCDeltaOutside * elapsedClockSeconds;
+                            car.TempCDeltaAir = +TempStepUpSlow / CarAirVolumeM3 * TempCDeltaOutside * elapsedClockSeconds;
                         else
                         if (car.AbsSpeedMpS == 0 && car.WagonTemperature > car.CarOutsideTempC0)
-                            car.TempCDeltaAir = -car.PowerReductionByHeating / TempStepDownSlow / car.CarLengthM * TempCDeltaOutside * elapsedClockSeconds;
+                            car.TempCDeltaAir = -TempStepDownSlow / CarAirVolumeM3 * TempCDeltaOutside * elapsedClockSeconds;
                         else
                             car.TempCDeltaAir = 0;
 
@@ -2910,9 +2920,9 @@ namespace Orts.Simulation.RollingStocks
                             // Termostat vypnutý, topení aktivní
                             if ((HeatingIsOn || car.DieselHeaterPower > 0) && car.WagonTemperature < car.SetTempCThreshold && !car.ThermostatOn)
                             {
-                                car.TempCDelta = +car.PowerReductionByHeating0 / TempStepUp / car.CarLengthM * TempCDeltaOutside * elapsedClockSeconds;
+                                car.TempCDelta = +car.PowerReductionByHeating0 / TempStepUp / CarAirVolumeM3 * TempCDeltaOutside * elapsedClockSeconds;
                                 if (car.DieselHeaterPower > 0)
-                                    car.TempCDelta = +car.DieselHeaterPower0 / TempStepUp / car.CarLengthM * TempCDeltaOutside * elapsedClockSeconds;
+                                    car.TempCDelta = +car.DieselHeaterPower0 / TempStepUp / CarAirVolumeM3 * TempCDeltaOutside * elapsedClockSeconds;
                                 if (car.WagonTemperature > car.SetTempCThreshold - 0.1f)
                                     car.ThermostatOn = true;
                                 car.StatusHeatIsOn = true;
@@ -2952,9 +2962,9 @@ namespace Orts.Simulation.RollingStocks
                                 }
                             }
                             // Termostat vypnutý, klimatizace aktivní
-                            if (HeatingIsOn && car.WagonTemperature > car.SetTempCThreshold && !car.ThermostatOn && car.PowerReductionByAirCondition0 > 0)
+                            if (HeatingIsOn && car.WagonTemperature > car.SetTempCThreshold && !car.ThermostatOn && car.PowerReductionByAirCondition > 0)
                             {
-                                car.TempCDelta = -car.PowerReductionByAirCondition0 / TempStepDown / car.CarLengthM * TempCDeltaOutside * elapsedClockSeconds;
+                                car.TempCDelta = -car.PowerReductionByAirCondition0 / TempStepDown / CarAirVolumeM3 * TempCDeltaOutside * elapsedClockSeconds;
                                 if (car.WagonTemperature < car.SetTempCThreshold + 0.1f)
                                     car.ThermostatOn = true;
                                 car.StatusHeatIsOn = true;

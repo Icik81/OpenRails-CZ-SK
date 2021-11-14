@@ -2034,7 +2034,7 @@ namespace Orts.Simulation.Physics
         // Leaks in system, loss of heat (and pressure) as steam moves along train
 
         public void UpdateCarSteamHeat(float elapsedClockSeconds)
-        {
+        {           
             var mstsLocomotive = Simulator.PlayerLocomotive as MSTSLocomotive;
             if (mstsLocomotive != null)
             {
