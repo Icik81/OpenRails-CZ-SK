@@ -449,6 +449,7 @@ namespace Orts.Simulation.RollingStocks
         public bool OverCurrent = false;
         public bool OverVoltage = false;
         public bool MultiSystemEngine = false;
+        public bool MultiSystemEnginePlayer = false;
         public float MaxCurrentPower;
         public float MaxCurrentBrake;
         public float SlipSpeedCritical;
@@ -1177,7 +1178,7 @@ namespace Orts.Simulation.RollingStocks
                 case "engine(ortsmaxtracksanderairconsumption": TrackSanderAirComsumptionM3pS = stf.ReadFloatBlock(STFReader.UNITS.Volume, null); break;
                 // Icik
                 case "engine(adhesionefficiencykoef": AdhesionEfficiencyKoef = stf.ReadFloatBlock(STFReader.UNITS.None, null); break;
-                case "engine(multisystemengine": MultiSystemEngine = stf.ReadBoolBlock(false); break;
+                case "engine(multisystemengine": MultiSystemEngine = MultiSystemEnginePlayer = stf.ReadBoolBlock(false); break;
                 case "engine(maxcurrentpower": MaxCurrentPower = stf.ReadFloatBlock(STFReader.UNITS.Current, null); break;
                 case "engine(maxcurrentbrake": MaxCurrentBrake = stf.ReadFloatBlock(STFReader.UNITS.Current, null); break;
                 case "engine(slipspeedcritical": SlipSpeedCritical = stf.ReadFloatBlock(STFReader.UNITS.Speed, null); break;
@@ -1409,6 +1410,7 @@ namespace Orts.Simulation.RollingStocks
             // Icik
             AdhesionEfficiencyKoef = locoCopy.AdhesionEfficiencyKoef;
             MultiSystemEngine = locoCopy.MultiSystemEngine;
+            MultiSystemEnginePlayer = locoCopy.MultiSystemEnginePlayer;
             MaxCurrentPower = locoCopy.MaxCurrentPower;
             MaxCurrentBrake = locoCopy.MaxCurrentBrake;
             SlipSpeedCritical = locoCopy.SlipSpeedCritical;

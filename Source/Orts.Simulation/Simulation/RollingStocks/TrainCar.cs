@@ -3217,7 +3217,7 @@ namespace Orts.Simulation.RollingStocks
                 Gender = Genders.Female;
 
             DoorsToEnterAndExit = rnd.Next(0, 2);
-            float timeToExit = rnd.Next(250, 500);
+            float timeToExit = rnd.Next(0, 500);
             TimeToEnterAndExit = timeToExit / 25;
 
             int nameIndex = 0;

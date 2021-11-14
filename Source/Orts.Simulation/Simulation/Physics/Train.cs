@@ -16492,7 +16492,7 @@ namespace Orts.Simulation.Physics
                         continue;
                     foreach (Passenger pax in exitPaxList)
                     {
-                        if (pax.WagonIndex == currentWagIndex && train.StationStops[0].PlatformItem.PlatformFrontUiD == pax.ArrivalStation)
+                        if (pax.WagonIndex == currentWagIndex && train.StationStops[0].PlatformItem.PlatformFrontUiD == pax.ArrivalStation && pax.TimeToStartExiting < gameClock)
                         {
                             if (!platformSide && !loco.DoorLeftOpen && !loco.CentralHandlingDoors)
                             {
@@ -16597,6 +16597,7 @@ namespace Orts.Simulation.Physics
                     }
 
                 }
+                else continue;
             boarded:
                 break;
             }

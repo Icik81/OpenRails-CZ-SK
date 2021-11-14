@@ -430,6 +430,8 @@ namespace Orts.Simulation.RollingStocks
                 return;
             }
 
+            MultiSystemEngine = MultiSystemEnginePlayer;
+
             // výpočet napětí dle proudu a odporu k napaječce
             float watts = TractiveForceN > 0 ? (TractiveForceN * 1f + TractiveForceN * AbsSpeedMpS) : 0;
             if ((Flipped || Direction == Direction.Reverse) && watts < 0)
@@ -819,6 +821,7 @@ namespace Orts.Simulation.RollingStocks
 
                             if (CruiseControl != null)
                                 if (PowerSupply.PantographVoltageV == 1
+                                    && CruiseControl.ForceThrottleAndDynamicBrake != -1
                                     && CruiseControl.ForceThrottleAndDynamicBrake != 0
                                     && CruiseControl.ForceThrottleAndDynamicBrake != 1
                                     && PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closed)
