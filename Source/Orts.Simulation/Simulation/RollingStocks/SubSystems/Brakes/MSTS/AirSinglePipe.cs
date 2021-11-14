@@ -775,6 +775,11 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     else MaxReleaseRatePSIpS = ReleaseRatePSIpS = MaxReleaseRatePSIpSR;
                     break;
                 case 3: // Režim R+Mg
+                    if (MaxApplicationRatePSIpSR == 0) MaxApplicationRatePSIpS = MaxApplicationRatePSIpS0 / (TimeApplyR / TimeApplyP);
+                    else MaxApplicationRatePSIpS = MaxApplicationRatePSIpSR;
+
+                    if (MaxReleaseRatePSIpSR == 0) MaxReleaseRatePSIpS = ReleaseRatePSIpS = MaxReleaseRatePSIpS0 / (TimeReleaseR / TimeReleaseP);
+                    else MaxReleaseRatePSIpS = ReleaseRatePSIpS = MaxReleaseRatePSIpSR;
                     break;
             }
 
