@@ -1152,31 +1152,30 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     BrakeCylReleaseEDBOn = true;
 
                 // Automatické napuštění brzdového válce po uvadnutí EDB
-                if (loco.DynamicBrakeForceCurves != null)
-                    if (ThresholdBailOffOn > 0 && Math.Abs(loco.MotiveForceN) < 40000) // Napustí brzdový válec pod 40kN EDB
+                if (ThresholdBailOffOn > 0 && Math.Abs(loco.MotiveForceN) < 40000) // Napustí brzdový válec pod 40kN EDB
+                {
+                    if (AutoCylPressurePSI0 < ThresholdBailOffOn
+                        && loco.MainResPressurePSI > 0
+                        && AutoCylPressurePSI < loco.BrakeSystem.BrakeCylinderMaxSystemPressurePSI
+                        && AutoCylPressurePSI < loco.MainResPressurePSI)
                     {
-                        if (AutoCylPressurePSI0 < ThresholdBailOffOn
-                            && loco.MainResPressurePSI > 0
-                            && AutoCylPressurePSI < loco.BrakeSystem.BrakeCylinderMaxSystemPressurePSI
-                            && AutoCylPressurePSI < loco.MainResPressurePSI)
+                        EDBEngineBrakeDelay += elapsedClockSeconds;
+                        if (EDBEngineBrakeDelay > BrakeDelayToEngage - 0.05f && EDBEngineBrakeDelay < BrakeDelayToEngage && AutoCylPressurePSI < 1)
+                            AutoCylPressurePSI0 = 0.1f * 14.50377f;
+                        if (EDBEngineBrakeDelay > BrakeDelayToEngage + 0.25f)
                         {
-                            EDBEngineBrakeDelay += elapsedClockSeconds;
-                            if (EDBEngineBrakeDelay > BrakeDelayToEngage - 0.05f && EDBEngineBrakeDelay < BrakeDelayToEngage && AutoCylPressurePSI < 1)
-                                AutoCylPressurePSI0 = 0.1f * 14.50377f;
-                            if (EDBEngineBrakeDelay > BrakeDelayToEngage + 0.25f)
-                            {
-                                AutoCylPressurePSI0 += elapsedClockSeconds * AutoBailOffOnRatePSIpS; // Rychlost napouštění po uvadnutí EDB
-                            }
-                            loco.MainResPressurePSI -= elapsedClockSeconds * AutoBailOffOnRatePSIpS * loco.BrakeSystem.BrakePipeVolumeM3 / loco.MainResVolumeM3;
+                            AutoCylPressurePSI0 += elapsedClockSeconds * AutoBailOffOnRatePSIpS; // Rychlost napouštění po uvadnutí EDB
                         }
-                        else
-                        if (AutoCylPressurePSI0 >= ThresholdBailOffOn)
-                        {
-                            threshold = ThresholdBailOffOn;
-                            ThresholdBailOffOn = 0;
-                            EDBEngineBrakeDelay = 0;                            
-                        }
+                        loco.MainResPressurePSI -= elapsedClockSeconds * AutoBailOffOnRatePSIpS * loco.BrakeSystem.BrakePipeVolumeM3 / loco.MainResVolumeM3;
                     }
+                    else
+                    if (AutoCylPressurePSI0 >= ThresholdBailOffOn)
+                    {
+                        threshold = ThresholdBailOffOn;
+                        ThresholdBailOffOn = 0;
+                        EDBEngineBrakeDelay = 0;
+                    }
+                }
             }
             else
             {

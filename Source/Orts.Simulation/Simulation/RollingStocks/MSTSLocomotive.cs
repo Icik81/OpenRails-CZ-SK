@@ -2859,8 +2859,8 @@ namespace Orts.Simulation.RollingStocks
 
                         float TempStepUp = 200;
                         float TempStepDown = 300;                        
-                        float TempStepUpSlow = 200;                        
-                        float TempStepDownSlow = 200;
+                        float TempStepUpSlow = 100;                        
+                        float TempStepDownSlow = 100;
                         float TempCDeltaOutside;
                         float CarAirVolumeM3;                       
 
@@ -2881,11 +2881,11 @@ namespace Orts.Simulation.RollingStocks
 
                         // Ochlazování a oteplování vlivem protékajícího vzduchu a okolní teploty
                         TempCDeltaOutside = car.WagonTemperature / car.CarOutsideTempC0 / 5;
-                        if (car.AbsSpeedMpS > 0 && car.WagonTemperature > car.CarOutsideTempC0 * (1 - (car.AbsSpeedMpS / (400 / 3.6f))))
-                            car.TempCDeltaAir = -TempStepDownSlow / CarAirVolumeM3 * TempCDeltaOutside * (1 + (1 - (car.AbsSpeedMpS / (400 / 3.6f)))) * elapsedClockSeconds;
+                        if (car.AbsSpeedMpS > 0 && car.WagonTemperature > car.CarOutsideTempC0 * (1 - (car.AbsSpeedMpS / (250 / 3.6f))))
+                            car.TempCDeltaAir = -TempStepDownSlow / CarAirVolumeM3 * TempCDeltaOutside * (1 + (1 - (car.AbsSpeedMpS / (250 / 3.6f)))) * elapsedClockSeconds;
                         else
-                        if (car.AbsSpeedMpS > 0 && car.WagonTemperature < car.CarOutsideTempC0 * (1 - (car.AbsSpeedMpS / (400 / 3.6f))))
-                            car.TempCDeltaAir = +TempStepUpSlow / CarAirVolumeM3 * TempCDeltaOutside * (1 - (car.AbsSpeedMpS / (400 / 3.6f))) * elapsedClockSeconds;
+                        if (car.AbsSpeedMpS > 0 && car.WagonTemperature < car.CarOutsideTempC0 * (1 - (car.AbsSpeedMpS / (250 / 3.6f))))
+                            car.TempCDeltaAir = +TempStepUpSlow / CarAirVolumeM3 * TempCDeltaOutside * (1 - (car.AbsSpeedMpS / (250 / 3.6f))) * elapsedClockSeconds;
                         else
                         if (car.AbsSpeedMpS == 0 && car.WagonTemperature < car.CarOutsideTempC0 * 1.05f)
                             car.TempCDeltaAir = +TempStepUpSlow / CarAirVolumeM3 * TempCDeltaOutside * elapsedClockSeconds;
@@ -6845,7 +6845,9 @@ namespace Orts.Simulation.RollingStocks
         {
             if (!MultiSystemEngine && !CircuitBreakerOn)
                 return;
-            
+            if (Pantograph3Enable)
+                return;
+
             // Zabrání zvednutí pantografu po stlačení tlačítka přerušení napájení
             if (BreakPowerButton)
                 BreakPowerButton_Activated = true;
