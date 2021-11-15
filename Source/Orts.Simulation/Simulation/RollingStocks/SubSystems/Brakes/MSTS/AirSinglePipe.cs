@@ -1078,7 +1078,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 BrakeCylRelease = true;
                 BrakeCylApply = false;
                 BrakeReadyToApply = false;
-                ThresholdBailOffOn = 0;
+                //ThresholdBailOffOn = 0;
                 BrakeCylReleaseEDBOn = false;
 
                 if ((Car as MSTSWagon).EmergencyReservoirPresent)
@@ -1152,8 +1152,17 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     BrakeCylReleaseEDBOn = true;
 
                 // Automatické napuštění brzdového válce po uvadnutí EDB
-                if (ThresholdBailOffOn > 0 && Math.Abs(loco.MotiveForceN) < 40000) // Napustí brzdový válec pod 40kN EDB
+                float AirWithEDBMotiveForceN = 0;
+                if (loco.HV5Enable)
+                    AirWithEDBMotiveForceN = 40000; // 2-systémovky x6x, x5x
+                if (loco.HV3Enable)
+                    AirWithEDBMotiveForceN = 10000; // moderní (Vectron, ...)
+                if (loco.HV2Enable)
+                    AirWithEDBMotiveForceN = 40000; // 1-systémovky
+
+                if (ThresholdBailOffOn > 0 && Math.Abs(loco.MotiveForceN) <= AirWithEDBMotiveForceN) // Napustí brzdový válec pod limit síly k EDB
                 {
+                    ThresholdBailOffOn = (maxPressurePSI0 - BrakeLine1PressurePSI) * AuxCylVolumeRatio;
                     if (AutoCylPressurePSI0 < ThresholdBailOffOn
                         && loco.MainResPressurePSI > 0
                         && AutoCylPressurePSI < loco.BrakeSystem.BrakeCylinderMaxSystemPressurePSI
