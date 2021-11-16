@@ -2786,12 +2786,12 @@ namespace Orts.Simulation.RollingStocks
                                 {
                                     if (car.CarLengthM <= 10)
                                     {
-                                        if (car.PowerReductionByHeating == 0) car.PowerReductionByHeating = 30.0f * 1000;   // 30kW                    
+                                        if (car.PowerReductionByHeating == 0) car.PowerReductionByHeating = 10.0f * 1000;   // 10kW                    
                                         if (car.DieselHeaterConsumptionPerHour == 0) car.DieselHeaterConsumptionPerHour = 2; // 2l/h
                                     }
                                     if (car.CarLengthM > 10)
                                     {
-                                        if (car.PowerReductionByHeating == 0) car.PowerReductionByHeating = 40.0f * 1000;   // 40kW
+                                        if (car.PowerReductionByHeating == 0) car.PowerReductionByHeating = 15.0f * 1000;   // 15kW
                                         if (car.DieselHeaterConsumptionPerHour == 0) car.DieselHeaterConsumptionPerHour = 3; // 3l/h
                                     }
                                 }
@@ -2867,6 +2867,16 @@ namespace Orts.Simulation.RollingStocks
                         // Výpočet objemu vzduchu ve vozech
                         CarAirVolumeM3 = car.CarWidthM * car.CarLengthM * (car.CarHeightM - 1.06f);
 
+                        // Výpočet objemu vzduchu v lokomotivách
+                        if (car.WagonType == WagonTypes.Engine && !HasPassengerCapacity)
+                        {
+                            CarAirVolumeM3 = car.CarWidthM * 1.5f * (car.CarHeightM - 1.06f);
+                            TempStepUp = 1000;
+                            TempStepDown = 3000;
+                            TempStepUpSlow = 10;
+                            TempStepDownSlow = 10;
+                        }
+
                         // Vliv otevření dveří u vozů
                         if (car.BrakeSystem.LeftDoorIsOpened)
                         {
@@ -2898,7 +2908,7 @@ namespace Orts.Simulation.RollingStocks
                         // Topení
                         if (Simulator.Season == SeasonType.Spring || Simulator.Season == SeasonType.Autumn || Simulator.Season == SeasonType.Winter)
                         {
-                            float SetTempCHyst = 2.5f;
+                            float SetTempCHyst = 3.5f;
                             //TempCDeltaOutside = car.CarOutsideTempC0 / car.WagonTemperature;
 
                             if (car.SetTemperatureC == 0)
@@ -2942,7 +2952,7 @@ namespace Orts.Simulation.RollingStocks
                         // Klimatizace
                         if (Simulator.Season == SeasonType.Summer)
                         {
-                            float SetTempCHyst = 1.5f;
+                            float SetTempCHyst = 2.5f;
                             TempCDeltaOutside = car.WagonTemperature / car.CarOutsideTempC;
 
                             if (car.SetTemperatureC == 0)
