@@ -255,106 +255,121 @@ namespace Orts.Viewer3D.RollingStock
         public override void HandleUserInput(ElapsedTime elapsedTime)
         {
             // Icik
-            
+
             // Ovládání HV2 nearetované pozice
-            if (Locomotive.HV2Switch == 1)
+            if (Locomotive.HV2Enable)
             {
-                Locomotive.HVPressedTest = true;
+                if (Locomotive.HV2Switch == 1)
+                {
+                    Locomotive.HVPressedTest = true;
+                }
+                if (Locomotive.HV2Switch == 1 && UserInput.IsReleased(UserCommand.ControlHV2SwitchUp))
+                {
+                    Locomotive.HV2Switch = 0;
+                    Locomotive.HVPressedTest = false;
+                }
             }
-            if (Locomotive.HV2Switch == 1 && UserInput.IsReleased(UserCommand.ControlHV2SwitchUp))
-            {
-                Locomotive.HV2Switch = 0;
-                Locomotive.HVPressedTest = false;
-            }
-
             // Ovládání HV3 nearetované pozice
-            if (Locomotive.HV3Switch == 2)
+            if (Locomotive.HV3Enable)
             {
-                Locomotive.HVOnPressedTest = true;
+                if (Locomotive.HV3Switch == 2)
+                {
+                    Locomotive.HVOnPressedTest = true;
+                }
+                if (Locomotive.HV3Switch == 2 && UserInput.IsReleased(UserCommand.ControlHV3SwitchUp))
+                {
+                    Locomotive.HV3Switch = 1;
+                    Locomotive.HVOnPressedTest = false;
+                }
+                if (Locomotive.HV3Switch == 0)
+                {
+                    Locomotive.HVOffPressedTest = true;
+                }
+                if (Locomotive.HV3Switch == 0 && UserInput.IsReleased(UserCommand.ControlHV3SwitchDown))
+                {
+                    Locomotive.HV3Switch = 1;
+                    Locomotive.HVOffPressedTest = false;
+                }
             }
-            if (Locomotive.HV3Switch == 2 && UserInput.IsReleased(UserCommand.ControlHV3SwitchUp))
-            {
-                Locomotive.HV3Switch = 1;
-                Locomotive.HVOnPressedTest = false;
-            }
-            if (Locomotive.HV3Switch == 0)
-            {
-                Locomotive.HVOffPressedTest = true;
-            }
-            if (Locomotive.HV3Switch == 0 && UserInput.IsReleased(UserCommand.ControlHV3SwitchDown))
-            {
-                Locomotive.HV3Switch = 1;
-                Locomotive.HVOffPressedTest = false;
-            }
-
             // Ovládání HV5 nearetované pozice
-            if (Locomotive.HV5Switch == 5)
-            {                
-                Locomotive.HVPressedTestAC = true;
-            }
-            if (Locomotive.HV5Switch == 5 && UserInput.IsReleased(UserCommand.ControlHV5SwitchUp))
+            if (Locomotive.HV5Enable)
             {
-                Locomotive.HV5Switch = 4;
-                Locomotive.HVPressedTestAC = false;
+                if (Locomotive.HV5Switch == 4)
+                {
+                    Locomotive.HVPressedTestAC = true;
+                }
+                if (Locomotive.HV5Switch == 4 && UserInput.IsReleased(UserCommand.ControlHV5SwitchUp))
+                {
+                    Locomotive.HV5Switch = 3;
+                    Locomotive.HVPressedTestAC = false;
+                }
+                if (Locomotive.HV5Switch == 0)
+                {
+                    Locomotive.HVPressedTestDC = true;
+                }
+                if (Locomotive.HV5Switch == 0 && UserInput.IsReleased(UserCommand.ControlHV5SwitchDown))
+                {
+                    Locomotive.HV5Switch = 1;
+                    Locomotive.HVPressedTestDC = false;
+                }
             }
-            if (Locomotive.HV5Switch == 1)
-            {             
-                Locomotive.HVPressedTestDC = true;
-            }
-            if (Locomotive.HV5Switch == 1 && UserInput.IsReleased(UserCommand.ControlHV5SwitchDown))
-            {
-                Locomotive.HV5Switch = 2;
-                Locomotive.HVPressedTestDC = false;
-            }
-
             // Ovládání Pantograph3 nearetované pozice
-            if (Locomotive.Pantograph3Switch == 2)
+            if (Locomotive.Pantograph3Enable)
             {
-                Locomotive.PantographOnPressedTest = true;
+                if (Locomotive.Pantograph3Switch == 2)
+                {
+                    Locomotive.PantographOnPressedTest = true;
+                }
+                if (Locomotive.Pantograph3Switch == 2 && UserInput.IsReleased(UserCommand.ControlPantograph3SwitchUp))
+                {
+                    Locomotive.Pantograph3Switch = 1;
+                    Locomotive.PantographOnPressedTest = false;
+                }
+                if (Locomotive.Pantograph3Switch == 0)
+                {
+                    Locomotive.PantographOffPressedTest = true;
+                }
+                if (Locomotive.Pantograph3Switch == 0 && UserInput.IsReleased(UserCommand.ControlPantograph3SwitchDown))
+                {
+                    Locomotive.Pantograph3Switch = 1;
+                    Locomotive.PantographOffPressedTest = false;
+                }
             }
-            if (Locomotive.Pantograph3Switch == 2 && UserInput.IsReleased(UserCommand.ControlPantograph3SwitchUp))
-            {
-                Locomotive.Pantograph3Switch = 1;
-                Locomotive.PantographOnPressedTest = false;
-            }
-            if (Locomotive.Pantograph3Switch == 0)
-            {
-                Locomotive.PantographOffPressedTest = true;
-            }
-            if (Locomotive.Pantograph3Switch == 0 && UserInput.IsReleased(UserCommand.ControlPantograph3SwitchDown))
-            {
-                Locomotive.Pantograph3Switch = 1;
-                Locomotive.PantographOffPressedTest = false;
-            }
-
             // Ovládání tlačítka vysokotlakého švihu
-            if (UserInput.IsPressed(UserCommand.ControlQuickReleaseButton))
+            if (Locomotive.QuickReleaseButtonEnable)
             {
-                Locomotive.ToggleQuickReleaseButton(true);
+                if (UserInput.IsPressed(UserCommand.ControlQuickReleaseButton))
+                {
+                    Locomotive.ToggleQuickReleaseButton(true);
+                }
+                if (UserInput.IsReleased(UserCommand.ControlQuickReleaseButton))
+                {
+                    Locomotive.ToggleQuickReleaseButton(false);
+                }
             }
-            if (UserInput.IsReleased(UserCommand.ControlQuickReleaseButton))
-            {
-                Locomotive.ToggleQuickReleaseButton(false);
-            }
-            
             // Ovládání tlačítka nízkotlakého přebití
-            if (UserInput.IsPressed(UserCommand.ControlLowPressureReleaseButton))
+            if (Locomotive.LowPressureReleaseButtonEnable)
             {
-                Locomotive.ToggleLowPressureReleaseButton(true);
+                if (UserInput.IsPressed(UserCommand.ControlLowPressureReleaseButton))
+                {
+                    Locomotive.ToggleLowPressureReleaseButton(true);
+                }
+                if (UserInput.IsReleased(UserCommand.ControlLowPressureReleaseButton))
+                {
+                    Locomotive.ToggleLowPressureReleaseButton(false);
+                }
             }
-            if (UserInput.IsReleased(UserCommand.ControlLowPressureReleaseButton))
-            {
-                Locomotive.ToggleLowPressureReleaseButton(false);
-            }
-
             // Ovládání tlačítka přerušení napájení
-            if (UserInput.IsPressed(UserCommand.ControlBreakPowerButton))
+            if (Locomotive.BreakPowerButtonEnable)
             {
-                Locomotive.ToggleBreakPowerButton(true);
-            }
-            if (UserInput.IsReleased(UserCommand.ControlBreakPowerButton))
-            {
-                Locomotive.ToggleBreakPowerButton(false);
+                if (UserInput.IsPressed(UserCommand.ControlBreakPowerButton))
+                {
+                    Locomotive.ToggleBreakPowerButton(true);
+                }
+                if (UserInput.IsReleased(UserCommand.ControlBreakPowerButton))
+                {
+                    Locomotive.ToggleBreakPowerButton(false);
+                }
             }
 
             if (UserInput.IsPressed(UserCommand.CameraToggleShowCab))
@@ -2716,22 +2731,22 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.HV5:
                     {
                         // Ovládání HV nearetované pozice
-                        if (Locomotive.HV5Switch == 5)
+                        if (Locomotive.HV5Switch == 4)
                         {                            
                             Locomotive.HVPressedTestAC = true;
                         }
-                        if (Locomotive.HV5Switch == 5 && UserInput.IsMouseLeftButtonReleased)
+                        if (Locomotive.HV5Switch == 4 && UserInput.IsMouseLeftButtonReleased)
                         {
-                            Locomotive.HV5Switch = 4;
+                            Locomotive.HV5Switch = 3;
                             Locomotive.HVPressedTestAC = false;
                         }                                                
-                        if (Locomotive.HV5Switch == 1)
+                        if (Locomotive.HV5Switch == 0)
                         {                            
                             Locomotive.HVPressedTestDC = true;
                         }
-                        if (Locomotive.HV5Switch == 1 && UserInput.IsMouseLeftButtonReleased)
+                        if (Locomotive.HV5Switch == 0 && UserInput.IsMouseLeftButtonReleased)
                         {
-                            Locomotive.HV5Switch = 2;
+                            Locomotive.HV5Switch = 1;
                             Locomotive.HVPressedTestDC = false;
                         }
 

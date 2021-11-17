@@ -238,10 +238,15 @@ namespace Orts.Common
 
         public override void Redo() {
             if (Receiver != null && Receiver.Train != null)
-            {
-                // Nahrazeno novější variantou
-                //Receiver.Train.SignalEvent(ToState ? PowerSupplyEvent.RaisePantograph : PowerSupplyEvent.LowerPantograph, item);
-                Receiver.TogglePantograph4Switch();
+            {                
+                // Icik
+                if (Receiver.Pantograph3Enable)
+                    Receiver.TogglePantograph3Switch();
+                else
+                if (Receiver.Pantograph4Enable)
+                    Receiver.TogglePantograph4Switch();
+                else                    
+                    Receiver.Train.SignalEvent(ToState ? PowerSupplyEvent.RaisePantograph : PowerSupplyEvent.LowerPantograph, item);                                   
             }
         }
 
