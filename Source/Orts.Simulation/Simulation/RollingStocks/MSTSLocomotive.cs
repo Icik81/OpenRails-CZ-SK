@@ -2427,11 +2427,12 @@ namespace Orts.Simulation.RollingStocks
                 {
                     float diff = DynamicBrakeBlendingForceMatch ? targetDynamicBrakePercent * MaxBrakeForceN - DynamicBrakeForceN : targetDynamicBrakePercent - DynamicBrakeIntervention;
                     if (diff > threshold && DynamicBrakeIntervention <= 1)
-                        //DynamicBrakeIntervention = Math.Min( DynamicBrakeIntervention + elapsedClockSeconds * (airPipeSystem.GetMaxApplicationRatePSIpS() / maxCylPressurePSI), 1.0f);
-                        DynamicBrakeIntervention += elapsedClockSeconds * (airPipeSystem.GetMaxApplicationRatePSIpS() / maxCylPressurePSI);
+                    {
+                        DynamicBrakeIntervention = Math.Min(DynamicBrakeIntervention + elapsedClockSeconds * (airPipeSystem.GetMaxApplicationRatePSIpS() / maxCylPressurePSI), 1.0f);
+                    }
                     else if (diff < -threshold)
                     {
-                        DynamicBrakeIntervention -= elapsedClockSeconds * (airPipeSystem.GetMaxReleaseRatePSIpS() / maxCylPressurePSI);                         
+                        DynamicBrakeIntervention = Math.Max(DynamicBrakeIntervention - elapsedClockSeconds * (airPipeSystem.GetMaxApplicationRatePSIpS() / maxCylPressurePSI), 0f);
                     }
                 }
                 if (DynamicBrakeController != null)
@@ -2440,11 +2441,13 @@ namespace Orts.Simulation.RollingStocks
 
             else if (DynamicBrakeBlended)
             {
-                if (DynamicBrakeIntervention > -1) 
+                if (DynamicBrakeIntervention > 0 && DynamicBrakeIntervention > DynamicBrakeController.CurrentValue)
                     DynamicBrakeIntervention -= 0.01f;
-                else DynamicBrakeBlended = false;
-                if (DynamicBrakeIntervention < 0)
+                else
+                {
+                    DynamicBrakeBlended = false;
                     DynamicBrakeIntervention = -1;
+                }
             }
         }
 
