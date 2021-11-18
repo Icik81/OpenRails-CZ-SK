@@ -112,8 +112,6 @@ namespace Orts.Simulation.RollingStocks
         bool AIPantoDown;
         bool AIPantoDownStop;
 
-        bool AIPantoChangeCyklus;
-        float AIPantoChangeCyklusTime;
 
         public MSTSElectricLocomotive(Simulator simulator, string wagFile) :
             base(simulator, wagFile)
@@ -193,7 +191,8 @@ namespace Orts.Simulation.RollingStocks
             outf.Write(Train.TrainHasFirstPantoMarker);
             outf.Write(Train.TrainPantoMarker);
             outf.Write(Train.AIPantoChange);
-            outf.Write(AIPanto2Raise);
+            outf.Write(Train.AIPanto2Raise);
+            outf.Write(PreAIDirection);
 
             base.Save(outf);
         }
@@ -231,7 +230,8 @@ namespace Orts.Simulation.RollingStocks
             Train.TrainHasFirstPantoMarker = inf.ReadBoolean();
             Train.TrainPantoMarker = inf.ReadInt32();
             Train.AIPantoChange = inf.ReadBoolean();
-            AIPanto2Raise = inf.ReadBoolean();
+            Train.AIPanto2Raise = inf.ReadBoolean();
+            PreAIDirection = inf.ReadBoolean();
 
             base.Restore(inf);
         }
@@ -1257,25 +1257,32 @@ namespace Orts.Simulation.RollingStocks
         }
 
         // Icik
-        // AI stahuje pantografy na úseku bez napětí a když nemá akci        
-        bool AIPanto2Raise = false;
+        // AI stahuje pantografy na úseku bez napětí a když nemá akci         
+        bool CurrentAIDirection = false;
+        bool PreAIDirection = false;
         protected void SetAIPantoDown(float elapsedClockSeconds)
-        {            
-            // Po zastavení AI vlaku složí pantograf
-            if (!IsPlayerTrain && GameTimeCyklus == 10)
+        {
+            if (IsPlayerTrain)
+                return;
+            
+            // Inicializace pantografů na AI loko
+            if (!Train.TrainHasFirstPantoMarker)
             {
-                if ((Train as AITrain).MovementState == AITrain.AI_MOVEMENT_STATE.AI_STATIC
-                || (Train as AITrain).MovementState == AITrain.AI_MOVEMENT_STATE.STOPPED
-                || (Train as AITrain).MovementState == AITrain.AI_MOVEMENT_STATE.SUSPENDED                
-                )
-                    AIPantoDownStop = true;
-                else
-                    AIPantoDownStop = false;
-
+                Train.TrainHasFirstPantoMarker = true;                
+                if (Flipped)                
+                    Train.TrainPantoMarker = 2;                
+                else               
+                    Train.TrainPantoMarker = 1;
+                Train.SignalEvent(PowerSupplyEvent.RaisePantograph, Train.TrainPantoMarker);
+            }
+            
+            if (GameTimeCyklus == 10 && GameTimeFlow > 1)
+            {
                 if ((Train as AITrain).nextActionInfo != null)
                 {
                     if ((Train as AITrain).nextActionInfo.GetType().IsSubclassOf(typeof(AuxActionItem)))
                     {
+                        // Po zastavení AI vlaku složí pantograf
                         if ((Train as AITrain).AuxActionsContain[0] != null && ((AIAuxActionsRef)(Train as AITrain).AuxActionsContain[0]).NextAction == AuxActionRef.AUX_ACTION.WAITING_POINT)
                         {
                             if (((AuxActionWPItem)(Train as AITrain).nextActionInfo).ActualDepart > 0)
@@ -1286,23 +1293,50 @@ namespace Orts.Simulation.RollingStocks
                                 else
                                     AIPantoDownStop = false;
                                 if (AITimeToGo < 120) // Čekání 2min pro nahození 2.pantografu 
-                                    AIPanto2Raise = true;
-                            }
-                        }
+                                    Train.AIPanto2Raise = true;
+                            }                            
+                        }                        
                     }
-                    
-                    if ((Train as AITrain).nextActionInfo.NextAction != AIActionItem.AI_ACTION_TYPE.REVERSAL && (Train as AITrain).SpeedMpS == 0 && !AIPantoChangeCyklus)
-                    {
-                        Train.AIPantoChange = true;
-                    }                    
-                }                
+                }                                
+            }
+
+            // Detekce změny směru AI
+            if (Direction == Direction.Reverse)
+                CurrentAIDirection = true;
+            if (Direction == Direction.Forward)
+                CurrentAIDirection = false;
+            if (PreAIDirection != CurrentAIDirection && MaxPowerW > 1200 * 1000)
+                Train.AIPantoChange = true;
+            PreAIDirection = CurrentAIDirection;
+
+            // AI mění pantografy 
+            if (Train.AIPantoChange)
+            {
+                SignalEvent(PowerSupplyEvent.LowerPantograph);
+                //Simulator.Confirmer.Message(ConfirmLevel.Warning, "ID " + (Train as AITrain).GetTrainName(CarID) + "   změna směru ");
+                if (Train.TrainPantoMarker == 1)
+                    Train.TrainPantoMarker = 2;
+                else
+                if (Train.TrainPantoMarker == 2)
+                    Train.TrainPantoMarker = 1;
+                Train.AIPantoChange = false;
             }
 
             // AI zvedne druhý pantograf při rozjezdu
-            if (AIPanto2Raise)
+            if (Train.AIPanto2Raise)
             {
                 //Simulator.Confirmer.Message(ConfirmLevel.Warning, "ID " + (Train as AITrain).GetTrainName(CarID) + "   Hmotnost " + (Train as AITrain).MassKg / 1000 + " t");
-                if ((Train as AITrain).MassKg > 300 * 1000) // Vlak těžší než 300t
+                float TrainMassKg = 400 * 1000; // Vlak těžší než 400t
+                float MassKoef = 0;
+                if (WagonType == WagonTypes.Passenger)
+                {
+                    if ((Train as AITrain).MassKg > 200 * 1000)
+                        MassKoef = Simulator.Random.Next(0, 3) * 100 * 1000;
+                }
+                if (Simulator.Season == SeasonType.Winter)
+                    MassKoef = 200 * 1000;
+                
+                if ((Train as AITrain).MassKg > TrainMassKg - MassKoef) 
                 {
                     if (Train.TrainPantoMarker == 1)
                         Train.SignalEvent(PowerSupplyEvent.RaisePantograph, 2);
@@ -1321,7 +1355,7 @@ namespace Orts.Simulation.RollingStocks
                             Train.SignalEvent(PowerSupplyEvent.LowerPantograph, 2);
                         if (Train.TrainPantoMarker == 2)
                             Train.SignalEvent(PowerSupplyEvent.LowerPantograph, 1);
-                        AIPanto2Raise = false;
+                        Train.AIPanto2Raise = false;
                     }
                 }
             }
@@ -1339,40 +1373,9 @@ namespace Orts.Simulation.RollingStocks
                     AIPantoDownGenerate = 0;
                 }
             }
-
-            // AI mění pantografy na revers bodu pro lokomotivy s výkonem nad 1200kW, cyklus trvá 30s
-            if (!IsPlayerTrain && Train.AIPantoChange && (Train as AITrain).MovementState == AITrain.AI_MOVEMENT_STATE.HANDLE_ACTION && MaxPowerW > 1200 * 1000)
-            {
-                SignalEvent(PowerSupplyEvent.LowerPantograph);
-                if (Train.TrainPantoMarker == 1)
-                    Train.TrainPantoMarker = 2;
-                else
-                if (Train.TrainPantoMarker == 2)
-                    Train.TrainPantoMarker = 1;                    
-                Train.AIPantoChange = false;
-                AIPantoChangeCyklus = true;
-            }
-            if (AIPantoChangeCyklus)
-            {
-                AIPantoChangeCyklusTime += elapsedClockSeconds;
-                if (AIPantoChangeCyklusTime > 30)
-                {
-                    AIPantoChangeCyklus = false;
-                    AIPantoChangeCyklusTime = 0;
-                }
-            }
-
-            // Inicializace pantografů na AI loko
-            if (!IsPlayerTrain && !Train.TrainHasFirstPantoMarker)
-            {
-                Train.TrainHasFirstPantoMarker = true;
-                Train.TrainPantoMarker = 1;
-                Train.SignalEvent(PowerSupplyEvent.RaisePantograph, Train.TrainPantoMarker);
-            }
-
-
-            if (!IsPlayerTrain && GameTimeCyklus == 10 && GameTimeFlow > 1)
-            {
+                      
+            if (GameTimeCyklus == 10 && GameTimeFlow > 0.5f)
+            {                
                 for (int i = 1; i <= Pantographs.Count; i++)
                 {
                     switch (Pantographs[i].State)
@@ -1383,7 +1386,7 @@ namespace Orts.Simulation.RollingStocks
                             if (RouteVoltageV != 1 && !AIPantoDown && !AIPantoDownStop)
                             {
                                 Pantographs[i].PantographsUpBlocked = false;
-                                Train.SignalEvent(PowerSupplyEvent.RaisePantograph, Train.TrainPantoMarker);
+                                Train.SignalEvent(PowerSupplyEvent.RaisePantograph, Train.TrainPantoMarker);                                
                             }
                             break;
                         case PantographState.Up:
@@ -1397,7 +1400,7 @@ namespace Orts.Simulation.RollingStocks
                             break;
                     }
                 }
-            }
+            }            
         }
 
         // Penalizace hráče

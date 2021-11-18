@@ -104,6 +104,8 @@ namespace Orts.Simulation.Physics
         public bool TrainHasFirstPantoMarker;
         public int TrainPantoMarker;
         public bool AIPantoChange;
+        public bool AIPanto2Raise = false;
+        
 
         public Traveller RearTDBTraveller;               // positioned at the back of the last car in the train
         public Traveller FrontTDBTraveller;              // positioned at the front of the train by CalculatePositionOfCars
