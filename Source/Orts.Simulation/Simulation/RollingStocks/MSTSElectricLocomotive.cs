@@ -1290,7 +1290,7 @@ namespace Orts.Simulation.RollingStocks
                             }
                         }
                     }
-                    else
+                    
                     if ((Train as AITrain).nextActionInfo.NextAction != AIActionItem.AI_ACTION_TYPE.REVERSAL && (Train as AITrain).SpeedMpS == 0 && !AIPantoChangeCyklus)
                     {
                         Train.AIPantoChange = true;
@@ -1309,7 +1309,13 @@ namespace Orts.Simulation.RollingStocks
                     if (Train.TrainPantoMarker == 2)
                         Train.SignalEvent(PowerSupplyEvent.RaisePantograph, 1);
 
-                    if (Math.Abs((Train as AITrain).SpeedMpS) > 18.0f / 3.6f) // Rychlost 18km/h
+                    float BreakSpeedPanto2Down;
+                    if (WagonType == WagonTypes.Passenger)
+                        BreakSpeedPanto2Down = 30.0f / 3.6f;
+                    else
+                        BreakSpeedPanto2Down = 18.0f / 3.6f;
+
+                    if (Math.Abs((Train as AITrain).SpeedMpS) > BreakSpeedPanto2Down || IsOverJunction()) // Překročí rychlost nebo je na výhybce
                     {
                         if (Train.TrainPantoMarker == 1)
                             Train.SignalEvent(PowerSupplyEvent.LowerPantograph, 2);
