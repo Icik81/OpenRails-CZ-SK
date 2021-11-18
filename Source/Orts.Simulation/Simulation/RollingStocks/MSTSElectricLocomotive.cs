@@ -189,12 +189,11 @@ namespace Orts.Simulation.RollingStocks
             outf.Write(AIPantoUPTime);
             outf.Write(AIPantoDown);
             outf.Write(AIPantoDownGenerate);
-            outf.Write(FaultByPlayerPenaltyTime);
-
-            // Icik
+            outf.Write(FaultByPlayerPenaltyTime);            
             outf.Write(Train.TrainHasFirstPantoMarker);
             outf.Write(Train.TrainPantoMarker);
             outf.Write(Train.AIPantoChange);
+            outf.Write(AIPanto2Raise);
 
             base.Save(outf);
         }
@@ -228,11 +227,11 @@ namespace Orts.Simulation.RollingStocks
             AIPantoUPTime = inf.ReadSingle();
             AIPantoDown = inf.ReadBoolean();
             AIPantoDownGenerate = inf.ReadSingle();
-            FaultByPlayerPenaltyTime = inf.ReadSingle();
-            // Icik
+            FaultByPlayerPenaltyTime = inf.ReadSingle();            
             Train.TrainHasFirstPantoMarker = inf.ReadBoolean();
             Train.TrainPantoMarker = inf.ReadInt32();
             Train.AIPantoChange = inf.ReadBoolean();
+            AIPanto2Raise = inf.ReadBoolean();
 
             base.Restore(inf);
         }
@@ -1258,9 +1257,10 @@ namespace Orts.Simulation.RollingStocks
         }
 
         // Icik
-        // AI stahuje pantografy na úseku bez napětí a když nemá akci
+        // AI stahuje pantografy na úseku bez napětí a když nemá akci        
+        bool AIPanto2Raise = false;
         protected void SetAIPantoDown(float elapsedClockSeconds)
-        {
+        {            
             // Po zastavení AI vlaku složí pantograf
             if (!IsPlayerTrain && GameTimeCyklus == 10)
             {
@@ -1281,10 +1281,12 @@ namespace Orts.Simulation.RollingStocks
                             if (((AuxActionWPItem)(Train as AITrain).nextActionInfo).ActualDepart > 0)
                             {
                                 double AITimeToGo = ((AuxActionWPItem)(Train as AITrain).nextActionInfo).ActualDepart - Simulator.ClockTime;
-                                if (AITimeToGo > 900)
+                                if (AITimeToGo > 900) // Čekání 15min pro zdvižení pantografu
                                     AIPantoDownStop = true;
                                 else
                                     AIPantoDownStop = false;
+                                if (AITimeToGo < 120) // Čekání 2min pro nahození 2.pantografu 
+                                    AIPanto2Raise = true;
                             }
                         }
                     }
@@ -1294,6 +1296,28 @@ namespace Orts.Simulation.RollingStocks
                         Train.AIPantoChange = true;
                     }                    
                 }                
+            }
+
+            // AI zvedne druhý pantograf při rozjezdu
+            if (AIPanto2Raise)
+            {
+                //Simulator.Confirmer.Message(ConfirmLevel.Warning, "ID " + (Train as AITrain).GetTrainName(CarID) + "   Hmotnost " + (Train as AITrain).MassKg / 1000 + " t");
+                if ((Train as AITrain).MassKg > 300 * 1000) // Vlak těžší než 300t
+                {
+                    if (Train.TrainPantoMarker == 1)
+                        Train.SignalEvent(PowerSupplyEvent.RaisePantograph, 2);
+                    if (Train.TrainPantoMarker == 2)
+                        Train.SignalEvent(PowerSupplyEvent.RaisePantograph, 1);
+
+                    if (Math.Abs((Train as AITrain).SpeedMpS) > 18.0f / 3.6f) // Rychlost 18km/h
+                    {
+                        if (Train.TrainPantoMarker == 1)
+                            Train.SignalEvent(PowerSupplyEvent.LowerPantograph, 2);
+                        if (Train.TrainPantoMarker == 2)
+                            Train.SignalEvent(PowerSupplyEvent.LowerPantograph, 1);
+                        AIPanto2Raise = false;
+                    }
+                }
             }
 
             // AI stahuje pantografy a nechá je dole minimálně 20s
