@@ -7079,32 +7079,36 @@ namespace Orts.Simulation.RollingStocks
                 if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.Heating_OffOn, Heating_OffOn ? CabSetting.On : CabSetting.Off);
             }
         }
-        
+
 
         // Zatím povoleno kvůli kompatibilitě
+        int NumberChoice = 1;
         public void ToggleControlRouteVoltage()
         {
             if (!IsPlayerTrain)
                 return;
             if (!EnableControlVoltageChange)
                 return;
-            if (LocomotivePowerVoltage == 3000)
+            NumberChoice++;
+            if (NumberChoice > 3)
+                NumberChoice = 1;
+            switch (NumberChoice)
             {
-                LocomotivePowerVoltage = 25000;
-                MultiSystemEngine = false;
-                Simulator.Confirmer.Information("Systém napájení změněn na 25kV.");
-            }
-            else if (LocomotivePowerVoltage == 25000 && !MultiSystemEngine)
-            {
-                MultiSystemEngine = true;
-                Simulator.Confirmer.Information("Systém napájení změněn na 3kV + 25kV.");
-            }
-            else if (LocomotivePowerVoltage == 25000 && MultiSystemEngine)
-            {
-                LocomotivePowerVoltage = 3000;
-                MultiSystemEngine = false;
-                Simulator.Confirmer.Information("Systém napájení byl změněn na 3kV.");
-            }
+                case 1:
+                    LocomotivePowerVoltage = 25000;
+                    MultiSystemEngine = false;
+                    Simulator.Confirmer.Information("Systém napájení změněn na 25kV.");
+                    break;
+                case 2:
+                    MultiSystemEngine = true;
+                    Simulator.Confirmer.Information("Systém napájení změněn na 3kV + 25kV.");
+                    break;
+                case 3:
+                    LocomotivePowerVoltage = 3000;
+                    MultiSystemEngine = false;
+                    Simulator.Confirmer.Information("Systém napájení byl změněn na 3kV.");
+                    break;
+            }                            
         }
 
         public void SetVoltageMarker(int newVoltage)
