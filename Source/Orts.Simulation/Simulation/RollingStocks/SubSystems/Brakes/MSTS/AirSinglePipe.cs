@@ -1453,6 +1453,22 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             {
                 if (lead != null)
                 {
+                    // Zajistí funkci zkrokování nebo znulování výkonu při použití brzdy
+                    if (lead.TrainBrakeController.TrainBrakeControllerState == ControllerState.Apply
+                        || lead.TrainBrakeController.TrainBrakeControllerState == ControllerState.EPApply
+                        || lead.TrainBrakeController.TrainBrakeControllerState == ControllerState.EPFullServ
+                        || lead.TrainBrakeController.TrainBrakeControllerState == ControllerState.FullServ
+                        || lead.TrainBrakeController.TrainBrakeControllerState == ControllerState.Emergency)
+                    {
+                        if (lead.ThrottlePercent > 0 && lead.DoesBrakeCutPower && (lead.DoesPowerLossResetControls || lead.DoesPowerLossResetControls2))
+                        {
+                            if (lead.DoesPowerLossResetControls)
+                                lead.StartThrottleToZero(0.0f);
+                            if (lead.DoesPowerLossResetControls2)
+                                lead.ThrottleController.SetPercent(0);                            
+                        }
+                    }
+
                     // Ohlídá hodnotu v hlavní jímce, aby nepřekročila limity
                     lead.MainResPressurePSI = MathHelper.Clamp(lead.MainResPressurePSI, 0, lead.MaxMainResPressurePSI + 1.0f * 14.50377f);
 

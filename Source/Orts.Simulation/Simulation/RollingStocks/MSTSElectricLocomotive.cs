@@ -722,7 +722,7 @@ namespace Orts.Simulation.RollingStocks
                 else CircuitBreakerOn = false;
 
                 // Plynulé klesání ručičky ampermetru při vynulování Throttle
-                if (PowerSupply.CircuitBreaker.State == CircuitBreakerState.Open && DoesPowerLossResetControls && LocalThrottlePercent > 0)
+                if (PowerSupply.CircuitBreaker.State == CircuitBreakerState.Open && (DoesPowerLossResetControls || DoesPowerLossResetControls2) && LocalThrottlePercent > 0)
                     StartThrottleToZero(0.0f);
 
                 // Úbytek výkonu v závislosti na napětí
@@ -1155,7 +1155,7 @@ namespace Orts.Simulation.RollingStocks
             
             if (PowerSupply.CircuitBreaker != null && IsPlayerTrain)
             {
-                if (PowerSupply.CircuitBreaker.State == CircuitBreakerState.Open && DoesPowerLossResetControls)
+                if (PowerSupply.CircuitBreaker.State == CircuitBreakerState.Open && (DoesPowerLossResetControls || DoesPowerLossResetControls2))
                 {                    
                     ControllerVolts = 0;
                     ThrottleController.SetPercent(0);

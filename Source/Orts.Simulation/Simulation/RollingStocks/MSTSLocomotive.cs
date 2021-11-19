@@ -460,6 +460,7 @@ namespace Orts.Simulation.RollingStocks
         public bool HVOffStatusBrakeCyl = false;
         public bool HVOffStatusBrakePipe = false;
         public bool DoesPowerLossResetControls = false;
+        public bool DoesPowerLossResetControls2 = false;
         public bool ThrottleZero = false;
         public bool AuxCompressorMode_OffOn;
         public bool CompressorMode_OffAuto;
@@ -1184,6 +1185,7 @@ namespace Orts.Simulation.RollingStocks
                 case "engine(slipspeedcritical": SlipSpeedCritical = stf.ReadFloatBlock(STFReader.UNITS.Speed, null); break;
                 case "engine(edbindependent": EDBIndependent = stf.ReadBoolBlock(false); break;
                 case "engine(doespowerlossresetcontrols": DoesPowerLossResetControls = stf.ReadBoolBlock(false); break;
+                case "engine(doespowerlossresetcontrols2": DoesPowerLossResetControls2 = stf.ReadBoolBlock(false); break;
                 case "engine(airbrakesiscompressorelectricormechanical": AirBrakesIsCompressorElectricOrMechanical = stf.ReadBoolBlock(false); break;
                 case "engine(airbrakesaircompressorwattage": AirBrakesAirCompressorWattage = stf.ReadFloatBlock(STFReader.UNITS.Power, null); break;
                 case "engine(centralhandlingdoors": CentralHandlingDoors = stf.ReadBoolBlock(false); break;
@@ -1416,6 +1418,7 @@ namespace Orts.Simulation.RollingStocks
             SlipSpeedCritical = locoCopy.SlipSpeedCritical;
             EDBIndependent = locoCopy.EDBIndependent;
             DoesPowerLossResetControls = locoCopy.DoesPowerLossResetControls;
+            DoesPowerLossResetControls2 = locoCopy.DoesPowerLossResetControls2;
             EngineBrakeEngageEDB = locoCopy.EngineBrakeEngageEDB;
             SwitchingVoltageMode = locoCopy.SwitchingVoltageMode;            
             PowerReductionByAuxEquipment = locoCopy.PowerReductionByAuxEquipment;
@@ -2483,7 +2486,7 @@ namespace Orts.Simulation.RollingStocks
 
                 if (OverCurrent)
                 {
-                    if (DoesPowerLossResetControls)
+                    if (DoesPowerLossResetControls || DoesPowerLossResetControls2)
                     {
                         SetThrottlePercent(0);
                         ControllerVolts = 0;
@@ -2546,7 +2549,7 @@ namespace Orts.Simulation.RollingStocks
 
                 if (OverVoltage)
                 {
-                    if (DoesPowerLossResetControls)
+                    if (DoesPowerLossResetControls || DoesPowerLossResetControls2)
                     {
                         SetThrottlePercent(0);
                         ControllerVolts = 0;
@@ -5710,19 +5713,7 @@ namespace Orts.Simulation.RollingStocks
                 CruiseControl.TrainBrakePriority = true;
                 if (from == 0)
                     CruiseControl.IReallyWantToBrake = true;
-            }
-            if (TrainBrakeController.TrainBrakeControllerState == ControllerState.Apply
-                || TrainBrakeController.TrainBrakeControllerState == ControllerState.EPApply
-                || TrainBrakeController.TrainBrakeControllerState == ControllerState.EPFullServ
-                || TrainBrakeController.TrainBrakeControllerState == ControllerState.FullServ
-                || TrainBrakeController.TrainBrakeControllerState  == ControllerState.Emergency)
-            {
-            if (ThrottlePercent > 0 && DoesBrakeCutPower && DoesPowerLossResetControls)
-                {
-                    //ThrottleController.SetPercent(0);
-                    StartThrottleToZero(0.0f);
-                }
-            }
+            }            
 
             if (alertChange)
             {
