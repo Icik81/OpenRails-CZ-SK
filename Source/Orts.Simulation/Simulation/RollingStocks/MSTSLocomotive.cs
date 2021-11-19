@@ -2702,13 +2702,17 @@ namespace Orts.Simulation.RollingStocks
         public bool HeatingOverCurrent = false;
         public bool HeatingIsOn = false;
         public float MSGHeatingCycle;
-        public float GameTimeCyklus;
+        public float GameTimeCyklus10;
+        public float GameTimeCyklus500;
 
         public void ElevatedConsumptionOnLocomotive(float elapsedClockSeconds)
         {
-            GameTimeCyklus++;
-            if (GameTimeCyklus > 10)
-                GameTimeCyklus = 0;
+            GameTimeCyklus10++;
+            if (GameTimeCyklus10 > 10)
+                GameTimeCyklus10 = 0;
+            GameTimeCyklus500++;
+            if (GameTimeCyklus500 > 500)
+                GameTimeCyklus500 = 0;
 
             if (TElevatedConsumption == 0)
                 PowerReduction0 = PowerReduction;
@@ -2751,7 +2755,7 @@ namespace Orts.Simulation.RollingStocks
             }
             
             // Počítání teplot proběhne každý desátý cyklus 
-            if (GameTimeCyklus == 10 && (!Train.HeatingBoilerCarAttached || !Train.HeatedCarAttached))
+            if (GameTimeCyklus10 == 10 && (!Train.HeatingBoilerCarAttached || !Train.HeatedCarAttached))
             {
                 foreach (TrainCar car in Train.Cars)
                 {
@@ -3001,7 +3005,7 @@ namespace Orts.Simulation.RollingStocks
             }
             
             // Bufík
-            if (IsPlayerTrain && GameTimeCyklus == 10)
+            if (IsPlayerTrain && GameTimeCyklus10 == 10)
             {
                 foreach (TrainCar car in Train.Cars)
                 {
