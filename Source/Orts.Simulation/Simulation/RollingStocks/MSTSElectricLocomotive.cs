@@ -905,7 +905,26 @@ namespace Orts.Simulation.RollingStocks
 
                 // Blokování HV u vícesystémových lokomotiv při malém napětí                                                
                 if (MultiSystemEngine)
-                {                    
+                {
+                    // Pokud nebude žádný HV aktivní
+                    if (!HV5Enable && !HV3Enable && !HV2Enable)
+                    {
+                        LocoSwitchACDC = true;
+                        switch (RouteVoltageV)
+                        {
+                            case 3000:
+                                SwitchingVoltageMode = 0;
+                                SwitchingVoltageMode_OffDC = true;
+                                SwitchingVoltageMode_OffAC = false;
+                                break;
+                            case 25000:
+                                SwitchingVoltageMode = 2;
+                                SwitchingVoltageMode_OffDC = false;
+                                SwitchingVoltageMode_OffAC = true;
+                                break;
+                        }
+                    }
+
                     // Stisknutí hříbku pro přerušení napájení, vypne HV a shodí sběrače
                     if (BreakPowerButton)
                     {
@@ -1187,23 +1206,23 @@ namespace Orts.Simulation.RollingStocks
                     CompressorSwitch2 = 1;
                     CompressorMode_OffAuto = true;
                     CompressorMode2_OffAuto = true;
-
+                    
                     if (MultiSystemEngine && RouteVoltageV != 1)
-                    {
+                    {                                                
                         if (Pantograph4Enable)
                         {
                             Pantograph4Switch = 1;
                             if (RouteVoltageV == 3000)
                                 HV5Switch = 1;
                             if (RouteVoltageV == 25000)
-                                HV5Switch = 3;
+                                HV5Switch = 3;                                                        
                         }                        
                         if (Pantograph3Enable)
                             Pantograph3Switch = 2;                        
 
                         if (PantographVoltageV > PantographCriticalVoltage)
                             HVOn = true;
-                        
+
                         if (PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closed)
                         {
                             LocoReadyToGo = false;
