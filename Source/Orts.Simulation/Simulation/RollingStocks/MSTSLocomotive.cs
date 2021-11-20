@@ -3059,6 +3059,7 @@ namespace Orts.Simulation.RollingStocks
             }
 
             // Elektrické topení a klimatizace
+            PowerReductionByHeatingSum = 0;
             if (HeatingIsOn)
             {                
                 TElevatedConsumption = 1;
@@ -3122,27 +3123,29 @@ namespace Orts.Simulation.RollingStocks
                     //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Příkon topení/klimatizace " + PowerReductionByHeating0 / 1000 + " kW" + "   Proud " + I_HeatingData0 + " A!"));
                     //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Zapnuté topení, výkon zredukován " + PowerReductionByHeating0 * MaxPowerW / 1000) + " kW!");
                 }
-            }
-            else
-                PowerReductionByHeatingSum = 0;
+            }                
 
             TElevatedConsumption = 1;
             PowerReductionByAuxEquipmentWag = 0;
             PowerReductionByAuxEquipmentEng = 0;
+            PowerReductionByAuxEquipmentSum = 0;
 
             if (CircuitBreakerOn)
             {
-                foreach (TrainCar car in Train.Cars)
-                {                    
-                    if (car.WagonType == WagonTypes.Passenger) // Osobní vozy
+                if (Heating_OffOn)
+                {
+                    foreach (TrainCar car in Train.Cars)
                     {
-                        PowerReductionByAuxEquipmentWag += car.PowerReductionByAuxEquipment;
+                        if (car.WagonType == WagonTypes.Passenger) // Osobní vozy
+                        {
+                            PowerReductionByAuxEquipmentWag += car.PowerReductionByAuxEquipment;
+                        }
+                        if (car.WagonType == WagonTypes.Engine) // Lokomotivy
+                        {
+                            PowerReductionByAuxEquipmentEng += car.PowerReductionByAuxEquipment;
+                        }
                     }
-                    if (car.WagonType == WagonTypes.Engine) // Lokomotivy
-                    {
-                        PowerReductionByAuxEquipmentEng += car.PowerReductionByAuxEquipment;
-                    }
-                }                
+                }
                 // I.Compressor
                 if (/*WagonType == WagonTypes.Engine && this is MSTSDieselLocomotive &&*/ CompressorIsOn) // Lokomotivy
                 {
@@ -3167,8 +3170,9 @@ namespace Orts.Simulation.RollingStocks
                     AirBrakesAirCompressorWattage = 5000f; // 5kW Elektrický kompresor
                     PowerReductionByAuxEquipmentEng += AirBrakesAirCompressorWattage;
                 }
+                PowerReductionByAuxEquipmentSum = PowerReductionByAuxEquipmentWag + PowerReductionByAuxEquipmentEng;
             }
-            PowerReductionByAuxEquipmentSum = PowerReductionByAuxEquipmentWag + PowerReductionByAuxEquipmentEng;
+            
             //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Zvýšený odběr proudu, výkon zredukován "+ PowerReductionByAuxEquipment0 * MaxPowerW/1000) + " kW!");                        
 
             if (IsPlayerTrain)
