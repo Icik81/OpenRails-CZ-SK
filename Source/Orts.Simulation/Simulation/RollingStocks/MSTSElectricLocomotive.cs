@@ -951,13 +951,13 @@ namespace Orts.Simulation.RollingStocks
                         TRouteVoltageV_1 += elapsedClockSeconds;
                         if (!VoltageFilter && TRouteVoltageV_1 > Simulator.Random.Next(2, 4))
                         {
-                            if (PowerReductionByHeating0 + PowerReductionByAuxEquipmentEng > 0)
+                            if (PowerReductionByHeatingSum + PowerReductionByAuxEquipmentSum > 0)
                                 HVOff = true;
                             TRouteVoltageV_1 = 0;
                         }
                         if (VoltageFilter && TRouteVoltageV_1 > Simulator.Random.Next(2, 4))
                         {
-                            if (PowerReductionByHeating0 + PowerReductionByAuxEquipmentEng > 0)
+                            if (PowerReductionByHeatingSum + PowerReductionByAuxEquipmentSum > 0)
                                 HVOff = true;
                             TRouteVoltageV_1 = 0;
                         }

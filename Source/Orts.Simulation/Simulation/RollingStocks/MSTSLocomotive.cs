@@ -2720,7 +2720,7 @@ namespace Orts.Simulation.RollingStocks
             if (TElevatedConsumption == 0)
                 PowerReduction0 = PowerReduction;
             
-            if (!IsPlayerTrain)
+            if (!IsPlayerTrain && CircuitBreakerOn)
                 HeatingIsOn = true;
 
             // Ochrana při nadproudu topení/klimatizace jen pro hráče
@@ -2730,7 +2730,7 @@ namespace Orts.Simulation.RollingStocks
                 if (HeatingMaxCurrentA == 0)
                     HeatingMaxCurrentA = 130; // Default 130A
 
-                if (Heating_OffOn && PowerOn && !HeatingOverCurrent)
+                if (Heating_OffOn && CircuitBreakerOn && !HeatingOverCurrent)
                     HeatingIsOn = true;
                 else
                 {
@@ -3130,7 +3130,7 @@ namespace Orts.Simulation.RollingStocks
             PowerReductionByAuxEquipmentWag = 0;
             PowerReductionByAuxEquipmentEng = 0;
 
-            if (PowerOn && AuxPowerOn)
+            if (CircuitBreakerOn)
             {
                 foreach (TrainCar car in Train.Cars)
                 {                    
