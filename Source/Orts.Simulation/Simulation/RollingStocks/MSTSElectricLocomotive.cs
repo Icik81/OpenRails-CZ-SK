@@ -770,7 +770,7 @@ namespace Orts.Simulation.RollingStocks
 
                     // Stisknutí hříbku pro přerušení napájení, vypne HV a shodí sběrače
                     if (BreakPowerButton)
-                    {
+                    { 
                         HVOff = true;
                         if (Pantographs[1].State == PantographState.Up || Pantographs[2].State == PantographState.Up)
                             SignalEvent(PowerSupplyEvent.LowerPantograph);
@@ -1202,13 +1202,18 @@ namespace Orts.Simulation.RollingStocks
                     Battery = true;
                     PowerKey = true;
                     ActiveStation = UsingRearCab ? DriverStation.Station2 : DriverStation.Station1;
+                    if (Flipped)
+                        ActiveStation = UsingRearCab ? DriverStation.Station1 : DriverStation.Station2;
                     CompressorSwitch = 2;
                     CompressorSwitch2 = 1;
                     CompressorMode_OffAuto = true;
                     CompressorMode2_OffAuto = true;
                     
                     if (MultiSystemEngine && RouteVoltageV != 1)
-                    {                                                
+                    {
+                        if (AcceptMUSignals)
+                            Pantograph4Enable = true;
+
                         if (Pantograph4Enable)
                         {
                             Pantograph4Switch = 1;
@@ -1218,11 +1223,11 @@ namespace Orts.Simulation.RollingStocks
                                 HV5Switch = 3;                                                        
                         }                        
                         if (Pantograph3Enable)
-                            Pantograph3Switch = 2;                        
+                            Pantograph3Switch = 2;
 
-                        if (PantographVoltageV > PantographCriticalVoltage)
+                        if (PantographVoltageV > PantographCriticalVoltage )                        
                             HVOn = true;
-
+                        
                         if (PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closed)
                         {
                             LocoReadyToGo = false;
@@ -1261,10 +1266,13 @@ namespace Orts.Simulation.RollingStocks
                     Mirel.MaxSelectedSpeed = Mirel.MirelMaximumSpeed = MpS.ToKpH(MaxSpeedMpS);
                     // LS90
                     Mirel.ls90tested = true;
-                    Mirel.Ls90power = SubSystems.Mirel.LS90power.On;                    
+                    Mirel.Ls90power = SubSystems.Mirel.LS90power.On;
 
                     // Směr + ARR
                     Direction = Direction.Forward;
+                    if (Flipped)
+                        Direction = Direction.Reverse;                    
+
                     if (CruiseControl != null && CruiseControl.Equipped)
                     {
                         CruiseControl.SpeedRegMode = SubSystems.CruiseControl.SpeedRegulatorMode.Auto;
