@@ -1319,9 +1319,15 @@ namespace Orts.Simulation.RollingStocks
 
             // Detekce změny směru AI
             if (Direction == Direction.Reverse)
+            {
                 CurrentAIDirection = true;
+                UsingRearCab = true;
+            }
             if (Direction == Direction.Forward)
+            {
                 CurrentAIDirection = false;
+                UsingRearCab = false;
+            }
             if (PreAIDirection != CurrentAIDirection && MaxPowerW > 1200 * 1000)
                 Train.AIPantoChange = true;
             PreAIDirection = CurrentAIDirection;

@@ -2706,21 +2706,18 @@ namespace Orts.Simulation.RollingStocks
         public bool HeatingIsOn = false;
         public float MSGHeatingCycle;
         public float GameTimeCyklus10;
-        public float GameTimeCyklus500;
 
         public void ElevatedConsumptionOnLocomotive(float elapsedClockSeconds)
         {
             GameTimeCyklus10++;
             if (GameTimeCyklus10 > 10)
                 GameTimeCyklus10 = 0;
-            GameTimeCyklus500++;
-            if (GameTimeCyklus500 > 500)
-                GameTimeCyklus500 = 0;
 
             if (TElevatedConsumption == 0)
                 PowerReduction0 = PowerReduction;
             
-            if (!IsPlayerTrain && CircuitBreakerOn)
+            if (!IsPlayerTrain
+                && ((this is MSTSElectricLocomotive && CircuitBreakerOn) || (this is MSTSDieselLocomotive && AuxPowerOn) || (this is MSTSSteamLocomotive && AuxPowerOn)))
                 HeatingIsOn = true;
 
             // Ochrana při nadproudu topení/klimatizace jen pro hráče
@@ -2730,7 +2727,8 @@ namespace Orts.Simulation.RollingStocks
                 if (HeatingMaxCurrentA == 0)
                     HeatingMaxCurrentA = 130; // Default 130A
 
-                if (Heating_OffOn && CircuitBreakerOn && !HeatingOverCurrent)
+                if (Heating_OffOn && !HeatingOverCurrent
+                    && ((this is MSTSElectricLocomotive && CircuitBreakerOn) || (this is MSTSDieselLocomotive && AuxPowerOn) || (this is MSTSSteamLocomotive && AuxPowerOn)))
                     HeatingIsOn = true;
                 else
                 {
@@ -3130,7 +3128,7 @@ namespace Orts.Simulation.RollingStocks
             PowerReductionByAuxEquipmentEng = 0;
             PowerReductionByAuxEquipmentSum = 0;
 
-            if (CircuitBreakerOn)
+            if ((this is MSTSElectricLocomotive && CircuitBreakerOn) || (this is MSTSDieselLocomotive && AuxPowerOn) || (this is MSTSSteamLocomotive && AuxPowerOn))
             {
                 if (Heating_OffOn)
                 {
