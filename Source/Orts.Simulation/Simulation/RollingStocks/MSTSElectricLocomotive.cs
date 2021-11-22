@@ -955,7 +955,7 @@ namespace Orts.Simulation.RollingStocks
                                 HVOff = true;
                             TRouteVoltageV_1 = 0;
                         }
-                        if (VoltageFilter && TRouteVoltageV_1 > Simulator.Random.Next(2, 4))
+                        if (VoltageFilter && TRouteVoltageV_1 > Simulator.Random.Next(6, 10))
                         {
                             if (PowerReductionByHeatingSum + PowerReductionByAuxEquipmentSum > 0)
                                 HVOff = true;
@@ -1239,6 +1239,8 @@ namespace Orts.Simulation.RollingStocks
                         HVOn = true;                                              
                         if (PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closed)
                         {
+                            if (AcceptMUSignals)
+                                Pantograph4Enable = true;
                             if (Pantograph4Enable)
                             {
                                 Pantograph4Switch = 1;

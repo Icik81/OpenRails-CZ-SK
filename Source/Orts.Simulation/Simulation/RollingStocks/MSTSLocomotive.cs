@@ -2717,7 +2717,10 @@ namespace Orts.Simulation.RollingStocks
                 PowerReduction0 = PowerReduction;
             
             if (!IsPlayerTrain
-                && ((this is MSTSElectricLocomotive && CircuitBreakerOn) || (this is MSTSDieselLocomotive && AuxPowerOn) || (this is MSTSSteamLocomotive && AuxPowerOn)))
+                && ((this is MSTSElectricLocomotive && CircuitBreakerOn && MultiSystemEngine)
+                || (this is MSTSElectricLocomotive && AuxPowerOn && !MultiSystemEngine)
+                || (this is MSTSDieselLocomotive && AuxPowerOn)
+                || (this is MSTSSteamLocomotive && AuxPowerOn)))
                 HeatingIsOn = true;
 
             // Ochrana při nadproudu topení/klimatizace jen pro hráče
@@ -2728,7 +2731,10 @@ namespace Orts.Simulation.RollingStocks
                     HeatingMaxCurrentA = 130; // Default 130A
 
                 if (Heating_OffOn && !HeatingOverCurrent
-                    && ((this is MSTSElectricLocomotive && CircuitBreakerOn) || (this is MSTSDieselLocomotive && AuxPowerOn) || (this is MSTSSteamLocomotive && AuxPowerOn)))
+                    && ((this is MSTSElectricLocomotive && CircuitBreakerOn && MultiSystemEngine)
+                    || (this is MSTSElectricLocomotive && AuxPowerOn && !MultiSystemEngine)
+                    || (this is MSTSDieselLocomotive && AuxPowerOn)
+                    || (this is MSTSSteamLocomotive && AuxPowerOn)))
                     HeatingIsOn = true;
                 else
                 {
@@ -3128,7 +3134,10 @@ namespace Orts.Simulation.RollingStocks
             PowerReductionByAuxEquipmentEng = 0;
             PowerReductionByAuxEquipmentSum = 0;
 
-            if ((this is MSTSElectricLocomotive && CircuitBreakerOn) || (this is MSTSDieselLocomotive && AuxPowerOn) || (this is MSTSSteamLocomotive && AuxPowerOn))
+            if ((this is MSTSElectricLocomotive && CircuitBreakerOn && MultiSystemEngine)
+                || (this is MSTSElectricLocomotive && AuxPowerOn && !MultiSystemEngine)
+                || (this is MSTSDieselLocomotive && AuxPowerOn)
+                || (this is MSTSSteamLocomotive && AuxPowerOn))
             {
                 if (Heating_OffOn)
                 {
@@ -3136,6 +3145,7 @@ namespace Orts.Simulation.RollingStocks
                     {
                         if (car.WagonType == WagonTypes.Passenger) // Osobní vozy
                         {
+                            if (car.PowerReductionByAuxEquipment == 0) car.PowerReductionByAuxEquipment = 5* 1000; // Default 5kW
                             PowerReductionByAuxEquipmentWag += car.PowerReductionByAuxEquipment;
                         }
                         if (car.WagonType == WagonTypes.Engine) // Lokomotivy
