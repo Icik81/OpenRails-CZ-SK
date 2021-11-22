@@ -1986,10 +1986,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
 
                         if (((loco.MainResPressurePSI >= loco.MaxMainResPressurePSI && !loco.Compressor_I_HandMode)
                             //|| (loco.MainResPressurePSI >= loco.MaxMainResOverPressurePSI && loco.Compressor_I_HandMode)
-                            || (loco is MSTSElectricLocomotive && !loco.CircuitBreakerOn && loco.MultiSystemEngine)
-                            || (loco is MSTSElectricLocomotive && !loco.AuxPowerOn && !loco.MultiSystemEngine)
-                            || (loco is MSTSDieselLocomotive && !loco.AuxPowerOn)
-                            || (loco is MSTSSteamLocomotive && !loco.AuxPowerOn)
+                            || !loco.AuxPowerOn                            
                             || (!loco.CompressorMode_OffAuto && !loco.Compressor_I_HandMode))                             
                             && loco.CompressorIsOn)                        
                             loco.SignalEvent(Event.CompressorOff);
@@ -1997,10 +1994,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
 
                         if (((loco.MainResPressurePSI >= loco.MaxMainResPressurePSI && !loco.Compressor_II_HandMode)
                             //|| (loco.MainResPressurePSI >= loco.MaxMainResOverPressurePSI && loco.Compressor_II_HandMode)
-                            || (loco is MSTSElectricLocomotive && !loco.CircuitBreakerOn && loco.MultiSystemEngine)
-                            || (loco is MSTSElectricLocomotive && !loco.AuxPowerOn && !loco.MultiSystemEngine)
-                            || (loco is MSTSDieselLocomotive && !loco.AuxPowerOn)
-                            || (loco is MSTSSteamLocomotive && !loco.AuxPowerOn)
+                            || !loco.AuxPowerOn
                             || (!loco.CompressorMode2_OffAuto && !loco.Compressor_II_HandMode))
                             && loco.Compressor2IsOn)
                             loco.SignalEvent(Event.Compressor2Off);

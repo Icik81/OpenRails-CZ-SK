@@ -2716,11 +2716,7 @@ namespace Orts.Simulation.RollingStocks
             if (TElevatedConsumption == 0)
                 PowerReduction0 = PowerReduction;
             
-            if (!IsPlayerTrain
-                && ((this is MSTSElectricLocomotive && CircuitBreakerOn && MultiSystemEngine)
-                || (this is MSTSElectricLocomotive && AuxPowerOn && !MultiSystemEngine)
-                || (this is MSTSDieselLocomotive && AuxPowerOn)
-                || (this is MSTSSteamLocomotive && AuxPowerOn)))
+            if (!IsPlayerTrain && AuxPowerOn)                
                 HeatingIsOn = true;
 
             // Ochrana při nadproudu topení/klimatizace jen pro hráče
@@ -2730,11 +2726,7 @@ namespace Orts.Simulation.RollingStocks
                 if (HeatingMaxCurrentA == 0)
                     HeatingMaxCurrentA = 130; // Default 130A
 
-                if (Heating_OffOn && !HeatingOverCurrent
-                    && ((this is MSTSElectricLocomotive && CircuitBreakerOn && MultiSystemEngine)
-                    || (this is MSTSElectricLocomotive && AuxPowerOn && !MultiSystemEngine)
-                    || (this is MSTSDieselLocomotive && AuxPowerOn)
-                    || (this is MSTSSteamLocomotive && AuxPowerOn)))
+                if (Heating_OffOn && !HeatingOverCurrent && AuxPowerOn)                  
                     HeatingIsOn = true;
                 else
                 {
@@ -3134,10 +3126,7 @@ namespace Orts.Simulation.RollingStocks
             PowerReductionByAuxEquipmentEng = 0;
             PowerReductionByAuxEquipmentSum = 0;
 
-            if ((this is MSTSElectricLocomotive && CircuitBreakerOn && MultiSystemEngine)
-                || (this is MSTSElectricLocomotive && AuxPowerOn && !MultiSystemEngine)
-                || (this is MSTSDieselLocomotive && AuxPowerOn)
-                || (this is MSTSSteamLocomotive && AuxPowerOn))
+            if (AuxPowerOn)
             {
                 if (Heating_OffOn)
                 {

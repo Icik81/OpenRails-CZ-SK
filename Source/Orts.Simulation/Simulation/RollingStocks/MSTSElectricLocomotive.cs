@@ -744,10 +744,6 @@ namespace Orts.Simulation.RollingStocks
                     PantographFaultByNotLowering = true;
                 }
 
-                // Shodí HV při stažení sběračů při navoleném výkonu
-                if (LocalThrottlePercent != 0 && PantographVoltageV < PantographCriticalVoltage)                    
-                    HVOff = true;
-
                 // Použije se pro kontrolku při ztrátě napětí v pantografech
                 if (RouteVoltageV == 25000 && PowerSupply.PantographVoltageV < 19000
                     || RouteVoltageV == 3000 && PowerSupply.PantographVoltageV < 1900
@@ -817,7 +813,7 @@ namespace Orts.Simulation.RollingStocks
                             {
 
                                 // Shodí HV při poklesu napětí v troleji a nastaveném výkonu (podpěťová ochrana)
-                                if (PowerSupply.PantographVoltageV < PantographCriticalVoltage && LocalThrottlePercent > 0.1)
+                                if (PowerSupply.PantographVoltageV < PantographCriticalVoltage && LocalThrottlePercent != 0)
                                     HVOff = true;
                             }
 
@@ -863,7 +859,7 @@ namespace Orts.Simulation.RollingStocks
                             if (PowerSupply.PantographVoltageV == 1 && LocalThrottlePercent != 0 && PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closed)
                             {
                                 // Shodí HV při poklesu napětí v troleji a nastaveném výkonu (podpěťová ochrana)
-                                if (PowerSupply.PantographVoltageV < PantographCriticalVoltage && LocalThrottlePercent > 0.1)
+                                if (PowerSupply.PantographVoltageV < PantographCriticalVoltage && LocalThrottlePercent != 0)
                                     HVOff = true;
                             }
 
@@ -946,7 +942,7 @@ namespace Orts.Simulation.RollingStocks
                     }
 
                     // Při zapnutém HV přejede do beznapěťového úseku - shodí HV po pár sekundách
-                    if (CircuitBreakerOn && (RouteVoltageV == 1 || (Pantographs[1].State == PantographState.Down && Pantographs[2].State == PantographState.Down)))
+                    if (CircuitBreakerOn && RouteVoltageV == 1 && (Pantographs[1].State == PantographState.Up || Pantographs[2].State == PantographState.Up))
                     {
                         TRouteVoltageV_1 += elapsedClockSeconds;
                         if (!VoltageFilter && TRouteVoltageV_1 > Simulator.Random.Next(2, 4))
@@ -955,7 +951,7 @@ namespace Orts.Simulation.RollingStocks
                                 HVOff = true;
                             TRouteVoltageV_1 = 0;
                         }
-                        if (VoltageFilter && TRouteVoltageV_1 > Simulator.Random.Next(6, 10))
+                        if (VoltageFilter && TRouteVoltageV_1 > Simulator.Random.Next(4, 6))
                         {
                             if (PowerReductionByHeatingSum + PowerReductionByAuxEquipmentSum > 0)
                                 HVOff = true;
