@@ -6827,7 +6827,11 @@ namespace Orts.Simulation.RollingStocks
                                 if (Pantographs[p1].State != PantographState.Down)                             
                                     SignalEvent(PowerSupplyEvent.LowerPantograph, p1);
                                 if (Pantographs[p2].State != PantographState.Down)
-                                    SignalEvent(PowerSupplyEvent.LowerPantograph, p2);                                
+                                    SignalEvent(PowerSupplyEvent.LowerPantograph, p2);
+
+                                if (AcceptMUSignals)
+                                    foreach (TrainCar car in Train.Cars)
+                                        car.SignalEvent(PowerSupplyEvent.LowerPantograph);
                                 break;
                             case 1: // střed                                    
                                 break;
@@ -6836,6 +6840,13 @@ namespace Orts.Simulation.RollingStocks
                                     SignalEvent(PowerSupplyEvent.RaisePantograph, p1);
                                 if (Pantographs[p2].State != PantographState.Down)
                                     SignalEvent(PowerSupplyEvent.LowerPantograph, p2);
+
+                                if (AcceptMUSignals)
+                                    foreach (TrainCar car in Train.Cars)
+                                    {
+                                        car.SignalEvent(PowerSupplyEvent.RaisePantograph, p1);
+                                        car.SignalEvent(PowerSupplyEvent.LowerPantograph, p2);
+                                    }
                                 break;
                         }
                         PrePantoStatus = Pantograph3Switch;
@@ -6896,6 +6907,10 @@ namespace Orts.Simulation.RollingStocks
                                         SignalEvent(PowerSupplyEvent.LowerPantograph, p1);
                                     if (Pantographs[p2].State == PantographState.Up || Pantographs[p2].State == PantographState.Raising) // Přední panto
                                         SignalEvent(PowerSupplyEvent.LowerPantograph, p2);
+
+                                    if (AcceptMUSignals)
+                                        foreach (TrainCar car in Train.Cars)
+                                            car.SignalEvent(PowerSupplyEvent.LowerPantograph);
                                 }
                                 break;
                             case 1:
@@ -6904,6 +6919,13 @@ namespace Orts.Simulation.RollingStocks
                                         SignalEvent(PowerSupplyEvent.RaisePantograph, p1);
                                     if (Pantographs[p2].State == PantographState.Up || Pantographs[p2].State == PantographState.Raising) // Přední panto
                                         SignalEvent(PowerSupplyEvent.LowerPantograph, p2);
+
+                                    if (AcceptMUSignals)
+                                        foreach (TrainCar car in Train.Cars)
+                                        {
+                                            car.SignalEvent(PowerSupplyEvent.RaisePantograph, p1);
+                                            car.SignalEvent(PowerSupplyEvent.LowerPantograph, p2);                                            
+                                        }
                                 }
                                 break;
                             case 2:
@@ -6912,6 +6934,10 @@ namespace Orts.Simulation.RollingStocks
                                         SignalEvent(PowerSupplyEvent.RaisePantograph, p1);
                                     if (AirForPantograph && Pantographs[p2].State == PantographState.Down || AirForPantograph && Pantographs[p2].State == PantographState.Lowering) // Přední panto
                                         SignalEvent(PowerSupplyEvent.RaisePantograph, p2);
+
+                                    if (AcceptMUSignals)
+                                        foreach (TrainCar car in Train.Cars)
+                                            car.SignalEvent(PowerSupplyEvent.RaisePantograph);
                                 }
                                 break;
                             case 3:
@@ -6920,6 +6946,13 @@ namespace Orts.Simulation.RollingStocks
                                         SignalEvent(PowerSupplyEvent.LowerPantograph, p1);
                                     if (AirForPantograph && Pantographs[p2].State == PantographState.Down || AirForPantograph && Pantographs[p2].State == PantographState.Lowering) // Přední panto
                                         SignalEvent(PowerSupplyEvent.RaisePantograph, p2);
+
+                                    if (AcceptMUSignals)
+                                        foreach (TrainCar car in Train.Cars)
+                                        {
+                                            car.SignalEvent(PowerSupplyEvent.LowerPantograph, p1);
+                                            car.SignalEvent(PowerSupplyEvent.RaisePantograph, p2);
+                                        }
                                 }
                                 break;
                         }

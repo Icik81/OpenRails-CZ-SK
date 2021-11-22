@@ -1237,6 +1237,7 @@ namespace Orts.Simulation.RollingStocks
                         {
                             if (AcceptMUSignals)
                                 Pantograph4Enable = true;
+
                             if (Pantograph4Enable)
                             {
                                 Pantograph4Switch = 1;
