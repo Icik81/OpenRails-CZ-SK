@@ -1207,9 +1207,9 @@ namespace Orts.Simulation.RollingStocks
                     
                     if (MultiSystemEngine && RouteVoltageV != 1)
                     {
-                        if (AcceptMUSignals)
-                            Pantograph4Enable = true;
-
+                        if (!Pantograph4Enable && !Pantograph3Enable)
+                            SignalEvent(PowerSupplyEvent.RaisePantograph, 1);
+                        
                         if (Pantograph4Enable)
                         {
                             Pantograph4Switch = 1;
@@ -1221,7 +1221,7 @@ namespace Orts.Simulation.RollingStocks
                         if (Pantograph3Enable)
                             Pantograph3Switch = 2;
 
-                        if (PantographVoltageV > PantographCriticalVoltage )                        
+                        if (PantographVoltageV > PantographCriticalVoltage)                        
                             HVOn = true;
                         
                         if (PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closed)
@@ -1235,8 +1235,8 @@ namespace Orts.Simulation.RollingStocks
                         HVOn = true;                                              
                         if (PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closed)
                         {
-                            if (AcceptMUSignals)
-                                Pantograph4Enable = true;
+                            if (!Pantograph4Enable && !Pantograph3Enable)
+                                SignalEvent(PowerSupplyEvent.RaisePantograph, 1);
 
                             if (Pantograph4Enable)
                             {
