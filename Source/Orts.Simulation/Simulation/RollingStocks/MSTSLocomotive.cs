@@ -7000,7 +7000,8 @@ namespace Orts.Simulation.RollingStocks
                     case 1:
                         {
                             AuxCompressorMode_OffOn = false;
-                            CompressorMode_OffAuto = false;                            
+                            CompressorMode_OffAuto = false;
+                            if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.CompressorMode_OffAuto, CompressorMode_OffAuto ? CabSetting.On : CabSetting.Off);
                         }
                         break;
                     case 2:
@@ -7053,6 +7054,7 @@ namespace Orts.Simulation.RollingStocks
                     case 0:
                         {                            
                             CompressorMode2_OffAuto = false;
+                            if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.CompressorMode2_OffAuto, CompressorMode2_OffAuto ? CabSetting.On : CabSetting.Off);
                         }
                         break;
                     case 1:
