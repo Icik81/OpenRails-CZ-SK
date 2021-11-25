@@ -16497,19 +16497,26 @@ namespace Orts.Simulation.Physics
                     {
                         if (pax.WagonIndex == currentWagIndex && train.StationStops[0].PlatformItem.PlatformFrontUiD == pax.ArrivalStation && pax.TimeToStartExiting < gameClock)
                         {
-                            if (!platformSide && !loco.DoorLeftOpen && !loco.CentralHandlingDoors)
+                            if (!platformSide && !wagon.DoorLeftOpen && !loco.CentralHandlingDoors)
                             {
                                 train.ToggleDoorsPeople(false, true, wagon);
                             }
-                            if (platformSide && !loco.DoorRightOpen && !loco.CentralHandlingDoors)
+                            if (platformSide && !wagon.DoorRightOpen && !loco.CentralHandlingDoors)
                             {
                                 train.ToggleDoorsPeople(true, true, wagon);
                             }
-                            if (!loco.DoorLeftOpen && !loco.DoorRightOpen && loco.CentralHandlingDoors)
+                            if (!loco.DoorLeftOpen && !wagon.DoorRightOpen && loco.CentralHandlingDoors)
                                 continue;
                             if (!wagon.DoorLeftOpen && !wagon.DoorRightOpen)
                                 continue;
-                            wagon.PassengerList.Remove(pax);
+                            for (int y = 0; y < train.Cars.Count; y++)
+                            {
+                                var wagon1 = (train.Cars[y] as MSTSWagon);
+                                if (wagon1.PassengerList.Contains(pax))
+                                {
+                                    wagon1.PassengerList.Remove(pax);
+                                }
+                            }
                             paxToExit--;
                             wagon.MassKG -= pax.Weight < 0 ? -pax.Weight : pax.Weight;
                             train.TotalOnBoard--;
