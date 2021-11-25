@@ -1226,6 +1226,7 @@ namespace Orts.Simulation.RollingStocks
                 case "engine(ortscruisecontrol": SetUpCruiseControl(); break;
                 case "engine(ortsmirel": SetUpMirel(); break;
                 case "engine(ortsmirel(defaultmaxspeedkph": Mirel.MaxSelectedSpeed = stf.ReadFloatBlock(STFReader.UNITS.Speed, 80); break;
+                case "engine(ortsmirel(pressurefortestpassbar": Mirel.PressureForTestPassBar = stf.ReadFloatBlock(STFReader.UNITS.Speed, 4.9f); break;
                 case "engine(ortsmirel(lvztype":
                     {
                         String type = stf.ReadStringBlock(String.Empty).ToLower();

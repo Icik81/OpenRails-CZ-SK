@@ -16639,53 +16639,6 @@ namespace Orts.Simulation.Physics
                 train.BoardingComplete = true;
                 enterTimesCalculated = false;
             }
-
-            /*            for (int i = 0; i < train.Cars.Count; i++)
-                        {
-                            var wagon = (train.Cars[i] as MSTSWagon);
-                            if (wagon is MSTSLocomotive)
-                                locoWag = wagon;
-                            if (!(wagon is MSTSLocomotive) && !wagon.FreightDoors)
-                            {
-
-                                if (wagon.DoorLeftOpen || wagon.DoorRightOpen || locoWag.DoorLeftOpen || locoWag.DoorRightOpen)
-                                {
-                                    // exit first
-                                    bool paxExited = false;
-                                    foreach (Passenger pax in wagon.PassengerList)
-                                    {
-                                        if (pax.ArrivalStation == train.StationStops[0].PlatformItem.PlatformFrontUiD)
-                                        {
-                                            paxExited = true;
-                                            wagon.PassengerList.Remove(pax);
-                                            wagon.MassKG -= pax.Weight < 0 ? -pax.Weight : pax.Weight;
-                                            train.TotalOnBoard--;
-                                            break;
-                                        }
-                                    }
-                                    if (!paxExited)
-                                    {
-                                        if (wagon.PassengerList.Count >= wagon.PassengerCapacity) // unable to board more than capacity ...
-                                        {
-                                            // nothing
-                                        }
-                                        else
-                                        {
-                                            if (train.StationStops[0].PlatformItem.PassengerList.Count > 0)
-                                            {
-                                                Passenger pax = (Passenger)train.StationStops[0].PlatformItem.PassengerList[0];
-                                                train.StationStops[0].PlatformItem.PassengerList.Remove(pax);
-                                                wagon.PassengerList.Add(pax);
-                                                wagon.MassKG += pax.Weight < 0? -pax.Weight : pax.Weight;
-                                                train.TotalOnBoard++;
-                                            }
-                                            else
-                                                BoardingComplete = true;
-                                        }
-                                    }
-                                }
-                            }
-                        }*/
         }
 
         //================================================================================================//
