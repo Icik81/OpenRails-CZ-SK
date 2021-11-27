@@ -595,8 +595,8 @@ namespace Orts.Simulation.RollingStocks
                 PowerSupply.PantographVoltageV = 1;
 
             decimal kW = Math.Round((decimal)((RouteVoltageV * myStation.TotalAmps) / 1000), 2);
-            if (IsPlayerTrain && Simulator.SuperUser)
-                Simulator.Confirmer.MSG("Mark U: " + markerVoltage.ToString() + "; Mark dist: " + Math.Round(distToMarker, 0).ToString() + "; Supl dist: " + Math.Round(dist, 0).ToString() + "; My panto U: " + Math.Round(PantographVoltageV, 0).ToString() + "; Supl I: " + Math.Round(myStation.TotalAmps, 0).ToString() + "; Supl #locos: " + myStation.Consuptors.Count.ToString() + "; Supl kW: " + kW.ToString());
+/*            if (IsPlayerTrain && Simulator.SuperUser)
+                Simulator.Confirmer.MSG("Mark U: " + markerVoltage.ToString() + "; Mark dist: " + Math.Round(distToMarker, 0).ToString() + "; Supl dist: " + Math.Round(dist, 0).ToString() + "; My panto U: " + Math.Round(PantographVoltageV, 0).ToString() + "; Supl I: " + Math.Round(myStation.TotalAmps, 0).ToString() + "; Supl #locos: " + myStation.Consuptors.Count.ToString() + "; Supl kW: " + kW.ToString());*/
 
             if (IsPlayerTrain)
             {

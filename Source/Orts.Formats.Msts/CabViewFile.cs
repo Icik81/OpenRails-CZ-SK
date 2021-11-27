@@ -245,6 +245,7 @@ namespace Orts.Formats.Msts
         ORTS_MINUTEDIAL,
         ORTS_SECONDDIAL,
         ORTS_SIGNED_TRACTION_BRAKING,
+        MOTOR_FORCE,
         ORTS_SIGNED_TRACTION_TOTAL_BRAKING,
         ORTS_BAILOFF,
         ORTS_QUICKRELEASE,
@@ -582,6 +583,7 @@ namespace Orts.Formats.Msts
         public double MinValueExtendedPhysics = 0;
         public double MaxValueExtendedPhysics = 0;
         public string DateFormat = "dd.MM.yy";
+        public int AxleId = 0;
 
         public CABViewControlTypes ControlType = CABViewControlTypes.NONE;
         public CABViewControlStyles ControlStyle = CABViewControlStyles.NONE;
@@ -697,6 +699,14 @@ namespace Orts.Formats.Msts
             var rotation = -MathHelper.ToRadians((float)stf.ReadDouble(0));
             stf.SkipRestOfBlock();
             return rotation;
+        }
+
+        protected virtual int ParseAxleId(STFReader stf)
+        {
+            stf.MustMatch("(");
+            var axle = stf.ReadInt(0);
+            stf.SkipRestOfBlock();
+            return axle;
         }
 
         protected virtual Point ParseSkew(STFReader stf)
@@ -901,6 +911,7 @@ namespace Orts.Formats.Msts
                     Label = stf.ReadString();
                     stf.SkipRestOfBlock();
                 }),
+                new STFReader.TokenProcessor("axleid", () =>{ AxleId = ParseAxleId(stf); }),
             });
         }
     }

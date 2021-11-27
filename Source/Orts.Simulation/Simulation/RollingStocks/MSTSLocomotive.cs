@@ -3325,6 +3325,14 @@ namespace Orts.Simulation.RollingStocks
         {
             if (IsPlayerTrain && !Simulator.Paused)
             {
+                if (increasingThrottle)
+                    ControllerVolts += 0.05f;
+                if (ControllerVolts > 10)
+                    ControllerVolts = 10;
+                if (decreasingThrottle)
+                    ControllerVolts -= 0.05f;
+                if (ControllerVolts < -10)
+                    ControllerVolts = -10;
                 if (extendedPhysics != null)
                     extendedPhysics.Update(elapsedClockSeconds);
                 if (CruiseControl != null)
@@ -5073,9 +5081,18 @@ namespace Orts.Simulation.RollingStocks
             CommandStartTime = Simulator.ClockTime;
         }
 
+        private bool increasingThrottle = false;
         public void StartThrottleIncrease()
         {
             Mirel.ResetVigilance();
+            if (extendedPhysics != null)
+            {
+                if (extendedPhysics.UseControllerVolts)
+                {
+                    increasingThrottle = true;
+                    return;
+                }
+            }
             if (MultiPositionControllers != null)
             {
                 foreach (MultiPositionController mpc in MultiPositionControllers)
@@ -5125,6 +5142,15 @@ namespace Orts.Simulation.RollingStocks
                 }
             }
 
+            if (extendedPhysics != null)
+            {
+                if (extendedPhysics.UseControllerVolts)
+                {
+                    increasingThrottle = true;
+                    return;
+                }
+            }
+
             if (CombinedControlType == CombinedControl.ThrottleDynamic && DynamicBrake)
                 StartDynamicBrakeDecrease(null);
             else if (CombinedControlType == CombinedControl.ThrottleAir && TrainBrakeController.CurrentValue > 0)
@@ -5135,6 +5161,7 @@ namespace Orts.Simulation.RollingStocks
 
         public void StopThrottleIncrease()
         {
+            increasingThrottle = false;
             Mirel.ResetVigilance();
             if (MultiPositionControllers != null)
             {
@@ -5202,8 +5229,16 @@ namespace Orts.Simulation.RollingStocks
         }
 
         protected bool speedSelectorModeDecreasing = false;
+        protected bool decreasingThrottle = false;
         public void StartThrottleDecrease()
         {
+            if (extendedPhysics != null)
+            {
+                if (extendedPhysics.UseControllerVolts)
+                {
+                    decreasingThrottle = true;
+                }
+            }
             Mirel.ResetVigilance();
             if (MultiPositionControllers != null)
             {
@@ -5257,6 +5292,7 @@ namespace Orts.Simulation.RollingStocks
 
         public void StopThrottleDecrease()
         {
+            decreasingThrottle = false;
             Mirel.ResetVigilance();
             if (MultiPositionControllers != null)
             {
@@ -7824,7 +7860,58 @@ namespace Orts.Simulation.RollingStocks
                         //                           data = -data;
                         break;
                     }
-                // this considers both the dynamic as well as the train braking
+                case CABViewControlTypes.MOTOR_FORCE:
+                    {
+                        var direction = 0; // Forwards
+                        if (cvc is CVCGauge && ((CVCGauge)cvc).Orientation == 0)
+                            direction = ((CVCGauge)cvc).Direction;
+                        data = 0.0f;
+                        foreach (Undercarriage uc in extendedPhysics.Undercarriages)
+                        {
+                            foreach (ExtendedAxle ea in uc.Axles)
+                            {
+                                if (ea.Id == cvc.AxleId)
+                                {
+                                    data = ea.ForceN / extendedPhysics.NumAxles * 2;
+                                }
+                            }
+                        }
+                        if (DynamicBrakePercent > 0)
+                        {
+                            data = -Math.Abs(DynamicBrakeForceN);
+                        }
+                        switch (cvc.Units)
+                        {
+                            case CABViewControlUnits.AMPS:
+                                if (MaxCurrentA == 0)
+                                    MaxCurrentA = (float)cvc.MaxValue;
+                                if (DynamicBrakeMaxCurrentA == 0)
+                                    DynamicBrakeMaxCurrentA = (float)cvc.MinValue;
+                                if (ThrottlePercent > 0)
+                                {
+                                    data = (data / MaxForceN) * MaxCurrentA;
+                                }
+                                if (DynamicBrakePercent > 0)
+                                {
+                                    data = (data / MaxDynamicBrakeForceN) * DynamicBrakeMaxCurrentA;
+                                }
+                                break;
+
+                            case CABViewControlUnits.NEWTONS:
+                                break;
+
+                            case CABViewControlUnits.KILO_NEWTONS:
+                                data = data / 1000.0f;
+                                break;
+
+                            case CABViewControlUnits.KILO_LBS:
+                                data = N.ToLbf(data) * 0.001f;
+                                break;
+                        }
+                        //                       if (direction == 1 && !(cvc is CVCGauge))
+                        //                           data = -data;
+                        break;
+                    }                // this considers both the dynamic as well as the train braking
                 case CABViewControlTypes.ORTS_SIGNED_TRACTION_TOTAL_BRAKING:
                     {
                         var direction = 0; // Forwards

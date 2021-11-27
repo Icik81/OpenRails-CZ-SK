@@ -75,6 +75,8 @@ namespace Orts.Simulation.RollingStocks
         public float AverageAxleSpeedMpS = 0;
         public float FastestAxleSpeedMpS = 0;
         public float OverridenControllerVolts = 0;
+        public bool IndependetMotorPower = false;
+        public bool UseControllerVolts = false;
         public ExtendedPhysics(MSTSLocomotive loco)
         {
             Locomotive = loco;
@@ -108,6 +110,10 @@ namespace Orts.Simulation.RollingStocks
                             CouplerDistanceFromTrack = float.Parse(innerText);
                         if (main.Name.ToLower() == "centerofgravitydistancefromtrack")
                             CenterOfGravityDistanceFromTrack = float.Parse(innerText);
+                        if (main.Name.ToLower() == "independentmotorpower")
+                            IndependetMotorPower = true;
+                        if (main.Name.ToLower() == "usecontrollervolts")
+                            UseControllerVolts = true;
                         if (main.Name.ToLower() == "undercarriage")
                         {
                             Undercarriage undercarriage = new Undercarriage();
@@ -344,6 +350,7 @@ namespace Orts.Simulation.RollingStocks
         public float ForceN = 0;
         public int NumMotors = 0;
         public float WheelSpeedMpS = 0;
+        protected float reducedForceN = 0;
         MSTSLocomotive Locomotive = null;
         public SubSystems.PowerTransmissions.Axle LocomotiveAxle;
         public bool HaveSpeedometerSensor = false;
@@ -463,6 +470,7 @@ namespace Orts.Simulation.RollingStocks
                 ForceN = -Locomotive.MaxForceN * (-Locomotive.ControllerVolts / Locomotive.MaxControllerVolts) / 4;
                 ForceN = ForceN * Locomotive.UiPowerLose;
             }
+            ForceN += (reducedForceN * 2);
             LocomotiveAxle.InertiaKgm2 = 10000;
             LocomotiveAxle.AxleRevolutionsInt.MinStep = LocomotiveAxle.InertiaKgm2 / (Locomotive.MaxPowerW / totalMotors) / 5.0f;
 
@@ -477,6 +485,10 @@ namespace Orts.Simulation.RollingStocks
             LocomotiveAxle.AdhesionConditions = Locomotive.LocomotiveAxle.AdhesionConditions;//Set the train speed of the axle model
             LocomotiveAxle.Update(elapsedClockSeconds);         //Main updater of the axle model
             WheelSpeedMpS = LocomotiveAxle.AxleSpeedMpS;
+            Mass *= 1000;
+            float addMass = (Locomotive.MassKG / totalMotors) - Mass;
+            Mass += addMass * 2;
+            reducedForceN = -((WheelSpeedMpS - (Locomotive.AbsSpeedMpS + 0.1f)) * (Mass / 1000)) * 1000;
             //if (WheelSpeedMpS == 0 && Locomotive.WheelSpeedMpS > 0)
             //    WheelSpeedMpS = Locomotive.WheelSpeedMpS;
         }
