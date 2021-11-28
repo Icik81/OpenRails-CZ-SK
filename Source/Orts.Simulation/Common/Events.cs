@@ -248,7 +248,9 @@ namespace Orts.Common
         CompressorMode_OffAutoOn,
         CompressorMode_OffAutoOff,
         Heating_OffOnOn,
-        Heating_OffOnOff,        
+        Heating_OffOnOff,
+        CabHeating_OffOnOn,
+        CabHeating_OffOnOff,
         SwitchingVoltageMode_OffDCOn,
         SwitchingVoltageMode_OffDCOff,
         SwitchingVoltageMode_OffACOn,
@@ -552,49 +554,38 @@ namespace Orts.Common
                         // Icik
                         case 20001: return Event.CompressorMode_OffAutoOn;
                         case 20002: return Event.CompressorMode_OffAutoOff;
-
                         case 20003: return Event.Heating_OffOnOn;
                         case 20004: return Event.Heating_OffOnOff;
-
                         case 20005: return Event.SwitchingVoltageMode_OffDCOn;
                         case 20006: return Event.SwitchingVoltageMode_OffDCOff;
                         case 20007: return Event.SwitchingVoltageMode_OffACOn;
                         case 20008: return Event.SwitchingVoltageMode_OffACOff;
-
                         case 20009: return Event.PowerOnAC; // 23
                         case 20010: return Event.PowerOffAC; // 24
                         case 20011: return Event.PowerOnDC; // 23
                         case 20012: return Event.PowerOffDC; // 24
-
                         case 20013: return Event.CircuitBreakerOpenAC; // 150
                         case 20014: return Event.CircuitBreakerClosingAC; // 151
                         case 20015: return Event.CircuitBreakerClosedAC; // 152
-
                         case 20016: return Event.CircuitBreakerOpenDC; // 150
                         case 20017: return Event.CircuitBreakerClosingDC; // 151
                         case 20018: return Event.CircuitBreakerClosedDC; // 152
-
                         case 20019: return Event.Pantograph1UpAC; // 45
                         case 20020: return Event.Pantograph1DownAC; // 46
                         case 20021: return Event.Pantograph2UpAC; // 66
                         case 20022: return Event.Pantograph2DownAC; // 67
-
                         case 20023: return Event.Pantograph1UpDC; // 45
                         case 20024: return Event.Pantograph1DownDC; // 46
                         case 20025: return Event.Pantograph2UpDC; // 66
                         case 20026: return Event.Pantograph2DownDC; // 67
-
                         case 20027: return Event.CompressorOnAC; // 12
                         case 20028: return Event.CompressorOffAC; // 13
                         case 20029: return Event.CompressorOnDC; // 12
                         case 20030: return Event.CompressorOffDC; // 13
-
                         case 20031: return Event.QuickReleaseButton;
                         case 20032: return Event.LowPressureReleaseButton;
-
                         case 20033: return Event.Compressor2On;
                         case 20034: return Event.Compressor2Off;
-
                         case 20035: return Event.AuxCompressorMode_OffOnOn;
                         case 20036: return Event.AuxCompressorMode_OffOnOff;
                         case 20037: return Event.AuxCompressorOn;
@@ -603,18 +594,16 @@ namespace Orts.Common
                         case 20040: return Event.MaxMainResOverPressureValveClosed;
                         case 20041: return Event.MaxAuxResOverPressureValveOpen;
                         case 20042: return Event.MaxAuxResOverPressureValveClosed;
-
                         case 20043: return Event.CompressorBeep;
-
                         case 20044: return Event.BrakePipeFlow;
                         case 20045: return Event.BreakPowerButton;
                         case 20046: return Event.BreakPowerButtonRelease;
-
                         case 20047: return Event.QuickReleaseButtonRelease;
                         case 20048: return Event.LowPressureReleaseButtonRelease;
-
                         case 20049: return Event.HeatingOverCurrentOn;
                         case 20050: return Event.HeatingOverCurrentOff;
+                        case 20051: return Event.CabHeating_OffOnOn;
+                        case 20052: return Event.CabHeating_OffOnOff;
 
                         default: return 0;
                     }

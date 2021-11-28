@@ -7165,8 +7165,8 @@ namespace Orts.Simulation.RollingStocks
             if (CabHeatingEnable)
             {
                 CabHeating_OffOn = !CabHeating_OffOn;
-                if (CabHeating_OffOn) SignalEvent(Event.Heating_OffOnOn);
-                else SignalEvent(Event.Heating_OffOnOff);
+                if (CabHeating_OffOn) SignalEvent(Event.CabHeating_OffOnOn);
+                else SignalEvent(Event.CabHeating_OffOnOff);
                 if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.CabHeating_OffOn, CabHeating_OffOn ? CabSetting.On : CabSetting.Off);
             }
         }
