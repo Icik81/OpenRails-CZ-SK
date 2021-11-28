@@ -605,10 +605,10 @@ namespace Orts.Simulation.RollingStocks
         public List<CabViewControl> EditableItems = new List<CabViewControl>();
         public ExtendedPhysics extendedPhysics = null;
         public float ControllerVolts;
-        public float ThrottleFullRangeIncreaseTimeSeconds = 0;
-        public float ThrottleFullRangeDecreaseTimeSeconds = 0;
-        public float DynamicBrakeFullRangeIncreaseTimeSeconds;
-        public float DynamicBrakeFullRangeDecreaseTimeSeconds;
+        public float ThrottleFullRangeIncreaseTimeSeconds = 3;
+        public float ThrottleFullRangeDecreaseTimeSeconds = 3;
+        public float DynamicBrakeFullRangeIncreaseTimeSeconds = 3;
+        public float DynamicBrakeFullRangeDecreaseTimeSeconds = 3;
         public float MaxControllerVolts = 10;
         public CurrentDirectionEnum CurrentDirection = CurrentDirectionEnum.Braking;
         public float AcceleratingToBrakingChangeTime = 0;
@@ -7903,10 +7903,6 @@ namespace Orts.Simulation.RollingStocks
                                     data = ea.ForceN / extendedPhysics.NumAxles * 2;
                                 }
                             }
-                        }
-                        if (DynamicBrakePercent > 0)
-                        {
-                            data = -Math.Abs(DynamicBrakeForceN);
                         }
                         switch (cvc.Units)
                         {

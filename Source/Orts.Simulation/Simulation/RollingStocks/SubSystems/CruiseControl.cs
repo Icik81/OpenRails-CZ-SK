@@ -1541,7 +1541,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                             delta = SelectedSpeedMpS - wheelSpeedMpS;
                         else
                             delta = CurrentSelectedSpeedMpS - wheelSpeedMpS;
-
+                        if (float.IsNaN(controllerVolts))
+                            controllerVolts = 0;
                         if ((controllerVolts != demandedVolts) && delta > 0)
                         {
                             if (Locomotive.DynamicBrakePercent > 0)
@@ -1622,14 +1623,17 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                             }
                             else
                             {
-                                if (controllerVolts - 0.2f > demandedVolts)
+                                float reduce = 0.2f;
+                                if (PowerBreakoutAmpers == 0)
+                                    reduce = 0;
+                                if (controllerVolts - reduce > demandedVolts)
                                 {
                                     float step = 100 / Locomotive.ThrottleFullRangeIncreaseTimeSeconds;
 
                                     step *= elapsedClockSeconds;
                                     controllerVolts -= step;
                                 }
-                                if (controllerVolts + 0.2f < demandedVolts)
+                                if (controllerVolts + reduce < demandedVolts)
                                 {
                                     float step = 100 / Locomotive.ThrottleFullRangeIncreaseTimeSeconds;
 
@@ -1799,12 +1803,12 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                 {
                     if (controllerVolts > 0)
                     {
+                        breakout = false;
                         Locomotive.ControllerVolts = controllerVolts / 10;
                     }
                     else
                     {
                         Locomotive.ControllerVolts = 0;
-                        breakout = true;
                     }
                 }
                 else if (controllerVolts > 0)
