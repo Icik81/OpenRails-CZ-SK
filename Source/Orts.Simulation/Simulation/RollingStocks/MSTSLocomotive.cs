@@ -468,6 +468,8 @@ namespace Orts.Simulation.RollingStocks
         public bool EngineBrakeEngageEDB = false;
         public bool Heating_OffOn;
         public bool HeatingEnable = false;
+        public bool CabHeating_OffOn;
+        public bool CabHeatingEnable = false;
         public bool SwitchingVoltageMode_OffAC;
         public bool SwitchingVoltageMode_OffDC;
         public int SwitchingVoltageMode = 1;
@@ -2759,6 +2761,10 @@ namespace Orts.Simulation.RollingStocks
             {
                 foreach (TrainCar car in Train.Cars)
                 {
+                    // Označí kabinu lokomotivy
+                    if (!car.HasPassengerCapacity && car.WagonType == WagonTypes.Engine)                    
+                        car.LocomotiveCab = true;
+                    
                     if (car.WagonType == WagonTypes.Passenger || car.HasPassengerCapacity || car.WagonType == WagonTypes.Engine)
                     {
                         if (car.WagonType == WagonTypes.Passenger)
@@ -2998,6 +3004,7 @@ namespace Orts.Simulation.RollingStocks
                             }
 
                         }
+                        
                         car.WagonTemperature += car.TempCDelta + car.TempCDeltaAir;
                     }
                      //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Teplota " + car.WagonTemperature));
@@ -3064,7 +3071,7 @@ namespace Orts.Simulation.RollingStocks
 
                 foreach (TrainCar car in Train.Cars)
                 {
-                    if (!car.BrakeSystem.HeatingIsOn) // Pokud má vůz vypnuté topení nebo klimatizaci
+                    if (!car.BrakeSystem.HeatingIsOn || (car.LocomotiveCab && !CabHeating_OffOn)) // Pokud má vůz vypnuté topení nebo klimatizaci
                     {
                         car.PowerReductionByHeating0 = 0;
                         car.PowerReductionByAirCondition0 = 0;
@@ -7150,6 +7157,17 @@ namespace Orts.Simulation.RollingStocks
                 if (Heating_OffOn) SignalEvent(Event.Heating_OffOnOn);
                 else SignalEvent(Event.Heating_OffOnOff);
                 if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.Heating_OffOn, Heating_OffOn ? CabSetting.On : CabSetting.Off);
+            }
+        }
+        public void ToggleCabHeating_OffOn()
+        {
+            CabHeatingEnable = true;
+            if (CabHeatingEnable)
+            {
+                CabHeating_OffOn = !CabHeating_OffOn;
+                if (CabHeating_OffOn) SignalEvent(Event.Heating_OffOnOn);
+                else SignalEvent(Event.Heating_OffOnOff);
+                if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.CabHeating_OffOn, CabHeating_OffOn ? CabSetting.On : CabSetting.Off);
             }
         }
 

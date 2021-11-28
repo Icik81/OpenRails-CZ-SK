@@ -340,7 +340,8 @@ namespace Orts.Simulation.RollingStocks
         public bool StatusHeatIsOn = false;
         public float CarOutsideTempCBase;
         public float CarOutsideTempCLastStatus;
-        public float TempCClockDelta;        
+        public float TempCClockDelta;
+        public bool LocomotiveCab = false;
 
         public float DieselHeaterPower;
         public float DieselHeaterPower0;

@@ -128,6 +128,7 @@ namespace Orts.Simulation
     , Compressor_I_HandMode
     , Compressor_II_HandMode
     , Heating_OffOn
+    , CabHeating_OffOn
     , SwitchingVoltageMode_OffAC
     , SwitchingVoltageMode_OffDC
     , RouteVoltage
@@ -292,7 +293,8 @@ namespace Orts.Simulation
                 , new string [] { GetString("Mód kompresoru II"), GetString("off"), null, GetString("Auto")}
                 , new string [] { GetString("Ruční zapnutí kompresoru I"), GetString("off"), null, GetString("on")}
                 , new string [] { GetString("Ruční zapnutí kompresoru II"), GetString("off"), null, GetString("on")}
-                , new string [] { GetString("Topení"), GetString("off"), null, GetString("on")}                
+                , new string [] { GetString("Topení"), GetString("off"), null, GetString("on")}
+                , new string [] { GetString("Topení v kabině"), GetString("off"), null, GetString("on")}
                 , new string [] { GetString("Přepnutí napěťového systému"), GetString("off"), null, GetString("AC")}
                 , new string [] { GetString("Přepnutí napěťového systému"), GetString("off"), null, GetString("DC")}
                 , new string [] { GetString("Napětí v soustavě změněno"), GetString("25kV"), null, GetString("3kV")}

@@ -1954,7 +1954,24 @@ namespace Orts.Common
             Receiver.ToggleHeating_OffOn();
             // Report();
         }
-    }    
+    }
+    [Serializable()]
+    public sealed class ToggleCabHeating_OffOnCommand : Command
+    {
+        public static MSTSLocomotive Receiver { get; set; }
+
+        public ToggleCabHeating_OffOnCommand(CommandLog log)
+            : base(log)
+        {
+            Redo();
+        }
+
+        public override void Redo()
+        {
+            Receiver.ToggleCabHeating_OffOn();
+            // Report();
+        }
+    }
     [Serializable()]
     public sealed class HeatingCommand : Command
     {
