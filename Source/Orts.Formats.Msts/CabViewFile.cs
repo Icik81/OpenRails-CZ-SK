@@ -913,6 +913,12 @@ namespace Orts.Formats.Msts
                     stf.SkipRestOfBlock();
                 }),
                 new STFReader.TokenProcessor("axleid", () =>{ AxleId = ParseAxleId(stf); }),
+                new STFReader.TokenProcessor("currentsource", () =>
+                {
+                    stf.MustMatch("(");
+                    CurrentSource = stf.ReadString();
+                    stf.SkipRestOfBlock();
+                }),
             });
         }
     }

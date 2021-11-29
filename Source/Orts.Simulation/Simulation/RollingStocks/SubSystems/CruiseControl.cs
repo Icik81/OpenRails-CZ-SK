@@ -198,7 +198,6 @@ namespace Orts.Simulation.RollingStocks.SubSystems
             {
                 arrIsBraking = false;
                 SkipThrottleDisplay = false;
-                return;
             }
             if (maxForceIncreasing) SpeedRegulatorMaxForceIncrease();
             if (maxForceDecreasing) SpeedRegulatorMaxForceDecrease();
@@ -422,7 +421,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
 
         public void SetMaxForcePercent(float percent)
         {
-            if (SelectedMaxAccelerationPercent == percent) return;
+            if (SelectedMaxAccelerationPercent == (int)percent) return;
             SelectedMaxAccelerationPercent = percent;
             SelectedMaxAccelerationPercent = (float)Math.Round(Locomotive.SelectedMaxAccelerationStep, 0);
             Simulator.Confirmer.Message(ConfirmLevel.Information, Simulator.Catalog.GetString("Speed regulator max acceleration percent changed to") + " " + Simulator.Catalog.GetString(SelectedMaxAccelerationPercent.ToString()) + "%");

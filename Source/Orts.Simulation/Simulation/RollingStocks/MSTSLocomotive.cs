@@ -3342,12 +3342,17 @@ namespace Orts.Simulation.RollingStocks
         {
             if (IsPlayerTrain && !Simulator.Paused)
             {
+                if (increasingThrottle || decreasingThrottle)
+                {
+                    float ctrV = ControllerVolts * 10f;
+                    Simulator.Confirmer.Information("Throttle changed to " + ((int)ctrV).ToString() + "%");
+                }
                 if (increasingThrottle)
-                    ControllerVolts += 0.05f;
+                    ControllerVolts += 0.25f;
                 if (ControllerVolts > 10)
                     ControllerVolts = 10;
                 if (decreasingThrottle)
-                    ControllerVolts -= 0.05f;
+                    ControllerVolts -= 0.25f;
                 if (ControllerVolts < -10)
                     ControllerVolts = -10;
                 if (extendedPhysics != null)
@@ -5104,10 +5109,21 @@ namespace Orts.Simulation.RollingStocks
             Mirel.ResetVigilance();
             if (extendedPhysics != null)
             {
-                if (extendedPhysics.UseControllerVolts)
+                if (CruiseControl != null)
                 {
-                    increasingThrottle = true;
-                    return;
+                    if (extendedPhysics.UseControllerVolts && CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.Manual)
+                    {
+                        increasingThrottle = true;
+                        return;
+                    }
+                }
+                else
+                {
+                    if (extendedPhysics.UseControllerVolts)
+                    {
+                        increasingThrottle = true;
+                        return;
+                    }
                 }
             }
             if (MultiPositionControllers != null)
@@ -5125,7 +5141,7 @@ namespace Orts.Simulation.RollingStocks
                     }
                 }
             }
-            if (CruiseControl != null && CombinedControlType == CombinedControl.None)
+            if (CruiseControl != null && (CombinedControlType == CombinedControl.None || CombinedControlType == CombinedControl.ThrottleDynamic))
             {
                 if (CruiseControl.UseThrottleAsForceSelector && CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.Auto)
                 {
@@ -5251,9 +5267,21 @@ namespace Orts.Simulation.RollingStocks
         {
             if (extendedPhysics != null)
             {
-                if (extendedPhysics.UseControllerVolts)
+                if (CruiseControl == null)
                 {
-                    decreasingThrottle = true;
+                    if (extendedPhysics.UseControllerVolts)
+                    {
+                        decreasingThrottle = true;
+                        return;
+                    }
+                }
+                else if (!CruiseControl.UseThrottleAsForceSelector || CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.Manual)
+                {
+                    if (extendedPhysics.UseControllerVolts)
+                    {
+                        decreasingThrottle = true;
+                        return;
+                    }
                 }
             }
             Mirel.ResetVigilance();
@@ -5272,7 +5300,7 @@ namespace Orts.Simulation.RollingStocks
                     }
                 }
             }
-            if (CruiseControl != null && CombinedControlType == CombinedControl.None)
+            if (CruiseControl != null && (CombinedControlType == CombinedControl.None || CombinedControlType == CombinedControl.ThrottleDynamic))
             {
                 if (CruiseControl.UseThrottleAsForceSelector && CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.Auto)
                 {
@@ -5331,12 +5359,15 @@ namespace Orts.Simulation.RollingStocks
                 if (CruiseControl.UseThrottleAsSpeedSelector && CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.Auto && CruiseControl.SelectedSpeedMpS > 0)
                 {
                     CruiseControl.SpeedRegulatorSelectedSpeedStopDecrease();
+                    CruiseControl.SpeedRegulatorMaxForceStopDecrease();
                     return;
                 }
                 else
                 {
                     if (CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.Auto && CruiseControl.SelectedSpeedMpS > 0)
                     {
+                        CruiseControl.SpeedRegulatorSelectedSpeedStopDecrease();
+                        CruiseControl.SpeedRegulatorMaxForceStopDecrease();
                         speedSelectorModeDecreasing = false;
                     }
                 }
@@ -5604,7 +5635,7 @@ namespace Orts.Simulation.RollingStocks
                     }
                     else
                     {
-                return CombinedControlSplitPosition + (1 - CombinedControlSplitPosition) * (intermediateValue ? DynamicBrakeController.IntermediateValue : DynamicBrakeController.CurrentValue);
+                        return CombinedControlSplitPosition + (1 - CombinedControlSplitPosition) * (intermediateValue ? DynamicBrakeController.IntermediateValue : DynamicBrakeController.CurrentValue);
                     }
                 }
                 else
@@ -5620,6 +5651,16 @@ namespace Orts.Simulation.RollingStocks
                 return CombinedControlSplitPosition * (1 - (intermediateValue ? ThrottleController.IntermediateValue : ThrottleController.CurrentValue));
             else if (CruiseControl.UseThrottleAsSpeedSelector)
                 return CombinedControlSplitPosition * (1 - (CruiseControl.SelectedSpeedMpS / MaxSpeedMpS));
+            else if (CruiseControl.UseThrottleAsForceSelector && CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.Auto)
+            {
+                float test = CruiseControl.SelectedMaxAccelerationPercent / 100;
+                test = 1 - test;
+                if (test < 0.02f && test > 0)
+                    test = 0.021f;
+                test = CombinedControlSplitPosition * test;
+                test = test * 100;
+                return test;
+            }
             else
                 return CombinedControlSplitPosition;
 
@@ -7901,6 +7942,10 @@ namespace Orts.Simulation.RollingStocks
                                 if (ea.Id == cvc.AxleId)
                                 {
                                     data = ea.ForceN / extendedPhysics.NumAxles * 2;
+                                    if (cvc.CurrentSource.ToLower() == "negative_force" && data < 0)
+                                        data = -data;
+                                    else if (cvc.CurrentSource.ToLower() == "negative_force")
+                                        data = 0;
                                 }
                             }
                         }

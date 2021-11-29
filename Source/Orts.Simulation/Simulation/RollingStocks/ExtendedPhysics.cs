@@ -284,6 +284,10 @@ namespace Orts.Simulation.RollingStocks
                 Locomotive.DynamicBrakeChangeActiveState(false);
                 Locomotive.ControllerVolts = 0;
             }
+            if (UseControllerVolts && Locomotive.ControllerVolts < 0)
+            {
+                Locomotive.SetDynamicBrakePercent(-Locomotive.ControllerVolts * 10);
+            }
             TotalCurrent = 0;
             StarorsCurrent = 0;
             RotorsCurrent = 0;
@@ -470,6 +474,13 @@ namespace Orts.Simulation.RollingStocks
                 ForceN = -Locomotive.MaxForceN * (-Locomotive.ControllerVolts / Locomotive.MaxControllerVolts) / 4;
                 ForceN = ForceN * Locomotive.UiPowerLose;
             }
+            if (Locomotive.CruiseControl != null)
+            {
+                if (Locomotive.CruiseControl.SelectedMaxAccelerationPercent == 0)
+                {
+                    ForceN = 0;
+                }
+            }
             ForceN += (reducedForceN * 2);
             LocomotiveAxle.InertiaKgm2 = 10000;
             LocomotiveAxle.AxleRevolutionsInt.MinStep = LocomotiveAxle.InertiaKgm2 / (Locomotive.MaxPowerW / totalMotors) / 5.0f;
@@ -487,7 +498,7 @@ namespace Orts.Simulation.RollingStocks
             WheelSpeedMpS = LocomotiveAxle.AxleSpeedMpS;
             if (Locomotive.CruiseControl != null)
             {
-                if (Locomotive.CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.Auto)
+                if (Locomotive.CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.Auto && Locomotive.ThrottlePercent > 0 && (Locomotive.CruiseControl.SelectedSpeedMpS - Locomotive.AbsSpeedMpS) > 1 && Locomotive.CruiseControl.SelectedMaxAccelerationPercent > 0)
                 {
                     float mMass = Mass;
                     Mass *= 1000;
@@ -496,6 +507,8 @@ namespace Orts.Simulation.RollingStocks
                     reducedForceN = -((WheelSpeedMpS - (Locomotive.AbsSpeedMpS + 0.1f)) * (Mass / 1000)) * 1000;
                     Mass = mMass;
                 }
+                else
+                    reducedForceN = 0;
             }
             //if (WheelSpeedMpS == 0 && Locomotive.WheelSpeedMpS > 0)
             //    WheelSpeedMpS = Locomotive.WheelSpeedMpS;
