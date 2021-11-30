@@ -476,7 +476,7 @@ namespace Orts.Simulation.RollingStocks
             }
             if (Locomotive.CruiseControl != null)
             {
-                if (Locomotive.CruiseControl.SelectedMaxAccelerationPercent == 0)
+                if (Locomotive.CruiseControl.SelectedMaxAccelerationPercent == 0 && Locomotive.SelectedMaxAccelerationStep == 0)
                 {
                     ForceN = 0;
                 }

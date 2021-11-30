@@ -1044,7 +1044,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                                 else
                                     delta = CurrentSelectedSpeedMpS - wheelSpeedMpS;
 
-                                AccelerationDemandMpSS = (float)-Math.Sqrt(-StartReducingSpeedDelta * delta) * 5;
+                                AccelerationDemandMpSS = (float)-Math.Sqrt(-StartReducingSpeedDelta * delta) * 2.5f;
                                 float demand = AccelerationDemandMpSS;
 
                                 if (maxForceN > 0)
@@ -1311,7 +1311,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                                 else
                                     delta = CurrentSelectedSpeedMpS - wheelSpeedMpS;
 
-                                AccelerationDemandMpSS = (float)-Math.Sqrt(-StartReducingSpeedDelta * delta) * 5;
+                                AccelerationDemandMpSS = (float)-Math.Sqrt(-StartReducingSpeedDelta * delta) * 2.5f;
                                 demand = AccelerationDemandMpSS;
 
                                 if (maxForceN > 0)
@@ -1623,8 +1623,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                             else
                             {
                                 float reduce = 0.2f;
-                                if (PowerBreakoutAmpers == 0)
-                                    reduce = 0;
+
+                                /*if (PowerBreakoutSpeedDelta == 0)
+                                    reduce = 0;*/
                                 if (controllerVolts - reduce > demandedVolts)
                                 {
                                     float step = 100 / Locomotive.ThrottleFullRangeIncreaseTimeSeconds;
@@ -1808,6 +1809,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                     else
                     {
                         Locomotive.ControllerVolts = 0;
+                        breakout = true;
                     }
                 }
                 else if (controllerVolts > 0)
