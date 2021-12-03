@@ -3347,6 +3347,10 @@ namespace Orts.Simulation.RollingStocks
                     float ctrV = ControllerVolts * 10f;
                     Simulator.Confirmer.Information("Throttle changed to " + ((int)ctrV).ToString() + "%");
                 }
+                if (increasingDynamicBrake && DynamicBrakePercent < 99)
+                    DynamicBrakePercent += 1f;
+                if (decreasingDynamicBrake && DynamicBrakePercent > -1)
+                    DynamicBrakePercent -= 1f;
                 if (increasingThrottle)
                     ControllerVolts += 0.25f;
                 if (ControllerVolts > 10)
@@ -5104,8 +5108,16 @@ namespace Orts.Simulation.RollingStocks
         }
 
         private bool increasingThrottle = false;
+        private bool decreasingDynamicBrake = false;
         public void StartThrottleIncrease()
         {
+            if (DynamicBrakePercent > 0)
+                decreasingDynamicBrake = true;
+            if (DynamicBrakePercent > 0 && SpeedMpS == 0)
+            {
+                DynamicBrakePercent = 0;
+                DynamicBrakeChangeActiveState(false);
+            }
             Mirel.ResetVigilance();
             if (extendedPhysics != null)
             {
@@ -5143,7 +5155,7 @@ namespace Orts.Simulation.RollingStocks
             }
             if (CruiseControl != null && (CombinedControlType == CombinedControl.None || CombinedControlType == CombinedControl.ThrottleDynamic))
             {
-                if (CruiseControl.UseThrottleAsForceSelector && CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.Auto)
+                if (CruiseControl.UseThrottleAsForceSelector && CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.Auto && DynamicBrakePercent < 1)
                 {
                     CruiseControl.SpeedRegulatorMaxForceStartIncrease();
                     return;
@@ -5195,6 +5207,7 @@ namespace Orts.Simulation.RollingStocks
         public void StopThrottleIncrease()
         {
             increasingThrottle = false;
+            decreasingDynamicBrake = false;
             Mirel.ResetVigilance();
             if (MultiPositionControllers != null)
             {
@@ -5263,6 +5276,7 @@ namespace Orts.Simulation.RollingStocks
 
         protected bool speedSelectorModeDecreasing = false;
         protected bool decreasingThrottle = false;
+        protected bool increasingDynamicBrake = false;
         public void StartThrottleDecrease()
         {
             if (extendedPhysics != null)
@@ -5304,7 +5318,22 @@ namespace Orts.Simulation.RollingStocks
             {
                 if (CruiseControl.UseThrottleAsForceSelector && CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.Auto)
                 {
-                    CruiseControl.SpeedRegulatorMaxForceStartDecrease();
+                    if (SelectedMaxAccelerationStep > 0)
+                        CruiseControl.SpeedRegulatorMaxForceStartDecrease();
+                    else
+                    {
+                        if (CruiseControl.controllerVolts > 0)
+                        {
+                            CruiseControl.controllerVolts = 0;
+                            ControllerVolts = 0;
+                            DynamicBrakeChangeActiveState(true);
+                        }
+                        {
+                            increasingDynamicBrake = true;
+                        }
+
+
+                    }
                     return;
                 }
                 else
@@ -5338,6 +5367,7 @@ namespace Orts.Simulation.RollingStocks
         public void StopThrottleDecrease()
         {
             decreasingThrottle = false;
+            increasingDynamicBrake = false;
             Mirel.ResetVigilance();
             if (MultiPositionControllers != null)
             {

@@ -476,7 +476,7 @@ namespace Orts.Simulation.RollingStocks
             }
             if (Locomotive.CruiseControl != null)
             {
-                if (Locomotive.CruiseControl.SelectedMaxAccelerationPercent == 0 && Locomotive.SelectedMaxAccelerationStep == 0)
+              if (Locomotive.CruiseControl.SelectedMaxAccelerationPercent == 0 && Locomotive.SelectedMaxAccelerationStep == 0 && ForceN > 0 && Locomotive.CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.Auto)
                 {
                     ForceN = 0;
                 }
@@ -496,9 +496,9 @@ namespace Orts.Simulation.RollingStocks
             LocomotiveAxle.AdhesionConditions = Locomotive.LocomotiveAxle.AdhesionConditions;//Set the train speed of the axle model
             LocomotiveAxle.Update(elapsedClockSeconds);         //Main updater of the axle model
             WheelSpeedMpS = LocomotiveAxle.AxleSpeedMpS;
-            /*if (Locomotive.CruiseControl != null)
+            if (Locomotive.CruiseControl != null)
             {
-                if (Locomotive.CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.Auto && Locomotive.ThrottlePercent > 0 && (Locomotive.CruiseControl.SelectedSpeedMpS - Locomotive.AbsSpeedMpS) > 1 && Locomotive.CruiseControl.SelectedMaxAccelerationPercent > 0)
+                if ((Locomotive.CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.Auto && Locomotive.ThrottlePercent > 0 && (Locomotive.CruiseControl.SelectedSpeedMpS - Locomotive.AbsSpeedMpS) > 1 && Locomotive.CruiseControl.SelectedMaxAccelerationPercent > 0 && Locomotive.CruiseControl.PreciseSpeedControl) || (ForceN < 0 && Locomotive.CruiseControl.PreciseSpeedControl))
                 {
                     float mMass = Mass;
                     Mass *= 1000;
@@ -509,7 +509,7 @@ namespace Orts.Simulation.RollingStocks
                 }
                 else
                     reducedForceN = 0;
-            }*/
+            }
             //if (WheelSpeedMpS == 0 && Locomotive.WheelSpeedMpS > 0)
             //    WheelSpeedMpS = Locomotive.WheelSpeedMpS;
         }

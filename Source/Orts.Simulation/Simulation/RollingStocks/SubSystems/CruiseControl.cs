@@ -106,6 +106,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
         public bool DisableCruiseControlOnThrottleAndZeroSpeed = false;
         public bool DisableCruiseControlOnThrottleAndZeroForce = false;
         public bool IReallyWantToBrake = false;
+        public bool PreciseSpeedControl = false;
 
         public void Parse(string lowercasetoken, STFReader stf)
         {
@@ -115,7 +116,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                 case "engine(ortscruisecontrol(usethrottle": UseThrottle = stf.ReadBoolBlock(false); break;
                 case "engine(ortscruisecontrol(speedselectorsteptimeseconds": SpeedSelectorStepTimeSeconds = stf.ReadFloatBlock(STFReader.UNITS.Any, 0.1f); break;
                 case "engine(ortscruisecontrol(resetforceafteranybraking": ResetForceAfterAnyBraking = stf.ReadBoolBlock(false); break;
-                case "engine(ortscruisecontrol(maxpowerthreshold": MaxPowerThreshold = stf.ReadFloatBlock(STFReader.UNITS.Any, 0); break;
+                case "engine(ortscruisecontrol(precisespeedcontrol": PreciseSpeedControl = stf.ReadBoolBlock(false); break;
                 case "engine(ortscruisecontrol(safespeedforautomaticoperationmps": SafeSpeedForAutomaticOperationMpS = stf.ReadFloatBlock(STFReader.UNITS.Any, 0); break;
                 case "engine(ortscruisecontrol(maxforcepercentunits": SpeedRegulatorMaxForcePercentUnits = stf.ReadBoolBlock(false); break;
                 case "engine(ortscruisecontrol(maxforcesteps": SpeedRegulatorMaxForceSteps = stf.ReadIntBlock(0); break;
@@ -964,7 +965,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                 firstIteration = false;
             }
 
-            if (Locomotive.SelectedMaxAccelerationStep == 0) // no effort, no throttle (i.e. for reverser change, etc) and return
+            if (Locomotive.SelectedMaxAccelerationStep == 0) // no effort, no throttle (i.e. for reverser change, etc)
             {
                 Locomotive.SetThrottlePercent(0);
                 if (Locomotive.DynamicBrakePercent > 0)
@@ -993,7 +994,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                         delta = SelectedSpeedMpS - wheelSpeedMpS;
                     else
                         delta = CurrentSelectedSpeedMpS - wheelSpeedMpS;
-
+                    if (PreciseSpeedControl)
+                        delta *= 4;
                     if (controllerVolts > 0)
                     {
                         float step = 100 / Locomotive.ThrottleFullRangeIncreaseTimeSeconds;
@@ -1043,6 +1045,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                                     delta = SelectedSpeedMpS - wheelSpeedMpS;
                                 else
                                     delta = CurrentSelectedSpeedMpS - wheelSpeedMpS;
+                                if (PreciseSpeedControl)
+                                    delta *= 4;
 
                                 AccelerationDemandMpSS = (float)-Math.Sqrt(-StartReducingSpeedDelta * delta) * 2.5f;
                                 float demand = AccelerationDemandMpSS;
@@ -1221,6 +1225,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                         delta = SelectedSpeedMpS - Locomotive.AbsSpeedMpS;
                     else
                         delta = CurrentSelectedSpeedMpS - Locomotive.AbsSpeedMpS;
+                    if (PreciseSpeedControl)
+                        delta *= 4;
                     if (delta > 0 && arrIsBraking)
                     {
                         if (Locomotive.BrakeSystem.BrakeLine1PressurePSI < Bar.ToPSI(4.98f))
@@ -1249,6 +1255,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                         delta = SelectedSpeedMpS - wheelSpeedMpS;
                     else
                         delta = CurrentSelectedSpeedMpS - wheelSpeedMpS;
+                    if (PreciseSpeedControl)
+                        delta *= 4;
                     float coeff = 1;
                     float speed = SpeedIsMph ? MpS.ToMpH(Locomotive.WheelSpeedMpS) : MpS.ToKpH(Locomotive.WheelSpeedMpS);
                     if (speed > 100)
@@ -1288,7 +1296,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                             step *= elapsedClockSeconds;
                             controllerVolts += step;
                         }
-                        if (Locomotive.DynamicBrakePercent < 1 && Locomotive.DynamicBrake)
+                        if (Locomotive.DynamicBrakePercent < 1 && Locomotive.DynamicBrake && !PreciseSpeedControl)
                         {
                             Locomotive.DynamicBrakeChangeActiveState(false);
                         }
@@ -1310,6 +1318,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                                     delta = SelectedSpeedMpS - wheelSpeedMpS;
                                 else
                                     delta = CurrentSelectedSpeedMpS - wheelSpeedMpS;
+                                if (PreciseSpeedControl)
+                                    delta *= 4;
 
                                 AccelerationDemandMpSS = (float)-Math.Sqrt(-StartReducingSpeedDelta * delta) * 2.5f;
                                 demand = AccelerationDemandMpSS;
@@ -1532,6 +1542,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                             delta = SelectedSpeedMpS - wheelSpeedMpS;
                         else
                             delta = CurrentSelectedSpeedMpS - wheelSpeedMpS;
+                        if (PreciseSpeedControl)
+                            delta *= 4;
 
                         if (Locomotive is MSTSDieselLocomotive) // not valid for diesel engines.
                             breakout = false;
@@ -1540,6 +1552,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                             delta = SelectedSpeedMpS - wheelSpeedMpS;
                         else
                             delta = CurrentSelectedSpeedMpS - wheelSpeedMpS;
+                        if (PreciseSpeedControl)
+                            delta *= 4;
                         if (float.IsNaN(controllerVolts))
                             controllerVolts = 0;
                         if ((controllerVolts != demandedVolts) && delta > 0)
@@ -1753,7 +1767,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                     {
                         if (maxForceN > 0) maxForceN = 0;
                         if (Locomotive.ThrottlePercent > 0 && !UseThrottle) Locomotive.ThrottleController.SetPercent(0);
-                        if (Locomotive.DynamicBrakePercent > -1)
+                        if (Locomotive.DynamicBrakePercent > -1 && !PreciseSpeedControl)
                         {
                             Locomotive.DynamicBrakeChangeActiveState(false);
                         }
