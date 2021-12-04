@@ -359,6 +359,10 @@ namespace Orts.Simulation.RollingStocks
         public SubSystems.PowerTransmissions.Axle LocomotiveAxle;
         public bool HaveSpeedometerSensor = false;
         public bool HaveTcsSensor = false;
+        public float ForceNFiltered = 0;
+        public List<float> ForceFilter = new List<float>();
+        public float ForceNFilteredMotor = 0;
+        public List<float> ForceFilterMotor = new List<float>();
 
         public ExtendedAxle(MSTSLocomotive loco)
         {
@@ -482,6 +486,18 @@ namespace Orts.Simulation.RollingStocks
                 }
             }
             ForceN += (reducedForceN * 2);
+            ForceFilter.Add(ForceN);
+            if (ForceFilter.Count == 30)
+            {
+                ForceFilter.RemoveAt(0);
+                ForceNFiltered = ForceFilter.Average();
+            }
+            ForceFilterMotor.Add(ForceN);
+            if (ForceFilterMotor.Count == 11)
+            {
+                ForceFilterMotor.RemoveAt(0);
+                ForceNFilteredMotor = ForceFilterMotor.Average();
+            }
             LocomotiveAxle.InertiaKgm2 = 10000;
             LocomotiveAxle.AxleRevolutionsInt.MinStep = LocomotiveAxle.InertiaKgm2 / (Locomotive.MaxPowerW / totalMotors) / 5.0f;
 
@@ -498,7 +514,7 @@ namespace Orts.Simulation.RollingStocks
             WheelSpeedMpS = LocomotiveAxle.AxleSpeedMpS;
             if (Locomotive.CruiseControl != null)
             {
-                if ((Locomotive.CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.Auto && Locomotive.ThrottlePercent > 0 && (Locomotive.CruiseControl.SelectedSpeedMpS - Locomotive.AbsSpeedMpS) > 1 && Locomotive.CruiseControl.SelectedMaxAccelerationPercent > 0 && Locomotive.CruiseControl.PreciseSpeedControl) || (ForceN < 0 && Locomotive.CruiseControl.PreciseSpeedControl))
+                if ((Locomotive.CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.Auto && Locomotive.ThrottlePercent > 0 && ((Locomotive.CruiseControl.SelectedSpeedMpS - Locomotive.AbsSpeedMpS) > 0.05f) && Locomotive.CruiseControl.SelectedMaxAccelerationPercent > 0 && Locomotive.CruiseControl.PreciseSpeedControl) || (ForceN < 0 && Locomotive.CruiseControl.PreciseSpeedControl))
                 {
                     float mMass = Mass;
                     Mass *= 1000;

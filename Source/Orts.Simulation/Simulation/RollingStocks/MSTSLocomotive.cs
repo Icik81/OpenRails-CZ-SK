@@ -624,6 +624,8 @@ namespace Orts.Simulation.RollingStocks
         public float SelectedMaxAccelerationStep = 0;
         public bool RecuperationAvailable = false;
         public bool MoveThrottle = true;
+        public bool UsingForceHandle = false;
+        public float ForceHandleValue = 0;
 
         public bool
       Speed0Pressed, Speed10Pressed, Speed20Pressed, Speed30Pressed, Speed40Pressed, Speed50Pressed
@@ -1215,9 +1217,10 @@ namespace Orts.Simulation.RollingStocks
                 case "engine(auxrespipeleak": AuxResPipeLeak = stf.ReadFloatBlock(STFReader.UNITS.PressureRateDefaultPSIpS, null); break;
                 case "engine(maxmainresoverpressure": MaxMainResOverPressurePSI = stf.ReadFloatBlock(STFReader.UNITS.PressureDefaultPSI, null); break;
                 case "engine(maxauxresoverpressure": MaxAuxResOverPressurePSI = stf.ReadFloatBlock(STFReader.UNITS.PressureDefaultPSI, null); break;
-                case "engine(heatingmaxcurrent": HeatingMaxCurrentA = stf.ReadFloatBlock(STFReader.UNITS.Current, null); break;                
+                case "engine(heatingmaxcurrent": HeatingMaxCurrentA = stf.ReadFloatBlock(STFReader.UNITS.Current, null); break;
 
                 // Jindrich
+                case "engine(usingforcehandle": UsingForceHandle = stf.ReadBoolBlock(false); break;
                 case "engine(batterydefaultoff": Battery = !stf.ReadBoolBlock(false); break;
                 case "engine(throttlefullrangeincreasetimeseconds": ThrottleFullRangeIncreaseTimeSeconds = stf.ReadFloatBlock(STFReader.UNITS.Any, 5); break;
                 case "engine(throttlefullrangedecreasetimeseconds": ThrottleFullRangeDecreaseTimeSeconds = stf.ReadFloatBlock(STFReader.UNITS.Any, 5); break;
@@ -7959,6 +7962,92 @@ namespace Orts.Simulation.RollingStocks
                         //                           data = -data;
                         break;
                     }
+                case CABViewControlTypes.REQUESTED_FORCE:
+                    bool autoMode = false;
+                    if (CruiseControl != null)
+                    {
+                        if (CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.Auto)
+                        {
+                            autoMode = true;
+                            if (SelectedMaxAccelerationStep > 0)
+                                data = SelectedMaxAccelerationStep;
+                            else if (DynamicBrakePercent > 0)
+                                data = -DynamicBrakePercent;
+
+                        }
+                        else
+                        {
+                            if (ThrottlePercent > 0)
+                                data = ThrottlePercent;
+                            else if (DynamicBrakePercent > 0)
+                                data = -DynamicBrakePercent;
+                        }
+                    }
+                    if (!autoMode)
+                    {
+                        if (ThrottlePercent > 0)
+                            data = ThrottlePercent;
+                        else if (DynamicBrakePercent > 0)
+                            data = -DynamicBrakePercent;
+                    }
+                    break;
+                case CABViewControlTypes.REQUESTED_MOTOR_FORCE:
+                    data = 0.0f;
+                    foreach (Undercarriage uc in extendedPhysics.Undercarriages)
+                    {
+                        foreach (ExtendedAxle ea in uc.Axles)
+                        {
+                            if (ea.Id == cvc.AxleId)
+                            {
+                                data = ea.ForceNFilteredMotor / extendedPhysics.NumAxles * 2;
+                                if (data < 0 && cvc.CurrentSource == "")
+                                    cvc.IsVisible = false;
+                                if (data >= 0 && cvc.CurrentSource == "")
+                                    cvc.IsVisible = true;
+                                if (cvc.CurrentSource.ToLower() == "negative_force" && data < 0)
+                                {
+                                    data = -data;
+                                    cvc.IsVisible = true;
+                                }
+                                else if (cvc.CurrentSource.ToLower() == "negative_force")
+                                {
+                                    data = 0;
+                                    cvc.IsVisible = false;
+                                }
+                            }
+                        }
+                    }
+                    switch (cvc.Units)
+                    {
+                        case CABViewControlUnits.AMPS:
+                            if (MaxCurrentA == 0)
+                                MaxCurrentA = (float)cvc.MaxValue;
+                            if (DynamicBrakeMaxCurrentA == 0)
+                                DynamicBrakeMaxCurrentA = (float)cvc.MinValue;
+                            if (ThrottlePercent > 0)
+                            {
+                                data = (data / MaxForceN) * MaxCurrentA;
+                            }
+                            if (DynamicBrakePercent > 0)
+                            {
+                                data = (data / MaxDynamicBrakeForceN) * DynamicBrakeMaxCurrentA;
+                            }
+                            break;
+
+                        case CABViewControlUnits.NEWTONS:
+                            break;
+
+                        case CABViewControlUnits.KILO_NEWTONS:
+                            data = data / 1000.0f;
+                            break;
+
+                        case CABViewControlUnits.KILO_LBS:
+                            data = N.ToLbf(data) * 0.001f;
+                            break;
+                    }
+                    //                       if (direction == 1 && !(cvc is CVCGauge))
+                    //                           data = -data;
+                    break;
                 case CABViewControlTypes.MOTOR_FORCE:
                     {
                         var direction = 0; // Forwards
@@ -7971,7 +8060,7 @@ namespace Orts.Simulation.RollingStocks
                             {
                                 if (ea.Id == cvc.AxleId)
                                 {
-                                    data = ea.ForceN / extendedPhysics.NumAxles * 2;
+                                    data = ea.ForceNFiltered / extendedPhysics.NumAxles * 2;
                                     if (cvc.CurrentSource.ToLower() == "negative_force" && data < 0)
                                         data = -data;
                                     else if (cvc.CurrentSource.ToLower() == "negative_force")

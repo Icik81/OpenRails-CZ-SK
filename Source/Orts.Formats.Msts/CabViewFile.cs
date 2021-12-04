@@ -169,6 +169,7 @@ namespace Orts.Formats.Msts
         PANTO_DISPLAY,
         DIRECTION_DISPLAY,
         CP_HANDLE,
+        FORCE_HANDLE,
         PANTOGRAPH2,
         CLOCK,
         SANDING,
@@ -246,6 +247,8 @@ namespace Orts.Formats.Msts
         ORTS_SECONDDIAL,
         ORTS_SIGNED_TRACTION_BRAKING,
         MOTOR_FORCE,
+        REQUESTED_FORCE,
+        REQUESTED_MOTOR_FORCE,
         ORTS_SIGNED_TRACTION_TOTAL_BRAKING,
         ORTS_BAILOFF,
         ORTS_QUICKRELEASE,
@@ -1488,7 +1491,7 @@ namespace Orts.Formats.Msts
                 }
 
                 // MSTS ignores/overrides various settings by the following exceptional cases:
-                if (ControlType == CABViewControlTypes.CP_HANDLE)
+                if (ControlType == CABViewControlTypes.CP_HANDLE || ControlType == CABViewControlTypes.FORCE_HANDLE)
                     ControlStyle = CABViewControlStyles.NOT_SPRUNG;
                 if (ControlType == CABViewControlTypes.PANTOGRAPH || ControlType == CABViewControlTypes.PANTOGRAPH2 ||
                     ControlType == CABViewControlTypes.ORTS_PANTOGRAPH3 || ControlType == CABViewControlTypes.ORTS_PANTOGRAPH4)

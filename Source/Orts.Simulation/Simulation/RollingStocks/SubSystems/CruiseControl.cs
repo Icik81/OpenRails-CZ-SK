@@ -995,7 +995,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                     else
                         delta = CurrentSelectedSpeedMpS - wheelSpeedMpS;
                     if (PreciseSpeedControl)
-                        delta *= 4;
+                        delta *= 3;
                     if (controllerVolts > 0)
                     {
                         float step = 100 / Locomotive.ThrottleFullRangeIncreaseTimeSeconds;
@@ -1046,7 +1046,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                                 else
                                     delta = CurrentSelectedSpeedMpS - wheelSpeedMpS;
                                 if (PreciseSpeedControl)
-                                    delta *= 4;
+                                    delta *= 3;
 
                                 AccelerationDemandMpSS = (float)-Math.Sqrt(-StartReducingSpeedDelta * delta) * 2.5f;
                                 float demand = AccelerationDemandMpSS;
@@ -1226,7 +1226,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                     else
                         delta = CurrentSelectedSpeedMpS - Locomotive.AbsSpeedMpS;
                     if (PreciseSpeedControl)
-                        delta *= 4;
+                        delta *= 3;
                     if (delta > 0 && arrIsBraking)
                     {
                         if (Locomotive.BrakeSystem.BrakeLine1PressurePSI < Bar.ToPSI(4.98f))
@@ -1256,7 +1256,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                     else
                         delta = CurrentSelectedSpeedMpS - wheelSpeedMpS;
                     if (PreciseSpeedControl)
-                        delta *= 4;
+                        delta *= 3;
                     float coeff = 1;
                     float speed = SpeedIsMph ? MpS.ToMpH(Locomotive.WheelSpeedMpS) : MpS.ToKpH(Locomotive.WheelSpeedMpS);
                     if (speed > 100)
@@ -1319,7 +1319,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                                 else
                                     delta = CurrentSelectedSpeedMpS - wheelSpeedMpS;
                                 if (PreciseSpeedControl)
-                                    delta *= 4;
+                                    delta *= 3;
 
                                 AccelerationDemandMpSS = (float)-Math.Sqrt(-StartReducingSpeedDelta * delta) * 2.5f;
                                 demand = AccelerationDemandMpSS;
@@ -1543,7 +1543,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                         else
                             delta = CurrentSelectedSpeedMpS - wheelSpeedMpS;
                         if (PreciseSpeedControl)
-                            delta *= 4;
+                            delta *= 3;
 
                         if (Locomotive is MSTSDieselLocomotive) // not valid for diesel engines.
                             breakout = false;
@@ -1553,7 +1553,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                         else
                             delta = CurrentSelectedSpeedMpS - wheelSpeedMpS;
                         if (PreciseSpeedControl)
-                            delta *= 4;
+                            delta *= 3;
                         if (float.IsNaN(controllerVolts))
                             controllerVolts = 0;
                         if ((controllerVolts != demandedVolts) && delta > 0)

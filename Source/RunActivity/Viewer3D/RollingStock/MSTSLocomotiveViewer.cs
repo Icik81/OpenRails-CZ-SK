@@ -1829,6 +1829,11 @@ namespace Orts.Viewer3D.RollingStock
 
         public override void PrepareFrame(RenderFrame frame, ElapsedTime elapsedTime)
         {
+            if (!Gauge.IsVisible)
+            {
+                Locomotive.GetDataOf(Control);
+                return;
+            }
             if (!(Gauge is CVCFirebox))
             {
                 var dark = Viewer.MaterialManager.sunDirection.Y <= -0.085f || Viewer.Camera.IsUnderground;
@@ -2203,6 +2208,51 @@ namespace Orts.Viewer3D.RollingStock
                         index = PercentToIndex(Locomotive.GetCombinedHandleValue(false));
                     else
                         index = PercentToIndex(Locomotive.GetCombinedHandleValue(false));
+                    break;
+                case CABViewControlTypes.FORCE_HANDLE:
+                    bool autoMode = false;
+                    if (Locomotive.CruiseControl != null)
+                    {
+                        if (Locomotive.CruiseControl.SpeedRegMode == Simulation.RollingStocks.SubSystems.CruiseControl.SpeedRegulatorMode.Auto)
+                        {
+                            autoMode = true;
+                            if (Locomotive.SelectedMaxAccelerationStep > 0)
+                            {
+                                index = PercentToIndex((Locomotive.SelectedMaxAccelerationStep / 2) + 50);
+                            }
+                            else if (Locomotive.DynamicBrakePercent > 0)
+                            {
+                                float percent = 100 - Locomotive.DynamicBrakePercent;
+                                percent /= 2;
+                                if (percent < 1 && percent != 0)
+                                    percent = 2;
+                                index = PercentToIndex(percent);
+                            }
+                            if (Locomotive.SelectedMaxAccelerationStep == 0 && Locomotive.DynamicBrakePercent <= 0)
+                            {
+                                index = PercentToIndex(50);
+                            }
+                        }
+                    }
+                    if (!autoMode)
+                    {
+                        if (Locomotive.ThrottlePercent > 0)
+                        {
+                            index = PercentToIndex((Locomotive.ThrottlePercent / 2) + 50);
+                        }
+                        else if (Locomotive.DynamicBrakePercent > 0)
+                        {
+                            float percent = 100 - Locomotive.DynamicBrakePercent;
+                            percent /= 2;
+                            if (percent < 1 && percent != 0)
+                                percent = 2;
+                            index = PercentToIndex(percent);
+                        }
+                        if (Locomotive.ThrottlePercent == 0 && Locomotive.DynamicBrakePercent <= 0)
+                        {
+                            index = PercentToIndex(50);
+                        }
+                    }
                     break;
                 case CABViewControlTypes.ORTS_SELECTED_SPEED_DISPLAY:
                     if (Locomotive.CruiseControl == null)
