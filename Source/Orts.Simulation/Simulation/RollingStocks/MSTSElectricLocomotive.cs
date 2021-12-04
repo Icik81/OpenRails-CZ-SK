@@ -1194,9 +1194,17 @@ namespace Orts.Simulation.RollingStocks
                 
                 // Nastavení pro plně oživenou lokomotivu
                 if (LocoReadyToGo && BrakeSystem.IsAirFull)
-                {                    
-                    Battery = true;
-                    PowerKey = true;
+                {                                        
+                    if (!Battery)
+                    {
+                        SignalEvent(Event.BatteryOn);
+                        Battery = true;
+                    }
+                    if (!PowerKey)
+                    {
+                        SignalEvent(Event.PowerKeyOn);
+                        PowerKey = true;
+                    }
                     ActiveStation = UsingRearCab ? DriverStation.Station2 : DriverStation.Station1;
                     if (Flipped)
                         ActiveStation = UsingRearCab ? DriverStation.Station1 : DriverStation.Station2;
