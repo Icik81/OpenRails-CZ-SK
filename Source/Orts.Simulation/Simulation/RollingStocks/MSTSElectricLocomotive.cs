@@ -1296,7 +1296,7 @@ namespace Orts.Simulation.RollingStocks
         float AIPantoChangeTime = 0;
         protected void SetAIPantoDown(float elapsedClockSeconds)
         {
-            if (IsPlayerTrain)
+            if (IsPlayerTrain || MaxPowerW < 10 * 1000) // Hráč nebo AI s nižším výkonem než 10kW (ms lokomotivy)
                 return;
                                     
             if (GameTimeCyklus10 == 10 && Train.TrainHasFirstPantoMarker)
@@ -1424,7 +1424,8 @@ namespace Orts.Simulation.RollingStocks
                     Train.TrainPantoMarker = 1;
                 Train.SignalEvent(Event.EnginePowerOff);
             }
-            
+
+            bool AIHasPantoUp = false;
             if (GameTimeCyklus10 == 10)
             {                
                 for (int i = 1; i <= Pantographs.Count; i++)
@@ -1433,15 +1434,8 @@ namespace Orts.Simulation.RollingStocks
                     {
                         case PantographState.Raising:
                         case PantographState.Lowering:
-                        case PantographState.Down:
-                            if (RouteVoltageV != 1 && !AIPantoDown && !AIPantoDownStop && !Train.AIPantoChange)
-                            {
-                                Pantographs[i].PantographsUpBlocked = false;
-                                Train.SignalEvent(PowerSupplyEvent.RaisePantograph, Train.TrainPantoMarker);
-                                Train.SignalEvent(Event.EnginePowerOn);
-                            }
-                            break;
                         case PantographState.Up:
+                            AIHasPantoUp = true;
                             if (RouteVoltageV == 1 || AIPantoDownStop)
                             {
                                 Pantographs[i].PantographsUpBlocked = true;
@@ -1451,6 +1445,15 @@ namespace Orts.Simulation.RollingStocks
                                     AIPantoDown = true;
                             }
                             break;
+                        case PantographState.Down:
+                            if (RouteVoltageV != 1 && !AIPantoDown && !AIPantoDownStop && !Train.AIPantoChange)
+                            {
+                                Pantographs[i].PantographsUpBlocked = false;
+                                Train.SignalEvent(PowerSupplyEvent.RaisePantograph, Train.TrainPantoMarker);
+                                if (!AIHasPantoUp)
+                                    Train.SignalEvent(Event.EnginePowerOn);
+                            }
+                            break;                        
                     }
                 }
             }            
