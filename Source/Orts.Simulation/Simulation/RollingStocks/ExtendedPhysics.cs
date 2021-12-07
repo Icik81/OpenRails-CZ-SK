@@ -77,6 +77,8 @@ namespace Orts.Simulation.RollingStocks
         public float OverridenControllerVolts = 0;
         public bool IndependetMotorPower = false;
         public bool UseControllerVolts = false;
+        public float TotalForceN = 0;
+        public bool KeepSelectedForce = false;
         public ExtendedPhysics(MSTSLocomotive loco)
         {
             Locomotive = loco;
@@ -293,6 +295,7 @@ namespace Orts.Simulation.RollingStocks
             RotorsCurrent = 0;
             FastestAxleSpeedMpS = 0;
             AverageAxleSpeedMpS = 0;
+            TotalForceN = 0;
             foreach (Undercarriage uc in Undercarriages)
             {
                 uc.StatorsCurrent = 0;
@@ -320,11 +323,12 @@ namespace Orts.Simulation.RollingStocks
                         uc.StatorsCurrent += em.StatorCurrent;
                         uc.RotorsCurrent += em.RotorCurrent;
                     }
+                    TotalForceN += ea.ForceN;
                 }
             }
             wasRestored = false;
             AverageAxleSpeedMpS /= NumAxles;
-            //Locomotive.Simulator.Confirmer.MSG(MpS.ToKpH(AverageAxleSpeedMpS).ToString() + "  " + MpS.ToKpH(FastestAxleSpeedMpS).ToString());
+            Locomotive.Simulator.Confirmer.MSG(TotalForceN.ToString() + " " + Locomotive.TractiveForceN.ToString());
             //Locomotive.Simulator.Confirmer.MSG(Undercarriages[0].Axles[0].WheelSpeedMpS.ToString() + " " + Undercarriages[0].Axles[1].WheelSpeedMpS.ToString() + " " + Undercarriages[1].Axles[0].WheelSpeedMpS.ToString() + " " + Undercarriages[1].Axles[1].WheelSpeedMpS.ToString());
         }
     }
@@ -514,7 +518,7 @@ namespace Orts.Simulation.RollingStocks
             WheelSpeedMpS = LocomotiveAxle.AxleSpeedMpS;
             if (Locomotive.CruiseControl != null)
             {
-                if ((Locomotive.CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.Auto && Locomotive.ThrottlePercent > 0 && ((Locomotive.CruiseControl.SelectedSpeedMpS - Locomotive.AbsSpeedMpS) > 0.05f) && Locomotive.CruiseControl.SelectedMaxAccelerationPercent > 0 && Locomotive.CruiseControl.PreciseSpeedControl) || (ForceN < 0 && Locomotive.CruiseControl.PreciseSpeedControl))
+                if ((Locomotive.CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.Auto && Locomotive.ThrottlePercent > 0 && ((Locomotive.CruiseControl.SelectedSpeedMpS - Locomotive.AbsSpeedMpS) > 0.05f) && Locomotive.SelectedMaxAccelerationStep > 0 && Locomotive.CruiseControl.PreciseSpeedControl) || (ForceN < 0 && Locomotive.CruiseControl.PreciseSpeedControl))
                 {
                     float mMass = Mass;
                     Mass *= 1000;
