@@ -1176,7 +1176,6 @@ namespace Orts.Simulation.RollingStocks
                     ThrottleController.SetPercent(0);
                     if (SpeedMpS > 0)
                     {
-                        DynamicBrakePercent = 0;
                         DynamicBrakeChangeActiveState(false);
                     }
                 }

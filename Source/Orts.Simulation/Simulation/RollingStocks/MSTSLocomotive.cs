@@ -3345,23 +3345,95 @@ namespace Orts.Simulation.RollingStocks
         {
             if (IsPlayerTrain && !Simulator.Paused)
             {
-                if (increasingThrottle || decreasingThrottle)
+                if (UsingForceHandle && TrainBrakeController.GetStatus().ToString() != "EPApply")
                 {
-                    float ctrV = ControllerVolts * 10f;
-                    Simulator.Confirmer.Information("Throttle changed to " + ((int)ctrV).ToString() + "%");
+                    if (forceHandleIncreasing)
+                    {
+                        ForceHandleValue += 0.5f;
+                        if (ForceHandleValue > 100)
+                            ForceHandleValue = 100;
+                        Simulator.Confirmer.Information("Force inreased to " + ((int)ForceHandleValue).ToString());
+                    }
+                    if (forceHandleDecreasing)
+                    {
+                        ForceHandleValue -= 0.5f;
+                        if (ForceHandleValue < -100)
+                            ForceHandleValue = -100;
+                        Simulator.Confirmer.Information("Force dereased to " + ((int)ForceHandleValue).ToString());
+                    }
+                    if (!forceHandleDecreasing && !forceHandleIncreasing)
+                    {
+                        if (ForceHandleValue < 1.5f && ForceHandleValue > 0)
+                        {
+                            ForceHandleValue = 0;
+                            SelectedMaxAccelerationStep = 0;
+                        }
+                        if (ForceHandleValue > -1.5f && ForceHandleValue < 0)
+                            ForceHandleValue = 0;
+                    }
+                    if (CruiseControl == null)
+                    {
+                        if (ForceHandleValue == 0)
+                        {
+                            ThrottlePercent = 0;
+                            if (DynamicBrakePercent >= 0)
+                            {
+                                DynamicBrakePercent = 0;
+                                DynamicBrakeChangeActiveState(false);
+                            }
+                        }
+                        if (ForceHandleValue > 0)
+                        {
+                            SetThrottlePercent(ForceHandleValue);
+                        }
+                        if (ForceHandleValue < 0)
+                        {
+                            SetDynamicBrakePercent(-ForceHandleValue);
+                        }
+                    }
+                    else
+                    {
+                        if (CruiseControl.SpeedRegMode != CruiseControl.SpeedRegulatorMode.Auto)
+                        {
+                            if (ForceHandleValue == 0)
+                            {
+                                ThrottlePercent = 0;
+                                if (DynamicBrakePercent >= 0)
+                                {
+                                    SetDynamicBrakeValue(-1);
+                                }
+                            }
+                            if (ForceHandleValue > 0)
+                            {
+                                SetThrottlePercent(ForceHandleValue);
+                            }
+                            if (ForceHandleValue < 0)
+                            {
+                                DynamicBrakePercent = -ForceHandleValue;
+                            }
+                        }
+                        else
+                        {
+                            if (ForceHandleValue == 0)
+                            {
+                                ThrottlePercent = 0;
+                                if (DynamicBrakePercent >= 0)
+                                {
+                                    DynamicBrakeChangeActiveState(false);
+                                }
+                            }
+                            if (ForceHandleValue > 0)
+                            {
+                                SelectedMaxAccelerationStep = ForceHandleValue;
+                            }
+                            if (ForceHandleValue < 0)
+                            {
+                                DynamicBrakePercent = -ForceHandleValue;
+                            }
+                        }
+                    }
+                    ControllerVolts = ForceHandleValue / 10;
                 }
-                if (increasingDynamicBrake && DynamicBrakePercent < 99)
-                    DynamicBrakePercent += 1f;
-                if (decreasingDynamicBrake && DynamicBrakePercent > -1)
-                    DynamicBrakePercent -= 1f;
-                if (increasingThrottle)
-                    ControllerVolts += 0.25f;
-                if (ControllerVolts > 10)
-                    ControllerVolts = 10;
-                if (decreasingThrottle)
-                    ControllerVolts -= 0.25f;
-                if (ControllerVolts < -10)
-                    ControllerVolts = -10;
                 if (extendedPhysics != null)
                     extendedPhysics.Update(elapsedClockSeconds);
                 if (CruiseControl != null)
@@ -5110,36 +5182,21 @@ namespace Orts.Simulation.RollingStocks
             CommandStartTime = Simulator.ClockTime;
         }
 
-        private bool increasingThrottle = false;
-        private bool decreasingDynamicBrake = false;
+        private bool forceHandleIncreasing = false;
+        private bool forceHandleDecreasing = false;
         public void StartThrottleIncrease()
         {
-            if (DynamicBrakePercent > 0)
-                decreasingDynamicBrake = true;
+
             if (DynamicBrakePercent > 0 && SpeedMpS == 0)
             {
                 DynamicBrakePercent = 0;
                 DynamicBrakeChangeActiveState(false);
             }
             Mirel.ResetVigilance();
-            if (extendedPhysics != null)
+            if (UsingForceHandle)
             {
-                if (CruiseControl != null)
-                {
-                    if (extendedPhysics.UseControllerVolts && CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.Manual)
-                    {
-                        increasingThrottle = true;
-                        return;
-                    }
-                }
-                else
-                {
-                    if (extendedPhysics.UseControllerVolts)
-                    {
-                        increasingThrottle = true;
-                        return;
-                    }
-                }
+                forceHandleIncreasing = true;
+                return;
             }
             if (MultiPositionControllers != null)
             {
@@ -5190,15 +5247,6 @@ namespace Orts.Simulation.RollingStocks
                 }
             }
 
-            if (extendedPhysics != null)
-            {
-                if (extendedPhysics.UseControllerVolts)
-                {
-                    increasingThrottle = true;
-                    return;
-                }
-            }
-
             if (CombinedControlType == CombinedControl.ThrottleDynamic && DynamicBrake)
                 StartDynamicBrakeDecrease(null);
             else if (CombinedControlType == CombinedControl.ThrottleAir && TrainBrakeController.CurrentValue > 0)
@@ -5209,8 +5257,7 @@ namespace Orts.Simulation.RollingStocks
 
         public void StopThrottleIncrease()
         {
-            increasingThrottle = false;
-            decreasingDynamicBrake = false;
+            forceHandleIncreasing = false;
             Mirel.ResetVigilance();
             if (MultiPositionControllers != null)
             {
@@ -5278,30 +5325,14 @@ namespace Orts.Simulation.RollingStocks
         }
 
         protected bool speedSelectorModeDecreasing = false;
-        protected bool decreasingThrottle = false;
-        protected bool increasingDynamicBrake = false;
         public void StartThrottleDecrease()
         {
-            if (extendedPhysics != null)
-            {
-                if (CruiseControl == null)
-                {
-                    if (extendedPhysics.UseControllerVolts)
-                    {
-                        decreasingThrottle = true;
-                        return;
-                    }
-                }
-                else if (!CruiseControl.UseThrottleAsForceSelector || CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.Manual)
-                {
-                    if (extendedPhysics.UseControllerVolts)
-                    {
-                        decreasingThrottle = true;
-                        return;
-                    }
-                }
-            }
             Mirel.ResetVigilance();
+            if (UsingForceHandle)
+            {
+                forceHandleDecreasing = true;
+                return;
+            }
             if (MultiPositionControllers != null)
             {
                 foreach (MultiPositionController mpc in MultiPositionControllers)
@@ -5313,41 +5344,6 @@ namespace Orts.Simulation.RollingStocks
                             mpc.StateChanged = true;
                             mpc.DoMovement(MultiPositionController.Movement.Aft);
                         }
-                        return;
-                    }
-                }
-            }
-            if (CruiseControl != null && (CombinedControlType == CombinedControl.None || CombinedControlType == CombinedControl.ThrottleDynamic))
-            {
-                if (CruiseControl.UseThrottleAsForceSelector && CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.Auto)
-                {
-                    if (SelectedMaxAccelerationStep > 0)
-                        CruiseControl.SpeedRegulatorMaxForceStartDecrease();
-                    else
-                    {
-                        if (CruiseControl.controllerVolts > 0)
-                        {
-                            CruiseControl.controllerVolts = 0;
-                            ControllerVolts = 0;
-                            DynamicBrakeChangeActiveState(true);
-                        }
-                        {
-                            increasingDynamicBrake = true;
-                        }
-
-
-                    }
-                    return;
-                }
-                else
-                {
-                    if (CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.Auto && CruiseControl.UseThrottleAsSpeedSelector)
-                    {
-                        CruiseControl.SpeedRegulatorSelectedSpeedStartDecrease();
-                        return;
-                    }
-                    if (CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.Auto && !CruiseControl.UseThrottleAsSpeedSelector)
-                    {
                         return;
                     }
                 }
@@ -5369,9 +5365,12 @@ namespace Orts.Simulation.RollingStocks
 
         public void StopThrottleDecrease()
         {
-            decreasingThrottle = false;
-            increasingDynamicBrake = false;
             Mirel.ResetVigilance();
+            if (UsingForceHandle)
+            {
+                forceHandleDecreasing = false;
+                return;
+            }
             if (MultiPositionControllers != null)
             {
                 foreach (MultiPositionController mpc in MultiPositionControllers)
@@ -5579,7 +5578,7 @@ namespace Orts.Simulation.RollingStocks
         {
             if (CruiseControl != null)
             {
-                if (CruiseControl.UseThrottleAsForceSelector && CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.Auto)
+                if (CruiseControl.UseThrottleAsForceSelector && CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.Auto && !UsingForceHandle)
                 {
                     CruiseControl.SetMaxForcePercent(percent);
                     return;
@@ -7963,33 +7962,7 @@ namespace Orts.Simulation.RollingStocks
                         break;
                     }
                 case CABViewControlTypes.REQUESTED_FORCE:
-                    bool autoMode = false;
-                    if (CruiseControl != null)
-                    {
-                        if (CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.Auto)
-                        {
-                            autoMode = true;
-                            if (SelectedMaxAccelerationStep > 0)
-                                data = SelectedMaxAccelerationStep;
-                            else if (DynamicBrakePercent > 0)
-                                data = -DynamicBrakePercent;
-
-                        }
-                        else
-                        {
-                            if (ThrottlePercent > 0)
-                                data = ThrottlePercent;
-                            else if (DynamicBrakePercent > 0)
-                                data = -DynamicBrakePercent;
-                        }
-                    }
-                    if (!autoMode)
-                    {
-                        if (ThrottlePercent > 0)
-                            data = ThrottlePercent;
-                        else if (DynamicBrakePercent > 0)
-                            data = -DynamicBrakePercent;
-                    }
+                    data = ForceHandleValue;
                     break;
                 case CABViewControlTypes.REQUESTED_MOTOR_FORCE:
                     data = 0.0f;

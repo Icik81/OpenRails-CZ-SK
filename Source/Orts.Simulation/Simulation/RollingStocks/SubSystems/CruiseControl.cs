@@ -206,6 +206,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems
 
         public void Update(float elapsedClockSeconds, float wheelSpeedMpS)
         {
+            if (Locomotive.ForceHandleValue < 0)
+                return;
             elapsedTime += elapsedClockSeconds;
             if (maxForceIncreasing) SpeedRegulatorMaxForceIncrease();
             if (maxForceDecreasing) SpeedRegulatorMaxForceDecrease();

@@ -2209,50 +2209,10 @@ namespace Orts.Viewer3D.RollingStock
                     else
                         index = PercentToIndex(Locomotive.GetCombinedHandleValue(false));
                     break;
-                case CABViewControlTypes.FORCE_HANDLE:
-                    bool autoMode = false;
-                    if (Locomotive.CruiseControl != null)
-                    {
-                        if (Locomotive.CruiseControl.SpeedRegMode == Simulation.RollingStocks.SubSystems.CruiseControl.SpeedRegulatorMode.Auto)
-                        {
-                            autoMode = true;
-                            if (Locomotive.SelectedMaxAccelerationStep > 0)
-                            {
-                                index = PercentToIndex((Locomotive.SelectedMaxAccelerationStep / 2) + 50);
-                            }
-                            else if (Locomotive.DynamicBrakePercent > 0)
-                            {
-                                float percent = 100 - Locomotive.DynamicBrakePercent;
-                                percent /= 2;
-                                if (percent < 1 && percent != 0)
-                                    percent = 2;
-                                index = PercentToIndex(percent);
-                            }
-                            if (Locomotive.SelectedMaxAccelerationStep == 0 && Locomotive.DynamicBrakePercent <= 0)
-                            {
-                                index = PercentToIndex(50);
-                            }
-                        }
-                    }
-                    if (!autoMode)
-                    {
-                        if (Locomotive.ThrottlePercent > 0)
-                        {
-                            index = PercentToIndex((Locomotive.ThrottlePercent / 2) + 50);
-                        }
-                        else if (Locomotive.DynamicBrakePercent > 0)
-                        {
-                            float percent = 100 - Locomotive.DynamicBrakePercent;
-                            percent /= 2;
-                            if (percent < 1 && percent != 0)
-                                percent = 2;
-                            index = PercentToIndex(percent);
-                        }
-                        if (Locomotive.ThrottlePercent == 0 && Locomotive.DynamicBrakePercent <= 0)
-                        {
-                            index = PercentToIndex(50);
-                        }
-                    }
+                case CABViewControlTypes.FORCE_HANDLE: // hard coded for vectron in v1.5
+                    index = (int)((Locomotive.ForceHandleValue / 2) + 50) / 10;
+                    if (((Locomotive.ForceHandleValue / 2) + 50) > 50 && index < 6)
+                        index = 6;
                     break;
                 case CABViewControlTypes.ORTS_SELECTED_SPEED_DISPLAY:
                     if (Locomotive.CruiseControl == null)
@@ -3774,6 +3734,14 @@ namespace Orts.Viewer3D.RollingStock
                 DrawText = Locomotive.GetDataOfS(digital, elapsedTime);
                 while (DrawText.Length < 3)
                     DrawText = " " + DrawText;
+                DrawColor = new Color(digital.PositiveColor.R, digital.PositiveColor.G, digital.PositiveColor.B);
+            }
+            else if (Control.ControlType == CABViewControlTypes.REQUESTED_FORCE)
+            {
+                if (Num >= 0)
+                    DrawText = "+" + ((int)Num).ToString();
+                else
+                    DrawText = ((int)Num).ToString();
                 DrawColor = new Color(digital.PositiveColor.R, digital.PositiveColor.G, digital.PositiveColor.B);
             }
             else if (digital.OldValue != 0 && digital.OldValue > Num && digital.DecreaseColor.A != 0)
