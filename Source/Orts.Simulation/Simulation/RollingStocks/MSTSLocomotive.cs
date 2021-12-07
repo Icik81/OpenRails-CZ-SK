@@ -583,6 +583,10 @@ namespace Orts.Simulation.RollingStocks
         public bool Pantograph3CanOn = false;
         public float PantographOnPressedTime;
         public float PantographOffPressedTime;
+        public bool TrainHasFirstPantoMarker;
+        public int TrainPantoMarker;
+        public bool AIPantoChange;
+        public bool AIPanto2Raise = false;
 
 
         // Jindrich
