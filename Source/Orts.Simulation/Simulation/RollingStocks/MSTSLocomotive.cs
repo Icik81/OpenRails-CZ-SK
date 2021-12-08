@@ -7672,6 +7672,7 @@ namespace Orts.Simulation.RollingStocks
         private float previousSelectedSpeed = 0;
         private float previousMaxMirelSpeed = 0;
         private float previousTrainBrakeData = 0;
+        private List<float> requestedForce = new List<float>();
         public virtual float GetDataOf(CabViewControl cvc)
         {
             CheckBlankDisplay(cvc);
@@ -7973,7 +7974,14 @@ namespace Orts.Simulation.RollingStocks
                         break;
                     }
                 case CABViewControlTypes.REQUESTED_FORCE:
-                    data = ForceHandleValue;
+                    float maxForce = (extendedPhysics.TotalMaxForceN / MaxForceN) * 100;
+                    requestedForce.Add(maxForce);
+                    if (requestedForce.Count >= 500)
+                    {
+                        requestedForce.RemoveAt(0);
+                    }
+                    maxForce = requestedForce.Average();
+                    data = cvc is Orts.Formats.Msts.CVCDigital ? ForceHandleValue : (maxForce < ForceHandleValue ? maxForce : ForceHandleValue);                    
                     break;
                 case CABViewControlTypes.REQUESTED_MOTOR_FORCE:
                     data = 0.0f;

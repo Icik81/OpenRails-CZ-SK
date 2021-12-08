@@ -1684,7 +1684,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                     }
                 }
 
-                if (Locomotive.WheelSpeedMpS == 0 && controllerVolts < 0)
+                if (Locomotive.AbsSpeedMpS == 0 && controllerVolts < 0)
                     controllerVolts = 0;
                 ForceThrottleAndDynamicBrake = controllerVolts;
                 if (controllerVolts > 0)
