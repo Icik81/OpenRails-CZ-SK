@@ -1294,9 +1294,14 @@ namespace Orts.Simulation.RollingStocks
         bool CurrentAIDirection = false;
         bool PreAIDirection = false;
         float AIPantoChangeTime = 0;
+        bool TrainHasMassKoef = false;
+        bool TrainIsPassenger = false;
+        bool TrainHasBreakSpeedPanto2Down = false;
+        float BreakSpeedPanto2Down;
+
         protected void SetAIPantoDown(float elapsedClockSeconds)
         {
-            if (IsPlayerTrain || MaxPowerW < 10 * 1000) // Hráč nebo AI s nižším výkonem než 10kW (ms lokomotivy)
+            if (IsPlayerTrain)  
                 return;
                                     
             if (GameTimeCyklus10 == 10 && TrainHasFirstPantoMarker)
@@ -1317,8 +1322,8 @@ namespace Orts.Simulation.RollingStocks
                                     AIPantoDownStop = false;
                                 if (AITimeToGo < 120) // Čekání 2min pro nahození 2.pantografu 
                                     AIPanto2Raise = true;
-                            }                            
-                        }                        
+                            }
+                        }                                                
                     }
                 }                                
             }
@@ -1334,7 +1339,7 @@ namespace Orts.Simulation.RollingStocks
                 CurrentAIDirection = false;
                 UsingRearCab = false;
             }
-            if (PreAIDirection != CurrentAIDirection && MaxPowerW > 1200 * 1000)
+            if (PreAIDirection != CurrentAIDirection && MassKG > 75 * 1000)
                 AIPantoChange = true;
             PreAIDirection = CurrentAIDirection;
 
@@ -1356,6 +1361,10 @@ namespace Orts.Simulation.RollingStocks
                 {
                     AIPantoChange = false;
                     AIPantoChangeTime = 0;
+                    AIPanto2Raise = true;
+                    TrainHasMassKoef = false;
+                    TrainIsPassenger = false;
+                    TrainHasBreakSpeedPanto2Down = false;
                 }
             }            
 
@@ -1365,26 +1374,40 @@ namespace Orts.Simulation.RollingStocks
                 //Simulator.Confirmer.Message(ConfirmLevel.Warning, "ID " + (Train as AITrain).GetTrainName(CarID) + "   Hmotnost " + (Train as AITrain).MassKg / 1000 + " t");
                 float TrainMassKg = 400 * 1000; // Vlak těžší než 400t
                 float MassKoef = 0;
-                if (WagonType == WagonTypes.Passenger)
+
+                if (!TrainHasMassKoef)
                 {
-                    if ((Train as AITrain).MassKg > 200 * 1000)
-                        MassKoef = Simulator.Random.Next(0, 3) * 100 * 1000;
+                    foreach (TrainCar car in Train.Cars)
+                    {
+                        if (car.WagonType == WagonTypes.Passenger && !TrainIsPassenger)
+                        {
+                            if ((Train as AITrain).MassKg > 200 * 1000)
+                                MassKoef = Simulator.Random.Next(0, 3) * 100 * 1000;
+                            TrainHasMassKoef = true;
+                            TrainIsPassenger = true;
+                        }
+                    }
+                    TrainHasMassKoef = true;
                 }
+                
                 if (Simulator.Season == SeasonType.Winter)
                     MassKoef = 250 * 1000;
-                
-                if ((Train as AITrain).MassKg > TrainMassKg - MassKoef) 
-                {
-                    if (TrainPantoMarker == 1)
-                        SignalEvent(PowerSupplyEvent.RaisePantograph, 2);
-                    if (TrainPantoMarker == 2)
-                        SignalEvent(PowerSupplyEvent.RaisePantograph, 1);
 
-                    float BreakSpeedPanto2Down;
-                    if (WagonType == WagonTypes.Passenger)
-                        BreakSpeedPanto2Down = 30.0f / 3.6f;
-                    else
-                        BreakSpeedPanto2Down = 18.0f / 3.6f;
+                if ((Train as AITrain).MassKg > TrainMassKg - MassKoef)
+                {
+                    if (!TrainHasBreakSpeedPanto2Down)
+                    {
+                        if (TrainPantoMarker == 1)
+                            SignalEvent(PowerSupplyEvent.RaisePantograph, 2);
+                        if (TrainPantoMarker == 2)
+                            SignalEvent(PowerSupplyEvent.RaisePantograph, 1);
+
+                        if (TrainIsPassenger)
+                            BreakSpeedPanto2Down = Simulator.Random.Next(20, 40) / 3.6f;
+                        else
+                            BreakSpeedPanto2Down = Simulator.Random.Next(15, 25) / 3.6f;
+                        TrainHasBreakSpeedPanto2Down = true;
+                    }
 
                     if (Math.Abs((Train as AITrain).SpeedMpS) > BreakSpeedPanto2Down || IsOverJunction()) // Překročí rychlost nebo je na výhybce
                     {
@@ -1393,7 +1416,16 @@ namespace Orts.Simulation.RollingStocks
                         if (TrainPantoMarker == 2)
                             SignalEvent(PowerSupplyEvent.LowerPantograph, 1);
                         AIPanto2Raise = false;
+                        TrainHasMassKoef = false;
+                        TrainIsPassenger = false;
+                        TrainHasBreakSpeedPanto2Down = false;
                     }
+                }
+                else
+                {
+                    AIPanto2Raise = false;
+                    TrainHasMassKoef = false;
+                    TrainIsPassenger = false;
                 }
             }
 
@@ -1421,7 +1453,7 @@ namespace Orts.Simulation.RollingStocks
                     TrainPantoMarker = 1;
                 SignalEvent(Event.EnginePowerOff);
             }
-
+            
             if (GameTimeCyklus10 == 10)
             {                
                 for (int i = 1; i <= Pantographs.Count; i++)

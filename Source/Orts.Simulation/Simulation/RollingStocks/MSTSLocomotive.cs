@@ -3747,7 +3747,7 @@ namespace Orts.Simulation.RollingStocks
                     else if (extendedPhysics != null)
                         extendedPhysics.OverridenControllerVolts = ControllerVolts - skidSpeedDegratation;
                 }
-                if (extendedPhysics.OverridenControllerVolts > 10)
+                if (extendedPhysics != null && extendedPhysics.OverridenControllerVolts > 10)
                     extendedPhysics.OverridenControllerVolts = 10;
             }
             ApplyDirectionToTractiveForce();
