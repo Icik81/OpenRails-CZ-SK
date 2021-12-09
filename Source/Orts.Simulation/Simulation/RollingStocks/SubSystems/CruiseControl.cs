@@ -1260,7 +1260,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                     if (PreciseSpeedControl)
                         delta *= 3;
                     float coeff = 1;
-                    float speed = SpeedIsMph ? MpS.ToMpH(Locomotive.WheelSpeedMpS) : MpS.ToKpH(Locomotive.WheelSpeedMpS);
+                    float speed = SpeedIsMph ? MpS.ToMpH(wheelSpeedMpS) : MpS.ToKpH(wheelSpeedMpS);
                     if (speed > 100)
                     {
                         coeff = (speed / 100) * 1.2f;
@@ -1820,7 +1820,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                     if (controllerVolts > 0)
                     {
                         breakout = false;
-                        Locomotive.ControllerVolts = controllerVolts / 10;
+                        //Locomotive.ControllerVolts = controllerVolts / 10;
                     }
                     else
                     {
