@@ -4605,7 +4605,7 @@ namespace Orts.Simulation.RollingStocks
                     }
                     WheelSpeedMpS = LocomotiveAxle.AxleSpeedMpS;
                 }
-                if (extendedPhysics != null && !extendedPhysics.UseControllerVolts)
+                else if (!extendedPhysics.UseControllerVolts)
                 {
                     if (AdhesionEfficiencyKoef == 0) AdhesionEfficiencyKoef = 1.00f;
                     LocomotiveAxle.AdhesionEfficiencyKoef = AdhesionEfficiencyKoef;
@@ -7998,12 +7998,57 @@ namespace Orts.Simulation.RollingStocks
                     }
                 case CABViewControlTypes.REQUESTED_FORCE:
                     float maxForce = (extendedPhysics.TotalMaxForceN / MaxForceN) * 100;
-                    requestedForce.Add(maxForce);
-                    if (requestedForce.Count >= 500)
+                    if (CruiseControl != null)
                     {
-                        requestedForce.RemoveAt(0);
+                        if (CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.Auto)
+                        {
+                            maxForce = 0;
+                            foreach (Undercarriage uc in extendedPhysics.Undercarriages)
+                            {
+                                foreach (ExtendedAxle ea in uc.Axles)
+                                {
+                                    maxForce += ea.maxForceN;
+                                }
+                            }
+                            maxForce = (maxForce / MaxForceN) * 100;
+                        }
                     }
-                    maxForce = requestedForce.Average();
+                    if (CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.Auto)
+                    {
+                        float diff = CruiseControl.SelectedSpeedMpS - AbsSpeedMpS;
+                        if (diff > 1.5 && diff > 0)
+                        {
+                            float mForce = maxForce;
+                            maxForce = ForceHandleValue;
+                            if (mForce < ForceHandleValue)
+                                maxForce = mForce;
+                        }
+                        if (diff < 0)
+                        {
+                            maxForce = 0;
+                            foreach (Undercarriage ucc in extendedPhysics.Undercarriages)
+                            {
+                                foreach (ExtendedAxle eaa in ucc.Axles)
+                                {
+                                    maxForce += eaa.ForceN;
+                                }
+                            }
+                            maxForce = (maxForce / MaxForceN) * 100;
+                        }
+                    }
+                    if (CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.Auto)
+                    {
+                        requestedForce.Add(maxForce);
+                        if (requestedForce.Count >= 50)
+                        {
+                            requestedForce.RemoveAt(0);
+                        }
+                        maxForce = requestedForce.Average();
+                    }
+                    if (CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.Manual)
+                    {
+                        requestedForce.Clear();
+                    }
                     data = cvc is Orts.Formats.Msts.CVCDigital ? ForceHandleValue : (maxForce < ForceHandleValue ? maxForce : ForceHandleValue);                    
                     break;
                 case CABViewControlTypes.REQUESTED_MOTOR_FORCE:

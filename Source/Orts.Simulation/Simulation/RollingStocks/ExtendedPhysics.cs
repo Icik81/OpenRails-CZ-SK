@@ -425,36 +425,36 @@ namespace Orts.Simulation.RollingStocks
                         if (Locomotive.TractiveForceCurves != null)
                         {
                             if (overridenControllerVolts != Locomotive.ControllerVolts)
-                                maxForceN = Locomotive.TractiveForceCurves.Get(overridenControllerVolts / Locomotive.MaxControllerVolts, WheelSpeedMpS) / totalMotors;
+                                maxForceN = Locomotive.TractiveForceCurves.Get(Locomotive.CruiseControl.controllerVolts / 100 < overridenControllerVolts ? (Locomotive.CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.Auto ? Locomotive.CruiseControl.controllerVolts / 100 : Locomotive.CruiseControl.controllerVolts / 10) : (usingControllerVolts ? 1 : overridenControllerVolts / Locomotive.MaxControllerVolts), WheelSpeedMpS) / totalMotors;
                             else
-                                maxForceN = Locomotive.TractiveForceCurves.Get(Locomotive.ControllerVolts / Locomotive.MaxControllerVolts, WheelSpeedMpS) / totalMotors;
+                                maxForceN = Locomotive.TractiveForceCurves.Get(Locomotive.CruiseControl.controllerVolts / 100 < Locomotive.ControllerVolts ? (Locomotive.CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.Auto ? Locomotive.CruiseControl.controllerVolts / 100 : Locomotive.CruiseControl.controllerVolts / 10) : (usingControllerVolts ? 1 : Locomotive.ControllerVolts / Locomotive.MaxControllerVolts), WheelSpeedMpS) / totalMotors;
                         }
                         break;
                     case 2:
                         if (Locomotive.TractiveForceCurvesAC != null)
                         {
                             if (overridenControllerVolts != Locomotive.ControllerVolts)
-                                maxForceN = Locomotive.TractiveForceCurvesAC.Get(overridenControllerVolts / Locomotive.MaxControllerVolts, WheelSpeedMpS) / totalMotors;
+                                maxForceN = Locomotive.TractiveForceCurvesAC.Get(Locomotive.CruiseControl.controllerVolts / 100 < overridenControllerVolts ? (Locomotive.CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.Auto ? Locomotive.CruiseControl.controllerVolts / 100 : Locomotive.CruiseControl.controllerVolts / 10) : (usingControllerVolts ? 1 : overridenControllerVolts / Locomotive.MaxControllerVolts), WheelSpeedMpS) / totalMotors;
                             else
-                                maxForceN = Locomotive.TractiveForceCurvesAC.Get(Locomotive.ControllerVolts / Locomotive.MaxControllerVolts, WheelSpeedMpS) / totalMotors;
+                                maxForceN = Locomotive.TractiveForceCurvesAC.Get(Locomotive.CruiseControl.controllerVolts / 100 < Locomotive.ControllerVolts ? (Locomotive.CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.Auto ? Locomotive.CruiseControl.controllerVolts / 100 : Locomotive.CruiseControl.controllerVolts / 10) : (usingControllerVolts ? 1 : Locomotive.ControllerVolts / Locomotive.MaxControllerVolts), WheelSpeedMpS) / totalMotors;
                         }
                         break;
                 }
                 if (Locomotive.ControllerVolts > 0 && Locomotive.TractiveForceCurvesAC == null && Locomotive.TractiveForceCurvesDC == null && Locomotive.TractiveForceCurves != null)
                 {
                     if (overridenControllerVolts != Locomotive.ControllerVolts)
-                        maxForceN = Locomotive.TractiveForceCurves.Get(overridenControllerVolts / Locomotive.MaxControllerVolts, WheelSpeedMpS) / totalMotors;
+                        maxForceN = Locomotive.TractiveForceCurves.Get(Locomotive.CruiseControl.controllerVolts / 100 < overridenControllerVolts ? (Locomotive.CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.Auto ? Locomotive.CruiseControl.controllerVolts / 100 : Locomotive.CruiseControl.controllerVolts / 10) : (usingControllerVolts ? 1 : overridenControllerVolts / Locomotive.MaxControllerVolts), WheelSpeedMpS) / totalMotors;
                     else
-                        maxForceN = Locomotive.TractiveForceCurves.Get(Locomotive.ControllerVolts / Locomotive.MaxControllerVolts, WheelSpeedMpS) / totalMotors;
+                        maxForceN = Locomotive.TractiveForceCurves.Get(Locomotive.CruiseControl.controllerVolts / 100 < Locomotive.ControllerVolts ? (Locomotive.CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.Auto ? Locomotive.CruiseControl.controllerVolts / 100 : Locomotive.CruiseControl.controllerVolts / 10) : (usingControllerVolts ? 1 : Locomotive.ControllerVolts / Locomotive.MaxControllerVolts), WheelSpeedMpS) / totalMotors;
                 }
                 maxForceN = maxForceN * Locomotive.UiPowerLose;
             }
             else if (Locomotive.ControllerVolts > 0)
             {
                 if (overridenControllerVolts != Locomotive.ControllerVolts)
-                    maxForceN = Locomotive.MaxForceN * (overridenControllerVolts / Locomotive.MaxControllerVolts) / 4;
+                    maxForceN = Locomotive.MaxForceN * (overridenControllerVolts / Locomotive.MaxControllerVolts) / totalMotors;
                 else
-                    maxForceN = Locomotive.MaxForceN * (Locomotive.ControllerVolts / Locomotive.MaxControllerVolts) / 4;
+                    maxForceN = Locomotive.MaxForceN * (Locomotive.ControllerVolts / Locomotive.MaxControllerVolts) / totalMotors;
                 maxForceN = maxForceN * Locomotive.UiPowerLose;
             }
             else if ((Locomotive.DynamicBrakeForceCurves != null || Locomotive.DynamicBrakeForceCurvesAC != null || Locomotive.DynamicBrakeForceCurvesDC != null) && Locomotive.ControllerVolts < 0)
