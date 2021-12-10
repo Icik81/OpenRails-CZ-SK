@@ -4605,7 +4605,7 @@ namespace Orts.Simulation.RollingStocks
                     }
                     WheelSpeedMpS = LocomotiveAxle.AxleSpeedMpS;
                 }
-                if (!extendedPhysics.UseControllerVolts)
+                if (extendedPhysics != null && !extendedPhysics.UseControllerVolts)
                 {
                     if (AdhesionEfficiencyKoef == 0) AdhesionEfficiencyKoef = 1.00f;
                     LocomotiveAxle.AdhesionEfficiencyKoef = AdhesionEfficiencyKoef;

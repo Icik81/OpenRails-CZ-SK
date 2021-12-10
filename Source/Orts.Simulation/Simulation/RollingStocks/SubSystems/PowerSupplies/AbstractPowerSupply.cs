@@ -46,11 +46,13 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                     switch (state)
                     {
                         case PowerSupplyState.PowerOff:
-                            Locomotive.SignalEvent(Event.EnginePowerOff);
+                            // Icik
+                            //Locomotive.SignalEvent(Event.EnginePowerOff);
                             break;
 
                         case PowerSupplyState.PowerOn:
-                            Locomotive.SignalEvent(Event.EnginePowerOn);
+                            // Icik
+                            //Locomotive.SignalEvent(Event.EnginePowerOn);
                             break;
                     }
 

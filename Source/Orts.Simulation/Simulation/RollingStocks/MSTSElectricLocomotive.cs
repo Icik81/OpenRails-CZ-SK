@@ -1347,6 +1347,9 @@ namespace Orts.Simulation.RollingStocks
             if (AIPantoChange && TrainHasFirstPantoMarker)
             {
                 SignalEvent(PowerSupplyEvent.LowerPantograph);
+                if (PowerOn)
+                    SignalEvent(Event.EnginePowerOff);
+                PowerOn = false;
                 //Simulator.Confirmer.Message(ConfirmLevel.Warning, "ID " + (Train as AITrain).GetTrainName(CarID) + "   změna směru ");
                 if (AIPantoChangeTime == 0)
                 {
@@ -1452,6 +1455,7 @@ namespace Orts.Simulation.RollingStocks
                 else
                     TrainPantoMarker = 1;
                 SignalEvent(Event.EnginePowerOff);
+                PowerOn = false;
             }
             
             if (GameTimeCyklus10 == 10)
@@ -1467,6 +1471,9 @@ namespace Orts.Simulation.RollingStocks
                             {
                                 Pantographs[i].PantographsUpBlocked = false;
                                 SignalEvent(PowerSupplyEvent.RaisePantograph, TrainPantoMarker);
+                                if (!PowerOn)
+                                    SignalEvent(Event.EnginePowerOn);
+                                PowerOn = true;
                             }
                             break;
                         case PantographState.Up:
@@ -1474,6 +1481,9 @@ namespace Orts.Simulation.RollingStocks
                             {
                                 Pantographs[i].PantographsUpBlocked = true;
                                 SignalEvent(PowerSupplyEvent.LowerPantograph);
+                                if (PowerOn)
+                                    SignalEvent(Event.EnginePowerOff);
+                                PowerOn = false;
                                 if (!AIPantoDownStop)
                                     AIPantoDown = true;
                             }
