@@ -330,7 +330,7 @@ namespace Orts.Simulation.RollingStocks
             }
             wasRestored = false;
             AverageAxleSpeedMpS /= NumAxles;
-//            if (UseControllerVolts)
+            if (UseControllerVolts)
                 Locomotive.MotiveForceN = Locomotive.TractiveForceN = TotalForceN;
 
             //Locomotive.Simulator.Confirmer.MSG(TotalForceN.ToString() + " " + Locomotive.TractiveForceN.ToString());
@@ -407,7 +407,7 @@ namespace Orts.Simulation.RollingStocks
                 axleCurrent = axleCurrent + em.RotorCurrent;
                 maxCurrent = maxCurrent + em.MaxRotorCurrent;
             }
-            if ((Locomotive.TractiveForceCurves != null || Locomotive.TractiveForceCurvesAC != null || Locomotive.TractiveForceCurvesDC != null) && Locomotive.ControllerVolts > 0)
+            if ((Locomotive.TractiveForceCurves != null || Locomotive.TractiveForceCurvesAC != null || Locomotive.TractiveForceCurvesDC != null) && overridenControllerVolts > 0 && Locomotive.ControllerVolts > 0)
             {
                 // Icik
                 switch (Locomotive.SwitchingVoltageMode)
@@ -416,9 +416,9 @@ namespace Orts.Simulation.RollingStocks
                         if (Locomotive.TractiveForceCurvesDC != null)
                         {
                             if (overridenControllerVolts != Locomotive.ControllerVolts)
-                                maxForceN = Locomotive.TractiveForceCurvesDC.Get(Locomotive.CruiseControl.controllerVolts < overridenControllerVolts ? Locomotive.CruiseControl.controllerVolts / 10 : (usingControllerVolts ? 1 : overridenControllerVolts / Locomotive.MaxControllerVolts), WheelSpeedMpS) / totalMotors;
+                                maxForceN = Locomotive.TractiveForceCurvesDC.Get(Locomotive.CruiseControl.controllerVolts / 100 < overridenControllerVolts ? (Locomotive.CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.Auto? Locomotive.CruiseControl.controllerVolts / 100 : Locomotive.CruiseControl.controllerVolts / 10) : (usingControllerVolts ? 1 : overridenControllerVolts / Locomotive.MaxControllerVolts), WheelSpeedMpS) / totalMotors;
                             else
-                                maxForceN = Locomotive.TractiveForceCurvesDC.Get(Locomotive.CruiseControl.controllerVolts < Locomotive.ControllerVolts ? Locomotive.CruiseControl.controllerVolts / 10 : (usingControllerVolts ? 1 : Locomotive.ControllerVolts / Locomotive.MaxControllerVolts), WheelSpeedMpS) / totalMotors;
+                                maxForceN = Locomotive.TractiveForceCurvesDC.Get(Locomotive.CruiseControl.controllerVolts / 100 < Locomotive.ControllerVolts ? (Locomotive.CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.Auto ? Locomotive.CruiseControl.controllerVolts / 100 : Locomotive.CruiseControl.controllerVolts / 10) : (usingControllerVolts ? 1 : Locomotive.ControllerVolts / Locomotive.MaxControllerVolts), WheelSpeedMpS) / totalMotors;
                         }
                         break;
                     case 1:
@@ -488,13 +488,15 @@ namespace Orts.Simulation.RollingStocks
                 maxForceN = -Locomotive.MaxForceN * (-Locomotive.ControllerVolts / Locomotive.MaxControllerVolts) / 4;
                 maxForceN = maxForceN * Locomotive.UiPowerLose;
             }
-            if (Locomotive.CruiseControl != null)
-            {
-              if (((Locomotive.CruiseControl.SelectedMaxAccelerationPercent == 0 && Locomotive.SelectedMaxAccelerationStep == 0) || Locomotive.CruiseControl.SpeedSelMode == CruiseControl.SpeedSelectorMode.Neutral) && maxForceN > 0 && Locomotive.CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.Auto)
-                {
-                    maxForceN = 0;
-                }
-            }
+            /*            if (Locomotive.CruiseControl != null)
+                        {
+                          if (((Locomotive.CruiseControl.SelectedMaxAccelerationPercent == 0 && Locomotive.SelectedMaxAccelerationStep == 0) || Locomotive.CruiseControl.SpeedSelMode == CruiseControl.SpeedSelectorMode.Neutral) && maxForceN > 0 && Locomotive.CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.Auto)
+                            {
+                                maxForceN = 0;
+                            }
+                        }*/
+            if (Locomotive.ControllerVolts == 0 && maxForceN > 0)
+                maxForceN = 0;
             if (!Locomotive.PowerOn)
                 maxForceN = 0;
             maxForceN += (reducedForceN * 2);
@@ -555,7 +557,7 @@ namespace Orts.Simulation.RollingStocks
             LocomotiveAxle.AdhesionConditions = Locomotive.LocomotiveAxle.AdhesionConditions;//Set the train speed of the axle model
             LocomotiveAxle.Update(elapsedClockSeconds);         //Main updater of the axle model
             WheelSpeedMpS = LocomotiveAxle.AxleSpeedMpS;
-            /*if (Locomotive.CruiseControl != null)
+            if (Locomotive.CruiseControl != null)
             {
                 if ((Locomotive.CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.Auto && Locomotive.ThrottlePercent > 0 && ((Locomotive.CruiseControl.SelectedSpeedMpS - Locomotive.AbsSpeedMpS) > 0.05f) && Locomotive.SelectedMaxAccelerationStep > 0 && Locomotive.CruiseControl.PreciseSpeedControl) || (ForceN < 0 && Locomotive.CruiseControl.PreciseSpeedControl))
                 {
@@ -568,7 +570,7 @@ namespace Orts.Simulation.RollingStocks
                 }
                 else
                     reducedForceN = 0;
-            }*/
+            }
             //if (WheelSpeedMpS == 0 && Locomotive.WheelSpeedMpS > 0)
             //    WheelSpeedMpS = Locomotive.WheelSpeedMpS;
         }

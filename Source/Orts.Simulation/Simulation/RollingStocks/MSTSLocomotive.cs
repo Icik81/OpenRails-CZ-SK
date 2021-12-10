@@ -4224,7 +4224,10 @@ namespace Orts.Simulation.RollingStocks
                     {
                         foreach (ExtendedAxle ea in uc.Axles)
                         {
-                            TractiveForceN += ea.ForceN;
+                            if (extendedPhysics.UseControllerVolts)
+                                TractiveForceN += ea.ForceN;
+                            else
+                                TractiveForceN += ea.maxForceN;
                         }
                     }
                 }
@@ -4583,6 +4586,26 @@ namespace Orts.Simulation.RollingStocks
 
                 // Jindřich > pokud máme definovánu EP, tento výpočet již proběhnul
                 if (extendedPhysics == null)
+                {
+                    if (AdhesionEfficiencyKoef == 0) AdhesionEfficiencyKoef = 1.00f;
+                    LocomotiveAxle.AdhesionEfficiencyKoef = AdhesionEfficiencyKoef;
+
+                    // Upravuje chybu v adhezi pokud vůz brzdí (brzdí plnou vahou tzn. všemi koly)
+                    LocomotiveAxle.BrakeRetardForceN = BrakeRetardForceN / (MassKG / DrvWheelWeightKg);
+
+                    LocomotiveAxle.AxleWeightN = 9.81f * DrvWheelWeightKg;   //will be computed each time considering the tilting
+                    LocomotiveAxle.DriveForceN = MotiveForceN * (1 - PowerReduction);  //Total force applied to wheels
+                    LocomotiveAxle.TrainSpeedMpS = SpeedMpS;            //Set the train speed of the axle model
+                    LocomotiveAxle.Update(elapsedClockSeconds);         //Main updater of the axle model
+                    MotiveForceN = LocomotiveAxle.AxleForceN;           //Get the Axle force and use it for the motion
+                    if (elapsedClockSeconds > 0)
+                    {
+                        WheelSlip = LocomotiveAxle.IsWheelSlip;             //Get the wheelslip indicator
+                        WheelSlipWarning = LocomotiveAxle.IsWheelSlipWarning;
+                    }
+                    WheelSpeedMpS = LocomotiveAxle.AxleSpeedMpS;
+                }
+                if (!extendedPhysics.UseControllerVolts)
                 {
                     if (AdhesionEfficiencyKoef == 0) AdhesionEfficiencyKoef = 1.00f;
                     LocomotiveAxle.AdhesionEfficiencyKoef = AdhesionEfficiencyKoef;
