@@ -24,7 +24,7 @@ namespace Orts.Simulation.cz.aspone.lkpr {
     
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.3761.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     [System.Web.Services.WebServiceBindingAttribute(Name="WebServiceSoap", Namespace="http://tempuri.org/")]
@@ -41,6 +41,8 @@ namespace Orts.Simulation.cz.aspone.lkpr {
         private System.Threading.SendOrPostCallback GetPowerSuplyStationVersionOperationCompleted;
         
         private System.Threading.SendOrPostCallback GetPowerSuplyMarkerVersionOperationCompleted;
+        
+        private System.Threading.SendOrPostCallback DeleteVoltageMarkerOperationCompleted;
         
         private System.Threading.SendOrPostCallback SaveMirelSignalOperationCompleted;
         
@@ -109,6 +111,9 @@ namespace Orts.Simulation.cz.aspone.lkpr {
         
         /// <remarks/>
         public event GetPowerSuplyMarkerVersionCompletedEventHandler GetPowerSuplyMarkerVersionCompleted;
+        
+        /// <remarks/>
+        public event DeleteVoltageMarkerCompletedEventHandler DeleteVoltageMarkerCompleted;
         
         /// <remarks/>
         public event SaveMirelSignalCompletedEventHandler SaveMirelSignalCompleted;
@@ -305,6 +310,36 @@ namespace Orts.Simulation.cz.aspone.lkpr {
             if ((this.GetPowerSuplyMarkerVersionCompleted != null)) {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.GetPowerSuplyMarkerVersionCompleted(this, new GetPowerSuplyMarkerVersionCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://tempuri.org/DeleteVoltageMarker", RequestNamespace="http://tempuri.org/", ResponseNamespace="http://tempuri.org/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public void DeleteVoltageMarker(int Id, string Track) {
+            this.Invoke("DeleteVoltageMarker", new object[] {
+                        Id,
+                        Track});
+        }
+        
+        /// <remarks/>
+        public void DeleteVoltageMarkerAsync(int Id, string Track) {
+            this.DeleteVoltageMarkerAsync(Id, Track, null);
+        }
+        
+        /// <remarks/>
+        public void DeleteVoltageMarkerAsync(int Id, string Track, object userState) {
+            if ((this.DeleteVoltageMarkerOperationCompleted == null)) {
+                this.DeleteVoltageMarkerOperationCompleted = new System.Threading.SendOrPostCallback(this.OnDeleteVoltageMarkerOperationCompleted);
+            }
+            this.InvokeAsync("DeleteVoltageMarker", new object[] {
+                        Id,
+                        Track}, this.DeleteVoltageMarkerOperationCompleted, userState);
+        }
+        
+        private void OnDeleteVoltageMarkerOperationCompleted(object arg) {
+            if ((this.DeleteVoltageMarkerCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.DeleteVoltageMarkerCompleted(this, new System.ComponentModel.AsyncCompletedEventArgs(invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
         
@@ -530,11 +565,11 @@ namespace Orts.Simulation.cz.aspone.lkpr {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.3761.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
     public delegate void GetMirelSignalsCompletedEventHandler(object sender, GetMirelSignalsCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.3761.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetMirelSignalsCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -556,11 +591,11 @@ namespace Orts.Simulation.cz.aspone.lkpr {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.3761.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
     public delegate void GetPowerSupplyStationsCompletedEventHandler(object sender, GetPowerSupplyStationsCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.3761.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetPowerSupplyStationsCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -582,11 +617,11 @@ namespace Orts.Simulation.cz.aspone.lkpr {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.3761.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
     public delegate void GetPowerSupplyMarkersCompletedEventHandler(object sender, GetPowerSupplyMarkersCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.3761.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetPowerSupplyMarkersCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -608,11 +643,11 @@ namespace Orts.Simulation.cz.aspone.lkpr {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.3761.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
     public delegate void GetLastVersionCompletedEventHandler(object sender, GetLastVersionCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.3761.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetLastVersionCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -634,11 +669,11 @@ namespace Orts.Simulation.cz.aspone.lkpr {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.3761.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
     public delegate void GetPowerSuplyStationVersionCompletedEventHandler(object sender, GetPowerSuplyStationVersionCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.3761.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetPowerSuplyStationVersionCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -660,11 +695,11 @@ namespace Orts.Simulation.cz.aspone.lkpr {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.3761.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
     public delegate void GetPowerSuplyMarkerVersionCompletedEventHandler(object sender, GetPowerSuplyMarkerVersionCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.3761.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetPowerSuplyMarkerVersionCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -686,15 +721,19 @@ namespace Orts.Simulation.cz.aspone.lkpr {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.3761.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    public delegate void DeleteVoltageMarkerCompletedEventHandler(object sender, System.ComponentModel.AsyncCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
     public delegate void SaveMirelSignalCompletedEventHandler(object sender, System.ComponentModel.AsyncCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.3761.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
     public delegate void SavePowerSupplyStationCompletedEventHandler(object sender, SavePowerSupplyStationCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.3761.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class SavePowerSupplyStationCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -716,11 +755,11 @@ namespace Orts.Simulation.cz.aspone.lkpr {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.3761.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
     public delegate void SavePowerSupplyMarkerCompletedEventHandler(object sender, SavePowerSupplyMarkerCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.3761.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class SavePowerSupplyMarkerCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -742,15 +781,15 @@ namespace Orts.Simulation.cz.aspone.lkpr {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.3761.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
     public delegate void UpdateMirelVersionCompletedEventHandler(object sender, System.ComponentModel.AsyncCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.3761.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
     public delegate void UpdatePowerSuplyStationVersionCompletedEventHandler(object sender, System.ComponentModel.AsyncCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.3761.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
     public delegate void UpdatePowerSupplyMarkerVersionCompletedEventHandler(object sender, System.ComponentModel.AsyncCompletedEventArgs e);
 }
 

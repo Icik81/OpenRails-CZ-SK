@@ -243,6 +243,7 @@ namespace Orts.Viewer3D.RollingStock
             UserInputCommands.Add(UserCommand.ControlSetVoltage25k, new Action[] { Noop, () => Locomotive.SetVoltageMarker(25000) });
             UserInputCommands.Add(UserCommand.ControlSetVoltage3k, new Action[] { Noop, () => Locomotive.SetVoltageMarker(3000) });
             UserInputCommands.Add(UserCommand.ControlSetVoltage0, new Action[] { Noop, () => Locomotive.SetVoltageMarker(0) });
+            UserInputCommands.Add(UserCommand.ControlDeleteVoltageMarker, new Action[] { Noop, () => Locomotive.DeleteVoltageMarker() });
 
             base.InitializeUserInputCommands();
         }

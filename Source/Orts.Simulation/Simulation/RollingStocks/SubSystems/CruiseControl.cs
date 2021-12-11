@@ -58,7 +58,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
         protected float trainBrakePercent = 0;
         protected float trainLength = 0;
         public int TrainLengthMeters = 0;
-        public int RemainingTrainLengthToPassRestrictedZone = 0;
+        public float RemainingTrainLengthToPassRestrictedZone = 0;
         public bool RestrictedSpeedActive = false;
         public float CurrentSelectedSpeedMpS = 0;
         protected float nextSelectedSpeedMps = 0;
@@ -652,9 +652,18 @@ namespace Orts.Simulation.RollingStocks.SubSystems
             if (checkRestrictedZoneCount < 10)
                 return;
             checkRestrictedZoneCount = 0;
-            RemainingTrainLengthToPassRestrictedZone = (int)Math.Round((Simulator.PlayerLocomotive.Train.DistanceTravelledM - restrictedRegionTravelledDistance));
+            if (!Locomotive.UsingRearCab)
+                RemainingTrainLengthToPassRestrictedZone = Simulator.PlayerLocomotive.Train.DistanceTravelledM - restrictedRegionTravelledDistance;
+            else
+                RemainingTrainLengthToPassRestrictedZone = -(Simulator.PlayerLocomotive.Train.DistanceTravelledM - restrictedRegionTravelledDistance);
             if (RemainingTrainLengthToPassRestrictedZone < 0) RemainingTrainLengthToPassRestrictedZone = 0;
-            if ((Simulator.PlayerLocomotive.Train.DistanceTravelledM - restrictedRegionTravelledDistance) >= trainLength)
+            if (!Locomotive.UsingRearCab && (Simulator.PlayerLocomotive.Train.DistanceTravelledM - restrictedRegionTravelledDistance) >= trainLength)
+            {
+                RestrictedSpeedActive = false;
+                Simulator.Confirmer.Message(ConfirmLevel.Information, Simulator.Catalog.GetString("Speed restricted zone off."));
+                Locomotive.SignalEvent(Common.Event.Alert);
+            }
+            else if (-(Simulator.PlayerLocomotive.Train.DistanceTravelledM - restrictedRegionTravelledDistance) >= trainLength)
             {
                 RestrictedSpeedActive = false;
                 Simulator.Confirmer.Message(ConfirmLevel.Information, Simulator.Catalog.GetString("Speed restricted zone off."));

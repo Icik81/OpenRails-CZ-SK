@@ -110,6 +110,17 @@
           </s:sequence>
         </s:complexType>
       </s:element>
+      <s:element name="DeleteVoltageMarker">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="Id" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="Track" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="DeleteVoltageMarkerResponse">
+        <s:complexType />
+      </s:element>
       <s:element name="SaveMirelSignal">
         <s:complexType>
           <s:sequence>
@@ -232,6 +243,12 @@
   <wsdl:message name="GetPowerSuplyMarkerVersionSoapOut">
     <wsdl:part name="parameters" element="tns:GetPowerSuplyMarkerVersionResponse" />
   </wsdl:message>
+  <wsdl:message name="DeleteVoltageMarkerSoapIn">
+    <wsdl:part name="parameters" element="tns:DeleteVoltageMarker" />
+  </wsdl:message>
+  <wsdl:message name="DeleteVoltageMarkerSoapOut">
+    <wsdl:part name="parameters" element="tns:DeleteVoltageMarkerResponse" />
+  </wsdl:message>
   <wsdl:message name="SaveMirelSignalSoapIn">
     <wsdl:part name="parameters" element="tns:SaveMirelSignal" />
   </wsdl:message>
@@ -292,6 +309,10 @@
     <wsdl:operation name="GetPowerSuplyMarkerVersion">
       <wsdl:input message="tns:GetPowerSuplyMarkerVersionSoapIn" />
       <wsdl:output message="tns:GetPowerSuplyMarkerVersionSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="DeleteVoltageMarker">
+      <wsdl:input message="tns:DeleteVoltageMarkerSoapIn" />
+      <wsdl:output message="tns:DeleteVoltageMarkerSoapOut" />
     </wsdl:operation>
     <wsdl:operation name="SaveMirelSignal">
       <wsdl:input message="tns:SaveMirelSignalSoapIn" />
@@ -367,6 +388,15 @@
     </wsdl:operation>
     <wsdl:operation name="GetPowerSuplyMarkerVersion">
       <soap:operation soapAction="http://tempuri.org/GetPowerSuplyMarkerVersion" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="DeleteVoltageMarker">
+      <soap:operation soapAction="http://tempuri.org/DeleteVoltageMarker" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -478,6 +508,15 @@
     </wsdl:operation>
     <wsdl:operation name="GetPowerSuplyMarkerVersion">
       <soap12:operation soapAction="http://tempuri.org/GetPowerSuplyMarkerVersion" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="DeleteVoltageMarker">
+      <soap12:operation soapAction="http://tempuri.org/DeleteVoltageMarker" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>

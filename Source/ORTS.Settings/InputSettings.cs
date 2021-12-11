@@ -444,6 +444,7 @@ namespace ORTS.Settings
             Commands[(int)UserCommand.ControlSetVoltage25k] = new UserCommandKeyInput(0x03, KeyModifiers.Alt);
             Commands[(int)UserCommand.ControlSetVoltage3k] = new UserCommandKeyInput(0x04, KeyModifiers.Alt);
             Commands[(int)UserCommand.ControlSetVoltage0] = new UserCommandKeyInput(0x0B, KeyModifiers.Alt);
+            Commands[(int)UserCommand.ControlDeleteVoltageMarker] = new UserCommandKeyInput(0x53, KeyModifiers.Alt);
 
             // normal
             Commands[(int)UserCommand.ControlSpeedRegulatorModeIncrease] = new UserCommandKeyInput(0x11, KeyModifiers.Shift);

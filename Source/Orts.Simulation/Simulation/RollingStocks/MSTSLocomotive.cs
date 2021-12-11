@@ -2176,9 +2176,12 @@ namespace Orts.Simulation.RollingStocks
                             double nextNodeLon = 0;
                             double nextNodeLat = 0;
                             int nextNodeVoltage = 0;
+                            int id = 0;
 
                             foreach (XmlNode nodeId in nodeSupply.ChildNodes)
                             {
+                                if (nodeId.Name == "Id")
+                                    id = int.Parse(nodeId.InnerText);
                                 if (nodeId.Name == "Longitude")
                                 {
                                     try
@@ -2206,6 +2209,7 @@ namespace Orts.Simulation.RollingStocks
                                     nextNodeVoltage = int.Parse(nodeId.InnerText);
                             }
                             VoltageChangeMarker vcm = new VoltageChangeMarker();
+                            vcm.Id = id;
                             vcm.Latitude = nextNodeLat;
                             vcm.Longitude = nextNodeLon;
                             vcm.Voltage = nextNodeVoltage;
@@ -7339,6 +7343,68 @@ namespace Orts.Simulation.RollingStocks
                 RouteVoltageV = 0;
         }
 
+        public void DeleteVoltageMarker()
+        {
+            if (!Simulator.SuperUser)
+                return;
+            MSTSElectricLocomotive eloco = null;
+            if (this is MSTSElectricLocomotive)
+            {
+                eloco = (MSTSElectricLocomotive)this;
+            }
+            else
+                return;
+            int markerId = eloco.marker.Id;
+
+            cz.aspone.lkpr.WebService ws = new cz.aspone.lkpr.WebService();
+
+            if (!VoltageMarkersDbVersionUpdated)
+            {
+                string result = ws.GetPowerSuplyMarkerVersion(Simulator.TRK.Tr_RouteFile.FileName);
+                int v = int.Parse(result);
+                VoltageMarkersDbVersion = v + 1;
+                ws.UpdatePowerSupplyMarkerVersion(VoltageMarkersDbVersion, Simulator.TRK.Tr_RouteFile.FileName);
+                VoltageMarkersDbVersionUpdated = true;
+            }
+            FileInfo fi = new FileInfo(Simulator.TRK.Tr_RouteFile.FullFileName);
+            File.WriteAllText(fi.DirectoryName + "\\VoltageChangeMarkersDbVersion.ini", VoltageMarkersDbVersion.ToString());
+
+            ws.DeleteVoltageMarker(markerId, Simulator.TRK.Tr_RouteFile.FileName);
+
+            if (voltageMarkersXml == null)
+            {
+                voltageMarkersXml = new XmlDocument();
+                voltageMarkersXml.Load(Simulator.RoutePath + "\\VoltageChangeMarkers.xml");
+            }
+
+            foreach (XmlNode node in voltageMarkersXml.ChildNodes)
+            {
+                if (node.Name == "VoltageChangeMarkers")
+                {
+                    foreach (XmlNode node1 in node)
+                    {
+                        if (node1.Name == "Marker")
+                        {
+                            foreach (XmlNode node2 in node1.ChildNodes)
+                            {
+                                if (node2.Name == "Id")
+                                {
+                                    if (node2.InnerText == markerId.ToString())
+                                    {
+                                        node.RemoveChild(node1);
+                                        goto Save;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            Save:
+            voltageMarkersXml.Save(Simulator.RoutePath + "\\VoltageChangeMarkers.xml");
+            SetUpVoltageChangeMarkers();
+            Simulator.Confirmer.Information("Marker byl vymazán a označen pro vymazání v externí databázi.");
+        }
 
         public void ToggleQuickReleaseButton(bool quickReleaseButton)
         {

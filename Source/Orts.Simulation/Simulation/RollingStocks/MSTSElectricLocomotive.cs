@@ -417,6 +417,8 @@ namespace Orts.Simulation.RollingStocks
         public float Amps;
         public PowerSupplyStation myStation = null;
         protected int markerVoltage = 0;
+        public VoltageChangeMarker marker;
+
         protected void UnderVoltageProtection(float elapsedClockSeconds)
         {
             if (Simulator.Paused)
@@ -459,7 +461,6 @@ namespace Orts.Simulation.RollingStocks
             if (Amps < 0)
                 Amps = 0;
             int powerSys = -1;
-            VoltageChangeMarker marker;
 
             float dist = DistanceToPowerSupplyStationM(RouteVoltageV == 3000 ? 0 : 1, out myStation);
             float distToMarker = DistanceToVoltageMarkerM(out markerVoltage, out marker);
@@ -596,7 +597,7 @@ namespace Orts.Simulation.RollingStocks
 
             decimal kW = Math.Round((decimal)((RouteVoltageV * myStation.TotalAmps) / 1000), 2);
             if (IsPlayerTrain && Simulator.SuperUser)
-                Simulator.Confirmer.MSG("Mark U: " + markerVoltage.ToString() + "; Mark dist: " + Math.Round(distToMarker, 0).ToString() + "; Supl dist: " + Math.Round(dist, 0).ToString() + "; My panto U: " + Math.Round(PantographVoltageV, 0).ToString() + "; Supl I: " + Math.Round(myStation.TotalAmps, 0).ToString() + "; Supl #locos: " + myStation.Consuptors.Count.ToString() + "; Supl kW: " + kW.ToString());
+                Simulator.Confirmer.MSG("MarkId: " + marker.Id.ToString() + "; Mark U: " + markerVoltage.ToString() + "; Mark dist: " + Math.Round(distToMarker, 0).ToString() + "; Supl dist: " + Math.Round(dist, 0).ToString() + "; My panto U: " + Math.Round(PantographVoltageV, 0).ToString() + "; Supl I: " + Math.Round(myStation.TotalAmps, 0).ToString() + "; Supl #locos: " + myStation.Consuptors.Count.ToString() + "; Supl kW: " + kW.ToString());
 
             if (IsPlayerTrain)
             {
