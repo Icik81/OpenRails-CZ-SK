@@ -587,6 +587,7 @@ namespace Orts.Simulation.RollingStocks
         public int TrainPantoMarker;
         public bool AIPantoChange;
         public bool AIPanto2Raise = false;
+        public float Current;
 
 
         // Jindrich
@@ -2471,7 +2472,7 @@ namespace Orts.Simulation.RollingStocks
         }
 
         // Icik
-        // Definice ochran lokomotiv
+        // Definice ochran lokomotiv        
         public void Overcurrent_Protection(float elapsedClockSeconds)
         {
             if (!IsPlayerTrain)
@@ -2484,7 +2485,7 @@ namespace Orts.Simulation.RollingStocks
 
                 //Trace.TraceInformation("WheelSlipTime {0},  Simulator.GameTime {1},  Time0 {2},   SlipSpeed {3}", WheelSlipTime, Simulator.GameTime, Time0, SlipSpeed);
 
-                float Current = (FilteredMotiveForceN + DynamicBrakeForceN) / MaxForceN * MaxCurrentA;
+                Current = (FilteredMotiveForceN + DynamicBrakeForceN) / MaxForceN * MaxCurrentA;
 
                 if (this is MSTSElectricLocomotive && DynamicBrakeForceN == 0) // Stanovení kritického proudu pro elektrické lokomotivy při výkonu
                     if (Current > MaxCurrentPower)
@@ -6626,23 +6627,34 @@ namespace Orts.Simulation.RollingStocks
         public void ToggleBattery()
         {
             Battery = !Battery;
-            if (Battery) SignalEvent(Event.BatteryOn);
-            else SignalEvent(Event.BatteryOff);
+            if (Battery)
+            {
+                SignalEvent(Event.BatteryOn);
+                if (PowerKey) SignalEvent(Event.PowerKeyOn);
+            }
+            else
+            {
+                SignalEvent(Event.BatteryOff);
+                SignalEvent(Event.PowerKeyOff);
+            }           
             if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.Battery, Battery ? CabSetting.On : CabSetting.Off);
         }
         public void TogglePowerKey()
         {
             PowerKey = !PowerKey;
-            if (PowerKey) SignalEvent(Event.PowerKeyOn);
-            else SignalEvent(Event.PowerKeyOff);
             if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.PowerKey, PowerKey ? CabSetting.On : CabSetting.Off);
-            if (ActiveStation == DriverStation.None && PowerKey)
+            if (Battery)
             {
-                ActiveStation = UsingRearCab ? DriverStation.Station2 : DriverStation.Station1;
-            }
-            if ((ActiveStation == DriverStation.Station1 || ActiveStation == DriverStation.Station2) && !PowerKey)
-            {
-                ActiveStation = DriverStation.None;
+                if (PowerKey) SignalEvent(Event.PowerKeyOn);
+                else SignalEvent(Event.PowerKeyOff);
+                if (ActiveStation == DriverStation.None && PowerKey)
+                {
+                    ActiveStation = UsingRearCab ? DriverStation.Station2 : DriverStation.Station1;
+                }
+                if ((ActiveStation == DriverStation.Station1 || ActiveStation == DriverStation.Station2) && !PowerKey)
+                {
+                    ActiveStation = DriverStation.None;
+                }
             }
         }       
         public void ToggleCabRadio( bool newState)

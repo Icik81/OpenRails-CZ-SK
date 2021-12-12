@@ -105,13 +105,13 @@ namespace Orts.Simulation.RollingStocks
         bool UpdateTimeEnable;
 
         public bool PantographFaultByVoltageChange;
-        public bool PantographFaultByNotLowering;
         float FaultByPlayerPenaltyTime;
+        float I_PantographCurrentToleranceTime;
         float AIPantoUPTime;
         float AIPantoDownGenerate;
         bool AIPantoDown;
         bool AIPantoDownStop;
-
+        bool PowerOnTriggered;
 
         public MSTSElectricLocomotive(Simulator simulator, string wagFile) :
             base(simulator, wagFile)
@@ -183,7 +183,6 @@ namespace Orts.Simulation.RollingStocks
             outf.Write(TCompressorDC);
             outf.Write(HVClosed);
             outf.Write(PantographFaultByVoltageChange);
-            outf.Write(PantographFaultByNotLowering);
             outf.Write(AIPantoUPTime);
             outf.Write(AIPantoDown);
             outf.Write(AIPantoDownGenerate);
@@ -222,7 +221,6 @@ namespace Orts.Simulation.RollingStocks
             TCompressorDC = inf.ReadSingle();
             HVClosed = inf.ReadBoolean();
             PantographFaultByVoltageChange = inf.ReadBoolean();
-            PantographFaultByNotLowering = inf.ReadBoolean();
             AIPantoUPTime = inf.ReadSingle();
             AIPantoDown = inf.ReadBoolean();
             AIPantoDownGenerate = inf.ReadSingle();
@@ -272,6 +270,9 @@ namespace Orts.Simulation.RollingStocks
             // Zapne Powerkey při startu loko se zapnutými bateriemy
             if (!BrakeSystem.IsAirFull && Battery && !PowerKey)
                 PowerKey = true;
+            // Spustí zvukové triggery při načtení hry    
+            if (PowerKey && Battery)
+                SignalEvent(Event.PowerKeyOn);
         }
 
         //================================================================================================//
@@ -567,14 +568,6 @@ namespace Orts.Simulation.RollingStocks
             if (RouteVoltageV == 25000)
                 volts += 2000; // max 27kV poblíž napaječky
 
-            //VoltageFilter = false;
-            //RouteVoltageV = 1;
-            //Induktion = 0;
-            //LocomotivePowerVoltage = 25000;
-
-            // Penalizace hráče při chybě přes přechody a změně voltáže na trati
-            FaultByPlayer_RouteVoltage(elapsedClockSeconds);
-            
             // Výpočet napětí v drátech
             if (IsPlayerTrain)
             {
@@ -738,12 +731,6 @@ namespace Orts.Simulation.RollingStocks
                 if (PowerSupply.PantographVoltageV < 1) PowerSupply.PantographVoltageV = 1;
                 if (LocalThrottlePercent < 0) LocalThrottlePercent = 0;
                 if (LocalDynamicBrakePercent < 0) LocalDynamicBrakePercent = 0;
-
-                // Vyvolání penalizace hráče při nestažení pantografu na úseku s 0V
-                if (RouteVoltageV == 1 && (Pantographs[1].State == PantographState.Up || Pantographs[2].State == PantographState.Up) && AbsSpeedMpS > 0.1f)
-                {
-                    PantographFaultByNotLowering = true;
-                }
 
                 // Použije se pro kontrolku při ztrátě napětí v pantografech
                 if (RouteVoltageV == 25000 && PowerSupply.PantographVoltageV < 19000
@@ -1159,16 +1146,28 @@ namespace Orts.Simulation.RollingStocks
             if (HVOff)
             {
                 HVOff = false;
-                SignalEvent(PowerSupplyEvent.OpenCircuitBreaker);
+                SignalEvent(PowerSupplyEvent.OpenCircuitBreaker);                
             }
             if (HVOn)
             {
                 HVOn = false;
                 SignalEvent(PowerSupplyEvent.CloseCircuitBreaker);
             }
-          
+                               
+            // Aktivuje zvukový trigger pro spuštění napájení
+            if (PowerOn && !PowerOnTriggered)
+            {
+                PowerOnTriggered = true;
+                SignalEvent(Event.EnginePowerOn);
+            }
+            if (!PowerOn && PowerOnTriggered)
+            {
+                PowerOnTriggered = false;
+                SignalEvent(Event.EnginePowerOff);
+            }
+                        
             PowerSupply.Update(elapsedClockSeconds);
-            
+
             if (PowerSupply.CircuitBreaker != null && IsPlayerTrain)
             {
                 if (PowerSupply.CircuitBreaker.State == CircuitBreakerState.Open && (DoesPowerLossResetControls || DoesPowerLossResetControls2))
@@ -1190,8 +1189,9 @@ namespace Orts.Simulation.RollingStocks
             {
                 PantographPressedTesting(elapsedClockSeconds);
                 HVPressedTesting(elapsedClockSeconds);
-                AuxAirConsumption(elapsedClockSeconds);
-                
+                AuxAirConsumption(elapsedClockSeconds);                
+                FaultByPlayer(elapsedClockSeconds);
+
                 // Nastavení pro plně oživenou lokomotivu
                 if (LocoReadyToGo && BrakeSystem.IsAirFull)
                 {                                        
@@ -1495,28 +1495,33 @@ namespace Orts.Simulation.RollingStocks
         }
 
         // Penalizace hráče
-        protected void FaultByPlayer_RouteVoltage(float elapsedClockSeconds)
+        protected void FaultByPlayer(float elapsedClockSeconds)
         {
-            //if (PantographFaultByNotLowering)
-            //{
-            //    PantographVoltageV = PowerSupply.PantographVoltageV;
-            //    RouteVoltageV = 1;
-            //    FaultByPlayerPenaltyTime += elapsedClockSeconds;
-            //    Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Nedal si dolu pantograf a došlo k jeho poškození!"));
-            //    if (FaultByPlayerPenaltyTime > 30) // Potrestání hráče čekáním 30s
-            //    {
-            //        PantographFaultByNotLowering = false;
-            //        FaultByPlayerPenaltyTime = 0;
-            //    }
-            //}
-            //else
+            // Sestřelení HV při těžkém rozjezdu na jeden sběrač
+            float I_PantographCurrent = Current;
+            float I_MaxPantographCurrent = MaxCurrentA * 0.80f; // Maximální zátěž na jeden sběrač 80% maxima proudu
+            if (Pantographs[1].State == PantographState.Up && Pantographs[2].State == PantographState.Up)
+                I_PantographCurrent /= 2;
+            if (Math.Abs(I_PantographCurrent) > I_MaxPantographCurrent)
+            {
+                int I_PantographCurrentToleranceTimeInfo = 10 - (int)I_PantographCurrentToleranceTime;
+                Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Příliš velký proud na jeden sběrač - použij i druhý sběrač! (" + I_PantographCurrentToleranceTimeInfo + ")"));
+                I_PantographCurrentToleranceTime += elapsedClockSeconds;
+                if (I_PantographCurrentToleranceTime > 10.5f) // 10s tolerance
+                    HVOff = true;
+            }
+            else I_PantographCurrentToleranceTime = 0;
+            //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("I_PantographCurrent " + I_PantographCurrent));
+
+            // Penalizace za zvednutí sběrače na špatném napěťovém systému
             if (PantographFaultByVoltageChange)
             {
                 PantographVoltageV = PowerSupply.PantographVoltageV;
                 RouteVoltageV = 1;
+                int FaultByPlayerPenaltyTimeInfo = 30 - (int)FaultByPlayerPenaltyTime;
                 FaultByPlayerPenaltyTime += elapsedClockSeconds;
-                Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Poškodil si zdvihnutým pantografem lokomotivu!"));
-                if (FaultByPlayerPenaltyTime > 30) // Potrestání hráče čekáním 30s
+                Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Poškodil si zdvihnutým pantografem lokomotivu! (" + FaultByPlayerPenaltyTimeInfo + ")"));
+                if (FaultByPlayerPenaltyTime > 30.5f) // Potrestání hráče čekáním 30s
                 {
                     PantographFaultByVoltageChange = false;
                     FaultByPlayerPenaltyTime = 0;
