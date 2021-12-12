@@ -227,7 +227,6 @@
         [GetString("Control Set Voltage 25k")] ControlSetVoltage25k,
         [GetString("Control Set Voltage 3k")] ControlSetVoltage3k,
         [GetString("Control Set Voltage 0")] ControlSetVoltage0,
-        [GetString("Control Delete Voltage Marker")] ControlDeleteVoltageMarker,
         [GetString("Control Select Speed 10 kph/mph")] ControlSelectSpeed10,
         [GetString("Control Select Speed 20 kph/mph")] ControlSelectSpeed20,
         [GetString("Control Select Speed 30 kph/mph")] ControlSelectSpeed30,
@@ -281,5 +280,6 @@
         [GetString("Control Quickrelease button")] ControlQuickReleaseButton,
         [GetString("Control Lowpressurerelease button")] ControlLowPressureReleaseButton,
         [GetString("Control Breakpower button")] ControlBreakPowerButton,
+        [GetString("Control Delete Voltage Marker")] ControlDeleteVoltageMarker,
     }
 }
