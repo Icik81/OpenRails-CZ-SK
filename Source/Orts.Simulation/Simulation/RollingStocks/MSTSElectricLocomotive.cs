@@ -1498,11 +1498,11 @@ namespace Orts.Simulation.RollingStocks
         protected void FaultByPlayer(float elapsedClockSeconds)
         {
             // Sestřelení HV při těžkém rozjezdu na jeden sběrač
-            float I_PantographCurrent = Current;
+            float I_PantographCurrent = PowerCurrent;
             float I_MaxPantographCurrent = MaxCurrentA * 0.80f; // Maximální zátěž na jeden sběrač 80% maxima proudu
             if (Pantographs[1].State == PantographState.Up && Pantographs[2].State == PantographState.Up)
                 I_PantographCurrent /= 2;
-            if (Math.Abs(I_PantographCurrent) > I_MaxPantographCurrent)
+            if (I_PantographCurrent > I_MaxPantographCurrent)
             {
                 int I_PantographCurrentToleranceTimeInfo = 10 - (int)I_PantographCurrentToleranceTime;
                 Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Příliš velký proud na jeden sběrač - použij i druhý sběrač! (" + I_PantographCurrentToleranceTimeInfo + ")"));

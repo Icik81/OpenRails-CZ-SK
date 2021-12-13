@@ -587,7 +587,8 @@ namespace Orts.Simulation.RollingStocks
         public int TrainPantoMarker;
         public bool AIPantoChange;
         public bool AIPanto2Raise = false;
-        public float Current;
+        public float PowerCurrent;
+        public float BrakeCurrent;
 
 
         // Jindrich
@@ -2483,22 +2484,21 @@ namespace Orts.Simulation.RollingStocks
                 if (MaxCurrentPower == 0) MaxCurrentPower = MaxCurrentA / 1.2f;
                 if (MaxCurrentBrake == 0) MaxCurrentBrake = MaxCurrentA / 2.3f;
 
-                //Trace.TraceInformation("WheelSlipTime {0},  Simulator.GameTime {1},  Time0 {2},   SlipSpeed {3}", WheelSlipTime, Simulator.GameTime, Time0, SlipSpeed);
-
-                Current = (FilteredMotiveForceN + DynamicBrakeForceN) / MaxForceN * MaxCurrentA;
+                PowerCurrent = Math.Abs(FilteredMotiveForceN) / MaxForceN * MaxCurrentA;
+                BrakeCurrent = Math.Abs(DynamicBrakeForceN) / MaxForceN * MaxCurrentA;
 
                 if (this is MSTSElectricLocomotive && DynamicBrakeForceN == 0) // Stanovení kritického proudu pro elektrické lokomotivy při výkonu
-                    if (Current > MaxCurrentPower)
+                    if (PowerCurrent > MaxCurrentPower)
                         OverCurrent = true;
                 if (this is MSTSElectricLocomotive && DynamicBrakeForceN > 0) // Stanovení kritického proudu pro elektrické lokomotivy při dynamickém brždění
-                    if (Current > MaxCurrentBrake)
+                    if (BrakeCurrent > MaxCurrentBrake)
                         OverCurrent = true;
 
                 if (this is MSTSDieselLocomotive && DynamicBrakeForceN == 0) // Stanovení kritického proudu pro dieselelektrické lokomotivy při výkonu
-                    if (Current > MaxCurrentPower)
+                    if (PowerCurrent > MaxCurrentPower)
                         OverCurrent = true;
                 if (this is MSTSDieselLocomotive && DynamicBrakeForceN > 0) // Stanovení kritického proudu pro dieselelektrické lokomotivy při dynamickém brždění
-                    if (Current > MaxCurrentBrake)
+                    if (BrakeCurrent > MaxCurrentBrake)
                         OverCurrent = true;
 
                 if (OverCurrent)
