@@ -98,6 +98,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
         {
             Car = car;
             // taking into account very short (fake) cars to prevent NaNs in brake line pressures
+            BrakePipeVolumeM3Base = ((0.032f / 2) * (0.032f / 2) * (float)Math.PI) * (2 + car.CarLengthM);
             //DebugType = "1P";
             // Force graduated releasable brakes. Workaround for MSTS with bugs preventing to set eng/wag files correctly for this.
             (Car as MSTSWagon).DistributorPresent |= Car.Simulator.Settings.GraduatedRelease;
