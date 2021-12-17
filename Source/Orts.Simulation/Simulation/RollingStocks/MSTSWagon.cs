@@ -189,11 +189,11 @@ namespace Orts.Simulation.RollingStocks
         //public AntislipControl AntislipControl = AntislipControl.None;
         public float AxleInertiaKgm2;    //axle inertia
         public float AdhesionDriveWheelRadiusM;
-        public float WheelSpeedMpS;
-        public float WheelSpeedSlipMpS; // speed of wheel if locomotive is slipping
+        public float WheelSpeedMpS = 0;
+        public float WheelSpeedSlipMpS = 0; // speed of wheel if locomotive is slipping
         public float SlipWarningThresholdPercent = 70;
         public MSTSNotchController WeightLoadController; // Used to control freight loading in freight cars
-        public float AbsWheelSpeedMpS; // Math.Abs(WheelSpeedMpS) is used frequently in the subclasses, maybe it's more efficient to compute it once
+        public float AbsWheelSpeedMpS = 0; // Math.Abs(WheelSpeedMpS) is used frequently in the subclasses, maybe it's more efficient to compute it once
 
         // Colours for smoke and steam effects
         public Color ExhaustTransientColor = Color.Black;
@@ -1014,6 +1014,28 @@ namespace Orts.Simulation.RollingStocks
 
                         if (DavisCNSSpMM == 0)
                             DavisCNSSpMM = 0.000136f * G0 / TrailLocoResistanceFactor;
+                        else
+                            if (G1 != G)
+                            DavisCNSSpMM *= G / G0;
+                        G1 = G;
+                        break;
+                    }
+                default:  // B'o-B'o
+                    {
+                        if (DavisAN == 0)
+                            DavisAN = 1.4f * G0;
+                        else
+                            if (G1 != G)
+                            DavisAN *= G / G0;
+
+                        if (DavisBNSpM == 0)
+                            DavisBNSpM = 0.00001f * G0;
+                        else
+                            if (G1 != G)
+                            DavisBNSpM *= G / G0;
+
+                        if (DavisCNSSpMM == 0)
+                            DavisCNSSpMM = 0.00015f * G0 / TrailLocoResistanceFactor;
                         else
                             if (G1 != G)
                             DavisCNSSpMM *= G / G0;
@@ -1970,11 +1992,9 @@ namespace Orts.Simulation.RollingStocks
                 // Rest flag so that this loop is not executed again
                 TenderWeightInitialize = false;
             }
-
+            
             UpdateTenderLoad(); // Updates the load physics characteristics of tender and aux tender
-
             UpdateLocomotiveLoadPhysics(); // Updates the load physics characteristics of locomotives
-
             UpdateSpecialEffects(elapsedClockSeconds); // Updates the wagon special effects
 
             // Update Aux Tender Information
@@ -2059,7 +2079,7 @@ namespace Orts.Simulation.RollingStocks
                     CouplerExceedBreakLimit = false;
                 }
             }
-            
+
             AbsWheelSpeedMpS = Math.Abs(WheelSpeedMpS);
 
             if (this is MSTSLocomotive)
@@ -2083,7 +2103,8 @@ namespace Orts.Simulation.RollingStocks
                     }
                 }
 
-            }
+            }            
+
             Pantographs.Update(elapsedClockSeconds);
             
             MSTSBrakeSystem.Update(elapsedClockSeconds);
@@ -2158,6 +2179,7 @@ namespace Orts.Simulation.RollingStocks
                             LocoIndex = i;
                     if (Train.Cars[LocoIndex] is MSTSSteamLocomotive)
                         SteamLocomotiveIdentification = Train.Cars[LocoIndex] as MSTSSteamLocomotive;
+
                     if (SteamLocomotiveIdentification != null)
                     {
                         if (SteamLocomotiveIdentification.IsTenderRequired == 0) // Test to see if the locomotive is a tender locomotive or tank locomotive. 
@@ -2178,7 +2200,6 @@ namespace Orts.Simulation.RollingStocks
                         // Adjust drive wheel weight
                             SteamLocomotiveIdentification.DrvWheelWeightKg = (MassKG / InitialMassKG) * SteamLocomotiveIdentification.InitialDrvWheelWeightKg;
                         }
-
                         // Update wagon physics parameters sensitive to wagon mass change
                         // Calculate the difference ratio, ie how full the wagon is. This value allows the relevant value to be scaled from the empty mass to the full mass of the wagon
                         float TempTenderMassDiffRatio = (MassKG - LoadEmptyMassKg) / (LoadFullMassKg - LoadEmptyMassKg);
@@ -2252,6 +2273,9 @@ namespace Orts.Simulation.RollingStocks
                     }
                 }
             }
+            // Icik
+            if (float.IsNaN(MassKG))
+                MassKG = 10000;
         }
 
         private void UpdateTrainBaseResistance()
@@ -3162,8 +3186,12 @@ namespace Orts.Simulation.RollingStocks
                         Trace.TraceInformation("Tender @ position {0} does not have a locomotive associated with. Check that it is preceeded by a steam locomotive.", CarID);
                     }
 
-                    MassKG = FreightAnimations.WagonEmptyWeight + TendersSteamLocomotive.TenderCoalMassKG + Kg.FromLb( (TendersSteamLocomotive.CurrentLocoTenderWaterVolumeUKG * WaterLBpUKG));
-                    MassKG = MathHelper.Clamp(MassKG, LoadEmptyMassKg, LoadFullMassKg); // Clamp Mass to between the empty and full wagon values   
+                    if (TendersSteamLocomotive != null)
+                    {
+                        MassKG = FreightAnimations.WagonEmptyWeight + TendersSteamLocomotive.TenderCoalMassKG + Kg.FromLb((TendersSteamLocomotive.CurrentLocoTenderWaterVolumeUKG * WaterLBpUKG));
+                        MassKG = MathHelper.Clamp(MassKG, LoadEmptyMassKg, LoadFullMassKg); // Clamp Mass to between the empty and full wagon values   
+                    }
+                    else MassKG = LoadFullMassKg;
 
                     // Update wagon parameters sensitive to wagon mass change
                     // Calculate the difference ratio, ie how full the wagon is. This value allows the relevant value to be scaled from the empty mass to the full mass of the wagon
