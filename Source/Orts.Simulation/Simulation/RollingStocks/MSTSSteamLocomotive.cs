@@ -2318,27 +2318,30 @@ namespace Orts.Simulation.RollingStocks
             // Limit Cylinder steam usage to the maximum boiler evaporation rate, lower limit is for when the locomotive is at rest and "no steam" is being used by cylinder, ensures some coal is used.
             TempCylinderSteamUsageLbpS = MathHelper.Clamp(TempCylinderSteamUsageLbpS, 0.1f, TheoreticalMaxSteamOutputLBpS);
 
-            if (HasTenderCoupled) // If a tender is coupled then coal is available
+            // Icik
+            if (IsPlayerTrain)
             {
-                TenderCoalMassKG -= elapsedClockSeconds * pS.FrompH(Kg.FromLb(NewBurnRateSteamToCoalLbspH[pS.TopH(TempCylinderSteamUsageLbpS)])); // Current Tender coal mass determined by burn rate.
-                TenderCoalMassKG = MathHelper.Clamp(TenderCoalMassKG, 0, MaxTenderCoalMassKG); // Clamp value so that it doesn't go out of bounds
-            }
-            else // if no tender coupled then check whether a tender is required
-            {
-                if (IsTenderRequired == 1.0)  // Tender is required
-                {
-                    TenderCoalMassKG = 0.0f; // Set tender coal to zero (none available)
-                }
-                else  // Tender is not required (ie tank locomotive) - therefore coal will be carried on the locomotive
+                if (HasTenderCoupled) // If a tender is coupled then coal is available
                 {
                     TenderCoalMassKG -= elapsedClockSeconds * pS.FrompH(Kg.FromLb(NewBurnRateSteamToCoalLbspH[pS.TopH(TempCylinderSteamUsageLbpS)])); // Current Tender coal mass determined by burn rate.
                     TenderCoalMassKG = MathHelper.Clamp(TenderCoalMassKG, 0, MaxTenderCoalMassKG); // Clamp value so that it doesn't go out of bounds
                 }
+                else // if no tender coupled then check whether a tender is required
+                {
+                    if (IsTenderRequired == 1.0)  // Tender is required
+                    {
+                        TenderCoalMassKG = 0.0f; // Set tender coal to zero (none available)
+                    }
+                    else  // Tender is not required (ie tank locomotive) - therefore coal will be carried on the locomotive
+                    {
+                        TenderCoalMassKG -= elapsedClockSeconds * pS.FrompH(Kg.FromLb(NewBurnRateSteamToCoalLbspH[pS.TopH(TempCylinderSteamUsageLbpS)])); // Current Tender coal mass determined by burn rate.
+                        TenderCoalMassKG = MathHelper.Clamp(TenderCoalMassKG, 0, MaxTenderCoalMassKG); // Clamp value so that it doesn't go out of bounds
+                    }
+                }
             }
-
             if (TenderCoalMassKG < 1.0)
             {
-                if (!CoalIsExhausted)
+                if (!CoalIsExhausted && IsPlayerTrain)
                 {
                     Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Tender coal supply is empty. Your loco will fail."));
                 }
