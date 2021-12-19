@@ -42,7 +42,12 @@ namespace Orts.Viewer3D
         public readonly Viewer Viewer;
         public readonly Weather Weather;
 
-        public readonly List<SoundSourceBase> ClearSound;
+        // Icik
+        public bool DayNightTimeChange = false;
+        public bool NightTime = false;
+        public readonly List<SoundSourceBase> ClearSoundNight;
+        
+        public readonly List<SoundSourceBase> ClearSound;       
         public readonly List<SoundSourceBase> RainSound;
         public readonly List<SoundSourceBase> SnowSound;
         public readonly List<SoundSourceBase> WeatherSounds = new List<SoundSourceBase>();
@@ -74,23 +79,111 @@ namespace Orts.Viewer3D
 
             var pathArray = new[] {
                 Program.Simulator.RoutePath + @"\SOUND",
-                Program.Simulator.BasePath + @"\SOUND",
+                Program.Simulator.BasePath + @"\SOUND",                
             };
 
-            ClearSound = new List<SoundSourceBase>() {
-                new SoundSource(viewer, Events.Source.MSTSInGame, ORTSPaths.GetFileFromFolders(pathArray, "clear_in.sms"), false),
-                new SoundSource(viewer, Events.Source.MSTSInGame, ORTSPaths.GetFileFromFolders(pathArray, "clear_ex.sms"), false),
-            };
-            RainSound = new List<SoundSourceBase>() {
-                new SoundSource(viewer, Events.Source.MSTSInGame, ORTSPaths.GetFileFromFolders(pathArray, "rain_in.sms"), false),
-                new SoundSource(viewer, Events.Source.MSTSInGame, ORTSPaths.GetFileFromFolders(pathArray, "rain_ex.sms"), false),
-            };
-            SnowSound = new List<SoundSourceBase>() {
-                new SoundSource(viewer, Events.Source.MSTSInGame, ORTSPaths.GetFileFromFolders(pathArray, "snow_in.sms"), false),
-                new SoundSource(viewer, Events.Source.MSTSInGame, ORTSPaths.GetFileFromFolders(pathArray, "snow_ex.sms"), false),
-            };
+            // Icik
+            //ClearSound = new List<SoundSourceBase>() {
+            //    new SoundSource(viewer, Events.Source.MSTSInGame, ORTSPaths.GetFileFromFolders(pathArray, "clear_in.sms"), false),
+            //    new SoundSource(viewer, Events.Source.MSTSInGame, ORTSPaths.GetFileFromFolders(pathArray, "clear_ex.sms"), false),
+            //};
+            //RainSound = new List<SoundSourceBase>() {
+            //    new SoundSource(viewer, Events.Source.MSTSInGame, ORTSPaths.GetFileFromFolders(pathArray, "rain_in.sms"), false),
+            //    new SoundSource(viewer, Events.Source.MSTSInGame, ORTSPaths.GetFileFromFolders(pathArray, "rain_ex.sms"), false),
+            //};
+            //SnowSound = new List<SoundSourceBase>() {
+            //    new SoundSource(viewer, Events.Source.MSTSInGame, ORTSPaths.GetFileFromFolders(pathArray, "snow_in.sms"), false),
+            //    new SoundSource(viewer, Events.Source.MSTSInGame, ORTSPaths.GetFileFromFolders(pathArray, "snow_ex.sms"), false),
+            //};
+            
+            // Výbìr ambientních zvukù dle sezóny
+            switch ((int)Viewer.Simulator.Season)
+            {
+                case 0:  // Jaro
+                    ClearSound = new List<SoundSourceBase>() {
+                    new SoundSource(viewer, Events.Source.MSTSInGame, System.IO.Path.Combine(Viewer.ContentPath, "..\\Content\\AmbientSound\\clear_in.sms"), false),
+                    new SoundSource(viewer, Events.Source.MSTSInGame, System.IO.Path.Combine(Viewer.ContentPath, "..\\Content\\AmbientSound\\clear_ex.sms"), false),
+                    new SoundSource(viewer, Events.Source.MSTSInGame, System.IO.Path.Combine(Viewer.ContentPath, "..\\Content\\AmbientSound\\SpringDay.sms"), false),
+                    };
+                    ClearSoundNight = new List<SoundSourceBase>() {
+                    new SoundSource(viewer, Events.Source.MSTSInGame, System.IO.Path.Combine(Viewer.ContentPath, "..\\Content\\AmbientSound\\clear_in.sms"), false),
+                    new SoundSource(viewer, Events.Source.MSTSInGame, System.IO.Path.Combine(Viewer.ContentPath, "..\\Content\\AmbientSound\\clear_ex.sms"), false),
+                    new SoundSource(viewer, Events.Source.MSTSInGame, System.IO.Path.Combine(Viewer.ContentPath, "..\\Content\\AmbientSound\\SpringNight.sms"), false),
+                    };
+                    RainSound = new List<SoundSourceBase>() {
+                    new SoundSource(viewer, Events.Source.MSTSInGame, System.IO.Path.Combine(Viewer.ContentPath, "..\\Content\\AmbientSound\\Rain_in.sms"), false),
+                    new SoundSource(viewer, Events.Source.MSTSInGame, System.IO.Path.Combine(Viewer.ContentPath, "..\\Content\\AmbientSound\\Rain_ex.sms"), false),
+                    };
+                    SnowSound = new List<SoundSourceBase>() {
+                    new SoundSource(viewer, Events.Source.MSTSInGame, System.IO.Path.Combine(Viewer.ContentPath, "..\\Content\\AmbientSound\\Snow_in.sms"), false),
+                    new SoundSource(viewer, Events.Source.MSTSInGame, System.IO.Path.Combine(Viewer.ContentPath, "..\\Content\\AmbientSound\\Snow_ex.sms"), false),
+                    };
+                    break;
+                case 1:  // Léto
+                    ClearSound = new List<SoundSourceBase>() {
+                    new SoundSource(viewer, Events.Source.MSTSInGame, System.IO.Path.Combine(Viewer.ContentPath, "..\\Content\\AmbientSound\\clear_in.sms"), false),
+                    new SoundSource(viewer, Events.Source.MSTSInGame, System.IO.Path.Combine(Viewer.ContentPath, "..\\Content\\AmbientSound\\clear_ex.sms"), false),
+                    new SoundSource(viewer, Events.Source.MSTSInGame, System.IO.Path.Combine(Viewer.ContentPath, "..\\Content\\AmbientSound\\SummerDay.sms"), false),
+                    };
+                    ClearSoundNight = new List<SoundSourceBase>() {
+                    new SoundSource(viewer, Events.Source.MSTSInGame, System.IO.Path.Combine(Viewer.ContentPath, "..\\Content\\AmbientSound\\clear_in.sms"), false),
+                    new SoundSource(viewer, Events.Source.MSTSInGame, System.IO.Path.Combine(Viewer.ContentPath, "..\\Content\\AmbientSound\\clear_ex.sms"), false),
+                    new SoundSource(viewer, Events.Source.MSTSInGame, System.IO.Path.Combine(Viewer.ContentPath, "..\\Content\\AmbientSound\\SummerNight.sms"), false),
+                    };
+                    RainSound = new List<SoundSourceBase>() {
+                    new SoundSource(viewer, Events.Source.MSTSInGame, System.IO.Path.Combine(Viewer.ContentPath, "..\\Content\\AmbientSound\\Rain_in.sms"), false),
+                    new SoundSource(viewer, Events.Source.MSTSInGame, System.IO.Path.Combine(Viewer.ContentPath, "..\\Content\\AmbientSound\\Rain_ex.sms"), false),
+                    new SoundSource(viewer, Events.Source.MSTSInGame, System.IO.Path.Combine(Viewer.ContentPath, "..\\Content\\AmbientSound\\Thunder.sms"), false),
+                    };
+                    SnowSound = new List<SoundSourceBase>() {
+                    new SoundSource(viewer, Events.Source.MSTSInGame, System.IO.Path.Combine(Viewer.ContentPath, "..\\Content\\AmbientSound\\Snow_in.sms"), false),
+                    new SoundSource(viewer, Events.Source.MSTSInGame, System.IO.Path.Combine(Viewer.ContentPath, "..\\Content\\AmbientSound\\Snow_ex.sms"), false),
+                    };
+                    break;
+                case 2:  // Podzim
+                    ClearSound = new List<SoundSourceBase>() {
+                    new SoundSource(viewer, Events.Source.MSTSInGame, System.IO.Path.Combine(Viewer.ContentPath, "..\\Content\\AmbientSound\\clear_in.sms"), false),
+                    new SoundSource(viewer, Events.Source.MSTSInGame, System.IO.Path.Combine(Viewer.ContentPath, "..\\Content\\AmbientSound\\clear_ex.sms"), false),
+                    new SoundSource(viewer, Events.Source.MSTSInGame, System.IO.Path.Combine(Viewer.ContentPath, "..\\Content\\AmbientSound\\AutumnDay.sms"), false),
+                    };
+                    ClearSoundNight = new List<SoundSourceBase>() {
+                    new SoundSource(viewer, Events.Source.MSTSInGame, System.IO.Path.Combine(Viewer.ContentPath, "..\\Content\\AmbientSound\\clear_in.sms"), false),
+                    new SoundSource(viewer, Events.Source.MSTSInGame, System.IO.Path.Combine(Viewer.ContentPath, "..\\Content\\AmbientSound\\clear_ex.sms"), false),
+                    new SoundSource(viewer, Events.Source.MSTSInGame, System.IO.Path.Combine(Viewer.ContentPath, "..\\Content\\AmbientSound\\AutumnNight.sms"), false),
+                    };
+                    RainSound = new List<SoundSourceBase>() {
+                    new SoundSource(viewer, Events.Source.MSTSInGame, System.IO.Path.Combine(Viewer.ContentPath, "..\\Content\\AmbientSound\\Rain_in.sms"), false),
+                    new SoundSource(viewer, Events.Source.MSTSInGame, System.IO.Path.Combine(Viewer.ContentPath, "..\\Content\\AmbientSound\\Rain_ex.sms"), false),
+                    };
+                    SnowSound = new List<SoundSourceBase>() {
+                    new SoundSource(viewer, Events.Source.MSTSInGame, System.IO.Path.Combine(Viewer.ContentPath, "..\\Content\\AmbientSound\\Snow_in.sms"), false),
+                    new SoundSource(viewer, Events.Source.MSTSInGame, System.IO.Path.Combine(Viewer.ContentPath, "..\\Content\\AmbientSound\\Snow_ex.sms"), false),
+                    };
+                    break;
+                case 3:  // Zima
+                    ClearSound = new List<SoundSourceBase>() {
+                    new SoundSource(viewer, Events.Source.MSTSInGame, System.IO.Path.Combine(Viewer.ContentPath, "..\\Content\\AmbientSound\\clear_in.sms"), false),
+                    new SoundSource(viewer, Events.Source.MSTSInGame, System.IO.Path.Combine(Viewer.ContentPath, "..\\Content\\AmbientSound\\clear_ex.sms"), false),
+                    new SoundSource(viewer, Events.Source.MSTSInGame, System.IO.Path.Combine(Viewer.ContentPath, "..\\Content\\AmbientSound\\WinterDay.sms"), false),
+                    };
+                    ClearSoundNight = new List<SoundSourceBase>() {
+                    new SoundSource(viewer, Events.Source.MSTSInGame, System.IO.Path.Combine(Viewer.ContentPath, "..\\Content\\AmbientSound\\clear_in.sms"), false),
+                    new SoundSource(viewer, Events.Source.MSTSInGame, System.IO.Path.Combine(Viewer.ContentPath, "..\\Content\\AmbientSound\\clear_ex.sms"), false),
+                    new SoundSource(viewer, Events.Source.MSTSInGame, System.IO.Path.Combine(Viewer.ContentPath, "..\\Content\\AmbientSound\\WinterNight.sms"), false),
+                    };
+                    RainSound = new List<SoundSourceBase>() {
+                    new SoundSource(viewer, Events.Source.MSTSInGame, System.IO.Path.Combine(Viewer.ContentPath, "..\\Content\\AmbientSound\\Rain_in.sms"), false),
+                    new SoundSource(viewer, Events.Source.MSTSInGame, System.IO.Path.Combine(Viewer.ContentPath, "..\\Content\\AmbientSound\\Rain_ex.sms"), false),
+                    };
+                    SnowSound = new List<SoundSourceBase>() {
+                    new SoundSource(viewer, Events.Source.MSTSInGame, System.IO.Path.Combine(Viewer.ContentPath, "..\\Content\\AmbientSound\\Snow_in.sms"), false),
+                    new SoundSource(viewer, Events.Source.MSTSInGame, System.IO.Path.Combine(Viewer.ContentPath, "..\\Content\\AmbientSound\\Snow_ex.sms"), false),
+                    };
+                    break;
+            }
 
             WeatherSounds.AddRange(ClearSound);
+            WeatherSounds.AddRange(ClearSoundNight);
             WeatherSounds.AddRange(RainSound);
             WeatherSounds.AddRange(SnowSound);
             
@@ -133,6 +226,9 @@ namespace Orts.Viewer3D
             {
                 dynamicWeather.Save(outf);
             }
+
+            // Icik
+            outf.Write(NightTime);
         }
 
         public virtual void RestoreWeatherParameters(BinaryReader inf)
@@ -157,6 +253,9 @@ namespace Orts.Viewer3D
                 dynamicWeather.Restore(inf);
               }
             UpdateVolume();
+
+            // Icik
+            NightTime = inf.ReadBoolean();
         }
 
         public void SetInitialWeatherParameters()
@@ -175,11 +274,38 @@ namespace Orts.Viewer3D
             Viewer.SoundProcess.RemoveSoundSources(this);
             switch (Viewer.Simulator.WeatherType)
             {
-                case Orts.Formats.Msts.WeatherType.Clear: Weather.PrecipitationLiquidity = 1; Weather.PricipitationIntensityPPSPM2 = 0; Viewer.SoundProcess.AddSoundSources(this, ClearSound); break;
+                case Orts.Formats.Msts.WeatherType.Clear: Weather.PrecipitationLiquidity = 1; Weather.PricipitationIntensityPPSPM2 = 0; /*Viewer.SoundProcess.AddSoundSources(this, ClearSound);*/ break;
                 case Orts.Formats.Msts.WeatherType.Rain: Weather.PrecipitationLiquidity = 1; Weather.PricipitationIntensityPPSPM2 = 0.500f; Viewer.SoundProcess.AddSoundSources(this, RainSound); break;
                 case Orts.Formats.Msts.WeatherType.Snow: Weather.PrecipitationLiquidity = 0; Weather.PricipitationIntensityPPSPM2 = 0.500f; Viewer.SoundProcess.AddSoundSources(this, SnowSound); break;
             }
 
+            // Icik
+            if (Viewer.Simulator.WeatherType == Orts.Formats.Msts.WeatherType.Clear)
+            {
+                switch ((int)Viewer.Simulator.Season)
+                {
+                    case 0:  // Jaro
+                        if (NightTime)
+                            Viewer.SoundProcess.AddSoundSources(this, ClearSoundNight);
+                        else Viewer.SoundProcess.AddSoundSources(this, ClearSound);
+                        break;
+                    case 1:  // Léto
+                        if (NightTime)
+                            Viewer.SoundProcess.AddSoundSources(this, ClearSoundNight);
+                        else Viewer.SoundProcess.AddSoundSources(this, ClearSound);
+                        break;
+                    case 2:  // Podzim
+                        if (NightTime)
+                            Viewer.SoundProcess.AddSoundSources(this, ClearSoundNight);
+                        else Viewer.SoundProcess.AddSoundSources(this, ClearSound);
+                        break;
+                    case 3:  // Zima
+                        if (NightTime)
+                            Viewer.SoundProcess.AddSoundSources(this, ClearSoundNight);
+                        else Viewer.SoundProcess.AddSoundSources(this, ClearSound);
+                        break;
+                }
+            }
         }
 
         void UpdateSoundSources()
@@ -187,9 +313,117 @@ namespace Orts.Viewer3D
             Viewer.SoundProcess.RemoveSoundSources(this);
             switch (Viewer.Simulator.WeatherType)
             {
-                case Orts.Formats.Msts.WeatherType.Clear: Viewer.SoundProcess.AddSoundSources(this, ClearSound); break;
+                //case Orts.Formats.Msts.WeatherType.Clear: Viewer.SoundProcess.AddSoundSources(this, ClearSound); break;
                 case Orts.Formats.Msts.WeatherType.Rain: Viewer.SoundProcess.AddSoundSources(this, RainSound); break;
                 case Orts.Formats.Msts.WeatherType.Snow: Viewer.SoundProcess.AddSoundSources(this, SnowSound); break;
+            }
+              
+            // Icik
+            if (Viewer.Simulator.WeatherType == Orts.Formats.Msts.WeatherType.Clear)
+            {
+                switch ((int)Viewer.Simulator.Season)
+                {
+                    case 0:  // Jaro
+                        if (NightTime)
+                            Viewer.SoundProcess.AddSoundSources(this, ClearSoundNight);
+                        else Viewer.SoundProcess.AddSoundSources(this, ClearSound);
+                        break;
+                    case 1:  // Léto
+                        if (NightTime)
+                            Viewer.SoundProcess.AddSoundSources(this, ClearSoundNight);
+                        else Viewer.SoundProcess.AddSoundSources(this, ClearSound);
+                        break;
+                    case 2:  // Podzim
+                        if (NightTime)
+                            Viewer.SoundProcess.AddSoundSources(this, ClearSoundNight);
+                        else Viewer.SoundProcess.AddSoundSources(this, ClearSound);
+                        break;
+                    case 3:  // Zima
+                        if (NightTime)
+                            Viewer.SoundProcess.AddSoundSources(this, ClearSoundNight);
+                        else Viewer.SoundProcess.AddSoundSources(this, ClearSound);
+                        break;
+                }
+            }
+        }
+
+        // Icik
+        void DayNightTimeChangeCyklus()
+        {
+            double DayTime = Viewer.Simulator.ClockTime;
+            for (int i = 10; i > 0; i--)
+            {
+                if (DayTime > i * 86400)
+                {
+                    DayTime = Viewer.Simulator.ClockTime - (i * 86400);
+                    break;
+                }
+            }
+
+            float H;
+            float L;
+            switch ((int)Viewer.Simulator.Season)
+            {
+                case 0:  // Jaro
+                    H = 19; // Zaèátek noci
+                    L = 6; // Konec noci
+                    if ((DayTime / 3600f > H || DayTime / 3600f < L) && !NightTime)
+                    {
+                        DayNightTimeChange = true;
+                        NightTime = true;
+                    }
+                    else
+                    if ((DayTime / 3600 >= L && DayTime / 3600f <= H) && NightTime)
+                    {
+                        DayNightTimeChange = true;
+                        NightTime = false;
+                    }
+                    break;
+                case 1:  // Léto
+                    H = 21; // Zaèátek noci
+                    L = 5; // Konec noci
+                    if ((DayTime / 3600f > H || DayTime / 3600f < L) && !NightTime)
+                    {
+                        DayNightTimeChange = true;
+                        NightTime = true;
+                    }
+                    else 
+                    if ((DayTime / 3600 >= L && DayTime / 3600f <= H) && NightTime)
+                    {
+                        DayNightTimeChange = true;
+                        NightTime = false;
+                    }
+                    break;
+                case 2:  // Podzim
+                    H = 19; // Zaèátek noci
+                    L = 7; // Konec noci
+                    if ((DayTime / 3600f > H || DayTime / 3600f < L) && !NightTime)
+                    {
+                        DayNightTimeChange = true;
+                        NightTime = true;
+                    }
+                    else
+                    if ((DayTime / 3600 >= L && DayTime / 3600f <= H) && NightTime)
+                    {
+                        DayNightTimeChange = true;
+                        NightTime = false;
+                    }
+                    break;
+                case 3:  // Zima
+                    H = 17; // Zaèátek noci
+                    L = 8; // Konec noci
+                    if ((DayTime / 3600f > H || DayTime / 3600f < L) && !NightTime)
+                    {
+                        DayNightTimeChange = true;
+                        NightTime = true;
+                    }
+                    else
+                    if ((DayTime / 3600 >= L && DayTime / 3600f <= H) && NightTime)
+                    {
+                        DayNightTimeChange = true;
+                        NightTime = false;
+                    }
+                    break;
             }
         }
 
@@ -333,6 +567,14 @@ namespace Orts.Viewer3D
         {
             Time += elapsedTime.ClockSeconds;
             var manager = MPManager.Instance();
+
+            // Icik
+            DayNightTimeChangeCyklus();
+            if (DayNightTimeChange)
+            {
+                UpdateSoundSources();
+                DayNightTimeChange = false;
+            }
 
             if (MPManager.IsClient() && manager.weatherChanged)
             {
@@ -491,7 +733,7 @@ namespace Orts.Viewer3D
                     weatherChangeOn = false;
                 }
 
-                UpdateWind(elapsedTime);
+                UpdateWind(elapsedTime);                                
             }
 
             if (!Orts.MultiPlayer.MPManager.IsMultiPlayer())

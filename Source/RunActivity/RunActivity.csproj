@@ -224,6 +224,30 @@
       <Link>Native\X64\OpenAL32.dll</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Content\AmbientSound\birdsong1.wav" />
+    <Content Include="Content\AmbientSound\crow-1.wav" />
+    <Content Include="Content\AmbientSound\crow.wav" />
+    <Content Include="Content\AmbientSound\e_rain_1.wav" />
+    <Content Include="Content\AmbientSound\e_rain_2.wav" />
+    <Content Include="Content\AmbientSound\e_snow_1.wav" />
+    <Content Include="Content\AmbientSound\e_snow_2.wav" />
+    <Content Include="Content\AmbientSound\e_wind_1.wav" />
+    <Content Include="Content\AmbientSound\e_wind_2.wav" />
+    <Content Include="Content\AmbientSound\e_wind_3.wav" />
+    <Content Include="Content\AmbientSound\gen_nat5.wav" />
+    <Content Include="Content\AmbientSound\gen_res1.wav" />
+    <Content Include="Content\AmbientSound\gen_uk_res1.wav" />
+    <Content Include="Content\AmbientSound\gen_uk_res2.wav" />
+    <Content Include="Content\AmbientSound\Thunder1.wav" />
+    <Content Include="Content\AmbientSound\Thunder2.wav" />
+    <Content Include="Content\AmbientSound\ticho_30s.wav" />
+    <Content Include="Content\AmbientSound\xe_rain_1.wav" />
+    <Content Include="Content\AmbientSound\xe_rain_2.wav" />
+    <Content Include="Content\AmbientSound\xe_snow_1.wav" />
+    <Content Include="Content\AmbientSound\xe_snow_2.wav" />
+    <Content Include="Content\AmbientSound\xe_wind_1.wav" />
+    <Content Include="Content\AmbientSound\xe_wind_2.wav" />
+    <Content Include="Content\AmbientSound\xe_wind_3.wav" />
     <Content Include="Content\blank.bmp">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -869,6 +893,21 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="app.config" />
+    <None Include="Content\AmbientSound\AutumnDay.sms" />
+    <None Include="Content\AmbientSound\AutumnNight.sms" />
+    <None Include="Content\AmbientSound\clear_ex.sms" />
+    <None Include="Content\AmbientSound\clear_in.sms" />
+    <None Include="Content\AmbientSound\Rain_ex.sms" />
+    <None Include="Content\AmbientSound\Rain_in.sms" />
+    <None Include="Content\AmbientSound\Snow_ex.sms" />
+    <None Include="Content\AmbientSound\Snow_in.sms" />
+    <None Include="Content\AmbientSound\SpringDay.sms" />
+    <None Include="Content\AmbientSound\SpringNight.sms" />
+    <None Include="Content\AmbientSound\SummerDay.sms" />
+    <None Include="Content\AmbientSound\SummerNight.sms" />
+    <None Include="Content\AmbientSound\Thunder.sms" />
+    <None Include="Content\AmbientSound\WinterDay.sms" />
+    <None Include="Content\AmbientSound\WinterNight.sms" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
