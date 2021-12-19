@@ -163,8 +163,8 @@ namespace Orts.Simulation.RollingStocks
         public float TimeToCloseDoorGenerate;
 
         bool TenderWeightInitialize = true;
-        float TenderWagonMaxCoalMassKG;
-        float TenderWagonMaxWaterMassKG;
+        float TenderWagonMaxCoalMassKG = 0;
+        float TenderWagonMaxWaterMassKG = 0;
 
         // Wind Impacts
         float WagonDirectionDeg;
@@ -2188,6 +2188,9 @@ namespace Orts.Simulation.RollingStocks
                         {
                             MassKG = LoadEmptyMassKg + Kg.FromLb(SteamLocomotiveIdentification.BoilerMassLB) + SteamLocomotiveIdentification.FireMassKG + SteamLocomotiveIdentification.TenderCoalMassKG + Kg.FromLb(SteamLocomotiveIdentification.CombinedTenderWaterVolumeUKG * WaterLBpUKG);
                             MassKG = MathHelper.Clamp(MassKG, LoadEmptyMassKg, LoadFullMassKg); // Clamp Mass to between the empty and full wagon values   
+                            // Icik
+                            if (float.IsNaN(MassKG))
+                                MassKG = LoadFullMassKg;
                             // Adjust drive wheel weight
                             SteamLocomotiveIdentification.DrvWheelWeightKg = (MassKG / InitialMassKG) * SteamLocomotiveIdentification.InitialDrvWheelWeightKg;
                         }
@@ -2196,8 +2199,11 @@ namespace Orts.Simulation.RollingStocks
                         // Thus the loco weight only changes as boiler level goes up and down, and coal mass varies in the fire
                         {
                             MassKG = LoadEmptyMassKg + Kg.FromLb(SteamLocomotiveIdentification.BoilerMassLB) + SteamLocomotiveIdentification.FireMassKG;
-                            MassKG = MathHelper.Clamp(MassKG, LoadEmptyMassKg, LoadFullMassKg); // Clamp Mass to between the empty and full wagon values        
-                        // Adjust drive wheel weight
+                            MassKG = MathHelper.Clamp(MassKG, LoadEmptyMassKg, LoadFullMassKg); // Clamp Mass to between the empty and full wagon values
+                            // Icik
+                            if (float.IsNaN(MassKG))
+                                MassKG = LoadFullMassKg;
+                            // Adjust drive wheel weight
                             SteamLocomotiveIdentification.DrvWheelWeightKg = (MassKG / InitialMassKG) * SteamLocomotiveIdentification.InitialDrvWheelWeightKg;
                         }
                         // Update wagon physics parameters sensitive to wagon mass change
@@ -2223,7 +2229,7 @@ namespace Orts.Simulation.RollingStocks
                         WagonFrontalAreaM2 = ((LoadFullWagonFrontalAreaM2 - LoadEmptyWagonFrontalAreaM2) * TempMassDiffRatio) + LoadEmptyWagonFrontalAreaM2;
 
                         // Update CoG related parameters
-                        CentreOfGravityM.Y = ((LoadFullCentreOfGravityM_Y - LoadEmptyCentreOfGravityM_Y) * TempMassDiffRatio) + LoadEmptyCentreOfGravityM_Y;
+                        CentreOfGravityM.Y = ((LoadFullCentreOfGravityM_Y - LoadEmptyCentreOfGravityM_Y) * TempMassDiffRatio) + LoadEmptyCentreOfGravityM_Y;                        
                     }
                 }
 
@@ -2239,9 +2245,11 @@ namespace Orts.Simulation.RollingStocks
                         DieselLocomotiveIdentification = Train.Cars[LocoIndex] as MSTSDieselLocomotive;
                     if (DieselLocomotiveIdentification != null)
                     {
-
                         MassKG = LoadEmptyMassKg + (DieselLocomotiveIdentification.DieselLevelL * DieselLocomotiveIdentification.DieselWeightKgpL) + DieselLocomotiveIdentification.CurrentLocomotiveSteamHeatBoilerWaterCapacityL;
-                        MassKG = MathHelper.Clamp(MassKG, LoadEmptyMassKg, LoadFullMassKg); // Clamp Mass to between the empty and full wagon values  
+                        MassKG = MathHelper.Clamp(MassKG, LoadEmptyMassKg, LoadFullMassKg); // Clamp Mass to between the empty and full wagon values
+                        // Icik
+                        if (float.IsNaN(MassKG))
+                            MassKG = LoadFullMassKg;
                         // Adjust drive wheel weight
                         DieselLocomotiveIdentification.DrvWheelWeightKg = (MassKG / InitialMassKG) * DieselLocomotiveIdentification.InitialDrvWheelWeightKg;
 
@@ -2268,14 +2276,10 @@ namespace Orts.Simulation.RollingStocks
                         WagonFrontalAreaM2 = ((LoadFullWagonFrontalAreaM2 - LoadEmptyWagonFrontalAreaM2) * TempMassDiffRatio) + LoadEmptyWagonFrontalAreaM2;
 
                         // Update CoG related parameters
-                        CentreOfGravityM.Y = ((LoadFullCentreOfGravityM_Y - LoadEmptyCentreOfGravityM_Y) * TempMassDiffRatio) + LoadEmptyCentreOfGravityM_Y;
-                        
+                        CentreOfGravityM.Y = ((LoadFullCentreOfGravityM_Y - LoadEmptyCentreOfGravityM_Y) * TempMassDiffRatio) + LoadEmptyCentreOfGravityM_Y;                        
                     }
                 }
             }
-            // Icik
-            if (float.IsNaN(MassKG))
-                MassKG = 10000;
         }
 
         private void UpdateTrainBaseResistance()
@@ -3170,10 +3174,8 @@ namespace Orts.Simulation.RollingStocks
         private void UpdateTenderLoad()
         // This section updates the weight and physics of the tender, and aux tender as load varies on it
         {
-
             if (FreightAnimations != null && FreightAnimations.ContinuousFreightAnimationsPresent) // make sure that a freight animation INCLUDE File has been defined, and it contains "continuous" animation data.
             {
-
                 if (WagonType == WagonTypes.Tender)
                 {
                     // Find the associated steam locomotive for this tender
@@ -3190,6 +3192,9 @@ namespace Orts.Simulation.RollingStocks
                     {
                         MassKG = FreightAnimations.WagonEmptyWeight + TendersSteamLocomotive.TenderCoalMassKG + Kg.FromLb((TendersSteamLocomotive.CurrentLocoTenderWaterVolumeUKG * WaterLBpUKG));
                         MassKG = MathHelper.Clamp(MassKG, LoadEmptyMassKg, LoadFullMassKg); // Clamp Mass to between the empty and full wagon values   
+                        // Icik
+                        if (float.IsNaN(MassKG))
+                            MassKG = LoadFullMassKg;
                     }
                     else MassKG = LoadFullMassKg;
 
@@ -3217,6 +3222,9 @@ namespace Orts.Simulation.RollingStocks
 
                     // Update CoG related parameters
                     CentreOfGravityM.Y = ((LoadFullCentreOfGravityM_Y - LoadEmptyCentreOfGravityM_Y) * TempTenderMassDiffRatio) + LoadEmptyCentreOfGravityM_Y;
+
+                    //if (float.IsNaN(MassKG))
+                    //{ }
                 }
                 else if (AuxWagonType == "AuxiliaryTender")
                 {
@@ -3225,6 +3233,9 @@ namespace Orts.Simulation.RollingStocks
 
                     MassKG = FreightAnimations.WagonEmptyWeight + Kg.FromLb((AuxTendersSteamLocomotive.CurrentAuxTenderWaterVolumeUKG * WaterLBpUKG));
                     MassKG = MathHelper.Clamp(MassKG, LoadEmptyMassKg, LoadFullMassKg); // Clamp Mass to between the empty and full wagon values   
+                    // Icik
+                    if (float.IsNaN(MassKG))
+                        MassKG = LoadFullMassKg;
 
                     // Update wagon parameters sensitive to wagon mass change
                     // Calculate the difference ratio, ie how full the wagon is. This value allows the relevant value to be scaled from the empty mass to the full mass of the wagon
