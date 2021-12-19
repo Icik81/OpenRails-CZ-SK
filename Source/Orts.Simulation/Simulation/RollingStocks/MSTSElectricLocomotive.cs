@@ -42,6 +42,7 @@ using System.Text;
 using Event = Orts.Common.Event;
 using System;
 using Orts.Formats.OR;
+using Orts.MultiPlayer;
 
 namespace Orts.Simulation.RollingStocks
 {
@@ -757,7 +758,14 @@ namespace Orts.Simulation.RollingStocks
                     { 
                         HVOff = true;
                         if (Pantographs[1].State == PantographState.Up || Pantographs[2].State == PantographState.Up)
+                        {
                             SignalEvent(PowerSupplyEvent.LowerPantograph);
+                            if (MPManager.IsMultiPlayer())
+                            {
+                                MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO1", 0).ToString());
+                                MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO2", 0).ToString());
+                            }
+                        }
                     }
 
                     // Test napětí v troleji pro jednosystémové lokomotivy
@@ -784,7 +792,14 @@ namespace Orts.Simulation.RollingStocks
                     if (!CircuitBreakerOn && Pantographs[1].PantographsBlocked == false && Pantographs[2].PantographsBlocked == false)
                     {
                         if (Pantograph4Switch != 0)
+                        {
                             SignalEvent(PowerSupplyEvent.LowerPantograph);
+                            if (MPManager.IsMultiPlayer())
+                            {
+                                MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO1", 0).ToString());
+                                MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO2", 0).ToString());
+                            }
+                        }
                         PantographDown = true;
                     }
                     if (CircuitBreakerOn)
@@ -914,7 +929,14 @@ namespace Orts.Simulation.RollingStocks
                     {
                         HVOff = true;
                         if (Pantographs[1].State == PantographState.Up || Pantographs[2].State == PantographState.Up)
+                        {
                             SignalEvent(PowerSupplyEvent.LowerPantograph);
+                            if (MPManager.IsMultiPlayer())
+                            {
+                                MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO1", 0).ToString());
+                                MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO2", 0).ToString());
+                            }
+                        }
                     }
 
                     // Nedovolí zapnout HV, pokud není napětí v drátech 
@@ -1216,7 +1238,11 @@ namespace Orts.Simulation.RollingStocks
                     if (MultiSystemEngine && RouteVoltageV != 1)
                     {
                         if (!Pantograph4Enable && !Pantograph3Enable)
+                        {
                             SignalEvent(PowerSupplyEvent.RaisePantograph, 1);
+                            if (MPManager.IsMultiPlayer())                            
+                                MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO1", 1).ToString());                            
+                        }
                         
                         if (Pantograph4Enable)
                         {
@@ -1244,7 +1270,11 @@ namespace Orts.Simulation.RollingStocks
                         if (PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closed)
                         {
                             if (!Pantograph4Enable && !Pantograph3Enable)
+                            {
                                 SignalEvent(PowerSupplyEvent.RaisePantograph, 1);
+                                if (MPManager.IsMultiPlayer())
+                                    MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO1", 1).ToString());
+                            }
 
                             if (Pantograph4Enable)
                             {
@@ -1650,7 +1680,14 @@ namespace Orts.Simulation.RollingStocks
                             {
                                 T_PantoUp[i] = 0;
                                 if (!AirForPantograph)
+                                {
                                     SignalEvent(PowerSupplyEvent.LowerPantograph);
+                                    if (MPManager.IsMultiPlayer())
+                                    {
+                                        MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO1", 0).ToString());
+                                        MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO2", 0).ToString());
+                                    }
+                                }
                                 break;
                             }
                     }
@@ -2052,9 +2089,20 @@ namespace Orts.Simulation.RollingStocks
             if (Train != null)
             {
                 if (!ToState)
+                {
                     SignalEvent(PowerSupplyEvent.LowerPantograph);
+                    if (MPManager.IsMultiPlayer())
+                    {
+                        MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO1", 0).ToString());
+                        MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO2", 0).ToString());
+                    }
+                }
                 else
+                {
                     SignalEvent(PowerSupplyEvent.RaisePantograph, 1);
+                    if (MPManager.IsMultiPlayer())                    
+                        MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO1", 1).ToString());                                            
+                }
             }
 
             base.SetPower(ToState);
