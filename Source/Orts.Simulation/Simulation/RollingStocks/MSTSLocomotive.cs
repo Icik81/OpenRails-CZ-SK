@@ -4630,6 +4630,10 @@ namespace Orts.Simulation.RollingStocks
                     }
                     WheelSpeedMpS = LocomotiveAxle.AxleSpeedMpS;
                 }
+                else
+                {
+                    WheelSpeedMpS = extendedPhysics.AverageAxleSpeedMpS;
+                }
             }
         }
 
