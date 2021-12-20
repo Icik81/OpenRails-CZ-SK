@@ -225,6 +225,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\AmbientSound\birdsong1.wav" />
+    <Content Include="Content\AmbientSound\ColdWind.wav" />
     <Content Include="Content\AmbientSound\crow-1.wav" />
     <Content Include="Content\AmbientSound\crow.wav" />
     <Content Include="Content\AmbientSound\e_rain_1.wav" />
@@ -238,6 +239,8 @@
     <Content Include="Content\AmbientSound\gen_res1.wav" />
     <Content Include="Content\AmbientSound\gen_uk_res1.wav" />
     <Content Include="Content\AmbientSound\gen_uk_res2.wav" />
+    <Content Include="Content\AmbientSound\SpringLoop.wav" />
+    <Content Include="Content\AmbientSound\SummerLoop.wav" />
     <Content Include="Content\AmbientSound\Thunder1.wav" />
     <Content Include="Content\AmbientSound\Thunder2.wav" />
     <Content Include="Content\AmbientSound\ticho_30s.wav" />
