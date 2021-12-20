@@ -254,6 +254,15 @@ namespace Orts.Simulation.RollingStocks
 
         public void Update(float elapsedClockSeconds)
         {
+            if (!Locomotive.IsLeadLocomotive())
+            {
+                if (Locomotive.CruiseControl != null)
+                {
+                    Locomotive.CruiseControl.SpeedRegMode = CruiseControl.SpeedRegulatorMode.Manual;
+                }
+            }
+            if (!Locomotive.IsLeadLocomotive())
+                Locomotive.ControllerVolts = OverridenControllerVolts = Locomotive.Train.ControllerVolts;
             if (!Locomotive.IsPlayerTrain)
                 return;
             if (Bar.FromPSI(Locomotive.BrakeSystem.BrakeLine1PressurePSI) < 4.98 && Locomotive.DynamicBrakePercent < 0.1f)
@@ -333,6 +342,10 @@ namespace Orts.Simulation.RollingStocks
             if (UseControllerVolts)
                 Locomotive.MotiveForceN = Locomotive.TractiveForceN = TotalForceN;
 
+            if (Locomotive.IsLeadLocomotive())
+                Locomotive.Train.ControllerVolts = Locomotive.ControllerVolts;
+            if (!Locomotive.IsLeadLocomotive())
+                Locomotive.ControllerVolts = Locomotive.Train.ControllerVolts;
             //Locomotive.Simulator.Confirmer.MSG(TotalForceN.ToString() + " " + Locomotive.TractiveForceN.ToString());
             //Locomotive.Simulator.Confirmer.MSG(Undercarriages[0].Axles[0].WheelSpeedMpS.ToString() + " " + Undercarriages[0].Axles[1].WheelSpeedMpS.ToString() + " " + Undercarriages[1].Axles[0].WheelSpeedMpS.ToString() + " " + Undercarriages[1].Axles[1].WheelSpeedMpS.ToString());
         }

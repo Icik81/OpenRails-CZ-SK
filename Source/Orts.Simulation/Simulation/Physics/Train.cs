@@ -436,6 +436,12 @@ namespace Orts.Simulation.Physics
         public int[] DatalogTSContents;                  // logging selection
         public string DataLogFile;                       // required datalog file
 
+        // power consumption info (Jindrich)
+        public int PowerSupplyId = 0;
+        public float TotalAmps = 0;
+
+        public float ControllerVolts = 0;
+
         public Simulator Simulator { get; protected set; }                   // reference to the simulator
 
 

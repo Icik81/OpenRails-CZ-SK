@@ -338,16 +338,21 @@ namespace Orts.Simulation.RollingStocks
             int markerVoltage = 0;
             VoltageChangeMarker marker;
 
-            float dist = DistanceToPowerSupplyStationM(RouteVoltageV == 3000 ? 0 : 1, out myStation);
             float distToMarker = DistanceToVoltageMarkerM(out markerVoltage, out marker);
+            float dist = DistanceToPowerSupplyStationM(markerVoltage == 3000 ? 0 : 1, out myStation);
 
             if (myStation == null && prevPss != null)
             {
                 myStation = prevPss;
                 powerSys = myStation.PowerSystem;
             }
-            else
+            else if (myStation != null)
                 powerSys = myStation.PowerSystem;
+            else
+            {
+                myStation = new PowerSupplyStation();
+                myStation.PowerSystem = markerVoltage == 3000 ? 0 : 1;
+            }
             if (powerSys == 0)
             {
                 RouteVoltageV = 3000;
