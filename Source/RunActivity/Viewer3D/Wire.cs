@@ -372,7 +372,8 @@ namespace Orts.Viewer3D
             Polyline pl; // Local polyline instance
             Polyline vertical;
 
-            expectedSegmentLength = 40; //segment of wire is expected to be 40 meters
+            // Icik - změna na 50m
+            expectedSegmentLength = 50; //segment of wire is expected to be 40 meters
 
             lod = new LODWire(800.0f); // Create LOD for railsides with specified CutoffRadius
             lodItem = new LODItemWire("Wire");
