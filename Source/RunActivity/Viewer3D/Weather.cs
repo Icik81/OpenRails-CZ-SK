@@ -570,7 +570,7 @@ namespace Orts.Viewer3D
 
             // Icik
             DayNightTimeChangeCyklus();
-            if (DayNightTimeChange)
+            if (DayNightTimeChange || (Viewer.Simulator.GameTime < 0.1f && NightTime))
             {
                 UpdateSoundSources();
                 DayNightTimeChange = false;
