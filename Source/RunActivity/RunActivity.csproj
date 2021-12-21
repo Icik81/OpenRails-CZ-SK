@@ -235,10 +235,14 @@
     <Content Include="Content\AmbientSound\e_wind_1.wav" />
     <Content Include="Content\AmbientSound\e_wind_2.wav" />
     <Content Include="Content\AmbientSound\e_wind_3.wav" />
+    <Content Include="Content\AmbientSound\Fly.wav" />
+    <Content Include="Content\AmbientSound\Frog_Birds_Night.wav" />
     <Content Include="Content\AmbientSound\gen_nat5.wav" />
     <Content Include="Content\AmbientSound\gen_res1.wav" />
     <Content Include="Content\AmbientSound\gen_uk_res1.wav" />
     <Content Include="Content\AmbientSound\gen_uk_res2.wav" />
+    <Content Include="Content\AmbientSound\Insect.wav" />
+    <Content Include="Content\AmbientSound\Owl.wav" />
     <Content Include="Content\AmbientSound\SpringLoop.wav" />
     <Content Include="Content\AmbientSound\SummerLoop.wav" />
     <Content Include="Content\AmbientSound\Thunder1.wav" />
