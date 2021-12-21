@@ -275,8 +275,8 @@ namespace Orts.Viewer3D
             switch (Viewer.Simulator.WeatherType)
             {
                 case Orts.Formats.Msts.WeatherType.Clear: Weather.PrecipitationLiquidity = 1; /*Weather.PricipitationIntensityPPSPM2 = 0; /*Viewer.SoundProcess.AddSoundSources(this, ClearSound);*/ break;
-                case Orts.Formats.Msts.WeatherType.Rain: Weather.PrecipitationLiquidity = 1; Weather.PricipitationIntensityPPSPM2 = 0.500f; Viewer.SoundProcess.AddSoundSources(this, RainSound); break;
-                case Orts.Formats.Msts.WeatherType.Snow: Weather.PrecipitationLiquidity = 0; Weather.PricipitationIntensityPPSPM2 = 0.500f; Viewer.SoundProcess.AddSoundSources(this, SnowSound); break;
+                case Orts.Formats.Msts.WeatherType.Rain: Weather.PrecipitationLiquidity = 1; Weather.PricipitationIntensityPPSPM2 = 0.7500f; Viewer.SoundProcess.AddSoundSources(this, RainSound); break;
+                case Orts.Formats.Msts.WeatherType.Snow: Weather.PrecipitationLiquidity = 0; Weather.PricipitationIntensityPPSPM2 = 0.7500f; Viewer.SoundProcess.AddSoundSources(this, SnowSound); break;
             }
 
             // Icik
@@ -431,19 +431,19 @@ namespace Orts.Viewer3D
         {
             if (Viewer.GraphicsDevice.GraphicsProfile == GraphicsProfile.HiDef)
             {
-                // Icik
+                // Icik                
+                foreach (var soundSource in RainSound) soundSource.Volume = (Weather.PricipitationIntensityPPSPM2 - 0.15f) / PrecipitationViewer.MaxIntensityPPSPM2;
+                foreach (var soundSource in SnowSound) soundSource.Volume = (Weather.PricipitationIntensityPPSPM2 - 0.15f) / PrecipitationViewer.MaxIntensityPPSPM2;
                 foreach (var soundSource in ClearSound) soundSource.Volume = 1 - (Weather.PricipitationIntensityPPSPM2 / 0.35f);
                 foreach (var soundSource in ClearSoundNight) soundSource.Volume = 1 - (Weather.PricipitationIntensityPPSPM2 / 0.35f);
-                foreach (var soundSource in RainSound) soundSource.Volume = (Weather.PricipitationIntensityPPSPM2 - 0.15f) / PrecipitationViewer.MaxIntensityPPSPM2;
-                foreach (var soundSource in SnowSound) soundSource.Volume = (Weather.PricipitationIntensityPPSPM2 - 0.15f) / PrecipitationViewer.MaxIntensityPPSPM2;                
             }
             else
             {
-                // Icik
-                foreach (var soundSource in ClearSound) soundSource.Volume = 1 - (Weather.PricipitationIntensityPPSPM2 / 0.35f);
-                foreach (var soundSource in ClearSoundNight) soundSource.Volume = 1 - (Weather.PricipitationIntensityPPSPM2 / 0.35f);
+                // Icik                
                 foreach (var soundSource in RainSound) soundSource.Volume = (Weather.PricipitationIntensityPPSPM2 - 0.15f) / PrecipitationViewer.MaxIntensityPPSPM2_16;
                 foreach (var soundSource in SnowSound) soundSource.Volume = (Weather.PricipitationIntensityPPSPM2 - 0.15f) / PrecipitationViewer.MaxIntensityPPSPM2_16;
+                foreach (var soundSource in ClearSound) soundSource.Volume = 1 - (Weather.PricipitationIntensityPPSPM2 / 0.35f);
+                foreach (var soundSource in ClearSoundNight) soundSource.Volume = 1 - (Weather.PricipitationIntensityPPSPM2 / 0.35f);
             }
         }
 
@@ -620,16 +620,27 @@ namespace Orts.Viewer3D
                     {
                         case Orts.Formats.Msts.WeatherType.Clear:
                             Viewer.Simulator.WeatherType = Orts.Formats.Msts.WeatherType.Rain;
+                            // Icik
+                            Weather.PricipitationIntensityPPSPM2 = 0.75f;
+                            Weather.OvercastFactor = 0.75f; 
+                            Weather.FogDistance = 5000;
                             break;
                         case Orts.Formats.Msts.WeatherType.Rain:
                             Viewer.Simulator.WeatherType = Orts.Formats.Msts.WeatherType.Snow;
+                            // Icik
+                            Weather.PricipitationIntensityPPSPM2 = 0.75f;
+                            Weather.OvercastFactor = 0.85f;
+                            Weather.FogDistance = 7500;
                             break;
                         case Orts.Formats.Msts.WeatherType.Snow:
                             Viewer.Simulator.WeatherType = Orts.Formats.Msts.WeatherType.Clear;
                             // Icik
                             Weather.PricipitationIntensityPPSPM2 = 0;
+                            Weather.OvercastFactor = 0.0f;
+                            Weather.FogDistance = 20000;
                             break;
                     }
+                    UpdateVolume();
                     // block dynamic weather change after a manual weather change operation
                     weatherChangeOn = false;
                     if (dynamicWeather != null) dynamicWeather.ResetWeatherTargets();
@@ -659,7 +670,8 @@ namespace Orts.Viewer3D
                 // 0xFFFF represents 65535 which is the max for 16bit devices.
                 if (UserInput.IsDown(UserCommand.DebugPrecipitationIncrease))
                 {
-                    if (Viewer.Simulator.WeatherType == WeatherType.Clear)
+                    // Icik
+                    if (Viewer.Simulator.WeatherType == WeatherType.Clear && Weather.PricipitationIntensityPPSPM2 >= 0.25f)
                     {
                         Viewer.SoundProcess.RemoveSoundSources(this);
                         if (Weather.PrecipitationLiquidity > DynamicWeather.RainSnowLiquidityThreshold)
