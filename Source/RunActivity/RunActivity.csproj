@@ -244,6 +244,7 @@
     <Content Include="Content\AmbientSound\Thunder1.wav" />
     <Content Include="Content\AmbientSound\Thunder2.wav" />
     <Content Include="Content\AmbientSound\ticho_30s.wav" />
+    <Content Include="Content\AmbientSound\WinterLoop.wav" />
     <Content Include="Content\AmbientSound\xe_rain_1.wav" />
     <Content Include="Content\AmbientSound\xe_rain_2.wav" />
     <Content Include="Content\AmbientSound\xe_snow_1.wav" />
