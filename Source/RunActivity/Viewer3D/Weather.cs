@@ -275,8 +275,8 @@ namespace Orts.Viewer3D
             switch (Viewer.Simulator.WeatherType)
             {
                 case Orts.Formats.Msts.WeatherType.Clear: Weather.PrecipitationLiquidity = 1; /*Weather.PricipitationIntensityPPSPM2 = 0; /*Viewer.SoundProcess.AddSoundSources(this, ClearSound);*/ break;
-                case Orts.Formats.Msts.WeatherType.Rain: Weather.PrecipitationLiquidity = 1; Weather.PricipitationIntensityPPSPM2 = 0.7500f; Viewer.SoundProcess.AddSoundSources(this, RainSound); break;
-                case Orts.Formats.Msts.WeatherType.Snow: Weather.PrecipitationLiquidity = 0; Weather.PricipitationIntensityPPSPM2 = 0.7500f; Viewer.SoundProcess.AddSoundSources(this, SnowSound); break;
+                case Orts.Formats.Msts.WeatherType.Rain: Weather.PrecipitationLiquidity = 1; /*Weather.PricipitationIntensityPPSPM2 = 0.7500f;*/ Viewer.SoundProcess.AddSoundSources(this, RainSound); break;
+                case Orts.Formats.Msts.WeatherType.Snow: Weather.PrecipitationLiquidity = 0; /*Weather.PricipitationIntensityPPSPM2 = 0.7500f;*/ Viewer.SoundProcess.AddSoundSources(this, SnowSound); break;
             }
 
             // Icik
