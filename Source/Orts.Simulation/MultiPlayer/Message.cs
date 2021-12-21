@@ -2099,7 +2099,7 @@ namespace Orts.MultiPlayer
             }
             else if (EventName == "PANTO1")
             {
-                //t.SignalEvent((EventState == 1 ? PowerSupplyEvent.RaisePantograph : PowerSupplyEvent.LowerPantograph), 1);
+                t.SignalEvent((EventState == 1 ? PowerSupplyEvent.RaisePantograph : PowerSupplyEvent.LowerPantograph), 1);
 
                 MPManager.BroadCast(this.ToString()); //if the server, will broadcast
             }

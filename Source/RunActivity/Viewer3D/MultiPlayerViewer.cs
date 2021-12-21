@@ -42,13 +42,13 @@ namespace Orts.Viewer3D
                 MPManager.RequestControl();
             }
 
-            if (UserInput.IsPressed(UserCommand.ControlPantograph2)) MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "PANTO2", (++PantoSecondCount) % 2)).ToString());
+            /*if (UserInput.IsPressed(UserCommand.ControlPantograph2)) MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "PANTO2", (++PantoSecondCount) % 2)).ToString());
 
             if (UserInput.IsPressed(UserCommand.ControlPantograph1)) MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "PANTO1", (++PantoFirstCount) % 2)).ToString());
 
             if (UserInput.IsPressed(UserCommand.ControlPantograph4)) MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "PANTO4", (++PantoFourthCount) % 2)).ToString());
 
-            if (UserInput.IsPressed(UserCommand.ControlPantograph3)) MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "PANTO3", (++PantoThirdCount) % 2)).ToString());
+            if (UserInput.IsPressed(UserCommand.ControlPantograph3)) MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "PANTO3", (++PantoThirdCount) % 2)).ToString());*/
 
             if (UserInput.IsPressed(UserCommand.ControlWiper)) MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "WIPER", (++WiperCount) % 2)).ToString());
 
