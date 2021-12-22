@@ -1667,6 +1667,17 @@ namespace Orts.Common
         }
     }
     [Serializable()]
+    public sealed class BrakeCarDeactivateCommand : Command
+    {
+        public static MSTSWagon Receiver { get; set; }
+
+        public BrakeCarDeactivateCommand(CommandLog log, MSTSWagon car, float BrakeCarDeactivate)
+            : base(log)
+        {
+            Receiver = car;
+        }
+    }
+    [Serializable()]
     public sealed class ToggleHV2SwitchUpCommand : Command
     {
         public static MSTSLocomotive Receiver { get; set; }

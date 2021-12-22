@@ -38,14 +38,14 @@ namespace Orts.Viewer3D.Popups
         }
 
         public CarOperationsWindow(WindowManager owner)
-            : base(owner, Window.DecorationSize.X + owner.TextFontDefault.Height * 22, Window.DecorationSize.Y + (owner.TextFontDefault.Height + 2) * 15 + ControlLayout.SeparatorSize * 9, Viewer.Catalog.GetString("*** Car Operation Menu ***"))
+            : base(owner, Window.DecorationSize.X + owner.TextFontDefault.Height * 22, Window.DecorationSize.Y + (owner.TextFontDefault.Height + 2) * 16 + ControlLayout.SeparatorSize * 9, Viewer.Catalog.GetString("*** Car Operation Menu ***"))
         {
             Viewer = owner.Viewer;
         }
 
         protected override ControlLayout Layout(ControlLayout layout)
         {
-            Label ID, buttonHandbrake, buttonTogglePower, buttonToggleMU, buttonToggleBrakeHose, buttonToggleAngleCockA, buttonToggleAngleCockB, buttonToggleBleedOffValve, buttonBrakeCarMode, buttonBrakeCarModePL, buttonTwoPipesConnection, buttonLeftDoor, buttonRightDoor, buttonHeating, buttonClose;
+            Label ID, buttonHandbrake, buttonTogglePower, buttonToggleMU, buttonToggleBrakeHose, buttonToggleAngleCockA, buttonToggleAngleCockB, buttonToggleBleedOffValve, buttonBrakeCarMode, buttonBrakeCarModePL, buttonBrakeCarDeactivate, buttonTwoPipesConnection, buttonLeftDoor, buttonRightDoor, buttonHeating, buttonClose;
 
             var vbox = base.Layout(layout).AddLayoutVertical();
             vbox.Add(ID = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Car ID") + "  " + (CarPosition >= Viewer.PlayerTrain.Cars.Count? " " :Viewer.PlayerTrain.Cars[CarPosition].CarID), LabelAlignment.Center));
@@ -87,10 +87,14 @@ namespace Orts.Viewer3D.Popups
                 if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.AutoLoadRegulatorEquipped)
                     (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.NumberBrakeCarMode = 2;
             }
+            
+            vbox.AddHorizontalSeparator();            
+            vbox.Add(buttonBrakeCarDeactivate = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Brzda vozu") + "     Nastaveno: " + (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.BrakeCarDeactivateText, LabelAlignment.Center));
+            buttonBrakeCarDeactivate.Color = Color.LightGreen;
 
             vbox.AddHorizontalSeparator();
             vbox.Add(buttonTwoPipesConnection = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Napájecí hadice") + "     Nastaveno: " + (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.TwoPipesConnectionText, LabelAlignment.Center));
-
+            
             vbox.AddHorizontalSeparator();
             vbox.Add(buttonLeftDoor = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Levé dveře") + "     Nastaveno: " + (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.LeftDoorText, LabelAlignment.Center));
 
@@ -115,6 +119,7 @@ namespace Orts.Viewer3D.Popups
             buttonToggleAngleCockB.Click += new Action<Control, Point>(buttonToggleAngleCockB_Click);
             buttonToggleBleedOffValve.Click += new Action<Control, Point>(buttonToggleBleedOffValve_Click);
             buttonBrakeCarMode.Click += new Action<Control, Point>(buttonBrakeCarMode_Click);
+            buttonBrakeCarDeactivate.Click += new Action<Control, Point>(buttonBrakeCarDeactivate_Click);
             buttonTwoPipesConnection.Click += new Action<Control, Point>(buttonTwoPipesConnection_Click);
             buttonLeftDoor.Click += new Action<Control, Point>(buttonLeftDoor_Click);
             buttonRightDoor.Click += new Action<Control, Point>(buttonRightDoor_Click);
@@ -298,6 +303,26 @@ namespace Orts.Viewer3D.Popups
             {
                 Viewer.Simulator.Confirmer.Information(Viewer.Catalog.GetString("Napájecí hadice zapojeny"));
                 (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.TwoPipesConnectionText = "zapojeny";
+            }
+        }
+
+        void buttonBrakeCarDeactivate_Click (Control arg1, Point arg2)
+        {
+            new BrakeCarDeactivateCommand(Viewer.Log, (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon), (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.BrakeCarDeactivateMenu += 1);
+
+            if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.BrakeCarDeactivateMenu > 1) (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.BrakeCarDeactivateMenu = 0;
+
+            if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.BrakeCarDeactivateMenu == 0)
+            {
+                Viewer.Simulator.Confirmer.Information(Viewer.Catalog.GetString("Brzda vozu zapnuta"));
+                (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.BrakeCarDeactivateText = "zapnuta";
+                (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.BrakeCarDeactivate = false;
+            }
+            if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.BrakeCarDeactivateMenu == 1)
+            {
+                Viewer.Simulator.Confirmer.Information(Viewer.Catalog.GetString("Brzda vozu vypnuta"));
+                (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.BrakeCarDeactivateText = "vypnuta";
+                (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.BrakeCarDeactivate = true;
             }
         }
 

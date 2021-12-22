@@ -805,8 +805,20 @@ namespace Orts.Simulation.RollingStocks
 
         public virtual void BrakeMassKG()
         {
+            if (!BrakeSystem.BrakeCarDeactivate && BrakeSystem.CarHasMechanicStuckBrake_1)
+            {
+                BrakeSystem.BrakeMassKG = BrakeSystem.BrakeMassG / 3;
+                return;
+            }
+
             BrakeSystem.BrakeMassKG = 0;
             BrakeSystem.BrakeMassKGRMg = 0;
+
+            if (BrakeSystem.BrakeCarDeactivate)
+            {
+                BrakeSystem.BleedOffValveOpen = true;
+                return;
+            }
 
             if (BrakeSystem.TwoStateBrake)  // Pokud bude TwoState brzda, použije se brzdící váha pro režim R
                 BrakeSystem.BrakeMassKG_TwoStateBrake = BrakeSystem.BrakeMassR;
@@ -874,6 +886,41 @@ namespace Orts.Simulation.RollingStocks
                         break;
                 }
         }
+        
+
+        public void BrakeCarStatus(float elapsedClockSeconds)
+        {
+            if (!IsPlayerTrain)
+                return;
+
+            if (!BrakeSystem.BrakeCarHasStatus && WagonType != WagonTypes.Engine)
+            {                
+                BrakeSystem.BrakeCarHasStatus = true;
+                switch (Simulator.Random.Next(0, 100))
+                {                    
+                    case 50:
+                        BrakeSystem.CarHasAirStuckBrake_1 = true; // Nejde odbrzdit
+                        BrakeSystem.CarHasProblemWithBrake = true;
+                        break;
+                    case 51:
+                        BrakeSystem.CarHasAirStuckBrake_2 = true; // Nejde zabrzdit
+                        BrakeSystem.CarHasProblemWithBrake = true;
+                        break;
+                    case 52:
+                        BrakeSystem.CarHasAirStuckBrake_3 = true; // Netěsný vůz
+                        BrakeSystem.CarHasProblemWithBrake = true;
+                        break;
+                    case 53:
+                        BrakeSystem.CarHasMechanicStuckBrake_1 = true; // Brzdí málo
+                        BrakeSystem.CarHasProblemWithBrake = true;
+                        break;
+                    case 54:
+                        BrakeSystem.CarHasMechanicStuckBrake_2 = true; // Je zaseklý 
+                        BrakeSystem.CarHasProblemWithBrake = true;
+                        break;
+                }                                                                
+            }            
+        }
 
         // called when it's time to update the MotiveForce and FrictionForce
         public virtual void Update(float elapsedClockSeconds)
@@ -884,6 +931,7 @@ namespace Orts.Simulation.RollingStocks
             const float CoefF = 0.90f; // Nákladní vůz
             const float CoefHB = 0.50f; // Ruční brzda
 
+            BrakeCarStatus(elapsedClockSeconds);
             AntiSkidSystem();
             BrakeSystem.WagonType = (int)WagonType;
 

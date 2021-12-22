@@ -160,6 +160,13 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes
         public float T2AirLoss = 0;
         public bool AirOK_DoorCanManipulate;
 
+        public bool BrakeCarHasStatus;
+        public bool CarHasAirStuckBrake_1;
+        public bool CarHasAirStuckBrake_2;
+        public bool CarHasAirStuckBrake_3;
+        public bool CarHasMechanicStuckBrake_1;
+        public bool CarHasMechanicStuckBrake_2;
+        public bool CarHasProblemWithBrake;
 
         public float AuxPowerOnDelayS { get; set; }
 
@@ -236,6 +243,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes
         public float TwoPipesConnectionMenu = 0;
         public string TwoPipesConnectionText = "odpojeny";
         public bool ForceTwoPipesConnection = false;
+
+        public float BrakeCarDeactivateMenu = 0;
+        public string BrakeCarDeactivateText = "odpojeny";
+        public bool BrakeCarDeactivate;
 
         public float LeftDoorMenu = 0;
         public string LeftDoorText = "zavřeno";

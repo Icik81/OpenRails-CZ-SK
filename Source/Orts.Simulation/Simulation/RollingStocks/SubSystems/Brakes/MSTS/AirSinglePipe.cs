@@ -217,17 +217,15 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 (Car as MSTSWagon).HandBrakePresent ? string.Format("{0:F0} %", HandbrakePercent) : string.Empty,
                 string.Format("{0} {1}", FrontBrakeHoseConnected ? "I" : "T", TwoPipesConnection ? "I" : ""),
                 string.Format("A{0} B{1}", AngleCockAOpen ? "+" : "-", AngleCockBOpen ? "+" : "-"),
-                BleedOffValveOpen ? Simulator.Catalog.GetString("Open") : " ",//HudScroll feature requires for the last value, at least one space instead of string.Empty,                
-                                
+                BleedOffValveOpen ? Simulator.Catalog.GetString("Open") : " ",//HudScroll feature requires for the last value, at least one space instead of string.Empty,                                                
                 BailOffOnAntiSkid ? Simulator.Catalog.GetString("Aktivní") : "",                
                 string.Format("{0:F5} bar/s", (Car as MSTSWagon).TrainPipeLeakRatePSIpSBase / 14.50377f),
                 string.Empty, // Spacer because the state above needs 2 columns.                                     
                 string.Format("{0:F0} L", BrakePipeVolumeM3Base * 1000),
                 string.Format("{0:F0} L", CylVolumeM3 * 1000),
                 string.Format("{0:F0} L", TotalCapacityMainResBrakePipe * 1000 / 14.50377f),
-                string.Format("{0:F0}", BrakeCarModeText),
-                string.Format("{0}{1:F0} t", AutoLoadRegulatorEquipped ? "Auto " : "", (BrakeMassKG + BrakeMassKGRMg) / 1000),                                                              
-                
+                CarHasProblemWithBrake ?  BrakeCarDeactivate ? Simulator.Catalog.GetString("Vypnuta") : Simulator.Catalog.GetString("Závada!") : BrakeCarModeText,
+                string.Format("{0}{1:F0} t", AutoLoadRegulatorEquipped ? "Auto " : "", (BrakeMassKG + BrakeMassKGRMg) / 1000),                                                                              
                 string.Format("DebKoef {0:F1}", DebugKoef),
                 string.Empty, // Spacer because the state above needs 2 columns.                                                     
                 string.Format("{0}", NextLocoBrakeState),
@@ -438,7 +436,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             outf.Write(CylVolumeM3);
             outf.Write(BailOffOn);
             outf.Write(StartOn);
-            outf.Write(PrevAuxResPressurePSI);            
+            outf.Write(PrevAuxResPressurePSI);
             outf.Write(AutoCylPressurePSI2);
             outf.Write(AutoCylPressurePSI1);
             outf.Write(AutoCylPressurePSI0);
@@ -464,6 +462,15 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             outf.Write(AutomaticDoorsCycle);
             outf.Write(LeftDoorIsOpened);
             outf.Write(RightDoorIsOpened);
+            outf.Write(BrakeCarDeactivateMenu);
+            outf.Write(BrakeCarDeactivateText);
+            outf.Write(BrakeCarDeactivate);
+            outf.Write(BrakeCarHasStatus);
+            outf.Write(CarHasAirStuckBrake_1);
+            outf.Write(CarHasAirStuckBrake_2);
+            outf.Write(CarHasAirStuckBrake_3);
+            outf.Write(CarHasMechanicStuckBrake_1);
+            outf.Write(CarHasMechanicStuckBrake_2);
         }
 
         public override void Restore(BinaryReader inf)
@@ -513,8 +520,18 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             AutomaticDoorsCycle = inf.ReadSingle();
             LeftDoorIsOpened = inf.ReadBoolean();
             RightDoorIsOpened = inf.ReadBoolean();
+            BrakeCarDeactivateMenu = inf.ReadSingle();
+            BrakeCarDeactivateText = inf.ReadString();
+            BrakeCarDeactivate = inf.ReadBoolean();            
+            BrakeCarHasStatus = inf.ReadBoolean();
+            CarHasAirStuckBrake_1 = inf.ReadBoolean();
+            CarHasAirStuckBrake_2 = inf.ReadBoolean();
+            CarHasAirStuckBrake_3 = inf.ReadBoolean();
+            CarHasMechanicStuckBrake_1 = inf.ReadBoolean();
+            CarHasMechanicStuckBrake_2 = inf.ReadBoolean();
         }
         
+
         public override void Initialize(bool handbrakeOn, float maxPressurePSI, float fullServPressurePSI, bool immediateRelease)
         {
             // reducing size of Emergency Reservoir for short (fake) cars
@@ -983,7 +1000,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 PrevAuxResPressurePSI = AuxResPressurePSI;
 
             // triple valve is set to charge the brake cylinder
-            if (TripleValveState == ValveState.Apply || TripleValveState == ValveState.Emergency)
+            if (TripleValveState == ValveState.Apply || TripleValveState == ValveState.Emergency && !CarHasAirStuckBrake_2)
             {
                 BrakeCylRelease = false;
 
@@ -1039,7 +1056,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             if (BrakeCylApply 
                 && BrakeLine1PressurePSI < PrevAuxResPressurePSI - BrakePipeMinPressureDropToEngage 
                 && ThresholdBailOffOn == 0
-                && BrakeCylApplyMainResPressureOK)                
+                && BrakeCylApplyMainResPressureOK
+                && !CarHasAirStuckBrake_2)                
             {
                 if (TrainBrakeDelay > BrakeDelayToEngage - 0.05f && TrainBrakeDelay < BrakeDelayToEngage && AutoCylPressurePSI < 1)
                     AutoCylPressurePSI0 = 0.1f * 14.50377f;
@@ -1056,7 +1074,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             }
 
             // Vypouští brzdový válec
-            if (BrakeCylRelease) 
+            if (BrakeCylRelease && !CarHasAirStuckBrake_1) 
             {                
                 if (AutoCylPressurePSI0 > threshold)
                 {
@@ -1067,14 +1085,14 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 else BrakeCylRelease = false;
             }
             // Vypouští brzdový válec, pokud je tlak v potrubí vyšší než 4.84bar            
-            if (BrakeLine1PressurePSI > 4.84f * 14.50377f && threshold < (maxPressurePSI0 - (4.84f * 14.50377f)) * AuxCylVolumeRatio)
+            if (BrakeLine1PressurePSI > 4.84f * 14.50377f && threshold < (maxPressurePSI0 - (4.84f * 14.50377f)) * AuxCylVolumeRatio && !CarHasAirStuckBrake_1)
             {
                 if (AutoCylPressurePSI0 > 0)                
                     AutoCylPressurePSI0 -= elapsedClockSeconds * ReleaseRatePSIpS;                                                    
             }
 
             // triple valve set to release pressure in brake cylinder and EP valve set
-            if (TripleValveState == ValveState.Release && HoldingValve == ValveState.Release)
+            if (TripleValveState == ValveState.Release && HoldingValve == ValveState.Release && !CarHasAirStuckBrake_1)
             {
                 BrakeCylRelease = true;
                 BrakeCylApply = false;
@@ -1237,6 +1255,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             else     
                 f = Math.Max(Car.MaxBrakeForceN, Car.MaxHandbrakeForceN / 2);
 
+            // Síla zaseklých zdrží nebo kotoučů
+            if (CarHasMechanicStuckBrake_2)            
+                f = Car.MaxBrakeForceN * 0.75f;            
+
             // fRMg není zohledněna v síle na brzdící nápravy
             Car.BrakeRetardForceN = f * Car.BrakeShoeRetardCoefficientFrictionAdjFactor; // calculates value of force applied to wheel, independent of wheel skid
             
@@ -1387,6 +1409,13 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 //  Pokud není netěstnost vozu definována
                 if ((car as MSTSWagon).TrainPipeLeakRatePSIpSBase == 0)
                     (car as MSTSWagon).TrainPipeLeakRatePSIpSBase = 0.0010f * 14.50377f; // Výchozí netěsnost 0.0010bar/s                
+
+                if ((car as MSTSWagon).BrakeSystem.CarHasAirStuckBrake_3)
+                {
+                    (car as MSTSWagon).TrainPipeLeakRatePSIpSBase = (car as MSTSWagon).TrainPipeLeakRatePSIpSBase * 50;
+                    if ((car as MSTSWagon).BrakeSystem.BrakeCarDeactivate)
+                        (car as MSTSWagon).TrainPipeLeakRatePSIpSBase = 0.0001f * 14.50377f; 
+                }
 
                 (car as MSTSWagon).TrainPipeLeakRatePSIpS = (car as MSTSWagon).TrainPipeLeakRatePSIpSBase * (car as MSTSWagon).BrakeSystem.BrakePipeVolumeM3 / train.TotalTrainBrakePipeVolumeM3;
                 (car as MSTSWagon).BrakeSystem.BrakePipeVolumeM3 = (car as MSTSWagon).BrakeSystem.BrakePipeVolumeM3Base;
