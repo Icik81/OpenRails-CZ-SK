@@ -1407,14 +1407,17 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             foreach (TrainCar car in train.Cars)
             {
                 //  Pokud není netěstnost vozu definována
-                if ((car as MSTSWagon).TrainPipeLeakRatePSIpSBase == 0)
+                if ((car as MSTSWagon).TrainPipeLeakRatePSIpSBase == 0 && !(car as MSTSWagon).BrakeSystem.BrakeCarDeactivate)
                     (car as MSTSWagon).TrainPipeLeakRatePSIpSBase = 0.0010f * 14.50377f; // Výchozí netěsnost 0.0010bar/s                
 
                 if ((car as MSTSWagon).BrakeSystem.CarHasAirStuckBrake_3)
                 {
-                    (car as MSTSWagon).TrainPipeLeakRatePSIpSBase = (car as MSTSWagon).TrainPipeLeakRatePSIpSBase * 50;
+                    (car as MSTSWagon).TrainPipeLeakRatePSIpSBase = 0.0500f * 14.50377f;
                     if ((car as MSTSWagon).BrakeSystem.BrakeCarDeactivate)
-                        (car as MSTSWagon).TrainPipeLeakRatePSIpSBase = 0.0001f * 14.50377f; 
+                    {
+                        (car as MSTSWagon).TrainPipeLeakRatePSIpS = 0;
+                        (car as MSTSWagon).BrakeSystem.BrakePipeVolumeM3 = 0.00001f;
+                    }
                 }
 
                 (car as MSTSWagon).TrainPipeLeakRatePSIpS = (car as MSTSWagon).TrainPipeLeakRatePSIpSBase * (car as MSTSWagon).BrakeSystem.BrakePipeVolumeM3 / train.TotalTrainBrakePipeVolumeM3;
