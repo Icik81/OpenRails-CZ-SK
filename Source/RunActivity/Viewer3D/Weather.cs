@@ -429,21 +429,24 @@ namespace Orts.Viewer3D
 
         void UpdateVolume()
         {
-            if (Viewer.GraphicsDevice.GraphicsProfile == GraphicsProfile.HiDef)
+            // Icik                            
+            foreach (var soundSource in ClearSound) soundSource.Volume = (1 - (Weather.PricipitationIntensityPPSPM2 / 0.35f)) / Viewer.Simulator.PlayerLocomotive.AbsSpeedMpS;
+            foreach (var soundSource in ClearSoundNight) soundSource.Volume = (1 - (Weather.PricipitationIntensityPPSPM2 / 0.35f)) / Viewer.Simulator.PlayerLocomotive.AbsSpeedMpS;
+            if ((Viewer.FreeRoamCameraList.Count > 0 && Viewer.Camera == Viewer.FreeRoamCamera) || Viewer.Camera == Viewer.TracksideCamera)
             {
-                // Icik                
-                foreach (var soundSource in RainSound) soundSource.Volume = (Weather.PricipitationIntensityPPSPM2 - 0.15f) / PrecipitationViewer.MaxIntensityPPSPM2;
-                foreach (var soundSource in SnowSound) soundSource.Volume = (Weather.PricipitationIntensityPPSPM2 - 0.15f) / PrecipitationViewer.MaxIntensityPPSPM2;
                 foreach (var soundSource in ClearSound) soundSource.Volume = 1 - (Weather.PricipitationIntensityPPSPM2 / 0.35f);
                 foreach (var soundSource in ClearSoundNight) soundSource.Volume = 1 - (Weather.PricipitationIntensityPPSPM2 / 0.35f);
             }
+           
+            if (Viewer.GraphicsDevice.GraphicsProfile == GraphicsProfile.HiDef)
+            {             
+                foreach (var soundSource in RainSound) soundSource.Volume = (Weather.PricipitationIntensityPPSPM2 - 0.15f) / PrecipitationViewer.MaxIntensityPPSPM2;
+                foreach (var soundSource in SnowSound) soundSource.Volume = (Weather.PricipitationIntensityPPSPM2 - 0.15f) / PrecipitationViewer.MaxIntensityPPSPM2;                
+            }
             else
-            {
-                // Icik                
+            {                
                 foreach (var soundSource in RainSound) soundSource.Volume = (Weather.PricipitationIntensityPPSPM2 - 0.15f) / PrecipitationViewer.MaxIntensityPPSPM2_16;
-                foreach (var soundSource in SnowSound) soundSource.Volume = (Weather.PricipitationIntensityPPSPM2 - 0.15f) / PrecipitationViewer.MaxIntensityPPSPM2_16;
-                foreach (var soundSource in ClearSound) soundSource.Volume = 1 - (Weather.PricipitationIntensityPPSPM2 / 0.35f);
-                foreach (var soundSource in ClearSoundNight) soundSource.Volume = 1 - (Weather.PricipitationIntensityPPSPM2 / 0.35f);
+                foreach (var soundSource in SnowSound) soundSource.Volume = (Weather.PricipitationIntensityPPSPM2 - 0.15f) / PrecipitationViewer.MaxIntensityPPSPM2_16;                
             }
         }
 
@@ -581,6 +584,8 @@ namespace Orts.Viewer3D
                 UpdateSoundSources();
                 DayNightTimeChange = false;
             }
+            if (Viewer.Simulator.PlayerLocomotive.AbsSpeedMpS > 1)
+                UpdateVolume();
 
             if (MPManager.IsClient() && manager.weatherChanged)
             {
