@@ -373,6 +373,7 @@ namespace Orts.Simulation.Physics
         public TCPosition[] PreviousPosition = new TCPosition[2] { new TCPosition(), new TCPosition() };        // previous train position
 
         public float DistanceTravelledM;                                 // actual distance travelled
+        public float RealDistanceTravelled;                              // real distance travelled no matter if forwards or back
         public float ReservedTrackLengthM = 0.0f;                        // lenght of reserved section
 
         public float travelled;                                          // distance travelled, but not exactly
@@ -1839,10 +1840,12 @@ namespace Orts.Simulation.Physics
             UpdateWindComponents();
 
             float distanceM = LastCar.SpeedMpS * elapsedClockSeconds;
+            float realDistanceM = LastCar.SpeedMpS > 0 ? LastCar.SpeedMpS * elapsedClockSeconds : (-LastCar.SpeedMpS) * elapsedClockSeconds; 
             if (float.IsNaN(distanceM)) distanceM = 0;//avoid NaN, if so will not move
             if (TrainType == TRAINTYPE.AI && LeadLocomotiveIndex == (Cars.Count - 1) && LastCar.Flipped)
                 distanceM = -distanceM;
             DistanceTravelledM += distanceM;
+            RealDistanceTravelled += realDistanceM;
 
             SpeedMpS = 0;
             foreach (TrainCar car1 in Cars)

@@ -633,7 +633,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
             RemainingTrainLengthToPassRestrictedZone = TrainLengthMeters;
             if (!RestrictedSpeedActive)
             {
-                restrictedRegionTravelledDistance = Simulator.PlayerLocomotive.Train.DistanceTravelledM;
+                restrictedRegionTravelledDistance = Simulator.PlayerLocomotive.Train.RealDistanceTravelled;
                 CurrentSelectedSpeedMpS = SelectedSpeedMpS;
                 RestrictedSpeedActive = true;
                 Simulator.Confirmer.Message(ConfirmLevel.Information, Simulator.Catalog.GetString("Speed restricted zone active."));
@@ -652,18 +652,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems
             if (checkRestrictedZoneCount < 10)
                 return;
             checkRestrictedZoneCount = 0;
-            if (!Locomotive.UsingRearCab)
-                RemainingTrainLengthToPassRestrictedZone = Simulator.PlayerLocomotive.Train.DistanceTravelledM - restrictedRegionTravelledDistance;
-            else
-                RemainingTrainLengthToPassRestrictedZone = -(Simulator.PlayerLocomotive.Train.DistanceTravelledM - restrictedRegionTravelledDistance);
-            if (RemainingTrainLengthToPassRestrictedZone < 0) RemainingTrainLengthToPassRestrictedZone = 0;
-            if (!Locomotive.UsingRearCab && (Simulator.PlayerLocomotive.Train.DistanceTravelledM - restrictedRegionTravelledDistance) >= trainLength)
-            {
-                RestrictedSpeedActive = false;
-                Simulator.Confirmer.Message(ConfirmLevel.Information, Simulator.Catalog.GetString("Speed restricted zone off."));
-                Locomotive.SignalEvent(Common.Event.Alert);
-            }
-            else if (-(Simulator.PlayerLocomotive.Train.DistanceTravelledM - restrictedRegionTravelledDistance) >= trainLength)
+            RemainingTrainLengthToPassRestrictedZone = Simulator.PlayerLocomotive.Train.RealDistanceTravelled - restrictedRegionTravelledDistance;
+            if (Simulator.PlayerLocomotive.Train.RealDistanceTravelled - restrictedRegionTravelledDistance >= trainLength)
             {
                 RestrictedSpeedActive = false;
                 Simulator.Confirmer.Message(ConfirmLevel.Information, Simulator.Catalog.GetString("Speed restricted zone off."));
