@@ -893,7 +893,8 @@ namespace Orts.Simulation.RollingStocks
             if (!IsPlayerTrain)
                 return;
 
-            if (!BrakeSystem.BrakeCarHasStatus && WagonType != WagonTypes.Engine)
+            var car = this as MSTSWagon;
+            if (!BrakeSystem.BrakeCarHasStatus && WagonType != WagonTypes.Engine && WagonType != WagonTypes.Passenger && car != Train.Cars[Train.Cars.Count - 1])
             {                
                 BrakeSystem.BrakeCarHasStatus = true;
                 switch (Simulator.Random.Next(0, 100))
