@@ -442,6 +442,7 @@ namespace Orts.Simulation.Physics
         public float TotalAmps = 0;
 
         public float ControllerVolts = 0;
+        public float OverridenControllerVolts = 0;
 
         public Simulator Simulator { get; protected set; }                   // reference to the simulator
 

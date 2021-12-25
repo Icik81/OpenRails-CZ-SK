@@ -2550,6 +2550,8 @@ namespace Orts.Simulation.RollingStocks
         {
             if (!IsPlayerTrain)
                 return;
+            if (!IsLeadLocomotive())
+                return;
             if (MaxCurrentA > 0)  // Zohlední jen elektrické a dieselelektrické lokomotivy 
             {                
                 if (SlipSpeedCritical == 0) SlipSpeedCritical = 40 / 3.6f; // Výchozí hodnota 40 km/h     
@@ -3445,6 +3447,64 @@ namespace Orts.Simulation.RollingStocks
                     }
                     ControllerVolts = ForceHandleValue / 10;
                 }
+
+                float speedDiff = 0;
+                if (IsPlayerTrain && !Simulator.Paused)
+                {
+                    if (extendedPhysics == null)
+                    {
+                        speedDiff = AbsWheelSpeedMpS - AbsSpeedMpS;
+                    }
+                    if (extendedPhysics != null)
+                    {
+                        speedDiff = extendedPhysics.FastestAxleSpeedMpS - extendedPhysics.AverageAxleSpeedMpS;
+                    }
+                    speedDiff = Math.Abs(speedDiff);
+
+                    if (IsLeadLocomotive())
+                    {
+                        if (speedDiff > AntiWheelSpinSpeedDiffThreshold)
+                        {
+                            skidSpeedDegratation += 0.1f;
+                        }
+                        else if (skidSpeedDegratation > 0)
+                        {
+                            skidSpeedDegratation -= 0.05f; // původně 0.01
+                        }
+                    }
+                    if (extendedPhysics != null)
+                    {
+                        if (extendedPhysics.OverridenControllerVolts > ControllerVolts && ControllerVolts == 0 && wasRestored)
+                        {
+                            wasRestored = false;
+                            ControllerVolts = extendedPhysics.OverridenControllerVolts;
+                        }
+                        extendedPhysics.OverridenControllerVolts = ControllerVolts;
+                    }
+                    if (AntiWheelSpinEquipped)
+                    {
+                        if (extendedPhysics == null && skidSpeedDegratation > 0)
+                        {
+                            TractiveForceN /= skidSpeedDegratation * 10;
+                            if (TractiveForceN > MaxForceN)
+                                TractiveForceN = MaxForceN;
+                        }
+                        else if (extendedPhysics != null)
+                        {
+                            if (IsLeadLocomotive())
+                                extendedPhysics.OverridenControllerVolts = Train.OverridenControllerVolts = ControllerVolts - skidSpeedDegratation;
+                            else
+                                extendedPhysics.OverridenControllerVolts = Train.OverridenControllerVolts;
+                            if (extendedPhysics.OverridenControllerVolts < 0)
+                            {
+                                extendedPhysics.OverridenControllerVolts = Train.ControllerVolts = ControllerVolts = 0;
+                            }
+                        }
+                    }
+                    if (extendedPhysics != null && extendedPhysics.OverridenControllerVolts > 10)
+                        extendedPhysics.OverridenControllerVolts = 10;
+                }
+
                 if (extendedPhysics != null)
                     extendedPhysics.Update(elapsedClockSeconds);
                 if (CruiseControl != null)
@@ -3705,58 +3765,7 @@ namespace Orts.Simulation.RollingStocks
                     mpc.Update(elapsedClockSeconds);
             }
 
-            float speedDiff = 0;
-            if (IsPlayerTrain && !Simulator.Paused)
-            {
-                if (extendedPhysics == null)
-                {
-                    speedDiff = AbsWheelSpeedMpS - AbsSpeedMpS;
-                }
-                if (extendedPhysics != null)
-                {
-                    speedDiff = extendedPhysics.FastestAxleSpeedMpS - extendedPhysics.AverageAxleSpeedMpS;                    
-                }
-                speedDiff = Math.Abs(speedDiff);
 
-                if (CruiseControl != null)
-                {
-                    foreach (MSTSLocomotive loco in CruiseControl.PlayerNotDriveableTrainLocomotives)
-                    {
-                        if ((loco.AbsWheelSpeedMpS - loco.AbsSpeedMpS) > speedDiff)
-                            speedDiff = loco.AbsWheelSpeedMpS - loco.AbsSpeedMpS;
-                    }
-                }
-                if (speedDiff > AntiWheelSpinSpeedDiffThreshold)
-                {
-                    skidSpeedDegratation += 0.1f;
-                }
-                else if (skidSpeedDegratation > 0)
-                {
-                    skidSpeedDegratation -= 0.05f; // původně 0.01
-                }
-                if (extendedPhysics != null)
-                {
-                    if (extendedPhysics.OverridenControllerVolts > ControllerVolts && ControllerVolts == 0 && wasRestored)
-                    {
-                        wasRestored = false;
-                        ControllerVolts = extendedPhysics.OverridenControllerVolts;
-                    }
-                    extendedPhysics.OverridenControllerVolts = ControllerVolts;
-                }
-                if (AntiWheelSpinEquipped)
-                {
-                    if (extendedPhysics == null && skidSpeedDegratation > 0)
-                    {
-                        TractiveForceN /= skidSpeedDegratation * 10;
-                        if (TractiveForceN > MaxForceN)
-                            TractiveForceN = MaxForceN;
-                    }
-                    else if (extendedPhysics != null)
-                        extendedPhysics.OverridenControllerVolts = ControllerVolts - skidSpeedDegratation;
-                }
-                if (extendedPhysics != null && extendedPhysics.OverridenControllerVolts > 10)
-                    extendedPhysics.OverridenControllerVolts = 10;
-            }
             ApplyDirectionToTractiveForce();
 
             // Calculate the total motive force for the locomotive - ie TractiveForce (driving force) + Dynamic Braking force.

@@ -262,7 +262,7 @@ namespace Orts.Simulation.RollingStocks
                 }
             }
             if (!Locomotive.IsLeadLocomotive() && Locomotive.PowerOn && Locomotive.AcceptMUSignals)
-                Locomotive.ControllerVolts = OverridenControllerVolts = Locomotive.Train.ControllerVolts;
+                Locomotive.ControllerVolts = Locomotive.Train.ControllerVolts;
             if (!Locomotive.IsLeadLocomotive() && (!Locomotive.PowerOn || !Locomotive.AcceptMUSignals))
                 Locomotive.ControllerVolts = OverridenControllerVolts = 0;
             if (!Locomotive.IsPlayerTrain)
@@ -429,7 +429,7 @@ namespace Orts.Simulation.RollingStocks
                         if (Locomotive.TractiveForceCurvesDC != null)
                         {
                             if (overridenControllerVolts != Locomotive.ControllerVolts)
-                                maxForceN = Locomotive.TractiveForceCurvesDC.Get(Locomotive.CruiseControl.controllerVolts / 100 < overridenControllerVolts ? (Locomotive.CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.Auto? Locomotive.CruiseControl.controllerVolts / 100 : Locomotive.CruiseControl.controllerVolts / 10) : (usingControllerVolts ? 1 : overridenControllerVolts / Locomotive.MaxControllerVolts), WheelSpeedMpS) / totalMotors;
+                                maxForceN = Locomotive.TractiveForceCurvesDC.Get(Locomotive.CruiseControl.controllerVolts / 100 < overridenControllerVolts ? (Locomotive.CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.Auto? overridenControllerVolts / 10 : overridenControllerVolts / 10) : (usingControllerVolts ? 1 : overridenControllerVolts / Locomotive.MaxControllerVolts), WheelSpeedMpS) / totalMotors;
                             else
                                 maxForceN = Locomotive.TractiveForceCurvesDC.Get(Locomotive.CruiseControl.controllerVolts / 100 < Locomotive.ControllerVolts ? (Locomotive.CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.Auto ? Locomotive.CruiseControl.controllerVolts / 100 : Locomotive.CruiseControl.controllerVolts / 10) : (usingControllerVolts ? 1 : Locomotive.ControllerVolts / Locomotive.MaxControllerVolts), WheelSpeedMpS) / totalMotors;
                         }

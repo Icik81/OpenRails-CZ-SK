@@ -1764,14 +1764,12 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                 }
                 else if (controllerVolts == 0)
                 {
-                    if (!breakout)
+                    if (maxForceN > 0) maxForceN = 0;
+                    if (Locomotive.ThrottlePercent > 0 && !UseThrottle) Locomotive.SetThrottlePercent(0);
+                    Locomotive.ControllerVolts = Locomotive.Train.ControllerVolts = 0;
+                    if (Locomotive.DynamicBrakePercent > -1 && !PreciseSpeedControl)
                     {
-                        if (maxForceN > 0) maxForceN = 0;
-                        if (Locomotive.ThrottlePercent > 0 && !UseThrottle) Locomotive.ThrottleController.SetPercent(0);
-                        if (Locomotive.DynamicBrakePercent > -1 && !PreciseSpeedControl)
-                        {
-                            Locomotive.DynamicBrakeChangeActiveState(false);
-                        }
+                        Locomotive.DynamicBrakeChangeActiveState(false);
                     }
                 }
 
