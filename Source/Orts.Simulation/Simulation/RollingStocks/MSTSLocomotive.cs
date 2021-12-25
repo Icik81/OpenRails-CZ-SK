@@ -2958,7 +2958,8 @@ namespace Orts.Simulation.RollingStocks
                                     if (car.WagonType == WagonTypes.Engine && !car.HasPassengerCapacity)
                                         Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Je ti zima!"));
                                     else
-                                        Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Cestujícím je zima!"));
+                                        if (car.PassengerList.Count > 0)
+                                            Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Cestujícím je zima!"));
                                     MSGHeatingCycle = 0;
                                 }
                             }
@@ -3002,7 +3003,8 @@ namespace Orts.Simulation.RollingStocks
                                     if (car.WagonType == WagonTypes.Engine && !car.HasPassengerCapacity)
                                         Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Je ti horko!"));
                                     else
-                                        Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Cestujícím je příliš horko!"));
+                                        if (car.PassengerList.Count > 0)
+                                            Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Cestujícím je příliš horko!"));
                                     MSGHeatingCycle = 0;
                                 }
                             }
