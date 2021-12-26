@@ -1306,6 +1306,8 @@ namespace Orts.Simulation.AIs
             StationStop thisStation = StationStops[stationIndex];
             while (thisStation.SubrouteIndex < TCRoute.activeSubpath) // station was in previous subpath
             {
+                if (IsPlayerDriven)
+                    break;
                 StationStops.RemoveAt(0);
                 if (StationStops.Count == 0) // no more stations
                 {

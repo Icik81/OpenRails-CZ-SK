@@ -16350,7 +16350,7 @@ namespace Orts.Simulation.Physics
         {
             if (train.Simulator.Paused)
                 return;
-            if (train.SpeedMpS > 0)
+            if (train.SpeedMpS > 0.05f || train.SpeedMpS < -0.05f)
             {
                 exitTimesCalculated = false;
                 return;
