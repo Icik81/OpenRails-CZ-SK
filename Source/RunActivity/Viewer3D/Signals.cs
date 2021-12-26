@@ -461,22 +461,29 @@ namespace Orts.Viewer3D
                         //   Typical electric light is 3.0/5.0
                         //   Semaphore is 0.0/5.0
                         //   Theatre box is 0.0/0.0
-                        var glowDay = 3.0f;
-                        var glowNight = 5.0f;
+                        var glowDay = 0.0f;
+                        var glowNight = 0.0f;
 
                         if (mstsSignalType.Semaphore)
                             glowDay = 0.0f;
                         if (mstsSignalType.FnType == MstsSignalFunction.INFO || mstsSignalType.FnType == MstsSignalFunction.SHUNTING) // These are good at identifying theatre boxes.
                             glowDay = glowNight = 0.0f;
 
-                        // use values from signal if defined
-                        if (mstsSignalType.DayGlow.HasValue)
+                        // Icik
+                        if (mstsSignalType.LightTextureName == "ltex")
                         {
-                            glowDay = mstsSignalType.DayGlow.Value;
-                        }
-                        if (mstsSignalType.NightGlow.HasValue)
-                        {
-                            glowNight = mstsSignalType.NightGlow.Value;
+                            // Default
+                            glowDay = 7; glowNight = 9;
+
+                            // use values from signal if defined
+                            if (mstsSignalType.DayGlow.HasValue)
+                            {
+                                glowDay = mstsSignalType.DayGlow.Value;
+                            }
+                            if (mstsSignalType.NightGlow.HasValue)
+                            {
+                                glowNight = mstsSignalType.NightGlow.Value;
+                            }                            
                         }
 
                         foreach (var mstsSignalLight in mstsSignalType.Lights)

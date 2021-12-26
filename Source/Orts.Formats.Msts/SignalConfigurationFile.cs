@@ -541,10 +541,7 @@ namespace Orts.Formats.Msts
                         }
                 }),
             });
-
-            if (DayGlow == null) DayGlow = 0;
-            if (NightGlow == null) NightGlow = 0;
-
+            
             if (ORTSMode)
             {
                 // set related MSTS function type
