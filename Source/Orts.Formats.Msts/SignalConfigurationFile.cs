@@ -955,7 +955,7 @@ namespace Orts.Formats.Msts
         /// <summary>Set to true if SignalFlags RESET option specified (ORTS only)</summary>
         public bool Reset; 
         /// <summary>Set to true if no speed reduction is required for RESTRICTED or STOP_AND_PROCEED aspects (ORTS only) </summary>
-        public bool NoSpeedReduction;
+        public bool NoSpeedReduction = true; // Icik
 
         /// <summary>
         /// constructor for dummy entries

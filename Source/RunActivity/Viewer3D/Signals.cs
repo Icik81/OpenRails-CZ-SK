@@ -469,12 +469,45 @@ namespace Orts.Viewer3D
                         if (mstsSignalType.FnType == MstsSignalFunction.INFO || mstsSignalType.FnType == MstsSignalFunction.SHUNTING) // These are good at identifying theatre boxes.
                             glowDay = glowNight = 0.0f;
 
-                        // Icik
-                        if (mstsSignalType.LightTextureName == "ltex")
-                        {
-                            // Default
-                            glowDay = 7; glowNight = 9;
+                        // Icik                        
+                        if (mstsSignalType.LightTextureName == "ltex" || mstsSignalType.LightTextureName == "mtex")
+                        {                                                                                    
+                            switch (viewer.Simulator.RouteName)
+                            {                                                                
+                                // 64x64   
+                                case "Breclav - Praha":
+                                case "Dvoukolejka":
+                                case "Caslav - Tremosnice":
+                                case "Valasske Mezirici - Ostrava":
+                                case "Bohumín - Olomouc hl.n.": // cz_bohumin-olomouc                                    
+                                case "Trencin - Nitra": // TN_NR                                                                        
+                                case "Ztracena_old":
+                                    Material = viewer.MaterialManager.Load("SignalLight", System.IO.Path.Combine(viewer.ContentPath, "..\\Content\\SignalLight\\SignalLight64.ace"));
+                                    glowDay = 2.5f; glowNight = 5;
+                                    break;
 
+                                // 128x128 
+                                case "Trat 321":                                    
+                                case "CR_310":                                    
+                                case "Frydlant - Ostrava":                                    
+                                case "Jihlava - Brno":                                    
+                                case "Luhacovice":                                    
+                                case "Zvolen-Nove Zamky": // ZSR150
+                                    Material = viewer.MaterialManager.Load("SignalLight", System.IO.Path.Combine(viewer.ContentPath, "..\\Content\\SignalLight\\SignalLight128.ace"));
+                                    glowDay = 2.5f; glowNight = 5;
+                                    break;
+
+                                // 256x256 
+                                case "Trat_183":
+                                    Material = viewer.MaterialManager.Load("SignalLight", System.IO.Path.Combine(viewer.ContentPath, "..\\Content\\SignalLight\\SignalLight256.ace"));
+                                    glowDay = 2.5f; glowNight = 5;
+                                    break;                                                              
+
+                                default:
+                                    glowDay = 2.5f; glowNight = 5;
+                                    break;
+                            }
+                            
                             // use values from signal if defined
                             if (mstsSignalType.DayGlow.HasValue)
                             {
@@ -606,40 +639,6 @@ namespace Orts.Viewer3D
             Position = position;
             GlowIntensityDay = glowDay;
             GlowIntensityNight = glowNight;
-
-            //if (radius >= 0.13f && radius <= 0.3f) radius = 0.11f;
-            //else radius = 0.04f;
-
-            switch (radius)
-            {
-                case 0.3f:
-                    radius = 0.11f;
-                    break;
-                case 0.21f:
-                    radius = 0.11f;
-                    break;
-                case 0.2f: 
-                    radius = 0.11f;
-                    break;
-                case 0.15f:
-                    radius = 0.11f;
-                    break;
-                case 0.13f:
-                    radius = 0.11f;
-                    break;
-                case 0.12f:
-                    radius = 0.04f;
-                    break;
-                case 0.11f:
-                    radius = 0.04f;
-                    break;
-                case 0.1f:
-                    radius = 0.04f;
-                    break;
-                case 0.08f:
-                    radius = 0.04f;
-                    break;
-            }
 
             var verticies = new[] {
 				new VertexPositionColorTexture(new Vector3(-radius, +radius, 0), color, new Vector2(u1, v0)),

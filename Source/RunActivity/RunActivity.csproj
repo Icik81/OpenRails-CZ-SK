@@ -916,6 +916,9 @@
     <None Include="Content\AmbientSound\Thunder.sms" />
     <None Include="Content\AmbientSound\WinterDay.sms" />
     <None Include="Content\AmbientSound\WinterNight.sms" />
+    <None Include="Content\SignalLight\SignalLight128.ace" />
+    <None Include="Content\SignalLight\SignalLight256.ace" />
+    <None Include="Content\SignalLight\SignalLight64.ace" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
