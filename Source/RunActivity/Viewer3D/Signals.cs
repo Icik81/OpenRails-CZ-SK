@@ -482,6 +482,7 @@ namespace Orts.Viewer3D
                                 case "Bohumín - Olomouc hl.n.": // cz_bohumin-olomouc                                    
                                 case "Trencin - Nitra": // TN_NR                                                                        
                                 case "Ztracena_old":
+                                case "Trat ZSR 191-193":
                                     Material = viewer.MaterialManager.Load("SignalLight", System.IO.Path.Combine(viewer.ContentPath, "..\\Content\\SignalLight\\SignalLight64.ace"));
                                     glowDay = 2.5f; glowNight = 5;
                                     break;
@@ -493,6 +494,7 @@ namespace Orts.Viewer3D
                                 case "Jihlava - Brno":                                    
                                 case "Luhacovice":                                    
                                 case "Zvolen-Nove Zamky": // ZSR150
+                                case "CR_244":
                                     Material = viewer.MaterialManager.Load("SignalLight", System.IO.Path.Combine(viewer.ContentPath, "..\\Content\\SignalLight\\SignalLight128.ace"));
                                     glowDay = 2.5f; glowNight = 5;
                                     break;
