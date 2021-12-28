@@ -1093,7 +1093,7 @@ namespace Orts.Simulation.RollingStocks
         public override void Initialize()
         {
             // Icik
-            // Úprava spřáhel kvůli kompatibilitě v klasickém OR a MSTS
+            // Úprava spřáhel kvůli kompatibilitě v klasickém OR a MSTS, testuje 1.spřáhlo
             // Nákladní vozy
             if (WagonType == WagonTypes.Freight)
             {
@@ -1986,6 +1986,39 @@ namespace Orts.Simulation.RollingStocks
         public override void Update(float elapsedClockSeconds)
         {
             base.Update(elapsedClockSeconds);
+
+            // Icik
+            // Úprava spřáhel kvůli kompatibilitě v klasickém OR a MSTS, testuje 2.spřáhlo
+            // Nákladní vozy
+            if (WagonType == WagonTypes.Freight)
+            {
+                switch (Coupler.R0X)
+                {
+                    case 0.30f:                        
+                        Coupler.R0X = 0f;
+                        Coupler.R0Y = 0.07f;
+                        break;
+                    case 0.80f:                        
+                        Coupler.R0X = 0f;
+                        Coupler.R0Y = 0.07f;
+                        break;
+                }
+            }
+            // Osobní vozy a ostatní
+            else
+            {
+                switch (Coupler.R0X)
+                {
+                    case 0.30f:                        
+                        Coupler.R0X = 0f;
+                        Coupler.R0Y = 0.015f;
+                        break;
+                    case 0.80f:                        
+                        Coupler.R0X = 0f;
+                        Coupler.R0Y = 0.015f;
+                        break;
+                }
+            }
 
             // Icik                        
             ToggleHeatingCarOperationsWindow();
