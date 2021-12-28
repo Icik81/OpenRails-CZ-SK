@@ -48,6 +48,7 @@ namespace ORTS
         public void ProcessUpdate()
         {
             string s = "";
+            string conts = "";
             try
             {
                 state = "Navazuji spojení";
@@ -73,23 +74,48 @@ namespace ORTS
                     File.WriteAllText(versionPath, "1");
                 }
                 string version = File.ReadAllText(versionPath);
+
+                string contentPath = Application.StartupPath + "\\content.ini";
+                if (!File.Exists(contentPath))
+                {
+                    File.WriteAllText(contentPath, "0");
+                }
+                string content = File.ReadAllText(contentPath);
+
                 WebClient webClient = new WebClient();
                 s = webClient.DownloadString("http://lkpr.aspone.cz/or/version15.txt");
-                if (version != s) // new version available
+                conts = webClient.DownloadString("http://lkpr.aspone.cz/or/content.txt");
+                if (version != s || conts != content) // new version available
                 {
-                    DialogResult dr = MessageBox.Show("Nalezena aktualizace. Chcete program aktualizovat?", "Aktualizace", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-                    if (dr == DialogResult.No)
-                        return;
-                    state = "Stahuji novou verzi";
-                    File.Delete(Application.StartupPath + "\\Update15.zip");
-                    webClient.DownloadFile("http://lkpr.aspone.cz/or/update15.zip", Application.StartupPath + "\\Update15.zip");
-                    state = "Rozbaluji archiv";
-                    ZipFile zip = new ZipFile(Application.StartupPath + "\\Update15.zip");
-                    zip.ExtractAll(Application.StartupPath, ExtractExistingFileAction.OverwriteSilently);
-                    File.WriteAllText(versionPath, s);
-                    waiting = true;
-                    state = s;
-                    System.Threading.Thread.Sleep(2500);
+                    if (version != s)
+                    {
+                        DialogResult dr = MessageBox.Show("Nalezena aktualizace. Chcete program aktualizovat?", "Aktualizace", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                        if (dr == DialogResult.No)
+                            return;
+                        state = "Stahuji novou verzi";
+                        File.Delete(Application.StartupPath + "\\Update15.zip");
+                        webClient.DownloadFile("http://lkpr.aspone.cz/or/update15.zip", Application.StartupPath + "\\Update15.zip");
+                        state = "Rozbaluji archiv";
+                        ZipFile zip = new ZipFile(Application.StartupPath + "\\Update15.zip");
+                        zip.ExtractAll(Application.StartupPath, ExtractExistingFileAction.OverwriteSilently);
+                        File.WriteAllText(versionPath, s);
+                        waiting = true;
+                        state = s;
+                        System.Threading.Thread.Sleep(2500);
+                    }
+                    if (conts != content)
+                    {
+                        state = "Stahuji novou verzi obsahu";
+                        File.Delete(Application.StartupPath + "\\Content.zip");
+                        webClient.DownloadFile("http://lkpr.aspone.cz/or/content.zip", Application.StartupPath + "\\Content.zip");
+                        state = "Rozbaluji archiv";
+                        ZipFile zip = new ZipFile(Application.StartupPath + "\\Content.zip");
+                        zip.ExtractAll(Application.StartupPath, ExtractExistingFileAction.OverwriteSilently);
+                        File.WriteAllText(contentPath, conts);
+                        waiting = true;
+                        state = "Obsah byl aktualizován.";
+                        System.Threading.Thread.Sleep(2500);
+                    }
                 }
                 else
                 {
