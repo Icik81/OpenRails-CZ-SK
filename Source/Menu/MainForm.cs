@@ -32,6 +32,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.NetworkInformation;
+using System.Net.Sockets;
 using System.Resources;
 using System.Runtime.InteropServices;
 using System.Threading;
@@ -149,6 +150,8 @@ namespace ORTS
 
         void MainForm_Shown(object sender, EventArgs e)
         {
+            LauncherUpdate();
+
             var options = Environment.GetCommandLineArgs().Where(a => (a.StartsWith("-") || a.StartsWith("/"))).Select(a => a.Substring(1));
             Settings = new UserSettings(options);
 
@@ -372,6 +375,46 @@ namespace ORTS
         {
             Process.Start(Application.ExecutablePath);
             Close();
+        }
+        #endregion
+
+        #region Launcher Update
+        public void LauncherUpdate()
+        {
+            Ping ping = new Ping();
+            PingReply pingReply = ping.Send("lkpr.aspone.cz", 1000);
+            if (pingReply != null)
+            {
+                if (pingReply.Status == IPStatus.Success)
+                {
+                    SplashWindow sw = new SplashWindow();
+                    sw.Show();
+                    sw.Message = "Kontrola verze updateru.";
+                    sw.UpdateProgress();
+                    if (pingReply.Status == IPStatus.Success)
+                    {
+                        if (!File.Exists(Application.StartupPath + @"\OpenRails.txt"))
+                            File.WriteAllText(Application.StartupPath + @"\OpenRails.txt", "0");
+                        string version = File.ReadAllText(Application.StartupPath + @"\OpenRails.txt");
+                        WebClient webClient = new WebClient();
+                        string verRemote = webClient.DownloadString(@"http://lkpr.aspone.cz/or/OpenRails.txt");
+                        if (verRemote == version)
+                        {
+                            sw.Close();
+                            return;
+                        }
+                        sw.Message = "Stahuji a rozbaluji novou vezi updateru.";
+                        sw.UpdateProgress();
+                        if (File.Exists(Application.StartupPath + @"\OpenRails.zip"))
+                            File.Delete(Application.StartupPath + @"\OpenRails.zip");
+                        webClient.DownloadFile(@"http://lkpr.aspone.cz/or/OpenRails.zip", Application.StartupPath + @"\OpenRails.zip");
+                        ZipFile zipEntries = new ZipFile(Application.StartupPath + @"\OpenRails.zip");
+                        zipEntries.ExtractAll(Application.StartupPath, ExtractExistingFileAction.OverwriteSilently);
+                        File.WriteAllText(Application.StartupPath + @"\OpenRails.txt", verRemote);
+                        sw.Close();
+                    }
+                }
+            }
         }
         #endregion
 
