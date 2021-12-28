@@ -550,7 +550,7 @@ namespace Orts.Simulation.RollingStocks
             {
                 WagonFrontalAreaM2 = CarWidthM * CarHeightM;
             }
-
+                        
             // Initialise key wagon parameters
             MassKG = InitialMassKG;
             MaxHandbrakeForceN = InitialMaxHandbrakeForceN;
@@ -1092,6 +1092,43 @@ namespace Orts.Simulation.RollingStocks
 
         public override void Initialize()
         {
+            // Icik
+            // Úprava spřáhel kvůli kompatibilitě v klasickém OR a MSTS
+            // Nákladní vozy
+            if (WagonType == WagonTypes.Freight)
+            {
+                switch (Coupler.R0X)
+                {
+                    case 0.30f:
+                        CarLengthM = CarLengthM + 0.30f;
+                        Coupler.R0X = 0f;
+                        Coupler.R0Y = 0.07f;
+                        break;
+                    case 0.80f:
+                        CarLengthM = CarLengthM + 0.80f;
+                        Coupler.R0X = 0f;
+                        Coupler.R0Y = 0.07f;
+                        break;
+                }
+            }
+            // Osobní vozy a ostatní
+            else
+            {
+                switch (Coupler.R0X)
+                {
+                    case 0.30f:
+                        CarLengthM = CarLengthM + 0.30f;
+                        Coupler.R0X = 0f;
+                        Coupler.R0Y = 0.015f;
+                        break;
+                    case 0.80f:
+                        CarLengthM = CarLengthM + 0.80f;
+                        Coupler.R0X = 0f;
+                        Coupler.R0Y = 0.015f;
+                        break;
+                }
+            }
+
             Pantographs.Initialize();
 
             base.Initialize();
@@ -1950,7 +1987,7 @@ namespace Orts.Simulation.RollingStocks
         {
             base.Update(elapsedClockSeconds);
 
-            // Icik
+            // Icik                        
             ToggleHeatingCarOperationsWindow();
             ToggleBrakeCarDeactivateCarOperationsWindow();
             ToggleDoorsCarOperationsWindow();
