@@ -1905,6 +1905,7 @@ namespace Orts.Simulation.RollingStocks
             outf.Write(BrakeSystem.HeatingIsOn);
             outf.Write(BrakeSystem.HeatingMenu);
             outf.Write(DieselHeaterTankCapacity);
+            outf.Write(CarLengthM);
 
             base.Save(outf);
         }
@@ -1956,6 +1957,7 @@ namespace Orts.Simulation.RollingStocks
             BrakeSystem.HeatingIsOn = inf.ReadBoolean();
             BrakeSystem.HeatingMenu = inf.ReadSingle();
             DieselHeaterTankCapacity = inf.ReadSingle();
+            CarLengthM = inf.ReadSingle();
 
             base.Restore(inf);
 
