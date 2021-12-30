@@ -334,6 +334,18 @@ namespace Orts.Simulation.RollingStocks
                 Amps = 0;
             if (Amps < 0)
                 Amps = 0;
+
+            if (RouteVoltageV == 25000)
+            {
+                if (Amps > 250)
+                    Amps = 250;
+            }
+            if (RouteVoltageV == 3000)
+            {
+                if (Amps > 2100)
+                    Amps = 2100;
+            }
+
             int powerSys = -1;
             int markerVoltage = 0;
             VoltageChangeMarker marker;
@@ -1239,6 +1251,8 @@ namespace Orts.Simulation.RollingStocks
                     CompressorSwitch2 = 1;
                     CompressorMode_OffAuto = true;
                     CompressorMode2_OffAuto = true;
+
+                    SplashScreen = false;
                     
                     if (MultiSystemEngine && RouteVoltageV != 1)
                     {

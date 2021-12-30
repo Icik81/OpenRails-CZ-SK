@@ -632,6 +632,9 @@ namespace Orts.Simulation.RollingStocks
         public bool MoveThrottle = true;
         public bool UsingForceHandle = false;
         public float ForceHandleValue = 0;
+        public bool SplashScreen = false;
+        public float SplashScreenMinDuration = 0;
+        public float SplashScreenMaxDuration = 0;
 
         public bool
       Speed0Pressed, Speed10Pressed, Speed20Pressed, Speed30Pressed, Speed40Pressed, Speed50Pressed
@@ -1267,6 +1270,8 @@ namespace Orts.Simulation.RollingStocks
                 case "engine(ortsautomaticparkingbrake": AutomaticParkingBrake = true; break;
                 case "engine(ortsautomaticparkingbrake(engagespeed": AutomaticParkingBrakeEngageSpeedKpH = stf.ReadFloatBlock(STFReader.UNITS.Speed, 0); break;
                 case "engine(ortsautomaticparkingbrake(targetpressurepsi": ParkingBrakeTargetPressurePSI = stf.ReadFloatBlock(STFReader.UNITS.PressureDefaultPSI, 30); break;
+                case "engine(ortssplashscreen(minduration": SplashScreenWillBeDisplayed = true; SplashScreenMinDuration = stf.ReadFloatBlock(STFReader.UNITS.Time, 0); break;
+                case "engine(ortssplashscreen(maxduration": SplashScreenWillBeDisplayed = true; SplashScreenMaxDuration = stf.ReadFloatBlock(STFReader.UNITS.Time, 0); break;
                 case "engine(antiwheelspinequipped": AntiWheelSpinEquipped = stf.ReadBoolBlock(false); break;
                 case "engine(antiwheelspinspeeddiffthreshold": AntiWheelSpinSpeedDiffThreshold = stf.ReadFloatBlock(STFReader.UNITS.None, 0.5f); break;
                 case "engine(dynamicbrakemaxforceatselectorstep": DynamicBrakeMaxForceAtSelectorStep = stf.ReadFloatBlock(STFReader.UNITS.Any, 1.0f); break;
@@ -3354,6 +3359,9 @@ namespace Orts.Simulation.RollingStocks
         protected float EngineBrakePercentSet = 0;
         public bool CanCheckEngineBrake = true;
         protected int checkParkingBrakeCount = 0;
+        protected float SplashScreenDisplayed = 0;
+        protected float SplashScreenRandomTime = 0;
+        public bool SplashScreenWillBeDisplayed = false;
         public override void Update(float elapsedClockSeconds)
         {
             if (IsPlayerTrain && !Simulator.Paused)
@@ -3580,6 +3588,26 @@ namespace Orts.Simulation.RollingStocks
             string s = this.LocomotiveName;
             UpdatePowerSupply(elapsedClockSeconds);
             UpdateControllers(elapsedClockSeconds);
+
+            if (Battery)
+            {
+                if (SplashScreenWillBeDisplayed && SplashScreen)
+                {
+                    if (SplashScreenRandomTime == 0)
+                    {
+                        Random rnd = new Random();
+                        SplashScreenRandomTime = rnd.Next((int)SplashScreenMinDuration, (int)SplashScreenMaxDuration);
+                    }
+                    SplashScreenDisplayed += elapsedClockSeconds;
+                    if (SplashScreenDisplayed > SplashScreenRandomTime) SplashScreen = false;
+                }
+            }
+            else
+            {
+                SplashScreen = SplashScreenWillBeDisplayed;
+                SplashScreenRandomTime = 0;
+                SplashScreenDisplayed = 0;
+            }
 
             if (GetTrainBrakeStatus().Contains("Apply") || GetTrainBrakeStatus().Contains("Emergency"))
             {
@@ -9037,6 +9065,22 @@ namespace Orts.Simulation.RollingStocks
                         else data = ThrottlePercent / 100 * (MaxCurrentA * 1.2f);
                     }
                     break;
+
+                case CABViewControlTypes.ORTS_TRAIN_TYPE_PAX_OR_CARGO:
+                    {
+                        data = (int)SelectedTrainType;
+                        break;
+                    }
+                case CABViewControlTypes.ORTS_DISPLAY_SPLASH_SCREEN:
+                    {
+                        data = SplashScreen ? 0 : 1;
+                        break;
+                    }
+                case CABViewControlTypes.ORTS_CONTROLLER_VOLTAGE:
+                    {
+                        data = CruiseControl.controllerVolts;
+                        break;
+                    }
 
                 case CABViewControlTypes.ORTS_SELECTED_SPEED:
                 case CABViewControlTypes.ORTS_SELECTED_SPEED_DISPLAY:

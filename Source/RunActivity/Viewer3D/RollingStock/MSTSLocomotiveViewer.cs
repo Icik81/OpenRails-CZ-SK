@@ -2488,8 +2488,9 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.ORTS_LS90_POWER:
                 case CABViewControlTypes.ORTS_LS90_LED:
                 case CABViewControlTypes.ORTS_AVV_SIGNAL:
+                case CABViewControlTypes.ORTS_DISPLAY_SPLASH_SCREEN:
 
-                
+
 
                     index = (int)data;
                     break;
