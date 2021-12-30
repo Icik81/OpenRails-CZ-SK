@@ -32,7 +32,11 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
         readonly Simulator Simulator;
 
         public bool Activated = false;
-        string ScriptName = "Automatic";
+        
+        // Icik
+        //string ScriptName = "Automatic";
+        string ScriptName = "Manual";
+
         CircuitBreaker Script;
 
         private float DelayS = 0.5f;

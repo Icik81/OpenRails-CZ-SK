@@ -991,7 +991,9 @@ namespace Orts.Formats.Msts
             white.G = 255f;
             white.B = 255f;
             PositiveColor = white;
-            FontSize = 8;
+            // Icik
+            //FontSize = 8;
+            FontSize = 4;
             FontStyle = 0;
             FontFamily = "Lucida Sans";
             
@@ -1143,7 +1145,9 @@ namespace Orts.Formats.Msts
 
         public CVCDigitalClock(STFReader stf, string basepath)
         {
-            FontSize = 8;
+            // Icik
+            //FontSize = 8;
+            FontSize = 4;
             FontStyle = 0;
             FontFamily = "Lucida Sans";
             stf.MustMatch("(");

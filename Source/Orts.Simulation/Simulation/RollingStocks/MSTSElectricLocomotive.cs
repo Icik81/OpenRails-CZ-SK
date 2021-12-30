@@ -1310,11 +1310,7 @@ namespace Orts.Simulation.RollingStocks
                     Mirel.ls90tested = true;
                     Mirel.Ls90power = SubSystems.Mirel.LS90power.On;
 
-                    // Směr + ARR
-                    Direction = Direction.Forward;
-                    if (Flipped)
-                        Direction = Direction.Reverse;                    
-
+                    // ARR
                     if (CruiseControl != null && CruiseControl.Equipped)
                     {
                         CruiseControl.SpeedRegMode = SubSystems.CruiseControl.SpeedRegulatorMode.Auto;
