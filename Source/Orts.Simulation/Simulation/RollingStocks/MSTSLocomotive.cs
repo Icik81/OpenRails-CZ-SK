@@ -3689,7 +3689,7 @@ namespace Orts.Simulation.RollingStocks
                                 }
                             }
                         }
-                        if (CruiseControl.SpeedSelMode != CruiseControl.SpeedSelectorMode.Parking)
+                        if (CruiseControl.SpeedSelMode != CruiseControl.SpeedSelectorMode.Parking && CruiseControl.SpeedRegulatorOptions.Contains("selectorparking"))
                             braking = false;
                         if (AbsSpeedMpS > MpS.FromKpH(AutomaticParkingBrakeEngageSpeedKpH))
                             braking = false;
@@ -5666,7 +5666,7 @@ namespace Orts.Simulation.RollingStocks
             {
                 if (CruiseControl.UseThrottleAsForceSelector && CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.Auto && !UsingForceHandle)
                 {
-                    CruiseControl.SetMaxForcePercent(percent);
+                    CruiseControl.SetMaxForcePercent(percent, true);
                     return;
                 }
                 else

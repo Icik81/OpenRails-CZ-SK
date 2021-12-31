@@ -424,10 +424,16 @@ namespace Orts.Simulation.RollingStocks.SubSystems
 
         public void SetMaxForcePercent(float percent)
         {
+            SetMaxForcePercent(percent, false);
+        }
+
+        public void SetMaxForcePercent(float percent, bool silent)
+        {
             if (SelectedMaxAccelerationPercent == (int)percent) return;
             SelectedMaxAccelerationPercent = percent;
             SelectedMaxAccelerationPercent = (float)Math.Round(Locomotive.SelectedMaxAccelerationStep, 0);
-            Simulator.Confirmer.Message(ConfirmLevel.Information, Simulator.Catalog.GetString("Speed regulator max acceleration percent changed to") + " " + Simulator.Catalog.GetString(SelectedMaxAccelerationPercent.ToString()) + "%");
+            if (!silent)
+                Simulator.Confirmer.Message(ConfirmLevel.Information, Simulator.Catalog.GetString("Speed regulator max acceleration percent changed to") + " " + Simulator.Catalog.GetString(SelectedMaxAccelerationPercent.ToString()) + "%");
         }
 
         bool maxForceIncreasing = false;
@@ -1499,7 +1505,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                         {
                             if (!UseThrottle)
                             {
-                                if (controllerVolts < 10)
+                                if (controllerVolts < 10 && Locomotive.SelectedMaxAccelerationStep > 0)
                                 {
                                     float step = 100 / Locomotive.ThrottleFullRangeIncreaseTimeSeconds;
                                     step *= elapsedClockSeconds;
@@ -1663,6 +1669,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                                 step *= elapsedClockSeconds;
                                 controllerVolts -= step;
                             }
+                            if (controllerVolts > demandedVolts && Locomotive.SelectedMaxAccelerationStep == 0)
+                                controllerVolts = 0;
                         }
 
                         if (UseThrottle)
