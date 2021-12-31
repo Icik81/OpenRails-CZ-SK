@@ -4196,6 +4196,8 @@ namespace Orts.Simulation.RollingStocks
         {
             // Method to set force and power info
             // An alternative method in the steam locomotive will override this and input force and power info for it.
+            if (ThrottleOverriden != 0)
+                t = ThrottleOverriden;
             if (DynamicBrakeFullRangeIncreaseTimeSeconds == 0)
                 DynamicBrakeFullRangeIncreaseTimeSeconds = 4;
             if (DynamicBrakeFullRangeDecreaseTimeSeconds == 0)

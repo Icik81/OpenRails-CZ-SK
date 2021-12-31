@@ -864,7 +864,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
 
             if (canAddForce)
             {
-                if (Locomotive.AbsSpeedMpS == 0)
+                if (Locomotive.AbsSpeedMpS == 0 && (PowerReductionDelayCargoTrain > 0 || PowerReductionDelayPaxTrain > 0))
                 {
                     timeFromEngineMoved = 0;
                     reducingForce = true;
@@ -1728,7 +1728,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                             }
                             else
                             {
-                                Locomotive.ThrottleController.SetPercent(100);
+                                Locomotive.ThrottleController.SetPercent(controllerVolts);
                                 throttleIsZero = false;
                             }
                         }
@@ -1850,7 +1850,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
 
             if (PlayerNotDriveableTrainLocomotives.Count > 0) // update any other than the player's locomotive in the consist throttles to percentage of the current force and the max force
             {
-                float locoPercent = Locomotive.MaxForceN - (Locomotive.MaxForceN - Locomotive.MotiveForceN);
+                float locoPercent = Locomotive.MaxForceN - (Locomotive.MaxForceN - Locomotive.TractiveForceN);
                 locoPercent = (locoPercent / Locomotive.MaxForceN) * 100;
                 //Simulator.Confirmer.MSG(locoPercent.ToString());
                 foreach (MSTSLocomotive lc in PlayerNotDriveableTrainLocomotives)
