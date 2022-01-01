@@ -430,8 +430,8 @@ namespace Orts.Viewer3D
         void UpdateVolume()
         {
             // Icik                            
-            foreach (var soundSource in ClearSound) soundSource.Volume = (1 - (Weather.PricipitationIntensityPPSPM2 / 0.35f)) / Viewer.Simulator.PlayerLocomotive.AbsSpeedMpS;
-            foreach (var soundSource in ClearSoundNight) soundSource.Volume = (1 - (Weather.PricipitationIntensityPPSPM2 / 0.35f)) / Viewer.Simulator.PlayerLocomotive.AbsSpeedMpS;
+            foreach (var soundSource in ClearSound) soundSource.Volume = (1 - (Weather.PricipitationIntensityPPSPM2 / 0.35f)) / (Viewer.Simulator.PlayerLocomotive.AbsSpeedMpS + 1);
+            foreach (var soundSource in ClearSoundNight) soundSource.Volume = (1 - (Weather.PricipitationIntensityPPSPM2 / 0.35f)) / (Viewer.Simulator.PlayerLocomotive.AbsSpeedMpS + 1);
             if ((Viewer.FreeRoamCameraList.Count > 0 && Viewer.Camera == Viewer.FreeRoamCamera) || Viewer.Camera == Viewer.TracksideCamera)
             {
                 foreach (var soundSource in ClearSound) soundSource.Volume = 1 - (Weather.PricipitationIntensityPPSPM2 / 0.35f);
@@ -578,15 +578,17 @@ namespace Orts.Viewer3D
             var manager = MPManager.Instance();
 
             // Icik
-            DayNightTimeChangeCyklus();
-            if (DayNightTimeChange || (Viewer.Simulator.GameTime < 0.1f && NightTime))
+            if (Viewer.Simulator.GameTimeCyklus10 == 10)
             {
-                UpdateSoundSources();
-                DayNightTimeChange = false;
-            }
-            if (Viewer.Simulator.PlayerLocomotive.AbsSpeedMpS > 1)
+                DayNightTimeChangeCyklus();
+                if (DayNightTimeChange || (Viewer.Simulator.GameTime < 0.1f && NightTime))
+                {
+                    UpdateSoundSources();
+                    DayNightTimeChange = false;
+                }
                 UpdateVolume();
-
+            }
+            
             if (MPManager.IsClient() && manager.weatherChanged)
             {
                 // Multiplayer weather has changed so we need to update our state to match weather, overcastFactor, pricipitationIntensity and fogDistance.
@@ -644,8 +646,7 @@ namespace Orts.Viewer3D
                             Weather.OvercastFactor = 0.0f;
                             Weather.FogDistance = 20000;
                             break;
-                    }
-                    UpdateVolume();
+                    }                    
                     // block dynamic weather change after a manual weather change operation
                     weatherChangeOn = false;
                     if (dynamicWeather != null) dynamicWeather.ResetWeatherTargets();

@@ -564,8 +564,7 @@ namespace Orts.Simulation.RollingStocks
         public bool BreakPowerButtonEnable = false;
         public bool BreakPowerButton;
         bool BreakPowerButtonPressed = false;
-        public bool BreakPowerButton_Activated;
-        public float GameTimeFlow;
+        public bool BreakPowerButton_Activated;        
         float PantoStatus = 0;
         float PrePantoStatus = 0;
         public float HeatingMaxCurrentA;
@@ -2730,14 +2729,9 @@ namespace Orts.Simulation.RollingStocks
         public bool HeatingIsOn = false;
         public bool CabHeatingIsOn = false;
         public float MSGHeatingCycle;
-        public float GameTimeCyklus10;
 
         public void ElevatedConsumptionOnLocomotive(float elapsedClockSeconds)
-        {
-            GameTimeCyklus10++;
-            if (GameTimeCyklus10 > 10)
-                GameTimeCyklus10 = 0;
-
+        {            
             if (TElevatedConsumption == 0)
                 PowerReduction0 = PowerReduction;
             
@@ -2784,7 +2778,7 @@ namespace Orts.Simulation.RollingStocks
             }
             
             // Počítání teplot proběhne každý desátý cyklus 
-            if (GameTimeCyklus10 == 10 && (!Train.HeatingBoilerCarAttached || !Train.HeatedCarAttached))
+            if (Simulator.GameTimeCyklus10 == 10 && (!Train.HeatingBoilerCarAttached || !Train.HeatedCarAttached))
             {
                 foreach (TrainCar car in Train.Cars)
                 {
@@ -2798,7 +2792,7 @@ namespace Orts.Simulation.RollingStocks
                             car.HasPassengerCapacity = true;
 
                         // Defaulty
-                        if (!car.WagonHasTemperature && GameTimeFlow > 1 || car.CarOutsideTempCLastStatus != car.CarOutsideTempC)
+                        if (!car.WagonHasTemperature && Simulator.GameTime > 1 || car.CarOutsideTempCLastStatus != car.CarOutsideTempC)
                         {
                             if (car.WagonType == WagonTypes.Engine)
                             {
@@ -3041,7 +3035,7 @@ namespace Orts.Simulation.RollingStocks
             }
             
             // Bufík
-            if (IsPlayerTrain && GameTimeCyklus10 == 10)
+            if (IsPlayerTrain && Simulator.GameTimeCyklus10 == 10)
             {
                 foreach (TrainCar car in Train.Cars)
                 {
@@ -3566,9 +3560,7 @@ namespace Orts.Simulation.RollingStocks
                     ControllerVolts = 0;
             }
 
-            // Icik
-            // Zpoždění pro inicializaci systémů ochran lokomotivy
-            GameTimeFlow += elapsedClockSeconds;
+            // Icik         
             Overcurrent_Protection(elapsedClockSeconds);
             AntiSlip_Protection(elapsedClockSeconds);
             PowerOn_Filter(elapsedClockSeconds);
@@ -7040,7 +7032,7 @@ namespace Orts.Simulation.RollingStocks
                 if (BreakPowerButton_Activated && Pantograph3Switch == 1)
                     BreakPowerButton_Activated = false;
 
-                if (Pantograph3CanOn && Battery && PowerKey && !BreakPowerButton_Activated && GameTimeFlow > 1) 
+                if (Pantograph3CanOn && Battery && PowerKey && !BreakPowerButton_Activated && Simulator.GameTime > 1) 
                 {
                     PantoStatus = Pantograph3Switch;
                     int p1 = 1; int p2 = 2;
@@ -7147,7 +7139,7 @@ namespace Orts.Simulation.RollingStocks
                 if (BreakPowerButton_Activated && Pantograph4Switch == 0)
                     BreakPowerButton_Activated = false;
 
-                if (Battery && PowerKey && !BreakPowerButton_Activated && GameTimeFlow > 1)
+                if (Battery && PowerKey && !BreakPowerButton_Activated && Simulator.GameTime > 1)
                 {
                     PantoStatus = Pantograph4Switch;
                     int p1 = 1; int p2 = 2;

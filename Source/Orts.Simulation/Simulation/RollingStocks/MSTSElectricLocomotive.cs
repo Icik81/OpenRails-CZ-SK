@@ -769,7 +769,7 @@ namespace Orts.Simulation.RollingStocks
                     DontRaisePanto = false;
 
                 // Blokování pantografu u jednosystémových lokomotiv při vypnutém HV
-                if (!MultiSystemEngine && GameTimeFlow > 1)
+                if (!MultiSystemEngine && Simulator.GameTime > 1)
                 {
                     // Definice default provozního napájení lokomotivy 25kV
                     if (LocomotivePowerVoltage == 0) LocomotivePowerVoltage = 25000; //Default pro lokomotivy bez udání napětí
@@ -829,7 +829,7 @@ namespace Orts.Simulation.RollingStocks
                         Pantographs[2].PantographsBlocked = false;
                         PantographDown = false;
 
-                        if (!EDBIndependent && GameTimeCyklus10 == 10)
+                        if (!EDBIndependent && Simulator.GameTimeCyklus10 == 10)
                         {
                             // Shodí HV při nulovém napětí a manipulaci s kontrolérem a EDB
                             if ((PowerSupply.PantographVoltageV == 1 && LocalThrottlePercent != 0 && PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closed)
@@ -877,7 +877,7 @@ namespace Orts.Simulation.RollingStocks
                             }
                         }
 
-                        if (EDBIndependent && GameTimeCyklus10 == 10)
+                        if (EDBIndependent && Simulator.GameTimeCyklus10 == 10)
                         {
                             // Shodí HV při nulovém napětí a manipulaci s kontrolérem
                             if (PowerSupply.PantographVoltageV == 1 && LocalThrottlePercent != 0 && PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closed)
@@ -1050,7 +1050,7 @@ namespace Orts.Simulation.RollingStocks
                     Pantographs[1].PantographsBlocked = false;
                     Pantographs[2].PantographsBlocked = false;
 
-                    if (!EDBIndependent && GameTimeCyklus10 == 10)
+                    if (!EDBIndependent && Simulator.GameTimeCyklus10 == 10)
                     {
                         // Blokuje zapnutí HV při staženém sběrači a nebo navoleném výkonu a EDB
                         if ((PowerSupply.PantographVoltageV == 1 && PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closing)
@@ -1119,7 +1119,7 @@ namespace Orts.Simulation.RollingStocks
                         }
                     }
 
-                    if (EDBIndependent && GameTimeCyklus10 == 10)
+                    if (EDBIndependent && Simulator.GameTimeCyklus10 == 10)
                     {
                         // Blokuje zapnutí HV při staženém sběrači a nebo navoleném výkonu
                         if ((PowerSupply.PantographVoltageV == 1 && PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closing)
@@ -1354,7 +1354,7 @@ namespace Orts.Simulation.RollingStocks
             if (IsPlayerTrain)  
                 return;
                                     
-            if (GameTimeCyklus10 == 10 && TrainHasFirstPantoMarker)
+            if (Simulator.GameTimeCyklus10 == 10 && TrainHasFirstPantoMarker)
             {
                 if ((Train as AITrain).nextActionInfo != null)
                 {
@@ -1508,7 +1508,7 @@ namespace Orts.Simulation.RollingStocks
                 PowerOn = false;
             }
             
-            if (GameTimeCyklus10 == 10)
+            if (Simulator.GameTimeCyklus10 == 10)
             {                
                 for (int i = 1; i <= Pantographs.Count; i++)
                 {
