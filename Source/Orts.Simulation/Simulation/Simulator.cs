@@ -171,6 +171,9 @@ namespace Orts.Simulation
 
         public bool SuperUser = false;
 
+        // Icik
+        public float VoltageSprung = 1;
+
         public List<PowerSupplyStation> powerSupplyStations;
         public List<VoltageChangeMarker> voltageChangeMarkers;
 

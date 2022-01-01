@@ -169,7 +169,11 @@ namespace Orts.Viewer3D.Popups
                 if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive).PowerOn)
                     Viewer.Simulator.Confirmer.Information(Viewer.Catalog.GetString("Power OFF command sent"));
                 else
+                {
                     Viewer.Simulator.Confirmer.Information(Viewer.Catalog.GetString("Power ON command sent"));
+                    if (Viewer.PlayerTrain.Cars[CarPosition].GetType() == typeof(MSTSElectricLocomotive))
+                        (Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive).HVOn = true;
+                }
             }
             else
                 Viewer.Simulator.Confirmer.Warning(Viewer.Catalog.GetString("No power command for this type of car!"));

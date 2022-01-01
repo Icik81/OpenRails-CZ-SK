@@ -61,7 +61,7 @@ namespace Orts.Simulation.RollingStocks
         // Icik        
         public bool PantographDown = true;
         public double PantographCriticalVoltage;       
-        public float VoltageSprung = 1.0f;
+        //public float VoltageSprung = 1.0f;
         public float TimeCriticalVoltage = 0;
         public float TimeCriticalVoltage0 = 0;
         public float Delta0 = 0;
@@ -113,6 +113,7 @@ namespace Orts.Simulation.RollingStocks
         bool AIPantoDown;
         bool AIPantoDownStop;
         bool PowerOnTriggered;
+
 
         public MSTSElectricLocomotive(Simulator simulator, string wagFile) :
             base(simulator, wagFile)
@@ -273,7 +274,7 @@ namespace Orts.Simulation.RollingStocks
                 PowerKey = true;
             // Spustí zvukové triggery při načtení hry    
             if (PowerKey && Battery)
-                SignalEvent(Event.PowerKeyOn);
+                SignalEvent(Event.PowerKeyOn);            
         }
 
         //================================================================================================//
@@ -591,7 +592,7 @@ namespace Orts.Simulation.RollingStocks
             {
                 if (RouteVoltageV > 1)
                 {
-                    Simulator.TRK.Tr_RouteFile.MaxLineVoltage = RouteVoltageV * VoltageSprung + volts;
+                    Simulator.TRK.Tr_RouteFile.MaxLineVoltage = RouteVoltageV * Simulator.VoltageSprung + volts;
                     MaxLineVoltage0 = RouteVoltageV + volts;
                 }
                 if (RouteVoltageV == 1)
@@ -709,18 +710,21 @@ namespace Orts.Simulation.RollingStocks
                     TInduktion = 0;
 
 
-                if (!UpdateTimeEnable)
+                if (!UpdateTimeEnable && IsLeadLocomotive())
                 {
                     // Zákmit na voltmetru            
                     if (PowerSupply.PantographVoltageV < 2)
                     {
-                        VoltageSprung = 1.5f;
-                        Step1 = 0.40f;
+                        Simulator.VoltageSprung = 1.5f;
+                        Step1 = 0.20f;
                         TimeCriticalVoltage = 0;
                     }
-                    Step1 = Step1 - elapsedClockSeconds;
+                    if (PowerSupply.PantographVoltageV > MaxLineVoltage0)
+                        Step1 = Step1 - elapsedClockSeconds;                    
                     if (Step1 < 0) Step1 = 0;
-                    if ((VoltageSprung > 1.0f && Step1 == 0 && PowerSupply.PantographVoltageV > MaxLineVoltage0)) VoltageSprung = 1.0f;
+                    
+                    if (Step1 == 0 && PowerSupply.PantographVoltageV > MaxLineVoltage0)
+                        Simulator.VoltageSprung = 1.0f;
                 }
 
                 // Kritická mez napětí pro podnapěťovku
@@ -765,7 +769,7 @@ namespace Orts.Simulation.RollingStocks
                     DontRaisePanto = false;
 
                 // Blokování pantografu u jednosystémových lokomotiv při vypnutém HV
-                if (!MultiSystemEngine)
+                if (!MultiSystemEngine && GameTimeFlow > 1)
                 {
                     // Definice default provozního napájení lokomotivy 25kV
                     if (LocomotivePowerVoltage == 0) LocomotivePowerVoltage = 25000; //Default pro lokomotivy bez udání napětí
@@ -825,7 +829,7 @@ namespace Orts.Simulation.RollingStocks
                         Pantographs[2].PantographsBlocked = false;
                         PantographDown = false;
 
-                        if (!EDBIndependent)
+                        if (!EDBIndependent && GameTimeCyklus10 == 10)
                         {
                             // Shodí HV při nulovém napětí a manipulaci s kontrolérem a EDB
                             if ((PowerSupply.PantographVoltageV == 1 && LocalThrottlePercent != 0 && PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closed)
@@ -873,7 +877,7 @@ namespace Orts.Simulation.RollingStocks
                             }
                         }
 
-                        if (EDBIndependent)
+                        if (EDBIndependent && GameTimeCyklus10 == 10)
                         {
                             // Shodí HV při nulovém napětí a manipulaci s kontrolérem
                             if (PowerSupply.PantographVoltageV == 1 && LocalThrottlePercent != 0 && PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closed)
@@ -1046,7 +1050,7 @@ namespace Orts.Simulation.RollingStocks
                     Pantographs[1].PantographsBlocked = false;
                     Pantographs[2].PantographsBlocked = false;
 
-                    if (!EDBIndependent && GameTimeFlow > 1)
+                    if (!EDBIndependent && GameTimeCyklus10 == 10)
                     {
                         // Blokuje zapnutí HV při staženém sběrači a nebo navoleném výkonu a EDB
                         if ((PowerSupply.PantographVoltageV == 1 && PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closing)
@@ -1115,7 +1119,7 @@ namespace Orts.Simulation.RollingStocks
                         }
                     }
 
-                    if (EDBIndependent && GameTimeFlow > 1)
+                    if (EDBIndependent && GameTimeCyklus10 == 10)
                     {
                         // Blokuje zapnutí HV při staženém sběrači a nebo navoleném výkonu
                         if ((PowerSupply.PantographVoltageV == 1 && PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closing)
