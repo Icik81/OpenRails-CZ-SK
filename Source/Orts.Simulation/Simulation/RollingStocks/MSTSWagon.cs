@@ -161,6 +161,7 @@ namespace Orts.Simulation.RollingStocks
         public float TrainPipeLeakRatePSIpS;
         public float TimeToCloseDoor;
         public float TimeToCloseDoorGenerate;
+        public float CarLengthM0;
 
         bool TenderWeightInitialize = true;
         float TenderWagonMaxCoalMassKG = 0;
@@ -1093,41 +1094,23 @@ namespace Orts.Simulation.RollingStocks
         public override void Initialize()
         {
             // Icik
-            // Úprava spřáhel kvůli kompatibilitě v klasickém OR a MSTS, testuje 1.spřáhlo
-            // Nákladní vozy
-            if (WagonType == WagonTypes.Freight)
+            // Úprava spřáhel kvůli kompatibilitě v klasickém OR a MSTS
+            CarLengthM0 = CarLengthM;
+            foreach (MSTSCoupling coupler in Couplers)
             {
-                switch (Coupler.R0X)
+                if (coupler.R0X != 0)
                 {
-                    case 0.30f:
-                        CarLengthM = CarLengthM + 0.30f;
-                        Coupler.R0X = 0f;
-                        Coupler.R0Y = 0.07f;
-                        break;
-                    case 0.80f:
-                        CarLengthM = CarLengthM + 0.80f;
-                        Coupler.R0X = 0f;
-                        Coupler.R0Y = 0.07f;
-                        break;
+                    CarLengthM0 = CarLengthM + coupler.R0X;
+                    coupler.R0X = 0f;
+                    // Nákladní vozy
+                    if (WagonType == WagonTypes.Freight)
+                        coupler.R0Y = 0.07f;
+                    // Osobní vozy a ostatní
+                    else
+                        coupler.R0Y = 0.015f;
                 }
             }
-            // Osobní vozy a ostatní
-            else
-            {
-                switch (Coupler.R0X)
-                {
-                    case 0.30f:
-                        CarLengthM = CarLengthM + 0.30f;
-                        Coupler.R0X = 0f;
-                        Coupler.R0Y = 0.015f;
-                        break;
-                    case 0.80f:
-                        CarLengthM = CarLengthM + 0.80f;
-                        Coupler.R0X = 0f;
-                        Coupler.R0Y = 0.015f;
-                        break;
-                }
-            }
+            CarLengthM = CarLengthM0;
 
             Pantographs.Initialize();
 
@@ -1988,40 +1971,7 @@ namespace Orts.Simulation.RollingStocks
         public override void Update(float elapsedClockSeconds)
         {
             base.Update(elapsedClockSeconds);
-
-            // Icik
-            // Úprava spřáhel kvůli kompatibilitě v klasickém OR a MSTS, testuje 2.spřáhlo
-            // Nákladní vozy
-            if (WagonType == WagonTypes.Freight)
-            {
-                switch (Coupler.R0X)
-                {
-                    case 0.30f:                        
-                        Coupler.R0X = 0f;
-                        Coupler.R0Y = 0.07f;
-                        break;
-                    case 0.80f:                        
-                        Coupler.R0X = 0f;
-                        Coupler.R0Y = 0.07f;
-                        break;
-                }
-            }
-            // Osobní vozy a ostatní
-            else
-            {
-                switch (Coupler.R0X)
-                {
-                    case 0.30f:                        
-                        Coupler.R0X = 0f;
-                        Coupler.R0Y = 0.015f;
-                        break;
-                    case 0.80f:                        
-                        Coupler.R0X = 0f;
-                        Coupler.R0Y = 0.015f;
-                        break;
-                }
-            }
-
+            
             // Icik                        
             ToggleHeatingCarOperationsWindow();
             ToggleBrakeCarDeactivateCarOperationsWindow();
