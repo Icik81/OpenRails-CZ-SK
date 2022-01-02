@@ -44,7 +44,7 @@ namespace Orts.Viewer3D.RollingStock
     public class MSTSLocomotiveViewer : MSTSWagonViewer
     {
         MSTSLocomotive Locomotive;
-
+        
         protected MSTSLocomotive MSTSLocomotive { get { return (MSTSLocomotive)Car; } }
 
         public bool _hasCabRenderer;
@@ -2037,9 +2037,9 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlStyles.NONE:
                     ChangedValue = (value) =>
                     {
-                        IntermediateValue %= 0.75f;
+                        IntermediateValue %= 0.50f;
                         IntermediateValue += NormalizedMouseMovement();
-                        return IntermediateValue > 0.75f ? 1 : IntermediateValue < -0.75f ? -1 : 0;
+                        return IntermediateValue > 0.50f ? 1 : IntermediateValue < -0.50f ? -1 : 0;
                     };
                     break;
                 default: ChangedValue = (value) => value + NormalizedMouseMovement(); break;
@@ -2539,8 +2539,15 @@ namespace Orts.Viewer3D.RollingStock
         protected bool MirelPlusKeyPressed = false;
         protected bool MirelMinusKeyPressed = false;
         protected bool MirelEnterKeyPressed = false;
+        // Icik
+        bool IsChanged = false;
+
         public void HandleUserInput()
         {
+            // Icik
+            if (ChangedValue(0) == 0 && !UserInput.IsMouseLeftButtonDown)
+                IsChanged = false;
+            
             switch (Control.ControlType)
             {
                 case CABViewControlTypes.REGULATOR:
@@ -2550,8 +2557,22 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.TRAIN_BRAKE: Locomotive.SetTrainBrakeValue(ChangedValue(Locomotive.TrainBrakeController.IntermediateValue), 0); break;
                 case CABViewControlTypes.DYNAMIC_BRAKE: Locomotive.SetDynamicBrakeValue(ChangedValue(Locomotive.DynamicBrakeController.IntermediateValue)); break;
                 case CABViewControlTypes.GEARS: Locomotive.SetGearBoxValue(ChangedValue(Locomotive.GearBoxController.IntermediateValue)); break;
-                case CABViewControlTypes.DIRECTION: var dir = ChangedValue(0); if (dir != 0) new ReverserCommand(Viewer.Log, dir > 0); break;
-                case CABViewControlTypes.FRONT_HLIGHT: var hl = ChangedValue(0); if (hl != 0) new HeadlightCommand(Viewer.Log, hl > 0); break;
+                case CABViewControlTypes.DIRECTION:
+                    var dir = ChangedValue(0);
+                    if (dir != 0)
+                    {
+                        new ReverserCommand(Viewer.Log, dir > 0);
+                        IsChanged = true;
+                    }
+                    break;
+                case CABViewControlTypes.FRONT_HLIGHT: 
+                    var hl = ChangedValue(0);
+                    if (hl != 0 && !IsChanged)
+                    {
+                        new HeadlightCommand(Viewer.Log, hl > 0);
+                        IsChanged = true;
+                    }                    
+                    break;
                 case CABViewControlTypes.WHISTLE:
                 case CABViewControlTypes.HORN: new HornCommand(Viewer.Log, ChangedValue(Locomotive.Horn ? 1 : 0) > 0); break;
                 case CABViewControlTypes.VACUUM_EXHAUSTER: new VacuumExhausterCommand(Viewer.Log, ChangedValue(Locomotive.VacuumExhausterPressed ? 1 : 0) > 0); break;
@@ -2762,14 +2783,16 @@ namespace Orts.Viewer3D.RollingStock
                             Locomotive.HVPressedTestDC = false;
                         }
 
-                        if (ChangedValue(0) < 0 && UserInput.IsMouseLeftButtonDown)
+                        if (ChangedValue(0) < 0 && UserInput.IsMouseLeftButtonDown && !IsChanged)
                         {                            
                             new ToggleHV5SwitchUpCommand(Viewer.Log);
+                            IsChanged = true;
                         }
-                        if (ChangedValue(0) > 0 && UserInput.IsMouseLeftButtonDown)
+                        if (ChangedValue(0) > 0 && UserInput.IsMouseLeftButtonDown && !IsChanged)
                         {
                             new ToggleHV5SwitchDownCommand(Viewer.Log);
-                        }
+                            IsChanged = true;
+                        }                        
                         break;
                     }
 
@@ -2809,15 +2832,17 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.PANTOGRAPHS_4C:
                 case CABViewControlTypes.PANTOGRAPHS_4:
                 case CABViewControlTypes.PANTOGRAPH_4_SWITCH:
-                    if (ChangedValue(0) < 0)
+                    if (ChangedValue(0) < 0 && !IsChanged)
                     {                      
                         new TogglePantograph4SwitchUpCommand(Viewer.Log);
+                        IsChanged = true;
                     }
-                    if (ChangedValue(0) > 0)
+                    if (ChangedValue(0) > 0 && !IsChanged)
                     {
                         new TogglePantograph4SwitchDownCommand(Viewer.Log);
-                    }
-                    break;
+                        IsChanged = true;
+                    }                   
+                    break;                    
 
                 case CABViewControlTypes.ORTS_BATTERY:
                     if (ChangedValue(Locomotive.Battery ? 1 : 0) > 0)
@@ -2848,24 +2873,28 @@ namespace Orts.Viewer3D.RollingStock
                     break;
 
                 case CABViewControlTypes.COMPRESSOR_COMBINED:
-                    if (ChangedValue(0) < 0)
+                    if (ChangedValue(0) < 0 && !IsChanged)
                     {
                         new ToggleCompressorCombinedSwitchUpCommand(Viewer.Log);
+                        IsChanged = true;
                     }
-                    if (ChangedValue(0) > 0)
+                    if (ChangedValue(0) > 0 && !IsChanged)
                     {
                         new ToggleCompressorCombinedSwitchDownCommand(Viewer.Log);
-                    }                   
+                        IsChanged = true;
+                    }                    
                     break;
 
                 case CABViewControlTypes.COMPRESSOR_COMBINED2:
-                    if (ChangedValue(0) < 0)
+                    if (ChangedValue(0) < 0 && !IsChanged)
                     {
                         new ToggleCompressorCombinedSwitch2UpCommand(Viewer.Log);
+                        IsChanged = true;
                     }
-                    if (ChangedValue(0) > 0)
+                    if (ChangedValue(0) > 0 && !IsChanged)
                     {
                         new ToggleCompressorCombinedSwitch2DownCommand(Viewer.Log);
+                        IsChanged = true;
                     }
                     break;
 
@@ -3038,9 +3067,10 @@ namespace Orts.Viewer3D.RollingStock
                     break;
                 case CABViewControlTypes.ORTS_SELECTED_SPEED_MODE:
                     p = ChangedValue(0);
-                    if (p == 1)
+                    if (p == 1 && !IsChanged)
                     {
                         Locomotive.CruiseControl.SpeedSelectorModeStartIncrease();
+                        IsChanged = true;
                     }
                     else if (Locomotive.CruiseControl.SpeedSelMode == Simulation.RollingStocks.SubSystems.CruiseControl.SpeedSelectorMode.Start)
                     {
@@ -3049,9 +3079,10 @@ namespace Orts.Viewer3D.RollingStock
                             Locomotive.CruiseControl.SpeedSelectorModeStopIncrease();
                         }
                     }
-                    else if (p == -1)
+                    else if (p == -1 && !IsChanged)
                     {
                         Locomotive.CruiseControl.SpeedSelectorModeDecrease();
+                        IsChanged = true;
                     }
                     break;
                 case CABViewControlTypes.ORTS_ACTIVE_CAB:
