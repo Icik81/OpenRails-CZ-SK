@@ -34,7 +34,7 @@ using ORTS.Scripting.Api.ETCS;
 
 namespace Orts.Simulation.RollingStocks.SubSystems
 {
-    public class ScriptedTrainControlSystem
+    public class ScriptedTrainControlSystem 
     {
         public class MonitoringDevice
         {
@@ -290,7 +290,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                 Script.NextGenericSignalFeatures = (arg1, arg2, arg3) => NextGenericSignalFeatures(arg1, arg2, arg3, Train.TrainObjectItem.TRAINOBJECTTYPE.SIGNAL);
                 Script.DoesNextNormalSignalHaveRepeaterHead = () => DoesNextNormalSignalHaveRepeaterHead();
                 Script.CurrentPostSpeedLimitMpS = () => Locomotive.Train.allowedMaxSpeedLimitMpS;
-                Script.NextPostSpeedLimitMpS = (value) => NextGenericSignalItem<float>(value, ref ItemSpeedLimit, float.MaxValue, Train.TrainObjectItem.TRAINOBJECTTYPE.SPEEDPOST);
+                Script.NextPostSpeedLimitMpS = (value) => NextGenericSignalItem<float>(value, ref ItemSpeedLimit, float.MaxValue, Train.TrainObjectItem.TRAINOBJECTTYPE.SPEEDPOST);                                
                 Script.NextPostDistanceM = (value) => NextGenericSignalItem<float>(value, ref ItemDistance, float.MaxValue, Train.TrainObjectItem.TRAINOBJECTTYPE.SPEEDPOST);
                 Script.NextTunnel = (value) =>
                 {
@@ -711,8 +711,12 @@ namespace Orts.Simulation.RollingStocks.SubSystems
             return (currentSpeedMpS - targetSpeedMpS) * (currentSpeedMpS + targetSpeedMpS) / (2 * distanceM);
         }
 
+        public float speed;
         public void Update()
         {
+            // Icik
+            Locomotive.Train.NextRouteSpeedLimit = NextGenericSignalItem<float>(0, ref ItemSpeedLimit, float.MaxValue, Train.TrainObjectItem.TRAINOBJECTTYPE.SPEEDPOST);
+
             switch (Locomotive.Train.TrainType)
             {
                 case Train.TRAINTYPE.STATIC:
@@ -841,7 +845,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
     }
 
     public class MSTSTrainControlSystem : TrainControlSystem
-    {
+    {        
         public enum MonitorState
         {
             Disabled,
@@ -1129,7 +1133,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
             SetMonitoringStatus(Status);
         }
 
-        // Provide basic functionality for ETCS DMI planning area
+        // Provide basic functionality for ETCS DMI planning area        
         private void UpdateETCSPlanning()
         {
             float maxDistanceAheadM = 0;

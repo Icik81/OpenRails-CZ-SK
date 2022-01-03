@@ -100,14 +100,15 @@ namespace Orts.Simulation.Physics
         public float TotalTrainTrainPipeLeakRate;
         public float TotalCapacityMainResBrakePipe;
         public float TotalAirLoss;
-        public bool TrainDoorsOpen;                
+        public bool TrainDoorsOpen;
+        public float NextRouteSpeedLimit;
 
         public Traveller RearTDBTraveller;               // positioned at the back of the last car in the train
         public Traveller FrontTDBTraveller;              // positioned at the front of the train by CalculatePositionOfCars
         public float Length;                             // length of train from FrontTDBTraveller to RearTDBTraveller
         public float MassKg;                             // weight of the train
         public float SpeedMpS;                           // meters per second +ve forward, -ve when backing
-        float LastSpeedMpS;                              // variable to remember last speed used for projected speed
+        public float LastSpeedMpS;                              // variable to remember last speed used for projected speed
         public SmoothedData AccelerationMpSpS = new SmoothedData(); // smoothed acceleration data
         public float ProjectedSpeedMpS;                  // projected speed
         public float LastReportedSpeed;

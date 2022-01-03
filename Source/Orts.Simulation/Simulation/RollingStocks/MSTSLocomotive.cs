@@ -587,8 +587,7 @@ namespace Orts.Simulation.RollingStocks
         public bool AIPantoChange;
         public bool AIPanto2Raise = false;
         public float PowerCurrent;
-        public float BrakeCurrent;
-
+        public float BrakeCurrent;        
 
         // Jindrich
         public bool EnableControlVoltageChange = true;
