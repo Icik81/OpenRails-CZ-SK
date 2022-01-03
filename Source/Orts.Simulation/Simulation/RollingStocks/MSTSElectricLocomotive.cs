@@ -762,21 +762,21 @@ namespace Orts.Simulation.RollingStocks
                 else CheckPowerLoss = false;
 
                 // Použije se pro text na displeji "NEDVIHAJ ZBERAČ"
-                if (PantographDown && PantographVoltageV >= 2000)
+                if (CircuitBreakerOn && PantographDown && PantographVoltageV >= 2000)
                     DontRaisePanto = true;
                 else
-                if (PantographDown || PantographVoltageV < 2000)
+                if (PantographDown && PantographVoltageV < 2000)
                     DontRaisePanto = false;
 
                 // Blokování pantografu u jednosystémových lokomotiv při vypnutém HV
-                if (!MultiSystemEngine && Simulator.GameTime > 1)
+                if (!MultiSystemEngine && (IsLeadLocomotive() || Simulator.GameTime > 1))
                 {
                     // Definice default provozního napájení lokomotivy 25kV
                     if (LocomotivePowerVoltage == 0) LocomotivePowerVoltage = 25000; //Default pro lokomotivy bez udání napětí
 
                     // Stisknutí hříbku pro přerušení napájení, vypne HV a shodí sběrače
                     if (BreakPowerButton)
-                    { 
+                    {
                         HVOff = true;
                         if (Pantographs[1].State == PantographState.Up || Pantographs[2].State == PantographState.Up)
                         {
@@ -821,13 +821,19 @@ namespace Orts.Simulation.RollingStocks
                                 MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO2", 0).ToString());
                             }
                         }
-                        PantographDown = true;
                     }
+
+                    if ((Pantographs[1].State == PantographState.Down && Pantographs[2].State == PantographState.Down)
+                        || (Pantographs[1].State == PantographState.Lowering && Pantographs[2].State == PantographState.Down)
+                        || (Pantographs[1].State == PantographState.Down && Pantographs[2].State == PantographState.Lowering))
+                       PantographDown = true;
+                    else
+                        PantographDown = false;
+
                     if (CircuitBreakerOn)
                     {
                         Pantographs[1].PantographsBlocked = false;
                         Pantographs[2].PantographsBlocked = false;
-                        PantographDown = false;
 
                         if (!EDBIndependent && Simulator.GameTimeCyklus10 == 10)
                         {
