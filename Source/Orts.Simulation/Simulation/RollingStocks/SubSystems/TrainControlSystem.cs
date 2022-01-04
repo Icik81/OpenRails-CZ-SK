@@ -711,11 +711,13 @@ namespace Orts.Simulation.RollingStocks.SubSystems
             return (currentSpeedMpS - targetSpeedMpS) * (currentSpeedMpS + targetSpeedMpS) / (2 * distanceM);
         }
 
-        public float speed;
         public void Update()
         {
             // Icik
-            Locomotive.Train.NextRouteSpeedLimit = NextGenericSignalItem<float>(0, ref ItemSpeedLimit, float.MaxValue, Train.TrainObjectItem.TRAINOBJECTTYPE.SPEEDPOST);
+            if (Locomotive == Simulator.PlayerLocomotive)
+                Locomotive.Train.NextRouteSpeedLimit = NextGenericSignalItem<float>(0, ref ItemSpeedLimit, float.MaxValue, Train.TrainObjectItem.TRAINOBJECTTYPE.SPEEDPOST);
+            else
+                Locomotive.Train.NextRouteSpeedLimit = 80 / 3.6f;
 
             switch (Locomotive.Train.TrainType)
             {
