@@ -1046,6 +1046,9 @@ namespace Orts.Simulation
                     MyPlayerTrain.StationStops[0].PlatformItem.NumPassengersWaiting = RestOfPax;
 
                 MyPlayerTrain.FillNames(MyPlayerTrain);
+                                
+                if (IsAtStation(MyPlayerTrain))
+                    MyPlayerTrain.ReverseAtStationStopTest(MyPlayerTrain);
 
                 var loco = MyPlayerTrain.LeadLocomotive as MSTSLocomotive;
                 if (loco != null)

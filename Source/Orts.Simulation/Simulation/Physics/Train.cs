@@ -677,6 +677,9 @@ namespace Orts.Simulation.Physics
 
         public Train(Simulator simulator, BinaryReader inf)
         {
+            // Icik
+            ReverseAtStation = inf.ReadBoolean();
+
             Init(simulator);            
             routedForward = new TrainRouted(this, 0);
             routedBackward = new TrainRouted(this, 1);
@@ -1024,6 +1027,9 @@ namespace Orts.Simulation.Physics
 
         public virtual void Save(BinaryWriter outf)
         {
+            // Icik
+            outf.Write(ReverseAtStation);
+
             SaveCars(outf);            
             outf.Write(Number);
             outf.Write(Name);
@@ -16205,7 +16211,10 @@ namespace Orts.Simulation.Physics
                     wagon.SignalEvent(open ? Event.DoorOpen : Event.DoorClose); // hook for sound trigger
 
                 if (!open && (wagon.BrakeSystem.LeftDoorIsOpened || wagon.BrakeSystem.RightDoorIsOpened))
+                {
                     wagon.SignalEvent(open ? Event.DoorOpen : Event.DoorClose); // hook for sound trigger
+                    ReverseAtStation = false;
+                }
 
                 if (!wagon.FreightDoors)
                 {
@@ -16229,21 +16238,38 @@ namespace Orts.Simulation.Physics
             }     
         }
 
+        bool ReverseAtStation = false;
         public void ToggleDoorsPeople(bool right, bool open, MSTSWagon wagon)
-        {
+        {            
             StationStop thisStation = StationStops[0];
             var frontIsFront = thisStation.PlatformReference == thisStation.PlatformItem.PlatformFrontUiD;
             if (open)
             {
-                if (thisStation.PlatformItem.PlatformSide[0])
+                if (ReverseAtStation)
                 {
-                    //open left doors
-                    ToggleDoorsWagon(frontIsFront, true, wagon);
+                    if (thisStation.PlatformItem.PlatformSide[1])
+                    {
+                        //open left doors
+                        ToggleDoorsWagon(frontIsFront, true, wagon);
+                    }
+                    if (thisStation.PlatformItem.PlatformSide[0])
+                    {
+                        //open right doors
+                        ToggleDoorsWagon(!frontIsFront, true, wagon);
+                    }
                 }
-                if (thisStation.PlatformItem.PlatformSide[1])
+                else
                 {
-                    //open right doors
-                    ToggleDoorsWagon(!frontIsFront, true, wagon);
+                    if (thisStation.PlatformItem.PlatformSide[0])
+                    {
+                        //open left doors
+                        ToggleDoorsWagon(frontIsFront, true, wagon);
+                    }
+                    if (thisStation.PlatformItem.PlatformSide[1])
+                    {
+                        //open right doors
+                        ToggleDoorsWagon(!frontIsFront, true, wagon);
+                    }
                 }
             }
             if (!open)
@@ -16252,6 +16278,17 @@ namespace Orts.Simulation.Physics
                 ToggleDoorsWagon(frontIsFront, false, wagon);
             }
          }
+
+        public void ReverseAtStationStopTest(Train train)
+        {
+            float distanceToReversalPoint = 100;
+ 
+            if (TCRoute.ReversalInfo[TCRoute.activeSubpath] != null && TCRoute.ReversalInfo[TCRoute.activeSubpath].Valid)
+                distanceToReversalPoint = ComputeDistanceToReversalPoint();
+
+            if (distanceToReversalPoint < 50)
+                ReverseAtStation = true;
+        }
 
 
         public bool BoardingComplete;
@@ -16271,7 +16308,7 @@ namespace Orts.Simulation.Physics
         private int numCars = 0;
 
         public void FillNames(Train train)
-        {
+        {            
             if (numCars == 0)
             {
                 numCars = train.Cars.Count;
