@@ -686,12 +686,6 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                 if (controllerPosition == ControllerPosition.Neutral)
                 {
                     Locomotive.CruiseControl.SpeedSelMode = CruiseControl.SpeedSelectorMode.Neutral;
-                    if (!Locomotive.CruiseControl.DisableZeroForceStep)
-                    {
-                        Locomotive.SelectedMaxAccelerationStep -= 0.5f;
-                        if (Locomotive.SelectedMaxAccelerationStep < 0)
-                            Locomotive.SelectedMaxAccelerationStep = 0;
-                    }
                 }
                 if (controllerPosition == ControllerPosition.Drive)
                 {
