@@ -696,7 +696,7 @@ namespace Orts.Simulation.RollingStocks
 
 
                 // Indukce z trolejového vedení pro střídavé napájení 25kV
-                if (RouteVoltageV == 25000 && LocomotivePowerVoltage != 3000 
+                if (RouteVoltageV == 25000 && LocomotivePowerVoltage != 3000
                     && (Pantographs[1].State == PantographState.Down || Pantographs[1].State == PantographState.Raising || Pantographs[1].State == PantographState.Lowering)
                     && (Pantographs[2].State == PantographState.Down || Pantographs[2].State == PantographState.Raising || Pantographs[2].State == PantographState.Lowering))
                 {
@@ -705,7 +705,7 @@ namespace Orts.Simulation.RollingStocks
                     TInduktion = 1;
                     if (PantographVoltageV < Induktion * 1000)
                         PantographVoltageV += 10;
-                }                
+                }
                 if (RouteVoltageV != 25000)
                     TInduktion = 0;
 
@@ -720,11 +720,11 @@ namespace Orts.Simulation.RollingStocks
                         TimeCriticalVoltage = 0;
                     }
                     if (PowerSupply.PantographVoltageV > MaxLineVoltage0)
-                        Step1 = Step1 - elapsedClockSeconds;                    
+                        Step1 = Step1 - elapsedClockSeconds;
                     if (Step1 < 0) Step1 = 0;
-                    
-                    if (Step1 == 0 && PowerSupply.PantographVoltageV > MaxLineVoltage0)
-                        Simulator.VoltageSprung = 1.0f;
+
+                    if (Simulator.GameSpeed > 1 || (Step1 == 0 && PowerSupply.PantographVoltageV > MaxLineVoltage0))
+                        Simulator.VoltageSprung = 1.0f;                    
                 }
 
                 // Kritická mez napětí pro podnapěťovku
