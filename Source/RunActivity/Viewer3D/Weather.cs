@@ -263,9 +263,9 @@ namespace Orts.Viewer3D
             // These values are defaults only; subsequent changes to the weather via debugging only change the components (weather, overcastFactor and fogDistance) individually.
             switch (Viewer.Simulator.WeatherType)
             {
-                case Orts.Formats.Msts.WeatherType.Clear: Weather.OvercastFactor = 0.05f; Weather.FogDistance = 20000; Weather.PricipitationIntensityPPSPM2 = 0f; break;
-                case Orts.Formats.Msts.WeatherType.Rain: Weather.OvercastFactor = 0.7f; Weather.FogDistance = 1000; Weather.PricipitationIntensityPPSPM2 = 0.7500f; break;
-                case Orts.Formats.Msts.WeatherType.Snow: Weather.OvercastFactor = 0.6f; Weather.FogDistance = 500; Weather.PricipitationIntensityPPSPM2 = 0.7500f; break;
+                case Orts.Formats.Msts.WeatherType.Clear: Weather.OvercastFactor = 0.05f; Weather.FogDistance = 20000; Weather.PrecipitationLiquidity = 1; Weather.PricipitationIntensityPPSPM2 = 0f; break;
+                case Orts.Formats.Msts.WeatherType.Rain: Weather.OvercastFactor = 0.7f; Weather.FogDistance = 1000; Weather.PrecipitationLiquidity = 1; Weather.PricipitationIntensityPPSPM2 = 0.7500f; break;
+                case Orts.Formats.Msts.WeatherType.Snow: Weather.OvercastFactor = 0.6f; Weather.FogDistance = 500; Weather.PrecipitationLiquidity = 0; Weather.PricipitationIntensityPPSPM2 = 0.7500f; break;
             }
         }
 
@@ -274,9 +274,9 @@ namespace Orts.Viewer3D
             Viewer.SoundProcess.RemoveSoundSources(this);
             switch (Viewer.Simulator.WeatherType)
             {
-                case Orts.Formats.Msts.WeatherType.Clear: Weather.PrecipitationLiquidity = 1; /*Weather.PricipitationIntensityPPSPM2 = 0; /*Viewer.SoundProcess.AddSoundSources(this, ClearSound);*/ break;
-                case Orts.Formats.Msts.WeatherType.Rain: Weather.PrecipitationLiquidity = 1; /*Weather.PricipitationIntensityPPSPM2 = 0.7500f;*/ Viewer.SoundProcess.AddSoundSources(this, RainSound); break;
-                case Orts.Formats.Msts.WeatherType.Snow: Weather.PrecipitationLiquidity = 0; /*Weather.PricipitationIntensityPPSPM2 = 0.7500f;*/ Viewer.SoundProcess.AddSoundSources(this, SnowSound); break;
+                case Orts.Formats.Msts.WeatherType.Clear: /*Weather.PrecipitationLiquidity = 1; /*Weather.PricipitationIntensityPPSPM2 = 0; /*Viewer.SoundProcess.AddSoundSources(this, ClearSound);*/ break;
+                case Orts.Formats.Msts.WeatherType.Rain: /*Weather.PrecipitationLiquidity = 1; /*Weather.PricipitationIntensityPPSPM2 = 0.7500f;*/ Viewer.SoundProcess.AddSoundSources(this, RainSound); break;
+                case Orts.Formats.Msts.WeatherType.Snow: /*Weather.PrecipitationLiquidity = 0; /*Weather.PricipitationIntensityPPSPM2 = 0.7500f;*/ Viewer.SoundProcess.AddSoundSources(this, SnowSound); break;
             }
 
             // Icik
@@ -628,6 +628,7 @@ namespace Orts.Viewer3D
                         case Orts.Formats.Msts.WeatherType.Clear:
                             Viewer.Simulator.WeatherType = Orts.Formats.Msts.WeatherType.Rain;
                             // Icik
+                            Weather.PrecipitationLiquidity = 1;
                             Weather.PricipitationIntensityPPSPM2 = 0.75f;
                             Weather.OvercastFactor = 0.75f; 
                             Weather.FogDistance = 5000;
@@ -635,6 +636,7 @@ namespace Orts.Viewer3D
                         case Orts.Formats.Msts.WeatherType.Rain:
                             Viewer.Simulator.WeatherType = Orts.Formats.Msts.WeatherType.Snow;
                             // Icik
+                            Weather.PrecipitationLiquidity = 0;
                             Weather.PricipitationIntensityPPSPM2 = 0.75f;
                             Weather.OvercastFactor = 0.85f;
                             Weather.FogDistance = 7500;
@@ -642,6 +644,7 @@ namespace Orts.Viewer3D
                         case Orts.Formats.Msts.WeatherType.Snow:
                             Viewer.Simulator.WeatherType = Orts.Formats.Msts.WeatherType.Clear;
                             // Icik
+                            Weather.PrecipitationLiquidity = 1;
                             Weather.PricipitationIntensityPPSPM2 = 0;
                             Weather.OvercastFactor = 0.0f;
                             Weather.FogDistance = 20000;
