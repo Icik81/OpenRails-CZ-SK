@@ -6367,6 +6367,10 @@ namespace Orts.Simulation.RollingStocks
 
         public void StopDynamicBrakeIncrease()
         {
+            StopDynamicBrakeIncrease(false);
+        }
+        public void StopDynamicBrakeIncrease(bool byKeyBoard)
+        {
             AlerterReset(TCSEvent.DynamicBrakeChanged);
             if (MultiPositionControllers != null)
             {
@@ -6374,7 +6378,7 @@ namespace Orts.Simulation.RollingStocks
                 {
                     if (mpc.controllerBinding == MultiPositionController.ControllerBinding.DynamicBrake)
                     {
-                        if (mpc.StateChanged)
+                        if (mpc.StateChanged && byKeyBoard)
                         {
                             mpc.StateChanged = false;
                             mpc.DoMovement(MultiPositionController.Movement.Neutral);
@@ -6539,7 +6543,7 @@ namespace Orts.Simulation.RollingStocks
             }
         }
 
-        protected bool CanUseDynamicBrake()
+        public bool CanUseDynamicBrake()
         {
             return (DynamicBrakeController != null
                 && ThrottlePercent == 0);

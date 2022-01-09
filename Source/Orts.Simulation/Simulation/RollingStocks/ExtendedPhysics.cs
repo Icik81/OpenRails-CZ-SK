@@ -63,6 +63,7 @@ namespace Orts.Simulation.RollingStocks
     {
         public List<Undercarriage> Undercarriages = new List<Undercarriage>();
         public MSTSLocomotive Locomotive = null;
+        public ExtendedDynamicBrake extendedDynamicBrake = null;
         public int NumMotors = 0;
         public int NumAxles = 0;
         public float StarorsCurrent = 0;
@@ -254,6 +255,9 @@ namespace Orts.Simulation.RollingStocks
 
         public void Update(float elapsedClockSeconds)
         {
+            if (extendedDynamicBrake == null)
+                extendedDynamicBrake = new ExtendedDynamicBrake(Locomotive);
+            extendedDynamicBrake.Update(elapsedClockSeconds);
             if (!Locomotive.IsLeadLocomotive())
             {
                 if (Locomotive.CruiseControl != null)
@@ -294,7 +298,6 @@ namespace Orts.Simulation.RollingStocks
             if (Locomotive.DynamicBrakePercent < 0.7 && Locomotive.ControllerVolts < 0)
             {
                 Locomotive.DynamicBrakePercent = 0;
-                Locomotive.DynamicBrakeChangeActiveState(false);
                 Locomotive.ControllerVolts = 0;
             }
             if (UseControllerVolts && Locomotive.ControllerVolts < 0)
@@ -745,6 +748,87 @@ namespace Orts.Simulation.RollingStocks
         public RotorCurrentTable()
         {
 
+        }
+    }
+
+
+    public class ExtendedDynamicBrake
+    {
+        public MSTSLocomotive Locomotive = null;
+        public float TimeToEngage = 0;
+        public float MotiveForce = 0;
+        public float Percent = 0;
+
+        public ExtendedDynamicBrake(MSTSLocomotive loco)
+        {
+            Locomotive = loco;
+        }
+
+        public bool Increasing = false;
+        public bool Decreasing = false;
+        protected float timeToActivate = 0;
+        public void Update(float elapsedClockSeconds)
+        {
+            return;
+            if (Increasing)
+            {
+                if (Percent == 0 && TimeToEngage > 0)
+                {
+                    timeToActivate += elapsedClockSeconds;
+                    if (timeToActivate < TimeToEngage)
+                        return;
+                }
+                float step = 100 / Locomotive.DynamicBrakeFullRangeIncreaseTimeSeconds;
+                step *= elapsedClockSeconds;
+                Percent += step;
+                if (Percent > 100)
+                    Percent = 100;
+                Locomotive.Simulator.Confirmer.Information("Dynamická brzda " + Math.Round(Percent, 0).ToString());
+            }
+            if (Decreasing)
+            {
+                float step = 100 / Locomotive.DynamicBrakeFullRangeDecreaseTimeSeconds;
+                step *= elapsedClockSeconds;
+                Percent -= step;
+                if (Percent < 0)
+                    Percent = 0;
+                Locomotive.Simulator.Confirmer.Information("Dynamická brzda " + Math.Round(Percent, 0).ToString());
+            }
+
+            // compute EDB force
+            if (Locomotive.RouteVoltageV == 3000)
+            {
+                MotiveForce = Locomotive.DynamicBrakeForceCurvesDC.Get(Percent / 100, Locomotive.extendedPhysics.AverageAxleSpeedMpS);
+            }
+            if (Locomotive.RouteVoltageV == 25000)
+            {
+                MotiveForce = Locomotive.DynamicBrakeForceCurvesAC.Get(Percent / 100, Locomotive.extendedPhysics.AverageAxleSpeedMpS);
+            }
+
+            if (Locomotive.ThrottlePercent == 0)
+            {
+                Locomotive.ControllerVolts = -(Percent / 10);
+            }
+        }
+
+        public void StartIncrease()
+        {
+            Increasing = true;
+        }
+
+        public void StopIncrease()
+        {
+            Increasing = false;
+        }
+
+        public void StartDecrease()
+        {
+            Decreasing = true;
+        }
+
+        public void StopDecrease()
+        {
+            Decreasing = false;
         }
     }
 }

@@ -717,9 +717,15 @@ namespace Orts.Simulation.RollingStocks.SubSystems
         protected float neutralNotchValue = 0;
         protected float releaseNotchValue = 0;
         public bool arrIsBraking = false;
+        protected bool wasDynamicBrakeUsed = false;
+        protected float timeFromDynamicBrakeStateChanged = 0;
 
         protected virtual void UpdateMotiveForce(float elapsedClockSeconds, float AbsWheelSpeedMps)
         {
+            if (Locomotive.DynamicBrakePercent > 0)
+            {
+                wasDynamicBrakeUsed = true;
+            }
             if (SkipThrottleDisplayExternal && SpeedRegMode == SpeedRegulatorMode.Auto)
             {
                 SkipThrottleDisplay = true;
@@ -800,9 +806,24 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                 Locomotive.TrainBrakeController.TrainBrakeControllerState == ORTS.Scripting.Api.ControllerState.Neutral || arrIsBraking)
                 TrainBrakePriority = false;
 
+            if (DynamicBrakePriority && Locomotive.ControllerVolts > 0)
+                Locomotive.ThrottlePercent = Locomotive.ControllerVolts = controllerVolts = 0;
             if (Locomotive.DynamicBrakePercent < 0)
             {
-                DynamicBrakePriority = false;
+                bool braking = false;
+                if (Locomotive.MultiPositionControllers != null)
+                {
+                    foreach (Controllers.MultiPositionController mpc in Locomotive.MultiPositionControllers)
+                    {
+                        if (mpc.controllerBinding == Controllers.MultiPositionController.ControllerBinding.DynamicBrake)
+                        {
+                            if (mpc.controllerPosition == Controllers.MultiPositionController.ControllerPosition.DynamicBrakeIncreaseWithPriority)
+                                braking = true;
+                        }
+                    }
+                }
+                if (!braking)
+                    DynamicBrakePriority = false;
             }
             if (TrainBrakePriority || DynamicBrakePriority)
             {
@@ -898,6 +919,31 @@ namespace Orts.Simulation.RollingStocks.SubSystems
             else if (Bar.FromPSI(Locomotive.BrakeSystem.BrakeLine1PressurePSI) > 4.7)
             {
                 canAddForce = true;
+            }
+
+            if (wasDynamicBrakeUsed && Locomotive.DynamicBrakePercent < 0.1f)
+            {
+                canAddForce = false;
+                if (SpeedRegulatorOptions.Contains("selectorstart") && SpeedSelMode == SpeedSelectorMode.Start)
+                {
+                    timeFromDynamicBrakeStateChanged += elapsedClockSeconds;
+                    if (timeFromDynamicBrakeStateChanged > Locomotive.DynamicBrakeDelayS)
+                    {
+                        canAddForce = true;
+                        timeFromDynamicBrakeStateChanged = 0;
+                        wasDynamicBrakeUsed = false;
+                    }
+                }
+                else if (!SpeedRegulatorOptions.Contains("selectorstart"))
+                {
+                    timeFromDynamicBrakeStateChanged += elapsedClockSeconds;
+                    if (timeFromDynamicBrakeStateChanged > Locomotive.DynamicBrakeDelayS)
+                    {
+                        canAddForce = true;
+                        timeFromDynamicBrakeStateChanged = 0;
+                        wasDynamicBrakeUsed = false;
+                    }
+                }
             }
 
             if (SpeedRegulatorOptions.Contains("engageforceonnonzerospeed") && SelectedSpeedMpS > 0)
@@ -1224,7 +1270,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                     }
                 }
 
-                if ((wheelSpeedMpS > SafeSpeedForAutomaticOperationMpS || SpeedSelMode == SpeedSelectorMode.Start || SpeedRegulatorOptions.Contains("startfromzero")) && (SpeedSelMode != SpeedSelectorMode.Neutral && SpeedSelMode != SpeedSelectorMode.Parking))
+                if ((wheelSpeedMpS > SafeSpeedForAutomaticOperationMpS || SpeedSelMode == SpeedSelectorMode.Start || SpeedRegulatorOptions.Contains("startfromzero")) && (SpeedSelMode != SpeedSelectorMode.Neutral && SpeedSelMode != SpeedSelectorMode.Parking) && canAddForce)
                 {
                     float delta = 0;
 
@@ -1775,10 +1821,6 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                     if (maxForceN > 0) maxForceN = 0;
                     if (Locomotive.ThrottlePercent > 0 && !UseThrottle) Locomotive.SetThrottlePercent(0);
                     Locomotive.ControllerVolts = Locomotive.Train.ControllerVolts = 0;
-                    if (Locomotive.DynamicBrakePercent > -1 && !PreciseSpeedControl)
-                    {
-                        Locomotive.DynamicBrakeChangeActiveState(false);
-                    }
                 }
 
                 if (Locomotive.Mirel != null)

@@ -132,6 +132,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
         }
 
         protected bool dynBrakeEngaged = false;
+        protected bool dynBrakeSetup = false;
+
         public void Update(float elapsedClockSeconds)
         {
             if (!initialized)
@@ -153,7 +155,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
             if (controllerPosition == ControllerPosition.DynamicBrakeIncreaseWithPriority)
             {
                 dynBrakeEngaged = true;
-                bool skipBraking = false;
+                bool skipBraking = false; 
                 if (haveCruiseControl)
                 {
                     if (Locomotive.CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.Manual)
@@ -163,22 +165,31 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                             float pct = Locomotive.ThrottlePercent - 0.3f;
                             if (pct < 0)
                                 pct = 0;
-                            Locomotive.ThrottleController.SetPercent(pct);
+                            Locomotive.ThrottlePercent = Locomotive.ControllerVolts = Locomotive.CruiseControl.controllerVolts = 0;
                             skipBraking = true;
                         }
                     }
-                    else
-                    {
-                        Locomotive.CruiseControl.DynamicBrakePriority = true;
-                        if (Locomotive.TractiveForceN > 0)
-                            skipBraking = true;
-                    }
+                    Locomotive.CruiseControl.DynamicBrakePriority = true;
+                    if (Locomotive.TractiveForceN > 0)
+                        skipBraking = true;
                 }
                 if (!skipBraking)
                 {
-                    if (Locomotive.DynamicBrakePercent < 0)
-                        Locomotive.DynamicBrakeChangeActiveState(true);
-                    Locomotive.DynamicBrakeController.StartIncrease();
+                    if (Locomotive.CanUseDynamicBrake())
+                    {
+                        if (Locomotive.DynamicBrakePercent < 0)
+                        {
+                            Locomotive.DynamicBrakeChangeActiveState(true);
+                        }
+                        else if (Locomotive.DynamicBrake)
+                        {
+                            Locomotive.SignalEvent(Common.Event.DynamicBrakeChange);
+
+                            float step = 100 / Locomotive.DynamicBrakeFullRangeIncreaseTimeSeconds;
+                            step *= elapsedClockSeconds;
+                            Locomotive.SetDynamicBrakePercent(Locomotive.DynamicBrakePercent + step);
+                        }
+                    }
                 }
             }
             else if (haveCruiseControl)
@@ -216,7 +227,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
             ReloadPositions();
 
             if (haveCruiseControl)
-                if (Locomotive.CruiseControl.DynamicBrakePriority && Locomotive.DynamicBrakePercent > -1) return;
+                if (Locomotive.CruiseControl.DynamicBrakePriority && Locomotive.DynamicBrakePercent > -1 && controllerBinding == ControllerBinding.DynamicBrake) return;
 
             if (Locomotive.AbsSpeedMpS > 0)
             {
@@ -481,9 +492,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                         }
                     }
                 }
-                if (controllerPosition == ControllerPosition.Drive || controllerPosition == ControllerPosition.ThrottleHold)
+                if ((controllerPosition == ControllerPosition.Drive || controllerPosition == ControllerPosition.ThrottleHold) && Locomotive.ThrottlePercent > 0)
                 {
-                    if (Locomotive.DynamicBrakePercent < 2)
+                    if (Locomotive.DynamicBrakePercent < 2 && Locomotive.DynamicBrakePercent > -1)
                     {
                         Locomotive.SetDynamicBrakePercent(-1);
                     }
