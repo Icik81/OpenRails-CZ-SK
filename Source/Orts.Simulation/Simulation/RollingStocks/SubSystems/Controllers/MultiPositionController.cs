@@ -162,6 +162,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                     {
                         if (Locomotive.ThrottlePercent > 0)
                         {
+                            Random rnd = new Random();
+                            int test = rnd.Next(0, 2);
+                            if (test == 0)
+                                Locomotive.HVOff = true;
                             float pct = Locomotive.ThrottlePercent - 0.3f;
                             if (pct < 0)
                                 pct = 0;
@@ -322,7 +326,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
 
             if (!haveCruiseControl || !ccAutoMode)
             {
-                if (controllerPosition == ControllerPosition.ThrottleIncrease)
+                if (controllerPosition == ControllerPosition.ThrottleIncrease && Locomotive.Direction != ORTS.Common.Direction.N)
                 {
                     if (Locomotive.extendedPhysics != null)
                     {
@@ -346,7 +350,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                         }
                     }
                 }
-                if (controllerPosition == ControllerPosition.ThrottleIncreaseFast)
+                if (controllerPosition == ControllerPosition.ThrottleIncreaseFast && Locomotive.Direction != ORTS.Common.Direction.N)
                 {
                     if (Locomotive.extendedPhysics != null)
                     {

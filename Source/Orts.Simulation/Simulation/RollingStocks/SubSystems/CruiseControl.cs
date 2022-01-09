@@ -717,12 +717,13 @@ namespace Orts.Simulation.RollingStocks.SubSystems
         protected float neutralNotchValue = 0;
         protected float releaseNotchValue = 0;
         public bool arrIsBraking = false;
-        protected bool wasDynamicBrakeUsed = false;
+        protected bool wasDynamicBrakeUsed = true;
         protected float timeFromDynamicBrakeStateChanged = 0;
+        protected bool doNotForceDynamicBrake = false;
 
         protected virtual void UpdateMotiveForce(float elapsedClockSeconds, float AbsWheelSpeedMps)
         {
-            if (Locomotive.DynamicBrakePercent > 0)
+            if (Locomotive.DynamicBrakePercent > 0 && !doNotForceDynamicBrake)
             {
                 wasDynamicBrakeUsed = true;
             }
@@ -924,7 +925,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
             if (wasDynamicBrakeUsed && Locomotive.DynamicBrakePercent < 0.1f)
             {
                 canAddForce = false;
-                if (SpeedRegulatorOptions.Contains("selectorstart") && SpeedSelMode == SpeedSelectorMode.Start)
+                if ((SpeedRegulatorOptions.Contains("selectorstart") && SpeedSelMode == SpeedSelectorMode.Start) || doNotForceDynamicBrake)
                 {
                     timeFromDynamicBrakeStateChanged += elapsedClockSeconds;
                     if (timeFromDynamicBrakeStateChanged > Locomotive.DynamicBrakeDelayS)
@@ -932,6 +933,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                         canAddForce = true;
                         timeFromDynamicBrakeStateChanged = 0;
                         wasDynamicBrakeUsed = false;
+                        doNotForceDynamicBrake = false;
                     }
                 }
                 else if (!SpeedRegulatorOptions.Contains("selectorstart"))
@@ -945,6 +947,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                     }
                 }
             }
+
 
             if (SpeedRegulatorOptions.Contains("engageforceonnonzerospeed") && SelectedSpeedMpS > 0)
             {
@@ -1083,6 +1086,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
 
                     if (delta < 0) // start braking
                     {
+                        doNotForceDynamicBrake = true;
                         if (controllerVolts > 0)
                         {
                             float step = 100 / Locomotive.ThrottleFullRangeDecreaseTimeSeconds;
@@ -1356,6 +1360,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                     }
                     else if (delta < 0) // start braking
                     {
+                        doNotForceDynamicBrake = true;
                         if (controllerVolts > 0)
                         {
                             float step = 100 / Locomotive.ThrottleFullRangeDecreaseTimeSeconds;
