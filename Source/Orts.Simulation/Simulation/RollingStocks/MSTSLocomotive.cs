@@ -2490,6 +2490,9 @@ namespace Orts.Simulation.RollingStocks
                 PowerCurrent = Math.Abs(FilteredMotiveForceN) / MaxForceN * MaxCurrentA;
                 BrakeCurrent = Math.Abs(DynamicBrakeForceN) / MaxForceN * MaxCurrentA;
 
+                if (float.IsInfinity(PowerCurrent) || float.IsNaN(BrakeCurrent))
+                    return;
+
                 if (this is MSTSElectricLocomotive && DynamicBrakeForceN == 0) // Stanovení kritického proudu pro elektrické lokomotivy při výkonu
                     if (PowerCurrent > MaxCurrentPower)
                         OverCurrent = true;
