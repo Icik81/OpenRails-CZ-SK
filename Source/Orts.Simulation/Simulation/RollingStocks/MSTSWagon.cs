@@ -911,7 +911,7 @@ namespace Orts.Simulation.RollingStocks
             ORTSDavisSetUp();
             ORTSWagonResistanceTypes();
                         
-            IsDavisFriction = DavisAN != 0 && DavisBNSpM != 0 && DavisCNSSpMM != 0;
+            //IsDavisFriction = DavisAN != 0 && DavisBNSpM != 0 && DavisCNSSpMM != 0;
 
             if (BrakeSystem == null)
                 BrakeSystem = MSTSBrakeSystem.Create(CarBrakeSystemType, this);
@@ -928,8 +928,8 @@ namespace Orts.Simulation.RollingStocks
             if (MergeSpeedMpS == 0)
                 MergeSpeedMpS = 0.31f;
           
-            if (DavisBNSpM / G0 > 0.00002f) // Pokud jsou zadány nesprávné Davis hodnoty, tak je resetuje do 0            
-                DavisAN = DavisBNSpM = DavisCNSSpMM = 0;
+            //if (DavisBNSpM / G0 > 0.00002f) // Pokud jsou zadány nesprávné Davis hodnoty, tak je resetuje do 0            
+            //    DavisAN = DavisBNSpM = DavisCNSSpMM = 0;
             
             switch (WagonNumAxles) // Definice Davis-default hodnot, pokud nejsou přesně definovány uživatelem 
             {
@@ -1111,6 +1111,11 @@ namespace Orts.Simulation.RollingStocks
                 }
             }
             CarLengthM = CarLengthM0;
+
+            // Hack
+            DavisAN = DavisBNSpM = DavisCNSSpMM = 0;
+            IsDavisFriction = true;
+
 
             Pantographs.Initialize();
 
