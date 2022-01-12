@@ -2507,6 +2507,8 @@ namespace Orts.Simulation.RollingStocks
                     if (BrakeCurrent > MaxCurrentBrake)
                         OverCurrent = true;
 
+                //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("MaxCurrentPower: " + MaxCurrentPower + "   PowerCurrent: " + PowerCurrent + "      MaxCurrentBrake: " + MaxCurrentBrake + "   BrakeCurrent: " + BrakeCurrent));
+
                 if (OverCurrent)
                 {
                     if (DoesPowerLossResetControls || DoesPowerLossResetControls2)

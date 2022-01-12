@@ -897,7 +897,7 @@ namespace Orts.Simulation.RollingStocks
             if (!BrakeSystem.BrakeCarHasStatus && WagonType != WagonTypes.Engine && WagonType != WagonTypes.Passenger && car != Train.Cars[Train.Cars.Count - 1])
             {                
                 BrakeSystem.BrakeCarHasStatus = true;
-                switch (Simulator.Random.Next(0, 100))
+                switch (Simulator.Random.Next(0, 150))
                 {                    
                     case 50:
                         BrakeSystem.CarHasAirStuckBrake_1 = true; // Nejde odbrzdit
