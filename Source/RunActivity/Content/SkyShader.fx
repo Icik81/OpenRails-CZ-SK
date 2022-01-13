@@ -187,14 +187,14 @@ float4 PSSky(VERTEX_OUTPUT In) : COLOR
 	
 	// Sun glow
 	// Coefficients selected by the author to achieve the desired appearance - fot limits the effect
-	skyColor += angleRcp * Fog.y;
+	skyColor += angleRcp * Fog.y * 0.5;
 	
 	// increase orange at sunset - fog limits the effect
-	if (LightVector.x < 0)
-	{
-		skyColor.r += SkyColor.z * angleRcp * Fog.z * 0.000001;
-		skyColor.g += skyColor.r * Fog.w * 0.000001;
-	}
+	//if (LightVector.x < 0)
+	//{
+	//	skyColor.r += SkyColor.z * angleRcp * Fog.z * 0.000001;
+	//	skyColor.g += skyColor.r * Fog.w * 0.000001;
+	//}
 	
 	// Keep alpha opague
 	skyColor.a = 1.0;
