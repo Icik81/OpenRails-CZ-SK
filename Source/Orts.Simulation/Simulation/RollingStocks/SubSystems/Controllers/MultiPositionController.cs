@@ -312,6 +312,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                         {
                             Locomotive.SetTrainBrakePercent(notch.Value * 100);
                         }
+                        if (Locomotive.CruiseControl != null)
+                            Locomotive.CruiseControl.TrainBrakePriority = true;
                     }
                     if (controllerPosition == ControllerPosition.TrainBrakesControllerEmergencyStart)
                     {
@@ -631,6 +633,14 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
             }
             else if (haveCruiseControl && ccAutoMode)
             {
+                if (controllerBinding == ControllerBinding.TrainBrake)
+                    Simulator.Confirmer.MSG(controllerPosition.ToString());
+                if (controllerPosition == ControllerPosition.TrainBrakesControllerApplyStart)
+                {
+                    if (Locomotive.CruiseControl != null)
+                        Locomotive.CruiseControl.TrainBrakePriority = true;
+                }
+
                 if (Locomotive.CruiseControl.CruiseControlLogic == CruiseControl.ControllerCruiseControlLogic.SpeedOnly)
                 {
                     if (controllerPosition == ControllerPosition.ThrottleIncrease)
@@ -772,11 +782,15 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                         Locomotive.SetDynamicBrakePercent(Locomotive.DynamicBrakePercent + 2f);
                     }
                 }
+
                 if (controllerPosition == ControllerPosition.TrainBrakeIncrease)
                 {
                     isBraking = true;
                     previousDriveModeWasAddPower = false;
-                    Locomotive.CruiseControl.SpeedSelMode = CruiseControl.SpeedSelectorMode.Neutral;
+                    if (Locomotive.CruiseControl != null)
+                    {
+                        Locomotive.CruiseControl.TrainBrakePriority = true;
+                    }
                     if (CanControlTrainBrake)
                     {
                         if (Locomotive.TrainBrakeController.GetStatus().ToLower() != "apply")
@@ -900,7 +914,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
 
         }
 
-        protected void ReloadPositions()
+        public void ReloadPositions()
         {
             if (noKeyPressed)
             {
@@ -1085,7 +1099,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
             messageDisplayed = true;
         }
 
-        protected void CheckNeutralPosition()
+        public void CheckNeutralPosition()
         {
             bool setNext = false;
             String previous = "";

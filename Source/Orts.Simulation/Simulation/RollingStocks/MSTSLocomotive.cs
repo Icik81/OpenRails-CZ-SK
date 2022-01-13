@@ -611,6 +611,7 @@ namespace Orts.Simulation.RollingStocks
         public float ControllerVolts;
         public float ThrottleFullRangeIncreaseTimeSeconds = 3;
         public float ThrottleFullRangeDecreaseTimeSeconds = 3;
+        public float ThrottleFullRangeDecreaseTimeSecondsFast = 2;
         public float DynamicBrakeFullRangeIncreaseTimeSeconds = 3;
         public float DynamicBrakeFullRangeDecreaseTimeSeconds = 3;
         public float MaxControllerVolts = 10;
@@ -1231,6 +1232,7 @@ namespace Orts.Simulation.RollingStocks
                 case "engine(batterydefaultoff": Battery = !stf.ReadBoolBlock(false); break;
                 case "engine(throttlefullrangeincreasetimeseconds": ThrottleFullRangeIncreaseTimeSeconds = stf.ReadFloatBlock(STFReader.UNITS.Any, 5); break;
                 case "engine(throttlefullrangedecreasetimeseconds": ThrottleFullRangeDecreaseTimeSeconds = stf.ReadFloatBlock(STFReader.UNITS.Any, 5); break;
+                case "engine(throttlefullrangedecreasetimesecondsfast": ThrottleFullRangeDecreaseTimeSecondsFast = stf.ReadFloatBlock(STFReader.UNITS.Any, 2); break;
                 case "engine(dynamicbrakefullrangeincreasetimeseconds": DynamicBrakeFullRangeIncreaseTimeSeconds = stf.ReadFloatBlock(STFReader.UNITS.Any, 5); break;
                 case "engine(dynamicbrakefullrangedecreasetimeseconds": DynamicBrakeFullRangeDecreaseTimeSeconds = stf.ReadFloatBlock(STFReader.UNITS.Any, 5); break;
                 case "engine(acceleratingtobrakingchangetime": AcceleratingToBrakingChangeTime = stf.ReadFloatBlock(STFReader.UNITS.Any, 2); break;
@@ -1628,14 +1630,6 @@ namespace Orts.Simulation.RollingStocks
             if (extendedPhysics != null)
                 extendedPhysics.Save(outf);
             Mirel.Save(outf);
-            if (MultiPositionControllers != null)
-            {
-                if (MultiPositionControllers.Count > 0)
-                {
-                    foreach (MultiPositionController mpc in MultiPositionControllers)
-                        mpc.Save(outf);
-                }
-            }
             outf.Write(ControllerVolts);
         }
 
@@ -1735,14 +1729,6 @@ namespace Orts.Simulation.RollingStocks
                 extendedPhysics.Restore(inf);
             }
             Mirel.Restore(inf);
-            if (MultiPositionControllers != null)
-            {
-                if (MultiPositionControllers.Count > 0)
-                {
-                    foreach (MultiPositionController mpc in MultiPositionControllers)
-                        mpc.Restore(inf);
-                }
-            }
             ControllerVolts = inf.ReadSingle();
         }
 
@@ -3478,15 +3464,31 @@ namespace Orts.Simulation.RollingStocks
                             skidSpeedDegratation -= 0.05f; // původně 0.01
                         }
                     }
-                    if (extendedPhysics != null)
+
+                    if (wasRestored && IsPlayerTrain && MultiPositionControllers != null && !Simulator.Paused)
+                    {
+                        foreach (MultiPositionController mpc in MultiPositionControllers)
+                        {
+                            if (mpc.controllerBinding == MultiPositionController.ControllerBinding.TrainBrake)
+                            {
+                                mpc.DoMovement(MultiPositionController.Movement.Aft);
+                                mpc.DoMovement(MultiPositionController.Movement.Neutral);
+                                mpc.CheckNeutralPosition();
+                                mpc.ReloadPositions();
+                            }
+                        }
+                    }
+
+                    if (extendedPhysics != null && !Simulator.Paused)
                     {
                         if (extendedPhysics.OverridenControllerVolts > ControllerVolts && ControllerVolts == 0 && wasRestored)
                         {
-                            wasRestored = false;
                             ControllerVolts = extendedPhysics.OverridenControllerVolts;
                         }
                         extendedPhysics.OverridenControllerVolts = ControllerVolts;
                     }
+                    if (wasRestored && !Simulator.Paused)
+                        wasRestored = false;
                     if (AntiWheelSpinEquipped)
                     {
                         if (extendedPhysics == null && skidSpeedDegratation > 0)

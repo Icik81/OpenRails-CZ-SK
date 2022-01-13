@@ -720,9 +720,12 @@ namespace Orts.Simulation.RollingStocks.SubSystems
         protected bool wasDynamicBrakeUsed = true;
         protected float timeFromDynamicBrakeStateChanged = 0;
         protected bool doNotForceDynamicBrake = false;
+        protected bool wasTrainBrakeUsed = false;
 
         protected virtual void UpdateMotiveForce(float elapsedClockSeconds, float AbsWheelSpeedMps)
         {
+            if (TrainBrakePriority)
+                wasTrainBrakeUsed = true;
             if (Locomotive.DynamicBrakePercent > 0 && !doNotForceDynamicBrake)
             {
                 wasDynamicBrakeUsed = true;
@@ -794,21 +797,20 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                 newThrotte = percentComplete;
             }
 
-            int count = 0;
-            /*TrainElevation = 0;
-            foreach (TrainCar tc in Locomotive.Train.Cars)
-            {
-                count++;
-                TrainElevation += tc.Flipped ? tc.CurrentElevationPercent : -tc.CurrentElevationPercent;
-            }
-            TrainElevation = TrainElevation / count;*/
-
             if (Locomotive.TrainBrakeController.TrainBrakeControllerState == ORTS.Scripting.Api.ControllerState.Release ||
                 Locomotive.TrainBrakeController.TrainBrakeControllerState == ORTS.Scripting.Api.ControllerState.Neutral || arrIsBraking)
                 TrainBrakePriority = false;
 
             if (DynamicBrakePriority && Locomotive.ControllerVolts > 0)
-                Locomotive.ThrottlePercent = Locomotive.ControllerVolts = controllerVolts = 0;
+            {
+                float step = 100 / Locomotive.ThrottleFullRangeDecreaseTimeSecondsFast;
+
+                step *= elapsedClockSeconds;
+                controllerVolts -= step;
+                if (controllerVolts < 0) controllerVolts = 0;
+                if (controllerVolts > 0 && controllerVolts < 0.1) controllerVolts = 0;
+                Locomotive.ThrottlePercent = Locomotive.ControllerVolts = controllerVolts;
+            }
             if (Locomotive.DynamicBrakePercent < 0)
             {
                 bool braking = false;
@@ -864,7 +866,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                 Locomotive.SetThrottlePercent(0);
             }
             if (WasBraking)
-                if (SpeedSelMode == SpeedSelectorMode.Start)
+                if (SpeedSelMode == SpeedSelectorMode.Start || SpeedSelMode == SpeedSelectorMode.On)
                     WasBraking = false;
             if (ResetForceAfterAnyBraking && WasBraking && (Locomotive.SelectedMaxAccelerationStep > 0 || SelectedMaxAccelerationPercent > 0) && !DynamicBrakePriority)
             {
@@ -925,7 +927,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
             if (wasDynamicBrakeUsed && Locomotive.DynamicBrakePercent < 0.1f)
             {
                 canAddForce = false;
-                if ((SpeedRegulatorOptions.Contains("selectorstart") && SpeedSelMode == SpeedSelectorMode.Start) || doNotForceDynamicBrake)
+                if ((SpeedRegulatorOptions.Contains("selectorstart") && (SpeedSelMode == SpeedSelectorMode.Start || SpeedSelMode == SpeedSelectorMode.On)) || doNotForceDynamicBrake)
                 {
                     timeFromDynamicBrakeStateChanged += elapsedClockSeconds;
                     if (timeFromDynamicBrakeStateChanged > Locomotive.DynamicBrakeDelayS)
@@ -945,6 +947,21 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                         timeFromDynamicBrakeStateChanged = 0;
                         wasDynamicBrakeUsed = false;
                     }
+                }
+            }
+
+            if (wasTrainBrakeUsed)
+            {
+                canAddForce = false;
+                if (SpeedRegulatorOptions.Contains("selectorstart") && SpeedSelMode == SpeedSelectorMode.Start)
+                {
+                    wasTrainBrakeUsed = false;
+                    canAddForce = true;
+                }
+                else if (!SpeedRegulatorOptions.Contains("selectorstart"))
+                {
+                    wasTrainBrakeUsed = false;
+                    canAddForce = true;
                 }
             }
 
