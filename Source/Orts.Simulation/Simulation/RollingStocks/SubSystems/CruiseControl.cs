@@ -953,7 +953,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
             if (wasTrainBrakeUsed)
             {
                 canAddForce = false;
-                if (SpeedRegulatorOptions.Contains("selectorstart") && SpeedSelMode == SpeedSelectorMode.Start)
+                if (SpeedRegulatorOptions.Contains("selectorstart") && (SpeedSelMode == SpeedSelectorMode.Start || SpeedSelMode == SpeedSelectorMode.On))
                 {
                     wasTrainBrakeUsed = false;
                     canAddForce = true;
