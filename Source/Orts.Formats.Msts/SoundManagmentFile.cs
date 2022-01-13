@@ -212,6 +212,7 @@ namespace Orts.Formats.Msts
             Variable1Controlled, Variable1ACControlled, Variable1DCControlled,
             Variable2Controlled, Variable2ACControlled, Variable2DCControlled,
             Variable3Controlled, Variable3ACControlled, Variable3DCControlled,
+            Variable4Controlled, 
             BrakeCylControlled,
             CurveForceControlled };
 
@@ -242,6 +243,7 @@ namespace Orts.Formats.Msts
                 case "variable3controlled": Control = Controls.Variable3Controlled; break;
                 case "variable3accontrolled": Control = Controls.Variable3ACControlled; break;
                 case "variable3dccontrolled": Control = Controls.Variable3DCControlled; break;
+                case "variable4controlled": Control = Controls.Variable4Controlled; break;
                 case "brakecylcontrolled": Control = Controls.BrakeCylControlled; break;
                 case "curveforcecontrolled": Control = Controls.CurveForceControlled; break;
                 default: STFException.TraceWarning(stf, "Crash expected: Skipped unknown VolumeCurve/Frequencycurve type " + type); stf.SkipRestOfBlock(); return;

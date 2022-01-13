@@ -1895,6 +1895,10 @@ namespace Orts.Viewer3D
         float StartValue;
         public bool IsBellow;
 
+        // Icik
+        int EqualsCycle = 0;
+        int NEqualsCycle = 0;
+
         public ORTSVariableTrigger(SoundStream soundStream, Orts.Formats.Msts.Variable_Trigger smsData)
         {
             SMS = smsData;
@@ -1997,12 +2001,16 @@ namespace Orts.Viewer3D
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable4_Equals_To:
                 case Orts.Formats.Msts.Variable_Trigger.Events.BrakeCyl_Equals_To:
                 case Orts.Formats.Msts.Variable_Trigger.Events.CurveForce_Equals_To:
-                    if (newValue == SMS.Threshold)
+                    if (newValue == SMS.Threshold && EqualsCycle == 0)
                     {
+                        EqualsCycle++;
                         Signaled = true;
                         if (SMS.Threshold == StartValue)
                             triggered = true;
                     }
+                    else
+                        if (newValue != SMS.Threshold && EqualsCycle != 0)
+                            EqualsCycle = 0;
                     break;
                 case Orts.Formats.Msts.Variable_Trigger.Events.Distance_NEquals_To:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Speed_NEquals_To:
@@ -2023,12 +2031,16 @@ namespace Orts.Viewer3D
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable4_NEquals_To:
                 case Orts.Formats.Msts.Variable_Trigger.Events.BrakeCyl_NEquals_To:
                 case Orts.Formats.Msts.Variable_Trigger.Events.CurveForce_NEquals_To:
-                    if (newValue != SMS.Threshold)
+                    if (newValue != SMS.Threshold && NEqualsCycle == 0)
                     {
+                        NEqualsCycle++;
                         Signaled = true;
                         if (SMS.Threshold != StartValue)
                             triggered = true;
                     }
+                    else
+                        if (newValue == SMS.Threshold && NEqualsCycle != 0)
+                        NEqualsCycle = 0;
                     break;
             }
 
