@@ -2001,7 +2001,7 @@ namespace Orts.Viewer3D
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable4_Equals_To:
                 case Orts.Formats.Msts.Variable_Trigger.Events.BrakeCyl_Equals_To:
                 case Orts.Formats.Msts.Variable_Trigger.Events.CurveForce_Equals_To:
-                    if (newValue == SMS.Threshold && EqualsCycle == 0)
+                    if (newValue == SMS.Threshold && EqualsCycle < 2)
                     {
                         EqualsCycle++;
                         Signaled = true;
@@ -2009,7 +2009,7 @@ namespace Orts.Viewer3D
                             triggered = true;
                     }
                     else
-                        if (newValue != SMS.Threshold && EqualsCycle != 0)
+                        if (newValue != SMS.Threshold && EqualsCycle == 2)
                             EqualsCycle = 0;
                     break;
                 case Orts.Formats.Msts.Variable_Trigger.Events.Distance_NEquals_To:
@@ -2031,7 +2031,7 @@ namespace Orts.Viewer3D
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable4_NEquals_To:
                 case Orts.Formats.Msts.Variable_Trigger.Events.BrakeCyl_NEquals_To:
                 case Orts.Formats.Msts.Variable_Trigger.Events.CurveForce_NEquals_To:
-                    if (newValue != SMS.Threshold && NEqualsCycle == 0)
+                    if (newValue != SMS.Threshold && NEqualsCycle < 2)
                     {
                         NEqualsCycle++;
                         Signaled = true;
@@ -2039,7 +2039,7 @@ namespace Orts.Viewer3D
                             triggered = true;
                     }
                     else
-                        if (newValue == SMS.Threshold && NEqualsCycle != 0)
+                        if (newValue == SMS.Threshold && NEqualsCycle == 2)
                         NEqualsCycle = 0;
                     break;
             }
