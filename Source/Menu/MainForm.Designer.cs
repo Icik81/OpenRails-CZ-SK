@@ -389,7 +389,7 @@ namespace ORTS
             this.pictureBoxLogo.Location = new System.Drawing.Point(16, 581);
             this.pictureBoxLogo.Margin = new System.Windows.Forms.Padding(4);
             this.pictureBoxLogo.Name = "pictureBoxLogo";
-            this.pictureBoxLogo.Size = new System.Drawing.Size(85, 79);
+            this.pictureBoxLogo.Size = new System.Drawing.Size(85, 70);
             this.pictureBoxLogo.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pictureBoxLogo.TabIndex = 5;
             this.pictureBoxLogo.TabStop = false;
