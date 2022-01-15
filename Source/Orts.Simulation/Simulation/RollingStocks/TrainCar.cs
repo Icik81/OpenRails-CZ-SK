@@ -2688,10 +2688,7 @@ namespace Orts.Simulation.RollingStocks
         internal void UpdateVibrationAndTilting(Traveller traveler, float elapsedTimeS, float distanceM, float speedMpS)
         {
             // NOTE: Traveller is at the FRONT of the TrainCar!
-
-            // Icik - Level 2 
-            Simulator.Settings.CarVibratingLevel = 2;
-
+            
             // Don't add vibrations to train cars less than 2.5 meter in length; they're unsuitable for these calculations.
             if (CarLengthM < 2.5f) return;
             if (Simulator.Settings.CarVibratingLevel != 0)
