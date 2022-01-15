@@ -2386,7 +2386,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                     case TrackMonitorSignalAspect.StopAndProceed:
                         {
                             MirelMaximumSpeed = (float)Math.Round(MirelMaximumSpeed, 0);
-                            if ((MirelMaximumSpeed.ToString().Contains("9") || MirelMaximumSpeed.ToString().Contains("4")) && !(MirelMaximumSpeed == 40 || MirelMaximumSpeed == 90))
+                            if ((MirelMaximumSpeed.ToString().Contains("9") || MirelMaximumSpeed.ToString().Contains("4")) && !(MirelMaximumSpeed == 40 || MirelMaximumSpeed == 45 || MirelMaximumSpeed == 90 || MirelMaximumSpeed == 95))
                                 MirelMaximumSpeed += 1;
                             if (recieverState == RecieverState.Off)
                             {
