@@ -629,7 +629,7 @@ namespace Orts.Common
                     switch (eventID)
                     {
                         // Calculated from inspection of existing ingame.sms files.
-                        case 10: return Event.ControlError;
+                        //case 10: return Event.ControlError;
                         case 20: return Event.Derail1;
                         case 21: return Event.Derail2;
                         case 22: return Event.Derail3;
