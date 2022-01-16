@@ -92,10 +92,10 @@ namespace Orts.Viewer3D
         public void FOVOffset()
         {
             // Icik
-            if (Viewer.Settings.CabView45)
+            if (Viewer.Settings.CabView_MSTSOR)
                 FieldOffViewOffset = 0;
             else
-                FieldOffViewOffset = 15;
+                FieldOffViewOffset = 0;
         }
 
         protected Camera(Viewer viewer)
@@ -2085,13 +2085,17 @@ namespace Orts.Viewer3D
             }
             else if (Viewer.Settings.Cab2DStretch == 0 && Viewer.CabExceedsDisplayHorizontally <= 0)
             {
-                // We must modify FOV to get correct lookout
-                FOVOffset();
-                if (Viewer.Settings.CabView45)                
+                // We must modify FOV to get correct lookout                
+                if (Viewer.Settings.CabView_MSTSOR)
+                {
                     FieldOfView = MathHelper.ToDegrees((float)(2 * Math.Atan((float)Viewer.DisplaySize.Y / Viewer.DisplaySize.X / Viewer.CabTextureInverseRatio * Math.Tan(MathHelper.ToRadians(Viewer.Settings.ViewingFOV / 2)))));
+                    RotationRatio = (float)(0.962314f * 2 * Math.Tan(MathHelper.ToRadians(FieldOfView / 2)) / Viewer.DisplaySize.Y);
+                }
                 else
-                    FieldOfView = Viewer.Settings.ViewingFOV + FieldOffViewOffset; 
-                RotationRatio = (float)(0.962314f * 2 * Math.Tan(MathHelper.ToRadians(FieldOfView / 2)) / Viewer.DisplaySize.Y);                                
+                {
+                    FieldOfView = Viewer.Settings.ViewingFOV + FieldOffViewOffset;
+                    RotationRatio = (float)(0.962314f * 0.75f * Math.Tan(MathHelper.ToRadians(FieldOfView / 0.75f)) / Viewer.DisplaySize.Y);
+                }
             }
             else if (Viewer.CabExceedsDisplayHorizontally > 0)
             {

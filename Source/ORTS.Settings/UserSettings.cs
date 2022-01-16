@@ -242,7 +242,7 @@ namespace ORTS.Settings
 
         // Icik
         [Default(false)]
-        public bool CabView45 { get; set; }
+        public bool CabView_MSTSOR { get; set; }
 
 
         // Simulation settings:

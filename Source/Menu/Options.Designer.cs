@@ -78,7 +78,7 @@
             this.numericSoundDetailLevel = new System.Windows.Forms.NumericUpDown();
             this.checkMSTSBINSound = new System.Windows.Forms.CheckBox();
             this.tabPageVideo = new System.Windows.Forms.TabPage();
-            this.CabView45 = new System.Windows.Forms.CheckBox();
+            this.CabView_MSTSOR = new System.Windows.Forms.CheckBox();
             this.labelAntiAliasingValue = new System.Windows.Forms.Label();
             this.labelAntiAliasing = new System.Windows.Forms.Label();
             this.trackAntiAliasing = new System.Windows.Forms.TrackBar();
@@ -926,7 +926,7 @@
             // 
             // tabPageVideo
             // 
-            this.tabPageVideo.Controls.Add(this.CabView45);
+            this.tabPageVideo.Controls.Add(this.CabView_MSTSOR);
             this.tabPageVideo.Controls.Add(this.labelAntiAliasingValue);
             this.tabPageVideo.Controls.Add(this.labelAntiAliasing);
             this.tabPageVideo.Controls.Add(this.trackAntiAliasing);
@@ -964,17 +964,17 @@
             this.tabPageVideo.Text = "Video";
             this.tabPageVideo.UseVisualStyleBackColor = true;
             // 
-            // CabView45
+            // CabView_MSTSOR
             // 
-            this.CabView45.AutoSize = true;
-            this.CabView45.Location = new System.Drawing.Point(409, 64);
-            this.CabView45.Margin = new System.Windows.Forms.Padding(4);
-            this.CabView45.Name = "CabView45";
-            this.CabView45.Size = new System.Drawing.Size(293, 21);
-            this.CabView45.TabIndex = 25;
-            this.CabView45.Text = "Výhled z kabiny kompatibilní s MSTS / OR";
-            this.CabView45.UseVisualStyleBackColor = true;
-            this.CabView45.CheckedChanged += new System.EventHandler(this.CabView45_CheckedChanged);
+            this.CabView_MSTSOR.AutoSize = true;
+            this.CabView_MSTSOR.Location = new System.Drawing.Point(409, 64);
+            this.CabView_MSTSOR.Margin = new System.Windows.Forms.Padding(4);
+            this.CabView_MSTSOR.Name = "CabView_MSTSOR";
+            this.CabView_MSTSOR.Size = new System.Drawing.Size(293, 21);
+            this.CabView_MSTSOR.TabIndex = 25;
+            this.CabView_MSTSOR.Text = "Výhled z kabiny kompatibilní s MSTS / OR";
+            this.CabView_MSTSOR.UseVisualStyleBackColor = true;
+            this.CabView_MSTSOR.CheckedChanged += new System.EventHandler(this.CabView_MSTSOR_CheckedChanged);
             // 
             // labelAntiAliasingValue
             // 
@@ -3142,6 +3142,6 @@
         private System.Windows.Forms.Label labelAntiAliasingValue;
         private System.Windows.Forms.Label labelAntiAliasing;
         private System.Windows.Forms.CheckBox checkAirEmpty;
-        private System.Windows.Forms.CheckBox CabView45;
+        private System.Windows.Forms.CheckBox CabView_MSTSOR;
     }
 }

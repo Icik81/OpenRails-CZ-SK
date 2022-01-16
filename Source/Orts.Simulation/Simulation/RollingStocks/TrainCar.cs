@@ -2818,9 +2818,9 @@ namespace Orts.Simulation.RollingStocks
             else
             if (Train.AllowedMaxSpeedMpS <= 50 / 3.6f && Train.NextRouteSpeedLimit <= 50 / 3.6f) // Běžná trať do 50km/h
             {
-                TrackFactorX = 1.2f;
-                TrackFactorY = 1.1f;
-                TrackFactorZ = 1.1f;
+                TrackFactorX = 1.0f;
+                TrackFactorY = 1.0f;
+                TrackFactorZ = 1.0f;
             }
             else 
             {

@@ -191,7 +191,7 @@ namespace ORTS
             checkDoubleWire.Checked = Settings.DoubleWire;
 
             // Icik
-            CabView45.Checked = Settings.CabView45;
+            CabView_MSTSOR.Checked = Settings.CabView_MSTSOR;
 
             // Simulation tab
 
@@ -474,7 +474,7 @@ private async void OptionsForm_Shown(object sender, EventArgs e)
             Settings.AntiAliasing = trackAntiAliasing.Value;
 
             // Icik
-            Settings.CabView45 = CabView45.Checked;
+            Settings.CabView_MSTSOR = CabView_MSTSOR.Checked;
 
             // Simulation tab
             Settings.SimpleControlPhysics = checkSimpleControlsPhysics.Checked;
@@ -956,7 +956,7 @@ private async void OptionsForm_Shown(object sender, EventArgs e)
 
         }
 
-        private void CabView45_CheckedChanged(object sender, EventArgs e)
+        private void CabView_MSTSOR_CheckedChanged(object sender, EventArgs e)
         {
 
         }
