@@ -190,6 +190,9 @@ namespace ORTS
             trackAntiAliasing_ValueChanged(null, null);
             checkDoubleWire.Checked = Settings.DoubleWire;
 
+            // Icik
+            CabView45.Checked = Settings.CabView45;
+
             // Simulation tab
 
             checkSimpleControlsPhysics.Checked = Settings.SimpleControlPhysics;
@@ -442,7 +445,7 @@ private async void OptionsForm_Shown(object sender, EventArgs e)
             Settings.ReduceMemory = checkReduceMemory.Checked;
 
             // Icik
-            Settings.AirEmpty = checkAirEmpty.Checked;
+            Settings.AirEmpty = checkAirEmpty.Checked;            
 
             // Audio tab
             Settings.MSTSBINSound = checkMSTSBINSound.Checked;
@@ -469,6 +472,9 @@ private async void OptionsForm_Shown(object sender, EventArgs e)
             Settings.DayAmbientLight = (int)trackDayAmbientLight.Value;
             Settings.DoubleWire = checkDoubleWire.Checked;
             Settings.AntiAliasing = trackAntiAliasing.Value;
+
+            // Icik
+            Settings.CabView45 = CabView45.Checked;
 
             // Simulation tab
             Settings.SimpleControlPhysics = checkSimpleControlsPhysics.Checked;
@@ -946,6 +952,11 @@ private async void OptionsForm_Shown(object sender, EventArgs e)
         #endregion
 
         private void OptionsForm_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void CabView45_CheckedChanged(object sender, EventArgs e)
         {
 
         }

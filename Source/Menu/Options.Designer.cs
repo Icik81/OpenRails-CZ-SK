@@ -78,6 +78,7 @@
             this.numericSoundDetailLevel = new System.Windows.Forms.NumericUpDown();
             this.checkMSTSBINSound = new System.Windows.Forms.CheckBox();
             this.tabPageVideo = new System.Windows.Forms.TabPage();
+            this.CabView45 = new System.Windows.Forms.CheckBox();
             this.labelAntiAliasingValue = new System.Windows.Forms.Label();
             this.labelAntiAliasing = new System.Windows.Forms.Label();
             this.trackAntiAliasing = new System.Windows.Forms.TrackBar();
@@ -172,10 +173,6 @@
             this.buttonContentAdd = new System.Windows.Forms.Button();
             this.panelContent = new System.Windows.Forms.Panel();
             this.dataGridViewContent = new System.Windows.Forms.DataGridView();
-
-            this.nameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.pathDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-
             this.bindingSourceContent = new System.Windows.Forms.BindingSource(this.components);
             this.tabPageExperimental = new System.Windows.Forms.TabPage();
             this.label27 = new System.Windows.Forms.Label();
@@ -454,10 +451,9 @@
             this.checkAirEmpty.Location = new System.Drawing.Point(43, 177);
             this.checkAirEmpty.Margin = new System.Windows.Forms.Padding(4);
             this.checkAirEmpty.Name = "checkAirEmpty";
-            this.checkAirEmpty.Size = new System.Drawing.Size(276, 21);
+            this.checkAirEmpty.Size = new System.Drawing.Size(342, 21);
             this.checkAirEmpty.TabIndex = 31;
             this.checkAirEmpty.Text = "Odstavená lokomotiva (lokomotivu je nutné oživit)";
-            //this.checkAirEmpty.Text = "Locomotive without air at the beginning";
             this.checkAirEmpty.UseVisualStyleBackColor = true;
             // 
             // checkReduceMemory
@@ -930,6 +926,7 @@
             // 
             // tabPageVideo
             // 
+            this.tabPageVideo.Controls.Add(this.CabView45);
             this.tabPageVideo.Controls.Add(this.labelAntiAliasingValue);
             this.tabPageVideo.Controls.Add(this.labelAntiAliasing);
             this.tabPageVideo.Controls.Add(this.trackAntiAliasing);
@@ -966,6 +963,18 @@
             this.tabPageVideo.TabIndex = 4;
             this.tabPageVideo.Text = "Video";
             this.tabPageVideo.UseVisualStyleBackColor = true;
+            // 
+            // CabView45
+            // 
+            this.CabView45.AutoSize = true;
+            this.CabView45.Location = new System.Drawing.Point(409, 64);
+            this.CabView45.Margin = new System.Windows.Forms.Padding(4);
+            this.CabView45.Name = "CabView45";
+            this.CabView45.Size = new System.Drawing.Size(293, 21);
+            this.CabView45.TabIndex = 25;
+            this.CabView45.Text = "Výhled z kabiny kompatibilní s MSTS / OR";
+            this.CabView45.UseVisualStyleBackColor = true;
+            this.CabView45.CheckedChanged += new System.EventHandler(this.CabView45_CheckedChanged);
             // 
             // labelAntiAliasingValue
             // 
@@ -2187,11 +2196,6 @@
             this.dataGridViewContent.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             this.dataGridViewContent.ColumnHeadersHeight = 29;
             this.dataGridViewContent.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
-
-            this.dataGridViewContent.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.nameDataGridViewTextBoxColumn,
-            this.pathDataGridViewTextBoxColumn});
-
             this.dataGridViewContent.DataSource = this.bindingSourceContent;
             dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
@@ -2214,30 +2218,6 @@
             this.dataGridViewContent.Size = new System.Drawing.Size(784, 334);
             this.dataGridViewContent.TabIndex = 0;
             this.dataGridViewContent.SelectionChanged += new System.EventHandler(this.dataGridViewContent_SelectionChanged);
-
-            // 
-            // nameDataGridViewTextBoxColumn
-            // 
-            this.nameDataGridViewTextBoxColumn.DataPropertyName = "Name";
-            this.nameDataGridViewTextBoxColumn.HeaderText = "Name";
-            this.nameDataGridViewTextBoxColumn.MinimumWidth = 6;
-            this.nameDataGridViewTextBoxColumn.Name = "nameDataGridViewTextBoxColumn";
-            this.nameDataGridViewTextBoxColumn.ReadOnly = true;
-            this.nameDataGridViewTextBoxColumn.Width = 60;
-            // 
-            // pathDataGridViewTextBoxColumn
-            // 
-            this.pathDataGridViewTextBoxColumn.DataPropertyName = "Path";
-            this.pathDataGridViewTextBoxColumn.HeaderText = "Path";
-            this.pathDataGridViewTextBoxColumn.MinimumWidth = 6;
-            this.pathDataGridViewTextBoxColumn.Name = "pathDataGridViewTextBoxColumn";
-            this.pathDataGridViewTextBoxColumn.ReadOnly = true;
-            this.pathDataGridViewTextBoxColumn.Width = 54;
-            // 
-            // bindingSourceContent
-            // 
-            //            this.bindingSourceContent.DataSource = typeof(ORTS.OptionsForm.ContentFolder);
-
             // 
             // tabPageExperimental
             // 
@@ -3162,5 +3142,6 @@
         private System.Windows.Forms.Label labelAntiAliasingValue;
         private System.Windows.Forms.Label labelAntiAliasing;
         private System.Windows.Forms.CheckBox checkAirEmpty;
+        private System.Windows.Forms.CheckBox CabView45;
     }
 }

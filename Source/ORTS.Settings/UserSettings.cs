@@ -240,6 +240,11 @@ namespace ORTS.Settings
         [Default(AntiAliasingMethod.MSAA2x)]
         public int AntiAliasing { get; set; }
 
+        // Icik
+        [Default(false)]
+        public bool CabView45 { get; set; }
+
+
         // Simulation settings:
 
         [Default(true)]
