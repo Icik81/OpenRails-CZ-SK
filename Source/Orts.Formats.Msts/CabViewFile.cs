@@ -47,19 +47,6 @@ namespace Orts.Formats.Msts
                         new STFReader.TokenProcessor("position", ()=>
                         { 
                             Locations.Add(stf.ReadVector3Block(STFReader.UNITS.None, new Vector3()));
-
-                            //int x = 0;
-                            //for (int i = 0; i < Locations.Count; i++)
-                            //{
-                            //    Vector3 v3 = Locations[i];
-                            //    v3.X = Locations[x].X + 0;
-                            //    v3.Y = Locations[x].Y + 0;
-                            //    v3.Z = Locations[x].Z + 0;
-                            //    Locations[i] = v3;
-                            //    x++;
-                            //    if (x + 1 > Locations.Count)
-                            //        break;
-                            //}
                         }),
                         
                         
@@ -79,23 +66,12 @@ namespace Orts.Formats.Msts
                                     break;
                             }
                         }),
+
                         new STFReader.TokenProcessor("direction", ()=>
                         {
                             Directions.Add(stf.ReadVector3Block(STFReader.UNITS.None, new Vector3()));
-
-                            //int x = 0;
-                            //for (int i = 0; i < Directions.Count; i++)
-                            //{
-                            //    Vector3 v3 = Directions[i];
-                            //    v3.X = Directions[x].X + 4;
-                            //    v3.Y = Directions[x].Y - ((i + 1) * 2);
-                            //    v3.Z = Directions[x].Z + 0;
-                            //    Directions[i] = v3;
-                            //    x++;
-                            //    if (x + 1 > Directions.Count)
-                            //        break;
-                            //}
                         }),
+
                         new STFReader.TokenProcessor("directionshift", ()=>
                         {
                             directionShift.Add(stf.ReadVector3Block(STFReader.UNITS.None, new Vector3()));
