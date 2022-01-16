@@ -2463,7 +2463,7 @@ namespace Orts.Simulation.RollingStocks
 
         // Icik
         // Definice ochran lokomotiv        
-        public void Overcurrent_Protection(float elapsedClockSeconds)
+        public void Overcurrent_Protection()
         {
             if (!IsPlayerTrain)
                 return;
@@ -2540,7 +2540,7 @@ namespace Orts.Simulation.RollingStocks
 
         // Icik
         // Protiskluzová ochrana
-        public void AntiSlip_Protection(float elapsedClockSeconds)
+        public void AntiSlip_Protection()
         {
             if (!IsPlayerTrain)
                 return;
@@ -3567,19 +3567,22 @@ namespace Orts.Simulation.RollingStocks
             }
 
             // Icik         
-            Overcurrent_Protection(elapsedClockSeconds);
-            AntiSlip_Protection(elapsedClockSeconds);
+            if (Simulator.GameTimeCyklus10 == 10)
+            {
+                Overcurrent_Protection();
+                AntiSlip_Protection();
+                EDBCancelByEngineBrake();
+                HVOffbyAirPressure();
+                MaxPower_MaxForce_ACDC();
+                if (IsPlayerTrain && Pantograph4Enable) TogglePantograph4Switch();
+                if (IsPlayerTrain && Pantograph3Enable) TogglePantograph3Switch();
+                ToggleHV2Switch();
+                ToggleHV3Switch();
+                ToggleHV5Switch();
+            }
             PowerOn_Filter(elapsedClockSeconds);
-            EDBCancelByEngineBrake();
-            HVOffbyAirPressure();
-            MaxPower_MaxForce_ACDC();
             ElevatedConsumptionOnLocomotive(elapsedClockSeconds);
-            if (IsPlayerTrain && Pantograph4Enable) TogglePantograph4Switch();
-            if (IsPlayerTrain && Pantograph3Enable) TogglePantograph3Switch();
-            ToggleHV2Switch();
-            ToggleHV3Switch();
-            ToggleHV5Switch();
-
+            
             TrainControlSystem.Update();
 
             elapsedTime = elapsedClockSeconds;

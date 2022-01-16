@@ -802,7 +802,8 @@ namespace Orts.Simulation.RollingStocks
                 if (AbsSpeedMpS < 0.01) BrakeSystem.BailOffOnAntiSkid = false;
             }
         }
-
+        
+        // Icik
         public virtual void BrakeMassKG()
         {
             if (!BrakeSystem.BrakeCarDeactivate && BrakeSystem.CarHasMechanicStuckBrake_1)
@@ -886,9 +887,9 @@ namespace Orts.Simulation.RollingStocks
                         break;
                 }
         }
-        
 
-        public void BrakeCarStatus(float elapsedClockSeconds)
+        // Icik
+        public void BrakeCarStatus()
         {
             if (!IsPlayerTrain)
                 return;
@@ -926,179 +927,182 @@ namespace Orts.Simulation.RollingStocks
         // called when it's time to update the MotiveForce and FrictionForce
         public virtual void Update(float elapsedClockSeconds)
         {
-            // Výpočet max brzdné síly
-            const float CoefE = 0.84f; // Lokomotiva
-            const float CoefP = 0.80f; // Osobní vůz
-            const float CoefF = 0.90f; // Nákladní vůz
-            const float CoefHB = 0.50f; // Ruční brzda
-
-            BrakeCarStatus(elapsedClockSeconds);
-            AntiSkidSystem();
-            BrakeSystem.WagonType = (int)WagonType;
-
-            if (WagonType == WagonTypes.Freight || WagonType == WagonTypes.Tender)    //  Nákladní vozy a tendry
+            // Icik
+            if (Simulator.GameTimeCyklus10 == 10)
             {
-                if (!BrakeSystem.AutoLoadRegulatorEquipped)
-                    switch (BrakeSystem.BrakeCarModePL)
+                // Výpočet max brzdné síly
+                const float CoefE = 0.84f; // Lokomotiva
+                const float CoefP = 0.80f; // Osobní vůz
+                const float CoefF = 0.90f; // Nákladní vůz
+                const float CoefHB = 0.50f; // Ruční brzda
+
+                BrakeCarStatus();
+                AntiSkidSystem();
+                BrakeSystem.WagonType = (int)WagonType;
+
+                if (WagonType == WagonTypes.Freight || WagonType == WagonTypes.Tender)    //  Nákladní vozy a tendry
+                {
+                    if (!BrakeSystem.AutoLoadRegulatorEquipped)
+                        switch (BrakeSystem.BrakeCarModePL)
+                        {
+                            case 0: // Režim Prázdný                     
+                                BrakeSystem.CoefMode = 0.36f;
+                                BrakeMassKG();
+                                break;
+                            case 1: // Režim Ložený                    
+                                BrakeSystem.CoefMode = 0.58f;
+                                BrakeMassKG();
+                                break;
+                        }
+                    else
+                        if (MassKG < BrakeSystem.AutoLoadRegulatorMaxBrakeMass)
+                        BrakeSystem.BrakeMassKG = MassKG;
+                    else BrakeSystem.BrakeMassKG = BrakeSystem.AutoLoadRegulatorMaxBrakeMass;
+
+                    if (BrakeSystem.DebugKoef == 0) MaxBrakeForceN = CoefF * BrakeSystem.BrakeMassKG * 9.964016384f * 0.31f;
+                    else MaxBrakeForceN = BrakeSystem.DebugKoef * BrakeSystem.BrakeMassKG * 9.964016384f * 0.31f;
+                }
+                if (WagonType == WagonTypes.Passenger)    //  Osobní vozy
+                {
+                    switch (BrakeSystem.BrakeCarMode)
                     {
-                        case 0: // Režim Prázdný                     
-                            BrakeSystem.CoefMode = 0.36f;
+                        case 0: // Režim G                     
+                            BrakeSystem.CoefMode = 0.0f;
                             BrakeMassKG();
                             break;
-                        case 1: // Režim Ložený                    
-                            BrakeSystem.CoefMode = 0.58f;
+                        case 1: // Režim P                    
+                            BrakeSystem.CoefMode = 1.05f;
+                            BrakeMassKG();
+                            break;
+                        case 2: // Režim R
+                            BrakeSystem.CoefMode = 1.49f;
+                            BrakeMassKG();
+                            break;
+                        case 3: // Režim R+Mg
+                            BrakeSystem.CoefMode = 1.49f;
                             BrakeMassKG();
                             break;
                     }
-                else
-                    if (MassKG < BrakeSystem.AutoLoadRegulatorMaxBrakeMass)
-                    BrakeSystem.BrakeMassKG = MassKG;
-                else BrakeSystem.BrakeMassKG = BrakeSystem.AutoLoadRegulatorMaxBrakeMass;
-
-                if (BrakeSystem.DebugKoef == 0) MaxBrakeForceN = CoefF * BrakeSystem.BrakeMassKG * 9.964016384f * 0.31f;
-                else MaxBrakeForceN = BrakeSystem.DebugKoef * BrakeSystem.BrakeMassKG * 9.964016384f * 0.31f;
-            }
-            if (WagonType == WagonTypes.Passenger)    //  Osobní vozy
-            {
-                switch (BrakeSystem.BrakeCarMode)
+                    if (BrakeSystem.DebugKoef == 0)
+                    {
+                        MaxBrakeForceN = CoefP * BrakeSystem.BrakeMassKG * 9.964016384f * 0.31f;
+                        MaxBrakeForceNRMg = CoefP * BrakeSystem.BrakeMassKGRMg * 9.964016384f * 0.31f;
+                    }
+                    else
+                    {
+                        MaxBrakeForceN = BrakeSystem.DebugKoef * BrakeSystem.BrakeMassKG * 9.964016384f * 0.31f;
+                        MaxBrakeForceNRMg = BrakeSystem.DebugKoef * BrakeSystem.BrakeMassKGRMg * 9.964016384f * 0.31f;
+                        if (BrakeSystem.TwoStateBrake)
+                            MaxBrakeForceN = BrakeSystem.DebugKoef * BrakeSystem.BrakeMassKG_TwoStateBrake * 9.964016384f * 0.31f;
+                    }
+                }
+                if (WagonType == WagonTypes.Engine || WagonType == WagonTypes.Unknown)    //  Lokomotivy a ostatní
                 {
-                    case 0: // Režim G                     
-                        BrakeSystem.CoefMode = 0.0f;
-                        BrakeMassKG();
+                    switch (BrakeSystem.BrakeCarMode)
+                    {
+                        case 0: // Režim G                     
+                            BrakeSystem.CoefMode = 0.5f;
+                            BrakeMassKG();
+                            break;
+                        case 1: // Režim P                    
+                            BrakeSystem.CoefMode = 0.65f;
+                            BrakeMassKG();
+                            break;
+                        case 2: // Režim R
+                            BrakeSystem.CoefMode = 1.66f;
+                            BrakeMassKG();
+                            break;
+                        case 3: // Režim R+Mg
+                            BrakeSystem.CoefMode = 1.66f;
+                            BrakeMassKG();
+                            break;
+                    }
+                    if (BrakeSystem.DebugKoef == 0)
+                    {
+                        MaxBrakeForceN = CoefE * BrakeSystem.BrakeMassKG * 9.964016384f * 0.31f;
+                        MaxBrakeForceNRMg = CoefE * BrakeSystem.BrakeMassKGRMg * 9.964016384f * 0.31f;
+                    }
+                    else
+                    {
+                        MaxBrakeForceN = BrakeSystem.DebugKoef * BrakeSystem.BrakeMassKG * 9.964016384f * 0.31f;
+                        MaxBrakeForceNRMg = BrakeSystem.DebugKoef * BrakeSystem.BrakeMassKGRMg * 9.964016384f * 0.31f;
+                        if (BrakeSystem.TwoStateBrake)
+                            MaxBrakeForceN = BrakeSystem.DebugKoef * BrakeSystem.BrakeMassKG_TwoStateBrake * 9.964016384f * 0.31f;
+                    }
+                }
+
+                // Výpočet pro ruční brzdu
+                MaxHandbrakeForceN = CoefHB * (MassKG / 6.4f) * 9.964016384f * 0.31f;
+
+
+                // Initialise ambient temperatures on first initial loop, then ignore
+                if (!AmbientTemperatureInitialised)
+                {
+                    InitializeCarTemperatures();
+                    AmbientTemperatureInitialised = true;
+                }
+
+                // Update temperature variation for height of car above sea level
+                // Typically in clear conditions there is a 9.8 DegC variation for every 1000m (1km) rise, in snow/rain there is approx 5.5 DegC variation for every 1000m (1km) rise
+                float TemperatureHeightVariationDegC = 0;
+                const float DryLapseTemperatureC = 9.8f;
+                const float WetLapseTemperatureC = 5.5f;
+
+                if (Simulator.WeatherType == WeatherType.Rain || Simulator.WeatherType == WeatherType.Snow) // Apply snow/rain height variation
+                {
+                    TemperatureHeightVariationDegC = Me.ToKiloM(CarHeightAboveSeaLevelM) * WetLapseTemperatureC;
+                }
+                else  // Apply dry height variation
+                {
+                    TemperatureHeightVariationDegC = Me.ToKiloM(CarHeightAboveSeaLevelM) * DryLapseTemperatureC;
+                }
+
+                TemperatureHeightVariationDegC = MathHelper.Clamp(TemperatureHeightVariationDegC, 0.00f, 30.0f);
+
+                float TClock = (float)Simulator.ClockTime / 60 / 60;
+                if (Simulator.ClockTime > 24 * 60 * 60)
+                    TClock = ((float)Simulator.ClockTime - (24 * 60 * 60)) / 60 / 60;
+
+                // Přírůstek teploty v závislosti na denním čase
+                if (TClock > 0 && TClock <= 3)
+                    TempCClockDelta = -5;
+                if (TClock > 3 && TClock <= 6)
+                    TempCClockDelta = -7;
+                if (TClock > 6 && TClock <= 9)
+                    TempCClockDelta = 0;
+                if (TClock > 9 && TClock <= 12)
+                    TempCClockDelta = +3;
+                if (TClock > 12 && TClock <= 15)
+                    TempCClockDelta = +5;
+                if (TClock > 15 && TClock <= 18)
+                    TempCClockDelta = +3;
+                if (TClock > 18 && TClock <= 21)
+                    TempCClockDelta = 0;
+                if (TClock > 21 && TClock <= 24)
+                    TempCClockDelta = -3;
+
+                // Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("TClock " + TClock));
+
+                CarOutsideTempCBase = InitialCarOutsideTempC - TemperatureHeightVariationDegC + TempCClockDelta;
+                CarOutsideTempCBase = MathHelper.Clamp(CarOutsideTempCBase, -25, 40);
+
+                // Okolní teplota závisí na podmínkách (oblačno, déšť, mlha)
+                switch (Simulator.Season)
+                {
+                    case SeasonType.Spring:
+                        CarOutsideTempC = CarOutsideTempCBase - (Simulator.Weather.PricipitationIntensityPPSPM2 * 4) - (Simulator.Weather.OvercastFactor * 4) - (3 - (Simulator.Weather.FogDistance / 100000 * 15));
                         break;
-                    case 1: // Režim P                    
-                        BrakeSystem.CoefMode = 1.05f;
-                        BrakeMassKG();
+                    case SeasonType.Summer:
+                        CarOutsideTempC = CarOutsideTempCBase - (Simulator.Weather.PricipitationIntensityPPSPM2 * 5) - (Simulator.Weather.OvercastFactor * 5) - (3 - (Simulator.Weather.FogDistance / 100000 * 15));
                         break;
-                    case 2: // Režim R
-                        BrakeSystem.CoefMode = 1.49f;
-                        BrakeMassKG();
+                    case SeasonType.Autumn:
+                        CarOutsideTempC = CarOutsideTempCBase - (Simulator.Weather.PricipitationIntensityPPSPM2 * 3) - (Simulator.Weather.OvercastFactor * 3) - (3 - (Simulator.Weather.FogDistance / 100000 * 15));
                         break;
-                    case 3: // Režim R+Mg
-                        BrakeSystem.CoefMode = 1.49f;
-                        BrakeMassKG();
+                    case SeasonType.Winter:
+                        CarOutsideTempC = CarOutsideTempCBase - (Simulator.Weather.PricipitationIntensityPPSPM2 * 2) - (Simulator.Weather.OvercastFactor * 2) - (3 - (Simulator.Weather.FogDistance / 100000 * 15));
                         break;
                 }
-                if (BrakeSystem.DebugKoef == 0)
-                {
-                    MaxBrakeForceN = CoefP * BrakeSystem.BrakeMassKG * 9.964016384f * 0.31f;
-                    MaxBrakeForceNRMg = CoefP * BrakeSystem.BrakeMassKGRMg * 9.964016384f * 0.31f;
-                }
-                else
-                {
-                    MaxBrakeForceN = BrakeSystem.DebugKoef * BrakeSystem.BrakeMassKG * 9.964016384f * 0.31f;
-                    MaxBrakeForceNRMg = BrakeSystem.DebugKoef * BrakeSystem.BrakeMassKGRMg * 9.964016384f * 0.31f;
-                    if (BrakeSystem.TwoStateBrake)
-                        MaxBrakeForceN = BrakeSystem.DebugKoef * BrakeSystem.BrakeMassKG_TwoStateBrake * 9.964016384f * 0.31f;
-                }
             }
-            if (WagonType == WagonTypes.Engine || WagonType == WagonTypes.Unknown)    //  Lokomotivy a ostatní
-            {
-                switch (BrakeSystem.BrakeCarMode)
-                {
-                    case 0: // Režim G                     
-                        BrakeSystem.CoefMode = 0.5f;
-                        BrakeMassKG();
-                        break;
-                    case 1: // Režim P                    
-                        BrakeSystem.CoefMode = 0.65f;
-                        BrakeMassKG();
-                        break;
-                    case 2: // Režim R
-                        BrakeSystem.CoefMode = 1.66f;
-                        BrakeMassKG();
-                        break;
-                    case 3: // Režim R+Mg
-                        BrakeSystem.CoefMode = 1.66f;
-                        BrakeMassKG();
-                        break;
-                }
-                if (BrakeSystem.DebugKoef == 0)
-                {
-                    MaxBrakeForceN = CoefE * BrakeSystem.BrakeMassKG * 9.964016384f * 0.31f;
-                    MaxBrakeForceNRMg = CoefE * BrakeSystem.BrakeMassKGRMg * 9.964016384f * 0.31f;
-                }
-                else
-                {
-                    MaxBrakeForceN = BrakeSystem.DebugKoef * BrakeSystem.BrakeMassKG * 9.964016384f * 0.31f;
-                    MaxBrakeForceNRMg = BrakeSystem.DebugKoef * BrakeSystem.BrakeMassKGRMg * 9.964016384f * 0.31f;
-                    if (BrakeSystem.TwoStateBrake)
-                        MaxBrakeForceN = BrakeSystem.DebugKoef * BrakeSystem.BrakeMassKG_TwoStateBrake * 9.964016384f * 0.31f;
-                }
-            }
-
-            // Výpočet pro ruční brzdu
-            MaxHandbrakeForceN = CoefHB * (MassKG / 6.4f) * 9.964016384f * 0.31f;
-
-            // Initialise ambient temperatures on first initial loop, then ignore
-            if (!AmbientTemperatureInitialised)
-            {
-                InitializeCarTemperatures();
-                AmbientTemperatureInitialised = true;
-            }
-
-            // Update temperature variation for height of car above sea level
-            // Typically in clear conditions there is a 9.8 DegC variation for every 1000m (1km) rise, in snow/rain there is approx 5.5 DegC variation for every 1000m (1km) rise
-            float TemperatureHeightVariationDegC = 0;
-            const float DryLapseTemperatureC = 9.8f;
-            const float WetLapseTemperatureC = 5.5f;
-
-            if (Simulator.WeatherType == WeatherType.Rain || Simulator.WeatherType == WeatherType.Snow) // Apply snow/rain height variation
-            {
-                TemperatureHeightVariationDegC = Me.ToKiloM(CarHeightAboveSeaLevelM) * WetLapseTemperatureC;
-            }
-            else  // Apply dry height variation
-            {
-                TemperatureHeightVariationDegC = Me.ToKiloM(CarHeightAboveSeaLevelM) * DryLapseTemperatureC;
-            }
-
-            TemperatureHeightVariationDegC = MathHelper.Clamp(TemperatureHeightVariationDegC, 0.00f, 30.0f);
-
-            float TClock = (float)Simulator.ClockTime / 60 / 60;
-            if (Simulator.ClockTime > 24 * 60 * 60)
-                TClock = ((float)Simulator.ClockTime - (24 * 60 * 60)) / 60 / 60;
-
-            // Icik
-            // Přírůstek teploty v závislosti na denním čase
-            if (TClock > 0 && TClock <= 3)
-                TempCClockDelta = -5;
-            if (TClock > 3  && TClock <= 6)
-                TempCClockDelta = -7;
-            if (TClock > 6 && TClock <= 9)
-                TempCClockDelta = 0;
-            if (TClock > 9 && TClock <= 12)
-                TempCClockDelta = +3;
-            if (TClock > 12 && TClock <= 15)
-                TempCClockDelta = +5;
-            if (TClock > 15 && TClock <= 18)
-                TempCClockDelta = +3;
-            if (TClock > 18 && TClock <= 21)
-                TempCClockDelta = 0;
-            if (TClock > 21 && TClock <= 24)
-                TempCClockDelta = -3;
-
-            // Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("TClock " + TClock));
-
-            //CarOutsideTempC = InitialCarOutsideTempC - TemperatureHeightVariationDegC;
-            CarOutsideTempCBase = InitialCarOutsideTempC - TemperatureHeightVariationDegC + TempCClockDelta;
-            CarOutsideTempCBase = MathHelper.Clamp(CarOutsideTempCBase, -25, 40);
-
-            // Okolní teplota závisí na podmínkách (oblačno, déšť, mlha)
-            switch (Simulator.Season)
-            {
-                case SeasonType.Spring:
-                    CarOutsideTempC = CarOutsideTempCBase - (Simulator.Weather.PricipitationIntensityPPSPM2 * 4) - (Simulator.Weather.OvercastFactor * 4) - (3 - (Simulator.Weather.FogDistance / 100000 * 15));
-                    break;
-                case SeasonType.Summer:
-                    CarOutsideTempC = CarOutsideTempCBase - (Simulator.Weather.PricipitationIntensityPPSPM2 * 5) - (Simulator.Weather.OvercastFactor * 5) - (3 - (Simulator.Weather.FogDistance / 100000 * 15)); 
-                    break;
-                case SeasonType.Autumn:
-                    CarOutsideTempC = CarOutsideTempCBase - (Simulator.Weather.PricipitationIntensityPPSPM2 * 3) - (Simulator.Weather.OvercastFactor * 3) - (3 - (Simulator.Weather.FogDistance / 100000 * 15)); 
-                    break;
-                case SeasonType.Winter:
-                    CarOutsideTempC = CarOutsideTempCBase - (Simulator.Weather.PricipitationIntensityPPSPM2 * 2) - (Simulator.Weather.OvercastFactor * 2) - (3 - (Simulator.Weather.FogDistance / 100000 * 15)); 
-                    break;
-            }            
 
             // gravity force, M32 is up component of forward vector
             GravityForceN = MassKG * GravitationalAccelerationMpS2 * WorldPosition.XNAMatrix.M32;
@@ -1118,7 +1122,6 @@ namespace Orts.Simulation.RollingStocks
             UpdateCurveForce(elapsedClockSeconds);
             UpdateTunnelForce();
             UpdateBrakeSlideCalculation();
-            // Icik
             //UpdateTrainDerailmentRisk();
 
             if (this is MSTSLocomotive) // Set train outside temperature the same as the locomotive - TO BE RECHECKED
@@ -2828,9 +2831,7 @@ namespace Orts.Simulation.RollingStocks
         }
 
         private void AddVibrations(float factor)
-        {
-            TrackFactorXYZ();
-
+        {            
             // NOTE: For low angles (as our vibration rotations are), sin(angle) ~= angle, and since the displacement at the end of the car is sin(angle) = displacement/half-length, sin(displacement/half-length) * half-length ~= displacement.
             if (CarLengthM >= 25.0f || Simulator.Paused || Simulator.GameSpeed != 1)
             {
@@ -2841,6 +2842,8 @@ namespace Orts.Simulation.RollingStocks
             if (CarLengthM < 25.0f && !Simulator.Paused && Simulator.GameSpeed == 1)
             {
                 int force;
+
+                TrackFactorXYZ();
 
                 if (!TypVibrace_1 && !TypVibrace_2 && !TypVibrace_3)
                     direction1 = Simulator.Random.Next(0, 2);
@@ -2908,6 +2911,8 @@ namespace Orts.Simulation.RollingStocks
                     }
                     else
                         VibrationSpringConstantPrimepSpS = (12 + (1 * 2)) / 0.2f;
+
+                    //Simulator.Confirmer.Information("Factor_vibration: " + Factor_vibration);
 
                     if (direction1 == 0)
                         VibrationRotationVelocityRadpS.X += (TrackFactorX * factor * Simulator.Settings.CarVibratingLevel * VibrationIntroductionStrength * force * 1.0f * VibrationMassKG) / x;
