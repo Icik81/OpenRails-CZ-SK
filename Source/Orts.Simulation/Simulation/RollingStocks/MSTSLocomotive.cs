@@ -9348,6 +9348,9 @@ namespace Orts.Simulation.RollingStocks
                             data = 0;
                         if (Mirel.MirelType != Mirel.Type.Full && (Mirel.Ls90power == Mirel.LS90power.Off || Mirel.Ls90power == Mirel.LS90power.Start))
                             data = 0;
+                        if (!Mirel.RecievingRepeaterSignal)
+                            data = 0;
+
                         break;
                     }
                 case CABViewControlTypes.ORTS_STATION:

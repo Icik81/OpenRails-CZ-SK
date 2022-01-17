@@ -1518,6 +1518,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
 
             if (previousTrackMonitorSignalAspect != Locomotive.TrainControlSystem.CabSignalAspect)
             {
+                recieverState = RecieverState.Off;
                 previousTrackMonitorSignalAspect = Locomotive.TrainControlSystem.CabSignalAspect;
                 RecievingRepeaterSignal = false;
                 distanceAndSpeed = null;
@@ -2042,6 +2043,12 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                 {
                     if (!ManualMode && !ManualModeDisplay)
                     {
+                        if (!RecievingRepeaterSignal)
+                        {
+                            MirelMaximumSpeed = MaxSelectedSpeed;
+                            if (MirelMaximumSpeed > 120)
+                                MirelMaximumSpeed = 120;
+                        }
                         flashing = false;
                         float diff = MpS.ToKpH(Locomotive.AbsSpeedMpS) - MirelMaximumSpeed;
                         if (diff > 3)
@@ -2061,6 +2068,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                         }
                         if (diff > 7 && Locomotive.EmergencyButtonPressed == false && Bar.FromPSI(Locomotive.BrakeSystem.BrakeLine1PressurePSI) > PressureForTestPassBar)
                         {
+                            if (RecievingRepeaterSignal)
                             if (!NZ2) ApplyNZ2();
                         }
                     }
