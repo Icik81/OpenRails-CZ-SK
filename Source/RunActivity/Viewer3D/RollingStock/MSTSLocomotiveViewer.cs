@@ -2357,6 +2357,7 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.HEATING_OVERCURRENT:
                 case CABViewControlTypes.CHECK_POWERLOSS:
                 case CABViewControlTypes.DONT_RAISE_PANTO:
+                case CABViewControlTypes.ORTS_BAILOFF:
 
 
                     index = (int)data;

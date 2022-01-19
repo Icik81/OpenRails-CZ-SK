@@ -686,9 +686,15 @@ namespace Orts.Simulation.RollingStocks
                     Math.Min(Math.Min(Variable2 + elapsedClockSeconds * PercentChangePerSec, EngineRPMRatio), 1);
             }
 
+            // Icik
+            if (DieselEngines[0].IdleRPM != 0)
+                IdleRPM = DieselEngines[0].IdleRPM;
+            if (DieselEngines[0].MaxRPM != 0)
+                MaxRPM = DieselEngines[0].MaxRPM;
+
             EngineRPM = Variable2 * (MaxRPM - IdleRPM) + IdleRPM;
             Variable4 = EngineRPM;
-            Variable4 = (float)Math.Round(Variable4);
+            Variable4 = (float)Math.Round(Variable4);            
 
             if (DynamicBrakePercent > 0)
             {

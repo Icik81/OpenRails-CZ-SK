@@ -1057,7 +1057,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 && BrakeLine1PressurePSI < PrevAuxResPressurePSI - BrakePipeMinPressureDropToEngage 
                 && ThresholdBailOffOn == 0
                 && BrakeCylApplyMainResPressureOK
-                && !CarHasAirStuckBrake_2)                
+                && !CarHasAirStuckBrake_2
+                && !OL2BailOff)                
             {
                 if (TrainBrakeDelay > BrakeDelayToEngage - 0.05f && TrainBrakeDelay < BrakeDelayToEngage && AutoCylPressurePSI < 1)
                     AutoCylPressurePSI0 = 0.1f * 14.50377f;
@@ -1130,7 +1131,22 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     BrakeLine1PressurePSI -= dp * AuxBrakeLineVolumeRatio;  // Adjust the train brake pipe pressure
                 }
             }
-            
+
+            // Odbržďovač OL2
+            if ((loco.Train.LeadLocomotiveIndex >= 0 && ((MSTSLocomotive)loco.Train.Cars[loco.Train.LeadLocomotiveIndex]).BailOff)
+                && BrakeLine1PressurePSI > FullServPressurePSI)
+            {
+                OL2BailOff = true;
+                if (AutoCylPressurePSI0 > 0)
+                    AutoCylPressurePSI0 -= elapsedClockSeconds * AutoBailOffOnRatePSIpS;
+                if (AutoCylPressurePSI1 > 0)
+                    AutoCylPressurePSI1 -= elapsedClockSeconds * AutoBailOffOnRatePSIpS;
+                BrakeCylApply = false;
+            }
+            else
+                OL2BailOff = false;
+
+
             if (Car is MSTSLocomotive && !(Car as MSTSLocomotive).PowerOn) PowerForWagon = false;
 
             if (Car is MSTSLocomotive && (Car as MSTSLocomotive).PowerOn
@@ -1142,7 +1158,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 else EmergencyBrakeForWagon = false;
 
                 BailOffOn = false;
-                if ((loco.Train.LeadLocomotiveIndex >= 0 && ((MSTSLocomotive)loco.Train.Cars[loco.Train.LeadLocomotiveIndex]).BailOff) || loco.DynamicBrakeAutoBailOff && loco.Train.MUDynamicBrakePercent > 0 && loco.DynamicBrakeForceCurves == null)
+                if (loco.DynamicBrakeAutoBailOff && loco.Train.MUDynamicBrakePercent > 0 && loco.DynamicBrakeForceCurves == null)
                 {
                     BailOffOn = true;
                 }

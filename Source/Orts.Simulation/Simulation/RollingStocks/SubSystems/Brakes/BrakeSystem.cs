@@ -140,6 +140,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes
         public bool OverChargeRunning = false;
         public bool BrakePipeFlow;
         public float BrakePipeChangeRate;
+        public bool OL2BailOff;
 
         public bool BrakePipeDischargeRate = false;
         public bool BrakePipeChargeRate = false;
