@@ -295,6 +295,8 @@ namespace Orts.Common
         LowPressureReleaseButtonRelease,
         HeatingOverCurrentOn,
         HeatingOverCurrentOff,
+        ORTS_BailOff,
+        ORTS_BailOffRelease,
     }
 
     public static class Events
@@ -604,6 +606,9 @@ namespace Orts.Common
                         case 20050: return Event.HeatingOverCurrentOff;
                         case 20051: return Event.CabHeating_OffOnOn;
                         case 20052: return Event.CabHeating_OffOnOff;
+                        case 20053: return Event.ORTS_BailOff;
+                        case 20054: return Event.ORTS_BailOffRelease;
+
 
                         default: return 0;
                     }

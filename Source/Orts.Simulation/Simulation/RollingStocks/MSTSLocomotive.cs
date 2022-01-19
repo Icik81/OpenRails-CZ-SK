@@ -587,7 +587,8 @@ namespace Orts.Simulation.RollingStocks
         public bool AIPantoChange;
         public bool AIPanto2Raise = false;
         public float PowerCurrent;
-        public float BrakeCurrent;        
+        public float BrakeCurrent;
+        public bool BailOffPressed;
 
         // Jindrich
         public bool EnableControlVoltageChange = true;
@@ -2395,6 +2396,8 @@ namespace Orts.Simulation.RollingStocks
         {
             if (IsPlayerTrain)
             {
+                if (EngineBrakeEngageEDB || BrakeSystem.OL3active)
+                    return;
                 if (!PowerOn && !EDBIndependent)
                     disableDynamicBrakeIntervention = true;
                 if (Bar.FromPSI(BrakeSystem.BrakeLine1PressurePSI) > 4.9)
@@ -2404,16 +2407,16 @@ namespace Orts.Simulation.RollingStocks
                     DynamicBrakeIntervention = -1;
                     DynamicBrakeBlended = false;
                     return;
-                }
-
-                // Povolí EDB pro AI vlaky
-                if (!IsPlayerTrain)
-                {
-                    airPipeSystem = BrakeSystem as AirSinglePipe;
-                    DynamicBrake = true;
-                }
-
+                }                
             }
+
+            // Povolí EDB pro AI vlaky
+            if (!IsPlayerTrain)
+            {
+                airPipeSystem = BrakeSystem as AirSinglePipe;
+                DynamicBrake = true;
+            }
+
             if (airPipeSystem != null
                 && ((airPipeSystem is EPBrakeSystem && Train.BrakeLine4 > 0f) || (MainResPressurePSI >= airPipeSystem.maxPressurePSI0 && airPipeSystem.BrakeLine1PressurePSI < TrainBrakeController.MaxPressurePSI - 1f && AbsSpeedMpS > 1)
                 && ThrottleController.CurrentValue == 0f && !(DynamicBrakeController != null && DynamicBrakeBlendingOverride && DynamicBrakeController.CurrentValue > 0f))
@@ -2652,16 +2655,34 @@ namespace Orts.Simulation.RollingStocks
                     DynamicBrakeIntervention -= 0.5f;
                 if (DynamicBrakeIntervention < 0)
                     DynamicBrakeIntervention = -1;
-                DynamicBrakePercent -= 5;
+                DynamicBrakePercent -= 2.0f;
                 if (DynamicBrakePercent < 0) 
                     DynamicBrakePercent = 0;
                 SetDynamicBrakePercent(DynamicBrakePercent);
-                if (BrakeSystem.AutoCylPressurePSI1 < 1 && DynamicBrakeIntervention == -1)
+                if (BrakeSystem.AutoCylPressurePSI1 < 1 && DynamicBrakePercent == 0)
                 {
-                    EngineBrakeEngageEDB = false;
-                    DynamicBrakePercent = -1;
+                    EngineBrakeEngageEDB = false;                    
                 }
             }          
+        }
+
+        // Icik
+        // Při aktivní OL3 zruší účinek EDB      
+        public void EDBCancelByOL3BailOff()
+        {
+            if (!IsPlayerTrain)
+                return;
+            if (BrakeSystem.OL3active)
+            {
+                if (DynamicBrakeIntervention > -1)
+                    DynamicBrakeIntervention -= 0.5f;
+                if (DynamicBrakeIntervention < 0)
+                    DynamicBrakeIntervention = -1;
+                DynamicBrakePercent -= 1.0f;
+                if (DynamicBrakePercent < 0)
+                    DynamicBrakePercent = 0;
+                SetDynamicBrakePercent(DynamicBrakePercent);                
+            }
         }
 
         // Icik
@@ -3570,8 +3591,7 @@ namespace Orts.Simulation.RollingStocks
             if (Simulator.GameTimeCyklus10 == 10)
             {
                 Overcurrent_Protection();
-                AntiSlip_Protection();
-                EDBCancelByEngineBrake();
+                AntiSlip_Protection();                
                 HVOffbyAirPressure();
                 MaxPower_MaxForce_ACDC();
                 if (IsPlayerTrain && Pantograph4Enable) TogglePantograph4Switch();
@@ -3580,6 +3600,8 @@ namespace Orts.Simulation.RollingStocks
                 ToggleHV3Switch();
                 ToggleHV5Switch();
             }
+            EDBCancelByEngineBrake();
+            EDBCancelByOL3BailOff();
             PowerOn_Filter(elapsedClockSeconds);
             ElevatedConsumptionOnLocomotive(elapsedClockSeconds);
             
@@ -6732,6 +6754,16 @@ namespace Orts.Simulation.RollingStocks
         public void SetBailOff(bool bailOff)
         {
             BailOff = bailOff;
+            if (BailOff && !BailOffPressed)
+            {
+                SignalEvent(Event.ORTS_BailOff);
+                BailOffPressed = true;
+            }
+            if (!BailOff && BailOffPressed)
+            {
+                SignalEvent(Event.ORTS_BailOffRelease);
+                BailOffPressed = false;
+            }
             Simulator.Confirmer.Confirm(CabControl.BailOff, bailOff ? CabSetting.On : CabSetting.Off);
         }
 
