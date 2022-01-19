@@ -1133,7 +1133,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             }
 
             // Odbržďovač OL2
-            if ((loco.Train.LeadLocomotiveIndex >= 0 && ((MSTSLocomotive)loco.Train.Cars[loco.Train.LeadLocomotiveIndex]).BailOff)
+            if (Car is MSTSLocomotive 
+                && loco.Train.LeadLocomotiveIndex >= 0 && ((MSTSLocomotive)loco.Train.Cars[loco.Train.LeadLocomotiveIndex]).BailOff
                 && BrakeLine1PressurePSI > FullServPressurePSI)
             {
                 OL2BailOff = true;
