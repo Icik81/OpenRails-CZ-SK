@@ -1101,8 +1101,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 BrakeCylApply = false;
                 BrakeReadyToApply = false;
                 //ThresholdBailOffOn = 0;
-                BrakeCylReleaseEDBOn = false;
-                OL3active = false;
+                BrakeCylReleaseEDBOn = false;                
 
                 if ((Car as MSTSWagon).EmergencyReservoirPresent)
                 {
@@ -1167,7 +1166,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 else
                     OL3active = false;
             }
-
+            if (BrakeLine1PressurePSI > 4.9f * 14.50377f && BrakeCylRelease)
+                OL3active = false;
 
             if (Car is MSTSLocomotive && !(Car as MSTSLocomotive).PowerOn) PowerForWagon = false;
 
