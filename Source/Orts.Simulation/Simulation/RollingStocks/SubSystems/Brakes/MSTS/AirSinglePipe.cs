@@ -1166,7 +1166,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 else
                     OL3active = false;
             }
-            if (BrakeLine1PressurePSI > 4.9f * 14.50377f && BrakeCylRelease)
+            if (BrakeLine1PressurePSI > 4.9f * 14.50377f && BrakeCylRelease || (Car is MSTSLocomotive && (Car as MSTSLocomotive).BrakeSystem.EmergencyBrakeForWagon))
                 OL3active = false;
 
             if (Car is MSTSLocomotive && !(Car as MSTSLocomotive).PowerOn) PowerForWagon = false;
