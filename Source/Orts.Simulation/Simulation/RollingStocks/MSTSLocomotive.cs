@@ -2454,7 +2454,7 @@ namespace Orts.Simulation.RollingStocks
 
             else if (DynamicBrakeBlended)
             {
-                if (DynamicBrakeIntervention > 0 && DynamicBrakeIntervention > DynamicBrakeController.CurrentValue)
+                if (DynamicBrakeIntervention > 0 && (DynamicBrakeController != null && DynamicBrakeIntervention > DynamicBrakeController.CurrentValue))
                     DynamicBrakeIntervention -= 0.01f;
                 else
                 {
