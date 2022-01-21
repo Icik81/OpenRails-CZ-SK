@@ -448,6 +448,24 @@ namespace Orts.Viewer3D
                 foreach (var soundSource in RainSound) soundSource.Volume = (Weather.PricipitationIntensityPPSPM2 - 0.15f) / PrecipitationViewer.MaxIntensityPPSPM2_16;
                 foreach (var soundSource in SnowSound) soundSource.Volume = (Weather.PricipitationIntensityPPSPM2 - 0.15f) / PrecipitationViewer.MaxIntensityPPSPM2_16;                
             }
+
+            if (Viewer.Simulator.PlayerLocomotive.CarTunnelData.FrontPositionBeyondStartOfTunnel.HasValue)
+            {
+                if (Viewer.Simulator.PlayerLocomotive.CarTunnelData.LengthMOfTunnelAheadFront.Value > 5 
+                && (Viewer.Simulator.PlayerIsInCab 
+                || Viewer.Camera == Viewer.PassengerCamera 
+                || Viewer.Camera == Viewer.HeadOutForwardCamera 
+                || Viewer.Camera == Viewer.HeadOutBackCamera 
+                || Viewer.Camera == Viewer.FrontCamera 
+                || Viewer.Camera == Viewer.BackCamera 
+                || Viewer.Camera == Viewer.BrakemanCamera))
+                {
+                    foreach (var soundSource in ClearSound) soundSource.Volume = 0;
+                    foreach (var soundSource in ClearSoundNight) soundSource.Volume = 0;
+                    foreach (var soundSource in RainSound) soundSource.Volume = 0;
+                    foreach (var soundSource in SnowSound) soundSource.Volume = 0;
+                }
+            }
         }
 
         private void UpdateWind(ElapsedTime elapsedTime)
