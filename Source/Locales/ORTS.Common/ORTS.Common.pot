@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2021-09-11 21:28:49+0200\n"
-"PO-Revision-Date: 2021-09-11 21:28:49+0200\n"
+"POT-Creation-Date: 2022-01-22 11:01:05+0100\n"
+"PO-Revision-Date: 2022-01-22 11:01:05+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -614,550 +614,642 @@ msgid "Camera Browse Forwards"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:122
-msgid "Control Forwards"
+msgid "TCS Zapnout VZ"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:123
-msgid "Control Backwards"
-msgstr ""
-
-#: ../../ORTS.Common/Input/UserCommand.cs:124
-msgid "Control Throttle Increase"
+msgid "TCS Přepnout VZ"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:125
-msgid "Control Throttle Decrease"
+msgid "Control_Classic Forwards"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:126
-msgid "Control Throttle Zero"
+msgid "Control_Classic Backwards"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:127
-msgid "Control Gear Up"
+msgid "Control_Classic Throttle Increase"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:128
-msgid "Control Gear Down"
+msgid "Control_Classic Throttle Decrease"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:129
-msgid "Control Train Brake Increase"
+msgid "Control_Classic Throttle Zero"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:130
-msgid "Control Train Brake Decrease"
+msgid "Control_Classic Gear Up"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:131
-msgid "Control Train Brake Zero"
+msgid "Control_Classic Gear Down"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:132
-msgid "Control Engine Brake Increase"
+msgid "Control_Classic Train Brake Increase"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:133
-msgid "Control Engine Brake Decrease"
+msgid "Control_Classic Train Brake Decrease"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:134
-msgid "Control Engine Brake Increase Alternative"
+msgid "Control_Classic Train Brake Zero"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:135
-msgid "Control Engine Brake Decrease Alternative"
+msgid "Control_Classic Engine Brake Increase"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:136
-msgid "Control Brakeman Brake Increase"
+msgid "Control_Classic Engine Brake Decrease"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:137
-msgid "Control Brakeman Brake Decrease"
+msgid "Control_Classic Engine Brake Increase Alternative"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:138
-msgid "Control Dynamic Brake Increase"
+msgid "Control_Classic Engine Brake Decrease Alternative"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:139
-msgid "Control Dynamic Brake Decrease"
+msgid "Control_Classic Brakeman Brake Increase"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:140
-msgid "Control Bail Off"
+msgid "Control_Classic Brakeman Brake Decrease"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:141
-msgid "Control Initialize Brakes"
+msgid "Control_Classic Dynamic Brake Increase"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:142
-msgid "Control Handbrake Full"
+msgid "Control_Classic Dynamic Brake Decrease"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:143
-msgid "Control Handbrake None"
+msgid "Control_Classic Bail Off"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:144
-msgid "Control Odometer Show/Hide"
+msgid "Control_Classic Initialize Brakes"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:145
-msgid "Control Odometer Reset"
+msgid "Control_Classic Handbrake Full"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:146
-msgid "Control Odometer Direction"
+msgid "Control_Classic Handbrake None"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:147
-msgid "Control Retainers On"
+msgid "Control_Classic Odometer Show/Hide"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:148
-msgid "Control Retainers Off"
+msgid "Control_Classic Odometer Reset"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:149
-msgid "Control Brake Hose Connect"
+msgid "Control_Classic Odometer Direction"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:150
-msgid "Control Brake Hose Disconnect"
+msgid "Control_Classic Retainers On"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:151
-msgid "Control Alerter"
+msgid "Control_Classic Retainers Off"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:152
-msgid "Control Emergency Push Button"
+msgid "Control_Classic Brake Hose Connect"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:153
-msgid "Control Sander"
+msgid "Control_Classic Brake Hose Disconnect"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:154
-msgid "Control Sander Toggle"
+msgid "Control_Classic Alerter"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:155
-msgid "Control Wiper"
+msgid "Control_Classic Emergency Push Button"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:156
-msgid "Control Horn"
+msgid "Control_Classic Sander"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:157
-msgid "Control Bell"
+msgid "Control_Classic Sander Toggle"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:158
-msgid "Control Bell Toggle"
+msgid "Control_Classic Wiper"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:159
-msgid "Control Door Left"
+msgid "Control_Classic Horn"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:160
-msgid "Control Door Right"
+msgid "Control_Classic Bell"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:161
-msgid "Control Mirror"
+msgid "Control_Classic Bell Toggle"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:162
-msgid "Control Light"
+msgid "Control_Classic Door Left"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:163
-msgid "Control Pantograph 1"
+msgid "Control_Classic Door Right"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:164
-msgid "Control Pantograph 2"
+msgid "Control_Classic Mirror"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:165
-msgid "Control Pantograph 3"
+msgid "Control_Classic Light"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:166
-msgid "Control Pantograph 4"
+msgid "Control_Classic Flood Light"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:167
-msgid "Control Circuit Breaker Closing Order"
+msgid "Control_Classic Pantograph 1"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:168
-msgid "Control Circuit Breaker Opening Order"
+msgid "Control_Classic Pantograph 2"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:169
-msgid "Control Circuit Breaker Closing Authorization"
+msgid "Control_Classic Pantograph 3"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:170
-msgid "Control Diesel Player"
+msgid "Control_Classic Pantograph 4"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:171
-msgid "Control Diesel Helper"
+msgid "Control_Classic Circuit Breaker Closing Order"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:172
-msgid "Control Headlight Increase"
+msgid "Control_Classic Circuit Breaker Opening Order"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:173
-msgid "Control Headlight Decrease"
+msgid "Control_Classic Circuit Breaker Closing Authorization"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:174
-msgid "Control Injector 1 Increase"
+msgid "Control_Classic Diesel Player"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:175
-msgid "Control Injector 1 Decrease"
+msgid "Control_Classic Diesel Helper"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:176
-msgid "Control Injector 1"
+msgid "Control_Classic Headlight Increase"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:177
-msgid "Control Injector 2 Increase"
+msgid "Control_Classic Headlight Decrease"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:178
-msgid "Control Injector 2 Decrease"
+msgid "Control_Classic Injector 1 Increase"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:179
-msgid "Control Injector 2"
+msgid "Control_Classic Injector 1 Decrease"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:180
-msgid "Control Blowdown Valve"
+msgid "Control_Classic Injector 1"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:181
-msgid "Control Blower Increase"
+msgid "Control_Classic Injector 2 Increase"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:182
-msgid "Control Blower Decrease"
+msgid "Control_Classic Injector 2 Decrease"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:183
-msgid "Control Steam Heat Increase"
+msgid "Control_Classic Injector 2"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:184
-msgid "Control Steam Heat Decrease"
+msgid "Control_Classic Blowdown Valve"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:185
-msgid "Control Damper Increase"
+msgid "Control_Classic Blower Increase"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:186
-msgid "Control Damper Decrease"
+msgid "Control_Classic Blower Decrease"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:187
-msgid "Control Firebox Open"
+msgid "Control_Classic Steam Heat Increase"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:188
-msgid "Control Firebox Close"
+msgid "Control_Classic Steam Heat Decrease"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:189
-msgid "Control Firing Rate Increase"
+msgid "Control_Classic Damper Increase"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:190
-msgid "Control Firing Rate Decrease"
+msgid "Control_Classic Damper Decrease"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:191
-msgid "Control Fire Shovel Full"
+msgid "Control_Classic Firebox Open"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:192
-msgid "Control Cylinder Cocks"
+msgid "Control_Classic Firebox Close"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:193
-msgid "Control Large Ejector Increase"
+msgid "Control_Classic Firing Rate Increase"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:194
-msgid "Control Large Ejector Decrease"
+msgid "Control_Classic Firing Rate Decrease"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:195
-msgid "Control Small Ejector Increase"
+msgid "Control_Classic Fire Shovel Full"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:196
-msgid "Control Small Ejector Decrease"
+msgid "Control_Classic Cylinder Cocks"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:197
-msgid "Control Vacuum Exhauster"
+msgid "Control_Classic Large Ejector Increase"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:198
-msgid "Control Cylinder Compound"
+msgid "Control_Classic Large Ejector Decrease"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:199
-msgid "Control Firing"
+msgid "Control_Classic Small Ejector Increase"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:200
-msgid "Control Refill"
+msgid "Control_Classic Small Ejector Decrease"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:201
-msgid "Control Water Scoop"
+msgid "Control_Classic Vacuum Exhauster"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:202
-msgid "Control ImmediateRefill"
+msgid "Control_Classic Cylinder Compound"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:203
-msgid "Control Turntable Clockwise"
+msgid "Control_Classic Firing"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:204
-msgid "Control Turntable Counterclockwise"
+msgid "Control_Classic Refill"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:205
-msgid "Control Generic 1"
+msgid "Control_Classic Water Scoop"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:206
-msgid "Control Generic 2"
+msgid "Control_Classic ImmediateRefill"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:207
-msgid "Control Cab Radio"
+msgid "Control_Classic Turntable Clockwise"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:208
-msgid "Control AI Fire On"
+msgid "Control_Classic Turntable Counterclockwise"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:209
-msgid "Control AI Fire Off"
+msgid "Control_Classic Cab Radio"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:210
-msgid "Control AI Fire Reset"
+msgid "Control_Classic AI Fire On"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:211
-msgid "Control Battery"
+msgid "Control_Classic AI Fire Off"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:212
-msgid "Control PowerKey"
+msgid "Control_Classic AI Fire Reset"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:213
-msgid "Control Speed Regulator Mode Increase"
+msgid "Control_Classic Battery"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:214
-msgid "Control Speed Regulator Mode Descrease"
-msgstr ""
-
-#: ../../ORTS.Common/Input/UserCommand.cs:215
-msgid "Control Selected Speed Increase"
-msgstr ""
-
-#: ../../ORTS.Common/Input/UserCommand.cs:216
-msgid "Control Selected Speed Decrease"
+msgid "Control_Classic PowerKey"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:217
-msgid "Control Speed Regulator Max Acceleration Increase"
+msgid "Control_CZSK Mirel Off"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:218
-msgid "Control Speed Regulator Max Acceleration Decrease"
+msgid "Control_CZSK Mirel On"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:219
-msgid "Control Number Of Axles Increase"
+msgid "Control_CZSK Speed Regulator Mode Increase"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:220
-msgid "Control Number Of Axles Decrease"
+msgid "Control_CZSK Speed Regulator Mode Descrease"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:221
-msgid "Control Restricted Speed Zone Active"
+msgid "Control_CZSK Selected Speed Increase"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:222
-msgid "Control Cruise Control Mode Increase"
+msgid "Control_CZSK Selected Speed Decrease"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:223
-msgid "Control Cruise Control Mode Decrease"
+msgid "Control_CZSK Speed Regulator Max Acceleration Increase"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:224
-msgid "Control Train Type Change (Passenger/Cargo)"
+msgid "Control_CZSK Speed Regulator Max Acceleration Decrease"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:225
-msgid "Control Select Speed 10 kph/mph"
+msgid "Control_CZSK Number Of Axles Increase"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:226
-msgid "Control Select Speed 20 kph/mph"
+msgid "Control_CZSK Number Of Axles Decrease"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:227
-msgid "Control Select Speed 30 kph/mph"
+msgid "Control_CZSK Restricted Speed Zone Active"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:228
-msgid "Control Select Speed 40 kph/mph"
+msgid "Control_CZSK Cruise Control Mode Increase"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:229
-msgid "Control Select Speed 50 kph/mph"
+msgid "Control_CZSK Cruise Control Mode Decrease"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:230
-msgid "Control Select Speed 60 kph/mph"
+msgid "Control_CZSK Train Type Change (Passenger/Cargo)"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:231
-msgid "Control Select Speed 70 kph/mph"
+msgid "Control_CZSK Select Speed 10 kph/mph"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:232
-msgid "Control Select Speed 80 kph/mph"
+msgid "Control_CZSK Select Speed 20 kph/mph"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:233
-msgid "Control Select Speed 90 kph/mph"
+msgid "Control_CZSK Select Speed 30 kph/mph"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:234
-msgid "Control Select Speed 100 kph/mph"
+msgid "Control_CZSK Select Speed 40 kph/mph"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:235
-msgid "Control Select Speed 110 kph/mph"
+msgid "Control_CZSK Select Speed 50 kph/mph"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:236
-msgid "Control Select Speed 120 kph/mph"
+msgid "Control_CZSK Select Speed 60 kph/mph"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:237
-msgid "Control Select Speed 130 kph/mph"
+msgid "Control_CZSK Select Speed 70 kph/mph"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:238
-msgid "Control Select Speed 140 kph/mph"
+msgid "Control_CZSK Select Speed 80 kph/mph"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:239
-msgid "Control Select Speed 150 kph/mph"
+msgid "Control_CZSK Select Speed 90 kph/mph"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:240
-msgid "Control Select Speed 160 kph/mph"
+msgid "Control_CZSK Select Speed 100 kph/mph"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:241
-msgid "Control Select Speed 170 kph/mph"
+msgid "Control_CZSK Select Speed 110 kph/mph"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:242
-msgid "Control Select Speed 180 kph/mph"
+msgid "Control_CZSK Select Speed 120 kph/mph"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:243
-msgid "Control Select Speed 190 kph/mph"
+msgid "Control_CZSK Select Speed 130 kph/mph"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:244
-msgid "Control Select Speed 200 kph/mph"
+msgid "Control_CZSK Select Speed 140 kph/mph"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:245
-msgid "Control Mirel Key Plus"
+msgid "Control_CZSK Select Speed 150 kph/mph"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:246
-msgid "Control Mirel Key Minus"
+msgid "Control_CZSK Select Speed 160 kph/mph"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:247
-msgid "Control Mirel Key Enter"
+msgid "Control_CZSK Select Speed 170 kph/mph"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:248
-msgid "Control Cab Select Increase"
+msgid "Control_CZSK Select Speed 180 kph/mph"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:249
-msgid "Control Cab Select Decrease"
+msgid "Control_CZSK Select Speed 190 kph/mph"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:250
-msgid "Control Display Key Position"
+msgid "Control_CZSK Select Speed 200 kph/mph"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:251
-msgid "Control Change Key Position"
+msgid "Control_CZSK Mirel Key Plus"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:252
-msgid "Set Mirel Off"
+msgid "Control_CZSK Mirel Key Minus"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:253
-msgid "Set Mirel On"
+msgid "Control_CZSK Mirel Key Enter"
+msgstr ""
+
+#: ../../ORTS.Common/Input/UserCommand.cs:254
+msgid "Control_CZSK Cab Select Increase"
+msgstr ""
+
+#: ../../ORTS.Common/Input/UserCommand.cs:255
+msgid "Control_CZSK Cab Select Decrease"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:256
-msgid "Control Compressor Mode Off/Auto"
+msgid "Control_CZSK Display Key Position"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:257
-msgid "Control Heating Off/Auto"
-msgstr ""
-
-#: ../../ORTS.Common/Input/UserCommand.cs:258
-msgid "Control Switching Voltage Mode Off/DC"
-msgstr ""
-
-#: ../../ORTS.Common/Input/UserCommand.cs:259
-msgid "Control Switching Voltage Mode Off/AC"
+msgid "Control_CZSK Change Key Position"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:260
-msgid "Control Route Voltage 25kV / 3kV"
+msgid "Control_CZSK HV2 1-system +"
+msgstr ""
+
+#: ../../ORTS.Common/Input/UserCommand.cs:261
+msgid "Control_CZSK HV3 2-system +"
+msgstr ""
+
+#: ../../ORTS.Common/Input/UserCommand.cs:262
+msgid "Control_CZSK HV3 2-system -"
+msgstr ""
+
+#: ../../ORTS.Common/Input/UserCommand.cs:263
+msgid "Control_CZSK HV5 2-system +"
+msgstr ""
+
+#: ../../ORTS.Common/Input/UserCommand.cs:264
+msgid "Control_CZSK HV5 2-system -"
+msgstr ""
+
+#: ../../ORTS.Common/Input/UserCommand.cs:265
+msgid "Control_CZSK Pantograph3 +"
+msgstr ""
+
+#: ../../ORTS.Common/Input/UserCommand.cs:266
+msgid "Control_CZSK Pantograph3 -"
+msgstr ""
+
+#: ../../ORTS.Common/Input/UserCommand.cs:267
+msgid "Control_CZSK Pantograph4 +"
+msgstr ""
+
+#: ../../ORTS.Common/Input/UserCommand.cs:268
+msgid "Control_CZSK Pantograph4 -"
+msgstr ""
+
+#: ../../ORTS.Common/Input/UserCommand.cs:269
+msgid "Control_CZSK Compressor I Combined +"
+msgstr ""
+
+#: ../../ORTS.Common/Input/UserCommand.cs:270
+msgid "Control_CZSK Compressor I Combined -"
+msgstr ""
+
+#: ../../ORTS.Common/Input/UserCommand.cs:271
+msgid "Control_CZSK Compressor II Combined +"
+msgstr ""
+
+#: ../../ORTS.Common/Input/UserCommand.cs:272
+msgid "Control_CZSK Compressor II Combined -"
+msgstr ""
+
+#: ../../ORTS.Common/Input/UserCommand.cs:273
+msgid "Control_CZSK AuxCompressor Off/On"
+msgstr ""
+
+#: ../../ORTS.Common/Input/UserCommand.cs:274
+msgid "Control_CZSK Compressor I Mode Off/Auto"
+msgstr ""
+
+#: ../../ORTS.Common/Input/UserCommand.cs:275
+msgid "Control_CZSK Compressor II Mode Off/Auto"
+msgstr ""
+
+#: ../../ORTS.Common/Input/UserCommand.cs:276
+msgid "Control_CZSK Heating Off/On"
+msgstr ""
+
+#: ../../ORTS.Common/Input/UserCommand.cs:277
+msgid "Control_CZSK Heating in Cab Off/On"
+msgstr ""
+
+#: ../../ORTS.Common/Input/UserCommand.cs:278
+msgid "Control_CZSK Locomotive PowerVoltage 25kV/both/3kV"
+msgstr ""
+
+#: ../../ORTS.Common/Input/UserCommand.cs:279
+msgid "Control_CZSK Quickrelease button"
+msgstr ""
+
+#: ../../ORTS.Common/Input/UserCommand.cs:280
+msgid "Control_CZSK Lowpressurerelease button"
+msgstr ""
+
+#: ../../ORTS.Common/Input/UserCommand.cs:281
+msgid "Control_CZSK Breakpower button"
+msgstr ""
+
+#: ../../ORTS.Common/Input/UserCommand.cs:284
+msgid "Set Power Supply Station Location"
+msgstr ""
+
+#: ../../ORTS.Common/Input/UserCommand.cs:285
+msgid "Set Voltage 25k"
+msgstr ""
+
+#: ../../ORTS.Common/Input/UserCommand.cs:286
+msgid "Set Voltage 3k"
+msgstr ""
+
+#: ../../ORTS.Common/Input/UserCommand.cs:287
+msgid "Set Voltage 0"
+msgstr ""
+
+#: ../../ORTS.Common/Input/UserCommand.cs:288
+msgid "Set Delete Voltage Marker"
 msgstr ""
 

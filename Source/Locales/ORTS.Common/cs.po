@@ -1,16 +1,17 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ORTS.Common\n"
-"POT-Creation-Date: 2019-05-19 00:50:56+0200\n"
-"PO-Revision-Date: 2019-05-19 01:58+0200\n"
+"POT-Creation-Date: 2022-01-22 11:01:05+0100\n"
+"PO-Revision-Date: 2022-01-22 12:03+0100\n"
 "Last-Translator: Altmann <altmann@bk.ru>\n"
 "Language-Team: \n"
 "Language: cs\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 2.2.2\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
+"X-Generator: Poedit 3.0.1\n"
+"X-Poedit-KeywordsList: Control_Classic\n"
 
 #: ../../ORTS.Common/Conversions.cs:524
 msgid "m"
@@ -177,19 +178,19 @@ msgid "klbf"
 msgstr "klbf"
 
 #. Context: Reverser
-#: ../../ORTS.Common/enums.cs:27
+#: ../../ORTS.Common/enums.cs:29
 msgctxt "Reverser"
 msgid "Forward"
 msgstr "Vpřed"
 
 #. Context: Reverser
-#: ../../ORTS.Common/enums.cs:28
+#: ../../ORTS.Common/enums.cs:30
 msgctxt "Reverser"
 msgid "Reverse"
 msgstr "Vzad"
 
 #. Context: Reverser
-#: ../../ORTS.Common/enums.cs:29
+#: ../../ORTS.Common/enums.cs:31
 msgctxt "Reverser"
 msgid "N"
 msgstr "N"
@@ -219,607 +220,1224 @@ msgid "Game Fullscreen"
 msgstr "Hra Celá obrazovka"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:17
-msgid "Game Switch Ahead"
+msgid "Game External Controller (RailDriver)"
+msgstr "Hra externí ovladač (RailDriver)"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:20
+#, fuzzy
+#| msgid "Game Switch Ahead"
+msgid "Game Facing Switch Ahead"
 msgstr "Hra Výhybka před"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:18
-msgid "Game Switch Behind"
+#: ../../ORTS.Common/Input/UserCommand.cs:21
+#, fuzzy
+#| msgid "Game Switch Behind"
+msgid "Game Facing Switch Behind"
 msgstr "Hra Výhybka za"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:19
+#: ../../ORTS.Common/Input/UserCommand.cs:22
 msgid "Game Switch Picked"
 msgstr "Hra Výběr výhybky"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:20
+#: ../../ORTS.Common/Input/UserCommand.cs:23
 msgid "Game Signal Picked"
 msgstr "Hra Výběr návěstidla"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:21
+#: ../../ORTS.Common/Input/UserCommand.cs:24
+#, fuzzy
+#| msgid "Game Switch Ahead"
+msgid "Game Trailing Switch Ahead"
+msgstr "Hra Výhybka před"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:25
+#, fuzzy
+#| msgid "Game Switch Behind"
+msgid "Game Trailing Switch Behind"
+msgstr "Hra Výhybka za"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:26
 msgid "Game Switch With Mouse"
 msgstr "Hra Výhybka myší"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:22
+#: ../../ORTS.Common/Input/UserCommand.cs:27
 msgid "Game Uncouple With Mouse"
 msgstr "Hra Rozpojit myší"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:23
+#: ../../ORTS.Common/Input/UserCommand.cs:28
 msgid "Game Change Cab"
 msgstr "Hra Přepnout kabinu"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:24
+#: ../../ORTS.Common/Input/UserCommand.cs:29
 msgid "Game Request Control"
 msgstr "Hra Požadavek na volnou cestu"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:25
+#: ../../ORTS.Common/Input/UserCommand.cs:30
 msgid "Game Multi Player Dispatcher"
 msgstr "Hra po síti Dispečer"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:26
+#: ../../ORTS.Common/Input/UserCommand.cs:31
 msgid "Game Multi Player Texting"
 msgstr "Hra po síti Poslat zprávu"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:27
+#: ../../ORTS.Common/Input/UserCommand.cs:32
 msgid "Game Switch Manual Mode"
 msgstr "Hra Ruční režim výhybek"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:28
+#: ../../ORTS.Common/Input/UserCommand.cs:33
 msgid "Game Clear Signal Forward"
 msgstr "Hra Postav cestu vpřed"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:29
+#: ../../ORTS.Common/Input/UserCommand.cs:34
 msgid "Game Clear Signal Backward"
 msgstr "Hra Postav cestu vzad"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:30
+#: ../../ORTS.Common/Input/UserCommand.cs:35
 msgid "Game Reset Signal Forward"
 msgstr "Hra Obnov cestu vpřed"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:31
+#: ../../ORTS.Common/Input/UserCommand.cs:36
 msgid "Game Reset Signal Backward"
 msgstr "Hra Obnov cestu vzad"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:32
+#: ../../ORTS.Common/Input/UserCommand.cs:37
 msgid "Game Autopilot Mode"
 msgstr "Hra Autopilot"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:33
+#: ../../ORTS.Common/Input/UserCommand.cs:38
 msgid "Game Suspend Old Player"
 msgstr "Hra Suspendovat starého hráče"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:35
+#: ../../ORTS.Common/Input/UserCommand.cs:40
 msgid "Display Next Window Tab"
 msgstr "Zobrazit Další záložka okna"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:36
+#: ../../ORTS.Common/Input/UserCommand.cs:41
 msgid "Display Help Window"
 msgstr "Zobrazit Okno nápovědy"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:37
+#: ../../ORTS.Common/Input/UserCommand.cs:42
 msgid "Display Track Monitor Window"
 msgstr "Zobrazit Monitor tratě"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:38
+#: ../../ORTS.Common/Input/UserCommand.cs:43
 msgid "Display HUD"
 msgstr "Zobrazit Interní veličiny"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:39
+#: ../../ORTS.Common/Input/UserCommand.cs:44
+#, fuzzy
+#| msgid "Display Train List Window"
+msgid "Display Train Driving Window"
+msgstr "Zobrazit Okno se seznamem vlaků"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:45
 msgid "Display Car Labels"
 msgstr "Zobrazit Popis vozidel"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:40
+#: ../../ORTS.Common/Input/UserCommand.cs:46
 msgid "Display Station Labels"
 msgstr "Zobrazit Popis stanic"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:41
+#: ../../ORTS.Common/Input/UserCommand.cs:47
 msgid "Display Switch Window"
 msgstr "Zobrazit Okno výhybky"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:42
+#: ../../ORTS.Common/Input/UserCommand.cs:48
 msgid "Display Train Operations Window"
 msgstr "Zobrazit Okno vlaku"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:43
+#: ../../ORTS.Common/Input/UserCommand.cs:49
 msgid "Display Next Station Window"
 msgstr "Zobrazit Okno následující stanice"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:44
+#: ../../ORTS.Common/Input/UserCommand.cs:50
 msgid "Display Compass Window"
 msgstr "Zobrazit Kompas"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:45
+#: ../../ORTS.Common/Input/UserCommand.cs:51
 msgid "Display Basic HUD Toggle"
 msgstr "Zobrazit Přepnutí zákl. interních veličin"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:46
+#: ../../ORTS.Common/Input/UserCommand.cs:52
 msgid "Display Train List Window"
 msgstr "Zobrazit Okno se seznamem vlaků"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:48
+#: ../../ORTS.Common/Input/UserCommand.cs:53
+msgid "Display Passenger List Window"
+msgstr "Zobrazit Okno se seznamem osobních vlaků"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:55
 msgid "Debug Speed Up"
 msgstr "Ladit Zrychlit čas"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:49
+#: ../../ORTS.Common/Input/UserCommand.cs:56
 msgid "Debug Speed Down"
 msgstr "Ladit Zpomalit čas"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:50
+#: ../../ORTS.Common/Input/UserCommand.cs:57
 msgid "Debug Speed Reset"
 msgstr "Ladit Výchozí rychlost"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:51
+#: ../../ORTS.Common/Input/UserCommand.cs:58
 msgid "Debug Overcast Increase"
 msgstr "Ladit Přidat oblačnost"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:52
+#: ../../ORTS.Common/Input/UserCommand.cs:59
 msgid "Debug Overcast Decrease"
 msgstr "Ladit Ubrat oblačnost"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:53
+#: ../../ORTS.Common/Input/UserCommand.cs:60
 msgid "Debug Fog Increase"
 msgstr "Ladit Přidat mlhu"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:54
+#: ../../ORTS.Common/Input/UserCommand.cs:61
 msgid "Debug Fog Decrease"
 msgstr "Ladit Ubrat mlhu"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:55
+#: ../../ORTS.Common/Input/UserCommand.cs:62
 msgid "Debug Precipitation Increase"
 msgstr "Ladit Přidat srážky"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:56
+#: ../../ORTS.Common/Input/UserCommand.cs:63
 msgid "Debug Precipitation Decrease"
 msgstr "Ladit Ubrat srážky"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:59
+#: ../../ORTS.Common/Input/UserCommand.cs:64
+msgid "Debug Precipitation Liquidity Increase"
+msgstr "Ladit Přidat likviditu srážky"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:65
+msgid "Debug Precipitation Liquidity Decrease"
+msgstr "Ladit Ubrat likviditu srážky"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:66
 msgid "Debug Weather Change"
 msgstr "Ladit Změna počasí"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:60
+#: ../../ORTS.Common/Input/UserCommand.cs:67
 msgid "Debug Clock Forwards"
 msgstr "Ladit Hodiny vpřed"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:61
+#: ../../ORTS.Common/Input/UserCommand.cs:68
 msgid "Debug Clock Backwards"
 msgstr "Ladit Hodiny vzad"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:62
+#: ../../ORTS.Common/Input/UserCommand.cs:69
 msgid "Debug Logger"
 msgstr "Ladit Spustit/zastavit logování"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:63
+#: ../../ORTS.Common/Input/UserCommand.cs:70
 msgid "Debug Lock Shadows"
 msgstr "Ladit Uzamknout stíny"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:64
+#: ../../ORTS.Common/Input/UserCommand.cs:71
 msgid "Debug Dump Keyboard Map"
 msgstr "Ladit Výpis mapy klávesnice"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:65
+#: ../../ORTS.Common/Input/UserCommand.cs:72
 msgid "Debug Log Render Frame"
 msgstr "Ladit Logování vykreslování"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:66
+#: ../../ORTS.Common/Input/UserCommand.cs:73
 msgid "Debug Tracks"
 msgstr "Ladit Koleje"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:67
+#: ../../ORTS.Common/Input/UserCommand.cs:74
 msgid "Debug Signalling"
 msgstr "Ladit Zabezpečovací systém"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:68
+#: ../../ORTS.Common/Input/UserCommand.cs:75
 msgid "Debug Reset Wheel Slip"
 msgstr "Ladit Resetovat prokluz kol"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:69
+#: ../../ORTS.Common/Input/UserCommand.cs:76
 msgid "Debug Toggle Advanced Adhesion"
 msgstr "Ladit Zapnout/vypnout pokročilou adhezi"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:70
+#: ../../ORTS.Common/Input/UserCommand.cs:77
 msgid "Debug Sound Form"
 msgstr "Ladit Okno zvuků"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:71
+#: ../../ORTS.Common/Input/UserCommand.cs:78
 msgid "Debug Physics Form"
 msgstr "Ladit Okno fyziky"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:73
+#: ../../ORTS.Common/Input/UserCommand.cs:79
+msgid "Debug Toggle Confirmations"
+msgstr "Ladit Zapnout/vypnout info řádek"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:81
 msgid "Camera Cab"
 msgstr "Pohled Kabina"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:75
-msgid "Camera 3D Cab"
-msgstr "Pohled 3D kabina"
+#: ../../ORTS.Common/Input/UserCommand.cs:82
+#, fuzzy
+#| msgid "Camera Passenger"
+msgid "Camera Change Passenger Viewpoint"
+msgstr "Pohled Cestující"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:76
+#: ../../ORTS.Common/Input/UserCommand.cs:83
+msgid "Camera Toggle 3D Cab"
+msgstr "Pohled Zapnout 3D kabinu"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:84
 msgid "Camera Toggle Show Cab"
 msgstr "Pohled Ukaž kabinu"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:77
+#: ../../ORTS.Common/Input/UserCommand.cs:85
+msgid "Camera Toggle Letterbox Cab"
+msgstr "Pohled Zapnout 4:3 formát kabiny"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:86
 msgid "Camera Head Out Forward"
 msgstr "Pohled Boční vpřed"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:78
+#: ../../ORTS.Common/Input/UserCommand.cs:87
 msgid "Camera Head Out Backward"
 msgstr "Pohled Boční vzad"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:79
+#: ../../ORTS.Common/Input/UserCommand.cs:88
 msgid "Camera Outside Front"
 msgstr "Pohled Začátek vlaku"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:80
+#: ../../ORTS.Common/Input/UserCommand.cs:89
 msgid "Camera Outside Rear"
 msgstr "Pohled Konec vlaku"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:81
+#: ../../ORTS.Common/Input/UserCommand.cs:90
 msgid "Camera Trackside"
 msgstr "Pohled Trať"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:83
+#: ../../ORTS.Common/Input/UserCommand.cs:91
+msgid "Camera SpecialTracksidePoint"
+msgstr "Pohled Trať další pohledy"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:92
 msgid "Camera Passenger"
 msgstr "Pohled Cestující"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:84
+#: ../../ORTS.Common/Input/UserCommand.cs:93
 msgid "Camera Brakeman"
 msgstr "Pohled Brzdař"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:85
+#: ../../ORTS.Common/Input/UserCommand.cs:94
 msgid "Camera Free"
 msgstr "Pohled Volný"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:86
+#: ../../ORTS.Common/Input/UserCommand.cs:95
 msgid "Camera Previous Free"
 msgstr "Pohled Volný předcházející"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:87
+#: ../../ORTS.Common/Input/UserCommand.cs:96
 msgid "Camera Reset"
 msgstr "Pohled Resetovat"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:88
+#: ../../ORTS.Common/Input/UserCommand.cs:97
 msgid "Camera Move Fast"
 msgstr "Pohled Pohyb rychle"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:89
+#: ../../ORTS.Common/Input/UserCommand.cs:98
 msgid "Camera Move Slow"
 msgstr "Pohled Pohyb pomalu"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:90
+#: ../../ORTS.Common/Input/UserCommand.cs:99
 msgid "Camera Pan (Rotate) Left"
 msgstr "Pohled Otočit vlevo"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:91
+#: ../../ORTS.Common/Input/UserCommand.cs:100
 msgid "Camera Pan (Rotate) Right"
 msgstr "Pohled Otočit vpravo"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:92
+#: ../../ORTS.Common/Input/UserCommand.cs:101
 msgid "Camera Pan (Rotate) Up"
 msgstr "Pohled Otočit nahoru"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:93
+#: ../../ORTS.Common/Input/UserCommand.cs:102
 msgid "Camera Pan (Rotate) Down"
 msgstr "Pohled Otočit dolů"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:94
+#: ../../ORTS.Common/Input/UserCommand.cs:103
 msgid "Camera Zoom In (Move Z)"
 msgstr "Pohled Přiblížit"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:95
+#: ../../ORTS.Common/Input/UserCommand.cs:104
 msgid "Camera Zoom Out (Move Z)"
 msgstr "Pohled Oddálit"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:96
+#: ../../ORTS.Common/Input/UserCommand.cs:105
 msgid "Camera Rotate (Pan) Left"
 msgstr "Pohled Pohyb vlevo"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:97
+#: ../../ORTS.Common/Input/UserCommand.cs:106
 msgid "Camera Rotate (Pan) Right"
 msgstr "Pohled Pohyb vpravo"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:98
+#: ../../ORTS.Common/Input/UserCommand.cs:107
 msgid "Camera Rotate (Pan) Up"
 msgstr "Pohled Pohyb nahoru"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:99
+#: ../../ORTS.Common/Input/UserCommand.cs:108
 msgid "Camera Rotate (Pan) Down"
 msgstr "Pohled Pohyb dolů"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:100
+#: ../../ORTS.Common/Input/UserCommand.cs:109
 msgid "Camera Car Next"
 msgstr "Pohled Další vozidlo"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:101
+#: ../../ORTS.Common/Input/UserCommand.cs:110
 msgid "Camera Car Previous"
 msgstr "Pohled Předchozí vozidlo"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:102
+#: ../../ORTS.Common/Input/UserCommand.cs:111
 msgid "Camera Car First"
 msgstr "Pohled První vozidlo"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:103
+#: ../../ORTS.Common/Input/UserCommand.cs:112
 msgid "Camera Car Last"
 msgstr "Pohled Poslední vozidlo"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:104
+#: ../../ORTS.Common/Input/UserCommand.cs:113
 msgid "Camera Jumping Trains"
 msgstr "Pohled Přepnout vlak"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:105
+#: ../../ORTS.Common/Input/UserCommand.cs:114
 msgid "Camera Jump Back Player"
 msgstr "Pohled Vlak hráče"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:106
+#: ../../ORTS.Common/Input/UserCommand.cs:115
 msgid "Camera Jump See Switch"
 msgstr "Pohled Výhybka"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:107
-msgid "Camera Vibrate"
-msgstr "Pohled Kývání"
-
-#: ../../ORTS.Common/Input/UserCommand.cs:113
-msgid "Control Forwards"
-msgstr "Ovladač Vpřed"
-
-#: ../../ORTS.Common/Input/UserCommand.cs:114
-msgid "Control Backwards"
-msgstr "Ovladač Vzad"
-
-#: ../../ORTS.Common/Input/UserCommand.cs:115
-msgid "Control Throttle Increase"
-msgstr "Ovladač Zvýšit tah"
-
 #: ../../ORTS.Common/Input/UserCommand.cs:116
-msgid "Control Throttle Decrease"
-msgstr "Ovladač Snížit tah"
+msgid "Camera Vibrate"
+msgstr "Pohled Vibrace vlaku"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:117
-msgid "Control Throttle Zero"
-msgstr "Ovladač Vynulovat tah"
+#, fuzzy
+#| msgid "Camera Pan (Rotate) Right"
+msgid "Camera Scroll Right"
+msgstr "Pohled Otočit vpravo"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:118
-msgid "Control Gear Up"
-msgstr "Ovladač Řazení nahoru"
+#, fuzzy
+#| msgid "Camera Car Next"
+msgid "Camera Scroll Left"
+msgstr "Pohled Další vozidlo"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:119
-msgid "Control Gear Down"
-msgstr "Ovladač Řazení dolů"
+#, fuzzy
+#| msgid "Camera Head Out Backward"
+msgid "Camera Browse Backwards"
+msgstr "Pohled Boční vzad"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:120
-msgid "Control Train Brake Increase"
-msgstr "Ovladač Zabrzdit vlakovou brzdu"
-
-#: ../../ORTS.Common/Input/UserCommand.cs:121
-msgid "Control Train Brake Decrease"
-msgstr "Ovladač Odbrzdit vlakovou brzdu"
+#, fuzzy
+#| msgid "Camera Head Out Forward"
+msgid "Camera Browse Forwards"
+msgstr "Pohled Boční vpřed"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:122
-msgid "Control Train Brake Zero"
-msgstr "Ovladač Vynulovat vlakovou brzdu"
+msgid "TCS Zapnout VZ"
+msgstr "TCS Zapnout VZ"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:123
-msgid "Control Engine Brake Increase"
-msgstr "Ovladač Zabrzdit přídavnou brzdu"
-
-#: ../../ORTS.Common/Input/UserCommand.cs:124
-msgid "Control Engine Brake Decrease"
-msgstr "Ovladač Odbrzdit přídavnou brzdu"
+msgid "TCS Přepnout VZ"
+msgstr "TCS Přepnout VZ"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:125
-msgid "Control Dynamic Brake Increase"
-msgstr "Ovladač Zabrzdit dynamickou brzdu"
+#, fuzzy
+#| msgid "Control Forwards"
+msgid "Control_Classic Forwards"
+msgstr "Ovládání_Classic Vpřed"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:126
-msgid "Control Dynamic Brake Decrease"
-msgstr "Ovladač Odbrzdit dynamickou brzdu"
+#, fuzzy
+#| msgid "Control Backwards"
+msgid "Control_Classic Backwards"
+msgstr "Ovládání_Classic Vzad"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:127
-msgid "Control Bail Off"
-msgstr "Ovladač Odbrzdit"
+#, fuzzy
+#| msgid "Control Throttle Increase"
+msgid "Control_Classic Throttle Increase"
+msgstr "Ovládání_Classic Zvýšit tah"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:128
-msgid "Control Initialize Brakes"
-msgstr "Ovladač Inicializace brzdového systému"
+#, fuzzy
+#| msgid "Control Throttle Decrease"
+msgid "Control_Classic Throttle Decrease"
+msgstr "Ovládání_Classic Snížit tah"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:129
-msgid "Control Handbrake Full"
-msgstr "Ovladač Zabrzdit ruční brzdu"
+#, fuzzy
+#| msgid "Control Throttle Zero"
+msgid "Control_Classic Throttle Zero"
+msgstr "Ovládání_Classic Vynulovat tah"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:130
-msgid "Control Handbrake None"
-msgstr "Ovladač Odbrzdit ruční brzdu"
+#, fuzzy
+#| msgid "Control Gear Up"
+msgid "Control_Classic Gear Up"
+msgstr "Ovládání_Classic Řazení nahoru"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:131
-msgid "Control Odometer Show/Hide"
-msgstr "Ovladač Zobrazit/skrýt měřič ujeté vzdálenosti"
+#, fuzzy
+#| msgid "Control Gear Down"
+msgid "Control_Classic Gear Down"
+msgstr "Ovládání_Classic Řazení dolů"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:132
-msgid "Control Odometer Reset"
-msgstr "Ovladač Resetovat měřič ujeté vzdálenosti"
+#, fuzzy
+#| msgid "Control Train Brake Increase"
+msgid "Control_Classic Train Brake Increase"
+msgstr "Ovládání_Classic Zabrzdit vlakovou brzdu"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:133
-msgid "Control Odometer Direction"
-msgstr "Ovladač Směr měřiče ujeté vzdálenosti"
+#, fuzzy
+#| msgid "Control Train Brake Decrease"
+msgid "Control_Classic Train Brake Decrease"
+msgstr "Ovládání_Classic Odbrzdit vlakovou brzdu"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:134
-msgid "Control Retainers On"
-msgstr "Ovladač Zarážky aktivní"
+#, fuzzy
+#| msgid "Control Train Brake Zero"
+msgid "Control_Classic Train Brake Zero"
+msgstr "Ovládání_Classic Vynulovat vlakovou brzdu"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:135
-msgid "Control Retainers Off"
-msgstr "Ovladač Zarážky neaktivní"
+#, fuzzy
+#| msgid "Control Engine Brake Increase"
+msgid "Control_Classic Engine Brake Increase"
+msgstr "Ovládání_Classic Zabrzdit přídavnou brzdu"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:136
-msgid "Control Brake Hose Connect"
-msgstr "Ovladač Zapojit brzdové hadice"
+#, fuzzy
+#| msgid "Control Engine Brake Decrease"
+msgid "Control_Classic Engine Brake Decrease"
+msgstr "Ovládání_Classic Odbrzdit přídavnou brzdu"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:137
-msgid "Control Brake Hose Disconnect"
-msgstr "Ovladač Odpojit brzdové hadice"
+#, fuzzy
+#| msgid "Control Engine Brake Increase"
+msgid "Control_Classic Engine Brake Increase Alternative"
+msgstr "Ovládání_Classic Zabrzdit přídavnou brzdu"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:138
-msgid "Control Alerter"
-msgstr "Ovladač Tlačítko bdělosti"
+#, fuzzy
+#| msgid "Control Engine Brake Decrease"
+msgid "Control_Classic Engine Brake Decrease Alternative"
+msgstr "Ovládání_Classic Odbrzdit přídavnou brzdu"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:139
-msgid "Control Emergency Push Button"
-msgstr "Ovladač Záchranná brzda"
+#, fuzzy
+#| msgid "Control Train Brake Increase"
+msgid "Control_Classic Brakeman Brake Increase"
+msgstr "Ovládání_Classic Zabrzdit vlakovou brzdu"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:140
-msgid "Control Sander"
-msgstr "Ovladač Pískování"
+#, fuzzy
+#| msgid "Control Train Brake Decrease"
+msgid "Control_Classic Brakeman Brake Decrease"
+msgstr "Ovládání_Classic Odbrzdit vlakovou brzdu"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:141
-msgid "Control Sander Toggle"
-msgstr "Ovladač Přepínání pískování"
+#, fuzzy
+#| msgid "Control Dynamic Brake Increase"
+msgid "Control_Classic Dynamic Brake Increase"
+msgstr "Ovládání_Classic Zabrzdit dynamickou brzdu"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:142
-msgid "Control Wiper"
-msgstr "Ovladač Stěrače"
+#, fuzzy
+#| msgid "Control Dynamic Brake Decrease"
+msgid "Control_Classic Dynamic Brake Decrease"
+msgstr "Ovládání_Classic Odbrzdit dynamickou brzdu"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:143
-msgid "Control Horn"
-msgstr "Ovladač Houkačka"
+#, fuzzy
+#| msgid "Control Bail Off"
+msgid "Control_Classic Bail Off"
+msgstr "Ovládání_Classic Odbrzdit"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:144
-msgid "Control Bell"
-msgstr "Ovladač Píšťala"
+#, fuzzy
+#| msgid "Control Initialize Brakes"
+msgid "Control_Classic Initialize Brakes"
+msgstr "Ovládání_Classic Inicializace brzdového systému"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:145
-msgid "Control Bell Toggle"
-msgstr "Ovladač Píšťala (přepnout)"
+#, fuzzy
+#| msgid "Control Handbrake Full"
+msgid "Control_Classic Handbrake Full"
+msgstr "Ovládání_Classic Zabrzdit ruční brzdu"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:146
-msgid "Control Door Left"
-msgstr "Ovladač Dveře levé"
+#, fuzzy
+#| msgid "Control Handbrake None"
+msgid "Control_Classic Handbrake None"
+msgstr "Ovládání_Classic Odbrzdit ruční brzdu"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:147
-msgid "Control Door Right"
-msgstr "Ovladač Dveře pravé"
+#, fuzzy
+#| msgid "Control Odometer Show/Hide"
+msgid "Control_Classic Odometer Show/Hide"
+msgstr "Ovládání_Classic Zobrazit/skrýt měřič ujeté vzdálenosti"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:148
-msgid "Control Mirror"
-msgstr "Ovladač Zrcátka"
+#, fuzzy
+#| msgid "Control Odometer Reset"
+msgid "Control_Classic Odometer Reset"
+msgstr "Ovládání_Classic Resetovat měřič ujeté vzdálenosti"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:149
-msgid "Control Light"
-msgstr "Ovladač Osvětlení kabiny"
+#, fuzzy
+#| msgid "Control Odometer Direction"
+msgid "Control_Classic Odometer Direction"
+msgstr "Ovládání_Classic Směr měřiče ujeté vzdálenosti"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:150
-msgid "Control Pantograph 1"
-msgstr "Ovladač Sběrač 1"
+#, fuzzy
+#| msgid "Control Retainers On"
+msgid "Control_Classic Retainers On"
+msgstr "Ovládání_Classic Zarážky aktivní"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:151
-msgid "Control Pantograph 2"
-msgstr "Ovladač Sběrač 2"
+#, fuzzy
+#| msgid "Control Retainers Off"
+msgid "Control_Classic Retainers Off"
+msgstr "Ovládání_Classic Zarážky neaktivní"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:152
-#| msgid "Control Pantograph 1"
-msgid "Control Pantograph 3"
-msgstr "Ovladač Sběrač 3"
+#, fuzzy
+#| msgid "Control Brake Hose Connect"
+msgid "Control_Classic Brake Hose Connect"
+msgstr "Ovládání_Classic Zapojit brzdové hadice"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:153
-#| msgid "Control Pantograph 1"
-msgid "Control Pantograph 4"
-msgstr "Ovladač Sběrač 4"
+#, fuzzy
+#| msgid "Control Brake Hose Disconnect"
+msgid "Control_Classic Brake Hose Disconnect"
+msgstr "Ovládání_Classic Odpojit brzdové hadice"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:154
+#, fuzzy
+#| msgid "Control Alerter"
+msgid "Control_Classic Alerter"
+msgstr "Ovládání_Classic Tlačítko bdělosti"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:155
+#, fuzzy
+#| msgid "Control Emergency Push Button"
+msgid "Control_Classic Emergency Push Button"
+msgstr "Ovládání_Classic Záchranná brzda"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:156
+#, fuzzy
+#| msgid "Control Sander"
+msgid "Control_Classic Sander"
+msgstr "Ovládání_Classic Pískování"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:157
-msgid "Control Diesel Player"
-msgstr "Ovladač Start/Stop motoru dieselu (hráč)"
+#, fuzzy
+#| msgid "Control Sander Toggle"
+msgid "Control_Classic Sander Toggle"
+msgstr "Ovládání_Classic Přepínání pískování"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:158
-msgid "Control Diesel Helper"
-msgstr "Ovladač Start/Stop motoru dieselu (ostatní)"
+#, fuzzy
+#| msgid "Control Wiper"
+msgid "Control_Classic Wiper"
+msgstr "Ovládání_Classic Stěrače"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:159
-msgid "Control Headlight Increase"
-msgstr "Ovladač Zapnout světla/reflektory"
+#, fuzzy
+#| msgid "Control Horn"
+msgid "Control_Classic Horn"
+msgstr "Ovládání_Classic Houkačka"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:160
-msgid "Control Headlight Decrease"
-msgstr "Ovladač Vypnout světla/reflektory"
+#, fuzzy
+#| msgid "Control Bell"
+msgid "Control_Classic Bell"
+msgstr "Ovládání_Classic Píšťala"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:161
-msgid "Control Injector 1 Increase"
-msgstr "Ovladač Zvýšit injektor 1"
+#, fuzzy
+#| msgid "Control Bell Toggle"
+msgid "Control_Classic Bell Toggle"
+msgstr "Ovládání_Classic Píšťala (přepnout)"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:162
-msgid "Control Injector 1 Decrease"
-msgstr "Ovladač Snížit injektor 1"
+#, fuzzy
+#| msgid "Control Door Left"
+msgid "Control_Classic Door Left"
+msgstr "Ovládání_Classic Dveře levé"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:163
-msgid "Control Injector 1"
-msgstr "Ovladač Injektor 1"
+#, fuzzy
+#| msgid "Control Door Right"
+msgid "Control_Classic Door Right"
+msgstr "Ovládání_Classic Dveře pravé"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:164
-msgid "Control Injector 2 Increase"
-msgstr "Ovladač Zvýšit injektor 2"
+#, fuzzy
+#| msgid "Control Mirror"
+msgid "Control_Classic Mirror"
+msgstr "Ovládání_Classic Zrcátka"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:165
-msgid "Control Injector 2 Decrease"
-msgstr "Ovladač Snížit injektor 2"
+#, fuzzy
+#| msgid "Control Light"
+msgid "Control_Classic Light"
+msgstr "Ovládání_Classic Osvětlení kabiny"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:166
-msgid "Control Injector 2"
-msgstr "Ovladač Injektor 2"
+#, fuzzy
+#| msgid "Control Door Right"
+msgid "Control_Classic Flood Light"
+msgstr "Ovládání_Classic Dveře pravé"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:167
-msgid "Control Blower Increase"
-msgstr "Ovladač Zvýšit průtok"
+#, fuzzy
+#| msgid "Control Pantograph 1"
+msgid "Control_Classic Pantograph 1"
+msgstr "Ovládání_Classic Sběrač 1"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:168
-msgid "Control Blower Decrease"
-msgstr "Ovladač Snížit průtok"
+#, fuzzy
+#| msgid "Control Pantograph 2"
+msgid "Control_Classic Pantograph 2"
+msgstr "Ovládání_Classic Sběrač 2"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:169
-msgid "Control Steam Heat Increase"
-msgstr "Ovladač Zvýšit žár páry"
+#, fuzzy
+#| msgid "Control Pantograph 3"
+msgid "Control_Classic Pantograph 3"
+msgstr "Ovládání_Classic Sběrač 3"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:170
-msgid "Control Steam Heat Decrease"
-msgstr "Ovladač Snížit žár páry"
+#, fuzzy
+#| msgid "Control Pantograph 4"
+msgid "Control_Classic Pantograph 4"
+msgstr "Ovládání_Classic Sběrač 4"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:171
-msgid "Control Damper Increase"
-msgstr "Ovladač Zvýšit klapku"
+msgid "Control_Classic Circuit Breaker Closing Order"
+msgstr "Ovládání_Classic Circuit Breaker Closing Order"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:172
-msgid "Control Damper Decrease"
-msgstr "Ovladač Snížit klapku"
+msgid "Control_Classic Circuit Breaker Opening Order"
+msgstr "Ovládání_Classic Circuit Breaker Opening Order"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:173
-msgid "Control Firebox Open"
-msgstr "Ovladač Otevřít ohniště"
+msgid "Control_Classic Circuit Breaker Closing Authorization"
+msgstr "Ovládání_Classic Circuit Breaker Closing Authorization"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:174
-msgid "Control Firebox Close"
-msgstr "Ovladač Zavřít ohniště"
+#, fuzzy
+#| msgid "Control Diesel Player"
+msgid "Control_Classic Diesel Player"
+msgstr "Ovládání_Classic Start/Stop motoru dieselu (hráč)"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:175
-msgid "Control Firing Rate Increase"
-msgstr "Ovladač Zvýšit dávku paliva"
+#, fuzzy
+#| msgid "Control Diesel Helper"
+msgid "Control_Classic Diesel Helper"
+msgstr "Ovládání_Classic Start/Stop motoru dieselu (ostatní)"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:176
-msgid "Control Firing Rate Decrease"
-msgstr "Ovladač Snížit dávku palivy"
+#, fuzzy
+#| msgid "Control Headlight Increase"
+msgid "Control_Classic Headlight Increase"
+msgstr "Ovládání_Classic Zapnout světla/reflektory"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:177
-msgid "Control Fire Shovel Full"
-msgstr "Ovladač Max. paliva"
+#, fuzzy
+#| msgid "Control Headlight Decrease"
+msgid "Control_Classic Headlight Decrease"
+msgstr "Ovládání_Classic Vypnout světla/reflektory"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:178
-msgid "Control Cylinder Cocks"
-msgstr "Ovladač Kohout válce"
+#, fuzzy
+#| msgid "Control Injector 1 Increase"
+msgid "Control_Classic Injector 1 Increase"
+msgstr "Ovládání_Classic Zvýšit injektor 1"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:179
+#, fuzzy
+#| msgid "Control Injector 1 Decrease"
+msgid "Control_Classic Injector 1 Decrease"
+msgstr "Ovládání_Classic Snížit injektor 1"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:180
+#, fuzzy
+#| msgid "Control Injector 1"
+msgid "Control_Classic Injector 1"
+msgstr "Ovládání_Classic Injektor 1"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:181
-msgid "Control Cylinder Compound"
-msgstr "Ovladač Sdružený válec"
+#, fuzzy
+#| msgid "Control Injector 2 Increase"
+msgid "Control_Classic Injector 2 Increase"
+msgstr "Ovládání_Classic Zvýšit injektor 2"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:182
-msgid "Control Firing"
-msgstr "Ovladač Spalování"
+#, fuzzy
+#| msgid "Control Injector 2 Decrease"
+msgid "Control_Classic Injector 2 Decrease"
+msgstr "Ovládání_Classic Snížit injektor 2"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:183
-msgid "Control Refill"
-msgstr "Ovladač Doplnit"
+#, fuzzy
+#| msgid "Control Injector 2"
+msgid "Control_Classic Injector 2"
+msgstr "Ovládání_Classic Injektor 2"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:184
-msgid "Control TroughRefill"
-msgstr "Ovladač Doplnit vodu ze žlabu"
+msgid "Control_Classic Blowdown Valve"
+msgstr "Ovládání_Classic Odvzdušňovací ventil"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:185
+#, fuzzy
+#| msgid "Control Blower Increase"
+msgid "Control_Classic Blower Increase"
+msgstr "Ovládání_Classic Zvýšit průtok"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:186
+#, fuzzy
+#| msgid "Control Blower Decrease"
+msgid "Control_Classic Blower Decrease"
+msgstr "Ovládání_Classic Snížit průtok"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:187
+#, fuzzy
+#| msgid "Control Steam Heat Increase"
+msgid "Control_Classic Steam Heat Increase"
+msgstr "Ovládání_Classic Zvýšit žár páry"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:188
+#, fuzzy
+#| msgid "Control Steam Heat Decrease"
+msgid "Control_Classic Steam Heat Decrease"
+msgstr "Ovládání_Classic Snížit žár páry"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:189
+#, fuzzy
+#| msgid "Control Damper Increase"
+msgid "Control_Classic Damper Increase"
+msgstr "Ovládání_Classic Zvýšit klapku"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:190
+#, fuzzy
+#| msgid "Control Damper Decrease"
+msgid "Control_Classic Damper Decrease"
+msgstr "Ovládání_Classic Snížit klapku"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:191
+#, fuzzy
+#| msgid "Control Firebox Open"
+msgid "Control_Classic Firebox Open"
+msgstr "Ovládání_Classic Otevřít ohniště"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:192
+#, fuzzy
+#| msgid "Control Firebox Close"
+msgid "Control_Classic Firebox Close"
+msgstr "Ovládání_Classic Zavřít ohniště"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:193
+#, fuzzy
+#| msgid "Control Firing Rate Increase"
+msgid "Control_Classic Firing Rate Increase"
+msgstr "Ovládání_Classic Zvýšit dávku paliva"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:194
+#, fuzzy
+#| msgid "Control Firing Rate Decrease"
+msgid "Control_Classic Firing Rate Decrease"
+msgstr "Ovládání_Classic Snížit dávku palivy"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:195
+#, fuzzy
+#| msgid "Control Fire Shovel Full"
+msgid "Control_Classic Fire Shovel Full"
+msgstr "Ovládání_Classic Max. paliva"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:196
+#, fuzzy
+#| msgid "Control Cylinder Cocks"
+msgid "Control_Classic Cylinder Cocks"
+msgstr "Ovládání_Classic Kohout válce"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:197
+msgid "Control_Classic Large Ejector Increase"
+msgstr "Ovládání_Classic Zvýšit velký injektor"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:198
+msgid "Control_Classic Large Ejector Decrease"
+msgstr "Ovládání_Classic Snížit velký injektor"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:199
+msgid "Control_Classic Small Ejector Increase"
+msgstr "Ovládání_Classic Zvýšit malý injektor"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:200
+msgid "Control_Classic Small Ejector Decrease"
+msgstr "Ovládání_Classic Snížit malý injektor"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:201
+msgid "Control_Classic Vacuum Exhauster"
+msgstr "Ovládání_Classic Vakuové odsávání"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:202
+#, fuzzy
+#| msgid "Control Cylinder Compound"
+msgid "Control_Classic Cylinder Compound"
+msgstr "Ovládání_Classic Sdružený válec"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:203
+#, fuzzy
+#| msgid "Control Firing"
+msgid "Control_Classic Firing"
+msgstr "Ovládání_Classic Spalování"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:204
+#, fuzzy
+#| msgid "Control Refill"
+msgid "Control_Classic Refill"
+msgstr "Ovládání_Classic Doplnit"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:205
+msgid "Control_Classic Water Scoop"
+msgstr "Ovládání_Classic Nabíračka vody"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:206
+msgid "Control_Classic ImmediateRefill"
+msgstr "Ovládání_Classic Okamžitě doplnit"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:207
+msgid "Control_Classic Turntable Clockwise"
+msgstr "Ovládání_Classic Točna po směru hodinových ručiček"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:208
+msgid "Control_Classic Turntable Counterclockwise"
+msgstr "Ovládání_Classic Točna proti směru hodinových ručiček"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:209
+msgid "Control_Classic Cab Radio"
+msgstr "Ovládání_Classic Zapnout rádiostanici"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:210
+msgid "Control_Classic AI Fire On"
+msgstr "Ovládání_Classic Zapnout AI ohniště"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:211
+msgid "Control_Classic AI Fire Off"
+msgstr "Ovládání_Classic Vypnout AI ohniště"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:212
+msgid "Control_Classic AI Fire Reset"
+msgstr "Ovládání_Classic Resetovat AI ohniště"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:213
+msgid "Control_Classic Battery"
+msgstr "Ovládání_Classic Zapnout/vypnout baterie"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:214
+msgid "Control_Classic PowerKey"
+msgstr "Ovládání_Classic Zapnout/vypnout pult lokomotivy"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:217
+#| msgid "Control Bail Off"
+msgid "Control_CZSK Mirel Off"
+msgstr "Ovládání_CZSK Zapnout Mirel"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:218
+#| msgid "Control Firebox Open"
+msgid "Control_CZSK Mirel On"
+msgstr "Ovládání_CZSK Vypnout Mirel"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:219
+#| msgid "Control Steam Heat Increase"
+msgid "Control_CZSK Speed Regulator Mode Increase"
+msgstr "Ovládání_CZSK + režim regulátor rychlosti"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:220
+#| msgid "Control Steam Heat Decrease"
+msgid "Control_CZSK Speed Regulator Mode Descrease"
+msgstr "Ovládání_CZSK - režim regulátor rychlosti"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:221
+#| msgid "Control Steam Heat Increase"
+msgid "Control_CZSK Selected Speed Increase"
+msgstr "Ovládání_CZSK + navolená rychlost regulátor rychlosti"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:222
+#| msgid "Control Steam Heat Decrease"
+msgid "Control_CZSK Selected Speed Decrease"
+msgstr "Ovládání_CZSK - navolená rychlost regulátor rychlosti"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:223
+msgid "Control_CZSK Speed Regulator Max Acceleration Increase"
+msgstr "Ovládání_CZSK + tah regulátor rychlosti"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:224
+msgid "Control_CZSK Speed Regulator Max Acceleration Decrease"
+msgstr "Ovládání_CZSK - tah regulátor rychlosti"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:225
+#| msgid "Control Damper Increase"
+msgid "Control_CZSK Number Of Axles Increase"
+msgstr "Ovládání_CZSK + počet os"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:226
+#| msgid "Control Damper Decrease"
+msgid "Control_CZSK Number Of Axles Decrease"
+msgstr "Ovládání_CZSK - počet os"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:227
+msgid "Control_CZSK Restricted Speed Zone Active"
+msgstr "Ovládání_CZSK Aktivovat tlačítko omezené rychlosti"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:228
+#| msgid "Control Throttle Increase"
+msgid "Control_CZSK Cruise Control Mode Increase"
+msgstr "Ovládání_CZSK + režim udržování rychlosti"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:229
+#| msgid "Control Throttle Decrease"
+msgid "Control_CZSK Cruise Control Mode Decrease"
+msgstr "Ovládání_CZSK - režim udržování rychlosti"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:230
+msgid "Control_CZSK Train Type Change (Passenger/Cargo)"
+msgstr "Ovládání_CZSK Změna typu vlaku (osobní/nákladní)"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:231
+msgid "Control_CZSK Select Speed 10 kph/mph"
+msgstr "Ovládání_CZSK Výběr rychlosti 10 kph/mph"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:232
+msgid "Control_CZSK Select Speed 20 kph/mph"
+msgstr "Ovládání_CZSK Výběr rychlosti 20 kph/mph"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:233
+msgid "Control_CZSK Select Speed 30 kph/mph"
+msgstr "Ovládání_CZSK Výběr rychlosti 30 kph/mph"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:234
+msgid "Control_CZSK Select Speed 40 kph/mph"
+msgstr "Ovládání_CZSK Výběr rychlosti 40 kph/mph"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:235
+msgid "Control_CZSK Select Speed 50 kph/mph"
+msgstr "Ovládání_CZSK Výběr rychlosti 50 kph/mph"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:236
+msgid "Control_CZSK Select Speed 60 kph/mph"
+msgstr "Ovládání_CZSK Výběr rychlosti 60 kph/mph"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:237
+msgid "Control_CZSK Select Speed 70 kph/mph"
+msgstr "Ovládání_CZSK Výběr rychlosti 70 kph/mph"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:238
+msgid "Control_CZSK Select Speed 80 kph/mph"
+msgstr "Ovládání_CZSK Výběr rychlosti 80 kph/mph"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:239
+msgid "Control_CZSK Select Speed 90 kph/mph"
+msgstr "Ovládání_CZSK Výběr rychlosti 90 kph/mph"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:240
+msgid "Control_CZSK Select Speed 100 kph/mph"
+msgstr "Ovládání_CZSK Výběr rychlosti 100 kph/mph"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:241
+msgid "Control_CZSK Select Speed 110 kph/mph"
+msgstr "Ovládání_CZSK Výběr rychlosti 110 kph/mph"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:242
+msgid "Control_CZSK Select Speed 120 kph/mph"
+msgstr "Ovládání_CZSK Výběr rychlosti 120 kph/mph"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:243
+msgid "Control_CZSK Select Speed 130 kph/mph"
+msgstr "Ovládání_CZSK Výběr rychlosti 130 kph/mph"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:244
+msgid "Control_CZSK Select Speed 140 kph/mph"
+msgstr "Ovládání_CZSK Výběr rychlosti 140 kph/mph"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:245
+msgid "Control_CZSK Select Speed 150 kph/mph"
+msgstr "Ovládání_CZSK Výběr rychlosti 150 kph/mph"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:246
+msgid "Control_CZSK Select Speed 160 kph/mph"
+msgstr "Ovládání_CZSK Výběr rychlosti 160 kph/mph"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:247
+msgid "Control_CZSK Select Speed 170 kph/mph"
+msgstr "Ovládání_CZSK Výběr rychlosti 170 kph/mph"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:248
+msgid "Control_CZSK Select Speed 180 kph/mph"
+msgstr "Ovládání_CZSK Výběr rychlosti 180 kph/mph"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:249
+msgid "Control_CZSK Select Speed 190 kph/mph"
+msgstr "Ovládání_CZSK Výběr rychlosti 190 kph/mph"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:250
+msgid "Control_CZSK Select Speed 200 kph/mph"
+msgstr "Ovládání_CZSK Výběr rychlosti 200 kph/mph"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:251
+msgid "Control_CZSK Mirel Key Plus"
+msgstr "Ovládání_CZSK Mirel klávesa +"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:252
+msgid "Control_CZSK Mirel Key Minus"
+msgstr "Ovládání_CZSK Mirel klávesa -"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:253
+#| msgid "Control Diesel Player"
+msgid "Control_CZSK Mirel Key Enter"
+msgstr "Ovládání_CZSK Mirel klávesa Enter"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:254
+#| msgid "Control Steam Heat Increase"
+msgid "Control_CZSK Cab Select Increase"
+msgstr "Ovládání_CZSK + výběr stanoviště"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:255
+#| msgid "Control Steam Heat Decrease"
+msgid "Control_CZSK Cab Select Decrease"
+msgstr "Ovládání_CZSK - výběr stanoviště"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:256
+msgid "Control_CZSK Display Key Position"
+msgstr "Ovládání_CZSK Display Key Position"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:257
+msgid "Control_CZSK Change Key Position"
+msgstr "Ovládání_CZSK Change Key Position"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:260
+msgid "Control_CZSK HV2 1-system +"
+msgstr "Ovládání_CZSK HV2 1-system +"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:261
+msgid "Control_CZSK HV3 2-system +"
+msgstr "Ovládání_CZSK HV3 2-system +"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:262
+msgid "Control_CZSK HV3 2-system -"
+msgstr "Ovládání_CZSK HV3 2-system -"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:263
+msgid "Control_CZSK HV5 2-system +"
+msgstr "Ovládání_CZSK HV5 2-system +"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:264
+msgid "Control_CZSK HV5 2-system -"
+msgstr "Ovládání_CZSK HV5 2-system -"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:265
+#| msgid "Control Pantograph 1"
+msgid "Control_CZSK Pantograph3 +"
+msgstr "Ovládání_CZSK Pantograf3 +"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:266
+#| msgid "Control Pantograph 1"
+msgid "Control_CZSK Pantograph3 -"
+msgstr "Ovládání_CZSK Pantograf3 -"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:267
+#| msgid "Control Pantograph 1"
+msgid "Control_CZSK Pantograph4 +"
+msgstr "Ovládání_CZSK Pantograf4 +"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:268
+#| msgid "Control Pantograph 1"
+msgid "Control_CZSK Pantograph4 -"
+msgstr "Ovládání_CZSK Pantograf4 -"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:269
+msgid "Control_CZSK Compressor I Combined +"
+msgstr "Ovládání_CZSK Kombinovaný kompresor I +"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:270
+msgid "Control_CZSK Compressor I Combined -"
+msgstr "Ovládání_CZSK Kombinovaný kompresor I -"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:271
+msgid "Control_CZSK Compressor II Combined +"
+msgstr "Ovládání_CZSK Kombinovaný kompresor II +"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:272
+msgid "Control_CZSK Compressor II Combined -"
+msgstr "Ovládání_CZSK Kombinovaný kompresor II +"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:273
+msgid "Control_CZSK AuxCompressor Off/On"
+msgstr "Ovládání_CZSK Zapnout/Vypnout pomocný kompresor"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:274
+msgid "Control_CZSK Compressor I Mode Off/Auto"
+msgstr "Ovládání_CZSK Zapnout/Vypnout kompresor režim I"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:275
+msgid "Control_CZSK Compressor II Mode Off/Auto"
+msgstr "Ovládání_CZSK Zapnout/Vypnout kompresor režim II"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:276
+#| msgid "Control Retainers Off"
+msgid "Control_CZSK Heating Off/On"
+msgstr "Ovládání_CZSK Zapnout/Vypnout topení vlaku"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:277
+msgid "Control_CZSK Heating in Cab Off/On"
+msgstr "Ovládání_CZSK Zapnout/Vypnout topení stanoviště strojvedoucího"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:278
+msgid "Control_CZSK Locomotive PowerVoltage 25kV/both/3kV"
+msgstr "Ovládání_CZSK Přepnout systém napájení lokomotivy 25kV/oba/3kV"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:279
+msgid "Control_CZSK Quickrelease button"
+msgstr "Ovládání_CZSK Tlačítko vysokotlakého švihu"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:280
+msgid "Control_CZSK Lowpressurerelease button"
+msgstr "Ovládání_CZSK Tlačítko nízkotlakého přebití"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:281
+#| msgid "Control Brake Hose Connect"
+msgid "Control_CZSK Breakpower button"
+msgstr "Ovládání_CZSK Tlačítko přerušení napájení"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:284
+msgid "Set Power Supply Station Location"
+msgstr ""
+
+#: ../../ORTS.Common/Input/UserCommand.cs:285
+msgid "Set Voltage 25k"
+msgstr ""
+
+#: ../../ORTS.Common/Input/UserCommand.cs:286
+msgid "Set Voltage 3k"
+msgstr ""
+
+#: ../../ORTS.Common/Input/UserCommand.cs:287
+msgid "Set Voltage 0"
+msgstr ""
+
+#: ../../ORTS.Common/Input/UserCommand.cs:288
+msgid "Set Delete Voltage Marker"
+msgstr ""
+
+#~ msgid "Camera 3D Cab"
+#~ msgstr "Pohled 3D kabina"
+
+#~ msgid "Control TroughRefill"
+#~ msgstr "Ovladač Doplnit vodu ze žlabu"
