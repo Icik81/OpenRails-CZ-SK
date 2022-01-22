@@ -2544,7 +2544,7 @@ namespace Orts.Simulation.RollingStocks
         // Icik
         // Protiskluzová ochrana
         public void AntiSlip_Protection()
-        {
+        {            
             if (!IsPlayerTrain)
                 return;
             if (!IsLeadLocomotive())
@@ -3600,11 +3600,15 @@ namespace Orts.Simulation.RollingStocks
                 ToggleHV3Switch();
                 ToggleHV5Switch();
             }
+            if (IsPlayerTrain)
+                TrainBrakeControllerValueForSound = (float)Math.Round(TrainBrakeController.CurrentValue, 2);
+
             EDBCancelByEngineBrake();
             EDBCancelByOL3BailOff();
             PowerOn_Filter(elapsedClockSeconds);
             ElevatedConsumptionOnLocomotive(elapsedClockSeconds);
             
+
             TrainControlSystem.Update();
 
             elapsedTime = elapsedClockSeconds;

@@ -212,7 +212,8 @@ namespace Orts.Formats.Msts
             Variable1Controlled, Variable1ACControlled, Variable1DCControlled,
             Variable2Controlled, Variable2ACControlled, Variable2DCControlled,
             Variable3Controlled, Variable3ACControlled, Variable3DCControlled,
-            Variable4Controlled, 
+            Variable4Controlled,
+            TrainBrakeControllerControlled,
             BrakeCylControlled,
             CurveForceControlled };
 
@@ -243,7 +244,8 @@ namespace Orts.Formats.Msts
                 case "variable3controlled": Control = Controls.Variable3Controlled; break;
                 case "variable3accontrolled": Control = Controls.Variable3ACControlled; break;
                 case "variable3dccontrolled": Control = Controls.Variable3DCControlled; break;
-                case "variable4controlled": Control = Controls.Variable4Controlled; break;
+                case "variable4controlled": Control = Controls.Variable4Controlled; break;                
+                case "trainbrakecontrollercontrolled": Control = Controls.TrainBrakeControllerControlled; break;
                 case "brakecylcontrolled": Control = Controls.BrakeCylControlled; break;
                 case "curveforcecontrolled": Control = Controls.CurveForceControlled; break;
                 default: STFException.TraceWarning(stf, "Crash expected: Skipped unknown VolumeCurve/Frequencycurve type " + type); stf.SkipRestOfBlock(); return;
@@ -369,10 +371,8 @@ namespace Orts.Formats.Msts
         public enum Events { 
             Speed_Inc_Past, Speed_Dec_Past, Speed_Equals_To, Speed_NEquals_To,
             WheelSpeed_Inc_Past, WheelSpeed_Dec_Past, WheelSpeed_Equals_To, WheelSpeed_NEquals_To,
-
             WheelSpeedAC_Inc_Past, WheelSpeedAC_Dec_Past, WheelSpeedAC_Equals_To, WheelSpeedAC_NEquals_To,
             WheelSpeedDC_Inc_Past, WheelSpeedDC_Dec_Past, WheelSpeedDC_Equals_To, WheelSpeedDC_NEquals_To,
-
             SlipSpeed_Inc_Past, SlipSpeed_Dec_Past, SlipSpeed_Equals_To, SlipSpeed_NEquals_To,
             Vibration_Inc_Past, Vibration_Dec_Past, Vibration_Equals_To, Vibration_NEquals_To,
             Distance_Inc_Past, Distance_Dec_Past, Distance_Equals_To, Distance_NEquals_To,
@@ -386,6 +386,7 @@ namespace Orts.Formats.Msts
             Variable3AC_Inc_Past, Variable3AC_Dec_Past, Variable3AC_Equals_To, Variable3AC_NEquals_To,
             Variable3DC_Inc_Past, Variable3DC_Dec_Past, Variable3DC_Equals_To, Variable3DC_NEquals_To,
             Variable4_Inc_Past, Variable4_Dec_Past, Variable4_Equals_To, Variable4_NEquals_To, // DieselMotor RPM
+            TrainBrakeController_Inc_Past, TrainBrakeController_Dec_Past, TrainBrakeController_Equals_To, TrainBrakeController_NEquals_To,
             BrakeCyl_Inc_Past, BrakeCyl_Dec_Past, BrakeCyl_Equals_To, BrakeCyl_NEquals_To,
             CurveForce_Inc_Past, CurveForce_Dec_Past, CurveForce_Equals_To, CurveForce_NEquals_To
         };
@@ -491,6 +492,10 @@ namespace Orts.Formats.Msts
                 case "variable4_dec_past": Event = Events.Variable4_Dec_Past; break;
                 case "variable4_equals_to": Event = Events.Variable4_Equals_To; break;
                 case "variable4_nequals_to": Event = Events.Variable4_NEquals_To; break;
+                case "trainbrakecontroller_inc_past": Event = Events.TrainBrakeController_Inc_Past; break;
+                case "trainbrakecontroller_dec_past": Event = Events.TrainBrakeController_Dec_Past; break;
+                case "trainbrakecontroller_equals_to": Event = Events.TrainBrakeController_Equals_To; break;
+                case "trainbrakecontroller_nequals_to": Event = Events.TrainBrakeController_NEquals_To; break;
                 case "brakecyl_inc_past": Event = Events.BrakeCyl_Inc_Past; break;
                 case "brakecyl_dec_past": Event = Events.BrakeCyl_Dec_Past; break;
                 case "brakecyl_equals_to": Event = Events.BrakeCyl_Equals_To; break;

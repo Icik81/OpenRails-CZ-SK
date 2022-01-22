@@ -822,8 +822,6 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     break;
             }
 
-
-
             // Načte hodnotu maximálního tlaku v BV
             if (TwoStateBrake && BrakeCarMode > 1) // Vozy v R, Mg mají nad určitou rychlost plný tlak do válců
             {
@@ -1313,25 +1311,27 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             if (SoundTriggerCounter >= 0.5f)
             {
                 SoundTriggerCounter = 0f;
-                if ( Math.Abs(threshold - prevCylPressurePSI) > 1.5f) //(AutoCylPressurePSI != prevCylPressurePSI)
+                // Událost pro hodnotu tlaku v brzdovém válci
+                if (Math.Abs(CylPressurePSI - prevCylPressurePSI) > 1.5f) //(AutoCylPressurePSI != prevCylPressurePSI)
                 {
                     if (!TrainBrakePressureChanging)
                     {
-                        if (threshold > prevCylPressurePSI)
+                        if (CylPressurePSI > prevCylPressurePSI)
                             Car.SignalEvent(Event.TrainBrakePressureIncrease);
                         else
                             Car.SignalEvent(Event.TrainBrakePressureDecrease);
                         TrainBrakePressureChanging = !TrainBrakePressureChanging;
                     }
-
                 }
-                else if (TrainBrakePressureChanging)
+                else
+                if (TrainBrakePressureChanging)
                 {
                     TrainBrakePressureChanging = !TrainBrakePressureChanging;
                     Car.SignalEvent(Event.TrainBrakePressureStoppedChanging);
                 }
 
-                if ( Math.Abs(BrakeLine1PressurePSI - prevBrakePipePressurePSI) > 1.5f /*BrakeLine1PressurePSI > prevBrakePipePressurePSI*/)
+                // Událost pro hodnotu tlaku v brzdovém potrubí
+                if (Math.Abs(BrakeLine1PressurePSI - prevBrakePipePressurePSI) > 1.5f /*BrakeLine1PressurePSI > prevBrakePipePressurePSI*/)
                 {
                     if (!BrakePipePressureChanging)
                     {
@@ -1341,15 +1341,15 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                             Car.SignalEvent(Event.BrakePipePressureDecrease);
                         BrakePipePressureChanging = !BrakePipePressureChanging;
                     }
-
                 }
-                else if (BrakePipePressureChanging)
+                else
+                if (BrakePipePressureChanging)
                 {
                     BrakePipePressureChanging = !BrakePipePressureChanging;
                     Car.SignalEvent(Event.BrakePipePressureStoppedChanging);
                 }
-                prevCylPressurePSI = threshold;
-                prevBrakePipePressurePSI = BrakeLine1PressurePSI;
+                prevCylPressurePSI = CylPressurePSI;
+                prevBrakePipePressurePSI = BrakeLine1PressurePSI;                
             }
             SoundTriggerCounter = SoundTriggerCounter + elapsedClockSeconds;
         }
