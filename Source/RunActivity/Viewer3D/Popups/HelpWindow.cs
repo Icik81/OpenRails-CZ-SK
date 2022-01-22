@@ -75,7 +75,7 @@ namespace Orts.Viewer3D.Popups
         }
 
         public HelpWindow(WindowManager owner)
-            : base(owner, Window.DecorationSize.X + owner.TextFontDefault.Height * 37, Window.DecorationSize.Y + owner.TextFontDefault.Height * 24, Viewer.Catalog.GetString("Help"))
+            : base(owner, Window.DecorationSize.X + owner.TextFontDefault.Height * 57, Window.DecorationSize.Y + owner.TextFontDefault.Height * 48, Viewer.Catalog.GetString("Help"))
         {
             Tabs.Add(new TabData(Tab.KeyboardShortcuts, Viewer.Catalog.GetString("Key Commands"), (cl) =>
             {
