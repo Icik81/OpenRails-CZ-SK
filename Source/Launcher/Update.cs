@@ -83,8 +83,8 @@ namespace ORTS
                 string content = File.ReadAllText(contentPath);
 
                 WebClient webClient = new WebClient();
-                s = webClient.DownloadString("http://lkpr.aspone.cz/or/version15.txt");
-                conts = webClient.DownloadString("http://lkpr.aspone.cz/or/content.txt");
+                s = webClient.DownloadString("http://lkpr.aspone.cz/or/version16.txt");
+                conts = webClient.DownloadString("http://lkpr.aspone.cz/or/content16.txt");
                 if (version != s || conts != content) // new version available
                 {
                     if (version != s)
@@ -94,7 +94,7 @@ namespace ORTS
                             return;
                         state = "Stahuji novou verzi";
                         File.Delete(Application.StartupPath + "\\Update16.zip");
-                        webClient.DownloadFile("http://lkpr.aspone.cz/or/update15.zip", Application.StartupPath + "\\Update16.zip");
+                        webClient.DownloadFile("http://lkpr.aspone.cz/or/update16.zip", Application.StartupPath + "\\Update16.zip");
                         state = "Rozbaluji archiv";
                         ZipFile zip = new ZipFile(Application.StartupPath + "\\Update16.zip");
                         zip.ExtractAll(Application.StartupPath, ExtractExistingFileAction.OverwriteSilently);
@@ -107,7 +107,7 @@ namespace ORTS
                     {
                         state = "Stahuji novou verzi obsahu";
                         File.Delete(Application.StartupPath + "\\Content16.zip");
-                        webClient.DownloadFile("http://lkpr.aspone.cz/or/content.zip", Application.StartupPath + "\\Content16.zip");
+                        webClient.DownloadFile("http://lkpr.aspone.cz/or/content16.zip", Application.StartupPath + "\\Content16.zip");
                         state = "Rozbaluji archiv";
                         ZipFile zip = new ZipFile(Application.StartupPath + "\\Content16.zip");
                         zip.ExtractAll(Application.StartupPath, ExtractExistingFileAction.OverwriteSilently);
