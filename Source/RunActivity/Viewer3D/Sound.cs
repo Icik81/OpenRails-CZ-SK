@@ -1501,7 +1501,8 @@ namespace Orts.Viewer3D
                 case Orts.Formats.Msts.VolumeCurve.Controls.Variable3ACControlled: return car.Variable3AC;
                 case Orts.Formats.Msts.VolumeCurve.Controls.Variable3DCControlled: return car.Variable3DC;
                 case Orts.Formats.Msts.VolumeCurve.Controls.Variable4Controlled: return car.Variable4;
-                case Orts.Formats.Msts.VolumeCurve.Controls.TrainBrakeControllerControlled: return car.TrainBrakeControllerValueForSound;                    
+                case Orts.Formats.Msts.VolumeCurve.Controls.TrainBrakeControllerControlled: return car.TrainBrakeControllerValueForSound;
+                case Orts.Formats.Msts.VolumeCurve.Controls.BrakePipeChangeRateControlled: return car.BrakeSystem.BrakePipeChangeRateBar;
                 case Orts.Formats.Msts.VolumeCurve.Controls.BrakeCylControlled: return car.BrakeSystem.GetCylPressurePSI();
                 case Orts.Formats.Msts.VolumeCurve.Controls.CurveForceControlled: return car.CurveForceNFiltered;
                 default: return 0;
