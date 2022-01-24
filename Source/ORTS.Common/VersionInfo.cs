@@ -101,10 +101,10 @@ namespace ORTS.Common
                 var timespan = builds.Keys.OrderBy(ts => ts).Last();
                 // Icik
                 //return String.Format("{0} ({1:u})", builds[timespan], datetime + timespan);
-                if (File.Exists(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + @"\Version15.ini"))
-                    return "Open Rails CZ/SK v" + File.ReadAllText(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + @"\Version15.ini").Replace("Aktualizován patch ", "").Replace("Aktualizována verze ", "");
+                if (File.Exists(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + @"\Version16.ini"))
+                    return "Open Rails CZ/SK v" + File.ReadAllText(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + @"\Version16.ini").Replace("Aktualizován patch ", "").Replace("Aktualizována verze ", "");
                 else
-                    return "Open Rails CZ/SK v1.5.?";
+                    return "Open Rails CZ/SK v1.6.?";
             }
             return "";
         }

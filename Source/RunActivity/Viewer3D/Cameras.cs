@@ -95,13 +95,14 @@ namespace Orts.Viewer3D
             if (Viewer.Settings.CabView_MSTSOR)
                 FieldOffViewOffset = 0;
             else
-                FieldOffViewOffset = 0;
+                FieldOffViewOffset = 10;
         }
 
         protected Camera(Viewer viewer)
         {
             Viewer = viewer;
-            FieldOfView = Viewer.Settings.ViewingFOV;
+            FOVOffset();
+            FieldOfView = Viewer.Settings.ViewingFOV + FieldOffViewOffset;
         }
 
         protected Camera(Viewer viewer, Camera previousCamera) // maintain visual continuity
@@ -133,7 +134,8 @@ namespace Orts.Viewer3D
         /// </summary>
         public virtual void Reset()
         {
-            FieldOfView = Viewer.Settings.ViewingFOV;
+            FOVOffset();
+            FieldOfView = Viewer.Settings.ViewingFOV + FieldOffViewOffset;
             ScreenChanged();
         }
 
@@ -379,7 +381,8 @@ namespace Orts.Viewer3D
         protected LookAtCamera(Viewer viewer)
             : base(viewer)
         {
-            FieldOfView = Viewer.Settings.ViewingFOV;
+            FOVOffset();
+            FieldOfView = Viewer.Settings.ViewingFOV + FieldOffViewOffset;
         }
 
         protected internal override void Save(BinaryWriter outf)
@@ -422,7 +425,8 @@ namespace Orts.Viewer3D
         protected RotatingCamera(Viewer viewer)
             : base(viewer)
         {
-            FieldOfView = Viewer.Settings.ViewingFOV;
+            FOVOffset();
+            FieldOfView = Viewer.Settings.ViewingFOV + FieldOffViewOffset;
         }
 
         protected RotatingCamera(Viewer viewer, Camera previousCamera)
@@ -619,7 +623,8 @@ namespace Orts.Viewer3D
         public FreeRoamCamera(Viewer viewer, Camera previousCamera)
             : base(viewer, previousCamera)
         {
-            FieldOfView = Viewer.Settings.ViewingFOV;
+            FOVOffset();
+            FieldOfView = Viewer.Settings.ViewingFOV + FieldOffViewOffset;
         }
 
         public void SetLocation(WorldLocation location)
@@ -799,7 +804,8 @@ namespace Orts.Viewer3D
         protected AttachedCamera(Viewer viewer)
             : base(viewer)
         {
-            FieldOfView = Viewer.Settings.ViewingFOV;
+            FOVOffset();
+            FieldOfView = Viewer.Settings.ViewingFOV + FieldOffViewOffset;
         }
 
         protected internal override void Save(BinaryWriter outf)
@@ -1019,7 +1025,8 @@ namespace Orts.Viewer3D
         public TrackingCamera(Viewer viewer, AttachedTo attachedTo)
             : base(viewer)
         {
-            FieldOfView = Viewer.Settings.ViewingFOV;
+            FOVOffset();
+            FieldOfView = Viewer.Settings.ViewingFOV + FieldOffViewOffset;
             Front = attachedTo == AttachedTo.Front;
             PositionYRadians = StartPositionYRadians + (Front ? 0 : MathHelper.Pi);
             RotationXRadians = PositionXRadians;
@@ -1492,7 +1499,8 @@ namespace Orts.Viewer3D
         public NonTrackingCamera(Viewer viewer)
             : base(viewer)
         {
-            FieldOfView = Viewer.Settings.ViewingFOV;
+            FOVOffset();
+            FieldOfView = Viewer.Settings.ViewingFOV + FieldOffViewOffset;
         }
 
         public override void HandleUserInput(ElapsedTime elapsedTime)
@@ -1539,7 +1547,8 @@ namespace Orts.Viewer3D
         public BrakemanCamera(Viewer viewer)
             : base(viewer)
         {
-            FieldOfView = Viewer.Settings.ViewingFOV;
+            FOVOffset();
+            FieldOfView = Viewer.Settings.ViewingFOV + FieldOffViewOffset;
         }
 
         protected override List<TrainCar> GetCameraCars()
@@ -1586,7 +1595,8 @@ namespace Orts.Viewer3D
         public InsideThreeDimCamera(Viewer viewer)
             : base(viewer)
         {
-            FieldOfView = Viewer.Settings.ViewingFOV;
+            FOVOffset();
+            FieldOfView = Viewer.Settings.ViewingFOV + FieldOffViewOffset;
         }
 
         protected Vector3 viewPointLocation;
@@ -1793,7 +1803,8 @@ namespace Orts.Viewer3D
         public PassengerCamera(Viewer viewer)
             : base(viewer)
         {
-            FieldOfView = Viewer.Settings.ViewingFOV;
+            FOVOffset();
+            FieldOfView = Viewer.Settings.ViewingFOV + FieldOffViewOffset;
         }
 
         protected override List<TrainCar> GetCameraCars()
@@ -2093,8 +2104,9 @@ namespace Orts.Viewer3D
                 }
                 else
                 {
+                    FOVOffset();
                     FieldOfView = Viewer.Settings.ViewingFOV + FieldOffViewOffset;
-                    RotationRatio = (float)(0.962314f * 0.75f * Math.Tan(MathHelper.ToRadians(FieldOfView / 0.75f)) / Viewer.DisplaySize.Y);
+                    RotationRatio = (float)(0.962314f * 0.75f * Math.Tan(MathHelper.ToRadians(FieldOfView - (2 * FieldOffViewOffset) / 0.75f)) / Viewer.DisplaySize.Y);
                 }
             }
             else if (Viewer.CabExceedsDisplayHorizontally > 0)
@@ -2311,7 +2323,8 @@ namespace Orts.Viewer3D
         public TracksideCamera(Viewer viewer)
             : base(viewer)
         {
-            FieldOfView = Viewer.Settings.ViewingFOV;
+            FOVOffset();
+            FieldOfView = Viewer.Settings.ViewingFOV + FieldOffViewOffset;
         }
 
         public override void Reset()
@@ -2489,7 +2502,8 @@ namespace Orts.Viewer3D
         public SpecialTracksideCamera(Viewer viewer)
             : base(viewer)
         {
-            FieldOfView = Viewer.Settings.ViewingFOV;
+            FOVOffset();
+            FieldOfView = Viewer.Settings.ViewingFOV + FieldOffViewOffset;
         }
 
         protected override void OnActivate(bool sameCamera)

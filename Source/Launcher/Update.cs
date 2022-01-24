@@ -68,14 +68,14 @@ namespace ORTS
             {
                 state = "Zjišťuji aktuální verzi";
                 string versionPath = Application.StartupPath;
-                versionPath = versionPath + "\\version15.ini";
+                versionPath = versionPath + "\\version16.ini";
                 if (!File.Exists(versionPath))
                 {
                     File.WriteAllText(versionPath, "1");
                 }
                 string version = File.ReadAllText(versionPath);
 
-                string contentPath = Application.StartupPath + "\\content.ini";
+                string contentPath = Application.StartupPath + "\\content16.ini";
                 if (!File.Exists(contentPath))
                 {
                     File.WriteAllText(contentPath, "0");
@@ -83,8 +83,8 @@ namespace ORTS
                 string content = File.ReadAllText(contentPath);
 
                 WebClient webClient = new WebClient();
-                s = webClient.DownloadString("http://lkpr.aspone.cz/or/version15.txt");
-                conts = webClient.DownloadString("http://lkpr.aspone.cz/or/content.txt");
+                s = webClient.DownloadString("http://lkpr.aspone.cz/or/version16.txt");
+                conts = webClient.DownloadString("http://lkpr.aspone.cz/or/content16.txt");
                 if (version != s || conts != content) // new version available
                 {
                     if (version != s)
@@ -93,10 +93,10 @@ namespace ORTS
                         if (dr == DialogResult.No)
                             return;
                         state = "Stahuji novou verzi";
-                        File.Delete(Application.StartupPath + "\\Update15.zip");
-                        webClient.DownloadFile("http://lkpr.aspone.cz/or/update15.zip", Application.StartupPath + "\\Update15.zip");
+                        File.Delete(Application.StartupPath + "\\Update16.zip");
+                        webClient.DownloadFile("http://lkpr.aspone.cz/or/update16.zip", Application.StartupPath + "\\Update16.zip");
                         state = "Rozbaluji archiv";
-                        ZipFile zip = new ZipFile(Application.StartupPath + "\\Update15.zip");
+                        ZipFile zip = new ZipFile(Application.StartupPath + "\\Update16.zip");
                         zip.ExtractAll(Application.StartupPath, ExtractExistingFileAction.OverwriteSilently);
                         File.WriteAllText(versionPath, s);
                         waiting = true;
@@ -106,10 +106,10 @@ namespace ORTS
                     if (conts != content)
                     {
                         state = "Stahuji novou verzi obsahu";
-                        File.Delete(Application.StartupPath + "\\Content.zip");
-                        webClient.DownloadFile("http://lkpr.aspone.cz/or/content.zip", Application.StartupPath + "\\Content.zip");
+                        File.Delete(Application.StartupPath + "\\Content16.zip");
+                        webClient.DownloadFile("http://lkpr.aspone.cz/or/content16.zip", Application.StartupPath + "\\Content16.zip");
                         state = "Rozbaluji archiv";
-                        ZipFile zip = new ZipFile(Application.StartupPath + "\\Content.zip");
+                        ZipFile zip = new ZipFile(Application.StartupPath + "\\Content16.zip");
                         zip.ExtractAll(Application.StartupPath, ExtractExistingFileAction.OverwriteSilently);
                         File.WriteAllText(contentPath, conts);
                         waiting = true;

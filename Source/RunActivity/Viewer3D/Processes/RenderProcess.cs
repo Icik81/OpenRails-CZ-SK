@@ -202,7 +202,7 @@ namespace Orts.Viewer3D.Processes
         void InitializeShadowMapLocations()
         {
             var ratio = (float)DisplaySize.X / DisplaySize.Y;
-            var fov = MathHelper.ToRadians(Game.Settings.ViewingFOV);
+            var fov = MathHelper.ToRadians(Game.Settings.ViewingFOV * 1.33f);
             var n = (float)0.5;
             var f = (float)Game.Settings.ShadowMapDistance;
             if (f == 0)
