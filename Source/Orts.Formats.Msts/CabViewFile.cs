@@ -1068,6 +1068,24 @@ namespace Orts.Formats.Msts
                     DateFormat = stf.ReadString();
                     stf.SkipRestOfBlock();
                 }),
+                new STFReader.TokenProcessor("currentsource", () =>
+                {
+                    stf.MustMatch("(");
+                    CurrentSource = stf.ReadString();
+                    stf.SkipRestOfBlock();
+                }),
+                new STFReader.TokenProcessor("currentsourceid", () =>
+                {
+                    stf.MustMatch("(");
+                    CurrentSourceID = (int)stf.ReadFloat(STFReader.UNITS.None, 0);
+                    stf.SkipRestOfBlock();
+                }),
+                new STFReader.TokenProcessor("currenttype", () =>
+                {
+                    stf.MustMatch("(");
+                    CurrentType = stf.ReadString();
+                    stf.SkipRestOfBlock();
+                }),
             });
         }
 

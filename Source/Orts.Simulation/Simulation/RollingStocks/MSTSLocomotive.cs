@@ -8978,6 +8978,12 @@ namespace Orts.Simulation.RollingStocks
                 case CABViewControlTypes.ORTS_AMPERS_BY_CONTROLLER_VOLTAGE:
                     if (extendedPhysics != null)
                     {
+                        if (cvc.UpdateTime > cvc.ElapsedTime)
+                        {
+                            data = cvc.PreviousData;
+                            cvc.ElapsedTime += elapsedTime;
+                            break;
+                        }
                         if (string.IsNullOrEmpty(cvc.CurrentSource))
                         {
                             data = extendedPhysics.TotalCurrent;
@@ -9006,6 +9012,8 @@ namespace Orts.Simulation.RollingStocks
                                 data = extendedPhysics.StarorsCurrent;
                                 if (data < 0)
                                     data = -data;
+                                cvc.PreviousData = data;
+                                cvc.ElapsedTime = 0;
                                 break;
                             }
                         }
@@ -9048,6 +9056,8 @@ namespace Orts.Simulation.RollingStocks
                                     }
                                 }
                             }
+                            cvc.ElapsedTime = 0;
+                            cvc.PreviousData = data;
                             break;
                         }
                         else if (cvc.CurrentSource.ToLower() == "motor")
@@ -9088,6 +9098,8 @@ namespace Orts.Simulation.RollingStocks
                             break;
                         }
                     }
+                    cvc.PreviousData = data;
+                    cvc.ElapsedTime = 0;
                     if (CruiseControl != null)
                     {
                         if (CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.Auto)
