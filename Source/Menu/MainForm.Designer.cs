@@ -118,7 +118,7 @@ namespace ORTS
             this.checkBoxWindowed.Checked = true;
             this.checkBoxWindowed.CheckState = System.Windows.Forms.CheckState.Checked;
             this.checkBoxWindowed.Location = new System.Drawing.Point(145, 87);
-            this.checkBoxWindowed.Margin = new System.Windows.Forms.Padding(4);
+            this.checkBoxWindowed.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.checkBoxWindowed.Name = "checkBoxWindowed";
             this.checkBoxWindowed.Size = new System.Drawing.Size(95, 21);
             this.checkBoxWindowed.TabIndex = 2;
@@ -129,7 +129,7 @@ namespace ORTS
             // 
             this.buttonStart.Enabled = false;
             this.buttonStart.Location = new System.Drawing.Point(8, 23);
-            this.buttonStart.Margin = new System.Windows.Forms.Padding(4);
+            this.buttonStart.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.buttonStart.Name = "buttonStart";
             this.buttonStart.Size = new System.Drawing.Size(100, 57);
             this.buttonStart.TabIndex = 0;
@@ -146,7 +146,7 @@ namespace ORTS
             this.labelLogo.Name = "labelLogo";
             this.labelLogo.Size = new System.Drawing.Size(299, 79);
             this.labelLogo.TabIndex = 11;
-            this.labelLogo.Text = "Open Rails CZ/SK";
+            this.labelLogo.Text = "Open Rails";
             this.labelLogo.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.labelLogo.UseMnemonic = false;
             // 
@@ -161,7 +161,7 @@ namespace ORTS
             this.checkBoxWarnings.Checked = true;
             this.checkBoxWarnings.CheckState = System.Windows.Forms.CheckState.Checked;
             this.checkBoxWarnings.Location = new System.Drawing.Point(145, 59);
-            this.checkBoxWarnings.Margin = new System.Windows.Forms.Padding(4);
+            this.checkBoxWarnings.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.checkBoxWarnings.Name = "checkBoxWarnings";
             this.checkBoxWarnings.Size = new System.Drawing.Size(81, 21);
             this.checkBoxWarnings.TabIndex = 1;
@@ -171,7 +171,7 @@ namespace ORTS
             // buttonOptions
             // 
             this.buttonOptions.Location = new System.Drawing.Point(145, 23);
-            this.buttonOptions.Margin = new System.Windows.Forms.Padding(4);
+            this.buttonOptions.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.buttonOptions.Name = "buttonOptions";
             this.buttonOptions.Size = new System.Drawing.Size(100, 28);
             this.buttonOptions.TabIndex = 0;
@@ -182,7 +182,7 @@ namespace ORTS
             // 
             this.buttonResume.Enabled = false;
             this.buttonResume.Location = new System.Drawing.Point(9, 97);
-            this.buttonResume.Margin = new System.Windows.Forms.Padding(4);
+            this.buttonResume.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.buttonResume.Name = "buttonResume";
             this.buttonResume.Size = new System.Drawing.Size(100, 43);
             this.buttonResume.TabIndex = 1;
@@ -192,7 +192,7 @@ namespace ORTS
             // buttonTools
             // 
             this.buttonTools.Location = new System.Drawing.Point(4, 23);
-            this.buttonTools.Margin = new System.Windows.Forms.Padding(4);
+            this.buttonTools.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.buttonTools.Name = "buttonTools";
             this.buttonTools.Size = new System.Drawing.Size(133, 28);
             this.buttonTools.TabIndex = 19;
@@ -206,7 +206,7 @@ namespace ORTS
             this.comboBoxFolder.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxFolder.FormattingEnabled = true;
             this.comboBoxFolder.Location = new System.Drawing.Point(16, 38);
-            this.comboBoxFolder.Margin = new System.Windows.Forms.Padding(4);
+            this.comboBoxFolder.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.comboBoxFolder.Name = "comboBoxFolder";
             this.comboBoxFolder.Size = new System.Drawing.Size(373, 24);
             this.comboBoxFolder.TabIndex = 1;
@@ -219,7 +219,7 @@ namespace ORTS
             this.comboBoxRoute.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxRoute.FormattingEnabled = true;
             this.comboBoxRoute.Location = new System.Drawing.Point(16, 95);
-            this.comboBoxRoute.Margin = new System.Windows.Forms.Padding(4);
+            this.comboBoxRoute.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.comboBoxRoute.Name = "comboBoxRoute";
             this.comboBoxRoute.Size = new System.Drawing.Size(373, 24);
             this.comboBoxRoute.TabIndex = 3;
@@ -229,7 +229,7 @@ namespace ORTS
             // 
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(16, 71);
-            this.label2.Margin = new System.Windows.Forms.Padding(4);
+            this.label2.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(50, 17);
             this.label2.TabIndex = 2;
@@ -239,7 +239,7 @@ namespace ORTS
             // textBoxMPHost
             // 
             this.textBoxMPHost.Location = new System.Drawing.Point(111, 55);
-            this.textBoxMPHost.Margin = new System.Windows.Forms.Padding(4);
+            this.textBoxMPHost.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.textBoxMPHost.Name = "textBoxMPHost";
             this.textBoxMPHost.Size = new System.Drawing.Size(207, 22);
             this.textBoxMPHost.TabIndex = 3;
@@ -249,7 +249,7 @@ namespace ORTS
             // 
             this.label14.AutoSize = true;
             this.label14.Location = new System.Drawing.Point(8, 59);
-            this.label14.Margin = new System.Windows.Forms.Padding(4);
+            this.label14.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.label14.Name = "label14";
             this.label14.Size = new System.Drawing.Size(70, 17);
             this.label14.TabIndex = 2;
@@ -260,7 +260,7 @@ namespace ORTS
             // 
             this.label13.AutoSize = true;
             this.label13.Location = new System.Drawing.Point(8, 27);
-            this.label13.Margin = new System.Windows.Forms.Padding(4);
+            this.label13.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.label13.Name = "label13";
             this.label13.Size = new System.Drawing.Size(81, 17);
             this.label13.TabIndex = 0;
@@ -270,7 +270,7 @@ namespace ORTS
             // textBoxMPUser
             // 
             this.textBoxMPUser.Location = new System.Drawing.Point(111, 23);
-            this.textBoxMPUser.Margin = new System.Windows.Forms.Padding(4);
+            this.textBoxMPUser.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.textBoxMPUser.Name = "textBoxMPUser";
             this.textBoxMPUser.Size = new System.Drawing.Size(207, 22);
             this.textBoxMPUser.TabIndex = 1;
@@ -288,9 +288,9 @@ namespace ORTS
             this.groupBox1.Controls.Add(this.textBoxMPUser);
             this.groupBox1.Controls.Add(this.label14);
             this.groupBox1.Location = new System.Drawing.Point(796, 512);
-            this.groupBox1.Margin = new System.Windows.Forms.Padding(4);
+            this.groupBox1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Padding = new System.Windows.Forms.Padding(4);
+            this.groupBox1.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.groupBox1.Size = new System.Drawing.Size(327, 148);
             this.groupBox1.TabIndex = 15;
             this.groupBox1.TabStop = false;
@@ -299,7 +299,7 @@ namespace ORTS
             // radioButtonMPServer
             // 
             this.radioButtonMPServer.Location = new System.Drawing.Point(12, 112);
-            this.radioButtonMPServer.Margin = new System.Windows.Forms.Padding(4);
+            this.radioButtonMPServer.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.radioButtonMPServer.Name = "radioButtonMPServer";
             this.radioButtonMPServer.Size = new System.Drawing.Size(77, 25);
             this.radioButtonMPServer.TabIndex = 9;
@@ -311,7 +311,7 @@ namespace ORTS
             // 
             this.radioButtonMPClient.Checked = true;
             this.radioButtonMPClient.Location = new System.Drawing.Point(12, 82);
-            this.radioButtonMPClient.Margin = new System.Windows.Forms.Padding(4);
+            this.radioButtonMPClient.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.radioButtonMPClient.Name = "radioButtonMPClient";
             this.radioButtonMPClient.Size = new System.Drawing.Size(100, 25);
             this.radioButtonMPClient.TabIndex = 8;
@@ -324,7 +324,7 @@ namespace ORTS
             // 
             this.buttonStartMP.Enabled = false;
             this.buttonStartMP.Location = new System.Drawing.Point(111, 108);
-            this.buttonStartMP.Margin = new System.Windows.Forms.Padding(4);
+            this.buttonStartMP.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.buttonStartMP.Name = "buttonStartMP";
             this.buttonStartMP.Size = new System.Drawing.Size(100, 28);
             this.buttonStartMP.TabIndex = 7;
@@ -335,7 +335,7 @@ namespace ORTS
             // 
             this.buttonResumeMP.Enabled = false;
             this.buttonResumeMP.Location = new System.Drawing.Point(219, 108);
-            this.buttonResumeMP.Margin = new System.Windows.Forms.Padding(4);
+            this.buttonResumeMP.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.buttonResumeMP.Name = "buttonResumeMP";
             this.buttonResumeMP.Size = new System.Drawing.Size(100, 28);
             this.buttonResumeMP.TabIndex = 6;
@@ -348,9 +348,9 @@ namespace ORTS
             this.groupBox3.Controls.Add(this.buttonResume);
             this.groupBox3.Controls.Add(this.buttonStart);
             this.groupBox3.Location = new System.Drawing.Point(672, 512);
-            this.groupBox3.Margin = new System.Windows.Forms.Padding(4);
+            this.groupBox3.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Padding = new System.Windows.Forms.Padding(4);
+            this.groupBox3.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.groupBox3.Size = new System.Drawing.Size(116, 148);
             this.groupBox3.TabIndex = 14;
             this.groupBox3.TabStop = false;
@@ -360,7 +360,7 @@ namespace ORTS
             // 
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(16, 15);
-            this.label1.Margin = new System.Windows.Forms.Padding(4);
+            this.label1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(122, 17);
             this.label1.TabIndex = 0;
@@ -377,7 +377,7 @@ namespace ORTS
             this.panelDetails.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panelDetails.ForeColor = System.Drawing.SystemColors.WindowText;
             this.panelDetails.Location = new System.Drawing.Point(399, 38);
-            this.panelDetails.Margin = new System.Windows.Forms.Padding(4);
+            this.panelDetails.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.panelDetails.Name = "panelDetails";
             this.panelDetails.Size = new System.Drawing.Size(723, 466);
             this.panelDetails.TabIndex = 20;
@@ -387,7 +387,7 @@ namespace ORTS
             this.pictureBoxLogo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.pictureBoxLogo.Image = ((System.Drawing.Image)(resources.GetObject("pictureBoxLogo.Image")));
             this.pictureBoxLogo.Location = new System.Drawing.Point(16, 581);
-            this.pictureBoxLogo.Margin = new System.Windows.Forms.Padding(4);
+            this.pictureBoxLogo.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.pictureBoxLogo.Name = "pictureBoxLogo";
             this.pictureBoxLogo.Size = new System.Drawing.Size(88, 70);
             this.pictureBoxLogo.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -403,7 +403,7 @@ namespace ORTS
             this.panel1.Controls.Add(this.checkBoxWindowed);
             this.panel1.Controls.Add(this.buttonTools);
             this.panel1.Location = new System.Drawing.Point(415, 512);
-            this.panel1.Margin = new System.Windows.Forms.Padding(4);
+            this.panel1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(249, 148);
             this.panel1.TabIndex = 13;
@@ -411,7 +411,7 @@ namespace ORTS
             // buttonDocuments
             // 
             this.buttonDocuments.Location = new System.Drawing.Point(4, 59);
-            this.buttonDocuments.Margin = new System.Windows.Forms.Padding(4);
+            this.buttonDocuments.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.buttonDocuments.Name = "buttonDocuments";
             this.buttonDocuments.Size = new System.Drawing.Size(133, 28);
             this.buttonDocuments.TabIndex = 22;
@@ -423,7 +423,7 @@ namespace ORTS
             // 
             this.label25.AutoSize = true;
             this.label25.Location = new System.Drawing.Point(16, 128);
-            this.label25.Margin = new System.Windows.Forms.Padding(4);
+            this.label25.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.label25.Name = "label25";
             this.label25.Size = new System.Drawing.Size(47, 17);
             this.label25.TabIndex = 4;
@@ -434,7 +434,7 @@ namespace ORTS
             // 
             this.radioButtonModeActivity.Checked = true;
             this.radioButtonModeActivity.Location = new System.Drawing.Point(16, 153);
-            this.radioButtonModeActivity.Margin = new System.Windows.Forms.Padding(4);
+            this.radioButtonModeActivity.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.radioButtonModeActivity.Name = "radioButtonModeActivity";
             this.radioButtonModeActivity.Size = new System.Drawing.Size(173, 25);
             this.radioButtonModeActivity.TabIndex = 6;
@@ -446,7 +446,7 @@ namespace ORTS
             // radioButtonModeTimetable
             // 
             this.radioButtonModeTimetable.Location = new System.Drawing.Point(217, 151);
-            this.radioButtonModeTimetable.Margin = new System.Windows.Forms.Padding(4);
+            this.radioButtonModeTimetable.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.radioButtonModeTimetable.Name = "radioButtonModeTimetable";
             this.radioButtonModeTimetable.Size = new System.Drawing.Size(173, 25);
             this.radioButtonModeTimetable.TabIndex = 7;
@@ -499,7 +499,7 @@ namespace ORTS
             // 
             this.label3.AutoSize = true;
             this.label3.Location = new System.Drawing.Point(4, 4);
-            this.label3.Margin = new System.Windows.Forms.Padding(4);
+            this.label3.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(56, 17);
             this.label3.TabIndex = 0;
@@ -513,7 +513,7 @@ namespace ORTS
             this.comboBoxActivity.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxActivity.FormattingEnabled = true;
             this.comboBoxActivity.Location = new System.Drawing.Point(4, 27);
-            this.comboBoxActivity.Margin = new System.Windows.Forms.Padding(4);
+            this.comboBoxActivity.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.comboBoxActivity.Name = "comboBoxActivity";
             this.comboBoxActivity.Size = new System.Drawing.Size(373, 24);
             this.comboBoxActivity.TabIndex = 1;
@@ -523,7 +523,7 @@ namespace ORTS
             // 
             this.label4.AutoSize = true;
             this.label4.Location = new System.Drawing.Point(4, 60);
-            this.label4.Margin = new System.Windows.Forms.Padding(4);
+            this.label4.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(84, 17);
             this.label4.TabIndex = 2;
@@ -538,7 +538,7 @@ namespace ORTS
             this.comboBoxLocomotive.Enabled = false;
             this.comboBoxLocomotive.FormattingEnabled = true;
             this.comboBoxLocomotive.Location = new System.Drawing.Point(4, 84);
-            this.comboBoxLocomotive.Margin = new System.Windows.Forms.Padding(4);
+            this.comboBoxLocomotive.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.comboBoxLocomotive.Name = "comboBoxLocomotive";
             this.comboBoxLocomotive.Size = new System.Drawing.Size(373, 24);
             this.comboBoxLocomotive.TabIndex = 3;
@@ -552,7 +552,7 @@ namespace ORTS
             this.comboBoxConsist.Enabled = false;
             this.comboBoxConsist.FormattingEnabled = true;
             this.comboBoxConsist.Location = new System.Drawing.Point(4, 138);
-            this.comboBoxConsist.Margin = new System.Windows.Forms.Padding(4);
+            this.comboBoxConsist.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.comboBoxConsist.Name = "comboBoxConsist";
             this.comboBoxConsist.Size = new System.Drawing.Size(373, 24);
             this.comboBoxConsist.TabIndex = 5;
@@ -562,7 +562,7 @@ namespace ORTS
             // 
             this.label5.AutoSize = true;
             this.label5.Location = new System.Drawing.Point(4, 114);
-            this.label5.Margin = new System.Windows.Forms.Padding(4);
+            this.label5.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(58, 17);
             this.label5.TabIndex = 4;
@@ -573,7 +573,7 @@ namespace ORTS
             // 
             this.label6.AutoSize = true;
             this.label6.Location = new System.Drawing.Point(4, 171);
-            this.label6.Margin = new System.Windows.Forms.Padding(4);
+            this.label6.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(77, 17);
             this.label6.TabIndex = 6;
@@ -588,7 +588,7 @@ namespace ORTS
             this.comboBoxStartAt.Enabled = false;
             this.comboBoxStartAt.FormattingEnabled = true;
             this.comboBoxStartAt.Location = new System.Drawing.Point(4, 194);
-            this.comboBoxStartAt.Margin = new System.Windows.Forms.Padding(4);
+            this.comboBoxStartAt.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.comboBoxStartAt.Name = "comboBoxStartAt";
             this.comboBoxStartAt.Size = new System.Drawing.Size(373, 24);
             this.comboBoxStartAt.TabIndex = 7;
@@ -598,7 +598,7 @@ namespace ORTS
             // 
             this.label7.AutoSize = true;
             this.label7.Location = new System.Drawing.Point(4, 228);
-            this.label7.Margin = new System.Windows.Forms.Padding(4);
+            this.label7.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(81, 17);
             this.label7.TabIndex = 8;
@@ -613,7 +613,7 @@ namespace ORTS
             this.comboBoxHeadTo.Enabled = false;
             this.comboBoxHeadTo.FormattingEnabled = true;
             this.comboBoxHeadTo.Location = new System.Drawing.Point(4, 251);
-            this.comboBoxHeadTo.Margin = new System.Windows.Forms.Padding(4);
+            this.comboBoxHeadTo.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.comboBoxHeadTo.Name = "comboBoxHeadTo";
             this.comboBoxHeadTo.Size = new System.Drawing.Size(373, 24);
             this.comboBoxHeadTo.TabIndex = 9;
@@ -647,7 +647,7 @@ namespace ORTS
             this.comboBoxStartTime.Enabled = false;
             this.comboBoxStartTime.FormattingEnabled = true;
             this.comboBoxStartTime.Location = new System.Drawing.Point(81, 284);
-            this.comboBoxStartTime.Margin = new System.Windows.Forms.Padding(4);
+            this.comboBoxStartTime.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.comboBoxStartTime.Name = "comboBoxStartTime";
             this.comboBoxStartTime.Size = new System.Drawing.Size(96, 24);
             this.comboBoxStartTime.TabIndex = 11;
@@ -661,7 +661,7 @@ namespace ORTS
             this.comboBoxDuration.Enabled = false;
             this.comboBoxDuration.FormattingEnabled = true;
             this.comboBoxDuration.Location = new System.Drawing.Point(281, 284);
-            this.comboBoxDuration.Margin = new System.Windows.Forms.Padding(4);
+            this.comboBoxDuration.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.comboBoxDuration.Name = "comboBoxDuration";
             this.comboBoxDuration.Size = new System.Drawing.Size(96, 24);
             this.comboBoxDuration.TabIndex = 17;
@@ -674,7 +674,7 @@ namespace ORTS
             this.comboBoxStartWeather.Enabled = false;
             this.comboBoxStartWeather.FormattingEnabled = true;
             this.comboBoxStartWeather.Location = new System.Drawing.Point(81, 352);
-            this.comboBoxStartWeather.Margin = new System.Windows.Forms.Padding(4);
+            this.comboBoxStartWeather.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.comboBoxStartWeather.Name = "comboBoxStartWeather";
             this.comboBoxStartWeather.Size = new System.Drawing.Size(96, 24);
             this.comboBoxStartWeather.TabIndex = 15;
@@ -698,7 +698,7 @@ namespace ORTS
             this.comboBoxStartSeason.Enabled = false;
             this.comboBoxStartSeason.FormattingEnabled = true;
             this.comboBoxStartSeason.Location = new System.Drawing.Point(81, 319);
-            this.comboBoxStartSeason.Margin = new System.Windows.Forms.Padding(4);
+            this.comboBoxStartSeason.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.comboBoxStartSeason.Name = "comboBoxStartSeason";
             this.comboBoxStartSeason.Size = new System.Drawing.Size(96, 24);
             this.comboBoxStartSeason.TabIndex = 13;
@@ -722,7 +722,7 @@ namespace ORTS
             this.comboBoxDifficulty.Enabled = false;
             this.comboBoxDifficulty.FormattingEnabled = true;
             this.comboBoxDifficulty.Location = new System.Drawing.Point(281, 319);
-            this.comboBoxDifficulty.Margin = new System.Windows.Forms.Padding(4);
+            this.comboBoxDifficulty.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.comboBoxDifficulty.Name = "comboBoxDifficulty";
             this.comboBoxDifficulty.Size = new System.Drawing.Size(96, 24);
             this.comboBoxDifficulty.TabIndex = 19;
@@ -764,7 +764,7 @@ namespace ORTS
             // 
             this.labelTimetableWeatherFile.AutoSize = true;
             this.labelTimetableWeatherFile.Location = new System.Drawing.Point(7, 261);
-            this.labelTimetableWeatherFile.Margin = new System.Windows.Forms.Padding(4);
+            this.labelTimetableWeatherFile.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.labelTimetableWeatherFile.Name = "labelTimetableWeatherFile";
             this.labelTimetableWeatherFile.Size = new System.Drawing.Size(92, 17);
             this.labelTimetableWeatherFile.TabIndex = 14;
@@ -776,7 +776,7 @@ namespace ORTS
             this.comboBoxTimetableWeatherFile.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxTimetableWeatherFile.FormattingEnabled = true;
             this.comboBoxTimetableWeatherFile.Location = new System.Drawing.Point(121, 257);
-            this.comboBoxTimetableWeatherFile.Margin = new System.Windows.Forms.Padding(4);
+            this.comboBoxTimetableWeatherFile.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.comboBoxTimetableWeatherFile.Name = "comboBoxTimetableWeatherFile";
             this.comboBoxTimetableWeatherFile.Size = new System.Drawing.Size(256, 24);
             this.comboBoxTimetableWeatherFile.TabIndex = 13;
@@ -786,7 +786,7 @@ namespace ORTS
             // 
             this.label24.AutoSize = true;
             this.label24.Location = new System.Drawing.Point(4, 97);
-            this.label24.Margin = new System.Windows.Forms.Padding(4);
+            this.label24.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.label24.Name = "label24";
             this.label24.Size = new System.Drawing.Size(45, 17);
             this.label24.TabIndex = 4;
@@ -798,7 +798,7 @@ namespace ORTS
             this.comboBoxTimetableTrain.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxTimetableTrain.FormattingEnabled = true;
             this.comboBoxTimetableTrain.Location = new System.Drawing.Point(121, 94);
-            this.comboBoxTimetableTrain.Margin = new System.Windows.Forms.Padding(4);
+            this.comboBoxTimetableTrain.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.comboBoxTimetableTrain.Name = "comboBoxTimetableTrain";
             this.comboBoxTimetableTrain.Size = new System.Drawing.Size(256, 24);
             this.comboBoxTimetableTrain.TabIndex = 5;
@@ -808,7 +808,7 @@ namespace ORTS
             // 
             this.label23.AutoSize = true;
             this.label23.Location = new System.Drawing.Point(4, 64);
-            this.label23.Margin = new System.Windows.Forms.Padding(4);
+            this.label23.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.label23.Name = "label23";
             this.label23.Size = new System.Drawing.Size(74, 17);
             this.label23.TabIndex = 2;
@@ -821,7 +821,7 @@ namespace ORTS
             this.comboBoxTimetableDay.Enabled = false;
             this.comboBoxTimetableDay.FormattingEnabled = true;
             this.comboBoxTimetableDay.Location = new System.Drawing.Point(121, 149);
-            this.comboBoxTimetableDay.Margin = new System.Windows.Forms.Padding(4);
+            this.comboBoxTimetableDay.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.comboBoxTimetableDay.Name = "comboBoxTimetableDay";
             this.comboBoxTimetableDay.Size = new System.Drawing.Size(96, 24);
             this.comboBoxTimetableDay.TabIndex = 8;
@@ -832,7 +832,7 @@ namespace ORTS
             // 
             this.label22.AutoSize = true;
             this.label22.Location = new System.Drawing.Point(7, 153);
-            this.label22.Margin = new System.Windows.Forms.Padding(4);
+            this.label22.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.label22.Name = "label22";
             this.label22.Size = new System.Drawing.Size(37, 17);
             this.label22.TabIndex = 7;
@@ -847,7 +847,7 @@ namespace ORTS
             this.comboBoxTimetableWeather.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxTimetableWeather.FormattingEnabled = true;
             this.comboBoxTimetableWeather.Location = new System.Drawing.Point(121, 217);
-            this.comboBoxTimetableWeather.Margin = new System.Windows.Forms.Padding(4);
+            this.comboBoxTimetableWeather.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.comboBoxTimetableWeather.Name = "comboBoxTimetableWeather";
             this.comboBoxTimetableWeather.Size = new System.Drawing.Size(96, 24);
             this.comboBoxTimetableWeather.TabIndex = 12;
@@ -857,7 +857,7 @@ namespace ORTS
             // 
             this.label20.AutoSize = true;
             this.label20.Location = new System.Drawing.Point(7, 220);
-            this.label20.Margin = new System.Windows.Forms.Padding(4);
+            this.label20.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.label20.Name = "label20";
             this.label20.Size = new System.Drawing.Size(66, 17);
             this.label20.TabIndex = 11;
@@ -871,7 +871,7 @@ namespace ORTS
             this.comboBoxTimetableSeason.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxTimetableSeason.FormattingEnabled = true;
             this.comboBoxTimetableSeason.Location = new System.Drawing.Point(121, 183);
-            this.comboBoxTimetableSeason.Margin = new System.Windows.Forms.Padding(4);
+            this.comboBoxTimetableSeason.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.comboBoxTimetableSeason.Name = "comboBoxTimetableSeason";
             this.comboBoxTimetableSeason.Size = new System.Drawing.Size(96, 24);
             this.comboBoxTimetableSeason.TabIndex = 10;
@@ -881,7 +881,7 @@ namespace ORTS
             // 
             this.label21.AutoSize = true;
             this.label21.Location = new System.Drawing.Point(7, 187);
-            this.label21.Margin = new System.Windows.Forms.Padding(4);
+            this.label21.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.label21.Name = "label21";
             this.label21.Size = new System.Drawing.Size(60, 17);
             this.label21.TabIndex = 9;
@@ -893,7 +893,7 @@ namespace ORTS
             this.comboBoxTimetable.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxTimetable.FormattingEnabled = true;
             this.comboBoxTimetable.Location = new System.Drawing.Point(121, 60);
-            this.comboBoxTimetable.Margin = new System.Windows.Forms.Padding(4);
+            this.comboBoxTimetable.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.comboBoxTimetable.Name = "comboBoxTimetable";
             this.comboBoxTimetable.Size = new System.Drawing.Size(256, 24);
             this.comboBoxTimetable.TabIndex = 3;
@@ -905,7 +905,7 @@ namespace ORTS
             this.comboBoxTimetableSet.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxTimetableSet.FormattingEnabled = true;
             this.comboBoxTimetableSet.Location = new System.Drawing.Point(4, 27);
-            this.comboBoxTimetableSet.Margin = new System.Windows.Forms.Padding(4);
+            this.comboBoxTimetableSet.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.comboBoxTimetableSet.Name = "comboBoxTimetableSet";
             this.comboBoxTimetableSet.Size = new System.Drawing.Size(373, 24);
             this.comboBoxTimetableSet.TabIndex = 1;
@@ -915,7 +915,7 @@ namespace ORTS
             // 
             this.label15.AutoSize = true;
             this.label15.Location = new System.Drawing.Point(4, 4);
-            this.label15.Margin = new System.Windows.Forms.Padding(4);
+            this.label15.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.label15.Name = "label15";
             this.label15.Size = new System.Drawing.Size(97, 17);
             this.label15.TabIndex = 0;
@@ -994,11 +994,11 @@ namespace ORTS
             this.Controls.Add(this.label2);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Margin = new System.Windows.Forms.Padding(4);
+            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.MaximizeBox = false;
             this.Name = "MainForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Open Rails CZ/SK";
+            this.Text = "Open Rails";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
             this.Load += new System.EventHandler(this.MainForm_Load);
             this.Shown += new System.EventHandler(this.MainForm_Shown);
