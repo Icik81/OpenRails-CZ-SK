@@ -389,7 +389,11 @@ namespace ORTS
             this.pictureBoxLogo.Location = new System.Drawing.Point(16, 581);
             this.pictureBoxLogo.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.pictureBoxLogo.Name = "pictureBoxLogo";
+<<<<<<< HEAD
             this.pictureBoxLogo.Size = new System.Drawing.Size(88, 70);
+=======
+            this.pictureBoxLogo.Size = new System.Drawing.Size(85, 79);
+>>>>>>> parent of 0d29511 (Update MainForm.Designer.cs)
             this.pictureBoxLogo.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pictureBoxLogo.TabIndex = 5;
             this.pictureBoxLogo.TabStop = false;
