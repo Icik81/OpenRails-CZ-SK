@@ -1409,6 +1409,13 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     foreach (TrainCar car in train.Cars)
                         car.BrakeSystem.EmergencyBrakeForWagon = false;
 
+                // Spustí trigger při nouzovém brždění
+                if (lead.BrakeSystem.EmergencyBrakeForWagon)
+                {
+                    if (lead.BrakeSystem.BrakeLine1PressurePSI > 5)
+                        lead.SignalEvent(Event.TrainBrakeEmergencyActivated);
+                }
+
                 // Aktivace napájení pro vozy, trigger 23 a 24 
                 if (lead.BrakeSystem.PowerForWagon)
                     foreach (TrainCar car in train.Cars)

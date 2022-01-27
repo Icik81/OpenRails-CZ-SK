@@ -297,6 +297,7 @@ namespace Orts.Common
         HeatingOverCurrentOff,
         ORTS_BailOff,
         ORTS_BailOffRelease,
+        TrainBrakeEmergencyActivated,
     }
 
     public static class Events
@@ -608,6 +609,7 @@ namespace Orts.Common
                         case 20052: return Event.CabHeating_OffOnOff;
                         case 20053: return Event.ORTS_BailOff;
                         case 20054: return Event.ORTS_BailOffRelease;
+                        case 20055: return Event.TrainBrakeEmergencyActivated;
 
 
                         default: return 0;
