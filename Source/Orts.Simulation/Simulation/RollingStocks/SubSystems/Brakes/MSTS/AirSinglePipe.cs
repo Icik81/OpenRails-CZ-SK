@@ -1315,40 +1315,25 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 // Událost pro hodnotu tlaku v brzdovém válci
                 if (Math.Abs(CylPressurePSI - prevCylPressurePSI) > 1.5f) //(AutoCylPressurePSI != prevCylPressurePSI)
                 {
-                    if (!TrainBrakePressureChanging)
-                    {
-                        if (CylPressurePSI > prevCylPressurePSI)
-                            Car.SignalEvent(Event.TrainBrakePressureIncrease);
-                        else
-                            Car.SignalEvent(Event.TrainBrakePressureDecrease);
-                        TrainBrakePressureChanging = !TrainBrakePressureChanging;
-                    }
+                    if (CylPressurePSI > prevCylPressurePSI)
+                        Car.SignalEvent(Event.TrainBrakePressureIncrease);
+                    else
+                        Car.SignalEvent(Event.TrainBrakePressureDecrease);
                 }
                 else
-                if (TrainBrakePressureChanging)
-                {
-                    TrainBrakePressureChanging = !TrainBrakePressureChanging;
                     Car.SignalEvent(Event.TrainBrakePressureStoppedChanging);
-                }
 
                 // Událost pro hodnotu tlaku v brzdovém potrubí
                 if (Math.Abs(BrakeLine1PressurePSI - prevBrakePipePressurePSI) > 1.5f /*BrakeLine1PressurePSI > prevBrakePipePressurePSI*/)
                 {
-                    if (!BrakePipePressureChanging)
-                    {
-                        if (BrakeLine1PressurePSI > prevBrakePipePressurePSI)
-                            Car.SignalEvent(Event.BrakePipePressureIncrease);
-                        else
-                            Car.SignalEvent(Event.BrakePipePressureDecrease);
-                        BrakePipePressureChanging = !BrakePipePressureChanging;
-                    }
+                    if (BrakeLine1PressurePSI > prevBrakePipePressurePSI)
+                        Car.SignalEvent(Event.BrakePipePressureIncrease);
+                    else
+                        Car.SignalEvent(Event.BrakePipePressureDecrease);
                 }
                 else
-                if (BrakePipePressureChanging)
-                {
-                    BrakePipePressureChanging = !BrakePipePressureChanging;
                     Car.SignalEvent(Event.BrakePipePressureStoppedChanging);
-                }
+                
                 prevCylPressurePSI = CylPressurePSI;
                 prevBrakePipePressurePSI = BrakeLine1PressurePSI;                
             }
@@ -1412,7 +1397,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 // Spustí trigger při nouzovém brždění
                 if (lead.BrakeSystem.EmergencyBrakeForWagon)
                 {
-                    if (lead.BrakeSystem.BrakeLine1PressurePSI > 5)
+                    if (lead.BrakeSystem.BrakeLine1PressurePSI > 30)                    
                         lead.SignalEvent(Event.TrainBrakeEmergencyActivated);
                 }
 
