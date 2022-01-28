@@ -1502,7 +1502,9 @@ namespace Orts.Viewer3D
                 case Orts.Formats.Msts.VolumeCurve.Controls.Variable3DCControlled: return car.Variable3DC;
                 case Orts.Formats.Msts.VolumeCurve.Controls.Variable4Controlled: return car.Variable4;
                 case Orts.Formats.Msts.VolumeCurve.Controls.TrainBrakeControllerControlled: return car.TrainBrakeControllerValueForSound;
+                case Orts.Formats.Msts.VolumeCurve.Controls.EngineBrakeControllerControlled: return car.EngineBrakeControllerValueForSound;
                 case Orts.Formats.Msts.VolumeCurve.Controls.BrakePipeChangeRateControlled: return car.BrakeSystem.BrakePipeChangeRateBar;
+                case Orts.Formats.Msts.VolumeCurve.Controls.CylinderChangeRateControlled: return car.BrakeSystem.CylinderChangeRateBar;
                 case Orts.Formats.Msts.VolumeCurve.Controls.BrakeCylControlled: return car.BrakeSystem.GetCylPressurePSI();
                 case Orts.Formats.Msts.VolumeCurve.Controls.CurveForceControlled: return car.CurveForceNFiltered;
                 default: return 0;
@@ -1950,7 +1952,8 @@ namespace Orts.Viewer3D
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable3AC_Dec_Past:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable3DC_Dec_Past:                                
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable4_Dec_Past:
-                case Orts.Formats.Msts.Variable_Trigger.Events.TrainBrakeController_Dec_Past:                    
+                case Orts.Formats.Msts.Variable_Trigger.Events.TrainBrakeController_Dec_Past:
+                case Orts.Formats.Msts.Variable_Trigger.Events.EngineBrakeController_Dec_Past:
                 case Orts.Formats.Msts.Variable_Trigger.Events.BrakeCyl_Dec_Past:
                 case Orts.Formats.Msts.Variable_Trigger.Events.CurveForce_Dec_Past:
                     if (newValue < SMS.Threshold)
@@ -1978,6 +1981,7 @@ namespace Orts.Viewer3D
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable3DC_Inc_Past:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable4_Inc_Past:
                 case Orts.Formats.Msts.Variable_Trigger.Events.TrainBrakeController_Inc_Past:
+                case Orts.Formats.Msts.Variable_Trigger.Events.EngineBrakeController_Inc_Past:
                 case Orts.Formats.Msts.Variable_Trigger.Events.BrakeCyl_Inc_Past:
                 case Orts.Formats.Msts.Variable_Trigger.Events.CurveForce_Inc_Past:
                     if (newValue > SMS.Threshold)
@@ -2005,6 +2009,7 @@ namespace Orts.Viewer3D
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable3DC_Equals_To:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable4_Equals_To:
                 case Orts.Formats.Msts.Variable_Trigger.Events.TrainBrakeController_Equals_To:
+                case Orts.Formats.Msts.Variable_Trigger.Events.EngineBrakeController_Equals_To:
                 case Orts.Formats.Msts.Variable_Trigger.Events.BrakeCyl_Equals_To:
                 case Orts.Formats.Msts.Variable_Trigger.Events.CurveForce_Equals_To:
                     if (newValue == SMS.Threshold && EqualsCycle < 2)
@@ -2036,6 +2041,7 @@ namespace Orts.Viewer3D
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable3DC_NEquals_To:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable4_NEquals_To:
                 case Orts.Formats.Msts.Variable_Trigger.Events.TrainBrakeController_NEquals_To:
+                case Orts.Formats.Msts.Variable_Trigger.Events.EngineBrakeController_NEquals_To:
                 case Orts.Formats.Msts.Variable_Trigger.Events.BrakeCyl_NEquals_To:
                 case Orts.Formats.Msts.Variable_Trigger.Events.CurveForce_NEquals_To:
                     if (newValue != SMS.Threshold && NEqualsCycle < 2)
@@ -2185,6 +2191,11 @@ namespace Orts.Viewer3D
                 case Orts.Formats.Msts.Variable_Trigger.Events.TrainBrakeController_Equals_To:
                 case Orts.Formats.Msts.Variable_Trigger.Events.TrainBrakeController_NEquals_To:
                     return car.TrainBrakeControllerValueForSound;
+                case Orts.Formats.Msts.Variable_Trigger.Events.EngineBrakeController_Dec_Past:
+                case Orts.Formats.Msts.Variable_Trigger.Events.EngineBrakeController_Inc_Past:
+                case Orts.Formats.Msts.Variable_Trigger.Events.EngineBrakeController_Equals_To:
+                case Orts.Formats.Msts.Variable_Trigger.Events.EngineBrakeController_NEquals_To:
+                    return car.EngineBrakeControllerValueForSound;
                 case Orts.Formats.Msts.Variable_Trigger.Events.BrakeCyl_Dec_Past:
                 case Orts.Formats.Msts.Variable_Trigger.Events.BrakeCyl_Inc_Past:
                 case Orts.Formats.Msts.Variable_Trigger.Events.BrakeCyl_Equals_To:

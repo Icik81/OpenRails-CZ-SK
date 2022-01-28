@@ -3601,7 +3601,10 @@ namespace Orts.Simulation.RollingStocks
                 ToggleHV5Switch();
             }
             if (IsPlayerTrain)
+            {
                 TrainBrakeControllerValueForSound = (float)Math.Round(TrainBrakeController.CurrentValue, 2);
+                EngineBrakeControllerValueForSound = (float)Math.Round(EngineBrakeController.CurrentValue, 2);
+            }
 
             EDBCancelByEngineBrake();
             EDBCancelByOL3BailOff();

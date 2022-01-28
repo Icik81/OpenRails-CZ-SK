@@ -214,7 +214,9 @@ namespace Orts.Formats.Msts
             Variable3Controlled, Variable3ACControlled, Variable3DCControlled,
             Variable4Controlled,
             TrainBrakeControllerControlled,
+            EngineBrakeControllerControlled,
             BrakePipeChangeRateControlled,
+            CylinderChangeRateControlled,
             BrakeCylControlled,
             CurveForceControlled };
 
@@ -247,7 +249,9 @@ namespace Orts.Formats.Msts
                 case "variable3dccontrolled": Control = Controls.Variable3DCControlled; break;
                 case "variable4controlled": Control = Controls.Variable4Controlled; break;                
                 case "trainbrakecontrollercontrolled": Control = Controls.TrainBrakeControllerControlled; break;
+                case "enginebrakecontrollercontrolled": Control = Controls.EngineBrakeControllerControlled; break;
                 case "brakepipechangeratecontrolled": Control = Controls.BrakePipeChangeRateControlled; break;
+                case "cylinderchangeratecontrolled": Control = Controls.CylinderChangeRateControlled; break;
                 case "brakecylcontrolled": Control = Controls.BrakeCylControlled; break;
                 case "curveforcecontrolled": Control = Controls.CurveForceControlled; break;
                 default: STFException.TraceWarning(stf, "Crash expected: Skipped unknown VolumeCurve/Frequencycurve type " + type); stf.SkipRestOfBlock(); return;
@@ -389,6 +393,7 @@ namespace Orts.Formats.Msts
             Variable3DC_Inc_Past, Variable3DC_Dec_Past, Variable3DC_Equals_To, Variable3DC_NEquals_To,
             Variable4_Inc_Past, Variable4_Dec_Past, Variable4_Equals_To, Variable4_NEquals_To, // DieselMotor RPM
             TrainBrakeController_Inc_Past, TrainBrakeController_Dec_Past, TrainBrakeController_Equals_To, TrainBrakeController_NEquals_To,
+            EngineBrakeController_Inc_Past, EngineBrakeController_Dec_Past, EngineBrakeController_Equals_To, EngineBrakeController_NEquals_To,
             BrakeCyl_Inc_Past, BrakeCyl_Dec_Past, BrakeCyl_Equals_To, BrakeCyl_NEquals_To,
             CurveForce_Inc_Past, CurveForce_Dec_Past, CurveForce_Equals_To, CurveForce_NEquals_To
         };
@@ -498,6 +503,10 @@ namespace Orts.Formats.Msts
                 case "trainbrakecontroller_dec_past": Event = Events.TrainBrakeController_Dec_Past; break;
                 case "trainbrakecontroller_equals_to": Event = Events.TrainBrakeController_Equals_To; break;
                 case "trainbrakecontroller_nequals_to": Event = Events.TrainBrakeController_NEquals_To; break;
+                case "enginebrakecontroller_inc_past": Event = Events.EngineBrakeController_Inc_Past; break;
+                case "enginebrakecontroller_dec_past": Event = Events.EngineBrakeController_Dec_Past; break;
+                case "enginebrakecontroller_equals_to": Event = Events.EngineBrakeController_Equals_To; break;
+                case "enginebrakecontroller_nequals_to": Event = Events.EngineBrakeController_NEquals_To; break;
                 case "brakecyl_inc_past": Event = Events.BrakeCyl_Inc_Past; break;
                 case "brakecyl_dec_past": Event = Events.BrakeCyl_Dec_Past; break;
                 case "brakecyl_equals_to": Event = Events.BrakeCyl_Equals_To; break;

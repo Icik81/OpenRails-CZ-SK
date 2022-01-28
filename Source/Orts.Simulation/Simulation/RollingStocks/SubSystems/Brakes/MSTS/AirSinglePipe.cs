@@ -74,6 +74,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
         protected float PrevAuxResPressurePSI = 0;
         protected float threshold = 0;
         protected float prevBrakeLine1PressurePSI = 0;
+        protected float prevAutoCylPressurePSI = 0;
         protected bool NotConnected = false;
         protected float ThresholdBailOffOn = 0;
         protected ValveState PrevTripleValveStateState;
@@ -984,17 +985,22 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             else
                 UpdateTripleValveState(threshold);
 
-            // Zjistí rychlost změny tlaku v potrubí
+            // Zjistí rychlost změny tlaku v potrubí a v brzdovém válci
             if (T0 >= 1.0f) T0 = 0.0f;
-            if (T0 == 0.0f) prevBrakeLine1PressurePSI = BrakeLine1PressurePSI;
-
+            if (T0 == 0.0f)
+            {
+                prevBrakeLine1PressurePSI = BrakeLine1PressurePSI;
+                prevAutoCylPressurePSI = AutoCylPressurePSI;
+            }            
             T0 += elapsedClockSeconds;
             if (T0 > 0.33f && T0 < 0.43f)
             {
                 T0 = 0.0f;
                 BrakePipeChangeRate = Math.Abs(prevBrakeLine1PressurePSI - BrakeLine1PressurePSI) * 3.33f;
-                BrakePipeChangeRateBar = BrakePipeChangeRate / 14.50377f;
-            }
+                BrakePipeChangeRateBar = BrakePipeChangeRate / 14.50377f;                                                
+                CylinderChangeRate = Math.Abs(prevAutoCylPressurePSI - AutoCylPressurePSI) * 3.33f;
+                CylinderChangeRateBar = CylinderChangeRate / 14.50377f;
+            }            
 
             // Zaznamená poslední stav pomocné jímky pro určení pracovního bodu pomocné jímky
             if (AutoCylPressurePSI0 < 1 && !BrakeReadyToApply)
@@ -1313,9 +1319,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             {
                 SoundTriggerCounter = 0f;
                 // Událost pro hodnotu tlaku v brzdovém válci
-                if (Math.Abs(CylPressurePSI - prevCylPressurePSI) > 1.5f) //(AutoCylPressurePSI != prevCylPressurePSI)
+                if (Math.Abs(AutoCylPressurePSI0 - prevCylPressurePSI) > 1.5f) //(AutoCylPressurePSI != prevCylPressurePSI)
                 {
-                    if (CylPressurePSI > prevCylPressurePSI)
+                    if (AutoCylPressurePSI0 > prevCylPressurePSI)
                         Car.SignalEvent(Event.TrainBrakePressureIncrease);
                     else
                         Car.SignalEvent(Event.TrainBrakePressureDecrease);
@@ -1334,7 +1340,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 else
                     Car.SignalEvent(Event.BrakePipePressureStoppedChanging);
                 
-                prevCylPressurePSI = CylPressurePSI;
+                prevCylPressurePSI = AutoCylPressurePSI0;
                 prevBrakePipePressurePSI = BrakeLine1PressurePSI;                
             }
             SoundTriggerCounter = SoundTriggerCounter + elapsedClockSeconds;
