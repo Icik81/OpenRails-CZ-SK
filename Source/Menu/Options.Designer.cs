@@ -173,6 +173,10 @@
             this.buttonContentAdd = new System.Windows.Forms.Button();
             this.panelContent = new System.Windows.Forms.Panel();
             this.dataGridViewContent = new System.Windows.Forms.DataGridView();
+
+            this.nameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.pathDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+
             this.bindingSourceContent = new System.Windows.Forms.BindingSource(this.components);
             this.tabPageExperimental = new System.Windows.Forms.TabPage();
             this.label27 = new System.Windows.Forms.Label();
@@ -380,8 +384,8 @@
             // 
             // tabOptions
             // 
-            this.tabOptions.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+            this.tabOptions.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tabOptions.Controls.Add(this.tabPageGeneral);
             this.tabOptions.Controls.Add(this.tabPageAudio);
@@ -451,9 +455,10 @@
             this.checkAirEmpty.Location = new System.Drawing.Point(43, 177);
             this.checkAirEmpty.Margin = new System.Windows.Forms.Padding(4);
             this.checkAirEmpty.Name = "checkAirEmpty";
-            this.checkAirEmpty.Size = new System.Drawing.Size(342, 21);
+            this.checkAirEmpty.Size = new System.Drawing.Size(276, 21);
             this.checkAirEmpty.TabIndex = 31;
             this.checkAirEmpty.Text = "Odstavená lokomotiva (lokomotivu je nutné oživit)";
+            //this.checkAirEmpty.Text = "Locomotive without air at the beginning";
             this.checkAirEmpty.UseVisualStyleBackColor = true;
             // 
             // checkReduceMemory
@@ -1613,8 +1618,8 @@
             // 
             // panelKeys
             // 
-            this.panelKeys.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+            this.panelKeys.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.panelKeys.AutoScroll = true;
             this.panelKeys.Location = new System.Drawing.Point(8, 7);
@@ -1704,8 +1709,8 @@
             // 
             // panelRDSettings
             // 
-            this.panelRDSettings.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+            this.panelRDSettings.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.panelRDSettings.AutoScroll = true;
             this.panelRDSettings.BackColor = System.Drawing.Color.Transparent;
@@ -2080,7 +2085,7 @@
             // 
             // groupBoxContent
             // 
-            this.groupBoxContent.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            this.groupBoxContent.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBoxContent.Controls.Add(this.buttonContentBrowse);
             this.groupBoxContent.Controls.Add(this.textBoxContentPath);
@@ -2110,7 +2115,7 @@
             // 
             // textBoxContentPath
             // 
-            this.textBoxContentPath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.textBoxContentPath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.textBoxContentPath.Location = new System.Drawing.Point(67, 26);
             this.textBoxContentPath.Margin = new System.Windows.Forms.Padding(4);
@@ -2141,7 +2146,7 @@
             // 
             // textBoxContentName
             // 
-            this.textBoxContentName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.textBoxContentName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.textBoxContentName.Location = new System.Drawing.Point(67, 60);
             this.textBoxContentName.Margin = new System.Windows.Forms.Padding(4);
@@ -2164,8 +2169,8 @@
             // 
             // panelContent
             // 
-            this.panelContent.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+            this.panelContent.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.panelContent.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panelContent.Controls.Add(this.dataGridViewContent);
@@ -2196,6 +2201,11 @@
             this.dataGridViewContent.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             this.dataGridViewContent.ColumnHeadersHeight = 29;
             this.dataGridViewContent.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
+
+            this.dataGridViewContent.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.nameDataGridViewTextBoxColumn,
+            this.pathDataGridViewTextBoxColumn});
+
             this.dataGridViewContent.DataSource = this.bindingSourceContent;
             dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
@@ -2218,6 +2228,30 @@
             this.dataGridViewContent.Size = new System.Drawing.Size(784, 334);
             this.dataGridViewContent.TabIndex = 0;
             this.dataGridViewContent.SelectionChanged += new System.EventHandler(this.dataGridViewContent_SelectionChanged);
+
+            // 
+            // nameDataGridViewTextBoxColumn
+            // 
+            this.nameDataGridViewTextBoxColumn.DataPropertyName = "Name";
+            this.nameDataGridViewTextBoxColumn.HeaderText = "Name";
+            this.nameDataGridViewTextBoxColumn.MinimumWidth = 6;
+            this.nameDataGridViewTextBoxColumn.Name = "nameDataGridViewTextBoxColumn";
+            this.nameDataGridViewTextBoxColumn.ReadOnly = true;
+            this.nameDataGridViewTextBoxColumn.Width = 60;
+            // 
+            // pathDataGridViewTextBoxColumn
+            // 
+            this.pathDataGridViewTextBoxColumn.DataPropertyName = "Path";
+            this.pathDataGridViewTextBoxColumn.HeaderText = "Path";
+            this.pathDataGridViewTextBoxColumn.MinimumWidth = 6;
+            this.pathDataGridViewTextBoxColumn.Name = "pathDataGridViewTextBoxColumn";
+            this.pathDataGridViewTextBoxColumn.ReadOnly = true;
+            this.pathDataGridViewTextBoxColumn.Width = 54;
+            // 
+            // bindingSourceContent
+            // 
+            //            this.bindingSourceContent.DataSource = typeof(ORTS.OptionsForm.ContentFolder);
+
             // 
             // tabPageExperimental
             // 
@@ -2958,7 +2992,7 @@
         private System.Windows.Forms.Button buttonCancel;
         private System.Windows.Forms.CheckBox checkAlerter;
         private System.Windows.Forms.CheckBox checkControlConfirmations;
-		private System.Windows.Forms.CheckBox checkViewMapWindow;
+        private System.Windows.Forms.CheckBox checkViewMapWindow;
         private System.Windows.Forms.TabControl tabOptions;
         private System.Windows.Forms.TabPage tabPageGeneral;
         private System.Windows.Forms.TabPage tabPageKeyboard;
