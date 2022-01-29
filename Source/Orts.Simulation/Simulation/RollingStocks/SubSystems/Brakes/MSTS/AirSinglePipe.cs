@@ -1323,25 +1323,39 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 // Událost pro hodnotu tlaku v brzdovém válci
                 if (Math.Abs(AutoCylPressurePSI0 - prevCylPressurePSI) > 1.5f) //(AutoCylPressurePSI != prevCylPressurePSI)
                 {
-                    if (AutoCylPressurePSI0 > prevCylPressurePSI)
-                        Car.SignalEvent(Event.TrainBrakePressureIncrease);
-                    else
-                        Car.SignalEvent(Event.TrainBrakePressureDecrease);
+                    if (!TrainBrakePressureChanging)
+                    {
+                        if (AutoCylPressurePSI0 > prevCylPressurePSI)
+                            Car.SignalEvent(Event.TrainBrakePressureIncrease);
+                        else
+                            Car.SignalEvent(Event.TrainBrakePressureDecrease);
+                        TrainBrakePressureChanging = !TrainBrakePressureChanging;
+                    }
                 }
-                else
+                else if (TrainBrakePressureChanging)
+                {
+                    TrainBrakePressureChanging = !TrainBrakePressureChanging;
                     Car.SignalEvent(Event.TrainBrakePressureStoppedChanging);
+                }
 
                 // Událost pro hodnotu tlaku v brzdovém potrubí
                 if (Math.Abs(BrakeLine1PressurePSI - prevBrakePipePressurePSI) > 1.5f /*BrakeLine1PressurePSI > prevBrakePipePressurePSI*/)
                 {
-                    if (BrakeLine1PressurePSI > prevBrakePipePressurePSI)
-                        Car.SignalEvent(Event.BrakePipePressureIncrease);
-                    else
-                        Car.SignalEvent(Event.BrakePipePressureDecrease);
+                    if (!BrakePipePressureChanging)
+                    {
+                        if (BrakeLine1PressurePSI > prevBrakePipePressurePSI)
+                            Car.SignalEvent(Event.BrakePipePressureIncrease);
+                        else
+                            Car.SignalEvent(Event.BrakePipePressureDecrease);
+                        BrakePipePressureChanging = !BrakePipePressureChanging;
+                    }
                 }
-                else
+                else if (BrakePipePressureChanging)
+                {
+                    BrakePipePressureChanging = !BrakePipePressureChanging;
                     Car.SignalEvent(Event.BrakePipePressureStoppedChanging);
-                
+                }
+
                 prevCylPressurePSI = AutoCylPressurePSI0;
                 prevBrakePipePressurePSI = BrakeLine1PressurePSI;                
             }
