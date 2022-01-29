@@ -2824,13 +2824,13 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
 
             // Použití průběžné brzdy v režimu automatiky ARR
             //lead.ARRTrainBrakeEngage = true;
-            //lead.ARRAutoCylPressurePSI = 3.0f * 14.50377f;
+            //lead.ARRAutoCylPressurePSI = 0f * 14.50377f;
 
             if (lead.ARRTrainBrakeEngage
                 && lead.MainResPressurePSI > 0
                 && AutoCylPressurePSI < lead.BrakeSystem.BrakeCylinderMaxSystemPressurePSI
                 && AutoCylPressurePSI < lead.MainResPressurePSI
-                && (AutoCylPressurePSI < lead.ARRAutoCylPressurePSI * 0.95f || AutoCylPressurePSI > lead.ARRAutoCylPressurePSI * 1.05f))
+                && (AutoCylPressurePSI <= lead.ARRAutoCylPressurePSI * 0.95f || AutoCylPressurePSI >= lead.ARRAutoCylPressurePSI * 1.05f))
             {
                 if (lead.ARRAutoCylPressurePSI > (lead.TrainBrakeController.MaxPressurePSI - train.EqualReservoirPressurePSIorInHg) * lead.BrakeSystem.LocoAuxCylVolumeRatio)
                 {
