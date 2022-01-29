@@ -623,7 +623,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                 var functionHead = trainSignal.SignalObject.SignalHeads.Find(head => head.ORTSsigFunctionIndex == fn_type);
                 textAspect = functionHead?.TextSignalAspect ?? "";
             }
-            else if (type == Train.TrainObjectItem.TRAINOBJECTTYPE.SPEEDPOST)
+            else if (type == Train.TrainObjectItem.TRAINOBJECTTYPE.SPEEDPOST && Locomotive.Train.PlayerTrainSpeedposts != null)
             {
                 var playerTrainSpeedpostList = Locomotive.Train.PlayerTrainSpeedposts[dir];
                 if (itemSequenceIndex > playerTrainSpeedpostList.Count - 1)
