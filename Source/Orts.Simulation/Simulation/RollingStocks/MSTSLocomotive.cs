@@ -589,6 +589,10 @@ namespace Orts.Simulation.RollingStocks
         public float PowerCurrent;
         public float BrakeCurrent;
         public bool BailOffPressed;
+        public bool ARRTrainBrakeEngage;
+        public float ARRAutoCylPressurePSI;
+        public bool ARRTrainBrakeEngage_Apply;
+        public bool ARRTrainBrakeEngage_Release;
 
         // Jindrich
         public bool EnableControlVoltageChange = true;

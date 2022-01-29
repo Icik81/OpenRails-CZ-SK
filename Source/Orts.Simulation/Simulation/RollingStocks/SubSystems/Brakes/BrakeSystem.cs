@@ -50,6 +50,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes
         public float AutoCylPressurePSI2;
         public float AutoCylPressurePSI1;
         public float AutoCylPressurePSI0;
+        public float LocoAuxCylVolumeRatio;
         public float maxPressurePSI0 = 72;
         public float TotalCapacityMainResBrakePipe;
         public float EB; // Hodnota EngineBrake
