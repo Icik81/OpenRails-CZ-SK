@@ -78,7 +78,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
         protected bool NotConnected = false;
         protected float ThresholdBailOffOn = 0;
         protected ValveState PrevTripleValveStateState;
-        protected float AutomaticDoorsCycle = 0;        
+        protected float AutomaticDoorsCycle = 0;
 
         /// <summary>
         /// EP brake holding valve. Needs to be closed (Lap) in case of brake application or holding.
@@ -1391,7 +1391,6 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
 
                 // Aktivace příznaku rychlobrzdy pro vozy 
                 if (lead.TrainBrakeController.TrainBrakeControllerState == ControllerState.Emergency
-                    || lead.BrakeSystem.EmergencyBrakeForWagon
                     || lead.TrainBrakeController.TCSEmergencyBraking
                     || lead.TrainBrakeController.EmergencyBrakingPushButton)
                     foreach (TrainCar car in train.Cars)
@@ -1403,9 +1402,14 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 // Spustí trigger při nouzovém brždění
                 if (lead.BrakeSystem.EmergencyBrakeForWagon)
                 {
-                    if (lead.BrakeSystem.BrakeLine1PressurePSI > 30)                    
+                    if (lead.BrakeSystem.BrakeLine1PressurePSI > 0 && !lead.BrakeSystem.EmerBrakeTriggerActive)
+                    {
                         lead.SignalEvent(Event.TrainBrakeEmergencyActivated);
+                        lead.BrakeSystem.EmerBrakeTriggerActive = true;
+                    }
                 }
+                else
+                    lead.BrakeSystem.EmerBrakeTriggerActive = false;
 
                 // Aktivace napájení pro vozy, trigger 23 a 24 
                 if (lead.BrakeSystem.PowerForWagon)
@@ -2786,8 +2790,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 if (lead.EngineBrakeState != prevState)
                     switch (lead.EngineBrakeState)
                     {
-                        case ValveState.Release: lead.SignalEvent(Event.EngineBrakePressureIncrease); break;
-                        case ValveState.Apply: lead.SignalEvent(Event.EngineBrakePressureDecrease); break;
+                        case ValveState.Release: lead.SignalEvent(Event.EngineBrakePressureDecrease); break;
+                        case ValveState.Apply: lead.SignalEvent(Event.EngineBrakePressureIncrease); break;
                         case ValveState.Lap: lead.SignalEvent(Event.EngineBrakePressureStoppedChanging); break;
                     }
             }
