@@ -1230,7 +1230,33 @@ namespace Orts.Simulation.RollingStocks
                 }
             }
 
+            // AI si vybere napěťový systém dle napětí tratě (nutné pro správné zvukové triggery)
+            if (!IsPlayerTrain)
+            {
+                if (TractiveForceCurvesDC != null)
+                {
+                    if (RouteVoltageV == 3000)
+                    {
+                        SwitchingVoltageMode = 0;
+                        goto EndAIVoltageChoice;
+                    }
+                }
+                if (TractiveForceCurvesAC != null)
+                {
+                    if (RouteVoltageV == 25000)
+                    {
+                        SwitchingVoltageMode = 2;
+                        goto EndAIVoltageChoice;
+                    }
+                }
+                if (TractiveForceCurves != null)
+                {
+                    SwitchingVoltageMode = 1;
+                }                
+            }
+
             // Icik            
+            EndAIVoltageChoice:
             SetAIPantoDown(elapsedClockSeconds);
             UnderVoltageProtection(elapsedClockSeconds);
             
@@ -1814,6 +1840,9 @@ namespace Orts.Simulation.RollingStocks
         /// </summary>
         protected override void UpdateSoundVariables(float elapsedClockSeconds)
         {
+            if (MaxForceN == 0)  // Default 300kN
+                MaxForceN = 300000;
+
             Variable1 = ThrottlePercent;
             if (ThrottlePercent == 0f) Variable2 = 0;
             else

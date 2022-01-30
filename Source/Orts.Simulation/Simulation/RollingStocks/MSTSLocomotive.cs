@@ -4238,7 +4238,7 @@ namespace Orts.Simulation.RollingStocks
                 DynamicBrakeFullRangeDecreaseTimeSeconds = 6;
             if (PowerOn && Direction != Direction.N)
             {
-                if (extendedPhysics == null)
+                if (extendedPhysics == null || !IsPlayerTrain) // AI musí vždy počítat TractiveForceN kvůli zvukům
                 {
                     if (TractiveForceCurves == null && TractiveForceCurvesAC == null && TractiveForceCurvesDC == null)
                     {

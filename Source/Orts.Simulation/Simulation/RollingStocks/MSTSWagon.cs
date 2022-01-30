@@ -87,9 +87,9 @@ namespace Orts.Simulation.RollingStocks
         float TempMassDiffRatio;
 
         // simulation parameters
-        public float Variable1;  // used to convey status to soundsource
-        public float Variable2;
-        public float Variable3;
+        public float Variable1 = 0;  // used to convey status to soundsource
+        public float Variable2 = 0;
+        public float Variable3 = 0;
 
         // wag file data
         public string MainShapeFileName;
