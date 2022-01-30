@@ -2568,10 +2568,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     }
                 }
             }
-
-            // Samostatná přímočinná brzda pro každou lokomotivu
+            
             if (lead != null)
             {
+                // Samostatná přímočinná brzda pro každou lokomotivu
                 BrakeSystem brakeSystem = lead.BrakeSystem;
                 var prevState = lead.EngineBrakeState;
                 train.BrakeLine3PressurePSI = MathHelper.Clamp(train.BrakeLine3PressurePSI, 0, lead.MainResPressurePSI);
@@ -2820,38 +2820,37 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         case ValveState.Apply: lead.SignalEvent(Event.EngineBrakePressureIncrease); break;
                         case ValveState.Lap: lead.SignalEvent(Event.EngineBrakePressureStoppedChanging); break;
                     }
-            }
 
-            // Použití průběžné brzdy v režimu automatiky ARR
-            //lead.ARRTrainBrakeEngage = true;
-            //lead.ARRAutoCylPressurePSI = 0f * 14.50377f;
+                // Použití průběžné brzdy v režimu automatiky ARR
+                //lead.ARRTrainBrakeEngage = true;
+                //lead.ARRAutoCylPressurePSI = 0f * 14.50377f;
 
-            if (lead.ARRTrainBrakeEngage
-                && lead.MainResPressurePSI > 0
-                && AutoCylPressurePSI < lead.BrakeSystem.BrakeCylinderMaxSystemPressurePSI
-                && AutoCylPressurePSI < lead.MainResPressurePSI
-                && (AutoCylPressurePSI <= lead.ARRAutoCylPressurePSI * 0.95f || AutoCylPressurePSI >= lead.ARRAutoCylPressurePSI * 1.05f))
-            {
-                if (lead.ARRAutoCylPressurePSI > (lead.TrainBrakeController.MaxPressurePSI - train.EqualReservoirPressurePSIorInHg) * lead.BrakeSystem.LocoAuxCylVolumeRatio)
+                if (lead.ARRTrainBrakeEngage
+                    && lead.MainResPressurePSI > 0
+                    && AutoCylPressurePSI < lead.BrakeSystem.BrakeCylinderMaxSystemPressurePSI
+                    && AutoCylPressurePSI < lead.MainResPressurePSI
+                    && (AutoCylPressurePSI <= lead.ARRAutoCylPressurePSI * 0.95f || AutoCylPressurePSI >= lead.ARRAutoCylPressurePSI * 1.05f))
                 {
-                    lead.ARRTrainBrakeEngage_Apply = true;
-                    lead.ARRTrainBrakeEngage_Release = false;
-                    if (train.EqualReservoirPressurePSIorInHg > 0)
-                        train.EqualReservoirPressurePSIorInHg -= lead.TrainBrakeController.ApplyRatePSIpS * elapsedClockSeconds;
-                    if (train.EqualReservoirPressurePSIorInHg < 0)
-                        train.EqualReservoirPressurePSIorInHg = 0;
+                    if (lead.ARRAutoCylPressurePSI > (lead.TrainBrakeController.MaxPressurePSI - train.EqualReservoirPressurePSIorInHg) * lead.BrakeSystem.LocoAuxCylVolumeRatio)
+                    {
+                        lead.ARRTrainBrakeEngage_Apply = true;
+                        lead.ARRTrainBrakeEngage_Release = false;
+                        if (train.EqualReservoirPressurePSIorInHg > 0)
+                            train.EqualReservoirPressurePSIorInHg -= lead.TrainBrakeController.ApplyRatePSIpS * elapsedClockSeconds;
+                        if (train.EqualReservoirPressurePSIorInHg < 0)
+                            train.EqualReservoirPressurePSIorInHg = 0;
+                    }
+                    if (lead.ARRAutoCylPressurePSI < (lead.TrainBrakeController.MaxPressurePSI - train.EqualReservoirPressurePSIorInHg) * lead.BrakeSystem.LocoAuxCylVolumeRatio)
+                    {
+                        lead.ARRTrainBrakeEngage_Apply = false;
+                        lead.ARRTrainBrakeEngage_Release = true;
+                        if (train.EqualReservoirPressurePSIorInHg < lead.TrainBrakeController.MaxPressurePSI)
+                            train.EqualReservoirPressurePSIorInHg += lead.TrainBrakeController.ReleaseRatePSIpS * elapsedClockSeconds;
+                        if (train.EqualReservoirPressurePSIorInHg > lead.TrainBrakeController.MaxPressurePSI)
+                            train.EqualReservoirPressurePSIorInHg = lead.TrainBrakeController.MaxPressurePSI;
+                    }
                 }
-                if (lead.ARRAutoCylPressurePSI < (lead.TrainBrakeController.MaxPressurePSI - train.EqualReservoirPressurePSIorInHg) * lead.BrakeSystem.LocoAuxCylVolumeRatio)
-                {
-                    lead.ARRTrainBrakeEngage_Apply = false;
-                    lead.ARRTrainBrakeEngage_Release = true;
-                    if (train.EqualReservoirPressurePSIorInHg < lead.TrainBrakeController.MaxPressurePSI)
-                        train.EqualReservoirPressurePSIorInHg += lead.TrainBrakeController.ReleaseRatePSIpS * elapsedClockSeconds;
-                    if (train.EqualReservoirPressurePSIorInHg > lead.TrainBrakeController.MaxPressurePSI)
-                        train.EqualReservoirPressurePSIorInHg = lead.TrainBrakeController.MaxPressurePSI;
-                }
-            }
-
+            }            
 
             // Start se vzduchem nebo bez vzduchu podle klíčového slova v názvu consistu nebo volby v menu OR
             if (lead != null && lead.BrakeSystem.StartOn)
