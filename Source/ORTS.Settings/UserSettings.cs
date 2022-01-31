@@ -357,7 +357,7 @@ namespace ORTS.Settings
         public int PrecipitationBoxWidth { get; set; }
         [Default(500)]
         public int PrecipitationBoxLength { get; set; }
-        [Default(false)]
+        [Default(true)]
         public bool CorrectQuestionableBrakingParams { get; set; }
         [Default(false)]
         public bool OpenDoorsInAITrains { get; set; }
