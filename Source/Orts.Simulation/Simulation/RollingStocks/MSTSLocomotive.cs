@@ -594,7 +594,9 @@ namespace Orts.Simulation.RollingStocks
         public bool ARRTrainBrakeEngage_Apply;
         public bool ARRTrainBrakeEngage_Release;
 
+
         // Jindrich
+        public bool IsActive = false;
         public bool EnableControlVoltageChange = true;
         public CruiseControl CruiseControl;
         public MultiPositionController MultiPositionController;

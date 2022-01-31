@@ -553,7 +553,7 @@ namespace Orts.Formats.Msts
         public int ScreenId = 0;
         public int ContainerGroup = 0;
         public int ActivateScreen = 0;
-        public bool IsActive = false;
+        //public bool IsActive = false; // Icik
         public bool IsVisible = true;
         public bool IsEditable = false;
         public int ScreenContainer = 0;
