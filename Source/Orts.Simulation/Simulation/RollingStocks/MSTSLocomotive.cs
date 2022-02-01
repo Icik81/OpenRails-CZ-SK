@@ -8904,13 +8904,21 @@ namespace Orts.Simulation.RollingStocks
                     float hour = (float)(Simulator.ClockTime / 3600) % 12;
                     if (hour < 0)
                         hour += 12;
-                    data = hour;
+                    // Icik
+                    int Hx = 6;
+                    if (hour + Hx > 12)
+                        Hx = -6;
+                    data = hour + Hx;
                     break;
                 case CABViewControlTypes.ORTS_MINUTEDIAL:
                     float minute = (float)(Simulator.ClockTime / 60) % 60;
                     if (minute < 0)
                         minute += 60;
-                    data = minute;
+                    // Icik
+                    int Mx = 30;
+                    if (minute + Mx > 60)
+                        Mx = -30;
+                    data = minute + Mx;
                     break;
                 case CABViewControlTypes.ORTS_SECONDDIAL:
                     int seconds = (int)Simulator.ClockTime % 60;
