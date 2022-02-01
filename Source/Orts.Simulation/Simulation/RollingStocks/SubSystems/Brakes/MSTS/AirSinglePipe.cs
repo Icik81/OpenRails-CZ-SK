@@ -1317,7 +1317,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             {
                 SoundTriggerCounter = 0f;
                 // Událost pro hodnotu tlaku v brzdovém válci
-                if (Math.Abs(AutoCylPressurePSI0 - prevCylPressurePSI) > 1.5f) //(AutoCylPressurePSI != prevCylPressurePSI)
+                if (Math.Abs(AutoCylPressurePSI0 - prevCylPressurePSI) > 0.5f) //(AutoCylPressurePSI != prevCylPressurePSI)
                 {
                     if (!TrainBrakePressureChanging)
                     {
@@ -1335,7 +1335,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 }
 
                 // Událost pro hodnotu tlaku v brzdovém potrubí
-                if (Math.Abs(BrakeLine1PressurePSI - prevBrakePipePressurePSI) > 1.5f /*BrakeLine1PressurePSI > prevBrakePipePressurePSI*/)
+                if (Math.Abs(BrakeLine1PressurePSI - prevBrakePipePressurePSI) > 0.5f) //BrakeLine1PressurePSI != prevBrakePipePressurePSI
                 {
                     if (!BrakePipePressureChanging)
                     {
