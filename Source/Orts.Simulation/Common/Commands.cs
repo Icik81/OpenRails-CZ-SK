@@ -2080,4 +2080,37 @@ namespace Orts.Common
             Receiver.ToggleBreakPowerButton(true);
         }
     }
+    [Serializable()]
+    public sealed class ToggleDieselDirectionControllerUpCommand : Command
+    {
+        public static MSTSLocomotive Receiver { get; set; }
+
+        public ToggleDieselDirectionControllerUpCommand(CommandLog log)
+            : base(log)
+        {
+            Redo();
+        }
+
+        public override void Redo()
+        {
+
+            Receiver.ToggleDieselDirectionControllerUp();
+        }
+    }
+    [Serializable()]
+    public sealed class ToggleDieselDirectionControllerDownCommand : Command
+    {
+        public static MSTSLocomotive Receiver { get; set; }
+
+        public ToggleDieselDirectionControllerDownCommand(CommandLog log)
+            : base(log)
+        {
+            Redo();
+        }
+
+        public override void Redo()
+        {
+            Receiver.ToggleDieselDirectionControllerDown();
+        }
+    }
 }

@@ -624,7 +624,9 @@ namespace Orts.Viewer3D
             ToggleControlRouteVoltageCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
             ToggleQuickReleaseButtonCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
             ToggleLowPressureReleaseButtonCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
-            ToggleBreakPowerButtonCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
+            ToggleBreakPowerButtonCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;            
+            ToggleDieselDirectionControllerUpCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
+            ToggleDieselDirectionControllerDownCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
         }
 
         public void ChangeToPreviousFreeRoamCamera()

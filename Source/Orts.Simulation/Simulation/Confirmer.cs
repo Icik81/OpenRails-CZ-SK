@@ -136,6 +136,10 @@ namespace Orts.Simulation
     , LowPressureReleaseButton
     , BreakPowerButton
     , CabFloodLight
+    , DieselDirection_Forward
+    , DieselDirection_Start
+    , DieselDirection_N
+    , DieselDirection_Reverse
     }
 
     public enum CabSetting {
@@ -302,6 +306,10 @@ namespace Orts.Simulation
                 , new string [] { GetString("Nízkotlaké přebití"), GetString("off"), null, GetString("on")}
                 , new string [] { GetString("Přerušení napájení"), GetString("off"), null, GetString("on")}
                 , new string [] { GetString("Plné osvětlení kabiny"), GetString("off"), null, GetString("on")}
+                , new string [] { GetString("") }
+                , new string [] { GetString("") }
+                , new string [] { GetString("") }
+                , new string [] { GetString("") }
 
             };
             Debug.Assert(ConfirmText.Length == Enum.GetNames(typeof(CabControl)).Length, "Number of entries indexer ConfirmText must match values in CabControl enum.");

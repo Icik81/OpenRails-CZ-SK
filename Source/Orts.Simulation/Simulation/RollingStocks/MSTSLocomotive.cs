@@ -593,6 +593,12 @@ namespace Orts.Simulation.RollingStocks
         public float ARRAutoCylPressurePSI;
         public bool ARRTrainBrakeEngage_Apply;
         public bool ARRTrainBrakeEngage_Release;
+        public int DieselDirectionControllerPosition = 2;
+        public bool DieselDirectionController;
+        public bool DieselDirection_Start;
+        public bool DieselDirection_Forward;
+        public bool DieselDirection_N;
+        public bool DieselDirection_Reverse;
 
 
         // Jindrich
@@ -1624,6 +1630,7 @@ namespace Orts.Simulation.RollingStocks
             outf.Write(BreakPowerButton_Activated);
             outf.Write(MultiSystemEngine);
             outf.Write(LocomotivePowerVoltage);
+            outf.Write(DieselDirectionControllerPosition);
 
             base.Save(outf);
 
@@ -1716,6 +1723,7 @@ namespace Orts.Simulation.RollingStocks
             BreakPowerButton_Activated = inf.ReadBoolean();
             MultiSystemEngine = inf.ReadBoolean();
             LocomotivePowerVoltage = inf.ReadSingle();
+            DieselDirectionControllerPosition = inf.ReadInt32();
 
             base.Restore(inf);
 
@@ -5243,15 +5251,18 @@ namespace Orts.Simulation.RollingStocks
 
         public virtual void StartReverseIncrease(float? target)
         {
-            AlerterReset(TCSEvent.ReverserChanged);
-            if (this.IsLeadLocomotive())
+            if (!DieselDirectionController)
             {
+                AlerterReset(TCSEvent.ReverserChanged);
+                if (this.IsLeadLocomotive())
                 {
-                    switch (Direction)
                     {
-                        case Direction.Reverse: SetDirection(Direction.N); Simulator.Confirmer.Confirm(CabControl.Reverser, CabSetting.Neutral); break;
-                        case Direction.N: SetDirection(Direction.Forward); Simulator.Confirmer.Confirm(CabControl.Reverser, CabSetting.On); break;
-                        case Direction.Forward: SetDirection(Direction.Forward); Simulator.Confirmer.Confirm(CabControl.Reverser, CabSetting.On); break;
+                        switch (Direction)
+                        {
+                            case Direction.Reverse: SetDirection(Direction.N); Simulator.Confirmer.Confirm(CabControl.Reverser, CabSetting.Neutral); break;
+                            case Direction.N: SetDirection(Direction.Forward); Simulator.Confirmer.Confirm(CabControl.Reverser, CabSetting.On); break;
+                            case Direction.Forward: SetDirection(Direction.Forward); Simulator.Confirmer.Confirm(CabControl.Reverser, CabSetting.On); break;
+                        }
                     }
                 }
             }
@@ -5259,15 +5270,18 @@ namespace Orts.Simulation.RollingStocks
 
         public virtual void StartReverseDecrease(float? target)
         {
-            AlerterReset(TCSEvent.ReverserChanged);
-            if (this.IsLeadLocomotive())
+            if (!DieselDirectionController)
             {
+                AlerterReset(TCSEvent.ReverserChanged);
+                if (this.IsLeadLocomotive())
                 {
-                    switch (Direction)
                     {
-                        case Direction.Reverse: SetDirection(Direction.Reverse); Simulator.Confirmer.Confirm(CabControl.Reverser, CabSetting.Off); break;
-                        case Direction.N: SetDirection(Direction.Reverse); Simulator.Confirmer.Confirm(CabControl.Reverser, CabSetting.Off); break;
-                        case Direction.Forward: SetDirection(Direction.N); Simulator.Confirmer.Confirm(CabControl.Reverser, CabSetting.Neutral); break;
+                        switch (Direction)
+                        {
+                            case Direction.Reverse: SetDirection(Direction.Reverse); Simulator.Confirmer.Confirm(CabControl.Reverser, CabSetting.Off); break;
+                            case Direction.N: SetDirection(Direction.Reverse); Simulator.Confirmer.Confirm(CabControl.Reverser, CabSetting.Off); break;
+                            case Direction.Forward: SetDirection(Direction.N); Simulator.Confirmer.Confirm(CabControl.Reverser, CabSetting.Neutral); break;
+                        }
                     }
                 }
             }
@@ -7488,6 +7502,139 @@ namespace Orts.Simulation.RollingStocks
                 if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.CabHeating_OffOn, CabHeating_OffOn ? CabSetting.On : CabSetting.Off);
             }
         }
+        public void ToggleQuickReleaseButton(bool quickReleaseButton)
+        {
+            if (QuickReleaseButtonEnable)
+            {
+                QuickReleaseButton = quickReleaseButton;
+                if (QuickReleaseButton && !QuickReleaseButtonPressed)
+                {
+                    SignalEvent(Event.QuickReleaseButton);
+                    QuickReleaseButtonPressed = true;
+                }
+                if (!QuickReleaseButton && QuickReleaseButtonPressed)
+                {
+                    SignalEvent(Event.QuickReleaseButtonRelease);
+                    QuickReleaseButtonPressed = false;
+                }
+                if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.QuickReleaseButton, quickReleaseButton ? CabSetting.On : CabSetting.Off);
+            }
+        }
+
+        public void ToggleLowPressureReleaseButton(bool lowPressureReleaseButton)
+        {
+            if (LowPressureReleaseButtonEnable)
+            {
+                LowPressureReleaseButton = lowPressureReleaseButton;
+                if (LowPressureReleaseButton && !LowPressureReleaseButtonPressed)
+                {
+                    SignalEvent(Event.LowPressureReleaseButton);
+                    LowPressureReleaseButtonPressed = true;
+                }
+                if (!LowPressureReleaseButton && LowPressureReleaseButtonPressed)
+                {
+                    SignalEvent(Event.LowPressureReleaseButtonRelease);
+                    LowPressureReleaseButtonPressed = false;
+                }
+                if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.LowPressureReleaseButton, lowPressureReleaseButton ? CabSetting.On : CabSetting.Off);
+            }
+        }
+
+        public void ToggleBreakPowerButton(bool breakPowerButton)
+        {
+            if (BreakPowerButtonEnable)
+            {
+                BreakPowerButton = breakPowerButton;
+                if (BreakPowerButton && !BreakPowerButtonPressed)
+                {
+                    SignalEvent(Event.BreakPowerButton);
+                    BreakPowerButtonPressed = true;
+                }
+                if (!BreakPowerButton && BreakPowerButtonPressed)
+                {
+                    SignalEvent(Event.BreakPowerButtonRelease);
+                    BreakPowerButtonPressed = false;
+                }
+                if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.BreakPowerButton, breakPowerButton ? CabSetting.On : CabSetting.Off);
+            }
+        }
+
+        
+        public void ToggleDieselDirectionControllerDown()
+        {
+            if (DieselDirectionControllerPosition < 5)
+                DieselDirectionControllerPosition++;
+            if (DieselDirectionControllerPosition <= 4)
+            {
+                SignalEvent(Event.ReverserChange);
+                ToggleDieselDirectionController();
+            }
+            DieselDirectionControllerPosition = MathHelper.Clamp(DieselDirectionControllerPosition, 0, 4);
+        }
+        public void ToggleDieselDirectionControllerUp()
+        {
+            if (DieselDirectionControllerPosition > -1)
+                DieselDirectionControllerPosition--;
+            if (DieselDirectionControllerPosition >= 0)
+            {
+                SignalEvent(Event.ReverserChange);
+                ToggleDieselDirectionController();
+            }
+            DieselDirectionControllerPosition = MathHelper.Clamp(DieselDirectionControllerPosition, 0, 4);
+        }
+        public void ToggleDieselDirectionController()
+        {
+            if (DieselDirectionController)
+            {
+                //Simulator.Confirmer.MSG("Nastaveno: " + DieselDirectionControllerPosition);
+                switch (DieselDirectionControllerPosition)
+                {
+                    case 0: // Vpřed
+                        {
+                            DieselDirection_Start = false;
+                            DieselDirection_Forward = true;
+                            Direction = Direction.Forward;
+                            Simulator.Confirmer.Confirm(CabControl.DieselDirection_Forward, "Vpřed");
+                        }
+                        break;
+                    case 1: // Diesel+
+                        {
+                            DieselDirection_Forward = false;
+                            DieselDirection_Start = true;
+                            DieselDirection_N = false;
+                            Direction = Direction.N;
+                            Simulator.Confirmer.Confirm(CabControl.DieselDirection_Forward, "Diesel Start");
+                        }
+                        break;
+                    case 2: // N
+                        {
+                            DieselDirection_Start = false;
+                            DieselDirection_N = true;
+                            Compressor_I_HandMode = false;
+                            Direction = Direction.N;
+                            Simulator.Confirmer.Confirm(CabControl.DieselDirection_Forward, "Neutral");
+                        }
+                        break;
+                    case 3: // Diesel-
+                        {
+                            DieselDirection_N = false;
+                            DieselDirection_Start = true;
+                            DieselDirection_Reverse = false;
+                            Direction = Direction.N;
+                            Simulator.Confirmer.Confirm(CabControl.DieselDirection_Forward, "Diesel Start");
+                        }
+                        break;
+                    case 4: // Vzad
+                        {
+                            DieselDirection_Start = false;
+                            DieselDirection_Reverse = true;
+                            Direction = Direction.Reverse;
+                            Simulator.Confirmer.Confirm(CabControl.DieselDirection_Forward, "Vzad");
+                        }
+                        break;
+                }
+            }
+        }
 
 
         // Zatím povoleno kvůli kompatibilitě
@@ -7602,63 +7749,7 @@ namespace Orts.Simulation.RollingStocks
             SetUpVoltageChangeMarkers();
             Simulator.Confirmer.Information("Marker byl vymazán a označen pro vymazání v externí databázi.");
         }
-
-        public void ToggleQuickReleaseButton(bool quickReleaseButton)
-        {
-            if (QuickReleaseButtonEnable)
-            {
-                QuickReleaseButton = quickReleaseButton;
-                if (QuickReleaseButton && !QuickReleaseButtonPressed)
-                {
-                    SignalEvent(Event.QuickReleaseButton);
-                    QuickReleaseButtonPressed = true;
-                }
-                if (!QuickReleaseButton && QuickReleaseButtonPressed)
-                {
-                    SignalEvent(Event.QuickReleaseButtonRelease);
-                    QuickReleaseButtonPressed = false;
-                }
-                if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.QuickReleaseButton, quickReleaseButton ? CabSetting.On : CabSetting.Off);
-            }
-        }
-
-        public void ToggleLowPressureReleaseButton(bool lowPressureReleaseButton)
-        {
-            if (LowPressureReleaseButtonEnable)
-            {
-                LowPressureReleaseButton = lowPressureReleaseButton;
-                if (LowPressureReleaseButton && !LowPressureReleaseButtonPressed)
-                {
-                    SignalEvent(Event.LowPressureReleaseButton);
-                    LowPressureReleaseButtonPressed = true;
-                }
-                if (!LowPressureReleaseButton && LowPressureReleaseButtonPressed)
-                {
-                    SignalEvent(Event.LowPressureReleaseButtonRelease);
-                    LowPressureReleaseButtonPressed = false;
-                }
-                if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.LowPressureReleaseButton, lowPressureReleaseButton ? CabSetting.On : CabSetting.Off);
-            }
-        }
-
-        public void ToggleBreakPowerButton(bool breakPowerButton)
-        {
-            if (BreakPowerButtonEnable)
-            {
-                BreakPowerButton = breakPowerButton;
-                if (BreakPowerButton && !BreakPowerButtonPressed)
-                {
-                    SignalEvent(Event.BreakPowerButton);
-                    BreakPowerButtonPressed = true;
-                }
-                if (!BreakPowerButton && BreakPowerButtonPressed)
-                {
-                    SignalEvent(Event.BreakPowerButtonRelease);
-                    BreakPowerButtonPressed = false;
-                }
-                if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.BreakPowerButton, breakPowerButton ? CabSetting.On : CabSetting.Off);
-            }
-        }
+       
 
         public enum TrainType { Pax, Cargo };
         public TrainType SelectedTrainType = TrainType.Pax;
@@ -9601,6 +9692,12 @@ namespace Orts.Simulation.RollingStocks
                             data = 1;
                         else
                             data = 0;
+                        break;
+                    }
+                case CABViewControlTypes.DIESEL_DIRECTION_CONTROLLER:
+                    {
+                        DieselDirectionController = true;
+                        data = DieselDirectionControllerPosition;
                         break;
                     }
             }

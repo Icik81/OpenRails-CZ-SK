@@ -412,6 +412,7 @@ namespace Orts.Formats.Msts
         HEATING_OVERCURRENT,
         CHECK_POWERLOSS,
         DONT_RAISE_PANTO,
+        DIESEL_DIRECTION_CONTROLLER,
 
         // Further CabViewControlTypes must be added above this line, to avoid their malfunction in 3DCabs
         EXTERNALWIPERS,

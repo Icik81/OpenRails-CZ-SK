@@ -1058,11 +1058,29 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
 
             if (EngineStatus == Status.Starting)
             {
-                if ((RealRPM > (0.9f * StartingRPM)) && (RealRPM < StartingRPM))
+                // Icik
+                if (locomotive.DieselDirectionController && locomotive.DieselDirection_Start)
                 {
-                    DemandedRPM = 1.1f * StartingConfirmationRPM;
-                    ExhaustColor = ExhaustTransientColor;
-                    ExhaustParticles = (MaxExhaust - InitialExhaust) / (0.5f * StartingRPM - StartingRPM) * (RealRPM - 0.5f * StartingRPM) + InitialExhaust;
+                    if ((RealRPM > (0.9f * StartingRPM)) && (RealRPM < StartingRPM))
+                    {
+                        DemandedRPM = 1.1f * StartingConfirmationRPM;
+                        ExhaustColor = ExhaustTransientColor;
+                        ExhaustParticles = (MaxExhaust - InitialExhaust) / (0.5f * StartingRPM - StartingRPM) * (RealRPM - 0.5f * StartingRPM) + InitialExhaust;
+                    }
+                }                
+                if (locomotive.DieselDirectionController && !locomotive.DieselDirection_Start)
+                {
+                    locomotive.DieselEngines[0].Stop();
+                }
+                
+                if (!locomotive.DieselDirectionController)
+                {
+                    if ((RealRPM > (0.9f * StartingRPM)) && (RealRPM < StartingRPM))
+                    {
+                        DemandedRPM = 1.1f * StartingConfirmationRPM;
+                        ExhaustColor = ExhaustTransientColor;
+                        ExhaustParticles = (MaxExhaust - InitialExhaust) / (0.5f * StartingRPM - StartingRPM) * (RealRPM - 0.5f * StartingRPM) + InitialExhaust;
+                    }
                 }
                 if ((RealRPM > StartingConfirmationRPM))// && (RealRPM < 0.9f * IdleRPM))
                     EngineStatus = Status.Running;
@@ -1178,8 +1196,20 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
             {
                 case Status.Stopped:
                 case Status.Stopping:
-                    DemandedRPM = StartingRPM;
-                    EngineStatus = Status.Starting;
+                    // Icik
+                    if (locomotive.DieselDirectionController && locomotive.DieselDirection_Start)
+                    {
+                        DemandedRPM = StartingRPM;
+                        EngineStatus = Status.Starting;
+                        locomotive.SignalEvent(Event.EnginePowerOn); // power on sound hook
+                    }
+                    else
+                    if (!locomotive.DieselDirectionController)
+                    {
+                        DemandedRPM = StartingRPM;
+                        EngineStatus = Status.Starting;
+                        locomotive.SignalEvent(Event.EnginePowerOn); // power on sound hook
+                    }
                     break;
                 default:
                     break;
@@ -1195,6 +1225,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                 EngineStatus = Status.Stopping;
                 if (RealRPM <= 0)
                     EngineStatus = Status.Stopped;
+                locomotive.SignalEvent(Event.EnginePowerOff); // power off sound hook
             }
             return EngineStatus;
         }

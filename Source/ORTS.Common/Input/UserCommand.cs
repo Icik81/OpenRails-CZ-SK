@@ -278,9 +278,10 @@
         [GetString("Control_CZSK Locomotive PowerVoltage 25kV/both/3kV")] ControlRouteVoltage,
         [GetString("Control_CZSK Quickrelease button")] ControlQuickReleaseButton,
         [GetString("Control_CZSK Lowpressurerelease button")] ControlLowPressureReleaseButton,
-        [GetString("Control_CZSK Breakpower button")] ControlBreakPowerButton,
+        [GetString("Control_CZSK Breakpower button")] ControlBreakPowerButton,        
+        [GetString("Control_CZSK Diesel Controller +")] ControlDieselDirectionControllerUp,
+        [GetString("Control_CZSK Diesel Controller -")] ControlDieselDirectionControllerDown,
 
-        
         [GetString("Set Power Supply Station Location")] ControlPowerStationLocation,
         [GetString("Set Voltage 25k")] ControlSetVoltage25k,
         [GetString("Set Voltage 3k")] ControlSetVoltage3k,

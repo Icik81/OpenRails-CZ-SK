@@ -580,6 +580,8 @@ namespace ORTS.Settings
             Commands[(int)UserCommand.ControlQuickReleaseButton] = new UserCommandKeyInput(0x52);
             Commands[(int)UserCommand.ControlLowPressureReleaseButton] = new UserCommandKeyInput(0x53);
             Commands[(int)UserCommand.ControlBreakPowerButton] = new UserCommandKeyInput(0x18, KeyModifiers.Control);
+            Commands[(int)UserCommand.ControlDieselDirectionControllerUp] = new UserCommandKeyInput(0x11);
+            Commands[(int)UserCommand.ControlDieselDirectionControllerDown] = new UserCommandKeyInput(0x1F);
         }
 #endregion
 

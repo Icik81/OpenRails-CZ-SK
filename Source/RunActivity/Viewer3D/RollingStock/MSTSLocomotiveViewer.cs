@@ -371,6 +371,18 @@ namespace Orts.Viewer3D.RollingStock
                     Locomotive.ToggleBreakPowerButton(false);
                 }
             }
+            // Ovládání Diesel kontroléru
+            if (Locomotive.DieselDirectionController)
+            {
+                if (UserInput.IsPressed(UserCommand.ControlDieselDirectionControllerUp))
+                {
+                    Locomotive.ToggleDieselDirectionControllerUp();
+                }
+                if (UserInput.IsReleased(UserCommand.ControlDieselDirectionControllerDown))
+                {
+                    Locomotive.ToggleDieselDirectionControllerDown();
+                }
+            }
 
             if (UserInput.IsPressed(UserCommand.CameraToggleShowCab))
                 Locomotive.ShowCab = !Locomotive.ShowCab;
@@ -2361,7 +2373,7 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.CHECK_POWERLOSS:
                 case CABViewControlTypes.DONT_RAISE_PANTO:
                 case CABViewControlTypes.ORTS_BAILOFF:
-
+                case CABViewControlTypes.DIESEL_DIRECTION_CONTROLLER:
 
                     index = (int)data;
                     break;
@@ -2551,7 +2563,7 @@ namespace Orts.Viewer3D.RollingStock
             // Icik
             if (ChangedValue(0) == 0 && !UserInput.IsMouseLeftButtonDown)
                 IsChanged = false;
-            
+
             switch (Control.ControlType)
             {
                 case CABViewControlTypes.REGULATOR:
@@ -2562,20 +2574,23 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.DYNAMIC_BRAKE: Locomotive.SetDynamicBrakeValue(ChangedValue(Locomotive.DynamicBrakeController.IntermediateValue)); break;
                 case CABViewControlTypes.GEARS: Locomotive.SetGearBoxValue(ChangedValue(Locomotive.GearBoxController.IntermediateValue)); break;
                 case CABViewControlTypes.DIRECTION:
-                    var dir = ChangedValue(0);
-                    if (dir != 0)
+                    if (!Locomotive.DieselDirectionController)
                     {
-                        new ReverserCommand(Viewer.Log, dir > 0);
-                        IsChanged = true;
+                        var dir = ChangedValue(0);
+                        if (dir != 0)
+                        {
+                            new ReverserCommand(Viewer.Log, dir > 0);
+                            IsChanged = true;
+                        }
                     }
                     break;
-                case CABViewControlTypes.FRONT_HLIGHT: 
+                case CABViewControlTypes.FRONT_HLIGHT:
                     var hl = ChangedValue(0);
                     if (hl != 0 && !IsChanged)
                     {
                         new HeadlightCommand(Viewer.Log, hl > 0);
                         IsChanged = true;
-                    }                    
+                    }                     
                     break;
                 case CABViewControlTypes.WHISTLE:
                 case CABViewControlTypes.HORN: new HornCommand(Viewer.Log, ChangedValue(Locomotive.Horn ? 1 : 0) > 0); break;
@@ -2970,8 +2985,7 @@ namespace Orts.Viewer3D.RollingStock
                         Locomotive.CabHeating_OffOn = false;
                         new ToggleCabHeating_OffOnCommand(Viewer.Log);
                     }
-                    break;
-
+                    break;                
                 case CABViewControlTypes.QUICK_RELEASE_BUTTON:                    
                         if (ChangedValue(Locomotive.QuickReleaseButton ? 1 : 0) > 0)
                             Locomotive.ToggleQuickReleaseButton(true);
@@ -2991,6 +3005,19 @@ namespace Orts.Viewer3D.RollingStock
                         Locomotive.ToggleBreakPowerButton(true);
                     else
                         Locomotive.ToggleBreakPowerButton(false);
+                    break;
+
+                case CABViewControlTypes.DIESEL_DIRECTION_CONTROLLER:
+                    if (ChangedValue(0) < 0 && !IsChanged)
+                    {
+                        new ToggleDieselDirectionControllerUpCommand(Viewer.Log);
+                        IsChanged = true;
+                    }
+                    if (ChangedValue(0) > 0 && !IsChanged)
+                    {
+                        new ToggleDieselDirectionControllerDownCommand(Viewer.Log);
+                        IsChanged = true;
+                    }
                     break;
 
                 // Train Control System controls

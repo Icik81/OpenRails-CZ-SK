@@ -975,13 +975,11 @@ namespace Orts.Simulation.RollingStocks
                 //                    PowerOn = !PowerOn;
                 if (DieselEngines[0].EngineStatus == DieselEngine.Status.Stopped)
                 {
-                    DieselEngines[0].Start();
-                    SignalEvent(Event.EnginePowerOn); // power on sound hook
+                    DieselEngines[0].Start();                    
                 }
                 if (DieselEngines[0].EngineStatus == DieselEngine.Status.Running)
                 {
-                    DieselEngines[0].Stop();
-                    SignalEvent(Event.EnginePowerOff); // power off sound hook
+                    DieselEngines[0].Stop();                    
                 }
                 Simulator.Confirmer.Confirm(CabControl.PlayerDiesel, DieselEngines.PowerOn ? CabSetting.On : CabSetting.Off);
             }
