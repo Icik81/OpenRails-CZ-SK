@@ -383,6 +383,7 @@ namespace Orts.Viewer3D.RollingStock
                     Locomotive.ToggleDieselDirectionControllerDown();
                 }
             }
+            
 
             if (UserInput.IsPressed(UserCommand.CameraToggleShowCab))
                 Locomotive.ShowCab = !Locomotive.ShowCab;
@@ -2374,6 +2375,7 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.DONT_RAISE_PANTO:
                 case CABViewControlTypes.ORTS_BAILOFF:
                 case CABViewControlTypes.DIESEL_DIRECTION_CONTROLLER:
+                case CABViewControlTypes.DIESEL_DIRECTION_CONTROLLER2:
 
                     index = (int)data;
                     break;
@@ -3008,6 +3010,18 @@ namespace Orts.Viewer3D.RollingStock
                     break;
 
                 case CABViewControlTypes.DIESEL_DIRECTION_CONTROLLER:
+                    if (ChangedValue(0) < 0 && !IsChanged)
+                    {
+                        new ToggleDieselDirectionControllerUpCommand(Viewer.Log);
+                        IsChanged = true;
+                    }
+                    if (ChangedValue(0) > 0 && !IsChanged)
+                    {
+                        new ToggleDieselDirectionControllerDownCommand(Viewer.Log);
+                        IsChanged = true;
+                    }
+                    break;
+                case CABViewControlTypes.DIESEL_DIRECTION_CONTROLLER2:
                     if (ChangedValue(0) < 0 && !IsChanged)
                     {
                         new ToggleDieselDirectionControllerUpCommand(Viewer.Log);
