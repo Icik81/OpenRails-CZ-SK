@@ -383,7 +383,19 @@ namespace Orts.Viewer3D.RollingStock
                     Locomotive.ToggleDieselDirectionControllerDown();
                 }
             }
-            
+            // Ovládání Diesel kontroléru
+            if (Locomotive.DieselDirectionController2)
+            {
+                if (UserInput.IsPressed(UserCommand.ControlDieselDirectionControllerUp))
+                {
+                    Locomotive.ToggleDieselDirectionControllerUp();
+                }
+                if (UserInput.IsReleased(UserCommand.ControlDieselDirectionControllerDown))
+                {
+                    Locomotive.ToggleDieselDirectionControllerDown();
+                }
+            }
+
 
             if (UserInput.IsPressed(UserCommand.CameraToggleShowCab))
                 Locomotive.ShowCab = !Locomotive.ShowCab;
@@ -2576,7 +2588,7 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.DYNAMIC_BRAKE: Locomotive.SetDynamicBrakeValue(ChangedValue(Locomotive.DynamicBrakeController.IntermediateValue)); break;
                 case CABViewControlTypes.GEARS: Locomotive.SetGearBoxValue(ChangedValue(Locomotive.GearBoxController.IntermediateValue)); break;
                 case CABViewControlTypes.DIRECTION:
-                    if (!Locomotive.DieselDirectionController)
+                    if (!Locomotive.DieselDirectionController && !Locomotive.DieselDirectionController2)
                     {
                         var dir = ChangedValue(0);
                         if (dir != 0)
