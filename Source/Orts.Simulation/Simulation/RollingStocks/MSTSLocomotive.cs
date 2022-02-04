@@ -605,6 +605,7 @@ namespace Orts.Simulation.RollingStocks
         public bool DieselDirection_Reverse;
         public bool DieselDirectionController_In = false;
         public bool DieselDirectionController_Out = true;
+        public bool DieselDirectionControllerInOut = false;
 
 
         // Jindrich
@@ -1640,6 +1641,7 @@ namespace Orts.Simulation.RollingStocks
             outf.Write(DieselDirectionController2Position);
             outf.Write(DieselDirectionController_In);
             outf.Write(DieselDirectionController_Out);
+            outf.Write(DieselDirectionControllerInOut);
 
             base.Save(outf);
 
@@ -1736,6 +1738,7 @@ namespace Orts.Simulation.RollingStocks
             DieselDirectionController2Position = inf.ReadInt32();
             DieselDirectionController_In = inf.ReadBoolean();
             DieselDirectionController_Out = inf.ReadBoolean();
+            DieselDirectionControllerInOut = inf.ReadBoolean();
 
             base.Restore(inf);
 
@@ -6769,37 +6772,8 @@ namespace Orts.Simulation.RollingStocks
         }
         public void TogglePowerKey()
         {
-            if (!DieselDirectionController && !DieselDirectionController2)
-            {
-                PowerKey = !PowerKey;
-                if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.PowerKey, PowerKey ? CabSetting.On : CabSetting.Off);
-            }
-
-            // Zasunutí a odebrání směrové páky u dieselu
-            if ((DieselDirectionController && DieselDirection_N) || (DieselDirectionController2 && DieselDirection_Start))
-            {
-                PowerKey = !PowerKey;
-                string DieselDirectionControllerMSG;
-                if (PowerKey)
-                    DieselDirectionControllerMSG = "Směrová páka zasunuta";
-                else
-                    DieselDirectionControllerMSG = "Směrová páka vysunuta";
-                if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.MSG(DieselDirectionControllerMSG);                
-            }                        
-            if (PowerKey 
-                && ((DieselDirectionController && DieselDirection_N) || (DieselDirectionController2 && DieselDirection_Start))
-                && DieselDirectionController_Out)
-            {
-                DieselDirectionController_In = true;
-                DieselDirectionController_Out = false;
-            }
-            if (!PowerKey
-                && ((DieselDirectionController && DieselDirection_N) || (DieselDirectionController2 && DieselDirection_Start))
-                && DieselDirectionController_In)
-            {
-                DieselDirectionController_In = false;
-                DieselDirectionController_Out = true;
-            }
+            PowerKey = !PowerKey;
+            if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.PowerKey, PowerKey ? CabSetting.On : CabSetting.Off);
 
             if (Battery)
             {
@@ -7812,7 +7786,36 @@ namespace Orts.Simulation.RollingStocks
                 }
             }
         }
-
+        public void ToggleDieselDirectionControllerInOut()
+        {            
+            // Zasunutí a odebrání směrové páky u dieselu
+            if ((DieselDirectionController && DieselDirection_N) || (DieselDirectionController2 && DieselDirection_Start))
+            {
+                DieselDirectionControllerInOut = !DieselDirectionControllerInOut;
+                string DieselDirectionControllerMSG;
+                if (DieselDirectionControllerInOut)
+                    DieselDirectionControllerMSG = "Směrová páka zasunuta";
+                else
+                    DieselDirectionControllerMSG = "Směrová páka vysunuta";
+                if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.MSG(DieselDirectionControllerMSG);
+            }
+            if (DieselDirectionControllerInOut
+                && ((DieselDirectionController && DieselDirection_N) || (DieselDirectionController2 && DieselDirection_Start))
+                && DieselDirectionController_Out)
+            {
+                DieselDirectionController_In = true;
+                DieselDirectionController_Out = false;
+                SignalEvent(Event.DieselDirectionControllerIn);
+            }
+            if (!DieselDirectionControllerInOut
+                && ((DieselDirectionController && DieselDirection_N) || (DieselDirectionController2 && DieselDirection_Start))
+                && DieselDirectionController_In)
+            {
+                DieselDirectionController_In = false;
+                DieselDirectionController_Out = true;
+                SignalEvent(Event.DieselDirectionControllerOut);
+            }
+        }
 
         // Zatím povoleno kvůli kompatibilitě
         int NumberChoice = 1;

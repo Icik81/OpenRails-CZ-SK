@@ -2113,4 +2113,20 @@ namespace Orts.Common
             Receiver.ToggleDieselDirectionControllerDown();
         }
     }
+    [Serializable()]
+    public sealed class ToggleDieselDirectionControllerInOutCommand : Command
+    {
+        public static MSTSLocomotive Receiver { get; set; }
+
+        public ToggleDieselDirectionControllerInOutCommand(CommandLog log)
+            : base(log)
+        {
+            Redo();
+        }
+
+        public override void Redo()
+        {
+            Receiver.ToggleDieselDirectionControllerInOut();
+        }
+    }
 }

@@ -281,6 +281,7 @@
         [GetString("Control_CZSK Breakpower button")] ControlBreakPowerButton,        
         [GetString("Control_CZSK Diesel Controller +")] ControlDieselDirectionControllerUp,
         [GetString("Control_CZSK Diesel Controller -")] ControlDieselDirectionControllerDown,
+        [GetString("Control_CZSK Diesel Controller In/Out")] ControlDieselDirectionControllerInOut,
 
         [GetString("Set Power Supply Station Location")] ControlPowerStationLocation,
         [GetString("Set Voltage 25k")] ControlSetVoltage25k,

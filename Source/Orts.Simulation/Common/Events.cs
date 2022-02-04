@@ -298,6 +298,8 @@ namespace Orts.Common
         ORTS_BailOff,
         ORTS_BailOffRelease,
         TrainBrakeEmergencyActivated,
+        DieselDirectionControllerIn,
+        DieselDirectionControllerOut
     }
 
     public static class Events
@@ -610,7 +612,8 @@ namespace Orts.Common
                         case 20053: return Event.ORTS_BailOff;
                         case 20054: return Event.ORTS_BailOffRelease;
                         case 20055: return Event.TrainBrakeEmergencyActivated;
-
+                        case 20056: return Event.DieselDirectionControllerIn;
+                        case 20057: return Event.DieselDirectionControllerOut;
 
                         default: return 0;
                     }

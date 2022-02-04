@@ -582,6 +582,7 @@ namespace ORTS.Settings
             Commands[(int)UserCommand.ControlBreakPowerButton] = new UserCommandKeyInput(0x18, KeyModifiers.Control);
             Commands[(int)UserCommand.ControlDieselDirectionControllerUp] = new UserCommandKeyInput(0x11);
             Commands[(int)UserCommand.ControlDieselDirectionControllerDown] = new UserCommandKeyInput(0x1F);
+            Commands[(int)UserCommand.ControlDieselDirectionControllerInOut] = new UserCommandKeyInput(0x25, KeyModifiers.Shift | KeyModifiers.Control);
         }
 #endregion
 

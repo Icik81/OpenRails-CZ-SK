@@ -374,9 +374,13 @@ namespace Orts.Viewer3D.RollingStock
             // Ovládání Diesel kontroléru
             if (Locomotive.LocalThrottlePercent == 0)
             {
+                if (UserInput.IsPressed(UserCommand.ControlDieselDirectionControllerInOut))
+                {
+                    Locomotive.ToggleDieselDirectionControllerInOut();
+                }
                 // Diesel kontrolér
                 if (Locomotive.DieselDirectionController && Locomotive.DieselDirectionController_In)
-                {
+                {                    
                     if (UserInput.IsPressed(UserCommand.ControlDieselDirectionControllerUp))
                     {
                         Locomotive.ToggleDieselDirectionControllerUp();
@@ -388,7 +392,7 @@ namespace Orts.Viewer3D.RollingStock
                 }
                 // Diesel kontrolér2
                 if (Locomotive.DieselDirectionController2 && Locomotive.DieselDirectionController_In)
-                {
+                {                 
                     if (UserInput.IsPressed(UserCommand.ControlDieselDirectionControllerUp))
                     {
                         Locomotive.ToggleDieselDirectionControllerUp();
@@ -3073,6 +3077,7 @@ namespace Orts.Viewer3D.RollingStock
                         {
                             Locomotive.DieselDirectionController_Out = false;
                             Locomotive.DieselDirectionController_In = true;
+                            Locomotive.SignalEvent(Event.DieselDirectionControllerIn);
                         }
                         else
                         if (Locomotive.DieselDirectionController2 && Locomotive.DieselDirection_Start
@@ -3081,6 +3086,7 @@ namespace Orts.Viewer3D.RollingStock
                         {
                             Locomotive.DieselDirectionController_Out = true;
                             Locomotive.DieselDirectionController_In = false;
+                            Locomotive.SignalEvent(Event.DieselDirectionControllerOut);
                         }
                     }
                     break;
