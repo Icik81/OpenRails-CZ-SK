@@ -7702,8 +7702,9 @@ namespace Orts.Simulation.RollingStocks
                             DieselDirection_Start = false;
                             DieselDirection_N = true;
                             DieselDirection_Reverse = false;
-                            Direction = Direction.N;                            
-                            SignalEvent(Event.ReverserToNeutral);
+                            Direction = Direction.N;
+                            if (Simulator.GameTime > 0.5f)
+                                SignalEvent(Event.ReverserToNeutral);
                         }
                         break;
                     case 3: // Diesel-
