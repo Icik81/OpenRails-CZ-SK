@@ -372,30 +372,33 @@ namespace Orts.Viewer3D.RollingStock
                 }
             }
             // Ovládání Diesel kontroléru
-            if (Locomotive.DieselDirectionController)
+            if (Locomotive.LocalThrottlePercent == 0)
             {
-                if (UserInput.IsPressed(UserCommand.ControlDieselDirectionControllerUp))
+                // Diesel kontrolér
+                if (Locomotive.DieselDirectionController && Locomotive.DieselDirectionController_In)
                 {
-                    Locomotive.ToggleDieselDirectionControllerUp();
+                    if (UserInput.IsPressed(UserCommand.ControlDieselDirectionControllerUp))
+                    {
+                        Locomotive.ToggleDieselDirectionControllerUp();
+                    }
+                    if (UserInput.IsReleased(UserCommand.ControlDieselDirectionControllerDown))
+                    {
+                        Locomotive.ToggleDieselDirectionControllerDown();
+                    }
                 }
-                if (UserInput.IsReleased(UserCommand.ControlDieselDirectionControllerDown))
+                // Diesel kontrolér2
+                if (Locomotive.DieselDirectionController2 && Locomotive.DieselDirectionController_In)
                 {
-                    Locomotive.ToggleDieselDirectionControllerDown();
+                    if (UserInput.IsPressed(UserCommand.ControlDieselDirectionControllerUp))
+                    {
+                        Locomotive.ToggleDieselDirectionControllerUp();
+                    }
+                    if (UserInput.IsReleased(UserCommand.ControlDieselDirectionControllerDown))
+                    {
+                        Locomotive.ToggleDieselDirectionControllerDown();
+                    }
                 }
             }
-            // Ovládání Diesel kontroléru
-            if (Locomotive.DieselDirectionController2)
-            {
-                if (UserInput.IsPressed(UserCommand.ControlDieselDirectionControllerUp))
-                {
-                    Locomotive.ToggleDieselDirectionControllerUp();
-                }
-                if (UserInput.IsReleased(UserCommand.ControlDieselDirectionControllerDown))
-                {
-                    Locomotive.ToggleDieselDirectionControllerDown();
-                }
-            }
-
 
             if (UserInput.IsPressed(UserCommand.CameraToggleShowCab))
                 Locomotive.ShowCab = !Locomotive.ShowCab;
@@ -3022,27 +3025,63 @@ namespace Orts.Viewer3D.RollingStock
                     break;
 
                 case CABViewControlTypes.DIESEL_DIRECTION_CONTROLLER:
-                    if (ChangedValue(0) < 0 && !IsChanged)
+                    if (Locomotive.LocalThrottlePercent == 0)
                     {
-                        new ToggleDieselDirectionControllerUpCommand(Viewer.Log);
-                        IsChanged = true;
-                    }
-                    if (ChangedValue(0) > 0 && !IsChanged)
-                    {
-                        new ToggleDieselDirectionControllerDownCommand(Viewer.Log);
-                        IsChanged = true;
+                        if (ChangedValue(0) < 0 && !IsChanged && Locomotive.DieselDirectionController_In)
+                        {
+                            new ToggleDieselDirectionControllerUpCommand(Viewer.Log);
+                            IsChanged = true;
+                        }
+                        if (ChangedValue(0) > 0 && !IsChanged && Locomotive.DieselDirectionController_In)
+                        {
+                            new ToggleDieselDirectionControllerDownCommand(Viewer.Log);
+                            IsChanged = true;
+                        }
+                        if (Locomotive.DieselDirectionController && Locomotive.DieselDirection_N
+                            && ChangedValue(0) == 0 && UserInput.IsMouseLeftButtonPressed
+                            && Locomotive.DieselDirectionController_Out)
+                        {
+                            Locomotive.DieselDirectionController_Out = false;
+                            Locomotive.DieselDirectionController_In = true;
+                        }
+                        else
+                        if (Locomotive.DieselDirectionController && Locomotive.DieselDirection_N
+                            && ChangedValue(0) == 0 && UserInput.IsMouseLeftButtonPressed
+                            && Locomotive.DieselDirectionController_In)
+                        {
+                            Locomotive.DieselDirectionController_Out = true;
+                            Locomotive.DieselDirectionController_In = false;
+                        }
                     }
                     break;
                 case CABViewControlTypes.DIESEL_DIRECTION_CONTROLLER2:
-                    if (ChangedValue(0) < 0 && !IsChanged)
+                    if (Locomotive.LocalThrottlePercent == 0)
                     {
-                        new ToggleDieselDirectionControllerUpCommand(Viewer.Log);
-                        IsChanged = true;
-                    }
-                    if (ChangedValue(0) > 0 && !IsChanged)
-                    {
-                        new ToggleDieselDirectionControllerDownCommand(Viewer.Log);
-                        IsChanged = true;
+                        if (ChangedValue(0) < 0 && !IsChanged && Locomotive.DieselDirectionController_In)
+                        {
+                            new ToggleDieselDirectionControllerUpCommand(Viewer.Log);
+                            IsChanged = true;
+                        }
+                        if (ChangedValue(0) > 0 && !IsChanged && Locomotive.DieselDirectionController_In)
+                        {
+                            new ToggleDieselDirectionControllerDownCommand(Viewer.Log);
+                            IsChanged = true;
+                        }
+                        if (Locomotive.DieselDirectionController2 && Locomotive.DieselDirection_Start
+                            && ChangedValue(0) == 0 && UserInput.IsMouseLeftButtonPressed
+                            && Locomotive.DieselDirectionController_Out)
+                        {
+                            Locomotive.DieselDirectionController_Out = false;
+                            Locomotive.DieselDirectionController_In = true;
+                        }
+                        else
+                        if (Locomotive.DieselDirectionController2 && Locomotive.DieselDirection_Start
+                            && ChangedValue(0) == 0 && UserInput.IsMouseLeftButtonPressed
+                            && Locomotive.DieselDirectionController_In)
+                        {
+                            Locomotive.DieselDirectionController_Out = true;
+                            Locomotive.DieselDirectionController_In = false;
+                        }
                     }
                     break;
 
