@@ -903,7 +903,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
 
         public void Initialize(bool start)
         {
-            if (start)
+            // Icik
+            if (start && !locomotive.Simulator.Settings.AirEmpty)
             {
                 RealRPM = IdleRPM;
                 EngineStatus = Status.Running;
