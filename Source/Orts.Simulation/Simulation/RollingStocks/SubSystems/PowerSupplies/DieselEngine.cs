@@ -749,16 +749,31 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
 
         public bool DieselEngineConfigured = false; // flag to indicate that the user has configured a diesel engine prime mover code block in the ENG file
 
+        // Icik
+        public float RealRPM0;
+
         /// <summary>
         /// Current Engine oil pressure in PSI
         /// </summary>
         public float DieselOilPressurePSI
         {
             get
-            {
+            {                
+                // Icik
+                // Tlakování mazacího čerpadla při spouštění motoru
+                if (locomotive.StartButtonPressed && locomotive.DieselStartTime > 0 && RealRPM0 < IdleRPM)
+                {
+                    RealRPM0 += IdleRPM / locomotive.DieselStartDelay * locomotive.Simulator.OneSecondLoop; 
+                }
+                else
+                if (locomotive.DieselStartTime > locomotive.DieselStartDelay)
+                    RealRPM0 = IdleRPM;
+                if (EngineStatus == Status.Running || (EngineStatus == Status.Stopping && !locomotive.StartButtonPressed))
+                    RealRPM0 = RealRPM;
+
                 float k = (DieselMaxOilPressurePSI - DieselMinOilPressurePSI)/(MaxRPM - IdleRPM);
                 float q = DieselMaxOilPressurePSI - k * MaxRPM;
-                float res = k * RealRPM + q - dieseloilfailurePSI;
+                float res = k * RealRPM0 + q - dieseloilfailurePSI;
                 if (res < 0f)
                     res = 0f;
                 return res;
@@ -1121,7 +1136,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
             }
 
             DieselTemperatureDeg += elapsedClockSeconds * (DieselMaxTemperatureDeg - DieselTemperatureDeg) / DieselTempTimeConstantSec;
-            switch(EngineCooling)
+
+            switch (EngineCooling)
             {
                 case Cooling.NoCooling:
                     DieselTemperatureDeg += elapsedClockSeconds * (LoadPercent * 0.01f * (95f - 60f) + 60f - DieselTemperatureDeg) / DieselTempTimeConstantSec;

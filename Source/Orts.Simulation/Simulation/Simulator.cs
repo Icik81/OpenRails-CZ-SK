@@ -174,6 +174,7 @@ namespace Orts.Simulation
         // Icik
         public float VoltageSprung = 1;
         public float GameTimeCyklus10;
+        public float OneSecondLoop;
 
         public List<PowerSupplyStation> powerSupplyStations;
         public List<VoltageChangeMarker> voltageChangeMarkers;
@@ -674,6 +675,7 @@ namespace Orts.Simulation
             GameTimeCyklus10++;
             if (GameTimeCyklus10 > 10)
                 GameTimeCyklus10 = 0;
+            OneSecondLoop = elapsedClockSeconds;            
 
             // Check if there is a request to switch to another played train
 
