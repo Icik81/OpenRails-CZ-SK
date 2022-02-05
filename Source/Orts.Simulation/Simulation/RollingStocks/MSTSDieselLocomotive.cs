@@ -525,6 +525,9 @@ namespace Orts.Simulation.RollingStocks
         {
             base.UpdateControllers(elapsedClockSeconds);
 
+            // Icik
+            DieselStartUpTime(elapsedClockSeconds);
+
             //Currently the ThrottlePercent is global to the entire train
             //So only the lead locomotive updates it, the others only updates the controller (actually useless)
             if (this.IsLeadLocomotive() || (!AcceptMUSignals))
@@ -968,20 +971,58 @@ namespace Orts.Simulation.RollingStocks
             }
         }
 
+        // Icik
+        public void DieselStartUpTime(float elapsedClockSeconds)
+        {
+            if ((DieselDirectionController || DieselDirectionController2) && StartButtonPressed && DieselEngines[0].EngineStatus == DieselEngine.Status.Stopped
+                && DieselDirection_Start)
+            {
+                if (DieselStartDelay == 0) DieselStartDelay = 10f; // Default 10s pro mazání motoru
+                DieselStartTime += elapsedClockSeconds;
+                if (DieselStartTime < DieselStartDelay - 1)
+                {
+                    SignalEvent(Event.StartUpMotor);
+                    Simulator.Confirmer.Information("Motor se startuje...");
+                }
+                if (DieselStartTime > DieselStartDelay)
+                {
+                    DieselStartDelayDone = true;
+                    DieselStartTime = 0;
+                    if (DieselEngines[0].EngineStatus == DieselEngine.Status.Stopped)
+                    {
+                        DieselEngines[0].Start();
+                        DieselStartDelayDone = false;
+                    }
+                }
+            }
+            else
+                DieselStartTime = 0;
+        }
+    
+
         public void TogglePlayerEngine()
         {
             if (ThrottlePercent < 1)
             {
-                //                    PowerOn = !PowerOn;
-                if (DieselEngines[0].EngineStatus == DieselEngine.Status.Stopped)
+                // Icik                
+                if ((!DieselDirectionController && !DieselDirectionController2)
+                    || DieselStartDelayDone
+                    || DieselEngines[0].EngineStatus == DieselEngine.Status.Running
+                    || StopButtonPressed)
                 {
-                    DieselEngines[0].Start();                    
+                    //                    PowerOn = !PowerOn;
+                    if (DieselEngines[0].EngineStatus == DieselEngine.Status.Stopped && !StopButtonPressed)
+                    {
+                        DieselEngines[0].Start();
+                        DieselStartDelayDone = false;
+                    }
+                    if (DieselEngines[0].EngineStatus == DieselEngine.Status.Running && StopButtonPressed)
+                    {
+                        DieselEngines[0].Stop();
+                    }
                 }
-                if (DieselEngines[0].EngineStatus == DieselEngine.Status.Running)
-                {
-                    DieselEngines[0].Stop();                    
-                }
-                Simulator.Confirmer.Confirm(CabControl.PlayerDiesel, DieselEngines.PowerOn ? CabSetting.On : CabSetting.Off);
+                if (!DieselDirectionController && !DieselDirectionController2)
+                    Simulator.Confirmer.Confirm(CabControl.PlayerDiesel, DieselEngines.PowerOn ? CabSetting.On : CabSetting.Off);
             }
             else
             {

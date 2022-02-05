@@ -415,6 +415,7 @@ namespace Orts.Formats.Msts
         DIESEL_DIRECTION_CONTROLLER,
         DIESEL_DIRECTION_CONTROLLER2,
 
+
         // Further CabViewControlTypes must be added above this line, to avoid their malfunction in 3DCabs
         EXTERNALWIPERS,
         LEFTDOOR,

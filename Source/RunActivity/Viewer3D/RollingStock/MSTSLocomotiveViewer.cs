@@ -403,6 +403,27 @@ namespace Orts.Viewer3D.RollingStock
                     }
                 }
             }
+            // Ovládání tlačítka startu motoru
+            if ((Locomotive as MSTSDieselLocomotive) != null)
+            {
+                if (UserInput.IsDown(UserCommand.ControlDieselPlayer)
+                    && ((Locomotive as MSTSDieselLocomotive).DieselEngines[0].EngineStatus != Orts.Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Running)
+                    && ((Locomotive as MSTSDieselLocomotive).DieselEngines[0].EngineStatus != Orts.Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Stopping))
+                    Locomotive.StartButtonPressed = true;
+                else
+                if (!UserInput.IsDown(UserCommand.ControlDieselPlayer)
+                    && ((Locomotive as MSTSDieselLocomotive).DieselEngines[0].EngineStatus != Orts.Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Running))
+                    Locomotive.StartButtonPressed = false;
+
+                if (UserInput.IsDown(UserCommand.ControlDieselPlayer)
+                    && ((Locomotive as MSTSDieselLocomotive).DieselEngines[0].EngineStatus != Orts.Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Stopped)
+                    && ((Locomotive as MSTSDieselLocomotive).DieselEngines[0].EngineStatus != Orts.Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Starting))
+                    Locomotive.StopButtonPressed = true;
+                else
+                if (!UserInput.IsDown(UserCommand.ControlDieselPlayer)
+                    && ((Locomotive as MSTSDieselLocomotive).DieselEngines[0].EngineStatus != Orts.Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Stopped))
+                    Locomotive.StopButtonPressed = false;
+            }
 
             if (UserInput.IsPressed(UserCommand.CameraToggleShowCab))
                 Locomotive.ShowCab = !Locomotive.ShowCab;
@@ -2729,12 +2750,26 @@ namespace Orts.Viewer3D.RollingStock
                     break;
                 case CABViewControlTypes.ORTS_PLAYER_DIESEL_ENGINE_STARTER:
                     dieselLoco = Locomotive as MSTSDieselLocomotive;
-                    if (dieselLoco.DieselEngines[0].EngineStatus == Orts.Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Stopped &&
-                                ChangedValue(1) == 0) new TogglePlayerEngineCommand(Viewer.Log); break;
+                    if (/*dieselLoco.DieselEngines[0].EngineStatus == Orts.Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Stopped &&*/
+                        UserInput.IsMouseLeftButtonDown)
+                    {
+                        Locomotive.StartButtonPressed = true;
+                        new TogglePlayerEngineCommand(Viewer.Log);
+                    }
+                    else
+                        Locomotive.StartButtonPressed = false;
+                    break;
                 case CABViewControlTypes.ORTS_PLAYER_DIESEL_ENGINE_STOPPER:
                     dieselLoco = Locomotive as MSTSDieselLocomotive;
-                    if (dieselLoco.DieselEngines[0].EngineStatus == Orts.Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Running &&
-                                ChangedValue(1) == 0) new TogglePlayerEngineCommand(Viewer.Log); break;
+                    if (/*dieselLoco.DieselEngines[0].EngineStatus == Orts.Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Running &&*/
+                        UserInput.IsMouseLeftButtonDown)
+                    {
+                        Locomotive.StopButtonPressed = true;
+                        new TogglePlayerEngineCommand(Viewer.Log);
+                    }
+                    else
+                        Locomotive.StopButtonPressed = false;
+                    break;
                 case CABViewControlTypes.ORTS_CABLIGHT:
                     if ((Locomotive.CabLightOn ? 1 : 0) != ChangedValue(Locomotive.CabLightOn ? 1 : 0)) new ToggleCabLightCommand(Viewer.Log); break;
                 case CABViewControlTypes.ORTS_LEFTDOOR:
@@ -3090,6 +3125,8 @@ namespace Orts.Viewer3D.RollingStock
                         }
                     }
                     break;
+                
+
 
                 // Train Control System controls
                 case CABViewControlTypes.ORTS_TCS1:

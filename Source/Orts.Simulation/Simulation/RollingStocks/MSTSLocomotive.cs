@@ -606,6 +606,11 @@ namespace Orts.Simulation.RollingStocks
         public bool DieselDirectionController_In = false;
         public bool DieselDirectionController_Out = true;
         public bool DieselDirectionControllerInOut = false;
+        public float DieselStartDelay;
+        public float DieselStartTime;
+        public bool DieselStartDelayDone;
+        public bool StartButtonPressed;
+        public bool StopButtonPressed;
 
 
         // Jindrich
@@ -1246,6 +1251,7 @@ namespace Orts.Simulation.RollingStocks
                 case "engine(maxmainresoverpressure": MaxMainResOverPressurePSI = stf.ReadFloatBlock(STFReader.UNITS.PressureDefaultPSI, null); break;
                 case "engine(maxauxresoverpressure": MaxAuxResOverPressurePSI = stf.ReadFloatBlock(STFReader.UNITS.PressureDefaultPSI, null); break;
                 case "engine(heatingmaxcurrent": HeatingMaxCurrentA = stf.ReadFloatBlock(STFReader.UNITS.Current, null); break;
+                case "engine(dieselstartdelay": DieselStartDelay = stf.ReadFloatBlock(STFReader.UNITS.Time, null); break;
 
                 // Jindrich
                 case "engine(usingforcehandle": UsingForceHandle = stf.ReadBoolBlock(false); break;
@@ -1483,6 +1489,7 @@ namespace Orts.Simulation.RollingStocks
             MaxMainResOverPressurePSI = locoCopy.MaxMainResOverPressurePSI;
             MaxAuxResOverPressurePSI = locoCopy.MaxAuxResOverPressurePSI;
             HeatingMaxCurrentA = locoCopy.HeatingMaxCurrentA;
+            DieselStartDelay = locoCopy.DieselStartDelay;
 
             // Jindrich
             if (locoCopy.CruiseControl != null)
@@ -5312,7 +5319,7 @@ namespace Orts.Simulation.RollingStocks
         public void StartThrottleIncrease(float? target)
         {
             // Icik
-            if ((DieselDirectionController && DieselDirection_N) || (DieselDirectionController2 && DieselDirection_Start))
+            if ((DieselDirectionController && DieselDirection_N) || (DieselDirectionController2 && DieselDirection_N))
                 return;
 
             Mirel.ResetVigilance();
@@ -5467,7 +5474,7 @@ namespace Orts.Simulation.RollingStocks
         public void StartThrottleDecrease(float? target)
         {
             // Icik
-            if ((DieselDirectionController && DieselDirection_N) || (DieselDirectionController2 && DieselDirection_Start))
+            if ((DieselDirectionController && DieselDirection_N) || (DieselDirectionController2 && DieselDirection_N))
                 return;
 
             Mirel.ResetVigilance();
@@ -7597,12 +7604,12 @@ namespace Orts.Simulation.RollingStocks
                     DieselDirectionController2Position++;
                 if (DieselDirectionController2Position <= 3)
                 {
-                    if ((DieselDirectionController2Position > 2 && DieselDirectionController2Position > prevDieselDirectionController2Position)
-                        || (DieselDirectionController2Position < 2 && DieselDirectionController2Position < prevDieselDirectionController2Position))
+                    if ((DieselDirectionController2Position > 0 && DieselDirectionController2Position > prevDieselDirectionController2Position)
+                        || (DieselDirectionController2Position < 0 && DieselDirectionController2Position < prevDieselDirectionController2Position))
                         SignalEvent(Event.ReverserToForwardBackward);
                     else
-                    if ((DieselDirectionController2Position > 2 && DieselDirectionController2Position < prevDieselDirectionController2Position)
-                        || (DieselDirectionController2Position < 2 && DieselDirectionController2Position > prevDieselDirectionController2Position))
+                    if ((DieselDirectionController2Position > 0 && DieselDirectionController2Position < prevDieselDirectionController2Position)
+                        || (DieselDirectionController2Position < 0 && DieselDirectionController2Position > prevDieselDirectionController2Position))
                         SignalEvent(Event.ReverserToNeutral);                    
                     ToggleDieselDirectionController2();                    
                 }
@@ -7632,12 +7639,12 @@ namespace Orts.Simulation.RollingStocks
                     DieselDirectionController2Position--;
                 if (DieselDirectionController2Position >= 0)
                 {
-                    if ((DieselDirectionController2Position > 2 && DieselDirectionController2Position > prevDieselDirectionController2Position)
-                        || (DieselDirectionController2Position < 2 && DieselDirectionController2Position < prevDieselDirectionController2Position))
+                    if ((DieselDirectionController2Position > 0 && DieselDirectionController2Position > prevDieselDirectionController2Position)
+                        || (DieselDirectionController2Position < 0 && DieselDirectionController2Position < prevDieselDirectionController2Position))
                         SignalEvent(Event.ReverserToForwardBackward);
                     else
-                    if ((DieselDirectionController2Position > 2 && DieselDirectionController2Position < prevDieselDirectionController2Position)
-                        || (DieselDirectionController2Position < 2 && DieselDirectionController2Position > prevDieselDirectionController2Position))
+                    if ((DieselDirectionController2Position >= 0 && DieselDirectionController2Position < prevDieselDirectionController2Position)
+                        || (DieselDirectionController2Position < 0 && DieselDirectionController2Position > prevDieselDirectionController2Position))
                         SignalEvent(Event.ReverserToNeutral);
                     ToggleDieselDirectionController2();
                 }
@@ -7667,11 +7674,11 @@ namespace Orts.Simulation.RollingStocks
                 {
                     switch (DieselDirectionControllerPosition)
                     {
-                        case 0: Simulator.Confirmer.Confirm(CabControl.DieselDirection_Forward, "Vpřed"); break;
-                        case 1: Simulator.Confirmer.Confirm(CabControl.DieselDirection_Start, "Diesel Start"); break;
-                        case 2: Simulator.Confirmer.Confirm(CabControl.DieselDirection_N, "Neutral"); break;
-                        case 3: Simulator.Confirmer.Confirm(CabControl.DieselDirection_Start, "Diesel Start"); break;
-                        case 4: Simulator.Confirmer.Confirm(CabControl.DieselDirection_Reverse, "Vzad"); break;
+                        case 0: Simulator.Confirmer.Confirm(CabControl.DieselDirection_Forward, "Poloha Vpřed"); break;
+                        case 1: Simulator.Confirmer.Confirm(CabControl.DieselDirection_Start, "Poloha D"); break;
+                        case 2: Simulator.Confirmer.Confirm(CabControl.DieselDirection_N, "Poloha 0"); break;
+                        case 3: Simulator.Confirmer.Confirm(CabControl.DieselDirection_Start, "Poloha D"); break;
+                        case 4: Simulator.Confirmer.Confirm(CabControl.DieselDirection_Reverse, "Poloha Vzad"); break;
                     }
                 }
                 prevDieselDirectionControllerPosition = DieselDirectionControllerPosition;
@@ -7687,7 +7694,7 @@ namespace Orts.Simulation.RollingStocks
                             Direction = Direction.Forward;                       
                         }
                         break;
-                    case 1: // Diesel+
+                    case 1: // D
                         {
                             DieselDirection_Forward = false;
                             DieselDirection_Start = true;
@@ -7707,7 +7714,7 @@ namespace Orts.Simulation.RollingStocks
                                 SignalEvent(Event.ReverserToNeutral);
                         }
                         break;
-                    case 3: // Diesel-
+                    case 3: // D
                         {
                             DieselDirection_Forward = false;
                             DieselDirection_Start = true;
@@ -7737,23 +7744,23 @@ namespace Orts.Simulation.RollingStocks
                 {
                     switch (DieselDirectionController2Position)
                     {
-                        case 0: Simulator.Confirmer.Confirm(CabControl.DieselDirection_Start, "Diesel Start"); break;
-                        case 1: Simulator.Confirmer.Confirm(CabControl.DieselDirection_Reverse, "Vzad"); break;
-                        case 2: Simulator.Confirmer.Confirm(CabControl.DieselDirection_N, "Neutral"); break;
-                        case 3: Simulator.Confirmer.Confirm(CabControl.DieselDirection_Forward, "Vpřed"); break;                        
+                        case 0: Simulator.Confirmer.Confirm(CabControl.DieselDirection_N, "Poloha 0"); break;
+                        case 1: Simulator.Confirmer.Confirm(CabControl.DieselDirection_Reverse, "Poloha Vzad"); break;
+                        case 2: Simulator.Confirmer.Confirm(CabControl.DieselDirection_Start, "Poloha D"); break;
+                        case 3: Simulator.Confirmer.Confirm(CabControl.DieselDirection_Forward, "Poloha Vpřed"); break;                        
                     }
                 }
                 prevDieselDirectionController2Position = DieselDirectionController2Position;
                 //Simulator.Confirmer.MSG("Nastaveno: " + DieselDirectionController2Position);
                 switch (DieselDirectionController2Position)
                 {
-                    case 0: // Diesel+
+                    case 0: // 0
                         {
-                            DieselDirection_Start = true;
+                            DieselDirection_Start = false;
                             DieselDirection_Reverse = false;
-                            DieselDirection_N = false;
+                            DieselDirection_N = true;
                             DieselDirection_Forward = false;
-                            Direction = Direction.N;
+                            Direction = Direction.N;                            
                         }
                         break;
                     case 1: // Vzad
@@ -7765,14 +7772,13 @@ namespace Orts.Simulation.RollingStocks
                             Direction = Direction.Reverse;
                         }
                         break;
-                    case 2: // N
+                    case 2: // D
                         {
-                            DieselDirection_Start = false;
+                            DieselDirection_Start = true;
                             DieselDirection_Reverse = false;
-                            DieselDirection_N = true;
+                            DieselDirection_N = false;
                             DieselDirection_Forward = false;
-                            Direction = Direction.N;
-                            SignalEvent(Event.ReverserToNeutral);
+                            Direction = Direction.N;                            
                         }
                         break;
                     case 3: // Vpřed
@@ -7790,7 +7796,7 @@ namespace Orts.Simulation.RollingStocks
         public void ToggleDieselDirectionControllerInOut()
         {            
             // Zasunutí a odebrání směrové páky u dieselu
-            if ((DieselDirectionController && DieselDirection_N) || (DieselDirectionController2 && DieselDirection_Start))
+            if ((DieselDirectionController && DieselDirection_N) || (DieselDirectionController2 && DieselDirection_N))
             {
                 DieselDirectionControllerInOut = !DieselDirectionControllerInOut;
                 string DieselDirectionControllerMSG;
@@ -7801,7 +7807,7 @@ namespace Orts.Simulation.RollingStocks
                 if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.MSG(DieselDirectionControllerMSG);
             }
             if (DieselDirectionControllerInOut
-                && ((DieselDirectionController && DieselDirection_N) || (DieselDirectionController2 && DieselDirection_Start))
+                && ((DieselDirectionController && DieselDirection_N) || (DieselDirectionController2 && DieselDirection_N))
                 && DieselDirectionController_Out)
             {
                 DieselDirectionController_In = true;
@@ -7809,7 +7815,7 @@ namespace Orts.Simulation.RollingStocks
                 SignalEvent(Event.DieselDirectionControllerIn);
             }
             if (!DieselDirectionControllerInOut
-                && ((DieselDirectionController && DieselDirection_N) || (DieselDirectionController2 && DieselDirection_Start))
+                && ((DieselDirectionController && DieselDirection_N) || (DieselDirectionController2 && DieselDirection_N))
                 && DieselDirectionController_In)
             {
                 DieselDirectionController_In = false;
@@ -9137,7 +9143,8 @@ namespace Orts.Simulation.RollingStocks
                         if (this is MSTSDieselLocomotive)
                         {
                             var dieselLoco = this as MSTSDieselLocomotive;
-                            data = dieselLoco.DieselEngines[0].EngineStatus == DieselEngine.Status.Starting ? 1 : 0;
+                            //data = dieselLoco.DieselEngines[0].EngineStatus == DieselEngine.Status.Starting ? 1 : 0;
+                            data = StartButtonPressed ? 1 : 0;
                         }
                         break;
                     }
@@ -9147,7 +9154,8 @@ namespace Orts.Simulation.RollingStocks
                         if (this is MSTSDieselLocomotive)
                         {
                             var dieselLoco = this as MSTSDieselLocomotive;
-                            data = dieselLoco.DieselEngines[0].EngineStatus == DieselEngine.Status.Stopping ? 1 : 0;
+                            //data = dieselLoco.DieselEngines[0].EngineStatus == DieselEngine.Status.Stopping ? 1 : 0;
+                            data = StopButtonPressed ? 1 : 0;
                         }
                         break;
                     }
@@ -9892,7 +9900,7 @@ namespace Orts.Simulation.RollingStocks
                         else
                             data = 4;
                         break;
-                    }
+                    }                
             }
             // max needle speed
             if (cvc.MaxNeedleSpeed > 0 && elapsedTime > 0)
