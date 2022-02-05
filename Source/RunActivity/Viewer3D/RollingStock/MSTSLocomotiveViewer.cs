@@ -406,23 +406,23 @@ namespace Orts.Viewer3D.RollingStock
             // Ovládání tlačítka startu motoru
             if ((Locomotive as MSTSDieselLocomotive) != null)
             {
-                if (UserInput.IsDown(UserCommand.ControlDieselPlayer)
-                    && ((Locomotive as MSTSDieselLocomotive).DieselEngines[0].EngineStatus != Orts.Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Running)
-                    && ((Locomotive as MSTSDieselLocomotive).DieselEngines[0].EngineStatus != Orts.Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Stopping))
-                    Locomotive.StartButtonPressed = true;
-                else
-                if (!UserInput.IsDown(UserCommand.ControlDieselPlayer)
-                    && ((Locomotive as MSTSDieselLocomotive).DieselEngines[0].EngineStatus != Orts.Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Running))
+                if (!UserInput.IsDown(UserCommand.ControlDieselPlayer))
+                {
                     Locomotive.StartButtonPressed = false;
+                    Locomotive.StopButtonPressed = false;
+                }
 
                 if (UserInput.IsDown(UserCommand.ControlDieselPlayer)
-                    && ((Locomotive as MSTSDieselLocomotive).DieselEngines[0].EngineStatus != Orts.Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Stopped)
-                    && ((Locomotive as MSTSDieselLocomotive).DieselEngines[0].EngineStatus != Orts.Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Starting))
-                    Locomotive.StopButtonPressed = true;
-                else
-                if (!UserInput.IsDown(UserCommand.ControlDieselPlayer)
-                    && ((Locomotive as MSTSDieselLocomotive).DieselEngines[0].EngineStatus != Orts.Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Stopped))
-                    Locomotive.StopButtonPressed = false;
+                    && ((Locomotive as MSTSDieselLocomotive).DieselEngines[0].EngineStatus == Orts.Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Stopped
+                    || (Locomotive as MSTSDieselLocomotive).DieselEngines[0].EngineStatus == Orts.Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Stopping)
+                    && !Locomotive.StopButtonPressed)
+                    Locomotive.StartButtonPressed = true;
+                
+                if (UserInput.IsDown(UserCommand.ControlDieselPlayer)
+                    && ((Locomotive as MSTSDieselLocomotive).DieselEngines[0].EngineStatus == Orts.Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Running
+                    || (Locomotive as MSTSDieselLocomotive).DieselEngines[0].EngineStatus == Orts.Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Starting)
+                    && !Locomotive.StartButtonPressed)
+                    Locomotive.StopButtonPressed = true;                
             }
 
             if (UserInput.IsPressed(UserCommand.CameraToggleShowCab))
@@ -2757,7 +2757,8 @@ namespace Orts.Viewer3D.RollingStock
                         new TogglePlayerEngineCommand(Viewer.Log);
                     }
                     else
-                        Locomotive.StartButtonPressed = false;
+                        if (!UserInput.IsDown(UserCommand.ControlDieselPlayer))
+                            Locomotive.StartButtonPressed = false;
                     break;
                 case CABViewControlTypes.ORTS_PLAYER_DIESEL_ENGINE_STOPPER:
                     dieselLoco = Locomotive as MSTSDieselLocomotive;
@@ -2768,7 +2769,8 @@ namespace Orts.Viewer3D.RollingStock
                         new TogglePlayerEngineCommand(Viewer.Log);
                     }
                     else
-                        Locomotive.StopButtonPressed = false;
+                        if (!UserInput.IsDown(UserCommand.ControlDieselPlayer))
+                            Locomotive.StopButtonPressed = false;
                     break;
                 case CABViewControlTypes.ORTS_CABLIGHT:
                     if ((Locomotive.CabLightOn ? 1 : 0) != ChangedValue(Locomotive.CabLightOn ? 1 : 0)) new ToggleCabLightCommand(Viewer.Log); break;
