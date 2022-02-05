@@ -659,6 +659,12 @@ namespace Orts.Simulation.RollingStocks
         public bool SplashScreen = false;
         public float SplashScreenMinDuration = 0;
         public float SplashScreenMaxDuration = 0;
+        public string TrainNumber = ""; // it's called number, still is a string (i.e. ICE530)
+        public string BrakingPercent = "";
+        public string ActiveSpeedPosts = "";
+        public string UserTrainLength = "";
+        public string UserTrainWeight = "";
+        public string UserTime = "";
 
         public bool
       Speed0Pressed, Speed10Pressed, Speed20Pressed, Speed30Pressed, Speed40Pressed, Speed50Pressed

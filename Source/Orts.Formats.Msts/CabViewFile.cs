@@ -377,6 +377,7 @@ namespace Orts.Formats.Msts
         ORTS_LS90_POWER,
         ORTS_LS90_LED,
         ORTS_AVV_SIGNAL,
+        ORTS_SCREEN_BUTTON,
 
         // Icik
         HV2,
@@ -542,10 +543,10 @@ namespace Orts.Formats.Msts
         public float Vibration;
 
         // Jindrich
-        public int ControlId = 0;
+        public int ControlId = 0; // in MPC
         public string StringValue = "";
         public int Length = 0;
-        public int DisplayID = -1;
+        public int DisplayID = -1; // in string array
         public bool BlankDisplay = false;
         public float ArrayIndex;
         public string PropertyName;
@@ -556,7 +557,7 @@ namespace Orts.Formats.Msts
         public int ScreenId = 0;
         public int ContainerGroup = 0;
         public int ActivateScreen = 0;
-        //public bool IsActive = false; // Icik
+        public bool IsActive = false; // Icik
         public bool IsVisible = true;
         public bool IsEditable = false;
         public int ScreenContainer = 0;
@@ -804,6 +805,11 @@ namespace Orts.Formats.Msts
                     DateFormat = stf.ReadString();
                     stf.SkipRestOfBlock();
                 }),
+                new STFReader.TokenProcessor("screencontainer", ()=>{
+                    stf.MustMatch("(");
+                    ScreenContainer = (int)stf.ReadFloat(STFReader.UNITS.None, 0);
+                    stf.SkipRestOfBlock();
+                }),
 
             });
         }
@@ -900,6 +906,11 @@ namespace Orts.Formats.Msts
                 {
                     stf.MustMatch("(");
                     CurrentSource = stf.ReadString();
+                    stf.SkipRestOfBlock();
+                }),
+                new STFReader.TokenProcessor("screencontainer", ()=>{
+                    stf.MustMatch("(");
+                    ScreenContainer = (int)stf.ReadFloat(STFReader.UNITS.None, 0);
                     stf.SkipRestOfBlock();
                 }),
             });
@@ -1157,7 +1168,12 @@ namespace Orts.Formats.Msts
                 new STFReader.TokenProcessor("controlcolour", ()=>{ PositiveColor = ParseControlColor(stf); }),
                 new STFReader.TokenProcessor("ortsfont", ()=>{ParseFont(stf); }),
                 new STFReader.TokenProcessor("ortsangle", () => { Rotation = ParseRotation(stf); }),
-                new STFReader.TokenProcessor("displayid", ()=>{ParseDisplayID(stf); })
+                new STFReader.TokenProcessor("displayid", ()=>{ParseDisplayID(stf); }),
+                new STFReader.TokenProcessor("screencontainer", ()=>{
+                    stf.MustMatch("(");
+                    ScreenContainer = (int)stf.ReadFloat(STFReader.UNITS.None, 0);
+                    stf.SkipRestOfBlock();
+                }),
             });
         }
 
@@ -1332,6 +1348,29 @@ namespace Orts.Formats.Msts
                         stf.SkipRestOfBlock();
                     }),
                     new STFReader.TokenProcessor("controlid", ()=> { ControlId = stf.ReadIntBlock(0); }),
+                    new STFReader.TokenProcessor("screenid", ()=>{
+                        stf.MustMatch("(");
+                        ScreenId = (int)stf.ReadFloat(STFReader.UNITS.None, 0);
+                        stf.SkipRestOfBlock();
+                    }),
+                    new STFReader.TokenProcessor("containergroup", ()=>{
+                        stf.MustMatch("(");
+                        ContainerGroup = (int)stf.ReadFloat(STFReader.UNITS.None, 0);
+                        stf.SkipRestOfBlock();
+                    }),
+                    new STFReader.TokenProcessor("activatescreen", ()=>{
+                        stf.MustMatch("(");
+                        ActivateScreen = (int)stf.ReadFloat(STFReader.UNITS.None, 0);
+                        stf.SkipRestOfBlock();
+                    }),
+                    new STFReader.TokenProcessor("screencontainer", ()=>{
+                        stf.MustMatch("(");
+                        ScreenContainer = (int)stf.ReadFloat(STFReader.UNITS.None, 0);
+                        stf.SkipRestOfBlock();
+                    }),
+                    new STFReader.TokenProcessor("isdefault", ()=>{
+                        IsActive = stf.ReadBoolBlock(false);
+                    }),
                 });
 
                 // If no ACE, just don't need any fixup
@@ -1556,6 +1595,11 @@ namespace Orts.Formats.Msts
                     if (Values.Count > 0) MaxValue = Values.Last();
                     for (int i = Values.Count; i < FramesCount; i++)
                         Values.Add(-10000);
+                }),
+                new STFReader.TokenProcessor("screencontainer", ()=>{
+                    stf.MustMatch("(");
+                    ScreenContainer = (int)stf.ReadFloat(STFReader.UNITS.None, 0);
+                    stf.SkipRestOfBlock();
                 }),
             });
         }

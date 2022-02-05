@@ -1681,6 +1681,7 @@ namespace Orts.Viewer3D.RollingStock
         protected Texture2D Texture;
         protected bool IsNightTexture;
         protected bool HasCabLightDirectory;
+        public bool IsVisible;
 
         Matrix Matrix = Matrix.Identity;
 
@@ -1742,6 +1743,24 @@ namespace Orts.Viewer3D.RollingStock
         [CallOnThread("Updater")]
         public virtual void PrepareFrame(RenderFrame frame, ElapsedTime elapsedTime)
         {
+            bool display = false;
+            if (Control.ScreenContainer == 0)
+            {
+                display = true;
+            }
+            else
+            {
+                foreach (CabViewControl control in Locomotive.ActiveScreens)
+                {
+                    if (control.IsActive && Control.ScreenContainer == control.ScreenId)
+                    {
+                        display = true;
+                        break;
+                    }
+                }
+            }
+            if (!display)
+                return;
             frame.AddPrimitive(CabShaderControlView, this, RenderPrimitiveGroup.Cab, ref Matrix);
         }
 
@@ -1796,6 +1815,24 @@ namespace Orts.Viewer3D.RollingStock
 
         public override void PrepareFrame(RenderFrame frame, ElapsedTime elapsedTime)
         {
+            bool display = false;
+            if (Control.ScreenContainer == 0)
+            {
+                display = true;
+            }
+            else
+            {
+                foreach (CabViewControl control in Locomotive.ActiveScreens)
+                {
+                    if (control.IsActive && Control.ScreenContainer == control.ScreenId)
+                    {
+                        display = true;
+                        break;
+                    }
+                }
+            }
+            if (!display)
+                return;
             var dark = Viewer.MaterialManager.sunDirection.Y <= -0.085f || Viewer.Camera.IsUnderground;
 
             Texture = CABTextureManager.GetTexture(Control.ACEFile, dark, Locomotive.CabFloodLightOn, Locomotive.CabLightOn, out IsNightTexture, HasCabLightDirectory);
@@ -1885,6 +1922,24 @@ namespace Orts.Viewer3D.RollingStock
 
         public override void PrepareFrame(RenderFrame frame, ElapsedTime elapsedTime)
         {
+            bool display = false;
+            if (Control.ScreenContainer == 0)
+            {
+                display = true;
+            }
+            else
+            {
+                foreach (CabViewControl control in Locomotive.ActiveScreens)
+                {
+                    if (control.IsActive && Control.ScreenContainer == control.ScreenId)
+                    {
+                        display = true;
+                        break;
+                    }
+                }
+            }
+            if (!display)
+                return;
             if (!Gauge.IsVisible)
             {
                 Locomotive.GetDataOf(Control);
@@ -2103,6 +2158,60 @@ namespace Orts.Viewer3D.RollingStock
 
         public override void PrepareFrame(RenderFrame frame, ElapsedTime elapsedTime)
         {
+            bool added = false;
+            if (Control.ScreenId > 0)
+            {
+                foreach (CabViewControl discrete in Locomotive.ActiveScreens)
+                {
+                    if (discrete.ScreenId == Control.ScreenId)
+                    {
+                        added = true;
+                    }
+                }
+                if (!added)
+                    Locomotive.ActiveScreens.Add(Control);
+                IsVisible = Control.IsActive;
+                if (!Control.IsActive)
+                    return;
+            }
+            if (Control.ScreenContainer > 0)
+            {
+                foreach (CabViewControl control in Locomotive.ActiveScreens)
+                {
+                    if (control.IsActive)
+                    {
+                        if (Control.ScreenContainer != control.ScreenId)
+                        {
+                            Control.IsVisible = Control.IsActive = false;
+                            return;
+                        }
+                        else
+                        {
+                            Control.IsVisible = Control.IsActive = true;
+                        }
+                    }
+                }
+            }
+
+
+            bool display = false;
+            if (Control.ScreenContainer == 0)
+            {
+                display = true;
+            }
+            else
+            {
+                foreach (CabViewControl control in Locomotive.ActiveScreens)
+                {
+                    if (control.IsActive && Control.ScreenContainer == control.ScreenId)
+                    {
+                        display = true;
+                        break;
+                    }
+                }
+            }
+            if (!display)
+                return;
             var index = GetDrawIndex();
 
             var mS = Control as CVCMultiStateDisplay;
@@ -2120,6 +2229,24 @@ namespace Orts.Viewer3D.RollingStock
 
         protected void PrepareFrameForIndex(RenderFrame frame, ElapsedTime elapsedTime, int index)
         {
+            bool display = false;
+            if (Control.ScreenContainer == 0)
+            {
+                display = true;
+            }
+            else
+            {
+                foreach (CabViewControl control in Locomotive.ActiveScreens)
+                {
+                    if (control.IsActive && Control.ScreenContainer == control.ScreenId)
+                    {
+                        display = true;
+                        break;
+                    }
+                }
+            }
+            if (!display)
+                return;
             var dark = Viewer.MaterialManager.sunDirection.Y <= -0.085f || Viewer.Camera.IsUnderground;
 
             Texture = CABTextureManager.GetTextureByIndexes(Control.ACEFile, index, Locomotive.CabFloodLightOn ? false : dark, Locomotive.CabLightOn, out IsNightTexture, HasCabLightDirectory);
@@ -3679,6 +3806,170 @@ namespace Orts.Viewer3D.RollingStock
                         else if (p == 0) Locomotive.Speed200Pressed = false;
                         break;
                     }
+                case CABViewControlTypes.ORTS_SCREEN_BUTTON:
+                    {
+                        p = ChangedValue(0);
+                        if (p == 0 && !PlusKeyPressed)
+                        {
+                            PlusKeyPressed = true;
+                            if (Control.ActivateScreen > 0)
+                            {
+                                foreach (CabViewControl control in Locomotive.ActiveScreens)
+                                {
+                                    if (control.ContainerGroup == Control.ContainerGroup)
+                                    {
+                                        if (control.ScreenId != Control.ActivateScreen)
+                                            control.IsActive = false;
+                                        else
+                                            control.IsActive = true;
+                                    }
+                                }
+                                // rebuild editable items on this screen
+                                //Locomotive.EditableItems.Clear();
+
+                            }
+                            if (!String.IsNullOrEmpty(Control.SendChar))
+                            {
+                                bool haveEditableControl = false;
+                                List<CabViewControl> checkList = new List<CabViewControl>();
+                                CabViewControl editableControl = new CabViewControl();
+                                foreach (CabViewControl control in Locomotive.EditableItems)
+                                {
+                                    if (control.ScreenContainer == Control.ScreenContainer)
+                                    {
+                                        checkList.Add(control);
+                                        if (control.IsEditable)
+                                        {
+                                            editableControl = control;
+                                            haveEditableControl = true;
+                                        }
+                                    }
+                                }
+                                if (!haveEditableControl)
+                                {
+                                    checkList[0].IsEditable = true;
+                                    editableControl = checkList[0];
+                                }
+                                if (Control.SendChar.ToLower() == "enter") // change to next editable control
+                                {
+                                    bool setNext = false;
+                                    int count = 1;
+                                    foreach (CabViewControl cabViewControl in Locomotive.EditableItems)
+                                    {
+                                        count++;
+                                        if (setNext)
+                                        {
+                                            cabViewControl.IsEditable = true;
+                                            setNext = false;
+                                            break;
+                                        }
+                                        if (cabViewControl.IsEditable)
+                                        {
+                                            setNext = true;
+                                            cabViewControl.IsEditable = false;
+                                        }
+                                    }
+                                    if (setNext)
+                                    {
+                                        Locomotive.EditableItems[0].IsEditable = true;
+                                    }
+                                }
+                                else if (Control.SendChar.ToLower() == "delete") // remove one character
+                                {
+                                    foreach (CabViewControl cvc in Locomotive.EditableItems)
+                                    {
+                                        if (cvc.IsEditable)
+                                        {
+                                            switch (cvc.PropertyName)
+                                            {
+                                                case "TrainNumber":
+                                                    {
+                                                        if (Locomotive.TrainNumber.Length > 0) Locomotive.TrainNumber = Locomotive.TrainNumber.Substring(0, Locomotive.TrainNumber.Length - 1);
+                                                        break;
+                                                    }
+                                                case "BrakingPercent":
+                                                    {
+                                                        if (Locomotive.BrakingPercent.Length > 0) Locomotive.BrakingPercent = Locomotive.BrakingPercent.Substring(0, Locomotive.BrakingPercent.Length - 1);
+                                                        break;
+                                                    }
+                                                case "ActiveSpeedPosts":
+                                                    {
+                                                        if (Locomotive.ActiveSpeedPosts.Length > 0) Locomotive.ActiveSpeedPosts = Locomotive.ActiveSpeedPosts.Substring(0, Locomotive.ActiveSpeedPosts.Length - 1);
+                                                        break;
+                                                    }
+                                                case "UserTrainLength":
+                                                    {
+                                                        if (Locomotive.UserTrainLength.Length > 0) Locomotive.UserTrainLength = Locomotive.UserTrainLength.Substring(0, Locomotive.UserTrainLength.Length - 1);
+                                                        int axlesTest;
+                                                        if (int.TryParse(Locomotive.UserTrainLength, out axlesTest))
+                                                        {
+                                                            Locomotive.CruiseControl.SelectedNumberOfAxles = axlesTest / 6;
+                                                        }
+                                                        break;
+                                                    }
+                                                case "UserTrainWeight":
+                                                    {
+                                                        if (Locomotive.UserTrainWeight.Length > 0) Locomotive.UserTrainWeight = Locomotive.UserTrainWeight.Substring(0, Locomotive.UserTrainWeight.Length - 1);
+                                                        break;
+                                                    }
+                                                case "UserTime":
+                                                    {
+                                                        if (Locomotive.UserTime.Length > 0) Locomotive.UserTime = Locomotive.UserTime.Substring(0, Locomotive.UserTime.Length - 1);
+                                                        break;
+                                                    }
+                                            }
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    switch (editableControl.PropertyName)
+                                    {
+                                        case "TrainNumber":
+                                            {
+                                                Locomotive.TrainNumber = Locomotive.TrainNumber + Control.SendChar;
+                                                break;
+                                            }
+                                        case "BrakingPercent":
+                                            {
+                                                Locomotive.BrakingPercent = Locomotive.BrakingPercent + Control.SendChar;
+                                                break;
+                                            }
+                                        case "ActiveSpeedPosts":
+                                            {
+                                                Locomotive.ActiveSpeedPosts = Locomotive.ActiveSpeedPosts + Control.SendChar;
+                                                break;
+                                            }
+                                        case "UserTrainLength":
+                                            {
+                                                Locomotive.UserTrainLength = Locomotive.UserTrainLength + Control.SendChar;
+                                                int axlesTest;
+                                                if (int.TryParse(Locomotive.UserTrainLength, out axlesTest))
+                                                {
+                                                    Locomotive.CruiseControl.SelectedNumberOfAxles = axlesTest / 6;
+                                                }
+                                                break;
+                                            }
+                                        case "UserTrainWeight":
+                                            {
+                                                Locomotive.UserTrainWeight = Locomotive.UserTrainWeight + Control.SendChar;
+                                                break;
+                                            }
+                                        case "UserTime":
+                                            {
+                                                Locomotive.UserTime = Locomotive.UserTime + Control.SendChar;
+                                                break;
+                                            }
+                                    }
+                                }
+                            }
+                        }
+                        else if (p == 0 && PlusKeyPressed)
+                        {
+                            PlusKeyPressed = false;
+                        }
+                        break;
+                    }
             }
 
         }
@@ -3738,6 +4029,24 @@ namespace Orts.Viewer3D.RollingStock
 
         public override void PrepareFrame(RenderFrame frame, ElapsedTime elapsedTime)
         {
+            bool display = false;
+            if (Control.ScreenContainer == 0)
+            {
+                display = true;
+            }
+            else
+            {
+                foreach (CabViewControl control in Locomotive.ActiveScreens)
+                {
+                    if (control.IsActive && Control.ScreenContainer == control.ScreenId)
+                    {
+                        display = true;
+                        break;
+                    }
+                }
+            }
+            if (!display)
+                return;
             var animate = Locomotive.GetDataOf(Control) != 0;
             if (animate)
                 AnimationOn = true;
@@ -3804,6 +4113,25 @@ namespace Orts.Viewer3D.RollingStock
 
         public override void PrepareFrame(RenderFrame frame, ElapsedTime elapsedTime)
         {
+            bool display = false;
+            if (Control.ScreenContainer == 0)
+            {
+                display = true;
+            }
+            else
+            {
+                foreach (CabViewControl control in Locomotive.ActiveScreens)
+                {
+                    if (control.IsActive && Control.ScreenContainer == control.ScreenId)
+                    {
+                        display = true;
+                        break;
+                    }
+                }
+            }
+            if (!display)
+                return;
+
             var digital = Control as CVCDigital;
 
             Num = Locomotive.GetDataOf(Control);
