@@ -114,6 +114,7 @@ namespace Orts.Viewer3D.RollingStock
 
         protected virtual void ReverserControlForwards()
         {
+            if (Locomotive.DieselDirectionController || Locomotive.DieselDirectionController2) return;
             if (Locomotive.Direction != Direction.Forward
             && (Locomotive.ThrottlePercent >= 1
             || Math.Abs(Locomotive.SpeedMpS) > 1))
@@ -126,6 +127,7 @@ namespace Orts.Viewer3D.RollingStock
 
         protected virtual void ReverserControlBackwards()
         {
+            if (Locomotive.DieselDirectionController || Locomotive.DieselDirectionController2) return;
             if (Locomotive.Direction != Direction.Reverse
             && (Locomotive.ThrottlePercent >= 1
             || Math.Abs(Locomotive.SpeedMpS) > 1))

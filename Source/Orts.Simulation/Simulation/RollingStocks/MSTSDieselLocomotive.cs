@@ -697,7 +697,10 @@ namespace Orts.Simulation.RollingStocks
 
             EngineRPM = Variable2 * (MaxRPM - IdleRPM) + IdleRPM;
             Variable4 = EngineRPM;
-            Variable4 = (float)Math.Round(Variable4);            
+            Variable4 = (float)Math.Round(Variable4);
+
+            Variable5 = (float)Math.Round(LocomotiveAxle.DriveForceN / 1000);
+            Variable6 = (float)Math.Round(DieselEngines[0].LoadPercent);
 
             if (DynamicBrakePercent > 0)
             {

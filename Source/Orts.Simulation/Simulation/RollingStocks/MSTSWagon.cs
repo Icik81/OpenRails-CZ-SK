@@ -142,6 +142,8 @@ namespace Orts.Simulation.RollingStocks
         public float DavisCoefficientC_3;
         Interpolator RMgShoeFrictionFactor;
         public float Variable4;
+        public float Variable5;
+        public float Variable6;
         public bool OpenedLeftDoor = false;
         public bool OpenedRightDoor = false;
         public float AirlossByHandlingDoorsPSIpS;
@@ -1888,8 +1890,7 @@ namespace Orts.Simulation.RollingStocks
             outf.Write(CarCurrentCarriageHeatTempC);
             outf.Write(CurrentCarSteamHeatBoilerWaterCapacityL);
 
-            // Icik
-            outf.Write(Variable4);
+            // Icik            
             outf.Write(DoorLeftOpen);
             outf.Write(DoorRightOpen);
             outf.Write(BrakeSystem.HeatingIsOn);
@@ -1941,7 +1942,6 @@ namespace Orts.Simulation.RollingStocks
             CurrentCarSteamHeatBoilerWaterCapacityL = inf.ReadSingle();
 
             // Icik
-            Variable4 = inf.ReadSingle();
             DoorLeftOpen = inf.ReadBoolean();
             DoorRightOpen = inf.ReadBoolean();
             BrakeSystem.HeatingIsOn = inf.ReadBoolean();
