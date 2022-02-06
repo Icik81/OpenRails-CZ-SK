@@ -977,8 +977,27 @@ namespace Orts.Simulation.RollingStocks
         // Icik
         public void DieselStartUpTime(float elapsedClockSeconds)
         {
+            if (!IsPlayerTrain)
+                return;
+
+            // Setup lokomotivy
+            if (LocoReadyToGo)
+            {
+                if (!Battery)
+                {
+                    SignalEvent(Event.BatteryOn);
+                    Battery = true;
+                }
+                if (!PowerKey)
+                {
+                    SignalEvent(Event.PowerKeyOn);
+                    PowerKey = true;
+                }                
+                LocoReadyToGo = false;
+            }            
+
             // Při vypnutí baterií motor vypne
-            if (!Battery && DieselEngines[0].EngineStatus == DieselEngine.Status.Running) DieselEngines[0].Stop();
+            if (Simulator.GameTime > 0.5f && !Battery && DieselEngines[0].EngineStatus == DieselEngine.Status.Running) DieselEngines[0].Stop();
 
             // Kompatibilita se standardními směrovými pákami OR/MSTS
             if (!DieselDirectionController && !DieselDirectionController2 && Direction == Direction.N)
@@ -997,7 +1016,7 @@ namespace Orts.Simulation.RollingStocks
                 DieselCheckPowerMotorLamp = false;
 
             // Spustí mazací čerpadlo při startu
-            if (StartButtonPressed 
+            if (StartButtonPressed
                 && DieselEngines[0].EngineStatus == DieselEngine.Status.Stopped
                 && DieselDirection_Start
                 && Battery)
@@ -1012,6 +1031,7 @@ namespace Orts.Simulation.RollingStocks
                 if (DieselStartTime > DieselStartDelay)
                 {
                     DieselStartDelayDone = true;
+                    SignalEvent(Event.StartUpMotorStop);
                     DieselStartTime = 0;
                     if (DieselEngines[0].EngineStatus == DieselEngine.Status.Stopped)
                     {
@@ -1021,7 +1041,10 @@ namespace Orts.Simulation.RollingStocks
                 }
             }
             else
+            {
                 DieselStartTime = 0;
+                SignalEvent(Event.StartUpMotorStop);
+            }
         }
     
 

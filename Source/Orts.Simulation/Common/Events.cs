@@ -301,7 +301,8 @@ namespace Orts.Common
         DieselDirectionControllerIn,
         DieselDirectionControllerOut,
         StartUpMotor,
-
+        StartUpMotorStop,
+        StartUpMotorBreak,
     }
 
     public static class Events
@@ -617,7 +618,8 @@ namespace Orts.Common
                         case 20056: return Event.DieselDirectionControllerIn;
                         case 20057: return Event.DieselDirectionControllerOut;
                         case 20058: return Event.StartUpMotor;
-                        
+                        case 20059: return Event.StartUpMotorStop;
+                        case 20060: return Event.StartUpMotorBreak;
 
                         default: return 0;
                     }

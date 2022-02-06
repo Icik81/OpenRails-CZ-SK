@@ -917,7 +917,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
         }
 
         public void Initialize(bool start)
-        {
+        {            
             // Icik
             if (start && !locomotive.Simulator.Settings.AirEmpty)
             {
@@ -1075,7 +1075,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
             if (EngineStatus == Status.Starting)
             {
                 // Icik
-                if ((locomotive.DieselDirectionController || locomotive.DieselDirectionController2) && locomotive.DieselDirection_Start)
+                if (locomotive.StartButtonPressed && locomotive.DieselDirection_Start)
                 {
                     if ((RealRPM > (0.9f * StartingRPM)) && (RealRPM < StartingRPM))
                     {
@@ -1084,20 +1084,12 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                         ExhaustParticles = (MaxExhaust - InitialExhaust) / (0.5f * StartingRPM - StartingRPM) * (RealRPM - 0.5f * StartingRPM) + InitialExhaust;
                     }
                 }                
-                if ((locomotive.DieselDirectionController || locomotive.DieselDirectionController2) && !locomotive.DieselDirection_Start)
+                if (!locomotive.StartButtonPressed || !locomotive.DieselDirection_Start)
                 {
                     locomotive.DieselEngines[0].Stop();
+                    locomotive.SignalEvent(Event.StartUpMotorBreak);
                 }
-                
-                if (!locomotive.DieselDirectionController && !locomotive.DieselDirectionController2)
-                {
-                    if ((RealRPM > (0.9f * StartingRPM)) && (RealRPM < StartingRPM))
-                    {
-                        DemandedRPM = 1.1f * StartingConfirmationRPM;
-                        ExhaustColor = ExhaustTransientColor;
-                        ExhaustParticles = (MaxExhaust - InitialExhaust) / (0.5f * StartingRPM - StartingRPM) * (RealRPM - 0.5f * StartingRPM) + InitialExhaust;
-                    }
-                }
+                                
                 if ((RealRPM > StartingConfirmationRPM))// && (RealRPM < 0.9f * IdleRPM))
                     EngineStatus = Status.Running;
             }

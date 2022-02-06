@@ -146,7 +146,7 @@ namespace Orts.Simulation.RollingStocks
         public bool CabRadioOn;
         public bool OnLineCabRadio;
         public string OnLineCabRadioURL;
-        public bool Battery = true;
+        public bool Battery;
         public bool PowerKey;
         public bool BrakeRelease = false;
         public bool Up = false;
