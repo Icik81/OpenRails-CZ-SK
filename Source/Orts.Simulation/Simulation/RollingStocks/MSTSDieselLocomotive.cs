@@ -556,6 +556,14 @@ namespace Orts.Simulation.RollingStocks
             // Advanced configuration (TF table) - use a user defined tractive force table
             // With Simple adhesion apart from correction for rail adhesion, there is no further variation to the motive force. 
             // With Advanced adhesion the raw motive force is fed into the advanced (axle) adhesion model, and is corrected for wheel slip and rail adhesion
+            
+            // Icik
+            if (DieselEngines[0].EngineStatus == DieselEngine.Status.Stopped)
+            {
+                TractiveForceN = 0;
+                return;
+            }
+
             if (PowerOn)
             {
                 // Appartent throttle setting is a reverse lookup of the throttletab vs rpm, hence motive force increase will be related to increase in rpm. The minimum of the two values
@@ -993,9 +1001,11 @@ namespace Orts.Simulation.RollingStocks
                     SignalEvent(Event.PowerKeyOn);
                     PowerKey = true;
                 }                
-                LocoReadyToGo = false;
+                LocoReadyToGo = false;                
+            }
+            // Spustí inicializační trigger zvuku volnoběhu
+            if (Simulator.GameTime < 0.5f && DieselEngines[0].EngineStatus == DieselEngine.Status.Running)
                 SignalEvent(Event.InitMotorIdle);
-            }            
 
             // Při vypnutí baterií motor vypne
             if (Simulator.GameTime > 0.5f && !Battery && DieselEngines[0].EngineStatus == DieselEngine.Status.Running) DieselEngines[0].Stop();
@@ -1051,7 +1061,7 @@ namespace Orts.Simulation.RollingStocks
 
         public void TogglePlayerEngine()
         {
-            if (ThrottlePercent < 1)
+            if (ThrottlePercent < 1 || StopButtonPressed)
             {
                 // Icik                
                 if (DieselStartDelayDone

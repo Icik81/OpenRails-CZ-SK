@@ -8085,7 +8085,7 @@ namespace Orts.Simulation.RollingStocks
                             if ((mstsDieselLocomotive.DieselEngines.Count > 1))
                             {
                                 for (int i = 1; i < mstsDieselLocomotive.DieselEngines.Count; i++)
-                                {
+                                {                                    
                                     if (!onOffFound)
                                     {
                                         onOffFound = true;
