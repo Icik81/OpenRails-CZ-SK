@@ -303,6 +303,7 @@ namespace Orts.Common
         StartUpMotor,
         StartUpMotorStop,
         StartUpMotorBreak,
+        InitMotorIdle,
     }
 
     public static class Events
@@ -620,6 +621,7 @@ namespace Orts.Common
                         case 20058: return Event.StartUpMotor;
                         case 20059: return Event.StartUpMotorStop;
                         case 20060: return Event.StartUpMotorBreak;
+                        case 20061: return Event.InitMotorIdle;
 
                         default: return 0;
                     }

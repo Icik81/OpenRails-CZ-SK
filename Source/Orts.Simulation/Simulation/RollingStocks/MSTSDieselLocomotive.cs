@@ -994,6 +994,7 @@ namespace Orts.Simulation.RollingStocks
                     PowerKey = true;
                 }                
                 LocoReadyToGo = false;
+                SignalEvent(Event.InitMotorIdle);
             }            
 
             // Při vypnutí baterií motor vypne
