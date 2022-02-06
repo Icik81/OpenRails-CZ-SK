@@ -977,8 +977,30 @@ namespace Orts.Simulation.RollingStocks
         // Icik
         public void DieselStartUpTime(float elapsedClockSeconds)
         {
-            if ((DieselDirectionController || DieselDirectionController2) && StartButtonPressed && DieselEngines[0].EngineStatus == DieselEngine.Status.Stopped
-                && DieselDirection_Start)
+            // Při vypnutí baterií motor vypne
+            if (!Battery && DieselEngines[0].EngineStatus == DieselEngine.Status.Running) DieselEngines[0].Stop();
+
+            // Kompatibilita se standardními směrovými pákami OR/MSTS
+            if (!DieselDirectionController && !DieselDirectionController2 && Direction == Direction.N)
+                DieselDirection_Start = true;
+            if (!DieselDirectionController && !DieselDirectionController2 && Direction != Direction.N)
+                DieselDirection_Start = false;
+
+            // Kontrolní žárovka pro dobíjení baterií
+            if (Battery && DieselEngines[0].EngineStatus == DieselEngine.Status.Running)
+                DieselCheckPowerMotorLamp = false;
+            else
+            if (Battery && DieselEngines[0].EngineStatus != DieselEngine.Status.Running)
+                DieselCheckPowerMotorLamp = true;
+            else
+            if (!Battery)
+                DieselCheckPowerMotorLamp = false;
+
+            // Spustí mazací čerpadlo při startu
+            if (StartButtonPressed 
+                && DieselEngines[0].EngineStatus == DieselEngine.Status.Stopped
+                && DieselDirection_Start
+                && Battery)
             {
                 if (DieselStartDelay == 0) DieselStartDelay = 10f; // Default 10s pro mazání motoru
                 DieselStartTime += elapsedClockSeconds;
@@ -1008,13 +1030,11 @@ namespace Orts.Simulation.RollingStocks
             if (ThrottlePercent < 1)
             {
                 // Icik                
-                if ((!DieselDirectionController && !DieselDirectionController2)
-                    || DieselStartDelayDone
+                if (DieselStartDelayDone
                     || DieselEngines[0].EngineStatus == DieselEngine.Status.Running
                     || StopButtonPressed)
                 {
-                    //                    PowerOn = !PowerOn;
-                    if (DieselEngines[0].EngineStatus == DieselEngine.Status.Stopped && !StopButtonPressed)
+                    if (DieselEngines[0].EngineStatus == DieselEngine.Status.Stopped && !StopButtonPressed && Battery)
                     {
                         DieselEngines[0].Start();
                         DieselStartDelayDone = false;
@@ -1024,8 +1044,7 @@ namespace Orts.Simulation.RollingStocks
                         DieselEngines[0].Stop();
                     }
                 }
-                if (!DieselDirectionController && !DieselDirectionController2)
-                    Simulator.Confirmer.Confirm(CabControl.PlayerDiesel, DieselEngines.PowerOn ? CabSetting.On : CabSetting.Off);
+                Simulator.Confirmer.Confirm(CabControl.PlayerDiesel, StartButtonPressed ? CabSetting.On : CabSetting.Off);
             }
             else
             {

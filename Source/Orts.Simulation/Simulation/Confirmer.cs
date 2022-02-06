@@ -138,7 +138,7 @@ namespace Orts.Simulation
     , CabFloodLight
     , DieselDirection_Forward
     , DieselDirection_Start
-    , DieselDirection_N
+    , DieselDirection_0
     , DieselDirection_Reverse
     }
 

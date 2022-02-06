@@ -2545,6 +2545,7 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.ORTS_BAILOFF:
                 case CABViewControlTypes.DIESEL_DIRECTION_CONTROLLER:
                 case CABViewControlTypes.DIESEL_DIRECTION_CONTROLLER2:
+                case CABViewControlTypes.DIESEL_CHECK_POWER_MOTOR_LAMP:
 
                     index = (int)data;
                     break;
@@ -3207,7 +3208,7 @@ namespace Orts.Viewer3D.RollingStock
                             new ToggleDieselDirectionControllerDownCommand(Viewer.Log);
                             IsChanged = true;
                         }
-                        if (Locomotive.DieselDirectionController && Locomotive.DieselDirection_N
+                        if (Locomotive.DieselDirectionController && Locomotive.DieselDirection_0
                             && ChangedValue(0) == 0 && UserInput.IsMouseLeftButtonPressed
                             && Locomotive.DieselDirectionController_Out)
                         {
@@ -3215,7 +3216,7 @@ namespace Orts.Viewer3D.RollingStock
                             Locomotive.DieselDirectionController_In = true;
                         }
                         else
-                        if (Locomotive.DieselDirectionController && Locomotive.DieselDirection_N
+                        if (Locomotive.DieselDirectionController && Locomotive.DieselDirection_0
                             && ChangedValue(0) == 0 && UserInput.IsMouseLeftButtonPressed
                             && Locomotive.DieselDirectionController_In)
                         {

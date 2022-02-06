@@ -415,6 +415,7 @@ namespace Orts.Formats.Msts
         DONT_RAISE_PANTO,
         DIESEL_DIRECTION_CONTROLLER,
         DIESEL_DIRECTION_CONTROLLER2,
+        DIESEL_CHECK_POWER_MOTOR_LAMP,
 
 
         // Further CabViewControlTypes must be added above this line, to avoid their malfunction in 3DCabs
