@@ -416,6 +416,9 @@ namespace Orts.Formats.Msts
         DIESEL_DIRECTION_CONTROLLER,
         DIESEL_DIRECTION_CONTROLLER2,
         DIESEL_CHECK_POWER_MOTOR_LAMP,
+        DIESEL_MOTOR_WATER_TEMP,
+        DIESEL_MOTOR_OIL_TEMP,
+        DIESEL_MOTOR_TEMP_WARNING,
 
 
         // Further CabViewControlTypes must be added above this line, to avoid their malfunction in 3DCabs

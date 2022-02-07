@@ -612,6 +612,8 @@ namespace Orts.Simulation.RollingStocks
         public bool StartButtonPressed;
         public bool StopButtonPressed;
         public bool DieselCheckPowerMotorLamp;
+        public bool DieselMotorDefected;
+        public bool DieselMotorTempWarning;
 
 
         // Jindrich
@@ -1656,6 +1658,7 @@ namespace Orts.Simulation.RollingStocks
             outf.Write(DieselDirectionController_In);
             outf.Write(DieselDirectionController_Out);
             outf.Write(DieselDirectionControllerInOut);
+            outf.Write(DieselMotorDefected);
 
             base.Save(outf);
 
@@ -1753,6 +1756,7 @@ namespace Orts.Simulation.RollingStocks
             DieselDirectionController_In = inf.ReadBoolean();
             DieselDirectionController_Out = inf.ReadBoolean();
             DieselDirectionControllerInOut = inf.ReadBoolean();
+            DieselMotorDefected = inf.ReadBoolean();
 
             base.Restore(inf);
 
@@ -9911,6 +9915,28 @@ namespace Orts.Simulation.RollingStocks
                 case CABViewControlTypes.DIESEL_CHECK_POWER_MOTOR_LAMP:
                     {                        
                         if (DieselCheckPowerMotorLamp)
+                            data = 1;
+                        else
+                            data = 0;
+                        break;
+                    }
+                case CABViewControlTypes.DIESEL_MOTOR_WATER_TEMP:
+                    {
+                        var mstsDieselLocomotive = this as MSTSDieselLocomotive;
+                        if (mstsDieselLocomotive.DieselEngines[0] != null)
+                            data = mstsDieselLocomotive.DieselEngines[0].DieselWaterTemperatureDeg;
+                        break;
+                    }
+                case CABViewControlTypes.DIESEL_MOTOR_OIL_TEMP:
+                    {
+                        var mstsDieselLocomotive = this as MSTSDieselLocomotive;
+                        if (mstsDieselLocomotive.DieselEngines[0] != null)
+                            data = mstsDieselLocomotive.DieselEngines[0].DieselOilTemperatureDeg;
+                        break;
+                    }
+                case CABViewControlTypes.DIESEL_MOTOR_TEMP_WARNING:
+                    {
+                        if (DieselMotorTempWarning)
                             data = 1;
                         else
                             data = 0;

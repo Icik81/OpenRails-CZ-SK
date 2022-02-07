@@ -1044,7 +1044,7 @@ namespace Orts.Simulation.RollingStocks
                     DieselStartDelayDone = true;
                     SignalEvent(Event.StartUpMotorStop);
                     DieselStartTime = 0;
-                    if (DieselEngines[0].EngineStatus == DieselEngine.Status.Stopped)
+                    if (DieselEngines[0].EngineStatus == DieselEngine.Status.Stopped && !DieselMotorDefected)
                     {
                         DieselEngines[0].Start();
                         DieselStartDelayDone = false;
@@ -1068,7 +1068,7 @@ namespace Orts.Simulation.RollingStocks
                     || DieselEngines[0].EngineStatus == DieselEngine.Status.Running
                     || StopButtonPressed)
                 {
-                    if (DieselEngines[0].EngineStatus == DieselEngine.Status.Stopped && !StopButtonPressed && Battery)
+                    if (DieselEngines[0].EngineStatus == DieselEngine.Status.Stopped && !StopButtonPressed && Battery && !DieselMotorDefected)
                     {
                         DieselEngines[0].Start();
                         DieselStartDelayDone = false;
