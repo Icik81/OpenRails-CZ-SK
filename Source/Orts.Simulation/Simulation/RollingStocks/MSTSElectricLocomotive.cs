@@ -1289,7 +1289,12 @@ namespace Orts.Simulation.RollingStocks
                     CompressorMode2_OffAuto = true;
 
                     SplashScreen = false;
-                    
+
+                    if (RouteVoltageV == 25000)
+                        SelectedPowerSystem = SelectingPowerSystem = PowerSystem.SK25kV;
+                    if (RouteVoltageV == 3000)
+                        SelectedPowerSystem = SelectingPowerSystem = PowerSystem.SK3kV;
+
                     if (MultiSystemEngine && RouteVoltageV != 1)
                     {
                         if (!Pantograph4Enable && !Pantograph3Enable)
