@@ -1596,7 +1596,10 @@ namespace Orts.Viewer3D.RollingStock
 
             if (_Location == 0)
                 foreach (var cvcr in CabViewControlRenderersList[i])
-                    cvcr.PrepareFrame(frame, elapsedTime);
+                {
+                    if (cvcr.Control != null)
+                        cvcr.PrepareFrame(frame, elapsedTime);
+                }
         }
 
         public override void Draw(GraphicsDevice graphicsDevice)
@@ -2183,11 +2186,12 @@ namespace Orts.Viewer3D.RollingStock
                         if (Control.ScreenContainer != control.ScreenId)
                         {
                             Control.IsVisible = Control.IsActive = false;
-                            return;
+                            continue;
                         }
                         else
                         {
                             Control.IsVisible = Control.IsActive = true;
+                            break;
                         }
                     }
                 }
@@ -2710,7 +2714,7 @@ namespace Orts.Viewer3D.RollingStock
 
         public bool IsMouseWithin()
         {
-            return ControlDiscrete.MouseControl & DestinationRectangle.Contains(UserInput.MouseX, UserInput.MouseY);
+            return ControlDiscrete.MouseControl & DestinationRectangle.Contains(UserInput.MouseX, UserInput.MouseY) && ControlDiscrete.IsVisible;
         }
 
         public string GetControlName()
