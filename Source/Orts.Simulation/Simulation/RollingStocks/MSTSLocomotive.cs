@@ -7419,10 +7419,16 @@ namespace Orts.Simulation.RollingStocks
                 case PowerSystem.DE25kV:
                 case PowerSystem.SK25kV:
                     // TODO change system to 25kV
+                    SwitchingVoltageMode = 2;
+                    SwitchingVoltageMode_OffDC = false;
+                    SwitchingVoltageMode_OffAC = true;
                     break;
                 case PowerSystem.CZ3kV:
                 case PowerSystem.SK3kV:
                     // TODO change system to 3kV
+                    SwitchingVoltageMode = 0;
+                    SwitchingVoltageMode_OffDC = true;
+                    SwitchingVoltageMode_OffAC = false;
                     break;
             }
             SelectedPowerSystem = SelectingPowerSystem;
