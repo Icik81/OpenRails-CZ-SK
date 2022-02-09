@@ -1596,7 +1596,10 @@ namespace Orts.Viewer3D.RollingStock
 
             if (_Location == 0)
                 foreach (var cvcr in CabViewControlRenderersList[i])
-                    cvcr.PrepareFrame(frame, elapsedTime);
+                {
+                    if (cvcr.Control != null)
+                        cvcr.PrepareFrame(frame, elapsedTime);
+                }
         }
 
         public override void Draw(GraphicsDevice graphicsDevice)
@@ -2183,11 +2186,12 @@ namespace Orts.Viewer3D.RollingStock
                         if (Control.ScreenContainer != control.ScreenId)
                         {
                             Control.IsVisible = Control.IsActive = false;
-                            return;
+                            continue;
                         }
                         else
                         {
                             Control.IsVisible = Control.IsActive = true;
+                            break;
                         }
                     }
                 }
@@ -2681,6 +2685,7 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.ORTS_LS90_LED:
                 case CABViewControlTypes.ORTS_AVV_SIGNAL:
                 case CABViewControlTypes.ORTS_DISPLAY_SPLASH_SCREEN:
+                case CABViewControlTypes.SELECTED_SYSTEM:
 
 
 
@@ -2710,7 +2715,7 @@ namespace Orts.Viewer3D.RollingStock
 
         public bool IsMouseWithin()
         {
-            return ControlDiscrete.MouseControl & DestinationRectangle.Contains(UserInput.MouseX, UserInput.MouseY);
+            return ControlDiscrete.MouseControl & DestinationRectangle.Contains(UserInput.MouseX, UserInput.MouseY) && ControlDiscrete.IsVisible;
         }
 
         public string GetControlName()
@@ -3814,9 +3819,26 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.ORTS_SCREEN_BUTTON:
                     {
                         p = ChangedValue(0);
-                        if (p == 0 && !PlusKeyPressed)
+                        if (p == 1 && !PlusKeyPressed)
                         {
                             PlusKeyPressed = true;
+                            if (!String.IsNullOrEmpty(Control.Feature))
+                            {
+                                switch (Control.Feature)
+                                {
+                                    case "SelectingSystemIncrease":
+                                        Locomotive.SelectingPowerSystem++;
+                                        break;
+                                    case "SelectingSystemDecrease":
+                                        Locomotive.SelectingPowerSystem--;
+                                        break;
+                                    case "ChangePowerSystem":
+                                        Locomotive.ChangePowerSystem();
+                                        break;
+                                }
+                                if (Locomotive.SelectingPowerSystem > MSTSLocomotive.PowerSystem.SK3kV) Locomotive.SelectingPowerSystem =  MSTSLocomotive.PowerSystem.SK3kV;
+                                if (Locomotive.SelectingPowerSystem < MSTSLocomotive.PowerSystem.DE25kV) Locomotive.SelectingPowerSystem = MSTSLocomotive.PowerSystem.DE25kV;
+                            }
                             if (Control.ActivateScreen > 0)
                             {
                                 foreach (CabViewControl control in Locomotive.ActiveScreens)

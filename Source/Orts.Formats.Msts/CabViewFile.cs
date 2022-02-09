@@ -378,6 +378,7 @@ namespace Orts.Formats.Msts
         ORTS_LS90_LED,
         ORTS_AVV_SIGNAL,
         ORTS_SCREEN_BUTTON,
+        SELECTED_SYSTEM,
 
         // Icik
         HV2,
@@ -562,6 +563,7 @@ namespace Orts.Formats.Msts
         public int ContainerGroup = 0;
         public int ActivateScreen = 0;
         public bool IsActive = false; // Icik
+        public string Feature = "None";
         public bool IsVisible = true;
         public bool IsEditable = false;
         public int ScreenContainer = 0;
@@ -1374,6 +1376,9 @@ namespace Orts.Formats.Msts
                     }),
                     new STFReader.TokenProcessor("isdefault", ()=>{
                         IsActive = stf.ReadBoolBlock(false);
+                    }),
+                    new STFReader.TokenProcessor("feature", ()=>{
+                        Feature = stf.ReadStringBlock("None");
                     }),
                 });
 

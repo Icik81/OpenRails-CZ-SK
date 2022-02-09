@@ -676,6 +676,21 @@ namespace Orts.Simulation.RollingStocks
     , Speed110Pressed, Speed120Pressed, Speed130Pressed, Speed140Pressed, Speed150Pressed
     , Speed160Pressed, Speed170Pressed, Speed180Pressed, Speed190Pressed, Speed200Pressed;
 
+        public enum PowerSystem
+        {
+            DE25kV,
+            AT25kV,
+            AT15kV,
+            CZ25kV,
+            CZ3kV,
+            SK25kV,
+            SK3kV,
+        }
+
+        public bool SelectingSystem = false;
+        public PowerSystem SelectedPowerSystem = PowerSystem.CZ25kV;
+        public PowerSystem SelectingPowerSystem = PowerSystem.CZ25kV;
+
         public MSTSLocomotive(Simulator simulator, string wagPath)
             : base(simulator, wagPath)
         {
@@ -7390,6 +7405,29 @@ namespace Orts.Simulation.RollingStocks
             }
         }
 
+        public void ChangePowerSystem()
+        {
+            if (SelectingPowerSystem == SelectedPowerSystem)
+                return;
+            switch (SelectingPowerSystem)
+            {
+                case PowerSystem.AT15kV:
+                    // TODO change system to 15kV
+                    break;
+                case PowerSystem.AT25kV:
+                case PowerSystem.CZ25kV:
+                case PowerSystem.DE25kV:
+                case PowerSystem.SK25kV:
+                    // TODO change system to 25kV
+                    break;
+                case PowerSystem.CZ3kV:
+                case PowerSystem.SK3kV:
+                    // TODO change system to 3kV
+                    break;
+            }
+            SelectedPowerSystem = SelectingPowerSystem;
+        }
+
         public void ToggleCompressorCombinedSwitchUp()
         {
             if (CompressorSwitch < 4)
@@ -9739,6 +9777,11 @@ namespace Orts.Simulation.RollingStocks
                 case CABViewControlTypes.ORTS_AVV_SIGNAL:
                     {
                         data = (float)CruiseControl.avvSignal;
+                        break;
+                    }
+                case CABViewControlTypes.SELECTED_SYSTEM:
+                    {
+                        data = SelectedPowerSystem != SelectingPowerSystem ? (float)SelectingPowerSystem : (float)SelectedPowerSystem;
                         break;
                     }
 
