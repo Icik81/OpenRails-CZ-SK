@@ -614,7 +614,8 @@ namespace Orts.Simulation.RollingStocks
         public bool DieselCheckPowerMotorLamp;
         public bool DieselMotorDefected;
         public bool DieselMotorTempWarning;
-
+        public bool DieselMotorPowerLost;
+        public bool DieselLocoTempReady;
 
         // Jindrich
         public bool IsActive = false;
@@ -1275,7 +1276,7 @@ namespace Orts.Simulation.RollingStocks
                 case "engine(maxmainresoverpressure": MaxMainResOverPressurePSI = stf.ReadFloatBlock(STFReader.UNITS.PressureDefaultPSI, null); break;
                 case "engine(maxauxresoverpressure": MaxAuxResOverPressurePSI = stf.ReadFloatBlock(STFReader.UNITS.PressureDefaultPSI, null); break;
                 case "engine(heatingmaxcurrent": HeatingMaxCurrentA = stf.ReadFloatBlock(STFReader.UNITS.Current, null); break;
-                case "engine(dieselstartdelay": DieselStartDelay = stf.ReadFloatBlock(STFReader.UNITS.Time, null); break;
+                case "engine(dieselstartdelay": DieselStartDelay = stf.ReadFloatBlock(STFReader.UNITS.Time, 10); break;
 
                 // Jindrich
                 case "engine(usingforcehandle": UsingForceHandle = stf.ReadBoolBlock(false); break;
@@ -1674,6 +1675,8 @@ namespace Orts.Simulation.RollingStocks
             outf.Write(DieselDirectionController_Out);
             outf.Write(DieselDirectionControllerInOut);
             outf.Write(DieselMotorDefected);
+            outf.Write(DieselMotorPowerLost);
+            outf.Write(DieselLocoTempReady);
 
             base.Save(outf);
 
@@ -1772,6 +1775,8 @@ namespace Orts.Simulation.RollingStocks
             DieselDirectionController_Out = inf.ReadBoolean();
             DieselDirectionControllerInOut = inf.ReadBoolean();
             DieselMotorDefected = inf.ReadBoolean();
+            DieselMotorPowerLost = inf.ReadBoolean();
+            DieselLocoTempReady = inf.ReadBoolean();
 
             base.Restore(inf);
 
@@ -7414,10 +7419,16 @@ namespace Orts.Simulation.RollingStocks
                 case PowerSystem.DE25kV:
                 case PowerSystem.SK25kV:
                     // TODO change system to 25kV
+                    SwitchingVoltageMode = 2;
+                    SwitchingVoltageMode_OffDC = false;
+                    SwitchingVoltageMode_OffAC = true;
                     break;
                 case PowerSystem.CZ3kV:
                 case PowerSystem.SK3kV:
                     // TODO change system to 3kV
+                    SwitchingVoltageMode = 0;
+                    SwitchingVoltageMode_OffDC = true;
+                    SwitchingVoltageMode_OffAC = false;
                     break;
             }
             SelectedPowerSystem = SelectingPowerSystem;
@@ -8867,7 +8878,7 @@ namespace Orts.Simulation.RollingStocks
                     {
                         var mstsDieselLocomotive = this as MSTSDieselLocomotive;
                         if (mstsDieselLocomotive.DieselEngines[0] != null)
-                            data = mstsDieselLocomotive.DieselEngines[0].DieselTemperatureDeg;
+                            data = mstsDieselLocomotive.DieselEngines[0].FakeDieselWaterTemperatureDeg;
                         break;
                     }
                 case CABViewControlTypes.ORTS_OIL_PRESSURE:
@@ -9967,14 +9978,14 @@ namespace Orts.Simulation.RollingStocks
                     {
                         var mstsDieselLocomotive = this as MSTSDieselLocomotive;
                         if (mstsDieselLocomotive.DieselEngines[0] != null)
-                            data = mstsDieselLocomotive.DieselEngines[0].DieselWaterTemperatureDeg;
+                            data = mstsDieselLocomotive.DieselEngines[0].FakeDieselWaterTemperatureDeg;
                         break;
                     }
                 case CABViewControlTypes.DIESEL_MOTOR_OIL_TEMP:
                     {
                         var mstsDieselLocomotive = this as MSTSDieselLocomotive;
                         if (mstsDieselLocomotive.DieselEngines[0] != null)
-                            data = mstsDieselLocomotive.DieselEngines[0].DieselOilTemperatureDeg;
+                            data = mstsDieselLocomotive.DieselEngines[0].FakeDieselOilTemperatureDeg;
                         break;
                     }
                 case CABViewControlTypes.DIESEL_MOTOR_TEMP_WARNING:

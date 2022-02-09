@@ -935,20 +935,7 @@ namespace Orts.Simulation.RollingStocks
                     // Pokud nebude žádný HV aktivní
                     if (!HV5Enable && !HV3Enable && !HV2Enable)
                     {
-                        LocoSwitchACDC = true;
-                        switch (RouteVoltageV)
-                        {
-                            case 3000:
-                                SwitchingVoltageMode = 0;
-                                SwitchingVoltageMode_OffDC = true;
-                                SwitchingVoltageMode_OffAC = false;
-                                break;
-                            case 25000:
-                                SwitchingVoltageMode = 2;
-                                SwitchingVoltageMode_OffDC = false;
-                                SwitchingVoltageMode_OffAC = true;
-                                break;
-                        }
+                        LocoSwitchACDC = true;                        
                     }
 
                     // Stisknutí hříbku pro přerušení napájení, vypne HV a shodí sběrače

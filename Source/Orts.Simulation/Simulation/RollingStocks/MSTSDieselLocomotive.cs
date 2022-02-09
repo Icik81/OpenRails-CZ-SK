@@ -94,7 +94,7 @@ namespace Orts.Simulation.RollingStocks
         public float DieselOilPressurePSI = 0f;
         public float DieselMinOilPressurePSI;
         public float DieselMaxOilPressurePSI;
-        public float DieselTemperatureDeg = 40f;
+        public float FakeDieselWaterTemperatureDeg = 40f;
         public float DieselMaxTemperatureDeg;
         public DieselEngine.Cooling DieselEngineCooling = DieselEngine.Cooling.Proportional;
 
@@ -1026,20 +1026,24 @@ namespace Orts.Simulation.RollingStocks
             if (!Battery)
                 DieselCheckPowerMotorLamp = false;
 
+            if (DieselStartDelay == 0) DieselStartDelay = 10f; // Default 10s pro mazání motoru
+            float DieselStartDelayTemp = DieselStartDelay;
+            if (DieselEngines[0].RealDieselWaterTemperatureDeg > 50)
+                DieselStartDelayTemp = DieselStartDelay / 2;
+
             // Spustí mazací čerpadlo při startu
             if (StartButtonPressed
                 && DieselEngines[0].EngineStatus == DieselEngine.Status.Stopped
                 && DieselDirection_Start
                 && Battery)
-            {
-                if (DieselStartDelay == 0) DieselStartDelay = 10f; // Default 10s pro mazání motoru
+            {                
                 DieselStartTime += elapsedClockSeconds;
-                if (DieselStartTime < DieselStartDelay - 1)
+                if (DieselStartTime < DieselStartDelayTemp - 1)
                 {
                     SignalEvent(Event.StartUpMotor);
                     Simulator.Confirmer.Information("Motor se startuje...");
                 }
-                if (DieselStartTime > DieselStartDelay)
+                if (DieselStartTime > DieselStartDelayTemp)
                 {
                     DieselStartDelayDone = true;
                     SignalEvent(Event.StartUpMotorStop);
