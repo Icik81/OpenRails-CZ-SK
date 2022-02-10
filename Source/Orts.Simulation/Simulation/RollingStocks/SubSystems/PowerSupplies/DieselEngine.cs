@@ -552,6 +552,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
             DieselWaterTempTimeConstantSec = copy.DieselWaterTempTimeConstantSec;
             DieselOilTempTimeConstantSec = copy.DieselOilTempTimeConstantSec;
             DieselTempCoolingHyst = copy.DieselTempCoolingHyst;
+            CoolingEnableRPM = copy.CoolingEnableRPM;
 
             if (copy.GearBox != null)
             {
@@ -762,6 +763,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
         public float RealDieselWaterTemperatureDeg;
         public float RealDieselOilTemperatureDeg;
         bool MSGOn;
+        public float CoolingEnableRPM;
 
         /// <summary>
         /// Current Engine oil pressure in PSI
@@ -930,6 +932,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                     case "opttemperature": DieselOptimalTemperatureDegC = stf.ReadFloatBlock(STFReader.UNITS.Temperature, 70f); initLevel |= SettingsFlags.OptTemperature; break;
                     case "idletemperature": DieselIdleTemperatureDegC = stf.ReadFloatBlock(STFReader.UNITS.Temperature, 60f); initLevel |= SettingsFlags.IdleTemperature; break;
                     case "tempcoolinghyst": DieselTempCoolingHyst = stf.ReadFloatBlock(STFReader.UNITS.Temperature, 10f); break;
+                    case "coolingenablerpm": CoolingEnableRPM = stf.ReadFloatBlock(STFReader.UNITS.None, 0f); break;
                     default:
                         end = true;
                         break;
@@ -1161,10 +1164,14 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                     DieselTempCoolingRunning = true;
                     break;
 
-                case Cooling.Hysteresis:                   
-                    if (RealDieselWaterTemperatureDeg > DieselOptimalTemperatureDegC + DieselTempCoolingHyst)
+                case Cooling.Hysteresis:                                       
+                    if ((CoolingEnableRPM == 0 && RealDieselWaterTemperatureDeg > DieselOptimalTemperatureDegC + DieselTempCoolingHyst)
+                        || (CoolingEnableRPM > 0 && locomotive.EngineRPM >= CoolingEnableRPM))
                         DieselTempCoolingRunning = true;
-                    if (RealDieselWaterTemperatureDeg < DieselOptimalTemperatureDegC)
+                    
+                    if ((CoolingEnableRPM == 0 && RealDieselWaterTemperatureDeg < DieselOptimalTemperatureDegC)
+                        || (CoolingEnableRPM > 0 && locomotive.EngineRPM < CoolingEnableRPM)
+                        || EngineStatus != Status.Running)
                     {
                         DieselTempCoolingRunning = false;
                         MSGOn = false;
@@ -1327,10 +1334,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
             if (EngineStatus == Status.Running && !locomotive.DieselLocoTempReady)
             {
                 ExhaustColor = Color.Black;
-                ExhaustParticles = 4f;
-                ExhaustMagnitude = InitialMagnitude * 2;
+                ExhaustParticles *= 2;
+                ExhaustMagnitude *= 2;
 
-                if (RealDieselWaterTemperatureDeg > 0.99f * DieselIdleTemperatureDegC)
+                if (RealDieselWaterTemperatureDeg > 0.90f * DieselIdleTemperatureDegC)
                     locomotive.DieselLocoTempReady = true;
             }
             if (RealDieselWaterTemperatureDeg < DieselIdleTemperatureDegC * 0.75f)
@@ -1403,14 +1410,14 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
             {
                 locomotive.PowerReduction = 0.25f;
                 ExhaustColor = Color.Gray;
-                ExhaustParticles = 4f;
-                ExhaustMagnitude = InitialMagnitude;
+                //ExhaustParticles = 4f;
+                //ExhaustMagnitude = InitialMagnitude;
             }
             if (locomotive.DieselMotorDefected)
             {
                 ExhaustColor = Color.Black;
                 ExhaustParticles = 4f;
-                ExhaustMagnitude = InitialMagnitude;
+                ExhaustMagnitude = InitialMagnitude * 2;
                 if (EngineStatus == Status.Running)
                 {
                     locomotive.DieselEngines[0].Stop();
