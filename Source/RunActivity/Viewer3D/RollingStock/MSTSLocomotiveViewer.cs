@@ -2549,8 +2549,7 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.ORTS_BAILOFF:
                 case CABViewControlTypes.DIESEL_DIRECTION_CONTROLLER:
                 case CABViewControlTypes.DIESEL_DIRECTION_CONTROLLER2:
-                case CABViewControlTypes.DIESEL_CHECK_POWER_MOTOR_LAMP:
-                
+                case CABViewControlTypes.DIESEL_CHECK_POWER_MOTOR_LAMP:                
                 case CABViewControlTypes.DIESEL_MOTOR_WATER_TEMP:
                 case CABViewControlTypes.DIESEL_MOTOR_OIL_TEMP:
                 case CABViewControlTypes.DIESEL_MOTOR_TEMP_WARNING:
