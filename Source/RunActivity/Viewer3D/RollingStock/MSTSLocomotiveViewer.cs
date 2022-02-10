@@ -2685,6 +2685,7 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.ORTS_AVV_SIGNAL:
                 case CABViewControlTypes.ORTS_DISPLAY_SPLASH_SCREEN:
                 case CABViewControlTypes.SELECTED_SYSTEM:
+                case CABViewControlTypes.SELECTING_SYSTEM:
 
 
 
@@ -3833,6 +3834,9 @@ namespace Orts.Viewer3D.RollingStock
                                         break;
                                     case "ChangePowerSystem":
                                         Locomotive.ChangePowerSystem();
+                                        break;
+                                    case "CancelPowerSystemChange":
+                                        Locomotive.SelectingPowerSystem = Locomotive.SelectedPowerSystem;
                                         break;
                                 }
                                 if (Locomotive.SelectingPowerSystem > MSTSLocomotive.PowerSystem.SK3kV) Locomotive.SelectingPowerSystem =  MSTSLocomotive.PowerSystem.SK3kV;

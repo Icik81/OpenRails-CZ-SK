@@ -379,6 +379,7 @@ namespace Orts.Formats.Msts
         ORTS_AVV_SIGNAL,
         ORTS_SCREEN_BUTTON,
         SELECTED_SYSTEM,
+        SELECTING_SYSTEM,
 
         // Icik
         HV2,
