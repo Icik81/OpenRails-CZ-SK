@@ -59,8 +59,8 @@ namespace Orts.Simulation.RollingStocks
         public float MaxRPM;
         public float MaxRPMChangeRate;
         public float PercentChangePerSec = .2f;
-        public float InitialExhaust;
-        public float InitialMagnitude;
+        public float InitialExhaust = 0.7f;
+        public float InitialMagnitude = 1.5f;
         public float MaxExhaust = 2.8f;
         public float MaxMagnitude = 1.5f;
         public float EngineRPMderivation;
