@@ -760,6 +760,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
         public float DieselMotorWaterInitTemp;
         public float DieselMotorOilInitTemp;
         public float OverHeatTimer = 0;
+        public float OverHeatTimer2 = 0;
         public float RealDieselWaterTemperatureDeg;
         public float RealDieselOilTemperatureDeg;
         bool MSGOn;
@@ -1333,8 +1334,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
             // Fáze zahřívání motoru
             if (EngineStatus == Status.Running && !locomotive.DieselLocoTempReady)
             {
-                ExhaustColor = Color.Black;
-                ExhaustParticles *= 2;
+                ExhaustColor = Color.TransparentBlack;
+                //ExhaustParticles *= 2;
                 ExhaustMagnitude *= 2;
 
                 if (RealDieselWaterTemperatureDeg > 0.90f * DieselIdleTemperatureDegC)
@@ -1356,8 +1357,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
             // Teplotu zvyšují otáčky a zátěž motoru
             if (EngineStatus == Status.Running)
             {
-                RealDieselWaterTemperatureDeg += elapsedClockSeconds * (LoadPercent * 0.01f * (95f - 60f) + 60f - RealDieselWaterTemperatureDeg) / DieselWaterTempTimeConstantSec;
-                RealDieselWaterTemperatureDeg += elapsedClockSeconds * ((RealRPM - IdleRPM) / (MaxRPM - IdleRPM) * 95f + 60f - RealDieselWaterTemperatureDeg) * 2 / DieselWaterTempTimeConstantSec;
+                RealDieselWaterTemperatureDeg += elapsedClockSeconds * (LoadPercent * 0.01f * (120 - DieselIdleTemperatureDegC) + DieselIdleTemperatureDegC - RealDieselWaterTemperatureDeg) / DieselWaterTempTimeConstantSec;
+                RealDieselWaterTemperatureDeg += elapsedClockSeconds * ((RealRPM - IdleRPM) / (MaxRPM - IdleRPM) * 120 + DieselIdleTemperatureDegC - RealDieselWaterTemperatureDeg) * 1.5f / DieselWaterTempTimeConstantSec;
             }
             // Teplota okolí koriguje teplotu motoru
             // Čerpadlo při vyšších otáčkách má vyšší průtok chladící kapaliny
@@ -1367,8 +1368,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
             // Teplotu zvyšují otáčky a zátěž motoru
             if (EngineStatus == Status.Running)
             {
-                RealDieselOilTemperatureDeg += elapsedClockSeconds * (LoadPercent * 0.01f * (95f - 60f) + 60f - RealDieselOilTemperatureDeg) / DieselOilTempTimeConstantSec;
-                RealDieselOilTemperatureDeg += elapsedClockSeconds * ((RealRPM - IdleRPM) / (MaxRPM - IdleRPM) * 95f + 60f - RealDieselOilTemperatureDeg) * 2 / DieselOilTempTimeConstantSec;
+                RealDieselOilTemperatureDeg += elapsedClockSeconds * (LoadPercent * 0.01f * (120 - DieselIdleTemperatureDegC) + DieselIdleTemperatureDegC - RealDieselOilTemperatureDeg) / DieselOilTempTimeConstantSec;
+                RealDieselOilTemperatureDeg += elapsedClockSeconds * ((RealRPM - IdleRPM) / (MaxRPM - IdleRPM) * 120 + DieselIdleTemperatureDegC - RealDieselOilTemperatureDeg) * 1.5f / DieselOilTempTimeConstantSec;
             }
             // Teplota okolí koriguje teplotu motoru
             // Čerpadlo při vyšších otáčkách má vyšší průtok chladící kapaliny
@@ -1410,18 +1411,15 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
             {
                 locomotive.PowerReduction = 0.25f;
                 ExhaustColor = Color.Gray;
-                //ExhaustParticles = 4f;
-                //ExhaustMagnitude = InitialMagnitude;
             }
-            if (locomotive.DieselMotorDefected)
+            if (locomotive.DieselMotorDefected && EngineStatus == Status.Running)
             {
+                OverHeatTimer2 += elapsedClockSeconds; 
                 ExhaustColor = Color.Black;
                 ExhaustParticles = 4f;
-                ExhaustMagnitude = InitialMagnitude * 2;
-                if (EngineStatus == Status.Running)
-                {
+                ExhaustMagnitude = InitialMagnitude * 10;
+                if (OverHeatTimer2 > 10)
                     locomotive.DieselEngines[0].Stop();
-                }
             }
 
             //locomotive.Simulator.Confirmer.Message(ConfirmLevel.Information, Simulator.Catalog.GetString("Teplota motoru: " + FakeDieselWaterTemperatureDeg));
