@@ -607,13 +607,15 @@ namespace Orts.Simulation.RollingStocks
                     AbsTractionSpeedMpS = AbsSpeedMpS;
                 }
 
+                float maxPowerW;
+
                 if (TractiveForceCurves == null)
                 {
                     // This sets the maximum force of the locomotive, it will be adjusted down if it exceeds the max power of the locomotive.
                     float maxForceN = Math.Min(t * MaxForceN * (1 - PowerReduction), AbsTractionSpeedMpS == 0.0f ? (t * MaxForceN * (1 - PowerReduction)) : (t * LocomotiveMaxRailOutputPowerW / AbsTractionSpeedMpS));
 
                     // Maximum rail power is reduced by apparent throttle factor and the number of engines running (power ratio)
-                    float maxPowerW = LocomotiveMaxRailOutputPowerW * DieselEngineFractionPower * LocomotiveApparentThrottleSetting;
+                    maxPowerW = LocomotiveMaxRailOutputPowerW * DieselEngineFractionPower * LocomotiveApparentThrottleSetting;
 
                     // If unloading speed is in ENG file, and locomotive speed is greater then unloading speed, and less then max speed, then apply a decay factor to the power/force
                     if (UnloadingSpeedMpS != 0 && AbsTractionSpeedMpS > UnloadingSpeedMpS && AbsTractionSpeedMpS < MaxSpeedMpS && !WheelSlip)
@@ -646,7 +648,13 @@ namespace Orts.Simulation.RollingStocks
 
                     if (TractiveForceN < 0 && !TractiveForceCurves.AcceptsNegativeValues())
                         TractiveForceN = 0;
-                }
+                   
+                    // Icik
+                    // Ohraničení trakční síly dle vstupního výkonu motoru
+                    maxPowerW = DieselEngines[0].CurrentDieselOutputPowerW * DieselEngineFractionPower;                    
+                    if (TractiveForceN * AbsSpeedMpS > maxPowerW)
+                        TractiveForceN = (0.87f * DieselEngines[0].CurrentDieselOutputPowerW * DieselEngineFractionPower * (1 - PowerReduction)) / AbsTractionSpeedMpS;
+                }                                
 
                 DieselFlowLps = DieselEngines.DieselFlowLps;
                 partialFuelConsumption += DieselEngines.DieselFlowLps * elapsedClockSeconds;

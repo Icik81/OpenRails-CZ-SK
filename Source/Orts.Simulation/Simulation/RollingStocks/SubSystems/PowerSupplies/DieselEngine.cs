@@ -1336,7 +1336,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
             {
                 ExhaustColor = Color.TransparentBlack;
                 //ExhaustParticles *= 2;
-                ExhaustMagnitude *= 2;
+                ExhaustMagnitude *= 2;                
+                locomotive.PowerReduction += 0.5f;
 
                 if (RealDieselWaterTemperatureDeg > 0.90f * DieselIdleTemperatureDegC)
                     locomotive.DieselLocoTempReady = true;
@@ -1408,8 +1409,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
             }             
 
             if (locomotive.DieselMotorPowerLost)
-            {
-                locomotive.PowerReduction = 0.25f;
+            {                
+                locomotive.PowerReduction += 0.25f;
                 ExhaustColor = Color.Gray;
             }
             if (locomotive.DieselMotorDefected && EngineStatus == Status.Running)
@@ -1423,6 +1424,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
             }
 
             //locomotive.Simulator.Confirmer.Message(ConfirmLevel.Information, Simulator.Catalog.GetString("Teplota motoru: " + FakeDieselWaterTemperatureDeg));
+            //locomotive.Simulator.Confirmer.Message(ConfirmLevel.Information, Simulator.Catalog.GetString("Power reduction: " + locomotive.PowerReduction));
         }
 
 
