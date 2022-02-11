@@ -380,6 +380,8 @@ namespace Orts.Formats.Msts
         ORTS_SCREEN_BUTTON,
         SELECTED_SYSTEM,
         SELECTING_SYSTEM,
+        MAINTENANCE_STATE,
+        PANTO_BLOCKED,
 
         // Icik
         HV2,
@@ -563,7 +565,9 @@ namespace Orts.Formats.Msts
         public int ScreenId = 0;
         public int ContainerGroup = 0;
         public int ActivateScreen = 0;
+        public string ActivateScreen1 = string.Empty;
         public bool IsActive = false; // Icik
+        public bool IsLvzSelection = false;
         public string Feature = "None";
         public bool IsVisible = true;
         public bool IsEditable = false;
@@ -1370,6 +1374,11 @@ namespace Orts.Formats.Msts
                         ActivateScreen = (int)stf.ReadFloat(STFReader.UNITS.None, 0);
                         stf.SkipRestOfBlock();
                     }),
+                    new STFReader.TokenProcessor("activatescreen1", ()=>{
+                        stf.MustMatch("(");
+                        ActivateScreen1 = stf.ReadString();
+                        stf.SkipRestOfBlock();
+                    }),
                     new STFReader.TokenProcessor("screencontainer", ()=>{
                         stf.MustMatch("(");
                         ScreenContainer = (int)stf.ReadFloat(STFReader.UNITS.None, 0);
@@ -1380,6 +1389,9 @@ namespace Orts.Formats.Msts
                     }),
                     new STFReader.TokenProcessor("feature", ()=>{
                         Feature = stf.ReadStringBlock("None");
+                    }),
+                    new STFReader.TokenProcessor("islvzselectionscreen", ()=>{
+                        IsLvzSelection = stf.ReadBoolBlock(false);
                     }),
                 });
 

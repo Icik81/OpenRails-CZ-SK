@@ -2686,7 +2686,8 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.ORTS_DISPLAY_SPLASH_SCREEN:
                 case CABViewControlTypes.SELECTED_SYSTEM:
                 case CABViewControlTypes.SELECTING_SYSTEM:
-
+                case CABViewControlTypes.MAINTENANCE_STATE:
+                case CABViewControlTypes.PANTO_BLOCKED:
 
 
                     index = (int)data;
@@ -3838,6 +3839,9 @@ namespace Orts.Viewer3D.RollingStock
                                     case "CancelPowerSystemChange":
                                         Locomotive.SelectingPowerSystem = Locomotive.SelectedPowerSystem;
                                         break;
+                                    case "ConfirmLvzSystem":
+                                        Locomotive.WaitingForLvzConfirmation = false;
+                                        break;
                                 }
                                 if (Locomotive.SelectingPowerSystem > MSTSLocomotive.PowerSystem.SK3kV) Locomotive.SelectingPowerSystem =  MSTSLocomotive.PowerSystem.SK3kV;
                                 if (Locomotive.SelectingPowerSystem < MSTSLocomotive.PowerSystem.DE25kV) Locomotive.SelectingPowerSystem = MSTSLocomotive.PowerSystem.DE25kV;
@@ -3849,6 +3853,23 @@ namespace Orts.Viewer3D.RollingStock
                                     if (control.ContainerGroup == Control.ContainerGroup)
                                     {
                                         if (control.ScreenId != Control.ActivateScreen)
+                                            control.IsActive = false;
+                                        else
+                                            control.IsActive = true;
+                                    }
+                                }
+                                // rebuild editable items on this screen
+                                //Locomotive.EditableItems.Clear();
+
+                            }
+                            if (!string.IsNullOrEmpty(Control.ActivateScreen1))
+                            {
+                                string[] arr = Control.ActivateScreen1.Split('_');
+                                foreach (CabViewControl control in Locomotive.ActiveScreens)
+                                {
+                                    if (control.ContainerGroup.ToString() == arr[0])
+                                    {
+                                        if (control.ScreenId.ToString() != arr[1])
                                             control.IsActive = false;
                                         else
                                             control.IsActive = true;

@@ -691,6 +691,9 @@ namespace Orts.Simulation.RollingStocks
         public PowerSystem SelectedPowerSystem = PowerSystem.CZ25kV;
         public PowerSystem SelectingPowerSystem = PowerSystem.CZ25kV;
 
+        public int MaintenanceState = 0;
+        public bool PantoBlocked = false;
+
         public MSTSLocomotive(Simulator simulator, string wagPath)
             : base(simulator, wagPath)
         {
@@ -3438,6 +3441,8 @@ namespace Orts.Simulation.RollingStocks
         {
             if (IsPlayerTrain && !Simulator.Paused)
             {
+                if (changingPowerSystem)
+                    PowerChangeRoutine(elapsedClockSeconds);
                 if (UsingForceHandle && TrainBrakeController.GetStatus().ToString() != "EPApply")
                 {
                     if (forceHandleIncreasing)
@@ -7405,10 +7410,13 @@ namespace Orts.Simulation.RollingStocks
             }
         }
 
+        protected bool changingPowerSystem = false;
         public void ChangePowerSystem()
         {
             if (SelectingPowerSystem == SelectedPowerSystem)
                 return;
+
+            changingPowerSystem = true;
             switch (SelectingPowerSystem)
             {
                 case PowerSystem.AT15kV:
@@ -7419,17 +7427,106 @@ namespace Orts.Simulation.RollingStocks
                 case PowerSystem.DE25kV:
                 case PowerSystem.SK25kV:
                     SwitchingVoltageMode = 2;
-                    SwitchingVoltageMode_OffDC = false;
-                    SwitchingVoltageMode_OffAC = true;
                     break;
                 case PowerSystem.CZ3kV:
                 case PowerSystem.SK3kV:
                     SwitchingVoltageMode = 0;
-                    SwitchingVoltageMode_OffDC = true;
-                    SwitchingVoltageMode_OffAC = false;
                     break;
             }
             SelectedPowerSystem = SelectingPowerSystem;
+        }
+
+        protected float timeChangingPowerSystem = 0;
+        public bool WaitingForLvzConfirmation = false;
+        public bool pantoCommandSent = false;
+        protected float continuingTimeChangingSystem = 0;
+        public void PowerChangeRoutine(float elapsedSeconds)
+        {
+            timeChangingPowerSystem += elapsedSeconds;
+            if (timeChangingPowerSystem > 0.3)
+            {
+                HVOff = true;
+            }
+            if (timeChangingPowerSystem > 0.5 && !pantoCommandSent)
+            {
+                SignalEvent(PowerSupplyEvent.LowerPantograph);
+                pantoCommandSent = true;
+                WaitingForLvzConfirmation = true;
+            }
+
+            PantoBlocked = true;
+
+            bool canContinue = true;
+            foreach (Pantograph panto in Pantographs.List)
+            {
+                if (panto.State != PantographState.Down)
+                    canContinue = false;
+            }
+            if (!canContinue || WaitingForLvzConfirmation)
+            {
+                return;
+            }
+
+            if (SwitchingVoltageMode == 0)
+            {
+                SwitchingVoltageMode_OffDC = false;
+                SwitchingVoltageMode_OffAC = false;
+            }
+            if (SwitchingVoltageMode == 2)
+            {
+                SwitchingVoltageMode_OffDC = false;
+                SwitchingVoltageMode_OffAC = false;
+            }
+            continuingTimeChangingSystem += elapsedSeconds;
+
+            if (continuingTimeChangingSystem > 1)
+                MaintenanceState = 2;
+            if (continuingTimeChangingSystem > 1.5)
+                MaintenanceState = 1;
+            if (continuingTimeChangingSystem > 44.5)
+                MaintenanceState = 0;
+            if (continuingTimeChangingSystem > 45)
+                PantoBlocked = false;
+            if ((SelectedPowerSystem == PowerSystem.AT15kV
+                || SelectedPowerSystem == PowerSystem.AT25kV
+                || SelectedPowerSystem == PowerSystem.CZ25kV
+                || SelectedPowerSystem == PowerSystem.DE25kV
+                || SelectedPowerSystem == PowerSystem.SK25kV)
+                && RouteVoltageV == 3000)
+            {
+                MaintenanceState = 2;
+                PantoBlocked = true;
+                HVOff = true;
+                return;
+            }
+            if ((SelectedPowerSystem == PowerSystem.AT15kV
+                || SelectedPowerSystem == PowerSystem.CZ3kV
+                || SelectedPowerSystem == PowerSystem.SK3kV)
+                && RouteVoltageV == 25000)
+            {
+                MaintenanceState = 2;
+                PantoBlocked = true;
+                HVOff = true;
+                return;
+            }
+            if (continuingTimeChangingSystem > 48)
+            {
+                changingPowerSystem = false;
+                timeChangingPowerSystem = 0;
+                continuingTimeChangingSystem = 0;
+                pantoCommandSent = false;
+                if (SwitchingVoltageMode == 0)
+                {
+                    SwitchingVoltageMode_OffDC = true;
+                    SwitchingVoltageMode_OffAC = false;
+                }
+                if (SwitchingVoltageMode == 2)
+                {
+                    SwitchingVoltageMode_OffDC = false;
+                    SwitchingVoltageMode_OffAC = true;
+                }
+                HVOff = false;
+            }
         }
 
         public void ToggleCompressorCombinedSwitchUp()
@@ -9793,7 +9890,16 @@ namespace Orts.Simulation.RollingStocks
                         data = (float)SelectedPowerSystem;
                         break;
                     }
-
+                case CABViewControlTypes.MAINTENANCE_STATE:
+                    {
+                        data = MaintenanceState;
+                        break;
+                    }
+                case CABViewControlTypes.PANTO_BLOCKED:
+                    {
+                        data = PantoBlocked ? 1 : 0;
+                        break;
+                    }
                 default:
                     if (CruiseControl != null)
                         data = CruiseControl.GetDataOf(cvc);
