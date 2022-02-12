@@ -796,9 +796,9 @@ namespace Orts.Viewer3D.Popups
                             //05
                             Viewer.Catalog.GetString("Speed"),
                             //06
-                            Viewer.Catalog.GetString("Power"),
+                            Viewer.Catalog.GetString("VýkonTM"),
                             //07
-                            Viewer.Catalog.GetString("Force"),
+                            Viewer.Catalog.GetString("TrakčníSílaTM"),
                             //08
                             car is MSTSDieselLocomotive && (car as MSTSDieselLocomotive).DieselEngines[0].HasGearBox ?
                             Viewer.Catalog.GetString("Gear") : Viewer.Catalog.GetString(""),
@@ -812,27 +812,27 @@ namespace Orts.Viewer3D.Popups
                             car is MSTSElectricLocomotive ? Viewer.Catalog.GetString("TCS") : Viewer.Catalog.GetString(""),
                             //11
                             car is MSTSSteamLocomotive ? Viewer.Catalog.GetString("") :
-                            car is MSTSDieselLocomotive ? Viewer.Catalog.GetString("Power") :
+                            car is MSTSDieselLocomotive ? Viewer.Catalog.GetString("VýkonSM") :
                             car is MSTSElectricLocomotive ? Viewer.Catalog.GetString("Driver") : Viewer.Catalog.GetString(""),
                             //12
                             car is MSTSSteamLocomotive ? Viewer.Catalog.GetString("") :
-                            car is MSTSDieselLocomotive ? Viewer.Catalog.GetString("Load") :
+                            car is MSTSDieselLocomotive ? Viewer.Catalog.GetString("ZátěžSM") :
                             car is MSTSElectricLocomotive ? Viewer.Catalog.GetString("Auxiliar power") : Viewer.Catalog.GetString(""),
                             //13
                             car is MSTSSteamLocomotive ? Viewer.Catalog.GetString("") :
-                            car is MSTSDieselLocomotive ? Viewer.Catalog.GetString("Rpm") :
+                            car is MSTSDieselLocomotive ? Viewer.Catalog.GetString("OtáčkySM") :
                             car is MSTSElectricLocomotive ? Viewer.Catalog.GetString("") : Viewer.Catalog.GetString(""),
                             //14
                             car is MSTSSteamLocomotive ? Viewer.Catalog.GetString("") :
-                            car is MSTSDieselLocomotive ? Viewer.Catalog.GetString("Flow") :
+                            car is MSTSDieselLocomotive ? Viewer.Catalog.GetString("SpotřSM") :
                             car is MSTSElectricLocomotive ? Viewer.Catalog.GetString("") : Viewer.Catalog.GetString(""),
                             //15
                             car is MSTSSteamLocomotive ? Viewer.Catalog.GetString("") :
-                            car is MSTSDieselLocomotive ? Viewer.Catalog.GetString("Temperature") :
+                            car is MSTSDieselLocomotive ? Viewer.Catalog.GetString("TeplotaSM") :
                             car is MSTSElectricLocomotive ? Viewer.Catalog.GetString("") : Viewer.Catalog.GetString(""),
                             //16
                             car is MSTSSteamLocomotive ? Viewer.Catalog.GetString("") :
-                            car is MSTSDieselLocomotive ? Viewer.Catalog.GetString("Oil") :
+                            car is MSTSDieselLocomotive ? Viewer.Catalog.GetString("TlakOlejSM") :
                             car is MSTSElectricLocomotive ? Viewer.Catalog.GetString("") : Viewer.Catalog.GetString("")
                             //Add new Locomotive header here, if required.
                             ));
