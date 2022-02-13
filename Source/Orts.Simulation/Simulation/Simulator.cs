@@ -175,6 +175,7 @@ namespace Orts.Simulation
         public float VoltageSprung = 1;
         public float GameTimeCyklus10;
         public float OneSecondLoop;
+        public bool CarCoupleSpeedOvercome;
 
         public List<PowerSupplyStation> powerSupplyStations;
         public List<VoltageChangeMarker> voltageChangeMarkers;
@@ -939,6 +940,11 @@ namespace Orts.Simulation
         /// </summary>
         public void CheckForCoupling(Train drivenTrain, float elapsedClockSeconds)
         {
+            // Icik
+            int PreviousCarCount = (int) drivenTrain.Cars.Count;
+            float CarCoupleSpeed = 2 / 3.6f; // Napojovací rychlost max 2km/h
+            CarCoupleSpeedOvercome = false;
+
             if (MPManager.IsMultiPlayer() && !MPManager.IsServer()) return; //in MultiPlayer mode, server will check coupling, client will get message and do things
             if (drivenTrain.SpeedMpS < 0)
             {
@@ -964,7 +970,7 @@ namespace Orts.Simulation
                             }
                             // couple my rear to front of train
                             //drivenTrain.SetCoupleSpeed(train, 1);
-                            drivenTrain.LastCar.SignalEvent(Event.Couple);
+                            //drivenTrain.LastCar.SignalEvent(Event.Couple);
                             if (drivenTrain.SpeedMpS > 1.5)
                                 DbfEvalOverSpeedCoupling += 1;
 
@@ -974,6 +980,16 @@ namespace Orts.Simulation
                                 car.Train = drivenTrain;
                             }
                             FinishRearCoupling(drivenTrain, train, true);
+
+                            // Icik
+                            if (Math.Abs(drivenTrain.SpeedMpS) > CarCoupleSpeed)
+                            {
+                                CarCoupleSpeedOvercome = true;
+                                UncoupleBehind(drivenTrain.Cars[PreviousCarCount - 1], true);                                
+                            }
+                            else                            
+                                drivenTrain.LastCar.SignalEvent(Event.Couple);
+
                             return;
                         }
                         float d2 = drivenTrain.RearTDBTraveller.OverlapDistanceM(train.RearTDBTraveller, true);
@@ -992,7 +1008,7 @@ namespace Orts.Simulation
                             }
                             // couple my rear to rear of train
                             //drivenTrain.SetCoupleSpeed(train, -1);
-                            drivenTrain.LastCar.SignalEvent(Event.Couple);
+                            //drivenTrain.LastCar.SignalEvent(Event.Couple);
                             if (drivenTrain.SpeedMpS > 1.5)
                                 DbfEvalOverSpeedCoupling += 1;
 
@@ -1004,6 +1020,16 @@ namespace Orts.Simulation
                                 car.Flipped = !car.Flipped;
                             }
                             FinishRearCoupling(drivenTrain, train, false);
+
+                            // Icik
+                            if (Math.Abs(drivenTrain.SpeedMpS) > CarCoupleSpeed)
+                            {
+                                CarCoupleSpeedOvercome = true;
+                                UncoupleBehind(drivenTrain.Cars[PreviousCarCount - 1], true);                                  
+                            }
+                            else
+                                drivenTrain.LastCar.SignalEvent(Event.Couple);
+
                             return;
                         }
                         UpdateUncoupled(drivenTrain, train, d1, d2, false);
@@ -1041,7 +1067,7 @@ namespace Orts.Simulation
                             if (lead == null)
                             {//Like Rear coupling with changed data  
                                 lead = train.LeadLocomotive;
-                                train.LastCar.SignalEvent(Event.Couple);
+                                //train.LastCar.SignalEvent(Event.Couple);
                                 if (drivenTrain.SpeedMpS > 1.5)
                                     DbfEvalOverSpeedCoupling += 1;
 
@@ -1053,10 +1079,19 @@ namespace Orts.Simulation
                                 }
                                 //Rear coupling
                                 FinishRearCoupling(train, drivenTrain, false);
+
+                                // Icik
+                                if (Math.Abs(train.SpeedMpS) > CarCoupleSpeed)
+                                {
+                                    CarCoupleSpeedOvercome = true;
+                                    UncoupleBehind(train.Cars[PreviousCarCount - 1], true);                                    
+                                }
+                                else
+                                    train.LastCar.SignalEvent(Event.Couple);
                             }
                             else
                             {
-                                drivenTrain.FirstCar.SignalEvent(Event.Couple);
+                                //drivenTrain.FirstCar.SignalEvent(Event.Couple);
                                 if (drivenTrain.SpeedMpS > 1.5)
                                     DbfEvalOverSpeedCoupling += 1;
 
@@ -1069,6 +1104,15 @@ namespace Orts.Simulation
                                 }
                                 if (drivenTrain.LeadLocomotiveIndex >= 0) drivenTrain.LeadLocomotiveIndex += train.Cars.Count;
                                 FinishFrontCoupling(drivenTrain, train, lead, true);
+
+                                // Icik
+                                if (Math.Abs(drivenTrain.SpeedMpS) > CarCoupleSpeed)
+                                {
+                                    CarCoupleSpeedOvercome = true;
+                                    UncoupleBehind(drivenTrain.FirstCar, true);                                    
+                                }
+                                else
+                                    drivenTrain.FirstCar.SignalEvent(Event.Couple);
                             }
                             return;
                         }
@@ -1088,7 +1132,7 @@ namespace Orts.Simulation
                             }
                             // couple my front to front of train
                             //drivenTrain.SetCoupleSpeed(train, -1);
-                            drivenTrain.FirstCar.SignalEvent(Event.Couple);
+                            //drivenTrain.FirstCar.SignalEvent(Event.Couple);
                             if (drivenTrain.SpeedMpS > 1.5)
                                 DbfEvalOverSpeedCoupling += 1;
 
@@ -1102,6 +1146,16 @@ namespace Orts.Simulation
                             }
                             if (drivenTrain.LeadLocomotiveIndex >= 0) drivenTrain.LeadLocomotiveIndex += train.Cars.Count;
                             FinishFrontCoupling(drivenTrain, train, lead, false);
+
+                            // Icik
+                            if (Math.Abs(drivenTrain.SpeedMpS) > CarCoupleSpeed)
+                            {
+                                CarCoupleSpeedOvercome = true;
+                                UncoupleBehind(drivenTrain.FirstCar, true);                                
+                            }
+                            else
+                                drivenTrain.FirstCar.SignalEvent(Event.Couple);
+
                             return;
                         }
 
@@ -1752,7 +1806,8 @@ namespace Orts.Simulation
             train.Update(0);   // stop the wheels from moving etc
             train2.Update(0);  // stop the wheels from moving etc
 
-            car.SignalEvent(Event.Uncouple);
+            if (!CarCoupleSpeedOvercome)
+                car.SignalEvent(Event.Uncouple);
             // TODO which event should we fire
             //car.CreateEvent(62);  these are listed as alternate events
             //car.CreateEvent(63);

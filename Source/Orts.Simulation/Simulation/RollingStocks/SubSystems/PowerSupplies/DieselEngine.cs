@@ -1187,7 +1187,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                         RealDieselOilTemperatureDeg -= elapsedClockSeconds * (RealDieselOilTemperatureDeg - (1.5f * locomotive.CarOutsideTempCBase)) / DieselOilTempTimeConstantSec;
                         if (!MSGOn)
                         {
-                            locomotive.Simulator.Confirmer.Message(ConfirmLevel.MSG, Simulator.Catalog.GetString("Žaluzie otevřené a ventilátor zapnutý!"));
+                            //locomotive.Simulator.Confirmer.Message(ConfirmLevel.MSG, Simulator.Catalog.GetString("Žaluzie otevřené a ventilátor zapnutý!"));
                             MSGOn = true;
                             locomotive.SignalEvent(Event.DieselMotorCooling);
                         }                        
