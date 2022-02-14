@@ -1714,6 +1714,11 @@ namespace Orts.Simulation.Physics
         /// Update train physics
         /// <\summary>
 
+        float SpeedMpS0;
+        bool HasCarCoupleSpeed;
+        public float TrainMassKG0;
+        public float TrainMassKG1;
+
         public virtual void physicsUpdate(float elapsedClockSeconds)
         {
             //if out of track, will set it to stop
@@ -1750,9 +1755,9 @@ namespace Orts.Simulation.Physics
             {
                 car.MotiveForceN = 0;
                 car.Update(elapsedClockSeconds);
-
+                
                 // Set TotalForce at the start of each calculation cycle. This value is adjusted further through loop based upon forces acting on the train.
-                car.TotalForceN = car.MotiveForceN + car.GravityForceN;
+                car.TotalForceN = car.MotiveForceN + car.GravityForceN;                
 
                 massKg += car.MassKG;
                 //TODO: next code line has been modified to flip trainset physics in order to get viewing direction coincident with loco direction when using rear cab.
@@ -1763,6 +1768,32 @@ namespace Orts.Simulation.Physics
                     car.TotalForceN = -car.TotalForceN;
                     car.SpeedMpS = -car.SpeedMpS;
                 }
+
+
+                // Icik
+                TrainMassKG0 = 0;
+                foreach (TrainCar car1 in Cars)               
+                    TrainMassKG0 += car1.MassKG;                                   
+
+                if (Simulator.CarCoupleSpeedOvercome && !HasCarCoupleSpeed)
+                {
+                    if (car.SpeedMpS > 0)
+                        SpeedMpS0 = car.SpeedMpS;
+                    if (car.SpeedMpS < 0)
+                        SpeedMpS0 = -car.SpeedMpS;
+                    HasCarCoupleSpeed = true;                    
+                }
+                //HasCarCoupleSpeed = false;
+                if (HasCarCoupleSpeed && LeadLocomotive != null)
+                {
+                    if (TrainMassKG0 <= Simulator.TrainMassKG1)                    
+                        car.SpeedMpS = SpeedMpS0 * 30000 / TrainMassKG0;                                            
+                    else
+                        car.SpeedMpS = -SpeedMpS0;
+                    HasCarCoupleSpeed = false;
+                    SignalEvent(Event.CoupleB);
+                }
+
 
                 if (car.WheelSlip)
                     whlslp = true;

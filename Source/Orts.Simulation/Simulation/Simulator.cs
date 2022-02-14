@@ -942,6 +942,8 @@ namespace Orts.Simulation
             }
         }
 
+        // Icik
+        public float TrainMassKG1;
         /// <summary>
         /// Scan other trains
         /// </summary>
@@ -987,13 +989,15 @@ namespace Orts.Simulation
                             if (drivenTrain.SpeedMpS > 1.5)
                                 DbfEvalOverSpeedCoupling += 1;
 
+                            TrainMassKG1 = 0;
                             foreach (TrainCar car in train.Cars)
                             {
                                 drivenTrain.Cars.Add(car);
                                 car.Train = drivenTrain;
+                                TrainMassKG1 += car.MassKG; 
                             }
                             FinishRearCoupling(drivenTrain, train, true);
-
+                            
                             // Icik
                             if (Math.Abs(drivenTrain.SpeedMpS) > CarCoupleSpeed)
                             {
@@ -1027,12 +1031,14 @@ namespace Orts.Simulation
                             if (drivenTrain.SpeedMpS > 1.5)
                                 DbfEvalOverSpeedCoupling += 1;
 
+                            TrainMassKG1 = 0;
                             for (int i = train.Cars.Count - 1; i >= 0; --i)
                             {
                                 TrainCar car = train.Cars[i];
                                 drivenTrain.Cars.Add(car);
                                 car.Train = drivenTrain;
                                 car.Flipped = !car.Flipped;
+                                TrainMassKG1 += car.MassKG;
                             }
                             FinishRearCoupling(drivenTrain, train, false);
 
@@ -1088,11 +1094,13 @@ namespace Orts.Simulation
                                 if (drivenTrain.SpeedMpS > 1.5)
                                     DbfEvalOverSpeedCoupling += 1;
 
+                                TrainMassKG1 = 0;
                                 for (int i = 0; i < drivenTrain.Cars.Count; ++i)
                                 {
                                     TrainCar car = drivenTrain.Cars[i];
                                     train.Cars.Add(car);
                                     car.Train = train;
+                                    TrainMassKG1 += car.MassKG;
                                 }
                                 //Rear coupling
                                 FinishRearCoupling(train, drivenTrain, false);
@@ -1115,11 +1123,13 @@ namespace Orts.Simulation
                                     DbfEvalOverSpeedCoupling += 1;
 
                                 lead = drivenTrain.LeadLocomotive;
+                                TrainMassKG1 = 0;
                                 for (int i = 0; i < train.Cars.Count; ++i)
                                 {
                                     TrainCar car = train.Cars[i];
                                     drivenTrain.Cars.Insert(i, car);
                                     car.Train = drivenTrain;
+                                    TrainMassKG1 += car.MassKG;
                                 }
                                 if (drivenTrain.LeadLocomotiveIndex >= 0) drivenTrain.LeadLocomotiveIndex += train.Cars.Count;
                                 FinishFrontCoupling(drivenTrain, train, lead, true);
@@ -1158,12 +1168,14 @@ namespace Orts.Simulation
                                 DbfEvalOverSpeedCoupling += 1;
 
                             TrainCar lead = drivenTrain.LeadLocomotive;
+                            TrainMassKG1 = 0;
                             for (int i = 0; i < train.Cars.Count; ++i)
                             {
                                 TrainCar car = train.Cars[i];
                                 drivenTrain.Cars.Insert(0, car);
                                 car.Train = drivenTrain;
                                 car.Flipped = !car.Flipped;
+                                TrainMassKG1 += car.MassKG;
                             }
                             if (drivenTrain.LeadLocomotiveIndex >= 0) drivenTrain.LeadLocomotiveIndex += train.Cars.Count;
                             FinishFrontCoupling(drivenTrain, train, lead, false);
