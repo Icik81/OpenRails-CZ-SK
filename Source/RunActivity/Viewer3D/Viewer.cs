@@ -75,12 +75,12 @@ namespace Orts.Viewer3D
         /// Monotonically increasing time value (in seconds) for the game/viewer. Starts at 0 and only ever increases, at real-time.
         /// </summary>
         public double RealTime { get; private set; }
-        InfoDisplay InfoDisplay;
+        InfoDisplay InfoDisplay;        
         public WindowManager WindowManager { get; private set; }
         public MessagesWindow MessagesWindow { get; private set; } // Game message window (special, always visible)
         public NoticeWindow NoticeWindow { get; private set; } // Game notices window (special)
         public PauseWindow PauseWindow { get; private set; } // Game paused window (special)
-        public ActivityWindow ActivityWindow { get; private set; } // Activity notices window
+        public ActivityWindow ActivityWindow { get; private set; } // Activity notices window        
         public QuitWindow QuitWindow { get; private set; } // Escape window
         public HelpWindow HelpWindow { get; private set; } // F1 window
         public TrackMonitorWindow TrackMonitorWindow { get; private set; } // F4 window
@@ -101,6 +101,7 @@ namespace Orts.Viewer3D
         public TrainListWindow TrainListWindow { get; private set; } // for switching driven train
         public TTDetachWindow TTDetachWindow { get; private set; } // for detaching player train in timetable mode
         public PaxWindow PaxWindow { get; private set; }
+        public DerailWindow DerailWindow { get; private set; } // Escape window
 
         // Route Information
         public TileManager Tiles { get; private set; }
@@ -438,12 +439,12 @@ namespace Orts.Viewer3D
 
             MaterialManager = new SharedMaterialManager(this);
             ShapeManager = new SharedShapeManager(this);
-
+            
             WindowManager = new WindowManager(this);
             MessagesWindow = new MessagesWindow(WindowManager);
             NoticeWindow = new NoticeWindow(WindowManager);
             PauseWindow = new PauseWindow(WindowManager);
-            ActivityWindow = new ActivityWindow(WindowManager);
+            ActivityWindow = new ActivityWindow(WindowManager);            
             QuitWindow = new QuitWindow(WindowManager);
             HelpWindow = new HelpWindow(WindowManager);
             TrackMonitorWindow = new TrackMonitorWindow(WindowManager);
@@ -464,6 +465,7 @@ namespace Orts.Viewer3D
             TrainListWindow = new TrainListWindow(WindowManager);
             TTDetachWindow = new TTDetachWindow(WindowManager);
             PaxWindow = new PaxWindow(WindowManager);
+            DerailWindow = new DerailWindow(WindowManager);
             WindowManager.Initialize();
 
             InfoDisplay = new InfoDisplay(this);
@@ -1605,6 +1607,15 @@ namespace Orts.Viewer3D
                     OldMousePickedControl = MousePickedControl;
                     MousePickedControl = null;
                 }
+            }
+
+            //Simulator.CarCoupleMaxSpeedOvercome = true;
+            // Icik
+            if (Simulator.CarCoupleMaxSpeedOvercome && !Simulator.Paused && !MPManager.IsMultiPlayer())
+            {
+                SelectedTrain = PlayerTrain;
+                FrontCamera.Activate();
+                DerailWindow.Visible = true;
             }
 
             MouseState currentMouseState = Mouse.GetState();

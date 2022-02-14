@@ -439,8 +439,13 @@ namespace ORTS.Settings
         public int[] WindowPosition_CarOperations { get; set; }
         [Default(new[] { 50, 50 })]
         public int[] WindowPosition_ComposeMessage { get; set; }
-        [Default(new[] { 100, 0 })]
+        [Default(new[] { 100, 0 })]                
         public int[] WindowPosition_TrainList { get; set; }
+
+        // Icik
+        [Default(new[] { 50, 25 })]
+        public int[] WindowPosition_Derail { get; set; }
+        
 
         // Menu-game communication settings:
         [Default(false)]

@@ -176,6 +176,7 @@ namespace Orts.Simulation
         public float GameTimeCyklus10;
         public float OneSecondLoop;
         public bool CarCoupleSpeedOvercome;
+        public bool CarCoupleMaxSpeedOvercome;
 
         public List<PowerSupplyStation> powerSupplyStations;
         public List<VoltageChangeMarker> voltageChangeMarkers;
@@ -522,6 +523,9 @@ namespace Orts.Simulation
 
         public void Restore(BinaryReader inf, string pathName, float initialTileX, float initialTileZ, CancellationToken cancellation)
         {
+            // Icik
+            CarCoupleMaxSpeedOvercome = inf.ReadBoolean();
+
             ClockTime = inf.ReadDouble();
             Season = (SeasonType)inf.ReadInt32();
             WeatherType = (WeatherType)inf.ReadInt32();
@@ -557,6 +561,9 @@ namespace Orts.Simulation
 
         public void Save(BinaryWriter outf)
         {
+            // Icik
+            outf.Write(CarCoupleMaxSpeedOvercome);
+
             outf.Write(ClockTime);
             outf.Write((int)Season);
             outf.Write((int)WeatherType);
@@ -942,8 +949,14 @@ namespace Orts.Simulation
         {
             // Icik
             int PreviousCarCount = (int) drivenTrain.Cars.Count;
-            float CarCoupleSpeed = 2 / 3.6f; // Napojovací rychlost max 2km/h
+            float CarCoupleSpeed = 2 / 3.6f; // Napojovací rychlost 2km/h
+            float CarCoupleMaxSpeed = 20 / 3.6f; // Maximální napojovací rychlost max 20km/h
             CarCoupleSpeedOvercome = false;
+
+            if (CarCoupleMaxSpeedOvercome)
+            {                
+                SoundNotify = Event.Derail2;
+            }
 
             if (MPManager.IsMultiPlayer() && !MPManager.IsServer()) return; //in MultiPlayer mode, server will check coupling, client will get message and do things
             if (drivenTrain.SpeedMpS < 0)
@@ -984,6 +997,8 @@ namespace Orts.Simulation
                             // Icik
                             if (Math.Abs(drivenTrain.SpeedMpS) > CarCoupleSpeed)
                             {
+                                if (Math.Abs(drivenTrain.SpeedMpS) > CarCoupleMaxSpeed)
+                                    CarCoupleMaxSpeedOvercome = true;
                                 CarCoupleSpeedOvercome = true;
                                 UncoupleBehind(drivenTrain.Cars[PreviousCarCount - 1], true);                                
                             }
@@ -1024,6 +1039,8 @@ namespace Orts.Simulation
                             // Icik
                             if (Math.Abs(drivenTrain.SpeedMpS) > CarCoupleSpeed)
                             {
+                                if (Math.Abs(drivenTrain.SpeedMpS) > CarCoupleMaxSpeed)
+                                    CarCoupleMaxSpeedOvercome = true;
                                 CarCoupleSpeedOvercome = true;
                                 UncoupleBehind(drivenTrain.Cars[PreviousCarCount - 1], true);                                  
                             }
@@ -1083,6 +1100,8 @@ namespace Orts.Simulation
                                 // Icik
                                 if (Math.Abs(train.SpeedMpS) > CarCoupleSpeed)
                                 {
+                                    if (Math.Abs(drivenTrain.SpeedMpS) > CarCoupleMaxSpeed)
+                                        CarCoupleMaxSpeedOvercome = true;
                                     CarCoupleSpeedOvercome = true;
                                     UncoupleBehind(train.Cars[PreviousCarCount - 1], true);                                    
                                 }
@@ -1108,6 +1127,8 @@ namespace Orts.Simulation
                                 // Icik
                                 if (Math.Abs(drivenTrain.SpeedMpS) > CarCoupleSpeed)
                                 {
+                                    if (Math.Abs(drivenTrain.SpeedMpS) > CarCoupleMaxSpeed)
+                                        CarCoupleMaxSpeedOvercome = true;
                                     CarCoupleSpeedOvercome = true;
                                     UncoupleBehind(drivenTrain.FirstCar, true);                                    
                                 }
@@ -1150,6 +1171,8 @@ namespace Orts.Simulation
                             // Icik
                             if (Math.Abs(drivenTrain.SpeedMpS) > CarCoupleSpeed)
                             {
+                                if (Math.Abs(drivenTrain.SpeedMpS) > CarCoupleMaxSpeed)
+                                    CarCoupleMaxSpeedOvercome = true;
                                 CarCoupleSpeedOvercome = true;
                                 UncoupleBehind(drivenTrain.FirstCar, true);                                
                             }

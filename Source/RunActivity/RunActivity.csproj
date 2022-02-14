@@ -150,6 +150,7 @@
     <Compile Include="Viewer3D\Popups\OSDCars.cs" />
     <Compile Include="Viewer3D\Popups\OSDLocations.cs" />
     <Compile Include="Viewer3D\Popups\PauseWindow.cs" />
+    <Compile Include="Viewer3D\Popups\DerailWindow.cs" />
     <Compile Include="Viewer3D\Popups\QuitWindow.cs" />
     <Compile Include="Viewer3D\Popups\SignallingDebugWindow.cs" />
     <Compile Include="Viewer3D\Popups\SwitchWindow.cs" />
