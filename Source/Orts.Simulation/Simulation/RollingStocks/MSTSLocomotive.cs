@@ -2820,7 +2820,7 @@ namespace Orts.Simulation.RollingStocks
                 HeatingIsOn = true;
 
             // Ochrana při nadproudu topení/klimatizace jen pro hráče
-            if (IsPlayerTrain)
+            if (IsPlayerTrain && IsLeadLocomotive())
             {
                 if (CabHeating_OffOn && AuxPowerOn)
                     CabHeatingIsOn = true;
@@ -2859,7 +2859,7 @@ namespace Orts.Simulation.RollingStocks
             }
             
             // Počítání teplot proběhne každý desátý cyklus 
-            if (Simulator.GameTimeCyklus10 == 10 && (!Train.HeatingBoilerCarAttached || !Train.HeatedCarAttached))
+            if (Simulator.GameTimeCyklus10 == 10 && (!Train.HeatingBoilerCarAttached || !Train.HeatedCarAttached) && IsLeadLocomotive())
             {
                 foreach (TrainCar car in Train.Cars)
                 {
