@@ -309,6 +309,7 @@ namespace Orts.Common
         DieselMotorTempDefected,
         DieselMotorCooling,
         DieselMotorCoolingOff,
+        CoupleImpact,
     }
 
     public static class Events
@@ -632,6 +633,7 @@ namespace Orts.Common
                         case 20064: return Event.DieselMotorTempDefected;                        
                         case 20065: return Event.DieselMotorCooling;                        
                         case 20066: return Event.DieselMotorCoolingOff;
+                        case 20067: return Event.CoupleImpact;
 
                         default: return 0;
                     }

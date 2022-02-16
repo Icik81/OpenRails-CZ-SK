@@ -1867,7 +1867,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     if (!TwoPipesConnectionBreak)
                         train.Cars[i].BrakeSystem.BrakeLine2PressurePSI = sumpv;
 
-                    if (loco != null)
+                    if (loco != null && lead != null)
                     {
                         if (!TwoPipesConnectionBreak)
                         {
@@ -2130,7 +2130,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 var engine = train.Cars[i] as MSTSLocomotive;
                                 
                 // Detekce nastavení polohy brzdiče průběžné brzdy                
-                if (engine != null)
+                if (engine != null && lead != null)
                 {
                     if (engine.TrainBrakeController.TrainBrakeControllerState == ControllerState.Release)
                     {

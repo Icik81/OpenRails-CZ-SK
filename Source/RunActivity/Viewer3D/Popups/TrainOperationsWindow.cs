@@ -124,6 +124,7 @@ namespace Orts.Viewer3D.Popups
             else
             {
                 new UncoupleCommand(Viewer.Log, CarPosition);
+                Viewer.Simulator.CarByUserUncoupled = true;
                 if (Viewer.CarOperationsWindow.CarPosition > CarPosition)
                     Viewer.CarOperationsWindow.Visible = false;
             }

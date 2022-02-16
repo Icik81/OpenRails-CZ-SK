@@ -1718,6 +1718,8 @@ namespace Orts.Simulation.Physics
         bool HasCarCoupleSpeed;
         public float TrainMassKG0;
         public float TrainMassKG1;
+        float CyklusCouplerImpuls = 1;
+        float CyklusCouplerUncouple = 6;
 
         public virtual void physicsUpdate(float elapsedClockSeconds)
         {
@@ -1768,9 +1770,9 @@ namespace Orts.Simulation.Physics
                     car.TotalForceN = -car.TotalForceN;
                     car.SpeedMpS = -car.SpeedMpS;
                 }
-
-
+                
                 // Icik
+                // Provede odraz vozů při prudkém najetí
                 TrainMassKG0 = 0;
                 foreach (TrainCar car1 in Cars)               
                     TrainMassKG0 += car1.MassKG;                                   
@@ -1783,17 +1785,32 @@ namespace Orts.Simulation.Physics
                         SpeedMpS0 = -car.SpeedMpS;
                     HasCarCoupleSpeed = true;                    
                 }
-                //HasCarCoupleSpeed = false;
-                if (HasCarCoupleSpeed && LeadLocomotive != null)
+                if (Simulator.CarByUserUncoupled  && LeadLocomotive != null)
                 {
-                    if (TrainMassKG0 <= Simulator.TrainMassKG1)                    
-                        car.SpeedMpS = SpeedMpS0 * 30000 / TrainMassKG0;                                            
-                    else
-                        car.SpeedMpS = -SpeedMpS0;
-                    HasCarCoupleSpeed = false;
-                    SignalEvent(Event.CoupleB);
+                    CyklusCouplerUncouple--;
+                    if (CyklusCouplerUncouple == 0)
+                    {
+                        Simulator.CarByUserUncoupled = false;
+                        CyklusCouplerUncouple = 6;
+                        HasCarCoupleSpeed = false;
+                    }
                 }
-
+                if (HasCarCoupleSpeed && LeadLocomotive != null && !Simulator.CarByUserUncoupled)
+                {
+                    CyklusCouplerImpuls--;
+                    if (CyklusCouplerImpuls == 0)
+                    {
+                        if (TrainMassKG0 <= Simulator.TrainMassKG1)
+                            car.SpeedMpS = SpeedMpS0 * 100000 / TrainMassKG0;
+                        else
+                            car.SpeedMpS = -SpeedMpS0;
+                        HasCarCoupleSpeed = false;
+                        if (Math.Abs(car.SpeedMpS) > 0.05f)
+                            SignalEvent(Event.CoupleImpact);
+                        CyklusCouplerImpuls = 1;                        
+                    }                    
+                }
+                                
 
                 if (car.WheelSlip)
                     whlslp = true;
