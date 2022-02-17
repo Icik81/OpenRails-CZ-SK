@@ -2870,8 +2870,16 @@ namespace Orts.Simulation.RollingStocks
                     VibrationRotationVelocityRadpS.X += (factor * Simulator.Settings.CarVibratingLevel * VibrationIntroductionStrength * 0.70f * VibrationMassKG) / x;
                 }
 
+                // Vibrace při nárazu      
+                if (IsPlayerTrain && Simulator.CarCoupleSpeedOvercome && !Simulator.CarCoupleMaxSpeedOvercome)
+                {
+                    VibrationSpringConstantPrimepSpS = 50 / 0.2f;
+                    VibratioDampingCoefficient = 0.3f;
+                    VibrationRotationVelocityRadpS.X += (VibrationIntroductionStrength * Math.Abs(SpeedMpS) * 50f * VibrationMassKG) / x;
+                }
+
                 // Vibrace při zrychlování a zpomalování
-                if (Math.Abs(AccelerationMpSS) > 1f && !TypVibrace_1 && !TypVibrace_2 && !TypVibrace_3 && SpeedMpS < 0.1f && !WheelSlip && IsPlayerTrain)
+                if (IsPlayerTrain && Math.Abs(AccelerationMpSS) > 1f && !TypVibrace_1 && !TypVibrace_2 && !TypVibrace_3 && Math.Abs(SpeedMpS) < 0.1f && !WheelSlip)
                 {                    
                     VibrationSpringConstantPrimepSpS = 50 / 0.2f;
                     VibratioDampingCoefficient = 0.3f;

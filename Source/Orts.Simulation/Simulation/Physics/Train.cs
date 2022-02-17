@@ -1809,8 +1809,8 @@ namespace Orts.Simulation.Physics
                             SignalEvent(Event.CoupleImpact);
                         CyklusCouplerImpuls = 1;                        
                     }                    
-                }
-                                
+                }                
+
 
                 if (car.WheelSlip)
                     whlslp = true;

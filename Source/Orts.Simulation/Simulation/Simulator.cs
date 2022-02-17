@@ -991,7 +991,7 @@ namespace Orts.Simulation
                             {
                                 if (drivenTrain.SpeedMpS < train.SpeedMpS)
                                     drivenTrain.SetCoupleSpeed(train, 1);                                
-                                //drivenTrain.CalculatePositionOfCars(elapsedClockSeconds, -d1);
+                                drivenTrain.CalculatePositionOfCars(elapsedClockSeconds, -d1);
                                 return;
                             }
                             // couple my rear to front of train
@@ -1046,7 +1046,7 @@ namespace Orts.Simulation
                             {
                                 if (drivenTrain.SpeedMpS < -train.SpeedMpS)
                                     drivenTrain.SetCoupleSpeed(train, 11);                                
-                                //drivenTrain.CalculatePositionOfCars(elapsedClockSeconds, -d2);
+                                drivenTrain.CalculatePositionOfCars(elapsedClockSeconds, -d2);
                                 return;
                             }
                             // couple my rear to rear of train
@@ -1117,7 +1117,7 @@ namespace Orts.Simulation
                             {
                                 if (drivenTrain.SpeedMpS > train.SpeedMpS)
                                     drivenTrain.SetCoupleSpeed(train, 1);                                
-                                //drivenTrain.CalculatePositionOfCars(elapsedClockSeconds, d1);
+                                drivenTrain.CalculatePositionOfCars(elapsedClockSeconds, d1);
                                 return;
                             }
                             // couple my front to rear of train
@@ -1211,7 +1211,7 @@ namespace Orts.Simulation
                             {
                                 if (drivenTrain.SpeedMpS > -train.SpeedMpS)
                                     drivenTrain.SetCoupleSpeed(train, -1);                                
-                                //drivenTrain.CalculatePositionOfCars(elapsedClockSeconds, d2);
+                                drivenTrain.CalculatePositionOfCars(elapsedClockSeconds, d2);
                                 return;
                             }
                             // couple my front to front of train
