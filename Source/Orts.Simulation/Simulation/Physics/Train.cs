@@ -1809,7 +1809,13 @@ namespace Orts.Simulation.Physics
                             SignalEvent(Event.CoupleImpact);
                         CyklusCouplerImpuls = 1;                        
                     }                    
-                }                
+                }
+                // Vykolejení vlaku
+                if (Simulator.CarCoupleMaxSpeedOvercome)
+                {
+                    car.SpeedMpS = 0;
+                    return;
+                }
 
 
                 if (car.WheelSlip)
