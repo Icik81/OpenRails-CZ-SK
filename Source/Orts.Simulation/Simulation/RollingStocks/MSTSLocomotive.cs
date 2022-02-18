@@ -478,6 +478,7 @@ namespace Orts.Simulation.RollingStocks
         public float PowerReductionByAuxEquipmentEng;
         public float PowerReductionByAuxEquipmentWag;
         public float PowerReduction0;
+        public float PowerReduction1;
         public float TElevatedConsumption = 0;
         public float MainResChargingRatePSIpS0;
         public bool AirBrakesIsCompressorElectricOrMechanical;
@@ -2590,7 +2591,7 @@ namespace Orts.Simulation.RollingStocks
                     }
                     if (this is MSTSDieselLocomotive) // Dieselelektrické lokomotivy
                     {                        
-                        PowerReduction = 0.9f; // Omezení trakčních motorů  
+                        PowerReductionResult4 = 0.9f; // Omezení trakčních motorů  
                         SetDynamicBrakePercent(0);
                         Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Zásah nadproudové ochrany!"));
                     }
@@ -2606,7 +2607,7 @@ namespace Orts.Simulation.RollingStocks
                 if (this is MSTSDieselLocomotive && OverCurrent && LocalThrottlePercent == 0 && LocalDynamicBrakePercent == 0)
                 {                    
                     OverCurrent = false;
-                    PowerReduction = 0;
+                    PowerReductionResult4 = 0;
                 }
             }
         }
@@ -2654,8 +2655,8 @@ namespace Orts.Simulation.RollingStocks
                         Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Zásah protiskluzové ochrany!"));
                     }
                     if (this is MSTSDieselLocomotive) // Dieselelektrické lokomotivy
-                    {             
-                        PowerReduction = 0.9f; // Omezení trakčních motorů  
+                    {
+                        PowerReductionResult4 = 0.9f; // Omezení trakčních motorů  
                         SetDynamicBrakePercent(0);
                         Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Zásah protiskluzové ochrany!"));
                     }
@@ -2671,7 +2672,7 @@ namespace Orts.Simulation.RollingStocks
                 if (this is MSTSDieselLocomotive && OverVoltage && LocalThrottlePercent == 0 && LocalDynamicBrakePercent == 0)
                 {                    
                     OverVoltage = false;
-                    PowerReduction = 0;                    
+                    PowerReductionResult4 = 0;                    
                 }
             }
         }
@@ -2756,24 +2757,24 @@ namespace Orts.Simulation.RollingStocks
         }
 
         // Icik
-        // Vypínání HV při určitém tlaku v potrubí
-        public void HVOffbyAirPressure()
+        public void HVOffbyAirPressureE()
         {
             if (!IsPlayerTrain)
-                return;
-            if (DoesBrakeCutPower)
+                return;            
+
+            if (DoesBrakeCutPower && this is MSTSElectricLocomotive)
             {
                 // Pokud stoupne tlak nad hraniční hodnotu tlaku v brzdovém válci
                 if (BrakeCutsPowerAtBrakeCylinderPressurePSI != 0)
                 {
                     if (BrakeSystem.GetCylPressurePSI() >= BrakeCutsPowerAtBrakeCylinderPressurePSI && LocalThrottlePercent > 0
                       || HVOffStatusBrakeCyl)
-                    {
-                        HVOff = true; // Vypnutí HV
+                    {                        
+                        HVOff = true; // Vypnutí HV                        
                         HVOffStatusBrakeCyl = true;
                     }
                     if (BrakeSystem.GetCylPressurePSI() < BrakeCutsPowerAtBrakeCylinderPressurePSI)
-                        HVOffStatusBrakeCyl = false;
+                        HVOffStatusBrakeCyl = false;                        
                 }
                 
                 if (PowerOn && BrakeSystem.BrakeCylApply && LocalThrottlePercent > 0
@@ -2783,7 +2784,7 @@ namespace Orts.Simulation.RollingStocks
                     if (BrakeCutsPowerAtBrakePipePressurePSI != 0)
                         if (BrakeSystem.BrakeLine1PressurePSI <= BrakeCutsPowerAtBrakePipePressurePSI)
                         {
-                            HVOff = true; // Vypnutí HV                             
+                            HVOff = true; // Vypnutí HV                            
                             HVOffStatusBrakePipe = true;
                         }
                     //Trace.TraceWarning("Hodnota BrakeSystem.BrakeLine1PressurePSI {0}, BrakeCutsPowerAtBrakePipePressurePSI {1}", BrakeSystem.BrakeLine1PressurePSI, BrakeCutsPowerAtBrakePipePressurePSI);                    
@@ -2794,11 +2795,68 @@ namespace Orts.Simulation.RollingStocks
                     // Pokud vystoupí tlak nad hraniční hodnotu tlaku v brzdovém potrubí
                     if (BrakeRestoresPowerAtBrakePipePressurePSI != 0)
                         if (BrakeSystem.BrakeLine1PressurePSI >= BrakeRestoresPowerAtBrakePipePressurePSI)
-                        {
-                            HVOffStatusBrakePipe = false;
-                        }
+                            HVOffStatusBrakePipe = false;                                                    
                 }
             }
+        }
+
+        public void HVOffbyAirPressureD()
+        {
+            if (!IsPlayerTrain)
+                return;
+
+            if (this is MSTSDieselLocomotive)
+            {
+                // Pokud stoupne tlak nad hraniční hodnotu tlaku v brzdovém válci
+                if (DoesBrakeCutPower && BrakeCutsPowerAtBrakeCylinderPressurePSI != 0 && !HVOffStatusBrakePipe)
+                {
+                    if (BrakeSystem.GetCylPressurePSI() >= BrakeCutsPowerAtBrakeCylinderPressurePSI && LocalThrottlePercent > 0
+                      || HVOffStatusBrakeCyl)
+                    {
+                        PowerReductionResult5 = 1;
+                        HVOffStatusBrakeCyl = true;
+                    }
+                    if (BrakeSystem.GetCylPressurePSI() < BrakeCutsPowerAtBrakeCylinderPressurePSI)
+                    {
+                        PowerReductionResult5 = 0;
+                        HVOffStatusBrakeCyl = false;
+                    }
+                }
+
+                if (BrakeCutsPowerAtBrakePipePressurePSI == 0) BrakeCutsPowerAtBrakePipePressurePSI = 3.5f * 14.50377f; // default 3.5bar
+                if (BrakeRestoresPowerAtBrakePipePressurePSI == 0) BrakeRestoresPowerAtBrakePipePressurePSI = 4.5f * 14.50377f; // default 4.5bar
+                // Pokud klesne tlak pod hraniční hodnotu tlaku v brzdovém potrubí
+                if (BrakeSystem.BrakeLine1PressurePSI <= BrakeCutsPowerAtBrakePipePressurePSI)
+                    PowerReductionResult2 = 1;
+                // Pokud vystoupí tlak nad hraniční hodnotu tlaku v brzdovém potrubí
+                if (BrakeSystem.BrakeLine1PressurePSI >= BrakeRestoresPowerAtBrakePipePressurePSI)
+                    PowerReductionResult2 = 0;
+            }            
+        }
+
+        public float PowerReductionResult1;  // Redukce výkonu od topení, klimatizace, kompresoru
+        public float PowerReductionResult2;  // Redukce výkonu od nedostatečného tlaku vzduchu v potrubí
+        public float PowerReductionResult3;  // Redukce výkonu při nadproudu topení, klimatizace 
+        public float PowerReductionResult4;  // Redukce výkonu při nadproudu pohonu, skluz 
+        public float PowerReductionResult5;  // Redukce výkonu při tlaku v brzdovém válci 
+        public float PowerReductionResult6;  // Redukce výkonu při motoru pod provozní teplotou  
+        public void PowerReductionResult(float elapsedClockSeconds)
+        {
+            if (!IsPlayerTrain)
+                return;
+            if (this is MSTSDieselLocomotive || this is MSTSSteamLocomotive)
+            {
+                if (PowerReduction < PowerReductionResult1 + PowerReductionResult2 + PowerReductionResult3 + PowerReductionResult4 + PowerReductionResult5 + PowerReductionResult6)
+                    PowerReduction += 1 * elapsedClockSeconds;
+
+                if (PowerReduction > PowerReductionResult1 + PowerReductionResult2 + PowerReductionResult3 + PowerReductionResult4 + PowerReductionResult5 + PowerReductionResult6)
+                    PowerReduction -= 1 * elapsedClockSeconds;
+
+                PowerReduction = MathHelper.Clamp(PowerReduction, 0, 0.999f);
+                PowerReduction = (float)Math.Round(PowerReduction, 3);
+            }
+            //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("PowerReduction " + PowerReduction));
+            //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Celková ztráta výkonu "+ PowerReduction * MaxPowerW/1000 + " kW!"));            
         }
 
         // Icik
@@ -2809,13 +2867,9 @@ namespace Orts.Simulation.RollingStocks
         public bool HeatingOverCurrent = false;
         public bool HeatingIsOn = false;
         public bool CabHeatingIsOn = false;
-        public float MSGHeatingCycle;
-
+        public float MSGHeatingCycle;        
         public void ElevatedConsumptionOnLocomotive(float elapsedClockSeconds)
-        {            
-            if (TElevatedConsumption == 0)
-                PowerReduction0 = PowerReduction;
-            
+        {                      
             if (!IsPlayerTrain && AuxPowerOn)                
                 HeatingIsOn = true;
 
@@ -2850,10 +2904,7 @@ namespace Orts.Simulation.RollingStocks
                     SignalEvent(Event.HeatingOverCurrentOff);
 
                 if (!Heating_OffOn)
-                    HeatingOverCurrent = false;
-
-                if (this is MSTSDieselLocomotive && !Heating_OffOn && !OverCurrent && !OverVoltage)
-                    PowerReduction = 0;
+                    HeatingOverCurrent = false;                
 
                 I_HeatingData0 = (float)Math.Round(I_HeatingData);
             }
@@ -3200,11 +3251,12 @@ namespace Orts.Simulation.RollingStocks
                             PowerReductionByHeatingWag += car.PowerReductionByHeating0; // Topení                        
                     }
 
+                    PowerReductionResult3 = 0;
                     if (I_HeatingData > HeatingMaxCurrentA && IsPlayerTrain)
                     {
                         if (car.WagonType == WagonTypes.Engine && this is MSTSDieselLocomotive)
                         {
-                            PowerReduction = 0.9f;
+                            PowerReductionResult3 = 0.9f;
                             HeatingOverCurrent = true;
                             Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Vybavení nadproudové ochrany topení/klimatizace!"));
                         }
@@ -3283,7 +3335,7 @@ namespace Orts.Simulation.RollingStocks
                 }
                 PowerReductionByAuxEquipmentSum = PowerReductionByAuxEquipmentWag + PowerReductionByAuxEquipmentEng;
             }
-            
+
             //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Zvýšený odběr proudu, výkon zredukován "+ PowerReductionByAuxEquipmentSum * MaxPowerW/1000) + " kW!");                        
 
             if (IsPlayerTrain)
@@ -3298,32 +3350,13 @@ namespace Orts.Simulation.RollingStocks
                 {
                     // Výpočet celkového úbytku výkonu 
                     if (MaxPowerW == 0) MaxPowerW = 1000000; // Default pro výkon, který nesmí být 0kW
-                    float PowerReductionResult = (PowerReductionByHeatingSum + PowerReductionByAuxEquipmentSum) * (1000000 / MaxPowerW);
-                    PowerReductionResult = PowerReductionResult / 1000000;
-                    PowerReductionResult = MathHelper.Clamp(PowerReductionResult, 0, 1);
-
-                    if (PowerReduction < PowerReductionResult)
-                        PowerReduction = PowerReduction + 0.025f;
-                    else PowerReduction = PowerReductionResult;
-
-                    //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Celková ztráta výkonu "+ PowerReduction * MaxPowerW/1000 + " kW!"));
-                    //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("PowerReduction " + PowerReduction));
-
-                    if (PowerReductionResult == 0)
-                    {
-                        if (PowerReduction > PowerReduction0)
-                            PowerReduction = PowerReduction - 0.05f;
-                        if (PowerReduction < PowerReduction0)
-                        {
-                            PowerReduction = PowerReduction0;
-                            TElevatedConsumption = 0;
-                        }
-                    }
-                }
-
-                //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Příkon topení " + PowerReductionByHeatingSum / 1000) + " kW!");
-                //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Příkon pom.obvodů " + PowerReductionByAuxEquipmentSum / 1000) + " kW!");
+                    PowerReductionResult1 = (PowerReductionByHeatingSum + PowerReductionByAuxEquipmentSum) * (1000000 / MaxPowerW);
+                    PowerReductionResult1 /= 1000000;
+                    PowerReductionResult1 = MathHelper.Clamp(PowerReductionResult1, 0, 1);                    
+                }                
             }
+                //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Příkon topení " + PowerReductionByHeatingSum / 1000) + " kW!");
+                //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Příkon pom.obvodů " + PowerReductionByAuxEquipmentSum / 1000) + " kW!");            
         }
         
         // Stanovení hodnot výkonů a síly pro AC-DC systém
@@ -3668,8 +3701,7 @@ namespace Orts.Simulation.RollingStocks
             if (Simulator.GameTimeCyklus10 == 10)
             {
                 Overcurrent_Protection();
-                AntiSlip_Protection();                
-                HVOffbyAirPressure();
+                AntiSlip_Protection();                                
                 MaxPower_MaxForce_ACDC();
                 if (IsPlayerTrain && Pantograph4Enable) TogglePantograph4Switch();
                 if (IsPlayerTrain && Pantograph3Enable) TogglePantograph3Switch();
@@ -3682,12 +3714,14 @@ namespace Orts.Simulation.RollingStocks
                 TrainBrakeControllerValueForSound = (float)Math.Round(TrainBrakeController.CurrentValue, 2);
                 EngineBrakeControllerValueForSound = (float)Math.Round(EngineBrakeController.CurrentValue, 2);
             }
-
+            
             EDBCancelByEngineBrake();
             EDBCancelByOL3BailOff();
             PowerOn_Filter(elapsedClockSeconds);
             ElevatedConsumptionOnLocomotive(elapsedClockSeconds);
-            
+            HVOffbyAirPressureE();
+            HVOffbyAirPressureD();
+            PowerReductionResult(elapsedClockSeconds);
 
             TrainControlSystem.Update();
 

@@ -1334,12 +1334,13 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
             }
 
             // Fáze zahřívání motoru
+            locomotive.PowerReductionResult6 = 0;
             if (EngineStatus == Status.Running && !locomotive.DieselLocoTempReady)
             {
                 ExhaustColor = Color.TransparentBlack;
                 //ExhaustParticles *= 2;
                 ExhaustMagnitude *= 2;                
-                locomotive.PowerReduction += MathHelper.Clamp(1 - (RealDieselWaterTemperatureDeg / (0.90f * DieselIdleTemperatureDegC)), 0, 0.5f);
+                locomotive.PowerReductionResult6 = MathHelper.Clamp(1 - (RealDieselWaterTemperatureDeg / (0.90f * DieselIdleTemperatureDegC)), 0, 0.5f);
 
                 if (RealDieselWaterTemperatureDeg > 0.90f * DieselIdleTemperatureDegC)
                     locomotive.DieselLocoTempReady = true;
