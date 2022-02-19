@@ -642,8 +642,11 @@ namespace Orts.Viewer3D.Popups
                 if (car.WagonHasTemperature && car.DieselHeaterPower > 0)
                     TypeHeatText = "Bufík";
                 else
-                if (car.WagonHasTemperature && car.DieselHeaterPower == 0)
+                if (car.WagonHasTemperature && car.DieselHeaterPower == 0 && !car.Train.CarSteamHeatOn)
                     TypeHeatText = "El.topení";
+                else
+                if (car.WagonHasTemperature && car.DieselHeaterPower == 0 && car.Train.CarSteamHeatOn)
+                    TypeHeatText = "Par.topení";
                 else
                     TypeHeatText = "";
 

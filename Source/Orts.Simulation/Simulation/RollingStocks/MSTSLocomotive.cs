@@ -2916,9 +2916,9 @@ namespace Orts.Simulation.RollingStocks
                 if (HeatingMaxCurrentA == 0)
                     HeatingMaxCurrentA = 130; // Default 130A
 
-                if (Heating_OffOn && !HeatingOverCurrent && AuxPowerOn)                  
+                if ((Heating_OffOn && !HeatingOverCurrent && AuxPowerOn) || Train.CarSteamHeatOn)                  
                     HeatingIsOn = true;
-                else
+                if ((!Heating_OffOn || HeatingOverCurrent || !AuxPowerOn) && !Train.CarSteamHeatOn)
                 {
                     if (I_HeatingData > 0)
                         I_HeatingData -= 50 * elapsedClockSeconds; // 50A/s
@@ -2941,7 +2941,7 @@ namespace Orts.Simulation.RollingStocks
             }
             
             // Počítání teplot proběhne každý desátý cyklus 
-            if (Simulator.GameTimeCyklus10 == 10 && (!Train.HeatingBoilerCarAttached || !Train.HeatedCarAttached) && IsLeadLocomotive())
+            if (Simulator.GameTimeCyklus10 == 10 && IsLeadLocomotive())
             {
                 foreach (TrainCar car in Train.Cars)
                 {
@@ -3377,7 +3377,7 @@ namespace Orts.Simulation.RollingStocks
                     return;
                 }
 
-                if (WagonType == WagonTypes.Engine && this is MSTSDieselLocomotive) // Diesel lokomotivy
+                if (WagonType == WagonTypes.Engine && this is MSTSDieselLocomotive && !Train.CarSteamHeatOn) // Diesel lokomotivy
                 {
                     // Výpočet celkového úbytku výkonu 
                     if (MaxPowerW == 0) MaxPowerW = 1000000; // Default pro výkon, který nesmí být 0kW
