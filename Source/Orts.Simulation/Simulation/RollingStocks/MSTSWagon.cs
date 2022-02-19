@@ -3616,7 +3616,7 @@ namespace Orts.Simulation.RollingStocks
             {
                 var mstsWagon = car as MSTSWagon;
                 bool StatusChange = false;
-                if (car.BrakeSystem.HeatingIsOn)
+                if (car.BrakeSystem.HeatingIsOn && !car.Train.CarSteamHeatOn)
                 {
                     //if (Simulator.Season == SeasonType.Summer && car.PowerReductionByAirCondition == 0)
                     //{
@@ -3625,7 +3625,7 @@ namespace Orts.Simulation.RollingStocks
                     //}
                     car.BrakeSystem.HeatingText = "zapnuto";                    
                 }
-                if (!car.BrakeSystem.HeatingIsOn)
+                if (!car.BrakeSystem.HeatingIsOn && !car.Train.CarSteamHeatOn)
                 {                 
                     car.BrakeSystem.HeatingText = "vypnuto";
                 }                

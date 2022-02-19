@@ -2433,9 +2433,13 @@ namespace Orts.Simulation.Physics
                             car.CarHeatCurrentCompartmentHeatW += car.CarNetSteamHeatLossWpTime * elapsedClockSeconds;  // Gains per elapsed time         
                         }
 
-                        car.CarCurrentCarriageHeatTempC = W.ToKW(car.CarHeatCurrentCompartmentHeatW) / (SpecificHeatCapcityAirKJpKgK * DensityAirKgpM3 * car.CarHeatVolumeM3) + TrainOutsideTempC;
+                        // Icik
+                        //car.CarCurrentCarriageHeatTempC = W.ToKW(car.CarHeatCurrentCompartmentHeatW) / (SpecificHeatCapcityAirKJpKgK * DensityAirKgpM3 * car.CarHeatVolumeM3) + TrainOutsideTempC;
+                        car.CarCurrentCarriageHeatTempC = W.ToKW(car.CarHeatCurrentCompartmentHeatW) / (2 * SpecificHeatCapcityAirKJpKgK * DensityAirKgpM3 * car.CarHeatVolumeM3) + TrainOutsideTempC;
 
-                        float DesiredCompartmentTempResetpointC = car.DesiredCompartmentTempSetpointC - 2.5f; // Allow 2.5Deg bandwidth for temperature
+                        //float DesiredCompartmentTempResetpointC = car.DesiredCompartmentTempSetpointC - 2.5f; // Allow 2.5Deg bandwidth for temperature
+                        float DesiredCompartmentTempResetpointC = car.SetTempCThreshold - 2.5f;
+                        car.DesiredCompartmentTempSetpointC = car.SetTempCThreshold;
 
                         if (car.CarCurrentCarriageHeatTempC > car.DesiredCompartmentTempSetpointC)
                         {
@@ -2444,32 +2448,35 @@ namespace Orts.Simulation.Physics
                         else if (car.CarCurrentCarriageHeatTempC < DesiredCompartmentTempResetpointC)
                         {
                             car.CarHeatCompartmentHeaterOn = true;
-                        }
+                        }                        
 
-                        float DesiredCompartmentAlarmTempSetpointC = C.FromF(45.0f); // Alarm temperature
-                        if (car.CarCurrentCarriageHeatTempC < DesiredCompartmentAlarmTempSetpointC) // If temp below 45of then alarm
-                        {
-                            if (!IsSteamHeatLow)
-                            {
-                                IsSteamHeatLow = true;
-                                // Provide warning message if temperature is too hot
-                                float CarTemp = car.CarCurrentCarriageHeatTempC;
-                                if (car.WagonType == TrainCar.WagonTypes.Passenger)
-                                {
-                                    Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetStringFmt("Carriage {0} temperature is too cold, the passengers are freezing.", car.CarID));
-                                }
-                                else
-                                {
-                                    Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetStringFmt("Car {0} temperature is too cold for the freight.", car.CarID));
-                                }
-                            }
+                        // Icik
+                        // Blokováno, diagnostika je v MSTSLocomotive
 
-                        }
-                        else if (car.CarCurrentCarriageHeatTempC > C.FromF(65.0f))
-                        {
+                        //float DesiredCompartmentAlarmTempSetpointC = C.FromF(45.0f); // Alarm temperature
+                        //if (car.CarCurrentCarriageHeatTempC < DesiredCompartmentAlarmTempSetpointC) // If temp below 45of then alarm
+                        //{
+                        //    if (!IsSteamHeatLow)
+                        //    {
+                        //        IsSteamHeatLow = true;
+                        //        // Provide warning message if temperature is too hot
+                        //        float CarTemp = car.CarCurrentCarriageHeatTempC;
+                        //        if (car.WagonType == TrainCar.WagonTypes.Passenger)
+                        //        {
+                        //            Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetStringFmt("Carriage {0} temperature is too cold, the passengers are freezing.", car.CarID));
+                        //        }
+                        //        else
+                        //        {
+                        //            Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetStringFmt("Car {0} temperature is too cold for the freight.", car.CarID));
+                        //        }
+                        //    }
 
-                            IsSteamHeatLow = false;        // Reset temperature warning
-                        }
+                        //}
+                        //else if (car.CarCurrentCarriageHeatTempC > C.FromF(65.0f))
+                        //{
+
+                        //    IsSteamHeatLow = false;        // Reset temperature warning
+                        //}
                     }
 
 #region Calculate Steam Pressure drop along train
