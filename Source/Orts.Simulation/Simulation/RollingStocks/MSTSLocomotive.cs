@@ -2799,7 +2799,7 @@ namespace Orts.Simulation.RollingStocks
                 }
             }
         }
-
+        // Icik
         public void HVOffbyAirPressureD()
         {
             if (!IsPlayerTrain)
@@ -2839,17 +2839,32 @@ namespace Orts.Simulation.RollingStocks
         public float PowerReductionResult3;  // Redukce výkonu při nadproudu topení, klimatizace 
         public float PowerReductionResult4;  // Redukce výkonu při nadproudu pohonu, skluz 
         public float PowerReductionResult5;  // Redukce výkonu při tlaku v brzdovém válci 
-        public float PowerReductionResult6;  // Redukce výkonu při motoru pod provozní teplotou  
+        public float PowerReductionResult6;  // Redukce výkonu při motoru pod provozní teplotou
+        public float PowerReductionResult7;  // Odpojení TM při selhání
         public void PowerReductionResult(float elapsedClockSeconds)
         {
             if (!IsPlayerTrain)
                 return;
             if (this is MSTSDieselLocomotive || this is MSTSSteamLocomotive)
             {
-                if (PowerReduction < PowerReductionResult1 + PowerReductionResult2 + PowerReductionResult3 + PowerReductionResult4 + PowerReductionResult5 + PowerReductionResult6)
+                if (PowerReduction < 
+                    PowerReductionResult1 
+                    + PowerReductionResult2 
+                    + PowerReductionResult3 
+                    + PowerReductionResult4 
+                    + PowerReductionResult5 
+                    + PowerReductionResult6 
+                    + PowerReductionResult7)
                     PowerReduction += 1 * elapsedClockSeconds;
 
-                if (PowerReduction > PowerReductionResult1 + PowerReductionResult2 + PowerReductionResult3 + PowerReductionResult4 + PowerReductionResult5 + PowerReductionResult6)
+                if (PowerReduction > 
+                    PowerReductionResult1 
+                    + PowerReductionResult2 
+                    + PowerReductionResult3 
+                    + PowerReductionResult4 
+                    + PowerReductionResult5 
+                    + PowerReductionResult6 
+                    + PowerReductionResult7)
                     PowerReduction -= 1 * elapsedClockSeconds;
 
                 PowerReduction = MathHelper.Clamp(PowerReduction, 0, 0.999f);
@@ -2857,6 +2872,22 @@ namespace Orts.Simulation.RollingStocks
             }
             //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("PowerReduction " + PowerReduction));
             //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Celková ztráta výkonu "+ PowerReduction * MaxPowerW/1000 + " kW!"));            
+        }
+
+        // Icik
+        bool TMFailureMSG;
+        public void TMFailure(float elapsedClockSeconds)
+        {
+            if (Train.TMFailure)
+            {
+                if (!TMFailureMSG)
+                {
+                    Simulator.Confirmer.Message(ConfirmLevel.MSG, Simulator.Catalog.GetString("Trakční motory zničeny!"));
+                    SignalEvent(Event.TMFailure);
+                }
+                PowerReductionResult7 = 1;
+                TMFailureMSG = true;
+            }
         }
 
         // Icik
@@ -3721,6 +3752,7 @@ namespace Orts.Simulation.RollingStocks
             ElevatedConsumptionOnLocomotive(elapsedClockSeconds);
             HVOffbyAirPressureE();
             HVOffbyAirPressureD();
+            TMFailure(elapsedClockSeconds);
             PowerReductionResult(elapsedClockSeconds);
 
             TrainControlSystem.Update();
@@ -8011,7 +8043,7 @@ namespace Orts.Simulation.RollingStocks
                 DieselDirectionController_Out = true;
                 SignalEvent(Event.DieselDirectionControllerOut);
             }
-        }
+        }      
 
         // Zatím povoleno kvůli kompatibilitě
         int NumberChoice = 1;

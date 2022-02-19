@@ -1720,6 +1720,7 @@ namespace Orts.Simulation.Physics
         public float TrainMassKG1;
         float CyklusCouplerImpuls = 1;
         float CyklusCouplerUncouple = 6;
+        public bool TMFailure;
 
         public virtual void physicsUpdate(float elapsedClockSeconds)
         {
@@ -1776,7 +1777,6 @@ namespace Orts.Simulation.Physics
                 TrainMassKG0 = 0;
                 foreach (TrainCar car1 in Cars)               
                     TrainMassKG0 += car1.MassKG;                                   
-
                 if (Simulator.CarCoupleSpeedOvercome && !HasCarCoupleSpeed)
                 {
                     if (car.SpeedMpS > 0)
@@ -1815,6 +1815,44 @@ namespace Orts.Simulation.Physics
                 {
                     car.SpeedMpS = 0;
                     return;
+                }
+                // Vyhodnocení selhání TM
+                if (car is MSTSDieselLocomotive)
+                {
+                    if (car.Flipped)
+                    {
+                        if (((MSTSLocomotive)car).UsingRearCab)
+                        {
+                            if (car.TractiveForceN > 0 && car.SpeedMpS < -2)
+                                TMFailure = true;
+                            if (car.TractiveForceN < 0 && car.SpeedMpS > 2)
+                                TMFailure = true;
+                        }
+                        else
+                        {
+                            if (car.TractiveForceN > 0 && car.SpeedMpS > 2)
+                                TMFailure = true;
+                            if (car.TractiveForceN < 0 && car.SpeedMpS < -2)
+                                TMFailure = true;
+                        }
+                    }
+                    else
+                    {
+                        if (((MSTSLocomotive)car).UsingRearCab)
+                        {
+                            if (car.TractiveForceN > 0 && car.SpeedMpS > 2)
+                                TMFailure = true;
+                            if (car.TractiveForceN < 0 && car.SpeedMpS < -2)
+                                TMFailure = true;
+                        }
+                        else
+                        {
+                            if (car.TractiveForceN > 0 && car.SpeedMpS < -2)
+                                TMFailure = true;
+                            if (car.TractiveForceN < 0 && car.SpeedMpS > 2)
+                                TMFailure = true;
+                        }
+                    }
                 }
 
 
