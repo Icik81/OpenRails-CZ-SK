@@ -639,13 +639,13 @@ namespace Orts.Viewer3D.Popups
                 var j = (i == 0) ? 0 : i;
                 var car = train.Cars[j];
                 
-                if (car.WagonHasTemperature && car.DieselHeaterPower > 0)
+                if (car.WagonHasTemperature && car.DieselHeaterPower > 0 && mstsLocomotive.HeatingIsOn)
                     TypeHeatText = "Bufík";
                 else
-                if (car.WagonHasTemperature && car.DieselHeaterPower == 0 && !car.Train.CarSteamHeatOn)
+                if (car.WagonHasTemperature && car.DieselHeaterPower == 0 && !car.Train.CarSteamHeatOn && mstsLocomotive.HeatingIsOn)
                     TypeHeatText = "El.topení";
                 else
-                if (car.WagonHasTemperature && car.DieselHeaterPower == 0 && car.Train.CarSteamHeatOn)
+                if (car.WagonHasTemperature && car.DieselHeaterPower == 0 && car.Train.CarSteamHeatOn && mstsLocomotive.HeatingIsOn)
                     TypeHeatText = "Par.topení";
                 else
                     TypeHeatText = "";
@@ -655,7 +655,7 @@ namespace Orts.Viewer3D.Popups
                     (train.IsFreight ? Viewer.Catalog.GetString("Freight") : Viewer.Catalog.GetString("Pass")) + "\t" +
                     (car.WagonHasTemperature ? Math.Round(car.WagonTemperature).ToString() + " °C" : NoText) + "\t" +
                     ((car.WagonHasTemperature && car.StatusHeatIsOn && !car.Train.CarSteamHeatOn) || (car.Train.CarSteamHeatOn) ? Viewer.Catalog.GetString("Aktivní") : NoText) + "\t" +
-                    (car.WagonHasTemperature && car.BrakeSystem.HeatingIsOn && !car.Train.CarSteamHeatOn ? Viewer.Catalog.GetString("On") : NoText) + "\t" +
+                    (car.WagonHasTemperature && car.BrakeSystem.HeatingIsOn && mstsLocomotive.HeatingIsOn && !car.Train.CarSteamHeatOn ? Viewer.Catalog.GetString("On") : NoText) + "\t" +
                     (TypeHeatText) + "\t" +
                     (car.WagonHasTemperature && car.DieselHeaterPower > 0 ? FormatStrings.FormatFuelVolume(car.DieselHeaterTankCapacityMark, true, false) : NoText) + "\t" +
                     (car.BrakeSystem.DoorsOpen ? Viewer.Catalog.GetString("Open") : NoText) + "\t" +

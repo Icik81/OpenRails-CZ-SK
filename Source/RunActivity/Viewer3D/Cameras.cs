@@ -1998,19 +1998,21 @@ namespace Orts.Viewer3D
         {
             base.SetCameraCar(car);
             if (attachedCar.HeadOutViewpoints.Count > 0)
-                attachedLocation = attachedCar.HeadOutViewpoints[CurrentViewpointIndex].Location;
+                attachedLocation = attachedCar.HeadOutViewpoints[CurrentViewpointIndex].Location;            
 
             if (!Forwards)
                 attachedLocation.X *= -1;
 
             // Icik                
+            float HeadOutZ = attachedLocation.Z;
+            
             if (car != null && (!Viewer.PlayerLocomotive.HasFront3DCab || !Viewer.PlayerLocomotive.HasRear3DCab))
             {
                 var loco = car as MSTSLocomotive;
                 var viewpoints = (loco.UsingRearCab)
                 ? loco.CabViewList[(int)CabViewType.Rear].ViewPointList
                 : loco.CabViewList[(int)CabViewType.Front].ViewPointList;
-                attachedLocation.Z = viewpoints[sideLocation].Location.Z;
+                attachedLocation.Z = (viewpoints[sideLocation].Location.Z / Math.Abs(viewpoints[sideLocation].Location.Z) * (Math.Abs(HeadOutZ)));
             }
         }
 

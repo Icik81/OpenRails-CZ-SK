@@ -2184,8 +2184,7 @@ namespace Orts.Simulation.Physics
                         // Only initialise these values the first time around the loop
                         if (car.IsCarSteamHeatInitial)
                         {
-                           
-                            // This section sets some arbitary default values the first time that this section is processed. Real values are set on subsequent loops, once steam heat is turned on in locomotive
+                            //This section sets some arbitary default values the first time that this section is processed.Real values are set on subsequent loops, once steam heat is turned on in locomotive
                             if (TrainInsideTempC == 0)
                             {
                                 TrainInsideTempC = car.DesiredCompartmentTempSetpointC; // Set intial temp - will be set in Steam and Diesel Eng, but these are done after this step
@@ -2434,8 +2433,9 @@ namespace Orts.Simulation.Physics
                         }
 
                         // Icik
-                        //car.CarCurrentCarriageHeatTempC = W.ToKW(car.CarHeatCurrentCompartmentHeatW) / (SpecificHeatCapcityAirKJpKgK * DensityAirKgpM3 * car.CarHeatVolumeM3) + TrainOutsideTempC;
-                        car.CarCurrentCarriageHeatTempC = W.ToKW(car.CarHeatCurrentCompartmentHeatW) / (2 * SpecificHeatCapcityAirKJpKgK * DensityAirKgpM3 * car.CarHeatVolumeM3) + TrainOutsideTempC;
+                        //car.CarCurrentCarriageHeatTempC = W.ToKW(car.CarHeatCurrentCompartmentHeatW) / (SpecificHeatCapcityAirKJpKgK * DensityAirKgpM3 * car.CarHeatVolumeM3) + TrainOutsideTempC;                                                 
+                        car.CarCurrentCarriageHeatDeltaTempC = W.ToKW(car.CarHeatCurrentCompartmentHeatW) / (SpecificHeatCapcityAirKJpKgK * DensityAirKgpM3 * car.CarHeatVolumeM3) / 1000;
+                        car.CarCurrentCarriageHeatTempC = car.WagonTemperature;
 
                         //float DesiredCompartmentTempResetpointC = car.DesiredCompartmentTempSetpointC - 2.5f; // Allow 2.5Deg bandwidth for temperature
                         float DesiredCompartmentTempResetpointC = car.SetTempCThreshold - 2.5f;

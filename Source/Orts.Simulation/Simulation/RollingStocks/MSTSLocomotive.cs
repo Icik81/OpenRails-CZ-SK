@@ -3189,11 +3189,11 @@ namespace Orts.Simulation.RollingStocks
                                 car.StatusHeatIsOn = false;
                             }
 
-                        }
-                        
+                        }                                       
+
                         // Parní topení počítá teplotu svým algoritmem
                         if (Train.CarSteamHeatOn)
-                            car.WagonTemperature = car.CarCurrentCarriageHeatTempC + car.TempCDeltaAir;
+                            car.WagonTemperature += car.CarCurrentCarriageHeatDeltaTempC + car.TempCDeltaAir;
                         else
                             car.WagonTemperature += car.TempCDelta + car.TempCDeltaAir;
                     }

@@ -180,6 +180,7 @@ namespace Orts.Simulation.RollingStocks
         public float CarHeatCurrentCompartmentHeatW;
         public float CarCurrentCarriageHeatTempC;
         public float TotalPossibleCarHeatW; // Total possible heat of the car, based upon the desired car temperature
+        public float CarCurrentCarriageHeatDeltaTempC;
 
         // some properties of this car
         public float CarWidthM = 2.5f;
@@ -342,6 +343,7 @@ namespace Orts.Simulation.RollingStocks
         public float CarOutsideTempCLastStatus;
         public float TempCClockDelta;
         public bool LocomotiveCab = false;
+        public bool SteamHeatOn;
 
         public float DieselHeaterPower;
         public float DieselHeaterPower0;
