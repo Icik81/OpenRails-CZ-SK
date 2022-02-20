@@ -638,15 +638,18 @@ namespace Orts.Viewer3D.Popups
                 string TypeHeatText;
                 var j = (i == 0) ? 0 : i;
                 var car = train.Cars[j];
-                
-                if (car.WagonHasTemperature && car.DieselHeaterPower > 0 && mstsLocomotive.HeatingIsOn)
+
+                if (car.WagonHasTemperature && car.DieselHeaterPower > 0)
                     TypeHeatText = "Bufík";
                 else
-                if (car.WagonHasTemperature && car.DieselHeaterPower == 0 && !car.Train.CarSteamHeatOn && mstsLocomotive.HeatingIsOn)
+                if (car.WagonHasTemperature && car.DieselHeaterPower == 0 && !car.Train.SteamHeatingIsAvailable && !car.LocomotiveCab)
                     TypeHeatText = "El.topení";
                 else
-                if (car.WagonHasTemperature && car.DieselHeaterPower == 0 && car.Train.CarSteamHeatOn && mstsLocomotive.HeatingIsOn)
-                    TypeHeatText = "Par.topení";
+                if (car.WagonHasTemperature && car.DieselHeaterPower == 0 && car.Train.SteamHeatingIsAvailable && !car.LocomotiveCab)
+                    TypeHeatText = "Par.topení";                
+                else
+                if (car.WagonHasTemperature && car.DieselHeaterPower == 0 && car.LocomotiveCab)
+                    TypeHeatText = "El.topení";
                 else
                     TypeHeatText = "";
 
@@ -654,7 +657,7 @@ namespace Orts.Viewer3D.Popups
                     (car.Flipped ? Viewer.Catalog.GetString("Yes") : Viewer.Catalog.GetString("No")) + "\t" +
                     (train.IsFreight ? Viewer.Catalog.GetString("Freight") : Viewer.Catalog.GetString("Pass")) + "\t" +
                     (car.WagonHasTemperature ? Math.Round(car.WagonTemperature).ToString() + " °C" : NoText) + "\t" +
-                    ((car.WagonHasTemperature && car.StatusHeatIsOn && !car.Train.CarSteamHeatOn) || (car.Train.CarSteamHeatOn) ? Viewer.Catalog.GetString("Aktivní") : NoText) + "\t" +
+                    ((car.WagonHasTemperature && car.StatusHeatIsOn && !car.Train.CarSteamHeatOn) || (car.Train.CarSteamHeatOn && !car.LocomotiveCab) || (car.LocomotiveCab && car.StatusHeatIsOn) ? Viewer.Catalog.GetString("Aktivní") : NoText) + "\t" +
                     (car.WagonHasTemperature && car.BrakeSystem.HeatingIsOn && mstsLocomotive.HeatingIsOn && !car.Train.CarSteamHeatOn ? Viewer.Catalog.GetString("On") : NoText) + "\t" +
                     (TypeHeatText) + "\t" +
                     (car.WagonHasTemperature && car.DieselHeaterPower > 0 ? FormatStrings.FormatFuelVolume(car.DieselHeaterTankCapacityMark, true, false) : NoText) + "\t" +
