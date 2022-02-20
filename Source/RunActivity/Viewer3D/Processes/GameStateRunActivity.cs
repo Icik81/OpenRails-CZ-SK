@@ -515,7 +515,7 @@ namespace Orts.Viewer3D.Processes
                 Simulator.Log.LoadLog(Path.ChangeExtension(saveFile, "replay"));
 
                 Game.ReplaceState(new GameStateViewer3D(Viewer));
-            }
+                }
         }
 
         /// <summary>

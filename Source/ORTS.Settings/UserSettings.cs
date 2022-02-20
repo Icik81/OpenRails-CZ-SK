@@ -238,8 +238,12 @@ namespace ORTS.Settings
         [Default(20)]
         public int DayAmbientLight { get; set; }
         [Default(AntiAliasingMethod.MSAA2x)]
-        public int AntiAliasing { get; set; }
+        public bool FrameTimeLimiter { get; set; }
+        [Default(false)]
+        public int FrameTimeLimit { get; set; }
+        [Default(0)]
 
+        public int AntiAliasing { get; set; }
         // Icik
         [Default(false)]
         public bool CabView_MSTSOR { get; set; }
