@@ -3508,55 +3508,58 @@ namespace Orts.Simulation.RollingStocks
         {
             if (IsPlayerTrain && !Simulator.Paused)
             {
-                if (changingPowerSystem)
-                    PowerChangeRoutine(elapsedClockSeconds);
-                else
+                if (UsingForceHandle)
                 {
-                    if (!CircuitBreakerOn && Pantographs.List[0].State == PantographState.Up)
+                    if (changingPowerSystem)
+                        PowerChangeRoutine(elapsedClockSeconds);
+                    else
                     {
-                        HvPantoTimer += elapsedClockSeconds;
-                        if (SystemAnnunciator == 0)
+                        if (!CircuitBreakerOn && Pantographs.List[0].State == PantographState.Up)
+                        {
+                            HvPantoTimer += elapsedClockSeconds;
+                            if (SystemAnnunciator == 0)
+                            {
+                                SystemAnnunciator = 6;
+                            }
+                            else if (SystemAnnunciator == 6 && HvPantoTimer > 2)
+                            {
+                                SystemAnnunciator = 4;
+                            }
+                            else if (SystemAnnunciator == 4 && HvPantoTimer > 4)
+                            {
+                                SystemAnnunciator = 5;
+                                HvPantoTimer = 0;
+                            }
+                        }
+                        if (!CircuitBreakerOn && (Pantographs.List[0].State == PantographState.Lowering || Pantographs.List[0].State == PantographState.Raising))
+                        {
+                            SystemAnnunciator = 3;
+                        }
+                        if (!CircuitBreakerOn && Pantographs.List[0].State == PantographState.Down && HvPantoTimer < 5)
+                        {
+                            HvPantoTimer += elapsedClockSeconds;
+                            SystemAnnunciator = 4;
+                        }
+                        if (!CircuitBreakerOn && Pantographs.List[0].State == PantographState.Down && HvPantoTimer >= 5)
+                        {
+                            SystemAnnunciator = 1;
+                        }
+
+                        if (CircuitBreakerOn && Pantographs.List[0].State == PantographState.Up)
+                        {
+                            HvPantoTimer = 0;
+                            SystemAnnunciator = 0;
+                        }
+
+                        if (SystemAnnunciator == 3 && !CircuitBreakerOn && Pantographs.List[0].State == PantographState.Up && HvPantoTimer > 6)
+                        {
+                            SystemAnnunciator = 5;
+                        }
+
+                        if (SystemAnnunciator == 0 && BrakeSystem.GetCylPressurePSI() > 0)
                         {
                             SystemAnnunciator = 6;
                         }
-                        else if (SystemAnnunciator == 6 && HvPantoTimer > 2)
-                        {
-                            SystemAnnunciator = 4;
-                        }
-                        else if (SystemAnnunciator == 4 && HvPantoTimer > 4)
-                        {
-                            SystemAnnunciator = 5;
-                            HvPantoTimer = 0;
-                        }
-                    }
-                    if (!CircuitBreakerOn && (Pantographs.List[0].State == PantographState.Lowering || Pantographs.List[0].State == PantographState.Raising))
-                    {
-                        SystemAnnunciator = 3;
-                    }
-                    if (!CircuitBreakerOn && Pantographs.List[0].State == PantographState.Down && HvPantoTimer < 5)
-                    {
-                        HvPantoTimer += elapsedClockSeconds;
-                        SystemAnnunciator = 4;
-                    }
-                    if (!CircuitBreakerOn && Pantographs.List[0].State == PantographState.Down && HvPantoTimer >= 5)
-                    {
-                        SystemAnnunciator = 1;
-                    }
-
-                    if (CircuitBreakerOn && Pantographs.List[0].State == PantographState.Up)
-                    {
-                        HvPantoTimer = 0;
-                        SystemAnnunciator = 0;
-                    }
-
-                    if (SystemAnnunciator == 3 && !CircuitBreakerOn && Pantographs.List[0].State == PantographState.Up && HvPantoTimer > 6)
-                    {
-                        SystemAnnunciator = 5;
-                    }
-
-                    if (SystemAnnunciator == 0 && BrakeSystem.GetCylPressurePSI() > 0)
-                    {
-                        SystemAnnunciator = 6;
                     }
                 }
 
