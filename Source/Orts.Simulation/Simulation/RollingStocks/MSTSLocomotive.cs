@@ -679,13 +679,12 @@ namespace Orts.Simulation.RollingStocks
 
         public enum PowerSystem
         {
-            DE25kV,
-            AT25kV,
-            AT15kV,
+            DE15kV,
             CZ25kV,
             CZ3kV,
             SK25kV,
             SK3kV,
+            HU25kV
         }
 
         public bool SelectingSystem = false;
@@ -7489,12 +7488,11 @@ namespace Orts.Simulation.RollingStocks
             changingPowerSystem = true;
             switch (SelectingPowerSystem)
             {
-                case PowerSystem.AT15kV:
+                case PowerSystem.DE15kV:
                     // TODO change system to 15kV
                     break;
-                case PowerSystem.AT25kV:
+                case PowerSystem.HU25kV:
                 case PowerSystem.CZ25kV:
-                case PowerSystem.DE25kV:
                 case PowerSystem.SK25kV:
                     SwitchingVoltageMode = 2;
                     break;
@@ -7557,11 +7555,9 @@ namespace Orts.Simulation.RollingStocks
                 MaintenanceState = 0;
             if (continuingTimeChangingSystem > 45)
                 PantoBlocked = false;
-            if ((SelectedPowerSystem == PowerSystem.AT15kV
-                || SelectedPowerSystem == PowerSystem.AT25kV
-                || SelectedPowerSystem == PowerSystem.CZ25kV
-                || SelectedPowerSystem == PowerSystem.DE25kV
-                || SelectedPowerSystem == PowerSystem.SK25kV)
+            if ((SelectedPowerSystem == PowerSystem.CZ25kV
+                || SelectedPowerSystem == PowerSystem.SK25kV
+                || SelectingPowerSystem == PowerSystem.HU25kV)
                 && RouteVoltageV == 3000)
             {
                 MaintenanceState = 2;
@@ -7569,8 +7565,7 @@ namespace Orts.Simulation.RollingStocks
                 HVOff = true;
                 return;
             }
-            if ((SelectedPowerSystem == PowerSystem.AT15kV
-                || SelectedPowerSystem == PowerSystem.CZ3kV
+            if ((SelectedPowerSystem == PowerSystem.CZ3kV
                 || SelectedPowerSystem == PowerSystem.SK3kV)
                 && RouteVoltageV == 25000)
             {
