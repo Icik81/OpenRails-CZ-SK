@@ -983,21 +983,34 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 UpdateTripleValveState(threshold);
 
             // Zjistí rychlost změny tlaku v potrubí a v brzdovém válci
-            if (T0 >= 1.0f) T0 = 0.0f;
             if (T0 == 0.0f)
             {
                 prevBrakeLine1PressurePSI = BrakeLine1PressurePSI;
-                prevAutoCylPressurePSI = AutoCylPressurePSI;
+                prevAutoCylPressurePSI = AutoCylPressurePSI;                
             }            
             T0 += elapsedClockSeconds;
             if (T0 > 0.33f && T0 < 0.43f)
             {
-                T0 = 0.0f;
+                T0 = 0;
                 BrakePipeChangeRate = Math.Abs(prevBrakeLine1PressurePSI - BrakeLine1PressurePSI) * 3.33f;
-                BrakePipeChangeRateBar = BrakePipeChangeRate / 14.50377f;                                                
-                CylinderChangeRate = Math.Abs(prevAutoCylPressurePSI - AutoCylPressurePSI) * 3.33f;
-                CylinderChangeRateBar = CylinderChangeRate / 14.50377f;
+
+                if (BrakePipeChangeRate > 0)
+                    BrakePipeChangeRateBar = Math.Max(BrakePipeChangeRateBar, BrakePipeChangeRate / 14.50377f);
+                else
+                    BrakePipeChangeRateBar = 0;
+
+                if (loco != null)
+                {
+                    CylinderChangeRate = Math.Abs(prevAutoCylPressurePSI - AutoCylPressurePSI) * 3.33f;
+                    if (AutoCylPressurePSI > prevAutoCylPressurePSI)
+                        CylinderChangeRateBar = loco.EngineBrakeController.CurrentValue * loco.EngineBrakeApplyRatePSIpS / 14.50377f;
+
+                    if (AutoCylPressurePSI < prevAutoCylPressurePSI)
+                        CylinderChangeRateBar = loco.EngineBrakeController.CurrentValue * loco.EngineBrakeReleaseRatePSIpS / 14.50377f;
+                }
             }            
+            //loco.Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("CylinderChangeRateBar " + CylinderChangeRateBar));
+
 
             // Zaznamená poslední stav pomocné jímky pro určení pracovního bodu pomocné jímky
             if (AutoCylPressurePSI0 < 1 && !BrakeReadyToApply)
