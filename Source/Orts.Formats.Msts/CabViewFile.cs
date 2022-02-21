@@ -380,8 +380,7 @@ namespace Orts.Formats.Msts
         ORTS_SCREEN_BUTTON,
         SELECTED_SYSTEM,
         SELECTING_SYSTEM,
-        MAINTENANCE_STATE,
-        PANTO_BLOCKED,
+        SYSTEM_ANNUNCIATOR,
 
         // Icik
         HV2,

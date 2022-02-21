@@ -352,6 +352,16 @@ namespace Orts.Simulation.RollingStocks.SubSystems
         }
         public void SpeedSelectorModeStartIncrease()
         {
+            if (Locomotive.UsingForceHandle)
+            {
+                if (Locomotive.ForceHandleValue < 0)
+                {
+                    Locomotive.ForceHandleValue = 0;
+                    return;
+                }
+                Locomotive.ForceHandleValue = 100;
+                return;
+            }
             Locomotive.SignalEvent(Common.Event.CruiseControlSpeedSelector);
             if (!Equipped) return;
             if (SpeedSelMode == SpeedSelectorMode.Start) return;
@@ -373,6 +383,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems
         }
         public void SpeedSelectorModeStopIncrease()
         {
+            if (Locomotive.UsingForceHandle)
+                return;
             Locomotive.SignalEvent(Common.Event.CruiseControlSpeedSelector);
             if (Locomotive.Mirel != null)
                 Locomotive.Mirel.ResetVigilance();
@@ -399,6 +411,16 @@ namespace Orts.Simulation.RollingStocks.SubSystems
         }
         public void SpeedSelectorModeDecrease()
         {
+            if (Locomotive.UsingForceHandle)
+            {
+                if (Locomotive.ForceHandleValue > 0)
+                {
+                    Locomotive.ForceHandleValue = 0;
+                    return;
+                }
+                Locomotive.ForceHandleValue = -100;
+                return;
+            }
             Locomotive.SignalEvent(Common.Event.CruiseControlSpeedSelector);
             SpeedSelectorMode previousMode = SpeedSelMode;
             if (!Equipped) return;

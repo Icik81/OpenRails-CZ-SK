@@ -2686,8 +2686,7 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.ORTS_DISPLAY_SPLASH_SCREEN:
                 case CABViewControlTypes.SELECTED_SYSTEM:
                 case CABViewControlTypes.SELECTING_SYSTEM:
-                case CABViewControlTypes.MAINTENANCE_STATE:
-                case CABViewControlTypes.PANTO_BLOCKED:
+                case CABViewControlTypes.SYSTEM_ANNUNCIATOR:
 
 
                     index = (int)data;

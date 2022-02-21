@@ -691,8 +691,7 @@ namespace Orts.Simulation.RollingStocks
         public PowerSystem SelectedPowerSystem = PowerSystem.CZ25kV;
         public PowerSystem SelectingPowerSystem = PowerSystem.CZ25kV;
 
-        public int MaintenanceState = 0;
-        public bool PantoBlocked = false;
+        public int SystemAnnunciator = 0;
 
         public MSTSLocomotive(Simulator simulator, string wagPath)
             : base(simulator, wagPath)
@@ -3504,12 +3503,63 @@ namespace Orts.Simulation.RollingStocks
         protected float SplashScreenDisplayed = 0;
         protected float SplashScreenRandomTime = 0;
         public bool SplashScreenWillBeDisplayed = false;
+        protected float HvPantoTimer = 0;
         public override void Update(float elapsedClockSeconds)
         {
             if (IsPlayerTrain && !Simulator.Paused)
             {
                 if (changingPowerSystem)
                     PowerChangeRoutine(elapsedClockSeconds);
+                else
+                {
+                    if (!CircuitBreakerOn && Pantographs.List[0].State == PantographState.Up)
+                    {
+                        HvPantoTimer += elapsedClockSeconds;
+                        if (SystemAnnunciator == 0)
+                        {
+                            SystemAnnunciator = 6;
+                        }
+                        else if (SystemAnnunciator == 6 && HvPantoTimer > 2)
+                        {
+                            SystemAnnunciator = 4;
+                        }
+                        else if (SystemAnnunciator == 4 && HvPantoTimer > 4)
+                        {
+                            SystemAnnunciator = 5;
+                            HvPantoTimer = 0;
+                        }
+                    }
+                    if (!CircuitBreakerOn && (Pantographs.List[0].State == PantographState.Lowering || Pantographs.List[0].State == PantographState.Raising))
+                    {
+                        SystemAnnunciator = 3;
+                    }
+                    if (!CircuitBreakerOn && Pantographs.List[0].State == PantographState.Down && HvPantoTimer < 5)
+                    {
+                        HvPantoTimer += elapsedClockSeconds;
+                        SystemAnnunciator = 4;
+                    }
+                    if (!CircuitBreakerOn && Pantographs.List[0].State == PantographState.Down && HvPantoTimer >= 5)
+                    {
+                        SystemAnnunciator = 1;
+                    }
+
+                    if (CircuitBreakerOn && Pantographs.List[0].State == PantographState.Up)
+                    {
+                        HvPantoTimer = 0;
+                        SystemAnnunciator = 0;
+                    }
+
+                    if (SystemAnnunciator == 3 && !CircuitBreakerOn && Pantographs.List[0].State == PantographState.Up && HvPantoTimer > 6)
+                    {
+                        SystemAnnunciator = 5;
+                    }
+
+                    if (SystemAnnunciator == 0 && BrakeSystem.GetCylPressurePSI() > 0)
+                    {
+                        SystemAnnunciator = 6;
+                    }
+                }
+
                 if (UsingForceHandle && TrainBrakeController.GetStatus().ToString() != "EPApply")
                 {
                     if (forceHandleIncreasing)
@@ -7522,7 +7572,7 @@ namespace Orts.Simulation.RollingStocks
                 WaitingForLvzConfirmation = true;
             }
 
-            PantoBlocked = true;
+            bool PantoBlocked = true;
 
             bool canContinue = true;
             foreach (Pantograph panto in Pantographs.List)
@@ -7530,7 +7580,7 @@ namespace Orts.Simulation.RollingStocks
                 if (panto.State != PantographState.Down)
                     canContinue = false;
             }
-            if (!canContinue || WaitingForLvzConfirmation)
+            if (!canContinue) // || WaitingForLvzConfirmation)
             {
                 return;
             }
@@ -7547,6 +7597,8 @@ namespace Orts.Simulation.RollingStocks
             }
             continuingTimeChangingSystem += elapsedSeconds;
 
+            int MaintenanceState = 0;
+
             if (continuingTimeChangingSystem > 1)
                 MaintenanceState = 2;
             if (continuingTimeChangingSystem > 1.5)
@@ -7554,7 +7606,10 @@ namespace Orts.Simulation.RollingStocks
             if (continuingTimeChangingSystem > 44.5)
                 MaintenanceState = 0;
             if (continuingTimeChangingSystem > 45)
+            {
                 PantoBlocked = false;
+                SystemAnnunciator = 4;
+            }
             if ((SelectedPowerSystem == PowerSystem.CZ25kV
                 || SelectedPowerSystem == PowerSystem.SK25kV
                 || SelectingPowerSystem == PowerSystem.HU25kV)
@@ -7563,6 +7618,7 @@ namespace Orts.Simulation.RollingStocks
                 MaintenanceState = 2;
                 PantoBlocked = true;
                 HVOff = true;
+                SystemAnnunciator = 3;
                 return;
             }
             if ((SelectedPowerSystem == PowerSystem.CZ3kV
@@ -7572,6 +7628,7 @@ namespace Orts.Simulation.RollingStocks
                 MaintenanceState = 2;
                 PantoBlocked = true;
                 HVOff = true;
+                SystemAnnunciator = 3;
                 return;
             }
             if (continuingTimeChangingSystem > 48)
@@ -7592,6 +7649,8 @@ namespace Orts.Simulation.RollingStocks
                 }
                 HVOff = false;
             }
+            if (PantoBlocked)
+                SystemAnnunciator = 3;
         }
 
         public void ToggleCompressorCombinedSwitchUp()
@@ -9955,14 +10014,9 @@ namespace Orts.Simulation.RollingStocks
                         data = (float)SelectedPowerSystem;
                         break;
                     }
-                case CABViewControlTypes.MAINTENANCE_STATE:
+                case CABViewControlTypes.SYSTEM_ANNUNCIATOR:
                     {
-                        data = MaintenanceState;
-                        break;
-                    }
-                case CABViewControlTypes.PANTO_BLOCKED:
-                    {
-                        data = PantoBlocked ? 1 : 0;
+                        data = SystemAnnunciator;
                         break;
                     }
                 default:
