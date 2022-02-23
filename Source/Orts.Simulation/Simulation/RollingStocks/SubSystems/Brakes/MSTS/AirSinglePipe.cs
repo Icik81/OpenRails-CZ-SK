@@ -2660,6 +2660,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         if (lead.BrakeSystem.AutoCylPressurePSI1 < 1) brakeSystem.EngineBrakeDelay = 0;
                         brakeSystem.PrevEngineBrakeControllerRateApply = EngineBrakeControllerRate;
                     }
+                    if (Math.Round(train.BrakeLine3PressurePSI) == Math.Round(lead.BrakeSystem.AutoCylPressurePSI1))
+                    {
+                        lead.EngineBrakeState = ValveState.Lap;
+                    }
                 }
 
                 // Definice pro brzdič BP2
@@ -2717,7 +2721,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                             lead.SignalEvent(Event.EngineBrakePressureStoppedChanging);
                         else lead.EngineBrakeState = ValveState.Release;
                         if (lead.BrakeSystem.AutoCylPressurePSI1 < 1) brakeSystem.EngineBrakeDelay = 0;
-                    }
+                    }                                        
                 }
 
                 // Definice pro brzdič LEKOV
@@ -2776,13 +2780,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         else lead.EngineBrakeState = ValveState.Release;
                         if (lead.BrakeSystem.AutoCylPressurePSI1 < 1) brakeSystem.EngineBrakeDelay = 0;
                     }
-                }
-
-                if (Math.Round(train.BrakeLine3PressurePSI) == Math.Round(lead.BrakeSystem.AutoCylPressurePSI1))
-                {
-                    lead.EngineBrakeState = ValveState.Lap;
-                }
-
+                }                
 
                 //lead.ParkingBrakeTargetPressurePSI = 2 * 14.50377f;
 
