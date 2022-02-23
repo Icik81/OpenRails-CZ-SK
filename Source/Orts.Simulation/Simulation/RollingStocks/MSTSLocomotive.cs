@@ -180,7 +180,7 @@ namespace Orts.Simulation.RollingStocks
         public MSTSNotchController WaterController = new MSTSNotchController(0, 1, 0.01f);
         public float CombinedTenderWaterVolumeUKG          // Decreased by running injectors and increased by refilling
         {
-            get { return WaterController.CurrentValue* MaxTotalCombinedWaterVolumeUKG; }
+            get { return WaterController.CurrentValue * MaxTotalCombinedWaterVolumeUKG; }
             set { WaterController.CurrentValue = value / MaxTotalCombinedWaterVolumeUKG; }
         }
 
@@ -270,7 +270,7 @@ namespace Orts.Simulation.RollingStocks
             {
                 if (value != _SmallEjectorSoundOn)
                 {
-                    SignalEvent(value? Event.SmallEjectorOn : Event.SmallEjectorOff);
+                    SignalEvent(value ? Event.SmallEjectorOn : Event.SmallEjectorOff);
                     _SmallEjectorSoundOn = value;
                 }
             }
@@ -284,11 +284,11 @@ namespace Orts.Simulation.RollingStocks
             {
                 if (value != _LargeEjectorSoundOn)
                 {
-                    SignalEvent(value? Event.LargeEjectorOn : Event.LargeEjectorOff);
+                    SignalEvent(value ? Event.LargeEjectorOn : Event.LargeEjectorOff);
                     _LargeEjectorSoundOn = value;
                 }
             }
-       }
+        }
 
         public bool SteamEngineBrakeFitted = false;
         public bool TrainBrakeFitted = false;
@@ -456,7 +456,7 @@ namespace Orts.Simulation.RollingStocks
         public bool EDBIndependent;
         public float PowerOnFilter;
         public float PowerOnFilterCapacity;
-        public float PowerOnFilterCapacityLimit;        
+        public float PowerOnFilterCapacityLimit;
         public bool HVOffStatusBrakeCyl = false;
         public bool HVOffStatusBrakePipe = false;
         public bool DoesPowerLossResetControls = false;
@@ -464,7 +464,7 @@ namespace Orts.Simulation.RollingStocks
         public bool ThrottleZero = false;
         public bool AuxCompressorMode_OffOn;
         public bool CompressorMode_OffAuto;
-        public bool CompressorMode2_OffAuto;        
+        public bool CompressorMode2_OffAuto;
         public bool EngineBrakeEngageEDB = false;
         public bool Heating_OffOn;
         public bool HeatingEnable = false;
@@ -486,7 +486,7 @@ namespace Orts.Simulation.RollingStocks
         float BaseFrictionCoefficientFactor0 = 1;
         public bool CentralHandlingDoors;
         public bool VoltageFilter;
-        public float RouteVoltageV;        
+        public float RouteVoltageV;
         public bool RouteVoltageChange;
         public float LocomotivePowerVoltage;
         public float MaxPowerWAC;
@@ -502,7 +502,7 @@ namespace Orts.Simulation.RollingStocks
         bool QuickReleaseButtonPressed = false;
         public bool LowPressureReleaseButton = false;
         bool LowPressureReleaseButtonPressed = false;
-        public bool QuickReleaseButtonEnable = false;        
+        public bool QuickReleaseButtonEnable = false;
         public bool LowPressureReleaseButtonEnable = false;
         public bool AuxCompressor = false;
         public bool CompressorCombined = false;
@@ -528,7 +528,7 @@ namespace Orts.Simulation.RollingStocks
         public float AuxResPipeLeak;
         public float CompressorSwitch = 1;
         public float CompressorSwitch2 = 0;
-        public float Pantograph4Switch = 0;        
+        public float Pantograph4Switch = 0;
         public bool Pantograph4 = false;
         public bool Compressor_I_HandMode;
         public bool Compressor_II_HandMode;
@@ -555,9 +555,9 @@ namespace Orts.Simulation.RollingStocks
         public bool HVOffPressedTest = false;
         public bool HVCanOn = false;
         public bool HV3CanOn = false;
-        public float HV3TimeToOn;        
+        public float HV3TimeToOn;
         public float CompressorBeep = 0;
-        public float Compressor2Beep = 0;        
+        public float Compressor2Beep = 0;
         public bool LocoReadyToGo = false;
         public bool CircuitBreakerOn = false;
         public bool HVOff = false;
@@ -565,7 +565,7 @@ namespace Orts.Simulation.RollingStocks
         public bool BreakPowerButtonEnable = false;
         public bool BreakPowerButton;
         bool BreakPowerButtonPressed = false;
-        public bool BreakPowerButton_Activated;        
+        public bool BreakPowerButton_Activated;
         float PantoStatus = 0;
         float PrePantoStatus = 0;
         public float HeatingMaxCurrentA;
@@ -617,6 +617,10 @@ namespace Orts.Simulation.RollingStocks
         public bool DieselMotorTempWarning;
         public bool DieselMotorPowerLost;
         public bool DieselLocoTempReady;
+        public bool RDSTBreakerVZEnable;
+        public bool RDSTBreakerPowerEnable;
+        public bool RDSTBreaker;
+
 
         // Jindrich
         public bool IsActive = false;
@@ -696,8 +700,8 @@ namespace Orts.Simulation.RollingStocks
         public MSTSLocomotive(Simulator simulator, string wagPath)
             : base(simulator, wagPath)
         {
-          //  BrakePipeChargingRatePSIpS = Simulator.Settings.BrakePipeChargingRate;
-                        
+            //  BrakePipeChargingRatePSIpS = Simulator.Settings.BrakePipeChargingRate;
+
             MilepostUnitsMetric = Simulator.TRK.Tr_RouteFile.MilepostUnitsMetric;
             //BrakeCutsPowerAtBrakeCylinderPressurePSI = 4.0f;
 
@@ -1120,8 +1124,8 @@ namespace Orts.Simulation.RollingStocks
                 case "engine(enginecontrollers(combined_control": ParseCombData(lowercasetoken, stf); break;
                 case "engine(airbrakesmainresvolume": MainResVolumeM3 = Me3.FromFt3(stf.ReadFloatBlock(STFReader.UNITS.VolumeDefaultFT3, null)); break;
                 case "engine(airbrakesmainmaxairpressure": MainResPressurePSI = MaxMainResPressurePSI = stf.ReadFloatBlock(STFReader.UNITS.PressureDefaultPSI, null); break;
-                case "engine(airbrakescompressorrestartpressure": CompressorRestartPressurePSI = stf.ReadFloatBlock(STFReader.UNITS.PressureDefaultPSI, null); break;                
-                case "engine(airbrakesaircompressorpowerrating": CompressorChargingRateM3pS = Me3.FromFt3(stf.ReadFloatBlock(STFReader.UNITS.VolumeDefaultFT3, null)); break;                
+                case "engine(airbrakescompressorrestartpressure": CompressorRestartPressurePSI = stf.ReadFloatBlock(STFReader.UNITS.PressureDefaultPSI, null); break;
+                case "engine(airbrakesaircompressorpowerrating": CompressorChargingRateM3pS = Me3.FromFt3(stf.ReadFloatBlock(STFReader.UNITS.VolumeDefaultFT3, null)); break;
                 case "engine(trainpipeleakrate": TrainBrakePipeLeakPSIorInHgpS = stf.ReadFloatBlock(STFReader.UNITS.PressureRateDefaultPSIpS, null); break;
                 case "engine(vacuumbrakesvacuumpumpresistance": VacuumPumpResistanceN = stf.ReadFloatBlock(STFReader.UNITS.Force, null); break;
 
@@ -1139,7 +1143,7 @@ namespace Orts.Simulation.RollingStocks
                 case "engine(ortsbrakepipechargingrate": BrakePipeChargingRatePSIorInHgpS = stf.ReadFloatBlock(STFReader.UNITS.PressureRateDefaultPSIpS, null); break;
                 case "engine(ortsbrakepipequickchargingrate": BrakePipeQuickChargingRatePSIpS = stf.ReadFloatBlock(STFReader.UNITS.PressureRateDefaultPSIpS, null); break;
                 case "engine(ortsbrakepipedischargetimemult": BrakePipeDischargeTimeFactor = stf.ReadFloatBlock(STFReader.UNITS.None, null); break;
-                case "engine(ortsmaxtractiveforcecurves": TractiveForceCurves = new InterpolatorDiesel2D(stf, false); TractiveForceCurves.HasNegativeValue();  break;
+                case "engine(ortsmaxtractiveforcecurves": TractiveForceCurves = new InterpolatorDiesel2D(stf, false); TractiveForceCurves.HasNegativeValue(); break;
                 case "engine(ortstractioncharacteristics": TractiveForceCurves = new InterpolatorDiesel2D(stf, true); break;
                 case "engine(ortsdynamicbrakeforcecurves": DynamicBrakeForceCurves = new InterpolatorDiesel2D(stf, false); break;
                 case "engine(ortsextendedexcitationcurrent": ExtendedExcitationCurrent = new InterpolatorDiesel2D(stf, true); break;
@@ -1185,7 +1189,7 @@ namespace Orts.Simulation.RollingStocks
                         {
                             switch (brakesenginecontrollers)
                             {
-                                case "blended":                              
+                                case "blended":
                                     DynamicBrakeBlendingEnabled = true;
                                     break;
                                 case "dynamic":
@@ -1202,13 +1206,13 @@ namespace Orts.Simulation.RollingStocks
                     foreach (var brakestrainbraketype in stf.ReadStringBlock("").ToLower().Replace(" ", "").Split(','))
                     {
                         switch (brakestrainbraketype)
-                            {
-                                case "vacuum_single_pipe_eq":
-                                    VacuumBrakeEQFitted = true;
-                                    break;
-                                 default:
-                                    break;
-                            }
+                        {
+                            case "vacuum_single_pipe_eq":
+                                VacuumBrakeEQFitted = true;
+                                break;
+                            default:
+                                break;
+                        }
                     }
                     break;
 
@@ -1490,12 +1494,12 @@ namespace Orts.Simulation.RollingStocks
             DoesPowerLossResetControls = locoCopy.DoesPowerLossResetControls;
             DoesPowerLossResetControls2 = locoCopy.DoesPowerLossResetControls2;
             EngineBrakeEngageEDB = locoCopy.EngineBrakeEngageEDB;
-            SwitchingVoltageMode = locoCopy.SwitchingVoltageMode;            
+            SwitchingVoltageMode = locoCopy.SwitchingVoltageMode;
             PowerReductionByAuxEquipment = locoCopy.PowerReductionByAuxEquipment;
             AirBrakesIsCompressorElectricOrMechanical = locoCopy.AirBrakesIsCompressorElectricOrMechanical;
             AirBrakesAirCompressorWattage = locoCopy.AirBrakesAirCompressorWattage;
             CentralHandlingDoors = locoCopy.CentralHandlingDoors;
-            VoltageFilter = locoCopy.VoltageFilter;            
+            VoltageFilter = locoCopy.VoltageFilter;
             LocomotivePowerVoltage = locoCopy.LocomotivePowerVoltage;
             TractiveForceCurvesAC = locoCopy.TractiveForceCurvesAC;
             TractiveForceCurvesDC = locoCopy.TractiveForceCurvesDC;
@@ -1882,7 +1886,7 @@ namespace Orts.Simulation.RollingStocks
 
             // Icik                        
             SetDefault_AuxCompressor();
-            MainResChargingRatePSIpS0 = MainResChargingRatePSIpS;           
+            MainResChargingRatePSIpS0 = MainResChargingRatePSIpS;
             if (!Compressor_I && !Compressor_II)
                 Compressor_I = true;
             if (Compressor_I && Compressor_II && MainResChargingRatePSIpS_2 == 0)
@@ -1892,7 +1896,7 @@ namespace Orts.Simulation.RollingStocks
             }
             if (MainResChargingRatePSIpS_2 == 0)
                 MainResChargingRatePSIpS_2 = MainResChargingRatePSIpS;
-            
+
 
 
             if (File.Exists(WagFilePath + ".ExtendedPhysics.xml") && extendedPhysics == null)
@@ -1924,7 +1928,7 @@ namespace Orts.Simulation.RollingStocks
             if (WaterScoopFillElevationM == 0)
             {
                 WaterScoopFillElevationM = 2.7432f; // Set to default of 9 ft
-            } 
+            }
 
             if (WaterScoopDepthM == 0)
             {
@@ -1937,17 +1941,17 @@ namespace Orts.Simulation.RollingStocks
             }
 
             // Check if current sander has been set
-            if (CurrentTrackSandBoxCapacityM3 == 0 )
+            if (CurrentTrackSandBoxCapacityM3 == 0)
             {
                 CurrentTrackSandBoxCapacityM3 = MaxTrackSandBoxCapacityM3;
             }
-            
+
             // Ensure Drive Axles is set with a default value if user doesn't supply an OR value in ENG file
             if (LocoNumDrvAxles == 0)
             {
                 if (MSTSLocoNumDrvWheels != 0 && MSTSLocoNumDrvWheels <= 6)
                 {
-                    LocoNumDrvAxles = (int) MSTSLocoNumDrvWheels;
+                    LocoNumDrvAxles = (int)MSTSLocoNumDrvWheels;
                 }
                 else
                 {
@@ -1959,7 +1963,7 @@ namespace Orts.Simulation.RollingStocks
                     Trace.TraceInformation("Number of Locomotive Drive Axles set to default value of {0}", LocoNumDrvAxles);
                 }
             }
-               
+
 
             // Calculate minimum speed to pickup water
             const float Aconst = 2;
@@ -2006,7 +2010,7 @@ namespace Orts.Simulation.RollingStocks
                     BrakePipeDischargeTimeFactor = 1.5f; // Air brakes
                 }
             }
-            
+
             // Initialise the resistance of the vacuum pump
             if (VacuumPumpResistanceN == 0)
             {
@@ -2056,7 +2060,7 @@ namespace Orts.Simulation.RollingStocks
                     {
                         Trace.TraceInformation("TrainBrakeController.MaxPressurePSI is assumed to be {0} Inhg, - confirmed as a value of {1} InHg", TempMaxPressure, Bar.ToInHg(Bar.FromPSI(TrainBrakeController.MaxPressurePSI)));
                     }
-                    
+
                 }
                 else if (TrainBrakeController.MaxPressurePSI < 7 || TrainBrakeController.MaxPressurePSI > 13) // Outside an acceptable range (Eqiv = 15InHg to 25InHg), then convert to a fixed default
                 {
@@ -2198,7 +2202,7 @@ namespace Orts.Simulation.RollingStocks
                 dist = Math.Acos(dist);
                 dist = rad2deg(dist);
                 dist = dist * 60 * 1.1515;
-                    dist = dist * 1.609344;
+                dist = dist * 1.609344;
                 return (dist);
             }
         }
@@ -2460,7 +2464,7 @@ namespace Orts.Simulation.RollingStocks
         /// <summary>
         /// Dynamic brake blending 
         /// </summary>
-        protected bool disableDynamicBrakeIntervention = false; 
+        protected bool disableDynamicBrakeIntervention = false;
         public void DynamicBrakeBlending(float elapsedClockSeconds)
         {
             if (IsPlayerTrain)
@@ -2476,7 +2480,7 @@ namespace Orts.Simulation.RollingStocks
                     DynamicBrakeIntervention = -1;
                     DynamicBrakeBlended = false;
                     return;
-                }                
+                }
             }
 
             // Povolí EDB pro AI vlaky
@@ -2588,7 +2592,7 @@ namespace Orts.Simulation.RollingStocks
                         Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Zásah nadproudové ochrany!"));
                     }
                     if (this is MSTSDieselLocomotive) // Dieselelektrické lokomotivy
-                    {                        
+                    {
                         PowerReductionResult4 = 0.9f; // Omezení trakčních motorů  
                         SetDynamicBrakePercent(0);
                         Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Zásah nadproudové ochrany!"));
@@ -2603,7 +2607,7 @@ namespace Orts.Simulation.RollingStocks
 
                 // Resetování nadproudové ochrany u dieselelektrických lokomotiv
                 if (this is MSTSDieselLocomotive && OverCurrent && LocalThrottlePercent == 0 && LocalDynamicBrakePercent == 0)
-                {                    
+                {
                     OverCurrent = false;
                     PowerReductionResult4 = 0;
                 }
@@ -2613,13 +2617,13 @@ namespace Orts.Simulation.RollingStocks
         // Icik
         // Protiskluzová ochrana
         public void AntiSlip_Protection()
-        {            
+        {
             if (!IsPlayerTrain)
                 return;
             if (!IsLeadLocomotive())
                 return;
             if (MaxCurrentA > 0)  // Zohlední jen elektrické a dieselelektrické lokomotivy 
-            {                
+            {
                 if (SlipSpeedCritical == 0) SlipSpeedCritical = 40 / 3.6f; // Výchozí hodnota 40 km/h     
                 float AbsSlipSpeedMpS = Math.Abs(WheelSpeedMpS) - AbsSpeedMpS;  // Zjistí absolutní rychlost prokluzu 
                 if (extendedPhysics != null)
@@ -2628,7 +2632,7 @@ namespace Orts.Simulation.RollingStocks
                     AbsSlipSpeedMpS = extendedPhysics.FastestAxleSpeedMpS - extendedPhysics.AverageAxleSpeedMpS;
                 }
                 //Trace.TraceInformation("WheelSlipTime {0},  Simulator.GameTime {1},  Time0 {2},   SlipSpeed {3}", WheelSlipTime, Simulator.GameTime, Time0, SlipSpeed);
-                
+
                 if (AbsSlipSpeedMpS > SlipSpeedCritical) // Přepěťová ochrana při skluzu 
                     OverVoltage = true;
 
@@ -2640,7 +2644,7 @@ namespace Orts.Simulation.RollingStocks
                         ControllerVolts = 0;
                     }
                     if (this is MSTSElectricLocomotive) // Elektrické lokomotivy
-                    {                        
+                    {
                         switch (MultiSystemEngine)
                         {
                             case true: // Vícesystémová lokomotiva                            
@@ -2668,9 +2672,9 @@ namespace Orts.Simulation.RollingStocks
 
                 // Resetování nadproudové ochrany u dieselelektrických lokomotiv
                 if (this is MSTSDieselLocomotive && OverVoltage && LocalThrottlePercent == 0 && LocalDynamicBrakePercent == 0)
-                {                    
+                {
                     OverVoltage = false;
-                    PowerReductionResult4 = 0;                    
+                    PowerReductionResult4 = 0;
                 }
             }
         }
@@ -2696,7 +2700,7 @@ namespace Orts.Simulation.RollingStocks
                 if (!PowerOn && DynamicBrakePercent > 0 && PowerOnFilter > 0)
                     PowerOnFilter = PowerOnFilter - (DynamicBrakeForceN / 10000 * elapsedClockSeconds);
                 // Pokles síly EDB při vybití filtru
-                if (!PowerOn && DynamicBrakePercent > 0 && PowerOnFilter < PowerOnFilterCapacityLimit)                    
+                if (!PowerOn && DynamicBrakePercent > 0 && PowerOnFilter < PowerOnFilterCapacityLimit)
                 {
                     if (DynamicBrakeIntervention > -1)
                         DynamicBrakeIntervention -= 0.01f;
@@ -2720,19 +2724,19 @@ namespace Orts.Simulation.RollingStocks
                 return;
             if (EngineBrakeEngageEDB)
             {
-                if (DynamicBrakeIntervention > -1) 
+                if (DynamicBrakeIntervention > -1)
                     DynamicBrakeIntervention -= 0.5f;
                 if (DynamicBrakeIntervention < 0)
                     DynamicBrakeIntervention = -1;
                 DynamicBrakePercent -= 2.0f;
-                if (DynamicBrakePercent < 0) 
+                if (DynamicBrakePercent < 0)
                     DynamicBrakePercent = 0;
                 SetDynamicBrakePercent(DynamicBrakePercent);
                 if (BrakeSystem.AutoCylPressurePSI1 < 1 && DynamicBrakePercent == 0)
                 {
-                    EngineBrakeEngageEDB = false;                    
+                    EngineBrakeEngageEDB = false;
                 }
-            }          
+            }
         }
 
         // Icik
@@ -2750,7 +2754,7 @@ namespace Orts.Simulation.RollingStocks
                 DynamicBrakePercent -= 1.0f;
                 if (DynamicBrakePercent < 0)
                     DynamicBrakePercent = 0;
-                SetDynamicBrakePercent(DynamicBrakePercent);                
+                SetDynamicBrakePercent(DynamicBrakePercent);
             }
         }
 
@@ -2758,7 +2762,7 @@ namespace Orts.Simulation.RollingStocks
         public void HVOffbyAirPressureE()
         {
             if (!IsPlayerTrain)
-                return;            
+                return;
 
             if (DoesBrakeCutPower && this is MSTSElectricLocomotive)
             {
@@ -2767,14 +2771,14 @@ namespace Orts.Simulation.RollingStocks
                 {
                     if (BrakeSystem.GetCylPressurePSI() >= BrakeCutsPowerAtBrakeCylinderPressurePSI && LocalThrottlePercent > 0
                       || HVOffStatusBrakeCyl)
-                    {                        
+                    {
                         HVOff = true; // Vypnutí HV                        
                         HVOffStatusBrakeCyl = true;
                     }
                     if (BrakeSystem.GetCylPressurePSI() < BrakeCutsPowerAtBrakeCylinderPressurePSI)
-                        HVOffStatusBrakeCyl = false;                        
+                        HVOffStatusBrakeCyl = false;
                 }
-                
+
                 if (PowerOn && BrakeSystem.BrakeCylApply && LocalThrottlePercent > 0
                 || HVOffStatusBrakePipe)
                 {
@@ -2787,13 +2791,13 @@ namespace Orts.Simulation.RollingStocks
                         }
                     //Trace.TraceWarning("Hodnota BrakeSystem.BrakeLine1PressurePSI {0}, BrakeCutsPowerAtBrakePipePressurePSI {1}", BrakeSystem.BrakeLine1PressurePSI, BrakeCutsPowerAtBrakePipePressurePSI);                    
                 }
-                
+
                 if (!PowerOn && BrakeSystem.BrakeCylRelease && HVOffStatusBrakePipe)
                 {
                     // Pokud vystoupí tlak nad hraniční hodnotu tlaku v brzdovém potrubí
                     if (BrakeRestoresPowerAtBrakePipePressurePSI != 0)
                         if (BrakeSystem.BrakeLine1PressurePSI >= BrakeRestoresPowerAtBrakePipePressurePSI)
-                            HVOffStatusBrakePipe = false;                                                    
+                            HVOffStatusBrakePipe = false;
                 }
             }
         }
@@ -2829,7 +2833,7 @@ namespace Orts.Simulation.RollingStocks
                 // Pokud vystoupí tlak nad hraniční hodnotu tlaku v brzdovém potrubí
                 if (BrakeSystem.BrakeLine1PressurePSI >= BrakeRestoresPowerAtBrakePipePressurePSI)
                     PowerReductionResult2 = 0;
-            }            
+            }
         }
 
         public float PowerReductionResult1;  // Redukce výkonu od topení, klimatizace, kompresoru
@@ -2839,30 +2843,33 @@ namespace Orts.Simulation.RollingStocks
         public float PowerReductionResult5;  // Redukce výkonu při tlaku v brzdovém válci 
         public float PowerReductionResult6;  // Redukce výkonu při motoru pod provozní teplotou
         public float PowerReductionResult7;  // Odpojení TM při selhání
+        public float PowerReductionResult8;  // Odpojení TM při nezapnuté RDST
         public void PowerReductionResult(float elapsedClockSeconds)
         {
             if (!IsPlayerTrain)
                 return;
             if (this is MSTSDieselLocomotive || this is MSTSSteamLocomotive)
             {
-                if (PowerReduction < 
-                    PowerReductionResult1 
-                    + PowerReductionResult2 
-                    + PowerReductionResult3 
-                    + PowerReductionResult4 
-                    + PowerReductionResult5 
-                    + PowerReductionResult6 
-                    + PowerReductionResult7)
+                if (PowerReduction <
+                    PowerReductionResult1
+                    + PowerReductionResult2
+                    + PowerReductionResult3
+                    + PowerReductionResult4
+                    + PowerReductionResult5
+                    + PowerReductionResult6
+                    + PowerReductionResult7
+                    + PowerReductionResult8)
                     PowerReduction += 1 * elapsedClockSeconds;
 
-                if (PowerReduction > 
-                    PowerReductionResult1 
-                    + PowerReductionResult2 
-                    + PowerReductionResult3 
-                    + PowerReductionResult4 
-                    + PowerReductionResult5 
-                    + PowerReductionResult6 
-                    + PowerReductionResult7)
+                if (PowerReduction >
+                    PowerReductionResult1
+                    + PowerReductionResult2
+                    + PowerReductionResult3
+                    + PowerReductionResult4
+                    + PowerReductionResult5
+                    + PowerReductionResult6
+                    + PowerReductionResult7
+                    + PowerReductionResult8)
                     PowerReduction -= 1 * elapsedClockSeconds;
 
                 PowerReduction = MathHelper.Clamp(PowerReduction, 0, 0.999f);
@@ -2896,10 +2903,10 @@ namespace Orts.Simulation.RollingStocks
         public bool HeatingOverCurrent = false;
         public bool HeatingIsOn = false;
         public bool CabHeatingIsOn = false;
-        public float MSGHeatingCycle;        
+        public float MSGHeatingCycle;
         public void ElevatedConsumptionOnLocomotive(float elapsedClockSeconds)
-        {                      
-            if (!IsPlayerTrain && AuxPowerOn)                
+        {
+            if (!IsPlayerTrain && AuxPowerOn)
                 HeatingIsOn = true;
 
             // Ochrana při nadproudu topení/klimatizace jen pro hráče
@@ -2914,7 +2921,7 @@ namespace Orts.Simulation.RollingStocks
                 if (HeatingMaxCurrentA == 0)
                     HeatingMaxCurrentA = 130; // Default 130A
 
-                if ((Heating_OffOn && !HeatingOverCurrent && AuxPowerOn) || Train.CarSteamHeatOn)                  
+                if ((Heating_OffOn && !HeatingOverCurrent && AuxPowerOn) || Train.CarSteamHeatOn)
                     HeatingIsOn = true;
                 if ((!Heating_OffOn || HeatingOverCurrent || !AuxPowerOn) && !Train.CarSteamHeatOn)
                 {
@@ -2922,7 +2929,7 @@ namespace Orts.Simulation.RollingStocks
                         I_HeatingData -= 50 * elapsedClockSeconds; // 50A/s
                     HeatingIsOn = false;
                 }
-              
+
                 if (HeatingOverCurrent)
                 {
                     if (I_HeatingData > 0)
@@ -2933,20 +2940,20 @@ namespace Orts.Simulation.RollingStocks
                     SignalEvent(Event.HeatingOverCurrentOff);
 
                 if (!Heating_OffOn)
-                    HeatingOverCurrent = false;                
+                    HeatingOverCurrent = false;
 
                 I_HeatingData0 = (float)Math.Round(I_HeatingData);
             }
-            
+
             // Počítání teplot proběhne každý desátý cyklus 
             if (Simulator.GameTimeCyklus10 == 10 && IsLeadLocomotive())
             {
                 foreach (TrainCar car in Train.Cars)
                 {
                     // Označí kabinu lokomotivy
-                    if (!car.HasPassengerCapacity && car.WagonType == WagonTypes.Engine)                    
+                    if (!car.HasPassengerCapacity && car.WagonType == WagonTypes.Engine)
                         car.LocomotiveCab = true;
-                    
+
                     if (car.WagonType == WagonTypes.Passenger || car.HasPassengerCapacity || car.WagonType == WagonTypes.Engine)
                     {
                         if (car.WagonType == WagonTypes.Passenger)
@@ -3012,8 +3019,8 @@ namespace Orts.Simulation.RollingStocks
                                     if (car.DieselHeaterConsumptionPerHour == 0) car.DieselHeaterConsumptionPerHour = 14; // 14l/h
                                     if (car.DieselHeaterTankCapacity == 0) car.DieselHeaterTankCapacity = 70; // 70l
                                 }
-                            }       
-                            
+                            }
+
                             car.PowerReductionByHeating = MathHelper.Clamp(car.PowerReductionByHeating, 0, 50.0f * 1000);
                             car.PowerReductionByAirCondition = MathHelper.Clamp(car.PowerReductionByAirCondition, 0, 50.0f * 1000);
 
@@ -3053,11 +3060,11 @@ namespace Orts.Simulation.RollingStocks
 
 
                         float TempStepUp = 200;
-                        float TempStepDown = 300;                        
-                        float TempStepUpSlow = 100;                        
+                        float TempStepDown = 300;
+                        float TempStepUpSlow = 100;
                         float TempStepDownSlow = 100;
                         float TempCDeltaOutside;
-                        float CarAirVolumeM3;                       
+                        float CarAirVolumeM3;
 
                         // Výpočet objemu vzduchu ve vozech
                         CarAirVolumeM3 = car.CarWidthM * car.CarLengthM * (car.CarHeightM - 1.06f);
@@ -3121,7 +3128,7 @@ namespace Orts.Simulation.RollingStocks
                                         Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Je ti zima!"));
                                     else
                                         if (car.PassengerList.Count > 0)
-                                            Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Cestujícím je zima!"));
+                                        Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Cestujícím je zima!"));
                                     MSGHeatingCycle = 0;
                                 }
                             }
@@ -3166,7 +3173,7 @@ namespace Orts.Simulation.RollingStocks
                                         Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Je ti horko!"));
                                     else
                                         if (car.PassengerList.Count > 0)
-                                            Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Cestujícím je příliš horko!"));
+                                        Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Cestujícím je příliš horko!"));
                                     MSGHeatingCycle = 0;
                                 }
                             }
@@ -3187,7 +3194,7 @@ namespace Orts.Simulation.RollingStocks
                                 car.StatusHeatIsOn = false;
                             }
 
-                        }                                       
+                        }
 
                         // Parní topení počítá teplotu svým algoritmem
                         if (Train.CarSteamHeatOn && !car.LocomotiveCab)
@@ -3195,10 +3202,10 @@ namespace Orts.Simulation.RollingStocks
                         else
                             car.WagonTemperature += car.TempCDelta + car.TempCDeltaAir;
                     }
-                     //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Teplota " + car.WagonTemperature));
+                    //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Teplota " + car.WagonTemperature));
                 }
             }
-            
+
             // Bufík
             if (IsPlayerTrain && Simulator.GameTimeCyklus10 == 10)
             {
@@ -3206,7 +3213,7 @@ namespace Orts.Simulation.RollingStocks
                 {
                     var mstsDieselLocomotive = car as MSTSDieselLocomotive;
                     if (car.DieselHeaterPower > 0 && (car.DieselHeaterTankCapacity > 2 || mstsDieselLocomotive != null && mstsDieselLocomotive.DieselLevelL > 0))
-                    {      
+                    {
                         if (car.DieselHeaterTankCapacity == 0 && mstsDieselLocomotive != null)
                             car.DieselHeaterTankCapacityMark = mstsDieselLocomotive.DieselLevelL;
                         else
@@ -3230,13 +3237,13 @@ namespace Orts.Simulation.RollingStocks
                                 if (car.DieselHeaterTankCapacity == 0 && mstsDieselLocomotive != null)
                                 {
                                     mstsDieselLocomotive.DieselLevelL -= car.DieselHeaterConsumptionPerHour0 * elapsedClockSeconds / 3600;
-                                    if (mstsDieselLocomotive.DieselLevelL < 0f) mstsDieselLocomotive.DieselLevelL = 0f;                                                                        
+                                    if (mstsDieselLocomotive.DieselLevelL < 0f) mstsDieselLocomotive.DieselLevelL = 0f;
                                 }
                                 else
                                 // Vozy                                
                                 {
                                     car.DieselHeaterTankCapacity -= car.DieselHeaterConsumptionPerHour0 * elapsedClockSeconds / 3600;
-                                    if (car.DieselHeaterTankCapacity < 2f) car.DieselHeaterTankCapacity = 2f;                                    
+                                    if (car.DieselHeaterTankCapacity < 2f) car.DieselHeaterTankCapacity = 2f;
                                 }
                             }
                         }
@@ -3246,7 +3253,7 @@ namespace Orts.Simulation.RollingStocks
                             car.DieselHeaterPower0 = 0;
                             car.DieselHeaterConsumptionPerHour0 = 0;
                         }
-                    }                   
+                    }
                 }
             }
 
@@ -3318,7 +3325,7 @@ namespace Orts.Simulation.RollingStocks
                     //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Příkon topení/klimatizace " + PowerReductionByHeatingSum / 1000 + " kW" + "   Proud " + I_HeatingData0 + " A!"));
                     //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Zapnuté topení, výkon zredukován " + PowerReductionByHeatingSum * MaxPowerW / 1000) + " kW!");
                 }
-            }                
+            }
 
             TElevatedConsumption = 1;
             PowerReductionByAuxEquipmentWag = 0;
@@ -3333,7 +3340,7 @@ namespace Orts.Simulation.RollingStocks
                     {
                         if (car.WagonType == WagonTypes.Passenger) // Osobní vozy
                         {
-                            if (car.PowerReductionByAuxEquipment == 0) car.PowerReductionByAuxEquipment = 5* 1000; // Default 5kW
+                            if (car.PowerReductionByAuxEquipment == 0) car.PowerReductionByAuxEquipment = 5 * 1000; // Default 5kW
                             PowerReductionByAuxEquipmentWag += car.PowerReductionByAuxEquipment;
                         }
                         if (car.WagonType == WagonTypes.Engine) // Lokomotivy
@@ -3345,9 +3352,9 @@ namespace Orts.Simulation.RollingStocks
                 // I.Compressor
                 if (/*WagonType == WagonTypes.Engine && this is MSTSDieselLocomotive &&*/ CompressorIsOn) // Lokomotivy
                 {
-                    if (AirBrakesIsCompressorElectricOrMechanical) 
+                    if (AirBrakesIsCompressorElectricOrMechanical)
                         if (AirBrakesAirCompressorWattage == 0) AirBrakesAirCompressorWattage = 35000f; // 35kW Mechanický kompresor
-                        else 
+                        else
                         if (AirBrakesAirCompressorWattage == 0) AirBrakesAirCompressorWattage = 25000f; // 25kW Elektrický kompresor
                     PowerReductionByAuxEquipmentEng += AirBrakesAirCompressorWattage;
                 }
@@ -3385,13 +3392,13 @@ namespace Orts.Simulation.RollingStocks
                     if (MaxPowerW == 0) MaxPowerW = 1000000; // Default pro výkon, který nesmí být 0kW
                     PowerReductionResult1 = (PowerReductionByHeatingSum + PowerReductionByAuxEquipmentSum) * (1000000 / MaxPowerW);
                     PowerReductionResult1 /= 1000000;
-                    PowerReductionResult1 = MathHelper.Clamp(PowerReductionResult1, 0, 1);                    
-                }                
+                    PowerReductionResult1 = MathHelper.Clamp(PowerReductionResult1, 0, 1);
+                }
             }
-                //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Příkon topení " + PowerReductionByHeatingSum / 1000) + " kW!");
-                //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Příkon pom.obvodů " + PowerReductionByAuxEquipmentSum / 1000) + " kW!");            
+            //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Příkon topení " + PowerReductionByHeatingSum / 1000) + " kW!");
+            //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Příkon pom.obvodů " + PowerReductionByAuxEquipmentSum / 1000) + " kW!");            
         }
-        
+
         // Stanovení hodnot výkonů a síly pro AC-DC systém
         public void MaxPower_MaxForce_ACDC()
         {
@@ -3403,7 +3410,7 @@ namespace Orts.Simulation.RollingStocks
                     if (MaxPowerWDC != 0)
                         MaxPowerW = MaxPowerWDC;
                     if (MaxForceNDC != 0)
-                        MaxForceN = MaxForceNDC;                    
+                        MaxForceN = MaxForceNDC;
                     break;
                 case 1:
                     break;
@@ -3411,7 +3418,7 @@ namespace Orts.Simulation.RollingStocks
                     if (MaxPowerWAC != 0)
                         MaxPowerW = MaxPowerWAC;
                     if (MaxForceNAC != 0)
-                        MaxForceN = MaxForceNAC;                    
+                        MaxForceN = MaxForceNAC;
                     break;
             }
         }
@@ -3432,7 +3439,7 @@ namespace Orts.Simulation.RollingStocks
 
             // Vícesystémové lokomotivy
             if (MultiSystemEngine)
-            {                
+            {
                 // Maximální tlak v jímce pomocného kompresoru 
                 if (MaxAuxResPressurePSI == 0)
                     MaxAuxResPressurePSI = 5.0f * 14.50377f; // 5 barů                                        
@@ -3452,7 +3459,7 @@ namespace Orts.Simulation.RollingStocks
 
             else
             // Jednosystémové lokomotivy
-            {             
+            {
                 if (LocomotivePowerVoltage == 3000)
                 {
                     // Maximální tlak v jímce pomocného kompresoru 
@@ -3491,6 +3498,24 @@ namespace Orts.Simulation.RollingStocks
                 }
             }
         }
+        public void RDSTBreakerType()
+        {            
+            if (RDSTBreakerVZEnable && Battery)
+            {
+                if (!RDSTBreaker)
+                    TrainBrakeController.EmergencyBrakingPushButton = true;
+                else
+                    TrainBrakeController.EmergencyBrakingPushButton = false;
+            }
+            if (RDSTBreakerPowerEnable && Battery)
+            {
+                if (!RDSTBreaker)
+                    PowerReductionResult8 = 1;
+                else
+                    PowerReductionResult8 = 0;
+            }
+        }
+
        
         /// <summary>
         /// This function updates periodically the states and physical variables of the locomotive's subsystems.
@@ -3795,6 +3820,7 @@ namespace Orts.Simulation.RollingStocks
                 ToggleHV2Switch();
                 ToggleHV3Switch();
                 ToggleHV5Switch();
+                RDSTBreakerType();
             }
             if (IsPlayerTrain)
             {
@@ -3809,7 +3835,7 @@ namespace Orts.Simulation.RollingStocks
             HVOffbyAirPressureE();
             HVOffbyAirPressureD();
             TMFailure(elapsedClockSeconds);
-            PowerReductionResult(elapsedClockSeconds);
+            PowerReductionResult(elapsedClockSeconds);            
 
             TrainControlSystem.Update();
 
@@ -8104,7 +8130,19 @@ namespace Orts.Simulation.RollingStocks
                 DieselDirectionController_Out = true;
                 SignalEvent(Event.DieselDirectionControllerOut);
             }
-        }      
+        }
+        // Ovládání jističe RDST
+        public void ToggleRDSTBreaker()
+        {
+            RDSTBreaker = !RDSTBreaker;
+            if (RDSTBreaker)
+                SignalEvent(Event.RDSTOn);
+            else
+                SignalEvent(Event.RDSTOff);
+            if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.RDSTBreaker, RDSTBreaker ? CabSetting.On : CabSetting.Off);            
+        }
+
+
 
         // Zatím povoleno kvůli kompatibilitě
         int NumberChoice = 1;
@@ -10222,6 +10260,24 @@ namespace Orts.Simulation.RollingStocks
                 case CABViewControlTypes.DIESEL_MOTOR_TEMP_WARNING:
                     {
                         if (DieselMotorTempWarning)
+                            data = 1;
+                        else
+                            data = 0;
+                        break;
+                    }
+                case CABViewControlTypes.RDST_BREAKER_VZ:
+                    {
+                        RDSTBreakerVZEnable = true;
+                        if (RDSTBreaker)
+                            data = 1;
+                        else
+                            data = 0;
+                        break;
+                    }
+                case CABViewControlTypes.RDST_BREAKER_POWER:
+                    {
+                        RDSTBreakerPowerEnable = true;
+                        if (RDSTBreaker)
                             data = 1;
                         else
                             data = 0;

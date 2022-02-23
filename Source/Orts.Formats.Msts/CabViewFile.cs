@@ -422,6 +422,8 @@ namespace Orts.Formats.Msts
         DIESEL_MOTOR_WATER_TEMP,
         DIESEL_MOTOR_OIL_TEMP,
         DIESEL_MOTOR_TEMP_WARNING,
+        RDST_BREAKER_VZ,
+        RDST_BREAKER_POWER,
 
 
         // Further CabViewControlTypes must be added above this line, to avoid their malfunction in 3DCabs

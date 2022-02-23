@@ -140,6 +140,7 @@ namespace Orts.Simulation
     , DieselDirection_Start
     , DieselDirection_0
     , DieselDirection_Reverse
+    , RDSTBreaker
     }
 
     public enum CabSetting {
@@ -310,6 +311,7 @@ namespace Orts.Simulation
                 , new string [] { GetString("") }
                 , new string [] { GetString("") }
                 , new string [] { GetString("") }
+                , new string [] { GetString("RDST"), GetString("off"), null, GetString("on")}
 
             };
             Debug.Assert(ConfirmText.Length == Enum.GetNames(typeof(CabControl)).Length, "Number of entries indexer ConfirmText must match values in CabControl enum.");

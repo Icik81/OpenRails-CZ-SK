@@ -630,6 +630,7 @@ namespace Orts.Viewer3D
             ToggleDieselDirectionControllerUpCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
             ToggleDieselDirectionControllerDownCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
             ToggleDieselDirectionControllerInOutCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
+            ToggleRDSTBreakerCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
         }
 
         public void ChangeToPreviousFreeRoamCamera()

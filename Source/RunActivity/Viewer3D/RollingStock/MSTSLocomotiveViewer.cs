@@ -239,6 +239,7 @@ namespace Orts.Viewer3D.RollingStock
             UserInputCommands.Add(UserCommand.ControlQuickReleaseButton, new Action[] { Noop, () => new ToggleQuickReleaseButtonCommand(Viewer.Log) });
             UserInputCommands.Add(UserCommand.ControlLowPressureReleaseButton, new Action[] { Noop, () => new ToggleLowPressureReleaseButtonCommand(Viewer.Log) });
             UserInputCommands.Add(UserCommand.ControlBreakPowerButton, new Action[] { Noop, () => new ToggleBreakPowerButtonCommand(Viewer.Log) });
+            UserInputCommands.Add(UserCommand.ControlRDSTBreaker, new Action[] { Noop, () => new ToggleRDSTBreakerCommand(Viewer.Log) });
 
             // Jindřich
             UserInputCommands.Add(UserCommand.ControlPowerStationLocation, new Action[] { Noop, () => Locomotive.SetPowerSupplyStationLocation() });
@@ -426,6 +427,7 @@ namespace Orts.Viewer3D.RollingStock
                     && !Locomotive.StartButtonPressed)
                     Locomotive.StopButtonPressed = true;                
             }
+            
 
             if (UserInput.IsPressed(UserCommand.CameraToggleShowCab))
                 Locomotive.ShowCab = !Locomotive.ShowCab;
@@ -2553,6 +2555,8 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.DIESEL_MOTOR_WATER_TEMP:
                 case CABViewControlTypes.DIESEL_MOTOR_OIL_TEMP:
                 case CABViewControlTypes.DIESEL_MOTOR_TEMP_WARNING:
+                case CABViewControlTypes.RDST_BREAKER_VZ:
+                case CABViewControlTypes.RDST_BREAKER_POWER:
 
                     index = (int)data;
                     break;
@@ -3266,7 +3270,23 @@ namespace Orts.Viewer3D.RollingStock
                         }
                     }
                     break;
-                
+                case CABViewControlTypes.RDST_BREAKER_VZ:
+                    // Ovládání jističe RDST
+                    if (Locomotive.RDSTBreakerVZEnable)
+                    {
+                        if (ChangedValue(Locomotive.RDSTBreaker ? 1 : 0) > 0)
+                            new ToggleRDSTBreakerCommand(Viewer.Log);
+                    }
+                    break;
+                case CABViewControlTypes.RDST_BREAKER_POWER:
+                    // Ovládání jističe RDST
+                    if (Locomotive.RDSTBreakerPowerEnable)
+                    {
+                        if (ChangedValue(Locomotive.RDSTBreaker ? 1 : 0) > 0)
+                            new ToggleRDSTBreakerCommand(Viewer.Log);
+                    }
+                    break;
+
 
 
                 // Train Control System controls
