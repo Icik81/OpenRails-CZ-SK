@@ -117,6 +117,18 @@ namespace Orts.Simulation.RollingStocks
                             IndependetMotorPower = true;
                         if (main.Name.ToLower() == "usecontrollervolts")
                             UseControllerVolts = true;
+                        if (main.Name.ToLower() == "locotype")
+                        {
+                            switch (innerText.ToLower())
+                            {
+                                case "vectron":
+                                    Locomotive.LocoType = MSTSLocomotive.LocoTypes.Vectron;
+                                    break;
+                                case "traxx":
+                                    Locomotive.LocoType = MSTSLocomotive.LocoTypes.Traxx;
+                                    break;
+                            }
+                        }
                         if (main.Name.ToLower() == "undercarriage")
                         {
                             Undercarriage undercarriage = new Undercarriage();
