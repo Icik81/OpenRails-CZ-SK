@@ -691,6 +691,13 @@ namespace Orts.Simulation.RollingStocks
             HU25kV
         }
 
+        public enum LocoTypes
+        {
+            Normal, Vectron, Traxx
+        }
+
+        public LocoTypes LocoType = LocoTypes.Normal;
+
         public bool SelectingSystem = false;
         public PowerSystem SelectedPowerSystem = PowerSystem.CZ25kV;
         public PowerSystem SelectingPowerSystem = PowerSystem.CZ25kV;
@@ -3533,7 +3540,7 @@ namespace Orts.Simulation.RollingStocks
         {
             if (IsPlayerTrain && !Simulator.Paused)
             {
-                if (UsingForceHandle)
+                if (LocoType == LocoTypes.Vectron)
                 {
                     if (changingPowerSystem)
                         PowerChangeRoutine(elapsedClockSeconds);
