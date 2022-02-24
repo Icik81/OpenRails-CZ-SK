@@ -1008,7 +1008,12 @@ namespace Orts.Simulation.RollingStocks
                 {
                     SignalEvent(Event.PowerKeyOn);
                     PowerKey = true;
-                }                
+                }
+                if (!RDSTBreaker)
+                {
+                    SignalEvent(Event.RDSTOn);
+                    RDSTBreaker = true;
+                }
                 LocoReadyToGo = false;                
             }
             // Spustí inicializační trigger zvuku volnoběhu
@@ -1044,13 +1049,14 @@ namespace Orts.Simulation.RollingStocks
                 && DieselEngines[0].EngineStatus == DieselEngine.Status.Stopped
                 && DieselDirection_Start
                 && Battery)
-            {                
-                DieselStartTime += elapsedClockSeconds;
+            {                                
                 if (DieselStartTime < DieselStartDelayTemp - 1)
                 {
-                    SignalEvent(Event.StartUpMotor);
+                    if (DieselStartTime == 0)
+                        SignalEvent(Event.StartUpMotor);
                     Simulator.Confirmer.Information("Motor se startuje...");
                 }
+                DieselStartTime += elapsedClockSeconds;
                 if (DieselStartTime > DieselStartDelayTemp)
                 {
                     DieselStartDelayDone = true;
@@ -1065,8 +1071,9 @@ namespace Orts.Simulation.RollingStocks
             }
             else
             {
-                DieselStartTime = 0;
-                SignalEvent(Event.StartUpMotorStop);
+                if (DieselStartTime != 0)
+                    SignalEvent(Event.StartUpMotorStop);
+                DieselStartTime = 0;                
             }
         }
     
