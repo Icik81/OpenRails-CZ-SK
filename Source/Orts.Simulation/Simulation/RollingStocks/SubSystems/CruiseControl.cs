@@ -261,6 +261,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
 
         public void Restore(BinaryReader inf)
         {
+            speedChanged = false;
             applyingPneumaticBrake = inf.ReadBoolean();
             Battery = inf.ReadBoolean();
             brakeIncreasing = inf.ReadBoolean();
