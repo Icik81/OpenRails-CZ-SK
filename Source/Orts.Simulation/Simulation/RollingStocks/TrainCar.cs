@@ -2914,6 +2914,8 @@ namespace Orts.Simulation.RollingStocks
                     if (force > 25 && force < 31) force -= 25; // Nabývá od 1 do 5
                     else force = 0;
 
+                    if (AbsSpeedMpS < 20 / 3.6f && force > 2) force = 2;
+
                     if (force != 0)
                     {
                         VibrationSpringConstantPrimepSpS = (12 + (force * 2)) / 0.2f;
