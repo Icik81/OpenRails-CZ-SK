@@ -994,7 +994,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 T0 = 0;
                 BrakePipeChangeRate = Math.Abs(prevBrakeLine1PressurePSI - BrakeLine1PressurePSI) * 3.33f;
 
-                if (BrakePipeChangeRate > 0)
+                if (BrakePipeChangeRate > 1)
                     BrakePipeChangeRateBar = Math.Max(BrakePipeChangeRateBar, BrakePipeChangeRate / 14.50377f);
                 else
                     BrakePipeChangeRateBar = 0;
