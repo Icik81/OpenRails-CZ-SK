@@ -999,17 +999,15 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 else
                     BrakePipeChangeRateBar = 0;
 
-                if (loco != null)
-                {
-                    CylinderChangeRate = Math.Abs(prevAutoCylPressurePSI - AutoCylPressurePSI) * 3.33f;
-                    if (AutoCylPressurePSI > prevAutoCylPressurePSI)
-                        CylinderChangeRateBar = loco.EngineBrakeController.CurrentValue * loco.EngineBrakeApplyRatePSIpS / 14.50377f;
+                CylinderChangeRate = Math.Abs(prevAutoCylPressurePSI - AutoCylPressurePSI) * 3.33f;
+                if (AutoCylPressurePSI > prevAutoCylPressurePSI)
+                    CylinderChangeRateBar = GetCylPressurePSI() / GetMaxCylPressurePSI() * GetMaxApplicationRatePSIpS() / 14.50377f;
 
-                    if (AutoCylPressurePSI < prevAutoCylPressurePSI)
-                        CylinderChangeRateBar = loco.EngineBrakeController.CurrentValue * loco.EngineBrakeReleaseRatePSIpS / 14.50377f;
-                }
+                if (AutoCylPressurePSI < prevAutoCylPressurePSI)
+                    CylinderChangeRateBar = GetCylPressurePSI() / GetMaxCylPressurePSI() * GetMaxReleaseRatePSIpS() / 14.50377f;
             }            
-            //loco.Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("CylinderChangeRateBar " + CylinderChangeRateBar));
+            //if (loco != null)
+            //    loco.Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("CylinderChangeRateBar " + CylinderChangeRateBar));
 
 
             // Zaznamená poslední stav pomocné jímky pro určení pracovního bodu pomocné jímky
