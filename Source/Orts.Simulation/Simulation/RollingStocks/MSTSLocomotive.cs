@@ -3269,12 +3269,13 @@ namespace Orts.Simulation.RollingStocks
 
             // Elektrické topení a klimatizace
             PowerReductionByHeatingSum = 0;
-            if (HeatingIsOn)
+            if (HeatingIsOn || CabHeatingIsOn)
             {
                 PowerReductionByHeatingWag = 0;
 
                 foreach (TrainCar car in Train.Cars)
                 {
+                    var mstsDieselLocomotive = car as MSTSDieselLocomotive;
                     if (!car.BrakeSystem.HeatingIsOn) // Pokud má vůz vypnuté topení nebo klimatizaci
                     {
                         car.PowerReductionByHeating0 = 0;
@@ -3283,7 +3284,13 @@ namespace Orts.Simulation.RollingStocks
                     }
                     else
                     {   // Jednotka je zapnutá a aktivní (termostat vypnutý)
-                        car.PowerReductionByHeating0 = car.PowerReductionByHeating;
+                        if (car.LocomotiveCab && car.DieselHeaterPower == 0 && !(car is MSTSElectricLocomotive))
+                        {
+                            // Kalorifer
+                            car.PowerReductionByHeating0 = car.PowerReductionByHeating / 2 * mstsDieselLocomotive.DieselEngines[0].RealDieselWaterTemperatureDeg / mstsDieselLocomotive.DieselEngines[0].DieselIdleTemperatureDegC;
+                        }
+                        else
+                            car.PowerReductionByHeating0 = car.PowerReductionByHeating;
                         car.PowerReductionByAirCondition0 = car.PowerReductionByAirCondition;
                     }
 
