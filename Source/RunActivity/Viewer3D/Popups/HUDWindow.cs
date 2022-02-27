@@ -639,14 +639,20 @@ namespace Orts.Viewer3D.Popups
                 var j = (i == 0) ? 0 : i;
                 var car = train.Cars[j];
 
-                if (car.WagonHasTemperature && car.DieselHeaterPower > 0)
+                if (car.WagonHasTemperature && car.DieselHeaterPower > 0 && !car.LocomotiveCab)
                     TypeHeatText = "Bufík";
                 else
                 if (car.WagonHasTemperature && car.DieselHeaterPower == 0 && !car.Train.SteamHeatingIsAvailable && !car.LocomotiveCab)
                     TypeHeatText = "El.topení";
                 else
                 if (car.WagonHasTemperature && car.DieselHeaterPower == 0 && car.Train.SteamHeatingIsAvailable && !car.LocomotiveCab)
-                    TypeHeatText = "Par.topení";                
+                    TypeHeatText = "Par.topení";
+                else
+                if (car.WagonHasTemperature && car.DieselHeaterPower > 0 && car.LocomotiveCab)
+                    TypeHeatText = "Bufík";
+                else
+                if (car.WagonHasTemperature && !(car is MSTSElectricLocomotive) && car.DieselHeaterPower == 0 && car.LocomotiveCab)
+                    TypeHeatText = "Kalorifer";
                 else
                 if (car.WagonHasTemperature && car.DieselHeaterPower == 0 && car.LocomotiveCab)
                     TypeHeatText = "El.topení";

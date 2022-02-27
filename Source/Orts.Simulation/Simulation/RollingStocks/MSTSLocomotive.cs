@@ -1528,6 +1528,7 @@ namespace Orts.Simulation.RollingStocks
             MaxAuxResOverPressurePSI = locoCopy.MaxAuxResOverPressurePSI;
             HeatingMaxCurrentA = locoCopy.HeatingMaxCurrentA;
             DieselStartDelay = locoCopy.DieselStartDelay;
+            RDSTBreaker = locoCopy.RDSTBreaker;
 
             // Jindrich
             if (locoCopy.CruiseControl != null)
@@ -1690,6 +1691,7 @@ namespace Orts.Simulation.RollingStocks
             outf.Write(DieselMotorDefected);
             outf.Write(DieselMotorPowerLost);
             outf.Write(DieselLocoTempReady);
+            outf.Write(RDSTBreaker);
 
             base.Save(outf);
 
@@ -1790,6 +1792,7 @@ namespace Orts.Simulation.RollingStocks
             DieselMotorDefected = inf.ReadBoolean();
             DieselMotorPowerLost = inf.ReadBoolean();
             DieselLocoTempReady = inf.ReadBoolean();
+            RDSTBreaker = inf.ReadBoolean();
 
             base.Restore(inf);
 
@@ -2883,7 +2886,7 @@ namespace Orts.Simulation.RollingStocks
                 PowerReduction = (float)Math.Round(PowerReduction, 3);
             }
             //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("PowerReduction " + PowerReduction));
-            //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Celková ztráta výkonu "+ PowerReduction * MaxPowerW/1000 + " kW!"));            
+            //Simulator.Confirmer.Message(ConfirmLevel.Information, Simulator.Catalog.GetString("Celková ztráta výkonu "+ PowerReduction * MaxPowerW/1000 + " kW!"));            
         }
 
         // Icik
@@ -3266,7 +3269,7 @@ namespace Orts.Simulation.RollingStocks
 
             // Elektrické topení a klimatizace
             PowerReductionByHeatingSum = 0;
-            if (HeatingIsOn || CabHeatingIsOn)
+            if (HeatingIsOn)
             {
                 PowerReductionByHeatingWag = 0;
 
@@ -3290,7 +3293,7 @@ namespace Orts.Simulation.RollingStocks
                         car.PowerReductionByAirCondition0 = 0;
                     }
 
-                    if (!car.LocomotiveCab)
+                    if (!car.LocomotiveCab && car.DieselHeaterPower == 0)
                     {
                         if (Simulator.Season == SeasonType.Summer)
                             PowerReductionByHeatingWag += car.PowerReductionByAirCondition0; // Klimatizace
@@ -3402,7 +3405,7 @@ namespace Orts.Simulation.RollingStocks
                     PowerReductionResult1 = MathHelper.Clamp(PowerReductionResult1, 0, 1);
                 }
             }
-            //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Příkon topení " + PowerReductionByHeatingSum / 1000) + " kW!");
+            //Simulator.Confirmer.Message(ConfirmLevel.Information, Simulator.Catalog.GetString("Příkon topení " + PowerReductionByHeatingSum / 1000) + " kW!");
             //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Příkon pom.obvodů " + PowerReductionByAuxEquipmentSum / 1000) + " kW!");            
         }
 

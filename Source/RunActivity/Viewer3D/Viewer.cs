@@ -976,7 +976,7 @@ namespace Orts.Viewer3D
                 if (ComposeMessageWindow == null) ComposeMessageWindow = new ComposeMessage(WindowManager);
                 ComposeMessageWindow.InitMessage();
             }
-            if (MPManager.IsMultiPlayer()) MultiPlayerWindow.Visible = TrainDrivingWindow.Visible? true : false;
+            if (MPManager.IsMultiPlayer()) MultiPlayerWindow.Visible = TrainDrivingWindow.Visible ? true : false;
             if (!MPManager.IsMultiPlayer() && UserInput.IsPressed(UserCommand.GamePauseMenu)) { QuitWindow.Visible = Simulator.Paused = !QuitWindow.Visible; }
             if (MPManager.IsMultiPlayer() && UserInput.IsPressed(UserCommand.GamePauseMenu)) { if (Simulator.Confirmer != null) Simulator.Confirmer.Information(Viewer.Catalog.GetString("In MP, use Alt-F4 to quit directly")); }
 
@@ -1003,11 +1003,11 @@ namespace Orts.Viewer3D
             if (UserInput.IsPressed(UserCommand.DisplayTrainDrivingWindow)) if (UserInput.IsDown(UserCommand.DisplayNextWindowTab)) TrainDrivingWindow.TabAction(); else TrainDrivingWindow.Visible = !TrainDrivingWindow.Visible;
 
             if (UserInput.IsPressed(UserCommand.DisplayHUD)) if (UserInput.IsDown(UserCommand.DisplayNextWindowTab)) HUDWindow.TabAction();
-            else
-            {
-                HUDWindow.Visible = !HUDWindow.Visible;
-                if (!HUDWindow.Visible) HUDScrollWindow.Visible = false;
-            }
+                else
+                {
+                    HUDWindow.Visible = !HUDWindow.Visible;
+                    if (!HUDWindow.Visible) HUDScrollWindow.Visible = false;
+                }
             if (UserInput.IsPressed(UserCommand.DisplayStationLabels))
             {
                 if (UserInput.IsDown(UserCommand.DisplayNextWindowTab)) OSDLocations.TabAction(); else OSDLocations.Visible = !OSDLocations.Visible;
@@ -1068,9 +1068,13 @@ namespace Orts.Viewer3D
             {
                 if (PlayerLocomotive.ThrottlePercent >= 1
                     || Math.Abs(PlayerLocomotive.SpeedMpS) > 1
-                    || !IsReverserInNeutral(PlayerLocomotive))
+                    || !IsReverserInNeutral(PlayerLocomotive)
+                    || (PlayerLocomotive as MSTSLocomotive).DieselDirectionControllerInOut)
                 {
-                    Simulator.Confirmer.Warning(CabControl.ChangeCab, CabSetting.Warn2);
+                    if ((PlayerLocomotive as MSTSLocomotive).DieselDirectionControllerInOut)
+                        Simulator.Confirmer.Information("Pro přechod mezi stanovišti vyjměte nejdříve směrovou páku.");
+                    else
+                        Simulator.Confirmer.Warning(CabControl.ChangeCab, CabSetting.Warn2);
                 }
                 else
                 {

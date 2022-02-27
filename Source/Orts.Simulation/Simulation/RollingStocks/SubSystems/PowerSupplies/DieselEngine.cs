@@ -851,7 +851,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
             {
                 // Icik
                 //return (CurrentDieselOutputPowerW <= 0f ? 0f : (OutputPowerW * 100f / CurrentDieselOutputPowerW)) ;
-                return (locomotive.TractiveForceN <= 0f ? 0f : (CurrentDieselOutputPowerW * 100f / MaximumDieselPowerW));
+                return (locomotive.TractiveForceN <= 0f ? (locomotive.PowerReductionResult1 * MaximumDieselPowerW * 100f / MaximumDieselPowerW)
+                    : ((CurrentDieselOutputPowerW + (locomotive.PowerReductionResult1 * MaximumDieselPowerW)) * 100f / MaximumDieselPowerW));
             }
         }
         /// <summary>
