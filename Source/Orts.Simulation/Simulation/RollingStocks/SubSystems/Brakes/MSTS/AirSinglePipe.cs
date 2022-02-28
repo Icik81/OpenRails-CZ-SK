@@ -983,11 +983,12 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 UpdateTripleValveState(threshold);
 
             // Zjistí rychlost změny tlaku v potrubí a v brzdovém válci
+            if (T0 > 1) T0 = 0;
             if (T0 == 0.0f)
             {
                 prevBrakeLine1PressurePSI = BrakeLine1PressurePSI;
                 prevAutoCylPressurePSI = AutoCylPressurePSI;                
-            }            
+            }                        
             T0 += elapsedClockSeconds;
             if (T0 > 0.33f && T0 < 0.43f)
             {

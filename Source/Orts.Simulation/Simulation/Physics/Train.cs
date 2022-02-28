@@ -16523,7 +16523,7 @@ namespace Orts.Simulation.Physics
             }
             for (int i = 0; i < train.Cars.Count; i++)
             {
-                var wagon = (train.Cars[i] as MSTSWagon);
+                var wagon = (train.Cars[i] as MSTSWagon);                
                 if (wagon is MSTSLocomotive)
                 {
                     MSTSLocomotive loc = (MSTSLocomotive)wagon;

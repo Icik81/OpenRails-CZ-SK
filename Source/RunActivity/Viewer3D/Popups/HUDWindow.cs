@@ -514,8 +514,8 @@ namespace Orts.Viewer3D.Popups
                 var sanderBlocked = Viewer.PlayerLocomotive is MSTSLocomotive && Math.Abs(playerTrain.SpeedMpS) > ((MSTSLocomotive)Viewer.PlayerLocomotive).SanderSpeedOfMpS;
                 if (sanderBlocked)
                     TableAddLine(table, Viewer.Catalog.GetString("Sander blocked") + "!!!");
-                else
-                    TableAddLine(table, Viewer.Catalog.GetString("Sander on") + "???");
+                else                                    
+                    TableAddLine(table, Viewer.Catalog.GetString("Množství písku: ") + (Viewer.PlayerLocomotive as MSTSLocomotive).CurrentTrackSandBoxCapacityKG + "kg" + "???");                
             }
 
             if ((Viewer.PlayerLocomotive as MSTSWagon).DoorLeftOpen || (Viewer.PlayerLocomotive as MSTSWagon).DoorRightOpen)

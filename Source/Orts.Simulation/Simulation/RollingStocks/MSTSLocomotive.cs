@@ -227,8 +227,8 @@ namespace Orts.Simulation.RollingStocks
         public float PreviousThrottleSetting = 0.0f;  // Holds the value of the previous throttle setting for calculating the correct antislip speed
 
         // parameters for Track Sander based upon compressor air and abrasive table for 1/2" sand blasting nozzle @ 50psi
-        public float MaxTrackSandBoxCapacityM3 = Me3.FromFt3(40.0f);  // Capacity of sandbox - assume 40.0 cu ft
-        public float CurrentTrackSandBoxCapacityM3 = 5.0f;   // This value needs to be initialised to the value above, as it reduces as sand is used.
+        public float MaxTrackSandBoxCapacityM3 = 0;  // Capacity of sandbox - assume 40.0 cu ft
+        public float CurrentTrackSandBoxCapacityM3 = 0;   // This value needs to be initialised to the value above, as it reduces as sand is used.
         public float TrackSanderAirComsumptionM3pS = Me3.FromFt3(195.0f) / 60.0f;  // Default value - cubic feet per min (CFM) 195 ft3/m
         public float TrackSanderAirPressurePSI = 50.0f;
         public float TrackSanderSandConsumptionM3pS = Me3.FromFt3(11.6f) / 3600.0f; // Default value - 11.6 ft3/h
@@ -620,6 +620,7 @@ namespace Orts.Simulation.RollingStocks
         public bool RDSTBreakerVZEnable;
         public bool RDSTBreakerPowerEnable;
         public bool RDSTBreaker;
+        public float CurrentTrackSandBoxCapacityKG;
 
 
         // Jindrich
@@ -1894,7 +1895,11 @@ namespace Orts.Simulation.RollingStocks
             Simulator.voltageChangeMarkers = new List<VoltageChangeMarker>();
             SetUpVoltageChangeMarkers();
 
-            // Icik                        
+            // Icik
+            if (MaxTrackSandBoxCapacityM3 == 0) MaxTrackSandBoxCapacityM3 = 1.0f; // Default 1.0m3
+            if (CurrentTrackSandBoxCapacityM3 == 0) CurrentTrackSandBoxCapacityM3 = MaxTrackSandBoxCapacityM3;
+            CurrentTrackSandBoxCapacityKG = (float)Math.Round(CurrentTrackSandBoxCapacityM3 * 1600, 0);
+
             SetDefault_AuxCompressor();
             MainResChargingRatePSIpS0 = MainResChargingRatePSIpS;
             if (!Compressor_I && !Compressor_II)
@@ -2551,8 +2556,6 @@ namespace Orts.Simulation.RollingStocks
         // Definice ochran lokomotiv        
         public void Overcurrent_Protection()
         {
-            if (!IsPlayerTrain)
-                return;
             if (MaxCurrentA > 0)  // Zohlední jen elektrické a dieselelektrické lokomotivy 
             {
                 // Nadproudová ochrana                        
@@ -2628,8 +2631,6 @@ namespace Orts.Simulation.RollingStocks
         // Protiskluzová ochrana
         public void AntiSlip_Protection()
         {
-            if (!IsPlayerTrain)
-                return;
             if (!IsLeadLocomotive())
                 return;
             if (MaxCurrentA > 0)  // Zohlední jen elektrické a dieselelektrické lokomotivy 
@@ -2693,8 +2694,6 @@ namespace Orts.Simulation.RollingStocks
         // Napěťový filtr pro umožnění použití EDB bez pantografu        
         public void PowerOn_Filter(float elapsedClockSeconds)
         {
-            if (!IsPlayerTrain)
-                return;
             // Nabíjení a vybíjení napěťového filtru
             if (EDBIndependent)
             {
@@ -2730,8 +2729,6 @@ namespace Orts.Simulation.RollingStocks
         // Při aktivní EDB a použití přímočinné brzdy zruší účinek EDB      
         public void EDBCancelByEngineBrake()
         {
-            if (!IsPlayerTrain)
-                return;
             if (EngineBrakeEngageEDB)
             {
                 if (DynamicBrakeIntervention > -1)
@@ -2753,8 +2750,6 @@ namespace Orts.Simulation.RollingStocks
         // Při aktivní OL3 zruší účinek EDB      
         public void EDBCancelByOL3BailOff()
         {
-            if (!IsPlayerTrain)
-                return;
             if (BrakeSystem.OL3active)
             {
                 if (DynamicBrakeIntervention > -1)
@@ -2771,9 +2766,6 @@ namespace Orts.Simulation.RollingStocks
         // Icik
         public void HVOffbyAirPressureE()
         {
-            if (!IsPlayerTrain)
-                return;
-
             if (DoesBrakeCutPower && this is MSTSElectricLocomotive)
             {
                 // Pokud stoupne tlak nad hraniční hodnotu tlaku v brzdovém válci
@@ -2814,9 +2806,6 @@ namespace Orts.Simulation.RollingStocks
         // Icik
         public void HVOffbyAirPressureD()
         {
-            if (!IsPlayerTrain)
-                return;
-
             if (this is MSTSDieselLocomotive)
             {
                 // Pokud stoupne tlak nad hraniční hodnotu tlaku v brzdovém válci
@@ -2856,8 +2845,6 @@ namespace Orts.Simulation.RollingStocks
         public float PowerReductionResult8;  // Odpojení TM při nezapnuté RDST
         public void PowerReductionResult(float elapsedClockSeconds)
         {
-            if (!IsPlayerTrain)
-                return;
             if (this is MSTSDieselLocomotive || this is MSTSSteamLocomotive)
             {
                 if (PowerReduction <
@@ -2916,11 +2903,8 @@ namespace Orts.Simulation.RollingStocks
         public float MSGHeatingCycle;
         public void ElevatedConsumptionOnLocomotive(float elapsedClockSeconds)
         {
-            if (!IsPlayerTrain && AuxPowerOn)
-                HeatingIsOn = true;
-
             // Ochrana při nadproudu topení/klimatizace jen pro hráče
-            if (IsPlayerTrain && IsLeadLocomotive())
+            if (IsLeadLocomotive())
             {
                 if (CabHeating_OffOn && AuxPowerOn)
                     CabHeatingIsOn = true;
@@ -3129,18 +3113,15 @@ namespace Orts.Simulation.RollingStocks
                                 car.SetTempCThreshold = car.SetTemperatureC;
                             }
 
-                            if (IsPlayerTrain)
+                            MSGHeatingCycle++;
+                            if (MSGHeatingCycle > 1000 && car.WagonTemperature < 14)
                             {
-                                MSGHeatingCycle++;
-                                if (MSGHeatingCycle > 1000 && car.WagonTemperature < 14)
-                                {
-                                    if (car.WagonType == WagonTypes.Engine && !car.HasPassengerCapacity)
-                                        Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Je ti zima!"));
-                                    else
-                                        if (car.PassengerList.Count > 0)
-                                        Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Cestujícím je zima!"));
-                                    MSGHeatingCycle = 0;
-                                }
+                                if (car.WagonType == WagonTypes.Engine && !car.HasPassengerCapacity)
+                                    Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Je ti zima!"));
+                                else
+                                    if (car.PassengerList.Count > 0)
+                                    Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Cestujícím je zima!"));
+                                MSGHeatingCycle = 0;
                             }
                             // Termostat vypnutý, topení aktivní
                             if (((!car.LocomotiveCab && HeatingIsOn) || car.DieselHeaterPower > 0 || (car.LocomotiveCab && CabHeatingIsOn)) && car.WagonTemperature < car.SetTempCThreshold && !car.ThermostatOn)
@@ -3174,18 +3155,15 @@ namespace Orts.Simulation.RollingStocks
                                 car.SetTempCThreshold = car.SetTemperatureC;
                             }
 
-                            if (IsPlayerTrain)
+                            MSGHeatingCycle++;
+                            if (MSGHeatingCycle > 1000 && car.WagonTemperature > 32)
                             {
-                                MSGHeatingCycle++;
-                                if (MSGHeatingCycle > 1000 && car.WagonTemperature > 32)
-                                {
-                                    if (car.WagonType == WagonTypes.Engine && !car.HasPassengerCapacity)
-                                        Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Je ti horko!"));
-                                    else
-                                        if (car.PassengerList.Count > 0)
-                                        Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Cestujícím je příliš horko!"));
-                                    MSGHeatingCycle = 0;
-                                }
+                                if (car.WagonType == WagonTypes.Engine && !car.HasPassengerCapacity)
+                                    Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Je ti horko!"));
+                                else
+                                    if (car.PassengerList.Count > 0)
+                                    Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Cestujícím je příliš horko!"));
+                                MSGHeatingCycle = 0;
                             }
                             // Termostat vypnutý, klimatizace aktivní
                             if (((!car.LocomotiveCab && HeatingIsOn) || (car.LocomotiveCab && CabHeatingIsOn)) && car.WagonTemperature > car.SetTempCThreshold && !car.ThermostatOn && car.PowerReductionByAirCondition > 0)
@@ -3217,7 +3195,7 @@ namespace Orts.Simulation.RollingStocks
             }
 
             // Bufík
-            if (IsPlayerTrain && Simulator.GameTimeCyklus10 == 10)
+            if (Simulator.GameTimeCyklus10 == 10)
             {
                 foreach (TrainCar car in Train.Cars)
                 {
@@ -3328,7 +3306,7 @@ namespace Orts.Simulation.RollingStocks
 
                 PowerReductionByHeatingSum = PowerReductionByHeatingWag;
 
-                if (IsPlayerTrain)
+                if (IsLeadLocomotive())
                 {
                     // Výpočet proudu při zapnutí topení nebo klimatizace
                     I_Heating = (float)Math.Round(PowerReductionByHeatingSum / U_Heating);
@@ -3395,7 +3373,7 @@ namespace Orts.Simulation.RollingStocks
 
             //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Zvýšený odběr proudu, výkon zredukován "+ PowerReductionByAuxEquipmentSum * MaxPowerW/1000) + " kW!");                        
 
-            if (IsPlayerTrain)
+            if (IsLeadLocomotive())
             {
                 if (WagonType == WagonTypes.Engine && this is MSTSElectricLocomotive) // Elektrické lokomotivy
                 {
@@ -3411,16 +3389,12 @@ namespace Orts.Simulation.RollingStocks
                     PowerReductionResult1 /= 1000000;
                     PowerReductionResult1 = MathHelper.Clamp(PowerReductionResult1, 0, 1);
                 }
-            }
-            //Simulator.Confirmer.Message(ConfirmLevel.Information, Simulator.Catalog.GetString("Příkon topení " + PowerReductionByHeatingSum / 1000) + " kW!");
-            //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Příkon pom.obvodů " + PowerReductionByAuxEquipmentSum / 1000) + " kW!");            
+            }            
         }
 
         // Stanovení hodnot výkonů a síly pro AC-DC systém
         public void MaxPower_MaxForce_ACDC()
         {
-            if (!IsPlayerTrain)
-                return;
             switch (SwitchingVoltageMode)
             {
                 case 0:
@@ -3822,37 +3796,36 @@ namespace Orts.Simulation.RollingStocks
             }
 
             // Icik
-            if (Simulator.GameTime < 0.5f)
+            if (IsPlayerTrain && Simulator.GameSpeed == 1)
             {
-                ToggleDieselDirectionController();
-                ToggleDieselDirectionController2();
-            }
-            if (Simulator.GameTimeCyklus10 == 10)
-            {
-                Overcurrent_Protection();
-                AntiSlip_Protection();                                
-                MaxPower_MaxForce_ACDC();
-                if (IsPlayerTrain && Pantograph4Enable) TogglePantograph4Switch();
-                if (IsPlayerTrain && Pantograph3Enable) TogglePantograph3Switch();
-                ToggleHV2Switch();
-                ToggleHV3Switch();
-                ToggleHV5Switch();
-                RDSTBreakerType();
-            }
-            if (IsPlayerTrain)
-            {
+                if (Simulator.GameTime < 0.5f) 
+                {                    
+                    ToggleDieselDirectionController();
+                    ToggleDieselDirectionController2();
+                }
+                if (Simulator.GameTimeCyklus10 == 10)
+                {
+                    Overcurrent_Protection();
+                    AntiSlip_Protection();
+                    MaxPower_MaxForce_ACDC();
+                    if (Pantograph4Enable) TogglePantograph4Switch();
+                    if (Pantograph3Enable) TogglePantograph3Switch();
+                    ToggleHV2Switch();
+                    ToggleHV3Switch();
+                    ToggleHV5Switch();
+                    RDSTBreakerType();
+                }
                 TrainBrakeControllerValueForSound = (float)Math.Round(TrainBrakeController.CurrentValue, 2);
                 EngineBrakeControllerValueForSound = (float)Math.Round(EngineBrakeController.CurrentValue, 2);
+                EDBCancelByEngineBrake();
+                EDBCancelByOL3BailOff();
+                PowerOn_Filter(elapsedClockSeconds);
+                ElevatedConsumptionOnLocomotive(elapsedClockSeconds);
+                HVOffbyAirPressureE();
+                HVOffbyAirPressureD();
+                TMFailure(elapsedClockSeconds);
+                PowerReductionResult(elapsedClockSeconds);                                                
             }
-            
-            EDBCancelByEngineBrake();
-            EDBCancelByOL3BailOff();
-            PowerOn_Filter(elapsedClockSeconds);
-            ElevatedConsumptionOnLocomotive(elapsedClockSeconds);
-            HVOffbyAirPressureE();
-            HVOffbyAirPressureD();
-            TMFailure(elapsedClockSeconds);
-            PowerReductionResult(elapsedClockSeconds);            
 
             TrainControlSystem.Update();
 
@@ -4172,7 +4145,7 @@ namespace Orts.Simulation.RollingStocks
 
                     // Icik
                     //if (Simulator.UseAdvancedAdhesion && !Simulator.Paused) 
-                    if (Simulator.UseAdvancedAdhesion) 
+                    if (Simulator.UseAdvancedAdhesion && Simulator.GameSpeed == 1) 
                     {
                         AdvancedAdhesion(elapsedClockSeconds); // Use advanced adhesion model
                         AdvancedAdhesionModel = true;  // Set flag to advise advanced adhesion model is in use
@@ -4204,7 +4177,8 @@ namespace Orts.Simulation.RollingStocks
                     }
 
                     //Force to display
-                    FilteredMotiveForceN = CurrentFilter.Filter(MotiveForceN, elapsedClockSeconds);
+                    if (Simulator.GameSpeed == 1)
+                        FilteredMotiveForceN = CurrentFilter.Filter(MotiveForceN, elapsedClockSeconds);
                     break;
                 default:
                     break;
@@ -5228,6 +5202,7 @@ namespace Orts.Simulation.RollingStocks
             // Icik
             if (Simulator.GameSpeed > 1)
                 return;
+            SanderSpeedOfMpS = 1000;
 
             //float BaseuMax = AdhesionEfficiencyKoef * (Curtius_KnifflerA / (MpS.ToKpH(AbsSpeedMpS) + Curtius_KnifflerB) + Curtius_KnifflerC); // Base Curtius - Kniffler equation - u = 0.33, all other values are scaled off this formula
             if (AdhesionEfficiencyKoef == 0) AdhesionEfficiencyKoef = 1.00f;
@@ -5407,35 +5382,37 @@ namespace Orts.Simulation.RollingStocks
         }
 
         #endregion
-
-
+        
         public void UpdateTrackSander(float elapsedClockSeconds)
         {
-        // updates track sander in terms of sand usage and impact on air compressor
-        // The following assumptions have been made:
-        //
-
+            // updates track sander in terms of sand usage and impact on air compressor
+            // The following assumptions have been made:
+            //
+            // Icik
+            TrackSanderSandConsumptionM3pS = MathHelper.Clamp(TrackSanderSandConsumptionM3pS, 0.0005f, 0.01f);
             if (Sander)  // If sander is on adjust parameters
             {
                 if (CurrentTrackSandBoxCapacityM3 > 0.0) // if sand still in sandbox then sanding is available
                 {
                     // Calculate consumption of sand, and drop in sand box level
-                    float ActualSandConsumptionM3pS = pS.FrompH(TrackSanderSandConsumptionM3pS) * elapsedClockSeconds;
+                    float ActualSandConsumptionM3pS = TrackSanderSandConsumptionM3pS * elapsedClockSeconds;
+                    MassKG -= ActualSandConsumptionM3pS * 1600;
                     CurrentTrackSandBoxCapacityM3 -= ActualSandConsumptionM3pS;
-                    CurrentTrackSandBoxCapacityM3 = MathHelper.Clamp(CurrentTrackSandBoxCapacityM3, 0.0f, MaxTrackSandBoxCapacityM3);
+                    CurrentTrackSandBoxCapacityM3 = MathHelper.Clamp(CurrentTrackSandBoxCapacityM3, 0.0f, MaxTrackSandBoxCapacityM3);                    
                     if (CurrentTrackSandBoxCapacityM3 == 0.0)
                     {
                         Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Sand supply has been exhausted"));
                     }
-                }
+                }                
+                CurrentTrackSandBoxCapacityKG = (float)Math.Round(CurrentTrackSandBoxCapacityM3 * 1600, 0);
 
-          // Calculate air consumption and change in main air reservoir pressure
-                float ActualAirConsumptionM3pS = pS.FrompM(TrackSanderAirComsumptionM3pS) * elapsedClockSeconds;
-                float SanderPressureDiffPSI = ActualAirConsumptionM3pS / Me3.ToFt3(MainResVolumeM3) ;
+            // Calculate air consumption and change in main air reservoir pressure
+                float ActualAirConsumptionM3pS = TrackSanderAirComsumptionM3pS * elapsedClockSeconds;
+                float SanderPressureDiffPSI = ActualAirConsumptionM3pS / MainResVolumeM3;
                 MainResPressurePSI -= SanderPressureDiffPSI;
                 MainResPressurePSI = MathHelper.Clamp(MainResPressurePSI, 0.001f, MaxMainResPressurePSI);
             }
-
+            //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("CurrentTrackSandBoxCapacityM3: " + CurrentTrackSandBoxCapacityM3));
         }
 
         public override bool GetSanderOn()
