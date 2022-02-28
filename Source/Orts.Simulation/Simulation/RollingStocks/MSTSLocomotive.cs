@@ -1896,9 +1896,9 @@ namespace Orts.Simulation.RollingStocks
             SetUpVoltageChangeMarkers();
 
             // Icik
-            if (MaxTrackSandBoxCapacityM3 == 0) MaxTrackSandBoxCapacityM3 = 1.0f; // Default 1.0m3
+            if (MaxTrackSandBoxCapacityM3 == 0) MaxTrackSandBoxCapacityM3 = 0.0125f; // Default 0.0125m3
             if (CurrentTrackSandBoxCapacityM3 == 0) CurrentTrackSandBoxCapacityM3 = MaxTrackSandBoxCapacityM3;
-            CurrentTrackSandBoxCapacityKG = (float)Math.Round(CurrentTrackSandBoxCapacityM3 * 1600, 0);
+            CurrentTrackSandBoxCapacityKG = (float)Math.Round(CurrentTrackSandBoxCapacityM3 * 1600, 2);
 
             SetDefault_AuxCompressor();
             MainResChargingRatePSIpS0 = MainResChargingRatePSIpS;
@@ -5389,7 +5389,7 @@ namespace Orts.Simulation.RollingStocks
             // The following assumptions have been made:
             //
             // Icik
-            TrackSanderSandConsumptionM3pS = MathHelper.Clamp(TrackSanderSandConsumptionM3pS, 0.0005f, 0.01f);
+            TrackSanderSandConsumptionM3pS = MathHelper.Clamp(TrackSanderSandConsumptionM3pS, 0.000025f, 0.00005f);
             if (Sander)  // If sander is on adjust parameters
             {
                 if (CurrentTrackSandBoxCapacityM3 > 0.0) // if sand still in sandbox then sanding is available
@@ -5401,10 +5401,10 @@ namespace Orts.Simulation.RollingStocks
                     CurrentTrackSandBoxCapacityM3 = MathHelper.Clamp(CurrentTrackSandBoxCapacityM3, 0.0f, MaxTrackSandBoxCapacityM3);                    
                     if (CurrentTrackSandBoxCapacityM3 == 0.0)
                     {
-                        Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Sand supply has been exhausted"));
+                        Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("V zásobnících už není písek!"));
                     }
                 }                
-                CurrentTrackSandBoxCapacityKG = (float)Math.Round(CurrentTrackSandBoxCapacityM3 * 1600, 0);
+                CurrentTrackSandBoxCapacityKG = (float)Math.Round(CurrentTrackSandBoxCapacityM3 * 1600, 2);
 
             // Calculate air consumption and change in main air reservoir pressure
                 float ActualAirConsumptionM3pS = TrackSanderAirComsumptionM3pS * elapsedClockSeconds;
