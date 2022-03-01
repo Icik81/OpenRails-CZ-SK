@@ -836,7 +836,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
         /// <summary>
         /// Hysteresis of the cooling regulator
         /// </summary>
-        public float DieselTempCoolingHyst = 10f;
+        public float DieselTempCoolingHyst = 5f;
         /// <summary>
         /// Cooling system indicator
         /// </summary>
@@ -935,7 +935,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                     case "tempoiltimeconstant": DieselOilTempTimeConstantSec = stf.ReadFloatBlock(STFReader.UNITS.Time, 1440); initLevel |= SettingsFlags.TempTimeConstant; break;
                     case "opttemperature": DieselOptimalTemperatureDegC = stf.ReadFloatBlock(STFReader.UNITS.Temperature, 70f); initLevel |= SettingsFlags.OptTemperature; break;
                     case "idletemperature": DieselIdleTemperatureDegC = stf.ReadFloatBlock(STFReader.UNITS.Temperature, 60f); initLevel |= SettingsFlags.IdleTemperature; break;
-                    case "tempcoolinghyst": DieselTempCoolingHyst = stf.ReadFloatBlock(STFReader.UNITS.Temperature, 10f); break;
+                    case "tempcoolinghyst": DieselTempCoolingHyst = stf.ReadFloatBlock(STFReader.UNITS.Temperature, 5f); break;
                     case "coolingenablerpm": CoolingEnableRPM = stf.ReadFloatBlock(STFReader.UNITS.None, 0f); break;
                     default:
                         end = true;
