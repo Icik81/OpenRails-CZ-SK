@@ -2843,6 +2843,7 @@ namespace Orts.Simulation.RollingStocks
         public float PowerReductionResult6;  // Redukce výkonu při motoru pod provozní teplotou
         public float PowerReductionResult7;  // Odpojení TM při selhání
         public float PowerReductionResult8;  // Odpojení TM při nezapnuté RDST
+        public float PowerReductionResult9;  // Redukce výkonu při poškozeném motoru 
         public void PowerReductionResult(float elapsedClockSeconds)
         {
             if (this is MSTSDieselLocomotive || this is MSTSSteamLocomotive)
@@ -2855,7 +2856,8 @@ namespace Orts.Simulation.RollingStocks
                     + PowerReductionResult5
                     + PowerReductionResult6
                     + PowerReductionResult7
-                    + PowerReductionResult8)
+                    + PowerReductionResult8
+                    + PowerReductionResult9)
                     PowerReduction += 1 * elapsedClockSeconds;
 
                 if (PowerReduction >
@@ -2866,7 +2868,8 @@ namespace Orts.Simulation.RollingStocks
                     + PowerReductionResult5
                     + PowerReductionResult6
                     + PowerReductionResult7
-                    + PowerReductionResult8)
+                    + PowerReductionResult8
+                    + PowerReductionResult9)
                     PowerReduction -= 1 * elapsedClockSeconds;
 
                 PowerReduction = MathHelper.Clamp(PowerReduction, 0, 0.999f);

@@ -1391,7 +1391,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                 locomotive.SignalEvent(Event.DieselMotorTempWarningOff);
             }
 
-            if (OverHeatTimer > 60)
+            if (OverHeatTimer > 120)
             {
                 locomotive.DieselMotorDefected = true;
                 if (EngineStatus == Status.Running && OverHeatTimer2 == 0)
@@ -1399,7 +1399,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                 locomotive.Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Motor je zničený!"));
             }
             else
-            if (OverHeatTimer > 30)
+            if (OverHeatTimer > 60)
             {
                 locomotive.DieselMotorPowerLost = true;
                 locomotive.Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Motor je poškozený!"));                
@@ -1413,9 +1413,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
             }             
 
             if (locomotive.DieselMotorPowerLost)
-            {                
-                locomotive.PowerReduction += 0.25f;
-                ExhaustColor = Color.Gray;
+            {
+                locomotive.PowerReductionResult9 = 0.25f;
+                ExhaustColor = Color.DarkGray;
             }
             if (locomotive.DieselMotorDefected && EngineStatus == Status.Running)
             {
