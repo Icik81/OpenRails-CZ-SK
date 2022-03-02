@@ -2832,6 +2832,7 @@ namespace Orts.Simulation.RollingStocks
             }
         }
 
+        float CyklusCouplerImpact;
         private void AddVibrations(float factor)
         {            
             // NOTE: For low angles (as our vibration rotations are), sin(angle) ~= angle, and since the displacement at the end of the car is sin(angle) = displacement/half-length, sin(displacement/half-length) * half-length ~= displacement.
@@ -2873,12 +2874,18 @@ namespace Orts.Simulation.RollingStocks
                 }
 
                 // Vibrace při nárazu      
-                if (IsPlayerTrain && Simulator.CarCoupleSpeedOvercome && !Simulator.CarCoupleMaxSpeedOvercome)
+                if (IsPlayerTrain && Simulator.CarCoupleSpeedOvercome && !Simulator.CarCoupleMaxSpeedOvercome && !Simulator.CarByUserUncoupled)
                 {
-                    VibrationSpringConstantPrimepSpS = 50 / 0.2f;
-                    VibratioDampingCoefficient = 0.3f;
-                    VibrationRotationVelocityRadpS.X += (VibrationIntroductionStrength * Math.Abs(SpeedMpS) * 50f * VibrationMassKG) / x;
+                    CyklusCouplerImpact++;
+                    if (CyklusCouplerImpact < 3)
+                    {
+                        VibrationSpringConstantPrimepSpS = 50 / 0.2f;
+                        VibratioDampingCoefficient = 0.3f;
+                        VibrationRotationVelocityRadpS.X += (VibrationIntroductionStrength * Math.Abs(SpeedMpS) * 50f * VibrationMassKG) / x;
+                    }
                 }
+                if (IsPlayerTrain && AbsSpeedMpS == 0)
+                    CyklusCouplerImpact = 0;
 
                 // Vibrace při zrychlování a zpomalování
                 if (IsPlayerTrain && Math.Abs(AccelerationMpSS) > 1f && !TypVibrace_1 && !TypVibrace_2 && !TypVibrace_3 && Math.Abs(SpeedMpS) < 0.1f && !WheelSlip)

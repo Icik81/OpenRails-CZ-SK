@@ -953,7 +953,8 @@ namespace Orts.Simulation
             // Icik
             int PreviousCarCount = (int) drivenTrain.Cars.Count;
             float CarCoupleSpeed = 0.05f / 3.6f; // Doťukávací rychlost pro napojení vozu
-            float CarCoupleMaxSpeed = 20 / 3.6f; // Maximální napojovací rychlost max 20km/h
+            float CarCoupleMaxSpeed = 15 / 3.6f; // Maximální nárazová rychlost max 15km/h
+            
             CarCoupleSpeedOvercome = false;
 
             if (CarCoupleMaxSpeedOvercome)
@@ -985,9 +986,10 @@ namespace Orts.Simulation
                                 CarCoupleMaxSpeedOvercome = true;
 
                             if (Math.Abs(drivenTrain.SpeedMpS) > CarCoupleSpeed)
-                                CarCoupleSpeedOvercome = true;                            
+                                CarCoupleSpeedOvercome = true;
 
-                            if (train == drivenTrain.UncoupledFrom || CarCoupleSpeedOvercome)
+                            //if (train == drivenTrain.UncoupledFrom || CarCoupleSpeedOvercome)
+                            if (CarCoupleSpeedOvercome)
                             {
                                 if (drivenTrain.SpeedMpS < train.SpeedMpS)
                                     drivenTrain.SetCoupleSpeed(train, 1);                                
@@ -1042,7 +1044,8 @@ namespace Orts.Simulation
                             if (Math.Abs(drivenTrain.SpeedMpS) > CarCoupleSpeed)
                                 CarCoupleSpeedOvercome = true;
 
-                            if (train == drivenTrain.UncoupledFrom || CarCoupleSpeedOvercome)
+                            //if (train == drivenTrain.UncoupledFrom || CarCoupleSpeedOvercome)
+                            if (CarCoupleSpeedOvercome)
                             {
                                 if (drivenTrain.SpeedMpS < -train.SpeedMpS)
                                     drivenTrain.SetCoupleSpeed(train, 11);                                
@@ -1113,7 +1116,8 @@ namespace Orts.Simulation
                             if (Math.Abs(drivenTrain.SpeedMpS) > CarCoupleSpeed)
                                 CarCoupleSpeedOvercome = true;
 
-                            if (train == drivenTrain.UncoupledFrom || CarCoupleSpeedOvercome)
+                            //if (train == drivenTrain.UncoupledFrom || CarCoupleSpeedOvercome)
+                            if (CarCoupleSpeedOvercome)
                             {
                                 if (drivenTrain.SpeedMpS > train.SpeedMpS)
                                     drivenTrain.SetCoupleSpeed(train, 1);                                
@@ -1207,7 +1211,8 @@ namespace Orts.Simulation
                             if (Math.Abs(drivenTrain.SpeedMpS) > CarCoupleSpeed)
                                 CarCoupleSpeedOvercome = true;
 
-                            if (train == drivenTrain.UncoupledFrom || CarCoupleSpeedOvercome)
+                            //if (train == drivenTrain.UncoupledFrom || CarCoupleSpeedOvercome)
+                            if (CarCoupleSpeedOvercome)
                             {
                                 if (drivenTrain.SpeedMpS > -train.SpeedMpS)
                                     drivenTrain.SetCoupleSpeed(train, -1);                                
