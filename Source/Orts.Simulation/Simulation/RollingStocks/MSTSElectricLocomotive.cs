@@ -1524,7 +1524,7 @@ namespace Orts.Simulation.RollingStocks
             if (!TrainHasFirstPantoMarker)
             {
                 TrainHasFirstPantoMarker = true;
-                if (Flipped)
+                if (Flipped && MassKG > 75 * 1000)
                     TrainPantoMarker = 2;
                 else
                     TrainPantoMarker = 1;
