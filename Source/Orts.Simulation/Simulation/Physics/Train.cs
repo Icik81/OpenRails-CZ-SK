@@ -1772,50 +1772,53 @@ namespace Orts.Simulation.Physics
                     car.TotalForceN = -car.TotalForceN;
                     car.SpeedMpS = -car.SpeedMpS;
                 }
-                
+
                 // Icik
                 // Provede odraz vozů při prudkém najetí
-                TrainMassKG0 = 0;
-                foreach (TrainCar car1 in Cars)               
-                    TrainMassKG0 += car1.MassKG;                                   
-                if (Simulator.CarCoupleSpeedOvercome && !HasCarCoupleSpeed)
+                if (LeadLocomotive != null)
                 {
-                    if (car.SpeedMpS > 0)
-                        SpeedMpS0 = car.SpeedMpS;
-                    if (car.SpeedMpS < 0)
-                        SpeedMpS0 = -car.SpeedMpS;
-                    HasCarCoupleSpeed = true;                    
-                }
-                if (Simulator.CarByUserUncoupled  && LeadLocomotive != null)
-                {
-                    CyklusCouplerUncouple--;
-                    if (CyklusCouplerUncouple == 0)
+                    TrainMassKG0 = 0;
+                    foreach (TrainCar car1 in Cars)
+                        TrainMassKG0 += car1.MassKG;
+                    if (Simulator.CarCoupleSpeedOvercome && !HasCarCoupleSpeed)
                     {
-                        Simulator.CarByUserUncoupled = false;
-                        CyklusCouplerUncouple = 6;
-                        HasCarCoupleSpeed = false;
+                        if (car.SpeedMpS > 0)
+                            SpeedMpS0 = car.SpeedMpS;
+                        if (car.SpeedMpS < 0)
+                            SpeedMpS0 = -car.SpeedMpS;
+                        HasCarCoupleSpeed = true;
                     }
-                }
-                if (HasCarCoupleSpeed && LeadLocomotive != null && !Simulator.CarByUserUncoupled)
-                {
-                    CyklusCouplerImpuls--;
-                    if (CyklusCouplerImpuls == 0)
+                    if (Simulator.CarByUserUncoupled)
                     {
-                        if (TrainMassKG0 <= Simulator.TrainMassKG1)
-                            car.SpeedMpS = SpeedMpS0 * 100000 / TrainMassKG0;
-                        else
-                            car.SpeedMpS = -SpeedMpS0;
-                        HasCarCoupleSpeed = false;
-                        if (Math.Abs(car.SpeedMpS) > 0.05f)
-                            SignalEvent(Event.CoupleImpact);
-                        CyklusCouplerImpuls = 1;                        
-                    }                    
-                }
-                // Vykolejení vlaku
-                if (Simulator.CarCoupleMaxSpeedOvercome)
-                {
-                    car.SpeedMpS = 0;
-                    return;
+                        CyklusCouplerUncouple--;
+                        if (CyklusCouplerUncouple == 0)
+                        {
+                            Simulator.CarByUserUncoupled = false;
+                            CyklusCouplerUncouple = 6;
+                            HasCarCoupleSpeed = false;
+                        }
+                    }
+                    if (HasCarCoupleSpeed && !Simulator.CarByUserUncoupled)
+                    {
+                        CyklusCouplerImpuls--;
+                        if (CyklusCouplerImpuls == 0)
+                        {
+                            if (TrainMassKG0 <= Simulator.TrainMassKG1)
+                                car.SpeedMpS = SpeedMpS0 * 100000 / TrainMassKG0;
+                            else
+                                car.SpeedMpS = -SpeedMpS0;
+                            HasCarCoupleSpeed = false;
+                            if (Math.Abs(car.SpeedMpS) > 0.05f)
+                                SignalEvent(Event.CoupleImpact);
+                            CyklusCouplerImpuls = 1;
+                        }
+                    }
+                    // Vykolejení vlaku
+                    if (Simulator.CarCoupleMaxSpeedOvercome)
+                    {
+                        car.SpeedMpS = 0;
+                        return;
+                    }
                 }
                 // Vyhodnocení selhání TM
                 if (car is MSTSDieselLocomotive)

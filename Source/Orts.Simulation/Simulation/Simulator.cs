@@ -952,7 +952,7 @@ namespace Orts.Simulation
         {
             // Icik
             int PreviousCarCount = (int) drivenTrain.Cars.Count;
-            float CarCoupleSpeed = 0.05f / 3.6f; // Doťukávací rychlost pro napojení vozu
+            float CarCoupleSpeed = 0.5f / 3.6f; // Doťukávací rychlost pro napojení vozu
             float CarCoupleMaxSpeed = 15 / 3.6f; // Maximální nárazová rychlost max 15km/h
             
             CarCoupleSpeedOvercome = false;
@@ -961,7 +961,7 @@ namespace Orts.Simulation
             {                
                 SoundNotify = Event.Derail2;
             }
-                       
+
             if (MPManager.IsMultiPlayer() && !MPManager.IsServer()) return; //in MultiPlayer mode, server will check coupling, client will get message and do things
             if (drivenTrain.SpeedMpS < 0)
             {
