@@ -1775,7 +1775,7 @@ namespace Orts.Simulation.Physics
 
                 // Icik
                 // Provede odraz vozů při prudkém najetí
-                if (LeadLocomotive != null)
+                if (car.IsDriveable && car.Train.IsActualPlayerTrain)
                 {
                     TrainMassKG0 = 0;
                     foreach (TrainCar car1 in Cars)
@@ -1804,7 +1804,7 @@ namespace Orts.Simulation.Physics
                         if (CyklusCouplerImpuls == 0)
                         {
                             if (TrainMassKG0 <= Simulator.TrainMassKG1)
-                                car.SpeedMpS = SpeedMpS0 * 100000 / TrainMassKG0;
+                                car.SpeedMpS = SpeedMpS0 * 50000 / TrainMassKG0;
                             else
                                 car.SpeedMpS = -SpeedMpS0;
                             HasCarCoupleSpeed = false;
@@ -1820,6 +1820,7 @@ namespace Orts.Simulation.Physics
                         return;
                     }
                 }
+
                 // Vyhodnocení selhání TM
                 if (car is MSTSDieselLocomotive)
                 {

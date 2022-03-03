@@ -2881,7 +2881,7 @@ namespace Orts.Simulation.RollingStocks
                     {
                         VibrationSpringConstantPrimepSpS = 50 / 0.2f;
                         VibratioDampingCoefficient = 0.3f;
-                        VibrationRotationVelocityRadpS.X += (VibrationIntroductionStrength * Math.Abs(SpeedMpS) * 10f * VibrationMassKG) / x;
+                        VibrationRotationVelocityRadpS.X += (VibrationIntroductionStrength * Math.Abs(SpeedMpS) * 25f * VibrationMassKG) / x;
                     }
                 }
                 if (IsPlayerTrain && AbsSpeedMpS == 0)
