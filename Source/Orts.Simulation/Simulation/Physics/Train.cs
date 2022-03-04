@@ -1822,22 +1822,23 @@ namespace Orts.Simulation.Physics
                 }
 
                 // Vyhodnocení selhání TM
-                if (car is MSTSDieselLocomotive)
+                if (car is MSTSDieselLocomotive && !(car as MSTSDieselLocomotive).DieselEngines[0].HasGearBox)
                 {
+                    float TMFailureSpeed = 7.0f / 3.6f;  // kritická rychlost kdy dojde ke zničení TM 
                     if (car.Flipped)
                     {
                         if (((MSTSLocomotive)car).UsingRearCab)
                         {
-                            if (car.TractiveForceN > 0 && car.SpeedMpS < -2)
+                            if (car.TractiveForceN > 0 && car.SpeedMpS < -TMFailureSpeed)
                                 TMFailure = true;
-                            if (car.TractiveForceN < 0 && car.SpeedMpS > 2)
+                            if (car.TractiveForceN < 0 && car.SpeedMpS > TMFailureSpeed)
                                 TMFailure = true;
                         }
                         else
                         {
-                            if (car.TractiveForceN > 0 && car.SpeedMpS > 2)
+                            if (car.TractiveForceN > 0 && car.SpeedMpS > TMFailureSpeed)
                                 TMFailure = true;
-                            if (car.TractiveForceN < 0 && car.SpeedMpS < -2)
+                            if (car.TractiveForceN < 0 && car.SpeedMpS < -TMFailureSpeed)
                                 TMFailure = true;
                         }
                     }
@@ -1845,16 +1846,16 @@ namespace Orts.Simulation.Physics
                     {
                         if (((MSTSLocomotive)car).UsingRearCab)
                         {
-                            if (car.TractiveForceN > 0 && car.SpeedMpS > 2)
+                            if (car.TractiveForceN > 0 && car.SpeedMpS > TMFailureSpeed)
                                 TMFailure = true;
-                            if (car.TractiveForceN < 0 && car.SpeedMpS < -2)
+                            if (car.TractiveForceN < 0 && car.SpeedMpS < -TMFailureSpeed)
                                 TMFailure = true;
                         }
                         else
                         {
-                            if (car.TractiveForceN > 0 && car.SpeedMpS < -2)
+                            if (car.TractiveForceN > 0 && car.SpeedMpS < -TMFailureSpeed)
                                 TMFailure = true;
-                            if (car.TractiveForceN < 0 && car.SpeedMpS > 2)
+                            if (car.TractiveForceN < 0 && car.SpeedMpS > TMFailureSpeed)
                                 TMFailure = true;
                         }
                     }
