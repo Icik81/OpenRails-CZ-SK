@@ -945,6 +945,7 @@ namespace Orts.Simulation
         // Icik
         public float TrainMassKG1;
         public bool CarByUserUncoupled;
+        public float DifferenceSpeedMpS = 0;
         /// <summary>
         /// Scan other trains
         /// </summary>
@@ -953,14 +954,14 @@ namespace Orts.Simulation
             // Icik
             int PreviousCarCount = (int) drivenTrain.Cars.Count;
             float CarCoupleSpeed = 0.5f / 3.6f; // Doťukávací rychlost pro napojení vozu
-            float CarCoupleMaxSpeed = 15 / 3.6f; // Maximální nárazová rychlost max 15km/h
+            float CarCoupleMaxSpeed = 15 / 3.6f; // Maximální nárazová rychlost max 15km/h            
             
-            CarCoupleSpeedOvercome = false;
+            CarCoupleSpeedOvercome = false;            
 
             if (CarCoupleMaxSpeedOvercome)
             {                
                 SoundNotify = Event.Derail2;
-            }
+            }            
 
             if (MPManager.IsMultiPlayer() && !MPManager.IsServer()) return; //in MultiPlayer mode, server will check coupling, client will get message and do things
             if (drivenTrain.SpeedMpS < 0)
@@ -978,14 +979,16 @@ namespace Orts.Simulation
                             d1 = drivenTrain.RearTDBTraveller.RoughOverlapDistanceM(train.FrontTDBTraveller, drivenTrain.FrontTDBTraveller, train.RearTDBTraveller, drivenTrain.Length, train.Length, true);
                         if (d1 < 0)
                         {
+                            DifferenceSpeedMpS = Math.Abs(Math.Abs(drivenTrain.SpeedMpS) - Math.Abs(train.SpeedMpS));                            
+                            //Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("DifferenceSpeedMpS: " + Math.Max(0, DifferenceSpeedMpS * 3.6f)));
                             TrainMassKG1 = 0;
                             foreach (TrainCar car in train.Cars)
                                 TrainMassKG1 += car.MassKG;
 
-                            if (Math.Abs(drivenTrain.SpeedMpS) > CarCoupleMaxSpeed)
+                            if (DifferenceSpeedMpS > CarCoupleMaxSpeed)
                                 CarCoupleMaxSpeedOvercome = true;
 
-                            if (Math.Abs(drivenTrain.SpeedMpS) > CarCoupleSpeed)
+                            if (DifferenceSpeedMpS > CarCoupleSpeed)
                                 CarCoupleSpeedOvercome = true;
 
                             //if (train == drivenTrain.UncoupledFrom || CarCoupleSpeedOvercome)
@@ -1034,14 +1037,15 @@ namespace Orts.Simulation
                             d2 = drivenTrain.RearTDBTraveller.RoughOverlapDistanceM(train.RearTDBTraveller, drivenTrain.FrontTDBTraveller, train.FrontTDBTraveller, drivenTrain.Length, train.Length, true);
                         if (d2 < 0)
                         {
+                            DifferenceSpeedMpS = Math.Abs(Math.Abs(drivenTrain.SpeedMpS) - Math.Abs(train.SpeedMpS));
                             TrainMassKG1 = 0;
                             foreach (TrainCar car in train.Cars)
                                 TrainMassKG1 += car.MassKG;
 
-                            if (Math.Abs(drivenTrain.SpeedMpS) > CarCoupleMaxSpeed)
+                            if (DifferenceSpeedMpS > CarCoupleMaxSpeed)
                                 CarCoupleMaxSpeedOvercome = true;
 
-                            if (Math.Abs(drivenTrain.SpeedMpS) > CarCoupleSpeed)
+                            if (DifferenceSpeedMpS > CarCoupleSpeed)
                                 CarCoupleSpeedOvercome = true;
 
                             //if (train == drivenTrain.UncoupledFrom || CarCoupleSpeedOvercome)
@@ -1106,14 +1110,16 @@ namespace Orts.Simulation
                             d1 = drivenTrain.FrontTDBTraveller.RoughOverlapDistanceM(train.RearTDBTraveller, drivenTrain.RearTDBTraveller, train.FrontTDBTraveller, drivenTrain.Length, train.Length, false);
                         if (d1 < 0)
                         {
+                            DifferenceSpeedMpS = Math.Abs(Math.Abs(drivenTrain.SpeedMpS) - Math.Abs(train.SpeedMpS));
+                            CarByUserUncoupled = true;
                             TrainMassKG1 = 0;
                             foreach (TrainCar car in train.Cars)
                                 TrainMassKG1 += car.MassKG;
 
-                            if (Math.Abs(drivenTrain.SpeedMpS) > CarCoupleMaxSpeed)
+                            if (DifferenceSpeedMpS > CarCoupleMaxSpeed)
                                 CarCoupleMaxSpeedOvercome = true;
 
-                            if (Math.Abs(drivenTrain.SpeedMpS) > CarCoupleSpeed)
+                            if (DifferenceSpeedMpS > CarCoupleSpeed)
                                 CarCoupleSpeedOvercome = true;
 
                             //if (train == drivenTrain.UncoupledFrom || CarCoupleSpeedOvercome)
@@ -1201,14 +1207,15 @@ namespace Orts.Simulation
                             d2 = drivenTrain.FrontTDBTraveller.RoughOverlapDistanceM(train.FrontTDBTraveller, drivenTrain.RearTDBTraveller, train.RearTDBTraveller, drivenTrain.Length, train.Length, false);
                         if (d2 < 0)
                         {
+                            DifferenceSpeedMpS = Math.Abs(Math.Abs(drivenTrain.SpeedMpS) - Math.Abs(train.SpeedMpS));
                             TrainMassKG1 = 0;
                             foreach (TrainCar car in train.Cars)
                                 TrainMassKG1 += car.MassKG;
 
-                            if (Math.Abs(drivenTrain.SpeedMpS) > CarCoupleMaxSpeed)
+                            if (DifferenceSpeedMpS > CarCoupleMaxSpeed)
                                 CarCoupleMaxSpeedOvercome = true;
 
-                            if (Math.Abs(drivenTrain.SpeedMpS) > CarCoupleSpeed)
+                            if (DifferenceSpeedMpS > CarCoupleSpeed)
                                 CarCoupleSpeedOvercome = true;
 
                             //if (train == drivenTrain.UncoupledFrom || CarCoupleSpeedOvercome)
@@ -1257,7 +1264,7 @@ namespace Orts.Simulation
 
                         UpdateUncoupled(drivenTrain, train, d1, d2, true);
                     }
-            }
+            }            
         }
 
         //  Used for explore mode; creates the player train within the Train class
