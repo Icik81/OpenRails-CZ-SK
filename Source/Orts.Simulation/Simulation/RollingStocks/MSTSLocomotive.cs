@@ -618,10 +618,10 @@ namespace Orts.Simulation.RollingStocks
         public bool DieselMotorPowerLost;
         public bool DieselLocoTempReady;
         public bool RDSTBreakerVZEnable;
-        public bool RDSTBreakerPowerEnable;
-        public bool RDSTBreaker;
+        public bool RDSTBreakerPowerEnable;        
         public float CurrentTrackSandBoxCapacityKG;
-
+        public bool MUCable;
+        public bool MUCableEquipment;
 
         // Jindrich
         public bool IsActive = false;
@@ -1291,6 +1291,7 @@ namespace Orts.Simulation.RollingStocks
                 case "engine(maxauxresoverpressure": MaxAuxResOverPressurePSI = stf.ReadFloatBlock(STFReader.UNITS.PressureDefaultPSI, null); break;
                 case "engine(heatingmaxcurrent": HeatingMaxCurrentA = stf.ReadFloatBlock(STFReader.UNITS.Current, null); break;
                 case "engine(dieselstartdelay": DieselStartDelay = stf.ReadFloatBlock(STFReader.UNITS.Time, 10); break;
+                case "engine(mucableequipment": MUCableEquipment = stf.ReadBoolBlock(false); break;
 
                 // Jindrich
                 case "engine(usingforcehandle": UsingForceHandle = stf.ReadBoolBlock(false); break;
@@ -1529,7 +1530,7 @@ namespace Orts.Simulation.RollingStocks
             MaxAuxResOverPressurePSI = locoCopy.MaxAuxResOverPressurePSI;
             HeatingMaxCurrentA = locoCopy.HeatingMaxCurrentA;
             DieselStartDelay = locoCopy.DieselStartDelay;
-            RDSTBreaker = locoCopy.RDSTBreaker;
+            MUCableEquipment = locoCopy.MUCableEquipment;
 
             // Jindrich
             if (locoCopy.CruiseControl != null)
@@ -1691,8 +1692,7 @@ namespace Orts.Simulation.RollingStocks
             outf.Write(DieselDirectionControllerInOut);
             outf.Write(DieselMotorDefected);
             outf.Write(DieselMotorPowerLost);
-            outf.Write(DieselLocoTempReady);
-            outf.Write(RDSTBreaker);
+            outf.Write(DieselLocoTempReady);            
 
             base.Save(outf);
 
@@ -1792,8 +1792,7 @@ namespace Orts.Simulation.RollingStocks
             DieselDirectionControllerInOut = inf.ReadBoolean();
             DieselMotorDefected = inf.ReadBoolean();
             DieselMotorPowerLost = inf.ReadBoolean();
-            DieselLocoTempReady = inf.ReadBoolean();
-            RDSTBreaker = inf.ReadBoolean();
+            DieselLocoTempReady = inf.ReadBoolean();            
 
             base.Restore(inf);
 
@@ -3376,7 +3375,7 @@ namespace Orts.Simulation.RollingStocks
 
             //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Zvýšený odběr proudu, výkon zredukován "+ PowerReductionByAuxEquipmentSum * MaxPowerW/1000) + " kW!");                        
 
-            if (IsLeadLocomotive())
+            if (IsLeadLocomotive() || PowerReductionByAuxEquipmentSum >= 0)
             {
                 if (WagonType == WagonTypes.Engine && this is MSTSElectricLocomotive) // Elektrické lokomotivy
                 {
@@ -3493,17 +3492,30 @@ namespace Orts.Simulation.RollingStocks
             }
         }
         public void RDSTBreakerType()
-        {            
+        {
+            int RDSTBreakerVZState = 0;
+            int RDSTBreakerPowerState = 0;
+
             if (RDSTBreakerVZEnable && Battery)
             {
-                if (!RDSTBreaker)
+                foreach (TrainCar car in Train.Cars)
+                {
+                    if (car is MSTSLocomotive && !car.RDSTBreaker)
+                        RDSTBreakerVZState += 1;                    
+                }
+                if (RDSTBreakerVZState > 0)
                     TrainBrakeController.EmergencyBrakingPushButton = true;
                 else
                     TrainBrakeController.EmergencyBrakingPushButton = false;
             }
             if (RDSTBreakerPowerEnable && Battery)
             {
-                if (!RDSTBreaker)
+                foreach (TrainCar car in Train.Cars)
+                {
+                    if (car is MSTSLocomotive && !car.RDSTBreaker)
+                        RDSTBreakerPowerState += 1;
+                }
+                if (RDSTBreakerPowerState > 0)
                     PowerReductionResult8 = 1;
                 else
                     PowerReductionResult8 = 0;
@@ -3809,6 +3821,8 @@ namespace Orts.Simulation.RollingStocks
 
             if (IsPlayerTrain && Simulator.GameSpeed == 1)
             {
+                //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("MUCable " + MUCable));
+
                 if (Simulator.GameTime < 0.5f) 
                 {                    
                     ToggleDieselDirectionController();

@@ -231,7 +231,13 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 string.Format("DebKoef {0:F1}", DebugKoef),
                 string.Empty, // Spacer because the state above needs 2 columns.                                                     
                 string.Format("{0}", NextLocoBrakeState),
+
+                //string.Empty, // Spacer because the state above needs 2 columns.                                                     
+                //(Car as MSTSLocomotive) != null ? string.Format("RDST {0}", (Car as MSTSLocomotive).RDSTBreaker): string.Empty,
                 
+                //string.Empty, // Spacer because the state above needs 2 columns.                                                     
+                //(Car as MSTSLocomotive) != null ? string.Format("MUCable {0}", (Car as MSTSLocomotive).MUCable): string.Empty,                
+
                 //string.Empty, // Spacer because the state above needs 2 columns.                                     
                 //string.Format("AirOK_DoorCanManipulate {0:F0}", AirOK_DoorCanManipulate),
                 //string.Empty, // Spacer because the state above needs 2 columns.                                     
@@ -675,9 +681,12 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     {
                         loco.AuxResPressurePSI = loco.MaxAuxResPressurePSI;
                         HandbrakePercent = loco.HandBrakePresent ? 0 : 0;
-                        loco.SetEngineBrakePercent(100);
-                        loco.LocoReadyToGo = true;
-                        AutoCylPressurePSI0 = MaxCylPressurePSI;
+                        if (loco.IsLeadLocomotive())
+                        {
+                            loco.SetEngineBrakePercent(100);
+                            AutoCylPressurePSI0 = MaxCylPressurePSI;
+                        }
+                        loco.LocoReadyToGo = true;                        
                     }
                     HandbrakePercent = (Car as MSTSWagon).HandBrakePresent ? 0 : 0;
                     BrakeLine1PressurePSI = maxPressurePSI0;
@@ -1796,6 +1805,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             int continuousFromInclusive = 0;
             int continuousToExclusive = train.Cars.Count;
             bool TwoPipesConnectionBreak = false;
+            int MUCableLocoCount = 0;
 
             for (int i = 0; i < train.Cars.Count; i++)
             {
@@ -1815,12 +1825,12 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         continuousToExclusive = i;
                     continue;
                 }
-                // Sčítá hlavní jímky pro napojení na napájecí potrubí
+                // Sčítá hlavní jímky pro napojení na napájecí potrubí                
                 if (i >= first && i <= last || TwoPipesConnection && continuousFromInclusive <= i && i < continuousToExclusive)
                 {
                     sumv += brakeSystem.BrakePipeVolumeM3;
                     sumpv += brakeSystem.BrakePipeVolumeM3 * brakeSystem.BrakeLine2PressurePSI;
-                    var eng = train.Cars[i] as MSTSLocomotive;
+                    var eng = train.Cars[i] as MSTSLocomotive;                    
                     if (eng != null)
                     {
                         sumv += eng.MainResVolumeM3;
@@ -1832,7 +1842,22 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 {
                     if (!brakeSystem.TwoPipesConnection)
                         TwoPipesConnectionBreak = true;
-                }            
+                }
+
+                // Testuje propojení MU kabelu
+                if (train.Cars[i] is MSTSLocomotive)
+                {
+                    (train.Cars[i] as MSTSLocomotive).MUCable = false;
+                    if ((train.Cars[i] as MSTSLocomotive).MUCableEquipment && i >= first && i <= last && continuousFromInclusive <= i && i < continuousToExclusive)
+                    {
+                        var eng = train.Cars[i] as MSTSLocomotive;
+                        if (eng != null)
+                        {
+                            eng.MUCable = true;
+                            MUCableLocoCount++;
+                        }
+                    }
+                }
             }
             if (sumv > 0)
                 sumpv /= sumv;
@@ -2593,8 +2618,16 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 // Při aktivní EDB a použití přímočinné brzdy zruší účinek EDB
                 if (lead.BrakeSystem.AutoCylPressurePSI1 > 0 && lead.DynamicBrakePercent > 0)
                     lead.EngineBrakeEngageEDB = true;
-                
 
+                // Propojí přímočinné brzdy, pokud jsou lokomotivy propojené kabelem
+                foreach (TrainCar car in train.Cars)
+                {
+                    if ((car is MSTSLocomotive) && (car as MSTSLocomotive).MUCable && (car as MSTSLocomotive).MUCableEquipment)
+                    {                        
+                        car.BrakeSystem.AutoCylPressurePSI1 = lead.BrakeSystem.AutoCylPressurePSI1;
+                    }
+                }
+                        
                 // Definice pro brzdič BP1
                 if (brakeSystem.BP1_EngineBrakeController)
                 {

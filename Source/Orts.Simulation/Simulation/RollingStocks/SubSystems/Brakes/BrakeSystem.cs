@@ -176,6 +176,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes
         public bool CarHasMechanicStuckBrake_1;
         public bool CarHasMechanicStuckBrake_2;
         public bool CarHasProblemWithBrake;
+        
 
         public float AuxPowerOnDelayS { get; set; }
 
