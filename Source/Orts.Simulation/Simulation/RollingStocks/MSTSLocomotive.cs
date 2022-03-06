@@ -3799,6 +3799,14 @@ namespace Orts.Simulation.RollingStocks
             }
 
             // Icik
+            if (!DieselDirection_Forward && !DieselDirection_Start && !DieselDirection_0 && !DieselDirection_Reverse)
+            {
+                DieselDirection_Forward = false;
+                DieselDirection_Start = false;
+                DieselDirection_0 = true;
+                DieselDirection_Reverse = false;
+            }
+
             if (IsPlayerTrain && Simulator.GameSpeed == 1)
             {
                 if (Simulator.GameTime < 0.5f) 
