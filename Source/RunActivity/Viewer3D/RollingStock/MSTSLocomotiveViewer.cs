@@ -337,6 +337,17 @@ namespace Orts.Viewer3D.RollingStock
                     Locomotive.Pantograph3Switch = 1;
                     Locomotive.PantographOffPressedTest = false;
                 }
+                if (Locomotive.Pantograph3Switch == 0 && UserInput.IsDown(UserCommand.ControlPantograph3SwitchDown) && Locomotive.PantographOffPressedTime > 1.0f)
+                {
+                    Locomotive.Pantograph3Switch = -1;
+                    Locomotive.Pantograph3CanOn = true;
+                    Locomotive.PantographOffPressedTest = false;
+                }
+                if (Locomotive.Pantograph3Switch == -1 && UserInput.IsPressed(UserCommand.ControlPantograph3SwitchUp))
+                {
+                    Locomotive.Pantograph3Switch = 1;
+                    Locomotive.PantographOffPressedTest = false;
+                }
             }
             // Ovládání tlačítka vysokotlakého švihu
             if (Locomotive.QuickReleaseButtonEnable)
@@ -3037,13 +3048,19 @@ namespace Orts.Viewer3D.RollingStock
                             Locomotive.Pantograph3Switch = 1;
                             Locomotive.PantographOffPressedTest = false;
                         }
-
                         if (ChangedValue(0) < 0 && UserInput.IsMouseLeftButtonDown)
                         {
                             new TogglePantograph3SwitchUpCommand(Viewer.Log);
                         }
-                        if (ChangedValue(0) > 0 && UserInput.IsMouseLeftButtonDown)
+                        if (ChangedValue(0) > 0 && NormalizedMouseMovement() < 0.75f && UserInput.IsMouseLeftButtonDown)
                         {
+                            new TogglePantograph3SwitchDownCommand(Viewer.Log);
+                        }
+                        if (ChangedValue(0) > 0 && NormalizedMouseMovement() > 0.75f && UserInput.IsMouseLeftButtonDown)
+                        {
+                            Locomotive.Pantograph3Switch = -1;
+                            Locomotive.Pantograph3CanOn = true;
+                            Locomotive.PantographOffPressedTest = false;
                             new TogglePantograph3SwitchDownCommand(Viewer.Log);
                         }
                         break;

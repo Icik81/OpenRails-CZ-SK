@@ -3822,24 +3822,20 @@ namespace Orts.Simulation.RollingStocks
             if (IsPlayerTrain && Simulator.GameSpeed == 1)
             {
                 //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("MUCable " + MUCable));
-
-                if (Simulator.GameTime < 0.5f) 
-                {                    
+                if (Simulator.GameTime < 0.5f)
+                {
                     ToggleDieselDirectionController();
                     ToggleDieselDirectionController2();
                 }
-                if (Simulator.GameTimeCyklus10 == 10)
-                {
-                    Overcurrent_Protection();
-                    AntiSlip_Protection();
-                    MaxPower_MaxForce_ACDC();
-                    if (Pantograph4Enable) TogglePantograph4Switch();
-                    if (Pantograph3Enable) TogglePantograph3Switch();
-                    ToggleHV2Switch();
-                    ToggleHV3Switch();
-                    ToggleHV5Switch();
-                    RDSTBreakerType();
-                }
+                Overcurrent_Protection();
+                AntiSlip_Protection();
+                MaxPower_MaxForce_ACDC();
+                RDSTBreakerType();
+                if (Pantograph4Enable) TogglePantograph4Switch();
+                if (Pantograph3Enable) TogglePantograph3Switch();
+                ToggleHV2Switch();
+                ToggleHV3Switch();
+                ToggleHV5Switch();
                 TrainBrakeControllerValueForSound = (float)Math.Round(TrainBrakeController.CurrentValue, 2);
                 EngineBrakeControllerValueForSound = (float)Math.Round(EngineBrakeController.CurrentValue, 2);
                 EDBCancelByEngineBrake();
@@ -3849,7 +3845,7 @@ namespace Orts.Simulation.RollingStocks
                 HVOffbyAirPressureE();
                 HVOffbyAirPressureD();
                 TMFailure(elapsedClockSeconds);
-                PowerReductionResult(elapsedClockSeconds);                                                
+                PowerReductionResult(elapsedClockSeconds);
             }
 
             TrainControlSystem.Update();
@@ -7311,7 +7307,7 @@ namespace Orts.Simulation.RollingStocks
                 {
                     TogglePantograph3Switch();
                 }
-                Pantograph3Switch = MathHelper.Clamp(Pantograph3Switch, 0, 2);
+                Pantograph3Switch = MathHelper.Clamp(Pantograph3Switch, -1, 2);
             }
         }
         public void TogglePantograph3SwitchDown()
@@ -7320,17 +7316,19 @@ namespace Orts.Simulation.RollingStocks
             {
                 if (Pantograph3Switch > 0)
                     Pantograph3Switch--;
-                if (Pantograph3Switch > -1)
+                if (Pantograph3Switch > -2)
                 {
                     TogglePantograph3Switch();
                 }
-                Pantograph3Switch = MathHelper.Clamp(Pantograph3Switch, 0, 2);
+                Pantograph3Switch = MathHelper.Clamp(Pantograph3Switch, -1, 2);                                
             }
         }
         public void TogglePantograph3Switch()
         {
             if (Pantograph3Enable)
             {
+                //Simulator.Confirmer.Information("Pantograph3Switch " + Pantograph3Switch);
+
                 if (LastStatePantograph3 != Pantograph3Switch)
                     SignalEvent(Event.PantographToggle); // Zvuk přepínače                
 
@@ -7353,6 +7351,33 @@ namespace Orts.Simulation.RollingStocks
                     {
                         switch (Pantograph3Switch)
                         {
+                            case -1: // SOS
+                                Pantograph3CanOn = false;
+                                HVOff = true;
+                                if (Pantographs[p1].State != PantographState.Down)
+                                {
+                                    SignalEvent(PowerSupplyEvent.LowerPantograph, p1);
+                                    if (MPManager.IsMultiPlayer())
+                                        MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps1, 0).ToString());
+                                }
+                                if (Pantographs[p2].State != PantographState.Down)
+                                {
+                                    SignalEvent(PowerSupplyEvent.LowerPantograph, p2);
+                                    if (MPManager.IsMultiPlayer())
+                                        MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps2, 0).ToString());
+                                }
+
+                                if (AcceptMUSignals)
+                                    foreach (TrainCar car in Train.Cars)
+                                    {
+                                        car.SignalEvent(PowerSupplyEvent.LowerPantograph);
+                                        if (MPManager.IsMultiPlayer())
+                                        {
+                                            MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps1, 0).ToString());
+                                            MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps2, 0).ToString());
+                                        }
+                                    }
+                                break;
                             case 0: // Panto vypnout
                                 if (Pantographs[p1].State != PantographState.Down)
                                 {
