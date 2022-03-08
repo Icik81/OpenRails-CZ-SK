@@ -2325,7 +2325,21 @@ namespace Orts.Simulation.RollingStocks
                 case CABViewControlTypes.PANTOGRAPH_3_SWITCH:
                     {
                         Pantograph3Enable = true;
-                        data = Pantograph3Switch;
+                        switch (Pantograph3Switch)
+                        {
+                            case -1:
+                                data = 0;
+                                break;
+                            case 0:
+                                data = 1;
+                                break;
+                            case 1:
+                                data = 2;
+                                break;
+                            case 2:
+                                data = 3;
+                                break;
+                        }                                                
                         break;
                     }
 
