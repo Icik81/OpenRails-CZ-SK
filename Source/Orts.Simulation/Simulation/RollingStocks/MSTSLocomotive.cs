@@ -467,8 +467,7 @@ namespace Orts.Simulation.RollingStocks
         public bool CompressorMode2_OffAuto;
         public bool EngineBrakeEngageEDB = false;
         public bool Heating_OffOn;
-        public bool HeatingEnable = false;
-        public bool CabHeating_OffOn;
+        public bool HeatingEnable = false;        
         public bool CabHeatingEnable = false;
         public bool SwitchingVoltageMode_OffAC;
         public bool SwitchingVoltageMode_OffDC;
@@ -1666,7 +1665,6 @@ namespace Orts.Simulation.RollingStocks
             outf.Write(CompressorMode2_OffAuto);
             outf.Write(EngineBrakeEngageEDB);
             outf.Write(Heating_OffOn);
-            outf.Write(CabHeating_OffOn);
             outf.Write(SwitchingVoltageMode_OffAC);
             outf.Write(SwitchingVoltageMode_OffDC);
             outf.Write(SwitchingVoltageMode);
@@ -1766,7 +1764,6 @@ namespace Orts.Simulation.RollingStocks
             CompressorMode2_OffAuto = inf.ReadBoolean();
             EngineBrakeEngageEDB = inf.ReadBoolean();
             Heating_OffOn = inf.ReadBoolean();
-            CabHeating_OffOn = inf.ReadBoolean();
             SwitchingVoltageMode_OffAC = inf.ReadBoolean();
             SwitchingVoltageMode_OffDC = inf.ReadBoolean();
             SwitchingVoltageMode = inf.ReadInt32();
@@ -2900,19 +2897,24 @@ namespace Orts.Simulation.RollingStocks
         public float I_HeatingData0 = 0;
         public float U_Heating = 3000;
         public bool HeatingOverCurrent = false;
-        public bool HeatingIsOn = false;
-        public bool CabHeatingIsOn = false;
+        public bool HeatingIsOn = false;        
         public float MSGHeatingCycle;
         public void ElevatedConsumptionOnLocomotive(float elapsedClockSeconds)
         {
+            foreach (TrainCar car in Train.Cars)
+            {
+                if (car is MSTSLocomotive)
+                {
+                    if (car.CabHeating_OffOn && AuxPowerOn)
+                        car.CabHeatingIsOn = true;
+                    if (!car.CabHeating_OffOn || !AuxPowerOn)
+                        car.CabHeatingIsOn = false;
+                }
+            }
+
             // Ochrana při nadproudu topení/klimatizace jen pro hráče
             if (IsLeadLocomotive())
-            {
-                if (CabHeating_OffOn && AuxPowerOn)
-                    CabHeatingIsOn = true;
-                if (!CabHeating_OffOn || !AuxPowerOn)
-                    CabHeatingIsOn = false;
-
+            {                
                 // Maximální proud topení            
                 if (HeatingMaxCurrentA == 0)
                     HeatingMaxCurrentA = 130; // Default 130A
@@ -3116,9 +3118,9 @@ namespace Orts.Simulation.RollingStocks
                             }
 
                             MSGHeatingCycle++;
-                            if (MSGHeatingCycle > 1000 && car.WagonTemperature < 14)
-                            {
-                                if (car.WagonType == WagonTypes.Engine && !car.HasPassengerCapacity)
+                            if (MSGHeatingCycle > 500 && car.WagonTemperature < 14)
+                            {                                
+                                if (car.WagonType == WagonTypes.Engine && !car.HasPassengerCapacity && WagonTemperature < 14)
                                     Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Je ti zima!"));
                                 else
                                     if (car.PassengerList.Count > 0)
@@ -3126,7 +3128,7 @@ namespace Orts.Simulation.RollingStocks
                                 MSGHeatingCycle = 0;
                             }
                             // Termostat vypnutý, topení aktivní
-                            if (((!car.LocomotiveCab && HeatingIsOn) || car.DieselHeaterPower > 0 || (car.LocomotiveCab && CabHeatingIsOn)) && car.WagonTemperature < car.SetTempCThreshold && !car.ThermostatOn)
+                            if (((!car.LocomotiveCab && HeatingIsOn) || car.DieselHeaterPower > 0 || (car.LocomotiveCab && car.CabHeatingIsOn)) && car.WagonTemperature < car.SetTempCThreshold && !car.ThermostatOn)
                             {
                                 car.TempCDelta = +car.PowerReductionByHeating0 / TempStepUp / CarAirVolumeM3 * elapsedClockSeconds;
                                 if (car.DieselHeaterPower > 0)
@@ -3159,8 +3161,8 @@ namespace Orts.Simulation.RollingStocks
 
                             MSGHeatingCycle++;
                             if (MSGHeatingCycle > 1000 && car.WagonTemperature > 32)
-                            {
-                                if (car.WagonType == WagonTypes.Engine && !car.HasPassengerCapacity)
+                            {                                
+                                if (car.WagonType == WagonTypes.Engine && !car.HasPassengerCapacity && WagonTemperature > 32)
                                     Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Je ti horko!"));
                                 else
                                     if (car.PassengerList.Count > 0)
@@ -3168,7 +3170,7 @@ namespace Orts.Simulation.RollingStocks
                                 MSGHeatingCycle = 0;
                             }
                             // Termostat vypnutý, klimatizace aktivní
-                            if (((!car.LocomotiveCab && HeatingIsOn) || (car.LocomotiveCab && CabHeatingIsOn)) && car.WagonTemperature > car.SetTempCThreshold && !car.ThermostatOn && car.PowerReductionByAirCondition > 0)
+                            if (((!car.LocomotiveCab && HeatingIsOn) || (car.LocomotiveCab && car.CabHeatingIsOn)) && car.WagonTemperature > car.SetTempCThreshold && !car.ThermostatOn && car.PowerReductionByAirCondition > 0)
                             {
                                 car.TempCDelta = -car.PowerReductionByAirCondition0 / TempStepDown / CarAirVolumeM3 * elapsedClockSeconds;
                                 if (car.WagonTemperature < car.SetTempCThreshold + 0.1f)
@@ -3249,7 +3251,7 @@ namespace Orts.Simulation.RollingStocks
 
             // Elektrické topení a klimatizace
             PowerReductionByHeatingSum = 0;
-            if (HeatingIsOn || CabHeatingIsOn)
+            if (HeatingIsOn || this.CabHeatingIsOn)
             {
                 PowerReductionByHeatingWag = 0;
 
