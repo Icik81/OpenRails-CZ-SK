@@ -186,7 +186,7 @@ namespace ORTS
             comboWindowSize.Text = Settings.WindowSize;
             trackDayAmbientLight.Value = Settings.DayAmbientLight;
             trackDayAmbientLight_ValueChanged(null, null);
-            trackAntiAliasing.Value = Settings.AntiAliasing;
+            trackAntiAliasing.Value = Settings.AntiAliasing == 0 ? 1 : Settings.AntiAliasing;
             trackAntiAliasing_ValueChanged(null, null);
             checkDoubleWire.Checked = Settings.DoubleWire;
 
