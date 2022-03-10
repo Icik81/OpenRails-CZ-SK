@@ -1847,6 +1847,10 @@ namespace Orts.Viewer3D.RollingStock
                     }
                 }
             }
+
+            if (Locomotive.LocoType == MSTSLocomotive.LocoTypes.Vectron && Locomotive.CruiseControl.SpeedRegMode == Simulation.RollingStocks.SubSystems.CruiseControl.SpeedRegulatorMode.Manual && Control.ControlType == CABViewControlTypes.ORTS_SELECTED_SPEED)
+                display = false;
+
             if (!display)
                 return;
             var dark = Viewer.MaterialManager.sunDirection.Y <= -0.085f || Viewer.Camera.IsUnderground;
@@ -3877,6 +3881,12 @@ namespace Orts.Viewer3D.RollingStock
                                         break;
                                     case "ConfirmLvzSystem":
                                         Locomotive.WaitingForLvzConfirmation = false;
+                                        break;
+                                    case "CruiseControlToggle":
+                                        if (Locomotive.CruiseControl.SpeedRegMode == Simulation.RollingStocks.SubSystems.CruiseControl.SpeedRegulatorMode.Auto)
+                                            Locomotive.CruiseControl.SpeedRegMode = Simulation.RollingStocks.SubSystems.CruiseControl.SpeedRegulatorMode.Manual;
+                                        else if (Locomotive.CruiseControl.SpeedRegMode == Simulation.RollingStocks.SubSystems.CruiseControl.SpeedRegulatorMode.Manual)
+                                            Locomotive.CruiseControl.SpeedRegMode = Simulation.RollingStocks.SubSystems.CruiseControl.SpeedRegulatorMode.Auto;
                                         break;
                                 }
                                 if (Locomotive.SelectingPowerSystem > MSTSLocomotive.PowerSystem.SK3kV) Locomotive.SelectingPowerSystem =  MSTSLocomotive.PowerSystem.SK3kV;

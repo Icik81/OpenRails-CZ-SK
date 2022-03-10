@@ -2017,6 +2017,13 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                     break;
                 case CABViewControlTypes.ORTS_SELECTED_SPEED_REGULATOR_MODE:
                     data = (float)SpeedRegMode;
+                    if (Locomotive.LocoType == MSTSLocomotive.LocoTypes.Vectron)
+                    {
+                        if (SpeedRegMode == SpeedRegulatorMode.Auto)
+                            data = 0;
+                        if (SpeedRegMode == SpeedRegulatorMode.Manual)
+                            data = 1;
+                    }
                     break;
                 case CABViewControlTypes.ORTS_SELECTED_SPEED_MAXIMUM_ACCELERATION:
                     if (SpeedRegMode == SpeedRegulatorMode.Auto || MaxForceKeepSelectedStepWhenManualModeSet)

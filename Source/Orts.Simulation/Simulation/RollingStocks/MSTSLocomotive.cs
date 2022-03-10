@@ -9828,6 +9828,14 @@ namespace Orts.Simulation.RollingStocks
                     {
                         if (CruiseControl == null)
                             break;
+                        if (LocoType == LocoTypes.Vectron)
+                        {
+                            if (CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.Manual)
+                            {
+                                data = -1;
+                                break;
+                            }
+                        }
                         bool jumpOut = false;
                         if (cvc.DisplayID > -1)
                             cvc.BlankDisplay = true;
