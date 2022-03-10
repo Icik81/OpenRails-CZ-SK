@@ -683,12 +683,13 @@ namespace Orts.Simulation.RollingStocks
 
         public enum PowerSystem
         {
-            DE15kV,
+            DE25kV,
+            AT15kV,
+            AT25kV,
             CZ25kV,
             CZ3kV,
             SK25kV,
-            SK3kV,
-            HU25kV
+            SK3kV
         }
 
         public enum LocoTypes
@@ -3569,6 +3570,15 @@ namespace Orts.Simulation.RollingStocks
                             SystemAnnunciator = 3;
                         }
                         if (!CircuitBreakerOn && Pantographs.List[0].State == PantographState.Down && HvPantoTimer < 5)
+                        {
+                            HvPantoTimer += elapsedClockSeconds;
+                            SystemAnnunciator = 4;
+                        }
+                        if (CircuitBreakerOn && (Pantographs.List[0].State == PantographState.Lowering || Pantographs.List[0].State == PantographState.Raising))
+                        {
+                            SystemAnnunciator = 3;
+                        }
+                        if (CircuitBreakerOn && Pantographs.List[0].State == PantographState.Down && HvPantoTimer < 5)
                         {
                             HvPantoTimer += elapsedClockSeconds;
                             SystemAnnunciator = 4;
@@ -7613,10 +7623,10 @@ namespace Orts.Simulation.RollingStocks
             changingPowerSystem = true;
             switch (SelectingPowerSystem)
             {
-                case PowerSystem.DE15kV:
+                case PowerSystem.AT15kV:
                     // TODO change system to 15kV
                     break;
-                case PowerSystem.HU25kV:
+                case PowerSystem.DE25kV:
                 case PowerSystem.CZ25kV:
                 case PowerSystem.SK25kV:
                     SwitchingVoltageMode = 2;
@@ -7636,6 +7646,19 @@ namespace Orts.Simulation.RollingStocks
         public void PowerChangeRoutine(float elapsedSeconds)
         {
             timeChangingPowerSystem += elapsedSeconds;
+            if (timeChangingPowerSystem > 3)
+            {
+                if (SelectedPowerSystem.ToString().ToLower().Contains("25kv") && RouteVoltageV == 3000)
+                {
+                    SystemAnnunciator = 3;
+                    return;
+                }
+                if (SelectedPowerSystem.ToString().ToLower().Contains("3kv") && RouteVoltageV == 25000)
+                {
+                    SystemAnnunciator = 3;
+                    return;
+                }
+            }
             if (timeChangingPowerSystem > 0.3)
             {
                 HVOff = true;
@@ -7687,7 +7710,7 @@ namespace Orts.Simulation.RollingStocks
             }
             if ((SelectedPowerSystem == PowerSystem.CZ25kV
                 || SelectedPowerSystem == PowerSystem.SK25kV
-                || SelectingPowerSystem == PowerSystem.HU25kV)
+                || SelectingPowerSystem == PowerSystem.DE25kV)
                 && RouteVoltageV == 3000)
             {
                 MaintenanceState = 2;

@@ -3879,8 +3879,8 @@ namespace Orts.Viewer3D.RollingStock
                                         Locomotive.WaitingForLvzConfirmation = false;
                                         break;
                                 }
-                                if (Locomotive.SelectingPowerSystem > MSTSLocomotive.PowerSystem.HU25kV) Locomotive.SelectingPowerSystem =  MSTSLocomotive.PowerSystem.HU25kV;
-                                if (Locomotive.SelectingPowerSystem < MSTSLocomotive.PowerSystem.DE15kV) Locomotive.SelectingPowerSystem = MSTSLocomotive.PowerSystem.DE15kV;
+                                if (Locomotive.SelectingPowerSystem > MSTSLocomotive.PowerSystem.SK3kV) Locomotive.SelectingPowerSystem =  MSTSLocomotive.PowerSystem.SK3kV;
+                                if (Locomotive.SelectingPowerSystem < MSTSLocomotive.PowerSystem.DE25kV) Locomotive.SelectingPowerSystem = MSTSLocomotive.PowerSystem.DE25kV;
                             }
                             if (Control.ActivateScreen > 0)
                             {
