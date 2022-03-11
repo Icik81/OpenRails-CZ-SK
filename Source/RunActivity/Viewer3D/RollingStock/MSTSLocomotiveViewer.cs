@@ -1849,7 +1849,8 @@ namespace Orts.Viewer3D.RollingStock
             }
 
             if (Locomotive.LocoType == MSTSLocomotive.LocoTypes.Vectron && Locomotive.CruiseControl.SpeedRegMode == Simulation.RollingStocks.SubSystems.CruiseControl.SpeedRegulatorMode.Manual && Control.ControlType == CABViewControlTypes.ORTS_SELECTED_SPEED)
-                display = false;
+                if (Locomotive.CruiseControl.SpeedRegMode == Simulation.RollingStocks.SubSystems.CruiseControl.SpeedRegulatorMode.Manual)
+                    display = Locomotive.DisplaySelectedSpeed;
 
             if (!display)
                 return;
@@ -2462,6 +2463,8 @@ namespace Orts.Viewer3D.RollingStock
 
                 case CABViewControlTypes.ORTS_SELECTED_SPEED:
                     {
+                        if (data != Locomotive.CruiseControl.SelectedSpeed && Locomotive.LocoType == MSTSLocomotive.LocoTypes.Vectron)
+                            data = Locomotive.CruiseControl.SelectedSpeed;
                         int test = (int)ControlDiscrete.MaxValue;
                         int test1 = ControlDiscrete.FramesCount - 1;
                         float multiplier = test / test1;

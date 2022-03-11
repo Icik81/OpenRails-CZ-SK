@@ -193,6 +193,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
             clockTime = Simulator.ClockTime * 100;
         }
 
+        public float SelectedSpeed = 0;
         public void Update()
         {
             if (SpeedRegMode != SpeedRegulatorMode.Manual)
@@ -206,6 +207,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems
 
         public void Update(float elapsedClockSeconds, float wheelSpeedMpS)
         {
+            if (SelectedSpeedMpS != 0)
+                SelectedSpeed = SelectedSpeedMpS;
             if (Locomotive.ForceHandleValue < 0)
                 return;
             elapsedTime += elapsedClockSeconds;
@@ -703,7 +706,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
             if (!Equipped) return;
             if (SpeedRegMode == SpeedRegulatorMode.Manual && ForceRegulatorAutoWhenNonZeroSpeedSelected)
                 SpeedRegMode = SpeedRegulatorMode.Auto;
-            if (SpeedRegMode == SpeedRegulatorMode.Manual)
+            if (SpeedRegMode == SpeedRegulatorMode.Manual && Locomotive.LocoType != MSTSLocomotive.LocoTypes.Vectron)
                 return;
             float prevSpeed = SelectedSpeedMpS;
             SelectedSpeedMpS = SpeedIsMph ? MpS.FromMpH(Speed) : MpS.FromKpH(Speed);

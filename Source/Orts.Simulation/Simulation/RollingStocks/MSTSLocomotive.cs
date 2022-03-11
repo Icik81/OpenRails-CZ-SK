@@ -702,7 +702,7 @@ namespace Orts.Simulation.RollingStocks
         }
 
         public LocoTypes LocoType = LocoTypes.Normal;
-
+        public bool DisplaySelectedSpeed = false;
         public bool SelectingSystem = false;
         public PowerSystem SelectedPowerSystem = PowerSystem.CZ25kV;
         public PowerSystem SelectingPowerSystem = PowerSystem.CZ25kV;
@@ -3534,29 +3534,12 @@ namespace Orts.Simulation.RollingStocks
             switch (PantoMode)
             {
                 case PantoModes.Auto:
-                    if (Direction == Direction.N)
-                    {
-                        foreach (Pantograph pantograph1 in Pantographs.List)
-                        {
-                            if (pantograph1.State == PantographState.Down)
-                                pantograph1.State = PantographState.Raising;
-                        }
-                    }
                     if (Direction == Direction.Forward)
                     {
                         Pantograph pantograph2 = Pantographs.List[0];
                         if (pantograph2.State == PantographState.Down)
                             pantograph2.State = PantographState.Raising;
                         pantograph2 = Pantographs.List[1];
-                        if (pantograph2.State == PantographState.Up)
-                            pantograph2.State = PantographState.Lowering;
-                    }
-                    if (Direction == Direction.Reverse)
-                    {
-                        Pantograph pantograph2 = Pantographs.List[1];
-                        if (pantograph2.State == PantographState.Down)
-                            pantograph2.State = PantographState.Raising;
-                        pantograph2 = Pantographs.List[0];
                         if (pantograph2.State == PantographState.Up)
                             pantograph2.State = PantographState.Lowering;
                     }
@@ -7744,7 +7727,7 @@ namespace Orts.Simulation.RollingStocks
             }
             if (!canContinue) // || WaitingForLvzConfirmation)
             {
-                return;
+//                return;
             }
 
             if (SwitchingVoltageMode == 0)
@@ -9892,14 +9875,6 @@ namespace Orts.Simulation.RollingStocks
                     {
                         if (CruiseControl == null)
                             break;
-                        if (LocoType == LocoTypes.Vectron)
-                        {
-                            if (CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.Manual)
-                            {
-                                data = -1;
-                                break;
-                            }
-                        }
                         bool jumpOut = false;
                         if (cvc.DisplayID > -1)
                             cvc.BlankDisplay = true;

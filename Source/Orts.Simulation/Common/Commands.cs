@@ -822,6 +822,7 @@ namespace Orts.Common
             if (ToState) Receiver.SignalEvent(Event.VigilanceAlarmResetPush); // There is no Event.VigilanceAlarmResetReleased
             else Receiver.SignalEvent(Event.VigilanceAlarmResetRelease); 
             Receiver.AlerterPressed(ToState);
+            Receiver.DisplaySelectedSpeed = ToState;
             // Report();
         }
     }
