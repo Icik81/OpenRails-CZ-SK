@@ -2706,6 +2706,7 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.SELECTED_SYSTEM:
                 case CABViewControlTypes.SELECTING_SYSTEM:
                 case CABViewControlTypes.SYSTEM_ANNUNCIATOR:
+                case CABViewControlTypes.PANTO_MODE:
 
 
                     index = (int)data;
@@ -2801,6 +2802,7 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.PANTOGRAPH:
                     var p1 = Locomotive.UsingRearCab && Locomotive.Pantographs.List.Count > 1 ? 2 : 1;
                     new PantographCommand(Viewer.Log, p1, ChangedValue(Locomotive.Pantographs[p1].CommandUp ? 1 : 0) > 0);
+                    Locomotive.PantoCommandDown = ChangedValue(Locomotive.Pantographs[p1].CommandUp ? 1 : 0) > 0;
                     break;
                 case CABViewControlTypes.PANTOGRAPH2:
                     var p2 = Locomotive.UsingRearCab ? 1 : 2;
@@ -3883,10 +3885,23 @@ namespace Orts.Viewer3D.RollingStock
                                         Locomotive.WaitingForLvzConfirmation = false;
                                         break;
                                     case "CruiseControlToggle":
+                                        Locomotive.SignalEvent(Event.AFB);
                                         if (Locomotive.CruiseControl.SpeedRegMode == Simulation.RollingStocks.SubSystems.CruiseControl.SpeedRegulatorMode.Auto)
                                             Locomotive.CruiseControl.SpeedRegMode = Simulation.RollingStocks.SubSystems.CruiseControl.SpeedRegulatorMode.Manual;
                                         else if (Locomotive.CruiseControl.SpeedRegMode == Simulation.RollingStocks.SubSystems.CruiseControl.SpeedRegulatorMode.Manual)
                                             Locomotive.CruiseControl.SpeedRegMode = Simulation.RollingStocks.SubSystems.CruiseControl.SpeedRegulatorMode.Auto;
+                                        break;
+                                    case "PantoAuto":
+                                        Locomotive.PantoMode = MSTSLocomotive.PantoModes.Auto;
+                                        break;
+                                    case "PantoAft":
+                                        Locomotive.PantoMode = MSTSLocomotive.PantoModes.Aft;
+                                        break;
+                                    case "PantoForward":
+                                        Locomotive.PantoMode = MSTSLocomotive.PantoModes.Forward;
+                                        break;
+                                    case "PantoBoth":
+                                        Locomotive.PantoMode = MSTSLocomotive.PantoModes.Both;
                                         break;
                                 }
                                 if (Locomotive.SelectingPowerSystem > MSTSLocomotive.PowerSystem.SK3kV) Locomotive.SelectingPowerSystem =  MSTSLocomotive.PowerSystem.SK3kV;

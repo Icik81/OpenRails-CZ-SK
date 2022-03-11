@@ -245,8 +245,9 @@ namespace Orts.Common
                 else
                 if (Receiver.Pantograph4Enable)
                     Receiver.TogglePantograph4Switch();
-                else                    
-                    Receiver.Train.SignalEvent(ToState ? PowerSupplyEvent.RaisePantograph : PowerSupplyEvent.LowerPantograph, item);                                   
+                else
+                    Receiver.Train.SignalEvent(ToState ? PowerSupplyEvent.RaisePantograph : PowerSupplyEvent.LowerPantograph, item);
+                Receiver.PantoCommandDown = !ToState;
             }
         }
 

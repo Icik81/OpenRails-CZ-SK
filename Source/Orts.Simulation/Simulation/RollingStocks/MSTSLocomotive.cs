@@ -675,6 +675,10 @@ namespace Orts.Simulation.RollingStocks
         public string UserTrainWeight = "";
         public string UserTime = "";
 
+        public enum PantoModes { Auto, Forward, Aft, Both };
+        public PantoModes PantoMode = PantoModes.Auto;
+        public bool PantoCommandDown = false;
+
         public bool
       Speed0Pressed, Speed10Pressed, Speed20Pressed, Speed30Pressed, Speed40Pressed, Speed50Pressed
     , Speed60Pressed, Speed70Pressed, Speed80Pressed, Speed90Pressed, Speed100Pressed
@@ -3525,7 +3529,65 @@ namespace Orts.Simulation.RollingStocks
             }
         }
 
-       
+        public void CheckPantos()
+        {
+            switch (PantoMode)
+            {
+                case PantoModes.Auto:
+                    if (Direction == Direction.N)
+                    {
+                        foreach (Pantograph pantograph1 in Pantographs.List)
+                        {
+                            if (pantograph1.State == PantographState.Down)
+                                pantograph1.State = PantographState.Raising;
+                        }
+                    }
+                    if (Direction == Direction.Forward)
+                    {
+                        Pantograph pantograph2 = Pantographs.List[0];
+                        if (pantograph2.State == PantographState.Down)
+                            pantograph2.State = PantographState.Raising;
+                        pantograph2 = Pantographs.List[1];
+                        if (pantograph2.State == PantographState.Up)
+                            pantograph2.State = PantographState.Lowering;
+                    }
+                    if (Direction == Direction.Reverse)
+                    {
+                        Pantograph pantograph2 = Pantographs.List[1];
+                        if (pantograph2.State == PantographState.Down)
+                            pantograph2.State = PantographState.Raising;
+                        pantograph2 = Pantographs.List[0];
+                        if (pantograph2.State == PantographState.Up)
+                            pantograph2.State = PantographState.Lowering;
+                    }
+                    break;
+                case PantoModes.Both:
+                    foreach (Pantograph pantograph4 in Pantographs.List)
+                    {
+                        if (pantograph4.State == PantographState.Down)
+                            pantograph4.State = PantographState.Raising;
+                    }
+                    break;
+                case PantoModes.Aft:
+                    Pantograph pantograph = Pantographs.List[0];
+                    if (pantograph.State == PantographState.Down)
+                        pantograph.State = PantographState.Raising;
+                    pantograph = Pantographs.List[1];
+                    if (pantograph.State == PantographState.Up)
+                        pantograph.State = PantographState.Lowering;
+                    break;
+                case PantoModes.Forward:
+                    pantograph = Pantographs.List[1];
+                    if (pantograph.State == PantographState.Down)
+                        pantograph.State = PantographState.Raising;
+                    pantograph = Pantographs.List[0];
+                    if (pantograph.State == PantographState.Up)
+                        pantograph.State = PantographState.Lowering;
+                    break;
+            }
+        }
+
+
         /// <summary>
         /// This function updates periodically the states and physical variables of the locomotive's subsystems.
         /// </summary>
@@ -3540,6 +3602,8 @@ namespace Orts.Simulation.RollingStocks
         protected float HvPantoTimer = 0;
         public override void Update(float elapsedClockSeconds)
         {
+            if (LocoType == LocoTypes.Vectron && !PantoCommandDown)
+                CheckPantos();
             if (IsPlayerTrain && !Simulator.Paused)
             {
                 if (LocoType == LocoTypes.Vectron)
@@ -10135,6 +10199,25 @@ namespace Orts.Simulation.RollingStocks
                 case CABViewControlTypes.SYSTEM_ANNUNCIATOR:
                     {
                         data = SystemAnnunciator;
+                        break;
+                    }
+                case CABViewControlTypes.PANTO_MODE:
+                    {
+                        switch (PantoMode)
+                        {
+                            case PantoModes.Auto:
+                                data = 0;
+                                break;
+                            case PantoModes.Forward:
+                                data = 1;
+                                break;
+                            case PantoModes.Aft:
+                                data = 2;
+                                break;
+                            case PantoModes.Both:
+                                data = 3;
+                                break;
+                        }
                         break;
                     }
                 default:

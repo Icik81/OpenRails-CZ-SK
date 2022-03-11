@@ -381,6 +381,7 @@ namespace Orts.Formats.Msts
         SELECTED_SYSTEM,
         SELECTING_SYSTEM,
         SYSTEM_ANNUNCIATOR,
+        PANTO_MODE,
 
         // Icik
         HV2,

@@ -218,6 +218,7 @@ namespace Orts.Common
         CruiseControlMaxForce,
         Alert,
         Alert1,
+        AFB,
         KeyboardBeep,
         KeyboardBeep1,
 
@@ -568,6 +569,7 @@ namespace Orts.Common
                         case 10186: return Event.MirelZS3Off;
                         case 10188: return Event.ActiveCabSelectorChange;
                         case 10195: return Event.LS90TestComplete;
+                        case 10196: return Event.AFB;
 
                         // Icik
                         case 20001: return Event.CompressorMode_OffAutoOn;

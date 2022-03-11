@@ -194,7 +194,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
         public bool PantographsBlocked;
         public bool PantographsUpBlocked;
 
-        public PantographState State { get; private set; }
+        public PantographState State { get; set; }
         public float DelayS { get; private set; }
         public float TimeS { get; private set; }
 
