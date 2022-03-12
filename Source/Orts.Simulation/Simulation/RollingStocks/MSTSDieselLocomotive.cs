@@ -1024,10 +1024,10 @@ namespace Orts.Simulation.RollingStocks
                     }
                 }
 
-                if (AIMotorStop && !AIMotorStart)
+                if (AIMotorStop && DieselEngines[0].EngineStatus == DieselEngine.Status.Running)
                 {
-                    DieselEngines[0].Stop();
-                    AIMotorStop = false;
+                    DieselEngines[0].Stop();               
+                    SignalEvent(Event.EnginePowerOff);
                 }
                 if (!Battery)
                 {
@@ -1048,7 +1048,9 @@ namespace Orts.Simulation.RollingStocks
                 {
                     // Spustí inicializační trigger zvuku volnoběhu
                     if (DieselEngines[0].AIStartTimeToGo == 10)
-                        SignalEvent(Event.InitMotorIdle);
+                    {
+                        SignalEvent(Event.InitMotorIdle);                        
+                    }
                     DieselEngines[0].AIStartTimeToGo -= elapsedClockSeconds;
                     DieselEngines[0].ExhaustColor = Color.TransparentBlack;
                     //ExhaustParticles *= 2;
@@ -1083,7 +1085,10 @@ namespace Orts.Simulation.RollingStocks
                         if (DieselStartTime < DieselStartDelayTempAI - 1)
                         {
                             if (DieselStartTime == 0)
+                            {
                                 SignalEvent(Event.StartUpMotor);
+                                SignalEvent(Event.MirrorOpen);
+                            }
                             //Simulator.Confirmer.Information("Motor se startuje..." + UiD);
                         }
                         DieselStartTime += elapsedClockSeconds;
@@ -1095,7 +1100,8 @@ namespace Orts.Simulation.RollingStocks
                             if (DieselEngines[0].EngineStatus == DieselEngine.Status.Stopped && !DieselMotorDefected)
                             {
                                 DieselEngines[0].Start();
-                                DieselStartDelayDone = false;                                
+                                DieselStartDelayDone = false;
+                                SignalEvent(Event.EnginePowerOn);
                             }
                         }
                     }
@@ -1166,7 +1172,10 @@ namespace Orts.Simulation.RollingStocks
                 if (DieselStartTime < DieselStartDelayTemp - 1)
                 {
                     if (DieselStartTime == 0)
+                    {
                         SignalEvent(Event.StartUpMotor);
+                        SignalEvent(Event.MirrorOpen);
+                    }
                     Simulator.Confirmer.Information("Motor se startuje...");
                 }
                 DieselStartTime += elapsedClockSeconds;
@@ -1179,6 +1188,7 @@ namespace Orts.Simulation.RollingStocks
                     {
                         DieselEngines[0].Start();
                         DieselStartDelayDone = false;
+                        SignalEvent(Event.EnginePowerOn);
                     }
                 }
             }
@@ -1208,6 +1218,7 @@ namespace Orts.Simulation.RollingStocks
                     if (DieselEngines[0].EngineStatus == DieselEngine.Status.Running && StopButtonPressed)
                     {
                         DieselEngines[0].Stop();
+                        SignalEvent(Event.EnginePowerOff);
                     }
                 }
                 Simulator.Confirmer.Confirm(CabControl.PlayerDiesel, StartButtonPressed ? CabSetting.On : CabSetting.Off);
