@@ -1004,7 +1004,6 @@ namespace Orts.Simulation.AIs
 
         public virtual void AIPreUpdate(float elapsedClockSeconds)
         {
-
             // calculate delta speed and speed
 
             float deltaSpeedMpS = (0.01f * AITrainThrottlePercent * MaxAccelMpSS - 0.01f * AITrainBrakePercent * MaxDecelMpSS) *
@@ -3741,6 +3740,16 @@ namespace Orts.Simulation.AIs
 
         public void AdjustControlsAccelMore(float reqAccelMpSS, float timeS, int stepSize)
         {
+            // Icik
+            foreach (TrainCar car in Cars)
+            {
+                if (car is MSTSDieselLocomotive && car.AIStart)
+                {
+                    AITrainThrottlePercent = 0;
+                    return;
+                }
+            }
+
             float step = stepSize;
             if (!Simulator.Paused)
                 step = 0.1f;

@@ -347,6 +347,7 @@ namespace Orts.Simulation.RollingStocks
         public bool RDSTBreaker;
         public bool CabHeating_OffOn;
         public bool CabHeatingIsOn = false;
+        public bool AIStart;
 
         public float DieselHeaterPower;
         public float DieselHeaterPower0;

@@ -141,7 +141,7 @@ namespace ORTS
             checkAlerter.Checked = Settings.Alerter;
             checkAlerterExternal.Enabled = Settings.Alerter;
             checkAlerterExternal.Checked = Settings.Alerter && !Settings.AlerterDisableExternal;
-            checkOverspeedMonitor.Checked = Settings.SpeedControl;
+            //checkOverspeedMonitor.Checked = Settings.SpeedControl;
             checkControlConfirmations.Checked = !Settings.SuppressConfirmations;
             checkViewMapWindow.Checked = Settings.ViewDispatcher;
             checkRetainers.Checked = Settings.RetainersOnAllCars;
@@ -195,7 +195,7 @@ namespace ORTS
 
             // Simulation tab
 
-            checkSimpleControlsPhysics.Checked = Settings.SimpleControlPhysics;
+            //checkSimpleControlsPhysics.Checked = Settings.SimpleControlPhysics;
             checkUseAdvancedAdhesion.Checked = Settings.UseAdvancedAdhesion;
             labelAdhesionMovingAverageFilterSize.Enabled = checkUseAdvancedAdhesion.Checked;
             numericAdhesionMovingAverageFilterSize.Enabled = checkUseAdvancedAdhesion.Checked; 
@@ -428,7 +428,7 @@ private async void OptionsForm_Shown(object sender, EventArgs e)
             // General tab
             Settings.Alerter = checkAlerter.Checked;
             Settings.AlerterDisableExternal = !checkAlerterExternal.Checked;
-            Settings.SpeedControl = checkOverspeedMonitor.Checked;
+            //Settings.SpeedControl = checkOverspeedMonitor.Checked;
             Settings.SuppressConfirmations = !checkControlConfirmations.Checked;
             Settings.ViewDispatcher = checkViewMapWindow.Checked;
             Settings.RetainersOnAllCars = checkRetainers.Checked;
@@ -477,7 +477,7 @@ private async void OptionsForm_Shown(object sender, EventArgs e)
             Settings.CabView_MSTSOR = CabView_MSTSOR.Checked;
 
             // Simulation tab
-            Settings.SimpleControlPhysics = checkSimpleControlsPhysics.Checked;
+            //Settings.SimpleControlPhysics = checkSimpleControlsPhysics.Checked;
             Settings.UseAdvancedAdhesion = checkUseAdvancedAdhesion.Checked;
             Settings.AdhesionMovingAverageFilterSize = (int)numericAdhesionMovingAverageFilterSize.Value;
             Settings.BreakCouplers = checkBreakCouplers.Checked;
@@ -839,7 +839,7 @@ private async void OptionsForm_Shown(object sender, EventArgs e)
                 (pbAlerter, new[] { checkAlerter }),
                 (pbControlConfirmations, new[] { checkControlConfirmations }),
                 (pbMapWindow, new[] { checkViewMapWindow }),
-                (pbRetainers, new[] { checkRetainers }),
+                //(pbRetainers, new[] { checkRetainers }),
                 //(pbGraduatedRelease, new[] { checkGraduatedRelease }),
                 (pbBrakePipeChargingRate, new[] { lBrakePipeChargingRate }),
                 (pbLanguage, new Control[] { labelLanguage, comboLanguage }),
@@ -847,7 +847,7 @@ private async void OptionsForm_Shown(object sender, EventArgs e)
                 (pbOtherUnits, new Control[] { labelOtherUnits, comboOtherUnits }),
                 (pbDisableTcsScripts, new[] { checkDisableTCSScripts }),
                 (pbEnableWebServer, new[] { checkEnableWebServer }),
-                (pbOverspeedMonitor, new[] { checkOverspeedMonitor }),
+                //(pbOverspeedMonitor, new[] { checkOverspeedMonitor }),
             };
             foreach ((PictureBox pb, Control[] controls) in helpIconControls)
             {
@@ -885,10 +885,10 @@ private async void OptionsForm_Shown(object sender, EventArgs e)
                     pbLAA,
                     baseUrl + "/options.html#large-address-aware-binaries"
                 },
-                {
-                    pbRetainers,
-                    baseUrl + "/options.html#retainer-valve-on-all-cars"
-                },
+                //{
+                //    pbRetainers,
+                //    baseUrl + "/options.html#retainer-valve-on-all-cars"
+                //},
                 //{
                 //    pbGraduatedRelease,
                 //    baseUrl + "/options.html#graduated-release-air-brakes"
@@ -917,10 +917,10 @@ private async void OptionsForm_Shown(object sender, EventArgs e)
                     pbEnableWebServer,
                     baseUrl + "/options.html#enable-web-server"
                 },
-                {
-                    pbOverspeedMonitor,
-                    baseUrl + "/options.html#overspeed-monitor"
-                },
+                //{
+                //    pbOverspeedMonitor,
+                //    baseUrl + "/options.html#overspeed-monitor"
+                //},
             };
             if (urls.TryGetValue(sender, out var url))
             {

@@ -43,6 +43,8 @@ using System;
 using System.IO;
 using System.Text;
 using Event = Orts.Common.Event;
+using Orts.Simulation.AIs;
+using Orts.Formats.OR;
 
 namespace Orts.Simulation.RollingStocks
 {
@@ -991,12 +993,123 @@ namespace Orts.Simulation.RollingStocks
         }
 
         // Icik
+        public bool AIMotorStop;
+        public bool AIMotorStart;
         public void DieselStartUpTime(float elapsedClockSeconds)
         {
+            // Startovní setup AI lokomotivy
             if (!IsPlayerTrain)
-                return;
+            {
+                if (Simulator.GameTimeCyklus10 == 10)
+                {
+                    if ((Train as AITrain).nextActionInfo != null)
+                    {
+                        if ((Train as AITrain).nextActionInfo.GetType().IsSubclassOf(typeof(AuxActionItem)))
+                        {
+                            // Po zastavení AI vlaku vypne motor
+                            if ((Train as AITrain).AuxActionsContain[0] != null && ((AIAuxActionsRef)(Train as AITrain).AuxActionsContain[0]).NextAction == AuxActionRef.AUX_ACTION.WAITING_POINT)
+                            {
+                                if (((AuxActionWPItem)(Train as AITrain).nextActionInfo).ActualDepart > 0)
+                                {
+                                    double AITimeToGo = ((AuxActionWPItem)(Train as AITrain).nextActionInfo).ActualDepart - Simulator.ClockTime;
+                                    if (AITimeToGo > 900) // Čekání 15min 
+                                        AIMotorStop = true;
+                                    else
+                                        AIMotorStop = false;
+                                    if (AITimeToGo < 120) // Čekání 2min pro nahození  
+                                        AIMotorStart = true;
+                                }
+                            }
+                        }
+                    }
+                }
 
-            // Setup lokomotivy
+                if (AIMotorStop && !AIMotorStart)
+                {
+                    DieselEngines[0].Stop();
+                    AIMotorStop = false;
+                }
+                if (!Battery)
+                {
+                    SignalEvent(Event.BatteryOn);
+                    Battery = true;
+                }
+                if (!PowerKey)
+                {
+                    SignalEvent(Event.PowerKeyOn);
+                    PowerKey = true;
+                }
+                if (!RDSTBreaker)
+                {
+                    SignalEvent(Event.RDSTOn);
+                    RDSTBreaker = true;
+                }
+                if (DieselEngines[0].EngineStatus == DieselEngine.Status.Running && this.AIStart)
+                {
+                    // Spustí inicializační trigger zvuku volnoběhu
+                    if (DieselEngines[0].AIStartTimeToGo == 10)
+                        SignalEvent(Event.InitMotorIdle);
+                    DieselEngines[0].AIStartTimeToGo -= elapsedClockSeconds;
+                    DieselEngines[0].ExhaustColor = Color.TransparentBlack;
+                    //ExhaustParticles *= 2;
+                    DieselEngines[0].ExhaustMagnitude *= 2;
+                    AIMotorStart = false;
+                }
+                if (DieselEngines[0].AIStartTimeToGo < 1)
+                {
+                    this.AIStart = false;                    
+                }
+
+                StartButtonPressed = false;                
+                if (DieselEngines[0].EngineStatus != DieselEngine.Status.Running && AIMotorStart)
+                {
+                    DieselEngines[0].AIStartTimeToGo = 10;
+                    this.AIStart = true;
+                    StartButtonPressed = true;
+                    DieselDirection_Start = true;
+                    if (!DieselDirection_Start)
+                        DieselDirection_Start = true;
+                    if (DieselStartDelay == 0) DieselStartDelay = 10f; // Default 10s pro mazání motoru
+                    float DieselStartDelayTempAI = DieselStartDelay;
+                    if (DieselEngines[0].RealDieselWaterTemperatureDeg > 50)
+                        DieselStartDelayTempAI = DieselStartDelay / 2;
+
+                    // Spustí mazací čerpadlo při startu
+                    if (StartButtonPressed
+                        && DieselEngines[0].EngineStatus == DieselEngine.Status.Stopped
+                        && DieselDirection_Start
+                        && Battery)
+                    {
+                        if (DieselStartTime < DieselStartDelayTempAI - 1)
+                        {
+                            if (DieselStartTime == 0)
+                                SignalEvent(Event.StartUpMotor);
+                            //Simulator.Confirmer.Information("Motor se startuje..." + UiD);
+                        }
+                        DieselStartTime += elapsedClockSeconds;
+                        if (DieselStartTime > DieselStartDelayTempAI)
+                        {
+                            DieselStartDelayDone = true;
+                            SignalEvent(Event.StartUpMotorStop);
+                            DieselStartTime = 0;
+                            if (DieselEngines[0].EngineStatus == DieselEngine.Status.Stopped && !DieselMotorDefected)
+                            {
+                                DieselEngines[0].Start();
+                                DieselStartDelayDone = false;                                
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if (DieselStartTime != 0)
+                            SignalEvent(Event.StartUpMotorStop);
+                        DieselStartTime = 0;
+                    }
+                }                
+                return;
+            }
+
+            // Startovní setup lokomotivy hráče
             if (LocoReadyToGo)
             {
                 if (!Battery)

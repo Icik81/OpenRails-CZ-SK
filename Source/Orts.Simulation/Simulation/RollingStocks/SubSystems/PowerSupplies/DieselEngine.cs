@@ -766,6 +766,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
         bool MSGOn;
         public float CoolingEnableRPM;
         float CoolingFlow;
+        public float AIStartTimeToGo;
 
         /// <summary>
         /// Current Engine oil pressure in PSI
@@ -948,7 +949,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
         {            
             // Icik
             if (start && !locomotive.Simulator.Settings.AirEmpty)
-            {
+            {                
                 RealRPM = IdleRPM;
                 EngineStatus = Status.Running;
             }
@@ -967,7 +968,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
             {
                 RealRPM = IdleRPM;
                 EngineStatus = Status.Running;
-            }
+            }            
 
             if (EngineStatus == DieselEngine.Status.Running)
                 DemandedThrottlePercent = locomotive.ThrottlePercent;
@@ -1254,8 +1255,12 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
         public void DieselMotorTempControl(float elapsedClockSeconds)
         {
             if (!locomotive.IsPlayerTrain)
+            {
+                RealDieselWaterTemperatureDeg = DieselIdleTemperatureDegC;
+                RealDieselOilTemperatureDeg = DieselIdleTemperatureDegC - 5;
                 return;
-
+            }
+                
             EngineCooling = Cooling.Hysteresis;
 
             // Volitelné
