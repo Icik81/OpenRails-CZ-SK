@@ -962,6 +962,13 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
 
         public void Update(float elapsedClockSeconds)
         {
+            // Icik
+            if (!locomotive.IsPlayerTrain && locomotive.BrakeSystem.StartOn)
+            {
+                RealRPM = IdleRPM;
+                EngineStatus = Status.Running;
+            }
+
             if (EngineStatus == DieselEngine.Status.Running)
                 DemandedThrottlePercent = locomotive.ThrottlePercent;
             else
@@ -1260,7 +1267,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
             //DieselTempCoolingHyst = 10;
 
             // Inicializační setup teplot
-            if (locomotive.Simulator.GameTime < 0.5f && locomotive.BrakeSystem.StartOn)
+            if (locomotive.BrakeSystem.StartOn)
             {                
                 if (locomotive.Battery)
                 {
