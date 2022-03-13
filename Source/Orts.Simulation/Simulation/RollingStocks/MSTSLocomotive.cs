@@ -3585,6 +3585,8 @@ namespace Orts.Simulation.RollingStocks
         protected float HvPantoTimer = 0;
         public override void Update(float elapsedClockSeconds)
         {
+            if (AbsSpeedMpS == 0)
+                WheelSpeedMpS = 0;
             if (LocoType == LocoTypes.Vectron && !PantoCommandDown)
                 CheckPantos();
             if (IsPlayerTrain && !Simulator.Paused)
@@ -7438,6 +7440,7 @@ namespace Orts.Simulation.RollingStocks
                                     }
                                 break;
                             case 0: // Panto vypnout
+                                PantoCommandDown = true;
                                 if (Pantographs[p1].State != PantographState.Down)
                                 {
                                     SignalEvent(PowerSupplyEvent.LowerPantograph, p1);
@@ -7465,6 +7468,7 @@ namespace Orts.Simulation.RollingStocks
                             case 1: // střed                                    
                                 break;
                             case 2: // Panto zapnout
+                                PantoCommandDown = false;
                                 if (AirForPantograph && Pantographs[p1].State != PantographState.Up)
                                 {
                                     SignalEvent(PowerSupplyEvent.RaisePantograph, p1);

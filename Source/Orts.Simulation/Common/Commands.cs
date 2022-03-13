@@ -238,7 +238,7 @@ namespace Orts.Common
 
         public override void Redo() {
             if (Receiver != null && Receiver.Train != null)
-            {                
+            {
                 // Icik
                 if (Receiver.Pantograph3Enable)
                     Receiver.TogglePantograph3Switch();
@@ -246,8 +246,10 @@ namespace Orts.Common
                 if (Receiver.Pantograph4Enable)
                     Receiver.TogglePantograph4Switch();
                 else
+                {
                     Receiver.Train.SignalEvent(ToState ? PowerSupplyEvent.RaisePantograph : PowerSupplyEvent.LowerPantograph, item);
-                Receiver.PantoCommandDown = !ToState;
+                    Receiver.PantoCommandDown = ToState;
+                }
             }
         }
 
