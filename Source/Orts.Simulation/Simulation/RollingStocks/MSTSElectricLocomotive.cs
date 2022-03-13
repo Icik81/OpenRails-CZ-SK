@@ -1380,7 +1380,7 @@ namespace Orts.Simulation.RollingStocks
                                     
             if (Simulator.GameTimeCyklus10 == 10 && TrainHasFirstPantoMarker)
             {
-                if ((Train as AITrain).nextActionInfo != null)
+                if ((Train as AITrain) != null && (Train as AITrain).nextActionInfo != null)
                 {
                     if ((Train as AITrain).nextActionInfo.GetType().IsSubclassOf(typeof(AuxActionItem)))
                     {
