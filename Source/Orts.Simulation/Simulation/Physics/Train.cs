@@ -2463,7 +2463,9 @@ namespace Orts.Simulation.Physics
                         //car.CarCurrentCarriageHeatTempC = W.ToKW(car.CarHeatCurrentCompartmentHeatW) / (SpecificHeatCapcityAirKJpKgK * DensityAirKgpM3 * car.CarHeatVolumeM3) + TrainOutsideTempC;                                                 
                         car.CarCurrentCarriageHeatDeltaTempC = W.ToKW(car.CarHeatCurrentCompartmentHeatW) / (SpecificHeatCapcityAirKJpKgK * DensityAirKgpM3 * car.CarHeatVolumeM3) / 500;
                         car.CarCurrentCarriageHeatTempC = car.WagonTemperature;
-                        
+
+                        car.CarHeatCurrentCompartmentHeatW = MathHelper.Clamp(car.CarHeatCurrentCompartmentHeatW, -1500000 * Simulator.GameSpeed, 2000000 * Simulator.GameSpeed * mstsLocomotive.SteamHeatController.CurrentValue);
+
                         //Simulator.Confirmer.Message(ConfirmLevel.None, Simulator.Catalog.GetString("CarHeatCurrentCompartmentHeatW " + car.CarHeatCurrentCompartmentHeatW));
                         //Simulator.Confirmer.Message(ConfirmLevel.Information, Simulator.Catalog.GetString("CarCurrentCarriageHeatDeltaTempC " + car.CarCurrentCarriageHeatDeltaTempC));
                         //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Teplota " + car.WagonTemperature));

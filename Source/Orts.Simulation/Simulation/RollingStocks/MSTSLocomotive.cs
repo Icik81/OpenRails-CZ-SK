@@ -3880,7 +3880,7 @@ namespace Orts.Simulation.RollingStocks
                 DieselDirection_Reverse = false;
             }
 
-            if (IsPlayerTrain && Simulator.GameSpeed == 1)
+            if (IsPlayerTrain)
             {
                 //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("MUCable " + MUCable));
                 if (Simulator.GameTime < 0.5f)
