@@ -2772,6 +2772,8 @@ namespace Orts.Viewer3D.RollingStock
             {
                 case CABViewControlTypes.REGULATOR:
                 case CABViewControlTypes.THROTTLE:
+                    if ((Locomotive.DieselDirectionController || Locomotive.DieselDirectionController2) && Locomotive.DieselDirection_0)
+                        return;
                     if (ChangedValue(0) != 0)
                     {
                         Locomotive.ThrottleController.CurrentValue += NormalizedMouseMovement() / 1;
