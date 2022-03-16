@@ -159,7 +159,7 @@ namespace ORTS.Settings
         [Default(2150)]
         public int WebServerPort { get; set; }
 
-        [Default(false)]
+        [Default(true)]
         public bool Alerter { get; set; }
         [Default(true)]
         public bool AlerterDisableExternal { get; set; }
@@ -173,7 +173,7 @@ namespace ORTS.Settings
         public bool RetainersOnAllCars { get; set; }
         [Default(false)]
         public bool SuppressConfirmations { get; set; }
-        [Default(21)]
+        [Default(29)]
         public int BrakePipeChargingRate { get; set; }
         [Default("")]
         public String Language { get; set; }
@@ -203,19 +203,19 @@ namespace ORTS.Settings
         public int SoundVolumePercent { get; set; }
         [Default(5)]
         public int SoundDetailLevel { get; set; }
-        [Default(50)]
+        [Default(30)]
         public int ExternalSoundPassThruPercent { get; set; } // higher = louder sound
 
         // Video settings:
-        [Default(false)]
+        [Default(true)]
         public bool DynamicShadows { get; set; }
-        [Default(false)]
+        [Default(true)]
         public bool ShadowAllShapes { get; set; }
         [Default(false)]
         public bool FastFullScreenAltTab { get; set; }
         [Default(false)]
         public bool WindowGlass { get; set; }
-        [Default(false)]
+        [Default(true)]
         public bool ModelInstancing { get; set; }
         [Default(true)]
         public bool Wire { get; set; }
@@ -251,21 +251,21 @@ namespace ORTS.Settings
 
         // Simulation settings:
 
-        [Default(true)]
+        [Default(false)]
         public bool SimpleControlPhysics { get; set; }
         [Default(true)]
         public bool UseAdvancedAdhesion { get; set; }
         [Default(10)]
         public int AdhesionMovingAverageFilterSize { get; set; }
-        [Default(false)]
+        [Default(true)]
         public bool BreakCouplers { get; set; }
-        [Default(false)]
+        [Default(true)]
         public bool CurveResistanceDependent { get; set; }
         [Default(false)]
         public bool CurveSpeedDependent { get; set; }
-        [Default(false)]
+        [Default(true)]
         public bool TunnelResistanceDependent { get; set; }
-        [Default(false)]
+        [Default(true)]
         public bool WindResistanceDependent { get; set; }
         [Default(false)]
         public bool OverrideNonElectrifiedRoutes { get; set; }
@@ -329,7 +329,7 @@ namespace ORTS.Settings
         public bool SuppressShapeWarnings { get; set; }
         [Default(60)]
         public int PerformanceTunerTarget { get; set; }
-        [Default(false)]
+        [Default(true)]
         public bool DoubleWire { get; set; }
         [Default(false)]
         public bool AuxActionEnabled { get; set; }
@@ -337,19 +337,19 @@ namespace ORTS.Settings
         public bool CircularSpeedGauge { get; set; }
         [Default(false)]
         public bool LODViewingExtention { get; set; }
-        [Default(false)]
+        [Default(true)]
         public bool PreferDDSTexture { get; set; }
         [Default(false)]
         public bool UseLocationPassingPaths { get; set; }
         [Default(false)]
         public bool UseMSTSEnv { get; set; }
-        [Default(false)]
+        [Default(true)]
         public bool SignalLightGlow { get; set; }
-        [Default(130)]
+        [Default(100)]
         public int AdhesionFactor { get; set; }
-        [Default(10)]
+        [Default(0)]
         public int AdhesionFactorChange { get; set; }
-        [Default(false)]
+        [Default(true)]
         public bool AdhesionProportionalToWeather { get; set; }
         [Default(false)]
         public bool NoForcedRedAtStationStops { get; set; }
@@ -363,7 +363,7 @@ namespace ORTS.Settings
         public int PrecipitationBoxLength { get; set; }
         [Default(true)]
         public bool CorrectQuestionableBrakingParams { get; set; }
-        [Default(false)]
+        [Default(true)]
         public bool OpenDoorsInAITrains { get; set; }
         [Default(0)]
         public int ActRandomizationLevel { get; set; }
@@ -371,7 +371,7 @@ namespace ORTS.Settings
         public int ActWeatherRandomizationLevel { get; set; }
 
         // Hidden settings:
-        [Default(0)]
+        [Default(2)]
         public int CarVibratingLevel { get; set; }
         [Default("OpenRailsLog.txt")]
         public string LoggingFilename { get; set; }

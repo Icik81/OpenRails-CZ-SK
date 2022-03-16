@@ -934,6 +934,9 @@ namespace Orts.Simulation.RollingStocks
         public virtual void Update(float elapsedClockSeconds)
         {
             // Icik
+            if (float.IsNaN(MassKG))
+                MassKG = InitialMassKG;
+
             if (Simulator.GameTimeCyklus10 == 10)
             {
                 // Výpočet max brzdné síly
