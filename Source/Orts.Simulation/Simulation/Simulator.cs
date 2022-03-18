@@ -946,6 +946,7 @@ namespace Orts.Simulation
         public float TrainMassKG1;
         public bool CarByUserUncoupled;
         public float DifferenceSpeedMpS = 0;
+        public bool HasSpeedInCoupler;
         /// <summary>
         /// Scan other trains
         /// </summary>
@@ -956,7 +957,12 @@ namespace Orts.Simulation
             float CarCoupleSpeed = 0.5f / 3.6f; // Doťukávací rychlost pro napojení vozu
             float CarCoupleMaxSpeed = 15 / 3.6f; // Maximální nárazová rychlost max 15km/h            
             
-            CarCoupleSpeedOvercome = false;            
+            if (HasSpeedInCoupler && drivenTrain.SpeedMpS == 0)
+                HasSpeedInCoupler = false;
+
+            CarCoupleSpeedOvercome = false;
+            if (HasSpeedInCoupler)
+                return;
 
             if (CarCoupleMaxSpeedOvercome)
             {                
@@ -997,6 +1003,7 @@ namespace Orts.Simulation
                                 if (drivenTrain.SpeedMpS < train.SpeedMpS)
                                     drivenTrain.SetCoupleSpeed(train, 1);                                
                                 drivenTrain.CalculatePositionOfCars(elapsedClockSeconds, -d1);
+                                HasSpeedInCoupler = true;
                                 return;
                             }
                             // couple my rear to front of train
@@ -1054,6 +1061,7 @@ namespace Orts.Simulation
                                 if (drivenTrain.SpeedMpS < -train.SpeedMpS)
                                     drivenTrain.SetCoupleSpeed(train, 11);                                
                                 drivenTrain.CalculatePositionOfCars(elapsedClockSeconds, -d2);
+                                HasSpeedInCoupler = true;
                                 return;
                             }
                             // couple my rear to rear of train
@@ -1128,6 +1136,7 @@ namespace Orts.Simulation
                                 if (drivenTrain.SpeedMpS > train.SpeedMpS)
                                     drivenTrain.SetCoupleSpeed(train, 1);                                
                                 drivenTrain.CalculatePositionOfCars(elapsedClockSeconds, d1);
+                                HasSpeedInCoupler = true;
                                 return;
                             }
                             // couple my front to rear of train
@@ -1224,6 +1233,7 @@ namespace Orts.Simulation
                                 if (drivenTrain.SpeedMpS > -train.SpeedMpS)
                                     drivenTrain.SetCoupleSpeed(train, -1);                                
                                 drivenTrain.CalculatePositionOfCars(elapsedClockSeconds, d2);
+                                HasSpeedInCoupler = true;
                                 return;
                             }
                             // couple my front to front of train

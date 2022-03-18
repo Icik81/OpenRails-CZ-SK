@@ -1804,7 +1804,7 @@ namespace Orts.Simulation.Physics
                         if (CyklusCouplerImpuls == 0)
                         {
                             if (TrainMassKG0 <= Simulator.TrainMassKG1)
-                                car.SpeedMpS = SpeedMpS0 * 50000 / TrainMassKG0;
+                                car.SpeedMpS = SpeedMpS0 * 100000 / TrainMassKG0;
                             else
                                 car.SpeedMpS = -SpeedMpS0;
                             HasCarCoupleSpeed = false;
@@ -2146,7 +2146,10 @@ namespace Orts.Simulation.Physics
         // Leaks in system, loss of heat (and pressure) as steam moves along train
 
         public void UpdateCarSteamHeat(float elapsedClockSeconds)
-        {           
+        {
+            if (Simulator.Paused)
+                return;
+
             var mstsLocomotive = Simulator.PlayerLocomotive as MSTSLocomotive;
             if (mstsLocomotive != null)
             {
