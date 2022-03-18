@@ -2905,7 +2905,7 @@ namespace Orts.Simulation.RollingStocks
         public bool HeatingIsOn = false;        
         public float MSGHeatingCycle;
         public void ElevatedConsumptionOnLocomotive(float elapsedClockSeconds)
-        {
+        {            
             foreach (TrainCar car in Train.Cars)
             {
                 if (car is MSTSLocomotive)
@@ -3880,7 +3880,7 @@ namespace Orts.Simulation.RollingStocks
                 DieselDirection_Reverse = false;
             }
 
-            if (IsPlayerTrain)
+            if (IsPlayerTrain && !Simulator.Paused)
             {
                 //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("MUCable " + MUCable));
                 if (Simulator.GameTime < 0.5f)
