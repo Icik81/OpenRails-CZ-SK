@@ -1783,7 +1783,7 @@ namespace Orts.Simulation.Physics
                     if (Simulator.CarCoupleSpeedOvercome && !HasCarCoupleSpeed)
                     {
                         if (car.SpeedMpS > 0)
-                            SpeedMpS0 = car.SpeedMpS;
+                            SpeedMpS0 = -car.SpeedMpS;
                         if (car.SpeedMpS < 0)
                             SpeedMpS0 = -car.SpeedMpS;
                         HasCarCoupleSpeed = true;
@@ -1800,11 +1800,12 @@ namespace Orts.Simulation.Physics
                     }
                     if (HasCarCoupleSpeed && !Simulator.CarByUserUncoupled)
                     {
+                        float MassCoefKG = MathHelper.Clamp(TrainMassKG0, 75000, 80000);
                         CyklusCouplerImpuls--;
                         if (CyklusCouplerImpuls == 0)
                         {
                             if (TrainMassKG0 <= Simulator.TrainMassKG1)
-                                car.SpeedMpS = SpeedMpS0 * 100000 / TrainMassKG0;
+                                car.SpeedMpS = SpeedMpS0 * 100000 / MassCoefKG;
                             else
                                 car.SpeedMpS = -SpeedMpS0;
                             HasCarCoupleSpeed = false;

@@ -954,10 +954,10 @@ namespace Orts.Simulation
         {
             // Icik
             int PreviousCarCount = (int) drivenTrain.Cars.Count;
-            float CarCoupleSpeed = 0.5f / 3.6f; // Doťukávací rychlost pro napojení vozu
+            float CarCoupleSpeed = 1.0f / 3.6f; // Doťukávací rychlost pro napojení vozu
             float CarCoupleMaxSpeed = 15 / 3.6f; // Maximální nárazová rychlost max 15km/h            
             
-            if (HasSpeedInCoupler && drivenTrain.SpeedMpS == 0)
+            if (HasSpeedInCoupler && Math.Abs(drivenTrain.SpeedMpS) < 1.0f)
                 HasSpeedInCoupler = false;
 
             CarCoupleSpeedOvercome = false;
@@ -1012,9 +1012,7 @@ namespace Orts.Simulation
                             if (drivenTrain.SpeedMpS > 1.5)
                                 DbfEvalOverSpeedCoupling += 1;
 
-                            if (train.SpeedMpS < 0)
-                                CarByUserUncoupled = true;
-                                                        
+                                                      
                             foreach (TrainCar car in train.Cars)
                             {
                                 drivenTrain.Cars.Add(car);
@@ -1070,9 +1068,6 @@ namespace Orts.Simulation
                             if (drivenTrain.SpeedMpS > 1.5)
                                 DbfEvalOverSpeedCoupling += 1;
 
-                            if (train.SpeedMpS < 0)
-                                CarByUserUncoupled = true;
-
                             for (int i = train.Cars.Count - 1; i >= 0; --i)
                             {
                                 TrainCar car = train.Cars[i];
@@ -1119,7 +1114,6 @@ namespace Orts.Simulation
                         if (d1 < 0)
                         {
                             DifferenceSpeedMpS = Math.Abs(Math.Abs(drivenTrain.SpeedMpS) - Math.Abs(train.SpeedMpS));
-                            CarByUserUncoupled = true;
                             TrainMassKG1 = 0;
                             foreach (TrainCar car in train.Cars)
                                 TrainMassKG1 += car.MassKG;
@@ -1150,9 +1144,6 @@ namespace Orts.Simulation
                                 if (drivenTrain.SpeedMpS > 1.5)
                                     DbfEvalOverSpeedCoupling += 1;
 
-                                if (train.SpeedMpS > 0)
-                                    CarByUserUncoupled = true;
-
                                 for (int i = 0; i < drivenTrain.Cars.Count; ++i)
                                 {
                                     TrainCar car = drivenTrain.Cars[i];
@@ -1180,9 +1171,6 @@ namespace Orts.Simulation
                                 //drivenTrain.FirstCar.SignalEvent(Event.Couple);
                                 if (drivenTrain.SpeedMpS > 1.5)
                                     DbfEvalOverSpeedCoupling += 1;
-
-                                if (train.SpeedMpS > 0)
-                                    CarByUserUncoupled = true;
 
                                 lead = drivenTrain.LeadLocomotive;
                                 for (int i = 0; i < train.Cars.Count; ++i)
@@ -1241,9 +1229,6 @@ namespace Orts.Simulation
                             //drivenTrain.FirstCar.SignalEvent(Event.Couple);
                             if (drivenTrain.SpeedMpS > 1.5)
                                 DbfEvalOverSpeedCoupling += 1;
-
-                            if (train.SpeedMpS > 0)
-                                CarByUserUncoupled = true;
 
                             TrainCar lead = drivenTrain.LeadLocomotive;
                             for (int i = 0; i < train.Cars.Count; ++i)
