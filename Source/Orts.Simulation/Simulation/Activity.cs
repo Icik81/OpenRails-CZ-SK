@@ -1126,6 +1126,8 @@ namespace Orts.Simulation
                                     BoardingCompleted = false;
                                     TimeToClearForDepart = 0;
                                     ClearForDepartGenerate = 0;
+                                    MyPlayerTrain.ToggleDoors(true, false);
+                                    MyPlayerTrain.ToggleDoors(false, false);
                                 }
                                 else
                                 {
