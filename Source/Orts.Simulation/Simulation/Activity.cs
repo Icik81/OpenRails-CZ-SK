@@ -909,7 +909,6 @@ namespace Orts.Simulation
 
         public override void NotifyEvent(ActivityEventType EventType)
         {
-
             MyPlayerTrain = Simulator.OriginalPlayerTrain;
             // The train is stopped.
             if (EventType == ActivityEventType.TrainStop)
@@ -1125,9 +1124,7 @@ namespace Orts.Simulation
                                     Simulator.SoundNotify = Event.PermissionToDepart;
                                     BoardingCompleted = false;
                                     TimeToClearForDepart = 0;
-                                    ClearForDepartGenerate = 0;
-                                    MyPlayerTrain.ToggleDoors(true, false);
-                                    MyPlayerTrain.ToggleDoors(false, false);
+                                    ClearForDepartGenerate = 0;                                    
                                 }
                                 else
                                 {
@@ -1178,7 +1175,13 @@ namespace Orts.Simulation
 
                                 IsCompleted = true;
                             }
-                        }                        
+                        }  
+                        // Zavření dveří průvodčím při odjezdu, pokud zůstanou některé otevřené nezbednými lidmi
+                        if (maydepart && !loco.CentralHandlingDoors)
+                        {
+                            MyPlayerTrain.ToggleDoors(true, false);
+                            MyPlayerTrain.ToggleDoors(false, false);
+                        }
                     }
 
                     else
