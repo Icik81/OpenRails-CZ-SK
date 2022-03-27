@@ -21923,7 +21923,11 @@ namespace Orts.Simulation.Physics
                         {
                             if (car is MSTSElectricLocomotive)
                             {
-                                (car as MSTSElectricLocomotive).Variable1 = 70;
+                                //(car as MSTSElectricLocomotive).Variable1 = 70;
+                                //(car as MSTSElectricLocomotive).Variable2 = 70;
+
+                                // Icik
+                                (car as MSTSElectricLocomotive).Variable1 = 0.7f;
                                 (car as MSTSElectricLocomotive).Variable2 = 70;
                             }
                             else if (car is MSTSDieselLocomotive)

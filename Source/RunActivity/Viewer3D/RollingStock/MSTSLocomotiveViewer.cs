@@ -2535,6 +2535,7 @@ namespace Orts.Viewer3D.RollingStock
 
                 // Icik
                 case CABViewControlTypes.HV2:
+                case CABViewControlTypes.HV2BUTTON:
                 case CABViewControlTypes.HV3:
                 case CABViewControlTypes.HV5:
                 case CABViewControlTypes.PANTOGRAPH_3_SWITCH:
@@ -3003,6 +3004,25 @@ namespace Orts.Viewer3D.RollingStock
                         {
                             new ToggleHV2SwitchUpCommand(Viewer.Log);
                         }                        
+                        break;
+                    }
+                case CABViewControlTypes.HV2BUTTON:
+                    {
+                        // Ovládání HV nearetované pozice
+                        if (Locomotive.HV2Switch == 1)
+                        {
+                            Locomotive.HVPressedTest = true;
+                        }
+                        if (Locomotive.HV2Switch == 1 && UserInput.IsMouseLeftButtonReleased)
+                        {
+                            Locomotive.HV2Switch = 0;
+                            Locomotive.HVPressedTest = false;
+                        }
+
+                        if (UserInput.IsMouseLeftButtonDown)
+                        {
+                            new ToggleHV2SwitchUpCommand(Viewer.Log);
+                        }
                         break;
                     }
 

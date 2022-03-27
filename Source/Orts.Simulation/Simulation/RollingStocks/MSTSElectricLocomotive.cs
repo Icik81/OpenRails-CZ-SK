@@ -1835,7 +1835,7 @@ namespace Orts.Simulation.RollingStocks
             if (MaxForceN == 0)  // Default 300kN
                 MaxForceN = 300000;
 
-            Variable1 = ThrottlePercent;
+            Variable1 = ThrottlePercent / 100.0f;
             if (ThrottlePercent == 0f) Variable2 = 0;
             else
             {
@@ -1964,7 +1964,7 @@ namespace Orts.Simulation.RollingStocks
             }
 
             // **** Variable Triggers ****
-            Variable1AC = ThrottlePercent;
+            Variable1AC = ThrottlePercent / 100.0f;
             Variable1DC = 0;
 
             if (ThrottlePercent == 0f) Variable2AC = 0;
@@ -2031,7 +2031,7 @@ namespace Orts.Simulation.RollingStocks
             }
 
             // **** Variable Triggers ****
-            Variable1DC = ThrottlePercent;
+            Variable1DC = ThrottlePercent / 100.0f;
             Variable1AC = 0;
 
             if (ThrottlePercent == 0f) Variable2DC = 0;
@@ -2346,6 +2346,13 @@ namespace Orts.Simulation.RollingStocks
                 case CABViewControlTypes.HV2:
                     {
                         HV2Enable = true;
+                        data = HV2Switch;
+                        break;
+                    }
+                case CABViewControlTypes.HV2BUTTON:
+                    {
+                        HV2Enable = true;
+                        HV2ButtonEnable = true;
                         data = HV2Switch;
                         break;
                     }

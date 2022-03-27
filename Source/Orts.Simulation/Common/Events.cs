@@ -252,8 +252,8 @@ namespace Orts.Common
         Heating_OffOnOff,
         CabHeating_OffOnOn,
         CabHeating_OffOnOff,
-        SwitchingVoltageMode_OffDCOn,
-        SwitchingVoltageMode_OffDCOff,
+        HVButtonPress,
+        HVButtonRelease,
         SwitchingVoltageMode_OffACOn,
         SwitchingVoltageMode_OffACOff,
         PowerOnAC,
@@ -576,8 +576,8 @@ namespace Orts.Common
                         case 20002: return Event.CompressorMode_OffAutoOff;
                         case 20003: return Event.Heating_OffOnOn;
                         case 20004: return Event.Heating_OffOnOff;
-                        case 20005: return Event.SwitchingVoltageMode_OffDCOn;
-                        case 20006: return Event.SwitchingVoltageMode_OffDCOff;
+                        case 20005: return Event.HVButtonPress;
+                        case 20006: return Event.HVButtonRelease;
                         case 20007: return Event.SwitchingVoltageMode_OffACOn;
                         case 20008: return Event.SwitchingVoltageMode_OffACOff;
                         case 20009: return Event.PowerOnAC; // 23

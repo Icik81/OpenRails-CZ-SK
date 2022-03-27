@@ -539,6 +539,7 @@ namespace Orts.Simulation.RollingStocks
         public float HV5Switch = 2;
         public float LastStateHV5 = 2;
         public bool HV2Enable = false;
+        public bool HV2ButtonEnable = false;
         public float HV2Switch = 0;
         public float LastStateHV2 = 0;
         public bool HV3Enable = false;
@@ -3896,9 +3897,7 @@ namespace Orts.Simulation.RollingStocks
                 if (Pantograph3Enable) TogglePantograph3Switch();
                 ToggleHV2Switch();
                 ToggleHV3Switch();
-                ToggleHV5Switch();
-                TrainBrakeControllerValueForSound = (float)Math.Round(TrainBrakeController.CurrentValue, 2);
-                EngineBrakeControllerValueForSound = (float)Math.Round(EngineBrakeController.CurrentValue, 2);
+                ToggleHV5Switch();                
                 EDBCancelByEngineBrake();
                 EDBCancelByOL3BailOff();
                 PowerOn_Filter(elapsedClockSeconds);
@@ -3908,6 +3907,12 @@ namespace Orts.Simulation.RollingStocks
                 TMFailure(elapsedClockSeconds);
                 PowerReductionResult(elapsedClockSeconds);
             }
+
+            // Hodnoty pro výpočet zvukových proměnných
+            TrainBrakeControllerValueForSound = (float)Math.Round(TrainBrakeController.CurrentValue, 2);
+            EngineBrakeControllerValueForSound = (float)Math.Round(EngineBrakeController.CurrentValue, 2);
+            Variable5 = (float)Math.Round(Math.Abs(LocomotiveAxle.DriveForceN / 1000));
+
 
             TrainControlSystem.Update();
 
@@ -7201,8 +7206,17 @@ namespace Orts.Simulation.RollingStocks
         {
             if (HV2Enable)
             {
+                if (HV2ButtonEnable)
+                {
+                    if (LastStateHV2 != HV2Switch && HV2Switch == 1)
+                        SignalEvent(Event.HVButtonPress); // Zvuk přepínače                
+                    else
+                    if (LastStateHV2 != HV2Switch && HV2Switch == 0)
+                        SignalEvent(Event.HVButtonRelease); // Zvuk přepínače                
+                }
+                else
                 if (LastStateHV2 != HV2Switch)
-                    SignalEvent(Event.PantographToggle); // Zvuk přepínače                
+                    SignalEvent(Event.PantographToggle); // Zvuk přepínače         
 
                 if (HVCanOn && Battery && PowerKey)
                     HVOn = true;

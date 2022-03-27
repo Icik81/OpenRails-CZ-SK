@@ -385,6 +385,7 @@ namespace Orts.Formats.Msts
 
         // Icik
         HV2,
+        HV2BUTTON,
         HV3,
         HV5,
         PANTOGRAPH_3_SWITCH,
