@@ -2260,7 +2260,9 @@ namespace Orts.Viewer3D
             if (p != "")
             {
                 if (ORTSStream != null && ORTSStream.ALSoundSource != null)
-                    ORTSStream.ALSoundSource.Queue(p, PlayMode.OneShot, ORTSStream.SoundSource.IsExternal, ORTSStream.RepeatedTrigger);
+                    // Icik
+                    //ORTSStream.ALSoundSource.Queue(p, PlayMode.OneShot, ORTSStream.SoundSource.IsExternal, ORTSStream.RepeatedTrigger);
+                    ORTSStream.ALSoundSource.Queue(p, PlayMode.OneShot, ORTSStream.SoundSource.IsExternal, true);
             }
         }
     } 
