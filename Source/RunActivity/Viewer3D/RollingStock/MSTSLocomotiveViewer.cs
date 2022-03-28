@@ -2777,42 +2777,42 @@ namespace Orts.Viewer3D.RollingStock
                         return;
                     if (ChangedValue(0) != 0)
                     {
-                        Locomotive.ThrottleController.CurrentValue += NormalizedMouseMovement() / 1;
+                        Locomotive.ThrottleController.CurrentValue += MathHelper.Clamp(NormalizedMouseMovement(), -0.25f, 0.25f);
                         Locomotive.ThrottleController.CurrentValue = MathHelper.Clamp(Locomotive.ThrottleController.CurrentValue, 0, 1);
                         Locomotive.SetThrottleValue(Locomotive.ThrottleController.CurrentValue);
-                    }
-                    Locomotive.SetThrottlePercent(Locomotive.ThrottleController.CurrentValue * 100);
+                        Locomotive.SetThrottlePercent(Locomotive.ThrottleController.CurrentValue * 100);
+                    }                    
                     //Locomotive.SetThrottleValue(ChangedValue(Locomotive.ThrottleController.IntermediateValue)); break;
                     break;                    
                 case CABViewControlTypes.ENGINE_BRAKE: 
                     if (ChangedValue(0) != 0)
                     {
-                        Locomotive.EngineBrakeController.CurrentValue += NormalizedMouseMovement() / 2;
+                        Locomotive.EngineBrakeController.CurrentValue += MathHelper.Clamp(NormalizedMouseMovement(), -0.25f, 0.25f);
                         Locomotive.EngineBrakeController.CurrentValue = MathHelper.Clamp(Locomotive.EngineBrakeController.CurrentValue, 0, 1);
                         Locomotive.SetEngineBrakeValue(Locomotive.EngineBrakeController.CurrentValue);
-                    }              
-                    Locomotive.SetEngineBrakePercent(Locomotive.EngineBrakeController.CurrentValue * 100);
+                        Locomotive.SetEngineBrakePercent(Locomotive.EngineBrakeController.CurrentValue * 100);
+                    }                                  
                     //Locomotive.SetEngineBrakeValue(ChangedValue(Locomotive.EngineBrakeController.IntermediateValue)); break;
                     break;
                 case CABViewControlTypes.BRAKEMAN_BRAKE: Locomotive.SetBrakemanBrakeValue(ChangedValue(Locomotive.BrakemanBrakeController.IntermediateValue)); break;
                 case CABViewControlTypes.TRAIN_BRAKE:
                     if (ChangedValue(0) != 0)
                     {
-                        Locomotive.TrainBrakeController.CurrentValue += NormalizedMouseMovement() / 1;
+                        Locomotive.TrainBrakeController.CurrentValue += MathHelper.Clamp(NormalizedMouseMovement(), -0.025f, 0.025f);
                         Locomotive.TrainBrakeController.CurrentValue = MathHelper.Clamp(Locomotive.TrainBrakeController.CurrentValue, 0, 1);
                         Locomotive.SetTrainBrakeValue(Locomotive.TrainBrakeController.CurrentValue, 0);
-                    }
-                    Locomotive.SetTrainBrakePercent(Locomotive.TrainBrakeController.CurrentValue * 100);
+                        Locomotive.SetTrainBrakePercent(Locomotive.TrainBrakeController.CurrentValue * 100);
+                    }                    
                     //Locomotive.SetTrainBrakeValue(ChangedValue(Locomotive.TrainBrakeController.IntermediateValue), 0); break;
                     break;
                 case CABViewControlTypes.DYNAMIC_BRAKE:
                     if (ChangedValue(0) != 0)
                     {
-                        Locomotive.DynamicBrakeController.CurrentValue += NormalizedMouseMovement() / 1;
+                        Locomotive.DynamicBrakeController.CurrentValue += MathHelper.Clamp(NormalizedMouseMovement(), -0.25f, 0.25f);
                         Locomotive.DynamicBrakeController.CurrentValue = MathHelper.Clamp(Locomotive.DynamicBrakeController.CurrentValue, 0, 1);
                         Locomotive.SetDynamicBrakeValue(Locomotive.DynamicBrakeController.CurrentValue);
-                    }
-                    Locomotive.SetDynamicBrakePercent(Locomotive.DynamicBrakeController.CurrentValue * 100);
+                        Locomotive.SetDynamicBrakePercent(Locomotive.DynamicBrakeController.CurrentValue * 100);
+                    }                    
                     //Locomotive.SetDynamicBrakeValue(ChangedValue(Locomotive.DynamicBrakeController.IntermediateValue)); break;
                     break;                    
                 case CABViewControlTypes.GEARS: Locomotive.SetGearBoxValue(ChangedValue(Locomotive.GearBoxController.IntermediateValue)); break;
