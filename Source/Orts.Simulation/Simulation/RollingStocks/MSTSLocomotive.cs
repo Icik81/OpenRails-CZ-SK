@@ -2609,7 +2609,7 @@ namespace Orts.Simulation.RollingStocks
                     if (this is MSTSDieselLocomotive) // Dieselelektrické lokomotivy
                     {
                         PowerReductionResult4 = 0.9f; // Omezení trakčních motorů  
-                        SetDynamicBrakePercent(0);
+                        SetDynamicBrakePercent(-1);
                         Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Zásah nadproudové ochrany!"));
                     }
                 }

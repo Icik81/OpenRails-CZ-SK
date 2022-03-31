@@ -808,9 +808,9 @@ namespace Orts.Viewer3D.Popups
                             //05
                             Viewer.Catalog.GetString("Speed"),
                             //06
-                            Viewer.Catalog.GetString("VýkonTM"),
+                            Viewer.Catalog.GetString("TažnýVýkon"),
                             //07
-                            Viewer.Catalog.GetString("TrakčníSílaTM"),
+                            Viewer.Catalog.GetString("TažnáSíla"),
                             //08
                             car is MSTSDieselLocomotive && (car as MSTSDieselLocomotive).DieselEngines[0].HasGearBox ?
                             Viewer.Catalog.GetString("Gear") : Viewer.Catalog.GetString(""),

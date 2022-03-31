@@ -1757,6 +1757,13 @@ namespace Orts.Simulation.Physics
             float massKg = 0f;
             foreach (TrainCar car in Cars)
             {
+                // Icik
+                // Ochrana proti NaN
+                if (float.IsNaN(car.SpeedMpS))
+                {
+                    car.SpeedMpS = 0;
+                }
+
                 car.MotiveForceN = 0;
                 car.Update(elapsedClockSeconds);
                 

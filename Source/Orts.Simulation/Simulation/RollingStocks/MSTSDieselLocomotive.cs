@@ -655,7 +655,7 @@ namespace Orts.Simulation.RollingStocks
                     // Ohraničení trakční síly dle vstupního výkonu motoru
                     maxPowerW = DieselEngines[0].CurrentDieselOutputPowerW * DieselEngineFractionPower;                    
                     if (TractiveForceN * AbsSpeedMpS > maxPowerW)
-                        TractiveForceN = (0.87f * DieselEngines[0].CurrentDieselOutputPowerW * DieselEngineFractionPower * (1 - PowerReduction)) / AbsTractionSpeedMpS;
+                        TractiveForceN = (0.88f * DieselEngines[0].CurrentDieselOutputPowerW * DieselEngineFractionPower * (1 - PowerReduction)) / AbsTractionSpeedMpS;
                 }                                
 
                 DieselFlowLps = DieselEngines.DieselFlowLps;
