@@ -1254,6 +1254,11 @@ namespace Orts.Simulation.RollingStocks
                 AuxAirConsumption(elapsedClockSeconds);                
                 FaultByPlayer(elapsedClockSeconds);
 
+                if (ControlMaster)
+                {
+                    Simulator.DataPantographVoltageV = PantographVoltageV;
+                }
+
                 // Nastavení pro plně oživenou lokomotivu
                 if (LocoReadyToGo && BrakeSystem.IsAirFull)
                 {                                        
@@ -1332,7 +1337,8 @@ namespace Orts.Simulation.RollingStocks
                                 Pantograph3Switch = 2;
                                 Pantograph3CanOn = true;
                             }
-                            LocoReadyToGo = false;
+                            if (PowerOn)
+                                LocoReadyToGo = false;
                         }
                     }
                     // Mirel
@@ -1361,6 +1367,16 @@ namespace Orts.Simulation.RollingStocks
                     }
                 }                   
             }            
+        }
+
+        // Icik
+        // Nastaví parametry pro Slave (řídící vůz)
+        public void SetElectricControlSlaveParameters()
+        {            
+            if (ControlSlave)
+            {
+                PantographVoltageV = Simulator.DataPantographVoltageV;
+            }
         }
 
         // Icik
@@ -2156,6 +2172,9 @@ namespace Orts.Simulation.RollingStocks
 
         public override float GetDataOf(CabViewControl cvc)
         {
+            // Icik
+            SetElectricControlSlaveParameters();
+
             float data = 0;
 
             switch (cvc.ControlType)

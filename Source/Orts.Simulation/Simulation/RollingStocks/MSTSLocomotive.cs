@@ -3530,6 +3530,42 @@ namespace Orts.Simulation.RollingStocks
             }
         }
 
+        // Určí vůz jako Master nebo Slave
+        public void SetControlMasterSlave()
+        {
+            if (Simulator.GameTimeCyklus10 == 10)
+            {
+                ControlMaster = false;
+                ControlSlave = false;
+
+                if (PowerOn && MaxPowerW > 100 * 1000)
+                    ControlMaster = true;
+
+                if (PowerOn && MaxPowerW < 100 * 1000)
+                    ControlSlave = true;
+
+                if (ControlMaster)
+                {
+                    Simulator.DataFilteredMotiveForceN = FilteredMotiveForceN;
+                    Simulator.DataMaxCurrentA = MaxCurrentA;
+                    Simulator.DataMaxForceN = MaxForceN;
+                    Simulator.DataDynamicBrakeMaxCurrentA = DynamicBrakeMaxCurrentA;
+                }
+            }
+        }
+
+        // Nastaví parametry pro Slave (řídící vůz)
+        public void SetControlSlaveParameters()
+        {            
+            if (ControlSlave)
+            {
+                FilteredMotiveForceN = Simulator.DataFilteredMotiveForceN;
+                MaxCurrentA = Simulator.DataMaxCurrentA;
+                MaxForceN = Simulator.DataMaxForceN;
+                DynamicBrakeMaxCurrentA = Simulator.DataDynamicBrakeMaxCurrentA;
+            }
+        }
+
         public void CheckPantos()
         {
             switch (PantoMode)
@@ -3906,6 +3942,7 @@ namespace Orts.Simulation.RollingStocks
                 HVOffbyAirPressureD();
                 TMFailure(elapsedClockSeconds);
                 PowerReductionResult(elapsedClockSeconds);
+                SetControlMasterSlave();
             }
 
             // Hodnoty pro výpočet zvukových proměnných
@@ -8692,7 +8729,10 @@ namespace Orts.Simulation.RollingStocks
         private float previousTrainBrakeData = 0;
         private List<float> requestedForce = new List<float>();
         public virtual float GetDataOf(CabViewControl cvc)
-        {
+        {     
+            // Icik
+            SetControlSlaveParameters();
+
             CheckBlankDisplay(cvc);
             float data = 0;
             switch (cvc.ControlType)
@@ -8815,7 +8855,7 @@ namespace Orts.Simulation.RollingStocks
 
                 case CABViewControlTypes.AMMETER: // Current not modelled yet to ammeter shows tractive effort until then.
                 case CABViewControlTypes.AMMETER_ABS:
-                    {
+                    {                        
                         cvc.ElapsedTime += elapsedTime;
                         if (cvc.ElapsedTime > cvc.UpdateTime)
                         {
@@ -8858,7 +8898,7 @@ namespace Orts.Simulation.RollingStocks
                                 }
                                 if (direction == 1)
                                     data = -data;
-                                if (cvc.ControlType == CABViewControlTypes.AMMETER_ABS) data = Math.Abs(data);
+                                if (cvc.ControlType == CABViewControlTypes.AMMETER_ABS) data = Math.Abs(data);                                
                                 break;
                             }
                             data = this.MotiveForceN / MaxForceN * MaxCurrentA;

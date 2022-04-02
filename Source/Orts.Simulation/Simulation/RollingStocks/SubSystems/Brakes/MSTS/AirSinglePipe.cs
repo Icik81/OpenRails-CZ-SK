@@ -232,6 +232,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 string.Empty, // Spacer because the state above needs 2 columns.                                                     
                 string.Format("{0}", NextLocoBrakeState),
 
+                string.Empty, // Spacer because the state above needs 2 columns.                                                     
+                (Car as MSTSLocomotive) != null ? string.Format("ControlMaster {0}", (Car as MSTSLocomotive).ControlMaster): string.Empty,
+
                 //string.Empty, // Spacer because the state above needs 2 columns.                                                     
                 //(Car as MSTSLocomotive) != null ? string.Format("RDST {0}", (Car as MSTSLocomotive).RDSTBreaker): string.Empty,
                 

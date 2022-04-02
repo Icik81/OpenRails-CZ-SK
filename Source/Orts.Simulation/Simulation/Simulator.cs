@@ -177,6 +177,12 @@ namespace Orts.Simulation
         public float OneSecondLoop;
         public bool CarCoupleSpeedOvercome;
         public bool CarCoupleMaxSpeedOvercome;
+        public float DataFilteredMotiveForceN;
+        public float DataMaxCurrentA;
+        public float DataMaxForceN;
+        public float DataDynamicBrakeMaxCurrentA;
+        public float DataPantographVoltageV;
+
 
         public List<PowerSupplyStation> powerSupplyStations;
         public List<VoltageChangeMarker> voltageChangeMarkers;
