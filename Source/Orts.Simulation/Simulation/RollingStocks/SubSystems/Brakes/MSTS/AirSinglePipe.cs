@@ -2613,7 +2613,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 // Samostatná přímočinná brzda pro každou lokomotivu
                 BrakeSystem brakeSystem = lead.BrakeSystem;
                 var prevState = lead.EngineBrakeState;
-                train.BrakeLine3PressurePSI = MathHelper.Clamp(train.BrakeLine3PressurePSI, 0, lead.MainResPressurePSI);
+                train.BrakeLine3PressurePSI = MathHelper.Clamp(train.BrakeLine3PressurePSI, 0, lead.BrakeSystem.BrakeCylinderMaxSystemPressurePSI);
                 
                 // Při aktivní EDB a použití přímočinné brzdy zruší účinek EDB
                 if (lead.BrakeSystem.AutoCylPressurePSI1 > 0 && lead.DynamicBrakePercent > 0)
