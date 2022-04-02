@@ -947,12 +947,6 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
 
         public void Initialize(bool start)
         {            
-            // Icik
-            if (start && !locomotive.Simulator.Settings.AirEmpty)
-            {                
-                RealRPM = IdleRPM;
-                EngineStatus = Status.Running;
-            }
             RPMRange = MaxRPM - IdleRPM;
             MagnitudeRange = MaxMagnitude - InitialMagnitude;
             ExhaustRange = MaxExhaust - InitialExhaust;
@@ -964,11 +958,18 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
         public void Update(float elapsedClockSeconds)
         {
             // Icik
+            // Inicializace AI
             if (!locomotive.IsPlayerTrain && locomotive.BrakeSystem.StartOn)
             {
                 RealRPM = IdleRPM;
                 EngineStatus = Status.Running;
-            }            
+            }
+            // Inicializace hráče
+            if (locomotive.IsPlayerTrain && locomotive.BrakeSystem.StartOn && !locomotive.Simulator.Settings.AirEmpty)
+            {
+                RealRPM = IdleRPM;
+                EngineStatus = Status.Running;
+            }
 
             if (EngineStatus == DieselEngine.Status.Running)
                 DemandedThrottlePercent = locomotive.ThrottlePercent;
@@ -1035,7 +1036,6 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                 ExhaustParticles = (InitialExhaust + ((ExhaustRange * (RealRPM - IdleRPM) / RPMRange))) * ExhaustDecelReduction;
                 ExhaustMagnitude = (InitialMagnitude + ((MagnitudeRange * (RealRPM - IdleRPM) / RPMRange))) * ExhaustDecelReduction;
                 ExhaustColor = ExhaustDecelColor;
-
             }
 
             // Uncertain about the purpose of this code piece?? Does there need to be a corresponding code for RateOfChangeUpRPMpSS???

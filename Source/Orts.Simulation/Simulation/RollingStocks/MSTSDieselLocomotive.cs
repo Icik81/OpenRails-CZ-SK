@@ -1024,7 +1024,6 @@ namespace Orts.Simulation.RollingStocks
                 if (AIMotorStop && DieselEngines[0].EngineStatus == DieselEngine.Status.Running)
                 {
                     DieselEngines[0].Stop();               
-                    SignalEvent(Event.EnginePowerOff);
                 }
                 if (!Battery)
                 {
