@@ -992,6 +992,7 @@ namespace Orts.Simulation.RollingStocks
         // Icik
         public bool AIMotorStop;
         public bool AIMotorStart;
+        float MotorSoundStopCycle;
         public void DieselStartUpTime(float elapsedClockSeconds)
         {
             // Startovní setup AI lokomotivy
@@ -1020,11 +1021,19 @@ namespace Orts.Simulation.RollingStocks
                         }
                     }
                 }
-
+                
                 if (AIMotorStop && DieselEngines[0].EngineStatus == DieselEngine.Status.Running)
-                {
-                    DieselEngines[0].Stop();               
+                {                    
+                    DieselEngines[0].Stop();
+                    MotorSoundStopCycle = 0;
                 }
+                if (DieselEngines[0].EngineStatus == DieselEngine.Status.Stopped && MotorSoundStopCycle == 0)
+                {                    
+                    if (MotorSoundStopCycle < 1)
+                        SignalEvent(Event.EnginePowerOff);
+                    MotorSoundStopCycle++;
+                }
+
                 if (!Battery)
                 {
                     SignalEvent(Event.BatteryOn);
