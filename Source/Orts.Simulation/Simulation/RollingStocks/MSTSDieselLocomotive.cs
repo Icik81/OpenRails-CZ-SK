@@ -786,13 +786,20 @@ namespace Orts.Simulation.RollingStocks
         public override string GetStatus()
         {
             var status = new StringBuilder();
-            status.AppendFormat("{0} = {1}\n", Simulator.Catalog.GetString("Engine"),
-                Simulator.Catalog.GetParticularString("Engine", GetStringAttribute.GetPrettyName(DieselEngines[0].EngineStatus)));
+            // Icik
+            if (!ControlUnit)
+            {
+                status.AppendFormat("{0} = {1}\n", Simulator.Catalog.GetString("Engine"),
+                  Simulator.Catalog.GetParticularString("Engine", GetStringAttribute.GetPrettyName(DieselEngines[0].EngineStatus)));
 
-            if (DieselEngines.HasGearBox)
-                status.AppendFormat("{0} = {1}\n", Simulator.Catalog.GetString("Gear"), DieselEngines[0].GearBox.CurrentGearIndex < 0
-                    ? Simulator.Catalog.GetParticularString("Gear", "N")
-                    : (DieselEngines[0].GearBox.CurrentGearIndex + 1).ToString());
+                if (DieselEngines.HasGearBox)
+                    status.AppendFormat("{0} = {1}\n", Simulator.Catalog.GetString("Gear"), DieselEngines[0].GearBox.CurrentGearIndex < 0
+                        ? Simulator.Catalog.GetParticularString("Gear", "N")
+                        : (DieselEngines[0].GearBox.CurrentGearIndex + 1).ToString());
+            }
+            else
+                status.AppendFormat("{0} = {1}\n", Simulator.Catalog.GetString("Řídící vůz"),
+                    Simulator.Catalog.GetParticularString("Řídící vůz", ""));
 
             return status.ToString();
         }
@@ -1172,7 +1179,8 @@ namespace Orts.Simulation.RollingStocks
             if (StartButtonPressed
                 && DieselEngines[0].EngineStatus == DieselEngine.Status.Stopped
                 && DieselDirection_Start
-                && Battery)
+                && Battery
+                && PowerUnit)
             {                                
                 if (DieselStartTime < DieselStartDelayTemp - 1)
                 {

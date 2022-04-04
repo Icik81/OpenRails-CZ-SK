@@ -362,7 +362,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                 result.AppendFormat("\t{0:F1}%", eng.LoadPercent);
 
             foreach (var eng in DEList)
-                result.AppendFormat("\t{0:F0} {1}", eng.RealRPM, FormatStrings.rpm);
+                result.AppendFormat("\t\t{0:F0} {1}", eng.RealRPM, FormatStrings.rpm);
 
             //result.AppendFormat("\t{0}", Simulator.Catalog.GetString("Flow"));
             foreach (var eng in DEList)
@@ -375,6 +375,15 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
             //result.AppendFormat("\t{0}", Simulator.Catalog.GetString("Oil"));
             foreach (var eng in DEList)
                 result.AppendFormat("\t{0}", FormatStrings.FormatPressure(eng.DieselOilPressurePSI, PressureUnit.PSI, Locomotive.MainPressureUnit, true));
+
+            // Icik
+            if (Locomotive.PowerUnit)
+            foreach (var eng in DEList)
+                result.AppendFormat("\t\t{0}", Simulator.Catalog.GetString("Hnací vůz"));
+
+            if (Locomotive.ControlUnit)
+                foreach (var eng in DEList)
+                    result.AppendFormat("\t\t{0}", Simulator.Catalog.GetString("Řídící vůz"));
 
             return result.ToString();
         }

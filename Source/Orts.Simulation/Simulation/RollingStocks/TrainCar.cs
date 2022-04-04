@@ -348,8 +348,8 @@ namespace Orts.Simulation.RollingStocks
         public bool CabHeating_OffOn;
         public bool CabHeatingIsOn = false;
         public bool AIStart;
-        public bool ControlMaster;
-        public bool ControlSlave;
+        public bool PowerUnit;
+        public bool ControlUnit;
 
         public float DieselHeaterPower;
         public float DieselHeaterPower0;

@@ -622,6 +622,7 @@ namespace Orts.Simulation.RollingStocks
         public float CurrentTrackSandBoxCapacityKG;
         public bool MUCable;
         public bool MUCableEquipment;
+        public float MaxPowerWBase;
 
         // Jindrich
         public bool IsActive = false;
@@ -1898,6 +1899,7 @@ namespace Orts.Simulation.RollingStocks
             SetUpVoltageChangeMarkers();
 
             // Icik
+            MaxPowerWBase = MaxPowerW;
             if (MaxTrackSandBoxCapacityM3 == 0) MaxTrackSandBoxCapacityM3 = 0.0125f; // Default 0.0125m3
             if (CurrentTrackSandBoxCapacityM3 == 0) CurrentTrackSandBoxCapacityM3 = MaxTrackSandBoxCapacityM3;
             CurrentTrackSandBoxCapacityKG = (float)Math.Round(CurrentTrackSandBoxCapacityM3 * 1600, 2);
@@ -3530,39 +3532,50 @@ namespace Orts.Simulation.RollingStocks
             }
         }
 
-        // Určí vůz jako Master nebo Slave
-        public void SetControlMasterSlave()
-        {
+        // Určí řídící vůz
+        public void SetControlUnit()
+        {              
             if (Simulator.GameTimeCyklus10 == 10)
             {
-                ControlMaster = false;
-                ControlSlave = false;
+                PowerUnit = false;
+                ControlUnit = false;
 
-                if (PowerOn && MaxPowerW > 100 * 1000)
-                    ControlMaster = true;
+                if (MaxPowerWBase > 10 * 1000)
+                    PowerUnit = true;
+                else
+                    ControlUnit = true;
 
-                if (PowerOn && MaxPowerW < 100 * 1000)
-                    ControlSlave = true;
-
-                if (ControlMaster)
+                if (PowerUnit)
                 {
                     Simulator.DataFilteredMotiveForceN = FilteredMotiveForceN;
                     Simulator.DataMaxCurrentA = MaxCurrentA;
-                    Simulator.DataMaxForceN = MaxForceN;
+                    Simulator.DataMaxForceN = MaxForceN;                    
                     Simulator.DataDynamicBrakeMaxCurrentA = DynamicBrakeMaxCurrentA;
                 }
             }
         }
 
-        // Nastaví parametry pro Slave (řídící vůz)
-        public void SetControlSlaveParameters()
+        // Nastaví parametry pro řídící vůz
+        public void SetControlUnitParameters()
         {            
-            if (ControlSlave)
+            if (ControlUnit)
             {
                 FilteredMotiveForceN = Simulator.DataFilteredMotiveForceN;
                 MaxCurrentA = Simulator.DataMaxCurrentA;
                 MaxForceN = Simulator.DataMaxForceN;
+                MaxPowerW = 0;
                 DynamicBrakeMaxCurrentA = Simulator.DataDynamicBrakeMaxCurrentA;
+            }
+        }
+        public void ResetControlUnitParameters()
+        {
+            if (ControlUnit)
+            {
+                FilteredMotiveForceN = 0;
+                MaxCurrentA = 0;
+                MaxForceN = 0;
+                MaxPowerW = 0;
+                DynamicBrakeMaxCurrentA = 0;
             }
         }
 
@@ -3941,8 +3954,8 @@ namespace Orts.Simulation.RollingStocks
                 HVOffbyAirPressureE();
                 HVOffbyAirPressureD();
                 TMFailure(elapsedClockSeconds);
-                PowerReductionResult(elapsedClockSeconds);
-                SetControlMasterSlave();
+                PowerReductionResult(elapsedClockSeconds);                               
+                SetControlUnit();
             }
 
             // Hodnoty pro výpočet zvukových proměnných
@@ -8731,7 +8744,7 @@ namespace Orts.Simulation.RollingStocks
         public virtual float GetDataOf(CabViewControl cvc)
         {     
             // Icik
-            SetControlSlaveParameters();
+            SetControlUnitParameters();
 
             CheckBlankDisplay(cvc);
             float data = 0;
@@ -10497,7 +10510,9 @@ namespace Orts.Simulation.RollingStocks
                 cvc.PreviousData = data;
             }
 
-            return data;
+            // Icik
+            ResetControlUnitParameters();
+            return data;            
         }
 
         public virtual string GetDataOfS(CabViewControl crc, ElapsedTime elapsedClockSeconds)

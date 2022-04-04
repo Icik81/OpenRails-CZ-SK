@@ -1254,7 +1254,7 @@ namespace Orts.Simulation.RollingStocks
                 AuxAirConsumption(elapsedClockSeconds);                
                 FaultByPlayer(elapsedClockSeconds);
 
-                if (ControlMaster)
+                if (PowerUnit)
                 {
                     Simulator.DataPantographVoltageV = PantographVoltageV;
                 }
@@ -1371,9 +1371,9 @@ namespace Orts.Simulation.RollingStocks
 
         // Icik
         // Nastaví parametry pro Slave (řídící vůz)
-        public void SetElectricControlSlaveParameters()
+        public void SetElectricControlUnitParameters()
         {            
-            if (ControlSlave)
+            if (ControlUnit)
             {
                 PantographVoltageV = Simulator.DataPantographVoltageV;
             }
@@ -2173,7 +2173,7 @@ namespace Orts.Simulation.RollingStocks
         public override float GetDataOf(CabViewControl cvc)
         {
             // Icik
-            SetElectricControlSlaveParameters();
+            SetElectricControlUnitParameters();
 
             float data = 0;
 
@@ -2559,7 +2559,13 @@ namespace Orts.Simulation.RollingStocks
             //Simulator.Catalog.GetString("Driver"),
             status.AppendFormat("{0}\t", PowerSupply.CircuitBreaker.DriverClosingAuthorization ? Simulator.Catalog.GetString("OK") : Simulator.Catalog.GetString("NOT OK"));
             //Simulator.Catalog.GetString("Auxiliary power"),
-            status.AppendFormat("{0}", Simulator.Catalog.GetParticularString("PowerSupply", GetStringAttribute.GetPrettyName(PowerSupply.AuxiliaryState)));
+            status.AppendFormat("{0}\t\t", Simulator.Catalog.GetParticularString("PowerSupply", GetStringAttribute.GetPrettyName(PowerSupply.AuxiliaryState)));
+
+            // Icik
+            if (PowerUnit)
+                status.AppendFormat("{0}", Simulator.Catalog.GetString("Hnací vůz"));
+            if (ControlUnit)
+                status.AppendFormat("{0}", Simulator.Catalog.GetString("Řídící vůz"));
 
             if (IsSteamHeatFitted && Train.PassengerCarsNumber > 0 && this.IsLeadLocomotive() && Train.CarSteamHeatOn)
             {
