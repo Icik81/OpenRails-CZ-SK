@@ -281,10 +281,6 @@ namespace Orts.Simulation.RollingStocks
                 Locomotive.ControllerVolts = Locomotive.Train.ControllerVolts;
             if (!Locomotive.IsLeadLocomotive() && (!Locomotive.PowerOn || !Locomotive.AcceptMUSignals))
                 Locomotive.ControllerVolts = OverridenControllerVolts = 0;
-            if (!Locomotive.IsLeadLocomotive() && Locomotive.ThrottlePercent > 0)
-            {
-                Locomotive.ControllerVolts = OverridenControllerVolts = Locomotive.ThrottlePercent / 10;
-            }
             if (!Locomotive.IsPlayerTrain)
                 return;
             if (Bar.FromPSI(Locomotive.BrakeSystem.BrakeLine1PressurePSI) < 4.98 && Locomotive.DynamicBrakePercent < 0.1f)
