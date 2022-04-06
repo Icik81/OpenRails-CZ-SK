@@ -21480,6 +21480,28 @@ namespace Orts.Simulation.Physics
                 if (passengerCarsWithinPlatform > 0)
                 {
                     var actualNumPassengersWaiting = PlatformItem.NumPassengersWaiting;
+
+                    // Icik
+                    // Ošetření počtu cestujících kvůli dlouhým časům stání AI
+                    switch (passengerCarsWithinPlatform)
+                    {
+                        case 1:
+                            actualNumPassengersWaiting = MathHelper.Clamp(actualNumPassengersWaiting, 0, 10);
+                            break;
+                        case 2:
+                            actualNumPassengersWaiting = MathHelper.Clamp(actualNumPassengersWaiting, 0, 20);
+                            break;
+                        case 3:
+                            actualNumPassengersWaiting = MathHelper.Clamp(actualNumPassengersWaiting, 0, 30);
+                            break;
+                        case 4:
+                            actualNumPassengersWaiting = MathHelper.Clamp(actualNumPassengersWaiting, 0, 40);
+                            break;
+                        default:
+                            actualNumPassengersWaiting = MathHelper.Clamp(actualNumPassengersWaiting, 0, 50);
+                            break;
+                    }
+
                     if (stopTrain.TrainType != TRAINTYPE.AI_PLAYERHOSTING) RandomizePassengersWaiting(ref actualNumPassengersWaiting, stopTrain);
                     stopTime = Math.Max(NumSecPerPass * actualNumPassengersWaiting / passengerCarsWithinPlatform, DefaultFreightStopTime);
                 }
