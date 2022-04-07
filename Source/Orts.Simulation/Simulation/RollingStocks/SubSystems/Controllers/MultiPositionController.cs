@@ -321,6 +321,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                         {
                             Locomotive.SetTrainBrakePercent(notch.Value * 100);
                         }
+                        else
+                        {
+                            Locomotive.TrainBrakeController.EmergencyBrakingPushButton = true;
+                        }
                     }
                 }
                 return;
