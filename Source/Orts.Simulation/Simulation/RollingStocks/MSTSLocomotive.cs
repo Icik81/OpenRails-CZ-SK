@@ -1899,7 +1899,15 @@ namespace Orts.Simulation.RollingStocks
             SetUpVoltageChangeMarkers();
 
             // Icik
-            MaxPowerWBase = MaxPowerW;
+            if (MaxPowerWAC != 0)
+                MaxPowerWBase = MaxPowerWAC;
+            else
+                if (MaxPowerWDC != 0)
+                    MaxPowerWBase = MaxPowerWDC;
+            else
+                if (MaxPowerW != 0)
+                    MaxPowerWBase = MaxPowerW;
+            
             if (MaxTrackSandBoxCapacityM3 == 0) MaxTrackSandBoxCapacityM3 = 0.0125f; // Default 0.0125m3
             if (CurrentTrackSandBoxCapacityM3 == 0) CurrentTrackSandBoxCapacityM3 = MaxTrackSandBoxCapacityM3;
             CurrentTrackSandBoxCapacityKG = (float)Math.Round(CurrentTrackSandBoxCapacityM3 * 1600, 2);
