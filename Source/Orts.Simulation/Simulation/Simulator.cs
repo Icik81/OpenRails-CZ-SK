@@ -182,6 +182,9 @@ namespace Orts.Simulation
         public float DataMaxForceN;
         public float DataDynamicBrakeMaxCurrentA;
         public float DataPantographVoltageV;
+        public int DataSwitchingVoltageMode;
+        public float DataDynamicBrakeForceN;
+        public float DataMaxDynamicBrakeForceN;
 
 
         public List<PowerSupplyStation> powerSupplyStations;

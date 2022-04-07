@@ -3559,6 +3559,8 @@ namespace Orts.Simulation.RollingStocks
                     Simulator.DataMaxCurrentA = MaxCurrentA;
                     Simulator.DataMaxForceN = MaxForceN;                    
                     Simulator.DataDynamicBrakeMaxCurrentA = DynamicBrakeMaxCurrentA;
+                    Simulator.DataDynamicBrakeForceN = DynamicBrakeForceN;
+                    Simulator.DataMaxDynamicBrakeForceN = MaxDynamicBrakeForceN;
                 }
             }
         }
@@ -3573,6 +3575,8 @@ namespace Orts.Simulation.RollingStocks
                 MaxForceN = Simulator.DataMaxForceN;
                 MaxPowerW = 0;
                 DynamicBrakeMaxCurrentA = Simulator.DataDynamicBrakeMaxCurrentA;
+                DynamicBrakeForceN = Simulator.DataDynamicBrakeForceN;
+                MaxDynamicBrakeForceN = Simulator.DataMaxDynamicBrakeForceN;
             }
         }
         public void ResetControlUnitParameters()
@@ -3584,6 +3588,8 @@ namespace Orts.Simulation.RollingStocks
                 MaxForceN = 0;
                 MaxPowerW = 0;
                 DynamicBrakeMaxCurrentA = 0;
+                DynamicBrakeForceN = 0;
+                MaxDynamicBrakeForceN = 0;
             }
         }
 

@@ -1182,12 +1182,32 @@ namespace Orts.Simulation.RollingStocks
             if (HVOff)
             {
                 HVOff = false;
-                SignalEvent(PowerSupplyEvent.OpenCircuitBreaker);                
+                SignalEvent(PowerSupplyEvent.OpenCircuitBreaker);
+                if (AcceptMUSignals)
+                {
+                    foreach (TrainCar car in Train.Cars)
+                    {
+                        if (car is MSTSElectricLocomotive)
+                        {
+                            car.SignalEvent(PowerSupplyEvent.OpenCircuitBreaker);
+                        }
+                    }
+                }
             }
             if (HVOn)
             {
                 HVOn = false;
                 SignalEvent(PowerSupplyEvent.CloseCircuitBreaker);
+                if (AcceptMUSignals)
+                {
+                    foreach (TrainCar car in Train.Cars)
+                    {
+                        if (car is MSTSElectricLocomotive)
+                        {
+                            car.SignalEvent(PowerSupplyEvent.CloseCircuitBreaker);
+                        }
+                    }
+                }
             }
                                
             // Aktivuje zvukový trigger pro spuštění napájení
@@ -1252,12 +1272,20 @@ namespace Orts.Simulation.RollingStocks
                 PantographPressedTesting(elapsedClockSeconds);
                 HVPressedTesting(elapsedClockSeconds);
                 AuxAirConsumption(elapsedClockSeconds);                
-                FaultByPlayer(elapsedClockSeconds);
+                FaultByPlayer(elapsedClockSeconds);                
+                SetElectricControlUnitParameters();
 
                 if (PowerUnit)
                 {
-                    Simulator.DataPantographVoltageV = PantographVoltageV;
+                    Simulator.DataPantographVoltageV = PantographVoltageV;                                                            
                 }
+                if (IsLeadLocomotive())
+                {                    
+                    Simulator.DataSwitchingVoltageMode = SwitchingVoltageMode;
+                }
+                if (AcceptMUSignals)
+                    SwitchingVoltageMode = Simulator.DataSwitchingVoltageMode;
+                
 
                 // Nastavení pro plně oživenou lokomotivu
                 if (LocoReadyToGo && BrakeSystem.IsAirFull)
@@ -1370,12 +1398,12 @@ namespace Orts.Simulation.RollingStocks
         }
 
         // Icik
-        // Nastaví parametry pro Slave (řídící vůz)
+        // Nastaví parametry pro řídící vůz
         public void SetElectricControlUnitParameters()
         {            
             if (ControlUnit)
             {
-                PantographVoltageV = Simulator.DataPantographVoltageV;
+                PantographVoltageV = Simulator.DataPantographVoltageV;                               
             }
         }
 
@@ -2171,10 +2199,7 @@ namespace Orts.Simulation.RollingStocks
         }
 
         public override float GetDataOf(CabViewControl cvc)
-        {
-            // Icik
-            SetElectricControlUnitParameters();
-
+        {            
             float data = 0;
 
             switch (cvc.ControlType)
