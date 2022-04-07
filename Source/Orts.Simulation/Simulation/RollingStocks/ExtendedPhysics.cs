@@ -265,6 +265,8 @@ namespace Orts.Simulation.RollingStocks
             OverridenControllerVolts = inf.ReadSingle();
         }
 
+        protected bool controlUnitInTrain = false;
+        protected bool controlUnitChecked = false;
         public void Update(float elapsedClockSeconds)
         {
             if (extendedDynamicBrake == null)
@@ -283,6 +285,28 @@ namespace Orts.Simulation.RollingStocks
                 Locomotive.ControllerVolts = OverridenControllerVolts = 0;
             if (!Locomotive.IsPlayerTrain)
                 return;
+            else if (Locomotive.PowerOn && !controlUnitChecked) // do this only once
+            {
+                controlUnitChecked = true;
+                foreach (TrainCar tc in Locomotive.Train.Cars)
+                {
+                    if (tc is MSTSLocomotive)
+                    {
+                        MSTSLocomotive loco = (MSTSLocomotive)tc;
+                        if (loco.ControlUnit)
+                            controlUnitInTrain = true;
+                    }
+                }
+            }
+
+            if (controlUnitInTrain && !Locomotive.IsLeadLocomotive())
+            {
+                if (Locomotive.ThrottlePercent > 0)
+                {
+                    Locomotive.ControllerVolts = OverridenControllerVolts = Locomotive.ThrottlePercent / 10;
+                }
+            }
+
             if (Bar.FromPSI(Locomotive.BrakeSystem.BrakeLine1PressurePSI) < 4.98 && Locomotive.DynamicBrakePercent < 0.1f)
                 Locomotive.ControllerVolts = 0;
 
