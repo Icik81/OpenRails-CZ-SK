@@ -506,7 +506,7 @@ namespace Orts.Viewer3D
         /// Desired max gain at max distance for OpenAL inverse distance model
         /// </summary>
         //public const float GainAtMaxDistance = 0.025f;
-        public const float GainAtMaxDistance = 0.010f;
+        public const float GainAtMaxDistance = 0.025f;
 
         // Icik
         /// <summary>
