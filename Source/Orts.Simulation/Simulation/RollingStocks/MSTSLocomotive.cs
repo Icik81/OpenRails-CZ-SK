@@ -4206,6 +4206,9 @@ namespace Orts.Simulation.RollingStocks
                     case 0:                        
                         if (DynamicBrakeForceCurvesDC != null)
                             f = DynamicBrakeForceCurvesDC.Get(.01f * DynamicBrakePercent, AbsTractionSpeedMpS);
+                        else
+                            if (DynamicBrakeForceCurves != null)
+                            f = DynamicBrakeForceCurves.Get(.01f * DynamicBrakePercent, AbsTractionSpeedMpS);
                         break;
                     case 1:
                         if (DynamicBrakeForceCurves != null)
@@ -4214,6 +4217,9 @@ namespace Orts.Simulation.RollingStocks
                     case 2:
                         if (DynamicBrakeForceCurvesAC != null)
                             f = DynamicBrakeForceCurvesAC.Get(.01f * DynamicBrakePercent, AbsTractionSpeedMpS);
+                        else
+                            if (DynamicBrakeForceCurves != null)
+                            f = DynamicBrakeForceCurves.Get(.01f * DynamicBrakePercent, AbsTractionSpeedMpS);
                         break;
                 }
                 f = f * UiPowerLose;
@@ -4634,6 +4640,12 @@ namespace Orts.Simulation.RollingStocks
                                         if (TractiveForceN < 0 && !TractiveForceCurvesDC.AcceptsNegativeValues())
                                             TractiveForceN = 0;
                                     }
+                                    else
+                                    {
+                                        TractiveForceN = TractiveForceCurves.Get(t, AbsTractionSpeedMpS) * (1 - PowerReduction);
+                                        if (TractiveForceN < 0 && !TractiveForceCurves.AcceptsNegativeValues())
+                                            TractiveForceN = 0;
+                                    }
                                     break;
                                 case 1:
                                     if (TractiveForceCurves != null)
@@ -4648,6 +4660,12 @@ namespace Orts.Simulation.RollingStocks
                                     {
                                         TractiveForceN = TractiveForceCurvesAC.Get(t, AbsTractionSpeedMpS) * (1 - PowerReduction);
                                         if (TractiveForceN < 0 && !TractiveForceCurvesAC.AcceptsNegativeValues())
+                                            TractiveForceN = 0;
+                                    }
+                                    else
+                                    {
+                                        TractiveForceN = TractiveForceCurves.Get(t, AbsTractionSpeedMpS) * (1 - PowerReduction);
+                                        if (TractiveForceN < 0 && !TractiveForceCurves.AcceptsNegativeValues())
                                             TractiveForceN = 0;
                                     }
                                     break;
@@ -8353,6 +8371,9 @@ namespace Orts.Simulation.RollingStocks
             NumberChoice++;
             if (NumberChoice > 3)
                 NumberChoice = 1;
+            SwitchingVoltageMode = 1;
+            SwitchingVoltageMode_OffAC = false;
+            SwitchingVoltageMode_OffDC = false;
             switch (NumberChoice)
             {
                 case 1:
@@ -8367,9 +8388,14 @@ namespace Orts.Simulation.RollingStocks
                     {
                         case 3000:
                             SwitchingVoltageMode = 0;
+                            LocomotivePowerVoltage = 3000;
+                            SwitchingVoltageMode_OffDC = true;
+
                             break;
                         case 25000:
                             SwitchingVoltageMode = 2;
+                            LocomotivePowerVoltage = 25000;
+                            SwitchingVoltageMode_OffAC = true;
                             break;
                     }                                            
                     break;
