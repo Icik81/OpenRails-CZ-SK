@@ -1277,7 +1277,7 @@ namespace Orts.Simulation.RollingStocks
 
                 if (PowerUnit)
                 {
-                    Simulator.DataPantographVoltageV = PantographVoltageV;                                                            
+                    Simulator.DataPantographVoltageV = PantographVoltageV;
                 }
                 if (IsLeadLocomotive())
                 {                    
@@ -1403,7 +1403,16 @@ namespace Orts.Simulation.RollingStocks
         {            
             if (ControlUnit)
             {
-                PantographVoltageV = Simulator.DataPantographVoltageV;                               
+                PantographVoltageV = Simulator.DataPantographVoltageV;                      
+                switch (SwitchingVoltageMode)
+                {
+                    case 0:
+                        VoltageDC = PantographVoltageV;
+                        break;
+                    case 2:
+                        VoltageAC = PantographVoltageV;
+                        break;
+                }
             }
         }
 
@@ -1619,7 +1628,7 @@ namespace Orts.Simulation.RollingStocks
             float I_MaxPantographCurrent = MaxCurrentA * 0.60f; // Maximální zátěž na jeden sběrač 60% maxima proudu
             if (Pantographs[1].State == PantographState.Up && Pantographs[2].State == PantographState.Up)
                 I_PantographCurrent /= 2;
-            if (I_PantographCurrent > I_MaxPantographCurrent && TractiveForceN > 0.80f * MaxForceN)
+            if (I_PantographCurrent > I_MaxPantographCurrent && Math.Abs(TractiveForceN) > 0.80f * MaxForceN)
             {
                 int I_PantographCurrentToleranceTimeInfo = 10 - (int)I_PantographCurrentToleranceTime;
                 Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Příliš velký proud na jeden sběrač - použij i druhý sběrač! (" + I_PantographCurrentToleranceTimeInfo + ")"));
