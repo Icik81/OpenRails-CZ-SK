@@ -506,14 +506,14 @@ namespace Orts.Viewer3D
         /// Desired max gain at max distance for OpenAL inverse distance model
         /// </summary>
         //public const float GainAtMaxDistance = 0.025f;
-        public const float GainAtMaxDistance = 0.020f;
+        public const float GainAtMaxDistance = 0.025f;
 
         // Icik
         /// <summary>
         /// Below this distance there is no attenuation. Used by OpenAL inverse distance model
         /// </summary>
         //public const float ReferenceDistanceM = 8f;
-        public const float ReferenceDistanceM = 10f;
+        public const float ReferenceDistanceM = 8f;
 
         /// <summary>
         /// Sound attenuation factor. Calculated to achieve goal set by <see cref="GainAtMaxDistance"/>
