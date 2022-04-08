@@ -8358,16 +8358,25 @@ namespace Orts.Simulation.RollingStocks
                 case 1:
                     LocomotivePowerVoltage = 25000;
                     MultiSystemEngine = false;
-                    Simulator.Confirmer.Information("Systém napájení změněn na 25kV.");
+                    Simulator.Confirmer.Information("Systém napájení změněn na 25kV.");                    
                     break;
                 case 2:
                     MultiSystemEngine = true;
                     Simulator.Confirmer.Information("Systém napájení změněn na 3kV + 25kV.");
+                    switch (RouteVoltageV)
+                    {
+                        case 3000:
+                            SwitchingVoltageMode = 0;
+                            break;
+                        case 25000:
+                            SwitchingVoltageMode = 2;
+                            break;
+                    }                                            
                     break;
                 case 3:
                     LocomotivePowerVoltage = 3000;
                     MultiSystemEngine = false;
-                    Simulator.Confirmer.Information("Systém napájení byl změněn na 3kV.");
+                    Simulator.Confirmer.Information("Systém napájení byl změněn na 3kV.");                    
                     break;
             }                            
         }
