@@ -771,8 +771,8 @@ namespace Orts.Simulation.RollingStocks
                 // Blokování pantografu u jednosystémových lokomotiv při vypnutém HV
                 if (!MultiSystemEngine && (IsLeadLocomotive() || Simulator.GameTime > 1))
                 {
-                    // Definice default provozního napájení lokomotivy 25kV
-                    if (LocomotivePowerVoltage == 0) LocomotivePowerVoltage = 25000; //Default pro lokomotivy bez udání napětí
+                    // Definice default provozního napájení lokomotivy
+                    if (LocomotivePowerVoltage == 0) LocomotivePowerVoltage = RouteVoltageV; //Default pro lokomotivy bez udání napětí
 
                     // Stisknutí hříbku pro přerušení napájení, vypne HV a shodí sběrače
                     if (BreakPowerButton)
@@ -1183,14 +1183,11 @@ namespace Orts.Simulation.RollingStocks
             {
                 HVOff = false;
                 SignalEvent(PowerSupplyEvent.OpenCircuitBreaker);
-                if (AcceptMUSignals)
+                foreach (TrainCar car in Train.Cars)
                 {
-                    foreach (TrainCar car in Train.Cars)
+                    if (car is MSTSElectricLocomotive && car.AcceptMUSignals)
                     {
-                        if (car is MSTSElectricLocomotive)
-                        {
-                            car.SignalEvent(PowerSupplyEvent.OpenCircuitBreaker);
-                        }
+                        car.SignalEvent(PowerSupplyEvent.OpenCircuitBreaker);
                     }
                 }
             }
@@ -1198,14 +1195,11 @@ namespace Orts.Simulation.RollingStocks
             {
                 HVOn = false;
                 SignalEvent(PowerSupplyEvent.CloseCircuitBreaker);
-                if (AcceptMUSignals)
+                foreach (TrainCar car in Train.Cars)
                 {
-                    foreach (TrainCar car in Train.Cars)
+                    if (car is MSTSElectricLocomotive && car.AcceptMUSignals)
                     {
-                        if (car is MSTSElectricLocomotive)
-                        {
-                            car.SignalEvent(PowerSupplyEvent.CloseCircuitBreaker);
-                        }
+                        car.SignalEvent(PowerSupplyEvent.CloseCircuitBreaker);
                     }
                 }
             }
@@ -1265,10 +1259,11 @@ namespace Orts.Simulation.RollingStocks
             // Icik            
             EndAIVoltageChoice:
             SetAIPantoDown(elapsedClockSeconds);
-            UnderVoltageProtection(elapsedClockSeconds);
-            
+            UnderVoltageProtection(elapsedClockSeconds);            
+
             if (IsPlayerTrain)
             {
+                RouteVoltageVInfo = RouteVoltageV;
                 PantographPressedTesting(elapsedClockSeconds);
                 HVPressedTesting(elapsedClockSeconds);
                 AuxAirConsumption(elapsedClockSeconds);                
@@ -1392,16 +1387,21 @@ namespace Orts.Simulation.RollingStocks
             if (PowerUnit)
             {
                 Simulator.DataPantographVoltageV = PantographVoltageV;
+                Simulator.DataPSPantographVoltageV = PowerSupply.PantographVoltageV;
             }
             if (IsLeadLocomotive())
             {
                 Simulator.DataSwitchingVoltageMode = SwitchingVoltageMode;
                 Simulator.DataBreakPowerButton = BreakPowerButton;
+                if (!MultiSystemEngine)
+                    Simulator.DataLocomotivePowerVoltage = LocomotivePowerVoltage;
             }
             if (AcceptMUSignals && !IsLeadLocomotive())
             {
                 SwitchingVoltageMode = Simulator.DataSwitchingVoltageMode;
                 BreakPowerButton = Simulator.DataBreakPowerButton;
+                if (!MultiSystemEngine)
+                    LocomotivePowerVoltage = Simulator.DataLocomotivePowerVoltage;
                 switch (SwitchingVoltageMode)
                 {
                     case 0:
@@ -1421,6 +1421,7 @@ namespace Orts.Simulation.RollingStocks
             if (ControlUnit)
             {
                 PantographVoltageV = Simulator.DataPantographVoltageV;
+                PowerSupply.PantographVoltageV = Simulator.DataPSPantographVoltageV;
                 switch (SwitchingVoltageMode)
                 {
                     case 0:
@@ -1659,8 +1660,7 @@ namespace Orts.Simulation.RollingStocks
             // Penalizace za zvednutí sběrače na špatném napěťovém systému
             if (PantographFaultByVoltageChange)
             {
-                PantographVoltageV = PowerSupply.PantographVoltageV;
-                RouteVoltageV = 1;
+                PantographVoltageV = PowerSupply.PantographVoltageV;                
                 int FaultByPlayerPenaltyTimeInfo = 30 - (int)FaultByPlayerPenaltyTime;
                 FaultByPlayerPenaltyTime += elapsedClockSeconds;
                 Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Poškodil si zdvihnutým pantografem lokomotivu! (" + FaultByPlayerPenaltyTimeInfo + ")"));
@@ -2614,9 +2614,17 @@ namespace Orts.Simulation.RollingStocks
 
             // Icik
             if (PowerUnit)
-                status.AppendFormat("{0}", Simulator.Catalog.GetString("Hnací vůz"));
+            {
+                status.AppendFormat("{0}\t\t", Simulator.Catalog.GetString("Hnací vůz"));
+                status.AppendFormat("{0}", Simulator.Catalog.GetString(MathHelper.Clamp(PantographVoltageV - 1, 0, RouteVoltageV * 1.2f) + "V"));
+                //status.AppendFormat("{0}", Simulator.Catalog.GetString("PSPantoVoltage: " + PowerSupply.PantographVoltageV));
+            }
             if (ControlUnit)
-                status.AppendFormat("{0}", Simulator.Catalog.GetString("Řídící vůz"));
+            {
+                status.AppendFormat("{0}\t\t", Simulator.Catalog.GetString("Řídící vůz"));
+                status.AppendFormat("{0}", Simulator.Catalog.GetString(MathHelper.Clamp(PantographVoltageV - 1, 0, RouteVoltageV * 1.2f) + "V"));
+                //status.AppendFormat("{0}", Simulator.Catalog.GetString("PSPantoVoltage: " + PowerSupply.PantographVoltageV));
+            }
 
             if (IsSteamHeatFitted && Train.PassengerCarsNumber > 0 && this.IsLeadLocomotive() && Train.CarSteamHeatOn)
             {

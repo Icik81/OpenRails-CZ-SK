@@ -763,7 +763,7 @@ namespace Orts.Viewer3D.Popups
             hudWindowSteamLocoLead = LocomotiveID.Count == 1 && IsSteamLocomotive ? true : false;
 
             //PlayerLoco data to display
-            statusHeader.Add(String.Format("{8}\t{0}\t{4}\t{1}\t{5:F0}%\t{2}\t{6:F0}%\t{3}\t\t{7}\n",
+            statusHeader.Add(String.Format("{9}\t{0}\t{4}\t{1}\t{5:F0}%\t{2}\t{6:F0}%\t{3}\t\t{7}\t\t{8}\n",
                 //0
                 Viewer.Catalog.GetString("Direction"),
                 //1
@@ -781,6 +781,8 @@ namespace Orts.Viewer3D.Popups
                 //7
                 train.MUDynamicBrakePercent >= 0 ? string.Format("{0:F0}%", train.MUDynamicBrakePercent) : Viewer.Catalog.GetString("off"),
                 //8
+                Viewer.PlayerLocomotive is MSTSElectricLocomotive ? string.Format("Traťové napětí: {0:F0}V", Viewer.PlayerLocomotive.RouteVoltageVInfo) : Viewer.Catalog.GetString(""),
+                //9
             Viewer.Catalog.GetString("PlayerLoco")
             //Add new Header data here, if adding additional column.
             ));
@@ -841,7 +843,7 @@ namespace Orts.Viewer3D.Popups
                             //15
                             car is MSTSSteamLocomotive ? Viewer.Catalog.GetString("") :
                             car is MSTSDieselLocomotive ? Viewer.Catalog.GetString("TeplotaSM") :
-                            car is MSTSElectricLocomotive ? Viewer.Catalog.GetString("") : Viewer.Catalog.GetString(""),
+                            car is MSTSElectricLocomotive ? Viewer.Catalog.GetString("PantoNapětí") : Viewer.Catalog.GetString(""),
                             //16
                             car is MSTSSteamLocomotive ? Viewer.Catalog.GetString("") :
                             car is MSTSDieselLocomotive ? Viewer.Catalog.GetString("TlakOlejSM") :
@@ -849,7 +851,7 @@ namespace Orts.Viewer3D.Popups
                             //17
                             car is MSTSSteamLocomotive ? Viewer.Catalog.GetString("") :
                             car is MSTSDieselLocomotive ? Viewer.Catalog.GetString("TypVozu") :
-                            car is MSTSElectricLocomotive ? Viewer.Catalog.GetString("") : Viewer.Catalog.GetString("")
+                            car is MSTSElectricLocomotive ? Viewer.Catalog.GetString("") : Viewer.Catalog.GetString("") 
                             //Add new Locomotive header here, if required.
                             ));
 

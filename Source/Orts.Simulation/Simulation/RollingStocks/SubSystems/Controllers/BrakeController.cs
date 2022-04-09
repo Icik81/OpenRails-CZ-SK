@@ -174,9 +174,14 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                 else
                     return Script.GetState();
             }
+            set
+            { }                     
         }
 
         float OldValue;
+
+        // Icik
+        public float DefaultBrakeValue { get; set; }
 
         public float CurrentValue { get; set; }
         public float DefaultValue { get; set; }
@@ -314,6 +319,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                     MaximumValue = stf.ReadFloat(STFReader.UNITS.None, null);
                     StepSize = stf.ReadFloat(STFReader.UNITS.None, null);
                     CurrentValue = DefaultValue = stf.ReadFloat(STFReader.UNITS.None, null);
+                    
+                    // Icik
+                    if (CurrentValue > 0) DefaultBrakeValue = CurrentValue;
+                    
                     string token = stf.ReadItem(); // s/b numnotches
                     if (string.Compare(token, "NumNotches", true) != 0) // handle error in gp38.eng where extra parameter provided before NumNotches statement 
                         stf.ReadItem();

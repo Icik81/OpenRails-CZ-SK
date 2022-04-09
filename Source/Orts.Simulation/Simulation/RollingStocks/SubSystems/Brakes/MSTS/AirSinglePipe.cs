@@ -579,13 +579,12 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             MSTSLocomotive loco = Car as MSTSLocomotive;
             if (loco != null)
             {
-                loco.MainResPressurePSI = loco.MaxMainResPressurePSI;
-                
+                loco.MainResPressurePSI = loco.MaxMainResPressurePSI;                
                 if (loco.AuxCompressor)
-                    loco.AuxResPressurePSI = loco.MaxAuxResPressurePSI;
-                
+                    loco.AuxResPressurePSI = loco.MaxAuxResPressurePSI;                
                 if (loco.HandBrakePresent)
                     HandbrakePercent = 0;
+                loco.TrainBrakeController.SetPercent(loco.TrainBrakeController.DefaultBrakeValue * 100);
             }
         }
 

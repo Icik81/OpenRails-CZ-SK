@@ -29,6 +29,7 @@ using Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS;
 using Orts.Simulation.Signalling;
 using Orts.Simulation.Timetables;
 using ORTS.Common;
+using ORTS.Scripting.Api;
 using ORTS.Settings;
 using System;
 using System.Collections.Generic;
@@ -182,11 +183,12 @@ namespace Orts.Simulation
         public float DataMaxForceN;
         public float DataDynamicBrakeMaxCurrentA;
         public float DataPantographVoltageV;
+        public float DataPSPantographVoltageV;
         public int DataSwitchingVoltageMode;
         public float DataDynamicBrakeForceN;
         public float DataMaxDynamicBrakeForceN;
         public bool DataBreakPowerButton;
-
+        public float DataLocomotivePowerVoltage;
 
         public List<PowerSupplyStation> powerSupplyStations;
         public List<VoltageChangeMarker> voltageChangeMarkers;

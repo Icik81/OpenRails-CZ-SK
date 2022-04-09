@@ -3176,9 +3176,9 @@ namespace Orts.Simulation.RollingStocks
                             }
 
                             MSGHeatingCycle++;
-                            if (MSGHeatingCycle > 1000 && car.WagonTemperature > 32)
+                            if (MSGHeatingCycle > 1000 && car.WagonTemperature > 35)
                             {                                
-                                if (car.WagonType == WagonTypes.Engine && !car.HasPassengerCapacity && WagonTemperature > 32)
+                                if (car.WagonType == WagonTypes.Engine && !car.HasPassengerCapacity && WagonTemperature > 35)
                                     Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Je ti horko!"));
                                 else
                                     if (car.PassengerList.Count > 0)
