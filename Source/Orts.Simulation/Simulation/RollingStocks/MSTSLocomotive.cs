@@ -3958,9 +3958,13 @@ namespace Orts.Simulation.RollingStocks
                 RDSTBreakerType();
                 if (Pantograph4Enable) TogglePantograph4Switch();
                 if (Pantograph3Enable) TogglePantograph3Switch();
-                ToggleHV2Switch();
-                ToggleHV3Switch();
-                ToggleHV5Switch();                
+
+                if (!AcceptMUSignals || IsLeadLocomotive())
+                {
+                    ToggleHV2Switch();
+                    ToggleHV3Switch();
+                    ToggleHV5Switch();
+                }
                 EDBCancelByEngineBrake();
                 EDBCancelByOL3BailOff();
                 PowerOn_Filter(elapsedClockSeconds);

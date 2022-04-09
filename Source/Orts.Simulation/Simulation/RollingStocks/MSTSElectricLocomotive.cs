@@ -1273,19 +1273,7 @@ namespace Orts.Simulation.RollingStocks
                 HVPressedTesting(elapsedClockSeconds);
                 AuxAirConsumption(elapsedClockSeconds);                
                 FaultByPlayer(elapsedClockSeconds);                
-                SetElectricControlUnitParameters();
-
-                if (PowerUnit)
-                {
-                    Simulator.DataPantographVoltageV = PantographVoltageV;
-                }
-                if (IsLeadLocomotive())
-                {                    
-                    Simulator.DataSwitchingVoltageMode = SwitchingVoltageMode;
-                }
-                if (AcceptMUSignals)
-                    SwitchingVoltageMode = Simulator.DataSwitchingVoltageMode;
-                
+                MUCableCommunication();
 
                 // Nastavení pro plně oživenou lokomotivu
                 if (LocoReadyToGo && BrakeSystem.IsAirFull)
@@ -1398,12 +1386,41 @@ namespace Orts.Simulation.RollingStocks
         }
 
         // Icik
-        // Nastaví parametry pro řídící vůz
-        public void SetElectricControlUnitParameters()
-        {            
+        // Komunikace po kabelu mezi spojenými jednotkami
+        public void MUCableCommunication()
+        {
+            if (PowerUnit)
+            {
+                Simulator.DataPantographVoltageV = PantographVoltageV;
+            }
+            if (IsLeadLocomotive())
+            {
+                Simulator.DataSwitchingVoltageMode = SwitchingVoltageMode;
+                Simulator.DataBreakPowerButton = BreakPowerButton;
+            }
+            if (AcceptMUSignals && !IsLeadLocomotive())
+            {
+                SwitchingVoltageMode = Simulator.DataSwitchingVoltageMode;
+                BreakPowerButton = Simulator.DataBreakPowerButton;
+                switch (SwitchingVoltageMode)
+                {
+                    case 0:
+                        SwitchingVoltageMode_OffDC = true;
+                        SwitchingVoltageMode_OffAC = false;
+                        break;
+                    case 1:
+                        SwitchingVoltageMode_OffDC = false;
+                        SwitchingVoltageMode_OffAC = false;
+                        break;
+                    case 2:
+                        SwitchingVoltageMode_OffDC = true;
+                        SwitchingVoltageMode_OffAC = false;
+                        break;
+                }
+            }
             if (ControlUnit)
             {
-                PantographVoltageV = Simulator.DataPantographVoltageV;                      
+                PantographVoltageV = Simulator.DataPantographVoltageV;
                 switch (SwitchingVoltageMode)
                 {
                     case 0:

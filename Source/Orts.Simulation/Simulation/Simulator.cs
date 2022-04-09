@@ -185,6 +185,7 @@ namespace Orts.Simulation
         public int DataSwitchingVoltageMode;
         public float DataDynamicBrakeForceN;
         public float DataMaxDynamicBrakeForceN;
+        public bool DataBreakPowerButton;
 
 
         public List<PowerSupplyStation> powerSupplyStations;
