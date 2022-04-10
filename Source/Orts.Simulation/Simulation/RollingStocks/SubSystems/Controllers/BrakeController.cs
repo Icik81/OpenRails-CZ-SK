@@ -232,6 +232,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
 
             // Iciks
             RunningReleaseRatePSIpS = controller.RunningReleaseRatePSIpS;
+            DefaultBrakeValue = controller.DefaultBrakeValue;
+            DefaultLapBrakeValue = controller.DefaultLapBrakeValue;
+            DefaultNeutralBrakeValue = controller.DefaultNeutralBrakeValue;
 
             CurrentValue = controller.CurrentValue;
             DefaultValue = controller.DefaultValue;
