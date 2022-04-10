@@ -182,6 +182,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
 
         // Icik
         public float DefaultBrakeValue { get; set; }
+        public float DefaultLapBrakeValue { get; set; }
+        public float DefaultNeutralBrakeValue { get; set; }
 
         public float CurrentValue { get; set; }
         public float DefaultValue { get; set; }
@@ -334,6 +336,19 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                             float value = stf.ReadFloat(STFReader.UNITS.None, null);
                             int smooth = stf.ReadInt(null);
                             string type = stf.ReadString();
+
+                            // Icik
+                            if (type == "TrainBrakesControllerHoldLappedStart")
+                            {
+                                if (DefaultLapBrakeValue == 0)
+                                    DefaultLapBrakeValue = value;
+                            }
+                            if (type == "TrainBrakesControllerNeutralhandleOffStart")
+                            {
+                                if (DefaultNeutralBrakeValue == 0)
+                                    DefaultNeutralBrakeValue = value;
+                            }                            
+
                             Notches.Add(new MSTSNotch(value, smooth, type, stf));
                             if (type != ")") stf.SkipRestOfBlock();
                         }),

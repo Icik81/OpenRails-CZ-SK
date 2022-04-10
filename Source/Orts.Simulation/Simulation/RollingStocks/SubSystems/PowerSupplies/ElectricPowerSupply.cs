@@ -255,35 +255,37 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                 case PantographState.Up:
 
                     // Icik
-                    // Trakce na 25kV naměří napětí hned                                           
-                    if (Locomotive.RouteVoltageV == 25000)
-                        SetPantographVoltageV(PantographFilter.Filter(LineVoltageV(), elapsedClockSeconds));
-
-                    // Trakce na 3kV po přepnutí na DC naběhne napětí, jednosystémová lokomotiva naměří napětí hned
-                    if (Locomotive.RouteVoltageV == 3000 && (Locomotive.SwitchingVoltageMode_OffDC || !Locomotive.MultiSystemEngine))
+                    if (Locomotive.IsPlayerTrain)
                     {
-                        TDC += elapsedClockSeconds;
-                        if (TDC > 0.5f)
+                        // Trakce na 25kV naměří napětí hned                                           
+                        if (Locomotive.RouteVoltageV == 25000)
                             SetPantographVoltageV(PantographFilter.Filter(LineVoltageV(), elapsedClockSeconds));
+
+                        // Trakce na 3kV po přepnutí na DC naběhne napětí, jednosystémová lokomotiva naměří napětí hned
+                        if (Locomotive.RouteVoltageV == 3000 && (Locomotive.SwitchingVoltageMode_OffDC || !Locomotive.MultiSystemEngine))
+                        {
+                            TDC += elapsedClockSeconds;
+                            if (TDC > 0.5f)
+                                SetPantographVoltageV(PantographFilter.Filter(LineVoltageV(), elapsedClockSeconds));
+                        }
+
+                        // Napětí po zdvihu pantografu na filtru DC 3kV
+                        if (Locomotive.RouteVoltageV == 3000 && Locomotive.preVoltageDC < Locomotive.RouteVoltageV)
+                            Locomotive.preVoltageDC += 100;
+                        else
+                        if (Locomotive.preVoltageDC > 1)
+                            Locomotive.preVoltageDC -= 100;
+
+                        // Trakce na 3kV spadne napětí po odpadu HV
+                        if (!Locomotive.MultiSystemEngine && Locomotive.RouteVoltageV == 3000 && Locomotive.PowerSupply.CircuitBreaker.State == CircuitBreakerState.Open && Locomotive.PantographVoltageV == 1
+                            || Locomotive.MultiSystemEngine && Locomotive.RouteVoltageV == 3000 && !Locomotive.SwitchingVoltageMode_OffDC)
+                        {
+                            SetCurrentState(PowerSupplyState.PowerOff);
+                            SetCurrentAuxiliaryState(PowerSupplyState.PowerOff);
+                            SetPantographVoltageV(PantographFilter.Filter(0.0f, elapsedClockSeconds));
+                            SetFilterVoltageV(VoltageFilter.Filter(0.0f, elapsedClockSeconds));
+                        }
                     }                    
-
-                    // Napětí po zdvihu pantografu na filtru DC 3kV
-                    if (Locomotive.RouteVoltageV == 3000 && Locomotive.preVoltageDC < Locomotive.RouteVoltageV)                       
-                        Locomotive.preVoltageDC += 100;
-                    else
-                    if (Locomotive.preVoltageDC > 1)
-                        Locomotive.preVoltageDC -= 100;
-
-                    // Trakce na 3kV spadne napětí po odpadu HV
-                    if (!Locomotive.MultiSystemEngine && Locomotive.RouteVoltageV == 3000 && Locomotive.PowerSupply.CircuitBreaker.State == CircuitBreakerState.Open && Locomotive.PantographVoltageV == 1
-                        || Locomotive.MultiSystemEngine && Locomotive.RouteVoltageV == 3000 && !Locomotive.SwitchingVoltageMode_OffDC)
-                    {
-                        SetCurrentState(PowerSupplyState.PowerOff);
-                        SetCurrentAuxiliaryState(PowerSupplyState.PowerOff);
-                        SetPantographVoltageV(PantographFilter.Filter(0.0f, elapsedClockSeconds));
-                        SetFilterVoltageV(VoltageFilter.Filter(0.0f, elapsedClockSeconds));
-                    }
-                                        
                     switch (CurrentCircuitBreakerState())
                     {
                         case CircuitBreakerState.Open:

@@ -584,7 +584,15 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     loco.AuxResPressurePSI = loco.MaxAuxResPressurePSI;                
                 if (loco.HandBrakePresent)
                     HandbrakePercent = 0;
-                loco.TrainBrakeController.SetPercent(loco.TrainBrakeController.DefaultBrakeValue * 100);
+                
+                if (loco.TrainBrakeController.DefaultLapBrakeValue > 0)
+                    loco.TrainBrakeController.SetPercent(loco.TrainBrakeController.DefaultLapBrakeValue * 100);                
+                else
+                    if (loco.TrainBrakeController.DefaultNeutralBrakeValue > 0)
+                        loco.TrainBrakeController.SetPercent(loco.TrainBrakeController.DefaultNeutralBrakeValue * 100);
+                else
+                    if (loco.TrainBrakeController.DefaultBrakeValue > 0)
+                        loco.TrainBrakeController.SetPercent(loco.TrainBrakeController.DefaultBrakeValue * 100);
             }
         }
 
