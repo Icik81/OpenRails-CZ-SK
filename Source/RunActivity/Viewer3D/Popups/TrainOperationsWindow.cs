@@ -62,11 +62,12 @@ namespace Orts.Viewer3D.Popups
                     var carLabel = new TrainOperationsLabel(textHeight * 6, textHeight, Owner.Viewer, car, carPosition, LabelAlignment.Center);
                     carLabel.Click += new Action<Control, Point>(carLabel_Click);
 
-                    if (car == PlayerTrain.LeadLocomotive) carLabel.Color = Color.Green;
+                    if (car == PlayerTrain.LeadLocomotive) carLabel.Color = Color.Green;                                        
                     
                     // Icik
                     //if (car.BrakesStuck || ((car is MSTSLocomotive) && (car as MSTSLocomotive).PowerReduction > 0)) carLabel.Color = Color.Red;
                     if (car.BrakesStuck || (car.BrakeSystem.CarHasProblemWithBrake)) carLabel.Color = Color.Red;
+                    if (car.SelectedCar) carLabel.Color = Color.Yellow;
 
                     scrollbox.Add(carLabel);
                     if (car != PlayerTrain.Cars.Last())
@@ -79,7 +80,7 @@ namespace Orts.Viewer3D.Popups
 
         void carLabel_Click(Control arg1, Point arg2)
         {
-
+            
         }
 
         public override void PrepareFrame(ElapsedTime elapsedTime, bool updateFull)
@@ -89,7 +90,9 @@ namespace Orts.Viewer3D.Popups
             if (updateFull)
             {
                 if (PlayerTrain != Owner.Viewer.PlayerTrain || Owner.Viewer.PlayerTrain.Cars.Count != LastPlayerTrainCars || (Owner.Viewer.PlayerLocomotive != null &&
-                    LastPlayerLocomotiveFlippedState != Owner.Viewer.PlayerLocomotive.Flipped))
+                    LastPlayerLocomotiveFlippedState != Owner.Viewer.PlayerLocomotive.Flipped)
+                    // Icik
+                    || Owner.Viewer.Simulator.GameTimeCyklus10 == 10)
                 {
                     PlayerTrain = Owner.Viewer.PlayerTrain;
                     LastPlayerTrainCars = Owner.Viewer.PlayerTrain.Cars.Count;
@@ -138,17 +141,26 @@ namespace Orts.Viewer3D.Popups
 
         public TrainOperationsLabel(int x, int y, Viewer viewer, TrainCar car, int carPosition, LabelAlignment alignment)
             : base(x, y, "", alignment)
-        {
+        {            
             Viewer = viewer;
             CarPosition = carPosition;
-            Text = car.CarID;
+            Text = car.CarID;            
             Click += new Action<Control, Point>(TrainOperationsLabel_Click);
+
+            // Icik
+            if (!Viewer.CarOperationsWindow.Visible)
+                car.SelectedCar = false;
         }
 
         void TrainOperationsLabel_Click(Control arg1, Point arg2)
         {
             Viewer.CarOperationsWindow.CarPosition = CarPosition;
             Viewer.CarOperationsWindow.Visible = true;
+
+            // Icik
+            foreach (var car in Viewer.PlayerTrain.Cars)            
+                car.SelectedCar = false;            
+            Viewer.PlayerTrain.Cars[CarPosition].SelectedCar = true;
         }
     }
 }

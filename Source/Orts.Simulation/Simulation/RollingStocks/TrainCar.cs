@@ -351,6 +351,7 @@ namespace Orts.Simulation.RollingStocks
         public bool PowerUnit;
         public bool ControlUnit;
         public float RouteVoltageVInfo;
+        public bool SelectedCar;
 
         public float DieselHeaterPower;
         public float DieselHeaterPower0;
