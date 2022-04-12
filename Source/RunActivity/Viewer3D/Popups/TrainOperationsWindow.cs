@@ -62,16 +62,16 @@ namespace Orts.Viewer3D.Popups
                     var carLabel = new TrainOperationsLabel(textHeight * 6, textHeight, Owner.Viewer, car, carPosition, LabelAlignment.Center);
                     carLabel.Click += new Action<Control, Point>(carLabel_Click);
 
-                    if (car == PlayerTrain.LeadLocomotive) carLabel.Color = Color.Green;                                        
-                    
+                    if (car == PlayerTrain.LeadLocomotive) carLabel.Color = Color.Green;
+
                     // Icik
                     //if (car.BrakesStuck || ((car is MSTSLocomotive) && (car as MSTSLocomotive).PowerReduction > 0)) carLabel.Color = Color.Red;
                     if (car.BrakesStuck || (car.BrakeSystem.CarHasProblemWithBrake)) carLabel.Color = Color.Red;
-                    if (car.SelectedCar) carLabel.Color = Color.Yellow;
+                    //if (car.SelectedCar) carLabel.Color = Color.Yellow;
 
                     scrollbox.Add(carLabel);
                     if (car != PlayerTrain.Cars.Last())
-                        scrollbox.Add(new TrainOperationsCoupler(0, 0, textHeight, Owner.Viewer, car, carPosition));
+                        scrollbox.Add(new TrainOperationsCoupler(0, 0, textHeight, Owner.Viewer, car, carPosition));                    
                     carPosition++;
                 }
             }
@@ -80,7 +80,7 @@ namespace Orts.Viewer3D.Popups
 
         void carLabel_Click(Control arg1, Point arg2)
         {
-            
+
         }
 
         public override void PrepareFrame(ElapsedTime elapsedTime, bool updateFull)
@@ -91,8 +91,7 @@ namespace Orts.Viewer3D.Popups
             {
                 if (PlayerTrain != Owner.Viewer.PlayerTrain || Owner.Viewer.PlayerTrain.Cars.Count != LastPlayerTrainCars || (Owner.Viewer.PlayerLocomotive != null &&
                     LastPlayerLocomotiveFlippedState != Owner.Viewer.PlayerLocomotive.Flipped)
-                    // Icik
-                    || Owner.Viewer.Simulator.GameTimeCyklus10 == 10)
+                    )
                 {
                     PlayerTrain = Owner.Viewer.PlayerTrain;
                     LastPlayerTrainCars = Owner.Viewer.PlayerTrain.Cars.Count;

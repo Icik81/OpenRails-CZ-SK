@@ -2975,7 +2975,7 @@ namespace Orts.Simulation.RollingStocks
                 {
                     VibrationSpringConstantPrimepSpS = 12f / 0.2f;
                     VibratioDampingCoefficient = 0.05f;
-                    VibrationRotationVelocityRadpS.Y += (TrackFactorY * factor * Simulator.Settings.CarVibratingLevel * VibrationIntroductionStrength * (CurrentCurveAngle / MathHelper.Clamp(CurrentCurveRadius / 200, 1, 10)) * VibrationMassKG) / x;
+                    VibrationRotationVelocityRadpS.Y += (TrackFactorY * factor * Simulator.Settings.CarVibratingLevel * VibrationIntroductionStrength * MathHelper.Clamp((CurrentCurveAngle / MathHelper.Clamp(CurrentCurveRadius / 200, 1, 10)), 0, 6) * VibrationMassKG) / x;
                 }
 
                 if (TypVibrace_3)   //Vibrace na výhybce
