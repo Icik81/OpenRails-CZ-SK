@@ -956,6 +956,13 @@ namespace Orts.Simulation
         /// Current Curve Radius value. Zero if not a curve
         /// </summary>
         /// <returns>Current Curve Radius in meters</returns>
+        public float GetCurveAngle()
+        {
+            if (trackSection == null)
+                return 0;
+
+            return trackSection.SectionCurve != null ? trackSection.SectionCurve.Angle : 0;
+        }
         public float GetCurveRadius()
         {
             if (trackSection == null)
