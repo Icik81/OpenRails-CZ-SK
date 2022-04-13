@@ -966,8 +966,8 @@ namespace Orts.Simulation
         {
             // Icik
             int PreviousCarCount = (int) drivenTrain.Cars.Count;
-            float CarCoupleSpeed = 1.0f / 3.6f; // Doťukávací rychlost pro napojení vozu
-            float CarCoupleMaxSpeed = 15 / 3.6f; // Maximální nárazová rychlost max 15km/h            
+            float CarCoupleSpeed = 2.0f / 3.6f; // Doťukávací rychlost pro napojení vozu
+            float CarCoupleMaxSpeed = 10 / 3.6f; // Maximální nárazová rychlost max 10km/h            
             
             if (HasSpeedInCoupler && Math.Abs(drivenTrain.SpeedMpS) < 1.0f)
                 HasSpeedInCoupler = false;
