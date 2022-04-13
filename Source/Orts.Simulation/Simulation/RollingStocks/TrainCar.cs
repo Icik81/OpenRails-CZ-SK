@@ -908,25 +908,25 @@ namespace Orts.Simulation.RollingStocks
             if (!BrakeSystem.BrakeCarHasStatus && WagonType != WagonTypes.Engine && WagonType != WagonTypes.Passenger && car != Train.Cars[Train.Cars.Count - 1])
             {                
                 BrakeSystem.BrakeCarHasStatus = true;
-                switch (Simulator.Random.Next(0, 150))
+                switch (Simulator.Random.Next(0, 200))
                 {                    
-                    case 50:
+                    case 150:
                         BrakeSystem.CarHasAirStuckBrake_1 = true; // Nejde odbrzdit
                         BrakeSystem.CarHasProblemWithBrake = true;
                         break;
-                    case 51:
+                    case 151:
                         BrakeSystem.CarHasAirStuckBrake_2 = true; // Nejde zabrzdit
                         BrakeSystem.CarHasProblemWithBrake = true;
                         break;
-                    case 52:
+                    case 152:
                         BrakeSystem.CarHasAirStuckBrake_3 = true; // Netěsný vůz
                         BrakeSystem.CarHasProblemWithBrake = true;
                         break;
-                    case 53:
+                    case 153:
                         BrakeSystem.CarHasMechanicStuckBrake_1 = true; // Brzdí málo
                         BrakeSystem.CarHasProblemWithBrake = true;
                         break;
-                    case 54:
+                    case 154:
                         BrakeSystem.CarHasMechanicStuckBrake_2 = true; // Je zaseklý 
                         BrakeSystem.CarHasProblemWithBrake = true;
                         break;

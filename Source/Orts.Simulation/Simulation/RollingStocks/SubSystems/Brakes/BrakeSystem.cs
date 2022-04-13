@@ -64,6 +64,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes
         public float BrakeMassEmpty;
         public float BrakeMassLoaded;
         public bool ForceWagonLoaded;
+        public string ForceBrakeMode;
         public float BrakeMassKG;
         public float BrakeMassKGRMg;
         public float CoefMode;

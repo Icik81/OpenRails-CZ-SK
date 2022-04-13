@@ -144,6 +144,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             BrakeMassEmpty = thiscopy.BrakeMassEmpty;
             BrakeMassLoaded = thiscopy.BrakeMassLoaded;
             ForceWagonLoaded = thiscopy.ForceWagonLoaded;
+            ForceBrakeMode = thiscopy.ForceBrakeMode;
             DebugKoef1 = thiscopy.DebugKoef1;
             DebugKoef2Factor = thiscopy.DebugKoef2Factor;
             DebugKoef = thiscopy.DebugKoef;
@@ -329,6 +330,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 case "wagon(brakemassempty": BrakeMassEmpty = stf.ReadFloatBlock(STFReader.UNITS.Mass, null); break;
                 case "wagon(brakemassloaded": BrakeMassLoaded = stf.ReadFloatBlock(STFReader.UNITS.Mass, null); break;
                 case "wagon(forcewagonloaded": ForceWagonLoaded = stf.ReadBoolBlock(false); break;
+                case "wagon(forcebrakemode": ForceBrakeMode = stf.ReadStringBlock("P"); break;
 
                 // Načte hodnoty napouštění a vypouštění brzdových válců lokomotivy i vozů v režimech G, P, R
                 case "wagon(maxapplicationrateg": MaxApplicationRatePSIpSG = stf.ReadFloatBlock(STFReader.UNITS.PressureRateDefaultPSIpS, null); break;
@@ -423,7 +425,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     break;
                 case "engine(ortsauxpowerondelay": AuxPowerOnDelayS = stf.ReadFloatBlock(STFReader.UNITS.Time, 10); break;
                 case "engine(olbailofftype": OLBailOffType = stf.ReadStringBlock("OL3"); break;
-                case "engine(ol2bailofflimitpressure": OLBailOffLimitPressurePSI = stf.ReadFloatBlock(STFReader.UNITS.PressureDefaultPSI, null); break;
+                case "engine(ol2bailofflimitpressure": OLBailOffLimitPressurePSI = stf.ReadFloatBlock(STFReader.UNITS.PressureDefaultPSI, null); break;                
             }
         }
 
@@ -745,6 +747,37 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     TwoPipesConnectionText = "odpojeny";
                 }
 
+                if (ForceBrakeMode != null)
+                {
+                    switch (ForceBrakeMode)
+                    {
+                        case "G":
+                            if ((Car as MSTSWagon).WagonType == TrainCar.WagonTypes.Engine || (Car as MSTSWagon).WagonType == TrainCar.WagonTypes.Freight)
+                            {
+                                BrakeCarMode = 0;
+                                BrakeCarModeText = ForceBrakeMode;
+                            }
+                            break;
+                        case "P":
+                            BrakeCarMode = 1;
+                            BrakeCarModeText = ForceBrakeMode;
+                            break;
+                        case "R":
+                            if ((Car as MSTSWagon).WagonType == TrainCar.WagonTypes.Engine || (Car as MSTSWagon).WagonType == TrainCar.WagonTypes.Passenger)
+                            {
+                                BrakeCarMode = 2;
+                                BrakeCarModeText = ForceBrakeMode;
+                            }
+                            break;
+                        case "R+MG":
+                            if ((Car as MSTSWagon).WagonType == TrainCar.WagonTypes.Engine || (Car as MSTSWagon).WagonType == TrainCar.WagonTypes.Passenger)
+                            {
+                                BrakeCarMode = 3;
+                                BrakeCarModeText = ForceBrakeMode;
+                            }
+                            break;
+                    }                    
+                }
             }
 
             // Definice limitů proměnných pro chod nenaladěných vozidel
