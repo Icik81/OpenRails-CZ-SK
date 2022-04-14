@@ -970,7 +970,7 @@ namespace Orts.Simulation
             float CarCoupleSpeed = 3.0f / 3.6f; // Doťukávací rychlost pro napojení vozu
             float CarCoupleMaxSpeed = 10 / 3.6f; // Maximální nárazová rychlost max 10km/h            
             
-            if (HasSpeedInCoupler && Math.Abs(drivenTrain.SpeedMpS) < 1.0f)
+            if (HasSpeedInCoupler && Math.Abs(drivenTrain.SpeedMpS) < CarCoupleSpeed)
                 HasSpeedInCoupler = false;
 
             CarCoupleSpeedOvercome = false;

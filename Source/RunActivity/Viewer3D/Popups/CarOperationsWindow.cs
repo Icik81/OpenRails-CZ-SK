@@ -171,12 +171,19 @@ namespace Orts.Viewer3D.Popups
             {
                 new PowerCommand(Viewer.Log, (Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive), !(Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive).PowerOn);
                 if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive).PowerOn)
+                {
                     Viewer.Simulator.Confirmer.Information(Viewer.Catalog.GetString("Power OFF command sent"));
+                    // Icik
+                    (Viewer.PlayerTrain.Cars[CarPosition] as MSTSDieselLocomotive).StartLooseCon = false;
+                }
                 else
                 {
                     Viewer.Simulator.Confirmer.Information(Viewer.Catalog.GetString("Power ON command sent"));
+                    // Icik
                     if (Viewer.PlayerTrain.Cars[CarPosition].GetType() == typeof(MSTSElectricLocomotive))
-                        (Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive).HVOn = true;
+                        (Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive).HVOn = true;                    
+                    if (Viewer.PlayerTrain.Cars[CarPosition].GetType() == typeof(MSTSDieselLocomotive))
+                        (Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive).StartLooseCon = true;
                 }
             }
             else

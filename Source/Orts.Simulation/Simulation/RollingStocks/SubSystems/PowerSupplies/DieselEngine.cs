@@ -786,12 +786,12 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
             {                
                 // Icik
                 // Tlakování mazacího čerpadla při spouštění motoru
-                if (locomotive.StartButtonPressed && locomotive.DieselStartTime > 0 && RealRPM0 < IdleRPM)
+                if ((locomotive.StartButtonPressed || locomotive.StartLooseCon) && locomotive.DieselStartTime > 0 && RealRPM0 < IdleRPM)
                 {
                     RealRPM0 += IdleRPM / locomotive.DieselStartDelay * locomotive.Simulator.OneSecondLoop; 
                 }
                 else
-                if (!locomotive.StartButtonPressed && (EngineStatus == Status.Stopped || EngineStatus == Status.Stopping) && RealRPM0 > 0)
+                if ((!locomotive.StartButtonPressed && !locomotive.StartLooseCon) && (EngineStatus == Status.Stopped || EngineStatus == Status.Stopping) && RealRPM0 > 0)
                 {
                     RealRPM0 -= IdleRPM / locomotive.DieselStartDelay * locomotive.Simulator.OneSecondLoop * 2;
                 }
@@ -1119,7 +1119,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
             if (EngineStatus == Status.Starting)
             {
                 // Icik
-                if (locomotive.StartButtonPressed && locomotive.DieselDirection_Start)
+                if ((locomotive.StartButtonPressed || locomotive.StartLooseCon) && (locomotive.DieselDirection_Start || locomotive.StartLooseCon))
                 {
                     if ((RealRPM > (0.9f * StartingRPM)) && (RealRPM < StartingRPM))
                     {
@@ -1128,14 +1128,17 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                         ExhaustParticles = (MaxExhaust - InitialExhaust) / (0.5f * StartingRPM - StartingRPM) * (RealRPM - 0.5f * StartingRPM) + InitialExhaust;
                     }
                 }                
-                if (!locomotive.StartButtonPressed || !locomotive.DieselDirection_Start)
+                if ((!locomotive.StartButtonPressed && !locomotive.StartLooseCon) || (!locomotive.DieselDirection_Start && !locomotive.StartLooseCon))
                 {
                     locomotive.DieselEngines[0].Stop();
                     locomotive.SignalEvent(Event.StartUpMotorBreak);
                 }
-                                
-                if ((RealRPM > StartingConfirmationRPM))// && (RealRPM < 0.9f * IdleRPM))
+
+                if ((RealRPM > StartingConfirmationRPM ))// && (RealRPM < 0.9f * IdleRPM))
+                {
                     EngineStatus = Status.Running;
+                    locomotive.StartLooseCon = false;
+                }
             }
 
             if ((EngineStatus != Status.Starting) && (RealRPM == 0f))
@@ -1648,7 +1651,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
             }
 
             if ((initLevel & SettingsFlags.StartingConfirmRPM) == 0)
-            {
+            {                
                 StartingConfirmationRPM = loco.IdleRPM * 1.1f;
                 if (DieselEngineConfigured && loco.Simulator.Settings.VerboseConfigurationMessages)
                     Trace.TraceInformation("StartingConfirmRpM not found in Diesel Engine Prime Mover Configuration, set at default value = {0}", StartingConfirmationRPM);

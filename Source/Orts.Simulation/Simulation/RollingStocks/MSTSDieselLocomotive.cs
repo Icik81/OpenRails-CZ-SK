@@ -1175,12 +1175,19 @@ namespace Orts.Simulation.RollingStocks
             if (DieselEngines[0].RealDieselWaterTemperatureDeg > 50)
                 DieselStartDelayTemp = DieselStartDelay / 2;
 
+            if (StartLooseCon)
+            {
+                Battery = true;
+                PowerKey = true;
+            }
+
             // Spustí mazací čerpadlo při startu
-            if (StartButtonPressed
+            if ((StartButtonPressed || StartLooseCon)
                 && DieselEngines[0].EngineStatus == DieselEngine.Status.Stopped
                 && DieselDirection_Start
                 && Battery
-                && PowerUnit)
+                && PowerUnit
+                )
             {                                
                 if (DieselStartTime < DieselStartDelayTemp - 1)
                 {
@@ -1202,6 +1209,7 @@ namespace Orts.Simulation.RollingStocks
                         DieselEngines[0].Start();
                         DieselStartDelayDone = false;
                         SignalEvent(Event.EnginePowerOn);
+                        StartLooseCon = false;
                     }
                 }
             }
