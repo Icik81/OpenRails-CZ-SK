@@ -933,7 +933,7 @@ namespace Orts.Simulation.RollingStocks
                 if (MultiSystemEngine)
                 {
                     // Pokud nebude žádný HV aktivní
-                    if (!HV5Enable && !HV3Enable && !HV2Enable)
+                    if (!HV5Enable && !HV3Enable && !HV2Enable && !HV4Enable)
                     {
                         LocoSwitchACDC = true;                        
                     }
@@ -1704,6 +1704,12 @@ namespace Orts.Simulation.RollingStocks
                 HVOnPressedTime = 0;
                 HVOffPressedTime = 0;
             }
+            // HV4
+            if (HV4Enable && !HVOffPressedTest && !HVOnPressedTest)
+            {
+                HVOnPressedTime = 0;
+                HVOffPressedTime = 0;
+            }
             if (HVOnPressedTest)
                 HVOnPressedTime += elapsedClockSeconds;
             if (HVOffPressedTest)
@@ -2432,6 +2438,28 @@ namespace Orts.Simulation.RollingStocks
                         HV3Enable = true;
                         data = HV3Switch;
                         LocoSwitchACDC = true;
+                        break;
+                    }
+                case CABViewControlTypes.HV4:
+                    {
+                        HV4Enable = true;
+                        Pantograph3Enable = true;
+                        LocoSwitchACDC = true;
+                        switch (HV4Switch)
+                        {
+                            case -1:
+                                data = 0;
+                                break;
+                            case 0:
+                                data = 1;
+                                break;
+                            case 1:
+                                data = 2;
+                                break;
+                            case 2:
+                                data = 3;
+                                break;
+                        }
                         break;
                     }
 

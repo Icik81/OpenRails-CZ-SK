@@ -387,6 +387,7 @@ namespace Orts.Formats.Msts
         HV2,
         HV2BUTTON,
         HV3,
+        HV4,
         HV5,
         PANTOGRAPH_3_SWITCH,
         PANTOGRAPH_4_SWITCH,

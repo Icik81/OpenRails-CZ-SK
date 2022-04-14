@@ -561,6 +561,8 @@ namespace ORTS.Settings
             Commands[(int)UserCommand.ControlHV2SwitchUp] = new UserCommandKeyInput(0x18);
             Commands[(int)UserCommand.ControlHV3SwitchUp] = new UserCommandKeyInput(0x18);
             Commands[(int)UserCommand.ControlHV3SwitchDown] = new UserCommandKeyInput(0x18, KeyModifiers.Shift);
+            Commands[(int)UserCommand.ControlHV4SwitchUp] = new UserCommandKeyInput(0x18);
+            Commands[(int)UserCommand.ControlHV4SwitchDown] = new UserCommandKeyInput(0x18, KeyModifiers.Shift);
             Commands[(int)UserCommand.ControlHV5SwitchUp] = new UserCommandKeyInput(0x18);
             Commands[(int)UserCommand.ControlHV5SwitchDown] = new UserCommandKeyInput(0x18, KeyModifiers.Shift);
             Commands[(int)UserCommand.ControlPantograph3SwitchUp] = new UserCommandKeyInput(0x19);

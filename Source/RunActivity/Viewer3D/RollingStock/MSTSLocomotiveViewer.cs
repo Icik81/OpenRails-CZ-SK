@@ -220,6 +220,8 @@ namespace Orts.Viewer3D.RollingStock
             UserInputCommands.Add(UserCommand.ControlHV2SwitchUp, new Action[] { Noop, () => new ToggleHV2SwitchUpCommand(Viewer.Log) });
             UserInputCommands.Add(UserCommand.ControlHV3SwitchUp, new Action[] { Noop, () => new ToggleHV3SwitchUpCommand(Viewer.Log) });
             UserInputCommands.Add(UserCommand.ControlHV3SwitchDown, new Action[] { Noop, () => new ToggleHV3SwitchDownCommand(Viewer.Log) });
+            UserInputCommands.Add(UserCommand.ControlHV4SwitchUp, new Action[] { Noop, () => new ToggleHV4SwitchUpCommand(Viewer.Log) });
+            UserInputCommands.Add(UserCommand.ControlHV4SwitchDown, new Action[] { Noop, () => new ToggleHV4SwitchDownCommand(Viewer.Log) });
             UserInputCommands.Add(UserCommand.ControlHV5SwitchUp, new Action[] { Noop, () => new ToggleHV5SwitchUpCommand(Viewer.Log) });
             UserInputCommands.Add(UserCommand.ControlHV5SwitchDown, new Action[] { Noop, () => new ToggleHV5SwitchDownCommand(Viewer.Log) });
             UserInputCommands.Add(UserCommand.ControlPantograph3SwitchUp, new Action[] { Noop, () => new TogglePantograph3SwitchUpCommand(Viewer.Log) });
@@ -294,6 +296,42 @@ namespace Orts.Viewer3D.RollingStock
                     Locomotive.HVOffPressedTest = false;
                 }
             }
+            // Ovládání HV4 nearetované pozice
+            if (Locomotive.HV4Enable)
+            {
+                if (Locomotive.HV4Switch == 2)
+                {
+                    Locomotive.HVOnPressedTest = true;
+                }
+                if (Locomotive.HV4Switch == 2 && UserInput.IsReleased(UserCommand.ControlHV4SwitchUp))
+                {
+                    Locomotive.HV4Switch = 1;
+                    Locomotive.HVOnPressedTest = false;
+                }
+                if (Locomotive.HV4Switch == 0)
+                {
+                    Locomotive.HVOffPressedTest = true;
+                }
+                if (Locomotive.HV4Switch == 0 && UserInput.IsReleased(UserCommand.ControlHV4SwitchDown))
+                {
+                    Locomotive.HV4Switch = 1;
+                    Locomotive.HVOffPressedTest = false;
+                }
+
+                if (Locomotive.HV4Switch == 0 && UserInput.IsDown(UserCommand.ControlHV4SwitchDown) && Locomotive.HVOffPressedTime > 1.0f)
+                {
+                    Locomotive.HV4Switch = -1;                    
+                    Locomotive.HVOffPressedTest = false;
+                }
+                if (Locomotive.HV4Switch == -1 && UserInput.IsPressed(UserCommand.ControlHV4SwitchUp))
+                {
+                    Locomotive.HV4Switch = -1;
+                    Locomotive.HVOffPressedTest = false;
+                    Locomotive.HV4SwitchFullDown = true;
+                }
+
+
+            }
             // Ovládání HV5 nearetované pozice
             if (Locomotive.HV5Enable)
             {
@@ -345,8 +383,9 @@ namespace Orts.Viewer3D.RollingStock
                 }
                 if (Locomotive.Pantograph3Switch == -1 && UserInput.IsPressed(UserCommand.ControlPantograph3SwitchUp))
                 {
-                    Locomotive.Pantograph3Switch = 1;
+                    Locomotive.Pantograph3Switch = -1;
                     Locomotive.PantographOffPressedTest = false;
+                    Locomotive.Pantograph3SwitchFullDown = true;
                 }
             }
             // Ovládání tlačítka vysokotlakého švihu
@@ -2537,6 +2576,7 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.HV2:
                 case CABViewControlTypes.HV2BUTTON:
                 case CABViewControlTypes.HV3:
+                case CABViewControlTypes.HV4:
                 case CABViewControlTypes.HV5:
                 case CABViewControlTypes.PANTOGRAPH_3_SWITCH:
                 case CABViewControlTypes.PANTOGRAPH_4_SWITCH:
@@ -3055,6 +3095,46 @@ namespace Orts.Viewer3D.RollingStock
                         if (ChangedValue(0) > 0 && UserInput.IsMouseLeftButtonDown)
                         {
                             new ToggleHV3SwitchDownCommand(Viewer.Log);
+                        }
+                        break;
+                    }
+
+                case CABViewControlTypes.HV4:
+                    {
+                        // Ovládání HV nearetované pozice
+                        if (Locomotive.HV4Switch == 2)
+                        {
+                            Locomotive.HVOnPressedTest = true;
+                        }
+                        if (Locomotive.HV4Switch == 2 && UserInput.IsMouseLeftButtonReleased)
+                        {
+                            Locomotive.HV4Switch = 1;
+                            Locomotive.HVOnPressedTest = false;
+                        }
+                        if (Locomotive.HV4Switch == 0)
+                        {
+                            Locomotive.HVOffPressedTest = true;
+                        }
+                        if (Locomotive.HV4Switch == 0 && UserInput.IsMouseLeftButtonReleased)
+                        {
+                            Locomotive.HV4Switch = 1;
+                            Locomotive.HVOffPressedTest = false;
+                        }
+
+                        if (ChangedValue(0) < 0 && UserInput.IsMouseLeftButtonDown)
+                        {
+                            new ToggleHV4SwitchUpCommand(Viewer.Log);
+                        }
+                        if (ChangedValue(0) > 0 && NormalizedMouseMovement() < 0.75f && UserInput.IsMouseLeftButtonDown)
+                        {
+                            new ToggleHV4SwitchDownCommand(Viewer.Log);
+                        }                        
+
+                        if (ChangedValue(0) > 0 && NormalizedMouseMovement() > 0.75f && UserInput.IsMouseLeftButtonDown)
+                        {
+                            Locomotive.HV4Switch = -1;                            
+                            Locomotive.HVOffPressedTest = false;
+                            new ToggleHV4SwitchDownCommand(Viewer.Log);
                         }
                         break;
                     }

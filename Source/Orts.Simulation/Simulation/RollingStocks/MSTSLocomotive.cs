@@ -545,6 +545,11 @@ namespace Orts.Simulation.RollingStocks
         public bool HV3Enable = false;
         public float HV3Switch = 1;
         public float LastStateHV3 = 1;
+        public bool HV4Enable = false;
+        public float HV4Switch = 1;
+        public float LastStateHV4 = 1;
+        public bool HV4SwitchFullDown;
+        public float HV4SwitchFullDownCycle;
         public bool HVPressedTestDC = false;
         public bool HVPressedTestAC = false;
         public bool HVPressedTest = false;
@@ -578,6 +583,8 @@ namespace Orts.Simulation.RollingStocks
         public bool Pantograph3Enable = false;
         public float Pantograph3Switch = 1;
         public float LastStatePantograph3;
+        public bool Pantograph3SwitchFullDown;
+        public float Pantograph3SwitchFullDownCycle;
         public bool PantographOnPressedTest;
         public bool PantographOffPressedTest;
         public bool Pantograph3CanOn = false;
@@ -3963,6 +3970,7 @@ namespace Orts.Simulation.RollingStocks
                 {
                     ToggleHV2Switch();
                     ToggleHV3Switch();
+                    ToggleHV4Switch();
                     ToggleHV5Switch();
                 }
                 EDBCancelByEngineBrake();
@@ -7387,6 +7395,91 @@ namespace Orts.Simulation.RollingStocks
             }
         }
 
+        public void ToggleHV4SwitchUp()
+        {
+            if (HV4Enable)
+            {
+                if (HV4Switch < 3)
+                    HV4Switch++;
+                if (HV4Switch < 3)
+                {
+                    ToggleHV4Switch();
+                }
+                HV4Switch = MathHelper.Clamp(HV4Switch, -1, 2);
+            }
+        }
+        public void ToggleHV4SwitchDown()
+        {
+            if (HV4Enable)
+            {
+                if (HV4Switch > 0)
+                    HV4Switch--;
+                if (HV4Switch > -1)
+                {
+                    ToggleHV4Switch();
+                }
+                HV4Switch = MathHelper.Clamp(HV4Switch, -1, 2);
+            }
+        }
+        public void ToggleHV4Switch()
+        {
+            if (HV4Enable)
+            {
+                if (HV4Switch == 0 && HV4SwitchFullDown)
+                {
+                    HV4SwitchFullDownCycle++;
+                    if (HV4SwitchFullDownCycle > 5)
+                    {
+                        ToggleHV4SwitchUp();
+                        HV4SwitchFullDown = false;
+                        HV4SwitchFullDownCycle = 0;
+                        HVOffPressedTest = false;
+                    }
+                }
+
+                if (HVCanOn && Battery && PowerKey)
+                    HVOn = true;
+                // Výběr napájecího systému při HV3 (zde bude výběr dle obrazovky)
+                switch (RouteVoltageV)
+                {
+                    case 3000:
+                        SwitchingVoltageMode = 0;
+                        SwitchingVoltageMode_OffDC = true;
+                        SwitchingVoltageMode_OffAC = false;
+                        break;
+                    case 25000:
+                        SwitchingVoltageMode = 2;
+                        SwitchingVoltageMode_OffDC = false;
+                        SwitchingVoltageMode_OffAC = true;
+                        break;
+                }
+                
+                if (LastStateHV4 != HV4Switch)
+                    SignalEvent(Event.PantographToggle); // Zvuk přepínače                                
+                
+                switch (HV4Switch)
+                {
+                    case -1: // SOS
+                        //Simulator.Confirmer.Information("Switch -1");
+                        Pantograph3Switch = -1;
+                        break;
+                    case 0: // HV vypnout, panto dolu
+                        //Simulator.Confirmer.Information("Switch 0");
+                        Pantograph3Switch = 0;
+                        break;
+                    case 1: // střed
+                        //Simulator.Confirmer.Information("Switch 1");
+                        Pantograph3Switch = 1;
+                        break;
+                    case 2: // HV zapnout, panto nahoru
+                        //Simulator.Confirmer.Information("Switch 2");
+                        Pantograph3Switch = 2;
+                        break;
+                }
+                LastStateHV4 = HV4Switch;
+            }
+        }
+
         public void ToggleHV5SwitchUp()
         {            
             if (HV5Enable)
@@ -7489,6 +7582,17 @@ namespace Orts.Simulation.RollingStocks
             if (Pantograph3Enable)
             {
                 //Simulator.Confirmer.Information("Pantograph3Switch " + Pantograph3Switch);
+                if (Pantograph3Switch == 0 && Pantograph3SwitchFullDown)
+                {
+                    Pantograph3SwitchFullDownCycle++;
+                    if (Pantograph3SwitchFullDownCycle > 5)
+                    {
+                        TogglePantograph3SwitchUp();
+                        Pantograph3SwitchFullDown = false;
+                        Pantograph3SwitchFullDownCycle = 0;
+                        PantographOffPressedTest = false;
+                    }
+                }
 
                 if (LastStatePantograph3 != Pantograph3Switch)
                     SignalEvent(Event.PantographToggle); // Zvuk přepínače                
@@ -7502,7 +7606,7 @@ namespace Orts.Simulation.RollingStocks
                 if (BreakPowerButton_Activated && Pantograph3Switch == 1)
                     BreakPowerButton_Activated = false;
 
-                if (Pantograph3CanOn && Battery && PowerKey && !BreakPowerButton_Activated && Simulator.GameTime > 1) 
+                if ((Pantograph3CanOn || HV4Enable) && Battery && PowerKey && !BreakPowerButton_Activated && Simulator.GameTime > 1) 
                 {
                     PantoStatus = Pantograph3Switch;
                     int p1 = 1; int p2 = 2;

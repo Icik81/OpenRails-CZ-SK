@@ -260,6 +260,8 @@
         [GetString("Control_CZSK HV2 1-system +")] ControlHV2SwitchUp,
         [GetString("Control_CZSK HV3 2-system +")] ControlHV3SwitchUp,
         [GetString("Control_CZSK HV3 2-system -")] ControlHV3SwitchDown,
+        [GetString("Control_CZSK HV4 2-system +")] ControlHV4SwitchUp,
+        [GetString("Control_CZSK HV4 2-system -")] ControlHV4SwitchDown,
         [GetString("Control_CZSK HV5 2-system +")] ControlHV5SwitchUp, 
         [GetString("Control_CZSK HV5 2-system -")] ControlHV5SwitchDown,
         [GetString("Control_CZSK Pantograph3 +")] ControlPantograph3SwitchUp,

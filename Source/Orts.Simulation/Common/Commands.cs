@@ -1732,6 +1732,39 @@ namespace Orts.Common
             Receiver.ToggleHV3SwitchDown();
         }
     }
+    [Serializable()]
+    public sealed class ToggleHV4SwitchUpCommand : Command
+    {
+        public static MSTSLocomotive Receiver { get; set; }
+
+        public ToggleHV4SwitchUpCommand(CommandLog log)
+            : base(log)
+        {
+            Redo();
+        }
+
+        public override void Redo()
+        {
+
+            Receiver.ToggleHV4SwitchUp();
+        }
+    }
+    [Serializable()]
+    public sealed class ToggleHV4SwitchDownCommand : Command
+    {
+        public static MSTSLocomotive Receiver { get; set; }
+
+        public ToggleHV4SwitchDownCommand(CommandLog log)
+            : base(log)
+        {
+            Redo();
+        }
+
+        public override void Redo()
+        {
+            Receiver.ToggleHV4SwitchDown();
+        }
+    }
 
     [Serializable()]
     public sealed class ToggleHV5SwitchUpCommand : Command

@@ -605,6 +605,8 @@ namespace Orts.Viewer3D
             ToggleHV2SwitchUpCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
             ToggleHV3SwitchUpCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
             ToggleHV3SwitchDownCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
+            ToggleHV4SwitchUpCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
+            ToggleHV4SwitchDownCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
             ToggleHV5SwitchUpCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
             ToggleHV5SwitchDownCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
             TogglePantograph3SwitchUpCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
