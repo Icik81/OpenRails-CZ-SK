@@ -7459,21 +7459,19 @@ namespace Orts.Simulation.RollingStocks
                 
                 switch (HV4Switch)
                 {
-                    case -1: // SOS
+                    case -1: // panto dolu
                         //Simulator.Confirmer.Information("Switch -1");
                         Pantograph3Switch = -1;
                         break;
-                    case 0: // HV vypnout, panto dolu
-                        //Simulator.Confirmer.Information("Switch 0");
-                        Pantograph3Switch = 0;
+                    case 0: // HV vypnout
+                        //Simulator.Confirmer.Information("Switch 0");                        
+                        Pantograph3Switch = 2;
                         break;
                     case 1: // střed
-                        //Simulator.Confirmer.Information("Switch 1");
-                        Pantograph3Switch = 1;
+                        //Simulator.Confirmer.Information("Switch 1");                        
                         break;
                     case 2: // HV zapnout, panto nahoru
-                        //Simulator.Confirmer.Information("Switch 2");
-                        Pantograph3Switch = 2;
+                        //Simulator.Confirmer.Information("Switch 2");                        
                         break;
                 }
                 LastStateHV4 = HV4Switch;
