@@ -1688,6 +1688,9 @@ namespace Orts.Viewer3D
             if (MPManager.IsMultiPlayer())
                 MPManager.LocoChange(Simulator.PlayerLocomotive.Train, Simulator.PlayerLocomotive);
             Simulator.Confirmer.Confirm(CabControl.ChangeCab, CabSetting.On);
+
+            // Icik
+            Simulator.ChangeCabActivated = true;
         }
 
         /// <summary>

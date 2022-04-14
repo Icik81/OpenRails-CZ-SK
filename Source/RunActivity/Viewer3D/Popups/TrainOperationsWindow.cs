@@ -68,6 +68,7 @@ namespace Orts.Viewer3D.Popups
                     //if (car.BrakesStuck || ((car is MSTSLocomotive) && (car as MSTSLocomotive).PowerReduction > 0)) carLabel.Color = Color.Red;
                     if (car.BrakesStuck || (car.BrakeSystem.CarHasProblemWithBrake)) carLabel.Color = Color.Red;
                     //if (car.SelectedCar) carLabel.Color = Color.Yellow;
+                    Owner.Viewer.PlayerTrain.Simulator.ChangeCabActivated = false;
 
                     scrollbox.Add(carLabel);
                     if (car != PlayerTrain.Cars.Last())
@@ -91,6 +92,8 @@ namespace Orts.Viewer3D.Popups
             {
                 if (PlayerTrain != Owner.Viewer.PlayerTrain || Owner.Viewer.PlayerTrain.Cars.Count != LastPlayerTrainCars || (Owner.Viewer.PlayerLocomotive != null &&
                     LastPlayerLocomotiveFlippedState != Owner.Viewer.PlayerLocomotive.Flipped)
+                    // Icik
+                    || Owner.Viewer.PlayerTrain.Simulator.ChangeCabActivated
                     )
                 {
                     PlayerTrain = Owner.Viewer.PlayerTrain;

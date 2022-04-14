@@ -189,6 +189,7 @@ namespace Orts.Simulation
         public float DataMaxDynamicBrakeForceN;
         public bool DataBreakPowerButton;
         public float DataLocomotivePowerVoltage;
+        public bool ChangeCabActivated;
 
         public List<PowerSupplyStation> powerSupplyStations;
         public List<VoltageChangeMarker> voltageChangeMarkers;
