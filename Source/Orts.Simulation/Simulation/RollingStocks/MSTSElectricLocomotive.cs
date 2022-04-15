@@ -1272,7 +1272,7 @@ namespace Orts.Simulation.RollingStocks
 
                 // Nastavení pro plně oživenou lokomotivu
                 if (LocoReadyToGo && BrakeSystem.IsAirFull)
-                {                                        
+                {
                     if (!Battery)
                     {
                         SignalEvent(Event.BatteryOn);
@@ -1320,7 +1320,7 @@ namespace Orts.Simulation.RollingStocks
 
                         if (PantographVoltageV > PantographCriticalVoltage)                        
                             HVOn = true;
-                        
+                                                                        
                         if (PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closed)
                         {
                             LocoReadyToGo = false;

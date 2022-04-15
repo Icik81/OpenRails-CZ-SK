@@ -2929,6 +2929,8 @@ namespace Orts.Simulation.RollingStocks
                     }
                 }
             }
+            if (HV4Switch != 0)
+                AuxPowerCycleHV4 = 0;
         }
         // Icik
         // Zapni proud
@@ -2945,6 +2947,8 @@ namespace Orts.Simulation.RollingStocks
                     }
                 }
             }
+            if (HV4Switch != 0)
+                AuxPowerCycleHV4 = 0;
         }
 
         // Icik
@@ -2955,11 +2959,23 @@ namespace Orts.Simulation.RollingStocks
         public bool HeatingOverCurrent = false;
         public bool HeatingIsOn = false;        
         public float MSGHeatingCycle;
+        float AuxPowerCycleHV4 = 0;
         public void ElevatedConsumptionOnLocomotive(float elapsedClockSeconds)
-        {
+        {            
+            // Nastavuje příznak napájení pomocných obvodů
+            if (!PowerOn) this.AuxPowerOff = true;
+            // HV4
+            if (IsLeadLocomotive() && AcceptMUSignals && PowerOn && HV4Enable && AuxPowerCycleHV4 == 0)
+            {
+                AuxPowerCycleHV4++;
+                AuxPowerStartOn();
+            }
+            if (IsLeadLocomotive() && PowerOn && !HV4Enable) AuxPowerStartOn();            
+
             // Rozhoduje čas sepnutí obvodu pro pomocné pohony 
             if (IsLeadLocomotive() && !PowerOn) Simulator.AuxPowerCanStart = false;
             if (IsLeadLocomotive() && AuxPowerOn) Simulator.AuxPowerCanStart = true;
+            
             if (this.AuxPowerOff) AuxPowerOn = false;
             if (!this.AuxPowerOff && Simulator.AuxPowerCanStart) AuxPowerOn = true;
 
@@ -2967,14 +2983,6 @@ namespace Orts.Simulation.RollingStocks
             {
                 if (car is MSTSLocomotive)
                 {
-                    if (car.AcceptMUSignals)
-                    {
-                      if (car.AuxPowerOff)
-                            AuxPowerOn = false;
-                      if (!car.AuxPowerOff && Simulator.AuxPowerCanStart)
-                            AuxPowerOn = true;
-                    }
-
                     if (car.CabHeating_OffOn && AuxPowerOn)
                         car.CabHeatingIsOn = true;
                     if (!car.CabHeating_OffOn || !AuxPowerOn)
@@ -4011,7 +4019,7 @@ namespace Orts.Simulation.RollingStocks
                 MaxPower_MaxForce_ACDC();
                 RDSTBreakerType();
                 if (Pantograph4Enable) TogglePantograph4Switch();
-                if (Pantograph3Enable) TogglePantograph3Switch();
+                if (Pantograph3Enable) TogglePantograph3Switch();                
 
                 if (!AcceptMUSignals || IsLeadLocomotive())
                 {
