@@ -353,6 +353,7 @@ namespace Orts.Simulation.RollingStocks
         public float RouteVoltageVInfo;
         public bool SelectedCar;
         public bool StartLooseCon;
+        public bool AuxPowerOff;
 
         public float DieselHeaterPower;
         public float DieselHeaterPower0;
@@ -1951,7 +1952,8 @@ namespace Orts.Simulation.RollingStocks
             outf.Write(CarOutsideTempC0);
             outf.Write(WagonTemperature);
             outf.Write(RDSTBreaker);            
-            outf.Write(CabHeating_OffOn);        
+            outf.Write(CabHeating_OffOn);
+            outf.Write(AuxPowerOff);
         }
 
         // Game restore
@@ -1980,6 +1982,7 @@ namespace Orts.Simulation.RollingStocks
             WagonTemperature = inf.ReadSingle();
             RDSTBreaker = inf.ReadBoolean();
             CabHeating_OffOn = inf.ReadBoolean();
+            AuxPowerOff = inf.ReadBoolean();
         }
 
         //================================================================================================//

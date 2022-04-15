@@ -190,6 +190,7 @@ namespace Orts.Simulation
         public bool DataBreakPowerButton;
         public float DataLocomotivePowerVoltage;
         public bool ChangeCabActivated;
+        public bool AuxPowerCanStart;
 
         public List<PowerSupplyStation> powerSupplyStations;
         public List<VoltageChangeMarker> voltageChangeMarkers;

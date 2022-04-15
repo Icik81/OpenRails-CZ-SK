@@ -2915,6 +2915,39 @@ namespace Orts.Simulation.RollingStocks
         }
 
         // Icik
+        // Vypni proud
+        public void AuxPowerStartOff()
+        {
+            this.AuxPowerOff = true;
+            if (AcceptMUSignals)
+            {
+                foreach (TrainCar car in Train.Cars)
+                {
+                    if (car is MSTSLocomotive && car.AcceptMUSignals)
+                    {
+                        car.AuxPowerOff = true;
+                    }
+                }
+            }
+        }
+        // Icik
+        // Zapni proud
+        public void AuxPowerStartOn()
+        {
+            this.AuxPowerOff = false;
+            if (AcceptMUSignals)
+            {
+                foreach (TrainCar car in Train.Cars)
+                {
+                    if (car is MSTSLocomotive && car.AcceptMUSignals)
+                    {
+                        car.AuxPowerOff = false;
+                    }
+                }
+            }
+        }
+
+        // Icik
         public float I_Heating = 0;
         public float I_HeatingData = 0;
         public float I_HeatingData0 = 0;
@@ -2923,11 +2956,25 @@ namespace Orts.Simulation.RollingStocks
         public bool HeatingIsOn = false;        
         public float MSGHeatingCycle;
         public void ElevatedConsumptionOnLocomotive(float elapsedClockSeconds)
-        {            
+        {
+            // Rozhoduje čas sepnutí obvodu pro pomocné pohony 
+            if (IsLeadLocomotive() && !PowerOn) Simulator.AuxPowerCanStart = false;
+            if (IsLeadLocomotive() && AuxPowerOn) Simulator.AuxPowerCanStart = true;
+            if (this.AuxPowerOff) AuxPowerOn = false;
+            if (!this.AuxPowerOff && Simulator.AuxPowerCanStart) AuxPowerOn = true;
+
             foreach (TrainCar car in Train.Cars)
             {
                 if (car is MSTSLocomotive)
                 {
+                    if (car.AcceptMUSignals)
+                    {
+                      if (car.AuxPowerOff)
+                            AuxPowerOn = false;
+                      if (!car.AuxPowerOff && Simulator.AuxPowerCanStart)
+                            AuxPowerOn = true;
+                    }
+
                     if (car.CabHeating_OffOn && AuxPowerOn)
                         car.CabHeatingIsOn = true;
                     if (!car.CabHeating_OffOn || !AuxPowerOn)
@@ -7465,13 +7512,15 @@ namespace Orts.Simulation.RollingStocks
                         //Simulator.Confirmer.Information("Switch -1");
                         Pantograph3Switch = -1;
                         break;
-                    case 0: // HV vypnout
-                        //Simulator.Confirmer.Information("Switch 0");                                                
+                    case 0: // vypni proud
+                        //Simulator.Confirmer.Information("Switch 0");
+                        AuxPowerStartOff();
                         break;
-                    case 1: // střed
+                    case 1: // střed X
                         //Simulator.Confirmer.Information("Switch 1");                        
                         break;
                     case 2: // HV zapnout, panto nahoru
+                        AuxPowerStartOn();
                         Pantograph3Switch = 2;
                         //Simulator.Confirmer.Information("Switch 2");                        
                         break;
@@ -7618,7 +7667,7 @@ namespace Orts.Simulation.RollingStocks
                         {
                             case -1: // SOS
                                 Pantograph3CanOn = false;
-                                HVOff = true;
+                                if (HV3Enable) HVOff = true;
                                 if (Pantographs[p1].State != PantographState.Down)
                                 {
                                     SignalEvent(PowerSupplyEvent.LowerPantograph, p1);

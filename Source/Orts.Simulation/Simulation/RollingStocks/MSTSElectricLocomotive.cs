@@ -1719,7 +1719,7 @@ namespace Orts.Simulation.RollingStocks
             {                
                 HVCanOn = true;
             }
-            if (HVOffPressedTime > 0.4f && HVOffPressedTime < 0.6f) // 0.5s na podržení polohy pro vypnutí HV
+            if (HV3Enable && HVOffPressedTime > 0.4f && HVOffPressedTime < 0.6f) // 0.5s na podržení polohy pro vypnutí HV
             {
                 HVOff = true;
                 HVCanOn = false;
@@ -2638,7 +2638,12 @@ namespace Orts.Simulation.RollingStocks
             //Simulator.Catalog.GetString("Driver"),
             status.AppendFormat("{0}\t", PowerSupply.CircuitBreaker.DriverClosingAuthorization ? Simulator.Catalog.GetString("OK") : Simulator.Catalog.GetString("NOT OK"));
             //Simulator.Catalog.GetString("Auxiliary power"),
-            status.AppendFormat("{0}\t\t", Simulator.Catalog.GetParticularString("PowerSupply", GetStringAttribute.GetPrettyName(PowerSupply.AuxiliaryState)));
+            
+            // Icik
+            if (AuxPowerOn)
+                status.AppendFormat("{0}\t\t", Simulator.Catalog.GetParticularString("PowerSupply", Simulator.Catalog.GetString("Zapnuto")));
+            else
+                status.AppendFormat("{0}\t\t", Simulator.Catalog.GetParticularString("PowerSupply", Simulator.Catalog.GetString("Vypnuto")));
 
             // Icik
             if (PowerUnit)
