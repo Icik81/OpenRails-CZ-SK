@@ -2601,15 +2601,15 @@ namespace Orts.Simulation.RollingStocks
                         if (Pantographs[0].State != PantographState.Down || Pantographs[1].State != PantographState.Down) 
                             data = 1;
                         else
-                            data = 0;                        
-                        break;
+                            data = 0;                                                
                     }
+                    break;
 
                 case CABViewControlTypes.HV4VOLTAGESETUP:
                     {
-                        data = SwitchingVoltageMode;
-                        break;
+                        data = SwitchingVoltageMode;                        
                     }
+                    break;
 
                 default:
                     data = base.GetDataOf(cvc);
