@@ -2598,7 +2598,7 @@ namespace Orts.Simulation.RollingStocks
 
                 case CABViewControlTypes.HV4PANTOUP:
                     {
-                        if (Pantographs[0].State != PantographState.Down || Pantographs[1].State != PantographState.Down) 
+                        if (Pantographs[1].State != PantographState.Down || Pantographs[2].State != PantographState.Down) 
                             data = 1;
                         else
                             data = 0;                                                
@@ -2607,7 +2607,17 @@ namespace Orts.Simulation.RollingStocks
 
                 case CABViewControlTypes.HV4VOLTAGESETUP:
                     {
-                        data = SwitchingVoltageMode;                        
+                        data = 1;
+                        if (PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closed)
+                        {
+                            if (PantographVoltageV > PantographCriticalVoltage && PantographVoltageV < 4000)
+                                data = 0;
+                            else
+                            if (PantographVoltageV > 4000)
+                                data = 2;
+                            else
+                                data = 1;
+                        }
                     }
                     break;
 

@@ -7494,6 +7494,9 @@ namespace Orts.Simulation.RollingStocks
                     }
                 }
 
+                if (BreakPowerButton)
+                    Pantograph3Switch = 1;
+
                 if (HVCanOn && Battery && PowerKey)
                     HVOn = true;
                 // Výběr napájecího systému při HV3 (zde bude výběr dle obrazovky)
