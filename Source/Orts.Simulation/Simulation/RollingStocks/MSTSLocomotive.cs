@@ -4514,7 +4514,9 @@ namespace Orts.Simulation.RollingStocks
             if (DynamicBrakeController != null && DynamicBrakeController.CommandStartTime > DynamicBrakeCommandStartTime) // use the latest command time
                 DynamicBrakeCommandStartTime = DynamicBrakeController.CommandStartTime;
 
-            if ((DynamicBrakeController != null || DynamicBrakeBlendingEnabled || DynamicBrakeAvailable) && (DynamicBrakePercent >= 0 || IsLeadLocomotive() && DynamicBrakeIntervention >= 0))
+            // Icik
+            //if ((DynamicBrakeController != null || DynamicBrakeBlendingEnabled || DynamicBrakeAvailable) && (DynamicBrakePercent >= 0 || IsLeadLocomotive() && DynamicBrakeIntervention >= 0))
+            if ((DynamicBrakeController != null || DynamicBrakeBlendingEnabled || DynamicBrakeAvailable) && (DynamicBrakePercent >= 0 || DynamicBrakeIntervention >= 0))
             {
                 if (!DynamicBrake)
                 {
@@ -4527,7 +4529,7 @@ namespace Orts.Simulation.RollingStocks
                     else if (IsLeadLocomotive())
                         Simulator.Confirmer.Confirm(CabControl.DynamicBrake, CabSetting.On); // Keeping status string on screen so user knows what's happening
                 }
-                else if (this.IsLeadLocomotive())
+                else if (this.IsLeadLocomotive() || !this.IsLeadLocomotive()) // Icik
                 {
                     if (DynamicBrakeController != null)
                     {
@@ -7464,13 +7466,13 @@ namespace Orts.Simulation.RollingStocks
                         Pantograph3Switch = -1;
                         break;
                     case 0: // HV vypnout
-                        //Simulator.Confirmer.Information("Switch 0");                        
-                        Pantograph3Switch = 2;
+                        //Simulator.Confirmer.Information("Switch 0");                                                
                         break;
                     case 1: // střed
                         //Simulator.Confirmer.Information("Switch 1");                        
                         break;
                     case 2: // HV zapnout, panto nahoru
+                        Pantograph3Switch = 2;
                         //Simulator.Confirmer.Information("Switch 2");                        
                         break;
                 }
