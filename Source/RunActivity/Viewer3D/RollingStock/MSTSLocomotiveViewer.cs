@@ -2616,7 +2616,9 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.DIESEL_MOTOR_TEMP_WARNING:
                 case CABViewControlTypes.RDST_BREAKER_VZ:
                 case CABViewControlTypes.RDST_BREAKER_POWER:
-
+                case CABViewControlTypes.HV4PANTOUP:
+                case CABViewControlTypes.HV4VOLTAGESETUP:
+                    
                     index = (int)data;
                     break;
 

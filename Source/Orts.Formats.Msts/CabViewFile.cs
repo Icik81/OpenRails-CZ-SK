@@ -427,6 +427,8 @@ namespace Orts.Formats.Msts
         DIESEL_MOTOR_TEMP_WARNING,
         RDST_BREAKER_VZ,
         RDST_BREAKER_POWER,
+        HV4PANTOUP,
+        HV4VOLTAGESETUP,
 
 
         // Further CabViewControlTypes must be added above this line, to avoid their malfunction in 3DCabs

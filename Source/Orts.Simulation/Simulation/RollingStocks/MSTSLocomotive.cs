@@ -4571,7 +4571,7 @@ namespace Orts.Simulation.RollingStocks
 
             // Icik
             //if ((DynamicBrakeController != null || DynamicBrakeBlendingEnabled || DynamicBrakeAvailable) && (DynamicBrakePercent >= 0 || IsLeadLocomotive() && DynamicBrakeIntervention >= 0))
-            if ((DynamicBrakeController != null || DynamicBrakeBlendingEnabled || DynamicBrakeAvailable) && (DynamicBrakePercent >= 0 || DynamicBrakeIntervention >= 0))
+            if ((DynamicBrakeController != null || DynamicBrakeBlendingEnabled || DynamicBrakeAvailable) && (DynamicBrakePercent >= 0 || (IsLeadLocomotive() || !IsLeadLocomotive() && AcceptMUSignals) && DynamicBrakeIntervention >= 0))
             {
                 if (!DynamicBrake)
                 {
