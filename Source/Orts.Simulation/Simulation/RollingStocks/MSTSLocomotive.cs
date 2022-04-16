@@ -2915,9 +2915,11 @@ namespace Orts.Simulation.RollingStocks
         }
 
         // Icik
-        // Vypni proud
+        // Vypnutí proudu
         public void AuxPowerStartOff()
         {
+            if (!this.AuxPowerOff)
+                Simulator.Confirmer.Information("Vypnutí proudu - pomocné pohony nejsou napájeny.");
             this.AuxPowerOff = true;
             if (AcceptMUSignals)
             {
@@ -2933,9 +2935,11 @@ namespace Orts.Simulation.RollingStocks
                 AuxPowerCycleHV4 = 0;
         }
         // Icik
-        // Zapni proud
+        // Zapnutí proudu
         public void AuxPowerStartOn()
         {
+            if (IsLeadLocomotive() && Simulator.AuxPowerCanStart && this.AuxPowerOff)
+                Simulator.Confirmer.Information("Zapnutí proudu - pomocné pohony jsou napájeny.");
             this.AuxPowerOff = false;
             if (AcceptMUSignals)
             {
@@ -2952,33 +2956,63 @@ namespace Orts.Simulation.RollingStocks
         }
 
         // Icik
+        // Nastavuje příznak napájení pomocných obvodů
+        float AuxPowerCycleHV4 = 0;
+        public void SetAuxPower()
+        {            
+            if (!PowerOn) this.AuxPowerOff = true;
+            // HV4
+            if (IsLeadLocomotive() && AcceptMUSignals && PowerOn && HV4Enable && AuxPowerCycleHV4 == 0)
+            {
+                AuxPowerCycleHV4++;
+                this.AuxPowerOff = false;
+                if (AcceptMUSignals)
+                {
+                    foreach (TrainCar car in Train.Cars)
+                    {
+                        if (car is MSTSLocomotive && car.AcceptMUSignals)
+                        {
+                            car.AuxPowerOff = false;
+                        }
+                    }
+                }
+                if (HV4Switch != 0)
+                    AuxPowerCycleHV4 = 0;
+            }
+            if (IsLeadLocomotive() && PowerOn && !HV4Enable)
+            {
+                this.AuxPowerOff = false;
+                if (AcceptMUSignals)
+                {
+                    foreach (TrainCar car in Train.Cars)
+                    {
+                        if (car is MSTSLocomotive && car.AcceptMUSignals)
+                        {
+                            car.AuxPowerOff = false;
+                        }
+                    }
+                }
+            }
+
+            // Rozhoduje čas sepnutí obvodu pro pomocné pohony 
+            if (IsLeadLocomotive() && !PowerOn) Simulator.AuxPowerCanStart = false;
+            if (IsLeadLocomotive() && AuxPowerOn) Simulator.AuxPowerCanStart = true;
+
+            if (this.AuxPowerOff) AuxPowerOn = false;
+            if (!this.AuxPowerOff && Simulator.AuxPowerCanStart) AuxPowerOn = true;
+        }
+
+
+        // Icik
         public float I_Heating = 0;
         public float I_HeatingData = 0;
         public float I_HeatingData0 = 0;
         public float U_Heating = 3000;
         public bool HeatingOverCurrent = false;
         public bool HeatingIsOn = false;        
-        public float MSGHeatingCycle;
-        float AuxPowerCycleHV4 = 0;
+        public float MSGHeatingCycle;        
         public void ElevatedConsumptionOnLocomotive(float elapsedClockSeconds)
-        {            
-            // Nastavuje příznak napájení pomocných obvodů
-            if (!PowerOn) this.AuxPowerOff = true;
-            // HV4
-            if (IsLeadLocomotive() && AcceptMUSignals && PowerOn && HV4Enable && AuxPowerCycleHV4 == 0)
-            {
-                AuxPowerCycleHV4++;
-                AuxPowerStartOn();
-            }
-            if (IsLeadLocomotive() && PowerOn && !HV4Enable) AuxPowerStartOn();            
-
-            // Rozhoduje čas sepnutí obvodu pro pomocné pohony 
-            if (IsLeadLocomotive() && !PowerOn) Simulator.AuxPowerCanStart = false;
-            if (IsLeadLocomotive() && AuxPowerOn) Simulator.AuxPowerCanStart = true;
-            
-            if (this.AuxPowerOff) AuxPowerOn = false;
-            if (!this.AuxPowerOff && Simulator.AuxPowerCanStart) AuxPowerOn = true;
-
+        {                        
             foreach (TrainCar car in Train.Cars)
             {
                 if (car is MSTSLocomotive)
@@ -4031,6 +4065,7 @@ namespace Orts.Simulation.RollingStocks
                 EDBCancelByEngineBrake();
                 EDBCancelByOL3BailOff();
                 PowerOn_Filter(elapsedClockSeconds);
+                SetAuxPower();
                 ElevatedConsumptionOnLocomotive(elapsedClockSeconds);
                 HVOffbyAirPressureE();
                 HVOffbyAirPressureD();
@@ -7494,12 +7529,12 @@ namespace Orts.Simulation.RollingStocks
                     }
                 }
 
-                if (BreakPowerButton)
+                if (BreakPowerButton || Pantograph3Switch == -1)                
                     Pantograph3Switch = 1;
-
+                                    
                 if (HVCanOn && Battery && PowerKey)
                     HVOn = true;
-                // Výběr napájecího systému při HV3 (zde bude výběr dle obrazovky)
+                // Výběr napájecího systému při HV4 (zde bude výběr dle obrazovky)
                 switch (RouteVoltageV)
                 {
                     case 3000:
@@ -7521,11 +7556,11 @@ namespace Orts.Simulation.RollingStocks
                 {
                     case -1: // panto dolu
                         //Simulator.Confirmer.Information("Switch -1");
-                        Pantograph3Switch = -1;
+                        Pantograph3Switch = -1;                        
                         break;
                     case 0: // vypni proud
-                        //Simulator.Confirmer.Information("Switch 0");
-                        AuxPowerStartOff();
+                        //Simulator.Confirmer.Information("Switch 0");                        
+                        AuxPowerStartOff();                        
                         break;
                     case 1: // střed X
                         //Simulator.Confirmer.Information("Switch 1");                        
