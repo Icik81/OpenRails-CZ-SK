@@ -227,6 +227,7 @@
         [GetString("Control_CZSK Restricted Speed Zone Active")] ControlRestrictedSpeedZoneActive,
         [GetString("Control_CZSK Cruise Control Mode Increase")] ControlCruiseControlModeIncrease,
         [GetString("Control_CZSK Cruise Control Mode Decrease")] ControlCruiseControlModeDecrease,
+        [GetString("Control_CZSK Confirm Selected Speed")] ControlConfirmSelectedSpeed,
         [GetString("Control_CZSK Train Type Change (Passenger/Cargo)")] ControlTrainTypePaxCargo,       
         [GetString("Control_CZSK Select Speed 10 kph/mph")] ControlSelectSpeed10,
         [GetString("Control_CZSK Select Speed 20 kph/mph")] ControlSelectSpeed20,

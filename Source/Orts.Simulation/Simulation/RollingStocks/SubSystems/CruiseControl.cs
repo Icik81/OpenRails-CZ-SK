@@ -60,8 +60,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems
         public int TrainLengthMeters = 0;
         public float RemainingTrainLengthToPassRestrictedZone = 0;
         public bool RestrictedSpeedActive = false;
-        public float CurrentSelectedSpeedMpS = 0;
-        protected float nextSelectedSpeedMps = 0;
+        public float CurrentSelectedSpeedMpS = MpS.FromKpH(40);
+        public float NextSelectedSpeedMps = MpS.FromKpH(40);
         protected float restrictedRegionTravelledDistance = 0;
         protected float currentThrottlePercent = 0;
         protected double clockTime = 0;
@@ -248,7 +248,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
             outf.Write(this.maxForceDecreasing);
             outf.Write(this.maxForceIncreasing);
             outf.Write(this.maxForceN);
-            outf.Write(this.nextSelectedSpeedMps);
+            outf.Write(this.NextSelectedSpeedMps);
             outf.Write(this.restrictedRegionTravelledDistance);
             outf.Write(this.RestrictedSpeedActive);
             outf.Write(this.SelectedMaxAccelerationPercent);
@@ -264,7 +264,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
 
         public void Restore(BinaryReader inf)
         {
-            speedChanged = false;
+            SpeedChanged = false;
             applyingPneumaticBrake = inf.ReadBoolean();
             Battery = inf.ReadBoolean();
             brakeIncreasing = inf.ReadBoolean();
@@ -277,7 +277,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
             maxForceDecreasing = inf.ReadBoolean();
             maxForceIncreasing = inf.ReadBoolean();
             maxForceN = inf.ReadSingle();
-            nextSelectedSpeedMps = inf.ReadSingle();
+            NextSelectedSpeedMps = inf.ReadSingle();
             restrictedRegionTravelledDistance = inf.ReadSingle();
             RestrictedSpeedActive = inf.ReadBoolean();
             SelectedMaxAccelerationPercent = inf.ReadSingle();
@@ -516,6 +516,12 @@ namespace Orts.Simulation.RollingStocks.SubSystems
         protected bool selectedSpeedIncreasing = false;
         public void SpeedRegulatorSelectedSpeedStartIncrease()
         {
+            if (Locomotive.LocoType == MSTSLocomotive.LocoTypes.Vectron)
+            {
+                float speed = MpS.ToKpH(NextSelectedSpeedMps) + 5;
+                SetSpeed(speed);
+                return;
+            }
             if (Locomotive.MultiPositionControllers != null)
             {
                 foreach (Controllers.MultiPositionController mpc in Locomotive.MultiPositionControllers)
@@ -545,6 +551,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems
         }
         public void SpeedRegulatorSelectedSpeedStopIncrease()
         {
+            if (Locomotive.LocoType == MSTSLocomotive.LocoTypes.Vectron)
+                return;
             if (Locomotive.MultiPositionControllers != null)
             {
                 foreach (Controllers.MultiPositionController mpc in Locomotive.MultiPositionControllers)
@@ -580,6 +588,12 @@ namespace Orts.Simulation.RollingStocks.SubSystems
         public bool SelectedSpeedDecreasing = false;
         public void SpeedRegulatorSelectedSpeedStartDecrease()
         {
+            if (Locomotive.LocoType == MSTSLocomotive.LocoTypes.Vectron)
+            {
+                float speed = MpS.ToKpH(NextSelectedSpeedMps) - 5;
+                SetSpeed(speed);
+                return;
+            }
             if (Locomotive.MultiPositionControllers != null)
             {
                 foreach (Controllers.MultiPositionController mpc in Locomotive.MultiPositionControllers)
@@ -601,6 +615,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems
         }
         public void SpeedRegulatorSelectedSpeedStopDecrease()
         {
+            if (Locomotive.LocoType == MSTSLocomotive.LocoTypes.Vectron)
+                return;
             if (Locomotive.MultiPositionControllers != null)
             {
                 foreach (Controllers.MultiPositionController mpc in Locomotive.MultiPositionControllers)
@@ -695,9 +711,12 @@ namespace Orts.Simulation.RollingStocks.SubSystems
 
         public void SetSpeed(float Speed)
         {
+            NextSelectedSpeedMps = MpS.FromKpH(Speed);
+            Locomotive.SelectedSpeedConfirmed = false;
             if (MpS.FromKpH(Speed) != SelectedSpeedMpS)
-                speedChanged = true;
-
+                SpeedChanged = true;
+            if (MpS.FromKpH(Speed) < Locomotive.AbsSpeedMpS || MpS.FromKpH(Speed) < SelectedSpeedMpS || MpS.FromKpH(Speed) < CurrentSelectedSpeedMpS)
+                CurrentSelectedSpeedMpS = SelectedSpeedMpS = MpS.FromKpH(Speed);
             Locomotive.SignalEvent(Common.Event.Alert1);
             if (MpS.FromKpH(Speed) > Locomotive.MaxSpeedMpS)
             {
@@ -709,9 +728,14 @@ namespace Orts.Simulation.RollingStocks.SubSystems
             if (SpeedRegMode == SpeedRegulatorMode.Manual && Locomotive.LocoType != MSTSLocomotive.LocoTypes.Vectron)
                 return;
             float prevSpeed = SelectedSpeedMpS;
+            if (Locomotive.LocoType == MSTSLocomotive.LocoTypes.Vectron)
+                return;
             SelectedSpeedMpS = SpeedIsMph ? MpS.FromMpH(Speed) : MpS.FromKpH(Speed);
             if (SelectedSpeedMpS < prevSpeed)
+            {
                 RestrictedSpeedActive = false;
+                Locomotive.SelectedSpeedConfirmed = true;
+            }
             if (SelectedSpeedMpS > Locomotive.MaxSpeedMpS)
                 SelectedSpeedMpS = Locomotive.MaxSpeedMpS;
             Simulator.Confirmer.Message(ConfirmLevel.Information, Simulator.Catalog.GetString("Selected speed set to ") + Speed.ToString() + (SpeedIsMph ? "mph" : "kmh"));
@@ -751,17 +775,25 @@ namespace Orts.Simulation.RollingStocks.SubSystems
         protected bool doNotForceDynamicBrake = false;
         protected bool wasTrainBrakeUsed = false;
         protected float overridenMaximalForce = 0;
-        protected bool speedChanged = true;
+        public bool SpeedChanged = true;
+        public bool ConfirmingSpeedRequired = false;
 
         protected virtual void UpdateMotiveForce(float elapsedClockSeconds, float AbsWheelSpeedMps)
         {
-            if (speedChanged && Locomotive.LocoType == MSTSLocomotive.LocoTypes.Vectron) // set up max effort for Vectron like "clever" loco's
+            if (Locomotive.LocoType == MSTSLocomotive.LocoTypes.Vectron)
+            {
+                ConfirmingSpeedRequired = true;
+            }
+
+            if (SpeedChanged && Locomotive.LocoType == MSTSLocomotive.LocoTypes.Vectron && MpS.ToKpH(Locomotive.AbsSpeedMpS) < 110) // set up max effort for Vectron like "clever" loco's
             {
                 overridenMaximalForce = (MpS.ToKpH(SelectedSpeedMpS) - MpS.ToKpH(Locomotive.AbsSpeedMpS)) * 2;
                 if (overridenMaximalForce < 0)
                     overridenMaximalForce = -overridenMaximalForce;
-                speedChanged = false;
+                SpeedChanged = false;
             }
+            else if (MpS.ToKpH(Locomotive.AbsSpeedMpS) > 110)
+                overridenMaximalForce = 0;
 
             if (overridenMaximalForce > 100)
                 overridenMaximalForce = 100;
@@ -1105,7 +1137,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                 else if (SpeedSelMode == SpeedSelectorMode.Neutral || SpeedSelMode < SpeedSelectorMode.Start && !SpeedRegulatorOptions.Contains("startfromzero") && wheelSpeedMpS < SafeSpeedForAutomaticOperationMpS)
                 {
                     float delta = 0;
-                    if (!RestrictedSpeedActive)
+                    if (!RestrictedSpeedActive && (Locomotive.LocoType != MSTSLocomotive.LocoTypes.Vectron || Locomotive.SelectedSpeedConfirmed))
                         delta = SelectedSpeedMpS - wheelSpeedMpS;
                     else
                         delta = CurrentSelectedSpeedMpS - wheelSpeedMpS;
@@ -1157,7 +1189,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                             if (Locomotive.DynamicBrakeAvailable)
                             {
                                 delta = 0;
-                                if (!RestrictedSpeedActive)
+                                if (!RestrictedSpeedActive && (Locomotive.LocoType != MSTSLocomotive.LocoTypes.Vectron || Locomotive.SelectedSpeedConfirmed))
                                     delta = SelectedSpeedMpS - wheelSpeedMpS;
                                 else
                                     delta = CurrentSelectedSpeedMpS - wheelSpeedMpS;
@@ -1343,7 +1375,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                 {
                     float delta = 0;
 
-                    if (!RestrictedSpeedActive)
+                    if (!RestrictedSpeedActive && (Locomotive.LocoType != MSTSLocomotive.LocoTypes.Vectron || Locomotive.SelectedSpeedConfirmed))
                         delta = SelectedSpeedMpS - Locomotive.AbsSpeedMpS;
                     else
                         delta = CurrentSelectedSpeedMpS - Locomotive.AbsSpeedMpS;
@@ -1373,10 +1405,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                     {
                         breakout = false;
                     }
-                    if (!RestrictedSpeedActive)
-                        delta = SelectedSpeedMpS - wheelSpeedMpS;
-                    else
+                    if (RestrictedSpeedActive || (Locomotive.LocoType == MSTSLocomotive.LocoTypes.Vectron && !Locomotive.SelectedSpeedConfirmed))
                         delta = CurrentSelectedSpeedMpS - wheelSpeedMpS;
+                    else
+                        delta = SelectedSpeedMpS - wheelSpeedMpS;
                     if (PreciseSpeedControl)
                         delta *= 3;
                     float coeff = 1;
@@ -1418,7 +1450,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                             step *= elapsedClockSeconds;
                             controllerVolts += step;
                         }
-                        if (Locomotive.DynamicBrakePercent < 1 && Locomotive.DynamicBrake && !PreciseSpeedControl)
+                        if (Locomotive.DynamicBrakePercent < 1 && Locomotive.DynamicBrake)
                         {
                             Locomotive.DynamicBrakeChangeActiveState(false);
                         }
@@ -1437,10 +1469,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                             if (Locomotive.DynamicBrakeAvailable)
                             {
                                 delta = 0;
-                                if (!RestrictedSpeedActive)
-                                    delta = SelectedSpeedMpS - wheelSpeedMpS;
-                                else
+                                if (RestrictedSpeedActive || (Locomotive.LocoType == MSTSLocomotive.LocoTypes.Vectron && !Locomotive.SelectedSpeedConfirmed))
                                     delta = CurrentSelectedSpeedMpS - wheelSpeedMpS;
+                                else
+                                    delta = SelectedSpeedMpS - wheelSpeedMpS;
                                 if (PreciseSpeedControl)
                                     delta *= 3;
 
@@ -1675,20 +1707,20 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                         float demandedVolts = t * 100;
 
                         float current = maxForceN / Locomotive.MaxForceN * 1400;// Locomotive.MaxCurrentA;
-                        if (!RestrictedSpeedActive)
-                            delta = SelectedSpeedMpS - wheelSpeedMpS;
-                        else
+                        if (RestrictedSpeedActive || (Locomotive.LocoType == MSTSLocomotive.LocoTypes.Vectron && !Locomotive.SelectedSpeedConfirmed))
                             delta = CurrentSelectedSpeedMpS - wheelSpeedMpS;
+                        else
+                            delta = SelectedSpeedMpS - wheelSpeedMpS;
                         if (PreciseSpeedControl)
                             delta *= 3;
 
                         if (Locomotive is MSTSDieselLocomotive) // not valid for diesel engines.
                             breakout = false;
 
-                        if (!RestrictedSpeedActive)
-                            delta = SelectedSpeedMpS - wheelSpeedMpS;
-                        else
+                        if (RestrictedSpeedActive || (Locomotive.LocoType == MSTSLocomotive.LocoTypes.Vectron && !Locomotive.SelectedSpeedConfirmed))
                             delta = CurrentSelectedSpeedMpS - wheelSpeedMpS;
+                        else
+                            delta = SelectedSpeedMpS - wheelSpeedMpS;
                         if (PreciseSpeedControl)
                             delta *= 3;
                         if (float.IsNaN(controllerVolts))
@@ -1883,8 +1915,12 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                 else if (controllerVolts < 0)
                 {
                     if (maxForceN > 0) maxForceN = 0;
-                    if (Locomotive.ThrottlePercent > 0) Locomotive.ThrottleController.SetPercent(0);
-                    if (Locomotive.DynamicBrakePercent <= 0)
+                    if (Locomotive.ThrottlePercent > 0)
+                    {
+                        Locomotive.ThrottleController.SetPercent(0);
+                        Locomotive.ControllerVolts = 0;
+                    }
+                    if (Locomotive.DynamicBrakePercent <= 0 && controllerVolts < -0.1f)
                     {
                         Locomotive.DynamicBrakeChangeActiveState(true);
                     }
@@ -1894,10 +1930,13 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                         Locomotive.DynamicBrakePercent = 0;
                         controllerVolts = 0;
                     }
+                    else if (controllerVolts < -0.1f)
+                    {
+                        Locomotive.DynamicBrakePercent = -controllerVolts;
+                    }
                     else
                     {
-                        Locomotive.SetDynamicBrakePercent(-controllerVolts);
-                        Locomotive.DynamicBrakePercent = -controllerVolts;
+                        Locomotive.SetDynamicBrakePercent(0);
                     }
                 }
                 else if (controllerVolts == 0)

@@ -821,6 +821,15 @@ namespace Orts.Common
         }
 
         public override void Redo() {
+            if (Receiver.LocoType == MSTSLocomotive.LocoTypes.Vectron && Receiver.CruiseControl != null && ToState)
+            {
+                TimeSpan ts = DateTime.Now - Receiver.AlerterPressedAt;
+                if (ts.TotalSeconds < 1)
+                {
+                    Receiver.CruiseControl.ActivateRestrictedSpeedZone();
+                }
+                Receiver.AlerterPressedAt = DateTime.Now;
+            }
             if (ToState) Receiver.SignalEvent(Event.VigilanceAlarmResetPush); // There is no Event.VigilanceAlarmResetReleased
             else Receiver.SignalEvent(Event.VigilanceAlarmResetRelease); 
             Receiver.AlerterPressed(ToState);

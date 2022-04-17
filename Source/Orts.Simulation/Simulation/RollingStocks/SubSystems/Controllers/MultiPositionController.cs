@@ -649,7 +649,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                 {
                     if (controllerPosition == ControllerPosition.ThrottleIncrease)
                     {
-                        if (Locomotive.CruiseControl.RestrictedSpeedActive)
+                        if (Locomotive.CruiseControl.RestrictedSpeedActive && (Locomotive.LocoType != MSTSLocomotive.LocoTypes.Vectron || Locomotive.SelectedSpeedConfirmed))
                         {
                             Locomotive.CruiseControl.SelectedSpeedMpS = Locomotive.CruiseControl.CurrentSelectedSpeedMpS;
                             Locomotive.CruiseControl.RestrictedSpeedActive = false;
@@ -661,7 +661,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                     }
                     if (controllerPosition == ControllerPosition.ThrottleIncreaseFast)
                     {
-                        if (Locomotive.CruiseControl.RestrictedSpeedActive)
+                        if (Locomotive.CruiseControl.RestrictedSpeedActive && (Locomotive.LocoType != MSTSLocomotive.LocoTypes.Vectron || Locomotive.SelectedSpeedConfirmed))
                         {
                             Locomotive.CruiseControl.SelectedSpeedMpS = Locomotive.CruiseControl.CurrentSelectedSpeedMpS;
                             Locomotive.CruiseControl.RestrictedSpeedActive = false;
@@ -673,7 +673,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                     }
                     if (controllerPosition == ControllerPosition.ThrottleDecrease)
                     {
-                        if (Locomotive.CruiseControl.RestrictedSpeedActive)
+                        if (Locomotive.CruiseControl.RestrictedSpeedActive && (Locomotive.LocoType != MSTSLocomotive.LocoTypes.Vectron || Locomotive.SelectedSpeedConfirmed))
                         {
                             Locomotive.CruiseControl.SelectedSpeedMpS = Locomotive.CruiseControl.CurrentSelectedSpeedMpS;
                             Locomotive.CruiseControl.RestrictedSpeedActive = false;
@@ -685,7 +685,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                     }
                     if (controllerPosition == ControllerPosition.ThrottleDecreaseFast)
                     {
-                        if (Locomotive.CruiseControl.RestrictedSpeedActive)
+                        if (Locomotive.CruiseControl.RestrictedSpeedActive && (Locomotive.LocoType != MSTSLocomotive.LocoTypes.Vectron || Locomotive.SelectedSpeedConfirmed))
                         {
                             Locomotive.CruiseControl.SelectedSpeedMpS = Locomotive.CruiseControl.CurrentSelectedSpeedMpS;
                             Locomotive.CruiseControl.RestrictedSpeedActive = false;

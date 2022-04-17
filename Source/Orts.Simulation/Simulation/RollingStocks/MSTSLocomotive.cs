@@ -683,7 +683,7 @@ namespace Orts.Simulation.RollingStocks
         public string UserTrainLength = "";
         public string UserTrainWeight = "";
         public string UserTime = "";
-
+        public DateTime AlerterPressedAt = new DateTime();
         public enum PantoModes { Auto, Forward, Aft, Both };
         public PantoModes PantoMode = PantoModes.Auto;
         public bool PantoCommandDown = false;
@@ -717,6 +717,8 @@ namespace Orts.Simulation.RollingStocks
         public PowerSystem SelectingPowerSystem = PowerSystem.CZ25kV;
 
         public int SystemAnnunciator = 0;
+
+        public bool SelectedSpeedConfirmed = true;
 
         public MSTSLocomotive(Simulator simulator, string wagPath)
             : base(simulator, wagPath)
@@ -3995,7 +3997,7 @@ namespace Orts.Simulation.RollingStocks
                         Mirel.Update(elapsedClockSeconds, AbsSpeedMpS, AbsWheelSpeedMpS);
                 }
 
-                if (CruiseControl != null && ControllerVolts > 0 && DynamicBrakePercent > -1)
+                if (CruiseControl != null && CruiseControl.controllerVolts > 0 && DynamicBrakePercent > -1)
                     DynamicBrakeChangeActiveState(false);
 
                 if (extendedPhysics == null)
@@ -6283,13 +6285,13 @@ namespace Orts.Simulation.RollingStocks
             {
                 if (CruiseControl != null)
                 {
-                    if (CruiseControl.SkipThrottleDisplay)
+                    if (CruiseControl.SkipThrottleDisplay && !UsingForceHandle)
                     {
                         return CombinedControlSplitPosition;
                     }
                     else
                     {
-                        return CombinedControlSplitPosition + (1 - CombinedControlSplitPosition) * (intermediateValue ? DynamicBrakeController.IntermediateValue : DynamicBrakeController.CurrentValue);
+                        return CombinedControlSplitPosition + (1 - CombinedControlSplitPosition) * (intermediateValue ? -DynamicBrakeController.IntermediateValue : -DynamicBrakeController.CurrentValue);
                     }
                 }
                 else
@@ -6308,6 +6310,8 @@ namespace Orts.Simulation.RollingStocks
             else if (CruiseControl.UseThrottleAsForceSelector && CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.Auto)
             {
                 float test = CruiseControl.SelectedMaxAccelerationPercent / 100;
+                if (UsingForceHandle)
+                    test = -ForceHandleValue / 100;
                 test = 1 - test;
                 if (test < 0.02f && test > 0)
                     test = 0.021f;
@@ -8053,9 +8057,9 @@ namespace Orts.Simulation.RollingStocks
                 MaintenanceState = 2;
             if (continuingTimeChangingSystem > 1.5)
                 MaintenanceState = 1;
-            if (continuingTimeChangingSystem > 44.5)
+            if (continuingTimeChangingSystem > 12.5)
                 MaintenanceState = 0;
-            if (continuingTimeChangingSystem > 45)
+            if (continuingTimeChangingSystem > 14)
             {
                 PantoBlocked = false;
                 SystemAnnunciator = 4;
@@ -8081,7 +8085,7 @@ namespace Orts.Simulation.RollingStocks
                 SystemAnnunciator = 3;
                 return;
             }
-            if (continuingTimeChangingSystem > 48)
+            if (continuingTimeChangingSystem > 17)
             {
                 changingPowerSystem = false;
                 timeChangingPowerSystem = 0;
@@ -10224,6 +10228,8 @@ namespace Orts.Simulation.RollingStocks
                             }
                         }
                         float temp = CruiseControl.RestrictedSpeedActive ? MpS.ToKpH(CruiseControl.CurrentSelectedSpeedMpS) : temp = MpS.ToKpH(CruiseControl.SelectedSpeedMpS);
+                        if (LocoType == LocoTypes.Vectron)
+                            temp = MpS.ToKpH(CruiseControl.NextSelectedSpeedMps);
                         if (cvc.ControlStyle == CABViewControlStyles.NEEDLE)
                         {
                             if (previousSelectedSpeed < temp) previousSelectedSpeed += 1f;
@@ -10767,6 +10773,16 @@ namespace Orts.Simulation.RollingStocks
             // Icik
             ResetControlUnitParameters();
             return data;            
+        }
+
+        public void ConfirmSelectedSpeed()
+        {
+            if (LocoType != LocoTypes.Vectron)
+                return;
+            SelectedSpeedConfirmed = true;
+            CruiseControl.CurrentSelectedSpeedMpS = CruiseControl.SelectedSpeedMpS = CruiseControl.NextSelectedSpeedMps;
+            CruiseControl.SpeedChanged = true;
+            Simulator.Confirmer.Information("Selected speed confirmed.");
         }
 
         public virtual string GetDataOfS(CabViewControl crc, ElapsedTime elapsedClockSeconds)

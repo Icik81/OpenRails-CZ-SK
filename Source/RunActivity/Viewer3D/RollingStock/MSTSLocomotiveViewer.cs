@@ -2478,10 +2478,8 @@ namespace Orts.Viewer3D.RollingStock
                     else
                         index = PercentToIndex(Locomotive.GetCombinedHandleValue(false));
                     break;
-                case CABViewControlTypes.FORCE_HANDLE: // hard coded for vectron in v1.5
-                    index = (int)((Locomotive.ForceHandleValue / 2) + 50) / 10;
-                    if (((Locomotive.ForceHandleValue / 2) + 50) > 50 && index < 6)
-                        index = 6;
+                case CABViewControlTypes.FORCE_HANDLE:
+                    index = PercentToIndex(Locomotive.GetCombinedHandleValue(false));
                     break;
                 case CABViewControlTypes.ORTS_SELECTED_SPEED_DISPLAY:
                     if (Locomotive.CruiseControl == null)
@@ -2527,6 +2525,11 @@ namespace Orts.Viewer3D.RollingStock
 
                 case CABViewControlTypes.ORTS_SELECTED_SPEED:
                     {
+                        if (Control.ControlStyle == CABViewControlStyles.NOT_SPRUNG)
+                        {
+                            index = PercentToIndex(data);
+                            break;
+                        }
                         if (data != Locomotive.CruiseControl.SelectedSpeed && Locomotive.LocoType == MSTSLocomotive.LocoTypes.Vectron)
                             data = Locomotive.CruiseControl.SelectedSpeed;
                         int test = (int)ControlDiscrete.MaxValue;

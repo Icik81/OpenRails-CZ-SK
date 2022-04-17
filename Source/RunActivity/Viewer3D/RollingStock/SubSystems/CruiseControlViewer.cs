@@ -53,6 +53,7 @@ namespace Orts.Viewer3D.RollingStock.SubSystems
             UserInputCommands.Add(UserCommand.ControlRestrictedSpeedZoneActive, new Action[] { Noop, () => CruiseControl.ActivateRestrictedSpeedZone() });
             UserInputCommands.Add(UserCommand.ControlCruiseControlModeIncrease, new Action[] { () => CruiseControl.SpeedSelectorModeStopIncrease(), () => CruiseControl.SpeedSelectorModeStartIncrease() });
             UserInputCommands.Add(UserCommand.ControlCruiseControlModeDecrease, new Action[] { Noop, () => CruiseControl.SpeedSelectorModeDecrease() });
+            UserInputCommands.Add(UserCommand.ControlConfirmSelectedSpeed, new Action[] { Noop, () => Locomotive.ConfirmSelectedSpeed() });
             UserInputCommands.Add(UserCommand.ControlTrainTypePaxCargo, new Action[] { Noop, () => Locomotive.ChangeTrainTypePaxCargo() });
             UserInputCommands.Add(UserCommand.ControlSelectSpeed10, new Action[] { Noop, () => CruiseControl.SetSpeed(10) });
             UserInputCommands.Add(UserCommand.ControlSelectSpeed20, new Action[] { Noop, () => CruiseControl.SetSpeed(20) });
