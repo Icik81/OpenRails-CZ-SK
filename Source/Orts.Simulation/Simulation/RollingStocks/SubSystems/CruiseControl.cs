@@ -785,15 +785,15 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                 ConfirmingSpeedRequired = true;
             }
 
-            if (SpeedChanged && Locomotive.LocoType == MSTSLocomotive.LocoTypes.Vectron && MpS.ToKpH(Locomotive.AbsSpeedMpS) < 110) // set up max effort for Vectron like "clever" loco's
-            {
-                overridenMaximalForce = (MpS.ToKpH(SelectedSpeedMpS) - MpS.ToKpH(Locomotive.AbsSpeedMpS)) * 2;
-                if (overridenMaximalForce < 0)
-                    overridenMaximalForce = -overridenMaximalForce;
-                SpeedChanged = false;
-            }
-            else if (MpS.ToKpH(Locomotive.AbsSpeedMpS) > 110)
-                overridenMaximalForce = 0;
+            //if (SpeedChanged && Locomotive.LocoType == MSTSLocomotive.LocoTypes.Vectron && MpS.ToKpH(Locomotive.AbsSpeedMpS) < 110) // set up max effort for Vectron like "clever" loco's
+            //{
+            //    overridenMaximalForce = (MpS.ToKpH(SelectedSpeedMpS) - MpS.ToKpH(Locomotive.AbsSpeedMpS)) * 2;
+            //    if (overridenMaximalForce < 0)
+            //        overridenMaximalForce = -overridenMaximalForce;
+            //    SpeedChanged = false;
+            //}
+            //else if (MpS.ToKpH(Locomotive.AbsSpeedMpS) > 110)
+            overridenMaximalForce = 0;
 
             if (overridenMaximalForce > 100)
                 overridenMaximalForce = 100;
