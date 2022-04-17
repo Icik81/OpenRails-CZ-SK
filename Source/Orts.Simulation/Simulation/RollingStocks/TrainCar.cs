@@ -355,6 +355,18 @@ namespace Orts.Simulation.RollingStocks
         public bool StartLooseCon;
         public bool AuxPowerOff;
 
+        public float PowerReductionResult1;  // Redukce výkonu od topení, klimatizace, kompresoru
+        public float PowerReductionResult2;  // Redukce výkonu od nedostatečného tlaku vzduchu v potrubí
+        public float PowerReductionResult3;  // Redukce výkonu při nadproudu topení, klimatizace 
+        public float PowerReductionResult4;  // Redukce výkonu při nadproudu pohonu, skluz 
+        public float PowerReductionResult5;  // Redukce výkonu při tlaku v brzdovém válci 
+        public float PowerReductionResult6;  // Redukce výkonu při motoru pod provozní teplotou
+        public float PowerReductionResult7;  // Odpojení TM při selhání
+        public float PowerReductionResult8;  // Odpojení TM při nezapnuté RDST
+        public float PowerReductionResult9;  // Redukce výkonu při poškozeném motoru 
+        public float PowerReductionResult10;  // Redukce výkonu při vypnutém proudu
+
+
         public float DieselHeaterPower;
         public float DieselHeaterPower0;
         public float DieselHeaterConsumptionPerHour;

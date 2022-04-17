@@ -257,9 +257,27 @@ namespace Orts.Viewer3D.RollingStock
         /// A keyboard or mouse click has occurred. Read the UserInput
         /// structure to determine what was pressed.
         /// </summary>
+        float PressedCycle;
+        bool PressedCycleStart;        
+        public bool DoublePressedKeyTest()
+        {
+            bool Status2KeyPressed = false;
+            
+            if (PressedCycleStart) PressedCycle++;
+            if (PressedCycle > 1 && PressedCycle < 10) Status2KeyPressed = true;
+
+            if (PressedCycle > 10)
+            {
+                PressedCycle = 0;
+                PressedCycleStart = false;                
+            }
+            return Status2KeyPressed;
+        }
+        
         public override void HandleUserInput(ElapsedTime elapsedTime)
         {
             // Icik
+            DoublePressedKeyTest();
 
             // Ovládání HV2 nearetované pozice
             if (Locomotive.HV2Enable)
@@ -317,20 +335,22 @@ namespace Orts.Viewer3D.RollingStock
                     Locomotive.HV4Switch = 1;
                     Locomotive.HVOffPressedTest = false;
                 }
+                
+                if (Locomotive.HV4Switch == 1 && UserInput.IsPressed(UserCommand.ControlHV4SwitchDown))
+                    PressedCycleStart = true;
 
-                if (Locomotive.HV4Switch == 0 && UserInput.IsDown(UserCommand.ControlHV4SwitchDown) && Locomotive.HVOffPressedTime > 1.0f)
+                if (Locomotive.HV4Switch == 1 && UserInput.IsPressed(UserCommand.ControlHV4SwitchDown) && DoublePressedKeyTest())
                 {
-                    Locomotive.HV4Switch = -1;                    
-                    Locomotive.HVOffPressedTest = false;
-                }
+                    Locomotive.HV4Switch = -1;
+                    Locomotive.HVOffPressedTest = false;                    
+                }                
+
                 if (Locomotive.HV4Switch == -1 && UserInput.IsPressed(UserCommand.ControlHV4SwitchUp))
                 {
                     Locomotive.HV4Switch = -1;
                     Locomotive.HVOffPressedTest = false;
                     Locomotive.HV4SwitchFullDown = true;
                 }
-
-
             }
             // Ovládání HV5 nearetované pozice
             if (Locomotive.HV5Enable)
@@ -375,12 +395,17 @@ namespace Orts.Viewer3D.RollingStock
                     Locomotive.Pantograph3Switch = 1;
                     Locomotive.PantographOffPressedTest = false;
                 }
-                if (Locomotive.Pantograph3Switch == 0 && UserInput.IsDown(UserCommand.ControlPantograph3SwitchDown) && Locomotive.PantographOffPressedTime > 1.0f)
+
+                if (Locomotive.Pantograph3Switch == 1 && UserInput.IsPressed(UserCommand.ControlPantograph3SwitchDown))
+                    PressedCycleStart = true;
+
+                if (Locomotive.Pantograph3Switch == 1 && UserInput.IsPressed(UserCommand.ControlPantograph3SwitchDown) && DoublePressedKeyTest())
                 {
                     Locomotive.Pantograph3Switch = -1;
                     Locomotive.Pantograph3CanOn = true;
                     Locomotive.PantographOffPressedTest = false;
                 }
+
                 if (Locomotive.Pantograph3Switch == -1 && UserInput.IsPressed(UserCommand.ControlPantograph3SwitchUp))
                 {
                     Locomotive.Pantograph3Switch = -1;

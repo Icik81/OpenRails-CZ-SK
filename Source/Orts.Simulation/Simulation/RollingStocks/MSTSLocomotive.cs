@@ -2854,18 +2854,10 @@ namespace Orts.Simulation.RollingStocks
             }
         }
 
-        public float PowerReductionResult1;  // Redukce výkonu od topení, klimatizace, kompresoru
-        public float PowerReductionResult2;  // Redukce výkonu od nedostatečného tlaku vzduchu v potrubí
-        public float PowerReductionResult3;  // Redukce výkonu při nadproudu topení, klimatizace 
-        public float PowerReductionResult4;  // Redukce výkonu při nadproudu pohonu, skluz 
-        public float PowerReductionResult5;  // Redukce výkonu při tlaku v brzdovém válci 
-        public float PowerReductionResult6;  // Redukce výkonu při motoru pod provozní teplotou
-        public float PowerReductionResult7;  // Odpojení TM při selhání
-        public float PowerReductionResult8;  // Odpojení TM při nezapnuté RDST
-        public float PowerReductionResult9;  // Redukce výkonu při poškozeném motoru 
+        // Icik 
         public void PowerReductionResult(float elapsedClockSeconds)
         {
-            if (this is MSTSDieselLocomotive || this is MSTSSteamLocomotive)
+            if (this is MSTSLocomotive)
             {
                 if (PowerReduction <
                     PowerReductionResult1
@@ -2876,7 +2868,8 @@ namespace Orts.Simulation.RollingStocks
                     + PowerReductionResult6
                     + PowerReductionResult7
                     + PowerReductionResult8
-                    + PowerReductionResult9)
+                    + PowerReductionResult9
+                    + PowerReductionResult10)
                     PowerReduction += 1 * elapsedClockSeconds;
 
                 if (PowerReduction >
@@ -2888,11 +2881,14 @@ namespace Orts.Simulation.RollingStocks
                     + PowerReductionResult6
                     + PowerReductionResult7
                     + PowerReductionResult8
-                    + PowerReductionResult9)
+                    + PowerReductionResult9
+                    + PowerReductionResult10)
                     PowerReduction -= 1 * elapsedClockSeconds;
 
                 PowerReduction = MathHelper.Clamp(PowerReduction, 0, 0.999f);
                 PowerReduction = (float)Math.Round(PowerReduction, 3);
+
+                if (PowerReductionResult10 == 1) SetThrottlePercent(0);
             }
             //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("PowerReduction " + PowerReduction));
             //Simulator.Confirmer.Message(ConfirmLevel.Information, Simulator.Catalog.GetString("Celková ztráta výkonu "+ PowerReduction * MaxPowerW/1000 + " kW!"));            
@@ -2921,6 +2917,7 @@ namespace Orts.Simulation.RollingStocks
             if (!this.AuxPowerOff)
                 Simulator.Confirmer.Information("Vypnutí proudu - pomocné pohony nejsou napájeny.");
             this.AuxPowerOff = true;
+            PowerReductionResult10 = 1;            
             if (AcceptMUSignals)
             {
                 foreach (TrainCar car in Train.Cars)
@@ -2928,6 +2925,7 @@ namespace Orts.Simulation.RollingStocks
                     if (car is MSTSLocomotive && car.AcceptMUSignals)
                     {
                         car.AuxPowerOff = true;
+                        car.PowerReductionResult10 = 1;
                     }
                 }
             }
@@ -2941,6 +2939,7 @@ namespace Orts.Simulation.RollingStocks
             if (IsLeadLocomotive() && Simulator.AuxPowerCanStart && this.AuxPowerOff)
                 Simulator.Confirmer.Information("Zapnutí proudu - pomocné pohony jsou napájeny.");
             this.AuxPowerOff = false;
+            PowerReductionResult10 = 0;
             if (AcceptMUSignals)
             {
                 foreach (TrainCar car in Train.Cars)
@@ -2948,6 +2947,7 @@ namespace Orts.Simulation.RollingStocks
                     if (car is MSTSLocomotive && car.AcceptMUSignals)
                     {
                         car.AuxPowerOff = false;
+                        car.PowerReductionResult10 = 0;
                     }
                 }
             }
@@ -4552,8 +4552,7 @@ namespace Orts.Simulation.RollingStocks
         /// This function updates periodically the states and physical variables of the locomotive's controllers.
         /// </summary>
         protected virtual void UpdateControllers(float elapsedClockSeconds)
-        {
-
+        {            
             SteamHeatController.Update(elapsedClockSeconds);
             if (IsPlayerTrain)
             {
@@ -4658,16 +4657,16 @@ namespace Orts.Simulation.RollingStocks
             }
 
             //Currently the ThrottlePercent is global to the entire train
-            //So only the lead locomotive updates it, the others only updates the controller (actually useless)
+            //So only the lead locomotive updates it, the others only updates the controller (actually useless)           
             if (this.IsLeadLocomotive())
-            {
+            {                
                 var throttleCurrentNotch = ThrottleController.CurrentNotch;
                 ThrottleController.Update(elapsedClockSeconds);
                 if (ThrottleController.CurrentNotch < throttleCurrentNotch && ThrottleController.ToZero)
                     SignalEvent(Event.ThrottleChange);
                 ThrottlePercent = (ThrottleIntervention < 0 ? ThrottleController.CurrentValue : ThrottleIntervention) * 100.0f;
                 ConfirmWheelslip(elapsedClockSeconds);
-                LocalThrottlePercent = (ThrottleIntervention < 0 ? ThrottleController.CurrentValue : ThrottleIntervention) * 100.0f;
+                LocalThrottlePercent = (ThrottleIntervention < 0 ? ThrottleController.CurrentValue : ThrottleIntervention) * 100.0f;                
             }
             else
             {
@@ -5806,7 +5805,6 @@ namespace Orts.Simulation.RollingStocks
         private bool forceHandleDecreasing = false;
         public void StartThrottleIncrease()
         {
-
             if (DynamicBrakePercent > 0 && SpeedMpS == 0)
             {
                 DynamicBrakePercent = 0;
@@ -6199,7 +6197,7 @@ namespace Orts.Simulation.RollingStocks
         }
 
         public void SetThrottlePercent(float percent)
-        {
+        {            
             if (CruiseControl != null)
             {
                 if (CruiseControl.UseThrottleAsForceSelector && CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.Auto && !UsingForceHandle)
