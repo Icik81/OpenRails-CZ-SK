@@ -1260,7 +1260,7 @@ namespace Orts.Simulation.RollingStocks
             EndAIVoltageChoice:
             SetAIPantoDown(elapsedClockSeconds);
             UnderVoltageProtection(elapsedClockSeconds);            
-
+            
             if (IsPlayerTrain)
             {
                 RouteVoltageVInfo = RouteVoltageV;
@@ -1269,6 +1269,18 @@ namespace Orts.Simulation.RollingStocks
                 AuxAirConsumption(elapsedClockSeconds);                
                 FaultByPlayer(elapsedClockSeconds);                
                 MUCableCommunication();
+
+                // Vypnutí baterií způsobí odpadnutí pantografů
+                if (!Battery && Pantograph3Switch != 1)
+                {
+                    SignalEvent(PowerSupplyEvent.LowerPantograph);
+                    if (MPManager.IsMultiPlayer())
+                    {
+                        MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO1", 0).ToString());
+                        MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO2", 0).ToString());
+                    }
+                    Pantograph3Switch = 1;
+                }
 
                 // Nastavení pro plně oživenou lokomotivu
                 if (LocoReadyToGo && BrakeSystem.IsAirFull)
@@ -1290,6 +1302,7 @@ namespace Orts.Simulation.RollingStocks
                     CompressorSwitch2 = 1;
                     CompressorMode_OffAuto = true;
                     CompressorMode2_OffAuto = true;
+                    HV4Switch = 1;
 
                     SplashScreen = false;
 
@@ -1305,8 +1318,8 @@ namespace Orts.Simulation.RollingStocks
                             SignalEvent(PowerSupplyEvent.RaisePantograph, 1);
                             if (MPManager.IsMultiPlayer())                            
                                 MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO1", 1).ToString());                            
-                        }
-                        
+                        }                       
+
                         if (Pantograph4Enable)
                         {
                             Pantograph4Switch = 1;
@@ -1413,8 +1426,8 @@ namespace Orts.Simulation.RollingStocks
                         SwitchingVoltageMode_OffAC = false;
                         break;
                     case 2:
-                        SwitchingVoltageMode_OffDC = true;
-                        SwitchingVoltageMode_OffAC = false;
+                        SwitchingVoltageMode_OffDC = false;
+                        SwitchingVoltageMode_OffAC = true;
                         break;
                 }
             }
@@ -2650,6 +2663,27 @@ namespace Orts.Simulation.RollingStocks
             status.AppendFormat("{0} = {1}",
                 Simulator.Catalog.GetParticularString("PowerSupply", "Power"),
                 Simulator.Catalog.GetParticularString("PowerSupply", GetStringAttribute.GetPrettyName(PowerSupply.State)));
+
+            // Icik
+            status.AppendLine();
+            if (Battery)
+                status.AppendFormat("{0} = {1}",
+                Simulator.Catalog.GetString("Battery"),                
+                Simulator.Catalog.GetParticularString("Battery", Simulator.Catalog.GetString("On")));
+            else
+                status.AppendFormat("{0} = {1}",
+                Simulator.Catalog.GetString("Battery"),
+                Simulator.Catalog.GetParticularString("Battery", Simulator.Catalog.GetString("Off")));
+            status.AppendLine();
+            if (PowerKey)
+                status.AppendFormat("{0} = {1}",
+                Simulator.Catalog.GetString("PowerKey"),
+                Simulator.Catalog.GetParticularString("PowerKey", Simulator.Catalog.GetString("On")));
+            else
+                status.AppendFormat("{0} = {1}",
+                Simulator.Catalog.GetString("PowerKey"),
+                Simulator.Catalog.GetParticularString("PowerKey", Simulator.Catalog.GetString("Off")));
+
             return status.ToString();
         }
 

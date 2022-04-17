@@ -787,6 +787,27 @@ namespace Orts.Simulation.RollingStocks
         {
             var status = new StringBuilder();
             // Icik
+            if (Battery)
+            {
+                status.AppendFormat("{0} = {1}\n", Simulator.Catalog.GetString("Battery"),
+                  Simulator.Catalog.GetParticularString("", "On"));
+            }
+            else
+            {
+                status.AppendFormat("{0} = {1}\n", Simulator.Catalog.GetString("Battery"),
+                  Simulator.Catalog.GetParticularString("", "Off"));
+            }
+            if (PowerKey)
+            {
+                status.AppendFormat("{0} = {1}\n", Simulator.Catalog.GetString("PowerKey"),
+                  Simulator.Catalog.GetParticularString("", "On"));
+            }
+            else
+            {
+                status.AppendFormat("{0} = {1}\n", Simulator.Catalog.GetString("PowerKey"),
+                  Simulator.Catalog.GetParticularString("", "Off"));
+            }
+
             if (!ControlUnit)
             {
                 status.AppendFormat("{0} = {1}\n", Simulator.Catalog.GetString("Engine"),

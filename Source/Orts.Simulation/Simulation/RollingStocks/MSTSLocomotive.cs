@@ -546,7 +546,7 @@ namespace Orts.Simulation.RollingStocks
         public float HV3Switch = 1;
         public float LastStateHV3 = 1;
         public bool HV4Enable = false;
-        public float HV4Switch = 1;
+        public float HV4Switch = -1;
         public float LastStateHV4 = 1;
         public bool HV4SwitchFullDown;
         public float HV4SwitchFullDownCycle;
@@ -7549,26 +7549,30 @@ namespace Orts.Simulation.RollingStocks
                 
                 if (LastStateHV4 != HV4Switch)
                     SignalEvent(Event.PantographToggle); // Zvuk přepínače                                
-                
-                switch (HV4Switch)
+
+                if (Battery && PowerKey)
                 {
-                    case -1: // panto dolu
-                        //Simulator.Confirmer.Information("Switch -1");
-                        Pantograph3Switch = -1;                        
-                        break;
-                    case 0: // vypni proud
-                        //Simulator.Confirmer.Information("Switch 0");                        
-                        AuxPowerStartOff();                        
-                        break;
-                    case 1: // střed X
-                        //Simulator.Confirmer.Information("Switch 1");                        
-                        break;
-                    case 2: // HV zapnout, panto nahoru
-                        AuxPowerStartOn();
-                        Pantograph3Switch = 2;
-                        //Simulator.Confirmer.Information("Switch 2");                        
-                        break;
-                }
+                    switch (HV4Switch)
+                    {
+                        case -1: // panto dolu
+                                 //Simulator.Confirmer.Information("Switch -1");
+                            Pantograph3Switch = -1;
+                            break;
+                        case 0: // vypni proud
+                                //Simulator.Confirmer.Information("Switch 0");                        
+                            AuxPowerStartOff();
+                            break;
+                        case 1: // střed X
+                                //Simulator.Confirmer.Information("Switch 1");                        
+                            break;
+                        case 2: // HV zapnout, panto nahoru
+                            AuxPowerStartOn();
+                            if (AirForPantograph)
+                                Pantograph3Switch = 2;
+                            //Simulator.Confirmer.Information("Switch 2");                        
+                            break;
+                    }
+                }                                
                 LastStateHV4 = HV4Switch;
             }
         }
@@ -8033,13 +8037,13 @@ namespace Orts.Simulation.RollingStocks
 
             if (SwitchingVoltageMode == 0)
             {
-                SwitchingVoltageMode_OffDC = false;
+                SwitchingVoltageMode_OffDC = true;
                 SwitchingVoltageMode_OffAC = false;
             }
             if (SwitchingVoltageMode == 2)
             {
                 SwitchingVoltageMode_OffDC = false;
-                SwitchingVoltageMode_OffAC = false;
+                SwitchingVoltageMode_OffAC = true;
             }
             continuingTimeChangingSystem += elapsedSeconds;
 
