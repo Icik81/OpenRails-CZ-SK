@@ -630,6 +630,8 @@ namespace Orts.Simulation.RollingStocks
         public bool MUCable;
         public bool MUCableEquipment;
         public float MaxPowerWBase;
+        public bool DoorSwitchEnable;
+        public float DoorSwitch = 1;
 
         // Jindrich
         public bool IsActive = false;
@@ -8568,7 +8570,6 @@ namespace Orts.Simulation.RollingStocks
         }
 
 
-
         // Zatím povoleno kvůli kompatibilitě
         int NumberChoice = 1;
         public void ToggleControlRouteVoltage()
@@ -10747,6 +10748,12 @@ namespace Orts.Simulation.RollingStocks
                             data = 1;
                         else
                             data = 0;
+                        break;
+                    }
+                case CABViewControlTypes.DOORSWITCH:
+                    {
+                        DoorSwitchEnable = true;
+                        data = DoorSwitch;                        
                         break;
                     }
             }

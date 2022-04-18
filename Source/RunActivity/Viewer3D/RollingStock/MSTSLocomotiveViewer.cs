@@ -2646,7 +2646,8 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.RDST_BREAKER_POWER:
                 case CABViewControlTypes.HV4PANTOUP:
                 case CABViewControlTypes.HV4VOLTAGESETUP:
-                    
+                case CABViewControlTypes.DOORSWITCH:
+
                     index = (int)data;
                     break;
 
@@ -3480,7 +3481,22 @@ namespace Orts.Viewer3D.RollingStock
                             new ToggleRDSTBreakerCommand(Viewer.Log);
                     }
                     break;
-
+                case CABViewControlTypes.DOORSWITCH:
+                    // Ovládání dveří
+                    if (Locomotive.DoorSwitchEnable)
+                    {
+                        if (ChangedValue(0) < 0 && !IsChanged)
+                        {
+                            new ToggleDoorsLeftCommand(Viewer.Log);
+                            IsChanged = true;
+                        }
+                        if (ChangedValue(0) > 0 && !IsChanged)
+                        {
+                            new ToggleDoorsRightCommand(Viewer.Log);
+                            IsChanged = true;
+                        }
+                    }
+                    break;
 
 
                 // Train Control System controls

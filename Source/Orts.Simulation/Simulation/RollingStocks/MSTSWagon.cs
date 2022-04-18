@@ -3725,9 +3725,41 @@ namespace Orts.Simulation.RollingStocks
             }
         }
 
+        float PrevDoorSwitch;
         public void ToggleDoorsLeft()
         {
-            // Icik            
+            // Icik
+            var loco = this as MSTSLocomotive;
+            if (loco.DoorSwitchEnable)
+            {
+                loco.DoorSwitch--;
+                if (loco.DoorSwitch < 0)
+                {
+                    loco.DoorSwitch = MathHelper.Clamp(loco.DoorSwitch, 0, 2);
+                    return;
+                }
+                if (PrevDoorSwitch != loco.DoorSwitch)
+                    SignalEvent(Event.PantographToggle); // Zvuk přepínače 
+                PrevDoorSwitch = loco.DoorSwitch;
+
+                if (loco.DoorSwitch == 1)
+                {
+                    foreach (var car in Train.Cars)
+                    {
+                        var mstsWagon = car as MSTSWagon;
+                        if (mstsWagon.AutomaticDoors && mstsWagon.BrakeSystem.AirOK_DoorCanManipulate && (DoorLeftOpen || DoorRightOpen))
+                        {
+                            mstsWagon.DoorRightOpen = false;
+                            mstsWagon.DoorLeftOpen = false;
+                            SignalEvent(Event.DoorClose);
+                            car.BrakeSystem.RightDoorIsOpened = false;
+                            car.BrakeSystem.LeftDoorIsOpened = false;
+                        }                    
+                    }
+                    return;
+                }                
+            }
+
             if (SpeedMpS > 0)
             {
                 if (DoorLeftOpen)
@@ -3789,7 +3821,38 @@ namespace Orts.Simulation.RollingStocks
         }
         public void ToggleDoorsRight()
         {
-            // Icik            
+            // Icik
+            var loco = this as MSTSLocomotive;
+            if (loco.DoorSwitchEnable)
+            {
+                loco.DoorSwitch++;
+                if (loco.DoorSwitch > 2)
+                {
+                    loco.DoorSwitch = MathHelper.Clamp(loco.DoorSwitch, 0, 2);
+                    return;
+                }
+                if (PrevDoorSwitch != loco.DoorSwitch)
+                    SignalEvent(Event.PantographToggle); // Zvuk přepínače 
+                PrevDoorSwitch = loco.DoorSwitch;
+
+                if (loco.DoorSwitch == 1)
+                {
+                    foreach (var car in Train.Cars)
+                    {
+                        var mstsWagon = car as MSTSWagon;
+                        if (mstsWagon.AutomaticDoors && mstsWagon.BrakeSystem.AirOK_DoorCanManipulate && (DoorLeftOpen || DoorRightOpen))
+                        {
+                            mstsWagon.DoorRightOpen = false;
+                            mstsWagon.DoorLeftOpen = false;
+                            SignalEvent(Event.DoorClose);
+                            car.BrakeSystem.RightDoorIsOpened = false;
+                            car.BrakeSystem.LeftDoorIsOpened = false;
+                        }
+                    }
+                    return;
+                }                
+            }
+
             if (SpeedMpS > 0)
             {
                 if (DoorRightOpen)

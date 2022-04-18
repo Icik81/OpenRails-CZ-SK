@@ -429,6 +429,7 @@ namespace Orts.Formats.Msts
         RDST_BREAKER_POWER,
         HV4PANTOUP,
         HV4VOLTAGESETUP,
+        DOORSWITCH,
 
 
         // Further CabViewControlTypes must be added above this line, to avoid their malfunction in 3DCabs
