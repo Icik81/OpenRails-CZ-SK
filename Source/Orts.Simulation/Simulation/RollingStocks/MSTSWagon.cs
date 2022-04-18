@@ -3724,8 +3724,7 @@ namespace Orts.Simulation.RollingStocks
                 car.BrakeSystem.RightDoorCycle = 1;
             }
         }
-
-        float PrevDoorSwitch;
+        
         public void ToggleDoorsLeft()
         {
             // Icik
@@ -3738,9 +3737,9 @@ namespace Orts.Simulation.RollingStocks
                     loco.DoorSwitch = MathHelper.Clamp(loco.DoorSwitch, 0, 2);
                     return;
                 }
-                if (PrevDoorSwitch != loco.DoorSwitch)
+                if (loco.PrevDoorSwitch != loco.DoorSwitch)
                     SignalEvent(Event.PantographToggle); // Zvuk přepínače 
-                PrevDoorSwitch = loco.DoorSwitch;
+                loco.PrevDoorSwitch = loco.DoorSwitch;
 
                 if (loco.DoorSwitch == 1)
                 {
@@ -3831,9 +3830,9 @@ namespace Orts.Simulation.RollingStocks
                     loco.DoorSwitch = MathHelper.Clamp(loco.DoorSwitch, 0, 2);
                     return;
                 }
-                if (PrevDoorSwitch != loco.DoorSwitch)
+                if (loco.PrevDoorSwitch != loco.DoorSwitch)
                     SignalEvent(Event.PantographToggle); // Zvuk přepínače 
-                PrevDoorSwitch = loco.DoorSwitch;
+                loco.PrevDoorSwitch = loco.DoorSwitch;
 
                 if (loco.DoorSwitch == 1)
                 {

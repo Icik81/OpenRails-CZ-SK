@@ -632,6 +632,7 @@ namespace Orts.Simulation.RollingStocks
         public float MaxPowerWBase;
         public bool DoorSwitchEnable;
         public float DoorSwitch = 1;
+        public float PrevDoorSwitch = 1;
 
         // Jindrich
         public bool IsActive = false;
@@ -1548,6 +1549,8 @@ namespace Orts.Simulation.RollingStocks
             HeatingMaxCurrentA = locoCopy.HeatingMaxCurrentA;
             DieselStartDelay = locoCopy.DieselStartDelay;
             MUCableEquipment = locoCopy.MUCableEquipment;
+            DoorSwitch = locoCopy.DoorSwitch;
+            PrevDoorSwitch = locoCopy.PrevDoorSwitch;
 
             // Jindrich
             if (locoCopy.CruiseControl != null)
@@ -1708,7 +1711,9 @@ namespace Orts.Simulation.RollingStocks
             outf.Write(DieselDirectionControllerInOut);
             outf.Write(DieselMotorDefected);
             outf.Write(DieselMotorPowerLost);
-            outf.Write(DieselLocoTempReady);            
+            outf.Write(DieselLocoTempReady);
+            outf.Write(DoorSwitch);
+            outf.Write(PrevDoorSwitch);
 
             base.Save(outf);
 
@@ -1807,7 +1812,9 @@ namespace Orts.Simulation.RollingStocks
             DieselDirectionControllerInOut = inf.ReadBoolean();
             DieselMotorDefected = inf.ReadBoolean();
             DieselMotorPowerLost = inf.ReadBoolean();
-            DieselLocoTempReady = inf.ReadBoolean();            
+            DieselLocoTempReady = inf.ReadBoolean();
+            DoorSwitch = inf.ReadSingle();
+            PrevDoorSwitch = inf.ReadSingle();
 
             base.Restore(inf);
 
