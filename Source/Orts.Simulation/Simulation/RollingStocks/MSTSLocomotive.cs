@@ -687,6 +687,7 @@ namespace Orts.Simulation.RollingStocks
         public string UserTrainWeight = "";
         public string UserTime = "";
         public DateTime AlerterPressedAt = new DateTime();
+        public DateTime SelectedSpeedChangedAt = new DateTime();
         public enum PantoModes { Auto, Forward, Aft, Both };
         public PantoModes PantoMode = PantoModes.Auto;
         public bool PantoCommandDown = false;
@@ -3828,21 +3829,21 @@ namespace Orts.Simulation.RollingStocks
 
                 if (UsingForceHandle && TrainBrakeController.GetStatus().ToString() != "EPApply")
                 {
-                    if (forceHandleIncreasing)
+                    if (ForceHandleIncreasing)
                     {
                         ForceHandleValue += 0.5f;
                         if (ForceHandleValue > 100)
                             ForceHandleValue = 100;
                         Simulator.Confirmer.Information("Force inreased to " + ((int)ForceHandleValue).ToString());
                     }
-                    if (forceHandleDecreasing)
+                    if (ForceHandleDecreasing)
                     {
                         ForceHandleValue -= 0.5f;
                         if (ForceHandleValue < -100)
                             ForceHandleValue = -100;
                         Simulator.Confirmer.Information("Force dereased to " + ((int)ForceHandleValue).ToString());
                     }
-                    if (!forceHandleDecreasing && !forceHandleIncreasing)
+                    if (!ForceHandleDecreasing && !ForceHandleIncreasing)
                     {
                         if (ForceHandleValue < 1.5f && ForceHandleValue > 0)
                         {
@@ -4623,10 +4624,10 @@ namespace Orts.Simulation.RollingStocks
                     if (DynamicBrakeCommandStartTime + DynamicBrakeDelayS < Simulator.ClockTime /*|| (DynamicBrakeController != null && DynamicBrakeController.CommandStartTime + DynamicBrakeDelayS < Simulator.ClockTime)*/)
                     {
                         DynamicBrake = true; // Engage
-                        if (IsLeadLocomotive() && DynamicBrakeController != null)
+                        if (IsLeadLocomotive() && DynamicBrakeController != null && LocoType != LocoTypes.Vectron)
                             Simulator.Confirmer.ConfirmWithPerCent(CabControl.DynamicBrake, DynamicBrakeController.CurrentValue * 100);
                     }
-                    else if (IsLeadLocomotive())
+                    else if (IsLeadLocomotive() && LocoType != LocoTypes.Vectron)
                         Simulator.Confirmer.Confirm(CabControl.DynamicBrake, CabSetting.On); // Keeping status string on screen so user knows what's happening
                 }
                 else if (this.IsLeadLocomotive() || !this.IsLeadLocomotive()) // Icik
@@ -4660,7 +4661,7 @@ namespace Orts.Simulation.RollingStocks
                 //           {
                 DynamicBrake = false; // Disengage
                 DynamicBrakeForceN = 0f; // Reset dynamic brake force
-                if (IsLeadLocomotive())
+                if (IsLeadLocomotive() && LocoType != LocoTypes.Vectron)
                     Simulator.Confirmer.Confirm(CabControl.DynamicBrake, CabSetting.Off);
                 //           }
                 //            else if (IsLeadLocomotive())
@@ -5812,8 +5813,8 @@ namespace Orts.Simulation.RollingStocks
             CommandStartTime = Simulator.ClockTime;
         }
 
-        private bool forceHandleIncreasing = false;
-        private bool forceHandleDecreasing = false;
+        public bool ForceHandleIncreasing = false;
+        public bool ForceHandleDecreasing = false;
         public void StartThrottleIncrease()
         {
             if (DynamicBrakePercent > 0 && SpeedMpS == 0)
@@ -5824,7 +5825,7 @@ namespace Orts.Simulation.RollingStocks
             Mirel.ResetVigilance();
             if (UsingForceHandle)
             {
-                forceHandleIncreasing = true;
+                ForceHandleIncreasing = true;
                 return;
             }
             if (MultiPositionControllers != null)
@@ -5886,7 +5887,7 @@ namespace Orts.Simulation.RollingStocks
 
         public void StopThrottleIncrease()
         {
-            forceHandleIncreasing = false;
+            ForceHandleIncreasing = false;
             Mirel.ResetVigilance();
             if (MultiPositionControllers != null)
             {
@@ -5963,7 +5964,7 @@ namespace Orts.Simulation.RollingStocks
             Mirel.ResetVigilance();
             if (UsingForceHandle)
             {
-                forceHandleDecreasing = true;
+                ForceHandleDecreasing = true;
                 return;
             }
             if (MultiPositionControllers != null)
@@ -6001,7 +6002,7 @@ namespace Orts.Simulation.RollingStocks
             Mirel.ResetVigilance();
             if (UsingForceHandle)
             {
-                forceHandleDecreasing = false;
+                ForceHandleDecreasing = false;
                 return;
             }
             if (MultiPositionControllers != null)
@@ -6300,7 +6301,10 @@ namespace Orts.Simulation.RollingStocks
                     }
                     else
                     {
-                        return CombinedControlSplitPosition + (1 - CombinedControlSplitPosition) * (intermediateValue ? -DynamicBrakeController.IntermediateValue : -DynamicBrakeController.CurrentValue);
+                        if (UsingForceHandle)
+                            return CombinedControlSplitPosition + (1 - CombinedControlSplitPosition) * ForceHandleValue  / 100;
+                        else
+                            return CombinedControlSplitPosition + (1 - CombinedControlSplitPosition) * (intermediateValue ? -DynamicBrakeController.IntermediateValue : -DynamicBrakeController.CurrentValue);
                     }
                 }
                 else
@@ -6555,6 +6559,10 @@ namespace Orts.Simulation.RollingStocks
                     }
                 }
             }
+
+            if (TrainBrakeController.Notches[TrainBrakeController.CurrentNotch].SpringLoaded)
+                TrainBrakeController.StartIncrease();
+            
             AlerterReset(TCSEvent.TrainBrakeChanged);
             TrainBrakeController.StopDecrease();
             new TrainBrakeCommand(Simulator.Log, false, TrainBrakeController.CurrentValue, TrainBrakeController.CommandStartTime, from);
@@ -10237,7 +10245,13 @@ namespace Orts.Simulation.RollingStocks
                         }
                         float temp = CruiseControl.RestrictedSpeedActive ? MpS.ToKpH(CruiseControl.CurrentSelectedSpeedMpS) : temp = MpS.ToKpH(CruiseControl.SelectedSpeedMpS);
                         if (LocoType == LocoTypes.Vectron)
-                            temp = MpS.ToKpH(CruiseControl.NextSelectedSpeedMps);
+                        {
+                            TimeSpan ts = DateTime.Now - SelectedSpeedChangedAt;
+                            if (ts.TotalSeconds < 5)
+                                temp = MpS.ToKpH(CruiseControl.NextSelectedSpeedMps);
+                            else
+                                temp = MpS.ToKpH(CruiseControl.SelectedSpeedMpS);
+                        }
                         if (cvc.ControlStyle == CABViewControlStyles.NEEDLE)
                         {
                             if (previousSelectedSpeed < temp) previousSelectedSpeed += 1f;

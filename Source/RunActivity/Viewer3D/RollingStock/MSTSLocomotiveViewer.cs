@@ -1916,6 +1916,13 @@ namespace Orts.Viewer3D.RollingStock
                 if (Locomotive.CruiseControl.SpeedRegMode == Simulation.RollingStocks.SubSystems.CruiseControl.SpeedRegulatorMode.Manual)
                     display = Locomotive.DisplaySelectedSpeed;
 
+            if (Locomotive.LocoType == MSTSLocomotive.LocoTypes.Vectron && Locomotive.CruiseControl.SpeedRegMode == Simulation.RollingStocks.SubSystems.CruiseControl.SpeedRegulatorMode.Manual)
+            {
+                TimeSpan ts = DateTime.Now - Locomotive.SelectedSpeedChangedAt;
+                if (ts.TotalSeconds < 5)
+                    display = true;
+            }
+
             if (!display)
                 return;
             var dark = Viewer.MaterialManager.sunDirection.Y <= -0.085f || Viewer.Camera.IsUnderground;
@@ -2481,6 +2488,9 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.FORCE_HANDLE:
                     index = PercentToIndex(Locomotive.GetCombinedHandleValue(false));
                     break;
+                case CABViewControlTypes.REQUESTED_FORCE:
+                    index = PercentToIndex(Locomotive.GetCombinedHandleValue(false));
+                    break;
                 case CABViewControlTypes.ORTS_SELECTED_SPEED_DISPLAY:
                     if (Locomotive.CruiseControl == null)
                     {
@@ -2527,7 +2537,7 @@ namespace Orts.Viewer3D.RollingStock
                     {
                         if (Control.ControlStyle == CABViewControlStyles.NOT_SPRUNG)
                         {
-                            index = PercentToIndex(data);
+                            index = PercentToIndex(MpS.ToKpH(Locomotive.CruiseControl.NextSelectedSpeedMps));
                             break;
                         }
                         if (data != Locomotive.CruiseControl.SelectedSpeed && Locomotive.LocoType == MSTSLocomotive.LocoTypes.Vectron)
@@ -3553,6 +3563,33 @@ namespace Orts.Viewer3D.RollingStock
                         new TCSButtonCommand(Viewer.Log, !Locomotive.TrainControlSystem.TCSCommandButtonDown[commandIndex], commandIndex);
                     new TCSSwitchCommand(Viewer.Log, ChangedValue(Locomotive.TrainControlSystem.TCSCommandSwitchOn[commandIndex] ? 1 : 0) > 0, commandIndex);
                     break;
+                case CABViewControlTypes.REQUESTED_FORCE:
+                    var v = ChangedValue(0);
+                    if (v > 0)
+                    {
+                        Locomotive.ForceHandleIncreasing = true;
+                    }
+                    if (v < 0)
+                    {
+                        Locomotive.ForceHandleDecreasing = true;
+                    }
+                    if (v == 0)
+                    {
+                        Locomotive.ForceHandleIncreasing = Locomotive.ForceHandleDecreasing = false;
+                    }
+                    break;
+                case CABViewControlTypes.ORTS_SELECTED_SPEED:
+                    var s = ChangedValue(0);
+                    if (s > 0)
+                        Locomotive.CruiseControl.SpeedRegulatorSelectedSpeedStartIncrease();
+                    if (s < 0)
+                        Locomotive.CruiseControl.SpeedRegulatorSelectedSpeedStartDecrease();
+                    if (s == 0)
+                    {
+                        Locomotive.CruiseControl.SpeedRegulatorSelectedSpeedStopIncrease();
+                        Locomotive.CruiseControl.SpeedRegulatorSelectedSpeedStopDecrease();
+                    }
+                    break;
                 case CABViewControlTypes.ORTS_CC_SELECT_SPEED:
                     if (Locomotive.CruiseControl == null)
                         break;
@@ -4076,7 +4113,10 @@ namespace Orts.Viewer3D.RollingStock
                                         if (Locomotive.CruiseControl.SpeedRegMode == Simulation.RollingStocks.SubSystems.CruiseControl.SpeedRegulatorMode.Auto)
                                             Locomotive.CruiseControl.SpeedRegMode = Simulation.RollingStocks.SubSystems.CruiseControl.SpeedRegulatorMode.Manual;
                                         else if (Locomotive.CruiseControl.SpeedRegMode == Simulation.RollingStocks.SubSystems.CruiseControl.SpeedRegulatorMode.Manual)
+                                        {
                                             Locomotive.CruiseControl.SpeedRegMode = Simulation.RollingStocks.SubSystems.CruiseControl.SpeedRegulatorMode.Auto;
+                                            Locomotive.CruiseControl.SelectedSpeedMpS = Locomotive.CruiseControl.CurrentSelectedSpeedMpS = Locomotive.CruiseControl.NextSelectedSpeedMps;
+                                        }
                                         break;
                                     case "PantoAuto":
                                         Locomotive.PantoMode = MSTSLocomotive.PantoModes.Auto;

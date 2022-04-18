@@ -27,8 +27,14 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
         public float Value;
         public bool Smooth;
         public ControllerState Type;
+        public bool SpringLoaded = false;
         public MSTSNotch(float v, int s, string type, STFReader stf)
         {
+            if (s == -1)
+            {
+                SpringLoaded = true;
+                s = 0;
+            }
             Value = v;
             Smooth = s == 0 ? false : true;
             Type = ControllerState.Dummy;  // Default to a dummy controller state if no valid alternative state used

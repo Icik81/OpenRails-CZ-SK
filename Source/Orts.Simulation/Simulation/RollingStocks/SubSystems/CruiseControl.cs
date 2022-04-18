@@ -711,6 +711,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
 
         public void SetSpeed(float Speed)
         {
+            Locomotive.SelectedSpeedChangedAt = DateTime.Now;
             NextSelectedSpeedMps = MpS.FromKpH(Speed);
             Locomotive.SelectedSpeedConfirmed = false;
             if (MpS.FromKpH(Speed) != SelectedSpeedMpS)
@@ -792,8 +793,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems
             //        overridenMaximalForce = -overridenMaximalForce;
             //    SpeedChanged = false;
             //}
-            //else if (MpS.ToKpH(Locomotive.AbsSpeedMpS) > 110)
-            overridenMaximalForce = 0;
+            if (MpS.ToKpH(Locomotive.AbsSpeedMpS) < 100)
+                overridenMaximalForce = 50;
+            else
+                overridenMaximalForce = (MpS.ToKpH(Locomotive.AbsSpeedMpS) - 100) + 50;
 
             if (overridenMaximalForce > 100)
                 overridenMaximalForce = 100;
