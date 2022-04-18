@@ -85,7 +85,14 @@ namespace Orts.Viewer3D.RollingStock
             {
                 CruiseControlViewer = new CruiseControlViewer(this, Locomotive, Locomotive.CruiseControl);
                 CruiseControlViewer.InitializeUserInputCommands();
-        }
+            }
+
+            // Icik
+            // Inicializace STATIC, nebude mít aktivovaný trigger zvuku motoru
+            if (this.MSTSLocomotive.Train.TrainType == Train.TRAINTYPE.STATIC)
+            {
+                this.MSTSLocomotive.SignalEvent(Event.EnginePowerOff);
+            }
         }
 
         protected virtual void StartGearBoxIncrease()
@@ -139,7 +146,7 @@ namespace Orts.Viewer3D.RollingStock
         }
 
         public override void InitializeUserInputCommands()
-        {
+        {            
             // Steam locomotives handle these differently, and might have set them already
             if (!UserInputCommands.ContainsKey(UserCommand.ControlForwards))
                 UserInputCommands.Add(UserCommand.ControlForwards, new Action[] { Noop, () => ReverserControlForwards() });
@@ -250,7 +257,7 @@ namespace Orts.Viewer3D.RollingStock
             UserInputCommands.Add(UserCommand.ControlSetVoltage0, new Action[] { Noop, () => Locomotive.SetVoltageMarker(0) });
             UserInputCommands.Add(UserCommand.ControlDeleteVoltageMarker, new Action[] { Noop, () => Locomotive.DeleteVoltageMarker() });
 
-            base.InitializeUserInputCommands();
+            base.InitializeUserInputCommands();            
         }
 
         /// <summary>
@@ -588,7 +595,7 @@ namespace Orts.Viewer3D.RollingStock
         /// animated objects, and add their primitives to the RenderFrame list.
         /// </summary>
         public override void PrepareFrame(RenderFrame frame, ElapsedTime elapsedTime)
-        {
+        {            
             if (Viewer.Camera.AttachedCar == this.MSTSWagon && Viewer.Camera.Style == Camera.Styles.ThreeDimCab)
             {
                 if (ThreeDimentionCabViewer != null)
