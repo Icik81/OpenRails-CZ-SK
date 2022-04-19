@@ -10134,8 +10134,8 @@ namespace Orts.Simulation.RollingStocks
                                     }
                                 }
                             }
-                            cvc.ElapsedTime = 0;
-                            cvc.PreviousData = data;
+                            //cvc.ElapsedTime = 0;
+                            //cvc.PreviousData = data;
                             break;
                         }
                         else if (cvc.CurrentSource.ToLower() == "motor")
