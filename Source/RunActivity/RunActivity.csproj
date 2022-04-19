@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Orts</RootNamespace>
     <AssemblyName>RunActivity</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ApplicationIcon>..\ORTS.ico</ApplicationIcon>
     <TargetFrameworkProfile />
@@ -54,8 +54,9 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
     <OutputPath>..\..\Program\</OutputPath>
     <DefineConstants>WINDOWS;NEW_ACTION;WITH_NEW_SAVE;ACTIVITY_EDITOR</DefineConstants>
-    <Prefer32Bit>true</Prefer32Bit>
+    <Prefer32Bit>false</Prefer32Bit>
     <Optimize>true</Optimize>
+    <PlatformTarget>x64</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="EmbedIO, Version=3.4.3.0, Culture=neutral, PublicKeyToken=5e5f048b6e04267e, processorArchitecture=MSIL">

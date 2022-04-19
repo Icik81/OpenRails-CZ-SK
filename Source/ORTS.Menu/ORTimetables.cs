@@ -24,24 +24,42 @@ using System.IO;
 
 namespace ORTS.Menu
 {
+#pragma warning disable CS1591 // Komentář XML pro veřejně viditelný typ nebo člen TimetableInfo se nenašel.
     public class TimetableInfo
+#pragma warning restore CS1591 // Komentář XML pro veřejně viditelný typ nebo člen TimetableInfo se nenašel.
     {
+#pragma warning disable CS1591 // Komentář XML pro veřejně viditelný typ nebo člen TimetableInfo.ORTTList se nenašel.
         public readonly List<TimetableFileLite> ORTTList = new List<TimetableFileLite>();
+#pragma warning restore CS1591 // Komentář XML pro veřejně viditelný typ nebo člen TimetableInfo.ORTTList se nenašel.
+#pragma warning disable CS1591 // Komentář XML pro veřejně viditelný typ nebo člen TimetableInfo.Description se nenašel.
         public readonly String Description;
+#pragma warning restore CS1591 // Komentář XML pro veřejně viditelný typ nebo člen TimetableInfo.Description se nenašel.
+#pragma warning disable CS1591 // Komentář XML pro veřejně viditelný typ nebo člen TimetableInfo.fileName se nenašel.
         public readonly String fileName;
+#pragma warning restore CS1591 // Komentář XML pro veřejně viditelný typ nebo člen TimetableInfo.fileName se nenašel.
 
         // items set for use as parameters, taken from main menu
+#pragma warning disable CS1591 // Komentář XML pro veřejně viditelný typ nebo člen TimetableInfo.Day se nenašel.
         public int Day;
+#pragma warning restore CS1591 // Komentář XML pro veřejně viditelný typ nebo člen TimetableInfo.Day se nenašel.
+#pragma warning disable CS1591 // Komentář XML pro veřejně viditelný typ nebo člen TimetableInfo.Season se nenašel.
         public int Season;
+#pragma warning restore CS1591 // Komentář XML pro veřejně viditelný typ nebo člen TimetableInfo.Season se nenašel.
+#pragma warning disable CS1591 // Komentář XML pro veřejně viditelný typ nebo člen TimetableInfo.Weather se nenašel.
         public int Weather;
+#pragma warning restore CS1591 // Komentář XML pro veřejně viditelný typ nebo člen TimetableInfo.Weather se nenašel.
+#pragma warning disable CS1591 // Komentář XML pro veřejně viditelný typ nebo člen TimetableInfo.WeatherFile se nenašel.
         public String WeatherFile;
+#pragma warning restore CS1591 // Komentář XML pro veřejně viditelný typ nebo člen TimetableInfo.WeatherFile se nenašel.
 
         // note : file is read preliminary only, extracting description and train information
         // all other information is read only when activity is started
 
         GettextResourceManager catalog = new GettextResourceManager("ORTS.Menu");
 
+#pragma warning disable CS1591 // Komentář XML pro veřejně viditelný typ nebo člen TimetableInfo.TimetableInfo(string) se nenašel.
         protected TimetableInfo(string filePath)
+#pragma warning restore CS1591 // Komentář XML pro veřejně viditelný typ nebo člen TimetableInfo.TimetableInfo(string) se nenašel.
         {
             if (File.Exists(filePath))
             {
@@ -62,7 +80,9 @@ namespace ORTS.Menu
             }
         }
 
+#pragma warning disable CS1591 // Komentář XML pro veřejně viditelný typ nebo člen TimetableInfo.TimetableInfo(string, string) se nenašel.
         protected TimetableInfo(String filePath, String directory)
+#pragma warning restore CS1591 // Komentář XML pro veřejně viditelný typ nebo člen TimetableInfo.TimetableInfo(string, string) se nenašel.
         {
             if (File.Exists(filePath))
             {
@@ -84,13 +104,17 @@ namespace ORTS.Menu
             }
         }
 
+#pragma warning disable CS1591 // Komentář XML pro veřejně viditelný typ nebo člen TimetableInfo.ToString() se nenašel.
         public override string ToString()
+#pragma warning restore CS1591 // Komentář XML pro veřejně viditelný typ nebo člen TimetableInfo.ToString() se nenašel.
         {
             return Description;
         }
 
         // get timetable information
+#pragma warning disable CS1591 // Komentář XML pro veřejně viditelný typ nebo člen TimetableInfo.GetTimetableInfo(Folder, Route) se nenašel.
         public static List<TimetableInfo> GetTimetableInfo(Folder folder, Route route)
+#pragma warning restore CS1591 // Komentář XML pro veřejně viditelný typ nebo člen TimetableInfo.GetTimetableInfo(Folder, Route) se nenašel.
         {
             var ORTTInfo = new List<TimetableInfo>();
             if (route != null)
@@ -141,27 +165,39 @@ namespace ORTS.Menu
         }
     }
 
+#pragma warning disable CS1591 // Komentář XML pro veřejně viditelný typ nebo člen WeatherFileInfo se nenašel.
     public class WeatherFileInfo
+#pragma warning restore CS1591 // Komentář XML pro veřejně viditelný typ nebo člen WeatherFileInfo se nenašel.
     {
+#pragma warning disable CS1591 // Komentář XML pro veřejně viditelný typ nebo člen WeatherFileInfo.filedetails se nenašel.
         public FileInfo filedetails;
+#pragma warning restore CS1591 // Komentář XML pro veřejně viditelný typ nebo člen WeatherFileInfo.filedetails se nenašel.
 
+#pragma warning disable CS1591 // Komentář XML pro veřejně viditelný typ nebo člen WeatherFileInfo.WeatherFileInfo(string) se nenašel.
         public WeatherFileInfo(string filename)
+#pragma warning restore CS1591 // Komentář XML pro veřejně viditelný typ nebo člen WeatherFileInfo.WeatherFileInfo(string) se nenašel.
         {
             filedetails = new FileInfo(filename);
         }
 
+#pragma warning disable CS1591 // Komentář XML pro veřejně viditelný typ nebo člen WeatherFileInfo.ToString() se nenašel.
         public override string ToString()
+#pragma warning restore CS1591 // Komentář XML pro veřejně viditelný typ nebo člen WeatherFileInfo.ToString() se nenašel.
         {
             return (filedetails.Name);
         }
 
+#pragma warning disable CS1591 // Komentář XML pro veřejně viditelný typ nebo člen WeatherFileInfo.GetFullName() se nenašel.
         public string GetFullName()
+#pragma warning restore CS1591 // Komentář XML pro veřejně viditelný typ nebo člen WeatherFileInfo.GetFullName() se nenašel.
         {
             return (filedetails.FullName);
         }
 
         // get weatherfiles
+#pragma warning disable CS1591 // Komentář XML pro veřejně viditelný typ nebo člen WeatherFileInfo.GetTimetableWeatherFiles(Folder, Route) se nenašel.
         public static List<WeatherFileInfo> GetTimetableWeatherFiles(Folder folder, Route route)
+#pragma warning restore CS1591 // Komentář XML pro veřejně viditelný typ nebo člen WeatherFileInfo.GetTimetableWeatherFiles(Folder, Route) se nenašel.
         {
             var weatherInfo = new List<WeatherFileInfo>();
             if (route != null)

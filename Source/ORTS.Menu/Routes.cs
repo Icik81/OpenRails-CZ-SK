@@ -23,12 +23,22 @@ using Orts.Formats.Msts;
 
 namespace ORTS.Menu
 {
+#pragma warning disable CS1591 // Komentář XML pro veřejně viditelný typ nebo člen Route se nenašel.
     public class Route
+#pragma warning restore CS1591 // Komentář XML pro veřejně viditelný typ nebo člen Route se nenašel.
     {
+#pragma warning disable CS1591 // Komentář XML pro veřejně viditelný typ nebo člen Route.Name se nenašel.
         public readonly string Name;
+#pragma warning restore CS1591 // Komentář XML pro veřejně viditelný typ nebo člen Route.Name se nenašel.
+#pragma warning disable CS1591 // Komentář XML pro veřejně viditelný typ nebo člen Route.RouteID se nenašel.
         public readonly string RouteID;
+#pragma warning restore CS1591 // Komentář XML pro veřejně viditelný typ nebo člen Route.RouteID se nenašel.
+#pragma warning disable CS1591 // Komentář XML pro veřejně viditelný typ nebo člen Route.Description se nenašel.
         public readonly string Description;
+#pragma warning restore CS1591 // Komentář XML pro veřejně viditelný typ nebo člen Route.Description se nenašel.
+#pragma warning disable CS1591 // Komentář XML pro veřejně viditelný typ nebo člen Route.Path se nenašel.
         public readonly string Path;
+#pragma warning restore CS1591 // Komentář XML pro veřejně viditelný typ nebo člen Route.Path se nenašel.
 
         GettextResourceManager catalog = new GettextResourceManager("ORTS.Menu");
 
@@ -58,12 +68,16 @@ namespace ORTS.Menu
             Path = path;
         }
 
+#pragma warning disable CS1591 // Komentář XML pro veřejně viditelný typ nebo člen Route.ToString() se nenašel.
         public override string ToString()
+#pragma warning restore CS1591 // Komentář XML pro veřejně viditelný typ nebo člen Route.ToString() se nenašel.
         {
             return Name;
         }
 
+#pragma warning disable CS1591 // Komentář XML pro veřejně viditelný typ nebo člen Route.GetRoutes(Folder) se nenašel.
         public static List<Route> GetRoutes(Folder folder)
+#pragma warning restore CS1591 // Komentář XML pro veřejně viditelný typ nebo člen Route.GetRoutes(Folder) se nenašel.
         {
             var routes = new List<Route>();
             var directory = System.IO.Path.Combine(folder.Path, "ROUTES");

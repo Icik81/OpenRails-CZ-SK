@@ -24,11 +24,19 @@ using ORTS.Settings;
 
 namespace ORTS.Menu
 {
+#pragma warning disable CS1591 // Komentář XML pro veřejně viditelný typ nebo člen Consist se nenašel.
     public class Consist
+#pragma warning restore CS1591 // Komentář XML pro veřejně viditelný typ nebo člen Consist se nenašel.
     {
+#pragma warning disable CS1591 // Komentář XML pro veřejně viditelný typ nebo člen Consist.Name se nenašel.
         public readonly string Name;
+#pragma warning restore CS1591 // Komentář XML pro veřejně viditelný typ nebo člen Consist.Name se nenašel.
+#pragma warning disable CS1591 // Komentář XML pro veřejně viditelný typ nebo člen Consist.Locomotive se nenašel.
         public readonly Locomotive Locomotive = new Locomotive("unknown");
+#pragma warning restore CS1591 // Komentář XML pro veřejně viditelný typ nebo člen Consist.Locomotive se nenašel.
+#pragma warning disable CS1591 // Komentář XML pro veřejně viditelný typ nebo člen Consist.FilePath se nenašel.
         public readonly string FilePath;
+#pragma warning restore CS1591 // Komentář XML pro veřejně viditelný typ nebo člen Consist.FilePath se nenašel.
 
         GettextResourceManager catalog = new GettextResourceManager("ORTS.Menu");
 
@@ -80,12 +88,16 @@ namespace ORTS.Menu
             FilePath = filePath;
         }
 
+#pragma warning disable CS1591 // Komentář XML pro veřejně viditelný typ nebo člen Consist.ToString() se nenašel.
         public override string ToString()
+#pragma warning restore CS1591 // Komentář XML pro veřejně viditelný typ nebo člen Consist.ToString() se nenašel.
         {
             return Name;
         }
 
+#pragma warning disable CS1591 // Komentář XML pro veřejně viditelný typ nebo člen Consist.GetConsists(Folder) se nenašel.
         public static List<Consist> GetConsists(Folder folder)
+#pragma warning restore CS1591 // Komentář XML pro veřejně viditelný typ nebo člen Consist.GetConsists(Folder) se nenašel.
         {
             var consists = new List<Consist>();
             var directory = System.IO.Path.Combine(System.IO.Path.Combine(folder.Path, "TRAINS"), "CONSISTS");
@@ -103,7 +115,9 @@ namespace ORTS.Menu
             return consists;
         }
 
+#pragma warning disable CS1591 // Komentář XML pro veřejně viditelný typ nebo člen Consist.GetConsist(Folder, string) se nenašel.
         public static Consist GetConsist(Folder folder, string name)
+#pragma warning restore CS1591 // Komentář XML pro veřejně viditelný typ nebo člen Consist.GetConsist(Folder, string) se nenašel.
         {
             Consist consist = null;
             var directory = System.IO.Path.Combine(System.IO.Path.Combine(folder.Path, "TRAINS"), "CONSISTS");
@@ -118,7 +132,9 @@ namespace ORTS.Menu
             return consist;
         }
 
+#pragma warning disable CS1591 // Komentář XML pro veřejně viditelný typ nebo člen Consist.GetConsist(Folder, string, bool) se nenašel.
         public static Consist GetConsist(Folder folder, string name, bool reverseConsist)
+#pragma warning restore CS1591 // Komentář XML pro veřejně viditelný typ nebo člen Consist.GetConsist(Folder, string, bool) se nenašel.
         {
             Consist consist = null;
             var directory = System.IO.Path.Combine(System.IO.Path.Combine(folder.Path, "TRAINS"), "CONSISTS");
@@ -165,15 +181,25 @@ namespace ORTS.Menu
 
     }
 
+#pragma warning disable CS1591 // Komentář XML pro veřejně viditelný typ nebo člen Locomotive se nenašel.
     public class Locomotive
+#pragma warning restore CS1591 // Komentář XML pro veřejně viditelný typ nebo člen Locomotive se nenašel.
     {
+#pragma warning disable CS1591 // Komentář XML pro veřejně viditelný typ nebo člen Locomotive.Name se nenašel.
         public readonly string Name;
+#pragma warning restore CS1591 // Komentář XML pro veřejně viditelný typ nebo člen Locomotive.Name se nenašel.
+#pragma warning disable CS1591 // Komentář XML pro veřejně viditelný typ nebo člen Locomotive.Description se nenašel.
         public readonly string Description;
+#pragma warning restore CS1591 // Komentář XML pro veřejně viditelný typ nebo člen Locomotive.Description se nenašel.
+#pragma warning disable CS1591 // Komentář XML pro veřejně viditelný typ nebo člen Locomotive.FilePath se nenašel.
         public readonly string FilePath;
+#pragma warning restore CS1591 // Komentář XML pro veřejně viditelný typ nebo člen Locomotive.FilePath se nenašel.
 
         GettextResourceManager catalog = new GettextResourceManager("ORTS.Menu");
 
+#pragma warning disable CS1591 // Komentář XML pro veřejně viditelný typ nebo člen Locomotive.Locomotive() se nenašel.
         public Locomotive()
+#pragma warning restore CS1591 // Komentář XML pro veřejně viditelný typ nebo člen Locomotive.Locomotive() se nenašel.
             : this(null)
         {
         }
@@ -217,17 +243,23 @@ namespace ORTS.Menu
             FilePath = filePath;
         }
 
+#pragma warning disable CS1591 // Komentář XML pro veřejně viditelný typ nebo člen Locomotive.ToString() se nenašel.
         public override string ToString()
+#pragma warning restore CS1591 // Komentář XML pro veřejně viditelný typ nebo člen Locomotive.ToString() se nenašel.
         {
             return Name;
         }
 
+#pragma warning disable CS1591 // Komentář XML pro veřejně viditelný typ nebo člen Locomotive.Equals(object) se nenašel.
         public override bool Equals(object obj)
+#pragma warning restore CS1591 // Komentář XML pro veřejně viditelný typ nebo člen Locomotive.Equals(object) se nenašel.
         {
             return obj is Locomotive && ((obj as Locomotive).Name == Name || (obj as Locomotive).FilePath == null || FilePath == null);
         }
 
+#pragma warning disable CS1591 // Komentář XML pro veřejně viditelný typ nebo člen Locomotive.GetHashCode() se nenašel.
         public override int GetHashCode()
+#pragma warning restore CS1591 // Komentář XML pro veřejně viditelný typ nebo člen Locomotive.GetHashCode() se nenašel.
         {
             return Name.GetHashCode();
         }

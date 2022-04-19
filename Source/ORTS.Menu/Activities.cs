@@ -23,24 +23,52 @@ using ORTS.Settings;
 
 namespace ORTS.Menu
 {
+#pragma warning disable CS1591 // Komentář XML pro veřejně viditelný typ nebo člen Activity se nenašel.
     public class Activity
+#pragma warning restore CS1591 // Komentář XML pro veřejně viditelný typ nebo člen Activity se nenašel.
     {
+#pragma warning disable CS1591 // Komentář XML pro veřejně viditelný typ nebo člen Activity.Name se nenašel.
         public readonly string Name;
+#pragma warning restore CS1591 // Komentář XML pro veřejně viditelný typ nebo člen Activity.Name se nenašel.
+#pragma warning disable CS1591 // Komentář XML pro veřejně viditelný typ nebo člen Activity.ActivityID se nenašel.
         public readonly string ActivityID;
+#pragma warning restore CS1591 // Komentář XML pro veřejně viditelný typ nebo člen Activity.ActivityID se nenašel.
+#pragma warning disable CS1591 // Komentář XML pro veřejně viditelný typ nebo člen Activity.Description se nenašel.
         public readonly string Description;
+#pragma warning restore CS1591 // Komentář XML pro veřejně viditelný typ nebo člen Activity.Description se nenašel.
+#pragma warning disable CS1591 // Komentář XML pro veřejně viditelný typ nebo člen Activity.Briefing se nenašel.
         public readonly string Briefing;
+#pragma warning restore CS1591 // Komentář XML pro veřejně viditelný typ nebo člen Activity.Briefing se nenašel.
+#pragma warning disable CS1591 // Komentář XML pro veřejně viditelný typ nebo člen Activity.StartTime se nenašel.
         public readonly StartTime StartTime = new StartTime(10, 0, 0);
+#pragma warning restore CS1591 // Komentář XML pro veřejně viditelný typ nebo člen Activity.StartTime se nenašel.
+#pragma warning disable CS1591 // Komentář XML pro veřejně viditelný typ nebo člen Activity.Season se nenašel.
         public readonly SeasonType Season = SeasonType.Summer;
+#pragma warning restore CS1591 // Komentář XML pro veřejně viditelný typ nebo člen Activity.Season se nenašel.
+#pragma warning disable CS1591 // Komentář XML pro veřejně viditelný typ nebo člen Activity.Weather se nenašel.
         public readonly WeatherType Weather = WeatherType.Clear;
+#pragma warning restore CS1591 // Komentář XML pro veřejně viditelný typ nebo člen Activity.Weather se nenašel.
+#pragma warning disable CS1591 // Komentář XML pro veřejně viditelný typ nebo člen Activity.Difficulty se nenašel.
         public readonly Difficulty Difficulty = Difficulty.Easy;
+#pragma warning restore CS1591 // Komentář XML pro veřejně viditelný typ nebo člen Activity.Difficulty se nenašel.
+#pragma warning disable CS1591 // Komentář XML pro veřejně viditelný typ nebo člen Activity.Duration se nenašel.
         public readonly Duration Duration = new Duration(1, 0);
+#pragma warning restore CS1591 // Komentář XML pro veřejně viditelný typ nebo člen Activity.Duration se nenašel.
+#pragma warning disable CS1591 // Komentář XML pro veřejně viditelný typ nebo člen Activity.Consist se nenašel.
         public readonly Consist Consist = new Consist("unknown", null);
+#pragma warning restore CS1591 // Komentář XML pro veřejně viditelný typ nebo člen Activity.Consist se nenašel.
+#pragma warning disable CS1591 // Komentář XML pro veřejně viditelný typ nebo člen Activity.Path se nenašel.
         public readonly Path Path = new Path("unknown");
+#pragma warning restore CS1591 // Komentář XML pro veřejně viditelný typ nebo člen Activity.Path se nenašel.
+#pragma warning disable CS1591 // Komentář XML pro veřejně viditelný typ nebo člen Activity.FilePath se nenašel.
         public readonly string FilePath;
+#pragma warning restore CS1591 // Komentář XML pro veřejně viditelný typ nebo člen Activity.FilePath se nenašel.
 
         GettextResourceManager catalog = new GettextResourceManager("ORTS.Menu");
 
+#pragma warning disable CS1591 // Komentář XML pro veřejně viditelný typ nebo člen Activity.Activity(string, Folder, Route) se nenašel.
         protected Activity(string filePath, Folder folder, Route route)
+#pragma warning restore CS1591 // Komentář XML pro veřejně viditelný typ nebo člen Activity.Activity(string, Folder, Route) se nenašel.
         {
             if (filePath == null && this is DefaultExploreActivity)
             {
@@ -96,12 +124,16 @@ namespace ORTS.Menu
             FilePath = filePath;
         }
 
+#pragma warning disable CS1591 // Komentář XML pro veřejně viditelný typ nebo člen Activity.ToString() se nenašel.
         public override string ToString()
+#pragma warning restore CS1591 // Komentář XML pro veřejně viditelný typ nebo člen Activity.ToString() se nenašel.
         {
             return Name;
         }
 
+#pragma warning disable CS1591 // Komentář XML pro veřejně viditelný typ nebo člen Activity.GetActivities(Folder, Route) se nenašel.
         public static List<Activity> GetActivities(Folder folder, Route route)
+#pragma warning restore CS1591 // Komentář XML pro veřejně viditelný typ nebo člen Activity.GetActivities(Folder, Route) se nenašel.
         {
             var activities = new List<Activity>();
             if (route != null)
@@ -125,13 +157,25 @@ namespace ORTS.Menu
         }
     }
 
+#pragma warning disable CS1591 // Komentář XML pro veřejně viditelný typ nebo člen ExploreActivity se nenašel.
     public class ExploreActivity : Activity
+#pragma warning restore CS1591 // Komentář XML pro veřejně viditelný typ nebo člen ExploreActivity se nenašel.
     {
+#pragma warning disable CS1591 // Komentář XML pro veřejně viditelný typ nebo člen ExploreActivity.StartTime se nenašel.
         public new string StartTime;
+#pragma warning restore CS1591 // Komentář XML pro veřejně viditelný typ nebo člen ExploreActivity.StartTime se nenašel.
+#pragma warning disable CS1591 // Komentář XML pro veřejně viditelný typ nebo člen ExploreActivity.Season se nenašel.
         public new SeasonType Season = SeasonType.Summer;
+#pragma warning restore CS1591 // Komentář XML pro veřejně viditelný typ nebo člen ExploreActivity.Season se nenašel.
+#pragma warning disable CS1591 // Komentář XML pro veřejně viditelný typ nebo člen ExploreActivity.Weather se nenašel.
         public new WeatherType Weather = WeatherType.Clear;
+#pragma warning restore CS1591 // Komentář XML pro veřejně viditelný typ nebo člen ExploreActivity.Weather se nenašel.
+#pragma warning disable CS1591 // Komentář XML pro veřejně viditelný typ nebo člen ExploreActivity.Consist se nenašel.
         public new Consist Consist = new Consist("unknown", null);
+#pragma warning restore CS1591 // Komentář XML pro veřejně viditelný typ nebo člen ExploreActivity.Consist se nenašel.
+#pragma warning disable CS1591 // Komentář XML pro veřejně viditelný typ nebo člen ExploreActivity.Path se nenašel.
         public new Path Path = new Path("unknown");
+#pragma warning restore CS1591 // Komentář XML pro veřejně viditelný typ nebo člen ExploreActivity.Path se nenašel.
 
         internal ExploreActivity()
             : base(null, null, null)
@@ -139,9 +183,13 @@ namespace ORTS.Menu
         }
     }
 
+#pragma warning disable CS1591 // Komentář XML pro veřejně viditelný typ nebo člen DefaultExploreActivity se nenašel.
     public class DefaultExploreActivity : ExploreActivity
+#pragma warning restore CS1591 // Komentář XML pro veřejně viditelný typ nebo člen DefaultExploreActivity se nenašel.
     { }
 
+#pragma warning disable CS1591 // Komentář XML pro veřejně viditelný typ nebo člen ExploreThroughActivity se nenašel.
     public class ExploreThroughActivity : ExploreActivity
+#pragma warning restore CS1591 // Komentář XML pro veřejně viditelný typ nebo člen ExploreThroughActivity se nenašel.
     { }
 }
