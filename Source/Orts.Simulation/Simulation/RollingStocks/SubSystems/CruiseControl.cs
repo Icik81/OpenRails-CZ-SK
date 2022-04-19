@@ -793,10 +793,13 @@ namespace Orts.Simulation.RollingStocks.SubSystems
             //        overridenMaximalForce = -overridenMaximalForce;
             //    SpeedChanged = false;
             //}
-            if (MpS.ToKpH(Locomotive.AbsSpeedMpS) < 100)
-                overridenMaximalForce = 50;
-            else
-                overridenMaximalForce = (MpS.ToKpH(Locomotive.AbsSpeedMpS) - 100) + 50;
+            if (Locomotive.LocoType == MSTSLocomotive.LocoTypes.Vectron)
+            {
+                if (MpS.ToKpH(Locomotive.AbsSpeedMpS) < 100)
+                    overridenMaximalForce = 50;
+                else
+                    overridenMaximalForce = (MpS.ToKpH(Locomotive.AbsSpeedMpS) - 100) + 50;
+            }
 
             if (overridenMaximalForce > 100)
                 overridenMaximalForce = 100;
