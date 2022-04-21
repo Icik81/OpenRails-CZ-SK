@@ -373,7 +373,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
             while (!test)
             {
                 SpeedSelMode++;
-                if (SpeedSelMode != SpeedSelectorMode.Parking && !Locomotive.EngineBrakePriority) Locomotive.SetEngineBrakePercent(0);
+                //if (SpeedSelMode != SpeedSelectorMode.Parking && !Locomotive.EngineBrakePriority) Locomotive.SetEngineBrakePercent(0);
                 switch (SpeedSelMode)
                 {
                     case SpeedSelectorMode.Neutral: if (SpeedRegulatorOptions.Contains("selectorneutral")) test = true; break;

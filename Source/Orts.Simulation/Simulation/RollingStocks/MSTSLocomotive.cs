@@ -4203,11 +4203,11 @@ namespace Orts.Simulation.RollingStocks
                             braking = false;
                         if (AbsSpeedMpS > MpS.FromKpH(AutomaticParkingBrakeEngageSpeedKpH))
                             braking = false;
-                        if (!braking && !EngineBrakePriority)
-                        {
-                            SetEngineBrakePercent(0);
-                            EngineBrakePercentSet = 0;
-                        }
+                        //if (!braking && !EngineBrakePriority)
+                        //{
+                        //    SetEngineBrakePercent(0);
+                        //    EngineBrakePercentSet = 0;
+                        //}
                         if (CanCheckEngineBrake && BrakeSystem.GetCylPressurePSI() < 0.01 || AbsSpeedMpS == 0)
                         {
                             if (EngineBrakeController.CurrentValue == 0.0f)
