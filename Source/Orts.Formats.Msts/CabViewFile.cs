@@ -432,6 +432,7 @@ namespace Orts.Formats.Msts
         DOORSWITCH,
         POWER_OFFCLOSINGON,
         HIGHVOLTAGE_DCOFFAC,
+        LAP_BUTTON,
 
 
         // Further CabViewControlTypes must be added above this line, to avoid their malfunction in 3DCabs

@@ -314,6 +314,8 @@ namespace Orts.Common
         TMFailure,
         RDSTOn,
         RDSTOff,
+        LapButton,
+        LapButtonRelease,
     }
 
     public static class Events
@@ -642,6 +644,9 @@ namespace Orts.Common
                         case 20068: return Event.TMFailure;
                         case 20069: return Event.RDSTOn;
                         case 20070: return Event.RDSTOff;
+                        case 20071: return Event.LapButton;
+                        case 20072: return Event.LapButtonRelease;
+
 
                         default: return 0;
                     }

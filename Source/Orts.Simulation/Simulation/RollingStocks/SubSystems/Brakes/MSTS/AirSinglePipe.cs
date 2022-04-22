@@ -1649,6 +1649,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         lead.BrakeSystem.BrakeCylReleaseFlow = true;
 
                     if (lead.TrainBrakeController.TrainBrakeControllerState != ControllerState.Lap
+                        && !lead.LapActive
                         && lead.TrainBrakeController.TrainBrakeControllerState != ControllerState.Emergency
                         && !lead.TrainBrakeController.TCSEmergencyBraking
                         && !lead.EmergencyButtonPressed
@@ -1661,7 +1662,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     else lead.BrakeSystem.BrakePipeFlow = false;
 
                     // Vyrovnává maximální tlak s tlakem v potrubí    
-                    if (lead.TrainBrakeController.TrainBrakeControllerState == ControllerState.Lap) lead.TrainBrakeController.MaxPressurePSI = lead.BrakeSystem.BrakeLine1PressurePSI;
+                    if (lead.TrainBrakeController.TrainBrakeControllerState == ControllerState.Lap || lead.LapActive) lead.TrainBrakeController.MaxPressurePSI = lead.BrakeSystem.BrakeLine1PressurePSI;
 
                     // Změna rychlosti plnění vzduchojemu při švihu
                     if (lead.TrainBrakeController.TrainBrakeControllerState == ControllerState.FullQuickRelease
@@ -1687,7 +1688,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         lead.BrakeSystem.OverChargeRunning = true;
                     }
 
-                    else if (lead.TrainBrakeController.TrainBrakeControllerState != ControllerState.Lap)
+                    else if (lead.TrainBrakeController.TrainBrakeControllerState != ControllerState.Lap && !lead.LapActive)
                     {
                         BrakePipeChargingRatePSIorInHgpS0 = brakePipeChargingNormalPSIpS;  // Standardní rychlost plnění 
 
@@ -1749,7 +1750,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     }
                     // reduce pressure in lead brake line if brake pipe pressure is above equalising pressure - apply brakes
                     else
-                    if (lead.BrakeSystem.BrakeLine1PressurePSI > train.EqualReservoirPressurePSIorInHg && lead.TrainBrakeController.TrainBrakeControllerState != ControllerState.Lap
+                    if (lead.BrakeSystem.BrakeLine1PressurePSI > train.EqualReservoirPressurePSIorInHg && lead.TrainBrakeController.TrainBrakeControllerState != ControllerState.Lap 
                         || lead.BrakeSystem.BrakeLine1PressurePSI > train.EqualReservoirPressurePSIorInHg && lead.TrainBrakeController.TCSEmergencyBraking
                         || lead.BrakeSystem.BrakeLine1PressurePSI > train.EqualReservoirPressurePSIorInHg && lead.EmergencyButtonPressed
                         || lead.BrakeSystem.BrakeLine1PressurePSI > train.EqualReservoirPressurePSIorInHg && lead.TrainBrakeController.EmergencyBrakingPushButton)
@@ -2208,148 +2209,162 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 // Detekce nastavení polohy brzdiče průběžné brzdy                
                 if (engine != null && lead != null)
                 {
-                    if (engine.TrainBrakeController.TrainBrakeControllerState == ControllerState.Release)
+                    if (!engine.LapActive || engine.TrainBrakeController.TrainBrakeControllerState == ControllerState.Emergency)
                     {
-                        engine.BrakeSystem.NextLocoRelease = true;
-                        engine.BrakeSystem.NextLocoBrakeState = "Odbrzďovací poloha";
-                        Release = true;
-                        SumRe++;
-                        lead.BrakeSystem.ReleaseTr = 1;
-                    }
-                    else
-                    if (engine.TrainBrakeController.TrainBrakeControllerState != ControllerState.Release)
-                        engine.BrakeSystem.NextLocoRelease = false;
+                        if (engine.TrainBrakeController.TrainBrakeControllerState == ControllerState.Release)
+                        {
+                            engine.BrakeSystem.NextLocoRelease = true;
+                            engine.BrakeSystem.NextLocoBrakeState = "Odbrzďovací poloha";
+                            Release = true;
+                            SumRe++;
+                            lead.BrakeSystem.ReleaseTr = 1;
+                        }
+                        else
+                        if (engine.TrainBrakeController.TrainBrakeControllerState != ControllerState.Release)
+                            engine.BrakeSystem.NextLocoRelease = false;
 
-                    if (engine.TrainBrakeController.TrainBrakeControllerState == ControllerState.Apply)
-                    {
-                        engine.BrakeSystem.NextLocoApply = true;
-                        engine.BrakeSystem.NextLocoBrakeState = "Brzdící poloha";
-                        Apply = true;
-                        SumA++;
-                        lead.BrakeSystem.ReleaseTr = 0;
-                    }
-                    else
-                    if (engine.TrainBrakeController.TrainBrakeControllerState != ControllerState.Apply)
-                        engine.BrakeSystem.NextLocoApply = false;
+                        if (engine.TrainBrakeController.TrainBrakeControllerState == ControllerState.Apply)
+                        {
+                            engine.BrakeSystem.NextLocoApply = true;
+                            engine.BrakeSystem.NextLocoBrakeState = "Brzdící poloha";
+                            Apply = true;
+                            SumA++;
+                            lead.BrakeSystem.ReleaseTr = 0;
+                        }
+                        else
+                        if (engine.TrainBrakeController.TrainBrakeControllerState != ControllerState.Apply)
+                            engine.BrakeSystem.NextLocoApply = false;
 
-                    if (engine.TrainBrakeController.TrainBrakeControllerState == ControllerState.FullQuickRelease || engine.QuickReleaseButton && engine.QuickReleaseButtonEnable)
-                    {
-                        engine.BrakeSystem.NextLocoQuickRelease = true;
-                        engine.BrakeSystem.NextLocoBrakeState = "Vysokotlaký švih";
-                        QuickRelease = true;
-                        SumQRe++;
-                    }
-                    else
-                    if (engine.TrainBrakeController.TrainBrakeControllerState != ControllerState.FullQuickRelease && !engine.QuickReleaseButton)
-                        engine.BrakeSystem.NextLocoQuickRelease = false;
+                        if (engine.TrainBrakeController.TrainBrakeControllerState == ControllerState.FullQuickRelease || engine.QuickReleaseButton && engine.QuickReleaseButtonEnable)
+                        {
+                            engine.BrakeSystem.NextLocoQuickRelease = true;
+                            engine.BrakeSystem.NextLocoBrakeState = "Vysokotlaký švih";
+                            QuickRelease = true;
+                            SumQRe++;
+                        }
+                        else
+                        if (engine.TrainBrakeController.TrainBrakeControllerState != ControllerState.FullQuickRelease && !engine.QuickReleaseButton)
+                            engine.BrakeSystem.NextLocoQuickRelease = false;
 
-                    if (engine.TrainBrakeController.TrainBrakeControllerState == ControllerState.Emergency)
-                    {
-                        engine.BrakeSystem.NextLocoEmergency = true;
-                        engine.BrakeSystem.NextLocoBrakeState = "Rychlobrzda";
-                        Emergency = true;
-                    }
-                    else
-                    if (engine.TrainBrakeController.TrainBrakeControllerState != ControllerState.Emergency)
-                        engine.BrakeSystem.NextLocoEmergency = false;
+                        if (engine.TrainBrakeController.TrainBrakeControllerState == ControllerState.Emergency)
+                        {
+                            engine.BrakeSystem.NextLocoEmergency = true;
+                            engine.BrakeSystem.NextLocoBrakeState = "Rychlobrzda";
+                            Emergency = true;
+                        }
+                        else
+                        if (engine.TrainBrakeController.TrainBrakeControllerState != ControllerState.Emergency)
+                            engine.BrakeSystem.NextLocoEmergency = false;
 
-                    if (engine.TrainBrakeController.TrainBrakeControllerState == ControllerState.OverchargeStart || engine.LowPressureReleaseButton && engine.LowPressureReleaseButtonEnable)
-                    {
-                        engine.BrakeSystem.NextLocoOvercharge = true;
-                        engine.BrakeSystem.NextLocoBrakeState = "Nízkotlaké přebití";
-                        Overcharge = true;
-                        SumO++;
-                    }
-                    else
-                    if (engine.TrainBrakeController.TrainBrakeControllerState != ControllerState.OverchargeStart && !engine.LowPressureReleaseButton)
-                        engine.BrakeSystem.NextLocoOvercharge = false;
+                        if (engine.TrainBrakeController.TrainBrakeControllerState == ControllerState.OverchargeStart || engine.LowPressureReleaseButton && engine.LowPressureReleaseButtonEnable)
+                        {
+                            engine.BrakeSystem.NextLocoOvercharge = true;
+                            engine.BrakeSystem.NextLocoBrakeState = "Nízkotlaké přebití";
+                            Overcharge = true;
+                            SumO++;
+                        }
+                        else
+                        if (engine.TrainBrakeController.TrainBrakeControllerState != ControllerState.OverchargeStart && !engine.LowPressureReleaseButton)
+                            engine.BrakeSystem.NextLocoOvercharge = false;
 
-                    if (engine.TrainBrakeController.TrainBrakeControllerState == ControllerState.Lap)
+                        if (engine.TrainBrakeController.TrainBrakeControllerState == ControllerState.Lap)
+                        {
+                            engine.BrakeSystem.NextLocoLap = true;
+                            engine.BrakeSystem.NextLocoBrakeState = "Závěr";
+                            Lap = true;
+                        }
+                        else
+                        if (engine.TrainBrakeController.TrainBrakeControllerState != ControllerState.Lap)
+                            engine.BrakeSystem.NextLocoLap = false;
+
+                        if (engine.TrainBrakeController.TrainBrakeControllerState == ControllerState.Running)
+                        {
+                            engine.BrakeSystem.NextLocoRunning = true;
+                            engine.BrakeSystem.NextLocoBrakeState = "Jízdní poloha";
+                            Running = true;
+                            SumRu++;
+                        }
+                        else
+                        if (engine.TrainBrakeController.TrainBrakeControllerState != ControllerState.Running)
+                            engine.BrakeSystem.NextLocoRunning = false;
+
+                        if (engine.TrainBrakeController.TrainBrakeControllerState == ControllerState.Neutral)
+                        {
+                            engine.BrakeSystem.NextLocoNeutral = true;
+                            engine.BrakeSystem.NextLocoBrakeState = "Jízdní poloha";
+                            Neutral = true;
+                        }
+                        else
+                        if (engine.TrainBrakeController.TrainBrakeControllerState != ControllerState.Neutral)
+                            engine.BrakeSystem.NextLocoNeutral = false;
+
+                        if (engine.TrainBrakeController.TrainBrakeControllerState == ControllerState.Suppression)
+                        {
+                            engine.BrakeSystem.NextLocoSuppression = true;
+                            engine.BrakeSystem.NextLocoBrakeState = "Plný brzdný účinek";
+                            ApplyGA = true;
+                            SumGA++;
+                        }
+                        else
+                        if (engine.TrainBrakeController.TrainBrakeControllerState != ControllerState.Suppression)
+                            engine.BrakeSystem.NextLocoSuppression = false;
+
+                        if (engine.TrainBrakeController.TrainBrakeControllerState == ControllerState.GSelfLapH)
+                        {
+                            engine.BrakeSystem.NextLocoGSelfLapH = true;
+                            engine.BrakeSystem.NextLocoBrakeState = "Brzdit";
+                            ApplyGA = true;
+                            SumGA++;
+                        }
+                        else
+                        if (engine.TrainBrakeController.TrainBrakeControllerState != ControllerState.GSelfLapH)
+                            engine.BrakeSystem.NextLocoGSelfLapH = false;
+
+                        if (engine.TrainBrakeController.TrainBrakeControllerState == ControllerState.SlowApplyStart)
+                        {
+                            engine.BrakeSystem.NextLocoSlowApplyStart = true;
+                            engine.BrakeSystem.NextLocoBrakeState = "Pomalé brzdění";
+                            SlowApplyStart = true;
+                            SumSA++;
+                        }
+                        else
+                        if (engine.TrainBrakeController.TrainBrakeControllerState != ControllerState.SlowApplyStart)
+                            engine.BrakeSystem.NextLocoSlowApplyStart = false;
+
+                        if (engine.TrainBrakeController.TrainBrakeControllerState == ControllerState.MatrosovRelease)
+                        {
+                            engine.BrakeSystem.NextLocoMatrosovRelease = true;
+                            engine.BrakeSystem.NextLocoBrakeState = "Odbrzďovací poloha";
+                            MatrosovRelease = true;
+                            SumMaRe++;
+                        }
+                        else
+                        if (engine.TrainBrakeController.TrainBrakeControllerState != ControllerState.MatrosovRelease)
+                            engine.BrakeSystem.NextLocoMatrosovRelease = false;
+
+                        if (engine.TrainBrakeController.TrainBrakeControllerState == ControllerState.WestingHouseRelease)
+                        {
+                            engine.BrakeSystem.NextLocoWestingHouseRelease = true;
+                            engine.BrakeSystem.NextLocoBrakeState = "Odbrzďovací poloha";
+                            WestingHouseRelease = true;
+                            SumWHRe++;
+                        }
+                        else
+                        if (engine.TrainBrakeController.TrainBrakeControllerState != ControllerState.WestingHouseRelease)
+                            engine.BrakeSystem.NextLocoWestingHouseRelease = false;
+                    }
+
+                    if (engine.LapActive && !Emergency)
                     {
                         engine.BrakeSystem.NextLocoLap = true;
                         engine.BrakeSystem.NextLocoBrakeState = "Závěr";
-                        Lap = true;                        
+                        Lap = true;
                     }
                     else
-                    if (engine.TrainBrakeController.TrainBrakeControllerState != ControllerState.Lap)
+                    if (!engine.LapActive)
                         engine.BrakeSystem.NextLocoLap = false;
-
-                    if (engine.TrainBrakeController.TrainBrakeControllerState == ControllerState.Running)
-                    {
-                        engine.BrakeSystem.NextLocoRunning = true;
-                        engine.BrakeSystem.NextLocoBrakeState = "Jízdní poloha";
-                        Running = true;
-                        SumRu++;
-                    }
-                    else
-                    if (engine.TrainBrakeController.TrainBrakeControllerState != ControllerState.Running)
-                        engine.BrakeSystem.NextLocoRunning = false;
-
-                    if (engine.TrainBrakeController.TrainBrakeControllerState == ControllerState.Neutral)
-                    {
-                        engine.BrakeSystem.NextLocoNeutral = true;
-                        engine.BrakeSystem.NextLocoBrakeState = "Jízdní poloha";
-                        Neutral = true;
-                    }
-                    else
-                    if (engine.TrainBrakeController.TrainBrakeControllerState != ControllerState.Neutral)
-                        engine.BrakeSystem.NextLocoNeutral = false;
-
-                    if (engine.TrainBrakeController.TrainBrakeControllerState == ControllerState.Suppression)
-                    {
-                        engine.BrakeSystem.NextLocoSuppression = true;
-                        engine.BrakeSystem.NextLocoBrakeState = "Plný brzdný účinek";
-                        ApplyGA = true;
-                        SumGA++;
-                    }
-                    else
-                    if (engine.TrainBrakeController.TrainBrakeControllerState != ControllerState.Suppression)
-                        engine.BrakeSystem.NextLocoSuppression = false;
-
-                    if (engine.TrainBrakeController.TrainBrakeControllerState == ControllerState.GSelfLapH)
-                    {
-                        engine.BrakeSystem.NextLocoGSelfLapH = true;
-                        engine.BrakeSystem.NextLocoBrakeState = "Brzdit";
-                        ApplyGA = true;
-                        SumGA++;                        
-                    }
-                    else
-                    if (engine.TrainBrakeController.TrainBrakeControllerState != ControllerState.GSelfLapH)
-                        engine.BrakeSystem.NextLocoGSelfLapH = false;
-
-                    if (engine.TrainBrakeController.TrainBrakeControllerState == ControllerState.SlowApplyStart)
-                    {
-                        engine.BrakeSystem.NextLocoSlowApplyStart = true;
-                        engine.BrakeSystem.NextLocoBrakeState = "Pomalé brzdění";
-                        SlowApplyStart = true;
-                        SumSA++;
-                    }
-                    else
-                    if (engine.TrainBrakeController.TrainBrakeControllerState != ControllerState.SlowApplyStart)
-                        engine.BrakeSystem.NextLocoSlowApplyStart = false;
-
-                    if (engine.TrainBrakeController.TrainBrakeControllerState == ControllerState.MatrosovRelease)
-                    {
-                        engine.BrakeSystem.NextLocoMatrosovRelease = true;
-                        engine.BrakeSystem.NextLocoBrakeState = "Odbrzďovací poloha";
-                        MatrosovRelease = true;
-                        SumMaRe++;
-                    }
-                    else
-                    if (engine.TrainBrakeController.TrainBrakeControllerState != ControllerState.MatrosovRelease)
-                        engine.BrakeSystem.NextLocoMatrosovRelease = false;
-                    
-                    if (engine.TrainBrakeController.TrainBrakeControllerState == ControllerState.WestingHouseRelease)
-                    {
-                        engine.BrakeSystem.NextLocoWestingHouseRelease = true;
-                        engine.BrakeSystem.NextLocoBrakeState = "Odbrzďovací poloha";
-                        WestingHouseRelease = true;
-                        SumWHRe++;
-                    }
-                    else
-                    if (engine.TrainBrakeController.TrainBrakeControllerState != ControllerState.WestingHouseRelease)
-                        engine.BrakeSystem.NextLocoWestingHouseRelease = false;
                 }
+
             }
 
             // Upravuje chování řídící jímky 

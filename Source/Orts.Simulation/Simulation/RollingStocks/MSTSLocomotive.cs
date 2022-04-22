@@ -571,6 +571,11 @@ namespace Orts.Simulation.RollingStocks
         public bool BreakPowerButton;
         bool BreakPowerButtonPressed = false;
         public bool BreakPowerButton_Activated;
+        public bool LapButtonEnable = false;
+        public bool LapButton;
+        bool LapButtonPressed = false;
+        public bool LapButton_Activated;
+        public bool LapActive;
         float PantoStatus = 0;
         float PrePantoStatus = 0;
         public float HeatingMaxCurrentA;
@@ -1552,6 +1557,7 @@ namespace Orts.Simulation.RollingStocks
             MUCableEquipment = locoCopy.MUCableEquipment;
             DoorSwitch = locoCopy.DoorSwitch;
             PrevDoorSwitch = locoCopy.PrevDoorSwitch;
+            LapActive = locoCopy.LapActive;
 
             // Jindrich
             if (locoCopy.CruiseControl != null)
@@ -1715,6 +1721,7 @@ namespace Orts.Simulation.RollingStocks
             outf.Write(DieselLocoTempReady);
             outf.Write(DoorSwitch);
             outf.Write(PrevDoorSwitch);
+            outf.Write(LapActive);
 
             base.Save(outf);
 
@@ -1816,6 +1823,7 @@ namespace Orts.Simulation.RollingStocks
             DieselLocoTempReady = inf.ReadBoolean();
             DoorSwitch = inf.ReadSingle();
             PrevDoorSwitch = inf.ReadSingle();
+            LapActive = inf.ReadBoolean();
 
             base.Restore(inf);
 
@@ -4054,7 +4062,7 @@ namespace Orts.Simulation.RollingStocks
 
             if (IsPlayerTrain && !Simulator.Paused)
             {
-                //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("MUCable " + MUCable));
+                //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("LapActive " + LapActive));
                 if (Simulator.GameTime < 0.5f)
                 {
                     ToggleDieselDirectionController();
@@ -7381,18 +7389,6 @@ namespace Orts.Simulation.RollingStocks
         }
 
         // Icik      
-        public void ResetMarkerMethod()
-        {
-            Pantograph3Enable = false;
-            Pantograph4Enable = false;
-            HV2Enable = false;
-            HV3Enable = false;
-            HV5Enable = false;
-            QuickReleaseButtonEnable = false;
-            LowPressureReleaseButtonEnable = false;
-            BreakPowerButtonEnable = false;
-        }
-
         public void ToggleHV2SwitchUp()
         {
             if (HV2Enable)
@@ -8345,7 +8341,26 @@ namespace Orts.Simulation.RollingStocks
             }
         }
 
-        
+        public void ToggleLapButton(bool lapButton)
+        {            
+            if (LapButtonEnable)
+            {                
+                LapButton = lapButton;
+                if (LapButton && !LapButtonPressed)
+                {
+                    SignalEvent(Event.LapButton);
+                    LapButtonPressed = true;
+                    LapActive = !LapActive;
+                }
+                if (!LapButton && LapButtonPressed)
+                {
+                    SignalEvent(Event.LapButtonRelease);
+                    LapButtonPressed = false;
+                }
+                if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.LapActive, LapActive ? CabSetting.On : CabSetting.Off);
+            }
+        }
+
         public void ToggleDieselDirectionControllerDown()
         {
             if (DieselDirectionController2)
@@ -10777,7 +10792,15 @@ namespace Orts.Simulation.RollingStocks
                         data = DoorSwitch;                        
                         break;
                     }
-                
+                case CABViewControlTypes.LAP_BUTTON:
+                    {
+                        LapButtonEnable = true;
+                        if (LapActive)
+                            data = 1;
+                        else data = 0;
+                        break;
+                    }
+
             }
             // max needle speed
             if (cvc.MaxNeedleSpeed > 0 && elapsedTime > 0)

@@ -249,6 +249,7 @@ namespace Orts.Viewer3D.RollingStock
             UserInputCommands.Add(UserCommand.ControlLowPressureReleaseButton, new Action[] { Noop, () => new ToggleLowPressureReleaseButtonCommand(Viewer.Log) });
             UserInputCommands.Add(UserCommand.ControlBreakPowerButton, new Action[] { Noop, () => new ToggleBreakPowerButtonCommand(Viewer.Log) });
             UserInputCommands.Add(UserCommand.ControlRDSTBreaker, new Action[] { Noop, () => new ToggleRDSTBreakerCommand(Viewer.Log) });
+            UserInputCommands.Add(UserCommand.ControlLapButton, new Action[] { Noop, () => new ToggleLapButtonCommand(Viewer.Log) });
 
             // Jindřich
             UserInputCommands.Add(UserCommand.ControlPowerStationLocation, new Action[] { Noop, () => Locomotive.SetPowerSupplyStationLocation() });
@@ -454,6 +455,19 @@ namespace Orts.Viewer3D.RollingStock
                 if (UserInput.IsReleased(UserCommand.ControlBreakPowerButton))
                 {
                     Locomotive.ToggleBreakPowerButton(false);
+                }
+            }
+            // Ovládání tlačítka závěru
+            if (Locomotive.LapButtonEnable)
+            {
+                if (UserInput.IsPressed(UserCommand.ControlLapButton))
+                {
+                    Locomotive.ToggleLapButton(true);
+                }
+                else
+                if (UserInput.IsReleased(UserCommand.ControlLapButton))
+                {
+                    Locomotive.ToggleLapButton(false);
                 }
             }
             // Ovládání Diesel kontroléru
@@ -2666,6 +2680,7 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.DOORSWITCH:
                 case CABViewControlTypes.POWER_OFFCLOSINGON:
                 case CABViewControlTypes.HIGHVOLTAGE_DCOFFAC:
+                case CABViewControlTypes.LAP_BUTTON:
 
                     index = (int)data;
                     break;
@@ -3420,6 +3435,13 @@ namespace Orts.Viewer3D.RollingStock
                         Locomotive.ToggleBreakPowerButton(true);
                     else
                         Locomotive.ToggleBreakPowerButton(false);
+                    break;
+
+                case CABViewControlTypes.LAP_BUTTON:
+                    if (ChangedValue(Locomotive.LapButton ? 1 : 0) > 0)
+                        Locomotive.ToggleLapButton(true);
+                    else
+                        Locomotive.ToggleLapButton(false);
                     break;
 
                 case CABViewControlTypes.DIESEL_DIRECTION_CONTROLLER:
