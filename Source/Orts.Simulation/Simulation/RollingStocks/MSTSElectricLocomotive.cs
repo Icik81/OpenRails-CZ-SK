@@ -2641,17 +2641,17 @@ namespace Orts.Simulation.RollingStocks
                             data = 0;
                         if (PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closing)
                             data = 1;
-                        if (PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closed && PowerReductionResult10 == 0)
+                        if (PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closed && PowerReductionResult10 == 0 && AuxPowerOn)
                             data = 2;
                     }
                     break;
                 
                 case CABViewControlTypes.HIGHVOLTAGE_DCOFFAC:
                     {
-                        if (preVoltageDC > 500 && preVoltageDC < 4000)
+                        if (preVoltageDC > 500 && preVoltageDC < 4000 && AuxPowerOn)
                             data = 0;
                         else
-                        if (VoltageAC > 5000)
+                        if (VoltageAC > 5000 && AuxPowerOn)
                             data = 2;
                         else
                             data = 1;
