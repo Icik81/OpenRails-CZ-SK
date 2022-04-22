@@ -10777,6 +10777,7 @@ namespace Orts.Simulation.RollingStocks
                         data = DoorSwitch;                        
                         break;
                     }
+                
             }
             // max needle speed
             if (cvc.MaxNeedleSpeed > 0 && elapsedTime > 0)

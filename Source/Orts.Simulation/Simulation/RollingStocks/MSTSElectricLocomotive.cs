@@ -2623,14 +2623,41 @@ namespace Orts.Simulation.RollingStocks
                         data = 1;
                         if (PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closed)
                         {
-                            if (PantographVoltageV > PantographCriticalVoltage && PantographVoltageV < 4000)
+                            if (SwitchingVoltageMode_OffDC)
                                 data = 0;
                             else
-                            if (PantographVoltageV > 4000)
+                            if (SwitchingVoltageMode_OffAC)
                                 data = 2;
                             else
                                 data = 1;
                         }
+                    }
+                    break;
+
+                case CABViewControlTypes.POWER_OFFCLOSINGON:
+                    {
+                        data = 1;
+                        if (PowerSupply.CircuitBreaker.State == CircuitBreakerState.Open || PowerReductionResult10 == 1)
+                            data = 0;
+                        if (PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closing)
+                            data = 1;
+                        if (PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closed && PowerReductionResult10 == 0)
+                            data = 2;
+                    }
+                    break;
+                
+                case CABViewControlTypes.HIGHVOLTAGE_DCOFFAC:
+                    {
+                        if (preVoltageDC > 500 && preVoltageDC < 4000)
+                            data = 0;
+                        else
+                        if (VoltageAC > 5000)
+                            data = 2;
+                        else
+                            data = 1;
+
+                        if (PowerReductionResult10 == 1)
+                            data = 1;
                     }
                     break;
 

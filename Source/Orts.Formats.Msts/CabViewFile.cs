@@ -430,6 +430,8 @@ namespace Orts.Formats.Msts
         HV4PANTOUP,
         HV4VOLTAGESETUP,
         DOORSWITCH,
+        POWER_OFFCLOSINGON,
+        HIGHVOLTAGE_DCOFFAC,
 
 
         // Further CabViewControlTypes must be added above this line, to avoid their malfunction in 3DCabs
