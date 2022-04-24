@@ -2811,7 +2811,7 @@ namespace Orts.Simulation.RollingStocks
             {
                 float MaxSpeedTilting = 60.0f / 3.6f;
                 float TiltingMark = AbsSpeedMpS / SpeedMpS;
-                if (TiltingMark == 0) TiltingMark = 1;
+                if (float.IsNaN(TiltingMark)) TiltingMark = 1;
                 
                 // Omezí maximální náklon vozu dle náprav
                 switch (WagonNumAxles)
