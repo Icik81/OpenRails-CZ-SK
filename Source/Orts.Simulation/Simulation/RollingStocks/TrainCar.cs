@@ -2807,12 +2807,11 @@ namespace Orts.Simulation.RollingStocks
             }
             
             // Naklápění skříně vozu
-            if (Train != null)
+            if (Train != null && SpeedMpS != 0)
             {
-                float MaxSpeedTilting = 60.0f / 3.6f;
+                float MaxSpeedTilting = 60.0f / 3.6f;                
                 float TiltingMark = AbsSpeedMpS / SpeedMpS;
-                if (float.IsNaN(TiltingMark)) TiltingMark = 1;
-                
+                                
                 // Omezí maximální náklon vozu dle náprav
                 switch (WagonNumAxles)
                 {
