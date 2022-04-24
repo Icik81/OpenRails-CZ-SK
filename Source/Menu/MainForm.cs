@@ -381,40 +381,44 @@ namespace ORTS
         #region Launcher Update
         public void LauncherUpdate()
         {
-            Ping ping = new Ping();
-            PingReply pingReply = ping.Send("lkpr.aspone.cz", 1000);
-            if (pingReply != null)
+            try
             {
-                if (pingReply.Status == IPStatus.Success)
+                Ping ping = new Ping();
+                PingReply pingReply = ping.Send("lkpr.aspone.cz", 1000);
+                if (pingReply != null)
                 {
-                    SplashWindow sw = new SplashWindow();
-                    sw.Show();
-                    sw.Message = "Kontrola verze updateru.";
-                    sw.UpdateProgress();
                     if (pingReply.Status == IPStatus.Success)
                     {
-                        if (!File.Exists(Application.StartupPath + @"\OpenRails.txt"))
-                            File.WriteAllText(Application.StartupPath + @"\OpenRails.txt", "0");
-                        string version = File.ReadAllText(Application.StartupPath + @"\OpenRails.txt");
-                        WebClient webClient = new WebClient();
-                        string verRemote = webClient.DownloadString(@"http://lkpr.aspone.cz/or/OpenRails.txt");
-                        if (verRemote == version)
-                        {
-                            sw.Close();
-                            return;
-                        }
-                        sw.Message = "Stahuji a rozbaluji novou vezi updateru.";
+                        SplashWindow sw = new SplashWindow();
+                        sw.Show();
+                        sw.Message = "Kontrola verze updateru.";
                         sw.UpdateProgress();
-                        if (File.Exists(Application.StartupPath + @"\OpenRails.zip"))
-                            File.Delete(Application.StartupPath + @"\OpenRails.zip");
-                        webClient.DownloadFile(@"http://lkpr.aspone.cz/or/OpenRails.zip", Application.StartupPath + @"\OpenRails.zip");
-                        ZipFile zipEntries = new ZipFile(Application.StartupPath + @"\OpenRails.zip");
-                        zipEntries.ExtractAll(Application.StartupPath, ExtractExistingFileAction.OverwriteSilently);
-                        File.WriteAllText(Application.StartupPath + @"\OpenRails.txt", verRemote);
-                        sw.Close();
+                        if (pingReply.Status == IPStatus.Success)
+                        {
+                            if (!File.Exists(Application.StartupPath + @"\OpenRails.txt"))
+                                File.WriteAllText(Application.StartupPath + @"\OpenRails.txt", "0");
+                            string version = File.ReadAllText(Application.StartupPath + @"\OpenRails.txt");
+                            WebClient webClient = new WebClient();
+                            string verRemote = webClient.DownloadString(@"http://lkpr.aspone.cz/or/OpenRails.txt");
+                            if (verRemote == version)
+                            {
+                                sw.Close();
+                                return;
+                            }
+                            sw.Message = "Stahuji a rozbaluji novou vezi updateru.";
+                            sw.UpdateProgress();
+                            if (File.Exists(Application.StartupPath + @"\OpenRails.zip"))
+                                File.Delete(Application.StartupPath + @"\OpenRails.zip");
+                            webClient.DownloadFile(@"http://lkpr.aspone.cz/or/OpenRails.zip", Application.StartupPath + @"\OpenRails.zip");
+                            ZipFile zipEntries = new ZipFile(Application.StartupPath + @"\OpenRails.zip");
+                            zipEntries.ExtractAll(Application.StartupPath, ExtractExistingFileAction.OverwriteSilently);
+                            File.WriteAllText(Application.StartupPath + @"\OpenRails.txt", verRemote);
+                            sw.Close();
+                        }
                     }
                 }
             }
+            catch (PingException) { }                                        
         }
         #endregion
 
@@ -444,262 +448,278 @@ namespace ORTS
         #region MirelDatabase
         void LoadMirelDatabase()
         {
-            Ping ping = new Ping();
-            PingReply pingReply = ping.Send("lkpr.aspone.cz", 1000);
-            if (pingReply != null)
+            try
             {
-                if (pingReply.Status == IPStatus.Success)
+                Ping ping = new Ping();
+                PingReply pingReply = ping.Send("lkpr.aspone.cz", 1000);
+                if (pingReply != null)
                 {
-                    SplashWindow sw = new SplashWindow();
-                    sw.Show();
-                    sw.UpdateProgress();
                     if (pingReply.Status == IPStatus.Success)
                     {
-                        if (!File.Exists(SelectedRoute.Path + "\\MirelDb.xml") && File.Exists(SelectedRoute.Path + "\\MirelDbVersion.ini"))
-                            File.Delete(SelectedRoute.Path + "\\MirelDbVersion.ini");
-                        FileInfo fileInfo = new FileInfo(SelectedRoute.Path + "\\MirelDbVersion.ini");
-                        if (!fileInfo.Exists)
+                        SplashWindow sw = new SplashWindow();
+                        sw.Show();
+                        sw.UpdateProgress();
+                        if (pingReply.Status == IPStatus.Success)
                         {
-                            File.WriteAllText(SelectedRoute.Path + "\\MirelDbVersion.ini", "0");
-                        }
-                        string version = File.ReadAllText(SelectedRoute.Path + "\\MirelDbVersion.ini");
-                        if (string.IsNullOrEmpty(version)) version = "0";
-                        cz.aspone.lkpr.WebService ws = new cz.aspone.lkpr.WebService();
-                        string verRemote = ws.GetLastVersion(SelectedRoute.ToString());
-                        if (verRemote == version)
-                        {
-                            sw.Close();
-                            return;
-                        }
-
-                        DataTable dt = ws.GetMirelSignals(comboBoxRoute.Text, version);
-                        int currentRow = 0;
-
-                        if (!File.Exists(SelectedRoute.Path + "\\MirelDb.xml"))
-                        {
-                            WebClient webClient = new WebClient();
-                            webClient.DownloadFile("http://lkpr.aspone.cz/or/MirelDb.xml", SelectedRoute.Path + "\\MirelDb.xml");
-                        }
-                        XmlDocument doc = new XmlDocument();
-                        doc.Load(SelectedRoute.Path + "\\MirelDb.xml");
-
-                        foreach (DataRow dr in dt.Rows)
-                        {
-                            currentRow++;
-                            double calc = 100 / (double)dt.Rows.Count;
-                            calc = calc * currentRow;
-                            calc = Math.Round(calc, 0) + 1;
-                            sw.Progress = int.Parse(calc.ToString());
-                            sw.UpdateProgress();
-                            if (dr[3].ToString() == SelectedRoute.ToString())
+                            if (!File.Exists(SelectedRoute.Path + "\\MirelDb.xml") && File.Exists(SelectedRoute.Path + "\\MirelDbVersion.ini"))
+                                File.Delete(SelectedRoute.Path + "\\MirelDbVersion.ini");
+                            FileInfo fileInfo = new FileInfo(SelectedRoute.Path + "\\MirelDbVersion.ini");
+                            if (!fileInfo.Exists)
                             {
-                                foreach (XmlNode node in doc.ChildNodes)
+                                File.WriteAllText(SelectedRoute.Path + "\\MirelDbVersion.ini", "0");
+                            }
+                            string version = File.ReadAllText(SelectedRoute.Path + "\\MirelDbVersion.ini");
+                            if (string.IsNullOrEmpty(version)) version = "0";
+                            cz.aspone.lkpr.WebService ws = new cz.aspone.lkpr.WebService();
+                            string verRemote = ws.GetLastVersion(SelectedRoute.ToString());
+                            if (verRemote == version)
+                            {
+                                sw.Close();
+                                return;
+                            }
+
+                            DataTable dt = ws.GetMirelSignals(comboBoxRoute.Text, version);
+                            int currentRow = 0;
+
+                            if (!File.Exists(SelectedRoute.Path + "\\MirelDb.xml"))
+                            {
+                                WebClient webClient = new WebClient();
+                                webClient.DownloadFile("http://lkpr.aspone.cz/or/MirelDb.xml", SelectedRoute.Path + "\\MirelDb.xml");
+                            }
+                            XmlDocument doc = new XmlDocument();
+                            doc.Load(SelectedRoute.Path + "\\MirelDb.xml");
+
+                            foreach (DataRow dr in dt.Rows)
+                            {
+                                currentRow++;
+                                double calc = 100 / (double)dt.Rows.Count;
+                                calc = calc * currentRow;
+                                calc = Math.Round(calc, 0) + 1;
+                                sw.Progress = int.Parse(calc.ToString());
+                                sw.UpdateProgress();
+                                if (dr[3].ToString() == SelectedRoute.ToString())
                                 {
-                                    if (node.Name == "MirelDb")
+                                    foreach (XmlNode node in doc.ChildNodes)
                                     {
-                                        XmlNode node1 = doc.CreateElement("Signal");
-                                        XmlNode node2 = doc.CreateElement("Id");
-                                        node2.InnerText = dr[1].ToString();
-                                        XmlNode node3 = doc.CreateElement("Value");
-                                        node3.InnerText = dr[2].ToString();
-                                        node1.AppendChild(node2);
-                                        node1.AppendChild(node3);
-                                        node.AppendChild(node1);
+                                        if (node.Name == "MirelDb")
+                                        {
+                                            XmlNode node1 = doc.CreateElement("Signal");
+                                            XmlNode node2 = doc.CreateElement("Id");
+                                            node2.InnerText = dr[1].ToString();
+                                            XmlNode node3 = doc.CreateElement("Value");
+                                            node3.InnerText = dr[2].ToString();
+                                            node1.AppendChild(node2);
+                                            node1.AppendChild(node3);
+                                            node.AppendChild(node1);
+                                        }
                                     }
                                 }
                             }
+                            doc.Save(SelectedRoute.Path + "\\MirelDb.xml");
+                            File.WriteAllText(SelectedRoute.Path + "\\MirelDbVersion.ini", ws.GetLastVersion(SelectedRoute.Name));
+                            sw.Close();
                         }
-                        doc.Save(SelectedRoute.Path + "\\MirelDb.xml");
-                        File.WriteAllText(SelectedRoute.Path + "\\MirelDbVersion.ini", ws.GetLastVersion(SelectedRoute.Name));
-                        sw.Close();
                     }
                 }
             }
+            catch (PingException) { }
         }
         #endregion
 
         void LoadPowerSupplyStations()
         {
-            Ping ping = new Ping();
-            PingReply pingReply = ping.Send("lkpr.aspone.cz", 1000);
-            if (pingReply != null)
+            try
             {
-                if (pingReply.Status == IPStatus.Success)
+                Ping ping = new Ping();
+                PingReply pingReply = ping.Send("lkpr.aspone.cz", 1000);
+                if (pingReply != null)
                 {
-                    SplashWindow sw = new SplashWindow();
-                    sw.Show();
-                    sw.Message = "Aktualizace napaječek. Zabere to jen pár vteřin..";
-                    sw.UpdateProgress();
                     if (pingReply.Status == IPStatus.Success)
                     {
-                        if (!File.Exists(SelectedRoute.Path + "\\PowerSupplyStations.xml") && File.Exists(SelectedRoute.Path + "\\PowerSupplyStationsDbVersion.ini"))
-                            File.Delete(SelectedRoute.Path + "\\PowerSupplyStationsDbVersion.ini");
-                        FileInfo fileInfo = new FileInfo(SelectedRoute.Path + "\\PowerSupplyStationsDbVersion.ini");
-                        if (!fileInfo.Exists)
+                        SplashWindow sw = new SplashWindow();
+                        sw.Show();
+                        sw.Message = "Aktualizace napaječek. Zabere to jen pár vteřin..";
+                        sw.UpdateProgress();
+                        if (pingReply.Status == IPStatus.Success)
                         {
-                            File.WriteAllText(SelectedRoute.Path + "\\PowerSupplyStationsDbVersion.ini", "0");
-                        }
-                        string version = File.ReadAllText(SelectedRoute.Path + "\\PowerSupplyStationsDbVersion.ini");
-                        if (string.IsNullOrEmpty(version)) version = "0";
-                        cz.aspone.lkpr.WebService ws = new cz.aspone.lkpr.WebService();
-                        string verRemote = ws.GetPowerSuplyStationVersion(SelectedRoute.ToString());
-                        if (verRemote == version)
-                        {
-                            sw.Close();
-                            return;
-                        }
-
-                        DataTable dt = ws.GetPowerSupplyStations(comboBoxRoute.Text, version);
-                        int currentRow = 0;
-
-                        if (!File.Exists(SelectedRoute.Path + "\\PowerSupplyStations.xml"))
-                        {
-                            WebClient webClient = new WebClient();
-                            webClient.DownloadFile("http://lkpr.aspone.cz/or/PowerSupplyStations.xml", SelectedRoute.Path + "\\PowerSupplyStations.xml");
-                        }
-                        XmlDocument doc = new XmlDocument();
-                        doc.Load(SelectedRoute.Path + "\\PowerSupplyStations.xml");
-
-                        foreach (DataRow dr in dt.Rows)
-                        {
-                            currentRow++;
-                            double calc = 100 / (double)dt.Rows.Count;
-                            calc = calc * currentRow;
-                            calc = Math.Round(calc, 0) + 1;
-                            sw.Progress = int.Parse(calc.ToString());
-                            sw.UpdateProgress();
-                            if (dr[1].ToString() == SelectedRoute.ToString())
+                            if (!File.Exists(SelectedRoute.Path + "\\PowerSupplyStations.xml") && File.Exists(SelectedRoute.Path + "\\PowerSupplyStationsDbVersion.ini"))
+                                File.Delete(SelectedRoute.Path + "\\PowerSupplyStationsDbVersion.ini");
+                            FileInfo fileInfo = new FileInfo(SelectedRoute.Path + "\\PowerSupplyStationsDbVersion.ini");
+                            if (!fileInfo.Exists)
                             {
-                                foreach (XmlNode node in doc.ChildNodes)
+                                File.WriteAllText(SelectedRoute.Path + "\\PowerSupplyStationsDbVersion.ini", "0");
+                            }
+                            string version = File.ReadAllText(SelectedRoute.Path + "\\PowerSupplyStationsDbVersion.ini");
+                            if (string.IsNullOrEmpty(version)) version = "0";
+                            cz.aspone.lkpr.WebService ws = new cz.aspone.lkpr.WebService();
+                            string verRemote = ws.GetPowerSuplyStationVersion(SelectedRoute.ToString());
+                            if (verRemote == version)
+                            {
+                                sw.Close();
+                                return;
+                            }
+
+                            DataTable dt = ws.GetPowerSupplyStations(comboBoxRoute.Text, version);
+                            int currentRow = 0;
+
+                            if (!File.Exists(SelectedRoute.Path + "\\PowerSupplyStations.xml"))
+                            {
+                                WebClient webClient = new WebClient();
+                                webClient.DownloadFile("http://lkpr.aspone.cz/or/PowerSupplyStations.xml", SelectedRoute.Path + "\\PowerSupplyStations.xml");
+                            }
+                            XmlDocument doc = new XmlDocument();
+                            doc.Load(SelectedRoute.Path + "\\PowerSupplyStations.xml");
+
+                            foreach (DataRow dr in dt.Rows)
+                            {
+                                currentRow++;
+                                double calc = 100 / (double)dt.Rows.Count;
+                                calc = calc * currentRow;
+                                calc = Math.Round(calc, 0) + 1;
+                                sw.Progress = int.Parse(calc.ToString());
+                                sw.UpdateProgress();
+                                if (dr[1].ToString() == SelectedRoute.ToString())
                                 {
-                                    if (node.Name == "PowerSupplyStations")
+                                    foreach (XmlNode node in doc.ChildNodes)
                                     {
-                                        XmlNode node1 = doc.CreateElement("SupplyStation");
-                                        XmlNode node2 = doc.CreateElement("Id");
-                                        node2.InnerText = dr[0].ToString();
-                                        XmlNode node3 = doc.CreateElement("Longitude");
-                                        node3.InnerText = dr[3].ToString();
-                                        XmlNode node4 = doc.CreateElement("Latitude");
-                                        node4.InnerText = dr[4].ToString();
-                                        XmlNode node5 = doc.CreateElement("PowerSystem");
-                                        node5.InnerText = dr[5].ToString();
-                                        node1.AppendChild(node2);
-                                        node1.AppendChild(node3);
-                                        node1.AppendChild(node4);
-                                        node1.AppendChild(node5);
-                                        node.AppendChild(node1);
+                                        if (node.Name == "PowerSupplyStations")
+                                        {
+                                            XmlNode node1 = doc.CreateElement("SupplyStation");
+                                            XmlNode node2 = doc.CreateElement("Id");
+                                            node2.InnerText = dr[0].ToString();
+                                            XmlNode node3 = doc.CreateElement("Longitude");
+                                            node3.InnerText = dr[3].ToString();
+                                            XmlNode node4 = doc.CreateElement("Latitude");
+                                            node4.InnerText = dr[4].ToString();
+                                            XmlNode node5 = doc.CreateElement("PowerSystem");
+                                            node5.InnerText = dr[5].ToString();
+                                            node1.AppendChild(node2);
+                                            node1.AppendChild(node3);
+                                            node1.AppendChild(node4);
+                                            node1.AppendChild(node5);
+                                            node.AppendChild(node1);
+                                        }
                                     }
                                 }
                             }
+                            doc.Save(SelectedRoute.Path + "\\PowerSupplyStations.xml");
+                            File.WriteAllText(SelectedRoute.Path + "\\PowerSupplyStationsDbVersion.ini", ws.GetPowerSuplyStationVersion(SelectedRoute.Name));
+                            sw.Close();
                         }
-                        doc.Save(SelectedRoute.Path + "\\PowerSupplyStations.xml");
-                        File.WriteAllText(SelectedRoute.Path + "\\PowerSupplyStationsDbVersion.ini", ws.GetPowerSuplyStationVersion(SelectedRoute.Name));
-                        sw.Close();
                     }
                 }
             }
+            catch (PingException) { }
         }
 
         void LoadPowerSupplyMarkers()
         {
-            Ping ping = new Ping();
-            PingReply pingReply = ping.Send("lkpr.aspone.cz", 1000);
-            if (pingReply != null)
+            try
             {
-                if (pingReply.Status == IPStatus.Success)
+                Ping ping = new Ping();
+                PingReply pingReply = ping.Send("lkpr.aspone.cz", 1000);
+                if (pingReply != null)
                 {
-                    SplashWindow sw = new SplashWindow();
-                    sw.Show();
-                    sw.Message = "Aktualizace stahovaček. Zabere to jen pár vteřin..";
-                    sw.UpdateProgress();
                     if (pingReply.Status == IPStatus.Success)
                     {
-                        if (!File.Exists(SelectedRoute.Path + "\\VoltageChangeMarkers.xml") && File.Exists(SelectedRoute.Path + "\\VoltageChangeMarkersDbVersion.ini"))
-                            File.Delete(SelectedRoute.Path + "\\VoltageChangeMarkersDbVersion.ini");
-                        FileInfo fileInfo = new FileInfo(SelectedRoute.Path + "\\VoltageChangeMarkersDbVersion.ini");
-                        if (!fileInfo.Exists)
+                        SplashWindow sw = new SplashWindow();
+                        sw.Show();
+                        sw.Message = "Aktualizace stahovaček. Zabere to jen pár vteřin..";
+                        sw.UpdateProgress();
+                        if (pingReply.Status == IPStatus.Success)
                         {
-                            File.WriteAllText(SelectedRoute.Path + "\\VoltageChangeMarkersDbVersion.ini", "0");
-                        }
-                        string version = File.ReadAllText(SelectedRoute.Path + "\\VoltageChangeMarkersDbVersion.ini");
-                        if (string.IsNullOrEmpty(version)) version = "0";
-                        cz.aspone.lkpr.WebService ws = new cz.aspone.lkpr.WebService();
-                        string verRemote = ws.GetPowerSuplyMarkerVersion(SelectedRoute.ToString());
-                        if (verRemote == version)
-                        {
-                            sw.Close();
-                            return;
-                        }
-
-                        DataTable dt = ws.GetPowerSupplyMarkers(comboBoxRoute.Text, version);
-                        int currentRow = 0;
-
-                        if (!File.Exists(SelectedRoute.Path + "\\VoltageChangeMarkers.xml"))
-                        {
-                            WebClient webClient = new WebClient();
-                            webClient.DownloadFile("http://lkpr.aspone.cz/or/VoltageChangeMarkers.xml", SelectedRoute.Path + "\\VoltageChangeMarkers.xml");
-                        }
-                        XmlDocument doc = new XmlDocument();
-                        doc.Load(SelectedRoute.Path + "\\VoltageChangeMarkers.xml");
-
-                        foreach (DataRow dr in dt.Rows)
-                        {
-                            currentRow++;
-                            double calc = 100 / (double)dt.Rows.Count;
-                            calc = calc * currentRow;
-                            calc = Math.Round(calc, 0) + 1;
-                            sw.Progress = int.Parse(calc.ToString());
-                            sw.UpdateProgress();
-                            if (dr[1].ToString() == SelectedRoute.ToString())
+                            if (!File.Exists(SelectedRoute.Path + "\\VoltageChangeMarkers.xml") && File.Exists(SelectedRoute.Path + "\\VoltageChangeMarkersDbVersion.ini"))
+                                File.Delete(SelectedRoute.Path + "\\VoltageChangeMarkersDbVersion.ini");
+                            FileInfo fileInfo = new FileInfo(SelectedRoute.Path + "\\VoltageChangeMarkersDbVersion.ini");
+                            if (!fileInfo.Exists)
                             {
-                                foreach (XmlNode node in doc.ChildNodes)
+                                File.WriteAllText(SelectedRoute.Path + "\\VoltageChangeMarkersDbVersion.ini", "0");
+                            }
+                            string version = File.ReadAllText(SelectedRoute.Path + "\\VoltageChangeMarkersDbVersion.ini");
+                            if (string.IsNullOrEmpty(version)) version = "0";
+                            cz.aspone.lkpr.WebService ws = new cz.aspone.lkpr.WebService();
+                            string verRemote = ws.GetPowerSuplyMarkerVersion(SelectedRoute.ToString());
+                            if (verRemote == version)
+                            {
+                                sw.Close();
+                                return;
+                            }
+
+                            DataTable dt = ws.GetPowerSupplyMarkers(comboBoxRoute.Text, version);
+                            int currentRow = 0;
+
+                            if (!File.Exists(SelectedRoute.Path + "\\VoltageChangeMarkers.xml"))
+                            {
+                                WebClient webClient = new WebClient();
+                                webClient.DownloadFile("http://lkpr.aspone.cz/or/VoltageChangeMarkers.xml", SelectedRoute.Path + "\\VoltageChangeMarkers.xml");
+                            }
+                            XmlDocument doc = new XmlDocument();
+                            doc.Load(SelectedRoute.Path + "\\VoltageChangeMarkers.xml");
+
+                            foreach (DataRow dr in dt.Rows)
+                            {
+                                currentRow++;
+                                double calc = 100 / (double)dt.Rows.Count;
+                                calc = calc * currentRow;
+                                calc = Math.Round(calc, 0) + 1;
+                                sw.Progress = int.Parse(calc.ToString());
+                                sw.UpdateProgress();
+                                if (dr[1].ToString() == SelectedRoute.ToString())
                                 {
-                                    if (node.Name == "VoltageChangeMarkers")
+                                    foreach (XmlNode node in doc.ChildNodes)
                                     {
-                                        XmlNode node1 = doc.CreateElement("Marker");
-                                        XmlNode node2 = doc.CreateElement("Id");
-                                        node2.InnerText = dr[0].ToString();
-                                        XmlNode node3 = doc.CreateElement("Longitude");
-                                        node3.InnerText = dr[3].ToString();
-                                        XmlNode node4 = doc.CreateElement("Latitude");
-                                        node4.InnerText = dr[4].ToString();
-                                        XmlNode node5 = doc.CreateElement("Voltage");
-                                        node5.InnerText = dr[5].ToString();
-                                        node1.AppendChild(node2);
-                                        node1.AppendChild(node3);
-                                        node1.AppendChild(node4);
-                                        node1.AppendChild(node5);
-                                        node.AppendChild(node1);
+                                        if (node.Name == "VoltageChangeMarkers")
+                                        {
+                                            XmlNode node1 = doc.CreateElement("Marker");
+                                            XmlNode node2 = doc.CreateElement("Id");
+                                            node2.InnerText = dr[0].ToString();
+                                            XmlNode node3 = doc.CreateElement("Longitude");
+                                            node3.InnerText = dr[3].ToString();
+                                            XmlNode node4 = doc.CreateElement("Latitude");
+                                            node4.InnerText = dr[4].ToString();
+                                            XmlNode node5 = doc.CreateElement("Voltage");
+                                            node5.InnerText = dr[5].ToString();
+                                            node1.AppendChild(node2);
+                                            node1.AppendChild(node3);
+                                            node1.AppendChild(node4);
+                                            node1.AppendChild(node5);
+                                            node.AppendChild(node1);
+                                        }
                                     }
                                 }
                             }
+                            doc.Save(SelectedRoute.Path + "\\VoltageChangeMarkers.xml");
+                            File.WriteAllText(SelectedRoute.Path + "\\VoltageChangeMarkersDbVersion.ini", ws.GetPowerSuplyMarkerVersion(SelectedRoute.Name));
+                            sw.Close();
                         }
-                        doc.Save(SelectedRoute.Path + "\\VoltageChangeMarkers.xml");
-                        File.WriteAllText(SelectedRoute.Path + "\\VoltageChangeMarkersDbVersion.ini", ws.GetPowerSuplyMarkerVersion(SelectedRoute.Name));
-                        sw.Close();
                     }
                 }
             }
+            catch (PingException) { }
         }
 
         #region Names
         public void LoadNames()
         {
-            Ping ping = new Ping();
-            PingReply pingReply = ping.Send("lkpr.aspone.cz", 1000);
-            if (pingReply != null)
+            try
             {
-                if (pingReply.Status == IPStatus.Success)
+                Ping ping = new Ping();
+                PingReply pingReply = ping.Send("lkpr.aspone.cz", 1000);
+                if (pingReply != null)
                 {
-                    if (!File.Exists(Application.StartupPath + "\\krestni_muzi.csv") || !File.Exists(Application.StartupPath + "\\krestni_zeny.csv") || !File.Exists(Application.StartupPath + "\\prijmeni_muzi_1.csv") || !File.Exists(Application.StartupPath + "\\prijmeni_zeny_1.csv"))
+                    if (pingReply.Status == IPStatus.Success)
                     {
-                        WebClient webClient = new WebClient();
-                        webClient.DownloadFile("http://lkpr.aspone.cz/or/Names.zip", Application.StartupPath + "\\Names.zip");
-                        ZipFile zFile = new ZipFile(Application.StartupPath + "\\Names.zip");
-                        zFile.ExtractAll(Application.StartupPath, ExtractExistingFileAction.OverwriteSilently);
+                        if (!File.Exists(Application.StartupPath + "\\krestni_muzi.csv") || !File.Exists(Application.StartupPath + "\\krestni_zeny.csv") || !File.Exists(Application.StartupPath + "\\prijmeni_muzi_1.csv") || !File.Exists(Application.StartupPath + "\\prijmeni_zeny_1.csv"))
+                        {
+                            WebClient webClient = new WebClient();
+                            webClient.DownloadFile("http://lkpr.aspone.cz/or/Names.zip", Application.StartupPath + "\\Names.zip");
+                            ZipFile zFile = new ZipFile(Application.StartupPath + "\\Names.zip");
+                            zFile.ExtractAll(Application.StartupPath, ExtractExistingFileAction.OverwriteSilently);
+                        }
                     }
                 }
             }
+            catch (PingException) { }
         }
         #endregion
 
