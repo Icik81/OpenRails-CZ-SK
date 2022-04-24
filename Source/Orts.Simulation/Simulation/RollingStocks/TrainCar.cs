@@ -2805,19 +2805,40 @@ namespace Orts.Simulation.RollingStocks
 
                 if (Factor_vibration > 0) Factor_vibration--;
             }
-            //if (Train != null && Train.IsTilting)
+            
+            // Naklápění skříně vozu
             if (Train != null)
             {
-                TiltingZRot = traveler.FindTiltedZ(speedMpS);//rotation if tilted, an indication of centrifugal force
+                float MaxSpeedTilting = 60.0f / 3.6f;
+                float TiltingMark = AbsSpeedMpS / SpeedMpS;
+                if (TiltingMark == 0) TiltingMark = 1;
+                
+                // Omezí maximální náklon vozu dle náprav
+                switch (WagonNumAxles)
+                {
+                    case 0:
+                    case 1:
+                    case 2:
+                        MaxSpeedTilting = 60.0f / 3.6f;
+                        break;
+                    case 4:
+                        MaxSpeedTilting = 100.0f / 3.6f;
+                        break;
+                    case 6:
+                        MaxSpeedTilting = 80.0f / 3.6f;
+                        break;
+                }
+
+                TiltingZRot = traveler.FindTiltedZ(TiltingMark * (MathHelper.Clamp(AbsSpeedMpS, 0, MaxSpeedTilting)));//rotation if tilted, an indication of centrifugal force                
                 TiltingZRot = PrevTiltingZRot + (TiltingZRot - PrevTiltingZRot) * elapsedTimeS;//smooth rotation
                 PrevTiltingZRot = TiltingZRot;
                 if (this.Flipped) TiltingZRot *= -1f;
             }
-            //if (Simulator.Settings.CarVibratingLevel != 0 || Train.IsTilting)
+
             if (Simulator.Settings.CarVibratingLevel != 0)
             {
-                var rotation = Matrix.CreateFromYawPitchRoll(VibrationRotationRad.Y, VibrationRotationRad.X, VibrationRotationRad.Z + TiltingZRot * 0.3f);
-                if (Train.IsTilting) rotation = Matrix.CreateFromYawPitchRoll(VibrationRotationRad.Y, VibrationRotationRad.X, VibrationRotationRad.Z + TiltingZRot * 0.5f);
+                var rotation = Matrix.CreateFromYawPitchRoll(VibrationRotationRad.Y, VibrationRotationRad.X, VibrationRotationRad.Z + TiltingZRot * 0.5f);
+                if (Train.IsTilting && AbsSpeedMpS > 50 / 3.6f) rotation = Matrix.CreateFromYawPitchRoll(VibrationRotationRad.Y, VibrationRotationRad.X, VibrationRotationRad.Z + TiltingZRot * 0.8f);
                 var translation = Matrix.CreateTranslation(VibrationTranslationM.X, VibrationTranslationM.Y, 0);
                 WorldPosition.XNAMatrix = rotation * translation * WorldPosition.XNAMatrix;
                 VibrationInverseMatrix = Matrix.Invert(rotation * translation);
@@ -3040,7 +3061,7 @@ namespace Orts.Simulation.RollingStocks
                 TypVibrace_3 = false;                
                
                 //if (IsPlayerTrain)              
-                //    Simulator.Confirmer.Information("CurrentCurveAngle " + CurrentCurveAngle);                    
+                //    Simulator.Confirmer.Information("Curveture " + curvaturepM);                    
             }
         }
         #endregion
