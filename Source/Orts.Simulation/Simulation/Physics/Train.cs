@@ -1812,7 +1812,7 @@ namespace Orts.Simulation.Physics
                         if (CyklusCouplerImpuls == 0)
                         {
                             if (TrainMassKG0 <= Simulator.TrainMassKG1)
-                                car.SpeedMpS = SpeedMpS0 * 100000 / MassCoefKG;
+                                car.SpeedMpS = SpeedMpS0 * 10000 / MassCoefKG;
                             else
                                 car.SpeedMpS = -SpeedMpS0;
                             HasCarCoupleSpeed = false;
@@ -4569,34 +4569,26 @@ namespace Orts.Simulation.Physics
         /// <\summary>
 
         public void SetCoupleSpeed(Train otherTrain, float otherMult)
-        {
-            float SpeedMarkCar1 = 1;
+        {            
             float kg1 = 0;
             foreach (TrainCar car in Cars)
                 kg1 += car.MassKG;
             float kg2 = 0;
             foreach (TrainCar car in otherTrain.Cars)
                 kg2 += car.MassKG;
-            SpeedMpS = (kg1 * SpeedMpS + kg2 * otherTrain.SpeedMpS * otherMult) / (kg1 + kg2);
+            SpeedMpS = (((kg1 * SpeedMpS) + (kg2 * otherTrain.SpeedMpS)) * otherMult) / (kg1 + kg2);
             otherTrain.SpeedMpS = SpeedMpS;
-            foreach (TrainCar car1 in Cars)
+            // Icik
+            //foreach (TrainCar car1 in Cars)
             //TODO: next code line has been modified to flip trainset physics in order to get viewing direction coincident with loco direction when using rear cab.
             // To achieve the same result with other means, without flipping trainset physics, the line should be changed as follows:
-            //                 car1.SpeedMpS = car1.Flipped ? -SpeedMpS : SpeedMpS;
+            //                 car1.SpeedMpS = car1.Flipped ? -SpeedMpS : SpeedMpS;                
             //car1.SpeedMpS = car1.Flipped ^ (car1.IsDriveable && car1.Train.IsActualPlayerTrain && ((MSTSLocomotive)car1).UsingRearCab) ? -SpeedMpS : SpeedMpS;                
-            {
-                // Icik
-                SpeedMarkCar1 = car1.SpeedMpS / Math.Abs(car1.SpeedMpS);
-                car1.SpeedMpS = car1.Flipped ^ (car1.IsDriveable && car1.Train.IsActualPlayerTrain && ((MSTSLocomotive)car1).UsingRearCab) ? -SpeedMpS : SpeedMpS;                
-                SpeedMarkCar1 = car1.Flipped ^ (car1.IsDriveable && car1.Train.IsActualPlayerTrain && ((MSTSLocomotive)car1).UsingRearCab) ? SpeedMarkCar1 : -SpeedMarkCar1;
-            }
             foreach (TrainCar car2 in otherTrain.Cars)
                 //TODO: next code line has been modified to flip trainset physics in order to get viewing direction coincident with loco direction when using rear cab.
                 // To achieve the same result with other means, without flipping trainset physics, the line should be changed as follows:
                 //                 car2.SpeedMpS = car2.Flipped ? -SpeedMpS : SpeedMpS;
-                //car2.SpeedMpS = car2.Flipped ^ (car2.IsDriveable && car2.Train.IsActualPlayerTrain && ((MSTSLocomotive)car2).UsingRearCab) ? -SpeedMpS : SpeedMpS;                
-                // Icik
-                car2.SpeedMpS = car2.Flipped ^ (car2.IsDriveable && car2.Train.IsActualPlayerTrain && ((MSTSLocomotive)car2).UsingRearCab) ? SpeedMpS * SpeedMarkCar1 : SpeedMpS * SpeedMarkCar1;                
+                car2.SpeedMpS = car2.Flipped ^ (car2.IsDriveable && car2.Train.IsActualPlayerTrain && ((MSTSLocomotive)car2).UsingRearCab) ? -SpeedMpS : SpeedMpS;                            
         }
 
 
