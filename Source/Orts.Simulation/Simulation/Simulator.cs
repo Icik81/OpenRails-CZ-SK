@@ -975,8 +975,6 @@ namespace Orts.Simulation
                 HasSpeedInCoupler = false;
 
             CarCoupleSpeedOvercome = false;
-            if (HasSpeedInCoupler)
-                return;
 
             if (CarCoupleMaxSpeedOvercome)
             {                
@@ -1008,11 +1006,11 @@ namespace Orts.Simulation
                             if (DifferenceSpeedMpS > CarCoupleMaxSpeed)
                                 CarCoupleMaxSpeedOvercome = true;
 
-                            if (DifferenceSpeedMpS > CarCoupleSpeed)
+                            if (DifferenceSpeedMpS > CarCoupleSpeed && drivenTrain.IsActualPlayerTrain)
                                 CarCoupleSpeedOvercome = true;
 
                             //if (train == drivenTrain.UncoupledFrom || CarCoupleSpeedOvercome)
-                            if (CarCoupleSpeedOvercome)
+                            if (CarCoupleSpeedOvercome || HasSpeedInCoupler)
                             {
                                 if (drivenTrain.SpeedMpS < train.SpeedMpS)
                                     drivenTrain.SetCoupleSpeed(train, 1);                                
@@ -1064,14 +1062,14 @@ namespace Orts.Simulation
                             if (DifferenceSpeedMpS > CarCoupleMaxSpeed)
                                 CarCoupleMaxSpeedOvercome = true;
 
-                            if (DifferenceSpeedMpS > CarCoupleSpeed)
+                            if (DifferenceSpeedMpS > CarCoupleSpeed && drivenTrain.IsActualPlayerTrain)
                                 CarCoupleSpeedOvercome = true;
 
                             //if (train == drivenTrain.UncoupledFrom || CarCoupleSpeedOvercome)
-                            if (CarCoupleSpeedOvercome)
+                            if (CarCoupleSpeedOvercome || HasSpeedInCoupler)
                             {
                                 if (drivenTrain.SpeedMpS < -train.SpeedMpS)
-                                    drivenTrain.SetCoupleSpeed(train, 11);                                
+                                    drivenTrain.SetCoupleSpeed(train, -1);                                
                                 drivenTrain.CalculatePositionOfCars(elapsedClockSeconds, -d2);
                                 HasSpeedInCoupler = true;
                                 return;
@@ -1135,11 +1133,11 @@ namespace Orts.Simulation
                             if (DifferenceSpeedMpS > CarCoupleMaxSpeed)
                                 CarCoupleMaxSpeedOvercome = true;
 
-                            if (DifferenceSpeedMpS > CarCoupleSpeed)
+                            if (DifferenceSpeedMpS > CarCoupleSpeed && drivenTrain.IsActualPlayerTrain)
                                 CarCoupleSpeedOvercome = true;
 
                             //if (train == drivenTrain.UncoupledFrom || CarCoupleSpeedOvercome)
-                            if (CarCoupleSpeedOvercome)
+                            if (CarCoupleSpeedOvercome || HasSpeedInCoupler)
                             {
                                 if (drivenTrain.SpeedMpS > train.SpeedMpS)
                                     drivenTrain.SetCoupleSpeed(train, 1);                                
@@ -1226,11 +1224,11 @@ namespace Orts.Simulation
                             if (DifferenceSpeedMpS > CarCoupleMaxSpeed)
                                 CarCoupleMaxSpeedOvercome = true;
 
-                            if (DifferenceSpeedMpS > CarCoupleSpeed)
+                            if (DifferenceSpeedMpS > CarCoupleSpeed && drivenTrain.IsActualPlayerTrain)
                                 CarCoupleSpeedOvercome = true;
 
                             //if (train == drivenTrain.UncoupledFrom || CarCoupleSpeedOvercome)
-                            if (CarCoupleSpeedOvercome)
+                            if (CarCoupleSpeedOvercome || HasSpeedInCoupler)
                             {
                                 if (drivenTrain.SpeedMpS > -train.SpeedMpS)
                                     drivenTrain.SetCoupleSpeed(train, -1);                                
@@ -1273,7 +1271,7 @@ namespace Orts.Simulation
 
                         UpdateUncoupled(drivenTrain, train, d1, d2, true);
                     }
-            }            
+            }
         }
 
         //  Used for explore mode; creates the player train within the Train class
