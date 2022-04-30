@@ -1176,9 +1176,9 @@ namespace Orts.Simulation.RollingStocks
             if (Simulator.GameTime > 0.5f && !Battery && DieselEngines[0].EngineStatus == DieselEngine.Status.Running) DieselEngines[0].Stop();
 
             // Kompatibilita se standardními směrovými pákami OR/MSTS
-            if (!DieselDirectionController && !DieselDirectionController2 && Direction == Direction.N)
+            if (!DieselDirectionController && !DieselDirectionController2 && !DieselDirectionController3 && !DieselDirectionController4 && Direction == Direction.N)
                 DieselDirection_Start = true;
-            if (!DieselDirectionController && !DieselDirectionController2 && Direction != Direction.N)
+            if (!DieselDirectionController && !DieselDirectionController2 && !DieselDirectionController3 && !DieselDirectionController4 && Direction != Direction.N)
                 DieselDirection_Start = false;
 
             // Kontrolní žárovka pro dobíjení baterií

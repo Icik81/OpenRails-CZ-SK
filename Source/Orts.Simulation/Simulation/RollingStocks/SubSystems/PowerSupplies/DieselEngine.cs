@@ -1549,14 +1549,14 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                 case Status.Stopped:
                 case Status.Stopping:
                     // Icik
-                    if ((locomotive.DieselDirectionController || locomotive.DieselDirectionController2) && locomotive.DieselDirection_Start)
+                    if ((locomotive.DieselDirectionController || locomotive.DieselDirectionController2 || locomotive.DieselDirectionController3 || locomotive.DieselDirectionController4) && locomotive.DieselDirection_Start)
                     {
                         DemandedRPM = StartingRPM;
                         EngineStatus = Status.Starting;
                         locomotive.SignalEvent(Event.EnginePowerOn); // power on sound hook
                     }
                     else
-                    if (!locomotive.DieselDirectionController && !locomotive.DieselDirectionController2)
+                    if (!locomotive.DieselDirectionController && !locomotive.DieselDirectionController2 && !locomotive.DieselDirectionController3 && !locomotive.DieselDirectionController4)
                     {
                         DemandedRPM = StartingRPM;
                         EngineStatus = Status.Starting;

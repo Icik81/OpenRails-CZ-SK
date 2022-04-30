@@ -820,6 +820,7 @@ namespace Orts.Common
             Redo();
         }
 
+        bool AlerterPressed;
         public override void Redo() {
             if (Receiver.LocoType == MSTSLocomotive.LocoTypes.Vectron && Receiver.CruiseControl != null && ToState)
             {
@@ -830,8 +831,16 @@ namespace Orts.Common
                 }
                 Receiver.AlerterPressedAt = DateTime.Now;
             }
-            if (ToState) Receiver.SignalEvent(Event.VigilanceAlarmResetPush); // There is no Event.VigilanceAlarmResetReleased
-            else Receiver.SignalEvent(Event.VigilanceAlarmResetRelease); 
+            if (ToState && !AlerterPressed)
+            {
+                Receiver.SignalEvent(Event.VigilanceAlarmResetPush); // There is no Event.VigilanceAlarmResetReleased
+                AlerterPressed = true;
+            }
+            else
+            {
+                Receiver.SignalEvent(Event.VigilanceAlarmResetRelease);
+                AlerterPressed = false;
+            }
             Receiver.AlerterPressed(ToState);
             Receiver.DisplaySelectedSpeed = ToState;
             // Report();

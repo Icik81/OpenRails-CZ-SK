@@ -121,7 +121,7 @@ namespace Orts.Viewer3D.RollingStock
 
         protected virtual void ReverserControlForwards()
         {
-            if (Locomotive.DieselDirectionController || Locomotive.DieselDirectionController2) return;
+            if (Locomotive.DieselDirectionController || Locomotive.DieselDirectionController2 || Locomotive.DieselDirectionController3 || Locomotive.DieselDirectionController4) return;
             if (Locomotive.Direction != Direction.Forward
             && (Locomotive.ThrottlePercent >= 1
             || Math.Abs(Locomotive.SpeedMpS) > 1))
@@ -134,7 +134,7 @@ namespace Orts.Viewer3D.RollingStock
 
         protected virtual void ReverserControlBackwards()
         {
-            if (Locomotive.DieselDirectionController || Locomotive.DieselDirectionController2) return;
+            if (Locomotive.DieselDirectionController || Locomotive.DieselDirectionController2 || Locomotive.DieselDirectionController3 || Locomotive.DieselDirectionController4) return;
             if (Locomotive.Direction != Direction.Reverse
             && (Locomotive.ThrottlePercent >= 1
             || Math.Abs(Locomotive.SpeedMpS) > 1))
@@ -492,6 +492,30 @@ namespace Orts.Viewer3D.RollingStock
                 // Diesel kontrolér2
                 if (Locomotive.DieselDirectionController2 && Locomotive.DieselDirectionController_In)
                 {                 
+                    if (UserInput.IsPressed(UserCommand.ControlDieselDirectionControllerUp))
+                    {
+                        Locomotive.ToggleDieselDirectionControllerUp();
+                    }
+                    if (UserInput.IsReleased(UserCommand.ControlDieselDirectionControllerDown))
+                    {
+                        Locomotive.ToggleDieselDirectionControllerDown();
+                    }
+                }
+                // Diesel kontrolér3
+                if (Locomotive.DieselDirectionController3 && Locomotive.PowerKey)
+                {
+                    if (UserInput.IsPressed(UserCommand.ControlDieselDirectionControllerUp))
+                    {
+                        Locomotive.ToggleDieselDirectionControllerUp();
+                    }
+                    if (UserInput.IsReleased(UserCommand.ControlDieselDirectionControllerDown))
+                    {
+                        Locomotive.ToggleDieselDirectionControllerDown();
+                    }
+                }
+                // Diesel kontrolér4
+                if (Locomotive.DieselDirectionController4 && Locomotive.PowerKey)
+                {
                     if (UserInput.IsPressed(UserCommand.ControlDieselDirectionControllerUp))
                     {
                         Locomotive.ToggleDieselDirectionControllerUp();
@@ -2669,6 +2693,8 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.ORTS_BAILOFF:
                 case CABViewControlTypes.DIESEL_DIRECTION_CONTROLLER:
                 case CABViewControlTypes.DIESEL_DIRECTION_CONTROLLER2:
+                case CABViewControlTypes.DIESEL_DIRECTION_CONTROLLER3:
+                case CABViewControlTypes.DIESEL_DIRECTION_CONTROLLER4:
                 case CABViewControlTypes.DIESEL_CHECK_POWER_MOTOR_LAMP:                
                 case CABViewControlTypes.DIESEL_MOTOR_WATER_TEMP:
                 case CABViewControlTypes.DIESEL_MOTOR_OIL_TEMP:
@@ -2878,7 +2904,7 @@ namespace Orts.Viewer3D.RollingStock
             {
                 case CABViewControlTypes.REGULATOR:
                 case CABViewControlTypes.THROTTLE:
-                    if ((Locomotive.DieselDirectionController || Locomotive.DieselDirectionController2) && Locomotive.DieselDirection_0)
+                    if ((Locomotive.DieselDirectionController || Locomotive.DieselDirectionController2 || Locomotive.DieselDirectionController3 || Locomotive.DieselDirectionController4) && Locomotive.DieselDirection_0)
                         return;
                     if (ChangedValue(0) != 0)
                     {
@@ -2922,7 +2948,7 @@ namespace Orts.Viewer3D.RollingStock
                     break;                    
                 case CABViewControlTypes.GEARS: Locomotive.SetGearBoxValue(ChangedValue(Locomotive.GearBoxController.IntermediateValue)); break;
                 case CABViewControlTypes.DIRECTION:
-                    if (!Locomotive.DieselDirectionController && !Locomotive.DieselDirectionController2)
+                    if (!Locomotive.DieselDirectionController && !Locomotive.DieselDirectionController2 && !Locomotive.DieselDirectionController3 && !Locomotive.DieselDirectionController4)
                     {
                         var dir = ChangedValue(0);
                         if (dir != 0)
@@ -3007,7 +3033,15 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.ORTS_BAILOFF: new BailOffCommand(Viewer.Log, ChangedValue(Locomotive.BailOff ? 1 : 0) > 0); break;
                 case CABViewControlTypes.ORTS_QUICKRELEASE: new QuickReleaseCommand(Viewer.Log, ChangedValue(Locomotive.TrainBrakeController.QuickReleaseButtonPressed ? 1 : 0) > 0); break;
                 case CABViewControlTypes.ORTS_OVERCHARGE: new BrakeOverchargeCommand(Viewer.Log, ChangedValue(Locomotive.TrainBrakeController.OverchargeButtonPressed ? 1 : 0) > 0); break;
-                case CABViewControlTypes.RESET: new AlerterCommand(Viewer.Log, ChangedValue(Locomotive.TrainControlSystem.AlerterButtonPressed ? 1 : 0) > 0); break;
+                case CABViewControlTypes.RESET:
+                    if (ChangedValue(UserInput.IsMouseLeftButtonPressed ? 1 : 0) > 0 && !IsChanged)
+                    {
+                        new AlerterCommand(Viewer.Log, true);
+                        IsChanged = true;
+                    }
+                    else
+                    if (ChangedValue(UserInput.IsMouseLeftButtonPressed ? 1 : 0) == 0) new AlerterCommand(Viewer.Log, false);
+                    break;
                 case CABViewControlTypes.CP_HANDLE: Locomotive.SetCombinedHandleValue(ChangedValue(Locomotive.GetCombinedHandleValue(true))); break;
 
                 // Steam locomotives only:
@@ -3503,6 +3537,36 @@ namespace Orts.Viewer3D.RollingStock
                             Locomotive.DieselDirectionController_Out = true;
                             Locomotive.DieselDirectionController_In = false;
                             Locomotive.SignalEvent(Event.DieselDirectionControllerOut);
+                        }
+                    }
+                    break;
+                case CABViewControlTypes.DIESEL_DIRECTION_CONTROLLER3:
+                    if (Locomotive.LocalThrottlePercent == 0)
+                    {
+                        if (ChangedValue(0) < 0 && !IsChanged && Locomotive.PowerKey)
+                        {
+                            new ToggleDieselDirectionControllerUpCommand(Viewer.Log);
+                            IsChanged = true;
+                        }
+                        if (ChangedValue(0) > 0 && !IsChanged && Locomotive.PowerKey)
+                        {
+                            new ToggleDieselDirectionControllerDownCommand(Viewer.Log);
+                            IsChanged = true;
+                        }                        
+                    }
+                    break;
+                case CABViewControlTypes.DIESEL_DIRECTION_CONTROLLER4:
+                    if (Locomotive.LocalThrottlePercent == 0)
+                    {
+                        if (ChangedValue(0) < 0 && !IsChanged && Locomotive.PowerKey)
+                        {
+                            new ToggleDieselDirectionControllerUpCommand(Viewer.Log);
+                            IsChanged = true;
+                        }
+                        if (ChangedValue(0) > 0 && !IsChanged && Locomotive.PowerKey)
+                        {
+                            new ToggleDieselDirectionControllerDownCommand(Viewer.Log);
+                            IsChanged = true;
                         }
                     }
                     break;
