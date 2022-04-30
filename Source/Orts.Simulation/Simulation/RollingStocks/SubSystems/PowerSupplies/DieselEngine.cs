@@ -562,7 +562,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
             DieselOilTempTimeConstantSec = copy.DieselOilTempTimeConstantSec;
             DieselTempCoolingHyst = copy.DieselTempCoolingHyst;
             CoolingEnableRPM = copy.CoolingEnableRPM;
-            WatterCoolingPower = copy.WatterCoolingPower;
+            WaterCoolingPower = copy.WaterCoolingPower;
             OilCoolingPower = copy.OilCoolingPower;            
 
             if (copy.GearBox != null)
@@ -774,12 +774,12 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
         public float OverHeatTimer2 = 0;
         public float RealDieselWaterTemperatureDeg;
         public float RealDieselOilTemperatureDeg;
-        bool MSGWatterOn;
+        bool MSGWaterOn;
         bool MSGOilOn;
-        bool MSGWatterLowOn;
+        bool MSGWaterLowOn;
         bool MSGOilLowOn;
         public float CoolingEnableRPM;
-        public float WatterCoolingPower = 75;
+        public float WaterCoolingPower = 75;
         public float OilCoolingPower = 75;        
         float CoolingFlow;
         public float AIStartTimeToGo;
@@ -857,9 +857,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
         /// <summary>
         /// Cooling system indicator
         /// </summary>
-        public bool WatterTempCoolingRunning = false;
+        public bool WaterTempCoolingRunning = false;
         public bool OilTempCoolingRunning = false;
-        public bool WatterTempCoolingLowRunning = false;
+        public bool WaterTempCoolingLowRunning = false;
         public bool OilTempCoolingLowRunning = false;
 
         /// <summary>
@@ -957,8 +957,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                     case "idletemperature": DieselIdleTemperatureDegC = stf.ReadFloatBlock(STFReader.UNITS.Temperature, 60f); initLevel |= SettingsFlags.IdleTemperature; break;
                     case "tempcoolinghyst": DieselTempCoolingHyst = stf.ReadFloatBlock(STFReader.UNITS.Temperature, 5f); break;
                     case "coolingenablerpm": CoolingEnableRPM = stf.ReadFloatBlock(STFReader.UNITS.None, 0f); break;                    
-                    case "wattercoolingpower": WatterCoolingPower = stf.ReadFloatBlock(STFReader.UNITS.None, 75f); WatterCoolingPower = MathHelper.Clamp(WatterCoolingPower, 30, 100); break;
-                    case "oilcoolingpower": OilCoolingPower = stf.ReadFloatBlock(STFReader.UNITS.None, 75f); OilCoolingPower = MathHelper.Clamp(OilCoolingPower, 30, 100); break;
+                    case "watercoolingpower": WaterCoolingPower = stf.ReadFloatBlock(STFReader.UNITS.None, 75f); WaterCoolingPower = MathHelper.Clamp(WaterCoolingPower, 30, 200); break;
+                    case "oilcoolingpower": OilCoolingPower = stf.ReadFloatBlock(STFReader.UNITS.None, 75f); OilCoolingPower = MathHelper.Clamp(OilCoolingPower, 30, 200); break;
 
                     default:
                         end = true;
@@ -1205,24 +1205,24 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                     // Malý chladící okruh
                     // Chlazení vody
                     if (RealDieselWaterTemperatureDeg > DieselOptimalTemperatureDegC)                        
-                        WatterTempCoolingLowRunning = true;
+                        WaterTempCoolingLowRunning = true;
 
                     if (RealDieselWaterTemperatureDeg < DieselOptimalTemperatureDegC                        
                         || EngineStatus != Status.Running)
                     {
-                        WatterTempCoolingLowRunning = false;
-                        MSGWatterLowOn = false;
-                        locomotive.SignalEvent(Event.DieselMotorWatterLowCoolingOff);
+                        WaterTempCoolingLowRunning = false;
+                        MSGWaterLowOn = false;
+                        locomotive.SignalEvent(Event.DieselMotorWaterLowCoolingOff);
                     }
 
-                    if (WatterTempCoolingLowRunning)
+                    if (WaterTempCoolingLowRunning)
                     {
-                        RealDieselWaterTemperatureDeg -= elapsedClockSeconds * (RealDieselWaterTemperatureDeg - (1.5f * locomotive.CarOutsideTempCBase)) / DieselWaterTempTimeConstantSec * (WatterCoolingPower / 250);
-                        if (!MSGWatterLowOn)
+                        RealDieselWaterTemperatureDeg -= elapsedClockSeconds * (RealDieselWaterTemperatureDeg - (1.5f * locomotive.CarOutsideTempCBase)) / DieselWaterTempTimeConstantSec * (WaterCoolingPower / 250);
+                        if (!MSGWaterLowOn)
                         {
                             //locomotive.Simulator.Confirmer.Message(ConfirmLevel.MSG, Simulator.Catalog.GetString("Malý chladící okruh zapnutý!"));
-                            MSGWatterLowOn = true;
-                            locomotive.SignalEvent(Event.DieselMotorWatterLowCooling);
+                            MSGWaterLowOn = true;
+                            locomotive.SignalEvent(Event.DieselMotorWaterLowCooling);
                         }
                     }
                     // Chlazení oleje
@@ -1253,25 +1253,25 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                     // Chlazení vody
                     if ((CoolingEnableRPM == 0 && (RealDieselWaterTemperatureDeg > DieselOptimalTemperatureDegC + DieselTempCoolingHyst))
                         || (CoolingEnableRPM > 0 && locomotive.EngineRPM >= CoolingEnableRPM))
-                        WatterTempCoolingRunning = true;
+                        WaterTempCoolingRunning = true;
                     
                     if ((CoolingEnableRPM == 0 && RealDieselWaterTemperatureDeg < DieselOptimalTemperatureDegC)
                         || (CoolingEnableRPM > 0 && locomotive.EngineRPM < CoolingEnableRPM)
                         || EngineStatus != Status.Running)
                     {
-                        WatterTempCoolingRunning = false;
-                        MSGWatterOn = false;
-                        locomotive.SignalEvent(Event.DieselMotorWatterCoolingOff);
+                        WaterTempCoolingRunning = false;
+                        MSGWaterOn = false;
+                        locomotive.SignalEvent(Event.DieselMotorWaterCoolingOff);
                     }
 
-                    if (WatterTempCoolingRunning)
+                    if (WaterTempCoolingRunning)
                     {
-                        RealDieselWaterTemperatureDeg -= elapsedClockSeconds * (RealDieselWaterTemperatureDeg - (1.5f * locomotive.CarOutsideTempCBase)) / DieselWaterTempTimeConstantSec * (WatterCoolingPower / 50);                        
-                        if (!MSGWatterOn)
+                        RealDieselWaterTemperatureDeg -= elapsedClockSeconds * (RealDieselWaterTemperatureDeg - (1.5f * locomotive.CarOutsideTempCBase)) / DieselWaterTempTimeConstantSec * (WaterCoolingPower / 50);                        
+                        if (!MSGWaterOn)
                         {
                             //locomotive.Simulator.Confirmer.Message(ConfirmLevel.MSG, Simulator.Catalog.GetString("Žaluzie otevřené a ventilátor zapnutý!"));
-                            MSGWatterOn = true;
-                            locomotive.SignalEvent(Event.DieselMotorWatterCooling);
+                            MSGWaterOn = true;
+                            locomotive.SignalEvent(Event.DieselMotorWaterCooling);
                         }                        
                     }
                     // Chlazení oleje

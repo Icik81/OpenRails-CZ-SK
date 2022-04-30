@@ -308,8 +308,8 @@ namespace Orts.Common
         DieselMotorTempWarning,
         DieselMotorTempWarningOff,
         DieselMotorTempDefected,
-        DieselMotorWatterCooling,
-        DieselMotorWatterCoolingOff,
+        DieselMotorWaterCooling,
+        DieselMotorWaterCoolingOff,
         CoupleImpact,
         TMFailure,
         RDSTOn,
@@ -318,8 +318,8 @@ namespace Orts.Common
         LapButtonRelease,
         DieselMotorOilCooling,
         DieselMotorOilCoolingOff,
-        DieselMotorWatterLowCooling,
-        DieselMotorWatterLowCoolingOff,
+        DieselMotorWaterLowCooling,
+        DieselMotorWaterLowCoolingOff,
         DieselMotorOilLowCooling,
         DieselMotorOilLowCoolingOff,
     }
@@ -644,20 +644,18 @@ namespace Orts.Common
                         case 20062: return Event.DieselMotorTempWarning;
                         case 20063: return Event.DieselMotorTempWarningOff;
                         case 20064: return Event.DieselMotorTempDefected;                        
-                        case 20065: return Event.DieselMotorWatterCooling;                        
-                        case 20066: return Event.DieselMotorWatterCoolingOff;
+                        case 20065: return Event.DieselMotorWaterCooling;                        
+                        case 20066: return Event.DieselMotorWaterCoolingOff;
                         case 20067: return Event.CoupleImpact;
                         case 20068: return Event.TMFailure;
                         case 20069: return Event.RDSTOn;
                         case 20070: return Event.RDSTOff;
                         case 20071: return Event.LapButton;
-                        case 20072: return Event.LapButtonRelease;
-                        
+                        case 20072: return Event.LapButtonRelease;                        
                         case 20073: return Event.DieselMotorOilCooling;
                         case 20074: return Event.DieselMotorOilCoolingOff;
-
-                        case 20075: return Event.DieselMotorWatterLowCooling;
-                        case 20076: return Event.DieselMotorWatterLowCoolingOff;
+                        case 20075: return Event.DieselMotorWaterLowCooling;
+                        case 20076: return Event.DieselMotorWaterLowCoolingOff;
                         case 20077: return Event.DieselMotorOilLowCooling;
                         case 20078: return Event.DieselMotorOilLowCoolingOff;
 
