@@ -15,6 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Open Rails.  If not, see <http://www.gnu.org/licenses/>.
 
+using Microsoft.Xna.Framework;
 using Orts.Common;
 using Orts.Parsers.Msts;
 using ORTS.Scripting.Api;
@@ -115,8 +116,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
 
             State = PowerSupplyState.PowerOff;
             AuxiliaryState = PowerSupplyState.PowerOff;
-            PowerOnDelayS = 0;
-            AuxPowerOnDelayS = 0;
+            PowerOnDelayS = 0.5f;
+            AuxPowerOnDelayS = 10;
         }
 
         public virtual void Parse(string lowercasetoken, STFReader stf)
@@ -128,9 +129,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                     break;
 
                 case "engine(ortsauxpowerondelay":
-                    AuxPowerOnDelayS = stf.ReadFloatBlock(STFReader.UNITS.Time, 10);
+                    AuxPowerOnDelayS = stf.ReadFloatBlock(STFReader.UNITS.Time, 10);                    
                     break;
             }
+            AuxPowerOnDelayS = MathHelper.Clamp(AuxPowerOnDelayS, PowerOnDelayS, 100);
         }
 
         public void Copy(AbstractPowerSupply other)
