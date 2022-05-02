@@ -338,8 +338,8 @@ namespace Orts.Parsers.Msts
                 {
                     STFException.TraceWarning(this, "\"" + target + "\" not found - instead found \"" + s1 + "\"");
                     string s2 = ReadItem();
-                    if (!s2.Equals(target, StringComparison.OrdinalIgnoreCase))
-                        throw new STFException(this, "\"" + target + "\" not found - instead found \"" + s1 + "\"");
+                    //if (!s2.Equals(target, StringComparison.OrdinalIgnoreCase))
+                      //      throw new STFException(this, "\"" + target + "\" not found - instead found \"" + s1 + "\"");
                 }
             }
         }

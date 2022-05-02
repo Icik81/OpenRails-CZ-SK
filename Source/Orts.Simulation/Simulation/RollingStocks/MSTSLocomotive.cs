@@ -10154,6 +10154,8 @@ namespace Orts.Simulation.RollingStocks
                             data = extendedPhysics.TotalCurrent;
                             if (data < 0)
                                 data = -data;
+                            cvc.PreviousData = data;
+                            cvc.ElapsedTime = 0;
                             break;
                         }
                         else if (cvc.CurrentSource.ToLower() == "total")
@@ -10163,6 +10165,8 @@ namespace Orts.Simulation.RollingStocks
                                 data = extendedPhysics.TotalCurrent;
                                 if (data < 0)
                                     data = -data;
+                                cvc.PreviousData = data;
+                                cvc.ElapsedTime = 0;
                                 break;
                             }
                             else if (cvc.CurrentType.ToLower() == "rotor")
@@ -10170,6 +10174,8 @@ namespace Orts.Simulation.RollingStocks
                                 data = extendedPhysics.RotorsCurrent;
                                 if (data < 0)
                                     data = -data;
+                                cvc.PreviousData = data;
+                                cvc.ElapsedTime = 0;
                                 break;
                             }
                             else if (cvc.CurrentType.ToLower() == "stator")
@@ -10189,6 +10195,8 @@ namespace Orts.Simulation.RollingStocks
                                 data = extendedPhysics.TotalCurrent;
                                 if (data < 0)
                                     data = -data;
+                                cvc.PreviousData = data;
+                                cvc.ElapsedTime = 0;
                                 break;
                             }
                             else
@@ -10197,6 +10205,8 @@ namespace Orts.Simulation.RollingStocks
                                 {
                                     if (uc.Id == cvc.CurrentSourceID)
                                     {
+                                        cvc.PreviousData = data;
+                                        cvc.ElapsedTime = 0;
                                         if (string.IsNullOrEmpty(cvc.CurrentType))
                                         {
                                             data = uc.StatorsCurrent + uc.RotorsCurrent;
@@ -10235,6 +10245,8 @@ namespace Orts.Simulation.RollingStocks
                                     {
                                         if (em.Id == cvc.CurrentSourceID)
                                         {
+                                            cvc.PreviousData = data;
+                                            cvc.ElapsedTime = 0;
                                             if (string.IsNullOrEmpty(cvc.CurrentType))
                                             {
                                                 data = em.RotorCurrent + em.StatorCurrent;
