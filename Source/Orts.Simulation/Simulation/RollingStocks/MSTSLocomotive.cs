@@ -10215,8 +10215,9 @@ namespace Orts.Simulation.RollingStocks
                                         {
                                             data = uc.RotorsCurrent;
                                             if (data < 0)
-                                                data = -data;
-                                            cvc.PreviousData = data;
+                                                data = -data;                                            
+                                            if (cvc.UpdateTime > 0)
+                                                cvc.PreviousData = data;                                            
                                             cvc.ElapsedTime = 0;
                                             break;
                                         }
