@@ -1203,6 +1203,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                                     delta *= 3;
 
                                 AccelerationDemandMpSS = (float)-Math.Sqrt(-StartReducingSpeedDelta * delta);
+                                if (Locomotive.LocoType == MSTSLocomotive.LocoTypes.Vectron)
+                                    AccelerationDemandMpSS /= 10;
                                 float demand = AccelerationDemandMpSS;
 
                                 if (maxForceN > 0)
@@ -1484,6 +1486,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                                     delta *= 3;
 
                                 AccelerationDemandMpSS = (float)-Math.Sqrt(-StartReducingSpeedDelta * delta);
+                                if (Locomotive.LocoType == MSTSLocomotive.LocoTypes.Vectron)
+                                    AccelerationDemandMpSS /= 10;
                                 demand = AccelerationDemandMpSS;
 
                                 if (maxForceN > 0)
