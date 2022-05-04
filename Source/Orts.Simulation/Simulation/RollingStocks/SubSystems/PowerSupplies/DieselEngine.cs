@@ -783,6 +783,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
         public float OilCoolingPower = 75;        
         float CoolingFlow;
         public float AIStartTimeToGo;
+        public bool InitTriggerSetOff;
 
         /// <summary>
         /// Current Engine oil pressure in PSI
@@ -978,7 +979,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
 
 
         public void Update(float elapsedClockSeconds)
-        {
+        {            
             // Icik
             // Inicializace AI
             if (!locomotive.IsPlayerTrain && locomotive.BrakeSystem.StartOn)
@@ -986,11 +987,16 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                 RealRPM = IdleRPM;
                 EngineStatus = Status.Running;
             }
-            // Inicializace hráče
+            // Inicializace hráče            
             if (locomotive.IsPlayerTrain && locomotive.BrakeSystem.StartOn && !locomotive.Simulator.Settings.AirEmpty)
             {
                 RealRPM = IdleRPM;
                 EngineStatus = Status.Running;
+            }
+            if (locomotive.IsPlayerTrain && EngineStatus != Status.Running && !InitTriggerSetOff)
+            {
+                locomotive.SignalEvent(Event.EnginePowerOff);
+                InitTriggerSetOff = true;
             }
 
             if (EngineStatus == DieselEngine.Status.Running)

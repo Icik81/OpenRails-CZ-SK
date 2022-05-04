@@ -38,6 +38,7 @@ using ORTS.Common;
 using ORTS.Common.Input;
 using ORTS.Scripting.Api;
 using Event = Orts.Common.Event;
+using Orts.Simulation.RollingStocks.SubSystems.PowerSupplies;
 
 namespace Orts.Viewer3D.RollingStock
 {
@@ -89,7 +90,8 @@ namespace Orts.Viewer3D.RollingStock
 
             // Icik
             // Inicializace STATIC, nebude mít aktivovaný trigger zvuku motoru
-            if (this.MSTSLocomotive.Train.TrainType == Train.TRAINTYPE.STATIC)
+            var mstsDieselLocomotive = car as MSTSDieselLocomotive;
+            if (this.MSTSLocomotive.Train.TrainType == Train.TRAINTYPE.STATIC && mstsDieselLocomotive.DieselEngines[0].EngineStatus != DieselEngine.Status.Running)
             {
                 this.MSTSLocomotive.SignalEvent(Event.EnginePowerOff);
             }
