@@ -982,7 +982,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
         {            
             // Icik
             // Inicializace AI
-            if (!locomotive.IsPlayerTrain && locomotive.BrakeSystem.StartOn)
+            if (!locomotive.IsPlayerTrain && locomotive.BrakeSystem.StartOn && !locomotive.LocoIsStatic)
             {
                 RealRPM = IdleRPM;
                 EngineStatus = Status.Running;

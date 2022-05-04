@@ -94,6 +94,7 @@ namespace Orts.Viewer3D.RollingStock
             if (this.MSTSLocomotive.Train.TrainType == Train.TRAINTYPE.STATIC && mstsDieselLocomotive.DieselEngines[0].EngineStatus != DieselEngine.Status.Running)
             {
                 this.MSTSLocomotive.SignalEvent(Event.EnginePowerOff);
+                this.MSTSLocomotive.LocoIsStatic = true;
             }
         }
 

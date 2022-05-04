@@ -641,6 +641,7 @@ namespace Orts.Simulation.RollingStocks
         public bool DoorSwitchEnable;
         public float DoorSwitch = 1;
         public float PrevDoorSwitch = 1;
+        public bool LocoIsStatic;
 
         // Jindrich
         public bool IsActive = false;
