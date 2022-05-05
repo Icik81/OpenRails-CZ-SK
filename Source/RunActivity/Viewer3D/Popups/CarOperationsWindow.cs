@@ -174,7 +174,8 @@ namespace Orts.Viewer3D.Popups
                 {
                     Viewer.Simulator.Confirmer.Information(Viewer.Catalog.GetString("Power OFF command sent"));
                     // Icik
-                    (Viewer.PlayerTrain.Cars[CarPosition] as MSTSDieselLocomotive).StartLooseCon = false;
+                    if (Viewer.PlayerTrain.Cars[CarPosition] as MSTSDieselLocomotive != null)
+                        (Viewer.PlayerTrain.Cars[CarPosition] as MSTSDieselLocomotive).StartLooseCon = false;
                 }
                 else
                 {

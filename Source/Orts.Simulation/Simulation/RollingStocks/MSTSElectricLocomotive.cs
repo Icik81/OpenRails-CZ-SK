@@ -1179,7 +1179,7 @@ namespace Orts.Simulation.RollingStocks
         protected override void UpdatePowerSupply(float elapsedClockSeconds)
         {
             // Icik                      
-            if (HVOff)
+            if (HVOff && IsLeadLocomotive())
             {
                 HVOff = false;
                 SignalEvent(PowerSupplyEvent.OpenCircuitBreaker);
@@ -1654,33 +1654,36 @@ namespace Orts.Simulation.RollingStocks
         // Penalizace hráče
         protected void FaultByPlayer(float elapsedClockSeconds)
         {
-            // Sestřelení HV při těžkém rozjezdu na jeden sběrač
-            float I_PantographCurrent = PowerCurrent;
-            float I_MaxPantographCurrent = MaxCurrentA * 0.60f; // Maximální zátěž na jeden sběrač 60% maxima proudu
-            if (Pantographs[1].State == PantographState.Up && Pantographs[2].State == PantographState.Up)
-                I_PantographCurrent /= 2;
-            if (I_PantographCurrent > I_MaxPantographCurrent && Math.Abs(TractiveForceN) > 0.80f * MaxForceN)
+            if (IsLeadLocomotive())
             {
-                int I_PantographCurrentToleranceTimeInfo = 10 - (int)I_PantographCurrentToleranceTime;
-                Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Příliš velký proud na jeden sběrač - použij i druhý sběrač! (" + I_PantographCurrentToleranceTimeInfo + ")"));
-                I_PantographCurrentToleranceTime += elapsedClockSeconds;
-                if (I_PantographCurrentToleranceTime > 10.5f) // 10s tolerance
-                    HVOff = true;
-            }
-            else I_PantographCurrentToleranceTime = 0;
-            //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("I_PantographCurrent " + I_PantographCurrent));
-
-            // Penalizace za zvednutí sběrače na špatném napěťovém systému
-            if (PantographFaultByVoltageChange)
-            {
-                PantographVoltageV = PowerSupply.PantographVoltageV;                
-                int FaultByPlayerPenaltyTimeInfo = 30 - (int)FaultByPlayerPenaltyTime;
-                FaultByPlayerPenaltyTime += elapsedClockSeconds;
-                Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Poškodil si zdvihnutým pantografem lokomotivu! (" + FaultByPlayerPenaltyTimeInfo + ")"));
-                if (FaultByPlayerPenaltyTime > 30.5f) // Potrestání hráče čekáním 30s
+                // Sestřelení HV při těžkém rozjezdu na jeden sběrač
+                float I_PantographCurrent = PowerCurrent;
+                float I_MaxPantographCurrent = MaxCurrentA * 0.60f; // Maximální zátěž na jeden sběrač 60% maxima proudu
+                if (Pantographs[1].State == PantographState.Up && Pantographs[2].State == PantographState.Up)
+                    I_PantographCurrent /= 2;
+                if (I_PantographCurrent > I_MaxPantographCurrent && Math.Abs(TractiveForceN) > 0.80f * MaxForceN)
                 {
-                    PantographFaultByVoltageChange = false;
-                    FaultByPlayerPenaltyTime = 0;
+                    int I_PantographCurrentToleranceTimeInfo = 10 - (int)I_PantographCurrentToleranceTime;
+                    Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Příliš velký proud na jeden sběrač - použij i druhý sběrač! (" + I_PantographCurrentToleranceTimeInfo + ")"));
+                    I_PantographCurrentToleranceTime += elapsedClockSeconds;
+                    if (I_PantographCurrentToleranceTime > 10.5f) // 10s tolerance
+                        HVOff = true;
+                }
+                else I_PantographCurrentToleranceTime = 0;
+                //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("I_PantographCurrent " + I_PantographCurrent));
+
+                // Penalizace za zvednutí sběrače na špatném napěťovém systému
+                if (PantographFaultByVoltageChange)
+                {
+                    PantographVoltageV = PowerSupply.PantographVoltageV;
+                    int FaultByPlayerPenaltyTimeInfo = 30 - (int)FaultByPlayerPenaltyTime;
+                    FaultByPlayerPenaltyTime += elapsedClockSeconds;
+                    Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Poškodil si zdvihnutým pantografem lokomotivu! (" + FaultByPlayerPenaltyTimeInfo + ")"));
+                    if (FaultByPlayerPenaltyTime > 30.5f) // Potrestání hráče čekáním 30s
+                    {
+                        PantographFaultByVoltageChange = false;
+                        FaultByPlayerPenaltyTime = 0;
+                    }
                 }
             }
         }
