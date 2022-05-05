@@ -2831,7 +2831,9 @@ namespace Orts.Simulation.RollingStocks
                 TiltingZRot = traveler.FindTiltedZ(TiltingMark * (MathHelper.Clamp(AbsSpeedMpS, 0, MaxSpeedTilting)));//rotation if tilted, an indication of centrifugal force                
                 TiltingZRot = PrevTiltingZRot + (TiltingZRot - PrevTiltingZRot) * elapsedTimeS;//smooth rotation
                 PrevTiltingZRot = TiltingZRot;
-                if (this.Flipped) TiltingZRot *= -1f;
+                //if (this.Flipped) TiltingZRot *= -1f;                
+                if (this.Flipped) TiltingMark *= -1f;
+                if (TiltingMark < 0) TiltingZRot *= -1f;
             }
 
             if (Simulator.Settings.CarVibratingLevel != 0)
