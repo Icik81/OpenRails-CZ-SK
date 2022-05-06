@@ -2805,13 +2805,13 @@ namespace Orts.Simulation.RollingStocks
 
                 if (Factor_vibration > 0) Factor_vibration--;
             }
-            
+
             // Naklápění skříně vozu
-            if (Train != null && SpeedMpS != 0)
+            if (Train != null && AbsSpeedMpS > 0.1f)
             {
-                float MaxSpeedTilting = 60.0f / 3.6f;                
+                float MaxSpeedTilting = 60.0f / 3.6f;
                 float TiltingMark = AbsSpeedMpS / SpeedMpS;
-                                
+
                 // Omezí maximální náklon vozu dle náprav
                 switch (WagonNumAxles)
                 {
@@ -2843,6 +2843,14 @@ namespace Orts.Simulation.RollingStocks
                 var translation = Matrix.CreateTranslation(VibrationTranslationM.X, VibrationTranslationM.Y, 0);
                 WorldPosition.XNAMatrix = rotation * translation * WorldPosition.XNAMatrix;
                 VibrationInverseMatrix = Matrix.Invert(rotation * translation);
+
+                if (AbsSpeedMpS < 0.1f)
+                {
+                    if (TiltingZRot > 0)
+                        TiltingZRot -= 0.0001f;
+                    if (TiltingZRot < 0)
+                        TiltingZRot += 0.0001f;
+                }
             }
         }
 
