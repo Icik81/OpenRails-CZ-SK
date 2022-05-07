@@ -382,6 +382,8 @@ namespace Orts.Formats.Msts
         SELECTING_SYSTEM,
         SYSTEM_ANNUNCIATOR,
         PANTO_MODE,
+        MOTOR_DISABLED,
+        INVERTER_TEST,
 
         // Icik
         HV2,
@@ -592,6 +594,7 @@ namespace Orts.Formats.Msts
         public double MaxValueExtendedPhysics = 0;
         public string DateFormat = "dd.MM.yy";
         public int AxleId = 0;
+        public int MotorId = 0;
 
         public CABViewControlTypes ControlType = CABViewControlTypes.NONE;
         public CABViewControlStyles ControlStyle = CABViewControlStyles.NONE;
@@ -831,6 +834,11 @@ namespace Orts.Formats.Msts
                 new STFReader.TokenProcessor("screencontainer", ()=>{
                     stf.MustMatch("(");
                     ScreenContainer = (int)stf.ReadFloat(STFReader.UNITS.None, 0);
+                    stf.SkipRestOfBlock();
+                }),
+                new STFReader.TokenProcessor("motorid", ()=>{
+                    stf.MustMatch("(");
+                    MotorId = (int)stf.ReadFloat(STFReader.UNITS.None, 0);
                     stf.SkipRestOfBlock();
                 }),
 
@@ -1404,6 +1412,11 @@ namespace Orts.Formats.Msts
                     }),
                     new STFReader.TokenProcessor("islvzselectionscreen", ()=>{
                         IsLvzSelection = stf.ReadBoolBlock(false);
+                    }),
+                    new STFReader.TokenProcessor("motorid", ()=>{
+                        stf.MustMatch("(");
+                        MotorId = (int)stf.ReadFloat(STFReader.UNITS.None, 0);
+                        stf.SkipRestOfBlock();
                     }),
                 });
 

@@ -190,6 +190,8 @@ namespace Orts.Simulation.RollingStocks
                                                     electricMotor.ErrorCoefficient = float.Parse(innerText);
                                                 if (motorNode.Name.ToLower() == "gearratio")
                                                     electricMotor.GearRatio = float.Parse(innerText);
+                                                if (motorNode.Name.ToLower() == "enablingmaxtime")
+                                                    electricMotor.EnablingMaxTime = float.Parse(innerText);
                                             }
                                             extendedAxle.ElectricMotors.Add(electricMotor);
                                         }
@@ -269,6 +271,14 @@ namespace Orts.Simulation.RollingStocks
         protected bool controlUnitChecked = false;
         public void Update(float elapsedClockSeconds)
         {
+            if (!Locomotive.PowerOn)
+            {
+                DisableMotors();
+            }
+            else
+            {
+                EnableMotors();
+            }
             if (extendedDynamicBrake == null)
                 extendedDynamicBrake = new ExtendedDynamicBrake(Locomotive);
             extendedDynamicBrake.Update(elapsedClockSeconds);
@@ -390,6 +400,35 @@ namespace Orts.Simulation.RollingStocks
             //Locomotive.Simulator.Confirmer.MSG(TotalForceN.ToString() + " " + Locomotive.TractiveForceN.ToString());
             //Locomotive.Simulator.Confirmer.MSG(Undercarriages[0].Axles[0].WheelSpeedMpS.ToString() + " " + Undercarriages[0].Axles[1].WheelSpeedMpS.ToString() + " " + Undercarriages[1].Axles[0].WheelSpeedMpS.ToString() + " " + Undercarriages[1].Axles[1].WheelSpeedMpS.ToString());
         }
+
+        public void DisableMotors()
+        {
+            foreach (Undercarriage uc in Undercarriages)
+            {
+                foreach (ExtendedAxle ea in uc.Axles)
+                {
+                    foreach (ElectricMotor em in ea.ElectricMotors)
+                    {
+                        em.Disabled = true;
+                    }
+                }
+            }
+        }
+
+        public void EnableMotors()
+        {
+            foreach (Undercarriage uc in Undercarriages)
+            {
+                foreach (ExtendedAxle ea in uc.Axles)
+                {
+                    foreach (ElectricMotor em in ea.ElectricMotors)
+                    {
+                        if (em.Disabled)
+                            em.Enabling = true;
+                    }
+                }
+            }
+        }
     }
 
     public class Undercarriage
@@ -436,6 +475,7 @@ namespace Orts.Simulation.RollingStocks
             LocomotiveAxle.StabilityCorrection = true;
             LocomotiveAxle.FilterMovingAverage.Size = Locomotive.Simulator.Settings.AdhesionMovingAverageFilterSize;
         }
+        int i = 0;
 
         public void Update(int totalMotors, float elapsedClockSeconds, float overridenControllerVolts, bool usingControllerVolts)
         {
@@ -457,7 +497,7 @@ namespace Orts.Simulation.RollingStocks
 
             foreach (ElectricMotor em in ElectricMotors)
             {
-                em.Update(em, WheelSpeedMpS, overridenControllerVolts);
+                em.Update(em, WheelSpeedMpS, overridenControllerVolts, elapsedClockSeconds);
                 axleCurrent = axleCurrent + em.RotorCurrent;
                 maxCurrent = maxCurrent + em.MaxRotorCurrent;
             }
@@ -604,7 +644,6 @@ namespace Orts.Simulation.RollingStocks
 
             if (Locomotive.AbsSpeedMpS == 0 && ForceN < 0)
                 ForceN = 0;
-
             LocomotiveAxle.AxleWeightN = 9.81f * Mass * 1000;   //will be computed each time considering the tilting
             LocomotiveAxle.DriveForceN = ForceN;  //Total force applied to wheels
             LocomotiveAxle.TrainSpeedMpS = Locomotive.SpeedMpS < 0 ? -Locomotive.SpeedMpS : Locomotive.SpeedMpS;
@@ -712,13 +751,38 @@ namespace Orts.Simulation.RollingStocks
         public float ErrorCoefficient = 1;
         public float RPM = 0;
         public float MaxControllerVolts = 0;
+        public bool Disabled = false;
+        public bool Enabling = false;
+        public float EnablingMaxTime = 250; // miliseconds
+        public float EnablingCurrentTime = 0;
+        protected Random random = new Random();
         MSTSLocomotive Locomotive = null;
         public ElectricMotor(MSTSLocomotive loco)
         {
             Locomotive = loco;
         }
-        public void Update(ElectricMotor Motor, float axleSpeed, float overridenControllerVolts)
+
+        public void Update(ElectricMotor Motor, float axleSpeed, float overridenControllerVolts, float elapsedSeconds)
         {
+            if (Disabled && EnablingCurrentTime <= 0)
+            {
+                Random rand = new Random(DateTime.Now.Millisecond + Motor.Id);
+                EnablingCurrentTime = rand.Next(10, (int)EnablingMaxTime);
+            }
+            if (Enabling)
+            {
+                EnablingCurrentTime -= elapsedSeconds * 1000;
+                if (EnablingCurrentTime < 0)
+                {
+                    Disabled = false;
+                    Enabling = false;
+                }
+            }
+            if (Disabled)
+            {
+                RotorCurrent = StatorCurrent = 0;
+                return;
+            }
             if (axleSpeed < 0)
                 axleSpeed = -axleSpeed;
             if (!Locomotive.PowerOn && Locomotive.ControllerVolts > 0)

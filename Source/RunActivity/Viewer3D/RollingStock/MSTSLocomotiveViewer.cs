@@ -2710,6 +2710,8 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.POWER_OFFCLOSINGON:
                 case CABViewControlTypes.HIGHVOLTAGE_DCOFFAC:
                 case CABViewControlTypes.LAP_BUTTON:
+                case CABViewControlTypes.MOTOR_DISABLED:
+                case CABViewControlTypes.INVERTER_TEST:
 
                     index = (int)data;
                     break;
