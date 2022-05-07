@@ -1789,6 +1789,15 @@ namespace Orts.Simulation.RollingStocks
                 // Sestřelení HV při těžkém rozjezdu na jeden sběrač
                 float I_PantographCurrent = PowerCurrent;
                 float I_MaxPantographCurrent = MaxCurrentA * 0.60f; // Maximální zátěž na jeden sběrač 60% maxima proudu
+                switch (RouteVoltageV)
+                {
+                    case 3000:
+                        I_MaxPantographCurrent = MaxCurrentA * 0.60f;
+                        break;
+                    case 25000:
+                        I_MaxPantographCurrent = MaxCurrentA * 0.90f;
+                        break;
+                }
                 if (Pantographs[1].State == PantographState.Up && Pantographs[2].State == PantographState.Up)
                     I_PantographCurrent /= 2;
                 if (I_PantographCurrent > I_MaxPantographCurrent && Math.Abs(TractiveForceN) > 0.80f * MaxForceN)

@@ -3673,6 +3673,20 @@ namespace Orts.Simulation.RollingStocks
             {
                 ThrottlePercent = Simulator.ThrottleLocoHelper;
             }
+
+            if (extendedPhysics != null)
+            {
+                if (LocoHelperOn && Math.Abs(ControllerVolts) > 0.5f) Simulator.ControllerVoltsLocoHelper = ControllerVolts;
+                
+                if (IsLeadLocomotive() && AbsSpeedMpS < 0.1f) Simulator.ControllerVoltsLocoHelper = 0;
+                if (IsLeadLocomotive() && PowerOn && ControllerVolts == 0) Simulator.ControllerVoltsLocoHelper = 0;
+              
+                if (LocoHelperOn)
+                {
+                    ControllerVolts = Simulator.ControllerVoltsLocoHelper;
+                    extendedPhysics.OverridenControllerVolts = Simulator.ControllerVoltsLocoHelper;
+                }
+            }
         }
 
         // Určí řídící vůz
