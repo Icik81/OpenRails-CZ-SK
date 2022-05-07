@@ -279,7 +279,7 @@ namespace ORTS.Common
         /// </summary>
         /// <param name="NewSample">Sample to filter</param>
         /// <returns>Filtered value</returns>
-        public float Filter(float NewSample)
+        public float Filter(double maxLineVoltage0, float NewSample)
         {
             //shift the old samples
             for (int n = NCoef; n > 0; n--)

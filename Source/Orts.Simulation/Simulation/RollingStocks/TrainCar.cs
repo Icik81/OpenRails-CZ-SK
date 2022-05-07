@@ -354,6 +354,8 @@ namespace Orts.Simulation.RollingStocks
         public bool SelectedCar;
         public bool StartLooseCon;
         public bool AuxPowerOff;
+        public bool LocoHelperOn;
+        public bool UserPowerOff;
 
         public float PowerReductionResult1;  // Redukce výkonu od topení, klimatizace, kompresoru
         public float PowerReductionResult2;  // Redukce výkonu od nedostatečného tlaku vzduchu v potrubí
@@ -1966,6 +1968,7 @@ namespace Orts.Simulation.RollingStocks
             outf.Write(RDSTBreaker);            
             outf.Write(CabHeating_OffOn);
             outf.Write(AuxPowerOff);
+            outf.Write(UserPowerOff);
         }
 
         // Game restore
@@ -1995,6 +1998,7 @@ namespace Orts.Simulation.RollingStocks
             RDSTBreaker = inf.ReadBoolean();
             CabHeating_OffOn = inf.ReadBoolean();
             AuxPowerOff = inf.ReadBoolean();
+            UserPowerOff = inf.ReadBoolean();
         }
 
         //================================================================================================//

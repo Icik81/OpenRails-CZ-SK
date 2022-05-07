@@ -259,14 +259,14 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                     {
                         // Trakce na 25kV naměří napětí hned                                           
                         if (Locomotive.RouteVoltageV == 25000)
-                            SetPantographVoltageV(PantographFilter.Filter(LineVoltageV(), elapsedClockSeconds));
+                            SetPantographVoltageV(PantographFilter.Filter((int)Locomotive.ActualLocoVoltage, elapsedClockSeconds));
 
                         // Trakce na 3kV po přepnutí na DC naběhne napětí, jednosystémová lokomotiva naměří napětí hned
                         if (Locomotive.RouteVoltageV == 3000 && (Locomotive.SwitchingVoltageMode_OffDC || !Locomotive.MultiSystemEngine))
                         {
                             TDC += elapsedClockSeconds;
                             if (TDC > 0.5f)
-                                SetPantographVoltageV(PantographFilter.Filter(LineVoltageV(), elapsedClockSeconds));
+                                SetPantographVoltageV(PantographFilter.Filter((int)Locomotive.ActualLocoVoltage, elapsedClockSeconds));
                         }
 
                         // Napětí po zdvihu pantografu na filtru DC 3kV

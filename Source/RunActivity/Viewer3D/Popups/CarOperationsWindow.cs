@@ -59,7 +59,7 @@ namespace Orts.Viewer3D.Popups
             vbox.AddHorizontalSeparator();
             vbox.Add(buttonTogglePower = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Toggle Power"), LabelAlignment.Center));
             vbox.AddHorizontalSeparator();
-            vbox.Add(buttonToggleMU = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Toggle MU Connection"), LabelAlignment.Center));
+            vbox.Add(buttonToggleMU = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Připojit/Odpojit postrk"), LabelAlignment.Center));
             vbox.AddHorizontalSeparator();
             vbox.Add(buttonToggleBrakeHose = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Toggle Brake Hose Connection"), LabelAlignment.Center));
             vbox.AddHorizontalSeparator();
@@ -176,6 +176,7 @@ namespace Orts.Viewer3D.Popups
                     // Icik
                     if (Viewer.PlayerTrain.Cars[CarPosition] as MSTSDieselLocomotive != null)
                         (Viewer.PlayerTrain.Cars[CarPosition] as MSTSDieselLocomotive).StartLooseCon = false;
+                    (Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive).UserPowerOff = true;
                 }
                 else
                 {
@@ -185,6 +186,7 @@ namespace Orts.Viewer3D.Popups
                         (Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive).HVOn = true;                    
                     if (Viewer.PlayerTrain.Cars[CarPosition].GetType() == typeof(MSTSDieselLocomotive))
                         (Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive).StartLooseCon = true;
+                    (Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive).UserPowerOff = false;
                 }
             }
             else
@@ -202,9 +204,9 @@ namespace Orts.Viewer3D.Popups
             {
                 new ToggleMUCommand(Viewer.Log, (Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive), !(Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive).AcceptMUSignals);
                 if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive).AcceptMUSignals)
-                    Viewer.Simulator.Confirmer.Information(Viewer.Catalog.GetString("MU signal connected"));
+                    Viewer.Simulator.Confirmer.Information(Viewer.Catalog.GetString("Postrk odpojen"));
                 else
-                    Viewer.Simulator.Confirmer.Information(Viewer.Catalog.GetString("MU signal disconnected"));
+                    Viewer.Simulator.Confirmer.Information(Viewer.Catalog.GetString("Postrk připojen"));
             }
             else
                 Viewer.Simulator.Confirmer.Warning(Viewer.Catalog.GetString("No MU command for this type of car!"));

@@ -3571,7 +3571,8 @@ namespace Orts.Simulation.RollingStocks
 
         public override void SignalEvent(PowerSupplyEvent evt)
         {
-            if (Simulator.PlayerLocomotive == this || AcceptMUSignals)
+            // Icik
+            if (Simulator.PlayerLocomotive == this || AcceptMUSignals || LocoHelperOn)
             {
                 switch (evt)
                 {
@@ -3591,7 +3592,8 @@ namespace Orts.Simulation.RollingStocks
 
         public override void SignalEvent(PowerSupplyEvent evt, int id)
         {
-            if (Simulator.PlayerLocomotive == this || AcceptMUSignals)
+            // Icik
+            if (Simulator.PlayerLocomotive == this || AcceptMUSignals || LocoHelperOn)
             {
                 switch (evt)
                 {

@@ -279,10 +279,24 @@ namespace Orts.Simulation.RollingStocks
                     Locomotive.CruiseControl.SpeedRegMode = CruiseControl.SpeedRegulatorMode.Manual;
                 }
             }
-            if (!Locomotive.IsLeadLocomotive() && Locomotive.PowerOn && Locomotive.AcceptMUSignals)
+            if (!Locomotive.IsLeadLocomotive() && Locomotive.PowerOn && (Locomotive.AcceptMUSignals || Locomotive.LocoHelperOn))
                 Locomotive.ControllerVolts = Locomotive.Train.ControllerVolts;
-            if (!Locomotive.IsLeadLocomotive() && (!Locomotive.PowerOn || !Locomotive.AcceptMUSignals))
+
+            // Icik
+            if (Locomotive.LocoHelperOn && Math.Abs(Locomotive.ControllerVolts) > 0.5f) Locomotive.Simulator.ControllerVoltsLocoHelper = Locomotive.ControllerVolts;            
+            if (Locomotive.IsLeadLocomotive() && Locomotive.AbsSpeedMpS < 0.1f) Locomotive.Simulator.ControllerVoltsLocoHelper = 0;
+            if (Locomotive.IsLeadLocomotive() && Locomotive.PowerOn && Locomotive.ControllerVolts == 0) Locomotive.Simulator.ControllerVoltsLocoHelper = 0;
+
+            if (!Locomotive.IsLeadLocomotive() && (!Locomotive.PowerOn || (!Locomotive.AcceptMUSignals && !Locomotive.LocoHelperOn)))
                 Locomotive.ControllerVolts = OverridenControllerVolts = 0;
+
+            // Icik
+            if (Locomotive.LocoHelperOn)
+            {
+                Locomotive.ControllerVolts = Locomotive.Simulator.ControllerVoltsLocoHelper;
+                OverridenControllerVolts = Locomotive.Simulator.ControllerVoltsLocoHelper;
+            }
+
             if (!Locomotive.IsPlayerTrain)
                 return;
             else if (Locomotive.PowerOn && !controlUnitChecked) // do this only once

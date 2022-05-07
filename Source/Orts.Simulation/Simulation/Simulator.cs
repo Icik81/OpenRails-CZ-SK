@@ -191,6 +191,8 @@ namespace Orts.Simulation
         public float DataLocomotivePowerVoltage;
         public bool ChangeCabActivated;
         public bool AuxPowerCanStart;
+        public float ControllerVoltsLocoHelper;
+        public float ThrottleLocoHelper;
 
         public List<PowerSupplyStation> powerSupplyStations;
         public List<VoltageChangeMarker> voltageChangeMarkers;
@@ -539,6 +541,7 @@ namespace Orts.Simulation
         {
             // Icik
             CarCoupleMaxSpeedOvercome = inf.ReadBoolean();
+            ControllerVoltsLocoHelper = inf.ReadSingle();
 
             ClockTime = inf.ReadDouble();
             Season = (SeasonType)inf.ReadInt32();
@@ -577,6 +580,7 @@ namespace Orts.Simulation
         {
             // Icik
             outf.Write(CarCoupleMaxSpeedOvercome);
+            outf.Write(ControllerVoltsLocoHelper);
 
             outf.Write(ClockTime);
             outf.Write((int)Season);

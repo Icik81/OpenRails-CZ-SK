@@ -377,9 +377,13 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                 result.AppendFormat("\t{0}", FormatStrings.FormatPressure(eng.DieselOilPressurePSI, PressureUnit.PSI, Locomotive.MainPressureUnit, true));
 
             // Icik
-            if (Locomotive.PowerUnit)
+            if (Locomotive.PowerUnit && Locomotive.AcceptMUSignals)
             foreach (var eng in DEList)
                 result.AppendFormat("\t\t{0}", Simulator.Catalog.GetString("Hnací vůz"));
+            else
+            if (Locomotive.LocoHelperOn)
+                foreach (var eng in DEList)
+                    result.AppendFormat("\t\t{0}", Simulator.Catalog.GetString("Postrkový vůz"));
 
             if (Locomotive.ControlUnit)
                 foreach (var eng in DEList)

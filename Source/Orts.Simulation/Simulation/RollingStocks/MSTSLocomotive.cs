@@ -641,7 +641,7 @@ namespace Orts.Simulation.RollingStocks
         public bool DoorSwitchEnable;
         public float DoorSwitch = 1;
         public float PrevDoorSwitch = 1;
-        public bool LocoIsStatic;
+        public bool LocoIsStatic;               
 
         // Jindrich
         public bool IsActive = false;
@@ -3023,7 +3023,7 @@ namespace Orts.Simulation.RollingStocks
             if (IsLeadLocomotive() && AuxPowerOn) Simulator.AuxPowerCanStart = true;
 
             if (this.AuxPowerOff) AuxPowerOn = false;
-            if (!this.AuxPowerOff && Simulator.AuxPowerCanStart) AuxPowerOn = true;
+            if (!this.AuxPowerOff && (Simulator.AuxPowerCanStart || this.LocoHelperOn && PowerOn)) AuxPowerOn = true;
         }
 
 
@@ -3660,6 +3660,21 @@ namespace Orts.Simulation.RollingStocks
             }
         }
 
+        // Nastaví výkon na postrku
+        public void SetHelperLocoThrottle()
+        {
+            if (IsLeadLocomotive() && ThrottlePercent != 0)
+                Simulator.ThrottleLocoHelper = ThrottlePercent;
+
+            if (IsLeadLocomotive() && AbsSpeedMpS < 0.1f) Simulator.ThrottleLocoHelper = 0;
+            if (IsLeadLocomotive() && PowerOn && ThrottlePercent == 0) Simulator.ThrottleLocoHelper = 0;
+
+            if (LocoHelperOn)
+            {
+                ThrottlePercent = Simulator.ThrottleLocoHelper;
+            }
+        }
+
         // Určí řídící vůz
         public void SetControlUnit()
         {              
@@ -4096,6 +4111,7 @@ namespace Orts.Simulation.RollingStocks
                 TMFailure(elapsedClockSeconds);
                 PowerReductionResult(elapsedClockSeconds);                               
                 SetControlUnit();
+                SetHelperLocoThrottle();                
             }
 
             // Hodnoty pro výpočet zvukových proměnných
@@ -7174,7 +7190,7 @@ namespace Orts.Simulation.RollingStocks
 
         public virtual void SetPower(bool ToState)
         {
-            
+
         }
 
         internal void ToggleMUCommand(bool ToState)
@@ -7753,11 +7769,14 @@ namespace Orts.Simulation.RollingStocks
                                 if (AcceptMUSignals)
                                     foreach (TrainCar car in Train.Cars)
                                     {
-                                        car.SignalEvent(PowerSupplyEvent.LowerPantograph);
-                                        if (MPManager.IsMultiPlayer())
+                                        if (car.AcceptMUSignals)
                                         {
-                                            MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps1, 0).ToString());
-                                            MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps2, 0).ToString());
+                                            car.SignalEvent(PowerSupplyEvent.LowerPantograph);
+                                            if (MPManager.IsMultiPlayer())
+                                            {
+                                                MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps1, 0).ToString());
+                                                MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps2, 0).ToString());
+                                            }
                                         }
                                     }
                                 break;
@@ -7779,11 +7798,14 @@ namespace Orts.Simulation.RollingStocks
                                 if (AcceptMUSignals)
                                     foreach (TrainCar car in Train.Cars)
                                     {
-                                        car.SignalEvent(PowerSupplyEvent.LowerPantograph);
-                                        if (MPManager.IsMultiPlayer())
+                                        if (car.AcceptMUSignals)
                                         {
-                                            MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps1, 0).ToString());
-                                            MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps2, 0).ToString());
+                                            car.SignalEvent(PowerSupplyEvent.LowerPantograph);
+                                            if (MPManager.IsMultiPlayer())
+                                            {
+                                                MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps1, 0).ToString());
+                                                MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps2, 0).ToString());
+                                            }
                                         }
                                     }                                
                                 break;
@@ -7807,12 +7829,15 @@ namespace Orts.Simulation.RollingStocks
                                 if (AcceptMUSignals)
                                     foreach (TrainCar car in Train.Cars)
                                     {
-                                        car.SignalEvent(PowerSupplyEvent.RaisePantograph, p1);
-                                        car.SignalEvent(PowerSupplyEvent.LowerPantograph, p2);
-                                        if (MPManager.IsMultiPlayer())
+                                        if (car.AcceptMUSignals)
                                         {
-                                            MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps1, 1).ToString());
-                                            MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps2, 0).ToString());
+                                            car.SignalEvent(PowerSupplyEvent.RaisePantograph, p1);
+                                            car.SignalEvent(PowerSupplyEvent.LowerPantograph, p2);
+                                            if (MPManager.IsMultiPlayer())
+                                            {
+                                                MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps1, 1).ToString());
+                                                MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps2, 0).ToString());
+                                            }
                                         }
                                     }
                                 break;
@@ -7888,11 +7913,14 @@ namespace Orts.Simulation.RollingStocks
                                     if (AcceptMUSignals)
                                         foreach (TrainCar car in Train.Cars)
                                         {
-                                            car.SignalEvent(PowerSupplyEvent.LowerPantograph);
-                                            if (MPManager.IsMultiPlayer())
+                                            if (car.AcceptMUSignals)
                                             {
-                                                MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps1, 0).ToString());
-                                                MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps2, 0).ToString());
+                                                car.SignalEvent(PowerSupplyEvent.LowerPantograph);
+                                                if (MPManager.IsMultiPlayer())
+                                                {
+                                                    MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps1, 0).ToString());
+                                                    MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps2, 0).ToString());
+                                                }
                                             }
                                         }
                                 }
@@ -7915,12 +7943,15 @@ namespace Orts.Simulation.RollingStocks
                                     if (AcceptMUSignals)
                                         foreach (TrainCar car in Train.Cars)
                                         {
-                                            car.SignalEvent(PowerSupplyEvent.RaisePantograph, p1);
-                                            car.SignalEvent(PowerSupplyEvent.LowerPantograph, p2);
-                                            if (MPManager.IsMultiPlayer())
+                                            if (car.AcceptMUSignals)
                                             {
-                                                MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps1, 1).ToString());
-                                                MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps2, 0).ToString());
+                                                car.SignalEvent(PowerSupplyEvent.RaisePantograph, p1);
+                                                car.SignalEvent(PowerSupplyEvent.LowerPantograph, p2);
+                                                if (MPManager.IsMultiPlayer())
+                                                {
+                                                    MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps1, 1).ToString());
+                                                    MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps2, 0).ToString());
+                                                }
                                             }
                                         }
                                 }
@@ -7943,11 +7974,14 @@ namespace Orts.Simulation.RollingStocks
                                     if (AcceptMUSignals)
                                         foreach (TrainCar car in Train.Cars)
                                         {
-                                            car.SignalEvent(PowerSupplyEvent.RaisePantograph);
-                                            if (MPManager.IsMultiPlayer())
+                                            if (car.AcceptMUSignals)
                                             {
-                                                MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps1, 1).ToString());
-                                                MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps2, 1).ToString());
+                                                car.SignalEvent(PowerSupplyEvent.RaisePantograph);
+                                                if (MPManager.IsMultiPlayer())
+                                                {
+                                                    MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps1, 1).ToString());
+                                                    MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps2, 1).ToString());
+                                                }
                                             }
                                         }
                                 }
@@ -7970,12 +8004,15 @@ namespace Orts.Simulation.RollingStocks
                                     if (AcceptMUSignals)
                                         foreach (TrainCar car in Train.Cars)
                                         {
-                                            car.SignalEvent(PowerSupplyEvent.LowerPantograph, p1);
-                                            car.SignalEvent(PowerSupplyEvent.RaisePantograph, p2);
-                                            if (MPManager.IsMultiPlayer())
+                                            if (car.AcceptMUSignals)
                                             {
-                                                MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps1, 0).ToString());
-                                                MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps2, 1).ToString());
+                                                car.SignalEvent(PowerSupplyEvent.LowerPantograph, p1);
+                                                car.SignalEvent(PowerSupplyEvent.RaisePantograph, p2);
+                                                if (MPManager.IsMultiPlayer())
+                                                {
+                                                    MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps1, 0).ToString());
+                                                    MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps2, 1).ToString());
+                                                }
                                             }
                                         }
                                 }
