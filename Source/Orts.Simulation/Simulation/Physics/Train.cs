@@ -1840,7 +1840,7 @@ namespace Orts.Simulation.Physics
                 }
 
                 // Vyhodnocení selhání TM
-                if (car is MSTSDieselLocomotive && !(car as MSTSDieselLocomotive).DieselEngines[0].HasGearBox)
+                if (car is MSTSDieselLocomotive && !(car as MSTSDieselLocomotive).DieselEngines[0].HasGearBox && (car as MSTSDieselLocomotive).PowerOn)
                 {
                     float TMFailureSpeed = 7.0f / 3.6f;  // kritická rychlost kdy dojde ke zničení TM 
                     if (car.Flipped)

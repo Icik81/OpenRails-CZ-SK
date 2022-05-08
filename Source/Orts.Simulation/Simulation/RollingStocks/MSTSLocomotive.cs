@@ -467,7 +467,7 @@ namespace Orts.Simulation.RollingStocks
         public bool CompressorMode2_OffAuto;
         public bool EngineBrakeEngageEDB = false;
         public bool Heating_OffOn;
-        public bool HeatingEnable = false;        
+        public bool HeatingEnable = false;
         public bool CabHeatingEnable = false;
         public bool SwitchingVoltageMode_OffAC;
         public bool SwitchingVoltageMode_OffDC;
@@ -633,7 +633,7 @@ namespace Orts.Simulation.RollingStocks
         public bool DieselMotorPowerLost;
         public bool DieselLocoTempReady;
         public bool RDSTBreakerVZEnable;
-        public bool RDSTBreakerPowerEnable;        
+        public bool RDSTBreakerPowerEnable;
         public float CurrentTrackSandBoxCapacityKG;
         public bool MUCable;
         public bool MUCableEquipment;
@@ -1938,11 +1938,11 @@ namespace Orts.Simulation.RollingStocks
                 MaxPowerWBase = MaxPowerWAC;
             else
                 if (MaxPowerWDC != 0)
-                    MaxPowerWBase = MaxPowerWDC;
+                MaxPowerWBase = MaxPowerWDC;
             else
                 if (MaxPowerW != 0)
-                    MaxPowerWBase = MaxPowerW;
-            
+                MaxPowerWBase = MaxPowerW;
+
             if (MaxTrackSandBoxCapacityM3 == 0) MaxTrackSandBoxCapacityM3 = 0.0125f; // Default 0.0125m3
             if (CurrentTrackSandBoxCapacityM3 == 0) CurrentTrackSandBoxCapacityM3 = MaxTrackSandBoxCapacityM3;
             CurrentTrackSandBoxCapacityKG = (float)Math.Round(CurrentTrackSandBoxCapacityM3 * 1600, 2);
@@ -2945,7 +2945,7 @@ namespace Orts.Simulation.RollingStocks
             if (!this.AuxPowerOff)
                 Simulator.Confirmer.Information("Vypnutí proudu - pomocné pohony nejsou napájeny.");
             this.AuxPowerOff = true;
-            PowerReductionResult10 = 1;            
+            PowerReductionResult10 = 1;
             if (AcceptMUSignals)
             {
                 foreach (TrainCar car in Train.Cars)
@@ -2987,7 +2987,7 @@ namespace Orts.Simulation.RollingStocks
         // Nastavuje příznak napájení pomocných obvodů
         float AuxPowerCycleHV4 = 0;
         public void SetAuxPower()
-        {            
+        {
             if (!PowerOn) this.AuxPowerOff = true;
             // HV4
             if (IsLeadLocomotive() && AcceptMUSignals && PowerOn && HV4Enable && AuxPowerCycleHV4 == 0)
@@ -3037,10 +3037,10 @@ namespace Orts.Simulation.RollingStocks
         public float I_HeatingData0 = 0;
         public float U_Heating = 3000;
         public bool HeatingOverCurrent = false;
-        public bool HeatingIsOn = false;        
-        public float MSGHeatingCycle;        
+        public bool HeatingIsOn = false;
+        public float MSGHeatingCycle;
         public void ElevatedConsumptionOnLocomotive(float elapsedClockSeconds)
-        {                        
+        {
             foreach (TrainCar car in Train.Cars)
             {
                 if (car is MSTSLocomotive)
@@ -3054,7 +3054,7 @@ namespace Orts.Simulation.RollingStocks
 
             // Ochrana při nadproudu topení/klimatizace jen pro hráče
             if (IsLeadLocomotive())
-            {                
+            {
                 // Maximální proud topení            
                 if (HeatingMaxCurrentA == 0)
                     HeatingMaxCurrentA = 130; // Default 130A
@@ -3259,7 +3259,7 @@ namespace Orts.Simulation.RollingStocks
 
                             MSGHeatingCycle++;
                             if (MSGHeatingCycle > 500 && car.WagonTemperature < 14)
-                            {                                
+                            {
                                 if (car.WagonType == WagonTypes.Engine && !car.HasPassengerCapacity && WagonTemperature < 14)
                                     Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Je ti zima!"));
                                 else
@@ -3301,7 +3301,7 @@ namespace Orts.Simulation.RollingStocks
 
                             MSGHeatingCycle++;
                             if (MSGHeatingCycle > 1000 && car.WagonTemperature > 35)
-                            {                                
+                            {
                                 if (car.WagonType == WagonTypes.Engine && !car.HasPassengerCapacity && WagonTemperature > 35)
                                     Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Je ti horko!"));
                                 else
@@ -3533,7 +3533,7 @@ namespace Orts.Simulation.RollingStocks
                     PowerReductionResult1 /= 1000000;
                     PowerReductionResult1 = MathHelper.Clamp(PowerReductionResult1, 0, 1);
                 }
-            }            
+            }
         }
 
         // Stanovení hodnot výkonů a síly pro AC-DC systém
@@ -3643,7 +3643,7 @@ namespace Orts.Simulation.RollingStocks
                 foreach (TrainCar car in Train.Cars)
                 {
                     if (car is MSTSLocomotive && !car.RDSTBreaker)
-                        RDSTBreakerVZState += 1;                    
+                        RDSTBreakerVZState += 1;
                 }
                 if (RDSTBreakerVZState > 0)
                     TrainBrakeController.EmergencyBrakingPushButton = true;
@@ -3683,8 +3683,15 @@ namespace Orts.Simulation.RollingStocks
         }
 
         // Nastaví výkon na postrku
-        public void SetHelperLocoThrottle()
+        public void SetHelperLoco()
         {
+            if (!IsLeadLocomotive() && !AcceptMUSignals && PowerUnit)
+            {
+                LocoHelperOn = true;
+            }
+            else
+                LocoHelperOn = false;
+
             if (IsLeadLocomotive() && ThrottlePercent != 0)
                 Simulator.ThrottleLocoHelper = ThrottlePercent;
 
@@ -3699,10 +3706,10 @@ namespace Orts.Simulation.RollingStocks
             if (extendedPhysics != null)
             {
                 if (LocoHelperOn && Math.Abs(ControllerVolts) > 0.5f) Simulator.ControllerVoltsLocoHelper = ControllerVolts;
-                
+
                 if (IsLeadLocomotive() && AbsSpeedMpS < 0.1f) Simulator.ControllerVoltsLocoHelper = 0;
                 if (IsLeadLocomotive() && PowerOn && ControllerVolts == 0) Simulator.ControllerVoltsLocoHelper = 0;
-              
+
                 if (LocoHelperOn)
                 {
                     ControllerVolts = Simulator.ControllerVoltsLocoHelper;
@@ -3710,7 +3717,7 @@ namespace Orts.Simulation.RollingStocks
                 }
             }
         }
-
+    
         // Určí řídící vůz
         public void SetControlUnit()
         {              
@@ -4147,7 +4154,7 @@ namespace Orts.Simulation.RollingStocks
                 TMFailure(elapsedClockSeconds);
                 PowerReductionResult(elapsedClockSeconds);                               
                 SetControlUnit();
-                SetHelperLocoThrottle();
+                SetHelperLoco();
                 PantoCanHVOff(elapsedClockSeconds);
             }
 

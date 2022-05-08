@@ -1402,11 +1402,8 @@ namespace Orts.Simulation.RollingStocks
         // Postrk
         public void HelperLoco()
         {
-            if (!IsLeadLocomotive() && !AcceptMUSignals && PowerUnit)
-            {
-                //RouteVoltageV = 1;
-
-                LocoHelperOn = true;                
+            if (LocoHelperOn)
+            {           
                 if (RouteVoltageV == 1)
                 {
                     SignalEvent(PowerSupplyEvent.LowerPantograph);
@@ -1519,9 +1516,7 @@ namespace Orts.Simulation.RollingStocks
                         }
                     }                    
                 }
-            }
-            else
-                LocoHelperOn = false;
+            }            
         }
         
         // Komunikace po kabelu mezi spojenými jednotkami
