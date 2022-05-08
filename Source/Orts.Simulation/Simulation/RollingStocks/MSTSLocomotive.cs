@@ -3835,7 +3835,7 @@ namespace Orts.Simulation.RollingStocks
             {
                 if (LocoType == LocoTypes.Vectron)
                 {
-                    if (changingPowerSystem)
+                    if (ChangingPowerSystem)
                         PowerChangeRoutine(elapsedClockSeconds);
                     else
                     {
@@ -8068,13 +8068,13 @@ namespace Orts.Simulation.RollingStocks
             }
         }
 
-        protected bool changingPowerSystem = false;
+        public bool ChangingPowerSystem = false;
         public void ChangePowerSystem()
         {
             if (SelectingPowerSystem == SelectedPowerSystem)
                 return;
 
-            changingPowerSystem = true;
+            ChangingPowerSystem = true;
             switch (SelectingPowerSystem)
             {
                 case PowerSystem.AT15kV:
@@ -8097,6 +8097,8 @@ namespace Orts.Simulation.RollingStocks
         public bool WaitingForLvzConfirmation = false;
         public bool pantoCommandSent = false;
         protected float continuingTimeChangingSystem = 0;
+        protected bool inverterChecked = false;
+
         public void PowerChangeRoutine(float elapsedSeconds)
         {
             timeChangingPowerSystem += elapsedSeconds;
@@ -8149,25 +8151,13 @@ namespace Orts.Simulation.RollingStocks
             }
             continuingTimeChangingSystem += elapsedSeconds;
 
-            int MaintenanceState = 0;
+            PantoBlocked = false;
 
-            if (continuingTimeChangingSystem > 1)
-                MaintenanceState = 2;
-            if (continuingTimeChangingSystem > 1.5)
-                MaintenanceState = 1;
-            if (continuingTimeChangingSystem > 12.5)
-                MaintenanceState = 0;
-            if (continuingTimeChangingSystem > 14)
-            {
-                PantoBlocked = false;
-                SystemAnnunciator = 4;
-            }
             if ((SelectedPowerSystem == PowerSystem.CZ25kV
                 || SelectedPowerSystem == PowerSystem.SK25kV
                 || SelectingPowerSystem == PowerSystem.DE25kV)
                 && RouteVoltageV == 3000)
             {
-                MaintenanceState = 2;
                 PantoBlocked = true;
                 HVOff = true;
                 SystemAnnunciator = 3;
@@ -8177,15 +8167,83 @@ namespace Orts.Simulation.RollingStocks
                 || SelectedPowerSystem == PowerSystem.SK3kV)
                 && RouteVoltageV == 25000)
             {
-                MaintenanceState = 2;
                 PantoBlocked = true;
                 HVOff = true;
                 SystemAnnunciator = 3;
                 return;
             }
-            if (continuingTimeChangingSystem > 17)
+            HVOff = false;
+            if (!CircuitBreakerOn && Pantographs.List[0].State == PantographState.Up)
             {
-                changingPowerSystem = false;
+                HvPantoTimer += elapsedSeconds;
+                if (SystemAnnunciator == 0)
+                {
+                    SystemAnnunciator = 6;
+                }
+                else if (SystemAnnunciator == 6 && HvPantoTimer > 2)
+                {
+                    SystemAnnunciator = 4;
+                }
+                else if (SystemAnnunciator == 4 && HvPantoTimer > 4)
+                {
+                    SystemAnnunciator = 5;
+                    HvPantoTimer = 0;
+                }
+            }
+            if (!CircuitBreakerOn && (Pantographs.List[0].State == PantographState.Lowering || Pantographs.List[0].State == PantographState.Raising))
+            {
+                SystemAnnunciator = 4;
+            }
+            if (!CircuitBreakerOn && Pantographs.List[0].State == PantographState.Down && HvPantoTimer < 5)
+            {
+                HvPantoTimer += elapsedSeconds;
+                SystemAnnunciator = 4;
+            }
+            if (CircuitBreakerOn && (Pantographs.List[0].State == PantographState.Lowering || Pantographs.List[0].State == PantographState.Raising))
+            {
+                SystemAnnunciator = 4;
+            }
+            if (CircuitBreakerOn && Pantographs.List[0].State == PantographState.Down && HvPantoTimer < 5)
+            {
+                HvPantoTimer += elapsedSeconds;
+                SystemAnnunciator = 4;
+            }
+            if (!CircuitBreakerOn && Pantographs.List[0].State == PantographState.Down && HvPantoTimer >= 5)
+            {
+                SystemAnnunciator = 1;
+            }
+
+            if (CircuitBreakerOn && Pantographs.List[0].State == PantographState.Up)
+            {
+                HvPantoTimer = 0;
+                SystemAnnunciator = 0;
+            }
+
+            if ((SystemAnnunciator == 3 || SystemAnnunciator == 4) && !CircuitBreakerOn && Pantographs.List[0].State == PantographState.Up && HvPantoTimer > 10)
+            {
+                SystemAnnunciator = 5;
+            }
+
+            if (SystemAnnunciator == 0 && BrakeSystem.GetCylPressurePSI() > 0)
+            {
+                SystemAnnunciator = 6;
+            }
+            if (!PowerOn && SystemAnnunciator == 0)
+            {
+                SystemAnnunciator = 5;
+                continuingTimeChangingSystem -= elapsedSeconds;
+                return;
+            }
+            if (!PowerOn)
+            {
+                continuingTimeChangingSystem -= elapsedSeconds;
+                return;
+            }
+            SystemAnnunciator = 6;
+            InverterTest = RouteVoltageV == 3000 ? 0 : 1;
+            if (continuingTimeChangingSystem > 23)
+            {
+                ChangingPowerSystem = false;
                 timeChangingPowerSystem = 0;
                 continuingTimeChangingSystem = 0;
                 pantoCommandSent = false;
@@ -8200,6 +8258,7 @@ namespace Orts.Simulation.RollingStocks
                     SwitchingVoltageMode_OffAC = true;
                 }
                 HVOff = false;
+                InverterTest = 2;
             }
             if (PantoBlocked)
                 SystemAnnunciator = 3;

@@ -275,7 +275,7 @@ namespace Orts.Simulation.RollingStocks
             {
                 DisableMotors();
             }
-            else
+            else if (!Locomotive.ChangingPowerSystem)
             {
                 EnableMotors();
             }
@@ -594,6 +594,12 @@ namespace Orts.Simulation.RollingStocks
             if (!Locomotive.PowerOn)
                 maxForceN = 0;
             maxForceN += (reducedForceN * 2);
+            if (Locomotive.ChangingPowerSystem)
+                maxForceN = 0;
+            if (ElectricMotors[0].Disabled)
+                maxForceN = 0;
+            if (Locomotive.SystemAnnunciator > 0)
+                maxForceN = 0;
             if (usingControllerVolts)
             {
                 ForceFilter.Add(ForceN);
