@@ -701,6 +701,7 @@ namespace Orts.Simulation.RollingStocks
         public enum PantoModes { Auto, Forward, Aft, Both };
         public PantoModes PantoMode = PantoModes.Auto;
         public bool PantoCommandDown = false;
+        public int InverterTest = 2;
 
         public bool
       Speed0Pressed, Speed10Pressed, Speed20Pressed, Speed30Pressed, Speed40Pressed, Speed50Pressed
@@ -10961,7 +10962,33 @@ namespace Orts.Simulation.RollingStocks
                         else data = 0;
                         break;
                     }
-
+                case CABViewControlTypes.MOTOR_DISABLED:
+                    {
+                        if (extendedPhysics == null)
+                            data = 0;
+                        else
+                        {
+                            int id = 0;
+                            foreach (Undercarriage uc in extendedPhysics.Undercarriages)
+                            {
+                                foreach (ExtendedAxle ea in uc.Axles)
+                                {
+                                    foreach (ElectricMotor em in ea.ElectricMotors)
+                                    {
+                                        if (id == cvc.MotorId)
+                                            data = em.Disabled ? 1 : 0;
+                                        id++;
+                                    }
+                                }
+                            }
+                        }
+                        break;
+                    }
+                case CABViewControlTypes.INVERTER_TEST:
+                    {
+                        data = InverterTest;
+                        break;
+                    }
             }
             // max needle speed
             if (cvc.MaxNeedleSpeed > 0 && elapsedTime > 0)
