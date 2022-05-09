@@ -147,6 +147,7 @@ VERTEX_OUTPUT VSMoon(VERTEX_INPUT In)
 
 // This function adjusts brightness, saturation and contrast
 // By Romain Dura aka Romz
+// Colors edit by DR_Aeronautics
 float3 ContrastSaturationBrightness(float3 color, float brt, float sat, float con)
 {
 	// Increase or decrease theese values to adjust r, g and b color channels separately
@@ -173,9 +174,9 @@ float4 PSSky(VERTEX_OUTPUT In) : COLOR
 	float4 starColor = tex2D(StarMapSampler, TexCoord);
 	
 	// Adjust sky color brightness for time of day
-	skyColor *= SkyColor.x * 0.85;
+	skyColor *= SkyColor.y;
 	
-	// Stars
+	// Stars 
 	skyColor = lerp(starColor, skyColor, SkyColor.y);
 	
 	// Fogging
@@ -189,12 +190,37 @@ float4 PSSky(VERTEX_OUTPUT In) : COLOR
 	// Coefficients selected by the author to achieve the desired appearance - fot limits the effect
 	skyColor += angleRcp * Fog.y * 0.5;
 	
-	// increase orange at sunset - fog limits the effect
-	//if (LightVector.x < 0)
-	//{
-	//	skyColor.r += SkyColor.z * angleRcp * Fog.z * 0.000001;
-	//	skyColor.g += skyColor.r * Fog.w * 0.000001;
-	//}
+	// Sky Color Fix by DR-Aeronautics
+	// increase orange at sunset and yellow at sunrise - fog limits the effect	
+	if (LightVector.x < 0)
+	{
+		// These if-statements prevent the yellow-flash effect
+		if (LightVector.y > 0.13)
+		{
+			skyColor.rg += SkyColor.z * 2 * angleRcp * Fog.z * 0.5;
+			skyColor.r += SkyColor.z * 2 * angleRcp * Fog.z * 0.5;
+		}
+	
+		else
+		{
+			skyColor.rg += angleRcp * 0.075 * SkyColor.y * 0.5;
+			skyColor.r += angleRcp * 0.075 * SkyColor.y * 0.5;
+		}
+	}
+	else
+	{
+		if (LightVector.y > 0.15)
+		{
+			skyColor.rg += SkyColor.z * 3 * angleRcp * Fog.z * 0.5;
+			skyColor.r += SkyColor.z * angleRcp * Fog.z * 0.5;
+		}
+	
+		else
+		{
+			skyColor.rg += angleRcp * 0.075 * SkyColor.y * 0.5;
+			skyColor.r += pow(angleRcp * 0.075 * SkyColor.y, 2);
+		}
+	}
 	
 	// Keep alpha opague
 	skyColor.a = 1.0;
@@ -223,7 +249,7 @@ float4 PSMoon(VERTEX_OUTPUT In) : COLOR
 float4 PSClouds(VERTEX_OUTPUT In) : COLOR
 {
 	// Get the color information for the current pixel
-	// Cloud map is tiled. Tiling factor: 2
+	// Cloud map is tiled. Tiling factor: 4
 	// Move cloud map to suit wind conditions
 	float2 TexCoord = float2(In.TexCoord.x * 4 + WindDisplacement.x, In.TexCoord.y * 4 + WindDisplacement.y);
 	float4 cloudColor = tex2D(CloudMapSampler, TexCoord);
@@ -238,7 +264,7 @@ float4 PSClouds(VERTEX_OUTPUT In) : COLOR
 		alpha += Overcast.x;
 		// Reduce contrast and brightness
 		float3 color = ContrastSaturationBrightness(cloudColor.xyz, 1.0, Overcast.z, Overcast.y); // Brightness and saturation are really need to be exchanged?
-		cloudColor = float4(color * 1.0, alpha);
+		cloudColor = float4(color, alpha);
 	}
 	else
 	{
