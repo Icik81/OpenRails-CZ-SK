@@ -93,7 +93,7 @@ namespace Orts.Viewer3D.RollingStock
             //var exhaustParticles = car.Train != null && car.Train.TrainType == Train.TRAINTYPE.STATIC ? 0 : car.ExhaustParticles.SmoothedValue;
             // Ošetření kouře pro Static, pokud je NaN
             var exhaustParticles = car.ExhaustParticles.SmoothedValue;
-            if (float.IsNaN(exhaustParticles) && car.PowerOn)
+            if ((float.IsNaN(exhaustParticles) || exhaustParticles == 0) && car.PowerOn)
             {                
                 foreach (var drawer in Exhaust)
                 {

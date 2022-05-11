@@ -3664,6 +3664,18 @@ namespace Orts.Simulation.RollingStocks
             }
         }
 
+        // Vypnutí baterií a powerkey při deaktivaci loko z menu F9
+        public void SetUserPowerOff()
+        {
+            if (UserPowerOff && Battery && PowerKey)
+            {
+                Battery = false;
+                PowerKey = false;
+            }
+            if (Battery)
+                UserPowerOff = false;
+        }
+
         // Panto shodí HV po zadaném čase
         float PantoCanHVOffActualTime;
         public void PantoCanHVOff(float elapsedClockSeconds)
@@ -4156,6 +4168,7 @@ namespace Orts.Simulation.RollingStocks
                 SetControlUnit();
                 SetHelperLoco();
                 PantoCanHVOff(elapsedClockSeconds);
+                SetUserPowerOff();
             }
 
             // Hodnoty pro výpočet zvukových proměnných

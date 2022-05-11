@@ -95,12 +95,13 @@ namespace Orts.Viewer3D.RollingStock
             {
                 this.MSTSLocomotive.SignalEvent(Event.EnginePowerOff);
                 this.MSTSLocomotive.LocoIsStatic = true;
+                this.MSTSLocomotive.UserPowerOff = true;
             }
+            // STATIC je nastartovaný po nahrání uložené pozice
             if (this.MSTSLocomotive.Train.TrainType == Train.TRAINTYPE.STATIC && mstsDieselLocomotive.DieselEngines[0].EngineStatus == DieselEngine.Status.Running)
             {
-                mstsDieselLocomotive.PowerOn = true;
                 this.MSTSLocomotive.SignalEvent(Event.EnginePowerOn);
-
+                this.MSTSLocomotive.PowerOn = true;
             }
         }
 

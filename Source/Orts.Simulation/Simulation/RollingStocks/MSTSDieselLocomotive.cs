@@ -1149,7 +1149,7 @@ namespace Orts.Simulation.RollingStocks
             }
 
             // Startovní setup lokomotivy hráče
-            if (LocoReadyToGo)
+            if (LocoReadyToGo && !LocoIsStatic)
             {
                 if (!Battery)
                 {

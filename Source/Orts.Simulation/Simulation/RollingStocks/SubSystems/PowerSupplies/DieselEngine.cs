@@ -1007,6 +1007,11 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
             {
                 RealRPM = 0;
                 EngineStatus = Status.Stopped;
+                locomotive.Battery = false;
+                locomotive.PowerKey = false;
+                locomotive.DieselDirectionControllerPosition = 2;
+                locomotive.DieselDirectionController2Position = 0;
+                locomotive.DieselDirectionController4Position = 0;
             }
 
             if (EngineStatus == DieselEngine.Status.Running)
@@ -1165,7 +1170,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                     locomotive.SignalEvent(Event.StartUpMotorBreak);
                 }
 
-                if ((RealRPM > StartingConfirmationRPM ))// && (RealRPM < 0.9f * IdleRPM))
+                if ((RealRPM > 0.9f * StartingConfirmationRPM ))// && (RealRPM < 0.9f * IdleRPM))
                 {
                     EngineStatus = Status.Running;
                     locomotive.StartLooseCon = false;
