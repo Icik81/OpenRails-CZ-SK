@@ -227,10 +227,18 @@ namespace Orts.Viewer3D
 			var newCarIsLast = Car.Train == null || (locomotiveFlipped ^ locomotiveReverseCab ? Car.Train.FirstCar : Car.Train.LastCar) == Car;
             // Penalty
 			var newPenalty = mstsLocomotive != null && mstsLocomotive.TrainBrakeController.EmergencyBraking;
+            
+            // Icik
             // Control
-            var newCarIsPlayer = (Car.Train != null && Car.Train == Viewer.PlayerTrain) || (Car.Train != null && Car.Train.TrainType == Train.TRAINTYPE.REMOTE);
+            var newCarIsPlayer = (Car.Train != null && Car.Train == Viewer.PlayerTrain && locomotive != null && mstsLocomotive.Battery)
+                || (Car.Train != null && Car.Train.TrainType == Train.TRAINTYPE.REMOTE && locomotive != null && mstsLocomotive.PowerOn)
+                || (Car.Train != null && Car.Train.TrainType == Train.TRAINTYPE.STATIC && !Car.UserPowerOff);
             // Service - if a player or AI train, then will considered to be in servie, loose consists will not be considered to be in service.
-            var newCarInService = (Car.Train != null && Car.Train == Viewer.PlayerTrain) || (Car.Train != null && Car.Train.TrainType == Train.TRAINTYPE.REMOTE) || (Car.Train != null && Car.Train.TrainType == Train.TRAINTYPE.AI);
+            var newCarInService = (Car.Train != null && Car.Train == Viewer.PlayerTrain && locomotive != null && mstsLocomotive.Battery)
+                || (Car.Train != null && Car.Train.TrainType == Train.TRAINTYPE.REMOTE && locomotive != null && mstsLocomotive.PowerOn)
+                || (Car.Train != null && Car.Train.TrainType == Train.TRAINTYPE.AI && locomotive != null && mstsLocomotive.PowerOn)
+                || (Car.Train != null && Car.Train.TrainType == Train.TRAINTYPE.STATIC && !Car.UserPowerOff);
+            
             // Time of day
             bool newIsDay = false;
             if (Viewer.Settings.UseMSTSEnv == false)

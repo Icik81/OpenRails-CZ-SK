@@ -978,7 +978,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
             MagnitudeRange = MaxMagnitude - InitialMagnitude;
             ExhaustRange = MaxExhaust - InitialExhaust;
             ExhaustSteadyColor.A = 10;
-            ExhaustDecelColor.A = 10;
+            ExhaustDecelColor.A = 10;            
         }
 
 
@@ -1001,6 +1001,12 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
             {
                 locomotive.SignalEvent(Event.EnginePowerOff);
                 InitTriggerSetOff = true;
+            }
+            // Inicializace Static
+            if (locomotive.IsPlayerTrain && locomotive.BrakeSystem.StartOn && locomotive.LocoIsStatic)
+            {
+                RealRPM = 0;
+                EngineStatus = Status.Stopped;
             }
 
             if (EngineStatus == DieselEngine.Status.Running)
@@ -1039,7 +1045,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                 }
             }
 
-            if ( RealRPM == IdleRPM )
+
+            if (RealRPM == IdleRPM)
             {
                 ExhaustParticles = InitialExhaust;
                 ExhaustMagnitude = InitialMagnitude;
@@ -1092,7 +1099,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
             {                
                 if (RealRPM > IdleRPM)
                     RealRPM -= ChangeDownRPMpS * elapsedClockSeconds;
-                if (RealRPM < IdleRPM + ElevatedConsumptionRPM) RealRPM = IdleRPM + ElevatedConsumptionRPM;
+                if (RealRPM < IdleRPM + ElevatedConsumptionRPM) 
+                    RealRPM = IdleRPM + ElevatedConsumptionRPM;
             }
             else
             { 

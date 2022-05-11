@@ -96,6 +96,12 @@ namespace Orts.Viewer3D.RollingStock
                 this.MSTSLocomotive.SignalEvent(Event.EnginePowerOff);
                 this.MSTSLocomotive.LocoIsStatic = true;
             }
+            if (this.MSTSLocomotive.Train.TrainType == Train.TRAINTYPE.STATIC && mstsDieselLocomotive.DieselEngines[0].EngineStatus == DieselEngine.Status.Running)
+            {
+                mstsDieselLocomotive.PowerOn = true;
+                this.MSTSLocomotive.SignalEvent(Event.EnginePowerOn);
+
+            }
         }
 
         protected virtual void StartGearBoxIncrease()

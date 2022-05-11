@@ -89,13 +89,29 @@ namespace Orts.Viewer3D.RollingStock
             var car = this.Car as MSTSDieselLocomotive;
             
             // Diesel exhaust
-            var exhaustParticles = car.Train != null && car.Train.TrainType == Train.TRAINTYPE.STATIC ? 0 : car.ExhaustParticles.SmoothedValue;
-            foreach (var drawer in Exhaust)
+            // Icik
+            //var exhaustParticles = car.Train != null && car.Train.TrainType == Train.TRAINTYPE.STATIC ? 0 : car.ExhaustParticles.SmoothedValue;
+            // Ošetření kouře pro Static, pokud je NaN
+            var exhaustParticles = car.ExhaustParticles.SmoothedValue;
+            if (float.IsNaN(exhaustParticles) && car.PowerOn)
+            {                
+                foreach (var drawer in Exhaust)
+                {
+                    var colorR = 82 / 255f;
+                    var colorG = 51 / 255f;
+                    var colorB = 20 / 255f;
+                    drawer.SetOutput(car.InitialExhaust, car.InitialMagnitude, new Color((byte)82, (byte)51, (byte)20));
+                }
+            }
+            else
             {
-                var colorR = car.ExhaustColorR.SmoothedValue / 255f;
-                var colorG = car.ExhaustColorG.SmoothedValue / 255f;
-                var colorB = car.ExhaustColorB.SmoothedValue / 255f;
-                drawer.SetOutput(exhaustParticles, car.ExhaustMagnitude.SmoothedValue, new Color((byte)car.ExhaustColorR.SmoothedValue, (byte)car.ExhaustColorG.SmoothedValue, (byte)car.ExhaustColorB.SmoothedValue));
+                foreach (var drawer in Exhaust)
+                {
+                    var colorR = car.ExhaustColorR.SmoothedValue / 255f;
+                    var colorG = car.ExhaustColorG.SmoothedValue / 255f;
+                    var colorB = car.ExhaustColorB.SmoothedValue / 255f;
+                    drawer.SetOutput(exhaustParticles, car.ExhaustMagnitude.SmoothedValue, new Color((byte)car.ExhaustColorR.SmoothedValue, (byte)car.ExhaustColorG.SmoothedValue, (byte)car.ExhaustColorB.SmoothedValue));
+                }
             }
             
             base.PrepareFrame(frame, elapsedTime);
