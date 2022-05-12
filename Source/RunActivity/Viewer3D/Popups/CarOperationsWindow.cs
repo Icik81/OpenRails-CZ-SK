@@ -57,7 +57,12 @@ namespace Orts.Viewer3D.Popups
             vbox.AddHorizontalSeparator();
             vbox.Add(buttonHandbrake = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Toggle Handbrake"), LabelAlignment.Center));
             vbox.AddHorizontalSeparator();
-            vbox.Add(buttonTogglePower = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Toggle Power"), LabelAlignment.Center));
+            if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive) == null || (Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive).IsLeadLocomotive())
+            {
+                vbox.Add(buttonTogglePower = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("N/A"), LabelAlignment.Center));
+            }
+            else
+                vbox.Add(buttonTogglePower = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Toggle Power"), LabelAlignment.Center));
             vbox.AddHorizontalSeparator();
             vbox.Add(buttonToggleMU = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Připojit/Odpojit postrk"), LabelAlignment.Center));
             vbox.AddHorizontalSeparator();
@@ -163,6 +168,9 @@ namespace Orts.Viewer3D.Popups
 
         void buttonTogglePower_Click(Control arg1, Point arg2)
         {
+            if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive).IsLeadLocomotive())
+                return;
+
             if ((Viewer.PlayerTrain.Cars[CarPosition].GetType() == typeof(MSTSLocomotive))
                 ||
               (Viewer.PlayerTrain.Cars[CarPosition].GetType() == typeof(MSTSElectricLocomotive))
@@ -174,6 +182,8 @@ namespace Orts.Viewer3D.Popups
                 {
                     Viewer.Simulator.Confirmer.Information(Viewer.Catalog.GetString("Power OFF command sent"));
                     // Icik
+                    (Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive).Battery = false;
+                    (Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive).PowerKey = false;
                     if (Viewer.PlayerTrain.Cars[CarPosition] as MSTSDieselLocomotive != null)
                         (Viewer.PlayerTrain.Cars[CarPosition] as MSTSDieselLocomotive).StartLooseCon = false;
                     (Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive).UserPowerOff = true;
@@ -182,8 +192,10 @@ namespace Orts.Viewer3D.Popups
                 {
                     Viewer.Simulator.Confirmer.Information(Viewer.Catalog.GetString("Power ON command sent"));
                     // Icik
-                    if (Viewer.PlayerTrain.Cars[CarPosition].GetType() == typeof(MSTSElectricLocomotive))
-                        (Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive).HVOn = true;                    
+                    (Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive).Battery = true;
+                    (Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive).PowerKey = true;
+                    if (Viewer.PlayerTrain.Cars[CarPosition].GetType() == typeof(MSTSElectricLocomotive))                    
+                        (Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive).HVOn = true;                                           
                     if (Viewer.PlayerTrain.Cars[CarPosition].GetType() == typeof(MSTSDieselLocomotive))
                         (Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive).StartLooseCon = true;
                     (Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive).UserPowerOff = false;
