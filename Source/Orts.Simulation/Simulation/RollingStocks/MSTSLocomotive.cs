@@ -7323,7 +7323,7 @@ namespace Orts.Simulation.RollingStocks
         {
             PowerKey = !PowerKey;
             if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.PowerKey, PowerKey ? CabSetting.On : CabSetting.Off);
-
+            SignalEvent(Event.PantographToggle);
             if (Battery)
             {
                 if (PowerKey) SignalEvent(Event.PowerKeyOn);
@@ -7352,8 +7352,10 @@ namespace Orts.Simulation.RollingStocks
         }
 
         public void ToggleWipers(bool newState)
-        {
-            SignalEvent(newState ? Event.WiperOn : Event.WiperOff);
+        {            
+            SignalEvent(Event.PantographToggle);
+            if (Battery)
+                SignalEvent(newState ? Event.WiperOn : Event.WiperOff);
         }
 
         public void SetBailOff(bool bailOff)

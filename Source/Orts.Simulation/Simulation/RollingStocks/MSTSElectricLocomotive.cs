@@ -780,7 +780,7 @@ namespace Orts.Simulation.RollingStocks
                     if (LocomotivePowerVoltage == 0) LocomotivePowerVoltage = RouteVoltageV; //Default pro lokomotivy bez udání napětí
 
                     // Stisknutí hříbku pro přerušení napájení, vypne HV a shodí sběrače
-                    if (BreakPowerButton)
+                    if (BreakPowerButton || !Battery)
                     {
                         HVOff = true;
                         if (Pantographs[1].State == PantographState.Up || Pantographs[2].State == PantographState.Up)
@@ -795,7 +795,7 @@ namespace Orts.Simulation.RollingStocks
                     }
 
                     // Test napětí v troleji pro jednosystémové lokomotivy
-                    if (PantographVoltageV == MaxLineVoltage0)
+                    if (VoltageIndicateTestCompleted)
                     {
                         if (PantographVoltageV > 1.5f * LocomotivePowerVoltage)
                         {
@@ -826,14 +826,7 @@ namespace Orts.Simulation.RollingStocks
                                 MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO2", 0).ToString());
                             }
                         }
-                    }
-
-                    if ((Pantographs[1].State == PantographState.Down && Pantographs[2].State == PantographState.Down)
-                        || (Pantographs[1].State == PantographState.Lowering && Pantographs[2].State == PantographState.Down)
-                        || (Pantographs[1].State == PantographState.Down && Pantographs[2].State == PantographState.Lowering))
-                       PantographDown = true;
-                    else
-                        PantographDown = false;
+                    }                    
 
                     if (CircuitBreakerOn)
                     {
@@ -848,11 +841,11 @@ namespace Orts.Simulation.RollingStocks
                             {
 
                                 // Shodí HV při poklesu napětí v troleji a nastaveném výkonu (podpěťová ochrana)
-                                if (PowerSupply.PantographVoltageV < PantographCriticalVoltage && LocalThrottlePercent != 0)
+                                if (PowerSupply.PantographVoltageV < PantographCriticalVoltage && LocalThrottlePercent != 0 && VoltageIndicateTestCompleted)
                                     HVOff = true;
                             }
 
-                            if (CruiseControl != null)
+                            if (CruiseControl != null && VoltageIndicateTestCompleted)
                                 if (PowerSupply.PantographVoltageV == 1
                                     && CruiseControl.ForceThrottleAndDynamicBrake != -1
                                     && CruiseControl.ForceThrottleAndDynamicBrake != 0
@@ -865,13 +858,13 @@ namespace Orts.Simulation.RollingStocks
                             // Shodí HV při poklesu napětí v troleji a nastaveném výkonu (podpěťová ochrana)
                             if (PowerSupply.PantographVoltageV > 1)
                             {
-                                if (PowerSupply.PantographVoltageV < PantographCriticalVoltage && LocalThrottlePercent != 0)
+                                if (PowerSupply.PantographVoltageV < PantographCriticalVoltage && LocalThrottlePercent != 0 && VoltageIndicateTestCompleted)
                                 {
                                     HVOff = true;
                                     Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Zásah podpěťové ochrany!"));
                                 }
                                 if (CruiseControl != null)
-                                    if (PowerSupply.PantographVoltageV < PantographCriticalVoltage && CruiseControl.ForceThrottleAndDynamicBrake > 0)
+                                    if (PowerSupply.PantographVoltageV < PantographCriticalVoltage && CruiseControl.ForceThrottleAndDynamicBrake > 0 && VoltageIndicateTestCompleted)
                                     {
                                         CruiseControl.ForceThrottleAndDynamicBrake = 0;
                                         CruiseControl.controllerVolts = 0;
@@ -894,12 +887,12 @@ namespace Orts.Simulation.RollingStocks
                             if (PowerSupply.PantographVoltageV == 1 && LocalThrottlePercent != 0 && PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closed)
                             {
                                 // Shodí HV při poklesu napětí v troleji a nastaveném výkonu (podpěťová ochrana)
-                                if (PowerSupply.PantographVoltageV < PantographCriticalVoltage && LocalThrottlePercent != 0)
+                                if (PowerSupply.PantographVoltageV < PantographCriticalVoltage && LocalThrottlePercent != 0 && VoltageIndicateTestCompleted)
                                     HVOff = true;
                             }
 
                             if (CruiseControl != null)
-                                if (PowerSupply.PantographVoltageV == 1
+                                if (PowerSupply.PantographVoltageV == 1 && VoltageIndicateTestCompleted
                                     && CruiseControl.ForceThrottleAndDynamicBrake != 0
                                     && CruiseControl.ForceThrottleAndDynamicBrake != 1
                                     && PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closed)
@@ -910,13 +903,13 @@ namespace Orts.Simulation.RollingStocks
                             // Shodí HV při poklesu napětí v troleji a nastaveném výkonu (podpěťová ochrana)
                             if (PowerSupply.PantographVoltageV > 1)
                             {
-                                if (PowerSupply.PantographVoltageV < PantographCriticalVoltage && LocalThrottlePercent != 0)
+                                if (PowerSupply.PantographVoltageV < PantographCriticalVoltage && LocalThrottlePercent != 0 && VoltageIndicateTestCompleted)
                                 {
                                     HVOff = true;
                                     Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Zásah podpěťové ochrany!"));
                                 }
                                 if (CruiseControl != null)
-                                    if (PowerSupply.PantographVoltageV < PantographCriticalVoltage && CruiseControl.ForceThrottleAndDynamicBrake > 0)
+                                    if (PowerSupply.PantographVoltageV < PantographCriticalVoltage && CruiseControl.ForceThrottleAndDynamicBrake > 0 && VoltageIndicateTestCompleted)
                                     {
                                         CruiseControl.ForceThrottleAndDynamicBrake = 0;
                                         CruiseControl.controllerVolts = 0;
@@ -944,7 +937,7 @@ namespace Orts.Simulation.RollingStocks
                     }
 
                     // Stisknutí hříbku pro přerušení napájení, vypne HV a shodí sběrače
-                    if (BreakPowerButton)
+                    if (BreakPowerButton || !Battery)
                     {
                         HVOff = true;
                         if (Pantographs[1].State == PantographState.Up || Pantographs[2].State == PantographState.Up)
@@ -1260,9 +1253,10 @@ namespace Orts.Simulation.RollingStocks
                 }                
             }
 
-            // Icik            
-            EndAIVoltageChoice:
+        // Icik            
+        EndAIVoltageChoice:
             SetAIPantoDown(elapsedClockSeconds);
+            VoltageIndicate(elapsedClockSeconds);
             UnderVoltageProtection(elapsedClockSeconds);            
             
             if (IsPlayerTrain)
@@ -1399,6 +1393,30 @@ namespace Orts.Simulation.RollingStocks
         }
 
         // Icik
+        // Zpoždění v testu indikaci napětí
+        float TimerVoltageIndicateTest;
+        bool VoltageIndicateTestCompleted;
+        public void VoltageIndicate(float elapsedSeconds)
+        {
+            if ((Pantographs[1].State == PantographState.Down && Pantographs[2].State == PantographState.Down)
+                        || (Pantographs[1].State == PantographState.Lowering && Pantographs[2].State == PantographState.Down)
+                        || (Pantographs[1].State == PantographState.Down && Pantographs[2].State == PantographState.Lowering))
+                PantographDown = true;
+            else
+                PantographDown = false;
+
+            if (!PantographDown && !VoltageIndicateTestCompleted)
+                TimerVoltageIndicateTest += elapsedSeconds;
+            else
+            if (PantographDown)
+                TimerVoltageIndicateTest = 0;
+
+            if (TimerVoltageIndicateTest > 4)            
+                VoltageIndicateTestCompleted = true;                         
+            else
+                VoltageIndicateTestCompleted = false;
+        }
+
         // Postrk
         public void HelperLoco()
         {
