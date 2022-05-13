@@ -2987,7 +2987,7 @@ namespace Orts.Simulation.RollingStocks
         // Nastavuje příznak napájení pomocných obvodů
         float AuxPowerCycleHV4 = 0;
         public void SetAuxPower()
-        {
+        {            
             if (!PowerOn) this.AuxPowerOff = true;
             // HV4
             if (IsLeadLocomotive() && AcceptMUSignals && PowerOn && HV4Enable && AuxPowerCycleHV4 == 0)
@@ -4114,6 +4114,15 @@ namespace Orts.Simulation.RollingStocks
             }
 
             // Icik
+            if (PowerOn)
+                CarPowerOn = true;
+            else
+                CarPowerOn = false;
+            if (IsLeadLocomotive())
+                CarIsPlayerLoco = true;
+            else
+                CarIsPlayerLoco = false;
+
             if (!DieselDirection_Forward && !DieselDirection_Start && !DieselDirection_0 && !DieselDirection_Reverse)
             {
                 DieselDirection_Forward = false;

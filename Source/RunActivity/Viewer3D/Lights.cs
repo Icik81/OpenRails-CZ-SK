@@ -140,9 +140,9 @@ namespace Orts.Viewer3D
             var locomotive = Car.Train != null && Car.Train.IsActualPlayerTrain ? Viewer.PlayerLocomotive : null;
             var mstsLocomotive = locomotive as MSTSLocomotive;
             if ((Car.Train != null && Car.Train.TrainType == Train.TRAINTYPE.STATIC && Car.UserPowerOff)
-                || (Car.Train != null && Car.Train.TrainType == Train.TRAINTYPE.AI && locomotive != null && !mstsLocomotive.PowerOn)
-                || (Car.Train != null && Car.Train.TrainType == Train.TRAINTYPE.REMOTE && locomotive != null && !mstsLocomotive.PowerOn)
-                || (Car.Train != null && Car.Train == Viewer.PlayerTrain && locomotive != null && !mstsLocomotive.Battery))
+                || (Car.Train != null && Car.Train.TrainType == Train.TRAINTYPE.AI && !Car.CarPowerOn)
+                || (Car.Train != null && Car.Train.TrainType == Train.TRAINTYPE.REMOTE && !Car.CarPowerOn)
+                || (Car.Train != null && Car.CarIsPlayerLoco && !mstsLocomotive.Battery))
             {
                 HasLightCone = false;
                 return;

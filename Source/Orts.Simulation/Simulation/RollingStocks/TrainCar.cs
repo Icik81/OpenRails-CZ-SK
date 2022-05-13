@@ -356,6 +356,8 @@ namespace Orts.Simulation.RollingStocks
         public bool AuxPowerOff;
         public bool LocoHelperOn;
         public bool UserPowerOff;
+        public bool CarPowerOn;
+        public bool CarIsPlayerLoco;
 
         public float PowerReductionResult1;  // Redukce výkonu od topení, klimatizace, kompresoru
         public float PowerReductionResult2;  // Redukce výkonu od nedostatečného tlaku vzduchu v potrubí
