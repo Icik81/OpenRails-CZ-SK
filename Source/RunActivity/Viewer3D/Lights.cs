@@ -134,6 +134,7 @@ namespace Orts.Viewer3D
             ActiveLightCone = newLightCone;
         }
 
+        int LightCycle = 0;
         public void PrepareFrame(RenderFrame frame, ElapsedTime elapsedTime)
         {
             // Icik
@@ -158,8 +159,7 @@ namespace Orts.Viewer3D
                 Console.WriteLine();
 #endif
                 UpdateActiveLightCone();
-            }
-
+            }            
             foreach (var lightPrimitive in LightPrimitives)
                 lightPrimitive.PrepareFrame(frame, elapsedTime);
 
@@ -261,7 +261,14 @@ namespace Orts.Viewer3D
             var newWeather = Viewer.Simulator.WeatherType;
             // Coupling
             var newCarCoupledFront = Car.Train != null && (Car.Train.Cars.Count > 1) && ((Car.Flipped ? Car.Train.LastCar : Car.Train.FirstCar) != Car);
-            var newCarCoupledRear = Car.Train != null && (Car.Train.Cars.Count > 1) && ((Car.Flipped ? Car.Train.FirstCar : Car.Train.LastCar) != Car);            
+            var newCarCoupledRear = Car.Train != null && (Car.Train.Cars.Count > 1) && ((Car.Flipped ? Car.Train.FirstCar : Car.Train.LastCar) != Car);
+
+            // Icik
+            // Neprobliknou ostatní světla při zapnutí baterií
+            LightCycle++;
+            if (LightCycle < 50)
+                return false;
+            LightCycle = 50;
 
             if (
                 (TrainHeadlight != newTrainHeadlight) ||
@@ -310,7 +317,7 @@ namespace Orts.Viewer3D
                     Console.WriteLine(PrimitiveStateLabel);
                     Console.WriteLine(new String('=', PrimitiveStateLabel.Length));
                 }
-#endif                
+#endif                          
                 return true;
             }
             return false;
