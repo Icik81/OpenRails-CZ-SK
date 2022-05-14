@@ -3682,6 +3682,22 @@ namespace Orts.Simulation.RollingStocks
             }
         }
 
+        // Nastaví příznak zapnutých baterií a napájení pro zapnutí světel
+        public void SetCarPowerOn()
+        {
+            if (Battery)
+                CarPowerOn = true;
+            else
+                CarPowerOn = false;
+            if (this.Train.TrainType == Train.TRAINTYPE.AI || this.Train.TrainType == Train.TRAINTYPE.REMOTE)
+            {
+                if (PowerOn)
+                    CarPowerOn = true;
+                else
+                    CarPowerOn = false;
+            }
+        }
+
         // Nastaví výkon na postrku
         public void SetHelperLoco()
         {
@@ -4114,10 +4130,8 @@ namespace Orts.Simulation.RollingStocks
             }
 
             // Icik
-            if (PowerOn)
-                CarPowerOn = true;
-            else
-                CarPowerOn = false;
+            SetCarPowerOn();
+
             if (IsLeadLocomotive())
                 CarIsPlayerLoco = true;
             else

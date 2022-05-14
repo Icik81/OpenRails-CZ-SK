@@ -140,10 +140,10 @@ namespace Orts.Viewer3D
             // Icik
             var locomotive = Car.Train != null && Car.Train.IsActualPlayerTrain ? Viewer.PlayerLocomotive : null;
             var mstsLocomotive = locomotive as MSTSLocomotive;
-            if ((Car.Train != null && Car.Train.TrainType == Train.TRAINTYPE.STATIC && Car.UserPowerOff)
+            if ((Car.Train != null && Car.Train.TrainType == Train.TRAINTYPE.STATIC && !Car.CarPowerOn)
                 || (Car.Train != null && Car.Train.TrainType == Train.TRAINTYPE.AI && !Car.CarPowerOn)
                 || (Car.Train != null && Car.Train.TrainType == Train.TRAINTYPE.REMOTE && !Car.CarPowerOn)
-                || (Car.Train != null && Car.CarIsPlayerLoco && !mstsLocomotive.Battery))
+                || (Car.Train != null && Car.CarIsPlayerLoco && mstsLocomotive != null && !mstsLocomotive.Battery))
             {
                 HasLightCone = false;
                 return;
@@ -232,7 +232,9 @@ namespace Orts.Viewer3D
             var mstsLocomotive = locomotive as MSTSLocomotive;
 
             // Headlight
-            var newTrainHeadlight = locomotive != null && mstsLocomotive.Battery ? locomotive.Headlight : Car.Train != null && Car.Train.TrainType != Train.TRAINTYPE.STATIC ? 2 : 0;
+            //var newTrainHeadlight = locomotive != null && mstsLocomotive.Battery ? locomotive.Headlight : Car.Train != null && Car.Train.TrainType != Train.TRAINTYPE.STATIC ? 2 : 0;
+            var newTrainHeadlight = Car.Train != null ? Car.Headlight : 0;
+
             // Unit
             var locomotiveFlipped = locomotive != null && locomotive.Flipped;
             var locomotiveReverseCab = mstsLocomotive != null && mstsLocomotive.UsingRearCab;
@@ -244,6 +246,7 @@ namespace Orts.Viewer3D
             // Control
             var newCarIsPlayer = (Car.Train != null && Car.Train == Viewer.PlayerTrain)
                 || (Car.Train != null && Car.Train.TrainType == Train.TRAINTYPE.REMOTE)
+                || (Car.Train != null && Car.Train.TrainType == Train.TRAINTYPE.AI)
                 || (Car.Train != null && Car.Train.TrainType == Train.TRAINTYPE.STATIC);
             // Service - if a player or AI train, then will considered to be in servie, loose consists will not be considered to be in service.
             var newCarInService = (Car.Train != null && Car.Train == Viewer.PlayerTrain)
