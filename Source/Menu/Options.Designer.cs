@@ -900,7 +900,7 @@
             this.CabView_MSTSOR.Name = "CabView_MSTSOR";
             this.CabView_MSTSOR.Size = new System.Drawing.Size(293, 21);
             this.CabView_MSTSOR.TabIndex = 25;
-            this.CabView_MSTSOR.Text = "Výhled z kabiny kompatibilní s MSTS / OR";
+            this.CabView_MSTSOR.Text = "View from the cabin compatible with MSTS / OR";
             this.CabView_MSTSOR.UseVisualStyleBackColor = true;
             this.CabView_MSTSOR.CheckedChanged += new System.EventHandler(this.CabView_MSTSOR_CheckedChanged);
             // 
@@ -1313,7 +1313,7 @@
             this.checkAirEmpty.Name = "checkAirEmpty";
             this.checkAirEmpty.Size = new System.Drawing.Size(342, 21);
             this.checkAirEmpty.TabIndex = 32;
-            this.checkAirEmpty.Text = "Odstavená lokomotiva (lokomotivu je nutné oživit)";
+            this.checkAirEmpty.Text = "Cold Start (locomotive needs to be revived)";
             this.checkAirEmpty.UseVisualStyleBackColor = true;
             // 
             // groupBox1
@@ -2306,7 +2306,7 @@
             this.checkCorrectQuestionableBrakingParams.Name = "checkCorrectQuestionableBrakingParams";
             this.checkCorrectQuestionableBrakingParams.Size = new System.Drawing.Size(288, 21);
             this.checkCorrectQuestionableBrakingParams.TabIndex = 43;
-            this.checkCorrectQuestionableBrakingParams.Text = "Correct questionable braking parameters";
+            this.checkCorrectQuestionableBrakingParams.Text = "Correct braking parameters for MSTS models";
             this.checkCorrectQuestionableBrakingParams.UseVisualStyleBackColor = true;
             // 
             // label25

@@ -304,8 +304,8 @@ namespace Orts.Simulation
                 , new string [] { GetString("Přepnutí napěťového systému"), GetString("off"), null, GetString("AC")}
                 , new string [] { GetString("Přepnutí napěťového systému"), GetString("off"), null, GetString("DC")}
                 , new string [] { GetString("Napětí v soustavě změněno"), GetString("25kV"), null, GetString("3kV")}
-                , new string [] { GetString("Vysokotlaký švih"), GetString("off"), null, GetString("on")}
-                , new string [] { GetString("Nízkotlaké přebití"), GetString("off"), null, GetString("on")}
+                , new string [] { GetString("Highpressure release"), GetString("off"), null, GetString("on")}
+                , new string [] { GetString("Lowpressure release"), GetString("off"), null, GetString("on")}
                 , new string [] { GetString("Přerušení napájení"), GetString("off"), null, GetString("on")}
                 , new string [] { GetString("Plné osvětlení kabiny"), GetString("off"), null, GetString("on")}
                 , new string [] { GetString("") }

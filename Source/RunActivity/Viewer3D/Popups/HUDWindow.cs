@@ -515,7 +515,7 @@ namespace Orts.Viewer3D.Popups
                 if (sanderBlocked)
                     TableAddLine(table, Viewer.Catalog.GetString("Sander blocked") + "!!!");
                 else                                    
-                    TableAddLine(table, Viewer.Catalog.GetString("Množství písku: ") + (Viewer.PlayerLocomotive as MSTSLocomotive).CurrentTrackSandBoxCapacityKG + "kg" + "???");                
+                    TableAddLine(table, Viewer.Catalog.GetString("Amount of sand") + ": " + (Viewer.PlayerLocomotive as MSTSLocomotive).CurrentTrackSandBoxCapacityKG + "kg" + "???");                
             }
 
             if ((Viewer.PlayerLocomotive as MSTSWagon).DoorLeftOpen || (Viewer.PlayerLocomotive as MSTSWagon).DoorRightOpen)
@@ -536,7 +536,7 @@ namespace Orts.Viewer3D.Popups
 
                 TableAddLabelValue(table, Viewer.Catalog.GetString("MultiPlayerStatus: "), "{0}", Orts.MultiPlayer.MPManager.IsServer()
                     ? Viewer.Catalog.GetString("Dispatcher") : Orts.MultiPlayer.MPManager.Instance().AmAider
-                    ? Viewer.Catalog.GetString("Helper") : Orts.MultiPlayer.MPManager.IsClient()
+                    ? Viewer.Catalog.GetString("Push") : Orts.MultiPlayer.MPManager.IsClient()
                     ? Viewer.Catalog.GetString("Client") : "");
                 TableAddLine(table);
                 foreach (var t in text.Split('\t'))
@@ -640,22 +640,22 @@ namespace Orts.Viewer3D.Popups
                 var car = train.Cars[j];
 
                 if (car.WagonHasTemperature && car.DieselHeaterPower > 0 && !car.LocomotiveCab)
-                    TypeHeatText = "Bufík";
+                    TypeHeatText = Viewer.Catalog.GetString("DieselHeat");
                 else
                 if (car.WagonHasTemperature && car.DieselHeaterPower == 0 && !car.Train.SteamHeatingIsAvailable && !car.LocomotiveCab)
-                    TypeHeatText = "El.topení";
+                    TypeHeatText = Viewer.Catalog.GetString("ElecHeat");
                 else
                 if (car.WagonHasTemperature && car.DieselHeaterPower == 0 && car.Train.SteamHeatingIsAvailable && !car.LocomotiveCab)
-                    TypeHeatText = "Par.topení";
+                    TypeHeatText = Viewer.Catalog.GetString("SteamHeat");
                 else
                 if (car.WagonHasTemperature && car.DieselHeaterPower > 0 && car.LocomotiveCab)
-                    TypeHeatText = "Bufík";
+                    TypeHeatText = Viewer.Catalog.GetString("DieselHeat");
                 else
                 if (car.WagonHasTemperature && !(car is MSTSElectricLocomotive) && car.DieselHeaterPower == 0 && car.LocomotiveCab)
-                    TypeHeatText = "Kalorifer";
+                    TypeHeatText = Viewer.Catalog.GetString("Calorifer");
                 else
                 if (car.WagonHasTemperature && car.DieselHeaterPower == 0 && car.LocomotiveCab)
-                    TypeHeatText = "El.topení";
+                    TypeHeatText = Viewer.Catalog.GetString("ElecHeat");
                 else
                     TypeHeatText = "";
 
@@ -663,7 +663,7 @@ namespace Orts.Viewer3D.Popups
                     (car.Flipped ? Viewer.Catalog.GetString("Yes") : Viewer.Catalog.GetString("No")) + "\t" +
                     (train.IsFreight ? Viewer.Catalog.GetString("Freight") : Viewer.Catalog.GetString("Pass")) + "\t" +
                     (car.WagonHasTemperature ? Math.Round(car.WagonTemperature).ToString() + " °C" : NoText) + "\t" +
-                    ((car.WagonHasTemperature && car.StatusHeatIsOn && !car.Train.CarSteamHeatOn) || (car.Train.CarSteamHeatOn && !car.LocomotiveCab) || (car.LocomotiveCab && car.StatusHeatIsOn) ? Viewer.Catalog.GetString("Aktivní") : NoText) + "\t" +
+                    ((car.WagonHasTemperature && car.StatusHeatIsOn && !car.Train.CarSteamHeatOn) || (car.Train.CarSteamHeatOn && !car.LocomotiveCab) || (car.LocomotiveCab && car.StatusHeatIsOn) ? Viewer.Catalog.GetString("Active") : NoText) + "\t" +
                     (car.WagonHasTemperature && car.BrakeSystem.HeatingIsOn && mstsLocomotive.HeatingIsOn && !car.Train.CarSteamHeatOn ? Viewer.Catalog.GetString("On") : NoText) + "\t" +
                     (TypeHeatText) + "\t" +
                     (car.WagonHasTemperature && car.DieselHeaterPower > 0 ? FormatStrings.FormatFuelVolume(car.DieselHeaterTankCapacityMark, true, false) : NoText) + "\t" +
@@ -781,7 +781,7 @@ namespace Orts.Viewer3D.Popups
                 //7
                 train.MUDynamicBrakePercent >= 0 ? string.Format("{0:F0}%", train.MUDynamicBrakePercent) : Viewer.Catalog.GetString("off"),
                 //8
-                Viewer.PlayerLocomotive is MSTSElectricLocomotive ? string.Format("Traťové napětí: {0:F0}V", Viewer.PlayerLocomotive.RouteVoltageVInfo) : Viewer.Catalog.GetString(""),
+                Viewer.PlayerLocomotive is MSTSElectricLocomotive ? string.Format(Viewer.Catalog.GetString("Route Voltage") + ": {0:F0}V", Viewer.PlayerLocomotive.RouteVoltageVInfo) : Viewer.Catalog.GetString(""),
                 //9
             Viewer.Catalog.GetString("PlayerLoco")
             //Add new Header data here, if adding additional column.
@@ -810,9 +810,9 @@ namespace Orts.Viewer3D.Popups
                             //05
                             Viewer.Catalog.GetString("Speed"),
                             //06
-                            Viewer.Catalog.GetString("TažnýVýkon"),
+                            Viewer.Catalog.GetString("TracPower"),
                             //07
-                            Viewer.Catalog.GetString("TažnáSíla"),
+                            Viewer.Catalog.GetString("TracForce"),
                             //08
                             car is MSTSDieselLocomotive && (car as MSTSDieselLocomotive).DieselEngines[0].HasGearBox ?
                             Viewer.Catalog.GetString("Gear") : Viewer.Catalog.GetString(""),
@@ -826,31 +826,31 @@ namespace Orts.Viewer3D.Popups
                             car is MSTSElectricLocomotive ? Viewer.Catalog.GetString("TCS") : Viewer.Catalog.GetString(""),
                             //11
                             car is MSTSSteamLocomotive ? Viewer.Catalog.GetString("") :
-                            car is MSTSDieselLocomotive ? Viewer.Catalog.GetString("VýkonSM") :
+                            car is MSTSDieselLocomotive ? Viewer.Catalog.GetString("PowerDE") :
                             car is MSTSElectricLocomotive ? Viewer.Catalog.GetString("Driver") : Viewer.Catalog.GetString(""),
                             //12
                             car is MSTSSteamLocomotive ? Viewer.Catalog.GetString("") :
-                            car is MSTSDieselLocomotive ? Viewer.Catalog.GetString("ZátěžSM") :
+                            car is MSTSDieselLocomotive ? Viewer.Catalog.GetString("LoadDE") :
                             car is MSTSElectricLocomotive ? Viewer.Catalog.GetString("Auxiliar power") : Viewer.Catalog.GetString(""),
                             //13
                             car is MSTSSteamLocomotive ? Viewer.Catalog.GetString("") :
-                            car is MSTSDieselLocomotive ? Viewer.Catalog.GetString("OtáčkySM") :
-                            car is MSTSElectricLocomotive ? Viewer.Catalog.GetString("TypVozu") : Viewer.Catalog.GetString(""),
+                            car is MSTSDieselLocomotive ? Viewer.Catalog.GetString("RpmDE") :
+                            car is MSTSElectricLocomotive ? Viewer.Catalog.GetString("CarType") : Viewer.Catalog.GetString(""),
                             //14
                             car is MSTSSteamLocomotive ? Viewer.Catalog.GetString("") :
-                            car is MSTSDieselLocomotive ? Viewer.Catalog.GetString("SpotřSM") :
+                            car is MSTSDieselLocomotive ? Viewer.Catalog.GetString("ConsDE") :
                             car is MSTSElectricLocomotive ? Viewer.Catalog.GetString("") : Viewer.Catalog.GetString(""),
                             //15
                             car is MSTSSteamLocomotive ? Viewer.Catalog.GetString("") :
-                            car is MSTSDieselLocomotive ? Viewer.Catalog.GetString("TeplotaSM") :
-                            car is MSTSElectricLocomotive ? Viewer.Catalog.GetString("PantoNapětí") : Viewer.Catalog.GetString(""),
+                            car is MSTSDieselLocomotive ? Viewer.Catalog.GetString("TempDE") :
+                            car is MSTSElectricLocomotive ? Viewer.Catalog.GetString("PantoVoltage") : Viewer.Catalog.GetString(""),
                             //16
                             car is MSTSSteamLocomotive ? Viewer.Catalog.GetString("") :
-                            car is MSTSDieselLocomotive ? Viewer.Catalog.GetString("TlakOlejSM") :
+                            car is MSTSDieselLocomotive ? Viewer.Catalog.GetString("OilPressDE") :
                             car is MSTSElectricLocomotive ? Viewer.Catalog.GetString("") : Viewer.Catalog.GetString(""),
                             //17
                             car is MSTSSteamLocomotive ? Viewer.Catalog.GetString("") :
-                            car is MSTSDieselLocomotive ? Viewer.Catalog.GetString("TypVozu") :
+                            car is MSTSDieselLocomotive ? Viewer.Catalog.GetString("CarType") :
                             car is MSTSElectricLocomotive ? Viewer.Catalog.GetString("") : Viewer.Catalog.GetString("") 
                             //Add new Locomotive header here, if required.
                             ));
@@ -1075,11 +1075,11 @@ namespace Orts.Viewer3D.Popups
                     Viewer.Catalog.GetString("PlayerLoco"),
                     Viewer.Catalog.GetString("Main reservoir"),
                     FormatStrings.FormatPressure((Viewer.PlayerLocomotive as MSTSLocomotive).MainResPressurePSI, PressureUnit.PSI, (Viewer.PlayerLocomotive as MSTSLocomotive).BrakeSystemPressureUnits[BrakeSystemComponent.MainReservoir], true),
-                    Viewer.Catalog.GetString("Kompresor I"),
+                    Viewer.Catalog.GetString("Compressor I"),
                     (Viewer.PlayerLocomotive as MSTSLocomotive).CompressorIsOn ? Viewer.Catalog.GetString("on") : Viewer.Catalog.GetString("off"),
-                    Viewer.Catalog.GetString("Kompresor II"),
+                    Viewer.Catalog.GetString("Compressor II"),
                     (Viewer.PlayerLocomotive as MSTSLocomotive).Compressor2IsOn ? Viewer.Catalog.GetString("on") : Viewer.Catalog.GetString("off"),
-                    Viewer.Catalog.GetString("Pomocný kompresor"),
+                    Viewer.Catalog.GetString("AuxCompressor"),
                     (Viewer.PlayerLocomotive as MSTSLocomotive).AuxCompressorIsOn ? Viewer.Catalog.GetString("on") : Viewer.Catalog.GetString("off"),
                     FormatStrings.FormatPressure((Viewer.PlayerLocomotive as MSTSLocomotive).AuxResPressurePSI, PressureUnit.PSI, (Viewer.PlayerLocomotive as MSTSLocomotive).BrakeSystemPressureUnits[BrakeSystemComponent.MainReservoir], true),
                     AuxResVolumeL + " L"));
@@ -1100,11 +1100,11 @@ namespace Orts.Viewer3D.Popups
                             car.CarID,
                             Viewer.Catalog.GetString("Main reservoir"),
                             FormatStrings.FormatPressure((car as MSTSLocomotive).MainResPressurePSI, PressureUnit.PSI, (car as MSTSLocomotive).BrakeSystemPressureUnits[BrakeSystemComponent.MainReservoir], true),
-                            Viewer.Catalog.GetString("Kompresor I"),
+                            Viewer.Catalog.GetString("Compressor I"),
                             (car as MSTSLocomotive).CompressorIsOn ? Viewer.Catalog.GetString("on") : Viewer.Catalog.GetString("off"),
-                            Viewer.Catalog.GetString("Kompresor II"),
+                            Viewer.Catalog.GetString("Compressor II"),
                             (car as MSTSLocomotive).Compressor2IsOn ? Viewer.Catalog.GetString("on") : Viewer.Catalog.GetString("off"),
-                            Viewer.Catalog.GetString("Pomocný kompresor"),
+                            Viewer.Catalog.GetString("AuxCompressor"),
                             (car as MSTSLocomotive).AuxCompressorIsOn ? Viewer.Catalog.GetString("on") : Viewer.Catalog.GetString("off"),
                             FormatStrings.FormatPressure((Viewer.PlayerLocomotive as MSTSLocomotive).AuxResPressurePSI, PressureUnit.PSI, (Viewer.PlayerLocomotive as MSTSLocomotive).BrakeSystemPressureUnits[BrakeSystemComponent.MainReservoir], true),
                             AuxResVolumeL + " L"));
@@ -1208,27 +1208,27 @@ namespace Orts.Viewer3D.Popups
                     //6
                     Viewer.Catalog.GetString("Handbrk"),
                     //7
-                    Viewer.Catalog.GetString("VzdHadice"),
+                    Viewer.Catalog.GetString("AirHoses"),
                     //8
                     Viewer.Catalog.GetString("AnglCock"),
                     //9
                     Viewer.Catalog.GetString("BleedOff"),
                     //10
-                    Viewer.Catalog.GetString("Protismyk"),
+                    Viewer.Catalog.GetString("AntiSkid"),
                     //11                  
-                    Viewer.Catalog.GetString("NetěsnostBrzPotr"),
+                    Viewer.Catalog.GetString("LeakBrkPipes"),
                     //12
                     Viewer.Catalog.GetString(""),
                     //13
-                    Viewer.Catalog.GetString("ObjBrzPotr"),
+                    Viewer.Catalog.GetString("VolBrkPipes"),
                     //14
-                    Viewer.Catalog.GetString("ObjBrzVál"),
+                    Viewer.Catalog.GetString("VolBrkCyl"),
                     //15
-                    Viewer.Catalog.GetString("ObjHlJímka"),
+                    Viewer.Catalog.GetString("VolMainRes"),
                     //16
-                    Viewer.Catalog.GetString("BrzRežim"),
+                    Viewer.Catalog.GetString("BrkMode"),
                     //17
-                    Viewer.Catalog.GetString("BrzVáha")
+                    Viewer.Catalog.GetString("BrkMass")
                     //Add new header data here, if addining additional column.
                     ));
                 }
@@ -1510,7 +1510,7 @@ namespace Orts.Viewer3D.Popups
                 TableSetCell(table, 0, "{0}", car.CarID);
                 if (hudWindowColumnsActualPage > 0)
                 {
-                    TableSetCell(table, 1, "{0} : {1}", car.GetCouplerRigidIndication() ? "R" : "F", car.CouplerExceedBreakLimit ? "xxx" + "!!!" : car.CouplerOverloaded ? "O/L" + "???" : car.HUDCouplerForceIndication == 1 ? "Pull" : car.HUDCouplerForceIndication == 2 ? "Push" : "-");
+                    TableSetCell(table, 1, "{0} : {1}", car.GetCouplerRigidIndication() ? "R" : "F", car.CouplerExceedBreakLimit ? "xxx" + "!!!" : car.CouplerOverloaded ? "O/L" + "???" : car.HUDCouplerForceIndication == 1 ? "Pull" : car.HUDCouplerForceIndication == 2 ? "Helper" : "-");
                     TableSetCell(table, 2, "{0}", FormatStrings.FormatVeryShortDistanceDisplay(car.CouplerSlackM, car.IsMetric));
                     TableSetCell(table, 3, "{0}", FormatStrings.FormatLargeMass(car.MassKG, car.IsMetric, car.IsUK));
                     TableSetCell(table, 4, "{0:F2}%", -car.CurrentElevationPercent);
@@ -1542,7 +1542,7 @@ namespace Orts.Viewer3D.Popups
                     TableSetCell(table, 7, "{0}", FormatStrings.FormatForce(car.TunnelForceN, car.IsMetric));
                     TableSetCell(table, 8, "{0}", FormatStrings.FormatForce(car.WindForceN, car.IsMetric));
                     TableSetCell(table, 9, "{0}", FormatStrings.FormatForce(car.CouplerForceU, car.IsMetric));
-                    TableSetCell(table, 10, "{0} : {1}", car.GetCouplerRigidIndication() ? "R" : "F", car.CouplerExceedBreakLimit ? "xxx" + "!!!" : car.CouplerOverloaded ? "O/L" + "???" : car.HUDCouplerForceIndication == 1 ? "Pull" : car.HUDCouplerForceIndication == 2 ? "Push" : "-");
+                    TableSetCell(table, 10, "{0} : {1}", car.GetCouplerRigidIndication() ? "R" : "F", car.CouplerExceedBreakLimit ? "xxx" + "!!!" : car.CouplerOverloaded ? "O/L" + "???" : car.HUDCouplerForceIndication == 1 ? "Pull" : car.HUDCouplerForceIndication == 2 ? "Helper" : "-");
                     TableSetCell(table, 11, "{0}", FormatStrings.FormatVeryShortDistanceDisplay(car.CouplerSlackM, car.IsMetric));
                     TableSetCell(table, 12, "{0}", FormatStrings.FormatLargeMass(car.MassKG, car.IsMetric, car.IsUK));
                     TableSetCell(table, 13, "{0:F2}%", -car.CurrentElevationPercent);

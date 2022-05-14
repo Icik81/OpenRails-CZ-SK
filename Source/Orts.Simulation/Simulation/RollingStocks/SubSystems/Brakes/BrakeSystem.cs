@@ -249,20 +249,20 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes
         public float NumberBrakeCarMode = 4;  // Celkový počet režimů vozu
 
         public float BrakeCarModePL = 0;
-        public string BrakeCarModeTextPL = "Prázdný";
+        public string BrakeCarModeTextPL = Simulator.Catalog.GetString("Empty");
 
         public float TwoPipesConnectionMenu = 0;
-        public string TwoPipesConnectionText = "odpojeny";
+        public string TwoPipesConnectionText = Simulator.Catalog.GetString("disconnect");
         public bool ForceTwoPipesConnection = false;
 
         public float BrakeCarDeactivateMenu = 0;
-        public string BrakeCarDeactivateText = "odpojeny";
+        public string BrakeCarDeactivateText = Simulator.Catalog.GetString("disconnect");
         public bool BrakeCarDeactivate;
 
         public float LeftDoorMenu = 0;
-        public string LeftDoorText = "zavřeno";
+        public string LeftDoorText = Simulator.Catalog.GetString("closed");
         public float RightDoorMenu = 0;
-        public string RightDoorText = "zavřeno";
+        public string RightDoorText = Simulator.Catalog.GetString("closed");
         public int LeftDoorCycle = 1;
         public int RightDoorCycle = 1;
         public bool LeftDoorIsOpened;
@@ -270,7 +270,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes
         public bool DoorsOpen;
 
         public float HeatingMenu = 0;
-        public string HeatingText = "vypnuto";
+        public string HeatingText = Simulator.Catalog.GetString("off");
         public bool HeatingIsOn;
 
         public int WagonType;

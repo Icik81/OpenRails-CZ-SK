@@ -379,15 +379,15 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
             // Icik
             if (Locomotive.PowerUnit && Locomotive.AcceptMUSignals)
             foreach (var eng in DEList)
-                result.AppendFormat("\t\t{0}", Simulator.Catalog.GetString("Hnací vůz"));
+                result.AppendFormat("\t\t{0}", Simulator.Catalog.GetString("Engine"));
             else
             if (Locomotive.LocoHelperOn)
                 foreach (var eng in DEList)
-                    result.AppendFormat("\t\t{0}", Simulator.Catalog.GetString("Postrkový vůz"));
+                    result.AppendFormat("\t\t{0}", Simulator.Catalog.GetString("Helper"));
 
             if (Locomotive.ControlUnit)
                 foreach (var eng in DEList)
-                    result.AppendFormat("\t\t{0}", Simulator.Catalog.GetString("Řídící vůz"));
+                    result.AppendFormat("\t\t{0}", Simulator.Catalog.GetString("Control"));
 
             return result.ToString();
         }
@@ -1526,13 +1526,13 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                 locomotive.DieselMotorDefected = true;
                 if (EngineStatus == Status.Running && OverHeatTimer2 == 0)
                     locomotive.SignalEvent(Event.DieselMotorTempDefected);                
-                locomotive.Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Motor je zničený!"));
+                locomotive.Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("The engine's wrecked!"));
             }
             else
             if (OverHeatTimer > 60)
             {
                 locomotive.DieselMotorPowerLost = true;
-                locomotive.Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Motor je poškozený!"));                
+                locomotive.Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("The engine's damaged!"));                
             }
             else
             if (OverHeatTimer > 1)
@@ -1540,9 +1540,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                 locomotive.DieselMotorTempWarning = true;
                 locomotive.SignalEvent(Event.DieselMotorTempWarning);
                 if (RealDieselWaterTemperatureDeg > DieselMaxTemperatureDeg)
-                    locomotive.Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Motor se přehřívá! Teplota vody: " + Math.Round(FakeDieselWaterTemperatureDeg, 2) + "°C"));
+                    locomotive.Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("The engine is overheating! Water temperature:" + " " + Math.Round(FakeDieselWaterTemperatureDeg, 2) + "°C"));
                 if (RealDieselOilTemperatureDeg > DieselMaxTemperatureDeg)
-                    locomotive.Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Motor se přehřívá! Teplota oleje: " + Math.Round(FakeDieselOilTemperatureDeg, 2) + "°C"));
+                    locomotive.Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("The engine is overheating! Oil temperature:" + " " + Math.Round(FakeDieselOilTemperatureDeg, 2) + "°C"));
             }             
 
             if (locomotive.DieselMotorPowerLost)

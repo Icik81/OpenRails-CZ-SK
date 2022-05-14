@@ -1587,20 +1587,20 @@ namespace Orts.Simulation.RollingStocks
             {
                 case DriverStation.None:
                     {
-                        Simulator.Confirmer.Information("No active cab selected");
+                        Simulator.Confirmer.Information(Simulator.Catalog.GetString("No active cab selected"));
                         PowerKey = false;
                         break;
                     }
                 case DriverStation.Station1:
                     {
                         PowerKey = true;
-                        Simulator.Confirmer.Information("Cab 1 selected");
+                        Simulator.Confirmer.Information(Simulator.Catalog.GetString("Cab 1 selected"));
                         break;
                     }
                 case DriverStation.Station2:
                     {
                         PowerKey = true;
-                        Simulator.Confirmer.Information("Cab 2 selected");
+                        Simulator.Confirmer.Information(Simulator.Catalog.GetString("Cab 2 selected"));
                         break;
                     }
             }
@@ -1615,19 +1615,19 @@ namespace Orts.Simulation.RollingStocks
             {
                 case DriverStation.None:
                     {
-                        Simulator.Confirmer.Information("No active cab selected");
+                        Simulator.Confirmer.Information(Simulator.Catalog.GetString("No active cab selected"));
                         PowerKey = false;
                         break;
                     }
                 case DriverStation.Station1:
                     {
-                        Simulator.Confirmer.Information("Cab 1 selected");
+                        Simulator.Confirmer.Information(Simulator.Catalog.GetString("Cab 1 selected"));
                         PowerKey = true;
                         break;
                     }
                 case DriverStation.Station2:
                     {
-                        Simulator.Confirmer.Information("Cab 2 selected");
+                        Simulator.Confirmer.Information(Simulator.Catalog.GetString("Cab 2 selected"));
                         PowerKey = true;
                         break;
                     }
@@ -2477,53 +2477,6 @@ namespace Orts.Simulation.RollingStocks
 
         //================================================================================================//
         /// <summary>
-        /// Correct braking parameters if needed or required 
-        /// </summary>
-        /// 
-        //protected void CorrectBrakingParams()
-        //{
-        //    if (Simulator.Settings.CorrectQuestionableBrakingParams || Simulator.Settings.SimpleControlPhysics)
-        //    {
-        //        if (!(BrakeSystem is EPBrakeSystem) && !(BrakeSystem is VacuumSinglePipe) && !(BrakeSystem is AirTwinPipe))
-        //        {
-        //            if (CompressorRestartPressurePSI - TrainBrakeController.MaxPressurePSI < DefaultCompressorRestartToMaxSysPressureDiff - 10)
-        //            {
-        //                CompressorRestartPressurePSI = Math.Max(CompressorRestartPressurePSI, Math.Min(TrainBrakeController.MaxPressurePSI + DefaultCompressorRestartToMaxSysPressureDiff, DefaultMaxCompressorRestartPressure));
-        //                MainResPressurePSI = MaxMainResPressurePSI = Math.Max(MaxMainResPressurePSI, Math.Min(CompressorRestartPressurePSI + DefaultMaxMainResToCompressorRestartPressureDiff, DefaultMaxMainResPressure));
-
-        //            }
-        //            if (MainResVolumeM3 < 0.3f && MassKG > 20000) MainResVolumeM3 = DefaultMainResVolume;
-
-        //            // correct questionable MaxCylPressurePSI
-        //            BrakeSystem.CorrectMaxCylPressurePSI(this);
-        //        }
-        //        if (MainResChargingRatePSIpS <= 0)
-        //        {
-        //            MainResChargingRatePSIpS = Math.Max(0.5f, (CompressorChargingRateM3pS * Bar.ToPSI(1)) / MainResVolumeM3);
-        //        }
-        //    }
-        //    else if (MainResChargingRatePSIpS <= 0) MainResChargingRatePSIpS = 0.4f;
-
-        //    // Corrections for dynamic braking parameters
-
-        //    if (this is MSTSElectricLocomotive && DynamicBrakeDelayS > 4) DynamicBrakeDelayS = 2; // Electric locomotives have short engaging delays
-        //    if (DynamicBrakeSpeed2MpS > 0 && DynamicBrakeSpeed3MpS > 0 && DynamicBrakeSpeed2MpS > DynamicBrakeSpeed3MpS)
-        //    {
-        //        // also exchanging DynamicBrakesMaximumEffectiveSpeed with DynamicBrakesFadingSpeed is a frequent error that upsets operation of
-        //        // dynamic brakes
-        //        var temp = DynamicBrakeSpeed2MpS;
-        //        DynamicBrakeSpeed2MpS = DynamicBrakeSpeed3MpS;
-        //        DynamicBrakeSpeed3MpS = temp;
-        //    }
-        //    if (Simulator.Settings.CorrectQuestionableBrakingParams)
-        //    {
-        //        if (MaxDynamicBrakeForceN > 0 && MaxContinuousForceN > 0 &&
-        //        (MaxDynamicBrakeForceN / MaxContinuousForceN < 0.3f && MaxDynamicBrakeForceN == 20000))
-        //            MaxDynamicBrakeForceN = Math.Min (MaxContinuousForceN * 0.5f, 150000); // 20000 is suggested as standard value in the MSTS documentation, but in general it is a too low value
-        //    }
-        //}
-
-        /// <summary>
         /// Dynamic brake blending 
         /// </summary>
         protected bool disableDynamicBrakeIntervention = false;
@@ -2649,13 +2602,13 @@ namespace Orts.Simulation.RollingStocks
                                 HVOff = true; // Vypnutí HV                                
                                 break;
                         }
-                        Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Zásah nadproudové ochrany!"));
+                        Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Overcurrent protection!"));
                     }
                     if (this is MSTSDieselLocomotive) // Dieselelektrické lokomotivy
                     {
                         PowerReductionResult4 = 0.9f; // Omezení trakčních motorů  
                         SetDynamicBrakePercent(-1);
-                        Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Zásah nadproudové ochrany!"));
+                        Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Overcurrent protection!"));
                     }
                 }
 
@@ -2712,13 +2665,13 @@ namespace Orts.Simulation.RollingStocks
                                 HVOff = true; // Vypnutí HV                                
                                 break;
                         }
-                        Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Zásah protiskluzové ochrany!"));
+                        Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Slip protection!"));
                     }
                     if (this is MSTSDieselLocomotive) // Dieselelektrické lokomotivy
                     {
                         PowerReductionResult4 = 0.9f; // Omezení trakčních motorů  
                         SetDynamicBrakePercent(0);
-                        Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Zásah protiskluzové ochrany!"));
+                        Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Slip protection!"));
                     }
                 }
 
@@ -2930,7 +2883,7 @@ namespace Orts.Simulation.RollingStocks
             {
                 if (!TMFailureMSG)
                 {
-                    Simulator.Confirmer.Message(ConfirmLevel.MSG, Simulator.Catalog.GetString("Trakční motory zničeny!"));
+                    Simulator.Confirmer.Message(ConfirmLevel.MSG, Simulator.Catalog.GetString("Traction engines destroyed!"));
                     SignalEvent(Event.TMFailure);
                 }
                 PowerReductionResult7 = 1;
@@ -2943,7 +2896,7 @@ namespace Orts.Simulation.RollingStocks
         public void AuxPowerStartOff()
         {
             if (!this.AuxPowerOff)
-                Simulator.Confirmer.Information("Vypnutí proudu - pomocné pohony nejsou napájeny.");
+                Simulator.Confirmer.Message(ConfirmLevel.MSG, Simulator.Catalog.GetString("Power outage - auxiliary drives are not powered."));
             this.AuxPowerOff = true;
             PowerReductionResult10 = 1;
             if (AcceptMUSignals)
@@ -2965,7 +2918,7 @@ namespace Orts.Simulation.RollingStocks
         public void AuxPowerStartOn()
         {
             if (IsLeadLocomotive() && Simulator.AuxPowerCanStart && this.AuxPowerOff)
-                Simulator.Confirmer.Information("Zapnutí proudu - pomocné pohony jsou napájeny.");
+                Simulator.Confirmer.Message(ConfirmLevel.MSG, Simulator.Catalog.GetString("Power on - auxiliary drives are powered up."));
             this.AuxPowerOff = false;
             PowerReductionResult10 = 0;
             if (AcceptMUSignals)
@@ -3261,10 +3214,10 @@ namespace Orts.Simulation.RollingStocks
                             if (MSGHeatingCycle > 500 && car.WagonTemperature < 14)
                             {
                                 if (car.WagonType == WagonTypes.Engine && !car.HasPassengerCapacity && WagonTemperature < 14)
-                                    Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Je ti zima!"));
+                                    Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("You're cold!"));
                                 else
                                     if (car.PassengerList.Count > 0)
-                                    Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Cestujícím je zima!"));
+                                    Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("The passengers are cold!"));
                                 MSGHeatingCycle = 0;
                             }
                             // Termostat vypnutý, topení aktivní
@@ -3303,10 +3256,10 @@ namespace Orts.Simulation.RollingStocks
                             if (MSGHeatingCycle > 1000 && car.WagonTemperature > 35)
                             {
                                 if (car.WagonType == WagonTypes.Engine && !car.HasPassengerCapacity && WagonTemperature > 35)
-                                    Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Je ti horko!"));
+                                    Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("You're hot!"));
                                 else
                                     if (car.PassengerList.Count > 0)
-                                    Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Cestujícím je příliš horko!"));
+                                    Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Passengers are too hot!"));
                                 MSGHeatingCycle = 0;
                             }
                             // Termostat vypnutý, klimatizace aktivní
@@ -3437,13 +3390,13 @@ namespace Orts.Simulation.RollingStocks
                         {
                             PowerReductionResult3 = 0.9f;
                             HeatingOverCurrent = true;
-                            Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Vybavení nadproudové ochrany topení/klimatizace!"));
+                            Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Overcurrent heating/air conditioning protection!"));
                         }
                         if (car.WagonType == WagonTypes.Engine && this is MSTSElectricLocomotive)
                         {
                             HVOff = true;
                             HeatingOverCurrent = true;
-                            Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Vybavení nadproudové ochrany topení/klimatizace!"));
+                            Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Overcurrent heating/air conditioning protection!"));
                         }
                     }
                 }
@@ -5780,7 +5733,7 @@ namespace Orts.Simulation.RollingStocks
                     CurrentTrackSandBoxCapacityM3 = MathHelper.Clamp(CurrentTrackSandBoxCapacityM3, 0.0f, MaxTrackSandBoxCapacityM3);                    
                     if (CurrentTrackSandBoxCapacityM3 == 0.0)
                     {
-                        Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("V zásobnících už není písek!"));
+                        Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("There's no more sand in the storage!"));
                     }
                 }                
                 CurrentTrackSandBoxCapacityKG = (float)Math.Round(CurrentTrackSandBoxCapacityM3 * 1600, 2);
@@ -8615,11 +8568,11 @@ namespace Orts.Simulation.RollingStocks
                 {
                     switch (DieselDirectionControllerPosition)
                     {
-                        case 0: Simulator.Confirmer.Confirm(CabControl.DieselDirection_Forward, "Poloha Vpřed"); break;
-                        case 1: Simulator.Confirmer.Confirm(CabControl.DieselDirection_Start, "Poloha D"); break;
-                        case 2: Simulator.Confirmer.Confirm(CabControl.DieselDirection_0, "Poloha 0"); break;
-                        case 3: Simulator.Confirmer.Confirm(CabControl.DieselDirection_Start, "Poloha D"); break;
-                        case 4: Simulator.Confirmer.Confirm(CabControl.DieselDirection_Reverse, "Poloha Vzad"); break;
+                        case 0: Simulator.Confirmer.Confirm(CabControl.DieselDirection_Forward, Simulator.Catalog.GetString("Position Forward")); break;
+                        case 1: Simulator.Confirmer.Confirm(CabControl.DieselDirection_Start, Simulator.Catalog.GetString("Position D")); break;
+                        case 2: Simulator.Confirmer.Confirm(CabControl.DieselDirection_0, Simulator.Catalog.GetString("Position 0")); break;
+                        case 3: Simulator.Confirmer.Confirm(CabControl.DieselDirection_Start, Simulator.Catalog.GetString("Position D")); break;
+                        case 4: Simulator.Confirmer.Confirm(CabControl.DieselDirection_Reverse, Simulator.Catalog.GetString("Position Backward")); break;
                     }
                 }
                 prevDieselDirectionControllerPosition = DieselDirectionControllerPosition;
@@ -8689,10 +8642,10 @@ namespace Orts.Simulation.RollingStocks
                 {                    
                     switch (DieselDirectionController2Position)
                     {
-                        case 0: Simulator.Confirmer.Confirm(CabControl.DieselDirection_0, "Poloha 0"); break;
-                        case 1: Simulator.Confirmer.Confirm(CabControl.DieselDirection_Reverse, "Poloha Vzad"); break;
-                        case 2: Simulator.Confirmer.Confirm(CabControl.DieselDirection_Start, "Poloha D"); break;
-                        case 3: Simulator.Confirmer.Confirm(CabControl.DieselDirection_Forward, "Poloha Vpřed"); break;                        
+                        case 0: Simulator.Confirmer.Confirm(CabControl.DieselDirection_0, Simulator.Catalog.GetString("Position 0")); break;
+                        case 1: Simulator.Confirmer.Confirm(CabControl.DieselDirection_Reverse, Simulator.Catalog.GetString("Position Backward")); break;
+                        case 2: Simulator.Confirmer.Confirm(CabControl.DieselDirection_Start, Simulator.Catalog.GetString("Position D")); break;
+                        case 3: Simulator.Confirmer.Confirm(CabControl.DieselDirection_Forward, Simulator.Catalog.GetString("Position Forward")); break;                        
                     }
                 }
                 prevDieselDirectionController2Position = DieselDirectionController2Position;
@@ -8747,10 +8700,10 @@ namespace Orts.Simulation.RollingStocks
                 {
                     switch (DieselDirectionController2Position)
                     {
-                        case 0: Simulator.Confirmer.Confirm(CabControl.DieselDirection_Reverse, "Poloha Vzad"); break;
-                        case 1: Simulator.Confirmer.Confirm(CabControl.DieselDirection_0, "Poloha 0"); break;
-                        case 2: Simulator.Confirmer.Confirm(CabControl.DieselDirection_Start, "Poloha D"); break;
-                        case 3: Simulator.Confirmer.Confirm(CabControl.DieselDirection_Forward, "Poloha Vpřed"); break;
+                        case 0: Simulator.Confirmer.Confirm(CabControl.DieselDirection_Reverse, Simulator.Catalog.GetString("Position Backward")); break;
+                        case 1: Simulator.Confirmer.Confirm(CabControl.DieselDirection_0, Simulator.Catalog.GetString("Position 0")); break;
+                        case 2: Simulator.Confirmer.Confirm(CabControl.DieselDirection_Start, Simulator.Catalog.GetString("Position D")); break;
+                        case 3: Simulator.Confirmer.Confirm(CabControl.DieselDirection_Forward, Simulator.Catalog.GetString("Position Forward")); break;
                     }
                 }
                 prevDieselDirectionController2Position = DieselDirectionController2Position;
@@ -8804,9 +8757,9 @@ namespace Orts.Simulation.RollingStocks
                 DieselDirectionControllerInOut = !DieselDirectionControllerInOut;
                 string DieselDirectionControllerInfo;
                 if (DieselDirectionControllerInOut)
-                    DieselDirectionControllerInfo = "Směrová páka zasunuta";
+                    DieselDirectionControllerInfo = Simulator.Catalog.GetString("Directional lever retracted");
                 else
-                    DieselDirectionControllerInfo = "Směrová páka vysunuta";
+                    DieselDirectionControllerInfo = Simulator.Catalog.GetString("Directional lever extended");
                 if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Information(DieselDirectionControllerInfo);
             }
             if (DieselDirectionControllerInOut
@@ -8857,11 +8810,11 @@ namespace Orts.Simulation.RollingStocks
                 case 1:
                     LocomotivePowerVoltage = 25000;
                     MultiSystemEngine = false;
-                    Simulator.Confirmer.Information("Systém napájení změněn na 25kV.");                    
+                    Simulator.Confirmer.Information(Simulator.Catalog.GetString("Power system changed to 25kV."));                    
                     break;
                 case 2:
                     MultiSystemEngine = true;
-                    Simulator.Confirmer.Information("Systém napájení změněn na 3kV + 25kV.");
+                    Simulator.Confirmer.Information(Simulator.Catalog.GetString("Power system changed to 3kV + 25kV."));
                     switch (RouteVoltageV)
                     {
                         case 3000:
@@ -8880,7 +8833,7 @@ namespace Orts.Simulation.RollingStocks
                 case 3:
                     LocomotivePowerVoltage = 3000;
                     MultiSystemEngine = false;
-                    Simulator.Confirmer.Information("Systém napájení byl změněn na 3kV.");                    
+                    Simulator.Confirmer.Information(Simulator.Catalog.GetString("Power system changed to 3kV."));                    
                     break;
             }                            
         }
@@ -8965,7 +8918,7 @@ namespace Orts.Simulation.RollingStocks
             Save:
             voltageMarkersXml.Save(Simulator.RoutePath + "\\VoltageChangeMarkers.xml");
             SetUpVoltageChangeMarkers();
-            Simulator.Confirmer.Information("Marker byl vymazán a označen pro vymazání v externí databázi.");
+            Simulator.Confirmer.Information(Simulator.Catalog.GetString("The marker has been deleted and marked for deletion in an external database."));
         }
        
 
@@ -9029,7 +8982,7 @@ namespace Orts.Simulation.RollingStocks
             }
             powerStationXml.Save(Simulator.RoutePath + "\\PowerSupplyStations.xml");
             SetUpPowerSupplyStations();
-            Simulator.Confirmer.Information("Napaječka uložena do externí databáze.");
+            Simulator.Confirmer.Information(Simulator.Catalog.GetString("The power station is stored in an external database."));
         }
 
         XmlDocument voltageMarkersXml;
@@ -9087,7 +9040,7 @@ namespace Orts.Simulation.RollingStocks
             }
             voltageMarkersXml.Save(Simulator.RoutePath + "\\VoltageChangeMarkers.xml");
             SetUpVoltageChangeMarkers();
-            Simulator.Confirmer.Information("Nastaveno " + Voltage.ToString() + "V a uloženo do externí databáze.");
+            Simulator.Confirmer.Information(Simulator.Catalog.GetString("Set ") + Voltage.ToString() + Simulator.Catalog.GetString("V and stored in an external database."));
         }
 
         //put here because you can have diesel helpers and electric player locomotive

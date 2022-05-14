@@ -197,10 +197,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             if (HandbrakePercent > 0)
                 s += $" {Simulator.Catalog.GetString("Handbrake")} {HandbrakePercent:F0}%";
 
-            s += string.Format("  Změna tlaku v potrubí {0:F5} bar/s", BrakePipeChangeRate / 14.50377f);
-            s += string.Format("  Netěsnost {0:F5} bar/s", Car.Train.TotalTrainTrainPipeLeakRate / 14.50377f);
+            s += string.Format("  " + Simulator.Catalog.GetString("Pipe pressure change") + " {0:F5} bar/s", BrakePipeChangeRate / 14.50377f);
+            s += string.Format("  " + Simulator.Catalog.GetString("Leakage") + " {0:F5} bar/s", Car.Train.TotalTrainTrainPipeLeakRate / 14.50377f);
             //s += string.Format("  Objem potrubí {0:F0} L", Car.Train.TotalTrainBrakePipeVolumeM3 * 1000);
-            s += string.Format("  Objem hl.jímka a potrubí {0:F0} L", Car.Train.TotalCapacityMainResBrakePipe * 1000 / 14.50377f);
+            s += string.Format("  " + Simulator.Catalog.GetString("Volume mainres and pipes") + " {0:F0} L", Car.Train.TotalCapacityMainResBrakePipe * 1000 / 14.50377f);
 
             return s;
         }
@@ -221,13 +221,13 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 string.Format("{0} {1}", FrontBrakeHoseConnected ? "I" : "T", TwoPipesConnection ? "I" : ""),
                 string.Format("A{0} B{1}", AngleCockAOpen ? "+" : "-", AngleCockBOpen ? "+" : "-"),
                 BleedOffValveOpen ? Simulator.Catalog.GetString("Open") : " ",//HudScroll feature requires for the last value, at least one space instead of string.Empty,                                                
-                BailOffOnAntiSkid ? Simulator.Catalog.GetString("Aktivní") : "",                
+                BailOffOnAntiSkid ? Simulator.Catalog.GetString("Active") : "",                
                 string.Format("{0:F5} bar/s", (Car as MSTSWagon).TrainPipeLeakRatePSIpSBase / 14.50377f),
                 string.Empty, // Spacer because the state above needs 2 columns.                                     
                 string.Format("{0:F0} L", BrakePipeVolumeM3Base * 1000),
                 string.Format("{0:F0} L", CylVolumeM3 * 1000),
                 string.Format("{0:F0} L", TotalCapacityMainResBrakePipe * 1000 / 14.50377f),
-                CarHasProblemWithBrake ?  BrakeCarDeactivate ? Simulator.Catalog.GetString("Vypnuta") : Simulator.Catalog.GetString("Závada!") : BrakeCarModeText,
+                CarHasProblemWithBrake ?  BrakeCarDeactivate ? Simulator.Catalog.GetString("Off") : Simulator.Catalog.GetString("Failure!") : BrakeCarModeText,
                 string.Format("{0}{1:F0} t", AutoLoadRegulatorEquipped ? "Auto " : "", (BrakeMassKG + BrakeMassKGRMg) / 1000),                                                                              
                 string.Format("DebKoef {0:F1}", DebugKoef),
                 string.Empty, // Spacer because the state above needs 2 columns.                                                     
@@ -237,7 +237,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 //(Car as MSTSLocomotive) != null ? string.Format("AuxPowerOff {0}", (Car as MSTSLocomotive).AuxPowerOff): string.Empty,
                 
                 //string.Empty, // Spacer because the state above needs 2 columns.                                                     
-                //(Car as MSTSLocomotive) != null ? ((Car as MSTSLocomotive).PowerUnit) ? string.Format("Hnací vůz"): string.Format("Řídící vůz"): string.Empty,
+                //(Car as MSTSLocomotive) != null ? ((Car as MSTSLocomotive).PowerUnit) ? string.Format("Hnací vůz"): string.Format("Control"): string.Empty,
 
                 //string.Empty, // Spacer because the state above needs 2 columns.                                                     
                 //(Car as MSTSLocomotive) != null ? string.Format("RDST {0}", (Car as MSTSLocomotive).RDSTBreaker): string.Empty,
@@ -731,23 +731,23 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 if (ForceWagonLoaded)
                 {
                     BrakeCarModePL = 1;
-                    BrakeCarModeTextPL = "Ložený";
+                    BrakeCarModeTextPL = Simulator.Catalog.GetString("Loaded");
                 }
                 else
                 {
                     BrakeCarModePL = 0; // Default režim 
-                    BrakeCarModeTextPL = "Prázdný";
+                    BrakeCarModeTextPL = Simulator.Catalog.GetString("Empty");
                 }
 
                 if (ForceTwoPipesConnection)
                 {
                     TwoPipesConnectionMenu = 1;
-                    TwoPipesConnectionText = "zapojeny";
+                    TwoPipesConnectionText = Simulator.Catalog.GetString("connect");
                 }
                 else
                 {
                     TwoPipesConnectionMenu = 0; // Default režim 
-                    TwoPipesConnectionText = "odpojeny";
+                    TwoPipesConnectionText = Simulator.Catalog.GetString("disconnect");
                 }
 
                 if (ForceBrakeMode != null)
@@ -861,7 +861,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 && ((Car as MSTSWagon) != null && (Car as MSTSWagon).AutomaticDoors || (Car as MSTSLocomotive) != null && (Car as MSTSLocomotive).CentralHandlingDoors))
             {
                 TwoPipesConnectionMenu = 1;
-                TwoPipesConnectionText = "zapojeny";
+                TwoPipesConnectionText = Simulator.Catalog.GetString("connect");
                 AutomaticDoorsCycle++;
             }
 
@@ -2214,7 +2214,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         if (engine.TrainBrakeController.TrainBrakeControllerState == ControllerState.Release)
                         {
                             engine.BrakeSystem.NextLocoRelease = true;
-                            engine.BrakeSystem.NextLocoBrakeState = "Odbrzďovací poloha";
+                            engine.BrakeSystem.NextLocoBrakeState = Simulator.Catalog.GetString("Release position");
                             Release = true;
                             SumRe++;
                             lead.BrakeSystem.ReleaseTr = 1;
@@ -2226,7 +2226,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         if (engine.TrainBrakeController.TrainBrakeControllerState == ControllerState.Apply)
                         {
                             engine.BrakeSystem.NextLocoApply = true;
-                            engine.BrakeSystem.NextLocoBrakeState = "Brzdící poloha";
+                            engine.BrakeSystem.NextLocoBrakeState = Simulator.Catalog.GetString("Apply position");
                             Apply = true;
                             SumA++;
                             lead.BrakeSystem.ReleaseTr = 0;
@@ -2238,7 +2238,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         if (engine.TrainBrakeController.TrainBrakeControllerState == ControllerState.FullQuickRelease || engine.QuickReleaseButton && engine.QuickReleaseButtonEnable)
                         {
                             engine.BrakeSystem.NextLocoQuickRelease = true;
-                            engine.BrakeSystem.NextLocoBrakeState = "Vysokotlaký švih";
+                            engine.BrakeSystem.NextLocoBrakeState = Simulator.Catalog.GetString("Highpressure release");
                             QuickRelease = true;
                             SumQRe++;
                         }
@@ -2249,7 +2249,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         if (engine.TrainBrakeController.TrainBrakeControllerState == ControllerState.Emergency)
                         {
                             engine.BrakeSystem.NextLocoEmergency = true;
-                            engine.BrakeSystem.NextLocoBrakeState = "Rychlobrzda";
+                            engine.BrakeSystem.NextLocoBrakeState = Simulator.Catalog.GetString("Emergency");
                             Emergency = true;
                         }
                         else
@@ -2259,7 +2259,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         if (engine.TrainBrakeController.TrainBrakeControllerState == ControllerState.OverchargeStart || engine.LowPressureReleaseButton && engine.LowPressureReleaseButtonEnable)
                         {
                             engine.BrakeSystem.NextLocoOvercharge = true;
-                            engine.BrakeSystem.NextLocoBrakeState = "Nízkotlaké přebití";
+                            engine.BrakeSystem.NextLocoBrakeState = Simulator.Catalog.GetString("Lowpressure release");
                             Overcharge = true;
                             SumO++;
                         }
@@ -2270,7 +2270,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         if (engine.TrainBrakeController.TrainBrakeControllerState == ControllerState.Lap)
                         {
                             engine.BrakeSystem.NextLocoLap = true;
-                            engine.BrakeSystem.NextLocoBrakeState = "Závěr";
+                            engine.BrakeSystem.NextLocoBrakeState = Simulator.Catalog.GetString("Lap");
                             Lap = true;
                         }
                         else
@@ -2280,7 +2280,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         if (engine.TrainBrakeController.TrainBrakeControllerState == ControllerState.Running)
                         {
                             engine.BrakeSystem.NextLocoRunning = true;
-                            engine.BrakeSystem.NextLocoBrakeState = "Jízdní poloha";
+                            engine.BrakeSystem.NextLocoBrakeState = Simulator.Catalog.GetString("Driving position");
                             Running = true;
                             SumRu++;
                         }
@@ -2291,7 +2291,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         if (engine.TrainBrakeController.TrainBrakeControllerState == ControllerState.Neutral)
                         {
                             engine.BrakeSystem.NextLocoNeutral = true;
-                            engine.BrakeSystem.NextLocoBrakeState = "Jízdní poloha";
+                            engine.BrakeSystem.NextLocoBrakeState = Simulator.Catalog.GetString("Driving position");
                             Neutral = true;
                         }
                         else
@@ -2301,7 +2301,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         if (engine.TrainBrakeController.TrainBrakeControllerState == ControllerState.Suppression)
                         {
                             engine.BrakeSystem.NextLocoSuppression = true;
-                            engine.BrakeSystem.NextLocoBrakeState = "Plný brzdný účinek";
+                            engine.BrakeSystem.NextLocoBrakeState = Simulator.Catalog.GetString("Full braking");
                             ApplyGA = true;
                             SumGA++;
                         }
@@ -2312,7 +2312,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         if (engine.TrainBrakeController.TrainBrakeControllerState == ControllerState.GSelfLapH)
                         {
                             engine.BrakeSystem.NextLocoGSelfLapH = true;
-                            engine.BrakeSystem.NextLocoBrakeState = "Brzdit";
+                            engine.BrakeSystem.NextLocoBrakeState = Simulator.Catalog.GetString("Braking");
                             ApplyGA = true;
                             SumGA++;
                         }
@@ -2323,7 +2323,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         if (engine.TrainBrakeController.TrainBrakeControllerState == ControllerState.SlowApplyStart)
                         {
                             engine.BrakeSystem.NextLocoSlowApplyStart = true;
-                            engine.BrakeSystem.NextLocoBrakeState = "Pomalé brzdění";
+                            engine.BrakeSystem.NextLocoBrakeState = Simulator.Catalog.GetString("Slow braking");
                             SlowApplyStart = true;
                             SumSA++;
                         }
@@ -2334,7 +2334,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         if (engine.TrainBrakeController.TrainBrakeControllerState == ControllerState.MatrosovRelease)
                         {
                             engine.BrakeSystem.NextLocoMatrosovRelease = true;
-                            engine.BrakeSystem.NextLocoBrakeState = "Odbrzďovací poloha";
+                            engine.BrakeSystem.NextLocoBrakeState = Simulator.Catalog.GetString("Release position");
                             MatrosovRelease = true;
                             SumMaRe++;
                         }
@@ -2345,7 +2345,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         if (engine.TrainBrakeController.TrainBrakeControllerState == ControllerState.WestingHouseRelease)
                         {
                             engine.BrakeSystem.NextLocoWestingHouseRelease = true;
-                            engine.BrakeSystem.NextLocoBrakeState = "Odbrzďovací poloha";
+                            engine.BrakeSystem.NextLocoBrakeState = Simulator.Catalog.GetString("Release position");
                             WestingHouseRelease = true;
                             SumWHRe++;
                         }
@@ -2357,7 +2357,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     if (engine.LapActive && !Emergency)
                     {
                         engine.BrakeSystem.NextLocoLap = true;
-                        engine.BrakeSystem.NextLocoBrakeState = "Závěr";
+                        engine.BrakeSystem.NextLocoBrakeState = Simulator.Catalog.GetString("Lap");
                         Lap = true;
                     }
                     else

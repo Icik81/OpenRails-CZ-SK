@@ -282,18 +282,18 @@ namespace ORTS.Scripting.Api
         public static readonly Dictionary<ControllerState, string> Dict = new Dictionary<ControllerState, string>
         {
             {ControllerState.Dummy, ""},
-            {ControllerState.Release, Catalog.GetString("Odbrzďovací poloha")},
-            {ControllerState.FullQuickRelease, Catalog.GetString("Vysokotlaký švih")},
-            {ControllerState.Running, Catalog.GetString("Jízdní poloha")},
-            {ControllerState.Neutral, Catalog.GetString("Jízdní poloha")},
-            {ControllerState.Apply, Catalog.GetString("Brzdící poloha")},
+            {ControllerState.Release, Catalog.GetString("Release position")},
+            {ControllerState.FullQuickRelease, Catalog.GetString("Highpressure release")},
+            {ControllerState.Running, Catalog.GetString("Driving position")},
+            {ControllerState.Neutral, Catalog.GetString("Driving position")},
+            {ControllerState.Apply, Catalog.GetString("Apply position")},
             {ControllerState.EPApply, Catalog.GetString("EPApply")},
-            {ControllerState.Emergency, Catalog.GetString("Rychlobrzda")},
+            {ControllerState.Emergency, Catalog.GetString("Emergency")},
             {ControllerState.SelfLap, Catalog.GetString("Self Lap")},
             {ControllerState.GSelfLap, Catalog.GetString("Service")},
             {ControllerState.GSelfLapH, Catalog.GetString("Service")},
-            {ControllerState.Lap, Catalog.GetString("Závěr")},
-            {ControllerState.Suppression, Catalog.GetString("Plný brzdný účinek")},
+            {ControllerState.Lap, Catalog.GetString("Lap")},
+            {ControllerState.Suppression, Catalog.GetString("Full braking")},
             {ControllerState.ContServ, Catalog.GetString("Cont. Service")},
             {ControllerState.FullServ, Catalog.GetString("Full Service")},
             {ControllerState.MinimalReduction, Catalog.GetString("Minimum Reduction")},
@@ -316,10 +316,10 @@ namespace ORTS.Scripting.Api
             {ControllerState.EPOnly, Catalog.GetString("EP Service")},
             {ControllerState.EPFullServ, Catalog.GetString("EP Full Service")},
             {ControllerState.SlowService, Catalog.GetString("Slow service")},
-            {ControllerState.OverchargeStart, Catalog.GetString("Nízkotlaké přebití")},
-            {ControllerState.SlowApplyStart, Catalog.GetString("Pomalé brzdění")},
-            {ControllerState.MatrosovRelease, Catalog.GetString("Odbrzďovací poloha")},
-            {ControllerState.WestingHouseRelease, Catalog.GetString("Odbrzďovací poloha")}
+            {ControllerState.OverchargeStart, Catalog.GetString("Lowpressure release")},
+            {ControllerState.SlowApplyStart, Catalog.GetString("Slow braking")},
+            {ControllerState.MatrosovRelease, Catalog.GetString("Release position")},
+            {ControllerState.WestingHouseRelease, Catalog.GetString("Release position")}
         };
     }
 }

@@ -3625,11 +3625,11 @@ namespace Orts.Simulation.RollingStocks
                     //    car.BrakeSystem.HeatingIsOn = false;
                     //    car.BrakeSystem.HeatingMenu = 0;
                     //}
-                    car.BrakeSystem.HeatingText = "zapnuto";                    
+                    car.BrakeSystem.HeatingText = Simulator.Catalog.GetString("on");                    
                 }
                 if (!car.BrakeSystem.HeatingIsOn && !car.Train.CarSteamHeatOn)
                 {                 
-                    car.BrakeSystem.HeatingText = "vypnuto";
+                    car.BrakeSystem.HeatingText = Simulator.Catalog.GetString("off");
                 }                
             }
         }
@@ -3641,11 +3641,11 @@ namespace Orts.Simulation.RollingStocks
                 var mstsWagon = car as MSTSWagon;
                 if (car.BrakeSystem.BrakeCarDeactivate)
                 {
-                    car.BrakeSystem.BrakeCarDeactivateText = "vypnuta";
+                    car.BrakeSystem.BrakeCarDeactivateText = Simulator.Catalog.GetString("off");
                 }
                 if (!car.BrakeSystem.BrakeCarDeactivate)
                 {
-                    car.BrakeSystem.BrakeCarDeactivateText = "zapnuta";
+                    car.BrakeSystem.BrakeCarDeactivateText = Simulator.Catalog.GetString("on");
                 }
             }
         }
@@ -3658,23 +3658,23 @@ namespace Orts.Simulation.RollingStocks
                 if (car.BrakeSystem.LeftDoorIsOpened)
                 {
                     car.BrakeSystem.LeftDoorMenu = 0;
-                    car.BrakeSystem.LeftDoorText = "otevřeno";
+                    car.BrakeSystem.LeftDoorText = Simulator.Catalog.GetString("opened");
                 }
                 else
                 {
                     car.BrakeSystem.LeftDoorMenu = 1;
-                    car.BrakeSystem.LeftDoorText = "zavřeno";
+                    car.BrakeSystem.LeftDoorText = Simulator.Catalog.GetString("closed");
                 }
 
                 if (car.BrakeSystem.RightDoorIsOpened)
                 {
                     car.BrakeSystem.RightDoorMenu = 0;
-                    car.BrakeSystem.RightDoorText = "otevřeno";
+                    car.BrakeSystem.RightDoorText = Simulator.Catalog.GetString("opened");
                 }
                 else
                 {
                     car.BrakeSystem.RightDoorMenu = 1;
-                    car.BrakeSystem.RightDoorText = "zavřeno";
+                    car.BrakeSystem.RightDoorText = Simulator.Catalog.GetString("closed");
                 }
 
                 if (car.BrakeSystem.LeftDoorCycle == 0)

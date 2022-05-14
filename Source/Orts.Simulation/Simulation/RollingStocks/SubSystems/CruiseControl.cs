@@ -1315,14 +1315,14 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                                     {
                                         if (Locomotive.BrakeSystem.BrakeLine1PressurePSI > Bar.ToPSI(5 - minBraking))
                                         {
-                                            if (Locomotive.TrainBrakeController.GetStatus().ToLower() != "brzdící poloha")
+                                            if (Locomotive.TrainBrakeController.GetStatus().ToLower() != "Apply position")
                                             {
                                                 Locomotive.SetTrainBrakeValue(brakingNotchValue, 1);
                                             }
                                         }
                                         else
                                         {
-                                            if (Locomotive.TrainBrakeController.GetStatus().ToLower() != "jízdní poloha")
+                                            if (Locomotive.TrainBrakeController.GetStatus().ToLower() != "Driving position")
                                             {
                                                 String test = Locomotive.TrainBrakeController.GetStatus().ToLower();
                                                 Locomotive.SetTrainBrakeValue(neutralNotchValue, 1);
@@ -1330,7 +1330,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                                         }
                                         if (Locomotive.BrakeSystem.BrakeLine1PressurePSI < Bar.ToPSI(5 - minBraking))
                                         {
-                                            if (Locomotive.TrainBrakeController.GetStatus().ToLower() != "odbrzďovací poloha")
+                                            if (Locomotive.TrainBrakeController.GetStatus().ToLower() != "Release position")
                                             {
                                                 Locomotive.SetTrainBrakeValue(releaseNotchValue, 1);
                                             }
@@ -1343,7 +1343,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                                     {
                                         if (Locomotive.BrakeSystem.BrakeLine1PressurePSI < Bar.ToPSI(5))
                                         {
-                                            if (Locomotive.TrainBrakeController.GetStatus().ToLower() != "odbrzďovací poloha")
+                                            if (Locomotive.TrainBrakeController.GetStatus().ToLower() != "Release position")
                                             {
                                                 String test = Locomotive.TrainBrakeController.GetStatus().ToLower();
                                                 Locomotive.SetTrainBrakeValue(releaseNotchValue, 1);
@@ -1351,7 +1351,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                                         }
                                         else
                                         {
-                                            if (Locomotive.TrainBrakeController.GetStatus().ToLower() != "jízdní poloha")
+                                            if (Locomotive.TrainBrakeController.GetStatus().ToLower() != "Driving position")
                                             {
                                                 String test = Locomotive.TrainBrakeController.GetStatus().ToLower();
                                                 Locomotive.SetTrainBrakeValue(neutralNotchValue, 1);
@@ -1394,7 +1394,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                     {
                         if (Locomotive.BrakeSystem.BrakeLine1PressurePSI < Bar.ToPSI(4.98f))
                         {
-                            if (Locomotive.TrainBrakeController.GetStatus().ToLower() != "odbrzďovací poloha")
+                            if (Locomotive.TrainBrakeController.GetStatus().ToLower() != "Release position")
                             {
                                 String test = Locomotive.TrainBrakeController.GetStatus().ToLower();
                                 Locomotive.SetTrainBrakeValue(releaseNotchValue, 1);
@@ -1402,7 +1402,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                         }
                         else
                         {
-                            if (Locomotive.TrainBrakeController.GetStatus().ToLower() != "jízdní poloha")
+                            if (Locomotive.TrainBrakeController.GetStatus().ToLower() != "Driving position")
                             {
                                 String test = Locomotive.TrainBrakeController.GetStatus().ToLower();
                                 Locomotive.SetTrainBrakeValue(neutralNotchValue, 1);
@@ -1598,14 +1598,14 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                                     {
                                         if (Locomotive.BrakeSystem.BrakeLine1PressurePSI > Bar.ToPSI(5 - minBraking))
                                         {
-                                            if (Locomotive.TrainBrakeController.GetStatus().ToLower() != "brzdící poloha")
+                                            if (Locomotive.TrainBrakeController.GetStatus().ToLower() != "Apply position")
                                             {
                                                 Locomotive.SetTrainBrakeValue(brakingNotchValue, 1);
                                             }
                                         }
                                         else
                                         {
-                                            if (Locomotive.TrainBrakeController.GetStatus().ToLower() != "jízdní poloha")
+                                            if (Locomotive.TrainBrakeController.GetStatus().ToLower() != "Driving position")
                                             {
                                                 String test = Locomotive.TrainBrakeController.GetStatus().ToLower();
                                                 Locomotive.SetTrainBrakeValue(neutralNotchValue, 1);
@@ -1613,7 +1613,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                                         }
                                         if (Locomotive.BrakeSystem.BrakeLine1PressurePSI < Bar.ToPSI(5 - minBraking))
                                         {
-                                            if (Locomotive.TrainBrakeController.GetStatus().ToLower() != "odbrzďovací poloha")
+                                            if (Locomotive.TrainBrakeController.GetStatus().ToLower() != "Release position")
                                             {
                                                 Locomotive.SetTrainBrakeValue(releaseNotchValue, 1);
                                             }
@@ -1626,7 +1626,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                                     {
                                         if (Locomotive.BrakeSystem.BrakeLine1PressurePSI < Bar.ToPSI(5))
                                         {
-                                            if (Locomotive.TrainBrakeController.GetStatus().ToLower() != "odbrzďovací poloha")
+                                            if (Locomotive.TrainBrakeController.GetStatus().ToLower() != "Release position")
                                             {
                                                 String test = Locomotive.TrainBrakeController.GetStatus().ToLower();
                                                 Locomotive.SetTrainBrakeValue(releaseNotchValue, 1);
@@ -1634,7 +1634,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                                         }
                                         else
                                         {
-                                            if (Locomotive.TrainBrakeController.GetStatus().ToLower() != "jízdní poloha")
+                                            if (Locomotive.TrainBrakeController.GetStatus().ToLower() != "Driving position")
                                             {
                                                 String test = Locomotive.TrainBrakeController.GetStatus().ToLower();
                                                 Locomotive.SetTrainBrakeValue(neutralNotchValue, 1);

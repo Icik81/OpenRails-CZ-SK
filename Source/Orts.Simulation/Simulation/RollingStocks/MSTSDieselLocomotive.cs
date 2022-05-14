@@ -819,8 +819,8 @@ namespace Orts.Simulation.RollingStocks
                         : (DieselEngines[0].GearBox.CurrentGearIndex + 1).ToString());
             }
             else
-                status.AppendFormat("{0} = {1}\n", Simulator.Catalog.GetString("Řídící vůz"),
-                    Simulator.Catalog.GetParticularString("Řídící vůz", ""));
+                status.AppendFormat("{0} = {1}\n", Simulator.Catalog.GetString("Control"),
+                    Simulator.Catalog.GetParticularString("Control", ""));
 
             return status.ToString();
         }
@@ -1217,7 +1217,7 @@ namespace Orts.Simulation.RollingStocks
                         SignalEvent(Event.StartUpMotor);
                         SignalEvent(Event.MirrorOpen);
                     }
-                    Simulator.Confirmer.Information("Motor se startuje...");
+                    Simulator.Confirmer.Information(Simulator.Catalog.GetString("Engine is starting…"));
                 }
                 DieselStartTime += elapsedClockSeconds;
                 if (DieselStartTime > DieselStartDelayTemp)

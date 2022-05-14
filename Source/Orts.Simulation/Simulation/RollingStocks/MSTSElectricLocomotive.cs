@@ -861,7 +861,7 @@ namespace Orts.Simulation.RollingStocks
                                 if (PowerSupply.PantographVoltageV < PantographCriticalVoltage && LocalThrottlePercent != 0 && VoltageIndicateTestCompleted)
                                 {
                                     HVOff = true;
-                                    Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Zásah podpěťové ochrany!"));
+                                    Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Undervoltage protection!"));
                                 }
                                 if (CruiseControl != null)
                                     if (PowerSupply.PantographVoltageV < PantographCriticalVoltage && CruiseControl.ForceThrottleAndDynamicBrake > 0 && VoltageIndicateTestCompleted)
@@ -876,7 +876,7 @@ namespace Orts.Simulation.RollingStocks
                                         TractiveForceN = 0;
 
                                         HVOff = true;
-                                        Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Zásah podpěťové ochrany!"));
+                                        Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Undervoltage protection!"));
                                     }
                             }
                         }
@@ -906,7 +906,7 @@ namespace Orts.Simulation.RollingStocks
                                 if (PowerSupply.PantographVoltageV < PantographCriticalVoltage && LocalThrottlePercent != 0 && VoltageIndicateTestCompleted)
                                 {
                                     HVOff = true;
-                                    Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Zásah podpěťové ochrany!"));
+                                    Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Undervoltage protection!"));
                                 }
                                 if (CruiseControl != null)
                                     if (PowerSupply.PantographVoltageV < PantographCriticalVoltage && CruiseControl.ForceThrottleAndDynamicBrake > 0 && VoltageIndicateTestCompleted)
@@ -920,7 +920,7 @@ namespace Orts.Simulation.RollingStocks
                                         CruiseControl.DynamicBrakePriority = false;
                                         TractiveForceN = 0;
                                         HVOff = true;
-                                        Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Zásah podpěťové ochrany!"));
+                                        Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Undervoltage protection!"));
                                     }
                             }
                         }
@@ -1089,7 +1089,7 @@ namespace Orts.Simulation.RollingStocks
                                     DynamicBrakeChangeActiveState(false);
                                 }
                                 HVOff = true;
-                                Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Zásah podpěťové ochrany!"));
+                                Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Undervoltage protection!"));
                             }
 
                             if (CruiseControl != null)
@@ -1104,7 +1104,7 @@ namespace Orts.Simulation.RollingStocks
                                     CruiseControl.DynamicBrakePriority = false;
                                     TractiveForceN = 0;
                                     HVOff = true;
-                                    Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Zásah podpěťové ochrany!"));
+                                    Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Undervoltage protection!"));
                                 }
                         }
                     }
@@ -1147,7 +1147,7 @@ namespace Orts.Simulation.RollingStocks
                                     DynamicBrakeChangeActiveState(false);
                                 }
                                 HVOff = true;
-                                Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Zásah podpěťové ochrany!"));
+                                Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Undervoltage protection!"));
                             }
 
                             if (CruiseControl != null)
@@ -1162,7 +1162,7 @@ namespace Orts.Simulation.RollingStocks
                                     CruiseControl.DynamicBrakePriority = false;
                                     TractiveForceN = 0;
                                     HVOff = true;
-                                    Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Zásah podpěťové ochrany!"));
+                                    Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Undervoltage protection!"));
                                 }
                         }
                     }
@@ -1816,7 +1816,7 @@ namespace Orts.Simulation.RollingStocks
                 if (I_PantographCurrent > I_MaxPantographCurrent && Math.Abs(TractiveForceN) > 0.80f * MaxForceN)
                 {
                     int I_PantographCurrentToleranceTimeInfo = 10 - (int)I_PantographCurrentToleranceTime;
-                    Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Příliš velký proud na jeden sběrač - použij i druhý sběrač! (" + I_PantographCurrentToleranceTimeInfo + ")"));
+                    Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Too much current for one pantograph - use the other pantograph too!") + " (" + I_PantographCurrentToleranceTimeInfo + ")");
                     I_PantographCurrentToleranceTime += elapsedClockSeconds;
                     if (I_PantographCurrentToleranceTime > 10.5f) // 10s tolerance
                         HVOff = true;
@@ -1830,7 +1830,7 @@ namespace Orts.Simulation.RollingStocks
                     PantographVoltageV = PowerSupply.PantographVoltageV;
                     int FaultByPlayerPenaltyTimeInfo = 30 - (int)FaultByPlayerPenaltyTime;
                     FaultByPlayerPenaltyTime += elapsedClockSeconds;
-                    Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Poškodil si zdvihnutým pantografem lokomotivu! (" + FaultByPlayerPenaltyTimeInfo + ")"));
+                    Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Locomotive is damaged with a raised pantograph!") + " (" + FaultByPlayerPenaltyTimeInfo + ")");
                     if (FaultByPlayerPenaltyTime > 30.5f) // Potrestání hráče čekáním 30s
                     {
                         PantographFaultByVoltageChange = false;
@@ -2882,27 +2882,27 @@ namespace Orts.Simulation.RollingStocks
             
             // Icik
             if (AuxPowerOn)
-                status.AppendFormat("{0}\t\t", Simulator.Catalog.GetParticularString("PowerSupply", Simulator.Catalog.GetString("Zapnuto")));
+                status.AppendFormat("{0}\t\t", Simulator.Catalog.GetParticularString("PowerSupply", Simulator.Catalog.GetString("On")));
             else
-                status.AppendFormat("{0}\t\t", Simulator.Catalog.GetParticularString("PowerSupply", Simulator.Catalog.GetString("Vypnuto")));
+                status.AppendFormat("{0}\t\t", Simulator.Catalog.GetParticularString("PowerSupply", Simulator.Catalog.GetString("Off")));
 
             // Icik
             if (PowerUnit && AcceptMUSignals)
             {
-                status.AppendFormat("{0}\t\t", Simulator.Catalog.GetString("Hnací vůz"));
+                status.AppendFormat("{0}\t\t", Simulator.Catalog.GetString("Engine"));
                 status.AppendFormat("{0}", Simulator.Catalog.GetString(MathHelper.Clamp(PantographVoltageV - 1, 0, RouteVoltageV * 1.2f) + "V"));
                 //status.AppendFormat("{0}", Simulator.Catalog.GetString("PSPantoVoltage: " + PowerSupply.PantographVoltageV));
             }
             else
             if (LocoHelperOn)
             {
-                status.AppendFormat("{0}\t\t", Simulator.Catalog.GetString("Postrkový vůz"));
+                status.AppendFormat("{0}\t\t", Simulator.Catalog.GetString("Helper"));
                 status.AppendFormat("{0}", Simulator.Catalog.GetString(MathHelper.Clamp(PantographVoltageV - 1, 0, RouteVoltageV * 1.2f) + "V"));
                 //status.AppendFormat("{0}", Simulator.Catalog.GetString("PSPantoVoltage: " + PowerSupply.PantographVoltageV));
             }
             if (ControlUnit)
             {
-                status.AppendFormat("{0}\t\t", Simulator.Catalog.GetString("Řídící vůz"));
+                status.AppendFormat("{0}\t\t", Simulator.Catalog.GetString("Control"));
                 status.AppendFormat("{0}", Simulator.Catalog.GetString(MathHelper.Clamp(PantographVoltageV - 1, 0, RouteVoltageV * 1.2f) + "V"));
                 //status.AppendFormat("{0}", Simulator.Catalog.GetString("PSPantoVoltage: " + PowerSupply.PantographVoltageV));
             }
