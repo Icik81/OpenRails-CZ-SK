@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2022-05-15 07:34:44+0200\n"
-"PO-Revision-Date: 2022-05-15 07:34:45+0200\n"
+"POT-Creation-Date: 2022-05-15 11:12:30+0200\n"
+"PO-Revision-Date: 2022-05-15 11:12:30+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -1423,12 +1423,21 @@ msgstr ""
 msgid "Cannot clear signal behind train while in AUTO mode"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Physics/Train.cs:16900
+#: ../../Orts.Simulation/Simulation/Physics/Train.cs:16710
+msgid "Passenger got out of the train "
+msgstr ""
+
+#: ../../Orts.Simulation/Simulation/Physics/Train.cs:16764
+#: ../../Orts.Simulation/Simulation/Physics/Train.cs:16787
+msgid "Passenger got in the train "
+msgstr ""
+
+#: ../../Orts.Simulation/Simulation/Physics/Train.cs:16903
 msgid "Car "
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Physics/Train.cs:16974
-#: ../../Orts.Simulation/Simulation/Physics/Train.cs:16979
+#: ../../Orts.Simulation/Simulation/Physics/Train.cs:16977
+#: ../../Orts.Simulation/Simulation/Physics/Train.cs:16982
 msgid "Locomotive "
 msgstr ""
 

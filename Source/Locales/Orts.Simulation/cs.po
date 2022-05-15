@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Orts.Simulation\n"
-"POT-Creation-Date: 2022-05-15 07:34:44+0200\n"
-"PO-Revision-Date: 2022-05-15 10:02+0200\n"
+"POT-Creation-Date: 2022-05-15 11:12:30+0200\n"
+"PO-Revision-Date: 2022-05-15 11:17+0200\n"
 "Last-Translator: Altmann <altmann@bk.ru>\n"
 "Language-Team: Open Rails Dev Team\n"
 "Language: cs\n"
@@ -1436,12 +1436,21 @@ msgstr "Je nutná změna směru - přední část vlaku je mimo původní trasu"
 msgid "Cannot clear signal behind train while in AUTO mode"
 msgstr "V AUTO režimu není možné žádat o volnou cestu za vlakem"
 
-#: ../../Orts.Simulation/Simulation/Physics/Train.cs:16900
+#: ../../Orts.Simulation/Simulation/Physics/Train.cs:16710
+msgid "Passenger got out of the train "
+msgstr "Vystoupil cestujíci "
+
+#: ../../Orts.Simulation/Simulation/Physics/Train.cs:16764
+#: ../../Orts.Simulation/Simulation/Physics/Train.cs:16787
+msgid "Passenger got in the train "
+msgstr "Nastoupil cestujíci "
+
+#: ../../Orts.Simulation/Simulation/Physics/Train.cs:16903
 msgid "Car "
 msgstr "Vůz "
 
-#: ../../Orts.Simulation/Simulation/Physics/Train.cs:16974
-#: ../../Orts.Simulation/Simulation/Physics/Train.cs:16979
+#: ../../Orts.Simulation/Simulation/Physics/Train.cs:16977
+#: ../../Orts.Simulation/Simulation/Physics/Train.cs:16982
 msgid "Locomotive "
 msgstr "Lokomotiva "
 
