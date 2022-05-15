@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Orts.Simulation\n"
 "POT-Creation-Date: 2022-05-15 11:12:30+0200\n"
-"PO-Revision-Date: 2022-05-15 11:17+0200\n"
+"PO-Revision-Date: 2022-05-15 11:21+0200\n"
 "Last-Translator: Altmann <altmann@bk.ru>\n"
 "Language-Team: Open Rails Dev Team\n"
 "Language: cs\n"
@@ -1438,12 +1438,12 @@ msgstr "V AUTO režimu není možné žádat o volnou cestu za vlakem"
 
 #: ../../Orts.Simulation/Simulation/Physics/Train.cs:16710
 msgid "Passenger got out of the train "
-msgstr "Vystoupil cestujíci "
+msgstr "Vystoupil cestující "
 
 #: ../../Orts.Simulation/Simulation/Physics/Train.cs:16764
 #: ../../Orts.Simulation/Simulation/Physics/Train.cs:16787
 msgid "Passenger got in the train "
-msgstr "Nastoupil cestujíci "
+msgstr "Nastoupil cestující "
 
 #: ../../Orts.Simulation/Simulation/Physics/Train.cs:16903
 msgid "Car "
