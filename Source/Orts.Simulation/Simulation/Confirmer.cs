@@ -294,26 +294,26 @@ namespace Orts.Simulation
                 , new string [] { GetString("Cab Radio"), GetString("off"), null, GetString("on") }
 
                 // Icik
-                , new string [] { GetString("Pomocný kompresor"), GetString("off"), null, GetString("on")}
-                , new string [] { GetString("Mód kompresoru I"), GetString("off"), null, GetString("Auto")}
-                , new string [] { GetString("Mód kompresoru II"), GetString("off"), null, GetString("Auto")}
-                , new string [] { GetString("Ruční zapnutí kompresoru I"), GetString("off"), null, GetString("on")}
-                , new string [] { GetString("Ruční zapnutí kompresoru II"), GetString("off"), null, GetString("on")}
-                , new string [] { GetString("Topení"), GetString("off"), null, GetString("on")}
-                , new string [] { GetString("Topení v kabině"), GetString("off"), null, GetString("on")}
-                , new string [] { GetString("Přepnutí napěťového systému"), GetString("off"), null, GetString("AC")}
-                , new string [] { GetString("Přepnutí napěťového systému"), GetString("off"), null, GetString("DC")}
-                , new string [] { GetString("Napětí v soustavě změněno"), GetString("25kV"), null, GetString("3kV")}
-                , new string [] { GetString("Highpressure release"), GetString("off"), null, GetString("on")}
-                , new string [] { GetString("Lowpressure release"), GetString("off"), null, GetString("on")}
-                , new string [] { GetString("Přerušení napájení"), GetString("off"), null, GetString("on")}
-                , new string [] { GetString("Plné osvětlení kabiny"), GetString("off"), null, GetString("on")}
+                , new string [] { GetString("AuxCompressor"), GetString("off"), null, GetString("on")}
+                , new string [] { GetString("Compressor I"), GetString("off"), null, GetString("Auto")}
+                , new string [] { GetString("Compressor II"), GetString("off"), null, GetString("Auto")}
+                , new string [] { GetString("Compressor I"), GetString("off"), null, GetString("on")}
+                , new string [] { GetString("Compressor II"), GetString("off"), null, GetString("on")}
+                , new string [] { GetString("Heating"), GetString("off"), null, GetString("on")}
+                , new string [] { GetString("Heating in Cab"), GetString("off"), null, GetString("on")}
+                , new string [] { GetString("Change Voltage System"), GetString("off"), null, GetString("AC")}
+                , new string [] { GetString("Change Voltage System"), GetString("off"), null, GetString("DC")}
+                , new string [] { GetString("Voltage Change to"), GetString("25kV"), null, GetString("3kV")}
+                , new string [] { GetString("Highpressure Release"), GetString("off"), null, GetString("on")}
+                , new string [] { GetString("Lowpressure Release"), GetString("off"), null, GetString("on")}
+                , new string [] { GetString("Powerbreaker"), GetString("off"), null, GetString("on")}
+                , new string [] { GetString("Full Cablight"), GetString("off"), null, GetString("on")}
                 , new string [] { GetString("") }
                 , new string [] { GetString("") }
                 , new string [] { GetString("") }
                 , new string [] { GetString("") }
                 , new string [] { GetString("RDST"), GetString("off"), null, GetString("on")}
-                , new string [] { GetString("Tlačítko závěru"), GetString("off"), null, GetString("on")}
+                , new string [] { GetString("Lap Button"), GetString("off"), null, GetString("on")}
 
             };
             Debug.Assert(ConfirmText.Length == Enum.GetNames(typeof(CabControl)).Length, "Number of entries indexer ConfirmText must match values in CabControl enum.");

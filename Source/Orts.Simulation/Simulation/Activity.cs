@@ -1059,7 +1059,7 @@ namespace Orts.Simulation
                         double SchDepartS = SchDepart.Subtract(new DateTime()).TotalSeconds;
                         BoardingEndS = CompareTimes.LatestTime((int)SchDepartS, (int)BoardingEndS);
                         DisplayColor = Color.Yellow;
-                        DisplayMessage = Simulator.Catalog.GetString("Lidé čekají na otevření dveří...");
+                        DisplayMessage = Simulator.Catalog.GetString("People are waiting for the door to open…");
                         return;
                     }
 
@@ -1087,7 +1087,7 @@ namespace Orts.Simulation
                         // Still have to wait
                         if (remaining > 0)
                         {                            
-                            DisplayMessage = Simulator.Catalog.GetStringFmt("Čas do odjezdu: {0:D2}:{1:D2}",
+                            DisplayMessage = Simulator.Catalog.GetStringFmt("Time to departure: {0:D2}:{1:D2}",
                                 remaining / 60, remaining % 60);
 
                             //Debrief Eval
@@ -1106,7 +1106,7 @@ namespace Orts.Simulation
                             if (MyPlayerTrain.StationStops[0].PlatformItem.PassengerList.Count > 0
                                 || (MyPlayerTrain.StationStops[0].PlatformItem.PassengerList.Count == 0 && MyPlayerTrain.TrainDoorsOpen && !loco.CentralHandlingDoors))                                
                             {                                
-                                DisplayMessage = Simulator.Catalog.GetString("Čeká se na nástup cestujících....");
+                                DisplayMessage = Simulator.Catalog.GetString("Waiting for passengers to board....");
                                 MyPlayerTrain.UpdatePassengerCountAndWeight(MyPlayerTrain, MyPlayerTrain.StationStops[0].PlatformItem.NumPassengersWaiting, clock);
                             }
                             else                            
@@ -1120,7 +1120,7 @@ namespace Orts.Simulation
                                 {
                                     maydepart = true;
                                     DisplayColor = Color.LightGreen;
-                                    DisplayMessage = Simulator.Catalog.GetString("Volno k odjezdu!");
+                                    DisplayMessage = Simulator.Catalog.GetString("Clear to go!");
                                     Simulator.SoundNotify = Event.PermissionToDepart;
                                     BoardingCompleted = false;
                                     TimeToClearForDepart = 0;
@@ -1129,7 +1129,7 @@ namespace Orts.Simulation
                                 else
                                 {
                                     DisplayColor = Color.Yellow;
-                                    DisplayMessage = Simulator.Catalog.GetString("Čeká se na povolení výpravčího....");
+                                    DisplayMessage = Simulator.Catalog.GetString("Waiting for the permission....");
                                     return;
                                 }
                             }                               

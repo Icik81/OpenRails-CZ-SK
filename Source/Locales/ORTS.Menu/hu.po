@@ -1,65 +1,74 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ORTS.Menu\n"
-"POT-Creation-Date: 2014-10-07 19:45:13+0200\n"
-"PO-Revision-Date: 2014-10-07 19:58+0100\n"
+"POT-Creation-Date: 2022-05-15 06:12:18+0200\n"
+"PO-Revision-Date: 2022-05-15 06:53+0200\n"
 "Last-Translator: Péter Gulyás <pzgulyas@gmail.com>\n"
 "Language-Team: Open Rails Dev Team\n"
 "Language: hu\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.6.7\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 3.0.1\n"
 
-#: ../../ORTS.Menu/Activities.cs:46
+#: ../../ORTS.Menu/Activities.cs:75
 msgid "- Explore Route -"
 msgstr "- Vonalbejárás -"
 
-#: ../../ORTS.Menu/Activities.cs:75 ../../ORTS.Menu/Consists.cs:47
-#: ../../ORTS.Menu/Consists.cs:143 ../../ORTS.Menu/Paths.cs:63
-#: ../../ORTS.Menu/Routes.cs:47
+#: ../../ORTS.Menu/Activities.cs:79
+msgid "+ Explore in Activity Mode +"
+msgstr ""
+
+#: ../../ORTS.Menu/Activities.cs:109
+msgid "Not same route:"
+msgstr ""
+
+#: ../../ORTS.Menu/Activities.cs:113 ../../ORTS.Menu/Consists.cs:55
+#: ../../ORTS.Menu/Consists.cs:79 ../../ORTS.Menu/Consists.cs:222
+#: ../../ORTS.Menu/ORTimetables.cs:74 ../../ORTS.Menu/ORTimetables.cs:98
+#: ../../ORTS.Menu/Paths.cs:63 ../../ORTS.Menu/Routes.cs:59
 msgid "load error:"
 msgstr "betöltési hiba:"
 
-#: ../../ORTS.Menu/Activities.cs:78 ../../ORTS.Menu/Consists.cs:50
-#: ../../ORTS.Menu/Consists.cs:146 ../../ORTS.Menu/Paths.cs:65
-#: ../../ORTS.Menu/Paths.cs:66 ../../ORTS.Menu/Paths.cs:67
-#: ../../ORTS.Menu/Routes.cs:49
+#: ../../ORTS.Menu/Activities.cs:116 ../../ORTS.Menu/Consists.cs:58
+#: ../../ORTS.Menu/Consists.cs:82 ../../ORTS.Menu/Consists.cs:232
+#: ../../ORTS.Menu/Paths.cs:65 ../../ORTS.Menu/Paths.cs:66
+#: ../../ORTS.Menu/Paths.cs:67 ../../ORTS.Menu/Routes.cs:61
 msgid "unnamed:"
 msgstr "névtelen:"
 
-#: ../../ORTS.Menu/Activities.cs:84 ../../ORTS.Menu/Consists.cs:54
-#: ../../ORTS.Menu/Consists.cs:151 ../../ORTS.Menu/Paths.cs:71
-#: ../../ORTS.Menu/Routes.cs:54
+#: ../../ORTS.Menu/Activities.cs:122 ../../ORTS.Menu/Consists.cs:62
+#: ../../ORTS.Menu/Consists.cs:86 ../../ORTS.Menu/Consists.cs:241
+#: ../../ORTS.Menu/ORTimetables.cs:79 ../../ORTS.Menu/ORTimetables.cs:103
+#: ../../ORTS.Menu/Paths.cs:71 ../../ORTS.Menu/Routes.cs:66
 msgid "missing:"
 msgstr "hiányzik:"
 
-#: ../../ORTS.Menu/Activities.cs:77
+#: ../../ORTS.Menu/Activities.cs:115
 #, csharp-format
 msgid "Activity '{0}' is excluded."
 msgstr "'{0}' szolgálat kizárva."
 
-#: ../../ORTS.Menu/Consists.cs:129
+#: ../../ORTS.Menu/Consists.cs:211
 msgid "- Any Locomotive -"
 msgstr "- Bármelyik jármű -"
 
-#: ../../ORTS.Menu/Consists.cs:145
+#: ../../ORTS.Menu/Consists.cs:229
 #, csharp-format
 msgid "Locomotive '{0}' is excluded."
 msgstr "'{0}' jármű kizárva."
 
-#: ../../ORTS.Menu/Paths.cs:150
-#, csharp-format
-msgid "Path Name: {0}"
-msgstr "Útvonal neve: {0}"
-
-#: ../../ORTS.Menu/Paths.cs:151
+#: ../../ORTS.Menu/Paths.cs:168
 #, csharp-format
 msgid "Start at: {0}"
 msgstr "Kiindulási állomás: {0}"
 
-#: ../../ORTS.Menu/Paths.cs:152
+#: ../../ORTS.Menu/Paths.cs:169
 #, csharp-format
 msgid "Heading to: {0}"
 msgstr "Útirány: {0}"
+
+#, csharp-format
+#~ msgid "Path Name: {0}"
+#~ msgstr "Útvonal neve: {0}"

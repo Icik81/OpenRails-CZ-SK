@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ORTS.Common\n"
-"POT-Creation-Date: 2022-01-22 11:01:05+0100\n"
-"PO-Revision-Date: 2022-01-22 12:03+0100\n"
+"POT-Creation-Date: 2022-05-15 07:34:40+0200\n"
+"PO-Revision-Date: 2022-05-15 09:47+0200\n"
 "Last-Translator: Altmann <altmann@bk.ru>\n"
 "Language-Team: \n"
 "Language: cs\n"
@@ -470,10 +470,8 @@ msgid "Camera Cab"
 msgstr "Pohled Kabina"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:82
-#, fuzzy
-#| msgid "Camera Passenger"
 msgid "Camera Change Passenger Viewpoint"
-msgstr "Pohled Cestující"
+msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:83
 msgid "Camera Toggle 3D Cab"
@@ -612,28 +610,20 @@ msgid "Camera Vibrate"
 msgstr "Pohled Vibrace vlaku"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:117
-#, fuzzy
-#| msgid "Camera Pan (Rotate) Right"
 msgid "Camera Scroll Right"
-msgstr "Pohled Otočit vpravo"
+msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:118
-#, fuzzy
-#| msgid "Camera Car Next"
 msgid "Camera Scroll Left"
-msgstr "Pohled Další vozidlo"
+msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:119
-#, fuzzy
-#| msgid "Camera Head Out Backward"
 msgid "Camera Browse Backwards"
-msgstr "Pohled Boční vzad"
+msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:120
-#, fuzzy
-#| msgid "Camera Head Out Forward"
 msgid "Camera Browse Forwards"
-msgstr "Pohled Boční vpřed"
+msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:122
 msgid "TCS Zapnout VZ"
@@ -1146,32 +1136,26 @@ msgid "Control_Classic PowerKey"
 msgstr "Ovládání_Classic Zapnout/vypnout pult lokomotivy"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:217
-#| msgid "Control Bail Off"
 msgid "Control_CZSK Mirel Off"
 msgstr "Ovládání_CZSK Zapnout Mirel"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:218
-#| msgid "Control Firebox Open"
 msgid "Control_CZSK Mirel On"
 msgstr "Ovládání_CZSK Vypnout Mirel"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:219
-#| msgid "Control Steam Heat Increase"
 msgid "Control_CZSK Speed Regulator Mode Increase"
 msgstr "Ovládání_CZSK + režim regulátor rychlosti"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:220
-#| msgid "Control Steam Heat Decrease"
 msgid "Control_CZSK Speed Regulator Mode Descrease"
 msgstr "Ovládání_CZSK - režim regulátor rychlosti"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:221
-#| msgid "Control Steam Heat Increase"
 msgid "Control_CZSK Selected Speed Increase"
 msgstr "Ovládání_CZSK + navolená rychlost regulátor rychlosti"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:222
-#| msgid "Control Steam Heat Decrease"
 msgid "Control_CZSK Selected Speed Decrease"
 msgstr "Ovládání_CZSK - navolená rychlost regulátor rychlosti"
 
@@ -1184,12 +1168,10 @@ msgid "Control_CZSK Speed Regulator Max Acceleration Decrease"
 msgstr "Ovládání_CZSK - tah regulátor rychlosti"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:225
-#| msgid "Control Damper Increase"
 msgid "Control_CZSK Number Of Axles Increase"
 msgstr "Ovládání_CZSK + počet os"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:226
-#| msgid "Control Damper Decrease"
 msgid "Control_CZSK Number Of Axles Decrease"
 msgstr "Ovládání_CZSK - počet os"
 
@@ -1198,243 +1180,264 @@ msgid "Control_CZSK Restricted Speed Zone Active"
 msgstr "Ovládání_CZSK Aktivovat tlačítko omezené rychlosti"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:228
-#| msgid "Control Throttle Increase"
 msgid "Control_CZSK Cruise Control Mode Increase"
 msgstr "Ovládání_CZSK + režim udržování rychlosti"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:229
-#| msgid "Control Throttle Decrease"
 msgid "Control_CZSK Cruise Control Mode Decrease"
 msgstr "Ovládání_CZSK - režim udržování rychlosti"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:230
+msgid "Control_CZSK Confirm Selected Speed"
+msgstr "Ovládání_CZSK Potvrzení navolené rychlosti"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:231
 msgid "Control_CZSK Train Type Change (Passenger/Cargo)"
 msgstr "Ovládání_CZSK Změna typu vlaku (osobní/nákladní)"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:231
+#: ../../ORTS.Common/Input/UserCommand.cs:232
 msgid "Control_CZSK Select Speed 10 kph/mph"
 msgstr "Ovládání_CZSK Výběr rychlosti 10 kph/mph"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:232
+#: ../../ORTS.Common/Input/UserCommand.cs:233
 msgid "Control_CZSK Select Speed 20 kph/mph"
 msgstr "Ovládání_CZSK Výběr rychlosti 20 kph/mph"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:233
+#: ../../ORTS.Common/Input/UserCommand.cs:234
 msgid "Control_CZSK Select Speed 30 kph/mph"
 msgstr "Ovládání_CZSK Výběr rychlosti 30 kph/mph"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:234
+#: ../../ORTS.Common/Input/UserCommand.cs:235
 msgid "Control_CZSK Select Speed 40 kph/mph"
 msgstr "Ovládání_CZSK Výběr rychlosti 40 kph/mph"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:235
+#: ../../ORTS.Common/Input/UserCommand.cs:236
 msgid "Control_CZSK Select Speed 50 kph/mph"
 msgstr "Ovládání_CZSK Výběr rychlosti 50 kph/mph"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:236
+#: ../../ORTS.Common/Input/UserCommand.cs:237
 msgid "Control_CZSK Select Speed 60 kph/mph"
 msgstr "Ovládání_CZSK Výběr rychlosti 60 kph/mph"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:237
+#: ../../ORTS.Common/Input/UserCommand.cs:238
 msgid "Control_CZSK Select Speed 70 kph/mph"
 msgstr "Ovládání_CZSK Výběr rychlosti 70 kph/mph"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:238
+#: ../../ORTS.Common/Input/UserCommand.cs:239
 msgid "Control_CZSK Select Speed 80 kph/mph"
 msgstr "Ovládání_CZSK Výběr rychlosti 80 kph/mph"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:239
+#: ../../ORTS.Common/Input/UserCommand.cs:240
 msgid "Control_CZSK Select Speed 90 kph/mph"
 msgstr "Ovládání_CZSK Výběr rychlosti 90 kph/mph"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:240
+#: ../../ORTS.Common/Input/UserCommand.cs:241
 msgid "Control_CZSK Select Speed 100 kph/mph"
 msgstr "Ovládání_CZSK Výběr rychlosti 100 kph/mph"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:241
+#: ../../ORTS.Common/Input/UserCommand.cs:242
 msgid "Control_CZSK Select Speed 110 kph/mph"
 msgstr "Ovládání_CZSK Výběr rychlosti 110 kph/mph"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:242
+#: ../../ORTS.Common/Input/UserCommand.cs:243
 msgid "Control_CZSK Select Speed 120 kph/mph"
 msgstr "Ovládání_CZSK Výběr rychlosti 120 kph/mph"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:243
+#: ../../ORTS.Common/Input/UserCommand.cs:244
 msgid "Control_CZSK Select Speed 130 kph/mph"
 msgstr "Ovládání_CZSK Výběr rychlosti 130 kph/mph"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:244
+#: ../../ORTS.Common/Input/UserCommand.cs:245
 msgid "Control_CZSK Select Speed 140 kph/mph"
 msgstr "Ovládání_CZSK Výběr rychlosti 140 kph/mph"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:245
+#: ../../ORTS.Common/Input/UserCommand.cs:246
 msgid "Control_CZSK Select Speed 150 kph/mph"
 msgstr "Ovládání_CZSK Výběr rychlosti 150 kph/mph"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:246
+#: ../../ORTS.Common/Input/UserCommand.cs:247
 msgid "Control_CZSK Select Speed 160 kph/mph"
 msgstr "Ovládání_CZSK Výběr rychlosti 160 kph/mph"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:247
+#: ../../ORTS.Common/Input/UserCommand.cs:248
 msgid "Control_CZSK Select Speed 170 kph/mph"
 msgstr "Ovládání_CZSK Výběr rychlosti 170 kph/mph"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:248
+#: ../../ORTS.Common/Input/UserCommand.cs:249
 msgid "Control_CZSK Select Speed 180 kph/mph"
 msgstr "Ovládání_CZSK Výběr rychlosti 180 kph/mph"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:249
+#: ../../ORTS.Common/Input/UserCommand.cs:250
 msgid "Control_CZSK Select Speed 190 kph/mph"
 msgstr "Ovládání_CZSK Výběr rychlosti 190 kph/mph"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:250
+#: ../../ORTS.Common/Input/UserCommand.cs:251
 msgid "Control_CZSK Select Speed 200 kph/mph"
 msgstr "Ovládání_CZSK Výběr rychlosti 200 kph/mph"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:251
+#: ../../ORTS.Common/Input/UserCommand.cs:252
 msgid "Control_CZSK Mirel Key Plus"
 msgstr "Ovládání_CZSK Mirel klávesa +"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:252
+#: ../../ORTS.Common/Input/UserCommand.cs:253
 msgid "Control_CZSK Mirel Key Minus"
 msgstr "Ovládání_CZSK Mirel klávesa -"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:253
-#| msgid "Control Diesel Player"
+#: ../../ORTS.Common/Input/UserCommand.cs:254
 msgid "Control_CZSK Mirel Key Enter"
 msgstr "Ovládání_CZSK Mirel klávesa Enter"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:254
-#| msgid "Control Steam Heat Increase"
+#: ../../ORTS.Common/Input/UserCommand.cs:255
 msgid "Control_CZSK Cab Select Increase"
 msgstr "Ovládání_CZSK + výběr stanoviště"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:255
-#| msgid "Control Steam Heat Decrease"
+#: ../../ORTS.Common/Input/UserCommand.cs:256
 msgid "Control_CZSK Cab Select Decrease"
 msgstr "Ovládání_CZSK - výběr stanoviště"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:256
+#: ../../ORTS.Common/Input/UserCommand.cs:257
 msgid "Control_CZSK Display Key Position"
 msgstr "Ovládání_CZSK Display Key Position"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:257
+#: ../../ORTS.Common/Input/UserCommand.cs:258
 msgid "Control_CZSK Change Key Position"
 msgstr "Ovládání_CZSK Change Key Position"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:260
+#: ../../ORTS.Common/Input/UserCommand.cs:261
 msgid "Control_CZSK HV2 1-system +"
 msgstr "Ovládání_CZSK HV2 1-system +"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:261
+#: ../../ORTS.Common/Input/UserCommand.cs:262
 msgid "Control_CZSK HV3 2-system +"
 msgstr "Ovládání_CZSK HV3 2-system +"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:262
+#: ../../ORTS.Common/Input/UserCommand.cs:263
 msgid "Control_CZSK HV3 2-system -"
 msgstr "Ovládání_CZSK HV3 2-system -"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:263
+#: ../../ORTS.Common/Input/UserCommand.cs:264
+msgid "Control_CZSK HV4 2-system +"
+msgstr "Ovládání_CZSK HV4 2-system +"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:265
+msgid "Control_CZSK HV4 2-system -"
+msgstr "Ovládání_CZSK HV4 2-system -"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:266
 msgid "Control_CZSK HV5 2-system +"
 msgstr "Ovládání_CZSK HV5 2-system +"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:264
+#: ../../ORTS.Common/Input/UserCommand.cs:267
 msgid "Control_CZSK HV5 2-system -"
 msgstr "Ovládání_CZSK HV5 2-system -"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:265
-#| msgid "Control Pantograph 1"
+#: ../../ORTS.Common/Input/UserCommand.cs:268
 msgid "Control_CZSK Pantograph3 +"
 msgstr "Ovládání_CZSK Pantograf3 +"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:266
-#| msgid "Control Pantograph 1"
+#: ../../ORTS.Common/Input/UserCommand.cs:269
 msgid "Control_CZSK Pantograph3 -"
 msgstr "Ovládání_CZSK Pantograf3 -"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:267
-#| msgid "Control Pantograph 1"
+#: ../../ORTS.Common/Input/UserCommand.cs:270
 msgid "Control_CZSK Pantograph4 +"
 msgstr "Ovládání_CZSK Pantograf4 +"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:268
-#| msgid "Control Pantograph 1"
+#: ../../ORTS.Common/Input/UserCommand.cs:271
 msgid "Control_CZSK Pantograph4 -"
 msgstr "Ovládání_CZSK Pantograf4 -"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:269
+#: ../../ORTS.Common/Input/UserCommand.cs:272
 msgid "Control_CZSK Compressor I Combined +"
 msgstr "Ovládání_CZSK Kombinovaný kompresor I +"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:270
+#: ../../ORTS.Common/Input/UserCommand.cs:273
 msgid "Control_CZSK Compressor I Combined -"
 msgstr "Ovládání_CZSK Kombinovaný kompresor I -"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:271
+#: ../../ORTS.Common/Input/UserCommand.cs:274
 msgid "Control_CZSK Compressor II Combined +"
 msgstr "Ovládání_CZSK Kombinovaný kompresor II +"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:272
+#: ../../ORTS.Common/Input/UserCommand.cs:275
 msgid "Control_CZSK Compressor II Combined -"
 msgstr "Ovládání_CZSK Kombinovaný kompresor II +"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:273
+#: ../../ORTS.Common/Input/UserCommand.cs:276
 msgid "Control_CZSK AuxCompressor Off/On"
 msgstr "Ovládání_CZSK Zapnout/Vypnout pomocný kompresor"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:274
+#: ../../ORTS.Common/Input/UserCommand.cs:277
 msgid "Control_CZSK Compressor I Mode Off/Auto"
 msgstr "Ovládání_CZSK Zapnout/Vypnout kompresor režim I"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:275
+#: ../../ORTS.Common/Input/UserCommand.cs:278
 msgid "Control_CZSK Compressor II Mode Off/Auto"
 msgstr "Ovládání_CZSK Zapnout/Vypnout kompresor režim II"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:276
-#| msgid "Control Retainers Off"
+#: ../../ORTS.Common/Input/UserCommand.cs:279
 msgid "Control_CZSK Heating Off/On"
 msgstr "Ovládání_CZSK Zapnout/Vypnout topení vlaku"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:277
+#: ../../ORTS.Common/Input/UserCommand.cs:280
 msgid "Control_CZSK Heating in Cab Off/On"
 msgstr "Ovládání_CZSK Zapnout/Vypnout topení stanoviště strojvedoucího"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:278
+#: ../../ORTS.Common/Input/UserCommand.cs:281
 msgid "Control_CZSK Locomotive PowerVoltage 25kV/both/3kV"
 msgstr "Ovládání_CZSK Přepnout systém napájení lokomotivy 25kV/oba/3kV"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:279
+#: ../../ORTS.Common/Input/UserCommand.cs:282
 msgid "Control_CZSK Quickrelease button"
 msgstr "Ovládání_CZSK Tlačítko vysokotlakého švihu"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:280
+#: ../../ORTS.Common/Input/UserCommand.cs:283
 msgid "Control_CZSK Lowpressurerelease button"
 msgstr "Ovládání_CZSK Tlačítko nízkotlakého přebití"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:281
-#| msgid "Control Brake Hose Connect"
+#: ../../ORTS.Common/Input/UserCommand.cs:284
 msgid "Control_CZSK Breakpower button"
 msgstr "Ovládání_CZSK Tlačítko přerušení napájení"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:284
-msgid "Set Power Supply Station Location"
-msgstr ""
-
 #: ../../ORTS.Common/Input/UserCommand.cs:285
-msgid "Set Voltage 25k"
-msgstr ""
+msgid "Control_CZSK Diesel Controller +"
+msgstr "Ovládání_CZSK Diesel kontrolér +"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:286
-msgid "Set Voltage 3k"
-msgstr ""
+msgid "Control_CZSK Diesel Controller -"
+msgstr "Ovládání_CZSK Diesel kontrolér -"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:287
-msgid "Set Voltage 0"
-msgstr ""
+msgid "Control_CZSK Diesel Controller In/Out"
+msgstr "Ovládání_CZSK Diesel kontrolér vyndat/zandat"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:288
+msgid "Control_CZSK RDST Breaker"
+msgstr "Ovládání_CZSK RDST"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:289
+msgid "Control_CZSK Lap button"
+msgstr "Ovládání_CZSK Tlačítko závěru"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:291
+msgid "Set Power Supply Station Location"
+msgstr "Nastavit lokaci napájecí stanice"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:292
+msgid "Set Voltage 25k"
+msgstr "Nastavit napětí 25kV"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:293
+msgid "Set Voltage 3k"
+msgstr "Nastavit napětí 3kV"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:294
+msgid "Set Voltage 0"
+msgstr "Nastavit napětí 0kV"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:295
 msgid "Set Delete Voltage Marker"
-msgstr ""
+msgstr "Smazat napěťový marker"
 
 #~ msgid "Camera 3D Cab"
 #~ msgstr "Pohled 3D kabina"
