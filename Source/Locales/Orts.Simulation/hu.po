@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Orts.Simulation\n"
-"POT-Creation-Date: 2022-05-15 07:34:44+0200\n"
+"POT-Creation-Date: 2022-05-15 11:12:30+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Péter Gulyás <pzgulyas@gmail.com>\n"
 "Language-Team: Open Rails Dev Team\n"
@@ -1514,12 +1514,21 @@ msgstr ""
 "Nem lehet a vonat mögötti jelzőt szabaddá tenni központi forgalomirányítás "
 "felügyelete alatt"
 
-#: ../../Orts.Simulation/Simulation/Physics/Train.cs:16900
+#: ../../Orts.Simulation/Simulation/Physics/Train.cs:16710
+msgid "Passenger got out of the train "
+msgstr ""
+
+#: ../../Orts.Simulation/Simulation/Physics/Train.cs:16764
+#: ../../Orts.Simulation/Simulation/Physics/Train.cs:16787
+msgid "Passenger got in the train "
+msgstr ""
+
+#: ../../Orts.Simulation/Simulation/Physics/Train.cs:16903
 msgid "Car "
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Physics/Train.cs:16974
-#: ../../Orts.Simulation/Simulation/Physics/Train.cs:16979
+#: ../../Orts.Simulation/Simulation/Physics/Train.cs:16977
+#: ../../Orts.Simulation/Simulation/Physics/Train.cs:16982
 #, fuzzy
 #| msgid "Locomotive Type:"
 msgid "Locomotive "
