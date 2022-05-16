@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Orts.Simulation\n"
 "POT-Creation-Date: 2022-05-15 11:12:30+0200\n"
-"PO-Revision-Date: 2022-05-15 11:21+0200\n"
+"PO-Revision-Date: 2022-05-15 23:25+0200\n"
 "Last-Translator: Altmann <altmann@bk.ru>\n"
 "Language-Team: Open Rails Dev Team\n"
 "Language: cs\n"
@@ -46,7 +46,7 @@ msgstr "EP zabrzdit"
 #: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/MSTS/AirSinglePipe.cs:94
 #: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/MSTS/AirSinglePipe.cs:2252
 msgid "Emergency"
-msgstr "Záchranná brzda"
+msgstr "Rychlobrzda"
 
 #: ../../Orts.Simulation/Common/Scripting/BrakeController.cs:292
 msgid "Self Lap"
@@ -55,14 +55,14 @@ msgstr "Závěr"
 #: ../../Orts.Simulation/Common/Scripting/BrakeController.cs:293
 #: ../../Orts.Simulation/Common/Scripting/BrakeController.cs:294
 msgid "Service"
-msgstr "Brzdit"
+msgstr "Provozní brzdění"
 
 #: ../../Orts.Simulation/Common/Scripting/BrakeController.cs:295
 #: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/MSTS/AirSinglePipe.cs:91
 #: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/MSTS/AirSinglePipe.cs:2273
 #: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/MSTS/AirSinglePipe.cs:2360
 msgid "Lap"
-msgstr "Přidržet"
+msgstr "Udržování nastaveného brzdného účinku"
 
 #: ../../Orts.Simulation/Common/Scripting/BrakeController.cs:296
 #: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/MSTS/AirSinglePipe.cs:2304
@@ -71,7 +71,7 @@ msgstr "Max. brzdný účinek"
 
 #: ../../Orts.Simulation/Common/Scripting/BrakeController.cs:297
 msgid "Cont. Service"
-msgstr "Trvale zabrzdit"
+msgstr "Trvalé nabržďování"
 
 #: ../../Orts.Simulation/Common/Scripting/BrakeController.cs:298
 msgid "Full Service"
@@ -79,11 +79,11 @@ msgstr "Max. brzdný účinek"
 
 #: ../../Orts.Simulation/Common/Scripting/BrakeController.cs:299
 msgid "Minimum Reduction"
-msgstr "Minimální průtok"
+msgstr "Minimální brzdný účinek"
 
 #: ../../Orts.Simulation/Common/Scripting/BrakeController.cs:300
 msgid "Hold"
-msgstr ""
+msgstr "Závěr"
 
 #: ../../Orts.Simulation/Common/Scripting/BrakeController.cs:301
 msgid "Str. Brk. Release On:"
@@ -116,49 +116,48 @@ msgstr ""
 #: ../../Orts.Simulation/Common/Scripting/BrakeController.cs:308
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:258
 msgid "Overcharge"
-msgstr "Přetížení"
+msgstr "Přebití"
 
 #: ../../Orts.Simulation/Common/Scripting/BrakeController.cs:309
 msgid "Emergency Braking Push Button"
-msgstr "Tlačítko záchranné brzdy"
+msgstr "Tlačítko rychlobrzdy"
 
 #: ../../Orts.Simulation/Common/Scripting/BrakeController.cs:310
 msgid "TCS Emergency Braking"
-msgstr "Záchranná brzda TCS"
+msgstr "Rychlobrzda TCS"
 
 #: ../../Orts.Simulation/Common/Scripting/BrakeController.cs:311
 msgid "TCS Full Service Braking"
-msgstr "Max. brzdný účinek"
+msgstr "TCS plný brzdný účinek"
 
 #: ../../Orts.Simulation/Common/Scripting/BrakeController.cs:312
 msgid "Vac. Cont. Service"
-msgstr ""
+msgstr "Sací brzda brzdění"
 
 #: ../../Orts.Simulation/Common/Scripting/BrakeController.cs:313
 msgid "Vac. Apply Cont. Service"
-msgstr ""
+msgstr "Sací brzda zabrzdit"
 
 #: ../../Orts.Simulation/Common/Scripting/BrakeController.cs:314
 msgid "Manual Braking"
-msgstr "Ruční brždění"
+msgstr "Ruční brzdění brzdařem"
 
 #: ../../Orts.Simulation/Common/Scripting/BrakeController.cs:315
 msgid "Notch"
-msgstr ""
+msgstr "Stupeň"
 
 #: ../../Orts.Simulation/Common/Scripting/BrakeController.cs:316
 #, fuzzy
-#| msgid "Service"
 msgid "EP Service"
-msgstr "Brzdit"
+msgstr "EP brzdění"
 
 #: ../../Orts.Simulation/Common/Scripting/BrakeController.cs:317
 msgid "EP Full Service"
-msgstr "Max. brzdný účinek"
+msgstr "EP plný brzdný účinek"
 
 #: ../../Orts.Simulation/Common/Scripting/BrakeController.cs:318
 msgid "Slow service"
-msgstr "Pomalu brzdit"
+msgstr "Pomalé nabrzďování"
 
 #: ../../Orts.Simulation/Common/Scripting/BrakeController.cs:319
 #: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/MSTS/AirSinglePipe.cs:2262
@@ -216,19 +215,19 @@ msgstr "Nahoře"
 #: ../../Orts.Simulation/Common/Scripting/PowerSupply/CircuitBreaker.cs:110
 msgctxt "CircuitBreaker"
 msgid "Open"
-msgstr "Rozpojit"
+msgstr "Rozepnut"
 
 #. Context: CircuitBreaker
 #: ../../Orts.Simulation/Common/Scripting/PowerSupply/CircuitBreaker.cs:111
 msgctxt "CircuitBreaker"
 msgid "Closing"
-msgstr "Zapojování"
+msgstr "Spínání"
 
 #. Context: CircuitBreaker
 #: ../../Orts.Simulation/Common/Scripting/PowerSupply/CircuitBreaker.cs:112
 msgctxt "CircuitBreaker"
 msgid "Closed"
-msgstr "Zapojeno"
+msgstr "Sepnut"
 
 #: ../../Orts.Simulation/MultiPlayer/ClientComm.cs:130
 #: ../../Orts.Simulation/MultiPlayer/ClientComm.cs:142
@@ -237,7 +236,7 @@ msgstr "Připojení k serveru bylo ztraceno, pokračujeme v režimu jednoho hrá
 
 #: ../../Orts.Simulation/MultiPlayer/ClientComm.cs:159
 msgid "Alt-E to gain control of your train"
-msgstr "Získat kontrolu nad svým vlakem Alt-E"
+msgstr " Alt-E převzít řízení svého vlaku"
 
 #: ../../Orts.Simulation/MultiPlayer/Message.cs:839
 msgid "Dispatcher does not allow hand throw at this time"
@@ -448,7 +447,7 @@ msgstr "upozornění"
 
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:211
 msgid "Power"
-msgstr "Výkon"
+msgstr "Hlavní pohony"
 
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:211
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:220
@@ -560,7 +559,7 @@ msgstr "Hlavní vypínač"
 
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:218
 msgid "Circuit breaker closing authorization"
-msgstr ""
+msgstr "Hlavní vpyípnač odblokování"
 
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:218
 msgid "remove"
@@ -584,7 +583,7 @@ msgstr "Start/stop dieselu ostatních"
 
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:222
 msgid "Diesel Tank"
-msgstr "Naftová nádrž"
+msgstr "Palivová nádrž"
 
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:222
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:223
@@ -594,13 +593,11 @@ msgstr "doplněna"
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:222
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:223
 msgid "level"
-msgstr "úroveň"
+msgstr "hladina"
 
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:223
-#, fuzzy
-#| msgid "Boiler water level"
 msgid "Boiler Water Tank"
-msgstr "Hladina vody v kotli"
+msgstr "Vodní nádrž pro kotel"
 
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:226
 msgid "Regulator"
@@ -616,13 +613,13 @@ msgstr "Injektor 2"
 
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:229
 msgid "Blowdown Valve"
-msgstr ""
+msgstr "Odkalovací ventil"
 
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:230
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSSteamLocomotive.cs:6031
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSSteamLocomotive.cs:6058
 msgid "Blower"
-msgstr "Průtok"
+msgstr "Dmychavka"
 
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:230
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:231
@@ -632,7 +629,7 @@ msgstr "Průtok"
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:250
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:285
 msgid "decrease"
-msgstr "snížit"
+msgstr "ubrat"
 
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:230
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:231
@@ -642,19 +639,19 @@ msgstr "snížit"
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:250
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:285
 msgid "increase"
-msgstr "zvýšit"
+msgstr "přidat"
 
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:231
 msgid "SteamHeat"
-msgstr "ŽárPáry"
+msgstr "Parní topení"
 
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:232
 msgid "Damper"
-msgstr "Dyšna"
+msgstr "Klapky roštu"
 
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:233
 msgid "Firebox Door"
-msgstr "Dveře ohniště"
+msgstr "Dveře topeniště"
 
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:234
 msgid "Firing Rate"
@@ -666,15 +663,15 @@ msgstr "Ruční přikládání"
 
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:236
 msgid "Fire"
-msgstr "Spalování"
+msgstr "Masa ohně"
 
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:236
 msgid "add shovel-full"
-msgstr "přidat plnou lopatu"
+msgstr "přiložit plnou lopatu"
 
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:237
 msgid "Cylinder Cocks"
-msgstr "Šoupátka válců"
+msgstr "Odvodňovací kohouty válců"
 
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:238
 msgid "Cylinder Compound"
@@ -682,15 +679,15 @@ msgstr "Sdružený válec"
 
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:239
 msgid "LargeEjector"
-msgstr ""
+msgstr "Hlavní ejektor"
 
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:240
 msgid "SmallEjector"
-msgstr ""
+msgstr "Pomocný ejektor"
 
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:241
 msgid "VacuumExhauster"
-msgstr ""
+msgstr "Vývěva"
 
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:241
 msgid "normal"
@@ -729,16 +726,16 @@ msgstr "Naběrač vody"
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:245
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:289
 msgid "up"
-msgstr "řazení nahoru"
+msgstr "zvednout"
 
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:245
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:289
 msgid "down"
-msgstr "řazení dolů"
+msgstr "spustit"
 
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:247
 msgid "Train Brake"
-msgstr "Vlaková brzda"
+msgstr "samočinná brzda"
 
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:247
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:248
@@ -756,15 +753,15 @@ msgstr "zabrzdit"
 
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:248
 msgid "Engine Brake"
-msgstr "Lokomotivní brzda"
+msgstr "Přimočinná brzda"
 
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:249
 msgid "Brakeman Brake"
-msgstr "Brzda brzdaře"
+msgstr "Brzdař - manuální brzdění"
 
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:250
 msgid "Dynamic Brake"
-msgstr "Dynamická brzda"
+msgstr "EDB"
 
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:250
 msgid "setup"
@@ -772,7 +769,7 @@ msgstr "sestavování"
 
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:251
 msgid "Emergency Brake"
-msgstr "Záchranná brzda"
+msgstr "Rychlobrzda"
 
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:252
 msgid "Bail Off"
@@ -809,18 +806,19 @@ msgstr "Ruční brzda"
 
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:254
 msgid "none"
-msgstr "není"
+msgstr "povolena"
 
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:254
 msgid "full"
-msgstr "plný"
+msgstr "plně zatažena"
 
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:255
 msgid "Retainers"
-msgstr "Zarážky"
+msgstr "Přídržné ventily"
 
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:255
 #: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/BrakeSystem.cs:315
+#, fuzzy
 msgid "Exhaust"
 msgstr "VýfZVál"
 
@@ -858,7 +856,7 @@ msgstr "spojit"
 
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:257
 msgid "Quick Release"
-msgstr "Švih (rychlé odbrzdění)"
+msgstr "Švih"
 
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:260
 msgid "Sander"
@@ -866,11 +864,11 @@ msgstr "Pískovač"
 
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:261
 msgid "Alerter"
-msgstr "Tlačítko bdělosti"
+msgstr "Požadavek potvrzení bdělosti"
 
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:261
 msgid "acknowledge"
-msgstr "vzít na vědomí"
+msgstr "Bdělost potvrzena"
 
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:262
 msgid "Horn"
@@ -882,7 +880,7 @@ msgstr "Píšťala"
 
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:263
 msgid "blow"
-msgstr "výfuk"
+msgstr "píská"
 
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:264
 msgid "Bell"
@@ -902,11 +900,11 @@ msgstr "tlumená"
 
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:265
 msgid "bright"
-msgstr ""
+msgstr "dálková"
 
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:266
 msgid "Cab Light"
-msgstr "Osvětlení kabiny"
+msgstr "Osvětlení pultu"
 
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:267
 msgid "Wipers"
@@ -946,7 +944,7 @@ msgstr "Baterie"
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSElectricLocomotive.cs:2852
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSElectricLocomotive.cs:2856
 msgid "PowerKey"
-msgstr "Odemknutí pultu"
+msgstr "Spínač pultu"
 
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:274
 msgid "Doors Left"
@@ -1044,7 +1042,7 @@ msgstr "zamčeno. Použijte spojku před změnou převodu."
 
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:290
 msgid "Signal mode"
-msgstr "Režim zabezpečovacího systému"
+msgstr "Režim návěstidel"
 
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:290
 msgid "manual"
@@ -1052,7 +1050,7 @@ msgstr "ruční"
 
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:290
 msgid "auto"
-msgstr "automatické"
+msgstr "automatický"
 
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:290
 msgid "locked. Stop train, then re-try."
@@ -1076,7 +1074,7 @@ msgstr "Naložení nákladu"
 
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:294
 msgid "Cab Radio"
-msgstr "Rádiostanice"
+msgstr "Radiostanice"
 
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:297
 msgid "AuxCompressor"
@@ -1099,11 +1097,11 @@ msgstr "Kompresor II"
 
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:302
 msgid "Heating"
-msgstr "Topení"
+msgstr "Topení vlaku"
 
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:303
 msgid "Heating in Cab"
-msgstr "Topení v kabině"
+msgstr "Topení stanoviště"
 
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:304
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:305
@@ -1140,15 +1138,15 @@ msgstr "Nízkotlaké přebití"
 
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:309
 msgid "Powerbreaker"
-msgstr "Přerušení napájení"
+msgstr "Vypnutí HV"
 
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:310
 msgid "Full Cablight"
-msgstr "Plné osvětlení kabiny"
+msgstr "Osvětlení kabiny"
 
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:315
 msgid "RDST"
-msgstr ""
+msgstr "Jistič radiostanice"
 
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:316
 msgid "Lap Button"
@@ -1208,7 +1206,7 @@ msgstr "Reverser"
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:261
 msgctxt "Alerter"
 msgid "sound"
-msgstr "živák"
+msgstr "Požadováno potvrzení"
 
 #. Context: Horn
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:262
@@ -1292,7 +1290,7 @@ msgstr "točna"
 
 #: ../../Orts.Simulation/Simulation/Turntables.cs:205
 msgid "transfertable"
-msgstr "pohyblivý přesuvník"
+msgstr "přesuvna"
 
 #: ../../Orts.Simulation/Simulation/Turntables.cs:224
 #: ../../Orts.Simulation/Simulation/Turntables.cs:265
@@ -1322,7 +1320,7 @@ msgstr ""
 
 #: ../../Orts.Simulation/Simulation/Turntables.cs:599
 msgid "Train partially on turntable, can't rotate"
-msgstr ""
+msgstr "Vlak částečně mimo točnu, točna se nemůže pohnout"
 
 #: ../../Orts.Simulation/Simulation/Turntables.cs:610
 msgid "Rotation can't start: check throttle, speed, direction and control mode"
@@ -1345,7 +1343,7 @@ msgstr ""
 #: ../../Orts.Simulation/Simulation/AIs/AITrain.cs:6605
 #: ../../Orts.Simulation/Simulation/Timetables/TTTrain.cs:10602
 msgid "Passenger boarding completed. Waiting for signal ahead to clear."
-msgstr "Nástup cestujících dokončen. Čekáme na návěstí volno před vlakem."
+msgstr "Nástup cestujících dokončen. Čekáme na návěst volno před vlakem."
 
 #: ../../Orts.Simulation/Simulation/AIs/AITrain.cs:6610
 #: ../../Orts.Simulation/Simulation/Timetables/TTTrain.cs:10610
@@ -1364,7 +1362,7 @@ msgstr ""
 #: ../../Orts.Simulation/Simulation/Timetables/TTTrain.cs:10617
 #, csharp-format
 msgid "Passenger boarding completes in {0:D2}:{1:D2}"
-msgstr "Nástup bude ukončen: {0:D2}:{1:D2}"
+msgstr "Nástup bude ukončen za: {0:D2}:{1:D2}"
 
 #: ../../Orts.Simulation/Simulation/Physics/Train.cs:1923
 msgid "Coupler broken!"
@@ -1378,12 +1376,12 @@ msgstr "Spřáhlo je přetížené!"
 msgid ""
 "The steam usage has exceeded the capacity of the steam boiler. Steam boiler "
 "locked out."
-msgstr ""
+msgstr "Spotřeba páry přesahuje kapacitu kotle. Kotel začne ztrácet tlak."
 
 #: ../../Orts.Simulation/Simulation/Physics/Train.cs:6931
 #: ../../Orts.Simulation/Simulation/Physics/Train.cs:6936
 msgid "Other train is blocking path"
-msgstr "Další vlak blokuje cestu"
+msgstr "Jiný vlak blokuje cestu"
 
 #: ../../Orts.Simulation/Simulation/Physics/Train.cs:7801
 msgid "Stopped due to errors in route setting"
@@ -1480,7 +1478,7 @@ msgstr "Řídící vůz"
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSElectricLocomotive.cs:2905
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSSteamLocomotive.cs:6214
 msgid "StHeat:"
-msgstr "ŽárPáry:"
+msgstr "ParTop:"
 
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSDieselLocomotive.cs:834
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSDieselLocomotive.cs:844
@@ -1503,12 +1501,12 @@ msgstr "TeplPár"
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSElectricLocomotive.cs:2910
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSSteamLocomotive.cs:6219
 msgid "StUse"
-msgstr "VyužPár"
+msgstr "SpotřPár"
 
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSDieselLocomotive.cs:841
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSElectricLocomotive.cs:2913
 msgid "WaterLvl"
-msgstr ""
+msgstr "HladinaVody"
 
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSDieselLocomotive.cs:843
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSElectricLocomotive.cs:2915
@@ -1526,17 +1524,17 @@ msgstr "Teplota"
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSElectricLocomotive.cs:2920
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSSteamLocomotive.cs:6227
 msgid "OutTemp"
-msgstr ""
+msgstr "EXTteplota"
 
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSDieselLocomotive.cs:850
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSElectricLocomotive.cs:2922
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSSteamLocomotive.cs:6229
 msgid "NetHt"
-msgstr "ZtrŽá"
+msgstr "ZtrTop"
 
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSDieselLocomotive.cs:1209
 msgid "Engine is starting…"
-msgstr "Motor se startuje..."
+msgstr "Předmazávání spalovacího motoru probíhá..."
 
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSDieselLocomotive.cs:782
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSDieselLocomotive.cs:792
@@ -1581,7 +1579,7 @@ msgstr "Příliš velký proud na jeden sběrač - použij i druhý sběrač!"
 
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSElectricLocomotive.cs:1823
 msgid "Locomotive is damaged with a raised pantograph!"
-msgstr "Poškodil si zdvihnutým pantografem lokomotivu!"
+msgstr "Zdvižením sběrače došlo k poškození lokomotivy!"
 
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSElectricLocomotive.cs:2350
 msgid "No power line!"
@@ -1593,7 +1591,7 @@ msgstr "Nepřítomnost troleje není brána v úvahu."
 
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSElectricLocomotive.cs:2827
 msgid "Pantographs"
-msgstr "Pantografy"
+msgstr "Sběrače"
 
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSElectricLocomotive.cs:2868
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSElectricLocomotive.cs:2870
@@ -1608,13 +1606,13 @@ msgstr "NENÍ OK"
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSElectricLocomotive.cs:2889
 #: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/PowerSupplies/DieselEngine.cs:386
 msgid "Helper"
-msgstr "Pomocník"
+msgstr "Přípřež"
 
 #. Context: PowerSupply
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSElectricLocomotive.cs:2836
 msgctxt "PowerSupply"
 msgid "Power"
-msgstr "Hlavní napájení"
+msgstr "Hlavnívýkon"
 
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:1568
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:1596
@@ -1647,11 +1645,11 @@ msgstr "Trakční motory zničeny!"
 
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:2877
 msgid "Power outage - auxiliary drives are not powered."
-msgstr "Vypnutí proudu - pomocné pohony nejsou napájeny."
+msgstr "Vypnutí proudu - pomocné pohony nekativní."
 
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:2899
 msgid "Power on - auxiliary drives are powered up."
-msgstr "Zapnutí proudu - pomocné pohony jsou napájeny."
+msgstr "Zapnutí proudu - pomocné pohony aktivní."
 
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:3195
 msgid "You're cold!"
@@ -1672,7 +1670,7 @@ msgstr "Cestujícím je příliš horko!"
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:3371
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:3377
 msgid "Overcurrent heating/air conditioning protection!"
-msgstr "Vybavení nadproudové ochrany topení/klimatizace!"
+msgstr "Zásahnadproudové ochrany topení/klimatizace!"
 
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:5328
 msgid "No water scoop on this loco"
@@ -1696,7 +1694,7 @@ msgstr "Naběrač vody je poškozen, nelze ji doplnit"
 
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:5706
 msgid "There's no more sand in the storage!"
-msgstr "V zásobnících už není písek!"
+msgstr "Pískovače jsou prázdné!"
 
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:8541
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:8618
@@ -1725,11 +1723,11 @@ msgstr "Poloha Vzad"
 
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:8730
 msgid "Directional lever retracted"
-msgstr "Směrová páka zasunuta"
+msgstr "Směrová páka vložena"
 
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:8732
 msgid "Directional lever extended"
-msgstr "Směrová páka vysunuta"
+msgstr "Směrová páka vyjmuta"
 
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:8783
 msgid "Power system changed to 25kV."
@@ -1825,21 +1823,19 @@ msgstr "Pevný převod"
 
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSSteamLocomotive.cs:5926
 msgid "Steam usage"
-msgstr "Využití páry"
+msgstr "Spotřeba páry"
 
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSSteamLocomotive.cs:5927
 msgid "Boiler pressure"
 msgstr "Tlak kotle"
 
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSSteamLocomotive.cs:5928
-#, fuzzy
-#| msgid "Boiler water level"
 msgid "Boiler water glass"
-msgstr "Hladina vody v kotli"
+msgstr "Hladina vody na vodoznaku"
 
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSSteamLocomotive.cs:5928
 msgid "(safe range)"
-msgstr "(rozsah)"
+msgstr "(bezpečný rozsah)"
 
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSSteamLocomotive.cs:5932
 msgid "Boiler water level"
@@ -1851,7 +1847,7 @@ msgstr "(absolutní)"
 
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSSteamLocomotive.cs:5934
 msgid "Fire mass"
-msgstr ""
+msgstr "Výkon ohně"
 
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSSteamLocomotive.cs:5936
 msgid "Fire Heat Loss"
@@ -1991,12 +1987,12 @@ msgstr "SouPřdh"
 
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSSteamLocomotive.cs:6020
 msgid "Steam Usage"
-msgstr "Využití páry"
+msgstr "Spotřeba páry"
 
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSSteamLocomotive.cs:6028
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSSteamLocomotive.cs:6055
 msgid "Usage:"
-msgstr "Využití:"
+msgstr "Spotřeba:"
 
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSSteamLocomotive.cs:6029
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSSteamLocomotive.cs:6056
@@ -2015,7 +2011,7 @@ msgstr "BezpečV"
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSSteamLocomotive.cs:6037
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSSteamLocomotive.cs:6064
 msgid "CylCock"
-msgstr "ŠoupVál"
+msgstr "KohoVál"
 
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSSteamLocomotive.cs:6039
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSSteamLocomotive.cs:6066
@@ -2026,12 +2022,12 @@ msgstr ""
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSSteamLocomotive.cs:6068
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSSteamLocomotive.cs:6353
 msgid "Stoker"
-msgstr "Topič"
+msgstr "Přikladač"
 
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSSteamLocomotive.cs:6043
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSSteamLocomotive.cs:6070
 msgid "BlowD"
-msgstr ""
+msgstr "OdkalV"
 
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSSteamLocomotive.cs:6045
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSSteamLocomotive.cs:6072
@@ -2058,7 +2054,7 @@ msgstr "Ujeto"
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSSteamLocomotive.cs:6139
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSSteamLocomotive.cs:6159
 msgid "Cutoff"
-msgstr "ZbTlak"
+msgstr "Plnění"
 
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSSteamLocomotive.cs:6088
 msgid "Lead"
@@ -2251,7 +2247,7 @@ msgstr "RoLimit"
 
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSSteamLocomotive.cs:6254
 msgid "MaxBurn"
-msgstr ""
+msgstr "MaxSpal"
 
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSSteamLocomotive.cs:6293
 msgid "Injector:"
@@ -2534,7 +2530,7 @@ msgstr ""
 
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSSteamLocomotive.cs:6595
 msgid "Ejector / Vacuum Pump"
-msgstr ""
+msgstr "ejektor/vývěva"
 
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSSteamLocomotive.cs:6600
 msgid "Large:"
@@ -2622,15 +2618,15 @@ msgstr "Nelze změnit převody, dokud kontrolér není na nule."
 
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSSteamLocomotive.cs:7523
 msgid "AI Fireman has started adding fuel to fire"
-msgstr ""
+msgstr "AI topič začal přikládat"
 
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSSteamLocomotive.cs:7530
 msgid "AI Fireman has stopped adding fuel to fire"
-msgstr ""
+msgstr "AI topič přestal přikládat"
 
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSSteamLocomotive.cs:7537
 msgid "AI Fireman has been reset"
-msgstr ""
+msgstr "AI topič resetován"
 
 #. Context: HUD
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSSteamLocomotive.cs:5980
@@ -2640,7 +2636,7 @@ msgstr "Výkon"
 
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSWagon.cs:2179
 msgid "Starting unload"
-msgstr "Začíná vykládat"
+msgstr "Vykládka zahájena"
 
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSWagon.cs:3650
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSWagon.cs:3661
@@ -2667,83 +2663,73 @@ msgid "Preparing for unload"
 msgstr "Příprava k vyložení"
 
 #: ../../Orts.Simulation/Simulation/RollingStocks/TrainCar.cs:1710
-#, fuzzy
-#| msgid ""
-#| "You are travelling too fast for this curve. Slow down, your freight may "
-#| "be damaged and your train may derail."
 msgid ""
 "You were travelling too fast for this curve, and have snapped a brake hose "
 "on Car "
 msgstr ""
-"Jedete do této zatáčky moc rychle. Zpomalte, váš náklad se může poškodit a "
-"váš vlak může vykolejit."
+"Jedete do tohoto oblouku moc rychle. Došlo k přetržení hladic hlavního "
+"potrubí (náhražka modelace vykolejení)."
 
 #: ../../Orts.Simulation/Simulation/RollingStocks/TrainCar.cs:1672
-#, fuzzy, csharp-format
-#| msgid ""
-#| "You are travelling too fast for this curve. Slow down, your freight may "
-#| "be damaged and your train may derail."
+#, csharp-format
 msgid ""
 "You are travelling too fast for this curve. Slow down, your freight car {0} "
 "may be damaged. The recommended speed for this curve is {1}"
 msgstr ""
-"Jedete do této zatáčky moc rychle. Zpomalte, váš náklad se může poškodit a "
-"váš vlak může vykolejit."
+"Jedete do tohoto oblouku příliš rychle!. Zpomalte, nebo dojde k poškození "
+"nákladního vozu č. {0}. Doporučená rychlost pro tento oblouk je: {1}"
 
 #: ../../Orts.Simulation/Simulation/RollingStocks/TrainCar.cs:1676
-#, fuzzy, csharp-format
-#| msgid ""
-#| "You are travelling too fast for this curve. Slow down, your passengers "
-#| "are feeling uncomfortable and your train may derail."
+#, csharp-format
 msgid ""
 "You are travelling too fast for this curve. Slow down, your passengers in "
 "car {0} are feeling uncomfortable. The recommended speed for this curve is "
 "{1}"
 msgstr ""
-"Jedete do této zatáčky moc rychle. Zpomalte, cestující se necítí příjemně a "
-"váš vlak může vykolejit."
+"Jedete do tohoto oblouk příliš rychle. Zpomalte, cestující ve voze č. {0} "
+"jsou stresováni. Doporučená rychlost pro tento oblouk je: {1}"
 
 #: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/CruiseControl.cs:324
 #: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/CruiseControl.cs:355
 msgid "Speed regulator mode changed to"
-msgstr ""
+msgstr "Režim řízení změněn na: "
 
 #: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/CruiseControl.cs:386
 #: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/CruiseControl.cs:414
 #: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/CruiseControl.cs:448
 msgid "Speed selector mode changed to"
-msgstr ""
+msgstr "Požadováná rychlost změněna na: "
 
 #: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/CruiseControl.cs:462
 msgid "Speed regulator max acceleration percent changed to"
-msgstr ""
+msgstr "Max. procento omezení poměrného tahu nastaveno na:"
 
 #: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/CruiseControl.cs:485
 #: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/CruiseControl.cs:513
 msgid "Speed regulator max acceleration changed to"
-msgstr ""
+msgstr "Omezení poměrného tahu nastaveno na:"
 
 #: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/CruiseControl.cs:585
 #: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/CruiseControl.cs:654
 msgid "Selected speed changed to "
-msgstr "Rychlost se změnila na "
+msgstr "Požadovaná rychlost byla změněna na:"
 
 #: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/CruiseControl.cs:665
 msgid "Number of axles increased to "
-msgstr ""
+msgstr "Počet náprav zvýšen na:"
 
 #: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/CruiseControl.cs:677
 msgid "Number of axles decreased to "
-msgstr ""
+msgstr "Počet náprav snížen na:"
 
 #: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/CruiseControl.cs:687
 msgid "Speed restricted zone active."
-msgstr "Oblast omezení rychlosti aktivována."
+msgstr "Pomalá jízda aktivní"
 
 #: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/CruiseControl.cs:692
 #: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/CruiseControl.cs:707
 msgid "Speed restricted zone off."
-msgstr "Oblast omezení rychlosti deaktivována."
+msgstr "Konec pomalé jízdy"
 
 #: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/CruiseControl.cs:742
 msgid "Selected speed set to "
@@ -2799,7 +2785,7 @@ msgstr "Netěsnost"
 
 #: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/MSTS/AirSinglePipe.cs:203
 msgid "Volume mainres and pipes"
-msgstr "Objem hl.jímka a potrubí"
+msgstr "Objem hl.jímky a potrubí"
 
 #: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/MSTS/AirSinglePipe.cs:224
 msgid "Active"
@@ -2833,47 +2819,47 @@ msgstr ""
 
 #: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/PowerSupplies/CircuitBreaker.cs:424
 msgid "Circuit breaker closing not authorized"
-msgstr ""
+msgstr "Sepnutí hlavního vypínače není povoleno!"
 
 #: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/PowerSupplies/DieselEngine.cs:1529
 msgid "The engine's wrecked!"
-msgstr "Motor je zničený!"
+msgstr "Spalovací motor je zadřený!"
 
 #: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/PowerSupplies/DieselEngine.cs:1535
 msgid "The engine's damaged!"
-msgstr "Motor je poškozený!"
+msgstr "Spalovací motor je poškozen!"
 
 #: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/PowerSupplies/DieselEngine.cs:1543
 msgid "The engine is overheating! Water temperature:"
-msgstr "Motor se přehřívá! Teplota vody:"
+msgstr "Spalovací motor se přehřívá! Teplota vody:"
 
 #: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/PowerSupplies/DieselEngine.cs:1545
 msgid "The engine is overheating! Oil temperature:"
-msgstr "Motor se přehřívá! Teplota oleje:"
+msgstr "Spalovací motor se přehřívá! Teplota oleje:"
 
 #. Context: Engine
 #: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/PowerSupplies/DieselEngine.cs:484
 msgctxt "Engine"
 msgid "Stopped"
-msgstr "Motor neběží"
+msgstr "Spalovací motor zastaven"
 
 #. Context: Engine
 #: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/PowerSupplies/DieselEngine.cs:485
 msgctxt "Engine"
 msgid "Starting"
-msgstr "Startuje motor"
+msgstr "Spalovací motor startuje"
 
 #. Context: Engine
 #: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/PowerSupplies/DieselEngine.cs:486
 msgctxt "Engine"
 msgid "Running"
-msgstr "Motor běží"
+msgstr "Spalovací motor běží"
 
 #. Context: Engine
 #: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/PowerSupplies/DieselEngine.cs:487
 msgctxt "Engine"
 msgid "Stopping"
-msgstr "Vypíná motor"
+msgstr "Spalovací motor stopuje"
 
 #: ../../Orts.Simulation/Simulation/Timetables/TTTrain.cs:10412
 msgid "Held for connecting train : "

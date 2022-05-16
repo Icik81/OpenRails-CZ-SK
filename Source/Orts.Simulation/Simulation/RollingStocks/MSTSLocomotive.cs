@@ -48,8 +48,10 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Orts.Common;
 using Orts.Formats.Msts;
+using Orts.Formats.OR;
 using Orts.MultiPlayer;
 using Orts.Parsers.Msts;
+using Orts.Simulation.AIs;
 using Orts.Simulation.Physics;
 using Orts.Simulation.RollingStocks.SubSystems;
 using Orts.Simulation.RollingStocks.SubSystems.Brakes;
@@ -3617,6 +3619,41 @@ namespace Orts.Simulation.RollingStocks
             }
         }
 
+        // AI akce pro definici světel
+        public void SetAIAction()
+        {
+            if (Simulator.GameTimeCyklus10 == 10)
+            {
+                if ((Train as AITrain) != null)
+                {
+                    CarIsWaiting = false;
+                    CarIsShunting = false;
+                    // AI je ve stanici nebo stojí
+                    if ((Train as AITrain).MovementState == AITrain.AI_MOVEMENT_STATE.STATION_STOP
+                        || (Train as AITrain).MovementState == AITrain.AI_MOVEMENT_STATE.STOPPED)                       
+                        CarIsWaiting = true;                                        
+                        
+                    // AI posunuje nebo vyčkává
+                    if ((Train as AITrain) != null && (Train as AITrain).nextActionInfo != null)
+                    {
+                        if ((Train as AITrain).nextActionInfo.GetType().IsSubclassOf(typeof(AuxActionItem)))
+                        {
+                            if ((Train as AITrain).AuxActionsContain[0] != null && ((AIAuxActionsRef)(Train as AITrain).AuxActionsContain[0]).NextAction == AuxActionRef.AUX_ACTION.WAITING_POINT)
+                            {
+                                if (((AuxActionWPItem)(Train as AITrain).nextActionInfo).NextAction > 0)
+                                {
+                                    if (((Train as AITrain).AuxActionsContain.SpecAuxActions[0] as AIActionWPRef).Delay > 40000 && ((Train as AITrain).AuxActionsContain.SpecAuxActions[0] as AIActionWPRef).Delay < 60010)
+                                        CarIsShunting = true; 
+                                    else
+                                        CarIsWaiting = true;
+                                }                                
+                            }
+                        }                                                    
+                    }
+                }
+            }
+        }
+
         // Panto shodí HV po zadaném čase
         float PantoCanHVOffActualTime;
         public void PantoCanHVOff(float elapsedClockSeconds)
@@ -4083,7 +4120,7 @@ namespace Orts.Simulation.RollingStocks
             }
 
             // Icik
-            SetCarPowerOn();
+            SetCarPowerOn();            
 
             if (IsLeadLocomotive())
                 CarIsPlayerLoco = true;
@@ -4097,6 +4134,9 @@ namespace Orts.Simulation.RollingStocks
                 DieselDirection_0 = true;
                 DieselDirection_Reverse = false;
             }
+            
+            if (!IsPlayerTrain && !Simulator.Paused)
+                SetAIAction();
 
             if (IsPlayerTrain && !Simulator.Paused)
             {

@@ -1782,7 +1782,7 @@ namespace Orts.Simulation.Physics
                     car.SpeedMpS = -car.SpeedMpS;
                 }
 
-                // Icik
+                // Icik                
                 // Provede odraz vozů při prudkém najetí
                 if (car.IsDriveable && car.Train.IsActualPlayerTrain)
                 {

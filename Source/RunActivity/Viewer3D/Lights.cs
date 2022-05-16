@@ -273,6 +273,29 @@ namespace Orts.Viewer3D
                 return false;
             LightCycle = 50;
 
+            // Světla pro AI
+            if (Car.Train != null && Car.Train.TrainType == Train.TRAINTYPE.AI)
+            {
+                // Reflektor bude mít AI jen v noci
+                if (newIsDay)                
+                    newTrainHeadlight = 1;
+                else                
+                    newTrainHeadlight = 2;
+
+                // AI posunuje
+                if (Car.CarIsShunting)
+                {
+                    newTrainHeadlight = 0;
+                }
+                else
+                // AI vyčkává na místě
+                if (Car.CarIsWaiting)
+                {
+                    newTrainHeadlight = 1;
+                }
+            }
+            
+
             if (
                 (TrainHeadlight != newTrainHeadlight) ||
                 (CarIsReversed != newCarIsReversed) ||

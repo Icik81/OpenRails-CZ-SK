@@ -1282,7 +1282,7 @@ namespace Orts.Simulation.RollingStocks
                 }
 
                 // Nastavení pro plně oživenou lokomotivu
-                if (LocoReadyToGo && BrakeSystem.IsAirFull)
+                if (LocoReadyToGo && BrakeSystem.IsAirFull && !LocoIsStatic)
                 {
                     if (!Battery)
                     {
@@ -1594,7 +1594,8 @@ namespace Orts.Simulation.RollingStocks
         // AI stahuje pantografy na úseku bez napětí a když nemá akci         
         bool CurrentAIDirection = false;
         bool PreAIDirection = false;
-        float AIPantoChangeTime = 0;
+        public float AIPantoChangeTime = 0;
+        float AISetPowerTime = 0;
         bool TrainHasMassKoef = false;
         bool TrainIsPassenger = false;
         bool TrainHasBreakSpeedPanto2Down = false;
@@ -1661,16 +1662,30 @@ namespace Orts.Simulation.RollingStocks
                         TrainPantoMarker = 1;
                 }
                 AIPantoChangeTime += elapsedClockSeconds;
+                SpeedMpS = 0;
                 if (AIPantoChangeTime > 10)
                 {
                     AIPantoChange = false;
-                    AIPantoChangeTime = 0;
+                    AIPantoChangeTime = -1;
                     AIPanto2Raise = true;
                     TrainHasMassKoef = false;
                     TrainIsPassenger = false;
-                    TrainHasBreakSpeedPanto2Down = false;
+                    TrainHasBreakSpeedPanto2Down = false;                    
+                }                
+            }
+            // Vyčká na místě po obratu
+            if (AIPantoChangeTime == -1)
+            {
+                CarPowerOn = true;
+                SpeedMpS = 0;
+                ThrottlePercent = 0;
+                AISetPowerTime += elapsedClockSeconds;
+                if (AISetPowerTime > 10)
+                {
+                    AISetPowerTime = 0;
+                    AIPantoChangeTime = 0;
                 }
-            }            
+            }
 
             // AI zvedne druhý pantograf při rozjezdu
             if (AIPanto2Raise)
@@ -1757,8 +1772,9 @@ namespace Orts.Simulation.RollingStocks
                     TrainPantoMarker = 1;
                 SignalEvent(Event.EnginePowerOff);
                 PowerOn = false;
-            }
-            
+            }            
+
+            // Pantografy AI
             if (Simulator.GameTimeCyklus10 == 10)
             {                
                 for (int i = 1; i <= Pantographs.Count; i++)
@@ -1772,12 +1788,18 @@ namespace Orts.Simulation.RollingStocks
                             {
                                 Pantographs[i].PantographsUpBlocked = false;
                                 SignalEvent(PowerSupplyEvent.RaisePantograph, TrainPantoMarker);
-                                if (!PowerOn)
-                                    SignalEvent(Event.EnginePowerOn);
-                                PowerOn = true;
                             }
                             break;
                         case PantographState.Up:
+                            if (AIPantoChangeTime == -1)
+                                return;
+                            else
+                            if (!PowerOn)
+                            {
+                                SignalEvent(Event.EnginePowerOn);
+                                PowerOn = true;
+                            }    
+                            
                             if (RouteVoltageV == 1 || AIPantoDownStop)
                             {
                                 Pantographs[i].PantographsUpBlocked = true;

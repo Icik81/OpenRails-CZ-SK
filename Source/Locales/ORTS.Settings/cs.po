@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ORTS.Settings\n"
 "POT-Creation-Date: 2022-05-15 06:12:19+0200\n"
-"PO-Revision-Date: 2022-05-15 06:53+0200\n"
+"PO-Revision-Date: 2022-05-15 15:59+0200\n"
 "Last-Translator: Altmann <altmann@bk.ru>\n"
 "Language-Team: Open Rails Dev Team\n"
 "Language: cs\n"
@@ -15,17 +15,17 @@ msgstr ""
 #: ../../ORTS.Settings/InputSettings.cs:616
 #, csharp-format
 msgid "{0} requires and is modified by Shift"
-msgstr "{0} vyžaduje stisknutí Shift"
+msgstr "{0} vyžaduje stisk Shift"
 
 #: ../../ORTS.Settings/InputSettings.cs:618
 #, csharp-format
 msgid "{0} requires and is modified by Control"
-msgstr "{0} vyžaduje stisknutí Control"
+msgstr "{0} vyžaduje stisk Control"
 
 #: ../../ORTS.Settings/InputSettings.cs:620
 #, csharp-format
 msgid "{0} requires and is modified by Alt"
-msgstr "{0} vyžaduje stisknutí Alt"
+msgstr "{0} vyžaduje stisk Alt"
 
 #: ../../ORTS.Settings/InputSettings.cs:651
 #, csharp-format
@@ -34,115 +34,115 @@ msgstr "{0} a {1} jsou totožné s {2}"
 
 #: ../../ORTS.Settings/RailDriverSettings.cs:15
 msgid "Reverser Neutral"
-msgstr ""
+msgstr "Plnění střední poloha"
 
 #: ../../ORTS.Settings/RailDriverSettings.cs:16
 msgid "Reverser Full Reversed"
-msgstr ""
+msgstr "Plnění zcela vpřed"
 
 #: ../../ORTS.Settings/RailDriverSettings.cs:17
 msgid "Reverser Full Forward"
-msgstr ""
+msgstr "Plnění zcela vzad"
 
 #: ../../ORTS.Settings/RailDriverSettings.cs:18
 msgid "Throttle Idle"
-msgstr ""
+msgstr "Regulátor zavřen"
 
 #: ../../ORTS.Settings/RailDriverSettings.cs:19
 msgid "Full Throttle"
-msgstr ""
+msgstr "Regulátor zcela otevřen"
 
 #: ../../ORTS.Settings/RailDriverSettings.cs:20
 msgid "Dynamic Brake"
-msgstr ""
+msgstr "EDB"
 
 #: ../../ORTS.Settings/RailDriverSettings.cs:21
 msgid "Dynamic Brake Setup"
-msgstr ""
+msgstr "EDB: sestavování"
 
 #: ../../ORTS.Settings/RailDriverSettings.cs:22
 msgid "Auto Brake Released"
-msgstr ""
+msgstr "Samočinná brzda odbrzděna"
 
 #: ../../ORTS.Settings/RailDriverSettings.cs:23
 msgid "Full Auto Brake "
-msgstr ""
+msgstr "Samočinná brzda plný účinek"
 
 #: ../../ORTS.Settings/RailDriverSettings.cs:24
 msgid "Emergency Brake"
-msgstr ""
+msgstr "Rychlobrzda"
 
 #: ../../ORTS.Settings/RailDriverSettings.cs:25
 msgid "Independent Brake Released"
-msgstr ""
+msgstr "Přimočinná brzda odbrzděna"
 
 #: ../../ORTS.Settings/RailDriverSettings.cs:26
 msgid "Independent Brake Full"
-msgstr ""
+msgstr "Přimočinná brzda plný účinek"
 
 #: ../../ORTS.Settings/RailDriverSettings.cs:27
 msgid "Bail Off Disengaged (in Released position)"
-msgstr ""
+msgstr "Odbržďovač neaktivní (v uvolněné pozici)"
 
 #: ../../ORTS.Settings/RailDriverSettings.cs:28
 msgid "Bail Off Engaged (in Released position)"
-msgstr ""
+msgstr "Odbržďovač aktivní (v uvolněné pozici)"
 
 #: ../../ORTS.Settings/RailDriverSettings.cs:29
 msgid "Bail Off Disengaged (in Full position)"
-msgstr ""
+msgstr "Odbržďovač neaktivní (pozice plného stisku)"
 
 #: ../../ORTS.Settings/RailDriverSettings.cs:30
 msgid "Bail Off Engaged (in Full position)"
-msgstr ""
+msgstr "Odbržďovač aktivní (pozice plného stisku)"
 
 #: ../../ORTS.Settings/RailDriverSettings.cs:31
 msgid "Rotary Switch 1-Position 1(OFF)"
-msgstr ""
+msgstr "Otočný přepínač 1 pozice 1 (vypnuto)"
 
 #: ../../ORTS.Settings/RailDriverSettings.cs:32
 msgid "Rotary Switch 1-Position 2(SLOW)"
-msgstr ""
+msgstr "Otočný přepínač 1 pozice 2 (pomalu)"
 
 #: ../../ORTS.Settings/RailDriverSettings.cs:33
 msgid "Rotary Switch 1-Position 3(FULL)"
-msgstr ""
+msgstr "Otočný přepínač 1 pozice 3 (naplno)"
 
 #: ../../ORTS.Settings/RailDriverSettings.cs:34
 msgid "Rotary Switch 2-Position 1(OFF)"
-msgstr ""
+msgstr "Otočný přepínač 2 pozice 1 (vypnuto)"
 
 #: ../../ORTS.Settings/RailDriverSettings.cs:35
 msgid "Rotary Switch 2-Position 2(DIM)"
-msgstr ""
+msgstr "Otočný přepínač 2 pozice 2 (tlumené)"
 
 #: ../../ORTS.Settings/RailDriverSettings.cs:36
 msgid "Rotary Switch 2-Position 3(FULL)"
-msgstr ""
+msgstr "Otočný přepínač 2 pozice 3 (dálkové)"
 
 #: ../../ORTS.Settings/RailDriverSettings.cs:37
 msgid "Reverse Reverser Direction"
-msgstr ""
+msgstr "Otočit smysl pohybu páky plnění"
 
 #: ../../ORTS.Settings/RailDriverSettings.cs:38
 msgid "Reverse Throttle Direction"
-msgstr ""
+msgstr "Otočit smysl pohybu páky regulátoru"
 
 #: ../../ORTS.Settings/RailDriverSettings.cs:39
 msgid "Reverse Auto Brake Direction"
-msgstr ""
+msgstr "Otočit smysl pohybu brzdiče samočinné brzdy"
 
 #: ../../ORTS.Settings/RailDriverSettings.cs:40
 msgid "Reverse Independent Brake Direction"
-msgstr ""
+msgstr "Otočit smysl pohybu brzdiče přímočinné brzdy"
 
 #: ../../ORTS.Settings/RailDriverSettings.cs:41
 msgid "Full Range Throttle"
-msgstr ""
+msgstr "Regulátor naplno"
 
 #: ../../ORTS.Settings/RailDriverSettings.cs:42
 msgid "Cut Off Delta"
-msgstr ""
+msgstr "Rozdíl/delta plnění"
 
 #: ../../ORTS.Settings/RailDriverSettings.cs:225
 #, csharp-format
@@ -150,3 +150,5 @@ msgid ""
 "Button {0} is assigned to \r\n"
 "\t"
 msgstr ""
+"Tkačítko {0} je přiřazeno k: \n"
+"\t"
