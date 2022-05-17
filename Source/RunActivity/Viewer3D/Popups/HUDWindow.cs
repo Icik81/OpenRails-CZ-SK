@@ -664,7 +664,7 @@ namespace Orts.Viewer3D.Popups
                     (train.IsFreight ? Viewer.Catalog.GetString("Freight") : Viewer.Catalog.GetString("Pass")) + "\t" +
                     (car.WagonHasTemperature ? Math.Round(car.WagonTemperature).ToString() + " °C" : NoText) + "\t" +
                     ((car.WagonHasTemperature && car.StatusHeatIsOn && !car.Train.CarSteamHeatOn) || (car.Train.CarSteamHeatOn && !car.LocomotiveCab) || (car.LocomotiveCab && car.StatusHeatIsOn) ? Viewer.Catalog.GetString("Active") : NoText) + "\t" +
-                    (car.WagonHasTemperature && car.BrakeSystem.HeatingIsOn && mstsLocomotive.HeatingIsOn && !car.Train.CarSteamHeatOn ? Viewer.Catalog.GetString("On") : NoText) + "\t" +
+                    (car.WagonHasTemperature && car.BrakeSystem.HeatingIsOn && !car.Train.CarSteamHeatOn ? Viewer.Catalog.GetString("On") : Viewer.Catalog.GetString("Off")) + "\t" +
                     (TypeHeatText) + "\t" +
                     (car.WagonHasTemperature && car.DieselHeaterPower > 0 ? FormatStrings.FormatFuelVolume(car.DieselHeaterTankCapacityMark, true, false) : NoText) + "\t" +
                     (car.BrakeSystem.DoorsOpen ? Viewer.Catalog.GetString("opened") : NoText) + "\t" +

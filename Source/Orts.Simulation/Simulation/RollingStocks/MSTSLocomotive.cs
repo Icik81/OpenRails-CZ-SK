@@ -3737,7 +3737,7 @@ namespace Orts.Simulation.RollingStocks
                 PowerUnit = false;
                 ControlUnit = false;
 
-                if (MaxPowerWBase > 10 * 1000)
+                if (MaxPowerWBase > 10 * 1000 || (this as MSTSDieselLocomotive).MaximumDieselEnginePowerW > 0)
                     PowerUnit = true;
                 else
                     ControlUnit = true;
