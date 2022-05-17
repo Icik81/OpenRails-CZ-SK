@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: RunActivity\n"
 "POT-Creation-Date: 2022-05-15 07:34:46+0200\n"
-"PO-Revision-Date: 2022-05-16 19:17+0200\n"
+"PO-Revision-Date: 2022-05-17 18:27+0200\n"
 "Last-Translator: Altmann <altmann@bk.ru>\n"
 "Language-Team: Open Rails Dev Team\n"
 "Language: cs\n"
@@ -595,7 +595,7 @@ msgstr "Připojit/Odpojit postrk"
 
 #: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:69
 msgid "Toggle Brake Hose Connection"
-msgstr "Spojit/rozpojit hladice hlavního potrubí"
+msgstr "Spojit/rozpojit hadice hlavního potrubí"
 
 #: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:71
 msgid "Open/Close Front Angle Cock"
@@ -758,7 +758,7 @@ msgstr "Napájecí hadice rozpojeny"
 
 #: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:330
 msgid "disconnect"
-msgstr "rozpojit"
+msgstr "rozpojeno"
 
 #: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:334
 msgid "Air Twin Pipe Hoses connected"
@@ -766,7 +766,7 @@ msgstr "Napájecí hadice spojeny"
 
 #: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:335
 msgid "connect"
-msgstr "spojit"
+msgstr "spojeno"
 
 #: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:347
 msgid "Car Brake On"
@@ -1129,7 +1129,7 @@ msgstr[2] "= Všechny lokomotivy."
 #: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:589
 #: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:107
 msgid "Throttle"
-msgstr "Kontrolér/regulátor"
+msgstr "Kontrolér"
 
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:162
 msgid "Power In/Out"
@@ -1449,7 +1449,7 @@ msgstr "Tepl int"
 
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:609
 msgid "H/AUnit"
-msgstr "JednTopení"
+msgstr "TopZAP/VYP"
 
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:610
 msgid "HeatType"
@@ -1489,28 +1489,28 @@ msgstr "A4 tíha"
 
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:621
 msgid "A1 Speed"
-msgstr "A1 Rychlost"
+msgstr "A1 rychl"
 
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:622
 msgid "A2 Speed"
-msgstr "A2 Rychlost"
+msgstr "A2 rychl"
 
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:623
 msgid "A3 Speed"
-msgstr "A3 Rychlost"
+msgstr "A3 rychl"
 
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:624
 msgid "A4 Speed"
-msgstr "A4 Rychlost"
+msgstr "A4 rychl"
 
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:625
 msgid "A5 Speed"
-msgstr "A5 Rychlost"
+msgstr "A5 rychl"
 
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:643
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:652
 msgid "DieselHeat"
-msgstr "TopnýAgregát"
+msgstr "TopAgreg"
 
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:646
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:658
@@ -1862,7 +1862,7 @@ msgstr "OdporVítr:"
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1429
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1438
 msgid "ResSpeed:"
-msgstr "OdporRychlost"
+msgstr "OdporRychl:"
 
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1434
 msgid "Wind Speed:"
@@ -1927,7 +1927,7 @@ msgstr "Brzdná"
 
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1475
 msgid "Friction"
-msgstr "GravitačníOdpor"
+msgstr "Odpor"
 
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1476
 msgid "Gravity"
@@ -2182,7 +2182,7 @@ msgstr "Ovladač plnění"
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:770
 msgctxt "NonSteam"
 msgid "Reverser"
-msgstr "Volič směru"
+msgstr "SměrVolič"
 
 #: ../../RunActivity/Viewer3D/Popups/MultiPlayerWindow.cs:95
 msgid "MultiPlayer Info"

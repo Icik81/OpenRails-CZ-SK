@@ -168,7 +168,7 @@ namespace Orts.Viewer3D.Popups
 
         void buttonTogglePower_Click(Control arg1, Point arg2)
         {
-            if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive).IsLeadLocomotive())
+            if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive) != null && (Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive).IsLeadLocomotive())
                 return;
 
             if ((Viewer.PlayerTrain.Cars[CarPosition].GetType() == typeof(MSTSLocomotive))

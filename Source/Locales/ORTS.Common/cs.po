@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ORTS.Common\n"
 "POT-Creation-Date: 2022-05-15 07:34:40+0200\n"
-"PO-Revision-Date: 2022-05-15 15:41+0200\n"
+"PO-Revision-Date: 2022-05-17 16:33+0200\n"
 "Last-Translator: Altmann <altmann@bk.ru>\n"
 "Language-Team: \n"
 "Language: cs\n"
@@ -941,7 +941,7 @@ msgstr "Ovládání_Classic Injektor 2 zap/vyp"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:184
 msgid "Control_Classic Blowdown Valve"
-msgstr "Ovládání_Classic Odkalovací ventil kotle"
+msgstr "Ovládání_Classic Odkalovací ventily kotle"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:185
 msgid "Control_Classic Blower Increase"
@@ -1021,7 +1021,7 @@ msgstr "Ovládání_Classic Sdružený válec zap/vyp"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:203
 msgid "Control_Classic Firing"
-msgstr "Ovládání_Classic Přiložit jednu lopatui"
+msgstr "Ovládání_Classic Přiložit jednu lopatu"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:204
 #, fuzzy
@@ -1031,7 +1031,7 @@ msgstr "Ovládání_Classic Doplnit"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:205
 msgid "Control_Classic Water Scoop"
-msgstr "Ovládání_Classic Vodní jeřáb spustit/zvednout"
+msgstr "Ovládání_Classic Naběrač vody spustit/zvednout"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:206
 msgid "Control_Classic ImmediateRefill"
@@ -1355,23 +1355,23 @@ msgstr "Ovládání_CZSK Tlačítko závěru"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:291
 msgid "Set Power Supply Station Location"
-msgstr "Nastavit lokaci napájecí stanice"
+msgstr "Nastavit lokaci napájecí stanice (pouze vývojáři)"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:292
 msgid "Set Voltage 25k"
-msgstr "Nastavit napětí 25kV"
+msgstr "Nastavit napětí 25kV (pouze vývojáři)"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:293
 msgid "Set Voltage 3k"
-msgstr "Nastavit napětí 3kV"
+msgstr "Nastavit napětí 3kV (pouze vývojáři)"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:294
 msgid "Set Voltage 0"
-msgstr "Nastavit napětí 0kV"
+msgstr "Nastavit napětí 0kV (pouze vývojáři)"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:295
 msgid "Set Delete Voltage Marker"
-msgstr "Smazat napěťový marker"
+msgstr "Smazat napěťový marker (pouze vývojáři)"
 
 #~ msgid "Camera 3D Cab"
 #~ msgstr "Pohled 3D kabina"

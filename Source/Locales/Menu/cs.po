@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: 2022-05-15 06:12:14+0200\n"
-"PO-Revision-Date: 2022-05-15 14:09+0200\n"
+"PO-Revision-Date: 2022-05-17 16:28+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: cs\n"
@@ -928,7 +928,7 @@ msgstr "Vliv větru na jízdní odpor"
 #: ../../Menu/Options.Designer.cs:1433
 #: ../../Menu/Properties/Options.Designer.cs:1416
 msgid "Override non-electrified route line-voltage"
-msgstr "Vnutit přítomnost trolejového napětí na neelektritikované trati"
+msgstr "Vnutit přítomnost trolej. napětí na neelektrifikované trati"
 
 #: ../../Menu/Options.Designer.cs:1444
 #: ../../Menu/Properties/Options.Designer.cs:1427

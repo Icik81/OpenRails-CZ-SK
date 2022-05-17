@@ -3630,9 +3630,14 @@ namespace Orts.Simulation.RollingStocks
                     CarIsShunting = false;
                     // AI je ve stanici nebo stojí
                     if ((Train as AITrain).MovementState == AITrain.AI_MOVEMENT_STATE.STATION_STOP
-                        || (Train as AITrain).MovementState == AITrain.AI_MOVEMENT_STATE.STOPPED)                       
-                        CarIsWaiting = true;                                        
-                        
+                        || (Train as AITrain).MovementState == AITrain.AI_MOVEMENT_STATE.STOPPED
+                        || (Train as AITrain).MovementState == AITrain.AI_MOVEMENT_STATE.SUSPENDED)                       
+                        CarIsWaiting = true;
+
+                    if ((Train as AITrain).MovementState == AITrain.AI_MOVEMENT_STATE.HANDLE_ACTION
+                        || (Train as AITrain).MovementState == AITrain.AI_MOVEMENT_STATE.INIT_ACTION)
+                        CarIsShunting = true;
+
                     // AI posunuje nebo vyčkává
                     if ((Train as AITrain) != null && (Train as AITrain).nextActionInfo != null)
                     {
