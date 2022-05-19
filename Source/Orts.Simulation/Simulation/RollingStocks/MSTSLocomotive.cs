@@ -3627,31 +3627,44 @@ namespace Orts.Simulation.RollingStocks
                 if ((Train as AITrain) != null)
                 {
                     CarIsWaiting = false;
-                    CarIsShunting = false;
+
                     // AI je ve stanici nebo stojí
                     if ((Train as AITrain).MovementState == AITrain.AI_MOVEMENT_STATE.STATION_STOP
                         || (Train as AITrain).MovementState == AITrain.AI_MOVEMENT_STATE.STOPPED
                         || (Train as AITrain).MovementState == AITrain.AI_MOVEMENT_STATE.SUSPENDED)                       
                         CarIsWaiting = true;
 
-                    if ((Train as AITrain).MovementState == AITrain.AI_MOVEMENT_STATE.HANDLE_ACTION
-                        || (Train as AITrain).MovementState == AITrain.AI_MOVEMENT_STATE.INIT_ACTION)
-                        CarIsShunting = true;
-
-                    // AI posunuje nebo vyčkává
                     if ((Train as AITrain) != null && (Train as AITrain).nextActionInfo != null)
                     {
                         if ((Train as AITrain).nextActionInfo.GetType().IsSubclassOf(typeof(AuxActionItem)))
                         {
                             if ((Train as AITrain).AuxActionsContain[0] != null && ((AIAuxActionsRef)(Train as AITrain).AuxActionsContain[0]).NextAction == AuxActionRef.AUX_ACTION.WAITING_POINT)
                             {
-                                if (((AuxActionWPItem)(Train as AITrain).nextActionInfo).NextAction > 0)
-                                {
-                                    if (((Train as AITrain).AuxActionsContain.SpecAuxActions[0] as AIActionWPRef).Delay > 40000 && ((Train as AITrain).AuxActionsContain.SpecAuxActions[0] as AIActionWPRef).Delay < 60010)
-                                        CarIsShunting = true; 
-                                    else
-                                        CarIsWaiting = true;
-                                }                                
+                                var AIActionPoint0 = ((Train as AITrain).AuxActionsContain.SpecAuxActions[0] as AIActionWPRef);
+                                if (AIActionPoint0.Delay < 40000 && CarIsShunting && Math.Abs((Train as AITrain).SpeedMpS) > 0)
+                                    CarIsRunning = true;
+                                if (AIActionPoint0.Delay < 40000 && CarIsRunning && (Train as AITrain).SpeedMpS == 0)
+                                    CarIsWaiting = true;                                                                                                        
+                            }
+                        }
+                    }
+
+                    if (CarIsWaiting)
+                    {
+                        CarIsShunting = false;
+                        CarIsRunning = false;
+                    }
+
+                    // AI posunuje                     
+                    if ((Train as AITrain) != null && (Train as AITrain).nextActionInfo != null)
+                    {                        
+                        if ((Train as AITrain).nextActionInfo.GetType().IsSubclassOf(typeof(AuxActionItem)))
+                        {
+                            if ((Train as AITrain).AuxActionsContain[0] != null && ((AIAuxActionsRef)(Train as AITrain).AuxActionsContain[0]).NextAction == AuxActionRef.AUX_ACTION.WAITING_POINT)
+                            {
+                                var AIActionPoint0 = ((Train as AITrain).AuxActionsContain.SpecAuxActions[0] as AIActionWPRef);
+                                if (AIActionPoint0.Delay > 40000 && AIActionPoint0.Delay < 60010)
+                                    CarIsShunting = true;
                             }
                         }                                                    
                     }
