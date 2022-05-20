@@ -191,6 +191,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems
         {
             Simulator = Locomotive.Simulator;
             clockTime = Simulator.ClockTime * 100;
+            if (Locomotive.LocoType == MSTSLocomotive.LocoTypes.Vectron)
+            {
+                ConfirmingSpeedRequired = true;
+            }
         }
 
         public float SelectedSpeed = 0;
@@ -783,22 +787,19 @@ namespace Orts.Simulation.RollingStocks.SubSystems
         {
             if (Locomotive.LocoType == MSTSLocomotive.LocoTypes.Vectron)
             {
-                ConfirmingSpeedRequired = true;
-            }
-
-            //if (SpeedChanged && Locomotive.LocoType == MSTSLocomotive.LocoTypes.Vectron && MpS.ToKpH(Locomotive.AbsSpeedMpS) < 110) // set up max effort for Vectron like "clever" loco's
-            //{
-            //    overridenMaximalForce = (MpS.ToKpH(SelectedSpeedMpS) - MpS.ToKpH(Locomotive.AbsSpeedMpS)) * 2;
-            //    if (overridenMaximalForce < 0)
-            //        overridenMaximalForce = -overridenMaximalForce;
-            //    SpeedChanged = false;
-            //}
-            if (Locomotive.LocoType == MSTSLocomotive.LocoTypes.Vectron)
-            {
-                if (MpS.ToKpH(Locomotive.AbsSpeedMpS) < 100)
+                if (overridenMaximalForce == 0)
                     overridenMaximalForce = 50;
-                else
-                    overridenMaximalForce = (MpS.ToKpH(Locomotive.AbsSpeedMpS) - 100) + 50;
+                if (Locomotive.ForceHandleValue == 0)
+                    overridenMaximalForce = 50;
+                float requestedMaxAcceleration = Locomotive.ForceHandleValue / 200;
+                if (Locomotive.AccelerationMpSS < requestedMaxAcceleration)
+                {
+                    overridenMaximalForce += elapsedClockSeconds * 5; // 5% per second
+                }
+                if (Locomotive.AccelerationMpSS > requestedMaxAcceleration + 0.05f)
+                {
+                    overridenMaximalForce -= elapsedClockSeconds;
+                }
             }
 
             if (overridenMaximalForce > 100)
