@@ -841,6 +841,9 @@ namespace Orts.Formats.Msts
                     MotorId = (int)stf.ReadFloat(STFReader.UNITS.None, 0);
                     stf.SkipRestOfBlock();
                 }),
+                new STFReader.TokenProcessor("feature", ()=>{
+                    Feature = stf.ReadStringBlock("None");
+                }),
 
             });
         }

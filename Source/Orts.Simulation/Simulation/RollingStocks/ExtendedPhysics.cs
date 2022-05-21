@@ -479,6 +479,21 @@ namespace Orts.Simulation.RollingStocks
 
         public void Update(int totalMotors, float elapsedClockSeconds, float overridenControllerVolts, bool usingControllerVolts)
         {
+            if (Locomotive.AbsSpeedMpS == 0)
+            {
+                if (overridenControllerVolts > 0)
+                {
+                    overridenControllerVolts -= 0.5f;
+                    if (overridenControllerVolts < 0)
+                        overridenControllerVolts = 0;
+                }
+                if (overridenControllerVolts < 0)
+                {
+                    overridenControllerVolts += 0.5f;
+                    if (overridenControllerVolts > 0)
+                        overridenControllerVolts = 0;
+                }
+            }
             LocomotiveAxle.DampingNs = Mass;
             LocomotiveAxle.FrictionN = Mass * 10;
             LocomotiveAxle.SlipWarningTresholdPercent = Locomotive.SlipWarningThresholdPercent;

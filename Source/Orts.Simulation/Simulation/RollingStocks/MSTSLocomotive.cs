@@ -9586,6 +9586,20 @@ namespace Orts.Simulation.RollingStocks
                         break;
                     }
                 case CABViewControlTypes.REQUESTED_FORCE:
+                    if (cvc.Feature == "HideOnPositiveForce")
+                    {
+                        if (extendedPhysics.TotalForceN > 0)
+                            cvc.IsVisible = false;
+                        else
+                            cvc.IsVisible = true;
+                    }
+                    if (cvc.Feature == "HideOnNegativeForce")
+                    {
+                        if (extendedPhysics.TotalForceN < 0)
+                            cvc.IsVisible = false;
+                        else
+                            cvc.IsVisible = true;
+                    }
                     float maxForce = (extendedPhysics.TotalMaxForceN / MaxForceN) * 100;
                     if (CruiseControl != null)
                     {

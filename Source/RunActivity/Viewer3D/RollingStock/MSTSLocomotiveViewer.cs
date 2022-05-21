@@ -2013,6 +2013,12 @@ namespace Orts.Viewer3D.RollingStock
                     display = true;
             }
 
+            if (!Control.IsVisible)
+            {
+                Locomotive.GetDataOf(Control);
+                return;
+            }
+
             if (!display)
                 return;
             var dark = Viewer.MaterialManager.sunDirection.Y <= -0.085f || Viewer.Camera.IsUnderground;
@@ -2579,6 +2585,22 @@ namespace Orts.Viewer3D.RollingStock
                     index = PercentToIndex(Locomotive.GetCombinedHandleValue(false));
                     break;
                 case CABViewControlTypes.REQUESTED_FORCE:
+                    if (Control.Feature == "NegativeMask")
+                    {
+                        if (Locomotive.extendedPhysics.TotalForceN < 0)
+                            index = 1;
+                        else
+                            index = 0;
+                        break;
+                    }
+                    if (Control.Feature == "PositiveMask")
+                    {
+                        if (Locomotive.extendedPhysics.TotalForceN > 0)
+                            index = 1;
+                        else
+                            index = 0;
+                        break;
+                    }
                     index = PercentToIndex(Locomotive.GetCombinedHandleValue(false));
                     break;
                 case CABViewControlTypes.ORTS_SELECTED_SPEED_DISPLAY:
