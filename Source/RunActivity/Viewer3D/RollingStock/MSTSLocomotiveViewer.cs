@@ -91,7 +91,7 @@ namespace Orts.Viewer3D.RollingStock
             // Icik
             // Inicializace STATIC
             if (this.MSTSLocomotive.Battery)
-                this.MSTSLocomotive.CarPowerOn = true;
+                this.MSTSLocomotive.CarLightsPowerOn = true;
 
             var mstsElectricLocomotive = car as MSTSElectricLocomotive;
             if (this.MSTSLocomotive.Train.TrainType == Train.TRAINTYPE.STATIC && mstsElectricLocomotive != null && !mstsElectricLocomotive.PowerOn)
@@ -105,7 +105,7 @@ namespace Orts.Viewer3D.RollingStock
             {
                 this.MSTSLocomotive.SignalEvent(Event.EnginePowerOn);                
                 this.MSTSLocomotive.LocoIsStatic = true;
-                this.MSTSLocomotive.CarPowerOn = true;
+                this.MSTSLocomotive.CarLightsPowerOn = true;
             }
 
             var mstsSteamLocomotive = car as MSTSSteamLocomotive;
@@ -120,7 +120,7 @@ namespace Orts.Viewer3D.RollingStock
             {
                 this.MSTSLocomotive.SignalEvent(Event.EnginePowerOn);                
                 this.MSTSLocomotive.LocoIsStatic = true;
-                this.MSTSLocomotive.CarPowerOn = true;
+                this.MSTSLocomotive.CarLightsPowerOn = true;
             }
                       
             var mstsDieselLocomotive = car as MSTSDieselLocomotive;
@@ -136,7 +136,7 @@ namespace Orts.Viewer3D.RollingStock
                 this.MSTSLocomotive.SignalEvent(Event.EnginePowerOn);
                 this.MSTSLocomotive.PowerOn = true;
                 this.MSTSLocomotive.LocoIsStatic = true;
-                this.MSTSLocomotive.CarPowerOn = true;
+                this.MSTSLocomotive.CarLightsPowerOn = true;
             }
         }
 

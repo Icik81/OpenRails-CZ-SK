@@ -1098,6 +1098,7 @@ namespace Orts.Simulation.RollingStocks
                 StartButtonPressed = false;                
                 if (DieselEngines[0].EngineStatus != DieselEngine.Status.Running && AIMotorStart)
                 {
+                    CarLightsPowerOn = true;
                     DieselEngines[0].AIStartTimeToGo = 10;
                     this.AIStart = true;
                     StartButtonPressed = true;

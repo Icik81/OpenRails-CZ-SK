@@ -1676,7 +1676,7 @@ namespace Orts.Simulation.RollingStocks
             // Vyčká na místě po obratu
             if (AIPantoChangeTime == -1)
             {
-                CarPowerOn = true;
+                CarLightsPowerOn = true;
                 SpeedMpS = 0;
                 ThrottlePercent = 0;
                 AISetPowerTime += elapsedClockSeconds;

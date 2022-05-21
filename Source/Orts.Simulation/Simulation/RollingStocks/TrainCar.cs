@@ -356,7 +356,7 @@ namespace Orts.Simulation.RollingStocks
         public bool AuxPowerOff;
         public bool LocoHelperOn;
         public bool UserPowerOff;
-        public bool CarPowerOn;
+        public bool CarLightsPowerOn;
         public bool CarIsPlayerLoco;
         public bool CarIsWaiting;
         public bool CarIsShunting;
