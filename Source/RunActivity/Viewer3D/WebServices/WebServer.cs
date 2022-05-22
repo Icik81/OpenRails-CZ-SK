@@ -26,7 +26,6 @@ using EmbedIO.WebApi;
 using Microsoft.Xna.Framework;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
-using Orts.Simulation.Physics;
 using Orts.Viewer3D.RollingStock;
 using System;
 using System.Collections.Generic;

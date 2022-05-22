@@ -67,8 +67,8 @@ namespace Orts.Common
         EngineBrakeChange,
         EngineBrakePressureDecrease,
         EngineBrakePressureIncrease,
-        EnginePowerOff, 
-        EnginePowerOn, 
+        EnginePowerOff,
+        EnginePowerOn,
         FireboxDoorChange,
         FireboxDoorOpen,
         FireboxDoorClose,
@@ -89,8 +89,8 @@ namespace Orts.Common
         HornOff,
         HornOn,
         LightSwitchToggle,
-        MirrorClose, 
-        MirrorOpen, 
+        MirrorClose,
+        MirrorOpen,
         Pantograph1Down,
         PantographToggle,
         // Don't modify order of next 7 events
@@ -120,7 +120,7 @@ namespace Orts.Common
         WaterInjector2Off,
         WaterInjector2On,
         BlowdownValveToggle,
-        SteamHeatChange, 
+        SteamHeatChange,
         SteamPulse1,
         SteamPulse2,
         SteamPulse3,
@@ -267,11 +267,11 @@ namespace Orts.Common
         CircuitBreakerClosingDC,
         CircuitBreakerClosedDC,
         Pantograph1UpAC,
-        Pantograph1DownAC,        
+        Pantograph1DownAC,
         Pantograph2UpAC,
         Pantograph2DownAC,
         Pantograph1UpDC,
-        Pantograph1DownDC,        
+        Pantograph1DownDC,
         Pantograph2UpDC,
         Pantograph2DownDC,
         CompressorOffAC,
@@ -434,7 +434,7 @@ namespace Orts.Common
                         case 104: return Event.ReverserToNeutral; // reversed moved to neutral
                         case 105: return Event.DoorOpen; // door opened; propagated to all locos and wagons of the consist
                         case 106: return Event.DoorClose; // door closed; propagated to all locos and wagons of the consist
-                        case 107: return Event.MirrorOpen; 
+                        case 107: return Event.MirrorOpen;
                         case 108: return Event.MirrorClose;
                         case 109: return Event.TrainControlSystemInfo1;
                         case 110: return Event.TrainControlSystemInfo2;
@@ -640,18 +640,18 @@ namespace Orts.Common
                         case 20058: return Event.StartUpMotor;
                         case 20059: return Event.StartUpMotorStop;
                         case 20060: return Event.StartUpMotorBreak;
-                        case 20061: return Event.InitMotorIdle;                                                
+                        case 20061: return Event.InitMotorIdle;
                         case 20062: return Event.DieselMotorTempWarning;
                         case 20063: return Event.DieselMotorTempWarningOff;
-                        case 20064: return Event.DieselMotorTempDefected;                        
-                        case 20065: return Event.DieselMotorWaterCooling;                        
+                        case 20064: return Event.DieselMotorTempDefected;
+                        case 20065: return Event.DieselMotorWaterCooling;
                         case 20066: return Event.DieselMotorWaterCoolingOff;
                         case 20067: return Event.CoupleImpact;
                         case 20068: return Event.TMFailure;
                         case 20069: return Event.RDSTOn;
                         case 20070: return Event.RDSTOff;
                         case 20071: return Event.LapButton;
-                        case 20072: return Event.LapButtonRelease;                        
+                        case 20072: return Event.LapButtonRelease;
                         case 20073: return Event.DieselMotorOilCooling;
                         case 20074: return Event.DieselMotorOilCoolingOff;
                         case 20075: return Event.DieselMotorWaterLowCooling;

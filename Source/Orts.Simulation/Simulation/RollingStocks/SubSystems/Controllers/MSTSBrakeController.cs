@@ -16,8 +16,6 @@
 // along with Open Rails.  If not, see <http://www.gnu.org/licenses/>.
 
 using ORTS.Scripting.Api;
-using System;
-using System.Diagnostics;
 
 namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
 {
@@ -28,7 +26,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
      * has specific methods to update brake status.
      * 
      */
-    public class MSTSBrakeController: BrakeController
+    public class MSTSBrakeController : BrakeController
     {
         public MSTSNotchController NotchController;
 
@@ -157,7 +155,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                         case ControllerState.FullServ:
                             epState = x;
                             EnforceMinimalReduction = true;
-                            DecreasePressure(ref pressureBar, MaxPressureBar()-FullServReductionBar(), ApplyRateBarpS(), elapsedClockSeconds);
+                            DecreasePressure(ref pressureBar, MaxPressureBar() - FullServReductionBar(), ApplyRateBarpS(), elapsedClockSeconds);
                             break;
                         case ControllerState.Lap:
                             // Icik
@@ -221,7 +219,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                             DecreasePressure(ref pressureBar, x, ApplyRateBarpS(), elapsedClockSeconds);
                             epState = -1;
                             break;
-                        
+
                         // Iciks
                         case ControllerState.OverchargeStart:
                             //IncreasePressure(ref pressureBar, MaxPressureBar(), ReleaseRateBarpS(), elapsedClockSeconds);
@@ -240,9 +238,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                             DecreasePressure(ref pressureBar, MaxPressureBar(), QuickReleaseRateBarpS(), elapsedClockSeconds);
                             epState = -1;
                             break;
-                        case ControllerState.MatrosovRelease:                            
+                        case ControllerState.MatrosovRelease:
                             IncreasePressure(ref pressureBar, MaxPressureBar(), QuickReleaseRateBarpS(), elapsedClockSeconds);
-                            DecreasePressure(ref pressureBar, MaxPressureBar(), QuickReleaseRateBarpS(), elapsedClockSeconds);                            
+                            DecreasePressure(ref pressureBar, MaxPressureBar(), QuickReleaseRateBarpS(), elapsedClockSeconds);
                             epState = -1;
                             break;
                         case ControllerState.WestingHouseRelease:
@@ -270,7 +268,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                 pressureBar = (MaxPressureBar() - FullServReductionBar()) * CurrentValue();
             }
             else
-            {                
+            {
                 float x = NotchController.GetNotchFraction();
                 switch (notch.Type)
                 {
@@ -286,11 +284,11 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                         break;
                     case ControllerState.Apply:
                     case ControllerState.FullServ:
-                        IncreasePressure(ref pressureBar, MaxPressureBar() - FullServReductionBar(), x * ApplyRateBarpS(), elapsedClockSeconds);                        
+                        IncreasePressure(ref pressureBar, MaxPressureBar() - FullServReductionBar(), x * ApplyRateBarpS(), elapsedClockSeconds);
                         break;
                     case ControllerState.ManualBraking:
                     case ControllerState.VacContServ:
-                    // Continuous service positions for vacuum brakes - allows brake to be adjusted up and down continuously between the ON and OFF position
+                        // Continuous service positions for vacuum brakes - allows brake to be adjusted up and down continuously between the ON and OFF position
                         pressureBar = (1 - x) * MaxPressureBar();
                         break;
                     case ControllerState.BrakeNotch:

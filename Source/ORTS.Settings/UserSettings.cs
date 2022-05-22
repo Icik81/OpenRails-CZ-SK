@@ -15,13 +15,13 @@
 // You should have received a copy of the GNU General Public License
 // along with Open Rails.  If not, see <http://www.gnu.org/licenses/>.
 
+using ORTS.Common;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
-using ORTS.Common;
 
 namespace ORTS.Settings
 {
@@ -443,13 +443,13 @@ namespace ORTS.Settings
         public int[] WindowPosition_CarOperations { get; set; }
         [Default(new[] { 50, 50 })]
         public int[] WindowPosition_ComposeMessage { get; set; }
-        [Default(new[] { 100, 0 })]                
+        [Default(new[] { 100, 0 })]
         public int[] WindowPosition_TrainList { get; set; }
 
         // Icik
         [Default(new[] { 50, 25 })]
         public int[] WindowPosition_Derail { get; set; }
-        
+
 
         // Menu-game communication settings:
         [Default(false)]

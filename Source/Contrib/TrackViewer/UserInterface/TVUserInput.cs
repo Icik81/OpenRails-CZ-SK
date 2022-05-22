@@ -27,9 +27,9 @@
 // This logs every UserCommandInput change from pressed to released.
 //#define DEBUG_USER_INPUT
 
+using Microsoft.Xna.Framework.Input;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
-using Microsoft.Xna.Framework.Input;
 
 namespace ORTS.TrackViewer.UserInterface
 {
@@ -86,7 +86,7 @@ namespace ORTS.TrackViewer.UserInterface
                 || LastMouseState.ScrollWheelValue != MouseState.ScrollWheelValue)
             {
                 Changed = true;
-             
+
             }
 #if DEBUG_RAW_INPUT
             for (Keys key = 0; key <= Keys.OemClear; key++)

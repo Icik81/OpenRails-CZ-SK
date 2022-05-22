@@ -15,13 +15,12 @@
 // You should have received a copy of the GNU General Public License
 // along with Open Rails.  If not, see <http://www.gnu.org/licenses/>.
 
+using Orts.ExternalDevices;
+using Orts.Viewer3D.Processes;
+using ORTS.Common.Input;
+using ORTS.Settings;
 using System;
 using System.Diagnostics;
-using Orts.Viewer3D.Processes;
-using ORTS.Common;
-using ORTS.Common.Input;
-using Orts.ExternalDevices;
-using ORTS.Settings;
 
 namespace Orts.Viewer3D
 {
@@ -216,7 +215,7 @@ namespace Orts.Viewer3D
 
         private static float Percentage(byte value, (byte p0, byte p100) range)
         {
-            float p = 100 * (value - range.p0) / (range.p100- range.p0);
+            float p = 100 * (value - range.p0) / (range.p100 - range.p0);
             if (p < 0)
                 return 0;
             if (p > 100)
@@ -224,7 +223,7 @@ namespace Orts.Viewer3D
             return p;
         }
 
-        private static float Percentage(byte value, (byte p100Minus, byte p0, byte p100Plus) range) 
+        private static float Percentage(byte value, (byte p100Minus, byte p0, byte p100Plus) range)
         {
             float p = 100 * (value - range.p0) / (range.p100Plus - range.p0);
             if (p < 0)
@@ -317,7 +316,7 @@ namespace Orts.Viewer3D
             if (raildriverCommand == byte.MaxValue)
                 return false;
             if (command == UserCommand.GamePauseMenu || raildriverCommand != 0)
-                return 
+                return
                     command == UserCommand.ControlHorn ? (IsPressed(raildriverCommand) || IsPressed((byte)(raildriverCommand + 1))) :
                     IsPressed(raildriverCommand);
             else
@@ -332,7 +331,7 @@ namespace Orts.Viewer3D
             if (raildriverCommand == byte.MaxValue)
                 return false;
             if (command == UserCommand.GamePauseMenu || raildriverCommand != 0)
-                return 
+                return
                     command == UserCommand.ControlHorn ? (IsReleased(raildriverCommand) || IsReleased((byte)(raildriverCommand + 1))) :
                 IsReleased(raildriverCommand);
             else

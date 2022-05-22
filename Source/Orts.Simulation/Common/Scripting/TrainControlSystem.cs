@@ -15,12 +15,12 @@
 // You should have received a copy of the GNU General Public License
 // along with Open Rails.  If not, see <http://www.gnu.org/licenses/>.
 
-using System;
-using System.IO;
-using ORTS.Common;
 using Orts.Common;
 using Orts.Simulation.RollingStocks;
+using ORTS.Common;
 using ORTS.Scripting.Api.ETCS;
+using System;
+using System.IO;
 
 namespace ORTS.Scripting.Api
 {
@@ -198,7 +198,7 @@ namespace ORTS.Scripting.Api
         /// True if circuit breaker or power contactor opening order is true.
         /// </summary>
         public Func<bool> CircuitBreakerOpeningOrder;
-         /// <summary>
+        /// <summary>
         /// Returns the number of pantographs on the locomotive.
         /// </summary>
         public Func<int> PantographCount;
@@ -541,16 +541,16 @@ namespace ORTS.Scripting.Api
     // Represents the same enum as TRAIN_CONTROL
 
     public enum TRAIN_CONTROL
-        {
-            AUTO_SIGNAL,
-            AUTO_NODE,
-            MANUAL,
-            EXPLORER,
-            OUT_OF_CONTROL,
-            INACTIVE,
-            TURNTABLE,
-            UNDEFINED
-        }
+    {
+        AUTO_SIGNAL,
+        AUTO_NODE,
+        MANUAL,
+        EXPLORER,
+        OUT_OF_CONTROL,
+        INACTIVE,
+        TURNTABLE,
+        UNDEFINED
+    }
 
     public enum TCSEvent
     {
@@ -586,7 +586,7 @@ namespace ORTS.Scripting.Api
         /// Internal reset request by the engine brake controller.
         /// </summary>
         EngineBrakeChanged,
-         /// <summary>
+        /// <summary>
         /// Internal reset request by the brakeman brake controller.
         /// </summary>
         BrakemanBrakeChanged,

@@ -29,6 +29,8 @@
 
 using Microsoft.Xna.Framework;
 using Orts.Formats.Msts;
+using Orts.Formats.OR;
+using Orts.MultiPlayer;
 using Orts.Parsers.Msts;
 using Orts.Simulation.AIs;
 using Orts.Simulation.RollingStocks.SubSystems.Controllers;
@@ -40,9 +42,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Text;
 using Event = Orts.Common.Event;
-using System;
-using Orts.Formats.OR;
-using Orts.MultiPlayer;
 
 namespace Orts.Simulation.RollingStocks
 {
@@ -60,7 +59,7 @@ namespace Orts.Simulation.RollingStocks
 
         // Icik        
         public bool PantographDown = true;
-        public double PantographCriticalVoltage;       
+        public double PantographCriticalVoltage;
         //public float VoltageSprung = 1.0f;
         public float TimeCriticalVoltage = 0;
         public float TimeCriticalVoltage0 = 0;
@@ -189,7 +188,7 @@ namespace Orts.Simulation.RollingStocks
             outf.Write(AIPantoUPTime);
             outf.Write(AIPantoDown);
             outf.Write(AIPantoDownGenerate);
-            outf.Write(FaultByPlayerPenaltyTime);            
+            outf.Write(FaultByPlayerPenaltyTime);
             outf.Write(TrainHasFirstPantoMarker);
             outf.Write(TrainPantoMarker);
             outf.Write(AIPantoChange);
@@ -227,7 +226,7 @@ namespace Orts.Simulation.RollingStocks
             AIPantoUPTime = inf.ReadSingle();
             AIPantoDown = inf.ReadBoolean();
             AIPantoDownGenerate = inf.ReadSingle();
-            FaultByPlayerPenaltyTime = inf.ReadSingle();            
+            FaultByPlayerPenaltyTime = inf.ReadSingle();
             TrainHasFirstPantoMarker = inf.ReadBoolean();
             TrainPantoMarker = inf.ReadInt32();
             AIPantoChange = inf.ReadBoolean();
@@ -275,7 +274,7 @@ namespace Orts.Simulation.RollingStocks
                 PowerKey = true;
             // Spustí zvukové triggery při načtení hry    
             if (PowerKey && Battery)
-                SignalEvent(Event.PowerKeyOn);            
+                SignalEvent(Event.PowerKeyOn);
         }
 
         //================================================================================================//
@@ -311,8 +310,8 @@ namespace Orts.Simulation.RollingStocks
                 PowerSupplyStation pss = new PowerSupplyStation();
                 pss.PowerSystem = RouteVoltageV == 25000 ? 1 : 0;
                 Simulator.powerSupplyStations.Add(pss);
-            }    
-            float watts = MaxForceN * (ThrottlePercent / 100)  * 1f + (MaxForceN * (ThrottlePercent / 100)) * AbsSpeedMpS;
+            }
+            float watts = MaxForceN * (ThrottlePercent / 100) * 1f + (MaxForceN * (ThrottlePercent / 100)) * AbsSpeedMpS;
             watts += PowerReductionByHeatingSum + PowerReductionByAuxEquipmentSum;
             if ((Flipped || Direction == Direction.Reverse) && watts < 0)
                 watts = -watts;
@@ -603,8 +602,8 @@ namespace Orts.Simulation.RollingStocks
                 PantographVoltageV = (float)Math.Round(PantographVoltageV);
                 PowerSupply.PantographVoltageV = (float)Math.Round(PowerSupply.PantographVoltageV);
                 MaxLineVoltage0 = (float)Math.Round(MaxLineVoltage0);
-                if (LocoHelperOn)                
-                    PowerSupply.PantographVoltageV = MathHelper.Clamp(PowerSupply.PantographVoltageV, 0, (float)MaxLineVoltage0);                
+                if (LocoHelperOn)
+                    PowerSupply.PantographVoltageV = MathHelper.Clamp(PowerSupply.PantographVoltageV, 0, (float)MaxLineVoltage0);
             }
 
             if (PantographVoltageV < 1)
@@ -729,16 +728,16 @@ namespace Orts.Simulation.RollingStocks
                     if (Step1 < 0) Step1 = 0;
 
                     if (Simulator.GameSpeed > 1 || (Step1 == 0 && PowerSupply.PantographVoltageV > MaxLineVoltage0))
-                        Simulator.VoltageSprung = 1.0f;                    
+                        Simulator.VoltageSprung = 1.0f;
                 }
-                
+
                 // Kritická mez napětí pro podnapěťovku
                 if (RouteVoltageV == 25000)
                     PantographCriticalVoltage = 19000;
                 if (RouteVoltageV == 3000)
                     PantographCriticalVoltage = 1900;
-                      
-                if (PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closed) 
+
+                if (PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closed)
                     CircuitBreakerOn = true;
                 else CircuitBreakerOn = false;
 
@@ -826,7 +825,7 @@ namespace Orts.Simulation.RollingStocks
                                 MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO2", 0).ToString());
                             }
                         }
-                    }                    
+                    }
 
                     if (CircuitBreakerOn)
                     {
@@ -933,7 +932,7 @@ namespace Orts.Simulation.RollingStocks
                     // Pokud nebude žádný HV aktivní
                     if (!HV5Enable && !HV3Enable && !HV2Enable && !HV4Enable)
                     {
-                        LocoSwitchACDC = true;                        
+                        LocoSwitchACDC = true;
                     }
 
                     // Stisknutí hříbku pro přerušení napájení, vypne HV a shodí sběrače
@@ -1036,7 +1035,7 @@ namespace Orts.Simulation.RollingStocks
                             VoltageAC -= VoltageAC * 1.5f * elapsedClockSeconds;
                         if (VoltageAC < 0) VoltageAC = 0;
                     }
-      
+
                     Pantographs[1].PantographsBlocked = false;
                     Pantographs[2].PantographsBlocked = false;
 
@@ -1200,7 +1199,7 @@ namespace Orts.Simulation.RollingStocks
                     }
                 }
             }
-                               
+
             // Aktivuje zvukový trigger pro spuštění napájení
             if (PowerOn && !PowerOnTriggered)
             {
@@ -1212,13 +1211,13 @@ namespace Orts.Simulation.RollingStocks
                 PowerOnTriggered = false;
                 SignalEvent(Event.EnginePowerOff);
             }
-                        
+
             PowerSupply.Update(elapsedClockSeconds);
 
             if (PowerSupply.CircuitBreaker != null && IsPlayerTrain)
             {
                 if (PowerSupply.CircuitBreaker.State == CircuitBreakerState.Open && (DoesPowerLossResetControls || DoesPowerLossResetControls2))
-                {                    
+                {
                     ControllerVolts = 0;
                     ThrottleController.SetPercent(0);
                     if (SpeedMpS > 0)
@@ -1250,22 +1249,22 @@ namespace Orts.Simulation.RollingStocks
                 if (TractiveForceCurves != null)
                 {
                     SwitchingVoltageMode = 1;
-                }                
+                }
             }
 
         // Icik            
         EndAIVoltageChoice:
             SetAIPantoDown(elapsedClockSeconds);
             VoltageIndicate(elapsedClockSeconds);
-            UnderVoltageProtection(elapsedClockSeconds);            
-            
+            UnderVoltageProtection(elapsedClockSeconds);
+
             if (IsPlayerTrain)
             {
                 RouteVoltageVInfo = RouteVoltageV;
                 PantographPressedTesting(elapsedClockSeconds);
                 HVPressedTesting(elapsedClockSeconds);
-                AuxAirConsumption(elapsedClockSeconds);                
-                FaultByPlayer(elapsedClockSeconds);                
+                AuxAirConsumption(elapsedClockSeconds);
+                FaultByPlayer(elapsedClockSeconds);
                 MUCableCommunication();
                 HelperLoco();
 
@@ -1315,9 +1314,9 @@ namespace Orts.Simulation.RollingStocks
                         if (!Pantograph4Enable && !Pantograph3Enable)
                         {
                             SignalEvent(PowerSupplyEvent.RaisePantograph, 1);
-                            if (MPManager.IsMultiPlayer())                            
-                                MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO1", 1).ToString());                            
-                        }                       
+                            if (MPManager.IsMultiPlayer())
+                                MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO1", 1).ToString());
+                        }
 
                         if (Pantograph4Enable)
                         {
@@ -1325,14 +1324,14 @@ namespace Orts.Simulation.RollingStocks
                             if (RouteVoltageV == 3000)
                                 HV5Switch = 1;
                             if (RouteVoltageV == 25000)
-                                HV5Switch = 3;                                                        
-                        }                        
+                                HV5Switch = 3;
+                        }
                         if (Pantograph3Enable)
                             Pantograph3Switch = 2;
 
-                        if (PantographVoltageV > PantographCriticalVoltage)                        
+                        if (PantographVoltageV > PantographCriticalVoltage)
                             HVOn = true;
-                                                                        
+
                         if (PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closed)
                         {
                             LocoReadyToGo = false;
@@ -1341,7 +1340,7 @@ namespace Orts.Simulation.RollingStocks
                     }
                     if (!MultiSystemEngine)
                     {
-                        HVOn = true;                                              
+                        HVOn = true;
                         if (PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closed)
                         {
                             if (!Pantograph4Enable && !Pantograph3Enable)
@@ -1388,8 +1387,8 @@ namespace Orts.Simulation.RollingStocks
                         CruiseControl.SelectedSpeedMpS = MpS.FromKpH(40);
                         CruiseControl.SpeedSelMode = SubSystems.CruiseControl.SpeedSelectorMode.Parking;
                     }
-                }                   
-            }            
+                }
+            }
         }
 
         // Icik
@@ -1411,8 +1410,8 @@ namespace Orts.Simulation.RollingStocks
             if (PantographDown)
                 TimerVoltageIndicateTest = 0;
 
-            if (TimerVoltageIndicateTest > PowerSupply.AuxPowerOnDelayS)            
-                VoltageIndicateTestCompleted = true;                         
+            if (TimerVoltageIndicateTest > PowerSupply.AuxPowerOnDelayS)
+                VoltageIndicateTestCompleted = true;
             else
                 VoltageIndicateTestCompleted = false;
         }
@@ -1421,7 +1420,7 @@ namespace Orts.Simulation.RollingStocks
         public void HelperLoco()
         {
             if (LocoHelperOn)
-            {           
+            {
                 if (RouteVoltageV == 1)
                 {
                     SignalEvent(PowerSupplyEvent.LowerPantograph);
@@ -1452,7 +1451,7 @@ namespace Orts.Simulation.RollingStocks
                         HV5Switch = 3;
                 }
                 if (Pantograph3Enable)
-                    Pantograph3Switch = 2;                
+                    Pantograph3Switch = 2;
 
                 switch (RouteVoltageV)
                 {
@@ -1469,7 +1468,7 @@ namespace Orts.Simulation.RollingStocks
                 }
 
                 if (RouteVoltageV > 1 && !UserPowerOff)
-                {                    
+                {
                     if (!PowerOn)
                     {
                         HVOn = true;
@@ -1508,10 +1507,10 @@ namespace Orts.Simulation.RollingStocks
                     {
                         if (Direction == Direction.Forward && Pantographs[1].State != PantographState.Up)
                         {
-                            SignalEvent(PowerSupplyEvent.RaisePantograph, 1);                            
+                            SignalEvent(PowerSupplyEvent.RaisePantograph, 1);
                             if (MPManager.IsMultiPlayer())
                             {
-                                MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO1", 1).ToString());                                
+                                MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO1", 1).ToString());
                             }
                         }
                         if (Direction == Direction.Forward && Pantographs[1].State == PantographState.Up && Pantographs[2].State == PantographState.Up)
@@ -1521,9 +1520,9 @@ namespace Orts.Simulation.RollingStocks
                         }
                         if (Direction == Direction.Reverse && Pantographs[2].State != PantographState.Up)
                         {
-                            SignalEvent(PowerSupplyEvent.RaisePantograph, 2);                            
+                            SignalEvent(PowerSupplyEvent.RaisePantograph, 2);
                             if (MPManager.IsMultiPlayer())
-                            {                                
+                            {
                                 MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO2", 1).ToString());
                             }
                         }
@@ -1532,11 +1531,11 @@ namespace Orts.Simulation.RollingStocks
                             SignalEvent(PowerSupplyEvent.LowerPantograph, 1);
                             MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO1", 0).ToString());
                         }
-                    }                    
+                    }
                 }
-            }            
+            }
         }
-        
+
         // Komunikace po kabelu mezi spojenými jednotkami
         public void MUCableCommunication()
         {
@@ -1603,9 +1602,9 @@ namespace Orts.Simulation.RollingStocks
 
         protected void SetAIPantoDown(float elapsedClockSeconds)
         {
-            if (IsPlayerTrain)  
+            if (IsPlayerTrain)
                 return;
-                                    
+
             if (Simulator.GameTimeCyklus10 == 10 && TrainHasFirstPantoMarker)
             {
                 if ((Train as AITrain) != null && (Train as AITrain).nextActionInfo != null)
@@ -1625,9 +1624,9 @@ namespace Orts.Simulation.RollingStocks
                                 if (AITimeToGo < 120) // Čekání 2min pro nahození 2.pantografu 
                                     AIPanto2Raise = true;
                             }
-                        }                                                
+                        }
                     }
-                }                                
+                }
             }
 
             // Detekce změny směru AI
@@ -1670,8 +1669,8 @@ namespace Orts.Simulation.RollingStocks
                     AIPanto2Raise = true;
                     TrainHasMassKoef = false;
                     TrainIsPassenger = false;
-                    TrainHasBreakSpeedPanto2Down = false;                    
-                }                
+                    TrainHasBreakSpeedPanto2Down = false;
+                }
             }
             // Vyčká na místě po obratu
             if (AIPantoChangeTime == -1)
@@ -1708,7 +1707,7 @@ namespace Orts.Simulation.RollingStocks
                     }
                     TrainHasMassKoef = true;
                 }
-                
+
                 if (Simulator.Season == SeasonType.Winter)
                     MassKoef = 250 * 1000;
 
@@ -1772,15 +1771,15 @@ namespace Orts.Simulation.RollingStocks
                     TrainPantoMarker = 1;
                 SignalEvent(Event.EnginePowerOff);
                 PowerOn = false;
-            }            
+            }
 
             // Pantografy AI
             if (Simulator.GameTimeCyklus10 == 10)
-            {                
+            {
                 for (int i = 1; i <= Pantographs.Count; i++)
                 {
                     switch (Pantographs[i].State)
-                    {                                                
+                    {
                         case PantographState.Raising:
                         case PantographState.Lowering:
                         case PantographState.Down:
@@ -1798,8 +1797,8 @@ namespace Orts.Simulation.RollingStocks
                             {
                                 SignalEvent(Event.EnginePowerOn);
                                 PowerOn = true;
-                            }    
-                            
+                            }
+
                             if (RouteVoltageV == 1 || AIPantoDownStop)
                             {
                                 Pantographs[i].PantographsUpBlocked = true;
@@ -1813,7 +1812,7 @@ namespace Orts.Simulation.RollingStocks
                             break;
                     }
                 }
-            }            
+            }
         }
 
         // Penalizace hráče
@@ -1866,22 +1865,22 @@ namespace Orts.Simulation.RollingStocks
         // Testování času stiknutého HV
         protected void HVPressedTesting(float elapsedClockSeconds)
         {
-            HVCanOn = false;            
-                                    
+            HVCanOn = false;
+
             // HV2
             if (HV2Enable && !HVPressedTest)
                 HVPressedTime = 0;
             if (HVPressedTest)
                 HVPressedTime += elapsedClockSeconds;
-            
+
             // HV5
             if (HV5Enable && (!HVPressedTestDC && !HVPressedTestAC || HV5Switch != 0 && HV5Switch != 4))
                 HVPressedTime = 0;
 
             if (HVPressedTestDC)
-                HVPressedTime += elapsedClockSeconds;                        
+                HVPressedTime += elapsedClockSeconds;
             if (HVPressedTestAC)
-                HVPressedTime += elapsedClockSeconds;            
+                HVPressedTime += elapsedClockSeconds;
 
             // HV2 + HV5
             if (HVPressedTime > 0.9f && HVPressedTime < 1.1f) // 1s na podržení polohy pro zapnutí HV
@@ -1906,21 +1905,21 @@ namespace Orts.Simulation.RollingStocks
                 HVOffPressedTime += elapsedClockSeconds;
 
             if (HVOnPressedTime > 0.9f && HVOnPressedTime < 1.1f) // 1s na podržení polohy pro zapnutí HV
-            {                
+            {
                 HVCanOn = true;
             }
             if (HV3Enable && HVOffPressedTime > 0.4f && HVOffPressedTime < 0.6f) // 0.5s na podržení polohy pro vypnutí HV
             {
                 HVOff = true;
                 HVCanOn = false;
-            }            
+            }
         }
 
         // Testování času stiknutého panto
         protected void PantographPressedTesting(float elapsedClockSeconds)
         {
             Pantograph3CanOn = false;
-            
+
             if (Pantograph3Enable && !PantographOffPressedTest && !PantographOnPressedTest)
             {
                 PantographOnPressedTime = 0;
@@ -2001,7 +2000,7 @@ namespace Orts.Simulation.RollingStocks
                             }
                     }
                 }
-                
+
                 if (!HVElectric)
                 {
                     switch (PowerSupply.CircuitBreaker.State)
@@ -2059,9 +2058,9 @@ namespace Orts.Simulation.RollingStocks
             {
 
                 // Update water controller for steam boiler heating tank
-                    WaterController.Update(elapsedClockSeconds);
-                    if (WaterController.UpdateValue > 0.0)
-                        Simulator.Confirmer.UpdateWithPerCent(CabControl.SteamHeatBoilerWater, CabSetting.Increase, WaterController.CurrentValue * 100);
+                WaterController.Update(elapsedClockSeconds);
+                if (WaterController.UpdateValue > 0.0)
+                    Simulator.Confirmer.UpdateWithPerCent(CabControl.SteamHeatBoilerWater, CabSetting.Increase, WaterController.CurrentValue * 100);
 
 
                 CurrentSteamHeatPressurePSI = SteamHeatController.CurrentValue * MaxSteamHeatPressurePSI;
@@ -2123,23 +2122,23 @@ namespace Orts.Simulation.RollingStocks
                 // **** AC ****
                 if (VoltageAC > 5000 && SwitchingVoltageMode_OffAC || (TPowerOnAC == 1 || TCircuitBreakerAC == 2 || TCompressorAC == 1))
                 {
-                    AC_Triggers();                   
+                    AC_Triggers();
                 }
                 else
 
                 // **** DC ****
                 if (VoltageDC > 500 && SwitchingVoltageMode_OffDC || (TPowerOnDC == 1 || TCircuitBreakerDC == 2 || TCompressorDC == 1))
                 {
-                    DC_Triggers();                    
+                    DC_Triggers();
                 }
 
                 // Pantografy
                 if (MaxLineVoltage0 > 15000)
-                {                    
+                {
                     if (Pantographs[1].State == PantographState.Raising && TPanto1AC == 0) // Zadní panto
                     {
-                        SignalEvent(Event.Pantograph1UpAC); 
-                         TPanto1AC = 1;
+                        SignalEvent(Event.Pantograph1UpAC);
+                        TPanto1AC = 1;
                     }
                     if (Pantographs[1].State == PantographState.Lowering && TPanto1AC == 1) // Zadní panto
                     {
@@ -2154,8 +2153,8 @@ namespace Orts.Simulation.RollingStocks
                     }
                     if (Pantographs[2].State == PantographState.Lowering && TPanto2AC == 1) // Přední panto
                     {
-                        SignalEvent(Event.Pantograph2DownAC); 
-                         TPanto2AC = 0;
+                        SignalEvent(Event.Pantograph2DownAC);
+                        TPanto2AC = 0;
                     }
                 }
                 else
@@ -2412,8 +2411,8 @@ namespace Orts.Simulation.RollingStocks
                 else
                 {
                     SignalEvent(PowerSupplyEvent.RaisePantograph, 1);
-                    if (MPManager.IsMultiPlayer())                    
-                        MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO1", 1).ToString());                                            
+                    if (MPManager.IsMultiPlayer())
+                        MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO1", 1).ToString());
                 }
             }
 
@@ -2421,7 +2420,7 @@ namespace Orts.Simulation.RollingStocks
         }
 
         public override float GetDataOf(CabViewControl cvc)
-        {            
+        {
             float data = 0;
 
             switch (cvc.ControlType)
@@ -2437,7 +2436,7 @@ namespace Orts.Simulation.RollingStocks
                         PreDataVoltage = data;
                     }
                     else
-                        data = PreDataVoltage;                                     
+                        data = PreDataVoltage;
                     if (cvc.Units == CABViewControlUnits.KILOVOLTS)
                         data /= 1000;
                     break;
@@ -2568,7 +2567,7 @@ namespace Orts.Simulation.RollingStocks
                     {
                         if (preVoltageDC > 500 && preVoltageDC < 4000)
                             data = 0;
-                        else 
+                        else
                         if (VoltageAC > 5000)
                             data = 2;
                         else
@@ -2605,7 +2604,7 @@ namespace Orts.Simulation.RollingStocks
                             case 2:
                                 data = 3;
                                 break;
-                        }                                                
+                        }
                         break;
                     }
 
@@ -2689,7 +2688,7 @@ namespace Orts.Simulation.RollingStocks
                     }
                     LocoSwitchACDC = true;
                     break;
-              
+
                 case CABViewControlTypes.LINE_VOLTAGE_AC:
                     if (cvc.UpdateTime != 0)
                         UpdateTimeEnable = true;
@@ -2737,7 +2736,7 @@ namespace Orts.Simulation.RollingStocks
                         }
                     }
                     break;
-                
+
                 case CABViewControlTypes.ORTS_CIRCUIT_BREAKER_CLOSED_DC:
                     if (SwitchingVoltageMode_OffDC)
                     {
@@ -2788,10 +2787,10 @@ namespace Orts.Simulation.RollingStocks
 
                 case CABViewControlTypes.HV4PANTOUP:
                     {
-                        if (Pantographs[1].State != PantographState.Down || Pantographs[2].State != PantographState.Down) 
+                        if (Pantographs[1].State != PantographState.Down || Pantographs[2].State != PantographState.Down)
                             data = 1;
                         else
-                            data = 0;                                                
+                            data = 0;
                     }
                     break;
 
@@ -2822,7 +2821,7 @@ namespace Orts.Simulation.RollingStocks
                             data = 2;
                     }
                     break;
-                
+
                 case CABViewControlTypes.HIGHVOLTAGE_DCOFFAC:
                     {
                         if (preVoltageDC > 500 && preVoltageDC < 4000 && AuxPowerOn)
@@ -2872,7 +2871,7 @@ namespace Orts.Simulation.RollingStocks
             status.AppendLine();
             if (Battery)
                 status.AppendFormat("{0} = {1}",
-                Simulator.Catalog.GetString("Battery"),                
+                Simulator.Catalog.GetString("Battery"),
                 Simulator.Catalog.GetParticularString("Battery", Simulator.Catalog.GetString("On")));
             else
                 status.AppendFormat("{0} = {1}",
@@ -2901,7 +2900,7 @@ namespace Orts.Simulation.RollingStocks
             //Simulator.Catalog.GetString("Driver"),
             status.AppendFormat("{0}\t", PowerSupply.CircuitBreaker.DriverClosingAuthorization ? Simulator.Catalog.GetString("OK") : Simulator.Catalog.GetString("NOT OK"));
             //Simulator.Catalog.GetString("Auxiliary power"),
-            
+
             // Icik
             if (AuxPowerOn)
                 status.AppendFormat("{0}\t\t", Simulator.Catalog.GetParticularString("PowerSupply", Simulator.Catalog.GetString("On")));

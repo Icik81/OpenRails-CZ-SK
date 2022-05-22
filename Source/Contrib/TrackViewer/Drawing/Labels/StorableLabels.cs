@@ -14,13 +14,10 @@
 // 
 // You should have received a copy of the GNU General Public License
 // along with Open Rails.  If not, see <http://www.gnu.org/licenses/>.
+using Newtonsoft.Json;
+using ORTS.Common;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Newtonsoft.Json;
-
-using ORTS.Common;
 
 namespace ORTS.TrackViewer.Drawing.Labels
 {
@@ -63,7 +60,8 @@ namespace ORTS.TrackViewer.Drawing.Labels
         internal void Replace(StorableLabel oldLabel, StorableLabel newLabel)
         {
             int index = _labels.IndexOf(oldLabel);
-            if (index != -1) {
+            if (index != -1)
+            {
                 _labels[index] = newLabel;
             }
         }
@@ -111,7 +109,7 @@ namespace ORTS.TrackViewer.Drawing.Labels
         /// </summary>
         /// <param name="location">The location in MSTS coordinates of the label</param>
         /// <param name="text">The text of the label</param>
-        public StorableLabel(WorldLocation location, string text )
+        public StorableLabel(WorldLocation location, string text)
         {
             LabelText = text;
             WorldLocation = location;

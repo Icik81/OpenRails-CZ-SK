@@ -17,6 +17,7 @@
 
 using GNU.Gettext;
 using GNU.Gettext.WinForms;
+using Ionic.Zip;
 using Orts.Formats.OR;
 using ORTS.Common;
 using ORTS.Menu;
@@ -32,14 +33,11 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.NetworkInformation;
-using System.Net.Sockets;
 using System.Resources;
 using System.Runtime.InteropServices;
-using System.Threading;
 using System.Windows.Forms;
 using System.Xml;
 using Path = ORTS.Menu.Path;
-using Ionic.Zip;
 
 namespace ORTS
 {
@@ -418,7 +416,7 @@ namespace ORTS
                     }
                 }
             }
-            catch (PingException) { }                                        
+            catch (PingException) { }
         }
         #endregion
 
@@ -723,8 +721,8 @@ namespace ORTS
         }
         #endregion
 
-         #region Mode
-                void radioButtonMode_CheckedChanged(object sender, EventArgs e)
+        #region Mode
+        void radioButtonMode_CheckedChanged(object sender, EventArgs e)
         {
             panelModeActivity.Visible = radioButtonModeActivity.Checked;
             panelModeTimetable.Visible = radioButtonModeTimetable.Checked;
@@ -919,7 +917,7 @@ namespace ORTS
                     case DialogResult.OK:
                         LoadFolderList();
                         // CheckForUpdate disabled for OR NewYear MG
-//                        CheckForUpdate();
+                        //                        CheckForUpdate();
                         break;
                     case DialogResult.Retry:
                         RestartMenu();
@@ -1502,7 +1500,7 @@ namespace ORTS
             {
                 if (SelectedTimetableSet != null)
                     ShowDetail(catalog.GetStringFmt("Timetable set: {0}", SelectedTimetableSet), new string[0]);
-                    // Description not shown as no description is available for a timetable set.
+                // Description not shown as no description is available for a timetable set.
 
                 if (SelectedTimetable != null)
                     ShowDetail(catalog.GetStringFmt("Timetable: {0}", SelectedTimetable), SelectedTimetable.Briefing.Split('\n'));
@@ -1535,7 +1533,7 @@ namespace ORTS
         /// </summary>
         /// <param name="info"></param>
         /// <returns></returns>
-        private string[] HideStartParameters(string [] info)
+        private string[] HideStartParameters(string[] info)
         {
             var fullStartTime = info[0].TrimStart();
             var startTimeArray = fullStartTime.Split('$');

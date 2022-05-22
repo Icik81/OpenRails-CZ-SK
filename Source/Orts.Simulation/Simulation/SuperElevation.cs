@@ -19,8 +19,6 @@ using Orts.Formats.Msts;
 using ORTS.Common;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Orts.Simulation
 {
@@ -58,7 +56,7 @@ namespace Orts.Simulation
                         if (simulator.TSectionDat.TrackShapes.TryGetValue(section.ShapeIndex, out sha) && sha.MainRoute != int.MaxValue)
                             continue;
                         if ((i == 1 && simulator.TDB.TrackDB.TrackNodes[node.TrPins[0].Link].TrEndNode == true) ||
-                            ( i == count && simulator.TDB.TrackDB.TrackNodes[node.TrPins[1].Link].TrEndNode == true))
+                            (i == count && simulator.TDB.TrackDB.TrackNodes[node.TrPins[1].Link].TrEndNode == true))
                             continue;
                     }
                     theCurve = sec.SectionCurve;
@@ -67,7 +65,7 @@ namespace Orts.Simulation
                         && !simulator.TRK.Tr_RouteFile.ChangeTrackGauge)
                         continue;//the main route has a gauge different than mine
 
-                    if (theCurve != null && ( !theCurve.Angle.AlmostEqual(0f, 0.01f) || simulator.TRK.Tr_RouteFile.ChangeTrackGauge)) //a good curve
+                    if (theCurve != null && (!theCurve.Angle.AlmostEqual(0f, 0.01f) || simulator.TRK.Tr_RouteFile.ChangeTrackGauge)) //a good curve
                     {
                         if (i == 1 || i == count)
                         {
@@ -106,13 +104,13 @@ namespace Orts.Simulation
                             {
                                 StartCurve = true; CurveDir = 0;
                             }
-//                            if (i != count && i != 1)
+                            //                            if (i != count && i != 1)
                             {
                                 Len += theStraight.Length;
                                 SectionList.Add(section);
                             }
                         }
-                            
+
                     }
                 }
                 if (StartCurve == true) // we are in a curve after looking at every section

@@ -762,7 +762,7 @@ namespace Orts.Viewer3D.Popups
             if (UserInput.IsMouseLeftButtonDown)
             {
                 Client.Position.Height = Client.CurrentTop;
-                
+
                 if (e.MouseDownPosition.X > Position.Right - TextHeight)
                 {
                     var thumbOffset = (int)((float)(Position.Height - 3 * TextHeight) * (float)ScrollPosition / (float)ScrollSize);
@@ -814,7 +814,7 @@ namespace Orts.Viewer3D.Popups
         internal override bool HandleMouseUp(WindowMouseEvent e)
         {
             if (Dragging)
-                Dragging = false;               
+                Dragging = false;
 
             return base.HandleMouseUp(e);
         }

@@ -23,14 +23,14 @@ using ORTS.Common;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Text;
-using System.Diagnostics;
 
 namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
 {
     public class DieselEngines : IEnumerable
-    {        
+    {
         /// <summary>
         /// A list of auxiliaries
         /// </summary>
@@ -119,7 +119,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                     // sets flag to indicate that a diesel eng prime mover code block has been defined by user, otherwise OR will define one through the next code section using "MSTS" values
                     DEList[i].DieselEngineConfigured = true;
                 }
-                
+
                 if ((!DEList[i].IsInitialized))
                 {
                     STFException.TraceWarning(stf, "Diesel engine model has some errors - loading MSTS format");
@@ -161,7 +161,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                     DEList[i].InitFromMSTS((MSTSDieselLocomotive)Locomotive);
                     DEList[i].Initialize(true);
                 }
-                
+
             }
             foreach (DieselEngine de in DEList)
                 de.Restore(inf);
@@ -233,7 +233,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
             }
         }
 
-         /// <summary>
+        /// <summary>
         /// Maximum rail output power for all diesl prime movers
         /// </summary>
         public float MaximumRailOutputPowerW
@@ -316,7 +316,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                 float temp = 0;
                 foreach (DieselEngine de in DEList)
                 {
-                    if(de.GearBox != null)
+                    if (de.GearBox != null)
                         temp += (de.DemandedThrottlePercent * 0.01f * de.GearBox.TractiveForceN);
                 }
                 return temp;
@@ -378,8 +378,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
 
             // Icik
             if (Locomotive.PowerUnit && Locomotive.AcceptMUSignals)
-            foreach (var eng in DEList)
-                result.AppendFormat("\t\t{0}", Simulator.Catalog.GetString("Engine"));
+                foreach (var eng in DEList)
+                    result.AppendFormat("\t\t{0}", Simulator.Catalog.GetString("Engine"));
             else
             if (Locomotive.LocoHelperOn)
                 foreach (var eng in DEList)
@@ -397,7 +397,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
             get
             {
                 int num = 0;
-                foreach(DieselEngine eng in DEList)
+                foreach (DieselEngine eng in DEList)
                 {
                     if (eng.EngineStatus == DieselEngine.Status.Running)
                         num++;
@@ -497,31 +497,31 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
 
         public enum SettingsFlags
         {
-            IdleRPM              = 0x0001,
-            MaxRPM               = 0x0002,
-            StartingRPM          = 0x0004,
-            StartingConfirmRPM   = 0x0008,
-            ChangeUpRPMpS        = 0x0010,
-            ChangeDownRPMpS      = 0x0020,
+            IdleRPM = 0x0001,
+            MaxRPM = 0x0002,
+            StartingRPM = 0x0004,
+            StartingConfirmRPM = 0x0008,
+            ChangeUpRPMpS = 0x0010,
+            ChangeDownRPMpS = 0x0020,
             RateOfChangeUpRPMpSS = 0x0040,
             RateOfChangeDownRPMpSS = 0x0080,
-            MaximalDieselPowerW  = 0x0100,
-            IdleExhaust          = 0x0200,
-            MaxExhaust           = 0x0400,
-            ExhaustDynamics      = 0x0800,
-            ExhaustColor         = 0x1000,
+            MaximalDieselPowerW = 0x0100,
+            IdleExhaust = 0x0200,
+            MaxExhaust = 0x0400,
+            ExhaustDynamics = 0x0800,
+            ExhaustColor = 0x1000,
             ExhaustTransientColor = 0x2000,
-            DieselPowerTab       = 0x4000,
+            DieselPowerTab = 0x4000,
             DieselConsumptionTab = 0x8000,
-            ThrottleRPMTab       = 0x10000,
-            DieselTorqueTab      = 0x20000,
-            MinOilPressure       = 0x40000,
-            MaxOilPressure       = 0x80000,
-            MaxTemperature       = 0x100000,
-            Cooling              = 0x200000,
-            TempTimeConstant     = 0x400000,
-            OptTemperature       = 0x800000,
-            IdleTemperature      = 0x1000000
+            ThrottleRPMTab = 0x10000,
+            DieselTorqueTab = 0x20000,
+            MinOilPressure = 0x40000,
+            MaxOilPressure = 0x80000,
+            MaxTemperature = 0x100000,
+            Cooling = 0x200000,
+            TempTimeConstant = 0x400000,
+            OptTemperature = 0x800000,
+            IdleTemperature = 0x1000000
         }
 
         public DieselEngine()
@@ -561,7 +561,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
             DieselMinOilPressurePSI = copy.DieselMinOilPressurePSI;
             DieselMaxTemperatureDeg = copy.DieselMaxTemperatureDeg;
             DieselOptimalTemperatureDegC = copy.DieselOptimalTemperatureDegC;
-            DieselIdleTemperatureDegC = copy.DieselIdleTemperatureDegC;            
+            DieselIdleTemperatureDegC = copy.DieselIdleTemperatureDegC;
             DieselWaterTempTimeConstantSec = copy.DieselWaterTempTimeConstantSec;
             DieselOilTempTimeConstantSec = copy.DieselOilTempTimeConstantSec;
             DieselTempCoolingHyst = copy.DieselTempCoolingHyst;
@@ -577,7 +577,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
             locomotive = loco;
         }
 
-#region Parameters and variables      
+        #region Parameters and variables      
         float dRPM;
         /// <summary>
         /// Actual change rate of the engine's RPM - useful for exhaust effects
@@ -640,7 +640,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
         /// <summary>
         /// The RPM controller tries to reach this value
         /// </summary>
-        public float DemandedRPM;           
+        public float DemandedRPM;
         float demandedThrottlePercent;
         /// <summary>
         /// Demanded throttle percent, usually token from parent locomotive
@@ -682,7 +682,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
         /// Current power available to the traction motors
         /// </summary>
         public float CurrentDieselOutputPowerW;
-         /// <summary>
+        /// <summary>
         /// Maximum power available to the rail
         /// </summary>
         public float MaximumRailOutputPowerW;
@@ -734,7 +734,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
         /// Engine output torque table - Torque vs. RPM
         /// </summary>
         public Interpolator DieselTorqueTab;
-         /// <summary>
+        /// <summary>
         /// Current exhaust number of particles
         /// </summary>
         public float ExhaustParticles = 10.0f;
@@ -757,10 +757,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
 
         public Color ExhaustCompressorBlownColor = Color.Gray;
 
-        public float InitialMagnitude = 1.5f;        
+        public float InitialMagnitude = 1.5f;
         public float MaxMagnitude = 1.5f;
         public float MagnitudeRange;
-        public float ExhaustMagnitude = 1.5f;   
+        public float ExhaustMagnitude = 1.5f;
 
         public float InitialExhaust = 0.7f;
         public float MaxExhaust = 2.8f;
@@ -772,7 +772,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
         public bool DieselEngineConfigured = false; // flag to indicate that the user has configured a diesel engine prime mover code block in the ENG file
 
         // Icik
-        public float RealRPM0;        
+        public float RealRPM0;
         public float DieselMotorWaterInitTemp;
         public float DieselMotorOilInitTemp;
         public float OverHeatTimer = 0;
@@ -785,7 +785,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
         bool MSGOilLowOn;
         public float CoolingEnableRPM;
         public float WaterCoolingPower = 75;
-        public float OilCoolingPower = 75;        
+        public float OilCoolingPower = 75;
         float CoolingFlow;
         public float AIStartTimeToGo;
         public bool InitTriggerSetOff;
@@ -796,12 +796,12 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
         public float DieselOilPressurePSI
         {
             get
-            {                
+            {
                 // Icik
                 // Tlakování mazacího čerpadla při spouštění motoru
                 if ((locomotive.StartButtonPressed || locomotive.StartLooseCon) && locomotive.DieselStartTime > 0 && RealRPM0 < IdleRPM)
                 {
-                    RealRPM0 += IdleRPM / locomotive.DieselStartDelay * locomotive.Simulator.OneSecondLoop; 
+                    RealRPM0 += IdleRPM / locomotive.DieselStartDelay * locomotive.Simulator.OneSecondLoop;
                 }
                 else
                 if ((!locomotive.StartButtonPressed && !locomotive.StartLooseCon) && (EngineStatus == Status.Stopped || EngineStatus == Status.Stopping) && RealRPM0 > 0)
@@ -814,7 +814,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                 if (EngineStatus == Status.Running)
                     RealRPM0 = RealRPM;
 
-                float k = (DieselMaxOilPressurePSI - DieselMinOilPressurePSI)/(MaxRPM - IdleRPM);
+                float k = (DieselMaxOilPressurePSI - DieselMinOilPressurePSI) / (MaxRPM - IdleRPM);
                 float q = DieselMaxOilPressurePSI - k * MaxRPM;
                 float res = k * RealRPM0 + q - dieseloilfailurePSI;
                 if (res < 0f)
@@ -892,7 +892,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
         /// </summary>
         public float CurrentDieselInputPowerW;
 
-#endregion
+        #endregion
 
         /// <summary>
         /// Parses parameters from the stf reader
@@ -910,16 +910,16 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                 switch (lowercasetoken)
                 {
                     case "idlerpm": IdleRPM = stf.ReadFloatBlock(STFReader.UNITS.None, 0); initLevel |= SettingsFlags.IdleRPM; break;
-                    case "maxrpm": MaxRPM = stf.ReadFloatBlock(STFReader.UNITS.None, 0);initLevel |= SettingsFlags.MaxRPM; break;
+                    case "maxrpm": MaxRPM = stf.ReadFloatBlock(STFReader.UNITS.None, 0); initLevel |= SettingsFlags.MaxRPM; break;
                     case "startingrpm": StartingRPM = stf.ReadFloatBlock(STFReader.UNITS.None, 0); initLevel |= SettingsFlags.StartingRPM; break;
                     case "startingconfirmrpm": StartingConfirmationRPM = stf.ReadFloatBlock(STFReader.UNITS.None, 0); initLevel |= SettingsFlags.StartingConfirmRPM; break;
                     case "changeuprpmps": ChangeUpRPMpS = stf.ReadFloatBlock(STFReader.UNITS.None, 0); initLevel |= SettingsFlags.ChangeUpRPMpS; break;
                     case "changedownrpmps": ChangeDownRPMpS = stf.ReadFloatBlock(STFReader.UNITS.None, 0); initLevel |= SettingsFlags.ChangeDownRPMpS; break;
-                    case "rateofchangeuprpmpss": RateOfChangeUpRPMpSS = stf.ReadFloatBlock(STFReader.UNITS.None, 0);initLevel |= SettingsFlags.RateOfChangeUpRPMpSS; break;
-                    case "rateofchangedownrpmpss": RateOfChangeDownRPMpSS = stf.ReadFloatBlock(STFReader.UNITS.None, 0);initLevel |= SettingsFlags.RateOfChangeDownRPMpSS; break;
-                    case "maximalpower":   MaximumDieselPowerW = stf.ReadFloatBlock(STFReader.UNITS.Power, 0);initLevel |= SettingsFlags.MaximalDieselPowerW; break;
-                    case "idleexhaust":     InitialExhaust = stf.ReadFloatBlock(STFReader.UNITS.None, 0); initLevel |= SettingsFlags.IdleExhaust; break;
-                    case "maxexhaust":      MaxExhaust = stf.ReadFloatBlock(STFReader.UNITS.None, 0);initLevel |= SettingsFlags.MaxExhaust; break;
+                    case "rateofchangeuprpmpss": RateOfChangeUpRPMpSS = stf.ReadFloatBlock(STFReader.UNITS.None, 0); initLevel |= SettingsFlags.RateOfChangeUpRPMpSS; break;
+                    case "rateofchangedownrpmpss": RateOfChangeDownRPMpSS = stf.ReadFloatBlock(STFReader.UNITS.None, 0); initLevel |= SettingsFlags.RateOfChangeDownRPMpSS; break;
+                    case "maximalpower": MaximumDieselPowerW = stf.ReadFloatBlock(STFReader.UNITS.Power, 0); initLevel |= SettingsFlags.MaximalDieselPowerW; break;
+                    case "idleexhaust": InitialExhaust = stf.ReadFloatBlock(STFReader.UNITS.None, 0); initLevel |= SettingsFlags.IdleExhaust; break;
+                    case "maxexhaust": MaxExhaust = stf.ReadFloatBlock(STFReader.UNITS.None, 0); initLevel |= SettingsFlags.MaxExhaust; break;
                     case "exhaustdynamics": ExhaustAccelIncrease = stf.ReadFloatBlock(STFReader.UNITS.None, 0); initLevel |= SettingsFlags.ExhaustDynamics; break;
                     case "exhaustdynamicsdown": ExhaustDecelReduction = stf.ReadFloatBlock(STFReader.UNITS.None, null); initLevel |= SettingsFlags.ExhaustDynamics; break;
                     case "exhaustcolor":
@@ -937,8 +937,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                         ExhaustTransientColor.B = tempTR;
                         initLevel |= SettingsFlags.ExhaustTransientColor;
                         break;
-                    case "dieselpowertab": DieselPowerTab = new Interpolator(stf);initLevel |= SettingsFlags.DieselPowerTab; break;
-                    case "dieselconsumptiontab": DieselConsumptionTab = new Interpolator(stf);initLevel |= SettingsFlags.DieselConsumptionTab; break;
+                    case "dieselpowertab": DieselPowerTab = new Interpolator(stf); initLevel |= SettingsFlags.DieselPowerTab; break;
+                    case "dieselconsumptiontab": DieselConsumptionTab = new Interpolator(stf); initLevel |= SettingsFlags.DieselConsumptionTab; break;
                     case "throttlerpmtab":
                         ThrottleRPMTab = new Interpolator(stf);
                         initLevel |= SettingsFlags.ThrottleRPMTab;
@@ -954,20 +954,20 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                         break;
                     case "dieseltorquetab": DieselTorqueTab = new Interpolator(stf); initLevel |= SettingsFlags.DieselTorqueTab; break;
                     case "minoilpressure": DieselMinOilPressurePSI = stf.ReadFloatBlock(STFReader.UNITS.PressureDefaultPSI, 0); initLevel |= SettingsFlags.MinOilPressure; break;
-                    case "maxoilpressure": DieselMaxOilPressurePSI = stf.ReadFloatBlock(STFReader.UNITS.PressureDefaultPSI, 0); initLevel |= SettingsFlags.MaxOilPressure; break;                    
+                    case "maxoilpressure": DieselMaxOilPressurePSI = stf.ReadFloatBlock(STFReader.UNITS.PressureDefaultPSI, 0); initLevel |= SettingsFlags.MaxOilPressure; break;
                     case "maxtemperature": DieselMaxTemperatureDeg = stf.ReadFloatBlock(STFReader.UNITS.TemperatureDifference, 90); initLevel |= SettingsFlags.MaxTemperature; break;
-                    case "cooling": EngineCooling = (Cooling)stf.ReadIntBlock((int)Cooling.Proportional); initLevel |= SettingsFlags.Cooling; break ; //ReadInt changed to ReadIntBlock
+                    case "cooling": EngineCooling = (Cooling)stf.ReadIntBlock((int)Cooling.Proportional); initLevel |= SettingsFlags.Cooling; break; //ReadInt changed to ReadIntBlock
                     case "temptimeconstant": DieselWaterTempTimeConstantSec = stf.ReadFloatBlock(STFReader.UNITS.Time, 720); initLevel |= SettingsFlags.TempTimeConstant; break;
                     case "tempwatertimeconstant": DieselWaterTempTimeConstantSec = stf.ReadFloatBlock(STFReader.UNITS.Time, 720); initLevel |= SettingsFlags.TempTimeConstant; break;
-                    case "tempoiltimeconstant": DieselOilTempTimeConstantSec = stf.ReadFloatBlock(STFReader.UNITS.Time, 1440); initLevel |= SettingsFlags.TempTimeConstant; break;                    
+                    case "tempoiltimeconstant": DieselOilTempTimeConstantSec = stf.ReadFloatBlock(STFReader.UNITS.Time, 1440); initLevel |= SettingsFlags.TempTimeConstant; break;
                     case "opttemperature": DieselOptimalTemperatureDegC = stf.ReadFloatBlock(STFReader.UNITS.Temperature, 70f); initLevel |= SettingsFlags.OptTemperature; break;
                     case "idletemperature": DieselIdleTemperatureDegC = stf.ReadFloatBlock(STFReader.UNITS.Temperature, 60f); initLevel |= SettingsFlags.IdleTemperature; break;
                     case "tempcoolinghyst": DieselTempCoolingHyst = stf.ReadFloatBlock(STFReader.UNITS.Temperature, 5f); break;
-                    case "coolingenablerpm": CoolingEnableRPM = stf.ReadFloatBlock(STFReader.UNITS.None, 0f); break;                    
+                    case "coolingenablerpm": CoolingEnableRPM = stf.ReadFloatBlock(STFReader.UNITS.None, 0f); break;
                     case "watercoolingpower": WaterCoolingPower = stf.ReadFloatBlock(STFReader.UNITS.None, 75f); WaterCoolingPower = MathHelper.Clamp(WaterCoolingPower, 30, 200); break;
                     case "oilcoolingpower": OilCoolingPower = stf.ReadFloatBlock(STFReader.UNITS.None, 75f); OilCoolingPower = MathHelper.Clamp(OilCoolingPower, 30, 200); break;
                     case "elevatedconsumptionidlerpm": ElevatedConsumptionIdleRPM = stf.ReadFloatBlock(STFReader.UNITS.None, 0); break;
-                        
+
                     default:
                         end = true;
                         break;
@@ -976,17 +976,17 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
         }
 
         public void Initialize(bool start)
-        {            
+        {
             RPMRange = MaxRPM - IdleRPM;
             MagnitudeRange = MaxMagnitude - InitialMagnitude;
             ExhaustRange = MaxExhaust - InitialExhaust;
             ExhaustSteadyColor.A = 10;
-            ExhaustDecelColor.A = 10;            
+            ExhaustDecelColor.A = 10;
         }
 
 
         public void Update(float elapsedClockSeconds)
-        {            
+        {
             // Icik
             // Inicializace AI
             if (!locomotive.IsPlayerTrain && locomotive.BrakeSystem.StartOn && !locomotive.LocoIsStatic)
@@ -1045,7 +1045,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                     GearBox.ClutchPercent = (RealRPM - GearBox.ShaftRPM) / RealRPM * 100f;
                 else
                     GearBox.ClutchPercent = 100f;
-                
+
                 if (GearBox.CurrentGear != null)
                 {
                     if (GearBox.IsClutchOn)
@@ -1107,14 +1107,14 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
             // Icik
             // Sníží otáčky motoru kvůli ochraně TM 
             if (locomotive.OverVoltage || locomotive.OverCurrent || locomotive.HeatingOverCurrent)
-            {                
+            {
                 if (RealRPM > IdleRPM)
                     RealRPM -= ChangeDownRPMpS * elapsedClockSeconds;
-                if (RealRPM < IdleRPM + ActualElevatedConsumptionRPM) 
+                if (RealRPM < IdleRPM + ActualElevatedConsumptionRPM)
                     RealRPM = IdleRPM + ActualElevatedConsumptionRPM;
             }
             else
-            { 
+            {
                 if (RealRPM > ElevatedConsumptionIdleRPM)
                     RealRPM = Math.Max(RealRPM + (dRPM * elapsedClockSeconds), 0);
                 else
@@ -1153,7 +1153,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                 CurrentRailOutputPowerW = (RealRPM - IdleRPM) / (MaxRPM - IdleRPM) * MaximumRailOutputPowerW * (1 - locomotive.PowerReduction);
                 CurrentRailOutputPowerW = CurrentRailOutputPowerW < 0f ? 0f : CurrentRailOutputPowerW;
             }
-             else
+            else
             {
                 CurrentDieselOutputPowerW = (RealRPM - IdleRPM) / (MaxRPM - IdleRPM) * MaximumDieselPowerW * (1 - locomotive.PowerReduction);
             }
@@ -1169,14 +1169,14 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                         ExhaustColor = ExhaustTransientColor;
                         ExhaustParticles = (MaxExhaust - InitialExhaust) / (0.5f * StartingRPM - StartingRPM) * (RealRPM - 0.5f * StartingRPM) + InitialExhaust;
                     }
-                }                
+                }
                 if ((!locomotive.StartButtonPressed && !locomotive.StartLooseCon) || (!locomotive.DieselDirection_Start && !locomotive.StartLooseCon))
                 {
                     locomotive.DieselEngines[0].Stop();
                     locomotive.SignalEvent(Event.StartUpMotorBreak);
                 }
 
-                if ((RealRPM > 0.9f * StartingConfirmationRPM ))// && (RealRPM < 0.9f * IdleRPM))
+                if ((RealRPM > 0.9f * StartingConfirmationRPM))// && (RealRPM < 0.9f * IdleRPM))
                 {
                     EngineStatus = Status.Running;
                     locomotive.StartLooseCon = false;
@@ -1195,7 +1195,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
             {
                 if (DieselConsumptionTab != null)
                 {
-                         DieselFlowLps = DieselConsumptionTab[RealRPM] / 3600.0f;
+                    DieselFlowLps = DieselConsumptionTab[RealRPM] / 3600.0f;
                 }
                 else
                 {
@@ -1233,10 +1233,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                 case Cooling.Hysteresis:
                     // Malý chladící okruh
                     // Chlazení vody
-                    if (RealDieselWaterTemperatureDeg > DieselOptimalTemperatureDegC)                        
+                    if (RealDieselWaterTemperatureDeg > DieselOptimalTemperatureDegC)
                         WaterTempCoolingLowRunning = true;
 
-                    if (RealDieselWaterTemperatureDeg < DieselOptimalTemperatureDegC                        
+                    if (RealDieselWaterTemperatureDeg < DieselOptimalTemperatureDegC
                         || EngineStatus != Status.Running)
                     {
                         WaterTempCoolingLowRunning = false;
@@ -1283,7 +1283,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                     if ((CoolingEnableRPM == 0 && (RealDieselWaterTemperatureDeg > DieselOptimalTemperatureDegC + DieselTempCoolingHyst))
                         || (CoolingEnableRPM > 0 && locomotive.EngineRPM >= CoolingEnableRPM))
                         WaterTempCoolingRunning = true;
-                    
+
                     if ((CoolingEnableRPM == 0 && RealDieselWaterTemperatureDeg < DieselOptimalTemperatureDegC)
                         || (CoolingEnableRPM > 0 && locomotive.EngineRPM < CoolingEnableRPM)
                         || EngineStatus != Status.Running)
@@ -1295,19 +1295,19 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
 
                     if (WaterTempCoolingRunning)
                     {
-                        RealDieselWaterTemperatureDeg -= elapsedClockSeconds * (RealDieselWaterTemperatureDeg - (1.5f * locomotive.CarOutsideTempCBase)) / DieselWaterTempTimeConstantSec * (WaterCoolingPower / 50);                        
+                        RealDieselWaterTemperatureDeg -= elapsedClockSeconds * (RealDieselWaterTemperatureDeg - (1.5f * locomotive.CarOutsideTempCBase)) / DieselWaterTempTimeConstantSec * (WaterCoolingPower / 50);
                         if (!MSGWaterOn)
                         {
                             //locomotive.Simulator.Confirmer.Message(ConfirmLevel.MSG, Simulator.Catalog.GetString("Žaluzie otevřené a ventilátor zapnutý!"));
                             MSGWaterOn = true;
                             locomotive.SignalEvent(Event.DieselMotorWaterCooling);
-                        }                        
+                        }
                     }
                     // Chlazení oleje
                     if (RealDieselOilTemperatureDeg > DieselOptimalTemperatureDegC + DieselTempCoolingHyst)
                         OilTempCoolingRunning = true;
 
-                    if (RealDieselOilTemperatureDeg < DieselOptimalTemperatureDegC                        
+                    if (RealDieselOilTemperatureDeg < DieselOptimalTemperatureDegC
                         || EngineStatus != Status.Running)
                     {
                         OilTempCoolingRunning = false;
@@ -1316,7 +1316,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                     }
 
                     if (OilTempCoolingRunning)
-                    {                        
+                    {
                         RealDieselOilTemperatureDeg -= elapsedClockSeconds * (RealDieselOilTemperatureDeg - (1.5f * locomotive.CarOutsideTempCBase)) / DieselOilTempTimeConstantSec * (OilCoolingPower / 50);
                         if (!MSGOilOn)
                         {
@@ -1327,24 +1327,24 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                     }
                     break;
 
-                //default:
-                //case Cooling.Proportional:
-                //    float cooling = (95f - RealDieselWaterTemperatureDeg) * 0.01f;
-                //    cooling = cooling < 0f ? 0 : cooling;
-                //    if (RealDieselWaterTemperatureDeg >= (80f))
-                //        DieselTempCoolingRunning = true;
-                //    if(RealDieselWaterTemperatureDeg < (80f - DieselTempCoolingHyst))
-                //        DieselTempCoolingRunning = false;
+                    //default:
+                    //case Cooling.Proportional:
+                    //    float cooling = (95f - RealDieselWaterTemperatureDeg) * 0.01f;
+                    //    cooling = cooling < 0f ? 0 : cooling;
+                    //    if (RealDieselWaterTemperatureDeg >= (80f))
+                    //        DieselTempCoolingRunning = true;
+                    //    if(RealDieselWaterTemperatureDeg < (80f - DieselTempCoolingHyst))
+                    //        DieselTempCoolingRunning = false;
 
-                //    if (!DieselTempCoolingRunning)
-                //        cooling = 0f;
+                    //    if (!DieselTempCoolingRunning)
+                    //        cooling = 0f;
 
-                //    RealDieselWaterTemperatureDeg += elapsedClockSeconds * (LoadPercent * 0.01f * 95f - RealDieselWaterTemperatureDeg) / DieselWaterTempTimeConstantSec;
-                //    if (RealDieselWaterTemperatureDeg > DieselMaxTemperatureDeg - DieselTempCoolingHyst)
-                //        RealDieselWaterTemperatureDeg = DieselMaxTemperatureDeg - DieselTempCoolingHyst;
-                //    break;
+                    //    RealDieselWaterTemperatureDeg += elapsedClockSeconds * (LoadPercent * 0.01f * 95f - RealDieselWaterTemperatureDeg) / DieselWaterTempTimeConstantSec;
+                    //    if (RealDieselWaterTemperatureDeg > DieselMaxTemperatureDeg - DieselTempCoolingHyst)
+                    //        RealDieselWaterTemperatureDeg = DieselMaxTemperatureDeg - DieselTempCoolingHyst;
+                    //    break;
             }
-            
+
 
             if (GearBox != null)
             {
@@ -1384,7 +1384,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                 RealDieselOilTemperatureDeg = DieselIdleTemperatureDegC - 5;
                 return;
             }
-                
+
             EngineCooling = Cooling.Hysteresis;
 
             // Volitelné
@@ -1397,7 +1397,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
 
             // Inicializační setup teplot
             if (locomotive.BrakeSystem.StartOn)
-            {                
+            {
                 if (locomotive.Battery)
                 {
                     DieselMotorWaterInitTemp = locomotive.CarOutsideTempC0;
@@ -1462,7 +1462,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                     FakeDieselOilTemperatureDeg += elapsedClockSeconds * 20;
                 if (FakeDieselOilTemperatureDeg > DieselMotorOilInitTemp)
                     FakeDieselOilTemperatureDeg -= elapsedClockSeconds * 20;
-                
+
                 if (RealDieselWaterTemperatureDeg < FakeDieselWaterTemperatureDeg)
                     RealDieselWaterTemperatureDeg = FakeDieselWaterTemperatureDeg;
 
@@ -1476,7 +1476,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
             {
                 ExhaustColor = Color.TransparentBlack;
                 //ExhaustParticles *= 2;
-                ExhaustMagnitude *= 2;                
+                ExhaustMagnitude *= 2;
                 locomotive.PowerReductionResult6 = MathHelper.Clamp(1 - (RealDieselWaterTemperatureDeg / (0.90f * DieselIdleTemperatureDegC)), 0, 0.5f);
 
                 if (RealDieselWaterTemperatureDeg > 0.90f * DieselIdleTemperatureDegC)
@@ -1531,14 +1531,14 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
             {
                 locomotive.DieselMotorDefected = true;
                 if (EngineStatus == Status.Running && OverHeatTimer2 == 0)
-                    locomotive.SignalEvent(Event.DieselMotorTempDefected);                
+                    locomotive.SignalEvent(Event.DieselMotorTempDefected);
                 locomotive.Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("The engine's wrecked!"));
             }
             else
             if (OverHeatTimer > 60)
             {
                 locomotive.DieselMotorPowerLost = true;
-                locomotive.Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("The engine's damaged!"));                
+                locomotive.Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("The engine's damaged!"));
             }
             else
             if (OverHeatTimer > 1)
@@ -1549,7 +1549,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                     locomotive.Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("The engine is overheating! Water temperature:" + " " + Math.Round(FakeDieselWaterTemperatureDeg, 2) + "°C"));
                 if (RealDieselOilTemperatureDeg > DieselMaxTemperatureDeg)
                     locomotive.Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("The engine is overheating! Oil temperature:" + " " + Math.Round(FakeDieselOilTemperatureDeg, 2) + "°C"));
-            }             
+            }
 
             if (locomotive.DieselMotorPowerLost)
             {
@@ -1558,7 +1558,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
             }
             if (locomotive.DieselMotorDefected && EngineStatus == Status.Running)
             {
-                OverHeatTimer2 += elapsedClockSeconds; 
+                OverHeatTimer2 += elapsedClockSeconds;
                 ExhaustColor = Color.Black;
                 ExhaustParticles = 4f;
                 ExhaustMagnitude = InitialMagnitude * 10;
@@ -1619,7 +1619,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
             RealDieselWaterTemperatureDeg = inf.ReadSingle();
             RealDieselOilTemperatureDeg = inf.ReadSingle();
 
-            Boolean gearSaved    = inf.ReadBoolean();  // read boolean which indicates gear data was saved
+            Boolean gearSaved = inf.ReadBoolean();  // read boolean which indicates gear data was saved
 
             if (((MSTSDieselLocomotive)locomotive).GearBox != null)
             {
@@ -1689,7 +1689,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                     if (loco.Simulator.Settings.VerboseConfigurationMessages)
                         Trace.TraceInformation("IdleRpM not found in Diesel Engine Configuration (BASIC Config): set at arbitary value = {0}", IdleRPM);
 
-                } 
+                }
             }
 
             if ((initLevel & SettingsFlags.MaxRPM) == 0)
@@ -1766,7 +1766,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
             }
 
             if ((initLevel & SettingsFlags.StartingConfirmRPM) == 0)
-            {                
+            {
                 StartingConfirmationRPM = loco.IdleRPM * 1.1f;
                 if (DieselEngineConfigured && loco.Simulator.Settings.VerboseConfigurationMessages)
                     Trace.TraceInformation("StartingConfirmRpM not found in Diesel Engine Prime Mover Configuration, set at default value = {0}", StartingConfirmationRPM);
@@ -2095,7 +2095,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
             {
                 MaximumRailOutputPowerW = loco.MaxPowerW; // set rail power to a default value on the basis that of the value specified in the MaxPowrW parameter
             }
-            else 
+            else
             {
                 MaximumRailOutputPowerW = 0.8f * MaximumDieselPowerW; // set rail power to a default value on the basis that it is about 80% of the prime mover output power
             }
@@ -2128,10 +2128,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                 ReverseThrottleRPMTab = new Interpolator(rpm, throttle); // create reverse table
             }
 
-                // TODO - this value needs to be divided by the number of diesel engines in the locomotive
+            // TODO - this value needs to be divided by the number of diesel engines in the locomotive
 
-                // Set MaximumRailOutputPower if not already set
-                if (MaximumRailOutputPowerW == 0)
+            // Set MaximumRailOutputPower if not already set
+            if (MaximumRailOutputPowerW == 0)
             {
                 if (loco.TractiveForceCurves != null)
                 {

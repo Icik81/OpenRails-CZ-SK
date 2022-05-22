@@ -16,7 +16,6 @@
 // along with Open Rails.  If not, see <http://www.gnu.org/licenses/>.
 
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using Orts.Simulation.Physics;
 using Orts.Simulation.RollingStocks;
 using ORTS.Common;
@@ -523,7 +522,7 @@ namespace Orts.Viewer3D.WebServices
                 // Draw forward items
                 DrawTrackItems(labels, trainInfo.ObjectInfoForward, zeroObjectPointTop, distanceFactor, markerIntervalM, useMetric, direction: TrainDirection.Forward);
             }
-            if (trainInfo.direction !=0)
+            if (trainInfo.direction != 0)
             {
                 // Draw fixed distance indications
                 float markerIntervalM = DrawDistanceMarkers(labels, distanceFactor, zeroObjectPointBottom, useMetric, numberOfMarkers: 4, direction: TrainDirection.Backward);

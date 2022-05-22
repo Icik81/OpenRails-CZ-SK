@@ -39,9 +39,9 @@
  * WorldPosition - adds tile coordinates to a Position
  */
 
+using Microsoft.Xna.Framework;
 using System;
 using System.IO;
-using Microsoft.Xna.Framework;
 
 namespace ORTS.Common
 {
@@ -365,5 +365,5 @@ namespace ORTS.Common
         {
             return TileX.GetHashCode() ^ TileZ.GetHashCode() ^ Location.GetHashCode();
         }
-	}
+    }
 }

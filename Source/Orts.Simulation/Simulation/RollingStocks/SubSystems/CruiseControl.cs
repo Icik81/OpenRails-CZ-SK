@@ -20,7 +20,6 @@ using Orts.Parsers.Msts;
 using ORTS.Common;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.IO;
 
 namespace Orts.Simulation.RollingStocks.SubSystems
@@ -779,7 +778,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
         protected float timeFromDynamicBrakeStateChanged = 0;
         protected bool doNotForceDynamicBrake = false;
         protected bool wasTrainBrakeUsed = false;
-        protected float overridenMaximalForce = 0;
+        public float OverridenMaximalForce = 0;
         public bool SpeedChanged = true;
         public bool ConfirmingSpeedRequired = false;
 
@@ -787,23 +786,23 @@ namespace Orts.Simulation.RollingStocks.SubSystems
         {
             if (Locomotive.LocoType == MSTSLocomotive.LocoTypes.Vectron)
             {
-                if (overridenMaximalForce == 0)
-                    overridenMaximalForce = 50;
+                if (OverridenMaximalForce == 0)
+                    OverridenMaximalForce = 50;
                 if (Locomotive.ForceHandleValue == 0)
-                    overridenMaximalForce = 50;
+                    OverridenMaximalForce = 50;
                 float requestedMaxAcceleration = Locomotive.ForceHandleValue / 200;
                 if (Locomotive.AccelerationMpSS < requestedMaxAcceleration)
                 {
-                    overridenMaximalForce += elapsedClockSeconds * 5; // 5% per second
+                    OverridenMaximalForce += elapsedClockSeconds * 5; // 5% per second
                 }
                 if (Locomotive.AccelerationMpSS > requestedMaxAcceleration + 0.05f)
                 {
-                    overridenMaximalForce -= elapsedClockSeconds;
+                    OverridenMaximalForce -= elapsedClockSeconds;
                 }
             }
 
-            if (overridenMaximalForce > 100)
-                overridenMaximalForce = 100;
+            if (OverridenMaximalForce > 100)
+                OverridenMaximalForce = 100;
 
             if (TrainBrakePriority)
                 wasTrainBrakeUsed = true;
@@ -1665,13 +1664,13 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                         {
                             if (!UseThrottle)
                             {
-                                if (controllerVolts < 10 && Locomotive.SelectedMaxAccelerationStep > 0 && overridenMaximalForce == 0)
+                                if (controllerVolts < 10 && Locomotive.SelectedMaxAccelerationStep > 0 && OverridenMaximalForce == 0)
                                 {
                                     float step = 100 / Locomotive.ThrottleFullRangeIncreaseTimeSeconds;
                                     step *= elapsedClockSeconds;
                                     controllerVolts += step;
                                 }
-                                else if (controllerVolts < 10 && overridenMaximalForce > 0)
+                                else if (controllerVolts < 10 && OverridenMaximalForce > 0)
                                 {
                                     float step = 100 / Locomotive.ThrottleFullRangeIncreaseTimeSeconds;
                                     step *= elapsedClockSeconds;
@@ -1686,8 +1685,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                     {
                         if (AccelerationTable.Count > 0)
                         {
-                            a = overridenMaximalForce == 0 ? AccelerationTable[(int)Locomotive.SelectedMaxAccelerationStep - 1] : AccelerationTable[(int)overridenMaximalForce - 1];
-                            if (Locomotive.SelectedMaxAccelerationStep < overridenMaximalForce)
+                            a = OverridenMaximalForce == 0 ? AccelerationTable[(int)Locomotive.SelectedMaxAccelerationStep - 1] : AccelerationTable[(int)OverridenMaximalForce - 1];
+                            if (Locomotive.SelectedMaxAccelerationStep < OverridenMaximalForce)
                                 a = AccelerationTable[(int)Locomotive.SelectedMaxAccelerationStep - 1];
                         }
                         if (controllerVolts >= 0)
@@ -1702,8 +1701,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                                 }
                                 else
                                 {
-                                    t = overridenMaximalForce == 0 ? Locomotive.SelectedMaxAccelerationStep : overridenMaximalForce;
-                                    if (Locomotive.SelectedMaxAccelerationStep < overridenMaximalForce)
+                                    t = OverridenMaximalForce == 0 ? Locomotive.SelectedMaxAccelerationStep : OverridenMaximalForce;
+                                    if (Locomotive.SelectedMaxAccelerationStep < OverridenMaximalForce)
                                         t = Locomotive.SelectedMaxAccelerationStep;
                                 }
                                 if (t < newThrotte)

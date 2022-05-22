@@ -1,9 +1,9 @@
-﻿using System;
+﻿using Ionic.Zip;
+using System;
 using System.IO;
 using System.Net;
 using System.Net.NetworkInformation;
 using System.Windows.Forms;
-using Ionic.Zip;
 
 namespace ORTS
 {
@@ -35,7 +35,7 @@ namespace ORTS
             dots += ".";
             if (dots == "....")
                 dots = "";
-            label1.Text = waiting? state : state + dots;
+            label1.Text = waiting ? state : state + dots;
             label1.Refresh();
         }
 

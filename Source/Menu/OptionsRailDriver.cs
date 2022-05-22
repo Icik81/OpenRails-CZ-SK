@@ -1,16 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+﻿using Orts.ExternalDevices;
+using Orts.Menu;
 using ORTS.Common;
 using ORTS.Common.Input;
-using Orts.ExternalDevices;
-using Orts.Menu;
 using ORTS.Settings;
+using System;
+using System.Drawing;
+using System.IO;
+using System.Windows.Forms;
 
 namespace ORTS
 {
@@ -23,7 +19,7 @@ namespace ORTS
         private byte[] calibrationSettings = new byte[Enum.GetNames(typeof(UserCommand)).Length];
         private bool isCalibrationSet;
 
-        private static int[,] startingPoints = { 
+        private static int[,] startingPoints = {
             { 170, 110 }, { 170, 150 }, { 170, 60 }, //Reverser
             { 230, 120 },  { 230, 150 }, { 230, 60 }, { 230, 90 }, //Throttle
             { 340, 150 }, { 340, 90 }, { 340, 60 }, // Auto Brake
@@ -31,7 +27,7 @@ namespace ORTS
             { 520, 80 }, { 540, 80 }, { 560, 80 }, // Rotary Switch 1
             { 520, 150 }, { 535, 150 }, { 550, 150 }, // Rotary Switch 2
         };
-        
+
         private Form GetRailDriverLegend()
         {
             const int WM_NCLBUTTONDOWN = 0xA1;
@@ -169,10 +165,10 @@ namespace ORTS
                 instance = RailDriverBase.GetInstance32();
             //#if !DEBUG
             if (!instance.Enabled)
-                {
-                    tabOptions.TabPages.Remove(tabPageRailDriver);
-                    return;
-                }
+            {
+                tabOptions.TabPages.Remove(tabPageRailDriver);
+                return;
+            }
             //#endif
             panelRDButtons.Width = panelRDSettings.Width / 2;
             panelRDButtons.Controls.Clear();
@@ -185,7 +181,7 @@ namespace ORTS
             Panel controls = InitializeRailDriverInputControls();
             controls.Dock = DockStyle.Fill;
             panelRDButtons.Controls.Add(controls);
-            foreach(Control control in controls.Controls)
+            foreach (Control control in controls.Controls)
                 if (control is RDButtonInputControl)
                     toolTip1.SetToolTip(control, catalog.GetString("Click to change this button"));
         }
@@ -210,7 +206,7 @@ namespace ORTS
                         if ((int)currentCalibrationStep < 3)        //Reverser
                             index = 1;
                         else if ((int)currentCalibrationStep < 7)   //Throttle/Dynamic Brake
-                            index = 2;  
+                            index = 2;
                         else if ((int)currentCalibrationStep < 10)  //Auto Brake
                             index = 3;
                         else if ((int)currentCalibrationStep < 12)  //Independent Brake
@@ -275,7 +271,7 @@ namespace ORTS
 
         private string CheckButtonAssignments()
         {
-           if (!instance.Enabled)
+            if (!instance.Enabled)
                 return string.Empty;
             byte[] buttons = new byte[Enum.GetNames(typeof(UserCommand)).Length];
             foreach (Control control in panelRDButtons.Controls)

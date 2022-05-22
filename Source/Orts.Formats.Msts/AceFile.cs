@@ -15,13 +15,13 @@
 // You should have received a copy of the GNU General Public License
 // along with Open Rails.  If not, see <http://www.gnu.org/licenses/>.
 
+using Microsoft.Xna.Framework.Graphics;
+using ORTS.IO;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
-using Microsoft.Xna.Framework.Graphics;
-using ORTS.IO;
 
 namespace Orts.Formats.Msts
 {
@@ -104,9 +104,9 @@ namespace Orts.Formats.Msts
                 texture = new Texture2D(graphicsDevice, width, height, false, textureFormat);
             else
                 if (imageCount > 1)
-                    texture = new Texture2D(graphicsDevice, width, height, true, textureFormat);
-                else
-                    texture = new Texture2D(graphicsDevice, width, height, true, textureFormat);
+                texture = new Texture2D(graphicsDevice, width, height, true, textureFormat);
+            else
+                texture = new Texture2D(graphicsDevice, width, height, true, textureFormat);
 
             // Read in the color channels; each one defines a size (in bits) and type (reg, green, blue, mask, alpha).
             var channels = new List<SimisAceChannel>();

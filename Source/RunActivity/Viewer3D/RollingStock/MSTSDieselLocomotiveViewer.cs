@@ -17,15 +17,15 @@
 
 // This file is the responsibility of the 3D & Environment Team. 
 
-using System;
 using Microsoft.Xna.Framework;
-using System.Collections.Generic;
-using System.Linq;
 using Orts.Common;
 using Orts.Simulation.Physics;
 using Orts.Simulation.RollingStocks;
 using ORTS.Common;
 using ORTS.Common.Input;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Orts.Viewer3D.RollingStock
 {
@@ -87,14 +87,14 @@ namespace Orts.Viewer3D.RollingStock
         public override void PrepareFrame(RenderFrame frame, ElapsedTime elapsedTime)
         {
             var car = this.Car as MSTSDieselLocomotive;
-            
+
             // Diesel exhaust
             // Icik
             //var exhaustParticles = car.Train != null && car.Train.TrainType == Train.TRAINTYPE.STATIC ? 0 : car.ExhaustParticles.SmoothedValue;
             // Ošetření kouře pro Static, pokud je NaN
             var exhaustParticles = car.ExhaustParticles.SmoothedValue;
             if ((float.IsNaN(exhaustParticles) || exhaustParticles == 0) && car.PowerOn)
-            {                
+            {
                 foreach (var drawer in Exhaust)
                 {
                     var colorR = 82 / 255f;
@@ -113,7 +113,7 @@ namespace Orts.Viewer3D.RollingStock
                     drawer.SetOutput(exhaustParticles, car.ExhaustMagnitude.SmoothedValue, new Color((byte)car.ExhaustColorR.SmoothedValue, (byte)car.ExhaustColorG.SmoothedValue, (byte)car.ExhaustColorB.SmoothedValue));
                 }
             }
-            
+
             base.PrepareFrame(frame, elapsedTime);
         }
     }

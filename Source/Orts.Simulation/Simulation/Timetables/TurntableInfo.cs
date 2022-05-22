@@ -18,12 +18,12 @@
 // This code processes the Timetable definition and converts it into playable train information
 //
 
+using Orts.Parsers.OR;
+using ORTS.Common;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using Orts.Parsers.OR;
-using ORTS.Common;
 
 namespace Orts.Simulation.Timetables
 {

@@ -15,13 +15,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Open Rails.  If not, see <http://www.gnu.org/licenses/>.
 
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
 using Orts.Parsers.Msts;
+using System.Collections.Generic;
 
 namespace Orts.Formats.Msts
 {
@@ -53,16 +48,16 @@ namespace Orts.Formats.Msts
         }
     }
 
-	/// <summary>
-	/// Represents the hiearchical structure of the SMS File
-	/// </summary>
-	public class SoundManagmentFile
-	{
-		public Tr_SMS Tr_SMS;
+    /// <summary>
+    /// Represents the hiearchical structure of the SMS File
+    /// </summary>
+    public class SoundManagmentFile
+    {
+        public Tr_SMS Tr_SMS;
 
-		public SoundManagmentFile( string filePath )
-		{
-            ReadFile(filePath);  
+        public SoundManagmentFile(string filePath)
+        {
+            ReadFile(filePath);
         }
 
         private void ReadFile(string filePath)
@@ -73,12 +68,12 @@ namespace Orts.Formats.Msts
                 });
         }
 
-	} // class SMSFile
+    } // class SMSFile
 
     public class Tr_SMS
     {
         public List<ScalabiltyGroup> ScalabiltyGroups = new List<ScalabiltyGroup>();
-        
+
         public Tr_SMS(STFReader stf)
         {
             stf.MustMatch("(");
@@ -117,7 +112,7 @@ namespace Orts.Formats.Msts
     {
         public bool ExternalCam;
         public bool CabCam;
-        public bool PassengerCam;                
+        public bool PassengerCam;
         public float Distance = 1000;  // by default we are 'in range' to hear this        
         public int TrackType = -1;
 
@@ -127,8 +122,8 @@ namespace Orts.Formats.Msts
             stf.ParseBlock(new STFReader.TokenProcessor[] {
                 new STFReader.TokenProcessor("externalcam", ()=>{ ExternalCam = stf.ReadBoolBlock(true); }),
                 new STFReader.TokenProcessor("cabcam", ()=>{ CabCam = stf.ReadBoolBlock(true); }),
-                new STFReader.TokenProcessor("passengercam", ()=>{ PassengerCam = stf.ReadBoolBlock(true); }),                                
-                new STFReader.TokenProcessor("distance", ()=>{ Distance = stf.ReadFloatBlock(STFReader.UNITS.Distance, Distance); }),                
+                new STFReader.TokenProcessor("passengercam", ()=>{ PassengerCam = stf.ReadBoolBlock(true); }),
+                new STFReader.TokenProcessor("distance", ()=>{ Distance = stf.ReadFloatBlock(STFReader.UNITS.Distance, Distance); }),
                 new STFReader.TokenProcessor("tracktype", ()=>{ TrackType = stf.ReadIntBlock(null); }),
             });
         }
@@ -139,14 +134,14 @@ namespace Orts.Formats.Msts
 
     }
 
-    public class Deactivation: Activation
+    public class Deactivation : Activation
     {
-        public Deactivation(STFReader stf): base(stf)
+        public Deactivation(STFReader stf) : base(stf)
         {
         }
 
         // for precompiled sound sources for activity sound
-        public Deactivation(): base()
+        public Deactivation() : base()
         { }
     }
 
@@ -198,7 +193,9 @@ namespace Orts.Formats.Msts
 
     public class VolumeCurve
     {
-        public enum Controls { None, DistanceControlled, SpeedControlled,
+        public enum Controls
+        {
+            None, DistanceControlled, SpeedControlled,
             WheelSpeedControlled, WheelSpeedACControlled, WheelSpeedDCControlled,
             SlipSpeedControlled,
             VibrationControlled,
@@ -213,7 +210,8 @@ namespace Orts.Formats.Msts
             BrakePipeChangeRateControlled,
             CylinderChangeRateControlled,
             BrakeCylControlled,
-            CurveForceControlled };
+            CurveForceControlled
+        };
 
         public Controls Control = Controls.None;
         public float Granularity = 1.0f;
@@ -263,10 +261,10 @@ namespace Orts.Formats.Msts
                     {
                         CurvePoints[i].X = stf.ReadFloat(STFReader.UNITS.None, null);
                         if (Control == Controls.DistanceControlled)
-						{
-							if (CurvePoints[i].X >= 0) CurvePoints[i].X *= CurvePoints[i].X;
-							else CurvePoints[i].X *= -CurvePoints[i].X;
-						}
+                        {
+                            if (CurvePoints[i].X >= 0) CurvePoints[i].X *= CurvePoints[i].X;
+                            else CurvePoints[i].X *= -CurvePoints[i].X;
+                        }
                         CurvePoints[i].Y = stf.ReadFloat(STFReader.UNITS.None, null);
                     }
                     stf.SkipRestOfBlock();
@@ -275,7 +273,7 @@ namespace Orts.Formats.Msts
         }
     }
 
-    public class FrequencyCurve: VolumeCurve
+    public class FrequencyCurve : VolumeCurve
     {
         public FrequencyCurve(STFReader stf)
             : base(stf)
@@ -313,13 +311,13 @@ namespace Orts.Formats.Msts
         {
             switch (lowertoken)
             {
-                case "playoneshot": 
+                case "playoneshot":
                 case "startloop":
-                case "releaselooprelease": 
+                case "releaselooprelease":
                 case "startlooprelease":
-                case "releaseloopreleasewithjump": 
-                case "disabletrigger": 
-                case "enabletrigger": 
+                case "releaseloopreleasewithjump":
+                case "disabletrigger":
+                case "enabletrigger":
                 case "setstreamvolume":
                     ++playcommandcount;
                     if (playcommandcount > 1)
@@ -333,11 +331,11 @@ namespace Orts.Formats.Msts
             {
                 case "playoneshot": SoundCommand = new PlayOneShot(f); break;
                 case "startloop": SoundCommand = new StartLoop(f); break;
-                case "releaselooprelease":  SoundCommand = new ReleaseLoopRelease(f); break; 
-                case "startlooprelease":  SoundCommand = new StartLoopRelease( f ); break; 
-                case "releaseloopreleasewithjump": SoundCommand = new ReleaseLoopReleaseWithJump( f ); break; 
-                case "disabletrigger": SoundCommand = new DisableTrigger( f); break; 
-                case "enabletrigger": SoundCommand = new EnableTrigger( f); break;
+                case "releaselooprelease": SoundCommand = new ReleaseLoopRelease(f); break;
+                case "startlooprelease": SoundCommand = new StartLoopRelease(f); break;
+                case "releaseloopreleasewithjump": SoundCommand = new ReleaseLoopReleaseWithJump(f); break;
+                case "disabletrigger": SoundCommand = new DisableTrigger(f); break;
+                case "enabletrigger": SoundCommand = new EnableTrigger(f); break;
                 case "setstreamvolume": SoundCommand = new SetStreamVolume(f); break;
                 case "(": f.SkipRestOfBlock(); break;
             }
@@ -371,7 +369,8 @@ namespace Orts.Formats.Msts
 
     public class Variable_Trigger : Trigger
     {
-        public enum Events { 
+        public enum Events
+        {
             Speed_Inc_Past, Speed_Dec_Past, Speed_Equals_To, Speed_NEquals_To,
             WheelSpeed_Inc_Past, WheelSpeed_Dec_Past, WheelSpeed_Equals_To, WheelSpeed_NEquals_To,
             WheelSpeedAC_Inc_Past, WheelSpeedAC_Dec_Past, WheelSpeedAC_Equals_To, WheelSpeedAC_NEquals_To,
@@ -473,7 +472,7 @@ namespace Orts.Formats.Msts
                 case "variable2_inc_past": Event = Events.Variable2_Inc_Past; break;
                 case "variable2_dec_past": Event = Events.Variable2_Dec_Past; break;
                 case "variable2_equals_to": Event = Events.Variable2_Equals_To; break;
-                case "variable2_nequals_to": Event = Events.Variable2_NEquals_To; break;                
+                case "variable2_nequals_to": Event = Events.Variable2_NEquals_To; break;
                 case "variable2ac_inc_past": Event = Events.Variable2AC_Inc_Past; break;
                 case "variable2ac_dec_past": Event = Events.Variable2AC_Dec_Past; break;
                 case "variable2ac_equals_to": Event = Events.Variable2AC_Equals_To; break;
@@ -524,7 +523,7 @@ namespace Orts.Formats.Msts
                 case "curveforce_nequals_to": Event = Events.CurveForce_NEquals_To; break;
             }
 
-           
+
 
             while (!f.EndOfBlock())
                 ParsePlayCommand(f, f.ReadString().ToLower());
@@ -631,7 +630,7 @@ namespace Orts.Formats.Msts
         }
     }
 
-    public class SoundPlayCommand: SoundCommand
+    public class SoundPlayCommand : SoundCommand
     {
         public string[] Files;
         public SelectionMethods SelectionMethod = SelectionMethods.SequentialSelection;
@@ -639,7 +638,7 @@ namespace Orts.Formats.Msts
 
     public class PlayOneShot : SoundPlayCommand
     {
-        
+
         public PlayOneShot(STFReader f)
         {
             f.MustMatch("(");
@@ -681,7 +680,7 @@ namespace Orts.Formats.Msts
 
     public class StartLoop : PlayOneShot
     {
-        public StartLoop( STFReader f ): base(f)
+        public StartLoop(STFReader f) : base(f)
         {
         }
     }

@@ -54,12 +54,12 @@ namespace Orts.Viewer3D
         {
             if ((Primitive as ForestPrimitive).PrimitiveCount > 0)
             {
-            var dTileX = Position.TileX - Viewer.Camera.TileX;
-            var dTileZ = Position.TileZ - Viewer.Camera.TileZ;
-            var mstsLocation = Position.Location + new Vector3(dTileX * 2048, 0, dTileZ * 2048);
-            var xnaMatrix = Matrix.CreateTranslation(mstsLocation.X, mstsLocation.Y, -mstsLocation.Z);
-            frame.AddAutoPrimitive(mstsLocation, Primitive.ObjectRadius, float.MaxValue, Material, Primitive, RenderPrimitiveGroup.World, ref xnaMatrix, Viewer.Settings.ShadowAllShapes ? ShapeFlags.ShadowCaster : ShapeFlags.None);
-        }
+                var dTileX = Position.TileX - Viewer.Camera.TileX;
+                var dTileZ = Position.TileZ - Viewer.Camera.TileZ;
+                var mstsLocation = Position.Location + new Vector3(dTileX * 2048, 0, dTileZ * 2048);
+                var xnaMatrix = Matrix.CreateTranslation(mstsLocation.X, mstsLocation.Y, -mstsLocation.Z);
+                frame.AddAutoPrimitive(mstsLocation, Primitive.ObjectRadius, float.MaxValue, Material, Primitive, RenderPrimitiveGroup.World, ref xnaMatrix, Viewer.Settings.ShadowAllShapes ? ShapeFlags.ShadowCaster : ShapeFlags.None);
+            }
         }
 
         [CallOnThread("Loader")]
@@ -126,7 +126,7 @@ namespace Orts.Viewer3D
                 forestVertex = new Vector3(forest.forestArea.X / 2, 0, forest.forestArea.Z / 2);
                 Vector3.Transform(ref forestVertex, ref position.XNAMatrix, out forestVertex);
                 forestVertices.Add(forestVertex);
-                bool[] considerTile = new bool [4] {false, false, false, false};
+                bool[] considerTile = new bool[4] { false, false, false, false };
                 foreach (var fVertex in forestVertices)
                 {
                     if (fVertex.X > 1024) considerTile[0] = true;
@@ -158,22 +158,22 @@ namespace Orts.Viewer3D
                 }
                 if (considerTile[0] && considerTile[2])
                 {
-                    addList = FindTracksAndRoadsClose(position.TileX + 1, position.TileZ +1);
+                    addList = FindTracksAndRoadsClose(position.TileX + 1, position.TileZ + 1);
                     FindTracksAndRoadsMoreClose(ref sections, addList, forest, position, InvForestXNAMatrix);
                 }
                 if (considerTile[0] && considerTile[3])
                 {
-                    addList = FindTracksAndRoadsClose(position.TileX + 1, position.TileZ -1);
+                    addList = FindTracksAndRoadsClose(position.TileX + 1, position.TileZ - 1);
                     FindTracksAndRoadsMoreClose(ref sections, addList, forest, position, InvForestXNAMatrix);
                 }
                 if (considerTile[1] && considerTile[2])
                 {
-                    addList = FindTracksAndRoadsClose(position.TileX-1, position.TileZ + 1);
+                    addList = FindTracksAndRoadsClose(position.TileX - 1, position.TileZ + 1);
                     FindTracksAndRoadsMoreClose(ref sections, addList, forest, position, InvForestXNAMatrix);
                 }
                 if (considerTile[1] && considerTile[3])
                 {
-                    addList = FindTracksAndRoadsClose(position.TileX-1, position.TileZ - 1);
+                    addList = FindTracksAndRoadsClose(position.TileX - 1, position.TileZ - 1);
                     FindTracksAndRoadsMoreClose(ref sections, addList, forest, position, InvForestXNAMatrix);
                 }
             }
@@ -223,13 +223,13 @@ namespace Orts.Viewer3D
                     if (!heightComputed) xnaTreePosition.Y = tiles.LoadAndGetElevation(position.TileX, position.TileZ, xnaTreePosition.X, -xnaTreePosition.Z, false);
                     xnaTreePosition -= position.XNAMatrix.Translation;
 
-                trees.Add(new VertexPositionNormalTexture(xnaTreePosition, treeSize, new Vector2(1, 1)));
-                trees.Add(new VertexPositionNormalTexture(xnaTreePosition, treeSize, new Vector2(0, 0)));
-                trees.Add(new VertexPositionNormalTexture(xnaTreePosition, treeSize, new Vector2(1, 0)));
-                trees.Add(new VertexPositionNormalTexture(xnaTreePosition, treeSize, new Vector2(1, 1)));
-                trees.Add(new VertexPositionNormalTexture(xnaTreePosition, treeSize, new Vector2(0, 1)));
-                trees.Add(new VertexPositionNormalTexture(xnaTreePosition, treeSize, new Vector2(0, 0)));
-            }
+                    trees.Add(new VertexPositionNormalTexture(xnaTreePosition, treeSize, new Vector2(1, 1)));
+                    trees.Add(new VertexPositionNormalTexture(xnaTreePosition, treeSize, new Vector2(0, 0)));
+                    trees.Add(new VertexPositionNormalTexture(xnaTreePosition, treeSize, new Vector2(1, 0)));
+                    trees.Add(new VertexPositionNormalTexture(xnaTreePosition, treeSize, new Vector2(1, 1)));
+                    trees.Add(new VertexPositionNormalTexture(xnaTreePosition, treeSize, new Vector2(0, 1)));
+                    trees.Add(new VertexPositionNormalTexture(xnaTreePosition, treeSize, new Vector2(0, 0)));
+                }
             }
             return trees;
         }
@@ -332,7 +332,7 @@ namespace Orts.Viewer3D
 
             // Do a preliminary cull based on a bounding square around the track section.
             // Bounding distance is (radius * angle + error) by (radius * angle + error) around starting coordinates but no more than 2 for angle.
-            var boundingDistance = trackSection.SectionCurve.Radius * Math.Min(Math.Abs(MathHelper.ToRadians(trackSection.SectionCurve.Angle)), 2) + MaximumCenterlineOffset+treeWidth;
+            var boundingDistance = trackSection.SectionCurve.Radius * Math.Min(Math.Abs(MathHelper.ToRadians(trackSection.SectionCurve.Angle)), 2) + MaximumCenterlineOffset + treeWidth;
             var dx = Math.Abs(x - sx);
             var dz = Math.Abs(z - sz);
             if (dx > boundingDistance || dz > boundingDistance)

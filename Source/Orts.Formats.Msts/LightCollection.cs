@@ -17,11 +17,8 @@
 
 using Microsoft.Xna.Framework;
 using Orts.Parsers.Msts;
-using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 
 namespace Orts.Formats.Msts
 {

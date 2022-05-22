@@ -192,7 +192,7 @@ namespace Orts.Simulation.Signalling
         /// <param name="id">Id of the signal to query</param>
         /// <param name="sigfn">Consider only heads with a specific signal function</param>
         /// <param name="headindex">Get aspect of nth head of the specified type</param>
-        public string IdTextSignalAspect(int id, string sigfn, int headindex=0)
+        public string IdTextSignalAspect(int id, string sigfn, int headindex = 0)
         {
             var heads = SignalObjectById(id)?.SignalHeads;
             if (heads != null)
@@ -216,7 +216,7 @@ namespace Orts.Simulation.Signalling
         /// <param name="mostRestrictiveHead">Check most restrictive head per signal</param>
         public Aspect DistMultiSigMR(string sigfnA, string sigfnB, bool mostRestrictiveHead = true)
         {
-            if(mostRestrictiveHead) return (Aspect)SignalHead.dist_multi_sig_mr(SigFnIndex(sigfnA), SigFnIndex(sigfnB), DebugFileName);
+            if (mostRestrictiveHead) return (Aspect)SignalHead.dist_multi_sig_mr(SigFnIndex(sigfnA), SigFnIndex(sigfnB), DebugFileName);
             return (Aspect)SignalHead.dist_multi_sig_mr_of_lr(SigFnIndex(sigfnA), SigFnIndex(sigfnB), DebugFileName);
         }
         /// <summary>
@@ -352,6 +352,6 @@ namespace Orts.Simulation.Signalling
         /// <param name="signalId">Signal ID of the calling signal</param>
         /// <param name="message">Message sent to signal</param>
         /// <returns></returns>
-        public virtual void HandleSignalMessage(int signalId, string message) {}
+        public virtual void HandleSignalMessage(int signalId, string message) { }
     }
 }

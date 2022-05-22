@@ -1070,17 +1070,17 @@ namespace Orts.Viewer3D.Popups
             if (validInfo.cabOrientation == 0)
             {
                 forwardsY = forwardsY - (forwardsY - (int)Math.Ceiling((forwardsY / Scale)));// scaling
-                DataCol = TrackControlList[itemLocationToRow(forwardsY , forwardsY )];
+                DataCol = TrackControlList[itemLocationToRow(forwardsY, forwardsY)];
                 DataCol.TrackCol = eyeWS;
-                TrackControlList[itemLocationToRow(forwardsY , forwardsY )] = DataCol;
+                TrackControlList[itemLocationToRow(forwardsY, forwardsY)] = DataCol;
                 //spriteBatch.Draw(TrackMonitorImages, new Rectangle(offset.X + eyePosition[0], offset.Y + forwardsY + eyePosition[1], eyePosition[3], eyePosition[4]), eyeSprite, Color.White);
             }
             else
             {
                 backwardsY = backwardsY - (backwardsY - (int)Math.Ceiling((backwardsY / Scale)));// scaling
-                DataCol = TrackControlList[itemLocationToRow(backwardsY , backwardsY )];
+                DataCol = TrackControlList[itemLocationToRow(backwardsY, backwardsY)];
                 DataCol.TrackCol = eyeWS;
-                TrackControlList[itemLocationToRow(backwardsY , backwardsY )] = DataCol;
+                TrackControlList[itemLocationToRow(backwardsY, backwardsY)] = DataCol;
                 //spriteBatch.Draw(TrackMonitorImages, new Rectangle(offset.X + eyePosition[0], offset.Y + backwardsY + eyePosition[2], eyePosition[3], eyePosition[4]), eyeSprite, Color.White);
             }
         }
@@ -2057,7 +2057,7 @@ namespace Orts.Viewer3D.Popups
             {
                 istrackColorRed = true;
                 DbfEvalIniOverSpeedTimeS = Orts.MultiPlayer.MPManager.Simulator.ClockTime;
-            }            
+            }
 
             if (istrackColorRed && trackColor != Color.Red)//Debrief Eval
             {
@@ -2358,7 +2358,7 @@ namespace Orts.Viewer3D.Popups
                 }
             }
             // reverse display of signals to have correct superposition
-            for (int iItems = itemList.Count-1 ; iItems >=0; iItems--)
+            for (int iItems = itemList.Count - 1; iItems >= 0; iItems--)
             {
                 var thisItem = itemList[iItems];
                 switch (thisItem.ItemType)
@@ -2487,7 +2487,7 @@ namespace Orts.Viewer3D.Popups
                     break;
             }
             var displayItem = SignalMarkers[aspect];
- 
+
             var displayRequired = false;
             var itemLocation = 0;
             var itemOffset = 0;

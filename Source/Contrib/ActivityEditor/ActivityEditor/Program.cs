@@ -21,17 +21,14 @@
 /// 
 
 
+using ActivityEditor.Internat;
+using ActivityEditor.Preference;
+using ORTS.Settings;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using ActivityEditor.Engine;
-using ActivityEditor.Preference;
 using System.Linq;
 using System.Windows.Forms;
-using ORTS;
-using ORTS.Settings;
-using LibAE.Formats;
-using ActivityEditor.Internat;
 
 namespace ActivityEditor
 {

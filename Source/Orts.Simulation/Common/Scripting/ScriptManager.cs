@@ -72,7 +72,7 @@ namespace Orts.Common.Scripting
 
             if (path == null || path == "")
                 return null;
-            
+
             path = path.ToLowerInvariant();
 
             var type = String.Format("{0}.{1}", nameSpace, Path.GetFileNameWithoutExtension(path).Replace('-', '_'));

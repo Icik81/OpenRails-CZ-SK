@@ -44,9 +44,7 @@ using Orts.Simulation.Signalling;
 using Orts.Simulation.Timetables;
 using ORTS.Common;
 using ORTS.Scripting.Api;
-using ORTS.Settings;
 using System;
-using Orts.Parsers.Msts;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -196,7 +194,7 @@ namespace Orts.Simulation.RollingStocks
         public int ExitQueue = 0;
         public int EnterQueue = 0;
         public List<Passenger> PassengerList = new List<Passenger>();
-        
+
         public bool UnboardingComplete = true;
         public bool BoardingComplete = false;
         public float FirstPaxActionDelay = 0;
@@ -833,7 +831,7 @@ namespace Orts.Simulation.RollingStocks
                 if (AbsSpeedMpS < 0.01) BrakeSystem.BailOffOnAntiSkid = false;
             }
         }
-        
+
         // Icik
         public virtual void BrakeMassKG()
         {
@@ -927,10 +925,10 @@ namespace Orts.Simulation.RollingStocks
 
             var car = this as MSTSWagon;
             if (!BrakeSystem.BrakeCarHasStatus && WagonType != WagonTypes.Engine && WagonType != WagonTypes.Passenger && car != Train.Cars[Train.Cars.Count - 1])
-            {                
+            {
                 BrakeSystem.BrakeCarHasStatus = true;
                 switch (Simulator.Random.Next(0, 200))
-                {                    
+                {
                     case 150:
                         BrakeSystem.CarHasAirStuckBrake_1 = true; // Nejde odbrzdit
                         BrakeSystem.CarHasProblemWithBrake = true;
@@ -951,8 +949,8 @@ namespace Orts.Simulation.RollingStocks
                         BrakeSystem.CarHasMechanicStuckBrake_2 = true; // Je zaseklý 
                         BrakeSystem.CarHasProblemWithBrake = true;
                         break;
-                }                                                                
-            }            
+                }
+            }
         }
 
         // called when it's time to update the MotiveForce and FrictionForce
@@ -1970,7 +1968,7 @@ namespace Orts.Simulation.RollingStocks
             outf.Write(WagonHasTemperature);
             outf.Write(CarOutsideTempC0);
             outf.Write(WagonTemperature);
-            outf.Write(RDSTBreaker);            
+            outf.Write(RDSTBreaker);
             outf.Write(CabHeating_OffOn);
             outf.Write(AuxPowerOff);
             outf.Write(UserPowerOff);
@@ -2645,7 +2643,7 @@ namespace Orts.Simulation.RollingStocks
         }
 
         #region Traveller-based updates
-        public float CurrentCurveRadius; 
+        public float CurrentCurveRadius;
         public float CurrentCurveAngle;
 
         internal void UpdatedTraveler(Traveller traveler, float elapsedTimeS, float distanceM, float speedMpS)
@@ -2705,7 +2703,7 @@ namespace Orts.Simulation.RollingStocks
         // Finally, we assume a mass (m) of 1kg to calculate a mass-independent value:
         //   k' = 9.8 / 0.2
         //float VibrationSpringConstantPrimepSpS = 9.8f / 0.2f; // 1/s/s
-        
+
         // 
         //float VibratioDampingCoefficient = 0.02f;
 
@@ -2735,7 +2733,7 @@ namespace Orts.Simulation.RollingStocks
         internal void UpdateVibrationAndTilting(Traveller traveler, float elapsedTimeS, float distanceM, float speedMpS)
         {
             // NOTE: Traveller is at the FRONT of the TrainCar!
-            
+
             // Don't add vibrations to train cars less than 2.5 meter in length; they're unsuitable for these calculations.
             if (CarLengthM < 2.5f) return;
             if (Simulator.Settings.CarVibratingLevel != 0)
@@ -2896,7 +2894,7 @@ namespace Orts.Simulation.RollingStocks
                 TrackFactorY = 1.0f;
                 TrackFactorZ = 1.0f;
             }
-            else 
+            else
             {
                 TrackFactorX = 0.8f;
                 TrackFactorY = 0.8f;
@@ -2913,7 +2911,7 @@ namespace Orts.Simulation.RollingStocks
 
         float CyklusCouplerImpact;
         private void AddVibrations(float factor)
-        {            
+        {
             // NOTE: For low angles (as our vibration rotations are), sin(angle) ~= angle, and since the displacement at the end of the car is sin(angle) = displacement/half-length, sin(displacement/half-length) * half-length ~= displacement.
             if (CarLengthM >= 25.0f || Simulator.Paused || Simulator.GameSpeed != 1)
             {
@@ -2936,7 +2934,7 @@ namespace Orts.Simulation.RollingStocks
                 float x;
                 if (CarLengthM > 15) x = (CarLengthM - ((CarLengthM - 15) * 0.75f));
                 else x = CarLengthM;
-                
+
                 // Vibrace při prokluzu kol
                 if (WheelSlip)
                 {
@@ -2961,7 +2959,7 @@ namespace Orts.Simulation.RollingStocks
 
                 // Vibrace při zrychlování a zpomalování
                 if (IsPlayerTrain && Math.Abs(AccelerationMpSS) > 1f && !TypVibrace_1 && !TypVibrace_2 && !TypVibrace_3 && Math.Abs(SpeedMpS) < 0.1f && !WheelSlip)
-                {                    
+                {
                     VibrationSpringConstantPrimepSpS = 50 / 0.2f;
                     VibratioDampingCoefficient = 0.3f;
                     VibrationRotationVelocityRadpS.X += (VibrationIntroductionStrength * AccelerationMpSS * 1.5f * VibrationMassKG) / x;
@@ -2969,7 +2967,7 @@ namespace Orts.Simulation.RollingStocks
 
                 //Vibrace náhodné nerovnosti
                 if (TypVibrace_1)   //Vibrace na spojích, dle vzdálenosti
-                {                    
+                {
                     int y = 10, y1 = 100;
                     switch (WagonNumAxles)
                     {
@@ -3034,7 +3032,7 @@ namespace Orts.Simulation.RollingStocks
                 }
 
                 if (TypVibrace_3)   //Vibrace na výhybce
-                {                    
+                {
                     int y = 10, y1 = 50;
                     switch (WagonNumAxles)
                     {
@@ -3076,8 +3074,8 @@ namespace Orts.Simulation.RollingStocks
 
                 TypVibrace_1 = false;
                 TypVibrace_2 = false;
-                TypVibrace_3 = false;                
-               
+                TypVibrace_3 = false;
+
                 //if (IsPlayerTrain)              
                 //    Simulator.Confirmer.Information("Curveture " + curvaturepM);                    
             }

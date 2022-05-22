@@ -17,15 +17,8 @@
 
 // This file is the responsibility of the 3D & Environment Team.
 
-using Microsoft.Xna.Framework.Graphics;
-using Orts.Simulation;
-using Orts.Simulation.Physics;
-using Orts.Simulation.Timetables;
-using Orts.Simulation.Signalling;
-using ORTS.Common;
-using System;
-using System.Collections.Generic;
 using Microsoft.Xna.Framework;
+using ORTS.Common;
 
 namespace Orts.Viewer3D.Popups
 {
@@ -141,8 +134,8 @@ namespace Orts.Viewer3D.Popups
         {
             var HudWindow = Owner.Viewer.HUDWindow;
 
-            if (HudWindow.hudWindowLinesPagesCount==1) pageDown.Text = Viewer.Catalog.GetString("▼ Page Down");
-            if (HudWindow.hudWindowLinesPagesCount>1) pageUp.Text= Viewer.Catalog.GetString("▲ Page Up");
+            if (HudWindow.hudWindowLinesPagesCount == 1) pageDown.Text = Viewer.Catalog.GetString("▼ Page Down");
+            if (HudWindow.hudWindowLinesPagesCount > 1) pageUp.Text = Viewer.Catalog.GetString("▲ Page Up");
         }
 
         protected override ControlLayout Layout(ControlLayout layout)
@@ -178,7 +171,7 @@ namespace Orts.Viewer3D.Popups
                 vbox.Add(prevLoco);
 
                 vbox.AddHorizontalSeparator();
-                screenMode = new Label(hbox.RemainingWidth, hbox.RemainingHeight, (HudWindow.hudWindowFullScreen?"Screen: Normal": "Screen: Full"), LabelAlignment.Center) { Color = Color.Gray };
+                screenMode = new Label(hbox.RemainingWidth, hbox.RemainingHeight, (HudWindow.hudWindowFullScreen ? "Screen: Normal" : "Screen: Full"), LabelAlignment.Center) { Color = Color.Gray };
                 screenMode.Click += ScreenMode_Click;
                 vbox.Add(screenMode);
             }

@@ -175,7 +175,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                     return Script.GetState();
             }
             set
-            { }                     
+            { }
         }
 
         float OldValue;
@@ -208,7 +208,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
             EmergencyRatePSIpS = 10;
             FullServReductionPSI = 26;
             MinReductionPSI = 6;
-            
+
             // Iciks
             if (RunningReleaseRatePSIpS == 0) RunningReleaseRatePSIpS = 1.45038f;
         }
@@ -278,7 +278,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                     break;
 
                 case "engine(trainbrakescontrollermaxreleaserate":
-                case "engine(enginebrakescontrollermaxreleaserate":    
+                case "engine(enginebrakescontrollermaxreleaserate":
                     ReleaseRatePSIpS = stf.ReadFloatBlock(STFReader.UNITS.PressureRateDefaultPSIpS, null);
                     break;
 
@@ -324,10 +324,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                     MaximumValue = stf.ReadFloat(STFReader.UNITS.None, null);
                     StepSize = stf.ReadFloat(STFReader.UNITS.None, null);
                     CurrentValue = DefaultValue = stf.ReadFloat(STFReader.UNITS.None, null);
-                    
+
                     // Icik
                     if (CurrentValue > 0) DefaultBrakeValue = CurrentValue;
-                    
+
                     string token = stf.ReadItem(); // s/b numnotches
                     if (string.Compare(token, "NumNotches", true) != 0) // handle error in gp38.eng where extra parameter provided before NumNotches statement 
                         stf.ReadItem();
@@ -350,7 +350,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                             {
                                 if (DefaultNeutralBrakeValue == 0)
                                     DefaultNeutralBrakeValue = value;
-                            }                            
+                            }
 
                             Notches.Add(new MSTSNotch(value, smooth, type, stf));
                             if (type != ")") stf.SkipRestOfBlock();
@@ -521,7 +521,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
             SignalEvent(BrakeControllerEvent.StartIncrease, target);
         }
 
-        public void StartDecrease(float? target , bool toZero = false)
+        public void StartDecrease(float? target, bool toZero = false)
         {
             if (toZero) SignalEvent(BrakeControllerEvent.StartDecreaseToZero, target);
             else SignalEvent(BrakeControllerEvent.StartDecrease, target);

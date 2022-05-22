@@ -18,7 +18,6 @@
 using ORTS.Common;
 using System;
 using System.IO;
-using System.Diagnostics;
 
 namespace Orts.Simulation.RollingStocks.SubSystems.PowerTransmissions
 {
@@ -121,7 +120,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerTransmissions
             set
             {
                 motor = value;
-                switch(driveType)
+                switch (driveType)
                 {
                     case AxleDriveType.NotDriven:
                         break;
@@ -189,7 +188,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerTransmissions
                         break;
                 }
             }
-            get 
+            get
             {
                 return inertiaKgm2;
             }
@@ -372,7 +371,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerTransmissions
         {
             get
             {
-                if (Math.Abs(SlipSpeedMpS) > WheelSlipThresholdMpS) 
+                if (Math.Abs(SlipSpeedMpS) > WheelSlipThresholdMpS)
                     return true;
                 else
                     return false;
@@ -393,12 +392,12 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerTransmissions
             {
                 if (AdhesionK == 0.0f)
                     AdhesionK = 1.0f;
-                float A = 2.0f*AdhesionK*AdhesionConditions*AdhesionConditions;
-                float B = AdhesionConditions*AdhesionConditions;
-                float C = AdhesionK*AdhesionK;
-                float a = -2.0f*A*B;
-                float b = A*B;
-                float c = A*C;
+                float A = 2.0f * AdhesionK * AdhesionConditions * AdhesionConditions;
+                float B = AdhesionConditions * AdhesionConditions;
+                float C = AdhesionK * AdhesionK;
+                float a = -2.0f * A * B;
+                float b = A * B;
+                float c = A * C;
                 return ((-b - (float)Math.Sqrt(b * b - 4.0f * a * c)) / (2.0f * a));
             }
         }
@@ -422,7 +421,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerTransmissions
                 }
                 if (SlipSpeedMpS < 0.0f)
                 {
-                    if ((SlipSpeedPercent < ( -SlipWarningTresholdPercent)))
+                    if ((SlipSpeedPercent < (-SlipWarningTresholdPercent)))
                         return true;
                     else
                         return false;
@@ -831,7 +830,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerTransmissions
         {
             if (conditions == 0)
                 conditions = 0.75f;
-            speed = Math.Abs(3.6f*speed);
+            speed = Math.Abs(3.6f * speed);
 
             //float umax = (CurtiusKnifflerA / (speed + CurtiusKnifflerB) + CurtiusKnifflerC);// *Adhesion2 / 0.331455f; // Curtius - Kniffler equation
 

@@ -19,8 +19,6 @@ using Orts.Formats.Msts;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
 
 namespace ORTS.ContentManager.Models
 {

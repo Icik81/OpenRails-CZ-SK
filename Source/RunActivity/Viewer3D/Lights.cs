@@ -70,12 +70,12 @@ namespace Orts.Viewer3D
         public Vector4 LightConeColor;
 
         public LightViewer(Viewer viewer, TrainCar car)
-        {            
+        {
             Viewer = viewer;
             Car = car;
             LightGlowMaterial = viewer.MaterialManager.Load("LightGlow");
             LightConeMaterial = viewer.MaterialManager.Load("LightCone");
-            
+
             UpdateState();
             if (Car.Lights != null)
             {
@@ -152,14 +152,14 @@ namespace Orts.Viewer3D
                 HasLightCone = true;
 
             if (UpdateState())
-            {                
+            {
                 foreach (var lightPrimitive in LightPrimitives)
                     lightPrimitive.UpdateState(this);
 #if DEBUG_LIGHT_STATES
                 Console.WriteLine();
 #endif
                 UpdateActiveLightCone();
-            }            
+            }
             foreach (var lightPrimitive in LightPrimitives)
                 lightPrimitive.PrepareFrame(frame, elapsedTime);
 
@@ -242,7 +242,7 @@ namespace Orts.Viewer3D
             var newCarIsFirst = Car.Train == null || (locomotiveFlipped ^ locomotiveReverseCab ? Car.Train.LastCar : Car.Train.FirstCar) == Car;
             var newCarIsLast = Car.Train == null || (locomotiveFlipped ^ locomotiveReverseCab ? Car.Train.FirstCar : Car.Train.LastCar) == Car;
             // Penalty
-            var newPenalty = mstsLocomotive != null && mstsLocomotive.TrainBrakeController.EmergencyBraking;                                            
+            var newPenalty = mstsLocomotive != null && mstsLocomotive.TrainBrakeController.EmergencyBraking;
             // Control
             var newCarIsPlayer = (Car.Train != null && Car.Train == Viewer.PlayerTrain)
                 || (Car.Train != null && Car.Train.TrainType == Train.TRAINTYPE.REMOTE)
@@ -277,9 +277,9 @@ namespace Orts.Viewer3D
             if (Car.Train != null && Car.Train.TrainType == Train.TRAINTYPE.AI)
             {
                 // Reflektor bude mít AI jen v noci
-                if (newIsDay)                
+                if (newIsDay)
                     newTrainHeadlight = 1;
-                else                
+                else
                     newTrainHeadlight = 2;
 
                 // AI posunuje
@@ -294,7 +294,7 @@ namespace Orts.Viewer3D
                     newTrainHeadlight = 1;
                 }
             }
-            
+
 
             if (
                 (TrainHeadlight != newTrainHeadlight) ||
@@ -716,7 +716,7 @@ namespace Orts.Viewer3D
                 IndexBuffer.SetData(indexData);
             }
             if (BlendState_SourceZeroDestOne == null)
-                BlendState_SourceZeroDestOne = new BlendState 
+                BlendState_SourceZeroDestOne = new BlendState
                 {
                     ColorSourceBlend = Blend.Zero,
                     ColorDestinationBlend = Blend.One,

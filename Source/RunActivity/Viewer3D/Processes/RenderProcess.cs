@@ -173,7 +173,7 @@ namespace Orts.Viewer3D.Processes
 
             DisplaySize = new Point(GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height);
 
-             if (Game.Settings.ShadowMapDistance == 0)
+            if (Game.Settings.ShadowMapDistance == 0)
                 Game.Settings.ShadowMapDistance = Game.Settings.ViewingDistance / 2;
 
             ShadowMapCount = Game.Settings.ShadowMapCount;
@@ -233,7 +233,7 @@ namespace Orts.Viewer3D.Processes
                 var C = (3 * Clog + Cuniform) / 4;
 
                 // This shadow map goes from LastC to C; calculate the correct center and diameter for the sphere from the view frustum.                
-                var height1 = (float)Math.Tan(fov / 2) * LastC;                
+                var height1 = (float)Math.Tan(fov / 2) * LastC;
                 var height2 = (float)Math.Tan(fov / 2) * C;
                 var width1 = height1 * ratio;
                 var width2 = height2 * ratio;

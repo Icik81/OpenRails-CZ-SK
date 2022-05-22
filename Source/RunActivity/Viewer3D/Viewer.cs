@@ -17,14 +17,6 @@
 
 // This file is the responsibility of the 3D & Environment Team.
 
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Management;
-using System.Threading;
-using System.Windows.Forms;
 using GNU.Gettext;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -43,6 +35,14 @@ using ORTS.Common;
 using ORTS.Common.Input;
 using ORTS.Scripting.Api;
 using ORTS.Settings;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Management;
+using System.Threading;
+using System.Windows.Forms;
 using Event = Orts.Common.Event;
 
 namespace Orts.Viewer3D
@@ -75,7 +75,7 @@ namespace Orts.Viewer3D
         /// Monotonically increasing time value (in seconds) for the game/viewer. Starts at 0 and only ever increases, at real-time.
         /// </summary>
         public double RealTime { get; private set; }
-        InfoDisplay InfoDisplay;        
+        InfoDisplay InfoDisplay;
         public WindowManager WindowManager { get; private set; }
         public MessagesWindow MessagesWindow { get; private set; } // Game message window (special, always visible)
         public NoticeWindow NoticeWindow { get; private set; } // Game notices window (special)
@@ -236,7 +236,7 @@ namespace Orts.Viewer3D
 
         public Camera SuspendedCamera { get; private set; }
 
-//        UserInputRailDriver RailDriver;
+        //        UserInputRailDriver RailDriver;
 
         public static double DbfEvalAutoPilotTimeS = 0;//Debrief eval
         public static double DbfEvalIniAutoPilotTimeS = 0;//Debrief eval  
@@ -439,12 +439,12 @@ namespace Orts.Viewer3D
 
             MaterialManager = new SharedMaterialManager(this);
             ShapeManager = new SharedShapeManager(this);
-            
+
             WindowManager = new WindowManager(this);
             MessagesWindow = new MessagesWindow(WindowManager);
             NoticeWindow = new NoticeWindow(WindowManager);
             PauseWindow = new PauseWindow(WindowManager);
-            ActivityWindow = new ActivityWindow(WindowManager);            
+            ActivityWindow = new ActivityWindow(WindowManager);
             QuitWindow = new QuitWindow(WindowManager);
             HelpWindow = new HelpWindow(WindowManager);
             TrackMonitorWindow = new TrackMonitorWindow(WindowManager);
@@ -499,8 +499,8 @@ namespace Orts.Viewer3D
             World.GetCameraTile();
             if (Simulator.Settings.ConditionalLoadOfDayOrNightTextures) // We need to compute sun height only in this case
             {
-            MaterialManager.LoadPrep();
-            LoadMemoryThreshold = (ulong)HUDWindow.GetVirtualAddressLimit() - 512 * 1024 * 1024;
+                MaterialManager.LoadPrep();
+                LoadMemoryThreshold = (ulong)HUDWindow.GetVirtualAddressLimit() - 512 * 1024 * 1024;
             }
             Load();
 
@@ -612,11 +612,11 @@ namespace Orts.Viewer3D
             TogglePantograph3SwitchUpCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
             TogglePantograph3SwitchDownCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
             TogglePantograph4SwitchUpCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
-            TogglePantograph4SwitchDownCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;            
+            TogglePantograph4SwitchDownCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
             ToggleCompressorCombinedSwitchUpCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
-            ToggleCompressorCombinedSwitchDownCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;            
+            ToggleCompressorCombinedSwitchDownCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
             ToggleCompressorCombinedSwitch2UpCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
-            ToggleCompressorCombinedSwitch2DownCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;           
+            ToggleCompressorCombinedSwitch2DownCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
             ToggleAuxCompressorMode_OffOnCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
             ToggleCompressorMode_OffAutoCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
             ToggleCompressorMode2_OffAutoCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
@@ -628,7 +628,7 @@ namespace Orts.Viewer3D
             ToggleControlRouteVoltageCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
             ToggleQuickReleaseButtonCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
             ToggleLowPressureReleaseButtonCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
-            ToggleBreakPowerButtonCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;            
+            ToggleBreakPowerButtonCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
             ToggleDieselDirectionControllerUpCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
             ToggleDieselDirectionControllerDownCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
             ToggleDieselDirectionControllerInOutCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
@@ -761,7 +761,7 @@ namespace Orts.Viewer3D
             {
                 cabTextureInverseRatio = (float)cabTexture.Height / cabTexture.Width;
                 // if square cab texture files with dimension of at least 1024 pixels are used, they are considered as stretched 4 : 3 ones
-                if (cabTextureInverseRatio == 1 && cabTexture.Width >= 1024) cabTextureInverseRatio = 0.75f; 
+                if (cabTextureInverseRatio == 1 && cabTexture.Width >= 1024) cabTextureInverseRatio = 0.75f;
             }
             return cabTextureInverseRatio;
         }
@@ -1198,20 +1198,20 @@ namespace Orts.Viewer3D
                 CheckReplaying();
                 new UseHeadOutBackCameraCommand(Log);
             }
-/*            if (UserInput.IsPressed(UserCommand.GameSwitchAhead))
-            {
-                if (PlayerTrain.ControlMode == Train.TRAIN_CONTROL.MANUAL || PlayerTrain.ControlMode == Train.TRAIN_CONTROL.EXPLORER)
-                    new ToggleSwitchAheadCommand(Log);
-                else
-                    Simulator.Confirmer.Warning(CabControl.SwitchAhead, CabSetting.Warn1);
-            }
-            if (UserInput.IsPressed(UserCommand.GameSwitchBehind))
-            {
-                if (PlayerTrain.ControlMode == Train.TRAIN_CONTROL.MANUAL || PlayerTrain.ControlMode == Train.TRAIN_CONTROL.EXPLORER)
-                    new ToggleSwitchBehindCommand(Log);
-                else
-                    Simulator.Confirmer.Warning(CabControl.SwitchBehind, CabSetting.Warn1);
-            }*/
+            /*            if (UserInput.IsPressed(UserCommand.GameSwitchAhead))
+                        {
+                            if (PlayerTrain.ControlMode == Train.TRAIN_CONTROL.MANUAL || PlayerTrain.ControlMode == Train.TRAIN_CONTROL.EXPLORER)
+                                new ToggleSwitchAheadCommand(Log);
+                            else
+                                Simulator.Confirmer.Warning(CabControl.SwitchAhead, CabSetting.Warn1);
+                        }
+                        if (UserInput.IsPressed(UserCommand.GameSwitchBehind))
+                        {
+                            if (PlayerTrain.ControlMode == Train.TRAIN_CONTROL.MANUAL || PlayerTrain.ControlMode == Train.TRAIN_CONTROL.EXPLORER)
+                                new ToggleSwitchBehindCommand(Log);
+                            else
+                                Simulator.Confirmer.Warning(CabControl.SwitchBehind, CabSetting.Warn1);
+                        }*/
             if (UserInput.IsPressed(UserCommand.GameFacingSwitchAhead))
             {
                 if (PlayerTrain.ControlMode == Train.TRAIN_CONTROL.MANUAL || PlayerTrain.ControlMode == Train.TRAIN_CONTROL.EXPLORER)
@@ -1316,7 +1316,7 @@ namespace Orts.Viewer3D
                 {
                     var success = ((AITrain)PlayerLocomotive.Train).SwitchToPlayerControl();
                     if (success)
-                    {   
+                    {
                         Simulator.Confirmer.Message(ConfirmLevel.Information, Viewer.Catalog.GetString("Switched to player control"));
                         DbfEvalAutoPilot = false;//Debrief eval
                     }
@@ -1338,8 +1338,8 @@ namespace Orts.Viewer3D
                 }
             }
 
-            if (DbfEvalAutoPilot && (Simulator.ClockTime - DbfEvalIniAutoPilotTimeS) > 1.0000 )
-            {              
+            if (DbfEvalAutoPilot && (Simulator.ClockTime - DbfEvalIniAutoPilotTimeS) > 1.0000)
+            {
                 DbfEvalAutoPilotTimeS = DbfEvalAutoPilotTimeS + (Simulator.ClockTime - DbfEvalIniAutoPilotTimeS);//Debrief eval
                 train.DbfEvalValueChanged = true;
                 DbfEvalIniAutoPilotTimeS = Simulator.ClockTime;//Debrief eval
@@ -1464,7 +1464,7 @@ namespace Orts.Viewer3D
 
             // explore 2D cabview controls
 
-            if (Camera is CabCamera && (PlayerLocomotiveViewer as MSTSLocomotiveViewer)._hasCabRenderer && MouseChangingControl == null && 
+            if (Camera is CabCamera && (PlayerLocomotiveViewer as MSTSLocomotiveViewer)._hasCabRenderer && MouseChangingControl == null &&
                 RenderProcess.IsMouseVisible)
             {
                 if (!UserInput.IsMouseLeftButtonPressed)
@@ -1514,7 +1514,7 @@ namespace Orts.Viewer3D
                         if (cabRenderer is CabViewDiscreteRenderer)
                         {
                             foreach (var iMatrix in animatedPart.Value.MatrixIndexes)
-                            { 
+                            {
                                 var matrix = Matrix.Identity;
                                 var hi = iMatrix;
                                 while (hi >= 0 && hi < trainCarShape.Hierarchy.Length && trainCarShape.Hierarchy[hi] != -1)
@@ -1642,7 +1642,7 @@ namespace Orts.Viewer3D
             // Diesel and electric locos have a Reverser lever and,
             // in the neutral position, direction == N
             return car.Direction == Direction.N
-                // Steam locos never have direction == N, so check for setting close to zero.
+            // Steam locos never have direction == N, so check for setting close to zero.
             || Math.Abs(car.Train.MUReverserPercent) <= 1;
         }
         /// <summary>

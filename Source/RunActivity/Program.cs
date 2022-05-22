@@ -15,11 +15,6 @@
 // You should have received a copy of the GNU General Public License
 // along with Open Rails.  If not, see <http://www.gnu.org/licenses/>.
 
-using System;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Runtime.InteropServices;
 using Orts.Common;
 using Orts.Simulation;
 using Orts.Viewer3D;
@@ -27,6 +22,11 @@ using Orts.Viewer3D.Debugging;
 using Orts.Viewer3D.Processes;
 using ORTS.Common;
 using ORTS.Settings;
+using System;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Runtime.InteropServices;
 
 namespace Orts
 {

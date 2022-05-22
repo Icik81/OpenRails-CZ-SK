@@ -17,18 +17,17 @@
 
 // This file is the responsibility of the 3D & Environment Team.
 
-using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework;
 using Orts.Simulation.Physics;
+using Orts.Simulation.RollingStocks;
+using Orts.Simulation.RollingStocks.SubSystems.Brakes;
 using ORTS.Common;
+using ORTS.Common.Input;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using Orts.Simulation.RollingStocks.SubSystems.Brakes;
-using Orts.Simulation.RollingStocks;
-using System.Text;
-using ORTS.Common.Input;
-using Microsoft.Xna.Framework;
 using System.IO;
+using System.Linq;
+using System.Text;
 
 namespace Orts.Viewer3D.Popups
 {
@@ -831,7 +830,7 @@ namespace Orts.Viewer3D.Popups
                 InfoToLabel(keyPressed, Viewer.Catalog.GetString("FPS"), Owner.Viewer.RenderProcess.FrameRate.SmoothedValue.ToString("F0"), "", false, keyPressed);
 
             // Messages
-			// Autopilot
+            // Autopilot
             keyPressed = "";
 
             if (Owner.Viewer.PlayerLocomotive.Train.TrainType == Train.TRAINTYPE.AI_PLAYERHOSTING)

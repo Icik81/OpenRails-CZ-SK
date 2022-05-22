@@ -15,6 +15,11 @@
 // You should have received a copy of the GNU General Public License
 // along with Open Rails.  If not, see <http://www.gnu.org/licenses/>.
 
+using GNU.Gettext;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
+using ORTS.Common;
+using ORTS.Common.Input;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -23,12 +28,6 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
-using GNU.Gettext;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
-using ORTS.Common;
-using ORTS.Common.Input;
 
 namespace ORTS.Settings
 {
@@ -133,7 +132,7 @@ namespace ORTS.Settings
                 Reset(command.ToString());
         }
 
-#region External APIs
+        #region External APIs
         enum MapVirtualKeyType
         {
             VirtualToCharacter = 2,
@@ -148,7 +147,7 @@ namespace ORTS.Settings
 
         [DllImport("user32.dll", CharSet = CharSet.Unicode)]
         static extern int GetKeyNameText(int scanCode, [Out] string name, int nameLength);
-#endregion
+        #endregion
 
         // Keyboard scancodes are basically constant; some keyboards have extra buttons (e.g. UK ones tend to have an
         // extra button next to Left Shift) or move one or two around (e.g. UK ones tend to move 0x2B down one row)
@@ -290,7 +289,7 @@ namespace ORTS.Settings
             rectangle.Height *= scaleY;
         }
 
-#region Default Input Settings
+        #region Default Input Settings
         static void InitializeCommands(UserCommandInput[] Commands)
         {
             // All UserCommandModifierInput commands go here.
@@ -305,7 +304,7 @@ namespace ORTS.Settings
             Commands[(int)UserCommand.CameraBrowseBackwards] = new UserCommandKeyInput(0x4F, KeyModifiers.Shift | KeyModifiers.Alt);
             Commands[(int)UserCommand.CameraBrowseForwards] = new UserCommandKeyInput(0x47, KeyModifiers.Shift | KeyModifiers.Alt);
             Commands[(int)UserCommand.CameraCab] = new UserCommandKeyInput(0x02);
-			Commands[(int)UserCommand.CameraToggleThreeDimensionalCab] = new UserCommandKeyInput(0x02, KeyModifiers.Alt);
+            Commands[(int)UserCommand.CameraToggleThreeDimensionalCab] = new UserCommandKeyInput(0x02, KeyModifiers.Alt);
             Commands[(int)UserCommand.CameraCarFirst] = new UserCommandKeyInput(0x47, KeyModifiers.Alt);
             Commands[(int)UserCommand.CameraCarLast] = new UserCommandKeyInput(0x4F, KeyModifiers.Alt);
             Commands[(int)UserCommand.CameraCarNext] = new UserCommandKeyInput(0x49, KeyModifiers.Alt);
@@ -572,7 +571,7 @@ namespace ORTS.Settings
             Commands[(int)UserCommand.ControlPantograph4SwitchDown] = new UserCommandKeyInput(0x19, KeyModifiers.Shift);
             Commands[(int)UserCommand.ControlCompressorCombinedUp] = new UserCommandKeyInput(0x2E);
             Commands[(int)UserCommand.ControlCompressorCombinedDown] = new UserCommandKeyInput(0x2E, KeyModifiers.Control);
-            Commands[(int)UserCommand.ControlCompressorCombined2Up] = new UserCommandKeyInput(0x2E, KeyModifiers.Shift); 
+            Commands[(int)UserCommand.ControlCompressorCombined2Up] = new UserCommandKeyInput(0x2E, KeyModifiers.Shift);
             Commands[(int)UserCommand.ControlCompressorCombined2Down] = new UserCommandKeyInput(0x2E, KeyModifiers.Shift | KeyModifiers.Control);
             Commands[(int)UserCommand.ControlAuxCompressorMode_OffOn] = new UserCommandKeyInput(0x2E, KeyModifiers.Control);
             Commands[(int)UserCommand.ControlCompressorMode_OffAuto] = new UserCommandKeyInput(0x2E);
@@ -589,7 +588,7 @@ namespace ORTS.Settings
             Commands[(int)UserCommand.ControlRDSTBreaker] = new UserCommandKeyInput(0x13, KeyModifiers.Shift);
             Commands[(int)UserCommand.ControlLapButton] = new UserCommandKeyInput(0x52, KeyModifiers.Shift);
         }
-#endregion
+        #endregion
 
         bool IsModifier(UserCommand command)
         {

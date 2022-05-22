@@ -542,7 +542,7 @@ namespace Orts.Viewer3D.WebServices
                         AddLabel(new ListLabel
                         {
                             FirstCol = keyPart.EndsWith("?") || keyPart.EndsWith("!") ? Viewer.Catalog.GetString(keyPart.Substring(0, keyPart.Length - 3)) : Viewer.Catalog.GetString(keyPart),
-                            LastCol = valuePart.Length > 1 ? Viewer.Catalog.GetString(valuePart.Replace(" ", string.Empty )) : "",
+                            LastCol = valuePart.Length > 1 ? Viewer.Catalog.GetString(valuePart.Replace(" ", string.Empty)) : "",
                         });
                     }
                     else if (keyPart.StartsWith(Viewer.Catalog.GetString("Gear")))

@@ -17,8 +17,6 @@
 
 // This file is the responsibility of the 3D & Environment Team. 
 
-using System;
-using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Orts.Common;
@@ -27,6 +25,8 @@ using Orts.Viewer3D.Common;
 using Orts.Viewer3D.Processes;
 using ORTS.Common;
 using ORTS.Common.Input;
+using System;
+using System.Collections.Generic;
 
 namespace Orts.Viewer3D
 {
@@ -304,7 +304,7 @@ namespace Orts.Viewer3D
         private static int mstsskySides = MSTSSkyConstants.skySides;
         public int mstscloudDomeRadiusDiff = 600;
         // skyLevels: Used for iterating vertically through the "levels" of the hemisphere polygon
-        private static int mstsskyLevels =  MSTSSkyConstants.skyLevels;
+        private static int mstsskyLevels = MSTSSkyConstants.skyLevels;
         private static float mstsskytextureu = MSTSSkyConstants.mstsskyTileu;
         private static float mstsskytexturev = MSTSSkyConstants.mstsskyTilev;
         private static float mstscloudtextureu = MSTSSkyConstants.mstscloudTileu;
@@ -395,9 +395,9 @@ namespace Orts.Viewer3D
 
                     // UV coordinates - top overlay
                     float uvRadius;
-                    uvRadius = (0.5f - (float)(0.5f * (i - 1)) / mstsskyLevels );
+                    uvRadius = (0.5f - (float)(0.5f * (i - 1)) / mstsskyLevels);
                     float uv_u = tile_u * (0.5f - ((float)Math.Cos(MathHelper.ToRadians((360 / mstsskySides) * (mstsskySides - j))) * uvRadius));
-                    float uv_v = tile_v * (0.5f - ((float)Math.Sin(MathHelper.ToRadians((360 / mstsskySides) * (mstsskySides - j))) * uvRadius ));
+                    float uv_v = tile_v * (0.5f - ((float)Math.Sin(MathHelper.ToRadians((360 / mstsskySides) * (mstsskySides - j))) * uvRadius));
 
                     // Store the position, texture coordinates and normal (normalized position vector) for the current vertex
                     vertexList[vertexIndex].Position = new Vector3(x, y, z);
@@ -535,7 +535,7 @@ namespace Orts.Viewer3D
         private Matrix XNAMoonMatrix;
         IEnumerator<EffectPass> ShaderPassesSky;
         IEnumerator<EffectPass> ShaderPassesMoon;
-        List<IEnumerator<EffectPass>>ShaderPassesClouds = new List<IEnumerator<EffectPass>>();
+        List<IEnumerator<EffectPass>> ShaderPassesClouds = new List<IEnumerator<EffectPass>>();
         private float mstsskytexturex;
         private float mstsskytexturey;
         private float mstscloudtexturex;
@@ -558,13 +558,13 @@ namespace Orts.Viewer3D
                 {
                     mstsSkyTexture[i] = Viewer.Simulator.RoutePath + @"\envfiles\textures\" + mstsskytexture[i].TextureName.ToString();
                     MSTSSkyTexture.Add(Orts.Formats.Msts.AceFile.Texture2DFromFile(Viewer.RenderProcess.GraphicsDevice, mstsSkyTexture[i]));
-                    if( i == 0 )
+                    if (i == 0)
                     {
                         MSTSDayTexture = MSTSSkyTexture[i];
                         mstsskytexturex = mstsskytexture[i].TileX;
                         mstsskytexturey = mstsskytexture[i].TileY;
                     }
-                    else if(mstsskytexture[i].Fadein_Begin_Time != null)
+                    else if (mstsskytexture[i].Fadein_Begin_Time != null)
                     {
                         MSTSSkyStarTexture = MSTSSkyTexture[i];
                         mstsskytexturex = mstsskytexture[i].TileX;

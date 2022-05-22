@@ -20,7 +20,6 @@
 using Orts.Simulation.RollingStocks;
 using ORTS.Common;
 using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -64,7 +63,7 @@ namespace Orts.Viewer3D.Debugging
         void UITimer_Tick(object sender, EventArgs e)
         {
             Visible = Viewer.SoundDebugFormEnabled;
-            if (!Visible || Viewer.RenderProcess.Viewer.RealTime - lastUpdateTime < 0.5 ) return;
+            if (!Visible || Viewer.RenderProcess.Viewer.RealTime - lastUpdateTime < 0.5) return;
             lastUpdateTime = Viewer.RenderProcess.Viewer.RealTime;
 
             UpdateContent();
@@ -94,13 +93,13 @@ namespace Orts.Viewer3D.Debugging
                             AddToForm((SoundSource)ssb);
                         else
                             if (ssb is TrackSoundSource)
-                            {
-                                var ts = (TrackSoundSource)ssb;
-                                if (ts._activeInSource != null)
-                                    AddToForm (ts._activeInSource);
-                                if (ts._activeOutSource != null)
-                                    AddToForm(ts._activeOutSource);
-                            }
+                        {
+                            var ts = (TrackSoundSource)ssb;
+                            if (ts._activeInSource != null)
+                                AddToForm(ts._activeInSource);
+                            if (ts._activeOutSource != null)
+                                AddToForm(ts._activeOutSource);
+                        }
                     }
 
                 CleanUp(activeSoundList.Nodes);
@@ -110,7 +109,7 @@ namespace Orts.Viewer3D.Debugging
 
                 // Fill selected node's data
                 if (activeSoundList.SelectedNode != lastActSelectedNode)
-                { 
+                {
                     selectedNode = activeSoundList.SelectedNode;
                     lastActSelectedNode = activeSoundList.SelectedNode;
                     inactiveSoundList.SelectedNode = null;
@@ -118,12 +117,12 @@ namespace Orts.Viewer3D.Debugging
                 }
                 else
                     if (inactiveSoundList.SelectedNode != lastInActSelectedNode)
-                    {
-                        selectedNode = inactiveSoundList.SelectedNode;
-                        lastInActSelectedNode = inactiveSoundList.SelectedNode;
-                        activeSoundList.SelectedNode = null;
-                        lastActSelectedNode = null;
-                    }
+                {
+                    selectedNode = inactiveSoundList.SelectedNode;
+                    lastInActSelectedNode = inactiveSoundList.SelectedNode;
+                    activeSoundList.SelectedNode = null;
+                    lastActSelectedNode = null;
+                }
 
                 if (selectedNode != null && selectedNode.Tag is SoundSource && (SoundSource)selectedNode.Tag != null)
                 {

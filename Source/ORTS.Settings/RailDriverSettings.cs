@@ -1,12 +1,11 @@
-﻿using System;
+﻿using GNU.Gettext;
+using ORTS.Common;
+using ORTS.Common.Input;
+using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Text;
-using GNU.Gettext;
-using ORTS.Common;
-using ORTS.Common.Input;
 
 namespace ORTS.Settings
 {

@@ -15,9 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Open Rails.  If not, see <http://www.gnu.org/licenses/>.
 
-using System.Data;
 using ORTS.Common;
-using ORTS.Settings;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -1290,7 +1288,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                 UpdateSpeedNumbers(0, true);
                 return;
             }
-            
+
         }
 
         public bool ManualMode = false;
@@ -1660,7 +1658,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
 
             if (MirelType == Type.LS90)
                 NZ1 = NZ2 = NZ3 = NZ4 = NZ5 = false;
-            if (NZ1 || NZ2|| NZ3|| NZ4|| NZ5)
+            if (NZ1 || NZ2 || NZ3 || NZ4 || NZ5)
             {
                 EmergencyBrakes(true);
                 return;
@@ -1838,114 +1836,114 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                     BlueLight = true;
                 }
             }
-            if ((selectedDriveMode == DriveMode.Normal || recieverState == RecieverState.Off) && selectedDriveMode != DriveMode.Trailing && selectedDriveMode != DriveMode.Shunting) 
+            if ((selectedDriveMode == DriveMode.Normal || recieverState == RecieverState.Off) && selectedDriveMode != DriveMode.Trailing && selectedDriveMode != DriveMode.Shunting)
             {
-               /* if ((recieverState == RecieverState.Off || !RecievingRepeaterSignal) && MpS.ToKpH(Locomotive.AbsSpeedMpS) > 119.9f)
-                {
-                    if (MpS.ToKpH(Locomotive.AbsSpeedMpS) < MirelMaximumSpeed && Locomotive.AbsSpeedMpS > 0 && ManualMode)
-                        StartReducingSpeed = false;
-                    operationalState = OperationalState.Restricting;
-                    if (ManualMode)
-                    {
-                        stopInterventingUntilNextSignal = true;
-                    }
-                    if (stopInterventingUntilNextSignal)
-                    {
-                        if (Locomotive.AbsSpeedMpS == 0)
-                            StartReducingSpeed = true;
-                        else
-                            StartReducingSpeed = false;
-                    }
+                /* if ((recieverState == RecieverState.Off || !RecievingRepeaterSignal) && MpS.ToKpH(Locomotive.AbsSpeedMpS) > 119.9f)
+                 {
+                     if (MpS.ToKpH(Locomotive.AbsSpeedMpS) < MirelMaximumSpeed && Locomotive.AbsSpeedMpS > 0 && ManualMode)
+                         StartReducingSpeed = false;
+                     operationalState = OperationalState.Restricting;
+                     if (ManualMode)
+                     {
+                         stopInterventingUntilNextSignal = true;
+                     }
+                     if (stopInterventingUntilNextSignal)
+                     {
+                         if (Locomotive.AbsSpeedMpS == 0)
+                             StartReducingSpeed = true;
+                         else
+                             StartReducingSpeed = false;
+                     }
 
-                    float slowDown = 1.5f;
-                    if (MpS.ToKpH(Locomotive.MaxSpeedMpS) < 101) slowDown = 0.6f;
-                    if (MpS.ToKpH(Locomotive.MaxSpeedMpS) < 141) slowDown = 0.82f;
+                     float slowDown = 1.5f;
+                     if (MpS.ToKpH(Locomotive.MaxSpeedMpS) < 101) slowDown = 0.6f;
+                     if (MpS.ToKpH(Locomotive.MaxSpeedMpS) < 141) slowDown = 0.82f;
 
-                    if (distanceAndSpeed == null)
-                        distanceAndSpeed = GetRequiredDecelerationMeters(slowDown, MpS.ToKpH(Locomotive.AbsSpeedMpS), 120);
-                    float requiredSpeed = 0;
-                    float fullDistance = 1000;
-                    if (distanceAndSpeed.Count > 0)
-                    {
-                        foreach (KeyValuePair<float, float> speed in distanceAndSpeed)
-                        {
-                            if (true)
-                            {
-                                fullDistance = speed.Value;
-                                break;
-                            }
-                        }
-                    }
-                    bool fast = false;
-                    float timeBeforeCountDown = 1500 - fullDistance;
-                    timeBeforeCountDown = timeBeforeCountDown / Locomotive.MaxSpeedMpS;
-                    if (MaxSelectedSpeed <= 120)
-                    {
-                        if (timeBeforeIntervetion > timeBeforeCountDown - 10 && !ZS1BConfirmed && !ZS1B)
-                        {
-                            BlueLight = false;
-                            ZS1B = true;
-                            Locomotive.SignalEvent(Common.Event.MirelOn);
-                        }
+                     if (distanceAndSpeed == null)
+                         distanceAndSpeed = GetRequiredDecelerationMeters(slowDown, MpS.ToKpH(Locomotive.AbsSpeedMpS), 120);
+                     float requiredSpeed = 0;
+                     float fullDistance = 1000;
+                     if (distanceAndSpeed.Count > 0)
+                     {
+                         foreach (KeyValuePair<float, float> speed in distanceAndSpeed)
+                         {
+                             if (true)
+                             {
+                                 fullDistance = speed.Value;
+                                 break;
+                             }
+                         }
+                     }
+                     bool fast = false;
+                     float timeBeforeCountDown = 1500 - fullDistance;
+                     timeBeforeCountDown = timeBeforeCountDown / Locomotive.MaxSpeedMpS;
+                     if (MaxSelectedSpeed <= 120)
+                     {
+                         if (timeBeforeIntervetion > timeBeforeCountDown - 10 && !ZS1BConfirmed && !ZS1B)
+                         {
+                             BlueLight = false;
+                             ZS1B = true;
+                             Locomotive.SignalEvent(Common.Event.MirelOn);
+                         }
 
-                        if (timeBeforeIntervetion > timeBeforeCountDown - 10)
-                        {
-                            fast = true;
-                        }
-                    }
-                    if (MpS.ToKpH(Locomotive.AbsSpeedMpS) > selectedApproachSpeed)
-                        StartReducingSpeedLightFlash(fast, elapsedTimeSeconds);
-                    else
-                        StartReducingSpeed = false;
-                    timeBeforeIntervetion += elapsedTimeSeconds;
-                    if (timeBeforeIntervetion > timeBeforeCountDown - 2)
-                        canChangeSelectedApproachSpeed = false;
+                         if (timeBeforeIntervetion > timeBeforeCountDown - 10)
+                         {
+                             fast = true;
+                         }
+                     }
+                     if (MpS.ToKpH(Locomotive.AbsSpeedMpS) > selectedApproachSpeed)
+                         StartReducingSpeedLightFlash(fast, elapsedTimeSeconds);
+                     else
+                         StartReducingSpeed = false;
+                     timeBeforeIntervetion += elapsedTimeSeconds;
+                     if (timeBeforeIntervetion > timeBeforeCountDown - 2)
+                         canChangeSelectedApproachSpeed = false;
 
-                    if (timeBeforeIntervetion > timeBeforeCountDown)
-                    {
-                        canChangeSelectedApproachSpeed = false;
-                        timeInterventing += elapsedTimeSeconds;
-                    }
-                    if (timeInterventing > 1)
-                    {
-                        int i = 0;
-                        foreach (KeyValuePair<float, float> speed in distanceAndSpeed)
-                        {
-                            if (i == currentSpeedStep)
-                            {
-                                currentSpeedStep++;
-                                requiredSpeed = speed.Key;
-                                timeInterventing = 0;
-                                break;
-                            }
-                            i++;
-                        }
-                    }
+                     if (timeBeforeIntervetion > timeBeforeCountDown)
+                     {
+                         canChangeSelectedApproachSpeed = false;
+                         timeInterventing += elapsedTimeSeconds;
+                     }
+                     if (timeInterventing > 1)
+                     {
+                         int i = 0;
+                         foreach (KeyValuePair<float, float> speed in distanceAndSpeed)
+                         {
+                             if (i == currentSpeedStep)
+                             {
+                                 currentSpeedStep++;
+                                 requiredSpeed = speed.Key;
+                                 timeInterventing = 0;
+                                 break;
+                             }
+                             i++;
+                         }
+                     }
 
-                    if (MaxSelectedSpeed > MpS.ToKpH(Locomotive.MaxSpeedMpS)) MaxSelectedSpeed = MpS.ToKpH(Locomotive.MaxSpeedMpS);
-                    if (MirelMaximumSpeed > MaxSelectedSpeed) MirelMaximumSpeed = MaxSelectedSpeed;
-                    if (requiredSpeed > 0)
-                    {
-                        if (MirelMaximumSpeed > requiredSpeed)
-                            MirelMaximumSpeed -= 5;
-                        if (MirelMaximumSpeed < selectedApproachSpeed)
-                            MirelMaximumSpeed = selectedApproachSpeed;
-                    }
+                     if (MaxSelectedSpeed > MpS.ToKpH(Locomotive.MaxSpeedMpS)) MaxSelectedSpeed = MpS.ToKpH(Locomotive.MaxSpeedMpS);
+                     if (MirelMaximumSpeed > MaxSelectedSpeed) MirelMaximumSpeed = MaxSelectedSpeed;
+                     if (requiredSpeed > 0)
+                     {
+                         if (MirelMaximumSpeed > requiredSpeed)
+                             MirelMaximumSpeed -= 5;
+                         if (MirelMaximumSpeed < selectedApproachSpeed)
+                             MirelMaximumSpeed = selectedApproachSpeed;
+                     }
 
-                    if (MpS.ToKpH(Locomotive.AbsSpeedMpS) > MirelMaximumSpeed + 0.5f && !emergency && Bar.FromPSI(Locomotive.BrakeSystem.BrakeLine1PressurePSI) > 4.98f)
-                    {
-                        ApplyNZ2();
-                    }
-                    else if (emergency && NZOK)
-                    {
-                        EmergencyBrakes(false);
-                        //Locomotive.SetTrainBrakePercent(0);
-                        emergency = false;
-                    }
-                }*/
-            
-            // Cyklická kontrola bdělosti
-            bool vigilanceActive = true;
+                     if (MpS.ToKpH(Locomotive.AbsSpeedMpS) > MirelMaximumSpeed + 0.5f && !emergency && Bar.FromPSI(Locomotive.BrakeSystem.BrakeLine1PressurePSI) > 4.98f)
+                     {
+                         ApplyNZ2();
+                     }
+                     else if (emergency && NZOK)
+                     {
+                         EmergencyBrakes(false);
+                         //Locomotive.SetTrainBrakePercent(0);
+                         emergency = false;
+                     }
+                 }*/
+
+                // Cyklická kontrola bdělosti
+                bool vigilanceActive = true;
                 if (Locomotive.AbsSpeedMpS == 0)
                     vigilanceActive = false;
                 if (Locomotive.AbsSpeedMpS > 0)
@@ -2069,7 +2067,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                         if (diff > 7 && Locomotive.EmergencyButtonPressed == false && Bar.FromPSI(Locomotive.BrakeSystem.BrakeLine1PressurePSI) > PressureForTestPassBar)
                         {
                             if (RecievingRepeaterSignal)
-                            if (!NZ2) ApplyNZ2();
+                                if (!NZ2) ApplyNZ2();
                         }
                     }
                 }
@@ -2104,9 +2102,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems
 
                 if (!RecievingRepeaterSignal && selectedDriveMode == DriveMode.Shunting)
                 {
-                        MirelMaximumSpeed = 40;
+                    MirelMaximumSpeed = 40;
                 }
-                CheckSignal:
+            CheckSignal:
                 switch (Locomotive.TrainControlSystem.CabSignalAspect)
                 {
                     case TrackMonitorSignalAspect.Clear_2:
@@ -2178,7 +2176,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                             float fullDistance = 1000;
                             if (distanceAndSpeed.Count > 0)
                             {
-                                foreach (KeyValuePair < float, float> speed in distanceAndSpeed)
+                                foreach (KeyValuePair<float, float> speed in distanceAndSpeed)
                                 {
                                     if (true)
                                     {

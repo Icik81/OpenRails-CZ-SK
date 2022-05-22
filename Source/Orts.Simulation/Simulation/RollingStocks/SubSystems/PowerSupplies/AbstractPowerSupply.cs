@@ -16,7 +16,6 @@
 // along with Open Rails.  If not, see <http://www.gnu.org/licenses/>.
 
 using Microsoft.Xna.Framework;
-using Orts.Common;
 using Orts.Parsers.Msts;
 using ORTS.Scripting.Api;
 using System;
@@ -108,7 +107,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
 
         public float PowerOnDelayS { get; private set; }
         public float AuxPowerOnDelayS { get; set; }
-        
+
         public AbstractPowerSupply(MSTSLocomotive locomotive)
         {
             Locomotive = locomotive;
@@ -129,7 +128,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                     break;
 
                 case "engine(ortsauxpowerondelay":
-                    AuxPowerOnDelayS = stf.ReadFloatBlock(STFReader.UNITS.Time, 10);                    
+                    AuxPowerOnDelayS = stf.ReadFloatBlock(STFReader.UNITS.Time, 10);
                     break;
             }
             AuxPowerOnDelayS = MathHelper.Clamp(AuxPowerOnDelayS, PowerOnDelayS, 100);

@@ -23,7 +23,6 @@ using System.Management;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows.Forms;
-using Microsoft.Xna.Framework.Graphics;
 
 namespace ORTS.Common
 {

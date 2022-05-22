@@ -28,24 +28,13 @@
  */
 
 
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Orts.Formats.Msts;
-using Orts.Parsers.Msts;
 using Orts.Simulation.RollingStocks.SubSystems;
-using Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS;
-using Orts.Simulation.RollingStocks.SubSystems.Controllers;
-using Orts.Simulation.RollingStocks.SubSystems.PowerSupplies;
 using ORTS.Common;
-using ORTS.Scripting.Api;
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Xml;
-using Event = Orts.Common.Event;
 
 namespace Orts.Simulation.RollingStocks
 {
@@ -291,9 +280,9 @@ namespace Orts.Simulation.RollingStocks
             }
             if (!Locomotive.IsLeadLocomotive() && Locomotive.PowerOn && (Locomotive.AcceptMUSignals || Locomotive.LocoHelperOn))
                 Locomotive.ControllerVolts = Locomotive.Train.ControllerVolts;
-            
+
             if (!Locomotive.IsLeadLocomotive() && (!Locomotive.PowerOn || (!Locomotive.AcceptMUSignals && !Locomotive.LocoHelperOn)))
-                Locomotive.ControllerVolts = OverridenControllerVolts = 0;           
+                Locomotive.ControllerVolts = OverridenControllerVolts = 0;
 
             if (!Locomotive.IsPlayerTrain)
                 return;
@@ -365,7 +354,7 @@ namespace Orts.Simulation.RollingStocks
                 uc.RotorsCurrent = 0;
                 uc.Mass = Locomotive.MassKG / Undercarriages.Count;
                 foreach (ExtendedAxle ea in uc.Axles)
-                {                    
+                {
                     if (ea.WheelSpeedMpS == 0)
                         ea.WheelSpeedMpS = Locomotive.WheelSpeedMpS;
 
@@ -525,7 +514,7 @@ namespace Orts.Simulation.RollingStocks
                         if (Locomotive.TractiveForceCurvesDC != null)
                         {
                             if (overridenControllerVolts != Locomotive.ControllerVolts)
-                                maxForceN = Locomotive.TractiveForceCurvesDC.Get(Locomotive.CruiseControl.controllerVolts / 100 < overridenControllerVolts ? (Locomotive.CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.Auto? overridenControllerVolts / 10 : overridenControllerVolts / 10) : (usingControllerVolts ? 1 : overridenControllerVolts / Locomotive.MaxControllerVolts), WheelSpeedMpS) / totalMotors;
+                                maxForceN = Locomotive.TractiveForceCurvesDC.Get(Locomotive.CruiseControl.controllerVolts / 100 < overridenControllerVolts ? (Locomotive.CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.Auto ? overridenControllerVolts / 10 : overridenControllerVolts / 10) : (usingControllerVolts ? 1 : overridenControllerVolts / Locomotive.MaxControllerVolts), WheelSpeedMpS) / totalMotors;
                             else
                                 maxForceN = Locomotive.TractiveForceCurvesDC.Get(Locomotive.CruiseControl.controllerVolts / 100 < Locomotive.ControllerVolts ? (Locomotive.CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.Auto ? Locomotive.CruiseControl.controllerVolts / 100 : Locomotive.CruiseControl.controllerVolts / 10) : (usingControllerVolts ? 1 : Locomotive.ControllerVolts / Locomotive.MaxControllerVolts), WheelSpeedMpS) / totalMotors;
                         }
@@ -567,7 +556,7 @@ namespace Orts.Simulation.RollingStocks
                 maxForceN = maxForceN * Locomotive.UiPowerLose;
             }
             else if ((Locomotive.DynamicBrakeForceCurves != null || Locomotive.DynamicBrakeForceCurvesAC != null || Locomotive.DynamicBrakeForceCurvesDC != null) && Locomotive.ControllerVolts < 0)
-            {                
+            {
                 // Icik
                 switch (Locomotive.SwitchingVoltageMode)
                 {
@@ -657,7 +646,7 @@ namespace Orts.Simulation.RollingStocks
                 ForceN = -Locomotive.DynamicBrakeForceN / 4;
                 ForceN += (reducedForceN * 2);
             }
-            else if (Locomotive.DynamicBrakeForceN  > 0)
+            else if (Locomotive.DynamicBrakeForceN > 0)
             {
                 ForceN = -Locomotive.DynamicBrakeForceN / 4;
                 ForceN += (reducedForceN * 2);
@@ -736,11 +725,11 @@ namespace Orts.Simulation.RollingStocks
             float Mass4 = ((Gp + N34) / 2 + N4) / 9.81f;
 
             //            Locomotive.Simulator.Confirmer.MSG(Mass1.ToString() + " " + Mass2.ToString() + " " + Mass3.ToString() + " " + Mass4.ToString());
-//            Locomotive.Simulator.Confirmer.MSG(MpS.ToKpH(extendedPhysics.Undercarriages[0].Axles[0].WheelSpeedMpS).ToString() + " " + MpS.ToKpH(extendedPhysics.Undercarriages[0].Axles[1].WheelSpeedMpS).ToString() + " " + MpS.ToKpH(extendedPhysics.Undercarriages[1].Axles[0].WheelSpeedMpS).ToString() + " " + MpS.ToKpH(extendedPhysics.Undercarriages[1].Axles[1].WheelSpeedMpS).ToString());
+            //            Locomotive.Simulator.Confirmer.MSG(MpS.ToKpH(extendedPhysics.Undercarriages[0].Axles[0].WheelSpeedMpS).ToString() + " " + MpS.ToKpH(extendedPhysics.Undercarriages[0].Axles[1].WheelSpeedMpS).ToString() + " " + MpS.ToKpH(extendedPhysics.Undercarriages[1].Axles[0].WheelSpeedMpS).ToString() + " " + MpS.ToKpH(extendedPhysics.Undercarriages[1].Axles[1].WheelSpeedMpS).ToString());
 
             foreach (Undercarriage uc in extendedPhysics.Undercarriages)
             {
-                foreach(ExtendedAxle ea in uc.Axles)
+                foreach (ExtendedAxle ea in uc.Axles)
                 {
                     if (ea.Id == 0)
                         ea.Mass = Mass1;
@@ -804,6 +793,10 @@ namespace Orts.Simulation.RollingStocks
                 RotorCurrent = StatorCurrent = 0;
                 return;
             }
+
+            if (MaxRotorCurrent == 0)
+                MaxRotorCurrent = 500;
+
             if (axleSpeed < 0)
                 axleSpeed = -axleSpeed;
             if (!Locomotive.PowerOn && Locomotive.ControllerVolts > 0)

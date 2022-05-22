@@ -187,7 +187,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
         }
     }
 
-    public class Pantograph 
+    public class Pantograph
     {
         readonly MSTSWagon Wagon;
 
@@ -198,7 +198,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
         public float DelayS { get; private set; }
         public float TimeS { get; private set; }
 
-        public bool CommandUp {
+        public bool CommandUp
+        {
             get
             {
                 bool value;
@@ -262,7 +263,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
 
         public void Restore(BinaryReader inf)
         {
-            State = (PantographState) Enum.Parse(typeof(PantographState), inf.ReadString());
+            State = (PantographState)Enum.Parse(typeof(PantographState), inf.ReadString());
             DelayS = inf.ReadSingle();
             TimeS = inf.ReadSingle();
         }
@@ -308,63 +309,63 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
             Event soundEvent = Event.None;
             // Icik
             if (!PantographsBlocked)
-            switch (evt)
-            {
-                case PowerSupplyEvent.LowerPantograph:
-                    if (State == PantographState.Up || State == PantographState.Raising)
-                    {
-                        State = PantographState.Lowering;
-
-                        switch (Id)
+                switch (evt)
+                {
+                    case PowerSupplyEvent.LowerPantograph:
+                        if (State == PantographState.Up || State == PantographState.Raising)
                         {
-                            default:
-                            case 1:
-                                soundEvent = Event.Pantograph1Down;
-                                break;
+                            State = PantographState.Lowering;
 
-                            case 2:
-                                soundEvent = Event.Pantograph2Down;
-                                break;
+                            switch (Id)
+                            {
+                                default:
+                                case 1:
+                                    soundEvent = Event.Pantograph1Down;
+                                    break;
 
-                            case 3:
-                                soundEvent = Event.Pantograph3Down;
-                                break;
+                                case 2:
+                                    soundEvent = Event.Pantograph2Down;
+                                    break;
 
-                            case 4:
-                                soundEvent = Event.Pantograph4Down;
-                                break;
+                                case 3:
+                                    soundEvent = Event.Pantograph3Down;
+                                    break;
+
+                                case 4:
+                                    soundEvent = Event.Pantograph4Down;
+                                    break;
+                            }
                         }
-                    }
 
-                    break;
+                        break;
 
-                case PowerSupplyEvent.RaisePantograph:
-                    if ((State == PantographState.Down || State == PantographState.Lowering) && !PantographsUpBlocked)
-                    {
-                        State = PantographState.Raising;
-
-                        switch (Id)
+                    case PowerSupplyEvent.RaisePantograph:
+                        if ((State == PantographState.Down || State == PantographState.Lowering) && !PantographsUpBlocked)
                         {
-                            default:
-                            case 1:
-                                soundEvent = Event.Pantograph1Up;
-                                break;
+                            State = PantographState.Raising;
 
-                            case 2:
-                                soundEvent = Event.Pantograph2Up;
-                                break;
+                            switch (Id)
+                            {
+                                default:
+                                case 1:
+                                    soundEvent = Event.Pantograph1Up;
+                                    break;
 
-                            case 3:
-                                soundEvent = Event.Pantograph3Up;
-                                break;
+                                case 2:
+                                    soundEvent = Event.Pantograph2Up;
+                                    break;
 
-                            case 4:
-                                soundEvent = Event.Pantograph4Up;
-                                break;
+                                case 3:
+                                    soundEvent = Event.Pantograph3Up;
+                                    break;
+
+                                case 4:
+                                    soundEvent = Event.Pantograph4Up;
+                                    break;
+                            }
                         }
-                    }
-                    break;
-            }
+                        break;
+                }
 
             if (soundEvent != Event.None)
             {

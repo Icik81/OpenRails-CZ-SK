@@ -35,7 +35,6 @@
 //
 
 using Orts.Formats.Msts;
-using Orts.Simulation.Timetables;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -1575,14 +1574,14 @@ namespace Orts.Simulation.Signalling
                     }
                 }
 
-  // AND or OR indication (to link previous and next part)
+                // AND or OR indication (to link previous and next part)
 
                 else if (thisCond is SignalScripts.SCRAndOr)
                 {
                     condstring = (SignalScripts.SCRAndOr)thisCond;
                 }
 
-  // subcondition
+                // subcondition
 
                 else
                 {
@@ -1709,7 +1708,7 @@ namespace Orts.Simulation.Signalling
 #endif
             }
 
-  // process second term
+            // process second term
 
             else
             {

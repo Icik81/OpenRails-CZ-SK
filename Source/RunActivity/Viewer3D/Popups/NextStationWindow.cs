@@ -20,8 +20,8 @@
 using Microsoft.Xna.Framework;
 using Orts.Simulation;
 using Orts.Simulation.Physics;
-using Orts.Simulation.Timetables;
 using Orts.Simulation.Signalling;
+using Orts.Simulation.Timetables;
 using ORTS.Common;
 using System;
 using System.Collections.Generic;

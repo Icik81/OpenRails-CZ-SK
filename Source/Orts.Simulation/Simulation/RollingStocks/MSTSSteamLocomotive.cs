@@ -68,8 +68,8 @@ using Orts.Common;
 using Orts.Formats.Msts;
 using Orts.Parsers.Msts;
 using Orts.Simulation.Physics;
-using Orts.Simulation.RollingStocks.SubSystems.Controllers;
 using Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS;
+using Orts.Simulation.RollingStocks.SubSystems.Controllers;
 using ORTS.Common;
 using System;
 using System.Diagnostics;
@@ -330,7 +330,7 @@ namespace Orts.Simulation.RollingStocks
         float BoilerSurfaceAreaFt2;
         float FractionBoilerAreaInsulated;
         float BoilerHeatRadiationLossBTU; // Heat loss of boiler (hourly value)
-               
+
         #region Additional steam properties
         const float SpecificHeatCoalKJpKGpK = 1.26f; // specific heat of coal - kJ/kg/K
         const float SteamVaporSpecVolumeAt100DegC1BarM3pKG = 1.696f;
@@ -789,7 +789,8 @@ namespace Orts.Simulation.RollingStocks
                 case "engine(boilervolume": BoilerVolumeFT3 = stf.ReadFloatBlock(STFReader.UNITS.VolumeDefaultFT3, null); break;
                 case "engine(maxboilerpressure": MaxBoilerPressurePSI = stf.ReadFloatBlock(STFReader.UNITS.PressureDefaultPSI, null); break;
                 case "engine(ortsmaxsuperheattemperature": MaxSuperheatRefTempF = stf.ReadFloatBlock(STFReader.UNITS.None, null); break;  // New input and conversion units to be added for temperature
-                case "engine(ortsmaxindicatedhorsepower": MaxIndicatedHorsePowerHP = stf.ReadFloatBlock(STFReader.UNITS.Power, null);
+                case "engine(ortsmaxindicatedhorsepower":
+                    MaxIndicatedHorsePowerHP = stf.ReadFloatBlock(STFReader.UNITS.Power, null);
                     MaxIndicatedHorsePowerHP = W.ToHp(MaxIndicatedHorsePowerHP);  // Convert input to HP for use internally in this module
                     break;
                 case "engine(vacuumbrakeslargeejectorusagerate": EjectorLargeSteamConsumptionLbpS = pS.FrompH(stf.ReadFloatBlock(STFReader.UNITS.MassRateDefaultLBpH, null)); break;
@@ -1096,7 +1097,7 @@ namespace Orts.Simulation.RollingStocks
                 ConnectingRodWeightLb = 600.0f * reductionfactor;  // Weignt of connecting rod
                 ConnectingRodBalanceWeightLb = 300.0f * reductionfactor; // Balance weight for connecting rods
             }
-            else if (MassKG < Kg.FromTUS(20)) 
+            else if (MassKG < Kg.FromTUS(20))
             {
                 const float reductionfactor = 0.3f;
                 ReciprocatingWeightLb = 580.0f * reductionfactor;  // Weight of reciprocating parts of the rod driving gears
@@ -1759,7 +1760,7 @@ namespace Orts.Simulation.RollingStocks
             MaxBoilerOutputHP = MaxBoilerOutputLBpH / SteamperIHPh; // Calculate boiler output power
 
             // if MaxIHP is set in ENG file, and is a geared (mainly selectable model) locomotive then retain a copy of the original value
-            if (MaxIndicatedHorsePowerHP != 0) 
+            if (MaxIndicatedHorsePowerHP != 0)
             {
                 RetainedGearedMaxMaxIndicatedHorsePowerHP = MaxIndicatedHorsePowerHP;
             }
@@ -1780,7 +1781,7 @@ namespace Orts.Simulation.RollingStocks
                     ISBoilerLimited = false;
                 }
             }
-                       
+
             DisplayMaxIndicatedHorsePowerHP = MaxIndicatedHorsePowerHP;
 
             // If DrvWheelWeight is not in ENG file, then calculate from Factor of Adhesion(FoA) = DrvWheelWeight / Start (Max) Tractive Effort, assume FoA = 4.2
@@ -3152,10 +3153,10 @@ namespace Orts.Simulation.RollingStocks
             // This section calculates heat radiation loss from the boiler. This section is based upon the description provided in "The Thermal Insulation of the Steam Locomotive" (Paper 501) published in the
             // which was published in the March 1, 1951 Journal of the Institution of Locomotive Engineers.
             // In basic terms,  Heat loss = Kc * A * dT, where Kc = heat transfer coefficient, A = heat transfer area, and dT = difference in temperature, ie (Boiler Temp - Ambient Temp)
-            
+
             // Calculate the temp differential
             float TemperatureDifferentialF = 0;
-            
+
             TemperatureDifferentialF = C.ToF(C.FromK(BoilerWaterTempK) - CarOutsideTempC);
 
             // As locomotive moves, the Kc value will increase as more heat loss occurs with greater speed.
@@ -3182,21 +3183,21 @@ namespace Orts.Simulation.RollingStocks
             {
                 KcMovementFraction = KcMaxSpeed / KcMinSpeed; // Calculate constant fraction over 20m/s
             }
-            
+
             //            Trace.TraceInformation("Fraction - {0} Speed {1} MinSpeed {2} Actual {3}", KcMovementFraction, absSpeedMpS, KcMinSpeed, KcActualSpeed);
-            
+
             // Calculate radiation loss - has two elements, insulated and uninsulated
             float UninsulatedBoilerHeatRadiationLossBTU = BoilerSurfaceAreaFt2 * (1.0f - FractionBoilerAreaInsulated) * KcMovementFraction * KcUninsulation * TemperatureDifferentialF;
             float InsulatedBoilerHeatRadiationLossBTU = BoilerSurfaceAreaFt2 * FractionBoilerAreaInsulated * KcMovementFraction * KcInsulation * TemperatureDifferentialF;
             BoilerHeatRadiationLossBTU = UninsulatedBoilerHeatRadiationLossBTU + InsulatedBoilerHeatRadiationLossBTU;
-            
+
             //            Trace.TraceInformation("Heat Loss - {0} Area {1} TempDiff {2} Speed {3} MoveFraction {4}", BoilerHeatRadiationLossBTU, BoilerSurfaceAreaFt2, TemperatureDifferentialF, absSpeedMpS, KcMovementFraction);
-            
+
             // Temporary calculation to maintain smoke stack and minimum coal feed in AI firing - could be changed
             RadiationSteamLossLBpS = pS.FrompH(BoilerHeatRadiationLossBTU) / (BoilerSteamHeatBTUpLB - BoilerWaterHeatBTUpLB);
-            
-                     //   Trace.TraceInformation("RadLoss {0}", RadiationSteamLossLBpS);
-            
+
+            //   Trace.TraceInformation("RadLoss {0}", RadiationSteamLossLBpS);
+
             BoilerHeatBTU -= elapsedClockSeconds * pS.FrompH(BoilerHeatRadiationLossBTU);
             BoilerHeatOutBTUpS += pS.FrompH(BoilerHeatRadiationLossBTU);
 
@@ -4490,7 +4491,7 @@ namespace Orts.Simulation.RollingStocks
                 // Force tractive effort to zero if throttle is closed, or if a geared steam locomotive in neutral gear. MEP calculation is not allowing it to go to zero
                 if (throttle < 0.001 || (SteamEngineType == SteamEngineTypes.Geared && SteamGearPosition == 0))
                 {
-                    TractiveEffortLbsF = 0.0f; 
+                    TractiveEffortLbsF = 0.0f;
                 }
                 TractiveEffortLbsF = MathHelper.Clamp(TractiveEffortLbsF, 0, TractiveEffortLbsF);
                 DisplayTractiveEffortLbsF = TractiveEffortLbsF;
@@ -5890,7 +5891,7 @@ namespace Orts.Simulation.RollingStocks
                         data = SmallEjectorController.CurrentValue;
                         break;
                     }
-               case CABViewControlTypes.ORTS_LARGE_EJECTOR:
+                case CABViewControlTypes.ORTS_LARGE_EJECTOR:
                     {
                         data = LargeEjectorController.CurrentValue;
                         break;
@@ -6686,11 +6687,11 @@ namespace Orts.Simulation.RollingStocks
             }
 
             return status.ToString();
-        } 
+        }
 
-// Gear Box
+        // Gear Box
 
-public void SteamStartGearBoxIncrease()
+        public void SteamStartGearBoxIncrease()
         {
             if (IsSelectGeared)
             {
@@ -6957,7 +6958,7 @@ public void SteamStartGearBoxIncrease()
         {
             LargeEjectorController.CommandStartTime = Simulator.ClockTime;
             if (IsPlayerTrain)
-                Simulator.Confirmer.ConfirmWithPerCent(CabControl.LargeEjector, CabSetting.Increase, LargeEjectorController.CurrentValue* 100);
+                Simulator.Confirmer.ConfirmWithPerCent(CabControl.LargeEjector, CabSetting.Increase, LargeEjectorController.CurrentValue * 100);
             LargeEjectorController.StartIncrease(target);
             SignalEvent(Event.LargeEjectorChange);
         }
@@ -6971,7 +6972,7 @@ public void SteamStartGearBoxIncrease()
         public void StartLargeEjectorDecrease(float? target)
         {
             if (IsPlayerTrain)
-                Simulator.Confirmer.ConfirmWithPerCent(CabControl.LargeEjector, CabSetting.Decrease, LargeEjectorController.CurrentValue* 100);
+                Simulator.Confirmer.ConfirmWithPerCent(CabControl.LargeEjector, CabSetting.Decrease, LargeEjectorController.CurrentValue * 100);
             LargeEjectorController.StartDecrease(target);
             SignalEvent(Event.LargeEjectorChange);
         }
@@ -6994,7 +6995,7 @@ public void SteamStartGearBoxIncrease()
             }
             else
             {
-                if (target<LargeEjectorController.CurrentValue)
+                if (target < LargeEjectorController.CurrentValue)
                 {
                     StartLargeEjectorDecrease(target);
                 }
@@ -7011,7 +7012,7 @@ public void SteamStartGearBoxIncrease()
                 new ContinuousLargeEjectorCommand(Simulator.Log, 1, change > 0, controller.CurrentValue, Simulator.GameTime);
             }
             if (oldValue != controller.IntermediateValue)
-                Simulator.Confirmer.UpdateWithPerCent(CabControl.LargeEjector, oldValue<controller.IntermediateValue? CabSetting.Increase : CabSetting.Decrease, controller.CurrentValue* 100);
+                Simulator.Confirmer.UpdateWithPerCent(CabControl.LargeEjector, oldValue < controller.IntermediateValue ? CabSetting.Increase : CabSetting.Decrease, controller.CurrentValue * 100);
         }
 
         #endregion
@@ -7447,7 +7448,7 @@ public void SteamStartGearBoxIncrease()
             SmokeColor.Update(1, 0);
         }
 
-public void ToggleCylinderCocks()
+        public void ToggleCylinderCocks()
         {
             CylinderCocksAreOpen = !CylinderCocksAreOpen;
             SignalEvent(Event.CylinderCocksToggle);
@@ -7516,10 +7517,10 @@ public void ToggleCylinderCocks()
                 SignalEvent(Event.BoilerBlowdownOff);
 
             if (IsPlayerTrain)
-                Simulator.Confirmer.Confirm(CabControl.BlowdownValve, BlowdownValveOpen? CabSetting.On : CabSetting.Off);
+                Simulator.Confirmer.Confirm(CabControl.BlowdownValve, BlowdownValveOpen ? CabSetting.On : CabSetting.Off);
         }
 
-    public void ToggleManualFiring()
+        public void ToggleManualFiring()
         {
             FiringIsManual = !FiringIsManual;
             if (FiringIsManual)
@@ -7572,7 +7573,7 @@ public void ToggleCylinderCocks()
             if (type == (uint)PickupType.FuelCoal && MaxTenderCoalMassKG != 0)
                 FuelController.SetStepSize(matchPickup.PickupCapacity.FeedRateKGpS / MSTSNotchController.StandardBoost / MaxTenderCoalMassKG);
             else if (type == (uint)PickupType.FuelWater && MaxLocoTenderWaterMassKG != 0)
-                WaterController.SetStepSize(matchPickup.PickupCapacity.FeedRateKGpS / MSTSNotchController.StandardBoost / MaxLocoTenderWaterMassKG); 
+                WaterController.SetStepSize(matchPickup.PickupCapacity.FeedRateKGpS / MSTSNotchController.StandardBoost / MaxLocoTenderWaterMassKG);
         }
 
         /// <summary>

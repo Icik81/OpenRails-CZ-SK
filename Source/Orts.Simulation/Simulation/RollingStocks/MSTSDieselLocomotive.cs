@@ -32,19 +32,19 @@
 
 using Microsoft.Xna.Framework;
 using Orts.Formats.Msts;
+using Orts.Formats.OR;
 using Orts.Parsers.Msts;
+using Orts.Simulation.AIs;
 using Orts.Simulation.Physics;
 using Orts.Simulation.RollingStocks.SubSystems.Controllers;
 using Orts.Simulation.RollingStocks.SubSystems.PowerSupplies;
 using Orts.Simulation.RollingStocks.SubSystems.PowerTransmissions;
 using ORTS.Common;
-using System.Diagnostics;
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Text;
 using Event = Orts.Common.Event;
-using Orts.Simulation.AIs;
-using Orts.Formats.OR;
 
 namespace Orts.Simulation.RollingStocks
 {
@@ -260,7 +260,7 @@ namespace Orts.Simulation.RollingStocks
 
                 }
 
-                
+
                 if (MaximumDieselEnginePowerW == 0)
                 {
                     MaximumDieselEnginePowerW = LocomotiveMaxRailOutputPowerW;  // If no value set in ENG file, then set the Prime Mover power to same as RailOutputPower (typically the MaxPower value)
@@ -450,7 +450,7 @@ namespace Orts.Simulation.RollingStocks
             CurrentLocomotiveSteamHeatBoilerWaterCapacityL = inf.ReadSingle();
             DieselEngines.Restore(inf);
             ControllerFactory.Restore(GearBoxController, inf);
-            
+
         }
 
         //================================================================================================//
@@ -558,7 +558,7 @@ namespace Orts.Simulation.RollingStocks
             // Advanced configuration (TF table) - use a user defined tractive force table
             // With Simple adhesion apart from correction for rail adhesion, there is no further variation to the motive force. 
             // With Advanced adhesion the raw motive force is fed into the advanced (axle) adhesion model, and is corrected for wheel slip and rail adhesion
-            
+
             // Icik
             if (DieselEngines[0].EngineStatus == DieselEngine.Status.Stopped)
             {
@@ -650,13 +650,13 @@ namespace Orts.Simulation.RollingStocks
 
                     if (TractiveForceN < 0 && !TractiveForceCurves.AcceptsNegativeValues())
                         TractiveForceN = 0;
-                   
+
                     // Icik
                     // Ohraničení trakční síly dle vstupního výkonu motoru
-                    maxPowerW = DieselEngines[0].CurrentDieselOutputPowerW * DieselEngineFractionPower;                    
+                    maxPowerW = DieselEngines[0].CurrentDieselOutputPowerW * DieselEngineFractionPower;
                     if (TractiveForceN * AbsSpeedMpS > maxPowerW)
                         TractiveForceN = (0.88f * DieselEngines[0].CurrentDieselOutputPowerW * DieselEngineFractionPower * (1 - PowerReduction)) / AbsTractionSpeedMpS;
-                }                                
+                }
 
                 DieselFlowLps = DieselEngines.DieselFlowLps;
                 partialFuelConsumption += DieselEngines.DieselFlowLps * elapsedClockSeconds;
@@ -714,7 +714,7 @@ namespace Orts.Simulation.RollingStocks
                 MaxRPM = DieselEngines[0].MaxRPM;
 
             EngineRPM = Variable2 * (MaxRPM - IdleRPM) + IdleRPM;
-            Variable4 = (float)Math.Round(EngineRPM);           
+            Variable4 = (float)Math.Round(EngineRPM);
             Variable6 = (float)Math.Round(DieselEngines[0].LoadPercent);
 
             if (DynamicBrakePercent > 0)
@@ -993,7 +993,7 @@ namespace Orts.Simulation.RollingStocks
 
                 // Calculate steam boiler usage values
                 // Don't turn steam heat on until pressure valve has been opened, water and fuel capacity also needs to be present, and steam boiler is not locked out
-                if (CurrentSteamHeatPressurePSI > 0.1 && CurrentLocomotiveSteamHeatBoilerWaterCapacityL > 0 && DieselLevelL > 0 && !IsSteamHeatBoilerLockedOut)      
+                if (CurrentSteamHeatPressurePSI > 0.1 && CurrentLocomotiveSteamHeatBoilerWaterCapacityL > 0 && DieselLevelL > 0 && !IsSteamHeatBoilerLockedOut)
                 {
                     // Set values for visible exhaust based upon setting of steam controller
                     HeatingSteamBoilerVolumeM3pS = 1.5f * SteamHeatController.CurrentValue;
@@ -1012,7 +1012,7 @@ namespace Orts.Simulation.RollingStocks
                 {
                     Train.CarSteamHeatOn = false; // turn on steam effects on wagons
                 }
-                
+
 
             }
         }
@@ -1049,14 +1049,14 @@ namespace Orts.Simulation.RollingStocks
                         }
                     }
                 }
-                
+
                 if (AIMotorStop && DieselEngines[0].EngineStatus == DieselEngine.Status.Running)
-                {                    
+                {
                     DieselEngines[0].Stop();
                     MotorSoundStopCycle = 0;
                 }
                 if (DieselEngines[0].EngineStatus == DieselEngine.Status.Stopped && MotorSoundStopCycle == 0)
-                {                    
+                {
                     if (MotorSoundStopCycle < 1)
                         SignalEvent(Event.EnginePowerOff);
                     MotorSoundStopCycle++;
@@ -1082,7 +1082,7 @@ namespace Orts.Simulation.RollingStocks
                     // Spustí inicializační trigger zvuku volnoběhu
                     if (DieselEngines[0].AIStartTimeToGo == 10)
                     {
-                        SignalEvent(Event.InitMotorIdle);                        
+                        SignalEvent(Event.InitMotorIdle);
                     }
                     DieselEngines[0].AIStartTimeToGo -= elapsedClockSeconds;
                     DieselEngines[0].ExhaustColor = Color.TransparentBlack;
@@ -1092,10 +1092,10 @@ namespace Orts.Simulation.RollingStocks
                 }
                 if (DieselEngines[0].AIStartTimeToGo < 1)
                 {
-                    this.AIStart = false;                    
+                    this.AIStart = false;
                 }
 
-                StartButtonPressed = false;                
+                StartButtonPressed = false;
                 if (DieselEngines[0].EngineStatus != DieselEngine.Status.Running && AIMotorStart)
                 {
                     CarLightsPowerOn = true;
@@ -1145,7 +1145,7 @@ namespace Orts.Simulation.RollingStocks
                             SignalEvent(Event.StartUpMotorStop);
                         DieselStartTime = 0;
                     }
-                }                
+                }
                 return;
             }
 
@@ -1167,7 +1167,7 @@ namespace Orts.Simulation.RollingStocks
                     SignalEvent(Event.RDSTOn);
                     RDSTBreaker = true;
                 }
-                LocoReadyToGo = false;                
+                LocoReadyToGo = false;
             }
             // Spustí inicializační trigger zvuku volnoběhu
             if (Simulator.GameTime < 0.5f && DieselEngines[0].EngineStatus == DieselEngine.Status.Running)
@@ -1210,7 +1210,7 @@ namespace Orts.Simulation.RollingStocks
                 && Battery
                 && PowerUnit
                 )
-            {                                
+            {
                 if (DieselStartTime < DieselStartDelayTemp - 1)
                 {
                     if (DieselStartTime == 0)
@@ -1239,10 +1239,10 @@ namespace Orts.Simulation.RollingStocks
             {
                 if (DieselStartTime != 0)
                     SignalEvent(Event.StartUpMotorStop);
-                DieselStartTime = 0;                
+                DieselStartTime = 0;
             }
         }
-    
+
 
         public void TogglePlayerEngine()
         {
@@ -1295,7 +1295,7 @@ namespace Orts.Simulation.RollingStocks
             if (GearBox != null && GearBox.mstsParams != null && GearBox.mstsParams.GearBoxMaxTractiveForceForGearsN.Count > 0)
             {
                 if (ThrottleController != null && ThrottleController.MaximumValue > 1 && MaxForceN / GearBox.mstsParams.GearBoxMaxTractiveForceForGearsN[0] > 3)
-                    // Tricky things have been made with this .eng file, see e.g Cravens 105; let's correct them
+                // Tricky things have been made with this .eng file, see e.g Cravens 105; let's correct them
                 {
                     for (int i = 0; i < GearBox.mstsParams.GearBoxMaxTractiveForceForGearsN.Count; i++)
                         GearBox.mstsParams.GearBoxMaxTractiveForceForGearsN[i] *= ThrottleController.MaximumValue;
@@ -1307,7 +1307,7 @@ namespace Orts.Simulation.RollingStocks
                     {
                         if (cabView.CVFFile != null && cabView.CVFFile.CabViewControls != null && cabView.CVFFile.CabViewControls.Count > 0)
                         {
-                            foreach ( var control in cabView.CVFFile.CabViewControls)
+                            foreach (var control in cabView.CVFFile.CabViewControls)
                             {
                                 if (control is CVCDiscrete && control.ControlType == CABViewControlTypes.THROTTLE && (control as CVCDiscrete).Values.Count > 0 && (control as CVCDiscrete).Values[(control as CVCDiscrete).Values.Count - 1] > 1)
                                 {

@@ -15,11 +15,10 @@
 // You should have received a copy of the GNU General Public License
 // along with Open Rails.  If not, see <http://www.gnu.org/licenses/>.
 
+using Orts.Parsers.Msts;
 using ORTS.Common;
 using System.Collections.Generic;
 using System.IO;
-using Orts.Parsers.Msts;
-using System;
 
 namespace Orts.Simulation.RollingStocks.SubSystems.Brakes
 {
@@ -179,7 +178,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes
         public bool CarHasMechanicStuckBrake_1;
         public bool CarHasMechanicStuckBrake_2;
         public bool CarHasProblemWithBrake;
-        
+
 
         public float AuxPowerOnDelayS { get; set; }
 

@@ -25,7 +25,6 @@ using Orts.Simulation.Physics;
 using Orts.Simulation.RollingStocks;
 using Orts.Simulation.RollingStocks.SubSystems.Brakes;
 using Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS;
-using Orts.Simulation.RollingStocks.SubSystems.PowerSupplies;
 using Orts.Viewer3D.Processes;
 using ORTS.Common;
 using System;
@@ -294,7 +293,7 @@ namespace Orts.Viewer3D.Popups
             {
                 var table = new TableData() { Cells = new string[TextTable.Cells.GetLength(0), TextTable.Cells.GetLength(1)] };
                 //Normal screen or full screen
-                if (!hudWindowFullScreen || (Viewer.HUDScrollWindow.Visible && TextPage == 0)) 
+                if (!hudWindowFullScreen || (Viewer.HUDScrollWindow.Visible && TextPage == 0))
                     TextPages[0](table);
 
                 if (TextPage > 0)
@@ -335,7 +334,7 @@ namespace Orts.Viewer3D.Popups
                         if (text.Contains("!!!"))
                         {//Change to red color, an example: overspeed.
                             color = Color.OrangeRed;
-                            text = text.Contains("!!!") && text.Contains("???")? text.Substring(0, text.Length - 6) :text.Substring(0, text.Length - 3);
+                            text = text.Contains("!!!") && text.Contains("???") ? text.Substring(0, text.Length - 6) : text.Substring(0, text.Length - 3);
                         }
                         else if (text.EndsWith("!!!") || text.EndsWith("???"))
                         {
@@ -367,7 +366,7 @@ namespace Orts.Viewer3D.Popups
                 DebugGraphs.Draw(spriteBatch);
         }
 
-#region Table handling
+        #region Table handling
         public sealed class TableData
         {
             public string[,] Cells;
@@ -438,7 +437,7 @@ namespace Orts.Viewer3D.Popups
             TableSetCell(table, table.CurrentRow, table.CurrentValueColumn, format, args);
             table.CurrentRow++;
         }
-#endregion
+        #endregion
 
         void TextPageCommon(TableData table)
         {
@@ -451,9 +450,9 @@ namespace Orts.Viewer3D.Popups
             var locomotiveStatus = Viewer.PlayerLocomotive.GetStatus();
             var stretched = playerTrain.Cars.Count > 1 && playerTrain.NPull == playerTrain.Cars.Count - 1;
             var bunched = !stretched && playerTrain.Cars.Count > 1 && playerTrain.NPush == playerTrain.Cars.Count - 1;
-            
+
             //Disable Hudscroll.
-            if(Viewer.HUDScrollWindow.Visible)
+            if (Viewer.HUDScrollWindow.Visible)
                 Viewer.HUDScrollWindow.Visible = TextPage == 0 && !WebServerEnabled ? false : true;
 
             TableSetLabelValueColumns(table, 0, 2);
@@ -514,8 +513,8 @@ namespace Orts.Viewer3D.Popups
                 var sanderBlocked = Viewer.PlayerLocomotive is MSTSLocomotive && Math.Abs(playerTrain.SpeedMpS) > ((MSTSLocomotive)Viewer.PlayerLocomotive).SanderSpeedOfMpS;
                 if (sanderBlocked)
                     TableAddLine(table, Viewer.Catalog.GetString("Sander blocked") + "!!!");
-                else                                    
-                    TableAddLine(table, Viewer.Catalog.GetString("Amount of sand") + ": " + (Viewer.PlayerLocomotive as MSTSLocomotive).CurrentTrackSandBoxCapacityKG + "kg" + "???");                
+                else
+                    TableAddLine(table, Viewer.Catalog.GetString("Amount of sand") + ": " + (Viewer.PlayerLocomotive as MSTSLocomotive).CurrentTrackSandBoxCapacityKG + "kg" + "???");
             }
 
             if ((Viewer.PlayerLocomotive as MSTSWagon).DoorLeftOpen || (Viewer.PlayerLocomotive as MSTSWagon).DoorRightOpen)
@@ -613,7 +612,7 @@ namespace Orts.Viewer3D.Popups
                 Viewer.Catalog.GetString("Length"),
                 Viewer.Catalog.GetString("Weight"),
                 Viewer.Catalog.GetString("Drv/Cabs"),
-                Viewer.Catalog.GetString("Wheels"),                
+                Viewer.Catalog.GetString("Wheels"),
                 Viewer.Catalog.GetString("A1 Mass"),
                 Viewer.Catalog.GetString("A2 Mass"),
                 Viewer.Catalog.GetString("A3 Mass"),
@@ -671,9 +670,9 @@ namespace Orts.Viewer3D.Popups
                     FormatStrings.FormatShortDistanceDisplay(car.CarLengthM, locomotive.IsMetric) + "\t" +
                     FormatStrings.FormatLargeMass(car.MassKG, locomotive.IsMetric, locomotive.IsUK) + "\t" +
                     (car.IsDriveable ? Viewer.Catalog.GetParticularString("Cab", "D") : "") + (car.HasFrontCab || car.HasFront3DCab ? Viewer.Catalog.GetParticularString("Cab", "F") : "") + (car.HasRearCab || car.HasRear3DCab ? Viewer.Catalog.GetParticularString("Cab", "R") : "") + "\t" +
-                    GetCarWhyteLikeNotation(car) + "\t" +                    
+                    GetCarWhyteLikeNotation(car) + "\t" +
                     GetAxleParamsEP(car) + "\t");
-                    //Add new data here, if adding additional column.
+                //Add new data here, if adding additional column.
             }
 
             DrawScrollArrows(statusConsist, table, false);
@@ -782,11 +781,11 @@ namespace Orts.Viewer3D.Popups
                 train.MUDynamicBrakePercent >= 0 ? string.Format("{0:F0}%", train.MUDynamicBrakePercent) : Viewer.Catalog.GetString("off"),
                 //8
                 Viewer.PlayerLocomotive is MSTSElectricLocomotive ? string.Format(Viewer.Catalog.GetString("Route Voltage") + ": {0:F0}V", Viewer.PlayerLocomotive.RouteVoltageVInfo) : Viewer.Catalog.GetString(""),
-                //9
+            //9
             Viewer.Catalog.GetString("PlayerLoco")
             //Add new Header data here, if adding additional column.
             ));
-            
+
             foreach (var car in train.Cars)
             {
                 if (car is MSTSLocomotive && (hudWindowLocoActualPage > 0 ? car.CarID == LocomotiveID[hudWindowLocoActualPage - 1] : true))
@@ -851,7 +850,7 @@ namespace Orts.Viewer3D.Popups
                             //17
                             car is MSTSSteamLocomotive ? Viewer.Catalog.GetString("") :
                             car is MSTSDieselLocomotive ? Viewer.Catalog.GetString("CarType") :
-                            car is MSTSElectricLocomotive ? Viewer.Catalog.GetString("") : Viewer.Catalog.GetString("") 
+                            car is MSTSElectricLocomotive ? Viewer.Catalog.GetString("") : Viewer.Catalog.GetString("")
                             //Add new Locomotive header here, if required.
                             ));
 
@@ -899,11 +898,11 @@ namespace Orts.Viewer3D.Popups
                         sectionsLocomotive.Add(cLine, nLine);
                         nLine = 0;
                     }
-               }
+                }
             }
             //Last section header.
             sectionsLocomotive[cLine] = nLine;
- 
+
             //Lines that fit by pages.
             TextLineNumber(hudWindowLocoActualPage == 0 ? hudWindowLocoPagesCount : statusData.Count, hudWindowLocoActualPage == 0 ? hudWindowLocoPagesCount : table.CurrentRow, maxColumns);
 
@@ -913,14 +912,14 @@ namespace Orts.Viewer3D.Popups
             for (var i = CurrentFirstLine; i < CurrentLastLine + 1; i++)
             {
                 //Locomotive info, line limit.
-               if ((CurrentFirstLine >= nLinesShow ? hudWindowLocoActualPage == 0 || hudWindowLinesActualPage > 1 ? i - lineOffsetLocoInfo[hudWindowLinesActualPage] : i - 1 : i) > statusData.Count - 1)
+                if ((CurrentFirstLine >= nLinesShow ? hudWindowLocoActualPage == 0 || hudWindowLinesActualPage > 1 ? i - lineOffsetLocoInfo[hudWindowLinesActualPage] : i - 1 : i) > statusData.Count - 1)
                     break;
                 //Locomotive, line limit.
                 if (hudWindowLocoActualPage == 0 && i > HeaderRows - 3)
                     break;
 
                 if (i - CurrentFirstLine < (hudWindowLocoActualPage == 0 ? hudWindowLocoPagesCount : 1))
-               {
+                {
                     int index = statusData.FindIndex(x => x.Contains(LocomotiveName[i - CurrentFirstLine]));
                     TextColNumber(statusData[index], 0, IsSteamLocomotive);//Horizontal string width to display Locomotives.
                 }
@@ -1137,7 +1136,7 @@ namespace Orts.Viewer3D.Popups
                         Viewer.Catalog.GetString("BrkPipe"),
                         //4
                         (car as MSTSWagon).NonAutoBrakePresent ? Viewer.Catalog.GetString("") : Viewer.Catalog.GetString("VacRes"),
-//                      Viewer.Catalog.GetString(""),
+                        //                      Viewer.Catalog.GetString(""),
                         //5
                         Viewer.Catalog.GetString(""),
                         //6
@@ -1355,7 +1354,7 @@ namespace Orts.Viewer3D.Popups
         /// <param name="endtext"></param>
         void BrakeInfoData(TableData table, string[] stringToDraw, string endtext)
         {
-            for (int iCell = 0; iCell<stringToDraw.Length; iCell++)
+            for (int iCell = 0; iCell < stringToDraw.Length; iCell++)
                 TableSetCell(table, table.CurrentRow, iCell, stringToDraw[iCell] + endtext);
         }
 
@@ -1558,7 +1557,7 @@ namespace Orts.Viewer3D.Popups
                 }
             }
         }
-        
+
         void TextPageDispatcherInfo(TableData table)
         {
             // count active trains
@@ -1748,7 +1747,7 @@ namespace Orts.Viewer3D.Popups
 
                     TableAddLine(table);
                 }
-            }           
+            }
 
 
 
@@ -1814,7 +1813,7 @@ namespace Orts.Viewer3D.Popups
             TextPageHeading(table, Viewer.Catalog.GetString("WEATHER INFORMATION"));
 
             //Disable Hudscroll.
-            Viewer.HUDScrollWindow.Visible = WebServerPageNo > 0? true: false;//HudScroll
+            Viewer.HUDScrollWindow.Visible = WebServerPageNo > 0 ? true : false;//HudScroll
 
             if (hudWindowFullScreen || WebServerEnabled)
                 TableSetLabelValueColumns(table, 0, 2);
@@ -2143,7 +2142,7 @@ namespace Orts.Viewer3D.Popups
             var train = locomotive.Train;
             if (Viewer.HUDScrollWindow.Visible && WebServerPageNo == 0 && hudWindowColumnsPagesCount == 0 && hudWindowLinesPagesCount == 1 && TextPages[TextPage] != TextPageLocomotiveInfo && !hudWindowFullScreen)
                 Viewer.HUDScrollWindow.Visible = false;
-            if ((!Viewer.HUDScrollWindow.Visible && hudWindowColumnsPagesCount > 0 )|| WebServerPageNo > 0 ||(TextPages[TextPage] == TextPageLocomotiveInfo && (IsSteamLocomotive || hudWindowLocoPagesCount > 1)))
+            if ((!Viewer.HUDScrollWindow.Visible && hudWindowColumnsPagesCount > 0) || WebServerPageNo > 0 || (TextPages[TextPage] == TextPageLocomotiveInfo && (IsSteamLocomotive || hudWindowLocoPagesCount > 1)))
                 Viewer.HUDScrollWindow.Visible = true;
         }
 
@@ -2157,7 +2156,7 @@ namespace Orts.Viewer3D.Popups
         {
             var cellSpace = "";
             string space = new string('X', columnsChars);
-            int cellColumns = (int)Math.Ceiling((decimal) cell.Length/ columnsChars);
+            int cellColumns = (int)Math.Ceiling((decimal)cell.Length / columnsChars);
             cellSpace = cell.Length > 0 && tabCount > 0 ? space.Substring(0, Math.Abs((columnsChars * cellColumns) - cell.Length)) : "";
             cellSpace = tabCount > cellColumns ? cellSpace + space : cellSpace;
             return cellSpace;
@@ -2170,7 +2169,7 @@ namespace Orts.Viewer3D.Popups
         /// </returns>
         public int CharFitPerLine(string status)
         {
-            var stringReference = status.Length > 0? status : "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890 \",.-+|!$%&/()=?;:'_[]";
+            var stringReference = status.Length > 0 ? status : "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890 \",.-+|!$%&/()=?;:'_[]";
             var textStringPixels = TextFont.MeasureString(stringReference);
             var charWidth = textStringPixels / stringReference.Length;
             columnsChars = (int)Math.Ceiling(Convert.ToDouble(ColumnWidth / charWidth));
@@ -2211,7 +2210,7 @@ namespace Orts.Viewer3D.Popups
         {
             for (int i = 0; i < statusConsist.Count; i++)
             {
-                if (i > 0 && stringStatus.Count> 0  && i < 2 && (statusConsist[i] == stringStatus[i - 1]) || i > 1 && (statusConsist[i - 2] == statusConsist[i]))
+                if (i > 0 && stringStatus.Count > 0 && i < 2 && (statusConsist[i] == stringStatus[i - 1]) || i > 1 && (statusConsist[i - 2] == statusConsist[i]))
                     continue;
 
                 TextColNumber(statusConsist[i], 0, IsSteamLocomotive);
@@ -2239,7 +2238,7 @@ namespace Orts.Viewer3D.Popups
             TableAddLine(table, name);
         }
 
-#region Native code
+        #region Native code
         [StructLayout(LayoutKind.Sequential, Size = 64)]
         public class MEMORYSTATUSEX
         {
@@ -2258,7 +2257,7 @@ namespace Orts.Viewer3D.Popups
         static extern bool GlobalMemoryStatusEx([In, Out] MEMORYSTATUSEX buffer);
 
         readonly ulong ProcessVirtualAddressLimit;
-#endregion
+        #endregion
 
         public ulong GetWorkingSetSize()
         {

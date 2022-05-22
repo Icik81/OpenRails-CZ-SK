@@ -15,12 +15,11 @@
 // You should have received a copy of the GNU General Public License
 // along with Open Rails.  If not, see <http://www.gnu.org/licenses/>.
 
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.IO;
 using Orts.Formats.Msts;
 using Orts.Parsers.Msts;
+using System;
+using System.Collections.Generic;
+using System.IO;
 
 namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
 {
@@ -155,7 +154,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
             if (controllerPosition == ControllerPosition.DynamicBrakeIncreaseWithPriority)
             {
                 dynBrakeEngaged = true;
-                bool skipBraking = false; 
+                bool skipBraking = false;
                 if (haveCruiseControl)
                 {
                     if (Locomotive.CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.Manual)
@@ -245,8 +244,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
             {
                 emergencyBrake = false;
             }
-/*            if (Locomotive.TrainBrakeController.TCSEmergencyBraking)
-                Locomotive.TrainBrakeController.TCSEmergencyBraking = false; */
+            /*            if (Locomotive.TrainBrakeController.TCSEmergencyBraking)
+                            Locomotive.TrainBrakeController.TCSEmergencyBraking = false; */
             elapsedSecondsFromLastChange += elapsedClockSeconds;
             // Simulator.Confirmer.MSG(currentPosition.ToString());
             if (checkNeutral)

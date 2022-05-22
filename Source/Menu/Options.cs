@@ -15,6 +15,12 @@
 // You should have received a copy of the GNU General Public License
 // along with Open Rails.  If not, see <http://www.gnu.org/licenses/>.
 
+using GNU.Gettext;
+using GNU.Gettext.WinForms;
+using MSTS;
+using ORTS.Common.Input;
+using ORTS.Settings;
+using ORTS.Updater;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -24,12 +30,6 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
-using GNU.Gettext;
-using GNU.Gettext.WinForms;
-using MSTS;
-using ORTS.Common.Input;
-using ORTS.Settings;
-using ORTS.Updater;
 
 namespace ORTS
 {
@@ -198,7 +198,7 @@ namespace ORTS
             //checkSimpleControlsPhysics.Checked = Settings.SimpleControlPhysics;
             checkUseAdvancedAdhesion.Checked = Settings.UseAdvancedAdhesion;
             labelAdhesionMovingAverageFilterSize.Enabled = checkUseAdvancedAdhesion.Checked;
-            numericAdhesionMovingAverageFilterSize.Enabled = checkUseAdvancedAdhesion.Checked; 
+            numericAdhesionMovingAverageFilterSize.Enabled = checkUseAdvancedAdhesion.Checked;
             numericAdhesionMovingAverageFilterSize.Value = Settings.AdhesionMovingAverageFilterSize;
             checkBreakCouplers.Checked = Settings.BreakCouplers;
             checkCurveResistanceDependent.Checked = Settings.CurveResistanceDependent;
@@ -246,7 +246,7 @@ namespace ORTS
             checkDataLogTrainSpeed.Checked = Settings.DataLogTrainSpeed;
             labelDataLogTSInterval.Enabled = checkDataLogTrainSpeed.Checked;
             numericDataLogTSInterval.Enabled = checkDataLogTrainSpeed.Checked;
-            checkListDataLogTSContents.Enabled = checkDataLogTrainSpeed.Checked;  
+            checkListDataLogTSContents.Enabled = checkDataLogTrainSpeed.Checked;
             numericDataLogTSInterval.Value = Settings.DataLogTSInterval;
             checkListDataLogTSContents.Items.AddRange(new object[] {
                 catalog.GetString("Time"),
@@ -326,16 +326,16 @@ namespace ORTS
             numericActWeatherRandomizationLevel.Value = Settings.ActWeatherRandomizationLevel;
         }
 
-/*
-private async void OptionsForm_Shown(object sender, EventArgs e)
-        {
-            List<System.Threading.Tasks.Task> initTasks = new List<System.Threading.Tasks.Task>()
-            {
-                InitializeKeyboardSettingsAsync(),
-                InitializeRailDriverSettingsAsync()
-            };
-            await System.Threading.Tasks.Task.WhenAll(initTasks);
-        }*/
+        /*
+        private async void OptionsForm_Shown(object sender, EventArgs e)
+                {
+                    List<System.Threading.Tasks.Task> initTasks = new List<System.Threading.Tasks.Task>()
+                    {
+                        InitializeKeyboardSettingsAsync(),
+                        InitializeRailDriverSettingsAsync()
+                    };
+                    await System.Threading.Tasks.Task.WhenAll(initTasks);
+                }*/
 
         static string ParseCategoryFrom(string name)
         {
@@ -445,7 +445,7 @@ private async void OptionsForm_Shown(object sender, EventArgs e)
             Settings.ReduceMemory = checkReduceMemory.Checked;
 
             // Icik
-            Settings.AirEmpty = checkAirEmpty.Checked;            
+            Settings.AirEmpty = checkAirEmpty.Checked;
 
             // Audio tab
             Settings.MSTSBINSound = checkMSTSBINSound.Checked;
@@ -760,21 +760,21 @@ private async void OptionsForm_Shown(object sender, EventArgs e)
         private void checkAlerter_CheckedChanged(object sender, EventArgs e)
         {
             //Disable checkAlerterExternal when checkAlerter is not checked
-            if (checkAlerter.Checked )
+            if (checkAlerter.Checked)
             {
-                checkAlerterExternal.Enabled = true; 
+                checkAlerterExternal.Enabled = true;
             }
             else
             {
                 checkAlerterExternal.Enabled = false;
-                checkAlerterExternal.Checked = false; 
+                checkAlerterExternal.Checked = false;
             }
         }
 
         private void checkDistantMountains_Click(object sender, EventArgs e)
         {
-           labelDistantMountainsViewingDistance.Enabled = checkDistantMountains.Checked;
-           numericDistantMountainsViewingDistance.Enabled = checkDistantMountains.Checked;
+            labelDistantMountainsViewingDistance.Enabled = checkDistantMountains.Checked;
+            numericDistantMountainsViewingDistance.Enabled = checkDistantMountains.Checked;
         }
 
         private void checkUseAdvancedAdhesion_Click(object sender, EventArgs e)

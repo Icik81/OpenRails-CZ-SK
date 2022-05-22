@@ -44,11 +44,15 @@ namespace Orts.Viewer3D.WebServices
             foreach (var controlRenderer in viewer._CabRenderer.ControlMap.Values)
             {
                 controlValueList.Add(new ControlValue
-                    { TypeName = controlRenderer.GetControlType().ToString()
-                    , MinValue = controlRenderer.Control.MinValue
-                    , MaxValue = controlRenderer.Control.MaxValue
-                    , RangeFraction = controlRenderer.GetRangeFraction()
-                    });
+                {
+                    TypeName = controlRenderer.GetControlType().ToString()
+                    ,
+                    MinValue = controlRenderer.Control.MinValue
+                    ,
+                    MaxValue = controlRenderer.Control.MaxValue
+                    ,
+                    RangeFraction = controlRenderer.GetRangeFraction()
+                });
             }
             return controlValueList;
         }

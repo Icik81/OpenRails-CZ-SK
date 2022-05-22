@@ -339,7 +339,7 @@ namespace Orts.Parsers.Msts
                     STFException.TraceWarning(this, "\"" + target + "\" not found - instead found \"" + s1 + "\"");
                     string s2 = ReadItem();
                     //if (!s2.Equals(target, StringComparison.OrdinalIgnoreCase))
-                      //      throw new STFException(this, "\"" + target + "\" not found - instead found \"" + s1 + "\"");
+                    //      throw new STFException(this, "\"" + target + "\" not found - instead found \"" + s1 + "\"");
                 }
             }
         }
@@ -1643,7 +1643,7 @@ namespace Orts.Parsers.Msts
 
             int c;
             #region Skip past any leading whitespace characters
-            for (;;)
+            for (; ; )
             {
                 c = ReadChar();
                 if (IsEof(c)) return UpdateTreeAndStepBack("");
@@ -1666,7 +1666,7 @@ namespace Orts.Parsers.Msts
             else if ((!skip_mode && !string_mode) && ((c == '#') || (c == '_')))
             {
                 #region Move on to a whitespace so we can pick up any token starting with a #
-                for (;;)
+                for (; ; )
                 {
                     c = PeekChar();
                     if ((c == '(') || (c == ')')) break;
@@ -1697,7 +1697,7 @@ namespace Orts.Parsers.Msts
             #region Build Quoted Items - including append operations
             else if (c == '"')
             {
-                for (;;)
+                for (; ; )
                 {
                     c = ReadChar();
                     if (IsEof(c))
@@ -1746,7 +1746,7 @@ namespace Orts.Parsers.Msts
             else if (c != -1)
             {
                 itemBuilder.Append((char)c);
-                for (;;)
+                for (; ; )
                 {
                     c = PeekChar();
                     if ((c == '(') || (c == ')')) break;
@@ -1898,7 +1898,7 @@ namespace Orts.Parsers.Msts
     // * We demand a correct syntax even in comments and includes, so also not possible to skipa
     //      a syntactically wrong section by putting it in comments
 
-    #region Interfaces
+#region Interfaces
     /// <summary>
     /// Interface for classes that have a 'stream' of StfTokens as output
     /// </summary>
@@ -1928,9 +1928,9 @@ namespace Orts.Parsers.Msts
         StreamReader GetStreamReader(string name, out string simisSignature);
     }
 
-    #endregion
+#endregion
 
-    #region StfToken
+#region StfToken
     /// <summary>
     /// Single token from the MSTS STF format (Structured Text Format).
     /// Token contains obviously the string, but also the name and lineNumber (at the start of the token)
@@ -1980,9 +1980,9 @@ namespace Orts.Parsers.Msts
             return "token: " + this.Contents;
         }
     }
-    #endregion
+#endregion
 
-    #region StfTokenizer
+#region StfTokenizer
     /// <summary>
     /// Class to tokenize a stream. Tokenize means splitting into tokens, according to the rules of STF format
     /// Most tokens are just strings without white space.
@@ -2192,7 +2192,7 @@ namespace Orts.Parsers.Msts
             return new StfToken(itemBuilder.ToString(), storedStreamName, lineNumberAtStart);
         }
 
-        #region IDisposable
+#region IDisposable
         bool hasBeenDisposed;
         /// <summary>
         /// Implements the IDisposable interface so this class can be implemented with the 
@@ -2232,18 +2232,18 @@ namespace Orts.Parsers.Msts
             itemBuilder.Capacity = 0;
             hasBeenDisposed = true;
         }
-        #endregion
+#endregion
     }
-    #endregion
+#endregion
 
-    #region Buffering of a token
+#region Buffering of a token
     public abstract class StfTokenStreamBuffer
     {
         internal StfToken UpcomingTokenFromSource;
         internal StfToken CurrentTokenFromSource;
         internal IStfTokenStream SourceTokenStream;
         
-        #region stepback legacy
+#region stepback legacy
         private StfToken bufferedTokenFromSource;
         private bool didAStepBack;
 
@@ -2288,7 +2288,7 @@ namespace Orts.Parsers.Msts
             UpcomingTokenFromSource = CurrentTokenFromSource;
             didAStepBack = true;
         }
-        #endregion
+#endregion
 
         /// <summary>
         /// Return the next token from whatever the source it uses, and, importantly, after possible pre-processing
@@ -2296,9 +2296,9 @@ namespace Orts.Parsers.Msts
         /// </summary>
         internal abstract StfToken NextToken();
     }
-    #endregion
+#endregion
 
-    #region Block handling and mustmatch
+#region Block handling and mustmatch
     public abstract class StfTokenStreamBlockProcessor : StfTokenStreamBuffer 
     {
         /// <summary>Skip to the end of this block, ignoring any nested blocks
@@ -2397,9 +2397,9 @@ namespace Orts.Parsers.Msts
         }
 
     }
-    #endregion
+#endregion
 
-    #region Preprocessing of comments, include, ...
+#region Preprocessing of comments, include, ...
     class StfTokenStreamPreprocessor : StfTokenStreamBlockProcessor, IStfTokenStream
     {
         /// <summary>
@@ -2531,7 +2531,7 @@ namespace Orts.Parsers.Msts
             return String.Equals("include", CurrentTokenFromSource.Contents, StringComparison.OrdinalIgnoreCase);
         }
 
-        #region IDisposable
+#region IDisposable
         bool hasBeenDisposed;
         /// <summary>
         /// Implements the IDisposable interface so this class can be implemented with the 
@@ -2584,7 +2584,7 @@ namespace Orts.Parsers.Msts
             }
         }
 
-        #endregion
+#endregion
 
         private string directoryName = String.Empty;
         private IStfTokenStream sourceInclude;
@@ -2592,7 +2592,7 @@ namespace Orts.Parsers.Msts
         private bool inSkipMode;
 
     }
-    #endregion
+#endregion
 
     /// <exception cref="STFException"><para>
     /// STF reports errors using the exception static members</para><para>
@@ -2604,7 +2604,7 @@ namespace Orts.Parsers.Msts
     /// </exception>
     public sealed class STFReader : StfTokenStreamBlockProcessor, IDisposable
     {
-        #region Properties
+#region Properties
         /// <summary>Property that returns true when the EOF (End-of-file) has been reached </summary>
         public bool Eof { get { return this.UpcomingTokenFromSource.IsEOF; } }
         /// <summary>Property that returns the line number in the file we are reading, at the beginning of the last item that was read
@@ -2639,7 +2639,7 @@ namespace Orts.Parsers.Msts
         }
         static IStreamReaderFactory storedNextStreamReaderFactory;
 
-        #endregion
+#endregion
 
         private STFReader()
         {
@@ -2647,7 +2647,7 @@ namespace Orts.Parsers.Msts
             this.streamReaderFactory = STFReader.NextStreamReaderFactory;
         }
 
-        #region Constructor
+#region Constructor
         /// <summary>Open a file, reader the header line, and prepare for STF parsing
         /// </summary>
         /// <param name="fileName">Filename of the STF file to be opened and parsed.</param>
@@ -2683,9 +2683,9 @@ namespace Orts.Parsers.Msts
             InitBuffer();
             InitTree(useTree);
         }
-        #endregion
+#endregion
 
-        #region IDisposable
+#region IDisposable
         bool hasBeenDisposed;
         /// <summary>
         /// Implements the IDisposable interface so this class can be implemented with the 
@@ -2726,9 +2726,9 @@ namespace Orts.Parsers.Msts
                 }
             }
         }
-        #endregion
+#endregion
 
-        #region Get tokens and buffer it.
+#region Get tokens and buffer it.
         /// <summary>
         /// Initialize the single-token buffer, so that the upcoming token is known
         /// </summary>
@@ -2784,9 +2784,9 @@ namespace Orts.Parsers.Msts
             return false;
         }
 
-        #endregion
+#endregion
 
-        #region Tree
+#region Tree
         private Stack<string> treeTokens;
         private bool treeIsMaintained;
 
@@ -2855,9 +2855,9 @@ namespace Orts.Parsers.Msts
                 return String.Join("(", treeTokens.Reverse().ToArray());
             }
         }
-        #endregion
+#endregion
 
-        #region Units
+#region Units
         /// <summary>Enumeration specifying which units are valid when parsing a numeric constant.
         /// </summary>
         // Additional entries because MSTS has multiple default units, e.g. some speeds in metres/sec and others in miles/hr
@@ -3323,10 +3323,10 @@ namespace Orts.Parsers.Msts
             return 1;
         }
 
-        #endregion
+#endregion
 
-        #region Reading values, numbers, ...
-        #region Private methods for common functionality. Here all the real work goes on
+#region Reading values, numbers, ...
+#region Private methods for common functionality. Here all the real work goes on
         private static NumberStyles parseNum = NumberStyles.AllowLeadingWhite | NumberStyles.AllowLeadingSign | NumberStyles.AllowThousands | NumberStyles.AllowDecimalPoint | NumberStyles.AllowExponent | NumberStyles.AllowTrailingWhite;
         private static NumberStyles parseHex = NumberStyles.AllowLeadingWhite | NumberStyles.AllowHexSpecifier | NumberStyles.AllowTrailingWhite;
         private static IFormatProvider parseNFI = NumberFormatInfo.InvariantInfo;
@@ -3413,9 +3413,9 @@ namespace Orts.Parsers.Msts
             STFException.TraceWarning(CurrentTokenFromSource, "Block not found - instead found " + CurrentTokenFromSource.Contents);
             return valueOfDefault;
         }
-        #endregion
+#endregion
 
-        #region Reading values itself
+#region Reading values itself
         /// <summary>Return next whitespace delimited string from the STF file.
         /// </summary>
         /// <remarks>
@@ -3526,9 +3526,9 @@ namespace Orts.Parsers.Msts
             });
         }
 
-        #endregion
+#endregion
 
-        #region Reading blocks with values
+#region Reading blocks with values
         /// <summary>Read an string constant from the STF format '( {string_constant} ... )'
         /// </summary>
         /// <param name="defaultValue">the default value if the item is not found in the block.</param>
@@ -3644,10 +3644,10 @@ namespace Orts.Parsers.Msts
                 return result;
             });
         }
-        #endregion
-        #endregion
+#endregion
+#endregion
 
-        #region Tokenprocessor, Parseblock
+#region Tokenprocessor, Parseblock
         /// <summary>Parse an STF file until the EOF, using the array of lower case tokens, with a processor delegate/lambda
         /// </summary>
         /// <param name="processors">Array of lower case token, and the delegate/lambda to call when matched.</param>
@@ -3721,9 +3721,9 @@ namespace Orts.Parsers.Msts
             public TokenProcessor(string t, Processor p) { token = t; processor = p; }
             public string token; public Processor processor;
         }
-        #endregion
+#endregion
 
-        #region Legacy (todo: refactor away)
+#region Legacy (todo: refactor away)
         /// <summary>Property that returns true when the EOF has been reached</summary>
         public bool EOF() { return Eof; }
         public void VerifyStartOfBlock()
@@ -3743,10 +3743,10 @@ namespace Orts.Parsers.Msts
             return 0;
         }
 
-        #endregion
+#endregion
     }
 
-    #region StreamReaderFactory
+#region StreamReaderFactory
     /// <summary>
     /// Factory class that creates a StreamReader from a file.
     /// Reading from an STF file also means that the first lines is interpreted as a SIMIS signature
@@ -3772,9 +3772,9 @@ namespace Orts.Parsers.Msts
             return stream;
         }
     }
-    #endregion
+#endregion
 
-    #region StfExceptions
+#region StfExceptions
     /// <summary>
     /// Exceptions to be called during reading of STF files
     /// </summary>
@@ -3827,7 +3827,7 @@ namespace Orts.Parsers.Msts
                                     "{2} in {0}:line {1}\n", fileName, lineNumber, message)) { }        
     }
 
-    #endregion
+#endregion
 
 }
 #endif

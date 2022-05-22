@@ -17,12 +17,10 @@
 
 // This file is the responsibility of the 3D & Environment Team. 
 
+using Microsoft.Xna.Framework;
+using ORTS.Common.Input;
 using System;
 using System.Windows.Forms;
-using Microsoft.Xna.Framework;
-using Orts.Common;
-using Orts.Viewer3D.Processes;
-using ORTS.Common.Input;
 
 namespace Orts.Viewer3D.Popups
 {
@@ -37,13 +35,13 @@ namespace Orts.Viewer3D.Popups
         {
             Label buttonQuit, MSG;
             var vbox = base.Layout(layout).AddLayoutVertical();
-            var heightForLabels = 10;			
-			heightForLabels = (vbox.RemainingHeight - 2 * ControlLayout.SeparatorSize) / 2;
+            var heightForLabels = 10;
+            heightForLabels = (vbox.RemainingHeight - 2 * ControlLayout.SeparatorSize) / 2;
             var spacing = (heightForLabels - Owner.TextFontDefault.Height) / 2;
 
-            vbox.AddSpace(0, spacing + 2);            
+            vbox.AddSpace(0, spacing + 2);
             vbox.Add(MSG = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, "     " + Viewer.Catalog.GetStringFmt("Train derailed! You caused an emergency. Get out!", Application.ProductName, LabelAlignment.Center)));
-                      
+
             vbox.AddSpace(0, spacing);
             vbox.AddSpace(0, spacing);
             vbox.AddHorizontalSeparator();
@@ -51,13 +49,13 @@ namespace Orts.Viewer3D.Popups
 
 
             vbox.Add(buttonQuit = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetStringFmt("Quit {1} ({0})", Owner.Viewer.Settings.Input.Commands[(int)UserCommand.GameQuit], Application.ProductName), LabelAlignment.Center));
-            buttonQuit.Click += new Action<Control, Point>(buttonQuit_Click);            
+            buttonQuit.Click += new Action<Control, Point>(buttonQuit_Click);
             return vbox;
         }
 
         void buttonQuit_Click(Control arg1, Point arg2)
         {
             Owner.Viewer.Game.PopState();
-        }                
+        }
     }
 }

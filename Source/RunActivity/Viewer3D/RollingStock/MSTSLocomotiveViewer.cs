@@ -17,11 +17,6 @@
 
 // This file is the responsibility of the 3D & Environment Team. 
 
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Orts.Common;
@@ -30,22 +25,27 @@ using Orts.Simulation;
 using Orts.Simulation.Physics;
 using Orts.Simulation.RollingStocks;
 using Orts.Simulation.RollingStocks.SubSystems.Controllers;
+using Orts.Simulation.RollingStocks.SubSystems.PowerSupplies;
 using Orts.Viewer3D.Common;
 using Orts.Viewer3D.Popups;
-using Orts.Viewer3D.RollingStock.SubSystems;
 using Orts.Viewer3D.RollingStock.Subsystems.ETCS;
+using Orts.Viewer3D.RollingStock.SubSystems;
 using ORTS.Common;
 using ORTS.Common.Input;
 using ORTS.Scripting.Api;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
 using Event = Orts.Common.Event;
-using Orts.Simulation.RollingStocks.SubSystems.PowerSupplies;
 
 namespace Orts.Viewer3D.RollingStock
 {
     public class MSTSLocomotiveViewer : MSTSWagonViewer
     {
         MSTSLocomotive Locomotive;
-        
+
         protected MSTSLocomotive MSTSLocomotive { get { return (MSTSLocomotive)Car; } }
 
         public bool _hasCabRenderer;
@@ -103,7 +103,7 @@ namespace Orts.Viewer3D.RollingStock
             // STATIC je zapnutý po nahrání uložené pozice
             if (this.MSTSLocomotive.Train.TrainType == Train.TRAINTYPE.STATIC && mstsElectricLocomotive != null && mstsElectricLocomotive.PowerOn)
             {
-                this.MSTSLocomotive.SignalEvent(Event.EnginePowerOn);                
+                this.MSTSLocomotive.SignalEvent(Event.EnginePowerOn);
                 this.MSTSLocomotive.LocoIsStatic = true;
                 this.MSTSLocomotive.CarLightsPowerOn = true;
             }
@@ -118,11 +118,11 @@ namespace Orts.Viewer3D.RollingStock
             // STATIC je zapnutý po nahrání uložené pozice
             if (this.MSTSLocomotive.Train.TrainType == Train.TRAINTYPE.STATIC && mstsSteamLocomotive != null && mstsElectricLocomotive.PowerOn)
             {
-                this.MSTSLocomotive.SignalEvent(Event.EnginePowerOn);                
+                this.MSTSLocomotive.SignalEvent(Event.EnginePowerOn);
                 this.MSTSLocomotive.LocoIsStatic = true;
                 this.MSTSLocomotive.CarLightsPowerOn = true;
             }
-                      
+
             var mstsDieselLocomotive = car as MSTSDieselLocomotive;
             if (this.MSTSLocomotive.Train.TrainType == Train.TRAINTYPE.STATIC && mstsDieselLocomotive != null && mstsDieselLocomotive.DieselEngines[0].EngineStatus != DieselEngine.Status.Running)
             {
@@ -191,7 +191,7 @@ namespace Orts.Viewer3D.RollingStock
         }
 
         public override void InitializeUserInputCommands()
-        {            
+        {
             // Steam locomotives handle these differently, and might have set them already
             if (!UserInputCommands.ContainsKey(UserCommand.ControlForwards))
                 UserInputCommands.Add(UserCommand.ControlForwards, new Action[] { Noop, () => ReverserControlForwards() });
@@ -288,7 +288,7 @@ namespace Orts.Viewer3D.RollingStock
             UserInputCommands.Add(UserCommand.ControlCompressorMode_OffAuto, new Action[] { Noop, () => new ToggleCompressorMode_OffAutoCommand(Viewer.Log) });
             UserInputCommands.Add(UserCommand.ControlCompressorMode2_OffAuto, new Action[] { Noop, () => new ToggleCompressorMode2_OffAutoCommand(Viewer.Log) });
             UserInputCommands.Add(UserCommand.ControlHeating_OffOn, new Action[] { Noop, () => new ToggleHeating_OffOnCommand(Viewer.Log) });
-            UserInputCommands.Add(UserCommand.ControlCabHeating_OffOn, new Action[] { Noop, () => new ToggleCabHeating_OffOnCommand(Viewer.Log) });            
+            UserInputCommands.Add(UserCommand.ControlCabHeating_OffOn, new Action[] { Noop, () => new ToggleCabHeating_OffOnCommand(Viewer.Log) });
             UserInputCommands.Add(UserCommand.ControlRouteVoltage, new Action[] { Noop, () => new ToggleControlRouteVoltageCommand(Viewer.Log) });
             UserInputCommands.Add(UserCommand.ControlQuickReleaseButton, new Action[] { Noop, () => new ToggleQuickReleaseButtonCommand(Viewer.Log) });
             UserInputCommands.Add(UserCommand.ControlLowPressureReleaseButton, new Action[] { Noop, () => new ToggleLowPressureReleaseButtonCommand(Viewer.Log) });
@@ -303,7 +303,7 @@ namespace Orts.Viewer3D.RollingStock
             UserInputCommands.Add(UserCommand.ControlSetVoltage0, new Action[] { Noop, () => Locomotive.SetVoltageMarker(0) });
             UserInputCommands.Add(UserCommand.ControlDeleteVoltageMarker, new Action[] { Noop, () => Locomotive.DeleteVoltageMarker() });
 
-            base.InitializeUserInputCommands();            
+            base.InitializeUserInputCommands();
         }
 
         /// <summary>
@@ -311,22 +311,22 @@ namespace Orts.Viewer3D.RollingStock
         /// structure to determine what was pressed.
         /// </summary>
         float PressedCycle;
-        bool PressedCycleStart;        
+        bool PressedCycleStart;
         public bool DoublePressedKeyTest()
         {
             bool Status2KeyPressed = false;
-            
+
             if (PressedCycleStart) PressedCycle++;
             if (PressedCycle > 1 && PressedCycle < 10) Status2KeyPressed = true;
 
             if (PressedCycle > 10)
             {
                 PressedCycle = 0;
-                PressedCycleStart = false;                
+                PressedCycleStart = false;
             }
             return Status2KeyPressed;
         }
-        
+
         public override void HandleUserInput(ElapsedTime elapsedTime)
         {
             // Icik
@@ -388,15 +388,15 @@ namespace Orts.Viewer3D.RollingStock
                     Locomotive.HV4Switch = 1;
                     Locomotive.HVOffPressedTest = false;
                 }
-                
+
                 if (Locomotive.HV4Switch == 1 && UserInput.IsPressed(UserCommand.ControlHV4SwitchDown))
                     PressedCycleStart = true;
 
                 if (Locomotive.HV4Switch == 1 && UserInput.IsPressed(UserCommand.ControlHV4SwitchDown) && DoublePressedKeyTest())
                 {
                     Locomotive.HV4Switch = -1;
-                    Locomotive.HVOffPressedTest = false;                    
-                }                
+                    Locomotive.HVOffPressedTest = false;
+                }
 
                 if (Locomotive.HV4Switch == -1 && UserInput.IsPressed(UserCommand.ControlHV4SwitchUp))
                 {
@@ -524,7 +524,7 @@ namespace Orts.Viewer3D.RollingStock
                 }
                 // Diesel kontrolér
                 if (Locomotive.DieselDirectionController && Locomotive.DieselDirectionController_In)
-                {                    
+                {
                     if (UserInput.IsPressed(UserCommand.ControlDieselDirectionControllerUp))
                     {
                         Locomotive.ToggleDieselDirectionControllerUp();
@@ -536,7 +536,7 @@ namespace Orts.Viewer3D.RollingStock
                 }
                 // Diesel kontrolér2
                 if (Locomotive.DieselDirectionController2 && Locomotive.DieselDirectionController_In)
-                {                 
+                {
                     if (UserInput.IsPressed(UserCommand.ControlDieselDirectionControllerUp))
                     {
                         Locomotive.ToggleDieselDirectionControllerUp();
@@ -585,14 +585,14 @@ namespace Orts.Viewer3D.RollingStock
                     || (Locomotive as MSTSDieselLocomotive).DieselEngines[0].EngineStatus == Orts.Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Stopping)
                     && !Locomotive.StopButtonPressed)
                     Locomotive.StartButtonPressed = true;
-                
+
                 if (UserInput.IsDown(UserCommand.ControlDieselPlayer)
                     && ((Locomotive as MSTSDieselLocomotive).DieselEngines[0].EngineStatus == Orts.Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Running
                     || (Locomotive as MSTSDieselLocomotive).DieselEngines[0].EngineStatus == Orts.Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Starting)
                     && !Locomotive.StartButtonPressed)
-                    Locomotive.StopButtonPressed = true;                
+                    Locomotive.StopButtonPressed = true;
             }
-            
+
 
             if (UserInput.IsPressed(UserCommand.CameraToggleShowCab))
                 Locomotive.ShowCab = !Locomotive.ShowCab;
@@ -678,7 +678,7 @@ namespace Orts.Viewer3D.RollingStock
         /// animated objects, and add their primitives to the RenderFrame list.
         /// </summary>
         public override void PrepareFrame(RenderFrame frame, ElapsedTime elapsedTime)
-        {            
+        {
             if (Viewer.Camera.AttachedCar == this.MSTSWagon && Viewer.Camera.Style == Camera.Styles.ThreeDimCab)
             {
                 if (ThreeDimentionCabViewer != null)
@@ -750,7 +750,7 @@ namespace Orts.Viewer3D.RollingStock
             if (Locomotive.TrainControlSystem != null && Locomotive.TrainControlSystem.Sounds.Count > 0)
                 foreach (var script in Locomotive.TrainControlSystem.Sounds.Keys)
                 {
-                         Viewer.SoundProcess.RemoveSoundSources(script);
+                    Viewer.SoundProcess.RemoveSoundSources(script);
                 }
             base.Unload();
         }
@@ -912,11 +912,11 @@ namespace Orts.Viewer3D.RollingStock
         public void ImmediateRefill()
         {
             var loco = this.Locomotive;
-            
+
             if (loco == null)
                 return;
-            
-            foreach(var car in loco.Train.Cars)
+
+            foreach (var car in loco.Train.Cars)
             {
                 // There is no need to check for the tender.  The MSTSSteamLocomotive is the primary key in the refueling process when using immediate refueling.
                 // Electric locomotives may have steam heat boilers fitted, and they can refill these
@@ -951,7 +951,7 @@ namespace Orts.Viewer3D.RollingStock
             if (distanceToPickupM > match.IntakePoint.WidthM / 2)
             {
                 Viewer.Simulator.Confirmer.Message(ConfirmLevel.None, Viewer.Catalog.GetStringFmt("Refill: Distance to {0} supply is {1}.",
-                    PickupTypeDictionary[(uint)match.Pickup.PickupType], Viewer.Catalog.GetPluralStringFmt("{0} meter", "{0} meters", (long)(distanceToPickupM+1f))));
+                    PickupTypeDictionary[(uint)match.Pickup.PickupType], Viewer.Catalog.GetPluralStringFmt("{0} meter", "{0} meters", (long)(distanceToPickupM + 1f))));
                 return;
             }
             if (distanceToPickupM <= match.IntakePoint.WidthM / 2)
@@ -975,18 +975,18 @@ namespace Orts.Viewer3D.RollingStock
                     FormatStrings.FormatSpeedLimit(match.Pickup.SpeedRange.MaxMpS, Viewer.MilepostUnitsMetric)));
                 return;
             }
-            if (match.Wagon is MSTSDieselLocomotive || match.Wagon is MSTSSteamLocomotive || match.Wagon is MSTSElectricLocomotive ||  (match.Wagon.WagonType == TrainCar.WagonTypes.Tender && match.SteamLocomotiveWithTender != null))
+            if (match.Wagon is MSTSDieselLocomotive || match.Wagon is MSTSSteamLocomotive || match.Wagon is MSTSElectricLocomotive || (match.Wagon.WagonType == TrainCar.WagonTypes.Tender && match.SteamLocomotiveWithTender != null))
             {
                 // Note: The tender contains the intake information, but the steam locomotive includes the controller information that is needed for the refueling process.
 
                 float fraction = 0;
 
                 // classical MSTS Freightanim, handled as usual
-                if(match.SteamLocomotiveWithTender != null)
+                if (match.SteamLocomotiveWithTender != null)
                     fraction = match.SteamLocomotiveWithTender.GetFilledFraction(match.Pickup.PickupType);
                 else
                     fraction = match.Wagon.GetFilledFraction(match.Pickup.PickupType);
-                                
+
                 if (fraction > 0.99)
                 {
                     Viewer.Simulator.Confirmer.Message(ConfirmLevel.None, Viewer.Catalog.GetStringFmt("Refill: {0} supply now replenished.",
@@ -1339,7 +1339,7 @@ namespace Orts.Viewer3D.RollingStock
                             tmp = PDayTextures[FileName];
                     }
                 }
-                
+
                 // Osvětlení přístrojů v kabině
                 else tmp = PLightTextures[FileName];
 
@@ -2174,14 +2174,14 @@ namespace Orts.Viewer3D.RollingStock
                     if (Gauge.Orientation == 0)
                     {
                         destX = (int)(xratio * (Control.PositionX)) + (int)(xratio * (zeropos < xpos ? zeropos : xpos));
-//                        destY = (int)(yratio * Control.PositionY);
+                        //                        destY = (int)(yratio * Control.PositionY);
                         destY = (int)(yratio * (Control.PositionY) - (int)(yratio * (Gauge.Direction == 0 && zeropos > xpos ? (zeropos - xpos) * Math.Sin(DrawRotation) : 0)));
                         destW = ((int)(xratio * xpos) - (int)(xratio * zeropos)) * (xpos >= zeropos ? 1 : -1);
                         destH = (int)(yratio * ypos);
                     }
                     else
                     {
-                        destX = (int)(xratio * Control.PositionX) +(int)(xratio * (Gauge.Direction == 0 && ypos > zeropos ? (ypos - zeropos) * Math.Sin(DrawRotation) : 0));
+                        destX = (int)(xratio * Control.PositionX) + (int)(xratio * (Gauge.Direction == 0 && ypos > zeropos ? (ypos - zeropos) * Math.Sin(DrawRotation) : 0));
                         if (Gauge.Direction != 1 && !IsFire)
                             destY = (int)(yratio * (Control.PositionY + zeropos)) + (ypos > zeropos ? (int)(yratio * (zeropos - ypos)) : 0);
                         else
@@ -2553,9 +2553,9 @@ namespace Orts.Viewer3D.RollingStock
                                     index = 0;
                                 }
                                 else
-                            index = PercentToIndex(dynBrakePercent);
-                    }
-                    else
+                                    index = PercentToIndex(dynBrakePercent);
+                            }
+                            else
                                 index = PercentToIndex(dynBrakePercent);
                         }
                     }
@@ -2587,7 +2587,7 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.REQUESTED_FORCE:
                     if (Control.Feature == "NegativeMask")
                     {
-                        if (Locomotive.extendedPhysics.TotalForceN < 0)
+                        if (Locomotive.extendedPhysics.TotalCurrent < -0.2f && Locomotive.PositiveMask)
                             index = 1;
                         else
                             index = 0;
@@ -2595,7 +2595,7 @@ namespace Orts.Viewer3D.RollingStock
                     }
                     if (Control.Feature == "PositiveMask")
                     {
-                        if (Locomotive.extendedPhysics.TotalForceN > 0)
+                        if (Locomotive.extendedPhysics.TotalCurrent > 0.2f && Locomotive.NegativeMask)
                             index = 1;
                         else
                             index = 0;
@@ -2740,7 +2740,7 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.CABHEATING_OFFON:
                 case CABViewControlTypes.HEATING_POWER:
                 case CABViewControlTypes.SWITCHINGVOLTAGEMODE_OFF_DC:
-                case CABViewControlTypes.SWITCHINGVOLTAGEMODE_OFF_AC:                
+                case CABViewControlTypes.SWITCHINGVOLTAGEMODE_OFF_AC:
                 case CABViewControlTypes.SWITCHINGVOLTAGEMODE_DC_OFF_AC:
                 case CABViewControlTypes.WARNING_NEUTRAL:
                 case CABViewControlTypes.ORTS_CIRCUIT_BREAKER_STATE_MULTISYSTEM:
@@ -2762,7 +2762,7 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.DIESEL_DIRECTION_CONTROLLER2:
                 case CABViewControlTypes.DIESEL_DIRECTION_CONTROLLER3:
                 case CABViewControlTypes.DIESEL_DIRECTION_CONTROLLER4:
-                case CABViewControlTypes.DIESEL_CHECK_POWER_MOTOR_LAMP:                
+                case CABViewControlTypes.DIESEL_CHECK_POWER_MOTOR_LAMP:
                 case CABViewControlTypes.DIESEL_MOTOR_WATER_TEMP:
                 case CABViewControlTypes.DIESEL_MOTOR_OIL_TEMP:
                 case CABViewControlTypes.DIESEL_MOTOR_TEMP_WARNING:
@@ -2981,17 +2981,17 @@ namespace Orts.Viewer3D.RollingStock
                         Locomotive.ThrottleController.CurrentValue = MathHelper.Clamp(Locomotive.ThrottleController.CurrentValue, 0, 1);
                         Locomotive.SetThrottleValue(Locomotive.ThrottleController.CurrentValue);
                         Locomotive.SetThrottlePercent(Locomotive.ThrottleController.CurrentValue * 100);
-                    }                    
+                    }
                     //Locomotive.SetThrottleValue(ChangedValue(Locomotive.ThrottleController.IntermediateValue)); break;
-                    break;                    
-                case CABViewControlTypes.ENGINE_BRAKE: 
+                    break;
+                case CABViewControlTypes.ENGINE_BRAKE:
                     if (ChangedValue(0) != 0)
                     {
                         Locomotive.EngineBrakeController.CurrentValue += MathHelper.Clamp(NormalizedMouseMovement(), -0.25f, 0.25f);
                         Locomotive.EngineBrakeController.CurrentValue = MathHelper.Clamp(Locomotive.EngineBrakeController.CurrentValue, 0, 1);
                         Locomotive.SetEngineBrakeValue(Locomotive.EngineBrakeController.CurrentValue);
                         Locomotive.SetEngineBrakePercent(Locomotive.EngineBrakeController.CurrentValue * 100);
-                    }                                  
+                    }
                     //Locomotive.SetEngineBrakeValue(ChangedValue(Locomotive.EngineBrakeController.IntermediateValue)); break;
                     break;
                 case CABViewControlTypes.BRAKEMAN_BRAKE: Locomotive.SetBrakemanBrakeValue(ChangedValue(Locomotive.BrakemanBrakeController.IntermediateValue)); break;
@@ -3002,7 +3002,7 @@ namespace Orts.Viewer3D.RollingStock
                         Locomotive.TrainBrakeController.CurrentValue = MathHelper.Clamp(Locomotive.TrainBrakeController.CurrentValue, 0, 1);
                         Locomotive.SetTrainBrakeValue(Locomotive.TrainBrakeController.CurrentValue, 0);
                         Locomotive.SetTrainBrakePercent(Locomotive.TrainBrakeController.CurrentValue * 100);
-                    }                    
+                    }
                     //Locomotive.SetTrainBrakeValue(ChangedValue(Locomotive.TrainBrakeController.IntermediateValue), 0); break;
                     break;
                 case CABViewControlTypes.DYNAMIC_BRAKE:
@@ -3012,9 +3012,9 @@ namespace Orts.Viewer3D.RollingStock
                         Locomotive.DynamicBrakeController.CurrentValue = MathHelper.Clamp(Locomotive.DynamicBrakeController.CurrentValue, 0, 1);
                         Locomotive.SetDynamicBrakeValue(Locomotive.DynamicBrakeController.CurrentValue);
                         Locomotive.SetDynamicBrakePercent(Locomotive.DynamicBrakeController.CurrentValue * 100);
-                    }                    
+                    }
                     //Locomotive.SetDynamicBrakeValue(ChangedValue(Locomotive.DynamicBrakeController.IntermediateValue)); break;
-                    break;                    
+                    break;
                 case CABViewControlTypes.GEARS: Locomotive.SetGearBoxValue(ChangedValue(Locomotive.GearBoxController.IntermediateValue)); break;
                 case CABViewControlTypes.DIRECTION:
                     if (!Locomotive.DieselDirectionController && !Locomotive.DieselDirectionController2 && !Locomotive.DieselDirectionController3 && !Locomotive.DieselDirectionController4)
@@ -3033,7 +3033,7 @@ namespace Orts.Viewer3D.RollingStock
                     {
                         new HeadlightCommand(Viewer.Log, hl > 0);
                         IsChanged = true;
-                    }                     
+                    }
                     break;
                 case CABViewControlTypes.WHISTLE:
                 case CABViewControlTypes.HORN: new HornCommand(Viewer.Log, ChangedValue(Locomotive.Horn ? 1 : 0) > 0); break;
@@ -3168,7 +3168,7 @@ namespace Orts.Viewer3D.RollingStock
                     }
                     else
                         if (!UserInput.IsDown(UserCommand.ControlDieselPlayer))
-                            Locomotive.StartButtonPressed = false;
+                        Locomotive.StartButtonPressed = false;
                     break;
                 case CABViewControlTypes.ORTS_PLAYER_DIESEL_ENGINE_STOPPER:
                     dieselLoco = Locomotive as MSTSDieselLocomotive;
@@ -3180,7 +3180,7 @@ namespace Orts.Viewer3D.RollingStock
                     }
                     else
                         if (!UserInput.IsDown(UserCommand.ControlDieselPlayer))
-                            Locomotive.StopButtonPressed = false;
+                        Locomotive.StopButtonPressed = false;
                     break;
                 case CABViewControlTypes.ORTS_CABLIGHT:
                     if ((Locomotive.CabLightOn ? 1 : 0) != ChangedValue(Locomotive.CabLightOn ? 1 : 0)) new ToggleCabLightCommand(Viewer.Log); break;
@@ -3207,11 +3207,11 @@ namespace Orts.Viewer3D.RollingStock
                             Locomotive.HV2Switch = 0;
                             Locomotive.HVPressedTest = false;
                         }
-                        
+
                         if (ChangedValue(0) < 0 && UserInput.IsMouseLeftButtonDown)
                         {
                             new ToggleHV2SwitchUpCommand(Viewer.Log);
-                        }                        
+                        }
                         break;
                     }
                 case CABViewControlTypes.HV2BUTTON:
@@ -3296,11 +3296,11 @@ namespace Orts.Viewer3D.RollingStock
                         if (ChangedValue(0) > 0 && NormalizedMouseMovement() < 0.75f && UserInput.IsMouseLeftButtonDown)
                         {
                             new ToggleHV4SwitchDownCommand(Viewer.Log);
-                        }                        
+                        }
 
                         if (ChangedValue(0) > 0 && NormalizedMouseMovement() > 0.75f && UserInput.IsMouseLeftButtonDown)
                         {
-                            Locomotive.HV4Switch = -1;                            
+                            Locomotive.HV4Switch = -1;
                             Locomotive.HVOffPressedTest = false;
                             new ToggleHV4SwitchDownCommand(Viewer.Log);
                         }
@@ -3311,16 +3311,16 @@ namespace Orts.Viewer3D.RollingStock
                     {
                         // Ovládání HV nearetované pozice
                         if (Locomotive.HV5Switch == 4)
-                        {                            
+                        {
                             Locomotive.HVPressedTestAC = true;
                         }
                         if (Locomotive.HV5Switch == 4 && UserInput.IsMouseLeftButtonReleased)
                         {
                             Locomotive.HV5Switch = 3;
                             Locomotive.HVPressedTestAC = false;
-                        }                                                
+                        }
                         if (Locomotive.HV5Switch == 0)
-                        {                            
+                        {
                             Locomotive.HVPressedTestDC = true;
                         }
                         if (Locomotive.HV5Switch == 0 && UserInput.IsMouseLeftButtonReleased)
@@ -3330,7 +3330,7 @@ namespace Orts.Viewer3D.RollingStock
                         }
 
                         if (ChangedValue(0) < 0 && UserInput.IsMouseLeftButtonDown && !IsChanged)
-                        {                            
+                        {
                             new ToggleHV5SwitchUpCommand(Viewer.Log);
                             IsChanged = true;
                         }
@@ -3338,7 +3338,7 @@ namespace Orts.Viewer3D.RollingStock
                         {
                             new ToggleHV5SwitchDownCommand(Viewer.Log);
                             IsChanged = true;
-                        }                        
+                        }
                         break;
                     }
 
@@ -3385,7 +3385,7 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.PANTOGRAPHS_4:
                 case CABViewControlTypes.PANTOGRAPH_4_SWITCH:
                     if (ChangedValue(0) < 0 && !IsChanged)
-                    {                      
+                    {
                         new TogglePantograph4SwitchUpCommand(Viewer.Log);
                         IsChanged = true;
                     }
@@ -3393,8 +3393,8 @@ namespace Orts.Viewer3D.RollingStock
                     {
                         new TogglePantograph4SwitchDownCommand(Viewer.Log);
                         IsChanged = true;
-                    }                   
-                    break;                    
+                    }
+                    break;
 
                 case CABViewControlTypes.ORTS_BATTERY:
                     if (ChangedValue(Locomotive.Battery ? 1 : 0) > 0)
@@ -3434,7 +3434,7 @@ namespace Orts.Viewer3D.RollingStock
                     {
                         new ToggleCompressorCombinedSwitchDownCommand(Viewer.Log);
                         IsChanged = true;
-                    }                    
+                    }
                     break;
 
                 case CABViewControlTypes.COMPRESSOR_COMBINED2:
@@ -3478,7 +3478,7 @@ namespace Orts.Viewer3D.RollingStock
                     }
                     break;
 
-                case CABViewControlTypes.COMPRESSOR_MODE2_OFFAUTO:                    
+                case CABViewControlTypes.COMPRESSOR_MODE2_OFFAUTO:
                     if (ChangedValue(Locomotive.CompressorMode2_OffAuto ? 1 : 0) > 0)
                     {
                         Locomotive.CompressorMode2_OffAuto = true;
@@ -3492,7 +3492,7 @@ namespace Orts.Viewer3D.RollingStock
                     }
                     break;
 
-                case CABViewControlTypes.HEATING_OFFON:                    
+                case CABViewControlTypes.HEATING_OFFON:
                     if (ChangedValue(Locomotive.Heating_OffOn ? 1 : 0) > 0)
                     {
                         Locomotive.Heating_OffOn = true;
@@ -3518,14 +3518,14 @@ namespace Orts.Viewer3D.RollingStock
                         Locomotive.CabHeating_OffOn = false;
                         new ToggleCabHeating_OffOnCommand(Viewer.Log);
                     }
-                    break;                
-                case CABViewControlTypes.QUICK_RELEASE_BUTTON:                    
-                        if (ChangedValue(Locomotive.QuickReleaseButton ? 1 : 0) > 0)
-                            Locomotive.ToggleQuickReleaseButton(true);
-                        else
-                            Locomotive.ToggleQuickReleaseButton(false);                    
                     break;
-                
+                case CABViewControlTypes.QUICK_RELEASE_BUTTON:
+                    if (ChangedValue(Locomotive.QuickReleaseButton ? 1 : 0) > 0)
+                        Locomotive.ToggleQuickReleaseButton(true);
+                    else
+                        Locomotive.ToggleQuickReleaseButton(false);
+                    break;
+
                 case CABViewControlTypes.LOWPRESSURE_RELEASE_BUTTON:
                     if (ChangedValue(Locomotive.LowPressureReleaseButton ? 1 : 0) > 0)
                         Locomotive.ToggleLowPressureReleaseButton(true);
@@ -3621,7 +3621,7 @@ namespace Orts.Viewer3D.RollingStock
                         {
                             new ToggleDieselDirectionControllerDownCommand(Viewer.Log);
                             IsChanged = true;
-                        }                        
+                        }
                     }
                     break;
                 case CABViewControlTypes.DIESEL_DIRECTION_CONTROLLER4:
@@ -3961,7 +3961,7 @@ namespace Orts.Viewer3D.RollingStock
                                     mpc.StateChanged = false;
                                 }
 
-        }
+                            }
                         }
                         break;
                     }
@@ -4295,7 +4295,7 @@ namespace Orts.Viewer3D.RollingStock
                                         Locomotive.PantoMode = MSTSLocomotive.PantoModes.Both;
                                         break;
                                 }
-                                if (Locomotive.SelectingPowerSystem > MSTSLocomotive.PowerSystem.SK3kV) Locomotive.SelectingPowerSystem =  MSTSLocomotive.PowerSystem.SK3kV;
+                                if (Locomotive.SelectingPowerSystem > MSTSLocomotive.PowerSystem.SK3kV) Locomotive.SelectingPowerSystem = MSTSLocomotive.PowerSystem.SK3kV;
                                 if (Locomotive.SelectingPowerSystem < MSTSLocomotive.PowerSystem.DE25kV) Locomotive.SelectingPowerSystem = MSTSLocomotive.PowerSystem.DE25kV;
                             }
                             if (Control.ActivateScreen > 0)

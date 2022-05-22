@@ -32,7 +32,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
         readonly Simulator Simulator;
 
         public bool Activated = false;
-        
+
         // Icik
         //string ScriptName = "Automatic";
         string ScriptName = "Manual";
@@ -45,7 +45,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
         public bool DriverClosingOrder { get; private set; }
         public bool DriverOpeningOrder { get; private set; }
         public bool DriverClosingAuthorization { get; private set; }
-        
+
         public bool TCSClosingOrder
         {
             get
@@ -79,7 +79,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                     return false;
             }
         }
-        public bool ClosingAuthorization { get;  set; }
+        public bool ClosingAuthorization { get; set; }
 
         public ScriptedCircuitBreaker(MSTSElectricLocomotive locomotive)
         {
@@ -117,7 +117,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
             {
                 if (ScriptName != null)
                 {
-                    switch(ScriptName)
+                    switch (ScriptName)
                     {
                         case "Automatic":
                             Script = new AutomaticCircuitBreaker() as CircuitBreaker;

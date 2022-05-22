@@ -48,7 +48,7 @@ namespace Orts.Viewer3D
         SunMoonPos skyVectors;
 
         // Icik
-        public double TimeOffset; 
+        public double TimeOffset;
 
         int seasonType; //still need to remember it as MP now can change it.
         // Latitude of current route in radians. -pi/2 = south pole, 0 = equator, pi/2 = north pole.
@@ -162,7 +162,7 @@ namespace Orts.Viewer3D
             while (Viewer.Simulator.ClockTime >= (oldClockTime + 1200)) // Plus key, or normal forward in time; <CSComment> better so in case of fast forward
             {
                 oldClockTime = oldClockTime + 1200;
-                diff = GetCelestialDiff();                
+                diff = GetCelestialDiff();
                 step1++;
                 step2++;
                 if (step2 >= maxSteps) // Midnight.
@@ -177,7 +177,7 @@ namespace Orts.Viewer3D
             if (Viewer.Simulator.ClockTime <= (oldClockTime - 1200)) // Minus key
             {
                 oldClockTime = Viewer.Simulator.ClockTime;
-                diff = GetCelestialDiff(); 
+                diff = GetCelestialDiff();
                 step1--;
                 step2--;
                 if (step1 < 0) // Midnight.
@@ -259,7 +259,7 @@ namespace Orts.Viewer3D
         // Number of point indices (each dome = 912 for 24 sides: 7 levels of 24 triangle pairs each
         // plus 24 triangles at the zenith)
         // plus six more for the moon quad
-        private static short indexCount = 6 + 2 * (SkyConstants.skySides * 6 *SkyConstants.skyLevels + 3 * SkyConstants.skySides);
+        private static short indexCount = 6 + 2 * (SkyConstants.skySides * 6 * SkyConstants.skyLevels + 3 * SkyConstants.skySides);
 
         /// <summary>
         /// Constructor.
@@ -331,8 +331,8 @@ namespace Orts.Viewer3D
             {
                 // The "oblate" factor is used to flatten the dome to an ellipsoid. Used for the inner (cloud)
                 // dome only. Gives the clouds a flatter appearance.
-                float y = (float)Math.Sin(MathHelper.ToRadians((360 / skySides) * (i-1))) * radius * oblate;
-                float yRadius = radius * (float)Math.Cos(MathHelper.ToRadians((360 / skySides) * (i-1)));
+                float y = (float)Math.Sin(MathHelper.ToRadians((360 / skySides) * (i - 1))) * radius * oblate;
+                float yRadius = radius * (float)Math.Cos(MathHelper.ToRadians((360 / skySides) * (i - 1)));
                 for (int j = 0; j < skySides; j++) // (=24 for top overlay)
                 {
 
@@ -513,7 +513,7 @@ namespace Orts.Viewer3D
                     SkyTexture = SharedTextureManager.Get(Viewer.RenderProcess.GraphicsDevice, System.IO.Path.Combine(Viewer.ContentPath, "..\\Content\\Season\\WinterSkyDome.png"));
                     break;
             }
-                    
+
             ShaderPassesSky = SkyShader.Techniques["Sky"].Passes.GetEnumerator();
             ShaderPassesMoon = SkyShader.Techniques["Moon"].Passes.GetEnumerator();
             ShaderPassesClouds = SkyShader.Techniques["Clouds"].Passes.GetEnumerator();
@@ -549,7 +549,7 @@ namespace Orts.Viewer3D
 
             for (var i = 0; i < 5; i++)
                 graphicsDevice.SamplerStates[i] = SamplerState.LinearWrap;
-            
+
             // Sky dome
             graphicsDevice.DepthStencilState = DepthStencilState.DepthRead;
 

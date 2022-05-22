@@ -19,7 +19,6 @@ using Orts.Parsers.Msts;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
 
 // TODO - UV_OPS

@@ -242,7 +242,7 @@ namespace ORTS.Scripting.Api
         ContServ,           // TrainBrakesControllerContinuousServiceStart 
         FullServ,           // TrainBrakesControllerFullServiceStart 
         Emergency,          // TrainBrakesControllerEmergencyStart
-        
+
 
         // Extra MSTS values
         MinimalReduction,  // TrainBrakesControllerMinimalReductionStart,

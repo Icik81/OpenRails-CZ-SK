@@ -17,14 +17,14 @@
 
 // This file is the responsibility of the 3D & Environment Team. 
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Orts.Viewer3D.Popups;
 using ORTS.Common;
 using ORTS.Scripting.Api.ETCS;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using static Orts.Viewer3D.RollingStock.Subsystems.ETCS.DriverMachineInterface;
 
 namespace Orts.Viewer3D.RollingStock.Subsystems.ETCS
@@ -130,7 +130,7 @@ namespace Orts.Viewer3D.RollingStock.Subsystems.ETCS
             if (!Visible) return;
             base.Draw(spriteBatch, position);
             // Planning area speed profile
-            DrawRectangle(spriteBatch, position, 14+133, 15, 99, 270, ColorPASPdark);
+            DrawRectangle(spriteBatch, position, 14 + 133, 15, 99, 270, ColorPASPdark);
             foreach (Rectangle r in PASPRectangles)
             {
                 DrawRectangle(spriteBatch, position, r.X + 133, r.Y + 15, r.Width, r.Height, ColorPASPlight);
@@ -171,7 +171,7 @@ namespace Orts.Viewer3D.RollingStock.Subsystems.ETCS
             }
 
             // Gradient profile
-            foreach(var e in GradientRectangles)
+            foreach (var e in GradientRectangles)
             {
                 int minp = e.Key.X + 15;
                 int maxp = e.Key.Y + 15;
@@ -179,7 +179,7 @@ namespace Orts.Viewer3D.RollingStock.Subsystems.ETCS
                 DrawRectangle(spriteBatch, position, 115, minp, 18, size, e.Value ? ColorGrey : ColorDarkGrey);
                 DrawIntRectangle(spriteBatch, position, 115, minp, 18, 1, e.Value ? Color.White : ColorGrey);
                 DrawIntRectangle(spriteBatch, position, 115, minp, 1, size, e.Value ? Color.White : ColorGrey);
-                DrawIntRectangle(spriteBatch, position, 115, maxp - (int)Math.Max(1, 1/Scale), 18, 1, Color.Black);
+                DrawIntRectangle(spriteBatch, position, 115, maxp - (int)Math.Max(1, 1 / Scale), 18, 1, Color.Black);
             }
             foreach (var text in GradientText)
             {
@@ -328,7 +328,7 @@ namespace Orts.Viewer3D.RollingStock.Subsystems.ETCS
                 if (condition.DistanceToTrainM > MaxViewingDistanceM || condition.DistanceToTrainM < 0 || prevObject[row] - posy < 20 || posy < 0) continue;
                 prevObject[row] = posy;
                 Texture2D tex;
-                switch(condition.Type)
+                switch (condition.Type)
                 {
                     case TrackConditionType.LowerPantograph:
                         tex = TrackConditionTextureData[condition.YellowColour ? 2 : 1];
@@ -367,7 +367,7 @@ namespace Orts.Viewer3D.RollingStock.Subsystems.ETCS
                         tex = TrackConditionTextureData[35];
                         break;
                     case TrackConditionType.TractionSystemChange:
-                        switch(condition.TractionSystem)
+                        switch (condition.TractionSystem)
                         {
                             case TractionSystem.NonFitted:
                                 tex = TrackConditionTextureData[condition.YellowColour ? 26 : 25];

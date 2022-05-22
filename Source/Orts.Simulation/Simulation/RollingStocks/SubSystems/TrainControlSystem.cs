@@ -21,20 +21,19 @@
 using Orts.Common;
 using Orts.Parsers.Msts;
 using Orts.Simulation.Physics;
-using Orts.Simulation.Signalling;
 using Orts.Simulation.RollingStocks.SubSystems.PowerSupplies;
 using ORTS.Common;
 using ORTS.Scripting.Api;
+using ORTS.Scripting.Api.ETCS;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
-using ORTS.Scripting.Api.ETCS;
 
 namespace Orts.Simulation.RollingStocks.SubSystems
 {
-    public class ScriptedTrainControlSystem 
+    public class ScriptedTrainControlSystem
     {
         public class MonitoringDevice
         {
@@ -271,7 +270,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                 Script.TrainMaxSpeedMpS = () => Locomotive.Train.TrainMaxSpeedMpS; // max speed for train in a specific section, independently from speedpost and signal limits
                 // Timetable mode doesn't provide a usable value for allowedMaxSpeedSignalMpS
                 Script.CurrentSignalSpeedLimitMpS = () => Simulator.TimetableMode ? Locomotive.Train.AllowedMaxSpeedMpS : Locomotive.Train.allowedMaxSpeedSignalMpS;
-                Script.NextSignalSpeedLimitMpS = (value) => NextGenericSignalItem<float>(value, ref ItemSpeedLimit, float.MaxValue,Train.TrainObjectItem.TRAINOBJECTTYPE.SIGNAL, "NORMAL");
+                Script.NextSignalSpeedLimitMpS = (value) => NextGenericSignalItem<float>(value, ref ItemSpeedLimit, float.MaxValue, Train.TrainObjectItem.TRAINOBJECTTYPE.SIGNAL, "NORMAL");
                 Script.NextSignalAspect = (value) => NextGenericSignalItem<Aspect>(value, ref ItemAspect, float.MaxValue, Train.TrainObjectItem.TRAINOBJECTTYPE.SIGNAL, "NORMAL");
                 Script.NextSignalDistanceM = (value) => NextGenericSignalItem<float>(value, ref ItemDistance, float.MaxValue, Train.TrainObjectItem.TRAINOBJECTTYPE.SIGNAL, "NORMAL");
                 Script.NextNormalSignalDistanceHeadsAspect = () => NextNormalSignalDistanceHeadsAspect();
@@ -290,7 +289,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                 Script.NextGenericSignalFeatures = (arg1, arg2, arg3) => NextGenericSignalFeatures(arg1, arg2, arg3, Train.TrainObjectItem.TRAINOBJECTTYPE.SIGNAL);
                 Script.DoesNextNormalSignalHaveRepeaterHead = () => DoesNextNormalSignalHaveRepeaterHead();
                 Script.CurrentPostSpeedLimitMpS = () => Locomotive.Train.allowedMaxSpeedLimitMpS;
-                Script.NextPostSpeedLimitMpS = (value) => NextGenericSignalItem<float>(value, ref ItemSpeedLimit, float.MaxValue, Train.TrainObjectItem.TRAINOBJECTTYPE.SPEEDPOST);                                
+                Script.NextPostSpeedLimitMpS = (value) => NextGenericSignalItem<float>(value, ref ItemSpeedLimit, float.MaxValue, Train.TrainObjectItem.TRAINOBJECTTYPE.SPEEDPOST);
                 Script.NextPostDistanceM = (value) => NextGenericSignalItem<float>(value, ref ItemDistance, float.MaxValue, Train.TrainObjectItem.TRAINOBJECTTYPE.SPEEDPOST);
                 Script.NextTunnel = (value) =>
                 {
@@ -322,7 +321,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                 Script.PantographCount = () => Locomotive.Pantographs.Count;
                 Script.GetPantographState = (pantoID) =>
                 {
-                   if (pantoID >= Pantographs.MinPantoID && pantoID <= Pantographs.MaxPantoID)
+                    if (pantoID >= Pantographs.MinPantoID && pantoID <= Pantographs.MaxPantoID)
                     {
                         return Locomotive.Pantographs[pantoID].State;
                     }
@@ -377,14 +376,14 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                     {
                         Locomotive.TrainBrakeController.TCSFullServiceBraking = value;
 
-                    //Debrief Eval
-                    if (value && Locomotive.IsPlayerTrain && !ldbfevalfullbrakeabove16kmh && Math.Abs(Locomotive.SpeedMpS) > 4.44444)
+                        //Debrief Eval
+                        if (value && Locomotive.IsPlayerTrain && !ldbfevalfullbrakeabove16kmh && Math.Abs(Locomotive.SpeedMpS) > 4.44444)
                         {
                             var train = Simulator.PlayerLocomotive.Train;//Debrief Eval
-                        DbfevalFullBrakeAbove16kmh++;
+                            DbfevalFullBrakeAbove16kmh++;
                             ldbfevalfullbrakeabove16kmh = true;
                             train.DbfEvalValueChanged = true;//Debrief eval
-                    }
+                        }
                         if (!value)
                             ldbfevalfullbrakeabove16kmh = false;
                     }
@@ -398,9 +397,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                 Script.SetThrottleController = (value) => Locomotive.ThrottleController.SetValue(value);
                 Script.SetDynamicBrakeController = (value) =>
                 {
-                if (Locomotive.DynamicBrakeController == null) return;
-                Locomotive.DynamicBrakeChangeActiveState(value > 0);
-                Locomotive.DynamicBrakeController.SetValue(value);
+                    if (Locomotive.DynamicBrakeController == null) return;
+                    Locomotive.DynamicBrakeChangeActiveState(value > 0);
+                    Locomotive.DynamicBrakeController.SetValue(value);
                 };
                 Script.SetPantographsDown = () =>
                 {
@@ -417,7 +416,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                         return;
                     }
                     Locomotive.Train.SignalEvent(PowerSupplyEvent.RaisePantograph, pantoID);
-                };               
+                };
                 Script.SetPantographDown = (pantoID) =>
                 {
                     if (pantoID < Pantographs.MinPantoID || pantoID > Pantographs.MaxPantoID)
@@ -474,7 +473,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                     this.CurrentSpeedLimitMpS = value;
                     ETCSStatus.AllowedSpeedMpS = value;
                 };
-                Script.SetNextSpeedLimitMpS = (value) => {
+                Script.SetNextSpeedLimitMpS = (value) =>
+                {
                     this.NextSpeedLimitMpS = value;
                     ETCSStatus.TargetSpeedMpS = value;
                 };
@@ -540,7 +540,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
         }
 
         private bool DoesNextNormalSignalHaveTwoAspects()
-            // ...and the two aspects of each head are STOP and ( CLEAR_2 or CLEAR_1 or RESTRICTING)
+        // ...and the two aspects of each head are STOP and ( CLEAR_2 or CLEAR_1 or RESTRICTING)
         {
             var signal = Locomotive.Train.NextSignalObject[Locomotive.Train.MUDirection == Direction.Reverse ? 1 : 0];
             if (signal != null)
@@ -667,7 +667,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
         public void SignalEvent(Event evt, TrainControlSystem script)
         {
             try
-            { 
+            {
                 foreach (var eventHandler in Locomotive.EventHandlers)
                     eventHandler.HandleEvent(evt, script);
             }
@@ -847,7 +847,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
     }
 
     public class MSTSTrainControlSystem : TrainControlSystem
-    {        
+    {
         public enum MonitorState
         {
             Disabled,
@@ -992,7 +992,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
         float VigilanceAlarmTimeoutS;
         float CurrentSpeedLimitMpS;
         float NextSpeedLimitMpS;
-       
+
         MonitoringStatus Status;
 
         public ScriptedTrainControlSystem.MonitoringDevice VigilanceMonitor;
@@ -1108,7 +1108,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                 CurrentSpeedLimitMpS = TrainSpeedLimitMpS();
 
             // TODO: NextSignalSpeedLimitMpS(0) should return 0 if the signal is at stop; cause seems to be updateSpeedInfo() within Train.cs
-            NextSpeedLimitMpS = NextSignalAspect(0) != Aspect.Stop ? (NextSignalSpeedLimitMpS(0) > 0 && NextSignalSpeedLimitMpS(0) < TrainSpeedLimitMpS() ? NextSignalSpeedLimitMpS(0) : TrainSpeedLimitMpS() ) : 0;
+            NextSpeedLimitMpS = NextSignalAspect(0) != Aspect.Stop ? (NextSignalSpeedLimitMpS(0) > 0 && NextSignalSpeedLimitMpS(0) < TrainSpeedLimitMpS() ? NextSignalSpeedLimitMpS(0) : TrainSpeedLimitMpS()) : 0;
 
             SetCurrentSpeedLimitMpS(CurrentSpeedLimitMpS);
             SetNextSpeedLimitMpS(NextSpeedLimitMpS);
@@ -1145,7 +1145,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
             {
                 maxDistanceAheadM = NextSignalDistanceM(i);
                 if (NextSignalAspect(i) == Aspect.Stop || NextSignalAspect(i) == Aspect.None) break;
-                float speedLimMpS = NextSignalSpeedLimitMpS(i); 
+                float speedLimMpS = NextSignalSpeedLimitMpS(i);
                 if (speedLimMpS >= 0) ETCSStatus.SpeedTargets.Add(new PlanningTarget(maxDistanceAheadM, speedLimMpS));
             }
             float prevDist = 0;
@@ -1161,7 +1161,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                 prevSpeed = speed;
             }
             ETCSStatus.SpeedTargets.Sort((x, y) => x.DistanceToTrainM.CompareTo(y.DistanceToTrainM));
-            ETCSStatus.SpeedTargets.Add(new PlanningTarget(maxDistanceAheadM, 0)); 
+            ETCSStatus.SpeedTargets.Add(new PlanningTarget(maxDistanceAheadM, 0));
             ETCSStatus.GradientProfile.Clear();
             ETCSStatus.GradientProfile.Add(new GradientProfileElement(0, (int)(CurrentGradientPercent() * 10)));
             ETCSStatus.GradientProfile.Add(new GradientProfileElement(maxDistanceAheadM, 0)); // End of profile
@@ -1169,7 +1169,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
 
         public override void HandleEvent(TCSEvent evt, string message)
         {
-            switch(evt)
+            switch (evt)
             {
                 case TCSEvent.AlerterPressed:
                 case TCSEvent.AlerterReleased:
@@ -1189,7 +1189,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                                 VigilanceMonitorState = MonitorState.StandBy;
                                 break;
 
-                            // case VigilanceState.Emergency: do nothing
+                                // case VigilanceState.Emergency: do nothing
                         }
                     }
                     break;
@@ -1301,12 +1301,12 @@ namespace Orts.Simulation.RollingStocks.SubSystems
         void UpdateSpeedControl()
         {
             var interventionSpeedMpS = CurrentSpeedLimitMpS + MpS.FromKpH(5.0f); // Default margin : 5 km/h
-            
+
             if (OverspeedMonitor.TriggerOnTrackOverspeed)
             {
                 interventionSpeedMpS = CurrentSpeedLimitMpS + OverspeedMonitor.TriggerOnTrackOverspeedMarginMpS;
             }
-            
+
             SetInterventionSpeedLimitMpS(interventionSpeedMpS);
 
             switch (OverspeedMonitorState)

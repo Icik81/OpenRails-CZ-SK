@@ -18,7 +18,6 @@
 // #define DEBUG_MULTIPLAYER
 // DEBUG flag for debug prints
 
-using Event = Orts.Common.Event;
 using Orts.Common;
 using Orts.Formats.Msts;
 using Orts.Simulation;
@@ -34,7 +33,7 @@ using System.Globalization;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
-using System.Runtime.Serialization.Formatters.Binary;
+using Event = Orts.Common.Event;
 
 namespace Orts.MultiPlayer
 {
@@ -83,7 +82,7 @@ namespace Orts.MultiPlayer
         public virtual void HandleMsg() { System.Console.WriteLine("test"); return; }
     }
 
-#region MSGMove
+    #region MSGMove
     public class MSGMove : Message
     {
         class MSGMoveItem
@@ -170,7 +169,7 @@ namespace Orts.MultiPlayer
         {
             string tmp = "MOVE ";
             if (items != null && items.Count > 0)
-            for (var i = 0; i < items.Count; i++) tmp += items[i].ToString() + " ";
+                for (var i = 0; i < items.Count; i++) tmp += items[i].ToString() + " ";
             return " " + tmp.Length + ": " + tmp;
         }
 
@@ -215,11 +214,11 @@ namespace Orts.MultiPlayer
                             if (t.TrainType == Train.TRAINTYPE.REMOTE)
                             {
                                 var reverseTrav = false;
-//                                 Alternate way to check for train flip
-//                                if (m.user.Contains("0xAI") && m.trackNodeIndex == t.RearTDBTraveller.TrackNodeIndex && m.tdbDir != (int)t.RearTDBTraveller.Direction)
-//                                {
-//                                    reverseTrav = true;
-//                                }
+                                //                                 Alternate way to check for train flip
+                                //                                if (m.user.Contains("0xAI") && m.trackNodeIndex == t.RearTDBTraveller.TrackNodeIndex && m.tdbDir != (int)t.RearTDBTraveller.Direction)
+                                //                                {
+                                //                                    reverseTrav = true;
+                                //                                }
                                 t.ToDoUpdate(m.trackNodeIndex, m.TileX, m.TileZ, m.X, m.Z, m.travelled, m.speed, m.direction, m.tdbDir, m.Length, reverseTrav);
                                 break;
                             }
@@ -239,7 +238,7 @@ namespace Orts.MultiPlayer
                         t.ToDoUpdate(m.trackNodeIndex, m.TileX, m.TileZ, m.X, m.Z, m.travelled, m.speed, m.direction, m.tdbDir, m.Length);
                         // This is necessary as sometimes a train isn't in the Trains list
                         MPManager.Instance().AddOrRemoveTrain(t, true);
- //                       if (MPManager.IsServer()) MPManager.Instance().AddOrRemoveLocomotives(m.user, t, true);
+                        //                       if (MPManager.IsServer()) MPManager.Instance().AddOrRemoveLocomotives(m.user, t, true);
                     }
                 }
                 if (found == false) //I do not have the train, tell server to send it to me
@@ -249,16 +248,16 @@ namespace Orts.MultiPlayer
             }
         }
     }
-#endregion MSGMove
+    #endregion MSGMove
 
-#region MSGRequired
+    #region MSGRequired
     public class MSGRequired : Message
     {
 
     }
-#endregion
+    #endregion
 
-#region MSGPlayer
+    #region MSGPlayer
     public class MSGPlayer : MSGRequired
     {
         public string user = "";
@@ -569,9 +568,9 @@ namespace Orts.MultiPlayer
                                 }
                             }
                             if (!identical)
-                            { 
-                            var carsCount = t.Cars.Count;
-                            t.Cars.RemoveRange(0, carsCount);
+                            {
+                                var carsCount = t.Cars.Count;
+                                t.Cars.RemoveRange(0, carsCount);
                                 for (int i = 0; i < cars.Length; i++)
                                 {
                                     string wagonFilePath = MPManager.Simulator.BasePath + @"\trains\trainset\" + cars[i];
@@ -736,9 +735,9 @@ namespace Orts.MultiPlayer
 
     }
 
-#endregion MSGPlayer
+    #endregion MSGPlayer
 
-#region MSGPlayerTrainSw
+    #region MSGPlayerTrainSw
     public class MSGPlayerTrainSw : MSGRequired
     {
         public string user = "";
@@ -833,9 +832,9 @@ namespace Orts.MultiPlayer
                 }*/
     }
 
-#endregion MSGPlayerTrainSw
+    #endregion MSGPlayerTrainSw
 
-#region MGSwitch
+    #region MGSwitch
 
     public class MSGSwitch : Message
     {
@@ -930,9 +929,9 @@ namespace Orts.MultiPlayer
         }
     }
 
-#endregion MGSwitch
+    #endregion MGSwitch
 
-#region MSGResetSignal
+    #region MSGResetSignal
     public class MSGResetSignal : Message
     {
         public string user;
@@ -964,9 +963,9 @@ namespace Orts.MultiPlayer
             }
         }
     }
-#endregion MSGResetSignal
+    #endregion MSGResetSignal
 
-#region MSGOrgSwitch
+    #region MSGOrgSwitch
     public class MSGOrgSwitch : MSGRequired
     {
         SortedList<uint, TrJunctionNode> SwitchState;
@@ -1054,9 +1053,9 @@ namespace Orts.MultiPlayer
             return " " + tmp.Length + ": " + tmp;
         }
     }
-#endregion MSGOrgSwitch
+    #endregion MSGOrgSwitch
 
-#region MSGSwitchStatus
+    #region MSGSwitchStatus
     public class MSGSwitchStatus : Message
     {
         static byte[] preState;
@@ -1219,8 +1218,8 @@ namespace Orts.MultiPlayer
             return " " + tmp.Length + ": " + tmp;
         }
     }
-#endregion MSGSwitchStatus
-#region MSGTrain
+    #endregion MSGSwitchStatus
+    #region MSGTrain
     //message to add new train from either a string (received message), or a Train (building a message)
     public class MSGTrain : Message
     {
@@ -1399,14 +1398,14 @@ namespace Orts.MultiPlayer
 
                 tmp += "\"" + c + "\"" + " " + ids[i] + "\n" + flipped[i] + "\n" + lengths[i] + "\t";
             }
-            tmp += "\n" + name  + "\t";
+            tmp += "\n" + name + "\t";
             return " " + tmp.Length + ": " + tmp;
         }
     }
 
-#endregion MSGTrain
+    #endregion MSGTrain
 
-#region MSGUpdateTrain
+    #region MSGUpdateTrain
 
     //message to add new train from either a string (received message), or a Train (building a message)
     public class MSGUpdateTrain : Message
@@ -1635,9 +1634,9 @@ namespace Orts.MultiPlayer
         }
     }
 
-#endregion MSGUpdateTrain
+    #endregion MSGUpdateTrain
 
-#region MSGRemoveTrain
+    #region MSGRemoveTrain
     //remove AI trains
     public class MSGRemoveTrain : Message
     {
@@ -1690,9 +1689,9 @@ namespace Orts.MultiPlayer
 
     }
 
-#endregion MSGRemoveTrain
+    #endregion MSGRemoveTrain
 
-#region MSGServer
+    #region MSGServer
     public class MSGServer : MSGRequired
     {
         string user; //true: I am a server now, false, not
@@ -1745,9 +1744,9 @@ namespace Orts.MultiPlayer
             }
         }
     }
-#endregion MSGServer
+    #endregion MSGServer
 
-#region MSGAlive
+    #region MSGAlive
     public class MSGAlive : Message
     {
         string user;
@@ -1769,9 +1768,9 @@ namespace Orts.MultiPlayer
             //System.Console.WriteLine(this.ToString());
         }
     }
-#endregion MSGAlive
+    #endregion MSGAlive
 
-#region MSGTrainMerge
+    #region MSGTrainMerge
     //message to add new train from either a string (received message), or a Train (building a message)
     public class MSGTrainMerge : Message
     {
@@ -1817,9 +1816,9 @@ namespace Orts.MultiPlayer
             return " " + tmp.Length + ": " + tmp;
         }
     }
-#endregion MSGTrainMerge
+    #endregion MSGTrainMerge
 
-#region MSGMessage
+    #region MSGMessage
     //warning, error or information from the server, a client receives Error will disconnect itself
     public class MSGMessage : MSGRequired
     {
@@ -1906,9 +1905,9 @@ namespace Orts.MultiPlayer
         }
     }
 
-#endregion MSGMessage
+    #endregion MSGMessage
 
-#region MSGControl
+    #region MSGControl
     //message to ask for the control of a train or confirm it
     public class MSGControl : Message
     {
@@ -1991,9 +1990,9 @@ namespace Orts.MultiPlayer
         }
     }
 
-#endregion MSGControl
+    #endregion MSGControl
 
-#region MSGLocoChange
+    #region MSGLocoChange
     //message to add new train from either a string (received message), or a Train (building a message)
     public class MSGLocoChange : Message
     {
@@ -2051,9 +2050,9 @@ namespace Orts.MultiPlayer
         }
     }
 
-#endregion MSGLocoChange
+    #endregion MSGLocoChange
 
-#region MSGEvent
+    #region MSGEvent
     public class MSGEvent : Message
     {
         public string user;
@@ -2162,9 +2161,9 @@ namespace Orts.MultiPlayer
 
     }
 
-#endregion MSGEvent
+    #endregion MSGEvent
 
-#region MSGQuit
+    #region MSGQuit
     public class MSGQuit : Message
     {
         public string user;
@@ -2237,10 +2236,10 @@ namespace Orts.MultiPlayer
 
     }
 
-#endregion MSGQuit
+    #endregion MSGQuit
 
 
-#region MSGLost
+    #region MSGLost
     public class MSGLost : Message
     {
         public string user;
@@ -2293,9 +2292,9 @@ namespace Orts.MultiPlayer
 
     }
 
-#endregion MSGLost
+    #endregion MSGLost
 
-#region MSGGetTrain
+    #region MSGGetTrain
     public class MSGGetTrain : Message
     {
         public int num;
@@ -2335,9 +2334,9 @@ namespace Orts.MultiPlayer
         }
 
     }
-#endregion MSGGetTrain
+    #endregion MSGGetTrain
 
-#region MSGUncouple
+    #region MSGUncouple
 
     public class MSGUncouple : Message
     {
@@ -2763,9 +2762,9 @@ namespace Orts.MultiPlayer
             }
         }
     }
-#endregion MSGUncouple
+    #endregion MSGUncouple
 
-#region MSGCouple
+    #region MSGCouple
     public class MSGCouple : Message
     {
         string[] cars;
@@ -3011,9 +3010,9 @@ namespace Orts.MultiPlayer
             }
         }
     }
-#endregion MSGCouple
+    #endregion MSGCouple
 
-#region MSGSignalStatus
+    #region MSGSignalStatus
     public class MSGSignalStatus : Message
     {
         static byte[] preState;
@@ -3195,9 +3194,9 @@ namespace Orts.MultiPlayer
             return " " + tmp.Length + ": " + tmp;
         }
     }
-#endregion MSGSignalStatus
+    #endregion MSGSignalStatus
 
-#region MSGLocoInfo
+    #region MSGLocoInfo
     public class MSGLocoInfo : Message
     {
 
@@ -3315,9 +3314,9 @@ namespace Orts.MultiPlayer
             return " " + tmp.Length + ": " + tmp;
         }
     }
-#endregion MSGLocoInfo
+    #endregion MSGLocoInfo
 
-#region MSGAvatar
+    #region MSGAvatar
     public class MSGAvatar : Message
     {
         public string user;
@@ -3360,10 +3359,10 @@ namespace Orts.MultiPlayer
 
     }
 
-#endregion MSGAvatar
+    #endregion MSGAvatar
 
 
-#region MSGText
+    #region MSGText
     //message to add new train from either a string (received message), or a Train (building a message)
     public class MSGText : MSGRequired
     {
@@ -3419,9 +3418,9 @@ namespace Orts.MultiPlayer
         }
     }
 
-#endregion MSGText
+    #endregion MSGText
 
-#region MSGWeather
+    #region MSGWeather
     public class MSGWeather : Message
     {
         public int weather;
@@ -3477,9 +3476,9 @@ namespace Orts.MultiPlayer
         }
     }
 
-#endregion MSGWeather
+    #endregion MSGWeather
 
-#region MSGAider
+    #region MSGAider
     public class MSGAider : Message
     {
         public string user;
@@ -3523,9 +3522,9 @@ namespace Orts.MultiPlayer
 
     }
 
-#endregion MSGAider
+    #endregion MSGAider
 
-#region MSGSignalChange
+    #region MSGSignalChange
     public class MSGSignalChange : Message
     {
         int index;
@@ -3598,9 +3597,9 @@ namespace Orts.MultiPlayer
             return " " + tmp.Length + ": " + tmp;
         }
     }
-#endregion MSGSignalChange
+    #endregion MSGSignalChange
 
-#region MSGExhaust
+    #region MSGExhaust
     public class MSGExhaust : Message
     {
         class MSGExhaustItem
@@ -3690,9 +3689,9 @@ namespace Orts.MultiPlayer
             }
         }
     }
-#endregion MSGExhaust
+    #endregion MSGExhaust
 
-#region MSGFlip
+    #region MSGFlip
     //message to indicate that a train has been flipped (reverse formation)
     // message contains data before flip
     public class MSGFlip : Message
@@ -3856,7 +3855,7 @@ namespace Orts.MultiPlayer
 
         public override string ToString()
         {
-            string tmp = "FLIP " + TrainNum + " " + direction + " " + TileX + " " + TileZ + " " + X.ToString(CultureInfo.InvariantCulture) + " " + Z.ToString(CultureInfo.InvariantCulture) + " " + Travelled.ToString(CultureInfo.InvariantCulture) + " " + mDirection + " " + 
+            string tmp = "FLIP " + TrainNum + " " + direction + " " + TileX + " " + TileZ + " " + X.ToString(CultureInfo.InvariantCulture) + " " + Z.ToString(CultureInfo.InvariantCulture) + " " + Travelled.ToString(CultureInfo.InvariantCulture) + " " + mDirection + " " +
                 speed.ToString(CultureInfo.InvariantCulture) + " " + tni + " " + count + " " + tdir + " " + len.ToString(CultureInfo.InvariantCulture) + " " + reverseMU + " ";
             for (var i = 0; i < cars.Length; i++)
             {
@@ -3873,6 +3872,6 @@ namespace Orts.MultiPlayer
         }
     }
 
-#endregion MSGFlip
+    #endregion MSGFlip
 
 }

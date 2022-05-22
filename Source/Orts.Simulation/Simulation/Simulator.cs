@@ -25,11 +25,9 @@ using Orts.MultiPlayer;
 using Orts.Simulation.AIs;
 using Orts.Simulation.Physics;
 using Orts.Simulation.RollingStocks;
-using Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS;
 using Orts.Simulation.Signalling;
 using Orts.Simulation.Timetables;
 using ORTS.Common;
-using ORTS.Scripting.Api;
 using ORTS.Settings;
 using System;
 using System.Collections.Generic;
@@ -701,7 +699,7 @@ namespace Orts.Simulation
             GameTimeCyklus10++;
             if (GameTimeCyklus10 > 10)
                 GameTimeCyklus10 = 0;
-            OneSecondLoop = elapsedClockSeconds;            
+            OneSecondLoop = elapsedClockSeconds;
 
             // Check if there is a request to switch to another played train
 
@@ -971,19 +969,19 @@ namespace Orts.Simulation
         public void CheckForCoupling(Train drivenTrain, float elapsedClockSeconds)
         {
             // Icik
-            int PreviousCarCount = (int) drivenTrain.Cars.Count;
+            int PreviousCarCount = (int)drivenTrain.Cars.Count;
             float CarCoupleSpeed = 3.0f / 3.6f; // Doťukávací rychlost pro napojení vozu
             float CarCoupleMaxSpeed = 10 / 3.6f; // Maximální nárazová rychlost max 10km/h            
-            
+
             if (HasSpeedInCoupler && Math.Abs(drivenTrain.SpeedMpS) < CarCoupleSpeed)
                 HasSpeedInCoupler = false;
 
             CarCoupleSpeedOvercome = false;
 
             if (CarCoupleMaxSpeedOvercome)
-            {                
+            {
                 SoundNotify = Event.Derail2;
-            }            
+            }
 
             if (MPManager.IsMultiPlayer() && !MPManager.IsServer()) return; //in MultiPlayer mode, server will check coupling, client will get message and do things
             if (drivenTrain.SpeedMpS < 0)
@@ -1001,7 +999,7 @@ namespace Orts.Simulation
                             d1 = drivenTrain.RearTDBTraveller.RoughOverlapDistanceM(train.FrontTDBTraveller, drivenTrain.FrontTDBTraveller, train.RearTDBTraveller, drivenTrain.Length, train.Length, true);
                         if (d1 < 0)
                         {
-                            DifferenceSpeedMpS = Math.Abs(Math.Abs(drivenTrain.SpeedMpS) - Math.Abs(train.SpeedMpS));                            
+                            DifferenceSpeedMpS = Math.Abs(Math.Abs(drivenTrain.SpeedMpS) - Math.Abs(train.SpeedMpS));
                             //Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("DifferenceSpeedMpS: " + Math.Max(0, DifferenceSpeedMpS * 3.6f)));
                             TrainMassKG1 = 0;
                             foreach (TrainCar car in train.Cars)
@@ -1017,7 +1015,7 @@ namespace Orts.Simulation
                             if (CarCoupleSpeedOvercome || HasSpeedInCoupler)
                             {
                                 if (drivenTrain.SpeedMpS < train.SpeedMpS)
-                                    drivenTrain.SetCoupleSpeed(train, 1);                                
+                                    drivenTrain.SetCoupleSpeed(train, 1);
                                 drivenTrain.CalculatePositionOfCars(elapsedClockSeconds, -d1);
                                 HasSpeedInCoupler = true;
                                 return;
@@ -1028,11 +1026,11 @@ namespace Orts.Simulation
                             if (drivenTrain.SpeedMpS > 1.5)
                                 DbfEvalOverSpeedCoupling += 1;
 
-                                                      
+
                             foreach (TrainCar car in train.Cars)
                             {
                                 drivenTrain.Cars.Add(car);
-                                car.Train = drivenTrain;                                
+                                car.Train = drivenTrain;
                             }
                             FinishRearCoupling(drivenTrain, train, true);
 
@@ -1073,7 +1071,7 @@ namespace Orts.Simulation
                             if (CarCoupleSpeedOvercome || HasSpeedInCoupler)
                             {
                                 if (drivenTrain.SpeedMpS < -train.SpeedMpS)
-                                    drivenTrain.SetCoupleSpeed(train, -1);                                
+                                    drivenTrain.SetCoupleSpeed(train, -1);
                                 drivenTrain.CalculatePositionOfCars(elapsedClockSeconds, -d2);
                                 HasSpeedInCoupler = true;
                                 return;
@@ -1144,7 +1142,7 @@ namespace Orts.Simulation
                             if (CarCoupleSpeedOvercome || HasSpeedInCoupler)
                             {
                                 if (drivenTrain.SpeedMpS > train.SpeedMpS)
-                                    drivenTrain.SetCoupleSpeed(train, 1);                                
+                                    drivenTrain.SetCoupleSpeed(train, 1);
                                 drivenTrain.CalculatePositionOfCars(elapsedClockSeconds, d1);
                                 HasSpeedInCoupler = true;
                                 return;
@@ -1235,7 +1233,7 @@ namespace Orts.Simulation
                             if (CarCoupleSpeedOvercome || HasSpeedInCoupler)
                             {
                                 if (drivenTrain.SpeedMpS > -train.SpeedMpS)
-                                    drivenTrain.SetCoupleSpeed(train, -1);                                
+                                    drivenTrain.SetCoupleSpeed(train, -1);
                                 drivenTrain.CalculatePositionOfCars(elapsedClockSeconds, d2);
                                 HasSpeedInCoupler = true;
                                 return;
@@ -1551,7 +1549,7 @@ namespace Orts.Simulation
 
                         if (!File.Exists(wagonFilePath))
                         {
-                            Trace.TraceWarning($"Ignored missing {(wagon.IsEngine? "engine" : "wagon")} {wagonFilePath} in activity definition {activityObject.Train_Config.TrainCfg.Name}");
+                            Trace.TraceWarning($"Ignored missing {(wagon.IsEngine ? "engine" : "wagon")} {wagonFilePath} in activity definition {activityObject.Train_Config.TrainCfg.Name}");
                             continue;
                         }
 
@@ -1954,7 +1952,7 @@ namespace Orts.Simulation
                     if (playerTrain != null)
                     {
                         if (playerTrain.ControlMode == Train.TRAIN_CONTROL.MANUAL) TrainSwitcher.SuspendOldPlayer = true; // force suspend state to avoid disappearing of train;
-                        if (TrainSwitcher.SuspendOldPlayer && 
+                        if (TrainSwitcher.SuspendOldPlayer &&
                             (playerTrain.SpeedMpS < -0.025 || playerTrain.SpeedMpS > 0.025 || playerTrain.PresentPosition[0].TCOffset != playerTrain.PreviousPosition[0].TCOffset))
                         {
                             Confirmer.Message(ConfirmLevel.Warning, Catalog.GetString("Train can't be suspended with speed not equal 0"));
@@ -2171,10 +2169,10 @@ namespace Orts.Simulation
                 }
             }
             if (trainToRestart == null)
-                Trace.TraceWarning("Train {0} to restart not found", restartWaitingTrain.WaitingTrainToRestart);            
+                Trace.TraceWarning("Train {0} to restart not found", restartWaitingTrain.WaitingTrainToRestart);
         }
 
- 
+
 
         /// <summary>
         /// Derive log-file name from route path and activity name

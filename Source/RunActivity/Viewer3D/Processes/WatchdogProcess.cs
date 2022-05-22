@@ -131,7 +131,7 @@ namespace Orts.Viewer3D.Processes
                 if (hungTokens.Count > 0)
                 {
                     if (Game.Settings.EnableWatchdog)
-                    { 
+                    {
                         // Report every hung thread as a fatal error.
                         foreach (var token in hungTokens)
                             Trace.WriteLine(new FatalException(new ThreadHangException(token.Thread, token.Stacks)));

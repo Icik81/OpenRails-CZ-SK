@@ -18,7 +18,6 @@
 // This file is the responsibility of the 3D & Environment Team. 
 
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using Orts.Common;
 using Orts.Simulation.RollingStocks;
 using Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS;
@@ -52,7 +51,7 @@ namespace Orts.Viewer3D.Popups
             if (CarPosition >= Viewer.PlayerTrain.Cars.Count)
                 CarPosition = Viewer.PlayerTrain.Cars.Count - 1;
 
-            vbox.Add(ID = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Car ID") + "  " + (CarPosition >= Viewer.PlayerTrain.Cars.Count? " " :Viewer.PlayerTrain.Cars[CarPosition].CarID), LabelAlignment.Center));
+            vbox.Add(ID = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Car ID") + "  " + (CarPosition >= Viewer.PlayerTrain.Cars.Count ? " " : Viewer.PlayerTrain.Cars[CarPosition].CarID), LabelAlignment.Center));
             ID.Color = Color.Yellow;
             vbox.AddHorizontalSeparator();
             vbox.Add(buttonHandbrake = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Toggle Handbrake"), LabelAlignment.Center));
@@ -96,14 +95,14 @@ namespace Orts.Viewer3D.Popups
                 if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.AutoLoadRegulatorEquipped)
                     (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.NumberBrakeCarMode = 2;
             }
-            
-            vbox.AddHorizontalSeparator();            
+
+            vbox.AddHorizontalSeparator();
             vbox.Add(buttonBrakeCarDeactivate = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Car Brake") + "      " + Viewer.Catalog.GetString("Set") + ": " + (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.BrakeCarDeactivateText, LabelAlignment.Center));
             buttonBrakeCarDeactivate.Color = Color.LightGreen;
 
             vbox.AddHorizontalSeparator();
             vbox.Add(buttonTwoPipesConnection = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Air Twin Pipe Hoses") + "      " + Viewer.Catalog.GetString("Set") + ": " + (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.TwoPipesConnectionText, LabelAlignment.Center));
-            
+
             vbox.AddHorizontalSeparator();
             vbox.Add(buttonLeftDoor = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Left Door") + "      " + Viewer.Catalog.GetString("Set") + ": " + (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.LeftDoorText, LabelAlignment.Center));
 
@@ -194,8 +193,8 @@ namespace Orts.Viewer3D.Popups
                     // Icik
                     (Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive).Battery = true;
                     (Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive).PowerKey = true;
-                    if (Viewer.PlayerTrain.Cars[CarPosition].GetType() == typeof(MSTSElectricLocomotive))                    
-                        (Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive).HVOn = true;                                           
+                    if (Viewer.PlayerTrain.Cars[CarPosition].GetType() == typeof(MSTSElectricLocomotive))
+                        (Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive).HVOn = true;
                     if (Viewer.PlayerTrain.Cars[CarPosition].GetType() == typeof(MSTSDieselLocomotive))
                         (Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive).StartLooseCon = true;
                     (Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive).UserPowerOff = false;
@@ -277,12 +276,12 @@ namespace Orts.Viewer3D.Popups
             {
                 Viewer.Simulator.Confirmer.Information(Viewer.Catalog.GetString("Car Mode G"));
                 (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.BrakeCarModeText = "G";
-    }
+            }
             if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.BrakeCarMode == 1)
             {
                 Viewer.Simulator.Confirmer.Information(Viewer.Catalog.GetString("Car Mode P"));
                 (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.BrakeCarModeText = "P";
-}
+            }
             if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.BrakeCarMode == 2)
             {
                 Viewer.Simulator.Confirmer.Information(Viewer.Catalog.GetString("Car Mode R"));
@@ -327,7 +326,7 @@ namespace Orts.Viewer3D.Popups
             if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.TwoPipesConnectionMenu == 0)
             {
                 Viewer.Simulator.Confirmer.Information(Viewer.Catalog.GetString("Air Twin Pipe Hoses disconnected"));
-                (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.TwoPipesConnectionText = Viewer.Catalog.GetString("disconnect");                
+                (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.TwoPipesConnectionText = Viewer.Catalog.GetString("disconnect");
             }
             if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.TwoPipesConnectionMenu == 1)
             {
@@ -336,7 +335,7 @@ namespace Orts.Viewer3D.Popups
             }
         }
 
-        void buttonBrakeCarDeactivate_Click (Control arg1, Point arg2)
+        void buttonBrakeCarDeactivate_Click(Control arg1, Point arg2)
         {
             new BrakeCarDeactivateCommand(Viewer.Log, (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon), (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.BrakeCarDeactivateMenu += 1);
 
@@ -378,7 +377,7 @@ namespace Orts.Viewer3D.Popups
         void buttonRightDoor_Click(Control arg1, Point arg2)
         {
             new RightDoorCommand(Viewer.Log, (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon), (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.RightDoorMenu += 1);
-            
+
             if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.RightDoorMenu > 1) (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.RightDoorMenu = 0;
 
             if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.RightDoorMenu == 1)

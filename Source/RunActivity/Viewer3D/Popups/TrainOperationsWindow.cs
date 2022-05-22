@@ -72,7 +72,7 @@ namespace Orts.Viewer3D.Popups
 
                     scrollbox.Add(carLabel);
                     if (car != PlayerTrain.Cars.Last())
-                        scrollbox.Add(new TrainOperationsCoupler(0, 0, textHeight, Owner.Viewer, car, carPosition));                    
+                        scrollbox.Add(new TrainOperationsCoupler(0, 0, textHeight, Owner.Viewer, car, carPosition));
                     carPosition++;
                 }
             }
@@ -143,10 +143,10 @@ namespace Orts.Viewer3D.Popups
 
         public TrainOperationsLabel(int x, int y, Viewer viewer, TrainCar car, int carPosition, LabelAlignment alignment)
             : base(x, y, "", alignment)
-        {            
+        {
             Viewer = viewer;
             CarPosition = carPosition;
-            Text = car.CarID;            
+            Text = car.CarID;
             Click += new Action<Control, Point>(TrainOperationsLabel_Click);
 
             // Icik
@@ -160,8 +160,8 @@ namespace Orts.Viewer3D.Popups
             Viewer.CarOperationsWindow.Visible = true;
 
             // Icik
-            foreach (var car in Viewer.PlayerTrain.Cars)            
-                car.SelectedCar = false;            
+            foreach (var car in Viewer.PlayerTrain.Cars)
+                car.SelectedCar = false;
             Viewer.PlayerTrain.Cars[CarPosition].SelectedCar = true;
         }
     }

@@ -49,8 +49,8 @@ namespace Orts.Viewer3D
             Size = tile.Size;
 
             if (Viewer.ENVFile.WaterLayers != null)
-            WaterLayers = Viewer.ENVFile.WaterLayers.Select(layer => new KeyValuePair<float, Material>(layer.Height, Viewer.MaterialManager.Load("Water", Viewer.Simulator.RoutePath + @"\envfiles\textures\" + layer.TextureName))).ToArray();
-  
+                WaterLayers = Viewer.ENVFile.WaterLayers.Select(layer => new KeyValuePair<float, Material>(layer.Height, Viewer.MaterialManager.Load("Water", Viewer.Simulator.RoutePath + @"\envfiles\textures\" + layer.TextureName))).ToArray();
+
             LoadGeometry(Viewer.GraphicsDevice, tile, out PrimitiveCount, out IndexBuffer, out VertexBuffer);
 
             VertexBufferBindings = new[] { new VertexBufferBinding(VertexBuffer), new VertexBufferBinding(GetDummyVertexBuffer(viewer.GraphicsDevice)) };
@@ -92,7 +92,7 @@ namespace Orts.Viewer3D
             {
                 for (var x = 0; x < tile.PatchCount; ++x)
                 {
-                    
+
                     var patch = tile.GetPatch(x, z);
 
                     if (!patch.WaterEnabled)

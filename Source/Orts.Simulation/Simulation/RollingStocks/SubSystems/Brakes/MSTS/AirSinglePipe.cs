@@ -26,7 +26,6 @@ using ORTS.Scripting.Api;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Diagnostics;
 
 namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
 {
@@ -63,13 +62,13 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
         protected float prevCylPressurePSI = 0;
         protected float prevBrakePipePressurePSI = 0;
         protected bool BailOffOn;
-             
+
         protected float T0 = 0;
         protected float T1 = 0;
         protected float TrainBrakeDelay = 0;
         protected bool BrakeReadyToApply = false;
         protected float EDBEngineBrakeDelay = 0;
-        protected int T00 = 0;        
+        protected int T00 = 0;
         protected float TRMg = 0;
         protected float PrevAuxResPressurePSI = 0;
         protected float threshold = 0;
@@ -79,7 +78,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
         protected float ThresholdBailOffOn = 0;
         protected ValveState PrevTripleValveStateState;
         protected float AutomaticDoorsCycle = 0;
-        
+
 
         /// <summary>
         /// EP brake holding valve. Needs to be closed (Lap) in case of brake application or holding.
@@ -132,7 +131,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             EmergAuxVolumeRatio = thiscopy.EmergAuxVolumeRatio;
             TwoPipesConnection = thiscopy.TwoPipesConnection;
             NoMRPAuxResCharging = thiscopy.NoMRPAuxResCharging;
-            HoldingValve = thiscopy.HoldingValve;        
+            HoldingValve = thiscopy.HoldingValve;
             TripleValveState = thiscopy.TripleValveState;
             BrakeSensitivityPSIpS = thiscopy.BrakeSensitivityPSIpS;
             OverchargeEliminationRatePSIpS = thiscopy.OverchargeEliminationRatePSIpS;
@@ -222,14 +221,14 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 string.Format("{0} {1}", FrontBrakeHoseConnected ? "I" : "T", TwoPipesConnection ? "I" : ""),
                 string.Format("A{0} B{1}", AngleCockAOpen ? "+" : "-", AngleCockBOpen ? "+" : "-"),
                 BleedOffValveOpen ? Simulator.Catalog.GetString("Open") : " ",//HudScroll feature requires for the last value, at least one space instead of string.Empty,                                                
-                BailOffOnAntiSkid ? Simulator.Catalog.GetString("Active") : "",                
+                BailOffOnAntiSkid ? Simulator.Catalog.GetString("Active") : "",
                 string.Format("{0:F5} bar/s", (Car as MSTSWagon).TrainPipeLeakRatePSIpSBase / 14.50377f),
                 string.Empty, // Spacer because the state above needs 2 columns.                                     
                 string.Format("{0:F0} L", BrakePipeVolumeM3Base * 1000),
                 string.Format("{0:F0} L", CylVolumeM3 * 1000),
                 string.Format("{0:F0} L", TotalCapacityMainResBrakePipe * 1000 / 14.50377f),
                 CarHasProblemWithBrake ?  BrakeCarDeactivate ? Simulator.Catalog.GetString("Off") : Simulator.Catalog.GetString("Failure!") : BrakeCarModeText,
-                string.Format("{0}{1:F0} t", AutoLoadRegulatorEquipped ? "Auto " : "", (BrakeMassKG + BrakeMassKGRMg) / 1000),                                                                              
+                string.Format("{0}{1:F0} t", AutoLoadRegulatorEquipped ? "Auto " : "", (BrakeMassKG + BrakeMassKGRMg) / 1000),
                 string.Format("DebKoef {0:F1}", DebugKoef),
                 string.Empty, // Spacer because the state above needs 2 columns.                                                     
                 string.Format("{0}", NextLocoBrakeState),
@@ -318,11 +317,11 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 case "wagon(emergencyreschargingrate": EmergResChargingRatePSIpS = stf.ReadFloatBlock(STFReader.UNITS.PressureRateDefaultPSIpS, null); break;
                 case "wagon(emergencyresvolumemultiplier": EmergAuxVolumeRatio = stf.ReadFloatBlock(STFReader.UNITS.None, null); break;
                 case "wagon(emergencyrescapacity": EmergResVolumeM3 = Me3.FromFt3(stf.ReadFloatBlock(STFReader.UNITS.VolumeDefaultFT3, null)); break;
-                
+
                 // OpenRails specific parameters
                 case "wagon(brakepipevolume": BrakePipeVolumeM3Base = Me3.FromFt3(stf.ReadFloatBlock(STFReader.UNITS.VolumeDefaultFT3, null)); break;
                 //case "wagon(ortsbrakeinsensitivity": BrakeInsensitivityPSIpS = stf.ReadFloatBlock(STFReader.UNITS.PressureRateDefaultPSIpS, null); break;
-               
+
                 // Načte hodnotu citivosti brzdy lokomotivy i vozů
                 case "wagon(brakesensitivity": BrakeSensitivityPSIpS = stf.ReadFloatBlock(STFReader.UNITS.PressureRateDefaultPSIpS, null); break;
 
@@ -351,11 +350,11 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 // Ladící koeficient pro ladiče brzd                
                 case "wagon(debugkoef": DebugKoef1 = stf.ReadFloatBlock(STFReader.UNITS.None, null); break;
                 case "wagon(debugkoef2": DebugKoef2Factor = new Interpolator(stf); break;
-                
+
                 // Minimální tlak v hlavní jímce a brzdovém potrubí pro brzdu R+Mg
                 case "wagon(mainresminimumpressureformgbrakeactivation": MainResMinimumPressureForMGbrakeActivationPSI = stf.ReadFloatBlock(STFReader.UNITS.PressureDefaultPSI, null); break;
                 case "wagon(brakepipepressureformgbrakeactivation": BrakePipePressureForMGbrakeActivationPSI = stf.ReadFloatBlock(STFReader.UNITS.PressureDefaultPSI, null); break;
-                
+
                 // Antismykový systém
                 case "wagon(antiskidsystemequipped": AntiSkidSystemEquipped = stf.ReadBoolBlock(false); break;
 
@@ -368,7 +367,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 // Omezení tlaku do válce po překročení rychlosti                              
                 case "wagon(twostatebrake(brakecylindermaxpressureforlowstate":
                     stf.MustMatch("(");
-                    BrakeCylinderMaxPressureForLowState = stf.ReadFloat(STFReader.UNITS.PressureDefaultPSI, null);                    
+                    BrakeCylinderMaxPressureForLowState = stf.ReadFloat(STFReader.UNITS.PressureDefaultPSI, null);
                     //TwoStateBrake = true;
                     break;
 
@@ -380,10 +379,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
 
                 // Načte hodnotu rychlosti eliminace níkotlakého přebití                              
                 case "engine(overchargeeliminationrate": OverchargeEliminationRatePSIpS = stf.ReadFloatBlock(STFReader.UNITS.PressureRateDefaultPSIpS, null); break;
-                
+
                 // Načte hodnotu maximálního tlaku v brzdovém válci
                 case "engine(brakecylindermaxsystempressure": BrakeCylinderMaxSystemPressurePSI = stf.ReadFloatBlock(STFReader.UNITS.PressureDefaultPSI, null); break;
-                
+
                 // Načte hodnotu tlaku při nízkotlakém přebití
                 case "engine(trainbrakescontrollermaxoverchargepressure": TrainBrakesControllerMaxOverchargePressurePSI = stf.ReadFloatBlock(STFReader.UNITS.PressureDefaultPSI, null); break;
 
@@ -402,18 +401,18 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     stf.MustMatch("(");
                     EngineBrakeControllerApplyDeadZone = stf.ReadFloat(STFReader.UNITS.None, null);
                     EngineBrakeControllerReleaseDeadZone = stf.ReadFloat(STFReader.UNITS.None, null);
-                    BP1_EngineBrakeControllerRatePSIpS = stf.ReadFloat(STFReader.UNITS.PressureRateDefaultPSIpS, null);                    
+                    BP1_EngineBrakeControllerRatePSIpS = stf.ReadFloat(STFReader.UNITS.PressureRateDefaultPSIpS, null);
                     stf.SkipRestOfBlock();
                     BP1_EngineBrakeController = true;
                     break;
                 case "engine(enginebrakecontroller_bp2":
-                    stf.MustMatch("(");                    
+                    stf.MustMatch("(");
                     BP2_EngineBrakeControllerRatePSIpS = stf.ReadFloat(STFReader.UNITS.PressureRateDefaultPSIpS, null);
                     stf.SkipRestOfBlock();
                     BP2_EngineBrakeController = true;
                     break;
                 case "engine(enginebrakecontroller_lekov":
-                    stf.MustMatch("(");                    
+                    stf.MustMatch("(");
                     LEKOV_EngineBrakeControllerRatePSIpS = stf.ReadFloat(STFReader.UNITS.PressureRateDefaultPSIpS, null);
                     stf.SkipRestOfBlock();
                     LEKOV_EngineBrakeController = true;
@@ -421,7 +420,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
 
                 case "engine(brakepipedischargerate":
                     BrakePipeDischargeRate = true;
-                    PressureRateFactorDischarge = new Interpolator(stf); 
+                    PressureRateFactorDischarge = new Interpolator(stf);
                     break;
                 case "engine(brakepipechargerate":
                     BrakePipeChargeRate = true;
@@ -429,7 +428,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     break;
                 case "engine(ortsauxpowerondelay": AuxPowerOnDelayS = stf.ReadFloatBlock(STFReader.UNITS.Time, 10); break;
                 case "engine(olbailofftype": OLBailOffType = stf.ReadStringBlock("OL3"); break;
-                case "engine(ol2bailofflimitpressure": OLBailOffLimitPressurePSI = stf.ReadFloatBlock(STFReader.UNITS.PressureDefaultPSI, null); break;                
+                case "engine(ol2bailofflimitpressure": OLBailOffLimitPressurePSI = stf.ReadFloatBlock(STFReader.UNITS.PressureDefaultPSI, null); break;
             }
         }
 
@@ -512,7 +511,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             CylVolumeM3 = inf.ReadSingle();
             BailOffOn = inf.ReadBoolean();
             StartOn = inf.ReadBoolean();
-            PrevAuxResPressurePSI = inf.ReadSingle();            
+            PrevAuxResPressurePSI = inf.ReadSingle();
             AutoCylPressurePSI2 = inf.ReadSingle();
             AutoCylPressurePSI1 = inf.ReadSingle();
             AutoCylPressurePSI0 = inf.ReadSingle();
@@ -540,7 +539,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             RightDoorIsOpened = inf.ReadBoolean();
             BrakeCarDeactivateMenu = inf.ReadSingle();
             BrakeCarDeactivateText = inf.ReadString();
-            BrakeCarDeactivate = inf.ReadBoolean();            
+            BrakeCarDeactivate = inf.ReadBoolean();
             BrakeCarHasStatus = inf.ReadBoolean();
             CarHasAirStuckBrake_1 = inf.ReadBoolean();
             CarHasAirStuckBrake_2 = inf.ReadBoolean();
@@ -548,19 +547,19 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             CarHasMechanicStuckBrake_1 = inf.ReadBoolean();
             CarHasMechanicStuckBrake_2 = inf.ReadBoolean();
         }
-        
+
 
         public override void Initialize(bool handbrakeOn, float maxPressurePSI, float fullServPressurePSI, bool immediateRelease)
-        {            
+        {
             // Zjistí maximální pracovní tlak v systému
             Car.Train.EqualReservoirPressurePSIorInHg = maxPressurePSI = maxPressurePSI0 = 5.0f * 14.50377f;
             if (StartOn) maxPressurePSI0 = Car.Train.EqualReservoirPressurePSIorInHg;
-                        
+
             BrakeLine1PressurePSI = maxPressurePSI0;
             BrakeLine2PressurePSI = Car.Train.BrakeLine2PressurePSI;
             BrakeLine3PressurePSI = 0;
             PrevAuxResPressurePSI = 0;
-            prevBrakeLine1PressurePSI = 0;            
+            prevBrakeLine1PressurePSI = 0;
             BrakeReadyToApply = false;
             EDBEngineBrakeDelay = 0;
             TrainBrakeDelay = 0;
@@ -585,27 +584,27 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             MSTSLocomotive loco = Car as MSTSLocomotive;
             if (loco != null)
             {
-                loco.MainResPressurePSI = loco.MaxMainResPressurePSI;                
+                loco.MainResPressurePSI = loco.MaxMainResPressurePSI;
                 if (loco.AuxCompressor)
-                    loco.AuxResPressurePSI = loco.MaxAuxResPressurePSI;                
+                    loco.AuxResPressurePSI = loco.MaxAuxResPressurePSI;
                 if (loco.HandBrakePresent)
                     HandbrakePercent = 0;
-                
+
                 if (loco.TrainBrakeController.DefaultLapBrakeValue > 0)
-                    loco.TrainBrakeController.SetPercent(loco.TrainBrakeController.DefaultLapBrakeValue * 100);                
+                    loco.TrainBrakeController.SetPercent(loco.TrainBrakeController.DefaultLapBrakeValue * 100);
                 else
                     if (loco.TrainBrakeController.DefaultNeutralBrakeValue > 0)
-                        loco.TrainBrakeController.SetPercent(loco.TrainBrakeController.DefaultNeutralBrakeValue * 100);
+                    loco.TrainBrakeController.SetPercent(loco.TrainBrakeController.DefaultNeutralBrakeValue * 100);
                 else
                     if (loco.TrainBrakeController.DefaultBrakeValue > 0)
-                        loco.TrainBrakeController.SetPercent(loco.TrainBrakeController.DefaultBrakeValue * 100);
+                    loco.TrainBrakeController.SetPercent(loco.TrainBrakeController.DefaultBrakeValue * 100);
             }
         }
 
         /// <summary>
         /// Used when initial speed > 0
         /// </summary>
-        public override void InitializeMoving ()
+        public override void InitializeMoving()
         {
             var emergResPressurePSI = EmergResPressurePSI;
             Initialize(false, 0, FullServPressurePSI, true);
@@ -621,7 +620,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             // Funkční 3-cestný ventil          
             if (!BailOffOn && BrakeLine1PressurePSI < AuxResPressurePSI - 0.5f) TripleValveState = ValveState.Apply;
             else
-               TripleValveState = ValveState.Lap;
+                TripleValveState = ValveState.Lap;
 
             if (!BailOffOn && BrakeLine1PressurePSI > AuxResPressurePSI + 0.5f) TripleValveState = ValveState.Release;
         }
@@ -702,7 +701,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                             loco.SetEngineBrakePercent(100);
                             AutoCylPressurePSI0 = MaxCylPressurePSI;
                         }
-                        loco.LocoReadyToGo = true;                        
+                        loco.LocoReadyToGo = true;
                     }
                     HandbrakePercent = (Car as MSTSWagon).HandBrakePresent ? 0 : 0;
                     BrakeLine1PressurePSI = maxPressurePSI0;
@@ -780,7 +779,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                                 BrakeCarModeText = ForceBrakeMode;
                             }
                             break;
-                    }                    
+                    }
                 }
             }
 
@@ -868,10 +867,12 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
 
             switch (TwoPipesConnectionMenu)
             {
-                case 0: TwoPipesConnection = false;
+                case 0:
+                    TwoPipesConnection = false;
                     DebugType = "1P";
                     break;
-                case 1: TwoPipesConnection = true;
+                case 1:
+                    TwoPipesConnection = true;
                     DebugType = "2P";
                     break;
             }
@@ -1037,7 +1038,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             }
             else
                 UpdateTripleValveState(threshold);
-            
+
             // Zjistí rychlost změny tlaku v potrubí a v brzdovém válci
             if (T0 > 1) T0 = 0;
             if (T0 == 0.0f)
@@ -1045,7 +1046,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 prevBrakeLine1PressurePSI = BrakeLine1PressurePSI;
                 prevAutoCylPressurePSI = AutoCylPressurePSI;
                 prevTotalCapacityMainResBrakePipe = TotalCapacityMainResBrakePipe;
-            }                        
+            }
             T0 += elapsedClockSeconds;
             if (T0 > 0.33f && T0 < 0.43f)
             {
@@ -1055,7 +1056,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     MainResChangeRate = 0;
 
                 BrakePipeChangeRate = Math.Abs(prevBrakeLine1PressurePSI - BrakeLine1PressurePSI) * 3.33f;
-                
+
                 if (BrakePipeChangeRate > 1)
                     BrakePipeChangeRateBar = Math.Max(BrakePipeChangeRateBar, BrakePipeChangeRate / 14.50377f);
                 else
@@ -1067,7 +1068,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
 
                 if (AutoCylPressurePSI < prevAutoCylPressurePSI)
                     CylinderChangeRateBar = GetCylPressurePSI() / GetMaxCylPressurePSI() * GetMaxReleaseRatePSIpS() / 14.50377f;
-            }            
+            }
             //if (loco != null)
             //    loco.Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("CylinderChangeRateBar " + CylinderChangeRateBar));
 
@@ -1176,7 +1177,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 BrakeCylApply = false;
                 BrakeReadyToApply = false;
                 //ThresholdBailOffOn = 0;
-                BrakeCylReleaseEDBOn = false;                
+                BrakeCylReleaseEDBOn = false;
 
                 if ((Car as MSTSWagon).EmergencyReservoirPresent)
                 {
@@ -1211,15 +1212,15 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
 
             // Odbržďovač OL2 a OL3
             if (OLBailOffLimitPressurePSI == 0) OLBailOffLimitPressurePSI = 3.2f * 14.50377f; // V15 definuje 3.2bar
-            if (OLBailOffType == null) OLBailOffType = "OL2";                                                                                   
+            if (OLBailOffType == null) OLBailOffType = "OL2";
             if (Car is MSTSLocomotive
                 && loco.Train.LeadLocomotiveIndex >= 0 && ((MSTSLocomotive)loco.Train.Cars[loco.Train.LeadLocomotiveIndex]).BailOff
                 && loco.Direction != Direction.N
-            )            
-                OLBailOff = true;            
+            )
+                OLBailOff = true;
             else
                 OLBailOff = false;
-            
+
             if (OLBailOff || OL3active)
             {
                 if (BrakeLine1PressurePSI > OLBailOffLimitPressurePSI)
@@ -1232,10 +1233,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     BrakeCylApply = false;
                     switch (OLBailOffType)
                     {
-                        case "OL2":                            
+                        case "OL2":
                             break;
-                        case "OL3":                            
-                            OL3active = true;                                
+                        case "OL3":
+                            OL3active = true;
                             break;
                     }
                 }
@@ -1249,7 +1250,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
 
             if (Car is MSTSLocomotive && (Car as MSTSLocomotive).PowerOn
                 || Car is MSTSLocomotive && (Car as MSTSLocomotive).EDBIndependent && (Car as MSTSLocomotive).PowerOnFilter > 0)
-            {                
+            {
                 PowerForWagon = true;
 
                 if ((Car as MSTSLocomotive).EmergencyButtonPressed) EmergencyBrakeForWagon = true;
@@ -1270,7 +1271,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 {
                     AutoCylPressurePSI0 -= MaxReleaseRatePSIpS * elapsedClockSeconds;
                 }
-                
+
                 if (BailOffOn && AutoCylPressurePSI0 > 0 && BrakeCylReleaseEDBOn)
                 {
                     ThresholdBailOffOn = (maxPressurePSI0 - BrakeLine1PressurePSI) * AuxCylVolumeRatio;
@@ -1317,7 +1318,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 if (ThresholdBailOffOn > 0)
                     threshold = ThresholdBailOffOn;
                 BailOffOn = false;
-                ThresholdBailOffOn = 0;                
+                ThresholdBailOffOn = 0;
             }
 
             if (AutoCylPressurePSI0 < 0)
@@ -1340,14 +1341,14 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 if (Car.UiD == Car.Train.FirstCarUiD)
                 {
                     Car.Train.HUDWagonBrakeCylinderPSI = CylPressurePSI;
-                }                
-            }            
+                }
+            }
 
             // If wagons are not attached to the locomotive, then set wagon BC pressure to same as locomotive in the Train brake line
-            if (!Car.Train.WagonsAttached &&  (Car.WagonType == MSTSWagon.WagonTypes.Engine || Car.WagonType == MSTSWagon.WagonTypes.Tender) ) 
+            if (!Car.Train.WagonsAttached && (Car.WagonType == MSTSWagon.WagonTypes.Engine || Car.WagonType == MSTSWagon.WagonTypes.Tender))
             {
                 Car.Train.HUDWagonBrakeCylinderPSI = CylPressurePSI;
-            }            
+            }
 
             float f;
             float fRMg;
@@ -1355,20 +1356,20 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             fRMg = Car.MaxBrakeForceNRMg;
             if (!Car.BrakesStuck)
             {
-                f = Car.MaxBrakeForceN * Math.Min(CylPressurePSI / MaxCylPressurePSI, 1);                
+                f = Car.MaxBrakeForceN * Math.Min(CylPressurePSI / MaxCylPressurePSI, 1);
                 if (f < Car.MaxHandbrakeForceN * HandbrakePercent / 100)
                     f = Car.MaxHandbrakeForceN * HandbrakePercent / 100;
             }
-            else     
+            else
                 f = Math.Max(Car.MaxBrakeForceN, Car.MaxHandbrakeForceN / 2);
 
             // Síla zaseklých zdrží nebo kotoučů
-            if (CarHasMechanicStuckBrake_2)            
-                f = Car.MaxBrakeForceN * 0.75f;            
+            if (CarHasMechanicStuckBrake_2)
+                f = Car.MaxBrakeForceN * 0.75f;
 
             // fRMg není zohledněna v síle na brzdící nápravy
             Car.BrakeRetardForceN = f * Car.BrakeShoeRetardCoefficientFrictionAdjFactor; // calculates value of force applied to wheel, independent of wheel skid
-            
+
             if (Car.BrakeSkid) // Test to see if wheels are skiding to excessive brake force
             {
                 Car.BrakeForceN = (fRMg * Car.RMgShoeCoefficientFrictionAdjFactor) + (f * Car.SkidFriction);   // if excessive brakeforce, wheel skids, and loses adhesion
@@ -1419,14 +1420,14 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 }
 
                 prevCylPressurePSI = AutoCylPressurePSI0;
-                prevBrakePipePressurePSI = BrakeLine1PressurePSI;                
+                prevBrakePipePressurePSI = BrakeLine1PressurePSI;
             }
             SoundTriggerCounter = SoundTriggerCounter + elapsedClockSeconds;
         }
 
         public override void PropagateBrakePressure(float elapsedClockSeconds)
         {
-            PropagateBrakeLinePressures(elapsedClockSeconds, Car, TwoPipesConnection);            
+            PropagateBrakeLinePressures(elapsedClockSeconds, Car, TwoPipesConnection);
         }
 
         protected static void PropagateBrakeLinePressures(float elapsedClockSeconds, TrainCar trainCar, bool TwoPipesConnection)
@@ -1445,7 +1446,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             }
 
             // Výpočet z údaje vlaku dlouhého 330m (25 vozů) sníží tlak v hp z 5 na 3.4bar za 22s
-            float brakePipeTimeFactorSToTrainLength = train.Length / (330 / (brakePipeTimeFactorS * 7.5f * 25) * train.Cars.Count);            
+            float brakePipeTimeFactorSToTrainLength = train.Length / (330 / (brakePipeTimeFactorS * 7.5f * 25) * train.Cars.Count);
             float brakePipeTimeFactorS_Release = brakePipeTimeFactorSToTrainLength;  // Vytvoří zpoždění tlakové vlny při odbržďování
             float brakePipeTimeFactorS_Apply = brakePipeTimeFactorSToTrainLength; // Vytvoří zpoždění náběhu brzdy vlaku kvůli průrazné tlakové vlně            
 
@@ -1463,9 +1464,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             if (lead != null)
             {
                 if (AutoCylPressurePSI < lead.BrakeSystem.AutoCylPressurePSI0)
-                    AutoCylPressurePSI = lead.BrakeSystem.AutoCylPressurePSI0;              
+                    AutoCylPressurePSI = lead.BrakeSystem.AutoCylPressurePSI0;
                 if (AutoCylPressurePSI < lead.BrakeSystem.AutoCylPressurePSI1)
-                    AutoCylPressurePSI = lead.BrakeSystem.AutoCylPressurePSI1;               
+                    AutoCylPressurePSI = lead.BrakeSystem.AutoCylPressurePSI1;
                 if (AutoCylPressurePSI < lead.BrakeSystem.AutoCylPressurePSI2)
                     AutoCylPressurePSI = lead.BrakeSystem.AutoCylPressurePSI2;
 
@@ -1593,9 +1594,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 }
 
                 // Spočítá celkovou netěsnost vlaku 
-                train.TotalTrainTrainPipeLeakRate += (car as MSTSWagon).TrainPipeLeakRatePSIpS;                
+                train.TotalTrainTrainPipeLeakRate += (car as MSTSWagon).TrainPipeLeakRatePSIpS;
             }
-                        
+
             // Propagate brake line (1) data if pressure gradient disabled            
             // approximate pressure gradient in train pipe line1
             float serviceTimeFactor = lead != null ? lead.TrainBrakeController != null && lead.TrainBrakeController.EmergencyBraking ? lead.BrakeEmergencyTimeFactorS : lead.BrakeServiceTimeFactorS : 0;
@@ -1631,7 +1632,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                             if (lead.DoesPowerLossResetControls)
                                 lead.StartThrottleToZero(0.0f);
                             if (lead.DoesPowerLossResetControls2)
-                                lead.ThrottleController.SetPercent(0);                            
+                                lead.ThrottleController.SetPercent(0);
                         }
                     }
 
@@ -1763,7 +1764,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     }
                     // reduce pressure in lead brake line if brake pipe pressure is above equalising pressure - apply brakes
                     else
-                    if (lead.BrakeSystem.BrakeLine1PressurePSI > train.EqualReservoirPressurePSIorInHg && lead.TrainBrakeController.TrainBrakeControllerState != ControllerState.Lap 
+                    if (lead.BrakeSystem.BrakeLine1PressurePSI > train.EqualReservoirPressurePSIorInHg && lead.TrainBrakeController.TrainBrakeControllerState != ControllerState.Lap
                         || lead.BrakeSystem.BrakeLine1PressurePSI > train.EqualReservoirPressurePSIorInHg && lead.TrainBrakeController.TCSEmergencyBraking
                         || lead.BrakeSystem.BrakeLine1PressurePSI > train.EqualReservoirPressurePSIorInHg && lead.EmergencyButtonPressed
                         || lead.BrakeSystem.BrakeLine1PressurePSI > train.EqualReservoirPressurePSIorInHg && lead.TrainBrakeController.EmergencyBrakingPushButton)
@@ -1811,8 +1812,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         // Based on the principle of pressure equualization between adjacent cars
                         // First, we define a variable storing the pressure diff between cars, but limited to a maximum flow rate depending on pipe characteristics
                         // The sign in the equation determines the direction of air flow.
-                        float TrainPipePressureDiffPropogationPSI = (p0>p1 ? -1 : 1) * Math.Min(TrainPipeTimeVariationS * Math.Abs(p1 - p0) / brakePipeTimeFactorSBase, Math.Abs(p1 - p0));
-                        
+                        float TrainPipePressureDiffPropogationPSI = (p0 > p1 ? -1 : 1) * Math.Min(TrainPipeTimeVariationS * Math.Abs(p1 - p0) / brakePipeTimeFactorSBase, Math.Abs(p1 - p0));
+
                         // Air flows from high pressure to low pressure, until pressure is equal in both cars.
                         // Brake pipe volumes of both cars are taken into account, so pressure increase/decrease is proportional to relative volumes.
                         // If TrainPipePressureDiffPropagationPSI equals to p1-p0 the equalization is achieved in one step.
@@ -1847,7 +1848,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     brakePipeVolumeM30 = car0.BrakeSystem.BrakePipeVolumeM3;
                 }
             }
-            
+
 
             // Propagate main reservoir pipe (2) and engine brake pipe (3) data
             int first = -1;
@@ -1883,7 +1884,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 {
                     sumv += brakeSystem.BrakePipeVolumeM3;
                     sumpv += brakeSystem.BrakePipeVolumeM3 * brakeSystem.BrakeLine2PressurePSI;
-                    var eng = train.Cars[i] as MSTSLocomotive;                    
+                    var eng = train.Cars[i] as MSTSLocomotive;
                     if (eng != null)
                     {
                         sumv += eng.MainResVolumeM3;
@@ -1924,7 +1925,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 {
                     BrakeSystem MSTSWagon = train.Cars[i].BrakeSystem;
                     MSTSWagon.AirOK_DoorCanManipulate = true;
-                                                            
+
                     if (!MSTSWagon.TwoPipesConnection)
                     {
                         MSTSWagon.AirOK_DoorCanManipulate = false;
@@ -1937,11 +1938,11 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         MSTSWagon.AirOK_DoorCanManipulate = false;
 
                     if (lead.MainResPressurePSI > 5 * 14.50377f && lead.AutomaticDoors)
-                        lead.BrakeSystem.AirOK_DoorCanManipulate = true;                        
+                        lead.BrakeSystem.AirOK_DoorCanManipulate = true;
                 }
             }
 
-            
+
 
             // Počítání hlavních jímek
             // Úbytky vzduchu při manipulaci s dveřmi
@@ -1951,7 +1952,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             {
                 var loco = (train.Cars[i] as MSTSLocomotive);
                 train.Cars[i].BrakeSystem.TotalCapacityMainResBrakePipe = 0;
-                
+
                 if (i >= first && i <= last || TwoPipesConnection && continuousFromInclusive <= i && i < continuousToExclusive)
                 {
                     if (!TwoPipesConnectionBreak)
@@ -2109,7 +2110,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         // Tlakový ventil při ručním provozu kompresorů
                         if (loco.MaxMainResOverPressurePSI == 0)
                             loco.MaxMainResOverPressurePSI = loco.MaxMainResPressurePSI + (0.60f * 14.50377f);
-                        
+
                         if (loco.MainResPressurePSI > loco.MaxMainResOverPressurePSI)
                             loco.MainResOverPressure = true;
 
@@ -2176,9 +2177,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
 
                         if (((loco.MainResPressurePSI >= loco.MaxMainResPressurePSI && !loco.Compressor_I_HandMode)
                             //|| (loco.MainResPressurePSI >= loco.MaxMainResOverPressurePSI && loco.Compressor_I_HandMode)
-                            || !loco.AuxPowerOn                            
-                            || (!loco.CompressorMode_OffAuto && !loco.Compressor_I_HandMode))                             
-                            && loco.CompressorIsOn)                        
+                            || !loco.AuxPowerOn
+                            || (!loco.CompressorMode_OffAuto && !loco.Compressor_I_HandMode))
+                            && loco.CompressorIsOn)
                             loco.SignalEvent(Event.CompressorOff);
 
 
@@ -2218,7 +2219,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             for (int i = 0; i < train.Cars.Count; i++)
             {
                 var engine = train.Cars[i] as MSTSLocomotive;
-                                
+
                 // Detekce nastavení polohy brzdiče průběžné brzdy                
                 if (engine != null && lead != null)
                 {
@@ -2562,7 +2563,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     }
                 }
             }
-            
+
 
             // Úbytky vzduchu při spotřebě vzduchu otevírání a zavírání dvěří            
             train.TotalAirLoss = 0;
@@ -2576,13 +2577,13 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
 
                 if (wagon.DoorLeftOpen || wagon.DoorRightOpen)
                 {
-                    wagon.BrakeSystem.DoorsOpen = true;                    
+                    wagon.BrakeSystem.DoorsOpen = true;
                     if (!wagon.LeftDoorOpenOverride && !wagon.RightDoorOpenOverride)
                         train.TrainDoorsOpen = true;
                 }
                 else
                     wagon.BrakeSystem.DoorsOpen = false;
-                                    
+
                 if (lead != null && lead.CentralHandlingDoors && wagon.AutomaticDoors && wagon.BrakeSystem.AirOK_DoorCanManipulate)
                 {
                     if (wagon.AirlossByHandlingDoorsPSIpS == 0)
@@ -2602,12 +2603,12 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     // Automaticky zavře dveře při vyšší rychlosti než 15km/h
                     if (lead.SpeedMpS > 15.0f / 3.6f && (wagon.DoorLeftOpen || wagon.DoorRightOpen))
                     {
-                        wagon.DoorRightOpen = false;                        
+                        wagon.DoorRightOpen = false;
                         wagon.DoorLeftOpen = false;
                         wagon.SignalEvent(Event.DoorClose);
                         car.BrakeSystem.LeftDoorIsOpened = false;
                         car.BrakeSystem.RightDoorIsOpened = false;
-                     }
+                    }
                 }
             }
 
@@ -2674,14 +2675,14 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     }
                 }
             }
-            
+
             if (lead != null)
             {
                 // Samostatná přímočinná brzda pro každou lokomotivu
                 BrakeSystem brakeSystem = lead.BrakeSystem;
                 var prevState = lead.EngineBrakeState;
                 train.BrakeLine3PressurePSI = MathHelper.Clamp(train.BrakeLine3PressurePSI, 0, lead.BrakeSystem.BrakeCylinderMaxSystemPressurePSI);
-                
+
                 // Při aktivní EDB a použití přímočinné brzdy zruší účinek EDB
                 if (lead.BrakeSystem.AutoCylPressurePSI1 > 0 && lead.DynamicBrakePercent > 0)
                     lead.EngineBrakeEngageEDB = true;
@@ -2690,11 +2691,11 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 foreach (TrainCar car in train.Cars)
                 {
                     if ((car is MSTSLocomotive) && (car as MSTSLocomotive).MUCable && (car as MSTSLocomotive).MUCableEquipment)
-                    {                        
+                    {
                         car.BrakeSystem.AutoCylPressurePSI1 = lead.BrakeSystem.AutoCylPressurePSI1;
                     }
                 }
-                        
+
                 // Definice pro brzdič BP1
                 if (brakeSystem.BP1_EngineBrakeController)
                 {
@@ -2704,7 +2705,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
 
                     // Definování mrtvé zóny brzdiče                    
                     float EngineBrakeControllerApply = (1 - brakeSystem.EngineBrakeControllerApplyDeadZone) * EngineBrakeControllerRate;
-                    float EngineBrakeControllerRelease = brakeSystem.PrevEngineBrakeControllerRateRelease - (brakeSystem.PrevEngineBrakeControllerRateRelease * brakeSystem.EngineBrakeControllerReleaseDeadZone);                    
+                    float EngineBrakeControllerRelease = brakeSystem.PrevEngineBrakeControllerRateRelease - (brakeSystem.PrevEngineBrakeControllerRateRelease * brakeSystem.EngineBrakeControllerReleaseDeadZone);
 
                     if (brakeSystem.PrevEngineBrakeControllerRateApply < brakeSystem.EngineBrakeControllerApplyDeadZone)
                         EngineBrakeControllerApply = brakeSystem.EngineBrakeControllerApplyDeadZone;
@@ -2824,7 +2825,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                             lead.EngineBrakeState = ValveState.Lap;
                         }
                         if (lead.BrakeSystem.AutoCylPressurePSI1 < 1) brakeSystem.EngineBrakeDelay = 0;
-                    }                                        
+                    }
                 }
 
                 // Definice pro brzdič LEKOV
@@ -2887,12 +2888,12 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         }
                         if (lead.BrakeSystem.AutoCylPressurePSI1 < 1) brakeSystem.EngineBrakeDelay = 0;
                     }
-                }                
+                }
 
                 //lead.ParkingBrakeTargetPressurePSI = 2 * 14.50377f;
 
                 // Automatická parkovací brzda
-                if (lead.AutomaticParkingBrakeEngaged 
+                if (lead.AutomaticParkingBrakeEngaged
                     && lead.MainResPressurePSI > 0
                     && AutoCylPressurePSI < lead.BrakeSystem.BrakeCylinderMaxSystemPressurePSI
                     && AutoCylPressurePSI < lead.MainResPressurePSI)
@@ -2907,13 +2908,13 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
 
                         if (brakeSystem.AutoEngineBrakeDelay > brakeSystem.BrakeDelayToEngage + 0.25f)
                             lead.BrakeSystem.AutoCylPressurePSI2 += dp;
-                        
+
                         lead.MainResPressurePSI -= dp * brakeSystem.GetCylVolumeM3() / lead.MainResVolumeM3;
                         if (lead.BrakeSystem.AutoCylPressurePSI2 >= lead.ParkingBrakeTargetPressurePSI)
                             lead.SignalEvent(Event.EngineBrakePressureStoppedChanging);
                         else lead.EngineBrakeState = ValveState.Apply;
                         lead.BrakeSystem.T4_ParkingkBrake = 1;
-                        lead.BrakeSystem.AutoCylPressurePSI2 = MathHelper.Clamp(lead.BrakeSystem.AutoCylPressurePSI2, 0, lead.ParkingBrakeTargetPressurePSI);                                              
+                        lead.BrakeSystem.AutoCylPressurePSI2 = MathHelper.Clamp(lead.BrakeSystem.AutoCylPressurePSI2, 0, lead.ParkingBrakeTargetPressurePSI);
                     }
                 }
                 else if (!lead.AutomaticParkingBrakeEngaged && lead.BrakeSystem.T4_ParkingkBrake == 1)
@@ -2929,9 +2930,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         if (lead.BrakeSystem.AutoCylPressurePSI2 < 1) brakeSystem.AutoEngineBrakeDelay = 0;
                     }
                     else
-                        lead.BrakeSystem.T4_ParkingkBrake = 0;                        
+                        lead.BrakeSystem.T4_ParkingkBrake = 0;
                 }
-                
+
 
                 if (lead.EngineBrakeState != prevState)
                     switch (lead.EngineBrakeState)
@@ -2970,7 +2971,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                             train.EqualReservoirPressurePSIorInHg = lead.TrainBrakeController.MaxPressurePSI;
                     }
                 }
-            }            
+            }
 
             // Start se vzduchem nebo bez vzduchu podle klíčového slova v názvu consistu nebo volby v menu OR
             if (lead != null && lead.BrakeSystem.StartOn)
@@ -3039,7 +3040,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 }
             }
         }
-        
+
         public override float InternalPressure(float realPressure)
         {
             return realPressure;
@@ -3114,7 +3115,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
         public override bool IsBraking()
         {
             if (AutoCylPressurePSI > MaxCylPressurePSI * 0.3)
-            return true;
+                return true;
             return false;
         }
 
@@ -3125,6 +3126,6 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             //{
             //    MaxCylPressurePSI = loco.TrainBrakeController.MaxPressurePSI * AuxCylVolumeRatio / (1 + AuxCylVolumeRatio);
             //}
-        }        
-    }   
+        }
+    }
 }

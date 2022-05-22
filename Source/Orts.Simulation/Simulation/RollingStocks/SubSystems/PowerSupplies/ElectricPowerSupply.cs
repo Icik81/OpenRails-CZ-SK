@@ -43,7 +43,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
             }
         }
 
-        public float LineVoltageV {
+        public float LineVoltageV
+        {
             get
             {
                 // TODO change to actual voltage calculated by power station location
@@ -94,7 +95,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
         {
             ScriptName = other.ScriptName;
 
-            base.Copy(other);            
+            base.Copy(other);
             CircuitBreaker.Copy(other.CircuitBreaker);
         }
 
@@ -173,7 +174,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
         }
 
         public void Update(float elapsedClockSeconds)
-        {                        
+        {
             CircuitBreaker.Update(elapsedClockSeconds);
 
             if (Script != null)
@@ -214,7 +215,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
         {
             PantographFilter = new IIRFilter(IIRFilter.FilterTypes.Butterworth, 1, IIRFilter.HzToRad(0.7f), 0.001f);
             VoltageFilter = new IIRFilter(IIRFilter.FilterTypes.Butterworth, 1, IIRFilter.HzToRad(0.7f), 0.001f);
-            
+
             PowerOnTimer = new Timer(this);
             PowerOnTimer.Setup(PowerOnDelayS());
 
@@ -224,7 +225,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
 
         public override void Update(float elapsedClockSeconds)
         {
-            if (elapsedClockSeconds == 0) 
+            if (elapsedClockSeconds == 0)
                 return;
 
             if (Locomotive.SwitchingVoltageMode == 1 && Locomotive.LocoSwitchACDC)
@@ -285,7 +286,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                             SetPantographVoltageV(PantographFilter.Filter(0.0f, elapsedClockSeconds));
                             SetFilterVoltageV(VoltageFilter.Filter(0.0f, elapsedClockSeconds));
                         }
-                    }                    
+                    }
                     switch (CurrentCircuitBreakerState())
                     {
                         case CircuitBreakerState.Open:

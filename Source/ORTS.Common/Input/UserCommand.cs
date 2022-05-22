@@ -7,7 +7,7 @@
     /// <para>The ordering and naming of these commands is important. They are listed in the UI in the order they are defined in the code, and the first word of each command is the "group" to which it belongs.</para>
     /// </remarks>
     public enum UserCommand
-    {        
+    {
         [GetString("Game Pause Menu")] GamePauseMenu,
         [GetString("Game Save")] GameSave,
         [GetString("Game Quit")] GameQuit,
@@ -15,8 +15,8 @@
         [GetString("Game Screenshot")] GameScreenshot,
         [GetString("Game Fullscreen")] GameFullscreen,
         [GetString("Game External Controller (RailDriver)")] GameExternalCabController,
-//        [GetString("Game Switch Ahead")] GameSwitchAhead,
-//        [GetString("Game Switch Behind")] GameSwitchBehind,
+        //        [GetString("Game Switch Ahead")] GameSwitchAhead,
+        //        [GetString("Game Switch Behind")] GameSwitchBehind,
         [GetString("Game Facing Switch Ahead")] GameFacingSwitchAhead,
         [GetString("Game Facing Switch Behind")] GameFacingSwitchBehind,
         [GetString("Game Switch Picked")] GameSwitchPicked,
@@ -205,7 +205,7 @@
         [GetString("Control_Classic Water Scoop")] ControlWaterScoop,
         [GetString("Control_Classic ImmediateRefill")] ControlImmediateRefill,
         [GetString("Control_Classic Turntable Clockwise")] ControlTurntableClockwise,
-        [GetString("Control_Classic Turntable Counterclockwise")] ControlTurntableCounterclockwise,        
+        [GetString("Control_Classic Turntable Counterclockwise")] ControlTurntableCounterclockwise,
         [GetString("Control_Classic Cab Radio")] ControlCabRadio,
         [GetString("Control_Classic AI Fire On")] ControlAIFireOn,
         [GetString("Control_Classic AI Fire Off")] ControlAIFireOff,
@@ -228,7 +228,7 @@
         [GetString("Control_CZSK Cruise Control Mode Increase")] ControlCruiseControlModeIncrease,
         [GetString("Control_CZSK Cruise Control Mode Decrease")] ControlCruiseControlModeDecrease,
         [GetString("Control_CZSK Confirm Selected Speed")] ControlConfirmSelectedSpeed,
-        [GetString("Control_CZSK Train Type Change (Passenger/Cargo)")] ControlTrainTypePaxCargo,       
+        [GetString("Control_CZSK Train Type Change (Passenger/Cargo)")] ControlTrainTypePaxCargo,
         [GetString("Control_CZSK Select Speed 10 kph/mph")] ControlSelectSpeed10,
         [GetString("Control_CZSK Select Speed 20 kph/mph")] ControlSelectSpeed20,
         [GetString("Control_CZSK Select Speed 30 kph/mph")] ControlSelectSpeed30,
@@ -256,14 +256,14 @@
         [GetString("Control_CZSK Cab Select Decrease")] CabSelectDecrease,
         [GetString("Control_CZSK Display Key Position")] DisplayKeyPosition,
         [GetString("Control_CZSK Change Key Position")] ChangeKeyPosition,
-        
+
         // Icik
         [GetString("Control_CZSK HV2 1-system +")] ControlHV2SwitchUp,
         [GetString("Control_CZSK HV3 2-system +")] ControlHV3SwitchUp,
         [GetString("Control_CZSK HV3 2-system -")] ControlHV3SwitchDown,
         [GetString("Control_CZSK HV4 2-system +")] ControlHV4SwitchUp,
         [GetString("Control_CZSK HV4 2-system -")] ControlHV4SwitchDown,
-        [GetString("Control_CZSK HV5 2-system +")] ControlHV5SwitchUp, 
+        [GetString("Control_CZSK HV5 2-system +")] ControlHV5SwitchUp,
         [GetString("Control_CZSK HV5 2-system -")] ControlHV5SwitchDown,
         [GetString("Control_CZSK Pantograph3 +")] ControlPantograph3SwitchUp,
         [GetString("Control_CZSK Pantograph3 -")] ControlPantograph3SwitchDown,
@@ -281,7 +281,7 @@
         [GetString("Control_CZSK Locomotive PowerVoltage 25kV/both/3kV")] ControlRouteVoltage,
         [GetString("Control_CZSK Quickrelease button")] ControlQuickReleaseButton,
         [GetString("Control_CZSK Lowpressurerelease button")] ControlLowPressureReleaseButton,
-        [GetString("Control_CZSK Breakpower button")] ControlBreakPowerButton,        
+        [GetString("Control_CZSK Breakpower button")] ControlBreakPowerButton,
         [GetString("Control_CZSK Diesel Controller +")] ControlDieselDirectionControllerUp,
         [GetString("Control_CZSK Diesel Controller -")] ControlDieselDirectionControllerDown,
         [GetString("Control_CZSK Diesel Controller In/Out")] ControlDieselDirectionControllerInOut,

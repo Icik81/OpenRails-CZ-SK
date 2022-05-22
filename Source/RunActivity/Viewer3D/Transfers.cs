@@ -154,7 +154,8 @@ namespace Orts.Viewer3D
             : base(viewer, textureName)
         {
             Texture = Viewer.TextureManager.Get(textureName, true);
-            TransferSamplerState = new SamplerState {
+            TransferSamplerState = new SamplerState
+            {
                 AddressU = TextureAddressMode.Clamp,
                 AddressV = TextureAddressMode.Clamp,
                 Filter = TextureFilter.Anisotropic,

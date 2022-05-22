@@ -15,13 +15,12 @@
 // You should have received a copy of the GNU General Public License
 // along with Open Rails.  If not, see <http://www.gnu.org/licenses/>.
 
+using Orts.Common;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using Orts.Common;
-using Orts.Parsers.Msts;
 
 namespace ContentChecker
 {
@@ -68,8 +67,9 @@ namespace ContentChecker
         /// <param name="args">The command line arguments that need to be checked for an iption</param>
         /// <param name="optionNames">The list of option names that need to be found</param>
         /// <returns>true if one of the optionNames is given</returns>
-        static bool OptionsContain(string[] args, IEnumerable<string> optionNames) {
-            return optionNames.Any((option) => args.Contains(option, StringComparer.OrdinalIgnoreCase) );
+        static bool OptionsContain(string[] args, IEnumerable<string> optionNames)
+        {
+            return optionNames.Any((option) => args.Contains(option, StringComparer.OrdinalIgnoreCase));
         }
 
         /// <summary>
@@ -191,7 +191,8 @@ namespace ContentChecker
             {
                 LoadAllFlat();
             }
-            else {
+            else
+            {
                 LoadWithAdditional(additionType);
             }
 
@@ -314,7 +315,7 @@ namespace ContentChecker
             int minimumBuffer = BUFFERMARGIN + Console.CursorTop;
             if (Console.BufferHeight < minimumBuffer)
             {
-                Console.SetBufferSize(Console.BufferWidth, minimumBuffer + BUFFEREXTENSION );
+                Console.SetBufferSize(Console.BufferWidth, minimumBuffer + BUFFEREXTENSION);
             }
 
         }

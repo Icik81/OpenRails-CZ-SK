@@ -806,8 +806,8 @@ namespace Orts.Viewer3D
     public class LevelCrossingShape : PoseableShape
     {
         readonly LevelCrossingObj CrossingObj;
-		readonly SoundSource Sound;
-		readonly LevelCrossing Crossing;
+        readonly SoundSource Sound;
+        readonly LevelCrossing Crossing;
 
         readonly float AnimationFrames;
         readonly float AnimationSpeed;
@@ -1435,7 +1435,8 @@ namespace Orts.Viewer3D
                    indexData: new ushort[maxIndices],
                    graphicsDevice: material.Viewer.GraphicsDevice,
                    hierarchy: hierarchy,
-                   hierarchyIndex: hierarchyIndex) { }
+                   hierarchyIndex: hierarchyIndex)
+        { }
 
         public void SetVertexData(VertexPositionNormalTexture[] data, int minVertexIndex, int numVertices, int primitiveCount)
         {
@@ -1609,14 +1610,14 @@ namespace Orts.Viewer3D
             Trace.Write("S");
             var filePath = FilePath;
             // commented lines allow reading the animation block from an additional file in an Openrails subfolder
-//           string dir = Path.GetDirectoryName(filePath);
-//            string file = Path.GetFileName(filePath);
-//            string orFilePath = dir + @"\openrails\" + file;
+            //           string dir = Path.GetDirectoryName(filePath);
+            //            string file = Path.GetFileName(filePath);
+            //            string orFilePath = dir + @"\openrails\" + file;
             var sFile = new ShapeFile(filePath, Viewer.Settings.SuppressShapeWarnings);
-//            if (file.ToLower().Contains("turntable") && File.Exists(orFilePath))
-//            {
-//                sFile.ReadAnimationBlock(orFilePath);
-//            }
+            //            if (file.ToLower().Contains("turntable") && File.Exists(orFilePath))
+            //            {
+            //                sFile.ReadAnimationBlock(orFilePath);
+            //            }
 
 
             var textureFlags = Helpers.TextureFlags.None;

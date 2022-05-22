@@ -19,7 +19,6 @@
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Graphics.PackedVector;
 using Orts.Simulation;
 using ORTS.Common;
 using System;
@@ -37,10 +36,10 @@ namespace Orts.Viewer3D
         public const float MaxIntensityPPSPM2_16 = 0.010f;
         // Default 32 bit version.
         //public const float MaxIntensityPPSPM2 = 0.035f;
-        
+
         // Icik
         public const float MaxIntensityPPSPM2 = 1.00f;
-        
+
         readonly Viewer Viewer;
         readonly WeatherControl WeatherControl;
         readonly Weather Weather;
@@ -59,7 +58,7 @@ namespace Orts.Viewer3D
             Material = viewer.MaterialManager.Load("Precipitation");
             Pricipitation = new PrecipitationPrimitive(Viewer.GraphicsDevice, viewer);
 
-            
+
 
             Wind = new Vector3(0, 0, 0);
             Reset();
@@ -86,7 +85,7 @@ namespace Orts.Viewer3D
             // Added random Wind.X value for rain and snow.
             // Max value used by randWind.Next is max value - 1.
             Wind.X = Viewer.Simulator.WeatherType == Orts.Formats.Msts.WeatherType.Snow ? Viewer.Random.Next(2, 6) : Viewer.Random.Next(15, 21);
-                                    
+
             var gameTime = (float)Viewer.Simulator.GameTime;
             Pricipitation.Initialize(Viewer.Simulator.WeatherType, Wind);
             // Camera is null during first initialisation.
@@ -113,7 +112,7 @@ namespace Orts.Viewer3D
         readonly float ParticleBoxLengthM;
         readonly float ParticleBoxWidthM;
         readonly float ParticleBoxHeightM;
-        
+
         // Icik
         float ParticleBoxHeightMDynamic;
         float ParticleBoxHeightMDynamicMinimum = 25;
@@ -319,7 +318,7 @@ namespace Orts.Viewer3D
         public void DynamicUpdate(WeatherControl weatherControl, Weather weather, Viewer viewer, ref Vector3 wind)
         {
             if (weather.PrecipitationLiquidity == 0 || weather.PrecipitationLiquidity == 1) return;
-            ParticleDuration = ParticleBoxHeightMDynamic / ((RainVelocityMpS-SnowVelocityMpS) *  weather.PrecipitationLiquidity + SnowVelocityMpS)/ ParticleVelocityFactor;
+            ParticleDuration = ParticleBoxHeightMDynamic / ((RainVelocityMpS - SnowVelocityMpS) * weather.PrecipitationLiquidity + SnowVelocityMpS) / ParticleVelocityFactor;
             wind.X = 18 * weather.PrecipitationLiquidity + 2;
             ParticleDirection = wind;
         }
@@ -330,11 +329,11 @@ namespace Orts.Viewer3D
             var scenery = viewer.World.Scenery;
             var worldLocation = viewer.Camera.CameraWorldLocation;
             //var worldLocation = Program.Viewer.PlayerLocomotive.WorldPosition.WorldLocation;  // This is used to test overall precipitation position.
-            
+
             // Icik
             ParticleBoxHeightMDynamic = ParticleBoxHeightM / particlesPerSecondPerM2 / 4;
             ParticleBoxHeightMDynamic = MathHelper.Clamp(ParticleBoxHeightMDynamic, ParticleBoxHeightMDynamicMinimum, ParticleBoxHeightM);
-            
+
             if (TimeParticlesLastEmitted == 0)
             {
                 TimeParticlesLastEmitted = currentTime - ParticleDuration;
@@ -528,7 +527,7 @@ namespace Orts.Viewer3D
             SnowTexture = SharedTextureManager.Get(Viewer.RenderProcess.GraphicsDevice, System.IO.Path.Combine(Viewer.ContentPath, "Snowflake.png"));
             DynamicPrecipitationTexture[0] = SnowTexture;
             DynamicPrecipitationTexture[11] = RainTexture;
-            for (int i = 1; i<=10; i++)
+            for (int i = 1; i <= 10; i++)
             {
                 var path = "Raindrop" + i.ToString() + ".png";
                 DynamicPrecipitationTexture[11 - i] = SharedTextureManager.Get(Viewer.RenderProcess.GraphicsDevice, System.IO.Path.Combine(Viewer.ContentPath, path));

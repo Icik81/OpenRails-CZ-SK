@@ -20,7 +20,6 @@ using Orts.Formats.Msts;
 using Orts.Simulation.AIs;
 using Orts.Simulation.Physics;
 using Orts.Simulation.RollingStocks;
-using Orts.Simulation.Signalling;
 using ORTS.Common;
 using System;
 using System.Collections.Generic;
@@ -46,7 +45,7 @@ namespace Orts.Simulation
 
     public class Activity
     {
-        Simulator Simulator;        
+        Simulator Simulator;
 
         // Passenger tasks
         public DateTime StartTime;
@@ -103,7 +102,7 @@ namespace Orts.Simulation
 
                     foreach (var i in sd.Player_Traffic_Definition.Player_Traffic_List)
                     {
-                        if (i.PlatformStartID < Simulator.TDB.TrackDB.TrItemTable.Length && i.PlatformStartID >= 0 && 
+                        if (i.PlatformStartID < Simulator.TDB.TrackDB.TrItemTable.Length && i.PlatformStartID >= 0 &&
                             Simulator.TDB.TrackDB.TrItemTable[i.PlatformStartID] is PlatformItem)
                             Platform = Simulator.TDB.TrackDB.TrItemTable[i.PlatformStartID] as PlatformItem;
                         else
@@ -521,9 +520,9 @@ namespace Orts.Simulation
             const float MaxDistanceOfWarningPost = 700;
 
             for (int idxZone = 0; idxZone < zones.ActivityRestrictedSpeedZoneList.Count; idxZone++)
-			{
-               var worldPosition1 = new WorldPosition();
-                newSpeedPostItems[0]   = new TempSpeedPostItem(routeFile,
+            {
+                var worldPosition1 = new WorldPosition();
+                newSpeedPostItems[0] = new TempSpeedPostItem(routeFile,
                     zones.ActivityRestrictedSpeedZoneList[idxZone].StartPosition, true, worldPosition1, false);
                 var worldPosition2 = new WorldPosition();
                 newSpeedPostItems[1] = new TempSpeedPostItem(routeFile,
@@ -539,7 +538,7 @@ namespace Orts.Simulation
                 // Add the speedposts to the track database. This will set the TrItemId's of all speedposts
                 trackDB.AddTrItems(newSpeedPostItems);
 
-            // And now update the various (vector) tracknodes (this needs the TrItemIds.
+                // And now update the various (vector) tracknodes (this needs the TrItemIds.
                 var endOffset = AddItemIdToTrackNode(ref zones.ActivityRestrictedSpeedZoneList[idxZone].EndPosition,
                     tsectionDat, trackDB, newSpeedPostItems[1], out traveller);
                 var startOffset = AddItemIdToTrackNode(ref zones.ActivityRestrictedSpeedZoneList[idxZone].StartPosition,
@@ -578,11 +577,11 @@ namespace Orts.Simulation
                 var worldPosition3 = new WorldPosition();
                 var speedWarningPostItem = new TempSpeedPostItem(routeFile,
                     zones.ActivityRestrictedSpeedZoneList[idxZone].StartPosition, false, worldPosition3, true);
-                
+
                 var worldPosition33 = new WorldPosition();
                 var speedWarningPostItem_back = new TempSpeedPostItem(routeFile,
                     zones.ActivityRestrictedSpeedZoneList[idxZone].StartPosition, false, worldPosition33, true);
-                 
+
                 traveller.Move(distanceOfWarningPost);
                 SpeedPostPosition(speedWarningPostItem, ref traveller);
                 traveller.Move(distanceOfWarningPost_back);
@@ -598,24 +597,24 @@ namespace Orts.Simulation
                 {
                     FlipRestrSpeedPost((TempSpeedPostItem)speedWarningPostItem_back);
                 }
-                                
-                ComputeTablePosition((TempSpeedPostItem)newSpeedPostItems[0]); 
+
+                ComputeTablePosition((TempSpeedPostItem)newSpeedPostItems[0]);
                 TempSpeedPostItems.Add((TempSpeedPostItem)newSpeedPostItems[0]);
-                ComputeTablePosition((TempSpeedPostItem)newSpeedPostItems[1]); 
+                ComputeTablePosition((TempSpeedPostItem)newSpeedPostItems[1]);
                 TempSpeedPostItems.Add((TempSpeedPostItem)newSpeedPostItems[1]);
-                
+
                 //ComputeTablePosition((TempSpeedPostItem)newSpeedPostItems[2]);
                 //TempSpeedPostItems.Add((TempSpeedPostItem)newSpeedPostItems[2]);
                 //ComputeTablePosition((TempSpeedPostItem)newSpeedPostItems[3]);
                 //TempSpeedPostItems.Add((TempSpeedPostItem)newSpeedPostItems[3]);
 
-                ComputeTablePosition((TempSpeedPostItem)speedWarningPostItem); 
+                ComputeTablePosition((TempSpeedPostItem)speedWarningPostItem);
                 TempSpeedPostItems.Add((TempSpeedPostItem)speedWarningPostItem);
                 ComputeTablePosition((TempSpeedPostItem)speedWarningPostItem_back);
                 TempSpeedPostItems.Add((TempSpeedPostItem)speedWarningPostItem_back);
             }
         }
-        
+
         /// <summary>
         /// Add a reference to a new TrItemId to the correct trackNode (which needs to be determined from the position)
         /// </summary>
@@ -628,15 +627,15 @@ namespace Orts.Simulation
         {
             float? offset = 0.0f;
             traveller = new Traveller(tsectionDat, trackDB.TrackNodes, position.TileX, position.TileZ, position.X, position.Z);
-                TrackNode trackNode = trackDB.TrackNodes[traveller.TrackNodeIndex];//find the track node
-                if (trackNode.TrVectorNode != null)
-                {
+            TrackNode trackNode = trackDB.TrackNodes[traveller.TrackNodeIndex];//find the track node
+            if (trackNode.TrVectorNode != null)
+            {
                 offset = traveller.TrackNodeOffset;
                 SpeedPostPosition((TempSpeedPostItem)newTrItem, ref traveller);
                 InsertTrItemRef(tsectionDat, trackDB, trackNode.TrVectorNode, (int)newTrItem.TrItemId, (float)offset);
-                }
-            return offset;
             }
+            return offset;
+        }
 
         /// <summary>
         /// Determine position parameters of restricted speed Post
@@ -670,7 +669,7 @@ namespace Orts.Simulation
             restrSpeedPost.WorldPosition.XNAMatrix.M13 *= -1;
             restrSpeedPost.WorldPosition.XNAMatrix.M31 *= -1;
             restrSpeedPost.WorldPosition.XNAMatrix.M33 *= -1;
-    }
+        }
 
         /// <summary>
         /// Compute position of restricted speedpost table
@@ -1027,13 +1026,13 @@ namespace Orts.Simulation
                         stringBuild.Append("\n");
                         File.AppendAllText(LogStationLogFile, stringBuild.ToString());
                     }
-                }                
+                }
             }
             else if (EventType == ActivityEventType.Timer)
             {
                 if (arrived && MyPlayerTrain.BoardingComplete)
                 {
-                    MyPlayerTrain.BoardingComplete = false;                   
+                    MyPlayerTrain.BoardingComplete = false;
                 }
 
                 double clock = MyPlayerTrain.Simulator.GameTime;
@@ -1045,7 +1044,7 @@ namespace Orts.Simulation
                     MyPlayerTrain.StationStops[0].PlatformItem.NumPassengersWaiting = RestOfPax;
 
                 MyPlayerTrain.FillNames(MyPlayerTrain);
-                                
+
                 if (IsAtStation(MyPlayerTrain))
                     MyPlayerTrain.ReverseAtStationStopTest(MyPlayerTrain);
 
@@ -1071,7 +1070,7 @@ namespace Orts.Simulation
                         else if (remaining < 11) DisplayColor = new Color(255, 255, 128);
                         else DisplayColor = Color.White;
 
-                        if (!BoardingCompleted)                                                                        
+                        if (!BoardingCompleted)
                             MyPlayerTrain.UpdatePassengerCountAndWeight(MyPlayerTrain, MyPlayerTrain.StationStops[0].PlatformItem.NumPassengersWaiting, clock);
 
                         if (remaining < 120 && (MyPlayerTrain.TrainType != Train.TRAINTYPE.AI_PLAYERHOSTING))
@@ -1086,7 +1085,7 @@ namespace Orts.Simulation
 
                         // Still have to wait
                         if (remaining > 0)
-                        {                            
+                        {
                             DisplayMessage = Simulator.Catalog.GetStringFmt("Time to departure: {0:D2}:{1:D2}",
                                 remaining / 60, remaining % 60);
 
@@ -1097,19 +1096,19 @@ namespace Orts.Simulation
                                 ldbfevaldepartbeforeboarding = true;
                                 DbfEvalDepartBeforeBoarding.Add(PlatformEnd1.Station);
                                 train.DbfEvalValueChanged = true;
-                            }                            
+                            }
                         }
                         // May depart
                         else if (!maydepart)
-                        {                            
+                        {
                             // check if passenger on board - if not, do not allow depart
                             if (MyPlayerTrain.StationStops[0].PlatformItem.PassengerList.Count > 0
-                                || (MyPlayerTrain.StationStops[0].PlatformItem.PassengerList.Count == 0 && MyPlayerTrain.TrainDoorsOpen && !loco.CentralHandlingDoors))                                
-                            {                                
+                                || (MyPlayerTrain.StationStops[0].PlatformItem.PassengerList.Count == 0 && MyPlayerTrain.TrainDoorsOpen && !loco.CentralHandlingDoors))
+                            {
                                 DisplayMessage = Simulator.Catalog.GetString("Waiting for passengers to board....");
                                 MyPlayerTrain.UpdatePassengerCountAndWeight(MyPlayerTrain, MyPlayerTrain.StationStops[0].PlatformItem.NumPassengersWaiting, clock);
                             }
-                            else                            
+                            else
                             if ((MyPlayerTrain.StationStops[0].PlatformItem.PassengerList.Count == 0 && !MyPlayerTrain.TrainDoorsOpen && !loco.CentralHandlingDoors)
                                 || (MyPlayerTrain.StationStops[0].PlatformItem.PassengerList.Count == 0 && loco.CentralHandlingDoors))
                             {
@@ -1124,7 +1123,7 @@ namespace Orts.Simulation
                                     Simulator.SoundNotify = Event.PermissionToDepart;
                                     BoardingCompleted = false;
                                     TimeToClearForDepart = 0;
-                                    ClearForDepartGenerate = 0;                                    
+                                    ClearForDepartGenerate = 0;
                                 }
                                 else
                                 {
@@ -1132,7 +1131,7 @@ namespace Orts.Simulation
                                     DisplayMessage = Simulator.Catalog.GetString("Waiting for the permission....");
                                     return;
                                 }
-                            }                               
+                            }
 
                             ldbfevaldepartbeforeboarding = false;//reset flag. Debrief Eval
 
@@ -1175,7 +1174,7 @@ namespace Orts.Simulation
 
                                 IsCompleted = true;
                             }
-                        }  
+                        }
                         // Zavření dveří průvodčím při odjezdu, pokud zůstanou některé otevřené nezbednými lidmi
                         if (maydepart && !loco.CentralHandlingDoors)
                         {
@@ -1241,7 +1240,7 @@ namespace Orts.Simulation
             outf.Write(arrived);
             outf.Write(maydepart);
             outf.Write(distanceToNextSignal);
-            
+
             // Icik
             outf.Write(BoardingCompleted);
             outf.Write(RestOfPax);
@@ -1396,7 +1395,7 @@ namespace Orts.Simulation
             }
             return false;
         }
-     
+
     }
 
     public class EventCategoryActionWrapper : EventWrapper
@@ -1539,11 +1538,11 @@ namespace Orts.Simulation
                 if (trainItem.Cars.Count - nCars == (wagonIdList.Count == nWagonListCars ? wagonIdList.Count : nWagonListCars))
                 {
                     if (excludesWagons(trainItem, wagonIdList)) listsMatch = false;//all wagons dropped
-                    
+
                     if (listsMatch) return trainItem;
-                    
+
                 }
-               
+
             }
             return null;
         }

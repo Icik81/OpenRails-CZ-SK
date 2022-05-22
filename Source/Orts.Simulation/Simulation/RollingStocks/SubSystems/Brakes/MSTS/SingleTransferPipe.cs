@@ -15,11 +15,10 @@
 // You should have received a copy of the GNU General Public License
 // along with Open Rails.  If not, see <http://www.gnu.org/licenses/>.
 
-using System;
-using ORTS.Common;
 using Orts.Parsers.Msts;
+using ORTS.Common;
+using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 
 namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
 {
@@ -101,15 +100,15 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     s += $" {Simulator.Catalog.GetString("Handbrake")} {HandbrakePercent:F0}%";
                 return s;
             }
-            
+
         }
 
         // This overides the information for each individual wagon in the extended HUD  
-       public override string[] GetDebugStatus(Dictionary<BrakeSystemComponent, PressureUnit> units)
+        public override string[] GetDebugStatus(Dictionary<BrakeSystemComponent, PressureUnit> units)
         {
             // display differently depending upon whether vacuum or air braked system
             if (Car.CarBrakeSystemType == "vacuum_piped")
-            {       
+            {
 
                 return new string[] {
                 DebugType,
@@ -125,7 +124,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             else  // air braked by default
             {
 
-            return new string[] {
+                return new string[] {
                 DebugType,
                 string.Empty,
                 FormatStrings.FormatPressure(BrakeLine1PressurePSI, PressureUnit.PSI, units[BrakeSystemComponent.BrakePipe], true),
@@ -141,7 +140,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 BleedOffValveOpen ? Simulator.Catalog.GetString("Open") : string.Empty,
                 };
 
-           }
+            }
         }
 
         public override float GetCylPressurePSI()
@@ -157,7 +156,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
         public override void Update(float elapsedClockSeconds)
         {
             BleedOffValveOpen = false;
-            Car.BrakeRetardForceN = ( Car.MaxHandbrakeForceN * HandbrakePercent / 100) * Car.BrakeShoeRetardCoefficientFrictionAdjFactor; // calculates value of force applied to wheel, independent of wheel skid
+            Car.BrakeRetardForceN = (Car.MaxHandbrakeForceN * HandbrakePercent / 100) * Car.BrakeShoeRetardCoefficientFrictionAdjFactor; // calculates value of force applied to wheel, independent of wheel skid
             if (Car.BrakeSkid) // Test to see if wheels are skiding to excessive brake force
             {
                 Car.BrakeForceN = (Car.MaxHandbrakeForceN * HandbrakePercent / 100) * Car.SkidFriction;   // if excessive brakeforce, wheel skids, and loses adhesion
@@ -166,7 +165,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             {
                 Car.BrakeForceN = (Car.MaxHandbrakeForceN * HandbrakePercent / 100) * Car.BrakeShoeCoefficientFrictionAdjFactor; // In advanced adhesion model brake shoe coefficient varies with speed, in simple model constant force applied as per value in WAG file, will vary with wheel skid.
             }
-        
+
         }
     }
 }
