@@ -21,7 +21,7 @@ msgstr ""
 #, fuzzy
 #| msgid "Release"
 msgid "Release position"
-msgstr "Töltés/Oldás"
+msgstr "Oldóállás"
 
 #: ../../Orts.Simulation/Common/Scripting/BrakeController.cs:286
 #: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/MSTS/AirSinglePipe.cs:2241
@@ -35,12 +35,12 @@ msgstr "Magas nyomáson tartás"
 #: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/MSTS/AirSinglePipe.cs:2283
 #: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/MSTS/AirSinglePipe.cs:2294
 msgid "Driving position"
-msgstr ""
+msgstr "Menetállás"
 
 #: ../../Orts.Simulation/Common/Scripting/BrakeController.cs:289
 #: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/MSTS/AirSinglePipe.cs:2229
 msgid "Apply position"
-msgstr ""
+msgstr "Fékezőállás"
 
 #: ../../Orts.Simulation/Common/Scripting/BrakeController.cs:290
 msgid "EPApply"
@@ -85,11 +85,11 @@ msgstr "Teljes üzem"
 
 #: ../../Orts.Simulation/Common/Scripting/BrakeController.cs:299
 msgid "Minimum Reduction"
-msgstr ""
+msgstr "Első fokozati fékezés"
 
 #: ../../Orts.Simulation/Common/Scripting/BrakeController.cs:300
 msgid "Hold"
-msgstr ""
+msgstr "Középállás"
 
 #: ../../Orts.Simulation/Common/Scripting/BrakeController.cs:301
 msgid "Str. Brk. Release On:"
@@ -156,7 +156,7 @@ msgstr "Kézi tüzelés"
 
 #: ../../Orts.Simulation/Common/Scripting/BrakeController.cs:315
 msgid "Notch"
-msgstr ""
+msgstr "Fokozat"
 
 #: ../../Orts.Simulation/Common/Scripting/BrakeController.cs:316
 #, fuzzy
@@ -361,24 +361,24 @@ msgstr[1] ""
 
 #: ../../Orts.Simulation/Simulation/Activity.cs:1062
 msgid "People are waiting for the door to open…"
-msgstr ""
+msgstr "Az utasok az ajtónyitás engedélyezésére várnak"
 
 #: ../../Orts.Simulation/Simulation/Activity.cs:1109
 msgid "Waiting for passengers to board...."
-msgstr ""
+msgstr "Várakozás az utasok beszállására"
 
 #: ../../Orts.Simulation/Simulation/Activity.cs:1123
 msgid "Clear to go!"
-msgstr ""
+msgstr "Indulhat"
 
 #: ../../Orts.Simulation/Simulation/Activity.cs:1132
 msgid "Waiting for the permission...."
-msgstr ""
+msgstr "Engedélyre vár"
 
 #: ../../Orts.Simulation/Simulation/Activity.cs:1090
 #, csharp-format
 msgid "Time to departure: {0:D2}:{1:D2}"
-msgstr ""
+msgstr "Indulási idő"
 
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:26
 msgid "None"
@@ -598,7 +598,7 @@ msgstr "Főmegszakító"
 
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:218
 msgid "Circuit breaker closing authorization"
-msgstr ""
+msgstr "Főmegszakító bekapcsolásának engedélyezése"
 
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:218
 msgid "remove"
@@ -982,7 +982,7 @@ msgstr "Útmérő"
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSElectricLocomotive.cs:2843
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSElectricLocomotive.cs:2847
 msgid "Battery"
-msgstr ""
+msgstr "Akkumulátor"
 
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:271
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSDieselLocomotive.cs:791
@@ -1132,13 +1132,13 @@ msgstr "Árurakodás"
 
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:294
 msgid "Cab Radio"
-msgstr ""
+msgstr "Vezetőállás rádió"
 
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:297
 #, fuzzy
 #| msgid "Comprsr"
 msgid "AuxCompressor"
-msgstr "Légsűrítő"
+msgstr "Segédlégsűrítő"
 
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:298
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:300
@@ -1150,7 +1150,7 @@ msgstr "Légsűrítő"
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:298
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:299
 msgid "Auto"
-msgstr ""
+msgstr "Automatikus nyomásszabályozás"
 
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:299
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:301
@@ -1167,24 +1167,24 @@ msgstr "Hő:"
 
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:303
 msgid "Heating in Cab"
-msgstr ""
+msgstr "Vezetőállás fűtés"
 
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:304
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:305
 msgid "Change Voltage System"
-msgstr ""
+msgstr "Feszültségrendszer váltása"
 
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:304
 msgid "AC"
-msgstr ""
+msgstr "Váltakozófeszültség"
 
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:305
 msgid "DC"
-msgstr ""
+msgstr "Egyenfeszültség"
 
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:306
 msgid "Voltage Change to"
-msgstr ""
+msgstr "Feszültség beállítva"
 
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:306
 msgid "25kV"
@@ -1208,13 +1208,13 @@ msgstr "Alacsony nyomáson tartás"
 
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:309
 msgid "Powerbreaker"
-msgstr ""
+msgstr "Vészütőgomb"
 
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:310
 #, fuzzy
 #| msgid "Cab Light"
 msgid "Full Cablight"
-msgstr "Vezérállás világítása"
+msgstr "Vezetőállás világítás"
 
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:315
 msgid "RDST"
@@ -1397,21 +1397,21 @@ msgstr ""
 
 #: ../../Orts.Simulation/Simulation/Turntables.cs:610
 msgid "Rotation can't start: check throttle, speed, direction and control mode"
-msgstr ""
+msgstr "A fordítás nem kezdhető: ellenőrízni kell a menetszabályzót,a sebességet,az irányváltót,és az irányítási módot"
 
 #: ../../Orts.Simulation/Simulation/Turntables.cs:618
 msgid "Turntable starting rotation with train"
-msgstr ""
+msgstr "A fordítókorong elkezdi fordítani a mozdonyt"
 
 #: ../../Orts.Simulation/Simulation/Turntables.cs:729
 #: ../../Orts.Simulation/Simulation/Turntables.cs:760
 msgid "Turntable forward connected"
-msgstr ""
+msgstr "A fordítókorong elől csatlakoztatva "
 
 #: ../../Orts.Simulation/Simulation/Turntables.cs:742
 #: ../../Orts.Simulation/Simulation/Turntables.cs:773
 msgid "Turntable backward connected"
-msgstr ""
+msgstr "A fordítókorong hátul csatlakoztatva"
 
 #: ../../Orts.Simulation/Simulation/AIs/AITrain.cs:6605
 #: ../../Orts.Simulation/Simulation/Timetables/TTTrain.cs:10602
@@ -1516,16 +1516,16 @@ msgstr ""
 
 #: ../../Orts.Simulation/Simulation/Physics/Train.cs:16710
 msgid "Passenger got out of the train "
-msgstr ""
+msgstr "Az utasok kiszálltak a vonatból"
 
 #: ../../Orts.Simulation/Simulation/Physics/Train.cs:16764
 #: ../../Orts.Simulation/Simulation/Physics/Train.cs:16787
 msgid "Passenger got in the train "
-msgstr ""
+msgstr "Az utasok beszálltak a vonatba"
 
 #: ../../Orts.Simulation/Simulation/Physics/Train.cs:16903
 msgid "Car "
-msgstr ""
+msgstr "Személykocsi"
 
 #: ../../Orts.Simulation/Simulation/Physics/Train.cs:16977
 #: ../../Orts.Simulation/Simulation/Physics/Train.cs:16982
@@ -1626,7 +1626,7 @@ msgstr "Nettó"
 
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSDieselLocomotive.cs:1209
 msgid "Engine is starting…"
-msgstr ""
+msgstr "A dízelmotor indul..."
 
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSDieselLocomotive.cs:782
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSDieselLocomotive.cs:792
@@ -1663,15 +1663,15 @@ msgstr "Üres"
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSElectricLocomotive.cs:1140
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSElectricLocomotive.cs:1155
 msgid "Undervoltage protection!"
-msgstr ""
+msgstr "Nullfeszültség védelem- Alacsony vonali feszültség"
 
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSElectricLocomotive.cs:1809
 msgid "Too much current for one pantograph - use the other pantograph too!"
-msgstr ""
+msgstr "Túl nagy áramfelvétel 1 áramszedőnek, a másik áramszedőt is használni kell!"
 
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSElectricLocomotive.cs:1823
 msgid "Locomotive is damaged with a raised pantograph!"
-msgstr ""
+msgstr "Az áramszedő megsérült,mert a mozdony kifutott a felsővezeték alól!"
 
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSElectricLocomotive.cs:2350
 msgid "No power line!"
@@ -1698,7 +1698,7 @@ msgstr "letiltva"
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSElectricLocomotive.cs:2889
 #: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/PowerSupplies/DieselEngine.cs:386
 msgid "Helper"
-msgstr ""
+msgstr "Csatolt"
 
 #. Context: PowerSupply
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSElectricLocomotive.cs:2836
@@ -1709,60 +1709,60 @@ msgstr "Feszültség"
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:1568
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:1596
 msgid "No active cab selected"
-msgstr ""
+msgstr "Nincs kiválasztva vezetőállás"
 
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:1575
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:1602
 msgid "Cab 1 selected"
-msgstr ""
+msgstr "1es vezetőállás kiválasztva"
 
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:1581
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:1608
 msgid "Cab 2 selected"
-msgstr ""
+msgstr "2es vezetőállás kiválasztva"
 
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:2583
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:2589
 msgid "Overcurrent protection!"
-msgstr ""
+msgstr "Túláramvédelem"
 
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:2646
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:2652
 msgid "Slip protection!"
-msgstr ""
+msgstr "Csúszásvédelem"
 
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:2864
 msgid "Traction engines destroyed!"
-msgstr ""
+msgstr "A vontatómotorok körtüzesek!"
 
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:2877
 msgid "Power outage - auxiliary drives are not powered."
 msgstr ""
 
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:2899
-msgid "Power on - auxiliary drives are powered up."
+msgid ""
 msgstr ""
 
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:3195
 msgid "You're cold!"
-msgstr ""
+msgstr "A vezetőálláson túl hideg van!"
 
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:3198
 msgid "The passengers are cold!"
-msgstr ""
+msgstr "Az utasok fáznak!"
 
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:3237
 msgid "You're hot!"
-msgstr ""
+msgstr "A vezetőálláson túl meleg van!"
 
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:3240
 msgid "Passengers are too hot!"
-msgstr ""
+msgstr "Az utasoknak melegük van!"
 
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:3371
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:3377
 msgid "Overcurrent heating/air conditioning protection!"
-msgstr ""
+msgstr "Fűtési túláram!"
 
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:5328
 msgid "No water scoop on this loco"
@@ -1782,7 +1782,7 @@ msgstr ""
 
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:5706
 msgid "There's no more sand in the storage!"
-msgstr ""
+msgstr "A homokolótartályból kifogyott a homok!"
 
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:8541
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:8618
@@ -1819,15 +1819,15 @@ msgstr ""
 
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:8783
 msgid "Power system changed to 25kV."
-msgstr ""
+msgstr "Felsővezeték feszültsége 25kV-ra állítva"
 
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:8787
 msgid "Power system changed to 3kV + 25kV."
-msgstr ""
+msgstr "Felsővezeték feszültsége 3kV+25kV-ra állítva"
 
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:8806
 msgid "Power system changed to 3kV."
-msgstr ""
+msgstr "Felsővezeték feszültsége 3kV-ra állítva"
 
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:8891
 msgid ""
@@ -2855,28 +2855,28 @@ msgstr ""
 #: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/CruiseControl.cs:585
 #: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/CruiseControl.cs:654
 msgid "Selected speed changed to "
-msgstr ""
+msgstr "A kiválasztott sebesség beállítva"
 
 #: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/CruiseControl.cs:665
 msgid "Number of axles increased to "
-msgstr ""
+msgstr "Tengelyek száma növelve"
 
 #: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/CruiseControl.cs:677
 msgid "Number of axles decreased to "
-msgstr ""
+msgstr "Tengelyek száma csökkentve"
 
 #: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/CruiseControl.cs:687
 msgid "Speed restricted zone active."
-msgstr ""
+msgstr "Sebességkorlátozás bekapcsolva"
 
 #: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/CruiseControl.cs:692
 #: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/CruiseControl.cs:707
 msgid "Speed restricted zone off."
-msgstr ""
+msgstr "Sebességkorlátozás kikapcsolva"
 
 #: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/CruiseControl.cs:742
 msgid "Selected speed set to "
-msgstr ""
+msgstr "A kiválasztott sebesség "
 
 #: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/BrakeSystem.cs:252
 #: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/MSTS/AirSinglePipe.cs:739
@@ -2922,15 +2922,15 @@ msgstr ""
 #, fuzzy
 #| msgid "Boiler pressure"
 msgid "Pipe pressure change"
-msgstr "Kazánnyomás"
+msgstr "Fővez. nyomvált."
 
 #: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/MSTS/AirSinglePipe.cs:201
 msgid "Leakage"
-msgstr ""
+msgstr "Tömörtelenség"
 
 #: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/MSTS/AirSinglePipe.cs:203
 msgid "Volume mainres and pipes"
-msgstr ""
+msgstr "A főlégt.térfogata"
 
 #: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/MSTS/AirSinglePipe.cs:224
 #, fuzzy
@@ -2940,7 +2940,7 @@ msgstr "Szolgálat"
 
 #: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/MSTS/AirSinglePipe.cs:230
 msgid "Failure!"
-msgstr ""
+msgstr "Hiba!"
 
 #: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/MSTS/AirSinglePipe.cs:734
 #, fuzzy
@@ -2972,23 +2972,23 @@ msgstr ""
 
 #: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/PowerSupplies/CircuitBreaker.cs:424
 msgid "Circuit breaker closing not authorized"
-msgstr ""
+msgstr "A főmegszakító bekapcsolása nem engedélyezett!"
 
 #: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/PowerSupplies/DieselEngine.cs:1529
 msgid "The engine's wrecked!"
-msgstr ""
+msgstr "A dízelmotor tönkrement! "
 
 #: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/PowerSupplies/DieselEngine.cs:1535
 msgid "The engine's damaged!"
-msgstr ""
+msgstr "A dízelmotor károsodott!"
 
 #: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/PowerSupplies/DieselEngine.cs:1543
 msgid "The engine is overheating! Water temperature:"
-msgstr ""
+msgstr "A dízelmotor túlmelegszik! Hűtővíz hőmérséklete:"
 
 #: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/PowerSupplies/DieselEngine.cs:1545
 msgid "The engine is overheating! Oil temperature:"
-msgstr ""
+msgstr "A dízelmotor túlmelegszik! Kenőolaj hőmérséklete:"
 
 #. Context: Engine
 #: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/PowerSupplies/DieselEngine.cs:484

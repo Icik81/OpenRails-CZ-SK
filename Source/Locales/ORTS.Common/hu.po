@@ -220,7 +220,7 @@ msgstr "Játék Teljes képernyő"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:17
 msgid "Game External Controller (RailDriver)"
-msgstr ""
+msgstr "Külső játékvezérlő (RailDriver)"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:20
 #, fuzzy
@@ -1144,11 +1144,11 @@ msgstr "Irányítás Hengercsapok"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:208
 msgid "Control_Classic Turntable Counterclockwise"
-msgstr ""
+msgstr "Fordítókorong az óramutató járásával ellentétes irányba"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:209
 msgid "Control_Classic Cab Radio"
-msgstr ""
+msgstr "Vezetőállás Rádió"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:210
 #, fuzzy
@@ -1170,23 +1170,23 @@ msgstr "Irányítás Tűzszekrény zárása"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:213
 msgid "Control_Classic Battery"
-msgstr ""
+msgstr "Akkufőkapcsoló"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:214
 msgid "Control_Classic PowerKey"
-msgstr ""
+msgstr "Pakketkulcs"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:217
 #, fuzzy
 #| msgid "Control Bail Off"
 msgid "Control_CZSK Mirel Off"
-msgstr "Irányítás Fék kiengedése"
+msgstr "Mirel kikapcsolása"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:218
 #, fuzzy
 #| msgid "Control Firebox Open"
 msgid "Control_CZSK Mirel On"
-msgstr "Irányítás Tűzszekrény nyitása"
+msgstr "Mirel bekapcsolása"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:219
 #, fuzzy
@@ -1204,13 +1204,13 @@ msgstr "Irányítás Gőzfűtés csökkentése"
 #, fuzzy
 #| msgid "Control Steam Heat Increase"
 msgid "Control_CZSK Selected Speed Increase"
-msgstr "Irányítás Gőzfűtés növelése"
+msgstr "Menet/fék üzem kiválasztott sebesség növelése"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:222
 #, fuzzy
 #| msgid "Control Steam Heat Decrease"
 msgid "Control_CZSK Selected Speed Decrease"
-msgstr "Irányítás Gőzfűtés csökkentése"
+msgstr "Menet/fék üzem kiválasztott sebesség csökkentése"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:223
 msgid "Control_CZSK Speed Regulator Max Acceleration Increase"
@@ -1224,131 +1224,131 @@ msgstr ""
 #, fuzzy
 #| msgid "Control Damper Increase"
 msgid "Control_CZSK Number Of Axles Increase"
-msgstr "Irányítás Légbefúvó növelése"
+msgstr "Tengelyszám csökkentése"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:226
 #, fuzzy
 #| msgid "Control Damper Decrease"
 msgid "Control_CZSK Number Of Axles Decrease"
-msgstr "Irányítás Légbefúvó csökkentése"
+msgstr "Tengelyszám növelése"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:227
 msgid "Control_CZSK Restricted Speed Zone Active"
-msgstr ""
+msgstr "Automata menet/fék üzem csökkentett sebesség aktiválása"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:228
 #, fuzzy
 #| msgid "Control Throttle Increase"
 msgid "Control_CZSK Cruise Control Mode Increase"
-msgstr "Irányítás Menetszabályzó növelése"
+msgstr "Automata menet/fék üzem kiválaszott sebesség növelése"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:229
 #, fuzzy
 #| msgid "Control Throttle Decrease"
 msgid "Control_CZSK Cruise Control Mode Decrease"
-msgstr "Irányítás Menetszabályzó csökkentése"
+msgstr "Automata menet/fék üzem kiválaszott sebesség csökkentése"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:230
 msgid "Control_CZSK Confirm Selected Speed"
-msgstr ""
+msgstr "Automata menet/fék üzem kiválaszott sebesség elfogadása"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:231
 msgid "Control_CZSK Train Type Change (Passenger/Cargo)"
-msgstr ""
+msgstr "Automata menet/fék üzem vonattípus kiválaszta (Személy/teher)"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:232
 msgid "Control_CZSK Select Speed 10 kph/mph"
-msgstr ""
+msgstr "Automata menet/fék üzem sebesség kiválasztása 10km/h"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:233
 msgid "Control_CZSK Select Speed 20 kph/mph"
-msgstr ""
+msgstr "Automata menet/fék üzem sebesség kiválasztása 20km/h"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:234
 msgid "Control_CZSK Select Speed 30 kph/mph"
-msgstr ""
+msgstr "Automata menet/fék üzem sebesség kiválasztása 30km/h"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:235
 msgid "Control_CZSK Select Speed 40 kph/mph"
-msgstr ""
+msgstr "Automata menet/fék üzem sebesség kiválasztása 40km/h"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:236
 msgid "Control_CZSK Select Speed 50 kph/mph"
-msgstr ""
+msgstr "Automata menet/fék üzem sebesség kiválasztása 50km/h"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:237
 msgid "Control_CZSK Select Speed 60 kph/mph"
-msgstr ""
+msgstr "Automata menet/fék üzem sebesség kiválasztása 60km/h"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:238
 msgid "Control_CZSK Select Speed 70 kph/mph"
-msgstr ""
+msgstr "Automata menet/fék üzem sebesség kiválasztása 70km/h"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:239
 msgid "Control_CZSK Select Speed 80 kph/mph"
-msgstr ""
+msgstr "Automata menet/fék üzem sebesség kiválasztása 80km/h"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:240
 msgid "Control_CZSK Select Speed 90 kph/mph"
-msgstr ""
+msgstr "Automata menet/fék üzem sebesség kiválasztása 90km/h"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:241
 msgid "Control_CZSK Select Speed 100 kph/mph"
-msgstr ""
+msgstr "Automata menet/fék üzem sebesség kiválasztása 100km/h"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:242
 msgid "Control_CZSK Select Speed 110 kph/mph"
-msgstr ""
+msgstr "Automata menet/fék üzem sebesség kiválasztása 110km/h"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:243
 msgid "Control_CZSK Select Speed 120 kph/mph"
-msgstr ""
+msgstr "Automata menet/fék üzem sebesség kiválasztása 120km/h"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:244
 msgid "Control_CZSK Select Speed 130 kph/mph"
-msgstr ""
+msgstr "Automata menet/fék üzem sebesség kiválasztása 130km/h"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:245
 msgid "Control_CZSK Select Speed 140 kph/mph"
-msgstr ""
+msgstr "Automata menet/fék üzem sebesség kiválasztása 140km/h"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:246
 msgid "Control_CZSK Select Speed 150 kph/mph"
-msgstr ""
+msgstr "Automata menet/fék üzem sebesség kiválasztása 150km/h"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:247
 msgid "Control_CZSK Select Speed 160 kph/mph"
-msgstr ""
+msgstr "Automata menet/fék üzem sebesség kiválasztása 160km/h"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:248
 msgid "Control_CZSK Select Speed 170 kph/mph"
-msgstr ""
+msgstr "Automata menet/fék üzem sebesség kiválasztása 170km/h"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:249
 msgid "Control_CZSK Select Speed 180 kph/mph"
-msgstr ""
+msgstr "Automata menet/fék üzem sebesség kiválasztása 180km/h"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:250
 msgid "Control_CZSK Select Speed 190 kph/mph"
-msgstr ""
+msgstr "Automata menet/fék üzem sebesség kiválasztása 190km/h"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:251
 msgid "Control_CZSK Select Speed 200 kph/mph"
-msgstr ""
+msgstr "Automata menet/fék üzem sebesség kiválasztása 200km/h"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:252
 msgid "Control_CZSK Mirel Key Plus"
-msgstr ""
+msgstr "Mirel "mínusz" gomb"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:253
 msgid "Control_CZSK Mirel Key Minus"
-msgstr ""
+msgstr "Mirel "plussz" gomb"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:254
 #, fuzzy
 #| msgid "Control Diesel Player"
 msgid "Control_CZSK Mirel Key Enter"
-msgstr "Irányítás Irányított gép"
+msgstr "Mirel "enter" gomb"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:255
 #, fuzzy
@@ -1368,35 +1368,35 @@ msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:258
 msgid "Control_CZSK Change Key Position"
-msgstr ""
+msgstr "Pakettkulcs be/ki"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:261
 msgid "Control_CZSK HV2 1-system +"
-msgstr ""
+msgstr "Főmegszakító kiválasztása fel"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:262
 msgid "Control_CZSK HV3 2-system +"
-msgstr ""
+msgstr "Főmegszakító kiválasztása fel"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:263
 msgid "Control_CZSK HV3 2-system -"
-msgstr ""
+msgstr "Főmegszakító kiválasztása le"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:264
 msgid "Control_CZSK HV4 2-system +"
-msgstr ""
+msgstr "Főmegszakító kiválasztása fel"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:265
 msgid "Control_CZSK HV4 2-system -"
-msgstr ""
+msgstr "Főmegszakító kiválasztása le"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:266
 msgid "Control_CZSK HV5 2-system +"
-msgstr ""
+msgstr "Főmegszakító kiválasztása fel"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:267
 msgid "Control_CZSK HV5 2-system -"
-msgstr ""
+msgstr "Főmegszakító kiválasztása le"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:268
 #, fuzzy
@@ -1424,45 +1424,45 @@ msgstr "Irányítás 1-es áramszedő"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:272
 msgid "Control_CZSK Compressor I Combined +"
-msgstr ""
+msgstr "Légsűrítő kapcsoló fel"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:273
 msgid "Control_CZSK Compressor I Combined -"
-msgstr ""
+msgstr "Légsűrítő kapcsoló le"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:274
 msgid "Control_CZSK Compressor II Combined +"
-msgstr ""
+msgstr "Légsűrítő 2 kapcsoló fel"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:275
 msgid "Control_CZSK Compressor II Combined -"
-msgstr ""
+msgstr "Légsűrítő 2 kapcsoló fel"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:276
 msgid "Control_CZSK AuxCompressor Off/On"
-msgstr ""
+msgstr "Segédlégsűrítő bekapcsolása"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:277
 msgid "Control_CZSK Compressor I Mode Off/Auto"
-msgstr ""
+msgstr "1-es légsűrítő bekapcsolás/kikapcsolás/Automata"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:278
 msgid "Control_CZSK Compressor II Mode Off/Auto"
-msgstr ""
+msgstr "2-es légsűrítő bekapcsolás/kikapcsolás/Automata"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:279
 #, fuzzy
 #| msgid "Control Retainers Off"
 msgid "Control_CZSK Heating Off/On"
-msgstr "Irányítás Légfékvisszatartó szelepek ki"
+msgstr "Vonatfűtés be/ki"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:280
 msgid "Control_CZSK Heating in Cab Off/On"
-msgstr ""
+msgstr "Vezetőállásfűtés be/ki"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:281
 msgid "Control_CZSK Locomotive PowerVoltage 25kV/both/3kV"
-msgstr ""
+msgstr "Feszültség beállítása 25kV/mindkettő/3kV"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:282
 msgid "Control_CZSK Quickrelease button"
@@ -1476,31 +1476,31 @@ msgstr ""
 #, fuzzy
 #| msgid "Control Brake Hose Connect"
 msgid "Control_CZSK Breakpower button"
-msgstr "Irányítás Fékvezeték csatlakoztatása"
+msgstr "Vészütőgomb"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:285
 #, fuzzy
 #| msgid "Control Diesel Player"
 msgid "Control_CZSK Diesel Controller +"
-msgstr "Irányítás Irányított gép"
+msgstr "Irányváltó előre"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:286
 #, fuzzy
 #| msgid "Control Diesel Player"
 msgid "Control_CZSK Diesel Controller -"
-msgstr "Irányítás Irányított gép"
+msgstr "Irányváltó Hátra"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:287
 #, fuzzy
 #| msgid "Control Diesel Player"
 msgid "Control_CZSK Diesel Controller In/Out"
-msgstr "Irányítás Irányított gép"
+msgstr "Irányváltó kar be/ki helyezése"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:288
 #, fuzzy
 #| msgid "Control Train Brake Zero"
 msgid "Control_CZSK RDST Breaker"
-msgstr "Irányítás Vonatfék alaphelyzetbe"
+msgstr "Éberségi kiömlőszelep be/ki"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:289
 #, fuzzy
@@ -1510,19 +1510,19 @@ msgstr "Irányítás Sebességfokozat le"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:291
 msgid "Set Power Supply Station Location"
-msgstr ""
+msgstr "Alállomások helyeinek beállítása"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:292
 msgid "Set Voltage 25k"
-msgstr ""
+msgstr "Feszültség 25kV-ra állítva"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:293
 msgid "Set Voltage 3k"
-msgstr ""
+msgstr "Feszültség 3kV-ra állítva"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:294
 msgid "Set Voltage 0"
-msgstr ""
+msgstr "Feszültség 0-ra állítva"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:295
 msgid "Set Delete Voltage Marker"

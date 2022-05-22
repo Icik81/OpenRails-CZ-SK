@@ -107,31 +107,31 @@ msgstr ""
 
 #: ../../RunActivity/Viewer3D/Viewer.cs:1025
 msgid "Platform and siding labels visible."
-msgstr ""
+msgstr "Fő- és mellékvágányok nevei láthatóak"
 
 #: ../../RunActivity/Viewer3D/Viewer.cs:1028
 msgid "Platform labels visible."
-msgstr ""
+msgstr "Fővágányok nevei láthatóak"
 
 #: ../../RunActivity/Viewer3D/Viewer.cs:1031
 msgid "Siding labels visible."
-msgstr ""
+msgstr "Mellékvágányok nevei láthatóak"
 
 #: ../../RunActivity/Viewer3D/Viewer.cs:1037
 msgid "Platform and siding labels hidden."
-msgstr ""
+msgstr "Fő- és mellékvágányok nevei elrejtve"
 
 #: ../../RunActivity/Viewer3D/Viewer.cs:1048
 msgid "Train labels visible."
-msgstr ""
+msgstr "Vonatok nevei láthatóak"
 
 #: ../../RunActivity/Viewer3D/Viewer.cs:1051
 msgid "Car labels visible."
-msgstr ""
+msgstr "Kocsik nevei láthatóak"
 
 #: ../../RunActivity/Viewer3D/Viewer.cs:1057
 msgid "Train and car labels hidden."
-msgstr ""
+msgstr "Vonatok és kocsik nevei elrejtve"
 
 #: ../../RunActivity/Viewer3D/Viewer.cs:1138
 #, fuzzy
@@ -601,7 +601,7 @@ msgstr "Gép indítása/leállítása"
 
 #: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:67
 msgid "Connect/Unmount Helper"
-msgstr ""
+msgstr "Távvezérlési kábel csatlakoztatása"
 
 #: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:69
 msgid "Toggle Brake Hose Connection"
@@ -621,7 +621,7 @@ msgstr "Kieresztőszelep nyit/zár"
 
 #: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:77
 msgid "Brake Mode G/P/R/R+Mg"
-msgstr ""
+msgstr "Vonatnemváltó G/P/R/R+Mg"
 
 #: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:77
 #: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:84
@@ -634,11 +634,11 @@ msgstr ""
 #, fuzzy
 #| msgid "Safety"
 msgid "Set"
-msgstr "BiztSz"
+msgstr "Beállítva"
 
 #: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:84
 msgid "Car Mode Empty/Loaded"
-msgstr ""
+msgstr "Raksúlyváltó Üres/Rakott"
 
 #: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:101
 #, fuzzy
@@ -648,7 +648,7 @@ msgstr "Fékező"
 
 #: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:105
 msgid "Air Twin Pipe Hoses"
-msgstr ""
+msgstr "Főlégtartály tömlő"
 
 #: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:108
 #, fuzzy
@@ -670,7 +670,7 @@ msgstr "Dízel üzemanyagtartály"
 
 #: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:119
 msgid "Electric Heating/Air"
-msgstr ""
+msgstr "Villamos Hűtés/Fűtés"
 
 #: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:122
 msgid "Close window"
@@ -748,35 +748,35 @@ msgstr "Kieresztőszelep lezárva"
 #, fuzzy
 #| msgid "Control Mode"
 msgid "Car Mode G"
-msgstr "Irányítási mód"
+msgstr "Vonatnemváltó G állásban"
 
 #: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:283
 #, fuzzy
 #| msgid "Control Mode"
 msgid "Car Mode P"
-msgstr "Irányítási mód"
+msgstr "Vonatnemváltó P állásban"
 
 #: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:288
 #, fuzzy
 #| msgid "Control Mode"
 msgid "Car Mode R"
-msgstr "Irányítási mód"
+msgstr "Vonatnemváltó R állásban"
 
 #: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:293
 msgid "Car Mode R+Mg"
-msgstr ""
+msgstr "Vonatnemváltó R+Mg állásban"
 
 #: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:308
 msgid "Empty Car"
-msgstr ""
+msgstr "Üres kocsi"
 
 #: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:309
 msgid "Empty"
-msgstr ""
+msgstr "Üres"
 
 #: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:313
 msgid "Loaded Car"
-msgstr ""
+msgstr "Rakott kocsi"
 
 #: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:314
 #, fuzzy
@@ -855,7 +855,7 @@ msgstr "ki"
 
 #: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:367
 msgid "Left Door Closed"
-msgstr ""
+msgstr "Bal ajtók zárva"
 
 #: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:368
 #, fuzzy
@@ -877,11 +877,11 @@ msgstr "nyitás"
 
 #: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:386
 msgid "Right Door Closed"
-msgstr ""
+msgstr "Jobb ajtók zárva"
 
 #: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:391
 msgid "Right Door Opened"
-msgstr ""
+msgstr "Jobb ajtók nyitva"
 
 #: ../../RunActivity/Viewer3D/Popups/CompassWindow.cs:35
 msgid "Compass"
@@ -1106,7 +1106,7 @@ msgstr "Gőz"
 
 #: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:763
 msgid "Electric."
-msgstr ""
+msgstr "Villany"
 
 #: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:1062
 msgid "Procedures"
@@ -1393,7 +1393,7 @@ msgstr "Homokoló letiltva"
 
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:518
 msgid "Amount of sand"
-msgstr ""
+msgstr "Homok mennyisége"
 
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:531
 #: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:105
@@ -1614,7 +1614,7 @@ msgstr "Dízel üzemanyagtartály"
 #, fuzzy
 #| msgid "Heat"
 msgid "ElecHeat"
-msgstr "Hő"
+msgstr "Vill.fűtés"
 
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:649
 #, fuzzy
@@ -1624,7 +1624,7 @@ msgstr "Gőz"
 
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:655
 msgid "Calorifer"
-msgstr ""
+msgstr "Kalorifer"
 
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:666
 #, fuzzy
@@ -1652,7 +1652,7 @@ msgstr "MOZDONY INFORMÁCIÓI"
 
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:784
 msgid "Route Voltage"
-msgstr ""
+msgstr "Felsővezeték fesz."
 
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:786
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1014
@@ -1731,7 +1731,7 @@ msgstr "Segédáram"
 
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:837
 msgid "RpmDE"
-msgstr ""
+msgstr "Fordulat"
 
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:838
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:853
@@ -1841,7 +1841,7 @@ msgstr "Légsűrítő"
 #, fuzzy
 #| msgid "Compressor"
 msgid "AuxCompressor"
-msgstr "Légsűrítő"
+msgstr "Segédégsűrítő"
 
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1135
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1193
@@ -1890,7 +1890,7 @@ msgstr "Kormányszelep"
 
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1211
 msgid "AirHoses"
-msgstr ""
+msgstr "Tömlők"
 
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1215
 msgid "BleedOff"
@@ -1898,7 +1898,7 @@ msgstr "KieresztőSz"
 
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1217
 msgid "AntiSkid"
-msgstr ""
+msgstr "Csúszásv."
 
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1219
 #, fuzzy
@@ -1920,7 +1920,7 @@ msgstr "Fékheng"
 
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1227
 msgid "VolMainRes"
-msgstr ""
+msgstr "Főlégt"
 
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1229
 #, fuzzy
@@ -1932,7 +1932,7 @@ msgstr "Mód"
 #, fuzzy
 #| msgid "Mass"
 msgid "BrkMass"
-msgstr "Tömeg"
+msgstr "Féktömeg"
 
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1365
 msgid "FORCE INFORMATION"
@@ -2016,7 +2016,7 @@ msgstr "(Fejlett csúszási modell kikapcsolva)"
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1428
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1437
 msgid "ResWind:"
-msgstr ""
+msgstr "Szél"
 
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1429
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1438
@@ -2109,7 +2109,7 @@ msgstr "Alagút"
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1479
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1826
 msgid "Wind"
-msgstr ""
+msgstr "Szél"
 
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1574
 #, fuzzy
@@ -2169,19 +2169,19 @@ msgstr "FORGALOMIRÁNYÍTÁSI INFORMÁCIÓK"
 
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1822
 msgid "Visibility"
-msgstr ""
+msgstr "Láthatótávolság"
 
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1823
 msgid "Cloud cover"
-msgstr ""
+msgstr "Felhőtakaró"
 
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1824
 msgid "Intensity"
-msgstr ""
+msgstr "Intenzitás"
 
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1825
 msgid "Liquidity"
-msgstr ""
+msgstr "Csapadék halmazállapota"
 
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1827
 #, fuzzy
@@ -2510,7 +2510,7 @@ msgstr "Utas"
 
 #: ../../RunActivity/Viewer3D/Popups/PaxWindow.cs:45
 msgid "Jméno"
-msgstr ""
+msgstr "Név"
 
 #: ../../RunActivity/Viewer3D/Popups/PaxWindow.cs:46
 #, fuzzy
@@ -2653,7 +2653,7 @@ msgstr "EllenNy"
 #: ../../RunActivity/Viewer3D/Popups/TrackMonitorWindow.cs:409
 #: ../../RunActivity/Viewer3D/WebServices/TrackMonitorDisplay.cs:361
 msgid "Milepost"
-msgstr ""
+msgstr "Szelvény"
 
 #: ../../RunActivity/Viewer3D/Popups/TrackMonitorWindow.cs:409
 #: ../../RunActivity/Viewer3D/WebServices/TrackMonitorDisplay.cs:363
@@ -3121,7 +3121,7 @@ msgstr "Zárva"
 #: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:606
 #: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:320
 msgid "Blocked"
-msgstr ""
+msgstr "Blokkolva"
 
 #: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:633
 #: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:635
@@ -3348,7 +3348,7 @@ msgstr "fa"
 
 #: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:756
 msgid "sand"
-msgstr ""
+msgstr "homok"
 
 #: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:757
 #, fuzzy
@@ -3360,23 +3360,23 @@ msgstr "kavics"
 #, fuzzy
 #| msgid "freight-gravel"
 msgid "freight-livestock"
-msgstr "kavics"
+msgstr "Élőállat"
 
 #: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:759
 #, fuzzy
 #| msgid "freight-gravel"
 msgid "freight-fuel"
-msgstr "kavics"
+msgstr "Üzemanyag"
 
 #: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:760
 #, fuzzy
 #| msgid "freight-coal"
 msgid "freight-milk"
-msgstr "szén"
+msgstr "Tej"
 
 #: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:761
 msgid "mail"
-msgstr ""
+msgstr "Posta"
 
 #: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:890
 msgid "Refill: Immediate refill process selected, refilling immediately."
@@ -3560,7 +3560,7 @@ msgstr ""
 
 #~ msgctxt "Brake Controller"
 #~ msgid "Running"
-#~ msgstr "Szabadonfutó"
+#~ msgstr "Menet"
 
 #~ msgctxt "PowerSupply"
 #~ msgid "Off"
@@ -4154,10 +4154,10 @@ msgstr ""
 #~ msgstr "A vízszint ismét megfelelő."
 
 #~ msgid "Carriage temperature is too hot, the passengers are sweating."
-#~ msgstr "A kocsikban lévő hőmérséklet túl magas, az utasok izzadnak."
+#~ msgstr "A kocsikban lévő hőmérséklet túl magas, az utasoknak melegük van."
 
 #~ msgid "Carriage temperature is too cold, the passengers are freezing."
-#~ msgstr "A kocsikban lévő hőmérséklet túl alacsony, az utasok megfagynak."
+#~ msgstr "A kocsikban lévő hőmérséklet túl alacsony, az utasok fáznak."
 
 #~ msgid "(absolute)"
 #~ msgstr "(abszolút)"

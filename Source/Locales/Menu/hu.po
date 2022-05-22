@@ -704,26 +704,26 @@ msgstr "Általános"
 #: ../../Menu/Options.Designer.cs:447
 #: ../../Menu/Properties/Options.Designer.cs:600
 msgid "Reduce memory usage"
-msgstr ""
+msgstr "Memóriahasználat csökkentése"
 
 #: ../../Menu/Options.Designer.cs:460
 #: ../../Menu/Properties/Options.Designer.cs:612
 msgid "Save commands for replay"
-msgstr ""
+msgstr "Parancsok mentése kiértékeléshez"
 
 #: ../../Menu/Options.Designer.cs:588
 #: ../../Menu/Properties/Options.Designer.cs:622
 msgid "Port number"
-msgstr ""
+msgstr "Port száma"
 
 #: ../../Menu/Options.Designer.cs:621
 msgid "Enable webserver"
-msgstr ""
+msgstr "Webserver engedélyezése"
 
 #: ../../Menu/Options.Designer.cs:634
 #: ../../Menu/Properties/Options.Designer.cs:663
 msgid "Run at 32 bit on Win64"
-msgstr ""
+msgstr "32 bites futtatás Win64es rendszeren"
 
 #: ../../Menu/Options.Designer.cs:647
 #: ../../Menu/Properties/Options.Designer.cs:675
@@ -759,7 +759,7 @@ msgstr "Hang"
 #: ../../Menu/Options.Designer.cs:785
 #: ../../Menu/Properties/Options.Designer.cs:819
 msgid "% external sound heard internally"
-msgstr ""
+msgstr "°% külső hang hallható a vezetőálláson"
 
 #: ../../Menu/Options.Designer.cs:819
 #: ../../Menu/Properties/Options.Designer.cs:852
@@ -797,7 +797,7 @@ msgstr ""
 #: ../../Menu/Options.Designer.cs:953
 #: ../../Menu/Properties/Options.Designer.cs:963
 msgid "Shadow for all shapes"
-msgstr ""
+msgstr "Árnyékok"
 
 #: ../../Menu/Options.Designer.cs:964
 #: ../../Menu/Properties/Options.Designer.cs:973
@@ -881,7 +881,7 @@ msgstr "Szimuláció"
 
 #: ../../Menu/Options.Designer.cs:1316
 msgid "Cold Start (locomotive needs to be revived)"
-msgstr ""
+msgstr "Szimuláció inditásánál teljesen kiüzemelt mozdony"
 
 #: ../../Menu/Options.Designer.cs:1332
 #: ../../Menu/Properties/Options.Designer.cs:1314
@@ -1140,7 +1140,7 @@ msgstr "Szint"
 #: ../../Menu/Options.Designer.cs:2265
 #: ../../Menu/Properties/Options.Designer.cs:2217
 msgid "Activity weather randomization"
-msgstr ""
+msgstr ""Activity"ben az időjárás véletlenszerűsége"
 
 #: ../../Menu/Options.Designer.cs:2275
 #: ../../Menu/Properties/Options.Designer.cs:2227
@@ -1719,7 +1719,7 @@ msgstr ""
 
 #: ../../Menu/Properties/Options.Designer.cs:1366
 msgid "Simple controls and physics"
-msgstr ""
+msgstr "Egyszerű irányítás és fizika"
 
 #: ../../Menu/Properties/Options.Designer.cs:2119
 msgid "Updater"
