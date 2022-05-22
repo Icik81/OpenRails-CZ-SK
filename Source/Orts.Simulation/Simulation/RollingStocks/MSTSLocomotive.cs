@@ -9698,29 +9698,37 @@ namespace Orts.Simulation.RollingStocks
                     //                           data = -data;
                     break;
                 case CABViewControlTypes.TOTAL_FORCE:
-                    Simulator.Confirmer.MSG(extendedPhysics.TotalCurrent.ToString());
+                    data = 0;
+                    foreach (Undercarriage uc in extendedPhysics.Undercarriages)
+                    {
+                        foreach (ExtendedAxle ea in uc.Axles)
+                        {
+                            data += ea.ForceNFiltered;
+                        }
+                    }
+                    if (data < 0 && data > MotiveForceN)
+                    {
+                        data = MotiveForceN;
+                        if (data < -MaxDynamicBrakeForceN)
+                            data = -MaxDynamicBrakeForceN;
+                        data = (data / MaxDynamicBrakeForceN) * 100;
+                    }
+                    else
+                        data = (data / MaxForceN) * 100;
                     if (cvc.Feature == "HideOnPositiveForce")
                     {
-                        if (extendedPhysics.TotalCurrent >= 0)
+                        if (data >= 0)
                             cvc.IsVisible = PositiveMask = false;
                         else
                             cvc.IsVisible = PositiveMask = true;
                     }
                     if (cvc.Feature == "HideOnNegativeForce")
                     {
-                        if (extendedPhysics.TotalCurrent <= 0)
+                        if (data <= 0)
                             cvc.IsVisible = NegativeMask = false;
                         else
                             cvc.IsVisible = NegativeMask = true;
                     }
-                    foreach (Undercarriage uc in extendedPhysics.Undercarriages)
-                    {
-                        foreach (ExtendedAxle ea in uc.Axles)
-                        {
-                            data += ea.ForceNFiltered / extendedPhysics.NumAxles * 2;
-                        }
-                    }
-                    data = (data / RouteVoltageV == 3000 ? MaxForceNDC : MaxForceNAC) * 100;
                     break;
                 case CABViewControlTypes.MOTOR_FORCE:
                     {
