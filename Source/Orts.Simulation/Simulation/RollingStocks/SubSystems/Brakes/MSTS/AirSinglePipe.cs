@@ -79,6 +79,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
         protected float ThresholdBailOffOn = 0;
         protected ValveState PrevTripleValveStateState;
         protected float AutomaticDoorsCycle = 0;
+        
 
         /// <summary>
         /// EP brake holding valve. Needs to be closed (Lap) in case of brake application or holding.
@@ -1036,20 +1037,25 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             }
             else
                 UpdateTripleValveState(threshold);
-
+            
             // Zjistí rychlost změny tlaku v potrubí a v brzdovém válci
             if (T0 > 1) T0 = 0;
             if (T0 == 0.0f)
             {
                 prevBrakeLine1PressurePSI = BrakeLine1PressurePSI;
-                prevAutoCylPressurePSI = AutoCylPressurePSI;                
+                prevAutoCylPressurePSI = AutoCylPressurePSI;
+                prevTotalCapacityMainResBrakePipe = TotalCapacityMainResBrakePipe;
             }                        
             T0 += elapsedClockSeconds;
             if (T0 > 0.33f && T0 < 0.43f)
             {
                 T0 = 0;
-                BrakePipeChangeRate = Math.Abs(prevBrakeLine1PressurePSI - BrakeLine1PressurePSI) * 3.33f;
+                MainResChangeRate = (prevTotalCapacityMainResBrakePipe - TotalCapacityMainResBrakePipe) * 3.33f;
+                if (MainResChangeRate < 0)
+                    MainResChangeRate = 0;
 
+                BrakePipeChangeRate = Math.Abs(prevBrakeLine1PressurePSI - BrakeLine1PressurePSI) * 3.33f;
+                
                 if (BrakePipeChangeRate > 1)
                     BrakePipeChangeRateBar = Math.Max(BrakePipeChangeRateBar, BrakePipeChangeRate / 14.50377f);
                 else
@@ -1428,7 +1434,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             // Brake pressures are calculated on the lead locomotive first, and then propogated along each wagon in the consist.
             var train = trainCar.Train;
             var lead = trainCar as MSTSLocomotive;
-            var brakePipeTimeFactorS = lead == null ? 0.003f : lead.BrakePipeTimeFactorS; // Průrazná rychlost tlakové vlny 250m/s 0.003f
+            //var brakePipeTimeFactorS = lead == null ? 0.003f : lead.BrakePipeTimeFactorS; // Průrazná rychlost tlakové vlny 250m/s 0.003f
+            var brakePipeTimeFactorS = 0.003f; // Průrazná rychlost tlakové vlny 250m/s 0.003f
             var BrakePipeChargingRatePSIorInHgpS0 = lead == null ? 29 : lead.BrakePipeChargingRatePSIorInHgpS;
 
             if (train.Simulator.Settings.CorrectQuestionableBrakingParams)
@@ -1437,8 +1444,14 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 BrakePipeChargingRatePSIorInHgpS0 = MathHelper.Clamp(BrakePipeChargingRatePSIorInHgpS0, 21, 50);
             }
 
-            float brakePipeTimeFactorS0 = brakePipeTimeFactorS;
-            float brakePipeTimeFactorS_Apply = brakePipeTimeFactorS * 3.0f; // Vytvoří zpoždění náběhu brzdy vlaku kvůli průrazné tlakové vlně            
+            // Výpočet z údaje vlaku dlouhého 330m (25 vozů) sníží tlak v hp z 5 na 3.4bar za 22s
+            float brakePipeTimeFactorSToTrainLength = train.Length / (330 / (brakePipeTimeFactorS * 7.5f * 25) * train.Cars.Count);            
+            float brakePipeTimeFactorS_Release = brakePipeTimeFactorSToTrainLength;  // Vytvoří zpoždění tlakové vlny při odbržďování
+            float brakePipeTimeFactorS_Apply = brakePipeTimeFactorSToTrainLength; // Vytvoří zpoždění náběhu brzdy vlaku kvůli průrazné tlakové vlně            
+
+            // Výchozí zpoždění tlakové vlny v potrubí 
+            float brakePipeTimeFactorSBase = brakePipeTimeFactorS_Release;
+
             float brakePipeChargingNormalPSIpS = BrakePipeChargingRatePSIorInHgpS0; // Rychlost plnění průběžného potrubí při normálním plnění 29 PSI/s
             float brakePipeChargingQuickPSIpS = 1000; // Rychlost plnění průběžného potrubí při švihu 1000 PSI/s
 
@@ -1655,7 +1668,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         && !lead.EmergencyButtonPressed
                         && lead.BrakeSystem.BrakeCylReleaseFlow)
                     {
-                        if (lead.BrakeSystem.BrakePipeChangeRate > 0.01f * 14.50377f && !lead.ARRTrainBrakeEngage)
+                        if ((lead.BrakeSystem.BrakePipeChangeRate > 0.01f * 14.50377f || lead.BrakeSystem.MainResChangeRate > 0.01f * 14.50377f) && !lead.ARRTrainBrakeEngage)
                             lead.BrakeSystem.BrakePipeFlow = true;
                         else lead.BrakeSystem.BrakePipeFlow = false;
                     }
@@ -1767,7 +1780,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                                 lead.BrakeSystem.BrakeLine1PressurePSI *= ServiceVariationFactor / serviceTimeFactor;
                             else lead.BrakeSystem.BrakeLine1PressurePSI *= ServiceVariationFactor;
 
-                            if (lead.TrainBrakeController.MaxPressurePSI <= lead.BrakeSystem.maxPressurePSI0) brakePipeTimeFactorS0 = brakePipeTimeFactorS_Apply;
+                            if (lead.TrainBrakeController.MaxPressurePSI <= lead.BrakeSystem.maxPressurePSI0) brakePipeTimeFactorSBase = brakePipeTimeFactorS_Apply;
                         }
                     }
 
@@ -1798,7 +1811,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         // Based on the principle of pressure equualization between adjacent cars
                         // First, we define a variable storing the pressure diff between cars, but limited to a maximum flow rate depending on pipe characteristics
                         // The sign in the equation determines the direction of air flow.
-                        float TrainPipePressureDiffPropogationPSI = (p0>p1 ? -1 : 1) * Math.Min(TrainPipeTimeVariationS * Math.Abs(p1 - p0) / brakePipeTimeFactorS, Math.Abs(p1 - p0));
+                        float TrainPipePressureDiffPropogationPSI = (p0>p1 ? -1 : 1) * Math.Min(TrainPipeTimeVariationS * Math.Abs(p1 - p0) / brakePipeTimeFactorSBase, Math.Abs(p1 - p0));
                         
                         // Air flows from high pressure to low pressure, until pressure is equal in both cars.
                         // Brake pipe volumes of both cars are taken into account, so pressure increase/decrease is proportional to relative volumes.
@@ -1811,21 +1824,21 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     {
                         if (car.BrakeSystem.AngleCockAOpen) //  AND Front brake cock opened
                         {
-                            car.BrakeSystem.BrakeLine1PressurePSI -= TrainPipeTimeVariationS * p1 / (brakePipeTimeFactorS * 300);
+                            car.BrakeSystem.BrakeLine1PressurePSI -= TrainPipeTimeVariationS * p1 / (brakePipeTimeFactorSBase * 200);
                             if (car.BrakeSystem.BrakeLine1PressurePSI < 0)
                                 car.BrakeSystem.BrakeLine1PressurePSI = 0;
                         }
 
                         if (car0.BrakeSystem.AngleCockBOpen && car != car0) //  AND Rear cock of wagon opened, and car is not the first wagon
                         {
-                            car0.BrakeSystem.BrakeLine1PressurePSI -= TrainPipeTimeVariationS * p0 / (brakePipeTimeFactorS * 300);
+                            car0.BrakeSystem.BrakeLine1PressurePSI -= TrainPipeTimeVariationS * p0 / (brakePipeTimeFactorSBase * 200);
                             if (car.BrakeSystem.BrakeLine1PressurePSI < 0)
                                 car.BrakeSystem.BrakeLine1PressurePSI = 0;
                         }
                     }
                     if (car == train.Cars[train.Cars.Count - 1] && car.BrakeSystem.AngleCockBOpen) // Last car in train and rear cock of wagon open
                     {
-                        car.BrakeSystem.BrakeLine1PressurePSI -= TrainPipeTimeVariationS * p1 / (brakePipeTimeFactorS * 300);
+                        car.BrakeSystem.BrakeLine1PressurePSI -= TrainPipeTimeVariationS * p1 / (brakePipeTimeFactorSBase * 200);
                         if (car.BrakeSystem.BrakeLine1PressurePSI < 0)
                             car.BrakeSystem.BrakeLine1PressurePSI = 0;
                     }

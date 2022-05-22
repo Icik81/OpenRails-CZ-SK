@@ -567,7 +567,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
             DieselTempCoolingHyst = copy.DieselTempCoolingHyst;
             CoolingEnableRPM = copy.CoolingEnableRPM;
             WaterCoolingPower = copy.WaterCoolingPower;
-            OilCoolingPower = copy.OilCoolingPower;            
+            OilCoolingPower = copy.OilCoolingPower;
+            ElevatedConsumptionIdleRPM = copy.ElevatedConsumptionIdleRPM;
 
             if (copy.GearBox != null)
             {
@@ -866,6 +867,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
         public bool OilTempCoolingRunning = false;
         public bool WaterTempCoolingLowRunning = false;
         public bool OilTempCoolingLowRunning = false;
+        public float ElevatedConsumptionIdleRPM;
 
         /// <summary>
         /// Load of the engine
@@ -964,7 +966,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                     case "coolingenablerpm": CoolingEnableRPM = stf.ReadFloatBlock(STFReader.UNITS.None, 0f); break;                    
                     case "watercoolingpower": WaterCoolingPower = stf.ReadFloatBlock(STFReader.UNITS.None, 75f); WaterCoolingPower = MathHelper.Clamp(WaterCoolingPower, 30, 200); break;
                     case "oilcoolingpower": OilCoolingPower = stf.ReadFloatBlock(STFReader.UNITS.None, 75f); OilCoolingPower = MathHelper.Clamp(OilCoolingPower, 30, 200); break;
-
+                    case "elevatedconsumptionidlerpm": ElevatedConsumptionIdleRPM = stf.ReadFloatBlock(STFReader.UNITS.None, 0); break;
+                        
                     default:
                         end = true;
                         break;
@@ -1092,10 +1095,13 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
 
             // Icik
             // Zvýší otáčky motoru při větším odběru proudu         
-            float ElevatedConsumptionRPM = 0;
+            float ActualElevatedConsumptionRPM = 0;
             if (locomotive.Heating_OffOn || ((locomotive.CompressorIsOn || locomotive.Compressor2IsOn) && locomotive.AirBrakesIsCompressorElectricOrMechanical))
             {
-                ElevatedConsumptionRPM = IdleRPM * 0.25f / 60;
+                //ElevatedConsumptionIdleRPM = 480;
+                ActualElevatedConsumptionRPM = 2f;
+                if (ElevatedConsumptionIdleRPM == 0)
+                    ElevatedConsumptionIdleRPM = IdleRPM * 1.1f;
             }
 
             // Icik
@@ -1104,15 +1110,15 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
             {                
                 if (RealRPM > IdleRPM)
                     RealRPM -= ChangeDownRPMpS * elapsedClockSeconds;
-                if (RealRPM < IdleRPM + ElevatedConsumptionRPM) 
-                    RealRPM = IdleRPM + ElevatedConsumptionRPM;
+                if (RealRPM < IdleRPM + ActualElevatedConsumptionRPM) 
+                    RealRPM = IdleRPM + ActualElevatedConsumptionRPM;
             }
             else
             { 
-                if (RealRPM > IdleRPM * 1.1f)
+                if (RealRPM > ElevatedConsumptionIdleRPM)
                     RealRPM = Math.Max(RealRPM + (dRPM * elapsedClockSeconds), 0);
                 else
-                    RealRPM = Math.Max(ElevatedConsumptionRPM + (RealRPM + dRPM * elapsedClockSeconds), 0);
+                    RealRPM = Math.Max(ActualElevatedConsumptionRPM + (RealRPM + (dRPM * elapsedClockSeconds)), 0);
             }
 
             // Icik

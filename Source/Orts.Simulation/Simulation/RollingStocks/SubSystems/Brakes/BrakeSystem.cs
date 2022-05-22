@@ -150,6 +150,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes
         public float OLBailOffLimitPressurePSI;
         public bool OL3active;
         public bool EmerBrakeTriggerActive = false;
+        public float MainResChangeRate;
+        public float prevTotalCapacityMainResBrakePipe;
 
         public bool BrakePipeDischargeRate = false;
         public bool BrakePipeChargeRate = false;
