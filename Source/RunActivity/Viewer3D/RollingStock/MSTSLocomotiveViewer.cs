@@ -2587,7 +2587,7 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.REQUESTED_FORCE:
                     if (Control.Feature == "NegativeMask")
                     {
-                        if (Locomotive.extendedPhysics.TotalCurrent < -0.2f && Locomotive.PositiveMask)
+                        if (Locomotive.MotiveForceN < -200f && Locomotive.PositiveMask)
                             index = 1;
                         else
                             index = 0;
@@ -2595,7 +2595,7 @@ namespace Orts.Viewer3D.RollingStock
                     }
                     if (Control.Feature == "PositiveMask")
                     {
-                        if (Locomotive.extendedPhysics.TotalCurrent > 0.2f && Locomotive.NegativeMask)
+                        if (Locomotive.MotiveForceN > 200 && Locomotive.NegativeMask)
                             index = 1;
                         else
                             index = 0;
