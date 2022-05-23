@@ -1282,7 +1282,7 @@ namespace Orts.Simulation.RollingStocks
 
                 // Nastavení pro plně oživenou lokomotivu
                 if (LocoReadyToGo && BrakeSystem.IsAirFull && !LocoIsStatic)
-                {
+                {                    
                     if (!Battery)
                     {
                         SignalEvent(Event.BatteryOn);
@@ -1318,15 +1318,15 @@ namespace Orts.Simulation.RollingStocks
                                 MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO1", 1).ToString());
                         }
 
-                        if (Pantograph4Enable)
-                        {
+                        //if (Pantograph4Enable)
+                        //{
                             Pantograph4Switch = 1;
                             if (RouteVoltageV == 3000)
                                 HV5Switch = 1;
                             if (RouteVoltageV == 25000)
                                 HV5Switch = 3;
-                        }
-                        if (Pantograph3Enable)
+                        //}
+                        //if (Pantograph3Enable)
                             Pantograph3Switch = 2;
 
                         if (PantographVoltageV > PantographCriticalVoltage)

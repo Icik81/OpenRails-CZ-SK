@@ -3691,6 +3691,9 @@ namespace Orts.Simulation.RollingStocks
         // Nastaví příznak zapnutých baterií a napájení pro zapnutí světel
         public void SetCarLightsPowerOn()
         {
+            if (LocoReadyToGo)
+                Headlight = 1;
+
             if (Battery)
                 CarLightsPowerOn = true;
             else
@@ -3726,6 +3729,7 @@ namespace Orts.Simulation.RollingStocks
             if (LocoHelperOn)
             {
                 ThrottlePercent = Simulator.ThrottleLocoHelper;
+                Headlight = 1;
             }
 
             if (extendedPhysics != null)

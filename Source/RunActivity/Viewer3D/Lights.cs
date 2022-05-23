@@ -274,7 +274,7 @@ namespace Orts.Viewer3D
             LightCycle = 50;
 
             // Světla pro AI
-            if (Car.Train != null && Car.Train.TrainType == Train.TRAINTYPE.AI)
+            if (Car.Train != null && (Car.Train.TrainType == Train.TRAINTYPE.AI || Car.Train.TrainType == Train.TRAINTYPE.REMOTE))
             {
                 // Reflektor bude mít AI jen v noci
                 if (newIsDay)

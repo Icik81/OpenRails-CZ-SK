@@ -2231,7 +2231,8 @@ namespace Orts.Simulation.RollingStocks
 
         public virtual void CopyControllerSettings(TrainCar other)
         {
-            Headlight = other.Headlight;
+            // Icik
+            //Headlight = other.Headlight;
         }
 
         public void AddWheelSet(float offset, int bogieID, int parentMatrix, string wheels, int bogie1Axles, int bogie2Axles)
