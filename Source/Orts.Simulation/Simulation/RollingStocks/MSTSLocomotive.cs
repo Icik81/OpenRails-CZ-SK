@@ -3855,8 +3855,17 @@ namespace Orts.Simulation.RollingStocks
         protected float SplashScreenRandomTime = 0;
         public bool SplashScreenWillBeDisplayed = false;
         protected float HvPantoTimer = 0;
+        protected bool firstFrame = true;
         public override void Update(float elapsedClockSeconds)
         {
+            if (firstFrame)
+            {
+                firstFrame = false;
+                if (Simulator.Settings.AirEmpty)
+                {
+                    PantoCommandDown = true;
+                }
+            }
             if (AbsSpeedMpS == 0)
                 WheelSpeedMpS = 0;
             if (LocoType == LocoTypes.Vectron && !PantoCommandDown)
