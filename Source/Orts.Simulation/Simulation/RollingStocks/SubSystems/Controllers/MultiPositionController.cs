@@ -322,7 +322,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                         }
                         else                        
                         {
-                            //Locomotive.TrainBrakeController.EmergencyBrakingPushButton = true;                            
+                            Locomotive.SetTrainBrakePercent(100);
                         }
                     }
                 }
