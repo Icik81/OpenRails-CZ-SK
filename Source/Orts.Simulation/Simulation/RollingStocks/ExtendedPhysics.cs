@@ -278,6 +278,11 @@ namespace Orts.Simulation.RollingStocks
                     Locomotive.CruiseControl.SpeedRegMode = CruiseControl.SpeedRegulatorMode.Manual;
                 }
             }
+
+            // Icik
+            if (Locomotive.LocoHelperOn)
+                Locomotive.Train.ControllerVolts = Locomotive.Simulator.ControllerVoltsLocoHelper;
+
             if (!Locomotive.IsLeadLocomotive() && Locomotive.PowerOn && (Locomotive.AcceptMUSignals || Locomotive.LocoHelperOn))
                 Locomotive.ControllerVolts = Locomotive.Train.ControllerVolts;
 
