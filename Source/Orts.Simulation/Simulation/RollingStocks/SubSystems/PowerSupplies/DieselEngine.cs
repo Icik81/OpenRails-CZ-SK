@@ -1098,8 +1098,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
             float ActualElevatedConsumptionRPM = 0;
             if (locomotive.Heating_OffOn || ((locomotive.CompressorIsOn || locomotive.Compressor2IsOn) && locomotive.AirBrakesIsCompressorElectricOrMechanical))
             {
-                //ElevatedConsumptionIdleRPM = 480;
-                ActualElevatedConsumptionRPM = 2f;
+                //ElevatedConsumptionIdleRPM = 580;
+                ActualElevatedConsumptionRPM = 5f;
                 if (ElevatedConsumptionIdleRPM == 0)
                     ElevatedConsumptionIdleRPM = IdleRPM * 1.1f;
             }
