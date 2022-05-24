@@ -961,7 +961,16 @@ namespace Orts.Simulation.RollingStocks
                 MassKG = InitialMassKG;
 
             if (Simulator.GameTimeCyklus10 == 10)
-            {
+            {                
+                foreach (TrainCar car in Train.Cars)
+                {
+                    if (car is MSTSLocomotive)
+                        continue;
+                    else
+                    if (WagonType == WagonTypes.Passenger)
+                        car.CarLightsPowerOn = true;
+                }
+
                 // Výpočet max brzdné síly
                 const float CoefE = 0.84f; // Lokomotiva
                 const float CoefP = 0.80f; // Osobní vůz

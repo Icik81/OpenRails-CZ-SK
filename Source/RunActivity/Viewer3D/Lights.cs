@@ -137,13 +137,10 @@ namespace Orts.Viewer3D
         int LightCycle = 0;
         public void PrepareFrame(RenderFrame frame, ElapsedTime elapsedTime)
         {
-            // Icik
-            var locomotive = Car.Train != null && Car.Train.IsActualPlayerTrain ? Viewer.PlayerLocomotive : null;
-            var mstsLocomotive = locomotive as MSTSLocomotive;
-            if ((Car.Train != null && Car.Train.TrainType == Train.TRAINTYPE.STATIC && !Car.CarLightsPowerOn)
-                || (Car.Train != null && Car.Train.TrainType == Train.TRAINTYPE.AI && !Car.CarLightsPowerOn)
-                || (Car.Train != null && Car.Train.TrainType == Train.TRAINTYPE.REMOTE && !Car.CarLightsPowerOn)
-                || (Car.Train != null && Car.CarIsPlayerLoco && mstsLocomotive != null && !mstsLocomotive.Battery))
+            // Icik            
+            //var locomotive = Car.Train != null && Car.Train.IsActualPlayerTrain ? Viewer.PlayerLocomotive : null;
+            //var mstsLocomotive = locomotive as MSTSLocomotive;
+            if (Car.Train != null && !Car.CarLightsPowerOn)                              
             {
                 HasLightCone = false;
                 return;
