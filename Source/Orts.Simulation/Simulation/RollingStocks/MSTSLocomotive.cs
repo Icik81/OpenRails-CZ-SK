@@ -643,6 +643,9 @@ namespace Orts.Simulation.RollingStocks
         public float PrevDoorSwitch = 1;
         public bool LocoIsStatic;
         public float PantoCanHVOffTime;
+        public bool DirectionButton;
+        public float DirectionButtonPosition = 2;
+
 
         // Jindrich
         public bool IsActive = false;
@@ -5862,7 +5865,7 @@ namespace Orts.Simulation.RollingStocks
 
         public virtual void StartReverseIncrease(float? target)
         {
-            if (!DieselDirectionController && !DieselDirectionController2 && !DieselDirectionController3 && !DieselDirectionController4)
+            if (!DirectionButton && !DieselDirectionController && !DieselDirectionController2 && !DieselDirectionController3 && !DieselDirectionController4)
             {
                 AlerterReset(TCSEvent.ReverserChanged);
                 if (this.IsLeadLocomotive())
@@ -5881,7 +5884,7 @@ namespace Orts.Simulation.RollingStocks
 
         public virtual void StartReverseDecrease(float? target)
         {
-            if (!DieselDirectionController && !DieselDirectionController2 && !DieselDirectionController3 && !DieselDirectionController4)
+            if (!DirectionButton && !DieselDirectionController && !DieselDirectionController2 && !DieselDirectionController3 && !DieselDirectionController4)
             {
                 AlerterReset(TCSEvent.ReverserChanged);
                 if (this.IsLeadLocomotive())
@@ -8556,6 +8559,107 @@ namespace Orts.Simulation.RollingStocks
                 if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.LapActive, LapActive ? CabSetting.On : CabSetting.Off);
             }
         }
+        public void ToggleDirectionButtonDown()
+        {
+            if (DirectionButton)
+            {
+                if (DirectionButtonPosition == 3)
+                {
+                    DirectionButtonPosition = 2;
+                    ToggleDirectionButton();
+                    return;
+                }
+                if (DirectionButtonPosition == 2)
+                {
+                    DirectionButtonPosition = 4;
+                    ToggleDirectionButton();
+                    return;
+                }
+                if (DirectionButtonPosition == 0)
+                {
+                    DirectionButtonPosition = 3;
+                }
+                else
+                {
+                    if (DirectionButtonPosition == 5)
+                    {
+                        DirectionButtonPosition = 4;
+                    }
+                    else
+                    {
+                        if (DirectionButtonPosition < 5)
+                            DirectionButtonPosition++;
+                    }
+                }
+                ToggleDirectionButton();
+            }            
+        }
+        public void ToggleDirectionButtonUp()
+        {
+            if (DirectionButton)
+            {
+                if (DirectionButtonPosition == 5)
+                {
+                    DirectionButtonPosition = 3;
+                    ToggleDirectionButton();
+                    return;
+                }
+                if (DirectionButtonPosition == 3)
+                {
+                    DirectionButtonPosition = 2;
+                    ToggleDirectionButton();
+                    return;
+                }
+                if (DirectionButtonPosition == 0)
+                {
+                    DirectionButtonPosition = 1;
+                }
+                else
+                {
+                    if (DirectionButtonPosition > 0)
+                        DirectionButtonPosition--;
+                }
+                ToggleDirectionButton();
+            }
+        }
+        public void ToggleDirectionButton()
+        {            
+            //Simulator.Confirmer.MSG("Nastaveno: " + DirectionButtonPosition);
+            switch (DirectionButtonPosition)
+            {
+                case 0: // Vpřed
+                    {
+                        Direction = Direction.Forward;
+                    }
+                    break;
+                case 1: // Vpřed
+                    {
+                        Direction = Direction.Forward;
+                    }
+                    break;
+                case 2: // N
+                    {
+                        Direction = Direction.N;
+                    }
+                    break;
+                case 3: // N
+                    {
+                        Direction = Direction.N;
+                    }
+                    break;                
+                case 4: // Vzad
+                    {
+                        Direction = Direction.Reverse;
+                    }
+                    break;                
+                case 5: // Vzad
+                    {
+                        Direction = Direction.Reverse;
+                    }
+                    break;
+            }
+        }
+
 
         public void ToggleDieselDirectionControllerDown()
         {
@@ -11115,6 +11219,33 @@ namespace Orts.Simulation.RollingStocks
                         else data = 0;
                         break;
                     }
+                case CABViewControlTypes.DIRECTION_BUTTON:
+                    {
+                        DirectionButton = true;                        
+                        switch (DirectionButtonPosition)
+                        {
+                            case 0:
+                                data = 4;
+                                break;
+                            case 1:
+                                data = 5;
+                                break;
+                            case 2:
+                                data = 2;
+                                break;
+                            case 3:
+                                data = 3;
+                                break;
+                            case 4:
+                                data = 1;
+                                break;
+                            case 5:
+                                data = 0;
+                                break;
+                        }                        
+                        break;
+                    }
+
                 case CABViewControlTypes.MOTOR_DISABLED:
                     {
                         if (extendedPhysics == null)

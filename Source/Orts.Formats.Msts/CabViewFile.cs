@@ -437,6 +437,7 @@ namespace Orts.Formats.Msts
         POWER_OFFCLOSINGON,
         HIGHVOLTAGE_DCOFFAC,
         LAP_BUTTON,
+        DIRECTION_BUTTON,
 
 
         // Further CabViewControlTypes must be added above this line, to avoid their malfunction in 3DCabs

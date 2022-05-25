@@ -592,6 +592,31 @@ namespace Orts.Viewer3D.RollingStock
                     && !Locomotive.StartButtonPressed)
                     Locomotive.StopButtonPressed = true;
             }
+            // Ovládání tlačítek navolení směru
+            if (Locomotive.DirectionButton && Locomotive.PowerKey)
+            {
+                if (UserInput.IsPressed(UserCommand.ControlForwards))
+                {
+                    Locomotive.ToggleDirectionButtonUp();
+                    Locomotive.SignalEvent(Event.DirectionButtonPressed);
+                }
+                if (UserInput.IsReleased(UserCommand.ControlForwards))
+                {
+                    Locomotive.ToggleDirectionButtonUp();
+                    Locomotive.SignalEvent(Event.DirectionButtonReleased);
+                }
+                if (UserInput.IsPressed(UserCommand.ControlBackwards))
+                {
+                    Locomotive.ToggleDirectionButtonDown();
+                    Locomotive.SignalEvent(Event.DirectionButtonPressed);
+                }
+                if (UserInput.IsReleased(UserCommand.ControlBackwards))
+                {
+                    Locomotive.ToggleDirectionButtonDown();
+                    Locomotive.SignalEvent(Event.DirectionButtonReleased);
+                }
+            }
+
 
 
             if (UserInput.IsPressed(UserCommand.CameraToggleShowCab))
@@ -2774,6 +2799,9 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.POWER_OFFCLOSINGON:
                 case CABViewControlTypes.HIGHVOLTAGE_DCOFFAC:
                 case CABViewControlTypes.LAP_BUTTON:
+                case CABViewControlTypes.DIRECTION_BUTTON:
+
+
                 case CABViewControlTypes.MOTOR_DISABLED:
                 case CABViewControlTypes.INVERTER_TEST:
 
@@ -3017,7 +3045,7 @@ namespace Orts.Viewer3D.RollingStock
                     break;
                 case CABViewControlTypes.GEARS: Locomotive.SetGearBoxValue(ChangedValue(Locomotive.GearBoxController.IntermediateValue)); break;
                 case CABViewControlTypes.DIRECTION:
-                    if (!Locomotive.DieselDirectionController && !Locomotive.DieselDirectionController2 && !Locomotive.DieselDirectionController3 && !Locomotive.DieselDirectionController4)
+                    if (!Locomotive.DirectionButton && !Locomotive.DieselDirectionController && !Locomotive.DieselDirectionController2 && !Locomotive.DieselDirectionController3 && !Locomotive.DieselDirectionController4)
                     {
                         var dir = ChangedValue(0);
                         if (dir != 0)

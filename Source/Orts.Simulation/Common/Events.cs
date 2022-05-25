@@ -322,6 +322,8 @@ namespace Orts.Common
         DieselMotorWaterLowCoolingOff,
         DieselMotorOilLowCooling,
         DieselMotorOilLowCoolingOff,
+        DirectionButtonPressed,
+        DirectionButtonReleased,
     }
 
     public static class Events
@@ -658,6 +660,8 @@ namespace Orts.Common
                         case 20076: return Event.DieselMotorWaterLowCoolingOff;
                         case 20077: return Event.DieselMotorOilLowCooling;
                         case 20078: return Event.DieselMotorOilLowCoolingOff;
+                        case 20079: return Event.DirectionButtonPressed;
+                        case 20080: return Event.DirectionButtonReleased;
 
                         default: return 0;
                     }
