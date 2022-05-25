@@ -1733,6 +1733,7 @@ namespace Orts.Simulation.RollingStocks
             outf.Write(DoorSwitch);
             outf.Write(PrevDoorSwitch);
             outf.Write(LapActive);
+            outf.Write(DirectionButtonPosition);
 
             base.Save(outf);
 
@@ -1835,6 +1836,7 @@ namespace Orts.Simulation.RollingStocks
             DoorSwitch = inf.ReadSingle();
             PrevDoorSwitch = inf.ReadSingle();
             LapActive = inf.ReadBoolean();
+            DirectionButtonPosition = inf.ReadInt32();
 
             base.Restore(inf);
 
