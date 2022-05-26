@@ -3723,7 +3723,10 @@ namespace Orts.Simulation.RollingStocks
                 LocoHelperOn = true;
             }
             else
+            {
                 LocoHelperOn = false;
+                AcceptMUSignals = true;
+            }            
 
             if (IsLeadLocomotive() && ThrottlePercent != 0)
                 Simulator.ThrottleLocoHelper = ThrottlePercent;
@@ -3735,6 +3738,7 @@ namespace Orts.Simulation.RollingStocks
             {
                 ThrottlePercent = Simulator.ThrottleLocoHelper;
                 Headlight = 1;
+                Mirel.Ls90power = SubSystems.Mirel.LS90power.Off;
             }
 
             if (extendedPhysics != null)
