@@ -237,7 +237,7 @@ namespace Orts.Viewer3D
             var locomotiveReverseCab = mstsLocomotive != null && mstsLocomotive.UsingRearCab;
             var newCarIsReversed = Car.Flipped ^ locomotiveFlipped ^ locomotiveReverseCab;
             var newCarIsFirst = Car.Train == null || (locomotiveFlipped ^ locomotiveReverseCab ? Car.Train.LastCar : Car.Train.FirstCar) == Car;
-            var newCarIsLast = Car.Train == null || (locomotiveFlipped ^ locomotiveReverseCab ? Car.Train.FirstCar : Car.Train.LastCar) == Car;
+            var newCarIsLast = Car.Train == null || (locomotiveFlipped ^ locomotiveReverseCab ? Car.Train.FirstCar : Car.Train.LastCar) == Car;            
             // Penalty
             var newPenalty = mstsLocomotive != null && mstsLocomotive.TrainBrakeController.EmergencyBraking;
             // Control
@@ -269,6 +269,13 @@ namespace Orts.Viewer3D
             if (LightCycle < 50)
                 return false;
             LightCycle = 50;
+
+            // Dovolí zapnout reflektor i pokud má před sebou vozy
+            if (locomotive != null && (Car as MSTSLocomotive) == Car.Train.LeadLocomotive && newCarIsLast)
+            {
+                newCarIsLast = true;
+                newCarIsFirst = true;
+            }
 
             // Světla pro AI
             if (Car.Train != null && (Car.Train.TrainType == Train.TRAINTYPE.AI || Car.Train.TrainType == Train.TRAINTYPE.REMOTE))
@@ -568,7 +575,7 @@ namespace Orts.Viewer3D
 
                     // FIXME: Is conversion of "azimuth" to a normal right?
 
-                    var position1 = state1.Position; position1.Z *= -1;
+                    var position1 = state1.Position; position1.Z *= -1.002f;
                     var normal1 = Vector3.Transform(Vector3.Transform(-Vector3.UnitZ, Matrix.CreateRotationX(MathHelper.ToRadians(-state1.Elevation.Y))), Matrix.CreateRotationY(MathHelper.ToRadians(-state1.Azimuth.Y)));
                     var color1 = new Color() { PackedValue = state1.Color }.ToVector4();
 

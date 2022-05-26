@@ -19694,6 +19694,10 @@ namespace Orts.Simulation.Physics
             {
                 float totalLength = startOffset;
 
+                // Icik
+                if (startSectionIndex < 0) startSectionIndex = 0;
+                if (endSectionIndex < 0) endSectionIndex = 0;
+
                 if (startSectionIndex == endSectionIndex)
                 {
                     TrackCircuitSection thisSection = signals.TrackCircuitList[this[startSectionIndex].TCSectionIndex];
