@@ -609,26 +609,6 @@ namespace Orts.Simulation.RollingStocks
                 maxForceN = 0;
             if (Locomotive.SystemAnnunciator > 0)
                 maxForceN = 0;
-            if (usingControllerVolts)
-            {
-                ForceFilter.Add(ForceN);
-                if (ForceFilter.Count >= 60)
-                {
-                    ForceFilter.RemoveAt(0);
-                    ForceNFiltered = ForceFilter.Average();
-                }
-                ForceFilterMotor.Add(ForceN);
-                if (ForceFilterMotor.Count >= 20)
-                {
-                    ForceFilterMotor.RemoveAt(0);
-                    ForceNFilteredMotor = ForceFilterMotor.Average();
-                }
-            }
-            else
-            {
-                ForceNFiltered = maxForceN;
-                ForceNFilteredMotor = maxForceN;
-            }
             LocomotiveAxle.InertiaKgm2 = 10000;
             LocomotiveAxle.AxleRevolutionsInt.MinStep = LocomotiveAxle.InertiaKgm2 / (Locomotive.MaxPowerW / totalMotors) / 5.0f;
 
@@ -679,6 +659,28 @@ namespace Orts.Simulation.RollingStocks
                 else
                     reducedForceN = 0;
             }
+
+            if (usingControllerVolts)
+            {
+                ForceFilter.Add(ForceN);
+                if (ForceFilter.Count >= 60)
+                {
+                    ForceFilter.RemoveAt(0);
+                    ForceNFiltered = ForceFilter.Average();
+                }
+                ForceFilterMotor.Add(ForceN);
+                if (ForceFilterMotor.Count >= 20)
+                {
+                    ForceFilterMotor.RemoveAt(0);
+                    ForceNFilteredMotor = ForceFilterMotor.Average();
+                }
+            }
+            else
+            {
+                ForceNFiltered = maxForceN;
+                ForceNFilteredMotor = maxForceN;
+            }
+
             //if (WheelSpeedMpS == 0 && Locomotive.WheelSpeedMpS > 0)
             //    WheelSpeedMpS = Locomotive.WheelSpeedMpS;
         }
