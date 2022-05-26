@@ -636,9 +636,9 @@ namespace Orts.Simulation.RollingStocks
                 ForceN = -Locomotive.DynamicBrakeForceN / 4;
                 ForceN += (reducedForceN * 2);
             }
-
-            if (Locomotive.AbsSpeedMpS == 0 && ForceN < 0)
+            else if (Locomotive.CruiseControl.controllerVolts == 0)
                 ForceN = 0;
+
             LocomotiveAxle.AxleWeightN = 9.81f * Mass * 1000;   //will be computed each time considering the tilting
             LocomotiveAxle.DriveForceN = ForceN;  //Total force applied to wheels
             LocomotiveAxle.TrainSpeedMpS = Locomotive.SpeedMpS < 0 ? -Locomotive.SpeedMpS : Locomotive.SpeedMpS;
