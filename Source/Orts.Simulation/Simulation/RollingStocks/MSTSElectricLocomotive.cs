@@ -2856,8 +2856,33 @@ namespace Orts.Simulation.RollingStocks
         {
             var status = new StringBuilder();
             status.AppendFormat("{0} = ", Simulator.Catalog.GetString("Pantographs"));
-            foreach (var pantograph in Pantographs.List)
-                status.AppendFormat("{0} ", Simulator.Catalog.GetParticularString("Pantograph", GetStringAttribute.GetPrettyName(pantograph.State)));
+            
+            //foreach (var pantograph in Pantographs.List)
+            //    status.AppendFormat("{0} ", Simulator.Catalog.GetParticularString("Pantograph", GetStringAttribute.GetPrettyName(pantograph.State)));
+            // Icik                        
+            if (UsingRearCab || Flipped)
+            {
+                if (Pantographs.List.Count == 2)
+                    status.AppendFormat("{0} ", Simulator.Catalog.GetParticularString("Pantograph", GetStringAttribute.GetPrettyName(Pantographs[1].State)));
+                if (Pantographs.List.Count == 4)
+                    status.AppendFormat("{0} ", Simulator.Catalog.GetParticularString("Pantograph", GetStringAttribute.GetPrettyName(Pantographs[3].State)));
+                if (Pantographs.List.Count <= 2)
+                    status.AppendFormat("{0} ", Simulator.Catalog.GetParticularString("Pantograph", GetStringAttribute.GetPrettyName(Pantographs[2].State)));
+                if (Pantographs.List.Count == 4)
+                    status.AppendFormat("{0} ", Simulator.Catalog.GetParticularString("Pantograph", GetStringAttribute.GetPrettyName(Pantographs[4].State)));
+            }
+            else
+            {
+                if (Pantographs.List.Count == 2)
+                    status.AppendFormat("{0} ", Simulator.Catalog.GetParticularString("Pantograph", GetStringAttribute.GetPrettyName(Pantographs[2].State)));
+                if (Pantographs.List.Count == 4)
+                    status.AppendFormat("{0} ", Simulator.Catalog.GetParticularString("Pantograph", GetStringAttribute.GetPrettyName(Pantographs[4].State)));
+                if (Pantographs.List.Count <= 2)
+                    status.AppendFormat("{0} ", Simulator.Catalog.GetParticularString("Pantograph", GetStringAttribute.GetPrettyName(Pantographs[1].State)));
+                if (Pantographs.List.Count == 4)
+                    status.AppendFormat("{0} ", Simulator.Catalog.GetParticularString("Pantograph", GetStringAttribute.GetPrettyName(Pantographs[3].State)));
+            }
+
             status.AppendLine();
             status.AppendFormat("{0} = {1}",
                 Simulator.Catalog.GetString("Circuit breaker"),
