@@ -642,7 +642,7 @@ namespace Orts.Simulation.RollingStocks
         public float DoorSwitch = 1;
         public float PrevDoorSwitch = 1;
         public bool LocoIsStatic;
-        public float PantoCanHVOffTime;
+        public float PantoCanHVOffSpeedKpH;
         public bool DirectionButton;
         public float DirectionButtonPosition = 2;
 
@@ -1325,7 +1325,7 @@ namespace Orts.Simulation.RollingStocks
                 case "engine(heatingmaxcurrent": HeatingMaxCurrentA = stf.ReadFloatBlock(STFReader.UNITS.Current, null); break;
                 case "engine(dieselstartdelay": DieselStartDelay = stf.ReadFloatBlock(STFReader.UNITS.Time, 10); break;
                 case "engine(mucableequipment": MUCableEquipment = stf.ReadBoolBlock(false); break;
-                case "engine(pantocanhvoff": PantoCanHVOffTime = stf.ReadFloatBlock(STFReader.UNITS.Time, 0); break;
+                case "engine(pantocanhvoff": PantoCanHVOffSpeedKpH = stf.ReadFloatBlock(STFReader.UNITS.Speed, 0); break;
 
                 // Jindrich
                 case "engine(usingforcehandle": UsingForceHandle = stf.ReadBoolBlock(false); break;
@@ -1568,7 +1568,7 @@ namespace Orts.Simulation.RollingStocks
             DoorSwitch = locoCopy.DoorSwitch;
             PrevDoorSwitch = locoCopy.PrevDoorSwitch;
             LapActive = locoCopy.LapActive;
-            PantoCanHVOffTime = locoCopy.PantoCanHVOffTime;
+            PantoCanHVOffSpeedKpH = locoCopy.PantoCanHVOffSpeedKpH;
 
             // Jindrich
             if (locoCopy.CruiseControl != null)
@@ -3676,18 +3676,15 @@ namespace Orts.Simulation.RollingStocks
         }
 
         // Panto shodí HV po zadaném čase
-        float PantoCanHVOffActualTime;
         public void PantoCanHVOff(float elapsedClockSeconds)
         {
-            if (PantoCanHVOffTime > 0 && this is MSTSElectricLocomotive && CircuitBreakerOn)
+            if (PantoCanHVOffSpeedKpH > 0 && this is MSTSElectricLocomotive && CircuitBreakerOn)
             {
                 if (Pantographs[1].State != PantographState.Up && Pantographs[2].State != PantographState.Up)
                 {
-                    PantoCanHVOffActualTime += elapsedClockSeconds;
-                    if (PantoCanHVOffActualTime > PantoCanHVOffTime)
+                    if (AbsSpeedMpS * 3.6f < PantoCanHVOffSpeedKpH)
                     {
                         HVOff = true;
-                        PantoCanHVOffActualTime = 0;
                     }
                 }
             }
