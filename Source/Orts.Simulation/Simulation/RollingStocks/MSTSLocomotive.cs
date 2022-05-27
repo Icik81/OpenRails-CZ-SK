@@ -3676,17 +3676,21 @@ namespace Orts.Simulation.RollingStocks
         }
 
         // Panto shodí HV po zadaném čase
+        public bool PantoCanHVOffon;
         public void PantoCanHVOff(float elapsedClockSeconds)
         {
             if (PantoCanHVOffSpeedKpH > 0 && this is MSTSElectricLocomotive && CircuitBreakerOn)
             {
                 if (Pantographs[1].State != PantographState.Up && Pantographs[2].State != PantographState.Up)
                 {
-                    if (AbsSpeedMpS * 3.6f < PantoCanHVOffSpeedKpH)
+                    PantoCanHVOffon = true;
+                    if (AbsSpeedMpS < PantoCanHVOffSpeedKpH)
                     {
                         HVOff = true;
                     }
                 }
+                else
+                    PantoCanHVOffon = false;
             }
         }
 
