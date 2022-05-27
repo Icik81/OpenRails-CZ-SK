@@ -3747,13 +3747,6 @@ namespace Orts.Simulation.RollingStocks
 
                 if (IsLeadLocomotive() && AbsSpeedMpS < 0.1f) Simulator.ControllerVoltsLocoHelper = 0;
                 if (IsLeadLocomotive() && PowerOn && ControllerVolts == 0) Simulator.ControllerVoltsLocoHelper = 0;
-
-                if (LocoHelperOn)
-                {
-                    ControllerVolts = Simulator.ControllerVoltsLocoHelper;
-                    extendedPhysics.OverridenControllerVolts = Simulator.ControllerVoltsLocoHelper;
-                    Train.ControllerVolts = Train.OverridenControllerVolts = Simulator.ControllerVoltsLocoHelper;
-                }
             }
         }
 
@@ -4083,7 +4076,10 @@ namespace Orts.Simulation.RollingStocks
                         {
                             ControllerVolts = extendedPhysics.OverridenControllerVolts;
                         }
-                        extendedPhysics.OverridenControllerVolts = ControllerVolts;
+                        if (IsLeadLocomotive())
+                            extendedPhysics.OverridenControllerVolts = ControllerVolts;
+                        if (!IsLeadLocomotive())
+                            ControllerVolts = Train.ControllerVolts;
                     }
                     if (wasRestored && !Simulator.Paused)
                         wasRestored = false;

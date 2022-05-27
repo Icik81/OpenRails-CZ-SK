@@ -488,7 +488,7 @@ namespace Orts.Simulation.RollingStocks
 
         public void Update(int totalMotors, float elapsedClockSeconds, float overridenControllerVolts, bool usingControllerVolts)
         {
-            if (Locomotive.AbsSpeedMpS == 0)
+            if (Locomotive.AbsSpeedMpS == 0 && Locomotive.IsLeadLocomotive())
             {
                 if (overridenControllerVolts > 0)
                 {
