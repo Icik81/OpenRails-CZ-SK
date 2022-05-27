@@ -4048,11 +4048,14 @@ namespace Orts.Simulation.RollingStocks
                     }
                     speedDiff = Math.Abs(speedDiff);
 
-                    if (IsLeadLocomotive())
+                    if (IsLeadLocomotive() || LocoHelperOn)
                     {
-                        if (speedDiff > AntiWheelSpinSpeedDiffThreshold)
+                        if (speedDiff > AntiWheelSpinSpeedDiffThreshold || (AbsWheelSpeedMpS - AbsSpeedMpS) > AntiWheelSpinSpeedDiffThreshold)
                         {
-                            skidSpeedDegratation += 0.1f;
+                            skidSpeedDegratation += 0.5f;
+                            if (skidSpeedDegratation + 0.5f > ControllerVolts)
+                                skidSpeedDegratation = ControllerVolts - 0.5f;
+
                         }
                         else if (skidSpeedDegratation > 0)
                         {
@@ -4094,15 +4097,7 @@ namespace Orts.Simulation.RollingStocks
                         }
                         else if (extendedPhysics != null)
                         {
-                            if (IsLeadLocomotive())
-                                extendedPhysics.OverridenControllerVolts = Train.OverridenControllerVolts = ControllerVolts - skidSpeedDegratation;
-                            else
-                                if (!LocoHelperOn)
-                                    extendedPhysics.OverridenControllerVolts = Train.OverridenControllerVolts;
-                            if (extendedPhysics.OverridenControllerVolts < 0)
-                            {
-                                extendedPhysics.OverridenControllerVolts = Train.ControllerVolts = ControllerVolts = 0;
-                            }
+                              extendedPhysics.OverridenControllerVolts = Train.OverridenControllerVolts = ControllerVolts - skidSpeedDegratation;
                         }
                     }
                     if (extendedPhysics != null && extendedPhysics.OverridenControllerVolts > 10)
@@ -9814,7 +9809,6 @@ namespace Orts.Simulation.RollingStocks
                         case CABViewControlUnits.KILO_NEWTONS:
                             data = data / 1000.0f;
                             break;
-
                         case CABViewControlUnits.KILO_LBS:
                             data = N.ToLbf(data) * 0.001f;
                             break;

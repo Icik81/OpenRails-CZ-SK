@@ -280,11 +280,8 @@ namespace Orts.Simulation.RollingStocks
             }
 
             // Icik
-            if (Locomotive.LocoHelperOn)
-                Locomotive.Train.ControllerVolts = Locomotive.Simulator.ControllerVoltsLocoHelper;
-
             if (!Locomotive.IsLeadLocomotive() && Locomotive.PowerOn && (Locomotive.AcceptMUSignals || Locomotive.LocoHelperOn))
-                Locomotive.ControllerVolts = Locomotive.Train.ControllerVolts;
+                Locomotive.ControllerVolts = OverridenControllerVolts = Locomotive.Train.ControllerVolts;
 
             if (!Locomotive.IsLeadLocomotive() && (!Locomotive.PowerOn || (!Locomotive.AcceptMUSignals && !Locomotive.LocoHelperOn)))
                 Locomotive.ControllerVolts = OverridenControllerVolts = 0;
@@ -337,7 +334,7 @@ namespace Orts.Simulation.RollingStocks
                     }
                 }
             }
-            if (Locomotive.DynamicBrakePercent < 0.7 && Locomotive.ControllerVolts < 0)
+            if (Locomotive.IsLeadLocomotive() && Locomotive.DynamicBrakePercent < 0.7 && Locomotive.ControllerVolts < 0)
             {
                 Locomotive.DynamicBrakePercent = 0;
                 Locomotive.ControllerVolts = 0;
@@ -390,7 +387,23 @@ namespace Orts.Simulation.RollingStocks
                 Locomotive.MotiveForceN = Locomotive.TractiveForceN = TotalForceN;
 
             if (Locomotive.IsLeadLocomotive())
-                Locomotive.Train.ControllerVolts = Locomotive.ControllerVolts;
+            {
+                if (Locomotive.CruiseControl != null)
+                {
+                    if (Locomotive.CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.Manual)
+                    {
+                        Locomotive.Train.ControllerVolts = Locomotive.ControllerVolts;
+                    }
+                    else
+                    {
+                        if (Locomotive.UsingForceHandle && Locomotive.ForceHandleValue < Locomotive.CruiseControl.controllerVolts / 10)
+                            Locomotive.Train.ControllerVolts = Locomotive.ForceHandleValue / 10;
+                        else
+                            Locomotive.Train.ControllerVolts = Locomotive.CruiseControl.controllerVolts / 10;
+                    }
+                }
+
+            }
             //Locomotive.Simulator.Confirmer.MSG(TotalForceN.ToString() + " " + Locomotive.TractiveForceN.ToString());
             //Locomotive.Simulator.Confirmer.MSG(Undercarriages[0].Axles[0].WheelSpeedMpS.ToString() + " " + Undercarriages[0].Axles[1].WheelSpeedMpS.ToString() + " " + Undercarriages[1].Axles[0].WheelSpeedMpS.ToString() + " " + Undercarriages[1].Axles[1].WheelSpeedMpS.ToString());
         }
