@@ -1363,30 +1363,6 @@ namespace Orts.Simulation.RollingStocks
                                 LocoReadyToGo = false;
                         }
                     }
-                    // Mirel
-                    Mirel.Test1 = true;
-                    Mirel.Test2 = true;
-                    Mirel.Test3 = true;
-                    Mirel.Test4 = true;
-                    Mirel.Test5 = true;
-                    Mirel.Test6 = true;
-                    Mirel.Test7 = true;
-                    Mirel.initTest = SubSystems.Mirel.InitTest.Passed;
-                    Mirel.BlueLight = true;
-                    Mirel.selectedDriveMode = SubSystems.Mirel.DriveMode.Normal;
-                    Mirel.driveMode = SubSystems.Mirel.DriveMode.Off;
-                    Mirel.MaxSelectedSpeed = Mirel.MirelMaximumSpeed = MpS.ToKpH(MaxSpeedMpS);
-                    // LS90
-                    Mirel.ls90tested = true;
-                    Mirel.Ls90power = SubSystems.Mirel.LS90power.On;
-
-                    // ARR
-                    if (CruiseControl != null && CruiseControl.Equipped)
-                    {
-                        CruiseControl.SpeedRegMode = SubSystems.CruiseControl.SpeedRegulatorMode.Auto;
-                        CruiseControl.SelectedSpeedMpS = MpS.FromKpH(40);
-                        CruiseControl.SpeedSelMode = SubSystems.CruiseControl.SpeedSelectorMode.Parking;
-                    }
                 }
             }
         }

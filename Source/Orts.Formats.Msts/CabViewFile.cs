@@ -384,8 +384,6 @@ namespace Orts.Formats.Msts
         PANTO_MODE,
         MOTOR_DISABLED,
         INVERTER_TEST,
-        FORCE_INCREASE,
-        FORCE_DECREASE,
 
         // Icik
         HV2,
@@ -440,6 +438,8 @@ namespace Orts.Formats.Msts
         HIGHVOLTAGE_DCOFFAC,
         LAP_BUTTON,
         DIRECTION_BUTTON,
+        FORCE_INCREASE,
+        FORCE_DECREASE,
 
 
         // Further CabViewControlTypes must be added above this line, to avoid their malfunction in 3DCabs

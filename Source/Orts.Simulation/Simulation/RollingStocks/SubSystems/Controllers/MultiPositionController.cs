@@ -123,6 +123,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                         case "trainbrake":
                             controllerBinding = ControllerBinding.TrainBrake;
                             break;
+                        case "combined":
+                            controllerBinding = ControllerBinding.Combined;
+                            break;
                     }
                     break;
                 case "engine(ortsmultipositioncontroller(controllerid": ControllerId = stf.ReadIntBlock(0); break;
@@ -266,7 +269,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
 
             }
 
-            if (controllerBinding == ControllerBinding.TrainBrake)
+            if (controllerBinding == ControllerBinding.TrainBrake || controllerBinding == ControllerBinding.Combined)
             {
                 foreach (MSTSNotch notch in Locomotive.TrainBrakeController.Notches)
                 {
@@ -291,14 +294,14 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                             Locomotive.SetTrainBrakePercent(notch.Value * 100);
                         }
                     }
-                    if (controllerPosition == ControllerPosition.TrainBrakesControllerReleaseStart)
+                    if (controllerPosition == ControllerPosition.TrainBrakesControllerReleaseStart || controllerPosition == ControllerPosition.Drive)
                     {
                         if (notch.Type == ORTS.Scripting.Api.ControllerState.Release && Locomotive.TrainBrakeController.CurrentValue != notch.Value)
                         {
                             Locomotive.SetTrainBrakePercent(notch.Value * 100);
                         }
                     }
-                    if (controllerPosition == ControllerPosition.TrainBrakesControllerNeutralhandleOffStart)
+                    if (controllerPosition == ControllerPosition.TrainBrakesControllerNeutralhandleOffStart || controllerPosition == ControllerPosition.Neutral)
                     {
                         if (notch.Type == ORTS.Scripting.Api.ControllerState.Neutral && Locomotive.TrainBrakeController.CurrentValue != notch.Value)
                         {
@@ -326,7 +329,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                         }
                     }
                 }
-                return;
+                if (controllerBinding != ControllerBinding.Combined)
+                    return;
             }
 
             if (!haveCruiseControl || !ccAutoMode)
@@ -437,21 +441,21 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                             Locomotive.StopTrainBrakeDecrease(0);
                         }
                     }
-                    if (Locomotive.ThrottlePercent < 2 && controllerBinding == ControllerBinding.Throttle)
+                    if (Locomotive.ThrottlePercent < 2 && controllerBinding == ControllerBinding.Throttle || controllerBinding == ControllerBinding.Combined)
                     {
                         if (Locomotive.ThrottlePercent != 0)
                             Locomotive.SetThrottlePercent(0);
                         if (Locomotive.ControllerVolts > 0)
                             Locomotive.ControllerVolts = 0;
                     }
-                    if (Locomotive.ThrottlePercent > 1 && controllerBinding == ControllerBinding.Throttle)
+                    if (Locomotive.ThrottlePercent > 1 && controllerBinding == ControllerBinding.Throttle || controllerBinding == ControllerBinding.Combined)
                     {
                         Locomotive.SetThrottlePercent(Locomotive.ThrottlePercent - 1f);
                         Locomotive.ControllerVolts -= 0.05f;
                         if (Locomotive.ControllerVolts < 0)
                             Locomotive.ControllerVolts = 0;
                     }
-                    if (Locomotive.ThrottlePercent > 100 && controllerBinding == ControllerBinding.Throttle)
+                    if (Locomotive.ThrottlePercent > 100 && controllerBinding == ControllerBinding.Throttle || controllerBinding == ControllerBinding.Combined)
                     {
                         Locomotive.ThrottlePercent = 100;
                     }
@@ -644,7 +648,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
             }
             else if (haveCruiseControl && ccAutoMode)
             {
-                if (controllerBinding == ControllerBinding.TrainBrake)
+                if (controllerBinding == ControllerBinding.TrainBrake || controllerBinding == ControllerBinding.Combined)
                     Simulator.Confirmer.MSG(controllerPosition.ToString());
                 if (controllerPosition == ControllerPosition.TrainBrakesControllerApplyStart)
                 {
@@ -1198,7 +1202,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
             Throttle,
             DynamicBrake,
             SelectedSpeed,
-            TrainBrake
+            TrainBrake,
+            Combined
         }
 
         public float GetDataOf(CabViewControl cvc)
