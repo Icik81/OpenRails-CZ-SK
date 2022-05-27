@@ -2939,6 +2939,8 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.SELECTING_SYSTEM:
                 case CABViewControlTypes.SYSTEM_ANNUNCIATOR:
                 case CABViewControlTypes.PANTO_MODE:
+                case CABViewControlTypes.FORCE_INCREASE:
+                case CABViewControlTypes.FORCE_DECREASE:
 
 
                     index = (int)data;
@@ -4499,6 +4501,24 @@ namespace Orts.Viewer3D.RollingStock
                         {
                             PlusKeyPressed = false;
                         }
+                        break;
+                    }
+                case CABViewControlTypes.FORCE_INCREASE:
+                    {
+                        p = ChangedValue(0);
+                        if (p == 1)
+                            Locomotive.CruiseControl.SpeedRegulatorMaxForceStartIncrease();
+                        else
+                            Locomotive.CruiseControl.SpeedRegulatorMaxForceStopIncrease();
+                        break;
+                    }
+                case CABViewControlTypes.FORCE_DECREASE:
+                    {
+                        p = ChangedValue(0);
+                        if (p == 1)
+                            Locomotive.CruiseControl.SpeedRegulatorMaxForceStartDecrease();
+                        else
+                            Locomotive.CruiseControl.SpeedRegulatorMaxForceStopDecrease();
                         break;
                     }
             }

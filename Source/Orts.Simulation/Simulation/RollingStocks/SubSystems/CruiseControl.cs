@@ -2252,6 +2252,12 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                         data = Locomotive.Speed200Pressed ? 1 : 0;
                         break;
                     }
+                case CABViewControlTypes.FORCE_INCREASE:
+                    data = maxForceIncreasing ? 1 : 0;
+                    break;
+                case CABViewControlTypes.FORCE_DECREASE:
+                    data = maxForceDecreasing ? 1 : 0;
+                    break;
                 default:
                     data = 0;
                     break;

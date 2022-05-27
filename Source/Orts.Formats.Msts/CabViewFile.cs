@@ -384,6 +384,8 @@ namespace Orts.Formats.Msts
         PANTO_MODE,
         MOTOR_DISABLED,
         INVERTER_TEST,
+        FORCE_INCREASE,
+        FORCE_DECREASE,
 
         // Icik
         HV2,
