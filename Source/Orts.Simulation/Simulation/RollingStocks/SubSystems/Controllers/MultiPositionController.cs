@@ -338,9 +338,14 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                         float step = Locomotive.MaxControllerVolts / Locomotive.ThrottleFullRangeIncreaseTimeSeconds;
                         step *= elapsedClockSeconds;
                         if (Locomotive.ControllerVolts >= 0)
+                        {
                             Locomotive.ControllerVolts += step;
+                            Locomotive.Train.ControllerVolts += step;
+                        }
                         if (Locomotive.ControllerVolts > Locomotive.MaxControllerVolts)
                             Locomotive.ControllerVolts = Locomotive.MaxControllerVolts;
+                        if (Locomotive.Train.ControllerVolts > Locomotive.MaxControllerVolts)
+                            Locomotive.Train.ControllerVolts = Locomotive.MaxControllerVolts;
                     }
                     else
                     {
@@ -388,6 +393,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                         Locomotive.ControllerVolts -= step;
                         if (Locomotive.ControllerVolts < 0)
                             Locomotive.ControllerVolts = 0;
+                        Locomotive.Train.ControllerVolts -= step;
+                        if (Locomotive.Train.ControllerVolts < 0)
+                            Locomotive.Train.ControllerVolts = 0;
                     }
                     else
                     {

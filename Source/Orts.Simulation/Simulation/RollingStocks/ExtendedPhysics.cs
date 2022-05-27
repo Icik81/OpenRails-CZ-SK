@@ -392,7 +392,20 @@ namespace Orts.Simulation.RollingStocks
                 {
                     if (Locomotive.CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.Manual)
                     {
-                        Locomotive.Train.ControllerVolts = Locomotive.ControllerVolts;
+                        bool update = true;
+                        if (Locomotive.MultiPositionControllers != null)
+                        {
+                            foreach (var mpc in Locomotive.MultiPositionControllers)
+                            {
+                                if (mpc.controllerBinding == SubSystems.Controllers.MultiPositionController.ControllerBinding.Throttle)
+                                {
+                                    update = false;
+                                    break;
+                                }
+                            }
+                        }
+                        if (update)
+                            Locomotive.Train.ControllerVolts = Locomotive.ControllerVolts;
                     }
                     else
                     {
@@ -488,7 +501,7 @@ namespace Orts.Simulation.RollingStocks
 
         public void Update(int totalMotors, float elapsedClockSeconds, float overridenControllerVolts, bool usingControllerVolts)
         {
-            if (Locomotive.AbsSpeedMpS == 0 && Locomotive.IsLeadLocomotive())
+            if (Locomotive.AbsSpeedMpS == 0 && Locomotive.IsLeadLocomotive() && Locomotive.PowerOn)
             {
                 if (overridenControllerVolts > 0)
                 {
