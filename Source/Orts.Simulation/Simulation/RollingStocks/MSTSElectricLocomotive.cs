@@ -2488,6 +2488,8 @@ namespace Orts.Simulation.RollingStocks
                             break;
                             LocoSwitchACDC = false;
                     }
+                    if (PantoCanHVOffon)
+                        data = 0;
                     break;
 
                 case CABViewControlTypes.ORTS_CIRCUIT_BREAKER_CLOSED:
@@ -2550,6 +2552,8 @@ namespace Orts.Simulation.RollingStocks
                             data = 1;
 
                         if (PantographVoltageV == 1 && preVoltageDC == 1)
+                            data = 1;
+                        if (PantoCanHVOffon)
                             data = 1;
                         break;
                     }
@@ -2633,6 +2637,8 @@ namespace Orts.Simulation.RollingStocks
                         HV5Enable = true;
                         data = HV5Switch;
                         LocoSwitchACDC = true;
+                        if (PantoCanHVOffon)
+                            data = 2;
                         break;
                     }
 
@@ -2788,13 +2794,15 @@ namespace Orts.Simulation.RollingStocks
 
                 case CABViewControlTypes.POWER_OFFCLOSINGON:
                     {
-                        data = 1;
+                        data = 1;                        
                         if (PowerSupply.CircuitBreaker.State == CircuitBreakerState.Open || PowerReductionResult10 == 1)
                             data = 0;
                         if (PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closing)
                             data = 1;
                         if (PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closed && PowerReductionResult10 == 0 && AuxPowerOn)
                             data = 2;
+                        if (PantoCanHVOffon)
+                            data = 0;
                     }
                     break;
 
