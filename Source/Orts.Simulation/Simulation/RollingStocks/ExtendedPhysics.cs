@@ -398,8 +398,10 @@ namespace Orts.Simulation.RollingStocks
                     {
                         if (Locomotive.UsingForceHandle && Locomotive.ForceHandleValue < Locomotive.CruiseControl.controllerVolts / 10)
                             Locomotive.Train.ControllerVolts = Locomotive.ForceHandleValue / 10;
-                        else
+                        else if (Locomotive.PowerOn)
                             Locomotive.Train.ControllerVolts = Locomotive.CruiseControl.controllerVolts / 10;
+                        else
+                            Locomotive.Train.ControllerVolts = Locomotive.ControllerVolts;
                     }
                 }
 

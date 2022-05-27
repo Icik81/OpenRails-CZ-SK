@@ -9825,13 +9825,8 @@ namespace Orts.Simulation.RollingStocks
                             data += ea.ForceNFiltered;
                         }
                     }
-                    if (data < 0 && data > MotiveForceN)
-                    {
-                        data = MotiveForceN;
-                        if (data < -MaxDynamicBrakeForceN)
-                            data = -MaxDynamicBrakeForceN;
+                    if (data < 0)
                         data = (data / MaxDynamicBrakeForceN) * 100;
-                    }
                     else
                         data = (data / MaxForceN) * 100;
                     if (cvc.Feature == "HideOnPositiveForce")
