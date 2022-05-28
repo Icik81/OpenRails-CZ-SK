@@ -4721,11 +4721,6 @@ namespace Orts.Simulation.RollingStocks
                 Simulator.Confirmer.Update(CabControl.TrainBrake, CabSetting.Increase, GetTrainBrakeStatus());
             }
 
-            if (TrainBrakeController.UpdateValue < 0.0)
-            {
-                Simulator.Confirmer.Update(CabControl.TrainBrake, CabSetting.Decrease, GetTrainBrakeStatus());
-            }
-
             if (EngineBrakeController != null)
             {
                 EngineBrakeController.Update(elapsedClockSeconds);
@@ -6607,13 +6602,6 @@ namespace Orts.Simulation.RollingStocks
             if (CombinedControlType == CombinedControl.ThrottleAir)
                 ThrottleController.SetValue(0);
 
-            bool alertChange = true;
-            if (CruiseControl != null)
-                if (CruiseControl.arrIsBraking && from == 1)
-                    alertChange = false;
-
-            if (alertChange)
-                AlerterReset(TCSEvent.TrainBrakeChanged);
             TrainBrakeController.StartIncrease(target);
             TrainBrakeController.CommandStartTime = Simulator.ClockTime;
             if (CruiseControl != null)
@@ -6621,12 +6609,6 @@ namespace Orts.Simulation.RollingStocks
                 CruiseControl.TrainBrakePriority = true;
                 if (from == 0)
                     CruiseControl.IReallyWantToBrake = true;
-            }
-
-            if (alertChange)
-            {
-                Simulator.Confirmer.Confirm(CabControl.TrainBrake, CabSetting.Increase, GetTrainBrakeStatus());
-                SignalEvent(Event.TrainBrakeChange);
             }
         }
 
@@ -6665,19 +6647,8 @@ namespace Orts.Simulation.RollingStocks
                     }
                 }
             }
-            bool alertChange = true;
-            if (CruiseControl != null)
-                if (CruiseControl.arrIsBraking)
-                    alertChange = false;
-            if (alertChange)
-                AlerterReset(TCSEvent.TrainBrakeChanged);
             TrainBrakeController.StartDecrease(target, toZero);
             TrainBrakeController.CommandStartTime = Simulator.ClockTime;
-            if (alertChange)
-            {
-                Simulator.Confirmer.Confirm(CabControl.TrainBrake, CabSetting.Decrease, GetTrainBrakeStatus());
-                SignalEvent(Event.TrainBrakeChange);
-            }
         }
 
         public void StopTrainBrakeDecrease(int from)
