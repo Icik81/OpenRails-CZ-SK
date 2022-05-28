@@ -424,6 +424,7 @@ namespace Orts.Viewer3D
                     }
                     break;
             }
+            Viewer.Simulator.NightTime = NightTime;
         }
 
         void UpdateVolume()

@@ -191,6 +191,7 @@ namespace Orts.Simulation
         public bool AuxPowerCanStart;
         public float ControllerVoltsLocoHelper;
         public float ThrottleLocoHelper;
+        public bool NightTime;
 
         public List<PowerSupplyStation> powerSupplyStations;
         public List<VoltageChangeMarker> voltageChangeMarkers;

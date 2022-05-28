@@ -251,9 +251,61 @@ namespace Orts.Viewer3D.Processes
                 LastC = C;
             }
         }
+        void InitializeShadowMapLocationsNighTime()
+        {
+            var ratio = (float)DisplaySize.X / DisplaySize.Y;
+            var fov = MathHelper.ToRadians(Game.Settings.ViewingFOV * 1.33f);
+            var n = (float)0.5;
+            var f = (float)Game.Settings.ViewingDistance;
+            if (f == 0)
+                f = Game.Settings.ViewingDistance / 2;
 
+            var m = (float)ShadowMapCount;
+            var LastC = n;
+            for (var shadowMapIndex = 0; shadowMapIndex < ShadowMapCount; shadowMapIndex++)
+            {
+                // Calculate the two Cs and average them to get a good balance.
+                var i = (float)(shadowMapIndex + 1);
+                var Clog = n * (float)Math.Pow(f / n, i / m);
+                var Cuniform = n + (f - n) * i / m;
+                var C = (3 * Clog + Cuniform) / 4;
+
+                // This shadow map goes from LastC to C; calculate the correct center and diameter for the sphere from the view frustum.                
+                var height1 = (float)Math.Tan(fov / 2) * LastC;
+                var height2 = (float)Math.Tan(fov / 2) * C;
+                var width1 = height1 * ratio;
+                var width2 = height2 * ratio;
+                var corner1 = new Vector3(height1, width1, LastC);
+                var corner2 = new Vector3(height2, width2, C);
+                var cornerCenter = (corner1 + corner2) / 2;
+                var length = cornerCenter.Length();
+                cornerCenter.Normalize();
+                var center = length / Vector3.Dot(cornerCenter, Vector3.UnitZ);
+                var diameter = 2 * (float)Math.Sqrt(height2 * height2 + width2 * width2 + (C - center) * (C - center));
+
+                ShadowMapDistance[shadowMapIndex] = (int)center;
+                ShadowMapDiameter[shadowMapIndex] = (int)diameter;
+                ShadowMapLimit[shadowMapIndex] = C;
+                LastC = C;
+            }
+        }
+
+        bool ShadowMapLocationsNighTimeSet;
         internal void Update(GameTime gameTime)
         {
+            // Icik
+            // Nastaví denní a noční rozsah stínové mapy kvůli světlým objektům v noci
+            if (Viewer != null && Viewer.Simulator.NightTime && !ShadowMapLocationsNighTimeSet)
+            {
+                InitializeShadowMapLocationsNighTime();
+                ShadowMapLocationsNighTimeSet = true;
+            }
+            if (Viewer != null && !Viewer.Simulator.NightTime && ShadowMapLocationsNighTimeSet)
+            {
+                InitializeShadowMapLocations();
+                ShadowMapLocationsNighTimeSet = false;
+            }
+
             if (IsMouseVisible != Game.IsMouseVisible)
                 Game.IsMouseVisible = IsMouseVisible;
 
