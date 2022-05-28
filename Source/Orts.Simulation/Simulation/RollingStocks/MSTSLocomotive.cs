@@ -3682,7 +3682,7 @@ namespace Orts.Simulation.RollingStocks
             {
                 if (PantoCanHVOffSpeedKpH > 0 && CircuitBreakerOn)
                 {
-                    if (Pantographs[1].State != PantographState.Up && Pantographs[2].State != PantographState.Up)
+                    if (Pantograph4Switch == 0)
                     {
                         PantoCanHVOffon = true;
                         if (AbsSpeedMpS < PantoCanHVOffSpeedKpH)
@@ -3691,7 +3691,7 @@ namespace Orts.Simulation.RollingStocks
                         }
                     }
                 }
-                if (Pantographs[1].State == PantographState.Up || Pantographs[2].State == PantographState.Up || !CircuitBreakerOn)
+                if (Pantograph4Switch != 0 || !CircuitBreakerOn)
                     PantoCanHVOffon = false;
             }
         }
