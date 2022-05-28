@@ -2631,17 +2631,20 @@ namespace Orts.Simulation.RollingStocks
                         }
                         break;
                     }
-
                 case CABViewControlTypes.HV5:
                     {
                         HV5Enable = true;
                         data = HV5Switch;
-                        LocoSwitchACDC = true;
+                        LocoSwitchACDC = true;                        
+                        break;
+                    }
+                case CABViewControlTypes.HV5_DISPLAY:
+                    {
+                        data = HV5Switch;                        
                         if (PantoCanHVOffon)
                             data = 2;
                         break;
                     }
-
                 case CABViewControlTypes.ORTS_CIRCUIT_BREAKER_STATE_MULTISYSTEM:
                     switch (PowerSupply.CircuitBreaker.State)
                     {

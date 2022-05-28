@@ -3678,17 +3678,20 @@ namespace Orts.Simulation.RollingStocks
         public bool PantoCanHVOffon;
         public void PantoCanHVOff(float elapsedClockSeconds)
         {
-            if (PantoCanHVOffSpeedKpH > 0 && this is MSTSElectricLocomotive && CircuitBreakerOn)
+            if (this is MSTSElectricLocomotive)
             {
-                if (Pantographs[1].State != PantographState.Up && Pantographs[2].State != PantographState.Up)
+                if (PantoCanHVOffSpeedKpH > 0 && CircuitBreakerOn)
                 {
-                    PantoCanHVOffon = true;
-                    if (AbsSpeedMpS < PantoCanHVOffSpeedKpH)
+                    if (Pantographs[1].State != PantographState.Up && Pantographs[2].State != PantographState.Up)
                     {
-                        HVOff = true;
+                        PantoCanHVOffon = true;
+                        if (AbsSpeedMpS < PantoCanHVOffSpeedKpH)
+                        {
+                            HVOff = true;
+                        }
                     }
                 }
-                else
+                if (Pantographs[1].State == PantographState.Up || Pantographs[2].State == PantographState.Up || !CircuitBreakerOn)
                     PantoCanHVOffon = false;
             }
         }

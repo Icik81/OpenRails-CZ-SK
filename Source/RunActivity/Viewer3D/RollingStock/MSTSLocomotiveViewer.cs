@@ -2753,6 +2753,7 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.HV3:
                 case CABViewControlTypes.HV4:
                 case CABViewControlTypes.HV5:
+                case CABViewControlTypes.HV5_DISPLAY:
                 case CABViewControlTypes.PANTOGRAPH_3_SWITCH:
                 case CABViewControlTypes.PANTOGRAPH_4_SWITCH:
                 case CABViewControlTypes.COMPRESSOR_START:
