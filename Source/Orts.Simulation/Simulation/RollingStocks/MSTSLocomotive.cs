@@ -3721,35 +3721,23 @@ namespace Orts.Simulation.RollingStocks
         // Nastaví výkon na postrku
         public void SetHelperLoco()
         {
-            if (!IsLeadLocomotive() && !AcceptMUSignals && PowerUnit)
+            if (!AcceptMUSignals && PowerUnit)
             {
                 LocoHelperOn = true;
             }
-            else
+            if (AcceptMUSignals && PowerUnit)
             {
                 LocoHelperOn = false;
-                AcceptMUSignals = true;
             }            
 
             if (IsLeadLocomotive() && ThrottlePercent != 0)
                 Simulator.ThrottleLocoHelper = ThrottlePercent;
-
-            if (IsLeadLocomotive() && AbsSpeedMpS < 0.1f) Simulator.ThrottleLocoHelper = 0;
-            if (IsLeadLocomotive() && PowerOn && ThrottlePercent == 0) Simulator.ThrottleLocoHelper = 0;
 
             if (LocoHelperOn)
             {
                 ThrottlePercent = Simulator.ThrottleLocoHelper;
                 Headlight = 1;
                 Mirel.Ls90power = SubSystems.Mirel.LS90power.Off;
-            }
-
-            if (extendedPhysics != null)
-            {
-                if (IsLeadLocomotive() && Math.Abs(ControllerVolts) > 0.5f) Simulator.ControllerVoltsLocoHelper = ControllerVolts;
-
-                if (IsLeadLocomotive() && AbsSpeedMpS < 0.1f) Simulator.ControllerVoltsLocoHelper = 0;
-                if (IsLeadLocomotive() && PowerOn && ControllerVolts == 0) Simulator.ControllerVoltsLocoHelper = 0;
             }
         }
 
