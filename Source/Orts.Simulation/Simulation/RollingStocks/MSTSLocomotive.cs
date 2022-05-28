@@ -3691,7 +3691,7 @@ namespace Orts.Simulation.RollingStocks
                         }
                     }
                 }
-                if (Pantographs[1].State == PantographState.Up || Pantographs[2].State == PantographState.Up || !CircuitBreakerOn)
+                if (PantoCanHVOffon && (Pantographs[1].State == PantographState.Raising || Pantographs[2].State == PantographState.Raising || !CircuitBreakerOn))
                     PantoCanHVOffon = false;
             }
         }
