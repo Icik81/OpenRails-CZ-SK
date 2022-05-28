@@ -250,6 +250,7 @@ namespace Orts.Viewer3D.Processes
                 ShadowMapLimit[shadowMapIndex] = C;
                 LastC = C;
             }
+            ShadowMapLocationsNighTimeSet = false;
         }
         void InitializeShadowMapLocationsNighTime()
         {
@@ -288,6 +289,7 @@ namespace Orts.Viewer3D.Processes
                 ShadowMapLimit[shadowMapIndex] = C;
                 LastC = C;
             }
+            ShadowMapLocationsNighTimeSet = true;
         }
 
         bool ShadowMapLocationsNighTimeSet;
@@ -296,15 +298,9 @@ namespace Orts.Viewer3D.Processes
             // Icik
             // Nastaví denní a noční rozsah stínové mapy kvůli světlým objektům v noci
             if (Viewer != null && Viewer.Simulator.NightTime && !ShadowMapLocationsNighTimeSet)
-            {
                 InitializeShadowMapLocationsNighTime();
-                ShadowMapLocationsNighTimeSet = true;
-            }
             if (Viewer != null && !Viewer.Simulator.NightTime && ShadowMapLocationsNighTimeSet)
-            {
                 InitializeShadowMapLocations();
-                ShadowMapLocationsNighTimeSet = false;
-            }
 
             if (IsMouseVisible != Game.IsMouseVisible)
                 Game.IsMouseVisible = IsMouseVisible;
