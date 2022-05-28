@@ -397,7 +397,7 @@ namespace Orts.Simulation.RollingStocks
                         {
                             foreach (var mpc in Locomotive.MultiPositionControllers)
                             {
-                                if (mpc.controllerBinding == SubSystems.Controllers.MultiPositionController.ControllerBinding.Throttle)
+                                if (mpc.controllerBinding == SubSystems.Controllers.MultiPositionController.ControllerBinding.Throttle || mpc.controllerBinding == SubSystems.Controllers.MultiPositionController.ControllerBinding.Combined)
                                 {
                                     update = false;
                                     break;

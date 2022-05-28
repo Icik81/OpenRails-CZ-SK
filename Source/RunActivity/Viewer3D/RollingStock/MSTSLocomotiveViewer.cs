@@ -4508,7 +4508,16 @@ namespace Orts.Viewer3D.RollingStock
                     {
                         p = ChangedValue(0);
                         if (p == 1)
-                            Locomotive.CruiseControl.SpeedRegulatorMaxForceStartIncrease();
+                        {
+                            if (Control.ControlStyle == CABViewControlStyles.WHILE_PRESSED)
+                            {
+                                Locomotive.CruiseControl.SpeedRegulatorMaxForceStartIncrease();
+                            }
+                            else
+                            {
+                                Locomotive.CruiseControl.SpeedRegulatorMaxForceIncrease();
+                            }
+                        }
                         else
                             Locomotive.CruiseControl.SpeedRegulatorMaxForceStopIncrease();
                         break;
@@ -4517,7 +4526,16 @@ namespace Orts.Viewer3D.RollingStock
                     {
                         p = ChangedValue(0);
                         if (p == 1)
-                            Locomotive.CruiseControl.SpeedRegulatorMaxForceStartDecrease();
+                        {
+                            if (Control.ControlStyle == CABViewControlStyles.WHILE_PRESSED)
+                            {
+                                Locomotive.CruiseControl.SpeedRegulatorMaxForceStartDecrease();
+                            }
+                            else
+                            {
+                                Locomotive.CruiseControl.SpeedRegulatorMaxForceDecrease();
+                            }
+                        }
                         else
                             Locomotive.CruiseControl.SpeedRegulatorMaxForceStopDecrease();
                         break;

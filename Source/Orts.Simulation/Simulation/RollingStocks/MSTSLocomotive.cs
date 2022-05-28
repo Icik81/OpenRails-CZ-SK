@@ -4327,7 +4327,7 @@ namespace Orts.Simulation.RollingStocks
                         {
                             foreach (MultiPositionController mpc in MultiPositionControllers)
                             {
-                                if (mpc.controllerBinding == MultiPositionController.ControllerBinding.Throttle
+                                if ((mpc.controllerBinding == MultiPositionController.ControllerBinding.Throttle || mpc.controllerBinding == MultiPositionController.ControllerBinding.Combined)
                                     && mpc.controllerPosition != MultiPositionController.ControllerPosition.Drive
                                     && mpc.controllerPosition != MultiPositionController.ControllerPosition.KeepCurrent
                                     && mpc.controllerPosition != MultiPositionController.ControllerPosition.ThrottleIncrease
@@ -5973,7 +5973,7 @@ namespace Orts.Simulation.RollingStocks
             {
                 foreach (MultiPositionController mpc in MultiPositionControllers)
                 {
-                    if (mpc.controllerBinding == MultiPositionController.ControllerBinding.Throttle)
+                    if (mpc.controllerBinding == MultiPositionController.ControllerBinding.Throttle || mpc.controllerBinding == MultiPositionController.ControllerBinding.Combined)
                     {
                         if (!mpc.StateChanged)
                         {
@@ -6034,7 +6034,7 @@ namespace Orts.Simulation.RollingStocks
             {
                 foreach (MultiPositionController mpc in MultiPositionControllers)
                 {
-                    if (mpc.controllerBinding == MultiPositionController.ControllerBinding.Throttle)
+                    if (mpc.controllerBinding == MultiPositionController.ControllerBinding.Throttle || mpc.controllerBinding == MultiPositionController.ControllerBinding.Combined)
                     {
                         if (mpc.StateChanged)
                         {
@@ -6112,7 +6112,7 @@ namespace Orts.Simulation.RollingStocks
             {
                 foreach (MultiPositionController mpc in MultiPositionControllers)
                 {
-                    if (mpc.controllerBinding == MultiPositionController.ControllerBinding.Throttle)
+                    if (mpc.controllerBinding == MultiPositionController.ControllerBinding.Throttle || mpc.controllerBinding == MultiPositionController.ControllerBinding.Combined)
                     {
                         if (!mpc.StateChanged)
                         {
@@ -6150,7 +6150,7 @@ namespace Orts.Simulation.RollingStocks
             {
                 foreach (MultiPositionController mpc in MultiPositionControllers)
                 {
-                    if (mpc.controllerBinding == MultiPositionController.ControllerBinding.Throttle)
+                    if (mpc.controllerBinding == MultiPositionController.ControllerBinding.Throttle || mpc.controllerBinding == MultiPositionController.ControllerBinding.Combined)
                     {
                         if (mpc.StateChanged)
                         {
@@ -6596,7 +6596,7 @@ namespace Orts.Simulation.RollingStocks
             {
                 foreach (MultiPositionController mpc in MultiPositionControllers)
                 {
-                    if (mpc.controllerBinding == MultiPositionController.ControllerBinding.TrainBrake || mpc.controllerBinding == MultiPositionController.ControllerBinding.Combined)
+                    if (mpc.controllerBinding == MultiPositionController.ControllerBinding.TrainBrake)
                     {
                         mpc.DoMovement(MultiPositionController.Movement.Aft);
                         SignalEvent(Event.TrainBrakeChange);
@@ -6637,7 +6637,7 @@ namespace Orts.Simulation.RollingStocks
             {
                 foreach (MultiPositionController mpc in MultiPositionControllers)
                 {
-                    if (mpc.controllerBinding == MultiPositionController.ControllerBinding.TrainBrake || mpc.controllerBinding == MultiPositionController.ControllerBinding.Combined)
+                    if (mpc.controllerBinding == MultiPositionController.ControllerBinding.TrainBrake)
                     {
                         mpc.DoMovement(MultiPositionController.Movement.Neutral);
                         SignalEvent(Event.TrainBrakeChange);
@@ -6657,7 +6657,7 @@ namespace Orts.Simulation.RollingStocks
             {
                 foreach (MultiPositionController mpc in MultiPositionControllers)
                 {
-                    if (mpc.controllerBinding == MultiPositionController.ControllerBinding.TrainBrake || mpc.controllerBinding == MultiPositionController.ControllerBinding.Combined)
+                    if (mpc.controllerBinding == MultiPositionController.ControllerBinding.TrainBrake)
                     {
                         mpc.DoMovement(MultiPositionController.Movement.Forward);
                         SignalEvent(Event.TrainBrakeChange);
