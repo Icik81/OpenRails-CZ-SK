@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Orts.Simulation\n"
 "POT-Creation-Date: 2022-05-15 11:12:30+0200\n"
-"PO-Revision-Date: 2022-05-26 20:33+0200\n"
+"PO-Revision-Date: 2022-05-29 16:59+0200\n"
 "Last-Translator: Altmann <altmann@bk.ru>\n"
 "Language-Team: Open Rails Dev Team\n"
 "Language: cs\n"
@@ -50,7 +50,7 @@ msgstr "Rychlobrzda"
 
 #: ../../Orts.Simulation/Common/Scripting/BrakeController.cs:292
 msgid "Self Lap"
-msgstr "Závěr"
+msgstr "Držení"
 
 #: ../../Orts.Simulation/Common/Scripting/BrakeController.cs:293
 #: ../../Orts.Simulation/Common/Scripting/BrakeController.cs:294
@@ -62,7 +62,7 @@ msgstr "Brzdění"
 #: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/MSTS/AirSinglePipe.cs:2273
 #: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/MSTS/AirSinglePipe.cs:2360
 msgid "Lap"
-msgstr "Držení"
+msgstr "Závěr"
 
 #: ../../Orts.Simulation/Common/Scripting/BrakeController.cs:296
 #: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/MSTS/AirSinglePipe.cs:2304
