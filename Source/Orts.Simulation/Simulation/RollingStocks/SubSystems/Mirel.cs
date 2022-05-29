@@ -662,10 +662,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                         if (!NZ1 && !NZ2 && !NZ3 && !NZ5 && !NZOK && !VYP && !ZAP)
                             UpdateSpeedNumbers((int)MirelMaximumSpeed, false);
                         else
-                            UpdateSpeedNumbers(0, true);
+                            UpdateSpeedNumbers((int)MpS.ToKpH(Locomotive.MaxSpeedMpS), true);
                     }
                     else
-                        UpdateSpeedNumbers(0, true);
+                        UpdateSpeedNumbers((int)MpS.ToKpH(Locomotive.MaxSpeedMpS), true);
                     driveModeSetup = false;
                     MaxSpeedSetup = false;
                 }
@@ -1545,6 +1545,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                 (initTest == InitTest.Passed && Locomotive.ActiveStation == MSTSLocomotive.DriverStation.Station2 && !Locomotive.UsingRearCab) ||
                 (initTest == InitTest.Passed && Locomotive.ActiveStation == MSTSLocomotive.DriverStation.Station1 && Locomotive.UsingRearCab))
                 NoSpeedDisplayed = true;
+            else
+                NoSpeedDisplayed = false;
 
             if (NoSpeedDisplayed || initTest != InitTest.Passed || ManualModeDisplay)
             {
