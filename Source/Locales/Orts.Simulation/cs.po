@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Orts.Simulation\n"
 "POT-Creation-Date: 2022-05-15 11:12:30+0200\n"
-"PO-Revision-Date: 2022-05-29 16:59+0200\n"
+"PO-Revision-Date: 2022-05-29 17:27+0200\n"
 "Last-Translator: Altmann <altmann@bk.ru>\n"
 "Language-Team: Open Rails Dev Team\n"
 "Language: cs\n"
@@ -83,7 +83,7 @@ msgstr "Minimální brzdný účinek"
 
 #: ../../Orts.Simulation/Common/Scripting/BrakeController.cs:300
 msgid "Hold"
-msgstr "Závěr"
+msgstr "Přidržet"
 
 #: ../../Orts.Simulation/Common/Scripting/BrakeController.cs:301
 msgid "Str. Brk. Release On:"
