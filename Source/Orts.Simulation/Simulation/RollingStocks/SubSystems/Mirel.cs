@@ -346,14 +346,14 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                             if (ms.Value == "a")
                             {
                                 prevRecieverState = recieverState = RecieverState.Off;
-                                Simulator.Confirmer.Warning(nextSignalTrId.ToString() + " - kódováni Mirel na příštím návěstidle je VYPNUTO (vzdálenost: " + Math.Round((double)distance, 0).ToString() + "m) -- AutoBlock? " + (noAutoblock ? "false" : "true"));
+                                Simulator.Confirmer.Warning("Mirel coding on next signal is OFF (distance: " + Math.Round((double)distance, 0).ToString() + "m");
                                 found = true;
                                 break;
                             }
                             if (ms.Value == "b")
                             {
                                 prevRecieverState = recieverState = RecieverState.Signal50;
-                                Simulator.Confirmer.Warning(nextSignalTrId.ToString() + " - kódování Mirel na příštím návěstidle je ZAPNUTO (vzdálenost: " + Math.Round((double)distance, 0).ToString() + "m) -- AutoBlock? " + (noAutoblock ? "false" : "true"));
+                                Simulator.Confirmer.Warning("Mirel coding on next signal is ON (distance: " + Math.Round((double)distance, 0).ToString() + "m");
                                 found = true;
                                 break;
                             }
@@ -366,7 +366,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                             Locomotive.SignalEvent(Common.Event.MirelUnwantedVigilancy);
                             prevNextSignalId = nextSignalTrId;
                         }
-                        Simulator.Confirmer.Warning(nextSignalTrId.ToString() + " - kódování Mirel na příštím návěstidle je NENASTAVENO (vzdálenost: " + Math.Round((double)distance, 0).ToString() + "m) -- AutoBlock? " + (noAutoblock ? "false" : "true"));
+                        Simulator.Confirmer.Warning("Mirel coding on next signal is NOT SET (distance: " + Math.Round((double)distance, 0).ToString() + "m");
                     }
                 }
                 else
