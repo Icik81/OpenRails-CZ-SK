@@ -247,6 +247,8 @@ namespace ORTS.Settings
         // Icik
         [Default(false)]
         public bool CabView_MSTSOR { get; set; }
+        [Default(2)]
+        public int NightBrightness { get; set; }
 
 
         // Simulation settings:

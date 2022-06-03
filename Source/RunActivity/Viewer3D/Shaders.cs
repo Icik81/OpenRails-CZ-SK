@@ -144,7 +144,25 @@ namespace Orts.Viewer3D
             //const float HalfShadowBrightness = 0.75;
             const float HalfNightBrightness = 0.6f;
             const float ShadowBrightness = 0.5f;
-            const float NightBrightness = 0.2f;
+
+            // Icik
+            //const float NightBrightness = 0.2f;
+            float NightBrightness = Program.Simulator.Settings.NightBrightness;
+            switch (NightBrightness)
+            {
+                case 0: NightBrightness = 0.05f; break;
+                case 1: NightBrightness = 0.10f; break;
+                case 2: NightBrightness = 0.20f; break;
+                case 3: NightBrightness = 0.30f; break;
+                case 4: NightBrightness = 0.40f; break;
+                case 5: NightBrightness = 0.50f; break;
+                case 6: NightBrightness = 0.60f; break;
+                case 7: NightBrightness = 0.70f; break;
+                case 8: NightBrightness = 0.80f; break;
+                case 9: NightBrightness = 0.90f; break;
+                case 10: NightBrightness = 1.00f; break;
+            }
+
 
             if (_imageTextureIsNight)
             {

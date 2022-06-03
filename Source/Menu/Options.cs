@@ -192,6 +192,8 @@ namespace ORTS
 
             // Icik
             CabView_MSTSOR.Checked = Settings.CabView_MSTSOR;
+            NightBrightnessTrackBar.Value = Settings.NightBrightness;
+            NightBrightnessTrackBar_Scroll(null, null);
 
             // Simulation tab
 
@@ -475,6 +477,7 @@ namespace ORTS
 
             // Icik
             Settings.CabView_MSTSOR = CabView_MSTSOR.Checked;
+            Settings.NightBrightness = NightBrightnessTrackBar.Value;
 
             // Simulation tab
             //Settings.SimpleControlPhysics = checkSimpleControlsPhysics.Checked;
@@ -959,6 +962,16 @@ namespace ORTS
         private void CabView_MSTSOR_CheckedChanged(object sender, EventArgs e)
         {
 
+        }
+
+        private void label4_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void NightBrightnessTrackBar_Scroll(object sender, EventArgs e)
+        {
+            labelNightBrightness.Text = catalog.GetStringFmt("{0}%", NightBrightnessTrackBar.Value * 10);
         }
     }
 }

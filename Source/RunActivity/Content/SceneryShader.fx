@@ -56,7 +56,6 @@ texture  ImageTexture;
 texture  OverlayTexture;
 float	 OverlayScale;
 float	 MaxShadowBrightness;
-float 	 MinNightColorModifier = 0.5;
 
 
 sampler Image = sampler_state
@@ -478,7 +477,7 @@ float4 PSImageTransfer(uniform bool ClampTexCoords, in VERTEX_OUTPUT In) : COLOR
 	litColor = lerp(litColor, _PSGetOvercastColor(Color, In), MaxShadowBrightness);
 
 	// Night-time darkens everything, except night-time textures.	
-	if (NightColorModifier < MinNightColorModifier) NightColorModifier = MinNightColorModifier;
+	
 	litColor *= NightColorModifier;
 	
 	//Ubere světlo, pokud je mlha 
@@ -548,7 +547,7 @@ float4 PSVegetation(in VERTEX_OUTPUT In) : COLOR0
 	litColor = lerp(litColor, _PSGetOvercastColor(Color, In), MaxShadowBrightness);
 
 	// Night-time darkens everything, except night-time textures.
-	if (NightColorModifier < MinNightColorModifier) NightColorModifier = MinNightColorModifier;
+	
 	litColor *= NightColorModifier;
 	
 	//Ubere světlo, pokud je mlha 
@@ -602,7 +601,7 @@ float4 PSTerrain(in VERTEX_OUTPUT In) : COLOR0
 	litColor = lerp(litColor, _PSGetOvercastColor(Color, In), MaxShadowBrightness);
 
 	// Night-time darkens everything, except night-time textures.
-	if (NightColorModifier < MinNightColorModifier) NightColorModifier = MinNightColorModifier;
+	
 	litColor *= NightColorModifier;
 
 	//Ubere světlo, pokud je mlha 
@@ -653,7 +652,7 @@ float4 PSDarkShade(in VERTEX_OUTPUT In) : COLOR0
 	litColor = lerp(litColor, _PSGetOvercastColor(Color, In), MaxShadowBrightness);
 
 	// Night-time darkens everything, except night-time textures.
-	if (NightColorModifier < MinNightColorModifier) NightColorModifier = MinNightColorModifier;
+	
 	litColor *= NightColorModifier;
 
 	// Headlights effect use original Color.

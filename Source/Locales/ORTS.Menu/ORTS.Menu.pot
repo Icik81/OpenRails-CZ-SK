@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2022-05-15 11:12:27+0200\n"
-"PO-Revision-Date: 2022-05-15 11:12:27+0200\n"
+"POT-Creation-Date: 2022-06-03 20:22:49+0200\n"
+"PO-Revision-Date: 2022-06-03 20:22:49+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -11,33 +11,33 @@ msgstr ""
 "X-Generator: MonoDevelop Gettext addin\n"
 
 
-#: ../../ORTS.Menu/Activities.cs:75
+#: ../../ORTS.Menu/Activities.cs:74
 msgid "- Explore Route -"
 msgstr ""
 
-#: ../../ORTS.Menu/Activities.cs:79
+#: ../../ORTS.Menu/Activities.cs:78
 msgid "+ Explore in Activity Mode +"
 msgstr ""
 
-#: ../../ORTS.Menu/Activities.cs:109
+#: ../../ORTS.Menu/Activities.cs:108
 msgid "Not same route:"
 msgstr ""
 
-#: ../../ORTS.Menu/Activities.cs:113
-#: ../../ORTS.Menu/Consists.cs:55
-#: ../../ORTS.Menu/Consists.cs:79
-#: ../../ORTS.Menu/Consists.cs:222
-#: ../../ORTS.Menu/ORTimetables.cs:74
-#: ../../ORTS.Menu/ORTimetables.cs:98
+#: ../../ORTS.Menu/Activities.cs:112
+#: ../../ORTS.Menu/Consists.cs:54
+#: ../../ORTS.Menu/Consists.cs:78
+#: ../../ORTS.Menu/Consists.cs:221
+#: ../../ORTS.Menu/ORTimetables.cs:73
+#: ../../ORTS.Menu/ORTimetables.cs:97
 #: ../../ORTS.Menu/Paths.cs:63
 #: ../../ORTS.Menu/Routes.cs:59
 msgid "load error:"
 msgstr ""
 
-#: ../../ORTS.Menu/Activities.cs:116
-#: ../../ORTS.Menu/Consists.cs:58
-#: ../../ORTS.Menu/Consists.cs:82
-#: ../../ORTS.Menu/Consists.cs:232
+#: ../../ORTS.Menu/Activities.cs:115
+#: ../../ORTS.Menu/Consists.cs:57
+#: ../../ORTS.Menu/Consists.cs:81
+#: ../../ORTS.Menu/Consists.cs:231
 #: ../../ORTS.Menu/Paths.cs:65
 #: ../../ORTS.Menu/Paths.cs:66
 #: ../../ORTS.Menu/Paths.cs:67
@@ -45,37 +45,37 @@ msgstr ""
 msgid "unnamed:"
 msgstr ""
 
-#: ../../ORTS.Menu/Activities.cs:122
-#: ../../ORTS.Menu/Consists.cs:62
-#: ../../ORTS.Menu/Consists.cs:86
-#: ../../ORTS.Menu/Consists.cs:241
-#: ../../ORTS.Menu/ORTimetables.cs:79
-#: ../../ORTS.Menu/ORTimetables.cs:103
+#: ../../ORTS.Menu/Activities.cs:121
+#: ../../ORTS.Menu/Consists.cs:61
+#: ../../ORTS.Menu/Consists.cs:85
+#: ../../ORTS.Menu/Consists.cs:240
+#: ../../ORTS.Menu/ORTimetables.cs:78
+#: ../../ORTS.Menu/ORTimetables.cs:102
 #: ../../ORTS.Menu/Paths.cs:71
 #: ../../ORTS.Menu/Routes.cs:66
 msgid "missing:"
 msgstr ""
 
-#: ../../ORTS.Menu/Activities.cs:115
+#: ../../ORTS.Menu/Activities.cs:114
 #, csharp-format
 msgid "Activity '{0}' is excluded."
 msgstr ""
 
-#: ../../ORTS.Menu/Consists.cs:211
+#: ../../ORTS.Menu/Consists.cs:210
 msgid "- Any Locomotive -"
 msgstr ""
 
-#: ../../ORTS.Menu/Consists.cs:229
+#: ../../ORTS.Menu/Consists.cs:228
 #, csharp-format
 msgid "Locomotive '{0}' is excluded."
 msgstr ""
 
-#: ../../ORTS.Menu/Paths.cs:168
+#: ../../ORTS.Menu/Paths.cs:169
 #, csharp-format
 msgid "Start at: {0}"
 msgstr ""
 
-#: ../../ORTS.Menu/Paths.cs:169
+#: ../../ORTS.Menu/Paths.cs:170
 #, csharp-format
 msgid "Heading to: {0}"
 msgstr ""

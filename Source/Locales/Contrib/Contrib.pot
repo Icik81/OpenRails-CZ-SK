@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2022-05-15 11:12:23+0200\n"
-"PO-Revision-Date: 2022-05-15 11:12:23+0200\n"
+"POT-Creation-Date: 2022-06-03 20:22:45+0200\n"
+"PO-Revision-Date: 2022-06-03 20:22:45+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -11,27 +11,27 @@ msgstr ""
 "X-Generator: MonoDevelop Gettext addin\n"
 
 
-#: ../../Contrib/ActivityEditor/ActivityEditor/AboutActEdit.cs:17
+#: ../../Contrib/ActivityEditor/ActivityEditor/AboutActEdit.cs:13
 #: ../../Contrib/ActivityEditor/ActivityEditor/AboutActEdit.Designer.cs:89
 #: ../../Contrib/ActivityEditor/ActivityEditor/Engine/ActEditor.Designer.cs:555
 #: ../../Contrib/ActivityEditor/ActivityEditor/Preference/Options.Designer.cs:287
 msgid "Activity Editor"
 msgstr ""
 
-#: ../../Contrib/ActivityEditor/ActivityEditor/AboutActEdit.cs:18
+#: ../../Contrib/ActivityEditor/ActivityEditor/AboutActEdit.cs:14
 msgid "0.1"
 msgstr ""
 
-#: ../../Contrib/ActivityEditor/ActivityEditor/AboutActEdit.cs:19
+#: ../../Contrib/ActivityEditor/ActivityEditor/AboutActEdit.cs:15
 #: ../../Contrib/ActivityEditor/ActivityEditor/AboutActEdit.Designer.cs:136
 msgid "Copyright by Open Rails project"
 msgstr ""
 
-#: ../../Contrib/ActivityEditor/ActivityEditor/AboutActEdit.cs:20
+#: ../../Contrib/ActivityEditor/ActivityEditor/AboutActEdit.cs:16
 msgid "OR"
 msgstr ""
 
-#: ../../Contrib/ActivityEditor/ActivityEditor/AboutActEdit.cs:21
+#: ../../Contrib/ActivityEditor/ActivityEditor/AboutActEdit.cs:17
 #: ../../Contrib/ActivityEditor/ActivityEditor/AboutActEdit.Designer.cs:125
 msgid ""
 "Tool intended for the creation of activities for the Open simulator Rail."
@@ -112,7 +112,7 @@ msgstr ""
 #: ../../Contrib/ActivityEditor/ActivityEditor/Activity/StartActivity.Designer.cs:100
 #: ../../Contrib/ActivityEditor/ActivityEditor/Activity/StartActivity.Designer.cs:111
 #: ../../Contrib/ActivityEditor/ActivityEditor/Activity/StartActivity.Designer.cs:339
-#: ../../Contrib/ActivityEditor/ActivityEditor/Wizard/ActivityDescr.cs:92
+#: ../../Contrib/ActivityEditor/ActivityEditor/Wizard/ActivityDescr.cs:91
 #: ../../Contrib/ActivityEditor/AEWizard/ActivityDescr.cs:91
 msgid "Activity Description"
 msgstr ""
@@ -274,8 +274,8 @@ msgid "Status"
 msgstr ""
 
 #: ../../Contrib/ActivityEditor/ActivityEditor/Engine/ActEditor.Designer.cs:302
-#: ../../Contrib/ActivityEditor/ActivityEditor/Engine/Viewer2D.cs:2026
-#: ../../Contrib/ActivityEditor/ActivityEditor/Engine/Viewer2D.cs:2128
+#: ../../Contrib/ActivityEditor/ActivityEditor/Engine/Viewer2D.cs:2018
+#: ../../Contrib/ActivityEditor/ActivityEditor/Engine/Viewer2D.cs:2120
 msgid "v"
 msgstr ""
 
@@ -356,25 +356,25 @@ msgstr ""
 msgid "Form1"
 msgstr ""
 
-#: ../../Contrib/ActivityEditor/ActivityEditor/Engine/Viewer2D.cs:164
+#: ../../Contrib/ActivityEditor/ActivityEditor/Engine/Viewer2D.cs:156
 msgid "Route MetaData"
 msgstr ""
 
-#: ../../Contrib/ActivityEditor/ActivityEditor/Engine/Viewer2D.cs:2004
-#: ../../Contrib/ActivityEditor/ActivityEditor/Engine/Viewer2D.cs:2093
+#: ../../Contrib/ActivityEditor/ActivityEditor/Engine/Viewer2D.cs:1996
+#: ../../Contrib/ActivityEditor/ActivityEditor/Engine/Viewer2D.cs:2085
 msgid "Display"
 msgstr ""
 
-#: ../../Contrib/ActivityEditor/ActivityEditor/Engine/Viewer2D.cs:2015
-#: ../../Contrib/ActivityEditor/ActivityEditor/Engine/Viewer2D.cs:2117
+#: ../../Contrib/ActivityEditor/ActivityEditor/Engine/Viewer2D.cs:2007
+#: ../../Contrib/ActivityEditor/ActivityEditor/Engine/Viewer2D.cs:2109
 msgid "x"
 msgstr ""
 
-#: ../../Contrib/ActivityEditor/ActivityEditor/Engine/Viewer2D.cs:2041
+#: ../../Contrib/ActivityEditor/ActivityEditor/Engine/Viewer2D.cs:2033
 msgid "Tag"
 msgstr ""
 
-#: ../../Contrib/ActivityEditor/ActivityEditor/Engine/Viewer2D.cs:2107
+#: ../../Contrib/ActivityEditor/ActivityEditor/Engine/Viewer2D.cs:2099
 msgid "Station"
 msgstr ""
 
@@ -479,9 +479,9 @@ msgstr ""
 msgid "Configuration for Generic Auxiliary Actions"
 msgstr ""
 
-#: ../../Contrib/ActivityEditor/ActivityEditor/Route%20Metadata/BufferInterface.cs:34
-#: ../../Contrib/ActivityEditor/ActivityEditor/Route%20Metadata/ConnectorInterface.cs:58
-#: ../../Contrib/ActivityEditor/ActivityEditor/Route%20Metadata/TrackSegmentInterface.cs:29
+#: ../../Contrib/ActivityEditor/ActivityEditor/Route%20Metadata/BufferInterface.cs:27
+#: ../../Contrib/ActivityEditor/ActivityEditor/Route%20Metadata/ConnectorInterface.cs:51
+#: ../../Contrib/ActivityEditor/ActivityEditor/Route%20Metadata/TrackSegmentInterface.cs:23
 msgid "Please, give a name"
 msgstr ""
 
@@ -502,7 +502,7 @@ msgstr ""
 msgid "BufferInterface"
 msgstr ""
 
-#: ../../Contrib/ActivityEditor/ActivityEditor/Route%20Metadata/ConnectorInterface.cs:49
+#: ../../Contrib/ActivityEditor/ActivityEditor/Route%20Metadata/ConnectorInterface.cs:42
 msgid "Not yet implemented"
 msgstr ""
 
@@ -518,19 +518,19 @@ msgstr ""
 msgid "Station Route Interface"
 msgstr ""
 
-#: ../../Contrib/ActivityEditor/ActivityEditor/Route%20Metadata/StationDisplay.cs:39
+#: ../../Contrib/ActivityEditor/ActivityEditor/Route%20Metadata/StationDisplay.cs:32
 msgid "Please Load Paths:"
 msgstr ""
 
-#: ../../Contrib/ActivityEditor/ActivityEditor/Route%20Metadata/StationDisplay.cs:43
+#: ../../Contrib/ActivityEditor/ActivityEditor/Route%20Metadata/StationDisplay.cs:36
 msgid "List of Paths seems OK:"
 msgstr ""
 
-#: ../../Contrib/ActivityEditor/ActivityEditor/Route%20Metadata/StationDisplay.cs:120
+#: ../../Contrib/ActivityEditor/ActivityEditor/Route%20Metadata/StationDisplay.cs:113
 msgid "###"
 msgstr ""
 
-#: ../../Contrib/ActivityEditor/ActivityEditor/Route%20Metadata/StationDisplay.cs:162
+#: ../../Contrib/ActivityEditor/ActivityEditor/Route%20Metadata/StationDisplay.cs:155
 msgid "Loaded:"
 msgstr ""
 
@@ -582,62 +582,62 @@ msgstr ""
 msgid "TrackSegmentInterface"
 msgstr ""
 
-#: ../../Contrib/ActivityEditor/ActivityEditor/Wizard/ActivityDescr.cs:108
+#: ../../Contrib/ActivityEditor/ActivityEditor/Wizard/ActivityDescr.cs:107
 #: ../../Contrib/ActivityEditor/AEWizard/ActivityDescr.cs:107
 msgid "Activity Name"
 msgstr ""
 
-#: ../../Contrib/ActivityEditor/ActivityEditor/Wizard/ActivityDescr.cs:124
-#: ../../Contrib/ActivityEditor/ActivityEditor/Wizard/SelectRoute.cs:69
+#: ../../Contrib/ActivityEditor/ActivityEditor/Wizard/ActivityDescr.cs:123
+#: ../../Contrib/ActivityEditor/ActivityEditor/Wizard/SelectRoute.cs:66
 #: ../../Contrib/ActivityEditor/AEWizard/ActivityDescr.cs:123
-#: ../../Contrib/ActivityEditor/AEWizard/SelectRoute.cs:69
+#: ../../Contrib/ActivityEditor/AEWizard/SelectRoute.cs:66
 msgid "Route Path"
 msgstr ""
 
-#: ../../Contrib/ActivityEditor/ActivityEditor/Wizard/ActivityDescr.cs:141
+#: ../../Contrib/ActivityEditor/ActivityEditor/Wizard/ActivityDescr.cs:140
 #: ../../Contrib/ActivityEditor/AEWizard/ActivityDescr.cs:140
 msgid "Activity Editor: Create new activity"
 msgstr ""
 
-#: ../../Contrib/ActivityEditor/ActivityEditor/Wizard/SelectRoute.cs:48
-#: ../../Contrib/ActivityEditor/AEWizard/SelectRoute.cs:48
+#: ../../Contrib/ActivityEditor/ActivityEditor/Wizard/SelectRoute.cs:45
+#: ../../Contrib/ActivityEditor/AEWizard/SelectRoute.cs:45
 msgid "Route Configuration: Select Route"
 msgstr ""
 
-#: ../../Contrib/ActivityEditor/ActivityEditor/Wizard/TrainInfo.cs:175
-#: ../../Contrib/ActivityEditor/AEWizard/TrainInfo.cs:139
+#: ../../Contrib/ActivityEditor/ActivityEditor/Wizard/TrainInfo.cs:173
+#: ../../Contrib/ActivityEditor/AEWizard/TrainInfo.cs:137
 msgid "Activity Editor: Specify Train Info"
 msgstr ""
 
-#: ../../Contrib/ActivityEditor/ActivityEditor/Wizard/TrainInfo.cs:194
-#: ../../Contrib/ActivityEditor/AEWizard/TrainInfo.cs:158
+#: ../../Contrib/ActivityEditor/ActivityEditor/Wizard/TrainInfo.cs:192
+#: ../../Contrib/ActivityEditor/AEWizard/TrainInfo.cs:156
 msgid "Select Train Consist"
 msgstr ""
 
-#: ../../Contrib/ActivityEditor/ActivityEditor/Wizard/TrainInfo.cs:211
-#: ../../Contrib/ActivityEditor/AEWizard/TrainInfo.cs:175
+#: ../../Contrib/ActivityEditor/ActivityEditor/Wizard/TrainInfo.cs:209
+#: ../../Contrib/ActivityEditor/AEWizard/TrainInfo.cs:173
 msgid "Train Name (Opt.)"
 msgstr ""
 
-#: ../../Contrib/ActivityEditor/ActivityEditor/Wizard/WizardForm.cs:192
-#: ../../Contrib/ActivityEditor/AEWizard/WizardForm.cs:192
+#: ../../Contrib/ActivityEditor/ActivityEditor/Wizard/WizardForm.cs:188
+#: ../../Contrib/ActivityEditor/AEWizard/WizardForm.cs:188
 msgid "< &Back"
 msgstr ""
 
-#: ../../Contrib/ActivityEditor/ActivityEditor/Wizard/WizardForm.cs:201
-#: ../../Contrib/ActivityEditor/AEWizard/WizardForm.cs:201
+#: ../../Contrib/ActivityEditor/ActivityEditor/Wizard/WizardForm.cs:197
+#: ../../Contrib/ActivityEditor/AEWizard/WizardForm.cs:197
 msgid "&Next >"
 msgstr ""
 
-#: ../../Contrib/ActivityEditor/ActivityEditor/Wizard/WizardForm.cs:211
-#: ../../Contrib/ActivityEditor/AEWizard/WizardForm.cs:211
+#: ../../Contrib/ActivityEditor/ActivityEditor/Wizard/WizardForm.cs:207
+#: ../../Contrib/ActivityEditor/AEWizard/WizardForm.cs:207
 #: ../../Contrib/TrackViewer/Drawing/Labels/EditLabel.xaml:12
 #: ../../Contrib/TrackViewer/UserInterface/SearchControl.xaml:12
 msgid "Cancel"
 msgstr ""
 
-#: ../../Contrib/ActivityEditor/ActivityEditor/Wizard/WizardForm.cs:220
-#: ../../Contrib/ActivityEditor/AEWizard/WizardForm.cs:220
+#: ../../Contrib/ActivityEditor/ActivityEditor/Wizard/WizardForm.cs:216
+#: ../../Contrib/ActivityEditor/AEWizard/WizardForm.cs:216
 msgid "&Finish"
 msgstr ""
 
@@ -663,30 +663,30 @@ msgstr ""
 msgid "Open Rails Content Manager"
 msgstr ""
 
-#: ../../Contrib/TrackViewer/TrackViewer.cs:627
+#: ../../Contrib/TrackViewer/TrackViewer.cs:625
 msgid ""
 "The path you are working on has un-saved changes.\n"
 msgstr ""
 
-#: ../../Contrib/TrackViewer/TrackViewer.cs:629
+#: ../../Contrib/TrackViewer/TrackViewer.cs:627
 msgid "Do you really want to Quit?"
 msgstr ""
 
-#: ../../Contrib/TrackViewer/TrackViewer.cs:733
+#: ../../Contrib/TrackViewer/TrackViewer.cs:731
 #, csharp-format
 msgid ""
 "Route cannot be loaded.\n"
 "Extension {0} is not supported"
 msgstr ""
 
-#: ../../Contrib/TrackViewer/TrackViewer.cs:740
+#: ../../Contrib/TrackViewer/TrackViewer.cs:738
 #, csharp-format
 msgid ""
 "Route cannot be loaded.\n"
 "{0} does not exist"
 msgstr ""
 
-#: ../../Contrib/TrackViewer/TrackViewer.cs:746
+#: ../../Contrib/TrackViewer/TrackViewer.cs:745
 #, csharp-format
 msgid ""
 "Route cannot be loaded.\n"
@@ -694,283 +694,283 @@ msgid ""
 "install folder but does not contain expected files"
 msgstr ""
 
-#: ../../Contrib/TrackViewer/TrackViewer.cs:771
+#: ../../Contrib/TrackViewer/TrackViewer.cs:770
 #, csharp-format
 msgid ""
 "Route cannot be loaded.\n"
 "{0} somehow could not be translated into a loadable route"
 msgstr ""
 
-#: ../../Contrib/TrackViewer/TrackViewer.cs:812
+#: ../../Contrib/TrackViewer/TrackViewer.cs:811
 msgid ""
 "Directory is not a valid install directory.\n"
 "The install directory needs to contain ROUTES, GLOBAL, ..."
 msgstr ""
 
-#: ../../Contrib/TrackViewer/TrackViewer.cs:886
+#: ../../Contrib/TrackViewer/TrackViewer.cs:885
 msgid "Loading route..."
 msgstr ""
 
-#: ../../Contrib/TrackViewer/TrackViewer.cs:911
+#: ../../Contrib/TrackViewer/TrackViewer.cs:910
 msgid "Route cannot be loaded. Sorry"
 msgstr ""
 
-#: ../../Contrib/TrackViewer/TrackViewer.cs:982
+#: ../../Contrib/TrackViewer/TrackViewer.cs:981
 msgid "Loading .pat file ..."
 msgstr ""
 
-#: ../../Contrib/TrackViewer/TrackViewer.cs:985
+#: ../../Contrib/TrackViewer/TrackViewer.cs:984
 msgid "Processing .pat file ..."
 msgstr ""
 
-#: ../../Contrib/TrackViewer/TrackViewer.cs:1013
+#: ../../Contrib/TrackViewer/TrackViewer.cs:1012
 msgid "Path has been modified. Loading a new path will discard changes."
+msgstr ""
+
+#: ../../Contrib/TrackViewer/TrackViewer.cs:1013
+#: ../../Contrib/TrackViewer/TrackViewer.cs:1094
+#: ../../Contrib/TrackViewer/Editing/SavePatFile.cs:98
+msgid "Do you want to continue?"
 msgstr ""
 
 #: ../../Contrib/TrackViewer/TrackViewer.cs:1014
 #: ../../Contrib/TrackViewer/TrackViewer.cs:1095
-#: ../../Contrib/TrackViewer/Editing/SavePatFile.cs:99
-msgid "Do you want to continue?"
-msgstr ""
-
-#: ../../Contrib/TrackViewer/TrackViewer.cs:1015
-#: ../../Contrib/TrackViewer/TrackViewer.cs:1096
-#: ../../Contrib/TrackViewer/Editing/SavePatFile.cs:85
-#: ../../Contrib/TrackViewer/Editing/SavePatFile.cs:102
+#: ../../Contrib/TrackViewer/Editing/SavePatFile.cs:84
+#: ../../Contrib/TrackViewer/Editing/SavePatFile.cs:101
 msgid "Trackviewer Path Editor"
 msgstr ""
 
-#: ../../Contrib/TrackViewer/TrackViewer.cs:1092
+#: ../../Contrib/TrackViewer/TrackViewer.cs:1091
 msgid ""
 "This will open every single .pat file for this route, (try to) fix all broken "
 "nodes, and save the modified path. "
 msgstr ""
 
-#: ../../Contrib/TrackViewer/TrackViewer.cs:1093
+#: ../../Contrib/TrackViewer/TrackViewer.cs:1092
 msgid "Potentially it will therefore change all .pat files on disc."
 msgstr ""
 
-#: ../../Contrib/TrackViewer/TrackViewer.cs:1094
+#: ../../Contrib/TrackViewer/TrackViewer.cs:1093
 msgid ""
 "This can be useful when a route has been changed and you want all paths to be "
 "corrected."
 msgstr ""
 
-#: ../../Contrib/TrackViewer/Drawing/DrawColors.cs:82
+#: ../../Contrib/TrackViewer/Drawing/DrawColors.cs:80
 msgid "Select broken path color"
 msgstr ""
 
-#: ../../Contrib/TrackViewer/Drawing/DrawColors.cs:88
+#: ../../Contrib/TrackViewer/Drawing/DrawColors.cs:86
 msgid "Select path color (main)"
 msgstr ""
 
-#: ../../Contrib/TrackViewer/Drawing/DrawColors.cs:100
+#: ../../Contrib/TrackViewer/Drawing/DrawColors.cs:98
 msgid "Select path color (siding)"
 msgstr ""
 
-#: ../../Contrib/TrackViewer/Drawing/DrawColors.cs:140
+#: ../../Contrib/TrackViewer/Drawing/DrawColors.cs:138
 msgid "Select color for multi-colored straight tracks"
 msgstr ""
 
-#: ../../Contrib/TrackViewer/Drawing/DrawColors.cs:141
+#: ../../Contrib/TrackViewer/Drawing/DrawColors.cs:139
 msgid "Select color for multi-colored curved tracks"
 msgstr ""
 
-#: ../../Contrib/TrackViewer/Drawing/DrawColors.cs:142
+#: ../../Contrib/TrackViewer/Drawing/DrawColors.cs:140
 msgid "Select color for mono-colored tracks"
 msgstr ""
 
-#: ../../Contrib/TrackViewer/Drawing/DrawColors.cs:143
+#: ../../Contrib/TrackViewer/Drawing/DrawColors.cs:141
 msgid "Select color for tracks on terrain"
 msgstr ""
 
-#: ../../Contrib/TrackViewer/Drawing/DrawColors.cs:145
+#: ../../Contrib/TrackViewer/Drawing/DrawColors.cs:143
 msgid "Select color for multi-colored straight roads"
 msgstr ""
 
-#: ../../Contrib/TrackViewer/Drawing/DrawColors.cs:146
+#: ../../Contrib/TrackViewer/Drawing/DrawColors.cs:144
 msgid "Select color for multi-colored curved roads"
 msgstr ""
 
-#: ../../Contrib/TrackViewer/Drawing/DrawColors.cs:147
+#: ../../Contrib/TrackViewer/Drawing/DrawColors.cs:145
 msgid "Select color for mono-colored roads"
 msgstr ""
 
-#: ../../Contrib/TrackViewer/Drawing/DrawColors.cs:148
+#: ../../Contrib/TrackViewer/Drawing/DrawColors.cs:146
 msgid "Select color for roads on terrain"
 msgstr ""
 
-#: ../../Contrib/TrackViewer/Drawing/DrawColors.cs:156
+#: ../../Contrib/TrackViewer/Drawing/DrawColors.cs:154
 msgid "Select background color"
 msgstr ""
 
-#: ../../Contrib/TrackViewer/Drawing/DrawColors.cs:171
+#: ../../Contrib/TrackViewer/Drawing/DrawColors.cs:169
 msgid "Select text color"
 msgstr ""
 
-#: ../../Contrib/TrackViewer/Drawing/DrawColors.cs:183
+#: ../../Contrib/TrackViewer/Drawing/DrawColors.cs:181
 msgid "Select item text color"
 msgstr ""
 
-#: ../../Contrib/TrackViewer/Drawing/DrawColors.cs:188
+#: ../../Contrib/TrackViewer/Drawing/DrawColors.cs:186
 msgid "Select junction color"
 msgstr ""
 
-#: ../../Contrib/TrackViewer/Drawing/DrawColors.cs:193
+#: ../../Contrib/TrackViewer/Drawing/DrawColors.cs:191
 msgid "Select endnode color"
 msgstr ""
 
-#: ../../Contrib/TrackViewer/Drawing/DrawColors.cs:198
+#: ../../Contrib/TrackViewer/Drawing/DrawColors.cs:196
 msgid "Select siding color"
 msgstr ""
 
-#: ../../Contrib/TrackViewer/Drawing/DrawColors.cs:203
+#: ../../Contrib/TrackViewer/Drawing/DrawColors.cs:201
 msgid "Select crossing color"
 msgstr ""
 
-#: ../../Contrib/TrackViewer/Drawing/DrawColors.cs:208
+#: ../../Contrib/TrackViewer/Drawing/DrawColors.cs:206
 msgid "Select road crossing color"
 msgstr ""
 
-#: ../../Contrib/TrackViewer/Drawing/DrawColors.cs:213
+#: ../../Contrib/TrackViewer/Drawing/DrawColors.cs:211
 msgid "Select speedpost color"
 msgstr ""
 
-#: ../../Contrib/TrackViewer/Drawing/DrawColors.cs:292
+#: ../../Contrib/TrackViewer/Drawing/DrawColors.cs:290
 msgid "Select other-paths color"
 msgstr ""
 
-#: ../../Contrib/TrackViewer/Drawing/DrawTerrain.cs:631
+#: ../../Contrib/TrackViewer/Drawing/DrawTerrain.cs:629
 #, csharp-format
 msgid "Loading terrain ace-files {0}-{1} (scaled down with a factor {2})"
 msgstr ""
 
-#: ../../Contrib/TrackViewer/Drawing/DrawTerrain.cs:657
+#: ../../Contrib/TrackViewer/Drawing/DrawTerrain.cs:655
 msgid "Rescaling previously loaded ace-files"
 msgstr ""
 
-#: ../../Contrib/TrackViewer/Drawing/DrawTrackDB.cs:61
+#: ../../Contrib/TrackViewer/Drawing/DrawTrackDB.cs:58
 msgid "Loading trackfile .trk ..."
 msgstr ""
 
-#: ../../Contrib/TrackViewer/Drawing/DrawTrackDB.cs:65
+#: ../../Contrib/TrackViewer/Drawing/DrawTrackDB.cs:62
 msgid "Loading track database .tdb ..."
 msgstr ""
 
-#: ../../Contrib/TrackViewer/Drawing/DrawTrackDB.cs:69
+#: ../../Contrib/TrackViewer/Drawing/DrawTrackDB.cs:66
 msgid "Loading tsection.dat ..."
 msgstr ""
 
-#: ../../Contrib/TrackViewer/Drawing/DrawTrackDB.cs:83
+#: ../../Contrib/TrackViewer/Drawing/DrawTrackDB.cs:80
 msgid "Loading road track database .rdb ..."
 msgstr ""
 
-#: ../../Contrib/TrackViewer/Drawing/DrawTrackDB.cs:270
+#: ../../Contrib/TrackViewer/Drawing/DrawTrackDB.cs:267
 msgid "Finding the angles to draw signals, endnodes, ..."
 msgstr ""
 
-#: ../../Contrib/TrackViewer/Drawing/Labels/DrawLabels.cs:266
+#: ../../Contrib/TrackViewer/Drawing/Labels/DrawLabels.cs:264
 msgid "The .json file could not be read properly."
 msgstr ""
 
-#: ../../Contrib/TrackViewer/Drawing/Labels/DrawLabels.cs:278
+#: ../../Contrib/TrackViewer/Drawing/Labels/DrawLabels.cs:276
 msgid "Some labels could not be read properly."
 msgstr ""
 
-#: ../../Contrib/TrackViewer/Drawing/Labels/DrawLabels.cs:285
+#: ../../Contrib/TrackViewer/Drawing/Labels/DrawLabels.cs:283
 msgid "None of the labels could be read properly"
 msgstr ""
 
-#: ../../Contrib/TrackViewer/Drawing/Labels/DrawLabels.cs:289
+#: ../../Contrib/TrackViewer/Drawing/Labels/DrawLabels.cs:287
 msgid "There were no labels read"
 msgstr ""
 
-#: ../../Contrib/TrackViewer/Editing/AutoFixAllPaths.xaml.cs:76
+#: ../../Contrib/TrackViewer/Editing/AutoFixAllPaths.xaml.cs:74
 msgid "Processing .pat file "
 msgstr ""
 
-#: ../../Contrib/TrackViewer/Editing/EditorActions.cs:180
+#: ../../Contrib/TrackViewer/Editing/EditorActions.cs:177
 msgid "Place start point"
 msgstr ""
 
-#: ../../Contrib/TrackViewer/Editing/EditorActions.cs:215
+#: ../../Contrib/TrackViewer/Editing/EditorActions.cs:212
 msgid "Remove start point"
 msgstr ""
 
-#: ../../Contrib/TrackViewer/Editing/EditorActions.cs:242
+#: ../../Contrib/TrackViewer/Editing/EditorActions.cs:239
 msgid "Clear path (keep tail)"
 msgstr ""
 
-#: ../../Contrib/TrackViewer/Editing/EditorActions.cs:266
+#: ../../Contrib/TrackViewer/Editing/EditorActions.cs:263
 msgid "Change start direction"
 msgstr ""
 
-#: ../../Contrib/TrackViewer/Editing/EditorActions.cs:295
+#: ../../Contrib/TrackViewer/Editing/EditorActions.cs:292
 msgid "Place end point"
 msgstr ""
 
-#: ../../Contrib/TrackViewer/Editing/EditorActions.cs:334
+#: ../../Contrib/TrackViewer/Editing/EditorActions.cs:331
 msgid "Remove end point"
 msgstr ""
 
-#: ../../Contrib/TrackViewer/Editing/EditorActions.cs:360
+#: ../../Contrib/TrackViewer/Editing/EditorActions.cs:357
 msgid "Place reversal point"
 msgstr ""
 
-#: ../../Contrib/TrackViewer/Editing/EditorActions.cs:397
+#: ../../Contrib/TrackViewer/Editing/EditorActions.cs:394
 msgid "Remove reversal point"
 msgstr ""
 
-#: ../../Contrib/TrackViewer/Editing/EditorActions.cs:451
+#: ../../Contrib/TrackViewer/Editing/EditorActions.cs:448
 msgid "Place wait point"
 msgstr ""
 
-#: ../../Contrib/TrackViewer/Editing/EditorActions.cs:479
+#: ../../Contrib/TrackViewer/Editing/EditorActions.cs:476
 msgid "Edit wait point"
 msgstr ""
 
-#: ../../Contrib/TrackViewer/Editing/EditorActions.cs:503
+#: ../../Contrib/TrackViewer/Editing/EditorActions.cs:500
 msgid "Remove wait point"
 msgstr ""
 
-#: ../../Contrib/TrackViewer/Editing/EditorActions.cs:706
-#: ../../Contrib/TrackViewer/Editing/EditorActions.cs:1276
+#: ../../Contrib/TrackViewer/Editing/EditorActions.cs:703
+#: ../../Contrib/TrackViewer/Editing/EditorActions.cs:1274
 msgid "Take other exit"
 msgstr ""
 
-#: ../../Contrib/TrackViewer/Editing/EditorActions.cs:753
+#: ../../Contrib/TrackViewer/Editing/EditorActions.cs:750
 msgid "Add passing path"
 msgstr ""
 
-#: ../../Contrib/TrackViewer/Editing/EditorActions.cs:793
+#: ../../Contrib/TrackViewer/Editing/EditorActions.cs:790
 msgid "Start passing path"
 msgstr ""
 
-#: ../../Contrib/TrackViewer/Editing/EditorActions.cs:858
+#: ../../Contrib/TrackViewer/Editing/EditorActions.cs:855
 msgid "Remove passing path"
 msgstr ""
 
-#: ../../Contrib/TrackViewer/Editing/EditorActions.cs:898
+#: ../../Contrib/TrackViewer/Editing/EditorActions.cs:895
 msgid "Fix invalid point"
 msgstr ""
 
-#: ../../Contrib/TrackViewer/Editing/EditorActions.cs:922
+#: ../../Contrib/TrackViewer/Editing/EditorActions.cs:919
 msgid "Delete rest of path"
 msgstr ""
 
-#: ../../Contrib/TrackViewer/Editing/EditorActions.cs:951
+#: ../../Contrib/TrackViewer/Editing/EditorActions.cs:948
 msgid "Cut path here and store its tail"
 msgstr ""
 
-#: ../../Contrib/TrackViewer/Editing/EditorActions.cs:1005
+#: ../../Contrib/TrackViewer/Editing/EditorActions.cs:1002
 msgid "Auto-fix broken points"
 msgstr ""
 
-#: ../../Contrib/TrackViewer/Editing/EditorActions.cs:1113
+#: ../../Contrib/TrackViewer/Editing/EditorActions.cs:1110
 msgid "Reconnect to tail"
 msgstr ""
 
-#: ../../Contrib/TrackViewer/Editing/EditorActions.cs:1174
+#: ../../Contrib/TrackViewer/Editing/EditorActions.cs:1171
 msgid "Reconnect passing path"
 msgstr ""
 
@@ -988,55 +988,55 @@ msgid ""
 "extended."
 msgstr ""
 
-#: ../../Contrib/TrackViewer/Editing/PathEditor.cs:800
+#: ../../Contrib/TrackViewer/Editing/PathEditor.cs:801
 msgid "The selected path has been added as tail and then reconnected."
 msgstr ""
 
-#: ../../Contrib/TrackViewer/Editing/PathEditor.cs:804
+#: ../../Contrib/TrackViewer/Editing/PathEditor.cs:805
 msgid ""
 "The selected path has been added as tail. It was not possible to reconnect "
 "automatically."
 msgstr ""
 
-#: ../../Contrib/TrackViewer/Editing/PathEditor.cs:847
+#: ../../Contrib/TrackViewer/Editing/PathEditor.cs:848
 msgid "Reversing broken paths is not supported"
 msgstr ""
 
-#: ../../Contrib/TrackViewer/Editing/PathEditor.cs:852
+#: ../../Contrib/TrackViewer/Editing/PathEditor.cs:853
 msgid "Reversing a path without start node is not supported"
 msgstr ""
 
-#: ../../Contrib/TrackViewer/Editing/PathEditor.cs:857
+#: ../../Contrib/TrackViewer/Editing/PathEditor.cs:858
 msgid "Reversing a path without end node is not supported"
 msgstr ""
 
-#: ../../Contrib/TrackViewer/Editing/SavePatFile.cs:84
+#: ../../Contrib/TrackViewer/Editing/SavePatFile.cs:83
 msgid ""
 "Path does not even have a start node.\n"
 "Saving is not possible."
 msgstr ""
 
-#: ../../Contrib/TrackViewer/Editing/SavePatFile.cs:91
+#: ../../Contrib/TrackViewer/Editing/SavePatFile.cs:90
 msgid "* The path does not have a well-defined end-point"
 msgstr ""
 
-#: ../../Contrib/TrackViewer/Editing/SavePatFile.cs:93
+#: ../../Contrib/TrackViewer/Editing/SavePatFile.cs:92
 msgid "* The path has a stored and not-yet reconnected tail"
 msgstr ""
 
-#: ../../Contrib/TrackViewer/Editing/SavePatFile.cs:97
+#: ../../Contrib/TrackViewer/Editing/SavePatFile.cs:96
 msgid "The current path is not finished:"
 msgstr ""
 
-#: ../../Contrib/TrackViewer/Editing/SavePatFile.cs:110
+#: ../../Contrib/TrackViewer/Editing/SavePatFile.cs:109
 msgid "Saving broken paths might not always work correctly."
 msgstr ""
 
-#: ../../Contrib/TrackViewer/Editing/SavePatFile.cs:111
+#: ../../Contrib/TrackViewer/Editing/SavePatFile.cs:110
 msgid "The MSTS format for defining broken paths is not understood very well."
 msgstr ""
 
-#: ../../Contrib/TrackViewer/Editing/SavePatFile.cs:112
+#: ../../Contrib/TrackViewer/Editing/SavePatFile.cs:111
 msgid "Reopening it in TrackViewer, however, is likely to work."
 msgstr ""
 
@@ -1060,270 +1060,270 @@ msgstr ""
 msgid "Unknown"
 msgstr ""
 
-#: ../../Contrib/TrackViewer/Editing/WaitPointDialog.xaml.cs:52
-#: ../../Contrib/TrackViewer/Editing/WaitPointDialog.xaml.cs:53
-#: ../../Contrib/TrackViewer/Editing/WaitPointDialog.xaml.cs:54
-#: ../../Contrib/TrackViewer/Editing/WaitPointDialog.xaml.cs:55
-#: ../../Contrib/TrackViewer/Editing/WaitPointDialog.xaml.cs:56
-#: ../../Contrib/TrackViewer/Editing/WaitPointDialog.xaml.cs:57
-#: ../../Contrib/TrackViewer/Editing/WaitPointDialog.xaml.cs:58
-#: ../../Contrib/TrackViewer/Editing/WaitPointDialog.xaml.cs:143
+#: ../../Contrib/TrackViewer/Editing/WaitPointDialog.xaml.cs:43
+#: ../../Contrib/TrackViewer/Editing/WaitPointDialog.xaml.cs:44
+#: ../../Contrib/TrackViewer/Editing/WaitPointDialog.xaml.cs:45
+#: ../../Contrib/TrackViewer/Editing/WaitPointDialog.xaml.cs:46
+#: ../../Contrib/TrackViewer/Editing/WaitPointDialog.xaml.cs:47
+#: ../../Contrib/TrackViewer/Editing/WaitPointDialog.xaml.cs:48
+#: ../../Contrib/TrackViewer/Editing/WaitPointDialog.xaml.cs:49
+#: ../../Contrib/TrackViewer/Editing/WaitPointDialog.xaml.cs:134
 msgid "1"
 msgstr ""
 
-#: ../../Contrib/TrackViewer/Editing/WaitPointDialog.xaml.cs:148
+#: ../../Contrib/TrackViewer/Editing/WaitPointDialog.xaml.cs:139
 msgid "11"
 msgstr ""
 
-#: ../../Contrib/TrackViewer/Editing/WaitPointDialog.xaml.cs:269
+#: ../../Contrib/TrackViewer/Editing/WaitPointDialog.xaml.cs:261
 msgid "99"
 msgstr ""
 
-#: ../../Contrib/TrackViewer/UserInterface/Languages.cs:91
+#: ../../Contrib/TrackViewer/UserInterface/Languages.cs:90
 msgid "Please restart TrackViewer in order to load the new language."
 msgstr ""
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:403
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:402
 msgid "<Select path>"
 msgstr ""
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:419
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:418
 msgid "<Select station>"
 msgstr ""
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:432
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:431
 msgid "<Select platform>"
 msgstr ""
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:445
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:444
 msgid "<Select siding>"
 msgstr ""
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:558
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:557
 msgid ""
 "ctrl-R\tReload the route\n"
 msgstr ""
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:559
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:558
 msgid ""
 "Q\tQuit\n"
 msgstr ""
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:561
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:560
 msgid ""
 "=\tZoom-in (and keep zooming)\n"
 msgstr ""
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:562
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:561
 msgid ""
 "shift-=\tZoom-in\n"
 msgstr ""
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:563
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:562
 msgid ""
 "-\tZoom-out (and keep zooming)\n"
 msgstr ""
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:564
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:563
 msgid ""
 "shift--\tZoom-out\n"
 msgstr ""
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:565
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:564
 msgid ""
 "Z\tZoom to tile\n"
 msgstr ""
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:566
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:565
 msgid ""
 "M\tToggle zoom center\n"
 msgstr ""
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:567
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:566
 msgid ""
 "R\tZoom reset\n"
 msgstr ""
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:568
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:567
 msgid ""
 "L\tAdd label\n"
 msgstr ""
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:570
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:569
 msgid ""
 "shift-C\t\tShift center to current mouse location\n"
 msgstr ""
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:571
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:570
 msgid ""
 "left arrow\tShift left\n"
 msgstr ""
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:572
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:571
 msgid ""
 "down arrow\tShift down\n"
 msgstr ""
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:573
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:572
 msgid ""
 "right arrow\tShift right\n"
 msgstr ""
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:574
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:573
 msgid ""
 "up arrow\t\tShift up\n"
 msgstr ""
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:576
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:575
 msgid ""
 "F5\tShow speed-limits\n"
 msgstr ""
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:577
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:576
 msgid ""
 "shift-F5\tShow mileposts\n"
 msgstr ""
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:578
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:577
 msgid ""
 "F6\tShow terrain\n"
 msgstr ""
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:579
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:578
 msgid ""
 "ctrl-F6\tShow DM terrain\n"
 msgstr ""
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:580
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:579
 msgid ""
 "shift-F6\tShow terrain patch lines\n"
 msgstr ""
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:581
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:580
 msgid ""
 "F7\tshow signals\n"
 msgstr ""
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:582
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:581
 msgid ""
 "F8\tShow platforms\n"
 msgstr ""
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:583
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:582
 msgid ""
 "shift-F8\tShow platform-names\n"
 msgstr ""
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:584
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:583
 msgid ""
 "F9\tShow sidings\n"
 msgstr ""
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:585
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:584
 msgid ""
 "shift-F9\tShow siding-names\n"
 msgstr ""
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:586
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:585
 msgid ""
 "F10\tHighlight tracks\n"
 msgstr ""
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:587
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:586
 msgid ""
 "shift-F10\tHighlight items\n"
 msgstr ""
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:588
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:587
 msgid ""
 "F11\tShow path\n"
 msgstr ""
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:589
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:588
 msgid ""
 "shift-F11\tShow raw path\n"
 msgstr ""
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:591
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:590
 msgid ""
 "C\t\tShift to center of current path node\n"
 msgstr ""
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:592
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:591
 msgid ""
 "PgUp\t\tShow more of the path\n"
 msgstr ""
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:593
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:592
 msgid ""
 "PgDn\t\tShow less of the path\n"
 msgstr ""
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:594
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:593
 msgid ""
 "shift-PgUp\tShow the full path\n"
 msgstr ""
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:595
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:594
 msgid ""
 "shift-PgDn\tShow only start point of path\n"
 msgstr ""
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:596
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:595
 msgid ""
 "E\t\tPlace end-point\n"
 msgstr ""
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:597
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:596
 msgid ""
 "W\t\tPlace a wait-point\n"
 msgstr ""
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:598
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:597
 msgid ""
 "ctrl-Z\t\tUndo in path editor\n"
 msgstr ""
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:599
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:598
 msgid ""
 "ctrl-Y\t\tRedo in path editor\n"
 msgstr ""
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:601
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:600
 msgid ""
 "alt-?\t\tVarious keys to open submenus\n"
 msgstr ""
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:602
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:601
 msgid "Keyboard shortcuts"
 msgstr ""
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:608
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:607
 msgid "This is ORTS TrackViewer, version "
 msgstr ""
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:611
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:610
 msgid ""
 "It is a 'Contribution' to ORTS, and as such\n"
 msgstr ""
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:612
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:611
 msgid "not an integral part of ORTS."
 msgstr ""
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:620
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:619
 msgid "Documentation is available"
 msgstr ""
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:624
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:623
 msgid "Right column → Open Rails Trackviewer"
 msgstr ""
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:626
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:625
 msgid "Do you want to go to the website?"
 msgstr ""
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:628
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:627
 #: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml:174
 msgid "Documentation"
 msgstr ""
