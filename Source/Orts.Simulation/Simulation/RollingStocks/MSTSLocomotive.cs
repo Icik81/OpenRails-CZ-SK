@@ -4716,9 +4716,16 @@ namespace Orts.Simulation.RollingStocks
             }
 
             TrainBrakeController.Update(elapsedClockSeconds);
-            if (TrainBrakeController.UpdateValue > 0.0)
+            if (TrainBrakeController != null)
             {
-                Simulator.Confirmer.Update(CabControl.TrainBrake, CabSetting.Increase, GetTrainBrakeStatus());
+                if (TrainBrakeController.UpdateValue > 0.0)
+                {
+                    Simulator.Confirmer.Update(CabControl.TrainBrake, CabSetting.Increase, GetTrainBrakeStatusSimple());
+                }
+                if (TrainBrakeController.UpdateValue < 0.0)
+                {
+                    Simulator.Confirmer.Update(CabControl.TrainBrake, CabSetting.Decrease, GetTrainBrakeStatusSimple());
+                }
             }
 
             if (EngineBrakeController != null)
@@ -6736,6 +6743,17 @@ namespace Orts.Simulation.RollingStocks
             if (lastCar == this)
                 lastCar = Train.Cars[0];
             s += BrakeSystem.GetFullStatus(lastCar.BrakeSystem, BrakeSystemPressureUnits);
+            return s;
+        }
+        // Icik
+        public string GetTrainBrakeStatusSimple()
+        {
+            var train = Simulator.PlayerLocomotive.Train;//Debrief Eval
+            string s = TrainBrakeController.GetStatus();
+            TrainCar lastCar = Train.Cars[Train.Cars.Count - 1];
+            if (lastCar == this)
+                lastCar = Train.Cars[0];
+            s += BrakeSystem.GetSimpleStatus(lastCar.BrakeSystem, BrakeSystemPressureUnits);
             return s;
         }
 

@@ -27,7 +27,7 @@ namespace Orts.Viewer3D.Popups
     public class DerailWindow : Window
     {
         public DerailWindow(WindowManager owner)
-            : base(owner, Window.DecorationSize.X + owner.TextFontDefault.Height * 20, Window.DecorationSize.Y + owner.TextFontDefault.Height * 5, Viewer.Catalog.GetString("Emergency"))
+            : base(owner, Window.DecorationSize.X + owner.TextFontDefault.Height * 20, Window.DecorationSize.Y + owner.TextFontDefault.Height * 5, Viewer.Catalog.GetString("Emergency Event"))
         {
         }
 
@@ -40,7 +40,7 @@ namespace Orts.Viewer3D.Popups
             var spacing = (heightForLabels - Owner.TextFontDefault.Height) / 2;
 
             vbox.AddSpace(0, spacing + 2);
-            vbox.Add(MSG = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, "     " + Viewer.Catalog.GetStringFmt("Train derailed! You caused an emergency. Get out!", Application.ProductName, LabelAlignment.Center)));
+            vbox.Add(MSG = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, "     " + Viewer.Catalog.GetStringFmt("Train derailed! You caused an emergency event!", Application.ProductName, LabelAlignment.Center)));
 
             vbox.AddSpace(0, spacing);
             vbox.AddSpace(0, spacing);

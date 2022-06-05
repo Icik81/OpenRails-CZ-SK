@@ -204,6 +204,19 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
 
             return s;
         }
+        public override string GetSimpleStatus(BrakeSystem lastCarBrakeSystem, Dictionary<BrakeSystemComponent, PressureUnit> units)
+        {
+            var s = $" {Simulator.Catalog.GetString("EQ")} {FormatStrings.FormatPressure(Car.Train.EqualReservoirPressurePSIorInHg, PressureUnit.PSI, units[BrakeSystemComponent.EqualizingReservoir], true)}"
+                //+ $" {Simulator.Catalog.GetString("BC")} {FormatStrings.FormatPressure(Car.Train.HUDWagonBrakeCylinderPSI, PressureUnit.PSI, units[BrakeSystemComponent.BrakeCylinder], true)}"
+                + $" {Simulator.Catalog.GetString("BC")} {FormatStrings.FormatPressure(AutoCylPressurePSI, PressureUnit.PSI, units[BrakeSystemComponent.BrakeCylinder], true)}"
+                + $" {Simulator.Catalog.GetString("BP")} {FormatStrings.FormatPressure(BrakeLine1PressurePSI, PressureUnit.PSI, units[BrakeSystemComponent.BrakePipe], true)}";
+            if (lastCarBrakeSystem != null && lastCarBrakeSystem != this)
+                s += $" {Simulator.Catalog.GetString("EOT")} {lastCarBrakeSystem.GetStatus(units)}";
+            if (HandbrakePercent > 0)
+                s += $" {Simulator.Catalog.GetString("Handbrake")} {HandbrakePercent:F0}%";            
+            return s;
+        }
+
 
         public override string[] GetDebugStatus(Dictionary<BrakeSystemComponent, PressureUnit> units)
         {

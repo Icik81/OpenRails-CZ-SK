@@ -236,6 +236,11 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             string s = Simulator.Catalog.GetString("Manual Brake");
             return s;
         }
+        public override string GetSimpleStatus(BrakeSystem lastCarBrakeSystem, Dictionary<BrakeSystemComponent, PressureUnit> units)
+        {
+            string s = Simulator.Catalog.GetString("Manual Brake");
+            return s;
+        }
 
 
         // This overides the information for each individual wagon in the extended HUD  

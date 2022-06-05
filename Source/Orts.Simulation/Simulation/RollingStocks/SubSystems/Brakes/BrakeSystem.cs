@@ -280,6 +280,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes
 
         public abstract string GetStatus(Dictionary<BrakeSystemComponent, PressureUnit> units);
         public abstract string GetFullStatus(BrakeSystem lastCarBrakeSystem, Dictionary<BrakeSystemComponent, PressureUnit> units);
+        public abstract string GetSimpleStatus(BrakeSystem lastCarBrakeSystem, Dictionary<BrakeSystemComponent, PressureUnit> units);
         public abstract string[] GetDebugStatus(Dictionary<BrakeSystemComponent, PressureUnit> units);
         public abstract float GetCylPressurePSI();
         public abstract float GetCylVolumeM3();
