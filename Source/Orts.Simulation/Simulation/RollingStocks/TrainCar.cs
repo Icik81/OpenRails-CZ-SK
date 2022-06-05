@@ -2862,12 +2862,13 @@ namespace Orts.Simulation.RollingStocks
                 VibrationInverseMatrix = Matrix.Invert(rotation * translation);
 
                 if (AbsSpeedMpS < 0.1f)
-                {
+                {                    
                     if (TiltingZRot > 0)
-                        TiltingZRot -= 0.0001f;
+                        TiltingZRot -= 0.001f * elapsedTimeS;
                     if (TiltingZRot < 0)
-                        TiltingZRot += 0.0001f;
-                }
+                        TiltingZRot += 0.001f * elapsedTimeS;
+                    PrevTiltingZRot = TiltingZRot;
+                }                
             }
         }
 
@@ -2968,7 +2969,7 @@ namespace Orts.Simulation.RollingStocks
                     CyklusCouplerImpact = 0;
 
                 // Vibrace při zrychlování a zpomalování
-                if (IsPlayerTrain && Math.Abs(AccelerationMpSS) > 1f && !TypVibrace_1 && !TypVibrace_2 && !TypVibrace_3 && Math.Abs(SpeedMpS) < 0.1f && !WheelSlip)
+                if (IsPlayerTrain && Math.Abs(AccelerationMpSS) > 0.5f && !TypVibrace_1 && !TypVibrace_2 && !TypVibrace_3 && Math.Abs(SpeedMpS) < 0.1f && !WheelSlip)
                 {
                     VibrationSpringConstantPrimepSpS = 50 / 0.2f;
                     VibratioDampingCoefficient = 0.3f;
