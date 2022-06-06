@@ -359,6 +359,7 @@ namespace Orts.Simulation.RollingStocks
         public bool CarIsWaiting;
         public bool CarIsShunting;
         public bool CarIsRunning;
+        public bool CarCabHeatingIsSetOn;
 
         public float PowerReductionResult1;  // Redukce výkonu od topení, klimatizace, kompresoru
         public float PowerReductionResult2;  // Redukce výkonu od nedostatečného tlaku vzduchu v potrubí

@@ -1937,6 +1937,7 @@ namespace Orts.Simulation.RollingStocks
             SetUpPowerSupplyStations();
             Simulator.voltageChangeMarkers = new List<VoltageChangeMarker>();
             SetUpVoltageChangeMarkers();
+
             // Icik
             if (MaxPowerWAC != 0)
                 MaxPowerWBase = MaxPowerWAC;
@@ -3009,9 +3010,16 @@ namespace Orts.Simulation.RollingStocks
                 }
             }
 
+            // Spustí zvuk topení v kabině při inicializaci loko
+            if (CabHeating_OffOn && !CarCabHeatingIsSetOn)
+            {
+                SignalEvent(Event.CabHeating_OffOnOn);
+                CarCabHeatingIsSetOn = true;
+            }
+
             // Ochrana při nadproudu topení/klimatizace jen pro hráče
             if (IsLeadLocomotive())
-            {
+            {                
                 // Maximální proud topení            
                 if (HeatingMaxCurrentA == 0)
                     HeatingMaxCurrentA = 130; // Default 130A
