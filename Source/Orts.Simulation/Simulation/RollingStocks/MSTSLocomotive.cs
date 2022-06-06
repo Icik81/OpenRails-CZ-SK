@@ -4720,10 +4720,12 @@ namespace Orts.Simulation.RollingStocks
             {
                 if (TrainBrakeController.UpdateValue > 0.0)
                 {
+                    SignalEvent(Event.TrainBrakeChange);
                     Simulator.Confirmer.Update(CabControl.TrainBrake, CabSetting.Increase, GetTrainBrakeStatusSimple());
                 }
                 if (TrainBrakeController.UpdateValue < 0.0)
                 {
+                    SignalEvent(Event.TrainBrakeChange);
                     Simulator.Confirmer.Update(CabControl.TrainBrake, CabSetting.Decrease, GetTrainBrakeStatusSimple());
                 }
             }
@@ -4733,11 +4735,13 @@ namespace Orts.Simulation.RollingStocks
                 EngineBrakeController.Update(elapsedClockSeconds);
                 if (EngineBrakeController.UpdateValue > 0.0)
                 {
-                    Simulator.Confirmer.Update(CabControl.EngineBrake, CabSetting.Increase, GetEngineBrakeStatus());
+                    SignalEvent(Event.EngineBrakeChange);
+                    Simulator.Confirmer.Update(CabControl.EngineBrake, CabSetting.Increase, GetEngineBrakeStatus());                    
                 }
                 if (EngineBrakeController.UpdateValue < 0.0)
                 {
-                    Simulator.Confirmer.Update(CabControl.EngineBrake, CabSetting.Decrease, GetEngineBrakeStatus());
+                    SignalEvent(Event.EngineBrakeChange);
+                    Simulator.Confirmer.Update(CabControl.EngineBrake, CabSetting.Decrease, GetEngineBrakeStatus());                    
                 }
             }
 
