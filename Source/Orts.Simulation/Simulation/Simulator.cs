@@ -192,6 +192,7 @@ namespace Orts.Simulation
         public float ControllerVoltsLocoHelper;
         public float ThrottleLocoHelper;
         public bool NightTime;
+        public bool PlayerCarIsInTunnel;
 
         public List<PowerSupplyStation> powerSupplyStations;
         public List<VoltageChangeMarker> voltageChangeMarkers;

@@ -449,6 +449,17 @@ namespace Orts.Viewer3D
                 foreach (var soundSource in SnowSound) soundSource.Volume = (Weather.PricipitationIntensityPPSPM2 - 0.15f) / PrecipitationViewer.MaxIntensityPPSPM2_16;
             }
 
+            Viewer.Simulator.PlayerCarIsInTunnel = false;
+            if (Viewer.Camera.IsUnderground || Viewer.Simulator.PlayerLocomotive.CarTunnelData.FrontPositionBeyondStartOfTunnel.HasValue
+                && (Viewer.Simulator.PlayerIsInCab
+                || Viewer.Camera == Viewer.PassengerCamera
+                || Viewer.Camera == Viewer.HeadOutForwardCamera
+                || Viewer.Camera == Viewer.HeadOutBackCamera
+                || Viewer.Camera == Viewer.FrontCamera
+                || Viewer.Camera == Viewer.BackCamera
+                || Viewer.Camera == Viewer.BrakemanCamera))
+                Viewer.Simulator.PlayerCarIsInTunnel = true;
+
             if (Viewer.Simulator.PlayerLocomotive.CarTunnelData.FrontPositionBeyondStartOfTunnel.HasValue)
             {
                 if (Viewer.Simulator.PlayerLocomotive.CarTunnelData.LengthMOfTunnelAheadFront.Value > 5

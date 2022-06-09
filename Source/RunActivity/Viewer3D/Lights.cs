@@ -276,6 +276,12 @@ namespace Orts.Viewer3D
                 newCarIsLast = true;
                 newCarIsFirst = true;
             }
+            
+            // Povolí kužel reflektoru v tunelu
+            if (Viewer.Simulator.PlayerCarIsInTunnel)
+            {
+                newIsDay = false;
+            }
 
             // Světla pro AI
             if (Car.Train != null && (Car.Train.TrainType == Train.TRAINTYPE.AI || Car.Train.TrainType == Train.TRAINTYPE.REMOTE))
@@ -296,10 +302,9 @@ namespace Orts.Viewer3D
                 if (Car.CarIsWaiting)
                 {
                     newTrainHeadlight = 1;
-                }
+                }                
             }
-
-
+            
             if (
                 (TrainHeadlight != newTrainHeadlight) ||
                 (CarIsReversed != newCarIsReversed) ||
