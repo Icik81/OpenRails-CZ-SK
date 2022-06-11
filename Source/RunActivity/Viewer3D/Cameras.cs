@@ -87,6 +87,9 @@ namespace Orts.Viewer3D
         // Icik
         // Zvýší FOV pro pohled z kabiny
         public float FieldOffViewOffset;
+        
+        // Příznak pro tunel
+        public float TunnelActivateM = 5;
 
         // Zajistí kompatibilitu MSTS/OR výhledu z kabiny
         public void FOVOffset()
@@ -800,6 +803,22 @@ namespace Orts.Viewer3D
         public bool tiltingLand;
         protected Vector3 attachedLocation;
         protected WorldPosition LookedAtPosition = new WorldPosition();
+
+        // Icik
+        public override bool IsUnderground
+        {
+            get
+            {
+                // Camera is underground if target (base) is underground or
+                // track location is underground. The latter means we switch
+                // to cab view instead of putting the camera above the tunnel.
+                if (base.IsUnderground)
+                    return true;
+                var elevationAtCameraTarget = Viewer.Tiles.GetElevation(attachedCar.WorldPosition.WorldLocation);
+                //return attachedCar.WorldPosition.Location.Y + TerrainAltitudeMargin < elevationAtCameraTarget || attachedCar.CarTunnelData.LengthMOfTunnelAheadFront > 0;
+                return attachedCar.CarTunnelData.LengthMOfTunnelAheadFront > TunnelActivateM;
+            }
+        }
 
         protected AttachedCamera(Viewer viewer)
             : base(viewer)
@@ -1544,6 +1563,22 @@ namespace Orts.Viewer3D
         public override float NearPlane { get { return 0.25f; } }
         public override string Name { get { return Viewer.Catalog.GetString("Brakeman"); } }
 
+        // Icik
+        public override bool IsUnderground
+        {
+            get
+            {
+                // Camera is underground if target (base) is underground or
+                // track location is underground. The latter means we switch
+                // to cab view instead of putting the camera above the tunnel.
+                if (base.IsUnderground)
+                    return true;
+                var elevationAtCameraTarget = Viewer.Tiles.GetElevation(attachedCar.WorldPosition.WorldLocation);
+                //return attachedCar.WorldPosition.Location.Y + TerrainAltitudeMargin < elevationAtCameraTarget || attachedCar.CarTunnelData.LengthMOfTunnelAheadFront > 0;
+                return attachedCar.CarTunnelData.LengthMOfTunnelAheadFront > TunnelActivateM;
+            }
+        }
+
         public BrakemanCamera(Viewer viewer)
             : base(viewer)
         {
@@ -1591,6 +1626,22 @@ namespace Orts.Viewer3D
     public class InsideThreeDimCamera : NonTrackingCamera
     {
         public override float NearPlane { get { return 0.1f; } }
+
+        // Icik
+        public override bool IsUnderground
+        {
+            get
+            {
+                // Camera is underground if target (base) is underground or
+                // track location is underground. The latter means we switch
+                // to cab view instead of putting the camera above the tunnel.
+                if (base.IsUnderground)
+                    return true;
+                var elevationAtCameraTarget = Viewer.Tiles.GetElevation(attachedCar.WorldPosition.WorldLocation);
+                //return attachedCar.WorldPosition.Location.Y + TerrainAltitudeMargin < elevationAtCameraTarget || attachedCar.CarTunnelData.LengthMOfTunnelAheadFront > 0;
+                return attachedCar.CarTunnelData.LengthMOfTunnelAheadFront > TunnelActivateM;
+            }
+        }
 
         public InsideThreeDimCamera(Viewer viewer)
             : base(viewer)
@@ -1800,6 +1851,22 @@ namespace Orts.Viewer3D
         public override bool IsAvailable { get { return Viewer.SelectedTrain != null && Viewer.SelectedTrain.Cars.Any(c => c.PassengerViewpoints.Count > 0); } }
         public override string Name { get { return Viewer.Catalog.GetString("Passenger"); } }
 
+        // Icik
+        public override bool IsUnderground
+        {
+            get
+            {
+                // Camera is underground if target (base) is underground or
+                // track location is underground. The latter means we switch
+                // to cab view instead of putting the camera above the tunnel.
+                if (base.IsUnderground)
+                    return true;
+                var elevationAtCameraTarget = Viewer.Tiles.GetElevation(attachedCar.WorldPosition.WorldLocation);
+                //return attachedCar.WorldPosition.Location.Y + TerrainAltitudeMargin < elevationAtCameraTarget || attachedCar.CarTunnelData.LengthMOfTunnelAheadFront > 0;
+                return attachedCar.CarTunnelData.LengthMOfTunnelAheadFront > TunnelActivateM;
+            }
+        }
+
         public PassengerCamera(Viewer viewer)
             : base(viewer)
         {
@@ -1959,7 +2026,8 @@ namespace Orts.Viewer3D
                 if (base.IsUnderground)
                     return true;
                 var elevationAtCameraTarget = Viewer.Tiles.GetElevation(attachedCar.WorldPosition.WorldLocation);
-                return attachedCar.WorldPosition.Location.Y + TerrainAltitudeMargin < elevationAtCameraTarget || attachedCar.CarTunnelData.LengthMOfTunnelAheadFront > 0;
+                //return attachedCar.WorldPosition.Location.Y + TerrainAltitudeMargin < elevationAtCameraTarget || attachedCar.CarTunnelData.LengthMOfTunnelAheadFront > 0;
+                return attachedCar.CarTunnelData.LengthMOfTunnelAheadFront > TunnelActivateM;
             }
         }
     }
@@ -1978,6 +2046,22 @@ namespace Orts.Viewer3D
         public override bool IsAvailable { get { return Viewer.PlayerTrain != null && Viewer.PlayerTrain.Cars.Any(c => c.HeadOutViewpoints.Count > 0); } }
         public override float NearPlane { get { return 0.25f; } }
         public override string Name { get { return Viewer.Catalog.GetString("Head out"); } }
+
+        // Icik
+        public override bool IsUnderground
+        {
+            get
+            {
+                // Camera is underground if target (base) is underground or
+                // track location is underground. The latter means we switch
+                // to cab view instead of putting the camera above the tunnel.
+                if (base.IsUnderground)
+                    return true;
+                var elevationAtCameraTarget = Viewer.Tiles.GetElevation(attachedCar.WorldPosition.WorldLocation);
+                //return attachedCar.WorldPosition.Location.Y + TerrainAltitudeMargin < elevationAtCameraTarget || attachedCar.CarTunnelData.LengthMOfTunnelAheadFront > 0;
+                return attachedCar.CarTunnelData.LengthMOfTunnelAheadFront > TunnelActivateM;
+            }
+        }
 
         public HeadOutCamera(Viewer viewer, HeadDirection headDirection)
             : base(viewer)
@@ -2049,7 +2133,8 @@ namespace Orts.Viewer3D
                 if (base.IsUnderground)
                     return true;
                 var elevationAtCameraTarget = Viewer.Tiles.GetElevation(attachedCar.WorldPosition.WorldLocation);
-                return attachedCar.WorldPosition.Location.Y + TerrainAltitudeMargin < elevationAtCameraTarget || attachedCar.CarTunnelData.LengthMOfTunnelAheadFront > 0;
+                //return attachedCar.WorldPosition.Location.Y + TerrainAltitudeMargin < elevationAtCameraTarget || attachedCar.CarTunnelData.LengthMOfTunnelAheadFront > 0;
+                return attachedCar.CarTunnelData.LengthMOfTunnelAheadFront > TunnelActivateM;
             }
         }
 

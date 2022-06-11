@@ -953,6 +953,19 @@ namespace Orts.Viewer3D
         {
             var train = Program.Viewer.PlayerLocomotive.Train;//DebriefEval
 
+            // Icik
+            Simulator.PlayerCarIsInTunnel = false;
+            if (Camera.IsUnderground
+                && (Simulator.PlayerIsInCab
+                || Camera == PassengerCamera
+                || Camera == HeadOutForwardCamera
+                || Camera == HeadOutBackCamera
+                || Camera == FrontCamera
+                || Camera == BackCamera
+                || Camera == BrakemanCamera))
+                Simulator.PlayerCarIsInTunnel = true;
+
+
             if (UserInput.IsMouseLeftButtonDown || (Camera is ThreeDimCabCamera && RenderProcess.IsMouseVisible))
             {
                 Vector3 nearsource = new Vector3((float)UserInput.MouseX, (float)UserInput.MouseY, 0f);

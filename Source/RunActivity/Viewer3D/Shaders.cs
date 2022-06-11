@@ -179,9 +179,9 @@ namespace Orts.Viewer3D
             else
             {
                 if (vIn < Program.Simulator.Settings.DayAmbientLight)
-                    vIn += 0.0002f;
+                    vIn += 0.0005f;
                 if (NightBrightness < NightBrightnessValue)
-                    NightBrightness += 0.0002f;
+                    NightBrightness += 0.0005f;
             }
             float FullBrightness = (float)vIn / 20.0f;
 
