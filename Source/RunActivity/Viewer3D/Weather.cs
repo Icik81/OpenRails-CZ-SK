@@ -449,7 +449,7 @@ namespace Orts.Viewer3D
                 foreach (var soundSource in SnowSound) soundSource.Volume = (Weather.PricipitationIntensityPPSPM2 - 0.15f) / PrecipitationViewer.MaxIntensityPPSPM2_16;
             }
 
-            if (Viewer.Camera.IsUnderground
+            if (Viewer.Camera != null && Viewer.Camera.IsUnderground
             && (Viewer.Simulator.PlayerIsInCab
             || Viewer.Camera == Viewer.PassengerCamera
             || Viewer.Camera == Viewer.HeadOutForwardCamera
