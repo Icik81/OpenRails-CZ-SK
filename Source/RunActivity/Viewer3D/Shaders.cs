@@ -168,6 +168,7 @@ namespace Orts.Viewer3D
                 }
                 NightBrightnessValue = NightBrightness;
                 NightBrightnessSet = true;
+                Program.Simulator._NightBrightnessValue = (float)NightBrightnessValue;
             }
             
             DayBrightnessCoef = Program.Simulator.Settings.DayAmbientLight / 35.0f;
@@ -722,7 +723,7 @@ namespace Orts.Viewer3D
         {
             if (!Program.Simulator.PlayerCarIsInTunnel)
             {
-                nightColorModifier.SetValue(MathHelper.Lerp(0.2f + (isDashLight ? 0.15f : 0), 1, isNightTexture ? 1 : MathHelper.Clamp((sunDirection.Y + 0.1f) / 0.2f, 0, 1) * MathHelper.Clamp(1.5f - overcast, 0, 1)));
+                nightColorModifier.SetValue(MathHelper.Lerp(Program.Simulator._NightBrightnessValue + (isDashLight ? 0.15f : 0), 1, isNightTexture ? 1 : MathHelper.Clamp((sunDirection.Y + 0.1f) / 0.2f, 0, 1) * MathHelper.Clamp(1.5f - overcast, 0, 1)));
                 CabnightColorModifierValue = nightColorModifier.GetValueSingle();
             }
             lightOn.SetValue(isDashLight);
