@@ -1166,6 +1166,8 @@ namespace Orts.Simulation.RollingStocks
             UpdateBrakeSlideCalculation();
             //UpdateTrainDerailmentRisk();
 
+            CalculatePositionInTunnel();
+
             if (this is MSTSLocomotive) // Set train outside temperature the same as the locomotive - TO BE RECHECKED
             {
                 Train.TrainOutsideTempC = CarOutsideTempC;
@@ -1453,6 +1455,16 @@ namespace Orts.Simulation.RollingStocks
             }
         }
 
+        // Icik
+        public void CalculatePositionInTunnel()
+        {
+            if (CarIsPlayerLoco && CarTunnelData.FrontPositionBeyondStartOfTunnel.HasValue)
+            {                
+                Simulator.PlayerCarIsInTunnelBeginM = (float)(CarTunnelData.LengthMOfTunnelAheadFront.Value + CarTunnelData.LengthMOfTunnelBehindRear.Value - CarTunnelData.LengthMOfTunnelAheadFront);
+                Simulator.PlayerCarIsInTunnelEndM = (float)(CarTunnelData.LengthMOfTunnelAheadFront.Value + CarTunnelData.LengthMOfTunnelBehindRear.Value - CarTunnelData.LengthMOfTunnelBehindRear);
+                Simulator.TunnelLengthM = (float)(CarTunnelData.LengthMOfTunnelAheadFront.Value + CarTunnelData.LengthMOfTunnelBehindRear.Value);
+            }
+        }
 
 
         #endregion

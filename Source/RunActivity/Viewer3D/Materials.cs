@@ -537,7 +537,13 @@ namespace Orts.Viewer3D
                     SceneryShader.SetHeadlightOff();
                 else
                 {
-                    if (sunDirection.Y <= -0.05 || Viewer.Simulator.PlayerCarIsInTunnel)
+                    // Icik
+                    if (Viewer.Simulator.PlayerCarIsInTunnel)
+                    {
+                        clampValue = 1.5f; 
+                        distance = lightDrawer.LightConeDistance; // and max distance
+                    }
+                    else if (sunDirection.Y <= -0.05)
                     {
                         clampValue = 1; // at nighttime max headlight
                         distance = lightDrawer.LightConeDistance; // and max distance
