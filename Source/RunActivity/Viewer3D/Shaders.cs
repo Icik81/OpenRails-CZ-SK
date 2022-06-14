@@ -721,7 +721,7 @@ namespace Orts.Viewer3D
         float CabnightColorModifierValue;
         public void SetData(Vector3 sunDirection, bool isNightTexture, bool isDashLight, float overcast)
         {
-            if (!Program.Simulator.PlayerCarIsInTunnel)
+            if (!Program.Simulator.PlayerCarIsInTunnel || Program.Viewer.MaterialManager.sunDirection.Y <= -0.085f)
             {
                 nightColorModifier.SetValue(MathHelper.Lerp(Program.Simulator._NightBrightnessValue + (isDashLight ? 0.15f : 0), 1, isNightTexture ? 1 : MathHelper.Clamp((sunDirection.Y + 0.1f) / 0.2f, 0, 1) * MathHelper.Clamp(1.5f - overcast, 0, 1)));
                 CabnightColorModifierValue = nightColorModifier.GetValueSingle();
@@ -730,8 +730,9 @@ namespace Orts.Viewer3D
 
             // Icik
             // Zařídí tmu v kabině v tunelu
+            if (isNightTexture) return;
             Program.Simulator.CabInDarkTunnel = false;
-            if (Program.Simulator.TunnelLengthM > 35)
+            if (Program.Simulator.TunnelLengthM > 35 && Program.Viewer.MaterialManager.sunDirection.Y > -0.085f)
             {
                 CabnightColorModifier = CabnightColorModifierValue;
                 if (Program.Simulator.PlayerCarIsInTunnelBeginM > 0 && Program.Simulator.PlayerCarIsInTunnelBeginM < 35)

@@ -1756,14 +1756,14 @@ namespace Orts.Viewer3D.RollingStock
             if (!_Locomotive.ShowCab)
                 return;
 
-            bool Dark = _Viewer.MaterialManager.sunDirection.Y <= -0.085f || _Viewer.Camera.IsUnderground;
+            bool Dark = _Viewer.MaterialManager.sunDirection.Y <= -0.085f || (_Viewer.Camera.IsUnderground);
             bool CabLight = _Locomotive.CabLightOn;
             bool FloodLight = _Locomotive.CabFloodLightOn;            
 
             // Icik
             _Viewer.Simulator.CabLightActivate = CabLight;
             _Viewer.Simulator.CabFloodLightActivate = FloodLight;
-            Dark = false;
+            
 
             CabCamera cbc = _Viewer.Camera as CabCamera;
             if (cbc != null)
@@ -2052,8 +2052,8 @@ namespace Orts.Viewer3D.RollingStock
             if (!display)
                 return;
             // Icik
-            var dark = Viewer.MaterialManager.sunDirection.Y <= -0.085f || (Viewer.Camera.IsUnderground && Program.Simulator.CabInDarkTunnel);
-            dark = false;
+            var dark = Viewer.MaterialManager.sunDirection.Y <= -0.085f || (Viewer.Camera.IsUnderground);
+            
 
             Texture = CABTextureManager.GetTexture(Control.ACEFile, dark, Locomotive.CabFloodLightOn, Locomotive.CabLightOn, out IsNightTexture, HasCabLightDirectory);
             if (Texture == SharedMaterialManager.MissingTexture)
@@ -2168,8 +2168,8 @@ namespace Orts.Viewer3D.RollingStock
             if (!(Gauge is CVCFirebox))
             {
                 // Icik
-                var dark = Viewer.MaterialManager.sunDirection.Y <= -0.085f || (Viewer.Camera.IsUnderground && Program.Simulator.CabInDarkTunnel);
-                dark = false;
+                var dark = Viewer.MaterialManager.sunDirection.Y <= -0.085f || (Viewer.Camera.IsUnderground);
+                
                 Texture = CABTextureManager.GetTexture(Control.ACEFile, dark, Locomotive.CabFloodLightOn, Locomotive.CabLightOn, out IsNightTexture, HasCabLightDirectory);
             }
             if (Texture == SharedMaterialManager.MissingTexture)
@@ -2471,8 +2471,8 @@ namespace Orts.Viewer3D.RollingStock
             if (!display)
                 return;
             // Icik
-            var dark = Viewer.MaterialManager.sunDirection.Y <= -0.085f || (Viewer.Camera.IsUnderground && Program.Simulator.CabInDarkTunnel);
-            dark = false;            
+            var dark = Viewer.MaterialManager.sunDirection.Y <= -0.085f || (Viewer.Camera.IsUnderground);
+                        
 
             Texture = CABTextureManager.GetTextureByIndexes(Control.ACEFile, index, Locomotive.CabFloodLightOn ? false : dark, Locomotive.CabLightOn, out IsNightTexture, HasCabLightDirectory);
             if (Texture == SharedMaterialManager.MissingTexture)
