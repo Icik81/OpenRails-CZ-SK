@@ -645,6 +645,7 @@ namespace Orts.Simulation.RollingStocks
         public float PantoCanHVOffSpeedKpH;
         public bool DirectionButton;
         public float DirectionButtonPosition = 2;
+        public bool CarIsPlayerLocoSet;
 
 
         // Jindrich
@@ -1569,6 +1570,7 @@ namespace Orts.Simulation.RollingStocks
             PrevDoorSwitch = locoCopy.PrevDoorSwitch;
             LapActive = locoCopy.LapActive;
             PantoCanHVOffSpeedKpH = locoCopy.PantoCanHVOffSpeedKpH;
+            CarIsPlayerLocoSet = locoCopy.CarIsPlayerLocoSet;
 
             // Jindrich
             if (locoCopy.CruiseControl != null)
@@ -1734,6 +1736,7 @@ namespace Orts.Simulation.RollingStocks
             outf.Write(PrevDoorSwitch);
             outf.Write(LapActive);
             outf.Write(DirectionButtonPosition);
+            outf.Write(CarIsPlayerLocoSet);
 
             base.Save(outf);
 
@@ -1837,6 +1840,7 @@ namespace Orts.Simulation.RollingStocks
             PrevDoorSwitch = inf.ReadSingle();
             LapActive = inf.ReadBoolean();
             DirectionButtonPosition = inf.ReadInt32();
+            CarIsPlayerLocoSet = inf.ReadBoolean();
 
             base.Restore(inf);
 
@@ -1938,7 +1942,7 @@ namespace Orts.Simulation.RollingStocks
             Simulator.voltageChangeMarkers = new List<VoltageChangeMarker>();
             SetUpVoltageChangeMarkers();
 
-            // Icik
+            // Icik            
             if (MaxPowerWAC != 0)
                 MaxPowerWBase = MaxPowerWAC;
             else
@@ -4183,10 +4187,22 @@ namespace Orts.Simulation.RollingStocks
             // Icik
             SetCarLightsPowerOn();
 
-            if (IsLeadLocomotive())
-                CarIsPlayerLoco = true;
+            if (IsLeadLocomotive())            
+                CarIsPlayerLoco = true;                            
             else
                 CarIsPlayerLoco = false;
+
+            // Inicialzace loko hráče (důležité pro TT scénář)
+            if (CarIsPlayerLoco && !CarIsPlayerLocoSet)
+            {
+                BrakeSystem.StartOn = true;
+                BrakeSystem.IsAirEmpty = Simulator.Settings.AirEmpty;
+                BrakeSystem.IsAirFull = !Simulator.Settings.AirEmpty;
+                LocoReadyToGo = !Simulator.Settings.AirEmpty;
+                Battery = false;
+                PowerKey = false;
+                CarIsPlayerLocoSet = true;
+            }
 
             if (!DieselDirection_Forward && !DieselDirection_Start && !DieselDirection_0 && !DieselDirection_Reverse)
             {
