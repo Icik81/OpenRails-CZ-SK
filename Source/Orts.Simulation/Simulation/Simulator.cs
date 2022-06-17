@@ -1009,15 +1009,7 @@ namespace Orts.Simulation
                             drivenTrain.PresentPosition[1].TCSectionIndex == train.PresentPosition[0].TCSectionIndex && drivenTrain.PresentPosition[1].TCSectionIndex != -1)
                             d1 = drivenTrain.RearTDBTraveller.RoughOverlapDistanceM(train.FrontTDBTraveller, drivenTrain.FrontTDBTraveller, train.RearTDBTraveller, drivenTrain.Length, train.Length, true);
                         if (d1 < 0)
-                        {
-                            if (Settings.ManualCoupling) // if manual coupling is set, the train will not couple to the player's train, but can be pushed
-                            {
-                                if (drivenTrain.SpeedMpS < train.SpeedMpS)
-                                    drivenTrain.SetCoupleSpeed(train, 1);
-                                drivenTrain.CalculatePositionOfCars(elapsedClockSeconds, -d1);
-                                HasSpeedInCoupler = true;
-                                return;
-                            }
+                        {                            
                             DifferenceSpeedMpS = Math.Abs(Math.Abs(drivenTrain.SpeedMpS) - Math.Abs(train.SpeedMpS));
                             //Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("DifferenceSpeedMpS: " + Math.Max(0, DifferenceSpeedMpS * 3.6f)));
                             TrainMassKG1 = 0;
@@ -1031,7 +1023,7 @@ namespace Orts.Simulation
                                 CarCoupleSpeedOvercome = true;
 
                             //if (train == drivenTrain.UncoupledFrom || CarCoupleSpeedOvercome)
-                            if (CarCoupleSpeedOvercome || HasSpeedInCoupler)
+                            if (CarCoupleSpeedOvercome || HasSpeedInCoupler || Settings.ManualCoupling) // if manual coupling is set, the train will not couple to the player's train, but can be pushed
                             {
                                 if (drivenTrain.SpeedMpS < train.SpeedMpS)
                                     drivenTrain.SetCoupleSpeed(train, 1);
@@ -1075,14 +1067,6 @@ namespace Orts.Simulation
                             d2 = drivenTrain.RearTDBTraveller.RoughOverlapDistanceM(train.RearTDBTraveller, drivenTrain.FrontTDBTraveller, train.FrontTDBTraveller, drivenTrain.Length, train.Length, true);
                         if (d2 < 0)
                         {
-                            if (Settings.ManualCoupling)
-                            {
-                                if (drivenTrain.SpeedMpS < -train.SpeedMpS)
-                                    drivenTrain.SetCoupleSpeed(train, -1);
-                                drivenTrain.CalculatePositionOfCars(elapsedClockSeconds, -d2);
-                                HasSpeedInCoupler = true;
-                                return;
-                            }
                             DifferenceSpeedMpS = Math.Abs(Math.Abs(drivenTrain.SpeedMpS) - Math.Abs(train.SpeedMpS));
                             TrainMassKG1 = 0;
                             foreach (TrainCar car in train.Cars)
@@ -1095,7 +1079,7 @@ namespace Orts.Simulation
                                 CarCoupleSpeedOvercome = true;
 
                             //if (train == drivenTrain.UncoupledFrom || CarCoupleSpeedOvercome)
-                            if (CarCoupleSpeedOvercome || HasSpeedInCoupler)
+                            if (CarCoupleSpeedOvercome || HasSpeedInCoupler || Settings.ManualCoupling) // if manual coupling is set, the train will not couple to the player's train, but can be pushed)
                             {
                                 if (drivenTrain.SpeedMpS < -train.SpeedMpS)
                                     drivenTrain.SetCoupleSpeed(train, -1);
@@ -1154,14 +1138,6 @@ namespace Orts.Simulation
                             d1 = drivenTrain.FrontTDBTraveller.RoughOverlapDistanceM(train.RearTDBTraveller, drivenTrain.RearTDBTraveller, train.FrontTDBTraveller, drivenTrain.Length, train.Length, false);
                         if (d1 < 0)
                         {
-                            if (Settings.ManualCoupling)
-                            {
-                                if (drivenTrain.SpeedMpS > train.SpeedMpS)
-                                    drivenTrain.SetCoupleSpeed(train, 1);
-                                drivenTrain.CalculatePositionOfCars(elapsedClockSeconds, d1);
-                                HasSpeedInCoupler = true;
-                                return;
-                            }
                             DifferenceSpeedMpS = Math.Abs(Math.Abs(drivenTrain.SpeedMpS) - Math.Abs(train.SpeedMpS));
                             TrainMassKG1 = 0;
                             foreach (TrainCar car in train.Cars)
@@ -1174,7 +1150,7 @@ namespace Orts.Simulation
                                 CarCoupleSpeedOvercome = true;
 
                             //if (train == drivenTrain.UncoupledFrom || CarCoupleSpeedOvercome)
-                            if (CarCoupleSpeedOvercome || HasSpeedInCoupler)
+                            if (CarCoupleSpeedOvercome || HasSpeedInCoupler || Settings.ManualCoupling) // if manual coupling is set, the train will not couple to the player's train, but can be pushed)
                             {
                                 if (drivenTrain.SpeedMpS > train.SpeedMpS)
                                     drivenTrain.SetCoupleSpeed(train, 1);
@@ -1253,14 +1229,6 @@ namespace Orts.Simulation
                             d2 = drivenTrain.FrontTDBTraveller.RoughOverlapDistanceM(train.FrontTDBTraveller, drivenTrain.RearTDBTraveller, train.RearTDBTraveller, drivenTrain.Length, train.Length, false);
                         if (d2 < 0)
                         {
-                            if (Settings.ManualCoupling)
-                            {
-                                if (drivenTrain.SpeedMpS > -train.SpeedMpS)
-                                    drivenTrain.SetCoupleSpeed(train, -1);
-                                drivenTrain.CalculatePositionOfCars(elapsedClockSeconds, d2);
-                                HasSpeedInCoupler = true;
-                                return;
-                            }
                             DifferenceSpeedMpS = Math.Abs(Math.Abs(drivenTrain.SpeedMpS) - Math.Abs(train.SpeedMpS));
                             TrainMassKG1 = 0;
                             foreach (TrainCar car in train.Cars)
@@ -1273,7 +1241,7 @@ namespace Orts.Simulation
                                 CarCoupleSpeedOvercome = true;
 
                             //if (train == drivenTrain.UncoupledFrom || CarCoupleSpeedOvercome)
-                            if (CarCoupleSpeedOvercome || HasSpeedInCoupler)
+                            if (CarCoupleSpeedOvercome || HasSpeedInCoupler || Settings.ManualCoupling) // if manual coupling is set, the train will not couple to the player's train, but can be pushed)
                             {
                                 if (drivenTrain.SpeedMpS > -train.SpeedMpS)
                                     drivenTrain.SetCoupleSpeed(train, -1);
