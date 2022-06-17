@@ -36,6 +36,8 @@
         [GetString("Game Reset Signal Backward")] GameResetSignalBackward,
         [GetString("Game Autopilot Mode")] GameAutopilotMode,
         [GetString("Game Suspend Old Player")] GameSuspendOldPlayer,
+        [GetString("Game Manual Coupling")] GameManualCoupling,
+
 
         [GetString("Display Next Window Tab")] DisplayNextWindowTab,
         [GetString("Display Help Window")] DisplayHelpWindow,

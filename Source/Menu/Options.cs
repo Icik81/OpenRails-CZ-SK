@@ -161,6 +161,9 @@ namespace ORTS
             // Icik
             checkAirEmpty.Checked = Settings.AirEmpty;
 
+            // Jindrich
+            chkManualCoupling.Checked = settings.ManualCoupling;
+
             // Audio tab
             checkMSTSBINSound.Checked = Settings.MSTSBINSound;
             numericSoundVolumePercent.Value = Settings.SoundVolumePercent;
@@ -448,6 +451,9 @@ namespace ORTS
 
             // Icik
             Settings.AirEmpty = checkAirEmpty.Checked;
+
+            // Jindrich
+            Settings.ManualCoupling = chkManualCoupling.Checked;
 
             // Audio tab
             Settings.MSTSBINSound = checkMSTSBINSound.Checked;

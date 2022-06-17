@@ -1323,6 +1323,12 @@ namespace Orts.Viewer3D
                 }
             }
 
+            if (UserInput.IsPressed(UserCommand.GameManualCoupling))
+            {
+                PlayerLocomotive.Simulator.Settings.ManualCoupling = !PlayerLocomotive.Simulator.Settings.ManualCoupling;
+                PlayerLocomotive.Simulator.Confirmer.Information("Manual coupling set to " + (PlayerLocomotive.Simulator.Settings.ManualCoupling ? "ON." : "OFF."));
+            }
+
             if (UserInput.IsPressed(UserCommand.GameAutopilotMode))
             {
                 if (PlayerLocomotive.Train.TrainType == Train.TRAINTYPE.AI_PLAYERHOSTING)

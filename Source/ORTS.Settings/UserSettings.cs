@@ -274,6 +274,9 @@ namespace ORTS.Settings
         [Default(true)]
         public bool HotStart { get; set; }
 
+        [Default(false)]
+        public bool ManualCoupling { get; set; }
+
         // Data logger settings:
         [Default("comma")]
         public string DataLoggerSeparator { set; get; }
