@@ -529,8 +529,8 @@ namespace Orts.MultiPlayer
             {
                 foreach (var p in OnlineTrains.Players)
                 {
-                    if (p.Value.Train == t1 && simulator.GameTime - p.Value.CreatedTime < 120) { result = false; break; }
-                    if (p.Value.Train == t2 && simulator.GameTime - p.Value.CreatedTime < 120) { result = false; break; }
+                    if (p.Value.Train == t1 && simulator.GameTime - p.Value.CreatedTime < 10) { result = false; break; }
+                    if (p.Value.Train == t2 && simulator.GameTime - p.Value.CreatedTime < 10) { result = false; break; }
                 }
             }
             catch (Exception)
