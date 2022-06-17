@@ -2866,8 +2866,8 @@ namespace Orts.Simulation.RollingStocks
                 if (TiltingMark < 0) TiltingZRot *= -1f;
             }
 
-            if (Simulator.Settings.CarVibratingLevel != 0)
-            {
+            //if (Simulator.Settings.CarVibratingLevel != 0)
+            //{
                 var rotation = Matrix.CreateFromYawPitchRoll(VibrationRotationRad.Y, VibrationRotationRad.X, VibrationRotationRad.Z + TiltingZRot * 0.5f);
                 if (Train.IsTilting && AbsSpeedMpS > 50 / 3.6f) rotation = Matrix.CreateFromYawPitchRoll(VibrationRotationRad.Y, VibrationRotationRad.X, VibrationRotationRad.Z + TiltingZRot * 0.8f);
                 var translation = Matrix.CreateTranslation(VibrationTranslationM.X, VibrationTranslationM.Y, 0);
@@ -2882,7 +2882,7 @@ namespace Orts.Simulation.RollingStocks
                         TiltingZRot += 0.001f * elapsedTimeS;
                     PrevTiltingZRot = TiltingZRot;
                 }                
-            }
+            //}
         }
 
         // Úprava síly vibrací dle rychlostníků na trati
