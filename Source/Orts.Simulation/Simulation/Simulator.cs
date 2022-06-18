@@ -1009,11 +1009,7 @@ namespace Orts.Simulation
                             drivenTrain.PresentPosition[1].TCSectionIndex == train.PresentPosition[0].TCSectionIndex && drivenTrain.PresentPosition[1].TCSectionIndex != -1)
                             d1 = drivenTrain.RearTDBTraveller.RoughOverlapDistanceM(train.FrontTDBTraveller, drivenTrain.FrontTDBTraveller, train.RearTDBTraveller, drivenTrain.Length, train.Length, true);
                         if (d1 < 0)
-<<<<<<< Updated upstream
-                        {                            
-=======
-                        {
->>>>>>> Stashed changes
+                        { 
                             DifferenceSpeedMpS = Math.Abs(Math.Abs(drivenTrain.SpeedMpS) - Math.Abs(train.SpeedMpS));
                             //Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("DifferenceSpeedMpS: " + Math.Max(0, DifferenceSpeedMpS * 3.6f)));
                             TrainMassKG1 = 0;
