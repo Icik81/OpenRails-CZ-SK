@@ -1781,7 +1781,7 @@ namespace Orts.Simulation.Physics
 
                 // Icik                
                 // Provede odraz vozů při prudkém najetí
-                if (car.IsDriveable && car.Train.IsActualPlayerTrain)
+                if (!MPManager.IsMultiPlayer() && car.IsDriveable && car.Train.IsActualPlayerTrain)
                 {
                     TrainMassKG0 = 0;
                     foreach (TrainCar car1 in Cars)
@@ -1837,7 +1837,7 @@ namespace Orts.Simulation.Physics
                 }
 
                 // Vyhodnocení selhání TM
-                if (car is MSTSDieselLocomotive && !(car as MSTSDieselLocomotive).DieselEngines[0].HasGearBox && (car as MSTSDieselLocomotive).PowerOn)
+                if (!MPManager.IsMultiPlayer() && car is MSTSDieselLocomotive && !(car as MSTSDieselLocomotive).DieselEngines[0].HasGearBox && (car as MSTSDieselLocomotive).PowerOn)
                 {
                     float TMFailureSpeed = 7.0f / 3.6f;  // kritická rychlost kdy dojde ke zničení TM 
                     if (car.Flipped)
@@ -4586,22 +4586,38 @@ namespace Orts.Simulation.Physics
             SpeedMpS = (((kg1 * SpeedMpS) + (kg2 * otherTrain.SpeedMpS)) * otherMult) / (kg1 + kg2);
             otherTrain.SpeedMpS = SpeedMpS;
             // Icik
-            foreach (TrainCar car1 in Cars)
-            //TODO: next code line has been modified to flip trainset physics in order to get viewing direction coincident with loco direction when using rear cab.
-            // To achieve the same result with other means, without flipping trainset physics, the line should be changed as follows:
-            //                 car1.SpeedMpS = car1.Flipped ? -SpeedMpS : SpeedMpS;                
+            if (!MPManager.IsMultiPlayer())
             {
-                car1.SpeedMpS = car1.Flipped ^ (car1.IsDriveable && car1.Train.IsActualPlayerTrain && ((MSTSLocomotive)car1).UsingRearCab) ? -SpeedMpS : SpeedMpS;
-                if (kg1 <= kg2 && otherMult == -1)
-                    car1.SpeedMpS = -car1.SpeedMpS;
-                SpeedMpS1 = car1.SpeedMpS;
-            }
-            foreach (TrainCar car2 in otherTrain.Cars)
-            {     //TODO: next code line has been modified to flip trainset physics in order to get viewing direction coincident with loco direction when using rear cab.
+                foreach (TrainCar car1 in Cars)
+                //TODO: next code line has been modified to flip trainset physics in order to get viewing direction coincident with loco direction when using rear cab.
                 // To achieve the same result with other means, without flipping trainset physics, the line should be changed as follows:
-                //                 car2.SpeedMpS = car2.Flipped ? -SpeedMpS : SpeedMpS;
-                car2.SpeedMpS = car2.Flipped ^ (car2.IsDriveable && car2.Train.IsActualPlayerTrain && ((MSTSLocomotive)car2).UsingRearCab) ? -SpeedMpS : SpeedMpS;
-                SpeedMpS2 = car2.SpeedMpS;
+                //                 car1.SpeedMpS = car1.Flipped ? -SpeedMpS : SpeedMpS;                
+                {
+                    car1.SpeedMpS = car1.Flipped ^ (car1.IsDriveable && car1.Train.IsActualPlayerTrain && ((MSTSLocomotive)car1).UsingRearCab) ? -SpeedMpS : SpeedMpS;
+                    if (kg1 <= kg2 && otherMult == -1)
+                        car1.SpeedMpS = -car1.SpeedMpS;
+                    SpeedMpS1 = car1.SpeedMpS;
+                }
+                foreach (TrainCar car2 in otherTrain.Cars)
+                {     //TODO: next code line has been modified to flip trainset physics in order to get viewing direction coincident with loco direction when using rear cab.
+                      // To achieve the same result with other means, without flipping trainset physics, the line should be changed as follows:
+                      //                 car2.SpeedMpS = car2.Flipped ? -SpeedMpS : SpeedMpS;
+                    car2.SpeedMpS = car2.Flipped ^ (car2.IsDriveable && car2.Train.IsActualPlayerTrain && ((MSTSLocomotive)car2).UsingRearCab) ? -SpeedMpS : SpeedMpS;
+                    SpeedMpS2 = car2.SpeedMpS;
+                }
+            }
+            if (MPManager.IsMultiPlayer())
+            {
+                foreach (TrainCar car1 in Cars)
+                    //TODO: next code line has been modified to flip trainset physics in order to get viewing direction coincident with loco direction when using rear cab.
+                    // To achieve the same result with other means, without flipping trainset physics, the line should be changed as follows:
+                    //                 car1.SpeedMpS = car1.Flipped ? -SpeedMpS : SpeedMpS;
+                    car1.SpeedMpS = car1.Flipped ^ (car1.IsDriveable && car1.Train.IsActualPlayerTrain && ((MSTSLocomotive)car1).UsingRearCab) ? -SpeedMpS : SpeedMpS;
+                foreach (TrainCar car2 in otherTrain.Cars)
+                    //TODO: next code line has been modified to flip trainset physics in order to get viewing direction coincident with loco direction when using rear cab.
+                    // To achieve the same result with other means, without flipping trainset physics, the line should be changed as follows:
+                    //                 car2.SpeedMpS = car2.Flipped ? -SpeedMpS : SpeedMpS;
+                    car2.SpeedMpS = car2.Flipped ^ (car2.IsDriveable && car2.Train.IsActualPlayerTrain && ((MSTSLocomotive)car2).UsingRearCab) ? -SpeedMpS : SpeedMpS;
             }
         }
 
