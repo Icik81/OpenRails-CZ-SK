@@ -1088,7 +1088,7 @@ namespace Orts.Viewer3D
                     || (PlayerLocomotive as MSTSLocomotive).DieselDirectionControllerInOut)
                 {
                     if ((PlayerLocomotive as MSTSLocomotive).DieselDirectionControllerInOut)
-                        Simulator.Confirmer.Information("Pro přechod mezi stanovišti vyjměte nejdříve směrovou páku.");
+                        Simulator.Confirmer.Information(Viewer.Catalog.GetString("To change stations, remove the directional lever first."));
                     else
                         Simulator.Confirmer.Warning(CabControl.ChangeCab, CabSetting.Warn2);
                 }

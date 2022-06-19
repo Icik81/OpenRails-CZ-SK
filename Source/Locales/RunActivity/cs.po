@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: RunActivity\n"
-"POT-Creation-Date: 2022-06-05 16:32:03+0200\n"
-"PO-Revision-Date: 2022-06-05 16:34+0200\n"
+"POT-Creation-Date: 2022-06-19 13:43:20+0200\n"
+"PO-Revision-Date: 2022-06-19 13:45+0200\n"
 "Last-Translator: Altmann <altmann@bk.ru>\n"
 "Language-Team: Open Rails Dev Team\n"
 "Language: cs\n"
@@ -32,35 +32,35 @@ msgstr[2] ""
 msgid "Free"
 msgstr "Volný"
 
-#: ../../RunActivity/Viewer3D/Cameras.cs:1023
+#: ../../RunActivity/Viewer3D/Cameras.cs:1039
 msgid "Outside Front"
 msgstr "Začátek vlaku"
 
-#: ../../RunActivity/Viewer3D/Cameras.cs:1023
+#: ../../RunActivity/Viewer3D/Cameras.cs:1039
 msgid "Outside Rear"
 msgstr "Konec vlaku"
 
-#: ../../RunActivity/Viewer3D/Cameras.cs:1545
+#: ../../RunActivity/Viewer3D/Cameras.cs:1561
 msgid "Brakeman"
 msgstr "Brzdař"
 
-#: ../../RunActivity/Viewer3D/Cameras.cs:1801
+#: ../../RunActivity/Viewer3D/Cameras.cs:1849
 msgid "Passenger"
 msgstr "Pasažér"
 
-#: ../../RunActivity/Viewer3D/Cameras.cs:1879
+#: ../../RunActivity/Viewer3D/Cameras.cs:1943
 msgid "3D Cab"
 msgstr "3D kabina"
 
-#: ../../RunActivity/Viewer3D/Cameras.cs:1980
+#: ../../RunActivity/Viewer3D/Cameras.cs:2045
 msgid "Head out"
 msgstr "Boční pohled"
 
-#: ../../RunActivity/Viewer3D/Cameras.cs:2040
+#: ../../RunActivity/Viewer3D/Cameras.cs:2121
 msgid "Cab"
 msgstr "Kabina"
 
-#: ../../RunActivity/Viewer3D/Cameras.cs:2304
+#: ../../RunActivity/Viewer3D/Cameras.cs:2386
 msgid "Trackside"
 msgstr "Trať"
 
@@ -101,67 +101,71 @@ msgstr[1] "{0:F0} dlaždic"
 msgstr[2] "{0:F0} dlaždic"
 
 #: ../../RunActivity/Viewer3D/Viewer.cs:899
-#: ../../RunActivity/Viewer3D/Viewer.cs:1096
+#: ../../RunActivity/Viewer3D/Viewer.cs:1109
 msgid "Cab view not available"
 msgstr "Kabina není dostupná"
 
-#: ../../RunActivity/Viewer3D/Viewer.cs:984
+#: ../../RunActivity/Viewer3D/Viewer.cs:997
 msgid "In MP, use Alt-F4 to quit directly"
 msgstr "Síťovou hru lze okamžitě ukončit pomocí Alt-F4"
 
-#: ../../RunActivity/Viewer3D/Viewer.cs:1022
+#: ../../RunActivity/Viewer3D/Viewer.cs:1035
 msgid "Automatic platform and siding labels visible."
 msgstr "Automatické názvy stanic a nástupišť zapnuty."
 
-#: ../../RunActivity/Viewer3D/Viewer.cs:1025
+#: ../../RunActivity/Viewer3D/Viewer.cs:1038
 msgid "Platform and siding labels visible."
 msgstr "Názvy stanic a nástupišť zapnuty."
 
-#: ../../RunActivity/Viewer3D/Viewer.cs:1028
+#: ../../RunActivity/Viewer3D/Viewer.cs:1041
 msgid "Platform labels visible."
 msgstr "Názvy stanic zapnuty."
 
-#: ../../RunActivity/Viewer3D/Viewer.cs:1031
+#: ../../RunActivity/Viewer3D/Viewer.cs:1044
 msgid "Siding labels visible."
 msgstr "Názvy nástupišť zapnuty."
 
-#: ../../RunActivity/Viewer3D/Viewer.cs:1037
+#: ../../RunActivity/Viewer3D/Viewer.cs:1050
 msgid "Platform and siding labels hidden."
 msgstr "Názvy stanic a nástupišť vypnuty."
 
-#: ../../RunActivity/Viewer3D/Viewer.cs:1048
+#: ../../RunActivity/Viewer3D/Viewer.cs:1061
 msgid "Train labels visible."
 msgstr "Názvy vlaků zapnuty."
 
-#: ../../RunActivity/Viewer3D/Viewer.cs:1051
+#: ../../RunActivity/Viewer3D/Viewer.cs:1064
 msgid "Car labels visible."
 msgstr "Názvy vozů zapnuty."
 
-#: ../../RunActivity/Viewer3D/Viewer.cs:1057
+#: ../../RunActivity/Viewer3D/Viewer.cs:1070
 msgid "Train and car labels hidden."
 msgstr "Názvy vlaků a vozů vypnuty."
 
-#: ../../RunActivity/Viewer3D/Viewer.cs:1138
+#: ../../RunActivity/Viewer3D/Viewer.cs:1091
+msgid "To change stations, remove the directional lever first."
+msgstr "Pro přechod mezi stanovišti vyjměte nejdříve směrovou páku."
+
+#: ../../RunActivity/Viewer3D/Viewer.cs:1151
 msgid "Confirmations suppressed"
 msgstr "Informační řádek zakázán"
 
-#: ../../RunActivity/Viewer3D/Viewer.cs:1140
+#: ../../RunActivity/Viewer3D/Viewer.cs:1153
 msgid "Confirmations visible"
 msgstr "Informační řádek povolen"
 
-#: ../../RunActivity/Viewer3D/Viewer.cs:1307
+#: ../../RunActivity/Viewer3D/Viewer.cs:1326
 msgid "Switched to player control"
 msgstr "Přepnuto na ovládání hráčem"
 
-#: ../../RunActivity/Viewer3D/Viewer.cs:1314
+#: ../../RunActivity/Viewer3D/Viewer.cs:1333
 msgid "You can't switch from manual to autopilot mode"
 msgstr "Nelze přepnout z manuálního módu na autopilota"
 
-#: ../../RunActivity/Viewer3D/Viewer.cs:1320
+#: ../../RunActivity/Viewer3D/Viewer.cs:1339
 msgid "Switched to autopilot"
 msgstr "Přepnuto na autopilota"
 
-#: ../../RunActivity/Viewer3D/Viewer.cs:1929
+#: ../../RunActivity/Viewer3D/Viewer.cs:1948
 msgid "Game saved"
 msgstr "Hra uložena"
 
@@ -170,22 +174,22 @@ msgstr "Hra uložena"
 msgid "Allowed speed raised to {0}"
 msgstr "Povolená rychlost se zvýšila na {0}"
 
-#: ../../RunActivity/Viewer3D/Viewer.cs:1129
+#: ../../RunActivity/Viewer3D/Viewer.cs:1142
 #, csharp-format
 msgid "Vibrating at level {0}"
 msgstr "Vibrrace/kývání na úrovni {0}"
 
-#: ../../RunActivity/Viewer3D/Viewer.cs:1338
+#: ../../RunActivity/Viewer3D/Viewer.cs:1357
 #, csharp-format
 msgid "Keyboard map list saved to '{0}'."
 msgstr "Seznam mapy kláves byl uložen do '{0}'."
 
-#: ../../RunActivity/Viewer3D/Viewer.cs:1342
+#: ../../RunActivity/Viewer3D/Viewer.cs:1361
 #, csharp-format
 msgid "Keyboard map image saved to '{0}'."
 msgstr "Obrázek mapy kláves byl uložen do '{0}'."
 
-#: ../../RunActivity/Viewer3D/Viewer.cs:1176
+#: ../../RunActivity/Viewer3D/Viewer.cs:1189
 #, csharp-format
 msgid "{0} viewpoint stored. Use Shift+8 to restore viewpoints."
 msgid_plural "{0} viewpoints stored. Use Shift+8 to restore viewpoints."
@@ -199,7 +203,7 @@ msgid ""
 "contains user controlled weather"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Weather.cs:1946
+#: ../../RunActivity/Viewer3D/Weather.cs:1943
 msgid ""
 "Restoring wrong weather type : trying to restore user controlled weather but "
 "save contains dynamic weather"

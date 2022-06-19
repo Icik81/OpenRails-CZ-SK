@@ -100,6 +100,7 @@ namespace Orts.Simulation.Physics
         public bool TrainDoorsOpen;
         public float NextRouteSpeedLimit;
         public bool SteamHeatingIsAvailable;
+        public bool HasSpeedInCoupler;
 
         public Traveller RearTDBTraveller;               // positioned at the back of the last car in the train
         public Traveller FrontTDBTraveller;              // positioned at the front of the train by CalculatePositionOfCars
@@ -1716,8 +1717,8 @@ namespace Orts.Simulation.Physics
         float SpeedMpS1;
         float SpeedMpS2;
         bool HasCarCoupleSpeed;
-        public float TrainMassKG0;
         public float TrainMassKG1;
+        public float TrainMassKG2;
         float CyklusCouplerImpuls = 1;
         float CyklusCouplerUncouple = 6;
         public bool TMFailure;
@@ -1782,10 +1783,7 @@ namespace Orts.Simulation.Physics
                 // Icik                
                 // Provede odraz vozů při prudkém najetí
                 if (!MPManager.IsMultiPlayer() && car.IsDriveable && car.Train.IsActualPlayerTrain)
-                {
-                    TrainMassKG0 = 0;
-                    foreach (TrainCar car1 in Cars)
-                        TrainMassKG0 += car1.MassKG;
+                {                    
                     if (Simulator.CarCoupleSpeedOvercome && !HasCarCoupleSpeed)
                     {
                         SpeedMpS0 = (car.Flipped ^ (car.IsDriveable && car.Train.IsActualPlayerTrain && ((MSTSLocomotive)car).UsingRearCab)) ? -Math.Abs(car.SpeedMpS) : Math.Abs(car.SpeedMpS);
@@ -1818,7 +1816,7 @@ namespace Orts.Simulation.Physics
                         CyklusCouplerImpuls--;
                         if (CyklusCouplerImpuls == 0)
                         {
-                            if (TrainMassKG0 <= Simulator.TrainMassKG1)
+                            if (TrainMassKG1 <= TrainMassKG2)
                                 car.SpeedMpS = -(SpeedMpS0 / Math.Abs(SpeedMpS0) * Math.Abs(SpeedMpS2));
                             else
                                 car.SpeedMpS = (SpeedMpS0 / Math.Abs(SpeedMpS0) * Math.Abs(SpeedMpS2));
@@ -4585,7 +4583,10 @@ namespace Orts.Simulation.Physics
                 kg2 += car.MassKG;
             SpeedMpS = (((kg1 * SpeedMpS) + (kg2 * otherTrain.SpeedMpS)) * otherMult) / (kg1 + kg2);
             otherTrain.SpeedMpS = SpeedMpS;
+            
             // Icik
+            TrainMassKG1 = kg1; // Napojující
+            TrainMassKG2 = kg2; // Napojovaný
             if (!MPManager.IsMultiPlayer())
             {
                 foreach (TrainCar car1 in Cars)

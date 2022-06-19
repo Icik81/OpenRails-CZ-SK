@@ -969,11 +969,9 @@ namespace Orts.Simulation
             }
         }
 
-        // Icik
-        public float TrainMassKG1;
+        // Icik       
         public bool CarByUserUncoupled;
-        public float DifferenceSpeedMpS = 0;
-        public bool HasSpeedInCoupler;
+        public float DifferenceSpeedMpS;        
         /// <summary>
         /// Scan other trains
         /// </summary>
@@ -984,8 +982,8 @@ namespace Orts.Simulation
             float CarCoupleSpeed = 3.0f / 3.6f; // Doťukávací rychlost pro napojení vozu
             float CarCoupleMaxSpeed = 10 / 3.6f; // Maximální nárazová rychlost max 10km/h            
 
-            if (HasSpeedInCoupler && Math.Abs(drivenTrain.SpeedMpS) < CarCoupleSpeed)
-                HasSpeedInCoupler = false;
+            if (drivenTrain.HasSpeedInCoupler && Math.Abs(drivenTrain.SpeedMpS) < CarCoupleSpeed)
+                drivenTrain.HasSpeedInCoupler = false;
 
             CarCoupleSpeedOvercome = false;
 
@@ -1013,9 +1011,6 @@ namespace Orts.Simulation
                             if (!MPManager.IsMultiPlayer())
                             {
                                 DifferenceSpeedMpS = Math.Abs(Math.Abs(drivenTrain.SpeedMpS) - Math.Abs(train.SpeedMpS));
-                                TrainMassKG1 = 0;
-                                foreach (TrainCar car in train.Cars)
-                                    TrainMassKG1 += car.MassKG;
 
                                 if (DifferenceSpeedMpS > CarCoupleMaxSpeed)
                                     CarCoupleMaxSpeedOvercome = true;
@@ -1024,12 +1019,12 @@ namespace Orts.Simulation
                                     CarCoupleSpeedOvercome = true;
 
                                 //if (train == drivenTrain.UncoupledFrom || CarCoupleSpeedOvercome)
-                                if (CarCoupleSpeedOvercome || HasSpeedInCoupler || Settings.ManualCoupling)
+                                if (CarCoupleSpeedOvercome || drivenTrain.HasSpeedInCoupler || Settings.ManualCoupling)
                                 {
                                     if (drivenTrain.SpeedMpS < train.SpeedMpS)
                                         drivenTrain.SetCoupleSpeed(train, 1);
                                     drivenTrain.CalculatePositionOfCars(elapsedClockSeconds, -d1);
-                                    HasSpeedInCoupler = true;
+                                    drivenTrain.HasSpeedInCoupler = true;
                                     return;
                                 }
                             }
@@ -1066,10 +1061,7 @@ namespace Orts.Simulation
                             if (!MPManager.IsMultiPlayer())
                             {
                                 DifferenceSpeedMpS = Math.Abs(Math.Abs(drivenTrain.SpeedMpS) - Math.Abs(train.SpeedMpS));
-                                TrainMassKG1 = 0;
-                                foreach (TrainCar car in train.Cars)
-                                    TrainMassKG1 += car.MassKG;
-
+  
                                 if (DifferenceSpeedMpS > CarCoupleMaxSpeed)
                                     CarCoupleMaxSpeedOvercome = true;
 
@@ -1077,12 +1069,12 @@ namespace Orts.Simulation
                                     CarCoupleSpeedOvercome = true;
 
                                 //if (train == drivenTrain.UncoupledFrom || CarCoupleSpeedOvercome)
-                                if (CarCoupleSpeedOvercome || HasSpeedInCoupler || Settings.ManualCoupling)
+                                if (CarCoupleSpeedOvercome || drivenTrain.HasSpeedInCoupler || Settings.ManualCoupling)
                                 {
                                     if (drivenTrain.SpeedMpS < -train.SpeedMpS)
                                         drivenTrain.SetCoupleSpeed(train, -1);
                                     drivenTrain.CalculatePositionOfCars(elapsedClockSeconds, -d2);
-                                    HasSpeedInCoupler = true;
+                                    drivenTrain.HasSpeedInCoupler = true;
                                     return;
                                 }
                             }
@@ -1135,9 +1127,6 @@ namespace Orts.Simulation
                             if (!MPManager.IsMultiPlayer())
                             {
                                 DifferenceSpeedMpS = Math.Abs(Math.Abs(drivenTrain.SpeedMpS) - Math.Abs(train.SpeedMpS));
-                                TrainMassKG1 = 0;
-                                foreach (TrainCar car in train.Cars)
-                                    TrainMassKG1 += car.MassKG;
 
                                 if (DifferenceSpeedMpS > CarCoupleMaxSpeed)
                                     CarCoupleMaxSpeedOvercome = true;
@@ -1146,12 +1135,12 @@ namespace Orts.Simulation
                                     CarCoupleSpeedOvercome = true;
 
                                 //if (train == drivenTrain.UncoupledFrom || CarCoupleSpeedOvercome)
-                                if (CarCoupleSpeedOvercome || HasSpeedInCoupler || Settings.ManualCoupling)
+                                if (CarCoupleSpeedOvercome || drivenTrain.HasSpeedInCoupler || Settings.ManualCoupling)
                                 {
                                     if (drivenTrain.SpeedMpS > train.SpeedMpS)
                                         drivenTrain.SetCoupleSpeed(train, 1);
                                     drivenTrain.CalculatePositionOfCars(elapsedClockSeconds, d1);
-                                    HasSpeedInCoupler = true;
+                                    drivenTrain.HasSpeedInCoupler = true;
                                     return;
                                 }
                             }
@@ -1214,9 +1203,6 @@ namespace Orts.Simulation
                             if (!MPManager.IsMultiPlayer())
                             {
                                 DifferenceSpeedMpS = Math.Abs(Math.Abs(drivenTrain.SpeedMpS) - Math.Abs(train.SpeedMpS));
-                                TrainMassKG1 = 0;
-                                foreach (TrainCar car in train.Cars)
-                                    TrainMassKG1 += car.MassKG;
 
                                 if (DifferenceSpeedMpS > CarCoupleMaxSpeed)
                                     CarCoupleMaxSpeedOvercome = true;
@@ -1225,12 +1211,12 @@ namespace Orts.Simulation
                                     CarCoupleSpeedOvercome = true;
 
                                 //if (train == drivenTrain.UncoupledFrom || CarCoupleSpeedOvercome)
-                                if (CarCoupleSpeedOvercome || HasSpeedInCoupler || Settings.ManualCoupling)
+                                if (CarCoupleSpeedOvercome || drivenTrain.HasSpeedInCoupler || Settings.ManualCoupling)
                                 {
                                     if (drivenTrain.SpeedMpS > -train.SpeedMpS)
                                         drivenTrain.SetCoupleSpeed(train, -1);
                                     drivenTrain.CalculatePositionOfCars(elapsedClockSeconds, d2);
-                                    HasSpeedInCoupler = true;
+                                    drivenTrain.HasSpeedInCoupler = true;
                                     return;
                                 }
                             }
