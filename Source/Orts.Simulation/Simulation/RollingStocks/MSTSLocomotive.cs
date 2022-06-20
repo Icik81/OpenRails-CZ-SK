@@ -3863,7 +3863,7 @@ namespace Orts.Simulation.RollingStocks
         protected bool firstFrame = true;
         public override void Update(float elapsedClockSeconds)
         {
-            if (firstFrame)
+            if (firstFrame && BrakeSystem.StartOn)
             {
                 firstFrame = false;
                 if (Simulator.Settings.AirEmpty)
