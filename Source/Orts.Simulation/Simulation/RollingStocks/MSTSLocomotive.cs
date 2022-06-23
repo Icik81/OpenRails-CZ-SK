@@ -645,7 +645,10 @@ namespace Orts.Simulation.RollingStocks
         public float PantoCanHVOffSpeedKpH;
         public bool DirectionButton;
         public float DirectionButtonPosition = 2;
+        public float MemDirectionButtonPosition = -1;
+        public float DirectionButtonPositionOffset;
         public bool CarIsPlayerLocoSet;
+        public bool BatterySetOn;
 
 
         // Jindrich
@@ -4249,6 +4252,8 @@ namespace Orts.Simulation.RollingStocks
                 SetControlUnit();
                 SetHelperLoco();
                 PantoCanHVOff(elapsedClockSeconds);
+                DirectionButtonSetup();
+                BatterySetOn = false;
             }
 
             // Hodnoty pro výpočet zvukových proměnných
@@ -7404,6 +7409,7 @@ namespace Orts.Simulation.RollingStocks
             Battery = !Battery;
             if (Battery)
             {
+                BatterySetOn = true;
                 SignalEvent(Event.BatteryOn);
                 if (PowerKey) SignalEvent(Event.PowerKeyOn);
             }
@@ -8664,9 +8670,41 @@ namespace Orts.Simulation.RollingStocks
                 ToggleDirectionButton();
             }
         }
+        public void DirectionButtonSetup()
+        {            
+            if (!DirectionButton) return;
+            if (!Battery)
+            {
+                DirectionButtonPositionOffset = 6;
+                Direction = Direction.N;
+            }
+            else
+            {
+                if (BatterySetOn)
+                    DirectionButtonPosition = 2;
+                DirectionButtonPositionOffset = 0;
+                if (MemDirectionButtonPosition != -1)
+                {
+                    DirectionButtonPosition = MemDirectionButtonPosition;
+                    ToggleDirectionButton();
+                }
+            }            
+        }
         public void ToggleDirectionButton()
         {            
             //Simulator.Confirmer.MSG("Nastaveno: " + DirectionButtonPosition);
+            if (AbsSpeedMpS > 0)
+            {
+                MemDirectionButtonPosition = DirectionButtonPosition;
+                return;
+            }
+            if (AbsSpeedMpS == 0 && ThrottlePercent != 0)
+            {
+                MemDirectionButtonPosition = DirectionButtonPosition;
+                return;
+            }
+            MemDirectionButtonPosition = -1;
+
             switch (DirectionButtonPosition)
             {
                 case 0: // Vpřed
@@ -11257,26 +11295,26 @@ namespace Orts.Simulation.RollingStocks
                     }
                 case CABViewControlTypes.DIRECTION_BUTTON:
                     {
-                        DirectionButton = true;                        
+                        DirectionButton = true;
                         switch (DirectionButtonPosition)
                         {
                             case 0:
-                                data = 4;
+                                data = 4 + DirectionButtonPositionOffset;
                                 break;
                             case 1:
-                                data = 5;
+                                data = 5 + DirectionButtonPositionOffset;
                                 break;
                             case 2:
-                                data = 2;
+                                data = 2 + DirectionButtonPositionOffset;
                                 break;
                             case 3:
-                                data = 3;
+                                data = 3 + DirectionButtonPositionOffset;
                                 break;
                             case 4:
-                                data = 1;
+                                data = 1 + DirectionButtonPositionOffset;
                                 break;
                             case 5:
-                                data = 0;
+                                data = 0 + DirectionButtonPositionOffset;
                                 break;
                         }                        
                         break;
