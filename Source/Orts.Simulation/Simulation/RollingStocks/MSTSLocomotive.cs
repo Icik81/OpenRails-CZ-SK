@@ -3914,7 +3914,7 @@ namespace Orts.Simulation.RollingStocks
                         PowerChangeRoutine(elapsedClockSeconds);
                     else
                     {
-                        if (!CircuitBreakerOn && Pantographs.List[0].State == PantographState.Up)
+                        if (!CircuitBreakerOn && (Pantographs.List[0].State == PantographState.Up || Pantographs.List[1].State == PantographState.Up))
                         {
                             HvPantoTimer += elapsedClockSeconds;
                             if (SystemAnnunciator == 0)
@@ -3931,36 +3931,36 @@ namespace Orts.Simulation.RollingStocks
                                 HvPantoTimer = 0;
                             }
                         }
-                        if (!CircuitBreakerOn && (Pantographs.List[0].State == PantographState.Lowering || Pantographs.List[0].State == PantographState.Raising))
+                        if (!CircuitBreakerOn && (Pantographs.List[0].State == PantographState.Lowering || Pantographs.List[0].State == PantographState.Raising || Pantographs.List[1].State == PantographState.Lowering || Pantographs.List[1].State == PantographState.Raising))
                         {
                             SystemAnnunciator = 3;
                         }
-                        if (!CircuitBreakerOn && Pantographs.List[0].State == PantographState.Down && HvPantoTimer < 5)
+                        if (!CircuitBreakerOn && Pantographs.List[0].State == PantographState.Down && Pantographs.List[1].State == PantographState.Down && HvPantoTimer < 5)
                         {
                             HvPantoTimer += elapsedClockSeconds;
                             SystemAnnunciator = 4;
                         }
-                        if (CircuitBreakerOn && (Pantographs.List[0].State == PantographState.Lowering || Pantographs.List[0].State == PantographState.Raising))
+                        if (CircuitBreakerOn && (Pantographs.List[0].State == PantographState.Lowering || Pantographs.List[0].State == PantographState.Raising || Pantographs.List[1].State == PantographState.Lowering || Pantographs.List[1].State == PantographState.Raising))
                         {
                             SystemAnnunciator = 3;
                         }
-                        if (CircuitBreakerOn && Pantographs.List[0].State == PantographState.Down && HvPantoTimer < 5)
+                        if (CircuitBreakerOn && Pantographs.List[0].State == PantographState.Down && Pantographs.List[1].State == PantographState.Down && HvPantoTimer < 5)
                         {
                             HvPantoTimer += elapsedClockSeconds;
                             SystemAnnunciator = 4;
                         }
-                        if (!CircuitBreakerOn && Pantographs.List[0].State == PantographState.Down && HvPantoTimer >= 5)
+                        if (!CircuitBreakerOn && Pantographs.List[0].State == PantographState.Down && Pantographs.List[1].State == PantographState.Down && HvPantoTimer >= 5)
                         {
                             SystemAnnunciator = 1;
                         }
 
-                        if (CircuitBreakerOn && Pantographs.List[0].State == PantographState.Up)
+                        if (CircuitBreakerOn && (Pantographs.List[0].State == PantographState.Up || Pantographs.List[1].State == PantographState.Up))
                         {
                             HvPantoTimer = 0;
                             SystemAnnunciator = 0;
                         }
 
-                        if (SystemAnnunciator == 3 && !CircuitBreakerOn && Pantographs.List[0].State == PantographState.Up && HvPantoTimer > 6)
+                        if (SystemAnnunciator == 3 && !CircuitBreakerOn && Pantographs.List[0].State == PantographState.Up && Pantographs.List[1].State == PantographState.Up && HvPantoTimer > 6)
                         {
                             SystemAnnunciator = 5;
                         }
@@ -6493,7 +6493,19 @@ namespace Orts.Simulation.RollingStocks
             else if (CruiseControl == null)
                 return CombinedControlSplitPosition * (1 - (intermediateValue ? ThrottleController.IntermediateValue : ThrottleController.CurrentValue));
             else if (CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.Manual)
+            {
+                if (UsingForceHandle)
+                {
+                    float test = -ForceHandleValue / 100;
+                    test = 1 - test;
+                    if (test < 0.02f && test > 0)
+                        test = 0.021f;
+                    test = CombinedControlSplitPosition * test;
+                    test = test * 100;
+                    return test;
+                }
                 return CombinedControlSplitPosition * (1 - (intermediateValue ? ThrottleController.IntermediateValue : ThrottleController.CurrentValue));
+            }
             else if (CruiseControl.UseThrottleAsSpeedSelector)
                 return CombinedControlSplitPosition * (1 - (CruiseControl.SelectedSpeedMpS / MaxSpeedMpS));
             else if (CruiseControl.UseThrottleAsForceSelector && CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.Auto)
