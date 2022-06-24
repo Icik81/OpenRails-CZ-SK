@@ -270,8 +270,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes
         public bool RightDoorIsOpened;
         public bool DoorsOpen;
 
-        public float HeatingMenu = 0;
-        public string HeatingText = Simulator.Catalog.GetString("off");
+        public float HeatingMenu = 1;
+        public string HeatingText = Simulator.Catalog.GetString("on");
         public bool HeatingIsOn;
 
         public int WagonType;

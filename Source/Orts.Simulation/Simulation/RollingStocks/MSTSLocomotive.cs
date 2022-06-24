@@ -3135,7 +3135,11 @@ namespace Orts.Simulation.RollingStocks
                             car.PowerReductionByAirCondition = MathHelper.Clamp(car.PowerReductionByAirCondition, 0, 50.0f * 1000);
 
                             // Zapne jednotky topení/klimy 
-                            car.BrakeSystem.HeatingIsOn = true;
+                            if (!Simulator.Settings.AirEmpty)
+                            {
+                                car.BrakeSystem.HeatingIsOn = true;
+                                car.BrakeSystem.HeatingMenu = 0;
+                            }
 
                             // Vozy nikdy nebudou startovat podchlazené pod 5°C
                             if (car.CarOutsideTempC < 5 && !car.WagonHasTemperature)
