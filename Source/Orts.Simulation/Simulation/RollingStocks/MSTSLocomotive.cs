@@ -4223,7 +4223,7 @@ namespace Orts.Simulation.RollingStocks
                 SetAIAction();
 
             if (IsPlayerTrain && !Simulator.Paused)
-            {
+            {                     
                 //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("LapActive " + LapActive));
                 if (Simulator.GameTime < 0.5f)
                 {
@@ -9064,6 +9064,11 @@ namespace Orts.Simulation.RollingStocks
             if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.RDSTBreaker, RDSTBreaker ? CabSetting.On : CabSetting.Off);
         }
 
+        public void ToggleRefreshWorld(bool refreshWorld)
+        {
+            Simulator.RefreshWorld = refreshWorld;
+            Simulator.Confirmer.Information(Simulator.Catalog.GetString("Proběhlo obnovení světa!"));
+        }
 
         // Zatím povoleno kvůli kompatibilitě
         int NumberChoice = 1;

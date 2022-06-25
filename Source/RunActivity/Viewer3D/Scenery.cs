@@ -84,7 +84,7 @@ namespace Orts.Viewer3D
             Viewer.DontLoadDayTextures = (Program.Simulator.Settings.ConditionalLoadOfDayOrNightTextures &&
             ((Viewer.MaterialManager.sunDirection.Y < -0.05f && Program.Simulator.ClockTime % 86400 >= 43200) ||
             (Viewer.MaterialManager.sunDirection.Y < -0.15f && Program.Simulator.ClockTime % 86400 < 43200))) ? true : false;
-            if (TileX != VisibleTileX || TileZ != VisibleTileZ)
+            if (TileX != VisibleTileX || TileZ != VisibleTileZ || Viewer.Simulator.RefreshWorld)
             {
                 TileX = VisibleTileX;
                 TileZ = VisibleTileZ;
@@ -104,7 +104,7 @@ namespace Orts.Viewer3D
                         CameraTileZ = (int)(Math.Abs(cameraTile) - (long)Math.Abs(CameraTileX) * 100000);
                         if ((CameraTileX != TileX || CameraTileZ != TileZ) && (Math.Abs(CameraTileX - (TileX + x)) > needed || Math.Abs(CameraTileZ - (TileZ + z)) > needed))
                             continue;
-                        if (tile == null)
+                        if (tile == null || Viewer.Simulator.RefreshWorld)
                             tile = LoadWorldFile(TileX + x, TileZ + z, x == 0 && z == 0);
                         if (tile != null)
                         {
@@ -577,6 +577,11 @@ namespace Orts.Viewer3D
             }
 
             if (viewer.Simulator.UseSuperElevation > 0 || viewer.Simulator.TRK.Tr_RouteFile.ChangeTrackGauge) SuperElevationManager.DecomposeStaticSuperElevation(Viewer, dTrackList, TileX, TileZ);
+            
+            // Icik
+            if (viewer.Simulator.RefreshWorld)            
+                Unload();
+            
             if (Viewer.World.Sounds != null) Viewer.World.Sounds.AddByTile(TileX, TileZ);
         }
 

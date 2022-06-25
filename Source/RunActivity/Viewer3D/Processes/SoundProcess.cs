@@ -281,7 +281,7 @@ namespace Orts.Viewer3D.Processes
             // is used to interrupt the update.
             int j;
             while (ASyncUpdatePending < 1)
-                j = Interlocked.CompareExchange(ref ASyncUpdatePending, 1, 0);
+                j = Interlocked.CompareExchange(ref ASyncUpdatePending, 1, 0);            
             lock (SoundSources)
                 SoundSources.Add(owner, sources);
             while (ASyncUpdatePending > 0)

@@ -588,6 +588,8 @@ namespace ORTS.Settings
             Commands[(int)UserCommand.ControlDieselDirectionControllerInOut] = new UserCommandKeyInput(0x25, KeyModifiers.Shift | KeyModifiers.Control);
             Commands[(int)UserCommand.ControlRDSTBreaker] = new UserCommandKeyInput(0x13, KeyModifiers.Shift);
             Commands[(int)UserCommand.ControlLapButton] = new UserCommandKeyInput(0x52, KeyModifiers.Shift);
+
+            Commands[(int)UserCommand.ControlRefreshWorld] = new UserCommandKeyInput(0x3B, KeyModifiers.Shift | KeyModifiers.Control | KeyModifiers.Alt);
         }
         #endregion
 

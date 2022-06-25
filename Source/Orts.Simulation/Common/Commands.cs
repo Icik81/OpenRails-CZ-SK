@@ -2350,4 +2350,20 @@ namespace Orts.Common
             Receiver.ToggleRDSTBreaker();
         }
     }
+    [Serializable()]
+    public sealed class ToggleRefreshWorldCommand : Command
+    {
+        public static MSTSLocomotive Receiver { get; set; }
+
+        public ToggleRefreshWorldCommand(CommandLog log)
+            : base(log)
+        {
+            Redo();
+        }
+
+        public override void Redo()
+        {
+            Receiver.ToggleRefreshWorld(true);
+        }
+    }
 }

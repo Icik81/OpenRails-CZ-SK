@@ -201,6 +201,7 @@ namespace Orts.Simulation
         public bool CabFloodLightActivate;
         public bool CabInDarkTunnel;
         public float _NightBrightnessValue;
+        public bool RefreshWorld;
 
 
         public List<PowerSupplyStation> powerSupplyStations;

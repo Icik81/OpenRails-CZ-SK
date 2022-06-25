@@ -295,5 +295,7 @@
         [GetString("Set Voltage 3k")] ControlSetVoltage3k,
         [GetString("Set Voltage 0")] ControlSetVoltage0,
         [GetString("Set Delete Voltage Marker")] ControlDeleteVoltageMarker,
+
+        [GetString("Control_CZSK Znovunačtení objektů světa")] ControlRefreshWorld,
     }
 }
