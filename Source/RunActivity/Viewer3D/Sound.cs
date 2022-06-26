@@ -1482,6 +1482,7 @@ namespace Orts.Viewer3D
         /// <returns></returns>
         private float ReadValue(Orts.Formats.Msts.VolumeCurve.Controls control, MSTSWagon car)
         {
+            var mstsDieselLocomotive = car as MSTSDieselLocomotive;
             switch (control)
             {
                 case Orts.Formats.Msts.VolumeCurve.Controls.DistanceControlled: return SoundSource.DistanceSquared;
@@ -1509,6 +1510,8 @@ namespace Orts.Viewer3D
                 case Orts.Formats.Msts.VolumeCurve.Controls.CylinderChangeRateControlled: return car.BrakeSystem.CylinderChangeRateBar;
                 case Orts.Formats.Msts.VolumeCurve.Controls.BrakeCylControlled: return car.BrakeSystem.GetCylPressurePSI();
                 case Orts.Formats.Msts.VolumeCurve.Controls.CurveForceControlled: return car.CurveForceNFiltered;
+                case Orts.Formats.Msts.VolumeCurve.Controls.MotorWaterTemperatureControlled: return mstsDieselLocomotive.DieselEngines[0].RealDieselWaterTemperatureDeg;
+                case Orts.Formats.Msts.VolumeCurve.Controls.MotorOilTemperatureControlled: return mstsDieselLocomotive.DieselEngines[0].RealDieselOilTemperatureDeg;
                 default: return 0;
             }
         }

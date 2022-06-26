@@ -9063,11 +9063,11 @@ namespace Orts.Simulation.RollingStocks
                 SignalEvent(Event.RDSTOff);
             if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.RDSTBreaker, RDSTBreaker ? CabSetting.On : CabSetting.Off);
         }
-
+        // Znovu načte objekty světa
         public void ToggleRefreshWorld(bool refreshWorld)
         {
             Simulator.RefreshWorld = refreshWorld;
-            Simulator.Confirmer.Information(Simulator.Catalog.GetString("Proběhlo obnovení světa!"));
+            Simulator.Confirmer.Information(Simulator.Catalog.GetString("World Object reloaded!"));
         }
 
         // Zatím povoleno kvůli kompatibilitě

@@ -541,22 +541,26 @@ namespace Orts.Viewer3D
                     if (Viewer.Simulator.PlayerCarIsInTunnel)
                     {
                         if (clampValue < 2.5f)
-                            clampValue += 5.0f * Program.Simulator.OneSecondLoop;                      
+                            clampValue += 0.01f;
+                        else if (clampValue > 2.5f)
+                            clampValue -= 0.01f;
                         distance = lightDrawer.LightConeDistance; // and max distance
                     }
                     else if (sunDirection.Y <= -0.05)
                     {
                         if (clampValue < 1.0f)
-                            clampValue += 5.0f * Program.Simulator.OneSecondLoop;
+                            clampValue += 0.01f;
                         else if (clampValue > 1.0f)
-                            clampValue -= 0.05f * Program.Simulator.OneSecondLoop;
+                            clampValue -= 0.01f;
                         //clampValue = 1; // at nighttime max headlight
                         distance = lightDrawer.LightConeDistance; // and max distance
                     }
                     else if (sunDirection.Y >= 0.15)
-                    {                        
-                        if (clampValue > 0.5f)
-                            clampValue -= 5.0f * Program.Simulator.OneSecondLoop;
+                    {
+                        if (clampValue < 0.1f)
+                            clampValue += 0.01f;
+                        else if (clampValue > 0.1f)
+                            clampValue -= 0.01f;
                         //clampValue = 0.5f; // at daytime min headlight                        
                         distance = lightDrawer.LightConeDistance * 1.0f; // and min distance
                     }
