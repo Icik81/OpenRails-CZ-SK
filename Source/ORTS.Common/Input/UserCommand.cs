@@ -289,6 +289,7 @@
         [GetString("Control_CZSK Diesel Controller In/Out")] ControlDieselDirectionControllerInOut,
         [GetString("Control_CZSK RDST Breaker")] ControlRDSTBreaker,
         [GetString("Control_CZSK Lap button")] ControlLapButton,
+        [GetString("Control_CZSK Disabling EDB button")] ControlBreakEDBButton,
 
         [GetString("Set Power Supply Station Location")] ControlPowerStationLocation,
         [GetString("Set Voltage 25k")] ControlSetVoltage25k,

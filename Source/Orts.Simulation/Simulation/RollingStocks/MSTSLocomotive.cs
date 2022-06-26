@@ -649,6 +649,10 @@ namespace Orts.Simulation.RollingStocks
         public float DirectionButtonPositionOffset;
         public bool CarIsPlayerLocoSet;
         public bool BatterySetOn;
+        public bool BreakEDBButtonEnable = false;
+        public bool BreakEDBButton;
+        bool BreakEDBButtonPressed = false;
+        public bool BreakEDBButton_Activated;
 
 
         // Jindrich
@@ -1574,6 +1578,8 @@ namespace Orts.Simulation.RollingStocks
             LapActive = locoCopy.LapActive;
             PantoCanHVOffSpeedKpH = locoCopy.PantoCanHVOffSpeedKpH;
             CarIsPlayerLocoSet = locoCopy.CarIsPlayerLocoSet;
+            BreakPowerButton_Activated = locoCopy.BreakPowerButton_Activated;
+            BreakEDBButton_Activated = locoCopy.BreakEDBButton_Activated;
 
             // Jindrich
             if (locoCopy.CruiseControl != null)
@@ -1740,6 +1746,7 @@ namespace Orts.Simulation.RollingStocks
             outf.Write(LapActive);
             outf.Write(DirectionButtonPosition);
             outf.Write(CarIsPlayerLocoSet);
+            outf.Write(BreakEDBButton_Activated);
 
             base.Save(outf);
 
@@ -1844,6 +1851,7 @@ namespace Orts.Simulation.RollingStocks
             LapActive = inf.ReadBoolean();
             DirectionButtonPosition = inf.ReadInt32();
             CarIsPlayerLocoSet = inf.ReadBoolean();
+            BreakEDBButton_Activated = inf.ReadBoolean();
 
             base.Restore(inf);
 
@@ -2496,8 +2504,9 @@ namespace Orts.Simulation.RollingStocks
         {
             if (IsPlayerTrain)
             {
-                if (EngineBrakeEngageEDB || BrakeSystem.OL3active)
+                if (EngineBrakeEngageEDB || BrakeSystem.OL3active || BreakEDBButton_Activated)
                     return;
+
                 if (!PowerOn && !EDBIndependent)
                     disableDynamicBrakeIntervention = true;
                 if (Bar.FromPSI(BrakeSystem.BrakeLine1PressurePSI) > 4.9)
@@ -2734,6 +2743,23 @@ namespace Orts.Simulation.RollingStocks
                 }
 
                 //Trace.TraceWarning("Hodnota PowerOnFilter {0}, DynamicBrakePercent {1}, čas simulace {2}", PowerOnFilter, DynamicBrakePercent, Simulator.GameTime);
+            }
+        }
+
+        // Icik
+        // Při stisknutí vyřazení EDB zruší účinek EDB      
+        public void EDBCancelByBreakEDBButton()
+        {
+            if (BreakEDBButton_Activated)
+            {
+                if (DynamicBrakeIntervention > -1)
+                    DynamicBrakeIntervention -= 0.5f;
+                if (DynamicBrakeIntervention < 0)
+                    DynamicBrakeIntervention = -1;
+                DynamicBrakePercent -= 1.0f;
+                if (DynamicBrakePercent < 0)
+                    DynamicBrakePercent = 0;
+                SetDynamicBrakePercent(DynamicBrakePercent);
             }
         }
 
@@ -4018,7 +4044,7 @@ namespace Orts.Simulation.RollingStocks
                             SetThrottlePercent(ForceHandleValue);
                         }
                         if (ForceHandleValue < 0)
-                        {
+                        {                            
                             SetDynamicBrakePercent(-ForceHandleValue);
                         }
                     }
@@ -4244,6 +4270,7 @@ namespace Orts.Simulation.RollingStocks
                     ToggleHV4Switch();
                     ToggleHV5Switch();
                 }
+                EDBCancelByBreakEDBButton();
                 EDBCancelByEngineBrake();
                 EDBCancelByOL3BailOff();
                 PowerOn_Filter(elapsedClockSeconds);
@@ -8623,6 +8650,33 @@ namespace Orts.Simulation.RollingStocks
                 if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.LapActive, LapActive ? CabSetting.On : CabSetting.Off);
             }
         }
+
+        public void ToggleBreakEDBButton(bool breakEDBButton)
+        {
+            if (BreakEDBButtonEnable)
+            {
+                BreakEDBButton = breakEDBButton;
+                if (BreakEDBButton && !BreakEDBButtonPressed)
+                {
+                    SignalEvent(Event.BreakEDBButton);
+                    BreakEDBButtonPressed = true;
+                    BreakEDBButton_Activated = !BreakEDBButton_Activated;
+                }
+                if (!BreakEDBButton && BreakEDBButtonPressed)
+                {
+                    SignalEvent(Event.BreakEDBButtonRelease);
+                    BreakEDBButtonPressed = false;
+                }
+                if (Simulator.PlayerLocomotive == this)
+                {
+                    if (BreakEDBButton_Activated)
+                        Simulator.Confirmer.Information(Simulator.Catalog.GetString("Disabling EDB: ") + Simulator.Catalog.GetString("On"));
+                    else
+                        Simulator.Confirmer.Information(Simulator.Catalog.GetString("Disabling EDB: ") + Simulator.Catalog.GetString("Off"));
+                }
+            }
+        }
+
         public void ToggleDirectionButtonDown()
         {
             if (DirectionButton)
@@ -11310,6 +11364,14 @@ namespace Orts.Simulation.RollingStocks
                     {
                         LapButtonEnable = true;
                         if (LapActive)
+                            data = 1;
+                        else data = 0;
+                        break;
+                    }
+                case CABViewControlTypes.BREAK_EDB_BUTTON:
+                    {
+                        BreakEDBButtonEnable = true;
+                        if (BreakEDBButton)
                             data = 1;
                         else data = 0;
                         break;

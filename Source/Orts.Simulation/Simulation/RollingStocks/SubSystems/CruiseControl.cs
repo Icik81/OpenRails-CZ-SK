@@ -1940,7 +1940,11 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                     }
                     else if (controllerVolts < -0.1f)
                     {
-                        Locomotive.DynamicBrakePercent = -controllerVolts;
+                        // Icik
+                        if (!Locomotive.EngineBrakeEngageEDB && !Locomotive.BrakeSystem.OL3active && !Locomotive.BreakEDBButton_Activated)
+                        {                            
+                            Locomotive.DynamicBrakePercent = -controllerVolts;
+                        }
                     }
                     else
                     {

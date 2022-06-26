@@ -635,6 +635,7 @@ namespace Orts.Viewer3D
             ToggleRDSTBreakerCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
             ToggleLapButtonCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
             ToggleRefreshWorldCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
+            ToggleBreakEDBButtonCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
         }
 
         public void ChangeToPreviousFreeRoamCamera()

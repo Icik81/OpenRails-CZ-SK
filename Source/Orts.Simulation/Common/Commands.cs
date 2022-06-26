@@ -2286,6 +2286,22 @@ namespace Orts.Common
         }
     }
     [Serializable()]
+    public sealed class ToggleBreakEDBButtonCommand : Command
+    {
+        public static MSTSLocomotive Receiver { get; set; }
+
+        public ToggleBreakEDBButtonCommand(CommandLog log)
+            : base(log)
+        {
+            Redo();
+        }
+
+        public override void Redo()
+        {
+            Receiver.ToggleBreakEDBButton(true);
+        }
+    }
+    [Serializable()]
     public sealed class ToggleDieselDirectionControllerUpCommand : Command
     {
         public static MSTSLocomotive Receiver { get; set; }

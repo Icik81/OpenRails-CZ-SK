@@ -296,6 +296,7 @@ namespace Orts.Viewer3D.RollingStock
             UserInputCommands.Add(UserCommand.ControlRDSTBreaker, new Action[] { Noop, () => new ToggleRDSTBreakerCommand(Viewer.Log) });
             UserInputCommands.Add(UserCommand.ControlLapButton, new Action[] { Noop, () => new ToggleLapButtonCommand(Viewer.Log) });
             UserInputCommands.Add(UserCommand.ControlRefreshWorld, new Action[] { Noop, () => new ToggleRefreshWorldCommand(Viewer.Log) });
+            UserInputCommands.Add(UserCommand.ControlBreakEDBButton, new Action[] { Noop, () => new ToggleBreakEDBButtonCommand(Viewer.Log) });
 
             // Jindřich
             UserInputCommands.Add(UserCommand.ControlPowerStationLocation, new Action[] { Noop, () => Locomotive.SetPowerSupplyStationLocation() });
@@ -491,7 +492,7 @@ namespace Orts.Viewer3D.RollingStock
                     Locomotive.ToggleLowPressureReleaseButton(false);
                 }
             }
-            // Ovládání tlačítka přerušení napájení
+            // Ovládání tlačítka přerušení napájení            
             if (Locomotive.BreakPowerButtonEnable)
             {
                 if (UserInput.IsPressed(UserCommand.ControlBreakPowerButton))
@@ -514,6 +515,19 @@ namespace Orts.Viewer3D.RollingStock
                 if (UserInput.IsReleased(UserCommand.ControlLapButton))
                 {
                     Locomotive.ToggleLapButton(false);
+                }
+            }
+            // Ovládání tlačítka přerušení EDB
+            Locomotive.BreakEDBButtonEnable = true;
+            if (Locomotive.BreakEDBButtonEnable)
+            {
+                if (UserInput.IsPressed(UserCommand.ControlBreakEDBButton))
+                {
+                    Locomotive.ToggleBreakEDBButton(true);
+                }
+                if (UserInput.IsReleased(UserCommand.ControlBreakEDBButton))
+                {
+                    Locomotive.ToggleBreakEDBButton(false);
                 }
             }
             // Ovládání Diesel kontroléru
@@ -2823,7 +2837,7 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.HIGHVOLTAGE_DCOFFAC:
                 case CABViewControlTypes.LAP_BUTTON:
                 case CABViewControlTypes.DIRECTION_BUTTON:
-
+                case CABViewControlTypes.BREAK_EDB_BUTTON:
 
                 case CABViewControlTypes.MOTOR_DISABLED:
                 case CABViewControlTypes.INVERTER_TEST:
@@ -3598,6 +3612,13 @@ namespace Orts.Viewer3D.RollingStock
                         Locomotive.ToggleLapButton(true);
                     else
                         Locomotive.ToggleLapButton(false);
+                    break;
+
+                case CABViewControlTypes.BREAK_EDB_BUTTON:
+                    if (ChangedValue(Locomotive.BreakEDBButton ? 1 : 0) > 0)
+                        Locomotive.ToggleBreakEDBButton(true);
+                    else
+                        Locomotive.ToggleBreakEDBButton(false);
                     break;
 
                 case CABViewControlTypes.DIESEL_DIRECTION_CONTROLLER:
