@@ -517,8 +517,7 @@ namespace Orts.Viewer3D.RollingStock
                     Locomotive.ToggleLapButton(false);
                 }
             }
-            // Ovládání tlačítka přerušení EDB
-            Locomotive.BreakEDBButtonEnable = true;
+            // Ovládání tlačítka a přepínače přerušení EDB            
             if (Locomotive.BreakEDBButtonEnable)
             {
                 if (UserInput.IsPressed(UserCommand.ControlBreakEDBButton))
@@ -2838,6 +2837,8 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.LAP_BUTTON:
                 case CABViewControlTypes.DIRECTION_BUTTON:
                 case CABViewControlTypes.BREAK_EDB_BUTTON:
+                case CABViewControlTypes.BREAK_EDB_SWITCH:
+                case CABViewControlTypes.BREAK_EDB_DISPLAY:
 
                 case CABViewControlTypes.MOTOR_DISABLED:
                 case CABViewControlTypes.INVERTER_TEST:
@@ -3615,6 +3616,13 @@ namespace Orts.Viewer3D.RollingStock
                     break;
 
                 case CABViewControlTypes.BREAK_EDB_BUTTON:
+                    if (ChangedValue(Locomotive.BreakEDBButton ? 1 : 0) > 0)
+                        Locomotive.ToggleBreakEDBButton(true);
+                    else
+                        Locomotive.ToggleBreakEDBButton(false);
+                    break;
+
+                case CABViewControlTypes.BREAK_EDB_SWITCH:
                     if (ChangedValue(Locomotive.BreakEDBButton ? 1 : 0) > 0)
                         Locomotive.ToggleBreakEDBButton(true);
                     else

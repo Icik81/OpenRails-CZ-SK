@@ -442,6 +442,8 @@ namespace Orts.Formats.Msts
         FORCE_INCREASE,
         FORCE_DECREASE,
         BREAK_EDB_BUTTON,
+        BREAK_EDB_SWITCH,
+        BREAK_EDB_DISPLAY,
 
 
         // Further CabViewControlTypes must be added above this line, to avoid their malfunction in 3DCabs

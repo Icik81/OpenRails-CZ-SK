@@ -650,6 +650,7 @@ namespace Orts.Simulation.RollingStocks
         public bool CarIsPlayerLocoSet;
         public bool BatterySetOn;
         public bool BreakEDBButtonEnable = false;
+        public bool BreakEDBSwitchEnable = false;
         public bool BreakEDBButton;
         bool BreakEDBButtonPressed = false;
         public bool BreakEDBButton_Activated;
@@ -2727,10 +2728,12 @@ namespace Orts.Simulation.RollingStocks
                 if (PowerOn && PowerOnFilter < PowerOnFilterCapacity)
                     PowerOnFilter = PowerOnFilter + (10 * elapsedClockSeconds); // 10 jednotek za sekundu
                 // Vybíjení
-                if (!PowerOn && DynamicBrakePercent > 0 && PowerOnFilter > 0)
+                if (Battery && PowerKey && !PowerOn && DynamicBrakePercent > 0 && PowerOnFilter > 0)
                     PowerOnFilter = PowerOnFilter - (DynamicBrakeForceN / 10000 * elapsedClockSeconds);
                 // Pokles síly EDB při vybití filtru
-                if (!PowerOn && DynamicBrakePercent > 0 && PowerOnFilter < PowerOnFilterCapacityLimit)
+                if (!Battery || !PowerKey)
+                    PowerOnFilter = 0;
+                if (Battery && PowerKey && !PowerOn && DynamicBrakePercent > 0 && PowerOnFilter < PowerOnFilterCapacityLimit)
                 {
                     if (DynamicBrakeIntervention > -1)
                         DynamicBrakeIntervention -= 0.01f;
@@ -2740,8 +2743,7 @@ namespace Orts.Simulation.RollingStocks
                     if (DynamicBrakePercent < 0)
                         DynamicBrakePercent = 0;
                     SetDynamicBrakePercent(DynamicBrakePercent);
-                }
-
+                }                
                 //Trace.TraceWarning("Hodnota PowerOnFilter {0}, DynamicBrakePercent {1}, čas simulace {2}", PowerOnFilter, DynamicBrakePercent, Simulator.GameTime);
             }
         }
@@ -8653,9 +8655,10 @@ namespace Orts.Simulation.RollingStocks
 
         public void ToggleBreakEDBButton(bool breakEDBButton)
         {
-            if (BreakEDBButtonEnable)
-            {
-                BreakEDBButton = breakEDBButton;
+            BreakEDBButton = breakEDBButton;
+            // Stav a zvuk pro tlačítko
+            if (!BreakEDBSwitchEnable)
+            {                                
                 if (BreakEDBButton && !BreakEDBButtonPressed)
                 {
                     SignalEvent(Event.BreakEDBButton);
@@ -8666,14 +8669,21 @@ namespace Orts.Simulation.RollingStocks
                 {
                     SignalEvent(Event.BreakEDBButtonRelease);
                     BreakEDBButtonPressed = false;
-                }
-                if (Simulator.PlayerLocomotive == this)
-                {
-                    if (BreakEDBButton_Activated)
-                        Simulator.Confirmer.Information(Simulator.Catalog.GetString("Disabling EDB: ") + Simulator.Catalog.GetString("On"));
-                    else
-                        Simulator.Confirmer.Information(Simulator.Catalog.GetString("Disabling EDB: ") + Simulator.Catalog.GetString("Off"));
-                }
+                }                
+            }
+            // Stav a zvuk pro přepínač
+            if (BreakEDBSwitchEnable)
+            {
+                BreakEDBButton_Activated = !BreakEDBButton_Activated;
+                if (BreakEDBButton_Activated)
+                    SignalEvent(Event.BreakEDBButton);                    
+            }
+            if (Simulator.PlayerLocomotive == this)
+            {
+                if (BreakEDBButton_Activated)
+                    Simulator.Confirmer.Information(Simulator.Catalog.GetString("Disabling EDB: ") + Simulator.Catalog.GetString("On"));
+                else
+                    Simulator.Confirmer.Information(Simulator.Catalog.GetString("Disabling EDB: ") + Simulator.Catalog.GetString("Off"));
             }
         }
 
@@ -11371,7 +11381,24 @@ namespace Orts.Simulation.RollingStocks
                 case CABViewControlTypes.BREAK_EDB_BUTTON:
                     {
                         BreakEDBButtonEnable = true;
+                        BreakEDBSwitchEnable = false;
                         if (BreakEDBButton)
+                            data = 1;
+                        else data = 0;
+                        break;
+                    }
+                case CABViewControlTypes.BREAK_EDB_SWITCH:
+                    {
+                        BreakEDBButtonEnable = true;
+                        BreakEDBSwitchEnable = true;
+                        if (BreakEDBButton_Activated)
+                            data = 1;
+                        else data = 0;
+                        break;
+                    }
+                case CABViewControlTypes.BREAK_EDB_DISPLAY:
+                    {                        
+                        if (BreakEDBButton_Activated)
                             data = 1;
                         else data = 0;
                         break;
