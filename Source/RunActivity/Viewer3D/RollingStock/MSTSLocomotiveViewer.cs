@@ -2416,6 +2416,16 @@ namespace Orts.Viewer3D.RollingStock
                 }
                 if (!added)
                     Locomotive.ActiveScreens.Add(Control);
+                if (Locomotive.UsingRearCab)
+                {
+                    foreach (CabViewControl discrete in Locomotive.ActiveScreens)
+                    {
+                        if (discrete.ScreenId == Control.ScreenId)
+                        {
+                            Control.IsActive = discrete.IsActive;
+                        }
+                    }
+                }
                 IsVisible = Control.IsActive;
                 if (!Control.IsActive)
                     return;
