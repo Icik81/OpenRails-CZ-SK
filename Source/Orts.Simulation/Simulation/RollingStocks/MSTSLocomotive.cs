@@ -4046,8 +4046,9 @@ namespace Orts.Simulation.RollingStocks
                             SetThrottlePercent(ForceHandleValue);
                         }
                         if (ForceHandleValue < 0)
-                        {                            
-                            SetDynamicBrakePercent(-ForceHandleValue);
+                        {
+                            if (!EngineBrakeEngageEDB && !BrakeSystem.OL3active && !BreakEDBButton_Activated)
+                                SetDynamicBrakePercent(-ForceHandleValue);
                         }
                     }
                     else
@@ -4068,7 +4069,8 @@ namespace Orts.Simulation.RollingStocks
                             }
                             if (ForceHandleValue < 0)
                             {
-                                DynamicBrakePercent = -ForceHandleValue;
+                                if (!EngineBrakeEngageEDB && !BrakeSystem.OL3active && !BreakEDBButton_Activated)
+                                    DynamicBrakePercent = -ForceHandleValue;
                             }
                         }
                         else
@@ -4087,7 +4089,8 @@ namespace Orts.Simulation.RollingStocks
                             }
                             if (ForceHandleValue < 0)
                             {
-                                DynamicBrakePercent = -ForceHandleValue;
+                                if (!EngineBrakeEngageEDB && !BrakeSystem.OL3active && !BreakEDBButton_Activated)
+                                    DynamicBrakePercent = -ForceHandleValue;
                             }
                         }
                     }
@@ -8675,7 +8678,7 @@ namespace Orts.Simulation.RollingStocks
             if (BreakEDBSwitchEnable)
             {
                 BreakEDBButton_Activated = !BreakEDBButton_Activated;
-                if (BreakEDBButton_Activated)
+                if (BreakEDBButton)
                     SignalEvent(Event.BreakEDBButton);                    
             }
             if (Simulator.PlayerLocomotive == this)
