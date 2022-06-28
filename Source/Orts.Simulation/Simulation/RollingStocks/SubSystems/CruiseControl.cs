@@ -1999,6 +1999,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems
 
                 if (!breakout)
                 {
+                    if (Locomotive.UsingForceHandle && Locomotive.ForceHandleValue == 0)
+                    {
+                        controllerVolts = Locomotive.ControllerVolts = 0;
+                    }
                     if (controllerVolts > 0)
                     {
                         breakout = false;
