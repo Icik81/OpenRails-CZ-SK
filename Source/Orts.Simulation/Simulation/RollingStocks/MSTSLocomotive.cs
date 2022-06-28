@@ -714,6 +714,8 @@ namespace Orts.Simulation.RollingStocks
         public PantoModes PantoMode = PantoModes.Auto;
         public bool PantoCommandDown = false;
         public int InverterTest = 2;
+        public bool GeneratoricModeActive = false;
+        public bool GeneratoricModeForcedOff = false;
 
         public bool
       Speed0Pressed, Speed10Pressed, Speed20Pressed, Speed30Pressed, Speed40Pressed, Speed50Pressed

@@ -69,6 +69,11 @@ namespace Orts.Simulation.RollingStocks
         public bool UseControllerVolts = false;
         public float TotalForceN = 0;
         public float TotalMaxForceN = 0;
+        public float GeneratoricModeDisengageSpeedKpH = 30; // KpH
+        public float GeneratoricModeDisengageSpeedRangeKpH = 2; // Speed range to disengage = 29-31 KpH in case Disengage is 30
+        public float GeneratoricModeMinKn = 10;
+        public float GeneratoricModeMaxKn = 13;
+
         public ExtendedPhysics(MSTSLocomotive loco)
         {
             Locomotive = loco;
@@ -118,6 +123,15 @@ namespace Orts.Simulation.RollingStocks
                                     break;
                             }
                         }
+                        if (main.Name.ToLower() == "generatoricmodedisengagespeedkph")
+                            GeneratoricModeDisengageSpeedKpH = float.Parse(innerText);
+                        if (main.Name.ToLower() == "generatoricmodedisengagespeedrangekph")
+                            GeneratoricModeDisengageSpeedRangeKpH = float.Parse(innerText);
+                        if (main.Name.ToLower() == "generatoricmodeminkn")
+                            GeneratoricModeMinKn = float.Parse(innerText);
+                        if (main.Name.ToLower() == "generatoricmodemaxkn")
+                            GeneratoricModeMaxKn = float.Parse(innerText);
+
                         if (main.Name.ToLower() == "undercarriage")
                         {
                             Undercarriage undercarriage = new Undercarriage();
