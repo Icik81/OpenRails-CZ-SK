@@ -565,7 +565,13 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
         public override void Initialize(bool handbrakeOn, float maxPressurePSI, float fullServPressurePSI, bool immediateRelease)
         {
             // Zjistí maximální pracovní tlak v systému
-            Car.Train.EqualReservoirPressurePSIorInHg = maxPressurePSI = maxPressurePSI0 = 5.0f * 14.50377f;
+            if (Car.Simulator.Settings.CorrectQuestionableBrakingParams)
+            {
+                Car.Train.EqualReservoirPressurePSIorInHg = maxPressurePSI = maxPressurePSI0 = 5.0f * 14.50377f;
+            }
+            else
+                Car.Train.EqualReservoirPressurePSIorInHg = maxPressurePSI0 = maxPressurePSI;
+
             if (StartOn) maxPressurePSI0 = Car.Train.EqualReservoirPressurePSIorInHg;
 
             BrakeLine1PressurePSI = maxPressurePSI0;
@@ -801,7 +807,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             {
                 if (loco != null) // Lokomotiva
                 {
-                    MaxCylPressurePSI = AutoCylPressurePSI = MathHelper.Clamp(MaxCylPressurePSI, 0.0f * 14.50377f, 7.0f * 14.50377f);
+                    MaxCylPressurePSI = AutoCylPressurePSI = MathHelper.Clamp(MaxCylPressurePSI, 0.0f * 14.50377f, 10.0f * 14.50377f);
                     AuxCylVolumeRatio = MathHelper.Clamp(AuxCylVolumeRatio, 1.5f, 4.0f);
                     loco.BrakeSystem.LocoAuxCylVolumeRatio = AuxCylVolumeRatio;
                     MaxAuxilaryChargingRatePSIpS = MathHelper.Clamp(MaxAuxilaryChargingRatePSIpS, 0.1f * 14.50377f, 0.5f * 14.50377f);
@@ -812,7 +818,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 }
                 else // Vagón
                 {
-                    MaxCylPressurePSI = AutoCylPressurePSI = MathHelper.Clamp(MaxCylPressurePSI, 0.0f * 14.50377f, 4.0f * 14.50377f);
+                    MaxCylPressurePSI = AutoCylPressurePSI = MathHelper.Clamp(MaxCylPressurePSI, 0.0f * 14.50377f, 10.0f * 14.50377f);
                     AuxCylVolumeRatio = MathHelper.Clamp(AuxCylVolumeRatio, 1.5f, 4.0f);
                     MaxAuxilaryChargingRatePSIpS = MathHelper.Clamp(MaxAuxilaryChargingRatePSIpS, 0.1f * 14.50377f, 0.5f * 14.50377f);
                     EmergResChargingRatePSIpS = MathHelper.Clamp(EmergResChargingRatePSIpS, 0.1f * 14.50377f, 0.5f * 14.50377f);
@@ -1615,9 +1621,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             float serviceTimeFactor = lead != null ? lead.TrainBrakeController != null && lead.TrainBrakeController.EmergencyBraking ? lead.BrakeEmergencyTimeFactorS : lead.BrakeServiceTimeFactorS : 0;
 
             // Definice limitů pro základní proměnné vzduchařiny
+            serviceTimeFactor = MathHelper.Clamp(serviceTimeFactor, 1.009f, 2.0f);
             if (train.Simulator.Settings.CorrectQuestionableBrakingParams)
-            {
-                serviceTimeFactor = MathHelper.Clamp(serviceTimeFactor, 1.009f, 2.0f);
+            {                
                 if (lead != null)
                 {
                     lead.TrainBrakeController.QuickReleaseRatePSIpS = MathHelper.Clamp(lead.TrainBrakeController.QuickReleaseRatePSIpS, 0.0f, 7.0f * 14.50377f);
@@ -1628,7 +1634,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     lead.EngineBrakeController.ApplyRatePSIpS = MathHelper.Clamp(lead.EngineBrakeController.ApplyRatePSIpS, 1.0f * 14.50377f, 2.5f * 14.50377f);
                 }
             }
-
+            
             for (int i = 0; i < nSteps; i++)
             {
                 if (lead != null)
