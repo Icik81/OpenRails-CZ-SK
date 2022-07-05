@@ -71,8 +71,10 @@ namespace Orts.Simulation.RollingStocks
         public float TotalMaxForceN = 0;
         public float GeneratoricModeDisengageSpeedKpH = 30; // KpH
         public float GeneratoricModeDisengageSpeedRangeKpH = 2; // Speed range to disengage = 29-31 KpH in case Disengage is 30
-        public float GeneratoricModeMinKn = 10;
-        public float GeneratoricModeMaxKn = 13;
+        public float GeneratoricModeEquipmentConsumptionKn = 7;
+        public float GeneratoricModeCompressorConsumptionKn = 3;
+        public float TimeSystemEnablesNormalSeconds = 15;
+        public float TimeSystemEnablesGeneratoticSeconds = 3;
 
         public ExtendedPhysics(MSTSLocomotive loco)
         {
@@ -127,12 +129,16 @@ namespace Orts.Simulation.RollingStocks
                             GeneratoricModeDisengageSpeedKpH = float.Parse(innerText);
                         if (main.Name.ToLower() == "generatoricmodedisengagespeedrangekph")
                             GeneratoricModeDisengageSpeedRangeKpH = float.Parse(innerText);
-                        if (main.Name.ToLower() == "generatoricmodeminkn")
-                            GeneratoricModeMinKn = float.Parse(innerText);
-                        if (main.Name.ToLower() == "generatoricmodemaxkn")
-                            GeneratoricModeMaxKn = float.Parse(innerText);
+                        if (main.Name.ToLower() == "generatoricmodeequipmentconsumptionkn")
+                            GeneratoricModeEquipmentConsumptionKn = float.Parse(innerText);
+                        if (main.Name.ToLower() == "generatoricmodecompressorconsumptionkn")
+                            GeneratoricModeCompressorConsumptionKn = float.Parse(innerText);
+                        if (main.Name.ToLower() == "timesystemenablesgeneratoticseconds")
+                            TimeSystemEnablesGeneratoticSeconds = float.Parse(innerText);
+                        if (main.Name.ToLower() == "timesystemenablesnormalseconds")
+                            TimeSystemEnablesNormalSeconds = float.Parse(innerText);
 
-                        if (main.Name.ToLower() == "undercarriage")
+                            if (main.Name.ToLower() == "undercarriage")
                         {
                             Undercarriage undercarriage = new Undercarriage();
                             foreach (XmlNode undercarriageNode in main.ChildNodes)
@@ -272,8 +278,32 @@ namespace Orts.Simulation.RollingStocks
 
         protected bool controlUnitInTrain = false;
         protected bool controlUnitChecked = false;
+
+        public enum SystemEnabledModes { Quick, Slow }
+        public SystemEnabledModes SystemEnabledMode = ExtendedPhysics.SystemEnabledModes.Slow;
+
+        public float GeneratorConsumptionKn = 0;
         public void Update(float elapsedClockSeconds)
         {
+            if (Locomotive.LocoType == MSTSLocomotive.LocoTypes.Vectron)
+            {
+                if (!Locomotive.PowerOn)
+                {
+                    if (MpS.ToKpH(Locomotive.AbsSpeedMpS) < 30)
+                    {
+                        SystemEnabledMode = SystemEnabledModes.Slow;
+                        GeneratorConsumptionKn = 0;
+                    }
+                    else
+                    {
+                        SystemEnabledMode = SystemEnabledModes.Quick;
+                        GeneratorConsumptionKn = -GeneratoricModeEquipmentConsumptionKn;
+                        if (Locomotive.CompressorIsOn)
+                            GeneratorConsumptionKn -= GeneratoricModeCompressorConsumptionKn;
+                    }
+                }
+            }
+
             if (!Locomotive.PowerOn)
             {
                 DisableMotors();
@@ -651,6 +681,7 @@ namespace Orts.Simulation.RollingStocks
                 maxForceN = 0;
             if (Locomotive.SystemAnnunciator > 0)
                 maxForceN = 0;
+
             LocomotiveAxle.InertiaKgm2 = 10000;
             LocomotiveAxle.AxleRevolutionsInt.MinStep = LocomotiveAxle.InertiaKgm2 / (Locomotive.MaxPowerW / totalMotors) / 5.0f;
 
@@ -680,6 +711,11 @@ namespace Orts.Simulation.RollingStocks
             }
             else if (Locomotive.CruiseControl.controllerVolts == 0)
                 ForceN = 0;
+
+            if (Locomotive.LocoType == MSTSLocomotive.LocoTypes.Vectron && !Locomotive.PowerOn)
+            {
+                maxForceN = ForceN = (Locomotive.extendedPhysics.GeneratorConsumptionKn * 1000) / totalMotors;
+            }
 
             LocomotiveAxle.AxleWeightN = 9.81f * Mass * 1000;   //will be computed each time considering the tilting
             LocomotiveAxle.DriveForceN = ForceN;  //Total force applied to wheels
@@ -827,6 +863,10 @@ namespace Orts.Simulation.RollingStocks
             {
                 Random rand = new Random(DateTime.Now.Millisecond + Motor.Id);
                 EnablingCurrentTime = rand.Next(10, (int)EnablingMaxTime);
+                if (Locomotive.extendedPhysics.SystemEnabledMode == ExtendedPhysics.SystemEnabledModes.Quick)
+                    EnablingCurrentTime += Locomotive.extendedPhysics.TimeSystemEnablesGeneratoticSeconds * 1000;
+                else if (Locomotive.extendedPhysics.SystemEnabledMode == ExtendedPhysics.SystemEnabledModes.Slow)
+                    EnablingCurrentTime += Locomotive.extendedPhysics.TimeSystemEnablesNormalSeconds * 1000;
             }
             if (Enabling)
             {

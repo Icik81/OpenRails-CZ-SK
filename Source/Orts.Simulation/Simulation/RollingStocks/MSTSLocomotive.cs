@@ -5022,7 +5022,7 @@ namespace Orts.Simulation.RollingStocks
                     }
                 }
             }
-            else
+            else if (TractiveForceN > 0)
                 TractiveForceN = 0f;
 
             /*if (MaxForceN > 0 && MaxContinuousForceN > 0 && PowerReduction < 1)
