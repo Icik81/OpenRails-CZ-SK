@@ -649,6 +649,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                         engineBrakeApplied = true;
                     if (Locomotive.EngineBrakeController.IntermediateValue == 0)
                         engineBrakeReleased = true;
+                    if (Bar.FromPSI(Locomotive.BrakeSystem.GetCylPressurePSI()) > PressureForTestPassBar && Locomotive.LocoType == MSTSLocomotive.LocoTypes.Vectron)
+                        Test5 = true;
                     if (engineBrakeApplied && engineBrakeReleased)
                         Test5 = true;
                 }

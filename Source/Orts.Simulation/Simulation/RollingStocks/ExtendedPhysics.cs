@@ -69,12 +69,14 @@ namespace Orts.Simulation.RollingStocks
         public bool UseControllerVolts = false;
         public float TotalForceN = 0;
         public float TotalMaxForceN = 0;
+        public bool GeneratoricModeActive = false;
         public float GeneratoricModeDisengageSpeedKpH = 30; // KpH
         public float GeneratoricModeDisengageSpeedRangeKpH = 2; // Speed range to disengage = 29-31 KpH in case Disengage is 30
         public float GeneratoricModeEquipmentConsumptionKn = 7;
         public float GeneratoricModeCompressorConsumptionKn = 3;
         public float TimeSystemEnablesNormalSeconds = 15;
         public float TimeSystemEnablesGeneratoticSeconds = 3;
+        public bool GeneratoricModeDisabled = false;
 
         public ExtendedPhysics(MSTSLocomotive loco)
         {
@@ -298,7 +300,7 @@ namespace Orts.Simulation.RollingStocks
                     {
                         SystemEnabledMode = SystemEnabledModes.Quick;
                         GeneratorConsumptionKn = -GeneratoricModeEquipmentConsumptionKn;
-                        if (Locomotive.CompressorIsOn)
+                        if (Locomotive.Compressor2IsOn)
                             GeneratorConsumptionKn -= GeneratoricModeCompressorConsumptionKn;
                     }
                 }
@@ -672,14 +674,14 @@ namespace Orts.Simulation.RollingStocks
                         }*/
             if (Locomotive.ControllerVolts == 0 && maxForceN > 0)
                 maxForceN = 0;
-            if (!Locomotive.PowerOn)
+            if (!Locomotive.PowerOn && maxForceN > 0)
                 maxForceN = 0;
             maxForceN += (reducedForceN * 2);
             if (Locomotive.ChangingPowerSystem)
                 maxForceN = 0;
-            if (ElectricMotors[0].Disabled)
+            if (ElectricMotors[0].Disabled && maxForceN > 0)
                 maxForceN = 0;
-            if (Locomotive.SystemAnnunciator > 0)
+            if (Locomotive.SystemAnnunciator > 0 && maxForceN > 0)
                 maxForceN = 0;
 
             LocomotiveAxle.InertiaKgm2 = 10000;
@@ -704,17 +706,28 @@ namespace Orts.Simulation.RollingStocks
                 ForceN = -Locomotive.DynamicBrakeForceN / 4;
                 ForceN += (reducedForceN * 2);
             }
-            else if (Locomotive.DynamicBrakeForceN > 0)
+            else if (Locomotive.DynamicBrakeForceN > 0 && (Locomotive.PowerOn || Locomotive.RouteVoltageV == 3000))
             {
                 ForceN = -Locomotive.DynamicBrakeForceN / 4;
                 ForceN += (reducedForceN * 2);
             }
             else if (Locomotive.CruiseControl.controllerVolts == 0)
-                ForceN = 0;
+                ForceN = maxForceN = 0;
 
-            if (Locomotive.LocoType == MSTSLocomotive.LocoTypes.Vectron && !Locomotive.PowerOn)
+            if (!Locomotive.PowerOn && Locomotive.RouteVoltageV == 25000)
             {
-                maxForceN = ForceN = (Locomotive.extendedPhysics.GeneratorConsumptionKn * 1000) / totalMotors;
+                ForceN = maxForceN = Locomotive.DynamicBrakeForceN = 0;
+                Locomotive.SetDynamicBrakePercent(0);
+            }
+
+            if (Locomotive.LocoType == MSTSLocomotive.LocoTypes.Vectron && !Locomotive.PowerOn && (-Locomotive.DynamicBrakeForceN / totalMotors) > ((Locomotive.extendedPhysics.GeneratorConsumptionKn * 1000) / totalMotors))
+            {
+                if (!Locomotive.extendedPhysics.GeneratoricModeDisabled) maxForceN = ForceN = (Locomotive.extendedPhysics.GeneratorConsumptionKn * 1000) / totalMotors;
+                Locomotive.extendedPhysics.GeneratoricModeActive = true;
+            }
+            else
+            {
+                Locomotive.extendedPhysics.GeneratoricModeActive = false;
             }
 
             LocomotiveAxle.AxleWeightN = 9.81f * Mass * 1000;   //will be computed each time considering the tilting

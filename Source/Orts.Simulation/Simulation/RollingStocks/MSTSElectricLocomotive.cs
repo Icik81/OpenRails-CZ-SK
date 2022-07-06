@@ -863,7 +863,7 @@ namespace Orts.Simulation.RollingStocks
                                     Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Undervoltage protection!"));
                                 }
                                 if (CruiseControl != null)
-                                    if (PowerSupply.PantographVoltageV < PantographCriticalVoltage && CruiseControl.ForceThrottleAndDynamicBrake > 0 && VoltageIndicateTestCompleted)
+                                    if (PowerSupply.PantographVoltageV < PantographCriticalVoltage && CruiseControl.ForceThrottleAndDynamicBrake > 0 && VoltageIndicateTestCompleted && LocoType != LocoTypes.Vectron)
                                     {
                                         CruiseControl.ForceThrottleAndDynamicBrake = 0;
                                         CruiseControl.controllerVolts = 0;
@@ -1150,7 +1150,7 @@ namespace Orts.Simulation.RollingStocks
                             }
 
                             if (CruiseControl != null)
-                                if (PowerSupply.PantographVoltageV < PantographCriticalVoltage && CruiseControl.ForceThrottleAndDynamicBrake != 0 && CruiseControl.ForceThrottleAndDynamicBrake != 1)
+                                if (PowerSupply.PantographVoltageV < PantographCriticalVoltage && CruiseControl.ForceThrottleAndDynamicBrake != 0 && CruiseControl.ForceThrottleAndDynamicBrake != 1 && LocoType != LocoTypes.Vectron)
                                 {
                                     CruiseControl.ForceThrottleAndDynamicBrake = 0;
                                     CruiseControl.controllerVolts = 0;

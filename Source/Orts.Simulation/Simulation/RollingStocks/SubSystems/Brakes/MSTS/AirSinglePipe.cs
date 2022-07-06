@@ -2183,9 +2183,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                             loco.SignalEvent(Event.CompressorOn);
 
                         if ((loco.MainResPressurePSI <= loco.CompressorRestartPressurePSI || loco.Compressor_II_HandMode)
-                            && loco.AuxPowerOn
+                            && (loco.AuxPowerOn || loco.extendedPhysics.GeneratoricModeActive)
                             && (loco.CompressorMode2_OffAuto || loco.Compressor_II_HandMode)
-                            && loco.BrakeSystem.Compressor2OnDelay
+                            && (loco.BrakeSystem.Compressor2OnDelay || loco.extendedPhysics.GeneratoricModeActive )
                             && !loco.Compressor2IsOn)
                             loco.SignalEvent(Event.Compressor2On);
 
@@ -2199,6 +2199,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         if (((loco.MainResPressurePSI >= loco.MaxMainResPressurePSI && !loco.Compressor_I_HandMode)
                             //|| (loco.MainResPressurePSI >= loco.MaxMainResOverPressurePSI && loco.Compressor_I_HandMode)
                             || !loco.AuxPowerOn
+                            || !loco.extendedPhysics.GeneratoricModeActive
                             || (!loco.CompressorMode_OffAuto && !loco.Compressor_I_HandMode))
                             && loco.CompressorIsOn)
                             loco.SignalEvent(Event.CompressorOff);
@@ -2206,7 +2207,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
 
                         if (((loco.MainResPressurePSI >= loco.MaxMainResPressurePSI && !loco.Compressor_II_HandMode)
                             //|| (loco.MainResPressurePSI >= loco.MaxMainResOverPressurePSI && loco.Compressor_II_HandMode)
-                            || !loco.AuxPowerOn
+                            || (!loco.AuxPowerOn && !loco.extendedPhysics.GeneratoricModeActive)
                             || (!loco.CompressorMode2_OffAuto && !loco.Compressor_II_HandMode))
                             && loco.Compressor2IsOn)
                             loco.SignalEvent(Event.Compressor2Off);

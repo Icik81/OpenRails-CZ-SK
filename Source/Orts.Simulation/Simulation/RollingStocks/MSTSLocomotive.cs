@@ -3959,7 +3959,7 @@ namespace Orts.Simulation.RollingStocks
                             {
                                 SystemAnnunciator = 4;
                             }
-                            else if (SystemAnnunciator == 4 && HvPantoTimer > 4)
+                            else if ((SystemAnnunciator == 4 || SystemAnnunciator == 3) && HvPantoTimer > 1)
                             {
                                 SystemAnnunciator = 5;
                                 HvPantoTimer = 0;
@@ -3990,8 +3990,31 @@ namespace Orts.Simulation.RollingStocks
 
                         if (CircuitBreakerOn && (Pantographs.List[0].State == PantographState.Up || Pantographs.List[1].State == PantographState.Up))
                         {
+                            bool motorDisabled = false;
+                            foreach (Undercarriage uc in extendedPhysics.Undercarriages)
+                            {
+                                foreach (ExtendedAxle ea in uc.Axles)
+                                {
+                                    foreach (ElectricMotor em in ea.ElectricMotors)
+                                    {
+                                        if (em.Disabled)
+                                        {
+                                            motorDisabled = true;
+                                            goto Action;
+                                        }
+                                    }
+                                }
+                            }
+                        Action:
                             HvPantoTimer = 0;
-                            SystemAnnunciator = 0;
+                            if (!motorDisabled)
+                            {
+                                SystemAnnunciator = 0;
+                            }
+                            else
+                            {
+                                SystemAnnunciator = 6;
+                            }
                         }
 
                         if (SystemAnnunciator == 3 && !CircuitBreakerOn && Pantographs.List[0].State == PantographState.Up && Pantographs.List[1].State == PantographState.Up && HvPantoTimer > 6)
@@ -4002,6 +4025,12 @@ namespace Orts.Simulation.RollingStocks
                         if (SystemAnnunciator == 0 && BrakeSystem.GetCylPressurePSI() > 0)
                         {
                             SystemAnnunciator = 6;
+                        }
+
+                        MSTSElectricLocomotive elecLoco = this as MSTSElectricLocomotive;
+                        if (SystemAnnunciator == 5 && elecLoco.PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closing)
+                        {
+                            SystemAnnunciator = 4;
                         }
                     }
                 }
