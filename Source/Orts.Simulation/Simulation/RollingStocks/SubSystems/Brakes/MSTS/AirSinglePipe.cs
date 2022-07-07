@@ -2175,18 +2175,18 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                             && !loco.AuxCompressorIsOn)
                             loco.SignalEvent(Event.AuxCompressorOn);
 
-                        if ((loco.MainResPressurePSI <= loco.CompressorRestartPressurePSI || loco.Compressor_I_HandMode)
-                            && loco.AuxPowerOn
-                            && (loco.CompressorMode_OffAuto || loco.Compressor_I_HandMode)
-                            && loco.BrakeSystem.CompressorOnDelay
-                            && !loco.CompressorIsOn)
-                            loco.SignalEvent(Event.CompressorOn);
-
                         bool genModeActive = false;
                         if (loco.extendedPhysics != null)
                         {
                             genModeActive = loco.extendedPhysics.GeneratoricModeActive;
                         }
+
+                        if ((loco.MainResPressurePSI <= loco.CompressorRestartPressurePSI || loco.Compressor_I_HandMode)
+                            && (loco.AuxPowerOn || genModeActive)
+                            && (loco.CompressorMode_OffAuto || loco.Compressor_I_HandMode)
+                            && loco.BrakeSystem.CompressorOnDelay
+                            && !loco.CompressorIsOn)
+                            loco.SignalEvent(Event.CompressorOn);
 
                         if ((loco.MainResPressurePSI <= loco.CompressorRestartPressurePSI || loco.Compressor_II_HandMode)
                             && (loco.AuxPowerOn || genModeActive)
@@ -2205,16 +2205,17 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         if (((loco.MainResPressurePSI >= loco.MaxMainResPressurePSI && !loco.Compressor_I_HandMode)
                             //|| (loco.MainResPressurePSI >= loco.MaxMainResOverPressurePSI && loco.Compressor_I_HandMode)
                             || !loco.AuxPowerOn
-                            || !genModeActive
                             || (!loco.CompressorMode_OffAuto && !loco.Compressor_I_HandMode))
+                            && !genModeActive
                             && loco.CompressorIsOn)
                             loco.SignalEvent(Event.CompressorOff);
 
 
                         if (((loco.MainResPressurePSI >= loco.MaxMainResPressurePSI && !loco.Compressor_II_HandMode)
                             //|| (loco.MainResPressurePSI >= loco.MaxMainResOverPressurePSI && loco.Compressor_II_HandMode)
-                            || (!loco.AuxPowerOn && !genModeActive)
+                            || !loco.AuxPowerOn
                             || (!loco.CompressorMode2_OffAuto && !loco.Compressor_II_HandMode))
+                            && !genModeActive 
                             && loco.Compressor2IsOn)
                             loco.SignalEvent(Event.Compressor2Off);
                     }
