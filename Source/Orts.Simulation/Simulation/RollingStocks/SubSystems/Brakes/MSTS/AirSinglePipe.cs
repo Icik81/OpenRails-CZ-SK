@@ -600,6 +600,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             if ((Car as MSTSWagon).HandBrakePresent)
                 HandbrakePercent = 0;
             SetRetainer(RetainerSetting.Exhaust);
+            TrainBrakePositionSet();
             MSTSLocomotive loco = Car as MSTSLocomotive;
             if (loco != null)
             {
@@ -607,16 +608,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 if (loco.AuxCompressor)
                     loco.AuxResPressurePSI = loco.MaxAuxResPressurePSI;
                 if (loco.HandBrakePresent)
-                    HandbrakePercent = 0;
-
-                if (loco.TrainBrakeController.DefaultLapBrakeValue > 0)
-                    loco.TrainBrakeController.SetPercent(loco.TrainBrakeController.DefaultLapBrakeValue * 100);
-                else
-                    if (loco.TrainBrakeController.DefaultNeutralBrakeValue > 0)
-                    loco.TrainBrakeController.SetPercent(loco.TrainBrakeController.DefaultNeutralBrakeValue * 100);
-                else
-                    if (loco.TrainBrakeController.DefaultBrakeValue > 0)
-                    loco.TrainBrakeController.SetPercent(loco.TrainBrakeController.DefaultBrakeValue * 100);
+                    HandbrakePercent = 0;                
             }
         }
 
@@ -644,6 +636,36 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             if (!BailOffOn && BrakeLine1PressurePSI > AuxResPressurePSI + 0.5f) TripleValveState = ValveState.Release;
         }
 
+        public void TrainBrakePositionSet()
+        {
+            MSTSLocomotive loco = Car as MSTSLocomotive;
+            if (loco != null)
+            {
+                if (loco.Battery && loco.PowerKey && loco.IsLeadLocomotive())
+                {
+                    if (loco.TrainBrakeController.DefaultNeutralBrakeValue > 0)
+                        loco.TrainBrakeController.SetPercent(loco.TrainBrakeController.DefaultNeutralBrakeValue * 100);
+                    else
+                    if (loco.TrainBrakeController.DefaultLapBrakeValue > 0)
+                        loco.TrainBrakeController.SetPercent(loco.TrainBrakeController.DefaultLapBrakeValue * 100);
+                    else
+                    if (loco.TrainBrakeController.DefaultBrakeValue > 0)
+                        loco.TrainBrakeController.SetPercent(loco.TrainBrakeController.DefaultBrakeValue * 100);
+                }
+                else
+                {
+                    if (loco.TrainBrakeController.DefaultLapBrakeValue > 0)
+                        loco.TrainBrakeController.SetPercent(loco.TrainBrakeController.DefaultLapBrakeValue * 100);
+                    else
+                    if (loco.TrainBrakeController.DefaultNeutralBrakeValue > 0)
+                        loco.TrainBrakeController.SetPercent(loco.TrainBrakeController.DefaultNeutralBrakeValue * 100);
+                    else
+                    if (loco.TrainBrakeController.DefaultBrakeValue > 0)
+                        loco.TrainBrakeController.SetPercent(loco.TrainBrakeController.DefaultBrakeValue * 100);
+                }
+            }
+        }
+
         public override void Update(float elapsedClockSeconds)
         {
             // Ochrana proti NaN
@@ -661,6 +683,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             MSTSLocomotive loco = Car as MSTSLocomotive;
             if (StartOn)
             {
+                TrainBrakePositionSet();
+
                 // Vyfouká všechny vozy
                 if (!(Car as MSTSWagon).IsDriveable)
                 {

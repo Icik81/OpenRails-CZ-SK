@@ -341,12 +341,12 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                             string type = stf.ReadString();
 
                             // Icik
-                            if (type == "TrainBrakesControllerHoldLappedStart")
+                            if (type.ToLower() == "trainbrakescontrollerholdlappedstart")
                             {
                                 if (DefaultLapBrakeValue == 0)
                                     DefaultLapBrakeValue = value;
                             }
-                            if (type == "TrainBrakesControllerNeutralhandleOffStart")
+                            if (type.ToLower() == "trainbrakescontrollerneutralhandleoffstart")
                             {
                                 if (DefaultNeutralBrakeValue == 0)
                                     DefaultNeutralBrakeValue = value;
