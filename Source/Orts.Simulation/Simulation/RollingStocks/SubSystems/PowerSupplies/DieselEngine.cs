@@ -894,8 +894,21 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
             {
                 // Icik
                 //return (CurrentDieselOutputPowerW <= 0f ? 0f : (OutputPowerW * 100f / CurrentDieselOutputPowerW)) ;
-                return (Math.Abs(locomotive.TractiveForceN) == 0f ? (locomotive.PowerReductionResult1 * MaximumDieselPowerW * 100f / MaximumDieselPowerW)
-                    : ((CurrentDieselOutputPowerW + (locomotive.PowerReductionResult1 * MaximumDieselPowerW)) * 100f / MaximumDieselPowerW));
+                return MathHelper.Clamp((Math.Abs(locomotive.TractiveForceN) == 0f ? (locomotive.PowerReductionResult1 * MaximumDieselPowerW * 100f / MaximumDieselPowerW * LoadSMCoef)
+                    : ((CurrentDieselOutputPowerW + (locomotive.PowerReductionResult1 * MaximumDieselPowerW)) * 100f / MaximumDieselPowerW) * LoadSMCoef), 0, 100);
+            }
+        }
+        // Icik
+        /// <summary>
+        /// Load SM coeficient
+        /// </summary>
+        public float LoadSMCoef
+        {
+            get
+            {                
+                float LoadSM = Math.Abs(locomotive.TractiveForceN) / locomotive.MaxForceN + 1;
+                LoadSM = MathHelper.Clamp(LoadSM, 1, 1.5f);
+                return LoadSM;
             }
         }
 
@@ -1063,12 +1076,13 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                 else
                     TurboCanBoostDown = false;
             }
-            turboRPM = MathHelper.Clamp(turboRPM, 0, MaxRPM);
-            TurboRPM = turboRPM / MaxRPM * MaxTurboRPM;            
-            TurboLoad = turboRPM / MaxRPM * 100;
-            TurboPressureBar = turboRPM / MaxRPM * MaxTurboPressurePSI / 14.50377f + 1; 
+            turboRPM = MathHelper.Clamp(turboRPM, 0, MaxRPM / LoadSMCoef);
+            TurboRPM = turboRPM / MaxRPM * MaxTurboRPM * LoadSMCoef;            
+            TurboLoad = turboRPM / MaxRPM * 100 * LoadSMCoef;
+            TurboPressureBar = turboRPM / MaxRPM * MaxTurboPressurePSI / 14.50377f * LoadSMCoef + 1;
 
             //locomotive.Simulator.Confirmer.Message(ConfirmLevel.MSG, "TurboRPM = " + locomotive.Variable8 + " ot/min" + "     TurboLoad = " + locomotive.Variable7 + " %");
+            //locomotive.Simulator.Confirmer.Message(ConfirmLevel.MSG, "LoadSMCoef = " + LoadSMCoef);
         }
 
         public void Update(float elapsedClockSeconds)
