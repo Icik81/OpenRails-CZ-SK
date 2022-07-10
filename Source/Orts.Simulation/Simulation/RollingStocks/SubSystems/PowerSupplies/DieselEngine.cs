@@ -363,7 +363,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
 
             foreach (var eng in DEList)
                 result.AppendFormat("\t\t{0:F0} {1}", eng.RealRPM, FormatStrings.rpm);
-
+            
             //result.AppendFormat("\t{0}", Simulator.Catalog.GetString("Flow"));
             foreach (var eng in DEList)
                 result.AppendFormat("\t{0}/{1}", FormatStrings.FormatFuelVolume(pS.TopH(eng.DieselFlowLps), Locomotive.IsMetric, Locomotive.IsUK), FormatStrings.h);
@@ -388,6 +388,15 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
             if (Locomotive.ControlUnit)
                 foreach (var eng in DEList)
                     result.AppendFormat("\t\t{0}", Simulator.Catalog.GetString("Control"));
+
+            foreach (var eng in DEList)
+                result.AppendFormat("\t\t{0:F0} {1}", Locomotive.Variable8, FormatStrings.rpm);
+
+            foreach (var eng in DEList)
+                result.AppendFormat("\t\t{0:F1} {1}", eng.TurboPressureBar, FormatStrings.bar);
+
+            foreach (var eng in DEList)
+                result.AppendFormat("\t\t{0:F1}%", Locomotive.Variable7);
 
             return result.ToString();
         }
@@ -569,6 +578,12 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
             WaterCoolingPower = copy.WaterCoolingPower;
             OilCoolingPower = copy.OilCoolingPower;
             ElevatedConsumptionIdleRPM = copy.ElevatedConsumptionIdleRPM;
+            TurboDelayUpS = copy.TurboDelayUpS;
+            TurboDelayDownS = copy.TurboDelayDownS;
+            TurboChargeRPMpS = copy.TurboChargeRPMpS;
+            TurboDischargeRPMpS = copy.TurboDischargeRPMpS;
+            MaxTurboRPM = copy.MaxTurboRPM;
+            MaxTurboPressurePSI = copy.MaxTurboPressurePSI;
 
             if (copy.GearBox != null)
             {
@@ -772,6 +787,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
         public bool DieselEngineConfigured = false; // flag to indicate that the user has configured a diesel engine prime mover code block in the ENG file
 
         // Icik
+        bool FirstFrame = true;
         public float RealRPM0;
         public float DieselMotorWaterInitTemp;
         public float DieselMotorOilInitTemp;
@@ -882,6 +898,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                     : ((CurrentDieselOutputPowerW + (locomotive.PowerReductionResult1 * MaximumDieselPowerW)) * 100f / MaximumDieselPowerW));
             }
         }
+
         /// <summary>
         /// The engine is connected to the gearbox
         /// </summary>
@@ -967,6 +984,12 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                     case "watercoolingpower": WaterCoolingPower = stf.ReadFloatBlock(STFReader.UNITS.None, 75f); WaterCoolingPower = MathHelper.Clamp(WaterCoolingPower, 30, 200); break;
                     case "oilcoolingpower": OilCoolingPower = stf.ReadFloatBlock(STFReader.UNITS.None, 75f); OilCoolingPower = MathHelper.Clamp(OilCoolingPower, 30, 200); break;
                     case "elevatedconsumptionidlerpm": ElevatedConsumptionIdleRPM = stf.ReadFloatBlock(STFReader.UNITS.None, 0); break;
+                    case "turbodelayup": TurboDelayUpS = stf.ReadFloatBlock(STFReader.UNITS.Time, 2f); break;
+                    case "turbodelaydown": TurboDelayDownS = stf.ReadFloatBlock(STFReader.UNITS.Time, 4f); break;
+                    case "turbochargerpm": TurboChargeRPMpS = stf.ReadFloatBlock(STFReader.UNITS.None, 10000f); break;
+                    case "turbodischargerpm": TurboDischargeRPMpS = stf.ReadFloatBlock(STFReader.UNITS.None, 20000f); break;
+                    case "maxturborpm": MaxTurboRPM = stf.ReadFloatBlock(STFReader.UNITS.None, 200000f); break;
+                    case "maxturbopressure": MaxTurboPressurePSI = stf.ReadFloatBlock(STFReader.UNITS.PressureDefaultPSI, 3f * 14.50377f); break;
 
                     default:
                         end = true;
@@ -985,9 +1008,71 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
         }
 
 
+        // Icik
+        float TurboDelayUpS = 2;
+        float TurboDelayDownS = 4;
+        float TurboChargeRPMpS = 0;
+        float TurboDischargeRPMpS = 0;
+        float MaxTurboRPM = 200000;
+        float MaxTurboPressurePSI = 3 * 14.50377f;
+        float TurboTimerUp;
+        float TurboTimerDown;                
+        bool TurboCanBoostUp;
+        bool TurboCanBoostDown;        
+        float turboRPM;       
+        public float TurboRPM;
+        public float TurboLoad;
+        public float TurboPressureBar;
+        public void TurboRPMLoad(float elapsedClockSeconds)
+        {
+            if (TurboChargeRPMpS == 0) TurboChargeRPMpS = MaxTurboRPM / 20;
+            if (TurboDischargeRPMpS == 0) TurboDischargeRPMpS = MaxTurboRPM / 10;
+
+            if (FirstFrame)                
+                turboRPM = RealRPM;
+
+            if (RealRPM > 1.01f * turboRPM && !TurboCanBoostUp)
+            {
+                TurboTimerUp += elapsedClockSeconds;
+                if (TurboTimerUp > TurboDelayUpS)
+                {
+                    TurboTimerUp = 0;
+                    TurboCanBoostUp = true;
+                }
+            }
+            if (RealRPM < 0.99f * turboRPM && !TurboCanBoostDown)
+            {
+                TurboTimerDown += elapsedClockSeconds;
+                if (TurboTimerDown > TurboDelayDownS)
+                {
+                    TurboTimerDown = 0;
+                    TurboCanBoostDown = true;
+                }
+            }
+            if (TurboCanBoostUp)
+            {
+                if (turboRPM < RealRPM)
+                    turboRPM += (TurboChargeRPMpS * MaxRPM / MaxTurboRPM) * elapsedClockSeconds;
+                else
+                    TurboCanBoostUp = false;
+            }
+            if (TurboCanBoostDown)
+            {
+                if (turboRPM > RealRPM)
+                    turboRPM -= (TurboDischargeRPMpS * MaxRPM / MaxTurboRPM) * elapsedClockSeconds;
+                else
+                    TurboCanBoostDown = false;
+            }
+            turboRPM = MathHelper.Clamp(turboRPM, 0, MaxRPM);
+            TurboRPM = turboRPM / MaxRPM * MaxTurboRPM;            
+            TurboLoad = turboRPM / MaxRPM * 100;
+            TurboPressureBar = turboRPM / MaxRPM * MaxTurboPressurePSI / 14.50377f + 1; 
+
+            //locomotive.Simulator.Confirmer.Message(ConfirmLevel.MSG, "TurboRPM = " + locomotive.Variable8 + " ot/min" + "     TurboLoad = " + locomotive.Variable7 + " %");
+        }
+
         public void Update(float elapsedClockSeconds)
         {
-            // Icik
             // Inicializace AI
             if (!locomotive.IsPlayerTrain && locomotive.BrakeSystem.StartOn && !locomotive.LocoIsStatic)
             {
@@ -1373,6 +1458,11 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
 
                 GearBox.Update(elapsedClockSeconds);
             }
+
+            // Icik
+            TurboRPMLoad(elapsedClockSeconds);
+
+            FirstFrame = false;
         }
 
         // Icik

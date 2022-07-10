@@ -11463,6 +11463,13 @@ namespace Orts.Simulation.RollingStocks
                         }                        
                         break;
                     }
+                case CABViewControlTypes.TURBO_PRESSURE:
+                    {
+                        var mstsDieselLocomotive = this as MSTSDieselLocomotive;
+                        if (mstsDieselLocomotive.DieselEngines[0] != null)
+                            data = mstsDieselLocomotive.DieselEngines[0].TurboPressureBar;
+                        break;
+                    }
 
                 case CABViewControlTypes.MOTOR_DISABLED:
                     {

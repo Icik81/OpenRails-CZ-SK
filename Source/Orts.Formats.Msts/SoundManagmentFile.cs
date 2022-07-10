@@ -205,6 +205,8 @@ namespace Orts.Formats.Msts
             Variable4Controlled,
             Variable5Controlled,
             Variable6Controlled,
+            Variable7Controlled,
+            Variable8Controlled,
             TrainBrakeControllerControlled,
             EngineBrakeControllerControlled,
             BrakePipeChangeRateControlled,
@@ -245,6 +247,8 @@ namespace Orts.Formats.Msts
                 case "variable4controlled": Control = Controls.Variable4Controlled; break;
                 case "variable5controlled": Control = Controls.Variable5Controlled; break;
                 case "variable6controlled": Control = Controls.Variable6Controlled; break;
+                case "variable7controlled": Control = Controls.Variable7Controlled; break;
+                case "variable8controlled": Control = Controls.Variable8Controlled; break;
                 case "trainbrakecontrollercontrolled": Control = Controls.TrainBrakeControllerControlled; break;
                 case "enginebrakecontrollercontrolled": Control = Controls.EngineBrakeControllerControlled; break;
                 case "brakepipechangeratecontrolled": Control = Controls.BrakePipeChangeRateControlled; break;
@@ -394,6 +398,8 @@ namespace Orts.Formats.Msts
             Variable4_Inc_Past, Variable4_Dec_Past, Variable4_Equals_To, Variable4_NEquals_To, // DieselMotor RPM
             Variable5_Inc_Past, Variable5_Dec_Past, Variable5_Equals_To, Variable5_NEquals_To, // DieselMotor vstupní síla kN
             Variable6_Inc_Past, Variable6_Dec_Past, Variable6_Equals_To, Variable6_NEquals_To, // DieselMotor zátěž %
+            Variable7_Inc_Past, Variable7_Dec_Past, Variable7_Equals_To, Variable7_NEquals_To, // DieselMotor turbo zátěž %
+            Variable8_Inc_Past, Variable8_Dec_Past, Variable8_Equals_To, Variable8_NEquals_To, // DieselMotor turbo RPM
             TrainBrakeController_Inc_Past, TrainBrakeController_Dec_Past, TrainBrakeController_Equals_To, TrainBrakeController_NEquals_To,
             EngineBrakeController_Inc_Past, EngineBrakeController_Dec_Past, EngineBrakeController_Equals_To, EngineBrakeController_NEquals_To,
             BrakeCyl_Inc_Past, BrakeCyl_Dec_Past, BrakeCyl_Equals_To, BrakeCyl_NEquals_To,
@@ -509,6 +515,14 @@ namespace Orts.Formats.Msts
                 case "variable6_dec_past": Event = Events.Variable6_Dec_Past; break;
                 case "variable6_equals_to": Event = Events.Variable6_Equals_To; break;
                 case "variable6_nequals_to": Event = Events.Variable6_NEquals_To; break;
+                case "variable7_inc_past": Event = Events.Variable7_Inc_Past; break;
+                case "variable7_dec_past": Event = Events.Variable7_Dec_Past; break;
+                case "variable7_equals_to": Event = Events.Variable7_Equals_To; break;
+                case "variable7_nequals_to": Event = Events.Variable7_NEquals_To; break;
+                case "variable8_inc_past": Event = Events.Variable8_Inc_Past; break;
+                case "variable8_dec_past": Event = Events.Variable8_Dec_Past; break;
+                case "variable8_equals_to": Event = Events.Variable8_Equals_To; break;
+                case "variable8_nequals_to": Event = Events.Variable8_NEquals_To; break;
                 case "trainbrakecontroller_inc_past": Event = Events.TrainBrakeController_Inc_Past; break;
                 case "trainbrakecontroller_dec_past": Event = Events.TrainBrakeController_Dec_Past; break;
                 case "trainbrakecontroller_equals_to": Event = Events.TrainBrakeController_Equals_To; break;

@@ -716,6 +716,8 @@ namespace Orts.Simulation.RollingStocks
             EngineRPM = Variable2 * (MaxRPM - IdleRPM) + IdleRPM;
             Variable4 = (float)Math.Round(EngineRPM);
             Variable6 = (float)Math.Round(DieselEngines[0].LoadPercent);
+            Variable7 = (float)Math.Round(DieselEngines[0].TurboLoad);
+            Variable8 = (float)Math.Round(DieselEngines[0].TurboRPM);
 
             if (DynamicBrakePercent > 0)
             {
