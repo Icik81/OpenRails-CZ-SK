@@ -1204,15 +1204,18 @@ namespace Orts.Simulation.RollingStocks
                 Battery = true;
                 PowerKey = true;
             }
-
+            
             // Spustí mazací čerpadlo při startu
-            if ((StartButtonPressed || StartLooseCon)
-                && DieselEngines[0].EngineStatus == DieselEngine.Status.Stopped
+            if ((StartButtonPressed || StartLooseCon || DieselEngines[0].OnePushStartButton)
+                && DieselEngines[0].EngineStatus == DieselEngine.Status.Stopped 
                 && DieselDirection_Start
                 && Battery
                 && PowerUnit
                 )
-            {
+            {    
+                if (DieselEngines[0].OnePushStart)
+                    DieselEngines[0].OnePushStartButton = true;
+
                 if (DieselStartTime < DieselStartDelayTemp - 1)
                 {
                     if (DieselStartTime == 0)

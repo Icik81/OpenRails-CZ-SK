@@ -393,10 +393,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                 result.AppendFormat("\t\t{0:F0} {1}", Locomotive.Variable8, FormatStrings.rpm);
 
             foreach (var eng in DEList)
-                result.AppendFormat("\t\t{0:F1} {1}", eng.TurboPressureBar, FormatStrings.bar);
+                result.AppendFormat("\t{0:F1} {1}", eng.TurboPressureBar, FormatStrings.bar);
 
             foreach (var eng in DEList)
-                result.AppendFormat("\t\t{0:F1}%", Locomotive.Variable7);
+                result.AppendFormat("\t{0:F1}%", Locomotive.Variable7);
 
             return result.ToString();
         }
@@ -584,6 +584,11 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
             TurboDischargeRPMpS = copy.TurboDischargeRPMpS;
             MaxTurboRPM = copy.MaxTurboRPM;
             MaxTurboPressurePSI = copy.MaxTurboPressurePSI;
+            StartingChangeUpRPMpS = copy.StartingChangeUpRPMpS;
+            StoppingChangeDownRPMpS = copy.StoppingChangeDownRPMpS;
+            StartingRateOfChangeUpRPMpSS = copy.StartingRateOfChangeUpRPMpSS;
+            StoppingRateOfChangeDownRPMpSS = copy.StoppingRateOfChangeDownRPMpSS;
+            OnePushStart = copy.OnePushStart;
 
             if (copy.GearBox != null)
             {
@@ -788,6 +793,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
 
         // Icik
         bool FirstFrame = true;
+        public bool OnePushStart;
+        public bool OnePushStartButton;        
         public float RealRPM0;
         public float DieselMotorWaterInitTemp;
         public float DieselMotorOilInitTemp;
@@ -805,6 +812,22 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
         float CoolingFlow;
         public float AIStartTimeToGo;
         public bool InitTriggerSetOff;
+        /// <summary>
+        /// Change rate when start the engine
+        /// </summary>
+        public float StartingChangeUpRPMpS;
+        /// <summary>
+        /// Change rate when stop the engine
+        /// </summary>
+        public float StoppingChangeDownRPMpS;
+        /// <summary>
+        /// "Jerk" of the RPM when start the engine
+        /// </summary>
+        public float StartingRateOfChangeUpRPMpSS;
+        /// <summary>
+        /// "Jerk" of the RPM when stop the engine
+        /// </summary>
+        public float StoppingRateOfChangeDownRPMpSS;
 
         /// <summary>
         /// Current Engine oil pressure in PSI
@@ -815,12 +838,12 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
             {
                 // Icik
                 // Tlakování mazacího čerpadla při spouštění motoru
-                if ((locomotive.StartButtonPressed || locomotive.StartLooseCon) && locomotive.DieselStartTime > 0 && RealRPM0 < IdleRPM)
+                if ((locomotive.StartButtonPressed || locomotive.StartLooseCon || OnePushStartButton) && locomotive.DieselStartTime > 0 && RealRPM0 < IdleRPM)
                 {
                     RealRPM0 += IdleRPM / locomotive.DieselStartDelay * locomotive.Simulator.OneSecondLoop;
                 }
                 else
-                if ((!locomotive.StartButtonPressed && !locomotive.StartLooseCon) && (EngineStatus == Status.Stopped || EngineStatus == Status.Stopping) && RealRPM0 > 0)
+                if ((!locomotive.StartButtonPressed && !locomotive.StartLooseCon && !OnePushStartButton) && (EngineStatus == Status.Stopped || EngineStatus == Status.Stopping) && RealRPM0 > 0)
                 {
                     RealRPM0 -= IdleRPM / locomotive.DieselStartDelay * locomotive.Simulator.OneSecondLoop * 2;
                 }
@@ -1003,7 +1026,12 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                     case "turbodischargerpm": TurboDischargeRPMpS = stf.ReadFloatBlock(STFReader.UNITS.None, 20000f); break;
                     case "maxturborpm": MaxTurboRPM = stf.ReadFloatBlock(STFReader.UNITS.None, 200000f); break;
                     case "maxturbopressure": MaxTurboPressurePSI = stf.ReadFloatBlock(STFReader.UNITS.PressureDefaultPSI, 3f * 14.50377f); break;
-
+                    case "startingchangeuprpmps": StartingChangeUpRPMpS = stf.ReadFloatBlock(STFReader.UNITS.None, 0); break;
+                    case "stoppingchangedownrpmps": StoppingChangeDownRPMpS = stf.ReadFloatBlock(STFReader.UNITS.None, 0); break;
+                    case "startingrateofchangeuprpmpss": StartingRateOfChangeUpRPMpSS = stf.ReadFloatBlock(STFReader.UNITS.None, 0); break;
+                    case "stoppingrateofchangedownrpmpss": StoppingRateOfChangeDownRPMpSS = stf.ReadFloatBlock(STFReader.UNITS.None, 0); break;
+                    case "onepushstart": OnePushStart = stf.ReadBoolBlock(false); break;
+                        
                     default:
                         end = true;
                         break;
@@ -1018,6 +1046,16 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
             ExhaustRange = MaxExhaust - InitialExhaust;
             ExhaustSteadyColor.A = 10;
             ExhaustDecelColor.A = 10;
+
+            // Icik
+            if (StartingChangeUpRPMpS == 0)
+                StartingChangeUpRPMpS = ChangeUpRPMpS;
+            if (StoppingChangeDownRPMpS == 0)
+                StoppingChangeDownRPMpS = ChangeDownRPMpS;
+            if (StartingRateOfChangeUpRPMpSS == 0)
+                StartingRateOfChangeUpRPMpSS = RateOfChangeUpRPMpSS;
+            if (StoppingRateOfChangeDownRPMpSS == 0)
+                StoppingRateOfChangeDownRPMpSS = RateOfChangeDownRPMpSS;
         }
 
 
@@ -1152,53 +1190,82 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                 }
             }
 
-
             if (RealRPM == IdleRPM)
             {
                 ExhaustParticles = InitialExhaust;
                 ExhaustMagnitude = InitialMagnitude;
                 ExhaustColor = ExhaustSteadyColor;
             }
-            if (RealRPM < DemandedRPM)
+            // Startování a zastavování SM má svoji rychlost změny 
+            if (EngineStatus == Status.Starting || EngineStatus == Status.Stopping)
             {
-                dRPM = (float)Math.Min(Math.Sqrt(2 * RateOfChangeUpRPMpSS * (DemandedRPM - RealRPM)), ChangeUpRPMpS);
-                if (dRPM > 1.0f) //The forumula above generates a floating point error that we have to compensate for so we can't actually test for zero.
+                if (RealRPM < DemandedRPM)
                 {
-                    ExhaustParticles = (InitialExhaust + ((ExhaustRange * (RealRPM - IdleRPM) / RPMRange))) * ExhaustAccelIncrease;
-                    ExhaustMagnitude = (InitialMagnitude + ((MagnitudeRange * (RealRPM - IdleRPM) / RPMRange))) * ExhaustAccelIncrease;
-                    ExhaustColor = ExhaustTransientColor;
+                    dRPM = (float)Math.Min(Math.Sqrt(2 * StartingRateOfChangeUpRPMpSS * (DemandedRPM - RealRPM)), StartingChangeUpRPMpS);
+                    if (dRPM > 1.0f) //The forumula above generates a floating point error that we have to compensate for so we can't actually test for zero.
+                    {
+                        ExhaustParticles = (InitialExhaust + ((ExhaustRange * (RealRPM - IdleRPM) / RPMRange))) * ExhaustAccelIncrease;
+                        ExhaustMagnitude = (InitialMagnitude + ((MagnitudeRange * (RealRPM - IdleRPM) / RPMRange))) * ExhaustAccelIncrease;
+                        ExhaustColor = ExhaustTransientColor;
+                    }
+                    else
+                    {
+                        dRPM = 0;
+                        ExhaustParticles = InitialExhaust + ((ExhaustRange * (RealRPM - IdleRPM) / RPMRange));
+                        ExhaustMagnitude = InitialMagnitude + ((MagnitudeRange * (RealRPM - IdleRPM) / RPMRange));
+                        ExhaustColor = ExhaustSteadyColor;
+                    }
                 }
-                else
+                else if (RealRPM > DemandedRPM)
                 {
-                    dRPM = 0;
-                    ExhaustParticles = InitialExhaust + ((ExhaustRange * (RealRPM - IdleRPM) / RPMRange));
-                    ExhaustMagnitude = InitialMagnitude + ((MagnitudeRange * (RealRPM - IdleRPM) / RPMRange));
-                    ExhaustColor = ExhaustSteadyColor;
+                    dRPM = (float)Math.Max(-Math.Sqrt(2 * StoppingRateOfChangeDownRPMpSS * (RealRPM - DemandedRPM)), -StoppingChangeDownRPMpS);
+                    ExhaustParticles = (InitialExhaust + ((ExhaustRange * (RealRPM - IdleRPM) / RPMRange))) * ExhaustDecelReduction;
+                    ExhaustMagnitude = (InitialMagnitude + ((MagnitudeRange * (RealRPM - IdleRPM) / RPMRange))) * ExhaustDecelReduction;
+                    ExhaustColor = ExhaustDecelColor;
                 }
             }
-            else if (RealRPM > DemandedRPM)
+            else
             {
-                dRPM = (float)Math.Max(-Math.Sqrt(2 * RateOfChangeDownRPMpSS * (RealRPM - DemandedRPM)), -ChangeDownRPMpS);
-                ExhaustParticles = (InitialExhaust + ((ExhaustRange * (RealRPM - IdleRPM) / RPMRange))) * ExhaustDecelReduction;
-                ExhaustMagnitude = (InitialMagnitude + ((MagnitudeRange * (RealRPM - IdleRPM) / RPMRange))) * ExhaustDecelReduction;
-                ExhaustColor = ExhaustDecelColor;
+                if (RealRPM < DemandedRPM)
+                {
+                    dRPM = (float)Math.Min(Math.Sqrt(2 * RateOfChangeUpRPMpSS * (DemandedRPM - RealRPM)), ChangeUpRPMpS);
+                    if (dRPM > 1.0f) //The forumula above generates a floating point error that we have to compensate for so we can't actually test for zero.
+                    {
+                        ExhaustParticles = (InitialExhaust + ((ExhaustRange * (RealRPM - IdleRPM) / RPMRange))) * ExhaustAccelIncrease;
+                        ExhaustMagnitude = (InitialMagnitude + ((MagnitudeRange * (RealRPM - IdleRPM) / RPMRange))) * ExhaustAccelIncrease;
+                        ExhaustColor = ExhaustTransientColor;
+                    }
+                    else
+                    {
+                        dRPM = 0;
+                        ExhaustParticles = InitialExhaust + ((ExhaustRange * (RealRPM - IdleRPM) / RPMRange));
+                        ExhaustMagnitude = InitialMagnitude + ((MagnitudeRange * (RealRPM - IdleRPM) / RPMRange));
+                        ExhaustColor = ExhaustSteadyColor;
+                    }
+                }
+                else if (RealRPM > DemandedRPM)
+                {
+                    dRPM = (float)Math.Max(-Math.Sqrt(2 * RateOfChangeDownRPMpSS * (RealRPM - DemandedRPM)), -ChangeDownRPMpS);
+                    ExhaustParticles = (InitialExhaust + ((ExhaustRange * (RealRPM - IdleRPM) / RPMRange))) * ExhaustDecelReduction;
+                    ExhaustMagnitude = (InitialMagnitude + ((MagnitudeRange * (RealRPM - IdleRPM) / RPMRange))) * ExhaustDecelReduction;
+                    ExhaustColor = ExhaustDecelColor;
+                }
             }
-
-            // Uncertain about the purpose of this code piece?? Does there need to be a corresponding code for RateOfChangeUpRPMpSS???
-            //            if (DemandedRPM < RealRPM && (OutputPowerW > (1.1f * CurrentDieselOutputPowerW)) && (EngineStatus == Status.Running))
-            //            {
-            //                dRPM = (CurrentDieselOutputPowerW - OutputPowerW) / MaximumDieselPowerW * 0.01f * RateOfChangeDownRPMpSS;
-            //            }
-            // Deleted to see what impact it has - was holding rpm artificialy high - http://www.elvastower.com/forums/index.php?/topic/33739-throttle-bug-in-recent-or-builds/page__gopid__256086#entry256086
+                // Uncertain about the purpose of this code piece?? Does there need to be a corresponding code for RateOfChangeUpRPMpSS???
+                //            if (DemandedRPM < RealRPM && (OutputPowerW > (1.1f * CurrentDieselOutputPowerW)) && (EngineStatus == Status.Running))
+                //            {
+                //                dRPM = (CurrentDieselOutputPowerW - OutputPowerW) / MaximumDieselPowerW * 0.01f * RateOfChangeDownRPMpSS;
+                //            }
+                // Deleted to see what impact it has - was holding rpm artificialy high - http://www.elvastower.com/forums/index.php?/topic/33739-throttle-bug-in-recent-or-builds/page__gopid__256086#entry256086
 
 
             // Icik
             // Zvýší otáčky motoru při větším odběru proudu         
-            float ActualElevatedConsumptionRPM = 0;
+            bool ElevatedConsumptionMode = false;
             if (locomotive.Heating_OffOn || ((locomotive.CompressorIsOn || locomotive.Compressor2IsOn) && locomotive.AirBrakesIsCompressorElectricOrMechanical))
             {
-                //ElevatedConsumptionIdleRPM = 580;
-                ActualElevatedConsumptionRPM = 5f;
+                //ElevatedConsumptionIdleRPM = 650;
+                ElevatedConsumptionMode = true;
                 if (ElevatedConsumptionIdleRPM == 0)
                     ElevatedConsumptionIdleRPM = IdleRPM * 1.1f;
             }
@@ -1209,16 +1276,21 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
             {
                 if (RealRPM > IdleRPM)
                     RealRPM -= ChangeDownRPMpS * elapsedClockSeconds;
-                if (RealRPM < IdleRPM + ActualElevatedConsumptionRPM)
-                    RealRPM = IdleRPM + ActualElevatedConsumptionRPM;
             }
             else
             {
-                if (RealRPM > ElevatedConsumptionIdleRPM)
-                    RealRPM = Math.Max(RealRPM + (dRPM * elapsedClockSeconds), 0);
+                if (ElevatedConsumptionMode)
+                {
+                    if (RealRPM < ElevatedConsumptionIdleRPM)
+                    {
+                        RealRPM += ChangeUpRPMpS * elapsedClockSeconds;
+                    }
+                    else
+                        RealRPM = Math.Max(RealRPM + (dRPM * elapsedClockSeconds), 0);
+                }
                 else
-                    RealRPM = Math.Max(ActualElevatedConsumptionRPM + (RealRPM + (dRPM * elapsedClockSeconds)), 0);
-            }
+                    RealRPM = Math.Max(RealRPM + (dRPM * elapsedClockSeconds), 0);
+            }            
 
             // Icik
             // Při vyšších otáčkách fouká kompresor rychleji
@@ -1260,7 +1332,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
             if (EngineStatus == Status.Starting)
             {
                 // Icik
-                if ((locomotive.StartButtonPressed || locomotive.StartLooseCon) && (locomotive.DieselDirection_Start || locomotive.StartLooseCon))
+                if ((locomotive.StartButtonPressed || locomotive.StartLooseCon || OnePushStartButton) && (locomotive.DieselDirection_Start || locomotive.StartLooseCon))
                 {
                     if ((RealRPM > (0.9f * StartingRPM)) && (RealRPM < StartingRPM))
                     {
@@ -1269,7 +1341,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                         ExhaustParticles = (MaxExhaust - InitialExhaust) / (0.5f * StartingRPM - StartingRPM) * (RealRPM - 0.5f * StartingRPM) + InitialExhaust;
                     }
                 }
-                if ((!locomotive.StartButtonPressed && !locomotive.StartLooseCon) || (!locomotive.DieselDirection_Start && !locomotive.StartLooseCon))
+                if ((!locomotive.StartButtonPressed && !locomotive.StartLooseCon && !OnePushStartButton) || (!locomotive.DieselDirection_Start && !locomotive.StartLooseCon))
                 {
                     locomotive.DieselEngines[0].Stop();
                     locomotive.SignalEvent(Event.StartUpMotorBreak);
@@ -1279,6 +1351,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                 {
                     EngineStatus = Status.Running;
                     locomotive.StartLooseCon = false;
+                    OnePushStartButton = false;
                 }
             }
 

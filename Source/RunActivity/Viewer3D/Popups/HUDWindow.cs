@@ -795,7 +795,7 @@ namespace Orts.Viewer3D.Popups
                         if (line.Contains(car.CarID) && !statusHeader.Contains(car.CarID))
                         {
                             //Header. Supports different types of locomotives.
-                            statusHeader.Add(string.Format("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t\t{6}\t{7}\t{8}\t{9}\t\t{10}\t{11}\t{12}\t\t{13}\t{14}\t{15}\t{16}\t\t{17}\t\t{18}\t\t{19}\t\t{20}",
+                            statusHeader.Add(string.Format("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t\t{6}\t{7}\t{8}\t{9}\t\t{10}\t{11}\t{12}\t\t{13}\t{14}\t{15}\t{16}\t\t{17}\t\t{18}\t{19}\t{20}",
                             //00
                             Viewer.Catalog.GetString("Loco"),
                             //01
@@ -857,7 +857,7 @@ namespace Orts.Viewer3D.Popups
                             car is MSTSElectricLocomotive ? Viewer.Catalog.GetString("") : Viewer.Catalog.GetString(""),
                             //19
                             car is MSTSSteamLocomotive ? Viewer.Catalog.GetString("") :
-                            car is MSTSDieselLocomotive ? Viewer.Catalog.GetString("TurboPressure") :
+                            car is MSTSDieselLocomotive ? Viewer.Catalog.GetString("TurboPress") :
                             car is MSTSElectricLocomotive ? Viewer.Catalog.GetString("") : Viewer.Catalog.GetString(""),
                             //20
                             car is MSTSSteamLocomotive ? Viewer.Catalog.GetString("") :
