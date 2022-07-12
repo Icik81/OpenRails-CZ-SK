@@ -929,8 +929,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
         {
             get
             {                
-                float LoadSM = Math.Abs(locomotive.TractiveForceN) / locomotive.MaxForceN + 1;
-                LoadSM = MathHelper.Clamp(LoadSM, 1, 1.5f);
+                float LoadSM = Math.Abs(locomotive.TractiveForceN) / 250000 * 3;
+                LoadSM = MathHelper.Clamp(LoadSM, 0.1f, 3f);
                 return LoadSM;
             }
         }

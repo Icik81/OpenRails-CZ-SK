@@ -2656,7 +2656,8 @@ namespace Orts.Simulation.RollingStocks
         public void AntiSlip_Protection()
         {
             if (!IsLeadLocomotive())
-                return;
+                return;                      
+
             if (MaxCurrentA > 0)  // Zohlední jen elektrické a dieselelektrické lokomotivy 
             {
                 if (SlipSpeedCritical == 0) SlipSpeedCritical = 40 / 3.6f; // Výchozí hodnota 40 km/h     
@@ -2709,7 +2710,7 @@ namespace Orts.Simulation.RollingStocks
                 if (this is MSTSDieselLocomotive && OverVoltage && LocalThrottlePercent == 0 && LocalDynamicBrakePercent == 0)
                 {
                     OverVoltage = false;
-                    PowerReductionResult4 = 0;
+                    PowerReductionResult4 = 0;                    
                 }
             }
         }
@@ -4251,9 +4252,12 @@ namespace Orts.Simulation.RollingStocks
                 }
                 else if (DynamicBrakePercent <= 0 && ControllerVolts < 0)
                     ControllerVolts = 0;
+                
+                if (ControllerVolts == 0)
+                    SetDynamicBrakeValue(-1);
             }
 
-            // Icik
+            // Icik                         
             SetCarLightsPowerOn();
 
             if (IsLeadLocomotive())            
