@@ -3535,9 +3535,9 @@ namespace Orts.Simulation.RollingStocks
                 if (WagonType == WagonTypes.Engine && this is MSTSDieselLocomotive && !Train.CarSteamHeatOn) // Diesel lokomotivy
                 {
                     // Výpočet celkového úbytku výkonu 
-                    if (MaxPowerW == 0) MaxPowerW = 1000000; // Default pro výkon, který nesmí být 0kW
-                    PowerReductionResult1 = (PowerReductionByHeatingSum + PowerReductionByAuxEquipmentSum) * (1000000 / MaxPowerW);
-                    PowerReductionResult1 /= 1000000;
+                    if (MaxPowerW == 0) MaxPowerW = 1000000f; // Default pro výkon, který nesmí být 0kW
+                    PowerReductionResult1 = (PowerReductionByHeatingSum + PowerReductionByAuxEquipmentSum) * (1000000f / MaxPowerW);
+                    PowerReductionResult1 /= 1000000f;
                     PowerReductionResult1 = MathHelper.Clamp(PowerReductionResult1, 0, 1);
                 }
             }

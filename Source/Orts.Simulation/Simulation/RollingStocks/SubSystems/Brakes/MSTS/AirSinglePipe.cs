@@ -852,24 +852,72 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 }
             }
 
+            // DebugKoef pro doladění MaxBrakeForce
+            if (DebugKoef1 == 0) DebugKoef1 = 1.0f;
+            DebugKoef = DebugKoef1 * GetDebugKoef2();
+
+            // Časy pro napouštění a vypouštění brzdového válce v sekundách režimy G, P, R
+            float TimeApplyG = 22.0f;
+            float TimeReleaseG = 50.0f;
+
+            float TimeApplyP = 5.3f;
+            float TimeReleaseP = 22.4f;
+
+            float TimeApplyR = 3.5f;
+            float TimeReleaseR = 22.4f;
+
+            // Vypočítá rychlost plnění/vyprazdňování brzdových válců s ohledem na režim
+            switch (BrakeCarMode)
+            {
+                case 0: // Režim G                     
+                    if (MaxApplicationRatePSIpSG == 0) MaxApplicationRatePSIpS = MaxApplicationRatePSIpS0 / (TimeApplyG / TimeApplyP);
+                    else MaxApplicationRatePSIpS = MaxApplicationRatePSIpSG;
+
+                    if (MaxReleaseRatePSIpSG == 0) MaxReleaseRatePSIpS = ReleaseRatePSIpS = MaxReleaseRatePSIpS0 / (TimeReleaseG / TimeReleaseP);
+                    else MaxReleaseRatePSIpS = ReleaseRatePSIpS = MaxReleaseRatePSIpSG;
+                    break;
+                case 1: // Režim P                    
+                    if (MaxApplicationRatePSIpSP == 0) MaxApplicationRatePSIpS = MaxApplicationRatePSIpS0;
+                    else MaxApplicationRatePSIpS = MaxApplicationRatePSIpSP;
+
+                    if (MaxReleaseRatePSIpSP == 0) MaxReleaseRatePSIpS = ReleaseRatePSIpS = MaxReleaseRatePSIpS0;
+                    else MaxReleaseRatePSIpS = ReleaseRatePSIpS = MaxReleaseRatePSIpSP;
+                    break;
+                case 2: // Režim R
+                    if (MaxApplicationRatePSIpSR == 0) MaxApplicationRatePSIpS = MaxApplicationRatePSIpS0 / (TimeApplyR / TimeApplyP);
+                    else MaxApplicationRatePSIpS = MaxApplicationRatePSIpSR;
+
+                    if (MaxReleaseRatePSIpSR == 0) MaxReleaseRatePSIpS = ReleaseRatePSIpS = MaxReleaseRatePSIpS0 / (TimeReleaseR / TimeReleaseP);
+                    else MaxReleaseRatePSIpS = ReleaseRatePSIpS = MaxReleaseRatePSIpSR;
+                    break;
+                case 3: // Režim R+Mg
+                    if (MaxApplicationRatePSIpSR == 0) MaxApplicationRatePSIpS = MaxApplicationRatePSIpS0 / (TimeApplyR / TimeApplyP);
+                    else MaxApplicationRatePSIpS = MaxApplicationRatePSIpSR;
+
+                    if (MaxReleaseRatePSIpSR == 0) MaxReleaseRatePSIpS = ReleaseRatePSIpS = MaxReleaseRatePSIpS0 / (TimeReleaseR / TimeReleaseP);
+                    else MaxReleaseRatePSIpS = ReleaseRatePSIpS = MaxReleaseRatePSIpSR;
+                    break;
+            }
+
             // Zjednodušený model pro AI
             if (!Car.IsPlayerTrain)
             {
+                UpdateTripleValveState(threshold);                                
                 // triple valve is set to charge the brake cylinder
                 if ((TripleValveState == ValveState.Apply || TripleValveState == ValveState.Emergency))
                 {
                     float dp = elapsedClockSeconds * MaxApplicationRatePSIpS;
-                    if (AuxResPressurePSI - dp / AuxCylVolumeRatio < AutoCylPressurePSI + dp)
-                        dp = (AuxResPressurePSI - AutoCylPressurePSI) * AuxCylVolumeRatio / (1 + AuxCylVolumeRatio);                    
-                    if (AutoCylPressurePSI + dp > MaxCylPressurePSI)
-                        dp = MaxCylPressurePSI - AutoCylPressurePSI;
+                    if (AuxResPressurePSI - dp / AuxCylVolumeRatio < AutoCylPressurePSI0 + dp)
+                        dp = (AuxResPressurePSI - AutoCylPressurePSI0) * AuxCylVolumeRatio / (1 + AuxCylVolumeRatio);
+                    if (AutoCylPressurePSI0 + dp > MaxCylPressurePSI)
+                        dp = MaxCylPressurePSI - AutoCylPressurePSI0;
                     if (BrakeLine1PressurePSI > AuxResPressurePSI - dp / AuxCylVolumeRatio && !BleedOffValveOpen)
                         dp = (AuxResPressurePSI - BrakeLine1PressurePSI) * AuxCylVolumeRatio;
                     if (dp < 0)
                         dp = 0;
 
                     AuxResPressurePSI -= dp / AuxCylVolumeRatio;
-                    AutoCylPressurePSI += dp;
+                    AutoCylPressurePSI0 += dp;
 
                     if (TripleValveState == ValveState.Emergency && (Car as MSTSWagon).EmergencyReservoirPresent)
                     {
@@ -884,11 +932,11 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 // triple valve set to release pressure in brake cylinder and EP valve set
                 if (TripleValveState == ValveState.Release && HoldingValve == ValveState.Release)
                 {
-                    if (AutoCylPressurePSI > threshold)
+                    if (AutoCylPressurePSI0 > threshold)
                     {
-                        AutoCylPressurePSI -= elapsedClockSeconds * ReleaseRatePSIpS;
-                        if (AutoCylPressurePSI < threshold)
-                            AutoCylPressurePSI = threshold;
+                        AutoCylPressurePSI0 -= elapsedClockSeconds * ReleaseRatePSIpS;
+                        if (AutoCylPressurePSI0 < threshold)
+                            AutoCylPressurePSI0 = threshold;
                     }
 
                     if ((Car as MSTSWagon).EmergencyReservoirPresent)
@@ -929,57 +977,11 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         BrakeLine1PressurePSI += dp * AuxBrakeLineVolumeRatio;
                     }
                 }
+                AutoCylPressurePSI = AutoCylPressurePSI0;
             }
             // Ostatní
             else
-            {
-                // DebugKoef pro doladění MaxBrakeForce
-                if (DebugKoef1 == 0) DebugKoef1 = 1.0f;
-                DebugKoef = DebugKoef1 * GetDebugKoef2();
-
-                // Časy pro napouštění a vypouštění brzdového válce v sekundách režimy G, P, R
-                float TimeApplyG = 22.0f;
-                float TimeReleaseG = 50.0f;
-
-                float TimeApplyP = 5.3f;
-                float TimeReleaseP = 22.4f;
-
-                float TimeApplyR = 3.5f;
-                float TimeReleaseR = 22.4f;
-
-                // Vypočítá rychlost plnění/vyprazdňování brzdových válců s ohledem na režim
-                switch (BrakeCarMode)
-                {
-                    case 0: // Režim G                     
-                        if (MaxApplicationRatePSIpSG == 0) MaxApplicationRatePSIpS = MaxApplicationRatePSIpS0 / (TimeApplyG / TimeApplyP);
-                        else MaxApplicationRatePSIpS = MaxApplicationRatePSIpSG;
-
-                        if (MaxReleaseRatePSIpSG == 0) MaxReleaseRatePSIpS = ReleaseRatePSIpS = MaxReleaseRatePSIpS0 / (TimeReleaseG / TimeReleaseP);
-                        else MaxReleaseRatePSIpS = ReleaseRatePSIpS = MaxReleaseRatePSIpSG;
-                        break;
-                    case 1: // Režim P                    
-                        if (MaxApplicationRatePSIpSP == 0) MaxApplicationRatePSIpS = MaxApplicationRatePSIpS0;
-                        else MaxApplicationRatePSIpS = MaxApplicationRatePSIpSP;
-
-                        if (MaxReleaseRatePSIpSP == 0) MaxReleaseRatePSIpS = ReleaseRatePSIpS = MaxReleaseRatePSIpS0;
-                        else MaxReleaseRatePSIpS = ReleaseRatePSIpS = MaxReleaseRatePSIpSP;
-                        break;
-                    case 2: // Režim R
-                        if (MaxApplicationRatePSIpSR == 0) MaxApplicationRatePSIpS = MaxApplicationRatePSIpS0 / (TimeApplyR / TimeApplyP);
-                        else MaxApplicationRatePSIpS = MaxApplicationRatePSIpSR;
-
-                        if (MaxReleaseRatePSIpSR == 0) MaxReleaseRatePSIpS = ReleaseRatePSIpS = MaxReleaseRatePSIpS0 / (TimeReleaseR / TimeReleaseP);
-                        else MaxReleaseRatePSIpS = ReleaseRatePSIpS = MaxReleaseRatePSIpSR;
-                        break;
-                    case 3: // Režim R+Mg
-                        if (MaxApplicationRatePSIpSR == 0) MaxApplicationRatePSIpS = MaxApplicationRatePSIpS0 / (TimeApplyR / TimeApplyP);
-                        else MaxApplicationRatePSIpS = MaxApplicationRatePSIpSR;
-
-                        if (MaxReleaseRatePSIpSR == 0) MaxReleaseRatePSIpS = ReleaseRatePSIpS = MaxReleaseRatePSIpS0 / (TimeReleaseR / TimeReleaseP);
-                        else MaxReleaseRatePSIpS = ReleaseRatePSIpS = MaxReleaseRatePSIpSR;
-                        break;
-                }
-
+            {                
                 // Pokud bude v sekci Wagon "AutomaticDoors" nebo v sekci Engine "CentralHandlingDoors", nastaví napájecí hadice jako aktivní
                 if (AutomaticDoorsCycle < 100
                     && ((Car as MSTSWagon) != null && (Car as MSTSWagon).AutomaticDoors || (Car as MSTSLocomotive) != null && (Car as MSTSLocomotive).CentralHandlingDoors))
@@ -1000,7 +1002,6 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         DebugType = "2P";
                         break;
                 }
-
 
                 // Načte hodnotu maximálního tlaku v BV
                 if (TwoStateBrake && BrakeCarMode > 1) // Vozy v R, Mg mají nad určitou rychlost plný tlak do válců
@@ -1447,62 +1448,65 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
 
                 if (AutoCylPressurePSI0 < 0)
                     AutoCylPressurePSI0 = 0;
-                if (AutoCylPressurePSI < BrakeLine3PressurePSI) // Brake Cylinder pressure will be the greater of engine brake pressure or train brake pressure
-                    CylPressurePSI = BrakeLine3PressurePSI;
-                else
-                    CylPressurePSI = AutoCylPressurePSI;
 
-                // Record HUD display values for brake cylinders depending upon whether they are wagons or locomotives/tenders (which are subject to their own engine brakes)   
-                if (Car.WagonType == MSTSWagon.WagonTypes.Engine || Car.WagonType == MSTSWagon.WagonTypes.Tender)
-                {
-                    Car.Train.HUDLocomotiveBrakeCylinderPSI = CylPressurePSI;
-                    Car.Train.HUDWagonBrakeCylinderPSI = Car.Train.HUDLocomotiveBrakeCylinderPSI;  // Initially set Wagon value same as locomotive, will be overwritten if a wagon is attached                
-                }
-                else
-                {
-                    // Record the Brake Cylinder pressure in first wagon, as EOT is also captured elsewhere, and this will provide the two extremeties of the train
-                    // Identifies the first wagon based upon the previously identified UiD 
-                    if (Car.UiD == Car.Train.FirstCarUiD)
-                    {
-                        Car.Train.HUDWagonBrakeCylinderPSI = CylPressurePSI;
-                    }
-                }
+            }
 
-                // If wagons are not attached to the locomotive, then set wagon BC pressure to same as locomotive in the Train brake line
-                if (!Car.Train.WagonsAttached && (Car.WagonType == MSTSWagon.WagonTypes.Engine || Car.WagonType == MSTSWagon.WagonTypes.Tender))
+            if (AutoCylPressurePSI < BrakeLine3PressurePSI) // Brake Cylinder pressure will be the greater of engine brake pressure or train brake pressure
+                CylPressurePSI = BrakeLine3PressurePSI;
+            else
+                CylPressurePSI = AutoCylPressurePSI;
+
+            // Record HUD display values for brake cylinders depending upon whether they are wagons or locomotives/tenders (which are subject to their own engine brakes)   
+            if (Car.WagonType == MSTSWagon.WagonTypes.Engine || Car.WagonType == MSTSWagon.WagonTypes.Tender)
+            {
+                Car.Train.HUDLocomotiveBrakeCylinderPSI = CylPressurePSI;
+                Car.Train.HUDWagonBrakeCylinderPSI = Car.Train.HUDLocomotiveBrakeCylinderPSI;  // Initially set Wagon value same as locomotive, will be overwritten if a wagon is attached                
+            }
+            else
+            {
+                // Record the Brake Cylinder pressure in first wagon, as EOT is also captured elsewhere, and this will provide the two extremeties of the train
+                // Identifies the first wagon based upon the previously identified UiD 
+                if (Car.UiD == Car.Train.FirstCarUiD)
                 {
                     Car.Train.HUDWagonBrakeCylinderPSI = CylPressurePSI;
                 }
+            }
 
-                float f;
-                float fRMg;
-                // Konstantní síla magnetických bačkor fRMg
-                fRMg = Car.MaxBrakeForceNRMg;
-                if (!Car.BrakesStuck)
-                {
-                    f = Car.MaxBrakeForceN * Math.Min(CylPressurePSI / MaxCylPressurePSI, 1);
-                    if (f < Car.MaxHandbrakeForceN * HandbrakePercent / 100)
-                        f = Car.MaxHandbrakeForceN * HandbrakePercent / 100;
-                }
-                else
-                    f = Math.Max(Car.MaxBrakeForceN, Car.MaxHandbrakeForceN / 2);
+            // If wagons are not attached to the locomotive, then set wagon BC pressure to same as locomotive in the Train brake line
+            if (!Car.Train.WagonsAttached && (Car.WagonType == MSTSWagon.WagonTypes.Engine || Car.WagonType == MSTSWagon.WagonTypes.Tender))
+            {
+                Car.Train.HUDWagonBrakeCylinderPSI = CylPressurePSI;
+            }
 
-                // Síla zaseklých zdrží nebo kotoučů
-                if (CarHasMechanicStuckBrake_2)
-                    f = Car.MaxBrakeForceN * 0.75f;
+            float f;
+            float fRMg;
+            // Konstantní síla magnetických bačkor fRMg
+            fRMg = Car.MaxBrakeForceNRMg;
+            if (!Car.BrakesStuck)
+            {
+                f = Car.MaxBrakeForceN * Math.Min(CylPressurePSI / MaxCylPressurePSI, 1);
+                if (f < Car.MaxHandbrakeForceN * HandbrakePercent / 100)
+                    f = Car.MaxHandbrakeForceN * HandbrakePercent / 100;
+            }
+            else
+            f = Math.Max(Car.MaxBrakeForceN, Car.MaxHandbrakeForceN / 2);
 
-                // fRMg není zohledněna v síle na brzdící nápravy
-                Car.BrakeRetardForceN = f * Car.BrakeShoeRetardCoefficientFrictionAdjFactor; // calculates value of force applied to wheel, independent of wheel skid
+            // Síla zaseklých zdrží nebo kotoučů
+            if (CarHasMechanicStuckBrake_2)
+                 f = Car.MaxBrakeForceN * 0.75f;
 
-                if (Car.BrakeSkid) // Test to see if wheels are skiding to excessive brake force
-                {
-                    Car.BrakeForceN = (fRMg * Car.RMgShoeCoefficientFrictionAdjFactor) + (f * Car.SkidFriction);   // if excessive brakeforce, wheel skids, and loses adhesion
-                }
-                else
-                {
-                    Car.BrakeForceN = (fRMg * Car.RMgShoeCoefficientFrictionAdjFactor) + (f * Car.BrakeShoeCoefficientFrictionAdjFactor); // In advanced adhesion model brake shoe coefficient varies with speed, in simple model constant force applied as per value in WAG file, will vary with wheel skid.
-                }
-            }            
+            // fRMg není zohledněna v síle na brzdící nápravy
+            Car.BrakeRetardForceN = f * Car.BrakeShoeRetardCoefficientFrictionAdjFactor; // calculates value of force applied to wheel, independent of wheel skid
+
+            if (Car.BrakeSkid) // Test to see if wheels are skiding to excessive brake force
+            {
+                Car.BrakeForceN = (fRMg * Car.RMgShoeCoefficientFrictionAdjFactor) + (f * Car.SkidFriction);   // if excessive brakeforce, wheel skids, and loses adhesion
+            }
+            else
+            {
+                Car.BrakeForceN = (fRMg * Car.RMgShoeCoefficientFrictionAdjFactor) + (f * Car.BrakeShoeCoefficientFrictionAdjFactor); // In advanced adhesion model brake shoe coefficient varies with speed, in simple model constant force applied as per value in WAG file, will vary with wheel skid.
+            }
+                        
 
             // sound trigger checking runs every half second, to avoid the problems caused by the jumping BrakeLine1PressurePSI value, and also saves cpu time :)
             if (SoundTriggerCounter >= 0.5f)

@@ -917,8 +917,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
             {
                 // Icik
                 //return (CurrentDieselOutputPowerW <= 0f ? 0f : (OutputPowerW * 100f / CurrentDieselOutputPowerW)) ;
-                return MathHelper.Clamp((Math.Abs(locomotive.TractiveForceN) == 0f ? (locomotive.PowerReductionResult1 * MaximumDieselPowerW * 100f / MaximumDieselPowerW * LoadSMCoef)
-                    : ((CurrentDieselOutputPowerW + (locomotive.PowerReductionResult1 * MaximumDieselPowerW)) * 100f / MaximumDieselPowerW) * LoadSMCoef), 0, 100);
+                return MathHelper.Clamp((Math.Abs(locomotive.TractiveForceN) == 0f ? (locomotive.PowerReductionResult1 / 0.85f * MaximumDieselPowerW * 100f / MaximumDieselPowerW + (LoadSMCoef * MaximumDieselPowerW * 100f/ MaximumDieselPowerW))
+                : (((OutputPowerW / 0.85f) + (locomotive.PowerReductionResult1 / 0.85f * MaximumDieselPowerW)) * 100f / MaximumDieselPowerW) + (LoadSMCoef * MaximumDieselPowerW * 100f / MaximumDieselPowerW)), 0, 100); 
             }
         }
         // Icik
@@ -929,8 +929,13 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
         {
             get
             {                
-                float LoadSM = Math.Abs(locomotive.TractiveForceN) / 250000 * 3;
-                LoadSM = MathHelper.Clamp(LoadSM, 0.1f, 3f);
+                float LoadSM;
+                float LoadEDB = 0;
+                // 30kW chlazení dieselu + 20kW chlazení trakčáků + 10kW dobíjení aku + 5kW napájení elektroniky na 1000kW loko
+                if (locomotive.DynamicBrake != null) LoadEDB = 10000; // Chlazení EDB 10kW na 1000kW loko
+                LoadSM = ((30000f + 20000f + 10000f + 5000f + LoadEDB) / 0.85f / 1000000f * MaximumDieselPowerW) * (1000000f / MaximumDieselPowerW);                
+                LoadSM /= 1000000f;
+                LoadSM = MathHelper.Clamp(LoadSM, 0, 1);                
                 return LoadSM;
             }
         }
@@ -1114,10 +1119,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                 else
                     TurboCanBoostDown = false;
             }
-            turboRPM = MathHelper.Clamp(turboRPM, 0, MaxRPM / LoadSMCoef);
-            TurboRPM = turboRPM / MaxRPM * MaxTurboRPM * LoadSMCoef;            
-            TurboLoad = turboRPM / MaxRPM * 100 * LoadSMCoef;
-            TurboPressureBar = turboRPM / MaxRPM * MaxTurboPressurePSI / 14.50377f * LoadSMCoef + 1;
+            turboRPM = MathHelper.Clamp(turboRPM, 0, MaxRPM);
+            TurboRPM = turboRPM / MaxRPM * MaxTurboRPM;            
+            TurboLoad = turboRPM / MaxRPM * 100;
+            TurboPressureBar = turboRPM / MaxRPM * MaxTurboPressurePSI / 14.50377f + 1;
 
             //locomotive.Simulator.Confirmer.Message(ConfirmLevel.MSG, "TurboRPM = " + locomotive.Variable8 + " ot/min" + "     TurboLoad = " + locomotive.Variable7 + " %");
             //locomotive.Simulator.Confirmer.Message(ConfirmLevel.MSG, "LoadSMCoef = " + LoadSMCoef);
