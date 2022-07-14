@@ -2630,8 +2630,7 @@ namespace Orts.Simulation.RollingStocks
                     }
                     if (this is MSTSDieselLocomotive) // Dieselelektrické lokomotivy
                     {
-                        PowerReductionResult4 = 0.9f; // Omezení trakčních motorů  
-                        SetDynamicBrakePercent(-1);
+                        PowerReductionResult4 = 0.9f; // Omezení trakčních motorů                                                  
                         Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Overcurrent protection!"));
                     }
                 }
@@ -2695,7 +2694,6 @@ namespace Orts.Simulation.RollingStocks
                     if (this is MSTSDieselLocomotive) // Dieselelektrické lokomotivy
                     {
                         PowerReductionResult4 = 0.9f; // Omezení trakčních motorů  
-                        SetDynamicBrakePercent(0);
                         Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Slip protection!"));
                     }
                 }
@@ -4893,8 +4891,8 @@ namespace Orts.Simulation.RollingStocks
 
                     if (DynamicBrakeIntervention < 0.1 && PreviousDynamicBrakeIntervention >= 0 && DynamicBrakePercent == 0)
                     {
-                        DynamicBrakePercent = -1;
-                        LocalDynamicBrakePercent = -1;
+                        DynamicBrakePercent = 0;
+                        LocalDynamicBrakePercent = 0;
                     }
                     PreviousDynamicBrakeIntervention = DynamicBrakeIntervention;
                 }
