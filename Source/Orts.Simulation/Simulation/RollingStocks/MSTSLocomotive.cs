@@ -3643,7 +3643,7 @@ namespace Orts.Simulation.RollingStocks
             int RDSTBreakerVZState = 0;
             int RDSTBreakerPowerState = 0;
 
-            if (RDSTBreakerVZEnable && Battery)
+            if (RDSTBreakerVZEnable && Battery && !TrainBrakeController.EmergencyBrakingPushButton)
             {
                 foreach (TrainCar car in Train.Cars)
                 {
