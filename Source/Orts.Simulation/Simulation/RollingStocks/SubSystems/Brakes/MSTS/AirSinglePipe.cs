@@ -84,6 +84,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
         protected bool AICompressorRun;
         protected float AITrainLeakage;
         protected float AITrainBrakePipeVolumeM3;
+        
 
         /// <summary>
         /// EP brake holding valve. Needs to be closed (Lap) in case of brake application or holding.
@@ -1005,21 +1006,36 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         AICompressorOff = true;
                     }
                     if (AICompressorOn)
-                    {                        
-                        loco.MainResPressurePSI += (loco.MainResChargingRatePSIpS + loco.MainResChargingRatePSIpS_2) * elapsedClockSeconds;
-                        if (!AICompressorRun)
+                    {
+                        loco.AICompressorStartDelay += elapsedClockSeconds;
+                        if (loco.AICompressorStartDelay > 10)
                         {
-                            loco.SignalEvent(Event.CompressorOn);
-                            loco.SignalEvent(Event.Compressor2On);
+                            loco.MainResPressurePSI += (loco.MainResChargingRatePSIpS + loco.MainResChargingRatePSIpS_2) * elapsedClockSeconds;
+                            if (!AICompressorRun)
+                            {
+                                loco.SignalEvent(Event.CompressorOn);
+                                loco.SignalEvent(Event.Compressor2On);
+                            }
+                            AICompressorRun = true;
                         }
-                        AICompressorRun = true;
                     }
                     if (AICompressorOff && AICompressorRun)
                     {
-                        {
-                            loco.SignalEvent(Event.CompressorOff);
-                            loco.SignalEvent(Event.Compressor2Off);
-                        }
+                        loco.AICompressorStartDelay = 10;
+                        loco.SignalEvent(Event.CompressorOff);
+                        loco.SignalEvent(Event.Compressor2Off);                        
+                        AICompressorRun = false;
+                    }
+                }
+                if (loco != null && !loco.Battery)
+                {
+                    AICompressorOn = false;
+                    AICompressorOff = true;
+                    loco.AICompressorStartDelay = 0;
+                    if (AICompressorRun)
+                    {                        
+                        loco.SignalEvent(Event.CompressorOff);
+                        loco.SignalEvent(Event.Compressor2Off);
                         AICompressorRun = false;
                     }
                 }
