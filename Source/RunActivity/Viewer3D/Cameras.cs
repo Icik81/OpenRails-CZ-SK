@@ -65,21 +65,17 @@ namespace Orts.Viewer3D
 
         // This sucks. It's really not camera-related at all.
         public static Matrix XNASkyProjection;
-
+        
         // The following group of properties are used by other code to vary
         // behavior by camera; e.g. Style is used for activating sounds,
         // AttachedCar for rendering the train or not, and IsUnderground for
         // automatically switching to/from cab view in tunnels.
         public enum Styles { External, Cab, Passenger, ThreeDimCab }
-        public virtual Styles Style { get { return Styles.External; } }
+        public virtual Styles Style { get { return Styles.External; } }        
         public virtual TrainCar AttachedCar { get { return null; } }
         public virtual bool IsAvailable { get { return true; } }
         public virtual bool IsUnderground { get { return false; } }
-        public virtual string Name { get { return ""; } }
-
-        // We need to allow different cameras to have different near planes.
-        public virtual float NearPlane { get { return 0.25f; } }
-
+        public virtual string Name { get { return ""; } }                    
         public float ReplaySpeed { get; set; }
         const int SpeedFactorFastSlow = 8;  // Use by GetSpeed
         protected const float SpeedAdjustmentForRotation = 0.25f;
@@ -90,12 +86,18 @@ namespace Orts.Viewer3D
 
         // Zajistí kompatibilitu MSTS/OR výhledu z kabiny
         public void FOVOffset()
-        {
-            // Icik
+        {            
             if (Viewer.Settings.CabView_MSTSOR)
                 FieldOffViewOffset = 0;
             else
                 FieldOffViewOffset = 10;
+        }
+
+        // Dynamický NearPlane
+        public float NearPlane;
+        public void NearPlaneUpdate()
+        {
+            ScreenChanged();
         }
 
         protected Camera(Viewer viewer)
@@ -186,9 +188,13 @@ namespace Orts.Viewer3D
         /// </summary>
         public void ScreenChanged()
         {
+            // Icik
+            NearPlane = (Math.Abs(cameraLocation.Location.Y) - Math.Abs(Viewer.PlayerLocomotive.WorldPosition.Location.Y)) / 10f;
+            NearPlane = MathHelper.Clamp(NearPlane, 0.01f, 100f);
+
             var aspectRatio = (float)Viewer.DisplaySize.X / Viewer.DisplaySize.Y;
             var farPlaneDistance = SkyConstants.skyRadius + 100;  // so far the sky is the biggest object in view
-            var fovWidthRadians = MathHelper.ToRadians(FieldOfView);
+            var fovWidthRadians = MathHelper.ToRadians(FieldOfView);            
             if (Viewer.Settings.DistantMountains)
                 XnaDistantMountainProjection = Matrix.CreatePerspectiveFieldOfView(fovWidthRadians, aspectRatio, MathHelper.Clamp(Viewer.Settings.ViewingDistance - 500, 500, 1500), Viewer.Settings.DistantMountainsViewingDistance);
             xnaProjection = Matrix.CreatePerspectiveFieldOfView(fovWidthRadians, aspectRatio, NearPlane, Viewer.Settings.ViewingDistance);
@@ -330,7 +336,7 @@ namespace Orts.Viewer3D
         /// <summary>
         /// CameraWorldLocation normalized to SoundBaseTile
         /// </summary>
-        WorldLocation ListenerLocation;
+        WorldLocation ListenerLocation;       
         /// <summary>
         /// Set OpenAL listener position based on CameraWorldLocation normalized to SoundBaseTile
         /// </summary>
@@ -361,6 +367,9 @@ namespace Orts.Viewer3D
             OpenAL.alListenerfv(OpenAL.AL_POSITION, cameraPosition);
             OpenAL.alListenerfv(OpenAL.AL_VELOCITY, cameraVelocity);
             OpenAL.alListenerfv(OpenAL.AL_ORIENTATION, cameraOrientation);
+
+            // Icik
+            NearPlaneUpdate();
         }
     }
 
@@ -716,7 +725,7 @@ namespace Orts.Viewer3D
 
         public override void Update(ElapsedTime elapsedTime)
         {
-            UpdateRotation(elapsedTime);
+            UpdateRotation(elapsedTime);            
 
             var replayRemainingS = EndTime - Viewer.Simulator.ClockTime;
             if (replayRemainingS > 0)
@@ -1556,8 +1565,7 @@ namespace Orts.Viewer3D
     public class BrakemanCamera : NonTrackingCamera
     {
         protected bool attachedToRear;
-
-        public override float NearPlane { get { return 0.25f; } }
+        
         public override string Name { get { return Viewer.Catalog.GetString("Brakeman"); } }
 
         // Icik
@@ -1621,9 +1629,7 @@ namespace Orts.Viewer3D
     }
 
     public class InsideThreeDimCamera : NonTrackingCamera
-    {
-        public override float NearPlane { get { return 0.1f; } }
-
+    {        
         // Icik
         public override bool IsUnderground
         {
@@ -2041,7 +2047,6 @@ namespace Orts.Viewer3D
 
         // Head-out camera is only possible on the player train.
         public override bool IsAvailable { get { return Viewer.PlayerTrain != null && Viewer.PlayerTrain.Cars.Any(c => c.HeadOutViewpoints.Count > 0); } }
-        public override float NearPlane { get { return 0.25f; } }
         public override string Name { get { return Viewer.Catalog.GetString("Head out"); } }
 
         // Icik
@@ -2113,7 +2118,6 @@ namespace Orts.Viewer3D
         private readonly SavingProperty<bool> LetterboxProperty;
         protected int sideLocation;
         public int SideLocation { get { return sideLocation; } }
-        public override float NearPlane { get { return 1.0f; } }
 
         public override Styles Style { get { return Styles.Cab; } }
         // Cab camera is only possible on the player train.
@@ -2379,7 +2383,6 @@ namespace Orts.Viewer3D
         protected const float CameraAltitude = 2;
         // Height above the coordinate center of target.
         protected const float TargetAltitude = TerrainAltitudeMargin;
-        public override float NearPlane { get { return 1.0f; } }
 
         protected TrainCar attachedCar;
         public override TrainCar AttachedCar { get { return attachedCar; } }
@@ -2580,8 +2583,6 @@ namespace Orts.Viewer3D
         const float MaxDistFromRoadCarM = 200.0f; // maximum distance of train traveller to spawned roadcar
         protected RoadCar NearRoadCar;
         protected bool RoadCarFound;
-
-        public override float NearPlane { get { return 1.0f; } }
 
         public SpecialTracksideCamera(Viewer viewer)
             : base(viewer)
