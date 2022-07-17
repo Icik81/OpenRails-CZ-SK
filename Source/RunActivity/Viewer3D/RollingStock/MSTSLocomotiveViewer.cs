@@ -4378,6 +4378,8 @@ namespace Orts.Viewer3D.RollingStock
                                         Locomotive.WaitingForLvzConfirmation = false;
                                         break;
                                     case "CruiseControlToggle":
+                                        if (Locomotive.LocoType == MSTSLocomotive.LocoTypes.Vectron && Locomotive.ForceHandleValue > 0)
+                                            break;
                                         Locomotive.SignalEvent(Event.AFB);
                                         if (Locomotive.CruiseControl.SpeedRegMode == Simulation.RollingStocks.SubSystems.CruiseControl.SpeedRegulatorMode.Auto)
                                             Locomotive.CruiseControl.SpeedRegMode = Simulation.RollingStocks.SubSystems.CruiseControl.SpeedRegulatorMode.Manual;

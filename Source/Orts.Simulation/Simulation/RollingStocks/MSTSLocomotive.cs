@@ -673,6 +673,7 @@ namespace Orts.Simulation.RollingStocks
         public float AutomaticParkingBrakeEngageSpeedKpH = 0;
         public float ParkingBrakeTargetPressurePSI = 0;
         public bool AutomaticParkingBrakeEngaged = false;
+        public bool ManualParkingBrakeReleaseRequired = true;
         public List<CabViewControl> ActiveScreens = new List<CabViewControl>();
         public List<CabViewControl> EditableItems = new List<CabViewControl>();
         public ExtendedPhysics extendedPhysics = null;
@@ -3943,6 +3944,8 @@ namespace Orts.Simulation.RollingStocks
             {
                 if (LocoType == LocoTypes.Vectron)
                 {
+                    if (CircuitBreakerOn && extendedPhysics.GeneratoricModeBlocked)
+                        extendedPhysics.GeneratoricModeBlocked = false;
                     if (ChangingPowerSystem)
                         PowerChangeRoutine(elapsedClockSeconds);
                     else
@@ -4455,6 +4458,21 @@ namespace Orts.Simulation.RollingStocks
                         AutomaticParkingBrakeEngaged = braking;
                     }
                     else AutomaticParkingBrakeEngaged = false;
+
+                    if (LocoType == LocoTypes.Vectron && CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.Auto)
+                    {
+                        if (ForceHandleValue <= 0)
+                        {
+                            if (AbsSpeedMpS < MpS.FromKpH(AutomaticParkingBrakeEngageSpeedKpH))
+                            {
+                                AutomaticParkingBrakeEngaged = true;
+                            }
+                        }
+                        else if (ForceHandleValue > 0 && !ManualParkingBrakeReleaseRequired)
+                        {
+                            AutomaticParkingBrakeEngaged = false;
+                        }
+                    }
                 }
             }
 
@@ -6934,6 +6952,14 @@ namespace Orts.Simulation.RollingStocks
 
         public void StartEngineBrakeDecrease(float? target)
         {
+            if (LocoType == LocoTypes.Vectron)
+            {
+                if (CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.Auto)
+                {
+                    ManualParkingBrakeReleaseRequired = false;
+                }
+            }
+
             if (EngineBrakeController == null)
                 return;
 
