@@ -3944,6 +3944,8 @@ namespace Orts.Simulation.RollingStocks
             {
                 if (LocoType == LocoTypes.Vectron)
                 {
+                    if (CircuitBreakerOn && extendedPhysics.GeneratoricModeBlocked)
+                        extendedPhysics.GeneratoricModeBlocked = false;
                     if (ChangingPowerSystem)
                         PowerChangeRoutine(elapsedClockSeconds);
                     else

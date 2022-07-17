@@ -284,12 +284,15 @@ namespace Orts.Simulation.RollingStocks
         public enum SystemEnabledModes { Quick, Slow }
         public SystemEnabledModes SystemEnabledMode = ExtendedPhysics.SystemEnabledModes.Slow;
 
+        public bool GeneratoricModeBlocked = false;
         public float GeneratorConsumptionKn = 0;
         public void Update(float elapsedClockSeconds)
         {
+            if (Locomotive.Pantograph3Switch == -1)
+                GeneratoricModeBlocked = true;
             if (Locomotive.LocoType == MSTSLocomotive.LocoTypes.Vectron)
             {
-                if (!Locomotive.PowerOn)
+                if (!Locomotive.PowerOn && !GeneratoricModeBlocked)
                 {
                     if (MpS.ToKpH(Locomotive.AbsSpeedMpS) < 30)
                     {
@@ -303,6 +306,12 @@ namespace Orts.Simulation.RollingStocks
                         if (Locomotive.Compressor2IsOn)
                             GeneratorConsumptionKn -= GeneratoricModeCompressorConsumptionKn;
                     }
+                }
+                if (GeneratoricModeBlocked)
+                {
+                    GeneratorConsumptionKn = 0;
+                    SystemEnabledMode = SystemEnabledModes.Slow;
+                    GeneratoricModeActive = false;
                 }
             }
 
