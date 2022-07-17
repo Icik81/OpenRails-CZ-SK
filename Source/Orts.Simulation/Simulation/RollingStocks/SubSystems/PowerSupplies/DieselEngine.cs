@@ -1560,12 +1560,12 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
         // Icik
         public void DieselMotorTempControl(float elapsedClockSeconds)
         {
-            if (!locomotive.IsPlayerTrain)
-            {
-                RealDieselWaterTemperatureDeg = DieselIdleTemperatureDegC;
-                RealDieselOilTemperatureDeg = DieselIdleTemperatureDegC - 5;
-                return;
-            }
+            //if (!locomotive.IsPlayerTrain)
+            //{
+            //    RealDieselWaterTemperatureDeg = DieselIdleTemperatureDegC;
+            //    RealDieselOilTemperatureDeg = DieselIdleTemperatureDegC - 5;
+            //    return;
+            //}
 
             EngineCooling = Cooling.Hysteresis;
 
@@ -1700,56 +1700,59 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
 
 
             // Poškození a vypnutí motoru
-            if (RealDieselWaterTemperatureDeg > DieselMaxTemperatureDeg || RealDieselOilTemperatureDeg > DieselMaxTemperatureDeg)
-                OverHeatTimer += elapsedClockSeconds;
-            else
+            if (locomotive.IsPlayerTrain)
             {
-                OverHeatTimer = 0;
-                locomotive.DieselMotorTempWarning = false;
-                locomotive.SignalEvent(Event.DieselMotorTempWarningOff);
-            }
+                if (RealDieselWaterTemperatureDeg > DieselMaxTemperatureDeg || RealDieselOilTemperatureDeg > DieselMaxTemperatureDeg)
+                    OverHeatTimer += elapsedClockSeconds;
+                else
+                {
+                    OverHeatTimer = 0;
+                    locomotive.DieselMotorTempWarning = false;
+                    locomotive.SignalEvent(Event.DieselMotorTempWarningOff);
+                }
 
-            if (OverHeatTimer > 120)
-            {
-                locomotive.DieselMotorDefected = true;
-                if (EngineStatus == Status.Running && OverHeatTimer2 == 0)
-                    locomotive.SignalEvent(Event.DieselMotorTempDefected);
-                locomotive.Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("The engine's wrecked!"));
-            }
-            else
-            if (OverHeatTimer > 60)
-            {
-                locomotive.DieselMotorPowerLost = true;
-                locomotive.Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("The engine's damaged!"));
-            }
-            else
-            if (OverHeatTimer > 1)
-            {
-                locomotive.DieselMotorTempWarning = true;
-                locomotive.SignalEvent(Event.DieselMotorTempWarning);
-                if (RealDieselWaterTemperatureDeg > DieselMaxTemperatureDeg)
-                    locomotive.Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("The engine is overheating! Water temperature:" + " " + Math.Round(FakeDieselWaterTemperatureDeg, 2) + "°C"));
-                if (RealDieselOilTemperatureDeg > DieselMaxTemperatureDeg)
-                    locomotive.Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("The engine is overheating! Oil temperature:" + " " + Math.Round(FakeDieselOilTemperatureDeg, 2) + "°C"));
-            }
+                if (OverHeatTimer > 120)
+                {
+                    locomotive.DieselMotorDefected = true;
+                    if (EngineStatus == Status.Running && OverHeatTimer2 == 0)
+                        locomotive.SignalEvent(Event.DieselMotorTempDefected);
+                    locomotive.Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("The engine's wrecked!"));
+                }
+                else
+                if (OverHeatTimer > 60)
+                {
+                    locomotive.DieselMotorPowerLost = true;
+                    locomotive.Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("The engine's damaged!"));
+                }
+                else
+                if (OverHeatTimer > 1)
+                {
+                    locomotive.DieselMotorTempWarning = true;
+                    locomotive.SignalEvent(Event.DieselMotorTempWarning);
+                    if (RealDieselWaterTemperatureDeg > DieselMaxTemperatureDeg)
+                        locomotive.Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("The engine is overheating! Water temperature:" + " " + Math.Round(FakeDieselWaterTemperatureDeg, 2) + "°C"));
+                    if (RealDieselOilTemperatureDeg > DieselMaxTemperatureDeg)
+                        locomotive.Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("The engine is overheating! Oil temperature:" + " " + Math.Round(FakeDieselOilTemperatureDeg, 2) + "°C"));
+                }
 
-            if (locomotive.DieselMotorPowerLost)
-            {
-                locomotive.PowerReductionResult9 = 0.25f;
-                ExhaustColor = Color.DarkGray;
-            }
-            if (locomotive.DieselMotorDefected && EngineStatus == Status.Running)
-            {
-                OverHeatTimer2 += elapsedClockSeconds;
-                ExhaustColor = Color.Black;
-                ExhaustParticles = 4f;
-                ExhaustMagnitude = InitialMagnitude * 10;
-                if (OverHeatTimer2 > 10)
-                    locomotive.DieselEngines[0].Stop();
-            }
+                if (locomotive.DieselMotorPowerLost)
+                {
+                    locomotive.PowerReductionResult9 = 0.25f;
+                    ExhaustColor = Color.DarkGray;
+                }
+                if (locomotive.DieselMotorDefected && EngineStatus == Status.Running)
+                {
+                    OverHeatTimer2 += elapsedClockSeconds;
+                    ExhaustColor = Color.Black;
+                    ExhaustParticles = 4f;
+                    ExhaustMagnitude = InitialMagnitude * 10;
+                    if (OverHeatTimer2 > 10)
+                        locomotive.DieselEngines[0].Stop();
+                }
 
-            //locomotive.Simulator.Confirmer.Message(ConfirmLevel.Information, Simulator.Catalog.GetString("Teplota motoru: " + FakeDieselWaterTemperatureDeg));
-            //locomotive.Simulator.Confirmer.Message(ConfirmLevel.Information, Simulator.Catalog.GetString("Power reduction: " + locomotive.PowerReduction));
+                //locomotive.Simulator.Confirmer.Message(ConfirmLevel.Information, Simulator.Catalog.GetString("Teplota motoru: " + FakeDieselWaterTemperatureDeg));
+                //locomotive.Simulator.Confirmer.Message(ConfirmLevel.Information, Simulator.Catalog.GetString("Power reduction: " + locomotive.PowerReduction));
+            }
         }
 
 
