@@ -190,7 +190,7 @@ namespace Orts.Viewer3D
         {
             // Icik
             NearPlane = (Math.Abs(cameraLocation.Location.Y) - Math.Abs(Viewer.PlayerLocomotive.WorldPosition.Location.Y)) / 10f;
-            NearPlane = MathHelper.Clamp(NearPlane, 0.01f, 100f);
+            NearPlane = MathHelper.Clamp(NearPlane, 0.25f, 10f);
 
             var aspectRatio = (float)Viewer.DisplaySize.X / Viewer.DisplaySize.Y;
             var farPlaneDistance = SkyConstants.skyRadius + 100;  // so far the sky is the biggest object in view
