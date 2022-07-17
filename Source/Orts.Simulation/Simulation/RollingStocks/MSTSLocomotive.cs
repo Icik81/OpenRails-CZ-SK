@@ -4457,7 +4457,7 @@ namespace Orts.Simulation.RollingStocks
                     }
                     else AutomaticParkingBrakeEngaged = false;
 
-                    if (LocoType == LocoTypes.Vectron & CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.Auto)
+                    if (LocoType == LocoTypes.Vectron && CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.Auto)
                     {
                         if (ForceHandleValue <= 0)
                         {
