@@ -1057,10 +1057,9 @@ namespace Orts.Simulation.RollingStocks
                     DieselEngines[0].Stop();
                     MotorSoundStopCycle = 0;
                 }
-                if (DieselEngines[0].EngineStatus == DieselEngine.Status.Stopped && MotorSoundStopCycle == 0)
+                if (DieselEngines[0].EngineStatus == DieselEngine.Status.Stopping && MotorSoundStopCycle == 0)
                 {
-                    if (MotorSoundStopCycle < 1)
-                        SignalEvent(Event.EnginePowerOff);
+                    SignalEvent(Event.EnginePowerOff);
                     MotorSoundStopCycle++;
                 }
 

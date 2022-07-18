@@ -1357,6 +1357,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                     EngineStatus = Status.Running;
                     locomotive.StartLooseCon = false;
                     OnePushStartButton = false;
+                    locomotive.Variable2 = 0.01f;
                 }
             }
 
