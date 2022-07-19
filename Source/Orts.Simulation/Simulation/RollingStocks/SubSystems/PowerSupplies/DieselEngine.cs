@@ -589,6 +589,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
             StartingRateOfChangeUpRPMpSS = copy.StartingRateOfChangeUpRPMpSS;
             StoppingRateOfChangeDownRPMpSS = copy.StoppingRateOfChangeDownRPMpSS;
             OnePushStart = copy.OnePushStart;
+            OnePushStop = copy.OnePushStop;     
 
             if (copy.GearBox != null)
             {
@@ -794,6 +795,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
         // Icik
         bool FirstFrame = true;
         public bool OnePushStart;
+        public bool OnePushStop;
         public bool OnePushStartButton;        
         public float RealRPM0;
         public float DieselMotorWaterInitTemp;
@@ -838,7 +840,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
             {
                 // Icik
                 // Tlakování mazacího čerpadla při spouštění motoru
-                if ((locomotive.StartButtonPressed || locomotive.StartLooseCon || OnePushStartButton) && locomotive.DieselStartTime > 0 && RealRPM0 < IdleRPM)
+                if (locomotive.StopButtonReleased || ((locomotive.StartButtonPressed || locomotive.StartLooseCon || OnePushStartButton) && locomotive.DieselStartTime > 0 && RealRPM0 < IdleRPM))
                 {
                     RealRPM0 += IdleRPM / locomotive.DieselStartDelay * locomotive.Simulator.OneSecondLoop;
                 }
@@ -850,7 +852,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                 else
                 if (locomotive.DieselStartTime > locomotive.DieselStartDelay)
                     RealRPM0 = IdleRPM;
-                if (EngineStatus == Status.Running)
+                if (EngineStatus == Status.Running && !locomotive.StopButtonReleased)
                     RealRPM0 = RealRPM;
 
                 float k = (DieselMaxOilPressurePSI - DieselMinOilPressurePSI) / (MaxRPM - IdleRPM);
@@ -1036,7 +1038,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                     case "startingrateofchangeuprpmpss": StartingRateOfChangeUpRPMpSS = stf.ReadFloatBlock(STFReader.UNITS.None, 0); break;
                     case "stoppingrateofchangedownrpmpss": StoppingRateOfChangeDownRPMpSS = stf.ReadFloatBlock(STFReader.UNITS.None, 0); break;
                     case "onepushstart": OnePushStart = stf.ReadBoolBlock(false); break;
-                        
+                    case "onepushstop": OnePushStop = stf.ReadBoolBlock(false); break;
+
                     default:
                         end = true;
                         break;
@@ -1231,6 +1234,13 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
             }
             else
             {
+                // Spustí volnoběh při dosažení volnoběžných otáček při přerušeném stopování motoru
+                if (locomotive.StopButtonReleased && RealRPM > 0.999f * IdleRPM)
+                {                    
+                    locomotive.StopButtonReleased = false;
+                    locomotive.SignalEvent(Event.InitMotorIdle);
+                }
+
                 if (RealRPM < DemandedRPM)
                 {
                     dRPM = (float)Math.Min(Math.Sqrt(2 * RateOfChangeUpRPMpSS * (DemandedRPM - RealRPM)), ChangeUpRPMpS);
@@ -1764,8 +1774,16 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                 case Status.Stopped:
                 case Status.Stopping:
                     // Icik
-                    if ((locomotive.DieselDirectionController || locomotive.DieselDirectionController2 || locomotive.DieselDirectionController3 || locomotive.DieselDirectionController4) && locomotive.DieselDirection_Start)
+                    if (locomotive.StopButtonReleased) // Přerušený stop motoru
+                    {                        
+                        DemandedRPM = IdleRPM;
+                        EngineStatus = Status.Running;
+                        locomotive.SignalEvent(Event.MotorStopBreak);
+                    }
+                    else
+                    if ((locomotive.DieselDirectionController || locomotive.DieselDirectionController2 || locomotive.DieselDirectionController3 || locomotive.DieselDirectionController4) && locomotive.DieselDirection_Start || locomotive.StopButtonReleased)
                     {
+                        locomotive.StopButtonReleased = false;
                         DemandedRPM = StartingRPM;
                         EngineStatus = Status.Starting;
                         locomotive.SignalEvent(Event.EnginePowerOn); // power on sound hook

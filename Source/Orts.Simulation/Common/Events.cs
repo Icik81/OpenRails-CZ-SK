@@ -326,6 +326,7 @@ namespace Orts.Common
         DirectionButtonReleased,
         BreakEDBButton,
         BreakEDBButtonRelease,
+        MotorStopBreak,
     }
 
     public static class Events
@@ -666,6 +667,7 @@ namespace Orts.Common
                         case 20080: return Event.DirectionButtonReleased;
                         case 20081: return Event.BreakEDBButton;
                         case 20082: return Event.BreakEDBButtonRelease;
+                        case 20083: return Event.MotorStopBreak;
 
                         default: return 0;
                     }

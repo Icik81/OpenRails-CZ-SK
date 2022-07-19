@@ -627,6 +627,7 @@ namespace Orts.Simulation.RollingStocks
         public bool DieselStartDelayDone;
         public bool StartButtonPressed;
         public bool StopButtonPressed;
+        public bool StopButtonReleased;
         public bool DieselCheckPowerMotorLamp;
         public bool DieselMotorDefected;
         public bool DieselMotorTempWarning;

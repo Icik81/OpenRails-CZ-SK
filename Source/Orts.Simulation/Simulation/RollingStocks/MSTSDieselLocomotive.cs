@@ -1245,6 +1245,12 @@ namespace Orts.Simulation.RollingStocks
                     SignalEvent(Event.StartUpMotorStop);
                 DieselStartTime = 0;
             }
+            // Předčasně uvolněné stop tlačítko
+            if (DieselEngines[0].EngineStatus == DieselEngine.Status.Stopping && !StopButtonPressed && !DieselEngines[0].OnePushStop)
+            {
+                StopButtonReleased = true;
+                DieselEngines[0].Start();                
+            }
         }
 
 
@@ -1265,9 +1271,8 @@ namespace Orts.Simulation.RollingStocks
                     if (DieselEngines[0].EngineStatus == DieselEngine.Status.Running && StopButtonPressed)
                     {
                         DieselEngines[0].Stop();
-                        SignalEvent(Event.EnginePowerOff);
-                    }
-                }
+                    }                    
+                }                
                 Simulator.Confirmer.Confirm(CabControl.PlayerDiesel, StartButtonPressed ? CabSetting.On : CabSetting.Off);
             }
             else
