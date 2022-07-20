@@ -840,19 +840,25 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
             {
                 // Icik
                 // Tlakování mazacího čerpadla při spouštění motoru
-                if (locomotive.StopButtonReleased || ((locomotive.StartButtonPressed || locomotive.StartLooseCon || OnePushStartButton) && locomotive.DieselStartTime > 0 && RealRPM0 < IdleRPM))
+                if (locomotive.StopButtonReleased || ((locomotive.StartButtonPressed || locomotive.StartLooseCon || OnePushStartButton) && locomotive.DieselStartTime > 0))
                 {
-                    RealRPM0 += IdleRPM / locomotive.DieselStartDelay * locomotive.Simulator.OneSecondLoop;
+                    if (RealRPM0 < IdleRPM)
+                        RealRPM0 += IdleRPM / locomotive.DieselStartDelay * locomotive.Simulator.OneSecondLoop * 2;
                 }
                 else
-                if ((!locomotive.StartButtonPressed && !locomotive.StartLooseCon && !OnePushStartButton) && (EngineStatus == Status.Stopped || EngineStatus == Status.Stopping) && RealRPM0 > 0)
+                if ((!locomotive.StartButtonPressed && !locomotive.StartLooseCon && !OnePushStartButton) && (EngineStatus == Status.Stopped || EngineStatus == Status.Stopping))
                 {
-                    RealRPM0 -= IdleRPM / locomotive.DieselStartDelay * locomotive.Simulator.OneSecondLoop * 2;
+                    if (RealRPM0 > 0)
+                        RealRPM0 -= IdleRPM / locomotive.DieselStartDelay * locomotive.Simulator.OneSecondLoop * 2;
                 }
                 else
                 if (locomotive.DieselStartTime > locomotive.DieselStartDelay)
                     RealRPM0 = IdleRPM;
-                if (EngineStatus == Status.Running && !locomotive.StopButtonReleased)
+
+                if (RealRPM0 == 0 && EngineStatus == Status.Running)
+                    RealRPM0 = RealRPM;
+
+                if (RealRPM > IdleRPM && EngineStatus == Status.Running)
                     RealRPM0 = RealRPM;
 
                 float k = (DieselMaxOilPressurePSI - DieselMinOilPressurePSI) / (MaxRPM - IdleRPM);
@@ -1063,7 +1069,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
             if (StartingRateOfChangeUpRPMpSS == 0)
                 StartingRateOfChangeUpRPMpSS = RateOfChangeUpRPMpSS;
             if (StoppingRateOfChangeDownRPMpSS == 0)
-                StoppingRateOfChangeDownRPMpSS = RateOfChangeDownRPMpSS;
+                StoppingRateOfChangeDownRPMpSS = RateOfChangeDownRPMpSS;            
         }
 
 
@@ -1367,7 +1373,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                     EngineStatus = Status.Running;
                     locomotive.StartLooseCon = false;
                     OnePushStartButton = false;
-                    locomotive.Variable2 = 0.01f;
+                    if (!locomotive.IsPlayerTrain)
+                        locomotive.Variable2 = 0.01f;
                 }
             }
 
