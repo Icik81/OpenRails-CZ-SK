@@ -843,23 +843,34 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                 if (locomotive.StopButtonReleased || ((locomotive.StartButtonPressed || locomotive.StartLooseCon || OnePushStartButton) && locomotive.DieselStartTime > 0))
                 {
                     if (RealRPM0 < IdleRPM)
-                        RealRPM0 += IdleRPM / locomotive.DieselStartDelay * locomotive.Simulator.OneSecondLoop * 2;
+                        RealRPM0 += IdleRPM / locomotive.DieselStartDelay * locomotive.Simulator.OneSecondLoop;
                 }
                 else
                 if ((!locomotive.StartButtonPressed && !locomotive.StartLooseCon && !OnePushStartButton) && (EngineStatus == Status.Stopped || EngineStatus == Status.Stopping))
                 {
                     if (RealRPM0 > 0)
-                        RealRPM0 -= IdleRPM / locomotive.DieselStartDelay * locomotive.Simulator.OneSecondLoop * 2;
-                }
-                else
-                if (locomotive.DieselStartTime > locomotive.DieselStartDelay)
-                    RealRPM0 = IdleRPM;
-
+                        RealRPM0 -= IdleRPM / (IdleRPM / StoppingRateOfChangeDownRPMpSS) * locomotive.Simulator.OneSecondLoop / 3;
+                }                
+                
                 if (RealRPM0 == 0 && EngineStatus == Status.Running)
                     RealRPM0 = RealRPM;
 
-                if (RealRPM > IdleRPM && EngineStatus == Status.Running)
-                    RealRPM0 = RealRPM;
+                if (EngineStatus == Status.Starting)
+                {
+                    if (RealRPM0 < IdleRPM)
+                        RealRPM0 += IdleRPM / (IdleRPM / StartingRateOfChangeUpRPMpSS) * locomotive.Simulator.OneSecondLoop;
+                }
+
+                if (EngineStatus == Status.Running)
+                {
+                    if (RealRPM0 < RealRPM)
+                        RealRPM0 += RealRPM / (RealRPM / RateOfChangeUpRPMpSS) * locomotive.Simulator.OneSecondLoop * 3;
+                    if (RealRPM0 > RealRPM)
+                        RealRPM0 -= RealRPM / (RealRPM / RateOfChangeDownRPMpSS) * locomotive.Simulator.OneSecondLoop;
+                }
+                
+                if (RealRPM0 < 0)
+                    RealRPM0 = 0;
 
                 float k = (DieselMaxOilPressurePSI - DieselMinOilPressurePSI) / (MaxRPM - IdleRPM);
                 float q = DieselMaxOilPressurePSI - k * MaxRPM;
@@ -1788,7 +1799,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                         locomotive.SignalEvent(Event.MotorStopBreak);
                     }
                     else
-                    if ((locomotive.DieselDirectionController || locomotive.DieselDirectionController2 || locomotive.DieselDirectionController3 || locomotive.DieselDirectionController4) && locomotive.DieselDirection_Start || locomotive.StopButtonReleased)
+                    if ((locomotive.DieselDirectionController || locomotive.DieselDirectionController2 || locomotive.DieselDirectionController3 || locomotive.DieselDirectionController4) && locomotive.DieselDirection_Start)
                     {
                         locomotive.StopButtonReleased = false;
                         DemandedRPM = StartingRPM;

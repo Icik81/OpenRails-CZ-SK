@@ -714,7 +714,8 @@ namespace Orts.Simulation.RollingStocks
                 MaxRPM = DieselEngines[0].MaxRPM;
 
             EngineRPM = Variable2 * (MaxRPM - IdleRPM) + IdleRPM;
-            Variable4 = (float)Math.Round(EngineRPM);
+
+            Variable4 = (float)Math.Round(DieselEngines[0].RealRPM);
             Variable6 = (float)Math.Round(DieselEngines[0].LoadPercent);
             Variable7 = (float)Math.Round(DieselEngines[0].TurboLoad);
             Variable8 = (float)Math.Round(DieselEngines[0].TurboRPM);
@@ -1023,6 +1024,7 @@ namespace Orts.Simulation.RollingStocks
         public bool AIMotorStop;
         public bool AIMotorStart;
         float MotorSoundStopCycle;
+        bool DERunningStatus;
         public void DieselStartUpTime(float elapsedClockSeconds)
         {
             // Startovní setup AI lokomotivy
@@ -1245,8 +1247,14 @@ namespace Orts.Simulation.RollingStocks
                     SignalEvent(Event.StartUpMotorStop);
                 DieselStartTime = 0;
             }
+
+            if (DieselEngines[0].EngineStatus == DieselEngine.Status.Running)
+                DERunningStatus = true;
+            if (DieselEngines[0].EngineStatus == DieselEngine.Status.Stopped)
+                DERunningStatus = false;
+
             // Předčasně uvolněné stop tlačítko
-            if (DieselEngines[0].EngineStatus == DieselEngine.Status.Stopping && !StopButtonPressed && !DieselEngines[0].OnePushStop)
+            if (Battery && DERunningStatus && DieselEngines[0].EngineStatus == DieselEngine.Status.Stopping && !StopButtonPressed && !DieselEngines[0].OnePushStop)
             {
                 StopButtonReleased = true;
                 DieselEngines[0].Start();                
