@@ -1634,7 +1634,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems
             BlueLight = true;
             vigilanceAfterZeroSpeedConfirmed = true;
             if (MirelType == Type.LS90)
-                Locomotive.TrainBrakeController.EmergencyBrakingPushButton = false;
+                //Locomotive.TrainBrakeController.EmergencyBrakingPushButton = false;
+                EmergencyBrakes(false);
         }
 
         protected float interventionTimer = 0;
@@ -1979,7 +1980,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                         if (MirelType == Type.Full)
                             ApplyNZ1();
                         else
-                            Locomotive.TrainBrakeController.EmergencyBrakingPushButton = true;
+                            //Locomotive.TrainBrakeController.EmergencyBrakingPushButton = true;
+                            EmergencyBrakes(true);
                     }
                 }
                 // Zvýšená cyklická kontrola bdělosti
@@ -2019,7 +2021,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                         if (MirelType == Type.Full)
                             ApplyNZ1();
                         else
-                            Locomotive.TrainBrakeController.EmergencyBrakingPushButton = true;
+                            //Locomotive.TrainBrakeController.EmergencyBrakingPushButton = true;
+                            EmergencyBrakes(true);
                     }
                 }
 
