@@ -840,18 +840,30 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
             {
                 // Icik
                 // Tlakování mazacího čerpadla při spouštění motoru
-                if (locomotive.StopButtonReleased || ((locomotive.StartButtonPressed || locomotive.StartLooseCon || OnePushStartButton) && locomotive.DieselStartTime > 0))
+                if (locomotive.DieselStartDelay > 0.1f)
                 {
-                    if (RealRPM0 < IdleRPM)
-                        RealRPM0 += IdleRPM / locomotive.DieselStartDelay * locomotive.Simulator.OneSecondLoop;
+                    if (locomotive.StopButtonReleased || ((locomotive.StartButtonPressed || locomotive.StartLooseCon || OnePushStartButton) && locomotive.DieselStartTime > 0))
+                    {
+                        if (RealRPM0 < IdleRPM)
+                            RealRPM0 += IdleRPM / locomotive.DieselStartDelay * locomotive.Simulator.OneSecondLoop;
+                    }
+                    else
+                    if ((!locomotive.StartButtonPressed && !locomotive.StartLooseCon && !OnePushStartButton) && (EngineStatus == Status.Stopped || EngineStatus == Status.Stopping))
+                    {
+                        if (RealRPM0 > 0)
+                            RealRPM0 -= IdleRPM / (IdleRPM / StoppingRateOfChangeDownRPMpSS) * locomotive.Simulator.OneSecondLoop / 3;
+                    }
                 }
                 else
-                if ((!locomotive.StartButtonPressed && !locomotive.StartLooseCon && !OnePushStartButton) && (EngineStatus == Status.Stopped || EngineStatus == Status.Stopping))
                 {
-                    if (RealRPM0 > 0)
-                        RealRPM0 -= IdleRPM / (IdleRPM / StoppingRateOfChangeDownRPMpSS) * locomotive.Simulator.OneSecondLoop / 3;
-                }                
-                
+                    // Motory bez předmazávání
+                    if (EngineStatus == Status.Stopped || EngineStatus == Status.Stopping)
+                    {
+                        if (RealRPM0 > 0)
+                            RealRPM0 -= IdleRPM / (IdleRPM / StoppingRateOfChangeDownRPMpSS) * locomotive.Simulator.OneSecondLoop / 3;
+                    }
+                }
+
                 if (RealRPM0 == 0 && EngineStatus == Status.Running)
                     RealRPM0 = RealRPM;
 
@@ -1256,6 +1268,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                 {                    
                     locomotive.StopButtonReleased = false;
                     locomotive.SignalEvent(Event.InitMotorIdle);
+                }
+                if (locomotive.StopButtonReleased && RealRPM == 0)
+                {
+                    locomotive.StopButtonReleased = false;
                 }
 
                 if (RealRPM < DemandedRPM)
