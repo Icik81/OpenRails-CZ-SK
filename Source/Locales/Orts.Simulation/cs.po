@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Orts.Simulation\n"
-"POT-Creation-Date: 2022-06-05 16:32:01+0200\n"
-"PO-Revision-Date: 2022-06-05 16:32+0200\n"
+"POT-Creation-Date: 2022-07-23 15:57:27+0200\n"
+"PO-Revision-Date: 2022-07-23 16:01+0200\n"
 "Last-Translator: Altmann <altmann@bk.ru>\n"
 "Language-Team: Open Rails Dev Team\n"
 "Language: cs\n"
@@ -15,26 +15,26 @@ msgstr ""
 #: ../../Orts.Simulation/Common/Scripting/BrakeController.cs:285
 #: ../../Orts.Simulation/Common/Scripting/BrakeController.cs:321
 #: ../../Orts.Simulation/Common/Scripting/BrakeController.cs:322
-#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/MSTS/AirSinglePipe.cs:2244
-#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/MSTS/AirSinglePipe.cs:2364
-#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/MSTS/AirSinglePipe.cs:2375
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/MSTS/AirSinglePipe.cs:2431
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/MSTS/AirSinglePipe.cs:2551
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/MSTS/AirSinglePipe.cs:2562
 msgid "Release position"
 msgstr "Odbrzďovací poloha"
 
 #: ../../Orts.Simulation/Common/Scripting/BrakeController.cs:286
-#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/MSTS/AirSinglePipe.cs:2268
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/MSTS/AirSinglePipe.cs:2455
 msgid "Highpressure release"
 msgstr "Vysokotlaký švih"
 
 #: ../../Orts.Simulation/Common/Scripting/BrakeController.cs:287
 #: ../../Orts.Simulation/Common/Scripting/BrakeController.cs:288
-#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/MSTS/AirSinglePipe.cs:2310
-#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/MSTS/AirSinglePipe.cs:2321
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/MSTS/AirSinglePipe.cs:2497
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/MSTS/AirSinglePipe.cs:2508
 msgid "Driving position"
 msgstr "Jízdní poloha"
 
 #: ../../Orts.Simulation/Common/Scripting/BrakeController.cs:289
-#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/MSTS/AirSinglePipe.cs:2256
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/MSTS/AirSinglePipe.cs:2443
 msgid "Apply position"
 msgstr "Brzdící poloha"
 
@@ -43,8 +43,8 @@ msgid "EPApply"
 msgstr "EP zabrzdit"
 
 #: ../../Orts.Simulation/Common/Scripting/BrakeController.cs:291
-#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/MSTS/AirSinglePipe.cs:94
-#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/MSTS/AirSinglePipe.cs:2279
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/MSTS/AirSinglePipe.cs:100
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/MSTS/AirSinglePipe.cs:2466
 msgid "Emergency"
 msgstr "Rychlobrzda"
 
@@ -58,14 +58,14 @@ msgid "Service"
 msgstr "Brzdění"
 
 #: ../../Orts.Simulation/Common/Scripting/BrakeController.cs:295
-#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/MSTS/AirSinglePipe.cs:91
-#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/MSTS/AirSinglePipe.cs:2300
-#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/MSTS/AirSinglePipe.cs:2387
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/MSTS/AirSinglePipe.cs:97
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/MSTS/AirSinglePipe.cs:2487
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/MSTS/AirSinglePipe.cs:2574
 msgid "Lap"
 msgstr "Závěr"
 
 #: ../../Orts.Simulation/Common/Scripting/BrakeController.cs:296
-#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/MSTS/AirSinglePipe.cs:2331
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/MSTS/AirSinglePipe.cs:2518
 msgid "Full braking"
 msgstr "Max. brzdný účinek"
 
@@ -160,12 +160,12 @@ msgid "Slow service"
 msgstr "Pomalé nabrzďování"
 
 #: ../../Orts.Simulation/Common/Scripting/BrakeController.cs:319
-#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/MSTS/AirSinglePipe.cs:2289
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/MSTS/AirSinglePipe.cs:2476
 msgid "Lowpressure release"
 msgstr "Nízkotlaké přebití"
 
 #: ../../Orts.Simulation/Common/Scripting/BrakeController.cs:320
-#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/MSTS/AirSinglePipe.cs:2353
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/MSTS/AirSinglePipe.cs:2540
 msgid "Slow braking"
 msgstr "Pomalé brždění"
 
@@ -484,9 +484,8 @@ msgstr "Hlavní pohony"
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:312
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:317
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:318
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSWagon.cs:3620
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSWagon.cs:3632
-#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/BrakeSystem.cs:274
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSWagon.cs:3622
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSWagon.cs:3634
 msgid "off"
 msgstr "vypnuto"
 
@@ -516,8 +515,9 @@ msgstr "vypnuto"
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:312
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:317
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:318
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSWagon.cs:3616
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSWagon.cs:3636
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSWagon.cs:3618
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSWagon.cs:3638
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/BrakeSystem.cs:274
 msgid "on"
 msgstr "zapnuto"
 
@@ -796,8 +796,8 @@ msgid "cannot initialize. Stop train then re-try."
 msgstr "nemohou být inicializovány za jízdy. Zastavte vlak a opakujte."
 
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:256
-#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/MSTS/AirSinglePipe.cs:198
-#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/MSTS/AirSinglePipe.cs:216
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/MSTS/AirSinglePipe.cs:204
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/MSTS/AirSinglePipe.cs:222
 #: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/MSTS/EPBrakeSystem.cs:68
 #: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/MSTS/SingleTransferPipe.cs:91
 #: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/MSTS/SingleTransferPipe.cs:100
@@ -846,13 +846,13 @@ msgstr "Brzdové hadice"
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:258
 #: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/BrakeSystem.cs:256
 #: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/BrakeSystem.cs:260
-#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/MSTS/AirSinglePipe.cs:763
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/MSTS/AirSinglePipe.cs:799
 msgid "disconnect"
 msgstr "rozpojeno"
 
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:258
-#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/MSTS/AirSinglePipe.cs:758
-#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/MSTS/AirSinglePipe.cs:877
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/MSTS/AirSinglePipe.cs:794
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/MSTS/AirSinglePipe.cs:1051
 msgid "connect"
 msgstr "spojeno"
 
@@ -933,16 +933,16 @@ msgid "Odometer"
 msgstr "Ujetá vzdálenost"
 
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:272
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSDieselLocomotive.cs:781
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSDieselLocomotive.cs:786
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSDieselLocomotive.cs:784
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSDieselLocomotive.cs:789
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSElectricLocomotive.cs:2876
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSElectricLocomotive.cs:2880
 msgid "Battery"
 msgstr "Baterie"
 
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:273
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSDieselLocomotive.cs:791
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSDieselLocomotive.cs:796
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSDieselLocomotive.cs:794
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSDieselLocomotive.cs:799
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSElectricLocomotive.cs:2885
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSElectricLocomotive.cs:2889
 msgid "PowerKey"
@@ -1251,15 +1251,15 @@ msgctxt "Switch"
 msgid "change"
 msgstr "přehodit"
 
-#: ../../Orts.Simulation/Simulation/Simulator.cs:1951
+#: ../../Orts.Simulation/Simulation/Simulator.cs:1928
 msgid "Train can't be suspended with speed not equal 0"
 msgstr "Vlak nemůže být suspendován, pokud rychlost není 0"
 
-#: ../../Orts.Simulation/Simulation/Simulator.cs:2072
+#: ../../Orts.Simulation/Simulation/Simulator.cs:2049
 msgid "To return to static train speed must be = 0"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Simulator.cs:862
+#: ../../Orts.Simulation/Simulation/Simulator.cs:873
 #: ../../Orts.Simulation/Simulation/AIs/AITrain.cs:4489
 #, csharp-format
 msgid ""
@@ -1366,124 +1366,124 @@ msgstr ""
 msgid "Passenger boarding completes in {0:D2}:{1:D2}"
 msgstr "Nástup bude ukončen za: {0:D2}:{1:D2}"
 
-#: ../../Orts.Simulation/Simulation/Physics/Train.cs:1920
+#: ../../Orts.Simulation/Simulation/Physics/Train.cs:1903
 msgid "Coupler broken!"
 msgstr "Spřáhlo se přetrhlo!"
 
-#: ../../Orts.Simulation/Simulation/Physics/Train.cs:1923
+#: ../../Orts.Simulation/Simulation/Physics/Train.cs:1906
 msgid "Coupler overloaded!"
 msgstr "Spřáhlo je přetížené!"
 
-#: ../../Orts.Simulation/Simulation/Physics/Train.cs:2556
+#: ../../Orts.Simulation/Simulation/Physics/Train.cs:2539
 msgid ""
 "The steam usage has exceeded the capacity of the steam boiler. Steam boiler "
 "locked out."
 msgstr "Spotřeba páry přesahuje kapacitu kotle. Kotel začne ztrácet tlak."
 
-#: ../../Orts.Simulation/Simulation/Physics/Train.cs:6928
-#: ../../Orts.Simulation/Simulation/Physics/Train.cs:6933
+#: ../../Orts.Simulation/Simulation/Physics/Train.cs:6930
+#: ../../Orts.Simulation/Simulation/Physics/Train.cs:6935
 msgid "Other train is blocking path"
 msgstr "Jiný vlak blokuje cestu"
 
-#: ../../Orts.Simulation/Simulation/Physics/Train.cs:7798
+#: ../../Orts.Simulation/Simulation/Physics/Train.cs:7800
 msgid "Stopped due to errors in route setting"
 msgstr "Zastaveno kvůli chybám v nastavení tratě"
 
-#: ../../Orts.Simulation/Simulation/Physics/Train.cs:8514
-#: ../../Orts.Simulation/Simulation/Physics/Train.cs:9709
+#: ../../Orts.Simulation/Simulation/Physics/Train.cs:8516
+#: ../../Orts.Simulation/Simulation/Physics/Train.cs:9711
 msgid "No signal in train's path"
 msgstr "Ve vlakové cestě není návěstidlo"
 
-#: ../../Orts.Simulation/Simulation/Physics/Train.cs:8522
+#: ../../Orts.Simulation/Simulation/Physics/Train.cs:8524
 msgid "Next signal already allocated to other train"
 msgstr "Následující návěstidlo je vyhrazeno pro jiný vlak"
 
-#: ../../Orts.Simulation/Simulation/Physics/Train.cs:8583
+#: ../../Orts.Simulation/Simulation/Physics/Train.cs:8585
 msgid "Request to clear signal cannot be processed"
 msgstr "Požadavek na návěst \"volno\" nemůže být zpracován"
 
-#: ../../Orts.Simulation/Simulation/Physics/Train.cs:8720
-#: ../../Orts.Simulation/Simulation/Physics/Train.cs:9858
+#: ../../Orts.Simulation/Simulation/Physics/Train.cs:8722
+#: ../../Orts.Simulation/Simulation/Physics/Train.cs:9860
 msgid "No switch found"
 msgstr "Výhybka nenalezena"
 
-#: ../../Orts.Simulation/Simulation/Physics/Train.cs:10216
+#: ../../Orts.Simulation/Simulation/Physics/Train.cs:10218
 msgid "You cannot enter manual mode when autopiloted"
 msgstr "Nelze přepnout do manuálního režimu, pokud je používán autopilot"
 
-#: ../../Orts.Simulation/Simulation/Physics/Train.cs:10221
+#: ../../Orts.Simulation/Simulation/Physics/Train.cs:10223
 msgid "You cannot use this command for pathless trains"
 msgstr "Příkaz se nemůže provést pro vlak bez cesty"
 
-#: ../../Orts.Simulation/Simulation/Physics/Train.cs:10233
+#: ../../Orts.Simulation/Simulation/Physics/Train.cs:10235
 msgid "Train is not back on original route"
 msgstr "Vlak není zpět na původní trase"
 
-#: ../../Orts.Simulation/Simulation/Physics/Train.cs:10242
+#: ../../Orts.Simulation/Simulation/Physics/Train.cs:10244
 msgid ""
 "Original route is reverse from present direction, stop train before switching"
 msgstr "Původní trasa je určena pro opačný směr. Před změnou směru zastavte."
 
-#: ../../Orts.Simulation/Simulation/Physics/Train.cs:10262
+#: ../../Orts.Simulation/Simulation/Physics/Train.cs:10264
 msgid "Cannot change to Manual Mode while in Explorer Mode"
 msgstr "Nelze přejít do ručního režimu v režimu Prohlížení tratě"
 
-#: ../../Orts.Simulation/Simulation/Physics/Train.cs:10349
+#: ../../Orts.Simulation/Simulation/Physics/Train.cs:10351
 msgid "Reversal required and rear of train not on required route"
 msgstr "Je nutná změna směru - přední část vlaku je mimo původní trasu"
 
-#: ../../Orts.Simulation/Simulation/Physics/Train.cs:10621
+#: ../../Orts.Simulation/Simulation/Physics/Train.cs:10623
 msgid "Cannot clear signal behind train while in AUTO mode"
 msgstr "V AUTO režimu není možné žádat o volnou cestu za vlakem"
 
-#: ../../Orts.Simulation/Simulation/Physics/Train.cs:16708
+#: ../../Orts.Simulation/Simulation/Physics/Train.cs:16710
 msgid "Passenger got out of the train "
 msgstr "Vystoupil cestující "
 
-#: ../../Orts.Simulation/Simulation/Physics/Train.cs:16762
-#: ../../Orts.Simulation/Simulation/Physics/Train.cs:16785
+#: ../../Orts.Simulation/Simulation/Physics/Train.cs:16764
+#: ../../Orts.Simulation/Simulation/Physics/Train.cs:16787
 msgid "Passenger got in the train "
 msgstr "Nastoupil cestující "
 
-#: ../../Orts.Simulation/Simulation/Physics/Train.cs:16901
+#: ../../Orts.Simulation/Simulation/Physics/Train.cs:16903
 msgid "Car "
 msgstr "Vůz "
 
-#: ../../Orts.Simulation/Simulation/Physics/Train.cs:16975
-#: ../../Orts.Simulation/Simulation/Physics/Train.cs:16980
+#: ../../Orts.Simulation/Simulation/Physics/Train.cs:16977
+#: ../../Orts.Simulation/Simulation/Physics/Train.cs:16982
 msgid "Locomotive "
 msgstr "Lokomotiva "
 
-#: ../../Orts.Simulation/Simulation/Physics/Train.cs:11104
+#: ../../Orts.Simulation/Simulation/Physics/Train.cs:11106
 #, csharp-format
 msgid "Train stopped due to problems with other train: train {0} , reason: {1}"
 msgstr "Vlak zastavil kvůli problémům s dalším vlakem: {0} , důvod: {1}"
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSDieselLocomotive.cs:802
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSDieselLocomotive.cs:805
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSElectricLocomotive.cs:2915
 #: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/PowerSupplies/DieselEngine.cs:382
 msgid "Engine"
 msgstr "Lokomotiva"
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSDieselLocomotive.cs:806
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSDieselLocomotive.cs:809
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSSteamLocomotive.cs:5925
 msgid "Gear"
 msgstr "Převod"
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSDieselLocomotive.cs:811
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSDieselLocomotive.cs:814
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSElectricLocomotive.cs:2928
 #: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/PowerSupplies/DieselEngine.cs:390
 msgid "Control"
 msgstr "Řídící vůz"
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSDieselLocomotive.cs:833
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSDieselLocomotive.cs:836
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSElectricLocomotive.cs:2938
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSSteamLocomotive.cs:6215
 msgid "StHeat:"
 msgstr "ParTop:"
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSDieselLocomotive.cs:834
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSDieselLocomotive.cs:844
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSDieselLocomotive.cs:837
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSDieselLocomotive.cs:847
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSElectricLocomotive.cs:2939
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSElectricLocomotive.cs:2949
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSSteamLocomotive.cs:6216
@@ -1493,72 +1493,74 @@ msgstr "ParTop:"
 msgid "Press"
 msgstr "TlakPá"
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSDieselLocomotive.cs:836
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSDieselLocomotive.cs:839
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSElectricLocomotive.cs:2941
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSSteamLocomotive.cs:6218
 msgid "StTemp"
 msgstr "TeplPár"
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSDieselLocomotive.cs:838
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSDieselLocomotive.cs:841
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSElectricLocomotive.cs:2943
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSSteamLocomotive.cs:6220
 msgid "StUse"
 msgstr "SpotřPár"
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSDieselLocomotive.cs:841
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSDieselLocomotive.cs:844
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSElectricLocomotive.cs:2946
 msgid "WaterLvl"
 msgstr "HladinaVody"
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSDieselLocomotive.cs:843
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSDieselLocomotive.cs:846
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSElectricLocomotive.cs:2948
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSSteamLocomotive.cs:6223
 msgid "Last:"
 msgstr "Poslední:"
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSDieselLocomotive.cs:846
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSDieselLocomotive.cs:849
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSElectricLocomotive.cs:2951
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSSteamLocomotive.cs:6226
 msgid "Temp"
 msgstr "Teplota"
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSDieselLocomotive.cs:848
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSDieselLocomotive.cs:851
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSElectricLocomotive.cs:2953
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSSteamLocomotive.cs:6228
 msgid "OutTemp"
 msgstr "EXTteplota"
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSDieselLocomotive.cs:850
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSDieselLocomotive.cs:853
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSElectricLocomotive.cs:2955
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSSteamLocomotive.cs:6230
 msgid "NetHt"
 msgstr "ZtrTop"
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSDieselLocomotive.cs:1210
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSDieselLocomotive.cs:1216
 msgid "Engine is starting…"
 msgstr "Předmazávání spalovacího motoru probíhá..."
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSDieselLocomotive.cs:782
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSDieselLocomotive.cs:792
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSDieselLocomotive.cs:785
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSDieselLocomotive.cs:795
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSElectricLocomotive.cs:2877
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSElectricLocomotive.cs:2886
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSElectricLocomotive.cs:2908
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:8717
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSSteamLocomotive.cs:6180
 msgid "On"
 msgstr "Zapnuto"
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSDieselLocomotive.cs:787
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSDieselLocomotive.cs:797
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSDieselLocomotive.cs:790
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSDieselLocomotive.cs:800
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSElectricLocomotive.cs:2881
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSElectricLocomotive.cs:2890
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSElectricLocomotive.cs:2910
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:8719
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSSteamLocomotive.cs:6180
-#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/MSTS/AirSinglePipe.cs:243
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/MSTS/AirSinglePipe.cs:249
 msgid "Off"
 msgstr "Vypnuto"
 
 #. Context: Gear
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSDieselLocomotive.cs:807
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSDieselLocomotive.cs:810
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSSteamLocomotive.cs:5926
 msgctxt "Gear"
 msgid "N"
@@ -1616,168 +1618,177 @@ msgctxt "PowerSupply"
 msgid "Power"
 msgstr "Hlavnívýkon"
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:1571
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:1599
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:1587
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:1615
 msgid "No active cab selected"
 msgstr "Stanoviště není vybráno"
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:1578
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:1605
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:1594
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:1621
 msgid "Cab 1 selected"
 msgstr "Stanoviště 1"
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:1584
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:1611
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:1600
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:1627
 msgid "Cab 2 selected"
 msgstr "Stanoviště 2"
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:2587
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:2593
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:2609
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:2614
 msgid "Overcurrent protection!"
 msgstr "Zásah nadproudové ochrany!"
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:2650
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:2656
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:2672
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:2677
 msgid "Slip protection!"
 msgstr "Zásah protiskluzové ochrany!"
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:2868
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:2907
 msgid "Traction engines destroyed!"
 msgstr "Trakční motory zničeny!"
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:2881
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:2920
 msgid "Power outage - auxiliary drives are not powered."
 msgstr "Vypnutí proudu - pomocné pohony nekativní."
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:2903
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:2942
 msgid "Power on - auxiliary drives are powered up."
 msgstr "Zapnutí proudu - pomocné pohony aktivní."
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:3199
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:3249
 msgid "You're cold!"
 msgstr "Je ti zima!"
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:3202
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:3252
 msgid "The passengers are cold!"
 msgstr "Cestujícím je zima!"
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:3241
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:3291
 msgid "You're hot!"
 msgstr "Je ti horko!"
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:3244
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:3294
 msgid "Passengers are too hot!"
 msgstr "Cestujícím je příliš horko!"
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:3375
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:3381
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:3425
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:3431
 msgid "Overcurrent heating/air conditioning protection!"
 msgstr "Zásahnadproudové ochrany topení/klimatizace!"
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:5423
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:5544
 msgid "No water scoop on this loco"
 msgstr "Tato lokomotiva nemá naběrač vody"
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:5430
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:5551
 msgid "Scoop is broken, can't refill"
 msgstr "Naběrač vody je poškozen, nelze ji doplnit"
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:5437
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:5558
 #, fuzzy
 #| msgid "Scoop is broken, can't refill"
 msgid "Scoop is broken by junction track"
 msgstr "Naběrač vody je poškozen, nelze ji doplnit"
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:5447
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:5568
 #, fuzzy
 #| msgid "Scoop is broken, can't refill"
 msgid "Scoop is not over trough, can't refill"
 msgstr "Naběrač vody je poškozen, nelze ji doplnit"
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:5801
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:5922
 msgid "There's no more sand in the storage!"
 msgstr "Pískovače jsou prázdné!"
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:8733
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:8810
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:8868
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:8717
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:8719
+msgid "Disabling EDB: "
+msgstr ""
+
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:8942
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:9019
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:9077
 msgid "Position Forward"
 msgstr "Poloha Vpřed"
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:8734
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:8736
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:8809
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:8867
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:8943
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:8945
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:9018
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:9076
 msgid "Position D"
 msgstr "Poloha D"
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:8735
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:8807
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:8866
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:8944
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:9016
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:9075
 msgid "Position 0"
 msgstr "Poloha 0"
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:8737
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:8808
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:8865
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:8946
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:9017
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:9074
 msgid "Position Backward"
 msgstr "Poloha Vzad"
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:8922
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:9131
 msgid "Directional lever retracted"
 msgstr "Směrová páka vložena"
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:8924
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:9133
 msgid "Directional lever extended"
 msgstr "Směrová páka vyjmuta"
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:8975
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:9167
+msgid "World Object reloaded!"
+msgstr ""
+
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:9189
 msgid "Power system changed to 25kV."
 msgstr "Systém napájení změněn na 25kV."
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:8979
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:9193
 msgid "Power system changed to 3kV + 25kV."
 msgstr "Systém napájení změněn na 3kV + 25kV."
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:8998
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:9212
 msgid "Power system changed to 3kV."
 msgstr "Systém napájení změněn na 3kV."
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:9083
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:9297
 msgid ""
 "The marker has been deleted and marked for deletion in an external database."
 msgstr "Marker byl vymazán a označen pro vymazání v externí databázi."
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:9147
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:9361
 msgid "The power station is stored in an external database."
 msgstr "Napaječka uložena do externí databáze."
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:9205
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:9419
 msgid "Set "
 msgstr "Nastaveno "
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:9205
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:9419
 msgid "V and stored in an external database."
 msgstr "V a uloženo do externí databáze."
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:11285
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:11531
 #, fuzzy
 #| msgid "Selected speed changed to "
 msgid "Selected speed confirmed."
 msgstr "Požadovaná rychlost byla změněna na:"
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:5458
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:5579
 msgid "Refill: Loco must be moving forward."
 msgstr "Doplnit: Lokomotiva musí popojet dopředu."
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:5467
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:5588
 #, csharp-format
 msgid "Refill: Loco speed must exceed {0} for water to enter tender."
 msgstr ""
 "Doplnit: Rychlost lokomotivy musí být vyšší než {0}, aby se doplnila voda do "
 "tenderu."
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:5477
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:5598
 msgid "Refill: Water supply now replenished."
 msgstr "Doplnit: Voda byla doplněna."
 
@@ -2143,7 +2154,7 @@ msgid "Status:"
 msgstr "Stav:"
 
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSSteamLocomotive.cs:6174
-#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/MSTS/AirSinglePipe.cs:236
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/MSTS/AirSinglePipe.cs:242
 #: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/MSTS/SingleTransferPipe.cs:140
 msgid "Open"
 msgstr "Otevřít"
@@ -2177,8 +2188,8 @@ msgstr "BPoj"
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSSteamLocomotive.cs:6638
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSSteamLocomotive.cs:6659
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSSteamLocomotive.cs:6661
-#: ../../Orts.Simulation/Simulation/RollingStocks/TrainCar.cs:1929
-#: ../../Orts.Simulation/Simulation/RollingStocks/TrainCar.cs:1931
+#: ../../Orts.Simulation/Simulation/RollingStocks/TrainCar.cs:1928
+#: ../../Orts.Simulation/Simulation/RollingStocks/TrainCar.cs:1930
 msgid "Yes"
 msgstr "Ano"
 
@@ -2203,8 +2214,8 @@ msgstr "Ano"
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSSteamLocomotive.cs:6638
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSSteamLocomotive.cs:6659
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSSteamLocomotive.cs:6661
-#: ../../Orts.Simulation/Simulation/RollingStocks/TrainCar.cs:1929
-#: ../../Orts.Simulation/Simulation/RollingStocks/TrainCar.cs:1931
+#: ../../Orts.Simulation/Simulation/RollingStocks/TrainCar.cs:1928
+#: ../../Orts.Simulation/Simulation/RollingStocks/TrainCar.cs:1930
 msgid "No"
 msgstr "Ne"
 
@@ -2642,35 +2653,35 @@ msgctxt "HUD"
 msgid "Power"
 msgstr "Výkon"
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSWagon.cs:2178
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSWagon.cs:2180
 msgid "Starting unload"
 msgstr "Vykládka zahájena"
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSWagon.cs:3649
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSWagon.cs:3660
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSWagon.cs:3651
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSWagon.cs:3662
 msgid "opened"
 msgstr "otevřeno"
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSWagon.cs:3654
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSWagon.cs:3665
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSWagon.cs:3656
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSWagon.cs:3667
 #: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/BrakeSystem.cs:264
 #: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/BrakeSystem.cs:266
 msgid "closed"
 msgstr "zavřeno"
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSWagon.cs:4497
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSWagon.cs:4499
 msgid "Incompatible data"
 msgstr "Nekompatibilní údaje"
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSWagon.cs:4511
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSWagon.cs:4513
 msgid "Starting refill"
 msgstr "Začíná doplňovat"
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSWagon.cs:4520
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSWagon.cs:4522
 msgid "Preparing for unload"
 msgstr "Příprava k vyložení"
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/TrainCar.cs:1720
+#: ../../Orts.Simulation/Simulation/RollingStocks/TrainCar.cs:1719
 msgid ""
 "You were travelling too fast for this curve, and have snapped a brake hose "
 "on Car "
@@ -2678,7 +2689,15 @@ msgstr ""
 "Jedete do tohoto oblouku moc rychle. Došlo k přetržení hladic hlavního "
 "potrubí (náhražka modelace vykolejení)."
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/TrainCar.cs:1682
+#: ../../Orts.Simulation/Simulation/RollingStocks/TrainCar.cs:1334
+msgid "Car ID: "
+msgstr "Vůz ID: "
+
+#: ../../Orts.Simulation/Simulation/RollingStocks/TrainCar.cs:1334
+msgid " - experiencing braking force wheel skid."
+msgstr " - je kvůli vysoké brzdící síle ve smyku."
+
+#: ../../Orts.Simulation/Simulation/RollingStocks/TrainCar.cs:1681
 #, csharp-format
 msgid ""
 "You are travelling too fast for this curve. Slow down, your freight car {0} "
@@ -2687,7 +2706,7 @@ msgstr ""
 "Jedete do tohoto oblouku příliš rychle!. Zpomalte, nebo dojde k poškození "
 "nákladního vozu č. {0}. Doporučená rychlost pro tento oblouk je: {1}"
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/TrainCar.cs:1686
+#: ../../Orts.Simulation/Simulation/RollingStocks/TrainCar.cs:1685
 #, csharp-format
 msgid ""
 "You are travelling too fast for this curve. Slow down, your passengers in "
@@ -2744,28 +2763,28 @@ msgid "Selected speed set to "
 msgstr "Rychlost nastavena na "
 
 #: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/BrakeSystem.cs:253
-#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/MSTS/AirSinglePipe.cs:752
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/MSTS/AirSinglePipe.cs:788
 msgid "Empty"
 msgstr "Prázdný"
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/MSTS/AirSinglePipe.cs:92
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/MSTS/AirSinglePipe.cs:98
 msgid "Apply"
 msgstr "Zabrzděno"
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/MSTS/AirSinglePipe.cs:93
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/MSTS/AirSinglePipe.cs:99
 msgid "Release"
 msgstr "Odbrzdit"
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/MSTS/AirSinglePipe.cs:184
-#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/MSTS/AirSinglePipe.cs:193
-#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/MSTS/AirSinglePipe.cs:211
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/MSTS/AirSinglePipe.cs:190
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/MSTS/AirSinglePipe.cs:199
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/MSTS/AirSinglePipe.cs:217
 #: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/MSTS/EPBrakeSystem.cs:66
 msgid "BC"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/MSTS/AirSinglePipe.cs:185
-#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/MSTS/AirSinglePipe.cs:194
-#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/MSTS/AirSinglePipe.cs:212
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/MSTS/AirSinglePipe.cs:191
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/MSTS/AirSinglePipe.cs:200
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/MSTS/AirSinglePipe.cs:218
 #: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/MSTS/SingleTransferPipe.cs:74
 #: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/MSTS/SingleTransferPipe.cs:78
 #: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/MSTS/SingleTransferPipe.cs:96
@@ -2773,15 +2792,15 @@ msgstr ""
 msgid "BP"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/MSTS/AirSinglePipe.cs:191
-#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/MSTS/AirSinglePipe.cs:209
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/MSTS/AirSinglePipe.cs:197
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/MSTS/AirSinglePipe.cs:215
 #: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/MSTS/VacuumSinglePipe.cs:127
 #: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/MSTS/VacuumSinglePipe.cs:157
 msgid "EQ"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/MSTS/AirSinglePipe.cs:196
-#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/MSTS/AirSinglePipe.cs:214
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/MSTS/AirSinglePipe.cs:202
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/MSTS/AirSinglePipe.cs:220
 #: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/MSTS/SingleTransferPipe.cs:89
 #: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/MSTS/SingleTransferPipe.cs:98
 #: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/MSTS/VacuumSinglePipe.cs:137
@@ -2789,31 +2808,31 @@ msgstr ""
 msgid "EOT"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/MSTS/AirSinglePipe.cs:200
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/MSTS/AirSinglePipe.cs:206
 msgid "Pipe pressure change"
 msgstr "Změna tlaku v potrubí"
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/MSTS/AirSinglePipe.cs:201
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/MSTS/AirSinglePipe.cs:207
 msgid "Leakage"
 msgstr "Netěsnost"
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/MSTS/AirSinglePipe.cs:203
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/MSTS/AirSinglePipe.cs:209
 msgid "Volume mainres and pipes"
 msgstr "Objem hl.jímky a potrubí"
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/MSTS/AirSinglePipe.cs:237
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/MSTS/AirSinglePipe.cs:243
 msgid "Active"
 msgstr "Aktivní"
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/MSTS/AirSinglePipe.cs:243
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/MSTS/AirSinglePipe.cs:249
 msgid "Failure!"
 msgstr "Závada!"
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/MSTS/AirSinglePipe.cs:747
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/MSTS/AirSinglePipe.cs:783
 msgid "Loaded"
 msgstr "Ložený"
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/MSTS/AirSinglePipe.cs:2342
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/MSTS/AirSinglePipe.cs:2529
 msgid "Braking"
 msgstr "Brždění"
 
@@ -2838,42 +2857,42 @@ msgstr ""
 msgid "Circuit breaker closing not authorized"
 msgstr "Sepnutí hlavního vypínače není povoleno!"
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/PowerSupplies/DieselEngine.cs:1535
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/PowerSupplies/DieselEngine.cs:1764
 msgid "The engine's wrecked!"
 msgstr "Spalovací motor je zadřený!"
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/PowerSupplies/DieselEngine.cs:1541
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/PowerSupplies/DieselEngine.cs:1770
 msgid "The engine's damaged!"
 msgstr "Spalovací motor je poškozen!"
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/PowerSupplies/DieselEngine.cs:1549
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/PowerSupplies/DieselEngine.cs:1778
 msgid "The engine is overheating! Water temperature:"
 msgstr "Spalovací motor se přehřívá! Teplota vody:"
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/PowerSupplies/DieselEngine.cs:1551
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/PowerSupplies/DieselEngine.cs:1780
 msgid "The engine is overheating! Oil temperature:"
 msgstr "Spalovací motor se přehřívá! Teplota oleje:"
 
 #. Context: Engine
-#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/PowerSupplies/DieselEngine.cs:484
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/PowerSupplies/DieselEngine.cs:493
 msgctxt "Engine"
 msgid "Stopped"
 msgstr "Spalovací motor zastaven"
 
 #. Context: Engine
-#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/PowerSupplies/DieselEngine.cs:485
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/PowerSupplies/DieselEngine.cs:494
 msgctxt "Engine"
 msgid "Starting"
 msgstr "Spalovací motor startuje"
 
 #. Context: Engine
-#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/PowerSupplies/DieselEngine.cs:486
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/PowerSupplies/DieselEngine.cs:495
 msgctxt "Engine"
 msgid "Running"
 msgstr "Spalovací motor běží"
 
 #. Context: Engine
-#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/PowerSupplies/DieselEngine.cs:487
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/PowerSupplies/DieselEngine.cs:496
 msgctxt "Engine"
 msgid "Stopping"
 msgstr "Spalovací motor stopuje"

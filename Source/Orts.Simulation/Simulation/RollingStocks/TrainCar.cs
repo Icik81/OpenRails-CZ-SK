@@ -248,7 +248,7 @@ namespace Orts.Simulation.RollingStocks
         float DefaultBrakeShoeCoefficientFriction;  // A default value of brake shoe friction is no user settings are present.
         float BrakeWheelTreadForceN; // The retarding force apparent on the tread of the wheel
         float WagonBrakeAdhesiveForceN; // The adhesive force existing on the wheels of the wagon
-        public float SkidFriction = 0.08f; // Friction if wheel starts skidding - based upon wheel dynamic friction of approx 0.08
+        public float SkidFriction = 0.20f; // Friction if wheel starts skidding - based upon wheel dynamic friction of approx 0.08
 
         public float AuxTenderWaterMassKG;    // Water mass in auxiliary tender
         public string AuxWagonType;           // Store wagon type for use with auxilary tender calculations

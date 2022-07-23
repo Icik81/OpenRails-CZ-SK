@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2022-06-19 13:43:14+0200\n"
-"PO-Revision-Date: 2022-06-19 13:43:14+0200\n"
+"POT-Creation-Date: 2022-07-23 15:57:22+0200\n"
+"PO-Revision-Date: 2022-07-23 15:57:22+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -1269,23 +1269,31 @@ msgstr ""
 msgid "Control_CZSK Lap button"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:293
-msgid "Set Power Supply Station Location"
+#: ../../ORTS.Common/Input/UserCommand.cs:292
+msgid "Control_CZSK Disabling EDB button"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:294
-msgid "Set Voltage 25k"
+msgid "Set Power Supply Station Location"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:295
-msgid "Set Voltage 3k"
+msgid "Set Voltage 25k"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:296
-msgid "Set Voltage 0"
+msgid "Set Voltage 3k"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:297
+msgid "Set Voltage 0"
+msgstr ""
+
+#: ../../ORTS.Common/Input/UserCommand.cs:298
 msgid "Set Delete Voltage Marker"
+msgstr ""
+
+#: ../../ORTS.Common/Input/UserCommand.cs:300
+msgid "Control_CZSK Reload World Object"
 msgstr ""
 
