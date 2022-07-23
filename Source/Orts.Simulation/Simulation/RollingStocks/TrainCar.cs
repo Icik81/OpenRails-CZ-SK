@@ -361,6 +361,7 @@ namespace Orts.Simulation.RollingStocks
         public bool CarIsRunning;
         public bool CarCabHeatingIsSetOn;
         public float AICompressorStartDelay;
+        public float WheelDamageValue;
 
         public float PowerReductionResult1;  // Redukce výkonu od topení, klimatizace, kompresoru
         public float PowerReductionResult2;  // Redukce výkonu od nedostatečného tlaku vzduchu v potrubí
@@ -702,6 +703,10 @@ namespace Orts.Simulation.RollingStocks
 
         public virtual void Initialize()
         {
+            // Icik
+            if (WheelDamageValue != 0)
+                this.SignalEvent(Event.WheelDamage);
+
             CurveResistanceDependent = Simulator.Settings.CurveResistanceDependent;
             CurveSpeedDependent = Simulator.Settings.CurveSpeedDependent;
             TunnelResistanceDependent = Simulator.Settings.TunnelResistanceDependent;
@@ -1280,7 +1285,7 @@ namespace Orts.Simulation.RollingStocks
                     BrakeShoeCoefficientFriction = DefaultBrakeShoeCoefficientFriction * AdhesionMultiplier;  // For display purposes on HUD
                 }
 
-                // Icik
+                // Icik                                
                 if (BrakeSystem.BrakeModeRMgActive)
                 {
                     float UserFrictionRMg = GetUserRMgShoeFrictionFactor();
@@ -1301,66 +1306,46 @@ namespace Orts.Simulation.RollingStocks
                 BrakeShoeCoefficientFrictionAdjFactor = MathHelper.Clamp(BrakeShoeCoefficientFrictionAdjFactor, 0.01f, 1.0f);
                 BrakeShoeRetardCoefficientFrictionAdjFactor = MathHelper.Clamp(BrakeShoeRetardCoefficientFrictionAdjFactor, 0.01f, 1.0f);
 
-                // ************  Check if diesel or electric - assumed already be cover by advanced adhesion model *********
-
-                if (this is MSTSDieselLocomotive || this is MSTSElectricLocomotive)
+                // Dupání kol při vydření plošek                
+                if (BrakeSkid || WheelSlip || WheelSkid)
                 {
-                    if (WheelSlip && ThrottlePercent < 0.1f && BrakeRetardForceN > 25.0) // If advanced adhesion model indicates wheel slip, then check other conditiond (throttle and brake force) to determine whether it is a wheel slip or brake skid
-                    {
-                        BrakeSkid = true;  // set brake skid flag true
-                    }
-                    else
-                    {
-                        BrakeSkid = false;
-                    }
+                    // Spustí zvuk dupání plošek na kolech
+                    if (WheelDamageValue == 0)
+                        this.SignalEvent(Event.WheelDamage);
+                    WheelDamageValue += 1 * Simulator.OneSecondLoop;
                 }
 
-                else if (!(this is MSTSDieselLocomotive) || !(this is MSTSElectricLocomotive))
+                // Brake Skid
+                // Výpočet adheze pro lokomotivy a vozy                    
+                LocoBrakeAdhesiveForceN = 0;
+                WagonBrakeAdhesiveForceN = 0;
+                if (this is MSTSDieselLocomotive || this is MSTSElectricLocomotive || this is MSTSSteamLocomotive)
+                    LocoBrakeAdhesiveForceN = MassKG * GravitationalAccelerationMpS2 * Train.LocomotiveCoefficientFriction; // Adheze pro lokomotivy
+                else
+                    WagonBrakeAdhesiveForceN = MassKG * GravitationalAccelerationMpS2 * Train.WagonCoefficientFriction; // Adheze pro vozy
+
+                float BrakeAdhesiveForceN = LocoBrakeAdhesiveForceN + WagonBrakeAdhesiveForceN;
+
+                // Test if wheel forces are high enough to induce a slip. Set slip flag if slip occuring 
+                if (!BrakeSkid && AbsSpeedMpS > 0.01)  // Train must be moving forward to experience skid
                 {
-
-                    // Calculate tread force on wheel - use the retard force as this is related to brakeshoe coefficient, and doesn't vary with skid.
-                    BrakeWheelTreadForceN = BrakeRetardForceN;
-
-
-                    // Calculate adhesive force based upon whether in skid or not
-                    if (BrakeSkid)
+                    if (BrakeRetardForceN > BrakeAdhesiveForceN)
                     {
-                        //WagonBrakeAdhesiveForceN = MassKG * GravitationalAccelerationMpS2 * SkidFriction;  // Adhesive force if wheel skidding
-                        WagonBrakeAdhesiveForceN = MassKG * GravitationalAccelerationMpS2 * Train.WagonCoefficientFriction;
+                        BrakeSkid = true;   // wagon wheel is slipping
+                        var message = Simulator.Catalog.GetStringFmt("Car ID: ") + CarID + Simulator.Catalog.GetStringFmt(" - experiencing braking force wheel skid.");
+                        Simulator.Confirmer.Message(ConfirmLevel.Warning, message);
                     }
-                    else
+                }
+                else if (BrakeSkid && AbsSpeedMpS > 0.01)
+                {
+                    if (BrakeRetardForceN < BrakeAdhesiveForceN || BrakeForceN == 0.0f)
                     {
-                        WagonBrakeAdhesiveForceN = MassKG * GravitationalAccelerationMpS2 * Train.WagonCoefficientFriction; // Adhesive force wheel normal
-                    }
-
-                    // Test if wheel forces are high enough to induce a slip. Set slip flag if slip occuring 
-                    if (!BrakeSkid && AbsSpeedMpS > 0.01)  // Train must be moving forward to experience skid
-                    {
-                        if (BrakeWheelTreadForceN > WagonBrakeAdhesiveForceN)
-                        {
-                            BrakeSkid = true; 	// wagon wheel is slipping
-                            var message = "Car ID: " + CarID + " - experiencing braking force wheel skid.";
-                            Simulator.Confirmer.Message(ConfirmLevel.Warning, message);
-                        }
-                    }
-                    else if (BrakeSkid && AbsSpeedMpS > 0.01)
-                    {
-                        if (BrakeWheelTreadForceN < WagonBrakeAdhesiveForceN || BrakeForceN == 0.0f)
-                        {
-                            BrakeSkid = false; 	// wagon wheel is not slipping
-                        }
-
-                    }
-                    else
-                    {
-                        BrakeSkid = false; 	// wagon wheel is not slipping
-
+                        BrakeSkid = false;  // wagon wheel is not slipping
                     }
                 }
                 else
                 {
-                    BrakeSkid = false; 	// wagon wheel is not slipping
-                    BrakeShoeRetardCoefficientFrictionAdjFactor = 1.0f;
+                    BrakeSkid = false;  // wagon wheel is not slipping
                 }
             }
             else  // set default values if simple adhesion model, or if diesel or electric locomotive is used, which doesn't check for brake skid.
@@ -1995,6 +1980,7 @@ namespace Orts.Simulation.RollingStocks
             outf.Write(CabHeating_OffOn);
             outf.Write(AuxPowerOff);
             outf.Write(UserPowerOff);
+            outf.Write(WheelDamageValue);
         }
 
         // Game restore
@@ -2025,6 +2011,7 @@ namespace Orts.Simulation.RollingStocks
             CabHeating_OffOn = inf.ReadBoolean();
             AuxPowerOff = inf.ReadBoolean();
             UserPowerOff = inf.ReadBoolean();
+            WheelDamageValue = inf.ReadSingle();
         }
 
         //================================================================================================//

@@ -214,7 +214,8 @@ namespace Orts.Formats.Msts
             BrakeCylControlled,
             CurveForceControlled,
             MotorWaterTemperatureControlled,
-            MotorOilTemperatureControlled
+            MotorOilTemperatureControlled,
+            WheelDamageValueControlled
         };
 
         public Controls Control = Controls.None;
@@ -257,6 +258,7 @@ namespace Orts.Formats.Msts
                 case "curveforcecontrolled": Control = Controls.CurveForceControlled; break;
                 case "motorwatertemperaturecontrolled": Control = Controls.MotorWaterTemperatureControlled; break;
                 case "motoroiltemperaturecontrolled": Control = Controls.MotorOilTemperatureControlled; break;
+                case "wheeldamagevaluecontrolled": Control = Controls.WheelDamageValueControlled; break;
                 default: STFException.TraceWarning(stf, "Crash expected: Skipped unknown VolumeCurve/Frequencycurve type " + type); stf.SkipRestOfBlock(); return;
             }
             stf.ParseBlock(new STFReader.TokenProcessor[] {

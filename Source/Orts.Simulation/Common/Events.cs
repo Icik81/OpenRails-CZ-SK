@@ -327,6 +327,7 @@ namespace Orts.Common
         BreakEDBButton,
         BreakEDBButtonRelease,
         MotorStopBreak,
+        WheelDamage,
     }
 
     public static class Events
@@ -668,6 +669,7 @@ namespace Orts.Common
                         case 20081: return Event.BreakEDBButton;
                         case 20082: return Event.BreakEDBButtonRelease;
                         case 20083: return Event.MotorStopBreak;
+                        case 20084: return Event.WheelDamage;
 
                         default: return 0;
                     }
