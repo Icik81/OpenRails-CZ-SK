@@ -248,7 +248,7 @@ namespace Orts.Simulation.RollingStocks
         float DefaultBrakeShoeCoefficientFriction;  // A default value of brake shoe friction is no user settings are present.
         float BrakeWheelTreadForceN; // The retarding force apparent on the tread of the wheel
         float WagonBrakeAdhesiveForceN; // The adhesive force existing on the wheels of the wagon
-        public float SkidFriction = 0.20f; // Friction if wheel starts skidding - based upon wheel dynamic friction of approx 0.08
+        public float SkidFriction = 0.16f; // Friction if wheel starts skidding - based upon wheel dynamic friction of approx 0.08
 
         public float AuxTenderWaterMassKG;    // Water mass in auxiliary tender
         public string AuxWagonType;           // Store wagon type for use with auxilary tender calculations
@@ -1169,7 +1169,7 @@ namespace Orts.Simulation.RollingStocks
             UpdateCurveSpeedLimit(); // call this first as it will provide inputs for the curve force.
             UpdateCurveForce(elapsedClockSeconds);
             UpdateTunnelForce();
-            UpdateBrakeSlideCalculation();
+            UpdateBrakeSlideCalculation(elapsedClockSeconds);
             //UpdateTrainDerailmentRisk();
 
             CalculatePositionInTunnel();
@@ -1255,7 +1255,9 @@ namespace Orts.Simulation.RollingStocks
         /// 
         /// </summary>
 
-        public virtual void UpdateBrakeSlideCalculation()
+        float PulseTracker;
+        int NextPulse = 1;
+        public virtual void UpdateBrakeSlideCalculation(float elapsedClockSeconds)
         {
 
             // Only apply slide, and advanced brake friction, if advanced adhesion is selected, and it is a Player train
@@ -1306,13 +1308,41 @@ namespace Orts.Simulation.RollingStocks
                 BrakeShoeCoefficientFrictionAdjFactor = MathHelper.Clamp(BrakeShoeCoefficientFrictionAdjFactor, 0.01f, 1.0f);
                 BrakeShoeRetardCoefficientFrictionAdjFactor = MathHelper.Clamp(BrakeShoeRetardCoefficientFrictionAdjFactor, 0.01f, 1.0f);
 
+                if (this is MSTSSteamLocomotive)
+                { 
+                    // Pro parní trakci nepočítej pulsy
+                }
+                else
+                {
+                    // 
+                    // Variable1 is proportional to angular speed, value of 10 means 1 rotation/second.
+                    if (BrakeSkid)
+                        (this as MSTSWagon).WheelSpeedMpS = 0;
+                    var variable1 = Math.Abs((this as MSTSWagon).WheelSpeedMpS / DriverWheelRadiusM / MathHelper.Pi * 5);
+                    
+                    const int rotations = 2;
+                    const int fullLoop = 10 * rotations;
+                    int numPulses = 4 * 2 * rotations;
+
+                    var dPulseTracker = variable1 / fullLoop * numPulses * elapsedClockSeconds;
+                    PulseTracker += dPulseTracker;
+
+                    if (PulseTracker > (float)NextPulse - dPulseTracker / 2)
+                    {
+                        SignalEvent((Event)((int)Event.SteamPulse1 + NextPulse - 1));
+                        PulseTracker %= numPulses;
+                        NextPulse %= numPulses;
+                        NextPulse++;
+                    }
+                }
+
                 // Dupání kol při vydření plošek                
-                if (BrakeSkid || WheelSlip || WheelSkid)
+                if (BrakeSkid)
                 {
                     // Spustí zvuk dupání plošek na kolech
                     if (WheelDamageValue == 0)
                         this.SignalEvent(Event.WheelDamage);
-                    WheelDamageValue += 1 * Simulator.OneSecondLoop;
+                    WheelDamageValue += 1 * elapsedClockSeconds;
                 }
 
                 // Brake Skid
@@ -1324,7 +1354,7 @@ namespace Orts.Simulation.RollingStocks
                 else
                     WagonBrakeAdhesiveForceN = MassKG * GravitationalAccelerationMpS2 * Train.WagonCoefficientFriction; // Adheze pro vozy
 
-                float BrakeAdhesiveForceN = LocoBrakeAdhesiveForceN + WagonBrakeAdhesiveForceN;
+                float BrakeAdhesiveForceN = (LocoBrakeAdhesiveForceN + WagonBrakeAdhesiveForceN) * 0.6f;
 
                 // Test if wheel forces are high enough to induce a slip. Set slip flag if slip occuring 
                 if (!BrakeSkid && AbsSpeedMpS > 0.01)  // Train must be moving forward to experience skid
