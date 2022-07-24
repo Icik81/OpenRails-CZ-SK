@@ -1596,12 +1596,14 @@ namespace Orts.Simulation.RollingStocks.SubSystems
 
         protected void EmergencyBrakes(bool Brakes)
         {
-            if (Locomotive.ControllerVolts > 0)
-                Locomotive.ControllerVolts = 0;
+            //if (Locomotive.ControllerVolts > 0)
+            //    Locomotive.ControllerVolts = 0;
             if (Brakes)
             {
                 Locomotive.EmergencyButtonPressed = true;
                 Locomotive.TrainBrakeController.EmergencyBrakingPushButton = true;
+                if (Locomotive.ControllerVolts > 0)
+                    Locomotive.ControllerVolts = 0;
             }
             else
             {
