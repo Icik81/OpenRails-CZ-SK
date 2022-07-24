@@ -794,9 +794,9 @@ namespace Orts.Viewer3D.RollingStock
 
         internal override void Mark()
         {
-            foreach (var pdl in ParticleDrawers.Values)
-                foreach (var pd in pdl)
-                    pd.Mark();
+            //foreach (var pdl in ParticleDrawers.Values)
+                //foreach (var pd in pdl)
+                    //pd.Mark();
             if (_CabRenderer != null)
                 _CabRenderer.Mark();
             if (ThreeDimentionCabViewer != null && Locomotive.CabView3D != null)

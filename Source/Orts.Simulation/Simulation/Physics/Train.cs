@@ -11604,7 +11604,8 @@ namespace Orts.Simulation.Physics
                         }
                         else
                         {
-                            ValidRoute[0].Add(new TCRouteElement(OccupiedTrack[isection], thisDirection, signalRef, lastSectionIndex));
+                            //ValidRoute[0].Add(new TCRouteElement(OccupiedTrack[isection], thisDirection, signalRef, lastSectionIndex));
+                            ValidRoute[0].Add(new TCRouteElement(OccupiedTrack[isection], thisDirection == 1 ? 0 : 1, signalRef, lastSectionIndex));
                         }
                     }
                     else
