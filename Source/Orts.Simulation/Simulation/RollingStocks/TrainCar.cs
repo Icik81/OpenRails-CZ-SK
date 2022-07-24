@@ -362,6 +362,7 @@ namespace Orts.Simulation.RollingStocks
         public bool CarCabHeatingIsSetOn;
         public float AICompressorStartDelay;
         public float WheelDamageValue;
+        public float PrevWheelDamageValue;
 
         public float PowerReductionResult1;  // Redukce výkonu od topení, klimatizace, kompresoru
         public float PowerReductionResult2;  // Redukce výkonu od nedostatečného tlaku vzduchu v potrubí
@@ -703,10 +704,6 @@ namespace Orts.Simulation.RollingStocks
 
         public virtual void Initialize()
         {
-            // Icik
-            if (WheelDamageValue != 0)
-                this.SignalEvent(Event.WheelDamage);
-
             CurveResistanceDependent = Simulator.Settings.CurveResistanceDependent;
             CurveSpeedDependent = Simulator.Settings.CurveSpeedDependent;
             TunnelResistanceDependent = Simulator.Settings.TunnelResistanceDependent;
@@ -1308,41 +1305,46 @@ namespace Orts.Simulation.RollingStocks
                 BrakeShoeCoefficientFrictionAdjFactor = MathHelper.Clamp(BrakeShoeCoefficientFrictionAdjFactor, 0.01f, 1.0f);
                 BrakeShoeRetardCoefficientFrictionAdjFactor = MathHelper.Clamp(BrakeShoeRetardCoefficientFrictionAdjFactor, 0.01f, 1.0f);
 
+                // WheelDamage 
                 if (this is MSTSSteamLocomotive)
-                { 
+                {
                     // Pro parní trakci nepočítej pulsy
                 }
                 else
                 {
-                    // 
-                    // Variable1 is proportional to angular speed, value of 10 means 1 rotation/second.
-                    if (BrakeSkid)
-                        (this as MSTSWagon).WheelSpeedMpS = 0;
-                    var variable1 = Math.Abs((this as MSTSWagon).WheelSpeedMpS / DriverWheelRadiusM / MathHelper.Pi * 5);
-                    
-                    const int rotations = 2;
-                    const int fullLoop = 10 * rotations;
-                    int numPulses = 4 * 2 * rotations;
-
-                    var dPulseTracker = variable1 / fullLoop * numPulses * elapsedClockSeconds;
-                    PulseTracker += dPulseTracker;
-
-                    if (PulseTracker > (float)NextPulse - dPulseTracker / 2)
+                    if (!BrakeSkid && (this as MSTSWagon).AbsWheelSpeedMpS > 0)
                     {
-                        SignalEvent((Event)((int)Event.SteamPulse1 + NextPulse - 1));
-                        PulseTracker %= numPulses;
-                        NextPulse %= numPulses;
-                        NextPulse++;
+                        // Variable1 is proportional to angular speed, value of 10 means 1 rotation/second.                                        
+                        var variable1 = Math.Abs((this as MSTSWagon).WheelSpeedMpS / DriverWheelRadiusM / MathHelper.Pi * 5);
+                        const int rotations = 2;
+                        const int fullLoop = 10 * rotations;
+                        int numPulses = 4 * 2 * rotations;
+                        var dPulseTracker = variable1 / fullLoop * numPulses * elapsedClockSeconds;
+                        PulseTracker += dPulseTracker;
+                        if (PulseTracker > (float)NextPulse - dPulseTracker / 2)
+                        {
+                            SignalEvent((Event)((int)Event.SteamPulse1 + NextPulse - 1));
+                            PulseTracker %= numPulses;
+                            NextPulse %= numPulses;
+                            NextPulse++;
+                        }
                     }
                 }
 
-                // Dupání kol při vydření plošek                
+                // WheelDamage - plošky na kolech při zaseknutých kolech                
                 if (BrakeSkid)
                 {
-                    // Spustí zvuk dupání plošek na kolech
+                    // Spustí trigger BrakeSkid
                     if (WheelDamageValue == 0)
-                        this.SignalEvent(Event.WheelDamage);
-                    WheelDamageValue += 1 * elapsedClockSeconds;
+                        this.SignalEvent(Event.BrakeSkidStart);
+                    WheelDamageValue += 1 * elapsedClockSeconds;                    
+                }
+                else
+                {
+                    // Ukončí trigger BrakeSkid
+                    if (WheelDamageValue != PrevWheelDamageValue)
+                        this.SignalEvent(Event.BrakeSkidStop);
+                    PrevWheelDamageValue = WheelDamageValue;
                 }
 
                 // Brake Skid

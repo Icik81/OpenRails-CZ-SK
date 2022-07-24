@@ -9640,18 +9640,47 @@ namespace Orts.Simulation.RollingStocks
             {
                 case CABViewControlTypes.SPEEDOMETER:
                     {
-                        float speed = Math.Abs(WheelSpeedMpS);
-                        if (extendedPhysics != null)
+                        if (!BrakeSkid)
                         {
-                            foreach (Undercarriage uc in extendedPhysics.Undercarriages)
+                            if (WheelSpeedMpS_Cab < WheelSpeedMpS)
+                                WheelSpeedMpS_Cab += 10f / 3.6f * elapsedTime;
+                            if (WheelSpeedMpS_Cab > WheelSpeedMpS)
                             {
-                                foreach (ExtendedAxle ea in uc.Axles)
+                                WheelSpeedMpS_Cab = WheelSpeedMpS;
+                                if (extendedPhysics != null)
                                 {
-                                    if (ea.HaveSpeedometerSensor)
-                                        speed = Math.Abs(ea.WheelSpeedMpS);
+                                    foreach (Undercarriage uc in extendedPhysics.Undercarriages)
+                                    {
+                                        foreach (ExtendedAxle ea in uc.Axles)
+                                        {
+                                            if (ea.HaveSpeedometerSensor)
+                                                WheelSpeedMpS_Cab = Math.Abs(ea.WheelSpeedMpS);
+                                        }
+                                    }
                                 }
                             }
                         }
+                        else
+                        {
+                            WheelSpeedMpS = 0;
+                            if (extendedPhysics != null)
+                            {
+                                foreach (Undercarriage uc in extendedPhysics.Undercarriages)
+                                {
+                                    foreach (ExtendedAxle ea in uc.Axles)
+                                    {
+                                        if (ea.HaveSpeedometerSensor)
+                                            WheelSpeedMpS = 0;
+                                    }
+                                }
+                            }
+                            if (WheelSpeedMpS_Cab > 0)
+                                WheelSpeedMpS_Cab -= 10f / 3.6f * elapsedTime;
+                            if (WheelSpeedMpS_Cab < 0)
+                                WheelSpeedMpS_Cab = 0;
+                        }
+
+                        float speed = WheelSpeedMpS_Cab;
                         cvc.ElapsedTime += elapsedTime;
                         if (cvc.ElapsedTime < cvc.UpdateTime && cvc.Vibration > 0)
                         {
