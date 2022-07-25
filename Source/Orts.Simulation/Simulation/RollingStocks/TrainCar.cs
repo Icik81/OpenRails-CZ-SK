@@ -1337,7 +1337,7 @@ namespace Orts.Simulation.RollingStocks
                     // Spustí trigger BrakeSkid
                     if (WheelDamageValue == 0)
                         this.SignalEvent(Event.BrakeSkidStart);
-                    WheelDamageValue += 1 * elapsedClockSeconds;                    
+                    WheelDamageValue += 1 * elapsedClockSeconds * (1.2f - Simulator.Weather.PricipitationIntensityPPSPM2);                    
                 }
                 else
                 {
@@ -1356,7 +1356,8 @@ namespace Orts.Simulation.RollingStocks
                 else
                     WagonBrakeAdhesiveForceN = MassKG * GravitationalAccelerationMpS2 * Train.WagonCoefficientFriction; // Adheze pro vozy
 
-                float BrakeAdhesiveForceN = (LocoBrakeAdhesiveForceN + WagonBrakeAdhesiveForceN) * 0.6f;
+                float TrackFactor = MathHelper.Clamp(1.0f - TrackFactorY, 0.5f, 1.0f);                
+                float BrakeAdhesiveForceN = (LocoBrakeAdhesiveForceN + WagonBrakeAdhesiveForceN) * TrackFactor;
 
                 // Test if wheel forces are high enough to induce a slip. Set slip flag if slip occuring 
                 if (!BrakeSkid && AbsSpeedMpS > 0.01)  // Train must be moving forward to experience skid
