@@ -1968,7 +1968,7 @@ namespace Orts.Simulation.RollingStocks
                 if (MaxPowerW != 0)
                 MaxPowerWBase = MaxPowerW;
 
-            if (MaxTrackSandBoxCapacityM3 == 0) MaxTrackSandBoxCapacityM3 = 0.0125f; // Default 0.0125m3
+            if (MaxTrackSandBoxCapacityM3 == 0) MaxTrackSandBoxCapacityM3 = 0.0250f; // Default 0.0250m3
             if (CurrentTrackSandBoxCapacityM3 == 0) CurrentTrackSandBoxCapacityM3 = MaxTrackSandBoxCapacityM3;
             CurrentTrackSandBoxCapacityKG = (float)Math.Round(CurrentTrackSandBoxCapacityM3 * 1600, 2);
 
@@ -5885,7 +5885,8 @@ namespace Orts.Simulation.RollingStocks
             float WagonCurtius_KnifflerC = 0.161f;
 
             float WagonBaseuMax = (WagonCurtius_KnifflerA / (MpS.ToKpH(AbsSpeedMpS) + WagonCurtius_KnifflerB) + WagonCurtius_KnifflerC);
-            Train.WagonCoefficientFriction = WagonBaseuMax * BaseFrictionCoefficientFactor;  // Find friction coefficient factor for wagons based upon environmental conditions
+            // Icik
+            Train.WagonCoefficientFriction = WagonBaseuMax * BaseFrictionCoefficientFactor * TrackFactor;  // Find friction coefficient factor for wagons based upon environmental conditions
             WagonCoefficientFrictionHUD = Train.WagonCoefficientFriction; // Save value for HUD display
 
             if (EngineType == EngineTypes.Steam && SteamDrvWheelWeightLbs < 10000 && Simulator.WeatherType == WeatherType.Clear)
@@ -5906,8 +5907,9 @@ namespace Orts.Simulation.RollingStocks
             var AdhesionMultiplier = Simulator.Settings.AdhesionFactor / 100.0f; // Convert to a factor where 100% = no change to adhesion
             var AdhesionRandom = (float)((float)(Simulator.Settings.AdhesionFactorChange) * 0.01f * 2f * (Simulator.Random.NextDouble() - 0.5f));
 
-            Train.LocomotiveCoefficientFriction = BaseuMax * BaseFrictionCoefficientFactor * AdhesionMultiplier;  // Find friction coefficient factor for locomotive
-            Train.LocomotiveCoefficientFriction = MathHelper.Clamp(Train.LocomotiveCoefficientFriction, 0.05f, 0.8f); // Ensure friction coefficient never exceeds a "reasonable" value
+            // Icik
+            Train.LocomotiveCoefficientFriction = BaseuMax * BaseFrictionCoefficientFactor * AdhesionMultiplier * TrackFactor;  // Find friction coefficient factor for locomotive
+            //Train.LocomotiveCoefficientFriction = MathHelper.Clamp(Train.LocomotiveCoefficientFriction, 0.05f, 0.8f); // Ensure friction coefficient never exceeds a "reasonable" value
 
             // Set adhesion conditions for diesel, electric or steam geared locomotives
             if (elapsedClockSeconds > 0)

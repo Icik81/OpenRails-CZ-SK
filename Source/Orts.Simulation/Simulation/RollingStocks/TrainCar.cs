@@ -1254,6 +1254,7 @@ namespace Orts.Simulation.RollingStocks
 
         float PulseTracker;
         int NextPulse = 1;
+        public float TrackFactor = 1;
         public virtual void UpdateBrakeSlideCalculation(float elapsedClockSeconds)
         {
 
@@ -1356,8 +1357,8 @@ namespace Orts.Simulation.RollingStocks
                 else
                     WagonBrakeAdhesiveForceN = MassKG * GravitationalAccelerationMpS2 * Train.WagonCoefficientFriction; // Adheze pro vozy
 
-                float TrackFactor = MathHelper.Clamp(1.0f - TrackFactorY, 0.5f, 1.0f);                
-                float BrakeAdhesiveForceN = (LocoBrakeAdhesiveForceN + WagonBrakeAdhesiveForceN) * TrackFactor;
+                TrackFactor = MathHelper.Clamp(1.3f - TrackFactorY, 0.7f, 1.3f);                
+                float BrakeAdhesiveForceN = (LocoBrakeAdhesiveForceN + WagonBrakeAdhesiveForceN) * 0.7f;
 
                 // Test if wheel forces are high enough to induce a slip. Set slip flag if slip occuring 
                 if (!BrakeSkid && AbsSpeedMpS > 0.01)  // Train must be moving forward to experience skid
