@@ -2073,26 +2073,31 @@ namespace Orts.Simulation.RollingStocks
                 }
 
                 // Test to see if coupler forces have been exceeded, and coupler has broken. Exceeding this limit will break the coupler
-                if (IsPlayerTrain && CarIsPlayerLoco) // Only break couplers on player trains
+                if (IsPlayerTrain && Simulator.Settings.BreakCouplers) // Only break couplers on player trains
                 {
                     // Icik
-                    //Simulator.Confirmer.Information("ImpulseCouplerForceUN = " + Math.Abs(ImpulseCouplerForceUN / 500 * CouplerForceU));
+                    //if (Math.Abs(ImpulseCouplerForceUN) > 0)
+                    //    Simulator.Confirmer.Information("ImpulseCouplerForceUN = " + Math.Abs(ImpulseCouplerForceUN / 500f * CouplerForceU));
                     //Simulator.Confirmer.Information("MaxImpulseCouplerForceUN = " + MaxImpulseCouplerForceUN);
 
                     float MaxImpulseCouplerForceUN = 850000; // default 850kN
+                    // Rozjezdový režim
+                    float ImpulsForce = ImpulseCouplerForceUN / 500f * CouplerForceU;
+                    // Brzdící režim
+                    if (MSTSBrakeSystem.BrakeLine1PressurePSI < MSTSBrakeSystem.maxPressurePSI0 || MSTSBrakeSystem.AutoCylPressurePSI0 > 0)
+                        ImpulsForce = ImpulseCouplerForceUN / 500f * CouplerForceU / 4f;
 
-                    if (Math.Abs(CouplerForceU) > GetCouplerBreak2N() || Math.Abs(ImpulseCouplerForceUN / 500 * CouplerForceU) > MaxImpulseCouplerForceUN)  // break couplers if either static or impulse forces exceeded
+                    if (Math.Abs(CouplerForceU) > GetCouplerBreak2N() || Math.Abs(ImpulsForce) > MaxImpulseCouplerForceUN)  // break couplers if either static or impulse forces exceeded
                     {
                         CouplerExceedBreakLimit = true;
 
                         if (Math.Abs(CouplerForceU) > GetCouplerBreak2N())
                         {
                             Trace.TraceInformation("Coupler on CarID {0} has broken due to excessive static coupler force {1}", CarID, CouplerForceU);
-
                         }
-                        else if (Math.Abs(ImpulseCouplerForceUN) > GetCouplerBreak2N())
+                        else if (Math.Abs(ImpulsForce) > MaxImpulseCouplerForceUN)
                         {
-                            Trace.TraceInformation("Coupler on CarID {0} has broken due to excessive impulse coupler force {1}", CarID, ImpulseCouplerForceUN);
+                            Trace.TraceInformation("Coupler on CarID {0} has broken due to excessive impulse coupler force {1}", CarID, ImpulsForce);
                         }
                     }
                     else
