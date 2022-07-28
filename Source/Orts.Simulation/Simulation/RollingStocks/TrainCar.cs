@@ -1414,7 +1414,7 @@ namespace Orts.Simulation.RollingStocks
                         string TreeLeavesMSG = "";
                         if (PlayerLoco != null && PlayerLoco.TreeLeavesLevel > 0)
                             TreeLeavesMSG = Simulator.Catalog.GetString("Tree leaves on track!");
-                        Simulator.Confirmer.Message(ConfirmLevel.Warning, message + " - " + TreeLeavesMSG);
+                        Simulator.Confirmer.Message(ConfirmLevel.Warning, message + "   " + TreeLeavesMSG);
                     }
                 }
                 else if (BrakeSkid && AbsSpeedMpS > 0.01)
