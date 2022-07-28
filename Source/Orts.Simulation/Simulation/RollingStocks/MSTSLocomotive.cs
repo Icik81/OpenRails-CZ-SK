@@ -5745,6 +5745,12 @@ namespace Orts.Simulation.RollingStocks
         /// 
         /// Note Heavy rain will actually wash track clean, and will give a higher value of adhesion then light drizzling rain
         /// </summary>
+        float Time0;
+        float Time1;
+        bool TimeToGenerate;
+        public float TreeLeavesLevel;
+        float RandomDelay0;
+        float RandomDelay1;
         public virtual void UpdateFrictionCoefficient(float elapsedClockSeconds)
         {
             // Icik
@@ -5878,6 +5884,32 @@ namespace Orts.Simulation.RollingStocks
                 }
                 BaseFrictionCoefficientFactor0 = BaseFrictionCoefficientFactor;
             }
+            
+            // Podzim
+            if (Simulator.Season == SeasonType.Autumn && AbsSpeedMpS > 0.1f)
+            {
+                Time0 += elapsedClockSeconds;
+                if (Time0 < 0.5f)
+                    RandomDelay0 = Simulator.Random.Next(50, 90);
+                if (Time0 > RandomDelay0 || TimeToGenerate)
+                {                    
+                    if (!TimeToGenerate)
+                        TreeLeavesLevel = Simulator.Random.Next(1, 40);
+                    Time1 += elapsedClockSeconds;
+                    if (Time1 < 0.5f)
+                        RandomDelay1 = Simulator.Random.Next(5, 10);
+                    TimeToGenerate = true;
+                    if (Time1 > RandomDelay1)
+                    {                        
+                        Time1 = 0;
+                        TimeToGenerate = false;
+                        TreeLeavesLevel = 0;
+                    }
+                    Time0 = 0;
+                }                                                                
+                BaseFrictionCoefficientFactor *= (1 - (TreeLeavesLevel / 100f));
+            }
+
 
             // For wagons use base Curtius-Kniffler adhesion factor - u = 0.33
             float WagonCurtius_KnifflerA = 7.5f;
@@ -9624,6 +9656,13 @@ namespace Orts.Simulation.RollingStocks
                {
                }*/
 
+        public void WheelSpeedCabCorrection(CabViewControl cvc)
+        {
+            if (Math.Abs(WheelSpeedMpS_Cab) < 0.9f * Math.Abs(cvc.PreviousData / 3.6f) || Math.Abs(WheelSpeedMpS_Cab) > 1.1f * Math.Abs(cvc.PreviousData / 3.6f))
+                cvc.PreviousData = Math.Abs(WheelSpeedMpS_Cab * 3.6f);
+        }
+
+
         public float elapsedTime;
         private float previousSelectedSpeed = 0;
         private float previousMaxMirelSpeed = 0;
@@ -9634,7 +9673,7 @@ namespace Orts.Simulation.RollingStocks
         public virtual float GetDataOf(CabViewControl cvc)
         {
             // Icik
-            SetControlUnitParameters();
+            SetControlUnitParameters();            
 
             CheckBlankDisplay(cvc);
             float data = 0;
@@ -9642,46 +9681,7 @@ namespace Orts.Simulation.RollingStocks
             {
                 case CABViewControlTypes.SPEEDOMETER:
                     {
-                        if (!BrakeSkid)
-                        {
-                            if (WheelSpeedMpS_Cab < WheelSpeedMpS)
-                                WheelSpeedMpS_Cab += 10f / 3.6f * elapsedTime;
-                            if (WheelSpeedMpS_Cab > WheelSpeedMpS)
-                            {
-                                WheelSpeedMpS_Cab = WheelSpeedMpS;
-                                if (extendedPhysics != null)
-                                {
-                                    foreach (Undercarriage uc in extendedPhysics.Undercarriages)
-                                    {
-                                        foreach (ExtendedAxle ea in uc.Axles)
-                                        {
-                                            if (ea.HaveSpeedometerSensor)
-                                                WheelSpeedMpS_Cab = Math.Abs(ea.WheelSpeedMpS);
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                        else
-                        {
-                            WheelSpeedMpS = 0;
-                            if (extendedPhysics != null)
-                            {
-                                foreach (Undercarriage uc in extendedPhysics.Undercarriages)
-                                {
-                                    foreach (ExtendedAxle ea in uc.Axles)
-                                    {
-                                        if (ea.HaveSpeedometerSensor)
-                                            WheelSpeedMpS = 0;
-                                    }
-                                }
-                            }
-                            if (WheelSpeedMpS_Cab > 0)
-                                WheelSpeedMpS_Cab -= 10f / 3.6f * elapsedTime;
-                            if (WheelSpeedMpS_Cab < 0)
-                                WheelSpeedMpS_Cab = 0;
-                        }
-
+                        WheelSpeedCabCorrection(cvc);
                         float speed = WheelSpeedMpS_Cab;
                         cvc.ElapsedTime += elapsedTime;
                         if (cvc.ElapsedTime < cvc.UpdateTime && cvc.Vibration > 0)

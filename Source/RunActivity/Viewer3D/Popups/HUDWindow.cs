@@ -1386,6 +1386,11 @@ namespace Orts.Viewer3D.Popups
             {
                 if (mstsLocomotive.AdvancedAdhesionModel)
                 {
+                    // Icik
+                    string TreeLeavesMSG = "";
+                    if (mstsLocomotive.TreeLeavesLevel > 0)
+                        TreeLeavesMSG = Viewer.Catalog.GetString("Tree leaves on track!");
+                    
                     var HUDSteamEngineType = mstsLocomotive.SteamEngineType;
                     var HUDEngineType = mstsLocomotive.EngineType;
 
@@ -1401,8 +1406,8 @@ namespace Orts.Viewer3D.Popups
                     else  // Advanced adhesion non steam locomotives HUD display
                     {
                         TableAddLine(table, Viewer.Catalog.GetString("(Advanced adhesion model)"));
-                        TableAddLabelValue(table, Viewer.Catalog.GetString("Wheel slip"), "{0:F0}% ({1:F0}%/{2})", mstsLocomotive.LocomotiveAxle.SlipSpeedPercent, mstsLocomotive.LocomotiveAxle.SlipDerivationPercentpS, FormatStrings.s);
-                        TableAddLabelValue(table, Viewer.Catalog.GetString("Conditions"), "{0:F0}%", mstsLocomotive.LocomotiveAxle.AdhesionConditions * 100.0f);
+                        TableAddLabelValue(table, Viewer.Catalog.GetString("Wheel slip"), "{0:F0}% ({1:F0}%/{2})", mstsLocomotive.LocomotiveAxle.SlipSpeedPercent, mstsLocomotive.LocomotiveAxle.SlipDerivationPercentpS, FormatStrings.s);                        
+                        TableAddLabelValue(table, Viewer.Catalog.GetString("Conditions"), "{0:F0}% " + TreeLeavesMSG, mstsLocomotive.LocomotiveAxle.AdhesionConditions * 100.0f);
                         TableAddLabelValue(table, Viewer.Catalog.GetString("Axle drive force"), "{0} ({1})", FormatStrings.FormatForce(mstsLocomotive.LocomotiveAxle.DriveForceN, mstsLocomotive.IsMetric),
                         FormatStrings.FormatPower(mstsLocomotive.LocomotiveAxle.DriveForceN * mstsLocomotive.AbsTractionSpeedMpS, mstsLocomotive.IsMetric, false, false));
                         TableAddLabelValue(table, Viewer.Catalog.GetString("Axle brake force"), "{0}", FormatStrings.FormatForce(mstsLocomotive.LocomotiveAxle.BrakeRetardForceN, mstsLocomotive.IsMetric));

@@ -1306,6 +1306,50 @@ namespace Orts.Simulation.RollingStocks
                 BrakeShoeCoefficientFrictionAdjFactor = MathHelper.Clamp(BrakeShoeCoefficientFrictionAdjFactor, 0.01f, 1.0f);
                 BrakeShoeRetardCoefficientFrictionAdjFactor = MathHelper.Clamp(BrakeShoeRetardCoefficientFrictionAdjFactor, 0.01f, 1.0f);
 
+                var PlayerLoco = this as MSTSLocomotive;
+                if (PlayerLoco != null)
+                {
+                    if (!BrakeSkid)
+                    {
+                        if (PlayerLoco.WheelSpeedMpS_Cab < PlayerLoco.WheelSpeedMpS)
+                            PlayerLoco.WheelSpeedMpS_Cab += 10f / 3.6f * elapsedClockSeconds;
+                        if (PlayerLoco.WheelSpeedMpS_Cab > PlayerLoco.WheelSpeedMpS)
+                        {
+                            PlayerLoco.WheelSpeedMpS_Cab = PlayerLoco.WheelSpeedMpS;
+                            if (PlayerLoco.extendedPhysics != null)
+                            {
+                                foreach (Undercarriage uc in PlayerLoco.extendedPhysics.Undercarriages)
+                                {
+                                    foreach (ExtendedAxle ea in uc.Axles)
+                                    {
+                                        if (ea.HaveSpeedometerSensor)
+                                            PlayerLoco.WheelSpeedMpS_Cab = Math.Abs(ea.WheelSpeedMpS);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        PlayerLoco.WheelSpeedMpS = 0;
+                        if (PlayerLoco.extendedPhysics != null)
+                        {
+                            foreach (Undercarriage uc in PlayerLoco.extendedPhysics.Undercarriages)
+                            {
+                                foreach (ExtendedAxle ea in uc.Axles)
+                                {
+                                    if (ea.HaveSpeedometerSensor)
+                                        PlayerLoco.WheelSpeedMpS = 0;
+                                }
+                            }
+                        }
+                        if (PlayerLoco.WheelSpeedMpS_Cab > 0)
+                            PlayerLoco.WheelSpeedMpS_Cab -= 10f / 3.6f * elapsedClockSeconds;
+                        if (PlayerLoco.WheelSpeedMpS_Cab < 0)
+                            PlayerLoco.WheelSpeedMpS_Cab = 0;
+                    }
+                }
+
                 // WheelDamage 
                 if (this is MSTSSteamLocomotive)
                 {
@@ -1367,7 +1411,10 @@ namespace Orts.Simulation.RollingStocks
                     {
                         BrakeSkid = true;   // wagon wheel is slipping
                         var message = Simulator.Catalog.GetStringFmt("Car ID: ") + CarID + Simulator.Catalog.GetStringFmt(" - experiencing braking force wheel skid.");
-                        Simulator.Confirmer.Message(ConfirmLevel.Warning, message);
+                        string TreeLeavesMSG = "";
+                        if (PlayerLoco != null && PlayerLoco.TreeLeavesLevel > 0)
+                            TreeLeavesMSG = Simulator.Catalog.GetString("Tree leaves on track!");
+                        Simulator.Confirmer.Message(ConfirmLevel.Warning, message + " - " + TreeLeavesMSG);
                     }
                 }
                 else if (BrakeSkid && AbsSpeedMpS > 0.01)
@@ -2947,7 +2994,7 @@ namespace Orts.Simulation.RollingStocks
                 TrackFactorZ = 0.8f;
             }
 
-            float SpeedFactor = MathHelper.Clamp(AbsSpeedMpS / Train.AllowedMaxSpeedMpS, 0.5f, 2.5f);
+            float SpeedFactor = MathHelper.Clamp(AbsSpeedMpS / Train.AllowedMaxSpeedMpS, 0.8f, 2.5f);
             if (AbsSpeedMpS < 0.1f) SpeedFactor = 0;
 
             TrackFactorX *= SpeedFactor;
