@@ -1200,18 +1200,13 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 if (BailOffOnAntiSkid)
                 {
                     TripleValveState = ValveState.Lap;
+                    BrakeCylApply = false;
                     TRMg += elapsedClockSeconds;
-                    if (TRMg < 0.5f)
+                    if (TRMg < 1.0f)
                     {
-                        if (AutoCylPressurePSI < 1.5f * 14.50377f)
-                        {
-                            BailOffOnAntiSkid = false;
-                        }
-                        else
-                        {
-                            AutoCylPressurePSI0 -= elapsedClockSeconds * (1.0f * 14.50377f); // Rychlost odvětrání 1 bar/s
-                            if (AutoCylPressurePSI0 < 0)
-                                AutoCylPressurePSI0 = 0;
+                        if (AutoCylPressurePSI0 > 0.5f * 14.50377f)
+                        {                            
+                            AutoCylPressurePSI0 -= elapsedClockSeconds * (1.0f * 14.50377f); // Rychlost odvětrání 1 bar/s                            
                         }
                     }
                     if (TRMg > 0.99f) TRMg = 0;

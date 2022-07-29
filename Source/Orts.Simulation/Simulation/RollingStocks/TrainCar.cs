@@ -807,31 +807,10 @@ namespace Orts.Simulation.RollingStocks
         {
             if (BrakeSystem.AntiSkidSystemEquipped)
             {
-                // Lokomotiva
-                if ((this is MSTSDieselLocomotive || this is MSTSElectricLocomotive) && AbsSpeedMpS > 0.01)
-                {
-                    LocoBrakeAdhesiveForceN = MassKG * GravitationalAccelerationMpS2 * Train.LocomotiveCoefficientFriction;
-                    if (BrakeRetardForceN > LocoBrakeAdhesiveForceN * 1.0f)
-                    {
-                        //var message = "BrakeRetardForceN: " + BrakeRetardForceN;
-                        //Simulator.Confirmer.Message(ConfirmLevel.Warning, message);
-                        BrakeSystem.BailOffOnAntiSkid = true;
-                    }
-                    else
-                        BrakeSystem.BailOffOnAntiSkid = false;
-                }
-
-                // Vagón
-                if ((!(this is MSTSDieselLocomotive) && !(this is MSTSElectricLocomotive)) && AbsSpeedMpS > 0.01)
-                    if (BrakeRetardForceN > WagonBrakeAdhesiveForceN * 1.0f)
-                    {
-                        //var message = "BrakeRetardForceN: " + BrakeRetardForceN;
-                        //Simulator.Confirmer.Message(ConfirmLevel.Warning, message);
-                        BrakeSystem.BailOffOnAntiSkid = true;
-                    }
-                    else
-                        BrakeSystem.BailOffOnAntiSkid = false;
-
+                if (BrakeSkid)
+                    BrakeSystem.BailOffOnAntiSkid = true;
+                else
+                    BrakeSystem.BailOffOnAntiSkid = false;
                 if (AbsSpeedMpS < 0.01) BrakeSystem.BailOffOnAntiSkid = false;
             }
         }
@@ -1401,7 +1380,7 @@ namespace Orts.Simulation.RollingStocks
                 else
                     WagonBrakeAdhesiveForceN = MassKG * GravitationalAccelerationMpS2 * Train.WagonCoefficientFriction; // Adheze pro vozy
 
-                TrackFactor = MathHelper.Clamp(1.3f - TrackFactorY, 0.7f, 1.3f);                
+                TrackFactor = MathHelper.Clamp(1.3f - TrackFactorY, 0.8f, 1.3f);                
                 float BrakeAdhesiveForceN = (LocoBrakeAdhesiveForceN + WagonBrakeAdhesiveForceN) * 0.7f;
 
                 // Test if wheel forces are high enough to induce a slip. Set slip flag if slip occuring 
