@@ -1834,20 +1834,7 @@ namespace Orts.Simulation.Physics
                         car.SpeedMpS = 0;
                         return;
                     }
-                }
-
-                // Zvuk pro napnutí a stlačení spřáhla
-                if (car.HUDCouplerForceIndication == 1 && !car.CouplerPull) // Pull
-                {
-                    car.CouplerPull = true;
-                    SignalEvent(Event.CouplerPull);
-                }
-                else
-                if (car.HUDCouplerForceIndication == 2 && car.CouplerPull) // Push
-                {
-                    car.CouplerPull = false;
-                    SignalEvent(Event.CouplerPush);
-                }
+                }                
 
                 // Vyhodnocení selhání TM
                 if (!MPManager.IsMultiPlayer() && car is MSTSDieselLocomotive && !(car as MSTSDieselLocomotive).DieselEngines[0].HasGearBox && (car as MSTSDieselLocomotive).PowerOn)

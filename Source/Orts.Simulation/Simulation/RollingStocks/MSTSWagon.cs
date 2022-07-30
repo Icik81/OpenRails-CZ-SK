@@ -1977,6 +1977,23 @@ namespace Orts.Simulation.RollingStocks
             }
         }
 
+        // Icik
+        public void CouplerPullPushSound()
+        {
+            // Zvuk pro napnutí a stlačení spřáhla
+            if (this.HUDCouplerForceIndication == 1 && !this.CouplerPull) // Pull
+            {
+                this.CouplerPull = true;
+                SignalEvent(Event.CouplerPull);
+            }
+            else
+            if (this.HUDCouplerForceIndication == 2 && this.CouplerPull) // Push
+            {
+                this.CouplerPull = false;
+                SignalEvent(Event.CouplerPush);
+            }
+        }
+
         public override void Update(float elapsedClockSeconds)
         {
             base.Update(elapsedClockSeconds);
@@ -1985,6 +2002,7 @@ namespace Orts.Simulation.RollingStocks
             ToggleHeatingCarOperationsWindow();
             ToggleBrakeCarDeactivateCarOperationsWindow();
             ToggleDoorsCarOperationsWindow();
+            CouplerPullPushSound();
 
             ConfirmSteamLocomotiveTender(); // Confirms that a tender is connected to the steam locomotive
 

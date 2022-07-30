@@ -1106,7 +1106,7 @@ namespace Orts.Viewer3D.RollingStock
             string smsFilePath = wagonFolderSlash + @"sound\" + filename;
 
             // Icik
-            string smsGenericFilePath = "..\\Content\\GenericSound\\4_Wheels\\GenSound_ex.sms"; // Default
+            string smsGenericFilePath = ""; // Default
             switch (MSTSWagon.WagonNumAxles)
             {
                 case 2:
@@ -1135,7 +1135,9 @@ namespace Orts.Viewer3D.RollingStock
             {
                 Viewer.SoundProcess.AddSoundSource(this, new SoundSource(Viewer, MSTSWagon, smsFilePath));
                 // Icik
-                Viewer.SoundProcess.AddSoundSource(this, new SoundSource(Viewer, MSTSWagon, System.IO.Path.Combine(Viewer.ContentPath, smsGenericFilePath)));
+                if (MSTSWagon.CarSoundLoaded == false)
+                    Viewer.SoundProcess.AddSoundSource(this, new SoundSource(Viewer, MSTSWagon, System.IO.Path.Combine(Viewer.ContentPath, smsGenericFilePath)));
+                MSTSWagon.CarSoundLoaded = true;
             }
             catch (Exception error)
             {
