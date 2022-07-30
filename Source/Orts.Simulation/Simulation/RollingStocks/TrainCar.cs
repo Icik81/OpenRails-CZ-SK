@@ -1238,6 +1238,31 @@ namespace Orts.Simulation.RollingStocks
         public float TrackFactor = 1;
         public virtual void UpdateBrakeSlideCalculation(float elapsedClockSeconds)
         {
+            // WheelDamage 
+            if (this is MSTSSteamLocomotive)
+            {
+                // Pro parní trakci nepočítej pulsy
+            }
+            else
+            {
+                if (!BrakeSkid && (this as MSTSWagon).AbsWheelSpeedMpS > 0 && WheelDamageValue > 0)
+                {
+                    // Variable1 is proportional to angular speed, value of 10 means 1 rotation/second.                                        
+                    var variable1 = Math.Abs((this as MSTSWagon).WheelSpeedMpS / DriverWheelRadiusM / MathHelper.Pi * 5);
+                    const int rotations = 2;
+                    const int fullLoop = 10 * rotations;
+                    int numPulses = 4 * 2 * rotations;
+                    var dPulseTracker = variable1 / fullLoop * numPulses * elapsedClockSeconds;
+                    PulseTracker += dPulseTracker;
+                    if (PulseTracker > (float)NextPulse - dPulseTracker / 2)
+                    {
+                        SignalEvent((Event)((int)Event.SteamPulse1 + NextPulse - 1));
+                        PulseTracker %= numPulses;
+                        NextPulse %= numPulses;
+                        NextPulse++;
+                    }
+                }
+            }
 
             // Only apply slide, and advanced brake friction, if advanced adhesion is selected, and it is a Player train
             if (Simulator.UseAdvancedAdhesion && IsPlayerTrain)
@@ -1330,33 +1355,7 @@ namespace Orts.Simulation.RollingStocks
                             PlayerLoco.WheelSpeedMpS_Cab = 0;
                     }
                 }
-
-                // WheelDamage 
-                if (this is MSTSSteamLocomotive)
-                {
-                    // Pro parní trakci nepočítej pulsy
-                }
-                else
-                {
-                    if (!BrakeSkid && (this as MSTSWagon).AbsWheelSpeedMpS > 0 && WheelDamageValue > 0)
-                    {
-                        // Variable1 is proportional to angular speed, value of 10 means 1 rotation/second.                                        
-                        var variable1 = Math.Abs((this as MSTSWagon).WheelSpeedMpS / DriverWheelRadiusM / MathHelper.Pi * 5);
-                        const int rotations = 2;
-                        const int fullLoop = 10 * rotations;
-                        int numPulses = 4 * 2 * rotations;
-                        var dPulseTracker = variable1 / fullLoop * numPulses * elapsedClockSeconds;
-                        PulseTracker += dPulseTracker;
-                        if (PulseTracker > (float)NextPulse - dPulseTracker / 2)
-                        {
-                            SignalEvent((Event)((int)Event.SteamPulse1 + NextPulse - 1));
-                            PulseTracker %= numPulses;
-                            NextPulse %= numPulses;
-                            NextPulse++;
-                        }
-                    }
-                }
-
+                
                 // WheelDamage - plošky na kolech při zaseknutých kolech                
                 if (BrakeSkid)
                 {
@@ -3099,10 +3098,18 @@ namespace Orts.Simulation.RollingStocks
                 }
 
                 if (TypVibrace_2)   //Vibrace v oblouku
-                {
-                    VibrationSpringConstantPrimepSpS = 12f / 0.2f;
+                {                    
+                    float forceF = MathHelper.Clamp(Math.Abs(CurrentCurveAngle) / MathHelper.Clamp(Math.Abs(CurrentCurveRadius) / 200f, 1, 10), 1, 5);                                        
+                    force = (int) forceF;
+
+                    VibrationSpringConstantPrimepSpS = (2 + (force * 2)) / 0.2f;
+                    for (int i = 0; i < TrackFactorY * force * 5 + 5; i++) Factor_vibration = i;
+                    
                     VibratioDampingCoefficient = 0.05f;
-                    VibrationRotationVelocityRadpS.Y += (TrackFactorY * factor * Simulator.Settings.CarVibratingLevel * VibrationIntroductionStrength * MathHelper.Clamp((CurrentCurveAngle / MathHelper.Clamp(CurrentCurveRadius / 200, 1, 10)), 0, 6) * VibrationMassKG) / x;
+                    VibrationRotationVelocityRadpS.Y += (TrackFactorY * factor * Simulator.Settings.CarVibratingLevel * VibrationIntroductionStrength * forceF * VibrationMassKG) / x;
+
+                    //if (IsPlayerTrain)
+                    //    Simulator.Confirmer.Information("Factor_vibration " + Factor_vibration);
                 }
 
                 if (TypVibrace_3)   //Vibrace na výhybce
@@ -3148,10 +3155,7 @@ namespace Orts.Simulation.RollingStocks
 
                 TypVibrace_1 = false;
                 TypVibrace_2 = false;
-                TypVibrace_3 = false;
-
-                //if (IsPlayerTrain)              
-                //    Simulator.Confirmer.Information("Curveture " + curvaturepM);                    
+                TypVibrace_3 = false;                                 
             }
         }
         #endregion
