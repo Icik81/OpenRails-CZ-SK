@@ -53,7 +53,7 @@ namespace ORTS
             {
                 state = "Navazuji spojení";
                 Ping ping = new Ping();
-                PingReply pr = ping.Send("lkpr.aspone.cz");
+                PingReply pr = ping.Send("msts-rw.cz");
                 if (pr.Status != IPStatus.Success)
                 {
                     waiting = true;
@@ -83,8 +83,8 @@ namespace ORTS
                 string content = File.ReadAllText(contentPath);
 
                 WebClient webClient = new WebClient();
-                s = webClient.DownloadString("http://lkpr.aspone.cz/or/version16.txt");
-                conts = webClient.DownloadString("http://lkpr.aspone.cz/or/content16.txt");
+                s = webClient.DownloadString("http://msts-rw.cz/ORIC/Updates/version16.txt");
+                conts = webClient.DownloadString("http://msts-rw.cz/ORIC/Updates/Content16.txt");
                 if (version != s || conts != content) // new version available
                 {
                     if (version != s)
@@ -94,7 +94,7 @@ namespace ORTS
                             return;
                         state = "Stahuji novou verzi";
                         File.Delete(Application.StartupPath + "\\Update16.zip");
-                        webClient.DownloadFile("http://lkpr.aspone.cz/or/update16.zip", Application.StartupPath + "\\Update16.zip");
+                        webClient.DownloadFile("http://msts-rw.cz/ORIC/Updates/update16.zip", Application.StartupPath + "\\Update16.zip");
                         state = "Rozbaluji archiv";
                         ZipFile zip = new ZipFile(Application.StartupPath + "\\Update16.zip");
                         zip.ExtractAll(Application.StartupPath, ExtractExistingFileAction.OverwriteSilently);
@@ -107,7 +107,7 @@ namespace ORTS
                     {
                         state = "Stahuji novou verzi obsahu";
                         File.Delete(Application.StartupPath + "\\Content16.zip");
-                        webClient.DownloadFile("http://lkpr.aspone.cz/or/content16.zip", Application.StartupPath + "\\Content16.zip");
+                        webClient.DownloadFile("http://msts-rw.cz/ORIC/Updates/content16.zip", Application.StartupPath + "\\Content16.zip");
                         state = "Rozbaluji archiv";
                         ZipFile zip = new ZipFile(Application.StartupPath + "\\Content16.zip");
                         zip.ExtractAll(Application.StartupPath, ExtractExistingFileAction.OverwriteSilently);

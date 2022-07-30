@@ -382,7 +382,7 @@ namespace ORTS
             try
             {
                 Ping ping = new Ping();
-                PingReply pingReply = ping.Send("lkpr.aspone.cz", 1000);
+                PingReply pingReply = ping.Send("msts-rw.cz", 1000);
                 if (pingReply != null)
                 {
                     if (pingReply.Status == IPStatus.Success)
@@ -397,7 +397,7 @@ namespace ORTS
                                 File.WriteAllText(Application.StartupPath + @"\OpenRails.txt", "0");
                             string version = File.ReadAllText(Application.StartupPath + @"\OpenRails.txt");
                             WebClient webClient = new WebClient();
-                            string verRemote = webClient.DownloadString(@"http://lkpr.aspone.cz/or/OpenRails.txt");
+                            string verRemote = webClient.DownloadString(@"http://msts-rw.cz/ORIC/Updates/OpenRails.txt");
                             if (verRemote == version)
                             {
                                 sw.Close();
@@ -407,11 +407,12 @@ namespace ORTS
                             sw.UpdateProgress();
                             if (File.Exists(Application.StartupPath + @"\OpenRails.zip"))
                                 File.Delete(Application.StartupPath + @"\OpenRails.zip");
-                            webClient.DownloadFile(@"http://lkpr.aspone.cz/or/OpenRails.zip", Application.StartupPath + @"\OpenRails.zip");
+                            webClient.DownloadFile(@"http://msts-rw.cz/ORIC/Updates/OpenRails.zip", Application.StartupPath + @"\OpenRails.zip");
                             ZipFile zipEntries = new ZipFile(Application.StartupPath + @"\OpenRails.zip");
                             zipEntries.ExtractAll(Application.StartupPath, ExtractExistingFileAction.OverwriteSilently);
                             File.WriteAllText(Application.StartupPath + @"\OpenRails.txt", verRemote);
                             sw.Close();
+                            MessageBox.Show("Program byl aktualizován a je třeba ho restartovat.", "Aktualizace", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         }
                     }
                 }
