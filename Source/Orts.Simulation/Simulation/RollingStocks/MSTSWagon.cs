@@ -1980,17 +1980,20 @@ namespace Orts.Simulation.RollingStocks
         // Icik
         public void CouplerPullPushSound()
         {
-            // Zvuk pro napnutí a stlačení spřáhla
-            if (this.HUDCouplerForceIndication == 1 && !this.CouplerPull) // Pull
+            if (Math.Abs(this.CouplerSlackM) > 0.012f)
             {
-                this.CouplerPull = true;
-                SignalEvent(Event.CouplerPull);
-            }
-            else
-            if (this.HUDCouplerForceIndication == 2 && this.CouplerPull) // Push
-            {
-                this.CouplerPull = false;
-                SignalEvent(Event.CouplerPush);
+                // Zvuk pro napnutí a stlačení spřáhla
+                if (this.HUDCouplerForceIndication == 1 && !this.CouplerPull) // Pull
+                {
+                    this.CouplerPull = true;
+                    SignalEvent(Event.CouplerPull);
+                }
+                else
+                if (this.HUDCouplerForceIndication == 2 && this.CouplerPull) // Push
+                {
+                    this.CouplerPull = false;
+                    SignalEvent(Event.CouplerPush);
+                }
             }
         }
 

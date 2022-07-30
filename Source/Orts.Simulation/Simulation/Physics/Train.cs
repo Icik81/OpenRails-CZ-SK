@@ -1822,9 +1822,7 @@ namespace Orts.Simulation.Physics
                                 car.SpeedMpS = -(SpeedMpS0 / Math.Abs(SpeedMpS0) * Math.Abs(SpeedMpS2));
                             else
                                 car.SpeedMpS = (SpeedMpS0 / Math.Abs(SpeedMpS0) * Math.Abs(SpeedMpS2));
-                            HasCarCoupleSpeed = false;
-                            if (Math.Abs(car.SpeedMpS) > 0.05f)
-                                SignalEvent(Event.CoupleImpact);
+                            HasCarCoupleSpeed = false;                            
                             CyklusCouplerImpuls = 1;
                         }
                     }
