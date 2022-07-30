@@ -21,7 +21,7 @@ Tr_SMS (
 				Priority ( 6 )
 				Volume( 1.0 )
 				Triggers ( 2
-					Variable_Trigger ( SlipSpeed_Inc_Past 1 StartLoop   ( 1 File ( "x_prokluz.wav" -1 )   SelectionMethod ( SequentialSelection ) ) )
+					Variable_Trigger ( SlipSpeed_Inc_Past 1 StartLoop   ( 1 File ( "../4_Wheels/x_prokluz.wav" -1 )   SelectionMethod ( SequentialSelection ) ) )
 					Variable_Trigger ( SlipSpeed_Dec_Past 1 ReleaseLoopRelease () )
 				)
 				FrequencyCurve(
@@ -50,7 +50,7 @@ Tr_SMS (
 				Priority ( 6 )
 				Volume (1.0)
 				Triggers ( 2
-					Variable_Trigger ( Speed_Inc_Past 0.010 StartLoopRelease   ( 1 File ( "jizda_ex.wav" -1 )   SelectionMethod ( SequentialSelection ) ) )
+					Variable_Trigger ( Speed_Inc_Past 0.010 StartLoopRelease   ( 1 File ( "../4_Wheels/jizda_ex.wav" -1 )   SelectionMethod ( SequentialSelection ) ) )
 					Variable_Trigger ( Speed_Dec_Past 0.010 ReleaseLoopRelease () )					
 				   )
                 FrequencyCurve(
@@ -81,16 +81,16 @@ Tr_SMS (
 				Volume( 1.0 )
 				Triggers ( 1
 				Variable_Trigger ( Vibration_Inc_Past 30 PlayOneShot ( 12
-						File ( "x_1.wav" -1 )
-						File ( "x_2.wav" -1 )
-						File ( "x_4.wav" -1 )
-						File ( "x_5.wav" -1 )
-						File ( "x_6.wav" -1 )
-						File ( "x_7.wav" -1 )
-						File ( "x_8.wav" -1 )
-						File ( "x_9.wav" -1 )
-						File ( "x_10.wav" -1 )
-						File ( "x_11.wav" -1 )
+						File ( "../4_Wheels/x_1.wav" -1 )
+						File ( "../4_Wheels/x_2.wav" -1 )
+						File ( "../4_Wheels/x_4.wav" -1 )
+						File ( "../4_Wheels/x_5.wav" -1 )
+						File ( "../4_Wheels/x_6.wav" -1 )
+						File ( "../4_Wheels/x_7.wav" -1 )
+						File ( "../4_Wheels/x_8.wav" -1 )
+						File ( "../4_Wheels/x_9.wav" -1 )
+						File ( "../4_Wheels/x_10.wav" -1 )
+						File ( "../4_Wheels/x_11.wav" -1 )
 				SelectionMethod ( RandomSelection ) ) )
 				)
 				VolumeCurve(
@@ -110,9 +110,9 @@ Tr_SMS (
 				Volume (1.5)
 				Triggers ( 1
 					Variable_Trigger ( Vibration_Inc_Past 10 PlayOneShot ( 3
-						File ( "buch1_ex.wav" -1 )
-						File ( "buch2_ex.wav" -1 )
-						File ( "buch3_ex.wav" -1 )
+						File ( "../4_Wheels/buch1_ex.wav" -1 )
+						File ( "../4_Wheels/buch2_ex.wav" -1 )
+						File ( "../4_Wheels/buch3_ex.wav" -1 )
 					SelectionMethod ( RandomSelection ) ) )
 				   )
                 FrequencyCurve(
@@ -140,7 +140,7 @@ Tr_SMS (
 	  	        Priority ( 6 )
 				Volume (1.0)
 				Triggers ( 2
-					Variable_Trigger ( CurveForce_Inc_Past 100	StartLoopRelease ( 1	File ( "okolky.wav" -1 ) SelectionMethod ( SequentialSelection) ) )
+					Variable_Trigger ( CurveForce_Inc_Past 100	StartLoopRelease ( 1	File ( "../4_Wheels/okolky.wav" -1 ) SelectionMethod ( SequentialSelection) ) )
 					Variable_Trigger ( CurveForce_Dec_Past 100	ReleaseLoopReleaseWithJump () )		
 				)
 				FrequencyCurve(
@@ -182,14 +182,14 @@ Tr_SMS (
 					Variable_Trigger ( CurveForce_Inc_Past 15 SetStreamVolume ( 2.00 ) )
 					Variable_Trigger ( CurveForce_Inc_Past 15 EnableTrigger ( 4 ) )
 					Random_Trigger ( Delay_Min_Max ( 0 4 ) Volume_Min_Max ( 1.0 1.0 ) PlayOneShot ( 8
-						File ( "x_okolky_30a.wav" -1 ) 
-						File ( "x_okolky_30b.wav" -1 ) 
-						File ( "x_okolky_30c.wav" -1 ) 
-						File ( "x_okolky_30d.wav" -1 ) 
-						File ( "x_okolky_30e.wav" -1 ) 
-						File ( "x_okolky_30f.wav" -1 ) 
-						File ( "x_okolky_30g.wav" -1 ) 
-						File ( "x_okolky_30h.wav" -1 ) 
+						File ( "../4_Wheels/x_okolky_30a.wav" -1 ) 
+						File ( "../4_Wheels/x_okolky_30b.wav" -1 ) 
+						File ( "../4_Wheels/x_okolky_30c.wav" -1 ) 
+						File ( "../4_Wheels/x_okolky_30d.wav" -1 ) 
+						File ( "../4_Wheels/x_okolky_30e.wav" -1 ) 
+						File ( "../4_Wheels/x_okolky_30f.wav" -1 ) 
+						File ( "../4_Wheels/x_okolky_30g.wav" -1 ) 
+						File ( "../4_Wheels/x_okolky_30h.wav" -1 ) 
 					SelectionMethod ( RandomSelection ) ) )
 					Variable_Trigger ( CurveForce_Dec_Past 15 DisableTrigger ( 4 ) )
 					Variable_Trigger ( CurveForce_Dec_Past 15 SetStreamVolume ( 0.00 ) )			
@@ -222,7 +222,7 @@ Tr_SMS (
 				Volume (0.8)
 				Triggers ( 4
 					Variable_Trigger ( CurveForce_Inc_Past 7 SetStreamVolume ( 2.00 ) )
-					Variable_Trigger ( CurveForce_Inc_Past 7 StartLoopRelease   ( 1 File ( "x_okolky_40a.wav" -1 )   SelectionMethod ( SequentialSelection ) ) )
+					Variable_Trigger ( CurveForce_Inc_Past 7 StartLoopRelease   ( 1 File ( "../4_Wheels/x_okolky_40a.wav" -1 )   SelectionMethod ( SequentialSelection ) ) )
 					Variable_Trigger ( CurveForce_Dec_Past 7 ReleaseLoopRelease () )
 					Variable_Trigger ( CurveForce_Dec_Past 7 SetStreamVolume ( 0.00 ) )					
 				)
@@ -252,7 +252,7 @@ Tr_SMS (
 				Priority ( 6 )
 				Volume (1.5)
 				Triggers ( 1
-					Variable_Trigger ( CurveForce_Dec_Past 7 PlayOneShot   ( 1 File ( "x_okolky_40b.wav" -1 )   SelectionMethod ( SequentialSelection ) ) )				
+					Variable_Trigger ( CurveForce_Dec_Past 7 PlayOneShot   ( 1 File ( "../4_Wheels/x_okolky_40b.wav" -1 )   SelectionMethod ( SequentialSelection ) ) )				
 				)
                 FrequencyCurve(
 					SpeedControlled
@@ -281,7 +281,7 @@ Tr_SMS (
 				Volume (0.6)
 				Triggers ( 4
 					Variable_Trigger ( CurveForce_Inc_Past 7 SetStreamVolume ( 2.0 ) )
-					Variable_Trigger ( CurveForce_Inc_Past 7 StartLoopRelease   ( 1 File ( "x_okolky_60a.wav" -1 )   SelectionMethod ( SequentialSelection ) ) )
+					Variable_Trigger ( CurveForce_Inc_Past 7 StartLoopRelease   ( 1 File ( "../4_Wheels/x_okolky_60a.wav" -1 )   SelectionMethod ( SequentialSelection ) ) )
 					Variable_Trigger ( CurveForce_Dec_Past 7 ReleaseLoopRelease () )
 					Variable_Trigger ( CurveForce_Dec_Past 7 SetStreamVolume ( 0.00 ) )						
 			    )
@@ -311,7 +311,7 @@ Tr_SMS (
 				Priority ( 6 )
 				Volume (1.0)
 				Triggers ( 1
-					Variable_Trigger ( CurveForce_Dec_Past 7 PlayOneShot   ( 1 File ( "x_okolky_60b.wav" -1 )   SelectionMethod ( SequentialSelection ) ) )					
+					Variable_Trigger ( CurveForce_Dec_Past 7 PlayOneShot   ( 1 File ( "../4_Wheels/x_okolky_60b.wav" -1 )   SelectionMethod ( SequentialSelection ) ) )					
 				)
                 FrequencyCurve(
 					SpeedControlled
@@ -340,7 +340,7 @@ Tr_SMS (
 				Volume (0.3)
 				Triggers ( 4
 					Variable_Trigger ( CurveForce_Inc_Past 10 SetStreamVolume ( 2.5 ) )
-					Variable_Trigger ( CurveForce_Inc_Past 10 StartLoopRelease   ( 1 File ( "x_okolky_90a.wav" -1 )   SelectionMethod ( SequentialSelection ) ) )
+					Variable_Trigger ( CurveForce_Inc_Past 10 StartLoopRelease   ( 1 File ( "../4_Wheels/x_okolky_90a.wav" -1 )   SelectionMethod ( SequentialSelection ) ) )
 					Variable_Trigger ( CurveForce_Dec_Past 10 ReleaseLoopRelease () )	
 					Variable_Trigger ( CurveForce_Dec_Past 10 SetStreamVolume ( 0.00 ) )					
 			    )
@@ -370,7 +370,7 @@ Tr_SMS (
 				Priority ( 6 )
 				Volume (0.5)
 				Triggers ( 1
-					Variable_Trigger ( CurveForce_Dec_Past 10 PlayOneShot   ( 1 File ( "x_okolky_90b.wav" -1 )   SelectionMethod ( SequentialSelection ) ) )				
+					Variable_Trigger ( CurveForce_Dec_Past 10 PlayOneShot   ( 1 File ( "../4_Wheels/x_okolky_90b.wav" -1 )   SelectionMethod ( SequentialSelection ) ) )				
 				)
                 FrequencyCurve(
 					SpeedControlled
@@ -398,9 +398,9 @@ Tr_SMS (
 				Priority ( 6 )
 				Volume (1.5)
 				Triggers ( 6
-					Discrete_Trigger ( 58 PlayOneShot ( 1 	File ( "Naraz_narazniku_ex.wav" -1 ) SelectionMethod (SequentialSelection) ) ) 
-					Discrete_Trigger ( 59 PlayOneShot ( 1 	File ( "Naraz_narazniku_ex.wav" -1 ) SelectionMethod (SequentialSelection) ) ) 
-					Discrete_Trigger ( 60 PlayOneShot ( 1 	File ( "Naraz_narazniku_ex.wav" -1 ) SelectionMethod (SequentialSelection) ) ) 
+					Discrete_Trigger ( 58 PlayOneShot ( 1 	File ( "../4_Wheels/Naraz_narazniku_ex.wav" -1 ) SelectionMethod (SequentialSelection) ) ) 
+					Discrete_Trigger ( 59 PlayOneShot ( 1 	File ( "../4_Wheels/Naraz_narazniku_ex.wav" -1 ) SelectionMethod (SequentialSelection) ) ) 
+					Discrete_Trigger ( 60 PlayOneShot ( 1 	File ( "../4_Wheels/Naraz_narazniku_ex.wav" -1 ) SelectionMethod (SequentialSelection) ) ) 
 				)
 				FrequencyCurve(
 					SpeedControlled
@@ -427,9 +427,9 @@ Tr_SMS (
 				Priority ( 6 )
 				Volume (1.0)
 				Triggers ( 6
-					Discrete_Trigger ( 61 PlayOneShot ( 1 	File ( "rozpojovani.wav" -1 ) SelectionMethod (SequentialSelection) ) ) 
-					Discrete_Trigger ( 62 PlayOneShot ( 1 	File ( "rozpojovani.wav" -1 ) SelectionMethod (SequentialSelection) ) ) 
-					Discrete_Trigger ( 63 PlayOneShot ( 1 	File ( "rozpojovani.wav" -1 ) SelectionMethod (SequentialSelection) ) ) 
+					Discrete_Trigger ( 61 PlayOneShot ( 1 	File ( "../4_Wheels/rozpojovani.wav" -1 ) SelectionMethod (SequentialSelection) ) ) 
+					Discrete_Trigger ( 62 PlayOneShot ( 1 	File ( "../4_Wheels/rozpojovani.wav" -1 ) SelectionMethod (SequentialSelection) ) ) 
+					Discrete_Trigger ( 63 PlayOneShot ( 1 	File ( "../4_Wheels/rozpojovani.wav" -1 ) SelectionMethod (SequentialSelection) ) ) 
 				)
 				FrequencyCurve(
 					SpeedControlled
@@ -446,7 +446,7 @@ Tr_SMS (
 				Priority ( 6 )
 				Volume (1.0)
 				Triggers ( 1
-					Discrete_Trigger ( 20067 PlayOneShot ( 1 	File ( "x_odrazeni.wav" -1 ) SelectionMethod (SequentialSelection) ) )
+					Discrete_Trigger ( 20067 PlayOneShot ( 1 	File ( "../4_Wheels/x_odrazeni.wav" -1 ) SelectionMethod (SequentialSelection) ) )
 				)
 				VolumeCurve(
 					SpeedControlled
@@ -465,7 +465,7 @@ Tr_SMS (
 				Priority ( 6 )
 				Volume (1.0)
 				Triggers ( 1
-					Discrete_Trigger ( 121 PlayOneShot ( 1 	File ( "x_obuti.wav" -1 ) SelectionMethod (SequentialSelection) ) )
+					Discrete_Trigger ( 121 PlayOneShot ( 1 	File ( "../4_Wheels/x_obuti.wav" -1 ) SelectionMethod (SequentialSelection) ) )
 				)
 				VolumeCurve(
 					WheelDamageValueControlled
@@ -484,7 +484,7 @@ Tr_SMS (
 				Priority ( 6 )
 				Volume (1.0)
 				Triggers ( 1
-					Discrete_Trigger ( 129 PlayOneShot ( 1 	File ( "x_obuti.wav" -1 ) SelectionMethod (SequentialSelection) ) )
+					Discrete_Trigger ( 129 PlayOneShot ( 1 	File ( "../4_Wheels/x_obuti.wav" -1 ) SelectionMethod (SequentialSelection) ) )
 				)
 				VolumeCurve(
 					WheelDamageValueControlled
