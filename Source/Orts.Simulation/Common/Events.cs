@@ -329,6 +329,8 @@ namespace Orts.Common
         MotorStopBreak,
         BrakeSkidStart,
         BrakeSkidStop,
+        CouplerPull,
+        CouplerPush,
     }
 
     public static class Events
@@ -672,6 +674,8 @@ namespace Orts.Common
                         case 20083: return Event.MotorStopBreak;
                         case 20084: return Event.BrakeSkidStart;
                         case 20085: return Event.BrakeSkidStop;
+                        case 20086: return Event.CouplerPull;
+                        case 20087: return Event.CouplerPush;
 
                         default: return 0;
                     }
