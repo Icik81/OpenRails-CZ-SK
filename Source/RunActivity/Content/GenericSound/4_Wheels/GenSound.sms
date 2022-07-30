@@ -1,0 +1,571 @@
+SIMISA@@@@@@@@@@JINX0x1t______
+
+
+Tr_SMS (
+
+	ScalabiltyGroup( 5
+		Activation (
+      		CabCam ()
+			PassengerCam ()
+			Distance  (20)
+		)
+		Deactivation (
+			ExternalCam ()
+			Distance  (20)
+		)
+		Stereo ()
+		Volume (0.6)
+		Streams (100
+		
+			Stream (
+				Skip ( **** Skřípot kol při skluzu **** )
+				Priority ( 6 )
+				Volume( 0.6 )
+				Triggers ( 2
+					Variable_Trigger ( SlipSpeed_Inc_Past 1 StartLoop   ( 1 File ( "prokluz.wav" -1 )   SelectionMethod ( SequentialSelection ) ) )
+					Variable_Trigger ( SlipSpeed_Dec_Past 1 ReleaseLoopRelease () )
+				)
+				FrequencyCurve(
+					SlipSpeedControlled
+					CurvePoints ( 3
+						0	40000
+						15  44000
+						30  46000					
+					)
+					Granularity ( 100 )
+				)
+				VolumeCurve (
+					SlipSpeedControlled
+					CurvePoints ( 4
+						0       0.0
+                        1	    0.3
+						10		1.0
+						20		1.0
+					)	
+					Granularity ( 0.05 )
+				)		
+			)
+
+			Stream (
+				Skip ( **** Vibrace a vrzání ****)
+				Priority ( 6 )
+				Volume( 1.0 )
+				Triggers ( 1
+				Variable_Trigger ( Vibration_Inc_Past 30 PlayOneShot ( 13
+						File ( "240_sedacka_00.wav" -1 )
+						File ( "240_sedacka_01.wav" -1 ) 
+						File ( "240_sedacka_02.wav" -1 )  
+						File ( "240_sedacka_03.wav" -1 )  
+						File ( "240_sedacka_04.wav" -1 ) 
+						File ( "240_sedacka_05.wav" -1 ) 
+						File ( "240_sedacka_06.wav" -1 )  
+						File ( "240_sedacka_07.wav" -1 )  
+						File ( "240_sedacka_08.wav" -1 ) 
+						File ( "240_sedacka_09.wav" -1 ) 
+						File ( "240_sedacka_10.wav" -1 )  
+						File ( "240_sedacka_11.wav" -1 )  
+						File ( "240_sedacka_12.wav" -1 ) 
+				SelectionMethod ( RandomSelection ) ) )
+				)
+				FrequencyCurve(
+					VibrationControlled
+					CurvePoints ( 2
+						0 22050
+						50 22050					
+					)
+					Granularity ( 100 )
+				)
+				VolumeCurve(
+					VibrationControlled
+					CurvePoints ( 3
+						 0		0.00
+						 10		0.10
+						 50		1.00
+					)
+					Granularity ( 0.05 )
+				)
+			)
+
+            Stream (
+				Skip( **** Valivy pohyb po trati **** )
+				Priority ( 6 )
+				Volume (0.6)
+				Triggers ( 2
+					Variable_Trigger ( Speed_Inc_Past 0.010 StartLoopRelease   ( 1 File ( "jizda.wav" -1 )   SelectionMethod ( SequentialSelection ) ) )
+					Variable_Trigger ( Speed_Dec_Past 0.010 ReleaseLoopRelease () )	
+				   )
+                FrequencyCurve(
+					SpeedControlled
+					CurvePoints ( 3
+						-35.0	    30050
+						0.000		7050
+						35.0	    30050
+					)
+					Granularity ( 100 )
+				)
+				VolumeCurve(
+					SpeedControlled
+					CurvePoints ( 4
+                        0.0		0.00
+						1.0		0.50
+						5.0		1.00
+                        15.0	0.50
+					)    
+					Granularity ( 0.01 )
+				)				
+			)
+
+			Stream (
+				Skip (** zvuk podvozku na nerovnostech trate **)
+				Priority ( 6 )
+				Volume( 1.0 )
+				Triggers ( 1
+				Variable_Trigger ( Vibration_Inc_Past 30 PlayOneShot ( 12
+						File ( "1.wav" -1 )
+						File ( "2.wav" -1 )
+						File ( "3.wav" -1 )
+						File ( "4.wav" -1 )
+						File ( "5.wav" -1 )
+						File ( "6.wav" -1 )
+						File ( "7.wav" -1 )
+						File ( "8.wav" -1 )
+						File ( "9.wav" -1 )
+						File ( "10.wav" -1 )
+						File ( "11.wav" -1 )
+						File ( "12.wav" -1 )
+				SelectionMethod ( RandomSelection ) ) )
+				)
+				VolumeCurve(
+					VibrationControlled
+					CurvePoints ( 3
+						 0		0.00
+						 10		0.20
+						 50		1.00
+					)
+					Granularity ( 0.05 )
+				)
+			)
+			
+			Stream (
+				Skip( **** Buch pohyb po trati **** )
+				Priority ( 6 )
+				Volume (1.0)
+				Triggers ( 1
+					Variable_Trigger ( Vibration_Inc_Past 10 PlayOneShot ( 3
+						File ( "buch1.wav" -1 )
+						File ( "buch2.wav" -1 )
+						File ( "buch3.wav" -1 )
+					SelectionMethod ( RandomSelection ) ) )
+				   )
+                FrequencyCurve(
+					SpeedControlled
+					CurvePoints ( 3
+						0.000		9000
+						11.0		11025
+						35.0	    15000				
+					)
+					Granularity ( 100 )
+				)	
+				VolumeCurve (
+					VibrationControlled
+					CurvePoints ( 3
+						0		0.00
+						10		0.10
+						50		1.00
+					)
+					Granularity ( 0.05 )
+				)
+			)
+		
+            Stream (
+				Skip( **** Obtekanie stanovista vzduchom 100 - 140 km/h  **** )
+				Priority ( 6 )
+				Volume (0.6)
+				Triggers ( 2
+					Variable_Trigger ( Speed_Inc_Past 25.00 StartLoop   ( 1 File ( "162.113_aero.wav" -1 )   SelectionMethod ( SequentialSelection ) ) )
+					Variable_Trigger ( Speed_Dec_Past 24.90 ReleaseLoopRelease () )					
+				   )
+                                   FrequencyCurve(
+					SpeedControlled
+					CurvePoints ( 3
+						-35.0	        44100
+						0.000		44100
+						35.0	        44100
+					)
+					Granularity ( 100 )
+				)
+				VolumeCurve(
+					SpeedControlled
+					CurvePoints ( 2
+                        23.000		0.00
+                        40.000		2.00
+					)    
+					Granularity ( 0.05 )
+				)				
+			)
+					
+			Stream (			
+				Skip ( **** Skřípání okolků v oblouku **** )	  	    
+				Priority ( 6 )
+				Volume (0.6)
+				Triggers ( 2
+					Variable_Trigger ( CurveForce_Inc_Past 100	StartLoopRelease ( 1	File ( "okolky.wav" -1 ) SelectionMethod ( SequentialSelection) ) )
+					Variable_Trigger ( CurveForce_Dec_Past 100	ReleaseLoopReleaseWithJump () )		
+				)
+				FrequencyCurve(
+					SpeedControlled
+					CurvePoints ( 3
+						0.0		6000
+						12.0	11025
+						35.0    15000
+					)
+					Granularity ( 100 )
+				)
+				VolumeCurve(
+				CurveForceControlled
+				CurvePoints ( 5
+					0    0.00
+					100  0.40
+					400  0.60	
+					600  0.80
+					800  1.00	
+				)
+				Granularity  ( 0.10 )
+				)
+				VolumeCurve(
+    			SpeedControlled
+				CurvePoints ( 2
+					0    0.00
+					5    1.00
+				)
+				Granularity  ( 0.10 )
+				)
+			)		
+
+            Stream (
+				Skip( **** Okolky 30km/h v obluku **** )
+				Priority ( 6 )
+				Volume (1.0)
+				Triggers ( 6
+					Initial_Trigger ( DisableTrigger ( 4 ) )
+					Variable_Trigger ( CurveForce_Inc_Past 15 SetStreamVolume ( 1.00 ) )
+					Variable_Trigger ( CurveForce_Inc_Past 15 EnableTrigger ( 4 ) )
+					Random_Trigger ( Delay_Min_Max ( 0 4 ) Volume_Min_Max ( 1.0 1.0 ) PlayOneShot ( 8
+						File ( "okolky_30a.wav" -1 ) 
+						File ( "okolky_30b.wav" -1 ) 
+						File ( "okolky_30c.wav" -1 ) 
+						File ( "okolky_30d.wav" -1 ) 
+						File ( "okolky_30e.wav" -1 ) 
+						File ( "okolky_30f.wav" -1 ) 
+						File ( "okolky_30g.wav" -1 ) 
+						File ( "okolky_30h.wav" -1 ) 
+					SelectionMethod ( RandomSelection ) ) )
+					Variable_Trigger ( CurveForce_Dec_Past 15 DisableTrigger ( 4 ) )
+					Variable_Trigger ( CurveForce_Dec_Past 15 SetStreamVolume ( 0.00 ) )			
+				)
+                FrequencyCurve(
+					SpeedControlled
+					CurvePoints ( 3
+						-35.0  44100
+						0.000  44100
+						35.0   44100
+					)
+					Granularity ( 0.05 )
+				)
+				VolumeCurve(
+					SpeedControlled
+					CurvePoints ( 5		
+                        0.00			0.00
+                        1.00			0.00
+                        2.90			1.30
+                        7.00			1.30
+                        10.8			0.00
+					)    
+					Granularity ( 0.05 )
+				)				
+			)
+            
+			Stream (
+				Skip( **** Okolky 40km/h **** )
+				Priority ( 6 )
+				Volume (0.6)
+				Triggers ( 4
+					Variable_Trigger ( CurveForce_Inc_Past 7 SetStreamVolume ( 1.00 ) )
+					Variable_Trigger ( CurveForce_Inc_Past 7 StartLoopRelease   ( 1 File ( "okolky_40a.wav" -1 )   SelectionMethod ( SequentialSelection ) ) )
+					Variable_Trigger ( CurveForce_Dec_Past 7 ReleaseLoopRelease () )
+					Variable_Trigger ( CurveForce_Dec_Past 7 SetStreamVolume ( 0.00 ) )					
+				)
+                FrequencyCurve(
+					SpeedControlled
+					CurvePoints ( 3
+						-35.0  44100
+						0.000  44100
+						35.0   44100
+					)
+					Granularity ( 0.05 )
+				)
+				VolumeCurve(
+					SpeedControlled
+					CurvePoints ( 4
+                        7.00			0.00
+                        10.8			0.70
+                        15.5			0.70
+                        18.5			0.00
+					)    
+					Granularity ( 0.05 )
+				)				
+			)
+            
+			Stream (
+				Skip( **** Okolky 40km/h dojazd  **** )
+				Priority ( 6 )
+				Volume (1.0)
+				Triggers ( 1
+					Variable_Trigger ( CurveForce_Dec_Past 7 PlayOneShot   ( 1 File ( "okolky_40b.wav" -1 )   SelectionMethod ( SequentialSelection ) ) )				
+				)
+                FrequencyCurve(
+					SpeedControlled
+					CurvePoints ( 3
+						-35.0  44100
+						0.000  44100
+						35.0   44100
+					)
+					Granularity ( 0.05 )
+				)
+				VolumeCurve(
+					SpeedControlled
+					CurvePoints ( 4
+                        7.00			0.00
+                        10.8			1.35
+                        15.5			1.35
+                        18.5			0.00
+					)    
+					Granularity ( 0.05 )
+				)				
+			)
+            
+			Stream (
+				Skip( **** Okolky 60km/h  **** )
+				Priority ( 6 )
+				Volume (0.6)
+				Triggers ( 4
+					Variable_Trigger ( CurveForce_Inc_Past 7 SetStreamVolume ( 1.0 ) )
+					Variable_Trigger ( CurveForce_Inc_Past 7 StartLoopRelease   ( 1 File ( "okolky_60a.wav" -1 )   SelectionMethod ( SequentialSelection ) ) )
+					Variable_Trigger ( CurveForce_Dec_Past 7 ReleaseLoopRelease () )
+					Variable_Trigger ( CurveForce_Dec_Past 7 SetStreamVolume ( 0.00 ) )						
+			    )
+                FrequencyCurve(
+					SpeedControlled
+					CurvePoints ( 3
+						-35.0	        44100
+						0.000		44100
+						35.0	        44100
+					)
+					Granularity ( 0.05 )
+				)
+				VolumeCurve(
+					SpeedControlled
+					CurvePoints ( 4
+                        15.55		0.00
+                        18.50		0.80
+                        22.86		0.80
+                        26.00 		0.00
+					)    
+					Granularity ( 0.05 )
+				)				
+			)
+            
+			Stream (
+				Skip( **** Okolky 60km/h dojazd  **** )
+				Priority ( 6 )
+				Volume (1.0)
+				Triggers ( 1
+					Variable_Trigger ( CurveForce_Dec_Past 7 PlayOneShot   ( 1 File ( "okolky_60b.wav" -1 )   SelectionMethod ( SequentialSelection ) ) )					
+				)
+                FrequencyCurve(
+					SpeedControlled
+					CurvePoints ( 3
+						-35.0	        44100
+						0.000		44100
+						35.0	        44100
+					)
+					Granularity ( 0.05 )
+				)
+				VolumeCurve(
+					SpeedControlled
+					CurvePoints ( 4
+                        15.55		0.00
+                        18.50		1.40
+                        22.86		1.40
+                        26.00 		0.00
+					)    
+					Granularity ( 0.05 )
+				)				
+			)
+            
+			Stream (
+				Skip( **** Okolky 90km/h **** )
+				Priority ( 6 )
+				Volume (0.3)
+				Triggers ( 4
+					Variable_Trigger ( CurveForce_Inc_Past 10 SetStreamVolume ( 1.0 ) )
+					Variable_Trigger ( CurveForce_Inc_Past 10 StartLoopRelease   ( 1 File ( "okolky_90a.wav" -1 )   SelectionMethod ( SequentialSelection ) ) )
+					Variable_Trigger ( CurveForce_Dec_Past 10 ReleaseLoopRelease () )	
+					Variable_Trigger ( CurveForce_Dec_Past 10 SetStreamVolume ( 0.00 ) )					
+			    )
+                FrequencyCurve(
+					SpeedControlled
+					CurvePoints ( 3
+						-35.0	        44100
+						0.000		44100
+						35.0	        44100
+					)
+					Granularity ( 0.05 )
+				)
+				VolumeCurve(
+					SpeedControlled
+					CurvePoints ( 4
+                        20.00		0.00
+                        25.71		0.70
+                        28.57		0.70
+                        32.50		0.00
+					)    
+					Granularity ( 0.05 )
+				)				
+			)
+            
+			Stream (
+				Skip( **** Okolky 90km/h dojazd  **** )
+				Priority ( 6 )
+				Volume (0.5)
+				Triggers ( 1
+					Variable_Trigger ( CurveForce_Dec_Past 10 PlayOneShot   ( 1 File ( "okolky_90b.wav" -1 )   SelectionMethod ( SequentialSelection ) ) )				
+				)
+                FrequencyCurve(
+					SpeedControlled
+					CurvePoints ( 3
+						-35.0	        44100
+						0.000		44100
+						35.0	        44100
+					)
+					Granularity ( 0.05 )
+				)
+				VolumeCurve(
+					SpeedControlled
+					CurvePoints ( 4
+                        20.00		0.00
+                        25.71		1.35
+                        28.57		1.35
+                        32.50		0.00
+					)    
+					Granularity ( 0.05 )
+				)				
+			)
+			
+			Stream (
+				Skip( **** Narazniky **** )
+				Priority ( 6 )
+				Volume (1.5)
+				Triggers ( 6
+					Discrete_Trigger ( 58 PlayOneShot ( 1 	File ( "Naraz_narazniku.wav" -1 ) SelectionMethod (SequentialSelection) ) ) 
+					Discrete_Trigger ( 59 PlayOneShot ( 1 	File ( "Naraz_narazniku.wav" -1 ) SelectionMethod (SequentialSelection) ) ) 
+					Discrete_Trigger ( 60 PlayOneShot ( 1 	File ( "Naraz_narazniku.wav" -1 ) SelectionMethod (SequentialSelection) ) ) 
+				)
+				FrequencyCurve(
+					SpeedControlled
+					CurvePoints ( 2
+						0.0		 9000
+						1.0		 11025
+					)
+					Granularity ( 100 )
+				)
+				VolumeCurve(
+					SpeedControlled
+					CurvePoints ( 4				 
+					0.3			0.3
+					0.5			0.6
+					1.0			1.0
+					1.5			1.5	 	  
+					)
+					Granularity ( 0.05 )
+				)
+			)
+			
+			Stream (
+				Skip( **** Rozpojeni **** )
+				Priority ( 6 )
+				Volume (0.6)
+				Triggers ( 6
+					Discrete_Trigger ( 61 PlayOneShot ( 1 	File ( "rozpojovani.wav" -1 ) SelectionMethod (SequentialSelection) ) ) 
+					Discrete_Trigger ( 62 PlayOneShot ( 1 	File ( "rozpojovani.wav" -1 ) SelectionMethod (SequentialSelection) ) ) 
+					Discrete_Trigger ( 63 PlayOneShot ( 1 	File ( "rozpojovani.wav" -1 ) SelectionMethod (SequentialSelection) ) ) 
+				)
+				FrequencyCurve(
+					SpeedControlled
+					CurvePoints ( 2
+						0.0		5512
+						1.0		5512
+					)
+					Granularity ( 100 )
+				)
+			)
+			
+			Stream (
+				Skip(** Neuspesne sveseni - odrazeni **)
+				Priority ( 6 )
+				Volume (1.0)
+				Triggers ( 1
+					Discrete_Trigger ( 20067 PlayOneShot ( 1 	File ( "odrazeni.wav" -1 ) SelectionMethod (SequentialSelection) ) )
+				)
+				VolumeCurve(
+					SpeedControlled
+					CurvePoints ( 4
+					0.3			0.3
+					0.5			0.7
+					1.0			0.8
+					1.5			1.0
+					)
+					Granularity ( 0.05 )
+				)
+			)
+			
+			Stream (
+				Skip(** Bouchani - "dupot" v dusledku "obuti" kol. 1. otacka kola **)
+				Priority ( 6 )
+				Volume (1.0)
+				Triggers ( 1
+					Discrete_Trigger ( 121 PlayOneShot ( 1 	File ( "obuti.wav" -1 ) SelectionMethod (SequentialSelection) ) )
+				)
+				VolumeCurve(
+					WheelDamageValueControlled
+					CurvePoints ( 4
+					0			0.0
+					2			0.3
+					5			0.7
+					10			1.0
+					)
+					Granularity ( 0.05 )
+				)
+			)
+			
+			Stream (
+				Skip(** Bouchani - "dupot" v dusledku "obuti" kol. 2. otacka kola **)
+				Priority ( 6 )
+				Volume (1.0)
+				Triggers ( 1
+					Discrete_Trigger ( 129 PlayOneShot ( 1 	File ( "obuti.wav" -1 ) SelectionMethod (SequentialSelection) ) )
+				)
+				VolumeCurve(
+					WheelDamageValueControlled
+					CurvePoints ( 4
+					0			0.0
+					2			0.3
+					5			0.7
+					10			1.0
+					)
+					Granularity ( 0.05 )
+				)
+			)			
+		)
+	)
+)			

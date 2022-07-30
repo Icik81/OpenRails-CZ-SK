@@ -67,6 +67,25 @@ namespace Orts.Viewer3D.RollingStock
             string wagonFolderSlash = Path.GetDirectoryName(Locomotive.WagFilePath) + "\\";
             if (Locomotive.CabSoundFileName != null) LoadCarSound(wagonFolderSlash, Locomotive.CabSoundFileName);
 
+            // Icik            
+            string smsGenericFilePath = "..\\Content\\GenericSound\\4_Wheels\\GenSound.sms"; // Default
+            switch (MSTSWagon.WagonNumAxles)
+            {
+                case 2:
+                    smsGenericFilePath = "..\\Content\\GenericSound\\2_Wheels\\GenSound.sms";
+                    break;
+                case 3:
+                    smsGenericFilePath = "..\\Content\\GenericSound\\3_Wheels\\GenSound.sms";
+                    break;
+                case 4:
+                    smsGenericFilePath = "..\\Content\\GenericSound\\4_Wheels\\GenSound.sms";
+                    break;
+                case 6:
+                    smsGenericFilePath = "..\\Content\\GenericSound\\6_Wheels\\GenSound.sms";
+                    break;
+            }
+            LoadCarSound(Viewer.ContentPath, smsGenericFilePath);
+
             //Viewer.SoundProcess.AddSoundSource(this, new TrackSoundSource(MSTSWagon, Viewer));
 
             if (Locomotive.TrainControlSystem != null && Locomotive.TrainControlSystem.Sounds.Count > 0)

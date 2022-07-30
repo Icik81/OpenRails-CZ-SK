@@ -1104,6 +1104,25 @@ namespace Orts.Viewer3D.RollingStock
             if (filename == null)
                 return;
             string smsFilePath = wagonFolderSlash + @"sound\" + filename;
+
+            // Icik
+            string smsGenericFilePath = "..\\Content\\GenericSound\\4_Wheels\\GenSound_ex.sms"; // Default
+            switch (MSTSWagon.WagonNumAxles)
+            {
+                case 2:
+                    smsGenericFilePath = "..\\Content\\GenericSound\\2_Wheels\\GenSound_ex.sms";
+                    break;
+                case 3:
+                    smsGenericFilePath = "..\\Content\\GenericSound\\3_Wheels\\GenSound_ex.sms";
+                    break;
+                case 4:
+                    smsGenericFilePath = "..\\Content\\GenericSound\\4_Wheels\\GenSound_ex.sms";
+                    break;
+                case 6:
+                    smsGenericFilePath = "..\\Content\\GenericSound\\6_Wheels\\GenSound_ex.sms";
+                    break;
+            }
+
             if (!File.Exists(smsFilePath))
                 smsFilePath = Viewer.Simulator.BasePath + @"\sound\" + filename;
             if (!File.Exists(smsFilePath))
@@ -1115,6 +1134,8 @@ namespace Orts.Viewer3D.RollingStock
             try
             {
                 Viewer.SoundProcess.AddSoundSource(this, new SoundSource(Viewer, MSTSWagon, smsFilePath));
+                // Icik
+                Viewer.SoundProcess.AddSoundSource(this, new SoundSource(Viewer, MSTSWagon, System.IO.Path.Combine(Viewer.ContentPath, smsGenericFilePath)));
             }
             catch (Exception error)
             {

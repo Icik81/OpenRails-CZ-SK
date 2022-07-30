@@ -1781,6 +1781,8 @@ namespace Orts.Simulation.Physics
                 }
 
                 // Icik                
+                (car as MSTSWagon).WheelSpeedMpS = car.SpeedMpS;
+                (car as MSTSWagon).AbsWheelSpeedMpS = Math.Abs((car as MSTSWagon).WheelSpeedMpS);
                 // Provede odraz vozů při prudkém najetí
                 if (!MPManager.IsMultiPlayer() && car.IsDriveable && car.Train.IsActualPlayerTrain)
                 {                    

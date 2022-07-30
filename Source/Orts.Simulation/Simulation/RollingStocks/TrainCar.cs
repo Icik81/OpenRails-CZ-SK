@@ -638,7 +638,7 @@ namespace Orts.Simulation.RollingStocks
         protected float StartCurveResistanceFactor = 2.0f; // Set curve friction at Start = 200%
         protected float RouteSpeedMpS; // Max Route Speed Limit
         protected const float GravitationalAccelerationMpS2 = 9.80665f; // Acceleration due to gravity 9.80665 m/s2
-        protected int WagonNumAxles; // Number of axles on a wagon
+        public int WagonNumAxles; // Number of axles on a wagon
         protected float MSTSWagonNumWheels; // Number of axless on a wagon - used to read MSTS value as default
         protected int LocoNumDrvAxles; // Number of drive axles on locomotive
         protected float MSTSLocoNumDrvWheels; // Number of drive axles on locomotive - used to read MSTS value as default
@@ -1336,7 +1336,7 @@ namespace Orts.Simulation.RollingStocks
                 }
                 else
                 {
-                    if (!BrakeSkid && (this as MSTSWagon).AbsWheelSpeedMpS > 0)
+                    if (!BrakeSkid && (this as MSTSWagon).AbsWheelSpeedMpS > 0 && WheelDamageValue > 0)
                     {
                         // Variable1 is proportional to angular speed, value of 10 means 1 rotation/second.                                        
                         var variable1 = Math.Abs((this as MSTSWagon).WheelSpeedMpS / DriverWheelRadiusM / MathHelper.Pi * 5);
@@ -1361,7 +1361,7 @@ namespace Orts.Simulation.RollingStocks
                     // Spustí trigger BrakeSkid
                     if (WheelDamageValue == 0)
                         this.SignalEvent(Event.BrakeSkidStart);
-                    WheelDamageValue += 1 * elapsedClockSeconds * (1.2f - Simulator.Weather.PricipitationIntensityPPSPM2);                    
+                    WheelDamageValue += 1 * elapsedClockSeconds * (1.2f - Simulator.Weather.PricipitationIntensityPPSPM2) * (1 - (1 - (this.MassKG / 85000)));                    
                 }
                 else
                 {
@@ -3141,7 +3141,7 @@ namespace Orts.Simulation.RollingStocks
                     else
                         VibrationRotationVelocityRadpS.X -= (TrackFactorX * factor * Simulator.Settings.CarVibratingLevel * VibrationIntroductionStrength * force * 1.0f * VibrationMassKG) / x;
 
-                    VibrationRotationVelocityRadpS.Z += (TrackFactorZ * factor * Simulator.Settings.CarVibratingLevel * VibrationIntroductionStrength * CurrentCurveAngle * 1.5f * VibrationMassKG) / x;
+                    VibrationRotationVelocityRadpS.Z += (TrackFactorZ * factor * Simulator.Settings.CarVibratingLevel * VibrationIntroductionStrength * CurrentCurveAngle * 1.0f * VibrationMassKG) / x;
                 }
 
                 TypVibrace_1 = false;
