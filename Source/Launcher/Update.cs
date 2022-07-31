@@ -81,7 +81,11 @@ namespace ORTS
                     File.WriteAllText(contentPath, "0");
                 }
                 string content = File.ReadAllText(contentPath);
-
+                
+                ServicePointManager.Expect100Continue = true;
+                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+                ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
+                
                 WebClient webClient = new WebClient();
                 s = webClient.DownloadString("http://msts-rw.cz/ORIC/Updates/version16.txt");
                 conts = webClient.DownloadString("http://msts-rw.cz/ORIC/Updates/Content16.txt");
