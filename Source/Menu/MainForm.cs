@@ -397,10 +397,6 @@ namespace ORTS
                                 File.WriteAllText(Application.StartupPath + @"\OpenRails.txt", "0");
                             string version = File.ReadAllText(Application.StartupPath + @"\OpenRails.txt");
 
-                            ServicePointManager.Expect100Continue = true;
-                            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-                            ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
-
                             WebClient webClient = new WebClient();
                             string verRemote = webClient.DownloadString(@"http://msts-rw.cz/ORIC/Updates/OpenRails.txt");
                             if (verRemote == version)
