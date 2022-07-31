@@ -1515,6 +1515,8 @@ namespace Orts.Viewer3D
                 case Orts.Formats.Msts.VolumeCurve.Controls.MotorWaterTemperatureControlled: return mstsDieselLocomotive.DieselEngines[0].RealDieselWaterTemperatureDeg;
                 case Orts.Formats.Msts.VolumeCurve.Controls.MotorOilTemperatureControlled: return mstsDieselLocomotive.DieselEngines[0].RealDieselOilTemperatureDeg;
                 case Orts.Formats.Msts.VolumeCurve.Controls.WheelDamageValueControlled: return car.WheelDamageValue;
+                case Orts.Formats.Msts.VolumeCurve.Controls.PullPushValueControlled: return car.PullPushValue;
+                case Orts.Formats.Msts.VolumeCurve.Controls.TrackFactorValueControlled: return car.TrackFactorValue;
                 default: return 0;
             }
         }

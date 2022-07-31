@@ -365,6 +365,8 @@ namespace Orts.Simulation.RollingStocks
         public float PrevWheelDamageValue;
         public bool CouplerPull;
         public bool CarSoundLoaded;
+        public float PullPushValue;
+        public float TrackFactorValue;
 
         public float PowerReductionResult1;  // Redukce výkonu od topení, klimatizace, kompresoru
         public float PowerReductionResult2;  // Redukce výkonu od nedostatečného tlaku vzduchu v potrubí
@@ -2973,6 +2975,8 @@ namespace Orts.Simulation.RollingStocks
                 TrackFactorY = 0.8f;
                 TrackFactorZ = 0.8f;
             }
+
+            TrackFactorValue = TrackFactorX;
 
             float SpeedFactor = MathHelper.Clamp(AbsSpeedMpS / Train.AllowedMaxSpeedMpS, 0.8f, 2.5f);
             if (AbsSpeedMpS < 0.1f) SpeedFactor = 0;
