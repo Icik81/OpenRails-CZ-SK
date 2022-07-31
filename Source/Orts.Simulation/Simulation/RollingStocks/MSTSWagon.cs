@@ -2095,11 +2095,11 @@ namespace Orts.Simulation.RollingStocks
                 }
 
                 // Test to see if coupler forces have been exceeded, and coupler has broken. Exceeding this limit will break the coupler
-                if (IsPlayerTrain && Simulator.Settings.BreakCouplers) // Only break couplers on player trains
+                if (IsPlayerTrain && Simulator.Settings.BreakCouplers && !Simulator.PlayerCoupling) // Only break couplers on player trains
                 {
                     // Icik
                     //if (Math.Abs(ImpulseCouplerForceUN) > 0)
-                    //    Simulator.Confirmer.Information("ImpulseCouplerForceUN = " + Math.Abs(ImpulseCouplerForceUN / 500f * CouplerForceU));
+                        //Simulator.Confirmer.Information("ImpulseCouplerForceUN = " + Math.Abs(ImpulseCouplerForceUN / 500f * CouplerForceU));
                     //Simulator.Confirmer.Information("MaxImpulseCouplerForceUN = " + MaxImpulseCouplerForceUN);
 
                     float MaxImpulseCouplerForceUN = 850000; // default 850kN

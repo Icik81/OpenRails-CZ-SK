@@ -213,7 +213,18 @@ Tr_SMS (
                         10.8			0.00
 					)    
 					Granularity ( 0.05 )
-				)				
+				)	
+				VolumeCurve(
+					TrackFactorValueControlled
+					CurvePoints ( 5		
+                        0.00			0.00
+                        0.20			0.00
+                        0.60			0.30
+                        0.80			0.80
+                        1.00			0.80
+					)    
+					Granularity ( 0.05 )
+				)								
 			)
 			
             Stream (
@@ -244,7 +255,18 @@ Tr_SMS (
                         18.5			0.00
 					)    
 					Granularity ( 0.05 )
-				)				
+				)
+				VolumeCurve(
+					TrackFactorValueControlled
+					CurvePoints ( 5		
+                        0.00			0.00
+                        0.20			0.00
+                        0.60			0.30
+                        0.80			0.80
+                        1.00			0.80
+					)    
+					Granularity ( 0.05 )
+				)								
 			)
 			
             Stream (
@@ -272,7 +294,18 @@ Tr_SMS (
                         18.5			0.00
 					)    
 					Granularity ( 0.05 )
-				)				
+				)	
+				VolumeCurve(
+					TrackFactorValueControlled
+					CurvePoints ( 5		
+                        0.00			0.00
+                        0.20			0.00
+                        0.60			0.30
+                        0.80			0.80
+                        1.00			0.80
+					)    
+					Granularity ( 0.05 )
+				)								
 			)
 			
             Stream (
@@ -303,7 +336,18 @@ Tr_SMS (
                         26.00 		0.00
 					)    
 					Granularity ( 0.05 )
-				)				
+				)
+				VolumeCurve(
+					TrackFactorValueControlled
+					CurvePoints ( 5		
+                        0.00			0.00
+                        0.20			0.00
+                        0.60			0.30
+                        0.80			0.80
+                        1.00			0.80
+					)    
+					Granularity ( 0.05 )
+				)								
 			)
 			
             Stream (
@@ -331,7 +375,18 @@ Tr_SMS (
                         26.00 		0.00
 					)    
 					Granularity ( 0.05 )
-				)				
+				)
+				VolumeCurve(
+					TrackFactorValueControlled
+					CurvePoints ( 5		
+                        0.00			0.00
+                        0.20			0.00
+                        0.60			0.30
+                        0.80			0.80
+                        1.00			0.80
+					)    
+					Granularity ( 0.05 )
+				)								
 			)
 			
             Stream (
@@ -362,7 +417,18 @@ Tr_SMS (
                         32.50		0.00
 					)    
 					Granularity ( 0.05 )
-				)				
+				)
+				VolumeCurve(
+					TrackFactorValueControlled
+					CurvePoints ( 5		
+                        0.00			0.00
+                        0.20			0.00
+                        0.60			0.30
+                        0.80			0.80
+                        1.00			0.80
+					)    
+					Granularity ( 0.05 )
+				)								
 			)
 			
             Stream (
@@ -390,38 +456,20 @@ Tr_SMS (
                         32.50		0.00
 					)    
 					Granularity ( 0.05 )
-				)				
-			)
-
-			Stream (
-				Skip( **** Narazniky **** )
-				Priority ( 6 )
-				Volume (1.5)
-				Triggers ( 6
-					Discrete_Trigger ( 58 PlayOneShot ( 1 	File ( "../4_Wheels/Naraz_narazniku_ex.wav" -1 ) SelectionMethod (SequentialSelection) ) ) 
-					Discrete_Trigger ( 59 PlayOneShot ( 1 	File ( "../4_Wheels/Naraz_narazniku_ex.wav" -1 ) SelectionMethod (SequentialSelection) ) ) 
-					Discrete_Trigger ( 60 PlayOneShot ( 1 	File ( "../4_Wheels/Naraz_narazniku_ex.wav" -1 ) SelectionMethod (SequentialSelection) ) ) 
-				)
-				FrequencyCurve(
-					SpeedControlled
-					CurvePoints ( 2
-						0.0		 9000
-						1.0		11025
-					)
-					Granularity ( 100 )
-				)
+				)	
 				VolumeCurve(
-					SpeedControlled
-					CurvePoints ( 4				 
-					0.3			0.3
-					0.5			0.6
-					1.0			1.0
-					1.5			1.5	 	  
-					)
+					TrackFactorValueControlled
+					CurvePoints ( 5		
+                        0.00			0.00
+                        0.20			0.00
+                        0.60			0.30
+                        0.80			0.80
+                        1.00			0.80
+					)    
 					Granularity ( 0.05 )
-				)
+				)								
 			)
-						
+					
 			Stream (
 				Skip( **** Rozpojeni **** )			
 				Priority ( 6 )
@@ -442,7 +490,7 @@ Tr_SMS (
 			)
 
 			Stream (
-				Skip(** Neuspesne sveseni - odrazeni **)
+				Skip(** Náraz **)
 				Priority ( 6 )
 				Volume (1.0)
 				Triggers ( 1
@@ -451,10 +499,10 @@ Tr_SMS (
 				VolumeCurve(
 					SpeedControlled
 					CurvePoints ( 4
-					0.3			0.3
-					0.5			0.7
-					1.0			0.8
-					1.5			1.0
+					0.1			0.5
+					0.3			0.7
+					0.5			1.0
+					1.0			1.5
 					)
 					Granularity ( 0.05 )
 				)
@@ -496,7 +544,47 @@ Tr_SMS (
 					)
 					Granularity ( 0.05 )
 				)
-			)									
+			)
+			
+			Stream (
+				Skip(** natazeni sprahla **)
+				Priority ( 6 )
+				Volume (1.0)
+				Triggers ( 1
+					Discrete_Trigger ( 20086 PlayOneShot ( 1 	File ( "../4_Wheels/x_sprahlo-natazeni.wav" -1 ) SelectionMethod (SequentialSelection) ) )
+				)
+				VolumeCurve(
+					TrackFactorValueControlled
+					CurvePoints ( 5		
+                        0.000			0.00
+                        0.005			0.00
+                        0.010			0.30
+                        0.020			1.00
+                        0.050			1.00
+					)    
+					Granularity ( 0.05 )
+				)				
+			)
+			
+            Stream (
+				Skip(** stlaceni sprahla **)
+				Priority ( 6 )
+				Volume (1.0)
+				Triggers ( 1
+					Discrete_Trigger ( 20087 PlayOneShot ( 1 	File ( "../4_Wheels/x_sprahlo-stlaceni.wav" -1 ) SelectionMethod (SequentialSelection) ) )
+				)
+				VolumeCurve(
+					TrackFactorValueControlled
+					CurvePoints ( 5		
+                        0.000			0.00
+                        0.005			0.00
+                        0.010			0.30
+                        0.020			1.00
+                        0.050			1.00
+					)    
+					Granularity ( 0.05 )
+				)				
+			)			
 		)
 	)
 )			

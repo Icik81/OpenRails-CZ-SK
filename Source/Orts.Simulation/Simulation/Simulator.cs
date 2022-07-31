@@ -972,7 +972,9 @@ namespace Orts.Simulation
 
         // Icik       
         public bool CarByUserUncoupled;
-        public float DifferenceSpeedMpS;        
+        public float DifferenceSpeedMpS;
+        public bool PlayerCoupling;
+        float CouplingCyklusTime;
         /// <summary>
         /// Scan other trains
         /// </summary>
@@ -985,6 +987,16 @@ namespace Orts.Simulation
 
             if (drivenTrain.HasSpeedInCoupler && Math.Abs(drivenTrain.SpeedMpS) < CarCoupleSpeed)
                 drivenTrain.HasSpeedInCoupler = false;
+
+            if (PlayerCoupling)
+            {
+                CouplingCyklusTime += elapsedClockSeconds;
+                if (CouplingCyklusTime > 10)
+                {
+                    PlayerCoupling = false;
+                    CouplingCyklusTime = 0;
+                }
+            }
 
             CarCoupleSpeedOvercome = false;
 
@@ -1009,6 +1021,7 @@ namespace Orts.Simulation
                             d1 = drivenTrain.RearTDBTraveller.RoughOverlapDistanceM(train.FrontTDBTraveller, drivenTrain.FrontTDBTraveller, train.RearTDBTraveller, drivenTrain.Length, train.Length, true);
                         if (d1 < 0)
                         {
+                            PlayerCoupling = true;
                             drivenTrain.SignalEvent(Event.CoupleImpact);
                             if (!MPManager.IsMultiPlayer())
                             {
@@ -1060,6 +1073,7 @@ namespace Orts.Simulation
                             d2 = drivenTrain.RearTDBTraveller.RoughOverlapDistanceM(train.RearTDBTraveller, drivenTrain.FrontTDBTraveller, train.FrontTDBTraveller, drivenTrain.Length, train.Length, true);
                         if (d2 < 0)
                         {
+                            PlayerCoupling = true;
                             drivenTrain.SignalEvent(Event.CoupleImpact);
                             if (!MPManager.IsMultiPlayer())
                             {
@@ -1127,6 +1141,7 @@ namespace Orts.Simulation
                             d1 = drivenTrain.FrontTDBTraveller.RoughOverlapDistanceM(train.RearTDBTraveller, drivenTrain.RearTDBTraveller, train.FrontTDBTraveller, drivenTrain.Length, train.Length, false);
                         if (d1 < 0)
                         {
+                            PlayerCoupling = true;
                             drivenTrain.SignalEvent(Event.CoupleImpact);
                             if (!MPManager.IsMultiPlayer())
                             {
@@ -1204,6 +1219,7 @@ namespace Orts.Simulation
                             d2 = drivenTrain.FrontTDBTraveller.RoughOverlapDistanceM(train.FrontTDBTraveller, drivenTrain.RearTDBTraveller, train.RearTDBTraveller, drivenTrain.Length, train.Length, false);
                         if (d2 < 0)
                         {
+                            PlayerCoupling = true;
                             drivenTrain.SignalEvent(Event.CoupleImpact);
                             if (!MPManager.IsMultiPlayer())
                             {
