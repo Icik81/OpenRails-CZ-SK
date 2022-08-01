@@ -1461,19 +1461,16 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     BrakeCylReleaseEDBOn = true;
 
                 // Automatické napuštění brzdového válce po uvadnutí EDB
-                float AirWithEDBMotiveForceN = loco.MaxDynamicBrakeForceN * 0.20f;
+                float AirWithEDBMotiveForceN = loco.MaxDynamicBrakeForceN * 0.50f;
                 if (ThresholdBailOffOn > 0 && Math.Abs(loco.DynamicBrakeForceN) <= AirWithEDBMotiveForceN) // Napustí brzdový válec pod limit síly k EDB
                 {
                     ThresholdBailOffOn = (maxPressurePSI0 - BrakeLine1PressurePSI) * AuxCylVolumeRatio;
                     if (AutoCylPressurePSI0 < ThresholdBailOffOn
                         && loco.MainResPressurePSI > 0
-                        && AutoCylPressurePSI < loco.BrakeSystem.BrakeCylinderMaxSystemPressurePSI
-                        && AutoCylPressurePSI < loco.MainResPressurePSI)
-                    {
-                        EDBEngineBrakeDelay += elapsedClockSeconds;
-                        if (EDBEngineBrakeDelay > BrakeDelayToEngage - 0.05f && EDBEngineBrakeDelay < BrakeDelayToEngage && AutoCylPressurePSI < 1)
-                            AutoCylPressurePSI0 = 0.1f * 14.50377f;
-                        if (EDBEngineBrakeDelay > BrakeDelayToEngage + 0.25f && !OL3active)
+                        && AutoCylPressurePSI0 < loco.BrakeSystem.BrakeCylinderMaxSystemPressurePSI
+                        && AutoCylPressurePSI0 < loco.MainResPressurePSI)
+                    {                        
+                        if (!OL3active)
                         {
                             AutoCylPressurePSI0 += elapsedClockSeconds * AutoBailOffOnRatePSIpS; // Rychlost napouštění po uvadnutí EDB
                         }

@@ -297,7 +297,12 @@ namespace Orts.Simulation.RollingStocks.SubSystems
 
             try
             {
-                Physics.Train train = Locomotive.Train;
+                if (Locomotive.Train == null)
+                {
+                    MirelCheck(elapsedClockSeconds);
+                    return;
+                }
+                Physics.Train train = Locomotive.Train;                
                 Signalling.SignalObject[] signals = train.NextSignalObject;
                 if (signals[0] == null)
                 {

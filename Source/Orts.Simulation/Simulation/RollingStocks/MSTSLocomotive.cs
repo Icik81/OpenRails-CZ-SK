@@ -1960,13 +1960,22 @@ namespace Orts.Simulation.RollingStocks
 
             // Icik            
             if (MaxPowerWAC != 0)
+            {
                 MaxPowerWBase = MaxPowerWAC;
+                Simulator.CarPowerW = MaxPowerWAC;
+            }
             else
-                if (MaxPowerWDC != 0)
+            if (MaxPowerWDC != 0)
+            {
                 MaxPowerWBase = MaxPowerWDC;
+                Simulator.CarPowerW = MaxPowerWDC;
+            }
             else
-                if (MaxPowerW != 0)
+            if (MaxPowerW != 0)
+            {
                 MaxPowerWBase = MaxPowerW;
+                Simulator.CarPowerW = MaxPowerW;
+            }
 
             if (MaxTrackSandBoxCapacityM3 == 0) MaxTrackSandBoxCapacityM3 = 0.0250f; // Default 0.0250m3
             if (CurrentTrackSandBoxCapacityM3 == 0) CurrentTrackSandBoxCapacityM3 = MaxTrackSandBoxCapacityM3;
@@ -2509,7 +2518,7 @@ namespace Orts.Simulation.RollingStocks
         {
             if (IsPlayerTrain)
             {
-                if (EngineBrakeEngageEDB || BrakeSystem.OL3active || BreakEDBButton_Activated || this.BrakeSystem.EmergencyBrakeForWagon)
+                if (EngineBrakeEngageEDB || BrakeSystem.OL3active || BreakEDBButton_Activated)
                     return;
 
                 if (!PowerOn && !EDBIndependent)
@@ -4268,7 +4277,7 @@ namespace Orts.Simulation.RollingStocks
                 CarIsPlayerLoco = false;
 
             // Inicialzace loko hráče (důležité pro TT scénář)
-            if (CarIsPlayerLoco && !CarIsPlayerLocoSet)
+            if (CarIsPlayerLoco && !CarIsPlayerLocoSet && Train is Timetables.TTTrain)
             {
                 BrakeSystem.StartOn = true;
                 BrakeSystem.IsAirEmpty = Simulator.Settings.AirEmpty;
@@ -4277,6 +4286,8 @@ namespace Orts.Simulation.RollingStocks
                 Battery = false;
                 PowerKey = false;
                 CarIsPlayerLocoSet = true;
+                if (MaxPowerWBase == 0)
+                    MaxPowerWBase = Simulator.CarPowerW;
             }
 
             if (!DieselDirection_Forward && !DieselDirection_Start && !DieselDirection_0 && !DieselDirection_Reverse)
