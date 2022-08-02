@@ -1543,6 +1543,8 @@ namespace Orts.Simulation.RollingStocks
             AdhesionEfficiencyKoef = locoCopy.AdhesionEfficiencyKoef;
             MultiSystemEngine = locoCopy.MultiSystemEngine;
             MultiSystemEnginePlayer = locoCopy.MultiSystemEnginePlayer;
+            MaxPowerWAC = locoCopy.MaxPowerWAC;
+            MaxPowerWDC = locoCopy.MaxPowerWDC;
             MaxCurrentPower = locoCopy.MaxCurrentPower;
             MaxCurrentBrake = locoCopy.MaxCurrentBrake;
             SlipSpeedCritical = locoCopy.SlipSpeedCritical;
@@ -1591,6 +1593,11 @@ namespace Orts.Simulation.RollingStocks
                 CruiseControl = locoCopy.CruiseControl;
             if (locoCopy.Mirel != null)
                 Mirel = locoCopy.Mirel;
+
+            //if (locoCopy.MultiPositionController != null)
+            //    MultiPositionController = locoCopy.MultiPositionController;
+            //if (locoCopy.MultiPositionControllers != null)
+            //    MultiPositionControllers = locoCopy.MultiPositionControllers;
         }
 
         public void ActiveStationIncrease()
@@ -1960,22 +1967,14 @@ namespace Orts.Simulation.RollingStocks
 
             // Icik            
             if (MaxPowerWAC != 0)
-            {
                 MaxPowerWBase = MaxPowerWAC;
-                Simulator.CarPowerW = MaxPowerWAC;
-            }
             else
             if (MaxPowerWDC != 0)
-            {
                 MaxPowerWBase = MaxPowerWDC;
-                Simulator.CarPowerW = MaxPowerWDC;
-            }
             else
             if (MaxPowerW != 0)
-            {
                 MaxPowerWBase = MaxPowerW;
-                Simulator.CarPowerW = MaxPowerW;
-            }
+
 
             if (MaxTrackSandBoxCapacityM3 == 0) MaxTrackSandBoxCapacityM3 = 0.0250f; // Default 0.0250m3
             if (CurrentTrackSandBoxCapacityM3 == 0) CurrentTrackSandBoxCapacityM3 = MaxTrackSandBoxCapacityM3;
@@ -4286,8 +4285,6 @@ namespace Orts.Simulation.RollingStocks
                 Battery = false;
                 PowerKey = false;
                 CarIsPlayerLocoSet = true;
-                if (MaxPowerWBase == 0)
-                    MaxPowerWBase = Simulator.CarPowerW;
             }
 
             if (!DieselDirection_Forward && !DieselDirection_Start && !DieselDirection_0 && !DieselDirection_Reverse)
