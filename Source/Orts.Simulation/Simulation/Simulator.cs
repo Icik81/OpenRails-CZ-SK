@@ -505,6 +505,7 @@ namespace Orts.Simulation
             }
         }
 
+        public TTTrain playerTTTrain = null;
         public void StartTimetable(string[] arguments, CancellationToken cancellation)
         {
             TimetableMode = true;
@@ -518,7 +519,7 @@ namespace Orts.Simulation
 
             TimetableInfo TTinfo = new TimetableInfo(this);
 
-            TTTrain playerTTTrain = null;
+            
             List<TTTrain> allTrains = TTinfo.ProcessTimetable(arguments, cancellation);
             playerTTTrain = allTrains[0];
 

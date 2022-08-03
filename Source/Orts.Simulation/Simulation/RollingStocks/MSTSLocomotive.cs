@@ -1589,15 +1589,34 @@ namespace Orts.Simulation.RollingStocks
             BreakEDBButton_Activated = locoCopy.BreakEDBButton_Activated;
 
             // Jindrich
+            UsingForceHandle = locoCopy.UsingForceHandle;
+            Battery = locoCopy.Battery;
+            ThrottleFullRangeIncreaseTimeSeconds = locoCopy.ThrottleFullRangeIncreaseTimeSeconds;
+            ThrottleFullRangeDecreaseTimeSeconds = locoCopy.ThrottleFullRangeDecreaseTimeSeconds;
+            ThrottleFullRangeDecreaseTimeSecondsFast = locoCopy.ThrottleFullRangeDecreaseTimeSecondsFast;
+            DynamicBrakeFullRangeIncreaseTimeSeconds = locoCopy.DynamicBrakeFullRangeIncreaseTimeSeconds;
+            DynamicBrakeFullRangeDecreaseTimeSeconds = locoCopy.DynamicBrakeFullRangeDecreaseTimeSeconds;
+            AcceleratingToBrakingChangeTime = locoCopy.AcceleratingToBrakingChangeTime;
+            MaxControllerVolts = locoCopy.MaxControllerVolts;
+            DisableRestrictedSpeedWhenManualDriving = locoCopy.DisableRestrictedSpeedWhenManualDriving;
+            AutomaticParkingBrake = locoCopy.AutomaticParkingBrake;
+            AutomaticParkingBrakeEngageSpeedKpH = locoCopy.AutomaticParkingBrakeEngageSpeedKpH;
+            ParkingBrakeTargetPressurePSI = locoCopy.ParkingBrakeTargetPressurePSI;
+            SplashScreenWillBeDisplayed = locoCopy.SplashScreenWillBeDisplayed;
+            SplashScreenMinDuration = locoCopy.SplashScreenMinDuration;
+            SplashScreenMaxDuration = locoCopy.SplashScreenMaxDuration;
+            AntiWheelSpinEquipped = locoCopy.AntiWheelSpinEquipped;
+            AntiWheelSpinSpeedDiffThreshold = locoCopy.AntiWheelSpinSpeedDiffThreshold;
+            DynamicBrakeMaxForceAtSelectorStep = locoCopy.DynamicBrakeMaxForceAtSelectorStep;
+            SelectedMaxAccelerationStep = locoCopy.SelectedMaxAccelerationStep;
+
             if (locoCopy.CruiseControl != null)
                 CruiseControl = locoCopy.CruiseControl;
             if (locoCopy.Mirel != null)
                 Mirel = locoCopy.Mirel;
 
-            //if (locoCopy.MultiPositionController != null)
-            //    MultiPositionController = locoCopy.MultiPositionController;
-            //if (locoCopy.MultiPositionControllers != null)
-            //    MultiPositionControllers = locoCopy.MultiPositionControllers;
+            if (locoCopy.MultiPositionControllers != null)
+                MultiPositionControllers = locoCopy.MultiPositionControllers;
         }
 
         public void ActiveStationIncrease()
