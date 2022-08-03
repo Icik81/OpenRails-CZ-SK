@@ -962,8 +962,7 @@ namespace Orts.Simulation.RollingStocks
                 {
                     if (car is MSTSLocomotive)
                         continue;
-                    else
-                    if (WagonType == WagonTypes.Passenger)
+                    else                    
                         car.CarLightsPowerOn = true;
                 }
 
