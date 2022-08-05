@@ -1583,6 +1583,7 @@ namespace Orts.Simulation.RollingStocks
                 case "wagon(dieselheaterpower": DieselHeaterPower = stf.ReadFloatBlock(STFReader.UNITS.Power, null); break;
                 case "wagon(dieselheaterconsumptionperhour": DieselHeaterConsumptionPerHour = stf.ReadFloatBlock(STFReader.UNITS.Volume, null); break;
                 case "wagon(dieselheatertankcapacity": DieselHeaterTankCapacity = stf.ReadFloatBlock(STFReader.UNITS.Volume, null); break;
+                case "wagon(gensoundoff": GenSoundOff = stf.ReadBoolBlock(false); break;
 
             }
         }
@@ -1773,6 +1774,7 @@ namespace Orts.Simulation.RollingStocks
             DieselHeaterPower = copy.DieselHeaterPower;
             DieselHeaterConsumptionPerHour = copy.DieselHeaterConsumptionPerHour;
             DieselHeaterTankCapacity = copy.DieselHeaterTankCapacity;
+            GenSoundOff = copy.GenSoundOff;
 
             if (copy.IntakePointList != null)
             {

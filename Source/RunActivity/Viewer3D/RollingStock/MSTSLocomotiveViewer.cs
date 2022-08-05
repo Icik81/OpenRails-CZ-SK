@@ -84,7 +84,8 @@ namespace Orts.Viewer3D.RollingStock
                     smsGenericFilePath = "..\\Content\\GenericSound\\6_Wheels\\GenSound.sms";
                     break;
             }
-            LoadCarSound(Viewer.ContentPath, smsGenericFilePath);
+            if (!MSTSWagon.GenSoundOff)
+                LoadCarSound(Viewer.ContentPath, smsGenericFilePath);
 
             //Viewer.SoundProcess.AddSoundSource(this, new TrackSoundSource(MSTSWagon, Viewer));
 

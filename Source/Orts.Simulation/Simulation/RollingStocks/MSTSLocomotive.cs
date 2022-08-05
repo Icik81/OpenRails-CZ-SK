@@ -1617,6 +1617,8 @@ namespace Orts.Simulation.RollingStocks
 
             if (locoCopy.MultiPositionControllers != null)
                 MultiPositionControllers = locoCopy.MultiPositionControllers;
+            if (locoCopy.MultiPositionController != null)
+                MultiPositionController = locoCopy.MultiPositionController;
         }
 
         public void ActiveStationIncrease()

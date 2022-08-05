@@ -1135,7 +1135,7 @@ namespace Orts.Viewer3D.RollingStock
             {
                 Viewer.SoundProcess.AddSoundSource(this, new SoundSource(Viewer, MSTSWagon, smsFilePath));
                 // Icik
-                if (MSTSWagon.CarSoundLoaded == false)
+                if (MSTSWagon.CarSoundLoaded == false && !MSTSWagon.GenSoundOff)
                     Viewer.SoundProcess.AddSoundSource(this, new SoundSource(Viewer, MSTSWagon, System.IO.Path.Combine(Viewer.ContentPath, smsGenericFilePath)));
                 MSTSWagon.CarSoundLoaded = true;
             }
