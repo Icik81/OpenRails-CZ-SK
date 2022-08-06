@@ -1775,9 +1775,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                     locomotive.DieselMotorTempWarning = true;
                     locomotive.SignalEvent(Event.DieselMotorTempWarning);
                     if (RealDieselWaterTemperatureDeg > DieselMaxTemperatureDeg)
-                        locomotive.Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("The engine is overheating! Water temperature:" + " " + Math.Round(FakeDieselWaterTemperatureDeg, 2) + "°C"));
+                        locomotive.Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("The engine is overheating! Water temperature:") + " " + Math.Round(FakeDieselWaterTemperatureDeg, 2) + "°C");
                     if (RealDieselOilTemperatureDeg > DieselMaxTemperatureDeg)
-                        locomotive.Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("The engine is overheating! Oil temperature:" + " " + Math.Round(FakeDieselOilTemperatureDeg, 2) + "°C"));
+                        locomotive.Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("The engine is overheating! Oil temperature:") + " " + Math.Round(FakeDieselOilTemperatureDeg, 2) + "°C");
                 }
 
                 if (locomotive.DieselMotorPowerLost)
