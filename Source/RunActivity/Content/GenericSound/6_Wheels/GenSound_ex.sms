@@ -2,6 +2,7 @@ SIMISA@@@@@@@@@@JINX0x1t______
 
 
 Tr_SMS (
+        Skip (** Obecne ozvuceni pro sestinapravove lokomotivy **)
 
 	ScalabiltyGroup( 5
 		Activation (
@@ -17,7 +18,7 @@ Tr_SMS (
 		Streams ( 100	
 		
 			Stream (
-				Skip ( *** Prokluz **** )
+				Skip (** Prokluz **)
 				Priority ( 6 )
 				Volume( 1.0 )
 				Triggers ( 2
@@ -46,7 +47,7 @@ Tr_SMS (
 			)
 
             Stream (
-				Skip( **** Valivy pohyb po trati **** )
+				Skip(** Valivy pohyb po trati **)
 				Priority ( 6 )
 				Volume (1.0)
 				Triggers ( 2
@@ -105,7 +106,7 @@ Tr_SMS (
 			)
 
 			Stream (
-				Skip( **** Buch pohyb po trati **** )
+				Skip (** Udery na nerovnostech **)
 				Priority ( 6 )
 				Volume (1.5)
 				Triggers ( 1
@@ -136,7 +137,7 @@ Tr_SMS (
 			)
 
 			Stream (
-				Skip ( **** Skřípání okolků v oblouku **** )
+				Skip (** Skripot a udery okolku v oblouku **)
 	  	        Priority ( 6 )
 				Volume (1.0)
 				Triggers ( 2
@@ -174,7 +175,7 @@ Tr_SMS (
 			)		
             
 			Stream (
-				Skip( **** Okolky 30km/h v obluku **** )
+				Skip(**** Okolky 30km/h v obluku ****)
 				Priority ( 6 )
 				Volume (1.5)
 				Triggers ( 6
@@ -182,17 +183,17 @@ Tr_SMS (
 					Variable_Trigger ( CurveForce_Inc_Past 15 SetStreamVolume ( 2.00 ) )
 					Variable_Trigger ( CurveForce_Inc_Past 15 EnableTrigger ( 4 ) )
 					Random_Trigger ( Delay_Min_Max ( 0 4 ) Volume_Min_Max ( 1.0 1.0 ) PlayOneShot ( 8
-						File ( "../4_Wheels/x_okolky_30a.wav" -1 ) 
-						File ( "../4_Wheels/x_okolky_30b.wav" -1 ) 
-						File ( "../4_Wheels/x_okolky_30c.wav" -1 ) 
-						File ( "../4_Wheels/x_okolky_30d.wav" -1 ) 
-						File ( "../4_Wheels/x_okolky_30e.wav" -1 ) 
-						File ( "../4_Wheels/x_okolky_30f.wav" -1 ) 
-						File ( "../4_Wheels/x_okolky_30g.wav" -1 ) 
-						File ( "../4_Wheels/x_okolky_30h.wav" -1 ) 
+						File ( "../4_Wheels/x_okolky_30a.wav" -1 )
+						File ( "../4_Wheels/x_okolky_30b.wav" -1 )
+						File ( "../4_Wheels/x_okolky_30c.wav" -1 )
+						File ( "../4_Wheels/x_okolky_30d.wav" -1 )
+						File ( "../4_Wheels/x_okolky_30e.wav" -1 )
+						File ( "../4_Wheels/x_okolky_30f.wav" -1 )
+						File ( "../4_Wheels/x_okolky_30g.wav" -1 )
+						File ( "../4_Wheels/x_okolky_30h.wav" -1 )
 					SelectionMethod ( RandomSelection ) ) )
 					Variable_Trigger ( CurveForce_Dec_Past 15 DisableTrigger ( 4 ) )
-					Variable_Trigger ( CurveForce_Dec_Past 15 SetStreamVolume ( 0.00 ) )			
+					Variable_Trigger ( CurveForce_Dec_Past 15 SetStreamVolume ( 0.00 ) )
 				)
                 FrequencyCurve(
 					SpeedControlled
@@ -205,37 +206,37 @@ Tr_SMS (
 				)
 				VolumeCurve(
 					SpeedControlled
-					CurvePoints ( 5		
+					CurvePoints ( 5
                         0.00			0.00
                         1.00			0.00
                         2.90			1.30
                         7.00			1.30
                         10.8			0.00
-					)    
+					)
 					Granularity ( 0.05 )
-				)	
+				)
 				VolumeCurve(
 					TrackFactorValueControlled
-					CurvePoints ( 5		
+					CurvePoints ( 5
                         0.00			0.00
                         0.20			0.00
                         0.60			0.30
                         0.80			0.80
                         1.00			0.80
-					)    
+					)
 					Granularity ( 0.05 )
-				)								
+				)
 			)
-			
+
             Stream (
-				Skip( **** Okolky 40km/h **** )
+				Skip(**** Okolky 40km/h ****)
 				Priority ( 6 )
 				Volume (0.8)
 				Triggers ( 4
 					Variable_Trigger ( CurveForce_Inc_Past 7 SetStreamVolume ( 2.00 ) )
 					Variable_Trigger ( CurveForce_Inc_Past 7 StartLoopRelease   ( 1 File ( "../4_Wheels/x_okolky_40a.wav" -1 )   SelectionMethod ( SequentialSelection ) ) )
 					Variable_Trigger ( CurveForce_Dec_Past 7 ReleaseLoopRelease () )
-					Variable_Trigger ( CurveForce_Dec_Past 7 SetStreamVolume ( 0.00 ) )					
+					Variable_Trigger ( CurveForce_Dec_Past 7 SetStreamVolume ( 0.00 ) )
 				)
                 FrequencyCurve(
 					SpeedControlled
@@ -253,28 +254,28 @@ Tr_SMS (
                         10.8			0.70
                         15.5			0.70
                         18.5			0.00
-					)    
+					)
 					Granularity ( 0.05 )
 				)
 				VolumeCurve(
 					TrackFactorValueControlled
-					CurvePoints ( 5		
+					CurvePoints ( 5
                         0.00			0.00
                         0.20			0.00
                         0.60			0.30
                         0.80			0.80
                         1.00			0.80
-					)    
+					)
 					Granularity ( 0.05 )
-				)								
+				)
 			)
-			
+
             Stream (
-				Skip( **** Okolky 40km/h dojazd  **** )
+				Skip(**** Okolky 40km/h dojazd  ****)
 				Priority ( 6 )
 				Volume (1.5)
 				Triggers ( 1
-					Variable_Trigger ( CurveForce_Dec_Past 7 PlayOneShot   ( 1 File ( "../4_Wheels/x_okolky_40b.wav" -1 )   SelectionMethod ( SequentialSelection ) ) )				
+					Variable_Trigger ( CurveForce_Dec_Past 7 PlayOneShot   ( 1 File ( "../4_Wheels/x_okolky_40b.wav" -1 )   SelectionMethod ( SequentialSelection ) ) )
 				)
                 FrequencyCurve(
 					SpeedControlled
@@ -292,31 +293,31 @@ Tr_SMS (
                         10.8			1.35
                         15.5			1.35
                         18.5			0.00
-					)    
+					)
 					Granularity ( 0.05 )
-				)	
+				)
 				VolumeCurve(
 					TrackFactorValueControlled
-					CurvePoints ( 5		
+					CurvePoints ( 5
                         0.00			0.00
                         0.20			0.00
                         0.60			0.30
                         0.80			0.80
                         1.00			0.80
-					)    
+					)
 					Granularity ( 0.05 )
-				)								
+				)
 			)
-			
+
             Stream (
-				Skip( **** Okolky 60km/h  **** )
+				Skip(**** Okolky 60km/h  ****)
 				Priority ( 6 )
 				Volume (0.6)
 				Triggers ( 4
 					Variable_Trigger ( CurveForce_Inc_Past 7 SetStreamVolume ( 2.0 ) )
 					Variable_Trigger ( CurveForce_Inc_Past 7 StartLoopRelease   ( 1 File ( "../4_Wheels/x_okolky_60a.wav" -1 )   SelectionMethod ( SequentialSelection ) ) )
 					Variable_Trigger ( CurveForce_Dec_Past 7 ReleaseLoopRelease () )
-					Variable_Trigger ( CurveForce_Dec_Past 7 SetStreamVolume ( 0.00 ) )						
+					Variable_Trigger ( CurveForce_Dec_Past 7 SetStreamVolume ( 0.00 ) )
 			    )
                 FrequencyCurve(
 					SpeedControlled
@@ -334,28 +335,28 @@ Tr_SMS (
                         18.50		0.80
                         22.86		0.80
                         26.00 		0.00
-					)    
+					)
 					Granularity ( 0.05 )
 				)
 				VolumeCurve(
 					TrackFactorValueControlled
-					CurvePoints ( 5		
+					CurvePoints ( 5
                         0.00			0.00
                         0.20			0.00
                         0.60			0.30
                         0.80			0.80
                         1.00			0.80
-					)    
+					)
 					Granularity ( 0.05 )
-				)								
+				)
 			)
-			
+
             Stream (
-				Skip( **** Okolky 60km/h dojazd  **** )
+				Skip(**** Okolky 60km/h dojazd  ****)
 				Priority ( 6 )
 				Volume (1.0)
 				Triggers ( 1
-					Variable_Trigger ( CurveForce_Dec_Past 7 PlayOneShot   ( 1 File ( "../4_Wheels/x_okolky_60b.wav" -1 )   SelectionMethod ( SequentialSelection ) ) )					
+					Variable_Trigger ( CurveForce_Dec_Past 7 PlayOneShot   ( 1 File ( "../4_Wheels/x_okolky_60b.wav" -1 )   SelectionMethod ( SequentialSelection ) ) )
 				)
                 FrequencyCurve(
 					SpeedControlled
@@ -373,31 +374,31 @@ Tr_SMS (
                         18.50		1.40
                         22.86		1.40
                         26.00 		0.00
-					)    
+					)
 					Granularity ( 0.05 )
 				)
 				VolumeCurve(
 					TrackFactorValueControlled
-					CurvePoints ( 5		
+					CurvePoints ( 5
                         0.00			0.00
                         0.20			0.00
                         0.60			0.30
                         0.80			0.80
                         1.00			0.80
-					)    
+					)
 					Granularity ( 0.05 )
-				)								
+				)
 			)
-			
+
             Stream (
-				Skip( **** Okolky 90km/h **** )
+				Skip(**** Okolky 90km/h ****)
 				Priority ( 6 )
 				Volume (0.3)
 				Triggers ( 4
 					Variable_Trigger ( CurveForce_Inc_Past 10 SetStreamVolume ( 2.5 ) )
 					Variable_Trigger ( CurveForce_Inc_Past 10 StartLoopRelease   ( 1 File ( "../4_Wheels/x_okolky_90a.wav" -1 )   SelectionMethod ( SequentialSelection ) ) )
-					Variable_Trigger ( CurveForce_Dec_Past 10 ReleaseLoopRelease () )	
-					Variable_Trigger ( CurveForce_Dec_Past 10 SetStreamVolume ( 0.00 ) )					
+					Variable_Trigger ( CurveForce_Dec_Past 10 ReleaseLoopRelease () )
+					Variable_Trigger ( CurveForce_Dec_Past 10 SetStreamVolume ( 0.00 ) )
 			    )
                 FrequencyCurve(
 					SpeedControlled
@@ -415,28 +416,28 @@ Tr_SMS (
                         25.71		0.70
                         28.57		0.70
                         32.50		0.00
-					)    
+					)
 					Granularity ( 0.05 )
 				)
 				VolumeCurve(
 					TrackFactorValueControlled
-					CurvePoints ( 5		
+					CurvePoints ( 5
                         0.00			0.00
                         0.20			0.00
                         0.60			0.30
                         0.80			0.80
                         1.00			0.80
-					)    
+					)
 					Granularity ( 0.05 )
-				)								
+				)
 			)
-			
+
             Stream (
-				Skip( **** Okolky 90km/h dojazd  **** )
+				Skip(**** Okolky 90km/h dojazd  ****)
 				Priority ( 6 )
 				Volume (0.5)
 				Triggers ( 1
-					Variable_Trigger ( CurveForce_Dec_Past 10 PlayOneShot   ( 1 File ( "../4_Wheels/x_okolky_90b.wav" -1 )   SelectionMethod ( SequentialSelection ) ) )				
+					Variable_Trigger ( CurveForce_Dec_Past 10 PlayOneShot   ( 1 File ( "../4_Wheels/x_okolky_90b.wav" -1 )   SelectionMethod ( SequentialSelection ) ) )
 				)
                 FrequencyCurve(
 					SpeedControlled
@@ -454,47 +455,28 @@ Tr_SMS (
                         25.71		1.35
                         28.57		1.35
                         32.50		0.00
-					)    
+					)
 					Granularity ( 0.05 )
-				)	
+				)
 				VolumeCurve(
 					TrackFactorValueControlled
-					CurvePoints ( 5		
+					CurvePoints ( 5
                         0.00			0.00
                         0.20			0.00
                         0.60			0.30
                         0.80			0.80
                         1.00			0.80
-					)    
-					Granularity ( 0.05 )
-				)								
-			)
-					
-			Stream (
-				Skip( **** Rozpojeni **** )			
-				Priority ( 6 )
-				Volume (1.0)
-				Triggers ( 6
-					Discrete_Trigger ( 61 PlayOneShot ( 1 	File ( "../4_Wheels/rozpojovani.wav" -1 ) SelectionMethod (SequentialSelection) ) ) 
-					Discrete_Trigger ( 62 PlayOneShot ( 1 	File ( "../4_Wheels/rozpojovani.wav" -1 ) SelectionMethod (SequentialSelection) ) ) 
-					Discrete_Trigger ( 63 PlayOneShot ( 1 	File ( "../4_Wheels/rozpojovani.wav" -1 ) SelectionMethod (SequentialSelection) ) ) 
-				)
-				FrequencyCurve(
-					SpeedControlled
-					CurvePoints ( 2
-						0.0		11025
-						1.0		11025
 					)
-					Granularity ( 100 )
+					Granularity ( 0.05 )
 				)
 			)
 
 			Stream (
-				Skip(** Náraz **)
+				Skip (** Naraz narazniku **)
 				Priority ( 6 )
 				Volume (1.0)
 				Triggers ( 1
-					Discrete_Trigger ( 20067 PlayOneShot ( 1 	File ( "../4_Wheels/x_odrazeni.wav" -1 ) SelectionMethod (SequentialSelection) ) )
+					Discrete_Trigger ( 20067 PlayOneShot ( 1 	File ( "x_odrazeni.wav" -1 ) SelectionMethod (SequentialSelection) ) )
 				)
 				VolumeCurve(
 					SpeedControlled
@@ -513,7 +495,7 @@ Tr_SMS (
 				Priority ( 6 )
 				Volume (1.0)
 				Triggers ( 1
-					Discrete_Trigger ( 121 PlayOneShot ( 1 	File ( "../4_Wheels/x_obuti.wav" -1 ) SelectionMethod (SequentialSelection) ) )
+					Discrete_Trigger ( 121 PlayOneShot ( 1 	File ( "x_obuti.wav" -1 ) SelectionMethod (SequentialSelection) ) )
 				)
 				VolumeCurve(
 					WheelDamageValueControlled
@@ -532,7 +514,7 @@ Tr_SMS (
 				Priority ( 6 )
 				Volume (1.0)
 				Triggers ( 1
-					Discrete_Trigger ( 129 PlayOneShot ( 1 	File ( "../4_Wheels/x_obuti.wav" -1 ) SelectionMethod (SequentialSelection) ) )
+					Discrete_Trigger ( 129 PlayOneShot ( 1 	File ( "x_obuti.wav" -1 ) SelectionMethod (SequentialSelection) ) )
 				)
 				VolumeCurve(
 					WheelDamageValueControlled
@@ -544,47 +526,7 @@ Tr_SMS (
 					)
 					Granularity ( 0.05 )
 				)
-			)
-			
-			Stream (
-				Skip(** natazeni sprahla **)
-				Priority ( 6 )
-				Volume (1.0)
-				Triggers ( 1
-					Discrete_Trigger ( 20086 PlayOneShot ( 1 	File ( "../4_Wheels/x_sprahlo-natazeni.wav" -1 ) SelectionMethod (SequentialSelection) ) )
-				)
-				VolumeCurve(
-					TrackFactorValueControlled
-					CurvePoints ( 5		
-                        0.000			0.00
-                        0.005			0.00
-                        0.010			0.30
-                        0.020			1.00
-                        0.050			1.00
-					)    
-					Granularity ( 0.05 )
-				)				
-			)
-			
-            Stream (
-				Skip(** stlaceni sprahla **)
-				Priority ( 6 )
-				Volume (1.0)
-				Triggers ( 1
-					Discrete_Trigger ( 20087 PlayOneShot ( 1 	File ( "../4_Wheels/x_sprahlo-stlaceni.wav" -1 ) SelectionMethod (SequentialSelection) ) )
-				)
-				VolumeCurve(
-					TrackFactorValueControlled
-					CurvePoints ( 5		
-                        0.000			0.00
-                        0.005			0.00
-                        0.010			0.30
-                        0.020			1.00
-                        0.050			1.00
-					)    
-					Granularity ( 0.05 )
-				)				
-			)			
+			)						
 		)
 	)
-)			
+)

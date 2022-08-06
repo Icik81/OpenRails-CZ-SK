@@ -2,7 +2,8 @@ SIMISA@@@@@@@@@@JINX0x1t______
 
 
 Tr_SMS (
-
+        Skip (** Obecne ozvuceni pro sestinapravove lokomotivy **)
+        
 	ScalabiltyGroup( 5
 		Activation (
       		CabCam ()
@@ -18,7 +19,7 @@ Tr_SMS (
 		Streams (100
 		
 			Stream (
-				Skip ( **** Skřípot kol při skluzu **** )
+				Skip (** Prokluz **)
 				Priority ( 6 )
 				Volume( 0.6 )
 				Triggers ( 2
@@ -46,48 +47,8 @@ Tr_SMS (
 				)		
 			)
 
-			Stream (
-				Skip ( **** Vibrace a vrzání ****)
-				Priority ( 6 )
-				Volume( 1.0 )
-				Triggers ( 1
-				Variable_Trigger ( Vibration_Inc_Past 30 PlayOneShot ( 13
-						File ( "../4_Wheels/240_sedacka_00.wav" -1 )
-						File ( "../4_Wheels/240_sedacka_01.wav" -1 ) 
-						File ( "../4_Wheels/240_sedacka_02.wav" -1 )  
-						File ( "../4_Wheels/240_sedacka_03.wav" -1 )  
-						File ( "../4_Wheels/240_sedacka_04.wav" -1 ) 
-						File ( "../4_Wheels/240_sedacka_05.wav" -1 ) 
-						File ( "../4_Wheels/240_sedacka_06.wav" -1 )  
-						File ( "../4_Wheels/240_sedacka_07.wav" -1 )  
-						File ( "../4_Wheels/240_sedacka_08.wav" -1 ) 
-						File ( "../4_Wheels/240_sedacka_09.wav" -1 ) 
-						File ( "../4_Wheels/240_sedacka_10.wav" -1 )  
-						File ( "../4_Wheels/240_sedacka_11.wav" -1 )  
-						File ( "../4_Wheels/240_sedacka_12.wav" -1 ) 
-				SelectionMethod ( RandomSelection ) ) )
-				)
-				FrequencyCurve(
-					VibrationControlled
-					CurvePoints ( 2
-						0 22050
-						50 22050					
-					)
-					Granularity ( 100 )
-				)
-				VolumeCurve(
-					VibrationControlled
-					CurvePoints ( 3
-						 0		0.00
-						 10		0.10
-						 50		1.00
-					)
-					Granularity ( 0.05 )
-				)
-			)
-
             Stream (
-				Skip( **** Valivy pohyb po trati **** )
+				Skip(** Valivy pohyb po trati **)
 				Priority ( 6 )
 				Volume (0.6)
 				Triggers ( 2
@@ -147,7 +108,7 @@ Tr_SMS (
 			)
 			
 			Stream (
-				Skip( **** Buch pohyb po trati **** )
+				Skip (** Udery na nerovnostech **)
 				Priority ( 6 )
 				Volume (1.0)
 				Triggers ( 1
@@ -178,7 +139,7 @@ Tr_SMS (
 			)
 		
             Stream (
-				Skip( **** Obtekanie stanovista vzduchom 100 - 140 km/h  **** )
+				Skip (** Zvuk vetru kolem stanoviste v rychlostech 100 - 140 km/h  **)
 				Priority ( 6 )
 				Volume (0.6)
 				Triggers ( 2
@@ -205,7 +166,7 @@ Tr_SMS (
 			)
 					
 			Stream (			
-				Skip ( **** Skřípání okolků v oblouku **** )	  	    
+				Skip (** Skripot a udery okolku v oblouku **)
 				Priority ( 6 )
 				Volume (0.6)
 				Triggers ( 2
@@ -243,7 +204,7 @@ Tr_SMS (
 			)		
 
             Stream (
-				Skip( **** Okolky 30km/h v obluku **** )
+				Skip(**** Okolky 30km/h v obluku ****)
 				Priority ( 6 )
 				Volume (1.0)
 				Triggers ( 6
@@ -297,7 +258,7 @@ Tr_SMS (
 			)
             
 			Stream (
-				Skip( **** Okolky 40km/h **** )
+				Skip(**** Okolky 40km/h ****)
 				Priority ( 6 )
 				Volume (0.6)
 				Triggers ( 4
@@ -339,7 +300,7 @@ Tr_SMS (
 			)
             
 			Stream (
-				Skip( **** Okolky 40km/h dojazd  **** )
+				Skip(**** Okolky 40km/h dojazd  ****)
 				Priority ( 6 )
 				Volume (1.0)
 				Triggers ( 1
@@ -378,7 +339,7 @@ Tr_SMS (
 			)
             
 			Stream (
-				Skip( **** Okolky 60km/h  **** )
+				Skip(**** Okolky 60km/h  ****)
 				Priority ( 6 )
 				Volume (0.6)
 				Triggers ( 4
@@ -420,7 +381,7 @@ Tr_SMS (
 			)
             
 			Stream (
-				Skip( **** Okolky 60km/h dojazd  **** )
+				Skip(**** Okolky 60km/h dojazd  ****)
 				Priority ( 6 )
 				Volume (1.0)
 				Triggers ( 1
@@ -459,7 +420,7 @@ Tr_SMS (
 			)
             
 			Stream (
-				Skip( **** Okolky 90km/h **** )
+				Skip(**** Okolky 90km/h ****)
 				Priority ( 6 )
 				Volume (0.3)
 				Triggers ( 4
@@ -501,7 +462,7 @@ Tr_SMS (
 			)
             
 			Stream (
-				Skip( **** Okolky 90km/h dojazd  **** )
+				Skip(**** Okolky 90km/h dojazd  ****)
 				Priority ( 6 )
 				Volume (0.5)
 				Triggers ( 1
@@ -538,32 +499,13 @@ Tr_SMS (
 					Granularity ( 0.05 )
 				)								
 			)
-					
-			Stream (
-				Skip( **** Rozpojeni **** )
-				Priority ( 6 )
-				Volume (0.6)
-				Triggers ( 6
-					Discrete_Trigger ( 61 PlayOneShot ( 1 	File ( "../4_Wheels/rozpojovani.wav" -1 ) SelectionMethod (SequentialSelection) ) ) 
-					Discrete_Trigger ( 62 PlayOneShot ( 1 	File ( "../4_Wheels/rozpojovani.wav" -1 ) SelectionMethod (SequentialSelection) ) ) 
-					Discrete_Trigger ( 63 PlayOneShot ( 1 	File ( "../4_Wheels/rozpojovani.wav" -1 ) SelectionMethod (SequentialSelection) ) ) 
-				)
-				FrequencyCurve(
-					SpeedControlled
-					CurvePoints ( 2
-						0.0		5512
-						1.0		5512
-					)
-					Granularity ( 100 )
-				)
-			)
 			
 			Stream (
-				Skip(** Náraz **)
+				Skip (** Naraz narazniku **)
 				Priority ( 6 )
 				Volume (1.0)
 				Triggers ( 1
-					Discrete_Trigger ( 20067 PlayOneShot ( 1 	File ( "../4_Wheels/odrazeni.wav" -1 ) SelectionMethod (SequentialSelection) ) )
+					Discrete_Trigger ( 20067 PlayOneShot ( 1 	File ( "odrazeni.wav" -1 ) SelectionMethod (SequentialSelection) ) )
 				)
 				VolumeCurve(
 					SpeedControlled
@@ -582,7 +524,7 @@ Tr_SMS (
 				Priority ( 6 )
 				Volume (1.0)
 				Triggers ( 1
-					Discrete_Trigger ( 121 PlayOneShot ( 1 	File ( "../4_Wheels/obuti.wav" -1 ) SelectionMethod (SequentialSelection) ) )
+					Discrete_Trigger ( 121 PlayOneShot ( 1 	File ( "obuti.wav" -1 ) SelectionMethod (SequentialSelection) ) )
 				)
 				VolumeCurve(
 					WheelDamageValueControlled
@@ -601,7 +543,7 @@ Tr_SMS (
 				Priority ( 6 )
 				Volume (1.0)
 				Triggers ( 1
-					Discrete_Trigger ( 129 PlayOneShot ( 1 	File ( "../4_Wheels/obuti.wav" -1 ) SelectionMethod (SequentialSelection) ) )
+					Discrete_Trigger ( 129 PlayOneShot ( 1 	File ( "obuti.wav" -1 ) SelectionMethod (SequentialSelection) ) )
 				)
 				VolumeCurve(
 					WheelDamageValueControlled
@@ -613,47 +555,7 @@ Tr_SMS (
 					)
 					Granularity ( 0.05 )
 				)
-			)
-			
-			Stream (
-				Skip(** natazeni sprahla **)
-				Priority ( 6 )
-				Volume (1.0)
-				Triggers ( 1
-					Discrete_Trigger ( 20086 PlayOneShot ( 1 	File ( "../4_Wheels/x_sprahlo-natazeni.wav" -1 ) SelectionMethod (SequentialSelection) ) )
-				)
-				VolumeCurve(
-					TrackFactorValueControlled
-					CurvePoints ( 5		
-                        0.000			0.00
-                        0.005			0.00
-                        0.010			0.30
-                        0.020			1.00
-                        0.050			1.00
-					)    
-					Granularity ( 0.05 )
-				)				
-			)
-            
-			Stream (
-				Skip(** stlaceni sprahla **)
-				Priority ( 6 )
-				Volume (1.0)
-				Triggers ( 1
-					Discrete_Trigger ( 20087 PlayOneShot ( 1 	File ( "../4_Wheels/x_sprahlo-stlaceni.wav" -1 ) SelectionMethod (SequentialSelection) ) )
-				)
-				VolumeCurve(
-					TrackFactorValueControlled
-					CurvePoints ( 5		
-                        0.000			0.00
-                        0.005			0.00
-                        0.010			0.30
-                        0.020			1.00
-                        0.050			1.00
-					)    
-					Granularity ( 0.05 )
-				)				
-			)			
+			)					
 		)
 	)
-)			
+)
