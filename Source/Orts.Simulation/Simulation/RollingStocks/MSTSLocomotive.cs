@@ -3939,6 +3939,8 @@ namespace Orts.Simulation.RollingStocks
                 }
                 else
                 {
+                    Battery = true;
+                    PowerKey = true;
                     // Mirel
                     Mirel.Test1 = true;
                     Mirel.Test2 = true;
