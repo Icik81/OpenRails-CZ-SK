@@ -445,6 +445,7 @@ namespace Orts.Formats.Msts
         BREAK_EDB_SWITCH,
         BREAK_EDB_DISPLAY,
         TURBO_PRESSURE,
+        BRAKEFORCE_CONVERTER,
 
 
         // Further CabViewControlTypes must be added above this line, to avoid their malfunction in 3DCabs

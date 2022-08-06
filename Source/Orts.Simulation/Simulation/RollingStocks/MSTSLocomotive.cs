@@ -11561,6 +11561,11 @@ namespace Orts.Simulation.RollingStocks
                             data = mstsDieselLocomotive.DieselEngines[0].TurboPressureBar;
                         break;
                     }
+                case CABViewControlTypes.BRAKEFORCE_CONVERTER:
+                    {
+                        data = ConvertFromPSI(cvc, BrakeSystem.PressureConverter); 
+                        break;
+                    }
 
                 case CABViewControlTypes.MOTOR_DISABLED:
                     {

@@ -682,11 +682,31 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 AuxResPressurePSI = 0;
             }
 
-            // Výpočet cílového tlaku v brzdovém válci
-            threshold = (PrevAuxResPressurePSI - BrakeLine1PressurePSI) * AuxCylVolumeRatio;
-            threshold = MathHelper.Clamp(threshold, 0, MCP);
-
             MSTSLocomotive loco = Car as MSTSLocomotive;
+
+            // Výpočet cílového tlaku v brzdovém válci
+            if (Car is MSTSLocomotive)
+            {
+                if (AuxCylVolumeRatio > AuxCylVolumeRatioTrainBrake)
+                    threshold = (PrevAuxResPressurePSI - BrakeLine1PressurePSI) * AuxCylVolumeRatioTrainBrake;
+                else
+                {
+                    threshold = (PrevAuxResPressurePSI - BrakeLine1PressurePSI) * AuxCylVolumeRatio;
+                    AuxCylVolumeRatioTrainBrake = AuxCylVolumeRatio;
+                }
+
+                if (MCP < MCP_TrainBrake)
+                    threshold = MathHelper.Clamp(threshold, 0, MCP);
+                else
+                    threshold = MathHelper.Clamp(threshold, 0, MCP_TrainBrake);
+            }
+            else
+            {
+                threshold = (PrevAuxResPressurePSI - BrakeLine1PressurePSI) * AuxCylVolumeRatio;
+                threshold = MathHelper.Clamp(threshold, 0, MCP);
+            }
+
+            
             if (StartOn)
             {
                 TrainBrakePositionSet();
@@ -1449,7 +1469,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
 
                 if (BailOffOn && AutoCylPressurePSI0 > 0 && BrakeCylReleaseEDBOn)
                 {
-                    ThresholdBailOffOn = (maxPressurePSI0 - BrakeLine1PressurePSI) * AuxCylVolumeRatio;
+                    ThresholdBailOffOn = (maxPressurePSI0 - BrakeLine1PressurePSI) * AuxCylVolumeRatioTrainBrake;
                     ThresholdBailOffOn = MathHelper.Clamp(ThresholdBailOffOn, 0, MCP);
                     AutoCylPressurePSI0 -= elapsedClockSeconds * AutoBailOffOnRatePSIpS; // Rychlost odvětrání při EDB                    
                 }
@@ -1461,10 +1481,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     BrakeCylReleaseEDBOn = true;
 
                 // Automatické napuštění brzdového válce po uvadnutí EDB
-                float AirWithEDBMotiveForceN = loco.MaxDynamicBrakeForceN * 0.50f;
+                float AirWithEDBMotiveForceN = loco.MaxDynamicBrakeForceN * 0.40f;
                 if (ThresholdBailOffOn > 0 && Math.Abs(loco.DynamicBrakeForceN) <= AirWithEDBMotiveForceN) // Napustí brzdový válec pod limit síly k EDB
                 {
-                    ThresholdBailOffOn = (maxPressurePSI0 - BrakeLine1PressurePSI) * AuxCylVolumeRatio;
+                    ThresholdBailOffOn = (maxPressurePSI0 - BrakeLine1PressurePSI) * AuxCylVolumeRatioTrainBrake;
                     if (AutoCylPressurePSI0 < ThresholdBailOffOn
                         && loco.MainResPressurePSI > 0
                         && AutoCylPressurePSI0 < loco.BrakeSystem.BrakeCylinderMaxSystemPressurePSI
@@ -1504,6 +1524,18 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 AutoCylPressurePSI = AutoCylPressurePSI1;
             if (AutoCylPressurePSI < AutoCylPressurePSI2)
                 AutoCylPressurePSI = AutoCylPressurePSI2;
+
+            // Převodník brzdné síly
+            if (PrevAuxResPressurePSI > 0)
+            {                
+                PressureConverterBase = (PrevAuxResPressurePSI - BrakeLine1PressurePSI) * AuxCylVolumeRatioTrainBrake;
+                PressureConverterBase = MathHelper.Clamp(PressureConverterBase, 0, MCP_TrainBrake);
+            }
+            if (PressureConverterBase > PressureConverter)
+                PressureConverter += elapsedClockSeconds * MaxApplicationRatePSIpS * 1.5f;
+            if (PressureConverterBase < PressureConverter)
+                PressureConverter -= elapsedClockSeconds * MaxReleaseRatePSIpS * 1.5f;
+
 
             if (AutoCylPressurePSI < BrakeLine3PressurePSI) // Brake Cylinder pressure will be the greater of engine brake pressure or train brake pressure
                 CylPressurePSI = BrakeLine3PressurePSI;

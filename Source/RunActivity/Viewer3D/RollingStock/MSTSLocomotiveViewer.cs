@@ -2882,6 +2882,7 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.BREAK_EDB_BUTTON:
                 case CABViewControlTypes.BREAK_EDB_SWITCH:
                 case CABViewControlTypes.BREAK_EDB_DISPLAY:
+                case CABViewControlTypes.BRAKEFORCE_CONVERTER:
 
                 case CABViewControlTypes.MOTOR_DISABLED:
                 case CABViewControlTypes.INVERTER_TEST:

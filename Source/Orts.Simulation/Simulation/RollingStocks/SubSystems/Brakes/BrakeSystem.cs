@@ -151,6 +151,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes
         public bool EmerBrakeTriggerActive = false;
         public float MainResChangeRate;
         public float prevTotalCapacityMainResBrakePipe;
+        public float PressureConverterBase;
+        public float PressureConverter;
+        public float AuxCylVolumeRatioTrainBrake = 2.5f;
+        public float MCP_TrainBrake = 4.0f * 14.50377f;
 
         public bool BrakePipeDischargeRate = false;
         public bool BrakePipeChargeRate = false;
