@@ -11563,7 +11563,7 @@ namespace Orts.Simulation.RollingStocks
                     }
                 case CABViewControlTypes.BRAKEFORCE_CONVERTER:
                     {
-                        data = ConvertFromPSI(cvc, BrakeSystem.PressureConverter); 
+                        data = ConvertFromPSI(cvc, BrakeSystem.PressureConverter);                       
                         break;
                     }
 

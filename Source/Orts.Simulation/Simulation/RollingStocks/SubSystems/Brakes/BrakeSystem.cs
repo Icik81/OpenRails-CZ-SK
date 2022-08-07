@@ -152,8 +152,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes
         public float MainResChangeRate;
         public float prevTotalCapacityMainResBrakePipe;
         public float PressureConverterBase;
-        public float PressureConverter;
-        public float AuxCylVolumeRatioTrainBrake = 2.5f;
+        public float PressureConverter;        
         public float MCP_TrainBrake = 4.0f * 14.50377f;
 
         public bool BrakePipeDischargeRate = false;
