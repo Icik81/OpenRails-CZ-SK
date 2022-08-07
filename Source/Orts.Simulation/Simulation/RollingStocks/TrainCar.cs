@@ -969,8 +969,8 @@ namespace Orts.Simulation.RollingStocks
 
                 // Výpočet max brzdné síly
                 const float CoefE = 0.84f; // Lokomotiva
-                const float CoefP = 0.80f; // Osobní vůz
-                const float CoefF = 0.90f; // Nákladní vůz
+                const float CoefP = 0.60f; // Osobní vůz
+                const float CoefF = 0.60f; // Nákladní vůz
                 const float CoefHB = 0.50f; // Ruční brzda
 
                 BrakeCarStatus();
@@ -996,7 +996,7 @@ namespace Orts.Simulation.RollingStocks
                         BrakeSystem.BrakeMassKG = MassKG;
                     else BrakeSystem.BrakeMassKG = BrakeSystem.AutoLoadRegulatorMaxBrakeMass;
 
-                    if (BrakeSystem.DebugKoef == 0) MaxBrakeForceN = CoefF * BrakeSystem.BrakeMassKG * 9.964016384f * 0.31f;
+                    if (BrakeSystem.DebugKoef == 1) MaxBrakeForceN = CoefF * BrakeSystem.BrakeMassKG * 9.964016384f * 0.31f;
                     else MaxBrakeForceN = BrakeSystem.DebugKoef * BrakeSystem.BrakeMassKG * 9.964016384f * 0.31f;
                 }
                 if (WagonType == WagonTypes.Passenger)    //  Osobní vozy
@@ -1020,7 +1020,7 @@ namespace Orts.Simulation.RollingStocks
                             BrakeMassKG();
                             break;
                     }
-                    if (BrakeSystem.DebugKoef == 0)
+                    if (BrakeSystem.DebugKoef == 1)
                     {
                         MaxBrakeForceN = CoefP * BrakeSystem.BrakeMassKG * 9.964016384f * 0.31f;
                         MaxBrakeForceNRMg = CoefP * BrakeSystem.BrakeMassKGRMg * 9.964016384f * 0.31f;
@@ -1054,7 +1054,7 @@ namespace Orts.Simulation.RollingStocks
                             BrakeMassKG();
                             break;
                     }
-                    if (BrakeSystem.DebugKoef == 0)
+                    if (BrakeSystem.DebugKoef == 1)
                     {
                         MaxBrakeForceN = CoefE * BrakeSystem.BrakeMassKG * 9.964016384f * 0.31f;
                         MaxBrakeForceNRMg = CoefE * BrakeSystem.BrakeMassKGRMg * 9.964016384f * 0.31f;
