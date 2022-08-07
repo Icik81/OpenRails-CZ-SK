@@ -786,12 +786,18 @@ namespace Orts.Simulation.RollingStocks.SubSystems
         {
             if (Locomotive.LocoType == MSTSLocomotive.LocoTypes.Vectron)
             {
-                if (OverridenMaximalForce == 0)
+                if (OverridenMaximalForce == 0 ||
+                    Locomotive.BrakeSystem.GetCylPressurePSI() > 0 ||
+                    Locomotive.SystemAnnunciator != 0 ||
+                    Locomotive.ForceHandleValue == 0)
+                {
                     OverridenMaximalForce = 50;
-                if (Locomotive.ForceHandleValue == 0)
-                    OverridenMaximalForce = 50;
+                }
                 float requestedMaxAcceleration = Locomotive.ForceHandleValue / 200;
-                if (Locomotive.AccelerationMpSS < requestedMaxAcceleration)
+                bool testConditions = true;
+                if (Locomotive.BrakeSystem.GetCylPressurePSI() > 0 || Locomotive.SystemAnnunciator != 0)
+                    testConditions = false;
+                if (Locomotive.AccelerationMpSS < requestedMaxAcceleration && testConditions)
                 {
                     OverridenMaximalForce += elapsedClockSeconds * 5; // 5% per second
                 }
