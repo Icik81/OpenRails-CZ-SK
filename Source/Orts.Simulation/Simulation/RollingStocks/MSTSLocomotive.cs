@@ -4069,7 +4069,7 @@ namespace Orts.Simulation.RollingStocks
                     }
                 }
 
-                if (UsingForceHandle && TrainBrakeController.GetStatus().ToString() != "EPApply")
+                if (UsingForceHandle && TrainBrakeController.TrainBrakeControllerState != ControllerState.EPApply)
                 {
                     if (ForceHandleIncreasing)
                     {
