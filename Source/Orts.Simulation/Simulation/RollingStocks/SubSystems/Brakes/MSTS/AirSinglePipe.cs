@@ -1509,12 +1509,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             if (AutoCylPressurePSI < AutoCylPressurePSI2)
                 AutoCylPressurePSI = AutoCylPressurePSI2;
 
-            // Převodník brzdné síly
-            if (PrevAuxResPressurePSI > 0)
-            {                
-                PressureConverterBase = (PrevAuxResPressurePSI - BrakeLine1PressurePSI) * AuxCylVolumeRatio;
-                PressureConverterBase = MathHelper.Clamp(PressureConverterBase, 0, MCP_TrainBrake);
-            }
+            // Převodník brzdné síly            
+            PressureConverterBase = (maxPressurePSI0 - BrakeLine1PressurePSI) * AuxCylVolumeRatio;
+            PressureConverterBase = MathHelper.Clamp(PressureConverterBase, 0, MCP_TrainBrake);
             if (Math.Round(PressureConverterBase) > Math.Round(PressureConverter))
                 PressureConverter += elapsedClockSeconds * MaxApplicationRatePSIpS * 1.5f;
             if (Math.Round(PressureConverterBase) < Math.Round(PressureConverter))
