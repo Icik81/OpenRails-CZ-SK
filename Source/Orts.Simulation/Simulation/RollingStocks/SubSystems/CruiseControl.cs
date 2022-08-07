@@ -791,15 +791,18 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                     Locomotive.SystemAnnunciator != 0 ||
                     Locomotive.ForceHandleValue == 0)
                 {
-                    OverridenMaximalForce = 50;
+                    if (Locomotive.AbsSpeedMpS > 0)
+                        OverridenMaximalForce = 50;
                 }
+                if (Locomotive.AbsSpeedMpS == 0 && Locomotive.ForceHandleValue == 0)
+                    OverridenMaximalForce = 10;
                 float requestedMaxAcceleration = Locomotive.ForceHandleValue / 200;
                 bool testConditions = true;
                 if (Locomotive.BrakeSystem.GetCylPressurePSI() > 0 || Locomotive.SystemAnnunciator != 0)
                     testConditions = false;
                 if (Locomotive.AccelerationMpSS < requestedMaxAcceleration && testConditions)
                 {
-                    OverridenMaximalForce += elapsedClockSeconds * 5; // 5% per second
+                    OverridenMaximalForce += OverridenMaximalForce < 50 ? elapsedClockSeconds * 7.5f : elapsedClockSeconds * 5; // 5% per second
                 }
                 if (Locomotive.AccelerationMpSS > requestedMaxAcceleration + 0.05f)
                 {
