@@ -1488,6 +1488,15 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         EDBEngineBrakeDelay = 0;
                     }
                 }
+                // Převodník brzdné síly  
+                PressureConverterBaseTrainBrake = (maxPressurePSI0 - BrakeLine1PressurePSI) * AuxCylVolumeRatio;
+                PressureConverterBaseEDB = loco.DynamicBrakePercent / 100 * 4.0f * 14.50377f;
+                PressureConverterBase = Math.Max(PressureConverterBaseTrainBrake, PressureConverterBaseEDB);
+                PressureConverterBase = MathHelper.Clamp(PressureConverterBase, 0, 4.0f * 14.50377f);
+                if (Math.Round(PressureConverterBase) > Math.Round(PressureConverter))
+                    PressureConverter += elapsedClockSeconds * MaxApplicationRatePSIpS * 1.5f;
+                if (Math.Round(PressureConverterBase) < Math.Round(PressureConverter))
+                    PressureConverter -= elapsedClockSeconds * MaxReleaseRatePSIpS * 2.0f;
             }
             else
             {
@@ -1508,16 +1517,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 AutoCylPressurePSI = AutoCylPressurePSI1;
             if (AutoCylPressurePSI < AutoCylPressurePSI2)
                 AutoCylPressurePSI = AutoCylPressurePSI2;
-
-            // Převodník brzdné síly            
-            PressureConverterBase = (maxPressurePSI0 - BrakeLine1PressurePSI) * AuxCylVolumeRatio;
-            PressureConverterBase = MathHelper.Clamp(PressureConverterBase, 0, MCP_TrainBrake);
-            if (Math.Round(PressureConverterBase) > Math.Round(PressureConverter))
-                PressureConverter += elapsedClockSeconds * MaxApplicationRatePSIpS * 1.5f;
-            if (Math.Round(PressureConverterBase) < Math.Round(PressureConverter))
-                PressureConverter -= elapsedClockSeconds * MaxReleaseRatePSIpS * 2.0f;
-
-
+                      
             if (AutoCylPressurePSI < BrakeLine3PressurePSI) // Brake Cylinder pressure will be the greater of engine brake pressure or train brake pressure
                 CylPressurePSI = BrakeLine3PressurePSI;
             else
