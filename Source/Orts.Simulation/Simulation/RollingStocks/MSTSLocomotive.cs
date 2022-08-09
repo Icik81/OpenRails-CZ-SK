@@ -10022,7 +10022,7 @@ namespace Orts.Simulation.RollingStocks
                             if (mForce < ForceHandleValue)
                                 maxForce = mForce;
                         }
-                        if (diff < 0)
+                        if (diff < 0 || TractiveForceN < 0)
                         {
                             maxForce = 0;
                             foreach (Undercarriage ucc in extendedPhysics.Undercarriages)
@@ -10032,7 +10032,7 @@ namespace Orts.Simulation.RollingStocks
                                     maxForce += eaa.ForceN;
                                 }
                             }
-                            maxForce = (maxForce / MaxForceN) * 100;
+                            maxForce = (maxForce / MaxDynamicBrakeForceN) * 100;
                         }
                     }
                     if (CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.Auto)
