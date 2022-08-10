@@ -84,7 +84,7 @@ namespace Orts.Viewer3D.RollingStock
                     smsGenericFilePath = "..\\Content\\GenericSound\\6_Wheels\\GenSound.sms";
                     break;
             }
-            if (!MSTSWagon.GenSoundOff)
+            if (!MSTSWagon.GenSoundOff && Program.Simulator.Settings.GenSound)
                 LoadCarSound(Viewer.ContentPath, smsGenericFilePath);
 
             //Viewer.SoundProcess.AddSoundSource(this, new TrackSoundSource(MSTSWagon, Viewer));
@@ -3632,35 +3632,35 @@ namespace Orts.Viewer3D.RollingStock
                     }
                     break;
                 case CABViewControlTypes.QUICK_RELEASE_BUTTON:
-                    if (ChangedValue(Locomotive.QuickReleaseButton ? 1 : 0) > 0)
+                    if (UserInput.IsMouseLeftButtonDown)
                         Locomotive.ToggleQuickReleaseButton(true);
                     else
                         Locomotive.ToggleQuickReleaseButton(false);
                     break;
 
                 case CABViewControlTypes.LOWPRESSURE_RELEASE_BUTTON:
-                    if (ChangedValue(Locomotive.LowPressureReleaseButton ? 1 : 0) > 0)
+                    if (UserInput.IsMouseLeftButtonDown)
                         Locomotive.ToggleLowPressureReleaseButton(true);
                     else
                         Locomotive.ToggleLowPressureReleaseButton(false);
                     break;
 
                 case CABViewControlTypes.BREAK_POWER_BUTTON:
-                    if (ChangedValue(Locomotive.BreakPowerButton ? 1 : 0) > 0)
+                    if (UserInput.IsMouseLeftButtonDown)
                         Locomotive.ToggleBreakPowerButton(true);
                     else
                         Locomotive.ToggleBreakPowerButton(false);
                     break;
 
                 case CABViewControlTypes.LAP_BUTTON:
-                    if (ChangedValue(Locomotive.LapButton ? 1 : 0) > 0)
+                    if (UserInput.IsMouseLeftButtonDown)
                         Locomotive.ToggleLapButton(true);
                     else
                         Locomotive.ToggleLapButton(false);
                     break;
 
                 case CABViewControlTypes.BREAK_EDB_BUTTON:
-                    if (ChangedValue(Locomotive.BreakEDBButton ? 1 : 0) > 0)
+                    if (UserInput.IsMouseLeftButtonDown)
                         Locomotive.ToggleBreakEDBButton(true);
                     else
                         Locomotive.ToggleBreakEDBButton(false);

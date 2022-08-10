@@ -170,6 +170,9 @@ namespace ORTS
             numericSoundDetailLevel.Value = Settings.SoundDetailLevel;
             numericExternalSoundPassThruPercent.Value = Settings.ExternalSoundPassThruPercent;
 
+            // Icik
+            GenSoundcheckBox.Checked = Settings.GenSound;
+
             // Video tab
             checkDynamicShadows.Checked = Settings.DynamicShadows;
             checkShadowAllShapes.Checked = Settings.ShadowAllShapes;
@@ -460,6 +463,9 @@ namespace ORTS
             Settings.SoundVolumePercent = (int)numericSoundVolumePercent.Value;
             Settings.SoundDetailLevel = (int)numericSoundDetailLevel.Value;
             Settings.ExternalSoundPassThruPercent = (int)numericExternalSoundPassThruPercent.Value;
+
+            // Icik
+            Settings.GenSound = GenSoundcheckBox.Checked;
 
             // Video tab
             Settings.DynamicShadows = checkDynamicShadows.Checked;
@@ -978,6 +984,11 @@ namespace ORTS
         private void NightBrightnessTrackBar_Scroll(object sender, EventArgs e)
         {
             labelNightBrightness.Text = catalog.GetStringFmt("{0}%", NightBrightnessTrackBar.Value * 10);
+        }
+
+        private void GenSoundcheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }

@@ -205,6 +205,9 @@ namespace ORTS.Settings
         public int SoundDetailLevel { get; set; }
         [Default(30)]
         public int ExternalSoundPassThruPercent { get; set; } // higher = louder sound
+        // Icik
+        [Default(true)]
+        public bool GenSound { get; set; }
 
         // Video settings:
         [Default(true)]
