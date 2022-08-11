@@ -1340,6 +1340,9 @@ namespace Orts.Simulation.RollingStocks
                 case "engine(mucableequipment": MUCableEquipment = stf.ReadBoolBlock(false); break;
                 case "engine(pantocanhvoff": PantoCanHVOffSpeedKpH = stf.ReadFloatBlock(STFReader.UNITS.Speed, 0); break;
                 case "engine(maxtrainbrakepressure": BrakeSystem.MCP_TrainBrake = stf.ReadFloatBlock(STFReader.UNITS.PressureDefaultPSI, null); break;
+                case "engine(arrtrainbrakepressuredrop": BrakeSystem.ARRTrainBrakePressureDrop = stf.ReadFloatBlock(STFReader.UNITS.PressureDefaultPSI, null); break;
+                case "engine(arrcylpressureengage": BrakeSystem.ARRCylPressureEngage = stf.ReadFloatBlock(STFReader.UNITS.PressureDefaultPSI, null); break;
+
 
                 // Jindrich
                 case "engine(usingforcehandle": UsingForceHandle = stf.ReadBoolBlock(false); break;

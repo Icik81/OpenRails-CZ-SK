@@ -996,7 +996,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                     }
                 }
             }
-            if (Bar.FromPSI(Locomotive.BrakeSystem.BrakeLine1PressurePSI) < 4.8 && !arrIsBraking)
+            if (Bar.FromPSI(Locomotive.BrakeSystem.BrakeLine1PressurePSI) < 4.8 && !arrIsBraking && !Locomotive.ARRTrainBrakeEngage)
             {
                 canAddForce = false;
                 reducingForce = true;
