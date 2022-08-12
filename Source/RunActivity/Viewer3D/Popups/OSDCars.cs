@@ -103,7 +103,7 @@ namespace Orts.Viewer3D.Popups
                                 case 3: FillColor = Color.Chocolate; break;
                                 case 4: FillColor = Color.Gray; break;
                                 case 5: FillColor = Color.DarkCyan; break;
-                                case 6: FillColor = Color.DeepSkyBlue; break;
+                                case 6: FillColor = Color.DarkGray; break;
                                 case 7: FillColor = Color.Pink; break;
                                 case 8: FillColor = Color.Purple; break;
                                 case 9: FillColor = Color.Tomato; break;
