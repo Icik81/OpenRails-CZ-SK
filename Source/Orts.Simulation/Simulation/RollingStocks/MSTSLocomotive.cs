@@ -1591,6 +1591,10 @@ namespace Orts.Simulation.RollingStocks
             CarIsPlayerLocoSet = locoCopy.CarIsPlayerLocoSet;
             BreakPowerButton_Activated = locoCopy.BreakPowerButton_Activated;
             BreakEDBButton_Activated = locoCopy.BreakEDBButton_Activated;
+            BrakeSystem.MCP_TrainBrake = locoCopy.BrakeSystem.MCP_TrainBrake;
+            BrakeSystem.ARRTrainBrakePressureDrop = locoCopy.BrakeSystem.ARRTrainBrakePressureDrop;
+            BrakeSystem.ARRCylPressureEngage = locoCopy.BrakeSystem.ARRCylPressureEngage;
+            
 
             // Jindrich
             UsingForceHandle = locoCopy.UsingForceHandle;

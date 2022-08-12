@@ -85,16 +85,42 @@ namespace Orts.Viewer3D.Popups
                     {
                         if ((State == DisplayState.Cars) || (State == DisplayState.Trains && (car.Train == null || car.Train.FirstCar == car)))
                         {
+                            Color FillColor = Color.Black;
+                            float ColorTrain = car.Train.Number;
+                            if (ColorTrain > 10 && ColorTrain < 21) ColorTrain = ColorTrain - 10;
+                            else 
+                                if (ColorTrain > 20 && ColorTrain < 31) ColorTrain = ColorTrain - 20;
+                            else
+                                if (ColorTrain > 30 && ColorTrain < 41) ColorTrain = ColorTrain - 30;
+                            else
+                                if (ColorTrain > 40 && ColorTrain < 51) ColorTrain = ColorTrain - 40;
+
+                            switch (ColorTrain)
+                            {
+                                case 0: FillColor = Color.Red; break;
+                                case 1: FillColor = Color.Blue; break;
+                                case 2: FillColor = Color.Green; break;
+                                case 3: FillColor = Color.Chocolate; break;
+                                case 4: FillColor = Color.Gray; break;
+                                case 5: FillColor = Color.DarkCyan; break;
+                                case 6: FillColor = Color.DeepSkyBlue; break;
+                                case 7: FillColor = Color.Pink; break;
+                                case 8: FillColor = Color.Purple; break;
+                                case 9: FillColor = Color.Tomato; break;
+                                case 10: FillColor = Color.Violet; break;
+                            }
+
                             if (labels.ContainsKey(car))
                                 newLabels[car] = labels[car];
+                                //newLabels[car] = new LabelPrimitive(Owner.Label3DMaterial, FillColor, Color.White, car.CarHeightM) { Position = car.WorldPosition };
                             else
-                                newLabels[car] = new LabelPrimitive(Owner.Label3DMaterial, Color.Blue, Color.White, car.CarHeightM) { Position = car.WorldPosition };
+                                newLabels[car] = new LabelPrimitive(Owner.Label3DMaterial, FillColor, Color.White, car.CarHeightM) { Position = car.WorldPosition };
 
                             newLabels[car].Text = State == DisplayState.Cars || car.Train == null ? car.CarID : car.Train.Name;
 
                             // Change color with distance.
                             var ratio = (MathHelper.Clamp(distance, MinimumDistance, MaximumDistance) - MinimumDistance) / (MaximumDistance - MinimumDistance);
-                            newLabels[car].Color.A = newLabels[car].Outline.A = (byte)MathHelper.Lerp(255, 0, ratio);
+                            newLabels[car].Color.A = newLabels[car].Outline.A = (byte)MathHelper.Lerp(255, 255, ratio);
                         }
                     }
                 }

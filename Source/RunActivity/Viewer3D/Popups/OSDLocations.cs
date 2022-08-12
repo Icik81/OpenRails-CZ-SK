@@ -166,7 +166,7 @@ namespace Orts.Viewer3D.Popups
 
                                 // Change color with distance.
                                 var ratio = (MathHelper.Clamp(distance, MinimumDistance, MaximumDistancePlatform) - MinimumDistance) / (MaximumDistancePlatform - MinimumDistance);
-                                newLabels[platform].Color.A = newLabels[platform].Outline.A = (byte)MathHelper.Lerp(255, 0, ratio);
+                                newLabels[platform].Color.A = newLabels[platform].Outline.A = (byte)MathHelper.Lerp(255, 255, ratio);
                             }
                         }
                     }
@@ -189,7 +189,7 @@ namespace Orts.Viewer3D.Popups
 
                                 // Change color with distance.
                                 var ratio = (MathHelper.Clamp(distance, MinimumDistance, MaximumDistanceSiding) - MinimumDistance) / (MaximumDistanceSiding - MinimumDistance);
-                                newLabels[siding].Color.A = newLabels[siding].Outline.A = (byte)MathHelper.Lerp(255, 0, ratio);
+                                newLabels[siding].Color.A = newLabels[siding].Outline.A = (byte)MathHelper.Lerp(255, 255, ratio);
                             }
                         }
                     }
