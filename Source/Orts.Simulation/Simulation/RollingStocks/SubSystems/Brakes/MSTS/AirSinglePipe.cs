@@ -1485,8 +1485,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         ThresholdBailOffOn = 0;
                         EDBEngineBrakeDelay = 0;
                     }
-                }                                
-                PressureConverterBaseEDB = loco.DynamicBrakePercent / 100 * 4.0f * 14.50377f;                  
+                }       
+                if (loco.DynamicBrakeForceCurves != null)
+                    PressureConverterBaseEDB = loco.DynamicBrakePercent / 100 * 4.0f * 14.50377f;                      
             }
             else
             {
@@ -1496,7 +1497,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 ThresholdBailOffOn = 0;
             }
 
-            // Převodník brzdné síly  
+            // Převodník brzdné síly              
             PressureConverterBaseTrainBrake = (maxPressurePSI0 - BrakeLine1PressurePSI) * AuxCylVolumeRatio;
             PressureConverterBase = Math.Max(PressureConverterBaseTrainBrake, PressureConverterBaseEDB);
             PressureConverterBase = MathHelper.Clamp(PressureConverterBase, 0, 4.0f * 14.50377f);
@@ -3162,8 +3163,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 {
                     if (lead.CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.Auto)
                     {
-                        // Při vyputém napájení vstupní tlak do převodníku brzdy (používá se signál EDB)
-                        if (!lead.PowerOn && (!lead.EDBIndependent || (lead.EDBIndependent && lead.PowerOnFilter < 1)))
+                        // Při vypnutém napájení nebo nedostupném EDB vstupní tlak do převodníku brzdy (používá se signál EDB)
+                        if ((!lead.PowerOn || lead.DynamicBrakePercent <= 0) && (!lead.EDBIndependent || (lead.EDBIndependent && lead.PowerOnFilter < 1)))
                         {
                             if (lead.CruiseControl.SelectedSpeedMpS < lead.AbsWheelSpeedMpS)
                                 lead.BrakeSystem.PressureConverterBaseEDB = (float)Math.Round(lead.SelectedMaxAccelerationStep, 0) / lead.CruiseControl.SpeedRegulatorMaxForceSteps * 4.0f * 14.50377f;
