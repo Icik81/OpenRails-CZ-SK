@@ -1424,6 +1424,9 @@ namespace Orts.Viewer3D.Popups
                             );
                         TableAddLabelValue(table, Viewer.Catalog.GetString("Loco Adhesion"), "{0:F0}%", mstsLocomotive.LocomotiveCoefficientFrictionHUD * 100.0f);
                         TableAddLabelValue(table, Viewer.Catalog.GetString("Wagon Adhesion"), "{0:F0}%", mstsLocomotive.WagonCoefficientFrictionHUD * 100.0f);
+
+                        // Icik
+                        TableAddLabelValue(table, Viewer.Catalog.GetString("Track quality"), "{0:F0}%", mstsLocomotive.TrackFactor * 100.0f);
                     }
                 }
                 else
@@ -1432,6 +1435,8 @@ namespace Orts.Viewer3D.Popups
                     TableAddLabelValue(table, Viewer.Catalog.GetString("Axle out force"), "{0:F0} N ({1:F0} kW)", mstsLocomotive.MotiveForceN, mstsLocomotive.MotiveForceN * mstsLocomotive.SpeedMpS / 1000.0f);
                     TableAddLabelValue(table, Viewer.Catalog.GetString("Loco Adhesion"), "{0:F0}%", mstsLocomotive.LocomotiveCoefficientFrictionHUD * 100.0f);
                     TableAddLabelValue(table, Viewer.Catalog.GetString("Wagon Adhesion"), "{0:F0}%", mstsLocomotive.WagonCoefficientFrictionHUD * 100.0f);
+                    // Icik
+                    TableAddLabelValue(table, Viewer.Catalog.GetString("Track quality"), "{0:F0}%", mstsLocomotive.TrackFactor * 100.0f);
                 }
                 TableAddLine(table);
 

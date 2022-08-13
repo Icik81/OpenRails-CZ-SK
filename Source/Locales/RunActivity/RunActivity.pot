@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2022-08-10 21:25:17+0200\n"
-"PO-Revision-Date: 2022-08-10 21:25:18+0200\n"
+"POT-Creation-Date: 2022-08-13 16:08:03+0200\n"
+"PO-Revision-Date: 2022-08-13 16:08:04+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -440,7 +440,7 @@ msgstr ""
 #: ../../RunActivity/Viewer3D/Debugging/SoundDebugForm.Designer.cs:284
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:470
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:810
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1610
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1615
 #: ../../RunActivity/Viewer3D/Popups/TrackMonitorWindow.cs:313
 #: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:121
 #: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:519
@@ -463,8 +463,8 @@ msgid "Variable 1"
 msgstr ""
 
 #: ../../RunActivity/Viewer3D/Debugging/SoundDebugForm.Designer.cs:351
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1616
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1618
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1621
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1623
 #: ../../RunActivity/Viewer3D/Popups/NextStationWindow.cs:80
 msgid "Distance"
 msgstr ""
@@ -1130,7 +1130,7 @@ msgid "Num of substeps"
 msgstr ""
 
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:170
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1862
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1867
 msgid "Memory"
 msgstr ""
 
@@ -1143,22 +1143,22 @@ msgid "Frame time"
 msgstr ""
 
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:173
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1876
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1881
 msgid "Render process"
 msgstr ""
 
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:174
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1877
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1882
 msgid "Updater process"
 msgstr ""
 
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:175
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1878
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1883
 msgid "Loader process"
 msgstr ""
 
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:176
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1879
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1884
 msgid "Sound process"
 msgstr ""
 
@@ -1193,8 +1193,8 @@ msgid "Replay"
 msgstr ""
 
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:471
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1470
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1500
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1475
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1505
 #: ../../RunActivity/Viewer3D/Popups/TrackMonitorWindow.cs:345
 #: ../../RunActivity/Viewer3D/Popups/TrackMonitorWindow.cs:352
 #: ../../RunActivity/Viewer3D/Popups/TrackMonitorWindow.cs:357
@@ -1388,9 +1388,9 @@ msgstr ""
 
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:580
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:662
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1535
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1567
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1860
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1540
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1572
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1865
 #: ../../RunActivity/Viewer3D/RollingStock/SubSystems/ETCS/DataEntry.cs:461
 #: ../../RunActivity/Viewer3D/RollingStock/SubSystems/ETCS/DataEntry.cs:486
 msgid "Yes"
@@ -1398,8 +1398,8 @@ msgstr ""
 
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:580
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:662
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1567
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1860
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1572
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1865
 msgid "No"
 msgstr ""
 
@@ -1417,15 +1417,15 @@ msgstr ""
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1142
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1173
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1200
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1466
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1487
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1471
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1492
 msgid "Car"
 msgstr ""
 
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:604
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:804
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1545
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1569
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1550
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1574
 msgid "Flipped"
 msgstr ""
 
@@ -1547,7 +1547,7 @@ msgstr ""
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1049
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1059
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1086
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:2114
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:2119
 msgid "PlayerLoco"
 msgstr ""
 
@@ -1802,7 +1802,7 @@ msgstr ""
 
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1400
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1425
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1433
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1436
 msgid "Loco Adhesion"
 msgstr ""
 
@@ -1843,7 +1843,7 @@ msgid "Stability correction"
 msgstr ""
 
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1418
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1432
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1435
 msgid "Axle out force"
 msgstr ""
 
@@ -1852,223 +1852,228 @@ msgid "Wheel Speed"
 msgstr ""
 
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1426
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1434
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1437
 msgid "Wagon Adhesion"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1431
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1429
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1439
+msgid "Track quality"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1434
 msgid "(Simple adhesion model)"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1444
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1453
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1449
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1458
 msgid "ResWind:"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1445
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1454
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1450
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1459
 msgid "ResSpeed:"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1450
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1455
 msgid "Wind Speed:"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1451
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1456
 msgid "Wind Direction:"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1452
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1457
 msgid "Train Direction:"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1467
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1496
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1497
-msgid "Coupler"
-msgstr ""
-
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1468
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1498
-msgid "Slack"
-msgstr ""
-
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1469
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1499
-msgid "Mass"
-msgstr ""
-
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1471
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1493
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1501
-msgid "Curve"
-msgstr ""
-
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1472
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1501
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1502
-msgid "Brk Frict."
+msgid "Coupler"
 msgstr ""
 
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1473
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1503
-msgid "Brk Slide"
+msgid "Slack"
 msgstr ""
 
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1474
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1504
+msgid "Mass"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1476
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1498
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1506
+msgid "Curve"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1477
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1507
+msgid "Brk Frict."
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1478
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1508
+msgid "Brk Slide"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1479
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1509
 msgid "Bear Temp"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1488
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1493
 msgid "Total"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1489
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1494
 msgid "Motive"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1490
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1495
 msgid "Brake"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1491
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1496
 msgid "Friction"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1492
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1497
 msgid "Gravity"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1494
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1499
 msgid "Tunnel"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1495
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1842
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1500
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1847
 msgid "Wind"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1590
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1595
 msgid "DISPATCHER INFORMATION : active trains : "
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1598
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1608
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1603
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1613
 msgid "Train"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1599
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1619
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1604
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1624
 msgid "Consist"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1600
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1620
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1904
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1605
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1625
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1909
 msgid "Path"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1609
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1614
 msgid "Travelled"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1611
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1616
 msgid "Max"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1612
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1617
 msgid "AI mode"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1613
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1618
 msgid "AI data"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1614
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1619
 msgid "Mode"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1615
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1620
 msgid "Auth"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1617
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1622
 msgid "Signal"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1830
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1835
 msgid "WEATHER INFORMATION"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1838
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1843
 msgid "Visibility"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1839
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1844
 msgid "Cloud cover"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1840
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1845
 msgid "Intensity"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1841
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1846
 msgid "Liquidity"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1843
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1848
 msgid "Amb Temp"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1848
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1853
 msgid "DEBUG INFORMATION"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1860
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1865
 msgid "Logging enabled"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1861
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1866
 msgid "Build"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1863
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1868
 msgid "CPU"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1864
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1869
 msgid "GPU"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1865
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1870
 msgid "Adapter"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1870
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1875
 msgid "Shadow maps"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1872
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1877
 msgid "Shadow primitives"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1875
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1880
 msgid "Render primitives"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1876
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1877
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1878
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1879
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1880
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1881
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1882
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1883
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1884
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1885
 msgid "wait"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1880
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1885
 msgid "Total process"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1881
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1886
 msgid "Camera"
 msgstr ""
 
@@ -2077,75 +2082,75 @@ msgstr ""
 msgid "filtered by {0:F0}"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1838
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1843
 #, csharp-format
 msgid "{0:N0} m"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1839
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1841
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1844
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1846
 #, csharp-format
 msgid "{0:F0} %"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1840
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1845
 #, csharp-format
 msgid "{0:F4} p/s/m^2"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1842
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1847
 #, csharp-format
 msgid "{0:F1},{1:F1} m/s"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1862
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1867
 #, csharp-format
 msgid ""
 "{0:F0} MB ({5}, {6}, {7}, {8}, {9}, {10}, {1:F0} MB managed, {11:F0} kB/frame "
 "allocated, {2:F0}/{3:F0}/{4:F0} GCs)"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1863
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1868
 #, csharp-format
 msgid "{0:F0}% ({1})"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1864
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1869
 #, csharp-format
 msgid "{0:F0} FPS (50th/95th/99th percentiles {1:F1} / {2:F1} / {3:F1} ms) "
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1865
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1870
 #, csharp-format
 msgid "{0} ({1:F0} MB) ({2:F0} pixels x {3:F0} pixels)"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1868
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1873
 #, csharp-format
 msgid "{0}/{1}"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1869
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1874
 #, csharp-format
 msgid "({0}x{0})"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1872
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1875
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1877
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1880
 #, csharp-format
 msgid "{0:F0}"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1876
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1877
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1878
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1879
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1880
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1881
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1882
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1883
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1884
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1885
 #, csharp-format
 msgid "{0:F0}% ({1:F0}% {2})"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1863
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1868
 #, csharp-format
 msgid "{0} logical processor"
 msgid_plural "{0} logical processors"

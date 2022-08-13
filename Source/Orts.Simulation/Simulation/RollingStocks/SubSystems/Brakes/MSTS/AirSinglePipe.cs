@@ -3193,7 +3193,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     }
                     lead.ARRAutoCylPressurePSI = lead.BrakeSystem.PressureConverter;
                     // Regulátor tlakové brzdy pro ARR
-                    if (lead.ARRTrainBrakeEngage 
+                    if (lead.ARRTrainBrakeEngage && lead.AbsWheelSpeedMpS > 0
                         && lead.MainResPressurePSI > 0
                         && AutoCylPressurePSI < lead.BrakeSystem.BrakeCylinderMaxSystemPressurePSI
                         && AutoCylPressurePSI < lead.MainResPressurePSI

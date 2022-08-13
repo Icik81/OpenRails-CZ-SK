@@ -1392,7 +1392,7 @@ namespace Orts.Simulation.RollingStocks
                 else
                     WagonBrakeAdhesiveForceN = MassKG * GravitationalAccelerationMpS2 * Train.WagonCoefficientFriction; // Adheze pro vozy
 
-                TrackFactor = MathHelper.Clamp(1.3f - TrackFactorY, 0.8f, 1.3f);                
+                TrackFactor = MathHelper.Clamp(TrackFactorValue, 0.8f, 1.0f);                
                 float BrakeAdhesiveForceN = (LocoBrakeAdhesiveForceN + WagonBrakeAdhesiveForceN) * 0.85f;
 
                 // Test if wheel forces are high enough to induce a slip. Set slip flag if slip occuring 
@@ -2956,6 +2956,7 @@ namespace Orts.Simulation.RollingStocks
                 TrackFactorX = 0.2f;
                 TrackFactorY = 0.2f;
                 TrackFactorZ = 0.2f;
+                TrackFactorValue = 1.00f;
             }
             else
             if (Train.AllowedMaxSpeedMpS >= 80 / 3.6f) // Běžná trať do 120km/h
@@ -2963,6 +2964,7 @@ namespace Orts.Simulation.RollingStocks
                 TrackFactorX = 0.6f;
                 TrackFactorY = 0.6f;
                 TrackFactorZ = 0.6f;
+                TrackFactorValue = 0.90f;
             }
             else
             if (Train.AllowedMaxSpeedMpS > 50 / 3.6f) // Běžná trať do 80km/h
@@ -2970,6 +2972,7 @@ namespace Orts.Simulation.RollingStocks
                 TrackFactorX = 0.8f;
                 TrackFactorY = 0.8f;
                 TrackFactorZ = 0.8f;
+                TrackFactorValue = 0.85f;
             }
             else
             if (Train.AllowedMaxSpeedMpS <= 50 / 3.6f && Train.NextRouteSpeedLimit <= 50 / 3.6f) // Běžná trať do 50km/h
@@ -2977,18 +2980,18 @@ namespace Orts.Simulation.RollingStocks
                 TrackFactorX = 1.0f;
                 TrackFactorY = 1.0f;
                 TrackFactorZ = 1.0f;
+                TrackFactorValue = 0.80f;
             }
             else
             {
                 TrackFactorX = 0.8f;
                 TrackFactorY = 0.8f;
                 TrackFactorZ = 0.8f;
-            }
-
-            TrackFactorValue = TrackFactorX;
+                TrackFactorValue = 0.85f;
+            }            
 
             float SpeedFactor = MathHelper.Clamp(AbsSpeedMpS / Train.AllowedMaxSpeedMpS, 0.8f, 2.5f);
-            if (AbsSpeedMpS < 0.1f) SpeedFactor = 0;
+            if (AbsSpeedMpS < 0.1f) SpeedFactor = 1;
 
             TrackFactorX *= SpeedFactor;
             TrackFactorY *= SpeedFactor;
