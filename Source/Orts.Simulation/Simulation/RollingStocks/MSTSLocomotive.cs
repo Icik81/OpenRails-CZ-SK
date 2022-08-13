@@ -4298,7 +4298,7 @@ namespace Orts.Simulation.RollingStocks
                     SetDynamicBrakeValue(-1);
             }
 
-            // Icik                         
+            // Icik            
             SetCarLightsPowerOn();
 
             if (IsLeadLocomotive())            
@@ -4609,6 +4609,11 @@ namespace Orts.Simulation.RollingStocks
             MotiveForceN = TractiveForceN;
 
             // Icik
+            if (!PowerOn && ControllerVolts == 0)
+            {
+                TractiveForceN = 0;
+                MotiveForceN = 0;
+            }
             if (DynamicBrakePercent > 0 && (DynamicBrakeForceCurves != null || DynamicBrakeForceCurvesAC != null || DynamicBrakeForceCurvesDC != null) && AbsSpeedMpS > 0)
             {
                 float f = 0;

@@ -1485,16 +1485,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         ThresholdBailOffOn = 0;
                         EDBEngineBrakeDelay = 0;
                     }
-                }
-                // Převodník brzdné síly  
-                PressureConverterBaseTrainBrake = (maxPressurePSI0 - BrakeLine1PressurePSI) * AuxCylVolumeRatio;
-                PressureConverterBaseEDB = loco.DynamicBrakePercent / 100 * 4.0f * 14.50377f;
-                PressureConverterBase = Math.Max(PressureConverterBaseTrainBrake, PressureConverterBaseEDB);
-                PressureConverterBase = MathHelper.Clamp(PressureConverterBase, 0, 4.0f * 14.50377f);
-                if (Math.Round(PressureConverterBase) > Math.Round(PressureConverter))
-                    PressureConverter += elapsedClockSeconds * MaxApplicationRatePSIpS * 1.5f;
-                if (Math.Round(PressureConverterBase) < Math.Round(PressureConverter))
-                    PressureConverter -= elapsedClockSeconds * MaxReleaseRatePSIpS * 2.0f;
+                }                                
+                PressureConverterBaseEDB = loco.DynamicBrakePercent / 100 * 4.0f * 14.50377f;                
             }
             else
             {
@@ -1503,6 +1495,16 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 BailOffOn = false;
                 ThresholdBailOffOn = 0;
             }
+
+            // Převodník brzdné síly  
+            PressureConverterBaseTrainBrake = (maxPressurePSI0 - BrakeLine1PressurePSI) * AuxCylVolumeRatio;
+            PressureConverterBase = Math.Max(PressureConverterBaseTrainBrake, PressureConverterBaseEDB);
+            PressureConverterBase = MathHelper.Clamp(PressureConverterBase, 0, 4.0f * 14.50377f);
+            if (Math.Round(PressureConverterBase) > Math.Round(PressureConverter))
+                PressureConverter += elapsedClockSeconds * MaxApplicationRatePSIpS * 1.5f;
+            if (Math.Round(PressureConverterBase) < Math.Round(PressureConverter))
+                PressureConverter -= elapsedClockSeconds * MaxReleaseRatePSIpS * 2.0f;
+
 
             if (AutoCylPressurePSI0 < 0)
                 AutoCylPressurePSI0 = 0;
@@ -1686,6 +1688,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 {
                     lead.BrakeSystem.ARRTrainBrakeCanEngage = false;
                     lead.ARRTrainBrakeEngage = false;
+                    lead.BrakeSystem.PressureConverterBaseEDB = 0;
                     if (lead.BrakeSystem.BrakeLine1PressurePSI > 0 && !lead.BrakeSystem.EmerBrakeTriggerActive)
                     {
                         lead.SignalEvent(Event.TrainBrakeEmergencyActivated);
@@ -1848,12 +1851,14 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         lead.BrakeSystem.BrakeCylReleaseFlow = true;
                         lead.ARRTrainBrakeEngage = false;
                         lead.BrakeSystem.ARRTrainBrakeCanEngage = false;
+                        lead.BrakeSystem.PressureConverterBaseEDB = 0;
                     }
                     if (lead.TrainBrakeController.TrainBrakeControllerState == ControllerState.Apply)
                     {
                         lead.BrakeSystem.BrakeCylReleaseFlow = false;
                         lead.ARRTrainBrakeEngage = false;
                         lead.BrakeSystem.ARRTrainBrakeCanEngage = false;
+                        lead.BrakeSystem.PressureConverterBaseEDB = 0;
                     }
                     if (lead.TrainBrakeController.TrainBrakeControllerState == ControllerState.Neutral)
                         lead.BrakeSystem.BrakeCylReleaseFlow = true;
@@ -3146,8 +3151,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         case ValveState.Lap: lead.SignalEvent(Event.EngineBrakePressureStoppedChanging); break;
                     }
 
-                // Použití průběžné brzdy v režimu automatiky ARR
-                if (lead.ControllerVolts >= 0)
+                // Použití průběžné brzdy v režimu automatiky ARR                
+                if (lead.ControllerVolts >= 0 && lead.BrakeSystem.PressureConverter < lead.BrakeSystem.ARRCylPressureEngage)
                 {
                     lead.BrakeSystem.ARRTrainBrakeCanEngage = true;
                     lead.BrakeSystem.ARRTrainBrakeCycle1 = 0;
@@ -3157,7 +3162,18 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 {
                     if (lead.CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.Auto)
                     {
-                        if (lead.CruiseControl.controllerVolts < 0 && lead.BrakeSystem.PressureConverter > lead.BrakeSystem.ARRCylPressureEngage && lead.BrakeSystem.ARRTrainBrakeCanEngage)
+                        // Při vyputém napájení vstupní tlak do převodníku brzdy (používá se signál EDB)
+                        if (!lead.PowerOn && (!lead.EDBIndependent || (lead.EDBIndependent && lead.PowerOnFilter < 1)))
+                        {
+                            if (lead.CruiseControl.SelectedSpeedMpS < lead.AbsWheelSpeedMpS)
+                                lead.BrakeSystem.PressureConverterBaseEDB = 2.0f * 14.50377f;
+                            else
+                                lead.BrakeSystem.PressureConverterBaseEDB = 0;
+                        }
+                        // Aktivace příznaku zásahu tlakové brzdy v režimu ARR
+                        if (lead.BrakeSystem.PressureConverter > lead.BrakeSystem.ARRCylPressureEngage 
+                            && lead.BrakeSystem.ARRTrainBrakeCanEngage 
+                            && lead.CruiseControl.SelectedSpeedMpS < lead.AbsWheelSpeedMpS)
                             lead.ARRTrainBrakeEngage = true;
                         else
                         {
@@ -3174,8 +3190,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         }
                     }
                     lead.ARRAutoCylPressurePSI = lead.BrakeSystem.PressureConverter;
-
-                    if (lead.ARRTrainBrakeEngage && lead.CruiseControl.controllerVolts < 0
+                    // Regulátor tlakové brzdy pro ARR
+                    if (lead.ARRTrainBrakeEngage 
                         && lead.MainResPressurePSI > 0
                         && AutoCylPressurePSI < lead.BrakeSystem.BrakeCylinderMaxSystemPressurePSI
                         && AutoCylPressurePSI < lead.MainResPressurePSI
