@@ -106,6 +106,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems
         public bool DisableCruiseControlOnThrottleAndZeroForce = false;
         public bool IReallyWantToBrake = false;
         public bool PreciseSpeedControl = false;
+        
+        // Icik
+        public bool UsePressuredTrainBrake = true;
 
         public void Parse(string lowercasetoken, STFReader stf)
         {
@@ -180,9 +183,12 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                                     CruiseControlLogic = ControllerCruiseControlLogic.SpeedOnly;
                                     break;
                                 }
-                        }
-                        break;
+                        }                        
                     }
+                    break;
+
+                // Icik
+                case "engine(ortscruisecontrol(usepressuredtrainbrake": UsePressuredTrainBrake = stf.ReadBoolBlock(false); break;
             }
         }
 

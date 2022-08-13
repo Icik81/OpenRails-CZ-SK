@@ -3143,7 +3143,6 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         lead.BrakeSystem.T4_ParkingkBrake = 0;
                 }
 
-
                 if (lead.EngineBrakeState != prevState)
                     switch (lead.EngineBrakeState)
                     {
@@ -3152,15 +3151,17 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         case ValveState.Lap: lead.SignalEvent(Event.EngineBrakePressureStoppedChanging); break;
                     }
 
-                // Použití průběžné brzdy v režimu automatiky ARR                
-                if (lead.ControllerVolts >= 0 && lead.BrakeSystem.PressureConverter < lead.BrakeSystem.ARRCylPressureEngage)
+
+                if (lead.CruiseControl != null && lead.CruiseControl.UsePressuredTrainBrake)
                 {
-                    lead.BrakeSystem.ARRTrainBrakeCanEngage = true;
-                    lead.BrakeSystem.ARRTrainBrakeCycle1 = 0;
-                    lead.BrakeSystem.ARRTrainBrakeCycle2 = 0;
-                }
-                if (lead.CruiseControl != null)
-                {
+                    // Použití průběžné brzdy v režimu automatiky ARR                
+                    if (lead.ControllerVolts >= 0 && lead.BrakeSystem.PressureConverter < lead.BrakeSystem.ARRCylPressureEngage)
+                    {
+                        lead.BrakeSystem.ARRTrainBrakeCanEngage = true;
+                        lead.BrakeSystem.ARRTrainBrakeCycle1 = 0;
+                        lead.BrakeSystem.ARRTrainBrakeCycle2 = 0;
+                    }
+
                     if (lead.CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.Auto)
                     {
                         // Při vypnutém napájení nebo nedostupném EDB vstupní tlak do převodníku brzdy (používá se signál EDB)
