@@ -1391,8 +1391,7 @@ namespace Orts.Simulation.RollingStocks
                     LocoBrakeAdhesiveForceN = MassKG * GravitationalAccelerationMpS2 * Train.LocomotiveCoefficientFriction; // Adheze pro lokomotivy
                 else
                     WagonBrakeAdhesiveForceN = MassKG * GravitationalAccelerationMpS2 * Train.WagonCoefficientFriction; // Adheze pro vozy
-
-                TrackFactor = MathHelper.Clamp(TrackFactorValue, 0.8f, 1.0f);                
+                           
                 float BrakeAdhesiveForceN = (LocoBrakeAdhesiveForceN + WagonBrakeAdhesiveForceN) * 0.85f;
 
                 // Test if wheel forces are high enough to induce a slip. Set slip flag if slip occuring 
@@ -2864,7 +2863,7 @@ namespace Orts.Simulation.RollingStocks
                 // Add new vibrations every CarLengthM in either direction.
                 if (Math.Round((VibrationOffsetM.X + DistanceM) / CarLengthM) != Math.Round((VibrationOffsetM.X + DistanceM + distanceM) / CarLengthM))
                 {
-                    AddVibrations(VibrationFactorDistance);
+                    AddVibrations(VibrationFactorDistance, elapsedTimeS);
                     TypVibrace_1 = true;
                 }
 
@@ -2875,7 +2874,7 @@ namespace Orts.Simulation.RollingStocks
                     if (VibrationTrackCurvaturepM != curvaturepM)
                     {
                         // Use the difference in curvature to determine the strength of the vibration caused.
-                        AddVibrations(VibrationFactorTrackVectorSection * Math.Abs(VibrationTrackCurvaturepM - curvaturepM) / VibrationMaximumCurvaturepM);
+                        AddVibrations(VibrationFactorTrackVectorSection * Math.Abs(VibrationTrackCurvaturepM - curvaturepM) / VibrationMaximumCurvaturepM, elapsedTimeS);
                         VibrationTrackCurvaturepM = curvaturepM;
                         TypVibrace_1 = true;
                         TypVibrace_2 = true;
@@ -2886,12 +2885,12 @@ namespace Orts.Simulation.RollingStocks
                 // Add new vibrations every track node.
                 if (VibrationTrackNode != traveler.TrackNodeIndex)
                 {
-                    AddVibrations(VibrationFactorTrackNode);
+                    AddVibrations(VibrationFactorTrackNode, elapsedTimeS);
                     VibrationTrackNode = traveler.TrackNodeIndex;
                     TypVibrace_3 = true;
                 }
 
-                AddVibrations(VibrationFactorDistance);
+                AddVibrations(VibrationFactorDistance, elapsedTimeS);
 
                 if (Factor_vibration > 0) Factor_vibration--;
             }
@@ -2949,14 +2948,23 @@ namespace Orts.Simulation.RollingStocks
         float TrackFactorX = 1;
         float TrackFactorY = 1;
         float TrackFactorZ = 1;
-        private void TrackFactorXYZ()
+        float AdhCycle = 0;
+        bool FirstFrame = true;
+        private void TrackFactorXYZ(float elapsedTimeS)
         {
+            float AdhTime = 1;
+            AdhCycle += elapsedTimeS;
             if (Train.AllowedMaxSpeedMpS >= 120 / 3.6f) // Koridor
             {
                 TrackFactorX = 0.2f;
                 TrackFactorY = 0.2f;
                 TrackFactorZ = 0.2f;
-                TrackFactorValue = 1.00f;
+                TrackFactorValue = 0.20f;
+                if ((AdhCycle > AdhTime && AbsSpeedMpS > 0.1f) || FirstFrame)
+                {
+                    TrackFactor = Simulator.Random.Next(95, 101) / 100f;
+                    AdhCycle = 0;
+                }
             }
             else
             if (Train.AllowedMaxSpeedMpS >= 80 / 3.6f) // Běžná trať do 120km/h
@@ -2964,7 +2972,12 @@ namespace Orts.Simulation.RollingStocks
                 TrackFactorX = 0.6f;
                 TrackFactorY = 0.6f;
                 TrackFactorZ = 0.6f;
-                TrackFactorValue = 0.90f;
+                TrackFactorValue = 0.60f;
+                if ((AdhCycle > AdhTime && AbsSpeedMpS > 0.1f) || FirstFrame)
+                {
+                    TrackFactor = Simulator.Random.Next(89, 95) / 100f;
+                    AdhCycle = 0;
+                }
             }
             else
             if (Train.AllowedMaxSpeedMpS > 50 / 3.6f) // Běžná trať do 80km/h
@@ -2972,7 +2985,12 @@ namespace Orts.Simulation.RollingStocks
                 TrackFactorX = 0.8f;
                 TrackFactorY = 0.8f;
                 TrackFactorZ = 0.8f;
-                TrackFactorValue = 0.85f;
+                TrackFactorValue = 0.80f;
+                if ((AdhCycle > AdhTime && AbsSpeedMpS > 0.1f) || FirstFrame)
+                {
+                    TrackFactor = Simulator.Random.Next(83, 89) / 100f;
+                    AdhCycle = 0;
+                }
             }
             else
             if (Train.AllowedMaxSpeedMpS <= 50 / 3.6f && Train.NextRouteSpeedLimit <= 50 / 3.6f) // Běžná trať do 50km/h
@@ -2980,14 +2998,24 @@ namespace Orts.Simulation.RollingStocks
                 TrackFactorX = 1.0f;
                 TrackFactorY = 1.0f;
                 TrackFactorZ = 1.0f;
-                TrackFactorValue = 0.80f;
+                TrackFactorValue = 1.00f;
+                if ((AdhCycle > AdhTime && AbsSpeedMpS > 0.1f) || FirstFrame)
+                {
+                    TrackFactor = Simulator.Random.Next(77, 83) / 100f;
+                    AdhCycle = 0;
+                }
             }
             else
             {
                 TrackFactorX = 0.8f;
                 TrackFactorY = 0.8f;
                 TrackFactorZ = 0.8f;
-                TrackFactorValue = 0.85f;
+                TrackFactorValue = 0.80f;
+                if ((AdhCycle > AdhTime && AbsSpeedMpS > 0.1f) || FirstFrame)
+                {
+                    TrackFactor = Simulator.Random.Next(83, 89) / 100f;
+                    AdhCycle = 0;
+                }
             }            
 
             float SpeedFactor = MathHelper.Clamp(AbsSpeedMpS / Train.AllowedMaxSpeedMpS, 0.8f, 2.5f);
@@ -2996,10 +3024,11 @@ namespace Orts.Simulation.RollingStocks
             TrackFactorX *= SpeedFactor;
             TrackFactorY *= SpeedFactor;
             TrackFactorZ *= SpeedFactor;
+            FirstFrame = false;
         }
 
         float CyklusCouplerImpact;
-        private void AddVibrations(float factor)
+        private void AddVibrations(float factor, float elapsedTimeS)
         {
             // NOTE: For low angles (as our vibration rotations are), sin(angle) ~= angle, and since the displacement at the end of the car is sin(angle) = displacement/half-length, sin(displacement/half-length) * half-length ~= displacement.
             if (CarLengthM >= 25.0f || Simulator.Paused || Simulator.GameSpeed != 1)
@@ -3012,7 +3041,7 @@ namespace Orts.Simulation.RollingStocks
             {
                 int force;
 
-                TrackFactorXYZ();
+                TrackFactorXYZ(elapsedTimeS);
 
                 if (!TypVibrace_1 && !TypVibrace_2 && !TypVibrace_3)
                     direction1 = Simulator.Random.Next(0, 2);
