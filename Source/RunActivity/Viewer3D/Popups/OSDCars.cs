@@ -93,7 +93,27 @@ namespace Orts.Viewer3D.Popups
                             else
                                 if (ColorTrain > 30 && ColorTrain < 41) ColorTrain = ColorTrain - 30;
                             else
-                                if (ColorTrain > 40 && ColorTrain < 51) ColorTrain = ColorTrain - 40;
+                                if (ColorTrain > 40 && ColorTrain < 51) ColorTrain = ColorTrain - 40;                            
+                            else
+                                if (ColorTrain > 50 && ColorTrain < 61) ColorTrain = ColorTrain - 50;
+                            else
+                                if (ColorTrain > 60 && ColorTrain < 71) ColorTrain = ColorTrain - 60;
+                            else
+                                if (ColorTrain > 70 && ColorTrain < 81) ColorTrain = ColorTrain - 70;
+                            else
+                                if (ColorTrain > 80 && ColorTrain < 91) ColorTrain = ColorTrain - 80;
+                            else
+                                if (ColorTrain > 90 && ColorTrain < 101) ColorTrain = ColorTrain - 90;
+                            else
+                                if (ColorTrain > 100 && ColorTrain < 111) ColorTrain = ColorTrain - 100;
+                            else
+                                if (ColorTrain > 110 && ColorTrain < 121) ColorTrain = ColorTrain - 110;
+                            else
+                                if (ColorTrain > 120 && ColorTrain < 131) ColorTrain = ColorTrain - 120;
+                            else
+                                if (ColorTrain > 130 && ColorTrain < 141) ColorTrain = ColorTrain - 130;
+                            else
+                                if (ColorTrain > 140 && ColorTrain < 151) ColorTrain = ColorTrain - 140;
 
                             switch (ColorTrain)
                             {

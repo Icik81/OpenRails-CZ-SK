@@ -576,6 +576,7 @@ namespace Orts.Simulation.RollingStocks
         bool LapButtonPressed = false;
         public bool LapButton_Activated;
         public bool LapActive;
+        public bool SetLapButtonStart;
         float PantoStatus = 0;
         float PrePantoStatus = 0;
         public float HeatingMaxCurrentA;
@@ -3939,7 +3940,7 @@ namespace Orts.Simulation.RollingStocks
                 firstFrame = false;
                 if (Simulator.Settings.AirEmpty)
                 {
-                    PantoCommandDown = true;
+                    PantoCommandDown = true;                                        
                 }
                 else
                 {
@@ -4294,8 +4295,9 @@ namespace Orts.Simulation.RollingStocks
                     SetDynamicBrakeValue(-1);
             }
 
-            // Icik            
+            // Icik                        
             SetCarLightsPowerOn();
+            SetLapButton();
 
             if (IsLeadLocomotive())            
                 CarIsPlayerLoco = true;                            
@@ -4326,7 +4328,7 @@ namespace Orts.Simulation.RollingStocks
                 SetAIAction();
 
             if (IsPlayerTrain && !Simulator.Paused)
-            {                     
+            {                         
                 //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("LapActive " + LapActive));
                 if (Simulator.GameTime < 0.5f)
                 {
@@ -4360,7 +4362,7 @@ namespace Orts.Simulation.RollingStocks
                 SetControlUnit();
                 SetHelperLoco();
                 PantoCanHVOff(elapsedClockSeconds);
-                DirectionButtonSetup();
+                DirectionButtonSetup();                
                 BatterySetOn = false;
             }
 
@@ -8824,6 +8826,19 @@ namespace Orts.Simulation.RollingStocks
             }
         }
 
+        public void SetLapButton()
+        {
+            if (!IsPlayerTrain)
+                return;
+            if (BrakeSystem.StartOn && Simulator.Settings.AirEmpty)
+                SetLapButtonStart = true;
+            if (SetLapButtonStart && LapButtonEnable && Battery)
+            {
+                SetLapButtonStart = false;
+                LapActive = true;
+            }
+        }
+
         public void ToggleDirectionButtonDown()
         {
             if (DirectionButton)
@@ -11363,6 +11378,7 @@ namespace Orts.Simulation.RollingStocks
                         if (QuickReleaseButton)
                             data = 1;
                         else data = 0;
+                        if (!Battery) data = 0;
                         break;
                     }
                 case CABViewControlTypes.LOWPRESSURE_RELEASE_BUTTON:
@@ -11371,6 +11387,7 @@ namespace Orts.Simulation.RollingStocks
                         if (LowPressureReleaseButton)
                             data = 1;
                         else data = 0;
+                        if (!Battery) data = 0;
                         break;
                     }
                 case CABViewControlTypes.BRAKE_PIPE_FLOW:
@@ -11510,6 +11527,7 @@ namespace Orts.Simulation.RollingStocks
                         if (LapActive)
                             data = 1;
                         else data = 0;
+                        if (!Battery) data = 0;
                         break;
                     }
                 case CABViewControlTypes.BREAK_EDB_BUTTON:
@@ -11519,6 +11537,7 @@ namespace Orts.Simulation.RollingStocks
                         if (BreakEDBButton)
                             data = 1;
                         else data = 0;
+                        if (!Battery) data = 0;
                         break;
                     }
                 case CABViewControlTypes.BREAK_EDB_SWITCH:
@@ -11539,7 +11558,7 @@ namespace Orts.Simulation.RollingStocks
                     }
                 case CABViewControlTypes.DIRECTION_BUTTON:
                     {
-                        DirectionButton = true;
+                        DirectionButton = true;                        
                         switch (DirectionButtonPosition)
                         {
                             case 0:
@@ -11560,7 +11579,8 @@ namespace Orts.Simulation.RollingStocks
                             case 5:
                                 data = 0 + DirectionButtonPositionOffset;
                                 break;
-                        }                        
+                        }
+                        if (!Battery) data = 10;
                         break;
                     }
                 case CABViewControlTypes.TURBO_PRESSURE:
