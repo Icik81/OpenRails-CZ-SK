@@ -4479,6 +4479,13 @@ namespace Orts.Simulation.RollingStocks
                                 }
                             }
                         }
+
+                        // Icik
+                        if (LocoType == MSTSLocomotive.LocoTypes.Normal)
+                        {
+                            braking = true;
+                        }
+
                         if (CruiseControl.SpeedSelMode != CruiseControl.SpeedSelectorMode.Parking && CruiseControl.SpeedRegulatorOptions.Contains("selectorparking"))
                             braking = false;
                         if (AbsSpeedMpS > MpS.FromKpH(AutomaticParkingBrakeEngageSpeedKpH))
