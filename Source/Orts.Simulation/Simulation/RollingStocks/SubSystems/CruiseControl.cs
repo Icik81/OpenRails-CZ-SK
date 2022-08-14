@@ -15,6 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Open Rails.  If not, see <http://www.gnu.org/licenses/>.
 
+using Microsoft.Xna.Framework;
 using Orts.Formats.Msts;
 using Orts.Parsers.Msts;
 using ORTS.Common;
@@ -529,6 +530,12 @@ namespace Orts.Simulation.RollingStocks.SubSystems
         protected bool selectedSpeedIncreasing = false;
         public void SpeedRegulatorSelectedSpeedStartIncrease()
         {
+            if (Locomotive.LocoType == MSTSLocomotive.LocoTypes.Normal)
+            {
+                float speed = MpS.ToKpH(NextSelectedSpeedMps) + 1;
+                SetSpeed(MathHelper.Clamp((int)speed, 0, MpS.ToKpH(Locomotive.MaxSpeedMpS)));
+                return;
+            }
             if (Locomotive.LocoType == MSTSLocomotive.LocoTypes.Vectron)
             {
                 float speed = MpS.ToKpH(NextSelectedSpeedMps) + 5;
@@ -564,7 +571,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
         }
         public void SpeedRegulatorSelectedSpeedStopIncrease()
         {
-            if (Locomotive.LocoType == MSTSLocomotive.LocoTypes.Vectron)
+            if (Locomotive.LocoType == MSTSLocomotive.LocoTypes.Vectron || Locomotive.LocoType == MSTSLocomotive.LocoTypes.Normal)
                 return;
             if (Locomotive.MultiPositionControllers != null)
             {
@@ -601,6 +608,12 @@ namespace Orts.Simulation.RollingStocks.SubSystems
         public bool SelectedSpeedDecreasing = false;
         public void SpeedRegulatorSelectedSpeedStartDecrease()
         {
+            if (Locomotive.LocoType == MSTSLocomotive.LocoTypes.Normal)
+            {
+                float speed = MpS.ToKpH(NextSelectedSpeedMps) - 1;
+                SetSpeed(MathHelper.Clamp((int)speed, 0, MpS.ToKpH(Locomotive.MaxSpeedMpS)));
+                return;
+            }
             if (Locomotive.LocoType == MSTSLocomotive.LocoTypes.Vectron)
             {
                 float speed = MpS.ToKpH(NextSelectedSpeedMps) - 5;
@@ -628,7 +641,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
         }
         public void SpeedRegulatorSelectedSpeedStopDecrease()
         {
-            if (Locomotive.LocoType == MSTSLocomotive.LocoTypes.Vectron)
+            if (Locomotive.LocoType == MSTSLocomotive.LocoTypes.Vectron || Locomotive.LocoType == MSTSLocomotive.LocoTypes.Normal)
                 return;
             if (Locomotive.MultiPositionControllers != null)
             {

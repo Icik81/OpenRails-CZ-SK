@@ -24,6 +24,7 @@ using Orts.Formats.Msts;
 using Orts.Simulation;
 using Orts.Simulation.Physics;
 using Orts.Simulation.RollingStocks;
+using Orts.Simulation.RollingStocks.SubSystems;
 using Orts.Simulation.RollingStocks.SubSystems.Controllers;
 using Orts.Simulation.RollingStocks.SubSystems.PowerSupplies;
 using Orts.Viewer3D.Common;
@@ -3087,6 +3088,14 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.THROTTLE:
                     if ((Locomotive.DieselDirectionController || Locomotive.DieselDirectionController2 || Locomotive.DieselDirectionController3 || Locomotive.DieselDirectionController4) && Locomotive.DieselDirection_0)
                         return;
+                    if (Locomotive.CruiseControl != null && Locomotive.CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.Auto && Locomotive.LocoType == MSTSLocomotive.LocoTypes.Normal)
+                    {
+                        if (ChangedValue(0) > 0)
+                            Locomotive.CruiseControl.SpeedRegulatorSelectedSpeedStartIncrease();
+                        if (ChangedValue(0) < 0)
+                            Locomotive.CruiseControl.SpeedRegulatorSelectedSpeedStartDecrease();
+                        return;
+                    }
                     if (ChangedValue(0) != 0)
                     {
                         Locomotive.ThrottleController.CurrentValue += MathHelper.Clamp(NormalizedMouseMovement(), -0.25f, 0.25f);
