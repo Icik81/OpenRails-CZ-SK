@@ -4592,7 +4592,7 @@ namespace Orts.Simulation.RollingStocks
                 UpdateTractiveForce(elapsedClockSeconds, t, AbsSpeedMpS, AbsWheelSpeedMpS);
             }
 
-            if (MultiPositionControllers != null)
+            if (MultiPositionControllers != null && MultiPositionController != null)
             {
                 foreach (MultiPositionController mpc in MultiPositionControllers)
                     mpc.Update(elapsedClockSeconds);
