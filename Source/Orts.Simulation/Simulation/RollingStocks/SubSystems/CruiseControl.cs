@@ -109,6 +109,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems
         
         // Icik
         public bool UsePressuredTrainBrake = true;
+        public float MaxTrainBrakePressureDrop = 1.5f * 14.50377f;
+        public float BrakeConverterPressureEngage = 1.0f * 14.50377f;
 
         public void Parse(string lowercasetoken, STFReader stf)
         {
@@ -189,6 +191,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems
 
                 // Icik
                 case "engine(ortscruisecontrol(usepressuredtrainbrake": UsePressuredTrainBrake = stf.ReadBoolBlock(false); break;
+                case "engine(ortscruisecontrol(maxtrainbrakepressuredrop": MaxTrainBrakePressureDrop = stf.ReadFloatBlock(STFReader.UNITS.PressureDefaultPSI, null); break;
+                case "engine(ortscruisecontrol(brakeconverterpressureengage": BrakeConverterPressureEngage = stf.ReadFloatBlock(STFReader.UNITS.PressureDefaultPSI, null); break;
             }
         }
 
@@ -1322,7 +1326,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                                 }
                                 if (Locomotive.AbsWheelSpeedMpS > SelectedSpeedMpS)
                                 {
-                                    arrIsBraking = true;
+                                    //arrIsBraking = true;
+                                    // Icik
+                                    arrIsBraking = !UsePressuredTrainBrake;
+   
                                     float minBraking = 0.3f;
                                     String testb = Locomotive.TrainBrakeController.GetStatus().ToLower();
                                     minBraking += (MpS.ToKpH(Locomotive.AbsWheelSpeedMpS) - MpS.ToKpH(SelectedSpeedMpS)) / 30;
@@ -1354,7 +1361,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                                 }
                                 else
                                 {
-                                    if (!TrainBrakePriority)
+                                    if (!TrainBrakePriority && !UsePressuredTrainBrake) // Icik
                                     {
                                         if (Locomotive.BrakeSystem.BrakeLine1PressurePSI < Bar.ToPSI(5))
                                         {
@@ -1605,7 +1612,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                                 }
                                 if (Locomotive.AbsWheelSpeedMpS > SelectedSpeedMpS)
                                 {
-                                    arrIsBraking = true;
+                                    //arrIsBraking = true;
+                                    // Icik
+                                    arrIsBraking = !UsePressuredTrainBrake;
+  
                                     float minBraking = 0.3f;
                                     String testb = Locomotive.TrainBrakeController.GetStatus().ToLower();
                                     minBraking += (MpS.ToKpH(Locomotive.AbsWheelSpeedMpS) - MpS.ToKpH(SelectedSpeedMpS)) / 30;
@@ -1637,7 +1647,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                                 }
                                 else
                                 {
-                                    if (!TrainBrakePriority)
+                                    if (!TrainBrakePriority && !UsePressuredTrainBrake) // Icik
                                     {
                                         if (Locomotive.BrakeSystem.BrakeLine1PressurePSI < Bar.ToPSI(5))
                                         {

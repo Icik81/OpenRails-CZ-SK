@@ -1339,9 +1339,7 @@ namespace Orts.Simulation.RollingStocks
                 case "engine(dieselstartdelay": DieselStartDelay = stf.ReadFloatBlock(STFReader.UNITS.Time, 10); break;
                 case "engine(mucableequipment": MUCableEquipment = stf.ReadBoolBlock(false); break;
                 case "engine(pantocanhvoff": PantoCanHVOffSpeedKpH = stf.ReadFloatBlock(STFReader.UNITS.Speed, 0); break;
-                case "engine(maxtrainbrakepressure": BrakeSystem.MCP_TrainBrake = stf.ReadFloatBlock(STFReader.UNITS.PressureDefaultPSI, null); break;
-                case "engine(arrtrainbrakepressuredrop": BrakeSystem.ARRTrainBrakePressureDrop = stf.ReadFloatBlock(STFReader.UNITS.PressureDefaultPSI, null); break;
-                case "engine(arrcylpressureengage": BrakeSystem.ARRCylPressureEngage = stf.ReadFloatBlock(STFReader.UNITS.PressureDefaultPSI, null); break;
+                case "engine(maxtrainbrakepressure": BrakeSystem.MCP_TrainBrake = stf.ReadFloatBlock(STFReader.UNITS.PressureDefaultPSI, null); break;                
 
 
                 // Jindrich
@@ -1591,9 +1589,7 @@ namespace Orts.Simulation.RollingStocks
             CarIsPlayerLocoSet = locoCopy.CarIsPlayerLocoSet;
             BreakPowerButton_Activated = locoCopy.BreakPowerButton_Activated;
             BreakEDBButton_Activated = locoCopy.BreakEDBButton_Activated;
-            BrakeSystem.MCP_TrainBrake = locoCopy.BrakeSystem.MCP_TrainBrake;
-            BrakeSystem.ARRTrainBrakePressureDrop = locoCopy.BrakeSystem.ARRTrainBrakePressureDrop;
-            BrakeSystem.ARRCylPressureEngage = locoCopy.BrakeSystem.ARRCylPressureEngage;
+            BrakeSystem.MCP_TrainBrake = locoCopy.BrakeSystem.MCP_TrainBrake;            
             
 
             // Jindrich

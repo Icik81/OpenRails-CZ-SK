@@ -3155,7 +3155,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 if (lead.CruiseControl != null && lead.CruiseControl.UsePressuredTrainBrake)
                 {
                     // Použití průběžné brzdy v režimu automatiky ARR                
-                    if (lead.ControllerVolts >= 0 && lead.BrakeSystem.PressureConverter < lead.BrakeSystem.ARRCylPressureEngage)
+                    if (lead.ControllerVolts >= 0 && lead.BrakeSystem.PressureConverter < lead.CruiseControl.BrakeConverterPressureEngage)
                     {
                         lead.BrakeSystem.ARRTrainBrakeCanEngage = true;
                         lead.BrakeSystem.ARRTrainBrakeCycle1 = 0;
@@ -3165,7 +3165,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     if (lead.CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.Auto)
                     {
                         // Při vypnutém napájení nebo nedostupném EDB vstupní tlak do převodníku brzdy (používá se signál EDB)
-                        if ((!lead.PowerOn || lead.DynamicBrakePercent <= 0) && (!lead.EDBIndependent || (lead.EDBIndependent && lead.PowerOnFilter < 1)))
+                        if ((!lead.PowerOn || lead.DynamicBrakePercent < 1) && (!lead.EDBIndependent || (lead.EDBIndependent && lead.PowerOnFilter < 1)))
                         {
                             if (lead.CruiseControl.SelectedSpeedMpS < lead.AbsWheelSpeedMpS)
                                 lead.BrakeSystem.PressureConverterBaseEDB = (float)Math.Round(lead.SelectedMaxAccelerationStep, 0) / lead.CruiseControl.SpeedRegulatorMaxForceSteps * 4.0f * 14.50377f;
@@ -3173,7 +3173,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                                 lead.BrakeSystem.PressureConverterBaseEDB = 0;
                         }
                         // Aktivace příznaku zásahu tlakové brzdy v režimu ARR
-                        if (lead.BrakeSystem.PressureConverter > lead.BrakeSystem.ARRCylPressureEngage 
+                        if (lead.BrakeSystem.PressureConverter > lead.CruiseControl.BrakeConverterPressureEngage
                             && lead.BrakeSystem.ARRTrainBrakeCanEngage 
                             && lead.CruiseControl.SelectedSpeedMpS < lead.AbsWheelSpeedMpS)
                             lead.ARRTrainBrakeEngage = true;
@@ -3200,7 +3200,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         && (AutoCylPressurePSI <= lead.ARRAutoCylPressurePSI * 0.95f || AutoCylPressurePSI >= lead.ARRAutoCylPressurePSI * 1.05f))
                     {
                         if (lead.ARRAutoCylPressurePSI > (lead.TrainBrakeController.MaxPressurePSI - train.EqualReservoirPressurePSIorInHg) * lead.BrakeSystem.LocoAuxCylVolumeRatio
-                            && (lead.TrainBrakeController.MaxPressurePSI - train.EqualReservoirPressurePSIorInHg) < lead.BrakeSystem.ARRTrainBrakePressureDrop)
+                            && (lead.TrainBrakeController.MaxPressurePSI - train.EqualReservoirPressurePSIorInHg) < lead.CruiseControl.MaxTrainBrakePressureDrop)
                         {
                             lead.BrakeSystem.ARRTrainBrakeCycle1 += elapsedClockSeconds;
                             if (lead.BrakeSystem.ARRTrainBrakeCycle1 > 4.0f)
