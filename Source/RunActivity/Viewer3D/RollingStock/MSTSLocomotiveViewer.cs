@@ -3088,6 +3088,7 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.THROTTLE:
                     if ((Locomotive.DieselDirectionController || Locomotive.DieselDirectionController2 || Locomotive.DieselDirectionController3 || Locomotive.DieselDirectionController4) && Locomotive.DieselDirection_0)
                         return;
+                    // Airpot
                     if (Locomotive.CruiseControl != null && Locomotive.CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.Auto && Locomotive.LocoType == MSTSLocomotive.LocoTypes.Normal)
                     {
                         if (ChangedValue(0) > 0)

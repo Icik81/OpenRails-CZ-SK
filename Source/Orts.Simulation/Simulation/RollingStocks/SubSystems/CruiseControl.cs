@@ -22,6 +22,7 @@ using ORTS.Common;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using static Orts.Simulation.RollingStocks.MSTSLocomotive;
 
 namespace Orts.Simulation.RollingStocks.SubSystems
 {
@@ -112,6 +113,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
         public bool UsePressuredTrainBrake = true;
         public float MaxTrainBrakePressureDrop = 1.5f * 14.50377f;
         public float BrakeConverterPressureEngage = 1.0f * 14.50377f;
+        float PreSelectedSpeedMpS;
 
         public void Parse(string lowercasetoken, STFReader stf)
         {
@@ -221,6 +223,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems
 
         public void Update(float elapsedClockSeconds, float wheelSpeedMpS)
         {
+            // Icik
+            PreSelectedSpeedMpS = SelectedSpeedMpS;
+            
             if (SelectedSpeedMpS != 0)
                 SelectedSpeed = SelectedSpeedMpS;
             if (Locomotive.ForceHandleValue < 0)
@@ -325,6 +330,11 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                         {
                             if (SpeedRegulatorOptions.Contains("regulatorauto")) test = true;
                             SelectedSpeedMpS = Locomotive.AbsSpeedMpS;
+                            // Icik
+                            if (Locomotive.LocoType == LocoTypes.Normal)
+                            {
+                                SelectedSpeedMpS = Locomotive.ThrottlePercent / 100 * Locomotive.MaxSpeedMpS;                                
+                            }
                             break;
                         }
                     case SpeedRegulatorMode.Testing: if (SpeedRegulatorOptions.Contains("regulatortest")) test = true; break;
@@ -351,10 +361,22 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                     case SpeedRegulatorMode.Auto: if (SpeedRegulatorOptions.Contains("regulatorauto")) test = true; break;
                     case SpeedRegulatorMode.Manual:
                         {
-                            Locomotive.ThrottleController.SetPercent(0);
-                            currentThrottlePercent = 0;
+                            if (Locomotive.LocoType != LocoTypes.Normal)
+                            {
+                                Locomotive.ThrottleController.SetPercent(0);
+                                currentThrottlePercent = 0;
+                                SelectedSpeedMpS = 0;
+                            }
                             if (SpeedRegulatorOptions.Contains("regulatormanual")) test = true;
-                            SelectedSpeedMpS = 0;
+
+                            // Icik
+                            if (Locomotive.LocoType == LocoTypes.Normal)
+                            {                                
+                                Locomotive.ThrottleController.SetPercent(PreSelectedSpeedMpS * 100 / Locomotive.MaxSpeedMpS);
+                                currentThrottlePercent = PreSelectedSpeedMpS * 100 / Locomotive.MaxSpeedMpS;
+                                SelectedSpeedMpS = 0;
+                            }
+
                             foreach (MSTSLocomotive lc in PlayerNotDriveableTrainLocomotives)
                             {
                                 lc.ThrottleOverriden = 0;
