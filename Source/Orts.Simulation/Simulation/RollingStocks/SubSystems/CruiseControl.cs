@@ -554,7 +554,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
         {
             if (Locomotive.LocoType == MSTSLocomotive.LocoTypes.Normal)
             {
-                float speed = MpS.ToKpH(NextSelectedSpeedMps) + 1;
+                float speed = MpS.ToKpH(PreSelectedSpeedMpS) + 1;
                 SetSpeed(MathHelper.Clamp((int)speed, 0, MpS.ToKpH(Locomotive.MaxSpeedMpS)));
                 return;
             }
@@ -632,7 +632,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
         {
             if (Locomotive.LocoType == MSTSLocomotive.LocoTypes.Normal)
             {
-                float speed = MpS.ToKpH(NextSelectedSpeedMps) - 1;
+                float speed = MpS.ToKpH(PreSelectedSpeedMpS) - 1;
                 SetSpeed(MathHelper.Clamp((int)speed, 0, MpS.ToKpH(Locomotive.MaxSpeedMpS)));
                 return;
             }
@@ -1910,7 +1910,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                         }
                     }
                 }
-                else if (UseThrottle)
+                else if (UseThrottle && Locomotive.LocoType != MSTSLocomotive.LocoTypes.Normal)
                 {
                     if (Locomotive.ThrottlePercent > 0)
                     {

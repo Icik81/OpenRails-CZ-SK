@@ -44,6 +44,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
+using static Orts.Simulation.RollingStocks.SubSystems.CruiseControl;
 using Event = Orts.Common.Event;
 
 namespace Orts.Simulation.RollingStocks
@@ -694,7 +695,13 @@ namespace Orts.Simulation.RollingStocks
         {
             EngineRPMRatio = (DieselEngines[0].RealRPM - DieselEngines[0].IdleRPM) / (DieselEngines[0].MaxRPM - DieselEngines[0].IdleRPM);
 
-            Variable1 = ThrottlePercent / 100.0f;
+            // Aripot
+            if (CruiseControl != null && CruiseControl.SpeedRegMode == SpeedRegulatorMode.Auto && LocoType == MSTSLocomotive.LocoTypes.Normal)
+            {
+                Variable1 = Variable1;
+            }
+            else
+                Variable1 = ThrottlePercent / 100.0f;
             // else Variable1 = MotiveForceN / MaxForceN; // Gearbased, Variable1 proportional to motive force
             // allows for motor volume proportional to effort.
 
