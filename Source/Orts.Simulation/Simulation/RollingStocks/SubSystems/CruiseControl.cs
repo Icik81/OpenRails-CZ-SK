@@ -1372,14 +1372,14 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                                     {
                                         if (Locomotive.BrakeSystem.BrakeLine1PressurePSI > Bar.ToPSI(5 - minBraking))
                                         {
-                                            if (Locomotive.TrainBrakeController.GetStatus().ToLower() != "apply position")
+                                            if (Locomotive.TrainBrakeController.TrainBrakeControllerState != ORTS.Scripting.Api.ControllerState.Apply)
                                             {
                                                 Locomotive.SetTrainBrakeValue(brakingNotchValue, 1);
                                             }
                                         }
                                         else
                                         {
-                                            if (Locomotive.TrainBrakeController.GetStatus().ToLower() != "driving position")
+                                            if (Locomotive.TrainBrakeController.TrainBrakeControllerState != ORTS.Scripting.Api.ControllerState.Neutral)
                                             {
                                                 String test = Locomotive.TrainBrakeController.GetStatus().ToLower();
                                                 Locomotive.SetTrainBrakeValue(neutralNotchValue, 1);
@@ -1387,7 +1387,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                                         }
                                         if (Locomotive.BrakeSystem.BrakeLine1PressurePSI < Bar.ToPSI(5 - minBraking))
                                         {
-                                            if (Locomotive.TrainBrakeController.GetStatus().ToLower() != "release position")
+                                            if (Locomotive.TrainBrakeController.TrainBrakeControllerState != ORTS.Scripting.Api.ControllerState.Release)
                                             {
                                                 Locomotive.SetTrainBrakeValue(releaseNotchValue, 1);
                                             }
@@ -1400,7 +1400,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                                     {
                                         if (Locomotive.BrakeSystem.BrakeLine1PressurePSI < Bar.ToPSI(5))
                                         {
-                                            if (Locomotive.TrainBrakeController.GetStatus().ToLower() != "release position")
+                                            if (Locomotive.TrainBrakeController.TrainBrakeControllerState != ORTS.Scripting.Api.ControllerState.Release)
                                             {
                                                 String test = Locomotive.TrainBrakeController.GetStatus().ToLower();
                                                 Locomotive.SetTrainBrakeValue(releaseNotchValue, 1);
@@ -1408,7 +1408,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                                         }
                                         else
                                         {
-                                            if (Locomotive.TrainBrakeController.GetStatus().ToLower() != "driving position")
+                                            if (Locomotive.TrainBrakeController.TrainBrakeControllerState != ORTS.Scripting.Api.ControllerState.Neutral)
                                             {
                                                 String test = Locomotive.TrainBrakeController.GetStatus().ToLower();
                                                 Locomotive.SetTrainBrakeValue(neutralNotchValue, 1);
@@ -1451,7 +1451,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                     {
                         if (Locomotive.BrakeSystem.BrakeLine1PressurePSI < Bar.ToPSI(4.98f))
                         {
-                            if (Locomotive.TrainBrakeController.GetStatus().ToLower() != "release position")
+                            if (Locomotive.TrainBrakeController.TrainBrakeControllerState != ORTS.Scripting.Api.ControllerState.Release)
                             {
                                 String test = Locomotive.TrainBrakeController.GetStatus().ToLower();
                                 Locomotive.SetTrainBrakeValue(releaseNotchValue, 1);
@@ -1459,7 +1459,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                         }
                         else
                         {
-                            if (Locomotive.TrainBrakeController.GetStatus().ToLower() != "driving position")
+                            if (Locomotive.TrainBrakeController.TrainBrakeControllerState != ORTS.Scripting.Api.ControllerState.Neutral)
                             {
                                 String test = Locomotive.TrainBrakeController.GetStatus().ToLower();
                                 Locomotive.SetTrainBrakeValue(neutralNotchValue, 1);
@@ -1658,14 +1658,14 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                                     {
                                         if (Locomotive.BrakeSystem.BrakeLine1PressurePSI > Bar.ToPSI(5 - minBraking))
                                         {
-                                            if (Locomotive.TrainBrakeController.GetStatus().ToLower() != "apply position")
+                                            if (Locomotive.TrainBrakeController.TrainBrakeControllerState != ORTS.Scripting.Api.ControllerState.Apply)
                                             {
                                                 Locomotive.SetTrainBrakeValue(brakingNotchValue, 1);
                                             }
                                         }
                                         else
                                         {
-                                            if (Locomotive.TrainBrakeController.GetStatus().ToLower() != "driving position")
+                                            if (Locomotive.TrainBrakeController.TrainBrakeControllerState != ORTS.Scripting.Api.ControllerState.Neutral)
                                             {
                                                 String test = Locomotive.TrainBrakeController.GetStatus().ToLower();
                                                 Locomotive.SetTrainBrakeValue(neutralNotchValue, 1);
@@ -1673,7 +1673,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                                         }
                                         if (Locomotive.BrakeSystem.BrakeLine1PressurePSI < Bar.ToPSI(5 - minBraking))
                                         {
-                                            if (Locomotive.TrainBrakeController.GetStatus().ToLower() != "release position")
+                                            if (Locomotive.TrainBrakeController.TrainBrakeControllerState != ORTS.Scripting.Api.ControllerState.Release)
                                             {
                                                 Locomotive.SetTrainBrakeValue(releaseNotchValue, 1);
                                             }
@@ -1686,7 +1686,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                                     {
                                         if (Locomotive.BrakeSystem.BrakeLine1PressurePSI < Bar.ToPSI(5))
                                         {
-                                            if (Locomotive.TrainBrakeController.GetStatus().ToLower() != "release position")
+                                            if (Locomotive.TrainBrakeController.TrainBrakeControllerState != ORTS.Scripting.Api.ControllerState.Release)
                                             {
                                                 String test = Locomotive.TrainBrakeController.GetStatus().ToLower();
                                                 Locomotive.SetTrainBrakeValue(releaseNotchValue, 1);
@@ -1694,7 +1694,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                                         }
                                         else
                                         {
-                                            if (Locomotive.TrainBrakeController.GetStatus().ToLower() != "driving position")
+                                            if (Locomotive.TrainBrakeController.TrainBrakeControllerState != ORTS.Scripting.Api.ControllerState.Neutral)
                                             {
                                                 String test = Locomotive.TrainBrakeController.GetStatus().ToLower();
                                                 Locomotive.SetTrainBrakeValue(neutralNotchValue, 1);

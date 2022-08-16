@@ -739,7 +739,7 @@ namespace Orts.Simulation.RollingStocks
 
         public enum LocoTypes
         {
-            Normal, Vectron, Traxx
+            Normal, Katr7507, Vectron, Traxx
         }
 
         public LocoTypes LocoType = LocoTypes.Normal;
@@ -4399,7 +4399,7 @@ namespace Orts.Simulation.RollingStocks
                 SplashScreenDisplayed = 0;
             }
 
-            if (GetTrainBrakeStatus().Contains("Apply") || GetTrainBrakeStatus().Contains("Emergency"))
+            if (TrainBrakeController.TrainBrakeControllerState == ControllerState.Apply || TrainBrakeController.TrainBrakeControllerState == ControllerState.Emergency)
             {
                 if (Mirel.initTest != Mirel.InitTest.Passed)
                 {
@@ -4416,7 +4416,7 @@ namespace Orts.Simulation.RollingStocks
                 trainBrakeApply = !trainBrakeApply;
             }
 
-            if (GetTrainBrakeStatus().Contains("Release"))
+            if (TrainBrakeController.TrainBrakeControllerState == ControllerState.Release)
             {
                 if (Mirel.initTest != Mirel.InitTest.Passed)
                 {
@@ -4524,7 +4524,7 @@ namespace Orts.Simulation.RollingStocks
             if (IsPlayerTrain)
             {
                 string test = GetTrainBrakeStatus();
-                if (GetTrainBrakeStatus().Contains("Release") || GetTrainBrakeStatus().Contains("Jízdní"))
+                if (TrainBrakeController.TrainBrakeControllerState == ControllerState.Release || TrainBrakeController.TrainBrakeControllerState == ControllerState.Neutral)
                 {
                     if (Mirel.initTest != Mirel.InitTest.Passed)
                     {
@@ -4887,7 +4887,7 @@ namespace Orts.Simulation.RollingStocks
                 if (TrainBrakeController.UpdateValue > 0.0)
                 {
                     SignalEvent(Event.TrainBrakeChange);
-                    Simulator.Confirmer.Update(CabControl.TrainBrake, CabSetting.Increase, GetTrainBrakeStatusSimple());
+                    //Simulator.Confirmer.Update(CabControl.TrainBrake, CabSetting.Increase, GetTrainBrakeStatusSimple());
                 }
                 if (TrainBrakeController.UpdateValue < 0.0)
                 {
