@@ -655,7 +655,7 @@ namespace Orts.Simulation.RollingStocks
         public bool BreakEDBSwitchEnable = false;
         public bool BreakEDBButton;
         bool BreakEDBButtonPressed = false;
-        public bool BreakEDBButton_Activated;
+        public bool BreakEDBButton_Activated;        
 
 
         // Jindrich
@@ -1590,7 +1590,7 @@ namespace Orts.Simulation.RollingStocks
             CarIsPlayerLocoSet = locoCopy.CarIsPlayerLocoSet;
             BreakPowerButton_Activated = locoCopy.BreakPowerButton_Activated;
             BreakEDBButton_Activated = locoCopy.BreakEDBButton_Activated;
-            BrakeSystem.MCP_TrainBrake = locoCopy.BrakeSystem.MCP_TrainBrake;            
+            BrakeSystem.MCP_TrainBrake = locoCopy.BrakeSystem.MCP_TrainBrake;              
             
 
             // Jindrich
@@ -4481,7 +4481,7 @@ namespace Orts.Simulation.RollingStocks
                         }
 
                         // Icik
-                        if (LocoType == MSTSLocomotive.LocoTypes.Normal)
+                        if (CruiseControl.AripotEquipment)
                         {
                             braking = true;
                         }
