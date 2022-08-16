@@ -4604,7 +4604,8 @@ namespace Orts.Simulation.RollingStocks
                 foreach (MultiPositionController mpc in MultiPositionControllers)
                     mpc.Update(elapsedClockSeconds);
             }
-
+            if (float.IsNaN(TractiveForceN))
+                Debugger.Break();
 
             ApplyDirectionToTractiveForce();
 
@@ -4892,7 +4893,7 @@ namespace Orts.Simulation.RollingStocks
                 if (TrainBrakeController.UpdateValue < 0.0)
                 {
                     SignalEvent(Event.TrainBrakeChange);
-                    Simulator.Confirmer.Update(CabControl.TrainBrake, CabSetting.Decrease, GetTrainBrakeStatusSimple());
+                    //Simulator.Confirmer.Update(CabControl.TrainBrake, CabSetting.Decrease, GetTrainBrakeStatusSimple());
                 }
             }
 
