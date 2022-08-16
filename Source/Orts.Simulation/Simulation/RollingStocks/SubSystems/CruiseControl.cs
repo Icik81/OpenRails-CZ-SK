@@ -113,6 +113,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
         public bool UsePressuredTrainBrake = true;
         public float MaxTrainBrakePressureDrop = 1.5f * 14.50377f;
         public float BrakeConverterPressureEngage = 1.0f * 14.50377f;
+        public bool AripotEquipment;
         float PreSelectedSpeedMpS;
 
         public void Parse(string lowercasetoken, STFReader stf)
@@ -196,6 +197,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                 case "engine(ortscruisecontrol(usepressuredtrainbrake": UsePressuredTrainBrake = stf.ReadBoolBlock(false); break;
                 case "engine(ortscruisecontrol(maxtrainbrakepressuredrop": MaxTrainBrakePressureDrop = stf.ReadFloatBlock(STFReader.UNITS.PressureDefaultPSI, null); break;
                 case "engine(ortscruisecontrol(brakeconverterpressureengage": BrakeConverterPressureEngage = stf.ReadFloatBlock(STFReader.UNITS.PressureDefaultPSI, null); break;
+                case "engine(ortscruisecontrol(aripotequipment": AripotEquipment = stf.ReadBoolBlock(false); break;
             }
         }
 
@@ -331,7 +333,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                             if (SpeedRegulatorOptions.Contains("regulatorauto")) test = true;
                             SelectedSpeedMpS = Locomotive.AbsSpeedMpS;
                             // Icik
-                            if (Locomotive.LocoType == LocoTypes.Normal)
+                            if (AripotEquipment)
                             {
                                 SelectedSpeedMpS = Locomotive.ThrottlePercent / 100 * Locomotive.MaxSpeedMpS;                                
                             }
@@ -361,16 +363,13 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                     case SpeedRegulatorMode.Auto: if (SpeedRegulatorOptions.Contains("regulatorauto")) test = true; break;
                     case SpeedRegulatorMode.Manual:
                         {
-                            if (Locomotive.LocoType != LocoTypes.Normal)
-                            {
-                                Locomotive.ThrottleController.SetPercent(0);
-                                currentThrottlePercent = 0;
-                                SelectedSpeedMpS = 0;
-                            }
+                            Locomotive.ThrottleController.SetPercent(0);
+                            currentThrottlePercent = 0;
+                            SelectedSpeedMpS = 0;
                             if (SpeedRegulatorOptions.Contains("regulatormanual")) test = true;
 
                             // Icik
-                            if (Locomotive.LocoType == LocoTypes.Normal)
+                            if (AripotEquipment)
                             {                                
                                 Locomotive.ThrottleController.SetPercent(PreSelectedSpeedMpS * 100 / Locomotive.MaxSpeedMpS);
                                 currentThrottlePercent = PreSelectedSpeedMpS * 100 / Locomotive.MaxSpeedMpS;
@@ -552,7 +551,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
         protected bool selectedSpeedIncreasing = false;
         public void SpeedRegulatorSelectedSpeedStartIncrease()
         {
-            if (Locomotive.LocoType == MSTSLocomotive.LocoTypes.Normal)
+            if (AripotEquipment)
             {
                 float speed = MpS.ToKpH(PreSelectedSpeedMpS) + 1;
                 SetSpeed(MathHelper.Clamp((int)speed, 0, MpS.ToKpH(Locomotive.MaxSpeedMpS)));
@@ -593,7 +592,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
         }
         public void SpeedRegulatorSelectedSpeedStopIncrease()
         {
-            if (Locomotive.LocoType == MSTSLocomotive.LocoTypes.Vectron || Locomotive.LocoType == MSTSLocomotive.LocoTypes.Normal)
+            if (Locomotive.LocoType == MSTSLocomotive.LocoTypes.Vectron || AripotEquipment)
                 return;
             if (Locomotive.MultiPositionControllers != null)
             {
@@ -630,7 +629,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
         public bool SelectedSpeedDecreasing = false;
         public void SpeedRegulatorSelectedSpeedStartDecrease()
         {
-            if (Locomotive.LocoType == MSTSLocomotive.LocoTypes.Normal)
+            if (AripotEquipment)
             {
                 float speed = MpS.ToKpH(PreSelectedSpeedMpS) - 1;
                 SetSpeed(MathHelper.Clamp((int)speed, 0, MpS.ToKpH(Locomotive.MaxSpeedMpS)));
@@ -663,7 +662,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
         }
         public void SpeedRegulatorSelectedSpeedStopDecrease()
         {
-            if (Locomotive.LocoType == MSTSLocomotive.LocoTypes.Vectron || Locomotive.LocoType == MSTSLocomotive.LocoTypes.Normal)
+            if (Locomotive.LocoType == MSTSLocomotive.LocoTypes.Vectron || AripotEquipment)
                 return;
             if (Locomotive.MultiPositionControllers != null)
             {
@@ -1910,7 +1909,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                         }
                     }
                 }
-                else if (UseThrottle && Locomotive.LocoType != MSTSLocomotive.LocoTypes.Normal)
+                else if (UseThrottle && !AripotEquipment)
                 {
                     if (Locomotive.ThrottlePercent > 0)
                     {
