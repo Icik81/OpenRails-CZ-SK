@@ -432,11 +432,11 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                 {
                     if (CanControlTrainBrake)
                     {
-                        if (Locomotive.TrainBrakeController.GetStatus().ToLower() == "apply position")
+                        if (Locomotive.TrainBrakeController.TrainBrakeControllerState == ORTS.Scripting.Api.ControllerState.Apply)
                         {
                             Locomotive.StartTrainBrakeDecrease(null);
                         }
-                        if (Locomotive.TrainBrakeController.GetStatus().ToLower() == "neutral position")
+                        if (Locomotive.TrainBrakeController.TrainBrakeControllerState == ORTS.Scripting.Api.ControllerState.Neutral)
                         {
                             Locomotive.StopTrainBrakeDecrease(0);
                         }
@@ -465,11 +465,11 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                 {
                     if (CanControlTrainBrake)
                     {
-                        if (Locomotive.TrainBrakeController.GetStatus().ToLower() == "apply position")
+                        if (Locomotive.TrainBrakeController.TrainBrakeControllerState == ORTS.Scripting.Api.ControllerState.Apply)
                         {
                             Locomotive.StartTrainBrakeDecrease(null);
                         }
-                        if (Locomotive.TrainBrakeController.GetStatus().ToLower() == "neutral position")
+                        if (Locomotive.TrainBrakeController.TrainBrakeControllerState == ORTS.Scripting.Api.ControllerState.Neutral)
                         {
                             Locomotive.StopTrainBrakeDecrease(0);
                         }
@@ -484,11 +484,11 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                 {
                     if (CanControlTrainBrake)
                     {
-                        if (Locomotive.TrainBrakeController.GetStatus().ToLower() == "apply position")
+                        if (Locomotive.TrainBrakeController.TrainBrakeControllerState == ORTS.Scripting.Api.ControllerState.Apply)
                         {
                             Locomotive.StartTrainBrakeDecrease(null);
                         }
-                        if (Locomotive.TrainBrakeController.GetStatus().ToLower() == "neutral position")
+                        if (Locomotive.TrainBrakeController.TrainBrakeControllerState == ORTS.Scripting.Api.ControllerState.Neutral)
                         {
                             Locomotive.StopTrainBrakeDecrease(0);
                         }
@@ -528,7 +528,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                 {
                     if (CanControlTrainBrake)
                     {
-                        if (Locomotive.TrainBrakeController.GetStatus().ToLower() != "apply position")
+                        if (Locomotive.TrainBrakeController.TrainBrakeControllerState != ORTS.Scripting.Api.ControllerState.Apply)
                         {
                             String test = Locomotive.TrainBrakeController.GetStatus().ToLower();
                             Locomotive.StartTrainBrakeIncrease(null, 1);
@@ -543,7 +543,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                 {
                     if (CanControlTrainBrake)
                     {
-                        if (Locomotive.TrainBrakeController.GetStatus().ToLower() != "release position")
+                        if (Locomotive.TrainBrakeController.TrainBrakeControllerState != ORTS.Scripting.Api.ControllerState.Release)
                         {
                             String boom = Locomotive.TrainBrakeController.GetStatus().ToString();
                             Locomotive.StartTrainBrakeDecrease(null);
@@ -556,7 +556,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                 {
                     if (CanControlTrainBrake)
                     {
-                        if (Locomotive.TrainBrakeController.GetStatus().ToLower() != "release position")
+                        if (Locomotive.TrainBrakeController.TrainBrakeControllerState != ORTS.Scripting.Api.ControllerState.Release)
                         {
                             String boom = Locomotive.TrainBrakeController.GetStatus().ToString();
                             Locomotive.StartTrainBrakeDecrease(null);
@@ -740,7 +740,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                         }
                         if (CanControlTrainBrake)
                         {
-                            if (Locomotive.TrainBrakeController.GetStatus().ToLower() == "release position")
+                            if (Locomotive.TrainBrakeController.TrainBrakeControllerState == ORTS.Scripting.Api.ControllerState.Release)
                             {
                                 string test = Locomotive.TrainBrakeController.GetStatus();
                                 Locomotive.StartTrainBrakeDecrease(null);
@@ -759,11 +759,11 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                     Locomotive.CruiseControl.SpeedSelMode = CruiseControl.SpeedSelectorMode.Neutral;
                     if (CanControlTrainBrake)
                     {
-                        if (Locomotive.TrainBrakeController.GetStatus().ToLower() == "apply position")
+                        if (Locomotive.TrainBrakeController.TrainBrakeControllerState == ORTS.Scripting.Api.ControllerState.Apply)
                         {
                             Locomotive.StartTrainBrakeDecrease(null);
                         }
-                        if (Locomotive.TrainBrakeController.GetStatus().ToLower() == "neutral position")
+                        if (Locomotive.TrainBrakeController.TrainBrakeControllerState == ORTS.Scripting.Api.ControllerState.Neutral)
                         {
                             Locomotive.StopTrainBrakeDecrease(0);
                         }
@@ -782,11 +782,11 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                     Locomotive.CruiseControl.SpeedSelMode = CruiseControl.SpeedSelectorMode.Neutral;
                     if (CanControlTrainBrake)
                     {
-                        if (Locomotive.TrainBrakeController.GetStatus().ToLower() == "apply position")
+                        if (Locomotive.TrainBrakeController.TrainBrakeControllerState == ORTS.Scripting.Api.ControllerState.Apply)
                         {
                             Locomotive.StartTrainBrakeDecrease(null);
                         }
-                        if (Locomotive.TrainBrakeController.GetStatus().ToLower() == "neutral position")
+                        if (Locomotive.TrainBrakeController.TrainBrakeControllerState == ORTS.Scripting.Api.ControllerState.Neutral)
                         {
                             Locomotive.StopTrainBrakeDecrease(0);
                         }
@@ -807,7 +807,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                     }
                     if (CanControlTrainBrake)
                     {
-                        if (Locomotive.TrainBrakeController.GetStatus().ToLower() != "apply position")
+                        if (Locomotive.TrainBrakeController.TrainBrakeControllerState != ORTS.Scripting.Api.ControllerState.Apply)
                         {
                             String test = Locomotive.TrainBrakeController.GetStatus().ToLower();
                             Locomotive.StartTrainBrakeIncrease(null, 1);
