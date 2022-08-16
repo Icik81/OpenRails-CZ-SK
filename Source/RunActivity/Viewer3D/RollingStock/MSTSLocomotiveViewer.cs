@@ -3089,7 +3089,7 @@ namespace Orts.Viewer3D.RollingStock
                     if ((Locomotive.DieselDirectionController || Locomotive.DieselDirectionController2 || Locomotive.DieselDirectionController3 || Locomotive.DieselDirectionController4) && Locomotive.DieselDirection_0)
                         return;
                     // Aripot
-                    if (Locomotive.CruiseControl != null && Locomotive.CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.Auto && Locomotive.LocoType == MSTSLocomotive.LocoTypes.Normal)
+                    if (Locomotive.CruiseControl != null && Locomotive.CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.Auto && Locomotive.CruiseControl.AripotEquipment)
                     {
                         if (ChangedValue(0) > 0)
                             Locomotive.CruiseControl.SpeedRegulatorSelectedSpeedStartIncrease();
