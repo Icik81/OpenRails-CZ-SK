@@ -665,6 +665,19 @@ namespace Orts.Viewer3D.RollingStock
                 }
             }
 
+            // Aripot
+            if (Locomotive.CruiseControl != null && Locomotive.CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.Auto && Locomotive.CruiseControl.AripotEquipment)
+            {
+                if (UserInput.IsDown(UserCommand.ControlThrottleIncrease))
+                {
+                    Locomotive.CruiseControl.SpeedRegulatorSelectedSpeedStartIncrease();
+                }
+                if (UserInput.IsDown(UserCommand.ControlThrottleDecrease))
+                {
+                    Locomotive.CruiseControl.SpeedRegulatorSelectedSpeedStartDecrease();
+                }
+            }
+
             // Ovládání tlačítka znovunačtení světa
             if (UserInput.IsPressed(UserCommand.ControlRefreshWorld))
             {

@@ -3162,6 +3162,12 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         lead.BrakeSystem.ARRTrainBrakeCycle2 = 0;
                     }
 
+                    if (lead.CruiseControl.SpeedRegMode != CruiseControl.SpeedRegulatorMode.Auto)
+                    {
+                        lead.ARRTrainBrakeEngage = false;
+                        lead.BrakeSystem.ARRTrainBrakeCanEngage = true;
+                    }
+
                     if (lead.CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.Auto)
                     {
                         // Při vypnutém napájení nebo nedostupném EDB vstupní tlak do převodníku brzdy (používá se signál EDB)
