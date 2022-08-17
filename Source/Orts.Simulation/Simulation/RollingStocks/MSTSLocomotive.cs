@@ -655,7 +655,8 @@ namespace Orts.Simulation.RollingStocks
         public bool BreakEDBSwitchEnable = false;
         public bool BreakEDBButton;
         bool BreakEDBButtonPressed = false;
-        public bool BreakEDBButton_Activated;        
+        public bool BreakEDBButton_Activated;
+        public float EP_SlipSpeedPercent;        
 
 
         // Jindrich
@@ -2696,11 +2697,33 @@ namespace Orts.Simulation.RollingStocks
             if (MaxCurrentA > 0)  // Zohlední jen elektrické a dieselelektrické lokomotivy 
             {
                 if (SlipSpeedCritical == 0) SlipSpeedCritical = 40 / 3.6f; // Výchozí hodnota 40 km/h     
-                float AbsSlipSpeedMpS = Math.Abs(WheelSpeedMpS) - AbsSpeedMpS;  // Zjistí absolutní rychlost prokluzu 
+                float AbsSlipSpeedMpS = AbsWheelSpeedMpS - AbsSpeedMpS;  // Zjistí absolutní rychlost prokluzu 
                 if (extendedPhysics != null)
                 {
-                    SlipSpeedCritical = 10 / 3.6f; // 10kmh pokud počítáme pátou osu
-                    AbsSlipSpeedMpS = extendedPhysics.FastestAxleSpeedMpS - extendedPhysics.AverageAxleSpeedMpS;
+                    //SlipSpeedCritical = 10 / 3.6f; // 10kmh pokud počítáme pátou osu
+                    //AbsSlipSpeedMpS = extendedPhysics.FastestAxleSpeedMpS - extendedPhysics.AverageAxleSpeedMpS;
+
+                    EP_SlipSpeedPercent = (AbsWheelSpeedMpS - AbsSpeedMpS) / LocomotiveAxle.WheelSlipThresholdMpS * 100.0f;
+                    if (EP_SlipSpeedPercent > 99)
+                    {
+                        WheelSlip = true;
+                        WheelSlipWarning = false;
+                        WheelslipState = Wheelslip.Warning;
+                        Simulator.Confirmer.Confirm(CabControl.Wheelslip, CabSetting.Warn1);
+                    }
+                    else
+                    if (EP_SlipSpeedPercent > (LocomotiveAxle.SlipWarningTresholdPercent))
+                    {
+                        WheelSlip = false;
+                        WheelSlipWarning = true;
+                        WheelslipState = Wheelslip.Warning;
+                        Simulator.Confirmer.Confirm(CabControl.Wheelslip, CabSetting.Warn1);
+                    }
+                    else
+                    {
+                        WheelSlip = false;
+                        WheelSlipWarning = false;                        
+                    }                    
                 }
                 //Trace.TraceInformation("WheelSlipTime {0},  Simulator.GameTime {1},  Time0 {2},   SlipSpeed {3}", WheelSlipTime, Simulator.GameTime, Time0, SlipSpeed);
 
@@ -2729,6 +2752,7 @@ namespace Orts.Simulation.RollingStocks
                     }
                     if (this is MSTSDieselLocomotive) // Dieselelektrické lokomotivy
                     {
+                        ControllerVolts = 0;
                         PowerReductionResult4 = 0.9f; // Omezení trakčních motorů  
                         Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Slip protection!"));
                     }
@@ -4899,12 +4923,12 @@ namespace Orts.Simulation.RollingStocks
                 if (TrainBrakeController.UpdateValue > 0.0)
                 {
                     SignalEvent(Event.TrainBrakeChange);
-                    //Simulator.Confirmer.Update(CabControl.TrainBrake, CabSetting.Increase, GetTrainBrakeStatusSimple());
+                    Simulator.Confirmer.Update(CabControl.TrainBrake, CabSetting.Increase, GetTrainBrakeStatusSimple());
                 }
                 if (TrainBrakeController.UpdateValue < 0.0)
                 {
                     SignalEvent(Event.TrainBrakeChange);
-                    //Simulator.Confirmer.Update(CabControl.TrainBrake, CabSetting.Decrease, GetTrainBrakeStatusSimple());
+                    Simulator.Confirmer.Update(CabControl.TrainBrake, CabSetting.Decrease, GetTrainBrakeStatusSimple());
                 }
             }
 
