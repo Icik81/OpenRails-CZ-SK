@@ -4263,17 +4263,6 @@ namespace Orts.Simulation.RollingStocks
                         extendedPhysics.OverridenControllerVolts = 10;
                 }
 
-                // Icik
-                if (extendedPhysics != null 
-                    && this is MSTSDieselLocomotive
-                    && CruiseControl != null && CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.Manual)
-                {
-                    if (ThrottlePercent > 0)
-                    {
-                        ControllerVolts = ThrottlePercent / 10;
-                    }
-                }
-
                 if (extendedPhysics != null)
                     extendedPhysics.Update(elapsedClockSeconds);
                 if (CruiseControl != null)
