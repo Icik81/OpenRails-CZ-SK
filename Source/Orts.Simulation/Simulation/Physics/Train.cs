@@ -21449,93 +21449,100 @@ namespace Orts.Simulation.Physics
             /// <\summary>
             public int ComputeStationBoardingTime(Train stopTrain)
             {
-                var passengerCarsWithinPlatform = stopTrain.PassengerCarsNumber;
-                int stopTime = DefaultFreightStopTime;
-                if (passengerCarsWithinPlatform == 0) return stopTime; // pure freight train
-                var distancePlatformHeadtoTrainHead = -stopTrain.StationStops[0].StopOffset
-                   + PlatformItem.TCOffset[1, stopTrain.StationStops[0].Direction]
-                   + stopTrain.StationStops[0].DistanceToTrainM;
-                var trainPartOutsidePlatformForward = distancePlatformHeadtoTrainHead < 0 ? -distancePlatformHeadtoTrainHead : 0;
-                if (trainPartOutsidePlatformForward >= stopTrain.Length) return (int)PlatformItem.MinWaitingTime; // train actually passed platform; should not happen
-                var distancePlatformTailtoTrainTail = distancePlatformHeadtoTrainHead - PlatformItem.Length + stopTrain.Length;
-                var trainPartOutsidePlatformBackward = distancePlatformTailtoTrainTail > 0 ? distancePlatformTailtoTrainTail : 0;
-                if (trainPartOutsidePlatformBackward >= stopTrain.Length) return (int)PlatformItem.MinWaitingTime; // train actually stopped before platform; should not happen
-                if (stopTrain == stopTrain.Simulator.OriginalPlayerTrain)
+                try
                 {
-                    if (trainPartOutsidePlatformForward == 0 && trainPartOutsidePlatformBackward == 0) passengerCarsWithinPlatform = stopTrain.PassengerCarsNumber;
+                    var passengerCarsWithinPlatform = stopTrain.PassengerCarsNumber;
+                    int stopTime = DefaultFreightStopTime;
+                    if (passengerCarsWithinPlatform == 0) return stopTime; // pure freight train
+                    var distancePlatformHeadtoTrainHead = -stopTrain.StationStops[0].StopOffset
+                       + PlatformItem.TCOffset[1, stopTrain.StationStops[0].Direction]
+                       + stopTrain.StationStops[0].DistanceToTrainM;
+                    var trainPartOutsidePlatformForward = distancePlatformHeadtoTrainHead < 0 ? -distancePlatformHeadtoTrainHead : 0;
+                    if (trainPartOutsidePlatformForward >= stopTrain.Length) return (int)PlatformItem.MinWaitingTime; // train actually passed platform; should not happen
+                    var distancePlatformTailtoTrainTail = distancePlatformHeadtoTrainHead - PlatformItem.Length + stopTrain.Length;
+                    var trainPartOutsidePlatformBackward = distancePlatformTailtoTrainTail > 0 ? distancePlatformTailtoTrainTail : 0;
+                    if (trainPartOutsidePlatformBackward >= stopTrain.Length) return (int)PlatformItem.MinWaitingTime; // train actually stopped before platform; should not happen
+                    if (stopTrain == stopTrain.Simulator.OriginalPlayerTrain)
+                    {
+                        if (trainPartOutsidePlatformForward == 0 && trainPartOutsidePlatformBackward == 0) passengerCarsWithinPlatform = stopTrain.PassengerCarsNumber;
+                        else
+                        {
+                            if (trainPartOutsidePlatformForward > 0)
+                            {
+                                var walkingDistance = 0.0f;
+                                int trainCarIndex = 0;
+                                while (walkingDistance <= trainPartOutsidePlatformForward && passengerCarsWithinPlatform > 0 && trainCarIndex < stopTrain.Cars.Count - 1)
+                                {
+                                    var walkingDistanceBehind = walkingDistance + stopTrain.Cars[trainCarIndex].CarLengthM;
+                                    if ((stopTrain.Cars[trainCarIndex].WagonType != TrainCar.WagonTypes.Freight && stopTrain.Cars[trainCarIndex].WagonType != TrainCar.WagonTypes.Tender && !stopTrain.Cars[trainCarIndex].IsDriveable) ||
+                                       (stopTrain.Cars[trainCarIndex].IsDriveable && stopTrain.Cars[trainCarIndex].HasPassengerCapacity))
+                                    {
+                                        if ((trainPartOutsidePlatformForward - walkingDistance) > 0.67 * stopTrain.Cars[trainCarIndex].CarLengthM) passengerCarsWithinPlatform--;
+                                    }
+                                    walkingDistance = walkingDistanceBehind;
+                                    trainCarIndex++;
+                                }
+                            }
+                            if (trainPartOutsidePlatformBackward > 0 && passengerCarsWithinPlatform > 0)
+                            {
+                                var walkingDistance = 0.0f;
+                                int trainCarIndex = stopTrain.Cars.Count - 1;
+                                while (walkingDistance <= trainPartOutsidePlatformBackward && passengerCarsWithinPlatform > 0 && trainCarIndex >= 0)
+                                {
+                                    var walkingDistanceBehind = walkingDistance + stopTrain.Cars[trainCarIndex].CarLengthM;
+                                    if ((stopTrain.Cars[trainCarIndex].WagonType != TrainCar.WagonTypes.Freight && stopTrain.Cars[trainCarIndex].WagonType != TrainCar.WagonTypes.Tender && !stopTrain.Cars[trainCarIndex].IsDriveable) ||
+                                       (stopTrain.Cars[trainCarIndex].IsDriveable && stopTrain.Cars[trainCarIndex].HasPassengerCapacity))
+                                    {
+                                        if ((trainPartOutsidePlatformBackward - walkingDistance) > 0.67 * stopTrain.Cars[trainCarIndex].CarLengthM) passengerCarsWithinPlatform--;
+                                    }
+                                    walkingDistance = walkingDistanceBehind;
+                                    trainCarIndex--;
+                                }
+                            }
+                        }
+                    }
                     else
                     {
-                        if (trainPartOutsidePlatformForward > 0)
-                        {
-                            var walkingDistance = 0.0f;
-                            int trainCarIndex = 0;
-                            while (walkingDistance <= trainPartOutsidePlatformForward && passengerCarsWithinPlatform > 0 && trainCarIndex < stopTrain.Cars.Count - 1)
-                            {
-                                var walkingDistanceBehind = walkingDistance + stopTrain.Cars[trainCarIndex].CarLengthM;
-                                if ((stopTrain.Cars[trainCarIndex].WagonType != TrainCar.WagonTypes.Freight && stopTrain.Cars[trainCarIndex].WagonType != TrainCar.WagonTypes.Tender && !stopTrain.Cars[trainCarIndex].IsDriveable) ||
-                                   (stopTrain.Cars[trainCarIndex].IsDriveable && stopTrain.Cars[trainCarIndex].HasPassengerCapacity))
-                                {
-                                    if ((trainPartOutsidePlatformForward - walkingDistance) > 0.67 * stopTrain.Cars[trainCarIndex].CarLengthM) passengerCarsWithinPlatform--;
-                                }
-                                walkingDistance = walkingDistanceBehind;
-                                trainCarIndex++;
-                            }
-                        }
-                        if (trainPartOutsidePlatformBackward > 0 && passengerCarsWithinPlatform > 0)
-                        {
-                            var walkingDistance = 0.0f;
-                            int trainCarIndex = stopTrain.Cars.Count - 1;
-                            while (walkingDistance <= trainPartOutsidePlatformBackward && passengerCarsWithinPlatform > 0 && trainCarIndex >= 0)
-                            {
-                                var walkingDistanceBehind = walkingDistance + stopTrain.Cars[trainCarIndex].CarLengthM;
-                                if ((stopTrain.Cars[trainCarIndex].WagonType != TrainCar.WagonTypes.Freight && stopTrain.Cars[trainCarIndex].WagonType != TrainCar.WagonTypes.Tender && !stopTrain.Cars[trainCarIndex].IsDriveable) ||
-                                   (stopTrain.Cars[trainCarIndex].IsDriveable && stopTrain.Cars[trainCarIndex].HasPassengerCapacity))
-                                {
-                                    if ((trainPartOutsidePlatformBackward - walkingDistance) > 0.67 * stopTrain.Cars[trainCarIndex].CarLengthM) passengerCarsWithinPlatform--;
-                                }
-                                walkingDistance = walkingDistanceBehind;
-                                trainCarIndex--;
-                            }
-                        }
+
+                        passengerCarsWithinPlatform = stopTrain.Length - trainPartOutsidePlatformForward - trainPartOutsidePlatformBackward > 0 ?
+                        stopTrain.PassengerCarsNumber : (int)Math.Min((stopTrain.Length - trainPartOutsidePlatformForward - trainPartOutsidePlatformBackward) / stopTrain.Cars.Count() + 0.33,
+                        stopTrain.PassengerCarsNumber);
                     }
-                }
-                else
-                {
-
-                    passengerCarsWithinPlatform = stopTrain.Length - trainPartOutsidePlatformForward - trainPartOutsidePlatformBackward > 0 ?
-                    stopTrain.PassengerCarsNumber : (int)Math.Min((stopTrain.Length - trainPartOutsidePlatformForward - trainPartOutsidePlatformBackward) / stopTrain.Cars.Count() + 0.33,
-                    stopTrain.PassengerCarsNumber);
-                }
-                if (passengerCarsWithinPlatform > 0)
-                {
-                    var actualNumPassengersWaiting = PlatformItem.NumPassengersWaiting;
-
-                    // Icik
-                    // Ošetření počtu cestujících kvůli dlouhým časům stání AI
-                    switch (passengerCarsWithinPlatform)
+                    if (passengerCarsWithinPlatform > 0)
                     {
-                        case 1:
-                            actualNumPassengersWaiting = MathHelper.Clamp(actualNumPassengersWaiting, 0, 10);
-                            break;
-                        case 2:
-                            actualNumPassengersWaiting = MathHelper.Clamp(actualNumPassengersWaiting, 0, 20);
-                            break;
-                        case 3:
-                            actualNumPassengersWaiting = MathHelper.Clamp(actualNumPassengersWaiting, 0, 30);
-                            break;
-                        case 4:
-                            actualNumPassengersWaiting = MathHelper.Clamp(actualNumPassengersWaiting, 0, 40);
-                            break;
-                        default:
-                            actualNumPassengersWaiting = MathHelper.Clamp(actualNumPassengersWaiting, 0, 50);
-                            break;
-                    }
+                        var actualNumPassengersWaiting = PlatformItem.NumPassengersWaiting;
 
-                    if (stopTrain.TrainType != TRAINTYPE.AI_PLAYERHOSTING) RandomizePassengersWaiting(ref actualNumPassengersWaiting, stopTrain);
-                    stopTime = Math.Max(NumSecPerPass * actualNumPassengersWaiting / passengerCarsWithinPlatform, DefaultFreightStopTime);
+                        // Icik
+                        // Ošetření počtu cestujících kvůli dlouhým časům stání AI
+                        switch (passengerCarsWithinPlatform)
+                        {
+                            case 1:
+                                actualNumPassengersWaiting = MathHelper.Clamp(actualNumPassengersWaiting, 0, 10);
+                                break;
+                            case 2:
+                                actualNumPassengersWaiting = MathHelper.Clamp(actualNumPassengersWaiting, 0, 20);
+                                break;
+                            case 3:
+                                actualNumPassengersWaiting = MathHelper.Clamp(actualNumPassengersWaiting, 0, 30);
+                                break;
+                            case 4:
+                                actualNumPassengersWaiting = MathHelper.Clamp(actualNumPassengersWaiting, 0, 40);
+                                break;
+                            default:
+                                actualNumPassengersWaiting = MathHelper.Clamp(actualNumPassengersWaiting, 0, 50);
+                                break;
+                        }
+
+                        if (stopTrain.TrainType != TRAINTYPE.AI_PLAYERHOSTING) RandomizePassengersWaiting(ref actualNumPassengersWaiting, stopTrain);
+                        stopTime = Math.Max(NumSecPerPass * actualNumPassengersWaiting / passengerCarsWithinPlatform, DefaultFreightStopTime);
+                    }
+                    else stopTime = 0; // no passenger car stopped within platform: sorry, no countdown starts
+                    return stopTime;
                 }
-                else stopTime = 0; // no passenger car stopped within platform: sorry, no countdown starts
-                return stopTime;
+                catch
+                {
+                    return 0;
+                }
             }
 
             //================================================================================================//
