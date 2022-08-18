@@ -1406,13 +1406,7 @@ namespace Orts.Viewer3D.Popups
                     else  // Advanced adhesion non steam locomotives HUD display
                     {
                         TableAddLine(table, Viewer.Catalog.GetString("(Advanced adhesion model)"));
-                        
-                        if (mstsLocomotive.extendedPhysics != null)
-                            TableAddLabelValue(table, Viewer.Catalog.GetString("Wheel slip"), "{0:F0}%", mstsLocomotive.EP_SlipSpeedPercent, FormatStrings.s);
-                        else
                         TableAddLabelValue(table, Viewer.Catalog.GetString("Wheel slip"), "{0:F0}% ({1:F0}%/{2})", mstsLocomotive.LocomotiveAxle.SlipSpeedPercent, mstsLocomotive.LocomotiveAxle.SlipDerivationPercentpS, FormatStrings.s);                        
-                        
-                        
                         TableAddLabelValue(table, Viewer.Catalog.GetString("Conditions"), "{0:F0}% " + TreeLeavesMSG, mstsLocomotive.LocomotiveAxle.AdhesionConditions * 100.0f);
                         TableAddLabelValue(table, Viewer.Catalog.GetString("Axle drive force"), "{0} ({1})", FormatStrings.FormatForce(mstsLocomotive.LocomotiveAxle.DriveForceN, mstsLocomotive.IsMetric),
                         FormatStrings.FormatPower(mstsLocomotive.LocomotiveAxle.DriveForceN * mstsLocomotive.AbsTractionSpeedMpS, mstsLocomotive.IsMetric, false, false));
