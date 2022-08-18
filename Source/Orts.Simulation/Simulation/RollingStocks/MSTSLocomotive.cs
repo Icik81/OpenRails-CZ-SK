@@ -4599,11 +4599,15 @@ namespace Orts.Simulation.RollingStocks
                 UpdateTractiveForce(elapsedClockSeconds, t, AbsSpeedMpS, AbsWheelSpeedMpS);
             }
 
-            if (MultiPositionControllers != null && MultiPositionController != null)
+            if (IsPlayerTrain)
             {
-                foreach (MultiPositionController mpc in MultiPositionControllers)
-                    mpc.Update(elapsedClockSeconds);
+                if (MultiPositionControllers != null && MultiPositionController != null)
+                {
+                    foreach (MultiPositionController mpc in MultiPositionControllers)
+                        mpc.Update(elapsedClockSeconds);
+                }
             }
+            
             if (float.IsNaN(TractiveForceN))
                 Debugger.Break();
 
