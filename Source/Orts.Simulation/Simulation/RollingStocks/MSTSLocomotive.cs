@@ -4888,12 +4888,12 @@ namespace Orts.Simulation.RollingStocks
                 if (TrainBrakeController.UpdateValue > 0.0)
                 {
                     SignalEvent(Event.TrainBrakeChange);
-                    //Simulator.Confirmer.Update(CabControl.TrainBrake, CabSetting.Increase, GetTrainBrakeStatusSimple());
+                    Simulator.Confirmer.Update(CabControl.TrainBrake, CabSetting.Increase, GetTrainBrakeStatusSimple());
                 }
                 if (TrainBrakeController.UpdateValue < 0.0)
                 {
                     SignalEvent(Event.TrainBrakeChange);
-                    //Simulator.Confirmer.Update(CabControl.TrainBrake, CabSetting.Decrease, GetTrainBrakeStatusSimple());
+                    Simulator.Confirmer.Update(CabControl.TrainBrake, CabSetting.Decrease, GetTrainBrakeStatusSimple());
                 }
             }
 
