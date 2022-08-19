@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Orts.Simulation\n"
 "POT-Creation-Date: 2022-07-28 20:06:38+0200\n"
-"PO-Revision-Date: 2022-07-28 20:08+0200\n"
+"PO-Revision-Date: 2022-08-19 18:24+0200\n"
 "Last-Translator: Altmann <altmann@bk.ru>\n"
 "Language-Team: Open Rails Dev Team\n"
 "Language: cs\n"
@@ -1772,10 +1772,8 @@ msgid "V and stored in an external database."
 msgstr "V a uloženo do externí databáze."
 
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:11562
-#, fuzzy
-#| msgid "Selected speed changed to "
 msgid "Selected speed confirmed."
-msgstr "Požadovaná rychlost byla změněna na:"
+msgstr "Rychlost AFB byla potvrzena."
 
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:5579
 msgid "Refill: Loco must be moving forward."

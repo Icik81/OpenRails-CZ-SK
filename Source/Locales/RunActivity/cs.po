@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: RunActivity\n"
 "POT-Creation-Date: 2022-08-13 16:08:03+0200\n"
-"PO-Revision-Date: 2022-08-13 16:10+0200\n"
+"PO-Revision-Date: 2022-08-19 18:30+0200\n"
 "Last-Translator: Altmann <altmann@bk.ru>\n"
 "Language-Team: Open Rails Dev Team\n"
 "Language: cs\n"
@@ -2384,7 +2384,7 @@ msgstr "Monitor tratě"
 #: ../../RunActivity/Viewer3D/Popups/TrackMonitorWindow.cs:240
 #: ../../RunActivity/Viewer3D/WebServices/TrackMonitorDisplay.cs:231
 msgid "Auto Signal"
-msgstr "Automatické návěsti"
+msgstr "Aut. návěsti"
 
 #: ../../RunActivity/Viewer3D/Popups/TrackMonitorWindow.cs:241
 #: ../../RunActivity/Viewer3D/WebServices/TrackMonitorDisplay.cs:232
