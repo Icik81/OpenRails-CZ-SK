@@ -2663,6 +2663,7 @@ namespace Orts.Simulation.RollingStocks
                                 break;
                         }
                         Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Overcurrent protection!"));
+                        SignalEvent(Event.Failure);
                     }
                     if (this is MSTSDieselLocomotive) // Dieselelektrické lokomotivy
                     {
@@ -2726,6 +2727,7 @@ namespace Orts.Simulation.RollingStocks
                                 break;
                         }
                         Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Slip protection!"));
+                        SignalEvent(Event.Failure);
                     }
                     if (this is MSTSDieselLocomotive) // Dieselelektrické lokomotivy
                     {

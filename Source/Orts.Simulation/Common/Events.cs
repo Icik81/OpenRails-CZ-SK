@@ -331,6 +331,7 @@ namespace Orts.Common
         BrakeSkidStop,
         CouplerPull,
         CouplerPush,
+        Failure,
     }
 
     public static class Events
@@ -587,6 +588,7 @@ namespace Orts.Common
                         case 10188: return Event.ActiveCabSelectorChange;
                         case 10195: return Event.LS90TestComplete;
                         case 10196: return Event.AFB;
+                        case 10197: return Event.Failure;
 
                         // Icik
                         case 20001: return Event.CompressorMode_OffAutoOn;

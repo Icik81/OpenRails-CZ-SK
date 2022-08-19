@@ -861,6 +861,7 @@ namespace Orts.Simulation.RollingStocks
                                 {
                                     HVOff = true;
                                     Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Undervoltage protection!"));
+                                    SignalEvent(Event.Failure);
                                 }
                                 if (CruiseControl != null)
                                     if (PowerSupply.PantographVoltageV < PantographCriticalVoltage && CruiseControl.ForceThrottleAndDynamicBrake > 0 && VoltageIndicateTestCompleted && LocoType != LocoTypes.Vectron)
@@ -906,6 +907,7 @@ namespace Orts.Simulation.RollingStocks
                                 {
                                     HVOff = true;
                                     Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Undervoltage protection!"));
+                                    SignalEvent(Event.Failure);
                                 }
                                 if (CruiseControl != null)
                                     if (PowerSupply.PantographVoltageV < PantographCriticalVoltage && CruiseControl.ForceThrottleAndDynamicBrake > 0 && VoltageIndicateTestCompleted)
@@ -1089,6 +1091,7 @@ namespace Orts.Simulation.RollingStocks
                                 }
                                 HVOff = true;
                                 Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Undervoltage protection!"));
+                                SignalEvent(Event.Failure);
                             }
 
                             if (CruiseControl != null)
@@ -1147,6 +1150,7 @@ namespace Orts.Simulation.RollingStocks
                                 }
                                 HVOff = true;
                                 Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Undervoltage protection!"));
+                                SignalEvent(Event.Failure);
                             }
 
                             if (CruiseControl != null)
