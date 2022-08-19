@@ -3496,7 +3496,7 @@ namespace Orts.Simulation.RollingStocks
                 if (IsLeadLocomotive())
                 {
                     // Výpočet proudu při zapnutí topení nebo klimatizace
-                    I_Heating = (float)Math.Round(PowerReductionByHeatingSum / U_Heating);
+                    I_Heating = (float)Math.Round((PowerReductionByHeatingSum + PowerReductionByAuxEquipmentSum) / U_Heating);
                     if (I_HeatingData > I_Heating)
                         I_HeatingData -= 20 * elapsedClockSeconds; // 20A/s               
                     if (I_HeatingData < I_Heating)
@@ -3522,7 +3522,7 @@ namespace Orts.Simulation.RollingStocks
                     {
                         if (car.WagonType == WagonTypes.Passenger) // Osobní vozy
                         {
-                            if (car.PowerReductionByAuxEquipment == 0) car.PowerReductionByAuxEquipment = 5 * 1000; // Default 5kW
+                            //if (car.PowerReductionByAuxEquipment == 0) car.PowerReductionByAuxEquipment = 5 * 1000; // Default 5kW
                             PowerReductionByAuxEquipmentWag += car.PowerReductionByAuxEquipment;
                         }
                         if (car.WagonType == WagonTypes.Engine) // Lokomotivy
