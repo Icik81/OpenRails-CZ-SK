@@ -3522,7 +3522,7 @@ namespace Orts.Simulation.RollingStocks
                     {
                         if (car.WagonType == WagonTypes.Passenger) // Osobní vozy
                         {
-                            if (car.PowerReductionByAuxEquipment == 0) car.PowerReductionByAuxEquipment = 5 * 1000; // Default 5kW
+                            //if (car.PowerReductionByAuxEquipment == 0) car.PowerReductionByAuxEquipment = 5 * 1000; // Default 5kW
                             PowerReductionByAuxEquipmentWag += car.PowerReductionByAuxEquipment;
                         }
                         if (car.WagonType == WagonTypes.Engine) // Lokomotivy
