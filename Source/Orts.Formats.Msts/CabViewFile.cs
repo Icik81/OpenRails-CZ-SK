@@ -583,6 +583,7 @@ namespace Orts.Formats.Msts
         public string PropertyName;
         public string EditablePositionCharacter;
         public string SendChar;
+        public string StaticText = String.Empty;
         public float ItemIndex;
         public string MouseHoverCursor = "Hand";
         public int ScreenId = 0;
@@ -1141,6 +1142,26 @@ namespace Orts.Formats.Msts
                 {
                     stf.MustMatch("(");
                     CurrentType = stf.ReadString();
+                    stf.SkipRestOfBlock();
+                }),
+                new STFReader.TokenProcessor("propertyname", ()=>{
+                    stf.MustMatch("(");
+                    PropertyName = stf.ReadString();
+                    stf.SkipRestOfBlock();
+                }),
+                new STFReader.TokenProcessor("editablepositioncharacter", ()=>{
+                    stf.MustMatch("(");
+                    EditablePositionCharacter = stf.ReadString();
+                    stf.SkipRestOfBlock();
+                }),
+                new STFReader.TokenProcessor("sendchar", ()=>{
+                    stf.MustMatch("(");
+                    SendChar = stf.ReadString();
+                    stf.SkipRestOfBlock();
+                }),
+                new STFReader.TokenProcessor("statictext", ()=>{
+                    stf.MustMatch("(");
+                    StaticText = stf.ReadString();
                     stf.SkipRestOfBlock();
                 }),
             });

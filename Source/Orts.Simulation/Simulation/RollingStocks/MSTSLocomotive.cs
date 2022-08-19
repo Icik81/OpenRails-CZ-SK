@@ -739,7 +739,7 @@ namespace Orts.Simulation.RollingStocks
 
         public enum LocoTypes
         {
-            Normal, Katr7507, Vectron, Traxx
+            Normal, Vectron, Traxx
         }
 
         public LocoTypes LocoType = LocoTypes.Normal;
@@ -11674,6 +11674,19 @@ namespace Orts.Simulation.RollingStocks
             CruiseControl.OverridenMaximalForce = 50;
         }
 
+        public float AvvDistanceToNext = 1000000;
+                protected float previousSignalSpeed = 0;
+        protected float previousSpeedpostSpeed = 0;
+        protected float previousSignalItemDistance = 0;
+        protected float maxSelSpeed = 0;
+        public bool TrainBrakePriority = true;
+        protected float speedPostSpeedAhead = 60;
+        protected float signalSpeedAhead = 0;
+        protected bool stoppedAtStation = false;
+        public float OverridenSignalDistanceOdometer = 0;
+        public float OverridenSignalDistance = -1;
+        public float OverridenSignalSpeed = -1;
+        
         public virtual string GetDataOfS(CabViewControl crc, ElapsedTime elapsedClockSeconds)
         {
             if (crc.ControlType == CABViewControlTypes.ORTS_MIREL_DISPLAY)
@@ -11682,6 +11695,677 @@ namespace Orts.Simulation.RollingStocks
             }
             if (crc.ControlType == CABViewControlTypes.ORTS_DIGITAL_STRING)
             {
+                // ************************************************************************
+                // ************************************************************************
+                // ****************               AVV                 *********************
+                // ************************************************************************
+                // ************************************************************************
+
+                if (StringArray.StArray == null)
+                {
+                    if (String.IsNullOrEmpty(crc.PropertyName))
+                        return crc.Label;
+                    else
+                    {
+                        string nearestItem = "";
+                        float nearestStation = 100000;
+                        float nearestSignal = 100000;
+                        float nearestSpeedpost = 100000;
+                        if (this.Train.StationStops.Count > 0)
+                        {
+                            Physics.Train.StationStop stationStop = Train.StationStops[0];
+                            nearestStation = stationStop.DistanceToTrainM;
+                        }
+                        Train.TrainInfo tinfo = this.Train.GetTrainInfo();
+                        List<Train.TrainObjectItem> titems = tinfo.ObjectInfoForward;
+                        foreach (var titem in titems)
+                        {
+                            if (titem.ItemType == Train.TrainObjectItem.TRAINOBJECTTYPE.SPEEDPOST)
+                            {
+                                if (nearestSpeedpost > titem.DistanceToTrainM)
+                                {
+                                    nearestSpeedpost = titem.DistanceToTrainM;
+                                }
+                            }
+                            if (titem.ItemType == Train.TrainObjectItem.TRAINOBJECTTYPE.SIGNAL)
+                            {
+                                if (nearestSignal > titem.DistanceToTrainM)
+                                {
+                                    nearestSignal = titem.DistanceToTrainM;
+                                }
+                            }
+                        }
+                        if (nearestStation < nearestSpeedpost && nearestStation < nearestSignal)
+                            nearestItem = "station";
+                        if (nearestSignal < nearestSpeedpost && nearestSignal < nearestStation)
+                            nearestItem = "signal";
+                        if (nearestSpeedpost < nearestSignal && nearestSpeedpost < nearestStation)
+                            nearestItem = "speedpost";
+                        switch (crc.PropertyName)
+                        {
+                            case "StaticText": return crc.StaticText;
+                            case "TrainNumber": return TrainNumber;
+                            case "BrakingPercent": return BrakingPercent;
+                            case "ActiveSpeedPosts": return ActiveSpeedPosts;
+                            case "UserTrainLength": return UserTrainLength;
+                            case "UserTrainWeight": return UserTrainWeight;
+                            case "UserTime": return UserTime;
+                            case "NextStation":
+                                {
+                                    Train.StationStop stationStop = Train.StationStops[0];
+                                    return stationStop.PlatformItem.Name.ToUpper();
+                                }
+                            case "NextStationDistance":
+                                {
+                                    if (this.Train.StationStops.Count == 0)
+                                        return "?";
+                                    Physics.Train.StationStop stationStop = Train.StationStops[0];
+                                    string ret = "";
+                                    ret = Math.Round(stationStop.DistanceToTrainM, 0).ToString();
+                                    if (ret.Contains("-"))
+                                        ret = "0";
+                                    float hillCoeff = 100;
+                                    if (stationStop.DistanceToTrainM < 100)
+                                        hillCoeff = stationStop.DistanceToTrainM;
+                                    AvvDistanceToNext = stationStop.DistanceToTrainM - (CruiseControl.TrainElevation * hillCoeff) - 20;
+
+                                    float accel = 0.3f;
+                                    float v0 = AbsWheelSpeedMpS;
+                                    float v = 0;
+                                    float s = 1.0f / 2.0f * accel * (((v0 - v) / accel) * ((v0 - v) / accel));
+                                    float newSpeed = MaxSpeedMpS;
+                                    float lengthRemainingToEngageDeceleration = AvvDistanceToNext - s;
+                                    if (lengthRemainingToEngageDeceleration < 0 && AvvDistanceToNext > 0)
+                                    {
+                                        newSpeed = v0 - (accel - AccelerationMpSS);
+                                    }
+                                    Simulator.Confirmer.MSG(s.ToString() + " " + MpS.ToKpH(newSpeed).ToString() + " " + AccelerationMpSS.ToString());
+
+                                    bool stopAtStation = stationStop.DistanceToTrainM < 500 ? true : false;
+                                    if (stopAtStation && AbsWheelSpeedMpS > 0)
+                                        stopAtStation = false;
+                                    else
+                                        stoppedAtStation = true;
+                                    if (stoppedAtStation && !stopAtStation)
+                                        stopAtStation = true;
+                                    if (stationStop.DistanceToTrainM > 500)
+                                        stopAtStation = stoppedAtStation = false;
+                                    if (AbsWheelSpeedMpS > 0)
+                                    {
+                                        if (newSpeed < maxSelSpeed && !stopAtStation)
+                                        {
+                                            CruiseControl.SelectedSpeedMpS = newSpeed;
+                                        }
+                                    }
+                                    if (AbsWheelSpeedMpS - 1 > CruiseControl.SelectedSpeedMpS)
+                                    {
+                                        float minBraking = 0.3f;
+                                        minBraking += (MpS.ToKpH(AbsWheelSpeedMpS) - MpS.ToKpH(CruiseControl.SelectedSpeedMpS)) / 60;
+                                        if (DynamicBrakePercent > 95)
+                                        {
+                                            if (BrakeSystem.BrakeLine1PressurePSI > Bar.ToPSI(5 - minBraking))
+                                            {
+                                                if (TrainBrakeController.TrainBrakeControllerState != ControllerState.Apply)
+                                                {
+                                                    String test = TrainBrakeController.GetStatus().ToLower();
+                                                    StartTrainBrakeIncrease(null, 1);
+                                                }
+                                                else
+                                                {
+                                                    StopTrainBrakeIncrease(1);
+                                                }
+                                            }
+                                            else
+                                            {
+                                                if (TrainBrakeController.TrainBrakeControllerState != ControllerState.Neutral)
+                                                {
+                                                    String test = TrainBrakeController.GetStatus().ToLower();
+                                                    StartTrainBrakeDecrease(null);
+                                                }
+                                                else
+                                                {
+                                                    StopTrainBrakeDecrease(1);
+                                                }
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        if (!TrainBrakePriority)
+                                        {
+                                            if (BrakeSystem.BrakeLine1PressurePSI < Bar.ToPSI(5))
+                                            {
+                                                if (TrainBrakeController.TrainBrakeControllerState != ControllerState.Release)
+                                                {
+                                                    String test = TrainBrakeController.GetStatus().ToLower();
+                                                    StartTrainBrakeDecrease(null);
+                                                }
+                                                else if (TrainBrakeController.TrainBrakeControllerState != ControllerState.Release)
+                                                {
+                                                    StopTrainBrakeDecrease(1);
+                                                }
+                                            }
+                                        }
+                                    }
+                                    if (OverridenSignalSpeed < 0 && AbsWheelSpeedMpS < 5 && !stopAtStation)
+                                    {
+                                        if (DynamicBrakePercent > 95)
+                                        {
+                                            if (BrakeSystem.BrakeLine1PressurePSI > Bar.ToPSI(5f))
+                                            {
+                                                if (TrainBrakeController.TrainBrakeControllerState != ControllerState.Apply)
+                                                {
+                                                    String test = TrainBrakeController.GetStatus().ToLower();
+                                                    StartTrainBrakeIncrease(null, 1);
+                                                }
+                                                else
+                                                {
+                                                    StopTrainBrakeIncrease(1);
+                                                }
+                                            }
+                                        }
+                                    }
+                                        float coeff = ((AvvDistanceToNext)) / 20;
+                                    newSpeed = coeff;
+                                    if (MpS.ToKpH(CruiseControl.SelectedSpeedMpS) > newSpeed)
+                                    {
+                                        if (newSpeed > speedPostSpeedAhead)
+                                            CruiseControl.SelectedSpeedMpS = MpS.FromKpH(newSpeed);
+                                    }
+                                    if (AbsWheelSpeedMpS - 1 > CruiseControl.SelectedSpeedMpS)
+                                    {
+                                        float minBraking = 0.3f;
+                                        minBraking += (MpS.ToKpH(AbsWheelSpeedMpS) - MpS.ToKpH(CruiseControl.SelectedSpeedMpS)) / 60;
+                                        if (DynamicBrakePercent > 95)
+                                        {
+                                            if (BrakeSystem.BrakeLine1PressurePSI > Bar.ToPSI(5 - minBraking))
+                                            {
+                                                if (TrainBrakeController.TrainBrakeControllerState != ControllerState.Apply)
+                                                {
+                                                    String test = TrainBrakeController.GetStatus().ToLower();
+                                                    StartTrainBrakeIncrease(null, 1);
+                                                }
+                                                else
+                                                {
+                                                    StopTrainBrakeIncrease(1);
+                                                }
+                                            }
+                                            else
+                                            {
+                                                if (TrainBrakeController.TrainBrakeControllerState != ControllerState.Neutral)
+                                                {
+                                                    String test = TrainBrakeController.GetStatus().ToLower();
+                                                    StartTrainBrakeDecrease(null);
+                                                }
+                                                else
+                                                {
+                                                    StopTrainBrakeDecrease(1);
+                                                }
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        if (!TrainBrakePriority)
+                                        {
+                                            if (BrakeSystem.BrakeLine1PressurePSI < Bar.ToPSI(5))
+                                            {
+                                                if (TrainBrakeController.TrainBrakeControllerState != ControllerState.Release)
+                                                {
+                                                    StartTrainBrakeDecrease(null);
+                                                }
+                                                else if (TrainBrakeController.TrainBrakeControllerState != ControllerState.Release)
+                                                {
+                                                    StopTrainBrakeDecrease(1);
+                                                }
+                                            }
+                                        }
+                                    }
+                                    return ret;
+
+                                }
+                            case "NextStationArival":
+                                {
+                                    Physics.Train.StationStop stationStop = Train.StationStops[0];
+                                    return TimeSpan.FromSeconds(stationStop.ArrivalTime).ToString();
+                                }
+                            case "NextStationSpeed":
+                                {
+                                    return "0";
+                                }
+                            case "NextMilepostDistance":
+                                {
+                                    bool found = false;
+                                    string ret = "?";
+                                    Train.TrainInfo info = this.Train.GetTrainInfo();
+                                    List<Train.TrainObjectItem> items = info.ObjectInfoForward;
+                                    float minDistance = 1000000;
+                                    foreach (var item in items)
+                                    {
+                                        if (item.ItemType == Train.TrainObjectItem.TRAINOBJECTTYPE.SPEEDPOST)
+                                        {
+                                            found = true;
+                                            if (minDistance > item.DistanceToTrainM)
+                                            {
+                                                minDistance = item.DistanceToTrainM;
+                                                minDistance = (float)Math.Round(minDistance, 0);
+                                                ret = Math.Round(minDistance, 0).ToString();
+                                            }
+                                        }
+                                    }
+                                    if (!found)
+                                    {
+                                        float maxDistanceFound = 0;
+                                        foreach (var item in items)
+                                        {
+                                            if (maxDistanceFound < item.DistanceToTrainM)
+                                                maxDistanceFound = item.DistanceToTrainM;
+                                            if (item.ItemType == Train.TrainObjectItem.TRAINOBJECTTYPE.SIGNAL && item.SignalState == TrackMonitorSignalAspect.Stop || item.SignalState == TrackMonitorSignalAspect.Approach_3)
+                                            {
+                                                if (minDistance > item.DistanceToTrainM)
+                                                {
+                                                    minDistance = item.DistanceToTrainM;
+                                                    minDistance = (float)Math.Round(minDistance, 0);
+                                                    minDistance += 500;
+                                                    ret = Math.Round(minDistance, 0).ToString();
+                                                    found = true;
+                                                }
+                                            }
+                                        }
+                                        if (!found)
+                                        {
+                                            maxDistanceFound = (float)Math.Round(maxDistanceFound, 0);
+                                            minDistance = maxDistanceFound;
+                                            ret = minDistance.ToString();
+                                        }
+                                    }
+                                    AvvDistanceToNext = minDistance;
+                                    float coeff = ((AvvDistanceToNext - 300) + speedPostSpeedAhead) / 20;
+                                    float newSpeed = coeff + speedPostSpeedAhead + 5;
+                                    if (MpS.ToKpH(CruiseControl.SelectedSpeedMpS) > newSpeed)
+                                    {
+                                        if (newSpeed > speedPostSpeedAhead)
+                                            CruiseControl.SelectedSpeedMpS = MpS.FromKpH(newSpeed);
+                                    }
+                                    if (AbsWheelSpeedMpS - 1 > CruiseControl.SelectedSpeedMpS)
+                                    {
+                                        float minBraking = 0.3f;
+                                        minBraking += (MpS.ToKpH(AbsWheelSpeedMpS) - MpS.ToKpH(CruiseControl.SelectedSpeedMpS)) / 60;
+                                        if (DynamicBrakePercent > 95)
+                                        {
+                                            if (BrakeSystem.BrakeLine1PressurePSI > Bar.ToPSI(5 - minBraking))
+                                            {
+                                                if (TrainBrakeController.TrainBrakeControllerState != ControllerState.Apply)
+                                                {
+                                                    String test = TrainBrakeController.GetStatus().ToLower();
+                                                    StartTrainBrakeIncrease(null, 1);
+                                                }
+                                                else
+                                                {
+                                                    StopTrainBrakeIncrease(1);
+                                                }
+                                            }
+                                            else
+                                            {
+                                                if (TrainBrakeController.TrainBrakeControllerState != ControllerState.Neutral)
+                                                {
+                                                    String test = TrainBrakeController.GetStatus().ToLower();
+                                                    StartTrainBrakeDecrease(null);
+                                                }
+                                                else
+                                                {
+                                                    StopTrainBrakeDecrease(1);
+                                                }
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        if (!TrainBrakePriority)
+                                        {
+                                            if (BrakeSystem.BrakeLine1PressurePSI < Bar.ToPSI(5))
+                                            {
+                                                if (TrainBrakeController.TrainBrakeControllerState != ControllerState.Release)
+                                                {
+                                                    StartTrainBrakeDecrease(null);
+                                                }
+                                                else if (TrainBrakeController.TrainBrakeControllerState != ControllerState.Release)
+                                                {
+                                                    StopTrainBrakeDecrease(1);
+                                                }
+                                            }
+                                        }
+                                    }
+                                    /*if (OverridenSignalSpeed < 0 && AbsWheelSpeedMpS < 5)
+                                    {
+                                        if (BrakeSystem.BrakeLine1PressurePSI > Bar.ToPSI(4.7f))
+                                        {
+                                            if (TrainBrakeController.GetStatus().ToLower() != "apply")
+                                            {
+                                                String test = TrainBrakeController.GetStatus().ToLower();
+                                                StartTrainBrakeIncrease(null);
+                                            }
+                                            else
+                                            {
+                                                StopTrainBrakeIncrease();
+                                            }
+                                        }
+                                        else
+                                        {
+                                            if (TrainBrakeController.GetStatus().ToLower() != "neutral")
+                                            {
+                                                String test = TrainBrakeController.GetStatus().ToLower();
+                                                StartTrainBrakeDecrease(null);
+                                            }
+                                            else
+                                            {
+                                                StopTrainBrakeDecrease();
+                                            }
+                                        }
+                                    }*/
+
+                                    return ret;
+                                }
+                            case "NextMilepostSpeed":
+                                {
+                                    string ret = "?";
+                                    Train.TrainInfo info = this.Train.GetTrainInfo();
+                                    List<Train.TrainObjectItem> items = info.ObjectInfoForward;
+                                    float minDistance = 1000000;
+                                    bool found = false;
+                                    foreach (var item in items)
+                                    {
+                                        if (item.ItemType == Train.TrainObjectItem.TRAINOBJECTTYPE.SPEEDPOST)
+                                        {
+                                            found = true;
+                                            if (minDistance > item.DistanceToTrainM)
+                                            {
+                                                minDistance = item.DistanceToTrainM;
+                                                minDistance = (float)Math.Round(minDistance, 0);
+                                                float newSpeed = (float)Math.Round(MpS.ToKpH(item.AllowedSpeedMpS), 0);
+                                                previousSpeedpostSpeed = speedPostSpeedAhead = (float)Math.Round(newSpeed, 0);
+                                                ret = newSpeed.ToString();
+                                            }
+                                        }
+                                    }
+                                    if (!found)
+                                    {
+                                        if (previousSpeedpostSpeed < 40)
+                                            previousSpeedpostSpeed = 40;
+                                        ret = Math.Round(previousSpeedpostSpeed, 0).ToString();
+                                        if (previousSpeedpostSpeed == 0)
+                                            previousSpeedpostSpeed = speedPostSpeedAhead = 40;
+                                    }
+                                    return ret;
+                                }
+                            case "CurrentMilepostSpeed":
+                                {
+                                    var thisInfo = this.Train.GetTrainInfo();
+                                    return Math.Round(MpS.ToKpH(thisInfo.allowedSpeedMpS), 0).ToString();
+                                }
+                            case "NextSignalDistance":
+                                {
+                                    string ret = "?m";
+                                    Train.TrainInfo info = this.Train.GetTrainInfo();
+                                    List<Train.TrainObjectItem> items = info.ObjectInfoForward;
+                                    float minDistance = 1000000;
+                                    foreach (var item in items)
+                                    {
+                                        if (item.SignalObject.WorldObject.SFileName != null && item.SignalObject.WorldObject.SFileName.ToUpper() == "NVSTOZNAC.S")
+                                            continue;
+                                        if (item.ItemType == Train.TrainObjectItem.TRAINOBJECTTYPE.SIGNAL)
+                                        {
+                                            if (minDistance > item.DistanceToTrainM)
+                                            {
+                                                minDistance = (float)Math.Round(item.DistanceToTrainM, 0);
+                                                ret = minDistance.ToString() + "m";
+                                            }
+                                        }
+                                    }
+                                    AvvDistanceToNext = minDistance;
+                                    float coeff = ((AvvDistanceToNext - 300) + signalSpeedAhead) / 20;
+                                    float newSpeed = coeff + signalSpeedAhead + 5;
+                                    if (newSpeed < signalSpeedAhead)
+                                        newSpeed = signalSpeedAhead;
+                                    if (MpS.ToKpH(CruiseControl.SelectedSpeedMpS) > newSpeed)
+                                    {
+                                        CruiseControl.SelectedSpeedMpS = MpS.FromKpH(newSpeed);
+                                    }
+                                    if (AbsWheelSpeedMpS - 1 > CruiseControl.SelectedSpeedMpS)
+                                    {
+                                        float minBraking = 0.3f;
+                                        minBraking += (MpS.ToKpH(AbsWheelSpeedMpS) - MpS.ToKpH(CruiseControl.SelectedSpeedMpS)) / 60;
+                                        if (DynamicBrakePercent > 95)
+                                        {
+                                            if (BrakeSystem.BrakeLine1PressurePSI > Bar.ToPSI(5 - minBraking))
+                                            {
+                                                if (TrainBrakeController.TrainBrakeControllerState != ControllerState.Apply)
+                                                {
+                                                    StartTrainBrakeIncrease(null, 1);
+                                                }
+                                                else
+                                                {
+                                                    StopTrainBrakeIncrease(1);
+                                                }
+                                            }
+                                            else
+                                            {
+                                                if (TrainBrakeController.TrainBrakeControllerState != ControllerState.Neutral)
+                                                {
+                                                    String test = TrainBrakeController.GetStatus().ToLower();
+                                                    StartTrainBrakeDecrease(null);
+                                                }
+                                                else
+                                                {
+                                                    StopTrainBrakeDecrease(1);
+                                                }
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        if (!TrainBrakePriority)
+                                        {
+                                            if (BrakeSystem.BrakeLine1PressurePSI < Bar.ToPSI(5))
+                                            {
+                                                if (TrainBrakeController.TrainBrakeControllerState != ControllerState.Release)
+                                                {
+                                                    String test = TrainBrakeController.GetStatus().ToLower();
+                                                    StartTrainBrakeDecrease(null);
+                                                }
+                                                else if (TrainBrakeController.TrainBrakeControllerState != ControllerState.Release)
+                                                {
+                                                    StopTrainBrakeDecrease(1);
+                                                }
+                                            }
+                                        }
+                                    }
+                                    /*if (OverridenSignalSpeed < 0 && AbsWheelSpeedMpS < 5)
+                                    {
+                                        if (BrakeSystem.BrakeLine1PressurePSI > Bar.ToPSI(4.7f))
+                                        {
+                                            if (TrainBrakeController.GetStatus().ToLower() != "apply")
+                                            {
+                                                String test = TrainBrakeController.GetStatus().ToLower();
+                                                StartTrainBrakeIncrease(null);
+                                            }
+                                            else
+                                            {
+                                                StopTrainBrakeIncrease();
+                                            }
+                                        }
+                                        else
+                                        {
+                                            if (TrainBrakeController.GetStatus().ToLower() != "neutral")
+                                            {
+                                                String test = TrainBrakeController.GetStatus().ToLower();
+                                                StartTrainBrakeDecrease(null);
+                                            }
+                                            else
+                                            {
+                                                StopTrainBrakeDecrease();
+                                            }
+                                        }
+                                    }*/
+                                    return ret;
+                                }
+                            case "NextSignalSpeed":
+                                {
+                                    /*                                    if (OverridenSignalSpeed > -1)
+                                                                            return OverridenSignalSpeed.ToString() + "kmh" */
+                                    string ret = "?kmh";
+                                    Train.TrainInfo info = this.Train.GetTrainInfo();
+                                    List<Train.TrainObjectItem> items = info.ObjectInfoForward;
+                                    float minDistance = 1000000;
+                                    bool overrideDistance = false;
+                                    foreach (var item in items)
+                                    {
+                                        if (item.SignalObject.WorldObject.SFileName != null && item.SignalObject.WorldObject.SFileName.ToUpper() == "NVSTOZNAC.S")
+                                            continue;
+                                        if (item.ItemType == Train.TrainObjectItem.TRAINOBJECTTYPE.SIGNAL)
+                                        {
+                                            if (minDistance > item.DistanceToTrainM)
+                                            {
+                                                minDistance = item.DistanceToTrainM;
+                                                if (item.DistanceToTrainM > previousSignalItemDistance + 10)
+                                                    overrideDistance = true;
+                                                previousSignalItemDistance = item.DistanceToTrainM - 1;
+                                                if (Mirel.RecievingRepeaterSignal)
+                                                {
+                                                    previousSignalItemDistance = item.DistanceToTrainM;
+                                                    switch (item.SignalState)
+                                                    {
+                                                        case TrackMonitorSignalAspect.Stop:
+                                                        case TrackMonitorSignalAspect.StopAndProceed:
+                                                        case TrackMonitorSignalAspect.None:
+                                                        case TrackMonitorSignalAspect.Permission:
+                                                            {
+                                                                if (item.DistanceToTrainM > 100)
+                                                                    signalSpeedAhead = 40;
+                                                                else
+                                                                    signalSpeedAhead = 0;
+                                                                CruiseControl.avvSignal = CruiseControl.AvvSignal.Stop;
+                                                                break;
+                                                            }
+                                                        case TrackMonitorSignalAspect.Restricted:
+                                                            {
+                                                                signalSpeedAhead = 100;
+                                                                CruiseControl.avvSignal = CruiseControl.AvvSignal.Restricted;
+                                                                break;
+                                                            }
+                                                        case TrackMonitorSignalAspect.Clear_1:
+                                                        case TrackMonitorSignalAspect.Clear_2:
+                                                            {
+                                                                signalSpeedAhead = MpS.ToKpH(MaxSpeedMpS);
+                                                                CruiseControl.avvSignal = CruiseControl.AvvSignal.Clear;
+                                                                break;
+                                                            }
+                                                        case TrackMonitorSignalAspect.Approach_1:
+                                                        case TrackMonitorSignalAspect.Approach_2:
+                                                        case TrackMonitorSignalAspect.Approach_3:
+                                                            {
+                                                                if (
+                                                                    CruiseControl.avvSignal == CruiseControl.AvvSignal.Clear ||
+                                                                    CruiseControl.avvSignal == CruiseControl.AvvSignal.Restricted ||
+                                                                    CruiseControl.avvSignal == CruiseControl.AvvSignal.Stop
+                                                                    )
+                                                                    CruiseControl.avvSignal = CruiseControl.AvvSignal.Restricting40;
+                                                                switch (CruiseControl.avvSignal)
+                                                                {
+                                                                    case CruiseControl.AvvSignal.Restricting100:
+                                                                        {
+                                                                            signalSpeedAhead = 100;
+                                                                            break;
+                                                                        }
+                                                                    case CruiseControl.AvvSignal.Restricting80:
+                                                                        {
+                                                                            signalSpeedAhead = 80;
+                                                                            break;
+                                                                        }
+                                                                    case CruiseControl.AvvSignal.Restricting60:
+                                                                        {
+                                                                            signalSpeedAhead = 60;
+                                                                            break;
+                                                                        }
+                                                                    case CruiseControl.AvvSignal.Restricting40:
+                                                                        {
+                                                                            signalSpeedAhead = 40;
+                                                                            break;
+                                                                        }
+                                                                }
+                                                                break;
+                                                            }
+                                                    }
+                                                    ret = Math.Round(signalSpeedAhead, 0).ToString() + "kmh";
+                                                }
+                                                else if (overrideDistance)
+                                                {
+                                                    if (CruiseControl.avvSignal == CruiseControl.AvvSignal.Clear)
+                                                    {
+                                                        CruiseControl.avvSignal = CruiseControl.AvvSignal.Restricted;
+                                                        ret = "100kmh";
+                                                    }
+                                                    else if (CruiseControl.avvSignal == CruiseControl.AvvSignal.Restricted)
+                                                    {
+                                                        CruiseControl.avvSignal = CruiseControl.AvvSignal.Stop;
+                                                        ret = "0kmh";
+                                                    }
+                                                    else if (CruiseControl.avvSignal == CruiseControl.AvvSignal.Restricting40)
+                                                    {
+                                                        CruiseControl.avvSignal = CruiseControl.AvvSignal.Stop;
+                                                        ret = "0kmh";
+                                                    }
+                                                }
+                                                if (!Mirel.RecievingRepeaterSignal)
+                                                {
+                                                    if (CruiseControl.avvSignal == CruiseControl.AvvSignal.Clear || CruiseControl.avvSignal == CruiseControl.AvvSignal.Restricted)
+                                                    {
+                                                        ret = "100kmh";
+                                                        signalSpeedAhead = 100;
+                                                    }
+                                                    if (CruiseControl.avvSignal == CruiseControl.AvvSignal.Restricting40)
+                                                    {
+                                                        signalSpeedAhead = 40;
+                                                        ret = "40kmh";
+                                                    }
+                                                    if (CruiseControl.avvSignal == CruiseControl.AvvSignal.Restricting60)
+                                                    {
+                                                        ret = "60kmh";
+                                                        signalSpeedAhead = 60;
+                                                    }
+                                                    if (CruiseControl.avvSignal == CruiseControl.AvvSignal.Restricting80)
+                                                    {
+                                                        ret = "80kmh";
+                                                        signalSpeedAhead = 80;
+                                                    }
+                                                    if (CruiseControl.avvSignal == CruiseControl.AvvSignal.Restricting100)
+                                                    {
+                                                        ret = "100kmh";
+                                                        signalSpeedAhead = 100;
+                                                    }
+                                                    if (CruiseControl.avvSignal == CruiseControl.AvvSignal.Stop)
+                                                    {
+                                                        ret = "0kmh";
+                                                        signalSpeedAhead = 0;
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                    return ret;
+                                }
+                            default: return "n/a";
+                        }
+                    }
+                }
+
+                // ************************************************************************
+                // ************************************************************************
+                // ****************              End AVV              *********************
+                // ************************************************************************
+                // ************************************************************************
+
+
                 if (StringArray.StArray == null)
                 {
                     if (String.IsNullOrEmpty(crc.PropertyName))
