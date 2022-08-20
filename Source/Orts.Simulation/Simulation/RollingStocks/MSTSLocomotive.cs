@@ -2637,12 +2637,12 @@ namespace Orts.Simulation.RollingStocks
                 if (MaxCurrentBrake == 0) MaxCurrentBrake = MaxCurrentA / 2.3f;
 
                 if (CurrentForceCurves != null)
-                    PowerCurrent = CurrentForceCurves.Get(TractiveForceN, WheelSpeedMpS);
+                    PowerCurrent = CurrentForceCurves.Get(Math.Abs(FilteredMotiveForceN), AbsWheelSpeedMpS);
                 else
                     PowerCurrent = Math.Abs(FilteredMotiveForceN) / MaxForceN * MaxCurrentA;
 
                 if (CurrentBrakeForceCurves != null)
-                    BrakeCurrent = CurrentBrakeForceCurves.Get(DynamicBrakeForceN, WheelSpeedMpS);
+                    BrakeCurrent = CurrentBrakeForceCurves.Get(Math.Abs(DynamicBrakeForceN), AbsWheelSpeedMpS);
                 else
                     BrakeCurrent = Math.Abs(DynamicBrakeForceN) / MaxForceN * MaxCurrentA;
 
@@ -4786,6 +4786,7 @@ namespace Orts.Simulation.RollingStocks
                     //Force to display
                     if (Simulator.GameSpeed == 1)
                         FilteredMotiveForceN = CurrentFilter.Filter(MotiveForceN, elapsedClockSeconds);
+   
                     break;
                 default:
                     break;
@@ -9919,9 +9920,9 @@ namespace Orts.Simulation.RollingStocks
 
                                 // Icik
                                 if (CurrentForceCurves != null)
-                                    data = CurrentForceCurves.Get(TractiveForceN, WheelSpeedMpS);
+                                    data = CurrentForceCurves.Get(this.FilteredMotiveForceN, AbsWheelSpeedMpS);
                                 if (CurrentBrakeForceCurves != null && DynamicBrakeForceN != 0)
-                                    data = CurrentBrakeForceCurves.Get(DynamicBrakeForceN, WheelSpeedMpS);
+                                    data = CurrentBrakeForceCurves.Get(DynamicBrakeForceN, AbsWheelSpeedMpS);
 
                                 if (cvc.ControlType == CABViewControlTypes.AMMETER_ABS) data = Math.Abs(data);
                                 break;
@@ -9930,9 +9931,9 @@ namespace Orts.Simulation.RollingStocks
 
                             // Icik
                             if (CurrentForceCurves != null)
-                                data = CurrentForceCurves.Get(TractiveForceN, WheelSpeedMpS);
+                                data = CurrentForceCurves.Get(this.FilteredMotiveForceN, AbsWheelSpeedMpS);
                             if (CurrentBrakeForceCurves != null && DynamicBrakeForceN != 0)
-                                data = CurrentBrakeForceCurves.Get(DynamicBrakeForceN, WheelSpeedMpS);
+                                data = CurrentBrakeForceCurves.Get(DynamicBrakeForceN, AbsWheelSpeedMpS);
 
                             if (cvc.ControlType == CABViewControlTypes.AMMETER_ABS) data = Math.Abs(data);
                             cvc.ElapsedTime = 0;                            
