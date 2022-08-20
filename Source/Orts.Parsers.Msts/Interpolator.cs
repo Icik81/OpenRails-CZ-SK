@@ -287,13 +287,18 @@ namespace Orts.Parsers.Msts
                 }
                 int numOfColumns = stf.ReadInt(0);
                 string header = stf.ReadString().ToLower();
-                if (header == "throttle")
+                if (header == "throttle" || header == "force")
                 {
                     stf.MustMatch("(");
                     int numOfThrottleValues = 0;
                     while (!stf.EndOfBlock())
                     {
-                        xlist.Add(stf.ReadFloat(STFReader.UNITS.None, 0f));
+                        if (header == "throttle")
+                            xlist.Add(stf.ReadFloat(STFReader.UNITS.None, 0f));
+                        
+                        if (header == "force")
+                            xlist.Add(stf.ReadFloat(STFReader.UNITS.Force, 0f));
+
                         ilist.Add(new Interpolator(numOfRows));
                         numOfThrottleValues++;
                     }

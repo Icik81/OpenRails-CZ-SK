@@ -660,6 +660,8 @@ namespace Orts.Simulation.RollingStocks
         public float AripotControllerValue;
         public float AripotControllerPreValue;
         public bool AripotControllerCanUseThrottle = true;
+        public InterpolatorDiesel2D CurrentForceCurves;
+        public InterpolatorDiesel2D CurrentBrakeForceCurves;
 
 
         // Jindrich
@@ -1344,7 +1346,9 @@ namespace Orts.Simulation.RollingStocks
                 case "engine(dieselstartdelay": DieselStartDelay = stf.ReadFloatBlock(STFReader.UNITS.Time, 10); break;
                 case "engine(mucableequipment": MUCableEquipment = stf.ReadBoolBlock(false); break;
                 case "engine(pantocanhvoff": PantoCanHVOffSpeedKpH = stf.ReadFloatBlock(STFReader.UNITS.Speed, 0); break;
-                case "engine(maxtrainbrakepressure": BrakeSystem.MCP_TrainBrake = stf.ReadFloatBlock(STFReader.UNITS.PressureDefaultPSI, null); break;                
+                case "engine(maxtrainbrakepressure": BrakeSystem.MCP_TrainBrake = stf.ReadFloatBlock(STFReader.UNITS.PressureDefaultPSI, null); break;
+                case "engine(ortscurrentcharacteristics": CurrentForceCurves = new InterpolatorDiesel2D(stf, true); break;
+                case "engine(ortsbrakecurrentcharacteristics": CurrentBrakeForceCurves = new InterpolatorDiesel2D(stf, true); break;
 
 
                 // Jindrich
@@ -1594,8 +1598,10 @@ namespace Orts.Simulation.RollingStocks
             CarIsPlayerLocoSet = locoCopy.CarIsPlayerLocoSet;
             BreakPowerButton_Activated = locoCopy.BreakPowerButton_Activated;
             BreakEDBButton_Activated = locoCopy.BreakEDBButton_Activated;
-            BrakeSystem.MCP_TrainBrake = locoCopy.BrakeSystem.MCP_TrainBrake;              
-            
+            BrakeSystem.MCP_TrainBrake = locoCopy.BrakeSystem.MCP_TrainBrake;
+            CurrentForceCurves = locoCopy.CurrentForceCurves;
+            CurrentBrakeForceCurves = locoCopy.CurrentBrakeForceCurves;
+
 
             // Jindrich
             UsingForceHandle = locoCopy.UsingForceHandle;
@@ -2630,8 +2636,15 @@ namespace Orts.Simulation.RollingStocks
                 if (MaxCurrentPower == 0) MaxCurrentPower = MaxCurrentA / 1.2f;
                 if (MaxCurrentBrake == 0) MaxCurrentBrake = MaxCurrentA / 2.3f;
 
-                PowerCurrent = Math.Abs(FilteredMotiveForceN) / MaxForceN * MaxCurrentA;
-                BrakeCurrent = Math.Abs(DynamicBrakeForceN) / MaxForceN * MaxCurrentA;
+                if (CurrentForceCurves != null)
+                    PowerCurrent = CurrentForceCurves.Get(TractiveForceN, WheelSpeedMpS);
+                else
+                    PowerCurrent = Math.Abs(FilteredMotiveForceN) / MaxForceN * MaxCurrentA;
+
+                if (CurrentBrakeForceCurves != null)
+                    BrakeCurrent = CurrentBrakeForceCurves.Get(DynamicBrakeForceN, WheelSpeedMpS);
+                else
+                    BrakeCurrent = Math.Abs(DynamicBrakeForceN) / MaxForceN * MaxCurrentA;
 
                 if (float.IsInfinity(PowerCurrent) || float.IsNaN(BrakeCurrent))
                     return;
@@ -5071,7 +5084,7 @@ namespace Orts.Simulation.RollingStocks
                         TractiveForceN = maxForceN;
                     }
                     else
-                    {
+                    {                        
                         if (t > 0)
                         {
                             // Icik
@@ -9912,16 +9925,30 @@ namespace Orts.Simulation.RollingStocks
                                 }
                                 if (direction == 1)
                                     data = -data;
+
+                                // Icik
+                                if (CurrentForceCurves != null)
+                                    data = CurrentForceCurves.Get(TractiveForceN, WheelSpeedMpS);
+                                if (CurrentBrakeForceCurves != null && DynamicBrakeForceN != 0)
+                                    data = CurrentBrakeForceCurves.Get(DynamicBrakeForceN, WheelSpeedMpS);
+
                                 if (cvc.ControlType == CABViewControlTypes.AMMETER_ABS) data = Math.Abs(data);
                                 break;
                             }
                             data = this.MotiveForceN / MaxForceN * MaxCurrentA;
+
+                            // Icik
+                            if (CurrentForceCurves != null)
+                                data = CurrentForceCurves.Get(TractiveForceN, WheelSpeedMpS);
+                            if (CurrentBrakeForceCurves != null && DynamicBrakeForceN != 0)
+                                data = CurrentBrakeForceCurves.Get(DynamicBrakeForceN, WheelSpeedMpS);
+
                             if (cvc.ControlType == CABViewControlTypes.AMMETER_ABS) data = Math.Abs(data);
-                            cvc.ElapsedTime = 0;
+                            cvc.ElapsedTime = 0;                            
                             PreDataAmmeter = data;
                         }
                         else
-                            data = PreDataAmmeter;
+                            data = PreDataAmmeter;                                                
                         break;
                     }
                 case CABViewControlTypes.LOAD_METER:
