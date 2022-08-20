@@ -1789,6 +1789,8 @@ namespace Orts.Simulation.RollingStocks
             outf.Write(DirectionButtonPosition);
             outf.Write(CarIsPlayerLocoSet);
             outf.Write(BreakEDBButton_Activated);
+            outf.Write(AripotControllerValue);
+            outf.Write(AripotControllerCanUseThrottle);
 
             base.Save(outf);
 
@@ -1894,6 +1896,8 @@ namespace Orts.Simulation.RollingStocks
             DirectionButtonPosition = inf.ReadInt32();
             CarIsPlayerLocoSet = inf.ReadBoolean();
             BreakEDBButton_Activated = inf.ReadBoolean();
+            AripotControllerValue = inf.ReadSingle();
+            AripotControllerCanUseThrottle = inf.ReadBoolean();
 
             base.Restore(inf);
 
@@ -3975,6 +3979,7 @@ namespace Orts.Simulation.RollingStocks
                         CruiseControl.SpeedRegMode = SubSystems.CruiseControl.SpeedRegulatorMode.Auto;
                         CruiseControl.SelectedSpeedMpS = MpS.FromKpH(40);
                         CruiseControl.SpeedSelMode = SubSystems.CruiseControl.SpeedSelectorMode.Parking;
+                        AripotControllerValue = CruiseControl.SelectedSpeedMpS / MaxSpeedMpS;
                     }
                 }
 
