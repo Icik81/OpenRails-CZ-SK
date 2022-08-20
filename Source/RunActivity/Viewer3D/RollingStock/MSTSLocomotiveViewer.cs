@@ -700,9 +700,20 @@ namespace Orts.Viewer3D.RollingStock
                 }
                 else
                 {
-                    // Manual
-                    Aripot_CycleTime = 0;
-                    Locomotive.CruiseControl.SelectedSpeedMpS = 0;
+                    // Manual                                        
+                    if (Locomotive.CruiseControl.SelectedSpeedMpS > 0)
+                    {
+                        Aripot_CycleTime += 1 * Locomotive.Simulator.OneSecondLoop;
+                        if (Aripot_CycleTime > 0.2f)
+                        {
+                            Aripot_CycleTime = 0;
+                            float speed = MpS.ToKpH(Locomotive.CruiseControl.SelectedSpeedMpS) - 1;
+                            Locomotive.CruiseControl.SetSpeed(MathHelper.Clamp((int)speed, 0, MpS.ToKpH(Locomotive.MaxSpeedMpS)));
+                        }
+                    }
+                    else
+                        Aripot_CycleTime = 0;
+
                     if (Locomotive.AripotControllerCanUseThrottle)
                         Locomotive.SetThrottlePercent(Locomotive.AripotControllerValue * 100);
 

@@ -372,6 +372,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                             {
                                 if (Locomotive.AripotControllerValue > 0)
                                     Locomotive.AripotControllerCanUseThrottle = false;
+                                Locomotive.ThrottleController.SetPercent(0);
+                                currentThrottlePercent = 0;
+                                return;
                             }
 
                             Locomotive.ThrottleController.SetPercent(0);
