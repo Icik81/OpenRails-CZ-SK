@@ -655,7 +655,11 @@ namespace Orts.Simulation.RollingStocks
         public bool BreakEDBSwitchEnable = false;
         public bool BreakEDBButton;
         bool BreakEDBButtonPressed = false;
-        public bool BreakEDBButton_Activated;        
+        public bool BreakEDBButton_Activated;
+        public bool AripotControllerEnable;
+        public float AripotControllerValue;
+        public float AripotControllerPreValue;
+        public bool AripotControllerCanUseThrottle = true;
 
 
         // Jindrich
@@ -6137,6 +6141,8 @@ namespace Orts.Simulation.RollingStocks
             // Icik
             if ((DieselDirectionController && DieselDirection_0) || (DieselDirectionController2 && DieselDirection_0) || (DieselDirectionController3 && DieselDirection_0) || (DieselDirectionController4 && DieselDirection_0))
                 return;
+            if (AripotControllerEnable)
+                return;
 
             Mirel.ResetVigilance();
             if (CruiseControl != null && target != null)
@@ -6290,6 +6296,8 @@ namespace Orts.Simulation.RollingStocks
         {
             // Icik
             if ((DieselDirectionController && DieselDirection_0) || (DieselDirectionController2 && DieselDirection_0) || (DieselDirectionController3 && DieselDirection_0) || (DieselDirectionController4 && DieselDirection_0))
+                return;
+            if (AripotControllerEnable)
                 return;
 
             Mirel.ResetVigilance();
@@ -11607,6 +11615,11 @@ namespace Orts.Simulation.RollingStocks
                 case CABViewControlTypes.BRAKEFORCE_CONVERTER:
                     {
                         data = ConvertFromPSI(cvc, BrakeSystem.PressureConverter);                       
+                        break;
+                    }
+                case CABViewControlTypes.ARIPOT_CONTROLLER:
+                    {
+                        data = AripotControllerValue * 8;
                         break;
                     }
 

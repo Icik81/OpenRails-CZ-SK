@@ -331,12 +331,14 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                     case SpeedRegulatorMode.Auto:
                         {
                             if (SpeedRegulatorOptions.Contains("regulatorauto")) test = true;
-                            SelectedSpeedMpS = Locomotive.AbsSpeedMpS;
+
                             // Icik
                             if (AripotEquipment)
                             {
-                                SelectedSpeedMpS = Locomotive.ThrottlePercent / 100 * Locomotive.MaxSpeedMpS;                                
+                                return;
                             }
+                            
+                            SelectedSpeedMpS = Locomotive.AbsSpeedMpS;                                                                                    
                             break;
                         }
                     case SpeedRegulatorMode.Testing: if (SpeedRegulatorOptions.Contains("regulatortest")) test = true; break;
@@ -362,20 +364,19 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                 {
                     case SpeedRegulatorMode.Auto: if (SpeedRegulatorOptions.Contains("regulatorauto")) test = true; break;
                     case SpeedRegulatorMode.Manual:
-                        {
-                            Locomotive.ThrottleController.SetPercent(0);
-                            currentThrottlePercent = 0;
-                            SelectedSpeedMpS = 0;
+                        {                            
                             if (SpeedRegulatorOptions.Contains("regulatormanual")) test = true;
 
                             // Icik
                             if (AripotEquipment)
-                            {                                
-                                Locomotive.ThrottleController.SetPercent(PreSelectedSpeedMpS * 100 / Locomotive.MaxSpeedMpS);
-                                currentThrottlePercent = PreSelectedSpeedMpS * 100 / Locomotive.MaxSpeedMpS;
-                                SelectedSpeedMpS = 0;
+                            {
+                                if (Locomotive.AripotControllerValue > 0)
+                                    Locomotive.AripotControllerCanUseThrottle = false;
                             }
 
+                            Locomotive.ThrottleController.SetPercent(0);
+                            currentThrottlePercent = 0;
+                            SelectedSpeedMpS = 0;                            
                             foreach (MSTSLocomotive lc in PlayerNotDriveableTrainLocomotives)
                             {
                                 lc.ThrottleOverriden = 0;

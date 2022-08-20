@@ -60,6 +60,9 @@ namespace Orts.Viewer3D.RollingStock
         public bool lemergencybuttonpressed = false;
         CruiseControlViewer CruiseControlViewer;
 
+        // Icik
+        float Aripot_CycleTime;
+
         public MSTSLocomotiveViewer(Viewer viewer, MSTSLocomotive car)
             : base(viewer, car)
         {
@@ -666,15 +669,45 @@ namespace Orts.Viewer3D.RollingStock
             }
 
             // Aripot
-            if (Locomotive.CruiseControl != null && Locomotive.CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.Auto && Locomotive.CruiseControl.AripotEquipment)
+            if (Locomotive.CruiseControl != null && Locomotive.CruiseControl.AripotEquipment)
             {
+                Locomotive.AripotControllerValue = (float)Math.Round(Locomotive.AripotControllerValue, 2);
+                Locomotive.AripotControllerEnable = true;
+                Locomotive.AripotControllerPreValue = Locomotive.AripotControllerValue;
                 if (UserInput.IsDown(UserCommand.ControlThrottleIncrease))
-                {
-                    Locomotive.CruiseControl.SpeedRegulatorSelectedSpeedStartIncrease();
+                {                    
+                    Locomotive.AripotControllerValue += 0.01f;
                 }
                 if (UserInput.IsDown(UserCommand.ControlThrottleDecrease))
+                {                    
+                    Locomotive.AripotControllerValue -= 0.01f;
+                }
+                Locomotive.AripotControllerValue = MathHelper.Clamp(Locomotive.AripotControllerValue, 0, 1);
+
+                if (Locomotive.CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.Auto)
                 {
-                    Locomotive.CruiseControl.SpeedRegulatorSelectedSpeedStartDecrease();
+                    // Auto
+                    Aripot_CycleTime += 1 * Locomotive.Simulator.OneSecondLoop;
+                    if (Aripot_CycleTime > 0.2f)
+                    {
+                        Aripot_CycleTime = 0;
+                        if (Math.Round(Locomotive.AripotControllerValue * Locomotive.MaxSpeedMpS, 1) > Math.Round(Locomotive.CruiseControl.SelectedSpeedMpS, 1))
+                            Locomotive.CruiseControl.SpeedRegulatorSelectedSpeedStartIncrease();
+
+                        if (Math.Round(Locomotive.AripotControllerValue * Locomotive.MaxSpeedMpS, 1) < Math.Round(Locomotive.CruiseControl.SelectedSpeedMpS, 1))
+                            Locomotive.CruiseControl.SpeedRegulatorSelectedSpeedStartDecrease();
+                    }
+                }
+                else
+                {
+                    // Manual
+                    Aripot_CycleTime = 0;
+                    Locomotive.CruiseControl.SelectedSpeedMpS = 0;
+                    if (Locomotive.AripotControllerCanUseThrottle)
+                        Locomotive.SetThrottlePercent(Locomotive.AripotControllerValue * 100);
+
+                    if (!Locomotive.AripotControllerCanUseThrottle && Locomotive.AripotControllerValue == 0)
+                        Locomotive.AripotControllerCanUseThrottle = true;
                 }
             }
 
@@ -2897,6 +2930,7 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.BREAK_EDB_SWITCH:
                 case CABViewControlTypes.BREAK_EDB_DISPLAY:
                 case CABViewControlTypes.BRAKEFORCE_CONVERTER:
+                case CABViewControlTypes.ARIPOT_CONTROLLER:
 
                 case CABViewControlTypes.MOTOR_DISABLED:
                 case CABViewControlTypes.INVERTER_TEST:
@@ -3100,16 +3134,7 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.REGULATOR:
                 case CABViewControlTypes.THROTTLE:
                     if ((Locomotive.DieselDirectionController || Locomotive.DieselDirectionController2 || Locomotive.DieselDirectionController3 || Locomotive.DieselDirectionController4) && Locomotive.DieselDirection_0)
-                        return;
-                    // Aripot
-                    if (Locomotive.CruiseControl != null && Locomotive.CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.Auto && Locomotive.CruiseControl.AripotEquipment)
-                    {
-                        if (ChangedValue(0) > 0)
-                            Locomotive.CruiseControl.SpeedRegulatorSelectedSpeedStartIncrease();
-                        if (ChangedValue(0) < 0)
-                            Locomotive.CruiseControl.SpeedRegulatorSelectedSpeedStartDecrease();
-                        return;
-                    }
+                        return;                    
                     if (ChangedValue(0) != 0)
                     {
                         Locomotive.ThrottleController.CurrentValue += MathHelper.Clamp(NormalizedMouseMovement(), -0.25f, 0.25f);
@@ -3818,6 +3843,16 @@ namespace Orts.Viewer3D.RollingStock
                             new ToggleDoorsRightCommand(Viewer.Log);
                             IsChanged = true;
                         }
+                    }
+                    break;
+                case CABViewControlTypes.ARIPOT_CONTROLLER:
+                    // Aripot
+                    if (Locomotive.CruiseControl != null && Locomotive.CruiseControl.AripotEquipment)
+                    {
+                        if (ChangedValue(0) > 0)                        
+                            Locomotive.AripotControllerValue += MathHelper.Clamp(NormalizedMouseMovement(), 0, 0.05f);                                                    
+                        if (ChangedValue(0) < 0)                        
+                            Locomotive.AripotControllerValue += MathHelper.Clamp(NormalizedMouseMovement(), -0.05f, 0);                                                    
                     }
                     break;
 
