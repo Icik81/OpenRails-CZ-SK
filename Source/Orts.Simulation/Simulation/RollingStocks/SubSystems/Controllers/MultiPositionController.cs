@@ -15,8 +15,10 @@
 // You should have received a copy of the GNU General Public License
 // along with Open Rails.  If not, see <http://www.gnu.org/licenses/>.
 
+using Orts.Common;
 using Orts.Formats.Msts;
 using Orts.Parsers.Msts;
+using ORTS.Common;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -296,16 +298,44 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                     }
                     if (controllerPosition == ControllerPosition.TrainBrakesControllerReleaseStart || controllerPosition == ControllerPosition.Drive)
                     {
-                        if (notch.Type == ORTS.Scripting.Api.ControllerState.Release && Locomotive.TrainBrakeController.CurrentValue != notch.Value)
+                        if (Locomotive.BrakeSystem.BrakeLine1PressurePSI < Bar.ToPSI(4.98f))
                         {
-                            Locomotive.SetTrainBrakePercent(notch.Value * 100);
+                            if (notch.Type == ORTS.Scripting.Api.ControllerState.Release && Locomotive.TrainBrakeController.CurrentValue < notch.Value)
+                            {
+                                Locomotive.TrainBrakeController.StartIncrease(null);
+                                Locomotive.TrainBrakeController.StopIncrease();
+                            }
+                            if (notch.Type == ORTS.Scripting.Api.ControllerState.Release && Locomotive.TrainBrakeController.CurrentValue > notch.Value)
+                            {
+                                Locomotive.TrainBrakeController.StartDecrease();
+                                Locomotive.TrainBrakeController.StopDecrease();
+                            }
+                        }
+                        else
+                        {
+                            if (notch.Type == ORTS.Scripting.Api.ControllerState.Neutral && Locomotive.TrainBrakeController.CurrentValue < notch.Value)
+                            {
+                                Locomotive.TrainBrakeController.StartIncrease(null);
+                                Locomotive.TrainBrakeController.StopIncrease();
+                            }
+                            if (notch.Type == ORTS.Scripting.Api.ControllerState.Neutral && Locomotive.TrainBrakeController.CurrentValue > notch.Value)
+                            {
+                                Locomotive.TrainBrakeController.StartDecrease();
+                                Locomotive.TrainBrakeController.StopDecrease();
+                            }
                         }
                     }
                     if (controllerPosition == ControllerPosition.TrainBrakesControllerNeutralhandleOffStart || controllerPosition == ControllerPosition.Neutral)
                     {
-                        if (notch.Type == ORTS.Scripting.Api.ControllerState.Neutral && Locomotive.TrainBrakeController.CurrentValue != notch.Value)
+                        if (notch.Type == ORTS.Scripting.Api.ControllerState.Neutral && Locomotive.TrainBrakeController.CurrentValue < notch.Value)
                         {
-                            Locomotive.SetTrainBrakePercent(notch.Value * 100);
+                            Locomotive.TrainBrakeController.StartIncrease(null);
+                            Locomotive.TrainBrakeController.StopIncrease();
+                        }
+                        if (notch.Type == ORTS.Scripting.Api.ControllerState.Neutral && Locomotive.TrainBrakeController.CurrentValue > notch.Value)
+                        {
+                            Locomotive.TrainBrakeController.StartDecrease();
+                            Locomotive.TrainBrakeController.StopDecrease();
                         }
                     }
                     if (controllerPosition == ControllerPosition.TrainBrakesControllerApplyStart)
@@ -670,6 +700,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
             }
             else if (haveCruiseControl && ccAutoMode)
             {
+                if (Locomotive.AVVBraking)
+                    return;
                 if (controllerPosition == ControllerPosition.TrainBrakesControllerApplyStart)
                 {
                     if (Locomotive.CruiseControl != null)

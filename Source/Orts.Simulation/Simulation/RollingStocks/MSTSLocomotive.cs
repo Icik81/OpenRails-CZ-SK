@@ -6925,15 +6925,6 @@ namespace Orts.Simulation.RollingStocks
                         SignalEvent(Event.TrainBrakeChange);
                         return;
                     }
-                    if (mpc.controllerBinding == MultiPositionController.ControllerBinding.Combined)
-                    {
-                        if (mpc.controllerPosition == MultiPositionController.ControllerPosition.Drive)
-                            mpc.DoMovement(MultiPositionController.Movement.Forward);
-                        else
-                            mpc.DoMovement(MultiPositionController.Movement.Neutral);
-                        SignalEvent(Event.TrainBrakeChange);
-                        return;
-                    }
                 }
             }
 
@@ -11731,6 +11722,8 @@ namespace Orts.Simulation.RollingStocks
         public float OverridenSignalDistanceOdometer = 0;
         public float OverridenSignalDistance = -1;
         public float OverridenSignalSpeed = -1;
+        public bool AVVBraking = false;
+        private float prevDynBrake = 0;
         
         public virtual string GetDataOfS(CabViewControl crc, ElapsedTime elapsedClockSeconds)
         {
@@ -11814,50 +11807,39 @@ namespace Orts.Simulation.RollingStocks
                                         hillCoeff = stationStop.DistanceToTrainM;
                                     AvvDistanceToNext = stationStop.DistanceToTrainM - (CruiseControl.TrainElevation * hillCoeff) - 20;
 
-                                    float accel = 0.3f;
-                                    float v0 = AbsWheelSpeedMpS;
-                                    float v = 0;
-                                    float s = 1.0f / 2.0f * accel * (((v0 - v) / accel) * ((v0 - v) / accel));
-                                    float newSpeed = MaxSpeedMpS;
-                                    float lengthRemainingToEngageDeceleration = AvvDistanceToNext - s;
-                                    if (lengthRemainingToEngageDeceleration < 0 && AvvDistanceToNext > 0)
-                                    {
-                                        newSpeed = v0 - (accel - AccelerationMpSS);
-                                    }
-                                    Simulator.Confirmer.MSG(s.ToString() + " " + MpS.ToKpH(newSpeed).ToString() + " " + AccelerationMpSS.ToString());
-
-                                    bool stopAtStation = stationStop.DistanceToTrainM < 500 ? true : false;
-                                    if (stopAtStation && AbsWheelSpeedMpS > 0)
-                                        stopAtStation = false;
-                                    else
-                                        stoppedAtStation = true;
-                                    if (stoppedAtStation && !stopAtStation)
-                                        stopAtStation = true;
                                     if (stationStop.DistanceToTrainM > 500)
-                                        stopAtStation = stoppedAtStation = false;
-                                    if (AbsWheelSpeedMpS > 0)
+                                        stoppedAtStation = false;
+
+                                    float newSpeed = AvvDistanceToNext / 5;
+
+                                    if (stationStop.DistanceToTrainM > 200 && newSpeed < 30)
+                                        newSpeed = 30;
+
+                                    if (MpS.ToKpH(CruiseControl.SelectedSpeedMpS) > newSpeed && !stoppedAtStation)
                                     {
-                                        if (newSpeed < maxSelSpeed && !stopAtStation)
-                                        {
-                                            CruiseControl.SelectedSpeedMpS = newSpeed;
-                                        }
+                                        CruiseControl.SelectedSpeedMpS = MpS.FromKpH(newSpeed);
                                     }
-                                    if (AbsWheelSpeedMpS - 1 > CruiseControl.SelectedSpeedMpS)
+                                    if (AbsSpeedMpS == 0 && stationStop.DistanceToTrainM < 100)
+                                        stoppedAtStation = true;
+                                    if (AbsWheelSpeedMpS - 1 > CruiseControl.SelectedSpeedMpS && !stoppedAtStation)
                                     {
+                                        AVVBraking = true;
                                         float minBraking = 0.3f;
                                         minBraking += (MpS.ToKpH(AbsWheelSpeedMpS) - MpS.ToKpH(CruiseControl.SelectedSpeedMpS)) / 60;
+                                        if (prevDynBrake != 0)
+                                        {
+                                            DynamicBrakePercent = prevDynBrake;
+                                            SetDynamicBrakePercent(prevDynBrake);
+                                        }
                                         if (DynamicBrakePercent > 95)
                                         {
+                                            prevDynBrake = DynamicBrakePercent;
                                             if (BrakeSystem.BrakeLine1PressurePSI > Bar.ToPSI(5 - minBraking))
                                             {
                                                 if (TrainBrakeController.TrainBrakeControllerState != ControllerState.Apply)
                                                 {
-                                                    String test = TrainBrakeController.GetStatus().ToLower();
-                                                    StartTrainBrakeIncrease(null, 1);
-                                                }
-                                                else
-                                                {
-                                                    StopTrainBrakeIncrease(1);
+                                                    StartTrainBrakeIncrease(null, 0);
+                                                    StopTrainBrakeIncrease(0);
                                                 }
                                             }
                                             else
@@ -11866,91 +11848,19 @@ namespace Orts.Simulation.RollingStocks
                                                 {
                                                     String test = TrainBrakeController.GetStatus().ToLower();
                                                     StartTrainBrakeDecrease(null);
-                                                }
-                                                else
-                                                {
-                                                    StopTrainBrakeDecrease(1);
+                                                    StopTrainBrakeDecrease(0);
                                                 }
                                             }
+                                        }
+                                        else
+                                        {
+                                            prevDynBrake = 0;
                                         }
                                     }
                                     else
                                     {
-                                        if (!TrainBrakePriority)
-                                        {
-                                            if (BrakeSystem.BrakeLine1PressurePSI < Bar.ToPSI(5))
-                                            {
-                                                if (TrainBrakeController.TrainBrakeControllerState != ControllerState.Release)
-                                                {
-                                                    String test = TrainBrakeController.GetStatus().ToLower();
-                                                    StartTrainBrakeDecrease(null);
-                                                }
-                                                else if (TrainBrakeController.TrainBrakeControllerState != ControllerState.Release)
-                                                {
-                                                    StopTrainBrakeDecrease(1);
-                                                }
-                                            }
-                                        }
-                                    }
-                                    if (OverridenSignalSpeed < 0 && AbsWheelSpeedMpS < 5 && !stopAtStation)
-                                    {
-                                        if (DynamicBrakePercent > 95)
-                                        {
-                                            if (BrakeSystem.BrakeLine1PressurePSI > Bar.ToPSI(5f))
-                                            {
-                                                if (TrainBrakeController.TrainBrakeControllerState != ControllerState.Apply)
-                                                {
-                                                    String test = TrainBrakeController.GetStatus().ToLower();
-                                                    StartTrainBrakeIncrease(null, 1);
-                                                }
-                                                else
-                                                {
-                                                    StopTrainBrakeIncrease(1);
-                                                }
-                                            }
-                                        }
-                                    }
-                                        float coeff = ((AvvDistanceToNext)) / 20;
-                                    newSpeed = coeff;
-                                    if (MpS.ToKpH(CruiseControl.SelectedSpeedMpS) > newSpeed)
-                                    {
-                                        if (newSpeed > speedPostSpeedAhead)
-                                            CruiseControl.SelectedSpeedMpS = MpS.FromKpH(newSpeed);
-                                    }
-                                    if (AbsWheelSpeedMpS - 1 > CruiseControl.SelectedSpeedMpS)
-                                    {
-                                        float minBraking = 0.3f;
-                                        minBraking += (MpS.ToKpH(AbsWheelSpeedMpS) - MpS.ToKpH(CruiseControl.SelectedSpeedMpS)) / 60;
-                                        if (DynamicBrakePercent > 95)
-                                        {
-                                            if (BrakeSystem.BrakeLine1PressurePSI > Bar.ToPSI(5 - minBraking))
-                                            {
-                                                if (TrainBrakeController.TrainBrakeControllerState != ControllerState.Apply)
-                                                {
-                                                    String test = TrainBrakeController.GetStatus().ToLower();
-                                                    StartTrainBrakeIncrease(null, 1);
-                                                }
-                                                else
-                                                {
-                                                    StopTrainBrakeIncrease(1);
-                                                }
-                                            }
-                                            else
-                                            {
-                                                if (TrainBrakeController.TrainBrakeControllerState != ControllerState.Neutral)
-                                                {
-                                                    String test = TrainBrakeController.GetStatus().ToLower();
-                                                    StartTrainBrakeDecrease(null);
-                                                }
-                                                else
-                                                {
-                                                    StopTrainBrakeDecrease(1);
-                                                }
-                                            }
-                                        }
-                                    }
-                                    else
-                                    {
+                                        prevDynBrake = 0;
+                                        AVVBraking = false;
                                         if (!TrainBrakePriority)
                                         {
                                             if (BrakeSystem.BrakeLine1PressurePSI < Bar.ToPSI(5))
@@ -11958,10 +11868,7 @@ namespace Orts.Simulation.RollingStocks
                                                 if (TrainBrakeController.TrainBrakeControllerState != ControllerState.Release)
                                                 {
                                                     StartTrainBrakeDecrease(null);
-                                                }
-                                                else if (TrainBrakeController.TrainBrakeControllerState != ControllerState.Release)
-                                                {
-                                                    StopTrainBrakeDecrease(1);
+                                                    StopTrainBrakeDecrease(0);
                                                 }
                                             }
                                         }
@@ -12025,8 +11932,8 @@ namespace Orts.Simulation.RollingStocks
                                         }
                                     }
                                     AvvDistanceToNext = minDistance;
-                                    float coeff = ((AvvDistanceToNext - 300) + speedPostSpeedAhead) / 20;
-                                    float newSpeed = coeff + speedPostSpeedAhead + 5;
+                                    float coeff = (AvvDistanceToNext - speedPostSpeedAhead - 50) / 20;
+                                    float newSpeed = coeff + speedPostSpeedAhead;
                                     if (MpS.ToKpH(CruiseControl.SelectedSpeedMpS) > newSpeed)
                                     {
                                         if (newSpeed > speedPostSpeedAhead)
@@ -12043,11 +11950,11 @@ namespace Orts.Simulation.RollingStocks
                                                 if (TrainBrakeController.TrainBrakeControllerState != ControllerState.Apply)
                                                 {
                                                     String test = TrainBrakeController.GetStatus().ToLower();
-                                                    StartTrainBrakeIncrease(null, 1);
+                                                    StartTrainBrakeIncrease(null, 0);
+                                                    StopTrainBrakeIncrease(0);
                                                 }
                                                 else
                                                 {
-                                                    StopTrainBrakeIncrease(1);
                                                 }
                                             }
                                             else
@@ -12056,10 +11963,7 @@ namespace Orts.Simulation.RollingStocks
                                                 {
                                                     String test = TrainBrakeController.GetStatus().ToLower();
                                                     StartTrainBrakeDecrease(null);
-                                                }
-                                                else
-                                                {
-                                                    StopTrainBrakeDecrease(1);
+                                                    StopTrainBrakeDecrease(0);
                                                 }
                                             }
                                         }
@@ -12073,10 +11977,7 @@ namespace Orts.Simulation.RollingStocks
                                                 if (TrainBrakeController.TrainBrakeControllerState != ControllerState.Release)
                                                 {
                                                     StartTrainBrakeDecrease(null);
-                                                }
-                                                else if (TrainBrakeController.TrainBrakeControllerState != ControllerState.Release)
-                                                {
-                                                    StopTrainBrakeDecrease(1);
+                                                    StopTrainBrakeDecrease(0);
                                                 }
                                             }
                                         }
@@ -12186,11 +12087,8 @@ namespace Orts.Simulation.RollingStocks
                                             {
                                                 if (TrainBrakeController.TrainBrakeControllerState != ControllerState.Apply)
                                                 {
-                                                    StartTrainBrakeIncrease(null, 1);
-                                                }
-                                                else
-                                                {
-                                                    StopTrainBrakeIncrease(1);
+                                                    StartTrainBrakeIncrease(null, 0);
+                                                    StopTrainBrakeIncrease(0);
                                                 }
                                             }
                                             else
@@ -12199,10 +12097,7 @@ namespace Orts.Simulation.RollingStocks
                                                 {
                                                     String test = TrainBrakeController.GetStatus().ToLower();
                                                     StartTrainBrakeDecrease(null);
-                                                }
-                                                else
-                                                {
-                                                    StopTrainBrakeDecrease(1);
+                                                    StopTrainBrakeDecrease(0);
                                                 }
                                             }
                                         }
@@ -12217,10 +12112,7 @@ namespace Orts.Simulation.RollingStocks
                                                 {
                                                     String test = TrainBrakeController.GetStatus().ToLower();
                                                     StartTrainBrakeDecrease(null);
-                                                }
-                                                else if (TrainBrakeController.TrainBrakeControllerState != ControllerState.Release)
-                                                {
-                                                    StopTrainBrakeDecrease(1);
+                                                    StopTrainBrakeDecrease(0);
                                                 }
                                             }
                                         }
