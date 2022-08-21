@@ -11868,6 +11868,8 @@ namespace Orts.Simulation.RollingStocks
                             case "UserTime": return UserTime;
                             case "NextStation":
                                 {
+                                    if (Train.StationStops.Count == 0)
+                                        return "";
                                     Train.StationStop stationStop = Train.StationStops[0];
                                     return stationStop.PlatformItem.Name.ToUpper();
                                 }
@@ -11891,9 +11893,13 @@ namespace Orts.Simulation.RollingStocks
                                     if (stationStop.DistanceToTrainM > 500)
                                         stoppedAtStation = false;
 
-                                    float newSpeed = AvvDistanceToNext / 5;
+                                    float newSpeed = AvvDistanceToNext / 8;
 
-                                    if (stationStop.DistanceToTrainM > 200 && newSpeed < 30)
+                                    if (stationStop.DistanceToTrainM > 200 && newSpeed < 50)
+                                        newSpeed = 50;
+                                    if (stationStop.DistanceToTrainM > 130 && newSpeed < 40)
+                                        newSpeed = 40;
+                                    if (stationStop.DistanceToTrainM > 75 && newSpeed < 30)
                                         newSpeed = 30;
 
                                     if (MpS.ToKpH(CruiseControl.SelectedSpeedMpS) > newSpeed && !stoppedAtStation)
@@ -11959,6 +11965,8 @@ namespace Orts.Simulation.RollingStocks
                                 }
                             case "NextStationArrDep":
                                 {
+                                    if (Train.StationStops.Count == 0)
+                                        return "";
                                     Physics.Train.StationStop stationStop = Train.StationStops[0];
                                     if (!stoppedAtStation)
                                         return stationStop.arrivalDT.ToShortTimeString();
