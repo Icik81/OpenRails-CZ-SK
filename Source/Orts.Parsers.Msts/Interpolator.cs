@@ -287,8 +287,13 @@ namespace Orts.Parsers.Msts
                 }
                 int numOfColumns = stf.ReadInt(0);
                 string header = stf.ReadString().ToLower();
-                if (header == "throttle" || header == "force")
+                if (header == "throttle" || header == "force" || header == "force2")
                 {
+                    // Icik
+                    // header = "throttle"...x = Throttle, y = AbsWheelSpeed, Out = TractiveForce
+                    // header = "force"...x = FilteredMotiveForce, y = AbsWheelSpeed, Out = Current
+                    // header = "force2"...x = FilteredMotiveForce, y = Throttle, Out = Current
+
                     stf.MustMatch("(");
                     int numOfThrottleValues = 0;
                     while (!stf.EndOfBlock())
@@ -296,8 +301,8 @@ namespace Orts.Parsers.Msts
                         if (header == "throttle")
                             xlist.Add(stf.ReadFloat(STFReader.UNITS.None, 0f));
                         
-                        if (header == "force")
-                            xlist.Add(stf.ReadFloat(STFReader.UNITS.Force, 0f));
+                        if (header == "force" || header == "force2")
+                            xlist.Add(stf.ReadFloat(STFReader.UNITS.Force, 0f));                        
 
                         ilist.Add(new Interpolator(numOfRows));
                         numOfThrottleValues++;
@@ -321,7 +326,13 @@ namespace Orts.Parsers.Msts
                         stf.MustMatch("(");
                         for (int i = 0; i < numOfRows; i++)
                         {
-                            float x = stf.ReadFloat(STFReader.UNITS.SpeedDefaultMPH, 0);
+                            float x = 0;
+                            if (header == "throttle" || header == "force")
+                                x = stf.ReadFloat(STFReader.UNITS.SpeedDefaultMPH, 0);
+
+                            if (header == "force2")
+                                x = stf.ReadFloat(STFReader.UNITS.None, 0);
+
                             numofData++;
                             for (int j = 0; j < numOfColumns - 1; j++)
                             {
@@ -330,12 +341,16 @@ namespace Orts.Parsers.Msts
                                     STFException.TraceWarning(stf, "Interpolator throttle vs. num of columns mismatch. (missing some throttle values)");
                                     errorFound = true;
                                 }
-                                ilist[j][x] = stf.ReadFloat(STFReader.UNITS.Force, 0);
+                                if (header == "throttle")
+                                    ilist[j][x] = stf.ReadFloat(STFReader.UNITS.Force, 0); // Výstup hodnoty trakční síly
+                                
+                                if (header == "force" || header == "force2")
+                                    ilist[j][x] = stf.ReadFloat(STFReader.UNITS.Current, 0); // Výstup hodnoty proudu                                
                                 numofData++;
                             }
                         }
                         stf.SkipRestOfBlock();
-                    }
+                    }                    
                     else
                     {
                         STFException.TraceWarning(stf, "Interpolator didn't find a table to load.");

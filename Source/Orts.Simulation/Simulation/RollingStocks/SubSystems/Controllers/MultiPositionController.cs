@@ -296,36 +296,20 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                             Locomotive.SetTrainBrakePercent(notch.Value * 100);
                         }
                     }
-                    if (controllerPosition == ControllerPosition.TrainBrakesControllerReleaseStart || controllerPosition == ControllerPosition.Drive)
+                    if (controllerPosition == ControllerPosition.TrainBrakesControllerReleaseStart)
                     {
-                        if (Locomotive.BrakeSystem.BrakeLine1PressurePSI < Bar.ToPSI(4.98f))
+                        if (notch.Type == ORTS.Scripting.Api.ControllerState.Release && Locomotive.TrainBrakeController.CurrentValue < notch.Value)
                         {
-                            if (notch.Type == ORTS.Scripting.Api.ControllerState.Release && Locomotive.TrainBrakeController.CurrentValue < notch.Value)
-                            {
-                                Locomotive.TrainBrakeController.StartIncrease(null);
-                                Locomotive.TrainBrakeController.StopIncrease();
-                            }
-                            if (notch.Type == ORTS.Scripting.Api.ControllerState.Release && Locomotive.TrainBrakeController.CurrentValue > notch.Value)
-                            {
-                                Locomotive.TrainBrakeController.StartDecrease();
-                                Locomotive.TrainBrakeController.StopDecrease();
-                            }
+                            Locomotive.TrainBrakeController.StartIncrease(null);
+                            Locomotive.TrainBrakeController.StopIncrease();
                         }
-                        else
+                        if (notch.Type == ORTS.Scripting.Api.ControllerState.Release && Locomotive.TrainBrakeController.CurrentValue > notch.Value)
                         {
-                            if (notch.Type == ORTS.Scripting.Api.ControllerState.Neutral && Locomotive.TrainBrakeController.CurrentValue < notch.Value)
-                            {
-                                Locomotive.TrainBrakeController.StartIncrease(null);
-                                Locomotive.TrainBrakeController.StopIncrease();
-                            }
-                            if (notch.Type == ORTS.Scripting.Api.ControllerState.Neutral && Locomotive.TrainBrakeController.CurrentValue > notch.Value)
-                            {
-                                Locomotive.TrainBrakeController.StartDecrease();
-                                Locomotive.TrainBrakeController.StopDecrease();
-                            }
+                            Locomotive.TrainBrakeController.StartDecrease();
+                            Locomotive.TrainBrakeController.StopDecrease();
                         }
                     }
-                    if (controllerPosition == ControllerPosition.TrainBrakesControllerNeutralhandleOffStart || controllerPosition == ControllerPosition.Neutral)
+                    if (controllerPosition == ControllerPosition.TrainBrakesControllerNeutralhandleOffStart || controllerPosition == ControllerPosition.Neutral || controllerPosition == ControllerPosition.Drive)
                     {
                         if (notch.Type == ORTS.Scripting.Api.ControllerState.Neutral && Locomotive.TrainBrakeController.CurrentValue < notch.Value)
                         {

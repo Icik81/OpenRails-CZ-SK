@@ -662,6 +662,9 @@ namespace Orts.Simulation.RollingStocks
         public bool AripotControllerCanUseThrottle = true;
         public InterpolatorDiesel2D CurrentForceCurves;
         public InterpolatorDiesel2D CurrentBrakeForceCurves;
+        public InterpolatorDiesel2D CurrentForce2Curves_1;
+        public InterpolatorDiesel2D CurrentForce2Curves_2;
+        public InterpolatorDiesel2D CurrentForce2Curves_3;
 
 
         // Jindrich
@@ -1349,7 +1352,9 @@ namespace Orts.Simulation.RollingStocks
                 case "engine(maxtrainbrakepressure": BrakeSystem.MCP_TrainBrake = stf.ReadFloatBlock(STFReader.UNITS.PressureDefaultPSI, null); break;
                 case "engine(ortscurrentcharacteristics": CurrentForceCurves = new InterpolatorDiesel2D(stf, true); break;
                 case "engine(ortsbrakecurrentcharacteristics": CurrentBrakeForceCurves = new InterpolatorDiesel2D(stf, true); break;
-
+                case "engine(ortscurrentcharacteristics_1": CurrentForce2Curves_1 = new InterpolatorDiesel2D(stf, true); break;
+                case "engine(ortscurrentcharacteristics_2": CurrentForce2Curves_2 = new InterpolatorDiesel2D(stf, true); break;
+                case "engine(ortscurrentcharacteristics_3": CurrentForce2Curves_3 = new InterpolatorDiesel2D(stf, true); break;
 
                 // Jindrich
                 case "engine(usingforcehandle": UsingForceHandle = stf.ReadBoolBlock(false); break;
@@ -1601,7 +1606,9 @@ namespace Orts.Simulation.RollingStocks
             BrakeSystem.MCP_TrainBrake = locoCopy.BrakeSystem.MCP_TrainBrake;
             CurrentForceCurves = locoCopy.CurrentForceCurves;
             CurrentBrakeForceCurves = locoCopy.CurrentBrakeForceCurves;
-
+            CurrentForce2Curves_1 = locoCopy.CurrentForce2Curves_1;
+            CurrentForce2Curves_2 = locoCopy.CurrentForce2Curves_2;
+            CurrentForce2Curves_3 = locoCopy.CurrentForce2Curves_3;
 
             // Jindrich
             UsingForceHandle = locoCopy.UsingForceHandle;
@@ -2627,6 +2634,38 @@ namespace Orts.Simulation.RollingStocks
         }
 
         // Icik
+        public void PowerCurrentCalculation()
+        {
+            if (CurrentForceCurves != null)
+                PowerCurrent = CurrentForceCurves.Get(Math.Abs(FilteredMotiveForceN), AbsWheelSpeedMpS);
+            else
+
+                // Zde bude podmínka pro notch ovladače výkonu 
+                if (CurrentForce2Curves_1 != null)
+                PowerCurrent = CurrentForce2Curves_1.Get(Math.Abs(FilteredMotiveForceN), ThrottlePercent);
+            else
+                if (CurrentForce2Curves_2 != null)
+                PowerCurrent = CurrentForce2Curves_2.Get(Math.Abs(FilteredMotiveForceN), ThrottlePercent);
+            else
+                if (CurrentForce2Curves_3 != null)
+                PowerCurrent = CurrentForce2Curves_3.Get(Math.Abs(FilteredMotiveForceN), ThrottlePercent);
+            else
+
+            // Default
+                PowerCurrent = Math.Abs(FilteredMotiveForceN) / MaxForceN * MaxCurrentA;
+        }
+
+        //Icik
+        public void BrakeCurrentCalculation()
+        {
+            if (CurrentBrakeForceCurves != null)
+                BrakeCurrent = CurrentBrakeForceCurves.Get(Math.Abs(DynamicBrakeForceN), AbsWheelSpeedMpS);
+            else
+            // Default
+                BrakeCurrent = Math.Abs(DynamicBrakeForceN) / MaxForceN * MaxCurrentA;            
+        }
+
+        // Icik
         // Definice ochran lokomotiv        
         public void Overcurrent_Protection()
         {
@@ -2635,17 +2674,7 @@ namespace Orts.Simulation.RollingStocks
                 // Nadproudová ochrana                        
                 if (MaxCurrentPower == 0) MaxCurrentPower = MaxCurrentA / 1.2f;
                 if (MaxCurrentBrake == 0) MaxCurrentBrake = MaxCurrentA / 2.3f;
-
-                if (CurrentForceCurves != null)
-                    PowerCurrent = CurrentForceCurves.Get(Math.Abs(FilteredMotiveForceN), AbsWheelSpeedMpS);
-                else
-                    PowerCurrent = Math.Abs(FilteredMotiveForceN) / MaxForceN * MaxCurrentA;
-
-                if (CurrentBrakeForceCurves != null)
-                    BrakeCurrent = CurrentBrakeForceCurves.Get(Math.Abs(DynamicBrakeForceN), AbsWheelSpeedMpS);
-                else
-                    BrakeCurrent = Math.Abs(DynamicBrakeForceN) / MaxForceN * MaxCurrentA;
-
+                                
                 if (float.IsInfinity(PowerCurrent) || float.IsNaN(BrakeCurrent))
                     return;
 
@@ -4359,6 +4388,8 @@ namespace Orts.Simulation.RollingStocks
                     ToggleDieselDirectionController();
                     ToggleDieselDirectionController2();
                 }
+                PowerCurrentCalculation();
+                BrakeCurrentCalculation();
                 Overcurrent_Protection();
                 AntiSlip_Protection();
                 MaxPower_MaxForce_ACDC();
@@ -9919,10 +9950,10 @@ namespace Orts.Simulation.RollingStocks
                                     data = -data;
 
                                 // Icik
-                                if (CurrentForceCurves != null)
-                                    data = CurrentForceCurves.Get(this.FilteredMotiveForceN, AbsWheelSpeedMpS);
+                                if (CurrentForceCurves != null || CurrentForce2Curves_1 != null || CurrentForce2Curves_2 != null || CurrentForce2Curves_3 != null)
+                                    data = PowerCurrent;
                                 if (CurrentBrakeForceCurves != null && DynamicBrakeForceN != 0)
-                                    data = CurrentBrakeForceCurves.Get(DynamicBrakeForceN, AbsWheelSpeedMpS);
+                                    data = BrakeCurrent;
 
                                 if (cvc.ControlType == CABViewControlTypes.AMMETER_ABS) data = Math.Abs(data);
                                 break;
@@ -9930,10 +9961,10 @@ namespace Orts.Simulation.RollingStocks
                             data = this.MotiveForceN / MaxForceN * MaxCurrentA;
 
                             // Icik
-                            if (CurrentForceCurves != null)
-                                data = CurrentForceCurves.Get(this.FilteredMotiveForceN, AbsWheelSpeedMpS);
+                            if (CurrentForceCurves != null || CurrentForce2Curves_1 != null || CurrentForce2Curves_2 != null || CurrentForce2Curves_3 != null)
+                                data = PowerCurrent;
                             if (CurrentBrakeForceCurves != null && DynamicBrakeForceN != 0)
-                                data = CurrentBrakeForceCurves.Get(DynamicBrakeForceN, AbsWheelSpeedMpS);
+                                data = BrakeCurrent;
 
                             if (cvc.ControlType == CABViewControlTypes.AMMETER_ABS) data = Math.Abs(data);
                             cvc.ElapsedTime = 0;                            

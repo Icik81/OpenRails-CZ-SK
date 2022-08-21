@@ -2225,7 +2225,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                     data = Locomotive.MaxForceN;
                     break;
                 case CABViewControlTypes.ORTS_FORCE_IN_PERCENT_THROTTLE_AND_DYNAMIC_BRAKE:
-                    data = Locomotive.ControllerVolts * 10;
+                    data = Locomotive.ControllerVolts * 10;                    
+                    // Icik
+                    if (AripotEquipment && SpeedRegMode == SpeedRegulatorMode.Manual)                    
+                        data = 0;                    
                     break;
                 case CABViewControlTypes.ORTS_TRAIN_TYPE_PAX_OR_CARGO:
                     data = (int)Locomotive.SelectedTrainType;
