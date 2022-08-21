@@ -11288,6 +11288,35 @@ namespace Orts.Simulation.RollingStocks
                 case CABViewControlTypes.ORTS_AVV_SIGNAL:
                     {
                         data = (float)CruiseControl.avvSignal;
+                        if (!String.IsNullOrEmpty(cvc.Label))
+                        {
+                            if (cvc.Label == "Milepost" && AVVActiveLine == 0)
+                            {
+                                data = 1;
+                                break;
+                            }
+                            else
+                            {
+                                data = 0;
+                            }
+                            if (cvc.Label == "Signal" && AVVActiveLine == 1)
+                            {
+                                data = 1;
+                                break;
+                            }
+                            else
+                            {
+                                data = 0;
+                            }
+                            if (cvc.Label == "Station" && AVVActiveLine == 2)
+                            {
+                                data = 1;
+                            }
+                            else
+                            {
+                                data = 0;
+                            }
+                        }
                         break;
                     }
                 case CABViewControlTypes.SELECTING_SYSTEM:
@@ -11725,9 +11754,11 @@ namespace Orts.Simulation.RollingStocks
         public float OverridenSignalSpeed = -1;
         public bool AVVBraking = false;
         private float prevDynBrake = 0;
+        public int AVVActiveLine = 0;
         
-        public virtual string GetDataOfS(CabViewControl crc, ElapsedTime elapsedClockSeconds)
+        public virtual string GetDataOfS(CabViewControl crc, ElapsedTime elapsedClockSeconds, out Color? positiveColor)
         {
+            positiveColor = null;
             if (crc.ControlType == CABViewControlTypes.ORTS_MIREL_DISPLAY)
             {
                 return Mirel.Display;
@@ -11775,14 +11806,29 @@ namespace Orts.Simulation.RollingStocks
                             }
                         }
                         if (nearestStation < nearestSpeedpost && nearestStation < nearestSignal)
-                            nearestItem = "station";
+                            AVVActiveLine = 2;
                         if (nearestSignal < nearestSpeedpost && nearestSignal < nearestStation)
-                            nearestItem = "signal";
+                            AVVActiveLine = 1;
                         if (nearestSpeedpost < nearestSignal && nearestSpeedpost < nearestStation)
-                            nearestItem = "speedpost";
+                            AVVActiveLine = 0;
                         switch (crc.PropertyName)
                         {
-                            case "StaticText": return crc.StaticText;
+                            case "StaticText":
+                                {
+                                    if (crc.Label == "Milepost" && AVVActiveLine == 0)
+                                    {
+                                        positiveColor = new Color(0, 0, 0);
+                                    }
+                                    if (crc.Label == "Signal" && AVVActiveLine == 1)
+                                    {
+                                        positiveColor = new Color(0, 0, 0);
+                                    }
+                                    if (crc.Label == "Station" && AVVActiveLine == 2)
+                                    {
+                                        positiveColor = new Color(0, 0, 0);
+                                    }
+                                    return crc.StaticText;
+                                }
                             case "TrainNumber": return TrainNumber;
                             case "BrakingPercent": return BrakingPercent;
                             case "ActiveSpeedPosts": return ActiveSpeedPosts;
@@ -11796,6 +11842,9 @@ namespace Orts.Simulation.RollingStocks
                                 }
                             case "NextStationDistance":
                                 {
+                                    if (AVVActiveLine == 2)
+                                        positiveColor = new Color(0, 0, 0);
+
                                     if (this.Train.StationStops.Count == 0)
                                         return "?";
                                     Physics.Train.StationStop stationStop = Train.StationStops[0];
@@ -11877,17 +11926,24 @@ namespace Orts.Simulation.RollingStocks
                                     return ret;
 
                                 }
-                            case "NextStationArival":
+                            case "NextStationArrDep":
                                 {
                                     Physics.Train.StationStop stationStop = Train.StationStops[0];
-                                    return TimeSpan.FromSeconds(stationStop.ArrivalTime).ToString();
+                                    if (!stoppedAtStation)
+                                        return stationStop.arrivalDT.ToShortTimeString();
+                                    else
+                                        return stationStop.departureDT.ToShortTimeString() + " ODJEZD";
                                 }
                             case "NextStationSpeed":
                                 {
+                                    if (AVVActiveLine == 2)
+                                        positiveColor = new Color(0, 0, 0);
                                     return "0";
                                 }
                             case "NextMilepostDistance":
                                 {
+                                    if (AVVActiveLine == 0)
+                                        positiveColor = new Color(0, 0, 0);
                                     bool found = false;
                                     string ret = "?";
                                     Train.TrainInfo info = this.Train.GetTrainInfo();
@@ -12015,6 +12071,8 @@ namespace Orts.Simulation.RollingStocks
                                 }
                             case "NextMilepostSpeed":
                                 {
+                                    if (AVVActiveLine == 0)
+                                        positiveColor = new Color(0, 0, 0);
                                     string ret = "?";
                                     Train.TrainInfo info = this.Train.GetTrainInfo();
                                     List<Train.TrainObjectItem> items = info.ObjectInfoForward;
@@ -12047,25 +12105,35 @@ namespace Orts.Simulation.RollingStocks
                                 }
                             case "CurrentMilepostSpeed":
                                 {
+                                    if (AVVActiveLine == 0)
+                                        positiveColor = new Color(0, 0, 0);
                                     var thisInfo = this.Train.GetTrainInfo();
                                     return Math.Round(MpS.ToKpH(thisInfo.allowedSpeedMpS), 0).ToString();
                                 }
                             case "NextSignalDistance":
                                 {
+                                    if (AVVActiveLine == 1)
+                                        positiveColor = new Color(0, 0, 0);
                                     string ret = "?m";
                                     Train.TrainInfo info = this.Train.GetTrainInfo();
                                     List<Train.TrainObjectItem> items = info.ObjectInfoForward;
                                     float minDistance = 1000000;
                                     foreach (var item in items)
                                     {
-                                        if (item.SignalObject.WorldObject.SFileName != null && item.SignalObject.WorldObject.SFileName.ToUpper() == "NVSTOZNAC.S")
-                                            continue;
                                         if (item.ItemType == Train.TrainObjectItem.TRAINOBJECTTYPE.SIGNAL)
                                         {
+                                            if (item.SignalObject.WorldObject != null)
+                                            {
+                                                if (item.SignalObject.WorldObject.SFileName.ToUpper() == "NVSTOZNAC.S" ||
+                                                    item.SignalObject.WorldObject.SFileName.ToUpper() == "NVSTAS4_100M.S")
+                                                {
+                                                    continue;
+                                                }
+                                            }
                                             if (minDistance > item.DistanceToTrainM)
                                             {
                                                 minDistance = (float)Math.Round(item.DistanceToTrainM, 0);
-                                                ret = minDistance.ToString() + "m";
+                                                ret = minDistance.ToString();
                                             }
                                         }
                                     }
@@ -12151,17 +12219,25 @@ namespace Orts.Simulation.RollingStocks
                                 {
                                     /*                                    if (OverridenSignalSpeed > -1)
                                                                             return OverridenSignalSpeed.ToString() + "kmh" */
-                                    string ret = "?kmh";
+                                    if (AVVActiveLine == 1)
+                                        positiveColor = new Color(0, 0, 0);
+                                    string ret = "?";
                                     Train.TrainInfo info = this.Train.GetTrainInfo();
                                     List<Train.TrainObjectItem> items = info.ObjectInfoForward;
                                     float minDistance = 1000000;
                                     bool overrideDistance = false;
                                     foreach (var item in items)
                                     {
-                                        if (item.SignalObject.WorldObject.SFileName != null && item.SignalObject.WorldObject.SFileName.ToUpper() == "NVSTOZNAC.S")
-                                            continue;
                                         if (item.ItemType == Train.TrainObjectItem.TRAINOBJECTTYPE.SIGNAL)
                                         {
+                                            if (item.SignalObject.WorldObject != null)
+                                            {
+                                                if (item.SignalObject.WorldObject.SFileName.ToUpper() == "NVSTOZNAC.S" ||
+                                                    item.SignalObject.WorldObject.SFileName.ToUpper() == "NVSTAS4_100M.S")
+                                                {
+                                                    continue;
+                                                }
+                                            }
                                             if (minDistance > item.DistanceToTrainM)
                                             {
                                                 minDistance = item.DistanceToTrainM;
@@ -12234,56 +12310,61 @@ namespace Orts.Simulation.RollingStocks
                                                                 break;
                                                             }
                                                     }
-                                                    ret = Math.Round(signalSpeedAhead, 0).ToString() + "kmh";
+                                                    ret = Math.Round(signalSpeedAhead, 0).ToString();
                                                 }
                                                 else if (overrideDistance)
                                                 {
                                                     if (CruiseControl.avvSignal == CruiseControl.AvvSignal.Clear)
                                                     {
                                                         CruiseControl.avvSignal = CruiseControl.AvvSignal.Restricted;
-                                                        ret = "100kmh";
+                                                        ret = "120";
                                                     }
                                                     else if (CruiseControl.avvSignal == CruiseControl.AvvSignal.Restricted)
                                                     {
                                                         CruiseControl.avvSignal = CruiseControl.AvvSignal.Stop;
-                                                        ret = "0kmh";
+                                                        ret = "0";
                                                     }
                                                     else if (CruiseControl.avvSignal == CruiseControl.AvvSignal.Restricting40)
                                                     {
                                                         CruiseControl.avvSignal = CruiseControl.AvvSignal.Stop;
-                                                        ret = "0kmh";
+                                                        ret = "0";
                                                     }
                                                 }
                                                 if (!Mirel.RecievingRepeaterSignal)
                                                 {
-                                                    if (CruiseControl.avvSignal == CruiseControl.AvvSignal.Clear || CruiseControl.avvSignal == CruiseControl.AvvSignal.Restricted)
+                                                    if (CruiseControl.avvSignal == CruiseControl.AvvSignal.Clear)
                                                     {
-                                                        ret = "100kmh";
-                                                        signalSpeedAhead = 100;
+                                                        ret = Math.Round(MpS.ToKpH(MaxSpeedMpS), 0).ToString();
+                                                        signalSpeedAhead = (int)Math.Round(MpS.ToKpH(MaxSpeedMpS), 0);
+                                                    }
+                                                    if (CruiseControl.avvSignal == CruiseControl.AvvSignal.Restricted)
+                                                    {
+                                                        ret = "120";
+                                                        signalSpeedAhead = (int)Math.Round(MpS.ToKpH(MaxSpeedMpS), 0);
                                                     }
                                                     if (CruiseControl.avvSignal == CruiseControl.AvvSignal.Restricting40)
                                                     {
                                                         signalSpeedAhead = 40;
-                                                        ret = "40kmh";
+                                                        ret = "40";
                                                     }
                                                     if (CruiseControl.avvSignal == CruiseControl.AvvSignal.Restricting60)
                                                     {
-                                                        ret = "60kmh";
+                                                        ret = "60";
                                                         signalSpeedAhead = 60;
                                                     }
                                                     if (CruiseControl.avvSignal == CruiseControl.AvvSignal.Restricting80)
                                                     {
-                                                        ret = "80kmh";
+                                                        ret = "80";
                                                         signalSpeedAhead = 80;
                                                     }
                                                     if (CruiseControl.avvSignal == CruiseControl.AvvSignal.Restricting100)
                                                     {
-                                                        ret = "100kmh";
+                                                        ret = "100";
                                                         signalSpeedAhead = 100;
                                                     }
                                                     if (CruiseControl.avvSignal == CruiseControl.AvvSignal.Stop)
                                                     {
-                                                        ret = "0kmh";
+                                                        ret = "0";
                                                         signalSpeedAhead = 0;
                                                     }
                                                 }

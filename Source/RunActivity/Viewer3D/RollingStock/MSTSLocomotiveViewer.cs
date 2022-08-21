@@ -3075,6 +3075,13 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.ORTS_LS90_POWER:
                 case CABViewControlTypes.ORTS_LS90_LED:
                 case CABViewControlTypes.ORTS_AVV_SIGNAL:
+                case CABViewControlTypes.ORTS_AVV_SET_CLEAR:
+                case CABViewControlTypes.ORTS_AVV_SET_RESTRICTED:
+                case CABViewControlTypes.ORTS_AVV_SET_STOP:
+                case CABViewControlTypes.ORTS_AVV_SET_40:
+                case CABViewControlTypes.ORTS_AVV_SET_60:
+                case CABViewControlTypes.ORTS_AVV_SET_80:
+                case CABViewControlTypes.ORTS_AVV_SET_100:
                 case CABViewControlTypes.ORTS_DISPLAY_SPLASH_SCREEN:
                 case CABViewControlTypes.SELECTED_SYSTEM:
                 case CABViewControlTypes.SELECTING_SYSTEM:
@@ -4706,6 +4713,62 @@ namespace Orts.Viewer3D.RollingStock
                             Locomotive.CruiseControl.SpeedRegulatorMaxForceStopDecrease();
                         break;
                     }
+                case CABViewControlTypes.ORTS_AVV_SET_CLEAR:
+                    {
+                        if (UserInput.IsMouseLeftButtonDown)
+                        {
+                            Locomotive.CruiseControl.avvSignal = CruiseControl.AvvSignal.Clear;
+                        }
+                        break;
+                    }
+                case CABViewControlTypes.ORTS_AVV_SET_RESTRICTED:
+                    {
+                        if (UserInput.IsMouseLeftButtonDown)
+                        {
+                            Locomotive.CruiseControl.avvSignal = CruiseControl.AvvSignal.Restricted;
+                        }
+                        break;
+                    }
+                case CABViewControlTypes.ORTS_AVV_SET_STOP:
+                    {
+                        if (UserInput.IsMouseLeftButtonDown)
+                        {
+                            Locomotive.CruiseControl.avvSignal = CruiseControl.AvvSignal.Stop;
+                        }
+                        break;
+                    }
+                case CABViewControlTypes.ORTS_AVV_SET_40:
+                    {
+                        if (UserInput.IsMouseLeftButtonDown)
+                        {
+                            Locomotive.CruiseControl.avvSignal = CruiseControl.AvvSignal.Restricting40;
+                        }
+                        break;
+                    }
+                case CABViewControlTypes.ORTS_AVV_SET_60:
+                    {
+                        if (UserInput.IsMouseLeftButtonDown)
+                        {
+                            Locomotive.CruiseControl.avvSignal = CruiseControl.AvvSignal.Restricting60;
+                        }
+                        break;
+                    }
+                case CABViewControlTypes.ORTS_AVV_SET_80:
+                    {
+                        if (UserInput.IsMouseLeftButtonDown)
+                        {
+                            Locomotive.CruiseControl.avvSignal = CruiseControl.AvvSignal.Restricting80;
+                        }
+                        break;
+                    }
+                case CABViewControlTypes.ORTS_AVV_SET_100:
+                    {
+                        if (UserInput.IsMouseLeftButtonDown)
+                        {
+                            Locomotive.CruiseControl.avvSignal = CruiseControl.AvvSignal.Restricting100;
+                        }
+                        break;
+                    }
             }
 
         }
@@ -4944,7 +5007,8 @@ namespace Orts.Viewer3D.RollingStock
     )
             {
                 digital.StringValue = Num.ToString();
-                DrawText = Locomotive.GetDataOfS(digital, elapsedTime);
+                Color? overridenColor = null;
+                DrawText = Locomotive.GetDataOfS(digital, elapsedTime, out overridenColor);
                 if (!String.IsNullOrEmpty(Control.EditablePositionCharacter))
                 {
                     if (Locomotive.EditableItems.Count == 0)
@@ -4968,10 +5032,13 @@ namespace Orts.Viewer3D.RollingStock
                     DrawText += Control.EditablePositionCharacter;
 
                 DrawColor = new Color(digital.PositiveColor.R, digital.PositiveColor.G, digital.PositiveColor.B);
+                if (overridenColor != null)
+                    DrawColor = new Color(overridenColor.Value.R, overridenColor.Value.G, overridenColor.Value.B);
             }
             else if (Control.ControlType == CABViewControlTypes.ORTS_MIREL_DISPLAY)
             {
-                DrawText = Locomotive.GetDataOfS(digital, elapsedTime);
+                Color? overridenColor = new Color();
+                DrawText = Locomotive.GetDataOfS(digital, elapsedTime, out overridenColor);
                 while (DrawText.Length < 3)
                     DrawText = " " + DrawText;
                 DrawColor = new Color(digital.PositiveColor.R, digital.PositiveColor.G, digital.PositiveColor.B);
