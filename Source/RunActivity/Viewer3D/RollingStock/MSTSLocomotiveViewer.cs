@@ -492,13 +492,16 @@ namespace Orts.Viewer3D.RollingStock
                     Locomotive.Pantograph3SwitchFullDown = true;
                 }
 
-                if (Locomotive.Pantograph3Switch == -1)
+                if (Locomotive.extendedPhysics != null)
                 {
-                    Locomotive.extendedPhysics.GeneratoricModeDisabled = true;
-                }
-                else
-                {
-                    Locomotive.extendedPhysics.GeneratoricModeDisabled = false;
+                    if (Locomotive.Pantograph3Switch == -1)
+                    {
+                        Locomotive.extendedPhysics.GeneratoricModeDisabled = true;
+                    }
+                    else
+                    {
+                        Locomotive.extendedPhysics.GeneratoricModeDisabled = false;
+                    }
                 }
                 if (Locomotive.LocoType == MSTSLocomotive.LocoTypes.Vectron && Locomotive.PantoCommandDown)
                 {
