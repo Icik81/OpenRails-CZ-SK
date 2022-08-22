@@ -1913,9 +1913,7 @@ namespace Orts.Simulation.Physics
 
                         Trace.WriteLine(String.Format("Num of coupler breaks: {0}", NumOfCouplerBreaks));
                         numOfCouplerBreaksNoted = true;
-
-                        // Icik
-                        if (Simulator.BreakCouplers || !Simulator.BreakCouplers)
+                        if (Simulator.BreakCouplers)
                         {
                             Simulator.UncoupleBehind(uncoupleBehindCar, true);
                             uncoupleBehindCar.CouplerExceedBreakLimit = false;

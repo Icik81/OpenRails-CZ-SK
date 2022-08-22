@@ -1106,15 +1106,15 @@ namespace Orts.Simulation.RollingStocks
             {
                 if (coupler.R0X != 0)
                 {
-                    CarLengthM0 = CarLengthM + coupler.R0X;
-                    coupler.R0X = 0f;
-                    // Nákladní vozy
-                    if (WagonType == WagonTypes.Freight)
-                        coupler.R0Y = 0.07f;
-                    // Osobní vozy a ostatní
-                    else
-                        coupler.R0Y = 0.015f;
+                    CarLengthM0 = CarLengthM + coupler.R0X;                    
                 }
+                coupler.R0X = 0f;
+                // Nákladní vozy
+                if (WagonType == WagonTypes.Freight)
+                    coupler.R0Y = 0.07f;
+                // Osobní vozy a ostatní
+                else
+                    coupler.R0Y = 0.015f;
             }
             CarLengthM = CarLengthM0;
 

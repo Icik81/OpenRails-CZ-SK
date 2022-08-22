@@ -1814,7 +1814,7 @@ namespace Orts.Simulation.RollingStocks
                 }
                 if (Pantographs[1].State == PantographState.Up && Pantographs[2].State == PantographState.Up)
                     I_PantographCurrent /= 2;
-                if (I_PantographCurrent > I_MaxPantographCurrent && Math.Abs(TractiveForceN) > 0.80f * MaxForceN && LocoType == LocoTypes.Normal && AbsSpeedMpS < 30f / 3.6f)
+                if (I_PantographCurrent > I_MaxPantographCurrent && Math.Abs(TractiveForceN) > 0.60f * MaxForceN * (1 + (AbsSpeedMpS / 10)) && LocoType == LocoTypes.Normal)
                 {
                     int I_PantographCurrentToleranceTimeInfo = 10 - (int)I_PantographCurrentToleranceTime;
                     Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Too much current for one pantograph - use the other pantograph too!") + " (" + I_PantographCurrentToleranceTimeInfo + ")");
