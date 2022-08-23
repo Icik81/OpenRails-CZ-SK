@@ -98,13 +98,12 @@ namespace Orts.Viewer3D
 #endif
             UpdateActiveLightCone();
         }
-
         void UpdateActiveLightCone()
         {
             var newLightCone = (LightConePrimitive)LightPrimitives.FirstOrDefault(lm => lm is LightConePrimitive && lm.Enabled);
 
             // Fade-in should be NEW headlight.
-            if ((ActiveLightCone == null) && (newLightCone != null))
+            if ((ActiveLightCone == null || TrainHeadlight == 2) && (newLightCone != null))
                 LightConeFadeIn = newLightCone.Light.FadeIn;
             else
                 LightConeFadeIn = 0;
