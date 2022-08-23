@@ -95,6 +95,7 @@ namespace Orts.Viewer3D
 
         // Dynamický NearPlane
         public float NearPlane;
+        public float PreNearPlane;
         public void NearPlaneUpdate()
         {
             ScreenChanged();
@@ -194,15 +195,19 @@ namespace Orts.Viewer3D
             if (Viewer.Simulator.PlayerIsInCab && (!Viewer.PlayerLocomotive.HasFront3DCab && !Viewer.PlayerLocomotive.HasRear3DCab))
                 NearPlane = 1.0f;
 
-            var aspectRatio = (float)Viewer.DisplaySize.X / Viewer.DisplaySize.Y;
-            var farPlaneDistance = SkyConstants.skyRadius + 100;  // so far the sky is the biggest object in view
-            var fovWidthRadians = MathHelper.ToRadians(FieldOfView);            
-            if (Viewer.Settings.DistantMountains)
-                XnaDistantMountainProjection = Matrix.CreatePerspectiveFieldOfView(fovWidthRadians, aspectRatio, MathHelper.Clamp(Viewer.Settings.ViewingDistance - 500, 500, 1500), Viewer.Settings.DistantMountainsViewingDistance);
-            xnaProjection = Matrix.CreatePerspectiveFieldOfView(fovWidthRadians, aspectRatio, NearPlane, Viewer.Settings.ViewingDistance);
-            XNASkyProjection = Matrix.CreatePerspectiveFieldOfView(fovWidthRadians, aspectRatio, NearPlane, farPlaneDistance);    // TODO remove? 
-            frustumRightProjected.X = (float)Math.Cos(fovWidthRadians / 2 * aspectRatio);  // Precompute the right edge of the view frustrum.
-            frustumRightProjected.Z = (float)Math.Sin(fovWidthRadians / 2 * aspectRatio);
+            if (PreNearPlane > 1.5f * NearPlane || PreNearPlane < 0.5f * NearPlane)
+            {
+                var aspectRatio = (float)Viewer.DisplaySize.X / Viewer.DisplaySize.Y;
+                var farPlaneDistance = SkyConstants.skyRadius + 100;  // so far the sky is the biggest object in view
+                var fovWidthRadians = MathHelper.ToRadians(FieldOfView);
+                if (Viewer.Settings.DistantMountains)
+                    XnaDistantMountainProjection = Matrix.CreatePerspectiveFieldOfView(fovWidthRadians, aspectRatio, MathHelper.Clamp(Viewer.Settings.ViewingDistance - 500, 500, 1500), Viewer.Settings.DistantMountainsViewingDistance);
+                xnaProjection = Matrix.CreatePerspectiveFieldOfView(fovWidthRadians, aspectRatio, NearPlane, Viewer.Settings.ViewingDistance);
+                XNASkyProjection = Matrix.CreatePerspectiveFieldOfView(fovWidthRadians, aspectRatio, NearPlane, farPlaneDistance);    // TODO remove? 
+                frustumRightProjected.X = (float)Math.Cos(fovWidthRadians / 2 * aspectRatio);  // Precompute the right edge of the view frustrum.
+                frustumRightProjected.Z = (float)Math.Sin(fovWidthRadians / 2 * aspectRatio);
+                PreNearPlane = NearPlane;
+            }
         }
 
         /// <summary>
