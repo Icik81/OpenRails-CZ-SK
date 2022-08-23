@@ -2373,7 +2373,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems
             Clear,
             Restricting60,
             Restricting80,
-            Restricting100
+            Restricting100,
+            NoRestriction
         };
 
         public enum ControllerCruiseControlLogic

@@ -1423,11 +1423,11 @@ namespace Orts.Simulation.RollingStocks
                                     string[] behaviors = array.Split('{');
                                     updatedArray = behaviors[0];
                                     displayID = int.Parse(behaviors[1].Replace("}", ""));
-            }
+                                }
                                 else
                                 {
                                     updatedArray = array;
-        }
+                                }
                                 if (strArray.Strings == null)
                                 {
                                     strArray.Strings = new Dictionary<string, int>();
@@ -4517,6 +4517,7 @@ namespace Orts.Simulation.RollingStocks
                     if (CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.Auto || CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.AVV)
                     {
                         bool braking = false;
+                        bool forceBrake = false;
                         if (MultiPositionControllers != null)
                         {
                             foreach (MultiPositionController mpc in MultiPositionControllers)
@@ -4532,6 +4533,13 @@ namespace Orts.Simulation.RollingStocks
                                 {
                                     braking = true;
                                 }
+                                if (mpc.controllerBinding == MultiPositionController.ControllerBinding.Combined)
+                                {
+                                    if (mpc.controllerPosition != MultiPositionController.ControllerPosition.ThrottleIncrease)
+                                    {
+                                        forceBrake = braking = true;
+                                    }
+                                }
                             }
                         }
 
@@ -4541,7 +4549,7 @@ namespace Orts.Simulation.RollingStocks
                             braking = true;
                         }
 
-                        if (CruiseControl.SpeedSelMode != CruiseControl.SpeedSelectorMode.Parking && CruiseControl.SpeedRegulatorOptions.Contains("selectorparking"))
+                        if (CruiseControl.SpeedSelMode != CruiseControl.SpeedSelectorMode.Parking && CruiseControl.SpeedRegulatorOptions.Contains("selectorparking") && !forceBrake)
                             braking = false;
                         if (AbsSpeedMpS > MpS.FromKpH(AutomaticParkingBrakeEngageSpeedKpH))
                             braking = false;
@@ -12181,7 +12189,7 @@ namespace Orts.Simulation.RollingStocks
                                     float newSpeed = coeff + signalSpeedAhead + 5;
                                     if (newSpeed < signalSpeedAhead)
                                         newSpeed = signalSpeedAhead;
-                                    if (MpS.ToKpH(CruiseControl.SelectedSpeedMpS) > newSpeed)
+                                    if (MpS.ToKpH(CruiseControl.SelectedSpeedMpS) > newSpeed && CruiseControl.avvSignal != CruiseControl.AvvSignal.NoRestriction)
                                     {
                                         CruiseControl.SelectedSpeedMpS = MpS.FromKpH(newSpeed);
                                     }

@@ -384,6 +384,7 @@ namespace Orts.Formats.Msts
         ORTS_AVV_SET_60,
         ORTS_AVV_SET_80,
         ORTS_AVV_SET_100,
+        ORTS_AVV_NO_RESTRICTION,
         ORTS_SCREEN_BUTTON,
         SELECTED_SYSTEM,
         SELECTING_SYSTEM,

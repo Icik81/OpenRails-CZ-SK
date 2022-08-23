@@ -3100,7 +3100,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     }
                 }
 
-                //lead.ParkingBrakeTargetPressurePSI = 2 * 14.50377f;
+                if (lead.AutomaticParkingBrakeEngaged && lead.ParkingBrakeTargetPressurePSI == 0)
+                {
+                    lead.ParkingBrakeTargetPressurePSI = 2 * 14.50377f;
+                }
 
                 // Automatická parkovací brzda
                 if (lead.AutomaticParkingBrakeEngaged

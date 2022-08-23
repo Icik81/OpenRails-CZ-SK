@@ -309,7 +309,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                             Locomotive.TrainBrakeController.StopDecrease();
                         }
                     }
-                    if (controllerPosition == ControllerPosition.TrainBrakesControllerNeutralhandleOffStart || controllerPosition == ControllerPosition.Neutral || controllerPosition == ControllerPosition.Drive)
+                    if (controllerPosition == ControllerPosition.TrainBrakesControllerNeutralhandleOffStart || controllerPosition == ControllerPosition.Neutral)
                     {
                         if (notch.Type == ORTS.Scripting.Api.ControllerState.Neutral && Locomotive.TrainBrakeController.CurrentValue < notch.Value)
                         {
@@ -317,6 +317,14 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                             Locomotive.TrainBrakeController.StopIncrease();
                         }
                         if (notch.Type == ORTS.Scripting.Api.ControllerState.Neutral && Locomotive.TrainBrakeController.CurrentValue > notch.Value)
+                        {
+                            Locomotive.TrainBrakeController.StartDecrease();
+                            Locomotive.TrainBrakeController.StopDecrease();
+                        }
+                    }
+                    if (controllerPosition == ControllerPosition.Drive)
+                    {
+                        if (notch.Type == ORTS.Scripting.Api.ControllerState.Release && Locomotive.TrainBrakeController.CurrentValue > notch.Value)
                         {
                             Locomotive.TrainBrakeController.StartDecrease();
                             Locomotive.TrainBrakeController.StopDecrease();

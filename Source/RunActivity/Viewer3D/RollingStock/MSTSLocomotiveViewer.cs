@@ -3085,6 +3085,7 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.ORTS_AVV_SET_60:
                 case CABViewControlTypes.ORTS_AVV_SET_80:
                 case CABViewControlTypes.ORTS_AVV_SET_100:
+                case CABViewControlTypes.ORTS_AVV_NO_RESTRICTION:
                 case CABViewControlTypes.ORTS_DISPLAY_SPLASH_SCREEN:
                 case CABViewControlTypes.SELECTED_SYSTEM:
                 case CABViewControlTypes.SELECTING_SYSTEM:
@@ -4769,6 +4770,14 @@ namespace Orts.Viewer3D.RollingStock
                         if (UserInput.IsMouseLeftButtonDown)
                         {
                             Locomotive.CruiseControl.avvSignal = CruiseControl.AvvSignal.Restricting100;
+                        }
+                        break;
+                    }
+                case CABViewControlTypes.ORTS_AVV_NO_RESTRICTION:
+                    {
+                        if (UserInput.IsMouseLeftButtonDown)
+                        {
+                            Locomotive.CruiseControl.avvSignal = CruiseControl.AvvSignal.NoRestriction;
                         }
                         break;
                     }
