@@ -498,6 +498,7 @@ namespace Orts.Viewer3D
         float fadeDuration = -1;
         float clampValue = 1;
         float distance = 1000;
+        bool TrainHeadlightOn;
         internal void UpdateShaders()
         {
             if (Viewer.Settings.UseMSTSEnv == false)
@@ -514,6 +515,7 @@ namespace Orts.Viewer3D
             {
                 var lightDrawer = Viewer.PlayerLocomotiveViewer.lightDrawer;
                 var lightState = lightDrawer.IsLightConeActive;
+                // TrainHeadlight 1
                 if (lightState != lastLightState)
                 {
                     if (lightDrawer.LightConeFadeIn > 0)
@@ -532,6 +534,24 @@ namespace Orts.Viewer3D
                 {
                     fadeDuration = 0;
                 }
+                // TrainHeadlight 2
+                if (lightDrawer.TrainHeadlight == 2 && !TrainHeadlightOn)
+                {
+                    if (lightDrawer.LightConeFadeIn > 0)
+                    {
+                        fadeStartTimer = Viewer.Simulator.GameTime;
+                        fadeDuration = lightDrawer.LightConeFadeIn;
+                    }
+                    else if (lightDrawer.LightConeFadeOut > 0)
+                    {
+                        fadeStartTimer = Viewer.Simulator.GameTime;
+                        fadeDuration = -lightDrawer.LightConeFadeOut;
+                    }
+                    TrainHeadlightOn = true;
+                }
+                if (lightDrawer.TrainHeadlight == 1)
+                    TrainHeadlightOn = false;
+
                 if (!lightState && fadeDuration == 0)
                     // This occurs when switching locos and needs to be handled or we get lingering light.
                     SceneryShader.SetHeadlightOff();
