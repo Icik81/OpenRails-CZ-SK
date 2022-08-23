@@ -1246,6 +1246,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                         if (controllerVolts > 0)
                         {
                             float step = 100 / Locomotive.ThrottleFullRangeDecreaseTimeSeconds;
+                            if (MpS.ToKpH(delta) < -2)
+                                step *= 10;
                             step *= elapsedClockSeconds;
                             controllerVolts -= step;
                         }

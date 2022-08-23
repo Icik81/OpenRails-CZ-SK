@@ -12185,7 +12185,7 @@ namespace Orts.Simulation.RollingStocks
                                         }
                                     }
                                     AvvDistanceToNext = minDistance;
-                                    float coeff = ((AvvDistanceToNext - 300) + signalSpeedAhead) / 20;
+                                    float coeff = ((AvvDistanceToNext - 150) + signalSpeedAhead) / 15;
                                     float newSpeed = coeff + signalSpeedAhead + 5;
                                     if (newSpeed < signalSpeedAhead)
                                         newSpeed = signalSpeedAhead;
@@ -12371,9 +12371,14 @@ namespace Orts.Simulation.RollingStocks
                                                         CruiseControl.avvSignal = CruiseControl.AvvSignal.Stop;
                                                         ret = "0";
                                                     }
-                                                    else if (CruiseControl.avvSignal == CruiseControl.AvvSignal.Restricting40)
+                                                    else if (CruiseControl.avvSignal == CruiseControl.AvvSignal.Restricting40 ||
+                                                        CruiseControl.avvSignal == CruiseControl.AvvSignal.Restricting60 ||
+                                                        CruiseControl.avvSignal == CruiseControl.AvvSignal.Restricting80 ||
+                                                        CruiseControl.avvSignal == CruiseControl.AvvSignal.Restricting100 ||
+                                                        CruiseControl.avvSignal == CruiseControl.AvvSignal.NoRestriction
+                                                        )
                                                     {
-                                                        CruiseControl.avvSignal = CruiseControl.AvvSignal.Stop;
+                                                        CruiseControl.avvSignal = CruiseControl.AvvSignal.Restricted;
                                                         ret = "0";
                                                     }
                                                 }
@@ -12387,6 +12392,8 @@ namespace Orts.Simulation.RollingStocks
                                                     if (CruiseControl.avvSignal == CruiseControl.AvvSignal.Restricted)
                                                     {
                                                         ret = "120";
+                                                        if (MpS.ToKpH(MaxSpeedMpS) < 120)
+                                                            ret = Math.Round(MpS.ToKpH(MaxSpeedMpS), 0).ToString();
                                                         signalSpeedAhead = (int)Math.Round(MpS.ToKpH(MaxSpeedMpS), 0);
                                                     }
                                                     if (CruiseControl.avvSignal == CruiseControl.AvvSignal.Restricting40)
@@ -12413,6 +12420,11 @@ namespace Orts.Simulation.RollingStocks
                                                     {
                                                         ret = "0";
                                                         signalSpeedAhead = 0;
+                                                    }
+                                                    if (CruiseControl.avvSignal == CruiseControl.AvvSignal.NoRestriction)
+                                                    {
+                                                        signalSpeedAhead = (int)Math.Round(MpS.ToKpH(MaxSpeedMpS), 0);
+                                                        ret = signalSpeedAhead.ToString();
                                                     }
                                                 }
                                             }
