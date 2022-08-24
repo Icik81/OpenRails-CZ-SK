@@ -1084,7 +1084,7 @@ namespace Orts.Viewer3D.RollingStock
         /// Load the various car sounds
         /// </summary>
         /// <param name="wagonFolderSlash"></param>
-        private void LoadCarSounds(string wagonFolderSlash)
+        public void LoadCarSounds(string wagonFolderSlash)
         {
             if (MSTSWagon.MainSoundFileName != null) LoadCarSound(wagonFolderSlash, MSTSWagon.MainSoundFileName);
             if (MSTSWagon.InteriorSoundFileName != null) LoadCarSound(wagonFolderSlash, MSTSWagon.InteriorSoundFileName);

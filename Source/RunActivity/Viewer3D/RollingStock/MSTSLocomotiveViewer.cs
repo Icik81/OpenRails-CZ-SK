@@ -66,30 +66,7 @@ namespace Orts.Viewer3D.RollingStock
         public MSTSLocomotiveViewer(Viewer viewer, MSTSLocomotive car)
             : base(viewer, car)
         {
-            Locomotive = car;
-
-            string wagonFolderSlash = Path.GetDirectoryName(Locomotive.WagFilePath) + "\\";
-            if (Locomotive.CabSoundFileName != null) LoadCarSound(wagonFolderSlash, Locomotive.CabSoundFileName);
-
-            // Icik            
-            string smsGenericFilePath = "..\\Content\\GenericSound\\4_Wheels\\GenSound.sms"; // Default
-            switch (MSTSWagon.WagonNumAxles)
-            {
-                case 2:
-                    smsGenericFilePath = "..\\Content\\GenericSound\\2_Wheels\\GenSound.sms";
-                    break;
-                case 3:
-                    smsGenericFilePath = "..\\Content\\GenericSound\\3_Wheels\\GenSound.sms";
-                    break;
-                case 4:
-                    smsGenericFilePath = "..\\Content\\GenericSound\\4_Wheels\\GenSound.sms";
-                    break;
-                case 6:
-                    smsGenericFilePath = "..\\Content\\GenericSound\\6_Wheels\\GenSound.sms";
-                    break;
-            }
-            if (!MSTSWagon.GenSoundOff && Program.Simulator.Settings.GenSound)
-                LoadCarSound(Viewer.ContentPath, smsGenericFilePath);
+            Locomotive = car;            
 
             //Viewer.SoundProcess.AddSoundSource(this, new TrackSoundSource(MSTSWagon, Viewer));
 
@@ -332,10 +309,86 @@ namespace Orts.Viewer3D.RollingStock
             base.InitializeUserInputCommands();
         }
 
+        // Icik
+        int SetCabCounter = 0;
+        public void SMSCabSelect()
+        {
+            if (SetCabCounter == 0 || UserInput.IsPressed(UserCommand.GameChangeCab))
+            {
+                string wagonFolderSlash = Path.GetDirectoryName(Locomotive.WagFilePath) + "\\";
+                string smsGenericFilePath = "..\\Content\\GenericSound\\4_Wheels\\GenSound.sms"; // Default
+                Unload();
+                MSTSWagon.CarSoundLoaded = false;
+                LoadCarSounds(wagonFolderSlash);                
+                if (SetCabCounter > 0)
+                {
+                    if (!Locomotive.UsingRearCab)
+                    {
+                        if (Locomotive.CabRearSoundFileName != null)
+                            LoadCarSound(wagonFolderSlash, Locomotive.CabRearSoundFileName);
+                        else
+                        if (Locomotive.CabSoundFileName != null)
+                            LoadCarSound(wagonFolderSlash, Locomotive.CabSoundFileName);
+                    }
+                    else
+                    if (Locomotive.UsingRearCab)
+                    {
+                        if (Locomotive.CabFrontSoundFileName != null)
+                            LoadCarSound(wagonFolderSlash, Locomotive.CabFrontSoundFileName);
+                        else
+                        if (Locomotive.CabSoundFileName != null)
+                            LoadCarSound(wagonFolderSlash, Locomotive.CabSoundFileName);
+                    }
+                    if (!MSTSWagon.GenSoundOff && Program.Simulator.Settings.GenSound)
+                        LoadCarSound(Viewer.ContentPath, smsGenericFilePath);
+                }
+                // Inicializace
+                if (SetCabCounter == 0)
+                {
+                    if (Locomotive.UsingRearCab)
+                    {
+                        if (Locomotive.CabRearSoundFileName != null)
+                            LoadCarSound(wagonFolderSlash, Locomotive.CabRearSoundFileName);
+                        else
+                        if (Locomotive.CabSoundFileName != null)
+                            LoadCarSound(wagonFolderSlash, Locomotive.CabSoundFileName);
+                    }
+                    else
+                    if (!Locomotive.UsingRearCab)
+                    {
+                        if (Locomotive.CabFrontSoundFileName != null)
+                            LoadCarSound(wagonFolderSlash, Locomotive.CabFrontSoundFileName);
+                        else
+                        if (Locomotive.CabSoundFileName != null)
+                            LoadCarSound(wagonFolderSlash, Locomotive.CabSoundFileName);
+                    }
+                    switch (MSTSWagon.WagonNumAxles)
+                    {
+                        case 2:
+                            smsGenericFilePath = "..\\Content\\GenericSound\\2_Wheels\\GenSound.sms";
+                            break;
+                        case 3:
+                            smsGenericFilePath = "..\\Content\\GenericSound\\3_Wheels\\GenSound.sms";
+                            break;
+                        case 4:
+                            smsGenericFilePath = "..\\Content\\GenericSound\\4_Wheels\\GenSound.sms";
+                            break;
+                        case 6:
+                            smsGenericFilePath = "..\\Content\\GenericSound\\6_Wheels\\GenSound.sms";
+                            break;
+                    }
+                    if (!MSTSWagon.GenSoundOff && Program.Simulator.Settings.GenSound)
+                        LoadCarSound(Viewer.ContentPath, smsGenericFilePath);
+                }
+            }
+            SetCabCounter++;
+        }
+
+
         /// <summary>
         /// A keyboard or mouse click has occurred. Read the UserInput
         /// structure to determine what was pressed.
-        /// </summary>
+        /// </summary>        
         float PressedCycle;
         bool PressedCycleStart;
         public bool DoublePressedKeyTest()
@@ -356,6 +409,7 @@ namespace Orts.Viewer3D.RollingStock
         public override void HandleUserInput(ElapsedTime elapsedTime)
         {
             // Icik
+            SMSCabSelect();
             DoublePressedKeyTest();
 
             // Ovládání HV2 nearetované pozice
