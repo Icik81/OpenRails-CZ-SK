@@ -1543,11 +1543,13 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                         {
                             float step = 100 / Locomotive.ThrottleFullRangeDecreaseTimeSeconds;
                             step *= elapsedClockSeconds;
+                            if (MpS.ToKpH(delta) < -2)
+                                step *= 10;
                             controllerVolts -= step;
                         }
                         else if (true)
                         {
-                            if (Locomotive.DynamicBrakeAvailable)
+                            if (Locomotive.DynamicBrakeAvailable && controllerVolts > -75)
                             {
                                 delta = 0;
                                 if (RestrictedSpeedActive || (Locomotive.LocoType == MSTSLocomotive.LocoTypes.Vectron && !Locomotive.SelectedSpeedConfirmed))
@@ -1669,33 +1671,22 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                                     //arrIsBraking = true;
                                     // Icik
                                     arrIsBraking = !UsePressuredTrainBrake;
+
+                                    if (Locomotive.AVVBraking)
+                                        arrIsBraking = true;
   
                                     float minBraking = 0.3f;
                                     String testb = Locomotive.TrainBrakeController.GetStatus().ToLower();
                                     minBraking += (MpS.ToKpH(Locomotive.AbsWheelSpeedMpS) - MpS.ToKpH(SelectedSpeedMpS)) / 30;
-                                    if (Locomotive.DynamicBrakeController == null || Locomotive.DynamicBrakePercent > 95)
+                                    if (Locomotive.DynamicBrakeController == null || controllerVolts < -75f)
                                     {
                                         if (Locomotive.BrakeSystem.BrakeLine1PressurePSI > Bar.ToPSI(5 - minBraking))
                                         {
-                                            if (Locomotive.TrainBrakeController.TrainBrakeControllerState != ORTS.Scripting.Api.ControllerState.Apply)
-                                            {
-                                                Locomotive.SetTrainBrakeValue(brakingNotchValue, 1);
-                                            }
+                                            Locomotive.BrakeSystem.BrakeLine1PressurePSI -= 1;
                                         }
                                         else
                                         {
-                                            if (Locomotive.TrainBrakeController.TrainBrakeControllerState != ORTS.Scripting.Api.ControllerState.Neutral)
-                                            {
-                                                String test = Locomotive.TrainBrakeController.GetStatus().ToLower();
-                                                Locomotive.SetTrainBrakeValue(neutralNotchValue, 1);
-                                            }
-                                        }
-                                        if (Locomotive.BrakeSystem.BrakeLine1PressurePSI < Bar.ToPSI(5 - minBraking))
-                                        {
-                                            if (Locomotive.TrainBrakeController.TrainBrakeControllerState != ORTS.Scripting.Api.ControllerState.Release)
-                                            {
-                                                Locomotive.SetTrainBrakeValue(releaseNotchValue, 1);
-                                            }
+                                            Locomotive.BrakeSystem.BrakeLine1PressurePSI += 1;
                                         }
                                     }
                                 }
@@ -1703,22 +1694,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                                 {
                                     if (!TrainBrakePriority && !UsePressuredTrainBrake) // Icik
                                     {
-                                        if (Locomotive.BrakeSystem.BrakeLine1PressurePSI < Bar.ToPSI(5))
+                                        if (Locomotive.BrakeSystem.BrakeLine1PressurePSI < Bar.ToPSI(4.98f))
                                         {
-                                            if (Locomotive.TrainBrakeController.TrainBrakeControllerState != ORTS.Scripting.Api.ControllerState.Release)
-                                            {
-                                                String test = Locomotive.TrainBrakeController.GetStatus().ToLower();
-                                                Locomotive.SetTrainBrakeValue(releaseNotchValue, 1);
-                                            }
-                                        }
-                                        else
-                                        {
-                                            if (Locomotive.TrainBrakeController.TrainBrakeControllerState != ORTS.Scripting.Api.ControllerState.Neutral)
-                                            {
-                                                String test = Locomotive.TrainBrakeController.GetStatus().ToLower();
-                                                Locomotive.SetTrainBrakeValue(neutralNotchValue, 1);
-                                                arrIsBraking = false;
-                                            }
+                                            Locomotive.BrakeSystem.BrakeLine1PressurePSI += 1;
                                         }
                                     }
                                 }
@@ -2099,7 +2077,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                         breakout = false;
                         Locomotive.ControllerVolts = controllerVolts / 10;
                     }
-                    else
+                    else if (!IReallyWantToBrake)
                     {
                         Locomotive.ControllerVolts = 0;
                         breakout = true;
