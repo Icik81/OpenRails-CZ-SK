@@ -62,14 +62,58 @@ namespace Orts.Viewer3D.RollingStock
 
         // Icik
         float Aripot_CycleTime;
-
+        string wagonFolderSlash;
+        string smsGenericFilePath;
         public MSTSLocomotiveViewer(Viewer viewer, MSTSLocomotive car)
             : base(viewer, car)
         {
-            Locomotive = car;            
+            Locomotive = car;
 
             //Viewer.SoundProcess.AddSoundSource(this, new TrackSoundSource(MSTSWagon, Viewer));
 
+            // Inicializace
+            wagonFolderSlash = Path.GetDirectoryName(Locomotive.WagFilePath) + "\\";
+            smsGenericFilePath = "..\\Content\\GenericSound\\4_Wheels\\GenSound.sms"; // Default
+
+            // Load CabSound
+            if (Locomotive.UsingRearCab)
+            {
+                if (Locomotive.CabRearSoundFileName != null)
+                    LoadCarSound(wagonFolderSlash, Locomotive.CabRearSoundFileName);
+                else
+                if (Locomotive.CabSoundFileName != null)
+                    LoadCarSound(wagonFolderSlash, Locomotive.CabSoundFileName);
+            }
+            else
+            if (!Locomotive.UsingRearCab)
+            {
+                if (Locomotive.CabFrontSoundFileName != null)
+                    LoadCarSound(wagonFolderSlash, Locomotive.CabFrontSoundFileName);
+                else
+                if (Locomotive.CabSoundFileName != null)
+                    LoadCarSound(wagonFolderSlash, Locomotive.CabSoundFileName);
+            }
+
+            // Load GenSound
+            switch (MSTSWagon.WagonNumAxles)
+            {
+                case 2:
+                    smsGenericFilePath = "..\\Content\\GenericSound\\2_Wheels\\GenSound.sms";
+                    break;
+                case 3:
+                    smsGenericFilePath = "..\\Content\\GenericSound\\3_Wheels\\GenSound.sms";
+                    break;
+                case 4:
+                    smsGenericFilePath = "..\\Content\\GenericSound\\4_Wheels\\GenSound.sms";
+                    break;
+                case 6:
+                    smsGenericFilePath = "..\\Content\\GenericSound\\6_Wheels\\GenSound.sms";
+                    break;
+            }                        
+            if (!MSTSWagon.GenSoundOff && Program.Simulator.Settings.GenSound)
+                LoadCarSound(Viewer.ContentPath, smsGenericFilePath);
+
+            // Load TCS
             if (Locomotive.TrainControlSystem != null && Locomotive.TrainControlSystem.Sounds.Count > 0)
                 foreach (var script in Locomotive.TrainControlSystem.Sounds.Keys)
                 {
@@ -83,6 +127,8 @@ namespace Orts.Viewer3D.RollingStock
                         Trace.TraceInformation("File " + Locomotive.TrainControlSystem.Sounds[script] + " in script of locomotive of train " + Locomotive.Train.Name + " : " + error.Message);
                     }
                 }
+            
+
             if (Locomotive.CruiseControl != null)
             {
                 CruiseControlViewer = new CruiseControlViewer(this, Locomotive, Locomotive.CruiseControl);
@@ -310,78 +356,42 @@ namespace Orts.Viewer3D.RollingStock
         }
 
         // Icik
-        int SetCabCounter = 0;
         public void SMSCabSelect()
         {
-            if (SetCabCounter == 0 || UserInput.IsPressed(UserCommand.GameChangeCab))
+            if (UserInput.IsPressed(UserCommand.GameChangeCab) && Locomotive.CabFrontSoundFileName != null && Locomotive.CabRearSoundFileName != null)
             {
-                string wagonFolderSlash = Path.GetDirectoryName(Locomotive.WagFilePath) + "\\";
-                string smsGenericFilePath = "..\\Content\\GenericSound\\4_Wheels\\GenSound.sms"; // Default
-                Unload();
+                Viewer.SoundProcess.RemoveSoundSources(this);
                 MSTSWagon.CarSoundLoaded = false;
-                LoadCarSounds(wagonFolderSlash);                
-                if (SetCabCounter > 0)
-                {
-                    if (!Locomotive.UsingRearCab)
+                
+                // Load CarSound
+                LoadCarSounds(wagonFolderSlash);
+                
+                // Load CabSound
+                if (!Locomotive.UsingRearCab)
+                    LoadCarSound(wagonFolderSlash, Locomotive.CabRearSoundFileName);
+                else
+                if (Locomotive.UsingRearCab)
+                    LoadCarSound(wagonFolderSlash, Locomotive.CabFrontSoundFileName);
+                                
+                // Load GenSound
+                if (!MSTSWagon.GenSoundOff && Program.Simulator.Settings.GenSound)
+                    LoadCarSound(Viewer.ContentPath, smsGenericFilePath);
+                
+                // Load TCS
+                if (Locomotive.TrainControlSystem != null && Locomotive.TrainControlSystem.Sounds.Count > 0)
+                    foreach (var script in Locomotive.TrainControlSystem.Sounds.Keys)
                     {
-                        if (Locomotive.CabRearSoundFileName != null)
-                            LoadCarSound(wagonFolderSlash, Locomotive.CabRearSoundFileName);
-                        else
-                        if (Locomotive.CabSoundFileName != null)
-                            LoadCarSound(wagonFolderSlash, Locomotive.CabSoundFileName);
+                        try
+                        {
+                            Viewer.SoundProcess.AddSoundSources(script, new List<SoundSourceBase>() {
+                            new SoundSource(Viewer, Locomotive, Locomotive.TrainControlSystem.Sounds[script])});
+                        }
+                        catch (Exception error)
+                        {
+                            Trace.TraceInformation("File " + Locomotive.TrainControlSystem.Sounds[script] + " in script of locomotive of train " + Locomotive.Train.Name + " : " + error.Message);
+                        }
                     }
-                    else
-                    if (Locomotive.UsingRearCab)
-                    {
-                        if (Locomotive.CabFrontSoundFileName != null)
-                            LoadCarSound(wagonFolderSlash, Locomotive.CabFrontSoundFileName);
-                        else
-                        if (Locomotive.CabSoundFileName != null)
-                            LoadCarSound(wagonFolderSlash, Locomotive.CabSoundFileName);
-                    }
-                    if (!MSTSWagon.GenSoundOff && Program.Simulator.Settings.GenSound)
-                        LoadCarSound(Viewer.ContentPath, smsGenericFilePath);
-                }
-                // Inicializace
-                if (SetCabCounter == 0)
-                {
-                    if (Locomotive.UsingRearCab)
-                    {
-                        if (Locomotive.CabRearSoundFileName != null)
-                            LoadCarSound(wagonFolderSlash, Locomotive.CabRearSoundFileName);
-                        else
-                        if (Locomotive.CabSoundFileName != null)
-                            LoadCarSound(wagonFolderSlash, Locomotive.CabSoundFileName);
-                    }
-                    else
-                    if (!Locomotive.UsingRearCab)
-                    {
-                        if (Locomotive.CabFrontSoundFileName != null)
-                            LoadCarSound(wagonFolderSlash, Locomotive.CabFrontSoundFileName);
-                        else
-                        if (Locomotive.CabSoundFileName != null)
-                            LoadCarSound(wagonFolderSlash, Locomotive.CabSoundFileName);
-                    }
-                    switch (MSTSWagon.WagonNumAxles)
-                    {
-                        case 2:
-                            smsGenericFilePath = "..\\Content\\GenericSound\\2_Wheels\\GenSound.sms";
-                            break;
-                        case 3:
-                            smsGenericFilePath = "..\\Content\\GenericSound\\3_Wheels\\GenSound.sms";
-                            break;
-                        case 4:
-                            smsGenericFilePath = "..\\Content\\GenericSound\\4_Wheels\\GenSound.sms";
-                            break;
-                        case 6:
-                            smsGenericFilePath = "..\\Content\\GenericSound\\6_Wheels\\GenSound.sms";
-                            break;
-                    }
-                    if (!MSTSWagon.GenSoundOff && Program.Simulator.Settings.GenSound)
-                        LoadCarSound(Viewer.ContentPath, smsGenericFilePath);
-                }
-            }
-            SetCabCounter++;
+            }                    
         }
 
 
