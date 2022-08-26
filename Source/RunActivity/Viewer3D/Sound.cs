@@ -1128,6 +1128,21 @@ namespace Orts.Viewer3D
                 viewpoint = Camera.Styles.External;
             }
 
+            // Icik
+            if (viewpoint == Camera.Styles.Cab || viewpoint == Camera.Styles.ThreeDimCab)
+            {
+                if (Viewer.Simulator.PlayerUsingRearCab)
+                {
+                    if (conditions.RearCabCam)
+                        return true;
+                }
+                else
+                {
+                    if (conditions.FrontCabCam)
+                        return true;
+                }
+            }
+
             if (conditions.CabCam && (viewpoint == Camera.Styles.Cab || viewpoint == Camera.Styles.ThreeDimCab))
                 return true;
             if (conditions.PassengerCam && viewpoint == Camera.Styles.Passenger)

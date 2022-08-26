@@ -2570,7 +2570,7 @@ namespace Orts.Simulation.RollingStocks
         {
             if (IsPlayerTrain)
             {
-                if (EngineBrakeEngageEDB || BrakeSystem.OL3active || BreakEDBButton_Activated || CruiseControl.IReallyWantToBrake)
+                if (EngineBrakeEngageEDB || BrakeSystem.OL3active || BreakEDBButton_Activated || (CruiseControl != null && CruiseControl.IReallyWantToBrake))
                     return;
 
                 if (!PowerOn && !EDBIndependent)
@@ -4425,6 +4425,7 @@ namespace Orts.Simulation.RollingStocks
                 PantoCanHVOff(elapsedClockSeconds);
                 DirectionButtonSetup();                
                 BatterySetOn = false;
+                Simulator.PlayerUsingRearCab = UsingRearCab;
             }
 
             // Hodnoty pro výpočet zvukových proměnných
