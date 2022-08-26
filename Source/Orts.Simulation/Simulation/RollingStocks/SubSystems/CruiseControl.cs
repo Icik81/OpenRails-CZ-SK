@@ -1549,7 +1549,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                         }
                         else if (true)
                         {
-                            if (Locomotive.DynamicBrakeAvailable && controllerVolts > -75)
+                            if (Locomotive.DynamicBrakeAvailable)
                             {
                                 delta = 0;
                                 if (RestrictedSpeedActive || (Locomotive.LocoType == MSTSLocomotive.LocoTypes.Vectron && !Locomotive.SelectedSpeedConfirmed))
