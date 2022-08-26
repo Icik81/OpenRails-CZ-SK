@@ -11718,7 +11718,8 @@ namespace Orts.Simulation.RollingStocks
                     }
                 case CABViewControlTypes.ARIPOT_CONTROLLER:
                     {
-                        data = AripotControllerValue * 8;
+                        CVCWithFrames cVCWithFrames = (CVCWithFrames)cvc;
+                        data = AripotControllerValue * cVCWithFrames.FramesCount;
                         break;
                     }
 
