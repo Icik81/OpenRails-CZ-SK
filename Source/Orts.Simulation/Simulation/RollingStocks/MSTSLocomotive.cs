@@ -4573,7 +4573,7 @@ namespace Orts.Simulation.RollingStocks
                         AutomaticParkingBrakeEngaged = braking;
                     }
                     else AutomaticParkingBrakeEngaged = false;
-                    if (AVVBraking && (MpS.ToKpH(AbsSpeedMpS) < 10 || ControllerVolts < -9.9f))
+                    if (AVVBraking && (MpS.ToKpH(AbsSpeedMpS) < 10 || DynamicBrakePercent > 99 || ControllerVolts < -9.9f))
                         AutomaticParkingBrakeEngaged = true;
 
                     if (LocoType == LocoTypes.Vectron && CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.Auto)
@@ -11911,7 +11911,7 @@ namespace Orts.Simulation.RollingStocks
                                     if (AbsSpeedMpS == 0 && stationStop.DistanceToTrainM < 100)
                                         stoppedAtStation = true;
 
-                                    float newSpeed = MpS.FromKpH(GetAvvSpeed((AvvDistanceToNext) / 1.5f, 0));
+                                    float newSpeed = MpS.FromKpH(GetAvvSpeed((AvvDistanceToNext) / 1.2f, 0));
                                     if (newSpeed < CruiseControl.SelectedSpeedMpS && !stoppedAtStation)
                                     {
                                         AVVBraking = true;
@@ -11921,7 +11921,7 @@ namespace Orts.Simulation.RollingStocks
                                     {
                                         AVVBraking = false;
                                     }
-                                    if (ControllerVolts < -9.9f)
+                                    if (ControllerVolts < -9.9f || DynamicBrakePercent > 99)
                                     {
                                         AVVBraking = true;
                                     }
@@ -12005,7 +12005,7 @@ namespace Orts.Simulation.RollingStocks
                                     {
                                         AVVBraking = false;
                                     }
-                                    if (ControllerVolts < -9.9f)
+                                    if (ControllerVolts < -9.9f || DynamicBrakePercent > 99)
                                     {
                                         AVVBraking = true;
                                     }
@@ -12093,7 +12093,7 @@ namespace Orts.Simulation.RollingStocks
                                     {
                                         AVVBraking = false;
                                     }
-                                    if (ControllerVolts < -9.9f)
+                                    if (ControllerVolts < -9.9f || DynamicBrakePercent > 99)
                                     {
                                         AVVBraking = true;
                                     }
@@ -12312,7 +12312,8 @@ namespace Orts.Simulation.RollingStocks
         {
             if (distanceToNext < 0)
                 distanceToNext = 0;
-            float speed = targetSpeed + (float)Math.Round(MpS.ToKpH((float)Math.Sqrt(distanceToNext)), 0);
+            float spd = (float)Math.Round(MpS.ToKpH((float)Math.Sqrt(distanceToNext)), 0);
+            float speed = targetSpeed + spd;
             if (speed < 0)
                 speed = 0;
             return speed;
