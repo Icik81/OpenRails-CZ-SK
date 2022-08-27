@@ -11911,7 +11911,7 @@ namespace Orts.Simulation.RollingStocks
                                     if (AbsSpeedMpS == 0 && stationStop.DistanceToTrainM < 100)
                                         stoppedAtStation = true;
 
-                                    float newSpeed = MpS.FromKpH(GetAvvSpeed((AvvDistanceToNext) / 2.2f, 0));
+                                    float newSpeed = MpS.FromKpH(GetAvvSpeed((AvvDistanceToNext) / 1.5f, 0));
                                     if (newSpeed < CruiseControl.SelectedSpeedMpS && !stoppedAtStation)
                                     {
                                         AVVBraking = true;
