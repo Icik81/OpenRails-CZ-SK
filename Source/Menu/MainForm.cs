@@ -128,16 +128,13 @@ namespace ORTS
             Font = SystemFonts.MessageBoxFont;
 
             // Set title to show revision or build info.
-            if (File.Exists(Application.StartupPath + @"\Version15.ini"))
+            if (File.Exists(Application.StartupPath + @"\Version17.ini"))
             {
-                Text = "Open Rails CZ/SK v" + File.ReadAllText(Application.StartupPath + @"\Version15.ini").Replace("Aktualizován patch ", "").Replace("Aktualizována verze ", "");
+                Text = "Open Rails CZ/SK v" + File.ReadAllText(Application.StartupPath + @"\Version17.ini").Replace("Aktualizován patch ", "").Replace("Aktualizována verze ", "");
             }
             else
             {
-                Text = String.Format(VersionInfo.Version.Length > 0 ? "{0} {1}" : "{0} build {2}", Application.ProductName, VersionInfo.Version, VersionInfo.Build);
-#if DEBUG
-                Text = Text + " (debug)";
-#endif
+                Text = "Open Rails CZ/SK";
             }
             panelModeTimetable.Location = panelModeActivity.Location;
             ShowDetails();
