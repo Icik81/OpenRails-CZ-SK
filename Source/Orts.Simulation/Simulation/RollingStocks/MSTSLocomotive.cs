@@ -2640,6 +2640,21 @@ namespace Orts.Simulation.RollingStocks
         }
 
         // Icik
+        public void PlayerSwitchToRearCab()
+        {
+            Simulator.PlayerUsingRearCab = UsingRearCab;
+
+            if (UsingRearCab)
+            {
+                SignalEvent(Event.ActiveRearCab);
+            }
+            else
+            {
+                SignalEvent(Event.ActiveFrontCab);
+            }
+        }
+
+        // Icik
         public void PowerCurrentCalculation()
         {
             if (CurrentForceCurves != null)
@@ -4423,9 +4438,9 @@ namespace Orts.Simulation.RollingStocks
                 SetControlUnit();
                 SetHelperLoco();
                 PantoCanHVOff(elapsedClockSeconds);
-                DirectionButtonSetup();                
-                BatterySetOn = false;
-                Simulator.PlayerUsingRearCab = UsingRearCab;
+                DirectionButtonSetup();
+                PlayerSwitchToRearCab();
+                BatterySetOn = false;                
             }
 
             // Hodnoty pro výpočet zvukových proměnných

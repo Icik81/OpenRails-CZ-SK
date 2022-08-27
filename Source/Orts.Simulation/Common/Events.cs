@@ -332,6 +332,8 @@ namespace Orts.Common
         CouplerPull,
         CouplerPush,
         Failure,
+        ActiveFrontCab,
+        ActiveRearCab,
     }
 
     public static class Events
@@ -678,6 +680,8 @@ namespace Orts.Common
                         case 20085: return Event.BrakeSkidStop;
                         case 20086: return Event.CouplerPull;
                         case 20087: return Event.CouplerPush;
+                        case 20088: return Event.ActiveFrontCab;
+                        case 20089: return Event.ActiveRearCab;
 
                         default: return 0;
                     }
