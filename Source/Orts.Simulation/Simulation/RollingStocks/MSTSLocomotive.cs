@@ -4324,7 +4324,7 @@ namespace Orts.Simulation.RollingStocks
                     if (CruiseControl.RestrictedSpeedActive)
                         CruiseControl.CheckRestrictedSpeedZone();
                 }
-                if (Mirel != null)
+                if (Mirel != null && Simulator.PlayerIsInCab)
                 {
                     if (IsPlayerTrain && Mirel.Equipped)
                         Mirel.Update(elapsedClockSeconds, AbsSpeedMpS, AbsWheelSpeedMpS);
