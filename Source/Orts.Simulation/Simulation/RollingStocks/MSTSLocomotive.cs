@@ -2586,7 +2586,7 @@ namespace Orts.Simulation.RollingStocks
             }
 
             // Povolí EDB pro AI vlaky
-            if (!IsPlayerTrain)
+            if (!IsPlayerTrain && DynamicBrakeController != null)
             {
                 airPipeSystem = BrakeSystem as AirSinglePipe;
                 DynamicBrake = true;
@@ -4362,7 +4362,7 @@ namespace Orts.Simulation.RollingStocks
                         }
                     }
                 }
-                else if (DynamicBrakePercent <= 0 && ControllerVolts < 0 && !CruiseControl.IReallyWantToBrake)
+                else if (DynamicBrakePercent <= 0 && ControllerVolts < 0 && CruiseControl != null && !CruiseControl.IReallyWantToBrake)
                     ControllerVolts = 0;
                 
                 if (ControllerVolts == 0)

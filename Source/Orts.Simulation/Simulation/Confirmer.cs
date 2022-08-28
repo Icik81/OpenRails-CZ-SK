@@ -424,7 +424,11 @@ namespace Orts.Simulation
         {
             // User can suppress levels None and Information but not Warning, Error and MSGs.
             // Cab control confirmations have level None.
-            if (level < ConfirmLevel.Information && Simulator.Settings.SuppressConfirmations)
+            //if (level < ConfirmLevel.Information && Simulator.Settings.SuppressConfirmations)
+            //    return;
+
+            // Icik
+            if (Simulator.Settings.SuppressConfirmations)
                 return;
 
             var format = "{2}";
