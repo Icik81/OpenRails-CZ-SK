@@ -881,29 +881,34 @@ namespace Orts.Simulation.RollingStocks
 
         public void Update(ElectricMotor Motor, float axleSpeed, float overridenControllerVolts, float elapsedSeconds)
         {
-            if (Disabled && EnablingCurrentTime <= 0)
+            if (Locomotive.LocoType == MSTSLocomotive.LocoTypes.Vectron)
             {
-                Random rand = new Random(DateTime.Now.Millisecond + Motor.Id);
-                EnablingCurrentTime = rand.Next(10, (int)EnablingMaxTime);
-                if (Locomotive.extendedPhysics.SystemEnabledMode == ExtendedPhysics.SystemEnabledModes.Quick)
-                    EnablingCurrentTime += Locomotive.extendedPhysics.TimeSystemEnablesGeneratoticSeconds * 1000;
-                else if (Locomotive.extendedPhysics.SystemEnabledMode == ExtendedPhysics.SystemEnabledModes.Slow)
-                    EnablingCurrentTime += Locomotive.extendedPhysics.TimeSystemEnablesNormalSeconds * 1000;
-            }
-            if (Enabling)
-            {
-                EnablingCurrentTime -= elapsedSeconds * 1000;
-                if (EnablingCurrentTime < 0)
+                if (Disabled && EnablingCurrentTime <= 0)
                 {
-                    Disabled = false;
-                    Enabling = false;
+                    Random rand = new Random(DateTime.Now.Millisecond + Motor.Id);
+                    EnablingCurrentTime = rand.Next(10, (int)EnablingMaxTime);
+                    if (Locomotive.extendedPhysics.SystemEnabledMode == ExtendedPhysics.SystemEnabledModes.Quick)
+                        EnablingCurrentTime += Locomotive.extendedPhysics.TimeSystemEnablesGeneratoticSeconds * 1000;
+                    else if (Locomotive.extendedPhysics.SystemEnabledMode == ExtendedPhysics.SystemEnabledModes.Slow)
+                        EnablingCurrentTime += Locomotive.extendedPhysics.TimeSystemEnablesNormalSeconds * 1000;
+                }
+                if (Enabling)
+                {
+                    EnablingCurrentTime -= elapsedSeconds * 1000;
+                    if (EnablingCurrentTime < 0)
+                    {
+                        Disabled = false;
+                        Enabling = false;
+                    }
+                }
+                if (Disabled)
+                {
+                    RotorCurrent = StatorCurrent = 0;
+                    return;
                 }
             }
-            if (Disabled)
-            {
-                RotorCurrent = StatorCurrent = 0;
-                return;
-            }
+            else if (Disabled && Locomotive.PowerOn)
+                Disabled = false;
 
             if (MaxRotorCurrent == 0)
                 MaxRotorCurrent = 500;
