@@ -4049,162 +4049,142 @@ namespace Orts.Simulation.RollingStocks
             }
             if (AbsSpeedMpS == 0)
                 WheelSpeedMpS = 0;
-            if (LocoType == LocoTypes.Vectron && !PantoCommandDown)
-                CheckPantos();
-            if (IsPlayerTrain && !Simulator.Paused)
+            if (IsPlayerTrain)
             {
-                if (LocoType == LocoTypes.Vectron)
+                if (LocoType == LocoTypes.Vectron && !PantoCommandDown)
+                    CheckPantos();
+                if (IsPlayerTrain && !Simulator.Paused)
                 {
-                    if (CircuitBreakerOn && extendedPhysics.GeneratoricModeBlocked)
-                        extendedPhysics.GeneratoricModeBlocked = false;
-                    if (ChangingPowerSystem)
-                        PowerChangeRoutine(elapsedClockSeconds);
-                    else
+                    if (LocoType == LocoTypes.Vectron)
                     {
-                        if (!CircuitBreakerOn && (Pantographs.List[0].State == PantographState.Up || Pantographs.List[1].State == PantographState.Up))
+                        if (CircuitBreakerOn && extendedPhysics.GeneratoricModeBlocked)
+                            extendedPhysics.GeneratoricModeBlocked = false;
+                        if (ChangingPowerSystem)
+                            PowerChangeRoutine(elapsedClockSeconds);
+                        else
                         {
-                            HvPantoTimer += elapsedClockSeconds;
-                            if (SystemAnnunciator == 0)
+                            if (!CircuitBreakerOn && (Pantographs.List[0].State == PantographState.Up || Pantographs.List[1].State == PantographState.Up))
                             {
-                                SystemAnnunciator = 6;
+                                HvPantoTimer += elapsedClockSeconds;
+                                if (SystemAnnunciator == 0)
+                                {
+                                    SystemAnnunciator = 6;
+                                }
+                                else if (SystemAnnunciator == 6 && HvPantoTimer > 2)
+                                {
+                                    SystemAnnunciator = 4;
+                                }
+                                else if ((SystemAnnunciator == 4 || SystemAnnunciator == 3) && HvPantoTimer > 1)
+                                {
+                                    SystemAnnunciator = 5;
+                                    HvPantoTimer = 0;
+                                }
                             }
-                            else if (SystemAnnunciator == 6 && HvPantoTimer > 2)
+                            if (!CircuitBreakerOn && (Pantographs.List[0].State == PantographState.Lowering || Pantographs.List[0].State == PantographState.Raising || Pantographs.List[1].State == PantographState.Lowering || Pantographs.List[1].State == PantographState.Raising))
                             {
+                                SystemAnnunciator = 3;
+                            }
+                            if (!CircuitBreakerOn && Pantographs.List[0].State == PantographState.Down && Pantographs.List[1].State == PantographState.Down && HvPantoTimer < 5)
+                            {
+                                HvPantoTimer += elapsedClockSeconds;
                                 SystemAnnunciator = 4;
                             }
-                            else if ((SystemAnnunciator == 4 || SystemAnnunciator == 3) && HvPantoTimer > 1)
+                            if (CircuitBreakerOn && (Pantographs.List[0].State == PantographState.Lowering || Pantographs.List[0].State == PantographState.Raising || Pantographs.List[1].State == PantographState.Lowering || Pantographs.List[1].State == PantographState.Raising))
                             {
-                                SystemAnnunciator = 5;
-                                HvPantoTimer = 0;
+                                SystemAnnunciator = 3;
                             }
-                        }
-                        if (!CircuitBreakerOn && (Pantographs.List[0].State == PantographState.Lowering || Pantographs.List[0].State == PantographState.Raising || Pantographs.List[1].State == PantographState.Lowering || Pantographs.List[1].State == PantographState.Raising))
-                        {
-                            SystemAnnunciator = 3;
-                        }
-                        if (!CircuitBreakerOn && Pantographs.List[0].State == PantographState.Down && Pantographs.List[1].State == PantographState.Down && HvPantoTimer < 5)
-                        {
-                            HvPantoTimer += elapsedClockSeconds;
-                            SystemAnnunciator = 4;
-                        }
-                        if (CircuitBreakerOn && (Pantographs.List[0].State == PantographState.Lowering || Pantographs.List[0].State == PantographState.Raising || Pantographs.List[1].State == PantographState.Lowering || Pantographs.List[1].State == PantographState.Raising))
-                        {
-                            SystemAnnunciator = 3;
-                        }
-                        if (CircuitBreakerOn && Pantographs.List[0].State == PantographState.Down && Pantographs.List[1].State == PantographState.Down && HvPantoTimer < 5)
-                        {
-                            HvPantoTimer += elapsedClockSeconds;
-                            SystemAnnunciator = 4;
-                        }
-                        if (!CircuitBreakerOn && Pantographs.List[0].State == PantographState.Down && Pantographs.List[1].State == PantographState.Down && HvPantoTimer >= 5)
-                        {
-                            SystemAnnunciator = 1;
-                        }
-
-                        if (CircuitBreakerOn && (Pantographs.List[0].State == PantographState.Up || Pantographs.List[1].State == PantographState.Up))
-                        {
-                            bool motorDisabled = false;
-                            foreach (Undercarriage uc in extendedPhysics.Undercarriages)
+                            if (CircuitBreakerOn && Pantographs.List[0].State == PantographState.Down && Pantographs.List[1].State == PantographState.Down && HvPantoTimer < 5)
                             {
-                                foreach (ExtendedAxle ea in uc.Axles)
+                                HvPantoTimer += elapsedClockSeconds;
+                                SystemAnnunciator = 4;
+                            }
+                            if (!CircuitBreakerOn && Pantographs.List[0].State == PantographState.Down && Pantographs.List[1].State == PantographState.Down && HvPantoTimer >= 5)
+                            {
+                                SystemAnnunciator = 1;
+                            }
+
+                            if (CircuitBreakerOn && (Pantographs.List[0].State == PantographState.Up || Pantographs.List[1].State == PantographState.Up))
+                            {
+                                bool motorDisabled = false;
+                                foreach (Undercarriage uc in extendedPhysics.Undercarriages)
                                 {
-                                    foreach (ElectricMotor em in ea.ElectricMotors)
+                                    foreach (ExtendedAxle ea in uc.Axles)
                                     {
-                                        if (em.Disabled)
+                                        foreach (ElectricMotor em in ea.ElectricMotors)
                                         {
-                                            motorDisabled = true;
-                                            goto Action;
+                                            if (em.Disabled)
+                                            {
+                                                motorDisabled = true;
+                                                goto Action;
+                                            }
                                         }
                                     }
                                 }
+                            Action:
+                                HvPantoTimer = 0;
+                                if (!motorDisabled)
+                                {
+                                    SystemAnnunciator = 0;
+                                }
+                                else
+                                {
+                                    SystemAnnunciator = 6;
+                                }
                             }
-                        Action:
-                            HvPantoTimer = 0;
-                            if (!motorDisabled)
+
+                            if (SystemAnnunciator == 3 && !CircuitBreakerOn && Pantographs.List[0].State == PantographState.Up && Pantographs.List[1].State == PantographState.Up && HvPantoTimer > 6)
                             {
-                                SystemAnnunciator = 0;
+                                SystemAnnunciator = 5;
                             }
-                            else
+
+                            if (SystemAnnunciator == 0 && BrakeSystem.GetCylPressurePSI() > 0)
                             {
                                 SystemAnnunciator = 6;
                             }
-                        }
 
-                        if (SystemAnnunciator == 3 && !CircuitBreakerOn && Pantographs.List[0].State == PantographState.Up && Pantographs.List[1].State == PantographState.Up && HvPantoTimer > 6)
-                        {
-                            SystemAnnunciator = 5;
-                        }
-
-                        if (SystemAnnunciator == 0 && BrakeSystem.GetCylPressurePSI() > 0)
-                        {
-                            SystemAnnunciator = 6;
-                        }
-
-                        MSTSElectricLocomotive elecLoco = this as MSTSElectricLocomotive;
-                        if (SystemAnnunciator == 5 && elecLoco.PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closing)
-                        {
-                            SystemAnnunciator = 4;
-                        }
-                    }
-                }
-
-                if (UsingForceHandle && TrainBrakeController.TrainBrakeControllerState != ControllerState.EPApply)
-                {
-                    if (ForceHandleIncreasing)
-                    {
-                        ForceHandleValue += 0.5f;
-                        if (ForceHandleValue > 100)
-                            ForceHandleValue = 100;
-                        Simulator.Confirmer.Information("Force inreased to " + ((int)ForceHandleValue).ToString());
-                    }
-                    if (ForceHandleDecreasing)
-                    {
-                        ForceHandleValue -= 0.5f;
-                        if (ForceHandleValue < -100)
-                            ForceHandleValue = -100;
-                        Simulator.Confirmer.Information("Force dereased to " + ((int)ForceHandleValue).ToString());
-                    }
-                    if (!ForceHandleDecreasing && !ForceHandleIncreasing)
-                    {
-                        if (ForceHandleValue < 1.5f && ForceHandleValue > 0)
-                        {
-                            ForceHandleValue = 0;
-                            SelectedMaxAccelerationStep = 0;
-                        }
-                        if (ForceHandleValue > -1.5f && ForceHandleValue < 0)
-                            ForceHandleValue = 0;
-                    }
-                    if (CruiseControl == null)
-                    {
-                        if (ForceHandleValue == 0)
-                        {
-                            ThrottlePercent = 0;
-                            if (DynamicBrakePercent >= 0)
+                            MSTSElectricLocomotive elecLoco = this as MSTSElectricLocomotive;
+                            if (SystemAnnunciator == 5 && elecLoco.PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closing)
                             {
-                                DynamicBrakePercent = 0;
-                                DynamicBrakeChangeActiveState(false);
+                                SystemAnnunciator = 4;
                             }
                         }
-                        if (ForceHandleValue > 0)
-                        {
-                            SetThrottlePercent(ForceHandleValue);
-                        }
-                        if (ForceHandleValue < 0)
-                        {
-                            if (!EngineBrakeEngageEDB && !BrakeSystem.OL3active && !BreakEDBButton_Activated)
-                                SetDynamicBrakePercent(-ForceHandleValue);
-                        }
                     }
-                    else
+
+                    if (UsingForceHandle && TrainBrakeController.TrainBrakeControllerState != ControllerState.EPApply)
                     {
-                        if (CruiseControl.SpeedRegMode != CruiseControl.SpeedRegulatorMode.Auto)
+                        if (ForceHandleIncreasing)
+                        {
+                            ForceHandleValue += 0.5f;
+                            if (ForceHandleValue > 100)
+                                ForceHandleValue = 100;
+                            Simulator.Confirmer.Information("Force inreased to " + ((int)ForceHandleValue).ToString());
+                        }
+                        if (ForceHandleDecreasing)
+                        {
+                            ForceHandleValue -= 0.5f;
+                            if (ForceHandleValue < -100)
+                                ForceHandleValue = -100;
+                            Simulator.Confirmer.Information("Force dereased to " + ((int)ForceHandleValue).ToString());
+                        }
+                        if (!ForceHandleDecreasing && !ForceHandleIncreasing)
+                        {
+                            if (ForceHandleValue < 1.5f && ForceHandleValue > 0)
+                            {
+                                ForceHandleValue = 0;
+                                SelectedMaxAccelerationStep = 0;
+                            }
+                            if (ForceHandleValue > -1.5f && ForceHandleValue < 0)
+                                ForceHandleValue = 0;
+                        }
+                        if (CruiseControl == null)
                         {
                             if (ForceHandleValue == 0)
                             {
                                 ThrottlePercent = 0;
                                 if (DynamicBrakePercent >= 0)
                                 {
-                                    SetDynamicBrakeValue(-1);
+                                    DynamicBrakePercent = 0;
+                                    DynamicBrakeChangeActiveState(false);
                                 }
                             }
                             if (ForceHandleValue > 0)
@@ -4214,160 +4194,183 @@ namespace Orts.Simulation.RollingStocks
                             if (ForceHandleValue < 0)
                             {
                                 if (!EngineBrakeEngageEDB && !BrakeSystem.OL3active && !BreakEDBButton_Activated)
-                                    DynamicBrakePercent = -ForceHandleValue;
+                                    SetDynamicBrakePercent(-ForceHandleValue);
                             }
                         }
                         else
                         {
-                            if (ForceHandleValue == 0)
+                            if (CruiseControl.SpeedRegMode != CruiseControl.SpeedRegulatorMode.Auto)
                             {
-                                ThrottlePercent = 0;
-                                if (DynamicBrakePercent >= 0)
+                                if (ForceHandleValue == 0)
                                 {
-                                    DynamicBrakeChangeActiveState(false);
+                                    ThrottlePercent = 0;
+                                    if (DynamicBrakePercent >= 0)
+                                    {
+                                        SetDynamicBrakeValue(-1);
+                                    }
+                                }
+                                if (ForceHandleValue > 0)
+                                {
+                                    SetThrottlePercent(ForceHandleValue);
+                                }
+                                if (ForceHandleValue < 0)
+                                {
+                                    if (!EngineBrakeEngageEDB && !BrakeSystem.OL3active && !BreakEDBButton_Activated)
+                                        DynamicBrakePercent = -ForceHandleValue;
                                 }
                             }
-                            if (ForceHandleValue > 0)
+                            else
                             {
-                                SelectedMaxAccelerationStep = ForceHandleValue;
-                            }
-                            if (ForceHandleValue < 0)
-                            {
-                                if (!EngineBrakeEngageEDB && !BrakeSystem.OL3active && !BreakEDBButton_Activated)
-                                    DynamicBrakePercent = -ForceHandleValue;
+                                if (ForceHandleValue == 0)
+                                {
+                                    ThrottlePercent = 0;
+                                    if (DynamicBrakePercent >= 0)
+                                    {
+                                        DynamicBrakeChangeActiveState(false);
+                                    }
+                                }
+                                if (ForceHandleValue > 0)
+                                {
+                                    SelectedMaxAccelerationStep = ForceHandleValue;
+                                }
+                                if (ForceHandleValue < 0)
+                                {
+                                    if (!EngineBrakeEngageEDB && !BrakeSystem.OL3active && !BreakEDBButton_Activated)
+                                        DynamicBrakePercent = -ForceHandleValue;
+                                }
                             }
                         }
+                        ControllerVolts = ForceHandleValue / 10;
                     }
-                    ControllerVolts = ForceHandleValue / 10;
-                }
 
-                float speedDiff = 0;
-                if (IsPlayerTrain && !Simulator.Paused)
-                {
+                    float speedDiff = 0;
+                    if (IsPlayerTrain && !Simulator.Paused)
+                    {
+                        if (extendedPhysics == null)
+                        {
+                            speedDiff = AbsWheelSpeedMpS - AbsSpeedMpS;
+                        }
+                        if (extendedPhysics != null)
+                        {
+                            speedDiff = extendedPhysics.FastestAxleSpeedMpS - extendedPhysics.AverageAxleSpeedMpS;
+                        }
+                        speedDiff = Math.Abs(speedDiff);
+
+                        if (IsLeadLocomotive() || LocoHelperOn)
+                        {
+                            if (speedDiff > AntiWheelSpinSpeedDiffThreshold || (AbsWheelSpeedMpS - AbsSpeedMpS) > AntiWheelSpinSpeedDiffThreshold)
+                            {
+                                skidSpeedDegratation += 0.5f;
+                                if (skidSpeedDegratation + 0.5f > ControllerVolts)
+                                    skidSpeedDegratation = ControllerVolts - 0.5f;
+
+                            }
+                            else if (skidSpeedDegratation > 0)
+                            {
+                                skidSpeedDegratation -= 0.05f; // původně 0.01
+                            }
+                        }
+
+                        if (wasRestored && IsPlayerTrain && MultiPositionControllers != null && !Simulator.Paused)
+                        {
+                            foreach (MultiPositionController mpc in MultiPositionControllers)
+                            {
+                                if (mpc.controllerBinding == MultiPositionController.ControllerBinding.TrainBrake || mpc.controllerBinding == MultiPositionController.ControllerBinding.Combined)
+                                {
+                                    mpc.DoMovement(MultiPositionController.Movement.Aft);
+                                    mpc.DoMovement(MultiPositionController.Movement.Neutral);
+                                    mpc.CheckNeutralPosition();
+                                    mpc.ReloadPositions();
+                                }
+                            }
+                        }
+
+                        if (extendedPhysics != null && !Simulator.Paused)
+                        {
+                            if (extendedPhysics.OverridenControllerVolts > ControllerVolts && ControllerVolts == 0 && wasRestored)
+                            {
+                                ControllerVolts = extendedPhysics.OverridenControllerVolts;
+                            }
+                            if (IsLeadLocomotive())
+                                extendedPhysics.OverridenControllerVolts = ControllerVolts;
+                            if (!IsLeadLocomotive())
+                                ControllerVolts = Train.ControllerVolts;
+                        }
+                        if (wasRestored && !Simulator.Paused)
+                            wasRestored = false;
+                        if (AntiWheelSpinEquipped)
+                        {
+                            if (extendedPhysics == null && skidSpeedDegratation > 0)
+                            {
+                                TractiveForceN /= skidSpeedDegratation * 10;
+                                if (TractiveForceN > MaxForceN)
+                                    TractiveForceN = MaxForceN;
+                            }
+                            else if (extendedPhysics != null)
+                            {
+                                extendedPhysics.OverridenControllerVolts = Train.OverridenControllerVolts = ControllerVolts - skidSpeedDegratation;
+                            }
+                        }
+                        if (extendedPhysics != null && extendedPhysics.OverridenControllerVolts > 10)
+                            extendedPhysics.OverridenControllerVolts = 10;
+                    }
+
+                    if (extendedPhysics != null)
+                        extendedPhysics.Update(elapsedClockSeconds);
+                    if (CruiseControl != null)
+                    {
+                        if (CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.Manual)
+                        {
+                            CruiseControl.controllerVolts = ControllerVolts;
+                        }
+                        if (CruiseControl.RestrictedSpeedActive)
+                            CruiseControl.CheckRestrictedSpeedZone();
+                    }
+                    if (Mirel != null && Simulator.PlayerIsInCab)
+                    {
+                        if (IsPlayerTrain && Mirel.Equipped)
+                            Mirel.Update(elapsedClockSeconds, AbsSpeedMpS, AbsWheelSpeedMpS);
+                    }
+
+                    if (CruiseControl != null && CruiseControl.controllerVolts > 0 && DynamicBrakePercent > -1)
+                        DynamicBrakeChangeActiveState(false);
+
                     if (extendedPhysics == null)
                     {
-                        speedDiff = AbsWheelSpeedMpS - AbsSpeedMpS;
-                    }
-                    if (extendedPhysics != null)
-                    {
-                        speedDiff = extendedPhysics.FastestAxleSpeedMpS - extendedPhysics.AverageAxleSpeedMpS;
-                    }
-                    speedDiff = Math.Abs(speedDiff);
-
-                    if (IsLeadLocomotive() || LocoHelperOn)
-                    {
-                        if (speedDiff > AntiWheelSpinSpeedDiffThreshold || (AbsWheelSpeedMpS - AbsSpeedMpS) > AntiWheelSpinSpeedDiffThreshold)
+                        if (CruiseControl == null)
                         {
-                            skidSpeedDegratation += 0.5f;
-                            if (skidSpeedDegratation + 0.5f > ControllerVolts)
-                                skidSpeedDegratation = ControllerVolts - 0.5f;
-
-                        }
-                        else if (skidSpeedDegratation > 0)
-                        {
-                            skidSpeedDegratation -= 0.05f; // původně 0.01
-                        }
-                    }
-
-                    if (wasRestored && IsPlayerTrain && MultiPositionControllers != null && !Simulator.Paused)
-                    {
-                        foreach (MultiPositionController mpc in MultiPositionControllers)
-                        {
-                            if (mpc.controllerBinding == MultiPositionController.ControllerBinding.TrainBrake || mpc.controllerBinding == MultiPositionController.ControllerBinding.Combined)
+                            if (ThrottlePercent > 0)
                             {
-                                mpc.DoMovement(MultiPositionController.Movement.Aft);
-                                mpc.DoMovement(MultiPositionController.Movement.Neutral);
-                                mpc.CheckNeutralPosition();
-                                mpc.ReloadPositions();
+                                ControllerVolts = ThrottlePercent / 10;
                             }
                         }
-                    }
-
-                    if (extendedPhysics != null && !Simulator.Paused)
-                    {
-                        if (extendedPhysics.OverridenControllerVolts > ControllerVolts && ControllerVolts == 0 && wasRestored)
-                        {
-                            ControllerVolts = extendedPhysics.OverridenControllerVolts;
-                        }
-                        if (IsLeadLocomotive())
-                            extendedPhysics.OverridenControllerVolts = ControllerVolts;
-                        if (!IsLeadLocomotive())
-                            ControllerVolts = Train.ControllerVolts;
-                    }
-                    if (wasRestored && !Simulator.Paused)
-                        wasRestored = false;
-                    if (AntiWheelSpinEquipped)
-                    {
-                        if (extendedPhysics == null && skidSpeedDegratation > 0)
-                        {
-                            TractiveForceN /= skidSpeedDegratation * 10;
-                            if (TractiveForceN > MaxForceN)
-                                TractiveForceN = MaxForceN;
-                        }
-                        else if (extendedPhysics != null)
-                        {
-                              extendedPhysics.OverridenControllerVolts = Train.OverridenControllerVolts = ControllerVolts - skidSpeedDegratation;
-                        }
-                    }
-                    if (extendedPhysics != null && extendedPhysics.OverridenControllerVolts > 10)
-                        extendedPhysics.OverridenControllerVolts = 10;
-                }
-
-                if (extendedPhysics != null)
-                    extendedPhysics.Update(elapsedClockSeconds);
-                if (CruiseControl != null)
-                {
-                    if (CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.Manual)
-                    {
-                        CruiseControl.controllerVolts = ControllerVolts;
-                    }
-                    if (CruiseControl.RestrictedSpeedActive)
-                        CruiseControl.CheckRestrictedSpeedZone();
-                }
-                if (Mirel != null && Simulator.PlayerIsInCab)
-                {
-                    if (IsPlayerTrain && Mirel.Equipped)
-                        Mirel.Update(elapsedClockSeconds, AbsSpeedMpS, AbsWheelSpeedMpS);
-                }
-
-                if (CruiseControl != null && CruiseControl.controllerVolts > 0 && DynamicBrakePercent > -1)
-                    DynamicBrakeChangeActiveState(false);
-
-                if (extendedPhysics == null)
-                {
-                    if (CruiseControl == null)
-                    {
-                        if (ThrottlePercent > 0)
+                        else if (CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.Manual)
                         {
                             ControllerVolts = ThrottlePercent / 10;
                         }
                     }
-                    else if (CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.Manual)
-                    {
-                        ControllerVolts = ThrottlePercent / 10;
-                    }
-                }
 
-                if (DynamicBrakePercent > 0)
-                {
-                    if (PowerOn)
+                    if (DynamicBrakePercent > 0)
                     {
-                        ControllerVolts = -(DynamicBrakePercent / 100) * MaxControllerVolts;
-                    }
-                    else
-                    {
-                        if (PowerOnFilter > 0)
+                        if (PowerOn)
                         {
                             ControllerVolts = -(DynamicBrakePercent / 100) * MaxControllerVolts;
                         }
+                        else
+                        {
+                            if (PowerOnFilter > 0)
+                            {
+                                ControllerVolts = -(DynamicBrakePercent / 100) * MaxControllerVolts;
+                            }
+                        }
                     }
+                    else if (DynamicBrakePercent <= 0 && ControllerVolts < 0 && CruiseControl != null && !CruiseControl.IReallyWantToBrake)
+                        ControllerVolts = 0;
+
+                    if (ControllerVolts == 0)
+                        SetDynamicBrakeValue(-1);
                 }
-                else if (DynamicBrakePercent <= 0 && ControllerVolts < 0 && CruiseControl != null && !CruiseControl.IReallyWantToBrake)
-                    ControllerVolts = 0;
-                
-                if (ControllerVolts == 0)
-                    SetDynamicBrakeValue(-1);
-            }            
+            }
 
             // Icik                        
             SetCarLightsPowerOn();
