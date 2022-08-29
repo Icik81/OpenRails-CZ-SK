@@ -2570,7 +2570,7 @@ namespace Orts.Simulation.RollingStocks
         {
             if (IsPlayerTrain)
             {
-                if (EngineBrakeEngageEDB || BrakeSystem.OL3active || BreakEDBButton_Activated || (CruiseControl != null && CruiseControl.IReallyWantToBrake))
+                if (EngineBrakeEngageEDB || BrakeSystem.OL3active || BreakEDBButton_Activated)
                     return;
 
                 if (!PowerOn && !EDBIndependent)
