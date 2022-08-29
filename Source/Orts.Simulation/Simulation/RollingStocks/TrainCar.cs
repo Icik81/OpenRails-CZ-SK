@@ -977,6 +977,10 @@ namespace Orts.Simulation.RollingStocks
                 AntiSkidSystem();
                 BrakeSystem.WagonType = (int)WagonType;
 
+                // DebugKoef pro doladění MaxBrakeForce
+                if (BrakeSystem.DebugKoef1 == 0) BrakeSystem.DebugKoef1 = 1.0f;
+                BrakeSystem.DebugKoef = BrakeSystem.DebugKoef1 * BrakeSystem.GetDebugKoef2();
+
                 if (WagonType == WagonTypes.Freight || WagonType == WagonTypes.Tender)    //  Nákladní vozy a tendry
                 {
                     if (!BrakeSystem.AutoLoadRegulatorEquipped)

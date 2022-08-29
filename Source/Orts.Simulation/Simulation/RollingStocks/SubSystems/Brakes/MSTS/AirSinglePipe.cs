@@ -858,11 +858,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     EmergResVolumeM3 = MathHelper.Clamp(EmergResVolumeM3, 0.050f, 0.100f);
                     BrakePipeVolumeM3 = MathHelper.Clamp(BrakePipeVolumeM3, 0.0f, 0.030f);
                 }
-            }
-
-            // DebugKoef pro doladění MaxBrakeForce
-            if (DebugKoef1 == 0) DebugKoef1 = 1.0f;
-            DebugKoef = DebugKoef1 * GetDebugKoef2();
+            }            
 
             // Časy pro napouštění a vypouštění brzdového válce v sekundách režimy G, P, R
             float TimeApplyG = 22.0f;
