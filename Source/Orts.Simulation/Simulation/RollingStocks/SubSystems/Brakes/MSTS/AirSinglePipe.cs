@@ -3172,11 +3172,15 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         // Při vypnutém napájení nebo nedostupném EDB vstupní tlak do převodníku brzdy (používá se signál EDB)
                         if ((!lead.PowerOn || lead.DynamicBrakePercent < 1) && (!lead.EDBIndependent || (lead.EDBIndependent && lead.PowerOnFilter < 1)))
                         {
+                            float SelectedMaxAccelerationStep = lead.SelectedMaxAccelerationStep;
+                            if (SelectedMaxAccelerationStep < lead.CruiseControl.SpeedRegulatorMaxForceSteps / 2)
+                                SelectedMaxAccelerationStep = lead.CruiseControl.SpeedRegulatorMaxForceSteps / 2;
                             if (lead.CruiseControl.SelectedSpeedMpS < lead.AbsWheelSpeedMpS)
-                                lead.BrakeSystem.PressureConverterBaseEDB = (float)Math.Round(lead.SelectedMaxAccelerationStep, 0) / lead.CruiseControl.SpeedRegulatorMaxForceSteps * 4.0f * 14.50377f;
+                                lead.BrakeSystem.PressureConverterBaseEDB = (float)Math.Round(SelectedMaxAccelerationStep, 0) / lead.CruiseControl.SpeedRegulatorMaxForceSteps * 4.0f * 14.50377f;
                             else
                                 lead.BrakeSystem.PressureConverterBaseEDB = 0;
                         }
+                        lead.CruiseControl.BrakeConverterPressureEngage = 1;
                         // Aktivace příznaku zásahu tlakové brzdy v režimu ARR
                         if (lead.BrakeSystem.PressureConverter > lead.CruiseControl.BrakeConverterPressureEngage
                             && lead.BrakeSystem.ARRTrainBrakeCanEngage 
@@ -3208,10 +3212,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                             && (lead.TrainBrakeController.MaxPressurePSI - train.EqualReservoirPressurePSIorInHg) < lead.CruiseControl.MaxTrainBrakePressureDrop)
                         {
                             lead.BrakeSystem.ARRTrainBrakeCycle1 += elapsedClockSeconds;
-                            if (lead.BrakeSystem.ARRTrainBrakeCycle1 > 4.0f)
+                            if (lead.BrakeSystem.ARRTrainBrakeCycle1 > 10.0f)
                             {
                                 lead.BrakeSystem.ARRTrainBrakeCycle2 += elapsedClockSeconds;
-                                if (lead.BrakeSystem.ARRTrainBrakeCycle2 < 1.0f)
+                                if (lead.BrakeSystem.ARRTrainBrakeCycle2 < 5.0f)
                                 {                                    
                                     if (Math.Abs(lead.AccelerationMpSS) < 0.5f)
                                     {
