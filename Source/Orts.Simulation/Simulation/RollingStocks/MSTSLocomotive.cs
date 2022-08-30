@@ -4707,13 +4707,7 @@ namespace Orts.Simulation.RollingStocks
             // Note typically only one of the above will only ever be non-zero at the one time.
             // For flipped locomotives the force is "flipped" elsewhere, whereas dynamic brake force is "flipped" below by the direction of the speed.
             MotiveForceN = TractiveForceN;
-
-            // Icik
-            if (!PowerOn && ControllerVolts == 0)
-            {
-                TractiveForceN = 0;
-                MotiveForceN = 0;
-            }
+            
             if (DynamicBrakePercent > 0 && (DynamicBrakeForceCurves != null || DynamicBrakeForceCurvesAC != null || DynamicBrakeForceCurvesDC != null) && AbsSpeedMpS > 0)
             {
                 float f = 0;
@@ -4747,6 +4741,10 @@ namespace Orts.Simulation.RollingStocks
                 {
                     DynamicBrakeForceN = f * (1 - PowerReduction);
                     MotiveForceN = -(SpeedMpS > 0 ? 1 : SpeedMpS < 0 ? -1 : Direction == Direction.Reverse ? -1 : 1) * DynamicBrakeForceN;
+                    
+                    // Lokomotiva nesmí být poháněna EDB silou, jen bržděna
+                    if (MotiveForceN / Math.Abs(MotiveForceN) == SpeedMpS / AbsSpeedMpS)
+                        MotiveForceN = 0;
                 }
                 else
                 {
