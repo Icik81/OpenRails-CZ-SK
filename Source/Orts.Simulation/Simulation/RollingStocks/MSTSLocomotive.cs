@@ -4019,6 +4019,9 @@ namespace Orts.Simulation.RollingStocks
                 {
                     Battery = true;
                     PowerKey = true;
+                    ActiveStation = UsingRearCab ? DriverStation.Station2 : DriverStation.Station1;
+                    if (Flipped)
+                        ActiveStation = UsingRearCab ? DriverStation.Station1 : DriverStation.Station2;
                     // Mirel
                     Mirel.Test1 = true;
                     Mirel.Test2 = true;
