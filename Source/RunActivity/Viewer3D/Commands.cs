@@ -963,4 +963,31 @@ namespace Orts.Viewer3D
             // Report();
         }
     }
+    [Serializable()]
+    public sealed class SelectScreenCommand : BooleanCommand
+    {
+        public static Viewer Receiver { get; set; }
+
+        public SelectScreenCommand(CommandLog log, bool toState, string screen, int display)
+            : base(log, toState)
+        {
+            Redo(display, screen);
+        }
+
+        public void Redo(int display, string screen)
+        {
+            if (ToState)
+            {
+                var finalReceiver = Receiver.Camera is ThreeDimCabCamera ?
+                    (Receiver.PlayerLocomotiveViewer as MSTSLocomotiveViewer).ThreeDimentionCabRenderer :
+                    (Receiver.PlayerLocomotiveViewer as MSTSLocomotiveViewer)._CabRenderer;
+                finalReceiver.ActiveScreen[display] = screen;
+            }
+        }
+
+        public override string ToString()
+        {
+            return base.ToString();
+        }
+    }
 }
