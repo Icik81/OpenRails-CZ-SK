@@ -11930,8 +11930,8 @@ namespace Orts.Simulation.RollingStocks
                                     if (AbsSpeedMpS == 0 && stationStop.DistanceToTrainM < 100)
                                         stoppedAtStation = true;
 
-                                    float newSpeed = MpS.FromKpH(GetAvvSpeed((AvvDistanceToNext) / 1.2f, 0));
-                                    if (newSpeed < CruiseControl.SelectedSpeedMpS && !stoppedAtStation)
+                                    float newSpeed = GetAvvSpeed((AvvDistanceToNext), 0);
+                                    if (newSpeed < CruiseControl.SelectedSpeedMpS && !float.IsNaN(newSpeed))
                                     {
                                         AVVBraking = true;
                                         CruiseControl.SelectedSpeedMpS = newSpeed;
@@ -12014,8 +12014,8 @@ namespace Orts.Simulation.RollingStocks
                                     }
                                     AvvDistanceToNext = minDistance;
 
-                                    float newSpeed = MpS.FromKpH(GetAvvSpeed((AvvDistanceToNext - 50) / 2.5f, speedPostSpeedAhead));
-                                    if (newSpeed < CruiseControl.SelectedSpeedMpS)
+                                    float newSpeed = GetAvvSpeed((AvvDistanceToNext - 50), speedPostSpeedAhead);
+                                    if (newSpeed < CruiseControl.SelectedSpeedMpS && !float.IsNaN(newSpeed))
                                     {
                                         AVVBraking = true;
                                         CruiseControl.SelectedSpeedMpS = newSpeed;
@@ -12028,7 +12028,6 @@ namespace Orts.Simulation.RollingStocks
                                     {
                                         AVVBraking = true;
                                     }
-
 
                                     return ret;
                                 }
@@ -12102,8 +12101,8 @@ namespace Orts.Simulation.RollingStocks
                                     }
                                     AvvDistanceToNext = minDistance;
 
-                                    float newSpeed = MpS.FromKpH(GetAvvSpeed((AvvDistanceToNext - 52) / 2.5f, signalSpeedAhead));
-                                    if (newSpeed < CruiseControl.SelectedSpeedMpS)
+                                    float newSpeed = GetAvvSpeed((AvvDistanceToNext - 52), signalSpeedAhead);
+                                    if (newSpeed < CruiseControl.SelectedSpeedMpS && !float.IsNaN(newSpeed))
                                     {
                                         AVVBraking = true;
                                         CruiseControl.SelectedSpeedMpS = newSpeed;
@@ -12331,8 +12330,21 @@ namespace Orts.Simulation.RollingStocks
         {
             if (distanceToNext < 0)
                 distanceToNext = 0;
-            float spd = (float)Math.Round(MpS.ToKpH((float)Math.Sqrt(distanceToNext)), 0);
-            float speed = targetSpeed + spd;
+            float spd = 0;
+            float decel = 0;
+            if (AbsSpeedMpS > 0)
+            {
+                decel = -(float)
+                    (Math.Pow(AbsSpeedMpS, 2) - Math.Pow(MpS.FromKpH(targetSpeed), 2)) / distanceToNext;
+                if (decel < -0.5)
+                {
+                    spd = MpS.ToKpH(AbsSpeedMpS) - 0.5f;
+                }
+                else
+                    return float.NaN;
+            }
+            else return float.NaN;
+            float speed = MpS.FromKpH(spd);
             if (speed < 0)
                 speed = 0;
             return speed;
