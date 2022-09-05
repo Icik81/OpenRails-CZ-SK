@@ -3029,6 +3029,7 @@ namespace Orts.Simulation.RollingStocks
         bool TMFailureMSG;
         public void TMFailure(float elapsedClockSeconds)
         {
+            return;
             if (Train.TMFailure)
             {
                 if (!TMFailureMSG)
@@ -11930,8 +11931,8 @@ namespace Orts.Simulation.RollingStocks
                                     if (AbsSpeedMpS == 0 && stationStop.DistanceToTrainM < 100)
                                         stoppedAtStation = true;
 
-                                    float newSpeed = GetAvvSpeed((AvvDistanceToNext), 0);
-                                    if (newSpeed < CruiseControl.SelectedSpeedMpS && !float.IsNaN(newSpeed))
+                                    float newSpeed = GetAvvSpeed((AvvDistanceToNext - 15), 0);
+                                    if (newSpeed < CruiseControl.SelectedSpeedMpS && !float.IsNaN(newSpeed) && !stoppedAtStation)
                                     {
                                         AVVBraking = true;
                                         CruiseControl.SelectedSpeedMpS = newSpeed;
@@ -12014,7 +12015,7 @@ namespace Orts.Simulation.RollingStocks
                                     }
                                     AvvDistanceToNext = minDistance;
 
-                                    float newSpeed = GetAvvSpeed((AvvDistanceToNext - 50), speedPostSpeedAhead);
+                                    float newSpeed = GetAvvSpeed((AvvDistanceToNext - 70), speedPostSpeedAhead);
                                     if (newSpeed < CruiseControl.SelectedSpeedMpS && !float.IsNaN(newSpeed))
                                     {
                                         AVVBraking = true;
@@ -12101,7 +12102,7 @@ namespace Orts.Simulation.RollingStocks
                                     }
                                     AvvDistanceToNext = minDistance;
 
-                                    float newSpeed = GetAvvSpeed((AvvDistanceToNext - 52), signalSpeedAhead);
+                                    float newSpeed = GetAvvSpeed((AvvDistanceToNext - 72), signalSpeedAhead);
                                     if (newSpeed < CruiseControl.SelectedSpeedMpS && !float.IsNaN(newSpeed))
                                     {
                                         AVVBraking = true;
@@ -12328,22 +12329,39 @@ namespace Orts.Simulation.RollingStocks
 
         private float GetAvvSpeed(float distanceToNext, float targetSpeed)
         {
+            var thisInfo = this.Train.GetTrainInfo();
+
             if (distanceToNext < 0)
                 distanceToNext = 0;
             float spd = 0;
             float decel = 0;
             if (AbsSpeedMpS > 0)
             {
-                decel = -(float)
-                    (Math.Pow(AbsSpeedMpS, 2) - Math.Pow(MpS.FromKpH(targetSpeed), 2)) / distanceToNext;
-                if (decel < -0.5)
+                if (targetSpeed == 0)
                 {
-                    spd = MpS.ToKpH(AbsSpeedMpS) - 0.5f;
+                   return (float)Math.Sqrt(distanceToNext / 1.4f);
                 }
                 else
-                    return float.NaN;
+                {
+                    decel = -(float)
+                        (Math.Pow(thisInfo.allowedSpeedMpS, 2) - Math.Pow(MpS.FromKpH(targetSpeed), 2)) / (distanceToNext + 170);
+                    if (float.IsNaN(decel) || float.IsInfinity(decel) || float.IsNegativeInfinity(decel))
+                        return float.NaN;
+                    if (decel < 0)
+                    {
+                        spd = MpS.ToKpH(thisInfo.allowedSpeedMpS) + (float)Math.Round((Math.Sqrt(decel) * 30), 0, MidpointRounding.AwayFromZero);
+                        if (spd < 3)
+                            spd = 0;
+                    }
+                    else
+                    {
+                        spd = MpS.ToKpH(MaxSpeedMpS);
+                    }
+                }
             }
             else return float.NaN;
+            if (spd < targetSpeed)
+                spd = targetSpeed;
             float speed = MpS.FromKpH(spd);
             if (speed < 0)
                 speed = 0;

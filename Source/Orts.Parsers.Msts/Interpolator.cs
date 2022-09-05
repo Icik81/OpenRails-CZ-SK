@@ -342,7 +342,8 @@ namespace Orts.Parsers.Msts
                                     errorFound = true;
                                 }
                                 if (header == "throttle")
-                                    ilist[j][x] = stf.ReadFloat(STFReader.UNITS.Force, 0); // Výstup hodnoty trakční síly
+                                    ilist[j][x] = stf.ReadFloat(STFReader.UNITS.Force, 0); // Výstup hodnoty
+                                                                                           // síly
                                 
                                 if (header == "force" || header == "force2")
                                     ilist[j][x] = stf.ReadFloat(STFReader.UNITS.Current, 0); // Výstup hodnoty proudu                                
