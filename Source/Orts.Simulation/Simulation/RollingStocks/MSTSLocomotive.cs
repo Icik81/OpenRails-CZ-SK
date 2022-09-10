@@ -12339,24 +12339,11 @@ namespace Orts.Simulation.RollingStocks
             {
                 if (targetSpeed == 0)
                 {
-                   return (float)Math.Sqrt(distanceToNext / 1.4f);
+                   return (float)Math.Sqrt(distanceToNext / 1.25f);
                 }
                 else
                 {
-                    decel = -(float)
-                        (Math.Pow(thisInfo.allowedSpeedMpS, 2) - Math.Pow(MpS.FromKpH(targetSpeed), 2)) / (distanceToNext + 170);
-                    if (float.IsNaN(decel) || float.IsInfinity(decel) || float.IsNegativeInfinity(decel))
-                        return float.NaN;
-                    if (decel < 0)
-                    {
-                        spd = MpS.ToKpH(thisInfo.allowedSpeedMpS) + (float)Math.Round((Math.Sqrt(decel) * 30), 0, MidpointRounding.AwayFromZero);
-                        if (spd < 3)
-                            spd = 0;
-                    }
-                    else
-                    {
-                        spd = MpS.ToKpH(MaxSpeedMpS);
-                    }
+                    spd = (distanceToNext / 15) + targetSpeed;
                 }
             }
             else return float.NaN;
