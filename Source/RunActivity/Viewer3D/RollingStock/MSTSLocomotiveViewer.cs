@@ -5333,9 +5333,13 @@ namespace Orts.Viewer3D.RollingStock
             DigitParts3D = new Dictionary<int, ThreeDimCabDigit>();
             Gauges = new Dictionary<int, ThreeDimCabGaugeNative>();
             OnDemandAnimateParts = new Dictionary<int, AnimatedPart>();
+            
             // Find the animated parts
             if (TrainCarShape != null && TrainCarShape.SharedShape.Animations != null)
             {
+                MatrixVisible = new bool[TrainCarShape.SharedShape.MatrixNames.Count + 1];
+                for (int i = 0; i < MatrixVisible.Length; i++)
+                    MatrixVisible[i] = true;
                 string matrixName = ""; string typeName = ""; AnimatedPartMultiState tmpPart = null;
                 for (int iMatrix = 0; iMatrix < TrainCarShape.SharedShape.MatrixNames.Count; ++iMatrix)
                 {
@@ -5372,6 +5376,10 @@ namespace Orts.Viewer3D.RollingStock
                             case CABViewControlTypes.MIRRORS:
                             case CABViewControlTypes.LEFTDOOR:
                             case CABViewControlTypes.RIGHTDOOR:
+                            case CABViewControlTypes.ORTS_ITEM1CONTINUOUS:
+                            case CABViewControlTypes.ORTS_ITEM2CONTINUOUS:
+                            case CABViewControlTypes.ORTS_ITEM1TWOSTATE:
+                            case CABViewControlTypes.ORTS_ITEM2TWOSTATE:
                                 break;
                             default:
                                 //cvf file has no external wipers, left door, right door and mirrors key word
