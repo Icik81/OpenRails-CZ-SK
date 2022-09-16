@@ -756,7 +756,7 @@ namespace Orts.Simulation.RollingStocks
                 LocalDynamicBrakePercent = (int)DynamicBrakePercent;
                 if (PowerSupply.PantographVoltageV < 1) PowerSupply.PantographVoltageV = 1;
                 if (LocalThrottlePercent < 0) LocalThrottlePercent = 0;
-                if (LocalDynamicBrakePercent < 0) LocalDynamicBrakePercent = 0;
+                if (LocalDynamicBrakePercent < -1) LocalDynamicBrakePercent = -1;
 
                 // Použije se pro kontrolku při ztrátě napětí v pantografech
                 if (RouteVoltageV == 25000 && PowerSupply.PantographVoltageV < 19000
@@ -2924,13 +2924,12 @@ namespace Orts.Simulation.RollingStocks
                 status.AppendFormat("{0}\t\t", Simulator.Catalog.GetParticularString("PowerSupply", Simulator.Catalog.GetString("Off")));
 
             // Icik
-            if (PowerUnit && AcceptMUSignals)
+            if (PowerUnit && !LocoHelperOn && !ControlUnit)
             {
                 status.AppendFormat("{0}\t\t", Simulator.Catalog.GetString("Engine"));
                 status.AppendFormat("{0}", Simulator.Catalog.GetString(MathHelper.Clamp(PantographVoltageV - 1, 0, RouteVoltageV * 1.2f) + "V"));
                 //status.AppendFormat("{0}", Simulator.Catalog.GetString("PSPantoVoltage: " + PowerSupply.PantographVoltageV));
-            }
-            else
+            }            
             if (LocoHelperOn)
             {
                 status.AppendFormat("{0}\t\t", Simulator.Catalog.GetString("Helper"));

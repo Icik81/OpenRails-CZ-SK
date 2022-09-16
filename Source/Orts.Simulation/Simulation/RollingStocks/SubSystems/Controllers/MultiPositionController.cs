@@ -369,8 +369,18 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                         }
                         if (Locomotive.ControllerVolts > Locomotive.MaxControllerVolts)
                             Locomotive.ControllerVolts = Locomotive.MaxControllerVolts;
-                        Locomotive.Train.ControllerVolts = Locomotive.ControllerVolts;
+                        //Locomotive.Train.ControllerVolts = Locomotive.ControllerVolts;
                         Locomotive.SetThrottlePercent(Locomotive.ControllerVolts * 10);
+
+                        // Icik
+                        if (Locomotive.ControllerVolts > 0.1f)
+                            Locomotive.Train.ControllerVolts = Locomotive.ControllerVolts;
+                        else
+                        {
+                            Locomotive.Train.ControllerVolts += step;
+                            if (Locomotive.Train.ControllerVolts > Locomotive.MaxControllerVolts)
+                                Locomotive.Train.ControllerVolts = Locomotive.MaxControllerVolts;
+                        }
                     }
                     else
                     {
@@ -893,7 +903,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                             Locomotive.SelectedMaxAccelerationStep = 0;
                     }
                 }
-            }
+            }            
         }
 
         private bool messageDisplayed = false;

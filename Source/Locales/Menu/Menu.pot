@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2022-08-13 16:07:56+0200\n"
-"PO-Revision-Date: 2022-08-13 16:07:56+0200\n"
+"POT-Creation-Date: 2022-09-16 21:36:17+0200\n"
+"PO-Revision-Date: 2022-09-16 21:36:17+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -90,96 +90,96 @@ msgstr ""
 msgid "Reset to default"
 msgstr ""
 
-#: ../../Menu/MainForm.cs:162
+#: ../../Menu/MainForm.cs:159
 msgid "Spring"
 msgstr ""
 
-#: ../../Menu/MainForm.cs:163
+#: ../../Menu/MainForm.cs:160
 msgid "Summer"
 msgstr ""
 
-#: ../../Menu/MainForm.cs:164
+#: ../../Menu/MainForm.cs:161
 msgid "Autumn"
 msgstr ""
 
-#: ../../Menu/MainForm.cs:165
+#: ../../Menu/MainForm.cs:162
 msgid "Winter"
 msgstr ""
 
-#: ../../Menu/MainForm.cs:168
+#: ../../Menu/MainForm.cs:165
 msgid "Clear"
 msgstr ""
 
-#: ../../Menu/MainForm.cs:169
+#: ../../Menu/MainForm.cs:166
 msgid "Snow"
 msgstr ""
 
-#: ../../Menu/MainForm.cs:170
+#: ../../Menu/MainForm.cs:167
 msgid "Rain"
 msgstr ""
 
-#: ../../Menu/MainForm.cs:173
+#: ../../Menu/MainForm.cs:170
 #: ../../Menu/Options.cs:619
 msgid "Easy"
 msgstr ""
 
-#: ../../Menu/MainForm.cs:174
+#: ../../Menu/MainForm.cs:171
 msgid "Medium"
 msgstr ""
 
-#: ../../Menu/MainForm.cs:175
+#: ../../Menu/MainForm.cs:172
 #: ../../Menu/Options.cs:625
 msgid "Hard"
 msgstr ""
 
-#: ../../Menu/MainForm.cs:179
+#: ../../Menu/MainForm.cs:176
 msgid "Monday"
 msgstr ""
 
-#: ../../Menu/MainForm.cs:180
+#: ../../Menu/MainForm.cs:177
 msgid "Tuesday"
 msgstr ""
 
-#: ../../Menu/MainForm.cs:181
+#: ../../Menu/MainForm.cs:178
 msgid "Wednesday"
 msgstr ""
 
-#: ../../Menu/MainForm.cs:182
+#: ../../Menu/MainForm.cs:179
 msgid "Thursday"
 msgstr ""
 
-#: ../../Menu/MainForm.cs:183
+#: ../../Menu/MainForm.cs:180
 msgid "Friday"
 msgstr ""
 
-#: ../../Menu/MainForm.cs:184
+#: ../../Menu/MainForm.cs:181
 msgid "Saturday"
 msgstr ""
 
-#: ../../Menu/MainForm.cs:185
+#: ../../Menu/MainForm.cs:182
 msgid "Sunday"
 msgstr ""
 
-#: ../../Menu/MainForm.cs:339
+#: ../../Menu/MainForm.cs:336
 msgid "Update check failed"
 msgstr ""
 
-#: ../../Menu/MainForm.cs:866
+#: ../../Menu/MainForm.cs:863
 msgid ""
 "User name must be 4-10 characters long, cannot contain space, ', \" or - and "
 "must not start with a digit."
 msgstr ""
 
-#: ../../Menu/MainForm.cs:1495
+#: ../../Menu/MainForm.cs:1492
 msgid "Activity Briefing"
 msgstr ""
 
-#: ../../Menu/MainForm.cs:341
+#: ../../Menu/MainForm.cs:338
 #, csharp-format
 msgid "Update to {0}"
 msgstr ""
 
-#: ../../Menu/MainForm.cs:879
+#: ../../Menu/MainForm.cs:876
 #, csharp-format
 msgid ""
 "The update check failed due to an error:\n"
@@ -187,7 +187,7 @@ msgid ""
 "{0}"
 msgstr ""
 
-#: ../../Menu/MainForm.cs:887
+#: ../../Menu/MainForm.cs:884
 #, csharp-format
 msgid ""
 "The update failed due to an error:\n"
@@ -195,54 +195,54 @@ msgid ""
 "{0}"
 msgstr ""
 
-#: ../../Menu/MainForm.cs:1484
+#: ../../Menu/MainForm.cs:1481
 #, csharp-format
 msgid "Route: {0}"
 msgstr ""
 
-#: ../../Menu/MainForm.cs:1490
-#: ../../Menu/MainForm.cs:1522
+#: ../../Menu/MainForm.cs:1487
+#: ../../Menu/MainForm.cs:1519
 #, csharp-format
 msgid "Locomotive: {0}"
 msgstr ""
 
-#: ../../Menu/MainForm.cs:1494
+#: ../../Menu/MainForm.cs:1491
 #, csharp-format
 msgid "Activity: {0}"
 msgstr ""
 
-#: ../../Menu/MainForm.cs:1499
-#: ../../Menu/MainForm.cs:1525
+#: ../../Menu/MainForm.cs:1496
+#: ../../Menu/MainForm.cs:1522
 #, csharp-format
 msgid "Path: {0}"
 msgstr ""
 
-#: ../../Menu/MainForm.cs:1500
+#: ../../Menu/MainForm.cs:1497
 #, csharp-format
 msgid "Starting at: {0}"
 msgstr ""
 
-#: ../../Menu/MainForm.cs:1501
+#: ../../Menu/MainForm.cs:1498
 #, csharp-format
 msgid "Heading to: {0}"
 msgstr ""
 
-#: ../../Menu/MainForm.cs:1508
+#: ../../Menu/MainForm.cs:1505
 #, csharp-format
 msgid "Timetable set: {0}"
 msgstr ""
 
-#: ../../Menu/MainForm.cs:1512
+#: ../../Menu/MainForm.cs:1509
 #, csharp-format
 msgid "Timetable: {0}"
 msgstr ""
 
-#: ../../Menu/MainForm.cs:1516
+#: ../../Menu/MainForm.cs:1513
 #, csharp-format
 msgid "Train: {0}"
 msgstr ""
 
-#: ../../Menu/MainForm.cs:1520
+#: ../../Menu/MainForm.cs:1517
 #, csharp-format
 msgid "Consist: {0}"
 msgstr ""

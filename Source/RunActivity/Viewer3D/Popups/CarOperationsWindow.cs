@@ -37,14 +37,14 @@ namespace Orts.Viewer3D.Popups
         }
 
         public CarOperationsWindow(WindowManager owner)
-            : base(owner, Window.DecorationSize.X + owner.TextFontDefault.Height * 22, Window.DecorationSize.Y + (owner.TextFontDefault.Height + 2) * 16 + ControlLayout.SeparatorSize * 9, Viewer.Catalog.GetString("*** Car Operation Menu ***"))
+            : base(owner, Window.DecorationSize.X + owner.TextFontDefault.Height * 23, Window.DecorationSize.Y + (owner.TextFontDefault.Height + 2) * 17 + ControlLayout.SeparatorSize * 9, Viewer.Catalog.GetString("*** Car Operation Menu ***"))
         {
             Viewer = owner.Viewer;
         }
 
         protected override ControlLayout Layout(ControlLayout layout)
         {
-            Label ID, buttonHandbrake, buttonTogglePower, buttonToggleMU, buttonToggleBrakeHose, buttonToggleAngleCockA, buttonToggleAngleCockB, buttonToggleBleedOffValve, buttonBrakeCarMode, buttonBrakeCarModePL, buttonBrakeCarDeactivate, buttonTwoPipesConnection, buttonLeftDoor, buttonRightDoor, buttonHeating, buttonClose;
+            Label ID, buttonHandbrake, buttonTogglePower, buttonToggleMU, buttonToggleHelper, buttonToggleBrakeHose, buttonToggleAngleCockA, buttonToggleAngleCockB, buttonToggleBleedOffValve, buttonBrakeCarMode, buttonBrakeCarModePL, buttonBrakeCarDeactivate, buttonTwoPipesConnection, buttonLeftDoor, buttonRightDoor, buttonHeating, buttonClose;
 
             var vbox = base.Layout(layout).AddLayoutVertical();
 
@@ -53,35 +53,60 @@ namespace Orts.Viewer3D.Popups
 
             vbox.Add(ID = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Car ID") + "  " + (CarPosition >= Viewer.PlayerTrain.Cars.Count ? " " : Viewer.PlayerTrain.Cars[CarPosition].CarID), LabelAlignment.Center));
             ID.Color = Color.Yellow;
+            
             vbox.AddHorizontalSeparator();
             vbox.Add(buttonHandbrake = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Toggle Handbrake"), LabelAlignment.Center));
+            if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).GetTrainHandbrakeStatus())
+                buttonHandbrake.Color = Color.LightGreen;
+
             vbox.AddHorizontalSeparator();
             if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive) == null || (Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive).IsLeadLocomotive())
-            {
                 vbox.Add(buttonTogglePower = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("N/A"), LabelAlignment.Center));
-            }
             else
+            {
                 vbox.Add(buttonTogglePower = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Toggle Power"), LabelAlignment.Center));
+                if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive) != null && (Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive).PowerOn)
+                    buttonTogglePower.Color = Color.LightGreen;
+            }    
+            
             vbox.AddHorizontalSeparator();
-            vbox.Add(buttonToggleMU = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Connect/Unmount Helper"), LabelAlignment.Center));
+            vbox.Add(buttonToggleMU = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Toggle Power MU"), LabelAlignment.Center));
+            if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive) != null && (Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive).AcceptPowerSignals)
+                buttonToggleMU.Color = Color.LightGreen;      
+            
+            vbox.AddHorizontalSeparator();
+            vbox.Add(buttonToggleHelper = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Connect/Unmount Helper"), LabelAlignment.Center));
+            if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive) != null && (Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive).AcceptHelperSignals)
+                buttonToggleHelper.Color = Color.LightGreen;
+            
             vbox.AddHorizontalSeparator();
             vbox.Add(buttonToggleBrakeHose = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Toggle Brake Hose Connection"), LabelAlignment.Center));
+            if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.FrontBrakeHoseConnected)
+                buttonToggleBrakeHose.Color = Color.LightGreen;
+
             vbox.AddHorizontalSeparator();
             vbox.Add(buttonToggleAngleCockA = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Open/Close Front Angle Cock"), LabelAlignment.Center));
+            if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.AngleCockAOpen)
+                buttonToggleAngleCockA.Color = Color.LightGreen;
+
             vbox.AddHorizontalSeparator();
             vbox.Add(buttonToggleAngleCockB = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Open/Close Rear Angle Cock"), LabelAlignment.Center));
+            if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.AngleCockBOpen)
+                buttonToggleAngleCockB.Color = Color.LightGreen;
+
             vbox.AddHorizontalSeparator();
             vbox.Add(buttonToggleBleedOffValve = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Open/Close Bleed Off Valve"), LabelAlignment.Center));
+            if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.BleedOffValveOpen)
+                buttonToggleBleedOffValve.Color = Color.LightGreen;
+            
             vbox.AddHorizontalSeparator();
             vbox.Add(buttonBrakeCarMode = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Brake Mode G/P/R/R+Mg") + "      " + Viewer.Catalog.GetString("Set") + ": " + (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.BrakeCarModeText, LabelAlignment.Center));
-            buttonBrakeCarMode.Color = Color.LightGreen;
 
             // Vůz je nákladní a není možný režim R+Mg
             if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.WagonType == 4 && !(Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.AutoLoadRegulatorEquipped)
             {
                 vbox.AddHorizontalSeparator();
                 vbox.Add(buttonBrakeCarModePL = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Car Mode Empty/Loaded") + "      " + Viewer.Catalog.GetString("Set") + ": " + (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.BrakeCarModeTextPL, LabelAlignment.Center));
-                buttonBrakeCarModePL.Color = Color.DarkOrange;
                 buttonBrakeCarModePL.Click += new Action<Control, Point>(buttonBrakeCarModePL_Click);
                 (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.NumberBrakeCarMode = 2;
             }
@@ -90,38 +115,45 @@ namespace Orts.Viewer3D.Popups
             {
                 vbox.AddHorizontalSeparator();
                 vbox.Add(buttonBrakeCarModePL = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("N/A"), LabelAlignment.Center));
-                buttonBrakeCarModePL.Color = Color.DarkOrange;
                 (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.NumberBrakeCarMode = 4;
                 if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.AutoLoadRegulatorEquipped)
                     (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.NumberBrakeCarMode = 2;
             }
 
             vbox.AddHorizontalSeparator();
-            vbox.Add(buttonBrakeCarDeactivate = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Car Brake") + "      " + Viewer.Catalog.GetString("Set") + ": " + (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.BrakeCarDeactivateText, LabelAlignment.Center));
-            buttonBrakeCarDeactivate.Color = Color.LightGreen;
+            vbox.Add(buttonBrakeCarDeactivate = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Car Brake"), LabelAlignment.Center));
+            if (!(Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.BrakeCarDeactivate)
+                buttonBrakeCarDeactivate.Color = Color.LightGreen;
 
             vbox.AddHorizontalSeparator();
-            vbox.Add(buttonTwoPipesConnection = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Air Twin Pipe Hoses") + "      " + Viewer.Catalog.GetString("Set") + ": " + (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.TwoPipesConnectionText, LabelAlignment.Center));
+            vbox.Add(buttonTwoPipesConnection = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Air Twin Pipe Hoses"), LabelAlignment.Center));
+            if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.TwoPipesConnection)
+                buttonTwoPipesConnection.Color = Color.LightGreen;
 
             vbox.AddHorizontalSeparator();
-            vbox.Add(buttonLeftDoor = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Left Door") + "      " + Viewer.Catalog.GetString("Set") + ": " + (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.LeftDoorText, LabelAlignment.Center));
+            vbox.Add(buttonLeftDoor = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Left Door"), LabelAlignment.Center));
+            if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.LeftDoorIsOpened)
+                buttonLeftDoor.Color = Color.LightGreen;
 
             vbox.AddHorizontalSeparator();
-            vbox.Add(buttonRightDoor = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Right Door") + "      " + Viewer.Catalog.GetString("Set") + ": " + (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.RightDoorText, LabelAlignment.Center));
+            vbox.Add(buttonRightDoor = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Right Door"), LabelAlignment.Center));
+            if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.RightDoorIsOpened)
+                buttonRightDoor.Color = Color.LightGreen;
 
             vbox.AddHorizontalSeparator();
-            if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).DieselHeaterPower > 0)
-            {
-                vbox.Add(buttonHeating = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Diesel Heating") + "      " + Viewer.Catalog.GetString("Set") + ": " + (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.HeatingText, LabelAlignment.Center));
-            }
+            if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).DieselHeaterPower > 0)            
+                vbox.Add(buttonHeating = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Diesel Heating"), LabelAlignment.Center));            
             else
-                vbox.Add(buttonHeating = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Electric Heating/Air") + "      " + Viewer.Catalog.GetString("Set") + ": " + (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.HeatingText, LabelAlignment.Center));
+                vbox.Add(buttonHeating = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Electric Heating/Air"), LabelAlignment.Center));                            
+            if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.HeatingIsOn)
+                buttonHeating.Color = Color.LightGreen;
 
             vbox.AddHorizontalSeparator();
             vbox.Add(buttonClose = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Close window"), LabelAlignment.Center));
             buttonHandbrake.Click += new Action<Control, Point>(buttonHandbrake_Click);
             buttonTogglePower.Click += new Action<Control, Point>(buttonTogglePower_Click);
             buttonToggleMU.Click += new Action<Control, Point>(buttonToggleMU_Click);
+            buttonToggleHelper.Click += new Action<Control, Point>(buttonToggleHelper_Click);
             buttonToggleBrakeHose.Click += new Action<Control, Point>(buttonToggleBrakeHose_Click);
             buttonToggleAngleCockA.Click += new Action<Control, Point>(buttonToggleAngleCockA_Click);
             buttonToggleAngleCockB.Click += new Action<Control, Point>(buttonToggleAngleCockB_Click);
@@ -213,14 +245,33 @@ namespace Orts.Viewer3D.Popups
                 ||
               (Viewer.PlayerTrain.Cars[CarPosition].GetType() == typeof(MSTSDieselLocomotive)))
             {
-                new ToggleMUCommand(Viewer.Log, (Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive), !(Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive).AcceptMUSignals);
-                if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive).AcceptMUSignals)
+                new ToggleMUCommand(Viewer.Log, (Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive), !(Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive).AcceptPowerSignals);
+                if (!(Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive).AcceptPowerSignals)
+                    Viewer.Simulator.Confirmer.Information(Viewer.Catalog.GetString("Power MU disconnected"));
+                else
+                    Viewer.Simulator.Confirmer.Information(Viewer.Catalog.GetString("Power MU connected"));
+            }
+            else
+                Viewer.Simulator.Confirmer.Warning(Viewer.Catalog.GetString("No Power MU command for this type of car!"));
+        }
+
+        void buttonToggleHelper_Click(Control arg1, Point arg2)
+        {
+
+            if ((Viewer.PlayerTrain.Cars[CarPosition].GetType() == typeof(MSTSLocomotive))
+                ||
+              (Viewer.PlayerTrain.Cars[CarPosition].GetType() == typeof(MSTSElectricLocomotive))
+                ||
+              (Viewer.PlayerTrain.Cars[CarPosition].GetType() == typeof(MSTSDieselLocomotive)))
+            {
+                new ToggleHelperCommand(Viewer.Log, (Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive), !(Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive).AcceptHelperSignals);
+                if (!(Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive).AcceptHelperSignals)
                     Viewer.Simulator.Confirmer.Information(Viewer.Catalog.GetString("Helper disconnected"));
                 else
                     Viewer.Simulator.Confirmer.Information(Viewer.Catalog.GetString("Helper connected"));
             }
             else
-                Viewer.Simulator.Confirmer.Warning(Viewer.Catalog.GetString("No MU command for this type of car!"));
+                Viewer.Simulator.Confirmer.Warning(Viewer.Catalog.GetString("No Helper command for this type of car!"));
         }
 
         void buttonToggleBrakeHose_Click(Control arg1, Point arg2)

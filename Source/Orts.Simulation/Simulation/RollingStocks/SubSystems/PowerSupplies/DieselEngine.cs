@@ -377,10 +377,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                 result.AppendFormat("\t{0}", FormatStrings.FormatPressure(eng.DieselOilPressurePSI, PressureUnit.PSI, Locomotive.MainPressureUnit, true));
 
             // Icik
-            if (Locomotive.PowerUnit && Locomotive.AcceptMUSignals)
+            if (Locomotive.PowerUnit && !Locomotive.LocoHelperOn && !Locomotive.ControlUnit)
                 foreach (var eng in DEList)
                     result.AppendFormat("\t\t{0}", Simulator.Catalog.GetString("Engine"));
-            else
+            
             if (Locomotive.LocoHelperOn)
                 foreach (var eng in DEList)
                     result.AppendFormat("\t\t{0}", Simulator.Catalog.GetString("Helper"));

@@ -443,6 +443,33 @@ namespace Orts.Common
         }
     }
 
+    // Icik
+    // Helper commands connection
+    [Serializable()]
+    public sealed class ToggleHelperCommand : BooleanCommand
+    {
+        public static MSTSLocomotive Receiver { get; set; }
+
+        public ToggleHelperCommand(CommandLog log, MSTSLocomotive receiver, bool toState)
+            : base(log, toState)
+        {
+            Receiver = receiver;
+            Redo();
+        }
+
+        public override void Redo()
+        {
+            if (Receiver == null) return;//no receiver of this panto
+            Receiver.ToggleHelperCommand(ToState);
+            // Report();
+        }
+
+        public override string ToString()
+        {
+            return base.ToString() + " - " + (ToState ? "ON" : "OFF");
+        }
+    }
+
     [Serializable()]
     public sealed class NotchedThrottleCommand : BooleanCommand
     {

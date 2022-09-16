@@ -1769,6 +1769,8 @@ namespace Orts.Simulation.RollingStocks
             outf.Write(AbsTractionSpeedMpS);
             outf.Write(AbsWheelSpeedMpS);
             // Icik
+            outf.Write(AcceptHelperSignals);
+            outf.Write(AcceptPowerSignals);
             outf.Write(HVOffStatusBrakeCyl);
             outf.Write(HVOffStatusBrakePipe);
             outf.Write(AuxCompressorMode_OffOn);
@@ -1876,6 +1878,8 @@ namespace Orts.Simulation.RollingStocks
             AbsWheelSpeedMpS = inf.ReadSingle();
 
             // Icik
+            AcceptHelperSignals = inf.ReadBoolean();
+            AcceptPowerSignals = inf.ReadBoolean();
             HVOffStatusBrakeCyl = inf.ReadBoolean();
             HVOffStatusBrakePipe = inf.ReadBoolean();
             AuxCompressorMode_OffOn = inf.ReadBoolean();
@@ -3879,23 +3883,32 @@ namespace Orts.Simulation.RollingStocks
         // Nastaví výkon na postrku
         public void SetHelperLoco()
         {
-            if (!AcceptMUSignals && PowerUnit)
+            if (AcceptHelperSignals && PowerUnit)
             {
                 LocoHelperOn = true;
+                AcceptMUSignals = false;
             }
-            if (AcceptMUSignals && PowerUnit)
+            if (!AcceptHelperSignals && PowerUnit)
             {
                 LocoHelperOn = false;
+                AcceptMUSignals = true;
             }            
 
-            if (IsLeadLocomotive() && ThrottlePercent != 0)
-                Simulator.ThrottleLocoHelper = ThrottlePercent;
+            if (IsLeadLocomotive())
+                Simulator.ThrottleLocoHelper = LocalThrottlePercent;
 
-            if (LocoHelperOn)
+            if (LocoHelperOn || !AcceptPowerSignals)
             {
-                ThrottlePercent = Simulator.ThrottleLocoHelper;
+                ThrottlePercent = Simulator.ThrottleLocoHelper;                          
                 Headlight = 1;
                 Mirel.Ls90power = SubSystems.Mirel.LS90power.Off;
+            }
+
+            if (!AcceptPowerSignals)
+            {
+                LocalThrottlePercent = 0;
+                AcceptMUSignals = false;
+                LocalDynamicBrakePercent = -1;
             }
         }
 
@@ -4374,7 +4387,7 @@ namespace Orts.Simulation.RollingStocks
                     if (ControllerVolts == 0)
                         SetDynamicBrakeValue(-1);
                 }
-            }
+            }            
 
             // Icik                        
             SetCarLightsPowerOn();
@@ -4409,7 +4422,7 @@ namespace Orts.Simulation.RollingStocks
                 SetAIAction();
 
             if (IsPlayerTrain && !Simulator.Paused)
-            {                       
+            {                
                 //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("LapActive " + LapActive));
                 if (Simulator.GameTime < 0.5f)
                 {
@@ -4461,7 +4474,7 @@ namespace Orts.Simulation.RollingStocks
             elapsedTime = elapsedClockSeconds;
             string s = this.LocomotiveName;
             UpdatePowerSupply(elapsedClockSeconds);
-            UpdateControllers(elapsedClockSeconds);
+            UpdateControllers(elapsedClockSeconds);            
 
             if (Battery)
             {
@@ -4709,9 +4722,14 @@ namespace Orts.Simulation.RollingStocks
 
             // Calculate the total motive force for the locomotive - ie TractiveForce (driving force) + Dynamic Braking force.
             // Note typically only one of the above will only ever be non-zero at the one time.
-            // For flipped locomotives the force is "flipped" elsewhere, whereas dynamic brake force is "flipped" below by the direction of the speed.
+            // For flipped locomotives the force is "flipped" elsewhere, whereas dynamic brake force is "flipped" below by the direction of the speed.            
+
+            // Icik
+            if (!PowerOn || !AcceptPowerSignals)                
+                TractiveForceN = 0;
+
             MotiveForceN = TractiveForceN;
-            
+
             if (DynamicBrakePercent > 0 && (DynamicBrakeForceCurves != null || DynamicBrakeForceCurvesAC != null || DynamicBrakeForceCurvesDC != null) && AbsSpeedMpS > 0)
             {
                 float f = 0;
@@ -7623,7 +7641,14 @@ namespace Orts.Simulation.RollingStocks
 
         internal void ToggleMUCommand(bool ToState)
         {
-            AcceptMUSignals = ToState;
+            //AcceptMUSignals = ToState;
+            AcceptPowerSignals = ToState;
+        }
+
+        // Icik
+        internal void ToggleHelperCommand(bool ToState)
+        {
+            AcceptHelperSignals = ToState;
         }
 
         public void SetTrainHandbrake(bool apply)
