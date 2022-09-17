@@ -3184,7 +3184,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         // Aktivace příznaku zásahu tlakové brzdy v režimu ARR
                         if (lead.BrakeSystem.PressureConverter > lead.CruiseControl.BrakeConverterPressureEngage
                             && lead.BrakeSystem.ARRTrainBrakeCanEngage 
-                            && lead.CruiseControl.SelectedSpeedMpS < lead.AbsWheelSpeedMpS)
+                            && lead.CruiseControl.SelectedSpeedMpS * 1.05f < lead.AbsWheelSpeedMpS)
                             lead.ARRTrainBrakeEngage = true;
                         else
                         {
@@ -3202,6 +3202,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     }
                     lead.ARRAutoCylPressurePSI = lead.BrakeSystem.PressureConverter;
                     // Regulátor tlakové brzdy pro ARR
+                    float ARRSpeedDeccelaration = lead.AbsWheelSpeedMpS - lead.CruiseControl.SelectedSpeedMpS;
+                    ARRSpeedDeccelaration = MathHelper.Clamp(ARRSpeedDeccelaration, 0.0f, 0.5f);
+                    //lead.Simulator.Confirmer.Information("ARRSpeedDeccelaration = " + ARRSpeedDeccelaration);
+
                     if (lead.ARRTrainBrakeEngage && lead.AbsWheelSpeedMpS > 0
                         && lead.MainResPressurePSI > 0
                         && AutoCylPressurePSI < lead.BrakeSystem.BrakeCylinderMaxSystemPressurePSI
@@ -3212,12 +3216,12 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                             && (lead.TrainBrakeController.MaxPressurePSI - train.EqualReservoirPressurePSIorInHg) < lead.CruiseControl.MaxTrainBrakePressureDrop)
                         {
                             lead.BrakeSystem.ARRTrainBrakeCycle1 += elapsedClockSeconds;
-                            if (lead.BrakeSystem.ARRTrainBrakeCycle1 > 10.0f)
+                            if (lead.BrakeSystem.ARRTrainBrakeCycle1 > 1.0f)
                             {
                                 lead.BrakeSystem.ARRTrainBrakeCycle2 += elapsedClockSeconds;
-                                if (lead.BrakeSystem.ARRTrainBrakeCycle2 < 5.0f)
+                                if (lead.BrakeSystem.ARRTrainBrakeCycle2 < 2.0f)
                                 {                                    
-                                    if (Math.Abs(lead.AccelerationMpSS) < 0.5f)
+                                    if (Math.Abs(lead.AccelerationMpSS) < ARRSpeedDeccelaration)
                                     {
                                         lead.ARRTrainBrakeEngage_Apply = true;
                                         lead.ARRTrainBrakeEngage_Release = false;
@@ -3226,7 +3230,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                                         if (train.EqualReservoirPressurePSIorInHg < 0)
                                             train.EqualReservoirPressurePSIorInHg = 0;
                                     }                                    
-                                    if (Math.Abs(lead.AccelerationMpSS) > 0.5f)
+                                    if (Math.Abs(lead.AccelerationMpSS) > ARRSpeedDeccelaration)
                                     {
                                         lead.ARRTrainBrakeEngage_Apply = false;
                                         lead.ARRTrainBrakeEngage_Release = true;
