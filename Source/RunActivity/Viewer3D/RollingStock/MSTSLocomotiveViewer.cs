@@ -703,7 +703,7 @@ namespace Orts.Viewer3D.RollingStock
                 }
                 Locomotive.AripotControllerValue = MathHelper.Clamp(Locomotive.AripotControllerValue, 0, 1);
 
-                if (Locomotive.CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.Auto)
+                if (Locomotive.CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.Auto || Locomotive.CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.AVV)
                 {
                     // Auto
                     Aripot_CycleTime += 1 * Locomotive.Simulator.OneSecondLoop;
@@ -2718,7 +2718,7 @@ namespace Orts.Viewer3D.RollingStock
                         {
                             if (Locomotive.CruiseControl != null)
                             {
-                                if ((Locomotive.CruiseControl.SpeedRegMode == Simulation.RollingStocks.SubSystems.CruiseControl.SpeedRegulatorMode.Auto && !Locomotive.CruiseControl.DynamicBrakePriority) || Locomotive.DynamicBrakeIntervention > 0)
+                                if (((Locomotive.CruiseControl.SpeedRegMode == Simulation.RollingStocks.SubSystems.CruiseControl.SpeedRegulatorMode.Auto || Locomotive.CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.AVV) && !Locomotive.CruiseControl.DynamicBrakePriority) || Locomotive.DynamicBrakeIntervention > 0)
                                 {
                                     index = 0;
                                 }
@@ -2749,7 +2749,7 @@ namespace Orts.Viewer3D.RollingStock
                         {
                             if (Locomotive.CruiseControl != null)
                             {
-                                if ((Locomotive.CruiseControl.SpeedRegMode == Simulation.RollingStocks.SubSystems.CruiseControl.SpeedRegulatorMode.Auto && !Locomotive.CruiseControl.DynamicBrakePriority) || Locomotive.DynamicBrakeIntervention > 0)
+                                if (((Locomotive.CruiseControl.SpeedRegMode == Simulation.RollingStocks.SubSystems.CruiseControl.SpeedRegulatorMode.Auto || Locomotive.CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.AVV) && !Locomotive.CruiseControl.DynamicBrakePriority) || Locomotive.DynamicBrakeIntervention > 0)
                                 {
                                     index = 0;
                                 }

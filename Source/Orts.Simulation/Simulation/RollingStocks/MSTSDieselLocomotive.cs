@@ -696,7 +696,7 @@ namespace Orts.Simulation.RollingStocks
             EngineRPMRatio = (DieselEngines[0].RealRPM - DieselEngines[0].IdleRPM) / (DieselEngines[0].MaxRPM - DieselEngines[0].IdleRPM);
 
             // Aripot
-            if (CruiseControl != null && CruiseControl.SpeedRegMode == SpeedRegulatorMode.Auto && CruiseControl.AripotEquipment)
+            if (CruiseControl != null && (CruiseControl.SpeedRegMode == SpeedRegulatorMode.Auto || CruiseControl.SpeedRegMode == SpeedRegulatorMode.AVV) && CruiseControl.AripotEquipment)
             {
                 Variable1 = Variable1;
             }

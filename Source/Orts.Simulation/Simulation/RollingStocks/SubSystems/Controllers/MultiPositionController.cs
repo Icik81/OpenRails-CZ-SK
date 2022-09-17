@@ -264,7 +264,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
             bool ccAutoMode = false;
             if (haveCruiseControl)
             {
-                if (Locomotive.CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.Auto)
+                if (Locomotive.CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.Auto || Locomotive.CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.AVV)
                 {
                     ccAutoMode = true;
                 }

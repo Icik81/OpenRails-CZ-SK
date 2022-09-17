@@ -321,7 +321,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
             Locomotive.SignalEvent(Common.Event.CruiseControlSpeedRegulator);
             SpeedRegulatorMode previousMode = SpeedRegMode;
             if (!Equipped) return;
-            if (SpeedRegMode == SpeedRegulatorMode.Testing) return;
+            if (SpeedRegMode == SpeedRegulatorMode.Testing || SpeedRegMode == SpeedRegulatorMode.AVV) return;
             bool test = false;
             while (!test)
             {
@@ -342,8 +342,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                             break;
                         }
                     case SpeedRegulatorMode.Testing: if (SpeedRegulatorOptions.Contains("regulatortest")) test = true; break;
+                    case SpeedRegulatorMode.AVV: if (SpeedRegulatorOptions.Contains("regulatorato")) test = true; break;
+
                 }
-                if (!test && SpeedRegMode == SpeedRegulatorMode.Testing) // if we're here, then it means no higher option, return to previous state and get out
+                if (!test && (SpeedRegMode == SpeedRegulatorMode.Testing && !SpeedRegulatorOptions.Contains("regulatorato")) || (SpeedRegMode == SpeedRegulatorMode.AVV && !SpeedRegulatorOptions.Contains("regulatorato")))  // if we're here, then it means no higher option, return to previous state and get out
                 {
                     SpeedRegMode = previousMode;
                     return;
@@ -867,7 +869,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
             {
                 wasDynamicBrakeUsed = true;
             }
-            if (SkipThrottleDisplayExternal && SpeedRegMode == SpeedRegulatorMode.Auto)
+            if (SkipThrottleDisplayExternal && (SpeedRegMode == SpeedRegulatorMode.Auto || SpeedRegMode == SpeedRegulatorMode.AVV))
             {
                 SkipThrottleDisplay = true;
             }
@@ -1182,7 +1184,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                     Locomotive.SetDynamicBrakePercent(0);
             }
 
-            if (SpeedRegMode == SpeedRegulatorMode.Auto)
+            if (SpeedRegMode == SpeedRegulatorMode.Auto || SpeedRegMode == SpeedRegulatorMode.AVV)
             {
                 if (SpeedSelMode == SpeedSelectorMode.Parking && !Locomotive.EngineBrakePriority)
                 {
@@ -2153,7 +2155,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                     }
                     break;
                 case CABViewControlTypes.ORTS_SELECTED_SPEED_MAXIMUM_ACCELERATION:
-                    if (SpeedRegMode == SpeedRegulatorMode.Auto || MaxForceKeepSelectedStepWhenManualModeSet)
+                    if (SpeedRegMode == SpeedRegulatorMode.Auto || SpeedRegMode == SpeedRegulatorMode.AVV || MaxForceKeepSelectedStepWhenManualModeSet)
                     {
                         data = (Locomotive.SelectedMaxAccelerationStep - 1) * (float)cvc.MaxValue / 100;
                     }
@@ -2182,7 +2184,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                         data = TrainLengthMeters - RemainingTrainLengthToPassRestrictedZone;
                     break;
                 case CABViewControlTypes.ORTS_REMAINING_TRAIN_LENGTH_PERCENT:
-                    if (SpeedRegMode != CruiseControl.SpeedRegulatorMode.Auto)
+                    if (SpeedRegMode != CruiseControl.SpeedRegulatorMode.Auto && SpeedRegMode != SpeedRegulatorMode.AVV)
                     {
                         data = 0;
                         break;

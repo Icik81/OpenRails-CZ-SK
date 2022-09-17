@@ -3161,13 +3161,13 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         lead.BrakeSystem.ARRTrainBrakeCycle2 = 0;
                     }
 
-                    if (lead.CruiseControl.SpeedRegMode != CruiseControl.SpeedRegulatorMode.Auto)
+                    if (lead.CruiseControl.SpeedRegMode != CruiseControl.SpeedRegulatorMode.Auto && lead.CruiseControl.SpeedRegMode != CruiseControl.SpeedRegulatorMode.AVV)
                     {
                         lead.ARRTrainBrakeEngage = false;
                         lead.BrakeSystem.ARRTrainBrakeCanEngage = true;
                     }
 
-                    if (lead.CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.Auto)
+                    if (lead.CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.Auto || lead.CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.AVV)
                     {
                         // Při vypnutém napájení nebo nedostupném EDB vstupní tlak do převodníku brzdy (používá se signál EDB)
                         if ((!lead.PowerOn || lead.DynamicBrakePercent < 1) && (!lead.EDBIndependent || (lead.EDBIndependent && lead.PowerOnFilter < 1)))
