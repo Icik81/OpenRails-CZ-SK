@@ -11842,7 +11842,7 @@ namespace Orts.Simulation.RollingStocks
         }
 
         public float AvvDistanceToNext = 1000000;
-                protected float previousSignalSpeed = 0;
+        protected float previousSignalSpeed = 0;
         protected float previousSpeedpostSpeed = 0;
         protected float previousSignalItemDistance = 0;
         protected float maxSelSpeed = 0;
@@ -11854,9 +11854,12 @@ namespace Orts.Simulation.RollingStocks
         public float OverridenSignalDistance = -1;
         public float OverridenSignalSpeed = -1;
         public bool AVVBraking = false;
-        private float prevDynBrake = 0;
         public int AVVActiveLine = 0;
-        
+        public bool AVVPassStation = false;
+        public bool AVVStop40 = false;
+        public int AVVExpectSpeed = 0;
+        public float previousStationItemDistance = 0;
+
         public virtual string GetDataOfS(CabViewControl crc, ElapsedTime elapsedClockSeconds, out Color? positiveColor)
         {
             positiveColor = null;
@@ -11951,6 +11954,11 @@ namespace Orts.Simulation.RollingStocks
                                     if (this.Train.StationStops.Count == 0)
                                         return "?";
                                     Physics.Train.StationStop stationStop = Train.StationStops[0];
+                                    if (stationStop.DistanceToTrainM > previousStationItemDistance + 10)
+                                    {
+                                        AVVStop40 = false;
+                                    }
+                                    previousStationItemDistance = stationStop.DistanceToTrainM - 1;
                                     string ret = "";
                                     ret = Math.Round(stationStop.DistanceToTrainM, 0).ToString();
                                     if (ret.Contains("-"))
@@ -11995,7 +12003,10 @@ namespace Orts.Simulation.RollingStocks
                                 {
                                     if (AVVActiveLine == 2)
                                         positiveColor = new Color(0, 0, 0);
-                                    return "0";
+                                    if (!AVVPassStation)
+                                        return "0";
+                                    else
+                                        return Math.Round(MpS.ToKpH(MaxSpeedMpS), 0).ToString();
                                 }
                             case "NextMilepostDistance":
                                 {
@@ -12109,7 +12120,7 @@ namespace Orts.Simulation.RollingStocks
                                 {
                                     if (AVVActiveLine == 1)
                                         positiveColor = new Color(0, 0, 0);
-                                    string ret = "?m";
+                                    string ret = "?";
                                     Train.TrainInfo info = this.Train.GetTrainInfo();
                                     List<Train.TrainObjectItem> items = info.ObjectInfoForward;
                                     float minDistance = 1000000;
@@ -12178,7 +12189,10 @@ namespace Orts.Simulation.RollingStocks
                                             {
                                                 minDistance = item.DistanceToTrainM;
                                                 if (item.DistanceToTrainM > previousSignalItemDistance + 10)
+                                                {
                                                     overrideDistance = true;
+                                                    AVVStop40 = false;
+                                                }
                                                 previousSignalItemDistance = item.DistanceToTrainM - 1;
                                                 if (Mirel.RecievingRepeaterSignal)
                                                 {
@@ -12246,6 +12260,8 @@ namespace Orts.Simulation.RollingStocks
                                                                 break;
                                                             }
                                                     }
+                                                    if (signalSpeedAhead == 0 && AVVStop40)
+                                                        signalSpeedAhead = 40;
                                                     ret = Math.Round(signalSpeedAhead, 0).ToString();
                                                 }
                                                 else if (overrideDistance)
@@ -12318,6 +12334,11 @@ namespace Orts.Simulation.RollingStocks
                                                 }
                                             }
                                         }
+                                    }
+                                    if (signalSpeedAhead < 40 && AVVStop40)
+                                    {
+                                        signalSpeedAhead = 40;
+                                        ret = "40";
                                     }
                                     return ret;
                                 }
