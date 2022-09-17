@@ -667,6 +667,7 @@ namespace Orts.Simulation.RollingStocks
         public InterpolatorDiesel2D CurrentForce2Curves_3;
         public string CabFrontSoundFileName;
         public string CabRearSoundFileName;
+        public int CabStationForBatterySwitchOn;
 
 
         // Jindrich
@@ -1359,6 +1360,7 @@ namespace Orts.Simulation.RollingStocks
                 case "engine(ortscurrentcharacteristics_3": CurrentForce2Curves_3 = new InterpolatorDiesel2D(stf, true); break;
                 case "engine(soundfront": CabFrontSoundFileName = stf.ReadStringBlock(null); break;
                 case "engine(soundrear": CabRearSoundFileName = stf.ReadStringBlock(null); break;
+                case "engine(cabstationforbatteryswitchon": CabStationForBatterySwitchOn = stf.ReadIntBlock(null); break;
 
                 // Jindrich
                 case "engine(usingforcehandle": UsingForceHandle = stf.ReadBoolBlock(false); break;
@@ -1615,6 +1617,7 @@ namespace Orts.Simulation.RollingStocks
             CurrentForce2Curves_3 = locoCopy.CurrentForce2Curves_3;
             CabFrontSoundFileName = locoCopy.CabFrontSoundFileName;
             CabRearSoundFileName = locoCopy.CabRearSoundFileName;
+            CabStationForBatterySwitchOn = locoCopy.CabStationForBatterySwitchOn;
 
             // Jindrich
             UsingForceHandle = locoCopy.UsingForceHandle;
@@ -7715,6 +7718,10 @@ namespace Orts.Simulation.RollingStocks
 
         public void ToggleBattery()
         {
+            if (CabStationForBatterySwitchOn == 1 && UsingRearCab) return;
+            if (CabStationForBatterySwitchOn == 2 && !UsingRearCab) return;
+            if (CabStationForBatterySwitchOn > 2) return;
+
             Battery = !Battery;
             if (Battery)
             {
