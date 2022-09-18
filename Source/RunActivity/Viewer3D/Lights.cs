@@ -246,7 +246,7 @@ namespace Orts.Viewer3D
             var locomotiveReverseCab = mstsLocomotive != null && mstsLocomotive.UsingRearCab;
             var newCarIsReversed = Car.Flipped ^ locomotiveFlipped ^ locomotiveReverseCab;
             var newCarIsFirst = Car.Train == null || (locomotiveFlipped ^ locomotiveReverseCab ? Car.Train.LastCar : Car.Train.FirstCar) == Car;
-            var newCarIsLast = Car.Train == null || (locomotiveFlipped ^ locomotiveReverseCab ? Car.Train.FirstCar : Car.Train.LastCar) == Car;            
+            var newCarIsLast = Car.Train == null || (locomotiveFlipped ^ locomotiveReverseCab ? Car.Train.FirstCar : Car.Train.LastCar) == Car;
             // Penalty
             var newPenalty = mstsLocomotive != null && mstsLocomotive.TrainBrakeController.EmergencyBraking;
             // Control
@@ -280,8 +280,7 @@ namespace Orts.Viewer3D
             var newCarLightFrontLR = locomotive != null && locomotive.LightFrontLR;
             var newCarLightFrontRR = locomotive != null && locomotive.LightFrontRR;
             var newCarLightRearLR = locomotive != null && locomotive.LightRearLR;
-            var newCarLightRearRR = locomotive != null && locomotive.LightRearRR;
-
+            var newCarLightRearRR = locomotive != null && locomotive.LightRearRR;            
 
             // Neprobliknou ostatní světla při zapnutí baterií
             LightCycle++;
