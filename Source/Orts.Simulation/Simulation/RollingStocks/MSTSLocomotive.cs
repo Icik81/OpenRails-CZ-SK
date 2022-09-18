@@ -634,6 +634,7 @@ namespace Orts.Simulation.RollingStocks
         public bool DieselMotorTempWarning;
         public bool DieselMotorPowerLost;
         public bool DieselLocoTempReady;
+        public bool RDSTBreakerRDSTEnable;
         public bool RDSTBreakerVZEnable;
         public bool RDSTBreakerPowerEnable;
         public float CurrentTrackSandBoxCapacityKG;
@@ -3757,9 +3758,22 @@ namespace Orts.Simulation.RollingStocks
         }
         public void RDSTBreakerType()
         {
+            int RDSTBreakerRDSTState = 0;
             int RDSTBreakerVZState = 0;
             int RDSTBreakerPowerState = 0;
 
+            if (RDSTBreakerRDSTEnable && Battery && !EmergencyButtonPressed)
+            {
+                foreach (TrainCar car in Train.Cars)
+                {
+                    if (car is MSTSLocomotive && !car.RDSTBreaker)
+                        RDSTBreakerRDSTState += 1;
+                }
+                if (RDSTBreakerRDSTState > 0)
+                    TrainBrakeController.EmergencyBrakingPushButton = true;
+                else
+                    TrainBrakeController.EmergencyBrakingPushButton = false;
+            }
             if (RDSTBreakerVZEnable && Battery && !EmergencyButtonPressed)
             {
                 foreach (TrainCar car in Train.Cars)
@@ -3768,7 +3782,25 @@ namespace Orts.Simulation.RollingStocks
                         RDSTBreakerVZState += 1;
                 }
                 if (RDSTBreakerVZState > 0)
+                {
                     TrainBrakeController.EmergencyBrakingPushButton = true;
+                    // Mirel
+                    Mirel.Test1 = false;
+                    Mirel.Test2 = false;
+                    Mirel.Test3 = false;
+                    Mirel.Test4 = false;
+                    Mirel.Test5 = false;
+                    Mirel.Test6 = false;
+                    Mirel.Test7 = false;
+                    Mirel.initTest = SubSystems.Mirel.InitTest.Off;
+                    Mirel.BlueLight = false;
+                    Mirel.selectedDriveMode = SubSystems.Mirel.DriveMode.Off;
+                    Mirel.driveMode = SubSystems.Mirel.DriveMode.Off;
+                    Mirel.MaxSelectedSpeed = Mirel.MirelMaximumSpeed = MpS.ToKpH(MaxSpeedMpS);
+                    // LS90
+                    Mirel.ls90tested = false;
+                    Mirel.Ls90power = SubSystems.Mirel.LS90power.Off;
+                }
                 else
                     TrainBrakeController.EmergencyBrakingPushButton = false;
             }
@@ -11667,6 +11699,15 @@ namespace Orts.Simulation.RollingStocks
                 case CABViewControlTypes.DIESEL_MOTOR_TEMP_WARNING:
                     {
                         if (DieselMotorTempWarning)
+                            data = 1;
+                        else
+                            data = 0;
+                        break;
+                    }
+                case CABViewControlTypes.RDST_BREAKER_RDST:
+                    {
+                        RDSTBreakerRDSTEnable = true;
+                        if (RDSTBreaker)
                             data = 1;
                         else
                             data = 0;

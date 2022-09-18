@@ -3157,7 +3157,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     if (lead.ControllerVolts >= 0 && lead.BrakeSystem.PressureConverter < lead.CruiseControl.BrakeConverterPressureEngage)
                     {
                         lead.BrakeSystem.ARRTrainBrakeCanEngage = true;
-                        lead.BrakeSystem.ARRTrainBrakeCycle1 = 0;
+                        lead.BrakeSystem.ARRTrainBrakeCycle1 = 2.0f;
                         lead.BrakeSystem.ARRTrainBrakeCycle2 = 0;
                     }
 
@@ -3216,7 +3216,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                             && (lead.TrainBrakeController.MaxPressurePSI - train.EqualReservoirPressurePSIorInHg) < lead.CruiseControl.MaxTrainBrakePressureDrop)
                         {
                             lead.BrakeSystem.ARRTrainBrakeCycle1 += elapsedClockSeconds;
-                            if (lead.BrakeSystem.ARRTrainBrakeCycle1 > 1.0f)
+                            if (lead.BrakeSystem.ARRTrainBrakeCycle1 > 2.0f)
                             {
                                 lead.BrakeSystem.ARRTrainBrakeCycle2 += elapsedClockSeconds;
                                 if (lead.BrakeSystem.ARRTrainBrakeCycle2 < 2.0f)

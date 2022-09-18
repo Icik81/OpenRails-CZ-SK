@@ -2968,6 +2968,7 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.DIESEL_MOTOR_WATER_TEMP:
                 case CABViewControlTypes.DIESEL_MOTOR_OIL_TEMP:
                 case CABViewControlTypes.DIESEL_MOTOR_TEMP_WARNING:
+                case CABViewControlTypes.RDST_BREAKER_RDST:
                 case CABViewControlTypes.RDST_BREAKER_VZ:
                 case CABViewControlTypes.RDST_BREAKER_POWER:
                 case CABViewControlTypes.HV4PANTOUP:
@@ -3891,6 +3892,14 @@ namespace Orts.Viewer3D.RollingStock
                             new ToggleDieselDirectionControllerDownCommand(Viewer.Log);
                             IsChanged = true;
                         }
+                    }
+                    break;
+                case CABViewControlTypes.RDST_BREAKER_RDST:
+                    // Ovládání jističe RDST
+                    if (Locomotive.RDSTBreakerRDSTEnable)
+                    {
+                        if (ChangedValue(Locomotive.RDSTBreaker ? 1 : 0) > 0)
+                            new ToggleRDSTBreakerCommand(Viewer.Log);
                     }
                     break;
                 case CABViewControlTypes.RDST_BREAKER_VZ:
