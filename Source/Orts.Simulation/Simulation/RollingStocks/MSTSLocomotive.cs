@@ -9537,7 +9537,7 @@ namespace Orts.Simulation.RollingStocks
             if (LightFrontLPosition < 1)
             {
                 LightFrontLPosition++;
-                SignalEvent(Event.PantographToggle);
+                SignalEvent(Event.LightSwitchToggle);
             }
             LightFrontLPosition = MathHelper.Clamp(LightFrontLPosition, -1, 1);
             LightPositionHandle();
@@ -9550,7 +9550,7 @@ namespace Orts.Simulation.RollingStocks
             if (LightFrontLPosition > -1)
             {
                 LightFrontLPosition--;
-                SignalEvent(Event.PantographToggle);
+                SignalEvent(Event.LightSwitchToggle);
             }
             LightFrontLPosition = MathHelper.Clamp(LightFrontLPosition, -1, 1);
             LightPositionHandle();
@@ -9566,7 +9566,7 @@ namespace Orts.Simulation.RollingStocks
             if (LightFrontRPosition < 1)
             {
                 LightFrontRPosition++;
-                SignalEvent(Event.PantographToggle);
+                SignalEvent(Event.LightSwitchToggle);
             }
             LightFrontRPosition = MathHelper.Clamp(LightFrontRPosition, -1, 1);
             LightPositionHandle();
@@ -9579,7 +9579,7 @@ namespace Orts.Simulation.RollingStocks
             if (LightFrontRPosition > -1)
             {
                 LightFrontRPosition--;
-                SignalEvent(Event.PantographToggle);
+                SignalEvent(Event.LightSwitchToggle);
             }
             LightFrontRPosition = MathHelper.Clamp(LightFrontRPosition, -1, 1);
             LightPositionHandle();
@@ -9595,7 +9595,7 @@ namespace Orts.Simulation.RollingStocks
             if (LightRearLPosition < 1)
             {
                 LightRearLPosition++;
-                SignalEvent(Event.PantographToggle);
+                SignalEvent(Event.LightSwitchToggle);
             }
             LightRearLPosition = MathHelper.Clamp(LightRearLPosition, -1, 1);
             LightPositionHandle();
@@ -9608,7 +9608,7 @@ namespace Orts.Simulation.RollingStocks
             if (LightRearLPosition > -1)
             {
                 LightRearLPosition--;
-                SignalEvent(Event.PantographToggle);
+                SignalEvent(Event.LightSwitchToggle);
             }
             LightRearLPosition = MathHelper.Clamp(LightRearLPosition, -1, 1);
             LightPositionHandle();
@@ -9623,7 +9623,7 @@ namespace Orts.Simulation.RollingStocks
             if (LightRearRPosition < 1)
             {
                 LightRearRPosition++;
-                SignalEvent(Event.PantographToggle);
+                SignalEvent(Event.LightSwitchToggle);
             }
             LightRearRPosition = MathHelper.Clamp(LightRearRPosition, -1, 1);
             LightPositionHandle();
@@ -9636,7 +9636,7 @@ namespace Orts.Simulation.RollingStocks
             if (LightRearRPosition > -1)
             {
                 LightRearRPosition--;
-                SignalEvent(Event.PantographToggle);
+                SignalEvent(Event.LightSwitchToggle);
             }
             LightRearRPosition = MathHelper.Clamp(LightRearRPosition, -1, 1);
             LightPositionHandle();

@@ -3957,26 +3957,58 @@ namespace Orts.Viewer3D.RollingStock
                     }
                     break;
 
-                //case CABViewControlTypes.FRONT_LIGHT_L:
-                //    // Ovládání předního levého světla                    
-                //    if (ChangedValue(Locomotive.LightFrontL ? 1 : 0) > 0)
-                //        new ToggleLightFrontLCommand(Viewer.Log);                    
-                //    break;
-                //case CABViewControlTypes.FRONT_LIGHT_R:
-                //    // Ovládání předního pravého světla                    
-                //    if (ChangedValue(Locomotive.LightFrontR ? 1 : 0) > 0)
-                //        new ToggleLightFrontRCommand(Viewer.Log);
-                //    break;
-                //case CABViewControlTypes.REAR_LIGHT_L:
-                //    // Ovládání zadního levého světla                    
-                //    if (ChangedValue(Locomotive.LightRearL ? 1 : 0) > 0)
-                //        new ToggleLightRearLCommand(Viewer.Log);
-                //    break;
-                //case CABViewControlTypes.REAR_LIGHT_R:
-                //    // Ovládání zadního pravého světla                    
-                //    if (ChangedValue(Locomotive.LightRearL ? 1 : 0) > 0)
-                //        new ToggleLightRearRCommand(Viewer.Log);
-                //    break;
+                case CABViewControlTypes.FRONT_LIGHT_L:
+                    // Ovládání předního levého světla                    
+                    if (ChangedValue(0) < 0 && !IsChanged)
+                    {
+                        new ToggleLightFrontLDownCommand(Viewer.Log);
+                        IsChanged = true;
+                    }
+                    if (ChangedValue(0) > 0 && !IsChanged)
+                    {
+                        new ToggleLightFrontLUpCommand(Viewer.Log);
+                        IsChanged = true;
+                    }
+                    break;
+                case CABViewControlTypes.FRONT_LIGHT_R:
+                    // Ovládání předního pravého světla                    
+                    if (ChangedValue(0) < 0 && !IsChanged)
+                    {
+                        new ToggleLightFrontRDownCommand(Viewer.Log);
+                        IsChanged = true;
+                    }
+                    if (ChangedValue(0) > 0 && !IsChanged)
+                    {
+                        new ToggleLightFrontRUpCommand(Viewer.Log);
+                        IsChanged = true;
+                    }
+                    break;
+                case CABViewControlTypes.REAR_LIGHT_L:
+                    // Ovládání zadního levého světla                    
+                    if (ChangedValue(0) < 0 && !IsChanged)
+                    {
+                        new ToggleLightRearLDownCommand(Viewer.Log);
+                        IsChanged = true;
+                    }
+                    if (ChangedValue(0) > 0 && !IsChanged)
+                    {
+                        new ToggleLightRearLUpCommand(Viewer.Log);
+                        IsChanged = true;
+                    }
+                    break;
+                case CABViewControlTypes.REAR_LIGHT_R:
+                    // Ovládání zadního pravého světla                    
+                    if (ChangedValue(0) < 0 && !IsChanged)
+                    {
+                        new ToggleLightRearRDownCommand(Viewer.Log);
+                        IsChanged = true;
+                    }
+                    if (ChangedValue(0) > 0 && !IsChanged)
+                    {
+                        new ToggleLightRearRUpCommand(Viewer.Log);
+                        IsChanged = true;
+                    }
+                    break;
 
 
                 // Train Control System controls

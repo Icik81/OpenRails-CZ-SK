@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2022-09-16 21:36:18+0200\n"
-"PO-Revision-Date: 2022-09-16 21:36:18+0200\n"
+"POT-Creation-Date: 2022-09-18 19:50:13+0200\n"
+"PO-Revision-Date: 2022-09-18 19:50:14+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -1273,27 +1273,59 @@ msgstr ""
 msgid "Control_CZSK Disabling EDB button"
 msgstr ""
 
+#: ../../ORTS.Common/Input/UserCommand.cs:293
+msgid "Control_CZSK Frontlight left white"
+msgstr ""
+
 #: ../../ORTS.Common/Input/UserCommand.cs:294
-msgid "Set Power Supply Station Location"
+msgid "Control_CZSK Frontlight left red"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:295
-msgid "Set Voltage 25k"
+msgid "Control_CZSK Frontlight right white"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:296
-msgid "Set Voltage 3k"
+msgid "Control_CZSK Frontlight right red"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:297
-msgid "Set Voltage 0"
+msgid "Control_CZSK Rearlight left white"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:298
-msgid "Set Delete Voltage Marker"
+msgid "Control_CZSK Rearlight left red"
+msgstr ""
+
+#: ../../ORTS.Common/Input/UserCommand.cs:299
+msgid "Control_CZSK Rearlight right white"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:300
+msgid "Control_CZSK Rearlight right red"
+msgstr ""
+
+#: ../../ORTS.Common/Input/UserCommand.cs:303
+msgid "Set Power Supply Station Location"
+msgstr ""
+
+#: ../../ORTS.Common/Input/UserCommand.cs:304
+msgid "Set Voltage 25k"
+msgstr ""
+
+#: ../../ORTS.Common/Input/UserCommand.cs:305
+msgid "Set Voltage 3k"
+msgstr ""
+
+#: ../../ORTS.Common/Input/UserCommand.cs:306
+msgid "Set Voltage 0"
+msgstr ""
+
+#: ../../ORTS.Common/Input/UserCommand.cs:307
+msgid "Set Delete Voltage Marker"
+msgstr ""
+
+#: ../../ORTS.Common/Input/UserCommand.cs:309
 msgid "Control_CZSK Reload World Object"
 msgstr ""
 

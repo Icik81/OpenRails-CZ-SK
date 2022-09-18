@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: RunActivity\n"
-"POT-Creation-Date: 2022-09-16 21:36:23+0200\n"
-"PO-Revision-Date: 2022-09-16 21:40+0200\n"
+"POT-Creation-Date: 2022-09-18 19:50:19+0200\n"
+"PO-Revision-Date: 2022-09-18 20:03+0200\n"
 "Last-Translator: Altmann <altmann@bk.ru>\n"
 "Language-Team: Open Rails Dev Team\n"
 "Language: cs\n"
@@ -100,72 +100,72 @@ msgstr[0] "{0:F0} dlaždic"
 msgstr[1] "{0:F0} dlaždic"
 msgstr[2] "{0:F0} dlaždic"
 
-#: ../../RunActivity/Viewer3D/Viewer.cs:901
-#: ../../RunActivity/Viewer3D/Viewer.cs:1111
+#: ../../RunActivity/Viewer3D/Viewer.cs:909
+#: ../../RunActivity/Viewer3D/Viewer.cs:1119
 msgid "Cab view not available"
 msgstr "Kabina není dostupná"
 
-#: ../../RunActivity/Viewer3D/Viewer.cs:999
+#: ../../RunActivity/Viewer3D/Viewer.cs:1007
 msgid "In MP, use Alt-F4 to quit directly"
 msgstr "Síťovou hru lze okamžitě ukončit pomocí Alt-F4"
 
-#: ../../RunActivity/Viewer3D/Viewer.cs:1037
+#: ../../RunActivity/Viewer3D/Viewer.cs:1045
 msgid "Automatic platform and siding labels visible."
 msgstr "Automatické názvy stanic a nástupišť zapnuty."
 
-#: ../../RunActivity/Viewer3D/Viewer.cs:1040
+#: ../../RunActivity/Viewer3D/Viewer.cs:1048
 msgid "Platform and siding labels visible."
 msgstr "Názvy stanic a nástupišť zapnuty."
 
-#: ../../RunActivity/Viewer3D/Viewer.cs:1043
+#: ../../RunActivity/Viewer3D/Viewer.cs:1051
 msgid "Platform labels visible."
 msgstr "Názvy stanic zapnuty."
 
-#: ../../RunActivity/Viewer3D/Viewer.cs:1046
+#: ../../RunActivity/Viewer3D/Viewer.cs:1054
 msgid "Siding labels visible."
 msgstr "Názvy nástupišť zapnuty."
 
-#: ../../RunActivity/Viewer3D/Viewer.cs:1052
+#: ../../RunActivity/Viewer3D/Viewer.cs:1060
 msgid "Platform and siding labels hidden."
 msgstr "Názvy stanic a nástupišť vypnuty."
 
-#: ../../RunActivity/Viewer3D/Viewer.cs:1063
+#: ../../RunActivity/Viewer3D/Viewer.cs:1071
 msgid "Train labels visible."
 msgstr "Názvy vlaků zapnuty."
 
-#: ../../RunActivity/Viewer3D/Viewer.cs:1066
+#: ../../RunActivity/Viewer3D/Viewer.cs:1074
 msgid "Car labels visible."
 msgstr "Názvy vozů zapnuty."
 
-#: ../../RunActivity/Viewer3D/Viewer.cs:1072
+#: ../../RunActivity/Viewer3D/Viewer.cs:1080
 msgid "Train and car labels hidden."
 msgstr "Názvy vlaků a vozů vypnuty."
 
-#: ../../RunActivity/Viewer3D/Viewer.cs:1093
+#: ../../RunActivity/Viewer3D/Viewer.cs:1101
 msgid "To change stations, remove the directional lever first."
 msgstr "Pro přechod mezi stanovišti vyjměte nejdříve směrovou páku."
 
-#: ../../RunActivity/Viewer3D/Viewer.cs:1153
+#: ../../RunActivity/Viewer3D/Viewer.cs:1161
 msgid "Confirmations suppressed"
 msgstr "Informační řádek zakázán"
 
-#: ../../RunActivity/Viewer3D/Viewer.cs:1155
+#: ../../RunActivity/Viewer3D/Viewer.cs:1163
 msgid "Confirmations visible"
 msgstr "Informační řádek povolen"
 
-#: ../../RunActivity/Viewer3D/Viewer.cs:1328
+#: ../../RunActivity/Viewer3D/Viewer.cs:1336
 msgid "Switched to player control"
 msgstr "Přepnuto na ovládání hráčem"
 
-#: ../../RunActivity/Viewer3D/Viewer.cs:1335
+#: ../../RunActivity/Viewer3D/Viewer.cs:1343
 msgid "You can't switch from manual to autopilot mode"
 msgstr "Nelze přepnout z manuálního módu na autopilota"
 
-#: ../../RunActivity/Viewer3D/Viewer.cs:1341
+#: ../../RunActivity/Viewer3D/Viewer.cs:1349
 msgid "Switched to autopilot"
 msgstr "Přepnuto na autopilota"
 
-#: ../../RunActivity/Viewer3D/Viewer.cs:2018
+#: ../../RunActivity/Viewer3D/Viewer.cs:2026
 msgid "Game saved"
 msgstr "Hra uložena"
 
@@ -174,22 +174,22 @@ msgstr "Hra uložena"
 msgid "Allowed speed raised to {0}"
 msgstr "Povolená rychlost se zvýšila na {0}"
 
-#: ../../RunActivity/Viewer3D/Viewer.cs:1144
+#: ../../RunActivity/Viewer3D/Viewer.cs:1152
 #, csharp-format
 msgid "Vibrating at level {0}"
 msgstr "Vibrrace/kývání na úrovni {0}"
 
-#: ../../RunActivity/Viewer3D/Viewer.cs:1359
+#: ../../RunActivity/Viewer3D/Viewer.cs:1367
 #, csharp-format
 msgid "Keyboard map list saved to '{0}'."
 msgstr "Seznam mapy kláves byl uložen do '{0}'."
 
-#: ../../RunActivity/Viewer3D/Viewer.cs:1363
+#: ../../RunActivity/Viewer3D/Viewer.cs:1371
 #, csharp-format
 msgid "Keyboard map image saved to '{0}'."
 msgstr "Obrázek mapy kláves byl uložen do '{0}'."
 
-#: ../../RunActivity/Viewer3D/Viewer.cs:1191
+#: ../../RunActivity/Viewer3D/Viewer.cs:1199
 #, csharp-format
 msgid "{0} viewpoint stored. Use Shift+8 to restore viewpoints."
 msgid_plural "{0} viewpoints stored. Use Shift+8 to restore viewpoints."
@@ -699,10 +699,8 @@ msgid "Helper connected"
 msgstr "Postrk zapojen"
 
 #: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:274
-#, fuzzy
-#| msgid "No power command for this type of car!"
 msgid "No Helper command for this type of car!"
-msgstr "Pro tento typ vozu je příkaz výkonu neplatný!"
+msgstr "Pro tento typ vozu je příkaz postrku neplatný!"
 
 #: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:281
 msgid "Front brake hose connected"
@@ -1667,8 +1665,6 @@ msgid "TurboRPM"
 msgstr ""
 
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:860
-#, fuzzy
-#| msgid "Press:"
 msgid "TurboPress"
 msgstr "Tlak:"
 
@@ -2790,7 +2786,7 @@ msgid "ApplS"
 msgstr ""
 
 #: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:134
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:947
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:955
 #: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:118
 msgid "coal"
 msgstr "uhlí"
@@ -2877,7 +2873,7 @@ msgid "Slip"
 msgstr "Prokluz"
 
 #: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:142
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:946
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:954
 #: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:126
 msgid "water"
 msgstr "voda"
@@ -3116,104 +3112,104 @@ msgstr[0] "{0:F0} textur"
 msgstr[1] "{0:F0} textur"
 msgstr[2] "{0:F0} textur"
 
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:942
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:950
 msgid "freight-grain"
 msgstr "náklad-obilí"
 
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:943
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:951
 msgid "freight-coal"
 msgstr "náklad-uhlí"
 
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:944
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:952
 msgid "freight-gravel"
 msgstr "náklad-štěrk"
 
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:945
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:953
 msgid "freight-sand"
 msgstr "náklad-písek"
 
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:948
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:956
 msgid "diesel oil"
 msgstr "nafta"
 
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:949
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:957
 msgid "wood"
 msgstr "dřevo"
 
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:950
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:958
 msgid "sand"
 msgstr "písek"
 
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:951
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:959
 msgid "freight-general"
 msgstr "náklad-obecné"
 
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:952
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:960
 msgid "freight-livestock"
 msgstr "náklad-životnost"
 
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:953
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:961
 msgid "freight-fuel"
 msgstr "náklad-palivo"
 
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:954
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:962
 msgid "freight-milk"
 msgstr "náklad-mléko"
 
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:955
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:963
 msgid "mail"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1084
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1092
 msgid "Refill: Immediate refill process selected, refilling immediately."
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1105
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1113
 msgid "Refill: Electric loco and no pickup. Command rejected"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1221
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1240
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1229
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1248
 msgid "Incompatible pickup type"
 msgstr "Nekompatibilní typ"
 
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1227
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1245
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1235
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1253
 msgid "Starting refill"
 msgstr "Začíná doplňovat"
 
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1112
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1120
 #, csharp-format
 msgid "Refill: Distance to {0} supply is {1}."
 msgstr "Doplněníl: Vzdálenost k zásobníku {0} jes {1}."
 
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1120
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1128
 #, csharp-format
 msgid "Refill: Loco must be stationary to refill {0}."
 msgstr "Doplněníl: Lokomotiva musí být pro doplněníl {0} nehybná."
 
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1126
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1134
 #, csharp-format
 msgid "Refill: Loco speed must exceed {0}."
 msgstr "Doplnění: Rychlost lokomotivy musí mít nejméně: {0}."
 
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1133
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1141
 #, csharp-format
 msgid "Refill: Loco speed must not exceed {0}."
 msgstr "Doplněníl: Rychlost lokomotivy nesmí překročit:  {0}."
 
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1151
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1172
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1159
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1180
 #, csharp-format
 msgid "Refill: {0} supply now replenished."
 msgstr "Doplnění: Z8sobník {0} byl doplněn."
 
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1178
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1186
 #, csharp-format
 msgid "Unload: {0} fuel or freight now unloaded."
 msgstr "Vykládka: {0} paliva nebo nákladu vyloženo."
 
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1113
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1121
 #, csharp-format
 msgid "{0} meter"
 msgid_plural "{0} meters"
