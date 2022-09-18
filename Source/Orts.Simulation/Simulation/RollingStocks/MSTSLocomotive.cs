@@ -668,8 +668,7 @@ namespace Orts.Simulation.RollingStocks
         public InterpolatorDiesel2D CurrentForce2Curves_3;
         public string CabFrontSoundFileName;
         public string CabRearSoundFileName;
-        public int CabStationForBatterySwitchOn;
-
+        public int CabStationForBatterySwitchOn;        
 
         // Jindrich
         public bool IsActive = false;
@@ -1816,6 +1815,10 @@ namespace Orts.Simulation.RollingStocks
             outf.Write(BreakEDBButton_Activated);
             outf.Write(AripotControllerValue);
             outf.Write(AripotControllerCanUseThrottle);
+            outf.Write(LightFrontLPosition);
+            outf.Write(LightFrontRPosition);
+            outf.Write(LightRearLPosition);
+            outf.Write(LightRearRPosition);
 
             base.Save(outf);
 
@@ -1925,6 +1928,10 @@ namespace Orts.Simulation.RollingStocks
             BreakEDBButton_Activated = inf.ReadBoolean();
             AripotControllerValue = inf.ReadSingle();
             AripotControllerCanUseThrottle = inf.ReadBoolean();
+            LightFrontLPosition = inf.ReadInt32();
+            LightFrontRPosition = inf.ReadInt32();
+            LightRearLPosition = inf.ReadInt32();
+            LightRearRPosition = inf.ReadInt32();
 
             base.Restore(inf);
 
@@ -4068,6 +4075,13 @@ namespace Orts.Simulation.RollingStocks
                 {
                     Battery = true;
                     PowerKey = true;
+
+                    // Světla
+                    LightFrontLPosition = -1;
+                    LightFrontRPosition = -1;
+                    LightRearLPosition = 1;
+                    LightRearRPosition = 1;
+
                     ActiveStation = UsingRearCab ? DriverStation.Station2 : DriverStation.Station1;
                     if (Flipped)
                         ActiveStation = UsingRearCab ? DriverStation.Station1 : DriverStation.Station2;
@@ -4422,9 +4436,9 @@ namespace Orts.Simulation.RollingStocks
                     if (ControllerVolts == 0)
                         SetDynamicBrakeValue(-1);
                 }
-            }            
+            }
 
-            // Icik                        
+            // Icik
             SetCarLightsPowerOn();
             SetLapButton();
 
@@ -4495,6 +4509,7 @@ namespace Orts.Simulation.RollingStocks
                 PantoCanHVOff(elapsedClockSeconds);
                 DirectionButtonSetup();
                 PlayerSwitchToRearCab();
+                LightPositionHandle();
                 BatterySetOn = false;                
             }
 
@@ -9449,6 +9464,187 @@ namespace Orts.Simulation.RollingStocks
             Simulator.RefreshWorld = refreshWorld;
             Simulator.Confirmer.Information(Simulator.Catalog.GetString("World Object reloaded!"));
         }
+
+        public void LightPositionHandle()
+        {
+            switch (LightFrontLPosition)
+            {
+                case -1:
+                    LightFrontLW = true;
+                    LightFrontLR = false;
+                    break;
+                case 0:
+                    LightFrontLW = false;
+                    LightFrontLR = false;
+                    break;
+                case 1:
+                    LightFrontLW = false;
+                    LightFrontLR = true;                    
+                    break;
+            }
+            switch (LightFrontRPosition)
+            {
+                case -1:
+                    LightFrontRW = true;
+                    LightFrontRR = false;
+                    break;
+                case 0:
+                    LightFrontRW = false;
+                    LightFrontRR = false;
+                    break;
+                case 1:
+                    LightFrontRW = false;
+                    LightFrontRR = true;                    
+                    break;
+            }
+            switch (LightRearLPosition)
+            {
+                case -1:
+                    LightRearLW = true;
+                    LightRearLR = false;
+                    break;
+                case 0:
+                    LightRearLW = false;
+                    LightRearLR = false;
+                    break;
+                case 1:
+                    LightRearLW = false;
+                    LightRearLR = true;
+                    break;
+            }
+            switch (LightRearRPosition)
+            {
+                case -1:
+                    LightRearRW = true;
+                    LightRearRR = false;
+                    break;
+                case 0:
+                    LightRearRW = false;
+                    LightRearRR = false;
+                    break;
+                case 1:
+                    LightRearRW = false;
+                    LightRearRR = true;
+                    break;
+            }
+        }
+
+        // Přední levé světlo
+        // Červené
+        int LightFrontLPosition;
+        public void ToggleLightFrontLUp()
+        {
+            if (LightFrontLPosition < 1)
+            {
+                LightFrontLPosition++;
+                SignalEvent(Event.PantographToggle);
+            }
+            LightFrontLPosition = MathHelper.Clamp(LightFrontLPosition, -1, 1);
+            LightPositionHandle();
+            if (LightFrontLPosition == 1)
+                if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.LightFrontLR, LightFrontLR ? CabSetting.On : CabSetting.Off);                  
+        }
+        // Bílé
+        public void ToggleLightFrontLDown()
+        {
+            if (LightFrontLPosition > -1)
+            {
+                LightFrontLPosition--;
+                SignalEvent(Event.PantographToggle);
+            }
+            LightFrontLPosition = MathHelper.Clamp(LightFrontLPosition, -1, 1);
+            LightPositionHandle();
+            if (LightFrontLPosition == -1)
+                if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.LightFrontLW, LightFrontLW ? CabSetting.On : CabSetting.Off);                                    
+        }
+
+        // Přední pravé světlo
+        // Červené
+        int LightFrontRPosition;
+        public void ToggleLightFrontRUp()
+        {
+            if (LightFrontRPosition < 1)
+            {
+                LightFrontRPosition++;
+                SignalEvent(Event.PantographToggle);
+            }
+            LightFrontRPosition = MathHelper.Clamp(LightFrontRPosition, -1, 1);
+            LightPositionHandle();
+            if (LightFrontRPosition == 1)
+                if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.LightFrontRR, LightFrontRR ? CabSetting.On : CabSetting.Off);
+        }
+        // Bílé
+        public void ToggleLightFrontRDown()
+        {
+            if (LightFrontRPosition > -1)
+            {
+                LightFrontRPosition--;
+                SignalEvent(Event.PantographToggle);
+            }
+            LightFrontRPosition = MathHelper.Clamp(LightFrontRPosition, -1, 1);
+            LightPositionHandle();
+            if (LightFrontRPosition == -1)
+                if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.LightFrontRW, LightFrontRW ? CabSetting.On : CabSetting.Off);
+        }
+
+        // Zadní levé světlo
+        // Červené
+        int LightRearLPosition;
+        public void ToggleLightRearLUp()
+        {
+            if (LightRearLPosition < 1)
+            {
+                LightRearLPosition++;
+                SignalEvent(Event.PantographToggle);
+            }
+            LightRearLPosition = MathHelper.Clamp(LightRearLPosition, -1, 1);
+            LightPositionHandle();
+            if (LightRearLPosition == 1)
+                if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.LightRearLR, LightRearLR ? CabSetting.On : CabSetting.Off);
+        }
+        // Bílé
+        public void ToggleLightRearLDown()
+        {
+            if (LightRearLPosition > -1)
+            {
+                LightRearLPosition--;
+                SignalEvent(Event.PantographToggle);
+            }
+            LightRearLPosition = MathHelper.Clamp(LightRearLPosition, -1, 1);
+            LightPositionHandle();
+            if (LightRearLPosition == -1)
+                if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.LightRearLW, LightRearLW ? CabSetting.On : CabSetting.Off);
+        }
+        // Zadní pravé světlo
+        // Červené
+        int LightRearRPosition;
+        public void ToggleLightRearRUp()
+        {
+            if (LightRearRPosition < 1)
+            {
+                LightRearRPosition++;
+                SignalEvent(Event.PantographToggle);
+            }
+            LightRearRPosition = MathHelper.Clamp(LightRearRPosition, -1, 1);
+            LightPositionHandle();
+            if (LightRearRPosition == 1)
+                if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.LightRearRR, LightRearRR ? CabSetting.On : CabSetting.Off);
+        }
+        // Bílé
+        public void ToggleLightRearRDown()
+        {
+            if (LightRearRPosition > -1)
+            {
+                LightRearRPosition--;
+                SignalEvent(Event.PantographToggle);
+            }
+            LightRearRPosition = MathHelper.Clamp(LightRearRPosition, -1, 1);
+            LightPositionHandle();
+            if (LightRearRPosition == -1)
+                if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.LightRearRW, LightRearRW ? CabSetting.On : CabSetting.Off);
+        }
+
+
 
         // Zatím povoleno kvůli kompatibilitě
         int NumberChoice = 1;

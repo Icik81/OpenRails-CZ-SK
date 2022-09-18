@@ -538,7 +538,7 @@ namespace ORTS.Settings
             Commands[(int)UserCommand.GameClearSignalForward] = new UserCommandKeyInput(0x0F);
             Commands[(int)UserCommand.GameExternalCabController] = new UserCommandKeyInput(0x29);
             Commands[(int)UserCommand.GameFullscreen] = new UserCommandKeyInput(0x1C, KeyModifiers.Alt);
-            Commands[(int)UserCommand.GameManualCoupling] = new UserCommandKeyInput(0x32, KeyModifiers.Control | KeyModifiers.Shift);
+            Commands[(int)UserCommand.GameManualCoupling] = new UserCommandKeyInput(0x32, KeyModifiers.Control | KeyModifiers.Shift | KeyModifiers.Alt);
             Commands[(int)UserCommand.GameMultiPlayerDispatcher] = new UserCommandKeyInput(0x0A, KeyModifiers.Control);
             Commands[(int)UserCommand.GameMultiPlayerTexting] = new UserCommandKeyInput(0x14, KeyModifiers.Control);
             Commands[(int)UserCommand.GamePause] = new UserCommandKeyInput(Keys.Pause);
@@ -589,7 +589,15 @@ namespace ORTS.Settings
             Commands[(int)UserCommand.ControlRDSTBreaker] = new UserCommandKeyInput(0x13, KeyModifiers.Shift);
             Commands[(int)UserCommand.ControlLapButton] = new UserCommandKeyInput(0x52, KeyModifiers.Shift);
             Commands[(int)UserCommand.ControlRefreshWorld] = new UserCommandKeyInput(0x3B, KeyModifiers.Shift | KeyModifiers.Control | KeyModifiers.Alt);
-            Commands[(int)UserCommand.ControlBreakEDBButton] = new UserCommandKeyInput(0x47, KeyModifiers.Control);
+            Commands[(int)UserCommand.ControlBreakEDBButton] = new UserCommandKeyInput(0x47, KeyModifiers.Control);            
+            Commands[(int)UserCommand.ControlLightFrontLUp] = new UserCommandKeyInput(0x24, KeyModifiers.Shift);
+            Commands[(int)UserCommand.ControlLightFrontLDown] = new UserCommandKeyInput(0x24, KeyModifiers.Shift | KeyModifiers.Control);
+            Commands[(int)UserCommand.ControlLightFrontRUp] = new UserCommandKeyInput(0x25, KeyModifiers.Shift);
+            Commands[(int)UserCommand.ControlLightFrontRDown] = new UserCommandKeyInput(0x25, KeyModifiers.Shift | KeyModifiers.Control);
+            Commands[(int)UserCommand.ControlLightRearLUp] = new UserCommandKeyInput(0x31, KeyModifiers.Shift);
+            Commands[(int)UserCommand.ControlLightRearLDown] = new UserCommandKeyInput(0x31, KeyModifiers.Shift | KeyModifiers.Control);
+            Commands[(int)UserCommand.ControlLightRearRUp] = new UserCommandKeyInput(0x32, KeyModifiers.Shift);
+            Commands[(int)UserCommand.ControlLightRearRDown] = new UserCommandKeyInput(0x32, KeyModifiers.Shift | KeyModifiers.Control);
         }
         #endregion
 

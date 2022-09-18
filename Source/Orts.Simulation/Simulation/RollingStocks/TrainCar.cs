@@ -377,6 +377,14 @@ namespace Orts.Simulation.RollingStocks
         public float PullPushValue;
         public float TrackFactorValue;
         public bool GenSoundOff;
+        public bool LightFrontLW;
+        public bool LightFrontRW;
+        public bool LightRearLW;
+        public bool LightRearRW;
+        public bool LightFrontLR;
+        public bool LightFrontRR;
+        public bool LightRearLR;
+        public bool LightRearRR;
 
         public float PowerReductionResult1;  // Redukce výkonu od topení, klimatizace, kompresoru
         public float PowerReductionResult2;  // Redukce výkonu od nedostatečného tlaku vzduchu v potrubí

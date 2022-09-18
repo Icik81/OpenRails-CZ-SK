@@ -335,7 +335,15 @@ namespace Orts.Viewer3D.RollingStock
             UserInputCommands.Add(UserCommand.ControlRDSTBreaker, new Action[] { Noop, () => new ToggleRDSTBreakerCommand(Viewer.Log) });
             UserInputCommands.Add(UserCommand.ControlLapButton, new Action[] { Noop, () => new ToggleLapButtonCommand(Viewer.Log) });
             UserInputCommands.Add(UserCommand.ControlRefreshWorld, new Action[] { Noop, () => new ToggleRefreshWorldCommand(Viewer.Log) });
-            UserInputCommands.Add(UserCommand.ControlBreakEDBButton, new Action[] { Noop, () => new ToggleBreakEDBButtonCommand(Viewer.Log) });
+            UserInputCommands.Add(UserCommand.ControlBreakEDBButton, new Action[] { Noop, () => new ToggleBreakEDBButtonCommand(Viewer.Log) });            
+            UserInputCommands.Add(UserCommand.ControlLightFrontLUp, new Action[] { Noop, () => new ToggleLightFrontLUpCommand(Viewer.Log) });
+            UserInputCommands.Add(UserCommand.ControlLightFrontLDown, new Action[] { Noop, () => new ToggleLightFrontLDownCommand(Viewer.Log) });
+            UserInputCommands.Add(UserCommand.ControlLightFrontRUp, new Action[] { Noop, () => new ToggleLightFrontRUpCommand(Viewer.Log) });
+            UserInputCommands.Add(UserCommand.ControlLightFrontRDown, new Action[] { Noop, () => new ToggleLightFrontRDownCommand(Viewer.Log) });
+            UserInputCommands.Add(UserCommand.ControlLightRearLUp, new Action[] { Noop, () => new ToggleLightRearLUpCommand(Viewer.Log) });
+            UserInputCommands.Add(UserCommand.ControlLightRearLDown, new Action[] { Noop, () => new ToggleLightRearLDownCommand(Viewer.Log) });
+            UserInputCommands.Add(UserCommand.ControlLightRearRUp, new Action[] { Noop, () => new ToggleLightRearRUpCommand(Viewer.Log) });
+            UserInputCommands.Add(UserCommand.ControlLightRearRDown, new Action[] { Noop, () => new ToggleLightRearRDownCommand(Viewer.Log) });
 
             // Jindřich
             UserInputCommands.Add(UserCommand.ControlPowerStationLocation, new Action[] { Noop, () => Locomotive.SetPowerSupplyStationLocation() });
@@ -2983,6 +2991,10 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.BREAK_EDB_DISPLAY:
                 case CABViewControlTypes.BRAKEFORCE_CONVERTER:
                 case CABViewControlTypes.ARIPOT_CONTROLLER:
+                case CABViewControlTypes.FRONT_LIGHT_L:
+                case CABViewControlTypes.FRONT_LIGHT_R:
+                case CABViewControlTypes.REAR_LIGHT_L:
+                case CABViewControlTypes.REAR_LIGHT_R:
 
                 case CABViewControlTypes.MOTOR_DISABLED:
                 case CABViewControlTypes.INVERTER_TEST:
@@ -3944,6 +3956,27 @@ namespace Orts.Viewer3D.RollingStock
                             Locomotive.AripotControllerValue += MathHelper.Clamp(NormalizedMouseMovement(), -0.05f, 0);                                                    
                     }
                     break;
+
+                //case CABViewControlTypes.FRONT_LIGHT_L:
+                //    // Ovládání předního levého světla                    
+                //    if (ChangedValue(Locomotive.LightFrontL ? 1 : 0) > 0)
+                //        new ToggleLightFrontLCommand(Viewer.Log);                    
+                //    break;
+                //case CABViewControlTypes.FRONT_LIGHT_R:
+                //    // Ovládání předního pravého světla                    
+                //    if (ChangedValue(Locomotive.LightFrontR ? 1 : 0) > 0)
+                //        new ToggleLightFrontRCommand(Viewer.Log);
+                //    break;
+                //case CABViewControlTypes.REAR_LIGHT_L:
+                //    // Ovládání zadního levého světla                    
+                //    if (ChangedValue(Locomotive.LightRearL ? 1 : 0) > 0)
+                //        new ToggleLightRearLCommand(Viewer.Log);
+                //    break;
+                //case CABViewControlTypes.REAR_LIGHT_R:
+                //    // Ovládání zadního pravého světla                    
+                //    if (ChangedValue(Locomotive.LightRearL ? 1 : 0) > 0)
+                //        new ToggleLightRearRCommand(Viewer.Log);
+                //    break;
 
 
                 // Train Control System controls

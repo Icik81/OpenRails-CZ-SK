@@ -143,6 +143,15 @@ namespace Orts.Simulation
     , DieselDirection_Reverse
     , RDSTBreaker
     , LapActive
+    , LightFrontLW
+    , LightFrontLR
+    , LightFrontRW
+    , LightFrontRR
+    , LightRearLW
+    , LightRearLR
+    , LightRearRW
+    , LightRearRR    
+
     }
 
     public enum CabSetting
@@ -316,6 +325,14 @@ namespace Orts.Simulation
                 , new string [] { GetString("") }
                 , new string [] { GetString("RDST"), GetString("off"), null, GetString("on")}
                 , new string [] { GetString("Lap Button"), GetString("off"), null, GetString("on")}
+                , new string [] { GetString("Front Light white left"), GetString("off"), null, GetString("on")}
+                , new string [] { GetString("Front Light red left"), GetString("off"), null, GetString("on")}
+                , new string [] { GetString("Front Light white right"), GetString("off"), null, GetString("on")}
+                , new string [] { GetString("Front Light red right"), GetString("off"), null, GetString("on")}
+                , new string [] { GetString("Rear Light white left"), GetString("off"), null, GetString("on")}
+                , new string [] { GetString("Rear Light red left"), GetString("off"), null, GetString("on")}
+                , new string [] { GetString("Rear Light white right"), GetString("off"), null, GetString("on")}
+                , new string [] { GetString("Rear Light red right"), GetString("off"), null, GetString("on")}
 
             };
             Debug.Assert(ConfirmText.Length == Enum.GetNames(typeof(CabControl)).Length, "Number of entries indexer ConfirmText must match values in CabControl enum.");

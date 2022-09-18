@@ -2409,4 +2409,134 @@ namespace Orts.Common
             Receiver.ToggleRefreshWorld(true);
         }
     }
+    // Lights
+    [Serializable()]
+    public sealed class ToggleLightFrontLUpCommand : Command
+    {
+        public static MSTSLocomotive Receiver { get; set; }
+
+        public ToggleLightFrontLUpCommand(CommandLog log)
+            : base(log)
+        {
+            Redo();
+        }
+
+        public override void Redo()
+        {
+            Receiver.ToggleLightFrontLUp();
+        }
+    }
+    [Serializable()]
+    public sealed class ToggleLightFrontLDownCommand : Command
+    {
+        public static MSTSLocomotive Receiver { get; set; }
+
+        public ToggleLightFrontLDownCommand(CommandLog log)
+            : base(log)
+        {
+            Redo();
+        }
+
+        public override void Redo()
+        {
+            Receiver.ToggleLightFrontLDown();
+        }
+    }
+    [Serializable()]
+    public sealed class ToggleLightFrontRUpCommand : Command
+    {
+        public static MSTSLocomotive Receiver { get; set; }
+
+        public ToggleLightFrontRUpCommand(CommandLog log)
+            : base(log)
+        {
+            Redo();
+        }
+
+        public override void Redo()
+        {
+            Receiver.ToggleLightFrontRUp();
+        }
+    }
+    [Serializable()]
+    public sealed class ToggleLightFrontRDownCommand : Command
+    {
+        public static MSTSLocomotive Receiver { get; set; }
+
+        public ToggleLightFrontRDownCommand(CommandLog log)
+            : base(log)
+        {
+            Redo();
+        }
+
+        public override void Redo()
+        {
+            Receiver.ToggleLightFrontRDown();
+        }
+    }
+    [Serializable()]
+    public sealed class ToggleLightRearLUpCommand : Command
+    {
+        public static MSTSLocomotive Receiver { get; set; }
+
+        public ToggleLightRearLUpCommand(CommandLog log)
+            : base(log)
+        {
+            Redo();
+        }
+
+        public override void Redo()
+        {
+            Receiver.ToggleLightRearLUp();
+        }
+    }
+    [Serializable()]
+    public sealed class ToggleLightRearLDownCommand : Command
+    {
+        public static MSTSLocomotive Receiver { get; set; }
+
+        public ToggleLightRearLDownCommand(CommandLog log)
+            : base(log)
+        {
+            Redo();
+        }
+
+        public override void Redo()
+        {
+            Receiver.ToggleLightRearLDown();
+        }
+    }
+    [Serializable()]
+    public sealed class ToggleLightRearRUpCommand : Command
+    {
+        public static MSTSLocomotive Receiver { get; set; }
+
+        public ToggleLightRearRUpCommand(CommandLog log)
+            : base(log)
+        {
+            Redo();
+        }
+
+        public override void Redo()
+        {
+            Receiver.ToggleLightRearRUp();
+        }
+    }
+    [Serializable()]
+    public sealed class ToggleLightRearRDownCommand : Command
+    {
+        public static MSTSLocomotive Receiver { get; set; }
+
+        public ToggleLightRearRDownCommand(CommandLog log)
+            : base(log)
+        {
+            Redo();
+        }
+
+        public override void Redo()
+        {
+            Receiver.ToggleLightRearRDown();
+        }
+    }
+    // End of Lights
 }

@@ -56,6 +56,16 @@ namespace Orts.Viewer3D
         public bool CarCoupledFront;
         public bool CarCoupledRear;
 
+        // Icik
+        public bool CarLightFrontLW;
+        public bool CarLightFrontRW;
+        public bool CarLightRearLW;
+        public bool CarLightRearRW;
+        public bool CarLightFrontLR;
+        public bool CarLightFrontRR;
+        public bool CarLightRearLR;
+        public bool CarLightRearRR;
+
         public bool IsLightConeActive { get { return ActiveLightCone != null; } }
         List<LightPrimitive> LightPrimitives = new List<LightPrimitive>();
 
@@ -263,6 +273,16 @@ namespace Orts.Viewer3D
             var newCarCoupledRear = Car.Train != null && (Car.Train.Cars.Count > 1) && ((Car.Flipped ? Car.Train.FirstCar : Car.Train.LastCar) != Car);
 
             // Icik
+            var newCarLightFrontLW = locomotive != null && locomotive.LightFrontLW;
+            var newCarLightFrontRW = locomotive != null && locomotive.LightFrontRW;
+            var newCarLightRearLW = locomotive != null && locomotive.LightRearLW;
+            var newCarLightRearRW = locomotive != null && locomotive.LightRearRW;
+            var newCarLightFrontLR = locomotive != null && locomotive.LightFrontLR;
+            var newCarLightFrontRR = locomotive != null && locomotive.LightFrontRR;
+            var newCarLightRearLR = locomotive != null && locomotive.LightRearLR;
+            var newCarLightRearRR = locomotive != null && locomotive.LightRearRR;
+
+
             // Neprobliknou ostatní světla při zapnutí baterií
             LightCycle++;
             if (LightCycle < 50)
@@ -315,7 +335,17 @@ namespace Orts.Viewer3D
                 (IsDay != newIsDay) ||
                 (Weather != newWeather) ||
                 (CarCoupledFront != newCarCoupledFront) ||
-                (CarCoupledRear != newCarCoupledRear))
+                (CarCoupledRear != newCarCoupledRear) ||
+                // Icik
+                (CarLightFrontLW != newCarLightFrontLW) ||
+                (CarLightFrontRW != newCarLightFrontRW) ||
+                (CarLightRearLW != newCarLightRearLW) ||
+                (CarLightRearRW != newCarLightRearRW) ||
+                (CarLightFrontLR != newCarLightFrontLR) ||
+                (CarLightFrontRR != newCarLightFrontRR) ||
+                (CarLightRearLR != newCarLightRearLR) ||
+                (CarLightRearRR != newCarLightRearRR)
+                )
             {
                 TrainHeadlight = newTrainHeadlight;
                 CarIsReversed = newCarIsReversed;
@@ -328,6 +358,15 @@ namespace Orts.Viewer3D
                 Weather = newWeather;
                 CarCoupledFront = newCarCoupledFront;
                 CarCoupledRear = newCarCoupledRear;
+                // Icik
+                CarLightFrontLW = newCarLightFrontLW;
+                CarLightFrontRW = newCarLightFrontRW;
+                CarLightRearLW = newCarLightRearLW;
+                CarLightRearRW = newCarLightRearRW;
+                CarLightFrontLR = newCarLightFrontLR;
+                CarLightFrontRR = newCarLightFrontRR;
+                CarLightRearLR = newCarLightRearLR;
+                CarLightRearRR = newCarLightRearRR;
 
 #if DEBUG_LIGHT_STATES
                 Console.WriteLine();
@@ -494,6 +533,29 @@ namespace Orts.Viewer3D
                     Enabled &= !lightViewer.CarCoupledFront && lightViewer.CarCoupledRear;
                 else if (Light.Coupling == LightCouplingCondition.Both)
                     Enabled &= lightViewer.CarCoupledFront && lightViewer.CarCoupledRear;
+                else
+                    Enabled &= false;
+            }
+
+            // Icik
+            if (Light.UnitSide != LightHandleCondition.Ignore)
+            {
+                if (Light.UnitSide == LightHandleCondition.FrontLW)
+                    Enabled &= lightViewer.CarLightFrontLW;
+                else if (Light.UnitSide == LightHandleCondition.FrontRW)
+                    Enabled &= lightViewer.CarLightFrontRW;
+                else if (Light.UnitSide == LightHandleCondition.RearLW)
+                    Enabled &= lightViewer.CarLightRearLW;
+                else if (Light.UnitSide == LightHandleCondition.RearRW)
+                    Enabled &= lightViewer.CarLightRearRW;
+                else if (Light.UnitSide == LightHandleCondition.FrontLR)
+                    Enabled &= lightViewer.CarLightFrontLR;
+                else if (Light.UnitSide == LightHandleCondition.FrontRR)
+                    Enabled &= lightViewer.CarLightFrontRR;
+                else if (Light.UnitSide == LightHandleCondition.RearLR)
+                    Enabled &= lightViewer.CarLightRearLR;
+                else if (Light.UnitSide == LightHandleCondition.RearRR)
+                    Enabled &= lightViewer.CarLightRearRR;
                 else
                     Enabled &= false;
             }

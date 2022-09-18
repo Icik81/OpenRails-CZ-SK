@@ -635,7 +635,15 @@ namespace Orts.Viewer3D
             ToggleRDSTBreakerCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
             ToggleLapButtonCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
             ToggleRefreshWorldCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
-            ToggleBreakEDBButtonCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
+            ToggleBreakEDBButtonCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;            
+            ToggleLightFrontLUpCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
+            ToggleLightFrontLDownCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
+            ToggleLightFrontRUpCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
+            ToggleLightFrontRDownCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
+            ToggleLightRearLUpCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
+            ToggleLightRearLDownCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
+            ToggleLightRearRUpCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
+            ToggleLightRearRDownCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
         }
 
         public void ChangeToPreviousFreeRoamCamera()

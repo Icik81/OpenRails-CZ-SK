@@ -183,6 +183,23 @@ namespace Orts.Formats.Msts
         Rear,
         Both,
     }
+
+    // Icik
+    /// <summary>
+    /// Specifies on which sides of the unit light is illuminated.
+    /// </summary>
+    public enum LightHandleCondition
+    {
+        Ignore,  // 0
+        FrontLW, // 1
+        FrontLR, // 2
+        FrontRW, // 3
+        FrontRR, // 4
+        RearLW,  // 5
+        RearLR,  // 6
+        RearRW,  // 7
+        RearRR,  // 8
+    }
     #endregion
 
     /// <summary>
@@ -201,6 +218,10 @@ namespace Orts.Formats.Msts
         public LightTimeOfDayCondition TimeOfDay;
         public LightWeatherCondition Weather;
         public LightCouplingCondition Coupling;
+        
+        // Icik
+        public LightHandleCondition UnitSide;
+        
         public bool Cycle;
         public float FadeIn;
         public float FadeOut;
@@ -221,6 +242,8 @@ namespace Orts.Formats.Msts
                     new STFReader.TokenProcessor("timeofday", ()=>{ TimeOfDay = (LightTimeOfDayCondition)stf.ReadIntBlock(null); }),
                     new STFReader.TokenProcessor("weather", ()=>{ Weather = (LightWeatherCondition)stf.ReadIntBlock(null); }),
                     new STFReader.TokenProcessor("coupling", ()=>{ Coupling = (LightCouplingCondition)stf.ReadIntBlock(null); }),
+                    // Icik
+                    new STFReader.TokenProcessor("unitside", ()=>{ UnitSide = (LightHandleCondition)stf.ReadIntBlock(null); }),
                 });}),
                 new STFReader.TokenProcessor("cycle", ()=>{ Cycle = 0 != stf.ReadIntBlock(null); }),
                 new STFReader.TokenProcessor("fadein", ()=>{ FadeIn = stf.ReadFloatBlock(STFReader.UNITS.None, null); }),
@@ -257,6 +280,10 @@ namespace Orts.Formats.Msts
             Cycle = light.Cycle;
             FadeIn = light.FadeIn;
             FadeOut = light.FadeOut;
+
+            // Icik
+            UnitSide = light.UnitSide;
+
             foreach (var state in light.States)
                 States.Add(new LightState(state, reverse));
 
