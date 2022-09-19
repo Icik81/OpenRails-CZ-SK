@@ -4079,8 +4079,11 @@ namespace Orts.Simulation.RollingStocks
                     // Světla
                     LightFrontLPosition = -1;
                     LightFrontRPosition = -1;
-                    LightRearLPosition = 1;
-                    LightRearRPosition = 1;
+                    if (Train.Cars.Count == 1)
+                    {
+                        LightRearLPosition = 1;
+                        LightRearRPosition = 1;
+                    }
 
                     ActiveStation = UsingRearCab ? DriverStation.Station2 : DriverStation.Station1;
                     if (Flipped)
