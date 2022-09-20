@@ -545,7 +545,8 @@ namespace Orts.Simulation.RollingStocks
             }
             set
             {
-                if (AcceptMUSignals && Train != null)
+                // Icik
+                if (AcceptMUSignals && Train != null && CarIsPlayerLoco)
                     Train.MUDynamicBrakePercent = value;
                 else
                     LocalDynamicBrakePercent = value;
