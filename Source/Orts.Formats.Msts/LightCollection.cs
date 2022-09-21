@@ -199,6 +199,7 @@ namespace Orts.Formats.Msts
         RearLR,  // 6
         RearRW,  // 7
         RearRR,  // 8
+        FrontRearLed,  // 9
     }
     #endregion
 

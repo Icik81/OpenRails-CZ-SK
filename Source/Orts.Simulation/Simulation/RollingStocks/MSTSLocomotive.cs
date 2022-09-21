@@ -9484,11 +9484,13 @@ namespace Orts.Simulation.RollingStocks
             {
                 case -1:
                     LightFrontLW = true;
+                    LightFrontRearLed = true;
                     LightFrontLR = false;
                     break;
                 case 0:
                     LightFrontLW = false;
                     LightFrontLR = false;
+                    LightFrontRearLed = false;
                     break;
                 case 1:
                     LightFrontLW = false;
@@ -9529,11 +9531,13 @@ namespace Orts.Simulation.RollingStocks
             {
                 case -1:
                     LightRearRW = true;
+                    LightFrontRearLed = true;
                     LightRearRR = false;
                     break;
                 case 0:
-                    LightRearRW = false;
+                    LightRearRW = false;                    
                     LightRearRR = false;
+                    LightFrontRearLed = false;
                     break;
                 case 1:
                     LightRearRW = false;

@@ -65,6 +65,7 @@ namespace Orts.Viewer3D
         public bool CarLightFrontRR;
         public bool CarLightRearLR;
         public bool CarLightRearRR;
+        public bool CarLightFrontRearLed;
 
         public bool IsLightConeActive { get { return ActiveLightCone != null; } }
         List<LightPrimitive> LightPrimitives = new List<LightPrimitive>();
@@ -280,7 +281,8 @@ namespace Orts.Viewer3D
             var newCarLightFrontLR = locomotive != null && locomotive.LightFrontLR;
             var newCarLightFrontRR = locomotive != null && locomotive.LightFrontRR;
             var newCarLightRearLR = locomotive != null && locomotive.LightRearLR;
-            var newCarLightRearRR = locomotive != null && locomotive.LightRearRR;            
+            var newCarLightRearRR = locomotive != null && locomotive.LightRearRR;
+            var newCarLightFrontRearLed = locomotive != null && locomotive.LightFrontRearLed;
 
             // Neprobliknou ostatní světla při zapnutí baterií
             LightCycle++;
@@ -343,7 +345,8 @@ namespace Orts.Viewer3D
                 (CarLightFrontLR != newCarLightFrontLR) ||
                 (CarLightFrontRR != newCarLightFrontRR) ||
                 (CarLightRearLR != newCarLightRearLR) ||
-                (CarLightRearRR != newCarLightRearRR)
+                (CarLightRearRR != newCarLightRearRR) ||
+                (CarLightFrontRearLed != newCarLightFrontRearLed)
                 )
             {
                 TrainHeadlight = newTrainHeadlight;
@@ -366,6 +369,7 @@ namespace Orts.Viewer3D
                 CarLightFrontRR = newCarLightFrontRR;
                 CarLightRearLR = newCarLightRearLR;
                 CarLightRearRR = newCarLightRearRR;
+                CarLightFrontRearLed = newCarLightFrontRearLed;
 
 #if DEBUG_LIGHT_STATES
                 Console.WriteLine();
@@ -555,6 +559,8 @@ namespace Orts.Viewer3D
                     Enabled &= lightViewer.CarLightRearLR;
                 else if (Light.UnitSide == LightHandleCondition.RearRR)
                     Enabled &= lightViewer.CarLightRearRR;
+                else if (Light.UnitSide == LightHandleCondition.FrontRearLed)
+                    Enabled &= lightViewer.CarLightFrontRearLed;
                 else
                     Enabled &= false;
             }
