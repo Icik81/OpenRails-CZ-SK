@@ -752,11 +752,11 @@ namespace Orts.Simulation.RollingStocks
 
                 PantographCriticalVoltage = (int)PantographCriticalVoltage;
                 PowerSupply.PantographVoltageV = (int)PowerSupply.PantographVoltageV;
-                LocalThrottlePercent = (int)ThrottlePercent;
-                LocalDynamicBrakePercent = (int)DynamicBrakePercent;
+                //LocalThrottlePercent = (int)ThrottlePercent;
+                //LocalDynamicBrakePercent = (int)DynamicBrakePercent;
                 if (PowerSupply.PantographVoltageV < 1) PowerSupply.PantographVoltageV = 1;
-                if (LocalThrottlePercent < 0) LocalThrottlePercent = 0;
-                if (LocalDynamicBrakePercent < -1) LocalDynamicBrakePercent = -1;
+                //if (LocalThrottlePercent < 0) LocalThrottlePercent = 0;
+                //if (LocalDynamicBrakePercent < -1) LocalDynamicBrakePercent = 0;
 
                 // Použije se pro kontrolku při ztrátě napětí v pantografech
                 if (RouteVoltageV == 25000 && PowerSupply.PantographVoltageV < 19000

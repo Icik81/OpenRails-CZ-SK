@@ -191,6 +191,7 @@ namespace Orts.Simulation
         public bool AuxPowerCanStart;
         public float ControllerVoltsLocoHelper;
         public float ThrottleLocoHelper;
+        public float DynamicBrakeLocoHelper;
         public bool NightTime;
         public bool PlayerCarIsInTunnel;
         public float PlayerCarIsInTunnelBeginM;

@@ -3934,14 +3934,24 @@ namespace Orts.Simulation.RollingStocks
             {
                 LocoHelperOn = false;
                 AcceptMUSignals = true;
-            }            
+            }
 
             if (IsLeadLocomotive())
+            {
                 Simulator.ThrottleLocoHelper = LocalThrottlePercent;
+                Simulator.DynamicBrakeLocoHelper = LocalDynamicBrakePercent;
+            }
 
             if (LocoHelperOn || !AcceptPowerSignals)
             {
-                ThrottlePercent = Simulator.ThrottleLocoHelper;                          
+                if (BrakeForceN > 0)
+                {
+                    Simulator.ThrottleLocoHelper = 0;
+                    Train.ControllerVolts = 0;
+                }
+                ThrottlePercent = Simulator.ThrottleLocoHelper;
+                if (DynamicBrakeController != null)
+                    DynamicBrakePercent = Simulator.DynamicBrakeLocoHelper;
                 Headlight = 1;
                 Mirel.Ls90power = SubSystems.Mirel.LS90power.Off;
             }
@@ -3950,7 +3960,7 @@ namespace Orts.Simulation.RollingStocks
             {
                 LocalThrottlePercent = 0;
                 AcceptMUSignals = false;
-                LocalDynamicBrakePercent = -1;
+                LocalDynamicBrakePercent = 0;
             }
         }
 
