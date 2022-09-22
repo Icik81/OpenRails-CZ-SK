@@ -2104,6 +2104,15 @@ namespace Orts.Viewer3D
                 : loco.CabViewList[(int)CabViewType.Front].ViewPointList;
                 attachedLocation.Z = (viewpoints[sideLocation].Location.Z / Math.Abs(viewpoints[sideLocation].Location.Z) * (Math.Abs(HeadOutZ)));
             }
+            else
+            {
+                if (car != null)
+                {
+                    var loco = car as MSTSLocomotive;
+                    if (loco.UsingRearCab)
+                        attachedLocation.Z = (attachedLocation.Z / -Math.Abs(attachedLocation.Z) * (Math.Abs(HeadOutZ)));
+                }
+            }
         }
 
         public void ChangeCab(TrainCar newCar)
