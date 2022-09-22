@@ -667,6 +667,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     else
                     if (loco.TrainBrakeController.DefaultBrakeValue > 0)
                         loco.TrainBrakeController.SetPercent(loco.TrainBrakeController.DefaultBrakeValue * 100);
+
+                    if (loco.LocoType == MSTSLocomotive.LocoTypes.Vectron && !loco.IsLeadLocomotive())
+                        loco.LapActive = true;
                 }
             }
         }
@@ -2411,6 +2414,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             bool Neutral = false;
             bool MatrosovRelease = false;
             bool WestingHouseRelease = false;
+            bool EPApply = false;
             int SumSA = 0;
             int SumA = 0;
             int SumGA = 0;
@@ -2572,6 +2576,16 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         else
                         if (engine.TrainBrakeController.TrainBrakeControllerState != ControllerState.WestingHouseRelease)
                             engine.BrakeSystem.NextLocoWestingHouseRelease = false;
+
+                        if (engine.TrainBrakeController.TrainBrakeControllerState == ControllerState.EPApply)
+                        {
+                            engine.BrakeSystem.NextLocoEPApply = true;
+                            engine.BrakeSystem.NextLocoBrakeState = Simulator.Catalog.GetString("EP Brake position");
+                            EPApply = true;
+                        }
+                        else
+                        if (engine.TrainBrakeController.TrainBrakeControllerState != ControllerState.EPApply)
+                            engine.BrakeSystem.NextLocoEPApply = false;
                     }
 
                     if (engine.LapActive && !Emergency)
@@ -2643,7 +2657,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         train.EqualReservoirPressurePSIorInHg += lead.TrainBrakeController.ReleaseRatePSIpS * SumRe * elapsedClockSeconds;
                     if (train.EqualReservoirPressurePSIorInHg > lead.TrainBrakeController.MaxPressurePSI)
                         train.EqualReservoirPressurePSIorInHg = lead.TrainBrakeController.MaxPressurePSI;
-                }
+                }                
                 if (Overcharge)
                 {
                     if (train.EqualReservoirPressurePSIorInHg < lead.BrakeSystem.TrainBrakesControllerMaxOverchargePressurePSI)

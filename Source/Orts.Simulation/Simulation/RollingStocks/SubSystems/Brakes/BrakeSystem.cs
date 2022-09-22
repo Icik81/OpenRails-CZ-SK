@@ -108,6 +108,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes
         public bool NextLocoSlowApplyStart;
         public bool NextLocoMatrosovRelease;
         public bool NextLocoWestingHouseRelease;
+        public bool NextLocoEPApply;
         public bool TripleValveRelease;
         public bool TripleValveApply;
         public bool TripleValveLap;
