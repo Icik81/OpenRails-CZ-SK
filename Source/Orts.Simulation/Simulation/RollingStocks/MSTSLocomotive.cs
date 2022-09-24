@@ -3943,15 +3943,17 @@ namespace Orts.Simulation.RollingStocks
             }
 
             if (LocoHelperOn || !AcceptPowerSignals)
-            {
+            {                
                 if (BrakeForceN > 0)
                 {
                     Simulator.ThrottleLocoHelper = 0;
                     Train.ControllerVolts = 0;
                 }
                 ThrottlePercent = Simulator.ThrottleLocoHelper;
+
                 if (DynamicBrakeController != null)
-                    DynamicBrakePercent = Simulator.DynamicBrakeLocoHelper;
+                    DynamicBrakePercent = Simulator.DynamicBrakeLocoHelper;             
+
                 Headlight = 1;
                 Mirel.Ls90power = SubSystems.Mirel.LS90power.Off;
             }
@@ -5126,9 +5128,13 @@ namespace Orts.Simulation.RollingStocks
                 {
                     if (DynamicBrakeController != null)
                     {
+                        // Icik
+                        if (LocoHelperOn && DynamicBrakeIntervention == -1)
+                            DynamicBrakeController.CurrentValue = 0;
+
                         DynamicBrakeController.Update(elapsedClockSeconds);
                         DynamicBrakePercent = (DynamicBrakeIntervention < 0.1 ? DynamicBrakeController.CurrentValue : DynamicBrakeIntervention) * 100f;
-                        LocalDynamicBrakePercent = (DynamicBrakeIntervention < 0.1 ? DynamicBrakeController.CurrentValue : DynamicBrakeIntervention) * 100f;
+                        LocalDynamicBrakePercent = (DynamicBrakeIntervention < 0.1 ? DynamicBrakeController.CurrentValue : DynamicBrakeIntervention) * 100f;                        
                     }
                     else
                     {

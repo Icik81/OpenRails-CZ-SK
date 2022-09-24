@@ -2106,7 +2106,7 @@ namespace Orts.Simulation.RollingStocks
 
                     float MaxImpulseCouplerForceUN = 850000; // default 850kN
                     // Rozjezdový režim
-                    float ImpulsForce = ImpulseCouplerForceUN / 500f * CouplerForceU * 0.75f;
+                    float ImpulsForce = ImpulseCouplerForceUN / 500f * CouplerForceU * 0.50f;
                     // Brzdící režim
                     if (MSTSBrakeSystem.BrakeLine1PressurePSI < MSTSBrakeSystem.maxPressurePSI0 || MSTSBrakeSystem.AutoCylPressurePSI0 > 0)
                         ImpulsForce = ImpulseCouplerForceUN / 500f * CouplerForceU * 0.25f;

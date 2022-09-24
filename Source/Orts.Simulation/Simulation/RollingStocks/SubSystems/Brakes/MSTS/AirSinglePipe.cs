@@ -1485,7 +1485,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         EDBEngineBrakeDelay = 0;
                     }
                 }       
-                if (loco.DynamicBrakeForceCurves != null)
+                if (loco.DynamicBrakeForceCurves != null || loco.DynamicBrakePercent > 0)
                     PressureConverterBaseEDB = loco.DynamicBrakePercent / 100 * 4.0f * 14.50377f;                      
             }
             else
@@ -3181,6 +3181,15 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         lead.BrakeSystem.ARRTrainBrakeCanEngage = true;
                     }
 
+                    float ApplyCoef = 1.0f;                                        
+                    if (lead.LocoType == MSTSLocomotive.LocoTypes.Vectron)
+                    {
+                        // Kvůli absenci jízdní polohy nutné
+                        lead.BrakeSystem.ARRTrainBrakeCanEngage = true;                        
+                        ApplyCoef = 1.1f;
+                        lead.BrakeSystem.ARRTrainBrakeCycle1 = 2.0f;    
+                    }
+
                     if (lead.CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.Auto || lead.CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.AVV)
                     {
                         // Při vypnutém napájení nebo nedostupném EDB vstupní tlak do převodníku brzdy (používá se signál EDB)
@@ -3197,7 +3206,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         lead.CruiseControl.BrakeConverterPressureEngage = 1;
                         // Aktivace příznaku zásahu tlakové brzdy v režimu ARR
                         if (lead.BrakeSystem.PressureConverter > lead.CruiseControl.BrakeConverterPressureEngage
-                            && lead.BrakeSystem.ARRTrainBrakeCanEngage 
+                            && (lead.BrakeSystem.ARRTrainBrakeCanEngage)
                             && lead.CruiseControl.SelectedSpeedMpS * 1.05f < lead.AbsWheelSpeedMpS)
                             lead.ARRTrainBrakeEngage = true;
                         else
@@ -3218,7 +3227,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     // Regulátor tlakové brzdy pro ARR
                     float ARRSpeedDeccelaration = lead.AbsWheelSpeedMpS - lead.CruiseControl.SelectedSpeedMpS;
                     ARRSpeedDeccelaration = MathHelper.Clamp(ARRSpeedDeccelaration, 0.0f, 0.5f);
-                    //lead.Simulator.Confirmer.Information("ARRSpeedDeccelaration = " + ARRSpeedDeccelaration);
+                    //lead.Simulator.Confirmer.Information("ARRSpeedDeccelaration = " + ARRSpeedDeccelaration);                    
 
                     if (lead.ARRTrainBrakeEngage && lead.AbsWheelSpeedMpS > 0
                         && lead.MainResPressurePSI > 0
@@ -3240,7 +3249,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                                         lead.ARRTrainBrakeEngage_Apply = true;
                                         lead.ARRTrainBrakeEngage_Release = false;
                                         if (train.EqualReservoirPressurePSIorInHg > 0)
-                                            train.EqualReservoirPressurePSIorInHg -= lead.TrainBrakeController.ApplyRatePSIpS * elapsedClockSeconds;
+                                            train.EqualReservoirPressurePSIorInHg -= lead.TrainBrakeController.ApplyRatePSIpS * ApplyCoef * elapsedClockSeconds;
                                         if (train.EqualReservoirPressurePSIorInHg < 0)
                                             train.EqualReservoirPressurePSIorInHg = 0;
                                     }                                    
