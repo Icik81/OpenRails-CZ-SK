@@ -385,7 +385,6 @@ namespace Orts.Simulation.RollingStocks
         public bool LightFrontRR;
         public bool LightRearLR;
         public bool LightRearRR;
-        public bool LightFrontRearLed;
 
         public float PowerReductionResult1;  // Redukce výkonu od topení, klimatizace, kompresoru
         public float PowerReductionResult2;  // Redukce výkonu od nedostatečného tlaku vzduchu v potrubí
