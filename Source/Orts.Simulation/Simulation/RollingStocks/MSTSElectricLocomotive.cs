@@ -752,11 +752,7 @@ namespace Orts.Simulation.RollingStocks
 
                 PantographCriticalVoltage = (int)PantographCriticalVoltage;
                 PowerSupply.PantographVoltageV = (int)PowerSupply.PantographVoltageV;
-                //LocalThrottlePercent = (int)ThrottlePercent;
-                //LocalDynamicBrakePercent = (int)DynamicBrakePercent;
                 if (PowerSupply.PantographVoltageV < 1) PowerSupply.PantographVoltageV = 1;
-                //if (LocalThrottlePercent < 0) LocalThrottlePercent = 0;
-                //if (LocalDynamicBrakePercent < -1) LocalDynamicBrakePercent = 0;
 
                 // Použije se pro kontrolku při ztrátě napětí v pantografech
                 if (RouteVoltageV == 25000 && PowerSupply.PantographVoltageV < 19000
@@ -835,12 +831,12 @@ namespace Orts.Simulation.RollingStocks
                         if (!EDBIndependent && Simulator.GameTimeCyklus10 == 10)
                         {
                             // Shodí HV při nulovém napětí a manipulaci s kontrolérem a EDB
-                            if ((PowerSupply.PantographVoltageV == 1 && LocalThrottlePercent != 0 && PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closed)
-                            || (PowerSupply.PantographVoltageV == 1 && LocalDynamicBrakePercent != 0 && PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closed))
+                            if ((PowerSupply.PantographVoltageV == 1 && LocalThrottlePercent > 0 && PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closed)
+                            || (PowerSupply.PantographVoltageV == 1 && LocalDynamicBrakePercent > 0 && PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closed))
                             {
 
                                 // Shodí HV při poklesu napětí v troleji a nastaveném výkonu (podpěťová ochrana)
-                                if (PowerSupply.PantographVoltageV < PantographCriticalVoltage && LocalThrottlePercent != 0 && VoltageIndicateTestCompleted)
+                                if (PowerSupply.PantographVoltageV < PantographCriticalVoltage && LocalThrottlePercent > 0 && VoltageIndicateTestCompleted)
                                     HVOff = true;
                             }
 
@@ -857,7 +853,7 @@ namespace Orts.Simulation.RollingStocks
                             // Shodí HV při poklesu napětí v troleji a nastaveném výkonu (podpěťová ochrana)
                             if (PowerSupply.PantographVoltageV > 1)
                             {
-                                if (PowerSupply.PantographVoltageV < PantographCriticalVoltage && LocalThrottlePercent != 0 && VoltageIndicateTestCompleted)
+                                if (PowerSupply.PantographVoltageV < PantographCriticalVoltage && LocalThrottlePercent > 0 && VoltageIndicateTestCompleted)
                                 {
                                     HVOff = true;
                                     Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Undervoltage protection!"));
@@ -884,10 +880,10 @@ namespace Orts.Simulation.RollingStocks
                         if (EDBIndependent && Simulator.GameTimeCyklus10 == 10)
                         {
                             // Shodí HV při nulovém napětí a manipulaci s kontrolérem
-                            if (PowerSupply.PantographVoltageV == 1 && LocalThrottlePercent != 0 && PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closed)
+                            if (PowerSupply.PantographVoltageV == 1 && LocalThrottlePercent > 0 && PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closed)
                             {
                                 // Shodí HV při poklesu napětí v troleji a nastaveném výkonu (podpěťová ochrana)
-                                if (PowerSupply.PantographVoltageV < PantographCriticalVoltage && LocalThrottlePercent != 0 && VoltageIndicateTestCompleted)
+                                if (PowerSupply.PantographVoltageV < PantographCriticalVoltage && LocalThrottlePercent > 0 && VoltageIndicateTestCompleted)
                                     HVOff = true;
                             }
 
@@ -903,7 +899,7 @@ namespace Orts.Simulation.RollingStocks
                             // Shodí HV při poklesu napětí v troleji a nastaveném výkonu (podpěťová ochrana)
                             if (PowerSupply.PantographVoltageV > 1)
                             {
-                                if (PowerSupply.PantographVoltageV < PantographCriticalVoltage && LocalThrottlePercent != 0 && VoltageIndicateTestCompleted)
+                                if (PowerSupply.PantographVoltageV < PantographCriticalVoltage && LocalThrottlePercent > 0 && VoltageIndicateTestCompleted)
                                 {
                                     HVOff = true;
                                     Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Undervoltage protection!"));
@@ -1045,10 +1041,10 @@ namespace Orts.Simulation.RollingStocks
                     {
                         // Blokuje zapnutí HV při staženém sběrači a nebo navoleném výkonu a EDB
                         if ((PowerSupply.PantographVoltageV == 1 && PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closing)
-                        || (LocalThrottlePercent != 0 && PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closing)
-                        || (LocalDynamicBrakePercent != 0 && PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closing)
-                        || (PowerSupply.PantographVoltageV == 1 && LocalThrottlePercent != 0 && PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closed)
-                        || (PowerSupply.PantographVoltageV == 1 && LocalDynamicBrakePercent != 0 && PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closed))
+                        || (LocalThrottlePercent > 0 && PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closing)
+                        || (LocalDynamicBrakePercent > 0 && PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closing)
+                        || (PowerSupply.PantographVoltageV == 1 && LocalThrottlePercent > 0 && PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closed)
+                        || (PowerSupply.PantographVoltageV == 1 && LocalDynamicBrakePercent > 0 && PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closed))
                         {
                             if (DynamicBrakePercent > 0)
                             {
@@ -1080,8 +1076,8 @@ namespace Orts.Simulation.RollingStocks
                         //Shodí HV při poklesu napětí v troleji a nastaveném výkonu a EDB(podpěťová ochrana)
                         if (PowerSupply.PantographVoltageV > 1)
                         {
-                            if ((PowerSupply.PantographVoltageV < PantographCriticalVoltage && LocalThrottlePercent != 0)
-                                || (PowerSupply.PantographVoltageV < PantographCriticalVoltage && LocalDynamicBrakePercent != 0))
+                            if ((PowerSupply.PantographVoltageV < PantographCriticalVoltage && LocalThrottlePercent > 0)
+                                || (PowerSupply.PantographVoltageV < PantographCriticalVoltage && LocalDynamicBrakePercent > 0))
                             {
                                 if (DynamicBrakePercent > 0)
                                 {
@@ -1115,8 +1111,8 @@ namespace Orts.Simulation.RollingStocks
                     {
                         // Blokuje zapnutí HV při staženém sběrači a nebo navoleném výkonu
                         if ((PowerSupply.PantographVoltageV == 1 && PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closing)
-                        || (LocalThrottlePercent != 0 && PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closing)
-                        || (PowerSupply.PantographVoltageV == 1 && LocalThrottlePercent != 0 && PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closed))
+                        || (LocalThrottlePercent > 0 && PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closing)
+                        || (PowerSupply.PantographVoltageV == 1 && LocalThrottlePercent > 0 && PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closed))
                         {
                             if (RouteVoltageV != 3000 && !SwitchingVoltageMode_OffDC)
                                 HVOff = true;
@@ -1140,7 +1136,7 @@ namespace Orts.Simulation.RollingStocks
                         if (PowerSupply.PantographVoltageV > 1)
                         {
                             // Shodí HV při poklesu napětí v troleji a nastaveném výkonu (podpěťová ochrana)
-                            if (PowerSupply.PantographVoltageV < PantographCriticalVoltage && LocalThrottlePercent != 0)
+                            if (PowerSupply.PantographVoltageV < PantographCriticalVoltage && LocalThrottlePercent > 0)
                             {
                                 if (DynamicBrakePercent > 0)
                                 {

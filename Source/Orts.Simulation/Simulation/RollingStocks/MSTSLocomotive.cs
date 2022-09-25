@@ -3940,17 +3940,16 @@ namespace Orts.Simulation.RollingStocks
             {
                 Simulator.ThrottleLocoHelper = LocalThrottlePercent;
                 Simulator.DynamicBrakeLocoHelper = LocalDynamicBrakePercent;
-            }
-
-            if (LocoHelperOn || !AcceptPowerSignals)
-            {                
                 if (BrakeForceN > 0)
                 {
                     Simulator.ThrottleLocoHelper = 0;
                     Train.ControllerVolts = 0;
                 }
-                ThrottlePercent = Simulator.ThrottleLocoHelper;
+            }
 
+            if (LocoHelperOn || !AcceptPowerSignals)
+            {                                
+                ThrottlePercent = Simulator.ThrottleLocoHelper;
                 if (DynamicBrakeController != null)
                     DynamicBrakePercent = Simulator.DynamicBrakeLocoHelper;             
 
@@ -5111,7 +5110,7 @@ namespace Orts.Simulation.RollingStocks
 
             // Icik
             //if ((DynamicBrakeController != null || DynamicBrakeBlendingEnabled || DynamicBrakeAvailable) && (DynamicBrakePercent >= 0 || IsLeadLocomotive() && DynamicBrakeIntervention >= 0))
-            if ((DynamicBrakeController != null || DynamicBrakeBlendingEnabled || DynamicBrakeAvailable) && (DynamicBrakePercent >= 0 || (IsLeadLocomotive() || !IsLeadLocomotive() && AcceptMUSignals) && DynamicBrakeIntervention >= 0))
+            if ((DynamicBrakeController != null || DynamicBrakeBlendingEnabled || DynamicBrakeAvailable) && (DynamicBrakePercent >= 0 || DynamicBrakeIntervention >= 0))
             {
                 if (!DynamicBrake)
                 {
@@ -5133,8 +5132,8 @@ namespace Orts.Simulation.RollingStocks
                             DynamicBrakeController.CurrentValue = 0;
 
                         DynamicBrakeController.Update(elapsedClockSeconds);
-                        DynamicBrakePercent = (DynamicBrakeIntervention < 0.1 ? DynamicBrakeController.CurrentValue : DynamicBrakeIntervention) * 100f;
-                        LocalDynamicBrakePercent = (DynamicBrakeIntervention < 0.1 ? DynamicBrakeController.CurrentValue : DynamicBrakeIntervention) * 100f;                        
+                        DynamicBrakePercent = (DynamicBrakeIntervention < 0.1f ? DynamicBrakeController.CurrentValue : DynamicBrakeIntervention) * 100f;
+                        LocalDynamicBrakePercent = (DynamicBrakeIntervention < 0.1f ? DynamicBrakeController.CurrentValue : DynamicBrakeIntervention) * 100f;
                     }
                     else
                     {
@@ -5142,7 +5141,7 @@ namespace Orts.Simulation.RollingStocks
                         LocalDynamicBrakePercent = Math.Max(DynamicBrakeIntervention * 100f, 0f);
                     }
 
-                    if (DynamicBrakeIntervention < 0.1 && PreviousDynamicBrakeIntervention >= 0 && DynamicBrakePercent == 0)
+                    if (DynamicBrakeIntervention < 0.1f && PreviousDynamicBrakeIntervention >= 0 && DynamicBrakePercent == 0)
                     {
                         DynamicBrakePercent = 0;
                         LocalDynamicBrakePercent = 0;
@@ -5152,7 +5151,7 @@ namespace Orts.Simulation.RollingStocks
                 else if (DynamicBrakeController != null)
                     DynamicBrakeController.Update(elapsedClockSeconds);
             }
-            else if ((DynamicBrakeController != null || DynamicBrakeBlendingEnabled || DynamicBrakeAvailable) && DynamicBrakePercent < 0 && (DynamicBrakeIntervention < 0 || !IsLeadLocomotive()) && DynamicBrake)
+            else if ((DynamicBrakeController != null || DynamicBrakeBlendingEnabled || DynamicBrakeAvailable) && DynamicBrakeIntervention < 0 && DynamicBrakePercent < 0 && DynamicBrake)
             {
                 // <CScomment> accordingly to shown documentation dynamic brake delay is required only when engaging
                 //           if (DynamicBrakeController.CommandStartTime + DynamicBrakeDelayS < Simulator.ClockTime)

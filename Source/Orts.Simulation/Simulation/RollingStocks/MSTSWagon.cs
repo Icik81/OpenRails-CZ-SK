@@ -2111,7 +2111,7 @@ namespace Orts.Simulation.RollingStocks
                     if (MSTSBrakeSystem.BrakeLine1PressurePSI < MSTSBrakeSystem.maxPressurePSI0 || MSTSBrakeSystem.AutoCylPressurePSI0 > 0)
                         ImpulsForce = ImpulseCouplerForceUN / 500f * CouplerForceU * 0.25f;
 
-                    if (Math.Abs(CouplerForceU) > GetCouplerBreak2N() || Math.Abs(ImpulsForce) > MaxImpulseCouplerForceUN)  // break couplers if either static or impulse forces exceeded
+                    if (this.HUDCouplerForceIndication == 1 && (Math.Abs(CouplerForceU) > GetCouplerBreak2N() || Math.Abs(ImpulsForce) > MaxImpulseCouplerForceUN))  // break couplers if either static or impulse forces exceeded
                     {
                         CouplerExceedBreakLimit = true;
 
