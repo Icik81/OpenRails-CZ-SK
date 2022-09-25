@@ -12320,7 +12320,7 @@ namespace Orts.Simulation.RollingStocks
                             case "UserTime": return UserTime;
                             case "NextStation":
                                 {
-                                    if (Train.StationStops.Count == 0)
+                                    if (Train.StationStops.Count == 0 || CruiseControl.SpeedRegMode != CruiseControl.SpeedRegulatorMode.AVV)
                                         return "";
                                     Train.StationStop stationStop = Train.StationStops[0];
                                     return stationStop.PlatformItem.Name.ToUpper();
@@ -12372,7 +12372,7 @@ namespace Orts.Simulation.RollingStocks
                                 }
                             case "NextStationArrDep":
                                 {
-                                    if (Train.StationStops.Count == 0)
+                                    if (Train.StationStops.Count == 0 || CruiseControl.SpeedRegMode != CruiseControl.SpeedRegulatorMode.AVV)
                                         return "";
                                     Physics.Train.StationStop stationStop = Train.StationStops[0];
                                     if (!stoppedAtStation)
