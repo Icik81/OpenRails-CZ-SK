@@ -251,14 +251,11 @@ namespace Orts.Viewer3D
             var newPenalty = mstsLocomotive != null && mstsLocomotive.TrainBrakeController.EmergencyBraking;
             // Control
             var newCarIsPlayer = (Car.Train != null && Car.Train == Viewer.PlayerTrain)
-                || (Car.Train != null && Car.Train.TrainType == Train.TRAINTYPE.REMOTE)
-                || (Car.Train != null && Car.Train.TrainType == Train.TRAINTYPE.AI)
-                || (Car.Train != null && Car.Train.TrainType == Train.TRAINTYPE.STATIC);
+                || (Car.Train != null && Car.Train.TrainType == Train.TRAINTYPE.REMOTE);
             // Service - if a player or AI train, then will considered to be in servie, loose consists will not be considered to be in service.
             var newCarInService = (Car.Train != null && Car.Train == Viewer.PlayerTrain)
                 || (Car.Train != null && Car.Train.TrainType == Train.TRAINTYPE.REMOTE)
-                || (Car.Train != null && Car.Train.TrainType == Train.TRAINTYPE.AI)
-                || (Car.Train != null && Car.Train.TrainType == Train.TRAINTYPE.STATIC);
+                || (Car.Train != null && Car.Train.TrainType == Train.TRAINTYPE.AI);
 
             // Time of day
             bool newIsDay = false;
@@ -304,12 +301,6 @@ namespace Orts.Viewer3D
             // Světla pro AI
             if (Car.Train != null && (Car.Train.TrainType == Train.TRAINTYPE.AI || Car.Train.TrainType == Train.TRAINTYPE.REMOTE))
             {
-                // Reflektor bude mít AI jen v noci
-                if (newIsDay)
-                    newTrainHeadlight = 1;
-                else
-                    newTrainHeadlight = 2;
-
                 // AI posunuje
                 if (Car.CarIsShunting)
                 {
