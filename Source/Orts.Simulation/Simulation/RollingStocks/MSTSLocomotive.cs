@@ -2784,11 +2784,11 @@ namespace Orts.Simulation.RollingStocks
             {
                 if (SlipSpeedCritical == 0) SlipSpeedCritical = 40 / 3.6f; // Výchozí hodnota 40 km/h     
                 float AbsSlipSpeedMpS = Math.Abs(WheelSpeedMpS) - AbsSpeedMpS;  // Zjistí absolutní rychlost prokluzu 
-                if (extendedPhysics != null)
-                {
-                    SlipSpeedCritical = 10 / 3.6f; // 10kmh pokud počítáme pátou osu
-                    AbsSlipSpeedMpS = extendedPhysics.FastestAxleSpeedMpS - extendedPhysics.AverageAxleSpeedMpS;
-                }
+                //if (extendedPhysics != null)
+                //{
+                //    SlipSpeedCritical = 10 / 3.6f; // 10kmh pokud počítáme pátou osu
+                //    AbsSlipSpeedMpS = extendedPhysics.FastestAxleSpeedMpS - extendedPhysics.AverageAxleSpeedMpS;
+                //}
                 //Trace.TraceInformation("WheelSlipTime {0},  Simulator.GameTime {1},  Time0 {2},   SlipSpeed {3}", WheelSlipTime, Simulator.GameTime, Time0, SlipSpeed);
 
                 if (AbsSlipSpeedMpS > SlipSpeedCritical) // Přepěťová ochrana při skluzu 
@@ -4530,7 +4530,7 @@ namespace Orts.Simulation.RollingStocks
             // Hodnoty pro výpočet zvukových proměnných
             TrainBrakeControllerValueForSound = (float)Math.Round(TrainBrakeController.CurrentValue, 2);
             EngineBrakeControllerValueForSound = (float)Math.Round(EngineBrakeController.CurrentValue, 2);
-            Variable5 = (float)Math.Round(Math.Abs(LocomotiveAxle.DriveForceN / 1000));
+            Variable5 = (float)Math.Round(Math.Abs(FilteredMotiveForceN / 1000));
 
 
             TrainControlSystem.Update();
