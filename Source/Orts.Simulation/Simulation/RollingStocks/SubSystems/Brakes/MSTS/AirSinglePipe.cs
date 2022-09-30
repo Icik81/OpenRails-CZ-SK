@@ -1500,10 +1500,15 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             PressureConverterBaseTrainBrake = (maxPressurePSI0 - BrakeLine1PressurePSI) * AuxCylVolumeRatio;
             PressureConverterBase = Math.Max(PressureConverterBaseTrainBrake, PressureConverterBaseEDB);
             PressureConverterBase = MathHelper.Clamp(PressureConverterBase, 0, 4.0f * 14.50377f);
-            if (Math.Round(PressureConverterBase) > Math.Round(PressureConverter))
+            
+            if (loco != null && loco.Battery && Math.Round(PressureConverterBase) > Math.Round(PressureConverter))
                 PressureConverter += elapsedClockSeconds * MaxApplicationRatePSIpS * 1.5f;
+
+            if (loco != null && !loco.Battery)
+                PressureConverterBase = 0;
+
             if (Math.Round(PressureConverterBase) < Math.Round(PressureConverter))
-                PressureConverter -= elapsedClockSeconds * MaxReleaseRatePSIpS * 2.0f;
+                PressureConverter -= elapsedClockSeconds * MaxReleaseRatePSIpS * 2.0f;            
 
 
             if (AutoCylPressurePSI0 < 0)
