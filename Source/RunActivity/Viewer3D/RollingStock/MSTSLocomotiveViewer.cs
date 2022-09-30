@@ -2995,6 +2995,7 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.FRONT_LIGHT_R:
                 case CABViewControlTypes.REAR_LIGHT_L:
                 case CABViewControlTypes.REAR_LIGHT_R:
+                case CABViewControlTypes.DIRTY_WINDOW:
 
                 case CABViewControlTypes.MOTOR_DISABLED:
                 case CABViewControlTypes.INVERTER_TEST:
@@ -4992,6 +4993,8 @@ namespace Orts.Viewer3D.RollingStock
             : base(viewer, locomotive, control, shader)
         {
             CycleTimeS = control.CycleTimeS;
+            // Icik
+            locomotive.DirtyWindowTimeClean = CycleTimeS;
         }
 
         public override void PrepareFrame(RenderFrame frame, ElapsedTime elapsedTime)

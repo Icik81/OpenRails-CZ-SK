@@ -1819,6 +1819,8 @@ namespace Orts.Simulation.RollingStocks
             outf.Write(LightFrontRPosition);
             outf.Write(LightRearLPosition);
             outf.Write(LightRearRPosition);
+            outf.Write(DirtyWindowPosition);
+            outf.Write(WiperStatusChange);
 
             base.Save(outf);
 
@@ -1932,6 +1934,8 @@ namespace Orts.Simulation.RollingStocks
             LightFrontRPosition = inf.ReadInt32();
             LightRearLPosition = inf.ReadInt32();
             LightRearRPosition = inf.ReadInt32();
+            DirtyWindowPosition = inf.ReadInt32();
+            WiperStatusChange = inf.ReadBoolean();
 
             base.Restore(inf);
 
@@ -4523,7 +4527,8 @@ namespace Orts.Simulation.RollingStocks
                 PantoCanHVOff(elapsedClockSeconds);
                 DirectionButtonSetup();
                 PlayerSwitchToRearCab();
-                LightPositionHandle();
+                LightPositionHandle();                
+                DirtyWindow(elapsedClockSeconds);
                 BatterySetOn = false;                
             }
 
@@ -9766,6 +9771,63 @@ namespace Orts.Simulation.RollingStocks
             }                    
         }
 
+        // Kapky na oknech
+        int DirtyWindowPosition;
+        int DirtyWindowMaxPosition;
+        float DirtyWindowTimer;
+        float DirtyWindowTimeBegin;
+        float DirtyWindowTimeDirt;
+        bool WiperStatusChange;
+        float DirtyWindowPower;
+        public float DirtyWindowTimeClean;
+        public void DirtyWindow(float elapsedSeconds)
+        {            
+            DirtyWindowPower = DirtyWindowMaxPosition * Simulator.Weather.PricipitationIntensityPPSPM2;
+            DirtyWindowTimeDirt = 1 / Simulator.Weather.PricipitationIntensityPPSPM2;
+            DirtyWindowTimer += elapsedSeconds;
+            if (DirtyWindowTimer > DirtyWindowTimeBegin)
+            {
+                // Stěrače vypnuty
+                if (!Wiper)
+                {
+                    if (WiperStatusChange)
+                    {
+                        WiperStatusChange = false;
+                        DirtyWindowTimeBegin = DirtyWindowTimeDirt * 2.0f;
+                        DirtyWindowTimer = 0;
+                        return;
+                    }
+                    if (Simulator.Weather.PricipitationIntensityPPSPM2 > 0.05f && Simulator.Weather.PrecipitationLiquidity > 0.50f)
+                    {
+                        // Kapky narůstají
+                        if (DirtyWindowTimer > DirtyWindowTimeDirt && DirtyWindowPosition < DirtyWindowPower)
+                        {
+                            DirtyWindowPosition++;
+                            DirtyWindowTimer = 0;
+                            DirtyWindowTimeBegin = 0;
+                        }
+                    }
+                }
+                else
+                {
+                    // Stěrače zapnuty
+                    if (!WiperStatusChange)
+                    {
+                        WiperStatusChange = true;
+                        DirtyWindowTimeBegin = DirtyWindowTimeClean * 2.0f;
+                        DirtyWindowTimer = 0;
+                        return;
+                    }
+                    // Kapky se stírají
+                    if (DirtyWindowTimer > DirtyWindowTimeClean && DirtyWindowPosition > 0)
+                    {
+                        DirtyWindowPosition--;
+                        DirtyWindowTimer = 0;
+                        DirtyWindowTimeBegin = 0;
+                    }
+                }
+            }            
+        }
 
         // Zatím povoleno kvůli kompatibilitě
         int NumberChoice = 1;
@@ -12154,7 +12216,13 @@ namespace Orts.Simulation.RollingStocks
                         data = LightRearRPosition + 1;
                         break;
                     }
-
+                case CABViewControlTypes.DIRTY_WINDOW:
+                    {
+                        CVCWithFrames cVCWithFrames = (CVCWithFrames)cvc;
+                        DirtyWindowMaxPosition = cVCWithFrames.FramesCount;                       
+                        data = DirtyWindowPosition;
+                        break;
+                    }
 
                 case CABViewControlTypes.MOTOR_DISABLED:
                     {
