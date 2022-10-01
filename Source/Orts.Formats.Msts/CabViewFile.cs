@@ -463,7 +463,8 @@ namespace Orts.Formats.Msts
         FRONT_LIGHT_R,
         REAR_LIGHT_L,
         REAR_LIGHT_R,
-        DIRTY_WINDOW,
+        RAIN_WINDOW,
+        WIPERS_WINDOW,
 
         // ORTS
         ORTS_SCREEN_SELECT,

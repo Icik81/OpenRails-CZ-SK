@@ -1819,7 +1819,8 @@ namespace Orts.Simulation.RollingStocks
             outf.Write(LightFrontRPosition);
             outf.Write(LightRearLPosition);
             outf.Write(LightRearRPosition);
-            outf.Write(DirtyWindowPosition);
+            outf.Write(RainWindowPosition);
+            outf.Write(WipersWindowPosition);
             outf.Write(WiperStatusChange);
 
             base.Save(outf);
@@ -1934,7 +1935,8 @@ namespace Orts.Simulation.RollingStocks
             LightFrontRPosition = inf.ReadInt32();
             LightRearLPosition = inf.ReadInt32();
             LightRearRPosition = inf.ReadInt32();
-            DirtyWindowPosition = inf.ReadInt32();
+            RainWindowPosition = inf.ReadInt32();
+            WipersWindowPosition = inf.ReadInt32();
             WiperStatusChange = inf.ReadBoolean();
 
             base.Restore(inf);
@@ -4528,7 +4530,8 @@ namespace Orts.Simulation.RollingStocks
                 DirectionButtonSetup();
                 PlayerSwitchToRearCab();
                 LightPositionHandle();                
-                DirtyWindow(elapsedClockSeconds);
+                RainWindow(elapsedClockSeconds);
+                WipersWindow(elapsedClockSeconds);
                 BatterySetOn = false;                
             }
 
@@ -9771,21 +9774,74 @@ namespace Orts.Simulation.RollingStocks
             }                    
         }
 
-        // Kapky na oknech
-        int DirtyWindowPosition;
-        int DirtyWindowMaxPosition;
-        float DirtyWindowTimer;
-        float DirtyWindowTimeBegin;
-        float DirtyWindowTimeDirt;
-        bool WiperStatusChange;
-        float DirtyWindowPower;
-        public float DirtyWindowTimeClean;
-        public void DirtyWindow(float elapsedSeconds)
+        // Kapky na oknech - oblast oken
+        int RainWindowPosition;
+        int RainWindowMaxPosition;
+        float RainWindowTimer;        
+        float RainWindowTimeDirt;
+        float RainWindowTimerNoRain;
+        float RainWindowTimeBeginNoRain = 5;
+        float RainWindowPower;        
+        public void RainWindow(float elapsedSeconds)
         {            
-            DirtyWindowPower = DirtyWindowMaxPosition * Simulator.Weather.PricipitationIntensityPPSPM2;
-            DirtyWindowTimeDirt = 1 / Simulator.Weather.PricipitationIntensityPPSPM2;
-            DirtyWindowTimer += elapsedSeconds;
-            if (DirtyWindowTimer > DirtyWindowTimeBegin)
+            RainWindowPower = RainWindowMaxPosition * Simulator.Weather.PricipitationIntensityPPSPM2;
+            RainWindowTimeDirt = 1 / Simulator.Weather.PricipitationIntensityPPSPM2;            
+            // Kapky vysychají za sucha
+            if (Simulator.Weather.PricipitationIntensityPPSPM2 < 0.05f)
+            {
+                RainWindowTimerNoRain += elapsedSeconds;
+                if (RainWindowTimerNoRain > RainWindowTimeBeginNoRain)
+                {
+                    if (RainWindowPosition > 0)
+                    {
+                        RainWindowPosition--;
+                        RainWindowTimerNoRain = 0;                        
+                    }
+                }
+            }
+            // Kapky narůstají
+            if (Simulator.Weather.PricipitationIntensityPPSPM2 > 0.05f && Simulator.Weather.PrecipitationLiquidity > 0.50f)
+            {
+                RainWindowTimer += elapsedSeconds;
+                if (RainWindowTimer > RainWindowTimeDirt && RainWindowPosition < RainWindowPower)
+                {
+                    RainWindowPosition++;
+                    RainWindowTimer = 0;
+                }
+            }                        
+        }
+
+        // Kapky na oknech - oblast stěračů
+        int WipersWindowPosition;
+        int WipersWindowMaxPosition;
+        float WipersWindowTimer;
+        float WipersWindowTimeBegin;
+        float WipersWindowTimeDirt;
+        float WipersWindowTimerNoRain;
+        float WipersWindowTimeBeginNoRain = 5;
+        bool WiperStatusChange;
+        float WipersWindowPower;
+        public float WipersWindowTimeClean;
+        public void WipersWindow(float elapsedSeconds)
+        {
+            WipersWindowPower = WipersWindowMaxPosition * Simulator.Weather.PricipitationIntensityPPSPM2;
+            WipersWindowTimeDirt = 1 / Simulator.Weather.PricipitationIntensityPPSPM2;
+            WipersWindowTimer += elapsedSeconds;
+
+            // Kapky vysychají za sucha
+            if (Simulator.Weather.PricipitationIntensityPPSPM2 < 0.05f)
+            {
+                WipersWindowTimerNoRain += elapsedSeconds;
+                if (WipersWindowTimerNoRain > WipersWindowTimeBeginNoRain)
+                {
+                    if (WipersWindowPosition > 0)
+                    {
+                        WipersWindowPosition--;
+                        WipersWindowTimerNoRain = 0;
+                    }
+                }
+            }
+            if (WipersWindowTimer > WipersWindowTimeBegin)
             {
                 // Stěrače vypnuty
                 if (!Wiper)
@@ -9793,18 +9849,18 @@ namespace Orts.Simulation.RollingStocks
                     if (WiperStatusChange)
                     {
                         WiperStatusChange = false;
-                        DirtyWindowTimeBegin = DirtyWindowTimeDirt * 2.0f;
-                        DirtyWindowTimer = 0;
+                        WipersWindowTimeBegin = WipersWindowTimeDirt * 2.0f;
+                        WipersWindowTimer = 0;
                         return;
                     }
                     if (Simulator.Weather.PricipitationIntensityPPSPM2 > 0.05f && Simulator.Weather.PrecipitationLiquidity > 0.50f)
                     {
                         // Kapky narůstají
-                        if (DirtyWindowTimer > DirtyWindowTimeDirt && DirtyWindowPosition < DirtyWindowPower)
+                        if (WipersWindowTimer > WipersWindowTimeDirt && WipersWindowPosition < WipersWindowPower)
                         {
-                            DirtyWindowPosition++;
-                            DirtyWindowTimer = 0;
-                            DirtyWindowTimeBegin = 0;
+                            WipersWindowPosition++;
+                            WipersWindowTimer = 0;
+                            WipersWindowTimeBegin = 0;
                         }
                     }
                 }
@@ -9814,19 +9870,25 @@ namespace Orts.Simulation.RollingStocks
                     if (!WiperStatusChange)
                     {
                         WiperStatusChange = true;
-                        DirtyWindowTimeBegin = DirtyWindowTimeClean * 2.0f;
-                        DirtyWindowTimer = 0;
+                        WipersWindowTimeBegin = WipersWindowTimeClean * 2.0f;
+                        WipersWindowTimer = 0;
                         return;
                     }
-                    // Kapky se stírají
-                    if (DirtyWindowTimer > DirtyWindowTimeClean && DirtyWindowPosition > 0)
+                    // 
+                    if (Simulator.Weather.PricipitationIntensityPPSPM2 > 0.05f && Simulator.Weather.PrecipitationLiquidity > 0.50f
+                        && WipersWindowTimer > WipersWindowTimeClean && WipersWindowPosition == 0)
                     {
-                        DirtyWindowPosition--;
-                        DirtyWindowTimer = 0;
-                        DirtyWindowTimeBegin = 0;
+                        WipersWindowPosition++;
+                    }
+                    // Kapky se stírají
+                    if (WipersWindowTimer > WipersWindowTimeClean * 2 && WipersWindowPosition > 0)
+                    {
+                        WipersWindowPosition--;
+                        WipersWindowTimer = 0;
+                        WipersWindowTimeBegin = 0;
                     }
                 }
-            }            
+            }
         }
 
         // Zatím povoleno kvůli kompatibilitě
@@ -12216,11 +12278,18 @@ namespace Orts.Simulation.RollingStocks
                         data = LightRearRPosition + 1;
                         break;
                     }
-                case CABViewControlTypes.DIRTY_WINDOW:
+                case CABViewControlTypes.RAIN_WINDOW:
                     {
                         CVCWithFrames cVCWithFrames = (CVCWithFrames)cvc;
-                        DirtyWindowMaxPosition = cVCWithFrames.FramesCount;                       
-                        data = DirtyWindowPosition;
+                        RainWindowMaxPosition = cVCWithFrames.FramesCount;                       
+                        data = RainWindowPosition;
+                        break;
+                    }
+                case CABViewControlTypes.WIPERS_WINDOW:
+                    {
+                        CVCWithFrames cVCWithFrames = (CVCWithFrames)cvc;
+                        WipersWindowMaxPosition = cVCWithFrames.FramesCount;
+                        data = WipersWindowPosition;
                         break;
                     }
 

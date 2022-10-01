@@ -1958,6 +1958,11 @@ namespace Orts.Viewer3D.RollingStock
                     }
                     cvcr.PrepareFrame(frame, elapsedTime);
                 }
+                // Icik
+                if (cvcr.Control.CabViewpoint == -1)
+                {                    
+                    cvcr.PrepareFrame(frame, elapsedTime);
+                }
             }
         }
 
@@ -2995,7 +3000,8 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.FRONT_LIGHT_R:
                 case CABViewControlTypes.REAR_LIGHT_L:
                 case CABViewControlTypes.REAR_LIGHT_R:
-                case CABViewControlTypes.DIRTY_WINDOW:
+                case CABViewControlTypes.RAIN_WINDOW:
+                case CABViewControlTypes.WIPERS_WINDOW:
 
                 case CABViewControlTypes.MOTOR_DISABLED:
                 case CABViewControlTypes.INVERTER_TEST:
@@ -4994,7 +5000,7 @@ namespace Orts.Viewer3D.RollingStock
         {
             CycleTimeS = control.CycleTimeS;
             // Icik
-            locomotive.DirtyWindowTimeClean = CycleTimeS;
+            locomotive.WipersWindowTimeClean = CycleTimeS;
         }
 
         public override void PrepareFrame(RenderFrame frame, ElapsedTime elapsedTime)
