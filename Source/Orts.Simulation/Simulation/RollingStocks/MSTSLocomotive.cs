@@ -9840,6 +9840,7 @@ namespace Orts.Simulation.RollingStocks
                         WipersWindowTimerNoRain = 0;
                     }
                 }
+                WipersWindowTimeBegin = 0;
             }
             if (WipersWindowTimer > WipersWindowTimeBegin)
             {
