@@ -4532,7 +4532,7 @@ namespace Orts.Simulation.RollingStocks
                 LightPositionHandle();                
                 RainWindow(elapsedClockSeconds);
                 WipersWindow(elapsedClockSeconds);
-                BatterySetOn = false;                
+                BatterySetOn = false;
             }
 
             // Hodnoty pro výpočet zvukových proměnných
@@ -9780,14 +9780,14 @@ namespace Orts.Simulation.RollingStocks
         float RainWindowTimer;        
         float RainWindowTimeDirt;
         float RainWindowTimerNoRain;
-        float RainWindowTimeBeginNoRain = 5;
+        float RainWindowTimeBeginNoRain = 20;
         float RainWindowPower;        
         public void RainWindow(float elapsedSeconds)
         {            
             RainWindowPower = RainWindowMaxPosition * Simulator.Weather.PricipitationIntensityPPSPM2;
             RainWindowTimeDirt = 1 / Simulator.Weather.PricipitationIntensityPPSPM2;            
             // Kapky vysychají za sucha
-            if (Simulator.Weather.PricipitationIntensityPPSPM2 < 0.05f)
+            if (Simulator.Weather.PricipitationIntensityPPSPM2 < 0.02f)
             {
                 RainWindowTimerNoRain += elapsedSeconds;
                 if (RainWindowTimerNoRain > RainWindowTimeBeginNoRain)
@@ -9800,7 +9800,7 @@ namespace Orts.Simulation.RollingStocks
                 }
             }
             // Kapky narůstají
-            if (Simulator.Weather.PricipitationIntensityPPSPM2 > 0.05f && Simulator.Weather.PrecipitationLiquidity > 0.50f)
+            if (Simulator.Weather.PricipitationIntensityPPSPM2 > 0.02f && Simulator.Weather.PrecipitationLiquidity > 0.50f)
             {
                 RainWindowTimer += elapsedSeconds;
                 if (RainWindowTimer > RainWindowTimeDirt && RainWindowPosition < RainWindowPower)
@@ -9818,7 +9818,7 @@ namespace Orts.Simulation.RollingStocks
         float WipersWindowTimeBegin;
         float WipersWindowTimeDirt;
         float WipersWindowTimerNoRain;
-        float WipersWindowTimeBeginNoRain = 5;
+        float WipersWindowTimeBeginNoRain = 20;
         bool WiperStatusChange;
         float WipersWindowPower;
         public float WipersWindowTimeClean;
@@ -9829,7 +9829,7 @@ namespace Orts.Simulation.RollingStocks
             WipersWindowTimer += elapsedSeconds;
 
             // Kapky vysychají za sucha
-            if (Simulator.Weather.PricipitationIntensityPPSPM2 < 0.05f)
+            if (Simulator.Weather.PricipitationIntensityPPSPM2 < 0.02f)
             {
                 WipersWindowTimerNoRain += elapsedSeconds;
                 if (WipersWindowTimerNoRain > WipersWindowTimeBeginNoRain)
@@ -9854,7 +9854,7 @@ namespace Orts.Simulation.RollingStocks
                         WipersWindowTimer = 0;
                         return;
                     }
-                    if (Simulator.Weather.PricipitationIntensityPPSPM2 > 0.05f && Simulator.Weather.PrecipitationLiquidity > 0.50f)
+                    if (Simulator.Weather.PricipitationIntensityPPSPM2 > 0.02f && Simulator.Weather.PrecipitationLiquidity > 0.50f)
                     {
                         // Kapky narůstají
                         if (WipersWindowTimer > WipersWindowTimeDirt && WipersWindowPosition < WipersWindowPower)
@@ -9871,20 +9871,20 @@ namespace Orts.Simulation.RollingStocks
                     if (!WiperStatusChange)
                     {
                         WiperStatusChange = true;
-                        WipersWindowTimeBegin = WipersWindowTimeClean * 2.0f;
+                        WipersWindowTimeBegin = WipersWindowTimeClean / 2;
                         WipersWindowTimer = 0;
                         return;
                     }
                     // 
-                    if (Simulator.Weather.PricipitationIntensityPPSPM2 > 0.05f && Simulator.Weather.PrecipitationLiquidity > 0.50f
-                        && WipersWindowTimer > WipersWindowTimeClean && WipersWindowPosition == 0)
+                    if (Simulator.Weather.PricipitationIntensityPPSPM2 > 0.02f && Simulator.Weather.PrecipitationLiquidity > 0.50f
+                        && WipersWindowTimer > WipersWindowTimeClean && WipersWindowPosition <= 0)
                     {
-                        WipersWindowPosition++;
+                        WipersWindowPosition = 3;
                     }
                     // Kapky se stírají
-                    if (WipersWindowTimer > WipersWindowTimeClean * 2 && WipersWindowPosition > 0)
+                    if (WipersWindowTimer > WipersWindowTimeClean && WipersWindowPosition > 0)
                     {
-                        WipersWindowPosition--;
+                        WipersWindowPosition = WipersWindowPosition - 2;
                         WipersWindowTimer = 0;
                         WipersWindowTimeBegin = 0;
                     }
@@ -10319,7 +10319,7 @@ namespace Orts.Simulation.RollingStocks
 
         public void WheelSpeedCabCorrection(CabViewControl cvc)
         {
-            if (Math.Abs(WheelSpeedMpS_Cab) < 0.9f * Math.Abs(cvc.PreviousData / 3.6f) || Math.Abs(WheelSpeedMpS_Cab) > 1.1f * Math.Abs(cvc.PreviousData / 3.6f))
+            if (Math.Abs(WheelSpeedMpS_Cab) < Math.Abs(cvc.PreviousData / 3.6f) - (10.0f / 3.6f) || Math.Abs(WheelSpeedMpS_Cab) > Math.Abs(cvc.PreviousData / 3.6f) + (10.0f / 3.6f))
                 cvc.PreviousData = Math.Abs(WheelSpeedMpS_Cab * 3.6f);
         }
 
@@ -10334,7 +10334,7 @@ namespace Orts.Simulation.RollingStocks
         public virtual float GetDataOf(CabViewControl cvc)
         {
             // Icik
-            SetControlUnitParameters();            
+            SetControlUnitParameters();                        
 
             CheckBlankDisplay(cvc);
             float data = 0;
@@ -10343,9 +10343,9 @@ namespace Orts.Simulation.RollingStocks
                 case CABViewControlTypes.SPEEDOMETER:
                     {
                         WheelSpeedCabCorrection(cvc);
-                        float speed = WheelSpeedMpS_Cab;
                         cvc.ElapsedTime += elapsedTime;
-                        if (cvc.ElapsedTime < cvc.UpdateTime && cvc.Vibration > 0)
+                        float speed = WheelSpeedMpS_Cab;                        
+                        if (cvc.ElapsedTime < cvc.UpdateTime && cvc.Vibration >= 0)
                         {
                             if (cvc.ElapsedTime > cvc.UpdateTime / 2 && Math.Abs(speed) > 0.1f)
                             {
@@ -10370,11 +10370,16 @@ namespace Orts.Simulation.RollingStocks
                         else // MPH
                             data *= 2.2369f;
                         data = Math.Abs(data);
-                        if (cvc.Precision > 0)
+                        if (cvc.Precision >= 0)
                         {
-                            data = data / cvc.Precision;
-                            data = (float)Math.Round(data, 0);
-                            data = data * cvc.Precision;
+                            if (cvc.Precision == 0)
+                                data = (float)Math.Round(data, 0);
+                            else
+                            {
+                                data = data / cvc.Precision;
+                                data = (float)Math.Round(data, 0);
+                                data = data * cvc.Precision;
+                            }
                         }
                         if (data > cvc.PreviousData)
                         {

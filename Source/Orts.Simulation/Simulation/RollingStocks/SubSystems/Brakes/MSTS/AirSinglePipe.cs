@@ -78,6 +78,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
         protected float ThresholdBailOffOn = 0;
         protected ValveState PrevTripleValveStateState;
         protected float AutomaticDoorsCycle = 0;
+        protected float AirWithEDBMotiveForceN;
 
         protected bool AICompressorOn;
         protected bool AICompressorOff;
@@ -1277,6 +1278,14 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         BrakeCylReleaseEDBOn = false;
                     }
 
+                    // Pro loco typu Vectron nenapouští brzdový válec vzduchem při průběžném brždění
+                    if (loco != null && loco.LocoType == MSTSLocomotive.LocoTypes.Vectron
+                        && (Math.Abs(loco.DynamicBrakeForceN) > AirWithEDBMotiveForceN || loco.AbsSpeedMpS > 11 / 3.6f))
+                    {
+                        BrakeCylApply = false;
+                        BrakeCylReleaseEDBOn = true;
+                    }
+
                     // Plní pomocnou jímku stále stejnou rychlostí 0.1bar/s
                     if (AuxResPressurePSI > maxPressurePSI0 && BrakeLine1PressurePSI > AuxResPressurePSI)
                     {
@@ -1446,12 +1455,18 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 {
                     AutoCylPressurePSI0 -= MaxReleaseRatePSIpS * elapsedClockSeconds;
                 }
-
-                if (BailOffOn && AutoCylPressurePSI0 > 0 && BrakeCylReleaseEDBOn)
+                
+                if (loco.LocoType != MSTSLocomotive.LocoTypes.Vectron && BailOffOn && AutoCylPressurePSI0 > 0 && BrakeCylReleaseEDBOn)
                 {
                     ThresholdBailOffOn = (maxPressurePSI0 - BrakeLine1PressurePSI) * AuxCylVolumeRatio;
                     ThresholdBailOffOn = MathHelper.Clamp(ThresholdBailOffOn, 0, MCP_TrainBrake);
                     AutoCylPressurePSI0 -= elapsedClockSeconds * AutoBailOffOnRatePSIpS; // Rychlost odvětrání při EDB                    
+                }
+
+                if (loco.LocoType == MSTSLocomotive.LocoTypes.Vectron && BailOffOn && BrakeCylReleaseEDBOn)
+                {
+                    ThresholdBailOffOn = (maxPressurePSI0 - BrakeLine1PressurePSI) * AuxCylVolumeRatio;
+                    ThresholdBailOffOn = MathHelper.Clamp(ThresholdBailOffOn, 0, MCP_TrainBrake);                    
                 }
 
                 if (AutoCylPressurePSI0 < 1)
@@ -1461,7 +1476,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     BrakeCylReleaseEDBOn = true;
 
                 // Automatické napuštění brzdového válce po uvadnutí EDB
-                float AirWithEDBMotiveForceN = loco.MaxDynamicBrakeForceN * 0.05f;
+                AirWithEDBMotiveForceN = loco.MaxDynamicBrakeForceN * 0.05f;
                 if (ThresholdBailOffOn > 0 && (Math.Abs(loco.DynamicBrakeForceN) <= AirWithEDBMotiveForceN || loco.AbsSpeedMpS < 11 / 3.6f)) // Napustí brzdový válec pod limit síly k EDB
                 {
                     ThresholdBailOffOn = (maxPressurePSI0 - BrakeLine1PressurePSI) * AuxCylVolumeRatio;
