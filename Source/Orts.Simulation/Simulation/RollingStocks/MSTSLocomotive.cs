@@ -10345,7 +10345,7 @@ namespace Orts.Simulation.RollingStocks
                         WheelSpeedCabCorrection(cvc);
                         cvc.ElapsedTime += elapsedTime;
                         float speed = WheelSpeedMpS_Cab;                        
-                        if (cvc.ElapsedTime < cvc.UpdateTime && cvc.Vibration >= 0)
+                        if (cvc.UpdateTime != 0 && cvc.ElapsedTime < cvc.UpdateTime && cvc.Vibration >= 0)
                         {
                             if (cvc.ElapsedTime > cvc.UpdateTime / 2 && Math.Abs(speed) > 0.1f)
                             {
@@ -10370,7 +10370,7 @@ namespace Orts.Simulation.RollingStocks
                         else // MPH
                             data *= 2.2369f;
                         data = Math.Abs(data);
-                        if (cvc.Precision >= 0)
+                        if (cvc.UpdateTime != 0 && cvc.Precision >= 0)
                         {
                             if (cvc.Precision == 0)
                                 data = (float)Math.Round(data, 0);
