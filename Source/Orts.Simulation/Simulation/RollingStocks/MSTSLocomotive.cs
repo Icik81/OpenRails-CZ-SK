@@ -2796,12 +2796,18 @@ namespace Orts.Simulation.RollingStocks
                 //    AbsSlipSpeedMpS = extendedPhysics.FastestAxleSpeedMpS - extendedPhysics.AverageAxleSpeedMpS;
                 //}
                 //Trace.TraceInformation("WheelSlipTime {0},  Simulator.GameTime {1},  Time0 {2},   SlipSpeed {3}", WheelSlipTime, Simulator.GameTime, Time0, SlipSpeed);
-
+                
                 if (AbsSlipSpeedMpS > SlipSpeedCritical) // Přepěťová ochrana při skluzu 
                     OverVoltage = true;
 
                 if (OverVoltage)
                 {
+                    if (extendedPhysics != null)
+                    {
+                        FilteredMotiveForceN = 0;                        
+                        extendedPhysics.FastestAxleSpeedMpS = extendedPhysics.AverageAxleSpeedMpS = WheelSpeedMpS = SpeedMpS;                         
+                    }
+
                     if (DoesPowerLossResetControls || DoesPowerLossResetControls2)
                     {
                         SetThrottlePercent(0);
@@ -2818,11 +2824,13 @@ namespace Orts.Simulation.RollingStocks
                                 HVOff = true; // Vypnutí HV                                
                                 break;
                         }
+                        LocalDynamicBrakePercent = 0;
                         Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Slip protection!"));
                         SignalEvent(Event.Failure);
                     }
                     if (this is MSTSDieselLocomotive) // Dieselelektrické lokomotivy
                     {
+                        LocalDynamicBrakePercent = 0;
                         PowerReductionResult4 = 0.9f; // Omezení trakčních motorů  
                         Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Slip protection!"));
                     }

@@ -1348,17 +1348,17 @@ namespace Orts.Simulation.RollingStocks
                         if (PlayerLoco.WheelSpeedMpS_Cab > PlayerLoco.WheelSpeedMpS)
                         {
                             PlayerLoco.WheelSpeedMpS_Cab = PlayerLoco.WheelSpeedMpS;
-                            if (PlayerLoco.extendedPhysics != null)
-                            {
-                                foreach (Undercarriage uc in PlayerLoco.extendedPhysics.Undercarriages)
-                                {
-                                    foreach (ExtendedAxle ea in uc.Axles)
-                                    {
-                                        if (ea.HaveSpeedometerSensor)
-                                            PlayerLoco.WheelSpeedMpS_Cab = Math.Abs(ea.WheelSpeedMpS);
-                                    }
-                                }
-                            }
+                            //if (PlayerLoco.extendedPhysics != null)
+                            //{
+                            //    foreach (Undercarriage uc in PlayerLoco.extendedPhysics.Undercarriages)
+                            //    {
+                            //        foreach (ExtendedAxle ea in uc.Axles)
+                            //        {
+                            //            if (ea.HaveSpeedometerSensor)
+                            //                PlayerLoco.WheelSpeedMpS_Cab = Math.Abs(ea.WheelSpeedMpS);                                       
+                            //        }                                    
+                            //    }
+                            //}
                         }
                     }
                     else
