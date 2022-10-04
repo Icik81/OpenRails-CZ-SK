@@ -305,6 +305,7 @@ namespace Orts.Viewer3D
                 if (Car.CarIsShunting)
                 {
                     newTrainHeadlight = 0;
+                    newCarInService = false;
                 }
                 else
                 // AI vyčkává na místě
