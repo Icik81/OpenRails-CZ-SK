@@ -334,6 +334,7 @@ namespace Orts.Common
         Failure,
         ActiveFrontCab,
         ActiveRearCab,
+        SeasonSwitch,
     }
 
     public static class Events
@@ -682,6 +683,7 @@ namespace Orts.Common
                         case 20087: return Event.CouplerPush;
                         case 20088: return Event.ActiveFrontCab;
                         case 20089: return Event.ActiveRearCab;
+                        case 20090: return Event.SeasonSwitch;
 
                         default: return 0;
                     }

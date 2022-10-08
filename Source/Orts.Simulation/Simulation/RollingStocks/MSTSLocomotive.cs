@@ -59,6 +59,7 @@ using Orts.Simulation.RollingStocks.SubSystems.Controllers;
 using Orts.Simulation.RollingStocks.SubSystems.PowerSupplies;
 using Orts.Simulation.RollingStocks.SubSystems.PowerTransmissions;
 using ORTS.Common;
+using ORTS.Common.Input;
 using ORTS.Scripting.Api;
 using System;
 using System.Collections.Generic;
@@ -668,7 +669,8 @@ namespace Orts.Simulation.RollingStocks
         public InterpolatorDiesel2D CurrentForce2Curves_3;
         public string CabFrontSoundFileName;
         public string CabRearSoundFileName;
-        public int CabStationForBatterySwitchOn;        
+        public int CabStationForBatterySwitchOn;
+        public bool SeasonSwitchPosition;
 
         // Jindrich
         public bool IsActive = false;
@@ -1822,6 +1824,7 @@ namespace Orts.Simulation.RollingStocks
             outf.Write(RainWindowPosition);
             outf.Write(WipersWindowPosition);
             outf.Write(WiperStatusChange);
+            outf.Write(SeasonSwitchPosition);
 
             base.Save(outf);
 
@@ -1938,6 +1941,7 @@ namespace Orts.Simulation.RollingStocks
             RainWindowPosition = inf.ReadInt32();
             WipersWindowPosition = inf.ReadInt32();
             WiperStatusChange = inf.ReadBoolean();
+            SeasonSwitchPosition = inf.ReadBoolean();
 
             base.Restore(inf);
 
@@ -9900,6 +9904,26 @@ namespace Orts.Simulation.RollingStocks
             }
         }
 
+        // Přepínač sezóny topení
+        bool PreSeasonSwitchPosition;
+        public void ToggleSeasonSwitch()
+        {            
+            if (SeasonSwitchPosition != PreSeasonSwitchPosition)
+            {
+                SignalEvent(Event.SeasonSwitch);
+                switch (SeasonSwitchPosition)
+                {
+                    case false:
+                        Simulator.Confirmer.Information(Simulator.Catalog.GetString("Season heating switched to Summer!"));                        
+                        break;
+                    case true:
+                        Simulator.Confirmer.Information(Simulator.Catalog.GetString("Season heating switched to Winter!"));                        
+                        break;
+                }
+            }
+            PreSeasonSwitchPosition = SeasonSwitchPosition;
+        }
+
         // Zatím povoleno kvůli kompatibilitě
         int NumberChoice = 1;
         public void ToggleControlRouteVoltage()
@@ -12304,6 +12328,11 @@ namespace Orts.Simulation.RollingStocks
                         CVCWithFrames cVCWithFrames = (CVCWithFrames)cvc;
                         WipersWindowMaxPosition = cVCWithFrames.FramesCount;
                         data = WipersWindowPosition;
+                        break;
+                    }
+                case CABViewControlTypes.SEASON_SWITCH:
+                    {
+                        data = SeasonSwitchPosition ? 1:0;
                         break;
                     }
 

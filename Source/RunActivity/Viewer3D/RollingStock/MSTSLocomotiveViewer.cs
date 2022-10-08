@@ -17,6 +17,7 @@
 
 // This file is the responsibility of the 3D & Environment Team. 
 
+using EmbedIO.Sessions;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Orts.Common;
@@ -344,6 +345,7 @@ namespace Orts.Viewer3D.RollingStock
             UserInputCommands.Add(UserCommand.ControlLightRearLDown, new Action[] { Noop, () => new ToggleLightRearLDownCommand(Viewer.Log) });
             UserInputCommands.Add(UserCommand.ControlLightRearRUp, new Action[] { Noop, () => new ToggleLightRearRUpCommand(Viewer.Log) });
             UserInputCommands.Add(UserCommand.ControlLightRearRDown, new Action[] { Noop, () => new ToggleLightRearRDownCommand(Viewer.Log) });
+            UserInputCommands.Add(UserCommand.ControlSeasonSwitch, new Action[] { Noop, () => new ToggleSeasonSwitchCommand(Viewer.Log) });
 
             // Jindřich
             UserInputCommands.Add(UserCommand.ControlPowerStationLocation, new Action[] { Noop, () => Locomotive.SetPowerSupplyStationLocation() });
@@ -747,6 +749,12 @@ namespace Orts.Viewer3D.RollingStock
                     if (!Locomotive.AripotControllerCanUseThrottle && Locomotive.AripotControllerValue == 0)
                         Locomotive.AripotControllerCanUseThrottle = true;
                 }
+            }
+
+            // Přepínač výběru topné sezóny
+            if (UserInput.IsPressed(UserCommand.ControlSeasonSwitch))
+            {
+                Locomotive.SeasonSwitchPosition = !Locomotive.SeasonSwitchPosition;
             }
 
             // Ovládání tlačítka znovunačtení světa
@@ -3002,6 +3010,7 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.REAR_LIGHT_R:
                 case CABViewControlTypes.RAIN_WINDOW:
                 case CABViewControlTypes.WIPERS_WINDOW:
+                case CABViewControlTypes.SEASON_SWITCH:
 
                 case CABViewControlTypes.MOTOR_DISABLED:
                 case CABViewControlTypes.INVERTER_TEST:
@@ -4014,6 +4023,21 @@ namespace Orts.Viewer3D.RollingStock
                     {
                         new ToggleLightRearRUpCommand(Viewer.Log);
                         IsChanged = true;
+                    }
+                    break;
+                case CABViewControlTypes.SEASON_SWITCH:
+                    // Ovládání přepnutí sezóny topení                    
+                    if (ChangedValue(0) < 0 && !IsChanged)
+                    {
+                        Locomotive.SeasonSwitchPosition = false;
+                        new ToggleSeasonSwitchCommand(Viewer.Log);
+                        IsChanged = true;                        
+                    }
+                    if (ChangedValue(0) > 0 && !IsChanged)
+                    {
+                        Locomotive.SeasonSwitchPosition = true;
+                        new ToggleSeasonSwitchCommand(Viewer.Log);
+                        IsChanged = true;                        
                     }
                     break;
 

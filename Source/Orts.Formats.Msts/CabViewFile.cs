@@ -465,6 +465,7 @@ namespace Orts.Formats.Msts
         REAR_LIGHT_R,
         RAIN_WINDOW,
         WIPERS_WINDOW,
+        SEASON_SWITCH,
 
         // ORTS
         ORTS_SCREEN_SELECT,

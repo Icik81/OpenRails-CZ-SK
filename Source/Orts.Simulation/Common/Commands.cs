@@ -2539,4 +2539,21 @@ namespace Orts.Common
         }
     }
     // End of Lights
+
+    [Serializable()]
+    public sealed class ToggleSeasonSwitchCommand : Command
+    {
+        public static MSTSLocomotive Receiver { get; set; }
+
+        public ToggleSeasonSwitchCommand(CommandLog log)
+            : base(log)
+        {
+            Redo();
+        }
+
+        public override void Redo()
+        {
+            Receiver.ToggleSeasonSwitch();
+        }
+    }
 }

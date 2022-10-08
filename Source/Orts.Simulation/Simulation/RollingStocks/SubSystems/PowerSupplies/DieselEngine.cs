@@ -589,7 +589,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
             StartingRateOfChangeUpRPMpSS = copy.StartingRateOfChangeUpRPMpSS;
             StoppingRateOfChangeDownRPMpSS = copy.StoppingRateOfChangeDownRPMpSS;
             OnePushStart = copy.OnePushStart;
-            OnePushStop = copy.OnePushStop;     
+            OnePushStop = copy.OnePushStop;
+            ElevatedConsumptionIdleRPMCompressor = copy.ElevatedConsumptionIdleRPMCompressor;
+            ElevatedConsumptionIdleRPMHeatingSummer = copy.ElevatedConsumptionIdleRPMHeatingSummer;
+            ElevatedConsumptionIdleRPMHeatingWinter = copy.ElevatedConsumptionIdleRPMHeatingWinter;
 
             if (copy.GearBox != null)
             {
@@ -938,6 +941,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
         public bool WaterTempCoolingLowRunning = false;
         public bool OilTempCoolingLowRunning = false;
         public float ElevatedConsumptionIdleRPM;
+        public float ElevatedConsumptionIdleRPMCompressor;
+        public float ElevatedConsumptionIdleRPMHeatingSummer;
+        public float ElevatedConsumptionIdleRPMHeatingWinter;
 
         /// <summary>
         /// Load of the engine
@@ -1068,6 +1074,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                     case "stoppingrateofchangedownrpmpss": StoppingRateOfChangeDownRPMpSS = stf.ReadFloatBlock(STFReader.UNITS.None, 0); break;
                     case "onepushstart": OnePushStart = stf.ReadBoolBlock(false); break;
                     case "onepushstop": OnePushStop = stf.ReadBoolBlock(false); break;
+                    case "elevatedconsumptionidlerpmcompressor": ElevatedConsumptionIdleRPMCompressor = stf.ReadFloatBlock(STFReader.UNITS.None, 0); break;
+                    case "elevatedconsumptionidlerpmheatingsummer": ElevatedConsumptionIdleRPMHeatingSummer = stf.ReadFloatBlock(STFReader.UNITS.None, 0); break;
+                    case "elevatedconsumptionidlerpmheatingwinter": ElevatedConsumptionIdleRPMHeatingWinter = stf.ReadFloatBlock(STFReader.UNITS.None, 0); break;
 
                     default:
                         end = true;
@@ -1310,12 +1319,43 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
             // Icik
             // Zvýší otáčky motoru při větším odběru proudu         
             bool ElevatedConsumptionMode = false;
+            float ElevatedConsumptionIdleRPMBase = 0;
             if (locomotive.Heating_OffOn || ((locomotive.CompressorIsOn || locomotive.Compressor2IsOn) && locomotive.AirBrakesIsCompressorElectricOrMechanical))
             {
                 //ElevatedConsumptionIdleRPM = 650;
                 ElevatedConsumptionMode = true;
-                if (ElevatedConsumptionIdleRPM == 0)
-                    ElevatedConsumptionIdleRPM = IdleRPM * 1.1f;
+
+                // Default při nezadání
+                if (ElevatedConsumptionIdleRPM == 0
+                    && ElevatedConsumptionIdleRPMCompressor == 0
+                    && ElevatedConsumptionIdleRPMHeatingSummer == 0
+                    && ElevatedConsumptionIdleRPMHeatingWinter == 0)
+                    ElevatedConsumptionIdleRPMBase = IdleRPM * 1.1f;
+
+                // Pokud se zadá jen ElevatedConsumptionIdleRPM
+                if (ElevatedConsumptionIdleRPM > 0)                
+                    ElevatedConsumptionIdleRPMBase = ElevatedConsumptionIdleRPM;
+                
+                // Při běhu kompresoru
+                if (ElevatedConsumptionIdleRPMCompressor != 0
+                    && (locomotive.CompressorIsOn || locomotive.Compressor2IsOn))
+                    ElevatedConsumptionIdleRPMBase = ElevatedConsumptionIdleRPMCompressor;
+
+                // Při zapnutí topení
+                if (locomotive.Heating_OffOn)
+                {                    
+                    switch (locomotive.SeasonSwitchPosition)
+                    {
+                        case false:
+                            if (ElevatedConsumptionIdleRPMBase < ElevatedConsumptionIdleRPMHeatingSummer)
+                                ElevatedConsumptionIdleRPMBase = ElevatedConsumptionIdleRPMHeatingSummer;
+                            break;
+                        case true:
+                            if (ElevatedConsumptionIdleRPMBase < ElevatedConsumptionIdleRPMHeatingWinter)
+                                ElevatedConsumptionIdleRPMBase = ElevatedConsumptionIdleRPMHeatingWinter;
+                            break;
+                    }
+                }
             }
 
             // Icik
@@ -1329,7 +1369,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
             {
                 if (ElevatedConsumptionMode)
                 {
-                    if (RealRPM < ElevatedConsumptionIdleRPM)
+                    if (RealRPM < ElevatedConsumptionIdleRPMBase)
                     {
                         RealRPM += ChangeUpRPMpS * elapsedClockSeconds;
                     }
