@@ -423,6 +423,11 @@ namespace Orts.Simulation.RollingStocks
                     CurrentLocomotiveSteamHeatBoilerWaterCapacityL = L.FromGUK(800.0f);
                 }
             }
+
+            // Icik
+            // Vypne inicializační zvuk pohonu při vypnutém stroji
+            if (AIMotorStop)            
+                SignalEvent(Event.EnginePowerOff);                            
         }
 
         /// <summary>
@@ -438,6 +443,9 @@ namespace Orts.Simulation.RollingStocks
             outf.Write(CurrentLocomotiveSteamHeatBoilerWaterCapacityL);
             DieselEngines.Save(outf);
             ControllerFactory.Save(GearBoxController, outf);
+
+            // Icik
+            outf.Write(AIMotorStop);
         }
 
         /// <summary>
@@ -452,6 +460,8 @@ namespace Orts.Simulation.RollingStocks
             DieselEngines.Restore(inf);
             ControllerFactory.Restore(GearBoxController, inf);
 
+            // Icik
+            AIMotorStop = inf.ReadBoolean();
         }
 
         //================================================================================================//

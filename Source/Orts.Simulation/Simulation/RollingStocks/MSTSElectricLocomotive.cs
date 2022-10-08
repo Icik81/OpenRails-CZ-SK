@@ -194,6 +194,7 @@ namespace Orts.Simulation.RollingStocks
             outf.Write(AIPantoChange);
             outf.Write(AIPanto2Raise);
             outf.Write(PreAIDirection);
+            outf.Write(AIPantoDownStop);
 
             base.Save(outf);
         }
@@ -232,6 +233,7 @@ namespace Orts.Simulation.RollingStocks
             AIPantoChange = inf.ReadBoolean();
             AIPanto2Raise = inf.ReadBoolean();
             PreAIDirection = inf.ReadBoolean();
+            AIPantoDownStop = inf.ReadBoolean();
 
             base.Restore(inf);
         }
@@ -274,7 +276,10 @@ namespace Orts.Simulation.RollingStocks
                 PowerKey = true;
             // Spustí zvukové triggery při načtení hry    
             if (PowerKey && Battery)
-                SignalEvent(Event.PowerKeyOn);
+                SignalEvent(Event.PowerKeyOn);            
+            // Vypne inicializační zvuk pohonu při vypnutém stroji
+            if (AIPantoDownStop)
+                SignalEvent(Event.EnginePowerOff);            
         }
 
         //================================================================================================//
