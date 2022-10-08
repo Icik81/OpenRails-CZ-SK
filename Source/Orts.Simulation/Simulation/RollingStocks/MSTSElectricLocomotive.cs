@@ -276,10 +276,7 @@ namespace Orts.Simulation.RollingStocks
                 PowerKey = true;
             // Spustí zvukové triggery při načtení hry    
             if (PowerKey && Battery)
-                SignalEvent(Event.PowerKeyOn);            
-            // Vypne inicializační zvuk pohonu při vypnutém stroji
-            if (AIPantoDownStop)
-                SignalEvent(Event.EnginePowerOff);            
+                SignalEvent(Event.PowerKeyOn);                                    
         }
 
         //================================================================================================//
@@ -1177,6 +1174,7 @@ namespace Orts.Simulation.RollingStocks
         /// <summary>
         /// This function updates periodically the states and physical variables of the locomotive's power supply.
         /// </summary>
+        bool FirstFrame = true;
         protected override void UpdatePowerSupply(float elapsedClockSeconds)
         {
             // Icik                      
@@ -1217,6 +1215,10 @@ namespace Orts.Simulation.RollingStocks
                 SignalEvent(Event.EnginePowerOff);
             }
 
+            // Vypne inicializační zvuk pohonu při vypnutém stroji
+            if (AIPantoDownStop && FirstFrame)            
+                SignalEvent(Event.EnginePowerOff);                
+            
             PowerSupply.Update(elapsedClockSeconds);
 
             if (PowerSupply.CircuitBreaker != null && IsPlayerTrain)
@@ -1370,6 +1372,7 @@ namespace Orts.Simulation.RollingStocks
                     }
                 }
             }
+            FirstFrame = false;
         }
 
         // Icik
