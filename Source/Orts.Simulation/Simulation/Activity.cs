@@ -1428,6 +1428,9 @@ namespace Orts.Simulation
             }
         }
 
+        //Icik
+        bool PickUpWagonsCorrect;
+        float PickUpWagonsTimer;
         override public Boolean Triggered(Activity activity)
         {
             Train OriginalPlayerTrain = Simulator.OriginalPlayerTrain;
@@ -1445,6 +1448,11 @@ namespace Orts.Simulation
             }
             var triggered = false;
             Train consistTrain;
+
+            // Icik
+            if (PickUpWagonsCorrect)
+                PickUpWagonsTimer += Simulator.OneSecondLoop;
+           
             switch (e.Type)
             {
                 case EventType.AllStops:
@@ -1478,6 +1486,20 @@ namespace Orts.Simulation
                     break;
                 case EventType.PickUpWagons: // PickUpWagons is independent of location or siding
                     triggered = includesWagons(OriginalPlayerTrain, ChangeWagonIdList);
+
+                    // Icik
+                    if (triggered)
+                    {
+                        PickUpWagonsCorrect = true;
+                        triggered = false;
+                    }
+                    if (PickUpWagonsTimer > 3.0f)
+                    {
+                        triggered = true;
+                        PickUpWagonsCorrect = false;
+                        PickUpWagonsTimer = 0;
+                    }
+
                     break;
                 case EventType.ReachSpeed:
                     triggered = (Math.Abs(Simulator.PlayerLocomotive.SpeedMpS) >= e.SpeedMpS);
