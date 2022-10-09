@@ -4404,7 +4404,7 @@ namespace Orts.Simulation.RollingStocks
                                 if (TractiveForceN > MaxForceN)
                                     TractiveForceN = MaxForceN;
                             }
-                            else if (extendedPhysics != null)
+                            else if (extendedPhysics != null && LocoType != LocoTypes.Vectron)
                             {
                                 extendedPhysics.OverridenControllerVolts = Train.OverridenControllerVolts = ControllerVolts - skidSpeedDegratation;
                             }
@@ -10698,6 +10698,8 @@ namespace Orts.Simulation.RollingStocks
                             }
                             maxForce = (maxForce / MaxForceN) * 100;
                         }
+                        if (maxForce > CruiseControl.controllerVolts)
+                            maxForce = CruiseControl.controllerVolts;
                     }
                     if (CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.Auto || CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.AVV)
                     {
@@ -10734,6 +10736,15 @@ namespace Orts.Simulation.RollingStocks
                     if (CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.Manual)
                     {
                         requestedForce.Clear();
+                        maxForce = 0;
+                        foreach (Undercarriage ucc in extendedPhysics.Undercarriages)
+                        {
+                            foreach (ExtendedAxle eaa in ucc.Axles)
+                            {
+                                maxForce += eaa.ForceN;
+                            }
+                        }
+                        maxForce = (maxForce / MaxForceN) * 100;
                     }
                     data = cvc is Orts.Formats.Msts.CVCDigital ? ForceHandleValue : (maxForce < ForceHandleValue ? maxForce : ForceHandleValue);
                     break;

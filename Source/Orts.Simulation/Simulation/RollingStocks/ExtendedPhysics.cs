@@ -286,6 +286,9 @@ namespace Orts.Simulation.RollingStocks
 
         public bool GeneratoricModeBlocked = false;
         public float GeneratorConsumptionKn = 0;
+
+        protected float myAverageAxleSpeedMps = 0;
+
         public void Update(float elapsedClockSeconds)
         {
             if (Locomotive.Pantograph3Switch == -1)
@@ -419,10 +422,17 @@ namespace Orts.Simulation.RollingStocks
                     if (FastestAxleSpeedMpS < ea.WheelSpeedMpS)
                         FastestAxleSpeedMpS = ea.WheelSpeedMpS;
 
+                    speedDiff = (ea.WheelSpeedMpS - myAverageAxleSpeedMps) * 20;
+                    if (speedDiff < 0)
+                        speedDiff = 0;
+                    if (OverridenControllerVolts - speedDiff < 0)
+                        speedDiff = OverridenControllerVolts;
+                    if (Locomotive.LocoType != MSTSLocomotive.LocoTypes.Vectron)
+                        speedDiff = 0;
                     foreach (ElectricMotor em in ea.ElectricMotors)
                     {
                         ea.GetCorrectedMass(this);
-                        ea.Update(NumMotors, elapsedClockSeconds, OverridenControllerVolts, UseControllerVolts);
+                        ea.Update(NumMotors, elapsedClockSeconds, OverridenControllerVolts - speedDiff, UseControllerVolts);
                         TotalCurrent += em.RotorCurrent;
                         StarorsCurrent += em.StatorCurrent;
                         RotorsCurrent += em.RotorCurrent;
@@ -473,8 +483,10 @@ namespace Orts.Simulation.RollingStocks
             }
             //Locomotive.Simulator.Confirmer.MSG(TotalForceN.ToString() + " " + Locomotive.TractiveForceN.ToString());
             //Locomotive.Simulator.Confirmer.MSG(Undercarriages[0].Axles[0].WheelSpeedMpS.ToString() + " " + Undercarriages[0].Axles[1].WheelSpeedMpS.ToString() + " " + Undercarriages[1].Axles[0].WheelSpeedMpS.ToString() + " " + Undercarriages[1].Axles[1].WheelSpeedMpS.ToString());
+            //Locomotive.Simulator.Confirmer.MSG(MpS.ToKpH((FastestAxleSpeedMpS - AverageAxleSpeedMpS)).ToString());
+            myAverageAxleSpeedMps = AverageAxleSpeedMpS;
         }
-
+        protected float speedDiff = 0;
         public void DisableMotors()
         {
             foreach (Undercarriage uc in Undercarriages)
@@ -742,20 +754,12 @@ namespace Orts.Simulation.RollingStocks
             LocomotiveAxle.AdhesionConditions = Locomotive.LocomotiveAxle.AdhesionConditions;//Set the train speed of the axle model
             LocomotiveAxle.Update(elapsedClockSeconds);         //Main updater of the axle model
             WheelSpeedMpS = LocomotiveAxle.AxleSpeedMpS;
-            if (Locomotive.CruiseControl != null)
-            {
-                if (((Locomotive.CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.Auto || Locomotive.CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.AVV) && Locomotive.ThrottlePercent > 0 && ((Locomotive.CruiseControl.SelectedSpeedMpS - Locomotive.AbsSpeedMpS) > 0.05f) && Locomotive.SelectedMaxAccelerationStep > 0 && Locomotive.CruiseControl.PreciseSpeedControl) || (ForceN < 0 && Locomotive.CruiseControl.PreciseSpeedControl))
-                {
-                    float mMass = Mass;
-                    Mass *= 1000;
-                    float addMass = (Locomotive.MassKG / totalMotors) - Mass;
-                    Mass += addMass * 2;
-                    reducedForceN = -((WheelSpeedMpS - (Locomotive.AbsSpeedMpS + 0.1f)) * (Mass / 1000)) * 1000;
-                    Mass = mMass;
-                }
-                else
-                    reducedForceN = 0;
-            }
+            float mMass = Mass;
+            Mass *= 1000;
+            float addMass = (Locomotive.MassKG / totalMotors) - Mass;
+            Mass += addMass * 2;
+            reducedForceN = -((WheelSpeedMpS - (Locomotive.AbsSpeedMpS + 0.1f)) * (Mass / 1000)) * 1000;
+            Mass = mMass;
 
             if (usingControllerVolts)
             {
