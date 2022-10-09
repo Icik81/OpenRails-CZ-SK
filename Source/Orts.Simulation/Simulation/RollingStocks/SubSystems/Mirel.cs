@@ -1169,6 +1169,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                     }
                     if (newSpeed > MaxSelectedSpeed)
                         newSpeed = MaxSelectedSpeed;
+                    if (newSpeed > 120)
+                        newSpeed = 120;
                     selectedApproachSpeed = newSpeed;
                     if (MirelMaximumSpeed < newSpeed) MirelMaximumSpeed = newSpeed;
                     distanceAndSpeed = null;
@@ -1659,6 +1661,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
         protected float previousDistanceToSignal = 0;
         protected float manualModeTime = 0;
         protected bool flashingByMaxSpeed = false;
+        protected float lengthPassedWithoutSignal = 0;
         protected void MirelCheck(float elapsedTimeSeconds)
         {
             if (flashing && MpS.ToKpH(Locomotive.AbsSpeedMpS) < MirelMaximumSpeed && !driveModeSetup && !MaxSpeedSetup)
@@ -1998,13 +2001,17 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                     vigilanceActive = false;
                 if (Locomotive.AbsSpeedMpS == 0)
                     vigilanceActive = false;
+                if (Locomotive.LocoType == MSTSLocomotive.LocoTypes.Vectron)
+                    NoAlertOnRestrictedSignal = true;
                 if (Locomotive.AbsSpeedMpS > 0)
                 {
                     if (MpS.ToKpH(Locomotive.AbsSpeedMpS) < 15 && Locomotive.EngineBrakeController.CurrentValue > 0)
                         vigilanceActive = false;
                     if (Locomotive.TrainControlSystem.CabSignalAspect == TrackMonitorSignalAspect.Clear_2 || (Locomotive.TrainControlSystem.CabSignalAspect == TrackMonitorSignalAspect.Restricted && MpS.ToKpH(Locomotive.AbsSpeedMpS) < 90))
                         vigilanceActive = false;
-                    if (NoAlertOnRestrictedSignal && Locomotive.TrainControlSystem.CabSignalAspect == TrackMonitorSignalAspect.Restricted)
+                    if (Locomotive.TrainControlSystem.CabSignalAspect == TrackMonitorSignalAspect.Restricted)
+                        vigilanceActive = false;
+                    if (NoAlertOnRestrictedSignal && (Locomotive.TrainControlSystem.CabSignalAspect == TrackMonitorSignalAspect.Approach_1 || Locomotive.TrainControlSystem.CabSignalAspect == TrackMonitorSignalAspect.Approach_2 || Locomotive.TrainControlSystem.CabSignalAspect == TrackMonitorSignalAspect.Approach_3))
                         vigilanceActive = false;
                     if (!RecievingRepeaterSignal)
                         vigilanceActive = false;
@@ -2057,9 +2064,16 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                     {
                         if (!RecievingRepeaterSignal)
                         {
-                            MirelMaximumSpeed = MaxSelectedSpeed;
-                            if (MirelMaximumSpeed > 120)
-                                MirelMaximumSpeed = 120;
+                            if (lengthPassedWithoutSignal + 200 < Locomotive.DistanceM)
+                            {
+                                MirelMaximumSpeed = MaxSelectedSpeed;
+                                if (MirelMaximumSpeed > 120)
+                                    MirelMaximumSpeed = 120;
+                            }
+                        }
+                        else
+                        {
+                            lengthPassedWithoutSignal = Locomotive.DistanceM;
                         }
                         flashing = false;
                         float diff = MpS.ToKpH(Locomotive.AbsSpeedMpS) - MirelMaximumSpeed;
@@ -2112,6 +2126,11 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                             Locomotive.SignalEvent(Common.Event.MirelClearSignalAhead);
                         repeaterRecievingDelayTime = 0;
                     }
+                }
+                else
+                {
+                    lengthPassedWithoutSignal = Locomotive.DistanceM;
+                    lastReceivedSpeed = MirelMaximumSpeed;
                 }
 
                 if (!RecievingRepeaterSignal && selectedDriveMode == DriveMode.Shunting)
@@ -2678,6 +2697,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
             }
         }
 
+        private float lastReceivedSpeed = 40;
         private void CheckSpeed(float elapsedTimeSeconds)
         {
             if (!RecievingRepeaterSignal)
@@ -2688,6 +2708,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                     {
                         MirelMaximumSpeed = 120;
                     }
+                    if (lengthPassedWithoutSignal + 200 > Locomotive.DistanceM)
+                    {
+                        MirelMaximumSpeed = lastReceivedSpeed;
+                    }
                 }
                 else
                 {
@@ -2696,6 +2720,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
             }
             else
             {
+                lengthPassedWithoutSignal = Locomotive.DistanceM;
                 if (recievingTimer < 5)
                 {
                     if (MirelMaximumSpeed > 120 && recievingTimer < 3)

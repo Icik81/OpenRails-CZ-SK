@@ -57,8 +57,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems
         public float ForceThrottleAndDynamicBrake = 0;
         protected float maxForceN = 0;
         protected float trainBrakePercent = 0;
-        protected float trainLength = 0;
-        public int TrainLengthMeters = 0;
+        protected float trainLength = 26.5f;
+        public int TrainLengthMeters = 27;
         public float RemainingTrainLengthToPassRestrictedZone = 0;
         public bool RestrictedSpeedActive = false;
         public float CurrentSelectedSpeedMpS = MpS.FromKpH(40);
@@ -848,7 +848,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                     OverridenMaximalForce = 10;
                 float requestedMaxAcceleration = Locomotive.ForceHandleValue / 200;
                 bool testConditions = true;
-                if (Locomotive.BrakeSystem.GetCylPressurePSI() > 0 || Locomotive.SystemAnnunciator != 0)
+                if (Locomotive.TrainBrakeController.TrainBrakeControllerState != ORTS.Scripting.Api.ControllerState.Release || Locomotive.SystemAnnunciator != 0)
                     testConditions = false;
                 if (Locomotive.AccelerationMpSS < requestedMaxAcceleration && testConditions)
                 {

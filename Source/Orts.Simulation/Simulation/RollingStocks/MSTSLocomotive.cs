@@ -4235,7 +4235,7 @@ namespace Orts.Simulation.RollingStocks
                                 SystemAnnunciator = 5;
                             }
 
-                            if (SystemAnnunciator == 0 && BrakeSystem.GetCylPressurePSI() > 0)
+                            if (SystemAnnunciator == 0 && TrainBrakeController.TrainBrakeControllerState != ControllerState.Release)
                             {
                                 SystemAnnunciator = 6;
                             }
@@ -6337,7 +6337,9 @@ namespace Orts.Simulation.RollingStocks
             if (AripotControllerEnable)
                 return;
 
-            Mirel.ResetVigilance();
+            if (LocoType != LocoTypes.Vectron) // vectron bdělost nevybaví (MichalM 2.10.2022)
+                Mirel.ResetVigilance();
+            
             if (CruiseControl != null && target != null)
             {
                 if (CruiseControl.DisableCruiseControlOnThrottleAndZeroSpeed && CruiseControl.SelectedSpeedMpS == 0 && (CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.Auto || CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.AVV))
@@ -6375,6 +6377,7 @@ namespace Orts.Simulation.RollingStocks
                 DynamicBrakePercent = 0;
                 DynamicBrakeChangeActiveState(false);
             }
+            if (LocoType != LocoTypes.Vectron)
             Mirel.ResetVigilance();
             if (UsingForceHandle)
             {
@@ -6441,7 +6444,8 @@ namespace Orts.Simulation.RollingStocks
         public void StopThrottleIncrease()
         {
             ForceHandleIncreasing = false;
-            Mirel.ResetVigilance();
+            if (LocoType != LocoTypes.Vectron)
+                Mirel.ResetVigilance();
             if (MultiPositionControllers != null)
             {
                 foreach (MultiPositionController mpc in MultiPositionControllers)
@@ -6493,7 +6497,8 @@ namespace Orts.Simulation.RollingStocks
             if (AripotControllerEnable)
                 return;
 
-            Mirel.ResetVigilance();
+            if (LocoType != LocoTypes.Vectron)
+                Mirel.ResetVigilance();
             if (CruiseControl != null)
             {
                 if (CruiseControl.UseThrottleAsSpeedSelector && (CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.Auto || CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.AVV) && CruiseControl.SelectedSpeedMpS > 0)
@@ -6516,7 +6521,8 @@ namespace Orts.Simulation.RollingStocks
         protected bool speedSelectorModeDecreasing = false;
         public void StartThrottleDecrease()
         {
-            Mirel.ResetVigilance();
+            if (LocoType != LocoTypes.Vectron)
+                Mirel.ResetVigilance();
             if (UsingForceHandle)
             {
                 ForceHandleDecreasing = true;
@@ -6554,7 +6560,8 @@ namespace Orts.Simulation.RollingStocks
 
         public void StopThrottleDecrease()
         {
-            Mirel.ResetVigilance();
+            if (LocoType != LocoTypes.Vectron)
+                Mirel.ResetVigilance();
             if (UsingForceHandle)
             {
                 ForceHandleDecreasing = false;
