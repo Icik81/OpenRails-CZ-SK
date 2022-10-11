@@ -754,12 +754,21 @@ namespace Orts.Simulation.RollingStocks
             LocomotiveAxle.AdhesionConditions = Locomotive.LocomotiveAxle.AdhesionConditions;//Set the train speed of the axle model
             LocomotiveAxle.Update(elapsedClockSeconds);         //Main updater of the axle model
             WheelSpeedMpS = LocomotiveAxle.AxleSpeedMpS;
-            float mMass = Mass;
-            Mass *= 1000;
-            float addMass = (Locomotive.MassKG / totalMotors) - Mass;
-            Mass += addMass * 2;
-            reducedForceN = -((WheelSpeedMpS - (Locomotive.AbsSpeedMpS + 0.1f)) * (Mass / 1000)) * 1000;
-            Mass = mMass;
+
+            if (Locomotive.CruiseControl != null)
+            {
+                if (((Locomotive.CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.Auto || Locomotive.CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.AVV) && Locomotive.ThrottlePercent > 0 && ((Locomotive.CruiseControl.SelectedSpeedMpS - Locomotive.AbsSpeedMpS) > 0.05f) && Locomotive.SelectedMaxAccelerationStep > 0 && Locomotive.CruiseControl.PreciseSpeedControl) || (ForceN < 0 && Locomotive.CruiseControl.PreciseSpeedControl))
+                {
+                    float mMass = Mass;
+                    Mass *= 1000;
+                    float addMass = (Locomotive.MassKG / totalMotors) - Mass;
+                    Mass += addMass * 2;
+                    reducedForceN = -((WheelSpeedMpS - (Locomotive.AbsSpeedMpS + 0.1f)) * (Mass / 1000)) * 1000;
+                    Mass = mMass;
+                }
+                else
+                    reducedForceN = 0;
+            }            
 
             if (usingControllerVolts)
             {
