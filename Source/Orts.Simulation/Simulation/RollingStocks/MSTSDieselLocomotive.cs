@@ -666,7 +666,8 @@ namespace Orts.Simulation.RollingStocks
                     // Icik
                     // Ohraničení trakční síly dle vstupního výkonu motoru
                     maxPowerW = DieselEngines[0].CurrentDieselOutputPowerW * DieselEngineFractionPower;
-                    if (TractiveForceN * AbsSpeedMpS > maxPowerW)
+                    
+                    if (TractiveForceN * AbsSpeedMpS > maxPowerW && AbsTractionSpeedMpS != 0)
                         TractiveForceN = (0.88f * DieselEngines[0].CurrentDieselOutputPowerW * DieselEngineFractionPower * (1 - PowerReduction)) / AbsTractionSpeedMpS;
                 }
 
