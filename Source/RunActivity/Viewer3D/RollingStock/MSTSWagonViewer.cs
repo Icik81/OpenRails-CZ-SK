@@ -139,7 +139,11 @@ namespace Orts.Viewer3D.RollingStock
 
                 // Smoke for wood/coal fire
                 if (emitter.Key.ToLowerInvariant() == "wagonsmokefx")
+                {
                     WagonSmoke.AddRange(emitter.Value);
+                    // Icik
+                    car.HasWagonSmoke = true;
+                }
 
                 foreach (var drawer in WagonSmoke)
                 {
@@ -606,6 +610,9 @@ namespace Orts.Viewer3D.RollingStock
             // Wagon fire smoke
             foreach (var drawer in WagonSmoke)
             {
+                // Icik
+                if (car.WagonHasStove && !car.BrakeSystem.HeatingIsOn)
+                    car.WagonSmokeVolumeM3pS = 0;
                 drawer.SetOutput(car.WagonSmokeVelocityMpS, car.WagonSmokeVolumeM3pS, car.WagonSmokeDurationS, car.WagonSmokeSteadyColor);
             }
 

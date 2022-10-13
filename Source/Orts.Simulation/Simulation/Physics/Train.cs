@@ -2165,6 +2165,9 @@ namespace Orts.Simulation.Physics
                         if (car.WagonSpecialType == MSTSWagon.WagonSpecialTypes.Heated)
                         {
                             HeatedCarAttached = true; // A steam heating boiler is fitted in a wagon
+                            car.WagonHasSteamHeating = true;
+                            if (car.HasWagonSmoke)
+                                car.WagonHasStove = true;
                         }
 
                     }
@@ -2512,13 +2515,12 @@ namespace Orts.Simulation.Physics
                         //{
 
                         //    IsSteamHeatLow = false;        // Reset temperature warning
-                        //}
+                        //}                        
                     }
+                        #region Calculate Steam Pressure drop along train
 
-                    #region Calculate Steam Pressure drop along train
-
-                    // Initialise main steam pipe pressure to same as steam heat valve setting
-                    float ProgressivePressureAlongTrainPSI = mstsLocomotive.CurrentSteamHeatPressurePSI;
+                        // Initialise main steam pipe pressure to same as steam heat valve setting
+                        float ProgressivePressureAlongTrainPSI = mstsLocomotive.CurrentSteamHeatPressurePSI;
 
                     // Calculate pressure drop along whole train
                     for (int i = 0; i < Cars.Count; i++)
@@ -2561,19 +2563,18 @@ namespace Orts.Simulation.Physics
                                 float FuelUsageLpS = L.FromGUK(pS.FrompH(car.TrainHeatBoilerFuelUsageGalukpH[pS.TopH(mstsLocomotive.CalculatedCarHeaterSteamUsageLBpS)]));
                                 float FuelOilConvertLtoKg = 0.85f;
                                 car.CurrentSteamHeatBoilerFuelCapacityL -= FuelUsageLpS * elapsedClockSeconds; // Reduce tank capacity as fuel used.
-                                // This may need to be changed at some stage, as currently weight decreases on freight cars does not happen, except when being filled or emptied at pickup point
+                                                                                                               // This may need to be changed at some stage, as currently weight decreases on freight cars does not happen, except when being filled or emptied at pickup point
                                 car.MassKG -= FuelUsageLpS * elapsedClockSeconds * FuelOilConvertLtoKg; // Reduce locomotive weight as Steam heat boiler uses fuel.
 
                                 // Calculate water usage for steam heat boiler
                                 float WaterUsageLpS = L.FromGUK(pS.FrompH(car.TrainHeatBoilerWaterUsageGalukpH[pS.TopH(mstsLocomotive.CalculatedCarHeaterSteamUsageLBpS)]));
                                 car.CurrentCarSteamHeatBoilerWaterCapacityL -= WaterUsageLpS * elapsedClockSeconds; // Reduce tank capacity as water used.
-                                // This may need to be changed at some stage, as currently weight decreases on freight cars does not happen, except when being filled or emptied at pickup point
+                                                                                                                    // This may need to be changed at some stage, as currently weight decreases on freight cars does not happen, except when being filled or emptied at pickup point
                                 car.MassKG -= WaterUsageLpS * elapsedClockSeconds; // Reduce locomotive weight as Steam heat boiler uses water - NB 1 litre of water = 1 kg.
                             }
                         }
                     }
-
-                    #endregion
+                        #endregion                    
                 }
             }
         }

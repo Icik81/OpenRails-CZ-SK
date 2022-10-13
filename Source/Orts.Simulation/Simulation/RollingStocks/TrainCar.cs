@@ -385,6 +385,9 @@ namespace Orts.Simulation.RollingStocks
         public bool LightFrontRR;
         public bool LightRearLR;
         public bool LightRearRR;
+        public bool HasWagonSmoke;
+        public bool WagonHasStove;
+        public bool WagonHasSteamHeating;
 
         public float PowerReductionResult1;  // Redukce výkonu od topení, klimatizace, kompresoru
         public float PowerReductionResult2;  // Redukce výkonu od nedostatečného tlaku vzduchu v potrubí
@@ -396,7 +399,7 @@ namespace Orts.Simulation.RollingStocks
         public float PowerReductionResult8;  // Odpojení TM při nezapnuté RDST
         public float PowerReductionResult9;  // Redukce výkonu při poškozeném motoru 
         public float PowerReductionResult10;  // Redukce výkonu při vypnutém proudu
-
+        public float PowerReductionResult11;  // Redukce výkonu při vypnutém pultu řízení
 
         public float DieselHeaterPower;
         public float DieselHeaterPower0;

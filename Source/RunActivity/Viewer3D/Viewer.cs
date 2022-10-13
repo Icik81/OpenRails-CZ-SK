@@ -1096,10 +1096,10 @@ namespace Orts.Viewer3D
                 if (PlayerLocomotive.ThrottlePercent >= 1
                     || Math.Abs(PlayerLocomotive.SpeedMpS) > 1
                     || !IsReverserInNeutral(PlayerLocomotive)
-                    || (PlayerLocomotive as MSTSLocomotive).DieselDirectionControllerInOut)
+                    || (PlayerLocomotive as MSTSLocomotive).PowerKey)
                 {
-                    if ((PlayerLocomotive as MSTSLocomotive).DieselDirectionControllerInOut)
-                        Simulator.Confirmer.Information(Viewer.Catalog.GetString("To change stations, remove the directional lever first."));
+                    if ((PlayerLocomotive as MSTSLocomotive).PowerKey)
+                        Simulator.Confirmer.Information(Viewer.Catalog.GetString("To change stations, remove the powerkey first."));
                     else
                         Simulator.Confirmer.Warning(CabControl.ChangeCab, CabSetting.Warn2);
                 }

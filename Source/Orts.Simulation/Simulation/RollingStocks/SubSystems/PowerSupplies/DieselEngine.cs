@@ -1320,7 +1320,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
             // Zvýší otáčky motoru při větším odběru proudu         
             bool ElevatedConsumptionMode = false;
             float ElevatedConsumptionIdleRPMBase = 0;
-            if (locomotive.Heating_OffOn || ((locomotive.CompressorIsOn || locomotive.Compressor2IsOn) && locomotive.AirBrakesIsCompressorElectricOrMechanical))
+            if (locomotive.HeatingIsOn || ((locomotive.CompressorIsOn || locomotive.Compressor2IsOn) && locomotive.AirBrakesIsCompressorElectricOrMechanical))
             {
                 //ElevatedConsumptionIdleRPM = 650;
                 ElevatedConsumptionMode = true;
@@ -1342,7 +1342,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                     ElevatedConsumptionIdleRPMBase = ElevatedConsumptionIdleRPMCompressor;
 
                 // Při zapnutí topení
-                if (locomotive.Heating_OffOn)
+                if (locomotive.HeatingIsOn)
                 {                    
                     switch (locomotive.SeasonSwitchPosition)
                     {

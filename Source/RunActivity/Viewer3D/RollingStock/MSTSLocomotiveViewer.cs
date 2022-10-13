@@ -598,6 +598,10 @@ namespace Orts.Viewer3D.RollingStock
             // Ovládání Diesel kontroléru
             if (Locomotive.LocalThrottlePercent == 0)
             {
+                if (Locomotive.DieselDirectionController || Locomotive.DieselDirectionController2)
+                {
+                    Locomotive.PowerKey = Locomotive.DieselDirectionControllerInOut;
+                }
                 if (UserInput.IsPressed(UserCommand.ControlDieselDirectionControllerInOut))
                 {
                     Locomotive.ToggleDieselDirectionControllerInOut();

@@ -3033,7 +3033,8 @@ namespace Orts.Simulation.RollingStocks
                     + PowerReductionResult7
                     + PowerReductionResult8
                     + PowerReductionResult9
-                    + PowerReductionResult10)
+                    + PowerReductionResult10
+                    + PowerReductionResult11)
                     PowerReduction += 1 * elapsedClockSeconds;
 
                 if (PowerReduction >
@@ -3046,13 +3047,20 @@ namespace Orts.Simulation.RollingStocks
                     + PowerReductionResult7
                     + PowerReductionResult8
                     + PowerReductionResult9
-                    + PowerReductionResult10)
+                    + PowerReductionResult10
+                    + PowerReductionResult11)
                     PowerReduction -= 1 * elapsedClockSeconds;
 
                 PowerReduction = MathHelper.Clamp(PowerReduction, 0, 0.999f);
                 PowerReduction = (float)Math.Round(PowerReduction, 3);
 
-                if (PowerReductionResult10 == 1) SetThrottlePercent(0);
+                if (PowerReductionResult10 == 1) SetThrottlePercent(0);                
+                
+                if (!PowerKey)
+                    PowerReductionResult11 = 1;
+                else
+                if (PowerReductionResult11 == 1 && LocalThrottlePercent == 0)
+                    PowerReductionResult11 = 0;
             }
             //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("PowerReduction " + PowerReduction));
             //Simulator.Confirmer.Message(ConfirmLevel.Information, Simulator.Catalog.GetString("Celková ztráta výkonu "+ PowerReduction * MaxPowerW/1000 + " kW!"));            
@@ -3175,7 +3183,7 @@ namespace Orts.Simulation.RollingStocks
         public float U_Heating = 3000;
         public bool HeatingOverCurrent = false;
         public bool HeatingIsOn = false;
-        public float MSGHeatingCycle;
+        public float MSGHeatingCycle;        
         public void ElevatedConsumptionOnLocomotive(float elapsedClockSeconds)
         {
             foreach (TrainCar car in Train.Cars)
@@ -3195,6 +3203,12 @@ namespace Orts.Simulation.RollingStocks
                 SignalEvent(Event.CabHeating_OffOnOn);
                 CarCabHeatingIsSetOn = true;
             }
+            // Deaktivuje vytápění stanoviště při shozeném jističi topení nebo baterií
+            if (CabHeating_OffOn && (!BrakeSystem.HeatingIsOn || !Battery || !PowerKey))
+            {
+                CabHeating_OffOn = false;                
+                SignalEvent(Event.CabHeating_OffOnOff);
+            }            
 
             // Ochrana při nadproudu topení/klimatizace jen pro hráče
             if (IsLeadLocomotive())
@@ -3203,13 +3217,15 @@ namespace Orts.Simulation.RollingStocks
                 if (HeatingMaxCurrentA == 0)
                     HeatingMaxCurrentA = 130; // Default 130A
 
-                if ((Heating_OffOn && !HeatingOverCurrent && AuxPowerOn) || Train.CarSteamHeatOn)
+                if ((Heating_OffOn && !HeatingOverCurrent && AuxPowerOn && PowerKey) || Train.CarSteamHeatOn)
                     HeatingIsOn = true;
-                if ((!Heating_OffOn || HeatingOverCurrent || !AuxPowerOn) && !Train.CarSteamHeatOn)
+                if ((!Heating_OffOn || HeatingOverCurrent || !AuxPowerOn || !PowerKey) && !Train.CarSteamHeatOn)
                 {
+                    if (HeatingIsOn)                    
+                        SignalEvent(Event.Heating_OffOnOff);                    
                     if (I_HeatingData > 0)
                         I_HeatingData -= 50 * elapsedClockSeconds; // 50A/s
-                    HeatingIsOn = false;
+                    HeatingIsOn = false;                    
                 }
 
                 if (HeatingOverCurrent)
@@ -3221,7 +3237,7 @@ namespace Orts.Simulation.RollingStocks
                 else
                     SignalEvent(Event.HeatingOverCurrentOff);
 
-                if (!Heating_OffOn)
+                if (!Heating_OffOn || !PowerKey)
                     HeatingOverCurrent = false;
 
                 I_HeatingData0 = (float)Math.Round(I_HeatingData);
@@ -3473,14 +3489,32 @@ namespace Orts.Simulation.RollingStocks
                                     car.ThermostatOn = false;
                                 car.StatusHeatIsOn = false;
                             }
-
                         }
 
+                        // Kamna
+                        if (car.WagonHasStove && car.BrakeSystem.HeatingIsOn)
+                        {
+                            if (car.WagonTemperature > 1.10f * car.SetTempCThreshold)
+                                car.TempCDelta = +0 * 1000 / TempStepUp / CarAirVolumeM3 * elapsedClockSeconds;
+                            else
+                            if (car.WagonTemperature > 1.05f * car.SetTempCThreshold)
+                                car.TempCDelta = +2.5f * 1000 / TempStepUp / CarAirVolumeM3 * elapsedClockSeconds;
+                            else
+                            if (car.WagonTemperature > 1.0f * car.SetTempCThreshold)                            
+                                car.TempCDelta = +5 * 1000 / TempStepUp / CarAirVolumeM3 * elapsedClockSeconds;                            
+                            else
+                            if (car.WagonTemperature < 0.90f * car.SetTempCThreshold)
+                                car.TempCDelta = +10 * 1000 / TempStepUp / CarAirVolumeM3 * elapsedClockSeconds;
+                            else
+                                car.TempCDelta = +7.5f * 1000 / TempStepUp / CarAirVolumeM3 * elapsedClockSeconds;
+                            car.WagonTemperature += car.TempCDelta + car.TempCDeltaAir;
+                        }
+                        else
                         // Parní topení počítá teplotu svým algoritmem
-                        if (Train.CarSteamHeatOn && !car.LocomotiveCab)
+                        if ((Train.CarSteamHeatOn && !car.WagonHasStove) && !car.LocomotiveCab)
                             car.WagonTemperature += car.CarCurrentCarriageHeatDeltaTempC + car.TempCDeltaAir;
                         else
-                            car.WagonTemperature += car.TempCDelta + car.TempCDeltaAir;
+                            car.WagonTemperature += car.TempCDelta + car.TempCDeltaAir;                        
                     }
                     //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Teplota " + car.WagonTemperature));
                 }
@@ -6258,7 +6292,7 @@ namespace Orts.Simulation.RollingStocks
         #region Reverser
         public void SetDirection(Direction direction)
         {
-            if (Direction != direction && ThrottlePercent < 1)
+            if (Direction != direction && ThrottlePercent < 1 && PowerKey)
             {
                 Direction = direction;
                 switch (direction)
@@ -6291,7 +6325,7 @@ namespace Orts.Simulation.RollingStocks
 
         public virtual void StartReverseIncrease(float? target)
         {
-            if (!DirectionButton && !DieselDirectionController && !DieselDirectionController2 && !DieselDirectionController3 && !DieselDirectionController4)
+            if (!DirectionButton && !DieselDirectionController && !DieselDirectionController2 && !DieselDirectionController3 && !DieselDirectionController4 && PowerKey)
             {
                 AlerterReset(TCSEvent.ReverserChanged);
                 if (this.IsLeadLocomotive())
@@ -6310,7 +6344,7 @@ namespace Orts.Simulation.RollingStocks
 
         public virtual void StartReverseDecrease(float? target)
         {
-            if (!DirectionButton && !DieselDirectionController && !DieselDirectionController2 && !DieselDirectionController3 && !DieselDirectionController4)
+            if (!DirectionButton && !DieselDirectionController && !DieselDirectionController2 && !DieselDirectionController3 && !DieselDirectionController4 && PowerKey)
             {
                 AlerterReset(TCSEvent.ReverserChanged);
                 if (this.IsLeadLocomotive())
@@ -8921,7 +8955,7 @@ namespace Orts.Simulation.RollingStocks
         public void ToggleHeating_OffOn()
         {
             if (HeatingEnable)
-            {
+            {                
                 Heating_OffOn = !Heating_OffOn;
                 if (Heating_OffOn) SignalEvent(Event.Heating_OffOnOn);
                 else SignalEvent(Event.Heating_OffOnOff);
@@ -8931,7 +8965,7 @@ namespace Orts.Simulation.RollingStocks
         public void ToggleCabHeating_OffOn()
         {
             CabHeatingEnable = true;
-            if (CabHeatingEnable)
+            if (CabHeatingEnable && BrakeSystem.HeatingIsOn)
             {
                 CabHeating_OffOn = !CabHeating_OffOn;
                 if (CabHeating_OffOn) SignalEvent(Event.CabHeating_OffOnOn);
