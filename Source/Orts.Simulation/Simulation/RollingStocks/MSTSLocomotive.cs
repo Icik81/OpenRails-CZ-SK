@@ -4544,6 +4544,7 @@ namespace Orts.Simulation.RollingStocks
             {
                 //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("LapActive " + LapActive));                
                 DirectionControllerLogic();
+                PowerKeyLogic();
                 if (Simulator.GameTime < 0.5f)
                 {
                     ToggleDieselDirectionController();
@@ -8048,6 +8049,34 @@ namespace Orts.Simulation.RollingStocks
                 if (DirectionPosition == 0 && DirectionControllerBlocked)
                     DirectionControllerBlocked = false;
             }
+        }
+
+        public void PowerKeyLogic()
+        {
+            if (IsLeadLocomotive())
+            {
+                if (PowerKey)
+                {
+                    foreach (TrainCar car in Train.Cars)
+                    {
+                        if (car is MSTSLocomotive && !car.LocoHelperOn)
+                        {
+                            car.CarPowerKey = true;
+                        }
+                    }
+                }
+                else
+                {
+                    foreach (TrainCar car in Train.Cars)
+                    {
+                        if (car is MSTSLocomotive && !car.LocoHelperOn)
+                        {
+                            car.CarPowerKey = false;
+                        }
+                    }
+                }
+            }
+            PowerKey = this.CarPowerKey;
         }
 
         public void ToggleHV2SwitchUp()

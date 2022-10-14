@@ -388,6 +388,7 @@ namespace Orts.Simulation.RollingStocks
         public bool HasWagonSmoke;
         public bool WagonHasStove;
         public bool WagonHasSteamHeating;
+        public bool CarPowerKey;
 
         public float PowerReductionResult1;  // Redukce výkonu od topení, klimatizace, kompresoru
         public float PowerReductionResult2;  // Redukce výkonu od nedostatečného tlaku vzduchu v potrubí

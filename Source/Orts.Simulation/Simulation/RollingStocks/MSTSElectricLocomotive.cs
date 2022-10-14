@@ -1274,7 +1274,7 @@ namespace Orts.Simulation.RollingStocks
                 FaultByPlayer(elapsedClockSeconds);
                 MUCableCommunication();
                 HelperLoco();
-
+                                
                 if (!PowerKey)
                 {
                     if (LocoType != LocoTypes.Vectron)
@@ -1292,8 +1292,8 @@ namespace Orts.Simulation.RollingStocks
                                 MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO2", 0).ToString());
                         }
                         HVOff = true;
-                    }                    
-                }
+                    }
+                }                                    
 
                 // Vypnutí baterií způsobí odpadnutí pantografů
                 if (!Battery && Pantograph3Switch != 1)
