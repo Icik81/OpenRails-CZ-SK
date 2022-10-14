@@ -671,6 +671,8 @@ namespace Orts.Simulation.RollingStocks
         public string CabRearSoundFileName;
         public int CabStationForBatterySwitchOn;
         public bool SeasonSwitchPosition;
+        public int DirectionPosition;
+        public bool DirectionControllerBlocked;
 
         // Jindrich
         public bool IsActive = false;
@@ -1825,6 +1827,7 @@ namespace Orts.Simulation.RollingStocks
             outf.Write(WipersWindowPosition);
             outf.Write(WiperStatusChange);
             outf.Write(SeasonSwitchPosition);
+            outf.Write(DirectionPosition);
 
             base.Save(outf);
 
@@ -1942,6 +1945,7 @@ namespace Orts.Simulation.RollingStocks
             WipersWindowPosition = inf.ReadInt32();
             WiperStatusChange = inf.ReadBoolean();
             SeasonSwitchPosition = inf.ReadBoolean();
+            DirectionPosition = inf.ReadInt32();
 
             base.Restore(inf);
 
@@ -4537,8 +4541,9 @@ namespace Orts.Simulation.RollingStocks
                 SetAIAction();
 
             if (IsPlayerTrain && !Simulator.Paused)
-            {                
-                //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("LapActive " + LapActive));
+            {
+                //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("LapActive " + LapActive));                
+                DirectionControllerLogic();
                 if (Simulator.GameTime < 0.5f)
                 {
                     ToggleDieselDirectionController();
@@ -4577,7 +4582,7 @@ namespace Orts.Simulation.RollingStocks
                 PlayerSwitchToRearCab();
                 LightPositionHandle();                
                 RainWindow(elapsedClockSeconds);
-                WipersWindow(elapsedClockSeconds);
+                WipersWindow(elapsedClockSeconds);                
                 BatterySetOn = false;
             }
 
@@ -6292,29 +6297,30 @@ namespace Orts.Simulation.RollingStocks
         #region Reverser
         public void SetDirection(Direction direction)
         {
-            if (Direction != direction && ThrottlePercent < 1 && PowerKey)
+            if (Direction != direction && ThrottlePercent < 1)
             {
                 Direction = direction;
-                switch (direction)
-                {
-                    case Direction.Reverse: SignalEvent(Event.ReverserToForwardBackward); break;
-                    case Direction.N: SignalEvent(Event.ReverserToNeutral); break;
-                    case Direction.Forward: SignalEvent(Event.ReverserToForwardBackward); break;
-                }
-                // passes event also to other locomotives
-                foreach (TrainCar car in Train.Cars)
-                {
-                    var loco = car as MSTSLocomotive;
-                    if (loco != null && car != this && loco.AcceptMUSignals)
-                        switch (direction)
-                        {
-                            case Direction.Reverse: loco.SignalEvent(Event.ReverserToForwardBackward); break;
-                            case Direction.N: loco.SignalEvent(Event.ReverserToNeutral); break;
-                            case Direction.Forward: loco.SignalEvent(Event.ReverserToForwardBackward); break;
-                        }
+                // Icik
+                //switch (direction)
+                //{
+                //    case Direction.Reverse: SignalEvent(Event.ReverserToForwardBackward); break;
+                //    case Direction.N: SignalEvent(Event.ReverserToNeutral); break;
+                //    case Direction.Forward: SignalEvent(Event.ReverserToForwardBackward); break;
+                //}
+                //// passes event also to other locomotives
+                //foreach (TrainCar car in Train.Cars)
+                //{
+                //    var loco = car as MSTSLocomotive;
+                //    if (loco != null && car != this && loco.AcceptMUSignals)
+                //        switch (direction)
+                //        {
+                //            case Direction.Reverse: loco.SignalEvent(Event.ReverserToForwardBackward); break;
+                //            case Direction.N: loco.SignalEvent(Event.ReverserToNeutral); break;
+                //            case Direction.Forward: loco.SignalEvent(Event.ReverserToForwardBackward); break;
+                //        }
 
-                }
-                SignalEvent(Event.ReverserChange);
+                //}
+                //SignalEvent(Event.ReverserChange);
                 if (direction == Direction.Forward)
                     Train.MUReverserPercent = 100;
                 else
@@ -6325,17 +6331,31 @@ namespace Orts.Simulation.RollingStocks
 
         public virtual void StartReverseIncrease(float? target)
         {
-            if (!DirectionButton && !DieselDirectionController && !DieselDirectionController2 && !DieselDirectionController3 && !DieselDirectionController4 && PowerKey)
+            // Icik
+            if (!DirectionButton && !DieselDirectionController && !DieselDirectionController2 && !DieselDirectionController3 && !DieselDirectionController4)
             {
-                AlerterReset(TCSEvent.ReverserChanged);
-                if (this.IsLeadLocomotive())
+                if (DirectionPosition < 1)
                 {
+                    DirectionPosition++;
+                    if (DirectionPosition == 1)
+                        SignalEvent(Event.ReverserToForwardBackward);
+                    else
+                        SignalEvent(Event.ReverserToNeutral);
+                    SignalEvent(Event.ReverserChange);
+                }
+                
+                if (PowerKey && !DirectionControllerBlocked)
+                {
+                    AlerterReset(TCSEvent.ReverserChanged);
+                    if (this.IsLeadLocomotive())
                     {
-                        switch (Direction)
                         {
-                            case Direction.Reverse: SetDirection(Direction.N); Simulator.Confirmer.Confirm(CabControl.Reverser, CabSetting.Neutral); break;
-                            case Direction.N: SetDirection(Direction.Forward); Simulator.Confirmer.Confirm(CabControl.Reverser, CabSetting.On); break;
-                            case Direction.Forward: SetDirection(Direction.Forward); Simulator.Confirmer.Confirm(CabControl.Reverser, CabSetting.On); break;
+                            switch (Direction)
+                            {
+                                case Direction.Reverse: SetDirection(Direction.N); Simulator.Confirmer.Confirm(CabControl.Reverser, CabSetting.Neutral); break;
+                                case Direction.N: SetDirection(Direction.Forward); Simulator.Confirmer.Confirm(CabControl.Reverser, CabSetting.On); break;
+                                case Direction.Forward: SetDirection(Direction.Forward); Simulator.Confirmer.Confirm(CabControl.Reverser, CabSetting.On); break;
+                            }
                         }
                     }
                 }
@@ -6344,17 +6364,31 @@ namespace Orts.Simulation.RollingStocks
 
         public virtual void StartReverseDecrease(float? target)
         {
-            if (!DirectionButton && !DieselDirectionController && !DieselDirectionController2 && !DieselDirectionController3 && !DieselDirectionController4 && PowerKey)
+            // Icik
+            if (!DirectionButton && !DieselDirectionController && !DieselDirectionController2 && !DieselDirectionController3 && !DieselDirectionController4)
             {
-                AlerterReset(TCSEvent.ReverserChanged);
-                if (this.IsLeadLocomotive())
+                if (DirectionPosition > -1)
                 {
+                    DirectionPosition--;
+                    if (DirectionPosition == -1)
+                        SignalEvent(Event.ReverserToForwardBackward);
+                    else
+                        SignalEvent(Event.ReverserToNeutral);
+                    SignalEvent(Event.ReverserChange);
+                }
+
+                if (PowerKey && !DirectionControllerBlocked)
+                {
+                    AlerterReset(TCSEvent.ReverserChanged);
+                    if (this.IsLeadLocomotive())
                     {
-                        switch (Direction)
                         {
-                            case Direction.Reverse: SetDirection(Direction.Reverse); Simulator.Confirmer.Confirm(CabControl.Reverser, CabSetting.Off); break;
-                            case Direction.N: SetDirection(Direction.Reverse); Simulator.Confirmer.Confirm(CabControl.Reverser, CabSetting.Off); break;
-                            case Direction.Forward: SetDirection(Direction.N); Simulator.Confirmer.Confirm(CabControl.Reverser, CabSetting.Neutral); break;
+                            switch (Direction)
+                            {
+                                case Direction.Reverse: SetDirection(Direction.Reverse); Simulator.Confirmer.Confirm(CabControl.Reverser, CabSetting.Off); break;
+                                case Direction.N: SetDirection(Direction.Reverse); Simulator.Confirmer.Confirm(CabControl.Reverser, CabSetting.Off); break;
+                                case Direction.Forward: SetDirection(Direction.N); Simulator.Confirmer.Confirm(CabControl.Reverser, CabSetting.Neutral); break;
+                            }
                         }
                     }
                 }
@@ -7864,6 +7898,10 @@ namespace Orts.Simulation.RollingStocks
         }
         public void TogglePowerKey()
         {
+            if ((DieselDirectionController && DieselDirectionControllerPosition != 2)
+                || (DieselDirectionController2 && DieselDirectionController2Position != 0))
+                return;
+
             PowerKey = !PowerKey;
             if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.PowerKey, PowerKey ? CabSetting.On : CabSetting.Off);
             SignalEvent(Event.PantographToggle);
@@ -7997,7 +8035,21 @@ namespace Orts.Simulation.RollingStocks
             Mirel.AlerterPressed(pressed);
         }
 
-        // Icik      
+        // Icik
+        public void DirectionControllerLogic()
+        {
+            if (!PowerKey)
+            {
+                Direction = Direction.N;
+                DirectionControllerBlocked = true;
+            }
+            else
+            {
+                if (DirectionPosition == 0 && DirectionControllerBlocked)
+                    DirectionControllerBlocked = false;
+            }
+        }
+
         public void ToggleHV2SwitchUp()
         {
             if (HV2Enable)
@@ -11220,12 +11272,7 @@ namespace Orts.Simulation.RollingStocks
                 case CABViewControlTypes.DIRECTION:
                 case CABViewControlTypes.DIRECTION_DISPLAY:
                     {
-                        if (Direction == Direction.Forward)
-                            data = 2;
-                        else if (Direction == Direction.Reverse)
-                            data = 0;
-                        else
-                            data = 1;
+                        data = DirectionPosition + 1;
                         break;
                     }
                 case CABViewControlTypes.ASPECT_DISPLAY:

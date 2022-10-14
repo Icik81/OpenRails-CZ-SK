@@ -207,12 +207,15 @@ namespace Orts.Viewer3D.RollingStock
         protected virtual void ReverserControlForwards()
         {
             if (Locomotive.DieselDirectionController || Locomotive.DieselDirectionController2 || Locomotive.DieselDirectionController3 || Locomotive.DieselDirectionController4) return;
-            if (Locomotive.Direction != Direction.Forward
-            && (Locomotive.ThrottlePercent >= 1
-            || Math.Abs(Locomotive.SpeedMpS) > 1))
+            if (Locomotive.PowerKey && !Locomotive.DirectionControllerBlocked)
             {
-                Viewer.Simulator.Confirmer.Warning(CabControl.Reverser, CabSetting.Warn1);
-                return;
+                if (Locomotive.Direction != Direction.Forward
+                && (Locomotive.ThrottlePercent >= 1
+                || Math.Abs(Locomotive.SpeedMpS) > 1))
+                {
+                    Viewer.Simulator.Confirmer.Warning(CabControl.Reverser, CabSetting.Warn1);
+                    return;
+                }
             }
             new ReverserCommand(Viewer.Log, true);    // No harm in trying to engage Forward when already engaged.
         }
@@ -220,12 +223,15 @@ namespace Orts.Viewer3D.RollingStock
         protected virtual void ReverserControlBackwards()
         {
             if (Locomotive.DieselDirectionController || Locomotive.DieselDirectionController2 || Locomotive.DieselDirectionController3 || Locomotive.DieselDirectionController4) return;
-            if (Locomotive.Direction != Direction.Reverse
-            && (Locomotive.ThrottlePercent >= 1
-            || Math.Abs(Locomotive.SpeedMpS) > 1))
+            if (Locomotive.PowerKey && !Locomotive.DirectionControllerBlocked)
             {
-                Viewer.Simulator.Confirmer.Warning(CabControl.Reverser, CabSetting.Warn1);
-                return;
+                if (Locomotive.Direction != Direction.Reverse
+                && (Locomotive.ThrottlePercent >= 1
+                || Math.Abs(Locomotive.SpeedMpS) > 1))
+                {
+                    Viewer.Simulator.Confirmer.Warning(CabControl.Reverser, CabSetting.Warn1);
+                    return;
+                }                
             }
             new ReverserCommand(Viewer.Log, false);    // No harm in trying to engage Reverse when already engaged.
         }
@@ -631,7 +637,7 @@ namespace Orts.Viewer3D.RollingStock
                     }
                 }
                 // Diesel kontrolér3
-                if (Locomotive.DieselDirectionController3 && Locomotive.PowerKey)
+                if (Locomotive.DieselDirectionController3)
                 {
                     if (UserInput.IsPressed(UserCommand.ControlDieselDirectionControllerUp))
                     {
@@ -643,7 +649,7 @@ namespace Orts.Viewer3D.RollingStock
                     }
                 }
                 // Diesel kontrolér4
-                if (Locomotive.DieselDirectionController4 && Locomotive.PowerKey)
+                if (Locomotive.DieselDirectionController4)
                 {
                     if (UserInput.IsPressed(UserCommand.ControlDieselDirectionControllerUp))
                     {
@@ -677,7 +683,7 @@ namespace Orts.Viewer3D.RollingStock
                     Locomotive.StopButtonPressed = true;
             }
             // Ovládání tlačítek navolení směru
-            if (Locomotive.DirectionButton && Locomotive.PowerKey)
+            if (Locomotive.DirectionButton)
             {
                 if (UserInput.IsPressed(UserCommand.ControlForwards))
                 {
@@ -3899,12 +3905,12 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.DIESEL_DIRECTION_CONTROLLER3:
                     if (Locomotive.LocalThrottlePercent == 0)
                     {
-                        if (ChangedValue(0) < 0 && !IsChanged && Locomotive.PowerKey)
+                        if (ChangedValue(0) < 0 && !IsChanged)
                         {
                             new ToggleDieselDirectionControllerUpCommand(Viewer.Log);
                             IsChanged = true;
                         }
-                        if (ChangedValue(0) > 0 && !IsChanged && Locomotive.PowerKey)
+                        if (ChangedValue(0) > 0 && !IsChanged)
                         {
                             new ToggleDieselDirectionControllerDownCommand(Viewer.Log);
                             IsChanged = true;
@@ -3914,12 +3920,12 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.DIESEL_DIRECTION_CONTROLLER4:
                     if (Locomotive.LocalThrottlePercent == 0)
                     {
-                        if (ChangedValue(0) < 0 && !IsChanged && Locomotive.PowerKey)
+                        if (ChangedValue(0) < 0 && !IsChanged)
                         {
                             new ToggleDieselDirectionControllerUpCommand(Viewer.Log);
                             IsChanged = true;
                         }
-                        if (ChangedValue(0) > 0 && !IsChanged && Locomotive.PowerKey)
+                        if (ChangedValue(0) > 0 && !IsChanged)
                         {
                             new ToggleDieselDirectionControllerDownCommand(Viewer.Log);
                             IsChanged = true;

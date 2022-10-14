@@ -1277,19 +1277,22 @@ namespace Orts.Simulation.RollingStocks
 
                 if (!PowerKey)
                 {
-                    if (Pantographs[1].State == PantographState.Up)
+                    if (LocoType != LocoTypes.Vectron)
                     {
-                        SignalEvent(PowerSupplyEvent.LowerPantograph, 1);
-                        if (MPManager.IsMultiPlayer())
-                            MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO1", 0).ToString());
-                    }                            
-                    if (Pantographs[2].State == PantographState.Up)
-                    {
-                        SignalEvent(PowerSupplyEvent.LowerPantograph, 2);
-                        if (MPManager.IsMultiPlayer())
-                            MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO2", 0).ToString());
+                        if (Pantographs[1].State == PantographState.Up)
+                        {
+                            SignalEvent(PowerSupplyEvent.LowerPantograph, 1);
+                            if (MPManager.IsMultiPlayer())
+                                MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO1", 0).ToString());
+                        }
+                        if (Pantographs[2].State == PantographState.Up)
+                        {
+                            SignalEvent(PowerSupplyEvent.LowerPantograph, 2);
+                            if (MPManager.IsMultiPlayer())
+                                MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO2", 0).ToString());
+                        }
+                        HVOff = true;
                     }                    
-                    HVOff = true;                    
                 }
 
                 // Vypnutí baterií způsobí odpadnutí pantografů
