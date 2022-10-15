@@ -397,6 +397,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems
         }
         public void SpeedSelectorModeStartIncrease()
         {
+            if (Locomotive.LocoType == LocoTypes.Katr7507)
+                return;
             if (Locomotive.UsingForceHandle)
             {
                 if (Locomotive.ForceHandleValue < 0)
@@ -426,6 +428,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems
         }
         public void SpeedSelectorModeStopIncrease()
         {
+            if (Locomotive.LocoType == LocoTypes.Katr7507)
+                return;
             if (Locomotive.UsingForceHandle)
                 return;
             Locomotive.SignalEvent(Common.Event.CruiseControlSpeedSelector);
@@ -454,6 +458,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems
         }
         public void SpeedSelectorModeDecrease()
         {
+            if (Locomotive.LocoType == LocoTypes.Katr7507)
+                return;
             if (Locomotive.UsingForceHandle)
             {
                 if (Locomotive.ForceHandleValue > 0)

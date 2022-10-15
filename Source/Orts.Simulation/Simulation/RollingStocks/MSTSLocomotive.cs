@@ -755,7 +755,7 @@ namespace Orts.Simulation.RollingStocks
 
         public enum LocoTypes
         {
-            Normal, Vectron, Traxx
+            Normal, Vectron, Traxx, Katr7507,
         }
 
         public LocoTypes LocoType = LocoTypes.Normal;
@@ -5177,7 +5177,7 @@ namespace Orts.Simulation.RollingStocks
                     if (DynamicBrakeCommandStartTime + DynamicBrakeDelayS < Simulator.ClockTime /*|| (DynamicBrakeController != null && DynamicBrakeController.CommandStartTime + DynamicBrakeDelayS < Simulator.ClockTime)*/)
                     {
                         DynamicBrake = true; // Engage
-                        if (IsLeadLocomotive() && DynamicBrakeController != null && LocoType != LocoTypes.Vectron)
+                        if (IsLeadLocomotive() && DynamicBrakeController != null && LocoType != LocoTypes.Vectron && LocoType != LocoTypes.Katr7507)
                             Simulator.Confirmer.ConfirmWithPerCent(CabControl.DynamicBrake, DynamicBrakeController.CurrentValue * 100);
                     }
                     else if (IsLeadLocomotive() && LocoType != LocoTypes.Vectron)
@@ -7525,6 +7525,8 @@ namespace Orts.Simulation.RollingStocks
         #region DynamicBrakeController
         public void StartDynamicBrakeIncrease(float? target)
         {
+            if (LocoType == LocoTypes.Katr7507)
+                return;
             AlerterReset(TCSEvent.DynamicBrakeChanged);
 
             if (MultiPositionControllers != null)
@@ -7567,6 +7569,49 @@ namespace Orts.Simulation.RollingStocks
             }
         }
 
+        public void StartDynamicBrakeIncreaseKatr(float? target)
+        {
+            AlerterReset(TCSEvent.DynamicBrakeChanged);
+
+            if (MultiPositionControllers != null)
+            {
+                foreach (MultiPositionController mpc in MultiPositionControllers)
+                {
+                    if (mpc.controllerBinding == MultiPositionController.ControllerBinding.DynamicBrake)
+                    {
+                        if (!mpc.StateChanged)
+                        {
+                            mpc.StateChanged = true;
+                            mpc.DoMovement(MultiPositionController.Movement.Aft);
+                        }
+                        return;
+                    }
+                }
+            }
+            if (CruiseControl != null)
+            {
+                SetThrottlePercent(0);
+                CruiseControl.DynamicBrakePriority = true;
+            }
+
+            if (!CanUseDynamicBrake())
+                return;
+
+            if (DynamicBrakePercent < 0)
+            {
+                DynamicBrakeChangeActiveState(true);
+            }
+            else if (DynamicBrake)
+            {
+                SignalEvent(Event.DynamicBrakeChange);
+                DynamicBrakeController.StartIncrease(target);
+                if (!HasSmoothStruc)
+                {
+                    StopDynamicBrakeIncrease();
+                    Simulator.Confirmer.ConfirmWithPerCent(CabControl.DynamicBrake, DynamicBrakeController.CurrentValue * 100);
+                }
+            }
+        }
         public void StopDynamicBrakeIncrease()
         {
             StopDynamicBrakeIncrease(false);
@@ -7598,6 +7643,9 @@ namespace Orts.Simulation.RollingStocks
 
         public void StartDynamicBrakeDecrease(float? target)
         {
+            if (LocoType == LocoTypes.Katr7507)
+                return;
+
             AlerterReset(TCSEvent.DynamicBrakeChanged);
 
             if (MultiPositionControllers != null)

@@ -125,6 +125,9 @@ namespace Orts.Simulation.RollingStocks
                                 case "traxx":
                                     Locomotive.LocoType = MSTSLocomotive.LocoTypes.Traxx;
                                     break;
+                                case "7507":
+                                    Locomotive.LocoType = MSTSLocomotive.LocoTypes.Katr7507;
+                                    break;
                             }
                         }
                         if (main.Name.ToLower() == "generatoricmodedisengagespeedkph")
