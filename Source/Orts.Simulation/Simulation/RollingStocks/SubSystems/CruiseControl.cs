@@ -402,9 +402,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                 if (Locomotive.ForceHandleValue < 0)
                 {
                     Locomotive.ForceHandleValue = 0;
-                    return;
                 }
-                Locomotive.ForceHandleValue = 100;
                 return;
             }
             Locomotive.SignalEvent(Common.Event.CruiseControlSpeedSelector);
@@ -461,9 +459,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                 if (Locomotive.ForceHandleValue > 0)
                 {
                     Locomotive.ForceHandleValue = 0;
-                    return;
                 }
-                Locomotive.ForceHandleValue = -100;
                 return;
             }
             Locomotive.SignalEvent(Common.Event.CruiseControlSpeedSelector);
