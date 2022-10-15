@@ -4510,7 +4510,8 @@ namespace Orts.Simulation.RollingStocks
 
             // Icik
             SetCarLightsPowerOn();
-            SetLapButton();
+            SetLapButton();            
+            CarFrameUpdate();
 
             if (IsLeadLocomotive())            
                 CarIsPlayerLoco = true;                            
@@ -5033,7 +5034,7 @@ namespace Orts.Simulation.RollingStocks
             UpdateSoundVariables(elapsedClockSeconds);
 
             PrevMotiveForceN = MotiveForceN;
-            base.Update(elapsedClockSeconds);
+            base.Update(elapsedClockSeconds);                                    
 
 #if DEBUG_ADHESION
             // Timer to determine travel time - resets when locomotive stops
@@ -6286,6 +6287,7 @@ namespace Orts.Simulation.RollingStocks
                 float SanderPressureDiffPSI = ActualAirConsumptionM3pS / MainResVolumeM3;
                 MainResPressurePSI -= SanderPressureDiffPSI;
                 MainResPressurePSI = MathHelper.Clamp(MainResPressurePSI, 0.001f, MaxMainResPressurePSI);
+                Simulator.Confirmer.Message(ConfirmLevel.Information, CurrentTrackSandBoxCapacityKG + " Kg");
             }
             //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("CurrentTrackSandBoxCapacityM3: " + CurrentTrackSandBoxCapacityM3));
         }
@@ -8085,6 +8087,24 @@ namespace Orts.Simulation.RollingStocks
         }
 
         // Icik
+        #region Icik`s code
+        public void CarFrameUpdate()
+        {
+            this.CarFrameUpdateState++;
+            if (this.CarFrameUpdateState > 1)
+                this.CarFrameUpdateState = 2;
+
+            if (this.CarFrameUpdateState == 1)
+            {
+                // Vypne inicializační zvuk pohonu při vypnutém stroji
+                if ((this as MSTSDieselLocomotive) != null && (this as MSTSDieselLocomotive).AIMotorStop)
+                    SignalEvent(Event.EnginePowerOff);
+
+                if ((this as MSTSElectricLocomotive) != null && (this as MSTSElectricLocomotive).AIPantoDownStop)
+                    SignalEvent(Event.EnginePowerOff);
+            }
+        }
+
         public void DirectionControllerLogic()
         {
             if (!PowerKey)
@@ -10093,6 +10113,7 @@ namespace Orts.Simulation.RollingStocks
             }
             PreSeasonSwitchPosition = SeasonSwitchPosition;
         }
+        #endregion
 
         // Zatím povoleno kvůli kompatibilitě
         int NumberChoice = 1;

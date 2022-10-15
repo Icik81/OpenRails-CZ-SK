@@ -111,7 +111,7 @@ namespace Orts.Simulation.RollingStocks
         float AIPantoUPTime;
         float AIPantoDownGenerate;
         bool AIPantoDown;
-        bool AIPantoDownStop;
+        public bool AIPantoDownStop;
         bool PowerOnTriggered;
 
 
@@ -1174,7 +1174,6 @@ namespace Orts.Simulation.RollingStocks
         /// <summary>
         /// This function updates periodically the states and physical variables of the locomotive's power supply.
         /// </summary>
-        bool FirstFrame = true;
         protected override void UpdatePowerSupply(float elapsedClockSeconds)
         {
             // Icik                      
@@ -1213,11 +1212,7 @@ namespace Orts.Simulation.RollingStocks
             {
                 PowerOnTriggered = false;
                 SignalEvent(Event.EnginePowerOff);
-            }
-
-            // Vypne inicializační zvuk pohonu při vypnutém stroji
-            if (AIPantoDownStop && FirstFrame)            
-                SignalEvent(Event.EnginePowerOff);                
+            }                           
             
             PowerSupply.Update(elapsedClockSeconds);
 
@@ -1392,7 +1387,6 @@ namespace Orts.Simulation.RollingStocks
                     }
                 }
             }
-            FirstFrame = false;
         }
 
         // Icik

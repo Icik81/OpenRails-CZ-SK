@@ -489,16 +489,10 @@ namespace Orts.Simulation.RollingStocks
         /// <summary>
         /// This function updates periodically the states and physical variables of the locomotive's subsystems.
         /// </summary>
-        bool FirstFrame = true;
         public override void Update(float elapsedClockSeconds)
         {
             base.Update(elapsedClockSeconds);
-
-            // Icik
-            // Vypne inicializační zvuk pohonu při vypnutém stroji
-            if (AIMotorStop && FirstFrame)            
-                SignalEvent(Event.EnginePowerOff);
-                
+            
             // The following is not in the UpdateControllers function due to the fact that fuel level has to be calculated after the motive force calculation.
             FuelController.Update(elapsedClockSeconds);
             if (FuelController.UpdateValue > 0.0)
@@ -511,7 +505,6 @@ namespace Orts.Simulation.RollingStocks
                 if (WaterController.UpdateValue > 0.0)
                     Simulator.Confirmer.UpdateWithPerCent(CabControl.SteamHeatBoilerWater, CabSetting.Increase, WaterController.CurrentValue * 100);
             }
-            FirstFrame = false;
         }
 
 
