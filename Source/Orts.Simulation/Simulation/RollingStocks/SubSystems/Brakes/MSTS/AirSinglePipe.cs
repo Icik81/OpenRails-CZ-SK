@@ -78,7 +78,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
         protected float ThresholdBailOffOn = 0;
         protected ValveState PrevTripleValveStateState;
         protected float AutomaticDoorsCycle = 0;
-        protected float AirWithEDBMotiveForceN;
+        protected float AirWithEDBMotiveForceN;        
 
         protected bool AICompressorOn;
         protected bool AICompressorOff;
@@ -1644,7 +1644,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
         {
             PropagateBrakeLinePressures(elapsedClockSeconds, Car, TwoPipesConnection);
         }
-        
+
         protected static void PropagateBrakeLinePressures(float elapsedClockSeconds, TrainCar trainCar, bool TwoPipesConnection)
         {
             // Brake pressures are calculated on the lead locomotive first, and then propogated along each wagon in the consist.
@@ -3237,21 +3237,44 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                             {
                                 if (train.EqualReservoirPressurePSIorInHg < lead.TrainBrakeController.MaxPressurePSI)
                                     train.EqualReservoirPressurePSIorInHg += lead.TrainBrakeController.ReleaseRatePSIpS * elapsedClockSeconds;
-                                if (train.EqualReservoirPressurePSIorInHg > lead.TrainBrakeController.MaxPressurePSI)
+                                if (train.EqualReservoirPressurePSIorInHg >= lead.TrainBrakeController.MaxPressurePSI)
                                 {
                                     train.EqualReservoirPressurePSIorInHg = lead.TrainBrakeController.MaxPressurePSI;
                                     lead.ARRTrainBrakeEngage = false;
+                                    lead.BrakeSystem.FirstRunARRTrainBrake = false;
+                                    lead.BrakeSystem.ARRTrainBrakeCycle0 = 0;
                                 }
                             }
-                        }
+                        }  
                     }
                     lead.ARRAutoCylPressurePSI = lead.BrakeSystem.PressureConverter;
                     // Regulátor tlakové brzdy pro ARR
                     float ARRSpeedDeccelaration = lead.AbsWheelSpeedMpS - lead.CruiseControl.SelectedSpeedMpS;
-                    ARRSpeedDeccelaration = MathHelper.Clamp(ARRSpeedDeccelaration, 0.0f, 0.5f);
+                    ARRSpeedDeccelaration = MathHelper.Clamp(ARRSpeedDeccelaration, 0.0f, 0.50f);
                     //lead.Simulator.Confirmer.Information("ARRSpeedDeccelaration = " + ARRSpeedDeccelaration);                    
 
-                    if (lead.ARRTrainBrakeEngage && lead.AbsWheelSpeedMpS > 0
+                    // První náběh ARR brzdy dá náskok EDB před aktivací tlakové brzdy
+                    float TimeToResponseARRTrainBrake = 2.0f;
+                    if (lead.ARRTrainBrakeEngage && !lead.BrakeSystem.FirstRunARRTrainBrake)
+                        lead.BrakeSystem.FirstRunARRTrainBrake = true;
+                    
+                    if (lead.BrakeSystem.FirstRunARRTrainBrake)
+                    {
+                        lead.BrakeSystem.ARRTrainBrakeCycle0 += elapsedClockSeconds;
+                        if (lead.BrakeSystem.ARRTrainBrakeCycle0 > 5.0f) // Náskok EDB před tlakovou 5s
+                            lead.BrakeSystem.FirstRunARRTrainBrake = false;
+                    }
+
+                    // Pokud nebude aktivní EDB, naskočí tlaková okamžitě 
+                    if (lead.DynamicBrakeForceN == 0)
+                    {
+                        TimeToResponseARRTrainBrake = 0;
+                        lead.BrakeSystem.FirstRunARRTrainBrake = false;
+                    }
+
+                    if (!lead.BrakeSystem.FirstRunARRTrainBrake
+                        && lead.ARRTrainBrakeEngage 
+                        && lead.AbsWheelSpeedMpS > 0
                         && lead.MainResPressurePSI > 0
                         && AutoCylPressurePSI < lead.BrakeSystem.BrakeCylinderMaxSystemPressurePSI
                         && AutoCylPressurePSI < lead.MainResPressurePSI
@@ -3261,7 +3284,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                             && (lead.TrainBrakeController.MaxPressurePSI - train.EqualReservoirPressurePSIorInHg) < lead.CruiseControl.MaxTrainBrakePressureDrop)
                         {
                             lead.BrakeSystem.ARRTrainBrakeCycle1 += elapsedClockSeconds;
-                            if (lead.BrakeSystem.ARRTrainBrakeCycle1 > 2.0f)
+                            if (lead.BrakeSystem.ARRTrainBrakeCycle1 > TimeToResponseARRTrainBrake)
                             {
                                 lead.BrakeSystem.ARRTrainBrakeCycle2 += elapsedClockSeconds;
                                 if (lead.BrakeSystem.ARRTrainBrakeCycle2 < 2.0f)
