@@ -1185,8 +1185,11 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
             if (!messageDisplayed)
             {
                 string msg = GetPositionName(currentPosition);
-                if (!string.IsNullOrEmpty(msg))
-                    Simulator.Confirmer.Information(msg);
+                if (Locomotive.CruiseControl != null && !Locomotive.CruiseControl.arrIsBraking)
+                {
+                    if (!string.IsNullOrEmpty(msg))
+                        Simulator.Confirmer.Information(msg);
+                }
             }
             messageDisplayed = true;
         }

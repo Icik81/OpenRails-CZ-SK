@@ -3187,7 +3187,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     }
 
 
-                if (lead.CruiseControl != null && lead.CruiseControl.UsePressuredTrainBrake)
+                if (lead.CruiseControl != null && lead.CruiseControl.UsePressuredTrainBrake && lead.PowerOn)
                 {
                     // Použití průběžné brzdy v režimu automatiky ARR                
                     if (lead.ControllerVolts >= 0 && lead.BrakeSystem.PressureConverter < lead.CruiseControl.BrakeConverterPressureEngage)
