@@ -3208,7 +3208,7 @@ namespace Orts.Simulation.RollingStocks
                 CarCabHeatingIsSetOn = true;
             }
             // Deaktivuje vytápění stanoviště při shozeném jističi topení nebo baterií
-            if (CabHeating_OffOn && (!BrakeSystem.HeatingIsOn || !Battery || !PowerKey))
+            if (CabHeating_OffOn && (!BrakeSystem.HeatingIsOn || !Battery || !PowerKey) && !DieselDirectionController && !DieselDirectionController2)
             {
                 CabHeating_OffOn = false;                
                 SignalEvent(Event.CabHeating_OffOnOff);
@@ -3496,21 +3496,26 @@ namespace Orts.Simulation.RollingStocks
                         }
 
                         // Kamna
+                        float StovePowerKW = 10;
+                        if (car.CarOutsideTempC0 < 0) StovePowerKW = 35;
+                        if (car.CarOutsideTempC0 >= 0) StovePowerKW = 30;
+                        if (car.CarOutsideTempC0 >= 10) StovePowerKW = 20;
+                        if (car.CarOutsideTempC0 >= 15) StovePowerKW = 10;
                         if (car.WagonHasStove && car.BrakeSystem.HeatingIsOn)
                         {
                             if (car.WagonTemperature > 1.10f * car.SetTempCThreshold)
-                                car.TempCDelta = +0 * 1000 / TempStepUp / CarAirVolumeM3 * elapsedClockSeconds;
+                                car.TempCDelta = +StovePowerKW * 0 * 1000 / TempStepUp / CarAirVolumeM3 * elapsedClockSeconds;
                             else
                             if (car.WagonTemperature > 1.05f * car.SetTempCThreshold)
-                                car.TempCDelta = +2.5f * 1000 / TempStepUp / CarAirVolumeM3 * elapsedClockSeconds;
+                                car.TempCDelta = +StovePowerKW * 0.25f  * 1000 / TempStepUp / CarAirVolumeM3 * elapsedClockSeconds;
                             else
                             if (car.WagonTemperature > 1.0f * car.SetTempCThreshold)                            
-                                car.TempCDelta = +5 * 1000 / TempStepUp / CarAirVolumeM3 * elapsedClockSeconds;                            
+                                car.TempCDelta = +StovePowerKW * 0.5f * 1000 / TempStepUp / CarAirVolumeM3 * elapsedClockSeconds;                            
                             else
                             if (car.WagonTemperature < 0.90f * car.SetTempCThreshold)
-                                car.TempCDelta = +10 * 1000 / TempStepUp / CarAirVolumeM3 * elapsedClockSeconds;
+                                car.TempCDelta = +StovePowerKW * 1.0f * 1000 / TempStepUp / CarAirVolumeM3 * elapsedClockSeconds;
                             else
-                                car.TempCDelta = +7.5f * 1000 / TempStepUp / CarAirVolumeM3 * elapsedClockSeconds;
+                                car.TempCDelta = +StovePowerKW * 0.75f * 1000 / TempStepUp / CarAirVolumeM3 * elapsedClockSeconds;
                             car.WagonTemperature += car.TempCDelta + car.TempCDeltaAir;
                         }
                         else
