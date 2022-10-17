@@ -155,12 +155,14 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes
         public float PressureConverterBase;
         public float PressureConverterBaseTrainBrake;
         public float PressureConverterBaseEDB;
+        public float PressureConverterBaseNoEDB;
         public float PressureConverter;        
         public float MCP_TrainBrake = 4.0f * 14.50377f;                
         public bool ARRTrainBrakeCanEngage;
         public float ARRTrainBrakeCycle0 = 0;
         public float ARRTrainBrakeCycle1 = 0;
         public float ARRTrainBrakeCycle2 = 0;
+        public float ARRTrainBrakeCycle3 = 0;
         public bool FirstRunARRTrainBrake;
 
         public bool BrakePipeDischargeRate = false;

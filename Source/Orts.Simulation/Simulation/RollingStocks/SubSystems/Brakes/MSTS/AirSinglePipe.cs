@@ -1500,8 +1500,11 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         EDBEngineBrakeDelay = 0;
                     }
                 }
-                if (loco.DynamicBrakeForceCurves != null || loco.DynamicBrakePercent > 0)
+                if (loco.DynamicBrakeForceCurves != null || loco.DynamicBrakePercent > 1)
+                {
                     PressureConverterBaseEDB = loco.DynamicBrakePercent / 100 * 4.0f * 14.50377f;
+                    PressureConverterBaseNoEDB = 0;
+                }
             }
             else
             {
@@ -1514,6 +1517,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             // Převodník brzdné síly                          
             PressureConverterBaseTrainBrake = (maxPressurePSI0 - BrakeLine1PressurePSI) * AuxCylVolumeRatio;
             PressureConverterBase = Math.Max(PressureConverterBaseTrainBrake, PressureConverterBaseEDB);
+            PressureConverterBase = Math.Max(PressureConverterBase, PressureConverterBaseNoEDB);
             PressureConverterBase = MathHelper.Clamp(PressureConverterBase, 0, 4.0f * 14.50377f);
             
             if (loco != null && loco.Battery && Math.Round(PressureConverterBase) > Math.Round(PressureConverter))
@@ -3202,7 +3206,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         lead.ARRTrainBrakeEngage = false;
                         lead.BrakeSystem.ARRTrainBrakeCanEngage = true;
                     }
-
+                    
+                    float DeltaPressure = 0.1f * 14.50377f;
                     float ApplyCoef = 1.0f;                                        
                     if (lead.LocoType == MSTSLocomotive.LocoTypes.Vectron)
                     {
@@ -3216,45 +3221,43 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     {
                         // Při vypnutém napájení nebo nedostupném EDB vstupní tlak do převodníku brzdy (používá se signál EDB)
                         if ((!lead.PowerOn || lead.DynamicBrakePercent < 1) && (!lead.EDBIndependent || (lead.EDBIndependent && lead.PowerOnFilter < 1)))
-                        {
-                            float SelectedMaxAccelerationStep = lead.SelectedMaxAccelerationStep;
-                            if (SelectedMaxAccelerationStep < lead.CruiseControl.SpeedRegulatorMaxForceSteps / 1)
-                                SelectedMaxAccelerationStep = lead.CruiseControl.SpeedRegulatorMaxForceSteps / 1;
-                            if (lead.CruiseControl.SelectedSpeedMpS < lead.AbsWheelSpeedMpS && lead.BrakeSystem.ARRTrainBrakeCanEngage)
-                                lead.BrakeSystem.PressureConverterBaseEDB = (float)Math.Round(SelectedMaxAccelerationStep, 0) / lead.CruiseControl.SpeedRegulatorMaxForceSteps * 4.0f * 14.50377f;
+                        {                            
+                            if (lead.CruiseControl.SelectedSpeedMpS < lead.AbsWheelSpeedMpS && lead.BrakeSystem.ARRTrainBrakeCanEngage)                         
+                                lead.BrakeSystem.PressureConverterBaseNoEDB = (train.EqualReservoirPressurePSIorInHg - DeltaPressure) * lead.BrakeSystem.LocoAuxCylVolumeRatio / (lead.BrakeSystem.MCP)  * 4.0f * 14.50377f;
                             else
-                                lead.BrakeSystem.PressureConverterBaseEDB = 0;
+                                lead.BrakeSystem.PressureConverterBaseNoEDB = 0;
                         }
                         lead.CruiseControl.BrakeConverterPressureEngage = 1;
                         // Aktivace příznaku zásahu tlakové brzdy v režimu ARR
                         if (lead.BrakeSystem.PressureConverter > lead.CruiseControl.BrakeConverterPressureEngage
                             && (lead.BrakeSystem.ARRTrainBrakeCanEngage)
-                            && lead.CruiseControl.SelectedSpeedMpS * 1.05f < lead.AbsWheelSpeedMpS)
+                            && lead.CruiseControl.SelectedSpeedMpS * 1.02f < lead.AbsWheelSpeedMpS)
                             lead.ARRTrainBrakeEngage = true;
                         else
                         {
-                            if (lead.ARRTrainBrakeEngage)
+                            if (lead.BrakeSystem.ARRTrainBrakeCanEngage)
                             {
                                 if (train.EqualReservoirPressurePSIorInHg < lead.TrainBrakeController.MaxPressurePSI)
-                                    train.EqualReservoirPressurePSIorInHg += lead.TrainBrakeController.ReleaseRatePSIpS * elapsedClockSeconds;
+                                    train.EqualReservoirPressurePSIorInHg += DeltaPressure * elapsedClockSeconds;
                                 if (train.EqualReservoirPressurePSIorInHg >= lead.TrainBrakeController.MaxPressurePSI)
                                 {
                                     train.EqualReservoirPressurePSIorInHg = lead.TrainBrakeController.MaxPressurePSI;
                                     lead.ARRTrainBrakeEngage = false;
                                     lead.BrakeSystem.FirstRunARRTrainBrake = false;
                                     lead.BrakeSystem.ARRTrainBrakeCycle0 = 0;
+                                    DeltaPressure = lead.TrainBrakeController.ReleaseRatePSIpS;
                                 }
                             }
                         }  
                     }
                     lead.ARRAutoCylPressurePSI = lead.BrakeSystem.PressureConverter;
                     // Regulátor tlakové brzdy pro ARR
-                    float ARRSpeedDeccelaration = lead.AbsWheelSpeedMpS - lead.CruiseControl.SelectedSpeedMpS;
-                    ARRSpeedDeccelaration = MathHelper.Clamp(ARRSpeedDeccelaration, 0.0f, 0.50f);
+                    float ARRSpeedDeccelaration = (lead.AbsWheelSpeedMpS - lead.CruiseControl.SelectedSpeedMpS) / 10;
+                    ARRSpeedDeccelaration = MathHelper.Clamp(ARRSpeedDeccelaration, 0.0f, 0.5f);
                     //lead.Simulator.Confirmer.Information("ARRSpeedDeccelaration = " + ARRSpeedDeccelaration);                    
 
                     // První náběh ARR brzdy dá náskok EDB před aktivací tlakové brzdy
-                    float TimeToResponseARRTrainBrake = 2.0f;
+                    float TimeToResponseARRTrainBrake = 1.0f;
                     if (lead.ARRTrainBrakeEngage && !lead.BrakeSystem.FirstRunARRTrainBrake)
                         lead.BrakeSystem.FirstRunARRTrainBrake = true;
                     
@@ -3266,11 +3269,14 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     }
 
                     // Pokud nebude aktivní EDB, naskočí tlaková okamžitě 
-                    if (lead.DynamicBrakeForceN == 0)
+                    if (lead.BrakeSystem.PressureConverterBaseEDB == 0 && lead.BrakeSystem.ARRTrainBrakeCycle3 == 0)
                     {
                         TimeToResponseARRTrainBrake = 0;
                         lead.BrakeSystem.FirstRunARRTrainBrake = false;
                     }
+                          
+                    if (train.EqualReservoirPressurePSIorInHg > 0.95f * lead.TrainBrakeController.MaxPressurePSI)                                            
+                        lead.BrakeSystem.ARRTrainBrakeCycle3 = 0;                    
 
                     if (!lead.BrakeSystem.FirstRunARRTrainBrake
                         && lead.ARRTrainBrakeEngage 
@@ -3286,24 +3292,26 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                             lead.BrakeSystem.ARRTrainBrakeCycle1 += elapsedClockSeconds;
                             if (lead.BrakeSystem.ARRTrainBrakeCycle1 > TimeToResponseARRTrainBrake)
                             {
-                                lead.BrakeSystem.ARRTrainBrakeCycle2 += elapsedClockSeconds;
-                                if (lead.BrakeSystem.ARRTrainBrakeCycle2 < 2.0f)
-                                {                                    
-                                    if (Math.Abs(lead.AccelerationMpSS) < ARRSpeedDeccelaration)
+                                lead.BrakeSystem.ARRTrainBrakeCycle2 += elapsedClockSeconds;                                                                                                
+                                if (lead.BrakeSystem.ARRTrainBrakeCycle2 < 1.0f)
+                                {
+                                    if (lead.BrakeSystem.ARRTrainBrakeCycle3 == 0)
+                                        DeltaPressure = 0.4f * 14.50377f;
+                                    if (lead.AccelerationMpSS > -ARRSpeedDeccelaration)
                                     {
                                         lead.ARRTrainBrakeEngage_Apply = true;
                                         lead.ARRTrainBrakeEngage_Release = false;
                                         if (train.EqualReservoirPressurePSIorInHg > 0)
-                                            train.EqualReservoirPressurePSIorInHg -= lead.TrainBrakeController.ApplyRatePSIpS * ApplyCoef * elapsedClockSeconds;
+                                            train.EqualReservoirPressurePSIorInHg -= DeltaPressure * ApplyCoef * elapsedClockSeconds;
                                         if (train.EqualReservoirPressurePSIorInHg < 0)
                                             train.EqualReservoirPressurePSIorInHg = 0;
-                                    }                                    
-                                    if (Math.Abs(lead.AccelerationMpSS) > ARRSpeedDeccelaration)
+                                    }
+                                    else
                                     {
                                         lead.ARRTrainBrakeEngage_Apply = false;
                                         lead.ARRTrainBrakeEngage_Release = true;
                                         if (train.EqualReservoirPressurePSIorInHg < lead.TrainBrakeController.MaxPressurePSI)
-                                            train.EqualReservoirPressurePSIorInHg += lead.TrainBrakeController.ReleaseRatePSIpS * elapsedClockSeconds;
+                                            train.EqualReservoirPressurePSIorInHg += DeltaPressure * elapsedClockSeconds;
                                         if (train.EqualReservoirPressurePSIorInHg > lead.TrainBrakeController.MaxPressurePSI)
                                             train.EqualReservoirPressurePSIorInHg = lead.TrainBrakeController.MaxPressurePSI;
                                     }
@@ -3312,6 +3320,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                                 {
                                     lead.BrakeSystem.ARRTrainBrakeCycle1 = 0;
                                     lead.BrakeSystem.ARRTrainBrakeCycle2 = 0;
+                                    lead.BrakeSystem.ARRTrainBrakeCycle3++;
                                 }
                             }
                         }
@@ -3320,7 +3329,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                             lead.ARRTrainBrakeEngage_Apply = false;
                             lead.ARRTrainBrakeEngage_Release = true;
                             if (train.EqualReservoirPressurePSIorInHg < lead.TrainBrakeController.MaxPressurePSI)
-                                train.EqualReservoirPressurePSIorInHg += lead.TrainBrakeController.ReleaseRatePSIpS * elapsedClockSeconds;
+                                train.EqualReservoirPressurePSIorInHg += DeltaPressure * elapsedClockSeconds;
                             if (train.EqualReservoirPressurePSIorInHg > lead.TrainBrakeController.MaxPressurePSI)
                                 train.EqualReservoirPressurePSIorInHg = lead.TrainBrakeController.MaxPressurePSI;
                         }
