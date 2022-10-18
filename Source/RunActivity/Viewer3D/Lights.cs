@@ -438,13 +438,15 @@ namespace Orts.Viewer3D
             var oldEnabled = Enabled;
             Enabled = true;
             if (Light.Headlight != LightHeadlightCondition.Ignore)
-            {
+            {                
                 if (Light.Headlight == LightHeadlightCondition.Off)
-                    Enabled &= lightViewer.TrainHeadlight == 0;
+                    Enabled &= lightViewer.TrainHeadlight == 0;                
                 else if (Light.Headlight == LightHeadlightCondition.Dim)
                     Enabled &= lightViewer.TrainHeadlight == 1;
                 else if (Light.Headlight == LightHeadlightCondition.Bright)
-                    Enabled &= lightViewer.TrainHeadlight == 2;
+                    Enabled &= lightViewer.TrainHeadlight == 2;                
+                else if (Light.Headlight == LightHeadlightCondition.DLight)
+                    Enabled &= lightViewer.TrainHeadlight == 3 || lightViewer.TrainHeadlight == 1 || lightViewer.TrainHeadlight == 2;
                 else if (Light.Headlight == LightHeadlightCondition.DimBright)
                     Enabled &= lightViewer.TrainHeadlight >= 1;
                 else if (Light.Headlight == LightHeadlightCondition.OffDim)
@@ -452,7 +454,7 @@ namespace Orts.Viewer3D
                 else if (Light.Headlight == LightHeadlightCondition.OffBright)
                     Enabled &= lightViewer.TrainHeadlight != 1;
                 else
-                    Enabled &= false;
+                    Enabled &= false;                
             }
             if (Light.Unit != LightUnitCondition.Ignore)
             {

@@ -580,8 +580,7 @@ namespace Orts.Viewer3D
             BellCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
             ToggleCabLightCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
             ToggleCabFloodLightCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
-            WipersCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
-            HeadlightCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
+            WipersCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;            
             ChangeCabCommand.Receiver = this;
             ToggleDoorsLeftCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
             ToggleDoorsRightCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
@@ -602,6 +601,8 @@ namespace Orts.Viewer3D
             TogglePowerKeyCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
 
             // Icik
+            HeadlightUpCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
+            HeadlightDownCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
             ToggleHV2SwitchUpCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
             ToggleHV3SwitchUpCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
             ToggleHV3SwitchDownCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;

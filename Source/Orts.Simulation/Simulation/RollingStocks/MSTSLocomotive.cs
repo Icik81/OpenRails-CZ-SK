@@ -673,6 +673,7 @@ namespace Orts.Simulation.RollingStocks
         public bool SeasonSwitchPosition;
         public int DirectionPosition;
         public bool DirectionControllerBlocked;
+        public int HeadLightPosition;
 
         // Jindrich
         public bool IsActive = false;
@@ -1828,6 +1829,7 @@ namespace Orts.Simulation.RollingStocks
             outf.Write(WiperStatusChange);
             outf.Write(SeasonSwitchPosition);
             outf.Write(DirectionPosition);
+            outf.Write(HeadLightPosition);
 
             base.Save(outf);
 
@@ -1946,6 +1948,7 @@ namespace Orts.Simulation.RollingStocks
             WiperStatusChange = inf.ReadBoolean();
             SeasonSwitchPosition = inf.ReadBoolean();
             DirectionPosition = inf.ReadInt32();
+            HeadLightPosition = inf.ReadInt32();
 
             base.Restore(inf);
 
@@ -3965,7 +3968,7 @@ namespace Orts.Simulation.RollingStocks
         public void SetCarLightsPowerOn()
         {
             if (LocoReadyToGo)
-                Headlight = 1;
+                Headlight = 0;
 
             if (Battery)
                 CarLightsPowerOn = true;
@@ -4014,7 +4017,7 @@ namespace Orts.Simulation.RollingStocks
                 if (DynamicBrakeController != null)
                     DynamicBrakePercent = Simulator.DynamicBrakeLocoHelper;             
 
-                Headlight = 1;
+                Headlight = 0;
                 Mirel.Ls90power = SubSystems.Mirel.LS90power.Off;
             }
 
@@ -8093,6 +8096,46 @@ namespace Orts.Simulation.RollingStocks
 
         // Icik
         #region Icik`s code
+        public void ToggleHeadLightsUp()
+        {
+            if (HeadLightPosition < 3)
+            {
+                HeadLightPosition++;
+                SignalEvent(Event.CabLightSwitchToggle);
+                HeadLights();
+            }
+        }
+        public void ToggleHeadLightsDown()
+        {
+            if (HeadLightPosition > 0)                
+            {
+                HeadLightPosition--;
+                SignalEvent(Event.CabLightSwitchToggle);
+                HeadLights();
+            }
+        }
+        public void HeadLights()
+        {            
+            switch (HeadLightPosition)
+            {
+                case 0:
+                    Headlight = 0;                    
+                    break;
+                case 1:
+                    Headlight = 3;
+                    Simulator.Confirmer.Information(Simulator.Catalog.GetString("Position Light"));
+                    break;
+                case 2:
+                    Headlight = 1;
+                    Simulator.Confirmer.Information(Simulator.Catalog.GetString("Dim Headlight"));
+                    break;
+                case 3:
+                    Headlight = 2;
+                    Simulator.Confirmer.Information(Simulator.Catalog.GetString("Bright Headlight"));
+                    break;                
+            }
+        }
+
         public void CarFrameUpdate()
         {
             this.CarFrameUpdateState++;
@@ -11360,7 +11403,10 @@ namespace Orts.Simulation.RollingStocks
 
                 case CABViewControlTypes.FRONT_HLIGHT:
                     {
-                        data = Headlight;
+                        if (HeadLightPosition == 0)
+                            data = 0;
+                        else
+                            data = HeadLightPosition - 1;
                         break;
                     }
                 case CABViewControlTypes.WHEELSLIP:

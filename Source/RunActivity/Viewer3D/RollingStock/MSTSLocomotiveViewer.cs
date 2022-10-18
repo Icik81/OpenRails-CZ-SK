@@ -278,8 +278,8 @@ namespace Orts.Viewer3D.RollingStock
             UserInputCommands.Add(UserCommand.ControlBell, new Action[] { () => new BellCommand(Viewer.Log, false), () => new BellCommand(Viewer.Log, true) });
             UserInputCommands.Add(UserCommand.ControlBellToggle, new Action[] { Noop, () => new BellCommand(Viewer.Log, !Locomotive.Bell) });
             UserInputCommands.Add(UserCommand.ControlAlerter, new Action[] { () => new AlerterCommand(Viewer.Log, false), () => new AlerterCommand(Viewer.Log, true) });
-            UserInputCommands.Add(UserCommand.ControlHeadlightIncrease, new Action[] { Noop, () => new HeadlightCommand(Viewer.Log, true) });
-            UserInputCommands.Add(UserCommand.ControlHeadlightDecrease, new Action[] { Noop, () => new HeadlightCommand(Viewer.Log, false) });
+            UserInputCommands.Add(UserCommand.ControlHeadlightIncrease, new Action[] { Noop, () => new HeadlightUpCommand(Viewer.Log) });
+            UserInputCommands.Add(UserCommand.ControlHeadlightDecrease, new Action[] { Noop, () => new HeadlightDownCommand(Viewer.Log) });
             UserInputCommands.Add(UserCommand.ControlLight, new Action[] { Noop, () => new ToggleCabLightCommand(Viewer.Log) });
             UserInputCommands.Add(UserCommand.ControlFloodLight, new Action[] { Noop, () => new ToggleCabFloodLightCommand(Viewer.Log) });
             UserInputCommands.Add(UserCommand.ControlRefill, new Action[] { () => StopRefillingOrUnloading(Viewer.Log), () => AttemptToRefillOrUnload() });
@@ -3306,11 +3306,15 @@ namespace Orts.Viewer3D.RollingStock
                         }
                     }
                     break;
-                case CABViewControlTypes.FRONT_HLIGHT:
-                    var hl = ChangedValue(0);
-                    if (hl != 0 && !IsChanged)
+                case CABViewControlTypes.FRONT_HLIGHT:                    
+                    if (ChangedValue(0) > 0 && !IsChanged)
                     {
-                        new HeadlightCommand(Viewer.Log, hl > 0);
+                        new HeadlightUpCommand(Viewer.Log);
+                        IsChanged = true;
+                    }
+                    if (ChangedValue(0) < 0 && !IsChanged)
+                    {
+                        new HeadlightDownCommand(Viewer.Log);
                         IsChanged = true;
                     }
                     break;

@@ -100,9 +100,10 @@ namespace Orts.Formats.Msts
     public enum LightHeadlightCondition
     {
         Ignore,
-        Off,
+        Off,        
         Dim,
         Bright,
+        DLight, // Poziční světla
         DimBright, // MSTSBin
         OffBright, // MSTSBin
         OffDim, // MSTSBin

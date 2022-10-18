@@ -1322,6 +1322,18 @@ namespace Orts.Simulation.RollingStocks
                     CompressorSwitch2 = 1;
                     CompressorMode_OffAuto = true;
                     CompressorMode2_OffAuto = true;
+                    if (!CompressorCombined && !CompressorCombined2)
+                    {
+                        CompressorMode_OffAuto = true;
+                        CompressorMode2_OffAuto = true;
+                    }
+                    else
+                    {
+                        if (!CompressorCombined)
+                            CompressorMode_OffAuto = false;
+                        if (!CompressorCombined2)
+                            CompressorMode2_OffAuto = false;
+                    }
                     HV4Switch = 1;
 
                     SplashScreen = false;

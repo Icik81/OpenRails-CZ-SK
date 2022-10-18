@@ -1076,37 +1076,35 @@ namespace Orts.Common
     }
 
     [Serializable()]
-    public sealed class HeadlightCommand : BooleanCommand
+    public sealed class HeadlightUpCommand : Command
     {
         public static MSTSLocomotive Receiver { get; set; }
 
-        public HeadlightCommand(CommandLog log, bool toState)
-            : base(log, toState)
+        public HeadlightUpCommand(CommandLog log)
+            : base(log)
         {
             Redo();
         }
 
         public override void Redo()
         {
-            if (ToState)
-            {
-                switch (Receiver.Headlight)
-                {
-                    case 0: Receiver.Headlight = 1; Receiver.Simulator.Confirmer.Confirm(CabControl.Headlight, CabSetting.Neutral); break;
-                    case 1: Receiver.Headlight = 2; Receiver.Simulator.Confirmer.Confirm(CabControl.Headlight, CabSetting.On); break;
-                }
-                Receiver.SignalEvent(Event.LightSwitchToggle);
-            }
-            else
-            {
-                switch (Receiver.Headlight)
-                {
-                    case 1: Receiver.Headlight = 0; Receiver.Simulator.Confirmer.Confirm(CabControl.Headlight, CabSetting.Off); break;
-                    case 2: Receiver.Headlight = 1; Receiver.Simulator.Confirmer.Confirm(CabControl.Headlight, CabSetting.Neutral); break;
-                }
-                Receiver.SignalEvent(Event.LightSwitchToggle);
-            }
-            // Report();
+            Receiver.ToggleHeadLightsUp();
+        }
+    }
+    [Serializable()]
+    public sealed class HeadlightDownCommand : Command
+    {
+        public static MSTSLocomotive Receiver { get; set; }
+
+        public HeadlightDownCommand(CommandLog log)
+            : base(log)
+        {
+            Redo();
+        }
+
+        public override void Redo()
+        {
+            Receiver.ToggleHeadLightsDown();
         }
     }
 
