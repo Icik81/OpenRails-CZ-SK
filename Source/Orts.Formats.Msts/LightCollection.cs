@@ -102,11 +102,11 @@ namespace Orts.Formats.Msts
         Ignore,
         Off,        
         Dim,
-        Bright,
-        DLight, // Poziční světla
+        Bright,        
         DimBright, // MSTSBin
         OffBright, // MSTSBin
         OffDim, // MSTSBin
+        DLight, // Poziční světla
         // TODO: DimBright?, // MSTSBin labels this the same as DimBright. Not sure what it means.
     }
 

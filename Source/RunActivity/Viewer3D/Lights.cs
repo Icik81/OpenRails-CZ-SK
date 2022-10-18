@@ -446,7 +446,7 @@ namespace Orts.Viewer3D
                 else if (Light.Headlight == LightHeadlightCondition.Bright)
                     Enabled &= lightViewer.TrainHeadlight == 2;                
                 else if (Light.Headlight == LightHeadlightCondition.DLight)
-                    Enabled &= lightViewer.TrainHeadlight == 3 || lightViewer.TrainHeadlight == 1 || lightViewer.TrainHeadlight == 2;
+                    Enabled &= lightViewer.TrainHeadlight == 7 || lightViewer.TrainHeadlight == 1 || lightViewer.TrainHeadlight == 2;
                 else if (Light.Headlight == LightHeadlightCondition.DimBright)
                     Enabled &= lightViewer.TrainHeadlight >= 1;
                 else if (Light.Headlight == LightHeadlightCondition.OffDim)

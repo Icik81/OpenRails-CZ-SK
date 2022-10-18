@@ -8122,7 +8122,7 @@ namespace Orts.Simulation.RollingStocks
                     Headlight = 0;                    
                     break;
                 case 1:
-                    Headlight = 3;
+                    Headlight = 7;
                     Simulator.Confirmer.Information(Simulator.Catalog.GetString("Position Light"));
                     break;
                 case 2:
