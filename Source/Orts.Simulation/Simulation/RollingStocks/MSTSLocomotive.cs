@@ -9088,7 +9088,7 @@ namespace Orts.Simulation.RollingStocks
         }
         public void ToggleCompressorMode_OffAuto()
         {
-            if (Compressor_I && !CompressorCombined)
+            if (Compressor_I && !CompressorCombined && !CompressorCombined2)
             {
                 CompressorMode_OffAuto = !CompressorMode_OffAuto;
                 if (CompressorMode_OffAuto) SignalEvent(Event.CompressorMode_OffAutoOn);
@@ -9098,7 +9098,7 @@ namespace Orts.Simulation.RollingStocks
         }
         public void ToggleCompressorMode2_OffAuto()
         {
-            if (Compressor_II && !CompressorCombined2)
+            if (Compressor_II && !CompressorCombined && !CompressorCombined2)
             {
                 CompressorMode2_OffAuto = !CompressorMode2_OffAuto;
                 if (CompressorMode2_OffAuto) SignalEvent(Event.CompressorMode_OffAutoOn);
