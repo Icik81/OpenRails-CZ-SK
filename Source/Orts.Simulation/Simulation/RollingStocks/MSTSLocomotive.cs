@@ -6093,7 +6093,7 @@ namespace Orts.Simulation.RollingStocks
                         {   //BaseFrictionCoefficientFactor = Math.Min((0.4539f + 1.0922f * (0.5f - pric)), 0.8f); // should give a minimum value between 0.8 and 1.0
                             BaseFrictionCoefficientFactor = Math.Min(1 - (pric * 0.5f), BaseFrictionCoefficientFactor0);
                         }
-                        if (BaseFrictionCoefficientFactor < 0.68f) BaseFrictionCoefficientFactor = 0.68f;
+                        if (BaseFrictionCoefficientFactor < 0.78f) BaseFrictionCoefficientFactor = 0.78f;
                     }
                     else // if not proportional to precipitation use fixed friction value of 0.8 x friction coefficient of 0.33
                     {
@@ -6212,6 +6212,7 @@ namespace Orts.Simulation.RollingStocks
                 BaseFrictionCoefficientFactor *= (1 - (TreeLeavesLevel / 100f));
             }
 
+            BaseFrictionCoefficientFactor *= TrackFactor;
 
             // For wagons use base Curtius-Kniffler adhesion factor - u = 0.33
             float WagonCurtius_KnifflerA = 7.5f;
@@ -6223,32 +6224,32 @@ namespace Orts.Simulation.RollingStocks
 
             float WagonBaseuMax = (WagonCurtius_KnifflerA / (MpS.ToKpH(AbsSpeedMpS) + WagonCurtius_KnifflerB) + WagonCurtius_KnifflerC);
             // Icik
-            Train.WagonCoefficientFriction = WagonBaseuMax * BaseFrictionCoefficientFactor * AdhesionMultiplier * TrackFactor;  // Find friction coefficient factor for wagons based upon environmental conditions
+            Train.WagonCoefficientFriction = WagonBaseuMax * BaseFrictionCoefficientFactor * AdhesionMultiplier;  // Find friction coefficient factor for wagons based upon environmental conditions
             WagonCoefficientFrictionHUD = Train.WagonCoefficientFriction; // Save value for HUD display
 
             if (EngineType == EngineTypes.Steam && SteamDrvWheelWeightLbs < 10000 && Simulator.WeatherType == WeatherType.Clear)
             {
                 BaseFrictionCoefficientFactor *= 0.75f;  // Dry track - static friction for vehicles with wheel weights less then 10,000lbs - u = 0.25
-
             }
 
             if (WheelSlip && ThrottlePercent > 0.2f && !BrakeSkid)   // Test to see if loco wheel is slipping, then coeff of friction will be decreased below static value. Sanding will override this somewhat
             {
                 BaseFrictionCoefficientFactor = 0.15f * SandingFrictionCoefficientFactor;  // Descrease friction to take into account dynamic (kinetic) friction U = 0.0525
             }
-            else if (WheelSlip && ThrottlePercent < 0.1f && BrakeSkid) // Test to see if loco wheel is skidding due to brake application
+            else 
+            if (WheelSlip && ThrottlePercent < 0.1f && BrakeSkid) // Test to see if loco wheel is skidding due to brake application
             {
                 BaseFrictionCoefficientFactor = 0.15f * SandingFrictionCoefficientFactor;  // Descrease friction to take into account dynamic (kinetic) friction U = 0.0525
             }
             
             // Icik
-            Train.LocomotiveCoefficientFriction = BaseuMax * BaseFrictionCoefficientFactor * AdhesionMultiplier * TrackFactor;  // Find friction coefficient factor for locomotive
+            Train.LocomotiveCoefficientFriction = BaseuMax * BaseFrictionCoefficientFactor * AdhesionMultiplier;  // Find friction coefficient factor for locomotive
             //Train.LocomotiveCoefficientFriction = MathHelper.Clamp(Train.LocomotiveCoefficientFriction, 0.05f, 0.8f); // Ensure friction coefficient never exceeds a "reasonable" value
 
             // Set adhesion conditions for diesel, electric or steam geared locomotives
             if (elapsedClockSeconds > 0)
             {
-                LocomotiveAxle.AdhesionConditions = AdhesionMultiplier * AdhesionFilter.Filter(BaseFrictionCoefficientFactor + AdhesionRandom, elapsedClockSeconds) * TrackFactor;
+                LocomotiveAxle.AdhesionConditions = AdhesionMultiplier * AdhesionFilter.Filter(BaseFrictionCoefficientFactor + AdhesionRandom, elapsedClockSeconds);
                 LocomotiveAxle.AdhesionConditions = MathHelper.Clamp(LocomotiveAxle.AdhesionConditions, 0.05f, 2.5f); // Avoids NaNs in axle speed computing
             }
 
