@@ -8101,7 +8101,7 @@ namespace Orts.Simulation.RollingStocks
             if (HeadLightPosition < 3)
             {
                 HeadLightPosition++;
-                SignalEvent(Event.CabLightSwitchToggle);
+                SignalEvent(Event.LightSwitchToggle);
                 HeadLights();
             }
         }
@@ -8110,7 +8110,7 @@ namespace Orts.Simulation.RollingStocks
             if (HeadLightPosition > 0)                
             {
                 HeadLightPosition--;
-                SignalEvent(Event.CabLightSwitchToggle);
+                SignalEvent(Event.LightSwitchToggle);
                 HeadLights();
             }
         }
@@ -8119,19 +8119,20 @@ namespace Orts.Simulation.RollingStocks
             switch (HeadLightPosition)
             {
                 case 0:
-                    Headlight = 0;                    
+                    Headlight = 0;
+                    Simulator.Confirmer.Information(Simulator.Catalog.GetString("Position Light: ") + Simulator.Catalog.GetString("Off"));
                     break;
                 case 1:
                     Headlight = 7;
-                    Simulator.Confirmer.Information(Simulator.Catalog.GetString("Position Light"));
+                    Simulator.Confirmer.Information(Simulator.Catalog.GetString("Position Light: ") + Simulator.Catalog.GetString("On"));
                     break;
                 case 2:
                     Headlight = 1;
-                    Simulator.Confirmer.Information(Simulator.Catalog.GetString("Dim Headlight"));
+                    Simulator.Confirmer.Information(Simulator.Catalog.GetString("Dim Headlight: ") + Simulator.Catalog.GetString("On"));
                     break;
                 case 3:
                     Headlight = 2;
-                    Simulator.Confirmer.Information(Simulator.Catalog.GetString("Bright Headlight"));
+                    Simulator.Confirmer.Information(Simulator.Catalog.GetString("Bright Headlight: ") + Simulator.Catalog.GetString("On"));
                     break;                
             }
         }

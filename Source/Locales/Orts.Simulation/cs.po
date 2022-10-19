@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Orts.Simulation\n"
-"POT-Creation-Date: 2022-10-19 16:12:32+0200\n"
-"PO-Revision-Date: 2022-10-19 16:15+0200\n"
+"POT-Creation-Date: 2022-10-19 17:06:04+0200\n"
+"PO-Revision-Date: 2022-10-19 17:08+0200\n"
 "Last-Translator: Altmann <altmann@bk.ru>\n"
 "Language-Team: Open Rails Dev Team\n"
 "Language: cs\n"
@@ -1591,7 +1591,10 @@ msgstr "Předmazávání spalovacího motoru probíhá..."
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSElectricLocomotive.cs:2911
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSElectricLocomotive.cs:2920
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSElectricLocomotive.cs:2942
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:9248
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:8097
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:8101
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:8105
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:9249
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSSteamLocomotive.cs:6180
 msgid "On"
 msgstr "Zapnuto"
@@ -1601,7 +1604,8 @@ msgstr "Zapnuto"
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSElectricLocomotive.cs:2915
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSElectricLocomotive.cs:2924
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSElectricLocomotive.cs:2944
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:9250
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:8093
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:9251
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSSteamLocomotive.cs:6180
 #: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/MSTS/AirSinglePipe.cs:249
 msgid "Off"
@@ -1748,98 +1752,99 @@ msgstr "Naběrač vody je poškozen, nelze ji doplnit"
 msgid "There's no more sand in the storage!"
 msgstr "Pískovače jsou prázdné!"
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:8096
-msgid "Position Light"
-msgstr "Poziční světlo"
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:8093
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:8097
+msgid "Position Light: "
+msgstr "Poziční světlo: "
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:8100
-msgid "Dim Headlight"
-msgstr "Tlumený reflektor"
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:8101
+msgid "Dim Headlight: "
+msgstr "Tlumený reflektor: "
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:8104
-msgid "Bright Headlight"
-msgstr "Dálkový reflektor"
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:8105
+msgid "Bright Headlight: "
+msgstr "Dálkový reflektor: "
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:9248
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:9250
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:9249
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:9251
 msgid "Disabling EDB: "
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:9486
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:9563
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:9621
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:9487
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:9564
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:9622
 msgid "Position Forward"
 msgstr "Poloha Vpřed"
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:9487
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:9489
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:9562
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:9620
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:9488
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:9490
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:9563
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:9621
 msgid "Position D"
 msgstr "Poloha D"
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:9488
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:9560
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:9619
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:9489
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:9561
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:9620
 msgid "Position 0"
 msgstr "Poloha 0"
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:9490
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:9561
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:9618
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:9491
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:9562
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:9619
 msgid "Position Backward"
 msgstr "Poloha Vzad"
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:9675
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:9676
 msgid "Directional lever retracted"
 msgstr "Směrová páka vložena"
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:9677
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:9678
 msgid "Directional lever extended"
 msgstr "Směrová páka vyjmuta"
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:9711
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:9712
 msgid "World Object reloaded!"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:10125
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:10126
 msgid "Season heating switched to Summer!"
 msgstr "Přepínač sezóny topení do polohy léto!"
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:10128
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:10129
 msgid "Season heating switched to Winter!"
 msgstr "Přepínač sezóny topení do polohy zima!"
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:10155
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:10156
 msgid "Power system changed to 25kV."
 msgstr "Systém napájení změněn na 25kV."
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:10159
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:10160
 msgid "Power system changed to 3kV + 25kV."
 msgstr "Systém napájení změněn na 3kV + 25kV."
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:10178
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:10179
 msgid "Power system changed to 3kV."
 msgstr "Systém napájení změněn na 3kV."
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:10263
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:10264
 msgid ""
 "The marker has been deleted and marked for deletion in an external database."
 msgstr "Marker byl vymazán a označen pro vymazání v externí databázi."
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:10327
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:10328
 msgid "The power station is stored in an external database."
 msgstr "Napaječka uložena do externí databáze."
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:10385
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:10386
 msgid "Set "
 msgstr "Nastaveno "
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:10385
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:10386
 msgid "V and stored in an external database."
 msgstr "V a uloženo do externí databáze."
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:12615
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:12616
 msgid "Selected speed confirmed."
 msgstr "Rychlost AFB byla potvrzena."
 
