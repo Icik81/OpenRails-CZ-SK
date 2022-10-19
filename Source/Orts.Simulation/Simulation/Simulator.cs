@@ -1439,7 +1439,7 @@ namespace Orts.Simulation
             }
             AI = null;
             train.Name = "PLAYER";
-            train.Cars[0].Headlight = 0;
+            //train.Cars[0].Headlight = 0;
             OriginalPlayerTrain = train;
             train.Efficiency = 0.9f; // Forced efficiency, as considered most similar to human player
             bool canPlace = true;

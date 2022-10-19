@@ -3967,8 +3967,8 @@ namespace Orts.Simulation.RollingStocks
         // Nastaví příznak zapnutých baterií a napájení pro zapnutí světel
         public void SetCarLightsPowerOn()
         {
-            if (LocoReadyToGo)
-                Headlight = 0;
+            //if (LocoReadyToGo)
+            //    Headlight = 0;
 
             if (Battery)
                 CarLightsPowerOn = true;
