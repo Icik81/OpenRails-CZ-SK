@@ -4015,9 +4015,17 @@ namespace Orts.Simulation.RollingStocks
             {                                
                 ThrottlePercent = Simulator.ThrottleLocoHelper;
                 if (DynamicBrakeController != null)
-                    DynamicBrakePercent = Simulator.DynamicBrakeLocoHelper;             
+                    DynamicBrakePercent = Simulator.DynamicBrakeLocoHelper;
+                
+                if (WheelSlipWarning || WheelSlip)                                 
+                {   
+                    AntiSlip = true;
+                    SimpleAdhesion();
+                    Sander = true;
+                }
+                else
+                    Sander = false;
 
-                Headlight = 0;
                 Mirel.Ls90power = SubSystems.Mirel.LS90power.Off;
             }
 
@@ -6296,7 +6304,10 @@ namespace Orts.Simulation.RollingStocks
                 float SanderPressureDiffPSI = ActualAirConsumptionM3pS / MainResVolumeM3;
                 MainResPressurePSI -= SanderPressureDiffPSI;
                 MainResPressurePSI = MathHelper.Clamp(MainResPressurePSI, 0.001f, MaxMainResPressurePSI);
-                Simulator.Confirmer.Message(ConfirmLevel.Information, CurrentTrackSandBoxCapacityKG + " Kg");
+                if (!LocoHelperOn)
+                    Simulator.Confirmer.Message(ConfirmLevel.Information, CurrentTrackSandBoxCapacityKG + " Kg");
+                else
+                    Simulator.Confirmer.Message(ConfirmLevel.Information, Simulator.Catalog.GetString("Helper") + " " + CurrentTrackSandBoxCapacityKG + " Kg");
             }
             //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("CurrentTrackSandBoxCapacityM3: " + CurrentTrackSandBoxCapacityM3));
         }
