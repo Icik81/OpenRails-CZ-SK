@@ -36,15 +36,17 @@ namespace Orts.Viewer3D.Popups
             get;
         }
 
+        public bool HelperOptionsOpened;
+
         public CarOperationsWindow(WindowManager owner)
-            : base(owner, Window.DecorationSize.X + owner.TextFontDefault.Height * 23, Window.DecorationSize.Y + (owner.TextFontDefault.Height + 2) * 17 + ControlLayout.SeparatorSize * 9, Viewer.Catalog.GetString("*** Car Operation Menu ***"))
+            : base(owner, Window.DecorationSize.X + owner.TextFontDefault.Height * 23, Window.DecorationSize.Y + (owner.TextFontDefault.Height + 2) * 18 + ControlLayout.SeparatorSize * 11, Viewer.Catalog.GetString("*** Car Operation Menu ***"))
         {
             Viewer = owner.Viewer;
         }
 
         protected override ControlLayout Layout(ControlLayout layout)
         {
-            Label ID, buttonHandbrake, buttonTogglePower, buttonToggleMU, buttonToggleHelper, buttonToggleBrakeHose, buttonToggleAngleCockA, buttonToggleAngleCockB, buttonToggleBleedOffValve, buttonBrakeCarMode, buttonBrakeCarModePL, buttonBrakeCarDeactivate, buttonTwoPipesConnection, buttonLeftDoor, buttonRightDoor, buttonHeating, buttonClose;
+            Label ID, buttonHandbrake, buttonTogglePower, buttonToggleMU, buttonToggleHelper, buttonToggleHelperOptions, buttonToggleBrakeHose, buttonToggleAngleCockA, buttonToggleAngleCockB, buttonToggleBleedOffValve, buttonBrakeCarMode, buttonBrakeCarModePL, buttonBrakeCarDeactivate, buttonTwoPipesConnection, buttonLeftDoor, buttonRightDoor, buttonHeating, buttonClose;
 
             var vbox = base.Layout(layout).AddLayoutVertical();
 
@@ -78,7 +80,12 @@ namespace Orts.Viewer3D.Popups
             vbox.Add(buttonToggleHelper = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Connect/Unmount Helper"), LabelAlignment.Center));
             if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive) != null && (Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive).AcceptHelperSignals)
                 buttonToggleHelper.Color = Color.LightGreen;
-            
+
+            vbox.AddHorizontalSeparator();
+            vbox.Add(buttonToggleHelperOptions = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Helper Options"), LabelAlignment.Center));
+            if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive) != null && (Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive).HelperOptionsOpened)
+                buttonToggleHelperOptions.Color = Color.LightGreen;
+
             vbox.AddHorizontalSeparator();
             vbox.Add(buttonToggleBrakeHose = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Toggle Brake Hose Connection"), LabelAlignment.Center));
             if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.FrontBrakeHoseConnected)
@@ -174,6 +181,7 @@ namespace Orts.Viewer3D.Popups
             buttonTogglePower.Click += new Action<Control, Point>(buttonTogglePower_Click);
             buttonToggleMU.Click += new Action<Control, Point>(buttonToggleMU_Click);
             buttonToggleHelper.Click += new Action<Control, Point>(buttonToggleHelper_Click);
+            buttonToggleHelperOptions.Click += new Action<Control, Point>(buttonToggleHelperOptions_Click);
             buttonToggleBrakeHose.Click += new Action<Control, Point>(buttonToggleBrakeHose_Click);
             buttonToggleAngleCockA.Click += new Action<Control, Point>(buttonToggleAngleCockA_Click);
             buttonToggleAngleCockB.Click += new Action<Control, Point>(buttonToggleAngleCockB_Click);
@@ -292,6 +300,22 @@ namespace Orts.Viewer3D.Popups
             }
             else
                 Viewer.Simulator.Confirmer.Warning(Viewer.Catalog.GetString("No Helper command for this type of car!"));
+        }
+        void buttonToggleHelperOptions_Click(Control arg1, Point arg2)
+        {
+
+            if ((Viewer.PlayerTrain.Cars[CarPosition].GetType() == typeof(MSTSLocomotive))
+                ||
+              (Viewer.PlayerTrain.Cars[CarPosition].GetType() == typeof(MSTSElectricLocomotive))
+                ||
+              (Viewer.PlayerTrain.Cars[CarPosition].GetType() == typeof(MSTSDieselLocomotive)))
+            {
+                if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive).AcceptHelperSignals)
+                {                                                           
+                    HelperOptionsOpened = true;                    
+                    Viewer.HelperOptionsWindow.Visible = true;
+                }
+            }
         }
 
         void buttonToggleBrakeHose_Click(Control arg1, Point arg2)

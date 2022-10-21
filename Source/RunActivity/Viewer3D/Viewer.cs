@@ -102,6 +102,8 @@ namespace Orts.Viewer3D
         public TTDetachWindow TTDetachWindow { get; private set; } // for detaching player train in timetable mode
         public PaxWindow PaxWindow { get; private set; }
         public DerailWindow DerailWindow { get; private set; } // Escape window
+        public HelperOptionsWindow HelperOptionsWindow { get; private set; } // Helper Options window
+        public HelperSpeedSelectWindow HelperSpeedSelectWindow { get; private set; } // Helper Options window
 
         // Route Information
         public TileManager Tiles { get; private set; }
@@ -372,6 +374,10 @@ namespace Orts.Viewer3D
             outf.Write(NightTexturesNotLoaded);
             outf.Write(DayTexturesNotLoaded);
             World.WeatherControl.SaveWeatherParameters(outf);
+
+            // Icik
+            outf.Write(HelperOptionsWindow.CarID);
+            outf.Write(CarOperationsWindow.CarPosition);
         }
 
         [CallOnThread("Render")]
@@ -408,6 +414,10 @@ namespace Orts.Viewer3D
             tryLoadingDayTextures = true;
 
             World.WeatherControl.RestoreWeatherParameters(inf);
+
+            // Icik
+            HelperOptionsWindow.CarID = inf.ReadInt32();
+            CarOperationsWindow.CarPosition = inf.ReadInt32();
         }
 
         /// <summary>
@@ -466,6 +476,8 @@ namespace Orts.Viewer3D
             TTDetachWindow = new TTDetachWindow(WindowManager);
             PaxWindow = new PaxWindow(WindowManager);
             DerailWindow = new DerailWindow(WindowManager);
+            HelperOptionsWindow = new HelperOptionsWindow(WindowManager);
+            HelperSpeedSelectWindow = new HelperSpeedSelectWindow(WindowManager);
             WindowManager.Initialize();
 
             InfoDisplay = new InfoDisplay(this);

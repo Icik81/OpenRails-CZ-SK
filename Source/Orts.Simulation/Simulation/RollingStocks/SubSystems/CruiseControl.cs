@@ -2045,7 +2045,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                         Locomotive.SetDynamicBrakePercent(0);
                     }
                 }
-                else if (controllerVolts == 0)
+                else if (controllerVolts == 0 && !Locomotive.LocoHelperOn)
                 {
                     if (maxForceN > 0) maxForceN = 0;
                     if (Locomotive.ThrottlePercent > 0 && !UseThrottle) Locomotive.SetThrottlePercent(0);

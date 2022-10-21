@@ -402,6 +402,7 @@ namespace Orts.Simulation.RollingStocks
         public float PowerReductionResult9;  // Redukce výkonu při poškozeném motoru 
         public float PowerReductionResult10;  // Redukce výkonu při vypnutém proudu
         public float PowerReductionResult11;  // Redukce výkonu při vypnutém pultu řízení
+        public float PowerReductionResult12;  // Redukce výkonu pro postrk při Don`t push! 
 
         public float DieselHeaterPower;
         public float DieselHeaterPower0;

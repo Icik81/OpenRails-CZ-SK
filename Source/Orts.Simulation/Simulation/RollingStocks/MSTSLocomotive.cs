@@ -674,6 +674,12 @@ namespace Orts.Simulation.RollingStocks
         public int DirectionPosition;
         public bool DirectionControllerBlocked;
         public int HeadLightPosition;
+        public bool HelperLocoDontPush;
+        public bool HelperLocoPush;
+        public bool HelperLocoFollow;
+        public int HelperSpeedPush;
+        public bool HelperPushStart;
+        public bool HelperOptionsOpened;
 
         // Jindrich
         public bool IsActive = false;
@@ -1830,6 +1836,12 @@ namespace Orts.Simulation.RollingStocks
             outf.Write(SeasonSwitchPosition);
             outf.Write(DirectionPosition);
             outf.Write(HeadLightPosition);
+            outf.Write(HelperLocoDontPush);
+            outf.Write(HelperLocoPush);
+            outf.Write(HelperLocoFollow);
+            outf.Write(HelperSpeedPush);
+            outf.Write(HelperPushStart);
+            outf.Write(HelperOptionsOpened);            
 
             base.Save(outf);
 
@@ -1949,6 +1961,12 @@ namespace Orts.Simulation.RollingStocks
             SeasonSwitchPosition = inf.ReadBoolean();
             DirectionPosition = inf.ReadInt32();
             HeadLightPosition = inf.ReadInt32();
+            HelperLocoDontPush = inf.ReadBoolean();
+            HelperLocoPush = inf.ReadBoolean();
+            HelperLocoFollow = inf.ReadBoolean();
+            HelperSpeedPush = inf.ReadInt32();
+            HelperPushStart = inf.ReadBoolean();
+            HelperOptionsOpened = inf.ReadBoolean();
 
             base.Restore(inf);
 
@@ -3041,7 +3059,8 @@ namespace Orts.Simulation.RollingStocks
                     + PowerReductionResult8
                     + PowerReductionResult9
                     + PowerReductionResult10
-                    + PowerReductionResult11)
+                    + PowerReductionResult11
+                    + PowerReductionResult12)
                     PowerReduction += 1 * elapsedClockSeconds;
 
                 if (PowerReduction >
@@ -3055,7 +3074,8 @@ namespace Orts.Simulation.RollingStocks
                     + PowerReductionResult8
                     + PowerReductionResult9
                     + PowerReductionResult10
-                    + PowerReductionResult11)
+                    + PowerReductionResult11
+                    + PowerReductionResult12)
                     PowerReduction -= 1 * elapsedClockSeconds;
 
                 PowerReduction = MathHelper.Clamp(PowerReduction, 0, 0.999f);
@@ -3987,7 +4007,9 @@ namespace Orts.Simulation.RollingStocks
         }
 
         // Nastaví výkon na postrku
-        public void SetHelperLoco()
+        float HelperTimerIncrease;
+        float HelperTimerDecrease;
+        public void SetHelperLoco(float elapsedClockSeconds)
         {
             if (AcceptHelperSignals && PowerUnit)
             {
@@ -4004,6 +4026,7 @@ namespace Orts.Simulation.RollingStocks
             {
                 Simulator.ThrottleLocoHelper = LocalThrottlePercent;
                 Simulator.DynamicBrakeLocoHelper = LocalDynamicBrakePercent;
+                Simulator.ControllerVoltsLocoHelper = ControllerVolts;
                 if (BrakeForceN > 0)
                 {
                     Simulator.ThrottleLocoHelper = 0;
@@ -4012,8 +4035,9 @@ namespace Orts.Simulation.RollingStocks
             }
 
             if (LocoHelperOn || !AcceptPowerSignals)
-            {                                
-                ThrottlePercent = Simulator.ThrottleLocoHelper;
+            {
+                if (!HelperLocoPush)
+                    ThrottlePercent = Simulator.ThrottleLocoHelper;
                 if (DynamicBrakeController != null)
                     DynamicBrakePercent = Simulator.DynamicBrakeLocoHelper;
                 
@@ -4027,6 +4051,54 @@ namespace Orts.Simulation.RollingStocks
                     Sander = false;
 
                 Mirel.Ls90power = SubSystems.Mirel.LS90power.Off;
+
+                if (!HelperLocoDontPush && !HelperLocoPush && !HelperLocoFollow)
+                {
+                    HelperLocoFollow = true;
+                }
+
+                if (Simulator.ControllerVoltsLocoHelper >= 0)
+                    PowerReductionResult12 = 1;
+                else
+                    PowerReductionResult12 = 0;
+                if (HelperLocoDontPush)
+                {
+                    LocalThrottlePercent = 0;
+                    if (ControllerVolts > 0)
+                        PowerReductionResult12 = 1;
+                }
+                if (HelperLocoPush && Simulator.ControllerVoltsLocoHelper >= 0)
+                {
+                    PowerReductionResult12 = 0;
+                    if (AbsSpeedMpS * 3.6 < 0.99f * HelperSpeedPush && HelperPushStart && !WheelSlipWarning && !WheelSlip)
+                    {
+                        HelperTimerIncrease += elapsedClockSeconds;
+                        if (HelperTimerIncrease > 1.0f)
+                        {
+                            HelperTimerIncrease = 0;                            
+                            if (LocalThrottlePercent < 100)
+                                LocalThrottlePercent++;                            
+                        }
+                    }
+                    else
+                    if (AbsSpeedMpS * 3.6 > 0.80f * HelperSpeedPush || !HelperPushStart || WheelSlipWarning || WheelSlip)
+                    {
+                        HelperTimerDecrease += elapsedClockSeconds;
+                        if (HelperTimerDecrease > 0.1f)
+                        {
+                            HelperTimerDecrease = 0;                            
+                            if (LocalThrottlePercent > 0)
+                                LocalThrottlePercent--;                            
+                        }
+                    }
+                    LocalThrottlePercent = MathHelper.Clamp(LocalThrottlePercent, 0, 100);
+                    Train.ControllerVolts = LocalThrottlePercent / 10;
+                }
+                if (HelperLocoFollow)
+                {
+                    if (Simulator.ThrottleLocoHelper != 0)
+                        PowerReductionResult12 = 0;                    
+                }
             }
 
             if (!AcceptPowerSignals)
@@ -4594,7 +4666,7 @@ namespace Orts.Simulation.RollingStocks
                 TMFailure(elapsedClockSeconds);
                 PowerReductionResult(elapsedClockSeconds);
                 SetControlUnit();
-                SetHelperLoco();
+                SetHelperLoco(elapsedClockSeconds);
                 PantoCanHVOff(elapsedClockSeconds);
                 DirectionButtonSetup();
                 PlayerSwitchToRearCab();
