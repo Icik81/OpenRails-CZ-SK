@@ -1667,8 +1667,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
             {
                 if (locomotive.Battery)
                 {
-                    DieselMotorWaterInitTemp = locomotive.CarOutsideTempC0;
-                    DieselMotorOilInitTemp = locomotive.CarOutsideTempC0;
+                    DieselMotorWaterInitTemp = DieselIdleTemperatureDegC;
+                    DieselMotorOilInitTemp = DieselIdleTemperatureDegC - 5;
+                    FakeDieselWaterTemperatureDeg = DieselMotorWaterInitTemp;
+                    FakeDieselOilTemperatureDeg = DieselMotorOilInitTemp;
                 }
                 else
                 {
@@ -1881,6 +1883,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
             OutputPowerW = inf.ReadSingle();
             RealDieselWaterTemperatureDeg = inf.ReadSingle();
             RealDieselOilTemperatureDeg = inf.ReadSingle();
+            FakeDieselWaterTemperatureDeg = inf.ReadSingle();
+            FakeDieselOilTemperatureDeg = inf.ReadSingle();
 
             Boolean gearSaved = inf.ReadBoolean();  // read boolean which indicates gear data was saved
 
@@ -1903,6 +1907,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
             outf.Write(OutputPowerW);
             outf.Write(RealDieselWaterTemperatureDeg);
             outf.Write(RealDieselOilTemperatureDeg);
+            outf.Write(FakeDieselWaterTemperatureDeg);
+            outf.Write(FakeDieselOilTemperatureDeg);
             if (GearBox != null)
             {
                 outf.Write(true);
