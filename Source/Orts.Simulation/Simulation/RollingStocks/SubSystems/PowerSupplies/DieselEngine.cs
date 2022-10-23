@@ -1690,52 +1690,37 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                 return;
             }
 
-            if (EngineStatus == Status.Running)
+            if (locomotive.Battery)
             {
-                FakeDieselWaterTemperatureDeg = RealDieselWaterTemperatureDeg;
-                FakeDieselOilTemperatureDeg = RealDieselOilTemperatureDeg;
-            }
+                DieselMotorWaterInitTemp = RealDieselWaterTemperatureDeg;
+                DieselMotorOilInitTemp = RealDieselOilTemperatureDeg;
 
-            // Fáze zapnutí/vypnutí baterek
-            if (EngineStatus != Status.Running)
-            {
-                if (locomotive.Battery)
-                {
-                    if (RealDieselWaterTemperatureDeg > locomotive.CarOutsideTempC0)
-                        DieselMotorWaterInitTemp = RealDieselWaterTemperatureDeg;
-                    else
-                        DieselMotorWaterInitTemp = locomotive.CarOutsideTempC0;
-
-                    if (RealDieselOilTemperatureDeg > locomotive.CarOutsideTempC0)
-                        DieselMotorOilInitTemp = RealDieselOilTemperatureDeg;
-                    else
-                        DieselMotorOilInitTemp = locomotive.CarOutsideTempC0;
-                }
+                if (RealDieselWaterTemperatureDeg > locomotive.CarOutsideTempC0)
+                    DieselMotorWaterInitTemp = RealDieselWaterTemperatureDeg;
                 else
-                {
-                    DieselMotorWaterInitTemp = 0;
-                    DieselMotorOilInitTemp = 0;
-                }
-            }
+                    DieselMotorWaterInitTemp = locomotive.CarOutsideTempC0;
 
-            if (EngineStatus != Status.Running)
+                if (RealDieselOilTemperatureDeg > locomotive.CarOutsideTempC0)
+                    DieselMotorOilInitTemp = RealDieselOilTemperatureDeg;
+                else
+                    DieselMotorOilInitTemp = locomotive.CarOutsideTempC0;
+            }
+            else
             {
-                if (FakeDieselWaterTemperatureDeg < DieselMotorWaterInitTemp)
-                    FakeDieselWaterTemperatureDeg += elapsedClockSeconds * 20;
-                if (FakeDieselWaterTemperatureDeg > DieselMotorWaterInitTemp)
-                    FakeDieselWaterTemperatureDeg -= elapsedClockSeconds * 20;
-
-                if (FakeDieselOilTemperatureDeg < DieselMotorOilInitTemp)
-                    FakeDieselOilTemperatureDeg += elapsedClockSeconds * 20;
-                if (FakeDieselOilTemperatureDeg > DieselMotorOilInitTemp)
-                    FakeDieselOilTemperatureDeg -= elapsedClockSeconds * 20;
-
-                if (RealDieselWaterTemperatureDeg < FakeDieselWaterTemperatureDeg)
-                    RealDieselWaterTemperatureDeg = FakeDieselWaterTemperatureDeg;
-
-                if (RealDieselOilTemperatureDeg < FakeDieselOilTemperatureDeg)
-                    RealDieselOilTemperatureDeg = FakeDieselOilTemperatureDeg;
+                DieselMotorWaterInitTemp = 0;
+                DieselMotorOilInitTemp = 0;
             }
+
+            if (FakeDieselWaterTemperatureDeg < DieselMotorWaterInitTemp)
+                FakeDieselWaterTemperatureDeg += elapsedClockSeconds * 20;
+            if (FakeDieselWaterTemperatureDeg > DieselMotorWaterInitTemp)
+                FakeDieselWaterTemperatureDeg -= elapsedClockSeconds * 20;
+
+            if (FakeDieselOilTemperatureDeg < DieselMotorOilInitTemp)
+                FakeDieselOilTemperatureDeg += elapsedClockSeconds * 20;
+            if (FakeDieselOilTemperatureDeg > DieselMotorOilInitTemp)
+                FakeDieselOilTemperatureDeg -= elapsedClockSeconds * 20;
+            
 
             // Fáze zahřívání motoru
             locomotive.PowerReductionResult6 = 0;
