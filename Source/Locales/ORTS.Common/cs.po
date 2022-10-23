@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ORTS.Common\n"
-"POT-Creation-Date: 2022-10-08 15:34:03+0200\n"
-"PO-Revision-Date: 2022-10-08 15:37+0200\n"
+"POT-Creation-Date: 2022-10-23 16:49:42+0200\n"
+"PO-Revision-Date: 2022-10-23 17:12+0200\n"
 "Last-Translator: Altmann <altmann@bk.ru>\n"
 "Language-Team: \n"
 "Language: cs\n"
@@ -1299,7 +1299,7 @@ msgstr "Ovládání_CZSK Kombiovladač kompresoru II +"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:277
 msgid "Control_CZSK Compressor II Combined -"
-msgstr "Ovládání_CZSK Kombiovladač kompresoru II +"
+msgstr "Ovládání_CZSK Kombiovladač kompresoru II -"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:278
 msgid "Control_CZSK AuxCompressor Off/On"

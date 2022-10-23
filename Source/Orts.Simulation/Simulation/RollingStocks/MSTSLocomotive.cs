@@ -4009,8 +4009,9 @@ namespace Orts.Simulation.RollingStocks
         // Nastaví výkon na postrku
         float HelperTimerIncrease;
         float HelperTimerDecrease;
+        bool LocoBecomeHelper;
         public void SetHelperLoco(float elapsedClockSeconds)
-        {
+        {            
             if (AcceptHelperSignals && PowerUnit)
             {
                 LocoHelperOn = true;
@@ -8235,6 +8236,18 @@ namespace Orts.Simulation.RollingStocks
 
                 if ((this as MSTSElectricLocomotive) != null && (this as MSTSElectricLocomotive).AIPantoDownStop)
                     SignalEvent(Event.EnginePowerOff);
+
+                // Nastaví automaticky lokomotivu jako postrk, pokud se jedná o nákladní vlak
+                foreach (TrainCar car in Train.Cars)
+                {
+                    if (car is MSTSWagon && car.WagonType == WagonTypes.Freight)                    
+                        LocoBecomeHelper = true;
+                    if (car is MSTSLocomotive && LocoBecomeHelper)
+                    {
+                        car.AcceptHelperSignals = true;
+                        Simulator.Confirmer.Information(Simulator.Catalog.GetString("Car ID") + " " + car.CarID + ": " + Simulator.Catalog.GetString("Helper connected"));
+                    }
+                }
             }
         }
 
