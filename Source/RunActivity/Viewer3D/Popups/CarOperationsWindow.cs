@@ -234,7 +234,9 @@ namespace Orts.Viewer3D.Popups
                 ||
               (Viewer.PlayerTrain.Cars[CarPosition].GetType() == typeof(MSTSElectricLocomotive))
                 ||
-              (Viewer.PlayerTrain.Cars[CarPosition].GetType() == typeof(MSTSDieselLocomotive)))
+              (Viewer.PlayerTrain.Cars[CarPosition].GetType() == typeof(MSTSDieselLocomotive))
+                ||
+              (Viewer.PlayerTrain.Cars[CarPosition].GetType() == typeof(MSTSSteamLocomotive)))
             {
                 new PowerCommand(Viewer.Log, (Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive), !(Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive).PowerOn);
                 if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive).PowerOn)
@@ -266,12 +268,13 @@ namespace Orts.Viewer3D.Popups
 
         void buttonToggleMU_Click(Control arg1, Point arg2)
         {
-
             if ((Viewer.PlayerTrain.Cars[CarPosition].GetType() == typeof(MSTSLocomotive))
                 ||
               (Viewer.PlayerTrain.Cars[CarPosition].GetType() == typeof(MSTSElectricLocomotive))
                 ||
-              (Viewer.PlayerTrain.Cars[CarPosition].GetType() == typeof(MSTSDieselLocomotive)))
+              (Viewer.PlayerTrain.Cars[CarPosition].GetType() == typeof(MSTSDieselLocomotive))
+                ||
+              (Viewer.PlayerTrain.Cars[CarPosition].GetType() == typeof(MSTSSteamLocomotive)))
             {
                 new ToggleMUCommand(Viewer.Log, (Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive), !(Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive).AcceptPowerSignals);
                 if (!(Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive).AcceptPowerSignals)
@@ -285,12 +288,15 @@ namespace Orts.Viewer3D.Popups
 
         void buttonToggleHelper_Click(Control arg1, Point arg2)
         {
-
-            if ((Viewer.PlayerTrain.Cars[CarPosition].GetType() == typeof(MSTSLocomotive))
+            if (!Viewer.PlayerTrain.LeadLocomotive.CarIsPlayerLoco
+                &&
+              ((Viewer.PlayerTrain.Cars[CarPosition].GetType() == typeof(MSTSLocomotive))
                 ||
               (Viewer.PlayerTrain.Cars[CarPosition].GetType() == typeof(MSTSElectricLocomotive))
                 ||
               (Viewer.PlayerTrain.Cars[CarPosition].GetType() == typeof(MSTSDieselLocomotive)))
+                ||
+              (Viewer.PlayerTrain.Cars[CarPosition].GetType() == typeof(MSTSSteamLocomotive)))
             {
                 new ToggleHelperCommand(Viewer.Log, (Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive), !(Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive).AcceptHelperSignals);
                 if (!(Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive).AcceptHelperSignals)
@@ -299,16 +305,20 @@ namespace Orts.Viewer3D.Popups
                     Viewer.Simulator.Confirmer.Information(Viewer.Catalog.GetString("Helper connected"));
             }
             else
+            {
                 Viewer.Simulator.Confirmer.Warning(Viewer.Catalog.GetString("No Helper command for this type of car!"));
+                (Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive).AcceptHelperSignals = false;
+            }
         }
         void buttonToggleHelperOptions_Click(Control arg1, Point arg2)
         {
-
             if ((Viewer.PlayerTrain.Cars[CarPosition].GetType() == typeof(MSTSLocomotive))
                 ||
               (Viewer.PlayerTrain.Cars[CarPosition].GetType() == typeof(MSTSElectricLocomotive))
                 ||
-              (Viewer.PlayerTrain.Cars[CarPosition].GetType() == typeof(MSTSDieselLocomotive)))
+              (Viewer.PlayerTrain.Cars[CarPosition].GetType() == typeof(MSTSDieselLocomotive))
+                ||
+              (Viewer.PlayerTrain.Cars[CarPosition].GetType() == typeof(MSTSSteamLocomotive)))
             {
                 if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive).AcceptHelperSignals)
                 {                                                           

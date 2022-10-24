@@ -608,9 +608,9 @@ namespace Orts.Simulation.RollingStocks
         public float ARRAutoCylPressurePSI;
         public bool ARRTrainBrakeEngage_Apply;
         public bool ARRTrainBrakeEngage_Release;
-        public int DieselDirectionControllerPosition = -1;
-        public int DieselDirectionController2Position = -1;
-        public int DieselDirectionController4Position = -1;
+        public int DieselDirectionControllerPosition = 2;
+        public int DieselDirectionController2Position = 0;
+        public int DieselDirectionController4Position = 1;
         public int prevDieselDirectionControllerPosition;
         public int prevDieselDirectionController2Position;
         public bool DieselDirectionController;
@@ -1629,6 +1629,7 @@ namespace Orts.Simulation.RollingStocks
             CabFrontSoundFileName = locoCopy.CabFrontSoundFileName;
             CabRearSoundFileName = locoCopy.CabRearSoundFileName;
             CabStationForBatterySwitchOn = locoCopy.CabStationForBatterySwitchOn;
+
 
             // Jindrich
             UsingForceHandle = locoCopy.UsingForceHandle;
@@ -4068,21 +4069,15 @@ namespace Orts.Simulation.RollingStocks
                     if (ControllerVolts > 0)
                         PowerReductionResult12 = 1;
                 }
-                if (HelperLocoPush && Simulator.ControllerVoltsLocoHelper >= 0)
+                if (HelperLocoPush)
                 {
-                    PowerReductionResult12 = 0;
-                    if (AbsSpeedMpS * 3.6 < 0.99f * HelperSpeedPush && HelperPushStart && !WheelSlipWarning && !WheelSlip)
-                    {
-                        HelperTimerIncrease += elapsedClockSeconds;
-                        if (HelperTimerIncrease > 1.0f)
-                        {
-                            HelperTimerIncrease = 0;                            
-                            if (LocalThrottlePercent < 100)
-                                LocalThrottlePercent++;                            
-                        }
-                    }
-                    else
-                    if (AbsSpeedMpS * 3.6 > 0.80f * HelperSpeedPush || !HelperPushStart || WheelSlipWarning || WheelSlip)
+                    PowerReductionResult12 = 0;                    
+                    if (AbsSpeedMpS * 3.6 > HelperSpeedPush
+                        || !HelperPushStart
+                        || WheelSlipWarning
+                        || WheelSlip
+                        || MSTSBrakeSystem.BrakeLine1PressurePSI < TrainBrakeController.MaxPressurePSI - (0.2f * 14.50377f)
+                        || Simulator.ControllerVoltsLocoHelper < 0)
                     {
                         HelperTimerDecrease += elapsedClockSeconds;
                         if (HelperTimerDecrease > 0.1f)
@@ -4090,6 +4085,17 @@ namespace Orts.Simulation.RollingStocks
                             HelperTimerDecrease = 0;                            
                             if (LocalThrottlePercent > 0)
                                 LocalThrottlePercent--;                            
+                        }
+                    }
+                    else
+                    if (AbsSpeedMpS * 3.6 < HelperSpeedPush - 1 && HelperPushStart && !WheelSlipWarning && !WheelSlip)
+                    {
+                        HelperTimerIncrease += elapsedClockSeconds;
+                        if (HelperTimerIncrease > 1.0f)
+                        {
+                            HelperTimerIncrease = 0;
+                            if (LocalThrottlePercent < 100)
+                                LocalThrottlePercent++;
                         }
                     }
                     LocalThrottlePercent = MathHelper.Clamp(LocalThrottlePercent, 0, 100);
@@ -4635,11 +4641,6 @@ namespace Orts.Simulation.RollingStocks
                 //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("LapActive " + LapActive));                
                 DirectionControllerLogic();
                 PowerKeyLogic();
-                if (Simulator.GameTime < 0.5f)
-                {
-                    ToggleDieselDirectionController();
-                    ToggleDieselDirectionController2();
-                }
                 PowerCurrentCalculation();
                 BrakeCurrentCalculation();
                 Overcurrent_Protection();
@@ -8273,7 +8274,7 @@ namespace Orts.Simulation.RollingStocks
                 {
                     foreach (TrainCar car in Train.Cars)
                     {
-                        if (car is MSTSLocomotive && !car.LocoHelperOn)
+                        if (car is MSTSLocomotive)
                         {
                             car.CarPowerKey = true;
                         }
@@ -8283,7 +8284,7 @@ namespace Orts.Simulation.RollingStocks
                 {
                     foreach (TrainCar car in Train.Cars)
                     {
-                        if (car is MSTSLocomotive && !car.LocoHelperOn)
+                        if (car is MSTSLocomotive)
                         {
                             car.CarPowerKey = false;
                         }
@@ -9603,10 +9604,6 @@ namespace Orts.Simulation.RollingStocks
         {
             if (DieselDirectionController || DieselDirectionController3)
             {
-                // Výchozí poloha kontroléru
-                if (DieselDirectionControllerPosition == -1)
-                    DieselDirectionControllerPosition = 2;
-
                 if (Simulator.GameTime > 0.5f)
                 {
                     switch (DieselDirectionControllerPosition)
@@ -9677,10 +9674,6 @@ namespace Orts.Simulation.RollingStocks
         {
             if (DieselDirectionController2)
             {
-                // Výchozí poloha kontroléru
-                if (DieselDirectionController2Position == -1)
-                    DieselDirectionController2Position = 0;
-
                 if (Simulator.GameTime > 0.5f)
                 {
                     switch (DieselDirectionController2Position)
@@ -9735,10 +9728,6 @@ namespace Orts.Simulation.RollingStocks
             }
             if (DieselDirectionController4)
             {
-                // Výchozí poloha kontroléru
-                if (DieselDirectionController2Position == -1)
-                    DieselDirectionController2Position = 1;
-
                 if (Simulator.GameTime > 0.5f)
                 {
                     switch (DieselDirectionController2Position)

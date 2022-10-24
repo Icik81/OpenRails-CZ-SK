@@ -40,15 +40,26 @@ namespace Orts.Viewer3D.Popups
         
         public int CarID;
         protected override ControlLayout Layout(ControlLayout layout)
-        {            
+        {
+            var vbox = base.Layout(layout).AddLayoutVertical();
+
             if (Viewer.CarOperationsWindow.HelperOptionsOpened)
             {
                 CarID = Viewer.CarOperationsWindow.CarPosition;
                 Viewer.CarOperationsWindow.HelperOptionsOpened = false;
             }
-            
             if (CarID >= Viewer.PlayerTrain.Cars.Count)
                 CarID = Viewer.PlayerTrain.Cars.Count - 1;
+
+            if (Viewer.PlayerTrain.Cars[CarID] as MSTSLocomotive == null
+                || (!(Viewer.PlayerTrain.Cars[CarID] as MSTSLocomotive).HelperLocoPush && !(Viewer.PlayerTrain.Cars[CarID] as MSTSLocomotive).HelperLocoFollow && !(Viewer.PlayerTrain.Cars[CarID] as MSTSLocomotive).HelperLocoDontPush)
+                )
+            {
+                Viewer.HelperOptionsWindow.Visible = false;
+                Viewer.HelperSpeedSelectWindow.Visible = false;
+                Viewer.CarOperationsWindow.HelperOptionsOpened = false;
+                return vbox;
+            }
 
             if (Viewer.Simulator.GameTime > 0.1f)
             {
@@ -59,22 +70,20 @@ namespace Orts.Viewer3D.Popups
             }
 
             if (!(Viewer.PlayerTrain.Cars[CarID] as MSTSLocomotive).HelperLocoPush)
-            {                
+            {
                 Viewer.HelperSpeedSelectWindow.Visible = false;
             }
 
-            Label ID, buttonDontPush, buttonPush, buttonFollow, buttonClose;
-
-            var vbox = base.Layout(layout).AddLayoutVertical();           
+            Label ID, buttonDontPush, buttonPush, buttonFollow, buttonClose;            
 
             vbox.Add(ID = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Car ID") + "  " + (CarID >= Viewer.PlayerTrain.Cars.Count ? " " : Viewer.PlayerTrain.Cars[CarID].CarID), LabelAlignment.Center));
             ID.Color = Color.Yellow;
-            
+
             vbox.AddHorizontalSeparator();
             vbox.Add(buttonDontPush = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Don`t push!"), LabelAlignment.Center));
             if ((Viewer.PlayerTrain.Cars[CarID] as MSTSLocomotive).HelperLocoDontPush)
                 buttonDontPush.Color = Color.LightGreen;
-                      
+
             vbox.AddHorizontalSeparator();
             vbox.Add(buttonPush = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Push!"), LabelAlignment.Center));
             if ((Viewer.PlayerTrain.Cars[CarID] as MSTSLocomotive).HelperLocoPush)
@@ -90,7 +99,7 @@ namespace Orts.Viewer3D.Popups
             vbox.Add(buttonClose = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Close window"), LabelAlignment.Center));
             buttonDontPush.Click += new Action<Control, Point>(buttonDontPush_Click);
             buttonPush.Click += new Action<Control, Point>(buttonPush_Click);
-            buttonFollow.Click += new Action<Control, Point>(buttonFollow_Click);            
+            buttonFollow.Click += new Action<Control, Point>(buttonFollow_Click);
             buttonClose.Click += new Action<Control, Point>(buttonClose_Click);
 
             return vbox;
