@@ -288,7 +288,7 @@ namespace Orts.Viewer3D.Popups
 
         void buttonToggleHelper_Click(Control arg1, Point arg2)
         {
-            if (!Viewer.PlayerTrain.LeadLocomotive.CarIsPlayerLoco
+            if (!Viewer.PlayerTrain.Cars[CarPosition].CarIsPlayerLoco
                 &&
               ((Viewer.PlayerTrain.Cars[CarPosition].GetType() == typeof(MSTSLocomotive))
                 ||

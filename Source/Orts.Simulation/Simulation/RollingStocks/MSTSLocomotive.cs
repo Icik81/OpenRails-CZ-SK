@@ -8230,9 +8230,10 @@ namespace Orts.Simulation.RollingStocks
         public void CarFrameUpdate()
         {
             this.CarFrameUpdateState++;
-            if (this.CarFrameUpdateState > 1)
-                this.CarFrameUpdateState = 2;
+            if (this.CarFrameUpdateState > 2)
+                this.CarFrameUpdateState = 3;
 
+            // První průběh - inicializace hodnot
             if (this.CarFrameUpdateState == 1)
             {
                 // Vypne inicializační zvuk pohonu při vypnutém stroji
@@ -8253,6 +8254,13 @@ namespace Orts.Simulation.RollingStocks
                         Simulator.Confirmer.Information(Simulator.Catalog.GetString("Car ID") + " " + car.CarID + ": " + Simulator.Catalog.GetString("Helper connected"));
                     }
                 }
+            }
+
+            // Druhý průběh - kabinové prvky načteny
+            if (this.CarFrameUpdateState == 2)
+            {
+                ToggleDieselDirectionController();
+                ToggleDieselDirectionController2();
             }
         }
 

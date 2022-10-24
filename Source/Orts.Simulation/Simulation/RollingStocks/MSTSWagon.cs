@@ -2100,18 +2100,20 @@ namespace Orts.Simulation.RollingStocks
                 if (IsPlayerTrain && Simulator.Settings.BreakCouplers && !Simulator.PlayerCoupling) // Only break couplers on player trains
                 {
                     // Icik
-                    //if (Math.Abs(ImpulseCouplerForceUN) > 0)
-                        //Simulator.Confirmer.Information("ImpulseCouplerForceUN = " + Math.Abs(ImpulseCouplerForceUN / 500f * CouplerForceU));
-                    //Simulator.Confirmer.Information("MaxImpulseCouplerForceUN = " + MaxImpulseCouplerForceUN);
+                    float MaxImpulseCouplerForceUN = 850000; // default 850kN                                        
+                    float ImpulsForce = 0;
 
-                    float MaxImpulseCouplerForceUN = 850000; // default 850kN
-                    // Rozjezdový režim
-                    float ImpulsForce = ImpulseCouplerForceUN / 500f * CouplerForceU * 0.50f;
-                    // Brzdící režim
-                    if (MSTSBrakeSystem.BrakeLine1PressurePSI < MSTSBrakeSystem.maxPressurePSI0 || MSTSBrakeSystem.AutoCylPressurePSI0 > 0)
-                        ImpulsForce = ImpulseCouplerForceUN / 500f * CouplerForceU * 0.25f;
+                    //if (ImpulseCouplerForceUN < 0)
+                    //    ImpulsForce = Math.Abs(ImpulseCouplerForceUN) * 10;
+                    if (CouplerForceU < 0)
+                        ImpulsForce = Math.Abs(CouplerForceU) * 2;
 
-                    if (this.HUDCouplerForceIndication == 1 && (Math.Abs(CouplerForceU) > GetCouplerBreak2N() || Math.Abs(ImpulsForce) > MaxImpulseCouplerForceUN))  // break couplers if either static or impulse forces exceeded
+                    //if (ImpulsForce > 100000)
+                    //{
+                    //    Simulator.Confirmer.Information("ImpulsForce = " + ImpulsForce);
+                    //}
+
+                    if ((Math.Abs(CouplerForceU) > GetCouplerBreak2N() || (ImpulsForce > MaxImpulseCouplerForceUN)))  // break couplers if either static or impulse forces exceeded
                     {
                         CouplerExceedBreakLimit = true;
 
