@@ -4088,7 +4088,11 @@ namespace Orts.Simulation.RollingStocks
                         }
                     }
                     else
-                    if (AbsSpeedMpS * 3.6 < HelperSpeedPush - 1 && HelperPushStart && !WheelSlipWarning && !WheelSlip)
+                    if (AbsSpeedMpS * 3.6 < HelperSpeedPush - 1 
+                        && HelperPushStart 
+                        && !WheelSlipWarning 
+                        && !WheelSlip
+                        && MSTSBrakeSystem.BrakeLine1PressurePSI > 0.95f * TrainBrakeController.MaxPressurePSI)
                     {
                         HelperTimerIncrease += elapsedClockSeconds;
                         if (HelperTimerIncrease > 1.0f)
@@ -8254,7 +8258,7 @@ namespace Orts.Simulation.RollingStocks
 
         public void DirectionControllerLogic()
         {
-            if (!PowerKey)
+            if (!PowerKey || !Battery)
             {
                 Direction = Direction.N;
                 DirectionControllerBlocked = true;
