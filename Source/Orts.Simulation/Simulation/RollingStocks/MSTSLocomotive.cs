@@ -608,9 +608,9 @@ namespace Orts.Simulation.RollingStocks
         public float ARRAutoCylPressurePSI;
         public bool ARRTrainBrakeEngage_Apply;
         public bool ARRTrainBrakeEngage_Release;
-        public int DieselDirectionControllerPosition = 2;
-        public int DieselDirectionController2Position = 0;
-        public int DieselDirectionController4Position = 1;
+        public int DieselDirectionControllerPosition = -1;
+        public int DieselDirectionController2Position = -1;
+        public int DieselDirectionController4Position = -1;
         public int prevDieselDirectionControllerPosition;
         public int prevDieselDirectionController2Position;
         public bool DieselDirectionController;
@@ -4039,10 +4039,11 @@ namespace Orts.Simulation.RollingStocks
                     Simulator.ThrottleLocoHelper = 0;
                     Train.ControllerVolts = 0;
                 }
-            }
+            }            
 
-            if (LocoHelperOn || !AcceptPowerSignals)
-            {
+            // Postrk aktivován
+            if (LocoHelperOn)
+            {                
                 if (!HelperLocoPush)
                     ThrottlePercent = Simulator.ThrottleLocoHelper;
                 if (DynamicBrakeController != null)
@@ -4116,12 +4117,19 @@ namespace Orts.Simulation.RollingStocks
                         PowerReductionResult12 = 0;                    
                 }
             }
-
+            // Odpojený MU kabel, výkon vypnutý
             if (!AcceptPowerSignals)
             {
                 LocalThrottlePercent = 0;
                 AcceptMUSignals = false;
                 LocalDynamicBrakePercent = 0;
+                if (CruiseControl != null && CruiseControl.Equipped)
+                {
+                    CruiseControl.SpeedRegMode = SubSystems.CruiseControl.SpeedRegulatorMode.Manual;
+                    CruiseControl.SelectedSpeedMpS = MpS.FromKpH(0);
+                    CruiseControl.SpeedSelMode = SubSystems.CruiseControl.SpeedSelectorMode.Neutral;
+                    AripotControllerValue = 0;
+                }
             }
         }
 
@@ -4277,12 +4285,15 @@ namespace Orts.Simulation.RollingStocks
                     Mirel.Ls90power = SubSystems.Mirel.LS90power.On;
 
                     // ARR
-                    if (CruiseControl != null && CruiseControl.Equipped)
+                    if (IsLeadLocomotive())
                     {
-                        CruiseControl.SpeedRegMode = SubSystems.CruiseControl.SpeedRegulatorMode.Auto;
-                        CruiseControl.SelectedSpeedMpS = MpS.FromKpH(40);
-                        CruiseControl.SpeedSelMode = SubSystems.CruiseControl.SpeedSelectorMode.Parking;
-                        AripotControllerValue = CruiseControl.SelectedSpeedMpS / MaxSpeedMpS;
+                        if (CruiseControl != null && CruiseControl.Equipped)
+                        {
+                            CruiseControl.SpeedRegMode = SubSystems.CruiseControl.SpeedRegulatorMode.Auto;
+                            CruiseControl.SelectedSpeedMpS = MpS.FromKpH(40);
+                            CruiseControl.SpeedSelMode = SubSystems.CruiseControl.SpeedSelectorMode.Parking;
+                            AripotControllerValue = CruiseControl.SelectedSpeedMpS / MaxSpeedMpS;
+                        }
                     }
                 }
 
@@ -9620,6 +9631,8 @@ namespace Orts.Simulation.RollingStocks
         {
             if (DieselDirectionController || DieselDirectionController3)
             {
+                if (DieselDirectionControllerPosition == -1) DieselDirectionControllerPosition = 2;
+
                 if (prevDieselDirectionControllerPosition != DieselDirectionControllerPosition)
                 {
                     switch (DieselDirectionControllerPosition)
@@ -9688,6 +9701,8 @@ namespace Orts.Simulation.RollingStocks
         {
             if (DieselDirectionController2)
             {
+                if (DieselDirectionController2Position == -1) DieselDirectionController2Position = 0;
+
                 if (prevDieselDirectionController2Position != DieselDirectionController2Position)
                 {
                     switch (DieselDirectionController2Position)
@@ -9742,6 +9757,8 @@ namespace Orts.Simulation.RollingStocks
             }
             if (DieselDirectionController4)
             {
+                if (DieselDirectionController2Position == -1) DieselDirectionController2Position = 1;
+
                 if (prevDieselDirectionController2Position != DieselDirectionController2Position)
                 {
                     switch (DieselDirectionController2Position)
