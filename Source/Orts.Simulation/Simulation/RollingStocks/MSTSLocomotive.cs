@@ -671,8 +671,7 @@ namespace Orts.Simulation.RollingStocks
         public string CabRearSoundFileName;
         public int CabStationForBatterySwitchOn;
         public bool SeasonSwitchPosition;
-        public int DirectionPosition;
-        public bool DirectionControllerBlocked;
+        public int DirectionPosition;        
         public int HeadLightPosition;
         public bool HelperLocoDontPush;
         public bool HelperLocoPush;
@@ -6446,7 +6445,7 @@ namespace Orts.Simulation.RollingStocks
                     SignalEvent(Event.ReverserChange);
                 }
                 
-                if (PowerKey && !DirectionControllerBlocked)
+                if (PowerKey && !this.DirectionControllerBlocked)
                 {
                     AlerterReset(TCSEvent.ReverserChanged);
                     if (this.IsLeadLocomotive())
@@ -6479,7 +6478,7 @@ namespace Orts.Simulation.RollingStocks
                     SignalEvent(Event.ReverserChange);
                 }
 
-                if (PowerKey && !DirectionControllerBlocked)
+                if (PowerKey && !this.DirectionControllerBlocked)
                 {
                     AlerterReset(TCSEvent.ReverserChanged);
                     if (this.IsLeadLocomotive())
@@ -8265,15 +8264,30 @@ namespace Orts.Simulation.RollingStocks
 
         public void DirectionControllerLogic()
         {
-            if (!PowerKey || !Battery)
+            if (IsLeadLocomotive())
             {
-                Direction = Direction.N;
-                DirectionControllerBlocked = true;
-            }
-            else
-            {
-                if (DirectionPosition == 0 && DirectionControllerBlocked)
-                    DirectionControllerBlocked = false;
+                if (!PowerKey || !Battery)
+                {
+                    foreach (TrainCar car in Train.Cars)
+                    {
+                        if (car is MSTSLocomotive)
+                        {
+                            Direction = Direction.N;
+                            car.DirectionControllerBlocked = true;
+                        }
+                    }
+                }
+                else
+                {
+                    foreach (TrainCar car in Train.Cars)
+                    {
+                        if (car is MSTSLocomotive)
+                        {
+                            if (DirectionPosition == 0 && car.DirectionControllerBlocked)
+                                car.DirectionControllerBlocked = false;
+                        }
+                    }
+                }
             }
         }
 

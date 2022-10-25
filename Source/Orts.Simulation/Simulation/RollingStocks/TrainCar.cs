@@ -390,6 +390,7 @@ namespace Orts.Simulation.RollingStocks
         public bool WagonHasSteamHeating;
         public bool CarPowerKey;
         public int CarFrameUpdateState;
+        public bool DirectionControllerBlocked;
 
         public float PowerReductionResult1;  // Redukce výkonu od topení, klimatizace, kompresoru
         public float PowerReductionResult2;  // Redukce výkonu od nedostatečného tlaku vzduchu v potrubí
