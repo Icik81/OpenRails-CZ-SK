@@ -51,13 +51,20 @@ namespace Orts.Viewer3D.Popups
             if (CarID >= Viewer.PlayerTrain.Cars.Count)
                 CarID = Viewer.PlayerTrain.Cars.Count - 1;
 
-            if (Viewer.PlayerTrain.Cars[CarID] as MSTSLocomotive == null
-                || (!(Viewer.PlayerTrain.Cars[CarID] as MSTSLocomotive).HelperLocoPush && !(Viewer.PlayerTrain.Cars[CarID] as MSTSLocomotive).HelperLocoFollow && !(Viewer.PlayerTrain.Cars[CarID] as MSTSLocomotive).HelperLocoDontPush)
-                )
+            if ((Viewer.PlayerTrain.Cars[CarID] as MSTSLocomotive) == null)
+            {
+                Viewer.HelperOptionsWindow.Visible = false;
+                Viewer.HelperSpeedSelectWindow.Visible = false;
+                Viewer.CarOperationsWindow.HelperOptionsOpened = false;                
+                return vbox;
+            }
+            if ((!(Viewer.PlayerTrain.Cars[CarID] as MSTSLocomotive).HelperLocoPush && !(Viewer.PlayerTrain.Cars[CarID] as MSTSLocomotive).HelperLocoFollow && !(Viewer.PlayerTrain.Cars[CarID] as MSTSLocomotive).HelperLocoDontPush)
+                || (Viewer.PlayerTrain.Cars[CarID] as MSTSLocomotive).CarIsPlayerLoco)
             {
                 Viewer.HelperOptionsWindow.Visible = false;
                 Viewer.HelperSpeedSelectWindow.Visible = false;
                 Viewer.CarOperationsWindow.HelperOptionsOpened = false;
+                (Viewer.PlayerTrain.Cars[CarID] as MSTSLocomotive).HelperOptionsOpened = false;
                 return vbox;
             }
 

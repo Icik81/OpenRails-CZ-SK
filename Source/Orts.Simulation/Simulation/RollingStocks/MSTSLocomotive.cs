@@ -4011,7 +4011,13 @@ namespace Orts.Simulation.RollingStocks
         float HelperTimerDecrease;
         bool LocoBecomeHelper;
         public void SetHelperLoco(float elapsedClockSeconds)
-        {            
+        {
+            if (IsLeadLocomotive() && AcceptHelperSignals)
+            {
+                AcceptHelperSignals = false;
+                PowerReductionResult12 = 0;
+            }
+
             if (AcceptHelperSignals && PowerUnit)
             {
                 LocoHelperOn = true;
@@ -9554,8 +9560,8 @@ namespace Orts.Simulation.RollingStocks
                         || (DieselDirectionControllerPosition < 2 && DieselDirectionControllerPosition < prevDieselDirectionControllerPosition))
                         SignalEvent(Event.ReverserToForwardBackward);
                     else
-                    if ((DieselDirectionControllerPosition > 2 && DieselDirectionControllerPosition < prevDieselDirectionControllerPosition)
-                        || (DieselDirectionControllerPosition < 2 && DieselDirectionControllerPosition > prevDieselDirectionControllerPosition))
+                    if ((DieselDirectionControllerPosition >= 2 && DieselDirectionControllerPosition < prevDieselDirectionControllerPosition)
+                        || (DieselDirectionControllerPosition <= 2 && DieselDirectionControllerPosition > prevDieselDirectionControllerPosition))
                         SignalEvent(Event.ReverserToNeutral);                    
                 }
             }
@@ -9588,8 +9594,8 @@ namespace Orts.Simulation.RollingStocks
                         || (DieselDirectionControllerPosition < 2 && DieselDirectionControllerPosition < prevDieselDirectionControllerPosition))
                         SignalEvent(Event.ReverserToForwardBackward);
                     else
-                    if ((DieselDirectionControllerPosition > 2 && DieselDirectionControllerPosition < prevDieselDirectionControllerPosition)
-                        || (DieselDirectionControllerPosition < 2 && DieselDirectionControllerPosition > prevDieselDirectionControllerPosition))
+                    if ((DieselDirectionControllerPosition >= 2 && DieselDirectionControllerPosition < prevDieselDirectionControllerPosition)
+                        || (DieselDirectionControllerPosition <= 2 && DieselDirectionControllerPosition > prevDieselDirectionControllerPosition))
                         SignalEvent(Event.ReverserToNeutral);                    
                 }
             }
@@ -9652,9 +9658,7 @@ namespace Orts.Simulation.RollingStocks
                                 DieselDirection_Start = false;
                                 DieselDirection_0 = true;
                                 DieselDirection_Reverse = false;
-                                Direction = Direction.N;
-                                if (Simulator.GameTime > 0.5f)
-                                    SignalEvent(Event.ReverserToNeutral);
+                                Direction = Direction.N;                               
                             }
                             break;
                         case 3: // D
