@@ -4082,15 +4082,18 @@ namespace Orts.Simulation.RollingStocks
                         || !HelperPushStart
                         || WheelSlipWarning
                         || WheelSlip
-                        || MSTSBrakeSystem.BrakeLine1PressurePSI < TrainBrakeController.MaxPressurePSI - (0.2f * 14.50377f)
-                        || Simulator.ControllerVoltsLocoHelper < 0)
+                        || MSTSBrakeSystem.BrakeLine1PressurePSI < BrakeSystem.maxPressurePSI0 - (0.2f * 14.50377f)
+                        || Simulator.ControllerVoltsLocoHelper < 0
+                        || Direction == Direction.N)
                     {
                         HelperTimerDecrease += elapsedClockSeconds;
                         if (HelperTimerDecrease > 0.1f)
                         {
                             HelperTimerDecrease = 0;                            
                             if (LocalThrottlePercent > 0)
-                                LocalThrottlePercent--;                            
+                                LocalThrottlePercent--;
+                            if (LocalThrottlePercent == 0 && MSTSBrakeSystem.BrakeLine1PressurePSI < 0.95f * BrakeSystem.maxPressurePSI0)
+                                HelperPushStart = false;
                         }
                     }
                     else
@@ -4098,7 +4101,7 @@ namespace Orts.Simulation.RollingStocks
                         && HelperPushStart 
                         && !WheelSlipWarning 
                         && !WheelSlip
-                        && MSTSBrakeSystem.BrakeLine1PressurePSI > 0.95f * TrainBrakeController.MaxPressurePSI)
+                        && MSTSBrakeSystem.BrakeLine1PressurePSI > 0.95f * BrakeSystem.maxPressurePSI0)
                     {
                         HelperTimerIncrease += elapsedClockSeconds;
                         if (HelperTimerIncrease > 1.0f)
@@ -4122,7 +4125,7 @@ namespace Orts.Simulation.RollingStocks
             {
                 LocalThrottlePercent = 0;
                 AcceptMUSignals = false;
-                LocalDynamicBrakePercent = 0;
+                LocalDynamicBrakePercent = -1;
                 if (CruiseControl != null && CruiseControl.Equipped)
                 {
                     CruiseControl.SpeedRegMode = SubSystems.CruiseControl.SpeedRegulatorMode.Manual;
@@ -8065,9 +8068,10 @@ namespace Orts.Simulation.RollingStocks
         public void TogglePowerKey()
         {
             if ((DieselDirectionController && DieselDirectionControllerPosition != 2)
-                || (DieselDirectionController2 && DieselDirectionController2Position != 0))
+                || (DieselDirectionController2 && DieselDirectionController2Position != 0)
+                || (DieselDirectionController4 && DieselDirectionController2Position != 1))
                 return;
-
+            
             PowerKey = !PowerKey;
             if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.PowerKey, PowerKey ? CabSetting.On : CabSetting.Off);
             SignalEvent(Event.PantographToggle);
@@ -8333,7 +8337,7 @@ namespace Orts.Simulation.RollingStocks
                     }
                 }
             }
-            PowerKey = this.CarPowerKey;
+            PowerKey = this.CarPowerKey;            
         }
 
         public void ToggleHV2SwitchUp()
@@ -9561,69 +9565,75 @@ namespace Orts.Simulation.RollingStocks
 
         public void ToggleDieselDirectionControllerDown()
         {
-            if (DieselDirectionController || DieselDirectionController3)
+            if (PowerKey)
             {
-                if (DieselDirectionControllerPosition < 4)
-                    DieselDirectionControllerPosition++;
-                if (DieselDirectionControllerPosition <= 4)
+                if (DieselDirectionController || DieselDirectionController3)
                 {
-                    if ((DieselDirectionControllerPosition > 2 && DieselDirectionControllerPosition > prevDieselDirectionControllerPosition)
-                        || (DieselDirectionControllerPosition < 2 && DieselDirectionControllerPosition < prevDieselDirectionControllerPosition))
-                        SignalEvent(Event.ReverserToForwardBackward);
-                    else
-                    if ((DieselDirectionControllerPosition >= 2 && DieselDirectionControllerPosition < prevDieselDirectionControllerPosition)
-                        || (DieselDirectionControllerPosition <= 2 && DieselDirectionControllerPosition > prevDieselDirectionControllerPosition))
-                        SignalEvent(Event.ReverserToNeutral);                    
+                    if (DieselDirectionControllerPosition < 4)
+                        DieselDirectionControllerPosition++;
+                    if (DieselDirectionControllerPosition <= 4)
+                    {
+                        if ((DieselDirectionControllerPosition > 2 && DieselDirectionControllerPosition > prevDieselDirectionControllerPosition)
+                            || (DieselDirectionControllerPosition < 2 && DieselDirectionControllerPosition < prevDieselDirectionControllerPosition))
+                            SignalEvent(Event.ReverserToForwardBackward);
+                        else
+                        if ((DieselDirectionControllerPosition >= 2 && DieselDirectionControllerPosition < prevDieselDirectionControllerPosition)
+                            || (DieselDirectionControllerPosition <= 2 && DieselDirectionControllerPosition > prevDieselDirectionControllerPosition))
+                            SignalEvent(Event.ReverserToNeutral);
+                    }
                 }
-            }
-            else
-            if (DieselDirectionController2 || DieselDirectionController4)
-            {
-                if (DieselDirectionController2Position > 0)
-                    DieselDirectionController2Position--;
-                if (DieselDirectionController2Position >= 0)
+                else
+                if (DieselDirectionController2 || DieselDirectionController4)
                 {
-                    if ((DieselDirectionController2Position > 0 && DieselDirectionController2Position > prevDieselDirectionController2Position)
-                        || (DieselDirectionController2Position < 0 && DieselDirectionController2Position < prevDieselDirectionController2Position))
-                        SignalEvent(Event.ReverserToForwardBackward);
-                    else
-                    if ((DieselDirectionController2Position >= 0 && DieselDirectionController2Position < prevDieselDirectionController2Position)
-                        || (DieselDirectionController2Position < 0 && DieselDirectionController2Position > prevDieselDirectionController2Position))
-                        SignalEvent(Event.ReverserToNeutral);                    
+                    if (DieselDirectionController2Position > 0)
+                        DieselDirectionController2Position--;
+                    if (DieselDirectionController2Position >= 0)
+                    {
+                        if ((DieselDirectionController2Position > 0 && DieselDirectionController2Position > prevDieselDirectionController2Position)
+                            || (DieselDirectionController2Position < 0 && DieselDirectionController2Position < prevDieselDirectionController2Position))
+                            SignalEvent(Event.ReverserToForwardBackward);
+                        else
+                        if ((DieselDirectionController2Position >= 0 && DieselDirectionController2Position < prevDieselDirectionController2Position)
+                            || (DieselDirectionController2Position < 0 && DieselDirectionController2Position > prevDieselDirectionController2Position))
+                            SignalEvent(Event.ReverserToNeutral);
+                    }
                 }
             }
         }
         public void ToggleDieselDirectionControllerUp()
         {
-            if (DieselDirectionController || DieselDirectionController3)
+            if (PowerKey)
             {
-                if (DieselDirectionControllerPosition > 0)
-                    DieselDirectionControllerPosition--;
-                if (DieselDirectionControllerPosition >= 0)
+                if (DieselDirectionController || DieselDirectionController3)
                 {
-                    if ((DieselDirectionControllerPosition > 2 && DieselDirectionControllerPosition > prevDieselDirectionControllerPosition)
-                        || (DieselDirectionControllerPosition < 2 && DieselDirectionControllerPosition < prevDieselDirectionControllerPosition))
-                        SignalEvent(Event.ReverserToForwardBackward);
-                    else
-                    if ((DieselDirectionControllerPosition >= 2 && DieselDirectionControllerPosition < prevDieselDirectionControllerPosition)
-                        || (DieselDirectionControllerPosition <= 2 && DieselDirectionControllerPosition > prevDieselDirectionControllerPosition))
-                        SignalEvent(Event.ReverserToNeutral);                    
+                    if (DieselDirectionControllerPosition > 0)
+                        DieselDirectionControllerPosition--;
+                    if (DieselDirectionControllerPosition >= 0)
+                    {
+                        if ((DieselDirectionControllerPosition > 2 && DieselDirectionControllerPosition > prevDieselDirectionControllerPosition)
+                            || (DieselDirectionControllerPosition < 2 && DieselDirectionControllerPosition < prevDieselDirectionControllerPosition))
+                            SignalEvent(Event.ReverserToForwardBackward);
+                        else
+                        if ((DieselDirectionControllerPosition >= 2 && DieselDirectionControllerPosition < prevDieselDirectionControllerPosition)
+                            || (DieselDirectionControllerPosition <= 2 && DieselDirectionControllerPosition > prevDieselDirectionControllerPosition))
+                            SignalEvent(Event.ReverserToNeutral);
+                    }
                 }
-            }
-            else
-            if (DieselDirectionController2 || DieselDirectionController4)
-            {
-                if (DieselDirectionController2Position < 3)
-                    DieselDirectionController2Position++;
-                if (DieselDirectionController2Position <= 3)
+                else
+                if (DieselDirectionController2 || DieselDirectionController4)
                 {
-                    if ((DieselDirectionController2Position > 0 && DieselDirectionController2Position > prevDieselDirectionController2Position)
-                        || (DieselDirectionController2Position < 0 && DieselDirectionController2Position < prevDieselDirectionController2Position))
-                        SignalEvent(Event.ReverserToForwardBackward);
-                    else
-                    if ((DieselDirectionController2Position > 0 && DieselDirectionController2Position < prevDieselDirectionController2Position)
-                        || (DieselDirectionController2Position < 0 && DieselDirectionController2Position > prevDieselDirectionController2Position))
-                        SignalEvent(Event.ReverserToNeutral);                    
+                    if (DieselDirectionController2Position < 3)
+                        DieselDirectionController2Position++;
+                    if (DieselDirectionController2Position <= 3)
+                    {
+                        if ((DieselDirectionController2Position > 0 && DieselDirectionController2Position > prevDieselDirectionController2Position)
+                            || (DieselDirectionController2Position < 0 && DieselDirectionController2Position < prevDieselDirectionController2Position))
+                            SignalEvent(Event.ReverserToForwardBackward);
+                        else
+                        if ((DieselDirectionController2Position > 0 && DieselDirectionController2Position < prevDieselDirectionController2Position)
+                            || (DieselDirectionController2Position < 0 && DieselDirectionController2Position > prevDieselDirectionController2Position))
+                            SignalEvent(Event.ReverserToNeutral);
+                    }
                 }
             }
         }
@@ -9756,7 +9766,7 @@ namespace Orts.Simulation.RollingStocks
                 }
             }
             if (DieselDirectionController4)
-            {
+            {                                                
                 if (DieselDirectionController2Position == -1) DieselDirectionController2Position = 1;
 
                 if (prevDieselDirectionController2Position != DieselDirectionController2Position)

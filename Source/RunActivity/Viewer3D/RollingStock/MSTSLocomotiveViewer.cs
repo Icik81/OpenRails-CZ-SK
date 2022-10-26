@@ -3680,30 +3680,30 @@ namespace Orts.Viewer3D.RollingStock
                     break;
 
                 case CABViewControlTypes.ORTS_BATTERY:
-                    if (ChangedValue(Locomotive.Battery ? 1 : 0) > 0)
-                    {
-                        Locomotive.Battery = false;
+                    if (ChangedValue(0) < 0 && !IsChanged)
+                    {                        
                         new ToggleBatteryCommand(Viewer.Log);
+                        IsChanged = true;
                     }
                     else
-                    if (ChangedValue(Locomotive.Battery ? 1 : 0) < 0)
-                    {
-                        Locomotive.Battery = true;
+                    if (ChangedValue(0) > 0 && !IsChanged)
+                    {                        
                         new ToggleBatteryCommand(Viewer.Log);
+                        IsChanged = true;
                     }
                     break;
 
                 case CABViewControlTypes.ORTS_POWERKEY:
-                    if (ChangedValue(Locomotive.PowerKey ? 1 : 0) > 0)
-                    {
-                        Locomotive.PowerKey = false;
+                    if (ChangedValue(0) < 0 && !IsChanged)
+                    {                        
                         new TogglePowerKeyCommand(Viewer.Log);
+                        IsChanged = true;
                     }
                     else
-                    if (ChangedValue(Locomotive.PowerKey ? 1 : 0) < 0)
-                    {
-                        Locomotive.PowerKey = true;
+                    if (ChangedValue(0) > 0 && !IsChanged)
+                    {                        
                         new TogglePowerKeyCommand(Viewer.Log);
+                        IsChanged = true;
                     }
                     break;
 
