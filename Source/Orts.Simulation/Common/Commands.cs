@@ -2554,4 +2554,36 @@ namespace Orts.Common
             Receiver.ToggleSeasonSwitch();
         }
     }
+    [Serializable()]
+    public sealed class ToggleMirerControllerUpCommand : Command
+    {
+        public static MSTSLocomotive Receiver { get; set; }
+
+        public ToggleMirerControllerUpCommand(CommandLog log)
+            : base(log)
+        {
+            Redo();
+        }
+
+        public override void Redo()
+        {
+            Receiver.ToggleMirerControllerUp();
+        }
+    }
+    [Serializable()]
+    public sealed class ToggleMirerControllerDownCommand : Command
+    {
+        public static MSTSLocomotive Receiver { get; set; }
+
+        public ToggleMirerControllerDownCommand(CommandLog log)
+            : base(log)
+        {
+            Redo();
+        }
+
+        public override void Redo()
+        {
+            Receiver.ToggleMirerControllerDown();
+        }
+    }
 }

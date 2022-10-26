@@ -679,6 +679,10 @@ namespace Orts.Simulation.RollingStocks
         public int HelperSpeedPush;
         public bool HelperPushStart;
         public bool HelperOptionsOpened;
+        public bool MirerControllerEnable;
+        public int MirerControllerPosition;
+        public int prevMirerControllerPosition;
+
 
         // Jindrich
         public bool IsActive = false;
@@ -1841,7 +1845,9 @@ namespace Orts.Simulation.RollingStocks
             outf.Write(HelperLocoFollow);
             outf.Write(HelperSpeedPush);
             outf.Write(HelperPushStart);
-            outf.Write(HelperOptionsOpened);            
+            outf.Write(HelperOptionsOpened);
+            outf.Write(MirerControllerPosition);
+            outf.Write(MirerControllerValue);
 
             base.Save(outf);
 
@@ -1967,6 +1973,8 @@ namespace Orts.Simulation.RollingStocks
             HelperSpeedPush = inf.ReadInt32();
             HelperPushStart = inf.ReadBoolean();
             HelperOptionsOpened = inf.ReadBoolean();
+            MirerControllerPosition = inf.ReadInt32();
+            MirerControllerValue = inf.ReadInt32();
 
             base.Restore(inf);
 
@@ -4672,6 +4680,7 @@ namespace Orts.Simulation.RollingStocks
                 RDSTBreakerType();
                 ToggleDieselDirectionController();
                 ToggleDieselDirectionController2();
+                MirerController();
                 TogglePantograph4Switch();
                 TogglePantograph3Switch();
                 if (!AcceptMUSignals || IsLeadLocomotive())
@@ -6521,9 +6530,14 @@ namespace Orts.Simulation.RollingStocks
         public void StartThrottleIncrease(float? target)
         {
             // Icik
-            if ((DieselDirectionController && DieselDirection_0) || (DieselDirectionController2 && DieselDirection_0) || (DieselDirectionController3 && DieselDirection_0) || (DieselDirectionController4 && DieselDirection_0))
+            if ((DieselDirectionController && DieselDirection_0) 
+                || (DieselDirectionController2 && DieselDirection_0) 
+                || (DieselDirectionController3 && DieselDirection_0) 
+                || (DieselDirectionController4 && DieselDirection_0))
                 return;
             if (AripotControllerEnable)
+                return;
+            if (MirerControllerEnable)
                 return;
 
             if (LocoType != LocoTypes.Vectron) // vectron bdělost nevybaví (MichalM 2.10.2022)
@@ -6681,10 +6695,15 @@ namespace Orts.Simulation.RollingStocks
         public void StartThrottleDecrease(float? target)
         {
             // Icik
-            if ((DieselDirectionController && DieselDirection_0) || (DieselDirectionController2 && DieselDirection_0) || (DieselDirectionController3 && DieselDirection_0) || (DieselDirectionController4 && DieselDirection_0))
+            if ((DieselDirectionController && DieselDirection_0) 
+                || (DieselDirectionController2 && DieselDirection_0) 
+                || (DieselDirectionController3 && DieselDirection_0) 
+                || (DieselDirectionController4 && DieselDirection_0))
                 return;
             if (AripotControllerEnable)
                 return;
+            if (MirerControllerEnable)
+                return;            
 
             if (LocoType != LocoTypes.Vectron)
                 Mirel.ResetVigilance();
@@ -10289,6 +10308,149 @@ namespace Orts.Simulation.RollingStocks
             }
             PreSeasonSwitchPosition = SeasonSwitchPosition;
         }
+
+        // Mirer ovladač        
+        public void ToggleMirerControllerUp()
+        {
+            MirerControllerPosition = -1;
+            MirerTimer += elapsedTime;
+            if (MirerControllerOneTouch)
+            {
+                if (MirerControllerValue < MirerMaxValue)
+                    MirerControllerValue++;
+                MirerControllerOneTouch = false;
+                //Simulator.Confirmer.MSG(Simulator.Catalog.GetString("Controller") + ": " + MirerControllerValue);
+            }
+            else
+            {                
+                if (MirerTimer > MirerSmoothPeriod)
+                {
+                    if (MirerControllerValue < MirerMaxValue)
+                        MirerControllerValue++;
+                    MirerControllerSmooth = true;
+                    MirerTimer = 0.0f;
+                    //Simulator.Confirmer.MSG(Simulator.Catalog.GetString("Controller") + ": " + MirerControllerValue);
+                }
+            }
+        }
+
+        public void ToggleMirerControllerDown()
+        {
+            MirerControllerPosition = 1;
+            MirerTimer += elapsedTime;
+
+            if (MirerControllerOneTouch)
+            {
+                if (MirerControllerValue > -1)
+                    MirerControllerValue--;
+                MirerControllerOneTouch = false;
+                //Simulator.Confirmer.MSG(Simulator.Catalog.GetString("Controller") + ": " + MirerControllerValue);
+            }
+            else
+            {
+                if (MirerTimer > MirerSmoothPeriod)
+                {
+                    if (MirerControllerValue > -1)
+                        MirerControllerValue--;
+                    MirerControllerSmooth = true;
+                    MirerTimer = 0.0f;
+                    //Simulator.Confirmer.MSG(Simulator.Catalog.GetString("Controller") + ": " + MirerControllerValue);
+                }
+            }
+        }
+
+        public float MirerControllerValue = -1;
+        public float prevMirerControllerValue = -1;
+        public float MirerTimer;
+        public bool MirerControllerOneTouch;
+        public bool MirerControllerSmooth;
+        public float MirerSmoothPeriod = 0.5f;
+        public int MirerMaxValue = 42;
+        public bool MirerUp;
+        public bool MirerDown;
+        public void MirerController()
+        {
+            if (MirerControllerEnable)
+            {                
+                if (MirerControllerPosition != prevMirerControllerPosition)
+                {
+                    prevMirerControllerPosition = MirerControllerPosition;
+                    SignalEvent(Event.ThrottleChange);
+                    switch (MirerControllerPosition)
+                    {
+                        case -1:                            
+                            break;
+                        case 0:
+                            break;
+                        case 1:
+                            break;
+                    }                    
+                }
+                if (MirerControllerValue != prevMirerControllerValue)
+                {
+                    prevMirerControllerValue = MirerControllerValue;
+                    switch (MirerControllerValue)
+                    {
+                        // 0
+                        case -1: LocalThrottlePercent = 0; Simulator.Confirmer.MSG(Simulator.Catalog.GetString("Controller") + ": 0"); break;
+                        // Kontrolní X
+                        case 0: LocalThrottlePercent = 0; Simulator.Confirmer.MSG(Simulator.Catalog.GetString("Controller") + ": X"); break;
+
+                        // Stupně
+                        case 1: SetThrottlePercent(1); Simulator.Confirmer.MSG(Simulator.Catalog.GetString("Controller") + ": " + MirerControllerValue); break;
+                        case 2: SetThrottlePercent(2); Simulator.Confirmer.MSG(Simulator.Catalog.GetString("Controller") + ": " + MirerControllerValue); break;
+                        case 3: SetThrottlePercent(3); Simulator.Confirmer.MSG(Simulator.Catalog.GetString("Controller") + ": " + MirerControllerValue); break;
+                        case 4: SetThrottlePercent(4); Simulator.Confirmer.MSG(Simulator.Catalog.GetString("Controller") + ": " + MirerControllerValue); break;
+                        case 5: SetThrottlePercent(5); Simulator.Confirmer.MSG(Simulator.Catalog.GetString("Controller") + ": " + MirerControllerValue); break;
+                        case 6: SetThrottlePercent(6); Simulator.Confirmer.MSG(Simulator.Catalog.GetString("Controller") + ": " + MirerControllerValue); break;
+                        case 7: SetThrottlePercent(7); Simulator.Confirmer.MSG(Simulator.Catalog.GetString("Controller") + ": " + MirerControllerValue); break;
+                        case 8: SetThrottlePercent(8); Simulator.Confirmer.MSG(Simulator.Catalog.GetString("Controller") + ": " + MirerControllerValue); break;
+                        case 9: SetThrottlePercent(9); Simulator.Confirmer.MSG(Simulator.Catalog.GetString("Controller") + ": " + MirerControllerValue); break;
+                        case 10: SetThrottlePercent(12); Simulator.Confirmer.MSG(Simulator.Catalog.GetString("Controller") + ": " + MirerControllerValue); break;
+                        case 11: SetThrottlePercent(15); Simulator.Confirmer.MSG(Simulator.Catalog.GetString("Controller") + ": " + MirerControllerValue); break;
+                        case 12: SetThrottlePercent(18); Simulator.Confirmer.MSG(Simulator.Catalog.GetString("Controller") + ": " + MirerControllerValue); break;
+                        case 13: SetThrottlePercent(21); Simulator.Confirmer.MSG(Simulator.Catalog.GetString("Controller") + ": " + MirerControllerValue); break;
+                        case 14: SetThrottlePercent(24); Simulator.Confirmer.MSG(Simulator.Catalog.GetString("Controller") + ": " + MirerControllerValue); break;
+                        case 15: SetThrottlePercent(27); Simulator.Confirmer.MSG(Simulator.Catalog.GetString("Controller") + ": " + MirerControllerValue); break;
+                        case 16: SetThrottlePercent(30); Simulator.Confirmer.MSG(Simulator.Catalog.GetString("Controller") + ": " + MirerControllerValue); break;
+                        case 17: SetThrottlePercent(33); Simulator.Confirmer.MSG(Simulator.Catalog.GetString("Controller") + ": " + MirerControllerValue); break;
+                        case 18: SetThrottlePercent(36); Simulator.Confirmer.MSG(Simulator.Catalog.GetString("Controller") + ": " + MirerControllerValue); break;
+                        case 19: SetThrottlePercent(39); Simulator.Confirmer.MSG(Simulator.Catalog.GetString("Controller") + ": " + MirerControllerValue); break;
+                        case 20: SetThrottlePercent(42); Simulator.Confirmer.MSG(Simulator.Catalog.GetString("Controller") + ": " + MirerControllerValue); break;
+                        case 21: SetThrottlePercent(45); Simulator.Confirmer.MSG(Simulator.Catalog.GetString("Controller") + ": " + MirerControllerValue); break;
+                        case 22: SetThrottlePercent(48); Simulator.Confirmer.MSG(Simulator.Catalog.GetString("Controller") + ": " + MirerControllerValue); break;
+                        case 23: SetThrottlePercent(51); Simulator.Confirmer.MSG(Simulator.Catalog.GetString("Controller") + ": " + MirerControllerValue); break;
+                        case 24: SetThrottlePercent(54); Simulator.Confirmer.MSG(Simulator.Catalog.GetString("Controller") + ": " + MirerControllerValue); break;
+
+                        // Hospodárný Se
+                        case 25: SetThrottlePercent(56); Simulator.Confirmer.MSG(Simulator.Catalog.GetString("Controller") + ": Se"); break;
+
+                        case 26: SetThrottlePercent(66); Simulator.Confirmer.MSG(Simulator.Catalog.GetString("Controller") + ": " + MirerControllerValue); break;
+                        case 27: SetThrottlePercent(68); Simulator.Confirmer.MSG(Simulator.Catalog.GetString("Controller") + ": " + MirerControllerValue); break;
+                        case 28: SetThrottlePercent(70); Simulator.Confirmer.MSG(Simulator.Catalog.GetString("Controller") + ": " + MirerControllerValue); break;
+                        case 29: SetThrottlePercent(72); Simulator.Confirmer.MSG(Simulator.Catalog.GetString("Controller") + ": " + MirerControllerValue); break;
+                        case 30: SetThrottlePercent(74); Simulator.Confirmer.MSG(Simulator.Catalog.GetString("Controller") + ": " + MirerControllerValue); break;
+                        case 31: SetThrottlePercent(76); Simulator.Confirmer.MSG(Simulator.Catalog.GetString("Controller") + ": " + MirerControllerValue); break;
+                        case 32: SetThrottlePercent(78); Simulator.Confirmer.MSG(Simulator.Catalog.GetString("Controller") + ": " + MirerControllerValue); break;
+                        case 33: SetThrottlePercent(80); Simulator.Confirmer.MSG(Simulator.Catalog.GetString("Controller") + ": " + MirerControllerValue); break;
+                        case 34: SetThrottlePercent(82); Simulator.Confirmer.MSG(Simulator.Catalog.GetString("Controller") + ": " + MirerControllerValue); break;
+                        case 35: SetThrottlePercent(84); Simulator.Confirmer.MSG(Simulator.Catalog.GetString("Controller") + ": " + MirerControllerValue); break;
+                        case 36: SetThrottlePercent(86); Simulator.Confirmer.MSG(Simulator.Catalog.GetString("Controller") + ": " + MirerControllerValue); break;
+
+                        // Hospodárný Pa
+                        case 37: SetThrottlePercent(88); Simulator.Confirmer.MSG(Simulator.Catalog.GetString("Controller") + ": Pa"); break;
+
+                        // P1 - P5
+                        case 38: SetThrottlePercent(92); Simulator.Confirmer.MSG(Simulator.Catalog.GetString("Controller") + ": P1"); break;
+                        case 39: SetThrottlePercent(94); Simulator.Confirmer.MSG(Simulator.Catalog.GetString("Controller") + ": P2"); break;
+                        case 40: SetThrottlePercent(96); Simulator.Confirmer.MSG(Simulator.Catalog.GetString("Controller") + ": P3"); break;
+                        case 41: SetThrottlePercent(98); Simulator.Confirmer.MSG(Simulator.Catalog.GetString("Controller") + ": P4"); break;
+                        case 42: SetThrottlePercent(100); Simulator.Confirmer.MSG(Simulator.Catalog.GetString("Controller") + ": P5"); break;
+                    }
+                }
+            }
+        }
+
         #endregion
 
         // Zatím povoleno kvůli kompatibilitě
@@ -12709,6 +12871,28 @@ namespace Orts.Simulation.RollingStocks
                 case CABViewControlTypes.SEASON_SWITCH:
                     {
                         data = SeasonSwitchPosition ? 1:0;
+                        break;
+                    }
+                case CABViewControlTypes.MIRER_CONTROLLER:
+                    {                        
+                        MirerControllerEnable = true;                        
+                        switch (MirerControllerPosition)
+                        {
+                            case -1: 
+                                data = 1;
+                                break;
+                            case 0:
+                                data = 0;
+                                break;
+                            case 1:
+                                data = 2;
+                                break;
+                        }
+                        break;
+                    }
+                case CABViewControlTypes.MIRER_DISPLAY:
+                    {
+                        data = MirerControllerValue + 1;
                         break;
                     }
 

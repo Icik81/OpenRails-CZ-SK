@@ -299,6 +299,8 @@
         [GetString("Control_CZSK Rearlight right white")] ControlLightRearRDown,
         [GetString("Control_CZSK Rearlight right red")] ControlLightRearRUp,
         [GetString("Control_CZSK Season heating switch")] ControlSeasonSwitch,
+        [GetString("Control_CZSK Mirer +")] ControlMirerControllerUp,
+        [GetString("Control_CZSK Mirer -")] ControlMirerControllerDown,
 
         [GetString("Set Power Supply Station Location")] ControlPowerStationLocation,
         [GetString("Set Voltage 25k")] ControlSetVoltage25k,

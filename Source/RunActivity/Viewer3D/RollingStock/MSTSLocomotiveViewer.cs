@@ -352,6 +352,8 @@ namespace Orts.Viewer3D.RollingStock
             UserInputCommands.Add(UserCommand.ControlLightRearRUp, new Action[] { Noop, () => new ToggleLightRearRUpCommand(Viewer.Log) });
             UserInputCommands.Add(UserCommand.ControlLightRearRDown, new Action[] { Noop, () => new ToggleLightRearRDownCommand(Viewer.Log) });
             UserInputCommands.Add(UserCommand.ControlSeasonSwitch, new Action[] { Noop, () => new ToggleSeasonSwitchCommand(Viewer.Log) });
+            UserInputCommands.Add(UserCommand.ControlMirerControllerUp, new Action[] { Noop, () => new ToggleMirerControllerUpCommand(Viewer.Log) });
+            UserInputCommands.Add(UserCommand.ControlMirerControllerDown, new Action[] { Noop, () => new ToggleMirerControllerDownCommand(Viewer.Log) });
 
             // Jindřich
             UserInputCommands.Add(UserCommand.ControlPowerStationLocation, new Action[] { Noop, () => Locomotive.SetPowerSupplyStationLocation() });
@@ -765,6 +767,40 @@ namespace Orts.Viewer3D.RollingStock
             if (UserInput.IsPressed(UserCommand.ControlSeasonSwitch))
             {
                 Locomotive.SeasonSwitchPosition = !Locomotive.SeasonSwitchPosition;
+            }
+
+            // Mirer ovladač
+            if (Locomotive.MirerControllerEnable)
+            {
+                if (UserInput.IsDown(UserCommand.ControlMirerControllerUp))
+                {
+                    Locomotive.ToggleMirerControllerUp();
+                }
+                else
+                if (UserInput.IsDown(UserCommand.ControlMirerControllerDown))
+                {
+                    Locomotive.ToggleMirerControllerDown();
+                }
+                else                
+                if (UserInput.IsReleased(UserCommand.ControlMirerControllerUp) && !Locomotive.MirerControllerSmooth && Locomotive.MirerTimer < Locomotive.MirerSmoothPeriod)
+                {
+                    Locomotive.MirerControllerOneTouch = true;
+                    Locomotive.ToggleMirerControllerUp();
+                }
+                else
+                if (UserInput.IsReleased(UserCommand.ControlMirerControllerDown) && !Locomotive.MirerControllerSmooth && Locomotive.MirerTimer < Locomotive.MirerSmoothPeriod)
+                {
+                    Locomotive.MirerControllerOneTouch = true;
+                    Locomotive.ToggleMirerControllerDown();
+                }                
+                else
+                if (!UserInput.IsMouseLeftButtonDown)
+                {
+                    Locomotive.MirerControllerPosition = 0;
+                    Locomotive.MirerTimer = 0;
+                    Locomotive.MirerControllerOneTouch = false;
+                    Locomotive.MirerControllerSmooth = false;
+                }
             }
 
             // Ovládání tlačítka znovunačtení světa
@@ -3021,6 +3057,8 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.RAIN_WINDOW:
                 case CABViewControlTypes.WIPERS_WINDOW:
                 case CABViewControlTypes.SEASON_SWITCH:
+                case CABViewControlTypes.MIRER_CONTROLLER:
+                case CABViewControlTypes.MIRER_DISPLAY:
 
                 case CABViewControlTypes.MOTOR_DISABLED:
                 case CABViewControlTypes.INVERTER_TEST:
@@ -4052,6 +4090,43 @@ namespace Orts.Viewer3D.RollingStock
                         Locomotive.SeasonSwitchPosition = true;
                         new ToggleSeasonSwitchCommand(Viewer.Log);
                         IsChanged = true;                        
+                    }
+                    break;
+                case CABViewControlTypes.MIRER_CONTROLLER:
+                    // Ovladač MIRER                                        
+                    if ((ChangedValue(0) > 0 || Locomotive.MirerUp) && UserInput.IsMouseLeftButtonDown)
+                    {
+                        Locomotive.ToggleMirerControllerUp();
+                        Locomotive.MirerUp = true;
+                        Locomotive.MirerDown = false;
+                    }
+                    else
+                    if ((ChangedValue(0) < 0 || Locomotive.MirerDown) && UserInput.IsMouseLeftButtonDown)
+                    {
+                        Locomotive.ToggleMirerControllerDown();
+                        Locomotive.MirerDown = true;
+                        Locomotive.MirerUp = false;
+                    }
+                    else
+                    if (Locomotive.MirerUp && !UserInput.IsMouseLeftButtonDown && !Locomotive.MirerControllerSmooth && Locomotive.MirerTimer < Locomotive.MirerSmoothPeriod)
+                    {
+                        Locomotive.MirerControllerOneTouch = true;
+                        Locomotive.ToggleMirerControllerUp();
+                    }
+                    else
+                    if (Locomotive.MirerDown && !UserInput.IsMouseLeftButtonDown && !Locomotive.MirerControllerSmooth && Locomotive.MirerTimer < Locomotive.MirerSmoothPeriod)
+                    {
+                        Locomotive.MirerControllerOneTouch = true;
+                        Locomotive.ToggleMirerControllerDown();
+                    }
+                    if (!UserInput.IsMouseLeftButtonDown)
+                    {
+                        Locomotive.MirerUp = false;
+                        Locomotive.MirerDown = false;
+                        Locomotive.MirerControllerPosition = 0;
+                        Locomotive.MirerTimer = 0;
+                        Locomotive.MirerControllerOneTouch = false;
+                        Locomotive.MirerControllerSmooth = false;
                     }
                     break;
 

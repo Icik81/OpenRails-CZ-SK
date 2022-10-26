@@ -658,6 +658,8 @@ namespace Orts.Viewer3D
             ToggleLightRearRUpCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
             ToggleLightRearRDownCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
             ToggleSeasonSwitchCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
+            ToggleMirerControllerUpCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
+            ToggleMirerControllerDownCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
         }
 
         public void ChangeToPreviousFreeRoamCamera()

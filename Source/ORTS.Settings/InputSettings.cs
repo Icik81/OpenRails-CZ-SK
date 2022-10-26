@@ -599,6 +599,8 @@ namespace ORTS.Settings
             Commands[(int)UserCommand.ControlLightRearRUp] = new UserCommandKeyInput(0x32, KeyModifiers.Shift | KeyModifiers.Control);
             Commands[(int)UserCommand.ControlLightRearRDown] = new UserCommandKeyInput(0x32, KeyModifiers.Shift);
             Commands[(int)UserCommand.ControlSeasonSwitch] = new UserCommandKeyInput(0x23, KeyModifiers.Alt | KeyModifiers.Shift | KeyModifiers.Control);
+            Commands[(int)UserCommand.ControlMirerControllerUp] = new UserCommandKeyInput(0x20);
+            Commands[(int)UserCommand.ControlMirerControllerDown] = new UserCommandKeyInput(0x1E);
         }
         #endregion
 

@@ -466,6 +466,8 @@ namespace Orts.Formats.Msts
         RAIN_WINDOW,
         WIPERS_WINDOW,
         SEASON_SWITCH,
+        MIRER_CONTROLLER,
+        MIRER_DISPLAY,
 
         // ORTS
         ORTS_SCREEN_SELECT,
