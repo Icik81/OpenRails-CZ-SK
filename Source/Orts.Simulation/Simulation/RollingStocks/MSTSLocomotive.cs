@@ -682,6 +682,10 @@ namespace Orts.Simulation.RollingStocks
         public bool MirerControllerEnable;
         public int MirerControllerPosition;
         public int prevMirerControllerPosition;
+        public int StepControllerValue;
+        public InterpolatorDiesel2D TractiveForceStepControllerCurves;
+        public InterpolatorDiesel2D TractiveForceStepControllerCurvesAC;
+        public InterpolatorDiesel2D TractiveForceStepControllerCurvesDC;
 
 
         // Jindrich
@@ -1375,6 +1379,10 @@ namespace Orts.Simulation.RollingStocks
                 case "engine(soundfront": CabFrontSoundFileName = stf.ReadStringBlock(null); break;
                 case "engine(soundrear": CabRearSoundFileName = stf.ReadStringBlock(null); break;
                 case "engine(cabstationforbatteryswitchon": CabStationForBatterySwitchOn = stf.ReadIntBlock(null); break;
+                case "engine(ortstractioncharacteristicsstepcontroller": TractiveForceStepControllerCurves = new InterpolatorDiesel2D(stf, true); break;
+                case "engine(ortstractioncharacteristicsstepcontrollerac": TractiveForceStepControllerCurvesAC = new InterpolatorDiesel2D(stf, true); break;
+                case "engine(ortstractioncharacteristicsstepcontrollerdc": TractiveForceStepControllerCurvesDC = new InterpolatorDiesel2D(stf, true); break;
+
 
                 // Jindrich
                 case "engine(usingforcehandle": UsingForceHandle = stf.ReadBoolBlock(false); break;
@@ -1632,6 +1640,9 @@ namespace Orts.Simulation.RollingStocks
             CabFrontSoundFileName = locoCopy.CabFrontSoundFileName;
             CabRearSoundFileName = locoCopy.CabRearSoundFileName;
             CabStationForBatterySwitchOn = locoCopy.CabStationForBatterySwitchOn;
+            TractiveForceStepControllerCurves = locoCopy.TractiveForceStepControllerCurves;
+            TractiveForceStepControllerCurvesAC = locoCopy.TractiveForceStepControllerCurvesAC;
+            TractiveForceStepControllerCurvesDC = locoCopy.TractiveForceStepControllerCurvesDC;
 
 
             // Jindrich
@@ -2713,6 +2724,14 @@ namespace Orts.Simulation.RollingStocks
         }
 
         // Icik
+        public void PowerStepControllerCalculation()
+        {
+            if (TractiveForceStepControllerCurvesAC != null)
+                TractiveForceN = TractiveForceStepControllerCurvesAC.Get(StepControllerValue, AbsWheelSpeedMpS);
+
+            TractiveForceN = 0;
+        }
+
         public void PowerCurrentCalculation()
         {
             if (CurrentForceCurves != null)
@@ -4671,7 +4690,7 @@ namespace Orts.Simulation.RollingStocks
             {
                 //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("LapActive " + LapActive));                
                 DirectionControllerLogic();
-                PowerKeyLogic();
+                PowerKeyLogic();                
                 PowerCurrentCalculation();
                 BrakeCurrentCalculation();
                 Overcurrent_Protection();
@@ -5405,7 +5424,8 @@ namespace Orts.Simulation.RollingStocks
             {
                 if (extendedPhysics == null || !IsPlayerTrain) // AI musí vždy počítat TractiveForceN kvůli zvukům
                 {
-                    if (TractiveForceCurves == null && TractiveForceCurvesAC == null && TractiveForceCurvesDC == null)
+                    if (TractiveForceCurves == null && TractiveForceCurvesAC == null && TractiveForceCurvesDC == null
+                        && TractiveForceStepControllerCurves == null && TractiveForceStepControllerCurvesAC == null && TractiveForceStepControllerCurvesDC == null)
                     {
                         float maxForceN = MaxForceN * t * (1 - PowerReduction);
                         float maxPowerW = MaxPowerW * t * t * (1 - PowerReduction);
@@ -5430,6 +5450,13 @@ namespace Orts.Simulation.RollingStocks
                             switch (SwitchingVoltageMode)
                             {
                                 case 0:
+                                    if (TractiveForceStepControllerCurvesDC != null)
+                                    {
+                                        TractiveForceN = TractiveForceStepControllerCurvesDC.Get(StepControllerValue, AbsTractionSpeedMpS) * (1 - PowerReduction);
+                                        if (TractiveForceN < 0 && !TractiveForceStepControllerCurvesDC.AcceptsNegativeValues())
+                                            TractiveForceN = 0;
+                                    }
+                                    else
                                     if (TractiveForceCurvesDC != null)
                                     {
                                         TractiveForceN = TractiveForceCurvesDC.Get(t, AbsTractionSpeedMpS) * (1 - PowerReduction);
@@ -5444,6 +5471,13 @@ namespace Orts.Simulation.RollingStocks
                                     }
                                     break;
                                 case 1:
+                                    if (TractiveForceStepControllerCurves != null)
+                                    {
+                                        TractiveForceN = TractiveForceStepControllerCurves.Get(StepControllerValue, AbsTractionSpeedMpS) * (1 - PowerReduction);
+                                        if (TractiveForceN < 0 && !TractiveForceStepControllerCurves.AcceptsNegativeValues())
+                                            TractiveForceN = 0;
+                                    }
+                                    else
                                     if (TractiveForceCurves != null)
                                     {
                                         TractiveForceN = TractiveForceCurves.Get(t, AbsTractionSpeedMpS) * (1 - PowerReduction);
@@ -5452,6 +5486,13 @@ namespace Orts.Simulation.RollingStocks
                                     }
                                     break;
                                 case 2:
+                                    if (TractiveForceStepControllerCurvesAC != null)
+                                    {
+                                        TractiveForceN = TractiveForceStepControllerCurvesAC.Get(StepControllerValue, AbsTractionSpeedMpS) * (1 - PowerReduction);
+                                        if (TractiveForceN < 0 && !TractiveForceStepControllerCurvesAC.AcceptsNegativeValues())
+                                            TractiveForceN = 0;
+                                    }
+                                    else
                                     if (TractiveForceCurvesAC != null)
                                     {
                                         TractiveForceN = TractiveForceCurvesAC.Get(t, AbsTractionSpeedMpS) * (1 - PowerReduction);
@@ -10359,7 +10400,7 @@ namespace Orts.Simulation.RollingStocks
             }
         }
 
-        public float MirerControllerValue = -1;
+        public int MirerControllerValue = -1;
         public float prevMirerControllerValue = -1;
         public float MirerTimer;
         public bool MirerControllerOneTouch;
@@ -10389,6 +10430,9 @@ namespace Orts.Simulation.RollingStocks
                 if (MirerControllerValue != prevMirerControllerValue)
                 {
                     prevMirerControllerValue = MirerControllerValue;
+
+                    StepControllerValue = MirerControllerValue;
+
                     switch (MirerControllerValue)
                     {
                         // 0

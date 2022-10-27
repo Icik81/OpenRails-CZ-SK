@@ -174,6 +174,9 @@ namespace Orts.Viewer3D.Popups
                 screenMode = new Label(hbox.RemainingWidth, hbox.RemainingHeight, (HudWindow.hudWindowFullScreen ? "Screen: Normal" : "Screen: Full"), LabelAlignment.Center) { Color = Color.Gray };
                 screenMode.Click += ScreenMode_Click;
                 vbox.Add(screenMode);
+
+                // Icik
+                HudWindow.hudWindowLocoActualPage -= 1;
             }
             return vbox;
         }

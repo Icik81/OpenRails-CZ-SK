@@ -287,18 +287,19 @@ namespace Orts.Parsers.Msts
                 }
                 int numOfColumns = stf.ReadInt(0);
                 string header = stf.ReadString().ToLower();
-                if (header == "throttle" || header == "force" || header == "force2")
+                if (header == "throttle" || header == "force" || header == "force2" || header == "step")
                 {
                     // Icik
                     // header = "throttle"...x = Throttle, y = AbsWheelSpeed, Out = TractiveForce
                     // header = "force"...x = FilteredMotiveForce, y = AbsWheelSpeed, Out = Current
                     // header = "force2"...x = FilteredMotiveForce, y = Throttle, Out = Current
+                    // header = "step"...x = StepControllerValue, y = AbsWheelSpeed, Out = TractiveForce
 
                     stf.MustMatch("(");
                     int numOfThrottleValues = 0;
                     while (!stf.EndOfBlock())
                     {
-                        if (header == "throttle")
+                        if (header == "throttle" || header == "step")
                             xlist.Add(stf.ReadFloat(STFReader.UNITS.None, 0f));
                         
                         if (header == "force" || header == "force2")
@@ -327,7 +328,7 @@ namespace Orts.Parsers.Msts
                         for (int i = 0; i < numOfRows; i++)
                         {
                             float x = 0;
-                            if (header == "throttle" || header == "force")
+                            if (header == "throttle" || header == "force" || header == "step")
                                 x = stf.ReadFloat(STFReader.UNITS.SpeedDefaultMPH, 0);
 
                             if (header == "force2")
@@ -341,7 +342,7 @@ namespace Orts.Parsers.Msts
                                     STFException.TraceWarning(stf, "Interpolator throttle vs. num of columns mismatch. (missing some throttle values)");
                                     errorFound = true;
                                 }
-                                if (header == "throttle")
+                                if (header == "throttle" || header == "step")
                                     ilist[j][x] = stf.ReadFloat(STFReader.UNITS.Force, 0); // Výstup hodnoty
                                                                                            // síly
                                 
