@@ -933,28 +933,29 @@ namespace Orts.Viewer3D.Popups
                 if (hudWindowLocoActualPage == 0 && i > HeaderRows - 3)
                     break;
 
-                if (i - CurrentFirstLine < (hudWindowLocoActualPage == 0 ? hudWindowLocoPagesCount : 1))
-                {
-                    int index = statusData.FindIndex(x => x.Contains(LocomotiveName[i - CurrentFirstLine]));
-                    TextColNumber(statusData[index], 0, IsSteamLocomotive);//Horizontal string width to display Locomotives.
-                }
-                else if ((i > nLinesShow ? i - lineOffsetLocoInfo[hudWindowLinesActualPage] : i) < statusData.Count || nLinesShow > statusData.Count)
-                {
-                    //Avoid to truncated sections.
-                    var offsetI = (i > nLinesShow ? i - lineOffsetLocoInfo[hudWindowLinesActualPage] : i);
-                    var dataText = statusData[offsetI];
-                    if (statusData[offsetI].Contains("===") && CurrentLastLine < i + sectionsLocomotive[statusData[offsetI]])
-                    {   //Calc string col number to display.
-                        lineOffsetLocoInfo[hudWindowLinesActualPage + 1] = nLinesShow - (i - CurrentFirstLine) + 2;//2 = First line + empty line
-                        break;
-                    }
-                    else
-                    {
-                        var newI = i > nLinesShow ? i - lineOffsetLocoInfo[hudWindowLinesActualPage] : i;
-                        var newStatus = statusData[newI];
-                        TextColNumber(statusData[offsetI], 0, IsSteamLocomotive);
-                    }
-                }
+                // Icik
+                //if (i - CurrentFirstLine < (hudWindowLocoActualPage == 0 ? hudWindowLocoPagesCount : 1))
+                //{
+                //    int index = statusData.FindIndex(x => x.Contains(LocomotiveName[i - CurrentFirstLine]));
+                //    TextColNumber(statusData[index], 0, IsSteamLocomotive);//Horizontal string width to display Locomotives.
+                //}
+                //else if ((i > nLinesShow ? i - lineOffsetLocoInfo[hudWindowLinesActualPage] : i) < statusData.Count || nLinesShow > statusData.Count)
+                //{
+                //    //Avoid to truncated sections.
+                //    var offsetI = (i > nLinesShow ? i - lineOffsetLocoInfo[hudWindowLinesActualPage] : i);
+                //    var dataText = statusData[offsetI];
+                //    if (statusData[offsetI].Contains("===") && CurrentLastLine < i + sectionsLocomotive[statusData[offsetI]])
+                //    {   //Calc string col number to display.
+                //        lineOffsetLocoInfo[hudWindowLinesActualPage + 1] = nLinesShow - (i - CurrentFirstLine) + 2;//2 = First line + empty line
+                //        break;
+                //    }
+                //    else
+                //    {
+                //        var newI = i > nLinesShow ? i - lineOffsetLocoInfo[hudWindowLinesActualPage] : i;
+                //        var newStatus = statusData[newI];
+                //        TextColNumber(statusData[offsetI], 0, IsSteamLocomotive);
+                //    }
+                //}
 
                 if (hudWindowLocoActualPage > 0 && !statusData[i >= nLinesShow ? i - lineOffsetLocoInfo[hudWindowLinesActualPage] : i].StartsWith(LocomotiveName[0]))
                 {

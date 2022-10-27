@@ -18,6 +18,7 @@
 // This file is the responsibility of the 3D & Environment Team.
 
 using Microsoft.Xna.Framework;
+using Orts.Simulation;
 using ORTS.Common;
 
 namespace Orts.Viewer3D.Popups
@@ -176,7 +177,8 @@ namespace Orts.Viewer3D.Popups
                 vbox.Add(screenMode);
 
                 // Icik
-                HudWindow.hudWindowLocoActualPage -= 1;
+                if (HudWindow.hudWindowLocoActualPage > 0)                
+                    HudWindow.hudWindowLocoActualPage--;                 
             }
             return vbox;
         }
