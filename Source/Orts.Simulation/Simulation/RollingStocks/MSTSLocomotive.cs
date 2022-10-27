@@ -10403,12 +10403,16 @@ namespace Orts.Simulation.RollingStocks
         public int MirerControllerValue = -1;
         public float prevMirerControllerValue = -1;
         public float MirerTimer;
+        public float MirerTimer2;
         public bool MirerControllerOneTouch;
         public bool MirerControllerSmooth;
         public float MirerSmoothPeriod = 0.5f;
         public int MirerMaxValue = 42;
         public bool MirerUp;
         public bool MirerDown;
+        public bool MirerNoCutPower = true;
+        public bool MirerToZero;
+        float MirerFastDownPeriod = 0.25f;
         public void MirerController()
         {
             if (MirerControllerEnable)
@@ -10427,18 +10431,38 @@ namespace Orts.Simulation.RollingStocks
                             break;
                     }                    
                 }
+                // Pokud nastane CutPower, nastaví se kontrolér do 0                
+                if (LocalThrottlePercent > 0 && MirerNoCutPower) 
+                    MirerNoCutPower = false;
+                else
+                if (LocalThrottlePercent == 0 && !MirerNoCutPower)
+                {
+                    MirerControllerValue = -1;
+                    MirerNoCutPower = true;
+                }
+                // Rychlé zkrokování dolů
+                if (MirerToZero)
+                {
+                    MirerTimer2 += elapsedTime;
+                    if (MirerTimer2 > MirerFastDownPeriod)
+                    {
+                        if (MirerControllerValue > -1)
+                            MirerControllerValue--;                        
+                        MirerTimer2 = 0.0f;
+                        //Simulator.Confirmer.MSG(Simulator.Catalog.GetString("Controller") + ": " + MirerControllerValue);
+                    }
+                }
+
                 if (MirerControllerValue != prevMirerControllerValue)
                 {
                     prevMirerControllerValue = MirerControllerValue;
-
                     StepControllerValue = MirerControllerValue;
-
                     switch (MirerControllerValue)
                     {
                         // 0
-                        case -1: LocalThrottlePercent = 0; Simulator.Confirmer.MSG(Simulator.Catalog.GetString("Controller") + ": 0"); break;
+                        case -1: SetThrottlePercent(0); Simulator.Confirmer.MSG(Simulator.Catalog.GetString("Controller") + ": 0"); break;
                         // Kontrolní X
-                        case 0: LocalThrottlePercent = 0; Simulator.Confirmer.MSG(Simulator.Catalog.GetString("Controller") + ": X"); break;
+                        case 0: SetThrottlePercent(0); Simulator.Confirmer.MSG(Simulator.Catalog.GetString("Controller") + ": X"); break;
 
                         // Stupně
                         case 1: SetThrottlePercent(1); Simulator.Confirmer.MSG(Simulator.Catalog.GetString("Controller") + ": " + MirerControllerValue); break;

@@ -775,11 +775,13 @@ namespace Orts.Viewer3D.RollingStock
                 if (UserInput.IsDown(UserCommand.ControlMirerControllerUp))
                 {
                     Locomotive.ToggleMirerControllerUp();
+                    Locomotive.MirerToZero = false;
                 }
                 else
                 if (UserInput.IsDown(UserCommand.ControlMirerControllerDown))
                 {
                     Locomotive.ToggleMirerControllerDown();
+                    Locomotive.MirerToZero = false;
                 }
                 else                
                 if (UserInput.IsReleased(UserCommand.ControlMirerControllerUp) && !Locomotive.MirerControllerSmooth && Locomotive.MirerTimer < Locomotive.MirerSmoothPeriod)
@@ -801,6 +803,9 @@ namespace Orts.Viewer3D.RollingStock
                     Locomotive.MirerControllerOneTouch = false;
                     Locomotive.MirerControllerSmooth = false;
                 }
+
+                if (UserInput.IsPressed(UserCommand.ControlThrottleZero))
+                    Locomotive.MirerToZero = true;                 
             }
 
             // Ovládání tlačítka znovunačtení světa
