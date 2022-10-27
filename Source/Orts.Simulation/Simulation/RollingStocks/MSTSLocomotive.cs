@@ -10353,7 +10353,15 @@ namespace Orts.Simulation.RollingStocks
         // Mirer ovladač        
         public void ToggleMirerControllerUp()
         {
-            MirerControllerPosition = -1;
+            if (MirerControllerPosition > 0)
+                return;
+            if (MirerControllerPosition > -1)
+                MirerControllerPosition--;
+            MirerTimer3 += elapsedTime;
+            if (MirerTimer3 > 0.5f)
+                if (MirerControllerPosition > -2)
+                    MirerControllerPosition--;
+
             MirerTimer += elapsedTime;
             if (MirerControllerOneTouch)
             {
@@ -10363,7 +10371,7 @@ namespace Orts.Simulation.RollingStocks
                 //Simulator.Confirmer.MSG(Simulator.Catalog.GetString("Controller") + ": " + MirerControllerValue);
             }
             else
-            {                
+            {                    
                 if (MirerTimer > MirerSmoothPeriod)
                 {
                     if (MirerControllerValue < MirerMaxValue)
@@ -10377,9 +10385,16 @@ namespace Orts.Simulation.RollingStocks
 
         public void ToggleMirerControllerDown()
         {
-            MirerControllerPosition = 1;
-            MirerTimer += elapsedTime;
+            if (MirerControllerPosition < 0)
+                return;
+            if (MirerControllerPosition < 1)
+                MirerControllerPosition++;
+            MirerTimer3 += elapsedTime;
+            if (MirerTimer3 > 0.5f)
+                if (MirerControllerPosition < 2)
+                    MirerControllerPosition++;
 
+            MirerTimer += elapsedTime;
             if (MirerControllerOneTouch)
             {
                 if (MirerControllerValue > -1)
@@ -10388,7 +10403,7 @@ namespace Orts.Simulation.RollingStocks
                 //Simulator.Confirmer.MSG(Simulator.Catalog.GetString("Controller") + ": " + MirerControllerValue);
             }
             else
-            {
+            {                
                 if (MirerTimer > MirerSmoothPeriod)
                 {
                     if (MirerControllerValue > -1)
@@ -10404,6 +10419,8 @@ namespace Orts.Simulation.RollingStocks
         public float prevMirerControllerValue = -1;
         public float MirerTimer;
         public float MirerTimer2;
+        public float MirerTimer3;
+        public float MirerTimer4;
         public bool MirerControllerOneTouch;
         public bool MirerControllerSmooth;
         public float MirerSmoothPeriod = 0.5f;
@@ -10413,6 +10430,7 @@ namespace Orts.Simulation.RollingStocks
         public bool MirerNoCutPower = true;
         public bool MirerToZero;
         float MirerFastDownPeriod = 0.25f;
+        public bool MirerControllerBlocked;
         public void MirerController()
         {
             if (MirerControllerEnable)
@@ -10423,11 +10441,15 @@ namespace Orts.Simulation.RollingStocks
                     SignalEvent(Event.ThrottleChange);
                     switch (MirerControllerPosition)
                     {
+                        case -2:
+                            break;
                         case -1:                            
                             break;
                         case 0:
                             break;
                         case 1:
+                            break;
+                        case 2:
                             break;
                     }                    
                 }
@@ -12946,14 +12968,20 @@ namespace Orts.Simulation.RollingStocks
                         MirerControllerEnable = true;                        
                         switch (MirerControllerPosition)
                         {
+                            case -2:
+                                data = 4;
+                                break;
                             case -1: 
-                                data = 1;
+                                data = 3;
                                 break;
                             case 0:
-                                data = 0;
+                                data = 2;
                                 break;
                             case 1:
-                                data = 2;
+                                data = 1;
+                                break;
+                            case 2:
+                                data = 0;
                                 break;
                         }
                         break;

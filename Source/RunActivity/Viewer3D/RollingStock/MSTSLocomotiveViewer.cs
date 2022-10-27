@@ -772,6 +772,11 @@ namespace Orts.Viewer3D.RollingStock
             // Mirer ovladač
             if (Locomotive.MirerControllerEnable)
             {
+                if (UserInput.IsDown(UserCommand.ControlMirerControllerUp) && Locomotive.MirerControllerPosition == 2)
+                {
+                    Locomotive.MirerControllerPosition--;
+                }
+                else
                 if (UserInput.IsDown(UserCommand.ControlMirerControllerUp))
                 {
                     Locomotive.ToggleMirerControllerUp();
@@ -798,14 +803,23 @@ namespace Orts.Viewer3D.RollingStock
                 else
                 if (!UserInput.IsMouseLeftButtonDown)
                 {
-                    Locomotive.MirerControllerPosition = 0;
+                    if (Locomotive.MirerControllerPosition != 2)
+                    {
+                        if (Locomotive.MirerControllerPosition < 0)
+                            Locomotive.MirerControllerPosition++;
+                        if (Locomotive.MirerControllerPosition > 0)
+                            Locomotive.MirerControllerPosition--;
+                    }
                     Locomotive.MirerTimer = 0;
+                    Locomotive.MirerTimer3 = 0;
                     Locomotive.MirerControllerOneTouch = false;
                     Locomotive.MirerControllerSmooth = false;
                 }
 
-                if (UserInput.IsPressed(UserCommand.ControlThrottleZero))
-                    Locomotive.MirerToZero = true;                 
+                if (UserInput.IsPressed(UserCommand.ControlThrottleZero) || Locomotive.MirerControllerPosition == 2)
+                {
+                    Locomotive.MirerToZero = true;
+                }
             }
 
             // Ovládání tlačítka znovunačtení světa
@@ -4098,19 +4112,26 @@ namespace Orts.Viewer3D.RollingStock
                     }
                     break;
                 case CABViewControlTypes.MIRER_CONTROLLER:
-                    // Ovladač MIRER                                        
-                    if ((ChangedValue(0) > 0 || Locomotive.MirerUp) && UserInput.IsMouseLeftButtonDown)
+                    // Ovladač MIRER
+                    if (((ChangedValue(0) > 0 && NormalizedMouseMovement() > 0.025f) || Locomotive.MirerUp) && UserInput.IsMouseLeftButtonDown && Locomotive.MirerControllerPosition == 2)
+                    {
+                        Locomotive.MirerControllerPosition--;
+                    }
+                    else
+                    if (((ChangedValue(0) > 0 && NormalizedMouseMovement() > 0.025f) || Locomotive.MirerUp) && UserInput.IsMouseLeftButtonDown && Locomotive.MirerControllerPosition < 1)
                     {
                         Locomotive.ToggleMirerControllerUp();
                         Locomotive.MirerUp = true;
                         Locomotive.MirerDown = false;
+                        Locomotive.MirerToZero = false;
                     }
                     else
-                    if ((ChangedValue(0) < 0 || Locomotive.MirerDown) && UserInput.IsMouseLeftButtonDown)
+                    if (((ChangedValue(0) < 0 && NormalizedMouseMovement() < 0.025f) || Locomotive.MirerDown) && UserInput.IsMouseLeftButtonDown)
                     {
                         Locomotive.ToggleMirerControllerDown();
                         Locomotive.MirerDown = true;
                         Locomotive.MirerUp = false;
+                        Locomotive.MirerToZero = false;
                     }
                     else
                     if (Locomotive.MirerUp && !UserInput.IsMouseLeftButtonDown && !Locomotive.MirerControllerSmooth && Locomotive.MirerTimer < Locomotive.MirerSmoothPeriod)
@@ -4127,9 +4148,9 @@ namespace Orts.Viewer3D.RollingStock
                     if (!UserInput.IsMouseLeftButtonDown)
                     {
                         Locomotive.MirerUp = false;
-                        Locomotive.MirerDown = false;
-                        Locomotive.MirerControllerPosition = 0;
+                        Locomotive.MirerDown = false;                        
                         Locomotive.MirerTimer = 0;
+                        Locomotive.MirerTimer3 = 0;
                         Locomotive.MirerControllerOneTouch = false;
                         Locomotive.MirerControllerSmooth = false;
                     }
