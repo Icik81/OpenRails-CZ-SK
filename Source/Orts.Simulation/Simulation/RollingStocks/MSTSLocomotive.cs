@@ -584,6 +584,7 @@ namespace Orts.Simulation.RollingStocks
         public bool CheckPowerLoss;
         public bool DontRaisePanto;
         float PreDataAmmeter;
+        float PreDataAmmeter2;
         float PreDataAmps;
         public bool AIPantoDown;
         public bool Pantograph4Enable = false;
@@ -601,8 +602,10 @@ namespace Orts.Simulation.RollingStocks
         public int TrainPantoMarker;
         public bool AIPantoChange;
         public bool AIPanto2Raise = false;
-        public float PowerCurrent;
-        public float BrakeCurrent;
+        public float PowerCurrent1;
+        public float PowerCurrent2;
+        public float BrakeCurrent1;
+        public float BrakeCurrent2;
         public bool BailOffPressed;
         public bool ARRTrainBrakeEngage;
         public float ARRAutoCylPressurePSI;
@@ -662,11 +665,7 @@ namespace Orts.Simulation.RollingStocks
         public float AripotControllerValue;
         public float AripotControllerPreValue;
         public bool AripotControllerCanUseThrottle = true;
-        public InterpolatorDiesel2D CurrentForceCurves;
-        public InterpolatorDiesel2D CurrentBrakeForceCurves;
-        public InterpolatorDiesel2D CurrentForce2Curves_1;
-        public InterpolatorDiesel2D CurrentForce2Curves_2;
-        public InterpolatorDiesel2D CurrentForce2Curves_3;
+        public InterpolatorDiesel2D CurrentForceCurves;        
         public string CabFrontSoundFileName;
         public string CabRearSoundFileName;
         public int CabStationForBatterySwitchOn;
@@ -686,7 +685,10 @@ namespace Orts.Simulation.RollingStocks
         public InterpolatorDiesel2D TractiveForceStepControllerCurves;
         public InterpolatorDiesel2D TractiveForceStepControllerCurvesAC;
         public InterpolatorDiesel2D TractiveForceStepControllerCurvesDC;
-
+        public InterpolatorDiesel2D CurrentForceStep1Curves;
+        public InterpolatorDiesel2D CurrentForceStep2Curves;
+        public InterpolatorDiesel2D CurrentBrakeForce1Curves;
+        public InterpolatorDiesel2D CurrentBrakeForce2Curves;
 
         // Jindrich
         public bool IsActive = false;
@@ -1371,17 +1373,17 @@ namespace Orts.Simulation.RollingStocks
                 case "engine(mucableequipment": MUCableEquipment = stf.ReadBoolBlock(false); break;
                 case "engine(pantocanhvoff": PantoCanHVOffSpeedKpH = stf.ReadFloatBlock(STFReader.UNITS.Speed, 0); break;
                 case "engine(maxtrainbrakepressure": BrakeSystem.MCP_TrainBrake = stf.ReadFloatBlock(STFReader.UNITS.PressureDefaultPSI, null); break;
-                case "engine(ortscurrentcharacteristics": CurrentForceCurves = new InterpolatorDiesel2D(stf, true); break;
-                case "engine(ortsbrakecurrentcharacteristics": CurrentBrakeForceCurves = new InterpolatorDiesel2D(stf, true); break;
-                case "engine(ortscurrentcharacteristics_1": CurrentForce2Curves_1 = new InterpolatorDiesel2D(stf, true); break;
-                case "engine(ortscurrentcharacteristics_2": CurrentForce2Curves_2 = new InterpolatorDiesel2D(stf, true); break;
-                case "engine(ortscurrentcharacteristics_3": CurrentForce2Curves_3 = new InterpolatorDiesel2D(stf, true); break;
+                case "engine(ortscurrentcharacteristics": CurrentForceCurves = new InterpolatorDiesel2D(stf, true); break;                
                 case "engine(soundfront": CabFrontSoundFileName = stf.ReadStringBlock(null); break;
                 case "engine(soundrear": CabRearSoundFileName = stf.ReadStringBlock(null); break;
                 case "engine(cabstationforbatteryswitchon": CabStationForBatterySwitchOn = stf.ReadIntBlock(null); break;
                 case "engine(ortstractioncharacteristicsstepcontroller": TractiveForceStepControllerCurves = new InterpolatorDiesel2D(stf, true); break;
                 case "engine(ortstractioncharacteristicsstepcontrollerac": TractiveForceStepControllerCurvesAC = new InterpolatorDiesel2D(stf, true); break;
                 case "engine(ortstractioncharacteristicsstepcontrollerdc": TractiveForceStepControllerCurvesDC = new InterpolatorDiesel2D(stf, true); break;
+                case "engine(ortscurrentforcestep1characteristics": CurrentForceStep1Curves = new InterpolatorDiesel2D(stf, true); break;
+                case "engine(ortscurrentforcestep2characteristics": CurrentForceStep2Curves = new InterpolatorDiesel2D(stf, true); break;
+                case "engine(ortsbrakecurrent1characteristics": CurrentBrakeForce1Curves = new InterpolatorDiesel2D(stf, true); break;
+                case "engine(ortsbrakecurrent2characteristics": CurrentBrakeForce2Curves = new InterpolatorDiesel2D(stf, true); break;
 
 
                 // Jindrich
@@ -1632,17 +1634,17 @@ namespace Orts.Simulation.RollingStocks
             BreakPowerButton_Activated = locoCopy.BreakPowerButton_Activated;
             BreakEDBButton_Activated = locoCopy.BreakEDBButton_Activated;
             BrakeSystem.MCP_TrainBrake = locoCopy.BrakeSystem.MCP_TrainBrake;
-            CurrentForceCurves = locoCopy.CurrentForceCurves;
-            CurrentBrakeForceCurves = locoCopy.CurrentBrakeForceCurves;
-            CurrentForce2Curves_1 = locoCopy.CurrentForce2Curves_1;
-            CurrentForce2Curves_2 = locoCopy.CurrentForce2Curves_2;
-            CurrentForce2Curves_3 = locoCopy.CurrentForce2Curves_3;
+            CurrentForceCurves = locoCopy.CurrentForceCurves;            
             CabFrontSoundFileName = locoCopy.CabFrontSoundFileName;
             CabRearSoundFileName = locoCopy.CabRearSoundFileName;
             CabStationForBatterySwitchOn = locoCopy.CabStationForBatterySwitchOn;
             TractiveForceStepControllerCurves = locoCopy.TractiveForceStepControllerCurves;
             TractiveForceStepControllerCurvesAC = locoCopy.TractiveForceStepControllerCurvesAC;
             TractiveForceStepControllerCurvesDC = locoCopy.TractiveForceStepControllerCurvesDC;
+            CurrentForceStep1Curves = locoCopy.CurrentForceStep1Curves;
+            CurrentForceStep2Curves = locoCopy.CurrentForceStep2Curves;
+            CurrentBrakeForce1Curves = locoCopy.CurrentBrakeForce1Curves;
+            CurrentBrakeForce2Curves = locoCopy.CurrentBrakeForce2Curves;
 
 
             // Jindrich
@@ -2734,33 +2736,30 @@ namespace Orts.Simulation.RollingStocks
 
         public void PowerCurrentCalculation()
         {
+            if (CurrentForceStep2Curves != null)
+                PowerCurrent2 = CurrentForceStep2Curves.Get(Math.Abs(FilteredMotiveForceN), StepControllerValue);
+            
+            if (CurrentForceStep1Curves != null)
+                PowerCurrent1 = CurrentForceStep1Curves.Get(Math.Abs(FilteredMotiveForceN), StepControllerValue);
+            else            
             if (CurrentForceCurves != null)
-                PowerCurrent = CurrentForceCurves.Get(Math.Abs(FilteredMotiveForceN), AbsWheelSpeedMpS);
+                PowerCurrent1 = CurrentForceCurves.Get(Math.Abs(FilteredMotiveForceN), AbsWheelSpeedMpS);                                    
             else
-
-                // Zde bude podmínka pro notch ovladače výkonu 
-                if (CurrentForce2Curves_1 != null)
-                PowerCurrent = CurrentForce2Curves_1.Get(Math.Abs(FilteredMotiveForceN), ThrottlePercent);
-            else
-                if (CurrentForce2Curves_2 != null)
-                PowerCurrent = CurrentForce2Curves_2.Get(Math.Abs(FilteredMotiveForceN), ThrottlePercent);
-            else
-                if (CurrentForce2Curves_3 != null)
-                PowerCurrent = CurrentForce2Curves_3.Get(Math.Abs(FilteredMotiveForceN), ThrottlePercent);
-            else
-
             // Default
-                PowerCurrent = Math.Abs(FilteredMotiveForceN) / MaxForceN * MaxCurrentA;
+            PowerCurrent1 = Math.Abs(FilteredMotiveForceN) / MaxForceN * MaxCurrentA;
         }
 
         //Icik
         public void BrakeCurrentCalculation()
         {
-            if (CurrentBrakeForceCurves != null)
-                BrakeCurrent = CurrentBrakeForceCurves.Get(Math.Abs(DynamicBrakeForceN), AbsWheelSpeedMpS);
+            if (CurrentBrakeForce2Curves != null)
+                BrakeCurrent2 = CurrentBrakeForce2Curves.Get(Math.Abs(DynamicBrakeForceN), AbsWheelSpeedMpS);
+
+            if (CurrentBrakeForce1Curves != null)
+                BrakeCurrent1 = CurrentBrakeForce1Curves.Get(Math.Abs(DynamicBrakeForceN), AbsWheelSpeedMpS);
             else
             // Default
-                BrakeCurrent = Math.Abs(DynamicBrakeForceN) / MaxForceN * MaxCurrentA;            
+            BrakeCurrent1 = Math.Abs(DynamicBrakeForceN) / MaxForceN * MaxCurrentA;            
         }
 
         // Icik
@@ -2773,24 +2772,24 @@ namespace Orts.Simulation.RollingStocks
                 if (MaxCurrentPower == 0) MaxCurrentPower = MaxCurrentA / 1.2f;
                 if (MaxCurrentBrake == 0) MaxCurrentBrake = MaxCurrentA / 2.3f;
                                 
-                if (float.IsInfinity(PowerCurrent) || float.IsNaN(BrakeCurrent))
+                if (float.IsInfinity(PowerCurrent1) || float.IsNaN(BrakeCurrent1))
                     return;
 
                 if (this is MSTSElectricLocomotive && DynamicBrakeForceN == 0) // Stanovení kritického proudu pro elektrické lokomotivy při výkonu
-                    if (PowerCurrent > MaxCurrentPower)
+                    if (PowerCurrent1 > MaxCurrentPower)
                         OverCurrent = true;
                 if (this is MSTSElectricLocomotive && DynamicBrakeForceN > 0) // Stanovení kritického proudu pro elektrické lokomotivy při dynamickém brždění
-                    if (BrakeCurrent > MaxCurrentBrake)
+                    if (BrakeCurrent1 > MaxCurrentBrake)
                         OverCurrent = true;
 
                 if (this is MSTSDieselLocomotive && DynamicBrakeForceN == 0) // Stanovení kritického proudu pro dieselelektrické lokomotivy při výkonu
-                    if (PowerCurrent > MaxCurrentPower)
+                    if (PowerCurrent1 > MaxCurrentPower)
                         OverCurrent = true;
                 if (this is MSTSDieselLocomotive && DynamicBrakeForceN > 0) // Stanovení kritického proudu pro dieselelektrické lokomotivy při dynamickém brždění
-                    if (BrakeCurrent > MaxCurrentBrake)
+                    if (BrakeCurrent1 > MaxCurrentBrake)
                         OverCurrent = true;
 
-                //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("MaxCurrentPower: " + MaxCurrentPower + "   PowerCurrent: " + PowerCurrent + "      MaxCurrentBrake: " + MaxCurrentBrake + "   BrakeCurrent: " + BrakeCurrent));
+                //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("MaxCurrentPower: " + MaxCurrentPower + "   PowerCurrent1: " + PowerCurrent1 + "      MaxCurrentBrake: " + MaxCurrentBrake + "   BrakeCurrent1: " + BrakeCurrent1));
 
                 if (OverCurrent)
                 {
@@ -11149,10 +11148,10 @@ namespace Orts.Simulation.RollingStocks
                                     data = -data;
 
                                 // Icik
-                                if (CurrentForceCurves != null || CurrentForce2Curves_1 != null || CurrentForce2Curves_2 != null || CurrentForce2Curves_3 != null)
-                                    data = PowerCurrent;
-                                if (CurrentBrakeForceCurves != null && DynamicBrakeForceN != 0)
-                                    data = BrakeCurrent;
+                                if (CurrentForceStep1Curves != null || CurrentForceCurves != null)
+                                    data = PowerCurrent1;
+                                if (CurrentBrakeForce1Curves != null && DynamicBrakeForceN != 0)
+                                    data = BrakeCurrent1;
 
                                 if (cvc.ControlType == CABViewControlTypes.AMMETER_ABS) data = Math.Abs(data);
                                 break;
@@ -11160,10 +11159,10 @@ namespace Orts.Simulation.RollingStocks
                             data = this.MotiveForceN / MaxForceN * MaxCurrentA;
 
                             // Icik
-                            if (CurrentForceCurves != null || CurrentForce2Curves_1 != null || CurrentForce2Curves_2 != null || CurrentForce2Curves_3 != null)
-                                data = PowerCurrent;
-                            if (CurrentBrakeForceCurves != null && DynamicBrakeForceN != 0)
-                                data = BrakeCurrent;
+                            if (CurrentForceStep1Curves != null || CurrentForceCurves != null)
+                                data = PowerCurrent1;
+                            if (CurrentBrakeForce1Curves != null && DynamicBrakeForceN != 0)
+                                data = BrakeCurrent1;
 
                             if (cvc.ControlType == CABViewControlTypes.AMMETER_ABS) data = Math.Abs(data);
                             cvc.ElapsedTime = 0;                            
@@ -11171,6 +11170,27 @@ namespace Orts.Simulation.RollingStocks
                         }
                         else
                             data = PreDataAmmeter;                                                
+                        break;
+                    }
+                // Icik
+                case CABViewControlTypes.AMMETER2:
+                case CABViewControlTypes.AMMETER2_ABS:
+                    {
+                        cvc.ElapsedTime += elapsedTime;
+                        if (cvc.ElapsedTime > cvc.UpdateTime)
+                        {                            
+                            if (CurrentForceStep2Curves != null)
+                                data = PowerCurrent2;
+                            if (CurrentBrakeForce2Curves != null && DynamicBrakeForceN != 0)
+                                data = BrakeCurrent2;
+
+                            if (cvc.ControlType == CABViewControlTypes.AMMETER2_ABS) data = Math.Abs(data);
+                            break;                                       
+                            cvc.ElapsedTime = 0;
+                            PreDataAmmeter2 = data;
+                        }
+                        else
+                            data = PreDataAmmeter2;
                         break;
                     }
                 case CABViewControlTypes.LOAD_METER:

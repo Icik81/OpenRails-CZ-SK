@@ -3078,6 +3078,8 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.SEASON_SWITCH:
                 case CABViewControlTypes.MIRER_CONTROLLER:
                 case CABViewControlTypes.MIRER_DISPLAY:
+                case CABViewControlTypes.AMMETER2:
+                case CABViewControlTypes.AMMETER2_ABS:
 
                 case CABViewControlTypes.MOTOR_DISABLED:
                 case CABViewControlTypes.INVERTER_TEST:

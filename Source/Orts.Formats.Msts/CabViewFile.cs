@@ -468,6 +468,8 @@ namespace Orts.Formats.Msts
         SEASON_SWITCH,
         MIRER_CONTROLLER,
         MIRER_DISPLAY,
+        AMMETER2,
+        AMMETER2_ABS,
 
         // ORTS
         ORTS_SCREEN_SELECT,

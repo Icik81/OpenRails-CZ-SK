@@ -1831,7 +1831,7 @@ namespace Orts.Simulation.RollingStocks
             if (IsLeadLocomotive())
             {
                 // Sestřelení HV při těžkém rozjezdu na jeden sběrač
-                float I_PantographCurrent = PowerCurrent;
+                float I_PantographCurrent = PowerCurrent1;
                 float I_MaxPantographCurrent = MaxCurrentA * 0.60f; // Maximální zátěž na jeden sběrač 60% maxima proudu
                 switch (RouteVoltageV)
                 {
