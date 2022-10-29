@@ -2766,7 +2766,7 @@ namespace Orts.Simulation.RollingStocks
         // Definice ochran lokomotiv        
         public void Overcurrent_Protection()
         {
-            if (MaxCurrentA > 0)  // Zohlední jen elektrické a dieselelektrické lokomotivy 
+            if (MaxCurrentA > 0 || !LocoHelperOn)  // Zohlední jen elektrické a dieselelektrické lokomotivy, lokomotiva nesmí být postrk 
             {
                 // Nadproudová ochrana                        
                 if (MaxCurrentPower == 0) MaxCurrentPower = MaxCurrentA / 1.2f;
@@ -4109,7 +4109,7 @@ namespace Orts.Simulation.RollingStocks
                         || WheelSlipWarning
                         || WheelSlip
                         || MSTSBrakeSystem.BrakeLine1PressurePSI < BrakeSystem.maxPressurePSI0 - (0.2f * 14.50377f)
-                        || Simulator.ControllerVoltsLocoHelper < 0
+                        || Simulator.ControllerVoltsLocoHelper < -0.1f
                         || Direction == Direction.N)
                     {
                         HelperTimerDecrease += elapsedClockSeconds;
@@ -4138,7 +4138,7 @@ namespace Orts.Simulation.RollingStocks
                         }
                     }
                     LocalThrottlePercent = MathHelper.Clamp(LocalThrottlePercent, 0, 100);
-                    Train.ControllerVolts = LocalThrottlePercent / 10;
+                    Train.ControllerVolts = LocalThrottlePercent / 10;                    
                 }
                 if (HelperLocoFollow)
                 {
