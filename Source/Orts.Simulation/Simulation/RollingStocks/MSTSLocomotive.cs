@@ -2737,10 +2737,10 @@ namespace Orts.Simulation.RollingStocks
         public void PowerCurrentCalculation()
         {
             if (CurrentForceStep2Curves != null)
-                PowerCurrent2 = CurrentForceStep2Curves.Get(Math.Abs(FilteredMotiveForceN), StepControllerValue);
+                PowerCurrent2 = CurrentForceStep2Curves.Get(StepControllerValue, Math.Abs(FilteredMotiveForceN));
             
             if (CurrentForceStep1Curves != null)
-                PowerCurrent1 = CurrentForceStep1Curves.Get(Math.Abs(FilteredMotiveForceN), StepControllerValue);
+                PowerCurrent1 = CurrentForceStep1Curves.Get(StepControllerValue, Math.Abs(FilteredMotiveForceN));
             else            
             if (CurrentForceCurves != null)
                 PowerCurrent1 = CurrentForceCurves.Get(Math.Abs(FilteredMotiveForceN), AbsWheelSpeedMpS);                                    
@@ -11168,11 +11168,12 @@ namespace Orts.Simulation.RollingStocks
                             if (cvc.ControlType == CABViewControlTypes.AMMETER_ABS) data = Math.Abs(data);
                             cvc.ElapsedTime = 0;                            
                             PreDataAmmeter = data;
+                            break; 
                         }
                         else
                             data = PreDataAmmeter;                                                
                         break;
-                    }
+                    }                    
                 // Icik
                 case CABViewControlTypes.AMMETER2:
                 case CABViewControlTypes.AMMETER2_ABS:
@@ -11185,15 +11186,15 @@ namespace Orts.Simulation.RollingStocks
                             if (CurrentBrakeForce2Curves != null && DynamicBrakeForceN != 0)
                                 data = BrakeCurrent2;
 
-                            if (cvc.ControlType == CABViewControlTypes.AMMETER2_ABS) data = Math.Abs(data);
-                            break;                                       
+                            if (cvc.ControlType == CABViewControlTypes.AMMETER2_ABS) data = Math.Abs(data);                                                                   
                             cvc.ElapsedTime = 0;
                             PreDataAmmeter2 = data;
+                            break;
                         }
                         else
                             data = PreDataAmmeter2;
                         break;
-                    }
+                    }                    
                 case CABViewControlTypes.LOAD_METER:
                     {
                         var direction = 0; // Forwards
