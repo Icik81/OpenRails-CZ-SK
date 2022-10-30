@@ -4274,10 +4274,11 @@ namespace Orts.Simulation.RollingStocks
         {
             if (firstFrame && BrakeSystem.StartOn)
             {
+                Headlight = 0;
                 firstFrame = false;
                 if (Simulator.Settings.AirEmpty)
                 {
-                    PantoCommandDown = true;                                        
+                    PantoCommandDown = true;                                       
                 }
                 else
                 {

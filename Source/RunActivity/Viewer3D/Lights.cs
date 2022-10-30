@@ -143,12 +143,11 @@ namespace Orts.Viewer3D
             ActiveLightCone = newLightCone;
         }
 
-        int LightCycle = 0;
         public void PrepareFrame(RenderFrame frame, ElapsedTime elapsedTime)
         {
             // Icik            
-            //var locomotive = Car.Train != null && Car.Train.IsActualPlayerTrain ? Viewer.PlayerLocomotive : null;
-            //var mstsLocomotive = locomotive as MSTSLocomotive;
+            var locomotive = Car.Train != null && Car.Train.IsActualPlayerTrain ? Viewer.PlayerLocomotive : null;
+            var mstsLocomotive = locomotive as MSTSLocomotive;            
             if (Car.Train != null && !Car.CarLightsPowerOn)                              
             {
                 HasLightCone = false;
@@ -277,13 +276,7 @@ namespace Orts.Viewer3D
             var newCarLightFrontLR = locomotive != null && locomotive.LightFrontLR;
             var newCarLightFrontRR = locomotive != null && locomotive.LightFrontRR;
             var newCarLightRearLR = locomotive != null && locomotive.LightRearLR;
-            var newCarLightRearRR = locomotive != null && locomotive.LightRearRR;            
-
-            // Neprobliknou ostatní světla při zapnutí baterií
-            LightCycle++;
-            if (LightCycle < 50)
-                return false;
-            LightCycle = 50;
+            var newCarLightRearRR = locomotive != null && locomotive.LightRearRR;
 
             // Dovolí zapnout reflektor i pokud má před sebou vozy
             if (locomotive != null && (Car as MSTSLocomotive) == Car.Train.LeadLocomotive && newCarIsLast)
@@ -314,7 +307,7 @@ namespace Orts.Viewer3D
                     newTrainHeadlight = 1;
                 }                
             }
-            
+
             if (
                 (TrainHeadlight != newTrainHeadlight) ||
                 (CarIsReversed != newCarIsReversed) ||
@@ -433,10 +426,19 @@ namespace Orts.Viewer3D
 #endif
         }
 
+        int LightCycle = 0;
         internal void UpdateState(LightViewer lightViewer)
         {
             var oldEnabled = Enabled;
-            Enabled = true;
+
+            if (LightCycle < 1)
+            {
+                Enabled = false;
+                LightCycle++;
+            }
+            else
+                Enabled = true;
+            
             if (Light.Headlight != LightHeadlightCondition.Ignore)
             {                
                 if (Light.Headlight == LightHeadlightCondition.Off)
