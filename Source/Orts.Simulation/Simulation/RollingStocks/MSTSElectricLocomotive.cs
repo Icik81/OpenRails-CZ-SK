@@ -788,7 +788,20 @@ namespace Orts.Simulation.RollingStocks
                                 MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO1", 0).ToString());
                                 MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO2", 0).ToString());
                             }
-                        }
+                            if (AcceptMUSignals)
+                                foreach (TrainCar car in Train.Cars)
+                                {
+                                    if (car.AcceptMUSignals)
+                                    {
+                                        car.SignalEvent(PowerSupplyEvent.LowerPantograph);
+                                        if (MPManager.IsMultiPlayer())
+                                        {
+                                            MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO1", 0).ToString());
+                                            MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO2", 0).ToString());
+                                        }
+                                    }
+                                }
+                        }                        
                     }
 
                     // Test napětí v troleji pro jednosystémové lokomotivy
@@ -822,6 +835,19 @@ namespace Orts.Simulation.RollingStocks
                                 MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO1", 0).ToString());
                                 MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO2", 0).ToString());
                             }
+                            if (AcceptMUSignals)
+                                foreach (TrainCar car in Train.Cars)
+                                {
+                                    if (car.AcceptMUSignals)
+                                    {
+                                        car.SignalEvent(PowerSupplyEvent.LowerPantograph);
+                                        if (MPManager.IsMultiPlayer())
+                                        {
+                                            MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO1", 0).ToString());
+                                            MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO2", 0).ToString());
+                                        }
+                                    }
+                                }
                         }
                     }
 
@@ -947,7 +973,20 @@ namespace Orts.Simulation.RollingStocks
                                 MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO1", 0).ToString());
                                 MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO2", 0).ToString());
                             }
-                        }
+                            if (AcceptMUSignals)
+                                foreach (TrainCar car in Train.Cars)
+                                {
+                                    if (car.AcceptMUSignals)
+                                    {
+                                        car.SignalEvent(PowerSupplyEvent.LowerPantograph);
+                                        if (MPManager.IsMultiPlayer())
+                                        {
+                                            MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO1", 0).ToString());
+                                            MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO2", 0).ToString());
+                                        }
+                                    }
+                                }
+                        }                        
                     }
 
                     // Nedovolí zapnout HV, pokud není napětí v drátech 
@@ -1844,7 +1883,7 @@ namespace Orts.Simulation.RollingStocks
                 }
                 if (Pantographs[1].State == PantographState.Up && Pantographs[2].State == PantographState.Up)
                     I_PantographCurrent /= 2;
-                if (I_PantographCurrent > I_MaxPantographCurrent && Math.Abs(TractiveForceN) > 0.60f * MaxForceN * (1 + (AbsSpeedMpS / 10)) && LocoType == LocoTypes.Normal)
+                if (I_PantographCurrent > I_MaxPantographCurrent && Math.Abs(TractiveForceN) > 0.70f * MaxForceN * (1 + (AbsSpeedMpS / 10)) && LocoType == LocoTypes.Normal)
                 {
                     int I_PantographCurrentToleranceTimeInfo = 10 - (int)I_PantographCurrentToleranceTime;
                     Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Too much current for one pantograph - use the other pantograph too!") + " (" + I_PantographCurrentToleranceTimeInfo + ")");
