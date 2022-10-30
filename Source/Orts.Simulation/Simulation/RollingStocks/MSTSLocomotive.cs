@@ -10363,7 +10363,7 @@ namespace Orts.Simulation.RollingStocks
                     MirerControllerPosition--;
 
             MirerTimer += elapsedTime;
-            if (MirerControllerOneTouch)
+            if (MirerControllerOneTouch && MirerControllerValue1 == MirerControllerValue2)
             {
                 if (MirerControllerValue < MirerMaxValue)
                     MirerControllerValue++;
@@ -10372,7 +10372,7 @@ namespace Orts.Simulation.RollingStocks
             }
             else
             {                    
-                if (MirerTimer > MirerSmoothPeriod)
+                if (MirerTimer > MirerSmoothPeriod && MirerControllerValue1 == MirerControllerValue2)
                 {
                     if (MirerControllerValue < MirerMaxValue)
                         MirerControllerValue++;
@@ -10395,7 +10395,7 @@ namespace Orts.Simulation.RollingStocks
                     MirerControllerPosition++;
 
             MirerTimer += elapsedTime;
-            if (MirerControllerOneTouch)
+            if (MirerControllerOneTouch && MirerControllerValue1 == MirerControllerValue2)
             {
                 if (MirerControllerValue > -1)
                     MirerControllerValue--;
@@ -10404,7 +10404,7 @@ namespace Orts.Simulation.RollingStocks
             }
             else
             {                
-                if (MirerTimer > MirerSmoothPeriod)
+                if (MirerTimer > MirerSmoothPeriod && MirerControllerValue1 == MirerControllerValue2)
                 {
                     if (MirerControllerValue > -1)
                         MirerControllerValue--;
@@ -10416,6 +10416,8 @@ namespace Orts.Simulation.RollingStocks
         }
 
         public int MirerControllerValue = -1;
+        public int MirerControllerValue1;
+        public int MirerControllerValue2;
         public float prevMirerControllerValue = -1;
         public float MirerTimer;
         public float MirerTimer2;
@@ -10463,7 +10465,7 @@ namespace Orts.Simulation.RollingStocks
                     MirerNoCutPower = true;
                 }
                 // Rychlé zkrokování dolů
-                if (MirerToZero)
+                if (MirerToZero && MirerControllerValue1 == MirerControllerValue2)
                 {
                     MirerTimer2 += elapsedTime;
                     if (MirerTimer2 > MirerFastDownPeriod)
@@ -13010,7 +13012,27 @@ namespace Orts.Simulation.RollingStocks
                     }
                 case CABViewControlTypes.MIRER_DISPLAY:
                     {
-                        data = MirerControllerValue + 1;
+                        cvc.ElapsedTime += elapsedTime;
+                        data = cvc.PreviousData;
+                        if (cvc.ElapsedTime > cvc.UpdateTime)
+                        {
+                            cvc.PreviousData = MirerControllerValue + 1;                            
+                            MirerControllerValue1 = (int)cvc.PreviousData;
+                            cvc.ElapsedTime = 0;                            
+                        }                                                
+                        break;
+                    }
+                case CABViewControlTypes.MIRER_DISPLAY2:
+                    {
+                        //cvc.UpdateTime = 3f;
+                        cvc.ElapsedTime += elapsedTime;
+                        data = cvc.PreviousData;
+                        if (cvc.ElapsedTime > cvc.UpdateTime)
+                        {
+                            cvc.PreviousData = MirerControllerValue + 1;                            
+                            MirerControllerValue2 = (int)cvc.PreviousData;
+                            cvc.ElapsedTime = 0;                            
+                        }                                                
                         break;
                     }
 
