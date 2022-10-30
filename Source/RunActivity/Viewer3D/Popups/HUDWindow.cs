@@ -1107,7 +1107,7 @@ namespace Orts.Viewer3D.Popups
                     if (car is MSTSLocomotive && car != Viewer.PlayerLocomotive)
                     {
                         // Icik
-                        float AuxResVolumeL = (Viewer.PlayerLocomotive as MSTSLocomotive).AuxResPressurePSI / 14.50377f * (Viewer.PlayerLocomotive as MSTSLocomotive).AuxResVolumeM3 * 1000;
+                        float AuxResVolumeL = (car as MSTSLocomotive).AuxResPressurePSI / 14.50377f * (car as MSTSLocomotive).AuxResVolumeM3 * 1000;
                         AuxResVolumeL = (float)Math.Round(AuxResVolumeL, 0);
 
                         TableAddLines(table, String.Format("{0}\t{1}\t{2}\t\t{3}\t{4}\t\t{5}\t{6}\t\t{7}\t{8}\t\t{9}\t{10}\t{11}",
@@ -1121,7 +1121,7 @@ namespace Orts.Viewer3D.Popups
                             (car as MSTSLocomotive).Compressor2IsOn ? Viewer.Catalog.GetString("on") : Viewer.Catalog.GetString("off"),
                             Viewer.Catalog.GetString("AuxCompressor"),
                             (car as MSTSLocomotive).AuxCompressorIsOn ? Viewer.Catalog.GetString("on") : Viewer.Catalog.GetString("off"),
-                            FormatStrings.FormatPressure((Viewer.PlayerLocomotive as MSTSLocomotive).AuxResPressurePSI, PressureUnit.PSI, (Viewer.PlayerLocomotive as MSTSLocomotive).BrakeSystemPressureUnits[BrakeSystemComponent.MainReservoir], true),
+                            FormatStrings.FormatPressure((car as MSTSLocomotive).AuxResPressurePSI, PressureUnit.PSI, (car as MSTSLocomotive).BrakeSystemPressureUnits[BrakeSystemComponent.MainReservoir], true),
                             AuxResVolumeL + " L"));
                     }
                 }

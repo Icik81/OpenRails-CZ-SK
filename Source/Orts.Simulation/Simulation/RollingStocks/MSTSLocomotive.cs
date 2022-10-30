@@ -688,7 +688,7 @@ namespace Orts.Simulation.RollingStocks
         public InterpolatorDiesel2D CurrentForceStep1Curves;
         public InterpolatorDiesel2D CurrentForceStep2Curves;
         public InterpolatorDiesel2D CurrentBrakeForce1Curves;
-        public InterpolatorDiesel2D CurrentBrakeForce2Curves;
+        public InterpolatorDiesel2D CurrentBrakeForce2Curves;        
 
         // Jindrich
         public bool IsActive = false;
@@ -4685,7 +4685,7 @@ namespace Orts.Simulation.RollingStocks
 
             if (!IsPlayerTrain && !Simulator.Paused)
                 SetAIAction();
-
+         
             if (IsPlayerTrain && !Simulator.Paused)
             {
                 //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("LapActive " + LapActive));                
@@ -8325,14 +8325,17 @@ namespace Orts.Simulation.RollingStocks
                     SignalEvent(Event.EnginePowerOff);
 
                 // Nastaví automaticky lokomotivu jako postrk, pokud se jedná o nákladní vlak
-                foreach (TrainCar car in Train.Cars)
+                if (IsPlayerTrain)
                 {
-                    if (car is MSTSWagon && car.WagonType == WagonTypes.Freight)                    
-                        LocoBecomeHelper = true;
-                    if (car is MSTSLocomotive && LocoBecomeHelper)
+                    foreach (TrainCar car in Train.Cars)
                     {
-                        car.AcceptHelperSignals = true;
-                        Simulator.Confirmer.Information(Simulator.Catalog.GetString("Car ID") + " " + car.CarID + ": " + Simulator.Catalog.GetString("Helper connected"));
+                        if (car is MSTSWagon && car.WagonType == WagonTypes.Freight)
+                            LocoBecomeHelper = true;
+                        if (car is MSTSLocomotive && LocoBecomeHelper)
+                        {
+                            car.AcceptHelperSignals = true;
+                            Simulator.Confirmer.Information(Simulator.Catalog.GetString("Car ID") + " " + car.CarID + ": " + Simulator.Catalog.GetString("Helper connected"));
+                        }
                     }
                 }
             }
