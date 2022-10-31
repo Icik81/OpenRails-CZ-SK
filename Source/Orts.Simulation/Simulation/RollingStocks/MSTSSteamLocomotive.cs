@@ -6494,9 +6494,9 @@ namespace Orts.Simulation.RollingStocks
                 status.AppendFormat("{0}\t{1}\t{2}\t{3}\t{4:N2}\t{5}\t{6:N2}\n",
                 Simulator.Catalog.GetString("Sand:"),
                 Simulator.Catalog.GetString("S/Use"),
-                FormatStrings.FormatVolume(TrackSanderSandConsumptionM3pS, IsMetric),
+                FormatStrings.FormatVolume(TrackSanderSandConsumptionLpS, IsMetric),
                 Simulator.Catalog.GetString("S/Box"),
-                FormatStrings.FormatVolume(CurrentTrackSandBoxCapacityM3, IsMetric),
+                FormatStrings.FormatVolume(CurrentTrackSandBoxCapacityL, IsMetric),
                 Simulator.Catalog.GetString("M/Press"),
                 MainResPressurePSI);
             }
