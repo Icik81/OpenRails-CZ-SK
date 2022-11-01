@@ -278,11 +278,23 @@ namespace Orts.Viewer3D
             var newCarLightRearLR = locomotive != null && locomotive.LightRearLR;
             var newCarLightRearRR = locomotive != null && locomotive.LightRearRR;
 
+            if (!newCarIsPlayer)
+            {
+                newCarLightFrontLW = false;
+                newCarLightFrontRW = false;
+                newCarLightRearLW = false;
+                newCarLightRearRW = false;
+                newCarLightFrontLR = false;
+                newCarLightFrontRR = false;
+                newCarLightRearLR = false;
+                newCarLightRearRR = false;
+            }
+
             // Dovolí zapnout reflektor i pokud má před sebou vozy
             if (locomotive != null && (Car as MSTSLocomotive) == Car.Train.LeadLocomotive && newCarIsLast)
             {
                 newCarIsLast = true;
-                newCarIsFirst = true;
+                newCarIsFirst = true;                
             }
             
             // Povolí kužel reflektoru v tunelu
@@ -292,7 +304,7 @@ namespace Orts.Viewer3D
             }
 
             // Světla pro AI
-            if (Car.Train != null && (Car.Train.TrainType == Train.TRAINTYPE.AI || Car.Train.TrainType == Train.TRAINTYPE.REMOTE))
+            if (Car.Train != null && (Car.Train.TrainType == Train.TRAINTYPE.AI))
             {
                 // AI posunuje
                 if (Car.CarIsShunting)
