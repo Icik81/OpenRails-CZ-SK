@@ -226,7 +226,7 @@ namespace Orts.Viewer3D
         public const string PrimitiveStateLabel = "Index       Enabled     Type        Headlight   Unit        Penalty     Control     Service     Time        Weather     Coupling  ";
         public const string PrimitiveStateFormat = "{0,-10  }  {1,-10   }  {2,-10   }  {3,-10   }  {4,-10   }  {5,-10   }  {6,-10   }  {7,-10   }  {8,-10   }  {9,-10   }  {10,-10  }";
 #endif
-
+        int LightCycle = 0;
         bool UpdateState()
         {
             Debug.Assert(Viewer.PlayerTrain.LeadLocomotive == Viewer.PlayerLocomotive || Viewer.PlayerTrain.TrainType == Train.TRAINTYPE.AI_PLAYERHOSTING ||
@@ -290,6 +290,12 @@ namespace Orts.Viewer3D
                 newCarLightRearRR = false;
             }
 
+            if (LightCycle < 1 && Car.Train != null && Car.Train.TrainType == Train.TRAINTYPE.AI)
+            {
+                LightCycle++;
+                return true;
+            }            
+
             // Dovolí zapnout reflektor i pokud má před sebou vozy
             if (locomotive != null && (Car as MSTSLocomotive) == Car.Train.LeadLocomotive && newCarIsLast)
             {
@@ -319,7 +325,7 @@ namespace Orts.Viewer3D
                     newTrainHeadlight = 1;
                 }                
             }
-
+            
             if (
                 (TrainHeadlight != newTrainHeadlight) ||
                 (CarIsReversed != newCarIsReversed) ||
@@ -443,14 +449,14 @@ namespace Orts.Viewer3D
         {
             var oldEnabled = Enabled;
 
-            if (LightCycle < 1)
+            if (LightCycle == 0)
             {
-                Enabled = false;
                 LightCycle++;
+                Enabled = false;
             }
             else
                 Enabled = true;
-            
+
             if (Light.Headlight != LightHeadlightCondition.Ignore)
             {                
                 if (Light.Headlight == LightHeadlightCondition.Off)
