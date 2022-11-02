@@ -204,6 +204,8 @@ namespace Orts.Simulation
         public float _NightBrightnessValue;
         public bool RefreshWorld;
         public bool PlayerUsingRearCab;
+        public int StepControllerValue;
+        public int StepControllerMaxValue;
 
 
         public List<PowerSupplyStation> powerSupplyStations;

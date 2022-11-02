@@ -681,7 +681,7 @@ namespace Orts.Simulation.RollingStocks
         public bool MirerControllerEnable;
         public int MirerControllerPosition;
         public int prevMirerControllerPosition;
-        public int StepControllerValue;
+        public int StepControllerValue;        
         public InterpolatorDiesel2D TractiveForceStepControllerCurves;
         public InterpolatorDiesel2D TractiveForceStepControllerCurvesAC;
         public InterpolatorDiesel2D TractiveForceStepControllerCurvesDC;
@@ -4139,7 +4139,8 @@ namespace Orts.Simulation.RollingStocks
                         }
                     }
                     LocalThrottlePercent = MathHelper.Clamp(LocalThrottlePercent, 0, 100);
-                    Train.ControllerVolts = LocalThrottlePercent / 10;                    
+                    Train.ControllerVolts = LocalThrottlePercent / 10;
+                    StepControllerValue = (int) (LocalThrottlePercent / 100f * Simulator.StepControllerMaxValue);
                 }
                 if (HelperLocoFollow)
                 {
@@ -4729,6 +4730,7 @@ namespace Orts.Simulation.RollingStocks
                 RainWindow(elapsedClockSeconds);
                 WipersWindow(elapsedClockSeconds);                
                 BatterySetOn = false;
+                StepControllerValue = Simulator.StepControllerValue;
             }
 
             // Hodnoty pro výpočet zvukových proměnných
@@ -5458,14 +5460,22 @@ namespace Orts.Simulation.RollingStocks
                                             TractiveForceN = 0;
                                     }
                                     else
+                                    if (TractiveForceStepControllerCurves != null)
+                                    {
+                                        TractiveForceN = TractiveForceStepControllerCurves.Get(StepControllerValue, AbsTractionSpeedMpS) * (1 - PowerReduction);
+                                        if (TractiveForceN < 0 && !TractiveForceStepControllerCurves.AcceptsNegativeValues())
+                                            TractiveForceN = 0;
+                                    }
+                                    else
                                     if (TractiveForceCurvesDC != null)
                                     {
                                         TractiveForceN = TractiveForceCurvesDC.Get(t, AbsTractionSpeedMpS) * (1 - PowerReduction);
                                         if (TractiveForceN < 0 && !TractiveForceCurvesDC.AcceptsNegativeValues())
                                             TractiveForceN = 0;
                                     }
-                                    else
-                                    {
+                                    else                                    
+                                    if (TractiveForceCurves != null)
+                                    { 
                                         TractiveForceN = TractiveForceCurves.Get(t, AbsTractionSpeedMpS) * (1 - PowerReduction);
                                         if (TractiveForceN < 0 && !TractiveForceCurves.AcceptsNegativeValues())
                                             TractiveForceN = 0;
@@ -5494,6 +5504,13 @@ namespace Orts.Simulation.RollingStocks
                                             TractiveForceN = 0;
                                     }
                                     else
+                                    if (TractiveForceStepControllerCurves != null)
+                                    {
+                                        TractiveForceN = TractiveForceStepControllerCurves.Get(StepControllerValue, AbsTractionSpeedMpS) * (1 - PowerReduction);
+                                        if (TractiveForceN < 0 && !TractiveForceStepControllerCurves.AcceptsNegativeValues())
+                                            TractiveForceN = 0;
+                                    }
+                                    else
                                     if (TractiveForceCurvesAC != null)
                                     {
                                         TractiveForceN = TractiveForceCurvesAC.Get(t, AbsTractionSpeedMpS) * (1 - PowerReduction);
@@ -5501,6 +5518,7 @@ namespace Orts.Simulation.RollingStocks
                                             TractiveForceN = 0;
                                     }
                                     else
+                                    if (TractiveForceCurves != null)
                                     {
                                         TractiveForceN = TractiveForceCurves.Get(t, AbsTractionSpeedMpS) * (1 - PowerReduction);
                                         if (TractiveForceN < 0 && !TractiveForceCurves.AcceptsNegativeValues())
@@ -10443,9 +10461,10 @@ namespace Orts.Simulation.RollingStocks
         float MirerFastDownPeriod = 0.25f;
         public bool MirerControllerBlocked;
         public void MirerController()
-        {
+        {                        
             if (MirerControllerEnable)
-            {                
+            {
+                Simulator.StepControllerMaxValue = MirerMaxValue;
                 if (MirerControllerPosition != prevMirerControllerPosition)
                 {
                     prevMirerControllerPosition = MirerControllerPosition;
@@ -10484,12 +10503,17 @@ namespace Orts.Simulation.RollingStocks
                         MirerTimer2 = 0.0f;
                         //Simulator.Confirmer.MSG(Simulator.Catalog.GetString("Controller") + ": " + MirerControllerValue);
                     }
-                }
+                }                
 
                 if (MirerControllerValue != prevMirerControllerValue)
                 {
                     prevMirerControllerValue = MirerControllerValue;
-                    StepControllerValue = MirerControllerValue;
+                    if (IsLeadLocomotive() && AcceptMUSignals)                    
+                        Simulator.StepControllerValue = MirerControllerValue;                    
+                    
+                    if (!IsLeadLocomotive() && !AcceptMUSignals)
+                        StepControllerValue = -1;
+;
                     switch (MirerControllerValue)
                     {
                         // 0
@@ -10549,7 +10573,7 @@ namespace Orts.Simulation.RollingStocks
                         case 42: SetThrottlePercent(100); Simulator.Confirmer.MSG(Simulator.Catalog.GetString("Controller") + ": P5"); break;
                     }
                 }
-            }
+            }            
         }
 
         #endregion
