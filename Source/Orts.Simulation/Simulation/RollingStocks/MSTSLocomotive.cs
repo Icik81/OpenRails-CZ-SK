@@ -4691,6 +4691,7 @@ namespace Orts.Simulation.RollingStocks
             if (IsPlayerTrain && !Simulator.Paused)
             {
                 //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("LapActive " + LapActive));                
+                StepControllerValue = Simulator.StepControllerValue;
                 DirectionControllerLogic();
                 PowerKeyLogic();                
                 PowerCurrentCalculation();
@@ -4729,8 +4730,7 @@ namespace Orts.Simulation.RollingStocks
                 LightPositionHandle();                
                 RainWindow(elapsedClockSeconds);
                 WipersWindow(elapsedClockSeconds);                
-                BatterySetOn = false;
-                StepControllerValue = Simulator.StepControllerValue;
+                BatterySetOn = false;                
             }
 
             // Hodnoty pro výpočet zvukových proměnných
