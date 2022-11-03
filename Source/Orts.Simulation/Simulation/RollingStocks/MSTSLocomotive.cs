@@ -10380,7 +10380,7 @@ namespace Orts.Simulation.RollingStocks
         // Mirer ovladač        
         public void ToggleMirerControllerUp()
         {
-            if (MirerControllerPosition > 0)
+            if (MirerControllerPosition > 0) 
                 return;
             if (MirerControllerPosition > -1)
                 MirerControllerPosition--;
@@ -10390,7 +10390,7 @@ namespace Orts.Simulation.RollingStocks
                     MirerControllerPosition--;
 
             MirerTimer += elapsedTime;
-            if (MirerControllerOneTouch && MirerControllerValue1 == MirerControllerValue2)
+            if (MirerControllerOneTouch && MirerControllerValue1 == MirerControllerValue2 && PowerCurrent1 < 410) // LTS410A
             {
                 if (MirerControllerValue < MirerMaxValue)
                     MirerControllerValue++;
@@ -10399,7 +10399,7 @@ namespace Orts.Simulation.RollingStocks
             }
             else
             {                    
-                if (MirerTimer > MirerSmoothPeriod && MirerControllerValue1 == MirerControllerValue2)
+                if (MirerTimer > MirerSmoothPeriod && MirerControllerValue1 == MirerControllerValue2 && PowerCurrent1 < 410) // LTS410A
                 {
                     if (MirerControllerValue < MirerMaxValue)
                         MirerControllerValue++;
@@ -10459,6 +10459,7 @@ namespace Orts.Simulation.RollingStocks
         public bool MirerNoCutPower = true;
         public bool MirerToZero;
         float MirerFastDownPeriod = 0.25f;
+        float MirerStepDownPeriod = 0.5f;
         public bool MirerControllerBlocked;
         public void MirerController()
         {                        
@@ -10493,7 +10494,7 @@ namespace Orts.Simulation.RollingStocks
                     MirerNoCutPower = true;
                 }
                 // Rychlé zkrokování dolů
-                if (MirerToZero && MirerControllerValue1 == MirerControllerValue2)
+                if (MirerToZero)
                 {
                     MirerTimer2 += elapsedTime;
                     if (MirerTimer2 > MirerFastDownPeriod)
@@ -10504,6 +10505,21 @@ namespace Orts.Simulation.RollingStocks
                         //Simulator.Confirmer.MSG(Simulator.Catalog.GetString("Controller") + ": " + MirerControllerValue);
                     }
                 }                
+
+                // LTS-510A
+                if (PowerCurrent1 > 510)
+                {
+                    MirerTimer4 += elapsedTime;
+                    if (MirerTimer4 > MirerStepDownPeriod)
+                    {
+                        if (MirerControllerValue > -1)
+                            MirerControllerValue--;
+                        MirerTimer4 = 0.0f;
+                    }
+                }
+
+                if (LocalDynamicBrakePercent < 1.0f)
+                    LocalDynamicBrakePercent = 0;
 
                 if (MirerControllerValue != prevMirerControllerValue)
                 {
