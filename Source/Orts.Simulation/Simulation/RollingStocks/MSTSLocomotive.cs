@@ -4878,8 +4878,6 @@ namespace Orts.Simulation.RollingStocks
                         AutomaticParkingBrakeEngaged = braking;
                     }
                     else AutomaticParkingBrakeEngaged = false;
-                    if (AVVBraking && (MpS.ToKpH(AbsSpeedMpS) < 10 || DynamicBrakePercent > 99 || ControllerVolts < -9.9f))
-                        AutomaticParkingBrakeEngaged = true;
 
                     if (LocoType == LocoTypes.Vectron && CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.Auto)
                     {
@@ -13291,7 +13289,7 @@ namespace Orts.Simulation.RollingStocks
                                     {
                                         AVVBraking = false;
                                     }
-                                    if (ControllerVolts < -9.9f || DynamicBrakePercent > 99)
+                                    if ((ControllerVolts < -9.9f || DynamicBrakePercent > 99) && !CruiseControl.DynamicBrakePriority)
                                     {
                                         AVVBraking = true;
                                     }
@@ -13378,7 +13376,7 @@ namespace Orts.Simulation.RollingStocks
                                     {
                                         AVVBraking = false;
                                     }
-                                    if (ControllerVolts < -9.9f || DynamicBrakePercent > 99)
+                                    if ((ControllerVolts < -9.9f || DynamicBrakePercent > 99f) && !CruiseControl.DynamicBrakePriority)
                                     {
                                         AVVBraking = true;
                                     }
@@ -13465,7 +13463,7 @@ namespace Orts.Simulation.RollingStocks
                                     {
                                         AVVBraking = false;
                                     }
-                                    if (ControllerVolts < -9.9f || DynamicBrakePercent > 99)
+                                    if ((ControllerVolts < -9.9f || DynamicBrakePercent > 99) && !CruiseControl.DynamicBrakePriority)
                                     {
                                         AVVBraking = true;
                                     }

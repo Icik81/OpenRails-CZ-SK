@@ -708,7 +708,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
             }
             else if (haveCruiseControl && ccAutoMode)
             {
-                if (Locomotive.AVVBraking)
+                if (Locomotive.AVVBraking && (controllerPosition == ControllerPosition.Drive || controllerPosition == ControllerPosition.Neutral || controllerPosition == ControllerPosition.ThrottleIncrease))
                     return;
                 if (controllerPosition == ControllerPosition.TrainBrakesControllerApplyStart)
                 {
@@ -840,13 +840,15 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                     }
                     if (Locomotive.ThrottlePercent < 1 && Locomotive.DynamicBrakePercent < 100)
                     {
-                        if (Locomotive.LocoType == MSTSLocomotive.LocoTypes.Katr7507)
+                        if (Locomotive.LocoType == MSTSLocomotive.LocoTypes.Katr7507 && Locomotive.DynamicBrakePercent < 98)
                         {
                             Locomotive.DynamicBrakeIntervention = 0;
                             Locomotive.StartDynamicBrakeIncreaseKatr(null);
                         }
                         else
                         {
+                            if (Locomotive.LocoType == MSTSLocomotive.LocoTypes.Katr7507 && Locomotive.DynamicBrakePercent > 98)
+                                Locomotive.StopDynamicBrakeIncrease();
                             if (Locomotive.DynamicBrakePercent < 0)
                                 Locomotive.DynamicBrakeChangeActiveState(true);
                             Locomotive.SetDynamicBrakePercent(Locomotive.DynamicBrakePercent + 1);
