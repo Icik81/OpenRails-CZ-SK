@@ -4620,7 +4620,7 @@ namespace Orts.Simulation.RollingStocks
                         if (CruiseControl.RestrictedSpeedActive)
                             CruiseControl.CheckRestrictedSpeedZone();
                     }
-                    if (Mirel != null && Simulator.PlayerIsInCab)
+                    if (Mirel != null && Simulator.PlayerIsInCab && this.CarIsPlayerLoco)
                     {
                         if (IsPlayerTrain && Mirel.Equipped)
                             Mirel.Update(elapsedClockSeconds, AbsSpeedMpS, AbsWheelSpeedMpS);
@@ -8380,17 +8380,34 @@ namespace Orts.Simulation.RollingStocks
             }
         }
 
+        public bool MUCylPressureMirelOk;
         public void TrainAlerterLogic()
-        {
-            if (IsLeadLocomotive())
+        {            
+            if (IsLeadLocomotive() && AcceptMUSignals)
             {
-                if (Mirel.initTest == SubSystems.Mirel.InitTest.Passed)                
+                MUCylPressureMirelOk = false;
+                foreach (TrainCar car in Train.Cars)
+                {
+                    if (car is MSTSLocomotive && AcceptMUSignals)
+                    {
+                        if (car.BrakeSystem.GetCylPressurePSI() > 1.5f * 14.50377f)
+                            MUCylPressureMirelOk = true;
+                    }
+                }
+                if (Mirel.initTest == SubSystems.Mirel.InitTest.Passed)
+                {
                     Simulator.TrainAlerterPassed = true;
-                
+                    Simulator.selectedDriveMode = Mirel.selectedDriveMode;
+                    Simulator.driveMode = Mirel.driveMode;
+                    Simulator.MaxSelectedSpeed = Mirel.MaxSelectedSpeed;
+                }                
                 if (!Battery)
-                    Simulator.TrainAlerterPassed = false;
-            
-                if (Simulator.TrainAlerterPassed && Mirel.initTest != SubSystems.Mirel.InitTest.Passed && AcceptMUSignals)
+                    Simulator.TrainAlerterPassed = false;                          
+            }   
+            else
+            {
+                // Přenos Mirelu do propojené lokomotivy
+                if (Simulator.TrainAlerterPassed && AcceptMUSignals)
                 {
                     Mirel.Test1 = true;
                     Mirel.Test2 = true;
@@ -8401,14 +8418,14 @@ namespace Orts.Simulation.RollingStocks
                     Mirel.Test7 = true;
                     Mirel.initTest = SubSystems.Mirel.InitTest.Passed;
                     Mirel.BlueLight = true;
-                    Mirel.selectedDriveMode = SubSystems.Mirel.DriveMode.Lockout;
-                    Mirel.driveMode = SubSystems.Mirel.DriveMode.Lockout;
-                    //Mirel.MaxSelectedSpeed = Mirel.MirelMaximumSpeed = MpS.ToKpH(MaxSpeedMpS);
+                    Mirel.selectedDriveMode = Simulator.selectedDriveMode;
+                    Mirel.driveMode = Simulator.driveMode;
+                    Mirel.MaxSelectedSpeed = Simulator.MaxSelectedSpeed;
                     // LS90
                     Mirel.ls90tested = false;
                     Mirel.Ls90power = SubSystems.Mirel.LS90power.Off;
                 }
-            }            
+            }
         }
 
         public void DirectionControllerLogic()

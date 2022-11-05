@@ -2946,7 +2946,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
         private void CheckNZ5(float ElapsedClockSeconds)
         {
             if (NZOK) NZ5timer = 0;
-            if ((Bar.FromPSI(Locomotive.BrakeSystem.GetCylPressurePSI()) > 1.5f || Locomotive.AbsSpeedMpS > 0) && !NZ5)
+            if ((Bar.FromPSI(Locomotive.BrakeSystem.GetCylPressurePSI()) > 1.5f || Locomotive.MUCylPressureMirelOk || Locomotive.AbsSpeedMpS > 0) && !NZ5)
             {
                 if (!zs3 && nz5zs3) Locomotive.SignalEvent(Common.Event.MirelZS3Off);
                 nz5zs3 = false;

@@ -25,6 +25,7 @@ using Orts.MultiPlayer;
 using Orts.Simulation.AIs;
 using Orts.Simulation.Physics;
 using Orts.Simulation.RollingStocks;
+using Orts.Simulation.RollingStocks.SubSystems;
 using Orts.Simulation.Signalling;
 using Orts.Simulation.Timetables;
 using ORTS.Common;
@@ -33,6 +34,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using static Orts.Simulation.RollingStocks.SubSystems.Mirel;
 using Event = Orts.Common.Event;
 
 namespace Orts.Simulation
@@ -207,6 +209,9 @@ namespace Orts.Simulation
         public int StepControllerValue;
         public int StepControllerMaxValue;
         public bool TrainAlerterPassed;
+        public DriveMode selectedDriveMode;
+        public DriveMode driveMode;
+        public float MaxSelectedSpeed;
 
 
         public List<PowerSupplyStation> powerSupplyStations;
