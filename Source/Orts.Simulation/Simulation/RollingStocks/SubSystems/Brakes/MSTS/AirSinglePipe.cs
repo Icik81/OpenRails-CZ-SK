@@ -3134,13 +3134,13 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     }
                 }
 
-                if (lead.AutomaticParkingBrakeEngaged && lead.ParkingBrakeTargetPressurePSI == 0)
+                if ((lead.AutomaticParkingBrakeEngaged || (lead.AVVBraking && lead.DynamicBrakePercent > 95)) && lead.ParkingBrakeTargetPressurePSI == 0)
                 {
                     lead.ParkingBrakeTargetPressurePSI = 2 * 14.50377f;
                 }
 
                 // Automatická parkovací brzda
-                if (lead.AutomaticParkingBrakeEngaged
+                if ((lead.AutomaticParkingBrakeEngaged || (lead.AVVBraking && lead.DynamicBrakePercent > 95))
                     && lead.MainResPressurePSI > 0
                     && AutoCylPressurePSI < lead.BrakeSystem.BrakeCylinderMaxSystemPressurePSI
                     && AutoCylPressurePSI < lead.MainResPressurePSI)
@@ -3166,7 +3166,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         lead.BrakeSystem.AutoCylPressurePSI2 = MathHelper.Clamp(lead.BrakeSystem.AutoCylPressurePSI2, 0, lead.ParkingBrakeTargetPressurePSI);
                     }
                 }
-                else if (!lead.AutomaticParkingBrakeEngaged && lead.BrakeSystem.T4_ParkingkBrake == 1)
+                else if (!lead.AutomaticParkingBrakeEngaged && (!lead.AVVBraking || lead.DynamicBrakePercent < 95) && lead.BrakeSystem.T4_ParkingkBrake == 1)
                 {
                     if (lead.BrakeSystem.AutoCylPressurePSI2 > 0)
                     {

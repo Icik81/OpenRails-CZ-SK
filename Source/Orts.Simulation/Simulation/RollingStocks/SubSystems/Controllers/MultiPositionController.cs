@@ -324,10 +324,20 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                     }
                     if (controllerPosition == ControllerPosition.Drive)
                     {
-                        if (notch.Type == ORTS.Scripting.Api.ControllerState.Release && Locomotive.TrainBrakeController.CurrentValue > notch.Value)
+                        if (Locomotive.LocoType == MSTSLocomotive.LocoTypes.Katr7507 && !Locomotive.AVVBraking)
                         {
-                            Locomotive.TrainBrakeController.StartDecrease();
-                            Locomotive.TrainBrakeController.StopDecrease();
+                            if (Locomotive.Train.EqualReservoirPressurePSIorInHg < Locomotive.TrainBrakeController.MaxPressurePSI)
+                                Locomotive.Train.EqualReservoirPressurePSIorInHg += Locomotive.TrainBrakeController.ReleaseRatePSIpS * elapsedClockSeconds;
+                            if (Locomotive.Train.EqualReservoirPressurePSIorInHg > Locomotive.TrainBrakeController.MaxPressurePSI)
+                                Locomotive.Train.EqualReservoirPressurePSIorInHg = Locomotive.TrainBrakeController.MaxPressurePSI;
+                        }
+                        else
+                        {
+                            if (notch.Type == ORTS.Scripting.Api.ControllerState.Release && Locomotive.TrainBrakeController.CurrentValue > notch.Value)
+                            {
+                                Locomotive.TrainBrakeController.StartDecrease();
+                                Locomotive.TrainBrakeController.StopDecrease();
+                            }
                         }
                     }
                     if (controllerPosition == ControllerPosition.TrainBrakesControllerApplyStart)
@@ -804,8 +814,18 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                         {
                             if (Locomotive.TrainBrakeController.TrainBrakeControllerState == ORTS.Scripting.Api.ControllerState.Release && Bar.FromPSI(Locomotive.BrakeSystem.BrakeLine1PressurePSI) < 4.98)
                             {
-                                string test = Locomotive.TrainBrakeController.GetStatus();
-                                Locomotive.StartTrainBrakeDecrease(null);
+                                if (Locomotive.LocoType == MSTSLocomotive.LocoTypes.Katr7507)
+                                {
+                                    if (Locomotive.Train.EqualReservoirPressurePSIorInHg < Locomotive.TrainBrakeController.MaxPressurePSI)
+                                        Locomotive.Train.EqualReservoirPressurePSIorInHg += Locomotive.TrainBrakeController.ReleaseRatePSIpS * elapsedClockSeconds;
+                                    if (Locomotive.Train.EqualReservoirPressurePSIorInHg > Locomotive.TrainBrakeController.MaxPressurePSI)
+                                        Locomotive.Train.EqualReservoirPressurePSIorInHg = Locomotive.TrainBrakeController.MaxPressurePSI;
+                                }
+                                else
+                                {
+                                    string test = Locomotive.TrainBrakeController.GetStatus();
+                                    Locomotive.StartTrainBrakeDecrease(null);
+                                }
                             }
                             else
                                 Locomotive.StopTrainBrakeDecrease(0);
