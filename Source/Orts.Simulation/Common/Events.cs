@@ -335,6 +335,10 @@ namespace Orts.Common
         ActiveFrontCab,
         ActiveRearCab,
         SeasonSwitch,
+        LTS410On,
+        LTS410Off,
+        LTS510On,
+        LTS510Off
     }
 
     public static class Events
@@ -683,7 +687,11 @@ namespace Orts.Common
                         case 20087: return Event.CouplerPush;
                         case 20088: return Event.ActiveFrontCab;
                         case 20089: return Event.ActiveRearCab;
-                        case 20090: return Event.SeasonSwitch;
+                        case 20090: return Event.SeasonSwitch;                        
+                        case 20091: return Event.LTS410On;
+                        case 20092: return Event.LTS410Off;
+                        case 20093: return Event.LTS510On;
+                        case 20094: return Event.LTS510Off;
 
                         default: return 0;
                     }

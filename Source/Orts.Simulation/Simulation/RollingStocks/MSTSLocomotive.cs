@@ -10388,7 +10388,7 @@ namespace Orts.Simulation.RollingStocks
                     MirerControllerPosition--;
 
             MirerTimer += elapsedTime;
-            if (MirerControllerOneTouch && MirerControllerValue1 == MirerControllerValue2 && PowerCurrent1 < 410) // LTS410A
+            if (MirerControllerOneTouch && MirerControllerValue1 == MirerControllerValue2 && LTS410Active == 0) 
             {
                 if (MirerControllerValue < MirerMaxValue)
                     MirerControllerValue++;
@@ -10397,7 +10397,7 @@ namespace Orts.Simulation.RollingStocks
             }
             else
             {                    
-                if (MirerTimer > MirerSmoothPeriod && MirerControllerValue1 == MirerControllerValue2 && PowerCurrent1 < 410) // LTS410A
+                if (MirerTimer > MirerSmoothPeriod && MirerControllerValue1 == MirerControllerValue2 && LTS410Active == 0) 
                 {
                     if (MirerControllerValue < MirerMaxValue)
                         MirerControllerValue++;
@@ -10459,6 +10459,8 @@ namespace Orts.Simulation.RollingStocks
         float MirerFastDownPeriod = 0.25f;
         float MirerStepDownPeriod = 0.5f;
         public bool MirerControllerBlocked;
+        int LTS410Active = 0;
+        int LTS510Active = 0;
         public void MirerController()
         {                        
             if (MirerControllerEnable)
@@ -10502,11 +10504,28 @@ namespace Orts.Simulation.RollingStocks
                         MirerTimer2 = 0.0f;
                         //Simulator.Confirmer.MSG(Simulator.Catalog.GetString("Controller") + ": " + MirerControllerValue);
                     }
-                }                
+                }
+
+                // LTS-410A
+                if (PowerCurrent1 > 410)
+                {
+                    if (LTS410Active != 1)
+                        SignalEvent(Event.LTS410On);
+                    LTS410Active = 1;                    
+                }
+                else
+                {
+                    if (LTS410Active != 0)
+                        SignalEvent(Event.LTS410Off);
+                    LTS410Active = 0;
+                }
 
                 // LTS-510A
                 if (PowerCurrent1 > 510)
                 {
+                    if (LTS510Active != 1)
+                        SignalEvent(Event.LTS510On);
+                    LTS510Active = 1;
                     MirerTimer4 += elapsedTime;
                     if (MirerTimer4 > MirerStepDownPeriod)
                     {
@@ -10514,6 +10533,12 @@ namespace Orts.Simulation.RollingStocks
                             MirerControllerValue--;
                         MirerTimer4 = 0.0f;
                     }
+                }
+                else
+                {
+                    if (LTS510Active != 0)
+                        SignalEvent(Event.LTS510Off);
+                    LTS510Active = 0;
                 }
 
                 if (LocalDynamicBrakePercent < 1.0f)
@@ -13080,6 +13105,16 @@ namespace Orts.Simulation.RollingStocks
                             MirerControllerValue2 = (int)cvc.PreviousData;
                             cvc.ElapsedTime = 0;                            
                         }                                                
+                        break;
+                    }
+                case CABViewControlTypes.LTS410_DISPLAY:
+                    {                        
+                        data = LTS410Active;                        
+                        break;
+                    }
+                case CABViewControlTypes.LTS510_DISPLAY:
+                    {
+                        data = LTS510Active;
                         break;
                     }
 

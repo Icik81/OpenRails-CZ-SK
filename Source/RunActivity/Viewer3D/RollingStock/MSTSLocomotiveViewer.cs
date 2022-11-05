@@ -3081,6 +3081,8 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.MIRER_DISPLAY2:
                 case CABViewControlTypes.AMMETER2:
                 case CABViewControlTypes.AMMETER2_ABS:
+                case CABViewControlTypes.LTS410_DISPLAY:
+                case CABViewControlTypes.LTS510_DISPLAY:
 
                 case CABViewControlTypes.MOTOR_DISABLED:
                 case CABViewControlTypes.INVERTER_TEST:

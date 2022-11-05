@@ -471,6 +471,8 @@ namespace Orts.Formats.Msts
         MIRER_DISPLAY2,
         AMMETER2,
         AMMETER2_ABS,
+        LTS410_DISPLAY,
+        LTS510_DISPLAY,
 
         // ORTS
         ORTS_SCREEN_SELECT,
