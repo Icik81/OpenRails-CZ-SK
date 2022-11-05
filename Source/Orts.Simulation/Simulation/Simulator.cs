@@ -206,6 +206,7 @@ namespace Orts.Simulation
         public bool PlayerUsingRearCab;
         public int StepControllerValue;
         public int StepControllerMaxValue;
+        public bool TrainAlerterPassed;
 
 
         public List<PowerSupplyStation> powerSupplyStations;

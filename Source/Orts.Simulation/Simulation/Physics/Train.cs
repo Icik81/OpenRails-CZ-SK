@@ -2166,10 +2166,7 @@ namespace Orts.Simulation.Physics
                         {
                             HeatedCarAttached = true; // A steam heating boiler is fitted in a wagon
                             car.WagonHasSteamHeating = true;
-                            if (car.HasWagonSmoke)
-                                car.WagonHasStove = true;
                         }
-
                     }
                     IsFirstTimeBoilerCarAttached = false;
                 }

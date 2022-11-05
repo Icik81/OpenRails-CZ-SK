@@ -3381,6 +3381,17 @@ namespace Orts.Simulation.RollingStocks
                             {
                                 car.BrakeSystem.HeatingIsOn = true;
                                 car.BrakeSystem.HeatingMenu = 0;
+
+                                if (car.WagonHasStove)
+                                {
+                                    car.BrakeSystem.HeatingIsOn = false;
+                                    car.BrakeSystem.HeatingMenu = 1;
+                                    if (car.CarOutsideTempC < 20)
+                                    {
+                                        car.BrakeSystem.HeatingIsOn = true;
+                                        car.BrakeSystem.HeatingMenu = 0;
+                                    }
+                                }
                             }
 
                             // Vozy nikdy nebudou startovat podchlazené pod 5°C
@@ -4692,6 +4703,7 @@ namespace Orts.Simulation.RollingStocks
             {
                 //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("LapActive " + LapActive));                
                 StepControllerValue = Simulator.StepControllerValue;
+                TrainAlerterLogic();
                 DirectionControllerLogic();
                 PowerKeyLogic();                
                 PowerCurrentCalculation();
@@ -8366,6 +8378,37 @@ namespace Orts.Simulation.RollingStocks
             if (this.CarFrameUpdateState == 2)
             {
             }
+        }
+
+        public void TrainAlerterLogic()
+        {
+            if (IsLeadLocomotive())
+            {
+                if (Mirel.initTest == SubSystems.Mirel.InitTest.Passed)                
+                    Simulator.TrainAlerterPassed = true;
+                
+                if (!Battery)
+                    Simulator.TrainAlerterPassed = false;
+            
+                if (Simulator.TrainAlerterPassed && Mirel.initTest != SubSystems.Mirel.InitTest.Passed && AcceptMUSignals)
+                {
+                    Mirel.Test1 = true;
+                    Mirel.Test2 = true;
+                    Mirel.Test3 = true;
+                    Mirel.Test4 = true;
+                    Mirel.Test5 = true;
+                    Mirel.Test6 = true;
+                    Mirel.Test7 = true;
+                    Mirel.initTest = SubSystems.Mirel.InitTest.Passed;
+                    Mirel.BlueLight = true;
+                    Mirel.selectedDriveMode = SubSystems.Mirel.DriveMode.Lockout;
+                    Mirel.driveMode = SubSystems.Mirel.DriveMode.Lockout;
+                    //Mirel.MaxSelectedSpeed = Mirel.MirelMaximumSpeed = MpS.ToKpH(MaxSpeedMpS);
+                    // LS90
+                    Mirel.ls90tested = false;
+                    Mirel.Ls90power = SubSystems.Mirel.LS90power.Off;
+                }
+            }            
         }
 
         public void DirectionControllerLogic()

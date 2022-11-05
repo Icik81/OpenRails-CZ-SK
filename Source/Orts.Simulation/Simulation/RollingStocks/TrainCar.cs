@@ -987,6 +987,27 @@ namespace Orts.Simulation.RollingStocks
                         continue;
                     else                    
                         car.CarLightsPowerOn = true;
+
+                    // Detekce vozu s kamny
+                    if (car.WagonSpecialType == MSTSWagon.WagonSpecialTypes.Heated)
+                    {                                                
+                        if (car.HasWagonSmoke)
+                            car.WagonHasStove = true;
+                    }                    
+                    if (!IsPlayerTrain)
+                    {
+                        // Nad 20°C budou kamna vypnutá
+                        if (car.WagonHasStove)
+                        {
+                            car.BrakeSystem.HeatingIsOn = false;
+                            car.BrakeSystem.HeatingMenu = 1;
+                            if (car.CarOutsideTempC < 20)
+                            {
+                                car.BrakeSystem.HeatingIsOn = true;
+                                car.BrakeSystem.HeatingMenu = 0;
+                            }                            
+                        }
+                    }
                 }
 
                 // Výpočet max brzdné síly
