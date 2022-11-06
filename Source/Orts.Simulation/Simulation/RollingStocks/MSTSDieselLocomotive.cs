@@ -812,7 +812,13 @@ namespace Orts.Simulation.RollingStocks
                 status.AppendFormat("{0} = {1}\n", Simulator.Catalog.GetString("Battery"),
                   Simulator.Catalog.GetParticularString("", "Off"));
             }
-            if (PowerKey)
+            if (PowerKeyPosition == 0)
+            {
+                status.AppendFormat("{0} = {1}\n", Simulator.Catalog.GetString("PowerKey"),
+                  Simulator.Catalog.GetParticularString("", "Out"));
+            }
+            else
+            if (PowerKeyPosition == 2)
             {
                 status.AppendFormat("{0} = {1}\n", Simulator.Catalog.GetString("PowerKey"),
                   Simulator.Catalog.GetParticularString("", "On"));
@@ -1166,17 +1172,7 @@ namespace Orts.Simulation.RollingStocks
 
             // Startovní setup lokomotivy hráče
             if (LocoReadyToGo && !LocoIsStatic)
-            {
-                if (!Battery)
-                {
-                    SignalEvent(Event.BatteryOn);
-                    Battery = true;
-                }
-                if (!PowerKey)
-                {
-                    SignalEvent(Event.PowerKeyOn);
-                    PowerKey = true;
-                }
+            {                
                 if (!RDSTBreaker)
                 {
                     SignalEvent(Event.RDSTOn);

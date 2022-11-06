@@ -338,7 +338,9 @@ namespace Orts.Common
         LTS410On,
         LTS410Off,
         LTS510On,
-        LTS510Off
+        LTS510Off,
+        PowerKeyIn,
+        PowerKeyOut
     }
 
     public static class Events
@@ -692,6 +694,8 @@ namespace Orts.Common
                         case 20092: return Event.LTS410Off;
                         case 20093: return Event.LTS510On;
                         case 20094: return Event.LTS510Off;
+                        case 20095: return Event.PowerKeyIn;
+                        case 20096: return Event.PowerKeyOut;
 
                         default: return 0;
                     }

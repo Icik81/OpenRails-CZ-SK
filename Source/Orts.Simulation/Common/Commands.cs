@@ -1200,23 +1200,23 @@ namespace Orts.Common
         }
     }
 
-    [Serializable()]
-    public sealed class TogglePowerKeyCommand : Command
-    {
-        public static MSTSLocomotive Receiver { get; set; }
+    //[Serializable()]
+    //public sealed class TogglePowerKeyCommand : Command
+    //{
+    //    public static MSTSLocomotive Receiver { get; set; }
 
-        public TogglePowerKeyCommand(CommandLog log)
-            : base(log)
-        {
-            Redo();
-        }
+    //    public TogglePowerKeyCommand(CommandLog log)
+    //        : base(log)
+    //    {
+    //        Redo();
+    //    }
 
-        public override void Redo()
-        {
-            Receiver.TogglePowerKey();
-            // Report();
-        }
-    }
+    //    public override void Redo()
+    //    {
+    //        Receiver.TogglePowerKey();
+    //        // Report();
+    //    }
+    //}
     // Steam controls
     [Serializable()]
     public sealed class ContinuousSteamHeatCommand : ContinuousCommand
@@ -2584,6 +2584,41 @@ namespace Orts.Common
         public override void Redo()
         {
             Receiver.ToggleMirerControllerDown();
+        }
+    }
+
+    [Serializable()]
+    public sealed class TogglePowerKeyUpCommand : Command
+    {
+        public static MSTSLocomotive Receiver { get; set; }
+
+        public TogglePowerKeyUpCommand(CommandLog log)
+            : base(log)
+        {
+            Redo();
+        }
+
+        public override void Redo()
+        {
+            Receiver.TogglePowerKeyUp();
+            // Report();
+        }
+    }
+    [Serializable()]
+    public sealed class TogglePowerKeyDownCommand : Command
+    {
+        public static MSTSLocomotive Receiver { get; set; }
+
+        public TogglePowerKeyDownCommand(CommandLog log)
+            : base(log)
+        {
+            Redo();
+        }
+
+        public override void Redo()
+        {
+            Receiver.TogglePowerKeyDown();
+            // Report();
         }
     }
 }

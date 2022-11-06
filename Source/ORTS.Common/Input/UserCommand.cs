@@ -213,7 +213,7 @@
         [GetString("Control_Classic AI Fire Off")] ControlAIFireOff,
         [GetString("Control_Classic AI Fire Reset")] ControlAIFireReset,
         [GetString("Control_Classic Battery")] ControlBattery,
-        [GetString("Control_Classic PowerKey")] ControlPowerKey,
+        //[GetString("Control_Classic PowerKey")] ControlPowerKey,
 
         // Jindrich
         [GetString("Control_CZSK Mirel Off")] SetMirelOff,
@@ -300,7 +300,9 @@
         [GetString("Control_CZSK Rearlight right red")] ControlLightRearRUp,
         [GetString("Control_CZSK Season heating switch")] ControlSeasonSwitch,
         [GetString("Control_CZSK Mirer +")] ControlMirerControllerUp,
-        [GetString("Control_CZSK Mirer -")] ControlMirerControllerDown,
+        [GetString("Control_CZSK Mirer -")] ControlMirerControllerDown,        
+        [GetString("Control_CZSK Powerkey +")] ControlPowerKeyUp,
+        [GetString("Control_CZSK Powerkey -")] ControlPowerKeyDown,
 
         [GetString("Set Power Supply Station Location")] ControlPowerStationLocation,
         [GetString("Set Voltage 25k")] ControlSetVoltage25k,

@@ -212,6 +212,8 @@ namespace Orts.Simulation
         public DriveMode selectedDriveMode;
         public DriveMode driveMode;
         public float MaxSelectedSpeed;
+        public bool PowerKeyInPocket;
+        public bool TrainPowerKey;
 
 
         public List<PowerSupplyStation> powerSupplyStations;

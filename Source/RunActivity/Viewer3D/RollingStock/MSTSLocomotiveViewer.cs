@@ -291,7 +291,7 @@ namespace Orts.Viewer3D.RollingStock
             UserInputCommands.Add(UserCommand.ControlCabRadio, new Action[] { Noop, () => new CabRadioCommand(Viewer.Log, !Locomotive.CabRadioOn) });
             UserInputCommands.Add(UserCommand.ControlDieselHelper, new Action[] { Noop, () => new ToggleHelpersEngineCommand(Viewer.Log) });
             UserInputCommands.Add(UserCommand.ControlBattery, new Action[] { Noop, () => new ToggleBatteryCommand(Viewer.Log) });
-            UserInputCommands.Add(UserCommand.ControlPowerKey, new Action[] { Noop, () => new TogglePowerKeyCommand(Viewer.Log) });
+            //UserInputCommands.Add(UserCommand.ControlPowerKey, new Action[] { Noop, () => new TogglePowerKeyCommand(Viewer.Log) });
             UserInputCommands.Add(UserCommand.ControlGeneric1, new Action[] {
                 () => new TCSButtonCommand(Viewer.Log, false, 0),
                 () => {
@@ -353,7 +353,9 @@ namespace Orts.Viewer3D.RollingStock
             UserInputCommands.Add(UserCommand.ControlLightRearRDown, new Action[] { Noop, () => new ToggleLightRearRDownCommand(Viewer.Log) });
             UserInputCommands.Add(UserCommand.ControlSeasonSwitch, new Action[] { Noop, () => new ToggleSeasonSwitchCommand(Viewer.Log) });
             UserInputCommands.Add(UserCommand.ControlMirerControllerUp, new Action[] { Noop, () => new ToggleMirerControllerUpCommand(Viewer.Log) });
-            UserInputCommands.Add(UserCommand.ControlMirerControllerDown, new Action[] { Noop, () => new ToggleMirerControllerDownCommand(Viewer.Log) });
+            UserInputCommands.Add(UserCommand.ControlMirerControllerDown, new Action[] { Noop, () => new ToggleMirerControllerDownCommand(Viewer.Log) });            
+            UserInputCommands.Add(UserCommand.ControlPowerKeyUp, new Action[] { Noop, () => new TogglePowerKeyUpCommand(Viewer.Log) });
+            UserInputCommands.Add(UserCommand.ControlPowerKeyDown, new Action[] { Noop, () => new TogglePowerKeyDownCommand(Viewer.Log) });
 
             // Jindřich
             UserInputCommands.Add(UserCommand.ControlPowerStationLocation, new Action[] { Noop, () => Locomotive.SetPowerSupplyStationLocation() });
@@ -3758,13 +3760,13 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.ORTS_POWERKEY:
                     if (ChangedValue(0) < 0 && !IsChanged)
                     {                        
-                        new TogglePowerKeyCommand(Viewer.Log);
+                        new TogglePowerKeyDownCommand(Viewer.Log);
                         IsChanged = true;
                     }
                     else
                     if (ChangedValue(0) > 0 && !IsChanged)
                     {                        
-                        new TogglePowerKeyCommand(Viewer.Log);
+                        new TogglePowerKeyUpCommand(Viewer.Log);
                         IsChanged = true;
                     }
                     break;

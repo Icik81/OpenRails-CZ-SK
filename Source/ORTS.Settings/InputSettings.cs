@@ -414,7 +414,7 @@ namespace ORTS.Settings
             Commands[(int)UserCommand.ControlPantograph2] = new UserCommandKeyInput(0x19, KeyModifiers.Shift);
             Commands[(int)UserCommand.ControlPantograph3] = new UserCommandKeyInput(0x19, KeyModifiers.Control);
             Commands[(int)UserCommand.ControlPantograph4] = new UserCommandKeyInput(0x19, KeyModifiers.Shift | KeyModifiers.Control);
-            Commands[(int)UserCommand.ControlPowerKey] = new UserCommandKeyInput(0x25, KeyModifiers.Control);
+            //Commands[(int)UserCommand.ControlPowerKey] = new UserCommandKeyInput(0x25, KeyModifiers.Control);
             Commands[(int)UserCommand.ControlOdoMeterShowHide] = new UserCommandKeyInput(0x2C, KeyModifiers.Shift);
             Commands[(int)UserCommand.ControlOdoMeterReset] = new UserCommandKeyInput(0x2C, KeyModifiers.Control);
             Commands[(int)UserCommand.ControlOdoMeterDirection] = new UserCommandKeyInput(0x2C, KeyModifiers.Control | KeyModifiers.Shift);
@@ -601,6 +601,8 @@ namespace ORTS.Settings
             Commands[(int)UserCommand.ControlSeasonSwitch] = new UserCommandKeyInput(0x23, KeyModifiers.Alt | KeyModifiers.Shift | KeyModifiers.Control);
             Commands[(int)UserCommand.ControlMirerControllerUp] = new UserCommandKeyInput(0x20);
             Commands[(int)UserCommand.ControlMirerControllerDown] = new UserCommandKeyInput(0x1E);
+            Commands[(int)UserCommand.ControlPowerKeyUp] = new UserCommandKeyInput(0x25, KeyModifiers.Control);
+            Commands[(int)UserCommand.ControlPowerKeyDown] = new UserCommandKeyInput(0x25, KeyModifiers.Control | KeyModifiers.Alt);
         }
         #endregion
 

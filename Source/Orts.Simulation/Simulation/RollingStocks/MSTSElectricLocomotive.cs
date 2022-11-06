@@ -272,8 +272,8 @@ namespace Orts.Simulation.RollingStocks
                 RouteVoltageV = (float)Simulator.TRK.Tr_RouteFile.MaxLineVoltage;
 
             // Zapne Powerkey při startu loko se zapnutými bateriemy
-            if (!BrakeSystem.IsAirFull && Battery && !PowerKey)
-                PowerKey = true;
+            //if (!BrakeSystem.IsAirFull && Battery && !PowerKey)
+            //    PowerKey = true;
             // Spustí zvukové triggery při načtení hry    
             if (PowerKey && Battery)
                 SignalEvent(Event.PowerKeyOn);                                    
@@ -807,7 +807,7 @@ namespace Orts.Simulation.RollingStocks
                     // Test napětí v troleji pro jednosystémové lokomotivy
                     if (VoltageIndicateTestCompleted)
                     {
-                        if (PantographVoltageV > 1.5f * LocomotivePowerVoltage)
+                        if (PantographVoltageV > 2.0f * LocomotivePowerVoltage)
                         {
                             HVOff = true;
                             PantographFaultByVoltageChange = true;
@@ -1309,7 +1309,7 @@ namespace Orts.Simulation.RollingStocks
                 MUCableCommunication();
                 HelperLoco();
                                 
-                if (!PowerKey)
+                if (!Simulator.TrainPowerKey)
                 {
                     if (LocoType != LocoTypes.Vectron)
                     {
@@ -1344,19 +1344,6 @@ namespace Orts.Simulation.RollingStocks
                 // Nastavení pro plně oživenou lokomotivu
                 if (LocoReadyToGo && BrakeSystem.IsAirFull && !LocoIsStatic)
                 {                    
-                    if (!Battery)
-                    {
-                        SignalEvent(Event.BatteryOn);
-                        Battery = true;
-                    }
-                    if (!PowerKey)
-                    {
-                        SignalEvent(Event.PowerKeyOn);
-                        PowerKey = true;
-                    }
-                    ActiveStation = UsingRearCab ? DriverStation.Station2 : DriverStation.Station1;
-                    if (Flipped)
-                        ActiveStation = UsingRearCab ? DriverStation.Station1 : DriverStation.Station2;
                     CompressorSwitch = 2;
                     CompressorSwitch2 = 1;
                     CompressorMode_OffAuto = true;
@@ -2963,7 +2950,12 @@ namespace Orts.Simulation.RollingStocks
                 Simulator.Catalog.GetString("Battery"),
                 Simulator.Catalog.GetParticularString("Battery", Simulator.Catalog.GetString("Off")));
             status.AppendLine();
-            if (PowerKey)
+            if (PowerKeyPosition == 0)
+                status.AppendFormat("{0} = {1}",
+                Simulator.Catalog.GetString("PowerKey"),
+                Simulator.Catalog.GetParticularString("PowerKey", Simulator.Catalog.GetString("Out")));
+            else
+            if (PowerKeyPosition == 2)
                 status.AppendFormat("{0} = {1}",
                 Simulator.Catalog.GetString("PowerKey"),
                 Simulator.Catalog.GetParticularString("PowerKey", Simulator.Catalog.GetString("On")));

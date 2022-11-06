@@ -610,7 +610,7 @@ namespace Orts.Viewer3D
             TCSButtonCommand.Receiver = ((MSTSLocomotive)PlayerLocomotive).TrainControlSystem;
             TCSSwitchCommand.Receiver = ((MSTSLocomotive)PlayerLocomotive).TrainControlSystem;
             ToggleBatteryCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
-            TogglePowerKeyCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
+            //TogglePowerKeyCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
 
             // Icik
             HeadlightUpCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
@@ -660,6 +660,8 @@ namespace Orts.Viewer3D
             ToggleSeasonSwitchCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
             ToggleMirerControllerUpCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
             ToggleMirerControllerDownCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
+            TogglePowerKeyUpCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
+            TogglePowerKeyDownCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
         }
 
         public void ChangeToPreviousFreeRoamCamera()
@@ -1111,11 +1113,12 @@ namespace Orts.Viewer3D
                 if (PlayerLocomotive.ThrottlePercent >= 1
                     || Math.Abs(PlayerLocomotive.SpeedMpS) > 1
                     || !IsReverserInNeutral(PlayerLocomotive)
-                    || (PlayerLocomotive as MSTSLocomotive).PowerKey)
+                    //|| (PlayerLocomotive as MSTSLocomotive).PowerKey
+                    )
                 {
-                    if ((PlayerLocomotive as MSTSLocomotive).PowerKey)
-                        Simulator.Confirmer.Information(Viewer.Catalog.GetString("To change stations, remove the powerkey first."));
-                    else
+                    //if ((PlayerLocomotive as MSTSLocomotive).PowerKey)
+                    //    Simulator.Confirmer.Information(Viewer.Catalog.GetString("To change stations, remove the powerkey first."));
+                    //else
                         Simulator.Confirmer.Warning(CabControl.ChangeCab, CabSetting.Warn2);
                 }
                 else
