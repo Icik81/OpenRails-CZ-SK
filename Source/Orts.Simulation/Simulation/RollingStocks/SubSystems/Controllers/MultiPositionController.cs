@@ -719,7 +719,54 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
             else if (haveCruiseControl && ccAutoMode)
             {
                 if (Locomotive.AVVBraking && (controllerPosition == ControllerPosition.Drive || controllerPosition == ControllerPosition.Neutral || controllerPosition == ControllerPosition.ThrottleIncrease))
+                {
+                    if (controllerPosition == ControllerPosition.Drive)
+                    {
+                        bool applyPower = true;
+                        if (isBraking && needPowerUpAfterBrake)
+                        {
+                            if (Locomotive.DynamicBrakePercent < 2)
+                            {
+                                Locomotive.SetDynamicBrakePercent(-1);
+                            }
+                            if (Locomotive.DynamicBrakePercent > 1)
+                            {
+                                Locomotive.SetDynamicBrakePercent(Locomotive.DynamicBrakePercent - 1);
+                            }
+                            if (CanControlTrainBrake)
+                            {
+                                if (Locomotive.TrainBrakeController.TrainBrakeControllerState == ORTS.Scripting.Api.ControllerState.Release && Bar.FromPSI(Locomotive.BrakeSystem.BrakeLine1PressurePSI) < 4.98)
+                                {
+                                    if (Locomotive.LocoType == MSTSLocomotive.LocoTypes.Katr7507)
+                                    {
+                                        if (Locomotive.Train.EqualReservoirPressurePSIorInHg < Locomotive.TrainBrakeController.MaxPressurePSI)
+                                            Locomotive.Train.EqualReservoirPressurePSIorInHg += Locomotive.TrainBrakeController.ReleaseRatePSIpS * elapsedClockSeconds;
+                                        if (Locomotive.Train.EqualReservoirPressurePSIorInHg > Locomotive.TrainBrakeController.MaxPressurePSI)
+                                            Locomotive.Train.EqualReservoirPressurePSIorInHg = Locomotive.TrainBrakeController.MaxPressurePSI;
+                                    }
+                                    else
+                                    {
+                                        string test = Locomotive.TrainBrakeController.GetStatus();
+                                        Locomotive.StartTrainBrakeDecrease(null);
+                                    }
+                                }
+                                else
+                                    Locomotive.StopTrainBrakeDecrease(0);
+                            }
+                            applyPower = false;
+                        }
+                        if (applyPower) Locomotive.CruiseControl.SpeedSelMode = CruiseControl.SpeedSelectorMode.On;
+                        if (Locomotive.LocoType == MSTSLocomotive.LocoTypes.Katr7507)
+                        {
+                            if (Locomotive.DynamicBrakePercent > 0)
+                            {
+                                Locomotive.DynamicBrakeIntervention = -1;
+                                Locomotive.DynamicBrakeController.StartDecrease(0);
+                            }
+                        }
+                    }
                     return;
+                }
                 if (controllerPosition == ControllerPosition.TrainBrakesControllerApplyStart)
                 {
                     if (Locomotive.CruiseControl != null)
