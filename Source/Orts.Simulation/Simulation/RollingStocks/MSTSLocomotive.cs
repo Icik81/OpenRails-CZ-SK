@@ -4084,7 +4084,9 @@ namespace Orts.Simulation.RollingStocks
 
             // Postrk aktivován
             if (LocoHelperOn)
-            {                
+            {
+                CarPowerKey = true;
+
                 if (!HelperLocoPush)
                     ThrottlePercent = Simulator.ThrottleLocoHelper;
                 if (DynamicBrakeController != null)
