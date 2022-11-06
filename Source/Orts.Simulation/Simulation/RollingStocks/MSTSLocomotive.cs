@@ -8222,7 +8222,7 @@ namespace Orts.Simulation.RollingStocks
                 {
                     this.CarPowerKey = false;
                     PowerKey = false;
-                    SignalEvent(Event.PantographToggle);
+                    SignalEvent(Event.PowerKeyOff);
                     if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.PowerKey, PowerKey ? CabSetting.On : CabSetting.Off);
                 }
             }
@@ -8268,8 +8268,8 @@ namespace Orts.Simulation.RollingStocks
                 }                        
                 if (Battery)
                 {
-                    if (PowerKey) SignalEvent(Event.PowerKeyOn);
-                    else SignalEvent(Event.PowerKeyOff);
+                    if (PowerKey)
+                        SignalEvent(Event.PowerKeyOn);                    
                     if (ActiveStation == DriverStation.None && PowerKey)
                     {
                         ActiveStation = UsingRearCab ? DriverStation.Station2 : DriverStation.Station1;
@@ -10691,13 +10691,14 @@ namespace Orts.Simulation.RollingStocks
                 }
 
                 // LTS-410A
-                if (PowerCurrent1 > 410)
+                if (PowerCurrent1 > 410 && LTS510Active == 0)
                 {
                     if (LTS410Active != 1)
                         SignalEvent(Event.LTS410On);
                     LTS410Active = 1;                    
                 }
                 else
+                if (PowerCurrent1 < 410 || LTS510Active == 1)
                 {
                     if (LTS410Active != 0)
                         SignalEvent(Event.LTS410Off);
