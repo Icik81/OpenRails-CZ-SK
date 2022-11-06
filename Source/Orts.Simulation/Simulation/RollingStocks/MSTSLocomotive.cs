@@ -13372,7 +13372,7 @@ namespace Orts.Simulation.RollingStocks
                                     if (AbsSpeedMpS == 0 && stationStop.DistanceToTrainM < 100)
                                         stoppedAtStation = true;
 
-                                    float newSpeed = GetAvvSpeed(((AvvDistanceToNext * 1.3f) - 15), 0);
+                                    float newSpeed = GetAvvSpeed(((AvvDistanceToNext * 0.9f) - 5), 0);
                                     if (AVVPassStation)
                                         newSpeed = MaxSpeedMpS;
                                     if (newSpeed < CruiseControl.SelectedSpeedMpS && !float.IsNaN(newSpeed) && !stoppedAtStation)
