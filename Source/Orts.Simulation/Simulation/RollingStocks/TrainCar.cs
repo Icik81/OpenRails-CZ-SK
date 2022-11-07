@@ -391,8 +391,10 @@ namespace Orts.Simulation.RollingStocks
         public bool CarPowerKey;
         public int CarFrameUpdateState;
         public bool DirectionControllerBlocked;
-        public int PowerKeyPosition;
-        public int prevPowerKeyPosition;
+        public int[] PowerKeyPosition = new int[3];        
+        public int[] prevPowerKeyPosition = new int[3];
+        public enum DriverStationPowerKey { None, Station1, Station2 };
+        public DriverStationPowerKey ActiveStationPowerKey = DriverStationPowerKey.None;
 
         public float PowerReductionResult1;  // Redukce výkonu od topení, klimatizace, kompresoru
         public float PowerReductionResult2;  // Redukce výkonu od nedostatečného tlaku vzduchu v potrubí

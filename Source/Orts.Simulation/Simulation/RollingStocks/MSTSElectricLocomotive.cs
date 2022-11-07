@@ -2949,13 +2949,13 @@ namespace Orts.Simulation.RollingStocks
                 status.AppendFormat("{0} = {1}",
                 Simulator.Catalog.GetString("Battery"),
                 Simulator.Catalog.GetParticularString("Battery", Simulator.Catalog.GetString("Off")));
-            status.AppendLine();
-            if (PowerKeyPosition == 0)
+            status.AppendLine();            
+            if (PowerKeyPosition[PowerKeyStation] == 0)
                 status.AppendFormat("{0} = {1}",
                 Simulator.Catalog.GetString("PowerKey"),
                 Simulator.Catalog.GetParticularString("PowerKey", Simulator.Catalog.GetString("Out")));
             else
-            if (PowerKeyPosition == 2)
+            if (PowerKeyPosition[PowerKeyStation] == 2)
                 status.AppendFormat("{0} = {1}",
                 Simulator.Catalog.GetString("PowerKey"),
                 Simulator.Catalog.GetParticularString("PowerKey", Simulator.Catalog.GetString("On")));

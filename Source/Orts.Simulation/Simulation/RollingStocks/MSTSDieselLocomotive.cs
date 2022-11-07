@@ -812,13 +812,13 @@ namespace Orts.Simulation.RollingStocks
                 status.AppendFormat("{0} = {1}\n", Simulator.Catalog.GetString("Battery"),
                   Simulator.Catalog.GetParticularString("", "Off"));
             }
-            if (PowerKeyPosition == 0)
+            if (PowerKeyPosition[PowerKeyStation] == 0)
             {
                 status.AppendFormat("{0} = {1}\n", Simulator.Catalog.GetString("PowerKey"),
                   Simulator.Catalog.GetParticularString("", "Out"));
             }
             else
-            if (PowerKeyPosition == 2)
+            if (PowerKeyPosition[PowerKeyStation] == 2)
             {
                 status.AppendFormat("{0} = {1}\n", Simulator.Catalog.GetString("PowerKey"),
                   Simulator.Catalog.GetParticularString("", "On"));
