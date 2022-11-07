@@ -4687,10 +4687,27 @@ namespace Orts.Simulation.RollingStocks
                 BrakeSystem.StartOn = true;
                 BrakeSystem.IsAirEmpty = Simulator.Settings.AirEmpty;
                 BrakeSystem.IsAirFull = !Simulator.Settings.AirEmpty;
-                LocoReadyToGo = !Simulator.Settings.AirEmpty;
-                Battery = false;
-                PowerKey = false;
+                LocoReadyToGo = !Simulator.Settings.AirEmpty;                
                 CarIsPlayerLocoSet = true;
+                if (LocoReadyToGo)
+                {
+                    Battery = true;
+                    PowerKey = true;
+                    PowerKeyPosition = 2;
+                    if (CruiseControl != null && CruiseControl.Equipped)
+                    {
+                        CruiseControl.SpeedRegMode = SubSystems.CruiseControl.SpeedRegulatorMode.Auto;
+                        CruiseControl.SelectedSpeedMpS = MpS.FromKpH(40);
+                        CruiseControl.SpeedSelMode = SubSystems.CruiseControl.SpeedSelectorMode.Parking;
+                        AripotControllerValue = CruiseControl.SelectedSpeedMpS / MaxSpeedMpS;
+                    }
+                }
+                else
+                {
+                    Battery = false;
+                    PowerKey = false;
+                    PowerKeyPosition = 0;                    
+                }
             }
 
             if (!DieselDirection_Forward && !DieselDirection_Start && !DieselDirection_0 && !DieselDirection_Reverse)
@@ -8169,7 +8186,7 @@ namespace Orts.Simulation.RollingStocks
         
         public void TogglePowerKeyUp()
         {
-            if ((DieselDirectionController || DieselDirectionController2))
+            if (DieselDirectionController || DieselDirectionController2)
             {
                 if (!AcceptMUSignals)
                     return;                
@@ -8177,7 +8194,11 @@ namespace Orts.Simulation.RollingStocks
                     Simulator.Confirmer.MSG(Simulator.Catalog.GetString("You have no Powerkey in pocket!"));
                 if (!DieselDirectionControllerInOut)
                     return;
-            }                                
+            }
+            if ((DieselDirectionController && DieselDirectionControllerPosition != 2)
+                || (DieselDirectionController2 && DieselDirectionController2Position != 0)
+                || (DieselDirectionController4 && DieselDirectionController2Position != 1))
+                return;
 
             if (Simulator.PowerKeyInPocket && PowerKeyPosition == 0)
             {
@@ -8212,7 +8233,12 @@ namespace Orts.Simulation.RollingStocks
         }
         public void TogglePowerKeyDown()
         {
-            if (DieselDirectionController)
+            if (DieselDirectionController || DieselDirectionController2)
+                return;
+
+            if ((DieselDirectionController && DieselDirectionControllerPosition != 2)
+                || (DieselDirectionController2 && DieselDirectionController2Position != 0)
+                || (DieselDirectionController4 && DieselDirectionController2Position != 1))
                 return;
 
             if (PowerKeyPosition > 0)

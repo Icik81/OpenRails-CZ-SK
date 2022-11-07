@@ -3029,8 +3029,12 @@ namespace Orts.Simulation.Timetables
                     if (car is MSTSLocomotive)
                     {
                         MSTSLocomotive loco = car as MSTSLocomotive;
-                        loco.SetPower(true);
-                        loco.AuxPowerOn = true;
+                        // Icik
+                        if (!loco.CarIsPlayerLoco)
+                        {
+                            loco.SetPower(true);
+                            loco.AuxPowerOn = true;
+                        }
                     }
                 }
                 PowerState = true;
