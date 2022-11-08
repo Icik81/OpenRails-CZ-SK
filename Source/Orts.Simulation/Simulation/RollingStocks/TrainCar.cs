@@ -393,6 +393,7 @@ namespace Orts.Simulation.RollingStocks
         public bool DirectionControllerBlocked;
         public int[] PowerKeyPosition = new int[3];        
         public int[] prevPowerKeyPosition = new int[3];
+        public bool CarHavePocketPowerKey;
         public enum DriverStationPowerKey { None, Station1, Station2 };
         public DriverStationPowerKey ActiveStationPowerKey = DriverStationPowerKey.None;
 

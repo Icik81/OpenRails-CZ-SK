@@ -8230,6 +8230,17 @@ namespace Orts.Simulation.RollingStocks
             if (PowerKeyPosition[PowerKeyStation] > 0 && PowerKeyPosition[PowerKeyStation] < 2)
             {
                 PowerKeyPosition[PowerKeyStation]++;
+                
+                if (!CarHavePocketPowerKey)
+                {
+                    if (PowerKeyPosition[1] == PowerKeyPosition[2])
+                    {
+                        PowerKeyPosition[PowerKeyStation]--;
+                        Simulator.Confirmer.MSG(Simulator.Catalog.GetString("Powerkey blocked!"));
+                        return;
+                    }
+                }
+                
                 if (PowerKeyPosition[PowerKeyStation] == 2)
                 {
                     this.CarPowerKey = true;
@@ -8251,11 +8262,21 @@ namespace Orts.Simulation.RollingStocks
             if ((DieselDirectionController && DieselDirectionControllerPosition != 2)
                 || (DieselDirectionController2 && DieselDirectionController2Position != 0)
                 || (DieselDirectionController4 && DieselDirectionController2Position != 1))
-                return;
+                return;            
 
             if (PowerKeyPosition[PowerKeyStation] > 0)
             {
                 PowerKeyPosition[PowerKeyStation]--;
+
+                if (!CarHavePocketPowerKey)
+                {
+                    if (PowerKeyPosition[PowerKeyStation] == 0)
+                    {
+                        PowerKeyPosition[PowerKeyStation]++;
+                        return;
+                    }                    
+                }
+
                 if (PowerKeyPosition[PowerKeyStation] == 1)
                 {
                     this.CarPowerKey = false;
@@ -8265,7 +8286,8 @@ namespace Orts.Simulation.RollingStocks
                 }
             }
         }
-        
+
+        bool SetPowerKeySound;
         public void TogglePowerKey()
         {
             ActiveStationPowerKey = UsingRearCab ? DriverStationPowerKey.Station2 : DriverStationPowerKey.Station1;
@@ -8280,7 +8302,16 @@ namespace Orts.Simulation.RollingStocks
                 || (DieselDirectionController2 && DieselDirectionController2Position != 0)
                 || (DieselDirectionController4 && DieselDirectionController2Position != 1))
                 return;
-            
+
+            if (!CarHavePocketPowerKey)
+            {
+                if (PowerKeyPosition[PowerKeyStation] == 0)
+                {
+                    PowerKeyPosition[PowerKeyStation]++;
+                    return;
+                }
+            }
+
             if (IsLeadLocomotive() && AcceptMUSignals)
             {
                 Simulator.PowerKeyInPocket = true;
@@ -8293,7 +8324,7 @@ namespace Orts.Simulation.RollingStocks
                     }
                 }
             }
-            if (IsLeadLocomotive() && !AcceptMUSignals)
+            if (IsLeadLocomotive() && !AcceptMUSignals || !CarHavePocketPowerKey)
             {
                 Simulator.PowerKeyInPocket = true;                
             }
@@ -8311,11 +8342,17 @@ namespace Orts.Simulation.RollingStocks
                         break;
                     case 2:                        
                         break;
-                }                        
+                }
+                if (!PowerKey)
+                    SetPowerKeySound = false;
+
                 if (Battery)
                 {
-                    if (PowerKey)
-                        SignalEvent(Event.PowerKeyOn);                    
+                    if (PowerKey && !SetPowerKeySound)
+                    {
+                        SignalEvent(Event.PowerKeyOn);
+                        SetPowerKeySound = true;
+                    }
                     if (ActiveStation == DriverStation.None && PowerKey)
                     {
                         ActiveStation = UsingRearCab ? DriverStation.Station2 : DriverStation.Station1;
@@ -12309,6 +12346,7 @@ namespace Orts.Simulation.RollingStocks
                         {
                             case 2:
                                 {
+                                    CarHavePocketPowerKey = false;
                                     switch (PowerKeyPosition[PowerKeyStation])
                                     {
                                         case 0:
@@ -12325,6 +12363,7 @@ namespace Orts.Simulation.RollingStocks
                                 break;
                             case 3:
                                 {
+                                    CarHavePocketPowerKey = true;
                                     switch (PowerKeyPosition[PowerKeyStation])
                                     {
                                         case 0:
