@@ -39,14 +39,14 @@ namespace Orts.Viewer3D.Popups
         public bool HelperOptionsOpened;
 
         public CarOperationsWindow(WindowManager owner)
-            : base(owner, Window.DecorationSize.X + owner.TextFontDefault.Height * 23, Window.DecorationSize.Y + (owner.TextFontDefault.Height + 2) * 18 + ControlLayout.SeparatorSize * 11, Viewer.Catalog.GetString("*** Car Operation Menu ***"))
+            : base(owner, Window.DecorationSize.X + owner.TextFontDefault.Height * 23, Window.DecorationSize.Y + (owner.TextFontDefault.Height + 2) * 19 + ControlLayout.SeparatorSize * 12, Viewer.Catalog.GetString("*** Car Operation Menu ***"))
         {
             Viewer = owner.Viewer;
         }
 
         protected override ControlLayout Layout(ControlLayout layout)
         {
-            Label ID, buttonHandbrake, buttonTogglePower, buttonToggleMU, buttonToggleHelper, buttonToggleHelperOptions, buttonToggleBrakeHose, buttonToggleAngleCockA, buttonToggleAngleCockB, buttonToggleBleedOffValve, buttonBrakeCarMode, buttonBrakeCarModePL, buttonBrakeCarDeactivate, buttonTwoPipesConnection, buttonLeftDoor, buttonRightDoor, buttonHeating, buttonClose;
+            Label ID, buttonHandbrake, buttonTogglePower, buttonToggleMUCable, buttonToggleMUPower, buttonToggleHelper, buttonToggleHelperOptions, buttonToggleBrakeHose, buttonToggleAngleCockA, buttonToggleAngleCockB, buttonToggleBleedOffValve, buttonBrakeCarMode, buttonBrakeCarModePL, buttonBrakeCarDeactivate, buttonTwoPipesConnection, buttonLeftDoor, buttonRightDoor, buttonHeating, buttonClose;
 
             var vbox = base.Layout(layout).AddLayoutVertical();
 
@@ -69,12 +69,17 @@ namespace Orts.Viewer3D.Popups
                 vbox.Add(buttonTogglePower = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Toggle Power"), LabelAlignment.Center));
                 if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive) != null && (Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive).PowerOn)
                     buttonTogglePower.Color = Color.LightGreen;
-            }    
-            
+            }
+
             vbox.AddHorizontalSeparator();
-            vbox.Add(buttonToggleMU = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Toggle Power MU"), LabelAlignment.Center));
+            vbox.Add(buttonToggleMUCable = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Toggle Cable MU"), LabelAlignment.Center));
+            if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive) != null && (Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive).AcceptCableSignals)
+                buttonToggleMUCable.Color = Color.LightGreen;
+
+            vbox.AddHorizontalSeparator();
+            vbox.Add(buttonToggleMUPower = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Toggle Power MU"), LabelAlignment.Center));
             if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive) != null && (Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive).AcceptPowerSignals)
-                buttonToggleMU.Color = Color.LightGreen;      
+                buttonToggleMUPower.Color = Color.LightGreen;            
             
             vbox.AddHorizontalSeparator();
             vbox.Add(buttonToggleHelper = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Connect/Unmount Helper"), LabelAlignment.Center));
@@ -179,7 +184,8 @@ namespace Orts.Viewer3D.Popups
             vbox.Add(buttonClose = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Close window"), LabelAlignment.Center));
             buttonHandbrake.Click += new Action<Control, Point>(buttonHandbrake_Click);
             buttonTogglePower.Click += new Action<Control, Point>(buttonTogglePower_Click);
-            buttonToggleMU.Click += new Action<Control, Point>(buttonToggleMU_Click);
+            buttonToggleMUCable.Click += new Action<Control, Point>(buttonToggleMUCable_Click);
+            buttonToggleMUPower.Click += new Action<Control, Point>(buttonToggleMUPower_Click);
             buttonToggleHelper.Click += new Action<Control, Point>(buttonToggleHelper_Click);
             buttonToggleHelperOptions.Click += new Action<Control, Point>(buttonToggleHelperOptions_Click);
             buttonToggleBrakeHose.Click += new Action<Control, Point>(buttonToggleBrakeHose_Click);
@@ -266,7 +272,7 @@ namespace Orts.Viewer3D.Popups
                 Viewer.Simulator.Confirmer.Warning(Viewer.Catalog.GetString("No power command for this type of car!"));
         }
 
-        void buttonToggleMU_Click(Control arg1, Point arg2)
+        void buttonToggleMUCable_Click(Control arg1, Point arg2)
         {
             if ((Viewer.PlayerTrain.Cars[CarPosition].GetType() == typeof(MSTSLocomotive))
                 ||
@@ -276,7 +282,27 @@ namespace Orts.Viewer3D.Popups
                 ||
               (Viewer.PlayerTrain.Cars[CarPosition].GetType() == typeof(MSTSSteamLocomotive)))
             {
-                new ToggleMUCommand(Viewer.Log, (Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive), !(Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive).AcceptPowerSignals);
+                new ToggleMUCommand(Viewer.Log, (Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive), !(Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive).AcceptCableSignals);
+                if (!(Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive).AcceptCableSignals)
+                    Viewer.Simulator.Confirmer.Information(Viewer.Catalog.GetString("Cable MU disconnected"));
+                else
+                    Viewer.Simulator.Confirmer.Information(Viewer.Catalog.GetString("Cable MU connected"));
+            }
+            else
+                Viewer.Simulator.Confirmer.Warning(Viewer.Catalog.GetString("No Cable MU command for this type of car!"));
+        }
+
+        void buttonToggleMUPower_Click(Control arg1, Point arg2)
+        {
+            if ((Viewer.PlayerTrain.Cars[CarPosition].GetType() == typeof(MSTSLocomotive))
+                ||
+              (Viewer.PlayerTrain.Cars[CarPosition].GetType() == typeof(MSTSElectricLocomotive))
+                ||
+              (Viewer.PlayerTrain.Cars[CarPosition].GetType() == typeof(MSTSDieselLocomotive))
+                ||
+              (Viewer.PlayerTrain.Cars[CarPosition].GetType() == typeof(MSTSSteamLocomotive)))
+            {
+                ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive).AcceptPowerSignals) = !((Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive).AcceptPowerSignals);
                 if (!(Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive).AcceptPowerSignals)
                     Viewer.Simulator.Confirmer.Information(Viewer.Catalog.GetString("Power MU disconnected"));
                 else

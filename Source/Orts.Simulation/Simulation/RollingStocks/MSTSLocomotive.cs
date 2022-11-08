@@ -1804,6 +1804,7 @@ namespace Orts.Simulation.RollingStocks
             // Icik
             outf.Write(AcceptHelperSignals);
             outf.Write(AcceptPowerSignals);
+            outf.Write(AcceptCableSignals);
             outf.Write(HVOffStatusBrakeCyl);
             outf.Write(HVOffStatusBrakePipe);
             outf.Write(AuxCompressorMode_OffOn);
@@ -1931,6 +1932,7 @@ namespace Orts.Simulation.RollingStocks
             AbsWheelSpeedMpS = inf.ReadSingle();
 
             // Icik
+            AcceptCableSignals = inf.ReadBoolean();
             AcceptHelperSignals = inf.ReadBoolean();
             AcceptPowerSignals = inf.ReadBoolean();
             HVOffStatusBrakeCyl = inf.ReadBoolean();
@@ -4167,11 +4169,17 @@ namespace Orts.Simulation.RollingStocks
                         PowerReductionResult12 = 0;                    
                 }
             }
-            // Odpojený MU kabel, výkon vypnutý
+
+            // Odpojený MU kabel
+            if (!AcceptCableSignals)
+            {                
+                AcceptMUSignals = false;                
+            }
+
+            // Výkon MU vypnutý
             if (!AcceptPowerSignals)
             {
-                LocalThrottlePercent = 0;
-                AcceptMUSignals = false;
+                LocalThrottlePercent = 0;                
                 LocalDynamicBrakePercent = -1;
                 if (CruiseControl != null && CruiseControl.Equipped)
                 {
@@ -8103,7 +8111,8 @@ namespace Orts.Simulation.RollingStocks
         internal void ToggleMUCommand(bool ToState)
         {
             //AcceptMUSignals = ToState;
-            AcceptPowerSignals = ToState;
+            //AcceptPowerSignals = ToState;
+            AcceptCableSignals = ToState;
         }
 
         // Icik
@@ -8233,7 +8242,7 @@ namespace Orts.Simulation.RollingStocks
                 
                 if (!CarHavePocketPowerKey)
                 {
-                    if (PowerKeyPosition[1] == PowerKeyPosition[2])
+                    if (PowerKeyPosition[1] == PowerKeyPosition[2] || !Simulator.PowerKeyNoPocketBlocked)
                     {
                         PowerKeyPosition[PowerKeyStation]--;
                         Simulator.Confirmer.MSG(Simulator.Catalog.GetString("Powerkey blocked!"));
@@ -8315,19 +8324,22 @@ namespace Orts.Simulation.RollingStocks
             if (IsLeadLocomotive() && AcceptMUSignals)
             {
                 Simulator.PowerKeyInPocket = true;
+                Simulator.PowerKeyNoPocketBlocked = true;
                 foreach (TrainCar car in Train.Cars)
                 {
                     if (car is MSTSLocomotive && car.AcceptMUSignals)
                     {
                         if (car.PowerKeyPosition[1] > 0 || car.PowerKeyPosition[2] > 0)
                             Simulator.PowerKeyInPocket = false;
+                        if (car.PowerKeyPosition[1] > 1 || car.PowerKeyPosition[2] > 1)
+                            Simulator.PowerKeyNoPocketBlocked = false;
                     }
                 }
             }
-            if (IsLeadLocomotive() && !AcceptMUSignals || !CarHavePocketPowerKey)
+            if (IsLeadLocomotive() && !AcceptMUSignals)
             {
                 Simulator.PowerKeyInPocket = true;                
-            }
+            }            
 
             if (PowerKeyPosition[PowerKeyStation] != prevPowerKeyPosition[PowerKeyStation])
             {

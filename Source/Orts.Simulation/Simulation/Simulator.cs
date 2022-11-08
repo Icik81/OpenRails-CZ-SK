@@ -214,6 +214,7 @@ namespace Orts.Simulation
         public float MaxSelectedSpeed;
         public bool PowerKeyInPocket;
         public bool TrainPowerKey;
+        public bool PowerKeyNoPocketBlocked;
 
 
         public List<PowerSupplyStation> powerSupplyStations;

@@ -474,6 +474,7 @@ namespace Orts.Simulation.RollingStocks
         public bool AcceptMUSignals = true; //indicates if the car accepts multiple unit signals
         public bool AcceptHelperSignals;
         public bool AcceptPowerSignals = true;
+        public bool AcceptCableSignals = true;
         public bool IsMetric;
         public bool IsUK;
         public float prevElev = -100f;
