@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2022-10-23 16:49:42+0200\n"
-"PO-Revision-Date: 2022-10-23 16:49:43+0200\n"
+"POT-Creation-Date: 2022-11-08 18:02:33+0100\n"
+"PO-Revision-Date: 2022-11-08 18:02:33+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -981,10 +981,6 @@ msgstr ""
 msgid "Control_Classic Battery"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:216
-msgid "Control_Classic PowerKey"
-msgstr ""
-
 #: ../../ORTS.Common/Input/UserCommand.cs:219
 msgid "Control_CZSK Mirel Off"
 msgstr ""
@@ -1309,27 +1305,43 @@ msgstr ""
 msgid "Control_CZSK Season heating switch"
 msgstr ""
 
+#: ../../ORTS.Common/Input/UserCommand.cs:302
+msgid "Control_CZSK Mirer +"
+msgstr ""
+
 #: ../../ORTS.Common/Input/UserCommand.cs:303
-msgid "Set Power Supply Station Location"
+msgid "Control_CZSK Mirer -"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:304
-msgid "Set Voltage 25k"
+msgid "Control_CZSK Powerkey +"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:305
-msgid "Set Voltage 3k"
-msgstr ""
-
-#: ../../ORTS.Common/Input/UserCommand.cs:306
-msgid "Set Voltage 0"
+msgid "Control_CZSK Powerkey -"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:307
-msgid "Set Delete Voltage Marker"
+msgid "Set Power Supply Station Location"
+msgstr ""
+
+#: ../../ORTS.Common/Input/UserCommand.cs:308
+msgid "Set Voltage 25k"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:309
+msgid "Set Voltage 3k"
+msgstr ""
+
+#: ../../ORTS.Common/Input/UserCommand.cs:310
+msgid "Set Voltage 0"
+msgstr ""
+
+#: ../../ORTS.Common/Input/UserCommand.cs:311
+msgid "Set Delete Voltage Marker"
+msgstr ""
+
+#: ../../ORTS.Common/Input/UserCommand.cs:313
 msgid "Control_CZSK Reload World Object"
 msgstr ""
 

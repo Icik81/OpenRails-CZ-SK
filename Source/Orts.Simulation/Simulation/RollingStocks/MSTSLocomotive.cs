@@ -12304,18 +12304,42 @@ namespace Orts.Simulation.RollingStocks
                     break;
                 case CABViewControlTypes.ORTS_POWERKEY:
                     {
-                        switch (PowerKeyPosition[PowerKeyStation])
+                        CVCWithFrames cVCWithFrames = (CVCWithFrames)cvc;
+                        switch (cVCWithFrames.FramesCount)
                         {
-                            case 0:
-                                data = 0;
-                                break;
-                            case 1:
-                                data = 0;
-                                break;
                             case 2:
-                                data = 1;
+                                {
+                                    switch (PowerKeyPosition[PowerKeyStation])
+                                    {
+                                        case 0:
+                                            data = 0;
+                                            break;
+                                        case 1:
+                                            data = 0;
+                                            break;
+                                        case 2:
+                                            data = 1;
+                                            break;
+                                    }
+                                }
                                 break;
-                        }
+                            case 3:
+                                {
+                                    switch (PowerKeyPosition[PowerKeyStation])
+                                    {
+                                        case 0:
+                                            data = 0;
+                                            break;
+                                        case 1:
+                                            data = 1;
+                                            break;
+                                        case 2:
+                                            data = 2;
+                                            break;
+                                    }
+                                }
+                                break;
+                        }                        
                         break;
                     }
                 case CABViewControlTypes.ORTS_2DEXTERNALWIPERS:

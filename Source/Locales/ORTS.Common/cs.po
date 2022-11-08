@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ORTS.Common\n"
-"POT-Creation-Date: 2022-10-23 16:49:42+0200\n"
-"PO-Revision-Date: 2022-10-23 17:12+0200\n"
+"POT-Creation-Date: 2022-11-08 18:02:33+0100\n"
+"PO-Revision-Date: 2022-11-08 18:04+0100\n"
 "Last-Translator: Altmann <altmann@bk.ru>\n"
 "Language-Team: \n"
 "Language: cs\n"
@@ -1069,10 +1069,6 @@ msgstr "Ovládání_Classic Ai topič resetovat"
 msgid "Control_Classic Battery"
 msgstr "Ovládání_Classic Baterie zap/vyp"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:216
-msgid "Control_Classic PowerKey"
-msgstr "Ovládání_Classic Spínač pultu zap/vyp"
-
 #: ../../ORTS.Common/Input/UserCommand.cs:219
 msgid "Control_CZSK Mirel Off"
 msgstr "Ovládání_CZSK Mirel kód vyp (pouze vývojáři)"
@@ -1397,29 +1393,52 @@ msgstr "Ovládání_CZSK Zadní pravé červené světlo"
 msgid "Control_CZSK Season heating switch"
 msgstr "Ovládání_CZSK Přepínač sezóny topení"
 
+#: ../../ORTS.Common/Input/UserCommand.cs:302
+#, fuzzy
+#| msgid "Control_CZSK Mirel On"
+msgid "Control_CZSK Mirer +"
+msgstr "Ovládání_CZSK Mirel kód vyp (pouze vývojáři)"
+
 #: ../../ORTS.Common/Input/UserCommand.cs:303
+#, fuzzy
+#| msgid "Control_CZSK Mirel On"
+msgid "Control_CZSK Mirer -"
+msgstr "Ovládání_CZSK Mirel kód vyp (pouze vývojáři)"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:304
+msgid "Control_CZSK Powerkey +"
+msgstr "Ovládání_CZSK Spínač pultu +"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:305
+msgid "Control_CZSK Powerkey -"
+msgstr "Ovládání_CZSK Spínač pultu -"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:307
 msgid "Set Power Supply Station Location"
 msgstr "Nastavit lokaci napájecí stanice (pouze vývojáři)"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:304
+#: ../../ORTS.Common/Input/UserCommand.cs:308
 msgid "Set Voltage 25k"
 msgstr "Nastavit napětí 25kV (pouze vývojáři)"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:305
+#: ../../ORTS.Common/Input/UserCommand.cs:309
 msgid "Set Voltage 3k"
 msgstr "Nastavit napětí 3kV (pouze vývojáři)"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:306
+#: ../../ORTS.Common/Input/UserCommand.cs:310
 msgid "Set Voltage 0"
 msgstr "Nastavit napětí 0kV (pouze vývojáři)"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:307
+#: ../../ORTS.Common/Input/UserCommand.cs:311
 msgid "Set Delete Voltage Marker"
 msgstr "Smazat napěťový marker (pouze vývojáři)"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:309
+#: ../../ORTS.Common/Input/UserCommand.cs:313
 msgid "Control_CZSK Reload World Object"
 msgstr "Ovládání_CZSK Znovunačtení objektů světa"
+
+#~ msgid "Control_Classic PowerKey"
+#~ msgstr "Ovládání_Classic Spínač pultu zap/vyp"
 
 #~ msgid "Camera 3D Cab"
 #~ msgstr "Pohled 3D kabina"

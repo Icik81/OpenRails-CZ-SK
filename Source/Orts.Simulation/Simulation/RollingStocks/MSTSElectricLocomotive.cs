@@ -2953,7 +2953,7 @@ namespace Orts.Simulation.RollingStocks
             if (PowerKeyPosition[PowerKeyStation] == 0)
                 status.AppendFormat("{0} = {1}",
                 Simulator.Catalog.GetString("PowerKey"),
-                Simulator.Catalog.GetParticularString("PowerKey", Simulator.Catalog.GetString("Out")));
+                Simulator.Catalog.GetParticularString("PowerKey", Simulator.Catalog.GetString("No Powerkey")));
             else
             if (PowerKeyPosition[PowerKeyStation] == 2)
                 status.AppendFormat("{0} = {1}",
