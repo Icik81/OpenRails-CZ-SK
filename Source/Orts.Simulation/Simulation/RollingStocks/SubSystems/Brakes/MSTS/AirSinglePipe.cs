@@ -78,7 +78,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
         protected float ThresholdBailOffOn = 0;
         protected ValveState PrevTripleValveStateState;
         protected float AutomaticDoorsCycle = 0;
-        protected float AirWithEDBMotiveForceN;        
+        protected float AirWithEDBMotiveForceN;
+        protected bool PressureConverterEnable;
 
         protected bool AICompressorOn;
         protected bool AICompressorOff;
@@ -1515,11 +1516,18 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             }
 
             // Převodník brzdné síly                          
-            PressureConverterBaseTrainBrake = (maxPressurePSI0 - BrakeLine1PressurePSI) * AuxCylVolumeRatio;
-            PressureConverterBase = Math.Max(PressureConverterBaseTrainBrake, PressureConverterBaseEDB);
-            PressureConverterBase = Math.Max(PressureConverterBase, PressureConverterBaseNoEDB);
-            PressureConverterBase = MathHelper.Clamp(PressureConverterBase, 0, 4.0f * 14.50377f);
-            
+            if (loco != null && maxPressurePSI0 < loco.MainResPressurePSI)
+            {
+                if (BrakeCylApply) PressureConverterEnable = true;
+                if (PressureConverterEnable)
+                    PressureConverterBaseTrainBrake = (maxPressurePSI0 - BrakeLine1PressurePSI) * AuxCylVolumeRatio;
+                PressureConverterBase = Math.Max(PressureConverterBaseTrainBrake, PressureConverterBaseEDB);
+                PressureConverterBase = Math.Max(PressureConverterBase, PressureConverterBaseNoEDB);
+                PressureConverterBase = MathHelper.Clamp(PressureConverterBase, 0, 4.0f * 14.50377f);
+            }
+            else
+                PressureConverterBase = 0;
+
             if (loco != null && loco.Battery && Math.Round(PressureConverterBase) > Math.Round(PressureConverter))
                 PressureConverter += elapsedClockSeconds * MaxApplicationRatePSIpS * 1.5f;
 
@@ -1729,9 +1737,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         if (car as MSTSLocomotive == null)
                         {
                             car.BrakeSystem.PowerForWagon = true;
-                            if (lead.Heating_OffOn)
+                            if (lead.Heating_OffOn[lead.LocoStation])
                                 car.SignalEvent(Event.EnginePowerOn);
-                            if (!lead.Heating_OffOn)
+                            if (!lead.Heating_OffOn[lead.LocoStation])
                                 car.SignalEvent(Event.EnginePowerOff);
                         }
                     }
@@ -2374,7 +2382,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
 
                         if ((loco.AuxResPressurePSI <= loco.AuxCompressorRestartPressurePSI && AuxResRestart || !AuxResRestart)
                             && loco.Battery && loco.PowerKey
-                            && loco.AuxCompressorMode_OffOn
+                            && loco.AuxCompressorMode_OffOn && loco.StationIsActivated[loco.LocoStation]
                             && loco.BrakeSystem.AuxCompressorOnDelay
                             && !loco.AuxCompressorIsOn)
                             loco.SignalEvent(Event.AuxCompressorOn);
@@ -2385,16 +2393,16 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                             genModeActive = loco.extendedPhysics.GeneratoricModeActive;
                         }
 
-                        if ((loco.MainResPressurePSI <= loco.CompressorRestartPressurePSI || loco.Compressor_I_HandMode)
+                        if ((loco.MainResPressurePSI <= loco.CompressorRestartPressurePSI || (loco.Compressor_I_HandMode && loco.StationIsActivated[loco.LocoStation]))
                             && (loco.AuxPowerOn || genModeActive)
-                            && (loco.CompressorMode_OffAuto || loco.Compressor_I_HandMode)
+                            && (loco.CompressorMode_OffAuto && loco.StationIsActivated[loco.LocoStation] || loco.Compressor_I_HandMode && loco.StationIsActivated[loco.LocoStation])
                             && loco.BrakeSystem.CompressorOnDelay
                             && !loco.CompressorIsOn)
                             loco.SignalEvent(Event.CompressorOn);
 
-                        if ((loco.MainResPressurePSI <= loco.CompressorRestartPressurePSI || loco.Compressor_II_HandMode)
+                        if ((loco.MainResPressurePSI <= loco.CompressorRestartPressurePSI || loco.Compressor_II_HandMode && loco.StationIsActivated[loco.LocoStation])
                             && (loco.AuxPowerOn || genModeActive)
-                            && (loco.CompressorMode2_OffAuto || loco.Compressor_II_HandMode)
+                            && (loco.CompressorMode2_OffAuto && loco.StationIsActivated[loco.LocoStation] || loco.Compressor_II_HandMode && loco.StationIsActivated[loco.LocoStation])
                             && (loco.BrakeSystem.Compressor2OnDelay || genModeActive)
                             && !loco.Compressor2IsOn)
                             loco.SignalEvent(Event.Compressor2On);
@@ -2402,23 +2410,23 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
 
                         if ((loco.AuxResPressurePSI >= loco.MaxAuxResPressurePSI && AuxResRestart
                             || (!loco.Battery || !loco.PowerKey)
-                            || !loco.AuxCompressorMode_OffOn)
+                            || (!loco.AuxCompressorMode_OffOn && loco.StationIsActivated[loco.LocoStation]))
                             && loco.AuxCompressorIsOn)
                             loco.SignalEvent(Event.AuxCompressorOff);
 
-                        if (((loco.MainResPressurePSI >= loco.MaxMainResPressurePSI && !loco.Compressor_I_HandMode)
+                        if (((loco.MainResPressurePSI >= loco.MaxMainResPressurePSI && !loco.Compressor_I_HandMode && loco.StationIsActivated[loco.LocoStation])
                             //|| (loco.MainResPressurePSI >= loco.MaxMainResOverPressurePSI && loco.Compressor_I_HandMode)
                             || !loco.AuxPowerOn
-                            || (!loco.CompressorMode_OffAuto && !loco.Compressor_I_HandMode))
+                            || (!loco.CompressorMode_OffAuto && !loco.Compressor_I_HandMode && loco.StationIsActivated[loco.LocoStation]))
                             && !genModeActive
                             && loco.CompressorIsOn)
                             loco.SignalEvent(Event.CompressorOff);
 
 
-                        if (((loco.MainResPressurePSI >= loco.MaxMainResPressurePSI && !loco.Compressor_II_HandMode)
+                        if (((loco.MainResPressurePSI >= loco.MaxMainResPressurePSI && !loco.Compressor_II_HandMode && loco.StationIsActivated[loco.LocoStation])
                             //|| (loco.MainResPressurePSI >= loco.MaxMainResOverPressurePSI && loco.Compressor_II_HandMode)
                             || !loco.AuxPowerOn
-                            || (!loco.CompressorMode2_OffAuto && !loco.Compressor_II_HandMode))
+                            || (!loco.CompressorMode2_OffAuto && !loco.Compressor_II_HandMode && loco.StationIsActivated[loco.LocoStation]))
                             && !genModeActive 
                             && loco.Compressor2IsOn)
                             loco.SignalEvent(Event.Compressor2Off);

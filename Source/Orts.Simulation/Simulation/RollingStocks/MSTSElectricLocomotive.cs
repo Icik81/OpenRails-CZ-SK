@@ -827,7 +827,7 @@ namespace Orts.Simulation.RollingStocks
                     }
                     if (!CircuitBreakerOn && Pantographs[1].PantographsBlocked == false && Pantographs[2].PantographsBlocked == false)
                     {
-                        if (Pantograph4Switch != 0)
+                        if (Pantograph4Switch[LocoStation] != 0)
                         {
                             SignalEvent(PowerSupplyEvent.LowerPantograph);
                             if (MPManager.IsMultiPlayer())
@@ -1344,8 +1344,8 @@ namespace Orts.Simulation.RollingStocks
                 // Nastavení pro plně oživenou lokomotivu
                 if (LocoReadyToGo && BrakeSystem.IsAirFull && !LocoIsStatic)
                 {                    
-                    CompressorSwitch = 2;
-                    CompressorSwitch2 = 1;
+                    CompressorSwitch[LocoStation] = 2;
+                    CompressorSwitch2[LocoStation] = 1;
                     CompressorMode_OffAuto = true;
                     CompressorMode2_OffAuto = true;
                     if (!CompressorCombined && !CompressorCombined2)
@@ -1380,11 +1380,11 @@ namespace Orts.Simulation.RollingStocks
 
                         //if (Pantograph4Enable)
                         //{
-                            Pantograph4Switch = 1;
+                            Pantograph4Switch[LocoStation] = 1;
                             if (RouteVoltageV == 3000)
-                                HV5Switch = 1;
+                                HV5Switch[LocoStation] = 1;
                             if (RouteVoltageV == 25000)
-                                HV5Switch = 3;
+                                HV5Switch[LocoStation] = 3;
                         //}
                         //if (Pantograph3Enable)
                             Pantograph3Switch = 2;
@@ -1412,7 +1412,7 @@ namespace Orts.Simulation.RollingStocks
 
                             if (Pantograph4Enable)
                             {
-                                Pantograph4Switch = 1;
+                                Pantograph4Switch[LocoStation] = 1;
                             }
                             if (Pantograph3Enable)
                             {
@@ -1480,11 +1480,11 @@ namespace Orts.Simulation.RollingStocks
 
                 if (Pantograph4Enable)
                 {
-                    Pantograph4Switch = 1;
+                    Pantograph4Switch[LocoStation] = 1;
                     if (RouteVoltageV == 3000)
-                        HV5Switch = 1;
+                        HV5Switch[LocoStation] = 1;
                     if (RouteVoltageV == 25000)
-                        HV5Switch = 3;
+                        HV5Switch[LocoStation] = 3;
                 }
                 if (Pantograph3Enable)
                     Pantograph3Switch = 2;
@@ -1910,7 +1910,7 @@ namespace Orts.Simulation.RollingStocks
                 HVPressedTime += elapsedClockSeconds;
 
             // HV5
-            if (HV5Enable && (!HVPressedTestDC && !HVPressedTestAC || HV5Switch != 0 && HV5Switch != 4))
+            if (HV5Enable && (!HVPressedTestDC && !HVPressedTestAC || HV5Switch[LocoStation] != 0 && HV5Switch[LocoStation] != 4))
                 HVPressedTime = 0;
 
             if (HVPressedTestDC)
@@ -2623,7 +2623,7 @@ namespace Orts.Simulation.RollingStocks
                 case CABViewControlTypes.PANTOGRAPH_4_SWITCH:
                     {
                         Pantograph4Enable = true;
-                        data = Pantograph4Switch;
+                        data = Pantograph4Switch[LocoStation];
                         break;
                     }
 
@@ -2694,13 +2694,13 @@ namespace Orts.Simulation.RollingStocks
                 case CABViewControlTypes.HV5:
                     {
                         HV5Enable = true;
-                        data = HV5Switch;
+                        data = HV5Switch[LocoStation];
                         LocoSwitchACDC = true;                        
                         break;
                     }
                 case CABViewControlTypes.HV5_DISPLAY:
                     {
-                        data = HV5Switch;                        
+                        data = HV5Switch[LocoStation];                        
                         if (PantoCanHVOffon)
                             data = 2;
                         break;
@@ -2950,12 +2950,12 @@ namespace Orts.Simulation.RollingStocks
                 Simulator.Catalog.GetString("Battery"),
                 Simulator.Catalog.GetParticularString("Battery", Simulator.Catalog.GetString("Off")));
             status.AppendLine();            
-            if (PowerKeyPosition[PowerKeyStation] == 0)
+            if (PowerKeyPosition[LocoStation] == 0)
                 status.AppendFormat("{0} = {1}",
                 Simulator.Catalog.GetString("PowerKey"),
                 Simulator.Catalog.GetParticularString("PowerKey", Simulator.Catalog.GetString("No Powerkey")));
             else
-            if (PowerKeyPosition[PowerKeyStation] == 2)
+            if (StationIsActivated[LocoStation])
                 status.AppendFormat("{0} = {1}",
                 Simulator.Catalog.GetString("PowerKey"),
                 Simulator.Catalog.GetParticularString("PowerKey", Simulator.Catalog.GetString("On")));

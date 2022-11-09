@@ -1344,7 +1344,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                 // Při zapnutí topení
                 if (locomotive.HeatingIsOn)
                 {                    
-                    switch (locomotive.SeasonSwitchPosition)
+                    switch (locomotive.SeasonSwitchPosition[locomotive.LocoStation])
                     {
                         case false:
                             if (ElevatedConsumptionIdleRPMBase < ElevatedConsumptionIdleRPMHeatingSummer)

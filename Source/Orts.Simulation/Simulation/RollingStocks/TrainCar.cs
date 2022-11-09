@@ -260,13 +260,13 @@ namespace Orts.Simulation.RollingStocks
         // instance variables set by train physics when it creates the traincar
         public Train Train;  // the car is connected to this train
                              //        public bool IsPlayerTrain { get { return Train.TrainType == ORTS.Train.TRAINTYPE.PLAYER ? true : false; } set { } }
-        public bool IsPlayerTrain { 
-            get 
+        public bool IsPlayerTrain {
+            get
             {
                 if (Train == null)
-                    Train = Simulator.playerTTTrain;               
-                return Train.IsPlayerDriven;                     
-            } 
+                    Train = Simulator.playerTTTrain;
+                return Train.IsPlayerDriven;
+            }
             set { }
         }
 
@@ -391,11 +391,20 @@ namespace Orts.Simulation.RollingStocks
         public bool CarPowerKey;
         public int CarFrameUpdateState;
         public bool DirectionControllerBlocked;
-        public int[] PowerKeyPosition = new int[3];        
+        public int[] PowerKeyPosition = new int[3];
         public int[] prevPowerKeyPosition = new int[3];
+        public bool[] StationIsActivated = new bool[3];
         public bool CarHavePocketPowerKey;
         public enum DriverStationPowerKey { None, Station1, Station2 };
         public DriverStationPowerKey ActiveStationPowerKey = DriverStationPowerKey.None;
+        public int[] Pantograph4Switch = new int[3];
+        public int[] CompressorSwitch = new int[3];
+        public int[] CompressorSwitch2 = new int[3];
+        public int[] HV5Switch = new int[3];
+        public bool[] Heating_OffOn = new bool[3];
+        public int[] HeadLightPosition = new int[3];
+        public int[] DirectionPosition = new int[3];
+        public bool[] SeasonSwitchPosition = new bool[3];
 
         public float PowerReductionResult1;  // Redukce výkonu od topení, klimatizace, kompresoru
         public float PowerReductionResult2;  // Redukce výkonu od nedostatečného tlaku vzduchu v potrubí

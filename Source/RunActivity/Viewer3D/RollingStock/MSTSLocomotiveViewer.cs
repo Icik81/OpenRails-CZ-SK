@@ -470,22 +470,22 @@ namespace Orts.Viewer3D.RollingStock
             // Ovládání HV5 nearetované pozice
             if (Locomotive.HV5Enable)
             {
-                if (Locomotive.HV5Switch == 4)
+                if (Locomotive.HV5Switch[Locomotive.LocoStation] == 4)
                 {
                     Locomotive.HVPressedTestAC = true;
                 }
-                if (Locomotive.HV5Switch == 4 && UserInput.IsReleased(UserCommand.ControlHV5SwitchUp))
+                if (Locomotive.HV5Switch[Locomotive.LocoStation] == 4 && UserInput.IsReleased(UserCommand.ControlHV5SwitchUp))
                 {
-                    Locomotive.HV5Switch = 3;
+                    Locomotive.HV5Switch[Locomotive.LocoStation] = 3;
                     Locomotive.HVPressedTestAC = false;
                 }
-                if (Locomotive.HV5Switch == 0)
+                if (Locomotive.HV5Switch[Locomotive.LocoStation] == 0)
                 {
                     Locomotive.HVPressedTestDC = true;
                 }
-                if (Locomotive.HV5Switch == 0 && UserInput.IsReleased(UserCommand.ControlHV5SwitchDown))
+                if (Locomotive.HV5Switch[Locomotive.LocoStation] == 0 && UserInput.IsReleased(UserCommand.ControlHV5SwitchDown))
                 {
-                    Locomotive.HV5Switch = 1;
+                    Locomotive.HV5Switch[Locomotive.LocoStation] = 1;
                     Locomotive.HVPressedTestDC = false;
                 }
             }
@@ -771,7 +771,7 @@ namespace Orts.Viewer3D.RollingStock
             // Přepínač výběru topné sezóny
             if (UserInput.IsPressed(UserCommand.ControlSeasonSwitch))
             {
-                Locomotive.SeasonSwitchPosition = !Locomotive.SeasonSwitchPosition;
+                Locomotive.SeasonSwitchPosition[Locomotive.LocoStation] = !Locomotive.SeasonSwitchPosition[Locomotive.LocoStation];
             }
 
             // Mirer ovladač
@@ -3660,22 +3660,22 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.HV5:
                     {
                         // Ovládání HV nearetované pozice
-                        if (Locomotive.HV5Switch == 4)
+                        if (Locomotive.HV5Switch[Locomotive.LocoStation] == 4)
                         {
                             Locomotive.HVPressedTestAC = true;
                         }
-                        if (Locomotive.HV5Switch == 4 && UserInput.IsMouseLeftButtonReleased)
+                        if (Locomotive.HV5Switch[Locomotive.LocoStation] == 4 && UserInput.IsMouseLeftButtonReleased)
                         {
-                            Locomotive.HV5Switch = 3;
+                            Locomotive.HV5Switch[Locomotive.LocoStation] = 3;
                             Locomotive.HVPressedTestAC = false;
                         }
-                        if (Locomotive.HV5Switch == 0)
+                        if (Locomotive.HV5Switch[Locomotive.LocoStation] == 0)
                         {
                             Locomotive.HVPressedTestDC = true;
                         }
-                        if (Locomotive.HV5Switch == 0 && UserInput.IsMouseLeftButtonReleased)
+                        if (Locomotive.HV5Switch[Locomotive.LocoStation] == 0 && UserInput.IsMouseLeftButtonReleased)
                         {
-                            Locomotive.HV5Switch = 1;
+                            Locomotive.HV5Switch[Locomotive.LocoStation] = 1;
                             Locomotive.HVPressedTestDC = false;
                         }
 
@@ -3847,15 +3847,15 @@ namespace Orts.Viewer3D.RollingStock
                     break;
 
                 case CABViewControlTypes.HEATING_OFFON:
-                    if (ChangedValue(Locomotive.Heating_OffOn ? 1 : 0) > 0)
+                    if (ChangedValue(Locomotive.Heating_OffOn[Locomotive.LocoStation] ? 1 : 0) > 0)
                     {
-                        Locomotive.Heating_OffOn = true;
+                        Locomotive.Heating_OffOn[Locomotive.LocoStation] = true;
                         new ToggleHeating_OffOnCommand(Viewer.Log);
                     }
                     else
-                    if (ChangedValue(Locomotive.Heating_OffOn ? 1 : 0) < 0)
+                    if (ChangedValue(Locomotive.Heating_OffOn[Locomotive.LocoStation] ? 1 : 0) < 0)
                     {
-                        Locomotive.Heating_OffOn = false;
+                        Locomotive.Heating_OffOn[Locomotive.LocoStation] = false;
                         new ToggleHeating_OffOnCommand(Viewer.Log);
                     }
                     break;
@@ -4114,13 +4114,13 @@ namespace Orts.Viewer3D.RollingStock
                     // Ovládání přepnutí sezóny topení                    
                     if (ChangedValue(0) < 0 && !IsChanged)
                     {
-                        Locomotive.SeasonSwitchPosition = false;
+                        Locomotive.SeasonSwitchPosition[Locomotive.LocoStation] = false;
                         new ToggleSeasonSwitchCommand(Viewer.Log);
                         IsChanged = true;                        
                     }
                     if (ChangedValue(0) > 0 && !IsChanged)
                     {
-                        Locomotive.SeasonSwitchPosition = true;
+                        Locomotive.SeasonSwitchPosition[Locomotive.LocoStation] = true;
                         new ToggleSeasonSwitchCommand(Viewer.Log);
                         IsChanged = true;                        
                     }
