@@ -13177,6 +13177,7 @@ namespace Orts.Simulation.RollingStocks
                 case CABViewControlTypes.DIESEL_DIRECTION_CONTROLLER:
                     {
                         DieselDirectionController = true;
+                        CarHavePocketPowerKey = true;
                         if (DieselDirectionController_In && PowerKeyPosition[PowerKeyStation] == 2)                              
                             data = DieselDirectionControllerPosition;
                         else
@@ -13186,6 +13187,7 @@ namespace Orts.Simulation.RollingStocks
                 case CABViewControlTypes.DIESEL_DIRECTION_CONTROLLER2:
                     {
                         DieselDirectionController2 = true;
+                        CarHavePocketPowerKey = true;
                         if (DieselDirectionController_In && PowerKeyPosition[PowerKeyStation] == 2)
                             data = DieselDirectionController2Position;
                         else
