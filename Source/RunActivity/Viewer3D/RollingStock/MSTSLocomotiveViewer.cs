@@ -410,59 +410,59 @@ namespace Orts.Viewer3D.RollingStock
             // Ovládání HV3 nearetované pozice
             if (Locomotive.HV3Enable)
             {
-                if (Locomotive.HV3Switch == 2)
+                if (Locomotive.HV3Switch[Locomotive.LocoStation] == 2)
                 {
                     Locomotive.HVOnPressedTest = true;
                 }
-                if (Locomotive.HV3Switch == 2 && UserInput.IsReleased(UserCommand.ControlHV3SwitchUp))
+                if (Locomotive.HV3Switch[Locomotive.LocoStation] == 2 && UserInput.IsReleased(UserCommand.ControlHV3SwitchUp))
                 {
-                    Locomotive.HV3Switch = 1;
+                    Locomotive.HV3Switch[Locomotive.LocoStation] = 1;
                     Locomotive.HVOnPressedTest = false;
                 }
-                if (Locomotive.HV3Switch == 0)
+                if (Locomotive.HV3Switch[Locomotive.LocoStation] == 0)
                 {
                     Locomotive.HVOffPressedTest = true;
                 }
-                if (Locomotive.HV3Switch == 0 && UserInput.IsReleased(UserCommand.ControlHV3SwitchDown))
+                if (Locomotive.HV3Switch[Locomotive.LocoStation] == 0 && UserInput.IsReleased(UserCommand.ControlHV3SwitchDown))
                 {
-                    Locomotive.HV3Switch = 1;
+                    Locomotive.HV3Switch[Locomotive.LocoStation] = 1;
                     Locomotive.HVOffPressedTest = false;
                 }
             }
             // Ovládání HV4 nearetované pozice
             if (Locomotive.HV4Enable)
             {
-                if (Locomotive.HV4Switch == 2)
+                if (Locomotive.HV4Switch[Locomotive.LocoStation] == 2)
                 {
                     Locomotive.HVOnPressedTest = true;
                 }
-                if (Locomotive.HV4Switch == 2 && UserInput.IsReleased(UserCommand.ControlHV4SwitchUp))
+                if (Locomotive.HV4Switch[Locomotive.LocoStation] == 2 && UserInput.IsReleased(UserCommand.ControlHV4SwitchUp))
                 {
-                    Locomotive.HV4Switch = 1;
+                    Locomotive.HV4Switch[Locomotive.LocoStation] = 1;
                     Locomotive.HVOnPressedTest = false;
                 }
-                if (Locomotive.HV4Switch == 0)
+                if (Locomotive.HV4Switch[Locomotive.LocoStation] == 0)
                 {
                     Locomotive.HVOffPressedTest = true;
                 }
-                if (Locomotive.HV4Switch == 0 && UserInput.IsReleased(UserCommand.ControlHV4SwitchDown))
+                if (Locomotive.HV4Switch[Locomotive.LocoStation] == 0 && UserInput.IsReleased(UserCommand.ControlHV4SwitchDown))
                 {
-                    Locomotive.HV4Switch = 1;
+                    Locomotive.HV4Switch[Locomotive.LocoStation] = 1;
                     Locomotive.HVOffPressedTest = false;
                 }
 
-                if (Locomotive.HV4Switch == 1 && UserInput.IsPressed(UserCommand.ControlHV4SwitchDown))
+                if (Locomotive.HV4Switch[Locomotive.LocoStation] == 1 && UserInput.IsPressed(UserCommand.ControlHV4SwitchDown))
                     PressedCycleStart = true;
 
-                if (Locomotive.HV4Switch == 1 && UserInput.IsPressed(UserCommand.ControlHV4SwitchDown) && DoublePressedKeyTest())
+                if (Locomotive.HV4Switch[Locomotive.LocoStation] == 1 && UserInput.IsPressed(UserCommand.ControlHV4SwitchDown) && DoublePressedKeyTest())
                 {
-                    Locomotive.HV4Switch = -1;
+                    Locomotive.HV4Switch[Locomotive.LocoStation] = -1;
                     Locomotive.HVOffPressedTest = false;
                 }
 
-                if (Locomotive.HV4Switch == -1 && UserInput.IsPressed(UserCommand.ControlHV4SwitchUp))
+                if (Locomotive.HV4Switch[Locomotive.LocoStation] == -1 && UserInput.IsPressed(UserCommand.ControlHV4SwitchUp))
                 {
-                    Locomotive.HV4Switch = -1;
+                    Locomotive.HV4Switch[Locomotive.LocoStation] = -1;
                     Locomotive.HVOffPressedTest = false;
                     Locomotive.HV4SwitchFullDown = true;
                 }
@@ -492,48 +492,48 @@ namespace Orts.Viewer3D.RollingStock
             // Ovládání Pantograph3 nearetované pozice
             if (Locomotive.Pantograph3Enable)
             {                                
-                if (Locomotive.Pantograph3Switch == 2 && UserInput.IsReleased(UserCommand.ControlPantograph3SwitchUp))
+                if (Locomotive.Pantograph3Switch[Locomotive.LocoStation] == 2 && UserInput.IsReleased(UserCommand.ControlPantograph3SwitchUp))
                 {
-                    Locomotive.Pantograph3Switch = 1;
+                    Locomotive.Pantograph3Switch[Locomotive.LocoStation] = 1;
                     Locomotive.PantographOnPressedTest = false;
                 }
                 else
-                if (Locomotive.Pantograph3Switch == 2)
+                if (Locomotive.Pantograph3Switch[Locomotive.LocoStation] == 2)
                 {
                     Locomotive.PantographOnPressedTest = true;
                 }
 
-                if (Locomotive.Pantograph3Switch == 0 && UserInput.IsReleased(UserCommand.ControlPantograph3SwitchDown))
+                if (Locomotive.Pantograph3Switch[Locomotive.LocoStation] == 0 && UserInput.IsReleased(UserCommand.ControlPantograph3SwitchDown))
                 {
-                    Locomotive.Pantograph3Switch = 1;
+                    Locomotive.Pantograph3Switch[Locomotive.LocoStation] = 1;
                     Locomotive.PantographOffPressedTest = false;
                 }
                 else
-                if (Locomotive.Pantograph3Switch == 0)
+                if (Locomotive.Pantograph3Switch[Locomotive.LocoStation] == 0)
                 {
                     Locomotive.PantographOffPressedTest = true;
                 }                
 
-                if (Locomotive.Pantograph3Switch == 1 && UserInput.IsPressed(UserCommand.ControlPantograph3SwitchDown))
+                if (Locomotive.Pantograph3Switch[Locomotive.LocoStation] == 1 && UserInput.IsPressed(UserCommand.ControlPantograph3SwitchDown))
                     PressedCycleStart = true;
 
-                if (Locomotive.Pantograph3Switch == 1 && UserInput.IsPressed(UserCommand.ControlPantograph3SwitchDown) && DoublePressedKeyTest())
+                if (Locomotive.Pantograph3Switch[Locomotive.LocoStation] == 1 && UserInput.IsPressed(UserCommand.ControlPantograph3SwitchDown) && DoublePressedKeyTest())
                 {
-                    Locomotive.Pantograph3Switch = -1;
+                    Locomotive.Pantograph3Switch[Locomotive.LocoStation] = -1;
                     Locomotive.Pantograph3CanOn = true;
                     Locomotive.PantographOffPressedTest = false;
                 }
 
-                if (Locomotive.Pantograph3Switch == -1 && UserInput.IsPressed(UserCommand.ControlPantograph3SwitchUp))
+                if (Locomotive.Pantograph3Switch[Locomotive.LocoStation] == -1 && UserInput.IsPressed(UserCommand.ControlPantograph3SwitchUp))
                 {
-                    Locomotive.Pantograph3Switch = -1;
+                    Locomotive.Pantograph3Switch[Locomotive.LocoStation] = -1;
                     Locomotive.PantographOffPressedTest = false;
                     Locomotive.Pantograph3SwitchFullDown = true;
                 }
 
                 if (Locomotive.extendedPhysics != null)
                 {
-                    if (Locomotive.Pantograph3Switch == -1)
+                    if (Locomotive.Pantograph3Switch[Locomotive.LocoStation] == -1)
                     {
                         Locomotive.extendedPhysics.GeneratoricModeDisabled = true;
                     }
@@ -717,18 +717,18 @@ namespace Orts.Viewer3D.RollingStock
             // Aripot
             if (Locomotive.CruiseControl != null && Locomotive.CruiseControl.AripotEquipment)
             {
-                Locomotive.AripotControllerValue = (float)Math.Round(Locomotive.AripotControllerValue, 2);
+                Locomotive.AripotControllerValue[Locomotive.LocoStation] = (float)Math.Round(Locomotive.AripotControllerValue[Locomotive.LocoStation], 2);
                 Locomotive.AripotControllerEnable = true;
-                Locomotive.AripotControllerPreValue = Locomotive.AripotControllerValue;
+                Locomotive.AripotControllerPreValue = Locomotive.AripotControllerValue[Locomotive.LocoStation];
                 if (UserInput.IsDown(UserCommand.ControlThrottleIncrease))
                 {                    
-                    Locomotive.AripotControllerValue += 0.01f;
+                    Locomotive.AripotControllerValue[Locomotive.LocoStation] += 0.01f;
                 }
                 if (UserInput.IsDown(UserCommand.ControlThrottleDecrease))
                 {                    
-                    Locomotive.AripotControllerValue -= 0.01f;
+                    Locomotive.AripotControllerValue[Locomotive.LocoStation] -= 0.01f;
                 }
-                Locomotive.AripotControllerValue = MathHelper.Clamp(Locomotive.AripotControllerValue, 0, 1);
+                Locomotive.AripotControllerValue[Locomotive.LocoStation] = MathHelper.Clamp(Locomotive.AripotControllerValue[Locomotive.LocoStation], 0, 1);
 
                 if (Locomotive.CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.Auto || Locomotive.CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.AVV)
                 {
@@ -737,10 +737,10 @@ namespace Orts.Viewer3D.RollingStock
                     if (Aripot_CycleTime > 0.2f)
                     {
                         Aripot_CycleTime = 0;
-                        if (Math.Round(Locomotive.AripotControllerValue * Locomotive.MaxSpeedMpS, 1) > Math.Round(Locomotive.CruiseControl.SelectedSpeedMpS, 1))
+                        if (Math.Round(Locomotive.AripotControllerValue[Locomotive.LocoStation] * Locomotive.MaxSpeedMpS, 1) > Math.Round(Locomotive.CruiseControl.SelectedSpeedMpS, 1))
                             Locomotive.CruiseControl.SpeedRegulatorSelectedSpeedStartIncrease();
 
-                        if (Math.Round(Locomotive.AripotControllerValue * Locomotive.MaxSpeedMpS, 1) < Math.Round(Locomotive.CruiseControl.SelectedSpeedMpS, 1))
+                        if (Math.Round(Locomotive.AripotControllerValue[Locomotive.LocoStation] * Locomotive.MaxSpeedMpS, 1) < Math.Round(Locomotive.CruiseControl.SelectedSpeedMpS, 1))
                             Locomotive.CruiseControl.SpeedRegulatorSelectedSpeedStartDecrease();
                     }
                 }
@@ -761,9 +761,9 @@ namespace Orts.Viewer3D.RollingStock
                         Aripot_CycleTime = 0;
 
                     if (Locomotive.AripotControllerCanUseThrottle)
-                        Locomotive.SetThrottlePercent(Locomotive.AripotControllerValue * 100);
+                        Locomotive.SetThrottlePercent(Locomotive.AripotControllerValue[Locomotive.LocoStation] * 100);
 
-                    if (!Locomotive.AripotControllerCanUseThrottle && Locomotive.AripotControllerValue == 0)
+                    if (!Locomotive.AripotControllerCanUseThrottle && Locomotive.AripotControllerValue[Locomotive.LocoStation] == 0)
                         Locomotive.AripotControllerCanUseThrottle = true;
                 }
             }
@@ -3587,22 +3587,22 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.HV3:
                     {
                         // Ovládání HV nearetované pozice
-                        if (Locomotive.HV3Switch == 2)
+                        if (Locomotive.HV3Switch[Locomotive.LocoStation] == 2)
                         {
                             Locomotive.HVOnPressedTest = true;
                         }
-                        if (Locomotive.HV3Switch == 2 && UserInput.IsMouseLeftButtonReleased)
+                        if (Locomotive.HV3Switch[Locomotive.LocoStation] == 2 && UserInput.IsMouseLeftButtonReleased)
                         {
-                            Locomotive.HV3Switch = 1;
+                            Locomotive.HV3Switch[Locomotive.LocoStation] = 1;
                             Locomotive.HVOnPressedTest = false;
                         }
-                        if (Locomotive.HV3Switch == 0)
+                        if (Locomotive.HV3Switch[Locomotive.LocoStation] == 0)
                         {
                             Locomotive.HVOffPressedTest = true;
                         }
-                        if (Locomotive.HV3Switch == 0 && UserInput.IsMouseLeftButtonReleased)
+                        if (Locomotive.HV3Switch[Locomotive.LocoStation] == 0 && UserInput.IsMouseLeftButtonReleased)
                         {
-                            Locomotive.HV3Switch = 1;
+                            Locomotive.HV3Switch[Locomotive.LocoStation] = 1;
                             Locomotive.HVOffPressedTest = false;
                         }
 
@@ -3620,22 +3620,22 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.HV4:
                     {
                         // Ovládání HV nearetované pozice
-                        if (Locomotive.HV4Switch == 2)
+                        if (Locomotive.HV4Switch[Locomotive.LocoStation] == 2)
                         {
                             Locomotive.HVOnPressedTest = true;
                         }
-                        if (Locomotive.HV4Switch == 2 && UserInput.IsMouseLeftButtonReleased)
+                        if (Locomotive.HV4Switch[Locomotive.LocoStation] == 2 && UserInput.IsMouseLeftButtonReleased)
                         {
-                            Locomotive.HV4Switch = 1;
+                            Locomotive.HV4Switch[Locomotive.LocoStation] = 1;
                             Locomotive.HVOnPressedTest = false;
                         }
-                        if (Locomotive.HV4Switch == 0)
+                        if (Locomotive.HV4Switch[Locomotive.LocoStation] == 0)
                         {
                             Locomotive.HVOffPressedTest = true;
                         }
-                        if (Locomotive.HV4Switch == 0 && UserInput.IsMouseLeftButtonReleased)
+                        if (Locomotive.HV4Switch[Locomotive.LocoStation] == 0 && UserInput.IsMouseLeftButtonReleased)
                         {
-                            Locomotive.HV4Switch = 1;
+                            Locomotive.HV4Switch[Locomotive.LocoStation] = 1;
                             Locomotive.HVOffPressedTest = false;
                         }
 
@@ -3650,7 +3650,7 @@ namespace Orts.Viewer3D.RollingStock
 
                         if (ChangedValue(0) > 0 && NormalizedMouseMovement() > 0.75f && UserInput.IsMouseLeftButtonDown)
                         {
-                            Locomotive.HV4Switch = -1;
+                            Locomotive.HV4Switch[Locomotive.LocoStation] = -1;
                             Locomotive.HVOffPressedTest = false;
                             new ToggleHV4SwitchDownCommand(Viewer.Log);
                         }
@@ -3695,24 +3695,24 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.PANTOGRAPH_3_SWITCH:
                     {
                         // Ovládání HV nearetované pozice
-                        if (Locomotive.Pantograph3Switch == 2 && UserInput.IsMouseLeftButtonReleased)
+                        if (Locomotive.Pantograph3Switch[Locomotive.LocoStation] == 2 && UserInput.IsMouseLeftButtonReleased)
                         {
-                            Locomotive.Pantograph3Switch = 1;
+                            Locomotive.Pantograph3Switch[Locomotive.LocoStation] = 1;
                             Locomotive.PantographOnPressedTest = false;
                         }
                         else
-                        if (Locomotive.Pantograph3Switch == 2)
+                        if (Locomotive.Pantograph3Switch[Locomotive.LocoStation] == 2)
                         {
                             Locomotive.PantographOnPressedTest = true;
                         }
 
-                        if (Locomotive.Pantograph3Switch == 0 && UserInput.IsMouseLeftButtonReleased)
+                        if (Locomotive.Pantograph3Switch[Locomotive.LocoStation] == 0 && UserInput.IsMouseLeftButtonReleased)
                         {
-                            Locomotive.Pantograph3Switch = 1;
+                            Locomotive.Pantograph3Switch[Locomotive.LocoStation] = 1;
                             Locomotive.PantographOffPressedTest = false;
                         }
                         else
-                        if (Locomotive.Pantograph3Switch == 0)
+                        if (Locomotive.Pantograph3Switch[Locomotive.LocoStation] == 0)
                         {
                             Locomotive.PantographOffPressedTest = true;
                         }
@@ -3727,7 +3727,7 @@ namespace Orts.Viewer3D.RollingStock
                         }
                         if (ChangedValue(0) > 0 && NormalizedMouseMovement() > 0.75f && UserInput.IsMouseLeftButtonDown)
                         {
-                            Locomotive.Pantograph3Switch = -1;
+                            Locomotive.Pantograph3Switch[Locomotive.LocoStation] = -1;
                             Locomotive.Pantograph3CanOn = true;
                             Locomotive.PantographOffPressedTest = false;
                             new TogglePantograph3SwitchDownCommand(Viewer.Log);
@@ -4052,9 +4052,9 @@ namespace Orts.Viewer3D.RollingStock
                     if (Locomotive.CruiseControl != null && Locomotive.CruiseControl.AripotEquipment)
                     {
                         if (ChangedValue(0) > 0)                        
-                            Locomotive.AripotControllerValue += MathHelper.Clamp(NormalizedMouseMovement(), 0, 0.05f);                                                    
+                            Locomotive.AripotControllerValue[Locomotive.LocoStation] += MathHelper.Clamp(NormalizedMouseMovement(), 0, 0.05f);                                                    
                         if (ChangedValue(0) < 0)                        
-                            Locomotive.AripotControllerValue += MathHelper.Clamp(NormalizedMouseMovement(), -0.05f, 0);                                                    
+                            Locomotive.AripotControllerValue[Locomotive.LocoStation] += MathHelper.Clamp(NormalizedMouseMovement(), -0.05f, 0);                                                    
                     }
                     break;
 

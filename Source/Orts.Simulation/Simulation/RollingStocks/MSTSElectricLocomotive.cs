@@ -1330,7 +1330,7 @@ namespace Orts.Simulation.RollingStocks
                 }                                    
 
                 // Vypnutí baterií způsobí odpadnutí pantografů
-                if (!Battery && Pantograph3Switch != 1)
+                if (!Battery && Pantograph3Switch[LocoStation] != 1)
                 {
                     SignalEvent(PowerSupplyEvent.LowerPantograph);
                     if (MPManager.IsMultiPlayer())
@@ -1338,7 +1338,7 @@ namespace Orts.Simulation.RollingStocks
                         MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO1", 0).ToString());
                         MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO2", 0).ToString());
                     }
-                    Pantograph3Switch = 1;
+                    Pantograph3Switch[LocoStation] = 1;
                 }
 
                 // Nastavení pro plně oživenou lokomotivu
@@ -1360,7 +1360,7 @@ namespace Orts.Simulation.RollingStocks
                         if (!CompressorCombined2)
                             CompressorMode2_OffAuto = false;
                     }
-                    HV4Switch = 1;
+                    HV4Switch[LocoStation] = 1;
 
                     SplashScreen = false;
 
@@ -1387,7 +1387,7 @@ namespace Orts.Simulation.RollingStocks
                                 HV5Switch[LocoStation] = 3;
                         //}
                         //if (Pantograph3Enable)
-                            Pantograph3Switch = 2;
+                            Pantograph3Switch[LocoStation] = 2;
 
                         if (PantographVoltageV > PantographCriticalVoltage)
                             HVOn = true;
@@ -1395,7 +1395,7 @@ namespace Orts.Simulation.RollingStocks
                         if (PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closed)
                         {
                             LocoReadyToGo = false;
-                            Pantograph3Switch = 1;
+                            Pantograph3Switch[LocoStation] = 1;
                         }
                     }
                     if (!MultiSystemEngine)
@@ -1416,7 +1416,7 @@ namespace Orts.Simulation.RollingStocks
                             }
                             if (Pantograph3Enable)
                             {
-                                Pantograph3Switch = 2;
+                                Pantograph3Switch[LocoStation] = 2;
                                 Pantograph3CanOn = true;
                             }
                             if (PowerOn)
@@ -1487,7 +1487,7 @@ namespace Orts.Simulation.RollingStocks
                         HV5Switch[LocoStation] = 3;
                 }
                 if (Pantograph3Enable)
-                    Pantograph3Switch = 2;
+                    Pantograph3Switch[LocoStation] = 2;
 
                 switch (RouteVoltageV)
                 {
@@ -2630,7 +2630,7 @@ namespace Orts.Simulation.RollingStocks
                 case CABViewControlTypes.PANTOGRAPH_3_SWITCH:
                     {
                         Pantograph3Enable = true;
-                        switch (Pantograph3Switch)
+                        switch (Pantograph3Switch[LocoStation])
                         {
                             case -1:
                                 data = 0;
@@ -2665,7 +2665,7 @@ namespace Orts.Simulation.RollingStocks
                 case CABViewControlTypes.HV3:
                     {
                         HV3Enable = true;
-                        data = HV3Switch;
+                        data = HV3Switch[LocoStation];
                         LocoSwitchACDC = true;
                         break;
                     }
@@ -2674,7 +2674,7 @@ namespace Orts.Simulation.RollingStocks
                         HV4Enable = true;
                         Pantograph3Enable = true;
                         LocoSwitchACDC = true;
-                        switch (HV4Switch)
+                        switch (HV4Switch[LocoStation])
                         {
                             case -1:
                                 data = 0;

@@ -294,7 +294,7 @@ namespace Orts.Simulation.RollingStocks
 
         public void Update(float elapsedClockSeconds)
         {
-            if (Locomotive.Pantograph3Switch == -1)
+            if (Locomotive.Pantograph3Switch[Locomotive.LocoStation] == -1)
                 GeneratoricModeBlocked = true;
             if (Locomotive.LocoType == MSTSLocomotive.LocoTypes.Vectron)
             {

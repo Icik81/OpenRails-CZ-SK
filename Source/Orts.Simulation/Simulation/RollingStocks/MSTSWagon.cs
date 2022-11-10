@@ -3761,17 +3761,17 @@ namespace Orts.Simulation.RollingStocks
             var loco = this as MSTSLocomotive;
             if (loco.DoorSwitchEnable)
             {
-                loco.DoorSwitch--;
-                if (loco.DoorSwitch < 0)
+                loco.DoorSwitch[loco.LocoStation]--;
+                if (loco.DoorSwitch[loco.LocoStation] < 0)
                 {
-                    loco.DoorSwitch = MathHelper.Clamp(loco.DoorSwitch, 0, 2);
+                    loco.DoorSwitch[loco.LocoStation] = MathHelper.Clamp(loco.DoorSwitch[loco.LocoStation], 0, 2);
                     return;
                 }
-                if (loco.PrevDoorSwitch != loco.DoorSwitch)
+                if (loco.PrevDoorSwitch != loco.DoorSwitch[loco.LocoStation])
                     SignalEvent(Event.PantographToggle); // Zvuk přepínače 
-                loco.PrevDoorSwitch = loco.DoorSwitch;
+                loco.PrevDoorSwitch = loco.DoorSwitch[loco.LocoStation];
 
-                if (loco.DoorSwitch == 1)
+                if (loco.DoorSwitch[loco.LocoStation] == 1)
                 {
                     foreach (var car in Train.Cars)
                     {
@@ -3854,17 +3854,17 @@ namespace Orts.Simulation.RollingStocks
             var loco = this as MSTSLocomotive;
             if (loco.DoorSwitchEnable)
             {
-                loco.DoorSwitch++;
-                if (loco.DoorSwitch > 2)
+                loco.DoorSwitch[loco.LocoStation]++;
+                if (loco.DoorSwitch[loco.LocoStation] > 2)
                 {
-                    loco.DoorSwitch = MathHelper.Clamp(loco.DoorSwitch, 0, 2);
+                    loco.DoorSwitch[loco.LocoStation] = MathHelper.Clamp(loco.DoorSwitch[loco.LocoStation], 0, 2);
                     return;
                 }
-                if (loco.PrevDoorSwitch != loco.DoorSwitch)
+                if (loco.PrevDoorSwitch != loco.DoorSwitch[loco.LocoStation])
                     SignalEvent(Event.PantographToggle); // Zvuk přepínače 
-                loco.PrevDoorSwitch = loco.DoorSwitch;
+                loco.PrevDoorSwitch = loco.DoorSwitch[loco.LocoStation];
 
-                if (loco.DoorSwitch == 1)
+                if (loco.DoorSwitch[loco.LocoStation] == 1)
                 {
                     foreach (var car in Train.Cars)
                     {

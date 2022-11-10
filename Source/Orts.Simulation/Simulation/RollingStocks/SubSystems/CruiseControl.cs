@@ -372,7 +372,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                             // Icik
                             if (AripotEquipment)
                             {
-                                if (Locomotive.AripotControllerValue > 0)
+                                if (Locomotive.AripotControllerValue[Locomotive.LocoStation] > 0)
                                     Locomotive.AripotControllerCanUseThrottle = false;
                                 Locomotive.ThrottleController.SetPercent(0);
                                 currentThrottlePercent = 0;

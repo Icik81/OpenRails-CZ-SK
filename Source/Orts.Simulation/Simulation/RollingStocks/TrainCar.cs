@@ -398,13 +398,21 @@ namespace Orts.Simulation.RollingStocks
         public enum DriverStationPowerKey { None, Station1, Station2 };
         public DriverStationPowerKey ActiveStationPowerKey = DriverStationPowerKey.None;
         public int[] Pantograph4Switch = new int[3];
+        public int[] Pantograph3Switch = new int[3];
         public int[] CompressorSwitch = new int[3];
         public int[] CompressorSwitch2 = new int[3];
         public int[] HV5Switch = new int[3];
+        public int[] HV4Switch = new int[3];
+        public int[] HV3Switch = new int[3];
         public bool[] Heating_OffOn = new bool[3];
         public int[] HeadLightPosition = new int[3];
         public int[] DirectionPosition = new int[3];
         public bool[] SeasonSwitchPosition = new bool[3];
+        public int[] DoorSwitch = new int[3];
+        public int[] DieselDirectionControllerPosition = new int[3];
+        public int[] DieselDirectionController2Position = new int[3];
+        public int[] DieselDirectionController4Position = new int[3];
+        public float[] AripotControllerValue = new float[3];
 
         public float PowerReductionResult1;  // Redukce výkonu od topení, klimatizace, kompresoru
         public float PowerReductionResult2;  // Redukce výkonu od nedostatečného tlaku vzduchu v potrubí

@@ -538,11 +538,9 @@ namespace Orts.Simulation.RollingStocks
         public bool HV2ButtonEnable = false;
         public float HV2Switch = 0;
         public float LastStateHV2 = 0;
-        public bool HV3Enable = false;
-        public float HV3Switch = 1;
+        public bool HV3Enable = false;        
         public float LastStateHV3 = 1;
-        public bool HV4Enable = false;
-        public float HV4Switch = -1;
+        public bool HV4Enable = false;        
         public float LastStateHV4 = 1;
         public bool HV4SwitchFullDown;
         public float HV4SwitchFullDownCycle;
@@ -583,8 +581,7 @@ namespace Orts.Simulation.RollingStocks
         float PreDataAmps;
         public bool AIPantoDown;
         public bool Pantograph4Enable = false;
-        public bool Pantograph3Enable = false;
-        public float Pantograph3Switch = 1;
+        public bool Pantograph3Enable = false;        
         public float LastStatePantograph3;
         public bool Pantograph3SwitchFullDown;
         public float Pantograph3SwitchFullDownCycle;
@@ -605,10 +602,7 @@ namespace Orts.Simulation.RollingStocks
         public bool ARRTrainBrakeEngage;
         public float ARRAutoCylPressurePSI;
         public bool ARRTrainBrakeEngage_Apply;
-        public bool ARRTrainBrakeEngage_Release;
-        public int DieselDirectionControllerPosition = -1;
-        public int DieselDirectionController2Position = -1;
-        public int DieselDirectionController4Position = -1;
+        public bool ARRTrainBrakeEngage_Release;        
         public int prevDieselDirectionControllerPosition;
         public int prevDieselDirectionController2Position;
         public bool DieselDirectionController;
@@ -640,8 +634,7 @@ namespace Orts.Simulation.RollingStocks
         public bool MUCable;
         public bool MUCableEquipment;
         public float MaxPowerWBase;
-        public bool DoorSwitchEnable;
-        public float DoorSwitch = 1;
+        public bool DoorSwitchEnable;        
         public float PrevDoorSwitch = 1;
         public bool LocoIsStatic;
         public float PantoCanHVOffSpeedKpH;
@@ -656,8 +649,7 @@ namespace Orts.Simulation.RollingStocks
         public bool BreakEDBButton;
         bool BreakEDBButtonPressed = false;
         public bool BreakEDBButton_Activated;
-        public bool AripotControllerEnable;
-        public float AripotControllerValue;
+        public bool AripotControllerEnable;        
         public float AripotControllerPreValue;
         public bool AripotControllerCanUseThrottle = true;
         public InterpolatorDiesel2D CurrentForceCurves;        
@@ -1827,21 +1819,25 @@ namespace Orts.Simulation.RollingStocks
             outf.Write(BreakPowerButton_Activated);
             outf.Write(MultiSystemEngine);
             outf.Write(LocomotivePowerVoltage);
-            outf.Write(DieselDirectionControllerPosition);
-            outf.Write(DieselDirectionController2Position);
+            outf.Write(DieselDirectionControllerPosition[1]);
+            outf.Write(DieselDirectionControllerPosition[2]);
+            outf.Write(DieselDirectionController2Position[1]);
+            outf.Write(DieselDirectionController2Position[2]);
             outf.Write(DieselDirectionController_In);
             outf.Write(DieselDirectionController_Out);
             outf.Write(DieselDirectionControllerInOut);
             outf.Write(DieselMotorDefected);
             outf.Write(DieselMotorPowerLost);
             outf.Write(DieselLocoTempReady);
-            outf.Write(DoorSwitch);
+            outf.Write(DoorSwitch[1]);
+            outf.Write(DoorSwitch[2]);
             outf.Write(PrevDoorSwitch);
             outf.Write(LapActive);
             outf.Write(DirectionButtonPosition);
             outf.Write(CarIsPlayerLocoSet);
             outf.Write(BreakEDBButton_Activated);
-            outf.Write(AripotControllerValue);
+            outf.Write(AripotControllerValue[1]);
+            outf.Write(AripotControllerValue[2]);
             outf.Write(AripotControllerCanUseThrottle);
             outf.Write(LightFrontLPosition);
             outf.Write(LightFrontRPosition);
@@ -1965,21 +1961,25 @@ namespace Orts.Simulation.RollingStocks
             BreakPowerButton_Activated = inf.ReadBoolean();
             MultiSystemEngine = inf.ReadBoolean();
             LocomotivePowerVoltage = inf.ReadSingle();
-            DieselDirectionControllerPosition = inf.ReadInt32();
-            DieselDirectionController2Position = inf.ReadInt32();
+            DieselDirectionControllerPosition[1] = inf.ReadInt32();
+            DieselDirectionControllerPosition[2] = inf.ReadInt32();
+            DieselDirectionController2Position[1] = inf.ReadInt32();
+            DieselDirectionController2Position[2] = inf.ReadInt32();
             DieselDirectionController_In = inf.ReadBoolean();
             DieselDirectionController_Out = inf.ReadBoolean();
             DieselDirectionControllerInOut = inf.ReadBoolean();
             DieselMotorDefected = inf.ReadBoolean();
             DieselMotorPowerLost = inf.ReadBoolean();
             DieselLocoTempReady = inf.ReadBoolean();
-            DoorSwitch = inf.ReadSingle();
+            DoorSwitch[1] = inf.ReadInt32();
+            DoorSwitch[2] = inf.ReadInt32();
             PrevDoorSwitch = inf.ReadSingle();
             LapActive = inf.ReadBoolean();
             DirectionButtonPosition = inf.ReadInt32();
             CarIsPlayerLocoSet = inf.ReadBoolean();
             BreakEDBButton_Activated = inf.ReadBoolean();
-            AripotControllerValue = inf.ReadSingle();
+            AripotControllerValue[1] = inf.ReadSingle();
+            AripotControllerValue[2] = inf.ReadSingle();
             AripotControllerCanUseThrottle = inf.ReadBoolean();
             LightFrontLPosition = inf.ReadInt32();
             LightFrontRPosition = inf.ReadInt32();
@@ -3172,7 +3172,7 @@ namespace Orts.Simulation.RollingStocks
                     }
                 }
             }
-            if (HV4Switch != 0)
+            if (HV4Switch[LocoStation] != 0)
                 AuxPowerCycleHV4 = 0;
         }
         // Icik
@@ -3194,7 +3194,7 @@ namespace Orts.Simulation.RollingStocks
                     }
                 }
             }
-            if (HV4Switch != 0)
+            if (HV4Switch[LocoStation] != 0)
                 AuxPowerCycleHV4 = 0;
         }
 
@@ -3219,7 +3219,7 @@ namespace Orts.Simulation.RollingStocks
                         }
                     }
                 }
-                if (HV4Switch != 0)
+                if (HV4Switch[LocoStation] != 0)
                     AuxPowerCycleHV4 = 0;
             }
             if (IsLeadLocomotive() && PowerOn && !HV4Enable)
@@ -4194,7 +4194,7 @@ namespace Orts.Simulation.RollingStocks
                     CruiseControl.SpeedRegMode = SubSystems.CruiseControl.SpeedRegulatorMode.Manual;
                     CruiseControl.SelectedSpeedMpS = MpS.FromKpH(0);
                     CruiseControl.SpeedSelMode = SubSystems.CruiseControl.SpeedSelectorMode.Neutral;
-                    AripotControllerValue = 0;
+                    AripotControllerValue[LocoStation] = 0;
                 }
             }
         }
@@ -4311,10 +4311,15 @@ namespace Orts.Simulation.RollingStocks
         {
             if (firstFrame && BrakeSystem.StartOn)
             {
-                CompressorSwitch[1] = 1;
-                CompressorSwitch[2] = 1;
-                HV5Switch[1] = 2;
-                HV5Switch[2] = 2;
+                CompressorSwitch[1] = CompressorSwitch[2] = 1;
+                HV5Switch[1] = HV5Switch[2] = 2;
+                HV4Switch[1] = HV4Switch[2] = -1;
+                HV3Switch[1] = HV3Switch[2] = 1;
+                Pantograph3Switch[1] = Pantograph3Switch[2] = 1;
+                DoorSwitch[1] = DoorSwitch[2] = 1;                
+                DieselDirectionControllerPosition[1] = DieselDirectionController2Position[1] = DieselDirectionController4Position[1] = -1;
+                DieselDirectionControllerPosition[2] = DieselDirectionController2Position[2] = DieselDirectionController4Position[2] = -1;
+
 
                 Headlight = 0;
                 firstFrame = false;
@@ -4373,7 +4378,7 @@ namespace Orts.Simulation.RollingStocks
                             CruiseControl.SpeedRegMode = SubSystems.CruiseControl.SpeedRegulatorMode.Auto;
                             CruiseControl.SelectedSpeedMpS = MpS.FromKpH(40);
                             CruiseControl.SpeedSelMode = SubSystems.CruiseControl.SpeedSelectorMode.Parking;
-                            AripotControllerValue = CruiseControl.SelectedSpeedMpS / MaxSpeedMpS;
+                            AripotControllerValue[LocoStation] = CruiseControl.SelectedSpeedMpS / MaxSpeedMpS;
                         }
                     }
                 }
@@ -4732,7 +4737,7 @@ namespace Orts.Simulation.RollingStocks
                         CruiseControl.SpeedRegMode = SubSystems.CruiseControl.SpeedRegulatorMode.Auto;
                         CruiseControl.SelectedSpeedMpS = MpS.FromKpH(40);
                         CruiseControl.SpeedSelMode = SubSystems.CruiseControl.SpeedSelectorMode.Parking;
-                        AripotControllerValue = CruiseControl.SelectedSpeedMpS / MaxSpeedMpS;
+                        AripotControllerValue[LocoStation] = CruiseControl.SelectedSpeedMpS / MaxSpeedMpS;
                     }
                 }
                 else
@@ -8230,9 +8235,9 @@ namespace Orts.Simulation.RollingStocks
                 if (!DieselDirectionControllerInOut)
                     return;
             }
-            if ((DieselDirectionController && DieselDirectionControllerPosition != 2)
-                || (DieselDirectionController2 && DieselDirectionController2Position != 0)
-                || (DieselDirectionController4 && DieselDirectionController2Position != 1))
+            if ((DieselDirectionController && DieselDirectionControllerPosition[LocoStation] != 2)
+                || (DieselDirectionController2 && DieselDirectionController2Position[LocoStation] != 0)
+                || (DieselDirectionController4 && DieselDirectionController2Position[LocoStation] != 1))
                 return;
 
             if (Simulator.PowerKeyInPocket && PowerKeyPosition[LocoStation] == 0)
@@ -8282,9 +8287,9 @@ namespace Orts.Simulation.RollingStocks
             if (DieselDirectionController || DieselDirectionController2)
                 return;
 
-            if ((DieselDirectionController && DieselDirectionControllerPosition != 2)
-                || (DieselDirectionController2 && DieselDirectionController2Position != 0)
-                || (DieselDirectionController4 && DieselDirectionController2Position != 1))
+            if ((DieselDirectionController && DieselDirectionControllerPosition[LocoStation] != 2)
+                || (DieselDirectionController2 && DieselDirectionController2Position[LocoStation] != 0)
+                || (DieselDirectionController4 && DieselDirectionController2Position[LocoStation] != 1))
                 return;            
 
             if (PowerKeyPosition[LocoStation] > 0)
@@ -8326,9 +8331,9 @@ namespace Orts.Simulation.RollingStocks
             else
                 StationIsActivated[LocoStation] = false;
 
-            if ((DieselDirectionController && DieselDirectionControllerPosition != 2)
-                || (DieselDirectionController2 && DieselDirectionController2Position != 0)
-                || (DieselDirectionController4 && DieselDirectionController2Position != 1))
+            if ((DieselDirectionController && DieselDirectionControllerPosition[LocoStation] != 2)
+                || (DieselDirectionController2 && DieselDirectionController2Position[LocoStation] != 0)
+                || (DieselDirectionController4 && DieselDirectionController2Position[LocoStation] != 1))
                 return;
 
             if (!CarHavePocketPowerKey)
@@ -8342,19 +8347,24 @@ namespace Orts.Simulation.RollingStocks
 
             if (IsLeadLocomotive() && AcceptMUSignals)
             {
-                Simulator.PowerKeyInPocket = true;
-                Simulator.PowerKeyNoPocketBlocked = true;
+                Simulator.PowerKeyInPocket = true;                
                 foreach (TrainCar car in Train.Cars)
                 {
                     if (car is MSTSLocomotive && car.AcceptMUSignals)
                     {
                         if (car.PowerKeyPosition[1] > 0 || car.PowerKeyPosition[2] > 0)
-                            Simulator.PowerKeyInPocket = false;
-                        if (car.PowerKeyPosition[1] > 1 || car.PowerKeyPosition[2] > 1)
-                            Simulator.PowerKeyNoPocketBlocked = false;
+                            Simulator.PowerKeyInPocket = false;                        
                     }
                 }
             }
+
+            if (IsLeadLocomotive())
+            {
+                Simulator.PowerKeyNoPocketBlocked = true;
+                if (PowerKeyPosition[1] > 1 || PowerKeyPosition[2] > 1)
+                    Simulator.PowerKeyNoPocketBlocked = false;
+            }
+
             if (IsLeadLocomotive() && !AcceptMUSignals)
             {
                 Simulator.PowerKeyInPocket = true;                
@@ -8743,26 +8753,26 @@ namespace Orts.Simulation.RollingStocks
         {
             if (HV3Enable)
             {
-                if (HV3Switch < 3)
-                    HV3Switch++;
-                if (HV3Switch < 3)
+                if (HV3Switch[LocoStation] < 3)
+                    HV3Switch[LocoStation]++;
+                if (HV3Switch[LocoStation] < 3)
                 {
                     ToggleHV3Switch();
                 }
-                HV3Switch = MathHelper.Clamp(HV3Switch, 0, 2);
+                HV3Switch[LocoStation] = MathHelper.Clamp(HV3Switch[LocoStation], 0, 2);
             }
         }
         public void ToggleHV3SwitchDown()
         {
             if (HV3Enable)
             {
-                if (HV3Switch > 0)
-                    HV3Switch--;
-                if (HV3Switch > -1)
+                if (HV3Switch[LocoStation] > 0)
+                    HV3Switch[LocoStation]--;
+                if (HV3Switch[LocoStation] > -1)
                 {
                     ToggleHV3Switch();
                 }
-                HV3Switch = MathHelper.Clamp(HV3Switch, 0, 2);
+                HV3Switch[LocoStation] = MathHelper.Clamp(HV3Switch[LocoStation], 0, 2);
             }
         }
         public void ToggleHV3Switch()
@@ -8788,10 +8798,10 @@ namespace Orts.Simulation.RollingStocks
                             break;
                     }
                 }
-                if (LastStateHV3 != HV3Switch)
+                if (LastStateHV3 != HV3Switch[LocoStation])
                     SignalEvent(Event.PantographToggle); // Zvuk přepínače                
 
-                switch (HV3Switch)
+                switch (HV3Switch[LocoStation])
                 {
                     case 0: // HV vypnout
                         //Simulator.Confirmer.Information("Switch 0");
@@ -8803,7 +8813,7 @@ namespace Orts.Simulation.RollingStocks
                         //Simulator.Confirmer.Information("Switch 2");
                         break;
                 }
-                LastStateHV3 = HV3Switch;
+                LastStateHV3 = HV3Switch[LocoStation];
             }
         }
 
@@ -8811,33 +8821,33 @@ namespace Orts.Simulation.RollingStocks
         {
             if (HV4Enable)
             {
-                if (HV4Switch < 3)
-                    HV4Switch++;
-                if (HV4Switch < 3)
+                if (HV4Switch[LocoStation] < 3)
+                    HV4Switch[LocoStation]++;
+                if (HV4Switch[LocoStation] < 3)
                 {
                     ToggleHV4Switch();
                 }
-                HV4Switch = MathHelper.Clamp(HV4Switch, -1, 2);
+                HV4Switch[LocoStation] = MathHelper.Clamp(HV4Switch[LocoStation], -1, 2);
             }
         }
         public void ToggleHV4SwitchDown()
         {
             if (HV4Enable)
             {
-                if (HV4Switch > 0)
-                    HV4Switch--;
-                if (HV4Switch > -1)
+                if (HV4Switch[LocoStation] > 0)
+                    HV4Switch[LocoStation]--;
+                if (HV4Switch[LocoStation] > -1)
                 {
                     ToggleHV4Switch();
                 }
-                HV4Switch = MathHelper.Clamp(HV4Switch, -1, 2);
+                HV4Switch[LocoStation] = MathHelper.Clamp(HV4Switch[LocoStation], -1, 2);
             }
         }
         public void ToggleHV4Switch()
         {
             if (HV4Enable)
             {
-                if (HV4Switch == 0 && HV4SwitchFullDown)
+                if (HV4Switch[LocoStation] == 0 && HV4SwitchFullDown)
                 {
                     HV4SwitchFullDownCycle++;
                     if (HV4SwitchFullDownCycle > 5)
@@ -8849,8 +8859,8 @@ namespace Orts.Simulation.RollingStocks
                     }
                 }
 
-                if (BreakPowerButton || Pantograph3Switch == -1)
-                    Pantograph3Switch = 1;
+                if (BreakPowerButton || Pantograph3Switch[LocoStation] == -1)
+                    Pantograph3Switch[LocoStation] = 1;
 
                 if (HVCanOn && Battery && StationIsActivated[LocoStation])
                     HVOn = true;
@@ -8869,16 +8879,16 @@ namespace Orts.Simulation.RollingStocks
                         break;
                 }
 
-                if (LastStateHV4 != HV4Switch)
+                if (LastStateHV4 != HV4Switch[LocoStation])
                     SignalEvent(Event.PantographToggle); // Zvuk přepínače                                
 
                 if (Battery && StationIsActivated[LocoStation])
                 {
-                    switch (HV4Switch)
+                    switch (HV4Switch[LocoStation])
                     {
                         case -1: // panto dolu
                                  //Simulator.Confirmer.Information("Switch -1");
-                            Pantograph3Switch = -1;
+                            Pantograph3Switch[LocoStation] = -1;
                             break;
                         case 0: // vypni proud
                                 //Simulator.Confirmer.Information("Switch 0");                        
@@ -8890,12 +8900,12 @@ namespace Orts.Simulation.RollingStocks
                         case 2: // HV zapnout, panto nahoru
                             AuxPowerStartOn();
                             if (AirForPantograph)
-                                Pantograph3Switch = 2;
+                                Pantograph3Switch[LocoStation] = 2;
                             //Simulator.Confirmer.Information("Switch 2");                        
                             break;
                     }
                 }
-                LastStateHV4 = HV4Switch;
+                LastStateHV4 = HV4Switch[LocoStation];
             }
         }
 
@@ -8976,18 +8986,18 @@ namespace Orts.Simulation.RollingStocks
         {
             if (Pantograph3Enable)
             {
-                if (Pantograph3Switch < 3)
-                    Pantograph3Switch++;                
-                Pantograph3Switch = MathHelper.Clamp(Pantograph3Switch, -1, 2);
+                if (Pantograph3Switch[LocoStation] < 3)
+                    Pantograph3Switch[LocoStation]++;                
+                Pantograph3Switch[LocoStation] = MathHelper.Clamp(Pantograph3Switch[LocoStation], -1, 2);
             }
         }
         public void TogglePantograph3SwitchDown()
         {
             if (Pantograph3Enable)
             {
-                if (Pantograph3Switch > 0)
-                    Pantograph3Switch--;
-                Pantograph3Switch = MathHelper.Clamp(Pantograph3Switch, -1, 2);
+                if (Pantograph3Switch[LocoStation] > 0)
+                    Pantograph3Switch[LocoStation]--;
+                Pantograph3Switch[LocoStation] = MathHelper.Clamp(Pantograph3Switch[LocoStation], -1, 2);
             }
         }
         public void TogglePantograph3Switch()
@@ -8995,7 +9005,7 @@ namespace Orts.Simulation.RollingStocks
             if (Pantograph3Enable)
             {
                 //Simulator.Confirmer.Information("Pantograph3Switch " + Pantograph3Switch);
-                if (Pantograph3Switch == 0 && Pantograph3SwitchFullDown)
+                if (Pantograph3Switch[LocoStation] == 0 && Pantograph3SwitchFullDown)
                 {
                     Pantograph3SwitchFullDownCycle++;
                     if (Pantograph3SwitchFullDownCycle > 5)
@@ -9007,7 +9017,7 @@ namespace Orts.Simulation.RollingStocks
                     }
                 }
 
-                if (LastStatePantograph3 != Pantograph3Switch)
+                if (LastStatePantograph3 != Pantograph3Switch[LocoStation])
                     SignalEvent(Event.PantographToggle); // Zvuk přepínače                
 
                 if (!MultiSystemEngine && !CircuitBreakerOn)
@@ -9016,18 +9026,18 @@ namespace Orts.Simulation.RollingStocks
                 // Zabrání zvednutí pantografu po stlačení tlačítka přerušení napájení
                 if (BreakPowerButton)
                     BreakPowerButton_Activated = true;
-                if (BreakPowerButton_Activated && Pantograph3Switch == 1)
+                if (BreakPowerButton_Activated && Pantograph3Switch[LocoStation] == 1)
                     BreakPowerButton_Activated = false;
 
                 if ((Pantograph3CanOn || HV4Enable) && Battery && StationIsActivated[LocoStation] && !BreakPowerButton_Activated && Simulator.GameTime > 1)
                 {
-                    PantoStatus = Pantograph3Switch;
+                    PantoStatus = Pantograph3Switch[LocoStation];
                     int p1 = 1; int p2 = 2;
                     string ps1 = "PANTO1"; string ps2 = "PANTO2";
                     if (UsingRearCab) { p1 = 2; p2 = 1; ps1 = "PANTO2"; ps2 = "PANTO1"; }
                     if (PantoStatus != PrePantoStatus)
                     {
-                        switch (Pantograph3Switch)
+                        switch (Pantograph3Switch[LocoStation])
                         {
                             case -1: // SOS
                                 Pantograph3CanOn = false;
@@ -9121,10 +9131,10 @@ namespace Orts.Simulation.RollingStocks
                                     }
                                 break;
                         }
-                        PrePantoStatus = Pantograph3Switch;
+                        PrePantoStatus = Pantograph3Switch[LocoStation];
                     }
                 }
-                LastStatePantograph3 = Pantograph3Switch;
+                LastStatePantograph3 = Pantograph3Switch[LocoStation];
             }
         }
 
@@ -9931,32 +9941,32 @@ namespace Orts.Simulation.RollingStocks
             {
                 if (DieselDirectionController || DieselDirectionController3)
                 {
-                    if (DieselDirectionControllerPosition < 4)
-                        DieselDirectionControllerPosition++;
-                    if (DieselDirectionControllerPosition <= 4)
+                    if (DieselDirectionControllerPosition[LocoStation] < 4)
+                        DieselDirectionControllerPosition[LocoStation]++;
+                    if (DieselDirectionControllerPosition[LocoStation] <= 4)
                     {
-                        if ((DieselDirectionControllerPosition > 2 && DieselDirectionControllerPosition > prevDieselDirectionControllerPosition)
-                            || (DieselDirectionControllerPosition < 2 && DieselDirectionControllerPosition < prevDieselDirectionControllerPosition))
+                        if ((DieselDirectionControllerPosition[LocoStation] > 2 && DieselDirectionControllerPosition[LocoStation] > prevDieselDirectionControllerPosition)
+                            || (DieselDirectionControllerPosition[LocoStation] < 2 && DieselDirectionControllerPosition[LocoStation] < prevDieselDirectionControllerPosition))
                             SignalEvent(Event.ReverserToForwardBackward);
                         else
-                        if ((DieselDirectionControllerPosition >= 2 && DieselDirectionControllerPosition < prevDieselDirectionControllerPosition)
-                            || (DieselDirectionControllerPosition <= 2 && DieselDirectionControllerPosition > prevDieselDirectionControllerPosition))
+                        if ((DieselDirectionControllerPosition[LocoStation] >= 2 && DieselDirectionControllerPosition[LocoStation] < prevDieselDirectionControllerPosition)
+                            || (DieselDirectionControllerPosition[LocoStation] <= 2 && DieselDirectionControllerPosition[LocoStation] > prevDieselDirectionControllerPosition))
                             SignalEvent(Event.ReverserToNeutral);
                     }
                 }
                 else
                 if (DieselDirectionController2 || DieselDirectionController4)
                 {
-                    if (DieselDirectionController2Position > 0)
-                        DieselDirectionController2Position--;
-                    if (DieselDirectionController2Position >= 0)
+                    if (DieselDirectionController2Position[LocoStation] > 0)
+                        DieselDirectionController2Position[LocoStation]--;
+                    if (DieselDirectionController2Position[LocoStation] >= 0)
                     {
-                        if ((DieselDirectionController2Position > 0 && DieselDirectionController2Position > prevDieselDirectionController2Position)
-                            || (DieselDirectionController2Position < 0 && DieselDirectionController2Position < prevDieselDirectionController2Position))
+                        if ((DieselDirectionController2Position[LocoStation] > 0 && DieselDirectionController2Position[LocoStation] > prevDieselDirectionController2Position)
+                            || (DieselDirectionController2Position[LocoStation] < 0 && DieselDirectionController2Position[LocoStation] < prevDieselDirectionController2Position))
                             SignalEvent(Event.ReverserToForwardBackward);
                         else
-                        if ((DieselDirectionController2Position >= 0 && DieselDirectionController2Position < prevDieselDirectionController2Position)
-                            || (DieselDirectionController2Position < 0 && DieselDirectionController2Position > prevDieselDirectionController2Position))
+                        if ((DieselDirectionController2Position[LocoStation] >= 0 && DieselDirectionController2Position[LocoStation] < prevDieselDirectionController2Position)
+                            || (DieselDirectionController2Position[LocoStation] < 0 && DieselDirectionController2Position[LocoStation] > prevDieselDirectionController2Position))
                             SignalEvent(Event.ReverserToNeutral);
                     }
                 }
@@ -9968,32 +9978,32 @@ namespace Orts.Simulation.RollingStocks
             {
                 if (DieselDirectionController || DieselDirectionController3)
                 {
-                    if (DieselDirectionControllerPosition > 0)
-                        DieselDirectionControllerPosition--;
-                    if (DieselDirectionControllerPosition >= 0)
+                    if (DieselDirectionControllerPosition[LocoStation] > 0)
+                        DieselDirectionControllerPosition[LocoStation]--;
+                    if (DieselDirectionControllerPosition[LocoStation] >= 0)
                     {
-                        if ((DieselDirectionControllerPosition > 2 && DieselDirectionControllerPosition > prevDieselDirectionControllerPosition)
-                            || (DieselDirectionControllerPosition < 2 && DieselDirectionControllerPosition < prevDieselDirectionControllerPosition))
+                        if ((DieselDirectionControllerPosition[LocoStation] > 2 && DieselDirectionControllerPosition[LocoStation] > prevDieselDirectionControllerPosition)
+                            || (DieselDirectionControllerPosition[LocoStation] < 2 && DieselDirectionControllerPosition[LocoStation] < prevDieselDirectionControllerPosition))
                             SignalEvent(Event.ReverserToForwardBackward);
                         else
-                        if ((DieselDirectionControllerPosition >= 2 && DieselDirectionControllerPosition < prevDieselDirectionControllerPosition)
-                            || (DieselDirectionControllerPosition <= 2 && DieselDirectionControllerPosition > prevDieselDirectionControllerPosition))
+                        if ((DieselDirectionControllerPosition[LocoStation] >= 2 && DieselDirectionControllerPosition[LocoStation] < prevDieselDirectionControllerPosition)
+                            || (DieselDirectionControllerPosition[LocoStation] <= 2 && DieselDirectionControllerPosition[LocoStation] > prevDieselDirectionControllerPosition))
                             SignalEvent(Event.ReverserToNeutral);
                     }
                 }
                 else
                 if (DieselDirectionController2 || DieselDirectionController4)
                 {
-                    if (DieselDirectionController2Position < 3)
-                        DieselDirectionController2Position++;
-                    if (DieselDirectionController2Position <= 3)
+                    if (DieselDirectionController2Position[LocoStation] < 3)
+                        DieselDirectionController2Position[LocoStation]++;
+                    if (DieselDirectionController2Position[LocoStation] <= 3)
                     {
-                        if ((DieselDirectionController2Position > 0 && DieselDirectionController2Position > prevDieselDirectionController2Position)
-                            || (DieselDirectionController2Position < 0 && DieselDirectionController2Position < prevDieselDirectionController2Position))
+                        if ((DieselDirectionController2Position[LocoStation] > 0 && DieselDirectionController2Position[LocoStation] > prevDieselDirectionController2Position)
+                            || (DieselDirectionController2Position[LocoStation] < 0 && DieselDirectionController2Position[LocoStation] < prevDieselDirectionController2Position))
                             SignalEvent(Event.ReverserToForwardBackward);
                         else
-                        if ((DieselDirectionController2Position > 0 && DieselDirectionController2Position < prevDieselDirectionController2Position)
-                            || (DieselDirectionController2Position < 0 && DieselDirectionController2Position > prevDieselDirectionController2Position))
+                        if ((DieselDirectionController2Position[LocoStation] > 0 && DieselDirectionController2Position[LocoStation] < prevDieselDirectionController2Position)
+                            || (DieselDirectionController2Position[LocoStation] < 0 && DieselDirectionController2Position[LocoStation] > prevDieselDirectionController2Position))
                             SignalEvent(Event.ReverserToNeutral);
                     }
                 }
@@ -10003,17 +10013,17 @@ namespace Orts.Simulation.RollingStocks
         {
             if (DieselDirectionController || DieselDirectionController3)
             {
-                if (DieselDirectionControllerPosition == -1)
+                if (DieselDirectionControllerPosition[LocoStation] == -1)
                 {                 
-                    DieselDirectionControllerPosition = 2;
+                    DieselDirectionControllerPosition[LocoStation] = 2;
                     PowerKeyPosition[1] = 0;
                     PowerKeyPosition[2] = 0;
                     this.CarPowerKey = false;
                 }
 
-                if (prevDieselDirectionControllerPosition != DieselDirectionControllerPosition)
+                if (prevDieselDirectionControllerPosition != DieselDirectionControllerPosition[LocoStation])
                 {
-                    switch (DieselDirectionControllerPosition)
+                    switch (DieselDirectionControllerPosition[LocoStation])
                     {
                         case 0: Simulator.Confirmer.Confirm(CabControl.DieselDirection_Forward, Simulator.Catalog.GetString("Position Forward")); break;
                         case 1: Simulator.Confirmer.Confirm(CabControl.DieselDirection_Start, Simulator.Catalog.GetString("Position D")); break;
@@ -10021,9 +10031,9 @@ namespace Orts.Simulation.RollingStocks
                         case 3: Simulator.Confirmer.Confirm(CabControl.DieselDirection_Start, Simulator.Catalog.GetString("Position D")); break;
                         case 4: Simulator.Confirmer.Confirm(CabControl.DieselDirection_Reverse, Simulator.Catalog.GetString("Position Backward")); break;
                     }
-                    prevDieselDirectionControllerPosition = DieselDirectionControllerPosition;
+                    prevDieselDirectionControllerPosition = DieselDirectionControllerPosition[LocoStation];
                     //Simulator.Confirmer.MSG("Nastaveno: " + DieselDirectionControllerPosition);
-                    switch (DieselDirectionControllerPosition)
+                    switch (DieselDirectionControllerPosition[LocoStation])
                     {
                         case 0: // Vpřed
                             {
@@ -10079,26 +10089,26 @@ namespace Orts.Simulation.RollingStocks
         {
             if (DieselDirectionController2)
             {
-                if (DieselDirectionController2Position == -1)
+                if (DieselDirectionController2Position[LocoStation] == -1)
                 {
-                    DieselDirectionController2Position = 0;
+                    DieselDirectionController2Position[LocoStation] = 0;
                     PowerKeyPosition[1] = 0;
                     PowerKeyPosition[2] = 0;
                     this.CarPowerKey = false;                    
                 }
 
-                if (prevDieselDirectionController2Position != DieselDirectionController2Position)
+                if (prevDieselDirectionController2Position != DieselDirectionController2Position[LocoStation])
                 {
-                    switch (DieselDirectionController2Position)
+                    switch (DieselDirectionController2Position[LocoStation])
                     {
                         case 0: Simulator.Confirmer.Confirm(CabControl.DieselDirection_0, Simulator.Catalog.GetString("Position 0")); break;
                         case 1: Simulator.Confirmer.Confirm(CabControl.DieselDirection_Reverse, Simulator.Catalog.GetString("Position Backward")); break;
                         case 2: Simulator.Confirmer.Confirm(CabControl.DieselDirection_Start, Simulator.Catalog.GetString("Position D")); break;
                         case 3: Simulator.Confirmer.Confirm(CabControl.DieselDirection_Forward, Simulator.Catalog.GetString("Position Forward")); break;
                     }
-                    prevDieselDirectionController2Position = DieselDirectionController2Position;
+                    prevDieselDirectionController2Position = DieselDirectionController2Position[LocoStation];
                     //Simulator.Confirmer.MSG("Nastaveno: " + DieselDirectionController2Position);
-                    switch (DieselDirectionController2Position)
+                    switch (DieselDirectionController2Position[LocoStation])
                     {
                         case 0: // 0
                             {
@@ -10141,20 +10151,20 @@ namespace Orts.Simulation.RollingStocks
             }
             if (DieselDirectionController4)
             {                                                
-                if (DieselDirectionController2Position == -1) DieselDirectionController2Position = 1;
+                if (DieselDirectionController2Position[LocoStation] == -1) DieselDirectionController2Position[LocoStation] = 1;
 
-                if (prevDieselDirectionController2Position != DieselDirectionController2Position)
+                if (prevDieselDirectionController2Position != DieselDirectionController2Position[LocoStation])
                 {
-                    switch (DieselDirectionController2Position)
+                    switch (DieselDirectionController2Position[LocoStation])
                     {
                         case 0: Simulator.Confirmer.Confirm(CabControl.DieselDirection_Reverse, Simulator.Catalog.GetString("Position Backward")); break;
                         case 1: Simulator.Confirmer.Confirm(CabControl.DieselDirection_0, Simulator.Catalog.GetString("Position 0")); break;
                         case 2: Simulator.Confirmer.Confirm(CabControl.DieselDirection_Start, Simulator.Catalog.GetString("Position D")); break;
                         case 3: Simulator.Confirmer.Confirm(CabControl.DieselDirection_Forward, Simulator.Catalog.GetString("Position Forward")); break;
                     }
-                    prevDieselDirectionController2Position = DieselDirectionController2Position;
+                    prevDieselDirectionController2Position = DieselDirectionController2Position[LocoStation];
                     //Simulator.Confirmer.MSG("Nastaveno: " + DieselDirectionController2Position);
-                    switch (DieselDirectionController2Position)
+                    switch (DieselDirectionController2Position[LocoStation])
                     {
                         case 0: // Vzad
                             {
@@ -13202,7 +13212,7 @@ namespace Orts.Simulation.RollingStocks
                         DieselDirectionController = true;
                         CarHavePocketPowerKey = true;
                         if (DieselDirectionController_In && StationIsActivated[LocoStation])                              
-                            data = DieselDirectionControllerPosition;
+                            data = DieselDirectionControllerPosition[LocoStation];
                         else
                             data = 5;
                         break;
@@ -13212,7 +13222,7 @@ namespace Orts.Simulation.RollingStocks
                         DieselDirectionController2 = true;
                         CarHavePocketPowerKey = true;
                         if (DieselDirectionController_In && StationIsActivated[LocoStation])
-                            data = DieselDirectionController2Position;
+                            data = DieselDirectionController2Position[LocoStation];
                         else
                             data = 4;
                         break;
@@ -13220,13 +13230,13 @@ namespace Orts.Simulation.RollingStocks
                 case CABViewControlTypes.DIESEL_DIRECTION_CONTROLLER3:
                     {
                         DieselDirectionController3 = true;
-                        data = DieselDirectionControllerPosition;
+                        data = DieselDirectionControllerPosition[LocoStation];
                         break;
                     }
                 case CABViewControlTypes.DIESEL_DIRECTION_CONTROLLER4:
                     {
                         DieselDirectionController4 = true;
-                        data = DieselDirectionController2Position;
+                        data = DieselDirectionController2Position[LocoStation];
                         break;
                     }
                 case CABViewControlTypes.DIESEL_CHECK_POWER_MOTOR_LAMP:
@@ -13289,7 +13299,7 @@ namespace Orts.Simulation.RollingStocks
                 case CABViewControlTypes.DOORSWITCH:
                     {
                         DoorSwitchEnable = true;
-                        data = DoorSwitch;
+                        data = DoorSwitch[LocoStation];
                         break;
                     }
                 case CABViewControlTypes.LAP_BUTTON:
@@ -13369,7 +13379,7 @@ namespace Orts.Simulation.RollingStocks
                 case CABViewControlTypes.ARIPOT_CONTROLLER:
                     {
                         CVCWithFrames cVCWithFrames = (CVCWithFrames)cvc;
-                        data = AripotControllerValue * cVCWithFrames.FramesCount;
+                        data = AripotControllerValue[LocoStation] * cVCWithFrames.FramesCount;
                         break;
                     }
                 case CABViewControlTypes.FRONT_LIGHT_L:
