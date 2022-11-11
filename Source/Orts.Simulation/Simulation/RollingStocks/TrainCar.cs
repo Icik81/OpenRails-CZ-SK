@@ -395,8 +395,6 @@ namespace Orts.Simulation.RollingStocks
         public int[] prevPowerKeyPosition = new int[3];
         public bool[] StationIsActivated = new bool[3];
         public bool CarHavePocketPowerKey;
-        public enum DriverStationPowerKey { None, Station1, Station2 };
-        public DriverStationPowerKey ActiveStationPowerKey = DriverStationPowerKey.None;
         public int[] PrePantoStatus = new int[3];
         public int[] Pantograph4Switch = new int[3];
         public int[] Pantograph3Switch = new int[3];

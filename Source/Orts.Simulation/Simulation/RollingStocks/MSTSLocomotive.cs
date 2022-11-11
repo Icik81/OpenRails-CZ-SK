@@ -8254,12 +8254,8 @@ namespace Orts.Simulation.RollingStocks
         bool SetPowerKeySound;
         public void TogglePowerKey()
         {
-            ActiveStationPowerKey = UsingRearCab ? DriverStationPowerKey.Station2 : DriverStationPowerKey.Station1;
-            if (Flipped)
-                ActiveStationPowerKey = UsingRearCab ? DriverStationPowerKey.Station1 : DriverStationPowerKey.Station2;
-            
             LocoStation = 1;
-            if (ActiveStationPowerKey == DriverStationPowerKey.Station2)
+            if (UsingRearCab)
                 LocoStation = 2;
 
             if (PowerKeyPosition[LocoStation] == 2)
