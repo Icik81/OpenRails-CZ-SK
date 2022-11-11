@@ -566,6 +566,7 @@ namespace Orts.Simulation
             // Icik
             CarCoupleMaxSpeedOvercome = inf.ReadBoolean();
             ControllerVoltsLocoHelper = inf.ReadSingle();
+            TrainPowerKey = inf.ReadBoolean();
 
             ClockTime = inf.ReadDouble();
             Season = (SeasonType)inf.ReadInt32();
@@ -605,6 +606,7 @@ namespace Orts.Simulation
             // Icik
             outf.Write(CarCoupleMaxSpeedOvercome);
             outf.Write(ControllerVoltsLocoHelper);
+            outf.Write(TrainPowerKey);
 
             outf.Write(ClockTime);
             outf.Write((int)Season);

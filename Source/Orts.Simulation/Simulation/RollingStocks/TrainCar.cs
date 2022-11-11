@@ -2191,6 +2191,8 @@ namespace Orts.Simulation.RollingStocks
             outf.Write(LastStateHV5[2]);
             outf.Write(PrePantoStatus[1]);
             outf.Write(PrePantoStatus[2]);
+            outf.Write(StationIsActivated[1]);
+            outf.Write(StationIsActivated[2]);
 
             BrakeSystem.Save(outf);
         }
@@ -2281,6 +2283,8 @@ namespace Orts.Simulation.RollingStocks
             LastStateHV5[2] = inf.ReadInt32();
             PrePantoStatus[1] = inf.ReadInt32();
             PrePantoStatus[2] = inf.ReadInt32();
+            StationIsActivated[1] = inf.ReadBoolean();
+            StationIsActivated[2] = inf.ReadBoolean();
 
             BrakeSystem.Restore(inf);
         }

@@ -1110,6 +1110,9 @@ namespace Orts.Viewer3D
 
             if (UserInput.IsPressed(UserCommand.GameChangeCab))
             {
+                if ((PlayerLocomotive as MSTSLocomotive).LocoReadyToGo)
+                    return;
+
                 if (PlayerLocomotive.ThrottlePercent >= 1
                     || Math.Abs(PlayerLocomotive.SpeedMpS) > 1
                     || !IsReverserInNeutral(PlayerLocomotive)

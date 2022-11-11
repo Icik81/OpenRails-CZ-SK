@@ -4240,13 +4240,15 @@ namespace Orts.Simulation.RollingStocks
             if (firstFrame && BrakeSystem.StartOn)
             {
                 CompressorSwitch[1] = CompressorSwitch[2] = 1;
+                CompressorSwitch2[1] = CompressorSwitch2[2] = 0;
                 HV5Switch[1] = HV5Switch[2] = 2;
                 LastStateHV5[1] = LastStateHV5[2] = 2;
                 HV4Switch[1] = HV4Switch[2] = -1;
                 LastStateHV4[1] = LastStateHV4[2] = 1;
                 HV3Switch[1] = HV3Switch[2] = 1;
                 LastStateHV3[1] = LastStateHV3[2] = 1;
-                Pantograph3Switch[1] = Pantograph3Switch[2] = 1;
+                Pantograph4Switch[1] = Pantograph4Switch[2] = 0;
+                Pantograph3Switch[1] = Pantograph3Switch[2] = 0;
                 DoorSwitch[1] = DoorSwitch[2] = 1;                
                 DieselDirectionControllerPosition[1] = DieselDirectionController2Position[1] = DieselDirectionController4Position[1] = -1;
                 DieselDirectionControllerPosition[2] = DieselDirectionController2Position[2] = DieselDirectionController4Position[2] = -1;
@@ -4297,9 +4299,11 @@ namespace Orts.Simulation.RollingStocks
                     // ARR
                     if (IsLeadLocomotive())
                     {                        
-                        PowerKeyPosition[LocoStation] = 2;
+                        PowerKeyPosition[LocoStation] = 2;                        
                         PowerKey = true;
-                        EngineBrakeValue[1] = 1;
+                        StationIsActivated[LocoStation] = true;
+                        EngineBrakeValue[LocoStation] = 1;
+ 
                         if (CruiseControl != null && CruiseControl.Equipped)
                         {
                             CruiseControl.SpeedRegMode = SubSystems.CruiseControl.SpeedRegulatorMode.Auto;
@@ -4309,7 +4313,6 @@ namespace Orts.Simulation.RollingStocks
                         }
                     }
                 }
-
             }
 
             //Simulator.Confirmer.MSG("EngineBrakeValue[1] = " + EngineBrakeValue[1]);
@@ -4662,6 +4665,7 @@ namespace Orts.Simulation.RollingStocks
                     Battery = true;
                     PowerKey = true;
                     PowerKeyPosition[LocoStation] = 2;
+                    StationIsActivated[LocoStation] = true;
                     if (CruiseControl != null && CruiseControl.Equipped)
                     {
                         CruiseControl.SpeedRegMode = SubSystems.CruiseControl.SpeedRegulatorMode.Auto;
