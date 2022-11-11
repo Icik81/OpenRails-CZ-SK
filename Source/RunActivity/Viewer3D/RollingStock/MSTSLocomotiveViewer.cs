@@ -719,7 +719,7 @@ namespace Orts.Viewer3D.RollingStock
             {
                 Locomotive.AripotControllerValue[Locomotive.LocoStation] = (float)Math.Round(Locomotive.AripotControllerValue[Locomotive.LocoStation], 2);
                 Locomotive.AripotControllerEnable = true;
-                Locomotive.AripotControllerPreValue = Locomotive.AripotControllerValue[Locomotive.LocoStation];
+                Locomotive.AripotControllerPreValue[Locomotive.LocoStation] = Locomotive.AripotControllerValue[Locomotive.LocoStation];
                 if (UserInput.IsDown(UserCommand.ControlThrottleIncrease))
                 {                    
                     Locomotive.AripotControllerValue[Locomotive.LocoStation] += 0.01f;
@@ -760,11 +760,11 @@ namespace Orts.Viewer3D.RollingStock
                     else
                         Aripot_CycleTime = 0;
 
-                    if (Locomotive.AripotControllerCanUseThrottle)
+                    if (Locomotive.AripotControllerCanUseThrottle[Locomotive.LocoStation])
                         Locomotive.SetThrottlePercent(Locomotive.AripotControllerValue[Locomotive.LocoStation] * 100);
 
-                    if (!Locomotive.AripotControllerCanUseThrottle && Locomotive.AripotControllerValue[Locomotive.LocoStation] == 0)
-                        Locomotive.AripotControllerCanUseThrottle = true;
+                    if (!Locomotive.AripotControllerCanUseThrottle[Locomotive.LocoStation] && Locomotive.AripotControllerValue[Locomotive.LocoStation] == 0)
+                        Locomotive.AripotControllerCanUseThrottle[Locomotive.LocoStation] = true;
                 }
             }
 
@@ -827,7 +827,7 @@ namespace Orts.Viewer3D.RollingStock
                 }
             }
 
-            // Přímočinná brzda
+            // Přímočinná brzda            
             if (UserInput.IsDown(UserCommand.ControlEngineBrakeIncrease) && Locomotive.LocoType != MSTSLocomotive.LocoTypes.Vectron)
             {
                 Locomotive.EngineBrakeValue[Locomotive.LocoStation] += 0.025f;

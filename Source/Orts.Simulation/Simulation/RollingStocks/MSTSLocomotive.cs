@@ -523,23 +523,18 @@ namespace Orts.Simulation.RollingStocks
         public float HVConsumptionVolumeM3_Off;
         public bool HVElectric;
         public float AuxResPipeLeak;     
-        public bool Pantograph4 = false;
-        public bool Compressor_I_HandMode;
-        public bool Compressor_II_HandMode;
+        public bool Pantograph4 = false;        
         public bool MainResOverPressure = false;
         public bool AuxResOverPressure = false;
         public float MaxMainResOverPressurePSI;
         public float MaxAuxResOverPressurePSI;
-        public bool HV5Enable = false;        
-        public float LastStateHV5 = 2;
+        public bool HV5Enable = false;                
         public bool HV2Enable = false;
         public bool HV2ButtonEnable = false;
         public float HV2Switch = 0;
         public float LastStateHV2 = 0;
-        public bool HV3Enable = false;        
-        public float LastStateHV3 = 1;
-        public bool HV4Enable = false;        
-        public float LastStateHV4 = 1;
+        public bool HV3Enable = false;                
+        public bool HV4Enable = false;                
         public bool HV4SwitchFullDown;
         public float HV4SwitchFullDownCycle;
         public bool HVPressedTestDC = false;
@@ -569,8 +564,7 @@ namespace Orts.Simulation.RollingStocks
         public bool LapButton_Activated;
         public bool LapActive;
         public bool SetLapButtonStart;
-        float PantoStatus = 0;
-        float PrePantoStatus = 0;
+        int PantoStatus = 0;        
         public float HeatingMaxCurrentA;
         public bool CheckPowerLoss;
         public bool DontRaisePanto;
@@ -600,9 +594,7 @@ namespace Orts.Simulation.RollingStocks
         public bool ARRTrainBrakeEngage;
         public float ARRAutoCylPressurePSI;
         public bool ARRTrainBrakeEngage_Apply;
-        public bool ARRTrainBrakeEngage_Release;        
-        public int prevDieselDirectionControllerPosition;
-        public int prevDieselDirectionController2Position;
+        public bool ARRTrainBrakeEngage_Release;                
         public bool DieselDirectionController;
         public bool DieselDirectionController2;
         public bool DieselDirectionController3;
@@ -647,9 +639,7 @@ namespace Orts.Simulation.RollingStocks
         public bool BreakEDBButton;
         bool BreakEDBButtonPressed = false;
         public bool BreakEDBButton_Activated;
-        public bool AripotControllerEnable;        
-        public float AripotControllerPreValue;
-        public bool AripotControllerCanUseThrottle = true;
+        public bool AripotControllerEnable;                
         public InterpolatorDiesel2D CurrentForceCurves;        
         public string CabFrontSoundFileName;
         public string CabRearSoundFileName;
@@ -1790,69 +1780,38 @@ namespace Orts.Simulation.RollingStocks
             outf.Write(AcceptCableSignals);
             outf.Write(HVOffStatusBrakeCyl);
             outf.Write(HVOffStatusBrakePipe);
-            outf.Write(AuxCompressorMode_OffOn);
-            outf.Write(CompressorMode_OffAuto[1]);
-            outf.Write(CompressorMode_OffAuto[2]);
-            outf.Write(CompressorMode2_OffAuto[1]);
-            outf.Write(CompressorMode2_OffAuto[2]);
-            outf.Write(EngineBrakeEngageEDB);
-            outf.Write(Heating_OffOn[1]);
-            outf.Write(Heating_OffOn[2]);
+            outf.Write(AuxCompressorMode_OffOn);            
+            outf.Write(EngineBrakeEngageEDB);            
             outf.Write(SwitchingVoltageMode_OffAC);
             outf.Write(SwitchingVoltageMode_OffDC);
             outf.Write(SwitchingVoltageMode);
             outf.Write(TElevatedConsumption);
             outf.Write(Compressor2IsOn);
             outf.Write(AuxCompressorIsOn);
-            outf.Write(AuxResPressurePSI);
-            outf.Write(CompressorSwitch[1]);
-            outf.Write(CompressorSwitch[2]);
-            outf.Write(Compressor_I_HandMode);
-            outf.Write(CompressorSwitch2[1]);
-            outf.Write(CompressorSwitch2[2]);
-            outf.Write(Compressor_II_HandMode);
+            outf.Write(AuxResPressurePSI);                        
             outf.Write(MainResOverPressure);
-            outf.Write(AuxResOverPressure);
-            outf.Write(Pantograph4Switch[1]);
-            outf.Write(Pantograph4Switch[2]);
-            outf.Write(HV5Switch[1]);
-            outf.Write(HV5Switch[2]);
+            outf.Write(AuxResOverPressure);            
             outf.Write(BreakPowerButton_Activated);
             outf.Write(MultiSystemEngine);
-            outf.Write(LocomotivePowerVoltage);
-            outf.Write(DieselDirectionControllerPosition[1]);
-            outf.Write(DieselDirectionControllerPosition[2]);
-            outf.Write(DieselDirectionController2Position[1]);
-            outf.Write(DieselDirectionController2Position[2]);
+            outf.Write(LocomotivePowerVoltage);            
             outf.Write(DieselDirectionController_In);
             outf.Write(DieselDirectionController_Out);
             outf.Write(DieselDirectionControllerInOut);
             outf.Write(DieselMotorDefected);
             outf.Write(DieselMotorPowerLost);
-            outf.Write(DieselLocoTempReady);
-            outf.Write(DoorSwitch[1]);
-            outf.Write(DoorSwitch[2]);
+            outf.Write(DieselLocoTempReady);            
             outf.Write(PrevDoorSwitch);
             outf.Write(LapActive);
             outf.Write(DirectionButtonPosition);
             outf.Write(CarIsPlayerLocoSet);
-            outf.Write(BreakEDBButton_Activated);
-            outf.Write(AripotControllerValue[1]);
-            outf.Write(AripotControllerValue[2]);
-            outf.Write(AripotControllerCanUseThrottle);
+            outf.Write(BreakEDBButton_Activated);                        
             outf.Write(LightFrontLPosition);
             outf.Write(LightFrontRPosition);
             outf.Write(LightRearLPosition);
             outf.Write(LightRearRPosition);
             outf.Write(RainWindowPosition);
             outf.Write(WipersWindowPosition);
-            outf.Write(WiperStatusChange);
-            outf.Write(SeasonSwitchPosition[1]);
-            outf.Write(SeasonSwitchPosition[2]);
-            outf.Write(DirectionPosition[1]);
-            outf.Write(DirectionPosition[2]);
-            outf.Write(HeadLightPosition[1]);
-            outf.Write(HeadLightPosition[2]);
+            outf.Write(WiperStatusChange);            
             outf.Write(HelperLocoDontPush);
             outf.Write(HelperLocoPush);
             outf.Write(HelperLocoFollow);
@@ -1861,12 +1820,7 @@ namespace Orts.Simulation.RollingStocks
             outf.Write(HelperOptionsOpened);
             outf.Write(MirerControllerPosition);
             outf.Write(MirerControllerValue);
-            outf.Write(PowerKeyPosition[1]);
-            outf.Write(PowerKeyPosition[2]);
-            outf.Write(EngineBrakeValue[1]);
-            outf.Write(EngineBrakeValue[2]);
-            outf.Write(LocoWiper[1]);
-            outf.Write(LocoWiper[2]);
+            
 
             base.Save(outf);
 
@@ -1938,69 +1892,38 @@ namespace Orts.Simulation.RollingStocks
             AcceptPowerSignals = inf.ReadBoolean();
             HVOffStatusBrakeCyl = inf.ReadBoolean();
             HVOffStatusBrakePipe = inf.ReadBoolean();
-            AuxCompressorMode_OffOn = inf.ReadBoolean();
-            CompressorMode_OffAuto[1] = inf.ReadBoolean();
-            CompressorMode_OffAuto[2] = inf.ReadBoolean();
-            CompressorMode2_OffAuto[1] = inf.ReadBoolean();
-            CompressorMode2_OffAuto[2] = inf.ReadBoolean();
-            EngineBrakeEngageEDB = inf.ReadBoolean();
-            Heating_OffOn[1] = inf.ReadBoolean();
-            Heating_OffOn[2] = inf.ReadBoolean();
+            AuxCompressorMode_OffOn = inf.ReadBoolean();            
+            EngineBrakeEngageEDB = inf.ReadBoolean();            
             SwitchingVoltageMode_OffAC = inf.ReadBoolean();
             SwitchingVoltageMode_OffDC = inf.ReadBoolean();
             SwitchingVoltageMode = inf.ReadInt32();
             TElevatedConsumption = inf.ReadSingle();
             Compressor2IsOn = inf.ReadBoolean();
             AuxCompressorIsOn = inf.ReadBoolean();
-            AuxResPressurePSI = inf.ReadSingle();
-            CompressorSwitch[1] = inf.ReadInt32();
-            CompressorSwitch[2] = inf.ReadInt32();
-            Compressor_I_HandMode = inf.ReadBoolean();
-            CompressorSwitch2[1] = inf.ReadInt32();
-            CompressorSwitch2[2] = inf.ReadInt32();
-            Compressor_II_HandMode = inf.ReadBoolean();
+            AuxResPressurePSI = inf.ReadSingle();                        
             MainResOverPressure = inf.ReadBoolean();
-            AuxResOverPressure = inf.ReadBoolean();
-            Pantograph4Switch[1] = inf.ReadInt32();
-            Pantograph4Switch[2] = inf.ReadInt32();
-            HV5Switch[1] = inf.ReadInt32();
-            HV5Switch[2] = inf.ReadInt32();
+            AuxResOverPressure = inf.ReadBoolean();                        
             BreakPowerButton_Activated = inf.ReadBoolean();
             MultiSystemEngine = inf.ReadBoolean();
-            LocomotivePowerVoltage = inf.ReadSingle();
-            DieselDirectionControllerPosition[1] = inf.ReadInt32();
-            DieselDirectionControllerPosition[2] = inf.ReadInt32();
-            DieselDirectionController2Position[1] = inf.ReadInt32();
-            DieselDirectionController2Position[2] = inf.ReadInt32();
+            LocomotivePowerVoltage = inf.ReadSingle();            
             DieselDirectionController_In = inf.ReadBoolean();
             DieselDirectionController_Out = inf.ReadBoolean();
             DieselDirectionControllerInOut = inf.ReadBoolean();
             DieselMotorDefected = inf.ReadBoolean();
             DieselMotorPowerLost = inf.ReadBoolean();
-            DieselLocoTempReady = inf.ReadBoolean();
-            DoorSwitch[1] = inf.ReadInt32();
-            DoorSwitch[2] = inf.ReadInt32();
+            DieselLocoTempReady = inf.ReadBoolean();            
             PrevDoorSwitch = inf.ReadSingle();
             LapActive = inf.ReadBoolean();
             DirectionButtonPosition = inf.ReadInt32();
             CarIsPlayerLocoSet = inf.ReadBoolean();
-            BreakEDBButton_Activated = inf.ReadBoolean();
-            AripotControllerValue[1] = inf.ReadSingle();
-            AripotControllerValue[2] = inf.ReadSingle();
-            AripotControllerCanUseThrottle = inf.ReadBoolean();
+            BreakEDBButton_Activated = inf.ReadBoolean();                        
             LightFrontLPosition = inf.ReadInt32();
             LightFrontRPosition = inf.ReadInt32();
             LightRearLPosition = inf.ReadInt32();
             LightRearRPosition = inf.ReadInt32();
             RainWindowPosition = inf.ReadInt32();
             WipersWindowPosition = inf.ReadInt32();
-            WiperStatusChange = inf.ReadBoolean();
-            SeasonSwitchPosition[1] = inf.ReadBoolean();
-            SeasonSwitchPosition[2] = inf.ReadBoolean();
-            DirectionPosition[1] = inf.ReadInt32();
-            DirectionPosition[2] = inf.ReadInt32();
-            HeadLightPosition[1] = inf.ReadInt32();
-            HeadLightPosition[2] = inf.ReadInt32();
+            WiperStatusChange = inf.ReadBoolean();            
             HelperLocoDontPush = inf.ReadBoolean();
             HelperLocoPush = inf.ReadBoolean();
             HelperLocoFollow = inf.ReadBoolean();
@@ -2008,13 +1931,7 @@ namespace Orts.Simulation.RollingStocks
             HelperPushStart = inf.ReadBoolean();
             HelperOptionsOpened = inf.ReadBoolean();
             MirerControllerPosition = inf.ReadInt32();
-            MirerControllerValue = inf.ReadInt32();
-            PowerKeyPosition[1] = inf.ReadInt32();
-            PowerKeyPosition[2] = inf.ReadInt32();
-            LocoWiper[1] = inf.ReadBoolean();
-            LocoWiper[2] = inf.ReadBoolean();
-            EngineBrakeValue[1] = inf.ReadSingle();
-            EngineBrakeValue[2] = inf.ReadSingle();
+            MirerControllerValue = inf.ReadInt32();                        
 
             base.Restore(inf);
 
@@ -4324,8 +4241,11 @@ namespace Orts.Simulation.RollingStocks
             {
                 CompressorSwitch[1] = CompressorSwitch[2] = 1;
                 HV5Switch[1] = HV5Switch[2] = 2;
+                LastStateHV5[1] = LastStateHV5[2] = 2;
                 HV4Switch[1] = HV4Switch[2] = -1;
+                LastStateHV4[1] = LastStateHV4[2] = 1;
                 HV3Switch[1] = HV3Switch[2] = 1;
+                LastStateHV3[1] = LastStateHV3[2] = 1;
                 Pantograph3Switch[1] = Pantograph3Switch[2] = 1;
                 DoorSwitch[1] = DoorSwitch[2] = 1;                
                 DieselDirectionControllerPosition[1] = DieselDirectionController2Position[1] = DieselDirectionController4Position[1] = -1;
@@ -4395,6 +4315,9 @@ namespace Orts.Simulation.RollingStocks
                 }
 
             }
+
+            //Simulator.Confirmer.MSG("EngineBrakeValue[1] = " + EngineBrakeValue[1]);
+
             if (AbsSpeedMpS == 0)
                 WheelSpeedMpS = 0;
             if (IsPlayerTrain)
@@ -8579,8 +8502,8 @@ namespace Orts.Simulation.RollingStocks
         public void CarFrameUpdate()
         {
             this.CarFrameUpdateState++;
-            if (this.CarFrameUpdateState > 2)
-                this.CarFrameUpdateState = 3;
+            if (this.CarFrameUpdateState > 10)
+                this.CarFrameUpdateState = 10;
 
             // První průběh - inicializace hodnot
             if (this.CarFrameUpdateState == 1)
@@ -8608,9 +8531,11 @@ namespace Orts.Simulation.RollingStocks
                 }
             }
 
-            // Druhý průběh - kabinové prvky načteny
-            if (this.CarFrameUpdateState == 2)
-            {                
+            // Desátý průběh - nastaví hodnoty po nahrání uložené pozice
+            if (this.CarFrameUpdateState == 10)
+            {
+                SetEngineBrakeValue(EngineBrakeValue[0]);
+                SetEngineBrakePercent(EngineBrakeValue[0] * 100);
             }
 
             // EDB Hack
@@ -8835,7 +8760,7 @@ namespace Orts.Simulation.RollingStocks
                             break;
                     }
                 }
-                if (LastStateHV3 != HV3Switch[LocoStation])
+                if (LastStateHV3[LocoStation] != HV3Switch[LocoStation])
                     SignalEvent(Event.PantographToggle); // Zvuk přepínače                
 
                 switch (HV3Switch[LocoStation])
@@ -8850,7 +8775,7 @@ namespace Orts.Simulation.RollingStocks
                         //Simulator.Confirmer.Information("Switch 2");
                         break;
                 }
-                LastStateHV3 = HV3Switch[LocoStation];
+                LastStateHV3[LocoStation] = HV3Switch[LocoStation];
             }
         }
 
@@ -8916,7 +8841,7 @@ namespace Orts.Simulation.RollingStocks
                         break;
                 }
 
-                if (LastStateHV4 != HV4Switch[LocoStation])
+                if (LastStateHV4[LocoStation] != HV4Switch[LocoStation])
                     SignalEvent(Event.PantographToggle); // Zvuk přepínače                                
 
                 if (Battery && StationIsActivated[LocoStation])
@@ -8942,7 +8867,7 @@ namespace Orts.Simulation.RollingStocks
                             break;
                     }
                 }
-                LastStateHV4 = HV4Switch[LocoStation];
+                LastStateHV4[LocoStation] = HV4Switch[LocoStation];
             }
         }
 
@@ -8978,7 +8903,7 @@ namespace Orts.Simulation.RollingStocks
         {
             if (HV5Enable)
             {
-                if (LastStateHV5 != HV5Switch[LocoStation])
+                if (LastStateHV5[LocoStation] != HV5Switch[LocoStation])
                     SignalEvent(Event.PantographToggle); // Zvuk přepínače                
 
                 if (HVCanOn && Battery && StationIsActivated[LocoStation] && Pantograph4Switch[LocoStation] != 0)
@@ -9014,7 +8939,7 @@ namespace Orts.Simulation.RollingStocks
                             break;
                     }
                 }
-                LastStateHV5 = HV5Switch[LocoStation];
+                LastStateHV5[LocoStation] = HV5Switch[LocoStation];
             }
         }
 
@@ -9072,7 +8997,7 @@ namespace Orts.Simulation.RollingStocks
                     int p1 = 1; int p2 = 2;
                     string ps1 = "PANTO1"; string ps2 = "PANTO2";
                     if (UsingRearCab) { p1 = 2; p2 = 1; ps1 = "PANTO2"; ps2 = "PANTO1"; }
-                    if (PantoStatus != PrePantoStatus)
+                    if (PantoStatus != PrePantoStatus[LocoStation])
                     {
                         switch (Pantograph3Switch[LocoStation])
                         {
@@ -9168,7 +9093,7 @@ namespace Orts.Simulation.RollingStocks
                                     }
                                 break;
                         }
-                        PrePantoStatus = Pantograph3Switch[LocoStation];
+                        PrePantoStatus[LocoStation] = Pantograph3Switch[LocoStation];
                     }
                 }
                 LastStatePantograph3 = Pantograph3Switch[LocoStation];
@@ -9215,7 +9140,7 @@ namespace Orts.Simulation.RollingStocks
                     int p1 = 1; int p2 = 2;
                     string ps1 = "PANTO1"; string ps2 = "PANTO2";
                     if (UsingRearCab) { p1 = 2; p2 = 1; ps1 = "PANTO2"; ps2 = "PANTO1"; }
-                    if (PantoStatus != PrePantoStatus)
+                    if (PantoStatus != PrePantoStatus[LocoStation])
                     {
                         switch (Pantograph4Switch[LocoStation])
                         {
@@ -9343,7 +9268,7 @@ namespace Orts.Simulation.RollingStocks
                                 break;
                         }
                     }
-                    PrePantoStatus = Pantograph4Switch[LocoStation];
+                    PrePantoStatus[LocoStation] = Pantograph4Switch[LocoStation];
                 }
             }
         }
@@ -9570,7 +9495,7 @@ namespace Orts.Simulation.RollingStocks
         {
             if (CompressorCombined)
             {
-                Compressor_I_HandMode = false;
+                Compressor_I_HandMode[LocoStation] = false;
                 if (StationIsActivated[LocoStation])
                 {
                     switch (CompressorSwitch[LocoStation])
@@ -9591,15 +9516,15 @@ namespace Orts.Simulation.RollingStocks
                         case 2:
                             {
                                 CompressorMode_OffAuto[LocoStation] = true;
-                                Compressor_I_HandMode = false;
+                                Compressor_I_HandMode[LocoStation] = false;
                                 if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.CompressorMode_OffAuto, CompressorMode_OffAuto[LocoStation] ? CabSetting.On : CabSetting.Off);
                             }
                             break;
                         case 3:
                             {
                                 CompressorMode_OffAuto[LocoStation] = false;
-                                Compressor_I_HandMode = true;
-                                if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.Compressor_I_HandMode, Compressor_I_HandMode ? CabSetting.On : CabSetting.Off);
+                                Compressor_I_HandMode[LocoStation] = true;
+                                if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.Compressor_I_HandMode, Compressor_I_HandMode[LocoStation] ? CabSetting.On : CabSetting.Off);
                             }
                             break;
                     }
@@ -9633,7 +9558,7 @@ namespace Orts.Simulation.RollingStocks
         {
             if (CompressorCombined2)
             {
-                Compressor_II_HandMode = false;
+                Compressor_II_HandMode[LocoStation] = false;
                 if (StationIsActivated[LocoStation])
                 {
                     switch (CompressorSwitch2[LocoStation])
@@ -9647,15 +9572,15 @@ namespace Orts.Simulation.RollingStocks
                         case 1:
                             {
                                 CompressorMode2_OffAuto[LocoStation] = true;
-                                Compressor_II_HandMode = false;
+                                Compressor_II_HandMode[LocoStation] = false;
                                 if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.CompressorMode2_OffAuto, CompressorMode2_OffAuto[LocoStation] ? CabSetting.On : CabSetting.Off);
                             }
                             break;
                         case 2:
                             {
                                 CompressorMode2_OffAuto[LocoStation] = false;
-                                Compressor_II_HandMode = true;
-                                if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.Compressor_II_HandMode, Compressor_II_HandMode ? CabSetting.On : CabSetting.Off);
+                                Compressor_II_HandMode[LocoStation] = true;
+                                if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.Compressor_II_HandMode, Compressor_II_HandMode[LocoStation] ? CabSetting.On : CabSetting.Off);
                             }
                             break;
                     }
@@ -9982,12 +9907,12 @@ namespace Orts.Simulation.RollingStocks
                         DieselDirectionControllerPosition[LocoStation]++;
                     if (DieselDirectionControllerPosition[LocoStation] <= 4)
                     {
-                        if ((DieselDirectionControllerPosition[LocoStation] > 2 && DieselDirectionControllerPosition[LocoStation] > prevDieselDirectionControllerPosition)
-                            || (DieselDirectionControllerPosition[LocoStation] < 2 && DieselDirectionControllerPosition[LocoStation] < prevDieselDirectionControllerPosition))
+                        if ((DieselDirectionControllerPosition[LocoStation] > 2 && DieselDirectionControllerPosition[LocoStation] > prevDieselDirectionControllerPosition[LocoStation])
+                            || (DieselDirectionControllerPosition[LocoStation] < 2 && DieselDirectionControllerPosition[LocoStation] < prevDieselDirectionControllerPosition[LocoStation]))
                             SignalEvent(Event.ReverserToForwardBackward);
                         else
-                        if ((DieselDirectionControllerPosition[LocoStation] >= 2 && DieselDirectionControllerPosition[LocoStation] < prevDieselDirectionControllerPosition)
-                            || (DieselDirectionControllerPosition[LocoStation] <= 2 && DieselDirectionControllerPosition[LocoStation] > prevDieselDirectionControllerPosition))
+                        if ((DieselDirectionControllerPosition[LocoStation] >= 2 && DieselDirectionControllerPosition[LocoStation] < prevDieselDirectionControllerPosition[LocoStation])
+                            || (DieselDirectionControllerPosition[LocoStation] <= 2 && DieselDirectionControllerPosition[LocoStation] > prevDieselDirectionControllerPosition[LocoStation]))
                             SignalEvent(Event.ReverserToNeutral);
                     }
                 }
@@ -9998,12 +9923,12 @@ namespace Orts.Simulation.RollingStocks
                         DieselDirectionController2Position[LocoStation]--;
                     if (DieselDirectionController2Position[LocoStation] >= 0)
                     {
-                        if ((DieselDirectionController2Position[LocoStation] > 0 && DieselDirectionController2Position[LocoStation] > prevDieselDirectionController2Position)
-                            || (DieselDirectionController2Position[LocoStation] < 0 && DieselDirectionController2Position[LocoStation] < prevDieselDirectionController2Position))
+                        if ((DieselDirectionController2Position[LocoStation] > 0 && DieselDirectionController2Position[LocoStation] > prevDieselDirectionController2Position[LocoStation])
+                            || (DieselDirectionController2Position[LocoStation] < 0 && DieselDirectionController2Position[LocoStation] < prevDieselDirectionController2Position[LocoStation]))
                             SignalEvent(Event.ReverserToForwardBackward);
                         else
-                        if ((DieselDirectionController2Position[LocoStation] >= 0 && DieselDirectionController2Position[LocoStation] < prevDieselDirectionController2Position)
-                            || (DieselDirectionController2Position[LocoStation] < 0 && DieselDirectionController2Position[LocoStation] > prevDieselDirectionController2Position))
+                        if ((DieselDirectionController2Position[LocoStation] >= 0 && DieselDirectionController2Position[LocoStation] < prevDieselDirectionController2Position[LocoStation])
+                            || (DieselDirectionController2Position[LocoStation] < 0 && DieselDirectionController2Position[LocoStation] > prevDieselDirectionController2Position[LocoStation]))
                             SignalEvent(Event.ReverserToNeutral);
                     }
                 }
@@ -10019,12 +9944,12 @@ namespace Orts.Simulation.RollingStocks
                         DieselDirectionControllerPosition[LocoStation]--;
                     if (DieselDirectionControllerPosition[LocoStation] >= 0)
                     {
-                        if ((DieselDirectionControllerPosition[LocoStation] > 2 && DieselDirectionControllerPosition[LocoStation] > prevDieselDirectionControllerPosition)
-                            || (DieselDirectionControllerPosition[LocoStation] < 2 && DieselDirectionControllerPosition[LocoStation] < prevDieselDirectionControllerPosition))
+                        if ((DieselDirectionControllerPosition[LocoStation] > 2 && DieselDirectionControllerPosition[LocoStation] > prevDieselDirectionControllerPosition[LocoStation])
+                            || (DieselDirectionControllerPosition[LocoStation] < 2 && DieselDirectionControllerPosition[LocoStation] < prevDieselDirectionControllerPosition[LocoStation]))
                             SignalEvent(Event.ReverserToForwardBackward);
                         else
-                        if ((DieselDirectionControllerPosition[LocoStation] >= 2 && DieselDirectionControllerPosition[LocoStation] < prevDieselDirectionControllerPosition)
-                            || (DieselDirectionControllerPosition[LocoStation] <= 2 && DieselDirectionControllerPosition[LocoStation] > prevDieselDirectionControllerPosition))
+                        if ((DieselDirectionControllerPosition[LocoStation] >= 2 && DieselDirectionControllerPosition[LocoStation] < prevDieselDirectionControllerPosition[LocoStation])
+                            || (DieselDirectionControllerPosition[LocoStation] <= 2 && DieselDirectionControllerPosition[LocoStation] > prevDieselDirectionControllerPosition[LocoStation]))
                             SignalEvent(Event.ReverserToNeutral);
                     }
                 }
@@ -10035,12 +9960,12 @@ namespace Orts.Simulation.RollingStocks
                         DieselDirectionController2Position[LocoStation]++;
                     if (DieselDirectionController2Position[LocoStation] <= 3)
                     {
-                        if ((DieselDirectionController2Position[LocoStation] > 0 && DieselDirectionController2Position[LocoStation] > prevDieselDirectionController2Position)
-                            || (DieselDirectionController2Position[LocoStation] < 0 && DieselDirectionController2Position[LocoStation] < prevDieselDirectionController2Position))
+                        if ((DieselDirectionController2Position[LocoStation] > 0 && DieselDirectionController2Position[LocoStation] > prevDieselDirectionController2Position[LocoStation])
+                            || (DieselDirectionController2Position[LocoStation] < 0 && DieselDirectionController2Position[LocoStation] < prevDieselDirectionController2Position[LocoStation]))
                             SignalEvent(Event.ReverserToForwardBackward);
                         else
-                        if ((DieselDirectionController2Position[LocoStation] > 0 && DieselDirectionController2Position[LocoStation] < prevDieselDirectionController2Position)
-                            || (DieselDirectionController2Position[LocoStation] < 0 && DieselDirectionController2Position[LocoStation] > prevDieselDirectionController2Position))
+                        if ((DieselDirectionController2Position[LocoStation] > 0 && DieselDirectionController2Position[LocoStation] < prevDieselDirectionController2Position[LocoStation])
+                            || (DieselDirectionController2Position[LocoStation] < 0 && DieselDirectionController2Position[LocoStation] > prevDieselDirectionController2Position[LocoStation]))
                             SignalEvent(Event.ReverserToNeutral);
                     }
                 }
@@ -10058,7 +9983,7 @@ namespace Orts.Simulation.RollingStocks
                     this.CarPowerKey = false;
                 }
 
-                if (prevDieselDirectionControllerPosition != DieselDirectionControllerPosition[LocoStation])
+                if (prevDieselDirectionControllerPosition[LocoStation] != DieselDirectionControllerPosition[LocoStation])
                 {
                     switch (DieselDirectionControllerPosition[LocoStation])
                     {
@@ -10068,7 +9993,7 @@ namespace Orts.Simulation.RollingStocks
                         case 3: Simulator.Confirmer.Confirm(CabControl.DieselDirection_Start, Simulator.Catalog.GetString("Position D")); break;
                         case 4: Simulator.Confirmer.Confirm(CabControl.DieselDirection_Reverse, Simulator.Catalog.GetString("Position Backward")); break;
                     }
-                    prevDieselDirectionControllerPosition = DieselDirectionControllerPosition[LocoStation];
+                    prevDieselDirectionControllerPosition[LocoStation] = DieselDirectionControllerPosition[LocoStation];
                     //Simulator.Confirmer.MSG("Nastaveno: " + DieselDirectionControllerPosition);
                     switch (DieselDirectionControllerPosition[LocoStation])
                     {
@@ -10134,7 +10059,7 @@ namespace Orts.Simulation.RollingStocks
                     this.CarPowerKey = false;                    
                 }
 
-                if (prevDieselDirectionController2Position != DieselDirectionController2Position[LocoStation])
+                if (prevDieselDirectionController2Position[LocoStation] != DieselDirectionController2Position[LocoStation])
                 {
                     switch (DieselDirectionController2Position[LocoStation])
                     {
@@ -10143,7 +10068,7 @@ namespace Orts.Simulation.RollingStocks
                         case 2: Simulator.Confirmer.Confirm(CabControl.DieselDirection_Start, Simulator.Catalog.GetString("Position D")); break;
                         case 3: Simulator.Confirmer.Confirm(CabControl.DieselDirection_Forward, Simulator.Catalog.GetString("Position Forward")); break;
                     }
-                    prevDieselDirectionController2Position = DieselDirectionController2Position[LocoStation];
+                    prevDieselDirectionController2Position[LocoStation] = DieselDirectionController2Position[LocoStation];
                     //Simulator.Confirmer.MSG("Nastaveno: " + DieselDirectionController2Position);
                     switch (DieselDirectionController2Position[LocoStation])
                     {
@@ -10190,7 +10115,7 @@ namespace Orts.Simulation.RollingStocks
             {                                                
                 if (DieselDirectionController2Position[LocoStation] == -1) DieselDirectionController2Position[LocoStation] = 1;
 
-                if (prevDieselDirectionController2Position != DieselDirectionController2Position[LocoStation])
+                if (prevDieselDirectionController2Position[LocoStation] != DieselDirectionController2Position[LocoStation])
                 {
                     switch (DieselDirectionController2Position[LocoStation])
                     {
@@ -10199,7 +10124,7 @@ namespace Orts.Simulation.RollingStocks
                         case 2: Simulator.Confirmer.Confirm(CabControl.DieselDirection_Start, Simulator.Catalog.GetString("Position D")); break;
                         case 3: Simulator.Confirmer.Confirm(CabControl.DieselDirection_Forward, Simulator.Catalog.GetString("Position Forward")); break;
                     }
-                    prevDieselDirectionController2Position = DieselDirectionController2Position[LocoStation];
+                    prevDieselDirectionController2Position[LocoStation] = DieselDirectionController2Position[LocoStation];
                     //Simulator.Confirmer.MSG("Nastaveno: " + DieselDirectionController2Position);
                     switch (DieselDirectionController2Position[LocoStation])
                     {

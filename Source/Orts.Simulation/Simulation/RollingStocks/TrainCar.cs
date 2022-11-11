@@ -397,16 +397,21 @@ namespace Orts.Simulation.RollingStocks
         public bool CarHavePocketPowerKey;
         public enum DriverStationPowerKey { None, Station1, Station2 };
         public DriverStationPowerKey ActiveStationPowerKey = DriverStationPowerKey.None;
+        public int[] PrePantoStatus = new int[3];
         public int[] Pantograph4Switch = new int[3];
         public int[] Pantograph3Switch = new int[3];
         public int[] CompressorSwitch = new int[3];
         public int[] CompressorSwitch2 = new int[3];
         public bool[] CompressorMode_OffAuto = new bool[3];
         public bool[] CompressorMode2_OffAuto = new bool[3];
-
+        public bool[] Compressor_I_HandMode = new bool[3];
+        public bool[] Compressor_II_HandMode = new bool[3];
         public int[] HV5Switch = new int[3];
+        public int[] LastStateHV5 = new int[3];
         public int[] HV4Switch = new int[3];
+        public int[] LastStateHV4 = new int[3];
         public int[] HV3Switch = new int[3];
+        public int[] LastStateHV3 = new int[3];
         public bool[] Heating_OffOn = new bool[3];
         public int[] HeadLightPosition = new int[3];
         public int[] DirectionPosition = new int[3];
@@ -415,9 +420,13 @@ namespace Orts.Simulation.RollingStocks
         public int[] DieselDirectionControllerPosition = new int[3];
         public int[] DieselDirectionController2Position = new int[3];
         public int[] DieselDirectionController4Position = new int[3];
+        public int[] prevDieselDirectionControllerPosition = new int[3];
+        public int[] prevDieselDirectionController2Position = new int[3];
         public float[] AripotControllerValue = new float[3];        
         public bool[] LocoWiper = new bool[3];
         public float[] EngineBrakeValue = new float[3];
+        public float[] AripotControllerPreValue = new float[3];
+        public bool[] AripotControllerCanUseThrottle = new bool[3];
 
         public float PowerReductionResult1;  // Redukce výkonu od topení, klimatizace, kompresoru
         public float PowerReductionResult2;  // Redukce výkonu od nedostatečného tlaku vzduchu v potrubí
@@ -2105,7 +2114,7 @@ namespace Orts.Simulation.RollingStocks
             outf.Write(Flipped);
             outf.Write(UiD);
             outf.Write(CarID);
-            BrakeSystem.Save(outf);
+            
             outf.Write(MotiveForceN);
             outf.Write(FrictionForceN);
             outf.Write(SpeedMpS);
@@ -2127,6 +2136,65 @@ namespace Orts.Simulation.RollingStocks
             outf.Write(AuxPowerOff);
             outf.Write(UserPowerOff);
             outf.Write(WheelDamageValue);
+
+            outf.Write(EngineBrakeValue[1]);
+            outf.Write(EngineBrakeValue[2]);
+            outf.Write(CompressorMode_OffAuto[1]);
+            outf.Write(CompressorMode_OffAuto[2]);
+            outf.Write(CompressorMode2_OffAuto[1]);
+            outf.Write(CompressorMode2_OffAuto[2]);
+            outf.Write(Compressor_I_HandMode[1]);
+            outf.Write(Compressor_I_HandMode[2]);
+            outf.Write(Compressor_II_HandMode[1]);
+            outf.Write(Compressor_II_HandMode[2]);
+            outf.Write(Heating_OffOn[1]);
+            outf.Write(Heating_OffOn[2]);
+            outf.Write(CompressorSwitch[1]);
+            outf.Write(CompressorSwitch[2]);
+            outf.Write(CompressorSwitch2[1]);
+            outf.Write(CompressorSwitch2[2]);
+            outf.Write(Pantograph4Switch[1]);
+            outf.Write(Pantograph4Switch[2]);
+            outf.Write(HV5Switch[1]);
+            outf.Write(HV5Switch[2]);
+            outf.Write(DieselDirectionControllerPosition[1]);
+            outf.Write(DieselDirectionControllerPosition[2]);
+            outf.Write(DieselDirectionController2Position[1]);
+            outf.Write(DieselDirectionController2Position[2]);
+            outf.Write(prevDieselDirectionControllerPosition[1]);
+            outf.Write(prevDieselDirectionControllerPosition[2]);
+            outf.Write(prevDieselDirectionController2Position[1]);
+            outf.Write(prevDieselDirectionController2Position[2]);
+            outf.Write(DoorSwitch[1]);
+            outf.Write(DoorSwitch[2]);
+            outf.Write(AripotControllerValue[1]);
+            outf.Write(AripotControllerValue[2]);
+            outf.Write(AripotControllerPreValue[1]);
+            outf.Write(AripotControllerPreValue[2]);
+            outf.Write(AripotControllerCanUseThrottle[1]);
+            outf.Write(AripotControllerCanUseThrottle[2]);
+            outf.Write(SeasonSwitchPosition[1]);
+            outf.Write(SeasonSwitchPosition[2]);
+            outf.Write(DirectionPosition[1]);
+            outf.Write(DirectionPosition[2]);
+            outf.Write(HeadLightPosition[1]);
+            outf.Write(HeadLightPosition[2]);
+            outf.Write(PowerKeyPosition[1]);
+            outf.Write(PowerKeyPosition[2]);
+            outf.Write(prevPowerKeyPosition[1]);
+            outf.Write(prevPowerKeyPosition[2]);
+            outf.Write(LocoWiper[1]);
+            outf.Write(LocoWiper[2]);
+            outf.Write(LastStateHV3[1]);
+            outf.Write(LastStateHV3[2]);
+            outf.Write(LastStateHV4[1]);
+            outf.Write(LastStateHV4[2]);
+            outf.Write(LastStateHV5[1]);
+            outf.Write(LastStateHV5[2]);
+            outf.Write(PrePantoStatus[1]);
+            outf.Write(PrePantoStatus[2]);
+
+            BrakeSystem.Save(outf);
         }
 
         // Game restore
@@ -2135,7 +2203,7 @@ namespace Orts.Simulation.RollingStocks
             Flipped = inf.ReadBoolean();
             UiD = inf.ReadInt32();
             CarID = inf.ReadString();
-            BrakeSystem.Restore(inf);
+            
             MotiveForceN = inf.ReadSingle();
             FrictionForceN = inf.ReadSingle();
             SpeedMpS = inf.ReadSingle();
@@ -2158,6 +2226,65 @@ namespace Orts.Simulation.RollingStocks
             AuxPowerOff = inf.ReadBoolean();
             UserPowerOff = inf.ReadBoolean();
             WheelDamageValue = inf.ReadSingle();
+
+            EngineBrakeValue[1] = inf.ReadSingle();
+            EngineBrakeValue[2] = inf.ReadSingle();
+            CompressorMode_OffAuto[1] = inf.ReadBoolean();
+            CompressorMode_OffAuto[2] = inf.ReadBoolean();
+            CompressorMode2_OffAuto[1] = inf.ReadBoolean();
+            CompressorMode2_OffAuto[2] = inf.ReadBoolean();
+            Compressor_I_HandMode[1] = inf.ReadBoolean();
+            Compressor_I_HandMode[2] = inf.ReadBoolean();
+            Compressor_II_HandMode[1] = inf.ReadBoolean();
+            Compressor_II_HandMode[2] = inf.ReadBoolean();
+            Heating_OffOn[1] = inf.ReadBoolean();
+            Heating_OffOn[2] = inf.ReadBoolean();
+            CompressorSwitch[1] = inf.ReadInt32();
+            CompressorSwitch[2] = inf.ReadInt32();
+            CompressorSwitch2[1] = inf.ReadInt32();
+            CompressorSwitch2[2] = inf.ReadInt32();
+            Pantograph4Switch[1] = inf.ReadInt32();
+            Pantograph4Switch[2] = inf.ReadInt32();
+            HV5Switch[1] = inf.ReadInt32();
+            HV5Switch[2] = inf.ReadInt32();
+            DieselDirectionControllerPosition[1] = inf.ReadInt32();
+            DieselDirectionControllerPosition[2] = inf.ReadInt32();
+            DieselDirectionController2Position[1] = inf.ReadInt32();
+            DieselDirectionController2Position[2] = inf.ReadInt32();
+            prevDieselDirectionControllerPosition[1] = inf.ReadInt32();
+            prevDieselDirectionControllerPosition[2] = inf.ReadInt32();
+            prevDieselDirectionController2Position[1] = inf.ReadInt32();
+            prevDieselDirectionController2Position[2] = inf.ReadInt32();
+            DoorSwitch[1] = inf.ReadInt32();
+            DoorSwitch[2] = inf.ReadInt32();
+            AripotControllerValue[1] = inf.ReadSingle();
+            AripotControllerValue[2] = inf.ReadSingle();
+            AripotControllerPreValue[1] = inf.ReadSingle();
+            AripotControllerPreValue[2] = inf.ReadSingle();
+            AripotControllerCanUseThrottle[1] = inf.ReadBoolean();
+            AripotControllerCanUseThrottle[2] = inf.ReadBoolean();
+            SeasonSwitchPosition[1] = inf.ReadBoolean();
+            SeasonSwitchPosition[2] = inf.ReadBoolean();
+            DirectionPosition[1] = inf.ReadInt32();
+            DirectionPosition[2] = inf.ReadInt32();
+            HeadLightPosition[1] = inf.ReadInt32();
+            HeadLightPosition[2] = inf.ReadInt32();
+            PowerKeyPosition[1] = inf.ReadInt32();
+            PowerKeyPosition[2] = inf.ReadInt32();
+            prevPowerKeyPosition[1] = inf.ReadInt32();
+            prevPowerKeyPosition[2] = inf.ReadInt32();
+            LocoWiper[1] = inf.ReadBoolean();
+            LocoWiper[2] = inf.ReadBoolean();            
+            LastStateHV3[1] = inf.ReadInt32();
+            LastStateHV3[2] = inf.ReadInt32();
+            LastStateHV4[1] = inf.ReadInt32();
+            LastStateHV4[2] = inf.ReadInt32();
+            LastStateHV5[1] = inf.ReadInt32();
+            LastStateHV5[2] = inf.ReadInt32();
+            PrePantoStatus[1] = inf.ReadInt32();
+            PrePantoStatus[2] = inf.ReadInt32();
+
+            BrakeSystem.Restore(inf);
         }
 
         //================================================================================================//
