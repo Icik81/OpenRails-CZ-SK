@@ -1346,19 +1346,19 @@ namespace Orts.Simulation.RollingStocks
                 {                    
                     CompressorSwitch[LocoStation] = 2;
                     CompressorSwitch2[LocoStation] = 1;
-                    CompressorMode_OffAuto = true;
-                    CompressorMode2_OffAuto = true;
+                    CompressorMode_OffAuto[LocoStation] = true;
+                    CompressorMode2_OffAuto[LocoStation] = true;
                     if (!CompressorCombined && !CompressorCombined2)
                     {
-                        CompressorMode_OffAuto = true;
-                        CompressorMode2_OffAuto = true;
+                        CompressorMode_OffAuto[LocoStation] = true;
+                        CompressorMode2_OffAuto[LocoStation] = true;
                     }
                     else
                     {
                         if (!CompressorCombined)
-                            CompressorMode_OffAuto = false;
+                            CompressorMode_OffAuto[LocoStation] = false;
                         if (!CompressorCombined2)
-                            CompressorMode2_OffAuto = false;
+                            CompressorMode2_OffAuto[LocoStation] = false;
                     }
                     HV4Switch[LocoStation] = 1;
 

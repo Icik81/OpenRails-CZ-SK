@@ -827,6 +827,24 @@ namespace Orts.Viewer3D.RollingStock
                 }
             }
 
+            // Přímočinná brzda
+            if (UserInput.IsDown(UserCommand.ControlEngineBrakeIncrease) && Locomotive.LocoType != MSTSLocomotive.LocoTypes.Vectron)
+            {
+                Locomotive.EngineBrakeValue[Locomotive.LocoStation] += 0.025f;
+                Locomotive.EngineBrakeValue[Locomotive.LocoStation] = MathHelper.Clamp(Locomotive.EngineBrakeValue[Locomotive.LocoStation], 0, 1);
+                Locomotive.SetEngineBrakeValue(Locomotive.EngineBrakeValue[0]);
+                Locomotive.SetEngineBrakePercent(Locomotive.EngineBrakeValue[0] * 100);
+            }
+            else
+            if (UserInput.IsDown(UserCommand.ControlEngineBrakeDecrease) && Locomotive.LocoType != MSTSLocomotive.LocoTypes.Vectron)
+            {
+                Locomotive.EngineBrakeValue[Locomotive.LocoStation] -= 0.025f;
+                Locomotive.EngineBrakeValue[Locomotive.LocoStation] = MathHelper.Clamp(Locomotive.EngineBrakeValue[Locomotive.LocoStation], 0, 1);
+                Locomotive.SetEngineBrakeValue(Locomotive.EngineBrakeValue[0]);
+                Locomotive.SetEngineBrakePercent(Locomotive.EngineBrakeValue[0] * 100);
+            }
+
+
             // Ovládání tlačítka znovunačtení světa
             if (UserInput.IsPressed(UserCommand.ControlRefreshWorld))
             {
@@ -3333,10 +3351,10 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.ENGINE_BRAKE:
                     if (ChangedValue(0) != 0)
                     {
-                        Locomotive.EngineBrakeController.CurrentValue += MathHelper.Clamp(NormalizedMouseMovement(), -0.25f, 0.25f);
-                        Locomotive.EngineBrakeController.CurrentValue = MathHelper.Clamp(Locomotive.EngineBrakeController.CurrentValue, 0, 1);
-                        Locomotive.SetEngineBrakeValue(Locomotive.EngineBrakeController.CurrentValue);
-                        Locomotive.SetEngineBrakePercent(Locomotive.EngineBrakeController.CurrentValue * 100);
+                        Locomotive.EngineBrakeValue[Locomotive.LocoStation] += MathHelper.Clamp(NormalizedMouseMovement(), -0.25f, 0.25f);
+                        Locomotive.EngineBrakeValue[Locomotive.LocoStation] = MathHelper.Clamp(Locomotive.EngineBrakeValue[Locomotive.LocoStation], 0, 1);
+                        Locomotive.SetEngineBrakeValue(Locomotive.EngineBrakeValue[0]);
+                        Locomotive.SetEngineBrakePercent(Locomotive.EngineBrakeValue[0] * 100);
                     }
                     //Locomotive.SetEngineBrakeValue(ChangedValue(Locomotive.EngineBrakeController.IntermediateValue)); break;
                     break;
@@ -3819,29 +3837,29 @@ namespace Orts.Viewer3D.RollingStock
                     break;
 
                 case CABViewControlTypes.COMPRESSOR_MODE_OFFAUTO:
-                    if (ChangedValue(Locomotive.CompressorMode_OffAuto ? 1 : 0) > 0)
+                    if (ChangedValue(Locomotive.CompressorMode_OffAuto[Locomotive.LocoStation] ? 1 : 0) > 0)
                     {
-                        Locomotive.CompressorMode_OffAuto = true;
+                        Locomotive.CompressorMode_OffAuto[Locomotive.LocoStation] = true;
                         new ToggleCompressorMode_OffAutoCommand(Viewer.Log);
                     }
                     else
-                    if (ChangedValue(Locomotive.CompressorMode_OffAuto ? 1 : 0) < 0)
+                    if (ChangedValue(Locomotive.CompressorMode_OffAuto[Locomotive.LocoStation] ? 1 : 0) < 0)
                     {
-                        Locomotive.CompressorMode_OffAuto = false;
+                        Locomotive.CompressorMode_OffAuto[Locomotive.LocoStation] = false;
                         new ToggleCompressorMode_OffAutoCommand(Viewer.Log);
                     }
                     break;
 
                 case CABViewControlTypes.COMPRESSOR_MODE2_OFFAUTO:
-                    if (ChangedValue(Locomotive.CompressorMode2_OffAuto ? 1 : 0) > 0)
+                    if (ChangedValue(Locomotive.CompressorMode2_OffAuto[Locomotive.LocoStation] ? 1 : 0) > 0)
                     {
-                        Locomotive.CompressorMode2_OffAuto = true;
+                        Locomotive.CompressorMode2_OffAuto[Locomotive.LocoStation] = true;
                         new ToggleCompressorMode2_OffAutoCommand(Viewer.Log);
                     }
                     else
-                    if (ChangedValue(Locomotive.CompressorMode2_OffAuto ? 1 : 0) < 0)
+                    if (ChangedValue(Locomotive.CompressorMode2_OffAuto[Locomotive.LocoStation] ? 1 : 0) < 0)
                     {
-                        Locomotive.CompressorMode2_OffAuto = false;
+                        Locomotive.CompressorMode2_OffAuto[Locomotive.LocoStation] = false;
                         new ToggleCompressorMode2_OffAutoCommand(Viewer.Log);
                     }
                     break;

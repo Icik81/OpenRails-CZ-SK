@@ -463,9 +463,7 @@ namespace Orts.Simulation.RollingStocks
         public bool DoesPowerLossResetControls = false;
         public bool DoesPowerLossResetControls2 = false;
         public bool ThrottleZero = false;
-        public bool AuxCompressorMode_OffOn;
-        public bool CompressorMode_OffAuto;
-        public bool CompressorMode2_OffAuto;
+        public bool AuxCompressorMode_OffOn;        
         public bool EngineBrakeEngageEDB = false;        
         public bool HeatingEnable = false;
         public bool CabHeatingEnable = false;
@@ -674,6 +672,7 @@ namespace Orts.Simulation.RollingStocks
         public InterpolatorDiesel2D CurrentBrakeForce1Curves;
         public InterpolatorDiesel2D CurrentBrakeForce2Curves;
         public int LocoStation = 1;
+        public bool LocoHasNoDynamicController = true;
 
 
         // Jindrich
@@ -1152,7 +1151,7 @@ namespace Orts.Simulation.RollingStocks
 
                 case "engine(enginecontrollers(throttle": ThrottleController = new MSTSNotchController(stf); break;
                 case "engine(enginecontrollers(regulator": ThrottleController = new MSTSNotchController(stf); break;
-                case "engine(enginecontrollers(brake_dynamic": DynamicBrakeController.Parse(stf); break;
+                case "engine(enginecontrollers(brake_dynamic": DynamicBrakeController.Parse(stf); LocoHasNoDynamicController = false; break;
 
                 case "engine(trainbrakescontrollermaxsystempressure":
                 case "engine(ortstrainbrakescontrollermaxoverchargepressure":
@@ -1751,7 +1750,7 @@ namespace Orts.Simulation.RollingStocks
             outf.Write(Bell);
             outf.Write(Sander);
             outf.Write(VacuumExhausterPressed);
-            outf.Write(Wiper);
+            outf.Write(Wiper);            
             outf.Write(OdometerResetPositionM);
             outf.Write(OdometerCountingUp);
             outf.Write(OdometerCountingForwards);
@@ -1792,8 +1791,10 @@ namespace Orts.Simulation.RollingStocks
             outf.Write(HVOffStatusBrakeCyl);
             outf.Write(HVOffStatusBrakePipe);
             outf.Write(AuxCompressorMode_OffOn);
-            outf.Write(CompressorMode_OffAuto);
-            outf.Write(CompressorMode2_OffAuto);
+            outf.Write(CompressorMode_OffAuto[1]);
+            outf.Write(CompressorMode_OffAuto[2]);
+            outf.Write(CompressorMode2_OffAuto[1]);
+            outf.Write(CompressorMode2_OffAuto[2]);
             outf.Write(EngineBrakeEngageEDB);
             outf.Write(Heating_OffOn[1]);
             outf.Write(Heating_OffOn[2]);
@@ -1862,6 +1863,10 @@ namespace Orts.Simulation.RollingStocks
             outf.Write(MirerControllerValue);
             outf.Write(PowerKeyPosition[1]);
             outf.Write(PowerKeyPosition[2]);
+            outf.Write(EngineBrakeValue[1]);
+            outf.Write(EngineBrakeValue[2]);
+            outf.Write(LocoWiper[1]);
+            outf.Write(LocoWiper[2]);
 
             base.Save(outf);
 
@@ -1934,8 +1939,10 @@ namespace Orts.Simulation.RollingStocks
             HVOffStatusBrakeCyl = inf.ReadBoolean();
             HVOffStatusBrakePipe = inf.ReadBoolean();
             AuxCompressorMode_OffOn = inf.ReadBoolean();
-            CompressorMode_OffAuto = inf.ReadBoolean();
-            CompressorMode2_OffAuto = inf.ReadBoolean();
+            CompressorMode_OffAuto[1] = inf.ReadBoolean();
+            CompressorMode_OffAuto[2] = inf.ReadBoolean();
+            CompressorMode2_OffAuto[1] = inf.ReadBoolean();
+            CompressorMode2_OffAuto[2] = inf.ReadBoolean();
             EngineBrakeEngageEDB = inf.ReadBoolean();
             Heating_OffOn[1] = inf.ReadBoolean();
             Heating_OffOn[2] = inf.ReadBoolean();
@@ -2004,6 +2011,10 @@ namespace Orts.Simulation.RollingStocks
             MirerControllerValue = inf.ReadInt32();
             PowerKeyPosition[1] = inf.ReadInt32();
             PowerKeyPosition[2] = inf.ReadInt32();
+            LocoWiper[1] = inf.ReadBoolean();
+            LocoWiper[2] = inf.ReadBoolean();
+            EngineBrakeValue[1] = inf.ReadSingle();
+            EngineBrakeValue[2] = inf.ReadSingle();
 
             base.Restore(inf);
 
@@ -4319,8 +4330,7 @@ namespace Orts.Simulation.RollingStocks
                 DoorSwitch[1] = DoorSwitch[2] = 1;                
                 DieselDirectionControllerPosition[1] = DieselDirectionController2Position[1] = DieselDirectionController4Position[1] = -1;
                 DieselDirectionControllerPosition[2] = DieselDirectionController2Position[2] = DieselDirectionController4Position[2] = -1;
-
-
+                
                 Headlight = 0;
                 firstFrame = false;
                 if (Simulator.Settings.AirEmpty)
@@ -4372,7 +4382,8 @@ namespace Orts.Simulation.RollingStocks
                     if (IsLeadLocomotive())
                     {                        
                         PowerKeyPosition[LocoStation] = 2;
-                        PowerKey = true;                        
+                        PowerKey = true;
+                        EngineBrakeValue[1] = 1;
                         if (CruiseControl != null && CruiseControl.Equipped)
                         {
                             CruiseControl.SpeedRegMode = SubSystems.CruiseControl.SpeedRegulatorMode.Auto;
@@ -4764,10 +4775,12 @@ namespace Orts.Simulation.RollingStocks
             {
                 //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("LapActive " + LapActive));                
                 StepControllerValue = Simulator.StepControllerValue;
-                TrainAlerterLogic();
-                DirectionControllerLogic();
-                PowerKeyLogic();
                 TogglePowerKey();
+                PowerKeyLogic();
+                TrainAlerterLogic();
+                WipersLogic();
+                EngineBrakeValueLogic();
+                DirectionControllerLogic();                                
                 PowerCurrentCalculation();
                 BrakeCurrentCalculation();
                 Overcurrent_Protection();
@@ -8421,8 +8434,7 @@ namespace Orts.Simulation.RollingStocks
         public void ToggleWipers(bool newState)
         {
             SignalEvent(Event.PantographToggle);
-            if (Battery)
-                SignalEvent(newState ? Event.WiperOn : Event.WiperOff);
+            LocoWiper[LocoStation] = !LocoWiper[LocoStation];                        
         }
 
         public void SetBailOff(bool bailOff)
@@ -8572,7 +8584,7 @@ namespace Orts.Simulation.RollingStocks
 
             // První průběh - inicializace hodnot
             if (this.CarFrameUpdateState == 1)
-            {
+            {                
                 // Vypne inicializační zvuk pohonu při vypnutém stroji
                 if ((this as MSTSDieselLocomotive) != null && (this as MSTSDieselLocomotive).AIMotorStop)
                     SignalEvent(Event.EnginePowerOff);
@@ -8598,8 +8610,11 @@ namespace Orts.Simulation.RollingStocks
 
             // Druhý průběh - kabinové prvky načteny
             if (this.CarFrameUpdateState == 2)
-            {
+            {                
             }
+
+            // EDB Hack
+            if (LocoHasNoDynamicController) DynamicBrakeController = null;
         }
 
         public bool MUCylPressureMirelOk;
@@ -8648,6 +8663,28 @@ namespace Orts.Simulation.RollingStocks
                     Mirel.Ls90power = SubSystems.Mirel.LS90power.Off;
                 }
             }
+        }
+
+        public void WipersLogic()
+        {
+            if (!LocoWiper[LocoStation] && Wiper)
+                SignalEvent(Event.WiperOff);
+
+            if (LocoWiper[LocoStation] && !Wiper && Battery)
+                SignalEvent(Event.WiperOn);
+
+            if (Wiper && !Battery)
+                SignalEvent(Event.WiperOff);
+
+            if (LocoWiper[LocoStation] && Battery)
+                Wiper = true;
+            else
+                Wiper = false;
+        }
+
+        public void EngineBrakeValueLogic()
+        {            
+            EngineBrakeValue[0] = Math.Max(EngineBrakeValue[1], EngineBrakeValue[2]);
         }
 
         public void DirectionControllerLogic()
@@ -9547,20 +9584,20 @@ namespace Orts.Simulation.RollingStocks
                         case 1:
                             {
                                 AuxCompressorMode_OffOn = false;
-                                CompressorMode_OffAuto = false;
-                                if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.CompressorMode_OffAuto, CompressorMode_OffAuto ? CabSetting.On : CabSetting.Off);
+                                CompressorMode_OffAuto[LocoStation] = false;
+                                if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.CompressorMode_OffAuto, CompressorMode_OffAuto[LocoStation] ? CabSetting.On : CabSetting.Off);
                             }
                             break;
                         case 2:
                             {
-                                CompressorMode_OffAuto = true;
+                                CompressorMode_OffAuto[LocoStation] = true;
                                 Compressor_I_HandMode = false;
-                                if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.CompressorMode_OffAuto, CompressorMode_OffAuto ? CabSetting.On : CabSetting.Off);
+                                if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.CompressorMode_OffAuto, CompressorMode_OffAuto[LocoStation] ? CabSetting.On : CabSetting.Off);
                             }
                             break;
                         case 3:
                             {
-                                CompressorMode_OffAuto = false;
+                                CompressorMode_OffAuto[LocoStation] = false;
                                 Compressor_I_HandMode = true;
                                 if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.Compressor_I_HandMode, Compressor_I_HandMode ? CabSetting.On : CabSetting.Off);
                             }
@@ -9603,20 +9640,20 @@ namespace Orts.Simulation.RollingStocks
                     {
                         case 0:
                             {
-                                CompressorMode2_OffAuto = false;
-                                if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.CompressorMode2_OffAuto, CompressorMode2_OffAuto ? CabSetting.On : CabSetting.Off);
+                                CompressorMode2_OffAuto[LocoStation] = false;
+                                if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.CompressorMode2_OffAuto, CompressorMode2_OffAuto[LocoStation] ? CabSetting.On : CabSetting.Off);
                             }
                             break;
                         case 1:
                             {
-                                CompressorMode2_OffAuto = true;
+                                CompressorMode2_OffAuto[LocoStation] = true;
                                 Compressor_II_HandMode = false;
-                                if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.CompressorMode2_OffAuto, CompressorMode2_OffAuto ? CabSetting.On : CabSetting.Off);
+                                if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.CompressorMode2_OffAuto, CompressorMode2_OffAuto[LocoStation] ? CabSetting.On : CabSetting.Off);
                             }
                             break;
                         case 2:
                             {
-                                CompressorMode2_OffAuto = false;
+                                CompressorMode2_OffAuto[LocoStation] = false;
                                 Compressor_II_HandMode = true;
                                 if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.Compressor_II_HandMode, Compressor_II_HandMode ? CabSetting.On : CabSetting.Off);
                             }
@@ -9640,20 +9677,20 @@ namespace Orts.Simulation.RollingStocks
         {
             if (Compressor_I && !CompressorCombined && !CompressorCombined2)
             {
-                CompressorMode_OffAuto = !CompressorMode_OffAuto;
-                if (CompressorMode_OffAuto) SignalEvent(Event.CompressorMode_OffAutoOn);
+                CompressorMode_OffAuto[LocoStation] = !CompressorMode_OffAuto[LocoStation];
+                if (CompressorMode_OffAuto[LocoStation]) SignalEvent(Event.CompressorMode_OffAutoOn);
                 else SignalEvent(Event.CompressorMode_OffAutoOff);
-                if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.CompressorMode_OffAuto, CompressorMode_OffAuto ? CabSetting.On : CabSetting.Off);
+                if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.CompressorMode_OffAuto, CompressorMode_OffAuto[LocoStation] ? CabSetting.On : CabSetting.Off);
             }
         }
         public void ToggleCompressorMode2_OffAuto()
         {
             if (Compressor_II && !CompressorCombined && !CompressorCombined2)
             {
-                CompressorMode2_OffAuto = !CompressorMode2_OffAuto;
-                if (CompressorMode2_OffAuto) SignalEvent(Event.CompressorMode_OffAutoOn);
+                CompressorMode2_OffAuto[LocoStation] = !CompressorMode2_OffAuto[LocoStation];
+                if (CompressorMode2_OffAuto[LocoStation]) SignalEvent(Event.CompressorMode_OffAutoOn);
                 else SignalEvent(Event.CompressorMode_OffAutoOff);
-                if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.CompressorMode2_OffAuto, CompressorMode2_OffAuto ? CabSetting.On : CabSetting.Off);
+                if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.CompressorMode2_OffAuto, CompressorMode2_OffAuto[LocoStation] ? CabSetting.On : CabSetting.Off);
             }
         }
         public void ToggleHeating_OffOn()
@@ -10628,7 +10665,7 @@ namespace Orts.Simulation.RollingStocks
             if (WipersWindowTimer > WipersWindowTimeBegin)
             {
                 // Stěrače vypnuty
-                if (!Wiper)
+                if (!LocoWiper[LocoStation])
                 {
                     if (WiperStatusChange)
                     {
@@ -11318,8 +11355,8 @@ namespace Orts.Simulation.RollingStocks
                     break;
                 case Event.SanderOn: { Sander = true; if (this.IsLeadLocomotive() && this == Simulator.PlayerLocomotive && Simulator.Confirmer != null) Simulator.Confirmer.Confirm(CabControl.Sander, CabSetting.On); break; }
                 case Event.SanderOff: { Sander = false; if (this.IsLeadLocomotive() && this == Simulator.PlayerLocomotive && Simulator.Confirmer != null) Simulator.Confirmer.Confirm(CabControl.Sander, CabSetting.Off); break; }
-                case Event.WiperOn: { Wiper = true; if (this == Simulator.PlayerLocomotive && Simulator.Confirmer != null) Simulator.Confirmer.Confirm(CabControl.Wipers, CabSetting.On); break; }
-                case Event.WiperOff: { Wiper = false; if (this == Simulator.PlayerLocomotive) Simulator.Confirmer.Confirm(CabControl.Wipers, CabSetting.Off); break; }
+                case Event.WiperOn: { if (this == Simulator.PlayerLocomotive && Simulator.Confirmer != null) Simulator.Confirmer.Confirm(CabControl.Wipers, CabSetting.On); break; }
+                case Event.WiperOff: { if (this == Simulator.PlayerLocomotive) Simulator.Confirmer.Confirm(CabControl.Wipers, CabSetting.Off); break; }
 
                 // <CJComment> The "H" key doesn't call these SignalEvents yet. </CJComment>
                 case Event._HeadlightOff: { Headlight = 0; break; }
@@ -12059,7 +12096,7 @@ namespace Orts.Simulation.RollingStocks
                     }
                 case CABViewControlTypes.ENGINE_BRAKE:
                     {
-                        data = (EngineBrakeController == null) ? 0.0f : EngineBrakeController.CurrentValue;
+                        data = (EngineBrakeController == null) ? 0.0f : EngineBrakeValue[LocoStation];
                         break;
                     }
                 case CABViewControlTypes.TRAIN_BRAKE:
@@ -12112,7 +12149,8 @@ namespace Orts.Simulation.RollingStocks
                     }
                 case CABViewControlTypes.WIPERS:
                     {
-                        data = Wiper ? 1 : 0;
+                        if (LocoWiper[LocoStation])
+                            data = Wiper ? 1 : 0;
                         break;
                     }
                 case CABViewControlTypes.VACUUM_EXHAUSTER:
@@ -12427,7 +12465,8 @@ namespace Orts.Simulation.RollingStocks
                         break;
                     }
                 case CABViewControlTypes.ORTS_2DEXTERNALWIPERS:
-                    data = Wiper ? 1 : 0;
+                    if (LocoWiper[LocoStation])
+                        data = Wiper ? 1 : 0;
                     break;
                 case CABViewControlTypes.ORTS_HOURDIAL:
                     float hour = (float)(Simulator.ClockTime / 3600) % 12;
@@ -13111,13 +13150,13 @@ namespace Orts.Simulation.RollingStocks
                 case CABViewControlTypes.COMPRESSOR_MODE_OFFAUTO:
                     {
                         Compressor_I = true;
-                        data = CompressorMode_OffAuto ? 1 : 0;
+                        data = CompressorMode_OffAuto[LocoStation] ? 1 : 0;
                         break;
                     }
                 case CABViewControlTypes.COMPRESSOR_MODE2_OFFAUTO:
                     {
                         Compressor_II = true;
-                        data = CompressorMode2_OffAuto ? 1 : 0;
+                        data = CompressorMode2_OffAuto[LocoStation] ? 1 : 0;
                         break;
                     }
                 case CABViewControlTypes.HEATING_OFFON:

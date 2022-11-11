@@ -401,6 +401,9 @@ namespace Orts.Simulation.RollingStocks
         public int[] Pantograph3Switch = new int[3];
         public int[] CompressorSwitch = new int[3];
         public int[] CompressorSwitch2 = new int[3];
+        public bool[] CompressorMode_OffAuto = new bool[3];
+        public bool[] CompressorMode2_OffAuto = new bool[3];
+
         public int[] HV5Switch = new int[3];
         public int[] HV4Switch = new int[3];
         public int[] HV3Switch = new int[3];
@@ -412,7 +415,9 @@ namespace Orts.Simulation.RollingStocks
         public int[] DieselDirectionControllerPosition = new int[3];
         public int[] DieselDirectionController2Position = new int[3];
         public int[] DieselDirectionController4Position = new int[3];
-        public float[] AripotControllerValue = new float[3];
+        public float[] AripotControllerValue = new float[3];        
+        public bool[] LocoWiper = new bool[3];
+        public float[] EngineBrakeValue = new float[3];
 
         public float PowerReductionResult1;  // Redukce výkonu od topení, klimatizace, kompresoru
         public float PowerReductionResult2;  // Redukce výkonu od nedostatečného tlaku vzduchu v potrubí
