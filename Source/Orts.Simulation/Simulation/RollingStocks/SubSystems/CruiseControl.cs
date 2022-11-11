@@ -828,7 +828,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
         public bool arrIsBraking = false;
         protected bool wasDynamicBrakeUsed = true;
         protected float timeFromDynamicBrakeStateChanged = 0;
-        protected bool doNotForceDynamicBrake = false;
+        public bool doNotForceDynamicBrake = false;
         protected bool wasTrainBrakeUsed = false;
         public float OverridenMaximalForce = 0;
         public bool SpeedChanged = true;
@@ -837,6 +837,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems
 
         protected virtual void UpdateMotiveForce(float elapsedClockSeconds, float AbsWheelSpeedMps)
         {
+            if (Locomotive.RequiredDecelerationPercent > 0)
+                return;
             if (Locomotive.TrainBrakeController.TrainBrakeControllerState == ORTS.Scripting.Api.ControllerState.Apply || Locomotive.TrainBrakeController.TrainBrakeControllerState == ORTS.Scripting.Api.ControllerState.Emergency)
                 noBrakeIntervention = true;
             else if (Locomotive.TrainBrakeController.TrainBrakeControllerState != ORTS.Scripting.Api.ControllerState.Neutral)
@@ -1287,6 +1289,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems
 
                     if (delta < 0) // start braking
                     {
+                        if (Locomotive.RequiredDecelerationPercent == 0)
+                            Locomotive.RequiredDecelerationPercentDisplay = Locomotive.DynamicBrakePercent;
                         doNotForceDynamicBrake = true;
                         if (controllerVolts > 0)
                         {
@@ -1604,6 +1608,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                     }
                     if (delta < 0) // start braking
                     {
+                        if (Locomotive.RequiredDecelerationPercent == 0)
+                            Locomotive.RequiredDecelerationPercentDisplay = Locomotive.DynamicBrakePercent;
+
                         doNotForceDynamicBrake = true;
                         if (controllerVolts > 0)
                         {

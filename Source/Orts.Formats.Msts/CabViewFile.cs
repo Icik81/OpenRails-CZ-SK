@@ -131,6 +131,7 @@ namespace Orts.Formats.Msts
         BRAKEMAN_BRAKE,
         DYNAMIC_BRAKE,
         DYNAMIC_BRAKE_DISPLAY,
+        REQUIRED_DECELERATION,
         SANDERS,
         WIPERS,
         VACUUM_EXHAUSTER,

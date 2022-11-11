@@ -2652,7 +2652,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 // Zpětné automatické dofouknutí při nechtěné manipulace s brzdičem
                 if (Neutral && lead.BrakeSystem.ReleaseTr != 1 && !Apply && !ApplyGA && !SlowApplyStart)
                 {
-                    if (lead.TrainBrakeController.MaxPressurePSI - train.EqualReservoirPressurePSIorInHg < lead.BrakeSystem.BrakePipeMinPressureDropToEngage)
+                    if (lead.TrainBrakeController.MaxPressurePSI - train.EqualReservoirPressurePSIorInHg < lead.BrakeSystem.BrakePipeMinPressureDropToEngage && lead.RequiredDecelerationPercent == 0)
                         train.EqualReservoirPressurePSIorInHg += lead.TrainBrakeController.ReleaseRatePSIpS * elapsedClockSeconds;
                     if (train.EqualReservoirPressurePSIorInHg > lead.TrainBrakeController.MaxPressurePSI)
                         train.EqualReservoirPressurePSIorInHg = lead.TrainBrakeController.MaxPressurePSI;
@@ -3245,7 +3245,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         {
                             if (lead.BrakeSystem.ARRTrainBrakeCanEngage)
                             {
-                                if (train.EqualReservoirPressurePSIorInHg < lead.TrainBrakeController.MaxPressurePSI)
+                                if (train.EqualReservoirPressurePSIorInHg < lead.TrainBrakeController.MaxPressurePSI && lead.RequiredDecelerationPercent == 0)
                                     train.EqualReservoirPressurePSIorInHg += DeltaPressure * elapsedClockSeconds;
                                 if (train.EqualReservoirPressurePSIorInHg >= lead.TrainBrakeController.MaxPressurePSI)
                                 {

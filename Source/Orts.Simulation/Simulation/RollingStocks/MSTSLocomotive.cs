@@ -5182,6 +5182,9 @@ namespace Orts.Simulation.RollingStocks
 
             UpdateSoundVariables(elapsedClockSeconds);
 
+            if (LocoType == LocoTypes.Katr7507)
+                TryKeepDeceleration(elapsedClockSeconds);
+
             PrevMotiveForceN = MotiveForceN;
             base.Update(elapsedClockSeconds);                                    
 
@@ -7733,8 +7736,6 @@ namespace Orts.Simulation.RollingStocks
         #region DynamicBrakeController
         public void StartDynamicBrakeIncrease(float? target)
         {
-            if (LocoType == LocoTypes.Katr7507)
-                return;
             AlerterReset(TCSEvent.DynamicBrakeChanged);
 
             if (MultiPositionControllers != null)
@@ -7777,46 +7778,95 @@ namespace Orts.Simulation.RollingStocks
             }
         }
 
-        public void StartDynamicBrakeIncreaseKatr(float? target)
+        public float RequiredDeceleration = 0;
+        public float RequiredDecelerationPercent = 0;
+        public float MaxRequiredDeceleration = -0.75f;
+        public float RequiredDecelerationPercentDisplay = 0;
+        public void StartAnyBrakeIncrease(float elapsedClockSeconds)
         {
             AlerterReset(TCSEvent.DynamicBrakeChanged);
+            float step = 100 / DynamicBrakeFullRangeIncreaseTimeSeconds;
+            step *= elapsedClockSeconds;
+            RequiredDecelerationPercent += step * 2;
+            if (RequiredDecelerationPercent > 100)
+                RequiredDecelerationPercent = 100;
+            RequiredDecelerationPercentDisplay = RequiredDecelerationPercent;
+            RequiredDeceleration = MaxRequiredDeceleration * RequiredDecelerationPercent / 100;
+        }
 
-            if (MultiPositionControllers != null)
+        public void TryKeepDeceleration(float elapsedClockSeconds)
+        {
+            if ((!CruiseControl.doNotForceDynamicBrake || RequiredDecelerationPercent < DynamicBrakePercent || DynamicBrakePercent == -1) && AbsSpeedMpS > 0)
             {
-                foreach (MultiPositionController mpc in MultiPositionControllers)
+                RequiredDecelerationPercentDisplay = RequiredDecelerationPercent;
+            }
+            if (RequiredDeceleration == 0 || AbsSpeedMpS == 0)
+            {
+                return;
+            }
+            if (AbsSpeedMpS == 0 && DynamicBrakePercent > -1)
+                DynamicBrakeChangeActiveState(false);
+            if (ControllerVolts > 0)
+            {
+                ControllerVolts = 0;
+            }
+            else if (true)
+            {
+                if (DynamicBrakeAvailable && PowerOn && DynamicBrakePercent < 99)
                 {
-                    if (mpc.controllerBinding == MultiPositionController.ControllerBinding.DynamicBrake)
+                    if (true)
                     {
-                        if (!mpc.StateChanged)
+                        ThrottleController.SetPercent(0);
+                        if (AccelerationMpSS > RequiredDeceleration)
                         {
-                            mpc.StateChanged = true;
-                            mpc.DoMovement(MultiPositionController.Movement.Aft);
+                            if (DynamicBrakePercent == -1)
+                                DynamicBrakeChangeActiveState(true);
+                            StopDynamicBrakeDecrease();
+                            float step = 100 / DynamicBrakeFullRangeIncreaseTimeSeconds;
+                            step *= elapsedClockSeconds * 10;
+                            StartDynamicBrakeIncrease(1);
                         }
-                        return;
+                        else
+                        {
+                            StopDynamicBrakeIncrease();
+                            float step = 100 / DynamicBrakeFullRangeDecreaseTimeSeconds;
+                            step *= elapsedClockSeconds;
+                            StartDynamicBrakeDecrease(0);
+                        }
                     }
                 }
-            }
-            if (CruiseControl != null)
-            {
-                SetThrottlePercent(0);
-                CruiseControl.DynamicBrakePriority = true;
-            }
-
-            if (!CanUseDynamicBrake())
-                return;
-
-            if (DynamicBrakePercent < 0)
-            {
-                DynamicBrakeChangeActiveState(true);
-            }
-            else if (DynamicBrake)
-            {
-                SignalEvent(Event.DynamicBrakeChange);
-                DynamicBrakeController.StartIncrease(target);
-                if (!HasSmoothStruc)
+                else // use TrainBrake
                 {
-                    StopDynamicBrakeIncrease();
-                    Simulator.Confirmer.ConfirmWithPerCent(CabControl.DynamicBrake, DynamicBrakeController.CurrentValue * 100);
+                    if (AccelerationMpSS > RequiredDeceleration && AbsSpeedMpS > 0)
+                    {
+                        if (Train.EqualReservoirPressurePSIorInHg > 0)
+                            Train.EqualReservoirPressurePSIorInHg -= TrainBrakeController.ApplyRatePSIpS * elapsedClockSeconds / 2;
+                        if (Train.EqualReservoirPressurePSIorInHg < 0)
+                            Train.EqualReservoirPressurePSIorInHg = 0;
+                    }
+                    else if (AccelerationMpSS +0.02 < RequiredDeceleration)
+                    {
+                        if (Train.EqualReservoirPressurePSIorInHg < TrainBrakeController.MaxPressurePSI)
+                            Train.EqualReservoirPressurePSIorInHg += TrainBrakeController.ReleaseRatePSIpS * elapsedClockSeconds / 2;
+                        if (Train.EqualReservoirPressurePSIorInHg > TrainBrakeController.MaxPressurePSI)
+                            Train.EqualReservoirPressurePSIorInHg = TrainBrakeController.MaxPressurePSI;
+                    }
+                }
+
+                if (DynamicBrakePercent < 99)
+                {
+                    if (Train.EqualReservoirPressurePSIorInHg < TrainBrakeController.MaxPressurePSI)
+                        Train.EqualReservoirPressurePSIorInHg += TrainBrakeController.ReleaseRatePSIpS * elapsedClockSeconds / 2;
+                    if (Train.EqualReservoirPressurePSIorInHg > TrainBrakeController.MaxPressurePSI)
+                        Train.EqualReservoirPressurePSIorInHg = TrainBrakeController.MaxPressurePSI;
+                }
+
+                if (AccelerationMpSS > RequiredDeceleration && DynamicBrakePercent == -1)
+                {
+                    if (Train.EqualReservoirPressurePSIorInHg > 0)
+                        Train.EqualReservoirPressurePSIorInHg -= TrainBrakeController.ApplyRatePSIpS * elapsedClockSeconds / 10;
+                    if (Train.EqualReservoirPressurePSIorInHg < 0)
+                        Train.EqualReservoirPressurePSIorInHg = 0;
                 }
             }
         }
@@ -7851,9 +7901,6 @@ namespace Orts.Simulation.RollingStocks
 
         public void StartDynamicBrakeDecrease(float? target)
         {
-            if (LocoType == LocoTypes.Katr7507)
-                return;
-
             AlerterReset(TCSEvent.DynamicBrakeChanged);
 
             if (MultiPositionControllers != null)
@@ -12062,6 +12109,16 @@ namespace Orts.Simulation.RollingStocks
                     //case CABViewControlTypes.CP_HANDLE:
                     {
                         data = DynamicBrakePercent / 100f;
+                        break;  
+                    }
+                case CABViewControlTypes.REQUIRED_DECELERATION:
+                    {
+                        data = RequiredDecelerationPercentDisplay / 100f;
+                        if (data < DynamicBrakePercent / 100f)
+                            data = DynamicBrakePercent / 100f;
+                        if (data > RequiredDecelerationPercent / 100f && RequiredDecelerationPercent != 0)
+                            data = RequiredDecelerationPercent / 100;
+   
                         break;
                     }
                 case CABViewControlTypes.WIPERS:
