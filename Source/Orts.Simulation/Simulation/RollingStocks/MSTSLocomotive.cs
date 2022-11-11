@@ -4289,13 +4289,9 @@ namespace Orts.Simulation.RollingStocks
                     // LS90
                     Mirel.ls90tested = true;
                     Mirel.Ls90power = SubSystems.Mirel.LS90power.On;
-
-                    ActiveStationPowerKey = UsingRearCab ? DriverStationPowerKey.Station2 : DriverStationPowerKey.Station1;
-                    if (Flipped)
-                        ActiveStationPowerKey = UsingRearCab ? DriverStationPowerKey.Station1 : DriverStationPowerKey.Station2;
-
+                    
                     LocoStation = 1;
-                    if (ActiveStationPowerKey == DriverStationPowerKey.Station2)
+                    if (UsingRearCab)
                         LocoStation = 2;
 
                     // ARR
