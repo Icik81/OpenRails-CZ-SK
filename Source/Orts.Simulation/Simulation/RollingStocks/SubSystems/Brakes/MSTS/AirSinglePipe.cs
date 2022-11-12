@@ -3151,7 +3151,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 if ((lead.AutomaticParkingBrakeEngaged || (lead.AVVBraking && lead.DynamicBrakePercent > 95))
                     && lead.MainResPressurePSI > 0
                     && AutoCylPressurePSI < lead.BrakeSystem.BrakeCylinderMaxSystemPressurePSI
-                    && AutoCylPressurePSI < lead.MainResPressurePSI)
+                    && AutoCylPressurePSI < lead.MainResPressurePSI
+                    && lead.PowerKey)
                 {
                     if (lead.LocoType == MSTSLocomotive.LocoTypes.Vectron)
                         lead.ParkingBrakeTargetPressurePSI = 58;
@@ -3174,7 +3175,11 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         lead.BrakeSystem.AutoCylPressurePSI2 = MathHelper.Clamp(lead.BrakeSystem.AutoCylPressurePSI2, 0, lead.ParkingBrakeTargetPressurePSI);
                     }
                 }
-                else if (!lead.AutomaticParkingBrakeEngaged && (!lead.AVVBraking || lead.DynamicBrakePercent < 95) && lead.BrakeSystem.T4_ParkingkBrake == 1)
+                else 
+                if (!lead.AutomaticParkingBrakeEngaged 
+                    && (!lead.AVVBraking || lead.DynamicBrakePercent < 95) 
+                    && lead.BrakeSystem.T4_ParkingkBrake == 1
+                    && lead.PowerKey)
                 {
                     if (lead.BrakeSystem.AutoCylPressurePSI2 > 0)
                     {
@@ -3209,7 +3214,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         lead.BrakeSystem.ARRTrainBrakeCycle2 = 0;
                     }
 
-                    if (lead.CruiseControl.SpeedRegMode != CruiseControl.SpeedRegulatorMode.Auto && lead.CruiseControl.SpeedRegMode != CruiseControl.SpeedRegulatorMode.AVV)
+                    if (lead.CruiseControl.SpeedRegMode[lead.LocoStation] != CruiseControl.SpeedRegulatorMode.Auto && lead.CruiseControl.SpeedRegMode[lead.LocoStation] != CruiseControl.SpeedRegulatorMode.AVV)
                     {
                         lead.ARRTrainBrakeEngage = false;
                         lead.BrakeSystem.ARRTrainBrakeCanEngage = true;
@@ -3225,7 +3230,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         lead.BrakeSystem.ARRTrainBrakeCycle1 = 2.0f;    
                     }
 
-                    if (lead.CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.Auto || lead.CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.AVV)
+                    if (lead.CruiseControl.SpeedRegMode[lead.LocoStation] == CruiseControl.SpeedRegulatorMode.Auto || lead.CruiseControl.SpeedRegMode[lead.LocoStation] == CruiseControl.SpeedRegulatorMode.AVV)
                     {
                         // Při vypnutém napájení nebo nedostupném EDB vstupní tlak do převodníku brzdy (používá se signál EDB)
                         if ((!lead.PowerOn || lead.DynamicBrakePercent < 1) && (!lead.EDBIndependent || (lead.EDBIndependent && lead.PowerOnFilter < 1)))

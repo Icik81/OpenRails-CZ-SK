@@ -20,6 +20,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Xml;
+using static Orts.Simulation.RollingStocks.SubSystems.Mirel;
 
 namespace Orts.Simulation.RollingStocks.SubSystems
 {
@@ -104,7 +105,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
         protected int DatabaseVersion = 0;
         protected bool DatabaseVersionUpdated = false;
         public enum LS90power { Off, Start, On };
-        public LS90power Ls90power = LS90power.Off;
+        public LS90power[] Ls90power = new LS90power[3];
         public enum LS90led { Off, Red, Green };
         public LS90led Ls90led = LS90led.Off;
         public bool NoAlertOnRestrictedSignal = false;
@@ -254,7 +255,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
 
             if (MirelType == Type.LS90)
             {
-                if (Ls90power == LS90power.Off)
+                if (Ls90power[Locomotive.LocoStation] == LS90power.Off)
                 {
                     Ls90led = LS90led.Off;
                     ls90tested = false;
@@ -262,7 +263,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                     BlueLight = false;
                     return;
                 }
-                if (Ls90power == LS90power.Start && !ls90tested)
+                if (Ls90power[Locomotive.LocoStation] == LS90power.Start && !ls90tested)
                 {
                     if (ls90testTime > 1.5 && Bar.FromPSI(Locomotive.BrakeSystem.GetCylPressurePSI()) > 1.5f && AbsSpeedMpS == 0)
                     {
@@ -276,7 +277,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                     ls90testTime += elapsedClockSeconds;
                     return;
                 }
-                if (Ls90power == LS90power.On && ls90tested)
+                if (Ls90power[Locomotive.LocoStation] == LS90power.On && ls90tested)
                 {
                     BlueLight = true;
                     Ls90led = LS90led.Off;
@@ -286,7 +287,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                     BlueLight = false;
                     Ls90led = LS90led.Red;
                 }
-                if (Ls90power != LS90power.On)
+                if (Ls90power[Locomotive.LocoStation] != LS90power.On)
                 {
                     return;
                 }
@@ -930,7 +931,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems
             outf.Write(this.zs3);
             outf.Write(this.recievingTimer);
             outf.Write((int)Ls90led);
-            outf.Write((int)Ls90power);
+            outf.Write((int)Ls90power[1]);
+            outf.Write((int)Ls90power[2]);
             outf.Write(ls90tested);
         }
 
@@ -1046,8 +1048,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems
             anyStationSet = true;
             int fLs90led = inf.ReadInt32();
             Ls90led = (LS90led)fLs90led;
-            int fLs90power = inf.ReadInt32();
-            Ls90power = (LS90power)fLs90power;
+            int fLs90power1 = inf.ReadInt32();
+            Ls90power[1] = (LS90power)fLs90power1;
+            int fLs90power2 = inf.ReadInt32();
+            Ls90power[2] = (LS90power)fLs90power2;
             ls90tested = inf.ReadBoolean();
             ls90testTime = 5;
         }
@@ -1132,9 +1136,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems
         {
             if (MirelType == Type.LS90)
             {
-                if (Ls90power < LS90power.On)
+                if (Ls90power[Locomotive.LocoStation] < LS90power.On)
                 {
-                    Ls90power++;
+                    Ls90power[Locomotive.LocoStation]++;
                     Locomotive.SignalEvent(Common.Event.LightSwitchToggle);
                 }
                 return;
@@ -1221,9 +1225,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems
 
             if (MirelType == Type.LS90)
             {
-                if (Ls90power > LS90power.Off)
+                if (Ls90power[Locomotive.LocoStation] > LS90power.Off)
                 {
-                    Ls90power--;
+                    Ls90power[Locomotive.LocoStation]--;
                     Locomotive.SignalEvent(Common.Event.LightSwitchToggle);
                 }
                 return;

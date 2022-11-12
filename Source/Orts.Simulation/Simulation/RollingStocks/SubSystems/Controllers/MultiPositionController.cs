@@ -162,7 +162,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                 bool skipBraking = false;
                 if (haveCruiseControl)
                 {
-                    if (Locomotive.CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.Manual)
+                    if (Locomotive.CruiseControl.SpeedRegMode[Locomotive.LocoStation] == CruiseControl.SpeedRegulatorMode.Manual)
                     {
                         if (Locomotive.ThrottlePercent > 0)
                         {
@@ -202,7 +202,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
             }
             else if (haveCruiseControl)
             {
-                if (Locomotive.CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.Manual && dynBrakeEngaged && Locomotive.ThrottlePercent > 0)
+                if (Locomotive.CruiseControl.SpeedRegMode[Locomotive.LocoStation] == CruiseControl.SpeedRegulatorMode.Manual && dynBrakeEngaged && Locomotive.ThrottlePercent > 0)
                 {
                     float pct = Locomotive.ThrottlePercent - 0.3f;
                     if (pct < 0)
@@ -264,7 +264,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
             bool ccAutoMode = false;
             if (haveCruiseControl)
             {
-                if (Locomotive.CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.Auto || Locomotive.CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.AVV)
+                if (Locomotive.CruiseControl.SpeedRegMode[Locomotive.LocoStation] == CruiseControl.SpeedRegulatorMode.Auto || Locomotive.CruiseControl.SpeedRegMode[Locomotive.LocoStation] == CruiseControl.SpeedRegulatorMode.AVV)
                 {
                     ccAutoMode = true;
                 }
@@ -764,7 +764,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                             }
                             applyPower = false;
                         }
-                        if (applyPower) Locomotive.CruiseControl.SpeedSelMode = CruiseControl.SpeedSelectorMode.On;
+                        if (applyPower) Locomotive.CruiseControl.SpeedSelMode[Locomotive.LocoStation] = CruiseControl.SpeedSelectorMode.On;
                         if (Locomotive.LocoType == MSTSLocomotive.LocoTypes.Katr7507)
                         {
                             if (Locomotive.DynamicBrakePercent > 0)
@@ -837,21 +837,21 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                 if (controllerPosition == ControllerPosition.ThrottleIncrease)
                 {
                     isBraking = false;
-                    Locomotive.CruiseControl.SpeedSelMode = CruiseControl.SpeedSelectorMode.Start;
+                    Locomotive.CruiseControl.SpeedSelMode[Locomotive.LocoStation] = CruiseControl.SpeedSelectorMode.Start;
                     previousDriveModeWasAddPower = true;
                     if (haveCruiseControl)
                     {
                         if (Locomotive.CruiseControl.UseThrottleAsForceSelector)
                         {
-                            Locomotive.SelectedMaxAccelerationStep += 0.5f;
-                            if (Locomotive.SelectedMaxAccelerationStep > 100)
-                                Locomotive.SelectedMaxAccelerationStep = 100;
+                            Locomotive.SelectedMaxAccelerationStep[Locomotive.LocoStation] += 0.5f;
+                            if (Locomotive.SelectedMaxAccelerationStep[Locomotive.LocoStation] > 100)
+                                Locomotive.SelectedMaxAccelerationStep[Locomotive.LocoStation] = 100;
                         }
                     }
                 }
                 if (controllerPosition == ControllerPosition.Neutral)
                 {
-                    Locomotive.CruiseControl.SpeedSelMode = CruiseControl.SpeedSelectorMode.Neutral;
+                    Locomotive.CruiseControl.SpeedSelMode[Locomotive.LocoStation] = CruiseControl.SpeedSelectorMode.Neutral;
                 }
                 if (controllerPosition == ControllerPosition.Drive)
                 {
@@ -897,7 +897,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                         }
                         applyPower = false;
                     }
-                    if (applyPower) Locomotive.CruiseControl.SpeedSelMode = CruiseControl.SpeedSelectorMode.On;
+                    if (applyPower) Locomotive.CruiseControl.SpeedSelMode[Locomotive.LocoStation] = CruiseControl.SpeedSelectorMode.On;
                     if (Locomotive.LocoType == MSTSLocomotive.LocoTypes.Katr7507)
                     {
                         if (Locomotive.DynamicBrakePercent > 0)
@@ -911,7 +911,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                 {
                     isBraking = true;
                     previousDriveModeWasAddPower = false;
-                    Locomotive.CruiseControl.SpeedSelMode = CruiseControl.SpeedSelectorMode.Neutral;
+                    Locomotive.CruiseControl.SpeedSelMode[Locomotive.LocoStation] = CruiseControl.SpeedSelectorMode.Neutral;
                     if (CanControlTrainBrake)
                     {
                         if (Locomotive.TrainBrakeController.TrainBrakeControllerState == ORTS.Scripting.Api.ControllerState.Apply)
@@ -946,7 +946,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                 {
                     isBraking = true;
                     previousDriveModeWasAddPower = false;
-                    Locomotive.CruiseControl.SpeedSelMode = CruiseControl.SpeedSelectorMode.Neutral;
+                    Locomotive.CruiseControl.SpeedSelMode[Locomotive.LocoStation] = CruiseControl.SpeedSelectorMode.Neutral;
                     if (CanControlTrainBrake)
                     {
                         if (Locomotive.TrainBrakeController.TrainBrakeControllerState == ORTS.Scripting.Api.ControllerState.Apply)
@@ -989,7 +989,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                 {
                     isBraking = true;
                     previousDriveModeWasAddPower = false;
-                    Locomotive.CruiseControl.SpeedSelMode = CruiseControl.SpeedSelectorMode.Neutral;
+                    Locomotive.CruiseControl.SpeedSelMode[Locomotive.LocoStation] = CruiseControl.SpeedSelectorMode.Neutral;
                     EmergencyBrakes();
                     emergencyBrake = true;
                 }
@@ -1009,9 +1009,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                 {
                     if (haveCruiseControl && ccAutoMode)
                     {
-                        Locomotive.SelectedMaxAccelerationStep -= 0.5f;
-                        if (Locomotive.SelectedMaxAccelerationStep < 0)
-                            Locomotive.SelectedMaxAccelerationStep = 0;
+                        Locomotive.SelectedMaxAccelerationStep[Locomotive.LocoStation] -= 0.5f;
+                        if (Locomotive.SelectedMaxAccelerationStep[Locomotive.LocoStation] < 0)
+                            Locomotive.SelectedMaxAccelerationStep[Locomotive.LocoStation] = 0;
                     }
                 }
             }            

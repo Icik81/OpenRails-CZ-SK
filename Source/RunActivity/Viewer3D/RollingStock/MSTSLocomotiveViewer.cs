@@ -17,6 +17,7 @@
 
 // This file is the responsibility of the 3D & Environment Team. 
 
+using EmbedIO;
 using EmbedIO.Sessions;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -42,6 +43,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
+using static Orts.Simulation.RollingStocks.SubSystems.Mirel;
 using Event = Orts.Common.Event;
 
 namespace Orts.Viewer3D.RollingStock
@@ -731,7 +733,7 @@ namespace Orts.Viewer3D.RollingStock
                 }
                 Locomotive.AripotControllerValue[Locomotive.LocoStation] = MathHelper.Clamp(Locomotive.AripotControllerValue[Locomotive.LocoStation], 0, 1);
 
-                if (Locomotive.CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.Auto || Locomotive.CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.AVV)
+                if (Locomotive.CruiseControl.SpeedRegMode[Locomotive.LocoStation] == CruiseControl.SpeedRegulatorMode.Auto || Locomotive.CruiseControl.SpeedRegMode[Locomotive.LocoStation] == CruiseControl.SpeedRegulatorMode.AVV)
                 {
                     // Auto
                     Aripot_CycleTime += 1 * Locomotive.Simulator.OneSecondLoop;
@@ -2294,11 +2296,11 @@ namespace Orts.Viewer3D.RollingStock
                 }
             }
 
-            if (Locomotive.LocoType == MSTSLocomotive.LocoTypes.Vectron && Locomotive.CruiseControl.SpeedRegMode == Simulation.RollingStocks.SubSystems.CruiseControl.SpeedRegulatorMode.Manual && Control.ControlType == CABViewControlTypes.ORTS_SELECTED_SPEED)
-                if (Locomotive.CruiseControl.SpeedRegMode == Simulation.RollingStocks.SubSystems.CruiseControl.SpeedRegulatorMode.Manual)
+            if (Locomotive.LocoType == MSTSLocomotive.LocoTypes.Vectron && Locomotive.CruiseControl.SpeedRegMode[Locomotive.LocoStation] == Simulation.RollingStocks.SubSystems.CruiseControl.SpeedRegulatorMode.Manual && Control.ControlType == CABViewControlTypes.ORTS_SELECTED_SPEED)
+                if (Locomotive.CruiseControl.SpeedRegMode[Locomotive.LocoStation] == Simulation.RollingStocks.SubSystems.CruiseControl.SpeedRegulatorMode.Manual)
                     display = Locomotive.DisplaySelectedSpeed;
 
-            if (Locomotive.LocoType == MSTSLocomotive.LocoTypes.Vectron && Locomotive.CruiseControl.SpeedRegMode == Simulation.RollingStocks.SubSystems.CruiseControl.SpeedRegulatorMode.Manual)
+            if (Locomotive.LocoType == MSTSLocomotive.LocoTypes.Vectron && Locomotive.CruiseControl.SpeedRegMode[Locomotive.LocoStation] == Simulation.RollingStocks.SubSystems.CruiseControl.SpeedRegulatorMode.Manual)
             {
                 TimeSpan ts = DateTime.Now - Locomotive.SelectedSpeedChangedAt;
                 if (ts.TotalSeconds < 5)
@@ -2826,7 +2828,7 @@ namespace Orts.Viewer3D.RollingStock
                         {
                             if (Locomotive.CruiseControl != null)
                             {
-                                if (((Locomotive.CruiseControl.SpeedRegMode == Simulation.RollingStocks.SubSystems.CruiseControl.SpeedRegulatorMode.Auto || Locomotive.CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.AVV) && !Locomotive.CruiseControl.DynamicBrakePriority) || Locomotive.DynamicBrakeIntervention > 0)
+                                if (((Locomotive.CruiseControl.SpeedRegMode[Locomotive.LocoStation] == Simulation.RollingStocks.SubSystems.CruiseControl.SpeedRegulatorMode.Auto || Locomotive.CruiseControl.SpeedRegMode[Locomotive.LocoStation] == CruiseControl.SpeedRegulatorMode.AVV) && !Locomotive.CruiseControl.DynamicBrakePriority) || Locomotive.DynamicBrakeIntervention > 0)
                                 {
                                     index = 0;
                                 }
@@ -2857,7 +2859,7 @@ namespace Orts.Viewer3D.RollingStock
                         {
                             if (Locomotive.CruiseControl != null)
                             {
-                                if (((Locomotive.CruiseControl.SpeedRegMode == Simulation.RollingStocks.SubSystems.CruiseControl.SpeedRegulatorMode.Auto || Locomotive.CruiseControl.SpeedRegMode == CruiseControl.SpeedRegulatorMode.AVV) && !Locomotive.CruiseControl.DynamicBrakePriority) || Locomotive.DynamicBrakeIntervention > 0)
+                                if (((Locomotive.CruiseControl.SpeedRegMode[Locomotive.LocoStation] == Simulation.RollingStocks.SubSystems.CruiseControl.SpeedRegulatorMode.Auto || Locomotive.CruiseControl.SpeedRegMode[Locomotive.LocoStation] == CruiseControl.SpeedRegulatorMode.AVV) && !Locomotive.CruiseControl.DynamicBrakePriority) || Locomotive.DynamicBrakeIntervention > 0)
                                 {
                                     index = 0;
                                 }
@@ -2932,7 +2934,7 @@ namespace Orts.Viewer3D.RollingStock
                             else
                                 index = 0;
                         }
-                        else if (Locomotive.CruiseControl.SpeedRegMode == Simulation.RollingStocks.SubSystems.CruiseControl.SpeedRegulatorMode.Manual
+                        else if (Locomotive.CruiseControl.SpeedRegMode[Locomotive.LocoStation] == Simulation.RollingStocks.SubSystems.CruiseControl.SpeedRegulatorMode.Manual
                             && Locomotive.DisableRestrictedSpeedWhenManualDriving)
                         {
                             if (Locomotive.IsActive)
@@ -4184,7 +4186,30 @@ namespace Orts.Viewer3D.RollingStock
                         Locomotive.MirerControllerSmooth = false;
                     }
                     break;
-
+                case CABViewControlTypes.ORTS_LS90_POWER:
+                    if (Locomotive.Mirel.MirelType == Mirel.Type.LS90)
+                    {
+                        if (ChangedValue(0) < 0 && !IsChanged)
+                        {
+                            if (Locomotive.Mirel.Ls90power[Locomotive.LocoStation] < LS90power.On)
+                            {
+                                Locomotive.Mirel.Ls90power[Locomotive.LocoStation]++;
+                                Locomotive.SignalEvent(Event.LightSwitchToggle);
+                            }
+                            IsChanged = true;
+                        }
+                        else
+                        if (ChangedValue(0) > 0 && !IsChanged)
+                        {
+                            if (Locomotive.Mirel.Ls90power[Locomotive.LocoStation] > LS90power.Off)
+                            {
+                                Locomotive.Mirel.Ls90power[Locomotive.LocoStation]--;
+                                Locomotive.SignalEvent(Event.LightSwitchToggle);
+                            }
+                            IsChanged = true;
+                        }
+                    }
+                    break;
 
                 // Train Control System controls
                 case CABViewControlTypes.ORTS_TCS1:
@@ -4296,7 +4321,7 @@ namespace Orts.Viewer3D.RollingStock
                         Locomotive.CruiseControl.SpeedSelectorModeStartIncrease();
                         IsChanged = true;
                     }
-                    else if (Locomotive.CruiseControl.SpeedSelMode == Simulation.RollingStocks.SubSystems.CruiseControl.SpeedSelectorMode.Start)
+                    else if (Locomotive.CruiseControl.SpeedSelMode[Locomotive.LocoStation] == Simulation.RollingStocks.SubSystems.CruiseControl.SpeedSelectorMode.Start)
                     {
                         if (UserInput.IsMouseLeftButtonReleased)
                         {
@@ -4378,7 +4403,7 @@ namespace Orts.Viewer3D.RollingStock
                     }
                     if (Locomotive.CruiseControl != null)
                     {
-                        if (Locomotive.DisableRestrictedSpeedWhenManualDriving && Locomotive.CruiseControl.SpeedRegMode == Simulation.RollingStocks.SubSystems.CruiseControl.SpeedRegulatorMode.Manual)
+                        if (Locomotive.DisableRestrictedSpeedWhenManualDriving && Locomotive.CruiseControl.SpeedRegMode[Locomotive.LocoStation] == Simulation.RollingStocks.SubSystems.CruiseControl.SpeedRegulatorMode.Manual)
                         {
                             if (ChangedValue(0) == 1 && !Locomotive.IsActive)
                                 Locomotive.IsActive = true;
@@ -4421,30 +4446,30 @@ namespace Orts.Viewer3D.RollingStock
                         break;
                     if (ChangedValue(0) == 1)
                     {
-                        Locomotive.SelectedMaxAccelerationStep += 1;
-                        if (Locomotive.SelectedMaxAccelerationStep > Locomotive.CruiseControl.SpeedRegulatorMaxForceSteps)
-                            Locomotive.SelectedMaxAccelerationStep = Locomotive.CruiseControl.SpeedRegulatorMaxForceSteps;
-                        if (Locomotive.SelectedMaxAccelerationStep < 0)
-                            Locomotive.SelectedMaxAccelerationStep = 0;
+                        Locomotive.SelectedMaxAccelerationStep[Locomotive.LocoStation] += 1;
+                        if (Locomotive.SelectedMaxAccelerationStep[Locomotive.LocoStation] > Locomotive.CruiseControl.SpeedRegulatorMaxForceSteps)
+                            Locomotive.SelectedMaxAccelerationStep[Locomotive.LocoStation] = Locomotive.CruiseControl.SpeedRegulatorMaxForceSteps;
+                        if (Locomotive.SelectedMaxAccelerationStep[Locomotive.LocoStation] < 0)
+                            Locomotive.SelectedMaxAccelerationStep[Locomotive.LocoStation] = 0;
                     }
                     if (ChangedValue(0) == -1)
                     {
-                        Locomotive.SelectedMaxAccelerationStep -= 1;
-                        if (Locomotive.SelectedMaxAccelerationStep == 0 && Locomotive.CruiseControl.DisableZeroForceStep)
-                            Locomotive.SelectedMaxAccelerationStep = 1;
+                        Locomotive.SelectedMaxAccelerationStep[Locomotive.LocoStation] -= 1;
+                        if (Locomotive.SelectedMaxAccelerationStep[Locomotive.LocoStation] == 0 && Locomotive.CruiseControl.DisableZeroForceStep)
+                            Locomotive.SelectedMaxAccelerationStep[Locomotive.LocoStation] = 1;
                     }
                     if (ChangedValue(0) != 0 && Locomotive.CruiseControl.SpeedRegulatorMaxForceSteps == 100)
                     {
-                        Locomotive.SelectedMaxAccelerationStep += ChangedValue(0) * (float)Control.MaxValue;
-                        if (Locomotive.SelectedMaxAccelerationStep > 100)
-                            Locomotive.SelectedMaxAccelerationStep = 100;
-                        if (Locomotive.SelectedMaxAccelerationStep < 0)
-                            Locomotive.SelectedMaxAccelerationStep = 0;
-                        Locomotive.Simulator.Confirmer.Information("Selected maximum acceleration was changed to " + Math.Round(Locomotive.SelectedMaxAccelerationStep, 0).ToString() + " percent.");
+                        Locomotive.SelectedMaxAccelerationStep[Locomotive.LocoStation] += ChangedValue(0) * (float)Control.MaxValue;
+                        if (Locomotive.SelectedMaxAccelerationStep[Locomotive.LocoStation] > 100)
+                            Locomotive.SelectedMaxAccelerationStep[Locomotive.LocoStation] = 100;
+                        if (Locomotive.SelectedMaxAccelerationStep[Locomotive.LocoStation] < 0)
+                            Locomotive.SelectedMaxAccelerationStep[Locomotive.LocoStation] = 0;
+                        Locomotive.Simulator.Confirmer.Information("Selected maximum acceleration was changed to " + Math.Round(Locomotive.SelectedMaxAccelerationStep[Locomotive.LocoStation], 0).ToString() + " percent.");
                     }
                     else
                     {
-                        Locomotive.Simulator.Confirmer.Information("Selected maximum acceleration was changed to " + Math.Round(Locomotive.SelectedMaxAccelerationStep, 0).ToString());
+                        Locomotive.Simulator.Confirmer.Information("Selected maximum acceleration was changed to " + Math.Round(Locomotive.SelectedMaxAccelerationStep[Locomotive.LocoStation], 0).ToString());
                     }
                     break;
                 case CABViewControlTypes.ORTS_MULTI_POSITION_CONTROLLER:
@@ -4462,8 +4487,8 @@ namespace Orts.Viewer3D.RollingStock
                                 {
                                     if (mpc.controllerBinding == MultiPositionController.ControllerBinding.SelectedSpeed && Locomotive.CruiseControl.ForceRegulatorAutoWhenNonZeroSpeedSelected)
                                     {
-                                        Locomotive.CruiseControl.SpeedRegMode = Simulation.RollingStocks.SubSystems.CruiseControl.SpeedRegulatorMode.Auto;
-                                        Locomotive.CruiseControl.SpeedSelMode = Simulation.RollingStocks.SubSystems.CruiseControl.SpeedSelectorMode.On;
+                                        Locomotive.CruiseControl.SpeedRegMode[Locomotive.LocoStation] = Simulation.RollingStocks.SubSystems.CruiseControl.SpeedRegulatorMode.Auto;
+                                        Locomotive.CruiseControl.SpeedSelMode[Locomotive.LocoStation] = Simulation.RollingStocks.SubSystems.CruiseControl.SpeedSelectorMode.On;
                                     }
                                     mpc.DoMovement(MultiPositionController.Movement.Forward);
                                 }
@@ -4789,11 +4814,11 @@ namespace Orts.Viewer3D.RollingStock
                                         if (Locomotive.LocoType == MSTSLocomotive.LocoTypes.Vectron && Locomotive.ForceHandleValue > 0)
                                             break;
                                         Locomotive.SignalEvent(Event.AFB);
-                                        if (Locomotive.CruiseControl.SpeedRegMode == Simulation.RollingStocks.SubSystems.CruiseControl.SpeedRegulatorMode.Auto)
-                                            Locomotive.CruiseControl.SpeedRegMode = Simulation.RollingStocks.SubSystems.CruiseControl.SpeedRegulatorMode.Manual;
-                                        else if (Locomotive.CruiseControl.SpeedRegMode == Simulation.RollingStocks.SubSystems.CruiseControl.SpeedRegulatorMode.Manual)
+                                        if (Locomotive.CruiseControl.SpeedRegMode[Locomotive.LocoStation] == Simulation.RollingStocks.SubSystems.CruiseControl.SpeedRegulatorMode.Auto)
+                                            Locomotive.CruiseControl.SpeedRegMode[Locomotive.LocoStation] = Simulation.RollingStocks.SubSystems.CruiseControl.SpeedRegulatorMode.Manual;
+                                        else if (Locomotive.CruiseControl.SpeedRegMode[Locomotive.LocoStation] == Simulation.RollingStocks.SubSystems.CruiseControl.SpeedRegulatorMode.Manual)
                                         {
-                                            Locomotive.CruiseControl.SpeedRegMode = Simulation.RollingStocks.SubSystems.CruiseControl.SpeedRegulatorMode.Auto;
+                                            Locomotive.CruiseControl.SpeedRegMode[Locomotive.LocoStation] = Simulation.RollingStocks.SubSystems.CruiseControl.SpeedRegulatorMode.Auto;
                                             Locomotive.CruiseControl.SelectedSpeedMpS = Locomotive.CruiseControl.CurrentSelectedSpeedMpS = Locomotive.CruiseControl.NextSelectedSpeedMps;
                                         }
                                         break;
@@ -4921,7 +4946,7 @@ namespace Orts.Viewer3D.RollingStock
                                                         int axlesTest;
                                                         if (int.TryParse(Locomotive.UserTrainLength, out axlesTest))
                                                         {
-                                                            Locomotive.CruiseControl.SelectedNumberOfAxles = axlesTest / 6;
+                                                            Locomotive.CruiseControl.SelectedNumberOfAxles[Locomotive.LocoStation] = axlesTest / 6;
                                                         }
                                                         break;
                                                     }
@@ -4964,7 +4989,7 @@ namespace Orts.Viewer3D.RollingStock
                                                 int axlesTest;
                                                 if (int.TryParse(Locomotive.UserTrainLength, out axlesTest))
                                                 {
-                                                    Locomotive.CruiseControl.SelectedNumberOfAxles = axlesTest / 6;
+                                                    Locomotive.CruiseControl.SelectedNumberOfAxles[Locomotive.LocoStation] = axlesTest / 6;
                                                 }
                                                 break;
                                             }

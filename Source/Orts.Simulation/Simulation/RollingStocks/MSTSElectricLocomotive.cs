@@ -892,10 +892,10 @@ namespace Orts.Simulation.RollingStocks
                                     {
                                         CruiseControl.ForceThrottleAndDynamicBrake = 0;
                                         CruiseControl.controllerVolts = 0;
-                                        SubSystems.CruiseControl.SpeedSelectorMode prevMode = CruiseControl.SpeedSelMode;
-                                        CruiseControl.SpeedSelMode = SubSystems.CruiseControl.SpeedSelectorMode.Neutral;
+                                        SubSystems.CruiseControl.SpeedSelectorMode prevMode = CruiseControl.SpeedSelMode[LocoStation];
+                                        CruiseControl.SpeedSelMode[LocoStation] = SubSystems.CruiseControl.SpeedSelectorMode.Neutral;
                                         CruiseControl.Update(elapsedClockSeconds, AbsWheelSpeedMpS);
-                                        CruiseControl.SpeedSelMode = prevMode;
+                                        CruiseControl.SpeedSelMode[LocoStation] = prevMode;
                                         CruiseControl.DynamicBrakePriority = false;
                                         TractiveForceN = 0;
 
@@ -938,10 +938,10 @@ namespace Orts.Simulation.RollingStocks
                                     {
                                         CruiseControl.ForceThrottleAndDynamicBrake = 0;
                                         CruiseControl.controllerVolts = 0;
-                                        SubSystems.CruiseControl.SpeedSelectorMode prevMode = CruiseControl.SpeedSelMode;
-                                        CruiseControl.SpeedSelMode = SubSystems.CruiseControl.SpeedSelectorMode.Neutral;
+                                        SubSystems.CruiseControl.SpeedSelectorMode prevMode = CruiseControl.SpeedSelMode[LocoStation];
+                                        CruiseControl.SpeedSelMode[LocoStation] = SubSystems.CruiseControl.SpeedSelectorMode.Neutral;
                                         CruiseControl.Update(elapsedClockSeconds, AbsWheelSpeedMpS);
-                                        CruiseControl.SpeedSelMode = prevMode;
+                                        CruiseControl.SpeedSelMode[LocoStation] = prevMode;
                                         CruiseControl.DynamicBrakePriority = false;
                                         TractiveForceN = 0;
                                         HVOff = true;
@@ -1104,10 +1104,10 @@ namespace Orts.Simulation.RollingStocks
                             {
                                 CruiseControl.ForceThrottleAndDynamicBrake = 0;
                                 CruiseControl.controllerVolts = 0;
-                                SubSystems.CruiseControl.SpeedSelectorMode prevMode = CruiseControl.SpeedSelMode;
-                                CruiseControl.SpeedSelMode = SubSystems.CruiseControl.SpeedSelectorMode.Neutral;
+                                SubSystems.CruiseControl.SpeedSelectorMode prevMode = CruiseControl.SpeedSelMode[LocoStation];
+                                CruiseControl.SpeedSelMode[LocoStation] = SubSystems.CruiseControl.SpeedSelectorMode.Neutral;
                                 CruiseControl.Update(elapsedClockSeconds, AbsWheelSpeedMpS);
-                                CruiseControl.SpeedSelMode = prevMode;
+                                CruiseControl.SpeedSelMode[LocoStation] = prevMode;
                                 CruiseControl.DynamicBrakePriority = false;
                                 TractiveForceN = 0;
                                 if (RouteVoltageV != 3000 && !SwitchingVoltageMode_OffDC)
@@ -1136,10 +1136,10 @@ namespace Orts.Simulation.RollingStocks
                                 {
                                     CruiseControl.ForceThrottleAndDynamicBrake = 0;
                                     CruiseControl.controllerVolts = 0;
-                                    SubSystems.CruiseControl.SpeedSelectorMode prevMode = CruiseControl.SpeedSelMode;
-                                    CruiseControl.SpeedSelMode = SubSystems.CruiseControl.SpeedSelectorMode.Neutral;
+                                    SubSystems.CruiseControl.SpeedSelectorMode prevMode = CruiseControl.SpeedSelMode[LocoStation];
+                                    CruiseControl.SpeedSelMode[LocoStation] = SubSystems.CruiseControl.SpeedSelectorMode.Neutral;
                                     CruiseControl.Update(elapsedClockSeconds, AbsWheelSpeedMpS);
-                                    CruiseControl.SpeedSelMode = prevMode;
+                                    CruiseControl.SpeedSelMode[LocoStation] = prevMode;
                                     CruiseControl.DynamicBrakePriority = false;
                                     TractiveForceN = 0;
                                     HVOff = true;
@@ -1195,10 +1195,10 @@ namespace Orts.Simulation.RollingStocks
                                 {
                                     CruiseControl.ForceThrottleAndDynamicBrake = 0;
                                     CruiseControl.controllerVolts = 0;
-                                    SubSystems.CruiseControl.SpeedSelectorMode prevMode = CruiseControl.SpeedSelMode;
-                                    CruiseControl.SpeedSelMode = SubSystems.CruiseControl.SpeedSelectorMode.Neutral;
+                                    SubSystems.CruiseControl.SpeedSelectorMode prevMode = CruiseControl.SpeedSelMode[LocoStation];
+                                    CruiseControl.SpeedSelMode[LocoStation] = SubSystems.CruiseControl.SpeedSelectorMode.Neutral;
                                     CruiseControl.Update(elapsedClockSeconds, AbsWheelSpeedMpS);
-                                    CruiseControl.SpeedSelMode = prevMode;
+                                    CruiseControl.SpeedSelMode[LocoStation] = prevMode;
                                     CruiseControl.DynamicBrakePriority = false;
                                     TractiveForceN = 0;
                                     HVOff = true;
