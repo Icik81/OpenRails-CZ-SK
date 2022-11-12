@@ -4302,7 +4302,7 @@ namespace Orts.Simulation.RollingStocks
                         PowerKeyPosition[LocoStation] = 2;                        
                         PowerKey = true;
                         StationIsActivated[LocoStation] = true;
-                        EngineBrakeValue[LocoStation] = 1;
+                        EngineBrakeValue[LocoStation] = 1.0f;
  
                         if (CruiseControl != null && CruiseControl.Equipped)
                         {
@@ -4314,8 +4314,7 @@ namespace Orts.Simulation.RollingStocks
                     }
                 }
             }
-
-            //Simulator.Confirmer.MSG("EngineBrakeValue[1] = " + EngineBrakeValue[1]);
+            
 
             if (AbsSpeedMpS == 0)
                 WheelSpeedMpS = 0;
@@ -8577,8 +8576,7 @@ namespace Orts.Simulation.RollingStocks
             // Desátý průběh - nastaví hodnoty po nahrání uložené pozice
             if (this.CarFrameUpdateState == 10)
             {
-                SetEngineBrakeValue(EngineBrakeValue[0]);
-                SetEngineBrakePercent(EngineBrakeValue[0] * 100);
+                
             }
 
             // EDB Hack
@@ -8652,7 +8650,16 @@ namespace Orts.Simulation.RollingStocks
 
         public void EngineBrakeValueLogic()
         {            
-            EngineBrakeValue[0] = Math.Max(EngineBrakeValue[1], EngineBrakeValue[2]);
+            if (IsLeadLocomotive())
+            {
+                EngineBrakeValue[0] = Math.Max(EngineBrakeValue[1], EngineBrakeValue[2]);
+                //Simulator.Confirmer.MSG("EngineBrakeValue[0] = " + EngineBrakeValue[0] + "        EngineBrakeValue[1] = " + EngineBrakeValue[1] + "   EngineBrakeValue[2] = " + EngineBrakeValue[2]);
+                if (EngineBrakeController.Notches.Count <= 1)
+                {
+                    SetEngineBrakeValue(EngineBrakeValue[0]);
+                    SetEngineBrakePercent(EngineBrakeValue[0] * 100);
+                }
+            }
         }
 
         public void DirectionControllerLogic()

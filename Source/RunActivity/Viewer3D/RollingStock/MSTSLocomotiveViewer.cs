@@ -26,6 +26,7 @@ using Orts.Simulation;
 using Orts.Simulation.Physics;
 using Orts.Simulation.RollingStocks;
 using Orts.Simulation.RollingStocks.SubSystems;
+using Orts.Simulation.RollingStocks.SubSystems.Brakes;
 using Orts.Simulation.RollingStocks.SubSystems.Controllers;
 using Orts.Simulation.RollingStocks.SubSystems.PowerSupplies;
 using Orts.Viewer3D.Common;
@@ -827,24 +828,22 @@ namespace Orts.Viewer3D.RollingStock
                 }
             }
 
-            // Přímočinná brzda            
-            if (UserInput.IsDown(UserCommand.ControlEngineBrakeIncrease) && Locomotive.LocoType != MSTSLocomotive.LocoTypes.Vectron)
+            // Přímočinná brzda                       
+            float EngineBrakeSpeedMovement = 0.025f;
+            if (Locomotive.EngineBrakeController.Notches.Count <= 1)
             {
-                Locomotive.EngineBrakeValue[Locomotive.LocoStation] += 0.025f;
-                Locomotive.EngineBrakeValue[Locomotive.LocoStation] = MathHelper.Clamp(Locomotive.EngineBrakeValue[Locomotive.LocoStation], 0, 1);
-                Locomotive.SetEngineBrakeValue(Locomotive.EngineBrakeValue[0]);
-                Locomotive.SetEngineBrakePercent(Locomotive.EngineBrakeValue[0] * 100);
+                if (UserInput.IsDown(UserCommand.ControlEngineBrakeIncrease))
+                {
+                    Locomotive.EngineBrakeValue[Locomotive.LocoStation] += EngineBrakeSpeedMovement;
+                    Locomotive.EngineBrakeValue[Locomotive.LocoStation] = MathHelper.Clamp(Locomotive.EngineBrakeValue[Locomotive.LocoStation], 0, 1);                    
+                }
+                else
+                if (UserInput.IsDown(UserCommand.ControlEngineBrakeDecrease))
+                {
+                    Locomotive.EngineBrakeValue[Locomotive.LocoStation] -= EngineBrakeSpeedMovement;
+                    Locomotive.EngineBrakeValue[Locomotive.LocoStation] = MathHelper.Clamp(Locomotive.EngineBrakeValue[Locomotive.LocoStation], 0, 1);                    
+                }
             }
-            else
-            if (UserInput.IsDown(UserCommand.ControlEngineBrakeDecrease) && Locomotive.LocoType != MSTSLocomotive.LocoTypes.Vectron)
-            {
-                Locomotive.EngineBrakeValue[Locomotive.LocoStation] -= 0.025f;
-                Locomotive.EngineBrakeValue[Locomotive.LocoStation] = MathHelper.Clamp(Locomotive.EngineBrakeValue[Locomotive.LocoStation], 0, 1);
-                Locomotive.SetEngineBrakeValue(Locomotive.EngineBrakeValue[0]);
-                Locomotive.SetEngineBrakePercent(Locomotive.EngineBrakeValue[0] * 100);
-            }
-
-
             // Ovládání tlačítka znovunačtení světa
             if (UserInput.IsPressed(UserCommand.ControlRefreshWorld))
             {
@@ -3353,8 +3352,6 @@ namespace Orts.Viewer3D.RollingStock
                     {
                         Locomotive.EngineBrakeValue[Locomotive.LocoStation] += MathHelper.Clamp(NormalizedMouseMovement(), -0.25f, 0.25f);
                         Locomotive.EngineBrakeValue[Locomotive.LocoStation] = MathHelper.Clamp(Locomotive.EngineBrakeValue[Locomotive.LocoStation], 0, 1);
-                        Locomotive.SetEngineBrakeValue(Locomotive.EngineBrakeValue[0]);
-                        Locomotive.SetEngineBrakePercent(Locomotive.EngineBrakeValue[0] * 100);
                     }
                     //Locomotive.SetEngineBrakeValue(ChangedValue(Locomotive.EngineBrakeController.IntermediateValue)); break;
                     break;
