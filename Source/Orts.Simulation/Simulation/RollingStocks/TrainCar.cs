@@ -2107,6 +2107,9 @@ namespace Orts.Simulation.RollingStocks
             outf.Write(PowerKeyPosition[2]);
             outf.Write(prevPowerKeyPosition[1]);
             outf.Write(prevPowerKeyPosition[2]);
+            outf.Write(AcceptCableSignals);
+            outf.Write(AcceptHelperSignals);
+            outf.Write(AcceptPowerSignals);            
 
             BrakeSystem.Save(outf);
         }
@@ -2144,6 +2147,9 @@ namespace Orts.Simulation.RollingStocks
             PowerKeyPosition[2] = inf.ReadInt32();
             prevPowerKeyPosition[1] = inf.ReadInt32();
             prevPowerKeyPosition[2] = inf.ReadInt32();
+            AcceptCableSignals = inf.ReadBoolean();
+            AcceptHelperSignals = inf.ReadBoolean();
+            AcceptPowerSignals = inf.ReadBoolean();
 
             BrakeSystem.Restore(inf);
         }

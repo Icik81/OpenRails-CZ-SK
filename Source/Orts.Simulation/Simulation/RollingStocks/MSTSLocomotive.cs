@@ -1807,10 +1807,7 @@ namespace Orts.Simulation.RollingStocks
             outf.Write(AbsWheelSpeedMpS);            
 
             // Icik
-            #region Icik
-            outf.Write(AcceptHelperSignals);
-            outf.Write(AcceptPowerSignals);
-            outf.Write(AcceptCableSignals);
+            #region Icik            
             outf.Write(HVOffStatusBrakeCyl);
             outf.Write(HVOffStatusBrakePipe);
             outf.Write(AuxCompressorMode_OffOn);            
@@ -1975,10 +1972,7 @@ namespace Orts.Simulation.RollingStocks
             AbsWheelSpeedMpS = inf.ReadSingle();
 
             // Icik
-            #region Icik
-            AcceptCableSignals = inf.ReadBoolean();
-            AcceptHelperSignals = inf.ReadBoolean();
-            AcceptPowerSignals = inf.ReadBoolean();
+            #region Icik            
             HVOffStatusBrakeCyl = inf.ReadBoolean();
             HVOffStatusBrakePipe = inf.ReadBoolean();
             AuxCompressorMode_OffOn = inf.ReadBoolean();            
