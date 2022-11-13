@@ -2904,13 +2904,13 @@ namespace Orts.Simulation.RollingStocks
                 }
 
                 // Resetování nadproudové ochrany u elektrických lokomotiv
-                if (this is MSTSElectricLocomotive && OverCurrent && LocalThrottlePercent == 0 && LocalDynamicBrakePercent == 0)
+                if (this is MSTSElectricLocomotive && OverCurrent && LocalThrottlePercent < 1.0f && LocalDynamicBrakePercent < 1.0f)
                 {
                     OverCurrent = false;
                 }
 
                 // Resetování nadproudové ochrany u dieselelektrických lokomotiv
-                if (this is MSTSDieselLocomotive && OverCurrent && LocalThrottlePercent == 0 && LocalDynamicBrakePercent == 0)
+                if (this is MSTSDieselLocomotive && OverCurrent && LocalThrottlePercent < 1.0f && LocalDynamicBrakePercent < 1.0f)
                 {
                     OverCurrent = false;
                     PowerReductionResult4 = 0;
