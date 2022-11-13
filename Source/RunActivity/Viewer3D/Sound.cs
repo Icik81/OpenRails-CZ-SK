@@ -1825,9 +1825,10 @@ namespace Orts.Viewer3D
     public class ORTSInitialTrigger : ORTSTrigger
     {
         private SoundStream SoundStream;
-
+        TrainCar car;
         public ORTSInitialTrigger(SoundStream soundStream, Orts.Formats.Msts.Initial_Trigger smsData)
         {
+            car = soundStream.SoundSource.Car;
             SoundCommand = ORTSSoundCommand.FromMSTS(smsData.SoundCommand, soundStream);
             SoundStream = soundStream;
         }
@@ -1843,6 +1844,13 @@ namespace Orts.Viewer3D
         {
             if (Enabled)
             {
+                // Icik
+                // Nepřehraje inicializační trigger, pokud je AI ve vypnutém stavu
+                if ((car as MSTSDieselLocomotive) != null && (car as MSTSDieselLocomotive).AIMotorStop)
+                    return;
+                if ((car as MSTSElectricLocomotive) != null && (car as MSTSElectricLocomotive).AIPantoDownStop)
+                    return;
+
                 SoundStream.RepeatedTrigger = this == SoundStream.LastTriggered;
                 SoundCommand.Run();
                 SoundStream.LastTriggered = this;

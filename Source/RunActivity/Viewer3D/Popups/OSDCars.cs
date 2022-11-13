@@ -86,7 +86,7 @@ namespace Orts.Viewer3D.Popups
                         if ((State == DisplayState.Cars) || (State == DisplayState.Trains && (car.Train == null || car.Train.FirstCar == car)))
                         {
                             Color FillColor = Color.Black;
-                            float ColorTrain = car.Train.Number;
+                            float ColorTrain = car.Train != null ? car.Train.Number : 1;
                             if (ColorTrain > 10 && ColorTrain < 21) ColorTrain = ColorTrain - 10;
                             else 
                                 if (ColorTrain > 20 && ColorTrain < 31) ColorTrain = ColorTrain - 20;
