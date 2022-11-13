@@ -1846,10 +1846,12 @@ namespace Orts.Viewer3D
             {
                 // Icik
                 // Nepřehraje inicializační trigger, pokud je AI ve vypnutém stavu
-                if ((car as MSTSDieselLocomotive) != null && (car as MSTSDieselLocomotive).AIMotorStop)
+                if (((car as MSTSDieselLocomotive) != null && (car as MSTSDieselLocomotive).AIMotorStop)
+                    || ((car as MSTSElectricLocomotive) != null && (car as MSTSElectricLocomotive).AIPantoDownStop))
+                {
+                    Signaled = true;
                     return;
-                if ((car as MSTSElectricLocomotive) != null && (car as MSTSElectricLocomotive).AIPantoDownStop)
-                    return;
+                }                
 
                 SoundStream.RepeatedTrigger = this == SoundStream.LastTriggered;
                 SoundCommand.Run();
