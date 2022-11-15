@@ -46,7 +46,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
         protected float elapsedSecondsFromLastChange = 0;
         protected bool checkNeutral = false;
         protected bool noKeyPressed = true;
-        protected string currentPosition = "";
+        protected string[] currentPosition = new string[3];
         protected bool emergencyBrake = false;
         protected bool previousDriveModeWasAddPower = false;
         protected bool isBraking = false;
@@ -63,7 +63,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
         {
             outf.Write(this.checkNeutral);
             outf.Write((int)this.controllerPosition);
-            outf.Write(this.currentPosition);
+            outf.Write(this.currentPosition[1]);
+            outf.Write(this.currentPosition[2]);
             outf.Write(this.elapsedSecondsFromLastChange);
             outf.Write(this.emergencyBrake);
             outf.Write(this.Equipped);
@@ -80,7 +81,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
             checkNeutral = inf.ReadBoolean();
             int fControllerPosition = inf.ReadInt32();
             controllerPosition = (ControllerPosition)fControllerPosition;
-            currentPosition = inf.ReadString();
+            currentPosition[1] = inf.ReadString();
+            currentPosition[2] = inf.ReadString();
             elapsedSecondsFromLastChange = inf.ReadSingle();
             emergencyBrake = inf.ReadBoolean();
             Equipped = inf.ReadBoolean();
@@ -148,7 +150,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                 {
                     if (pair.Flag.ToLower() == "default")
                     {
-                        currentPosition = pair.Type;
+                        currentPosition[Locomotive.LocoStation] = pair.Type;
                         break;
                     }
                 }
@@ -252,7 +254,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
             /*            if (Locomotive.TrainBrakeController.TCSEmergencyBraking)
                             Locomotive.TrainBrakeController.TCSEmergencyBraking = false; */
             elapsedSecondsFromLastChange += elapsedClockSeconds;
-            // Simulator.Confirmer.MSG(currentPosition.ToString());
+            // Simulator.Confirmer.MSG(currentPosition[Locomotive.LocoStation].ToString());
             if (checkNeutral)
             {
                 if (elapsedSecondsFromLastChange > 0.2f)
@@ -1024,13 +1026,13 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
             if (movement == Movement.Forward) movedAft = false;
             if (movement == Movement.Neutral) movedForward = movedAft = false;
             messageDisplayed = false;
-            if (String.IsNullOrEmpty(currentPosition))
+            if (String.IsNullOrEmpty(currentPosition[Locomotive.LocoStation]))
             {
                 foreach (Position pair in PositionsList)
                 {
                     if (pair.Flag.ToLower() == "default")
                     {
-                        currentPosition = pair.Type;
+                        currentPosition[Locomotive.LocoStation] = pair.Type;
                         break;
                     }
                 }
@@ -1043,11 +1045,11 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                 string previous = "";
                 foreach (Position pair in PositionsList)
                 {
-                    if (pair.Type == currentPosition)
+                    if (pair.Type == currentPosition[Locomotive.LocoStation])
                     {
                         if (isFirst)
                             break;
-                        currentPosition = previous;
+                        currentPosition[Locomotive.LocoStation] = previous;
                         break;
                     }
                     isFirst = false;
@@ -1063,10 +1065,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                 {
                     if (selectNext)
                     {
-                        currentPosition = pair.Type;
+                        currentPosition[Locomotive.LocoStation] = pair.Type;
                         break;
                     }
-                    if (pair.Type == currentPosition) selectNext = true;
+                    if (pair.Type == currentPosition[Locomotive.LocoStation]) selectNext = true;
                 }
             }
             if (movement == Movement.Neutral)
@@ -1074,7 +1076,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                 noKeyPressed = true;
                 foreach (Position pair in PositionsList)
                 {
-                    if (pair.Type == currentPosition)
+                    if (pair.Type == currentPosition[Locomotive.LocoStation])
                     {
                         if (pair.Flag.ToLower() == "springloadedbackwards" || pair.Flag.ToLower() == "springloadedforwards")
                         {
@@ -1101,7 +1103,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
             {
                 foreach (Position pair in PositionsList)
                 {
-                    if (pair.Type == currentPosition)
+                    if (pair.Type == currentPosition[Locomotive.LocoStation])
                     {
                         if (pair.Flag.ToLower() == "cruisecontrol.needincreaseafteranybrake")
                         {
@@ -1118,7 +1120,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                     }
                 }
             }
-            switch (currentPosition)
+            switch (currentPosition[Locomotive.LocoStation])
             {
                 case "ThrottleIncrease":
                     {
@@ -1273,7 +1275,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
             }
             if (!messageDisplayed)
             {
-                string msg = GetPositionName(currentPosition);
+                string msg = GetPositionName(currentPosition[Locomotive.LocoStation]);
                 if (Locomotive.CruiseControl != null && !Locomotive.CruiseControl.arrIsBraking)
                 {
                     if (!string.IsNullOrEmpty(msg))
@@ -1291,10 +1293,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
             {
                 if (setNext)
                 {
-                    currentPosition = pair.Type;
+                    currentPosition[Locomotive.LocoStation] = pair.Type;
                     break;
                 }
-                if (pair.Type == currentPosition)
+                if (pair.Type == currentPosition[Locomotive.LocoStation])
                 {
                     if (pair.Flag.ToLower() == "springloadedbackwards" || pair.Flag.ToLower() == "springloadedbackwardsimmediatelly")
                     {
@@ -1302,7 +1304,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                     }
                     if (pair.Flag.ToLower() == "springloadedforwards" || pair.Flag.ToLower() == "springloadedforwardsimmediatelly")
                     {
-                        currentPosition = previous;
+                        currentPosition[Locomotive.LocoStation] = previous;
                         break;
                     }
                 }

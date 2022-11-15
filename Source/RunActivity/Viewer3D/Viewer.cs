@@ -1813,6 +1813,7 @@ namespace Orts.Viewer3D
 
             // Icik
             Simulator.ChangeCabActivated = true;
+            Simulator.LocoStationChange = true;
         }
 
         /// <summary>

@@ -67,6 +67,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Xml;
+using static Orts.Simulation.RollingStocks.SubSystems.Controllers.MultiPositionController;
 using Event = Orts.Common.Event;
 
 namespace Orts.Simulation.RollingStocks
@@ -695,6 +696,7 @@ namespace Orts.Simulation.RollingStocks
         public float[] EngineBrakeValue = new float[3];
         public float[] AripotControllerPreValue = new float[3];
         public bool[] AripotControllerCanUseThrottle = new bool[3];
+        public float[] TrainBrakeValue= new float[3];
 
         // Jindrich
         public bool IsActive = false;
@@ -1905,6 +1907,15 @@ namespace Orts.Simulation.RollingStocks
             outf.Write(StationIsActivated[1]);
             outf.Write(StationIsActivated[2]);
             outf.Write(LocoStation);
+            outf.Write(TrainBrakeValue[1]);
+            outf.Write(TrainBrakeValue[2]);
+            outf.Write(TrainBrakeValueFQR);
+            outf.Write(TrainBrakeValueO);
+            outf.Write(TrainBrakeValueL);
+            outf.Write(TrainBrakeValueR);
+            outf.Write(TrainBrakeValueN);
+            outf.Write(TrainBrakeValueA);
+            outf.Write(TrainBrakeValueE);
             #endregion
 
             base.Save(outf);
@@ -2070,6 +2081,15 @@ namespace Orts.Simulation.RollingStocks
             StationIsActivated[1] = inf.ReadBoolean();
             StationIsActivated[2] = inf.ReadBoolean();
             LocoStation = inf.ReadInt32();
+            TrainBrakeValue[1] = inf.ReadSingle();
+            TrainBrakeValue[2] = inf.ReadSingle();
+            TrainBrakeValueFQR = inf.ReadSingle(); 
+            TrainBrakeValueO = inf.ReadSingle(); 
+            TrainBrakeValueL = inf.ReadSingle();
+            TrainBrakeValueR = inf.ReadSingle();
+            TrainBrakeValueN = inf.ReadSingle();
+            TrainBrakeValueA = inf.ReadSingle();
+            TrainBrakeValueE = inf.ReadSingle();
             #endregion
 
             base.Restore(inf);
@@ -2172,7 +2192,52 @@ namespace Orts.Simulation.RollingStocks
             Simulator.voltageChangeMarkers = new List<VoltageChangeMarker>();
             SetUpVoltageChangeMarkers();
 
-            // Icik            
+            // Icik
+            // Nastavení výchozí polohy brzdiče
+            LocoStation = 1;
+            if (UsingRearCab)
+                LocoStation= 2;
+            if (LocoStation == 1)
+            {
+                if (TrainBrakeController.DefaultLapBrakeValue > 0)
+                    TrainBrakeValue[1] = TrainBrakeController.DefaultLapBrakeValue;
+                else
+                if (TrainBrakeController.DefaultNeutralBrakeValue > 0)
+                    TrainBrakeValue[1] = TrainBrakeController.DefaultNeutralBrakeValue;
+                else
+                if (TrainBrakeController.DefaultBrakeValue > 0)
+                    TrainBrakeValue[1] = TrainBrakeController.DefaultBrakeValue;
+
+                if (TrainBrakeController.DefaultLapBrakeValue > 0)
+                    TrainBrakeValue[2] = TrainBrakeController.DefaultLapBrakeValue;
+                else
+                if (TrainBrakeController.DefaultNeutralBrakeValue > 0)
+                    TrainBrakeValue[2] = TrainBrakeController.DefaultNeutralBrakeValue;
+                else
+                if (TrainBrakeController.DefaultBrakeValue > 0)
+                    TrainBrakeValue[2] = TrainBrakeController.DefaultBrakeValue;                
+            }
+            else
+            {
+                if (TrainBrakeController.DefaultLapBrakeValue > 0)
+                    TrainBrakeValue[2] = TrainBrakeController.DefaultLapBrakeValue;
+                else
+                if (TrainBrakeController.DefaultNeutralBrakeValue > 0)
+                    TrainBrakeValue[2] = TrainBrakeController.DefaultNeutralBrakeValue;
+                else
+                if (TrainBrakeController.DefaultBrakeValue > 0)
+                    TrainBrakeValue[2] = TrainBrakeController.DefaultBrakeValue;
+
+                if (TrainBrakeController.DefaultLapBrakeValue > 0)
+                    TrainBrakeValue[1] = TrainBrakeController.DefaultLapBrakeValue;
+                else
+                if (TrainBrakeController.DefaultNeutralBrakeValue > 0)
+                    TrainBrakeValue[1] = TrainBrakeController.DefaultNeutralBrakeValue;
+                else
+                if (TrainBrakeController.DefaultBrakeValue > 0)
+                    TrainBrakeValue[1] = TrainBrakeController.DefaultBrakeValue;
+            }
+
             if (MaxPowerWAC != 0)
                 MaxPowerWBase = MaxPowerWAC;
             else
@@ -4390,8 +4455,8 @@ namespace Orts.Simulation.RollingStocks
                 Pantograph3Switch[1] = Pantograph3Switch[2] = 0;
                 DoorSwitch[1] = DoorSwitch[2] = 1;                
                 DieselDirectionControllerPosition[1] = DieselDirectionController2Position[1] = DieselDirectionController4Position[1] = -1;
-                DieselDirectionControllerPosition[2] = DieselDirectionController2Position[2] = DieselDirectionController4Position[2] = -1;
-                
+                DieselDirectionControllerPosition[2] = DieselDirectionController2Position[2] = DieselDirectionController4Position[2] = -1;                
+
                 Headlight = 0;
                 firstFrame = false;
                 if (Simulator.Settings.AirEmpty)
@@ -4841,6 +4906,7 @@ namespace Orts.Simulation.RollingStocks
                 TrainAlerterLogic();
                 WipersLogic();
                 EngineBrakeValueLogic();
+                TrainBrakeValueLogic();
                 DirectionControllerLogic();                                
                 PowerCurrentCalculation();
                 BrakeCurrentCalculation();
@@ -4892,8 +4958,8 @@ namespace Orts.Simulation.RollingStocks
             elapsedTime = elapsedClockSeconds;
             string s = this.LocomotiveName;
             UpdatePowerSupply(elapsedClockSeconds);
-            UpdateControllers(elapsedClockSeconds);            
-
+            UpdateControllers(elapsedClockSeconds);
+            
             if (Battery)
             {
                 if (SplashScreenWillBeDisplayed && SplashScreen)
@@ -8441,7 +8507,7 @@ namespace Orts.Simulation.RollingStocks
         {
             LocoStation = 1;
             if (UsingRearCab)
-                LocoStation = 2;
+                LocoStation = 2;            
 
             if (PowerKeyPosition[LocoStation] == 2)
                 StationIsActivated[LocoStation] = true;
@@ -8798,6 +8864,116 @@ namespace Orts.Simulation.RollingStocks
                     SetEngineBrakeValue(EngineBrakeValue[0]);
                     SetEngineBrakePercent(EngineBrakeValue[0] * 100);
                 }
+            }
+        }
+
+        float TrainBrakeValueFQR;
+        float TrainBrakeValueO;
+        float TrainBrakeValueL;
+        float TrainBrakeValueR;
+        float TrainBrakeValueN;
+        float TrainBrakeValueA;
+        float TrainBrakeValueE;
+        public void TrainBrakeValueLogic()
+        {
+            if (IsLeadLocomotive())
+            {                
+                //Simulator.Confirmer.MSG("TrainBrakeValue[0] = " + TrainBrakeValue[0] + "        TrainBrakeValue[1] = " + TrainBrakeValue[1] + "   TrainBrakeValue[2] = " + TrainBrakeValue[2]);
+                if (Simulator.LocoStationChange)
+                {
+                    SetTrainBrakePercent(TrainBrakeValue[LocoStation] * 100);
+                    Simulator.LocoStationChange = false;                    
+                }
+                #region TrainBrakeCheckPosition
+                switch (TrainBrakeController.TrainBrakeControllerState)
+                {
+                    case ControllerState.FullQuickRelease:
+                        TrainBrakeValueFQR = TrainBrakeValue[LocoStation];
+                        break;
+                    case ControllerState.OverchargeStart:
+                        TrainBrakeValueO = TrainBrakeValue[LocoStation];
+                        break;
+                    case ControllerState.Lap:
+                        TrainBrakeValueL = TrainBrakeValue[LocoStation];
+                        break;
+                    case ControllerState.Release:
+                        TrainBrakeValueR = TrainBrakeValue[LocoStation];
+                        break;
+                    case ControllerState.Neutral:
+                        TrainBrakeValueN = TrainBrakeValue[LocoStation];
+                        break;
+                    case ControllerState.Apply:
+                        TrainBrakeValueA = TrainBrakeValue[LocoStation];
+                        break;
+                    case ControllerState.Emergency:
+                        TrainBrakeValueE = TrainBrakeValue[LocoStation];
+                        break;
+                }
+
+                if (LocoStation == 1)
+                {
+                    if (TrainBrakeValue[2] == TrainBrakeValueFQR)
+                        BrakeSystem.QuickRelease = true;                    
+                    else
+                        BrakeSystem.QuickRelease = false;
+                    if (TrainBrakeValue[2] == TrainBrakeValueO)
+                        BrakeSystem.Overcharge = true;
+                    else
+                        BrakeSystem.Overcharge = false;
+                    if (TrainBrakeValue[2] == TrainBrakeValueL)
+                        BrakeSystem.Lap = true;
+                    else
+                        BrakeSystem.Lap = false;
+                    if (TrainBrakeValue[2] == TrainBrakeValueR)
+                        BrakeSystem.Release = true;
+                    else
+                        BrakeSystem.Release = false;
+                    if (TrainBrakeValue[2] == TrainBrakeValueN)
+                        BrakeSystem.Neutral = true;
+                    else
+                        BrakeSystem.Neutral = false;
+                    if (TrainBrakeValue[2] == TrainBrakeValueA)
+                        BrakeSystem.Apply = true;
+                    else
+                        BrakeSystem.Apply = false;
+                    if (TrainBrakeValue[2] == TrainBrakeValueE)
+                        BrakeSystem.Emergency = true;
+                    else
+                        BrakeSystem.Emergency = false;
+                }
+                if (LocoStation == 2)
+                {
+                    if (TrainBrakeValue[1] == TrainBrakeValueFQR)
+                        BrakeSystem.QuickRelease = true;
+                    else
+                        BrakeSystem.QuickRelease = false;
+                    if (TrainBrakeValue[1] == TrainBrakeValueO)
+                        BrakeSystem.Overcharge = true;
+                    else
+                        BrakeSystem.Overcharge = false;
+                    if (TrainBrakeValue[1] == TrainBrakeValueL)
+                        BrakeSystem.Lap = true;
+                    else
+                        BrakeSystem.Lap = false;
+                    if (TrainBrakeValue[1] == TrainBrakeValueR)
+                        BrakeSystem.Release = true;
+                    else
+                        BrakeSystem.Release = false;
+                    if (TrainBrakeValue[1] == TrainBrakeValueN)
+                        BrakeSystem.Neutral = true;
+                    else
+                        BrakeSystem.Neutral = false;
+                    if (TrainBrakeValue[1] == TrainBrakeValueA)
+                        BrakeSystem.Apply = true;
+                    else
+                        BrakeSystem.Apply = false;
+                    if (TrainBrakeValue[1] == TrainBrakeValueE)
+                        BrakeSystem.Emergency = true;
+                    else
+                        BrakeSystem.Emergency = false;
+                }
+                #endregion
+                TrainBrakeValue[LocoStation] = TrainBrakeController.CurrentValue;
             }
         }
 
@@ -12219,11 +12395,13 @@ namespace Orts.Simulation.RollingStocks
                         {
                             if (CruiseControl.arrIsBraking)
                             {
-                                data = previousTrainBrakeData;
+                                //data = previousTrainBrakeData;
+                                data = TrainBrakeValue[LocoStation];
                                 break;
                             }
                         }
-                        data = previousTrainBrakeData = (TrainBrakeController == null) ? 0.0f : TrainBrakeController.CurrentValue;
+                        //data = previousTrainBrakeData = (TrainBrakeController == null) ? 0.0f : TrainBrakeController.CurrentValue;
+                        data = previousTrainBrakeData = (TrainBrakeController == null) ? 0.0f : TrainBrakeValue[LocoStation];
                         break;
                     }
                 case CABViewControlTypes.ORTS_BAILOFF:

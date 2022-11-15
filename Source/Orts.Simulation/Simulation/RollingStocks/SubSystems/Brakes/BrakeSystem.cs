@@ -156,8 +156,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes
         public float PressureConverterBaseTrainBrake;
         public float PressureConverterBaseEDB;
         public float PressureConverterBaseNoEDB;
-        public float PressureConverter;        
-        public float MCP_TrainBrake = 4.0f * 14.50377f;                
+        public float PressureConverter;
+        public float MCP_TrainBrake = 4.0f * 14.50377f;
         public bool ARRTrainBrakeCanEngage;
         public float ARRTrainBrakeCycle0 = 0;
         public float ARRTrainBrakeCycle1 = 0;
@@ -192,6 +192,19 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes
         public bool CarHasMechanicStuckBrake_2;
         public bool CarHasProblemWithBrake;
 
+        public bool Apply = false;
+        public bool ApplyGA = false;
+        public bool Release = false;
+        public bool Lap = false;
+        public bool Overcharge = false;
+        public bool QuickRelease = false;
+        public bool Running = false;
+        public bool SlowApplyStart = false;
+        public bool Emergency = false;
+        public bool Neutral = false;
+        public bool MatrosovRelease = false;
+        public bool WestingHouseRelease = false;
+        public bool EPApply = false;
 
         public float AuxPowerOnDelayS { get; set; }
 
@@ -303,7 +316,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes
         public bool CarBPIntact;
 
         public abstract void Save(BinaryWriter outf);
-
+                
         public abstract void Restore(BinaryReader inf);
 
         public abstract void PropagateBrakePressure(float elapsedClockSeconds);

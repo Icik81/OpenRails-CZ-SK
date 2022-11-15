@@ -215,6 +215,7 @@ namespace Orts.Simulation
         public bool PowerKeyInPocket;
         public bool TrainPowerKey;
         public bool PowerKeyNoPocketBlocked;
+        public bool LocoStationChange;
 
 
         public List<PowerSupplyStation> powerSupplyStations;

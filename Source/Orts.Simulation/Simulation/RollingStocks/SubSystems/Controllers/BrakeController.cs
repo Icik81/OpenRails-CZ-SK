@@ -536,7 +536,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
         public int SetValue(float value)
         {
             var oldNotch = CurrentNotch;
-            SignalEvent(BrakeControllerEvent.SetCurrentValue, value);
+            SignalEvent(BrakeControllerEvent.SetCurrentValue, value);            
 
             var change = CurrentNotch > oldNotch || CurrentValue > OldValue + 0.1f || CurrentValue == 1 && OldValue < 1 || CurrentValue < value - 0.1f
                 ? 1 : CurrentNotch < oldNotch || CurrentValue < OldValue - 0.1f || CurrentValue == 0 && OldValue > 0 || CurrentValue > value + 0.1f ? -1 : 0;
