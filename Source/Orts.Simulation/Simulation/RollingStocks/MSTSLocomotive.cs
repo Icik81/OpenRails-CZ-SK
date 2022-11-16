@@ -9400,33 +9400,95 @@ namespace Orts.Simulation.RollingStocks
                                 break;
                             case 2: // Panto zapnout
                                 PantoCommandDown = false;
-                                if (AirForPantograph && Pantographs[p1].State != PantographState.Up)
+                                if (PantoMode == PantoModes.Auto || PantoMode == PantoModes.Aft)
                                 {
-                                    SignalEvent(PowerSupplyEvent.RaisePantograph, p1);
-                                    if (MPManager.IsMultiPlayer())
-                                        MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps1, 1).ToString());
-                                }
-                                if (Pantographs[p2].State != PantographState.Down)
-                                {
-                                    SignalEvent(PowerSupplyEvent.LowerPantograph, p2);
-                                    if (MPManager.IsMultiPlayer())
-                                        MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps2, 1).ToString());
-                                }
-
-                                if (AcceptMUSignals)
-                                    foreach (TrainCar car in Train.Cars)
+                                    if (AirForPantograph && Pantographs[p1].State != PantographState.Up)
                                     {
-                                        if (car.AcceptMUSignals)
+                                        SignalEvent(PowerSupplyEvent.RaisePantograph, p1);
+                                        if (MPManager.IsMultiPlayer())
+                                            MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps1, 1).ToString());
+                                    }
+                                    if (Pantographs[p2].State != PantographState.Down)
+                                    {
+                                        SignalEvent(PowerSupplyEvent.LowerPantograph, p2);
+                                        if (MPManager.IsMultiPlayer())
+                                            MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps2, 0).ToString());
+                                    }
+
+                                    if (AcceptMUSignals)
+                                        foreach (TrainCar car in Train.Cars)
                                         {
-                                            car.SignalEvent(PowerSupplyEvent.RaisePantograph, p1);
-                                            car.SignalEvent(PowerSupplyEvent.LowerPantograph, p2);
-                                            if (MPManager.IsMultiPlayer())
+                                            if (car.AcceptMUSignals)
                                             {
-                                                MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps1, 1).ToString());
-                                                MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps2, 0).ToString());
+                                                car.SignalEvent(PowerSupplyEvent.RaisePantograph, p1);
+                                                car.SignalEvent(PowerSupplyEvent.LowerPantograph, p2);
+                                                if (MPManager.IsMultiPlayer())
+                                                {
+                                                    MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps1, 1).ToString());
+                                                    MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps2, 0).ToString());
+                                                }
                                             }
                                         }
+                                }
+                                if (PantoMode == PantoModes.Both)
+                                {
+                                    if (AirForPantograph && Pantographs[p1].State != PantographState.Up)
+                                    {
+                                        SignalEvent(PowerSupplyEvent.RaisePantograph, p1);
+                                        if (MPManager.IsMultiPlayer())
+                                            MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps1, 1).ToString());
                                     }
+                                    if (AirForPantograph && Pantographs[p2].State != PantographState.Up)
+                                    {
+                                        SignalEvent(PowerSupplyEvent.RaisePantograph, p2);
+                                        if (MPManager.IsMultiPlayer())
+                                            MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps2, 1).ToString());
+                                    }
+                                    if (AcceptMUSignals)
+                                        foreach (TrainCar car in Train.Cars)
+                                        {
+                                            if (car.AcceptMUSignals)
+                                            {
+                                                car.SignalEvent(PowerSupplyEvent.RaisePantograph, p1);
+                                                car.SignalEvent(PowerSupplyEvent.RaisePantograph, p2);
+                                                if (MPManager.IsMultiPlayer())
+                                                {
+                                                    MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps1, 1).ToString());
+                                                    MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps2, 1).ToString());
+                                                }
+                                            }
+                                        }
+                                }
+                                if (PantoMode == PantoModes.Forward)
+                                {
+                                    if (AirForPantograph && Pantographs[p2].State != PantographState.Up)
+                                    {
+                                        SignalEvent(PowerSupplyEvent.RaisePantograph, p2);
+                                        if (MPManager.IsMultiPlayer())
+                                            MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps2, 1).ToString());
+                                    }
+                                    if (Pantographs[p1].State != PantographState.Down)
+                                    {
+                                        SignalEvent(PowerSupplyEvent.LowerPantograph, p1);
+                                        if (MPManager.IsMultiPlayer())
+                                            MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps1, 0).ToString());
+                                    }
+
+                                    if (AcceptMUSignals)
+                                        foreach (TrainCar car in Train.Cars)
+                                        {
+                                            if (car.AcceptMUSignals)
+                                            {
+                                                car.SignalEvent(PowerSupplyEvent.RaisePantograph, p2);
+                                                car.SignalEvent(PowerSupplyEvent.LowerPantograph, p1);
+                                                if (MPManager.IsMultiPlayer())
+                                                {
+                                                    MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps1, 0).ToString());
+                                                    MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps2, 1).ToString());
+                                                }
+                                            }
+                                        }
+                                }
                                 break;
                         }
                         PrePantoStatus[LocoStation] = Pantograph3Switch[LocoStation];
