@@ -3878,15 +3878,15 @@ namespace Orts.Viewer3D.RollingStock
                     break;
 
                 case CABViewControlTypes.CABHEATING_OFFON:
-                    if (ChangedValue(Locomotive.CabHeating_OffOn ? 1 : 0) > 0)
+                    if (ChangedValue(Locomotive.CabHeating_OffOn[Locomotive.LocoStation] ? 1 : 0) > 0)
                     {
-                        Locomotive.CabHeating_OffOn = true;
+                        Locomotive.CabHeating_OffOn[Locomotive.LocoStation] = true;
                         new ToggleCabHeating_OffOnCommand(Viewer.Log);
                     }
                     else
-                    if (ChangedValue(Locomotive.CabHeating_OffOn ? 1 : 0) < 0)
+                    if (ChangedValue(Locomotive.CabHeating_OffOn[Locomotive.LocoStation] ? 1 : 0) < 0)
                     {
-                        Locomotive.CabHeating_OffOn = false;
+                        Locomotive.CabHeating_OffOn[Locomotive.LocoStation] = false;
                         new ToggleCabHeating_OffOnCommand(Viewer.Log);
                     }
                     break;

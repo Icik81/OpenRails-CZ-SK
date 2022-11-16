@@ -563,7 +563,7 @@ namespace Orts.Simulation.RollingStocks
         public bool LapButton;
         bool LapButtonPressed = false;
         public bool LapButton_Activated;
-        public bool LapActive;
+        public bool[] LapActive = new bool[3];
         public bool SetLapButtonStart;
         int PantoStatus = 0;        
         public float HeatingMaxCurrentA;
@@ -1833,7 +1833,8 @@ namespace Orts.Simulation.RollingStocks
             outf.Write(DieselMotorPowerLost);
             outf.Write(DieselLocoTempReady);            
             outf.Write(PrevDoorSwitch);
-            outf.Write(LapActive);
+            outf.Write(LapActive[1]);
+            outf.Write(LapActive[2]);
             outf.Write(DirectionButtonPosition);
             outf.Write(CarIsPlayerLocoSet);
             outf.Write(BreakEDBButton_Activated);                        
@@ -1916,6 +1917,7 @@ namespace Orts.Simulation.RollingStocks
             outf.Write(TrainBrakeValueN);
             outf.Write(TrainBrakeValueA);
             outf.Write(TrainBrakeValueE);
+            outf.Write(TrainBrakeValueEPA);
             #endregion
 
             base.Save(outf);
@@ -2007,7 +2009,8 @@ namespace Orts.Simulation.RollingStocks
             DieselMotorPowerLost = inf.ReadBoolean();
             DieselLocoTempReady = inf.ReadBoolean();            
             PrevDoorSwitch = inf.ReadSingle();
-            LapActive = inf.ReadBoolean();
+            LapActive[1] = inf.ReadBoolean();
+            LapActive[2] = inf.ReadBoolean();
             DirectionButtonPosition = inf.ReadInt32();
             CarIsPlayerLocoSet = inf.ReadBoolean();
             BreakEDBButton_Activated = inf.ReadBoolean();                        
@@ -2090,6 +2093,7 @@ namespace Orts.Simulation.RollingStocks
             TrainBrakeValueN = inf.ReadSingle();
             TrainBrakeValueA = inf.ReadSingle();
             TrainBrakeValueE = inf.ReadSingle();
+            TrainBrakeValueEPA = inf.ReadSingle();
             #endregion
 
             base.Restore(inf);
@@ -2192,52 +2196,7 @@ namespace Orts.Simulation.RollingStocks
             Simulator.voltageChangeMarkers = new List<VoltageChangeMarker>();
             SetUpVoltageChangeMarkers();
 
-            // Icik
-            // Nastavení výchozí polohy brzdiče
-            LocoStation = 1;
-            if (UsingRearCab)
-                LocoStation= 2;
-            if (LocoStation == 1)
-            {
-                if (TrainBrakeController.DefaultLapBrakeValue > 0)
-                    TrainBrakeValue[1] = TrainBrakeController.DefaultLapBrakeValue;
-                else
-                if (TrainBrakeController.DefaultNeutralBrakeValue > 0)
-                    TrainBrakeValue[1] = TrainBrakeController.DefaultNeutralBrakeValue;
-                else
-                if (TrainBrakeController.DefaultBrakeValue > 0)
-                    TrainBrakeValue[1] = TrainBrakeController.DefaultBrakeValue;
-
-                if (TrainBrakeController.DefaultLapBrakeValue > 0)
-                    TrainBrakeValue[2] = TrainBrakeController.DefaultLapBrakeValue;
-                else
-                if (TrainBrakeController.DefaultNeutralBrakeValue > 0)
-                    TrainBrakeValue[2] = TrainBrakeController.DefaultNeutralBrakeValue;
-                else
-                if (TrainBrakeController.DefaultBrakeValue > 0)
-                    TrainBrakeValue[2] = TrainBrakeController.DefaultBrakeValue;                
-            }
-            else
-            {
-                if (TrainBrakeController.DefaultLapBrakeValue > 0)
-                    TrainBrakeValue[2] = TrainBrakeController.DefaultLapBrakeValue;
-                else
-                if (TrainBrakeController.DefaultNeutralBrakeValue > 0)
-                    TrainBrakeValue[2] = TrainBrakeController.DefaultNeutralBrakeValue;
-                else
-                if (TrainBrakeController.DefaultBrakeValue > 0)
-                    TrainBrakeValue[2] = TrainBrakeController.DefaultBrakeValue;
-
-                if (TrainBrakeController.DefaultLapBrakeValue > 0)
-                    TrainBrakeValue[1] = TrainBrakeController.DefaultLapBrakeValue;
-                else
-                if (TrainBrakeController.DefaultNeutralBrakeValue > 0)
-                    TrainBrakeValue[1] = TrainBrakeController.DefaultNeutralBrakeValue;
-                else
-                if (TrainBrakeController.DefaultBrakeValue > 0)
-                    TrainBrakeValue[1] = TrainBrakeController.DefaultBrakeValue;
-            }
-
+            // Icik           
             if (MaxPowerWAC != 0)
                 MaxPowerWBase = MaxPowerWAC;
             else
@@ -3392,23 +3351,23 @@ namespace Orts.Simulation.RollingStocks
             {
                 if (car is MSTSLocomotive)
                 {
-                    if (car.CabHeating_OffOn && AuxPowerOn)
+                    if (car.CabHeating_OffOn[LocoStation] && AuxPowerOn)
                         car.CabHeatingIsOn = true;
-                    if (!car.CabHeating_OffOn || !AuxPowerOn)
+                    if (!car.CabHeating_OffOn[LocoStation] || !AuxPowerOn)
                         car.CabHeatingIsOn = false;
                 }
             }
 
             // Spustí zvuk topení v kabině při inicializaci loko
-            if (CabHeating_OffOn && !CarCabHeatingIsSetOn)
+            if (CabHeating_OffOn[LocoStation] && !CarCabHeatingIsSetOn)
             {
                 SignalEvent(Event.CabHeating_OffOnOn);
                 CarCabHeatingIsSetOn = true;
             }
             // Deaktivuje vytápění stanoviště při shozeném jističi topení nebo baterií
-            if (CabHeating_OffOn && (!BrakeSystem.HeatingIsOn || !Battery || PowerKeyPosition[LocoStation] != 2) && !DieselDirectionController && !DieselDirectionController2)
+            if (CabHeating_OffOn[LocoStation] && (!BrakeSystem.HeatingIsOn || !Battery || PowerKeyPosition[LocoStation] != 2) && !DieselDirectionController && !DieselDirectionController2)
             {
-                CabHeating_OffOn = false;                
+                CabHeating_OffOn[LocoStation] = false;                
                 SignalEvent(Event.CabHeating_OffOnOff);
             }            
 
@@ -8874,6 +8833,7 @@ namespace Orts.Simulation.RollingStocks
         float TrainBrakeValueN;
         float TrainBrakeValueA;
         float TrainBrakeValueE;
+        float TrainBrakeValueEPA;
         public void TrainBrakeValueLogic()
         {
             if (IsLeadLocomotive())
@@ -8908,69 +8868,80 @@ namespace Orts.Simulation.RollingStocks
                     case ControllerState.Emergency:
                         TrainBrakeValueE = TrainBrakeValue[LocoStation];
                         break;
+                    case ControllerState.EPApply:
+                        TrainBrakeValueEPA = TrainBrakeValue[LocoStation];
+                        break;
                 }
 
                 if (LocoStation == 1)
                 {
-                    if (TrainBrakeValue[2] == TrainBrakeValueFQR)
+                    if (TrainBrakeValue[2] == TrainBrakeValueFQR && !LapActive[2])
                         BrakeSystem.QuickRelease = true;                    
                     else
                         BrakeSystem.QuickRelease = false;
-                    if (TrainBrakeValue[2] == TrainBrakeValueO)
+                    if (TrainBrakeValue[2] == TrainBrakeValueO && !LapActive[2])
                         BrakeSystem.Overcharge = true;
                     else
                         BrakeSystem.Overcharge = false;
-                    if (TrainBrakeValue[2] == TrainBrakeValueL)
+                    if (TrainBrakeValue[2] == TrainBrakeValueL && !LapActive[2])
                         BrakeSystem.Lap = true;
                     else
                         BrakeSystem.Lap = false;
-                    if (TrainBrakeValue[2] == TrainBrakeValueR)
+                    if (TrainBrakeValue[2] == TrainBrakeValueR && !LapActive[2])
                         BrakeSystem.Release = true;
                     else
                         BrakeSystem.Release = false;
-                    if (TrainBrakeValue[2] == TrainBrakeValueN)
+                    if (TrainBrakeValue[2] == TrainBrakeValueN && !LapActive[2])
                         BrakeSystem.Neutral = true;
                     else
                         BrakeSystem.Neutral = false;
-                    if (TrainBrakeValue[2] == TrainBrakeValueA)
+                    if (TrainBrakeValue[2] == TrainBrakeValueA && !LapActive[2])
                         BrakeSystem.Apply = true;
                     else
                         BrakeSystem.Apply = false;
-                    if (TrainBrakeValue[2] == TrainBrakeValueE)
+                    if (TrainBrakeValue[2] == TrainBrakeValueE && !LapActive[2])
                         BrakeSystem.Emergency = true;
                     else
                         BrakeSystem.Emergency = false;
+                    if (TrainBrakeValue[2] == TrainBrakeValueEPA && !LapActive[2])
+                        BrakeSystem.EPApply = true;
+                    else
+                        BrakeSystem.EPApply = false;
                 }
                 if (LocoStation == 2)
                 {
-                    if (TrainBrakeValue[1] == TrainBrakeValueFQR)
+                    if (TrainBrakeValue[1] == TrainBrakeValueFQR && !LapActive[1])
                         BrakeSystem.QuickRelease = true;
                     else
                         BrakeSystem.QuickRelease = false;
-                    if (TrainBrakeValue[1] == TrainBrakeValueO)
+                    if (TrainBrakeValue[1] == TrainBrakeValueO && !LapActive[1])
                         BrakeSystem.Overcharge = true;
                     else
                         BrakeSystem.Overcharge = false;
-                    if (TrainBrakeValue[1] == TrainBrakeValueL)
+                    if (TrainBrakeValue[1] == TrainBrakeValueL && !LapActive[1])
                         BrakeSystem.Lap = true;
                     else
                         BrakeSystem.Lap = false;
-                    if (TrainBrakeValue[1] == TrainBrakeValueR)
+                    if (TrainBrakeValue[1] == TrainBrakeValueR && !LapActive[1])
                         BrakeSystem.Release = true;
                     else
                         BrakeSystem.Release = false;
-                    if (TrainBrakeValue[1] == TrainBrakeValueN)
+                    if (TrainBrakeValue[1] == TrainBrakeValueN && !LapActive[1])
                         BrakeSystem.Neutral = true;
                     else
                         BrakeSystem.Neutral = false;
-                    if (TrainBrakeValue[1] == TrainBrakeValueA)
+                    if (TrainBrakeValue[1] == TrainBrakeValueA && !LapActive[1])
                         BrakeSystem.Apply = true;
                     else
                         BrakeSystem.Apply = false;
-                    if (TrainBrakeValue[1] == TrainBrakeValueE)
+                    if (TrainBrakeValue[1] == TrainBrakeValueE && !LapActive[1])
                         BrakeSystem.Emergency = true;
                     else
                         BrakeSystem.Emergency = false;
+                    if (TrainBrakeValue[1] == TrainBrakeValueEPA && !LapActive[1])
+                        BrakeSystem.EPApply = true;
+                    else
+                        BrakeSystem.EPApply = false;
                 }
                 #endregion
                 TrainBrakeValue[LocoStation] = TrainBrakeController.CurrentValue;
@@ -9998,10 +9969,10 @@ namespace Orts.Simulation.RollingStocks
             CabHeatingEnable = true;
             if (CabHeatingEnable && BrakeSystem.HeatingIsOn)
             {
-                CabHeating_OffOn = !CabHeating_OffOn;
-                if (CabHeating_OffOn) SignalEvent(Event.CabHeating_OffOnOn);
+                CabHeating_OffOn[LocoStation] = !CabHeating_OffOn[LocoStation];
+                if (CabHeating_OffOn[LocoStation]) SignalEvent(Event.CabHeating_OffOnOn);
                 else SignalEvent(Event.CabHeating_OffOnOff);
-                if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.CabHeating_OffOn, CabHeating_OffOn ? CabSetting.On : CabSetting.Off);
+                if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.CabHeating_OffOn, CabHeating_OffOn[LocoStation] ? CabSetting.On : CabSetting.Off);
             }
         }
         public void ToggleQuickReleaseButton(bool quickReleaseButton)
@@ -10070,14 +10041,14 @@ namespace Orts.Simulation.RollingStocks
                 {
                     SignalEvent(Event.LapButton);
                     LapButtonPressed = true;
-                    LapActive = !LapActive;
+                    LapActive[LocoStation] = !LapActive[LocoStation];
                 }
                 if (!LapButton && LapButtonPressed)
                 {
                     SignalEvent(Event.LapButtonRelease);
                     LapButtonPressed = false;
                 }
-                if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.LapActive, LapActive ? CabSetting.On : CabSetting.Off);
+                if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.LapActive, LapActive[LocoStation] ? CabSetting.On : CabSetting.Off);
             }
         }
 
@@ -10124,7 +10095,7 @@ namespace Orts.Simulation.RollingStocks
             if (SetLapButtonStart && LapButtonEnable && Battery)
             {
                 SetLapButtonStart = false;
-                LapActive = true;
+                LapActive[LocoStation] = true;
             }
         }
 
@@ -13646,7 +13617,7 @@ namespace Orts.Simulation.RollingStocks
                 case CABViewControlTypes.LAP_BUTTON:
                     {
                         LapButtonEnable = true;
-                        if (LapActive)
+                        if (LapActive[LocoStation])
                             data = 1;
                         else data = 0;
                         if (!Battery) data = 0;
