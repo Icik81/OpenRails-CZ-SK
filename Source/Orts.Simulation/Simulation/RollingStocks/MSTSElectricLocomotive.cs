@@ -1961,6 +1961,12 @@ namespace Orts.Simulation.RollingStocks
                 PantographOnPressedTime = 0;
                 PantographOffPressedTime = 0;
             }
+
+            if (PantographOnPressedTime > 1.5f)
+                PantographOnPressedTest = false;
+            if (PantographOffPressedTime > 1.5f)
+                PantographOffPressedTest = false;
+
             if (PantographOnPressedTest)
                 PantographOnPressedTime += elapsedClockSeconds;
             if (PantographOffPressedTest)
