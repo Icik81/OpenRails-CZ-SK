@@ -3371,7 +3371,7 @@ namespace Orts.Simulation.RollingStocks
                 CarCabHeatingIsSetOn = true;
             }
             // Deaktivuje vytápění stanoviště při shozeném jističi topení nebo baterií
-            if (CabHeating_OffOn[LocoStation] && (!BrakeSystem.HeatingIsOn || !Battery || PowerKeyPosition[LocoStation] != 2) && !DieselDirectionController && !DieselDirectionController2)
+            if (CabHeating_OffOn[LocoStation] && (!BrakeSystem.HeatingIsOn || !Battery) && !DieselDirectionController && !DieselDirectionController2)
             {
                 CabHeating_OffOn[LocoStation] = false;                
                 SignalEvent(Event.CabHeating_OffOnOff);
@@ -3386,7 +3386,7 @@ namespace Orts.Simulation.RollingStocks
 
                 if ((Heating_OffOn[LocoStation] && !HeatingOverCurrent && AuxPowerOn && StationIsActivated[LocoStation]) || Train.CarSteamHeatOn)
                     HeatingIsOn = true;
-                if ((!Heating_OffOn[LocoStation] || HeatingOverCurrent || !AuxPowerOn || PowerKeyPosition[LocoStation] != 2) && !Train.CarSteamHeatOn)
+                if ((!Heating_OffOn[LocoStation] || HeatingOverCurrent || !AuxPowerOn) && !Train.CarSteamHeatOn)
                 {
                     if (HeatingIsOn)                    
                         SignalEvent(Event.Heating_OffOnOff);                    
@@ -3404,7 +3404,7 @@ namespace Orts.Simulation.RollingStocks
                 else
                     SignalEvent(Event.HeatingOverCurrentOff);
 
-                if (!Heating_OffOn[LocoStation] || PowerKeyPosition[LocoStation] != 2)
+                if (!Heating_OffOn[LocoStation])
                     HeatingOverCurrent = false;
 
                 I_HeatingData0 = (float)Math.Round(I_HeatingData);
@@ -8892,6 +8892,7 @@ namespace Orts.Simulation.RollingStocks
                 //Simulator.Confirmer.MSG("TrainBrakeValue[0] = " + TrainBrakeValue[0] + "        TrainBrakeValue[1] = " + TrainBrakeValue[1] + "   TrainBrakeValue[2] = " + TrainBrakeValue[2]);                
                 if (Simulator.LocoStationChange)
                 {
+                    SetTrainBrakeValue(TrainBrakeValue[LocoStation], 1);
                     SetTrainBrakePercent(TrainBrakeValue[LocoStation] * 100);                    
                     Simulator.LocoStationChange = false;                    
                 }                
