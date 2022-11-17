@@ -696,6 +696,7 @@ namespace Orts.Simulation.RollingStocks
         public float[] AripotControllerPreValue = new float[3];
         public bool[] AripotControllerCanUseThrottle = new bool[3];
         public float[] TrainBrakeValue= new float[3];
+        public float[] prevEngineBrakeValue = new float[3];
 
         // Jindrich
         public bool IsActive = false;
@@ -1918,6 +1919,8 @@ namespace Orts.Simulation.RollingStocks
             outf.Write(TrainBrakeValueE);
             outf.Write(TrainBrakeValueEPA);
             outf.Write(TogglePowerKeyCycle);
+            outf.Write(prevEngineBrakeValue[1]);
+            outf.Write(prevEngineBrakeValue[2]);
             #endregion
 
             base.Save(outf);
@@ -2095,6 +2098,8 @@ namespace Orts.Simulation.RollingStocks
             TrainBrakeValueE = inf.ReadSingle();
             TrainBrakeValueEPA = inf.ReadSingle();
             TogglePowerKeyCycle = inf.ReadInt32();
+            prevEngineBrakeValue[1] = inf.ReadSingle();
+            prevEngineBrakeValue[2] = inf.ReadSingle();
             #endregion
 
             base.Restore(inf);
@@ -3766,7 +3771,7 @@ namespace Orts.Simulation.RollingStocks
                     }
                     else
                     {   // Jednotka je zapnutá a aktivní (termostat vypnutý)
-                        if (car.LocomotiveCab && car.DieselHeaterPower == 0 && !(car is MSTSElectricLocomotive))
+                        if (car.LocomotiveCab && car.DieselHeaterPower == 0 && car is MSTSDieselLocomotive)
                         {
                             // Kalorifer
                             car.PowerReductionByHeating0 = 0.85f * car.PowerReductionByHeating * mstsDieselLocomotive.DieselEngines[0].RealDieselWaterTemperatureDeg / mstsDieselLocomotive.DieselEngines[0].DieselIdleTemperatureDegC;
@@ -4467,7 +4472,8 @@ namespace Orts.Simulation.RollingStocks
                         PowerKey = true;
                         StationIsActivated[LocoStation] = true;                                                
                         EngineBrakeValue[LocoStation] = 1.0f;
- 
+                        prevEngineBrakeValue[LocoStation] = EngineBrakeValue[LocoStation];
+
                         if (CruiseControl != null && CruiseControl.Equipped)
                         {
                             CruiseControl.SpeedRegMode[LocoStation] = SubSystems.CruiseControl.SpeedRegulatorMode.Auto;
@@ -8852,7 +8858,7 @@ namespace Orts.Simulation.RollingStocks
             else
                 Wiper = false;
         }
-
+        
         public void EngineBrakeValueLogic()
         {            
             if (IsLeadLocomotive())
@@ -8861,8 +8867,12 @@ namespace Orts.Simulation.RollingStocks
                 //Simulator.Confirmer.MSG("EngineBrakeValue[0] = " + EngineBrakeValue[0] + "        EngineBrakeValue[1] = " + EngineBrakeValue[1] + "   EngineBrakeValue[2] = " + EngineBrakeValue[2]);
                 if (EngineBrakeController.Notches.Count <= 1)
                 {
-                    SetEngineBrakeValue(EngineBrakeValue[0]);
-                    SetEngineBrakePercent(EngineBrakeValue[0] * 100);
+                    if (prevEngineBrakeValue[LocoStation] != EngineBrakeValue[LocoStation])
+                    {
+                        SetEngineBrakeValue(EngineBrakeValue[0]);
+                        SetEngineBrakePercent(EngineBrakeValue[0] * 100);
+                        prevEngineBrakeValue[LocoStation] = EngineBrakeValue[LocoStation];
+                    }                    
                 }
             }
         }

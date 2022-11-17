@@ -2173,7 +2173,7 @@ namespace Orts.Simulation.Physics
 
                 // Icik
                 // Hodnota setrvačnosti se při vypnutí topení příblíží k 0 
-                if (IsPlayerDriven && (PassengerCarsNumber > 0 || HeatedCarAttached) && (mstsLocomotive.IsSteamHeatFitted || HeatingBoilerCarAttached))
+                if (IsPlayerDriven && (PassengerCarsNumber > 0 || HeatedCarAttached || mstsLocomotive is MSTSSteamLocomotive) && (mstsLocomotive.IsSteamHeatFitted || HeatingBoilerCarAttached || mstsLocomotive is MSTSSteamLocomotive))
                 {
                     SteamHeatingIsAvailable = true;
                     for (int i = 0; i < Cars.Count; i++)

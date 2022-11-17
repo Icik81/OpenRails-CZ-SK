@@ -154,7 +154,7 @@ namespace Orts.Viewer3D.Popups
 
             vbox.AddHorizontalSeparator();
 
-            if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).WagonHasSteamHeating)
+            if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).WagonHasSteamHeating || (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon) is MSTSSteamLocomotive)
             {
                 if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).WagonHasStove)
                 {
