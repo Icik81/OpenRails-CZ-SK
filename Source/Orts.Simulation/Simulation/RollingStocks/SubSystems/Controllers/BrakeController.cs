@@ -184,6 +184,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
         public float DefaultBrakeValue { get; set; }
         public float DefaultLapBrakeValue { get; set; }
         public float DefaultNeutralBrakeValue { get; set; }
+        public bool BS2ControllerOnStation { get; set; }
 
         public float CurrentValue { get; set; }
         public float DefaultValue { get; set; }
@@ -327,6 +328,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
 
                     // Icik
                     if (CurrentValue > 0) DefaultBrakeValue = CurrentValue;
+                    BS2ControllerOnStation = false;
 
                     string token = stf.ReadItem(); // s/b numnotches
                     if (string.Compare(token, "NumNotches", true) != 0) // handle error in gp38.eng where extra parameter provided before NumNotches statement 
@@ -350,6 +352,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                             {
                                 if (DefaultNeutralBrakeValue == 0)
                                     DefaultNeutralBrakeValue = value;
+                            }                            
+                            if (type.ToLower() == "trainbrakescontrollergraduatedselflaplimitedholdingstart")
+                            {
+                                BS2ControllerOnStation = true;
                             }
 
                             Notches.Add(new MSTSNotch(value, smooth, type, stf));

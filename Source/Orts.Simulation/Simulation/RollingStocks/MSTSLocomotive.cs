@@ -664,8 +664,7 @@ namespace Orts.Simulation.RollingStocks
         public InterpolatorDiesel2D CurrentBrakeForce2Curves;
         public int LocoStation = 1;
         public bool LocoHasNoDynamicController = true;
-        public bool[] StationIsActivated = new bool[3];
-        public bool CarHavePocketPowerKey;
+        public bool[] StationIsActivated = new bool[3];        
         public int[] PrePantoStatus = new int[3];
         public int[] Pantograph4Switch = new int[3];
         public int[] Pantograph3Switch = new int[3];
@@ -1918,6 +1917,7 @@ namespace Orts.Simulation.RollingStocks
             outf.Write(TrainBrakeValueA);
             outf.Write(TrainBrakeValueE);
             outf.Write(TrainBrakeValueEPA);
+            outf.Write(TogglePowerKeyCycle);
             #endregion
 
             base.Save(outf);
@@ -2085,7 +2085,7 @@ namespace Orts.Simulation.RollingStocks
             StationIsActivated[2] = inf.ReadBoolean();
             LocoStation = inf.ReadInt32();
             TrainBrakeValue[1] = inf.ReadSingle();
-            TrainBrakeValue[2] = inf.ReadSingle();
+            TrainBrakeValue[2] = inf.ReadSingle();            
             TrainBrakeValueFQR = inf.ReadSingle(); 
             TrainBrakeValueO = inf.ReadSingle(); 
             TrainBrakeValueL = inf.ReadSingle();
@@ -2094,6 +2094,7 @@ namespace Orts.Simulation.RollingStocks
             TrainBrakeValueA = inf.ReadSingle();
             TrainBrakeValueE = inf.ReadSingle();
             TrainBrakeValueEPA = inf.ReadSingle();
+            TogglePowerKeyCycle = inf.ReadInt32();
             #endregion
 
             base.Restore(inf);
@@ -2196,7 +2197,7 @@ namespace Orts.Simulation.RollingStocks
             Simulator.voltageChangeMarkers = new List<VoltageChangeMarker>();
             SetUpVoltageChangeMarkers();
 
-            // Icik           
+            // Icik        
             if (MaxPowerWAC != 0)
                 MaxPowerWBase = MaxPowerWAC;
             else
@@ -4461,10 +4462,10 @@ namespace Orts.Simulation.RollingStocks
 
                     // ARR
                     if (IsLeadLocomotive())
-                    {                        
-                        PowerKeyPosition[LocoStation] = 2;                        
+                    {                                                
+                        PowerKeyPosition[LocoStation] = 2;
                         PowerKey = true;
-                        StationIsActivated[LocoStation] = true;
+                        StationIsActivated[LocoStation] = true;                                                
                         EngineBrakeValue[LocoStation] = 1.0f;
  
                         if (CruiseControl != null && CruiseControl.Equipped)
@@ -7471,6 +7472,9 @@ namespace Orts.Simulation.RollingStocks
         #region TrainBrakeController
         public void StartTrainBrakeIncrease(float? target, int from) // from 0 = keyboard, 1 = CruiseControl
         {
+            if (TrainBrakeController.BS2ControllerOnStation && !StationIsActivated[LocoStation])
+                return;
+
             if (Mirel.Equipped && !Mirel.BlueLight && Mirel.initTest == Mirel.InitTest.Passed && SpeedMpS > 0) Mirel.AlerterPressed(true);
             if (MultiPositionControllers != null)
             {
@@ -7519,6 +7523,9 @@ namespace Orts.Simulation.RollingStocks
 
         public void StartTrainBrakeDecrease(float? target, bool toZero = false)
         {
+            if (TrainBrakeController.BS2ControllerOnStation && !StationIsActivated[LocoStation])
+                return;
+
             if (Mirel.Equipped && !Mirel.BlueLight && Mirel.initTest == Mirel.InitTest.Passed && SpeedMpS > 0) Mirel.AlerterPressed(true);
             if (MultiPositionControllers != null)
             {
@@ -8462,6 +8469,7 @@ namespace Orts.Simulation.RollingStocks
         }
 
         bool SetPowerKeySound;
+        int TogglePowerKeyCycle = 0;
         public void TogglePowerKey()
         {
             LocoStation = 1;
@@ -8485,23 +8493,46 @@ namespace Orts.Simulation.RollingStocks
                     PowerKeyPosition[LocoStation]++;
                     return;
                 }
-            }
+            }            
 
             if (IsLeadLocomotive() && AcceptMUSignals)
             {
+                if ((DieselDirectionController || DieselDirectionController2) && TogglePowerKeyCycle == 0)
+                {
+                    foreach (TrainCar car in Train.Cars)
+                    {
+                        if (car is MSTSLocomotive && car.AcceptMUSignals)
+                        {
+                            car.PowerKeyPosition[1] = 0;
+                            car.PowerKeyPosition[2] = 0;
+                        }
+                    }                    
+                }
+
                 Simulator.PowerKeyInPocket = true;                
                 foreach (TrainCar car in Train.Cars)
                 {
                     if (car is MSTSLocomotive && car.AcceptMUSignals)
                     {
                         if (car.PowerKeyPosition[1] > 0 || car.PowerKeyPosition[2] > 0)
-                            Simulator.PowerKeyInPocket = false;                        
+                            Simulator.PowerKeyInPocket = false;                                                
                     }
                 }
-            }
 
+                if (CarHavePocketPowerKey)
+                    foreach (TrainCar car in Train.Cars)
+                    {
+                        if (car is MSTSLocomotive && car.AcceptMUSignals)
+                        {
+                            car.CarHavePocketPowerKey = true;
+                        }
+                    }
+            }
+                        
             if (IsLeadLocomotive())
             {
+                //Simulator.Confirmer.MSG("PowerKeyPosition[1] = " + PowerKeyPosition[1] + "   PowerKeyPosition[2] = " + PowerKeyPosition[2]);
+
                 Simulator.PowerKeyNoPocketBlocked = true;
                 if (PowerKeyPosition[1] > 1 || PowerKeyPosition[2] > 1)
                     Simulator.PowerKeyNoPocketBlocked = false;
@@ -8520,10 +8551,14 @@ namespace Orts.Simulation.RollingStocks
                     case 0:                        
                         SignalEvent(Event.PowerKeyOut);
                         Simulator.Confirmer.MSG(Simulator.Catalog.GetString("Powerkey in pocket!"));
+                        if (TrainBrakeController.BS2ControllerOnStation)
+                            Simulator.Confirmer.MSG(Simulator.Catalog.GetString("Trainbrake controller locked!"));
                         break;
                     case 1:                        
                         break;
-                    case 2:                        
+                    case 2:
+                        if (TrainBrakeController.BS2ControllerOnStation)
+                            Simulator.Confirmer.MSG(Simulator.Catalog.GetString("Trainbrake controller unlocked!"));
                         break;
                 }
                 if (!PowerKey)
@@ -8546,6 +8581,9 @@ namespace Orts.Simulation.RollingStocks
                     }
                 }
             }
+            TogglePowerKeyCycle++;
+            if (TogglePowerKeyCycle > 10)
+                TogglePowerKeyCycle = 10;
         }
         public void ToggleCabRadio(bool newState)
         {
@@ -8734,13 +8772,16 @@ namespace Orts.Simulation.RollingStocks
                             Simulator.Confirmer.Information(Simulator.Catalog.GetString("Car ID") + " " + car.CarID + ": " + Simulator.Catalog.GetString("Helper connected"));
                         }
                     }
-                }
+                }                
+            }
+
+            if (this.CarFrameUpdateState == 2)
+            {                
             }
 
             // Desátý průběh - nastaví hodnoty po nahrání uložené pozice
             if (this.CarFrameUpdateState == 10)
             {
-                
             }
 
             // EDB Hack
@@ -8838,39 +8879,43 @@ namespace Orts.Simulation.RollingStocks
         {
             if (IsLeadLocomotive())
             {                
-                //Simulator.Confirmer.MSG("TrainBrakeValue[0] = " + TrainBrakeValue[0] + "        TrainBrakeValue[1] = " + TrainBrakeValue[1] + "   TrainBrakeValue[2] = " + TrainBrakeValue[2]);
+                //Simulator.Confirmer.MSG("TrainBrakeValue[0] = " + TrainBrakeValue[0] + "        TrainBrakeValue[1] = " + TrainBrakeValue[1] + "   TrainBrakeValue[2] = " + TrainBrakeValue[2]);                
                 if (Simulator.LocoStationChange)
                 {
-                    SetTrainBrakePercent(TrainBrakeValue[LocoStation] * 100);
+                    SetTrainBrakePercent(TrainBrakeValue[LocoStation] * 100);                    
                     Simulator.LocoStationChange = false;                    
-                }
+                }                
+
                 #region TrainBrakeCheckPosition
-                switch (TrainBrakeController.TrainBrakeControllerState)
+                foreach (MSTSNotch notch in TrainBrakeController.Notches)
                 {
-                    case ControllerState.FullQuickRelease:
-                        TrainBrakeValueFQR = TrainBrakeValue[LocoStation];
-                        break;
-                    case ControllerState.OverchargeStart:
-                        TrainBrakeValueO = TrainBrakeValue[LocoStation];
-                        break;
-                    case ControllerState.Lap:
-                        TrainBrakeValueL = TrainBrakeValue[LocoStation];
-                        break;
-                    case ControllerState.Release:
-                        TrainBrakeValueR = TrainBrakeValue[LocoStation];
-                        break;
-                    case ControllerState.Neutral:
-                        TrainBrakeValueN = TrainBrakeValue[LocoStation];
-                        break;
-                    case ControllerState.Apply:
-                        TrainBrakeValueA = TrainBrakeValue[LocoStation];
-                        break;
-                    case ControllerState.Emergency:
-                        TrainBrakeValueE = TrainBrakeValue[LocoStation];
-                        break;
-                    case ControllerState.EPApply:
-                        TrainBrakeValueEPA = TrainBrakeValue[LocoStation];
-                        break;
+                    switch (notch.Type)
+                    {
+                        case ControllerState.FullQuickRelease:
+                            TrainBrakeValueFQR = notch.Value;
+                            break;
+                        case ControllerState.OverchargeStart:
+                            TrainBrakeValueO = notch.Value;
+                            break;
+                        case ControllerState.Lap:
+                            TrainBrakeValueL = notch.Value;
+                            break;
+                        case ControllerState.Release:
+                            TrainBrakeValueR = notch.Value;
+                            break;
+                        case ControllerState.Neutral:
+                            TrainBrakeValueN = notch.Value;
+                            break;
+                        case ControllerState.Apply:
+                            TrainBrakeValueA = notch.Value;
+                            break;
+                        case ControllerState.Emergency:
+                            TrainBrakeValueE = notch.Value;
+                            break;
+                        case ControllerState.EPApply:
+                            TrainBrakeValueEPA = notch.Value;
+                            break;
+                    }
                 }
 
                 if (LocoStation == 1)
@@ -8944,7 +8989,8 @@ namespace Orts.Simulation.RollingStocks
                         BrakeSystem.EPApply = false;
                 }
                 #endregion
-                TrainBrakeValue[LocoStation] = TrainBrakeController.CurrentValue;
+                
+                TrainBrakeValue[LocoStation] = TrainBrakeController.CurrentValue;                
             }
         }
 
@@ -9338,6 +9384,7 @@ namespace Orts.Simulation.RollingStocks
                         switch (Pantograph3Switch[LocoStation])
                         {
                             case -1: // SOS
+                                PantoCommandDown = true;
                                 Pantograph3CanOn = false;
                                 if (HV3Enable) HVOff = true;
                                 if (Pantographs[p1].State != PantographState.Down)
@@ -10376,8 +10423,6 @@ namespace Orts.Simulation.RollingStocks
                 if (DieselDirectionControllerPosition[LocoStation] == -1)
                 {                 
                     DieselDirectionControllerPosition[LocoStation] = 2;
-                    PowerKeyPosition[1] = 0;
-                    PowerKeyPosition[2] = 0;
                     this.CarPowerKey = false;
                 }
 
@@ -10452,8 +10497,6 @@ namespace Orts.Simulation.RollingStocks
                 if (DieselDirectionController2Position[LocoStation] == -1)
                 {
                     DieselDirectionController2Position[LocoStation] = 0;
-                    PowerKeyPosition[1] = 0;
-                    PowerKeyPosition[2] = 0;
                     this.CarPowerKey = false;                    
                 }
 

@@ -393,7 +393,8 @@ namespace Orts.Simulation.RollingStocks
         public bool DirectionControllerBlocked;
         public int[] PowerKeyPosition = new int[3];
         public int[] prevPowerKeyPosition = new int[3];
-        
+        public bool CarHavePocketPowerKey;
+
 
         public float PowerReductionResult1;  // Redukce výkonu od topení, klimatizace, kompresoru
         public float PowerReductionResult2;  // Redukce výkonu od nedostatečného tlaku vzduchu v potrubí
