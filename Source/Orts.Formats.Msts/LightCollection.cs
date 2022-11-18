@@ -200,6 +200,8 @@ namespace Orts.Formats.Msts
         RearLR,  // 6
         RearRW,  // 7
         RearRR,  // 8
+        FrontHeadLight, // 9
+        RearHeadLight, // 10
     }
     #endregion
 
@@ -222,7 +224,9 @@ namespace Orts.Formats.Msts
         
         // Icik
         public LightHandleCondition UnitSide;
-        
+        public LightHeadlightCondition HeadlightFront;
+        public LightHeadlightCondition HeadlightRear;
+
         public bool Cycle;
         public float FadeIn;
         public float FadeOut;
@@ -245,6 +249,8 @@ namespace Orts.Formats.Msts
                     new STFReader.TokenProcessor("coupling", ()=>{ Coupling = (LightCouplingCondition)stf.ReadIntBlock(null); }),
                     // Icik
                     new STFReader.TokenProcessor("unitside", ()=>{ UnitSide = (LightHandleCondition)stf.ReadIntBlock(null); }),
+                    new STFReader.TokenProcessor("headlightfront", ()=>{ HeadlightFront = (LightHeadlightCondition)stf.ReadIntBlock(null); }),
+                    new STFReader.TokenProcessor("headlightrear", ()=>{ HeadlightRear = (LightHeadlightCondition)stf.ReadIntBlock(null); }),
                 });}),
                 new STFReader.TokenProcessor("cycle", ()=>{ Cycle = 0 != stf.ReadIntBlock(null); }),
                 new STFReader.TokenProcessor("fadein", ()=>{ FadeIn = stf.ReadFloatBlock(STFReader.UNITS.None, null); }),
@@ -284,6 +290,8 @@ namespace Orts.Formats.Msts
 
             // Icik
             UnitSide = light.UnitSide;
+            HeadlightFront = light.HeadlightFront;
+            HeadlightRear = light.HeadlightRear;
 
             foreach (var state in light.States)
                 States.Add(new LightState(state, reverse));

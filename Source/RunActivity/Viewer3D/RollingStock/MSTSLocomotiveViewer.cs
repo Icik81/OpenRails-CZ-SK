@@ -900,14 +900,14 @@ namespace Orts.Viewer3D.RollingStock
                     if (UserInput.RDState.Wipers != 1 && !Locomotive.Wiper)
                         Locomotive.SignalEvent(Event.WiperOn);
                     // changing Headlight more than one step at a time doesn't work for some reason
-                    if (Locomotive.Headlight < UserInput.RDState.Lights - 1)
+                    if (Locomotive.Headlight[Locomotive.LocoStation] < UserInput.RDState.Lights - 1)
                     {
-                        Locomotive.Headlight++;
+                        Locomotive.Headlight[Locomotive.LocoStation]++;
                         Locomotive.SignalEvent(Event.LightSwitchToggle);
                     }
-                    if (Locomotive.Headlight > UserInput.RDState.Lights - 1)
+                    if (Locomotive.Headlight[Locomotive.LocoStation] > UserInput.RDState.Lights - 1)
                     {
-                        Locomotive.Headlight--;
+                        Locomotive.Headlight[Locomotive.LocoStation]--;
                         Locomotive.SignalEvent(Event.LightSwitchToggle);
                     }
                 }

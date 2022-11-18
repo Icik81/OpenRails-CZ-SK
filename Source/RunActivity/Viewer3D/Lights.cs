@@ -65,6 +65,10 @@ namespace Orts.Viewer3D
         public bool CarLightFrontRR;
         public bool CarLightRearLR;
         public bool CarLightRearRR;
+        public bool CarFrontHeadLight;
+        public bool CarRearHeadLight;
+        public int TrainHeadlightFront;
+        public int TrainHeadlightRear;
 
         public bool IsLightConeActive { get { return ActiveLightCone != null; } }
         List<LightPrimitive> LightPrimitives = new List<LightPrimitive>();
@@ -237,8 +241,8 @@ namespace Orts.Viewer3D
             var mstsLocomotive = locomotive as MSTSLocomotive;
 
             // Headlight
-            var newTrainHeadlight = locomotive != null && mstsLocomotive.Battery ? locomotive.Headlight : Car.Train != null && Car.Train.TrainType != Train.TRAINTYPE.STATIC ? 2 : 0;
-            //var newTrainHeadlight = Car.Train != null ? Car.Headlight : 0;
+            //var newTrainHeadlight = locomotive != null && mstsLocomotive.Battery ? locomotive.Headlight : Car.Train != null && Car.Train.TrainType != Train.TRAINTYPE.STATIC ? 2 : 0;
+            var newTrainHeadlight = Car.Train != null && Car is MSTSLocomotive ? Car.Headlight[(Car as MSTSLocomotive).LocoStation] : 0;
 
             // Unit
             var locomotiveFlipped = locomotive != null && locomotive.Flipped;
@@ -269,15 +273,22 @@ namespace Orts.Viewer3D
             var newCarCoupledRear = Car.Train != null && (Car.Train.Cars.Count > 1) && ((Car.Flipped ? Car.Train.FirstCar : Car.Train.LastCar) != Car);
 
             // Icik
-            var newCarLightFrontLW = locomotive != null && locomotive.LightFrontLW;
-            var newCarLightFrontRW = locomotive != null && locomotive.LightFrontRW;
-            var newCarLightRearLW = locomotive != null && locomotive.LightRearLW;
-            var newCarLightRearRW = locomotive != null && locomotive.LightRearRW;
-            var newCarLightFrontLR = locomotive != null && locomotive.LightFrontLR;
-            var newCarLightFrontRR = locomotive != null && locomotive.LightFrontRR;
-            var newCarLightRearLR = locomotive != null && locomotive.LightRearLR;
-            var newCarLightRearRR = locomotive != null && locomotive.LightRearRR;
+            var newCarIsPlayerLoco = Car.Train != null && (Car as MSTSLocomotive) == Car.Train.LeadLocomotive;            
 
+            var newCarLightFrontLW = Car.LightFrontLW;
+            var newCarLightFrontRW = Car.LightFrontRW;
+            var newCarLightRearLW = Car.LightRearLW;
+            var newCarLightRearRW = Car.LightRearRW;
+            var newCarLightFrontLR = Car.LightFrontLR;
+            var newCarLightFrontRR = Car.LightFrontRR;
+            var newCarLightRearLR = Car.LightRearLR;
+            var newCarLightRearRR = Car.LightRearRR;
+            var newCarFrontHeadLight = Car.FrontHeadLight;
+            var newCarRearHeadLight = Car.RearHeadLight;
+            var newTrainHeadlightFront = Car.Train != null && Car is MSTSLocomotive ? Car.Headlight[1] : 0;
+            var newTrainHeadlightRear = Car.Train != null && Car is MSTSLocomotive ? Car.Headlight[2] : 0;
+
+            // AI
             if (!newCarIsPlayer)
             {
                 newCarLightFrontLW = false;
@@ -294,15 +305,15 @@ namespace Orts.Viewer3D
             {
                 LightCycle++;
                 return true;
-            }            
+            }
 
             // Dovolí zapnout reflektor i pokud má před sebou vozy
             if (locomotive != null && (Car as MSTSLocomotive) == Car.Train.LeadLocomotive && newCarIsLast)
             {
                 newCarIsLast = true;
-                newCarIsFirst = true;                
+                newCarIsFirst = true;
             }
-            
+
             // Povolí kužel reflektoru v tunelu
             if (Viewer.Simulator.PlayerCarIsInTunnel)
             {
@@ -320,10 +331,11 @@ namespace Orts.Viewer3D
                 }
                 else
                 // AI vyčkává na místě
-                if (Car.CarIsWaiting)
-                {
-                    newTrainHeadlight = 1;
-                }                
+                if (Car.CarIsWaiting)                
+                    newTrainHeadlight = 1;                   
+                else
+                if (!newIsDay)
+                    newTrainHeadlight = 2;
             }
             
             if (
@@ -346,7 +358,11 @@ namespace Orts.Viewer3D
                 (CarLightFrontLR != newCarLightFrontLR) ||
                 (CarLightFrontRR != newCarLightFrontRR) ||
                 (CarLightRearLR != newCarLightRearLR) ||
-                (CarLightRearRR != newCarLightRearRR)
+                (CarLightRearRR != newCarLightRearRR) ||
+                (CarFrontHeadLight != newCarFrontHeadLight) ||
+                (CarRearHeadLight != newCarRearHeadLight) ||
+                (TrainHeadlightFront != newTrainHeadlightFront) ||
+                (TrainHeadlightRear != newTrainHeadlightRear) 
                 )
             {
                 TrainHeadlight = newTrainHeadlight;
@@ -369,6 +385,10 @@ namespace Orts.Viewer3D
                 CarLightFrontRR = newCarLightFrontRR;
                 CarLightRearLR = newCarLightRearLR;
                 CarLightRearRR = newCarLightRearRR;
+                CarFrontHeadLight = newCarFrontHeadLight;
+                CarRearHeadLight = newCarRearHeadLight;
+                TrainHeadlightFront = newTrainHeadlightFront;
+                TrainHeadlightRear = newTrainHeadlightRear;
 
 #if DEBUG_LIGHT_STATES
                 Console.WriteLine();
@@ -487,7 +507,7 @@ namespace Orts.Viewer3D
                 else if (Light.Unit == LightUnitCondition.LastRev)
                     Enabled &= lightViewer.CarIsLast && lightViewer.CarIsReversed;
                 else if (Light.Unit == LightUnitCondition.FirstRev)
-                    Enabled &= lightViewer.CarIsFirst && lightViewer.CarIsReversed;
+                    Enabled &= lightViewer.CarIsFirst && lightViewer.CarIsReversed;                
                 else
                     Enabled &= false;
             }
@@ -569,6 +589,49 @@ namespace Orts.Viewer3D
                     Enabled &= lightViewer.CarLightRearLR;
                 else if (Light.UnitSide == LightHandleCondition.RearRR)
                     Enabled &= lightViewer.CarLightRearRR;
+                else if (Light.UnitSide == LightHandleCondition.FrontHeadLight)
+                    Enabled &= lightViewer.CarFrontHeadLight;
+                else if (Light.UnitSide == LightHandleCondition.RearHeadLight)
+                    Enabled &= lightViewer.CarRearHeadLight;
+                else
+                    Enabled &= false;
+            }
+
+            if (Light.HeadlightFront != LightHeadlightCondition.Ignore)
+            {
+                if (Light.HeadlightFront == LightHeadlightCondition.Off)
+                    Enabled &= lightViewer.TrainHeadlightFront == 0;
+                else if (Light.HeadlightFront == LightHeadlightCondition.Dim)
+                    Enabled &= lightViewer.TrainHeadlightFront == 1;
+                else if (Light.HeadlightFront == LightHeadlightCondition.Bright)
+                    Enabled &= lightViewer.TrainHeadlightFront == 2;
+                else if (Light.HeadlightFront == LightHeadlightCondition.DLight)
+                    Enabled &= lightViewer.TrainHeadlightFront == 7 || lightViewer.TrainHeadlight == 1 || lightViewer.TrainHeadlight == 2;
+                else if (Light.HeadlightFront == LightHeadlightCondition.DimBright)
+                    Enabled &= lightViewer.TrainHeadlightFront >= 1;
+                else if (Light.HeadlightFront == LightHeadlightCondition.OffDim)
+                    Enabled &= lightViewer.TrainHeadlightFront <= 1;
+                else if (Light.HeadlightFront == LightHeadlightCondition.OffBright)
+                    Enabled &= lightViewer.TrainHeadlightFront != 1;
+                else
+                    Enabled &= false;
+            }
+            if (Light.HeadlightRear != LightHeadlightCondition.Ignore)
+            {
+                if (Light.HeadlightRear == LightHeadlightCondition.Off)
+                    Enabled &= lightViewer.TrainHeadlightRear == 0;
+                else if (Light.HeadlightRear == LightHeadlightCondition.Dim)
+                    Enabled &= lightViewer.TrainHeadlightRear == 1;
+                else if (Light.HeadlightRear == LightHeadlightCondition.Bright)
+                    Enabled &= lightViewer.TrainHeadlightRear == 2;
+                else if (Light.HeadlightRear == LightHeadlightCondition.DLight)
+                    Enabled &= lightViewer.TrainHeadlightRear == 7 || lightViewer.TrainHeadlight == 1 || lightViewer.TrainHeadlight == 2;
+                else if (Light.HeadlightRear == LightHeadlightCondition.DimBright)
+                    Enabled &= lightViewer.TrainHeadlightRear >= 1;
+                else if (Light.HeadlightRear == LightHeadlightCondition.OffDim)
+                    Enabled &= lightViewer.TrainHeadlightRear <= 1;
+                else if (Light.HeadlightRear == LightHeadlightCondition.OffBright)
+                    Enabled &= lightViewer.TrainHeadlightRear != 1;
                 else
                     Enabled &= false;
             }

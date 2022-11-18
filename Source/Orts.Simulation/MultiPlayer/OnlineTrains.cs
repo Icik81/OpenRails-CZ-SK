@@ -245,7 +245,7 @@ namespace Orts.MultiPlayer
                 if (car.CarID == p.LeadingLocomotiveID)
                 {
                     train.LeadLocomotive = car;
-                    (train.LeadLocomotive as MSTSLocomotive).Headlight = player.headlight;
+                    (train.LeadLocomotive as MSTSLocomotive).Headlight[(train.LeadLocomotive as MSTSLocomotive).LocoStation] = player.headlight;
                     (train.LeadLocomotive as MSTSLocomotive).UsingRearCab = player.frontorrearcab == "R" ? true : false;
                 }
                 if (car is MSTSLocomotive && MPManager.IsServer())

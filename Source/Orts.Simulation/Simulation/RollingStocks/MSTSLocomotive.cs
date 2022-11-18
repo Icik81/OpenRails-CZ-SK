@@ -58,6 +58,7 @@ using Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS;
 using Orts.Simulation.RollingStocks.SubSystems.Controllers;
 using Orts.Simulation.RollingStocks.SubSystems.PowerSupplies;
 using Orts.Simulation.RollingStocks.SubSystems.PowerTransmissions;
+using Orts.Simulation.Timetables;
 using ORTS.Common;
 using ORTS.Common.Input;
 using ORTS.Scripting.Api;
@@ -1837,11 +1838,7 @@ namespace Orts.Simulation.RollingStocks
             outf.Write(LapActive[2]);
             outf.Write(DirectionButtonPosition);
             outf.Write(CarIsPlayerLocoSet);
-            outf.Write(BreakEDBButton_Activated);                        
-            outf.Write(LightFrontLPosition);
-            outf.Write(LightFrontRPosition);
-            outf.Write(LightRearLPosition);
-            outf.Write(LightRearRPosition);
+            outf.Write(BreakEDBButton_Activated);                                    
             outf.Write(RainWindowPosition);
             outf.Write(WipersWindowPosition);
             outf.Write(WiperStatusChange);            
@@ -2016,11 +2013,7 @@ namespace Orts.Simulation.RollingStocks
             LapActive[2] = inf.ReadBoolean();
             DirectionButtonPosition = inf.ReadInt32();
             CarIsPlayerLocoSet = inf.ReadBoolean();
-            BreakEDBButton_Activated = inf.ReadBoolean();                        
-            LightFrontLPosition = inf.ReadInt32();
-            LightFrontRPosition = inf.ReadInt32();
-            LightRearLPosition = inf.ReadInt32();
-            LightRearRPosition = inf.ReadInt32();
+            BreakEDBButton_Activated = inf.ReadBoolean();                                    
             RainWindowPosition = inf.ReadInt32();
             WipersWindowPosition = inf.ReadInt32();
             WiperStatusChange = inf.ReadBoolean();            
@@ -4420,9 +4413,9 @@ namespace Orts.Simulation.RollingStocks
                 Pantograph3Switch[1] = Pantograph3Switch[2] = 0;
                 DoorSwitch[1] = DoorSwitch[2] = 1;                
                 DieselDirectionControllerPosition[1] = DieselDirectionController2Position[1] = DieselDirectionController4Position[1] = -1;
-                DieselDirectionControllerPosition[2] = DieselDirectionController2Position[2] = DieselDirectionController4Position[2] = -1;                
+                DieselDirectionControllerPosition[2] = DieselDirectionController2Position[2] = DieselDirectionController4Position[2] = -1;
+                Headlight[1] = Headlight[2] = 0;
 
-                Headlight = 0;
                 firstFrame = false;
                 if (Simulator.Settings.AirEmpty)
                 {
@@ -4430,12 +4423,21 @@ namespace Orts.Simulation.RollingStocks
                 }
                 else
                 {
-                    Battery = true;                    
+                    Battery = true;
 
                     // Světla
-                    LightFrontLPosition = -1;
-                    LightFrontRPosition = -1;
+                    if (IsLeadLocomotive())
+                    {
+                        LightFrontLPosition = -1;
+                        LightFrontRPosition = -1;
+                    }
                     if (Train.Cars.Count == 1)
+                    {
+                        LightRearLPosition = 1;
+                        LightRearRPosition = 1;
+                    }
+                    else
+                    if (this == Train.Cars[Train.Cars.Count - 1])
                     {
                         LightRearLPosition = 1;
                         LightRearRPosition = 1;
@@ -8731,19 +8733,19 @@ namespace Orts.Simulation.RollingStocks
             switch (HeadLightPosition[LocoStation])
             {
                 case 0:
-                    Headlight = 0;
+                    Headlight[LocoStation] = 0;
                     Simulator.Confirmer.Information(Simulator.Catalog.GetString("Position Light: ") + Simulator.Catalog.GetString("Off"));
                     break;
                 case 1:
-                    Headlight = 7;
+                    Headlight[LocoStation] = 7;
                     Simulator.Confirmer.Information(Simulator.Catalog.GetString("Position Light: ") + Simulator.Catalog.GetString("On"));
                     break;
                 case 2:
-                    Headlight = 1;
+                    Headlight[LocoStation] = 1;
                     Simulator.Confirmer.Information(Simulator.Catalog.GetString("Dim Headlight: ") + Simulator.Catalog.GetString("On"));
                     break;
                 case 3:
-                    Headlight = 2;
+                    Headlight[LocoStation] = 2;
                     Simulator.Confirmer.Information(Simulator.Catalog.GetString("Bright Headlight: ") + Simulator.Catalog.GetString("On"));
                     break;                
             }
@@ -10690,7 +10692,10 @@ namespace Orts.Simulation.RollingStocks
         }
 
         public void LightPositionHandle()
-        {
+        {            
+            FrontHeadLight = HeadLightPosition[1] > 0 ? true : false;
+            RearHeadLight = HeadLightPosition[2] > 0 ? true : false;
+
             switch (LightFrontLPosition)
             {
                 case -1:
@@ -10754,8 +10759,7 @@ namespace Orts.Simulation.RollingStocks
         }
 
         // Přední levé světlo
-        // Červené
-        int LightFrontLPosition;
+        // Červené        
         public void ToggleLightFrontLUp()
         {
             if (!UsingRearCab)
@@ -10809,8 +10813,7 @@ namespace Orts.Simulation.RollingStocks
         }
 
         // Přední pravé světlo
-        // Červené
-        int LightFrontRPosition;
+        // Červené        
         public void ToggleLightFrontRUp()
         {
             if (!UsingRearCab)
@@ -10864,8 +10867,7 @@ namespace Orts.Simulation.RollingStocks
         }
 
         // Zadní levé světlo
-        // Červené
-        int LightRearLPosition;
+        // Červené        
         public void ToggleLightRearLUp()
         {
             if (!UsingRearCab)
@@ -10918,8 +10920,7 @@ namespace Orts.Simulation.RollingStocks
             }            
         }
         // Zadní pravé světlo
-        // Červené
-        int LightRearRPosition;
+        // Červené        
         public void ToggleLightRearRUp()
         {
             if (!UsingRearCab)
@@ -11737,9 +11738,9 @@ namespace Orts.Simulation.RollingStocks
                 case Event.WiperOff: { if (this == Simulator.PlayerLocomotive) Simulator.Confirmer.Confirm(CabControl.Wipers, CabSetting.Off); break; }
 
                 // <CJComment> The "H" key doesn't call these SignalEvents yet. </CJComment>
-                case Event._HeadlightOff: { Headlight = 0; break; }
-                case Event._HeadlightDim: { Headlight = 1; break; }
-                case Event._HeadlightOn: { Headlight = 2; break; }
+                case Event._HeadlightOff: { Headlight[LocoStation] = 0; break; }
+                case Event._HeadlightDim: { Headlight[LocoStation] = 1; break; }
+                case Event._HeadlightOn: { Headlight[LocoStation] = 2; break; }
 
                 case Event.CompressorOn: { CompressorIsOn = true; break; }
                 case Event.CompressorOff: { CompressorIsOn = false; break; }

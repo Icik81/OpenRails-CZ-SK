@@ -255,7 +255,7 @@ namespace Orts.Simulation.RollingStocks
 
         public LightCollection Lights;
         public FreightAnimations FreightAnimations;
-        public int Headlight;
+        public int[] Headlight = new int[3];
 
         // instance variables set by train physics when it creates the traincar
         public Train Train;  // the car is connected to this train
@@ -394,6 +394,12 @@ namespace Orts.Simulation.RollingStocks
         public int[] PowerKeyPosition = new int[3];
         public int[] prevPowerKeyPosition = new int[3];
         public bool CarHavePocketPowerKey;
+        public int LightFrontLPosition;
+        public int LightFrontRPosition;
+        public int LightRearLPosition;
+        public int LightRearRPosition;
+        public bool FrontHeadLight;
+        public bool RearHeadLight;
 
 
         public float PowerReductionResult1;  // Redukce výkonu od topení, klimatizace, kompresoru
@@ -2087,7 +2093,8 @@ namespace Orts.Simulation.RollingStocks
             outf.Write(FrictionForceN);
             outf.Write(SpeedMpS);
             outf.Write(CouplerSlackM);
-            outf.Write(Headlight);
+            outf.Write(Headlight[1]);
+            outf.Write(Headlight[2]);
             outf.Write(OrgConsist);
             outf.Write(PrevTiltingZRot);
             outf.Write(BrakesStuck);
@@ -2111,7 +2118,11 @@ namespace Orts.Simulation.RollingStocks
             outf.Write(prevPowerKeyPosition[2]);
             outf.Write(AcceptCableSignals);
             outf.Write(AcceptHelperSignals);
-            outf.Write(AcceptPowerSignals);            
+            outf.Write(AcceptPowerSignals);
+            outf.Write(LightFrontLPosition);
+            outf.Write(LightFrontRPosition);
+            outf.Write(LightRearLPosition);
+            outf.Write(LightRearRPosition);
 
             BrakeSystem.Save(outf);
         }
@@ -2128,7 +2139,8 @@ namespace Orts.Simulation.RollingStocks
             SpeedMpS = inf.ReadSingle();
             _PrevSpeedMpS = SpeedMpS;
             CouplerSlackM = inf.ReadSingle();
-            Headlight = inf.ReadInt32();
+            Headlight[1] = inf.ReadInt32();
+            Headlight[2] = inf.ReadInt32();
             OrgConsist = inf.ReadString();
             PrevTiltingZRot = inf.ReadSingle();
             BrakesStuck = inf.ReadBoolean();
@@ -2153,6 +2165,10 @@ namespace Orts.Simulation.RollingStocks
             AcceptCableSignals = inf.ReadBoolean();
             AcceptHelperSignals = inf.ReadBoolean();
             AcceptPowerSignals = inf.ReadBoolean();
+            LightFrontLPosition = inf.ReadInt32();
+            LightFrontRPosition = inf.ReadInt32();
+            LightRearLPosition = inf.ReadInt32();
+            LightRearRPosition = inf.ReadInt32();
 
             BrakeSystem.Restore(inf);
         }

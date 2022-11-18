@@ -407,7 +407,7 @@ namespace Orts.MultiPlayer
                 pantothird = w.Pantographs.List.Count > 2 && w.Pantographs[3].CommandUp ? 1 : 0;
                 pantofourth = w.Pantographs.List.Count > 3 && w.Pantographs[4].CommandUp ? 1 : 0;
                 frontorrearcab = (w as MSTSLocomotive).UsingRearCab ? "R" : "F";
-                headlight = w.Headlight;
+                headlight = w.Headlight[(w as MSTSLocomotive).LocoStation];
             }
 
             cars = new string[t.Cars.Count];
