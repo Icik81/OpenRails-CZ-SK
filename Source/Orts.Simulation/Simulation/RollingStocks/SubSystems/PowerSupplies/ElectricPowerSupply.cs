@@ -256,8 +256,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                 case PantographState.Up:
 
                     // Icik
-                    if (Locomotive.IsPlayerTrain)
-                    {
+                    if (Locomotive.IsPlayerTrain && Locomotive.RouteVoltageV != 600)
+                    {                        
                         // Trakce na 25kV naměří napětí hned                                           
                         if (Locomotive.RouteVoltageV == 25000)
                             SetPantographVoltageV(PantographFilter.Filter((int)Locomotive.ActualLocoVoltage, elapsedClockSeconds));
@@ -287,6 +287,13 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                             SetFilterVoltageV(VoltageFilter.Filter(0.0f, elapsedClockSeconds));
                         }
                     }
+
+                    // Trakce na 600V naměří napětí hned                                           
+                    if (Locomotive.IsPlayerTrain && Locomotive.RouteVoltageV == 600)
+                    {
+                        SetPantographVoltageV(PantographFilter.Filter((int)Locomotive.ActualLocoVoltage, elapsedClockSeconds));
+                    }
+
                     switch (CurrentCircuitBreakerState())
                     {
                         case CircuitBreakerState.Open:

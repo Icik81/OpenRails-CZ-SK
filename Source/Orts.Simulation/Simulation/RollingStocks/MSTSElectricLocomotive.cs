@@ -446,6 +446,50 @@ namespace Orts.Simulation.RollingStocks
             if (Simulator.Paused)
                 return;
 
+            // Tramvaje 600V DC
+            if (RouteVoltageV == 600 && LocomotivePowerVoltage == 600)
+            {
+                // Výpočet napětí v drátech
+                if (IsPlayerTrain)
+                {
+                    MultiSystemEngine = true;
+                    SwitchingVoltageMode = 0;                    
+                    SwitchingVoltageMode_OffDC = true;
+                    if (RouteVoltageV > 1)
+                    {
+                        Simulator.TRK.Tr_RouteFile.MaxLineVoltage = RouteVoltageV * Simulator.VoltageSprung;
+                        ActualLocoVoltage = RouteVoltageV * Simulator.VoltageSprung;
+                        MaxLineVoltage0 = RouteVoltageV;
+                    }
+                    if (RouteVoltageV == 1)
+                        PowerSupply.PantographVoltageV -= (float)MaxLineVoltage0 * 1.5f * elapsedClockSeconds;
+                    
+                    PowerSupply.PantographVoltageV = (float)Math.Round(PowerSupply.PantographVoltageV);
+                    PantographVoltageV = PowerSupply.PantographVoltageV;
+                    MaxLineVoltage0 = (float)Math.Round(MaxLineVoltage0);
+                    if (LocoHelperOn)
+                        PowerSupply.PantographVoltageV = MathHelper.Clamp(PowerSupply.PantographVoltageV, 0, (float)MaxLineVoltage0);
+
+                    if (!UpdateTimeEnable && IsLeadLocomotive())
+                    {
+                        // Zákmit na voltmetru            
+                        if (PowerSupply.PantographVoltageV < 2)
+                        {
+                            Simulator.VoltageSprung = 1.5f;
+                            Step1 = 0.20f;
+                            TimeCriticalVoltage = 0;
+                        }
+                        if (PowerSupply.PantographVoltageV > MaxLineVoltage0)
+                            Step1 = Step1 - elapsedClockSeconds;
+                        if (Step1 < 0) Step1 = 0;
+
+                        if (Simulator.GameSpeed > 1 || (Step1 == 0 && PowerSupply.PantographVoltageV > MaxLineVoltage0))
+                            Simulator.VoltageSprung = 1.0f;
+                    }
+                }
+                return;
+            }            
+
             if (RouteVoltageV == 0)
                 RouteVoltageV = 25000;
 

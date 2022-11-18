@@ -4403,7 +4403,7 @@ namespace Orts.Simulation.RollingStocks
         protected float SplashScreenRandomTime = 0;
         public bool SplashScreenWillBeDisplayed = false;
         protected float HvPantoTimer = 0;
-        protected bool firstFrame = true;
+        protected bool firstFrame = true;        
         public override void Update(float elapsedClockSeconds)
         {
             if (firstFrame && BrakeSystem.StartOn)
@@ -8870,7 +8870,7 @@ namespace Orts.Simulation.RollingStocks
                     if (prevEngineBrakeValue[LocoStation] != EngineBrakeValue[LocoStation])
                     {
                         SetEngineBrakeValue(EngineBrakeValue[0]);
-                        SetEngineBrakePercent(EngineBrakeValue[0] * 100);
+                        SetEngineBrakePercent(EngineBrakeValue[0] * 100f);
                         prevEngineBrakeValue[LocoStation] = EngineBrakeValue[LocoStation];
                     }                    
                 }
@@ -8888,13 +8888,14 @@ namespace Orts.Simulation.RollingStocks
         public void TrainBrakeValueLogic()
         {
             if (IsLeadLocomotive())
-            {                
+            {
                 //Simulator.Confirmer.MSG("TrainBrakeValue[0] = " + TrainBrakeValue[0] + "        TrainBrakeValue[1] = " + TrainBrakeValue[1] + "   TrainBrakeValue[2] = " + TrainBrakeValue[2]);                
+                
                 if (Simulator.LocoStationChange)
                 {
-                    SetTrainBrakeValue(TrainBrakeValue[LocoStation], 1);
-                    SetTrainBrakePercent(TrainBrakeValue[LocoStation] * 100);                    
-                    Simulator.LocoStationChange = false;                    
+                    SetTrainBrakeValue(TrainBrakeValue[LocoStation], 0);
+                    SetTrainBrakePercent(TrainBrakeValue[LocoStation] * 101.01f);
+                    Simulator.LocoStationChange = false;
                 }                
 
                 #region TrainBrakeCheckPosition
@@ -9000,8 +9001,8 @@ namespace Orts.Simulation.RollingStocks
                         BrakeSystem.EPApply = false;
                 }
                 #endregion
-                
-                TrainBrakeValue[LocoStation] = TrainBrakeController.CurrentValue;                
+
+                TrainBrakeValue[LocoStation] = TrainBrakeController.CurrentValue;
             }
         }
 
