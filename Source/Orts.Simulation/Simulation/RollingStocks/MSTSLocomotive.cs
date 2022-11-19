@@ -10794,6 +10794,8 @@ namespace Orts.Simulation.RollingStocks
             {
                 foreach (TrainCar car in Train.Cars)
                 {
+                    car.Headlight[1] = Headlight[1];
+                    car.Headlight[2] = Headlight[2];
                     if (UsingRearCab)
                     {
                         if (car is MSTSLocomotive && car.AcceptMUSignals && car == Train.FirstCar)
@@ -10826,7 +10828,7 @@ namespace Orts.Simulation.RollingStocks
                         }
 
                         if (car is MSTSLocomotive && car.AcceptMUSignals && car == Train.LastCar)
-                        {
+                        {                            
                             car.LightRearLPosition = LightRearLPosition;
                             car.LightRearRPosition = LightRearRPosition;
                             car.LightFrontLPosition = 0;
