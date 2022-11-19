@@ -4854,6 +4854,7 @@ namespace Orts.Simulation.RollingStocks
                 StepControllerValue = Simulator.StepControllerValue;
                 TogglePowerKey();
                 PowerKeyLogic();
+                MUCableLogic();
                 TrainAlerterLogic();
                 WipersLogic();
                 EngineBrakeValueLogic();
@@ -4892,8 +4893,7 @@ namespace Orts.Simulation.RollingStocks
                 PantoCanHVOff(elapsedClockSeconds);
                 DirectionButtonSetup();
                 PlayerSwitchToRearCab();
-                LightPositionHandle();
-                MUCableLogic();
+                LightPositionHandle();                
                 RainWindow(elapsedClockSeconds);
                 WipersWindow(elapsedClockSeconds);                
                 BatterySetOn = false;                
@@ -10838,7 +10838,7 @@ namespace Orts.Simulation.RollingStocks
                         if (car is MSTSLocomotive && car.AcceptMUSignals && car == Train.LastCar)
                         {                            
                             car.LightRearLPosition = LightRearLPosition;
-                            car.LightRearRPosition = LightRearRPosition;
+                            car.LightRearRPosition = LightRearRPosition;                            
                             car.LightFrontLPosition = 0;
                             car.LightFrontRPosition = 0;
                             car.LightFrontLW = false;
