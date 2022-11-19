@@ -10794,8 +10794,7 @@ namespace Orts.Simulation.RollingStocks
             {
                 foreach (TrainCar car in Train.Cars)
                 {
-                    car.Headlight[1] = Headlight[1];
-                    car.Headlight[2] = Headlight[2];
+                    car.Headlight[1] = car.Headlight[2] = Headlight[LocoStation];                     
                     if (UsingRearCab)
                     {
                         if (car is MSTSLocomotive && car.AcceptMUSignals && car == Train.FirstCar)
