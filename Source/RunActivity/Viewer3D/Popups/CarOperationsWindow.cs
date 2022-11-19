@@ -19,6 +19,7 @@
 
 using Microsoft.Xna.Framework;
 using Orts.Common;
+using Orts.Simulation;
 using Orts.Simulation.RollingStocks;
 using Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS;
 using ORTS.Common;
@@ -285,7 +286,7 @@ namespace Orts.Viewer3D.Popups
                 new ToggleMUCommand(Viewer.Log, (Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive), !(Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive).AcceptCableSignals);
                 if (!(Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive).AcceptCableSignals)
                     Viewer.Simulator.Confirmer.Information(Viewer.Catalog.GetString("Cable MU disconnected"));
-                else
+                else                
                     Viewer.Simulator.Confirmer.Information(Viewer.Catalog.GetString("Cable MU connected"));
             }
             else

@@ -1918,6 +1918,7 @@ namespace Orts.Simulation.RollingStocks
             outf.Write(TogglePowerKeyCycle);
             outf.Write(prevEngineBrakeValue[1]);
             outf.Write(prevEngineBrakeValue[2]);
+            outf.Write(LightsFrameUpdate);
             #endregion
 
             base.Save(outf);
@@ -2093,6 +2094,7 @@ namespace Orts.Simulation.RollingStocks
             TogglePowerKeyCycle = inf.ReadInt32();
             prevEngineBrakeValue[1] = inf.ReadSingle();
             prevEngineBrakeValue[2] = inf.ReadSingle();
+            LightsFrameUpdate = inf.ReadInt32();
             #endregion
 
             base.Restore(inf);
@@ -4423,26 +4425,7 @@ namespace Orts.Simulation.RollingStocks
                 }
                 else
                 {
-                    Battery = true;
-
-                    // Světla
-                    if (IsLeadLocomotive())
-                    {
-                        LightFrontLPosition = -1;
-                        LightFrontRPosition = -1;
-                    }
-                    if (Train.Cars.Count == 1)
-                    {
-                        LightRearLPosition = 1;
-                        LightRearRPosition = 1;
-                    }
-                    else
-                    if (this == Train.Cars[Train.Cars.Count - 1])
-                    {
-                        LightRearLPosition = 1;
-                        LightRearRPosition = 1;
-                    }
-
+                    Battery = true;                                  
                     ActiveStation = UsingRearCab ? DriverStation.Station2 : DriverStation.Station1;
                     if (Flipped)
                         ActiveStation = UsingRearCab ? DriverStation.Station1 : DriverStation.Station2;
@@ -4871,6 +4854,7 @@ namespace Orts.Simulation.RollingStocks
                 StepControllerValue = Simulator.StepControllerValue;
                 TogglePowerKey();
                 PowerKeyLogic();
+                MUCableLogic();
                 TrainAlerterLogic();
                 WipersLogic();
                 EngineBrakeValueLogic();
@@ -8292,7 +8276,8 @@ namespace Orts.Simulation.RollingStocks
         {
             //AcceptMUSignals = ToState;
             //AcceptPowerSignals = ToState;
-            AcceptCableSignals = ToState;
+            if (Simulator.LocoCount > 1)
+                AcceptCableSignals = ToState;
         }
 
         // Icik
@@ -8794,6 +8779,24 @@ namespace Orts.Simulation.RollingStocks
 
             // EDB Hack
             if (LocoHasNoDynamicController) DynamicBrakeController = null;
+        }
+        
+        public void MUCableLogic()
+        {
+            if (IsLeadLocomotive())
+            {
+                Simulator.LocoCount = 0;
+                Simulator.MUCableLocoCount = 0;
+                foreach (TrainCar car in Train.Cars)
+                {
+                    if (car is MSTSLocomotive)
+                        Simulator.LocoCount++;
+                    if (car is MSTSLocomotive && car.AcceptMUSignals)                    
+                        Simulator.MUCableLocoCount++;                                                            
+                }
+                if (Simulator.LocoCount == 1)
+                    AcceptCableSignals = false;
+            }
         }
 
         public bool MUCylPressureMirelOk;
@@ -10691,15 +10694,44 @@ namespace Orts.Simulation.RollingStocks
             Simulator.Confirmer.Information(Simulator.Catalog.GetString("World Object reloaded!"));
         }
 
+        int LightsFrameUpdate = 0;
         public void LightPositionHandle()
         {            
             FrontHeadLight = HeadLightPosition[1] > 0 ? true : false;
             RearHeadLight = HeadLightPosition[2] > 0 ? true : false;
 
+            // Lights setup
+            if (LightsFrameUpdate == 0)
+            {
+                LightsFrameUpdate++;                                                       
+                if (IsLeadLocomotive() && !AcceptMUSignals)
+                {
+                    if (Train.Cars.Count == 1)
+                    {
+                        LightFrontLPosition = -1;
+                        LightFrontRPosition = -1;
+                        LightRearLPosition = 1;
+                        LightRearRPosition = 1;
+                    }
+                    else
+                    {
+                        LightFrontLPosition = -1;
+                        LightFrontRPosition = -1;
+                    }
+                }
+                if (IsLeadLocomotive() && AcceptMUSignals)
+                {
+                    LightFrontLPosition = -1;
+                    LightFrontRPosition = -1;
+                    LightRearLPosition = 1;
+                    LightRearRPosition = 1;
+                }
+            }            
+
             switch (LightFrontLPosition)
             {
-                case -1:
-                    LightFrontLW = true;
+                case -1:                    
+                    LightFrontLW = true;                    
                     LightFrontLR = false;
                     break;
                 case 0:
@@ -10707,14 +10739,14 @@ namespace Orts.Simulation.RollingStocks
                     LightFrontLR = false;
                     break;
                 case 1:
-                    LightFrontLW = false;
+                    LightFrontLW = false;                    
                     LightFrontLR = true;                    
                     break;
             }
             switch (LightFrontRPosition)
             {
-                case -1:
-                    LightFrontRW = true;
+                case -1:                    
+                    LightFrontRW = true;                   
                     LightFrontRR = false;
                     break;
                 case 0:
@@ -10722,14 +10754,14 @@ namespace Orts.Simulation.RollingStocks
                     LightFrontRR = false;
                     break;
                 case 1:
-                    LightFrontRW = false;
-                    LightFrontRR = true;                    
+                    LightFrontRW = false;                    
+                    LightFrontRR = true;                                        
                     break;
             }
             switch (LightRearLPosition)
             {
-                case -1:
-                    LightRearLW = true;
+                case -1:                    
+                    LightRearLW = true;                    
                     LightRearLR = false;
                     break;
                 case 0:
@@ -10737,14 +10769,14 @@ namespace Orts.Simulation.RollingStocks
                     LightRearLR = false;
                     break;
                 case 1:
-                    LightRearLW = false;
-                    LightRearLR = true;
+                    LightRearLW = false;                    
+                    LightRearLR = true;                    
                     break;
             }
             switch (LightRearRPosition)
             {
-                case -1:
-                    LightRearRW = true;
+                case -1:                                        
+                    LightRearRW = true;                    
                     LightRearRR = false;
                     break;
                 case 0:
@@ -10752,9 +10784,60 @@ namespace Orts.Simulation.RollingStocks
                     LightRearRR = false;
                     break;
                 case 1:
-                    LightRearRW = false;
-                    LightRearRR = true;
+                    LightRearRW = false;                    
+                    LightRearRR = true;                    
                     break;
+            }
+
+            // Světla řízená přes kabel MU
+            if (IsLeadLocomotive() && AcceptMUSignals)
+            {
+                foreach (TrainCar car in Train.Cars)
+                {
+                    if (UsingRearCab)
+                    {
+                        if (car is MSTSLocomotive && car.AcceptMUSignals && car == Train.FirstCar)
+                        {
+                            car.LightFrontLPosition = LightFrontLPosition;
+                            car.LightFrontRPosition = LightFrontRPosition;
+                            car.LightRearLPosition = 0;
+                            car.LightRearRPosition = 0;
+                            car.LightRearLW = false;
+                            car.LightRearLR = false;
+                            car.LightRearRW = false;
+                            car.LightRearRR = false;
+                        }
+                        if (car is MSTSLocomotive && car.AcceptMUSignals && car == Train.LastCar)
+                        {                            
+                            car.LightFrontLW = false;
+                            car.LightFrontLR = false;
+                            car.LightFrontRW = false;
+                            car.LightFrontRR = false;
+                        }
+                    }
+                    else
+                    {
+                        if (car is MSTSLocomotive && car.AcceptMUSignals && car == Train.FirstCar)
+                        {
+                            car.LightRearLW = false;
+                            car.LightRearLR = false;
+                            car.LightRearRW = false;
+                            car.LightRearRR = false;
+                        }
+
+                        if (car is MSTSLocomotive && car.AcceptMUSignals && car == Train.LastCar)
+                        {
+                            car.LightRearLPosition = LightRearLPosition;
+                            car.LightRearRPosition = LightRearRPosition;
+                            car.LightFrontLPosition = 0;
+                            car.LightFrontRPosition = 0;
+                            car.LightFrontLW = false;
+                            car.LightFrontLR = false;
+                            car.LightFrontRW = false;
+                            car.LightFrontRR = false;
+                        }
+                    }
+                }
             }
         }
 
