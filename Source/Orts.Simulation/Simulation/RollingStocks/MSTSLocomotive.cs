@@ -4854,7 +4854,6 @@ namespace Orts.Simulation.RollingStocks
                 StepControllerValue = Simulator.StepControllerValue;
                 TogglePowerKey();
                 PowerKeyLogic();
-                MUCableLogic();
                 TrainAlerterLogic();
                 WipersLogic();
                 EngineBrakeValueLogic();
@@ -4893,7 +4892,8 @@ namespace Orts.Simulation.RollingStocks
                 PantoCanHVOff(elapsedClockSeconds);
                 DirectionButtonSetup();
                 PlayerSwitchToRearCab();
-                LightPositionHandle();                
+                LightPositionHandle();
+                MUCableLogic();
                 RainWindow(elapsedClockSeconds);
                 WipersWindow(elapsedClockSeconds);                
                 BatterySetOn = false;                
@@ -8785,15 +8785,24 @@ namespace Orts.Simulation.RollingStocks
         {
             if (IsLeadLocomotive())
             {
+                Simulator.TrainIsPassenger = true;
                 Simulator.LocoCount = 0;
                 Simulator.MUCableLocoCount = 0;
                 foreach (TrainCar car in Train.Cars)
                 {
+                    if (car.WagonType == WagonTypes.Freight)
+                        Simulator.TrainIsPassenger = false;                    
                     if (car is MSTSLocomotive)
                         Simulator.LocoCount++;
                     if (car is MSTSLocomotive && car.AcceptMUSignals)                    
                         Simulator.MUCableLocoCount++;                                                            
                 }
+                //if (!Simulator.TrainIsPassenger)
+                //    foreach (TrainCar car in Train.Cars)
+                //    {
+                //        if (car is MSTSLocomotive && car.AcceptMUSignals)
+                //            car.AcceptCableSignals = false;
+                //    }
                 if (Simulator.LocoCount == 1)
                     AcceptCableSignals = false;
             }
@@ -10794,7 +10803,7 @@ namespace Orts.Simulation.RollingStocks
             {
                 foreach (TrainCar car in Train.Cars)
                 {
-                    car.Headlight[1] = car.Headlight[2] = Headlight[LocoStation];                     
+                    //car.Headlight[1] = car.Headlight[2] = Headlight[LocoStation];                     
                     if (UsingRearCab)
                     {
                         if (car is MSTSLocomotive && car.AcceptMUSignals && car == Train.FirstCar)
