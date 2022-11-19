@@ -10803,7 +10803,6 @@ namespace Orts.Simulation.RollingStocks
             {
                 foreach (TrainCar car in Train.Cars)
                 {
-                    //car.Headlight[1] = car.Headlight[2] = Headlight[LocoStation];                     
                     if (UsingRearCab)
                     {
                         if (car is MSTSLocomotive && car.AcceptMUSignals && car == Train.FirstCar)
@@ -10818,7 +10817,7 @@ namespace Orts.Simulation.RollingStocks
                             car.LightRearRR = false;
                         }
                         if (car is MSTSLocomotive && car.AcceptMUSignals && car == Train.LastCar)
-                        {                            
+                        {
                             car.LightFrontLW = false;
                             car.LightFrontLR = false;
                             car.LightFrontRW = false;
@@ -10829,24 +10828,68 @@ namespace Orts.Simulation.RollingStocks
                     {
                         if (car is MSTSLocomotive && car.AcceptMUSignals && car == Train.FirstCar)
                         {
-                            car.LightRearLW = false;
-                            car.LightRearLR = false;
-                            car.LightRearRW = false;
-                            car.LightRearRR = false;
+                            if (!Flipped)
+                            {
+                                car.LightRearLW = false;
+                                car.LightRearLR = false;
+                                car.LightRearRW = false;
+                                car.LightRearRR = false;
+                            }
+                            if (Flipped)
+                            {
+                                car.LightFrontLPosition = LightRearRPosition;
+                                car.LightFrontRPosition = LightRearLPosition;
+                            }
                         }
 
-                        if (car is MSTSLocomotive && car.AcceptMUSignals && car == Train.LastCar)
-                        {                            
-                            car.LightRearLPosition = LightRearLPosition;
-                            car.LightRearRPosition = LightRearRPosition;                            
-                            car.LightFrontLPosition = 0;
-                            car.LightFrontRPosition = 0;
-                            car.LightFrontLW = false;
-                            car.LightFrontLR = false;
-                            car.LightFrontRW = false;
-                            car.LightFrontRR = false;
+                        if (car is MSTSLocomotive && car.AcceptMUSignals && car == Train.LastCar && !car.CarIsPlayerLoco)
+                        {
+                            if (!car.Flipped)
+                            {
+                                car.LightRearLPosition = LightRearLPosition;
+                                car.LightRearRPosition = LightRearRPosition;
+                                //car.LightFrontLPosition = 0;
+                                //car.LightFrontRPosition = 0;
+                                car.LightFrontLW = false;
+                                car.LightFrontLR = false;
+                                car.LightFrontRW = false;
+                                car.LightFrontRR = false;
+                            }
+                            else
+                            {                                
+                                car.LightFrontLPosition = LightRearRPosition;
+                                car.LightFrontRPosition = LightRearLPosition;
+                                car.LightRearLPosition = 0;
+                                car.LightRearRPosition = 0;
+                                car.LightRearLW = false;
+                                car.LightRearLR = false;
+                                car.LightRearRW = false;
+                                car.LightRearRR = false;
+                            }
                         }
-                    }
+
+                        if (car is MSTSLocomotive && car.AcceptMUSignals && car == Train.LastCar && car.CarIsPlayerLoco)
+                        {
+                            if (!car.Flipped)
+                            {
+                                car.LightRearLPosition = LightRearLPosition;
+                                car.LightRearRPosition = LightRearRPosition;
+                                //car.LightFrontLPosition = 0;
+                                //car.LightFrontRPosition = 0;
+                                car.LightFrontLW = false;
+                                car.LightFrontLR = false;
+                                car.LightFrontRW = false;
+                                car.LightFrontRR = false;
+                            }
+                            else
+                            {
+                                car.LightRearLW = false;
+                                car.LightRearLR = false;
+                                car.LightRearRW = false;
+                                car.LightRearRR = false;
+                            }
+                        }
+                    }                   
                 }
             }
         }
@@ -10864,7 +10907,7 @@ namespace Orts.Simulation.RollingStocks
                 }
                 LightPositionHandle();
                 if (LightFrontLPosition == 1)
-                    if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.LightFrontLR, LightFrontLR ? CabSetting.On : CabSetting.Off);
+                    if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.LightFrontLR, CabSetting.On);
             }
             else
             {
@@ -10875,7 +10918,7 @@ namespace Orts.Simulation.RollingStocks
                 }
                 LightPositionHandle();
                 if (LightRearRPosition == 1)
-                    if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.LightFrontLR, LightRearRR ? CabSetting.On : CabSetting.Off);
+                    if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.LightFrontLR, CabSetting.On);
             }                        
         }
         // Bílé
@@ -10890,7 +10933,7 @@ namespace Orts.Simulation.RollingStocks
                 }
                 LightPositionHandle();
                 if (LightFrontLPosition == -1)
-                    if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.LightFrontLW, LightFrontLW ? CabSetting.On : CabSetting.Off);
+                    if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.LightFrontLW, CabSetting.On);
             }
             else
             {
@@ -10901,7 +10944,7 @@ namespace Orts.Simulation.RollingStocks
                 }
                 LightPositionHandle();
                 if (LightRearRPosition == -1)
-                    if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.LightFrontLW, LightRearRW ? CabSetting.On : CabSetting.Off);
+                    if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.LightFrontLW, CabSetting.On);
             }                                                       
         }
 
@@ -10918,7 +10961,7 @@ namespace Orts.Simulation.RollingStocks
                 }
                 LightPositionHandle();
                 if (LightFrontRPosition == 1)
-                    if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.LightFrontRR, LightFrontRR ? CabSetting.On : CabSetting.Off);
+                    if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.LightFrontRR, CabSetting.On);
             }
             else
             {
@@ -10929,7 +10972,7 @@ namespace Orts.Simulation.RollingStocks
                 }
                 LightPositionHandle();
                 if (LightRearLPosition == 1)
-                    if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.LightFrontRR, LightRearLR ? CabSetting.On : CabSetting.Off);
+                    if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.LightFrontRR, CabSetting.On);
             }                                 
         }
         // Bílé
@@ -10944,7 +10987,7 @@ namespace Orts.Simulation.RollingStocks
                 }
                 LightPositionHandle();
                 if (LightFrontRPosition == -1)
-                    if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.LightFrontRW, LightFrontRW ? CabSetting.On : CabSetting.Off);
+                    if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.LightFrontRW, CabSetting.On);
             }
             else
             {
@@ -10955,7 +10998,7 @@ namespace Orts.Simulation.RollingStocks
                 }
                 LightPositionHandle();
                 if (LightRearLPosition == -1)
-                    if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.LightFrontRW, LightRearLW ? CabSetting.On : CabSetting.Off);
+                    if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.LightFrontRW, CabSetting.On);
             }            
         }
 
@@ -10972,7 +11015,7 @@ namespace Orts.Simulation.RollingStocks
                 }
                 LightPositionHandle();
                 if (LightRearLPosition == 1)
-                    if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.LightRearLR, LightRearLR ? CabSetting.On : CabSetting.Off);
+                    if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.LightRearLR, CabSetting.On);
             }
             else
             {
@@ -10983,7 +11026,7 @@ namespace Orts.Simulation.RollingStocks
                 }
                 LightPositionHandle();
                 if (LightFrontRPosition == 1)
-                    if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.LightRearLR, LightFrontRR ? CabSetting.On : CabSetting.Off);
+                    if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.LightRearLR, CabSetting.On);
             }            
         }
         // Bílé
@@ -10998,7 +11041,7 @@ namespace Orts.Simulation.RollingStocks
                 }
                 LightPositionHandle();
                 if (LightRearLPosition == -1)
-                    if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.LightRearLW, LightRearLW ? CabSetting.On : CabSetting.Off);
+                    if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.LightRearLW, CabSetting.On);
             }
             else
             {
@@ -11009,7 +11052,7 @@ namespace Orts.Simulation.RollingStocks
                 }
                 LightPositionHandle();
                 if (LightFrontRPosition == -1)
-                    if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.LightRearLW, LightFrontRW ? CabSetting.On : CabSetting.Off);
+                    if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.LightRearLW, CabSetting.On);
             }            
         }
         // Zadní pravé světlo
@@ -11025,7 +11068,7 @@ namespace Orts.Simulation.RollingStocks
                 }
                 LightPositionHandle();
                 if (LightRearRPosition == 1)
-                    if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.LightRearRR, LightRearRR ? CabSetting.On : CabSetting.Off);
+                    if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.LightRearRR, CabSetting.On);
             }
             else
             {
@@ -11036,7 +11079,7 @@ namespace Orts.Simulation.RollingStocks
                 }
                 LightPositionHandle();
                 if (LightFrontLPosition == 1)
-                    if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.LightRearRR, LightFrontLR ? CabSetting.On : CabSetting.Off);
+                    if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.LightRearRR, CabSetting.On);
             }
         }
         // Bílé
@@ -11051,7 +11094,7 @@ namespace Orts.Simulation.RollingStocks
                 }
                 LightPositionHandle();
                 if (LightRearRPosition == -1)
-                    if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.LightRearRW, LightRearRW ? CabSetting.On : CabSetting.Off);
+                    if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.LightRearRW, CabSetting.On);
             }
             else
             {
@@ -11062,7 +11105,7 @@ namespace Orts.Simulation.RollingStocks
                 }
                 LightPositionHandle();
                 if (LightFrontLPosition == -1)
-                    if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.LightRearRW, LightFrontLW ? CabSetting.On : CabSetting.Off);
+                    if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.LightRearRW, CabSetting.On);
             }                    
         }
 

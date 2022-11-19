@@ -2957,7 +2957,7 @@ namespace Orts.Simulation.RollingStocks
             //foreach (var pantograph in Pantographs.List)
             //    status.AppendFormat("{0} ", Simulator.Catalog.GetParticularString("Pantograph", GetStringAttribute.GetPrettyName(pantograph.State)));
             // Icik                        
-            if (UsingRearCab || Flipped)
+            if (UsingRearCab)
             {
                 if (Pantographs.List.Count == 2)
                     status.AppendFormat("{0} ", Simulator.Catalog.GetParticularString("Pantograph", GetStringAttribute.GetPrettyName(Pantographs[1].State)));
