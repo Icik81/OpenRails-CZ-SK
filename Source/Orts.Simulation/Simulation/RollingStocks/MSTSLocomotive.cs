@@ -8902,15 +8902,17 @@ namespace Orts.Simulation.RollingStocks
         public void TrainBrakeValueLogic()
         {
             if (IsLeadLocomotive())
-            {
-                //Simulator.Confirmer.MSG("TrainBrakeValue[0] = " + TrainBrakeValue[0] + "        TrainBrakeValue[1] = " + TrainBrakeValue[1] + "   TrainBrakeValue[2] = " + TrainBrakeValue[2]);                
-                
+            {                                
                 if (Simulator.LocoStationChange)
-                {
+                {                    
                     SetTrainBrakeValue(TrainBrakeValue[LocoStation], 0);
                     SetTrainBrakePercent(TrainBrakeValue[LocoStation] * 101.01f);
                     Simulator.LocoStationChange = false;
-                }                
+                }
+                TrainBrakeValue[1] = (float)Math.Round(TrainBrakeValue[1], 2);
+                TrainBrakeValue[2] = (float)Math.Round(TrainBrakeValue[2], 2);
+
+                //Simulator.Confirmer.MSG("TrainBrakeValue[0] = " + TrainBrakeValue[0] + "        TrainBrakeValue[1] = " + TrainBrakeValue[1] + "   TrainBrakeValue[2] = " + TrainBrakeValue[2]);
 
                 #region TrainBrakeCheckPosition
                 foreach (MSTSNotch notch in TrainBrakeController.Notches)
