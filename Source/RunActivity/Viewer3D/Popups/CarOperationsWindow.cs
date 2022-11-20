@@ -307,6 +307,7 @@ namespace Orts.Viewer3D.Popups
                 if (!(Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive).AcceptPowerSignals)
                     Viewer.Simulator.Confirmer.Information(Viewer.Catalog.GetString("Power MU disconnected"));
                 else
+                if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive).AcceptCableSignals)
                     Viewer.Simulator.Confirmer.Information(Viewer.Catalog.GetString("Power MU connected"));
             }
             else

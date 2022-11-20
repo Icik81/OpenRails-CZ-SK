@@ -476,10 +476,10 @@ namespace Orts.Simulation.RollingStocks
             return new Interpolator(WorldLatitudeDeg, WorldTemperatureSummer);
         }
 
-        public bool AcceptMUSignals = true; //indicates if the car accepts multiple unit signals
-        public bool AcceptHelperSignals;
+        public bool AcceptMUSignals = false; //indicates if the car accepts multiple unit signals
+        public bool AcceptHelperSignals = false;
         public bool AcceptPowerSignals = true;
-        public bool AcceptCableSignals = true;
+        public bool AcceptCableSignals = false;
         public bool IsMetric;
         public bool IsUK;
         public float prevElev = -100f;

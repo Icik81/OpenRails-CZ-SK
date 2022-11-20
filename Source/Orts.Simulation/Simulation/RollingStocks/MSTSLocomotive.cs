@@ -4167,12 +4167,11 @@ namespace Orts.Simulation.RollingStocks
             if (AcceptHelperSignals && PowerUnit)
             {
                 LocoHelperOn = true;
-                AcceptMUSignals = false;
+                AcceptCableSignals = false;
             }
             if (!AcceptHelperSignals && PowerUnit)
             {
-                LocoHelperOn = false;
-                AcceptMUSignals = true;
+                LocoHelperOn = false;                
             }
 
             if (IsLeadLocomotive())
@@ -4270,24 +4269,32 @@ namespace Orts.Simulation.RollingStocks
                 }
             }
 
+            // Připojený MU kabel
+            if (AcceptCableSignals)
+            {
+                AcceptMUSignals = true;                
+            }
+
             // Odpojený MU kabel
             if (!AcceptCableSignals)
             {                
-                AcceptMUSignals = false;                
+                AcceptMUSignals = false;
+                AcceptPowerSignals = false;
             }
 
             // Výkon MU vypnutý
-            if (!AcceptPowerSignals)
+            if (!AcceptPowerSignals && AcceptCableSignals)
             {
                 LocalThrottlePercent = 0;                
                 LocalDynamicBrakePercent = -1;
-                if (CruiseControl != null && CruiseControl.Equipped)
-                {
-                    CruiseControl.SpeedRegMode[LocoStation] = SubSystems.CruiseControl.SpeedRegulatorMode.Manual;
-                    CruiseControl.SelectedSpeedMpS = MpS.FromKpH(0);
-                    CruiseControl.SpeedSelMode[LocoStation] = SubSystems.CruiseControl.SpeedSelectorMode.Neutral;
-                    AripotControllerValue[LocoStation] = 0;
-                }
+                ControllerVolts = 0;
+                //if (CruiseControl != null && CruiseControl.Equipped)
+                //{
+                //    CruiseControl.SpeedRegMode[LocoStation] = SubSystems.CruiseControl.SpeedRegulatorMode.Manual;
+                //    CruiseControl.SelectedSpeedMpS = MpS.FromKpH(0);
+                //    CruiseControl.SpeedSelMode[LocoStation] = SubSystems.CruiseControl.SpeedSelectorMode.Neutral;
+                //    AripotControllerValue[LocoStation] = 0;
+                //}
             }
         }
 
@@ -4856,9 +4863,9 @@ namespace Orts.Simulation.RollingStocks
                 PowerKeyLogic();
                 MUCableLogic();
                 TrainAlerterLogic();
-                WipersLogic();
                 EngineBrakeValueLogic();
                 TrainBrakeValueLogic();
+                WipersLogic();                
                 DirectionControllerLogic();                                
                 PowerCurrentCalculation();
                 BrakeCurrentCalculation();
@@ -5159,7 +5166,7 @@ namespace Orts.Simulation.RollingStocks
             // For flipped locomotives the force is "flipped" elsewhere, whereas dynamic brake force is "flipped" below by the direction of the speed.            
 
             // Icik
-            if (!PowerOn || !AcceptPowerSignals)                
+            if (!PowerOn || (!AcceptPowerSignals && AcceptCableSignals))                
                 TractiveForceN = 0;
 
             MotiveForceN = TractiveForceN;
@@ -8154,6 +8161,8 @@ namespace Orts.Simulation.RollingStocks
 
         public void SetDynamicBrakeValue(float value)
         {
+            if (DynamicBrakeController == null)
+                return;
             if (!DynamicBrake && ThrottleController.CurrentValue == 0 && value > 0.05f)
                 DynamicBrakeChangeActiveState(true);
             if (DynamicBrake && DynamicBrakeController.CurrentValue == 0 && value < -0.05f)
@@ -8521,7 +8530,7 @@ namespace Orts.Simulation.RollingStocks
                         }
                     }
             }
-                        
+
             if (IsLeadLocomotive())
             {
                 //Simulator.Confirmer.MSG("PowerKeyPosition[1] = " + PowerKeyPosition[1] + "   PowerKeyPosition[2] = " + PowerKeyPosition[2]);
@@ -8532,8 +8541,20 @@ namespace Orts.Simulation.RollingStocks
             }
 
             if (IsLeadLocomotive() && !AcceptMUSignals)
-            {
-                Simulator.PowerKeyInPocket = true;                
+            {                
+                if ((DieselDirectionController || DieselDirectionController2) && TogglePowerKeyCycle == 0)
+                {
+                    this.PowerKeyPosition[1] = 0;
+                    this.PowerKeyPosition[2] = 0;
+                    Simulator.PowerKeyInPocket = true;
+                }
+
+                if (CarHavePocketPowerKey)
+                {
+                    Simulator.PowerKeyInPocket = true;
+                    if (PowerKeyPosition[1] > 0 || PowerKeyPosition[2] > 0)
+                        Simulator.PowerKeyInPocket = false;
+                }                
             }            
 
             if (PowerKeyPosition[LocoStation] != prevPowerKeyPosition[LocoStation])
@@ -8751,25 +8772,41 @@ namespace Orts.Simulation.RollingStocks
 
                 if ((this as MSTSElectricLocomotive) != null && (this as MSTSElectricLocomotive).AIPantoDownStop)
                     SignalEvent(Event.EnginePowerOff);
-
-                // Nastaví automaticky lokomotivu jako postrk, pokud se jedná o nákladní vlak
+                
                 if (IsPlayerTrain)
                 {
+                    Simulator.TrainIsPassenger = true;
                     foreach (TrainCar car in Train.Cars)
                     {
+                        // Nastaví automaticky lokomotivu jako postrk, pokud se jedná o nákladní vlak
                         if (car is MSTSWagon && car.WagonType == WagonTypes.Freight)
-                            LocoBecomeHelper = true;
+                            LocoBecomeHelper = true;                        
                         if (car is MSTSLocomotive && LocoBecomeHelper)
                         {
                             car.AcceptHelperSignals = true;
                             Simulator.Confirmer.Information(Simulator.Catalog.GetString("Car ID") + " " + car.CarID + ": " + Simulator.Catalog.GetString("Helper connected"));
                         }
+
+                        if (car.WagonType == WagonTypes.Freight)
+                            Simulator.TrainIsPassenger = false;
                     }
+                    // Osobní vlak s elektrickou lokomotivou
+                    if (Simulator.TrainIsPassenger)
+                        foreach (TrainCar car in Train.Cars)
+                        {
+                            if (car is MSTSElectricLocomotive && !car.AcceptCableSignals)
+                                car.AcceptCableSignals = true;
+                        }
+                    // Elektrické lokomotivy nebo oddíly spojené za sebou
+                    if (this.MUCable)
+                        if (this is MSTSElectricLocomotive && !AcceptCableSignals)
+                            AcceptCableSignals = true;
                 }                
             }
 
             if (this.CarFrameUpdateState == 2)
             {                
+                TrainBrakeValueLogic();
             }
 
             // Desátý průběh - nastaví hodnoty po nahrání uložené pozice
@@ -8784,27 +8821,20 @@ namespace Orts.Simulation.RollingStocks
         public void MUCableLogic()
         {
             if (IsLeadLocomotive())
-            {
-                Simulator.TrainIsPassenger = true;
+            {                
                 Simulator.LocoCount = 0;
                 Simulator.MUCableLocoCount = 0;
                 foreach (TrainCar car in Train.Cars)
                 {
-                    if (car.WagonType == WagonTypes.Freight)
-                        Simulator.TrainIsPassenger = false;                    
                     if (car is MSTSLocomotive)
                         Simulator.LocoCount++;
-                    if (car is MSTSLocomotive && car.AcceptMUSignals)                    
+                    if (car is MSTSLocomotive && car.AcceptMUSignals && !car.CarIsPlayerLoco)                    
                         Simulator.MUCableLocoCount++;                                                            
-                }
-                //if (!Simulator.TrainIsPassenger)
-                //    foreach (TrainCar car in Train.Cars)
-                //    {
-                //        if (car is MSTSLocomotive && car.AcceptMUSignals)
-                //            car.AcceptCableSignals = false;
-                //    }
-                if (Simulator.LocoCount == 1)
+                }                
+                if (Simulator.LocoCount == 1 || Simulator.MUCableLocoCount < 1)
                     AcceptCableSignals = false;
+                else
+                    AcceptCableSignals = true;
             }
         }
 
@@ -8902,11 +8932,17 @@ namespace Orts.Simulation.RollingStocks
         public void TrainBrakeValueLogic()
         {
             if (IsLeadLocomotive())
-            {                                
+            {
+                LocoStation = 1;
+                if (UsingRearCab)
+                    LocoStation = 2;
+
                 if (Simulator.LocoStationChange)
-                {                    
-                    SetTrainBrakeValue(TrainBrakeValue[LocoStation], 0);
-                    SetTrainBrakePercent(TrainBrakeValue[LocoStation] * 101.01f);
+                {                                        
+                    if (TrainBrakeController.BS2ControllerOnStation)                    
+                        SetTrainBrakePercent(TrainBrakeValue[LocoStation] * 101.01f);
+                    else
+                        SetTrainBrakePercent(TrainBrakeValue[LocoStation] * 100f);
                     Simulator.LocoStationChange = false;
                 }
                 TrainBrakeValue[1] = (float)Math.Round(TrainBrakeValue[1], 2);
@@ -9072,6 +9108,8 @@ namespace Orts.Simulation.RollingStocks
                     }
                 }             
             }
+            if (IsLeadLocomotive() && !AcceptMUSignals)            
+                Simulator.TrainPowerKey = true;            
         }
 
         public void ToggleHV2SwitchUp()

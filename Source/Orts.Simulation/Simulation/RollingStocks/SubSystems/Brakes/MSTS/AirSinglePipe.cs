@@ -646,7 +646,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
         }
 
         public void TrainBrakePositionSet()
-        {
+        {            
             MSTSLocomotive loco = Car as MSTSLocomotive;
             if (loco != null)
             {
@@ -2172,7 +2172,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 if (train.Cars[i] is MSTSLocomotive)
                 {
                     (train.Cars[i] as MSTSLocomotive).MUCable = false;
-                    if ((train.Cars[i] as MSTSLocomotive).MUCableEquipment && i >= first && i <= last && continuousFromInclusive <= i && i < continuousToExclusive)
+                    if (/*(train.Cars[i] as MSTSLocomotive).MUCableEquipment &&*/ i >= first && i <= last && continuousFromInclusive <= i && i < continuousToExclusive)
                     {
                         var eng = train.Cars[i] as MSTSLocomotive;
                         if (eng != null)
