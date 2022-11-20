@@ -1915,6 +1915,7 @@ namespace Orts.Simulation.RollingStocks
             outf.Write(TrainBrakeValueA);
             outf.Write(TrainBrakeValueE);
             outf.Write(TrainBrakeValueEPA);
+            outf.Write(TrainBrakeValueAGA);
             outf.Write(TogglePowerKeyCycle);
             outf.Write(prevEngineBrakeValue[1]);
             outf.Write(prevEngineBrakeValue[2]);
@@ -2091,6 +2092,7 @@ namespace Orts.Simulation.RollingStocks
             TrainBrakeValueA = inf.ReadSingle();
             TrainBrakeValueE = inf.ReadSingle();
             TrainBrakeValueEPA = inf.ReadSingle();
+            TrainBrakeValueAGA = inf.ReadSingle();
             TogglePowerKeyCycle = inf.ReadInt32();
             prevEngineBrakeValue[1] = inf.ReadSingle();
             prevEngineBrakeValue[2] = inf.ReadSingle();
@@ -8929,6 +8931,7 @@ namespace Orts.Simulation.RollingStocks
         float TrainBrakeValueA;
         float TrainBrakeValueE;
         float TrainBrakeValueEPA;
+        float TrainBrakeValueAGA;        
         public void TrainBrakeValueLogic()
         {
             if (IsLeadLocomotive())
@@ -8938,15 +8941,10 @@ namespace Orts.Simulation.RollingStocks
                     LocoStation = 2;
 
                 if (Simulator.LocoStationChange)
-                {                                        
-                    if (TrainBrakeController.BS2ControllerOnStation)                    
-                        SetTrainBrakePercent(TrainBrakeValue[LocoStation] * 101.01f);
-                    else
-                        SetTrainBrakePercent(TrainBrakeValue[LocoStation] * 100f);
+                {
+                    SetTrainBrakePercent(TrainBrakeValue[LocoStation] * 100f);
                     Simulator.LocoStationChange = false;
-                }
-                TrainBrakeValue[1] = (float)Math.Round(TrainBrakeValue[1], 2);
-                TrainBrakeValue[2] = (float)Math.Round(TrainBrakeValue[2], 2);
+                }                
 
                 //Simulator.Confirmer.MSG("TrainBrakeValue[0] = " + TrainBrakeValue[0] + "        TrainBrakeValue[1] = " + TrainBrakeValue[1] + "   TrainBrakeValue[2] = " + TrainBrakeValue[2]);
 
@@ -8978,6 +8976,10 @@ namespace Orts.Simulation.RollingStocks
                             break;
                         case ControllerState.EPApply:
                             TrainBrakeValueEPA = notch.Value;
+                            break;
+                        case ControllerState.GSelfLapH:
+                        case ControllerState.GSelfLap:
+                            TrainBrakeValueAGA = notch.Value;
                             break;
                     }
                 }
@@ -9016,6 +9018,10 @@ namespace Orts.Simulation.RollingStocks
                         BrakeSystem.EPApply = true;
                     else
                         BrakeSystem.EPApply = false;
+                    if (TrainBrakeValue[2] == TrainBrakeValueAGA && !LapActive[2])
+                        BrakeSystem.ApplyGA = true;
+                    else
+                        BrakeSystem.ApplyGA = false;
                 }
                 if (LocoStation == 2)
                 {
@@ -9051,6 +9057,10 @@ namespace Orts.Simulation.RollingStocks
                         BrakeSystem.EPApply = true;
                     else
                         BrakeSystem.EPApply = false;
+                    if (TrainBrakeValue[1] == TrainBrakeValueAGA && !LapActive[1])
+                        BrakeSystem.ApplyGA = true;
+                    else
+                        BrakeSystem.ApplyGA = false;
                 }
                 #endregion
 
@@ -10746,13 +10756,15 @@ namespace Orts.Simulation.RollingStocks
         int LightsFrameUpdate = 0;
         public void LightPositionHandle()
         {            
+            if (LightsFrameUpdate < 3)
+                LightsFrameUpdate++;
+
             FrontHeadLight = HeadLightPosition[1] > 0 ? true : false;
             RearHeadLight = HeadLightPosition[2] > 0 ? true : false;
 
             // Lights setup
-            if (LightsFrameUpdate == 0)
-            {
-                LightsFrameUpdate++;                                                       
+            if (LightsFrameUpdate == 2)
+            {                
                 if (IsLeadLocomotive() && !AcceptMUSignals)
                 {
                     if (Train.Cars.Count == 1)

@@ -298,8 +298,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
 
             if (CurrentNotch >= 0 && Notches.Count > 0)
             {
-                if (Notches[Notches.Count - 1].Type == ControllerState.Emergency)
-                    v = Notches[Notches.Count - 1].Value * percent / 100;
+                // Icik
+                //if (Notches[Notches.Count - 1].Type == ControllerState.Emergency)
+                //    v = Notches[Notches.Count - 1].Value * percent / 100;
                 for (; ; )
                 {
                     MSTSNotch notch = Notches[CurrentNotch];
