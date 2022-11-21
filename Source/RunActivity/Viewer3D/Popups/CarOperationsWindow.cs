@@ -332,11 +332,8 @@ namespace Orts.Viewer3D.Popups
                 else
                     Viewer.Simulator.Confirmer.Information(Viewer.Catalog.GetString("Helper connected"));
             }
-            else
-            {
-                Viewer.Simulator.Confirmer.Warning(Viewer.Catalog.GetString("No Helper command for this type of car!"));
-                (Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive).AcceptHelperSignals = false;
-            }
+            else            
+                Viewer.Simulator.Confirmer.Warning(Viewer.Catalog.GetString("No Helper command for this type of car!"));                            
         }
         void buttonToggleHelperOptions_Click(Control arg1, Point arg2)
         {

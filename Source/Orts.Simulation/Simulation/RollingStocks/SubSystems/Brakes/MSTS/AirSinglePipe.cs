@@ -1050,7 +1050,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         loco.AICompressorStartDelay += elapsedClockSeconds;
                         if (loco.AICompressorStartDelay > 10)
                         {
-                            loco.MainResPressurePSI += (loco.MainResChargingRatePSIpS + loco.MainResChargingRatePSIpS_2) * elapsedClockSeconds;
+                            loco.MainResPressurePSI += (loco.MainResChargingRatePSIpS + loco.MainResChargingRatePSIpS_2) * elapsedClockSeconds;                            
                             if (!AICompressorRun)
                             {
                                 loco.SignalEvent(Event.CompressorOn);
@@ -1861,6 +1861,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
 
                 // Spočítá celkovou netěsnost vlaku 
                 train.TotalTrainTrainPipeLeakRate += (car as MSTSWagon).TrainPipeLeakRatePSIpS;
+                
+                // Ohlídá hodnotu v hlavní jímce, aby nepřekročila limity                
+                if (car is MSTSLocomotive)
+                    (car as MSTSLocomotive).MainResPressurePSI = MathHelper.Clamp((car as MSTSLocomotive).MainResPressurePSI, 0, (car as MSTSLocomotive).MaxMainResPressurePSI + 1.0f * 14.50377f);
             }
 
             // Propagate brake line (1) data if pressure gradient disabled            
@@ -1869,6 +1873,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
 
             // Definice limitů pro základní proměnné vzduchařiny
             serviceTimeFactor = MathHelper.Clamp(serviceTimeFactor, 1.009f, 2.0f);
+            // Ohlídá hodnotu v hlavní jímce, aby nepřekročila limity            
             if (train.Simulator.Settings.CorrectQuestionableBrakingParams)
             {
                 if (lead != null)
@@ -1901,10 +1906,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                                 lead.ThrottleController.SetPercent(0);
                         }
                     }
-
-                    // Ohlídá hodnotu v hlavní jímce, aby nepřekročila limity
-                    lead.MainResPressurePSI = MathHelper.Clamp(lead.MainResPressurePSI, 0, lead.MaxMainResPressurePSI + 1.0f * 14.50377f);
-
+                    
                     // Výchozí hodnota pro nízkotlaké přebití je 5.4 barů, pokud není definována v sekci engine
                     if (lead.BrakeSystem.TrainBrakesControllerMaxOverchargePressurePSI == 0) lead.BrakeSystem.TrainBrakesControllerMaxOverchargePressurePSI = 5.4f * 14.50377f;
 

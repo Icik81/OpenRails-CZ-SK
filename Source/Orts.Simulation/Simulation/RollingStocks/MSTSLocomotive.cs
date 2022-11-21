@@ -4160,7 +4160,7 @@ namespace Orts.Simulation.RollingStocks
         bool LocoBecomeHelper;
         public void SetHelperLoco(float elapsedClockSeconds)
         {
-            if (IsLeadLocomotive() && AcceptHelperSignals)
+            if (IsLeadLocomotive() && (AcceptHelperSignals || PowerReductionResult12 > 0))
             {
                 AcceptHelperSignals = false;
                 PowerReductionResult12 = 0;
