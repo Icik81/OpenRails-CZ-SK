@@ -4808,7 +4808,7 @@ namespace Orts.Simulation.RollingStocks
             // Icik
             SetCarLightsPowerOn();
             SetLapButton();            
-            CarFrameUpdate();
+            CarFrameUpdate(elapsedClockSeconds);
 
             if (IsLeadLocomotive())            
                 CarIsPlayerLoco = true;                            
@@ -4865,7 +4865,7 @@ namespace Orts.Simulation.RollingStocks
                 PowerKeyLogic();
                 MUCableLogic();
                 TrainAlerterLogic();
-                EngineBrakeValueLogic();
+                EngineBrakeValueLogic(elapsedClockSeconds);
                 TrainBrakeValueLogic();
                 WipersLogic();                
                 DirectionControllerLogic();                                
@@ -8759,7 +8759,7 @@ namespace Orts.Simulation.RollingStocks
             }
         }
 
-        public void CarFrameUpdate()
+        public void CarFrameUpdate(float elapsedClockSeconds)
         {
             this.CarFrameUpdateState++;
             if (this.CarFrameUpdateState > 10)
@@ -8807,7 +8807,8 @@ namespace Orts.Simulation.RollingStocks
             }
 
             if (this.CarFrameUpdateState == 2)
-            {                
+            {
+                EngineBrakeValueLogic(elapsedClockSeconds);
                 TrainBrakeValueLogic();
             }
 
@@ -8904,23 +8905,115 @@ namespace Orts.Simulation.RollingStocks
             else
                 Wiper = false;
         }
-        
-        public void EngineBrakeValueLogic()
-        {            
+
+        float EngineBrakeValueR;
+        float EngineBrakeValueN;
+        float EngineBrakeValueA;
+        public void EngineBrakeValueLogic(float elapsedClockSeconds)
+        {                        
             if (IsLeadLocomotive())
-            {
-                EngineBrakeValue[0] = Math.Max(EngineBrakeValue[1], EngineBrakeValue[2]);
+            {                
                 //Simulator.Confirmer.MSG("EngineBrakeValue[0] = " + EngineBrakeValue[0] + "        EngineBrakeValue[1] = " + EngineBrakeValue[1] + "   EngineBrakeValue[2] = " + EngineBrakeValue[2]);
                 if (EngineBrakeController.Notches.Count <= 1)
                 {
-                    if (prevEngineBrakeValue[LocoStation] != EngineBrakeValue[LocoStation])
+                    EngineBrakeValue[0] = Math.Max(EngineBrakeValue[1], EngineBrakeValue[2]);
+                    SetEngineBrakePercent(EngineBrakeValue[0] * 100f);
+                }
+                else
+                {
+                    LocoStation = 1;
+                    if (UsingRearCab)
+                        LocoStation = 2;
+                    if (Simulator.LocoStationChange)
+                    {                        
+                        SetEngineBrakePercent(EngineBrakeValue[LocoStation] * 100f);                        
+                    }
+                    #region EngineBrakeCheckPosition
+                    foreach (MSTSNotch notch in EngineBrakeController.Notches)
                     {
-                        SetEngineBrakeValue(EngineBrakeValue[0]);
-                        SetEngineBrakePercent(EngineBrakeValue[0] * 100f);
-                        prevEngineBrakeValue[LocoStation] = EngineBrakeValue[LocoStation];
-                    }                    
+                        switch (notch.Type)
+                        {                                                                                    
+                            case ControllerState.Release:
+                                EngineBrakeValueR = notch.Value;
+                                break;
+                            case ControllerState.Neutral:
+                            case ControllerState.Lap:
+                                EngineBrakeValueN = notch.Value;
+                                break;
+                            case ControllerState.Apply:
+                            case ControllerState.EPApply:
+                            case ControllerState.ContServ:
+                                EngineBrakeValueA = notch.Value;
+                                break;                                                                                       
+                        }
+                    }
+
+                    if (LocoStation == 1)
+                    {
+                        if (EngineBrakeValue[2] == EngineBrakeValueR && !LapActive[2])
+                            if (BrakeSystem.AutoCylPressurePSI1 > 0)
+                                BrakeSystem.AutoCylPressurePSI1 -= 3f * EngineBrakeReleaseRatePSIpS * elapsedClockSeconds;
+                        
+                        if (EngineBrakeValue[2] == EngineBrakeValueA && !LapActive[2])
+                            if (BrakeSystem.AutoCylPressurePSI1 < BrakeSystem.MCP)
+                                BrakeSystem.AutoCylPressurePSI1 += 3f * EngineBrakeApplyRatePSIpS * elapsedClockSeconds;
+                    }
+                    if (LocoStation == 2)
+                    {
+                        if (EngineBrakeValue[1] == EngineBrakeValueR && !LapActive[1])
+                            if (BrakeSystem.AutoCylPressurePSI1 > 0)
+                                BrakeSystem.AutoCylPressurePSI1 -= 3f * EngineBrakeReleaseRatePSIpS * elapsedClockSeconds;
+
+                        if (EngineBrakeValue[1] == EngineBrakeValueA && !LapActive[1])
+                            if (BrakeSystem.AutoCylPressurePSI1 < BrakeSystem.MCP)
+                                BrakeSystem.AutoCylPressurePSI1 += 3f * EngineBrakeApplyRatePSIpS * elapsedClockSeconds;
+                    }
+                    #endregion
+                    EngineBrakeValue[LocoStation] = EngineBrakeController.CurrentValue;
+                }                
+            }
+            #region Výchozí nastavení přímočinky na vícestupňových ovladačích           
+            // Nastaví pozici Neutral na vícestupňových ovladačích
+            if (CarFrameUpdateState == 2)
+            {
+                if (EngineBrakeController.Notches.Count > 1)
+                {
+                    foreach (MSTSNotch notch in EngineBrakeController.Notches)
+                    {
+                        switch (notch.Type)
+                        {
+                            case ControllerState.Neutral:
+                            case ControllerState.Lap:
+                                EngineBrakeValueN = notch.Value;
+                                break;
+                            case ControllerState.Apply:
+                            case ControllerState.EPApply:
+                            case ControllerState.ContServ:
+                                EngineBrakeValueA = notch.Value;
+                                break;
+                        }
+                    }
+                    if (IsLeadLocomotive())
+                    {
+                        if (LocoStation == 1)
+                        {
+                            EngineBrakeValue[1] = EngineBrakeValueA;
+                            EngineBrakeValue[2] = EngineBrakeValueN;
+                        }
+                        else
+                        {
+                            EngineBrakeValue[1] = EngineBrakeValueN;
+                            EngineBrakeValue[2] = EngineBrakeValueA;
+                        }
+                    }
+                    else
+                    {
+                        EngineBrakeValue[1] = EngineBrakeValueN;
+                        EngineBrakeValue[2] = EngineBrakeValueN;                        
+                    }
                 }
             }
+            #endregion
         }
 
         float TrainBrakeValueFQR;
@@ -8936,18 +9029,15 @@ namespace Orts.Simulation.RollingStocks
         {
             if (IsLeadLocomotive())
             {
+                //Simulator.Confirmer.MSG("TrainBrakeValue[0] = " + TrainBrakeValue[0] + "        TrainBrakeValue[1] = " + TrainBrakeValue[1] + "   TrainBrakeValue[2] = " + TrainBrakeValue[2]);
                 LocoStation = 1;
                 if (UsingRearCab)
                     LocoStation = 2;
-
                 if (Simulator.LocoStationChange)
                 {
                     SetTrainBrakePercent(TrainBrakeValue[LocoStation] * 100f);
                     Simulator.LocoStationChange = false;
-                }                
-
-                //Simulator.Confirmer.MSG("TrainBrakeValue[0] = " + TrainBrakeValue[0] + "        TrainBrakeValue[1] = " + TrainBrakeValue[1] + "   TrainBrakeValue[2] = " + TrainBrakeValue[2]);
-
+                }                                
                 #region TrainBrakeCheckPosition
                 foreach (MSTSNotch notch in TrainBrakeController.Notches)
                 {
@@ -9063,7 +9153,6 @@ namespace Orts.Simulation.RollingStocks
                         BrakeSystem.ApplyGA = false;
                 }
                 #endregion
-
                 TrainBrakeValue[LocoStation] = TrainBrakeController.CurrentValue;
             }
         }
@@ -10763,7 +10852,7 @@ namespace Orts.Simulation.RollingStocks
             RearHeadLight = HeadLightPosition[2] > 0 ? true : false;
 
             // Lights setup
-            if (LightsFrameUpdate == 2)
+            if (LightsFrameUpdate == 2 && LocoReadyToGo)
             {                
                 if (IsLeadLocomotive() && !AcceptMUSignals)
                 {
