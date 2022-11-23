@@ -881,7 +881,10 @@ namespace Orts.Viewer3D.RollingStock
 
                     Locomotive.SetThrottlePercentWithSound(UserInput.RDState.ThrottlePercent);
                     Locomotive.SetTrainBrakePercent(UserInput.RDState.TrainBrakePercent);
+                    Locomotive.TrainBrakeValue[Locomotive.LocoStation] = UserInput.RDState.TrainBrakePercent / 100f;
                     Locomotive.SetEngineBrakePercent(UserInput.RDState.EngineBrakePercent);
+                    Locomotive.EngineBrakeValue[Locomotive.LocoStation] = UserInput.RDState.EngineBrakePercent / 100f;
+
                     //    Locomotive.SetBrakemanBrakePercent(UserInput.RDState.BrakemanBrakePercent); // For Raildriver control not complete for this value?
                     if (Locomotive.CombinedControlType != MSTSLocomotive.CombinedControl.ThrottleAir)
                         Locomotive.SetDynamicBrakePercentWithSound(UserInput.RDState.DynamicBrakePercent);

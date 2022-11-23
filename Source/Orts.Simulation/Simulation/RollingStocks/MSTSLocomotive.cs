@@ -7911,6 +7911,8 @@ namespace Orts.Simulation.RollingStocks
         #region DynamicBrakeController
         public void StartDynamicBrakeIncrease(float? target)
         {
+            if (DynamicBrakeController == null)
+                return;
             AlerterReset(TCSEvent.DynamicBrakeChanged);
 
             if (MultiPositionControllers != null)
@@ -8051,6 +8053,8 @@ namespace Orts.Simulation.RollingStocks
         }
         public void StopDynamicBrakeIncrease(bool byKeyBoard)
         {
+            if (DynamicBrakeController == null)
+                return;
             AlerterReset(TCSEvent.DynamicBrakeChanged);
             if (MultiPositionControllers != null)
             {
@@ -8076,6 +8080,8 @@ namespace Orts.Simulation.RollingStocks
 
         public void StartDynamicBrakeDecrease(float? target)
         {
+            if (DynamicBrakeController == null)
+                return;
             AlerterReset(TCSEvent.DynamicBrakeChanged);
 
             if (MultiPositionControllers != null)
@@ -8115,6 +8121,8 @@ namespace Orts.Simulation.RollingStocks
 
         public void StopDynamicBrakeDecrease()
         {
+            if (DynamicBrakeController == null)
+                return;
             AlerterReset(TCSEvent.DynamicBrakeChanged);
             if (MultiPositionControllers != null)
             {
@@ -8145,6 +8153,8 @@ namespace Orts.Simulation.RollingStocks
 
         public void DynamicBrakeChangeTo(bool increase, float? target)
         {  // Need a better way to express brake as a single number.
+            if (DynamicBrakeController == null)
+                return;
             if (increase)
             {
                 if (target > DynamicBrakeController.CurrentValue)
@@ -8190,6 +8200,8 @@ namespace Orts.Simulation.RollingStocks
 
         public void SetDynamicBrakePercent(float percent)
         {
+            if (DynamicBrakeController == null)
+                return;
             if (!CanUseDynamicBrake())
                 return;
             DynamicBrakeController.SetPercent(percent);
@@ -8198,6 +8210,8 @@ namespace Orts.Simulation.RollingStocks
 
         public void SetDynamicBrakePercentWithSound(float percent)
         {
+            if (DynamicBrakeController == null)
+                return;
             if (!CanUseDynamicBrake())
                 return;
             var oldDynamicBrakePercent = DynamicBrakeController.CurrentValue * 100;
