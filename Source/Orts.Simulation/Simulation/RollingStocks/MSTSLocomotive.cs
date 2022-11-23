@@ -8923,12 +8923,13 @@ namespace Orts.Simulation.RollingStocks
         float EngineBrakeValueR;
         float EngineBrakeValueN;
         float EngineBrakeValueA;
+        bool EngineBrakeHas1Notch;
         public void EngineBrakeValueLogic(float elapsedClockSeconds)
         {                        
             if (IsLeadLocomotive())
             {                
                 //Simulator.Confirmer.MSG("EngineBrakeValue[0] = " + EngineBrakeValue[0] + "        EngineBrakeValue[1] = " + EngineBrakeValue[1] + "   EngineBrakeValue[2] = " + EngineBrakeValue[2]);
-                if (EngineBrakeController.Notches.Count <= 1)
+                if (EngineBrakeController.Notches.Count <= 1 || EngineBrakeHas1Notch)
                 {
                     EngineBrakeValue[0] = Math.Max(EngineBrakeValue[1], EngineBrakeValue[2]);
                     SetEngineBrakePercent(EngineBrakeValue[0] * 100f);
@@ -8946,7 +8947,10 @@ namespace Orts.Simulation.RollingStocks
                     foreach (MSTSNotch notch in EngineBrakeController.Notches)
                     {
                         switch (notch.Type)
-                        {                                                                                    
+                        {
+                            case ControllerState.Dummy:
+                                EngineBrakeHas1Notch = true;
+                                break;
                             case ControllerState.Release:
                                 EngineBrakeValueR = notch.Value;
                                 break;
@@ -8990,12 +8994,15 @@ namespace Orts.Simulation.RollingStocks
             // Nastaví pozici Neutral na vícestupňových ovladačích
             if (CarFrameUpdateState == 2)
             {
-                if (EngineBrakeController.Notches.Count > 1)
+                if (EngineBrakeController.Notches.Count > 1 && !EngineBrakeHas1Notch)
                 {
                     foreach (MSTSNotch notch in EngineBrakeController.Notches)
                     {
                         switch (notch.Type)
                         {
+                            case ControllerState.Dummy:
+                                EngineBrakeHas1Notch = true;
+                                break;
                             case ControllerState.Neutral:
                             case ControllerState.Lap:
                                 EngineBrakeValueN = notch.Value;
