@@ -1213,7 +1213,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                 return;
             }
 
-            if (firstIteration) // if this is exetuted the first time, let's check all other than player engines in the consist, and record them for further throttle manipulation
+            // TODO !!
+            // This should be executed also anytime number of cars changed in consist.
+            if (firstIteration) // if this is executed the first time, let's check all other than player engines in the consist, and record them for further throttle manipulation
             {
                 if (SelectedNumberOfAxles[Locomotive.LocoStation] == 0) // also set the axles, for better delta computing, if user omits to set it
                 {
