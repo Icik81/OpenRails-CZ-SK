@@ -867,6 +867,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                 if (Locomotive.AbsSpeedMpS == 0 && Locomotive.ForceHandleValue == 0)
                     OverridenMaximalForce = 10;
                 float requestedMaxAcceleration = Locomotive.ForceHandleValue / 200;
+                if (requestedMaxAcceleration > 0.3f)
+                    requestedMaxAcceleration = 0.3f;
                 bool testConditions = true;
                 if (Locomotive.TrainBrakeController.TrainBrakeControllerState != ORTS.Scripting.Api.ControllerState.Release || Locomotive.SystemAnnunciator != 0)
                     testConditions = false;
@@ -876,7 +878,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                 }
                 if (Locomotive.AccelerationMpSS > requestedMaxAcceleration + 0.05f)
                 {
-                    OverridenMaximalForce -= elapsedClockSeconds;
+                    OverridenMaximalForce -= elapsedClockSeconds * 10;
                 }
             }
 
