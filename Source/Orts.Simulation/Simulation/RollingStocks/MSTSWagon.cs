@@ -3600,8 +3600,8 @@ namespace Orts.Simulation.RollingStocks
         public override void SignalEvent(PowerSupplyEvent evt)
         {
             // Icik
-            if (Simulator.PlayerLocomotive == this || AcceptMUSignals || LocoHelperOn)
-            {
+            //if (Simulator.PlayerLocomotive == this || AcceptMUSignals || LocoHelperOn)
+            //{
                 switch (evt)
                 {
                     case PowerSupplyEvent.RaisePantograph:
@@ -3613,7 +3613,7 @@ namespace Orts.Simulation.RollingStocks
                         }
                         break;
                 }
-            }
+            //}
 
             base.SignalEvent(evt);
         }
@@ -3621,8 +3621,8 @@ namespace Orts.Simulation.RollingStocks
         public override void SignalEvent(PowerSupplyEvent evt, int id)
         {
             // Icik
-            if (Simulator.PlayerLocomotive == this || AcceptMUSignals || LocoHelperOn)
-            {
+            //if (Simulator.PlayerLocomotive == this || AcceptMUSignals || LocoHelperOn)
+            //{
                 switch (evt)
                 {
                     case PowerSupplyEvent.RaisePantograph:
@@ -3634,7 +3634,7 @@ namespace Orts.Simulation.RollingStocks
                         }
                         break;
                 }
-            }
+            //}
 
             base.SignalEvent(evt, id);
         }
