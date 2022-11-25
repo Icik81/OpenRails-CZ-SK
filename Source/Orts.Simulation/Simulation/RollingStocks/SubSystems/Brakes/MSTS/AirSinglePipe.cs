@@ -1479,11 +1479,11 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 else EmergencyBrakeForWagon = false;
 
                 BailOffOn = false;
-                if (loco.DynamicBrakeAutoBailOff && loco.Train.MUDynamicBrakePercent > 0 && loco.DynamicBrakeForceCurves == null)
+                if (loco.DynamicBrakeAutoBailOff && loco.DynamicBrakePercent > 0 && loco.DynamicBrakeForceCurves == null)
                 {
                     BailOffOn = true;
                 }
-                else if (loco.DynamicBrakeAutoBailOff && loco.Train.MUDynamicBrakePercent > 0 && loco.DynamicBrakeForceCurves != null)
+                else if (loco.DynamicBrakeAutoBailOff && loco.DynamicBrakePercent > 0 && loco.DynamicBrakeForceCurves != null)
                 {
                     var dynforce = loco.DynamicBrakeForceCurves.Get(1.0f, loco.AbsSpeedMpS);  // max dynforce at that speed
                     if ((loco.MaxDynamicBrakeForceN == 0 && dynforce > 0) || dynforce > loco.MaxDynamicBrakeForceN * 0.05f)
