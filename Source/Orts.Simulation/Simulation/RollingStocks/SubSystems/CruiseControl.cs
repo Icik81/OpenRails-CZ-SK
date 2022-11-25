@@ -867,6 +867,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                 if (Locomotive.AbsSpeedMpS == 0 && Locomotive.ForceHandleValue == 0)
                     OverridenMaximalForce = 10;
                 float requestedMaxAcceleration = Locomotive.ForceHandleValue / 200;
+                if (requestedMaxAcceleration > 0.3f)
+                    requestedMaxAcceleration = 0.3f;
                 bool testConditions = true;
                 if (Locomotive.TrainBrakeController.TrainBrakeControllerState != ORTS.Scripting.Api.ControllerState.Release || Locomotive.SystemAnnunciator != 0)
                     testConditions = false;
@@ -876,7 +878,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                 }
                 if (Locomotive.AccelerationMpSS > requestedMaxAcceleration + 0.05f)
                 {
-                    OverridenMaximalForce -= elapsedClockSeconds;
+                    OverridenMaximalForce -= elapsedClockSeconds * 10;
                 }
             }
 
@@ -1213,9 +1215,16 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                 return;
             }
 
-            if (firstIteration) // if this is exetuted the first time, let's check all other than player engines in the consist, and record them for further throttle manipulation
+            // TODO !!
+            // This should be executed also anytime number of cars changed in consist.
+            if (firstIteration) // if this is executed the first time, let's check all other than player engines in the consist, and record them for further throttle manipulation
             {
-                if (SelectedNumberOfAxles[Locomotive.LocoStation] == 0) SelectedNumberOfAxles[Locomotive.LocoStation] = (int)(Locomotive.Train.Length / 6.6f) + 4; // also set the axles, for better delta computing, if user omits to set it
+                if (SelectedNumberOfAxles[Locomotive.LocoStation] == 0) // also set the axles, for better delta computing, if user omits to set it
+                {
+                    SelectedNumberOfAxles[Locomotive.LocoStation] = (int)(Locomotive.Train.Length / 6.6f) + 4;
+                    trainLength = SelectedNumberOfAxles[Locomotive.LocoStation] * 6.6f;
+                    TrainLengthMeters = (int)Math.Round(trainLength + 0.5, 0);
+                }
                 foreach (TrainCar tc in Locomotive.Train.Cars)
                 {
                     if (tc.GetType() == typeof(MSTSLocomotive) || tc.GetType() == typeof(MSTSDieselLocomotive) || tc.GetType() == typeof(MSTSElectricLocomotive))
