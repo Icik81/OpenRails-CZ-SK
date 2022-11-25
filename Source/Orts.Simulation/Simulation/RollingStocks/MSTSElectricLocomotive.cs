@@ -455,6 +455,11 @@ namespace Orts.Simulation.RollingStocks
                     MultiSystemEngine = true;
                     SwitchingVoltageMode = 0;                    
                     SwitchingVoltageMode_OffDC = true;
+                    
+                    if (Battery)
+                        foreach (Pantograph p in Pantographs.List)
+                            p.PantographsBlocked = false;
+
                     if (RouteVoltageV > 1)
                     {
                         Simulator.TRK.Tr_RouteFile.MaxLineVoltage = RouteVoltageV * Simulator.VoltageSprung;
