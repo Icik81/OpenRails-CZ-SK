@@ -1788,6 +1788,10 @@ namespace Orts.Simulation.RollingStocks
             outf.Write(LocomotiveAxle.AxleSpeedMpS);
             outf.Write(CabLightOn[1]);
             outf.Write(CabLightOn[2]);
+            outf.Write(CabFloodLightOn[1]);
+            outf.Write(CabFloodLightOn[2]);
+            outf.Write(wasCabLightSetOn[1]);
+            outf.Write(wasCabLightSetOn[2]);
             outf.Write(UsingRearCab);
             outf.Write(CalculatedCarHeaterSteamUsageLBpS);
             ControllerFactory.Save(ThrottleController, outf);
@@ -1963,6 +1967,10 @@ namespace Orts.Simulation.RollingStocks
             LocomotiveAxle.Reset(Simulator.GameTime, inf.ReadSingle());
             CabLightOn[1] = inf.ReadBoolean();
             CabLightOn[2] = inf.ReadBoolean();
+            CabFloodLightOn[1] = inf.ReadBoolean();
+            CabFloodLightOn[2] = inf.ReadBoolean();
+            wasCabLightSetOn[1] = inf.ReadBoolean();
+            wasCabLightSetOn[2] = inf.ReadBoolean();
             UsingRearCab = inf.ReadBoolean();
             CalculatedCarHeaterSteamUsageLBpS = inf.ReadSingle();
             ControllerFactory.Restore(ThrottleController, inf);
