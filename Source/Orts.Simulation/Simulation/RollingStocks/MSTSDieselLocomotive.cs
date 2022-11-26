@@ -1093,10 +1093,10 @@ namespace Orts.Simulation.RollingStocks
                     SignalEvent(Event.PowerKeyOn);
                     PowerKey = true;
                 }
-                if (!RDSTBreaker)
+                if (!RDSTBreaker[LocoStation])
                 {
                     SignalEvent(Event.RDSTOn);
-                    RDSTBreaker = true;
+                    RDSTBreaker[LocoStation] = true;
                 }
                 if (DieselEngines[0].EngineStatus == DieselEngine.Status.Running && this.AIStart)
                 {
@@ -1173,10 +1173,10 @@ namespace Orts.Simulation.RollingStocks
             // Startovní setup lokomotivy hráče
             if (LocoReadyToGo && !LocoIsStatic)
             {                
-                if (!RDSTBreaker)
+                if (!RDSTBreaker[LocoStation])
                 {
                     SignalEvent(Event.RDSTOn);
-                    RDSTBreaker = true;
+                    RDSTBreaker[LocoStation] = true;
                 }
                 LocoReadyToGo = false;
             }

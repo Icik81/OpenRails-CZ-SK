@@ -2000,8 +2000,8 @@ namespace Orts.Viewer3D.RollingStock
                 return;
 
             bool Dark = _Viewer.MaterialManager.sunDirection.Y <= -0.085f || (_Viewer.Camera.IsUnderground);
-            bool CabLight = _Locomotive.CabLightOn;
-            bool FloodLight = _Locomotive.CabFloodLightOn;            
+            bool CabLight = _Locomotive.CabLightOn[_Locomotive.LocoStation];
+            bool FloodLight = _Locomotive.CabFloodLightOn[_Locomotive.LocoStation];            
 
             // Icik
             _Viewer.Simulator.CabLightActivate = CabLight;
@@ -2322,7 +2322,7 @@ namespace Orts.Viewer3D.RollingStock
             var dark = Viewer.MaterialManager.sunDirection.Y <= -0.085f || (Viewer.Camera.IsUnderground);
             
 
-            Texture = CABTextureManager.GetTexture(Control.ACEFile, dark, Locomotive.CabFloodLightOn, Locomotive.CabLightOn, out IsNightTexture, HasCabLightDirectory);
+            Texture = CABTextureManager.GetTexture(Control.ACEFile, dark, Locomotive.CabFloodLightOn[Locomotive.LocoStation], Locomotive.CabLightOn[Locomotive.LocoStation], out IsNightTexture, HasCabLightDirectory);
             if (Texture == SharedMaterialManager.MissingTexture)
                 return;
 
@@ -2376,7 +2376,7 @@ namespace Orts.Viewer3D.RollingStock
             if ((Control.ControlType == CABViewControlTypes.REVERSER_PLATE) || (Gauge.ControlStyle == CABViewControlStyles.POINTER))
             {
                 DrawColor = Color.White;
-                Texture = CABTextureManager.GetTexture(Control.ACEFile, false, Locomotive.CabFloodLightOn, Locomotive.CabLightOn, out IsNightTexture, HasCabLightDirectory);
+                Texture = CABTextureManager.GetTexture(Control.ACEFile, false, Locomotive.CabFloodLightOn[Locomotive.LocoStation], Locomotive.CabLightOn[Locomotive.LocoStation], out IsNightTexture, HasCabLightDirectory);
                 SourceRectangle.Width = (int)Texture.Width;
                 SourceRectangle.Height = (int)Texture.Height;
             }
@@ -2392,7 +2392,7 @@ namespace Orts.Viewer3D.RollingStock
         {
             Gauge = control;
             HasCabLightDirectory = CABTextureManager.LoadTextures(Viewer, control.FireACEFile);
-            Texture = CABTextureManager.GetTexture(control.FireACEFile, false, Locomotive.CabFloodLightOn, Locomotive.CabLightOn, out IsNightTexture, HasCabLightDirectory);
+            Texture = CABTextureManager.GetTexture(control.FireACEFile, false, Locomotive.CabFloodLightOn[Locomotive.LocoStation], Locomotive.CabLightOn[Locomotive.LocoStation], out IsNightTexture, HasCabLightDirectory);
             DrawColor = Color.White;
             SourceRectangle.Width = (int)Texture.Width;
             SourceRectangle.Height = (int)Texture.Height;
@@ -2437,7 +2437,7 @@ namespace Orts.Viewer3D.RollingStock
                 // Icik
                 var dark = Viewer.MaterialManager.sunDirection.Y <= -0.085f || (Viewer.Camera.IsUnderground);
                 
-                Texture = CABTextureManager.GetTexture(Control.ACEFile, dark, Locomotive.CabFloodLightOn, Locomotive.CabLightOn, out IsNightTexture, HasCabLightDirectory);
+                Texture = CABTextureManager.GetTexture(Control.ACEFile, dark, Locomotive.CabFloodLightOn[Locomotive.LocoStation], Locomotive.CabLightOn[Locomotive.LocoStation], out IsNightTexture, HasCabLightDirectory);
             }
             if (Texture == SharedMaterialManager.MissingTexture)
                 return;
@@ -2752,7 +2752,7 @@ namespace Orts.Viewer3D.RollingStock
             var dark = Viewer.MaterialManager.sunDirection.Y <= -0.085f || (Viewer.Camera.IsUnderground);
                         
 
-            Texture = CABTextureManager.GetTextureByIndexes(Control.ACEFile, index, Locomotive.CabFloodLightOn ? false : dark, Locomotive.CabLightOn, out IsNightTexture, HasCabLightDirectory);
+            Texture = CABTextureManager.GetTextureByIndexes(Control.ACEFile, index, Locomotive.CabFloodLightOn[Locomotive.LocoStation] ? false : dark, Locomotive.CabLightOn[Locomotive.LocoStation], out IsNightTexture, HasCabLightDirectory);
             if (Texture == SharedMaterialManager.MissingTexture)
                 return;
 
@@ -3553,7 +3553,7 @@ namespace Orts.Viewer3D.RollingStock
                         Locomotive.StopButtonPressed = false;
                     break;
                 case CABViewControlTypes.ORTS_CABLIGHT:
-                    if ((Locomotive.CabLightOn ? 1 : 0) != ChangedValue(Locomotive.CabLightOn ? 1 : 0)) new ToggleCabLightCommand(Viewer.Log); break;
+                    if ((Locomotive.CabLightOn[Locomotive.LocoStation] ? 1 : 0) != ChangedValue(Locomotive.CabLightOn[Locomotive.LocoStation] ? 1 : 0)) new ToggleCabLightCommand(Viewer.Log); break;
                 case CABViewControlTypes.ORTS_LEFTDOOR:
                     if ((Locomotive.GetCabFlipped() ? (Locomotive.DoorRightOpen ? 1 : 0) : Locomotive.DoorLeftOpen ? 1 : 0)
                         != ChangedValue(Locomotive.GetCabFlipped() ? (Locomotive.DoorRightOpen ? 1 : 0) : Locomotive.DoorLeftOpen ? 1 : 0)) new ToggleDoorsLeftCommand(Viewer.Log); break;
@@ -4031,7 +4031,7 @@ namespace Orts.Viewer3D.RollingStock
                     // Ovládání jističe RDST
                     if (Locomotive.RDSTBreakerRDSTEnable)
                     {
-                        if (ChangedValue(Locomotive.RDSTBreaker ? 1 : 0) > 0)
+                        if (ChangedValue(Locomotive.RDSTBreaker[Locomotive.LocoStation] ? 1 : 0) > 0)
                             new ToggleRDSTBreakerCommand(Viewer.Log);
                     }
                     break;
@@ -4039,7 +4039,7 @@ namespace Orts.Viewer3D.RollingStock
                     // Ovládání jističe RDST
                     if (Locomotive.RDSTBreakerVZEnable)
                     {
-                        if (ChangedValue(Locomotive.RDSTBreaker ? 1 : 0) > 0)
+                        if (ChangedValue(Locomotive.RDSTBreaker[Locomotive.LocoStation] ? 1 : 0) > 0)
                             new ToggleRDSTBreakerCommand(Viewer.Log);
                     }
                     break;
@@ -4047,7 +4047,7 @@ namespace Orts.Viewer3D.RollingStock
                     // Ovládání jističe RDST
                     if (Locomotive.RDSTBreakerPowerEnable)
                     {
-                        if (ChangedValue(Locomotive.RDSTBreaker ? 1 : 0) > 0)
+                        if (ChangedValue(Locomotive.RDSTBreaker[Locomotive.LocoStation] ? 1 : 0) > 0)
                             new ToggleRDSTBreakerCommand(Viewer.Log);
                     }
                     break;

@@ -140,8 +140,8 @@ namespace Orts.Simulation.RollingStocks
         public float AverageForceN;
         public bool PowerOn;
         public float PowerOnDelayS;
-        public bool CabLightOn;
-        public bool CabFloodLightOn;
+        public bool[] CabLightOn = new bool[3];
+        public bool[] CabFloodLightOn = new bool[3];
         public bool ShowCab = true;
         public bool MilepostUnitsMetric;
         public float DrvWheelWeightKg; // current weight on locomotive drive wheels, includes drag factor (changes as mass changes)
@@ -1786,7 +1786,8 @@ namespace Orts.Simulation.RollingStocks
             outf.Write(TrainBrakePipeLeakPSIorInHgpS);
             outf.Write(AverageForceN);
             outf.Write(LocomotiveAxle.AxleSpeedMpS);
-            outf.Write(CabLightOn);
+            outf.Write(CabLightOn[1]);
+            outf.Write(CabLightOn[2]);
             outf.Write(UsingRearCab);
             outf.Write(CalculatedCarHeaterSteamUsageLBpS);
             ControllerFactory.Save(ThrottleController, outf);
@@ -1960,7 +1961,8 @@ namespace Orts.Simulation.RollingStocks
             TrainBrakePipeLeakPSIorInHgpS = inf.ReadSingle();
             AverageForceN = inf.ReadSingle();
             LocomotiveAxle.Reset(Simulator.GameTime, inf.ReadSingle());
-            CabLightOn = inf.ReadBoolean();
+            CabLightOn[1] = inf.ReadBoolean();
+            CabLightOn[2] = inf.ReadBoolean();
             UsingRearCab = inf.ReadBoolean();
             CalculatedCarHeaterSteamUsageLBpS = inf.ReadSingle();
             ControllerFactory.Restore(ThrottleController, inf);
@@ -4005,7 +4007,7 @@ namespace Orts.Simulation.RollingStocks
             {
                 foreach (TrainCar car in Train.Cars)
                 {
-                    if (car is MSTSLocomotive && !car.RDSTBreaker)
+                    if (car is MSTSLocomotive && (!car.RDSTBreaker[1] && !car.RDSTBreaker[2]))
                         RDSTBreakerRDSTState += 1;
                 }
                 if (RDSTBreakerRDSTState > 0)
@@ -4017,7 +4019,7 @@ namespace Orts.Simulation.RollingStocks
             {
                 foreach (TrainCar car in Train.Cars)
                 {
-                    if (car is MSTSLocomotive && !car.RDSTBreaker)
+                    if (car is MSTSLocomotive && (!car.RDSTBreaker[1] && !car.RDSTBreaker[2]))
                         RDSTBreakerVZState += 1;
                 }
                 if (RDSTBreakerVZState > 0)
@@ -4047,7 +4049,7 @@ namespace Orts.Simulation.RollingStocks
             {
                 foreach (TrainCar car in Train.Cars)
                 {
-                    if (car is MSTSLocomotive && !car.RDSTBreaker)
+                    if (car is MSTSLocomotive && (!car.RDSTBreaker[1] && !car.RDSTBreaker[2]))
                         RDSTBreakerPowerState += 1;
                 }
                 if (RDSTBreakerPowerState > 0)
@@ -8345,32 +8347,30 @@ namespace Orts.Simulation.RollingStocks
             }
         }
 
-        public bool wasCabLightSetOn = false;
+        public bool[] wasCabLightSetOn = new bool[3];
         public void ToggleCabLight()
         {
             if (this is MSTSSteamLocomotive)
                 return;
-            CabLightOn = !CabLightOn;
-            wasCabLightSetOn = CabLightOn;
-            if (CabFloodLightOn)
-                CabLightOn = false;
-
+            CabLightOn[LocoStation] = !CabLightOn[LocoStation];
+            wasCabLightSetOn[LocoStation] = CabLightOn[LocoStation];
+            if (CabFloodLightOn[LocoStation])
+                CabLightOn[LocoStation] = false;
             SignalEvent(Event.CabLightSwitchToggle);
-            Simulator.Confirmer.Confirm(CabControl.CabLight, CabLightOn ? CabSetting.On : CabSetting.Off);
+            Simulator.Confirmer.Confirm(CabControl.CabLight, CabLightOn[LocoStation] ? CabSetting.On : CabSetting.Off);
         }
 
         public void ToggleCabFloodLight()
         {
             if (this is MSTSSteamLocomotive)
                 return;
-
-            CabFloodLightOn = !CabFloodLightOn;
-            if (CabFloodLightOn)
-                CabLightOn = false;
+            CabFloodLightOn[LocoStation] = !CabFloodLightOn[LocoStation];
+            if (CabFloodLightOn[LocoStation])
+                CabLightOn[LocoStation] = false;
             else
-                CabLightOn = wasCabLightSetOn;
+                CabLightOn[LocoStation] = wasCabLightSetOn[LocoStation];
             SignalEvent(Event.CabLightSwitchToggle);
-            Simulator.Confirmer.Confirm(CabControl.CabFloodLight, CabFloodLightOn ? CabSetting.On : CabSetting.Off);
+            Simulator.Confirmer.Confirm(CabControl.CabFloodLight, CabFloodLightOn[LocoStation] ? CabSetting.On : CabSetting.Off);
         }
 
         public void ToggleBattery()
@@ -10849,12 +10849,12 @@ namespace Orts.Simulation.RollingStocks
         // Ovládání jističe RDST
         public void ToggleRDSTBreaker()
         {
-            RDSTBreaker = !RDSTBreaker;
-            if (RDSTBreaker)
+            RDSTBreaker[LocoStation] = !RDSTBreaker[LocoStation];
+            if (RDSTBreaker[LocoStation])
                 SignalEvent(Event.RDSTOn);
             else
                 SignalEvent(Event.RDSTOff);
-            if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.RDSTBreaker, RDSTBreaker ? CabSetting.On : CabSetting.Off);
+            if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.RDSTBreaker, RDSTBreaker[LocoStation] ? CabSetting.On : CabSetting.Off);
         }
         // Znovu načte objekty světa
         public void ToggleRefreshWorld(bool refreshWorld)
@@ -13097,7 +13097,7 @@ namespace Orts.Simulation.RollingStocks
                         break;
                     }
                 case CABViewControlTypes.ORTS_CABLIGHT:
-                    data = CabLightOn ? 1 : 0;
+                    data = CabLightOn[LocoStation] ? 1 : 0;
                     break;
                 case CABViewControlTypes.ORTS_LEFTDOOR:
                     data = GetCabFlipped() ? (DoorRightOpen ? 1 : 0) : DoorLeftOpen ? 1 : 0;
@@ -14000,7 +14000,7 @@ namespace Orts.Simulation.RollingStocks
                 case CABViewControlTypes.RDST_BREAKER_RDST:
                     {
                         RDSTBreakerRDSTEnable = true;
-                        if (RDSTBreaker)
+                        if (RDSTBreaker[LocoStation])
                             data = 1;
                         else
                             data = 0;
@@ -14009,7 +14009,7 @@ namespace Orts.Simulation.RollingStocks
                 case CABViewControlTypes.RDST_BREAKER_VZ:
                     {
                         RDSTBreakerVZEnable = true;
-                        if (RDSTBreaker)
+                        if (RDSTBreaker[LocoStation])
                             data = 1;
                         else
                             data = 0;
@@ -14018,7 +14018,7 @@ namespace Orts.Simulation.RollingStocks
                 case CABViewControlTypes.RDST_BREAKER_POWER:
                     {
                         RDSTBreakerPowerEnable = true;
-                        if (RDSTBreaker)
+                        if (RDSTBreaker[LocoStation])
                             data = 1;
                         else
                             data = 0;

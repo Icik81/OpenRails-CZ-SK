@@ -351,7 +351,7 @@ namespace Orts.Simulation.RollingStocks
         public float TempCClockDelta;
         public bool LocomotiveCab = false;
         public bool SteamHeatOn;
-        public bool RDSTBreaker;
+        public bool[] RDSTBreaker = new bool[3];
         public bool[] CabHeating_OffOn = new bool[3];
         public bool CabHeatingIsOn = false;
         public bool AIStart;
@@ -2106,7 +2106,8 @@ namespace Orts.Simulation.RollingStocks
             outf.Write(WagonHasTemperature);
             outf.Write(CarOutsideTempC0);
             outf.Write(WagonTemperature);
-            outf.Write(RDSTBreaker);
+            outf.Write(RDSTBreaker[1]);
+            outf.Write(RDSTBreaker[2]);
             outf.Write(CabHeating_OffOn[1]);
             outf.Write(CabHeating_OffOn[2]);
             outf.Write(AuxPowerOff);
@@ -2152,7 +2153,8 @@ namespace Orts.Simulation.RollingStocks
             WagonHasTemperature = inf.ReadBoolean();
             CarOutsideTempC0 = inf.ReadSingle();
             WagonTemperature = inf.ReadSingle();
-            RDSTBreaker = inf.ReadBoolean();
+            RDSTBreaker[1] = inf.ReadBoolean();
+            RDSTBreaker[2] = inf.ReadBoolean();
             CabHeating_OffOn[1] = inf.ReadBoolean();
             CabHeating_OffOn[2] = inf.ReadBoolean();
             AuxPowerOff = inf.ReadBoolean();
