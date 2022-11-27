@@ -102,7 +102,11 @@ namespace Orts.Viewer3D.RollingStock
                 case 4:
                     smsGenericFilePath = "..\\Content\\GenericSound\\4_Wheels\\GenSound.sms";
                     break;
-                case 6:
+                case 6:                
+                    smsGenericFilePath = "..\\Content\\GenericSound\\6_Wheels\\GenSound.sms";
+                    break;
+
+                default:
                     smsGenericFilePath = "..\\Content\\GenericSound\\6_Wheels\\GenSound.sms";
                     break;
             }
@@ -152,14 +156,14 @@ namespace Orts.Viewer3D.RollingStock
             }
 
             var mstsSteamLocomotive = car as MSTSSteamLocomotive;
-            if (this.MSTSLocomotive.Train.TrainType == Train.TRAINTYPE.STATIC && mstsSteamLocomotive != null && !mstsElectricLocomotive.PowerOn)
+            if (this.MSTSLocomotive.Train.TrainType == Train.TRAINTYPE.STATIC && mstsSteamLocomotive != null && !mstsSteamLocomotive.PowerOn)
             {
                 this.MSTSLocomotive.SignalEvent(Event.EnginePowerOff);
                 this.MSTSLocomotive.LocoIsStatic = true;
                 this.MSTSLocomotive.UserPowerOff = true;
             }
             // STATIC je zapnutý po nahrání uložené pozice
-            if (this.MSTSLocomotive.Train.TrainType == Train.TRAINTYPE.STATIC && mstsSteamLocomotive != null && mstsElectricLocomotive.PowerOn)
+            if (this.MSTSLocomotive.Train.TrainType == Train.TRAINTYPE.STATIC && mstsSteamLocomotive != null && mstsSteamLocomotive.PowerOn)
             {
                 this.MSTSLocomotive.SignalEvent(Event.EnginePowerOn);
                 this.MSTSLocomotive.LocoIsStatic = true;
