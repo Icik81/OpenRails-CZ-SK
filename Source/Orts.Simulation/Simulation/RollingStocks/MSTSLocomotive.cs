@@ -4290,8 +4290,7 @@ namespace Orts.Simulation.RollingStocks
             // Odpojený MU kabel
             if (!AcceptCableSignals)
             {                
-                AcceptMUSignals = false;
-                AcceptPowerSignals = false;
+                AcceptMUSignals = false;                
             }
 
             // Výkon MU vypnutý
@@ -4858,7 +4857,7 @@ namespace Orts.Simulation.RollingStocks
 
             if (!IsPlayerTrain && !Simulator.Paused)
                 SetAIAction();
-         
+
             if (IsPlayerTrain && !Simulator.Paused)
             {
                 //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("LapActive " + LapActive));                
@@ -4869,8 +4868,8 @@ namespace Orts.Simulation.RollingStocks
                 TrainAlerterLogic();
                 EngineBrakeValueLogic(elapsedClockSeconds);
                 TrainBrakeValueLogic();
-                WipersLogic();                
-                DirectionControllerLogic();                                
+                WipersLogic();
+                DirectionControllerLogic();
                 PowerCurrentCalculation();
                 BrakeCurrentCalculation();
                 Overcurrent_Protection();
@@ -4882,13 +4881,10 @@ namespace Orts.Simulation.RollingStocks
                 MirerController();
                 TogglePantograph4Switch();
                 TogglePantograph3Switch();
-                if (!AcceptMUSignals || IsLeadLocomotive())
-                {
-                    ToggleHV2Switch();
-                    ToggleHV3Switch();
-                    ToggleHV4Switch();
-                    ToggleHV5Switch();
-                }
+                ToggleHV2Switch();
+                ToggleHV3Switch();
+                ToggleHV4Switch();
+                ToggleHV5Switch();
                 EDBCancelByBreakEDBButton();
                 EDBCancelByEngineBrake();
                 EDBCancelByOL3BailOff();
@@ -4904,10 +4900,10 @@ namespace Orts.Simulation.RollingStocks
                 PantoCanHVOff(elapsedClockSeconds);
                 DirectionButtonSetup();
                 PlayerSwitchToRearCab();
-                LightPositionHandle();                
+                LightPositionHandle();
                 RainWindow(elapsedClockSeconds);
-                WipersWindow(elapsedClockSeconds);                
-                BatterySetOn = false;                
+                WipersWindow(elapsedClockSeconds);
+                BatterySetOn = false;
             }
 
             // Hodnoty pro výpočet zvukových proměnných
@@ -9248,6 +9244,8 @@ namespace Orts.Simulation.RollingStocks
 
         public void ToggleHV2Switch()
         {
+            if (!IsLeadLocomotive())
+                return;
             if (HV2Enable)
             {
                 if (HV2ButtonEnable)
@@ -9307,6 +9305,8 @@ namespace Orts.Simulation.RollingStocks
         }
         public void ToggleHV3Switch()
         {
+            if (!IsLeadLocomotive())
+                return;
             if (HV3Enable)
             {
                 if (HVCanOn && Battery && StationIsActivated[LocoStation])
@@ -9375,6 +9375,8 @@ namespace Orts.Simulation.RollingStocks
         }
         public void ToggleHV4Switch()
         {
+            if (!IsLeadLocomotive())
+                return;
             if (HV4Enable)
             {
                 if (HV4Switch[LocoStation] == 0 && HV4SwitchFullDown)
@@ -9469,6 +9471,8 @@ namespace Orts.Simulation.RollingStocks
         }
         public void ToggleHV5Switch()
         {
+            if (!IsLeadLocomotive())
+                return;
             if (HV5Enable)
             {
                 if (LastStateHV5[LocoStation] != HV5Switch[LocoStation])
@@ -10604,6 +10608,8 @@ namespace Orts.Simulation.RollingStocks
         }
         public void ToggleDieselDirectionController()
         {
+            if (!IsLeadLocomotive())
+                return;
             if (DieselDirectionController || DieselDirectionController3)
             {
                 if (DieselDirectionControllerPosition[LocoStation] == -1)
@@ -10677,6 +10683,8 @@ namespace Orts.Simulation.RollingStocks
 
         public void ToggleDieselDirectionController2()
         {
+            if (!IsLeadLocomotive())
+                return;
             if (DieselDirectionController2)
             {
                 if (DieselDirectionController2Position[LocoStation] == -1)
@@ -11493,7 +11501,9 @@ namespace Orts.Simulation.RollingStocks
         int LTS410Active = 0;
         int LTS510Active = 0;
         public void MirerController()
-        {                        
+        {
+            if (!IsLeadLocomotive())
+                return;
             if (MirerControllerEnable)
             {
                 Simulator.StepControllerMaxValue = MirerMaxValue;

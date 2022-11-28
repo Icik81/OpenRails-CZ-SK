@@ -902,9 +902,9 @@ namespace Orts.Viewer3D.RollingStock
                         Locomotive.SetEmergency(true);
                     else
                         Locomotive.SetEmergency(false);
-                    if (UserInput.RDState.Wipers == 1 && Locomotive.Wiper)
+                    if (UserInput.RDState.Wipers == 1 && Locomotive.LocoWiper[Locomotive.LocoStation])
                         Locomotive.SignalEvent(Event.WiperOff);
-                    if (UserInput.RDState.Wipers != 1 && !Locomotive.Wiper)
+                    if (UserInput.RDState.Wipers != 1 && !Locomotive.LocoWiper[Locomotive.LocoStation])
                         Locomotive.SignalEvent(Event.WiperOn);
                     // changing Headlight more than one step at a time doesn't work for some reason
                     if (Locomotive.Headlight[Locomotive.LocoStation] < UserInput.RDState.Lights - 1)

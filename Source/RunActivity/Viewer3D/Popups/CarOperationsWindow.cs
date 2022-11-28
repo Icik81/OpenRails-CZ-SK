@@ -285,8 +285,11 @@ namespace Orts.Viewer3D.Popups
             {
                 new ToggleMUCommand(Viewer.Log, (Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive), !(Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive).AcceptCableSignals);
                 if (!(Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive).AcceptCableSignals)
+                {
                     Viewer.Simulator.Confirmer.Information(Viewer.Catalog.GetString("Cable MU disconnected"));
-                else                
+                    (Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive).AcceptPowerSignals = false;
+                }
+                else
                     Viewer.Simulator.Confirmer.Information(Viewer.Catalog.GetString("Cable MU connected"));
             }
             else
