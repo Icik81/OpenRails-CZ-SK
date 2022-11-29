@@ -340,7 +340,9 @@ namespace Orts.Common
         LTS510On,
         LTS510Off,
         PowerKeyIn,
-        PowerKeyOut
+        PowerKeyOut,
+        MirerPush,
+        MirerLoosen
     }
 
     public static class Events
@@ -696,6 +698,9 @@ namespace Orts.Common
                         case 20094: return Event.LTS510Off;
                         case 20095: return Event.PowerKeyIn;
                         case 20096: return Event.PowerKeyOut;
+                        case 20097: return Event.MirerPush;
+                        case 20098: return Event.MirerLoosen;
+
 
                         default: return 0;
                     }

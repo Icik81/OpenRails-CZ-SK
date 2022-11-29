@@ -11511,8 +11511,15 @@ namespace Orts.Simulation.RollingStocks
 
                 if (MirerControllerPosition != prevMirerControllerPosition)
                 {
-                    prevMirerControllerPosition = MirerControllerPosition;
-                    SignalEvent(Event.ThrottleChange);
+                    if ((MirerControllerPosition < 0 && MirerControllerPosition < prevMirerControllerPosition)
+                        || (MirerControllerPosition > 0 && MirerControllerPosition > prevMirerControllerPosition))                    
+                        SignalEvent(Event.MirerPush);
+                    else
+                    if ((MirerControllerPosition == 0 && MirerControllerPosition > prevMirerControllerPosition)
+                        || (MirerControllerPosition == 0 && MirerControllerPosition < prevMirerControllerPosition))
+                        SignalEvent(Event.MirerLoosen);
+
+                    prevMirerControllerPosition = MirerControllerPosition;                          
                     switch (MirerControllerPosition)
                     {
                         case -2:
