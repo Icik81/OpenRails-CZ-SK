@@ -10372,9 +10372,8 @@ namespace Orts.Simulation.RollingStocks
             // Stav a zvuk pro přepínač
             if (BreakEDBSwitchEnable)
             {
-                BreakEDBButton_Activated = !BreakEDBButton_Activated;
-                if (BreakEDBButton)
-                    SignalEvent(Event.BreakEDBButton);                    
+                BreakEDBButton_Activated = !BreakEDBButton_Activated;                
+                SignalEvent(Event.BreakEDBButton);                    
             }
             if (Simulator.PlayerLocomotive == this)
             {
