@@ -225,7 +225,7 @@ namespace Orts.Formats.Msts
             MotorOilTemperatureControlled,
             WheelDamageValueControlled,
             PullPushValueControlled,
-            TrackFactorValueControlled
+            TrackFactorValueControlled            
         };
 
         public Controls Control = Controls.None;
@@ -417,7 +417,8 @@ namespace Orts.Formats.Msts
             TrainBrakeController_Inc_Past, TrainBrakeController_Dec_Past, TrainBrakeController_Equals_To, TrainBrakeController_NEquals_To,
             EngineBrakeController_Inc_Past, EngineBrakeController_Dec_Past, EngineBrakeController_Equals_To, EngineBrakeController_NEquals_To,
             BrakeCyl_Inc_Past, BrakeCyl_Dec_Past, BrakeCyl_Equals_To, BrakeCyl_NEquals_To,
-            CurveForce_Inc_Past, CurveForce_Dec_Past, CurveForce_Equals_To, CurveForce_NEquals_To
+            CurveForce_Inc_Past, CurveForce_Dec_Past, CurveForce_Equals_To, CurveForce_NEquals_To,
+            StepController_Inc_Past, StepController_Dec_Past, StepController_Equals_To, StepController_NEquals_To
         };
 
         public Events Event;
@@ -553,6 +554,10 @@ namespace Orts.Formats.Msts
                 case "curveforce_dec_past": Event = Events.CurveForce_Dec_Past; break;
                 case "curveforce_equals_to": Event = Events.CurveForce_Equals_To; break;
                 case "curveforce_nequals_to": Event = Events.CurveForce_NEquals_To; break;
+                case "stepcontroller_inc_past": Event = Events.StepController_Inc_Past; break;
+                case "stepcontroller_dec_past": Event = Events.StepController_Dec_Past; break;
+                case "stepcontroller_equals_to": Event = Events.StepController_Equals_To; break;
+                case "stepcontroller_nequals_to": Event = Events.StepController_NEquals_To; break;
             }
 
 

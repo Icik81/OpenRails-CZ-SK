@@ -11507,6 +11507,8 @@ namespace Orts.Simulation.RollingStocks
             if (MirerControllerEnable)
             {
                 Simulator.StepControllerMaxValue = MirerMaxValue;
+                Simulator.StepControllerValue = MirerControllerValue;
+
                 if (MirerControllerPosition != prevMirerControllerPosition)
                 {
                     prevMirerControllerPosition = MirerControllerPosition;
@@ -11584,17 +11586,11 @@ namespace Orts.Simulation.RollingStocks
                 }
 
                 if (LocalDynamicBrakePercent < 1.0f)
-                    LocalDynamicBrakePercent = 0;
+                    LocalDynamicBrakePercent = 0;                
 
                 if (MirerControllerValue != prevMirerControllerValue)
                 {
-                    prevMirerControllerValue = MirerControllerValue;
-                    if (IsLeadLocomotive() && AcceptMUSignals)                    
-                        Simulator.StepControllerValue = MirerControllerValue;                    
-                    
-                    if (!IsLeadLocomotive() && !AcceptMUSignals)
-                        StepControllerValue = -1;
-;
+                    prevMirerControllerValue = MirerControllerValue;                                                                                ;
                     switch (MirerControllerValue)
                     {
                         // 0
