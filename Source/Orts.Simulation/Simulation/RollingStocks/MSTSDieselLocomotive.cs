@@ -1178,7 +1178,8 @@ namespace Orts.Simulation.RollingStocks
                     SignalEvent(Event.RDSTOn);
                     RDSTBreaker[LocoStation] = true;
                 }
-                LocoReadyToGo = false;
+                if (LightsFrameUpdate > 2)
+                    LocoReadyToGo = false;
             }
             // Spustí inicializační trigger zvuku volnoběhu
             if (Simulator.GameTime < 0.5f && DieselEngines[0].EngineStatus == DieselEngine.Status.Running)

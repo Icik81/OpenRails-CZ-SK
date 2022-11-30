@@ -10867,7 +10867,7 @@ namespace Orts.Simulation.RollingStocks
             Simulator.Confirmer.Information(Simulator.Catalog.GetString("World Object reloaded!"));
         }
 
-        int LightsFrameUpdate = 0;
+        public int LightsFrameUpdate = 0;
         public void LightPositionHandle()
         {            
             if (LightsFrameUpdate < 3)
