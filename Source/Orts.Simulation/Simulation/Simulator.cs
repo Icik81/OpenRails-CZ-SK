@@ -207,6 +207,7 @@ namespace Orts.Simulation
         public bool RefreshWorld;
         public bool PlayerUsingRearCab;
         public int StepControllerValue;
+        public int StepControllerMinValue;
         public int StepControllerMaxValue;
         public bool TrainAlerterPassed;
         public DriveMode selectedDriveMode;

@@ -46,6 +46,7 @@ using Orts.Simulation.AIs;
 using Orts.Simulation.Physics;
 using Orts.Simulation.RollingStocks;
 using Orts.Simulation.Signalling;
+using Orts.Viewer3D.RollingStock;
 using ORTS.Common;
 using ORTS.Settings;
 using System;
@@ -2286,7 +2287,7 @@ namespace Orts.Viewer3D
                 case Orts.Formats.Msts.Variable_Trigger.Events.StepController_Inc_Past:
                 case Orts.Formats.Msts.Variable_Trigger.Events.StepController_Equals_To:
                 case Orts.Formats.Msts.Variable_Trigger.Events.StepController_NEquals_To:
-                    return (car as MSTSLocomotive).StepControllerValue;
+                    return car.CarIsPlayerLoco ? (car as MSTSLocomotive).StepControllerValue : Program.Simulator.StepControllerMinValue;
                 default:
                     return 0;
             }

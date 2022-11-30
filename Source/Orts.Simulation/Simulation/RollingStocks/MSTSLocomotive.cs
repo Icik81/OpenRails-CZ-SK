@@ -4857,10 +4857,10 @@ namespace Orts.Simulation.RollingStocks
 
             if (!IsPlayerTrain && !Simulator.Paused)
                 SetAIAction();
-
+            
             if (IsPlayerTrain && !Simulator.Paused)
             {
-                //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("LapActive " + LapActive));                
+                //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("LapActive " + LapActive));                                                
                 StepControllerValue = Simulator.StepControllerValue;
                 TogglePowerKey();
                 PowerKeyLogic();
@@ -8777,7 +8777,7 @@ namespace Orts.Simulation.RollingStocks
 
             // První průběh - inicializace hodnot
             if (this.CarFrameUpdateState == 1)
-            {                
+            {
                 // Vypne inicializační zvuk pohonu při vypnutém stroji
                 if ((this as MSTSDieselLocomotive) != null && (this as MSTSDieselLocomotive).AIMotorStop)
                     SignalEvent(Event.EnginePowerOff);
@@ -11424,24 +11424,27 @@ namespace Orts.Simulation.RollingStocks
             if (MirerTimer3 > 0.5f)
                 if (MirerControllerPosition > -2)
                     MirerControllerPosition--;
-
-            MirerTimer += elapsedTime;
-            if (MirerControllerOneTouch && MirerControllerValue1 == MirerControllerValue2 && LTS410Active == 0) 
+            
+            if (PowerOn)
             {
-                if (MirerControllerValue < MirerMaxValue)
-                    MirerControllerValue++;
-                MirerControllerOneTouch = false;
-                //Simulator.Confirmer.MSG(Simulator.Catalog.GetString("Controller") + ": " + MirerControllerValue);
-            }
-            else
-            {                    
-                if (MirerTimer > MirerSmoothPeriod && MirerControllerValue1 == MirerControllerValue2 && LTS410Active == 0) 
+                MirerTimer += elapsedTime;
+                if (MirerControllerOneTouch && MirerControllerValue1 == MirerControllerValue2 && LTS410Active == 0)
                 {
                     if (MirerControllerValue < MirerMaxValue)
                         MirerControllerValue++;
-                    MirerControllerSmooth = true;
-                    MirerTimer = 0.0f;
+                    MirerControllerOneTouch = false;
                     //Simulator.Confirmer.MSG(Simulator.Catalog.GetString("Controller") + ": " + MirerControllerValue);
+                }
+                else
+                {
+                    if (MirerTimer > MirerSmoothPeriod && MirerControllerValue1 == MirerControllerValue2 && LTS410Active == 0)
+                    {
+                        if (MirerControllerValue < MirerMaxValue)
+                            MirerControllerValue++;
+                        MirerControllerSmooth = true;
+                        MirerTimer = 0.0f;
+                        //Simulator.Confirmer.MSG(Simulator.Catalog.GetString("Controller") + ": " + MirerControllerValue);
+                    }
                 }
             }
         }
@@ -11456,24 +11459,27 @@ namespace Orts.Simulation.RollingStocks
             if (MirerTimer3 > 0.5f)
                 if (MirerControllerPosition < 2)
                     MirerControllerPosition++;
-
-            MirerTimer += elapsedTime;
-            if (MirerControllerOneTouch && MirerControllerValue1 == MirerControllerValue2)
+            
+            if (PowerOn)
             {
-                if (MirerControllerValue > -1)
-                    MirerControllerValue--;
-                MirerControllerOneTouch = false;
-                //Simulator.Confirmer.MSG(Simulator.Catalog.GetString("Controller") + ": " + MirerControllerValue);
-            }
-            else
-            {                
-                if (MirerTimer > MirerSmoothPeriod && MirerControllerValue1 == MirerControllerValue2)
+                MirerTimer += elapsedTime;
+                if (MirerControllerOneTouch && MirerControllerValue1 == MirerControllerValue2)
                 {
                     if (MirerControllerValue > -1)
                         MirerControllerValue--;
-                    MirerControllerSmooth = true;
-                    MirerTimer = 0.0f;
+                    MirerControllerOneTouch = false;
                     //Simulator.Confirmer.MSG(Simulator.Catalog.GetString("Controller") + ": " + MirerControllerValue);
+                }
+                else
+                {
+                    if (MirerTimer > MirerSmoothPeriod && MirerControllerValue1 == MirerControllerValue2)
+                    {
+                        if (MirerControllerValue > -1)
+                            MirerControllerValue--;
+                        MirerControllerSmooth = true;
+                        MirerTimer = 0.0f;
+                        //Simulator.Confirmer.MSG(Simulator.Catalog.GetString("Controller") + ": " + MirerControllerValue);
+                    }
                 }
             }
         }
@@ -11489,6 +11495,7 @@ namespace Orts.Simulation.RollingStocks
         public bool MirerControllerOneTouch;
         public bool MirerControllerSmooth;
         public float MirerSmoothPeriod = 0.5f;
+        public int MirerMinValue = -1;
         public int MirerMaxValue = 42;
         public bool MirerUp;
         public bool MirerDown;
@@ -11505,6 +11512,8 @@ namespace Orts.Simulation.RollingStocks
                 return;
             if (MirerControllerEnable)
             {
+                // Obecná proměnná pro StepController
+                Simulator.StepControllerMinValue = MirerMinValue;
                 Simulator.StepControllerMaxValue = MirerMaxValue;
                 Simulator.StepControllerValue = MirerControllerValue;
 
