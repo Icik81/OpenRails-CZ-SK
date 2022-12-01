@@ -7272,7 +7272,7 @@ namespace Orts.Simulation.RollingStocks
         /// </summary>
         public void SetCombinedHandleValue(float value)
         {
-            if (CombinedControlType == CombinedControl.ThrottleDynamic && DynamicBrake)
+            if (CombinedControlType == CombinedControl.ThrottleDynamic && DynamicBrake != null && DynamicBrake)
             {
                 if (DynamicBrakeController.CurrentValue == 0 && value < CombinedControlSplitPosition)
                     DynamicBrakeChangeActiveState(false);
@@ -7299,8 +7299,8 @@ namespace Orts.Simulation.RollingStocks
         /// <param name="intermediateValue">Whather asking for intermediate (for mouse operation) or notched (for displaying) value.</param>
         /// <returns>Combined position into 0-1 range, where arrangement is [[1--throttle--0]split[0--dynamic|airbrake--1]]</returns>
         public float GetCombinedHandleValue(bool intermediateValue)
-        {
-            if (CombinedControlType == CombinedControl.ThrottleDynamic && DynamicBrake)
+        {            
+            if (CombinedControlType == CombinedControl.ThrottleDynamic && DynamicBrake != null && DynamicBrake)
             {
                 if (CruiseControl != null)
                 {
