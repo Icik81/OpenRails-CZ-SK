@@ -98,8 +98,11 @@ namespace Orts.Viewer3D
         public float PreNearPlane;        
         public void NearPlaneUpdate()
         {            
-            var elevation = Viewer.Tiles.GetElevation(cameraLocation);
+            var elevation = Viewer.Tiles.GetElevation(cameraLocation);            
             NearPlane = Math.Abs((Math.Abs(cameraLocation.Location.Y) - Math.Abs(elevation))) / 10f;
+            if (AttachedCar != null)
+                NearPlane = 0.25f;
+
             NearPlane = MathHelper.Clamp(NearPlane, 0.25f, 10f);
             if (Viewer.Simulator.PlayerIsInCab && (!Viewer.PlayerLocomotive.HasFront3DCab && !Viewer.PlayerLocomotive.HasRear3DCab))
                 NearPlane = 1.0f;
