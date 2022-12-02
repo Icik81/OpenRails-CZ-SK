@@ -270,8 +270,11 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                     break;
 
                 case "engine(trainbrakescontrollermaxsystempressure":
-                case "engine(enginebrakescontrollermaxsystempressure":
                     MaxPressurePSI = stf.ReadFloatBlock(STFReader.UNITS.PressureDefaultPSI, null);
+                    break;
+                // Iciks
+                case "engine(enginebrakescontrollermaxsystempressure":
+                    MaxPressurePSI = 10f * 14.50377f;
                     break;
 
                 case "engine(ortstrainbrakescontrollermaxoverchargepressure":

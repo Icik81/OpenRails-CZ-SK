@@ -5461,12 +5461,12 @@ namespace Orts.Simulation.RollingStocks
                 EngineBrakeController.Update(elapsedClockSeconds);
                 if (EngineBrakeController.UpdateValue > 0.0)
                 {
-                    SignalEvent(Event.EngineBrakeChange);
+                    //SignalEvent(Event.EngineBrakeChange);
                     Simulator.Confirmer.Update(CabControl.EngineBrake, CabSetting.Increase, GetEngineBrakeStatus());                    
                 }
                 if (EngineBrakeController.UpdateValue < 0.0)
                 {
-                    SignalEvent(Event.EngineBrakeChange);
+                    //SignalEvent(Event.EngineBrakeChange);
                     Simulator.Confirmer.Update(CabControl.EngineBrake, CabSetting.Decrease, GetEngineBrakeStatus());                    
                 }
             }
@@ -7752,7 +7752,7 @@ namespace Orts.Simulation.RollingStocks
             if (change != 0)
             {
                 new EngineBrakeCommand(Simulator.Log, change > 0, controller.CurrentValue, Simulator.ClockTime);
-                SignalEvent(Event.EngineBrakeChange);
+                //SignalEvent(Event.EngineBrakeChange);
                 AlerterReset(TCSEvent.EngineBrakeChanged);
             }
             if (oldValue != controller.IntermediateValue)
@@ -8928,7 +8928,7 @@ namespace Orts.Simulation.RollingStocks
                 if (EngineBrakeController.Notches.Count <= 1 || EngineBrakeHas1Notch)
                 {
                     EngineBrakeValue[0] = Math.Max(EngineBrakeValue[1], EngineBrakeValue[2]);
-                    SetEngineBrakePercent(EngineBrakeValue[0] * 100f);
+                    SetEngineBrakePercent(EngineBrakeValue[0] * 100f);                    
                 }
                 else
                 {
