@@ -3108,12 +3108,11 @@ namespace Orts.Simulation.RollingStocks
                 }
             }            
 
-            float SpeedFactor = MathHelper.Clamp(AbsSpeedMpS / Train.AllowedMaxSpeedMpS, 0.8f, 2.5f);
-            if (AbsSpeedMpS < 0.1f) SpeedFactor = 1;
+            float SpeedFactor = MathHelper.Clamp(AbsSpeedMpS / Train.AllowedMaxSpeedMpS, 0f, 2.5f);            
 
             TrackFactorX *= SpeedFactor;
-            TrackFactorY *= SpeedFactor;
-            TrackFactorZ *= SpeedFactor;
+            TrackFactorY *= SpeedFactor * 1.5f;
+            TrackFactorZ *= SpeedFactor * 0.5f;
             FirstFrame = false;
         }
 
