@@ -4474,7 +4474,12 @@ namespace Orts.Simulation.RollingStocks
                         PowerKeyPosition[LocoStation] = 2;
                         PowerKey = true;
                         StationIsActivated[LocoStation] = true;                                                
-                        EngineBrakeValue[LocoStation] = 1.0f;
+                        
+                        if (TrainBrakeController.TrainBrakeControllerState == ControllerState.Lap 
+                            || TrainBrakeController.TrainBrakeControllerState == ControllerState.Neutral
+                            || LapActive[LocoStation])
+                            EngineBrakeValue[LocoStation] = 1.0f;
+                        
                         prevEngineBrakeValue[LocoStation] = EngineBrakeValue[LocoStation];
 
                         if (CruiseControl != null && CruiseControl.Equipped)
