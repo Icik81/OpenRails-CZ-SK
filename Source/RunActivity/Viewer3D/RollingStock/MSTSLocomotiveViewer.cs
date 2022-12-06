@@ -2931,7 +2931,7 @@ namespace Orts.Viewer3D.RollingStock
                     break;
                 case CABViewControlTypes.ORTS_RESTRICTED_SPEED_ZONE_ACTIVE:
                     {
-                        if (Locomotive.Direction == Direction.N)
+                        if (Locomotive.CruiseControl != null && Locomotive.Direction == Direction.N)
                             Locomotive.CruiseControl.RestrictedSpeedActive = false;
 
                         if (Locomotive.CruiseControl == null)
@@ -2970,7 +2970,7 @@ namespace Orts.Viewer3D.RollingStock
                             index = PercentToIndex(MpS.ToKpH(Locomotive.CruiseControl.NextSelectedSpeedMps));
                             break;
                         }
-                        if (data != Locomotive.CruiseControl.SelectedSpeed && Locomotive.LocoType == MSTSLocomotive.LocoTypes.Vectron)
+                        if (Locomotive.CruiseControl != null && data != Locomotive.CruiseControl.SelectedSpeed && Locomotive.LocoType == MSTSLocomotive.LocoTypes.Vectron)
                             data = Locomotive.CruiseControl.SelectedSpeed;
                         int test = (int)ControlDiscrete.MaxValue;
                         int test1 = ControlDiscrete.FramesCount - 1;

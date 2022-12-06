@@ -1495,7 +1495,7 @@ namespace Orts.Simulation.RollingStocks
             if (PantographDown)
                 TimerVoltageIndicateTest = 0;
 
-            if (TimerVoltageIndicateTest > PowerSupply.AuxPowerOnDelayS)
+            if (TimerVoltageIndicateTest > PowerSupply.AuxPowerOnDelayS + PowerSupply.PowerOnDelayS)
                 VoltageIndicateTestCompleted = true;
             else
                 VoltageIndicateTestCompleted = false;
