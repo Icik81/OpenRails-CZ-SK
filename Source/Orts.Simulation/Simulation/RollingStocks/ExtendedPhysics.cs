@@ -368,7 +368,8 @@ namespace Orts.Simulation.RollingStocks
                 }
             }
 
-            if (Bar.FromPSI(Locomotive.BrakeSystem.BrakeLine1PressurePSI) < 4.78 && Locomotive.DynamicBrakePercent < 0.1f)
+            //if (Bar.FromPSI(Locomotive.BrakeSystem.BrakeLine1PressurePSI) < 4.78 && Locomotive.DynamicBrakePercent < 0.1f)
+            if (Locomotive.BrakeSystem.BrakePipeChangeRateBar > 0.1f && Locomotive.DynamicBrakePercent < 0.1f)
                 Locomotive.ControllerVolts = 0;
 
             if (Locomotive.ControllerVolts > 0)
