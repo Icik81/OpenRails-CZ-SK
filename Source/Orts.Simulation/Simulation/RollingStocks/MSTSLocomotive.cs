@@ -2891,7 +2891,7 @@ namespace Orts.Simulation.RollingStocks
             {
                 // Nadproudová ochrana                        
                 if (MaxCurrentPower == 0) MaxCurrentPower = MaxCurrentA / 1.2f;
-                if (MaxCurrentBrake == 0) MaxCurrentBrake = MaxCurrentA / 2.3f;
+                if (MaxCurrentBrake == 0) MaxCurrentBrake = MaxCurrentA / 1.2f;
                                 
                 if (float.IsInfinity(PowerCurrent1) || float.IsNaN(BrakeCurrent1))
                     return;
@@ -5435,6 +5435,7 @@ namespace Orts.Simulation.RollingStocks
         /// <summary>
         /// This function updates periodically the states and physical variables of the locomotive's controllers.
         /// </summary>
+        bool EDBOn;
         protected virtual void UpdateControllers(float elapsedClockSeconds)
         {
             SteamHeatController.Update(elapsedClockSeconds);
@@ -5519,6 +5520,16 @@ namespace Orts.Simulation.RollingStocks
                         DynamicBrakeController.Update(elapsedClockSeconds);
                         DynamicBrakePercent = (DynamicBrakeIntervention < 0.1f ? DynamicBrakeController.CurrentValue : DynamicBrakeIntervention) * 100f;
                         LocalDynamicBrakePercent = (DynamicBrakeIntervention < 0.1f ? DynamicBrakeController.CurrentValue : DynamicBrakeIntervention) * 100f;
+
+                        // Icik
+                        if (DynamicBrakeController.CurrentValue > 0 || DynamicBrakePercent > 0)
+                            EDBOn = true;                        
+                        if (DynamicBrakeIntervention == -1 && EDBOn && DynamicBrakeController.CurrentValue == 0)
+                        {
+                            DynamicBrakePercent = -1;
+                            LocalDynamicBrakePercent = -1;
+                            EDBOn = false;
+                        }
                     }
                     else
                     {
