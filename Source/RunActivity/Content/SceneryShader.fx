@@ -395,12 +395,12 @@ float _PSGetShadowEffect(uniform bool NormalLighting, in VERTEX_OUTPUT In)
 	float3 moments;
 	moments = _PSGetShadowEffect(In);
 
-	bool not_shadowed = moments.z - moments.x < 0.0001;
+	bool not_shadowed = moments.z - moments.x < 0.000000001;
 	float E_x2 = moments.y;
 	float Ex_2 = moments.x * moments.x;
 	float variance = clamp(E_x2 - Ex_2, 0.001, 1.0);
 	float m_d = moments.z - moments.x;
-	float p = pow(variance / (variance + m_d * m_d), 2000);
+	float p = pow(variance / (variance + m_d * m_d), 1500);
 	if (NormalLighting)
 		return saturate(not_shadowed + p) * saturate(In.Normal_Light.w * 5 - 2 );
 	return saturate(not_shadowed + p);
@@ -464,7 +464,7 @@ float4 PSImageTransfer(uniform bool ClampTexCoords, in VERTEX_OUTPUT In) : COLOR
 	if (Fog.a < 0.0001) MaxShadowBrightness = 0.0001 * 1000 * 3.0;
 	if (MaxShadowBrightness > 1.0) MaxShadowBrightness = 1.0;
 
-	float3 litColor = Color.rgb * lerp(MaxShadowBrightness * 0.9, FullBrightness, saturate(_PSGetAmbientEffect(In) * _PSGetShadowEffect(true, In) + ImageTextureIsNight));
+	float3 litColor = Color.rgb * lerp(MaxShadowBrightness * 1.5, FullBrightness, saturate(_PSGetAmbientEffect(In) * _PSGetShadowEffect(true, In) + ImageTextureIsNight));
 
 	// Specular effect next.
 	litColor += _PSGetSpecularEffect(In) * _PSGetShadowEffect(true, In) * 0.0f;
@@ -534,7 +534,7 @@ float4 PSVegetation(in VERTEX_OUTPUT In) : COLOR0
 	if (Fog.a < 0.0001) MaxShadowBrightness = 0.0001 * 1000 * 4.5;
 	if (MaxShadowBrightness > 1.0) MaxShadowBrightness = 1.0;
 	
-	float3 litColor = Color.rgb * lerp(MaxShadowBrightness, FullBrightness, saturate(_PSGetAmbientEffect(In) * _PSGetShadowEffect(true, In) + ImageTextureIsNight));
+	float3 litColor = Color.rgb * lerp(MaxShadowBrightness * 1.5, FullBrightness, saturate(_PSGetAmbientEffect(In) * _PSGetShadowEffect(true, In) + ImageTextureIsNight));
 	
 	// Specular effect next.
 	litColor += _PSGetSpecularEffect(In) * _PSGetShadowEffect(true, In);
@@ -589,7 +589,7 @@ float4 PSTerrain(in VERTEX_OUTPUT In) : COLOR0
 	if (Fog.a < 0.0001) MaxShadowBrightness = 0.0001 * 1000 * 3.0;
 	if (MaxShadowBrightness > 1.0) MaxShadowBrightness = 1.0;
 	
-	float3 litColor = Color.rgb * lerp(MaxShadowBrightness, FullBrightness, saturate(_PSGetAmbientEffect(In) * _PSGetShadowEffect(true, In) + ImageTextureIsNight));
+	float3 litColor = Color.rgb * lerp(MaxShadowBrightness * 1.5, FullBrightness, saturate(_PSGetAmbientEffect(In) * _PSGetShadowEffect(true, In) + ImageTextureIsNight));
 
 	// No specular effect for terrain.
 
