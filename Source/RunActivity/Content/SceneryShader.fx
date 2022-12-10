@@ -460,17 +460,17 @@ float4 PSImageTransfer(uniform bool ClampTexCoords, in VERTEX_OUTPUT In) : COLOR
 	clip(Color.a - ReferenceAlpha);
 
 	// Ambient and shadow effects apply first; night-time textures cancel out all normal lighting.
-	if (Fog.a != 0) MaxShadowBrightness = Fog.a * 1000 * 3.0;
-	if (Fog.a < 0.0001) MaxShadowBrightness = 0.0001 * 1000 * 3.0;
+	if (Fog.a != 0) MaxShadowBrightness = Fog.a * 1000 * 4.5;
+	if (Fog.a < 0.0001) MaxShadowBrightness = 0.0001 * 1000 * 4.5;
 	if (MaxShadowBrightness > 1.0) MaxShadowBrightness = 1.0;
 
-	float3 litColor = Color.rgb * lerp(MaxShadowBrightness * 1.5, FullBrightness, saturate(_PSGetAmbientEffect(In) * _PSGetShadowEffect(true, In) + ImageTextureIsNight));
+	float3 litColor = Color.rgb * lerp(MaxShadowBrightness, FullBrightness, saturate(_PSGetAmbientEffect(In) * _PSGetShadowEffect(true, In) + ImageTextureIsNight));
 
 	// Specular effect next.
 	litColor += _PSGetSpecularEffect(In) * _PSGetShadowEffect(true, In) * 0.0f;
 	
 	// Overcast blanks out ambient, shadow and specular effects (so use original Color).
-	if (Overcast.x != 0) MaxShadowBrightness = Overcast.x * 1.0;
+	if (Overcast.x != 0) MaxShadowBrightness = Overcast.x * 2.0;
 	if (Overcast.x < 0.01) MaxShadowBrightness = 0.01 * 1.0;
 	if (MaxShadowBrightness > 1.0) MaxShadowBrightness = 1.0;
 		
@@ -530,17 +530,17 @@ float4 PSVegetation(in VERTEX_OUTPUT In) : COLOR0
 	clip(Color.a - ReferenceAlpha);
 	
 	// Ambient effect applies first; night-time textures cancel out all normal lighting.
-	if (Fog.a != 0) MaxShadowBrightness = Fog.a * 1000 * 4.5;
-	if (Fog.a < 0.0001) MaxShadowBrightness = 0.0001 * 1000 * 4.5;
+	if (Fog.a != 0) MaxShadowBrightness = Fog.a * 1000 * 7;
+	if (Fog.a < 0.0001) MaxShadowBrightness = 0.0001 * 1000 * 7;
 	if (MaxShadowBrightness > 1.0) MaxShadowBrightness = 1.0;
 	
-	float3 litColor = Color.rgb * lerp(MaxShadowBrightness * 1.5, FullBrightness, saturate(_PSGetAmbientEffect(In) * _PSGetShadowEffect(true, In) + ImageTextureIsNight));
+	float3 litColor = Color.rgb * lerp(MaxShadowBrightness, FullBrightness, saturate(_PSGetAmbientEffect(In) * _PSGetShadowEffect(true, In) + ImageTextureIsNight));
 	
 	// Specular effect next.
 	litColor += _PSGetSpecularEffect(In) * _PSGetShadowEffect(true, In);
 	
 	// Overcast blanks out ambient, shadow effects (so use original Color).
-	if (Overcast.x != 0) MaxShadowBrightness = Overcast.x * 1.0;
+	if (Overcast.x != 0) MaxShadowBrightness = Overcast.x * 2.0;
 	if (Overcast.x < 0.01) MaxShadowBrightness = 0.01 * 1.0;
 	if (MaxShadowBrightness > 1.0) MaxShadowBrightness = 1.0;
 	
@@ -585,16 +585,16 @@ float4 PSTerrain(in VERTEX_OUTPUT In) : COLOR0
 	float4 Color = tex2D(Image, In.TexCoords.xy);
 
 	// Ambient and shadow effects apply first; night-time textures cancel out all normal lighting.
-	if (Fog.a != 0) MaxShadowBrightness = Fog.a * 1000 * 3.0;
-	if (Fog.a < 0.0001) MaxShadowBrightness = 0.0001 * 1000 * 3.0;
+	if (Fog.a != 0) MaxShadowBrightness = Fog.a * 1000 * 4.5;
+	if (Fog.a < 0.0001) MaxShadowBrightness = 0.0001 * 1000 * 4.5;
 	if (MaxShadowBrightness > 1.0) MaxShadowBrightness = 1.0;
 	
-	float3 litColor = Color.rgb * lerp(MaxShadowBrightness * 1.5, FullBrightness, saturate(_PSGetAmbientEffect(In) * _PSGetShadowEffect(true, In) + ImageTextureIsNight));
+	float3 litColor = Color.rgb * lerp(MaxShadowBrightness, FullBrightness, saturate(_PSGetAmbientEffect(In) * _PSGetShadowEffect(true, In) + ImageTextureIsNight));
 
 	// No specular effect for terrain.
 
 	// Overcast blanks out ambient, shadow and specular effects (so use original Color).
-	if (Overcast.x != 0) MaxShadowBrightness = Overcast.x * 1.00;
+	if (Overcast.x != 0) MaxShadowBrightness = Overcast.x * 2.00;
 	if (Overcast.x < 0.01) MaxShadowBrightness = 0.01 * 1.00;
 	if (MaxShadowBrightness > 1.0) MaxShadowBrightness = 1.0;
 	
