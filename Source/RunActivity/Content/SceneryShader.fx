@@ -235,6 +235,12 @@ void _VSLightsAndShadows(in float4 InPosition, inout VERTEX_OUTPUT Out)
 			if (Opar_scena < 2.0) Opar_scena = 2.0;
 		}	
 	
+	if (Fog.a > 0.1)
+	{
+		Opar_scena = 2.0;
+		Opar_horizont = 1.0;
+	}
+	
 	Out.LightDir_Fog.w = (Opar_scena / (1.0 + exp(length(Out.Position.xyz) * Opar_horizont * Fog.a * -2.0))) - 1.0;
 	if (Out.LightDir_Fog.w > 1.025) Out.LightDir_Fog.w = 1.025;
 
@@ -411,8 +417,8 @@ float3 _PSGetOvercastColor(in float4 Color, in VERTEX_OUTPUT In)
 {
 	// Value used to determine equivalent grayscale color.
 	const float3 LumCoeff = float3(0.2125, 0.7154, 0.0721);
+	
 	float intensity = dot((float3)Color, LumCoeff);
-
 	return lerp(intensity, Color.rgb, 1.0);	
 }
 
@@ -434,6 +440,7 @@ void _PSApplyHeadlights(inout float3 Color, in float4 OriginalColor, in VERTEX_O
 // Applies distance fog to the pixel.
 void _PSApplyFog(inout float3 Color, in VERTEX_OUTPUT In)
 {
+	Fog.rgb = Fog.rgb * 1.25;
 	Color = lerp(Color, Fog.rgb, In.LightDir_Fog.w);
 }
 
@@ -482,11 +489,11 @@ float4 PSImageTransfer(uniform bool ClampTexCoords, in VERTEX_OUTPUT In) : COLOR
 	
 	//Ubere světlo, pokud je mlha 
 	float MaxDim1 = 0;
-	if (Fog.a > 0) MaxDim1 = Fog.a * 1000 * 2.5;
+	if (Fog.a > 0) MaxDim1 = Fog.a * 1000 * 1.5;
 	if (MaxDim1 > 1.0) MaxDim1 = 1.0;
 	
 	float MaxDim2 = 0;
-	if (Overcast.x > 0.0) MaxDim2 = Overcast.x * 1.5;
+	if (Overcast.x > 0.0) MaxDim2 = Overcast.x * 1.0;
 	if (MaxDim2 > 1.2) MaxDim2 = 1.2;	
 
 	float MaxDim3;
@@ -552,11 +559,11 @@ float4 PSVegetation(in VERTEX_OUTPUT In) : COLOR0
 	
 	//Ubere světlo, pokud je mlha 
 	float MaxDim1 = 0;
-	if (Fog.a > 0) MaxDim1 = Fog.a * 1000 * 2.5;
+	if (Fog.a > 0) MaxDim1 = Fog.a * 1000 * 1.5;
 	if (MaxDim1 > 1.0) MaxDim1 = 1.0;
 	
 	float MaxDim2 = 0;
-	if (Overcast.x > 0.0) MaxDim2 = Overcast.x * 1.5;
+	if (Overcast.x > 0.0) MaxDim2 = Overcast.x * 1.0;
 	if (MaxDim2 > 1.2) MaxDim2 = 1.2;	
 
 	float MaxDim3;
@@ -606,11 +613,11 @@ float4 PSTerrain(in VERTEX_OUTPUT In) : COLOR0
 
 	//Ubere světlo, pokud je mlha 
 	float MaxDim1 = 0;
-	if (Fog.a > 0) MaxDim1 = Fog.a * 1000 * 2.5;
+	if (Fog.a > 0) MaxDim1 = Fog.a * 1000 * 1.5;
 	if (MaxDim1 > 1.0) MaxDim1 = 1.0;
 	
 	float MaxDim2 = 0;
-	if (Overcast.x > 0.0) MaxDim2 = Overcast.x * 1.5;
+	if (Overcast.x > 0.0) MaxDim2 = Overcast.x * 1.0;
 	if (MaxDim2 > 1.2) MaxDim2 = 1.2;	
 
 	float MaxDim3;

@@ -180,6 +180,7 @@ float4 PSSky(VERTEX_OUTPUT In) : COLOR
 	skyColor = lerp(starColor, skyColor, SkyColor.y);
 	
 	// Fogging
+	FogColor.rgb = FogColor.rgb * 1.3;
 	skyColor.rgb = lerp(skyColor.rgb, FogColor.rgb, saturate((1 - In.Normal.y) * Fog.x));
 	
 	// Calculate angular difference between LightVector and vertex normal, radians
