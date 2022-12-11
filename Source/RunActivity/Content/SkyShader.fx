@@ -236,14 +236,17 @@ float4 PSMoon(VERTEX_OUTPUT In) : COLOR
 	float4 moonMask = tex2D(MoonMaskSampler, In.TexCoord);
 	
 	// Fade moon during daylight
-	moonColor.a *= MoonColor.x;
+	moonColor.a *= MoonColor.x * 0;	
 	
 	// Fogging
 	moonColor.rgb = lerp(moonColor.rgb, FogColor.rgb, saturate((1 - In.Normal.y) * Fog.x));
 	
 	// Mask stars behind dark side (mask fades in)
-	moonColor.a += moonMask.r * MoonColor.y;
-		
+	moonColor.a += moonMask.r * MoonColor.y * 0.2;
+
+	if (moonColor.a > 0)	
+		moonColor *= (1 + moonColor.a) + moonColor.a;	
+	
 	return moonColor;
 }
 
