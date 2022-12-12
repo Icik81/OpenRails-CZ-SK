@@ -257,8 +257,10 @@ float4 PSClouds(VERTEX_OUTPUT In) : COLOR
 	// Move cloud map to suit wind conditions
 	float2 TexCoord = float2(In.TexCoord.x * 4 + WindDisplacement.x, In.TexCoord.y * 4 + WindDisplacement.y);
 	float4 cloudColor = tex2D(CloudMapSampler, TexCoord);
-	float alpha = cloudColor.a * 0.1;
+	float alpha = cloudColor.a * 0.1;	
 	
+	cloudColor.rgb *= 1.75; 
+			
     // Fogging
     cloudColor.rgb = lerp(cloudColor.rgb, FogColor.rgb, saturate((1 - In.Normal.y) * Fog.x));
 	
@@ -268,7 +270,14 @@ float4 PSClouds(VERTEX_OUTPUT In) : COLOR
 		alpha += Overcast.x;
 		// Reduce contrast and brightness
 		float3 color = ContrastSaturationBrightness(cloudColor.xyz, 1.0, Overcast.z, Overcast.y); // Brightness and saturation are really need to be exchanged?
-		cloudColor = float4(color, alpha);
+		float3 CloudDim;
+		
+		if (Overcast.x > 0.7)
+		{	
+			cloudColor = float4(color * (0.3 + (Overcast.x * (1 + (Overcast.x - 0.7)))), alpha);
+		}
+		else
+			cloudColor = float4(color, alpha);
 	}
 	else
 	{
@@ -276,8 +285,9 @@ float4 PSClouds(VERTEX_OUTPUT In) : COLOR
 	}
 
 	// Adjust cloud color brightness for time of day
-	cloudColor *= CloudColor;
+	cloudColor *= CloudColor;	
 	cloudColor.a = alpha;
+	
 	return cloudColor;
 }
 
