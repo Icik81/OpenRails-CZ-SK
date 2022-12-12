@@ -3117,7 +3117,8 @@ namespace Orts.Viewer3D.RollingStock
 
                 case CABViewControlTypes.MOTOR_DISABLED:
                 case CABViewControlTypes.INVERTER_TEST:
-
+                case CABViewControlTypes.ODOMETER_DISPLAY_START:
+                case CABViewControlTypes.ODOMETER_DISPLAY:
                     index = (int)data;
                     break;
 
@@ -3607,7 +3608,12 @@ namespace Orts.Viewer3D.RollingStock
                         }
                         break;
                     }
-
+                case CABViewControlTypes.ODOMETER_DISPLAY_START:
+                    {
+                        Locomotive.OdometerDistancePassed = (int)Locomotive.DistanceM;
+                        Locomotive.OdometerDisplayActive = true;
+                        break;
+                    }
                 case CABViewControlTypes.HV3:
                     {
                         // Ovládání HV nearetované pozice
@@ -5386,7 +5392,8 @@ namespace Orts.Viewer3D.RollingStock
             else if (
     Control.ControlType == CABViewControlTypes.ORTS_DIGITAL_STRING ||
     Control.ControlType == CABViewControlTypes.ORTS_DATE ||
-    Control.ControlType == CABViewControlTypes.BRAKE_PIPE
+    Control.ControlType == CABViewControlTypes.BRAKE_PIPE ||
+    Control.ControlType == CABViewControlTypes.ODOMETER_DISPLAY
     )
             {
                 digital.StringValue = Num.ToString();
