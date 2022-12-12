@@ -760,6 +760,8 @@ namespace Orts.Simulation.RollingStocks
         public int InverterTest = 2;
         public bool GeneratoricModeActive = false;
         public bool GeneratoricModeForcedOff = false;
+        public bool OdometerDisplayActive = false;
+        public int OdometerDistancePassed = 0;
 
         public bool
       Speed0Pressed, Speed10Pressed, Speed20Pressed, Speed30Pressed, Speed40Pressed, Speed50Pressed
@@ -14340,7 +14342,7 @@ namespace Orts.Simulation.RollingStocks
                 // ************************************************************************
                 // ************************************************************************
 
-                if (StringArray.StArray == null)
+                if (StringArray.StArray == null || !string.IsNullOrEmpty(crc.StaticText))
                 {
                     if (String.IsNullOrEmpty(crc.PropertyName))
                         return crc.Label;
@@ -14396,6 +14398,8 @@ namespace Orts.Simulation.RollingStocks
                                     {
                                         positiveColor = new Color(0, 0, 0);
                                     }
+                                    if (crc.Feature == "OdometerDisplay" && !OdometerDisplayActive)
+                                        return "";
                                     return crc.StaticText;
                                 }
                             case "TrainNumber": return TrainNumber;
@@ -14841,6 +14845,21 @@ namespace Orts.Simulation.RollingStocks
             {
                 if (retVal.Length > crc.Length) retVal = retVal.Substring(0, crc.Length);
                 while (retVal.Length < crc.Length) retVal = retVal + "0";
+            }
+            if (crc.ControlType == CABViewControlTypes.ODOMETER_DISPLAY)
+            {
+                if (!OdometerDisplayActive)
+                    return "";
+                float displayNum = DistanceM - OdometerDistancePassed;
+                displayNum /= crc.Precision;
+                displayNum = (float)Math.Round(displayNum, 0);
+                displayNum = displayNum * 20;
+                if (displayNum > 700)
+                {
+                    OdometerDisplayActive = false;
+                    return "";
+                }
+                return displayNum.ToString() + "m";
             }
             return retVal;
         }

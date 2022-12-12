@@ -396,6 +396,8 @@ namespace Orts.Formats.Msts
         PANTO_MODE,
         MOTOR_DISABLED,
         INVERTER_TEST,
+        ODOMETER_DISPLAY_START,
+        ODOMETER_DISPLAY,
 
         // Icik
         HV2,
@@ -1233,6 +1235,11 @@ namespace Orts.Formats.Msts
                 new STFReader.TokenProcessor("statictext", ()=>{
                     stf.MustMatch("(");
                     StaticText = stf.ReadString();
+                    stf.SkipRestOfBlock();
+                }),
+                new STFReader.TokenProcessor("feature", ()=>{
+                    stf.MustMatch("(");
+                    Feature = stf.ReadString();
                     stf.SkipRestOfBlock();
                 }),
                 // ORTS
