@@ -69,6 +69,7 @@ using System.IO;
 using System.Linq;
 using System.Xml;
 using static Orts.Simulation.RollingStocks.SubSystems.Controllers.MultiPositionController;
+using static Orts.Simulation.RollingStocks.SubSystems.Mirel;
 using Event = Orts.Common.Event;
 
 namespace Orts.Simulation.RollingStocks
@@ -1345,7 +1346,7 @@ namespace Orts.Simulation.RollingStocks
                 case "engine(ortsmaxtracksanderairconsumption": TrackSanderAirComsumptionLpS = stf.ReadFloatBlock(STFReader.UNITS.Volume, null); break;
                 // Icik
                 case "engine(adhesionefficiencykoef": AdhesionEfficiencyKoef = stf.ReadFloatBlock(STFReader.UNITS.None, null); break;
-                case "engine(multisystemengine": MultiSystemEngine = MultiSystemEnginePlayer = stf.ReadBoolBlock(false); break;
+                case "engine(multisystemengine": EnableControlVoltageChange = false; MultiSystemEngine = MultiSystemEnginePlayer = stf.ReadBoolBlock(false); break;
                 case "engine(maxcurrentpower": MaxCurrentPower = stf.ReadFloatBlock(STFReader.UNITS.Current, null); break;
                 case "engine(maxcurrentbrake": MaxCurrentBrake = stf.ReadFloatBlock(STFReader.UNITS.Current, null); break;
                 case "engine(slipspeedcritical": SlipSpeedCritical = stf.ReadFloatBlock(STFReader.UNITS.Speed, null); break;
@@ -1815,7 +1816,9 @@ namespace Orts.Simulation.RollingStocks
             outf.Write(AbsSpeedMpS);
             outf.Write(AbsTractionSpeedMpS);
             outf.Write(AbsWheelSpeedMpS);            
-
+            outf.Write((int)SelectedPowerSystem);
+            outf.Write((int)SelectingPowerSystem);
+            
             // Icik
             #region Icik            
             outf.Write(HVOffStatusBrakeCyl);
@@ -1988,15 +1991,17 @@ namespace Orts.Simulation.RollingStocks
             ScoopIsBroken = inf.ReadBoolean();
             IsWaterScoopDown = inf.ReadBoolean();
             CurrentTrackSandBoxCapacityL = inf.ReadSingle();
-
             AdhesionFilter.Reset(0.5f);
-
             SpeedMpS = inf.ReadSingle();
             _SpeedMpS = inf.ReadSingle();
             WheelSpeedMpS = inf.ReadSingle();
             AbsSpeedMpS = inf.ReadSingle();
             AbsTractionSpeedMpS = inf.ReadSingle();
-            AbsWheelSpeedMpS = inf.ReadSingle();
+            AbsWheelSpeedMpS = inf.ReadSingle();            
+            int fSelectedPowerSystem = inf.ReadInt32();
+            SelectedPowerSystem = (PowerSystem)fSelectedPowerSystem;
+            int fSelectingPowerSystem = inf.ReadInt32();
+            SelectingPowerSystem = (PowerSystem)fSelectingPowerSystem;
 
             // Icik
             #region Icik            
@@ -4233,6 +4238,7 @@ namespace Orts.Simulation.RollingStocks
                 if (HelperLocoDontPush)
                 {
                     LocalThrottlePercent = 0;
+                    Train.ControllerVolts = LocalThrottlePercent;
                     if (ControllerVolts > 0)
                         PowerReductionResult12 = 1;
                 }
@@ -4269,18 +4275,21 @@ namespace Orts.Simulation.RollingStocks
                         {
                             HelperTimerIncrease = 0;
                             if (LocalThrottlePercent < 100)
-                                LocalThrottlePercent++;
+                                LocalThrottlePercent++;                            
                         }
                     }
                     LocalThrottlePercent = MathHelper.Clamp(LocalThrottlePercent, 0, 100);
-                    Train.ControllerVolts = LocalThrottlePercent / 10;
+                    Train.ControllerVolts = LocalThrottlePercent / 10f;
                     StepControllerValue = (int) (LocalThrottlePercent / 100f * Simulator.StepControllerMaxValue);
+                    ForceHandleValue = LocalThrottlePercent;                    
                 }
                 if (HelperLocoFollow)
                 {
                     if (Simulator.ThrottleLocoHelper != 0)
                         PowerReductionResult12 = 0;                    
                 }
+                if (extendedPhysics != null)
+                    extendedPhysics.Update(elapsedClockSeconds);
             }
 
             // Připojený MU kabel
@@ -4650,7 +4659,7 @@ namespace Orts.Simulation.RollingStocks
                         {
                             if (CruiseControl.SpeedRegMode[LocoStation] != CruiseControl.SpeedRegulatorMode.Auto && CruiseControl.SpeedRegMode[LocoStation] != CruiseControl.SpeedRegulatorMode.AVV)
                             {
-                                if (ForceHandleValue == 0)
+                                if (ForceHandleValue == 0 && !LocoHelperOn)
                                 {
                                     ThrottlePercent = 0;
                                     if (DynamicBrakePercent >= 0)
@@ -4764,7 +4773,7 @@ namespace Orts.Simulation.RollingStocks
                             extendedPhysics.OverridenControllerVolts = 10;
                     }
 
-                    if (extendedPhysics != null)
+                    if (extendedPhysics != null && !LocoHelperOn)
                         extendedPhysics.Update(elapsedClockSeconds);
                     if (CruiseControl != null)
                     {
