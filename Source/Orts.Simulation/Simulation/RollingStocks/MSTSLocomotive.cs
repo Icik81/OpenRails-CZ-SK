@@ -567,7 +567,7 @@ namespace Orts.Simulation.RollingStocks
         public bool LapButton_Activated;
         public bool[] LapActive = new bool[3];
         public bool SetLapButtonStart;
-        int PantoStatus = 0;        
+        int PantoStatus = 1;        
         public float HeatingMaxCurrentA;
         public bool CheckPowerLoss;
         public bool DontRaisePanto;
@@ -1876,8 +1876,14 @@ namespace Orts.Simulation.RollingStocks
             outf.Write(CompressorSwitch[2]);
             outf.Write(CompressorSwitch2[1]);
             outf.Write(CompressorSwitch2[2]);
+            outf.Write(Pantograph3Switch[1]);
+            outf.Write(Pantograph3Switch[2]);
             outf.Write(Pantograph4Switch[1]);
             outf.Write(Pantograph4Switch[2]);
+            outf.Write(HV3Switch[1]);
+            outf.Write(HV3Switch[2]);
+            outf.Write(HV4Switch[1]);
+            outf.Write(HV4Switch[2]);
             outf.Write(HV5Switch[1]);
             outf.Write(HV5Switch[2]);
             outf.Write(DieselDirectionControllerPosition[1]);
@@ -2060,8 +2066,14 @@ namespace Orts.Simulation.RollingStocks
             CompressorSwitch[2] = inf.ReadInt32();
             CompressorSwitch2[1] = inf.ReadInt32();
             CompressorSwitch2[2] = inf.ReadInt32();
+            Pantograph3Switch[1] = inf.ReadInt32();
+            Pantograph3Switch[2] = inf.ReadInt32();
             Pantograph4Switch[1] = inf.ReadInt32();
             Pantograph4Switch[2] = inf.ReadInt32();
+            HV3Switch[1] = inf.ReadInt32();
+            HV3Switch[2] = inf.ReadInt32();
+            HV4Switch[1] = inf.ReadInt32();
+            HV4Switch[2] = inf.ReadInt32();
             HV5Switch[1] = inf.ReadInt32();
             HV5Switch[2] = inf.ReadInt32();
             DieselDirectionControllerPosition[1] = inf.ReadInt32();
