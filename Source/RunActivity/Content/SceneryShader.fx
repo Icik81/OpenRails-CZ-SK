@@ -477,7 +477,7 @@ float4 PSImageTransfer(uniform bool ClampTexCoords, in VERTEX_OUTPUT In) : COLOR
 	litColor += _PSGetSpecularEffect(In) * _PSGetShadowEffect(true, In) * 0.0f;
 	
 	// Overcast blanks out ambient, shadow and specular effects (so use original Color).
-	if (Overcast.x != 0) MaxShadowBrightness = Overcast.x * 2.0;
+	if (Overcast.x != 0) MaxShadowBrightness = Overcast.x * 1.25;
 	if (Overcast.x < 0.01) MaxShadowBrightness = 0.01 * 1.0;
 	if (MaxShadowBrightness > 1.0) MaxShadowBrightness = 1.0;
 		
@@ -547,7 +547,7 @@ float4 PSVegetation(in VERTEX_OUTPUT In) : COLOR0
 	litColor += _PSGetSpecularEffect(In) * _PSGetShadowEffect(true, In);
 	
 	// Overcast blanks out ambient, shadow effects (so use original Color).
-	if (Overcast.x != 0) MaxShadowBrightness = Overcast.x * 2.0;
+	if (Overcast.x != 0) MaxShadowBrightness = Overcast.x * 1.25;
 	if (Overcast.x < 0.01) MaxShadowBrightness = 0.01 * 1.0;
 	if (MaxShadowBrightness > 1.0) MaxShadowBrightness = 1.0;
 	
@@ -601,7 +601,7 @@ float4 PSTerrain(in VERTEX_OUTPUT In) : COLOR0
 	// No specular effect for terrain.
 
 	// Overcast blanks out ambient, shadow and specular effects (so use original Color).
-	if (Overcast.x != 0) MaxShadowBrightness = Overcast.x * 2.00;
+	if (Overcast.x != 0) MaxShadowBrightness = Overcast.x * 1.5;
 	if (Overcast.x < 0.01) MaxShadowBrightness = 0.01 * 1.00;
 	if (MaxShadowBrightness > 1.0) MaxShadowBrightness = 1.0;
 	
