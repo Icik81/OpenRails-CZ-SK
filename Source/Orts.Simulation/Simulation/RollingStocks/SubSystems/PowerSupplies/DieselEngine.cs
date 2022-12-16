@@ -1185,7 +1185,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
             }
             if (locomotive.IsPlayerTrain && EngineStatus != Status.Running && !InitTriggerSetOff)
             {
-                locomotive.SignalEvent(Event.EnginePowerOff);
+                //locomotive.SignalEvent(Event.EnginePowerOff);
                 InitTriggerSetOff = true;
             }
             // Inicializace Static

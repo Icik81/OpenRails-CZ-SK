@@ -4095,6 +4095,21 @@ namespace Orts.Simulation.RollingStocks
                 {
                     CarIsWaiting = false;
 
+                    if (((this as MSTSElectricLocomotive != null) && (this as MSTSElectricLocomotive).AIPantoDownStop)
+                        || ((this as MSTSDieselLocomotive != null) && (this as MSTSDieselLocomotive).AIMotorStop)
+                        || ((this as MSTSLocomotive != null) && (this as MSTSLocomotive).LocoIsStatic))
+                        foreach (TrainCar car in (Train as AITrain).Cars)
+                        {
+                            car.BrakeSystem.PowerForWagon = false;
+                            PowerOn = false;
+                        }
+                    else
+                        foreach (TrainCar car in (Train as AITrain).Cars)
+                        {
+                            car.BrakeSystem.PowerForWagon = true;
+                            PowerOn = true;
+                        }
+
                     // AI je ve stanici nebo stojí
                     if ((Train as AITrain).MovementState == AITrain.AI_MOVEMENT_STATE.STATION_STOP
                         || (Train as AITrain).MovementState == AITrain.AI_MOVEMENT_STATE.STOPPED
@@ -4883,9 +4898,9 @@ namespace Orts.Simulation.RollingStocks
                 }
             }
 
-            if (!IsPlayerTrain && !Simulator.Paused)
-                SetAIAction();
-            
+            if (!IsPlayerTrain && !Simulator.Paused)            
+                SetAIAction();            
+
             if (IsPlayerTrain && !Simulator.Paused)
             {
                 //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("LapActive " + LapActive));                                                

@@ -1684,7 +1684,8 @@ namespace Orts.Simulation.RollingStocks
         bool TrainIsPassenger = false;
         bool TrainHasBreakSpeedPanto2Down = false;
         float BreakSpeedPanto2Down;
-
+        bool AIPantoDownStopSoundCyklus;
+        float AIPantoDownStopTimer = 0;
         protected void SetAIPantoDown(float elapsedClockSeconds)
         {
             if (IsPlayerTrain)
@@ -1857,6 +1858,20 @@ namespace Orts.Simulation.RollingStocks
                 SignalEvent(Event.EnginePowerOff);
                 PowerOn = false;
             }
+
+            // Provede vypnutí zvuku po dobu stání AI přes 900s
+            if (AIPantoDownStop && !AIPantoDownStopSoundCyklus)
+            {                
+                AIPantoDownStopTimer += elapsedClockSeconds;
+                if (AIPantoDownStopTimer > 1)
+                {
+                    AIPantoDownStopSoundCyklus = true;
+                    AIPantoDownStopTimer = 0;
+                    SignalEvent(Event.EnginePowerOff);
+                }
+            }
+            if (!AIPantoDownStop)
+                AIPantoDownStopSoundCyklus = false;
 
             // Pantografy AI
             if (Simulator.GameTimeCyklus10 == 10)

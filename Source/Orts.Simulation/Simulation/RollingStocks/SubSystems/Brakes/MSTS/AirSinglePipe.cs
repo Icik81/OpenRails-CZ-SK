@@ -656,12 +656,15 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
 
                 if (loco.LocoStation == 1)
                 {
-                    //if (loco.TrainBrakeController.DefaultLapBrakeValue > 0)
-                    //    loco.TrainBrakeValue[1] = loco.TrainBrakeController.DefaultLapBrakeValue;
-                    //else
-                    //if (loco.TrainBrakeController.DefaultNeutralBrakeValue > 0)
-                    //    loco.TrainBrakeValue[1] = loco.TrainBrakeController.DefaultNeutralBrakeValue;
-                    //else
+                    if (!loco.IsLeadLocomotive())
+                    {
+                        if (loco.TrainBrakeController.DefaultLapBrakeValue > 0)
+                            loco.TrainBrakeValue[1] = loco.TrainBrakeController.DefaultLapBrakeValue;
+                        else
+                        if (loco.TrainBrakeController.DefaultNeutralBrakeValue > 0)
+                            loco.TrainBrakeValue[1] = loco.TrainBrakeController.DefaultNeutralBrakeValue;
+                    }   
+                    else
                     if (loco.TrainBrakeController.DefaultBrakeValue > 0)
                         loco.TrainBrakeValue[1] = loco.TrainBrakeController.DefaultBrakeValue;
 
@@ -676,12 +679,15 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 }
                 else
                 {
-                    //if (loco.TrainBrakeController.DefaultLapBrakeValue > 0)
-                    //    loco.TrainBrakeValue[2] = loco.TrainBrakeController.DefaultLapBrakeValue;
-                    //else
-                    //if (loco.TrainBrakeController.DefaultNeutralBrakeValue > 0)
-                    //    loco.TrainBrakeValue[2] = loco.TrainBrakeController.DefaultNeutralBrakeValue;
-                    //else
+                    if (!loco.IsLeadLocomotive())
+                    {
+                        if (loco.TrainBrakeController.DefaultLapBrakeValue > 0)
+                            loco.TrainBrakeValue[2] = loco.TrainBrakeController.DefaultLapBrakeValue;
+                        else
+                        if (loco.TrainBrakeController.DefaultNeutralBrakeValue > 0)
+                            loco.TrainBrakeValue[2] = loco.TrainBrakeController.DefaultNeutralBrakeValue;
+                    }
+                    else
                     if (loco.TrainBrakeController.DefaultBrakeValue > 0)
                         loco.TrainBrakeValue[2] = loco.TrainBrakeController.DefaultBrakeValue;
 

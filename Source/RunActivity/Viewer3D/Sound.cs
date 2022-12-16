@@ -1847,13 +1847,8 @@ namespace Orts.Viewer3D
             {
                 // Icik
                 // Nepřehraje inicializační trigger, pokud je AI ve vypnutém stavu
-                if (((car as MSTSDieselLocomotive) != null && (car as MSTSDieselLocomotive).AIMotorStop)
-                    || ((car as MSTSElectricLocomotive) != null && (car as MSTSElectricLocomotive).AIPantoDownStop)
-                    || (car as MSTSLocomotive) != null && (car as MSTSLocomotive).LocoIsStatic)
-                {
-                    Signaled = true;
-                    return;
-                }                
+                if ((car as MSTSWagon) != null && !(car as MSTSWagon).BrakeSystem.PowerForWagon)
+                    return;           
 
                 SoundStream.RepeatedTrigger = this == SoundStream.LastTriggered;
                 SoundCommand.Run();
@@ -1878,9 +1873,11 @@ namespace Orts.Viewer3D
         Orts.Formats.Msts.Random_Trigger SMS;
         double triggerAtSeconds;
         SoundStream SoundStream;
+        TrainCar car;
 
         public ORTSRandomTrigger(SoundStream soundStream, Orts.Formats.Msts.Random_Trigger smsData)
         {
+            car = soundStream.SoundSource.Car;
             SoundStream = soundStream;
             SMS = smsData;
             Simulator = soundStream.SoundSource.Viewer.Simulator;
@@ -1895,6 +1892,11 @@ namespace Orts.Viewer3D
 
         public override void TryTrigger()
         {
+            // Icik
+            // Nepřehraje random trigger, pokud je AI ve vypnutém stavu
+            if ((car as MSTSWagon) != null && !(car as MSTSWagon).BrakeSystem.PowerForWagon)
+                return;
+
             if (Simulator.ClockTime > triggerAtSeconds)
             {
                 Signaled = true;
