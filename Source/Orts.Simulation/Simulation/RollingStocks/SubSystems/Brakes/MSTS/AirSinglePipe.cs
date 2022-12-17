@@ -1039,7 +1039,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     loco.MainResPressurePSI -= AITrainLeakage * elapsedClockSeconds * AITrainBrakePipeVolumeM3 / loco.MainResVolumeM3;
                 }
                 // AI spouští kompresor
-                if (loco != null && loco.PowerOn && loco.Battery)
+                if (loco != null && loco.BrakeSystem.PowerForWagon)
                 {
                     if (loco.MainResPressurePSI < 7.0f * 14.50377f)
                     {
@@ -1073,7 +1073,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         AICompressorRun = false;
                     }
                 }
-                if (loco != null && !loco.Battery)
+                if (loco != null && !loco.BrakeSystem.PowerForWagon)
                 {
                     AICompressorOn = false;
                     AICompressorOff = true;
