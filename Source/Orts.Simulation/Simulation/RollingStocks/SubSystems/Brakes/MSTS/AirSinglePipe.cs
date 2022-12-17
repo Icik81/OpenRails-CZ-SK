@@ -2210,12 +2210,12 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         T = 1;
                     }
                     else
-                    if (lead.MainResPressurePSI > 5 * 14.50377f && T == 0) // 5bar default
+                    if ((lead.MainResPressurePSI > 5 * 14.50377f && T == 0) || lead.TramRailUnit) // 5bar default
                         MSTSWagon.AirOK_DoorCanManipulate = true;
                     else
                         MSTSWagon.AirOK_DoorCanManipulate = false;
 
-                    if (lead.MainResPressurePSI > 5 * 14.50377f && lead.AutomaticDoors)
+                    if ((lead.MainResPressurePSI > 5 * 14.50377f || lead.TramRailUnit) && lead.AutomaticDoors)
                         lead.BrakeSystem.AirOK_DoorCanManipulate = true;
                 }
             }
@@ -2251,7 +2251,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         }
 
                         // *** Manipulace s dveřmi ***
-                        if (loco.CentralHandlingDoors)
+                        if (loco.CentralHandlingDoors && !loco.TramRailUnit)
                         {
                             BrakeSystem MSTSWagon = train.Cars[i].BrakeSystem;
                             // Snižuje tlak v hlavní jímce kvůli spotřebě vzduchu při otevírání/zavírání dveří

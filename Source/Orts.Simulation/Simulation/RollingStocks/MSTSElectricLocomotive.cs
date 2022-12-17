@@ -439,13 +439,14 @@ namespace Orts.Simulation.RollingStocks
         public float Amps;
         public PowerSupplyStation myStation = null;
         protected int markerVoltage = 0;
-        public VoltageChangeMarker marker;
+        public VoltageChangeMarker marker;        
 
         protected void UnderVoltageProtection(float elapsedClockSeconds)
         {
             if (Simulator.Paused)
                 return;
 
+            TramRailUnit = LocomotivePowerVoltage == 600 ? true: false;            
             // Tramvaje 600V DC
             if (RouteVoltageV == 600 && LocomotivePowerVoltage == 600)
             {

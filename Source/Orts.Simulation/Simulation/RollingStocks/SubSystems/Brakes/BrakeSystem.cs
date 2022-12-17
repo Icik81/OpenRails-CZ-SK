@@ -84,7 +84,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes
         public float MainResMinimumPressureForMGbrakeActivationPSI;
         public float BrakePipePressureForMGbrakeActivationPSI;
         public bool BrakeModeRMgActive;
-        public bool PowerForWagon;
+        public bool PowerForWagon = true;
         public bool EmergencyBrakeForWagon;
         public bool AirForWagon;
         public bool AntiSkidSystemEquipped;

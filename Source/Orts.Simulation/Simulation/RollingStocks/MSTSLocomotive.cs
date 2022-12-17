@@ -699,6 +699,7 @@ namespace Orts.Simulation.RollingStocks
         public bool[] AripotControllerCanUseThrottle = new bool[3];
         public float[] TrainBrakeValue= new float[3];
         public float[] prevEngineBrakeValue = new float[3];
+        public bool TramRailUnit;
 
         // Jindrich
         public bool IsActive = false;
@@ -1936,6 +1937,7 @@ namespace Orts.Simulation.RollingStocks
             outf.Write(prevEngineBrakeValue[1]);
             outf.Write(prevEngineBrakeValue[2]);
             outf.Write(LightsFrameUpdate);
+            outf.Write(BrakeSystem.PowerForWagon);
             #endregion
 
             base.Save(outf);
@@ -2126,6 +2128,7 @@ namespace Orts.Simulation.RollingStocks
             prevEngineBrakeValue[1] = inf.ReadSingle();
             prevEngineBrakeValue[2] = inf.ReadSingle();
             LightsFrameUpdate = inf.ReadInt32();
+            BrakeSystem.PowerForWagon = inf.ReadBoolean();
             #endregion
 
             base.Restore(inf);
@@ -2228,7 +2231,10 @@ namespace Orts.Simulation.RollingStocks
             Simulator.voltageChangeMarkers = new List<VoltageChangeMarker>();
             SetUpVoltageChangeMarkers();
 
-            // Icik        
+            // Icik
+            if (BrakeSystem.StartOn && Simulator.Settings.AirEmpty)
+                BrakeSystem.PowerForWagon = false;
+
             if (MaxPowerWAC != 0)
                 MaxPowerWBase = MaxPowerWAC;
             else
@@ -4480,7 +4486,7 @@ namespace Orts.Simulation.RollingStocks
                     PantoCommandDown = true;                                       
                 }
                 else
-                {
+                {                    
                     Battery = true;                                  
                     ActiveStation = UsingRearCab ? DriverStation.Station2 : DriverStation.Station1;
                     if (Flipped)
