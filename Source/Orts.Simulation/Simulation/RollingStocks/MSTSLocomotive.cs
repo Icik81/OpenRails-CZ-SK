@@ -11361,7 +11361,7 @@ namespace Orts.Simulation.RollingStocks
                 }
             }
             // Kapky narůstají
-            if (Simulator.Weather.PricipitationIntensityPPSPM2 > 0.02f && Simulator.Weather.PrecipitationLiquidity > 0.50f)
+            if (Simulator.Weather.PricipitationIntensityPPSPM2 > 0.02f && Simulator.Weather.PrecipitationLiquidity > -0.50f)
             {
                 RainWindowTimer += elapsedSeconds;
                 if (RainWindowTimer > RainWindowTimeDirt && RainWindowPosition < RainWindowPower)
@@ -11415,7 +11415,7 @@ namespace Orts.Simulation.RollingStocks
                         WipersWindowTimer = 0;
                         return;
                     }
-                    if (Simulator.Weather.PricipitationIntensityPPSPM2 > 0.02f && Simulator.Weather.PrecipitationLiquidity > 0.50f)
+                    if (Simulator.Weather.PricipitationIntensityPPSPM2 > 0.02f && Simulator.Weather.PrecipitationLiquidity > -0.50f)
                     {
                         // Kapky narůstají
                         if (WipersWindowTimer > WipersWindowTimeDirt && WipersWindowPosition < WipersWindowPower)
@@ -11437,7 +11437,7 @@ namespace Orts.Simulation.RollingStocks
                         return;
                     }
                     // 
-                    if (Simulator.Weather.PricipitationIntensityPPSPM2 > 0.02f && Simulator.Weather.PrecipitationLiquidity > 0.50f
+                    if (Simulator.Weather.PricipitationIntensityPPSPM2 > 0.02f && Simulator.Weather.PrecipitationLiquidity > -0.50f
                         && WipersWindowTimer > WipersWindowTimeClean && WipersWindowPosition <= 0)
                     {
                         WipersWindowPosition = 3;
