@@ -817,6 +817,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
         float CoolingFlow;
         public float AIStartTimeToGo;
         public bool InitTriggerSetOff;
+        bool ElevatedConsumptionMode = false;
+        float ElevatedConsumptionIdleRPMBase = 0;
         /// <summary>
         /// Change rate when start the engine
         /// </summary>
@@ -1008,10 +1010,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                     case "maxrpm": MaxRPM = stf.ReadFloatBlock(STFReader.UNITS.None, 0); initLevel |= SettingsFlags.MaxRPM; break;
                     case "startingrpm": StartingRPM = stf.ReadFloatBlock(STFReader.UNITS.None, 0); initLevel |= SettingsFlags.StartingRPM; break;
                     case "startingconfirmrpm": StartingConfirmationRPM = stf.ReadFloatBlock(STFReader.UNITS.None, 0); initLevel |= SettingsFlags.StartingConfirmRPM; break;
-                    case "changeuprpmps": ChangeUpRPMpS = stf.ReadFloatBlock(STFReader.UNITS.None, 0); initLevel |= SettingsFlags.ChangeUpRPMpS; break;
-                    case "changedownrpmps": ChangeDownRPMpS = stf.ReadFloatBlock(STFReader.UNITS.None, 0); initLevel |= SettingsFlags.ChangeDownRPMpS; break;
-                    case "rateofchangeuprpmpss": RateOfChangeUpRPMpSS = stf.ReadFloatBlock(STFReader.UNITS.None, 0); initLevel |= SettingsFlags.RateOfChangeUpRPMpSS; break;
-                    case "rateofchangedownrpmpss": RateOfChangeDownRPMpSS = stf.ReadFloatBlock(STFReader.UNITS.None, 0); initLevel |= SettingsFlags.RateOfChangeDownRPMpSS; break;
+                    case "changeuprpmps": ChangeUpRPMpS = MathHelper.Clamp(stf.ReadFloatBlock(STFReader.UNITS.None, 0), 0, 1000); initLevel |= SettingsFlags.ChangeUpRPMpS; break;
+                    case "changedownrpmps": ChangeDownRPMpS = MathHelper.Clamp(stf.ReadFloatBlock(STFReader.UNITS.None, 0), 0, 1000); initLevel |= SettingsFlags.ChangeDownRPMpS; break;
+                    case "rateofchangeuprpmpss": RateOfChangeUpRPMpSS = MathHelper.Clamp(stf.ReadFloatBlock(STFReader.UNITS.None, 0), 0, 1000); initLevel |= SettingsFlags.RateOfChangeUpRPMpSS; break;
+                    case "rateofchangedownrpmpss": RateOfChangeDownRPMpSS = MathHelper.Clamp(stf.ReadFloatBlock(STFReader.UNITS.None, 0), 0, 1000); initLevel |= SettingsFlags.RateOfChangeDownRPMpSS; break;
                     case "maximalpower": MaximumDieselPowerW = stf.ReadFloatBlock(STFReader.UNITS.Power, 0); initLevel |= SettingsFlags.MaximalDieselPowerW; break;
                     case "idleexhaust": InitialExhaust = stf.ReadFloatBlock(STFReader.UNITS.None, 0); initLevel |= SettingsFlags.IdleExhaust; break;
                     case "maxexhaust": MaxExhaust = stf.ReadFloatBlock(STFReader.UNITS.None, 0); initLevel |= SettingsFlags.MaxExhaust; break;
@@ -1068,10 +1070,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                     case "turbodischargerpm": TurboDischargeRPMpS = stf.ReadFloatBlock(STFReader.UNITS.None, 20000f); break;
                     case "maxturborpm": MaxTurboRPM = stf.ReadFloatBlock(STFReader.UNITS.None, 200000f); break;
                     case "maxturbopressure": MaxTurboPressurePSI = stf.ReadFloatBlock(STFReader.UNITS.PressureDefaultPSI, 3f * 14.50377f); break;
-                    case "startingchangeuprpmps": StartingChangeUpRPMpS = stf.ReadFloatBlock(STFReader.UNITS.None, 0); break;
-                    case "stoppingchangedownrpmps": StoppingChangeDownRPMpS = stf.ReadFloatBlock(STFReader.UNITS.None, 0); break;
-                    case "startingrateofchangeuprpmpss": StartingRateOfChangeUpRPMpSS = stf.ReadFloatBlock(STFReader.UNITS.None, 0); break;
-                    case "stoppingrateofchangedownrpmpss": StoppingRateOfChangeDownRPMpSS = stf.ReadFloatBlock(STFReader.UNITS.None, 0); break;
+                    case "startingchangeuprpmps": StartingChangeUpRPMpS = MathHelper.Clamp(stf.ReadFloatBlock(STFReader.UNITS.None, 0), 0, 1000); break;
+                    case "stoppingchangedownrpmps": StoppingChangeDownRPMpS = MathHelper.Clamp(stf.ReadFloatBlock(STFReader.UNITS.None, 0), 0, 1000); break;
+                    case "startingrateofchangeuprpmpss": StartingRateOfChangeUpRPMpSS = MathHelper.Clamp(stf.ReadFloatBlock(STFReader.UNITS.None, 0), 0, 1000); break;
+                    case "stoppingrateofchangedownrpmpss": StoppingRateOfChangeDownRPMpSS = MathHelper.Clamp(stf.ReadFloatBlock(STFReader.UNITS.None, 0), 0, 1000); break;
                     case "onepushstart": OnePushStart = stf.ReadBoolBlock(false); break;
                     case "onepushstop": OnePushStop = stf.ReadBoolBlock(false); break;
                     case "elevatedconsumptionidlerpmcompressor": ElevatedConsumptionIdleRPMCompressor = stf.ReadFloatBlock(STFReader.UNITS.None, 0); break;
@@ -1317,9 +1319,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
 
 
             // Icik
-            // Zvýší otáčky motoru při větším odběru proudu         
-            bool ElevatedConsumptionMode = false;
-            float ElevatedConsumptionIdleRPMBase = 0;
+            // Zvýší otáčky motoru při větším odběru proudu                     
             if (locomotive.HeatingIsOn || ((locomotive.CompressorIsOn || locomotive.Compressor2IsOn) && locomotive.AirBrakesIsCompressorElectricOrMechanical))
             {
                 //ElevatedConsumptionIdleRPM = 650;
@@ -1357,6 +1357,11 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                     }
                 }
             }
+            else
+            {
+                ElevatedConsumptionMode = false;
+                ElevatedConsumptionIdleRPMBase = 0;
+            }
 
             // Icik
             // Sníží otáčky motoru kvůli ochraně TM 
@@ -1371,7 +1376,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                 {
                     if (RealRPM < ElevatedConsumptionIdleRPMBase)
                     {
-                        RealRPM += ChangeUpRPMpS * elapsedClockSeconds;
+                        float DeltaUpRPMpS = MathHelper.Clamp(ChangeUpRPMpS, 0, 100);
+                        RealRPM += DeltaUpRPMpS * elapsedClockSeconds;
                     }
                     else
                         RealRPM = Math.Max(RealRPM + (dRPM * elapsedClockSeconds), 0);
@@ -1417,6 +1423,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                 CurrentDieselOutputPowerW = (RealRPM - IdleRPM) / (MaxRPM - IdleRPM) * MaximumDieselPowerW * (1 - locomotive.PowerReduction);
             }
 
+            if ((EngineStatus != Status.Starting) && (RealRPM == 0f))
+                EngineStatus = Status.Stopped;
+
             if (EngineStatus == Status.Starting)
             {
                 // Icik
@@ -1444,10 +1453,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                         locomotive.Variable2 = 0.01f;
                 }
             }
-
-            if ((EngineStatus != Status.Starting) && (RealRPM == 0f))
-                EngineStatus = Status.Stopped;
-
+            
             if ((EngineStatus == Status.Stopped) || (EngineStatus == Status.Stopping) || ((EngineStatus == Status.Starting) && (RealRPM < StartingRPM)))
             {
                 ExhaustParticles = 0;
@@ -1850,7 +1856,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                         locomotive.SignalEvent(Event.EnginePowerOn); // power on sound hook
                     }
                     else
-                    if (!locomotive.DieselDirectionController && !locomotive.DieselDirectionController2 && !locomotive.DieselDirectionController3 && !locomotive.DieselDirectionController4)
+                    if (locomotive.CarFrameUpdateState > 9 && !locomotive.DieselDirectionController && !locomotive.DieselDirectionController2 && !locomotive.DieselDirectionController3 && !locomotive.DieselDirectionController4)
                     {
                         DemandedRPM = StartingRPM;
                         EngineStatus = Status.Starting;
@@ -2066,7 +2072,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                     if (loco.Simulator.Settings.VerboseConfigurationMessages)
                         Trace.TraceInformation("ChangeUpRPMpS not found in Diesel Engine Configuration (BASIC Config): set at arbitary value = {0}", ChangeUpRPMpS);
 
-                }
+                }                
             }
 
             if ((initLevel & SettingsFlags.ChangeDownRPMpS) == 0)
