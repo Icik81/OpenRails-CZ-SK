@@ -1016,16 +1016,7 @@ namespace Orts.Simulation
                 drivenTrain.HasSpeedInCoupler = false;
                 CarByUserUncoupled = false;
             }
-            
-            if (CouplingType_1 > 0)            
-                CouplingType_2 = CouplingType_3 = CouplingType_4 = 0;
-            if (CouplingType_2 > 0)
-                CouplingType_1 = CouplingType_3 = CouplingType_4 = 0;
-            if (CouplingType_3 > 0)
-                CouplingType_1 = CouplingType_2 = CouplingType_4 = 0;
-            if (CouplingType_4 > 0)
-                CouplingType_1 = CouplingType_2 = CouplingType_3 = 0;
-
+                        
             if (CouplingType_1 + CouplingType_2 + CouplingType_3 + CouplingType_4 > 0)
                 PlayerCoupling = true;
             else
@@ -1052,8 +1043,8 @@ namespace Orts.Simulation
                         if (MPManager.IsMultiPlayer() && !MPManager.TrainOK2Couple(this, drivenTrain, train)) continue;
 
                         float d1 = drivenTrain.RearTDBTraveller.OverlapDistanceM(train.FrontTDBTraveller, true);
-                        if (d1 > 0.5f && d1 < 1f) CouplingType_1 = 0;
-                        //Confirmer.MSG("d1 = " + d1);
+                        if (d1 > 0.5f && d1 < 1f) CouplingType_1 = CouplingType_2 = CouplingType_3 = CouplingType_4 = 0;                                                
+                        //Confirmer.MSG("CouplingType_1 = " + d1);
 
                         // Give another try if multiplayer
                         if (d1 >= 0 && drivenTrain.TrainType == Train.TRAINTYPE.REMOTE &&
@@ -1105,8 +1096,11 @@ namespace Orts.Simulation
                             drivenTrain.LastCar.SignalEvent(Event.Couple);
                             return;
                         }                        
+                        
                         float d2 = drivenTrain.RearTDBTraveller.OverlapDistanceM(train.RearTDBTraveller, true);
-                        if (d2 > 0.5f && d2 < 1f) CouplingType_2 = 0;
+                        if (d2 > 0.5f && d2 < 1f) CouplingType_1 = CouplingType_2 = CouplingType_3 = CouplingType_4 = 0;
+                        //Confirmer.MSG("CouplingType_2 = " + d2);
+                        
                         // Give another try if multiplayer                        
                         if (d2 >= 0 && drivenTrain.TrainType == Train.TRAINTYPE.REMOTE &&
                             drivenTrain.PresentPosition[1].TCSectionIndex == train.PresentPosition[1].TCSectionIndex && drivenTrain.PresentPosition[1].TCSectionIndex != -1)
@@ -1174,7 +1168,9 @@ namespace Orts.Simulation
                         //		if ((MPManager.Instance().FindPlayerTrain(train) && MPManager.Instance().FindPlayerTrain(drivenTrain))) continue; //if both are player-controlled trains
                         //	}
                         float d1 = drivenTrain.FrontTDBTraveller.OverlapDistanceM(train.RearTDBTraveller, false);
-                        if (d1 > 0.5f && d1 < 1f) CouplingType_3 = 0;
+                        if (d1 > 0.5f && d1 < 1f) CouplingType_1 = CouplingType_2 = CouplingType_3 = CouplingType_4 = 0;
+                        //Confirmer.MSG("CouplingType_3 = " + d1);
+                        
                         // Give another try if multiplayer
                         if (d1 >= 0 && drivenTrain.TrainType == Train.TRAINTYPE.REMOTE &&
                             drivenTrain.PresentPosition[0].TCSectionIndex == train.PresentPosition[1].TCSectionIndex && drivenTrain.PresentPosition[0].TCSectionIndex != -1)
@@ -1252,7 +1248,9 @@ namespace Orts.Simulation
                             return;
                         }
                         float d2 = drivenTrain.FrontTDBTraveller.OverlapDistanceM(train.FrontTDBTraveller, false);
-                        if (d2 > 0.5f && d2 < 1f) CouplingType_4 = 0;
+                        if (d2 > 0.5f && d2 < 1f) CouplingType_1 = CouplingType_2 = CouplingType_3 = CouplingType_4 = 0;
+                        //Confirmer.MSG("CouplingType_4 = " + d2);
+
                         // Give another try if multiplayer
                         if (d2 >= 0 && drivenTrain.TrainType == Train.TRAINTYPE.REMOTE &&
                             drivenTrain.PresentPosition[0].TCSectionIndex == train.PresentPosition[0].TCSectionIndex && drivenTrain.PresentPosition[0].TCSectionIndex != -1)
