@@ -1806,16 +1806,6 @@ namespace Orts.Simulation.Physics
 
                         HasCarCoupleSpeed = true;
                     }
-                    if (Simulator.CarByUserUncoupled)
-                    {
-                        CyklusCouplerUncouple--;
-                        if (CyklusCouplerUncouple == 0)
-                        {
-                            Simulator.CarByUserUncoupled = false;
-                            CyklusCouplerUncouple = 6;
-                            HasCarCoupleSpeed = false;
-                        }
-                    }
                     if (HasCarCoupleSpeed && !Simulator.CarByUserUncoupled)
                     {
                         CyklusCouplerImpuls--;

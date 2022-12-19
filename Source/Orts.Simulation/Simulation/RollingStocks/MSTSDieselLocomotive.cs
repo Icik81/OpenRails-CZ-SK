@@ -639,7 +639,7 @@ namespace Orts.Simulation.RollingStocks
                     }
                     else
                     {
-                        if (maxForceN * AbsSpeedMpS > maxPowerW)
+                        if (maxForceN * AbsSpeedMpS > maxPowerW && AbsTractionSpeedMpS != 0)
                             maxForceN = maxPowerW / AbsTractionSpeedMpS;
 
                         TractiveForceN = maxForceN;
