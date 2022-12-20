@@ -5173,28 +5173,17 @@ namespace Orts.Simulation.RollingStocks
             if (CruiseControl != null && !TrainBrakeController.TCSEmergencyBraking)
             {
                 if (!IsPlayerTrain || CruiseControl.SpeedRegMode[LocoStation] == CruiseControl.SpeedRegulatorMode.Manual)
-                {
                     CruiseControl.WasForceReset = false;
-                    UpdateTractiveForce(elapsedClockSeconds, t, AbsSpeedMpS, AbsWheelSpeedMpS);
-                }
                 else if (CruiseControl.SelectedSpeedMpS > 0)
-                {
                     CruiseControl.Update(elapsedClockSeconds, AbsWheelSpeedMpS);
-                    if (extendedPhysics != null)
-                        UpdateTractiveForce(elapsedClockSeconds, t, AbsSpeedMpS, AbsWheelSpeedMpS);
-                }
                 else if (CruiseControl.SpeedRegMode[LocoStation] == CruiseControl.SpeedRegulatorMode.Auto || CruiseControl.SpeedRegMode[LocoStation] == CruiseControl.SpeedRegulatorMode.AVV)
                     CruiseControl.Update(elapsedClockSeconds, AbsWheelSpeedMpS);
-                else
-                    UpdateTractiveForce(elapsedClockSeconds, t, AbsSpeedMpS, AbsWheelSpeedMpS);
-
             }
             else
-            {
                 if (CruiseControl != null && (TrainBrakeController.TCSEmergencyBraking || TrainBrakeController.TCSFullServiceBraking))
-                    CruiseControl.WasBraking = true;
-                UpdateTractiveForce(elapsedClockSeconds, t, AbsSpeedMpS, AbsWheelSpeedMpS);
-            }
+                CruiseControl.WasBraking = true;
+
+            UpdateTractiveForce(elapsedClockSeconds, t, AbsSpeedMpS, AbsWheelSpeedMpS);
 
             if (IsPlayerTrain)
             {

@@ -4286,13 +4286,15 @@ namespace Orts.Viewer3D.RollingStock
                     break;
                 case CABViewControlTypes.REQUESTED_FORCE:
                     var v = ChangedValue(0);
-                    if (v > 0)
+                    if (v > 0 && !IsChanged)
                     {
                         Locomotive.ForceHandleIncreasing = true;
+                        IsChanged = true;
                     }
-                    if (v < 0)
+                    if (v < 0 && !IsChanged)
                     {
                         Locomotive.ForceHandleDecreasing = true;
+                        IsChanged = true;
                     }
                     if (v == 0)
                     {
@@ -4324,13 +4326,15 @@ namespace Orts.Viewer3D.RollingStock
                     break;
                 case CABViewControlTypes.ORTS_SELECTED_SPEED_REGULATOR_MODE:
                     p = ChangedValue(0);
-                    if (p == 1)
+                    if (p == 1 && !IsChanged)
                     {
                         Locomotive.CruiseControl.SpeedRegulatorModeIncrease();
+                        IsChanged = true;
                     }
-                    else if (p == -1)
+                    else if (p == -1 && !IsChanged)
                     {
                         Locomotive.CruiseControl.SpeedRegulatorModeDecrease();
+                        IsChanged = true;
                     }
                     break;
                 case CABViewControlTypes.ORTS_SELECTED_SPEED_MODE:
@@ -4463,19 +4467,23 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.ORTS_SELECTED_SPEED_MAXIMUM_ACCELERATION:
                     if (Locomotive.CruiseControl == null)
                         break;
-                    if (ChangedValue(0) == 1)
+                    if (ChangedValue(0) == 1 && !IsChanged)
                     {
                         Locomotive.SelectedMaxAccelerationStep[Locomotive.LocoStation] += 1;
                         if (Locomotive.SelectedMaxAccelerationStep[Locomotive.LocoStation] > Locomotive.CruiseControl.SpeedRegulatorMaxForceSteps)
                             Locomotive.SelectedMaxAccelerationStep[Locomotive.LocoStation] = Locomotive.CruiseControl.SpeedRegulatorMaxForceSteps;
                         if (Locomotive.SelectedMaxAccelerationStep[Locomotive.LocoStation] < 0)
                             Locomotive.SelectedMaxAccelerationStep[Locomotive.LocoStation] = 0;
+                        Locomotive.SignalEvent(Event.CruiseControlMaxForce);
+                        IsChanged = true;
                     }
-                    if (ChangedValue(0) == -1)
+                    if (ChangedValue(0) == -1 && !IsChanged)
                     {
                         Locomotive.SelectedMaxAccelerationStep[Locomotive.LocoStation] -= 1;
                         if (Locomotive.SelectedMaxAccelerationStep[Locomotive.LocoStation] == 0 && Locomotive.CruiseControl.DisableZeroForceStep)
                             Locomotive.SelectedMaxAccelerationStep[Locomotive.LocoStation] = 1;
+                        Locomotive.SignalEvent(Event.CruiseControlMaxForce);
+                        IsChanged = true;
                     }
                     if (ChangedValue(0) != 0 && Locomotive.CruiseControl.SpeedRegulatorMaxForceSteps == 100)
                     {
