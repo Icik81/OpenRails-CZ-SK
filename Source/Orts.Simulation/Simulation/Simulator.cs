@@ -993,11 +993,11 @@ namespace Orts.Simulation
         // Icik       
         public bool CarByUserUncoupled;
         public float DifferenceSpeedMpS;
-        public bool PlayerCoupling;
-        int CouplingType_1 = 0;
-        int CouplingType_2 = 0;
-        int CouplingType_3 = 0;
-        int CouplingType_4 = 0;        
+        public bool PlayerCoupling = true;
+        int CouplingType_1 = 1;
+        int CouplingType_2 = 1;
+        int CouplingType_3 = 1;
+        int CouplingType_4 = 1;        
         /// <summary>
         /// Scan other trains
         /// </summary>
