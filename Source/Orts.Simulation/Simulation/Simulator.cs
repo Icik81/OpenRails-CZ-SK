@@ -998,6 +998,8 @@ namespace Orts.Simulation
         int CouplingType_2 = 1;
         int CouplingType_3 = 1;
         int CouplingType_4 = 1;        
+        TrainCar lead;
+        TrainCar lead0;
         /// <summary>
         /// Scan other trains
         /// </summary>
@@ -1006,7 +1008,7 @@ namespace Orts.Simulation
             // Icik
             int PreviousCarCount = (int)drivenTrain.Cars.Count;
             float CarCoupleSpeed = 3.0f / 3.6f; // Doťukávací rychlost pro napojení vozu
-            float CarCoupleMaxSpeed = 10 / 3.6f; // Maximální nárazová rychlost max 10km/h            
+            float CarCoupleMaxSpeed = 10 / 3.6f; // Maximální nárazová rychlost max 10km/h                        
 
             if (CarByUserUncoupled)
                 drivenTrain.HasSpeedInCoupler = true;
@@ -1038,7 +1040,7 @@ namespace Orts.Simulation
             {
                 foreach (Train train in Trains)
                     if (train != drivenTrain && train.TrainType != Train.TRAINTYPE.AI_INCORPORATED)
-                    {
+                    {                        
                         //avoid coupling of player train with other players train
                         if (MPManager.IsMultiPlayer() && !MPManager.TrainOK2Couple(this, drivenTrain, train)) continue;
 
@@ -1057,6 +1059,9 @@ namespace Orts.Simulation
                             {
                                 DifferenceSpeedMpS = Math.Abs(Math.Abs(drivenTrain.SpeedMpS) - Math.Abs(train.SpeedMpS));
 
+                                if (Math.Abs(train.SpeedMpS) > 0)
+                                    drivenTrain.HasSpeedInCoupler = true;
+
                                 if (DifferenceSpeedMpS > CarCoupleMaxSpeed)
                                     CarCoupleMaxSpeedOvercome = true;
 
@@ -1064,7 +1069,7 @@ namespace Orts.Simulation
                                     CarCoupleSpeedOvercome = true;                                
 
                                 //if (train == drivenTrain.UncoupledFrom || CarCoupleSpeedOvercome)
-                                if (CarCoupleSpeedOvercome || drivenTrain.HasSpeedInCoupler || Settings.ManualCoupling)
+                                if (CarCoupleMaxSpeedOvercome || CarCoupleSpeedOvercome || drivenTrain.HasSpeedInCoupler || Settings.ManualCoupling)
                                 {
                                     if (drivenTrain.SpeedMpS < train.SpeedMpS)
                                         drivenTrain.SetCoupleSpeed(train, 1);
@@ -1111,7 +1116,10 @@ namespace Orts.Simulation
                             if (!MPManager.IsMultiPlayer())
                             {
                                 DifferenceSpeedMpS = Math.Abs(Math.Abs(drivenTrain.SpeedMpS) - Math.Abs(train.SpeedMpS));
-  
+
+                                if (Math.Abs(train.SpeedMpS) > 0)
+                                    drivenTrain.HasSpeedInCoupler = true;
+
                                 if (DifferenceSpeedMpS > CarCoupleMaxSpeed)
                                     CarCoupleMaxSpeedOvercome = true;
 
@@ -1119,7 +1127,7 @@ namespace Orts.Simulation
                                     CarCoupleSpeedOvercome = true;
 
                                 //if (train == drivenTrain.UncoupledFrom || CarCoupleSpeedOvercome)
-                                if (CarCoupleSpeedOvercome || drivenTrain.HasSpeedInCoupler || Settings.ManualCoupling)
+                                if (CarCoupleMaxSpeedOvercome || CarCoupleSpeedOvercome || drivenTrain.HasSpeedInCoupler || Settings.ManualCoupling)
                                 {
                                     if (drivenTrain.SpeedMpS < -train.SpeedMpS)
                                         drivenTrain.SetCoupleSpeed(train, -1);
@@ -1182,6 +1190,9 @@ namespace Orts.Simulation
                             {
                                 DifferenceSpeedMpS = Math.Abs(Math.Abs(drivenTrain.SpeedMpS) - Math.Abs(train.SpeedMpS));
 
+                                if (Math.Abs(train.SpeedMpS) > 0)
+                                    drivenTrain.HasSpeedInCoupler = true;
+
                                 if (DifferenceSpeedMpS > CarCoupleMaxSpeed)
                                     CarCoupleMaxSpeedOvercome = true;
 
@@ -1189,7 +1200,7 @@ namespace Orts.Simulation
                                     CarCoupleSpeedOvercome = true;
 
                                 //if (train == drivenTrain.UncoupledFrom || CarCoupleSpeedOvercome)
-                                if (CarCoupleSpeedOvercome || drivenTrain.HasSpeedInCoupler || Settings.ManualCoupling)
+                                if (CarCoupleMaxSpeedOvercome || CarCoupleSpeedOvercome || drivenTrain.HasSpeedInCoupler || Settings.ManualCoupling)
                                 {
                                     if (drivenTrain.SpeedMpS > train.SpeedMpS)
                                         drivenTrain.SetCoupleSpeed(train, 1);
@@ -1208,7 +1219,7 @@ namespace Orts.Simulation
                             // couple my front to rear of train
                             //drivenTrain.SetCoupleSpeed(train, 1);
 
-                            TrainCar lead = drivenTrain.LeadLocomotive;
+                            lead = drivenTrain.LeadLocomotive;
                             if (lead == null)
                             {//Like Rear coupling with changed data  
                                 lead = train.LeadLocomotive;
@@ -1262,6 +1273,9 @@ namespace Orts.Simulation
                             {
                                 DifferenceSpeedMpS = Math.Abs(Math.Abs(drivenTrain.SpeedMpS) - Math.Abs(train.SpeedMpS));
 
+                                if (Math.Abs(train.SpeedMpS) > 0)
+                                    drivenTrain.HasSpeedInCoupler = true;
+
                                 if (DifferenceSpeedMpS > CarCoupleMaxSpeed)
                                     CarCoupleMaxSpeedOvercome = true;
 
@@ -1269,7 +1283,7 @@ namespace Orts.Simulation
                                     CarCoupleSpeedOvercome = true;
 
                                 //if (train == drivenTrain.UncoupledFrom || CarCoupleSpeedOvercome)
-                                if (CarCoupleSpeedOvercome || drivenTrain.HasSpeedInCoupler || Settings.ManualCoupling)
+                                if (CarCoupleMaxSpeedOvercome || CarCoupleSpeedOvercome || drivenTrain.HasSpeedInCoupler || Settings.ManualCoupling)
                                 {
                                     if (drivenTrain.SpeedMpS > -train.SpeedMpS)
                                         drivenTrain.SetCoupleSpeed(train, -1);
@@ -1291,7 +1305,7 @@ namespace Orts.Simulation
                             if (drivenTrain.SpeedMpS > 1.5)
                                 DbfEvalOverSpeedCoupling += 1;
 
-                            TrainCar lead = drivenTrain.LeadLocomotive;
+                            lead = drivenTrain.LeadLocomotive;
                             for (int i = 0; i < train.Cars.Count; ++i)
                             {
                                 TrainCar car = train.Cars[i];
