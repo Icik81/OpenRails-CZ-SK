@@ -69,6 +69,7 @@ using System.IO;
 using System.Linq;
 using System.Xml;
 using static Orts.Simulation.RollingStocks.SubSystems.Controllers.MultiPositionController;
+using static Orts.Simulation.RollingStocks.SubSystems.CruiseControl;
 using static Orts.Simulation.RollingStocks.SubSystems.Mirel;
 using Event = Orts.Common.Event;
 
@@ -4366,7 +4367,7 @@ namespace Orts.Simulation.RollingStocks
                 else
                     ControlUnit = true;                
 
-                if (PowerUnit)
+                if (PowerUnit && AcceptCableSignals)
                 {
                     Simulator.DataFilteredMotiveForceN = FilteredMotiveForceN;
                     Simulator.DataMaxCurrentA = MaxCurrentA;
@@ -4387,7 +4388,7 @@ namespace Orts.Simulation.RollingStocks
         // Nastaví parametry pro řídící vůz
         public void SetControlUnitParameters()
         {
-            if (ControlUnit)
+            if (ControlUnit && AcceptCableSignals)
             {
                 FilteredMotiveForceN = Simulator.DataFilteredMotiveForceN;
                 MaxCurrentA = Simulator.DataMaxCurrentA;
@@ -4491,6 +4492,11 @@ namespace Orts.Simulation.RollingStocks
                 DieselDirectionControllerPosition[1] = DieselDirectionController2Position[1] = DieselDirectionController4Position[1] = -1;
                 DieselDirectionControllerPosition[2] = DieselDirectionController2Position[2] = DieselDirectionController4Position[2] = -1;
                 Headlight[1] = Headlight[2] = 0;
+
+                if (CruiseControl != null)
+                {
+                    CruiseControl.SpeedSelMode[1] = CruiseControl.SpeedSelMode[2] = SpeedSelectorMode.Neutral;
+                }
 
                 firstFrame = false;
                 if (Simulator.Settings.AirEmpty)
@@ -8829,7 +8835,7 @@ namespace Orts.Simulation.RollingStocks
                     break;                
             }
         }
-
+        
         public void CarFrameUpdate(float elapsedClockSeconds)
         {
             this.CarFrameUpdateState++;
@@ -8877,9 +8883,19 @@ namespace Orts.Simulation.RollingStocks
                         PowerUnit = true;
                     else
                         ControlUnit = true;
-                    if (ControlUnit || (IsLeadLocomotive() && PowerUnit))                        
+                    if (ControlUnit)
+                    {
                         AcceptCableSignals = true;
-                    
+                        foreach (TrainCar car in Train.Cars)
+                        {
+                            if (car is MSTSLocomotive && car.PowerUnit)
+                            {
+                                car.AcceptCableSignals = true;
+                                break;
+                            }
+                        }
+                    }
+ 
                     // Elektrické lokomotivy nebo oddíly spojené za sebou
                     if (this.MUCable)
                         if (this is MSTSElectricLocomotive && !AcceptCableSignals)
