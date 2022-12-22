@@ -1043,6 +1043,8 @@ namespace Orts.Simulation.RollingStocks
         public bool AIMotorStart;
         float MotorSoundStopCycle;
         bool DERunningStatus;
+        float AITimeToMotorStop;
+        float AITimeMotorRunning;
         public void DieselStartUpTime(float elapsedClockSeconds)
         {
             // Startovní setup AI lokomotivy
@@ -1070,7 +1072,22 @@ namespace Orts.Simulation.RollingStocks
                             }
                         }
                     }
-                }
+                    // AI se vypne cca po 20s při dlouhém stání
+                    if (AIMotorStop && DieselEngines[0].EngineStatus == DieselEngine.Status.Running && AITimeMotorRunning > 1f)
+                    {
+                        AITimeToMotorStop += elapsedClockSeconds;
+                        if (AITimeToMotorStop > 2f)
+                        {
+                            AIMotorStop = true;
+                            AITimeToMotorStop = 0;
+                        }
+                        else
+                            AIMotorStop = false;
+                    }
+                }                
+
+                if (DieselEngines[0].EngineStatus == DieselEngine.Status.Running)
+                    AITimeMotorRunning += elapsedClockSeconds;
 
                 if (AIMotorStop && DieselEngines[0].EngineStatus == DieselEngine.Status.Running)
                 {

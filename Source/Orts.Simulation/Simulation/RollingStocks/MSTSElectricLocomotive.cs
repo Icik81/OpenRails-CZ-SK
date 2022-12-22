@@ -1687,6 +1687,8 @@ namespace Orts.Simulation.RollingStocks
         float BreakSpeedPanto2Down;
         bool AIPantoDownStopSoundCyklus;
         float AIPantoDownStopTimer = 0;
+        float AITimeToAIPantoDownStop;
+        float AITimePowerRunning;
         protected void SetAIPantoDown(float elapsedClockSeconds)
         {
             if (IsPlayerTrain)
@@ -1714,7 +1716,22 @@ namespace Orts.Simulation.RollingStocks
                         }
                     }
                 }
+                // AI se vypne cca po 20s při dlouhém stání
+                if (AIPantoDownStop && PowerOn && AITimePowerRunning > 1f)
+                {
+                    AITimeToAIPantoDownStop += elapsedClockSeconds;
+                    if (AITimeToAIPantoDownStop > 2f)
+                    {
+                        AIPantoDownStop = true;
+                        AITimeToAIPantoDownStop = 0;
+                    }
+                    else
+                        AIPantoDownStop = false;
+                }
             }
+
+            if (PowerOn)
+                AITimePowerRunning += elapsedClockSeconds;
 
             // Detekce změny směru AI
             if (Direction == Direction.Reverse)
