@@ -189,6 +189,9 @@ namespace Orts.Simulation
         public float DataMaxDynamicBrakeForceN;
         public bool DataBreakPowerButton;
         public float DataLocomotivePowerVoltage;
+        public float DataFakeDieselWaterTemperatureDeg;
+        public float DataFakeDieselOilTemperatureDeg;
+        public float DataRealRPM;
         public bool ChangeCabActivated;
         public bool AuxPowerCanStart;
         public float ControllerVoltsLocoHelper;

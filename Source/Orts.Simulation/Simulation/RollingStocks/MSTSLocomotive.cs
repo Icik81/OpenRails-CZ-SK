@@ -4355,16 +4355,16 @@ namespace Orts.Simulation.RollingStocks
 
         // Určí řídící vůz
         public void SetControlUnit()
-        {
+        {            
             if (Simulator.GameTimeCyklus10 == 10)
             {
                 PowerUnit = false;
                 ControlUnit = false;
 
-                if (MaxPowerWBase > 10 * 1000 || (this as MSTSDieselLocomotive != null && (this as MSTSDieselLocomotive).MaximumDieselEnginePowerW > 0))
+                if (MaxPowerWBase > 10 * 1000 || (this as MSTSDieselLocomotive != null && (this as MSTSDieselLocomotive).MaximumDieselEnginePowerW > 10 * 1000))
                     PowerUnit = true;
                 else
-                    ControlUnit = true;
+                    ControlUnit = true;                
 
                 if (PowerUnit)
                 {
@@ -4374,6 +4374,12 @@ namespace Orts.Simulation.RollingStocks
                     Simulator.DataDynamicBrakeMaxCurrentA = DynamicBrakeMaxCurrentA;
                     Simulator.DataDynamicBrakeForceN = DynamicBrakeForceN;
                     Simulator.DataMaxDynamicBrakeForceN = MaxDynamicBrakeForceN;
+                    if (this as MSTSDieselLocomotive != null)
+                    {
+                        Simulator.DataFakeDieselWaterTemperatureDeg = (this as MSTSDieselLocomotive).DieselEngines[0].FakeDieselWaterTemperatureDeg;
+                        Simulator.DataFakeDieselOilTemperatureDeg = (this as MSTSDieselLocomotive).DieselEngines[0].FakeDieselOilTemperatureDeg;
+                        Simulator.DataRealRPM = (this as MSTSDieselLocomotive).DieselEngines[0].RealRPM;
+                    }
                 }
             }
         }
@@ -4390,6 +4396,12 @@ namespace Orts.Simulation.RollingStocks
                 DynamicBrakeMaxCurrentA = Simulator.DataDynamicBrakeMaxCurrentA;
                 DynamicBrakeForceN = Simulator.DataDynamicBrakeForceN;
                 MaxDynamicBrakeForceN = Simulator.DataMaxDynamicBrakeForceN;
+                if (this as MSTSDieselLocomotive != null)
+                {
+                    (this as MSTSDieselLocomotive).DieselEngines[0].FakeDieselWaterTemperatureDeg = Simulator.DataFakeDieselWaterTemperatureDeg;
+                    (this as MSTSDieselLocomotive).DieselEngines[0].FakeDieselOilTemperatureDeg = Simulator.DataFakeDieselOilTemperatureDeg;
+                    (this as MSTSDieselLocomotive).DieselEngines[0].RealRPM = Simulator.DataRealRPM;
+                }
             }
         }
         public void ResetControlUnitParameters()
@@ -8851,13 +8863,23 @@ namespace Orts.Simulation.RollingStocks
                         if (car.WagonType == WagonTypes.Freight)
                             Simulator.TrainIsPassenger = false;
                     }
-                    // Osobní vlak s elektrickou lokomotivou
+                    
+                    // Osobní vlak s elektrickou lokomotivou                    
                     if (Simulator.TrainIsPassenger)
                         foreach (TrainCar car in Train.Cars)
                         {
                             if (car is MSTSElectricLocomotive && !car.AcceptCableSignals)
-                                car.AcceptCableSignals = true;
+                                car.AcceptCableSignals = true;                            
                         }
+                    
+                    // Řídící vůz v soupravě
+                    if (MaxPowerWBase > 10 * 1000 || (this as MSTSDieselLocomotive != null && (this as MSTSDieselLocomotive).MaximumDieselEnginePowerW > 10 * 1000))
+                        PowerUnit = true;
+                    else
+                        ControlUnit = true;
+                    if (ControlUnit || (IsLeadLocomotive() && PowerUnit))                        
+                        AcceptCableSignals = true;
+                    
                     // Elektrické lokomotivy nebo oddíly spojené za sebou
                     if (this.MUCable)
                         if (this is MSTSElectricLocomotive && !AcceptCableSignals)
@@ -8895,8 +8917,8 @@ namespace Orts.Simulation.RollingStocks
                 }                
                 if (Simulator.LocoCount == 1 || Simulator.MUCableLocoCount < 1)
                     AcceptCableSignals = false;
-                else
-                    AcceptCableSignals = true;
+                //else
+                //    AcceptCableSignals = true;
             }
         }
 

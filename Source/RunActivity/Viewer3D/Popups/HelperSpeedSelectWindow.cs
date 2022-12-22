@@ -48,7 +48,7 @@ namespace Orts.Viewer3D.Popups
             vbox.Add(buttonSpeedIncrement = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("+"), LabelAlignment.Center));
 
             vbox.AddHorizontalSeparator();
-            vbox.Add(Speed = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Speed: ") + (Viewer.PlayerTrain.Cars[CarID] as MSTSLocomotive).HelperSpeedPush + " km/h", LabelAlignment.Center));            
+            vbox.Add(Speed = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Speed: ") + (Viewer.PlayerTrain.Cars[CarID] as MSTSLocomotive != null ? (Viewer.PlayerTrain.Cars[CarID] as MSTSLocomotive).HelperSpeedPush : 0) + " km/h", LabelAlignment.Center));            
             Speed.Color = Color.Yellow;
                       
             vbox.AddHorizontalSeparator();
@@ -56,7 +56,7 @@ namespace Orts.Viewer3D.Popups
 
             vbox.AddHorizontalSeparator();            
             vbox.Add(buttonStart = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Start"), LabelAlignment.Center));
-            if ((Viewer.PlayerTrain.Cars[CarID] as MSTSLocomotive).HelperPushStart)
+            if (Viewer.PlayerTrain.Cars[CarID] as MSTSLocomotive != null && (Viewer.PlayerTrain.Cars[CarID] as MSTSLocomotive).HelperPushStart)
                 buttonStart.Color = Color.LightGreen;
             
             vbox.AddHorizontalSeparator();
