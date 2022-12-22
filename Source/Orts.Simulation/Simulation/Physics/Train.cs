@@ -16463,6 +16463,8 @@ namespace Orts.Simulation.Physics
         private int numUsableWagons = 0;
         private bool firtWagonActionComputed = false;
         private int numCars = 0;
+        public float MaxPaxCapacity = 0;
+        public float CurrentPaxCapacity = 0;
 
         public void FillNames(Train train)
         {
@@ -16484,6 +16486,32 @@ namespace Orts.Simulation.Physics
             MSTSWagon locoWag = null;
             if (!namesFilled)
             {
+                // calculate maximum capacity
+                foreach (TrainCar tc in train.Cars)
+                {
+                    MaxPaxCapacity += tc.PassengerCapacity;
+                }
+                Random paxRand = new Random();
+                float trainOccupancyPercent = paxRand.Next(25, 100);
+                CurrentPaxCapacity = MaxPaxCapacity * (trainOccupancyPercent / 100);
+                CurrentPaxCapacity = (float)Math.Round(CurrentPaxCapacity, 0);
+                int index = 0;
+                foreach (StationStop ss in train.StationStops)
+                {
+                    if (index == 0)
+                    {
+                        if (ss.PlatformItem.NumPassengersWaiting < (int)CurrentPaxCapacity)
+                            ss.PlatformItem.NumPassengersWaiting = (int)CurrentPaxCapacity;
+                    }
+                    if (index > 0)
+                    {
+                        int remainingPax = (((int)MaxPaxCapacity - (int)CurrentPaxCapacity) / train.StationStops.Count) + ss.PlatformItem.NumPassengersWaiting;
+                        if (ss.PlatformItem.NumPassengersWaiting < remainingPax && ss.PlatformItem.NumPassengersWaiting > 0)
+                            ss.PlatformItem.NumPassengersWaiting = remainingPax;
+                    }
+                    index++;
+                }
+
                 if (testNamesM == null)
                 {
                     testNamesM = new List<string>();
