@@ -16481,6 +16481,11 @@ namespace Orts.Simulation.Physics
                 {
                     ss.PlatformItem.PassengerList.Clear();
                 }
+            }
+
+            MSTSWagon locoWag = null;
+            if (!namesFilled)
+            {
                 // calculate maximum capacity
                 MaxPaxCapacity = 0;
                 foreach (TrainCar tc in train.Cars)
@@ -16512,11 +16517,7 @@ namespace Orts.Simulation.Physics
                     }
                     index++;
                 }
-            }
 
-            MSTSWagon locoWag = null;
-            if (!namesFilled)
-            {
                 if (testNamesM == null)
                 {
                     testNamesM = new List<string>();
