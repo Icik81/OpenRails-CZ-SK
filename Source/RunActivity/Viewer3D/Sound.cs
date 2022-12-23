@@ -1848,7 +1848,9 @@ namespace Orts.Viewer3D
                 // Icik
                 // Nepřehraje inicializační trigger, pokud je AI ve vypnutém stavu
                 if ((car as MSTSWagon) != null && !(car as MSTSWagon).BrakeSystem.PowerForWagon)
-                    return;           
+                    return;
+                if ((car as MSTSLocomotive) != null && !(car as MSTSLocomotive).IsPlayerTrain && Program.Simulator.Settings.AirEmpty)
+                    return;
 
                 SoundStream.RepeatedTrigger = this == SoundStream.LastTriggered;
                 SoundCommand.Run();
@@ -1895,6 +1897,8 @@ namespace Orts.Viewer3D
             // Icik
             // Nepřehraje random trigger, pokud je AI ve vypnutém stavu
             if ((car as MSTSWagon) != null && !(car as MSTSWagon).BrakeSystem.PowerForWagon)
+                return;
+            if ((car as MSTSLocomotive) != null && !(car as MSTSLocomotive).IsPlayerTrain && Program.Simulator.Settings.AirEmpty)
                 return;
 
             if (Simulator.ClockTime > triggerAtSeconds)
