@@ -4351,7 +4351,7 @@ namespace Orts.Simulation.RollingStocks
                 //    CruiseControl.SpeedSelMode[LocoStation] = SubSystems.CruiseControl.SpeedSelectorMode.Neutral;
                 //    AripotControllerValue[LocoStation] = 0;
                 //}
-            }
+            }            
         }
 
         // Určí řídící vůz
@@ -4922,8 +4922,11 @@ namespace Orts.Simulation.RollingStocks
                 }
             }
 
-            if (!IsPlayerTrain && !Simulator.Paused)            
-                SetAIAction();            
+            if (!IsPlayerTrain && !Simulator.Paused)
+            {
+                SetAIAction();
+                AcceptMUSignals = true;
+            }
 
             if (IsPlayerTrain && !Simulator.Paused)
             {
@@ -4972,7 +4975,7 @@ namespace Orts.Simulation.RollingStocks
                 WipersWindow(elapsedClockSeconds);
                 BatterySetOn = false;
             }
-
+            
             // Hodnoty pro výpočet zvukových proměnných
             TrainBrakeControllerValueForSound = (float)Math.Round(TrainBrakeController.CurrentValue, 2);
             EngineBrakeControllerValueForSound = (float)Math.Round(EngineBrakeController.CurrentValue, 2);
