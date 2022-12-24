@@ -16512,6 +16512,9 @@ namespace Orts.Simulation.Physics
                     if (index > 0)
                     {
                         int remainingPax = (((int)MaxPaxCapacity - (int)CurrentPaxCapacity) / train.StationStops.Count) + ss.PlatformItem.NumPassengersWaiting;
+                        float byPlatform = ss.PlatformItem.Length / 25;
+                        remainingPax += (int)Math.Round(byPlatform, 0);
+
                         if (ss.PlatformItem.NumPassengersWaiting < remainingPax && ss.PlatformItem.NumPassengersWaiting > 0)
                             ss.PlatformItem.NumPassengersWaiting = remainingPax;
                     }
