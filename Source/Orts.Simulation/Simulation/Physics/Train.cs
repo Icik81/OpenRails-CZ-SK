@@ -16494,7 +16494,7 @@ namespace Orts.Simulation.Physics
                 foreach (TrainCar tc in train.Cars)
                 {
                     if (tc.GetType() == typeof(MSTSDieselLocomotive) || tc.GetType() == typeof(MSTSElectricLocomotive) || tc.GetType() == typeof(MSTSLocomotive))
-                        if (tc.PassengerCapacity == 0)
+                        if (tc.PassengerCapacity == 0 && !tc.HasPassengerCapacity)
                             continue;
                     MaxPaxCapacity += tc.PassengerCapacity;
                     if (tc.PassengerCapacity == 0)
