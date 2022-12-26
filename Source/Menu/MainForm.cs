@@ -1231,12 +1231,41 @@ namespace ORTS
             ShowConsistList();
 
             var selectedFolder = SelectedFolder;
-            ConsistLoader = new Task<List<Consist>>(this, () => Consist.GetConsists(selectedFolder).OrderBy(a => a.ToString()).ToList(), (consists) =>
+            List<Consist> cl = GetConsists(selectedFolder);
+            Consists = cl;
+            if (SelectedActivity == null || SelectedActivity is ExploreActivity)
+                ShowLocomotiveList();
+        }
+
+        public List<Consist> GetConsists(Folder folder)
+        {
+            foreach (Control ctl in Controls)
+                ctl.Refresh();
+            var consists = new List<Consist>();
+            var directory = System.IO.Path.Combine(System.IO.Path.Combine(folder.Path, "TRAINS"), "CONSISTS");
+            if (Directory.Exists(directory))
             {
-                Consists = consists;
-                if (SelectedActivity == null || SelectedActivity is ExploreActivity)
-                    ShowLocomotiveList();
-            });
+                foreach (var consist in Directory.GetFiles(directory, "*.con"))
+                {
+                    try
+                    {
+                        Consist cs = new Consist(consist, folder);
+                        lblConsists.Visible = true;
+                        lblConsists.Text = cs.Name;
+                        lblConsists.Refresh();
+                        consists.Add(cs);
+
+                    }
+                    catch (Exception ex) {
+                        lblConsists.Visible = true;
+                        lblConsists.Text = ex.Message;
+                        lblConsists.Refresh();
+
+                    }
+                }
+            }
+            lblConsists.Visible = false;
+            return consists;
         }
 
         void ShowLocomotiveList()
@@ -1246,7 +1275,9 @@ namespace ORTS
                 comboBoxLocomotive.Items.Clear();
                 comboBoxLocomotive.Items.Add(new Locomotive());
                 foreach (var loco in Consists.Where(c => c.Locomotive != null).Select(c => c.Locomotive).Distinct().OrderBy(l => l.ToString()))
+                {
                     comboBoxLocomotive.Items.Add(loco);
+                }
                 if (comboBoxLocomotive.Items.Count == 1)
                     comboBoxLocomotive.Items.Clear();
                 UpdateFromMenuSelection<Locomotive>(comboBoxLocomotive, UserSettings.Menu_SelectionIndex.Locomotive, l => l.FilePath);

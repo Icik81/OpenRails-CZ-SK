@@ -39,7 +39,7 @@ namespace ORTS.Menu
 
         GettextResourceManager catalog = new GettextResourceManager("ORTS.Menu");
 
-        internal Consist(string filePath, Folder folder)
+        public Consist(string filePath, Folder folder)
         {
             if (File.Exists(filePath))
             {
@@ -53,7 +53,7 @@ namespace ORTS.Menu
                 {
                     Name = "<" + catalog.GetString("load error:") + " " + System.IO.Path.GetFileNameWithoutExtension(filePath) + ">";
                 }
-                if (Locomotive == null) throw new InvalidDataException("Consist '" + filePath + "' is excluded.");
+                if (Locomotive == null) throw new InvalidDataException(Name);
                 if (string.IsNullOrEmpty(Name)) Name = "<" + catalog.GetString("unnamed:") + " " + System.IO.Path.GetFileNameWithoutExtension(filePath) + ">";
             }
             else
@@ -107,6 +107,7 @@ namespace ORTS.Menu
                     try
                     {
                         consists.Add(new Consist(consist, folder));
+                        
                     }
                     catch { }
                 }
