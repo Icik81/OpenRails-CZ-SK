@@ -642,6 +642,22 @@ namespace Orts.Simulation.RollingStocks
             // Výpočet napětí v drátech
             if (IsPlayerTrain)
             {
+                // Pro nenaladěné modely se zapsaným MultiSystemEngine
+                if (MultiSystemEngine && !HV2Enable && !HV3Enable && !HV4Enable && !HV5Enable)
+                {
+                    switch (RouteVoltageV)
+                    {
+                        case 3000:
+                            SwitchingVoltageMode = 0;
+                            SwitchingVoltageMode_OffDC = true;
+                            break;
+                        case 25000:
+                            SwitchingVoltageMode = 2;
+                            SwitchingVoltageMode_OffAC = true;
+                            break;
+                    }
+                }
+
                 if (RouteVoltageV > 1)
                 {
                     Simulator.TRK.Tr_RouteFile.MaxLineVoltage = RouteVoltageV * Simulator.VoltageSprung + volts;
