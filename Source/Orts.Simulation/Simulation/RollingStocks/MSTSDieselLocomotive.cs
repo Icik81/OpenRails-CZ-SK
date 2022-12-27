@@ -422,7 +422,7 @@ namespace Orts.Simulation.RollingStocks
                 {
                     CurrentLocomotiveSteamHeatBoilerWaterCapacityL = L.FromGUK(800.0f);
                 }
-            }                                        
+            }                         
         }
 
         /// <summary>
@@ -746,6 +746,13 @@ namespace Orts.Simulation.RollingStocks
             {
                 EngineRPMderivation = (EngineRPM - EngineRPMold) / elapsedClockSeconds;
                 EngineRPMold = EngineRPM;
+            }
+
+            // Hack pro start zvuku motoru JV ladění
+            if (BrakeSystem.StartOn)
+            {
+                if (!Simulator.Settings.AirEmpty)
+                    SignalEvent(Event.EnginePowerOn);                
             }
         }
 
