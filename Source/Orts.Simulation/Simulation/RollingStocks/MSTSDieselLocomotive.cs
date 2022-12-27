@@ -751,9 +751,12 @@ namespace Orts.Simulation.RollingStocks
             // Hack pro start zvuku motoru JV ladění
             if (BrakeSystem.StartOn)
             {
-                if (!Simulator.Settings.AirEmpty)
+                if (!Simulator.Settings.AirEmpty && IsPlayerTrain)
                     SignalEvent(Event.EnginePowerOn);                
-            }
+            
+                if (!IsPlayerTrain)
+                    SignalEvent(Event.EnginePowerOn);
+            }            
         }
 
         public override void ChangeGearUp()
