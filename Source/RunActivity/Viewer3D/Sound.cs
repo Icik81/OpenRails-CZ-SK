@@ -1846,10 +1846,10 @@ namespace Orts.Viewer3D
             if (Enabled)
             {
                 // Icik
-                // Nepřehraje inicializační trigger, pokud je AI ve vypnutém stavu
-                if ((car as MSTSWagon) != null && !(car as MSTSWagon).BrakeSystem.PowerForWagon)
+                // Nepřehraje inicializační trigger, pokud je loko ve vypnutém stavu - neplatí pro OR CZ/SK ladění
+                if ((car as MSTSWagon) != null && !(car as MSTSWagon).BrakeSystem.PowerForWagon && !(car as MSTSWagon).BrakeSystem.ORCZSKSetUp)
                     return;
-                if ((car as MSTSLocomotive) != null && !(car as MSTSLocomotive).CarIsPlayerLoco && Program.Simulator.Settings.AirEmpty)
+                if ((car as MSTSLocomotive) != null && !(car as MSTSLocomotive).CarIsPlayerLoco && Program.Simulator.Settings.AirEmpty && !(car as MSTSLocomotive).BrakeSystem.ORCZSKSetUp)
                     return;
 
                 SoundStream.RepeatedTrigger = this == SoundStream.LastTriggered;
@@ -1895,10 +1895,10 @@ namespace Orts.Viewer3D
         public override void TryTrigger()
         {
             // Icik
-            // Nepřehraje random trigger, pokud je AI ve vypnutém stavu
-            if ((car as MSTSWagon) != null && !(car as MSTSWagon).BrakeSystem.PowerForWagon)
+            // Nepřehraje random trigger, pokud je loko ve vypnutém stavu - neplatí pro OR CZ/SK ladění
+            if ((car as MSTSWagon) != null && !(car as MSTSWagon).BrakeSystem.PowerForWagon && !(car as MSTSWagon).BrakeSystem.ORCZSKSetUp)
                 return;
-            if ((car as MSTSLocomotive) != null && !(car as MSTSLocomotive).CarIsPlayerLoco && Program.Simulator.Settings.AirEmpty)
+            if ((car as MSTSLocomotive) != null && !(car as MSTSLocomotive).CarIsPlayerLoco && Program.Simulator.Settings.AirEmpty && !(car as MSTSLocomotive).BrakeSystem.ORCZSKSetUp)
                 return;
 
             if (Simulator.ClockTime > triggerAtSeconds)

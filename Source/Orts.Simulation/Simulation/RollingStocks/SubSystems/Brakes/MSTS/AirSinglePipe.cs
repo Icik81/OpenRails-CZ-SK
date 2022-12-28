@@ -183,6 +183,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             TwoStateBrake = thiscopy.TwoStateBrake;
             AuxPowerOnDelayS = thiscopy.AuxPowerOnDelayS;
             OLBailOffLimitPressurePSI = thiscopy.OLBailOffLimitPressurePSI;
+            ORCZSKSetUp = thiscopy.ORCZSKSetUp;
         }
 
         // Get the brake BC & BP for EOT conditions
@@ -368,8 +369,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 case "wagon(autoloadregulatormaxbrakemass": AutoLoadRegulatorMaxBrakeMass = stf.ReadFloatBlock(STFReader.UNITS.Mass, null); break;
 
                 // Ladící koeficient pro ladiče brzd                
-                case "wagon(debugkoef": DebugKoef1 = stf.ReadFloatBlock(STFReader.UNITS.None, null); break;
-                case "wagon(debugkoef2": DebugKoef2Factor = new Interpolator(stf); break;
+                case "wagon(debugkoef": DebugKoef1 = stf.ReadFloatBlock(STFReader.UNITS.None, null); ORCZSKSetUp = true; break;
+                case "wagon(debugkoef2": DebugKoef2Factor = new Interpolator(stf); ORCZSKSetUp = true; break;
 
                 // Minimální tlak v hlavní jímce a brzdovém potrubí pro brzdu R+Mg
                 case "wagon(mainresminimumpressureformgbrakeactivation": MainResMinimumPressureForMGbrakeActivationPSI = stf.ReadFloatBlock(STFReader.UNITS.PressureDefaultPSI, null); break;

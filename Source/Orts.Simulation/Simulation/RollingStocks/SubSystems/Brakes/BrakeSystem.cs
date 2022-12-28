@@ -206,6 +206,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes
         public bool WestingHouseRelease = false;
         public bool EPApply = false;
 
+        public bool ORCZSKSetUp;
+
         public float AuxPowerOnDelayS { get; set; }
 
         public float GetDebugKoef2()

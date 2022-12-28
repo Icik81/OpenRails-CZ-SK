@@ -112,6 +112,8 @@ namespace Orts.Simulation.RollingStocks
 
         private const float GearBoxControllerBoost = 1; // Slow boost to enable easy single gear up/down commands
 
+        public bool JVSetUp;
+
         public MSTSDieselLocomotive(Simulator simulator, string wagFile)
             : base(simulator, wagFile)
         {
@@ -143,6 +145,11 @@ namespace Orts.Simulation.RollingStocks
                 case "engine(ortsminoilpressure": DieselMinOilPressurePSI = stf.ReadFloatBlock(STFReader.UNITS.PressureDefaultPSI, 40f); break;
                 case "engine(maxtemperature": DieselMaxTemperatureDeg = stf.ReadFloatBlock(STFReader.UNITS.TemperatureDifference, 0); break;
                 case "engine(ortsdieselcooling": DieselEngineCooling = (DieselEngine.Cooling)stf.ReadInt((int)DieselEngine.Cooling.Proportional); break;
+
+                // Detekuje JV ladění, ladění pro OR CZ/SK tento parametr nikdy nepoužívá        
+                case "engine(ortsmasterkey": JVSetUp = true; break;
+
+
                 default:
                     GearBox.Parse(lowercasetoken, stf);
                     base.Parse(lowercasetoken, stf); break;
@@ -370,6 +377,8 @@ namespace Orts.Simulation.RollingStocks
 
             DieselFlowLps = 0.0f;
             InitialMassKg = MassKG;
+
+            JVSetUp = locoCopy.JVSetUp;
 
             if (this.CarID.StartsWith("0"))
                 DieselLevelL = locoCopy.DieselLevelL;
@@ -749,7 +758,7 @@ namespace Orts.Simulation.RollingStocks
             }
 
             // Hack pro start zvuku motoru JV ladění
-            if (BrakeSystem.StartOn)
+            if (BrakeSystem.StartOn && JVSetUp)
             {
                 if (!Simulator.Settings.AirEmpty && IsPlayerTrain)
                     SignalEvent(Event.EnginePowerOn);                
