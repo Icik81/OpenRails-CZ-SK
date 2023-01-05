@@ -292,6 +292,81 @@ namespace Orts.Simulation.RollingStocks
 
         protected float myAverageAxleSpeedMps = 0;
 
+        public float SlipSpeedPercent
+        {
+            get
+            {
+                var temp = SlipSpeedMpS / WheelSlipThresholdMpS * 100.0f;
+                if (float.IsNaN(temp)) temp = 0;
+                return temp;
+            }
+        }
+
+        public bool IsWheelSlipWarning
+        {
+            get
+            {
+                if (SlipSpeedMpS > 0.0f)
+                {
+                    if ((SlipSpeedPercent > (Locomotive.LocomotiveAxle.SlipWarningTresholdPercent)))
+                        return true;
+                    else
+                        return false;
+                }
+                if (SlipSpeedMpS < 0.0f)
+                {
+                    if ((SlipSpeedPercent < (-Locomotive.LocomotiveAxle.SlipWarningTresholdPercent)))
+                        return true;
+                    else
+                        return false;
+                }
+                else
+                    return false;
+            }
+        }
+
+        public float WheelSlipThresholdMpS
+        {
+            get
+            {
+                if (Locomotive.LocomotiveAxle.AdhesionK == 0.0f)
+                    Locomotive.LocomotiveAxle.AdhesionK = 1.0f;
+                float A = 2.0f * Locomotive.LocomotiveAxle.AdhesionK * Locomotive.LocomotiveAxle.AdhesionConditions * Locomotive.LocomotiveAxle.AdhesionConditions;
+                float B = Locomotive.LocomotiveAxle.AdhesionConditions * Locomotive.LocomotiveAxle.AdhesionConditions;
+                float C = Locomotive.LocomotiveAxle.AdhesionK * Locomotive.LocomotiveAxle.AdhesionK;
+                float a = -2.0f * A * B;
+                float b = A * B;
+                float c = A * C;
+                return ((-b - (float)Math.Sqrt(b * b - 4.0f * a * c)) / (2.0f * a));
+            }
+        }
+
+        public float SlipSpeedMpS
+        {
+            get
+            {
+                if (TotalForceN == 0 && Locomotive.BrakeRetardForceN == 0)
+                {
+                    return 0f; 
+                }
+                else
+                {
+                    return (AverageAxleSpeedMpS - Locomotive.SpeedMpS);
+                }
+            }
+        }
+
+        public bool IsWheelSlip
+        {
+            get
+            {
+                if (Math.Abs(SlipSpeedMpS) > WheelSlipThresholdMpS)
+                    return true;
+                else
+                    return false;
+            }
+        }
+
         public void Update(float elapsedClockSeconds)
         {
             if (Locomotive.Pantograph3Switch[Locomotive.LocoStation] == -1)

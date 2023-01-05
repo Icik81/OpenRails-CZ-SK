@@ -6188,6 +6188,8 @@ namespace Orts.Simulation.RollingStocks
                 }
                 else
                 {
+                    WheelSlip = extendedPhysics.IsWheelSlip;
+                    WheelSlipWarning = extendedPhysics.IsWheelSlipWarning;
                     WheelSpeedMpS = extendedPhysics.AverageAxleSpeedMpS;
                 }
             }
