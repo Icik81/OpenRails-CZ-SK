@@ -4209,6 +4209,8 @@ namespace Orts.Simulation.RollingStocks
         float HelperTimerIncrease;
         float HelperTimerDecrease;
         bool LocoBecomeHelper;
+        bool HelperStartOn;
+        float HelperBellTimer;
         public void SetHelperLoco(float elapsedClockSeconds)
         {
             if (IsLeadLocomotive() && (AcceptHelperSignals || PowerReductionResult12 > 0))
@@ -4232,7 +4234,7 @@ namespace Orts.Simulation.RollingStocks
                 Simulator.ThrottleLocoHelper = LocalThrottlePercent;
                 Simulator.DynamicBrakeLocoHelper = LocalDynamicBrakePercent;
                 Simulator.ControllerVoltsLocoHelper = ControllerVolts;
-                if (BrakeForceN > 0)
+                if (MSTSBrakeSystem.BrakeLine1PressurePSI < BrakeSystem.maxPressurePSI0 - (0.5f * 14.50377f))
                 {
                     Simulator.ThrottleLocoHelper = 0;
                     Train.ControllerVolts = 0;
@@ -4277,13 +4279,13 @@ namespace Orts.Simulation.RollingStocks
                         PowerReductionResult12 = 1;
                 }
                 if (HelperLocoPush)
-                {
+                {                    
                     PowerReductionResult12 = 0;                    
                     if (AbsSpeedMpS * 3.6 > HelperSpeedPush
                         || !HelperPushStart
                         || WheelSlipWarning
                         || WheelSlip
-                        || MSTSBrakeSystem.BrakeLine1PressurePSI < BrakeSystem.maxPressurePSI0 - (0.2f * 14.50377f)
+                        || MSTSBrakeSystem.BrakeLine1PressurePSI < BrakeSystem.maxPressurePSI0 - (0.5f * 14.50377f)
                         || Simulator.ControllerVoltsLocoHelper < -0.1f
                         || Direction == Direction.N)
                     {
@@ -4293,8 +4295,8 @@ namespace Orts.Simulation.RollingStocks
                             HelperTimerDecrease = 0;                            
                             if (LocalThrottlePercent > 0)
                                 LocalThrottlePercent--;
-                            if (LocalThrottlePercent == 0 && MSTSBrakeSystem.BrakeLine1PressurePSI < 0.95f * BrakeSystem.maxPressurePSI0)
-                                HelperPushStart = false;
+                            //if (LocalThrottlePercent == 0 && MSTSBrakeSystem.BrakeLine1PressurePSI < BrakeSystem.maxPressurePSI0 - (0.5f * 14.50377f))
+                            //    HelperPushStart = false;
                         }
                     }
                     else
@@ -4302,11 +4304,13 @@ namespace Orts.Simulation.RollingStocks
                         && HelperPushStart 
                         && !WheelSlipWarning 
                         && !WheelSlip
-                        && MSTSBrakeSystem.BrakeLine1PressurePSI > 0.95f * BrakeSystem.maxPressurePSI0)
+                        && MSTSBrakeSystem.BrakeLine1PressurePSI > BrakeSystem.maxPressurePSI0 - (0.5f * 14.50377f))
                     {
                         HelperTimerIncrease += elapsedClockSeconds;
-                        if (HelperTimerIncrease > 1.0f)
+                        if (HelperTimerIncrease > (Simulator.Weather.PricipitationIntensityPPSPM2 + 0.5f))
                         {
+                            if (LocalThrottlePercent == 0 && SpeedMpS == 0)
+                                HelperStartOn = true;
                             HelperTimerIncrease = 0;
                             if (LocalThrottlePercent < 100)
                                 LocalThrottlePercent++;                            
@@ -4315,7 +4319,21 @@ namespace Orts.Simulation.RollingStocks
                     LocalThrottlePercent = MathHelper.Clamp(LocalThrottlePercent, 0, 100);
                     Train.ControllerVolts = LocalThrottlePercent / 10f;
                     StepControllerValue = (int) (LocalThrottlePercent / 100f * Simulator.StepControllerMaxValue);
-                    ForceHandleValue = LocalThrottlePercent;                    
+                    ForceHandleValue = LocalThrottlePercent;
+
+                    // Postrk zapíská
+                    if (HelperStartOn && Train.IsFreight && !AcceptCableSignals)
+                    {
+                        HelperBellTimer += elapsedClockSeconds;
+                        if (HelperBellTimer > 1.0f)
+                            SignalEvent(Event.BellOn);
+                        if (HelperBellTimer > 1.5f)
+                        {
+                            SignalEvent(Event.BellOff);
+                            HelperStartOn = false;
+                            HelperBellTimer = 0;
+                        }
+                    }                    
                 }
                 if (HelperLocoFollow)
                 {
