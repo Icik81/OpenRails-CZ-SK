@@ -705,6 +705,7 @@ namespace Orts.Simulation.RollingStocks
         /// <summary>
         /// This function updates periodically the locomotive's sound variables.
         /// </summary>
+        int MotorStartCyklus;
         protected override void UpdateSoundVariables(float elapsedClockSeconds)
         {
             EngineRPMRatio = (DieselEngines[0].RealRPM - DieselEngines[0].IdleRPM) / (DieselEngines[0].MaxRPM - DieselEngines[0].IdleRPM);
@@ -756,10 +757,11 @@ namespace Orts.Simulation.RollingStocks
                 EngineRPMderivation = (EngineRPM - EngineRPMold) / elapsedClockSeconds;
                 EngineRPMold = EngineRPM;
             }
-
+            
             // Hack pro start zvuku motoru JV ladění
-            if (BrakeSystem.StartOn && JVSetUp)
+            if (MotorStartCyklus < 1000 && JVSetUp)
             {
+                MotorStartCyklus++;
                 if (!Simulator.Settings.AirEmpty && IsPlayerTrain)
                     SignalEvent(Event.EnginePowerOn);                
             
