@@ -2939,11 +2939,12 @@ namespace Orts.Simulation.RollingStocks
                 //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("MaxCurrentPower: " + MaxCurrentPower + "   PowerCurrent1: " + PowerCurrent1 + "      MaxCurrentBrake: " + MaxCurrentBrake + "   BrakeCurrent1: " + BrakeCurrent1));
 
                 if (OverCurrent)
-                {
+                {                                        
                     if (DoesPowerLossResetControls || DoesPowerLossResetControls2)
                     {
                         SetThrottlePercent(0);
                         ControllerVolts = 0;
+                        DynamicBrakeController.CurrentValue = 0;
                     }
                     if (this is MSTSElectricLocomotive) // Elektrické lokomotivy
                     {
@@ -5592,7 +5593,7 @@ namespace Orts.Simulation.RollingStocks
                         DynamicBrakeController.Update(elapsedClockSeconds);
                         DynamicBrakePercent = (DynamicBrakeIntervention < 0.1f ? DynamicBrakeController.CurrentValue : DynamicBrakeIntervention) * 100f;
                         LocalDynamicBrakePercent = (DynamicBrakeIntervention < 0.1f ? DynamicBrakeController.CurrentValue : DynamicBrakeIntervention) * 100f;
-
+                 
                         // Icik
                         if (DynamicBrakeController.CurrentValue > 0 || DynamicBrakePercent > 0)
                             EDBOn = true;                        
@@ -5624,6 +5625,7 @@ namespace Orts.Simulation.RollingStocks
                 // <CScomment> accordingly to shown documentation dynamic brake delay is required only when engaging
                 //           if (DynamicBrakeController.CommandStartTime + DynamicBrakeDelayS < Simulator.ClockTime)
                 //           {
+                EDBOn = false;
                 DynamicBrake = false; // Disengage
                 DynamicBrakeForceN = 0f; // Reset dynamic brake force
                 if (IsLeadLocomotive() && LocoType != LocoTypes.Vectron)
