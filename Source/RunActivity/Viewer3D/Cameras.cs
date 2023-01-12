@@ -98,8 +98,9 @@ namespace Orts.Viewer3D
         public float PreNearPlane;        
         public void NearPlaneUpdate()
         {            
-            var elevation = Viewer.Tiles.GetElevation(cameraLocation);            
-            NearPlane = Math.Abs((Math.Abs(cameraLocation.Location.Y) - Math.Abs(elevation))) / 10f;
+            var elevation = Viewer.Tiles.GetElevation(cameraLocation);
+            var PlayerCameraHeight = Math.Abs((Math.Abs(cameraLocation.Location.Y) - Math.Abs(elevation)));
+            NearPlane = PlayerCameraHeight / 30f;
             if (AttachedCar != null)
                 NearPlane = 0.25f;
 
@@ -108,7 +109,8 @@ namespace Orts.Viewer3D
                 NearPlane = 1.0f;
 
             if (PreNearPlane > 1.5f * NearPlane || PreNearPlane < 0.5f * NearPlane)            
-                ScreenChanged();            
+                ScreenChanged();
+            //Program.Simulator.Confirmer.MSG("NearPlane: " + NearPlane);
         }
 
         protected Camera(Viewer viewer)
