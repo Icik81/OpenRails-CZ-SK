@@ -2973,7 +2973,7 @@ namespace Orts.Simulation.RollingStocks
                 }
 
                 // Add new vibrations every track node.
-                if (VibrationTrackNode != traveler.TrackNodeIndex)
+                if (/*VibrationTrackNode != traveler.TrackNodeIndex ||*/ IsOverJunction())
                 {
                     AddVibrations(VibrationFactorTrackNode, elapsedTimeS);
                     VibrationTrackNode = traveler.TrackNodeIndex;
@@ -3057,7 +3057,7 @@ namespace Orts.Simulation.RollingStocks
                 }
             }
             else
-            if (Train.AllowedMaxSpeedMpS >= 80 / 3.6f) // Běžná trať do 120km/h
+            if (Train.AllowedMaxSpeedMpS >= 100 / 3.6f) // Běžná trať do 120km/h
             {
                 TrackFactorX = 0.6f;
                 TrackFactorY = 0.6f;
@@ -3070,7 +3070,7 @@ namespace Orts.Simulation.RollingStocks
                 }
             }
             else
-            if (Train.AllowedMaxSpeedMpS > 50 / 3.6f) // Běžná trať do 80km/h
+            if (Train.AllowedMaxSpeedMpS > 50 / 3.6f) // Běžná trať do 100km/h
             {
                 TrackFactorX = 0.8f;
                 TrackFactorY = 0.8f;
@@ -3120,6 +3120,7 @@ namespace Orts.Simulation.RollingStocks
 
         float CyklusCouplerImpact;
         float VibrationTimer;
+        float Vibration3Timer;
         private void AddVibrations(float factor, float elapsedTimeS)
         {
             // NOTE: For low angles (as our vibration rotations are), sin(angle) ~= angle, and since the displacement at the end of the car is sin(angle) = displacement/half-length, sin(displacement/half-length) * half-length ~= displacement.
@@ -3146,7 +3147,7 @@ namespace Orts.Simulation.RollingStocks
                     direction1 = 0;
 
                 float VibrationMassKG = ((3 + (MassKG / 10000)) / (MassKG / 10000));
-                if (VibrationMassKG > 2.5) VibrationMassKG = 2.5f;
+                if (VibrationMassKG > 1.5) VibrationMassKG = 1.5f;
 
                 float x;
                 if (CarLengthM > 15) x = (CarLengthM - ((CarLengthM - 15) * 0.75f));
@@ -3227,7 +3228,7 @@ namespace Orts.Simulation.RollingStocks
 
                     if (force == 0) force = 1;
                     if (force < 4)                    
-                        VibrationRotationVelocityRadpS.Y += (TrackFactorY * factor * Simulator.Settings.CarVibratingLevel * VibrationIntroductionStrength * force * 0.5f * VibrationMassKG) / x;                                                
+                        VibrationRotationVelocityRadpS.Y += (TrackFactorY * factor * Simulator.Settings.CarVibratingLevel * VibrationIntroductionStrength * force * 0.25f * VibrationMassKG) / x;                                                
                 }
 
                 if (TypVibrace_2)   //Vibrace v oblouku
@@ -3238,18 +3239,30 @@ namespace Orts.Simulation.RollingStocks
                     VibratioDampingCoefficient = 0.05f;
                     if (CurrentCurveAngle > 0)
                     {
-                        VibrationRotationVelocityRadpS.Y -= (TrackFactorY * factor * Simulator.Settings.CarVibratingLevel * VibrationIntroductionStrength * force * VibrationMassKG) / x;
-                        VibrationRotationVelocityRadpS.Z -= (TrackFactorY * factor * Simulator.Settings.CarVibratingLevel * VibrationIntroductionStrength * force * VibrationMassKG) / x;
+                        VibrationRotationVelocityRadpS.Y -= (TrackFactorY * factor * Simulator.Settings.CarVibratingLevel * VibrationIntroductionStrength * force * 0.75f * VibrationMassKG) / x;
+                        VibrationRotationVelocityRadpS.Z -= (TrackFactorY * factor * Simulator.Settings.CarVibratingLevel * VibrationIntroductionStrength * force * 0.75f * VibrationMassKG) / x;
                     }
                     else
                     {
-                        VibrationRotationVelocityRadpS.Y += (TrackFactorY * factor * Simulator.Settings.CarVibratingLevel * VibrationIntroductionStrength * force * VibrationMassKG) / x;
-                        VibrationRotationVelocityRadpS.Z += (TrackFactorY * factor * Simulator.Settings.CarVibratingLevel * VibrationIntroductionStrength * force * VibrationMassKG) / x;
+                        VibrationRotationVelocityRadpS.Y += (TrackFactorY * factor * Simulator.Settings.CarVibratingLevel * VibrationIntroductionStrength * force * 0.75f * VibrationMassKG) / x;
+                        VibrationRotationVelocityRadpS.Z += (TrackFactorY * factor * Simulator.Settings.CarVibratingLevel * VibrationIntroductionStrength * force * 0.75f * VibrationMassKG) / x;
                     }                    
                     //Simulator.Confirmer.Information("VibrationRotationVelocityRadpS.Y " + VibrationRotationVelocityRadpS.Y);
                 }
 
-                if (TypVibrace_3)   //Vibrace na výhybce
+                float ActivateVibrationTime3 = AbsSpeedMpS == 0 ? 0 : ((1.0f / (AbsSpeedMpS * 3.6f)) * 10f);
+                //Simulator.Confirmer.Information("ActivateVibrationTime3 " + ActivateVibrationTime3);
+                
+                if (IsOverJunction())
+                {
+                    Vibration3Timer += elapsedTimeS;
+                    if (Vibration3Timer > ActivateVibrationTime3 + 0.1f)
+                        Vibration3Timer = 0;
+                }
+                else
+                    Vibration3Timer = 0;
+
+                if (TypVibrace_3 && Vibration3Timer > ActivateVibrationTime3 && Vibration3Timer < ActivateVibrationTime3 + 0.1f)   //Vibrace na výhybce
                 {
                     int y = 25, y1 = 31;
                     switch (WagonNumAxles)
