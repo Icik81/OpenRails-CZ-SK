@@ -3220,10 +3220,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     }
                 }
                 else 
-                if (!lead.AutomaticParkingBrakeEngaged 
+                if ((!lead.AutomaticParkingBrakeEngaged 
                     && (!lead.AVVBraking || lead.DynamicBrakePercent < 95) 
-                    && lead.BrakeSystem.T4_ParkingkBrake == 1
-                    && lead.PowerKey)
+                    && lead.BrakeSystem.T4_ParkingkBrake == 1)
+                    || !lead.PowerKey)
                 {
                     if (lead.BrakeSystem.AutoCylPressurePSI2 > 0)
                     {

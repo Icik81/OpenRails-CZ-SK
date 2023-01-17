@@ -5088,7 +5088,8 @@ namespace Orts.Simulation.RollingStocks
                 checkParkingBrakeCount = 0;
                 if (CruiseControl != null)
                 {
-                    if (CruiseControl.SpeedRegMode[LocoStation] == CruiseControl.SpeedRegulatorMode.Auto || CruiseControl.SpeedRegMode[LocoStation] == CruiseControl.SpeedRegulatorMode.AVV)
+                    if (((CruiseControl.SpeedRegMode[1] == CruiseControl.SpeedRegulatorMode.Auto && StationIsActivated[1]) || (CruiseControl.SpeedRegMode[2] == CruiseControl.SpeedRegulatorMode.Auto && StationIsActivated[2]))
+                        || ((CruiseControl.SpeedRegMode[1] == CruiseControl.SpeedRegulatorMode.AVV && StationIsActivated[1]) || (CruiseControl.SpeedRegMode[2] == CruiseControl.SpeedRegulatorMode.AVV && StationIsActivated[2])))
                     {
                         bool braking = false;
                         bool forceBrake = false;
@@ -5123,7 +5124,8 @@ namespace Orts.Simulation.RollingStocks
                             braking = true;
                         }
 
-                        if (CruiseControl.SpeedSelMode[LocoStation] != CruiseControl.SpeedSelectorMode.Parking && CruiseControl.SpeedRegulatorOptions.Contains("selectorparking") && !forceBrake)
+                        if (((CruiseControl.SpeedSelMode[1] != CruiseControl.SpeedSelectorMode.Parking && StationIsActivated[1]) || (CruiseControl.SpeedSelMode[2] != CruiseControl.SpeedSelectorMode.Parking && StationIsActivated[2]))                            
+                            && CruiseControl.SpeedRegulatorOptions.Contains("selectorparking") && !forceBrake)
                             braking = false;
                         if (AbsSpeedMpS > MpS.FromKpH(AutomaticParkingBrakeEngageSpeedKpH))
                             braking = false;

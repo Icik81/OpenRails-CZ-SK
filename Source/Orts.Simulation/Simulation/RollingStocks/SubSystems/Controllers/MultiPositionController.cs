@@ -52,7 +52,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
         protected bool isBraking = false;
         protected bool needPowerUpAfterBrake = false;
         public bool CanControlTrainBrake = false;
-        protected bool initialized = false;
+        protected bool[] initialized = new bool[3];
         protected bool movedForward = false;
         protected bool movedAft = false;
         protected bool haveCruiseControl = false;
@@ -77,7 +77,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
 
         public void Restore(BinaryReader inf)
         {
-            initialized = true;
+            initialized[1] = true;
+            initialized[2] = true;
             checkNeutral = inf.ReadBoolean();
             int fControllerPosition = inf.ReadInt32();
             controllerPosition = (ControllerPosition)fControllerPosition;
@@ -142,7 +143,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
 
         public void Update(float elapsedClockSeconds)
         {
-            if (!initialized)
+            if (!initialized[Locomotive.LocoStation])
             {
                 if (Locomotive.CruiseControl != null)
                     haveCruiseControl = true;
@@ -154,7 +155,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                         break;
                     }
                 }
-                initialized = true;
+                initialized[Locomotive.LocoStation] = true;
             }
             if (!Locomotive.IsPlayerTrain) return;
 
