@@ -267,7 +267,7 @@ namespace Orts.Viewer3D
         // Sky dome geometry is based on two global variables: the radius and the number of sides
         public int skyRadius = SkyConstants.skyRadius;
         private static int skySides = SkyConstants.skySides;
-        public int cloudDomeRadiusDiff = 600; // Amount by which cloud dome radius is smaller than sky dome
+        public int cloudDomeRadiusDiff = 60; // Amount by which cloud dome radius is smaller than sky dome
         // skyLevels: Used for iterating vertically through the "levels" of the hemisphere polygon
         private static int skyLevels = SkyConstants.skyLevels;
         // Number of vertices in the sky hemisphere. (each dome = 169 for 24-sided sky dome: 24 x 7 + 1)
@@ -286,11 +286,14 @@ namespace Orts.Viewer3D
             // Initialize the vertex and point-index buffers
             vertexList = new VertexPositionNormalTexture[numVertices];
             triangleListIndices = new short[indexCount];
+
+            // Icik
+            float OblateCoef = 0.5f;
             // Sky dome
-            DomeVertexList(0, skyRadius, 1.0f);
+            DomeVertexList(0, skyRadius, 1.0f * OblateCoef);
             DomeTriangleList(0, 0);
             // Cloud dome
-            DomeVertexList((numVertices - 4) / 2, skyRadius - cloudDomeRadiusDiff, 0.4f);
+            DomeVertexList((numVertices - 4) / 2, skyRadius - cloudDomeRadiusDiff, 0.4f * OblateCoef);
             DomeTriangleList((short)((indexCount - 6) / 2), 1);
             // Moon quad
             MoonLists(numVertices - 5, indexCount - 6);

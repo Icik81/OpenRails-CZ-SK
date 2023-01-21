@@ -270,14 +270,14 @@ float4 PSClouds(VERTEX_OUTPUT In) : COLOR
 		alpha += Overcast.x;
 		// Reduce contrast and brightness
 		float3 color = ContrastSaturationBrightness(cloudColor.xyz, 1.0, Overcast.z, Overcast.y); // Brightness and saturation are really need to be exchanged?
-		float3 CloudDim;
-		
-		if (Overcast.x > 0.7)
+		float CloudDim = 0.2 + (Overcast.x * (1 + (Overcast.x - 0.8)));		
+
+		if (Overcast.x > 0.8)
 		{	
-			cloudColor = float4(color * (0.3 + (Overcast.x * (1 + (Overcast.x - 0.7)))), alpha);
+			cloudColor = float4(color * CloudDim, alpha);
 		}
 		else
-			cloudColor = float4(color, alpha);
+			cloudColor = float4(color, alpha);		
 	}
 	else
 	{
