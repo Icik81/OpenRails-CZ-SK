@@ -1022,10 +1022,24 @@ namespace Orts.Simulation.RollingStocks
                 }
 
                 // Výpočet max brzdné síly
-                const float CoefE = 0.84f; // Lokomotiva
-                const float CoefP = 0.60f; // Osobní vůz
-                const float CoefF = 0.60f; // Nákladní vůz
-                const float CoefHB = 0.50f; // Ruční brzda
+                float CoefE = 0.84f; // Lokomotiva
+                float CoefP = 0.60f; // Osobní vůz
+                float CoefF = 0.60f; // Nákladní vůz
+                float CoefHB = 0.50f; // Ruční brzda
+
+                switch (WagonNumAxles)
+                {
+                    case 2:
+                        CoefE /= 1.25f;
+                        CoefP /= 1.25f;
+                        CoefF /= 1.25f;
+                        break;
+                    case 4:
+                        CoefE = 0.84f;
+                        CoefP = 0.60f;
+                        CoefF = 0.60f;
+                        break;
+                }
 
                 BrakeCarStatus();
                 AntiSkidSystem();
@@ -3062,12 +3076,12 @@ namespace Orts.Simulation.RollingStocks
         {
             float AdhTime = 1;
             AdhCycle += elapsedTimeS;
-            if (Train.AllowedMaxSpeedMpS >= 120 / 3.6f) // Koridor
+            if (Train.AllowedMaxSpeedMpS >= 140 / 3.6f) // Koridor
             {
-                TrackFactorX = 0.2f;
-                TrackFactorY = 0.2f;
-                TrackFactorZ = 0.2f;
-                TrackFactorValue = 0.20f;
+                TrackFactorX = 0.5f;
+                TrackFactorY = 0.5f;
+                TrackFactorZ = 0.5f;
+                TrackFactorValue = 0.50f;
                 if ((AdhCycle > AdhTime && AbsSpeedMpS > 0.1f) || FirstFrame)
                 {
                     TrackFactor = Simulator.Random.Next(95, 101) / 100f;
@@ -3077,10 +3091,10 @@ namespace Orts.Simulation.RollingStocks
             else
             if (Train.AllowedMaxSpeedMpS >= 100 / 3.6f) // Běžná trať do 120km/h
             {
-                TrackFactorX = 0.6f;
-                TrackFactorY = 0.6f;
-                TrackFactorZ = 0.6f;
-                TrackFactorValue = 0.60f;
+                TrackFactorX = 0.8f;
+                TrackFactorY = 0.8f;
+                TrackFactorZ = 0.8f;
+                TrackFactorValue = 0.80f;
                 if ((AdhCycle > AdhTime && AbsSpeedMpS > 0.1f) || FirstFrame)
                 {
                     TrackFactor = Simulator.Random.Next(89, 95) / 100f;
@@ -3090,10 +3104,10 @@ namespace Orts.Simulation.RollingStocks
             else
             if (Train.AllowedMaxSpeedMpS > 50 / 3.6f) // Běžná trať do 100km/h
             {
-                TrackFactorX = 0.8f;
-                TrackFactorY = 0.8f;
-                TrackFactorZ = 0.8f;
-                TrackFactorValue = 0.80f;
+                TrackFactorX = 0.9f;
+                TrackFactorY = 0.9f;
+                TrackFactorZ = 0.9f;
+                TrackFactorValue = 0.90f;
                 if ((AdhCycle > AdhTime && AbsSpeedMpS > 0.1f) || FirstFrame)
                 {
                     TrackFactor = Simulator.Random.Next(83, 89) / 100f;
@@ -3115,10 +3129,10 @@ namespace Orts.Simulation.RollingStocks
             }
             else
             {
-                TrackFactorX = 0.8f;
-                TrackFactorY = 0.8f;
-                TrackFactorZ = 0.8f;
-                TrackFactorValue = 0.80f;
+                TrackFactorX = 0.9f;
+                TrackFactorY = 0.9f;
+                TrackFactorZ = 0.9f;
+                TrackFactorValue = 0.90f;
                 if ((AdhCycle > AdhTime && AbsSpeedMpS > 0.1f) || FirstFrame)
                 {
                     TrackFactor = Simulator.Random.Next(83, 89) / 100f;
