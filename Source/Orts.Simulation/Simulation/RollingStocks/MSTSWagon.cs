@@ -1484,7 +1484,7 @@ namespace Orts.Simulation.RollingStocks
                 case "wagon(inside": HasInsideView = true; ParseWagonInside(stf); break;
                 case "wagon(orts3dcab": Parse3DCab(stf); break;
                 case "wagon(numwheels": MSTSWagonNumWheels = stf.ReadFloatBlock(STFReader.UNITS.None, 4.0f); break;
-                case "wagon(ortsnumberaxles": WagonNumAxles = stf.ReadIntBlock(null); break;
+                case "wagon(ortsnumberaxles": WagonNumAxles = stf.ReadIntBlock(null); if (WagonNumAxles == 1) WagonNumAxles = 2; break;
                 case "wagon(ortspantographs":
                     Pantographs.Parse(lowercasetoken, stf);
                     break;
