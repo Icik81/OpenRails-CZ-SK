@@ -1514,7 +1514,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
 
                     if (WaterTempCoolingLowRunning)
                     {
-                        RealDieselWaterTemperatureDeg -= elapsedClockSeconds * (RealDieselWaterTemperatureDeg - (1.5f * locomotive.CarOutsideTempCBase)) / DieselWaterTempTimeConstantSec * (WaterCoolingPower / 250);
+                        RealDieselWaterTemperatureDeg -= elapsedClockSeconds * (RealDieselWaterTemperatureDeg - (2.5f * locomotive.CarOutsideTempCBase)) / DieselWaterTempTimeConstantSec * (WaterCoolingPower / 250);
                         if (!MSGWaterLowOn)
                         {
                             //locomotive.Simulator.Confirmer.Message(ConfirmLevel.MSG, Simulator.Catalog.GetString("Malý chladící okruh zapnutý!"));
@@ -1536,7 +1536,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
 
                     if (OilTempCoolingLowRunning)
                     {
-                        RealDieselOilTemperatureDeg -= elapsedClockSeconds * (RealDieselOilTemperatureDeg - (1.5f * locomotive.CarOutsideTempCBase)) / DieselOilTempTimeConstantSec * (OilCoolingPower / 250);
+                        RealDieselOilTemperatureDeg -= elapsedClockSeconds * (RealDieselOilTemperatureDeg - (2.5f * locomotive.CarOutsideTempCBase)) / DieselOilTempTimeConstantSec * (OilCoolingPower / 250);
                         if (!MSGOilLowOn)
                         {
                             //locomotive.Simulator.Confirmer.Message(ConfirmLevel.MSG, Simulator.Catalog.GetString("Malý chladící okruh zapnutý!"));
@@ -1763,7 +1763,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
             }
             // Teplota okolí koriguje teplotu motoru
             // Čerpadlo při vyšších otáčkách má vyšší průtok chladící kapaliny
-            RealDieselWaterTemperatureDeg -= elapsedClockSeconds * (RealDieselWaterTemperatureDeg - (1.5f * locomotive.CarOutsideTempCBase)) * CoolingFlow / DieselWaterTempTimeConstantSec;
+            RealDieselWaterTemperatureDeg -= elapsedClockSeconds * (RealDieselWaterTemperatureDeg - (2.5f * locomotive.CarOutsideTempCBase)) * CoolingFlow / DieselWaterTempTimeConstantSec;
 
             // Olej
             // Teplotu zvyšují otáčky a zátěž motoru
@@ -1774,7 +1774,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
             }
             // Teplota okolí koriguje teplotu motoru
             // Čerpadlo při vyšších otáčkách má vyšší průtok chladící kapaliny
-            RealDieselOilTemperatureDeg -= elapsedClockSeconds * (RealDieselOilTemperatureDeg - (1.5f * locomotive.CarOutsideTempCBase)) * CoolingFlow / (DieselOilTempTimeConstantSec * 2);
+            RealDieselOilTemperatureDeg -= elapsedClockSeconds * (RealDieselOilTemperatureDeg - (2.5f * locomotive.CarOutsideTempCBase)) * CoolingFlow / (DieselOilTempTimeConstantSec * 2);
 
 
             // Poškození a vypnutí motoru
