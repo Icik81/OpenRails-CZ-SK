@@ -1067,6 +1067,15 @@ namespace Orts.Simulation.RollingStocks
                             break;
                         case 1: // Režim P                    
                             BrakeSystem.CoefMode = 1.05f;
+                            switch (WagonNumAxles)
+                            {
+                                case 2:
+                                    BrakeSystem.CoefMode = 1.25f;
+                                    break;
+                                case 4:
+                                    BrakeSystem.CoefMode = 1.05f;
+                                    break;
+                            }
                             BrakeMassKG();
                             break;
                         case 2: // Režim R
@@ -1101,6 +1110,15 @@ namespace Orts.Simulation.RollingStocks
                             break;
                         case 1: // Režim P                    
                             BrakeSystem.CoefMode = 0.65f;
+                            switch (WagonNumAxles)
+                            {
+                                case 2:
+                                    BrakeSystem.CoefMode = 1.12f;
+                                    break;
+                                case 4:
+                                    BrakeSystem.CoefMode = 0.65f;
+                                    break;
+                            }
                             BrakeMassKG();
                             break;
                         case 2: // Režim R
