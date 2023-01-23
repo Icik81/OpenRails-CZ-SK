@@ -284,7 +284,7 @@ namespace ORTS.Scripting.Api
             {ControllerState.Dummy, ""},
             {ControllerState.Release, Catalog.GetString("Release position")},
             {ControllerState.FullQuickRelease, Catalog.GetString("Highpressure release")},
-            {ControllerState.Running, Catalog.GetString("Driving position")},
+            {ControllerState.Running, Catalog.GetString("Slow release")},
             {ControllerState.Neutral, Catalog.GetString("Driving position")},
             {ControllerState.Apply, Catalog.GetString("Apply position")},
             {ControllerState.EPApply, Catalog.GetString("EPApply")},

@@ -1934,6 +1934,8 @@ namespace Orts.Simulation.RollingStocks
             outf.Write(TrainBrakeValueE);
             outf.Write(TrainBrakeValueEPA);
             outf.Write(TrainBrakeValueAGA);
+            outf.Write(TrainBrakeValueSA);
+            outf.Write(TrainBrakeValueRUN);
             outf.Write(TogglePowerKeyCycle);
             outf.Write(prevEngineBrakeValue[1]);
             outf.Write(prevEngineBrakeValue[2]);
@@ -2125,6 +2127,8 @@ namespace Orts.Simulation.RollingStocks
             TrainBrakeValueE = inf.ReadSingle();
             TrainBrakeValueEPA = inf.ReadSingle();
             TrainBrakeValueAGA = inf.ReadSingle();
+            TrainBrakeValueSA = inf.ReadSingle();
+            TrainBrakeValueRUN = inf.ReadSingle();
             TogglePowerKeyCycle = inf.ReadInt32();
             prevEngineBrakeValue[1] = inf.ReadSingle();
             prevEngineBrakeValue[2] = inf.ReadSingle();
@@ -9155,7 +9159,10 @@ namespace Orts.Simulation.RollingStocks
         float TrainBrakeValueA;
         float TrainBrakeValueE;
         float TrainBrakeValueEPA;
-        float TrainBrakeValueAGA;        
+        float TrainBrakeValueAGA;
+        float TrainBrakeValueSA; // SlowApply
+        float TrainBrakeValueRUN; // Running        
+
         public void TrainBrakeValueLogic()
         {
             if (IsLeadLocomotive())
@@ -9174,6 +9181,8 @@ namespace Orts.Simulation.RollingStocks
                 {
                     switch (notch.Type)
                     {
+                        case ControllerState.MatrosovRelease:
+                        case ControllerState.WestingHouseRelease:
                         case ControllerState.FullQuickRelease:
                             TrainBrakeValueFQR = notch.Value;
                             break;
@@ -9202,11 +9211,22 @@ namespace Orts.Simulation.RollingStocks
                         case ControllerState.GSelfLap:
                             TrainBrakeValueAGA = notch.Value;
                             break;
+                        case ControllerState.SlowApplyStart:
+                            TrainBrakeValueSA = notch.Value;
+                            break;
+                        case ControllerState.Running:
+                            TrainBrakeValueRUN = notch.Value;
+                            break;
                     }
                 }
 
+                if ((TrainBrakeValue[1] == TrainBrakeValueL && TrainBrakeValue[2] == TrainBrakeValueL) || (LapActive[1] && LapActive[2]))
+                    BrakeSystem.BrakeControllerLap = true;
+                else
+                    BrakeSystem.BrakeControllerLap = false;
+
                 if (LocoStation == 1)
-                {
+                {                    
                     if (TrainBrakeValue[2] == TrainBrakeValueFQR && !LapActive[2])
                         BrakeSystem.QuickRelease = true;                    
                     else
@@ -9243,6 +9263,14 @@ namespace Orts.Simulation.RollingStocks
                         BrakeSystem.ApplyGA = true;
                     else
                         BrakeSystem.ApplyGA = false;
+                    if (TrainBrakeValue[2] == TrainBrakeValueSA && !LapActive[2])
+                        BrakeSystem.SlowApplyStart = true;
+                    else
+                        BrakeSystem.SlowApplyStart = false;
+                    if (TrainBrakeValue[2] == TrainBrakeValueRUN && !LapActive[2])
+                        BrakeSystem.Running = true;
+                    else
+                        BrakeSystem.Running = false;
                 }
                 if (LocoStation == 2)
                 {
@@ -9282,6 +9310,14 @@ namespace Orts.Simulation.RollingStocks
                         BrakeSystem.ApplyGA = true;
                     else
                         BrakeSystem.ApplyGA = false;
+                    if (TrainBrakeValue[1] == TrainBrakeValueSA && !LapActive[1])
+                        BrakeSystem.SlowApplyStart = true;
+                    else
+                        BrakeSystem.SlowApplyStart = false;
+                    if (TrainBrakeValue[1] == TrainBrakeValueRUN && !LapActive[1])
+                        BrakeSystem.Running = true;
+                    else
+                        BrakeSystem.Running = false;
                 }
                 #endregion
                 TrainBrakeValue[LocoStation] = TrainBrakeController.CurrentValue;
