@@ -7764,7 +7764,7 @@ namespace Orts.Simulation.RollingStocks
         }
         #endregion
 
-        #region EngineBrakeController
+        #region EngineBrakeController        
         public void StartEngineBrakeIncrease(float? target)
         {
             CanCheckEngineBrake = false;
@@ -7775,7 +7775,6 @@ namespace Orts.Simulation.RollingStocks
 
             EngineBrakeController.StartIncrease(target);
             Simulator.Confirmer.Confirm(CabControl.EngineBrake, CabSetting.Increase, GetEngineBrakeStatus());
-            SignalEvent(Event.EngineBrakeChange);
         }
 
         /// <summary>
@@ -7803,12 +7802,11 @@ namespace Orts.Simulation.RollingStocks
 
             if (EngineBrakeController == null)
                 return;
-
+            
             AlerterReset(TCSEvent.EngineBrakeChanged);
             EngineBrakeController.StartDecrease(target);
             EngineBrakeController.CommandStartTime = Simulator.ClockTime; // Remember when the command was issued
-            Simulator.Confirmer.Confirm(CabControl.EngineBrake, CabSetting.Increase, GetEngineBrakeStatus());
-            SignalEvent(Event.EngineBrakeChange);
+            Simulator.Confirmer.Confirm(CabControl.EngineBrake, CabSetting.Increase, GetEngineBrakeStatus());            
         }
 
         /// <summary>
@@ -9038,8 +9036,23 @@ namespace Orts.Simulation.RollingStocks
         float EngineBrakeValueN;
         float EngineBrakeValueA;
         bool EngineBrakeHas1Notch;
+        float prevAutoCylPressurePSI1;
+        bool EngineBrakeSoundChange;
         public void EngineBrakeValueLogic(float elapsedClockSeconds)
-        {                        
+        {
+            if (BrakeSystem.AutoCylPressurePSI1 != prevAutoCylPressurePSI1 && EngineBrakeValue[LocoStation] != prevEngineBrakeValue[LocoStation])
+            {
+                if (!EngineBrakeSoundChange)
+                {                    
+                    SignalEvent(Event.EngineBrakeChange);
+                    EngineBrakeSoundChange = true;
+                }
+            }
+            else
+                EngineBrakeSoundChange = false;
+
+            prevAutoCylPressurePSI1 = BrakeSystem.AutoCylPressurePSI1;
+
             if (IsLeadLocomotive())
             {                
                 //Simulator.Confirmer.MSG("EngineBrakeValue[0] = " + EngineBrakeValue[0] + "        EngineBrakeValue[1] = " + EngineBrakeValue[1] + "   EngineBrakeValue[2] = " + EngineBrakeValue[2]);
