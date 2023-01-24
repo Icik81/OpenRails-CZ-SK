@@ -9040,26 +9040,25 @@ namespace Orts.Simulation.RollingStocks
         bool EngineBrakeSoundChange;
         public void EngineBrakeValueLogic(float elapsedClockSeconds)
         {
-            if (BrakeSystem.AutoCylPressurePSI1 != prevAutoCylPressurePSI1 && EngineBrakeValue[LocoStation] != prevEngineBrakeValue[LocoStation])
-            {
-                if (!EngineBrakeSoundChange)
-                {                    
-                    SignalEvent(Event.EngineBrakeChange);
-                    EngineBrakeSoundChange = true;
-                }
-            }
-            else
-                EngineBrakeSoundChange = false;
-
-            prevAutoCylPressurePSI1 = BrakeSystem.AutoCylPressurePSI1;
-
             if (IsLeadLocomotive())
             {                
                 //Simulator.Confirmer.MSG("EngineBrakeValue[0] = " + EngineBrakeValue[0] + "        EngineBrakeValue[1] = " + EngineBrakeValue[1] + "   EngineBrakeValue[2] = " + EngineBrakeValue[2]);
                 if (EngineBrakeController.Notches.Count <= 1 || EngineBrakeHas1Notch)
                 {
                     EngineBrakeValue[0] = Math.Max(EngineBrakeValue[1], EngineBrakeValue[2]);
-                    SetEngineBrakePercent(EngineBrakeValue[0] * 100f);                    
+                    SetEngineBrakePercent(EngineBrakeValue[0] * 100f);
+                    if (BrakeSystem.AutoCylPressurePSI1 != prevAutoCylPressurePSI1 && EngineBrakeValue[LocoStation] != prevEngineBrakeValue[LocoStation])
+                    {
+                        if (!EngineBrakeSoundChange)
+                        {
+                            SignalEvent(Event.EngineBrakeChange);
+                            EngineBrakeSoundChange = true;
+                            prevAutoCylPressurePSI1 = BrakeSystem.AutoCylPressurePSI1;
+                            prevEngineBrakeValue[LocoStation] = EngineBrakeValue[LocoStation];
+                        }
+                    }
+                    else
+                        EngineBrakeSoundChange = false;
                 }
                 else
                 {
@@ -9113,10 +9112,22 @@ namespace Orts.Simulation.RollingStocks
                             if (BrakeSystem.AutoCylPressurePSI1 < BrakeSystem.MCP)
                                 BrakeSystem.AutoCylPressurePSI1 += 3f * EngineBrakeApplyRatePSIpS * elapsedClockSeconds;
                     }
+                    
+                    if (EngineBrakeValue[LocoStation] != prevEngineBrakeValue[LocoStation])
+                    {
+                        if (!EngineBrakeSoundChange)
+                        {
+                            SignalEvent(Event.EngineBrakeChange);
+                            EngineBrakeSoundChange = true;
+                            prevEngineBrakeValue[LocoStation] = EngineBrakeValue[LocoStation];
+                        }
+                    }
+                    else
+                        EngineBrakeSoundChange = false;
                     #endregion
                     EngineBrakeValue[LocoStation] = EngineBrakeController.CurrentValue;
                 }                
-            }
+            }                        
             #region Výchozí nastavení přímočinky na vícestupňových ovladačích           
             // Nastaví pozici Neutral na vícestupňových ovladačích
             if (CarFrameUpdateState == 2)
