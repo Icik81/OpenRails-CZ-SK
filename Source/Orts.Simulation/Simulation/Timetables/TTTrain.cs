@@ -9111,6 +9111,9 @@ namespace Orts.Simulation.Timetables
         {
             bool[] returnValue = new bool[2] { false, true };
 
+            // Icik fix
+            PresentPosition[0].RouteListIndex = PresentPosition[0].RouteListIndex < 0 ? 0 : PresentPosition[0].RouteListIndex;
+
             int directionNow = ValidRoute[0][PresentPosition[0].RouteListIndex].Direction;
             int positionNow = ValidRoute[0][PresentPosition[0].RouteListIndex].TCSectionIndex;
 
