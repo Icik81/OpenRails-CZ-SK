@@ -4500,7 +4500,7 @@ namespace Orts.Simulation.RollingStocks
         public override void Update(float elapsedClockSeconds)
         {
             if (firstFrame && BrakeSystem.StartOn)
-            {
+            {                
                 CompressorSwitch[1] = CompressorSwitch[2] = 1;
                 CompressorSwitch2[1] = CompressorSwitch2[2] = 0;
                 HV5Switch[1] = HV5Switch[2] = 2;
@@ -4997,6 +4997,8 @@ namespace Orts.Simulation.RollingStocks
                 RainWindow(elapsedClockSeconds);
                 WipersWindow(elapsedClockSeconds);
                 BatterySetOn = false;
+                if (LocoReadyToGo && this is MSTSSteamLocomotive)
+                    LocoReadyToGo = false;
             }
             
             // Hodnoty pro výpočet zvukových proměnných
