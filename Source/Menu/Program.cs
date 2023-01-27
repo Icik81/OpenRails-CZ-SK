@@ -95,22 +95,24 @@ namespace ORTS
                             if (MainForm.SelectedActivity is ORTS.Menu.DefaultExploreActivity)
                             {
                                 var exploreActivity = MainForm.SelectedActivity as ORTS.Menu.DefaultExploreActivity;
-                                parameters.Add(String.Format("-explorer \"{0}\" \"{1}\" {2} {3} {4}",
+                                parameters.Add(String.Format("-explorer \"{0}\" \"{1}\" {2} {3} {4} {5}",
                                     exploreActivity.Path.FilePath,
                                     exploreActivity.Consist.FilePath,
                                     exploreActivity.StartTime,
                                     (int)exploreActivity.Season,
-                                    (int)exploreActivity.Weather));
+                                    (int)exploreActivity.Weather,
+                                    MainForm.WeatherAdv));
                             }
                             else if (MainForm.SelectedActivity is ORTS.Menu.ExploreThroughActivity)
                             {
                                 var exploreActivity = MainForm.SelectedActivity as ORTS.Menu.ExploreThroughActivity;
-                                parameters.Add(String.Format("-exploreactivity \"{0}\" \"{1}\" {2} {3} {4}",
+                                parameters.Add(String.Format("-exploreactivity \"{0}\" \"{1}\" {2} {3} {4} {5}",
                                     exploreActivity.Path.FilePath,
                                     exploreActivity.Consist.FilePath,
                                     exploreActivity.StartTime,
                                     (int)exploreActivity.Season,
-                                    (int)exploreActivity.Weather));
+                                    (int)exploreActivity.Weather,
+                                    MainForm.WeatherAdv));
                             }
                             else
                             {
@@ -127,7 +129,7 @@ namespace ORTS
                         case MainForm.UserAction.SinglePlayerTimetableGame:
                             if (String.IsNullOrEmpty(MainForm.SelectedTimetableSet.WeatherFile))
                             {
-                                parameters.Add(String.Format("-timetable \"{0}\" \"{1}:{2}\" {3} {4} {5}",
+                                parameters.Add(String.Format("-timetable \"{0}\" \"{1}:{2}\" {3} {4} {5} {6}",
                                     MainForm.SelectedTimetableSet.fileName,
                                     MainForm.SelectedTimetable,
                                     MainForm.SelectedTimetableTrain,

@@ -99,6 +99,8 @@ namespace ORTS
         public Path SelectedPath { get { return (Path)comboBoxHeadTo.SelectedItem; } }
         public string SelectedStartTime { get { return comboBoxStartTime.Text; } }
 
+        public int WeatherAdv;
+
         // Timetable mode items
         public TimetableInfo SelectedTimetableSet { get { return (TimetableInfo)comboBoxTimetableSet.SelectedItem; } }
         public TimetableFileLite SelectedTimetable { get { return (TimetableFileLite)comboBoxTimetable.SelectedItem; } }
@@ -181,6 +183,17 @@ namespace ORTS
                     new KeyedComboBoxItem(5, catalog.GetString("Saturday")),
                     new KeyedComboBoxItem(6, catalog.GetString("Sunday")),
                 };
+                var WeathersAdv = new[] {
+                    new KeyedComboBoxItem(0, catalog.GetString("Clear")),
+                    new KeyedComboBoxItem(1, catalog.GetString("Cloudy")),
+                    new KeyedComboBoxItem(2, catalog.GetString("Overcast")),
+                    new KeyedComboBoxItem(3, catalog.GetString("Foggy day")),
+                    new KeyedComboBoxItem(4, catalog.GetString("Rain/snowing day")),
+                    new KeyedComboBoxItem(5, catalog.GetString("Heavy rain/snow")),
+                    new KeyedComboBoxItem(6, catalog.GetString("Storm")),
+                };
+                
+                comboBoxWeather.Items.AddRange(WeathersAdv);
 
                 comboBoxStartSeason.Items.AddRange(Seasons);
                 comboBoxStartWeather.Items.AddRange(Weathers);
@@ -847,6 +860,13 @@ namespace ORTS
         {
             UpdateTimetableWeatherSet();
         }
+
+        // Icik
+        void comboBoxWeather_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            UpdateWeatherSet();
+        }
+
         #endregion
 
         #region Multiplayer
@@ -1088,6 +1108,7 @@ namespace ORTS
             comboBoxTimetable.Enabled = comboBoxTimetableSet.Items.Count > 0;
             comboBoxTimetableTrain.Enabled = comboBoxTimetable.Items.Count > 0;
             comboBoxTimetableWeatherFile.Enabled = comboBoxTimetableWeatherFile.Items.Count > 0;
+            comboBoxWeather.Enabled = comboBoxWeather.Items.Count > 0;
             //Avoid to Start with a non valid Activity/Locomotive/Consist.
             buttonResume.Enabled = buttonStart.Enabled = radioButtonModeActivity.Checked && !comboBoxActivity.Text.StartsWith("<") && !comboBoxLocomotive.Text.StartsWith("<") ?
                 SelectedActivity != null && (!(SelectedActivity is ExploreActivity) || (comboBoxConsist.Items.Count > 0 && comboBoxHeadTo.Items.Count > 0)) :
@@ -1216,7 +1237,7 @@ namespace ORTS
             exploreActivity.Path = SelectedPath;
             exploreActivity.StartTime = SelectedStartTime;
             exploreActivity.Season = (Orts.Formats.Msts.SeasonType)SelectedStartSeason;
-            exploreActivity.Weather = (Orts.Formats.Msts.WeatherType)SelectedStartWeather;
+            exploreActivity.Weather = (Orts.Formats.Msts.WeatherType)SelectedStartWeather;            
         }
         #endregion
 
@@ -1386,7 +1407,8 @@ namespace ORTS
                 comboBoxDifficulty.SelectedIndex = 3;
                 comboBoxDuration.Items.Clear();
                 comboBoxDuration.Items.Add("");
-                comboBoxDuration.SelectedIndex = 0;
+                comboBoxDuration.SelectedIndex = 0;                
+                comboBoxWeather.SelectedIndex = Settings.WeatherAdv;
             }
             else
             {
@@ -1398,9 +1420,16 @@ namespace ORTS
                 comboBoxDifficulty.SelectedIndex = (int)SelectedActivity.Difficulty;
                 comboBoxDuration.Items.Clear();
                 comboBoxDuration.Items.Add(SelectedActivity.Duration.FormattedDurationTime());
-                comboBoxDuration.SelectedIndex = 0;
+                comboBoxDuration.SelectedIndex = 0;                
             }
         }
+
+        // Icik
+        void UpdateWeatherSet()
+        {            
+            Settings.WeatherAdv = comboBoxWeather.SelectedIndex;            
+        }
+
         #endregion
 
         #region Timetable Set list
@@ -1449,7 +1478,7 @@ namespace ORTS
 
         void ShowTimetableWeatherSet()
         {
-            comboBoxTimetableWeatherFile.Items.Clear();
+            comboBoxTimetableWeatherFile.Items.Clear();            
             foreach (var weatherFile in TimetableWeatherFileSet)
             {
                 comboBoxTimetableWeatherFile.Items.Add(weatherFile);
@@ -1460,8 +1489,7 @@ namespace ORTS
         void UpdateTimetableWeatherSet()
         {
             SelectedTimetableSet.WeatherFile = SelectedWeatherFile.GetFullName();
-        }
-
+        }        
         #endregion
 
         #region Timetable list

@@ -260,11 +260,58 @@ namespace Orts.Viewer3D
         public void SetInitialWeatherParameters()
         {
             // These values are defaults only; subsequent changes to the weather via debugging only change the components (weather, overcastFactor and fogDistance) individually.
-            switch (Viewer.Simulator.WeatherType)
+            float PrecipitationLiquidity = 0;
+            WeatherType WeatherType = WeatherType.Clear;
+            switch ((int)Viewer.Simulator.Season)
             {
-                case Orts.Formats.Msts.WeatherType.Clear: Weather.OvercastFactor = 0.05f; Weather.FogDistance = 20000; Weather.PrecipitationLiquidity = 1; Weather.PricipitationIntensityPPSPM2 = 0f; break;
-                case Orts.Formats.Msts.WeatherType.Rain: Weather.OvercastFactor = 0.7f; Weather.FogDistance = 1000; Weather.PrecipitationLiquidity = 1; Weather.PricipitationIntensityPPSPM2 = 0.7500f; break;
-                case Orts.Formats.Msts.WeatherType.Snow: Weather.OvercastFactor = 0.6f; Weather.FogDistance = 500; Weather.PrecipitationLiquidity = 0; Weather.PricipitationIntensityPPSPM2 = 0.7500f; break;
+                case 0:  // Jaro
+                    PrecipitationLiquidity = 0.7f;
+                    WeatherType = WeatherType.Rain;
+                    break;
+                case 1:  // Léto
+                    PrecipitationLiquidity = 1.0f;
+                    WeatherType = WeatherType.Rain;
+                    break;
+                case 2:  // Podzim
+                    PrecipitationLiquidity = 1.0f;
+                    WeatherType = WeatherType.Rain;
+                    break;
+                case 3:  // Zima
+                    PrecipitationLiquidity = 0.0f;
+                    WeatherType = WeatherType.Snow;
+                    break;
+            }
+
+            switch (Viewer.Simulator.WeatherAdv)
+            {
+                case 0: // Clear
+                    Viewer.Simulator.WeatherType = WeatherType.Clear;
+                    Weather.OvercastFactor = 0.05f; Weather.FogDistance = 20000; Weather.PrecipitationLiquidity = PrecipitationLiquidity; Weather.PricipitationIntensityPPSPM2 = 0f;
+                    break;
+                case 1: // Cloudy
+                    Viewer.Simulator.WeatherType = WeatherType.Clear;
+                    Weather.OvercastFactor = 0.3f; Weather.FogDistance = 15000; Weather.PrecipitationLiquidity = PrecipitationLiquidity; Weather.PricipitationIntensityPPSPM2 = 0f;
+                    break;                
+                case 2: // Overcast
+                    Viewer.Simulator.WeatherType = WeatherType.Clear;
+                    Weather.OvercastFactor = 0.8f; Weather.FogDistance = 10000; Weather.PrecipitationLiquidity = PrecipitationLiquidity; Weather.PricipitationIntensityPPSPM2 = 0f;
+                    break;
+                case 3: // Foggy day
+                    Viewer.Simulator.WeatherType = WeatherType.Clear;
+                    Weather.OvercastFactor = 0.0f; Weather.FogDistance = 1000; Weather.PrecipitationLiquidity = PrecipitationLiquidity; Weather.PricipitationIntensityPPSPM2 = 0.05f;
+                    break;
+                case 4: // Rain/snowing day
+                    Viewer.Simulator.WeatherType = WeatherType;
+                    Weather.OvercastFactor = 0.3f; Weather.FogDistance = 5000; Weather.PrecipitationLiquidity = PrecipitationLiquidity; Weather.PricipitationIntensityPPSPM2 = 0.15f;
+                    break;
+                case 5: // Heavy rain/snow
+                    Viewer.Simulator.WeatherType = WeatherType;
+                    Weather.OvercastFactor = 0.6f; Weather.FogDistance = 3000; Weather.PrecipitationLiquidity = PrecipitationLiquidity; Weather.PricipitationIntensityPPSPM2 = 0.5f;
+                    break;
+                case 6: // Storm
+                    Viewer.Simulator.WeatherType = WeatherType;
+                    Weather.OvercastFactor = 1.0f; Weather.FogDistance = 500; Weather.PrecipitationLiquidity = PrecipitationLiquidity; Weather.PricipitationIntensityPPSPM2 = 1.0f;
+                    break;
             }
         }
 

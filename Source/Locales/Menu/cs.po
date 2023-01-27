@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2022-08-10 21:25:10+0200\n"
-"PO-Revision-Date: 2022-08-10 21:27+0200\n"
+"POT-Creation-Date: 2023-01-27 23:12:53+0100\n"
+"PO-Revision-Date: 2023-01-27 23:22+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: cs\n"
@@ -92,79 +92,103 @@ msgstr "Stiskněte libovolnou klávesu"
 msgid "Reset to default"
 msgstr "Vrátit původní nastavení"
 
-#: ../../Menu/MainForm.cs:162
+#: ../../Menu/MainForm.cs:161
 msgid "Spring"
 msgstr "Jaro"
 
-#: ../../Menu/MainForm.cs:163
+#: ../../Menu/MainForm.cs:162
 msgid "Summer"
 msgstr "Léto"
 
-#: ../../Menu/MainForm.cs:164
+#: ../../Menu/MainForm.cs:163
 msgid "Autumn"
 msgstr "Podzim"
 
-#: ../../Menu/MainForm.cs:165
+#: ../../Menu/MainForm.cs:164
 msgid "Winter"
 msgstr "Zima"
 
-#: ../../Menu/MainForm.cs:168
+#: ../../Menu/MainForm.cs:167 ../../Menu/MainForm.cs:187
 msgid "Clear"
 msgstr "Jasno"
 
-#: ../../Menu/MainForm.cs:169
+#: ../../Menu/MainForm.cs:168
 msgid "Snow"
 msgstr "Sněžení"
 
-#: ../../Menu/MainForm.cs:170
+#: ../../Menu/MainForm.cs:169
 msgid "Rain"
 msgstr "Déšť"
 
-#: ../../Menu/MainForm.cs:173 ../../Menu/Options.cs:619
+#: ../../Menu/MainForm.cs:172 ../../Menu/Options.cs:619
 msgid "Easy"
 msgstr "Jednoduché"
 
-#: ../../Menu/MainForm.cs:174
+#: ../../Menu/MainForm.cs:173
 msgid "Medium"
 msgstr "Střední"
 
-#: ../../Menu/MainForm.cs:175 ../../Menu/Options.cs:625
+#: ../../Menu/MainForm.cs:174 ../../Menu/Options.cs:625
 msgid "Hard"
 msgstr "Těžké"
 
-#: ../../Menu/MainForm.cs:179
+#: ../../Menu/MainForm.cs:178
 msgid "Monday"
 msgstr "Pondělí"
 
-#: ../../Menu/MainForm.cs:180
+#: ../../Menu/MainForm.cs:179
 msgid "Tuesday"
 msgstr "Úterý"
 
-#: ../../Menu/MainForm.cs:181
+#: ../../Menu/MainForm.cs:180
 msgid "Wednesday"
 msgstr "Středa"
 
-#: ../../Menu/MainForm.cs:182
+#: ../../Menu/MainForm.cs:181
 msgid "Thursday"
 msgstr "Čtvrtek"
 
-#: ../../Menu/MainForm.cs:183
+#: ../../Menu/MainForm.cs:182
 msgid "Friday"
 msgstr "Pátek"
 
-#: ../../Menu/MainForm.cs:184
+#: ../../Menu/MainForm.cs:183
 msgid "Saturday"
 msgstr "Sobota"
 
-#: ../../Menu/MainForm.cs:185
+#: ../../Menu/MainForm.cs:184
 msgid "Sunday"
 msgstr "Neděle"
 
-#: ../../Menu/MainForm.cs:339
+#: ../../Menu/MainForm.cs:188
+msgid "Cloudy"
+msgstr "Oblačno"
+
+#: ../../Menu/MainForm.cs:189
+msgid "Overcast"
+msgstr "Zataženo"
+
+#: ../../Menu/MainForm.cs:190
+msgid "Foggy day"
+msgstr "Mlha"
+
+#: ../../Menu/MainForm.cs:191
+msgid "Rain/snowing day"
+msgstr "Deštivý den/sněžení"
+
+#: ../../Menu/MainForm.cs:192
+msgid "Heavy rain/snow"
+msgstr "Silný déšť/sníh"
+
+#: ../../Menu/MainForm.cs:193
+msgid "Storm"
+msgstr "Průtrž mračen"
+
+#: ../../Menu/MainForm.cs:349
 msgid "Update check failed"
 msgstr "Kontrola aktualizace selhala"
 
-#: ../../Menu/MainForm.cs:866
+#: ../../Menu/MainForm.cs:883
 msgid ""
 "User name must be 4-10 characters long, cannot contain space, ', \" or - and "
 "must not start with a digit."
@@ -172,16 +196,16 @@ msgstr ""
 "Uživatelské jméno musí mít 4-10 znaků, nesmí obsahovat mezeru, ', \" nebo - "
 "a nesmí začínat číslicí."
 
-#: ../../Menu/MainForm.cs:1495
+#: ../../Menu/MainForm.cs:1551
 msgid "Activity Briefing"
 msgstr "Informace k aktivitě"
 
-#: ../../Menu/MainForm.cs:341
+#: ../../Menu/MainForm.cs:351
 #, csharp-format
 msgid "Update to {0}"
 msgstr "Aktualizovat na {0}"
 
-#: ../../Menu/MainForm.cs:879
+#: ../../Menu/MainForm.cs:896
 #, csharp-format
 msgid ""
 "The update check failed due to an error:\n"
@@ -192,7 +216,7 @@ msgstr ""
 "\n"
 "{0}"
 
-#: ../../Menu/MainForm.cs:887
+#: ../../Menu/MainForm.cs:904
 #, csharp-format
 msgid ""
 "The update failed due to an error:\n"
@@ -203,211 +227,219 @@ msgstr ""
 "\n"
 "{0}"
 
-#: ../../Menu/MainForm.cs:1484
+#: ../../Menu/MainForm.cs:1540
 #, csharp-format
 msgid "Route: {0}"
 msgstr "Trať: {0}"
 
-#: ../../Menu/MainForm.cs:1490 ../../Menu/MainForm.cs:1522
+#: ../../Menu/MainForm.cs:1546 ../../Menu/MainForm.cs:1578
 #, csharp-format
 msgid "Locomotive: {0}"
 msgstr "Lokomotiva: {0}"
 
-#: ../../Menu/MainForm.cs:1494
+#: ../../Menu/MainForm.cs:1550
 #, csharp-format
 msgid "Activity: {0}"
 msgstr "Aktivita: {0}"
 
-#: ../../Menu/MainForm.cs:1499 ../../Menu/MainForm.cs:1525
+#: ../../Menu/MainForm.cs:1555 ../../Menu/MainForm.cs:1581
 #, csharp-format
 msgid "Path: {0}"
 msgstr "Vlaková cesta: {0}"
 
-#: ../../Menu/MainForm.cs:1500
+#: ../../Menu/MainForm.cs:1556
 #, csharp-format
 msgid "Starting at: {0}"
 msgstr "Začátek trasy: {0}"
 
-#: ../../Menu/MainForm.cs:1501
+#: ../../Menu/MainForm.cs:1557
 #, csharp-format
 msgid "Heading to: {0}"
 msgstr "Konec trasy: {0}"
 
-#: ../../Menu/MainForm.cs:1508
+#: ../../Menu/MainForm.cs:1564
 #, csharp-format
 msgid "Timetable set: {0}"
 msgstr "Nast. jízdního řádu: {0}"
 
-#: ../../Menu/MainForm.cs:1512
+#: ../../Menu/MainForm.cs:1568
 #, csharp-format
 msgid "Timetable: {0}"
 msgstr "Jízdní řád: {0}"
 
-#: ../../Menu/MainForm.cs:1516
+#: ../../Menu/MainForm.cs:1572
 #, csharp-format
 msgid "Train: {0}"
 msgstr "Vlak: {0}"
 
-#: ../../Menu/MainForm.cs:1520
+#: ../../Menu/MainForm.cs:1576
 #, csharp-format
 msgid "Consist: {0}"
 msgstr "Souprava: {0}"
 
-#: ../../Menu/MainForm.Designer.cs:125
+#: ../../Menu/MainForm.Designer.cs:127
 msgid "Windowed"
 msgstr "V okně"
 
-#: ../../Menu/MainForm.Designer.cs:136
+#: ../../Menu/MainForm.Designer.cs:138
 msgid "Start"
 msgstr "Spustit"
 
-#: ../../Menu/MainForm.Designer.cs:149 ../../Menu/MainForm.Designer.cs:1001
+#: ../../Menu/MainForm.Designer.cs:151 ../../Menu/MainForm.Designer.cs:1028
 msgid "Open Rails CZ/SK"
 msgstr "Open Rails CZ/SK"
 
-#: ../../Menu/MainForm.Designer.cs:168
+#: ../../Menu/MainForm.Designer.cs:170
 msgid "Logging"
 msgstr "Logování"
 
-#: ../../Menu/MainForm.Designer.cs:178 ../../Menu/Options.Designer.cs:2911
+#: ../../Menu/MainForm.Designer.cs:180 ../../Menu/Options.Designer.cs:2911
 #: ../../Menu/Properties/Options.Designer.cs:2763
 msgid "Options"
 msgstr "Nastavení"
 
-#: ../../Menu/MainForm.Designer.cs:189
+#: ../../Menu/MainForm.Designer.cs:191
 msgid "Resume/ Replay..."
 msgstr "Pokračovat/ Přehrát..."
 
-#: ../../Menu/MainForm.Designer.cs:199
+#: ../../Menu/MainForm.Designer.cs:201
 msgid "Tools ▼"
 msgstr "Nástroje ▼"
 
-#: ../../Menu/MainForm.Designer.cs:236
+#: ../../Menu/MainForm.Designer.cs:238
 msgid "Route:"
 msgstr "Trať:"
 
-#: ../../Menu/MainForm.Designer.cs:256
+#: ../../Menu/MainForm.Designer.cs:258
 msgid "Host/port:"
 msgstr "IP adresa/port:"
 
-#: ../../Menu/MainForm.Designer.cs:267
+#: ../../Menu/MainForm.Designer.cs:269
 msgid "User name:"
 msgstr "Uživ. jméno:"
 
-#: ../../Menu/MainForm.Designer.cs:297
+#: ../../Menu/MainForm.Designer.cs:299
 msgid "Multiplayer"
 msgstr "Síťová hra"
 
-#: ../../Menu/MainForm.Designer.cs:306
+#: ../../Menu/MainForm.Designer.cs:308
 msgid "Server"
 msgstr "Server"
 
-#: ../../Menu/MainForm.Designer.cs:319
+#: ../../Menu/MainForm.Designer.cs:321
 msgid "Client"
 msgstr "Klient"
 
-#: ../../Menu/MainForm.Designer.cs:331
+#: ../../Menu/MainForm.Designer.cs:333
 msgid "Start MP"
 msgstr "Začít MP"
 
-#: ../../Menu/MainForm.Designer.cs:342
+#: ../../Menu/MainForm.Designer.cs:344
 msgid "Resume MP"
 msgstr "Nahrát MP"
 
-#: ../../Menu/MainForm.Designer.cs:357
+#: ../../Menu/MainForm.Designer.cs:359
 msgid "Singleplayer"
 msgstr "Jeden hráč"
 
-#: ../../Menu/MainForm.Designer.cs:367
+#: ../../Menu/MainForm.Designer.cs:369
 msgid "Installation profile:"
 msgstr "Instalační profil:"
 
-#: ../../Menu/MainForm.Designer.cs:418
+#: ../../Menu/MainForm.Designer.cs:420
 msgid "Documents ▼"
 msgstr "Dokumenty ▼"
 
-#: ../../Menu/MainForm.Designer.cs:430
+#: ../../Menu/MainForm.Designer.cs:432
 msgid "Mode:"
 msgstr "Režim:"
 
-#: ../../Menu/MainForm.Designer.cs:442 ../../Menu/TestingForm.Designer.cs:192
+#: ../../Menu/MainForm.Designer.cs:444 ../../Menu/TestingForm.Designer.cs:192
 msgid "Activity"
 msgstr "Aktivita"
 
-#: ../../Menu/MainForm.Designer.cs:453
+#: ../../Menu/MainForm.Designer.cs:455
 msgid "Timetable"
 msgstr "Jízdní řád"
 
-#: ../../Menu/MainForm.Designer.cs:494
+#: ../../Menu/MainForm.Designer.cs:498
+msgid "Weather advanced:"
+msgstr "Pokročilé počasí:"
+
+#: ../../Menu/MainForm.Designer.cs:520
+msgid "načítám..."
+msgstr ""
+
+#: ../../Menu/MainForm.Designer.cs:531
 msgid "Debrief evaluation:"
 msgstr "Hodnocení po jízdě:"
 
-#: ../../Menu/MainForm.Designer.cs:506
+#: ../../Menu/MainForm.Designer.cs:543
 msgid "Activity:"
 msgstr "Aktivita:"
 
-#: ../../Menu/MainForm.Designer.cs:530
+#: ../../Menu/MainForm.Designer.cs:567
 msgid "Locomotive:"
 msgstr "Lokomotiva:"
 
-#: ../../Menu/MainForm.Designer.cs:569
+#: ../../Menu/MainForm.Designer.cs:606
 msgid "Consist:"
 msgstr "Složení soupravy:"
 
-#: ../../Menu/MainForm.Designer.cs:580
+#: ../../Menu/MainForm.Designer.cs:617
 msgid "Starting at:"
 msgstr "Začátek trasy:"
 
-#: ../../Menu/MainForm.Designer.cs:605
+#: ../../Menu/MainForm.Designer.cs:642
 msgid "Heading to:"
 msgstr "Konec trasy:"
 
-#: ../../Menu/MainForm.Designer.cs:629
+#: ../../Menu/MainForm.Designer.cs:680
 msgid "Duration:"
 msgstr "Doba trvání:"
 
-#: ../../Menu/MainForm.Designer.cs:639
+#: ../../Menu/MainForm.Designer.cs:690
 msgid "Time:"
 msgstr "Čas:"
 
-#: ../../Menu/MainForm.Designer.cs:690 ../../Menu/MainForm.Designer.cs:864
-msgid "Weather:"
-msgstr "Počasí:"
-
-#: ../../Menu/MainForm.Designer.cs:714
+#: ../../Menu/MainForm.Designer.cs:727
 msgid "Difficulty:"
 msgstr "Obtížnost:"
 
-#: ../../Menu/MainForm.Designer.cs:737 ../../Menu/MainForm.Designer.cs:888
+#: ../../Menu/MainForm.Designer.cs:750 ../../Menu/MainForm.Designer.cs:901
 msgid "Season:"
 msgstr "Období:"
 
-#: ../../Menu/MainForm.Designer.cs:771
+#: ../../Menu/MainForm.Designer.cs:784
 msgid "Weather File:"
-msgstr "Soubor s počasím:"
+msgstr "Soubor počasí:"
 
-#: ../../Menu/MainForm.Designer.cs:793
+#: ../../Menu/MainForm.Designer.cs:806
 msgid "Train:"
 msgstr "Vlak:"
 
-#: ../../Menu/MainForm.Designer.cs:815
+#: ../../Menu/MainForm.Designer.cs:828
 msgid "Timetable:"
 msgstr "Jízdní řád:"
 
-#: ../../Menu/MainForm.Designer.cs:839
+#: ../../Menu/MainForm.Designer.cs:852
 msgid "Day:"
 msgstr "Den:"
 
-#: ../../Menu/MainForm.Designer.cs:922
+#: ../../Menu/MainForm.Designer.cs:877
+msgid "Weather:"
+msgstr "Počasí:"
+
+#: ../../Menu/MainForm.Designer.cs:935
 msgid "Timetable set:"
 msgstr "Nastavení jízdního řádu:"
 
-#: ../../Menu/MainForm.Designer.cs:943 ../../Menu/Options.cs:295
+#: ../../Menu/MainForm.Designer.cs:956 ../../Menu/Options.cs:295
 #: ../../Menu/TestingForm.Designer.cs:314
 msgid "Testing"
 msgstr "Testovací"
 
-#: ../../Menu/MainForm.Designer.cs:962
+#: ../../Menu/MainForm.Designer.cs:975
 msgid "What's new?"
 msgstr "Co je nového?"
 

@@ -67,7 +67,7 @@ namespace Orts.Formats.OR
     }
 
     public class WeatherSetting
-    {
+    {        
         public float Time;                                                 // time of change
         public float GenOvercast;                                          // cloud cover, copied from actual type when terminating
         public float GenVisibility;                                        // visibility, copied from actual type when terminating

@@ -24,6 +24,7 @@ using Orts.Formats.OR;
 using Orts.MultiPlayer;
 using Orts.Simulation.AIs;
 using Orts.Simulation.Physics;
+using Orts.Simulation.Properties;
 using Orts.Simulation.RollingStocks;
 using Orts.Simulation.RollingStocks.SubSystems;
 using Orts.Simulation.Signalling;
@@ -223,6 +224,7 @@ namespace Orts.Simulation
         public int LocoCount;
         public int MUCableLocoCount;
         public bool TrainIsPassenger;
+        public int WeatherAdv;        
 
         public List<PowerSupplyStation> powerSupplyStations;
         public List<VoltageChangeMarker> voltageChangeMarkers;
@@ -423,6 +425,9 @@ namespace Orts.Simulation
             FuelManager = new FuelManager(this);
             ScriptManager = new ScriptManager(this);
             Log = new CommandLog(this);
+
+            // Icik
+            WeatherAdv = Settings.WeatherAdv;            
         }
 
         public void SetActivity(string activityPath)

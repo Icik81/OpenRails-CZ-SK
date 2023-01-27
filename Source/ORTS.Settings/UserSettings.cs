@@ -88,6 +88,7 @@ namespace ORTS.Settings
             // Shared items
             Season = 7,
             Weather = 8,
+            WeatherAdv = 9,
         }
         #endregion
 
@@ -151,6 +152,9 @@ namespace ORTS.Settings
         public int Multiplayer_Port { get; set; }
         [Default(true)]
         public bool IsModeActivity { get; set; } // false indicates Timetable mode
+        // Icik
+        [Default(0)]
+        public int WeatherAdv { get; set; }
 
         // General settings:
 
@@ -251,8 +255,7 @@ namespace ORTS.Settings
         [Default(false)]
         public bool CabView_MSTSOR { get; set; }
         [Default(2)]
-        public int NightBrightness { get; set; }
-
+        public int NightBrightness { get; set; }        
 
         // Simulation settings:
 
