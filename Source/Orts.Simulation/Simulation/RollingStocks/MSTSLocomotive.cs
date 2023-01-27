@@ -4955,7 +4955,7 @@ namespace Orts.Simulation.RollingStocks
 
             if (IsPlayerTrain && !Simulator.Paused)
             {
-                Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("WeatherAdv: " + Simulator.WeatherAdv));                                                
+                //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("WeatherAdv: " + Simulator.WeatherAdv));                                                
                 StepControllerValue = Simulator.StepControllerValue;
                 TogglePowerKey();
                 PowerKeyLogic();
