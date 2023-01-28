@@ -796,8 +796,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         HandbrakePercent = loco.HandBrakePresent ? 0 : 0;
                         if (loco.IsLeadLocomotive())
                         {
-                            loco.SetEngineBrakePercent(100);
-                            AutoCylPressurePSI0 = MaxCylPressurePSI;
+                            loco.SetEngineBrakePercent(100);                            
                         }
                         loco.LocoReadyToGo = true;
                     }
@@ -1127,10 +1126,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     {
                         MCP = BrakeCylinderMaxPressureForLowState;
                         if (T_HighPressure == 0)
-                            FromHighToLowPressureRate = (AutoCylPressurePSI0 - MCP) / 12;
+                            FromHighToLowPressureRate = (AutoCylPressurePSI0 - MCP) / 12.0f;
 
                         T_HighPressure += elapsedClockSeconds;
-                        if (T_HighPressure < 12)
+                        if (T_HighPressure < 12.0f)
                         {
                             if (AutoCylPressurePSI0 > MCP)
                                 AutoCylPressurePSI0 -= elapsedClockSeconds * FromHighToLowPressureRate; // Rychlost odvětrání po dobu 12s na 1.9bar                                                
@@ -1142,8 +1141,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         }
                     }
                     // Pod 50km/h přepne na nižší stupeň brzdění
-                    if ((Car as MSTSWagon) != null && (Car as MSTSWagon).AbsSpeedMpS < 50 / 3.6f && HighPressure
-                        || (Car as MSTSLocomotive) != null && (Car as MSTSLocomotive).AbsSpeedMpS < 50 / 3.6f && HighPressure)
+                    if ((Car as MSTSWagon) != null && (Car as MSTSWagon).AbsSpeedMpS < 50f / 3.6f && HighPressure
+                        || (Car as MSTSLocomotive) != null && (Car as MSTSLocomotive).AbsSpeedMpS < 50f / 3.6f && HighPressure)
                         LowPressure = true;
 
                     if (LowPressure)
@@ -1151,7 +1150,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         if (AutoCylPressurePSI0 > MCP)
                             AutoCylPressurePSI0 -= elapsedClockSeconds * (1.0f * 14.50377f); // Rychlost odvětrání 1 bar/s
                         MCP = BrakeCylinderMaxPressureForLowState;
-                    }
+                    }                    
                 }
                 else
                 if (TwoStateBrake && BrakeCarMode < 2) // Vozy v G, P mají omezený tlak do válců
@@ -1389,13 +1388,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                             AutoCylPressurePSI0 = threshold;
                     }
                     else BrakeCylRelease = false;
-                }
-                // Vypouští brzdový válec, pokud je tlak v potrubí vyšší než 4.84bar            
-                if (BrakeLine1PressurePSI > 4.84f * 14.50377f && threshold < (maxPressurePSI0 - (4.84f * 14.50377f)) * AuxCylVolumeRatio && !CarHasAirStuckBrake_1)
-                {
-                    if (AutoCylPressurePSI0 > 0)
-                        AutoCylPressurePSI0 -= elapsedClockSeconds * ReleaseRatePSIpS;
-                }
+                }                
 
                 // triple valve set to release pressure in brake cylinder and EP valve set
                 if (TripleValveState == ValveState.Release && HoldingValve == ValveState.Release && !CarHasAirStuckBrake_1)
@@ -2996,10 +2989,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 // Definice pro brzdič BP1
                 if (brakeSystem.BP1_EngineBrakeController)
                 {
-                    // Určení pozice kontroléru 0.0 - 1.0
-                    float EngineBrakeControllerRate = train.BrakeLine3PressurePSI / lead.BrakeSystem.BrakeCylinderMaxSystemPressurePSI;
-                    EngineBrakeControllerRate = MathHelper.Clamp(EngineBrakeControllerRate, 0, 1);
-
+                    // Určení pozice kontroléru 0.0 - 1.0                    
+                    float EngineBrakeControllerRate = lead.EngineBrakeValue[lead.LocoStation];
+                    
                     // Definování mrtvé zóny brzdiče                    
                     float EngineBrakeControllerApply = (1 - brakeSystem.EngineBrakeControllerApplyDeadZone) * EngineBrakeControllerRate;
                     float EngineBrakeControllerRelease = brakeSystem.PrevEngineBrakeControllerRateRelease - (brakeSystem.PrevEngineBrakeControllerRateRelease * brakeSystem.EngineBrakeControllerReleaseDeadZone);
@@ -3013,7 +3005,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     if (train.BrakeLine3PressurePSI > EngineBrakeControllerApply * lead.BrakeSystem.BrakeCylinderMaxSystemPressurePSI
                         && lead.BrakeSystem.AutoCylPressurePSI1 < EngineBrakeCylOffset
                         && lead.MainResPressurePSI > 0
-                        && AutoCylPressurePSI < lead.BrakeSystem.BrakeCylinderMaxSystemPressurePSI
+                        && AutoCylPressurePSI <= lead.BrakeSystem.BrakeCylinderMaxSystemPressurePSI
                         && AutoCylPressurePSI < lead.MainResPressurePSI)
                     {
                         if (lead.BrakeSystem.BP1_EngineBrakeControllerRatePSIpS == 0) lead.BrakeSystem.BP1_EngineBrakeControllerRatePSIpS = lead.EngineBrakeApplyRatePSIpS;
@@ -3069,7 +3061,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     // Apply
                     if (lead.BrakeSystem.AutoCylPressurePSI1 < train.BrakeLine3PressurePSI
                         && lead.MainResPressurePSI > 0
-                        && AutoCylPressurePSI < lead.BrakeSystem.BrakeCylinderMaxSystemPressurePSI
+                        && AutoCylPressurePSI <= lead.BrakeSystem.BrakeCylinderMaxSystemPressurePSI
                         && AutoCylPressurePSI < lead.MainResPressurePSI)
                     {
                         if (lead.BrakeSystem.BP2_EngineBrakeControllerRatePSIpS == 0) lead.BrakeSystem.BP2_EngineBrakeControllerRatePSIpS = lead.EngineBrakeApplyRatePSIpS;
@@ -3131,7 +3123,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     // Apply
                     if (lead.BrakeSystem.AutoCylPressurePSI1 < train.BrakeLine3PressurePSI
                         && lead.MainResPressurePSI > 0
-                        && AutoCylPressurePSI < lead.BrakeSystem.BrakeCylinderMaxSystemPressurePSI
+                        && AutoCylPressurePSI <= lead.BrakeSystem.BrakeCylinderMaxSystemPressurePSI
                         && AutoCylPressurePSI < lead.MainResPressurePSI)
                     {
                         if (lead.BrakeSystem.LEKOV_EngineBrakeControllerRatePSIpS == 0) lead.BrakeSystem.LEKOV_EngineBrakeControllerRatePSIpS = lead.EngineBrakeApplyRatePSIpS;
@@ -3195,7 +3187,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 // Automatická parkovací brzda
                 if ((lead.AutomaticParkingBrakeEngaged || (lead.AVVBraking && lead.DynamicBrakePercent > 95))
                     && lead.MainResPressurePSI > 0
-                    && AutoCylPressurePSI < lead.BrakeSystem.BrakeCylinderMaxSystemPressurePSI
+                    && AutoCylPressurePSI <= lead.BrakeSystem.BrakeCylinderMaxSystemPressurePSI
                     && AutoCylPressurePSI < lead.MainResPressurePSI
                     && lead.PowerKey)
                 {
