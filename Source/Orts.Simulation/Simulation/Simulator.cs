@@ -452,7 +452,11 @@ namespace Orts.Simulation
             StartTime st = Activity.Tr_Activity.Tr_Activity_Header.StartTime;
             TimeSpan StartTime = new TimeSpan(st.Hour, st.Minute, st.Second);
             ClockTime = StartTime.TotalSeconds;
-            Season = Activity.Tr_Activity.Tr_Activity_Header.Season;
+
+            // Icik
+            //Season = Activity.Tr_Activity.Tr_Activity_Header.Season;
+            Season = (SeasonType)(Settings.Season);
+
             WeatherType = Activity.Tr_Activity.Tr_Activity_Header.Weather;
             if (Activity.Tr_Activity.Tr_Activity_File.ActivityRestrictedSpeedZones != null)
             {

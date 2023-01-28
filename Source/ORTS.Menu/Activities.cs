@@ -42,7 +42,7 @@ namespace ORTS.Menu
         public readonly StartTime StartTime = new StartTime(10, 0, 0);
 #pragma warning restore CS1591 // Komentář XML pro veřejně viditelný typ nebo člen Activity.StartTime se nenašel.
 #pragma warning disable CS1591 // Komentář XML pro veřejně viditelný typ nebo člen Activity.Season se nenašel.
-        public readonly SeasonType Season = SeasonType.Summer;
+        public SeasonType Season = SeasonType.Summer;
 #pragma warning restore CS1591 // Komentář XML pro veřejně viditelný typ nebo člen Activity.Season se nenašel.
 #pragma warning disable CS1591 // Komentář XML pro veřejně viditelný typ nebo člen Activity.Weather se nenašel.
         public readonly WeatherType Weather = WeatherType.Clear;
@@ -92,7 +92,7 @@ namespace ORTS.Menu
                         Description = actFile.Tr_Activity.Tr_Activity_Header.Description;
                         Briefing = actFile.Tr_Activity.Tr_Activity_Header.Briefing;
                         StartTime = actFile.Tr_Activity.Tr_Activity_Header.StartTime;
-                        Season = actFile.Tr_Activity.Tr_Activity_Header.Season;
+                        Season = actFile.Tr_Activity.Tr_Activity_Header.Season;                        
                         Weather = actFile.Tr_Activity.Tr_Activity_Header.Weather;
                         Difficulty = actFile.Tr_Activity.Tr_Activity_Header.Difficulty;
                         Duration = actFile.Tr_Activity.Tr_Activity_Header.Duration;

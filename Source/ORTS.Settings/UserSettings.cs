@@ -155,7 +155,9 @@ namespace ORTS.Settings
         // Icik
         [Default(0)]
         public int WeatherAdv { get; set; }
-
+        [Default(1)]
+        public int Season { get; set; }
+        
         // General settings:
 
         [Default(false)]

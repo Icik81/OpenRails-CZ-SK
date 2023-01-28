@@ -805,11 +805,18 @@ namespace ORTS
         void comboBoxStartSeason_SelectedIndexChanged(object sender, EventArgs e)
         {
             UpdateExploreActivity();
+            UpdateSeason();
         }
 
         void comboBoxStartWeather_SelectedIndexChanged(object sender, EventArgs e)
         {
             UpdateExploreActivity();
+        }
+        
+        // Icik
+        void comboBoxWeather_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            UpdateWeatherAdv();
         }
         #endregion
 
@@ -859,14 +866,7 @@ namespace ORTS
         void comboBoxTimetableWeatherFile_SelectedIndexChanged(object sender, EventArgs e)
         {
             UpdateTimetableWeatherSet();
-        }
-
-        // Icik
-        void comboBoxWeather_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            UpdateWeatherSet();
-        }
-
+        }        
         #endregion
 
         #region Multiplayer
@@ -1109,6 +1109,7 @@ namespace ORTS
             comboBoxTimetableTrain.Enabled = comboBoxTimetable.Items.Count > 0;
             comboBoxTimetableWeatherFile.Enabled = comboBoxTimetableWeatherFile.Items.Count > 0;
             comboBoxWeather.Enabled = comboBoxWeather.Items.Count > 0;
+            comboBoxStartSeason.Enabled = comboBoxStartSeason.Items.Count > 0;
             //Avoid to Start with a non valid Activity/Locomotive/Consist.
             buttonResume.Enabled = buttonStart.Enabled = radioButtonModeActivity.Checked && !comboBoxActivity.Text.StartsWith("<") && !comboBoxLocomotive.Text.StartsWith("<") ?
                 SelectedActivity != null && (!(SelectedActivity is ExploreActivity) || (comboBoxConsist.Items.Count > 0 && comboBoxHeadTo.Items.Count > 0)) :
@@ -1425,9 +1426,13 @@ namespace ORTS
         }
 
         // Icik
-        void UpdateWeatherSet()
+        void UpdateWeatherAdv()
         {            
             Settings.WeatherAdv = comboBoxWeather.SelectedIndex;            
+        }
+        void UpdateSeason()
+        {
+            Settings.Season = comboBoxStartSeason.SelectedIndex;
         }
 
         #endregion
