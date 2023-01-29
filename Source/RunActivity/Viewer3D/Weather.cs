@@ -44,7 +44,7 @@ namespace Orts.Viewer3D
         // Icik
         public bool DayNightTimeChange = false;
         public bool NightTime = false;
-        public readonly List<SoundSourceBase> ClearSoundNight;
+        public readonly List<SoundSourceBase> ClearSoundNight;        
 
         public readonly List<SoundSourceBase> ClearSound;
         public readonly List<SoundSourceBase> RainSound;
@@ -261,6 +261,9 @@ namespace Orts.Viewer3D
         {
             // These values are defaults only; subsequent changes to the weather via debugging only change the components (weather, overcastFactor and fogDistance) individually.
             float PrecipitationLiquidity = 0;
+            float PricipitationIntensityPPSPM2 = 0.10f;
+            Weather.SnowVelocityMpS = 1.0f;
+
             WeatherType WeatherType = WeatherType.Clear;
             switch ((int)Viewer.Simulator.Season)
             {
@@ -279,6 +282,7 @@ namespace Orts.Viewer3D
                 case 3:  // Zima
                     PrecipitationLiquidity = 0.0f;
                     WeatherType = WeatherType.Snow;
+                    PricipitationIntensityPPSPM2 = 0.002f;
                     break;
             }
 
@@ -290,7 +294,7 @@ namespace Orts.Viewer3D
                     break;
                 case 1: // Cloudy
                     Viewer.Simulator.WeatherType = WeatherType.Clear;
-                    Weather.OvercastFactor = 0.3f; Weather.FogDistance = 15000; Weather.PrecipitationLiquidity = PrecipitationLiquidity; Weather.PricipitationIntensityPPSPM2 = 0f;
+                    Weather.OvercastFactor = 0.3f; Weather.FogDistance = 20000; Weather.PrecipitationLiquidity = PrecipitationLiquidity; Weather.PricipitationIntensityPPSPM2 = 0f;
                     break;                
                 case 2: // Overcast
                     Viewer.Simulator.WeatherType = WeatherType.Clear;
@@ -302,15 +306,18 @@ namespace Orts.Viewer3D
                     break;
                 case 4: // Rain/snowing day
                     Viewer.Simulator.WeatherType = WeatherType;
-                    Weather.OvercastFactor = 0.3f; Weather.FogDistance = 5000; Weather.PrecipitationLiquidity = PrecipitationLiquidity; Weather.PricipitationIntensityPPSPM2 = 0.15f;
+                    Weather.OvercastFactor = 0.3f; Weather.FogDistance = 5000; Weather.PrecipitationLiquidity = PrecipitationLiquidity; Weather.PricipitationIntensityPPSPM2 = PricipitationIntensityPPSPM2;
+                    Weather.SnowVelocityMpS = 0.1f;
                     break;
                 case 5: // Heavy rain/snow
                     Viewer.Simulator.WeatherType = WeatherType;
-                    Weather.OvercastFactor = 0.6f; Weather.FogDistance = 3000; Weather.PrecipitationLiquidity = PrecipitationLiquidity; Weather.PricipitationIntensityPPSPM2 = 0.5f;
+                    Weather.OvercastFactor = 0.6f; Weather.FogDistance = 1000; Weather.PrecipitationLiquidity = PrecipitationLiquidity; Weather.PricipitationIntensityPPSPM2 = 0.5f;
+                    Weather.SnowVelocityMpS = 0.8f;
                     break;
                 case 6: // Storm
                     Viewer.Simulator.WeatherType = WeatherType;
-                    Weather.OvercastFactor = 1.0f; Weather.FogDistance = 500; Weather.PrecipitationLiquidity = PrecipitationLiquidity; Weather.PricipitationIntensityPPSPM2 = 1.0f;
+                    Weather.OvercastFactor = 1.0f; Weather.FogDistance = 300; Weather.PrecipitationLiquidity = PrecipitationLiquidity; Weather.PricipitationIntensityPPSPM2 = 1.0f;
+                    Weather.SnowVelocityMpS = 1.2f;
                     break;
             }
         }

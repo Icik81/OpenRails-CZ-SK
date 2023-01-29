@@ -50,5 +50,8 @@ namespace Orts.Simulation
         public float WindSpeed { get { return WindSpeedMpS.Length(); } }
         //        public float WindDirection { get { return (float)Math.Atan2(WindSpeedMpS.X, WindSpeedMpS.Y); } }
         public float WindDirection { get { return CalculatedWindDirection; } }
+
+        // Icik
+        public float SnowVelocityMpS;
     }
 }

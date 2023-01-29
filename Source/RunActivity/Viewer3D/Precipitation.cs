@@ -87,7 +87,7 @@ namespace Orts.Viewer3D
             Wind.X = Viewer.Simulator.WeatherType == Orts.Formats.Msts.WeatherType.Snow ? Viewer.Random.Next(2, 6) : Viewer.Random.Next(15, 21);
 
             var gameTime = (float)Viewer.Simulator.GameTime;
-            Pricipitation.Initialize(Viewer.Simulator.WeatherType, Wind);
+            Pricipitation.Initialize(Viewer.Simulator.WeatherType, Wind, Weather);
             // Camera is null during first initialisation.
             if (Viewer.Camera != null) Pricipitation.Update(gameTime, null, Weather.PricipitationIntensityPPSPM2, Viewer);
         }
@@ -105,7 +105,7 @@ namespace Orts.Viewer3D
         // "Rain  1.8 - 2.2mm  6.1 - 6.9m/s"
         const float RainVelocityMpS = 6.9f;
         // "Snow flakes of any size falls at about 1 m/s"
-        const float SnowVelocityMpS = 1.0f;
+        float SnowVelocityMpS = 1.0f;
         // This is a fiddle factor because the above values feel too slow. Alternative suggestions welcome.
         const float ParticleVelocityFactor = 10.0f;
 
@@ -305,10 +305,10 @@ namespace Orts.Viewer3D
             return (MaxParticles - nextFree) + FirstRetiredParticle;
         }
 
-        public void Initialize(Orts.Formats.Msts.WeatherType weather, Vector3 wind)
+        public void Initialize(Orts.Formats.Msts.WeatherType weather, Vector3 wind, Weather Weather)
         {
             //ParticleDuration = ParticleBoxHeightM / (weather == Orts.Formats.Msts.WeatherType.Snow ? SnowVelocityMpS : RainVelocityMpS) / ParticleVelocityFactor;
-            ParticleDuration = ParticleBoxHeightMDynamicMinimum / (weather == Orts.Formats.Msts.WeatherType.Snow ? SnowVelocityMpS : RainVelocityMpS) / ParticleVelocityFactor;
+            ParticleDuration = ParticleBoxHeightMDynamicMinimum / (weather == Orts.Formats.Msts.WeatherType.Snow ? Weather.SnowVelocityMpS : RainVelocityMpS) / ParticleVelocityFactor;
             ParticleDirection = wind;
             FirstActiveParticle = FirstNewParticle = FirstFreeParticle = FirstRetiredParticle = 0;
             ParticlesToEmit = TimeParticlesLastEmitted = 0;

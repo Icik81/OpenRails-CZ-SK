@@ -757,8 +757,17 @@ namespace Orts.Simulation.RollingStocks
                 EngineRPMderivation = (EngineRPM - EngineRPMold) / elapsedClockSeconds;
                 EngineRPMold = EngineRPM;
             }
-            
+
             // Hack pro start zvuku motoru JV ladění
+            if (MotorStartCyklus < 1 && !BrakeSystem.ORCZSKSetUp)
+            {
+                MotorStartCyklus++;
+                if (!Simulator.Settings.AirEmpty && IsPlayerTrain)
+                    SignalEvent(Event.EnginePowerOn);
+
+                if (!IsPlayerTrain)
+                    SignalEvent(Event.EnginePowerOn);
+            }
             if (MotorStartCyklus < 1000 && JVSetUp)
             {
                 MotorStartCyklus++;
