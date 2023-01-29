@@ -262,6 +262,7 @@ namespace Orts.Viewer3D
             // These values are defaults only; subsequent changes to the weather via debugging only change the components (weather, overcastFactor and fogDistance) individually.
             float PrecipitationLiquidity = 0;
             float PricipitationIntensityPPSPM2 = 0.10f;
+            float WinterFogOffSet = 0f;
             Weather.SnowVelocityMpS = 1.0f;
 
             WeatherType WeatherType = WeatherType.Clear;
@@ -283,6 +284,7 @@ namespace Orts.Viewer3D
                     PrecipitationLiquidity = 0.0f;
                     WeatherType = WeatherType.Snow;
                     PricipitationIntensityPPSPM2 = 0.002f;
+                    WinterFogOffSet = 30000f;
                     break;
             }
 
@@ -302,21 +304,21 @@ namespace Orts.Viewer3D
                     break;
                 case 3: // Foggy day
                     Viewer.Simulator.WeatherType = WeatherType.Clear;
-                    Weather.OvercastFactor = 0.0f; Weather.FogDistance = 1000; Weather.PrecipitationLiquidity = PrecipitationLiquidity; Weather.PricipitationIntensityPPSPM2 = 0.05f;
+                    Weather.OvercastFactor = 0.0f; Weather.FogDistance = 1000; Weather.PrecipitationLiquidity = PrecipitationLiquidity; Weather.PricipitationIntensityPPSPM2 = 0.005f;
                     break;
                 case 4: // Rain/snowing day
                     Viewer.Simulator.WeatherType = WeatherType;
-                    Weather.OvercastFactor = 0.3f; Weather.FogDistance = 5000; Weather.PrecipitationLiquidity = PrecipitationLiquidity; Weather.PricipitationIntensityPPSPM2 = PricipitationIntensityPPSPM2;
+                    Weather.OvercastFactor = 0.6f; Weather.FogDistance = 5000 + WinterFogOffSet; Weather.PrecipitationLiquidity = PrecipitationLiquidity; Weather.PricipitationIntensityPPSPM2 = PricipitationIntensityPPSPM2;
                     Weather.SnowVelocityMpS = 0.1f;
                     break;
                 case 5: // Heavy rain/snow
                     Viewer.Simulator.WeatherType = WeatherType;
-                    Weather.OvercastFactor = 0.6f; Weather.FogDistance = 1000; Weather.PrecipitationLiquidity = PrecipitationLiquidity; Weather.PricipitationIntensityPPSPM2 = 0.5f;
+                    Weather.OvercastFactor = 0.8f; Weather.FogDistance = 1000 + WinterFogOffSet; Weather.PrecipitationLiquidity = PrecipitationLiquidity; Weather.PricipitationIntensityPPSPM2 = 0.5f;
                     Weather.SnowVelocityMpS = 0.8f;
                     break;
                 case 6: // Storm
                     Viewer.Simulator.WeatherType = WeatherType;
-                    Weather.OvercastFactor = 1.0f; Weather.FogDistance = 300; Weather.PrecipitationLiquidity = PrecipitationLiquidity; Weather.PricipitationIntensityPPSPM2 = 1.0f;
+                    Weather.OvercastFactor = 1.0f; Weather.FogDistance = 300 + WinterFogOffSet; Weather.PrecipitationLiquidity = PrecipitationLiquidity; Weather.PricipitationIntensityPPSPM2 = 1.0f;
                     Weather.SnowVelocityMpS = 1.2f;
                     break;
             }
