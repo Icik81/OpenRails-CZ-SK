@@ -184,9 +184,18 @@ namespace Orts.Viewer3D
                 //ParticleBoxHeightM = (float)Program.Simulator.Settings.PrecipitationBoxHeight;
 
                 // Icik
-                ParticleBoxLengthM = 300;
-                ParticleBoxWidthM = 500;
-                ParticleBoxHeightM = 100;
+                if (viewer.Simulator.Weather.SnowVelocityMpS < 0.5f)
+                {
+                    ParticleBoxLengthM = 1000;
+                    ParticleBoxWidthM = 1000;
+                    ParticleBoxHeightM = 100;
+                }
+                else
+                {
+                    ParticleBoxLengthM = 300;
+                    ParticleBoxWidthM = 500;
+                    ParticleBoxHeightM = 100;
+                }
             }
             else
             {
