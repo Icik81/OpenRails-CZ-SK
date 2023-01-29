@@ -668,6 +668,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerTransmissions
         /// - computes wheelslip indicators
         /// </summary>
         /// <param name="timeSpan"></param>
+        float BrakePulsTimer;
         public virtual void Update(float timeSpan)
         {
             //Update axle force ( = k * loadTorqueNm)
@@ -699,7 +700,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerTransmissions
                     break;
                 case AxleDriveType.ForceDriven:
                     //Axle revolutions integration
-                    if (TrainSpeedMpS > 0.01f)
+                    if (TrainSpeedMpS > 0.1f)
                     {
                         axleSpeedMpS = AxleRevolutionsInt.Integrate(timeSpan,
                             (
@@ -719,7 +720,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerTransmissions
                             Reset();
                         }
                     }
-                    else if (TrainSpeedMpS < -0.01f)
+                    else if (TrainSpeedMpS < -0.1f)
                     {
                         axleSpeedMpS = AxleRevolutionsInt.Integrate(timeSpan,
                             (
@@ -741,6 +742,18 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerTransmissions
                     }
                     else
                     {
+                        float DriveMarker = driveForceN / Math.Abs(driveForceN);
+                        axleSpeedMpS = AxleRevolutionsInt.Integrate(timeSpan,
+                            (
+                                driveForceN * transmissionEfficiency
+                                - (DriveMarker * brakeRetardForceN)
+                                - slipDerivationMpSS * dampingNs
+                                - (DriveMarker * Math.Abs(SlipSpeedMpS) * frictionN)
+                                - AxleForceN
+                            )
+                            / totalInertiaKgm2
+                        );
+
                         if (Math.Abs(driveForceN) < 1f)
                         {
                             Reset();
@@ -753,6 +766,19 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerTransmissions
                             if (Math.Abs(axleSpeedMpS) < 0.01f)
                                 Reset();
                         }
+
+                        if (brakeRetardForceN > Math.Abs(driveForceN) && AxleSpeedMpS != 0f)
+                        {
+                            BrakePulsTimer += timeSpan;
+                            if (BrakePulsTimer > 0.3f)
+                            {
+                                axleSpeedMpS = 0.0f;
+                                //axleForceN /= 1000;
+                                Reset();
+                            }
+                        }
+                        else
+                            BrakePulsTimer = 0f;
 
                         //Reset(TrainSpeedMpS);
                         //axleForceN = driveForceN - brakeRetardForceN;
