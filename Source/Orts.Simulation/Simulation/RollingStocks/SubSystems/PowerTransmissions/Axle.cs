@@ -754,19 +754,6 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerTransmissions
                             / totalInertiaKgm2
                         );
 
-                        if (Math.Abs(driveForceN) < 1f)
-                        {
-                            Reset();
-                            axleSpeedMpS = 0.0f;
-                            //axleForceN = 0.0f;
-                        }
-                        else
-                        {
-                            axleForceN = driveForceN - brakeRetardForceN;
-                            if (Math.Abs(axleSpeedMpS) < 0.01f)
-                                Reset();
-                        }
-
                         if (brakeRetardForceN > Math.Abs(driveForceN) && AxleSpeedMpS != 0f)
                         {
                             BrakePulsTimer += timeSpan;
@@ -780,6 +767,19 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerTransmissions
                         else
                             BrakePulsTimer = 0f;
 
+                        if (Math.Abs(driveForceN) < 1f)
+                        {                            
+                            axleSpeedMpS = 0.0f;
+                            Reset();
+                            //axleForceN = 0.0f;
+                        }
+                        else
+                        {
+                            axleForceN = driveForceN - (DriveMarker * brakeRetardForceN);
+                            if (Math.Abs(axleSpeedMpS) < 0.01f)
+                                Reset();
+                        }
+                        
                         //Reset(TrainSpeedMpS);
                         //axleForceN = driveForceN - brakeRetardForceN;
                         //axleSpeedMpS = AxleRevolutionsInt.Value;
