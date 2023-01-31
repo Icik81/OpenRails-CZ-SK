@@ -588,7 +588,7 @@ namespace ORTS.Settings
             Commands[(int)UserCommand.ControlDieselDirectionControllerInOut] = new UserCommandKeyInput(0x25, KeyModifiers.Control);
             Commands[(int)UserCommand.ControlRDSTBreaker] = new UserCommandKeyInput(0x13, KeyModifiers.Shift);
             Commands[(int)UserCommand.ControlLapButton] = new UserCommandKeyInput(0x52, KeyModifiers.Shift);
-            Commands[(int)UserCommand.ControlRefreshWorld] = new UserCommandKeyInput(0x3B, KeyModifiers.Shift | KeyModifiers.Control | KeyModifiers.Alt);
+            Commands[(int)UserCommand.ControlRefreshWorld] = new UserCommandKeyInput(0x3B, KeyModifiers.Shift | KeyModifiers.Control | KeyModifiers.Alt);            
             Commands[(int)UserCommand.ControlBreakEDBButton] = new UserCommandKeyInput(0x47, KeyModifiers.Control);            
             Commands[(int)UserCommand.ControlLightFrontLUp] = new UserCommandKeyInput(0x24, KeyModifiers.Shift | KeyModifiers.Control);
             Commands[(int)UserCommand.ControlLightFrontLDown] = new UserCommandKeyInput(0x24, KeyModifiers.Shift);
@@ -603,6 +603,7 @@ namespace ORTS.Settings
             Commands[(int)UserCommand.ControlMirerControllerDown] = new UserCommandKeyInput(0x1E);
             Commands[(int)UserCommand.ControlPowerKeyUp] = new UserCommandKeyInput(0x25, KeyModifiers.Control);
             Commands[(int)UserCommand.ControlPowerKeyDown] = new UserCommandKeyInput(0x25, KeyModifiers.Control | KeyModifiers.Alt);
+            Commands[(int)UserCommand.ControlRefreshCab] = new UserCommandKeyInput(0x3C, KeyModifiers.Shift | KeyModifiers.Control | KeyModifiers.Alt);
         }
         #endregion
 

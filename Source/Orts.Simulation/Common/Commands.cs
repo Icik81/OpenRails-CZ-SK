@@ -2407,6 +2407,22 @@ namespace Orts.Common
             Receiver.ToggleRefreshWorld(true);
         }
     }
+    [Serializable()]
+    public sealed class ToggleRefreshCabCommand : Command
+    {
+        public static MSTSLocomotive Receiver { get; set; }
+
+        public ToggleRefreshCabCommand(CommandLog log)
+            : base(log)
+        {
+            Redo();
+        }
+
+        public override void Redo()
+        {
+            Receiver.ToggleRefreshCab(true);
+        }
+    }
     // Lights
     [Serializable()]
     public sealed class ToggleLightFrontLUpCommand : Command

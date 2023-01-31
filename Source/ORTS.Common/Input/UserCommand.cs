@@ -311,5 +311,6 @@
         [GetString("Set Delete Voltage Marker")] ControlDeleteVoltageMarker,
 
         [GetString("Control_CZSK Reload World Object")] ControlRefreshWorld,
+        [GetString("Control_CZSK Reload Cab Object")] ControlRefreshCab,
     }
 }

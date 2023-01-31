@@ -363,6 +363,7 @@ namespace Orts.Viewer3D.RollingStock
             UserInputCommands.Add(UserCommand.ControlMirerControllerDown, new Action[] { Noop, () => new ToggleMirerControllerDownCommand(Viewer.Log) });            
             UserInputCommands.Add(UserCommand.ControlPowerKeyUp, new Action[] { Noop, () => new TogglePowerKeyUpCommand(Viewer.Log) });
             UserInputCommands.Add(UserCommand.ControlPowerKeyDown, new Action[] { Noop, () => new TogglePowerKeyDownCommand(Viewer.Log) });
+            UserInputCommands.Add(UserCommand.ControlRefreshCab, new Action[] { Noop, () => new ToggleRefreshCabCommand(Viewer.Log) });
 
             // Jindřich
             UserInputCommands.Add(UserCommand.ControlPowerStationLocation, new Action[] { Noop, () => Locomotive.SetPowerSupplyStationLocation() });
@@ -859,6 +860,16 @@ namespace Orts.Viewer3D.RollingStock
             if (UserInput.IsReleased(UserCommand.ControlRefreshWorld))
             {
                 Locomotive.ToggleRefreshWorld(false);
+            }
+            // Ovládání tlačítka znovunačtení kabiny
+            if (UserInput.IsPressed(UserCommand.ControlRefreshCab))
+            {
+                Locomotive.ToggleRefreshCab(true);
+            }
+            else
+            if (UserInput.IsReleased(UserCommand.ControlRefreshCab))
+            {
+                Locomotive.ToggleRefreshCab(false);
             }
 
 

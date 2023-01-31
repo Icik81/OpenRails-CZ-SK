@@ -703,6 +703,7 @@ namespace Orts.Simulation.RollingStocks
         public float[] TrainBrakeValue= new float[3];
         public float[] prevEngineBrakeValue = new float[3];
         public bool TramRailUnit;
+        public int TwoPipesConnectionLocoCount;
 
         // Jindrich
         public bool IsActive = false;
@@ -832,7 +833,7 @@ namespace Orts.Simulation.RollingStocks
         /// </summary>
         public override void LoadFromWagFile(string wagFilePath)
         {
-            base.LoadFromWagFile(wagFilePath);
+            base.LoadFromWagFile(wagFilePath);            
 
             // Assumes that CabViewList[0] is the front cab
             // and that CabViewList[1] is the rear cab, if present.
@@ -6047,8 +6048,11 @@ namespace Orts.Simulation.RollingStocks
             if (Compressor2IsOn)
                 MainResPressurePSI += elapsedClockSeconds * MainResChargingRatePSIpS_2;
 
+            if (TwoPipesConnectionLocoCount < 1)
+                TwoPipesConnectionLocoCount = 1;
+
             if (AuxCompressorIsOn)
-                AuxResPressurePSI += elapsedClockSeconds * AuxResChargingRatePSIpS;
+                AuxResPressurePSI += elapsedClockSeconds * AuxResChargingRatePSIpS / TwoPipesConnectionLocoCount;
         }
 
         /// <summary>
@@ -11043,6 +11047,13 @@ namespace Orts.Simulation.RollingStocks
         {
             Simulator.RefreshWorld = refreshWorld;
             Simulator.Confirmer.Information(Simulator.Catalog.GetString("World Object reloaded!"));
+        }
+        // Znovu načte objekty kabiny
+        public void ToggleRefreshCab(bool refreshCab)
+        {
+            Simulator.RefreshCab = refreshCab;
+            Simulator.Confirmer.Information(Simulator.Catalog.GetString("Cab Object reloaded!"));
+
         }
 
         public int LightsFrameUpdate = 0;

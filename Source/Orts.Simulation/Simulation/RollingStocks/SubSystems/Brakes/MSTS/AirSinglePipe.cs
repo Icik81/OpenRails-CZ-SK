@@ -2131,6 +2131,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             int continuousToExclusive = train.Cars.Count;
             bool TwoPipesConnectionBreak = false;
             int MUCableLocoCount = 0;
+            
+            if (lead != null)
+                lead.TwoPipesConnectionLocoCount = 0;
 
             for (int i = 0; i < train.Cars.Count; i++)
             {
@@ -2169,7 +2172,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         TwoPipesConnectionBreak = true;
                 }
 
-                // Testuje propojení MU kabelu
+                // Testuje propojení MU kabelu a počet lokomotiv propojených vedle sebe napájecím potrubím
                 if (train.Cars[i] is MSTSLocomotive)
                 {
                     (train.Cars[i] as MSTSLocomotive).MUCable = false;
@@ -2180,6 +2183,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         {
                             eng.MUCable = true;
                             MUCableLocoCount++;
+
+                            if (lead != null && brakeSystem.TwoPipesConnection)
+                                lead.TwoPipesConnectionLocoCount++;
                         }
                     }
                 }
@@ -2192,6 +2198,11 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             int T = 0;
             if (lead != null)
             {
+                if (!TwoPipesConnectionBreak)
+                {
+                    lead.TwoPipesConnectionLocoCount = lead.Simulator.LocoCount;
+                }
+
                 for (int i = 0; i < train.Cars.Count; i++)
                 {
                     BrakeSystem MSTSWagon = train.Cars[i].BrakeSystem;
@@ -2234,8 +2245,21 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         if (!TwoPipesConnectionBreak)
                         {
                             // Použití všech hlavních jímek při propojení napájecího potrubí                             
-                            (train.Cars[i] as MSTSLocomotive).MainResPressurePSI = sumpv;
+                            (train.Cars[i] as MSTSLocomotive).MainResPressurePSI = sumpv;                            
                             train.Cars[i].BrakeSystem.TotalCapacityMainResBrakePipe = (train.Cars[i].BrakeSystem.BrakePipeVolumeM3 * train.Cars[i].BrakeSystem.BrakeLine1PressurePSI) + (loco.MainResVolumeM3 * loco.MainResPressurePSI);
+
+                            // Logika chování vzduchu mezi pomocnými jímkami
+                            if ((train.Cars[i] as MSTSLocomotive).AuxResPressurePSI < lead.AuxResPressurePSI)
+                            {
+                                (train.Cars[i] as MSTSLocomotive).AuxResPressurePSI += BrakePipeChargingRatePSIorInHgpS0 * elapsedClockSeconds;
+                                lead.AuxResPressurePSI -= BrakePipeChargingRatePSIorInHgpS0 * elapsedClockSeconds;
+                            }
+                            else
+                            if ((train.Cars[i] as MSTSLocomotive).AuxResPressurePSI > lead.AuxResPressurePSI)
+                            {
+                                (train.Cars[i] as MSTSLocomotive).AuxResPressurePSI -= BrakePipeChargingRatePSIorInHgpS0 * elapsedClockSeconds;
+                                lead.AuxResPressurePSI += BrakePipeChargingRatePSIorInHgpS0 * elapsedClockSeconds;
+                            }                            
                         }
                         else
                         {
