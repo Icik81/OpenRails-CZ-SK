@@ -2251,14 +2251,14 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                             // Logika chování vzduchu mezi pomocnými jímkami
                             if ((train.Cars[i] as MSTSLocomotive).AuxResPressurePSI < lead.AuxResPressurePSI)
                             {
-                                (train.Cars[i] as MSTSLocomotive).AuxResPressurePSI += BrakePipeChargingRatePSIorInHgpS0 * elapsedClockSeconds;
-                                lead.AuxResPressurePSI -= BrakePipeChargingRatePSIorInHgpS0 * elapsedClockSeconds;
+                                (train.Cars[i] as MSTSLocomotive).AuxResPressurePSI += 10f * elapsedClockSeconds;
+                                lead.AuxResPressurePSI -= 10f * elapsedClockSeconds;
                             }
                             else
                             if ((train.Cars[i] as MSTSLocomotive).AuxResPressurePSI > lead.AuxResPressurePSI)
                             {
-                                (train.Cars[i] as MSTSLocomotive).AuxResPressurePSI -= BrakePipeChargingRatePSIorInHgpS0 * elapsedClockSeconds;
-                                lead.AuxResPressurePSI += BrakePipeChargingRatePSIorInHgpS0 * elapsedClockSeconds;
+                                (train.Cars[i] as MSTSLocomotive).AuxResPressurePSI -= 10f * elapsedClockSeconds;
+                                lead.AuxResPressurePSI += 10f * elapsedClockSeconds;
                             }                            
                         }
                         else
