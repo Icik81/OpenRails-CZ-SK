@@ -8965,7 +8965,7 @@ namespace Orts.Simulation.RollingStocks
                 {
                     if (car is MSTSLocomotive)
                         Simulator.LocoCount++;
-                    if (car is MSTSLocomotive && car.AcceptCableSignals && !car.CarIsPlayerLoco)                    
+                    if (car is MSTSLocomotive && car.AcceptCableSignals)                    
                         Simulator.MUCableLocoCount++;                                                            
                 }                
                 if (Simulator.LocoCount == 1 || Simulator.MUCableLocoCount < 1)
