@@ -3964,6 +3964,7 @@ namespace Orts.Simulation.RollingStocks
             }
         }
 
+        public bool NoAuxCompressor;
         public void SetDefault_AuxCompressor()
         {
             // Netěsnost pomocné jímky pomocného kompresoru 0.002 bar/s
@@ -3972,7 +3973,10 @@ namespace Orts.Simulation.RollingStocks
 
             // Velikost jímky pomocného kompresoru
             if (AuxResVolumeM3 == 0)
+            {
                 AuxResVolumeM3 = 60.0f / 1000f; // 60 L
+                NoAuxCompressor = true;
+            }
 
             // Maximální rychlost plnění jímky pomocným kompresorem
             if (AuxResChargingRatePSIpS == 0)
