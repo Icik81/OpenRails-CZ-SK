@@ -85,7 +85,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
         protected bool AICompressorOff;
         protected bool AICompressorRun;
         protected float AITrainLeakage;
-        protected float AITrainBrakePipeVolumeM3;        
+        protected float AITrainBrakePipeVolumeM3;
+        protected float AuxCylVolumeRatioLowPressureBraking;
 
         /// <summary>
         /// EP brake holding valve. Needs to be closed (Lap) in case of brake application or holding.
@@ -729,7 +730,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             }
 
             // Výpočet cílového tlaku v brzdovém válci
-            threshold = (PrevAuxResPressurePSI - BrakeLine1PressurePSI) * AuxCylVolumeRatio;
+            if (AuxCylVolumeRatioLowPressureBraking > 0)
+                threshold = (PrevAuxResPressurePSI - BrakeLine1PressurePSI) * AuxCylVolumeRatioLowPressureBraking;
+            else
+                threshold = (PrevAuxResPressurePSI - BrakeLine1PressurePSI) * AuxCylVolumeRatio;
             if (MCP < MCP_TrainBrake)
                 threshold = MathHelper.Clamp(threshold, 0, MCP);
             else
@@ -1107,7 +1111,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         DebugType = "2P";
                         break;
                 }
-
+                
+                AuxCylVolumeRatioLowPressureBraking = 0;
+                float MCPLowPressureBraking = threshold;
+                MCP = MaxCylPressurePSI;
                 // Načte hodnotu maximálního tlaku v BV
                 if (TwoStateBrake && BrakeCarMode > 1) // Vozy v R, Mg mají nad určitou rychlost plný tlak do válců
                 {
@@ -1116,22 +1123,22 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         || (Car as MSTSLocomotive) != null && (Car as MSTSLocomotive).AbsSpeedMpS > LowStateOnSpeedEngageLevel)
                     {
                         HighPressure = true;
-                        LowPressure = false;
-                        MCP = MaxCylPressurePSI;
-                        T_HighPressure = 0;
+                        LowPressure = false;                        
+                        T_HighPressure = 0;                        
                     }
                     // Po dobu 12s se brzdící válce odvětrávají na nižší stupeň brzdění 
                     if ((Car as MSTSWagon) != null && (Car as MSTSWagon).AbsSpeedMpS < LowStateOnSpeedEngageLevel && HighPressure
                         || (Car as MSTSLocomotive) != null && (Car as MSTSLocomotive).AbsSpeedMpS < LowStateOnSpeedEngageLevel && HighPressure)
                     {
-                        MCP = BrakeCylinderMaxPressureForLowState;
-                        if (T_HighPressure == 0)
-                            FromHighToLowPressureRate = (AutoCylPressurePSI0 - MCP) / 12.0f;
+                        AuxCylVolumeRatioLowPressureBraking = BrakeCylinderMaxPressureForLowState / MCP * AuxCylVolumeRatio;
+                                                  
+                        if (T_HighPressure < 0.3f)
+                            FromHighToLowPressureRate = (AutoCylPressurePSI0 - MCPLowPressureBraking) / 12.0f;
 
                         T_HighPressure += elapsedClockSeconds;
                         if (T_HighPressure < 12.0f)
                         {
-                            if (AutoCylPressurePSI0 > MCP)
+                            if (AutoCylPressurePSI0 > MCPLowPressureBraking)
                                 AutoCylPressurePSI0 -= elapsedClockSeconds * FromHighToLowPressureRate; // Rychlost odvětrání po dobu 12s na 1.9bar                                                
                         }
                         else
@@ -1147,16 +1154,16 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
 
                     if (LowPressure)
                     {
-                        if (AutoCylPressurePSI0 > MCP)
-                            AutoCylPressurePSI0 -= elapsedClockSeconds * (1.0f * 14.50377f); // Rychlost odvětrání 1 bar/s
-                        MCP = BrakeCylinderMaxPressureForLowState;
+                        AuxCylVolumeRatioLowPressureBraking = BrakeCylinderMaxPressureForLowState / MCP * AuxCylVolumeRatio;
+                        if (AutoCylPressurePSI0 > MCPLowPressureBraking || AutoCylPressurePSI0 > BrakeCylinderMaxPressureForLowState)
+                            AutoCylPressurePSI0 -= elapsedClockSeconds * (1.0f * 14.50377f); // Rychlost odvětrání 1 bar/s                        
                     }                    
                 }
                 else
                 if (TwoStateBrake && BrakeCarMode < 2) // Vozy v G, P mají omezený tlak do válců
-                    MCP = BrakeCylinderMaxPressureForLowState;
+                    AuxCylVolumeRatioLowPressureBraking = BrakeCylinderMaxPressureForLowState / MCP * AuxCylVolumeRatio;
                 else
-                    MCP = MaxCylPressurePSI;
+                    AuxCylVolumeRatioLowPressureBraking = 0;
 
                 // Definice default zpoždění náskoku brzdy pro nenaladěné vozy
                 switch ((Car as MSTSWagon).WagonType)
