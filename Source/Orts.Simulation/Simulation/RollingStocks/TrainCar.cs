@@ -1217,16 +1217,20 @@ namespace Orts.Simulation.RollingStocks
                 switch (Simulator.Season)
                 {
                     case SeasonType.Spring:
-                        CarOutsideTempC = CarOutsideTempCBase - (Simulator.Weather.PricipitationIntensityPPSPM2 * 4) - (Simulator.Weather.OvercastFactor * 4) - (3 - (Simulator.Weather.FogDistance / 100000 * 15));
+                        CarOutsideTempC = CarOutsideTempCBase - (Simulator.Weather.PricipitationIntensityPPSPM2 * 2) - (Simulator.Weather.OvercastFactor * 2) - (3 - (Simulator.Weather.FogDistance / 100000 * 15));
+                        CarOutsideTempC = MathHelper.Clamp(CarOutsideTempC, 5, 40);
                         break;
                     case SeasonType.Summer:
-                        CarOutsideTempC = CarOutsideTempCBase - (Simulator.Weather.PricipitationIntensityPPSPM2 * 5) - (Simulator.Weather.OvercastFactor * 5) - (3 - (Simulator.Weather.FogDistance / 100000 * 15));
+                        CarOutsideTempC = CarOutsideTempCBase - (Simulator.Weather.PricipitationIntensityPPSPM2 * 3) - (Simulator.Weather.OvercastFactor * 3) - (3 - (Simulator.Weather.FogDistance / 100000 * 15));
+                        CarOutsideTempC = MathHelper.Clamp(CarOutsideTempC, 12, 40);
                         break;
                     case SeasonType.Autumn:
-                        CarOutsideTempC = CarOutsideTempCBase - (Simulator.Weather.PricipitationIntensityPPSPM2 * 3) - (Simulator.Weather.OvercastFactor * 3) - (3 - (Simulator.Weather.FogDistance / 100000 * 15));
+                        CarOutsideTempC = CarOutsideTempCBase - (Simulator.Weather.PricipitationIntensityPPSPM2 * 1) - (Simulator.Weather.OvercastFactor * 1) - (3 - (Simulator.Weather.FogDistance / 100000 * 15));
+                        CarOutsideTempC = MathHelper.Clamp(CarOutsideTempC, 1, 40);
                         break;
                     case SeasonType.Winter:
-                        CarOutsideTempC = CarOutsideTempCBase - (Simulator.Weather.PricipitationIntensityPPSPM2 * 2) - (Simulator.Weather.OvercastFactor * 2) - (3 - (Simulator.Weather.FogDistance / 100000 * 15));
+                        CarOutsideTempC = CarOutsideTempCBase - (Simulator.Weather.PricipitationIntensityPPSPM2 * 1) - (Simulator.Weather.OvercastFactor * 1) - (3 - (Simulator.Weather.FogDistance / 100000 * 15));
+                        CarOutsideTempC = MathHelper.Clamp(CarOutsideTempC, -25, 40);
                         break;
                 }
             }
