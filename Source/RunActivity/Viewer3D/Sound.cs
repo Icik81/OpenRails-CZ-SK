@@ -1533,7 +1533,7 @@ namespace Orts.Viewer3D
                 case Orts.Formats.Msts.VolumeCurve.Controls.WheelDamageValueControlled: return car.WheelDamageValue;
                 case Orts.Formats.Msts.VolumeCurve.Controls.PullPushValueControlled: return car.PullPushValue;
                 case Orts.Formats.Msts.VolumeCurve.Controls.TrackFactorValueControlled: return car.TrackFactorValue;
-                case Orts.Formats.Msts.VolumeCurve.Controls.PricipitationIntensityControlled: return Program.Simulator.Weather.PricipitationIntensityPPSPM2;
+                case Orts.Formats.Msts.VolumeCurve.Controls.PricipitationIntensityControlled: return Program.Simulator.Weather.PrecipitationLiquidity > 0.5f && car.CarOutsideTempCBase > 5.0f ? Program.Simulator.Weather.PricipitationIntensityPPSPM2 : 0;
                 default: return 0;
             }
         }
