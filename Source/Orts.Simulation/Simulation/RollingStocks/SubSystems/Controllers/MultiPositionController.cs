@@ -578,7 +578,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                         }
                     }
                 }
-                if ((controllerPosition == ControllerPosition.Drive || controllerPosition == ControllerPosition.ThrottleHold) && Locomotive.ThrottlePercent >= 0)
+                if ((controllerPosition == ControllerPosition.Drive || controllerPosition == ControllerPosition.ThrottleHold) && Locomotive.ThrottlePercent > 0)
                 {
                     if (Locomotive.DynamicBrakePercent < 2 && Locomotive.DynamicBrakePercent > -1)
                     {
@@ -616,14 +616,14 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                         else
                             Locomotive.StopTrainBrakeDecrease(0);
                     }
-                    if (controllerBinding == ControllerBinding.Combined)
+                    if (controllerBinding == ControllerBinding.Combined || controllerBinding == ControllerBinding.Throttle)
                     {
                         if (Locomotive.DynamicBrakePercent > 0)
                         {
                             Locomotive.DynamicBrakeIntervention = -1;
                             Locomotive.DynamicBrakeController.StartDecrease(0);
                         }
-                    }
+                    }                    
                     if (Locomotive.RequiredDecelerationPercent > 0)
                     {
                         float step = 100 / Locomotive.DynamicBrakeFullRangeDecreaseTimeSeconds;
