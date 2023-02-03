@@ -870,6 +870,7 @@ namespace Orts.Viewer3D.RollingStock
             if (UserInput.IsReleased(UserCommand.ControlRefreshCab))
             {
                 Locomotive.ToggleRefreshCab(false);
+                Locomotive.CabRefreshCycle = 0;
             }
 
 
@@ -984,7 +985,7 @@ namespace Orts.Viewer3D.RollingStock
 
         internal override void LoadForPlayer()
         {
-            if (!_hasCabRenderer)
+            if (!_hasCabRenderer || Locomotive.CabRefreshCycle > 0)
             {
                 if (Locomotive.CabViewList.Count > 0)
                 {

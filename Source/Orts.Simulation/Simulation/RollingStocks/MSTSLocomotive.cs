@@ -11053,11 +11053,48 @@ namespace Orts.Simulation.RollingStocks
             Simulator.Confirmer.Information(Simulator.Catalog.GetString("World Object reloaded!"));
         }
         // Znovu načte objekty kabiny
+        public int CabRefreshCycle;
         public void ToggleRefreshCab(bool refreshCab)
         {
             Simulator.RefreshCab = refreshCab;
             Simulator.Confirmer.Information(Simulator.Catalog.GetString("Cab Object reloaded!"));
+            if (CVFFileName != null && CabRefreshCycle == 0)
+            {
+                var cabView = BuildCabView(WagFilePath, CVFFileName);
+                if (cabView != null)
+                {
+                    CabViewList.Clear();
+                    CabViewList.Add(cabView);
+                    var reverseCVFFileName = Path.Combine(
+                        Path.GetDirectoryName(CVFFileName), // Some CVF paths begin with "..\..\", so Path.GetDirectoryName() is needed.
+                        Path.GetFileNameWithoutExtension(CVFFileName) + "_rv.cvf"
+                    );
 
+                    {
+                        cabView = BuildCabView(WagFilePath, reverseCVFFileName);
+                        if (cabView != null)
+                            CabViewList.Add(cabView);
+                    }
+                    // practically never happens, but never say never
+                    if (CabViewList.Count == 2 && CabViewList[1].CabViewType == CabViewType.Front && CabViewList[0].CabViewType == CabViewType.Rear)
+                    {
+                        cabView = CabViewList[1];
+                        CabViewList.Insert(0, cabView);
+                        CabViewList.RemoveAt(2);
+                    }
+                    // only one cabview, and it looks rear; insert a void one at first place to maintain fast indexing
+                    else if (CabViewList.Count == 1 && CabViewList[0].CabViewType == CabViewType.Rear)
+                    {
+                        UsingRearCab = true;
+                        CabViewList.Add(CabViewList[0]);
+                        CabViewList[0].CabViewType = CabViewType.Void;
+                    }
+                }
+                CabView3D = BuildCab3DView();
+                if (CabViewList.Count == 0 & CabView3D == null)
+                    Trace.TraceWarning("{0} locomotive's CabView references non-existent {1}", WagFilePath, CVFFileName);                
+            }
+            CabRefreshCycle++;
         }
 
         public int LightsFrameUpdate = 0;

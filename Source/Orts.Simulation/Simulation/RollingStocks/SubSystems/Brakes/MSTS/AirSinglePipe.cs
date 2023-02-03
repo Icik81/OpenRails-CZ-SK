@@ -2136,15 +2136,20 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             float sumv = 0;
             int continuousFromInclusive = 0;
             int continuousToExclusive = train.Cars.Count;
-            bool TwoPipesConnectionBreak = false;
+            bool LocoTwoPipesConnectionBreak = false;
+            bool TrainTwoPipesConnectionBreak = false;
             int MUCableLocoCount = 0;
             
             if (lead != null)
                 lead.TwoPipesConnectionLocoCount = 0;
 
             for (int i = 0; i < train.Cars.Count; i++)
-            {
+            {                
                 BrakeSystem brakeSystem = train.Cars[i].BrakeSystem;
+                
+                if (!brakeSystem.TwoPipesConnection)
+                    TrainTwoPipesConnectionBreak = true;
+
                 if (i < first && (!train.Cars[i + 1].BrakeSystem.FrontBrakeHoseConnected || !brakeSystem.AngleCockBOpen || !train.Cars[i + 1].BrakeSystem.AngleCockAOpen || !train.Cars[i].BrakeSystem.TwoPipesConnection))
                 {
                     if (continuousFromInclusive < i + 1)
@@ -2176,7 +2181,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 if (i >= first && i <= last)
                 {
                     if (!brakeSystem.TwoPipesConnection)
-                        TwoPipesConnectionBreak = true;
+                        LocoTwoPipesConnectionBreak = true;
                 }
 
                 // Testuje propojení MU kabelu a počet lokomotiv propojených vedle sebe napájecím potrubím
@@ -2191,7 +2196,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                             eng.MUCable = true;
                             MUCableLocoCount++;
 
-                            if (lead != null && brakeSystem.TwoPipesConnection)
+                            if (lead != null && brakeSystem.TwoPipesConnection && eng is MSTSElectricLocomotive)
                                 lead.TwoPipesConnectionLocoCount++;
                         }
                     }
@@ -2205,13 +2210,12 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             int T = 0;
             if (lead != null)
             {
-                if (!TwoPipesConnectionBreak)
-                {
-                    lead.TwoPipesConnectionLocoCount = lead.Simulator.LocoCount;
-                }
-
+                if (!TrainTwoPipesConnectionBreak) lead.TwoPipesConnectionLocoCount = 0;
                 for (int i = 0; i < train.Cars.Count; i++)
                 {
+                    if (!TrainTwoPipesConnectionBreak && train.Cars[i] is MSTSElectricLocomotive)
+                        lead.TwoPipesConnectionLocoCount++;
+
                     BrakeSystem MSTSWagon = train.Cars[i].BrakeSystem;
                     MSTSWagon.AirOK_DoorCanManipulate = true;
 
@@ -2231,8 +2235,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 }
             }
 
-
-
+           
             // Počítání hlavních jímek
             // Úbytky vzduchu při manipulaci s dveřmi
             // Spouštění kompresoru na obsazených nebo propojených lokomotivách
@@ -2244,29 +2247,32 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
 
                 if (i >= first && i <= last || TwoPipesConnection && continuousFromInclusive <= i && i < continuousToExclusive)
                 {
-                    if (!TwoPipesConnectionBreak)
+                    if (!LocoTwoPipesConnectionBreak)
                         train.Cars[i].BrakeSystem.BrakeLine2PressurePSI = sumpv;
 
                     if (loco != null && lead != null)
                     {
-                        if (!TwoPipesConnectionBreak)
+                        if (!LocoTwoPipesConnectionBreak)
                         {
                             // Použití všech hlavních jímek při propojení napájecího potrubí                             
                             (train.Cars[i] as MSTSLocomotive).MainResPressurePSI = sumpv;                            
                             train.Cars[i].BrakeSystem.TotalCapacityMainResBrakePipe = (train.Cars[i].BrakeSystem.BrakePipeVolumeM3 * train.Cars[i].BrakeSystem.BrakeLine1PressurePSI) + (loco.MainResVolumeM3 * loco.MainResPressurePSI);
 
                             // Logika chování vzduchu mezi pomocnými jímkami
-                            if ((train.Cars[i] as MSTSLocomotive).AuxResPressurePSI < lead.AuxResPressurePSI)
+                            if (train.Cars[i] is MSTSElectricLocomotive)
                             {
-                                (train.Cars[i] as MSTSLocomotive).AuxResPressurePSI += 10f * elapsedClockSeconds;
-                                lead.AuxResPressurePSI -= 10f * elapsedClockSeconds;
+                                if ((train.Cars[i] as MSTSLocomotive).AuxResPressurePSI < lead.AuxResPressurePSI)
+                                {
+                                    (train.Cars[i] as MSTSLocomotive).AuxResPressurePSI += 10f * elapsedClockSeconds;
+                                    lead.AuxResPressurePSI -= 10f * elapsedClockSeconds;
+                                }
+                                else
+                                if ((train.Cars[i] as MSTSLocomotive).AuxResPressurePSI > lead.AuxResPressurePSI)
+                                {
+                                    (train.Cars[i] as MSTSLocomotive).AuxResPressurePSI -= 10f * elapsedClockSeconds;
+                                    lead.AuxResPressurePSI += 10f * elapsedClockSeconds;
+                                }
                             }
-                            else
-                            if ((train.Cars[i] as MSTSLocomotive).AuxResPressurePSI > lead.AuxResPressurePSI)
-                            {
-                                (train.Cars[i] as MSTSLocomotive).AuxResPressurePSI -= 10f * elapsedClockSeconds;
-                                lead.AuxResPressurePSI += 10f * elapsedClockSeconds;
-                            }                            
                         }
                         else
                         {
