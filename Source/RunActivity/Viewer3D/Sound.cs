@@ -1848,6 +1848,8 @@ namespace Orts.Viewer3D
             {
                 // Icik
                 // Nepřehraje inicializační trigger, pokud je loko ve vypnutém stavu - neplatí pro OR CZ/SK ladění
+                if ((car as MSTSLocomotive) != null && (car as MSTSLocomotive).LocoIsStatic)
+                    return;
                 if ((car as MSTSWagon) != null && !(car as MSTSWagon).BrakeSystem.PowerForWagon && !(car as MSTSWagon).BrakeSystem.ORCZSKSetUp)
                     return;
                 if ((car as MSTSLocomotive) != null && !(car as MSTSLocomotive).CarIsPlayerLoco && Program.Simulator.Settings.AirEmpty && !(car as MSTSLocomotive).BrakeSystem.ORCZSKSetUp)
@@ -1897,6 +1899,8 @@ namespace Orts.Viewer3D
         {
             // Icik
             // Nepřehraje random trigger, pokud je loko ve vypnutém stavu - neplatí pro OR CZ/SK ladění
+            if ((car as MSTSLocomotive) != null && (car as MSTSLocomotive).LocoIsStatic)
+                return;
             if ((car as MSTSWagon) != null && !(car as MSTSWagon).BrakeSystem.PowerForWagon && !(car as MSTSWagon).BrakeSystem.ORCZSKSetUp)
                 return;
             if ((car as MSTSLocomotive) != null && !(car as MSTSLocomotive).CarIsPlayerLoco && Program.Simulator.Settings.AirEmpty && !(car as MSTSLocomotive).BrakeSystem.ORCZSKSetUp)
@@ -1979,13 +1983,7 @@ namespace Orts.Viewer3D
 
             switch (SMS.Event)
             {
-                case Orts.Formats.Msts.Variable_Trigger.Events.Distance_Dec_Past:
-                case Orts.Formats.Msts.Variable_Trigger.Events.Speed_Dec_Past:
-                case Orts.Formats.Msts.Variable_Trigger.Events.WheelSpeed_Dec_Past:
-                case Orts.Formats.Msts.Variable_Trigger.Events.WheelSpeedAC_Dec_Past:
-                case Orts.Formats.Msts.Variable_Trigger.Events.WheelSpeedDC_Dec_Past:
-                case Orts.Formats.Msts.Variable_Trigger.Events.SlipSpeed_Dec_Past:
-                case Orts.Formats.Msts.Variable_Trigger.Events.Vibration_Dec_Past:
+                // LooseConsist nebude používat kontroler pro zvuk
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable1_Dec_Past:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable1AC_Dec_Past:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable1DC_Dec_Past:
@@ -1995,6 +1993,22 @@ namespace Orts.Viewer3D
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable3_Dec_Past:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable3AC_Dec_Past:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable3DC_Dec_Past:
+                    if ((car as MSTSLocomotive).LocoIsStatic)
+                        break;
+                    if (newValue < SMS.Threshold)
+                    {
+                        Signaled = true;
+                        if (SMS.Threshold <= StartValue)
+                            triggered = true;
+                    }
+                    break;
+                case Orts.Formats.Msts.Variable_Trigger.Events.Distance_Dec_Past:
+                case Orts.Formats.Msts.Variable_Trigger.Events.Speed_Dec_Past:
+                case Orts.Formats.Msts.Variable_Trigger.Events.WheelSpeed_Dec_Past:
+                case Orts.Formats.Msts.Variable_Trigger.Events.WheelSpeedAC_Dec_Past:
+                case Orts.Formats.Msts.Variable_Trigger.Events.WheelSpeedDC_Dec_Past:
+                case Orts.Formats.Msts.Variable_Trigger.Events.SlipSpeed_Dec_Past:
+                case Orts.Formats.Msts.Variable_Trigger.Events.Vibration_Dec_Past:                                                    
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable4_Dec_Past:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable5_Dec_Past:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable6_Dec_Past:
@@ -2012,13 +2026,8 @@ namespace Orts.Viewer3D
                             triggered = true;
                     }
                     break;
-                case Orts.Formats.Msts.Variable_Trigger.Events.Distance_Inc_Past:
-                case Orts.Formats.Msts.Variable_Trigger.Events.Speed_Inc_Past:
-                case Orts.Formats.Msts.Variable_Trigger.Events.WheelSpeed_Inc_Past:
-                case Orts.Formats.Msts.Variable_Trigger.Events.WheelSpeedAC_Inc_Past:
-                case Orts.Formats.Msts.Variable_Trigger.Events.WheelSpeedDC_Inc_Past:
-                case Orts.Formats.Msts.Variable_Trigger.Events.SlipSpeed_Inc_Past:
-                case Orts.Formats.Msts.Variable_Trigger.Events.Vibration_Inc_Past:
+
+                // LooseConsist nebude používat kontroler pro zvuk
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable1_Inc_Past:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable1AC_Inc_Past:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable1DC_Inc_Past:
@@ -2028,6 +2037,22 @@ namespace Orts.Viewer3D
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable3_Inc_Past:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable3AC_Inc_Past:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable3DC_Inc_Past:
+                    if ((car as MSTSLocomotive).LocoIsStatic)
+                        break;
+                    if (newValue > SMS.Threshold)
+                    {
+                        Signaled = true;
+                        if (SMS.Threshold >= StartValue)
+                            triggered = true;
+                    }
+                    break;
+                case Orts.Formats.Msts.Variable_Trigger.Events.Distance_Inc_Past:
+                case Orts.Formats.Msts.Variable_Trigger.Events.Speed_Inc_Past:
+                case Orts.Formats.Msts.Variable_Trigger.Events.WheelSpeed_Inc_Past:
+                case Orts.Formats.Msts.Variable_Trigger.Events.WheelSpeedAC_Inc_Past:
+                case Orts.Formats.Msts.Variable_Trigger.Events.WheelSpeedDC_Inc_Past:
+                case Orts.Formats.Msts.Variable_Trigger.Events.SlipSpeed_Inc_Past:
+                case Orts.Formats.Msts.Variable_Trigger.Events.Vibration_Inc_Past:                                
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable4_Inc_Past:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable5_Inc_Past:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable6_Inc_Past:

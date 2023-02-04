@@ -759,7 +759,7 @@ namespace Orts.Simulation.RollingStocks
             }
 
             // Hack pro start zvuku motoru JV ladění
-            if (MotorStartCyklus < 1 && !BrakeSystem.ORCZSKSetUp)
+            if (MotorStartCyklus < 1000 && !BrakeSystem.ORCZSKSetUp)
             {
                 MotorStartCyklus++;
                 if (!Simulator.Settings.AirEmpty && IsPlayerTrain)
@@ -767,16 +767,7 @@ namespace Orts.Simulation.RollingStocks
 
                 if (!IsPlayerTrain)
                     SignalEvent(Event.EnginePowerOn);
-            }
-            if (MotorStartCyklus < 1000 && JVSetUp)
-            {
-                MotorStartCyklus++;
-                if (!Simulator.Settings.AirEmpty && IsPlayerTrain)
-                    SignalEvent(Event.EnginePowerOn);                
-            
-                if (!IsPlayerTrain)
-                    SignalEvent(Event.EnginePowerOn);
-            }            
+            }                      
         }
 
         public override void ChangeGearUp()

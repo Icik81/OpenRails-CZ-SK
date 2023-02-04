@@ -4109,7 +4109,7 @@ namespace Orts.Simulation.RollingStocks
         public void SetAIAction()
         {
             if (Simulator.GameTimeCyklus10 == 10)
-            {
+            {                
                 if ((Train as AITrain) != null)
                 {
                     CarIsWaiting = false;
@@ -4916,8 +4916,11 @@ namespace Orts.Simulation.RollingStocks
             SetLapButton();            
             CarFrameUpdate(elapsedClockSeconds);
 
-            if (IsLeadLocomotive())            
-                CarIsPlayerLoco = true;                            
+            if (IsLeadLocomotive())
+            {
+                CarIsPlayerLoco = true;
+                LocoIsStatic = false;
+            }
             else
                 CarIsPlayerLoco = false;
 
@@ -4956,7 +4959,7 @@ namespace Orts.Simulation.RollingStocks
             {
                 SetAIAction();
                 AcceptMUSignals = true;
-            }
+            }            
 
             if (IsPlayerTrain && !Simulator.Paused)
             {
