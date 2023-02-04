@@ -262,67 +262,242 @@ namespace Orts.Viewer3D
 
         public void SetInitialWeatherParameters()
         {
-            // These values are defaults only; subsequent changes to the weather via debugging only change the components (weather, overcastFactor and fogDistance) individually.
-            float PrecipitationLiquidity = 0;
-            float PricipitationIntensityPPSPM2 = 0.10f;
-            float WinterFogOffSet = 0f;
-            Weather.SnowVelocityMpS = 1.0f;
-
-            WeatherType WeatherType = WeatherType.Clear;
-            switch ((int)Viewer.Simulator.Season)
-            {
-                case 0:  // Jaro
-                    PrecipitationLiquidity = 0.7f;
-                    WeatherType = WeatherType.Rain;
-                    break;
-                case 1:  // Léto
-                    PrecipitationLiquidity = 1.0f;
-                    WeatherType = WeatherType.Rain;
-                    break;
-                case 2:  // Podzim
-                    PrecipitationLiquidity = 1.0f;
-                    WeatherType = WeatherType.Rain;
-                    break;
-                case 3:  // Zima
-                    PrecipitationLiquidity = 0.0f;
-                    WeatherType = WeatherType.Snow;
-                    PricipitationIntensityPPSPM2 = 0.002f;
-                    WinterFogOffSet = 30000f;
-                    break;
-            }
-
+            // Profily poèasí
             switch (Viewer.Simulator.WeatherAdv)
             {
-                case 0: // Clear
-                    Viewer.Simulator.WeatherType = WeatherType.Clear;
-                    Weather.OvercastFactor = 0.05f; Weather.FogDistance = 20000; Weather.PrecipitationLiquidity = PrecipitationLiquidity; Weather.PricipitationIntensityPPSPM2 = 0f;
+                case 0: // Clear                    
+                    switch ((int)Viewer.Simulator.Season)
+                    {
+                        case 0:  // Jaro
+                            Viewer.Simulator.WeatherType = WeatherType.Clear;
+                            Weather.OvercastFactor = 0.05f;
+                            Weather.FogDistance = 20000f;
+                            Weather.PrecipitationLiquidity = 1.0f;
+                            Weather.PricipitationIntensityPPSPM2 = 0f;
+                            break;
+                        case 1:  // Léto
+                            Viewer.Simulator.WeatherType = WeatherType.Clear;
+                            Weather.OvercastFactor = 0.05f;
+                            Weather.FogDistance = 20000f;
+                            Weather.PrecipitationLiquidity = 1.0f;
+                            Weather.PricipitationIntensityPPSPM2 = 0f;
+                            break;
+                        case 2:  // Podzim
+                            Viewer.Simulator.WeatherType = WeatherType.Clear;
+                            Weather.OvercastFactor = 0.05f;
+                            Weather.FogDistance = 20000f;
+                            Weather.PrecipitationLiquidity = 1.0f;
+                            Weather.PricipitationIntensityPPSPM2 = 0f;
+                            break;
+                        case 3:  // Zima
+                            Viewer.Simulator.WeatherType = WeatherType.Clear;
+                            Weather.OvercastFactor = 0.05f;
+                            Weather.FogDistance = 20000f;
+                            Weather.PrecipitationLiquidity = 0f;
+                            Weather.PricipitationIntensityPPSPM2 = 0f;
+                            break;
+                    }
                     break;
-                case 1: // Cloudy
-                    Viewer.Simulator.WeatherType = WeatherType.Clear;
-                    Weather.OvercastFactor = 0.3f; Weather.FogDistance = 20000; Weather.PrecipitationLiquidity = PrecipitationLiquidity; Weather.PricipitationIntensityPPSPM2 = 0f;
+                case 1: // Cloudy                                
+                    switch ((int)Viewer.Simulator.Season)
+                    {
+                        case 0:  // Jaro
+                            Viewer.Simulator.WeatherType = WeatherType.Clear;
+                            Weather.OvercastFactor = 0.3f;
+                            Weather.FogDistance = 20000f;
+                            Weather.PrecipitationLiquidity = 1.0f;
+                            Weather.PricipitationIntensityPPSPM2 = 0f;
+                            break;
+                        case 1:  // Léto
+                            Viewer.Simulator.WeatherType = WeatherType.Clear;
+                            Weather.OvercastFactor = 0.3f;
+                            Weather.FogDistance = 20000f;
+                            Weather.PrecipitationLiquidity = 1.0f;
+                            Weather.PricipitationIntensityPPSPM2 = 0f;
+                            break;
+                        case 2:  // Podzim
+                            Viewer.Simulator.WeatherType = WeatherType.Clear;
+                            Weather.OvercastFactor = 0.3f;
+                            Weather.FogDistance = 20000f;
+                            Weather.PrecipitationLiquidity = 1.0f;
+                            Weather.PricipitationIntensityPPSPM2 = 0f;
+                            break;
+                        case 3:  // Zima
+                            Viewer.Simulator.WeatherType = WeatherType.Clear;
+                            Weather.OvercastFactor = 0.3f;
+                            Weather.FogDistance = 20000f;
+                            Weather.PrecipitationLiquidity = 0f;
+                            Weather.PricipitationIntensityPPSPM2 = 0f;                            
+                            break;
+                    }
                     break;                
-                case 2: // Overcast
-                    Viewer.Simulator.WeatherType = WeatherType.Clear;
-                    Weather.OvercastFactor = 0.8f; Weather.FogDistance = 10000; Weather.PrecipitationLiquidity = PrecipitationLiquidity; Weather.PricipitationIntensityPPSPM2 = 0f;
+                case 2: // Overcast                                        
+                    switch ((int)Viewer.Simulator.Season)
+                    {
+                        case 0:  // Jaro
+                            Viewer.Simulator.WeatherType = WeatherType.Clear;
+                            Weather.OvercastFactor = 0.8f;
+                            Weather.FogDistance = 10000f;
+                            Weather.PrecipitationLiquidity = 1.0f;
+                            Weather.PricipitationIntensityPPSPM2 = 0f;
+                            break;
+                        case 1:  // Léto
+                            Viewer.Simulator.WeatherType = WeatherType.Clear;
+                            Weather.OvercastFactor = 0.8f;
+                            Weather.FogDistance = 10000f;
+                            Weather.PrecipitationLiquidity = 1.0f;
+                            Weather.PricipitationIntensityPPSPM2 = 0f;
+                            break;
+                        case 2:  // Podzim
+                            Viewer.Simulator.WeatherType = WeatherType.Clear;
+                            Weather.OvercastFactor = 0.8f;
+                            Weather.FogDistance = 10000f;
+                            Weather.PrecipitationLiquidity = 1.0f;
+                            Weather.PricipitationIntensityPPSPM2 = 0f;
+                            break;
+                        case 3:  // Zima
+                            Viewer.Simulator.WeatherType = WeatherType.Clear;
+                            Weather.OvercastFactor = 0.8f;
+                            Weather.FogDistance = 10000f;
+                            Weather.PrecipitationLiquidity = 0f;
+                            Weather.PricipitationIntensityPPSPM2 = 0f;                            
+                            break;
+                    }
                     break;
-                case 3: // Foggy day
-                    Viewer.Simulator.WeatherType = WeatherType.Clear;
-                    Weather.OvercastFactor = 0.0f; Weather.FogDistance = 1000; Weather.PrecipitationLiquidity = PrecipitationLiquidity; Weather.PricipitationIntensityPPSPM2 = 0.005f;
+                case 3: // Foggy day                                    
+                    switch ((int)Viewer.Simulator.Season)
+                    {
+                        case 0:  // Jaro
+                            Viewer.Simulator.WeatherType = WeatherType.Rain;
+                            Weather.OvercastFactor = 0.0f;
+                            Weather.FogDistance = 1000f;
+                            Weather.PrecipitationLiquidity = 1.0f;
+                            Weather.PricipitationIntensityPPSPM2 = 0.002f;                            
+                            break;
+                        case 1:  // Léto
+                            Viewer.Simulator.WeatherType = WeatherType.Rain;
+                            Weather.OvercastFactor = 0.0f;
+                            Weather.FogDistance = 1000f;
+                            Weather.PrecipitationLiquidity = 1.0f;
+                            Weather.PricipitationIntensityPPSPM2 = 0.002f;                            
+                            break;
+                        case 2:  // Podzim
+                            Viewer.Simulator.WeatherType = WeatherType.Rain;
+                            Weather.OvercastFactor = 0.0f;
+                            Weather.FogDistance = 1000f;
+                            Weather.PrecipitationLiquidity = 1.0f;
+                            Weather.PricipitationIntensityPPSPM2 = 0.002f;                            
+                            break;
+                        case 3:  // Zima
+                            Viewer.Simulator.WeatherType = WeatherType.Snow;
+                            Weather.OvercastFactor = 0.0f;
+                            Weather.FogDistance = 1000f;
+                            Weather.PrecipitationLiquidity = 0f;
+                            Weather.PricipitationIntensityPPSPM2 = 0.002f;                            
+                            break;
+                    }
                     break;
-                case 4: // Rain/snowing day
-                    Viewer.Simulator.WeatherType = WeatherType;
-                    Weather.OvercastFactor = 0.6f; Weather.FogDistance = 5000 + WinterFogOffSet; Weather.PrecipitationLiquidity = PrecipitationLiquidity; Weather.PricipitationIntensityPPSPM2 = PricipitationIntensityPPSPM2;
-                    Weather.SnowVelocityMpS = 0.1f;
+                case 4: // Rain/snowing day                                        
+                    switch ((int)Viewer.Simulator.Season)
+                    {
+                        case 0:  // Jaro
+                            Viewer.Simulator.WeatherType = WeatherType.Rain;
+                            Weather.OvercastFactor = 0.85f;
+                            Weather.FogDistance = 2550f;
+                            Weather.PrecipitationLiquidity = 0.5f;
+                            Weather.PricipitationIntensityPPSPM2 = 0.1f;
+                            break;
+                        case 1:  // Léto
+                            Viewer.Simulator.WeatherType = WeatherType.Rain;
+                            Weather.OvercastFactor = 0.85f;
+                            Weather.FogDistance = 2550f;
+                            Weather.PrecipitationLiquidity = 1.0f;
+                            Weather.PricipitationIntensityPPSPM2 = 0.1f;
+                            break;
+                        case 2:  // Podzim
+                            Viewer.Simulator.WeatherType = WeatherType.Rain;
+                            Weather.OvercastFactor = 0.85f;
+                            Weather.FogDistance = 2550f;
+                            Weather.PrecipitationLiquidity = 1.0f;
+                            Weather.PricipitationIntensityPPSPM2 = 0.1f;
+                            break;
+                        case 3:  // Zima
+                            Weather.SnowVelocityMpS = 0.1f;
+                            Viewer.Simulator.WeatherType = WeatherType.Snow;
+                            Weather.OvercastFactor = 0.6f;
+                            Weather.FogDistance = 35000f;
+                            Weather.PrecipitationLiquidity = 0f;
+                            Weather.PricipitationIntensityPPSPM2 = 0.001f;                            
+                            break;
+                    }
                     break;
-                case 5: // Heavy rain/snow
-                    Viewer.Simulator.WeatherType = WeatherType;
-                    Weather.OvercastFactor = 0.8f; Weather.FogDistance = 1000 + WinterFogOffSet; Weather.PrecipitationLiquidity = PrecipitationLiquidity; Weather.PricipitationIntensityPPSPM2 = 0.5f;
-                    Weather.SnowVelocityMpS = 0.8f;
+                case 5: // Heavy rain/snow                    
+                    switch ((int)Viewer.Simulator.Season)
+                    {
+                        case 0:  // Jaro
+                            Viewer.Simulator.WeatherType = WeatherType.Rain;
+                            Weather.OvercastFactor = 0.8f;
+                            Weather.FogDistance = 1000f;
+                            Weather.PrecipitationLiquidity = 0.5f;
+                            Weather.PricipitationIntensityPPSPM2 = 0.5f;
+                            break;
+                        case 1:  // Léto
+                            Viewer.Simulator.WeatherType = WeatherType.Rain;
+                            Weather.OvercastFactor = 0.8f;
+                            Weather.FogDistance = 1000f;
+                            Weather.PrecipitationLiquidity = 1.0f;
+                            Weather.PricipitationIntensityPPSPM2 = 0.5f;
+                            break;
+                        case 2:  // Podzim
+                            Viewer.Simulator.WeatherType = WeatherType.Rain;
+                            Weather.OvercastFactor = 0.8f;
+                            Weather.FogDistance = 1000f;
+                            Weather.PrecipitationLiquidity = 1.0f;
+                            Weather.PricipitationIntensityPPSPM2 = 0.5f;
+                            break;
+                        case 3:  // Zima
+                            Weather.SnowVelocityMpS = 0.7f;
+                            Viewer.Simulator.WeatherType = WeatherType.Snow;
+                            Weather.OvercastFactor = 0.8f;
+                            Weather.FogDistance = 30000f;
+                            Weather.PrecipitationLiquidity = 0f;
+                            Weather.PricipitationIntensityPPSPM2 = 0.5f;
+                            break;
+                    }
                     break;
                 case 6: // Storm
-                    Viewer.Simulator.WeatherType = WeatherType;
-                    Weather.OvercastFactor = 1.0f; Weather.FogDistance = 300 + WinterFogOffSet; Weather.PrecipitationLiquidity = PrecipitationLiquidity; Weather.PricipitationIntensityPPSPM2 = 1.0f;
-                    Weather.SnowVelocityMpS = 1.2f;
+                    switch ((int)Viewer.Simulator.Season)
+                    {
+                        case 0:  // Jaro
+                            Viewer.Simulator.WeatherType = WeatherType.Rain;
+                            Weather.OvercastFactor = 1.0f;
+                            Weather.FogDistance = 150f;
+                            Weather.PrecipitationLiquidity = 0.5f;
+                            Weather.PricipitationIntensityPPSPM2 = 1.0f;
+                            break;
+                        case 1:  // Léto
+                            Viewer.Simulator.WeatherType = WeatherType.Rain;
+                            Weather.OvercastFactor = 1.0f;
+                            Weather.FogDistance = 150f;
+                            Weather.PrecipitationLiquidity = 1.0f;
+                            Weather.PricipitationIntensityPPSPM2 = 1.0f;
+                            break;
+                        case 2:  // Podzim
+                            Viewer.Simulator.WeatherType = WeatherType.Rain;
+                            Weather.OvercastFactor = 1.0f;
+                            Weather.FogDistance = 150f;
+                            Weather.PrecipitationLiquidity = 1.0f;
+                            Weather.PricipitationIntensityPPSPM2 = 1.0f;
+                            break;
+                        case 3:  // Zima
+                            Weather.SnowVelocityMpS = 1.2f;
+                            Viewer.Simulator.WeatherType = WeatherType.Snow;
+                            Weather.OvercastFactor = 1.0f;
+                            Weather.FogDistance = 30000f;
+                            Weather.PrecipitationLiquidity = 0.0f;
+                            Weather.PricipitationIntensityPPSPM2 = 1.0f;
+                            break;
+                    }
                     break;
             }
         }
