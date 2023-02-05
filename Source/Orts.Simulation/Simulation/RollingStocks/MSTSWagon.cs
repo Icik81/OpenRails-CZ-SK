@@ -167,7 +167,8 @@ namespace Orts.Simulation.RollingStocks
         public float CarLengthM0;
         public float TrainBrakeControllerValueForSound;
         public float EngineBrakeControllerValueForSound;
-        public float WheelSpeedMpS_Cab;        
+        public float WheelSpeedMpS_Cab;
+        public int MotorStartCyklus;
 
         bool TenderWeightInitialize = true;
         float TenderWagonMaxCoalMassKG = 0;
