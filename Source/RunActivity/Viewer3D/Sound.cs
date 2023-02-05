@@ -1993,7 +1993,7 @@ namespace Orts.Viewer3D
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable3_Dec_Past:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable3AC_Dec_Past:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable3DC_Dec_Past:
-                    if ((car as MSTSLocomotive).LocoIsStatic)
+                    if ((car as MSTSLocomotive) != null && (car as MSTSLocomotive).LocoIsStatic)
                         break;
                     if (newValue < SMS.Threshold)
                     {
@@ -2037,7 +2037,7 @@ namespace Orts.Viewer3D
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable3_Inc_Past:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable3AC_Inc_Past:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable3DC_Inc_Past:
-                    if ((car as MSTSLocomotive).LocoIsStatic)
+                    if ((car as MSTSLocomotive) != null && (car as MSTSLocomotive).LocoIsStatic)
                         break;
                     if (newValue > SMS.Threshold)
                     {
