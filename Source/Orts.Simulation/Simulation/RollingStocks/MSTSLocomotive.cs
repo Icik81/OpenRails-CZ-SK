@@ -8890,11 +8890,11 @@ namespace Orts.Simulation.RollingStocks
             if (this.CarFrameUpdateState == 1)
             {
                 // Vypne inicializační zvuk pohonu při vypnutém stroji
-                if ((this as MSTSDieselLocomotive) != null && (this as MSTSDieselLocomotive).AIMotorStop)
-                    SignalEvent(Event.EnginePowerOff);
+                //if ((this as MSTSDieselLocomotive) != null && (this as MSTSDieselLocomotive).AIMotorStop)
+                //    SignalEvent(Event.EnginePowerOff);
 
-                if ((this as MSTSElectricLocomotive) != null && (this as MSTSElectricLocomotive).AIPantoDownStop)
-                    SignalEvent(Event.EnginePowerOff);
+                //if ((this as MSTSElectricLocomotive) != null && (this as MSTSElectricLocomotive).AIPantoDownStop)
+                //    SignalEvent(Event.EnginePowerOff);
                 
                 if (IsPlayerTrain)
                 {
