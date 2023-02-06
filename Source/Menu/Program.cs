@@ -129,7 +129,7 @@ namespace ORTS
                         case MainForm.UserAction.SinglePlayerTimetableGame:
                             if (String.IsNullOrEmpty(MainForm.SelectedTimetableSet.WeatherFile))
                             {
-                                parameters.Add(String.Format("-timetable \"{0}\" \"{1}:{2}\" {3} {4} {5} {6}",
+                                parameters.Add(String.Format("-timetable \"{0}\" \"{1}:{2}\" {3} {4} {5}",
                                     MainForm.SelectedTimetableSet.fileName,
                                     MainForm.SelectedTimetable,
                                     MainForm.SelectedTimetableTrain,
@@ -145,7 +145,7 @@ namespace ORTS
                                     MainForm.SelectedTimetableTrain,
                                     MainForm.SelectedTimetableSet.Day,
                                     MainForm.SelectedTimetableSet.Season,
-                                    MainForm.SelectedTimetableSet.Weather,
+                                    MainForm.SelectedTimetableSet.Weather,                                    
                                     MainForm.SelectedTimetableSet.WeatherFile));
                             }
                             break;

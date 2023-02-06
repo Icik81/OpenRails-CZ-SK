@@ -402,10 +402,10 @@ namespace Orts.Viewer3D
                     {
                         case 0:  // Jaro
                             Viewer.Simulator.WeatherType = WeatherType.Rain;
-                            Weather.OvercastFactor = 0.85f;
-                            Weather.FogDistance = 2550f;
-                            Weather.PrecipitationLiquidity = 0.5f;
-                            Weather.PricipitationIntensityPPSPM2 = 0.1f;
+                            Weather.OvercastFactor = 0.90f;
+                            Weather.FogDistance = 4763f;
+                            Weather.PrecipitationLiquidity = 0.55f;
+                            Weather.PricipitationIntensityPPSPM2 = 0.0557f;
                             break;
                         case 1:  // Léto
                             Viewer.Simulator.WeatherType = WeatherType.Rain;
@@ -416,18 +416,18 @@ namespace Orts.Viewer3D
                             break;
                         case 2:  // Podzim
                             Viewer.Simulator.WeatherType = WeatherType.Rain;
-                            Weather.OvercastFactor = 0.85f;
-                            Weather.FogDistance = 2550f;
-                            Weather.PrecipitationLiquidity = 1.0f;
-                            Weather.PricipitationIntensityPPSPM2 = 0.1f;
+                            Weather.OvercastFactor = 0.28f;
+                            Weather.FogDistance = 2182f;
+                            Weather.PrecipitationLiquidity = 0.22f;
+                            Weather.PricipitationIntensityPPSPM2 = 0.0416f;
                             break;
                         case 3:  // Zima
                             Weather.SnowVelocityMpS = 0.1f;
                             Viewer.Simulator.WeatherType = WeatherType.Snow;
-                            Weather.OvercastFactor = 0.6f;
-                            Weather.FogDistance = 35000f;
+                            Weather.OvercastFactor = 0.60f;
+                            Weather.FogDistance = 9412f;
                             Weather.PrecipitationLiquidity = 0f;
-                            Weather.PricipitationIntensityPPSPM2 = 0.001f;                            
+                            Weather.PricipitationIntensityPPSPM2 = 0.0050f;                            
                             break;
                     }
                     break;

@@ -186,9 +186,9 @@ namespace Orts.Viewer3D
                 // Icik
                 if (viewer.Simulator.Weather.SnowVelocityMpS < 0.5f)
                 {
-                    ParticleBoxLengthM = 1000;
-                    ParticleBoxWidthM = 1000;
-                    ParticleBoxHeightM = 100;
+                    ParticleBoxLengthM = 500;
+                    ParticleBoxWidthM = 500;
+                    ParticleBoxHeightM = 50;
                 }
                 else
                 {
