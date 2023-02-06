@@ -403,9 +403,9 @@ namespace Orts.Viewer3D
                         case 0:  // Jaro
                             Viewer.Simulator.WeatherType = WeatherType.Rain;
                             Weather.OvercastFactor = 0.90f;
-                            Weather.FogDistance = 4763f;
+                            Weather.FogDistance = 4750f;
                             Weather.PrecipitationLiquidity = 0.55f;
-                            Weather.PricipitationIntensityPPSPM2 = 0.0557f;
+                            Weather.PricipitationIntensityPPSPM2 = 0.060f;
                             break;
                         case 1:  // Léto
                             Viewer.Simulator.WeatherType = WeatherType.Rain;
@@ -417,17 +417,17 @@ namespace Orts.Viewer3D
                         case 2:  // Podzim
                             Viewer.Simulator.WeatherType = WeatherType.Rain;
                             Weather.OvercastFactor = 0.28f;
-                            Weather.FogDistance = 2182f;
+                            Weather.FogDistance = 2200f;
                             Weather.PrecipitationLiquidity = 0.22f;
-                            Weather.PricipitationIntensityPPSPM2 = 0.0416f;
+                            Weather.PricipitationIntensityPPSPM2 = 0.04f;
                             break;
                         case 3:  // Zima
                             Weather.SnowVelocityMpS = 0.1f;
                             Viewer.Simulator.WeatherType = WeatherType.Snow;
                             Weather.OvercastFactor = 0.60f;
-                            Weather.FogDistance = 9412f;
+                            Weather.FogDistance = 9400f;
                             Weather.PrecipitationLiquidity = 0f;
-                            Weather.PricipitationIntensityPPSPM2 = 0.0050f;                            
+                            Weather.PricipitationIntensityPPSPM2 = 0.005f;                            
                             break;
                     }
                     break;
@@ -436,21 +436,21 @@ namespace Orts.Viewer3D
                     {
                         case 0:  // Jaro
                             Viewer.Simulator.WeatherType = WeatherType.Rain;
-                            Weather.OvercastFactor = 0.8f;
-                            Weather.FogDistance = 1000f;
-                            Weather.PrecipitationLiquidity = 0.5f;
-                            Weather.PricipitationIntensityPPSPM2 = 0.5f;
+                            Weather.OvercastFactor = 0.35f;
+                            Weather.FogDistance = 2500f;
+                            Weather.PrecipitationLiquidity = 1.0f;
+                            Weather.PricipitationIntensityPPSPM2 = 0.4f;
                             break;
                         case 1:  // Léto
                             Viewer.Simulator.WeatherType = WeatherType.Rain;
-                            Weather.OvercastFactor = 0.8f;
-                            Weather.FogDistance = 1000f;
+                            Weather.OvercastFactor = 0.2f;
+                            Weather.FogDistance = 1500f;
                             Weather.PrecipitationLiquidity = 1.0f;
-                            Weather.PricipitationIntensityPPSPM2 = 0.5f;
+                            Weather.PricipitationIntensityPPSPM2 = 0.85f;
                             break;
                         case 2:  // Podzim
                             Viewer.Simulator.WeatherType = WeatherType.Rain;
-                            Weather.OvercastFactor = 0.8f;
+                            Weather.OvercastFactor = 0.85f;
                             Weather.FogDistance = 1000f;
                             Weather.PrecipitationLiquidity = 1.0f;
                             Weather.PricipitationIntensityPPSPM2 = 0.5f;
@@ -458,10 +458,10 @@ namespace Orts.Viewer3D
                         case 3:  // Zima
                             Weather.SnowVelocityMpS = 0.7f;
                             Viewer.Simulator.WeatherType = WeatherType.Snow;
-                            Weather.OvercastFactor = 0.8f;
-                            Weather.FogDistance = 30000f;
+                            Weather.OvercastFactor = 0.3f;
+                            Weather.FogDistance = 1000f;
                             Weather.PrecipitationLiquidity = 0f;
-                            Weather.PricipitationIntensityPPSPM2 = 0.5f;
+                            Weather.PricipitationIntensityPPSPM2 = 0.25f;
                             break;
                     }
                     break;
@@ -470,32 +470,32 @@ namespace Orts.Viewer3D
                     {
                         case 0:  // Jaro
                             Viewer.Simulator.WeatherType = WeatherType.Rain;
-                            Weather.OvercastFactor = 1.0f;
-                            Weather.FogDistance = 150f;
-                            Weather.PrecipitationLiquidity = 0.5f;
-                            Weather.PricipitationIntensityPPSPM2 = 1.0f;
+                            Weather.OvercastFactor = 0.75f;
+                            Weather.FogDistance = 1500f;
+                            Weather.PrecipitationLiquidity = 1.0f;
+                            Weather.PricipitationIntensityPPSPM2 = 0.75f;
                             break;
                         case 1:  // Léto
                             Viewer.Simulator.WeatherType = WeatherType.Rain;
-                            Weather.OvercastFactor = 1.0f;
-                            Weather.FogDistance = 150f;
+                            Weather.OvercastFactor = 0.90f;
+                            Weather.FogDistance = 750f;
                             Weather.PrecipitationLiquidity = 1.0f;
-                            Weather.PricipitationIntensityPPSPM2 = 1.0f;
+                            Weather.PricipitationIntensityPPSPM2 = 0.7f;
                             break;
                         case 2:  // Podzim
                             Viewer.Simulator.WeatherType = WeatherType.Rain;
-                            Weather.OvercastFactor = 1.0f;
-                            Weather.FogDistance = 150f;
+                            Weather.OvercastFactor = 0.85f;
+                            Weather.FogDistance = 200f;
                             Weather.PrecipitationLiquidity = 1.0f;
                             Weather.PricipitationIntensityPPSPM2 = 1.0f;
                             break;
                         case 3:  // Zima
                             Weather.SnowVelocityMpS = 1.2f;
                             Viewer.Simulator.WeatherType = WeatherType.Snow;
-                            Weather.OvercastFactor = 1.0f;
-                            Weather.FogDistance = 30000f;
+                            Weather.OvercastFactor = 0.35f;
+                            Weather.FogDistance = 950f;
                             Weather.PrecipitationLiquidity = 0.0f;
-                            Weather.PricipitationIntensityPPSPM2 = 1.0f;
+                            Weather.PricipitationIntensityPPSPM2 = 0.95f;
                             break;
                     }
                     break;
