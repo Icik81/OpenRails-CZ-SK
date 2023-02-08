@@ -181,6 +181,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             PressureRateFactorCharge = thiscopy.PressureRateFactorCharge;
             BrakeCylinderMaxPressureForLowState = thiscopy.BrakeCylinderMaxPressureForLowState;
             LowStateOnSpeedEngageLevel = thiscopy.LowStateOnSpeedEngageLevel;
+            MaxReleaseRateAtHighState = thiscopy.MaxReleaseRateAtHighState;
             TwoStateBrake = thiscopy.TwoStateBrake;
             AuxPowerOnDelayS = thiscopy.AuxPowerOnDelayS;
             OLBailOffLimitPressurePSI = thiscopy.OLBailOffLimitPressurePSI;
@@ -399,6 +400,11 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     TwoStateBrake = true;
                     break;
 
+                case "wagon(twostatebrake(maxreleaserateathighstate":
+                    stf.MustMatch("(");
+                    MaxReleaseRateAtHighState = stf.ReadFloat(STFReader.UNITS.PressureRateDefaultPSIpS, null);                    
+                    break;
+                    
                 // Načte hodnotu rychlosti eliminace níkotlakého přebití                              
                 case "engine(overchargeeliminationrate": OverchargeEliminationRatePSIpS = stf.ReadFloatBlock(STFReader.UNITS.PressureRateDefaultPSIpS, null); break;
 
@@ -1134,17 +1140,30 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                                                   
                         if (T_HighPressure < 0.3f)
                             FromHighToLowPressureRate = (AutoCylPressurePSI0 - MCPLowPressureBraking) / 12.0f;
-
+                        
                         T_HighPressure += elapsedClockSeconds;
-                        if (T_HighPressure < 12.0f)
+                        if (MaxReleaseRateAtHighState == 0)
                         {
-                            if (AutoCylPressurePSI0 > MCPLowPressureBraking)
-                                AutoCylPressurePSI0 -= elapsedClockSeconds * FromHighToLowPressureRate; // Rychlost odvětrání po dobu 12s na 1.9bar                                                
+                            if (T_HighPressure < 12.0f)
+                            {
+                                if (AutoCylPressurePSI0 > MCPLowPressureBraking)
+                                    AutoCylPressurePSI0 -= elapsedClockSeconds * FromHighToLowPressureRate; // Rychlost odvětrání po dobu 12s                                                 
+                            }
+                            else
+                            {
+                                HighPressure = false;
+                                LowPressure = true;
+                            }
                         }
                         else
                         {
-                            HighPressure = false;
-                            LowPressure = true;
+                            if (AutoCylPressurePSI0 > MCPLowPressureBraking)
+                                AutoCylPressurePSI0 -= elapsedClockSeconds * MaxReleaseRateAtHighState; // Rychlost odvětrání zadaná uživatelem                                                                            
+                            else
+                            {
+                                HighPressure = false;
+                                LowPressure = true;
+                            }
                         }
                     }
                     // Pod 50km/h přepne na nižší stupeň brzdění
