@@ -793,15 +793,24 @@ namespace Orts.Viewer3D.Popups
             ));
 
             foreach (var car in train.Cars)
-            {
+            {                
                 if (car is MSTSLocomotive && (hudWindowLocoActualPage > 0 ? car.CarID == LocomotiveID[hudWindowLocoActualPage - 1] : true))
-                {
+                {                    
                     foreach (var line in car.GetDebugStatus().Split('\n'))
                     {
                         if (line.Contains(car.CarID) && !statusHeader.Contains(car.CarID))
                         {
-                            //Header. Supports different types of locomotives.
-                            statusHeader.Add(string.Format("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t\t{6}\t{7}\t{8}\t{9}\t\t{10}\t{11}\t{12}\t\t{13}\t{14}\t{15}\t{16}\t\t{17}\t\t{18}\t{19}\t{20}",
+                            //Header. Supports different types of locomotives.                            
+                            string LocoTypeSteam = "{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t\t{6}\t{7}\t{8}\t{9}\t\t{10}\t{11}\t{12}\t\t{13}\t{14}\t{15}\t{16}\t{17}\t{18}\t{19}\t{20}\t{21}";
+                            string LocoTypeDiesel = "{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t\t{6}\t{7}\t{8}\t{9}\t\t{10}\t{11}\t{12}\t{13}\t{14}\t{15}\t{16}\t{17}\t{18}\t{19}\t{20}\t{21}";
+                            string LocoTypeElectric = "{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t\t{6}\t{7}\t{8}\t{9}\t\t{10}\t{11}\t{12}\t\t{13}\t{14}\t{15}\t{16}\t{17}\t{18}\t{19}\t{20}\t{21}";
+
+                            string LocoType =
+                                car is MSTSSteamLocomotive ? LocoType = LocoTypeSteam :
+                                car is MSTSDieselLocomotive ? LocoType = LocoTypeDiesel :
+                                car is MSTSElectricLocomotive ? LocoType = LocoTypeElectric : "";
+
+                            statusHeader.Add(string.Format(LocoType,
                             //00
                             Viewer.Catalog.GetString("Loco"),
                             //01
@@ -847,26 +856,30 @@ namespace Orts.Viewer3D.Popups
                             car is MSTSElectricLocomotive ? Viewer.Catalog.GetString("") : Viewer.Catalog.GetString(""),
                             //15
                             car is MSTSSteamLocomotive ? Viewer.Catalog.GetString("") :
-                            car is MSTSDieselLocomotive ? Viewer.Catalog.GetString("TempDE") :
+                            car is MSTSDieselLocomotive ? Viewer.Catalog.GetString("WaterTemp") :
                             car is MSTSElectricLocomotive ? Viewer.Catalog.GetString("PantoVoltage") : Viewer.Catalog.GetString(""),
                             //16
                             car is MSTSSteamLocomotive ? Viewer.Catalog.GetString("") :
-                            car is MSTSDieselLocomotive ? Viewer.Catalog.GetString("OilPressDE") :
+                            car is MSTSDieselLocomotive ? Viewer.Catalog.GetString("OilTemp") :                            
                             car is MSTSElectricLocomotive ? Viewer.Catalog.GetString("") : Viewer.Catalog.GetString(""),
                             //17
                             car is MSTSSteamLocomotive ? Viewer.Catalog.GetString("") :
-                            car is MSTSDieselLocomotive ? Viewer.Catalog.GetString("CarType") :
+                            car is MSTSDieselLocomotive ? Viewer.Catalog.GetString("OilPress") :                            
                             car is MSTSElectricLocomotive ? Viewer.Catalog.GetString("") : Viewer.Catalog.GetString(""),
                             //18
                             car is MSTSSteamLocomotive ? Viewer.Catalog.GetString("") :
-                            car is MSTSDieselLocomotive ? Viewer.Catalog.GetString("TurboRPM") :
+                            car is MSTSDieselLocomotive ? Viewer.Catalog.GetString("CarType") :                            
                             car is MSTSElectricLocomotive ? Viewer.Catalog.GetString("") : Viewer.Catalog.GetString(""),
                             //19
                             car is MSTSSteamLocomotive ? Viewer.Catalog.GetString("") :
-                            car is MSTSDieselLocomotive ? Viewer.Catalog.GetString("TurboPress") :
+                            car is MSTSDieselLocomotive ? Viewer.Catalog.GetString("TurboRPM") :                            
                             car is MSTSElectricLocomotive ? Viewer.Catalog.GetString("") : Viewer.Catalog.GetString(""),
                             //20
                             car is MSTSSteamLocomotive ? Viewer.Catalog.GetString("") :
+                            car is MSTSDieselLocomotive ? Viewer.Catalog.GetString("TurboPress") :                            
+                            car is MSTSElectricLocomotive ? Viewer.Catalog.GetString("") : Viewer.Catalog.GetString(""),
+                            //21
+                            car is MSTSSteamLocomotive ? Viewer.Catalog.GetString("") :                            
                             car is MSTSDieselLocomotive ? Viewer.Catalog.GetString("TurboLoad") :
                             car is MSTSElectricLocomotive ? Viewer.Catalog.GetString("") : Viewer.Catalog.GetString("")
                             //Add new Locomotive header here, if required.

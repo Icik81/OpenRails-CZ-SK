@@ -731,7 +731,7 @@ namespace ORTS.Common
         public static string FormatTemperature(float temperatureC, bool isMetric, bool isDelta)
         {
             var temperature = isMetric ? temperatureC : isDelta ? C.ToDeltaF(temperatureC) : C.ToF(temperatureC);
-            return String.Format(CultureInfo.CurrentCulture, "{0:F0}{1}", temperature, isMetric ? c : f);
+            return String.Format(CultureInfo.CurrentCulture, "{0:F1}{1}", temperature, isMetric ? c : f);
         }
 
         public static string FormatEnergyDensityByMass(float edKJpKg, bool isMetric)
