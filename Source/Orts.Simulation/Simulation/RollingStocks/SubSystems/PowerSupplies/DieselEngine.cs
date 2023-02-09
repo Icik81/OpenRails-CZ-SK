@@ -1686,7 +1686,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
             //DieselTempCoolingHyst = 10;
 
             // Inicializační setup teplot
-            if (locomotive.BrakeSystem.StartOn || (RunCycle > 0 && RunCycle < 300))
+            if (locomotive.BrakeSystem.StartOn || (RunCycle > 0 && DieselMotorWaterInitTemp == 0))
             {
                 RunCycle++;
                 if (locomotive.Battery)
@@ -1715,6 +1715,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                 }
                 return;
             }
+            RunCycle = 0;
 
             if (locomotive.Battery)
             {
