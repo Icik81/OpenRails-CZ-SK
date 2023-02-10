@@ -821,12 +821,12 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 {
                     if (loco != null) // Lokomotiva
                     {
-                        MaxReleaseRatePSIpS = ReleaseRatePSIpS = MathHelper.Clamp(MaxReleaseRatePSIpS, 0.15f * 14.50377f, 0.5f * 14.50377f);
+                        MaxReleaseRatePSIpS = ReleaseRatePSIpS = MathHelper.Clamp(MaxReleaseRatePSIpS, 0.1f * 14.50377f, 0.5f * 14.50377f);
                         MaxApplicationRatePSIpS = MathHelper.Clamp(MaxApplicationRatePSIpS, 0.5f * 14.50377f, 1.0f * 14.50377f);
                     }
                     else // Vagón
                     {
-                        MaxReleaseRatePSIpS = ReleaseRatePSIpS = MathHelper.Clamp(MaxReleaseRatePSIpS, 0.15f * 14.50377f, 0.5f * 14.50377f);
+                        MaxReleaseRatePSIpS = ReleaseRatePSIpS = MathHelper.Clamp(MaxReleaseRatePSIpS, 0.1f * 14.50377f, 0.5f * 14.50377f);
                         MaxApplicationRatePSIpS = MathHelper.Clamp(MaxApplicationRatePSIpS, 0.5f * 14.50377f, 1.0f * 14.50377f);
                     }
                 }
@@ -1174,15 +1174,22 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     if (LowPressure)
                     {
                         AuxCylVolumeRatioLowPressureBraking = BrakeCylinderMaxPressureForLowState / MCP * AuxCylVolumeRatio;
-                        if (AutoCylPressurePSI0 > MCPLowPressureBraking || AutoCylPressurePSI0 > BrakeCylinderMaxPressureForLowState)
-                            AutoCylPressurePSI0 -= elapsedClockSeconds * (1.0f * 14.50377f); // Rychlost odvětrání 1 bar/s                        
+                        if (MaxReleaseRateAtHighState == 0)
+                        {
+                            if (AutoCylPressurePSI0 > BrakeCylinderMaxPressureForLowState)
+                                AutoCylPressurePSI0 -= elapsedClockSeconds * (0.3f * 14.50377f); // Rychlost odvětrání 0.3bar/s                        
+                        }
+                        else
+                        {
+                            if (AutoCylPressurePSI0 > BrakeCylinderMaxPressureForLowState)
+                                AutoCylPressurePSI0 -= elapsedClockSeconds * MaxReleaseRateAtHighState; // Rychlost odvětrání zadaná uživatelem                        
+                        }
                     }                    
                 }
                 else
                 if (TwoStateBrake && BrakeCarMode < 2) // Vozy v G, P mají omezený tlak do válců
-                    AuxCylVolumeRatioLowPressureBraking = BrakeCylinderMaxPressureForLowState / MCP * AuxCylVolumeRatio;
-                else
-                    AuxCylVolumeRatioLowPressureBraking = 0;
+                    AuxCylVolumeRatioLowPressureBraking = BrakeCylinderMaxPressureForLowState / MCP * AuxCylVolumeRatio;                
+
 
                 // Definice default zpoždění náskoku brzdy pro nenaladěné vozy
                 switch ((Car as MSTSWagon).WagonType)
