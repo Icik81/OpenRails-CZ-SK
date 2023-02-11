@@ -95,22 +95,39 @@ namespace Orts.Viewer3D
 
         // Dynamický NearPlane
         public float NearPlane = 1.0f;
-        public float PreNearPlane;        
+        public float PreNearPlane;
         public void NearPlaneUpdate()
-        {            
+        {
             var elevation = Viewer.Tiles.GetElevation(cameraLocation);
             var PlayerCameraHeight = Math.Abs((Math.Abs(cameraLocation.Location.Y) - Math.Abs(elevation)));
-            NearPlane = PlayerCameraHeight / 30f;
-            if (AttachedCar != null)
-                NearPlane = 0.25f;
+            bool CameraInPlace;
+            float CameraDistanceX = 0;
+            float CameraDistanceY = 0;
+            float CameraDistanceZ = 0;
 
+            NearPlane = PlayerCameraHeight / 30f;
             NearPlane = MathHelper.Clamp(NearPlane, 0.25f, 10f);
+
+            if (AttachedCar != null)
+            {
+                CameraDistanceX = Math.Abs(AttachedCar.WorldPosition.Location.X - cameraLocation.Location.X);
+                CameraDistanceY = Math.Abs(AttachedCar.WorldPosition.Location.Y - cameraLocation.Location.Y);
+                CameraDistanceZ = Math.Abs(AttachedCar.WorldPosition.Location.Z - cameraLocation.Location.Z);
+                float CameraInPlacePerimeter = AttachedCar.CarLengthM / 2.0f + 2.0f;
+                CameraInPlace = CameraDistanceX < CameraInPlacePerimeter && CameraDistanceY < CameraInPlacePerimeter && CameraDistanceZ < CameraInPlacePerimeter ? true : false; 
+                if (CameraInPlace)
+                    NearPlane = 0.25f;
+                else
+                    NearPlane = 1.0f;
+            }
+                      
             if (Viewer.Simulator.PlayerIsInCab && (!Viewer.PlayerLocomotive.HasFront3DCab && !Viewer.PlayerLocomotive.HasRear3DCab))
                 NearPlane = 1.0f;
 
             if (PreNearPlane > 1.5f * NearPlane || PreNearPlane < 0.5f * NearPlane)            
                 ScreenChanged();
             //Program.Simulator.Confirmer.MSG("NearPlane: " + NearPlane);
+            //Program.Simulator.Confirmer.MSG("CameraDistanceX: " + CameraDistanceX + "  CameraDistanceY: " + CameraDistanceY + "  CameraDistanceZ: " + CameraDistanceZ);
         }
 
         protected Camera(Viewer viewer)
