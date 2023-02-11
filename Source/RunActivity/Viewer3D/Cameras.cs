@@ -113,7 +113,7 @@ namespace Orts.Viewer3D
                 CameraDistanceX = Math.Abs(AttachedCar.WorldPosition.Location.X - cameraLocation.Location.X);
                 CameraDistanceY = Math.Abs(AttachedCar.WorldPosition.Location.Y - cameraLocation.Location.Y);
                 CameraDistanceZ = Math.Abs(AttachedCar.WorldPosition.Location.Z - cameraLocation.Location.Z);
-                float CameraInPlacePerimeter = AttachedCar.CarLengthM / 2.0f + 2.0f;
+                float CameraInPlacePerimeter = AttachedCar.CarLengthM / 2.0f;
                 CameraInPlace = CameraDistanceX < CameraInPlacePerimeter && CameraDistanceY < CameraInPlacePerimeter && CameraDistanceZ < CameraInPlacePerimeter ? true : false; 
                 if (CameraInPlace)
                     NearPlane = 0.25f;
