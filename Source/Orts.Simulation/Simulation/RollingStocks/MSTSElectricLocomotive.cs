@@ -1499,12 +1499,10 @@ namespace Orts.Simulation.RollingStocks
         bool VoltageIndicateTestCompleted;
         public void VoltageIndicate(float elapsedSeconds)
         {
-            if ((Pantographs[1].State == PantographState.Down && Pantographs[2].State == PantographState.Down)
-                        || (Pantographs[1].State == PantographState.Lowering && Pantographs[2].State == PantographState.Down)
-                        || (Pantographs[1].State == PantographState.Down && Pantographs[2].State == PantographState.Lowering))
-                PantographDown = true;
-            else
+            if (Pantographs[1].State == PantographState.Up || Pantographs[2].State == PantographState.Up)                        
                 PantographDown = false;
+            else
+                PantographDown = true;
 
             if (!PantographDown && !VoltageIndicateTestCompleted)
                 TimerVoltageIndicateTest += elapsedSeconds;
