@@ -3815,6 +3815,8 @@ namespace Orts.Simulation.RollingStocks
                         if (car.LocomotiveCab && car.DieselHeaterPower == 0 && car is MSTSDieselLocomotive)
                         {
                             // Kalorifer
+                            if (mstsDieselLocomotive.DieselEngines[0].DieselIdleWaterTemperatureDegC != 0)
+                                mstsDieselLocomotive.DieselEngines[0].DieselIdleTemperatureDegC = mstsDieselLocomotive.DieselEngines[0].DieselIdleWaterTemperatureDegC;
                             car.PowerReductionByHeating0 = 0.85f * car.PowerReductionByHeating * mstsDieselLocomotive.DieselEngines[0].RealDieselWaterTemperatureDeg / mstsDieselLocomotive.DieselEngines[0].DieselIdleTemperatureDegC;
                         }
                         else

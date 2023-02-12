@@ -578,6 +578,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
             DieselOptimalWaterTemperatureDegC = copy.DieselOptimalWaterTemperatureDegC;
             DieselOptimalOilTemperatureDegC = copy.DieselOptimalOilTemperatureDegC;
             DieselIdleTemperatureDegC = copy.DieselIdleTemperatureDegC;
+            DieselIdleWaterTemperatureDegC = copy.DieselIdleWaterTemperatureDegC;
+            DieselIdleOilTemperatureDegC = copy.DieselIdleOilTemperatureDegC;
             DieselWaterTempTimeConstantSec = copy.DieselWaterTempTimeConstantSec;
             DieselOilTempTimeConstantSec = copy.DieselOilTempTimeConstantSec;
             DieselTempCoolingHyst = copy.DieselTempCoolingHyst;
@@ -944,6 +946,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
         /// Steady temperature when idling
         /// </summary>
         public float DieselIdleTemperatureDegC = 60f;
+        public float DieselIdleWaterTemperatureDegC;
+        public float DieselIdleOilTemperatureDegC;
         /// <summary>
         /// Hysteresis of the cooling regulator
         /// </summary>
@@ -1079,6 +1083,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                     case "opttemperaturewater": DieselOptimalWaterTemperatureDegC = stf.ReadFloatBlock(STFReader.UNITS.Temperature, 70f); break;
                     case "opttemperatureoil": DieselOptimalOilTemperatureDegC = stf.ReadFloatBlock(STFReader.UNITS.Temperature, 60f); break;
                     case "idletemperature": DieselIdleTemperatureDegC = stf.ReadFloatBlock(STFReader.UNITS.Temperature, 60f); initLevel |= SettingsFlags.IdleTemperature; break;
+                    case "idlewatertemperature": DieselIdleWaterTemperatureDegC = stf.ReadFloatBlock(STFReader.UNITS.Temperature, 60f); break;
+                    case "idleoiltemperature": DieselIdleOilTemperatureDegC = stf.ReadFloatBlock(STFReader.UNITS.Temperature, 60f);  break;
                     case "tempcoolinghyst": DieselTempCoolingHyst = stf.ReadFloatBlock(STFReader.UNITS.Temperature, 5f); break;
                     case "watertempcoolinghyst": DieselTempWaterCoolingHyst = stf.ReadFloatBlock(STFReader.UNITS.Temperature, 5f); break;
                     case "oiltempcoolinghyst": DieselTempOilCoolingHyst = stf.ReadFloatBlock(STFReader.UNITS.Temperature, 5f); break;
@@ -1711,8 +1717,18 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                 RunCycle++;
                 if (locomotive.Battery)
                 {
+                    if (DieselIdleWaterTemperatureDegC != 0)
+                        DieselIdleTemperatureDegC = DieselIdleWaterTemperatureDegC;
                     DieselMotorWaterInitTemp = DieselIdleTemperatureDegC;
-                    DieselMotorOilInitTemp = DieselIdleTemperatureDegC - 5;
+
+                    if (DieselIdleOilTemperatureDegC != 0)
+                    {
+                        DieselIdleTemperatureDegC = DieselIdleOilTemperatureDegC;
+                        DieselMotorOilInitTemp = DieselIdleTemperatureDegC;
+                    }
+                    else
+                        DieselMotorOilInitTemp = DieselIdleTemperatureDegC - 5;
+
                     FakeDieselWaterTemperatureDeg = DieselMotorWaterInitTemp;
                     FakeDieselOilTemperatureDeg = DieselMotorOilInitTemp;
                 }
@@ -1724,8 +1740,18 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
 
                 if (!locomotive.Simulator.Settings.AirEmpty)
                 {
+                    if (DieselIdleWaterTemperatureDegC != 0)
+                        DieselIdleTemperatureDegC = DieselIdleWaterTemperatureDegC;
                     RealDieselWaterTemperatureDeg = DieselIdleTemperatureDegC;
-                    RealDieselOilTemperatureDeg = DieselIdleTemperatureDegC - 5;
+
+                    if (DieselIdleOilTemperatureDegC != 0)
+                    {
+                        DieselIdleTemperatureDegC = DieselIdleOilTemperatureDegC;
+                        RealDieselOilTemperatureDeg = DieselIdleTemperatureDegC;
+                    }
+                    else
+                        RealDieselOilTemperatureDeg = DieselIdleTemperatureDegC - 5;
+                    
                     locomotive.DieselLocoTempReady = true;
                 }
                 else
@@ -1776,11 +1802,16 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                 ExhaustColor = Color.TransparentBlack;
                 //ExhaustParticles *= 2;
                 ExhaustMagnitude *= 2;
+                
+                if (DieselIdleWaterTemperatureDegC != 0)
+                    DieselIdleTemperatureDegC = DieselIdleWaterTemperatureDegC;
                 locomotive.PowerReductionResult6 = MathHelper.Clamp(1 - (RealDieselWaterTemperatureDeg / (0.90f * DieselIdleTemperatureDegC)), 0, 0.5f);
 
                 if (RealDieselWaterTemperatureDeg > 0.90f * DieselIdleTemperatureDegC)
                     locomotive.DieselLocoTempReady = true;
-            }
+            }            
+            if (DieselIdleWaterTemperatureDegC != 0)
+                DieselIdleTemperatureDegC = DieselIdleWaterTemperatureDegC;
             if (RealDieselWaterTemperatureDeg < DieselIdleTemperatureDegC * 0.75f)
                 locomotive.DieselLocoTempReady = false;
 
@@ -1797,6 +1828,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
             // Teplotu zvyšují otáčky a zátěž motoru
             if (EngineStatus == Status.Running)
             {
+                if (DieselIdleWaterTemperatureDegC != 0)
+                    DieselIdleTemperatureDegC = DieselIdleWaterTemperatureDegC;
                 RealDieselWaterTemperatureDeg += elapsedClockSeconds * (LoadPercent * 0.01f * (120 - DieselIdleTemperatureDegC) + DieselIdleTemperatureDegC - RealDieselWaterTemperatureDeg) * 2.5f / DieselWaterTempTimeConstantSec;
                 RealDieselWaterTemperatureDeg += elapsedClockSeconds * ((RealRPM - IdleRPM) / (MaxRPM - IdleRPM) * 120 + DieselIdleTemperatureDegC - RealDieselWaterTemperatureDeg) * 2.0f * MathHelper.Clamp(DieselIdleTemperatureDegC / RealDieselWaterTemperatureDeg, 1, 10) / DieselWaterTempTimeConstantSec;
             }
@@ -1809,6 +1842,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
             // Teplotu zvyšují otáčky a zátěž motoru
             if (EngineStatus == Status.Running)
             {
+                if (DieselIdleOilTemperatureDegC != 0)
+                    DieselIdleTemperatureDegC = DieselIdleOilTemperatureDegC;
                 RealDieselOilTemperatureDeg += elapsedClockSeconds * (LoadPercent * 0.01f * (120 - DieselIdleTemperatureDegC) + DieselIdleTemperatureDegC - RealDieselOilTemperatureDeg) * 2.5f / DieselOilTempTimeConstantSec;
                 RealDieselOilTemperatureDeg += elapsedClockSeconds * ((RealRPM - IdleRPM) / (MaxRPM - IdleRPM) * 120 + DieselIdleTemperatureDegC - RealDieselOilTemperatureDeg) * 2.0f * MathHelper.Clamp(DieselIdleTemperatureDegC / RealDieselOilTemperatureDeg, 1, 10) / DieselOilTempTimeConstantSec;
             }
