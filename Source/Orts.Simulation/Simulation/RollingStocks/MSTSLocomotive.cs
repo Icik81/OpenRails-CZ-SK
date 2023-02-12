@@ -4940,13 +4940,13 @@ namespace Orts.Simulation.RollingStocks
                     PowerKey = true;
                     PowerKeyPosition[LocoStation] = 2;
                     StationIsActivated[LocoStation] = true;
-                    if (CruiseControl != null && CruiseControl.Equipped)
+                    /*if (CruiseControl != null && CruiseControl.Equipped)
                     {
                         CruiseControl.SpeedRegMode[LocoStation] = SubSystems.CruiseControl.SpeedRegulatorMode.Auto;
                         CruiseControl.SelectedSpeedMpS = MpS.FromKpH(40);
                         CruiseControl.SpeedSelMode[LocoStation] = SubSystems.CruiseControl.SpeedSelectorMode.Parking;
                         AripotControllerValue[LocoStation] = CruiseControl.SelectedSpeedMpS / MaxSpeedMpS;
-                    }
+                    }*/
                 }
                 else
                 {
