@@ -659,7 +659,7 @@ namespace Orts.Simulation.RollingStocks
         public bool MirerControllerEnable;
         public int MirerControllerPosition;
         public int prevMirerControllerPosition;
-        public int StepControllerValue;        
+        public float StepControllerValue;        
         public InterpolatorDiesel2D TractiveForceStepControllerCurves;
         public InterpolatorDiesel2D TractiveForceStepControllerCurvesAC;
         public InterpolatorDiesel2D TractiveForceStepControllerCurvesDC;
@@ -4965,8 +4965,11 @@ namespace Orts.Simulation.RollingStocks
 
             if (IsPlayerTrain && !Simulator.Paused)
             {
-                //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("WeatherAdv: " + Simulator.WeatherAdv));                                                
+                //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("WeatherAdv: " + Simulator.WeatherAdv));                                                                
                 StepControllerValue = Simulator.StepControllerValue;
+                // StepController odpovídá v defaultu throttle
+                Simulator.StepControllerValue = LocalThrottlePercent / 100;
+
                 TogglePowerKey();
                 PowerKeyLogic();
                 MUCableLogic();
@@ -5010,7 +5013,7 @@ namespace Orts.Simulation.RollingStocks
                 WipersWindow(elapsedClockSeconds);
                 BatterySetOn = false;
                 if (LocoReadyToGo && this is MSTSSteamLocomotive)
-                    LocoReadyToGo = false;
+                    LocoReadyToGo = false;                
             }
             
             // Hodnoty pro výpočet zvukových proměnných
@@ -11744,8 +11747,7 @@ namespace Orts.Simulation.RollingStocks
         public void MirerController()
         {
             if (!IsLeadLocomotive())
-                return;
-            Simulator.StepControllerValue = (int)LocalThrottlePercent;
+                return;            
             if (MirerControllerEnable)
             {
                 // Obecná proměnná pro StepController

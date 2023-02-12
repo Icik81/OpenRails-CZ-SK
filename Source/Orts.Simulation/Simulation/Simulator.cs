@@ -210,7 +210,7 @@ namespace Orts.Simulation
         public float _NightBrightnessValue;
         public bool RefreshWorld;
         public bool PlayerUsingRearCab;
-        public int StepControllerValue;
+        public float StepControllerValue;
         public int StepControllerMinValue;
         public int StepControllerMaxValue;
         public bool TrainAlerterPassed;
