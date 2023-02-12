@@ -467,8 +467,8 @@ float4 PSImageTransfer(uniform bool ClampTexCoords, in VERTEX_OUTPUT In) : COLOR
 	clip(Color.a - ReferenceAlpha);
 
 	// Ambient and shadow effects apply first; night-time textures cancel out all normal lighting.
-	if (Fog.a != 0) MaxShadowBrightness = Fog.a * 1000 * 4.5;
-	if (Fog.a < 0.0001) MaxShadowBrightness = 0.0001 * 1000 * 4.5;
+	if (Fog.a != 0) MaxShadowBrightness = Fog.a * 1000 * 3.5;
+	if (Fog.a < 0.0001) MaxShadowBrightness = 0.0001 * 1000 * 3.5;
 	if (MaxShadowBrightness > 1.0) MaxShadowBrightness = 1.0;
 
 	float3 litColor = Color.rgb * lerp(MaxShadowBrightness, FullBrightness, saturate(_PSGetAmbientEffect(In) * _PSGetShadowEffect(true, In) + ImageTextureIsNight));
@@ -537,8 +537,8 @@ float4 PSVegetation(in VERTEX_OUTPUT In) : COLOR0
 	clip(Color.a - ReferenceAlpha);
 	
 	// Ambient effect applies first; night-time textures cancel out all normal lighting.
-	if (Fog.a != 0) MaxShadowBrightness = Fog.a * 1000 * 7;
-	if (Fog.a < 0.0001) MaxShadowBrightness = 0.0001 * 1000 * 7;
+	if (Fog.a != 0) MaxShadowBrightness = Fog.a * 1000 * 5;
+	if (Fog.a < 0.0001) MaxShadowBrightness = 0.0001 * 1000 * 5;
 	if (MaxShadowBrightness > 1.0) MaxShadowBrightness = 1.0;
 	
 	float3 litColor = Color.rgb * lerp(MaxShadowBrightness, FullBrightness, saturate(_PSGetAmbientEffect(In) * _PSGetShadowEffect(true, In) + ImageTextureIsNight));
@@ -592,8 +592,8 @@ float4 PSTerrain(in VERTEX_OUTPUT In) : COLOR0
 	float4 Color = tex2D(Image, In.TexCoords.xy);
 
 	// Ambient and shadow effects apply first; night-time textures cancel out all normal lighting.
-	if (Fog.a != 0) MaxShadowBrightness = Fog.a * 1000 * 4.5;
-	if (Fog.a < 0.0001) MaxShadowBrightness = 0.0001 * 1000 * 4.5;
+	if (Fog.a != 0) MaxShadowBrightness = Fog.a * 1000 * 3.5;
+	if (Fog.a < 0.0001) MaxShadowBrightness = 0.0001 * 1000 * 3.5;
 	if (MaxShadowBrightness > 1.0) MaxShadowBrightness = 1.0;
 	
 	float3 litColor = Color.rgb * lerp(MaxShadowBrightness, FullBrightness, saturate(_PSGetAmbientEffect(In) * _PSGetShadowEffect(true, In) + ImageTextureIsNight));
