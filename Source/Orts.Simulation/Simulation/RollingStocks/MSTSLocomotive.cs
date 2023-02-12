@@ -4576,13 +4576,13 @@ namespace Orts.Simulation.RollingStocks
                         
                         prevEngineBrakeValue[LocoStation] = EngineBrakeValue[LocoStation];
 
-                        if (CruiseControl != null && CruiseControl.Equipped)
+                        /*if (CruiseControl != null && CruiseControl.Equipped)
                         {
                             CruiseControl.SpeedRegMode[LocoStation] = SubSystems.CruiseControl.SpeedRegulatorMode.Auto;
                             CruiseControl.SelectedSpeedMpS = MpS.FromKpH(40);
                             CruiseControl.SpeedSelMode[LocoStation] = SubSystems.CruiseControl.SpeedSelectorMode.Parking;
                             AripotControllerValue[LocoStation] = CruiseControl.SelectedSpeedMpS / MaxSpeedMpS;
-                        }
+                        }*/
                     }
                 }
             }
