@@ -431,6 +431,11 @@ namespace Orts.Simulation.RollingStocks
             string orFile = dir + @"\openrails\" + file;
             if (File.Exists(orFile))
                 wagFilePath = orFile;
+            
+            // Icik
+            string orczskFile = dir + @"\openrailsczsk\" + file;
+            if (File.Exists(orczskFile))
+                wagFilePath = orczskFile;
 
             using (STFReader stf = new STFReader(wagFilePath, true))
             {
