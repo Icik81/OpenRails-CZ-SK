@@ -11745,6 +11745,7 @@ namespace Orts.Simulation.RollingStocks
         {
             if (!IsLeadLocomotive())
                 return;
+            Simulator.StepControllerValue = (int)LocalThrottlePercent;
             if (MirerControllerEnable)
             {
                 // Obecná proměnná pro StepController
