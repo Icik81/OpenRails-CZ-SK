@@ -567,7 +567,7 @@ namespace Orts.Simulation.RollingStocks
             myAverageAxleSpeedMps = AverageAxleSpeedMpS;
 
             // Icik - pro správný směr točení kol
-            AverageAxleSpeedMpS *= (Math.Abs(Locomotive.FilteredMotiveForceN) > 0 ? (Locomotive.FilteredMotiveForceN / Math.Abs(Locomotive.FilteredMotiveForceN)) : 1);
+            AverageAxleSpeedMpS *= (Locomotive.AbsSpeedMpS > 0 ? (Locomotive.SpeedMpS / Locomotive.AbsSpeedMpS) : 1);
         }
         protected float speedDiff = 0;
         public void DisableMotors()
