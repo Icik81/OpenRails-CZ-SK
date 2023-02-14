@@ -1174,17 +1174,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     if (LowPressure)
                     {
                         AuxCylVolumeRatioLowPressureBraking = BrakeCylinderMaxPressureForLowState / MCP * AuxCylVolumeRatio;
-                        if (MaxReleaseRateAtHighState == 0)
-                        {
-                            if (AutoCylPressurePSI0 > BrakeCylinderMaxPressureForLowState)
-                                AutoCylPressurePSI0 -= elapsedClockSeconds * (0.3f * 14.50377f); // Rychlost odvětrání 0.3bar/s                        
-                        }
-                        else
-                        {
-                            if (AutoCylPressurePSI0 > BrakeCylinderMaxPressureForLowState)
-                                AutoCylPressurePSI0 -= elapsedClockSeconds * MaxReleaseRateAtHighState; // Rychlost odvětrání zadaná uživatelem                        
-                        }
-                    }                    
+                        if (AutoCylPressurePSI0 > BrakeCylinderMaxPressureForLowState)
+                            AutoCylPressurePSI0 -= elapsedClockSeconds * (1.0f * 14.50377f); // Rychlost odvětrání 1bar/s                        
+                    }                   
                 }
                 else
                 if (TwoStateBrake && BrakeCarMode < 2) // Vozy v G, P mají omezený tlak do válců
