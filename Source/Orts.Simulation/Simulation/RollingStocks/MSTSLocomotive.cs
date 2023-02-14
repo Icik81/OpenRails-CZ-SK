@@ -6234,9 +6234,23 @@ namespace Orts.Simulation.RollingStocks
                 }
                 else
                 {
-                    WheelSlip = extendedPhysics.IsWheelSlip;
-                    WheelSlipWarning = extendedPhysics.IsWheelSlipWarning;
-                    WheelSpeedMpS = extendedPhysics.AverageAxleSpeedMpS;
+                    if (AdhesionEfficiencyKoef == 0) AdhesionEfficiencyKoef = 1.00f;
+                    LocomotiveAxle.AdhesionEfficiencyKoef = AdhesionEfficiencyKoef;
+
+                    // Upravuje chybu v adhezi pokud vůz brzdí (brzdí plnou vahou tzn. všemi koly)
+                    LocomotiveAxle.BrakeRetardForceN = BrakeRetardForceN / (MassKG / DrvWheelWeightKg);
+
+                    LocomotiveAxle.AxleWeightN = 9.81f * DrvWheelWeightKg;   //will be computed each time considering the tilting
+                    LocomotiveAxle.DriveForceN = MotiveForceN * (1 - PowerReduction);  //Total force applied to wheels
+                    LocomotiveAxle.TrainSpeedMpS = SpeedMpS;            //Set the train speed of the axle model
+                    LocomotiveAxle.Update(elapsedClockSeconds);
+                    MotiveForceN = LocomotiveAxle.AxleForceN;           //Get the Axle force and use it for the motion
+                    if (elapsedClockSeconds > 0)
+                    {
+                        WheelSlip = extendedPhysics.IsWheelSlip;
+                        WheelSlipWarning = extendedPhysics.IsWheelSlipWarning;
+                    }
+                    WheelSpeedMpS = LocomotiveAxle.AxleSpeedMpS;
                 }
             }
         }

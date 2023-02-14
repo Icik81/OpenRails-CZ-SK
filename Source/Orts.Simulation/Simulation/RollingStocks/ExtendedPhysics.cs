@@ -564,10 +564,7 @@ namespace Orts.Simulation.RollingStocks
             //Locomotive.Simulator.Confirmer.MSG(TotalForceN.ToString() + " " + Locomotive.TractiveForceN.ToString());
             //Locomotive.Simulator.Confirmer.MSG(Undercarriages[0].Axles[0].WheelSpeedMpS.ToString() + " " + Undercarriages[0].Axles[1].WheelSpeedMpS.ToString() + " " + Undercarriages[1].Axles[0].WheelSpeedMpS.ToString() + " " + Undercarriages[1].Axles[1].WheelSpeedMpS.ToString());
             //Locomotive.Simulator.Confirmer.MSG(MpS.ToKpH((FastestAxleSpeedMpS - AverageAxleSpeedMpS)).ToString());
-            myAverageAxleSpeedMps = AverageAxleSpeedMpS;
-
-            // Icik - pro správný směr točení kol
-            AverageAxleSpeedMpS *= (Locomotive.AbsSpeedMpS > 0 ? (Locomotive.SpeedMpS / Locomotive.AbsSpeedMpS) : 1);
+            myAverageAxleSpeedMps = AverageAxleSpeedMpS;            
         }
         protected float speedDiff = 0;
         public void DisableMotors()
