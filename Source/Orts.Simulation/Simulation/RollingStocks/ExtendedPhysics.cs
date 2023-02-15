@@ -351,7 +351,7 @@ namespace Orts.Simulation.RollingStocks
                 }
                 else
                 {
-                    return (Math.Abs(AverageAxleSpeedMpS) - Locomotive.AbsSpeedMpS);
+                    return ((Locomotive.LocomotiveAxle.AxleSpeedMpS / Math.Abs(Locomotive.LocomotiveAxle.AxleSpeedMpS) * AverageAxleSpeedMpS) - Locomotive.LocomotiveAxle.TrainSpeedMpS);
                 }
             }
         }

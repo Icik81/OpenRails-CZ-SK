@@ -6183,75 +6183,44 @@ namespace Orts.Simulation.RollingStocks
 
 
                 //Set axle model parameters
+                // Icik              
+                if (AdhesionEfficiencyKoef == 0) AdhesionEfficiencyKoef = 1.0f;
+                LocomotiveAxle.AdhesionEfficiencyKoef = AdhesionEfficiencyKoef;                
+                LocomotiveAxle.BrakeRetardForceN = BrakeRetardForceN / (MassKG / DrvWheelWeightKg); // Upravuje chybu v adhezi pokud vůz brzdí (brzdí plnou vahou tzn. všemi koly)
+                LocomotiveAxle.AxleWeightN = 9.81f * DrvWheelWeightKg;   //will be computed each time considering the tilting
+                LocomotiveAxle.DriveForceN = MotiveForceN * (1 - PowerReduction);  //Total force applied to wheels
+                LocomotiveAxle.TrainSpeedMpS = SpeedMpS;            //Set the train speed of the axle model
+                LocomotiveAxle.Update(elapsedClockSeconds);         //Main updater of the axle model               
 
-                //LocomotiveAxle.BrakeForceN = FrictionForceN;
-                //  LocomotiveAxle.BrakeRetardForceN = BrakeForceN;
-
-                //LocomotiveAxle.BrakeRetardForceN = BrakeRetardForceN;
-                // Icik
-                // Součinitel využití adheze (výchozí hodnota 1.00)
-
-                // Jindřich > pokud máme definovánu EP, tento výpočet již proběhnul
                 if (extendedPhysics == null)
-                {
-                    if (AdhesionEfficiencyKoef == 0) AdhesionEfficiencyKoef = 1.00f;
-                    LocomotiveAxle.AdhesionEfficiencyKoef = AdhesionEfficiencyKoef;
-
-                    // Upravuje chybu v adhezi pokud vůz brzdí (brzdí plnou vahou tzn. všemi koly)
-                    LocomotiveAxle.BrakeRetardForceN = BrakeRetardForceN / (MassKG / DrvWheelWeightKg);
-
-                    LocomotiveAxle.AxleWeightN = 9.81f * DrvWheelWeightKg;   //will be computed each time considering the tilting
-                    LocomotiveAxle.DriveForceN = MotiveForceN * (1 - PowerReduction);  //Total force applied to wheels
-                    LocomotiveAxle.TrainSpeedMpS = SpeedMpS;            //Set the train speed of the axle model
-                    LocomotiveAxle.Update(elapsedClockSeconds);         //Main updater of the axle model
-                    MotiveForceN = LocomotiveAxle.AxleForceN;           //Get the Axle force and use it for the motion
+                {                                        
+                    MotiveForceN = LocomotiveAxle.AxleForceN;           
                     if (elapsedClockSeconds > 0)
                     {
-                        WheelSlip = LocomotiveAxle.IsWheelSlip;             //Get the wheelslip indicator
+                        WheelSlip = LocomotiveAxle.IsWheelSlip;             
                         WheelSlipWarning = LocomotiveAxle.IsWheelSlipWarning;
-                    }
-                    WheelSpeedMpS = LocomotiveAxle.AxleSpeedMpS;
+                    }                    
                 }
-                else if (!extendedPhysics.UseControllerVolts)
+                else 
+                if (!extendedPhysics.UseControllerVolts)
                 {
-                    if (AdhesionEfficiencyKoef == 0) AdhesionEfficiencyKoef = 1.00f;
-                    LocomotiveAxle.AdhesionEfficiencyKoef = AdhesionEfficiencyKoef;
-
-                    // Upravuje chybu v adhezi pokud vůz brzdí (brzdí plnou vahou tzn. všemi koly)
-                    LocomotiveAxle.BrakeRetardForceN = BrakeRetardForceN / (MassKG / DrvWheelWeightKg);
-
-                    LocomotiveAxle.AxleWeightN = 9.81f * DrvWheelWeightKg;   //will be computed each time considering the tilting
-                    LocomotiveAxle.DriveForceN = MotiveForceN * (1 - PowerReduction);  //Total force applied to wheels
-                    LocomotiveAxle.TrainSpeedMpS = SpeedMpS;            //Set the train speed of the axle model
-                    LocomotiveAxle.Update(elapsedClockSeconds);         //Main updater of the axle model
-                    MotiveForceN = LocomotiveAxle.AxleForceN;           //Get the Axle force and use it for the motion
-                    if (elapsedClockSeconds > 0)
-                    {
-                        WheelSlip = LocomotiveAxle.IsWheelSlip;             //Get the wheelslip indicator
-                        WheelSlipWarning = LocomotiveAxle.IsWheelSlipWarning;
-                    }
-                    WheelSpeedMpS = LocomotiveAxle.AxleSpeedMpS;
-                }
-                else
-                {
-                    if (AdhesionEfficiencyKoef == 0) AdhesionEfficiencyKoef = 1.00f;
-                    LocomotiveAxle.AdhesionEfficiencyKoef = AdhesionEfficiencyKoef;
-
-                    // Upravuje chybu v adhezi pokud vůz brzdí (brzdí plnou vahou tzn. všemi koly)
-                    LocomotiveAxle.BrakeRetardForceN = BrakeRetardForceN / (MassKG / DrvWheelWeightKg);
-
-                    LocomotiveAxle.AxleWeightN = 9.81f * DrvWheelWeightKg;   //will be computed each time considering the tilting
-                    LocomotiveAxle.DriveForceN = MotiveForceN * (1 - PowerReduction);  //Total force applied to wheels
-                    LocomotiveAxle.TrainSpeedMpS = SpeedMpS;            //Set the train speed of the axle model
-                    LocomotiveAxle.Update(elapsedClockSeconds);
-                    MotiveForceN = LocomotiveAxle.AxleForceN;           //Get the Axle force and use it for the motion
+                    MotiveForceN = LocomotiveAxle.AxleForceN;
                     if (elapsedClockSeconds > 0)
                     {
                         WheelSlip = extendedPhysics.IsWheelSlip;
                         WheelSlipWarning = extendedPhysics.IsWheelSlipWarning;
                     }
-                    WheelSpeedMpS = LocomotiveAxle.AxleSpeedMpS;
                 }
+                else
+                {
+                    // MotiveForceN je počítán v EP
+                    if (elapsedClockSeconds > 0)
+                    {
+                        WheelSlip = extendedPhysics.IsWheelSlip;
+                        WheelSlipWarning = extendedPhysics.IsWheelSlipWarning;
+                    }                    
+                }
+                WheelSpeedMpS = LocomotiveAxle.AxleSpeedMpS;
             }
         }
 
