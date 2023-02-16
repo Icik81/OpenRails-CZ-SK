@@ -345,7 +345,7 @@ namespace Orts.Simulation.RollingStocks
         {
             get
             {
-                if (TotalForceN == 0 && Locomotive.BrakeRetardForceN == 0)
+                if (Locomotive.LocomotiveAxle.AxleForceN == 0 && Locomotive.BrakeRetardForceN == 0)
                 {
                     return 0f; 
                 }

@@ -4797,7 +4797,7 @@ namespace Orts.Simulation.RollingStocks
                         }
                         speedDiff = Math.Abs(speedDiff);
 
-                        if (IsLeadLocomotive() || LocoHelperOn)
+                        if (IsLeadLocomotive() || LocoHelperOn || AcceptMUSignals)
                         {
                             if (speedDiff > AntiWheelSpinSpeedDiffThreshold || (AbsWheelSpeedMpS - AbsSpeedMpS) > AntiWheelSpinSpeedDiffThreshold)
                             {
