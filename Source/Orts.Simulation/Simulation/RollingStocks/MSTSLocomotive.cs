@@ -1401,7 +1401,7 @@ namespace Orts.Simulation.RollingStocks
                 case "engine(ortscurrentforcestep2characteristics": CurrentForceStep2Curves = new InterpolatorDiesel2D(stf, true); break;
                 case "engine(ortsbrakecurrent1characteristics": CurrentBrakeForce1Curves = new InterpolatorDiesel2D(stf, true); break;
                 case "engine(ortsbrakecurrent2characteristics": CurrentBrakeForce2Curves = new InterpolatorDiesel2D(stf, true); break;
-                case "engine(auxconsumtioncurrents(cab_heating": Current_CabHeating = stf.ReadFloatBlock(STFReader.UNITS.Current, null); break;
+                case "engine(auxconsumtioncurrents(cabheating": Current_CabHeating = stf.ReadFloatBlock(STFReader.UNITS.Current, null); break;
                 case "engine(auxconsumtioncurrents(tmcoolings": Current_TMCoolings = stf.ReadFloatBlock(STFReader.UNITS.Current, null); break;
                 case "engine(auxconsumtioncurrents(otherscoolings": Current_OthersCoolings = stf.ReadFloatBlock(STFReader.UNITS.Current, null); break;
                 case "engine(auxconsumtioncurrents(compressor1": Current_Compressor1 = stf.ReadFloatBlock(STFReader.UNITS.Current, null); break;
@@ -3406,7 +3406,7 @@ namespace Orts.Simulation.RollingStocks
         {
             // Výpočet teploty trakčních motorů
             float LoadPercent = MathHelper.Clamp(Math.Max(PowerCurrent1, PowerCurrent2) / MaxCurrentA * 100f, 1, 100);
-            float IdleTemperatureDegC = 80f;
+            float IdleTemperatureDegC = 100f;
             float AirTempTimeConstantSec = 1500f;
 
             if (BrakeSystem.StartOn)
@@ -3424,7 +3424,7 @@ namespace Orts.Simulation.RollingStocks
             TMTemperature -= MathHelper.Clamp(elapsedClockSeconds * (TMTemperature - CarOutsideTempC0) / AirTempTimeConstantSec, 0, 100);
 
             // Ochlazení během aktivního chlazení
-            if (TMTemperature > IdleTemperatureDegC)
+            if (LocalThrottlePercent > 0)
             {
                 TMTemperature -= elapsedClockSeconds * (TMTemperature - (1.5f * CarOutsideTempCBase)) / AirTempTimeConstantSec * (AirCoolingPower / 50);
                 if (!TMCoolingIsOn)
@@ -3433,6 +3433,7 @@ namespace Orts.Simulation.RollingStocks
                 }
             }
             else
+            if (LocalThrottlePercent == 0 && TMCoolingIsOn && TMTemperature < 1.05f * IdleTemperatureDegC)
             {
                 TMCoolingIsOn = false;
             }
