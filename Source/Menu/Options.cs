@@ -154,7 +154,7 @@ namespace ORTS
             checkEnableWebServer.Checked = Settings.WebServer;
             numericWebServerPort.Value = Settings.WebServerPort;
             checkEnableWatchdog.Checked = Settings.EnableWatchdog;
-            checkRunAt32bit.Checked = Settings.RunAt32bit;
+            //checkRunAt32bit.Checked = Settings.RunAt32bit;
             checkSaveCommands.Checked = Settings.SaveCommands;
             checkReduceMemory.Checked = Settings.ReduceMemory;
 
@@ -448,7 +448,7 @@ namespace ORTS
             Settings.DisableTCSScripts = checkDisableTCSScripts.Checked;
             Settings.WebServer = checkEnableWebServer.Checked;
             Settings.EnableWatchdog = checkEnableWatchdog.Checked;
-            Settings.RunAt32bit = checkRunAt32bit.Checked;
+            //Settings.RunAt32bit = checkRunAt32bit.Checked;
             Settings.SaveCommands = checkSaveCommands.Checked;
             Settings.ReduceMemory = checkReduceMemory.Checked;
 
