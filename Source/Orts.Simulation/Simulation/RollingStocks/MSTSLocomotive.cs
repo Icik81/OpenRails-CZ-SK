@@ -1401,6 +1401,12 @@ namespace Orts.Simulation.RollingStocks
                 case "engine(ortscurrentforcestep2characteristics": CurrentForceStep2Curves = new InterpolatorDiesel2D(stf, true); break;
                 case "engine(ortsbrakecurrent1characteristics": CurrentBrakeForce1Curves = new InterpolatorDiesel2D(stf, true); break;
                 case "engine(ortsbrakecurrent2characteristics": CurrentBrakeForce2Curves = new InterpolatorDiesel2D(stf, true); break;
+                case "engine(auxconsumtioncurrents(cab_heating": Current_CabHeating = stf.ReadFloatBlock(STFReader.UNITS.Current, null); break;
+                case "engine(auxconsumtioncurrents(tmcoolings": Current_TMCoolings = stf.ReadFloatBlock(STFReader.UNITS.Current, null); break;
+                case "engine(auxconsumtioncurrents(otherscoolings": Current_OthersCoolings = stf.ReadFloatBlock(STFReader.UNITS.Current, null); break;
+                case "engine(auxconsumtioncurrents(compressor1": Current_Compressor1 = stf.ReadFloatBlock(STFReader.UNITS.Current, null); break;
+                case "engine(auxconsumtioncurrents(compressor2": Current_Compressor2 = stf.ReadFloatBlock(STFReader.UNITS.Current, null); break;
+                case "engine(auxconsumtioncurrents(auxcompressor": Current_AuxCompressor = stf.ReadFloatBlock(STFReader.UNITS.Current, null); break;
 
 
                 // Jindrich
@@ -1662,7 +1668,12 @@ namespace Orts.Simulation.RollingStocks
             CurrentForceStep2Curves = locoCopy.CurrentForceStep2Curves;
             CurrentBrakeForce1Curves = locoCopy.CurrentBrakeForce1Curves;
             CurrentBrakeForce2Curves = locoCopy.CurrentBrakeForce2Curves;
-
+            Current_CabHeating = locoCopy.Current_CabHeating;
+            Current_TMCoolings = locoCopy.Current_TMCoolings;
+            Current_OthersCoolings = locoCopy.Current_OthersCoolings;
+            Current_Compressor1 = locoCopy.Current_Compressor1;
+            Current_Compressor2 = locoCopy.Current_Compressor2;
+            Current_AuxCompressor = locoCopy.Current_AuxCompressor;
 
             // Jindrich
             UsingForceHandle = locoCopy.UsingForceHandle;
@@ -1944,6 +1955,7 @@ namespace Orts.Simulation.RollingStocks
             outf.Write(prevEngineBrakeValue[2]);
             outf.Write(LightsFrameUpdate);
             outf.Write(BrakeSystem.PowerForWagon);
+            outf.Write(TMTemperature);
             #endregion
 
             base.Save(outf);
@@ -2137,6 +2149,7 @@ namespace Orts.Simulation.RollingStocks
             prevEngineBrakeValue[2] = inf.ReadSingle();
             LightsFrameUpdate = inf.ReadInt32();
             BrakeSystem.PowerForWagon = inf.ReadBoolean();
+            TMTemperature = inf.ReadSingle();
             #endregion
 
             base.Restore(inf);
@@ -3383,6 +3396,98 @@ namespace Orts.Simulation.RollingStocks
             if (!this.AuxPowerOff && (Simulator.AuxPowerCanStart || this.LocoHelperOn && PowerOn)) AuxPowerOn = true;
         }
 
+
+        public float TMTemperature = 0;
+        public float TMTemperatureData = 0;
+        public float TMTemperatureData0 = 0;
+        public float AirCoolingPower = 80;
+        public bool TMCoolingIsOn;
+        public void TM_Temperature(float elapsedClockSeconds)
+        {
+            // Výpočet teploty trakčních motorů
+            float LoadPercent = MathHelper.Clamp(Math.Max(PowerCurrent1, PowerCurrent2) / MaxCurrentA * 100f, 1, 100);
+            float IdleTemperatureDegC = 80f;
+            float AirTempTimeConstantSec = 1500f;
+
+            if (BrakeSystem.StartOn)
+            {
+                if (Simulator.Settings.AirEmpty || BrakeSystem.IsAirEmpty)
+                    TMTemperature = 0;
+                else
+                    TMTemperature = IdleTemperatureDegC;
+            }
+
+            // Fáze zahřívání vlivem zátěže TM
+            TMTemperature += elapsedClockSeconds * (LoadPercent * 0.01f * (120 - IdleTemperatureDegC) + IdleTemperatureDegC - TMTemperature) * 10f * MathHelper.Clamp(IdleTemperatureDegC / TMTemperature, 1, 10) / AirTempTimeConstantSec;
+            
+            // Přirozené chladnutí vlivem okolního prostředí
+            TMTemperature -= MathHelper.Clamp(elapsedClockSeconds * (TMTemperature - CarOutsideTempC0) / AirTempTimeConstantSec, 0, 100);
+
+            // Ochlazení během aktivního chlazení
+            if (TMTemperature > IdleTemperatureDegC)
+            {
+                TMTemperature -= elapsedClockSeconds * (TMTemperature - (1.5f * CarOutsideTempCBase)) / AirTempTimeConstantSec * (AirCoolingPower / 50);
+                if (!TMCoolingIsOn)
+                {
+                    TMCoolingIsOn = true;
+                }
+            }
+            else
+            {
+                TMCoolingIsOn = false;
+            }
+
+            if (TMTemperatureData > TMTemperature)
+                TMTemperatureData -= 20 * elapsedClockSeconds; // 20°C/s               
+            if (TMTemperatureData < TMTemperature)
+                TMTemperatureData += 10 * elapsedClockSeconds; // 10°C/s                                
+            TMTemperatureData = MathHelper.Clamp(TMTemperatureData, 0, 1000);
+            TMTemperatureData0 = (float)Math.Round(TMTemperatureData);
+
+            //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Teplota TM: " + TMTemperatureData0 + " °C!"));
+        }
+
+
+        // Icik
+        public float I_AuxConsumption = 0;
+        public float I_AuxConsumptionData = 0;
+        public float I_AuxConsumptionData0 = 0;        
+        public float ActualCurrent_CabHeating;
+        public float ActualCurrent_Coolings;
+        public float ActualCurrent_Compressors;
+        public float Current_CabHeating;
+        public float Current_TMCoolings;
+        public float Current_OthersCoolings;
+        public float Current_Compressor1;
+        public float Current_Compressor2;
+        public float Current_AuxCompressor;
+        public void AuxConsumptionOnLocomotive(float elapsedClockSeconds)
+        {
+            if (!IsLeadLocomotive())
+                return;
+
+            ActualCurrent_CabHeating = (PowerOn && CabHeatingIsOn ? Current_CabHeating : 0);
+
+            float ActualCurrent_TMCoolings = (PowerOn && TMCoolingIsOn ? Current_TMCoolings : 0);
+            float ActualCurrent_OthersCoolings = (PowerOn /*&& OthersCoolingsIsOn*/ ? Current_OthersCoolings : 0);
+            ActualCurrent_Coolings = ActualCurrent_TMCoolings + ActualCurrent_OthersCoolings;
+
+            float ActualCurrent_Compressor1 = (PowerOn && CompressorIsOn ? Current_Compressor1 : 0);
+            float ActualCurrent_Compressor2 = (PowerOn && Compressor2IsOn ? Current_Compressor2 : 0);
+            float ActualCurrent_AuxCompressor = (PowerOn && AuxCompressorIsOn ? Current_AuxCompressor : 0);
+            ActualCurrent_Compressors = ActualCurrent_Compressor1 + ActualCurrent_Compressor2 + ActualCurrent_AuxCompressor;
+
+            // Výpočet proudu pomocných pohonů
+            I_AuxConsumption = ActualCurrent_CabHeating + ActualCurrent_Coolings + ActualCurrent_Compressors;
+            if (I_AuxConsumptionData > I_AuxConsumption)
+                I_AuxConsumptionData -= 20 * elapsedClockSeconds; // 20A/s               
+            if (I_AuxConsumptionData < I_AuxConsumption)
+                I_AuxConsumptionData += 10 * elapsedClockSeconds; // 10A/s                                
+            I_AuxConsumptionData = MathHelper.Clamp(I_AuxConsumptionData, 0, 1000);
+            I_AuxConsumptionData0 = (float)Math.Round(I_AuxConsumptionData);
+
+            //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Proud pomocných pohonů: " + I_AuxConsumptionData0 + " A!"));
+        }
 
         // Icik
         public float I_Heating = 0;
@@ -4961,7 +5066,7 @@ namespace Orts.Simulation.RollingStocks
             {
                 SetAIAction();
                 AcceptMUSignals = true;
-            }            
+            }
 
             if (IsPlayerTrain && !Simulator.Paused)
             {
@@ -4969,7 +5074,7 @@ namespace Orts.Simulation.RollingStocks
                 StepControllerValue = Simulator.StepControllerValue;
                 // StepController odpovídá v defaultu throttle
                 Simulator.StepControllerValue = LocalThrottlePercent / 100;
-
+                
                 TogglePowerKey();
                 PowerKeyLogic();
                 MUCableLogic();
@@ -4998,6 +5103,8 @@ namespace Orts.Simulation.RollingStocks
                 EDBCancelByOL3BailOff();
                 PowerOn_Filter(elapsedClockSeconds);
                 SetAuxPower();
+                TM_Temperature(elapsedClockSeconds);
+                AuxConsumptionOnLocomotive(elapsedClockSeconds); 
                 ElevatedConsumptionOnLocomotive(elapsedClockSeconds);
                 HVOffbyAirPressureE();
                 HVOffbyAirPressureD();
@@ -8886,6 +8993,7 @@ namespace Orts.Simulation.RollingStocks
                 
                 if (IsPlayerTrain)
                 {
+                    TM_Temperature(elapsedClockSeconds);
                     Simulator.TrainIsPassenger = true;
                     foreach (TrainCar car in Train.Cars)
                     {
@@ -14143,6 +14251,11 @@ namespace Orts.Simulation.RollingStocks
                         if (BreakPowerButton)
                             data = 1;
                         else data = 0;
+                        break;
+                    }
+                case CABViewControlTypes.AUXCONSUMPTION_CURRENT:
+                    {
+                        data = I_AuxConsumptionData0;
                         break;
                     }
                 case CABViewControlTypes.HEATING_CURRENT:
