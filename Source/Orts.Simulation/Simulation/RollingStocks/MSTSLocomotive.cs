@@ -4379,6 +4379,9 @@ namespace Orts.Simulation.RollingStocks
                 }
             }            
 
+            if (!LocoHelperOn && Simulator.ControllerVoltsLocoHelper == 0 && AcceptCableSignals)
+                Train.ControllerVolts = 0;
+
             // Postrk aktivován
             if (LocoHelperOn)
             {
