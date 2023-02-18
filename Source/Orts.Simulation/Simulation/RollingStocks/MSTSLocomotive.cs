@@ -1407,6 +1407,9 @@ namespace Orts.Simulation.RollingStocks
                 case "engine(auxconsumtioncurrents(compressor1": Current_Compressor1 = stf.ReadFloatBlock(STFReader.UNITS.Current, null); break;
                 case "engine(auxconsumtioncurrents(compressor2": Current_Compressor2 = stf.ReadFloatBlock(STFReader.UNITS.Current, null); break;
                 case "engine(auxconsumtioncurrents(auxcompressor": Current_AuxCompressor = stf.ReadFloatBlock(STFReader.UNITS.Current, null); break;
+                case "engine(tmparameters(maxtmtemperature": MaxTMTemperatureDegC = stf.ReadFloatBlock(STFReader.UNITS.Temperature, null); break;
+                case "engine(tmparameters(idletmtemperature": IdleTMTemperatureDegC = stf.ReadFloatBlock(STFReader.UNITS.Temperature, null); break;
+                case "engine(tmparameters(airtmcoolingpower": AirTMCoolingPower = stf.ReadFloatBlock(STFReader.UNITS.None, null); break;
 
 
                 // Jindrich
@@ -1674,6 +1677,9 @@ namespace Orts.Simulation.RollingStocks
             Current_Compressor1 = locoCopy.Current_Compressor1;
             Current_Compressor2 = locoCopy.Current_Compressor2;
             Current_AuxCompressor = locoCopy.Current_AuxCompressor;
+            MaxTMTemperatureDegC = locoCopy.MaxTMTemperatureDegC;
+            IdleTMTemperatureDegC = locoCopy.IdleTMTemperatureDegC;
+            AirTMCoolingPower = locoCopy.AirTMCoolingPower;
 
             // Jindrich
             UsingForceHandle = locoCopy.UsingForceHandle;
@@ -3397,47 +3403,59 @@ namespace Orts.Simulation.RollingStocks
         }
 
 
-        public float TMTemperature = 0;
-        public float TMTemperatureData = 0;
-        public float TMTemperatureData0 = 0;
-        public float AirCoolingPower = 80;
+        public float TMTemperature;
+        public float TMTemperatureData;
+        public float TMTemperatureData0;
+        public float MaxTMTemperatureDegC;
+        public float IdleTMTemperatureDegC;
+        public float AirTMCoolingPower;
         public bool TMCoolingIsOn;
+        float RunCycle;
         public void TM_Temperature(float elapsedClockSeconds)
         {
             // Výpočet teploty trakčních motorů
-            float LoadPercent = MathHelper.Clamp(Math.Max(PowerCurrent1, PowerCurrent2) / MaxCurrentA * 100f, 1, 100);
-            float IdleTemperatureDegC = 100f;
+            float CurrentLoadPercent = MathHelper.Clamp(Math.Max(PowerCurrent1, PowerCurrent2) / MaxCurrentA * 100f, 0, 100);            
             float AirTempTimeConstantSec = 1500f;
 
-            if (BrakeSystem.StartOn)
+            // Defaulty
+            if (MaxTMTemperatureDegC == 0) MaxTMTemperatureDegC = 200f;
+            if (IdleTMTemperatureDegC == 0) IdleTMTemperatureDegC = 80f;
+            if (AirTMCoolingPower == 0) AirTMCoolingPower = 80f;
+
+            if (BrakeSystem.StartOn || (RunCycle > 0 && TMTemperature == 0))
             {
+                RunCycle++;
                 if (Simulator.Settings.AirEmpty || BrakeSystem.IsAirEmpty)
-                    TMTemperature = 0;
+                    TMTemperature = CarOutsideTempC0;
                 else
-                    TMTemperature = IdleTemperatureDegC;
+                    TMTemperature = IdleTMTemperatureDegC;
+                return;
             }
+            RunCycle = 0;
 
             // Fáze zahřívání vlivem zátěže TM
-            TMTemperature += elapsedClockSeconds * (LoadPercent * 0.01f * (120 - IdleTemperatureDegC) + IdleTemperatureDegC - TMTemperature) * 10f * MathHelper.Clamp(IdleTemperatureDegC / TMTemperature, 1, 10) / AirTempTimeConstantSec;
-            
+            float TMTemperatureDelta = elapsedClockSeconds * (CurrentLoadPercent * 0.01f * (MaxTMTemperatureDegC - IdleTMTemperatureDegC) + IdleTMTemperatureDegC - TMTemperature) * 50f * MathHelper.Clamp(IdleTMTemperatureDegC / TMTemperature, 1f, 10f) / AirTempTimeConstantSec;
+            if (PowerOn)
+                TMTemperature += MathHelper.Clamp(TMTemperatureDelta, 0, 100f);
+
             // Přirozené chladnutí vlivem okolního prostředí
-            TMTemperature -= MathHelper.Clamp(elapsedClockSeconds * (TMTemperature - CarOutsideTempC0) / AirTempTimeConstantSec, 0, 100);
+            TMTemperature -= MathHelper.Clamp(elapsedClockSeconds * (TMTemperature - CarOutsideTempC0) / AirTempTimeConstantSec, 0, 100f);
 
             // Ochlazení během aktivního chlazení
-            if (LocalThrottlePercent > 0)
+            if (LocalThrottlePercent > 0 && PowerOn)
             {
-                TMTemperature -= elapsedClockSeconds * (TMTemperature - (1.5f * CarOutsideTempCBase)) / AirTempTimeConstantSec * (AirCoolingPower / 50);
+                TMTemperature -= elapsedClockSeconds * (TMTemperature - (1.5f * CarOutsideTempCBase)) / AirTempTimeConstantSec * (AirTMCoolingPower / 500f);
                 if (!TMCoolingIsOn)
                 {
                     TMCoolingIsOn = true;
                 }
             }
             else
-            if (LocalThrottlePercent == 0 && TMCoolingIsOn && TMTemperature < 1.05f * IdleTemperatureDegC)
+            if (TMCoolingIsOn && (LocalThrottlePercent == 0 || !PowerOn))
             {
                 TMCoolingIsOn = false;
             }
-
+            
             if (TMTemperatureData > TMTemperature)
                 TMTemperatureData -= 20 * elapsedClockSeconds; // 20°C/s               
             if (TMTemperatureData < TMTemperature)
