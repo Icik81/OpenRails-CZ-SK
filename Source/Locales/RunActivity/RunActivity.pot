@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2023-02-09 21:28:48+0100\n"
-"PO-Revision-Date: 2023-02-09 21:28:48+0100\n"
+"POT-Creation-Date: 2023-02-18 11:27:43+0100\n"
+"PO-Revision-Date: 2023-02-18 11:27:44+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -25,39 +25,39 @@ msgid_plural "{0:F0} AL sound sources"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../../RunActivity/Viewer3D/Cameras.cs:640
+#: ../../RunActivity/Viewer3D/Cameras.cs:657
 msgid "Free"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Cameras.cs:1058
+#: ../../RunActivity/Viewer3D/Cameras.cs:1075
 msgid "Outside Front"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Cameras.cs:1058
+#: ../../RunActivity/Viewer3D/Cameras.cs:1075
 msgid "Outside Rear"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Cameras.cs:1579
+#: ../../RunActivity/Viewer3D/Cameras.cs:1596
 msgid "Brakeman"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Cameras.cs:1865
+#: ../../RunActivity/Viewer3D/Cameras.cs:1882
 msgid "Passenger"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Cameras.cs:1959
+#: ../../RunActivity/Viewer3D/Cameras.cs:1976
 msgid "3D Cab"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Cameras.cs:2060
+#: ../../RunActivity/Viewer3D/Cameras.cs:2077
 msgid "Head out"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Cameras.cs:2144
+#: ../../RunActivity/Viewer3D/Cameras.cs:2161
 msgid "Cab"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Cameras.cs:2408
+#: ../../RunActivity/Viewer3D/Cameras.cs:2425
 msgid "Trackside"
 msgstr ""
 
@@ -1716,6 +1716,10 @@ msgstr ""
 
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:855
 msgid "ConsDE"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:856
+msgid "TMTemp"
 msgstr ""
 
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:859

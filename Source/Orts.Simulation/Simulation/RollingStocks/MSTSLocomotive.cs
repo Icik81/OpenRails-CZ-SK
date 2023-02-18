@@ -5092,7 +5092,8 @@ namespace Orts.Simulation.RollingStocks
                 //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("WeatherAdv: " + Simulator.WeatherAdv));                                                                
                 StepControllerValue = Simulator.StepControllerValue;
                 // StepController odpovídá v defaultu throttle
-                Simulator.StepControllerValue = LocalThrottlePercent / 100;
+                if (IsLeadLocomotive() && !MirerControllerEnable)
+                    Simulator.StepControllerValue = LocalThrottlePercent / 100;
                 
                 TogglePowerKey();
                 PowerKeyLogic();

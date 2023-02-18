@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: RunActivity\n"
-"POT-Creation-Date: 2023-02-09 21:28:48+0100\n"
-"PO-Revision-Date: 2023-02-09 21:34+0100\n"
+"POT-Creation-Date: 2023-02-18 11:27:43+0100\n"
+"PO-Revision-Date: 2023-02-18 11:32+0100\n"
 "Last-Translator: Altmann <altmann@bk.ru>\n"
 "Language-Team: Open Rails Dev Team\n"
 "Language: cs\n"
@@ -28,39 +28,39 @@ msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
 
-#: ../../RunActivity/Viewer3D/Cameras.cs:640
+#: ../../RunActivity/Viewer3D/Cameras.cs:657
 msgid "Free"
 msgstr "Volný"
 
-#: ../../RunActivity/Viewer3D/Cameras.cs:1058
+#: ../../RunActivity/Viewer3D/Cameras.cs:1075
 msgid "Outside Front"
 msgstr "Začátek vlaku"
 
-#: ../../RunActivity/Viewer3D/Cameras.cs:1058
+#: ../../RunActivity/Viewer3D/Cameras.cs:1075
 msgid "Outside Rear"
 msgstr "Konec vlaku"
 
-#: ../../RunActivity/Viewer3D/Cameras.cs:1579
+#: ../../RunActivity/Viewer3D/Cameras.cs:1596
 msgid "Brakeman"
 msgstr "Brzdař"
 
-#: ../../RunActivity/Viewer3D/Cameras.cs:1865
+#: ../../RunActivity/Viewer3D/Cameras.cs:1882
 msgid "Passenger"
 msgstr "Pasažér"
 
-#: ../../RunActivity/Viewer3D/Cameras.cs:1959
+#: ../../RunActivity/Viewer3D/Cameras.cs:1976
 msgid "3D Cab"
 msgstr "3D kabina"
 
-#: ../../RunActivity/Viewer3D/Cameras.cs:2060
+#: ../../RunActivity/Viewer3D/Cameras.cs:2077
 msgid "Head out"
 msgstr "Boční pohled"
 
-#: ../../RunActivity/Viewer3D/Cameras.cs:2144
+#: ../../RunActivity/Viewer3D/Cameras.cs:2161
 msgid "Cab"
 msgstr "Kabina"
 
-#: ../../RunActivity/Viewer3D/Cameras.cs:2408
+#: ../../RunActivity/Viewer3D/Cameras.cs:2425
 msgid "Trackside"
 msgstr "Trať"
 
@@ -1736,6 +1736,10 @@ msgstr "TypVozu"
 msgid "ConsDE"
 msgstr "SpotřSM"
 
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:856
+msgid "TMTemp"
+msgstr "TeplotaTM"
+
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:859
 msgid "WaterTemp"
 msgstr "TeplVoda"
@@ -3338,9 +3342,6 @@ msgstr "Posunout nahoru"
 #: ../../RunActivity/Viewer3D/RollingStock/SubSystems/ETCS/TextMessages.cs:74
 msgid "Scroll Down"
 msgstr "Posunout dolů"
-
-#~ msgid "TempDE"
-#~ msgstr "TeplotaSM"
 
 #~ msgid "To change stations, remove the powerkey first."
 #~ msgstr "Pro přechod mezi stanovišti vyjměte nejdříve klíč pultu."
