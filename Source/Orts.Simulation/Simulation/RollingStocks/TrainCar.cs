@@ -1441,19 +1441,7 @@ namespace Orts.Simulation.RollingStocks
                         }
                     }
                     else
-                    {
-                        PlayerLoco.WheelSpeedMpS = 0;
-                        if (PlayerLoco.extendedPhysics != null)
-                        {
-                            foreach (Undercarriage uc in PlayerLoco.extendedPhysics.Undercarriages)
-                            {
-                                foreach (ExtendedAxle ea in uc.Axles)
-                                {
-                                    if (ea.HaveSpeedometerSensor)
-                                        PlayerLoco.WheelSpeedMpS = 0;
-                                }
-                            }
-                        }
+                    {                        
                         if (PlayerLoco.WheelSpeedMpS_Cab > 0)
                             PlayerLoco.WheelSpeedMpS_Cab -= 10f / 3.6f * elapsedClockSeconds;
                         if (PlayerLoco.WheelSpeedMpS_Cab < 0)

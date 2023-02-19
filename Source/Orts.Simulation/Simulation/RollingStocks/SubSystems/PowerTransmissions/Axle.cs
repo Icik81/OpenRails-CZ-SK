@@ -669,6 +669,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerTransmissions
         /// </summary>
         /// <param name="timeSpan"></param>
         float BrakePulsTimer;
+        int RunCycle;
         public virtual void Update(float timeSpan)
         {
             //Update axle force ( = k * loadTorqueNm)
@@ -699,8 +700,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerTransmissions
                     motor.Update(timeSpan);
                     break;
                 case AxleDriveType.ForceDriven:
+                    float DriveMarker = driveForceN / Math.Abs(driveForceN);
                     //Axle revolutions integration
-                    if (TrainSpeedMpS > 0.1f)
+                    if (TrainSpeedMpS > 0.0f)
                     {
                         axleSpeedMpS = AxleRevolutionsInt.Integrate(timeSpan,
                             (
@@ -713,14 +715,14 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerTransmissions
                             / totalInertiaKgm2
                         );
 
-                        if (brakeRetardForceN > driveForceN && AxleSpeedMpS < 0.1f)
+                        if (brakeRetardForceN > driveForceN && AxleSpeedMpS < 0.0f)
                         {
                             axleSpeedMpS = 0.0f;
                             axleForceN = -brakeRetardForceN + driveForceN;
                             Reset();
                         }
                     }
-                    else if (TrainSpeedMpS < -0.1f)
+                    else if (TrainSpeedMpS < -0.0f)
                     {
                         axleSpeedMpS = AxleRevolutionsInt.Integrate(timeSpan,
                             (
@@ -733,7 +735,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerTransmissions
                             / totalInertiaKgm2
                         );
 
-                        if (brakeRetardForceN > Math.Abs(driveForceN) && AxleSpeedMpS > -0.1f)
+                        if (brakeRetardForceN > Math.Abs(driveForceN) && AxleSpeedMpS > -0.0f)
                         {
                             axleSpeedMpS = 0.0f;
                             axleForceN = brakeRetardForceN - driveForceN;
@@ -741,8 +743,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerTransmissions
                         }
                     }
                     else
-                    {
-                        float DriveMarker = driveForceN / Math.Abs(driveForceN);
+                    {                        
                         axleSpeedMpS = AxleRevolutionsInt.Integrate(timeSpan,
                             (
                                 driveForceN * transmissionEfficiency
@@ -759,8 +760,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerTransmissions
                             BrakePulsTimer += timeSpan;
                             if (BrakePulsTimer > 0.3f)
                             {
-                                axleSpeedMpS = 0.0f;
-                                //axleForceN /= 1000;
+                                axleSpeedMpS = 0.0f;                                
                                 Reset();
                             }
                         }
@@ -770,20 +770,15 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerTransmissions
                         if (Math.Abs(driveForceN) < 1f)
                         {                            
                             axleSpeedMpS = 0.0f;
-                            Reset();
-                            //axleForceN = 0.0f;
+                            Reset();                            
                         }
                         else
                         {
                             axleForceN = driveForceN - (DriveMarker * brakeRetardForceN);
                             if (Math.Abs(axleSpeedMpS) < 0.01f)
                                 Reset();
-                        }
-                        
-                        //Reset(TrainSpeedMpS);
-                        //axleForceN = driveForceN - brakeRetardForceN;
-                        //axleSpeedMpS = AxleRevolutionsInt.Value;
-                    }
+                        }                       
+                    }                    
                     break;
                 default:
                     totalInertiaKgm2 = inertiaKgm2;
