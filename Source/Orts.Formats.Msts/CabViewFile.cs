@@ -637,6 +637,8 @@ namespace Orts.Formats.Msts
         public string CurrentType = "";
         public int CurrentSourceID = -1;
         public float MaxNeedleSpeed = 0; // time in seconds from max to min and vice versa
+        public float MaxNeedleSpeedUp = 0; // Up time in seconds from max to min and vice versa
+        public float MaxNeedleSpeedDown = 0; // Down time in seconds from max to min and vice versa
         public double MinValueExtendedPhysics = 0;
         public double MaxValueExtendedPhysics = 0;
         public string DateFormat = "dd.MM.yy";
@@ -900,6 +902,18 @@ namespace Orts.Formats.Msts
                 {
                     stf.MustMatch("(");
                     MaxNeedleSpeed = stf.ReadFloat(STFReader.UNITS.None, 0);
+                    stf.SkipRestOfBlock();
+                }),
+                new STFReader.TokenProcessor("maxneedlespeedup", () =>
+                {
+                    stf.MustMatch("(");
+                    MaxNeedleSpeedUp = stf.ReadFloat(STFReader.UNITS.None, 0);
+                    stf.SkipRestOfBlock();
+                }),
+                new STFReader.TokenProcessor("maxneedlespeeddown", () =>
+                {
+                    stf.MustMatch("(");
+                    MaxNeedleSpeedDown = stf.ReadFloat(STFReader.UNITS.None, 0);
                     stf.SkipRestOfBlock();
                 }),
                 new STFReader.TokenProcessor("dateformat", () =>

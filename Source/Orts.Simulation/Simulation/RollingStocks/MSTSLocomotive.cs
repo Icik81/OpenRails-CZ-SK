@@ -3485,7 +3485,7 @@ namespace Orts.Simulation.RollingStocks
             if (!IsLeadLocomotive())
                 return;
 
-            ActualCurrent_CabHeating = (PowerOn && CabHeatingIsOn ? Current_CabHeating : 0);
+            ActualCurrent_CabHeating = (PowerOn && CabHeatingIsOn && StatusHeatIsOn ? Current_CabHeating : 0);
 
             float ActualCurrent_TMCoolings = (PowerOn && TMCoolingIsOn ? Current_TMCoolings : 0);
             float ActualCurrent_OthersCoolings = (PowerOn /*&& OthersCoolingsIsOn*/ ? Current_OthersCoolings : 0);
@@ -3505,7 +3505,7 @@ namespace Orts.Simulation.RollingStocks
             I_AuxConsumptionData = MathHelper.Clamp(I_AuxConsumptionData, 0, 1000);
             I_AuxConsumptionData0 = (float)Math.Round(I_AuxConsumptionData);
 
-            //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Proud pomocných pohonů: " + I_AuxConsumptionData0 + " A!"));
+            //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Proud pomocných pohonů: " + I_AuxConsumption + " A!"));
         }
 
         // Icik
@@ -14278,12 +14278,12 @@ namespace Orts.Simulation.RollingStocks
                     }
                 case CABViewControlTypes.AUXCONSUMPTION_CURRENT:
                     {
-                        data = I_AuxConsumptionData0;
+                        data = I_AuxConsumption;
                         break;
                     }
                 case CABViewControlTypes.HEATING_CURRENT:
                     {
-                        data = I_HeatingData0;
+                        data = I_Heating;
                         break;
                     }
                 case CABViewControlTypes.HEATING_OVERCURRENT:
@@ -14629,6 +14629,37 @@ namespace Orts.Simulation.RollingStocks
                     data = cvc.PreviousData - step;
                 }
                 cvc.PreviousData = data;
+            }
+            else
+            {
+                if (cvc.MaxNeedleSpeedUp > 0 && elapsedTime > 0 && data > cvc.PreviousData)
+                {
+                    double fullRange = 0;
+                    if (cvc.MinValueExtendedPhysics != 0 || cvc.MaxValueExtendedPhysics != 0)
+                        fullRange = cvc.MaxValueExtendedPhysics - cvc.MinValueExtendedPhysics;
+                    else
+                        fullRange = cvc.MaxValue - cvc.MinValue;
+                    float step = (float)fullRange / (cvc.MaxNeedleSpeedUp / elapsedTime);
+                    if (data - step > cvc.PreviousData)
+                    {
+                        data = cvc.PreviousData + step;
+                    }
+                    cvc.PreviousData = data;
+                }
+                if (cvc.MaxNeedleSpeedDown > 0 && elapsedTime > 0 && data < cvc.PreviousData)
+                {
+                    double fullRange = 0;
+                    if (cvc.MinValueExtendedPhysics != 0 || cvc.MaxValueExtendedPhysics != 0)
+                        fullRange = cvc.MaxValueExtendedPhysics - cvc.MinValueExtendedPhysics;
+                    else
+                        fullRange = cvc.MaxValue - cvc.MinValue;
+                    float step = (float)fullRange / (cvc.MaxNeedleSpeedDown / elapsedTime);
+                    if (data + step < cvc.PreviousData)
+                    {
+                        data = cvc.PreviousData - step;
+                    }
+                    cvc.PreviousData = data;
+                }
             }
 
             // Icik
