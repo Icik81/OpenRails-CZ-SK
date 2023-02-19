@@ -2910,16 +2910,16 @@ namespace Orts.Simulation.RollingStocks
         public void PowerCurrentCalculation()
         {
             if (CurrentForceStep2Curves != null)
-                PowerCurrent2 = CurrentForceStep2Curves.Get(StepControllerValue, Math.Abs(FilteredMotiveForceN));
+                PowerCurrent2 = CurrentForceStep2Curves.Get(StepControllerValue, Math.Abs(LocomotiveAxle.DriveForceN));
             
             if (CurrentForceStep1Curves != null)
-                PowerCurrent1 = CurrentForceStep1Curves.Get(StepControllerValue, Math.Abs(FilteredMotiveForceN));
+                PowerCurrent1 = CurrentForceStep1Curves.Get(StepControllerValue, Math.Abs(LocomotiveAxle.DriveForceN));
             else            
             if (CurrentForceCurves != null)
-                PowerCurrent1 = CurrentForceCurves.Get(Math.Abs(FilteredMotiveForceN), AbsWheelSpeedMpS);                                    
+                PowerCurrent1 = CurrentForceCurves.Get(Math.Abs(LocomotiveAxle.DriveForceN), AbsWheelSpeedMpS);                                    
             else
             // Default
-            PowerCurrent1 = Math.Abs(FilteredMotiveForceN) / MaxForceN * MaxCurrentA;
+            PowerCurrent1 = Math.Abs(LocomotiveAxle.DriveForceN) / MaxForceN * MaxCurrentA;
         }
 
         //Icik
@@ -3033,7 +3033,7 @@ namespace Orts.Simulation.RollingStocks
                 {
                     if (extendedPhysics != null)
                     {
-                        FilteredMotiveForceN = 0;                        
+                        LocomotiveAxle.DriveForceN = 0;                        
                         extendedPhysics.FastestAxleSpeedMpS = extendedPhysics.AverageAxleSpeedMpS = WheelSpeedMpS = SpeedMpS;                         
                     }
 
@@ -4528,7 +4528,7 @@ namespace Orts.Simulation.RollingStocks
 
                 if (PowerUnit && AcceptCableSignals)
                 {
-                    Simulator.DataFilteredMotiveForceN = FilteredMotiveForceN;
+                    Simulator.DataDriveForceN = LocomotiveAxle.DriveForceN;
                     Simulator.DataMaxCurrentA = MaxCurrentA;
                     Simulator.DataMaxForceN = MaxForceN;
                     Simulator.DataDynamicBrakeMaxCurrentA = DynamicBrakeMaxCurrentA;
@@ -4549,7 +4549,7 @@ namespace Orts.Simulation.RollingStocks
         {
             if (ControlUnit && AcceptCableSignals)
             {
-                FilteredMotiveForceN = Simulator.DataFilteredMotiveForceN;
+                LocomotiveAxle.DriveForceN = Simulator.DataDriveForceN;
                 MaxCurrentA = Simulator.DataMaxCurrentA;
                 MaxForceN = Simulator.DataMaxForceN;
                 MaxPowerW = 0;
@@ -4568,7 +4568,7 @@ namespace Orts.Simulation.RollingStocks
         {
             if (ControlUnit)
             {
-                FilteredMotiveForceN = 0;
+                LocomotiveAxle.DriveForceN = 0;
                 MaxCurrentA = 0;
                 MaxForceN = 0;
                 MaxPowerW = 0;
@@ -5149,7 +5149,7 @@ namespace Orts.Simulation.RollingStocks
             // Hodnoty pro výpočet zvukových proměnných
             TrainBrakeControllerValueForSound = (float)Math.Round(TrainBrakeController.CurrentValue, 2);
             EngineBrakeControllerValueForSound = (float)Math.Round(EngineBrakeController.CurrentValue, 2);
-            Variable5 = (float)Math.Round(Math.Abs(FilteredMotiveForceN / 1000));
+            Variable5 = (float)Math.Round(Math.Abs(LocomotiveAxle.DriveForceN / 1000));
 
 
             TrainControlSystem.Update();
@@ -12599,8 +12599,8 @@ namespace Orts.Simulation.RollingStocks
                                 {
                                     //float rangeFactor = direction == 0 ? (float)cvc.MaxValue : (float)cvc.MinValue;
                                     float rangeFactor = direction == 0 ? MaxCurrentA : (float)cvc.MinValue;
-                                    if (FilteredMotiveForceN != 0)
-                                        data = this.FilteredMotiveForceN / MaxForceN * rangeFactor;
+                                    if (LocomotiveAxle.DriveForceN != 0)
+                                        data = this.LocomotiveAxle.DriveForceN / MaxForceN * rangeFactor;
                                     else
                                         data = this.LocomotiveAxle.AxleForceN / MaxForceN * rangeFactor;
                                     data = Math.Abs(data);
@@ -12636,7 +12636,7 @@ namespace Orts.Simulation.RollingStocks
                                 if (cvc.ControlType == CABViewControlTypes.AMMETER_ABS) data = Math.Abs(data);
                                 break;
                             }
-                            data = this.MotiveForceN / MaxForceN * MaxCurrentA;
+                            data = this.LocomotiveAxle.DriveForceN / MaxForceN * MaxCurrentA;
 
                             // Icik
                             if (CurrentForceStep1Curves != null || CurrentForceCurves != null)
