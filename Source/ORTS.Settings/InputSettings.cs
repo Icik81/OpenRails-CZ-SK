@@ -458,7 +458,7 @@ namespace ORTS.Settings
             Commands[(int)UserCommand.ControlCruiseControlModeDecrease] = new UserCommandKeyInput(0x1E, KeyModifiers.Control);
             Commands[(int)UserCommand.ControlConfirmSelectedSpeed] = new UserCommandKeyInput(0x11, KeyModifiers.Control);
             Commands[(int)UserCommand.ControlCruiseControlModeIncrease] = new UserCommandKeyInput(0x20, KeyModifiers.Control);
-            Commands[(int)UserCommand.ControlTrainTypePaxCargo] = new UserCommandKeyInput(0x31, KeyModifiers.Control | KeyModifiers.Shift);
+            Commands[(int)UserCommand.ControlTrainTypePaxCargo] = new UserCommandKeyInput(0x31, KeyModifiers.Alt | KeyModifiers.Shift);
             Commands[(int)UserCommand.ControlSelectSpeed10] = new UserCommandKeyInput(0x3B, KeyModifiers.Control | KeyModifiers.Shift);
             Commands[(int)UserCommand.ControlSelectSpeed20] = new UserCommandKeyInput(0x3C, KeyModifiers.Control | KeyModifiers.Shift);
             Commands[(int)UserCommand.ControlSelectSpeed30] = new UserCommandKeyInput(0x3D, KeyModifiers.Control | KeyModifiers.Shift);

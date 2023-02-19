@@ -704,6 +704,7 @@ namespace Orts.Simulation.RollingStocks
         public float[] prevEngineBrakeValue = new float[3];
         public bool TramRailUnit;
         public int TwoPipesConnectionLocoCount;
+        public float DriveForceN;
 
         // Jindrich
         public bool IsActive = false;
@@ -2910,16 +2911,16 @@ namespace Orts.Simulation.RollingStocks
         public void PowerCurrentCalculation()
         {
             if (CurrentForceStep2Curves != null)
-                PowerCurrent2 = CurrentForceStep2Curves.Get(StepControllerValue, Math.Abs(LocomotiveAxle.DriveForceN));
+                PowerCurrent2 = CurrentForceStep2Curves.Get(StepControllerValue, Math.Abs(DriveForceN));
             
             if (CurrentForceStep1Curves != null)
-                PowerCurrent1 = CurrentForceStep1Curves.Get(StepControllerValue, Math.Abs(LocomotiveAxle.DriveForceN));
+                PowerCurrent1 = CurrentForceStep1Curves.Get(StepControllerValue, Math.Abs(DriveForceN));
             else            
             if (CurrentForceCurves != null)
-                PowerCurrent1 = CurrentForceCurves.Get(Math.Abs(LocomotiveAxle.DriveForceN), AbsWheelSpeedMpS);                                    
+                PowerCurrent1 = CurrentForceCurves.Get(Math.Abs(DriveForceN), AbsWheelSpeedMpS);                                    
             else
             // Default
-            PowerCurrent1 = Math.Abs(LocomotiveAxle.DriveForceN) / MaxForceN * MaxCurrentA;
+            PowerCurrent1 = Math.Abs(DriveForceN) / MaxForceN * MaxCurrentA;
         }
 
         //Icik
@@ -3033,7 +3034,7 @@ namespace Orts.Simulation.RollingStocks
                 {
                     if (extendedPhysics != null)
                     {
-                        LocomotiveAxle.DriveForceN = 0;                        
+                        DriveForceN = 0;                        
                         extendedPhysics.FastestAxleSpeedMpS = extendedPhysics.AverageAxleSpeedMpS = WheelSpeedMpS = SpeedMpS;                         
                     }
 
@@ -4528,7 +4529,7 @@ namespace Orts.Simulation.RollingStocks
 
                 if (PowerUnit && AcceptCableSignals)
                 {
-                    Simulator.DataDriveForceN = LocomotiveAxle.DriveForceN;
+                    Simulator.DataDriveForceN = DriveForceN;
                     Simulator.DataMaxCurrentA = MaxCurrentA;
                     Simulator.DataMaxForceN = MaxForceN;
                     Simulator.DataDynamicBrakeMaxCurrentA = DynamicBrakeMaxCurrentA;
@@ -4549,7 +4550,7 @@ namespace Orts.Simulation.RollingStocks
         {
             if (ControlUnit && AcceptCableSignals)
             {
-                LocomotiveAxle.DriveForceN = Simulator.DataDriveForceN;
+                DriveForceN = Simulator.DataDriveForceN;
                 MaxCurrentA = Simulator.DataMaxCurrentA;
                 MaxForceN = Simulator.DataMaxForceN;
                 MaxPowerW = 0;
@@ -4568,7 +4569,7 @@ namespace Orts.Simulation.RollingStocks
         {
             if (ControlUnit)
             {
-                LocomotiveAxle.DriveForceN = 0;
+                DriveForceN = 0;
                 MaxCurrentA = 0;
                 MaxForceN = 0;
                 MaxPowerW = 0;
@@ -5040,7 +5041,7 @@ namespace Orts.Simulation.RollingStocks
                 }
             }
 
-            // Icik
+            // Icik            
             SetCarLightsPowerOn();
             SetLapButton();            
             CarFrameUpdate(elapsedClockSeconds);
@@ -5149,7 +5150,7 @@ namespace Orts.Simulation.RollingStocks
             // Hodnoty pro výpočet zvukových proměnných
             TrainBrakeControllerValueForSound = (float)Math.Round(TrainBrakeController.CurrentValue, 2);
             EngineBrakeControllerValueForSound = (float)Math.Round(EngineBrakeController.CurrentValue, 2);
-            Variable5 = (float)Math.Round(Math.Abs(LocomotiveAxle.DriveForceN / 1000));
+            Variable5 = (float)Math.Round(Math.Abs(DriveForceN / 1000));
 
 
             TrainControlSystem.Update();
@@ -5396,7 +5397,7 @@ namespace Orts.Simulation.RollingStocks
             // Note typically only one of the above will only ever be non-zero at the one time.
             // For flipped locomotives the force is "flipped" elsewhere, whereas dynamic brake force is "flipped" below by the direction of the speed.            
 
-            // Icik
+            // Icik            
             if (!PowerOn || (!AcceptPowerSignals && AcceptCableSignals))                
                 TractiveForceN = 0;
 
@@ -6313,7 +6314,8 @@ namespace Orts.Simulation.RollingStocks
 
 
                 //Set axle model parameters
-                // Icik              
+                // Icik                
+                DriveForceN = LocomotiveAxle.DriveForceN;
                 if (AdhesionEfficiencyKoef == 0) AdhesionEfficiencyKoef = 1.0f;
                 LocomotiveAxle.AdhesionEfficiencyKoef = AdhesionEfficiencyKoef;                
                 LocomotiveAxle.BrakeRetardForceN = BrakeRetardForceN / (MassKG / DrvWheelWeightKg); // Upravuje chybu v adhezi pokud vůz brzdí (brzdí plnou vahou tzn. všemi koly)
@@ -6321,7 +6323,7 @@ namespace Orts.Simulation.RollingStocks
                 LocomotiveAxle.DriveForceN = MotiveForceN * (1 - PowerReduction);  //Total force applied to wheels
                 LocomotiveAxle.TrainSpeedMpS = SpeedMpS;            //Set the train speed of the axle model
                 LocomotiveAxle.Update(elapsedClockSeconds);         //Main updater of the axle model               
-
+                
                 if (extendedPhysics == null)
                 {                                        
                     MotiveForceN = LocomotiveAxle.AxleForceN;           
@@ -12599,8 +12601,8 @@ namespace Orts.Simulation.RollingStocks
                                 {
                                     //float rangeFactor = direction == 0 ? (float)cvc.MaxValue : (float)cvc.MinValue;
                                     float rangeFactor = direction == 0 ? MaxCurrentA : (float)cvc.MinValue;
-                                    if (LocomotiveAxle.DriveForceN != 0)
-                                        data = this.LocomotiveAxle.DriveForceN / MaxForceN * rangeFactor;
+                                    if (DriveForceN != 0)
+                                        data = this.DriveForceN / MaxForceN * rangeFactor;
                                     else
                                         data = this.LocomotiveAxle.AxleForceN / MaxForceN * rangeFactor;
                                     data = Math.Abs(data);
@@ -12636,7 +12638,7 @@ namespace Orts.Simulation.RollingStocks
                                 if (cvc.ControlType == CABViewControlTypes.AMMETER_ABS) data = Math.Abs(data);
                                 break;
                             }
-                            data = this.LocomotiveAxle.DriveForceN / MaxForceN * MaxCurrentA;
+                            data = this.DriveForceN / MaxForceN * MaxCurrentA;
 
                             // Icik
                             if (CurrentForceStep1Curves != null || CurrentForceCurves != null)
