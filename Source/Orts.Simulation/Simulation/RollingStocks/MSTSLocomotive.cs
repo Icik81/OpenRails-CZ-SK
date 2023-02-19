@@ -3018,7 +3018,7 @@ namespace Orts.Simulation.RollingStocks
             if (MaxCurrentA > 0)  // Zohlední jen elektrické a dieselelektrické lokomotivy 
             {
                 if (SlipSpeedCritical == 0) SlipSpeedCritical = 40 / 3.6f; // Výchozí hodnota 40 km/h     
-                float AbsSlipSpeedMpS = Math.Abs(WheelSpeedMpS) - AbsSpeedMpS;  // Zjistí absolutní rychlost prokluzu 
+                float AbsSlipSpeedMpS = Math.Abs(WheelSpeedMpS_Cab) - AbsSpeedMpS;  // Zjistí absolutní rychlost prokluzu 
                 //if (extendedPhysics != null)
                 //{
                 //    SlipSpeedCritical = 10 / 3.6f; // 10kmh pokud počítáme pátou osu
