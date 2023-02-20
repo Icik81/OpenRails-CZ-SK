@@ -342,7 +342,9 @@ namespace Orts.Common
         PowerKeyIn,
         PowerKeyOut,
         MirerPush,
-        MirerLoosen
+        MirerLoosen,
+        TMCoolingOn,
+        TMCoolingOff
     }
 
     public static class Events
@@ -700,6 +702,8 @@ namespace Orts.Common
                         case 20096: return Event.PowerKeyOut;
                         case 20097: return Event.MirerPush;
                         case 20098: return Event.MirerLoosen;
+                        case 20099: return Event.TMCoolingOn;
+                        case 20100: return Event.TMCoolingOff;
 
 
                         default: return 0;
