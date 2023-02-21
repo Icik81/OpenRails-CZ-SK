@@ -502,7 +502,7 @@ namespace Orts.Simulation.RollingStocks
                     if (FastestAxleSpeedMpS < ea.WheelSpeedMpS)
                         FastestAxleSpeedMpS = ea.WheelSpeedMpS;
 
-                    speedDiff = (ea.WheelSpeedMpS - myAverageAxleSpeedMps) * 20;
+                    speedDiff = (ea.WheelSpeedMpS - myAverageAxleSpeedMps) * 10.0f;
                     if (speedDiff < 0)
                         speedDiff = 0;
                     if (OverridenControllerVolts - speedDiff < 0)
