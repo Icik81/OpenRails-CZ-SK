@@ -596,8 +596,27 @@ namespace Orts.Simulation.RollingStocks
 
         public float PreviousSteamBrakeCylinderPressurePSI;
 
+        protected float motiveForceN = 0;
         // TrainCar.Update() must set these variables
-        public float MotiveForceN;   // ie motor power in Newtons  - signed relative to direction of car -
+        public float MotiveForceN 
+        {
+            get
+            {
+                return motiveForceN;
+            }
+            set
+            {
+                motiveForceN = value;
+                if (GetType() == typeof(MSTSElectricLocomotive))
+                {
+                    var myLoco = (MSTSElectricLocomotive)this;
+                    if (myLoco.LocoType == MSTSLocomotive.LocoTypes.Vectron)
+                    {
+                        motiveForceN  = value * 1.1f;
+                    }
+                }
+            }
+        }   // ie motor power in Newtons  - signed relative to direction of car -
         public float TractiveForceN = 0f; // Raw tractive force for electric sound variable2
         public SmoothedData MotiveForceSmoothedN = new SmoothedData(0.5f);
         public float PrevMotiveForceN;
