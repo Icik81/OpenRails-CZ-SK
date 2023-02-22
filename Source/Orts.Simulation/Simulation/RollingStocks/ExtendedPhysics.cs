@@ -502,7 +502,7 @@ namespace Orts.Simulation.RollingStocks
                     if (FastestAxleSpeedMpS < ea.WheelSpeedMpS)
                         FastestAxleSpeedMpS = ea.WheelSpeedMpS;
 
-                    speedDiff = (ea.WheelSpeedMpS - myAverageAxleSpeedMps) * 1.0f;
+                    speedDiff = (ea.WheelSpeedMpS - myAverageAxleSpeedMps) * 20; // Jirko když to budeš měnit, řekni pro kterou mašinu, jinak přestanou fungovat ostatní.
                     if (speedDiff < 0)
                         speedDiff = 0;
                     if (OverridenControllerVolts - speedDiff < 0)
@@ -521,12 +521,20 @@ namespace Orts.Simulation.RollingStocks
                     }
                     TotalForceN += ea.ForceN;
                     TotalMaxForceN += ea.maxForceN;
+                    if (Locomotive.LocoType == MSTSLocomotive.LocoTypes.Vectron)
+                        TotalMaxForceN *= 1.017f;
                 }
             }
             wasRestored = false;
             AverageAxleSpeedMpS /= NumAxles;
             if (UseControllerVolts)
+            {
                 Locomotive.MotiveForceN = Locomotive.TractiveForceN = TotalForceN;
+                if (Locomotive.LocoType == MSTSLocomotive.LocoTypes.Vectron)
+                {
+                    Locomotive.MotiveForceN = Locomotive.TractiveForceN = TotalMaxForceN;
+                }
+            }
 
             if (Locomotive.IsLeadLocomotive())
             {
@@ -837,13 +845,13 @@ namespace Orts.Simulation.RollingStocks
 
             if (Locomotive.CruiseControl != null)
             {
-                if (((Locomotive.CruiseControl.SpeedRegMode[Locomotive.LocoStation] == CruiseControl.SpeedRegulatorMode.Auto || Locomotive.CruiseControl.SpeedRegMode[Locomotive.LocoStation] == CruiseControl.SpeedRegulatorMode.AVV) && Locomotive.ThrottlePercent > 0 && ((Locomotive.CruiseControl.SelectedSpeedMpS - Locomotive.AbsSpeedMpS) > 0.05f) && Locomotive.SelectedMaxAccelerationStep[Locomotive.LocoStation] > 0 && Locomotive.CruiseControl.PreciseSpeedControl) || (ForceN < 0 && Locomotive.CruiseControl.PreciseSpeedControl))
+                if (((Locomotive.CruiseControl.SpeedRegMode[Locomotive.LocoStation] == CruiseControl.SpeedRegulatorMode.Auto || Locomotive.CruiseControl.SpeedRegMode[Locomotive.LocoStation] == CruiseControl.SpeedRegulatorMode.AVV) && Locomotive.ThrottlePercent > 0 && ((Locomotive.CruiseControl.SelectedSpeedMpS - Locomotive.AbsSpeedMpS) > 0.05f) && Locomotive.SelectedMaxAccelerationStep[Locomotive.LocoStation] > 0 && Locomotive.CruiseControl.PreciseSpeedControl) || (ForceN < 0 && Locomotive.CruiseControl.PreciseSpeedControl) || Locomotive.LocoType == MSTSLocomotive.LocoTypes.Vectron)
                 {
                     float mMass = Mass;
                     Mass *= 1000;
                     float addMass = (Locomotive.MassKG / totalMotors) - Mass;
                     Mass += addMass * 2;
-                    reducedForceN = -((WheelSpeedMpS - (Locomotive.AbsSpeedMpS + 0.1f)) * (Mass / 1000)) * 1000;
+                    reducedForceN = -((WheelSpeedMpS - (Locomotive.AbsSpeedMpS + 0.1f)) * (Mass / 1000)) * 750;
                     Mass = mMass;
                 }
                 else
