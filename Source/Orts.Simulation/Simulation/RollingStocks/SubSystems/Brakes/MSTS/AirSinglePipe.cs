@@ -3040,13 +3040,12 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         car.BrakeSystem.AutoCylPressurePSI1 = lead.BrakeSystem.AutoCylPressurePSI1;
                     }
                 }
+                // Určení pozice kontroléru 0.0 - 1.0                    
+                float EngineBrakeControllerRate = lead.EngineBrakeController.CurrentValue;                
 
                 // Definice pro brzdič BP1
                 if (brakeSystem.BP1_EngineBrakeController)
-                {
-                    // Určení pozice kontroléru 0.0 - 1.0                    
-                    float EngineBrakeControllerRate = lead.EngineBrakeValue[lead.LocoStation];
-                    
+                {                    
                     // Definování mrtvé zóny brzdiče                    
                     float EngineBrakeControllerApply = (1 - brakeSystem.EngineBrakeControllerApplyDeadZone) * EngineBrakeControllerRate;
                     float EngineBrakeControllerRelease = brakeSystem.PrevEngineBrakeControllerRateRelease - (brakeSystem.PrevEngineBrakeControllerRateRelease * brakeSystem.EngineBrakeControllerReleaseDeadZone);
@@ -3056,7 +3055,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
 
                     float EngineBrakeCylOffset = train.BrakeLine3PressurePSI - (brakeSystem.EngineBrakeControllerApplyDeadZone * lead.BrakeSystem.BrakeCylinderMaxSystemPressurePSI - (EngineBrakeControllerRate * brakeSystem.EngineBrakeControllerApplyDeadZone * lead.BrakeSystem.BrakeCylinderMaxSystemPressurePSI));
 
-                    // Apply
+                    // Apply                    
                     if (train.BrakeLine3PressurePSI > EngineBrakeControllerApply * lead.BrakeSystem.BrakeCylinderMaxSystemPressurePSI
                         && lead.BrakeSystem.AutoCylPressurePSI1 < EngineBrakeCylOffset
                         && lead.MainResPressurePSI > 0
@@ -3089,20 +3088,22 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     }
                     // Release
                     else
-                    if (lead.BrakeSystem.AutoCylPressurePSI1 > 0
-                        && train.BrakeLine3PressurePSI < EngineBrakeControllerRelease * lead.BrakeSystem.BrakeCylinderMaxSystemPressurePSI
-                        && lead.BrakeSystem.AutoCylPressurePSI1 > train.BrakeLine3PressurePSI - 0)
-                    {
-                        if (lead.BrakeSystem.BP1_EngineBrakeControllerRatePSIpS == 0) lead.BrakeSystem.BP1_EngineBrakeControllerRatePSIpS = lead.EngineBrakeApplyRatePSIpS;
-                        float dp = elapsedClockSeconds * lead.BrakeSystem.BP1_EngineBrakeControllerRatePSIpS;
+                    {                        
+                        if (lead.BrakeSystem.AutoCylPressurePSI1 > 0
+                            && train.BrakeLine3PressurePSI < EngineBrakeControllerRelease * lead.BrakeSystem.BrakeCylinderMaxSystemPressurePSI
+                            && lead.BrakeSystem.AutoCylPressurePSI1 > train.BrakeLine3PressurePSI - 0)
+                        {
+                            if (lead.BrakeSystem.BP1_EngineBrakeControllerRatePSIpS == 0) lead.BrakeSystem.BP1_EngineBrakeControllerRatePSIpS = lead.EngineBrakeApplyRatePSIpS;
+                            float dp = elapsedClockSeconds * lead.BrakeSystem.BP1_EngineBrakeControllerRatePSIpS;
 
-                        lead.BrakeSystem.AutoCylPressurePSI1 -= dp * (1 - (1 + ((EngineBrakeControllerRate - EngineBrakeControllerRelease) / EngineBrakeControllerRelease)));
-                        lead.BrakeSystem.AutoCylPressurePSI1 = MathHelper.Clamp(lead.BrakeSystem.AutoCylPressurePSI1, 0, lead.BrakeSystem.BrakeCylinderMaxSystemPressurePSI);
-                        if (train.BrakeLine3PressurePSI > lead.BrakeSystem.AutoCylPressurePSI1)
-                            lead.SignalEvent(Event.EngineBrakePressureStoppedChanging);
-                        else lead.EngineBrakeState = ValveState.Release;
-                        if (lead.BrakeSystem.AutoCylPressurePSI1 < 1) brakeSystem.EngineBrakeDelay = 0;
-                        brakeSystem.PrevEngineBrakeControllerRateApply = EngineBrakeControllerRate;
+                            lead.BrakeSystem.AutoCylPressurePSI1 -= dp * (1 - (1 + ((EngineBrakeControllerRate - EngineBrakeControllerRelease) / EngineBrakeControllerRelease)));
+                            lead.BrakeSystem.AutoCylPressurePSI1 = MathHelper.Clamp(lead.BrakeSystem.AutoCylPressurePSI1, 0, lead.BrakeSystem.BrakeCylinderMaxSystemPressurePSI);
+                            if (train.BrakeLine3PressurePSI > lead.BrakeSystem.AutoCylPressurePSI1)
+                                lead.SignalEvent(Event.EngineBrakePressureStoppedChanging);
+                            else lead.EngineBrakeState = ValveState.Release;
+                            if (lead.BrakeSystem.AutoCylPressurePSI1 < 1) brakeSystem.EngineBrakeDelay = 0;
+                            brakeSystem.PrevEngineBrakeControllerRateApply = EngineBrakeControllerRate;
+                        }
                     }
                     if (Math.Round(train.BrakeLine3PressurePSI) == Math.Round(lead.BrakeSystem.AutoCylPressurePSI1))
                     {
@@ -3113,8 +3114,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 // Definice pro brzdič BP2
                 if (brakeSystem.BP2_EngineBrakeController)
                 {
+                    train.BrakeLine3PressurePSI = lead.BrakeSystem.BrakeCylinderMaxSystemPressurePSI * EngineBrakeControllerRate;
                     // Apply
-                    if (lead.BrakeSystem.AutoCylPressurePSI1 < train.BrakeLine3PressurePSI
+                    if (lead.BrakeSystem.AutoCylPressurePSI1 < train.BrakeLine3PressurePSI  
                         && lead.MainResPressurePSI > 0
                         && AutoCylPressurePSI <= lead.BrakeSystem.BrakeCylinderMaxSystemPressurePSI
                         && AutoCylPressurePSI < lead.MainResPressurePSI)
