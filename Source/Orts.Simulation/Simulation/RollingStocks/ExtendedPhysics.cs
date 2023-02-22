@@ -416,9 +416,9 @@ namespace Orts.Simulation.RollingStocks
             }
 
             // Icik
-            if (!Locomotive.IsLeadLocomotive() && Locomotive.PowerOn && Locomotive.LocoHelperOn && Locomotive.AcceptPowerSignals)
+            if (!Locomotive.IsLeadLocomotive() && Locomotive.PowerOn && (Locomotive.LocoHelperOn || Locomotive.AcceptCableSignals) && Locomotive.AcceptPowerSignals)
                 Locomotive.ControllerVolts = OverridenControllerVolts = Locomotive.Train.ControllerVolts;
-
+            
             if (!Locomotive.IsPlayerTrain)
                 return;
             else if (Locomotive.PowerOn && !controlUnitChecked) // do this only once

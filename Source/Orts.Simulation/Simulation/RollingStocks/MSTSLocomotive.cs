@@ -4384,9 +4384,18 @@ namespace Orts.Simulation.RollingStocks
                 }
             }            
 
+            // Lokomotivy propojené datovým kabelem
             if (!LocoHelperOn && Simulator.ControllerVoltsLocoHelper == 0 && AcceptCableSignals)
                 Train.ControllerVolts = 0;
 
+            if (!LocoHelperOn && !IsLeadLocomotive())
+            {
+                if (!AcceptCableSignals)
+                    PowerReductionResult12 = 1;
+                else
+                    PowerReductionResult12 = 0;
+            }
+            
             // Postrk aktivován
             if (LocoHelperOn)
             {
@@ -4929,7 +4938,7 @@ namespace Orts.Simulation.RollingStocks
                         }
                         speedDiff = Math.Abs(speedDiff);
 
-                        if (IsLeadLocomotive() || LocoHelperOn || AcceptMUSignals)
+                        if (IsLeadLocomotive() || LocoHelperOn || AcceptCableSignals)
                         {
                             if (speedDiff > AntiWheelSpinSpeedDiffThreshold || (AbsWheelSpeedMpS - AbsSpeedMpS) > AntiWheelSpinSpeedDiffThreshold)
                             {
