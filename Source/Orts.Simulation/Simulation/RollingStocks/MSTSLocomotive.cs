@@ -2942,6 +2942,9 @@ namespace Orts.Simulation.RollingStocks
         // Definice ochran lokomotiv        
         public void Overcurrent_Protection()
         {
+            if (LocoType == LocoTypes.Vectron)
+                return;
+
             if (MaxCurrentA > 0 || !LocoHelperOn)  // Zohlední jen elektrické a dieselelektrické lokomotivy, lokomotiva nesmí být postrk 
             {
                 // Nadproudová ochrana                        
@@ -12599,6 +12602,7 @@ namespace Orts.Simulation.RollingStocks
                 case CABViewControlTypes.AMMETER: // Current not modelled yet to ammeter shows tractive effort until then.
                 case CABViewControlTypes.AMMETER_ABS:
                     {
+                        if (cvc.MaxNeedleSpeedUp == 0 && cvc.MaxNeedleSpeedDown == 0 && cvc.MaxNeedleSpeed == 0) cvc.MaxNeedleSpeed = 5.0f;
                         cvc.ElapsedTime += elapsedTime;
                         if (cvc.ElapsedTime > cvc.UpdateTime)
                         {
@@ -12672,6 +12676,7 @@ namespace Orts.Simulation.RollingStocks
                 case CABViewControlTypes.AMMETER2:
                 case CABViewControlTypes.AMMETER2_ABS:
                     {
+                        if (cvc.MaxNeedleSpeedUp == 0 && cvc.MaxNeedleSpeedDown == 0 && cvc.MaxNeedleSpeed == 0) cvc.MaxNeedleSpeed = 5.0f;
                         cvc.ElapsedTime += elapsedTime;
                         if (cvc.ElapsedTime > cvc.UpdateTime)
                         {                            
@@ -14626,6 +14631,7 @@ namespace Orts.Simulation.RollingStocks
                         break;
                     }
             }
+            
             // max needle speed
             if (cvc.MaxNeedleSpeed > 0 && elapsedTime > 0)
             {
