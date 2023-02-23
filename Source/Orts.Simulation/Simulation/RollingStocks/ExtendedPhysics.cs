@@ -35,6 +35,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml;
+using static Orts.Simulation.RollingStocks.MSTSLocomotive;
 
 namespace Orts.Simulation.RollingStocks
 {
@@ -416,7 +417,7 @@ namespace Orts.Simulation.RollingStocks
             }
 
             // Icik
-            if (!Locomotive.IsLeadLocomotive() && Locomotive.PowerOn && (Locomotive.LocoHelperOn || Locomotive.AcceptCableSignals) && Locomotive.AcceptPowerSignals)
+            if (!Locomotive.IsLeadLocomotive() && Locomotive.PowerOn && (Locomotive.LocoHelperOn || (Locomotive.LocoType == LocoTypes.Vectron && Locomotive.AcceptCableSignals)) && Locomotive.AcceptPowerSignals)
                 Locomotive.ControllerVolts = OverridenControllerVolts = Locomotive.Train.ControllerVolts;
             
             if (!Locomotive.IsPlayerTrain)

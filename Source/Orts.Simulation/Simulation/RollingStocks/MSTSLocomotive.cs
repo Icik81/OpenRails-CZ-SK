@@ -4952,7 +4952,7 @@ namespace Orts.Simulation.RollingStocks
                             }
                             else if (skidSpeedDegratation > 0)
                             {
-                                skidSpeedDegratation -= 0.05f; // původně 0.01
+                                skidSpeedDegratation -= 0.05f; // původně 0.01                                
                             }
                         }
 
@@ -4979,7 +4979,19 @@ namespace Orts.Simulation.RollingStocks
                             if (IsLeadLocomotive())
                                 extendedPhysics.OverridenControllerVolts = ControllerVolts;
                             if (!IsLeadLocomotive())
-                                ControllerVolts = Train.ControllerVolts;
+                            {
+                                // Postrk
+                                if (LocoHelperOn)
+                                    ControllerVolts = Train.ControllerVolts;
+                                else
+                                // Dvojčlen
+                                {
+                                    if (AcceptCableSignals)
+                                        ControllerVolts = Train.ControllerVolts;
+                                    else
+                                        ControllerVolts = 0;
+                                }
+                            }
                         }
                         if (wasRestored && !Simulator.Paused)
                             wasRestored = false;
