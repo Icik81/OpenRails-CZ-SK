@@ -3112,14 +3112,15 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 }
 
                 // Definice pro brzdič BP2
-                if (brakeSystem.BP2_EngineBrakeController)
+                if (brakeSystem.BP2_EngineBrakeController && lead.EngineBrakeController.TrainBrakeControllerState != ControllerState.Neutral)
                 {
                     train.BrakeLine3PressurePSI = lead.BrakeSystem.BrakeCylinderMaxSystemPressurePSI * EngineBrakeControllerRate;
                     // Apply
                     if (lead.BrakeSystem.AutoCylPressurePSI1 < train.BrakeLine3PressurePSI  
                         && lead.MainResPressurePSI > 0
                         && AutoCylPressurePSI <= lead.BrakeSystem.BrakeCylinderMaxSystemPressurePSI
-                        && AutoCylPressurePSI < lead.MainResPressurePSI)
+                        && AutoCylPressurePSI < lead.MainResPressurePSI
+                        )
                     {
                         if (lead.BrakeSystem.BP2_EngineBrakeControllerRatePSIpS == 0) lead.BrakeSystem.BP2_EngineBrakeControllerRatePSIpS = lead.EngineBrakeApplyRatePSIpS;
                         float dp = elapsedClockSeconds * lead.BrakeSystem.BP2_EngineBrakeControllerRatePSIpS;
