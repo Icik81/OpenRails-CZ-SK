@@ -6737,7 +6737,7 @@ namespace Orts.Simulation.RollingStocks
                         {
                             // Icik
                             SandingFrictionCoefficientFactor = 1 + (0.75f * ((SanderSpeedEffectUpToMpS - AbsSpeedMpS) / SanderSpeedEffectUpToMpS));
-                            BaseFrictionCoefficientFactor *= SandingFrictionCoefficientFactor;
+                            BaseFrictionCoefficientFactor *= SandingFrictionCoefficientFactor - MathHelper.Clamp((50f - LocomotiveAxle.SlipSpeedPercent) / 50f, 0, SandingFrictionCoefficientFactor - 1);                            
                         }
                     }
                     else
