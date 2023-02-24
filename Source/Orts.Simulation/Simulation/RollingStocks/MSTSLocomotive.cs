@@ -6727,7 +6727,7 @@ namespace Orts.Simulation.RollingStocks
                 }
 
                 //add sander - more effective in wet weather, so increases adhesion by more
-                if (AbsSpeedMpS < SanderSpeedOfMpS && CurrentTrackSandBoxCapacityL > 0.0 && MainResPressurePSI > 80.0 && (AbsSpeedMpS > 0))
+                if (AbsSpeedMpS < SanderSpeedOfMpS && CurrentTrackSandBoxCapacityL > 0.0 && MainResPressurePSI > 80.0 && (AbsSpeedMpS > 0.1f))
                 {
                     // Icik
                     if (SanderSpeedEffectUpToMpS == 0) SanderSpeedEffectUpToMpS = 112 / 3.6f; // 112km/h
