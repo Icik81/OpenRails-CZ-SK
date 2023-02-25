@@ -580,15 +580,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
 
 
         public override void Initialize(bool handbrakeOn, float maxPressurePSI, float fullServPressurePSI, bool immediateRelease)
-        {
-            // Zjistí maximální pracovní tlak v systému
-            if (maxPressurePSI == 0)
-            {
-                Car.Train.EqualReservoirPressurePSIorInHg = maxPressurePSI = maxPressurePSI0 = 5.0f * 14.50377f;
-            }
-            else
-                Car.Train.EqualReservoirPressurePSIorInHg = maxPressurePSI0 = maxPressurePSI;
-
+        {            
+            Car.Train.EqualReservoirPressurePSIorInHg = maxPressurePSI = maxPressurePSI0 = 5.0f * 14.50377f;         
             if (StartOn) maxPressurePSI0 = Car.Train.EqualReservoirPressurePSIorInHg;
 
             BrakeLine1PressurePSI = maxPressurePSI0;
