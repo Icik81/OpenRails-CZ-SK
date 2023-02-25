@@ -3581,6 +3581,7 @@ namespace Orts.Simulation.RollingStocks
                     HeatingOverCurrent = false;
 
                 I_HeatingData0 = (float)Math.Round(I_HeatingData);
+                I_Heating = I_HeatingData;
             }
 
             // Počítání teplot proběhne každý desátý cyklus 
@@ -14313,11 +14314,13 @@ namespace Orts.Simulation.RollingStocks
                     }
                 case CABViewControlTypes.AUXCONSUMPTION_CURRENT:
                     {
+                        if (cvc.MaxNeedleSpeedUp == 0 && cvc.MaxNeedleSpeedDown == 0 && cvc.MaxNeedleSpeed == 0) cvc.MaxNeedleSpeed = 5.0f;
                         data = I_AuxConsumption;
                         break;
                     }
                 case CABViewControlTypes.HEATING_CURRENT:
                     {
+                        if (cvc.MaxNeedleSpeedUp == 0 && cvc.MaxNeedleSpeedDown == 0 && cvc.MaxNeedleSpeed == 0) cvc.MaxNeedleSpeed = 5.0f;
                         data = I_Heating;
                         break;
                     }
