@@ -871,8 +871,9 @@ namespace Orts.Simulation.RollingStocks
                     }
 
                     // Test napětí v troleji pro jednosystémové lokomotivy
-                    if (VoltageIndicateTestCompleted)
+                    if (VoltageIndicateTestCompleted && VoltageTestCycle == 0)
                     {
+                        VoltageTestCycle++;
                         if (PantographVoltageV > 2.0f * LocomotivePowerVoltage)
                         {
                             HVOff = true;
@@ -1495,6 +1496,7 @@ namespace Orts.Simulation.RollingStocks
 
         // Icik
         // Zpoždění v testu indikaci napětí
+        int VoltageTestCycle;
         float TimerVoltageIndicateTest;
         bool VoltageIndicateTestCompleted;
         public void VoltageIndicate(float elapsedSeconds)
@@ -1502,6 +1504,7 @@ namespace Orts.Simulation.RollingStocks
             if (Pantographs[1].State == PantographState.Up || Pantographs[2].State == PantographState.Up)                        
                 PantographDown = false;
             else
+            if (Pantographs[1].State == PantographState.Down && Pantographs[2].State == PantographState.Down)
                 PantographDown = true;
 
             if (!PantographDown && !VoltageIndicateTestCompleted)
@@ -1513,7 +1516,10 @@ namespace Orts.Simulation.RollingStocks
             if (TimerVoltageIndicateTest > PowerSupply.AuxPowerOnDelayS + PowerSupply.PowerOnDelayS)
                 VoltageIndicateTestCompleted = true;
             else
+            {
                 VoltageIndicateTestCompleted = false;
+                VoltageTestCycle = 0;
+            }
         }
 
         // Postrk

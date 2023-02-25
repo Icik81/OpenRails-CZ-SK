@@ -1291,40 +1291,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 }
                 else
                     UpdateTripleValveState(threshold);
-
-                // Zjistí rychlost změny tlaku v potrubí a v brzdovém válci
-                if (T0 > 1) T0 = 0;
-                if (T0 == 0.0f)
-                {
-                    prevBrakeLine1PressurePSI = BrakeLine1PressurePSI;
-                    prevAutoCylPressurePSI = AutoCylPressurePSI;
-                    prevTotalCapacityMainResBrakePipe = TotalCapacityMainResBrakePipe;
-                }
-                T0 += elapsedClockSeconds;
-                if (T0 > 0.33f && T0 < 0.43f)
-                {
-                    T0 = 0;
-                    MainResChangeRate = (prevTotalCapacityMainResBrakePipe - TotalCapacityMainResBrakePipe) * 3.33f;
-                    if (MainResChangeRate < 0)
-                        MainResChangeRate = 0;
-
-                    BrakePipeChangeRate = Math.Abs(prevBrakeLine1PressurePSI - BrakeLine1PressurePSI) * 3.33f;
-
-                    if (BrakePipeChangeRate > 1)
-                        BrakePipeChangeRateBar = Math.Max(BrakePipeChangeRateBar, BrakePipeChangeRate / 14.50377f);
-                    else
-                        BrakePipeChangeRateBar = 0;
-
-                    CylinderChangeRate = Math.Abs(prevAutoCylPressurePSI - AutoCylPressurePSI) * 3.33f;
-                    if (AutoCylPressurePSI > prevAutoCylPressurePSI)
-                        CylinderChangeRateBar = GetCylPressurePSI() / GetMaxCylPressurePSI() * GetMaxApplicationRatePSIpS() / 14.50377f;
-
-                    if (AutoCylPressurePSI < prevAutoCylPressurePSI)
-                        CylinderChangeRateBar = GetCylPressurePSI() / GetMaxCylPressurePSI() * GetMaxReleaseRatePSIpS() / 14.50377f;
-                }
-                //if (loco != null)
-                //    loco.Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("CylinderChangeRateBar " + CylinderChangeRateBar));
-
+                
 
                 // Zaznamená poslední stav pomocné jímky pro určení pracovního bodu pomocné jímky
                 if (AutoCylPressurePSI0 < 1 && !BrakeReadyToApply)
@@ -1618,7 +1585,41 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 AutoCylPressurePSI = AutoCylPressurePSI1;
             if (AutoCylPressurePSI < AutoCylPressurePSI2)
                 AutoCylPressurePSI = AutoCylPressurePSI2;
-                      
+
+            // Zjistí rychlost změny tlaku v potrubí a v brzdovém válci
+            if (T0 > 1) T0 = 0;
+            if (T0 == 0.0f)
+            {
+                prevBrakeLine1PressurePSI = BrakeLine1PressurePSI;
+                prevAutoCylPressurePSI = AutoCylPressurePSI;
+                prevTotalCapacityMainResBrakePipe = TotalCapacityMainResBrakePipe;
+            }
+            T0 += elapsedClockSeconds;
+            if (T0 > 0.33f && T0 < 0.43f)
+            {
+                T0 = 0;
+                MainResChangeRate = (prevTotalCapacityMainResBrakePipe - TotalCapacityMainResBrakePipe) * 3.33f;
+                if (MainResChangeRate < 0)
+                    MainResChangeRate = 0;
+
+                BrakePipeChangeRate = Math.Abs(prevBrakeLine1PressurePSI - BrakeLine1PressurePSI) * 3.33f;
+
+                if (BrakePipeChangeRate > 1)
+                    BrakePipeChangeRateBar = Math.Max(BrakePipeChangeRateBar, BrakePipeChangeRate / 14.50377f);
+                else
+                    BrakePipeChangeRateBar = 0;
+
+                CylinderChangeRate = Math.Abs(prevAutoCylPressurePSI - AutoCylPressurePSI) * 3.33f;
+                if (AutoCylPressurePSI > prevAutoCylPressurePSI)
+                    CylinderChangeRateBar = GetCylPressurePSI() / GetMaxCylPressurePSI() * GetMaxApplicationRatePSIpS() / 14.50377f;
+
+                if (AutoCylPressurePSI < prevAutoCylPressurePSI)
+                    CylinderChangeRateBar = GetCylPressurePSI() / GetMaxCylPressurePSI() * GetMaxReleaseRatePSIpS() / 14.50377f;
+            }
+            //if (loco != null)
+            //    loco.Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("CylinderChangeRateBar " + CylinderChangeRateBar));
+
+
             if (AutoCylPressurePSI < BrakeLine3PressurePSI) // Brake Cylinder pressure will be the greater of engine brake pressure or train brake pressure
                 CylPressurePSI = BrakeLine3PressurePSI;
             else
