@@ -671,7 +671,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         loco.TrainBrakeValue[1] = loco.TrainBrakeValue[2] = loco.TrainBrakeController.DefaultNeutralBrakeValue;
                     else
                     if (loco.TrainBrakeController.DefaultBrakeValue > 0)
+                    {
                         loco.TrainBrakeValue[1] = loco.TrainBrakeValue[2] = loco.TrainBrakeController.DefaultBrakeValue;
+                        loco.LapButtonEnable = true;
+                    }
                     loco.SetTrainBrakePercent(loco.TrainBrakeValue[1] * 100f);                    
                 }
 
@@ -689,7 +692,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                             loco.TrainBrakeValue[2] = loco.TrainBrakeController.DefaultNeutralBrakeValue;
                         else
                         if (loco.TrainBrakeController.DefaultBrakeValue > 0)
+                        {
                             loco.TrainBrakeValue[2] = loco.TrainBrakeController.DefaultBrakeValue;
+                            loco.LapButtonEnable = true;
+                        }
                     }
                     if (loco.LocoStation == 2)
                     {
@@ -703,11 +709,14 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                             loco.TrainBrakeValue[1] = loco.TrainBrakeController.DefaultNeutralBrakeValue;
                         else
                         if (loco.TrainBrakeController.DefaultBrakeValue > 0)
+                        {
                             loco.TrainBrakeValue[1] = loco.TrainBrakeController.DefaultBrakeValue;
+                            loco.LapButtonEnable = true;
+                        }
                     }
                 }
 
-                if (loco.LocoType == MSTSLocomotive.LocoTypes.Vectron)
+                if (loco.LapButtonEnable)
                 {
                     if (loco.IsLeadLocomotive())
                     {
@@ -1781,9 +1790,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     lead.BrakeSystem.ARRTrainBrakeCanEngage = false;
                     lead.ARRTrainBrakeEngage = false;
                     lead.BrakeSystem.PressureConverterBaseEDB = 0;
-                    if (lead.BrakeSystem.BrakeLine1PressurePSI > 0 && !lead.BrakeSystem.EmerBrakeTriggerActive)
+                    if (!lead.BrakeSystem.EmerBrakeTriggerActive)
                     {
-                        lead.SignalEvent(Event.TrainBrakeEmergencyActivated);
+                        if (lead.BrakeSystem.BrakeLine1PressurePSI > lead.BrakeSystem.maxPressurePSI0 / 2f)
+                            lead.SignalEvent(Event.TrainBrakeEmergencyActivated);
                         lead.BrakeSystem.EmerBrakeTriggerActive = true;
                     }
                 }

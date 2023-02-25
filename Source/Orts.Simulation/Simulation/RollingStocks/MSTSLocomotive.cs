@@ -4677,56 +4677,59 @@ namespace Orts.Simulation.RollingStocks
                 firstFrame = false;
                 if (Simulator.Settings.AirEmpty)
                 {
-                    PantoCommandDown = true;                                       
+                    PantoCommandDown = true;
                 }
                 else
-                {                    
-                    Battery = true;                                  
-                    ActiveStation = UsingRearCab ? DriverStation.Station2 : DriverStation.Station1;
-                    if (Flipped)
-                        ActiveStation = UsingRearCab ? DriverStation.Station1 : DriverStation.Station2;
-                    // Mirel
-                    Mirel.Test1 = true;
-                    Mirel.Test2 = true;
-                    Mirel.Test3 = true;
-                    Mirel.Test4 = true;
-                    Mirel.Test5 = true;
-                    Mirel.Test6 = true;
-                    Mirel.Test7 = true;
-                    Mirel.initTest = SubSystems.Mirel.InitTest.Passed;
-                    Mirel.BlueLight = true;
-                    Mirel.selectedDriveMode = SubSystems.Mirel.DriveMode.Normal;
-                    Mirel.driveMode = SubSystems.Mirel.DriveMode.Off;
-                    Mirel.MaxSelectedSpeed = Mirel.MirelMaximumSpeed = MpS.ToKpH(MaxSpeedMpS);
-                    // LS90
-                    Mirel.ls90tested = true;
-                    Mirel.Ls90power[LocoStation] = SubSystems.Mirel.LS90power.On;
-                    
-                    LocoStation = 1;
-                    if (UsingRearCab)
-                        LocoStation = 2;
+                {
+                    if (!LocoIsStatic)
+                    {
+                        Battery = true;
+                        ActiveStation = UsingRearCab ? DriverStation.Station2 : DriverStation.Station1;
+                        if (Flipped)
+                            ActiveStation = UsingRearCab ? DriverStation.Station1 : DriverStation.Station2;
+                        // Mirel
+                        Mirel.Test1 = true;
+                        Mirel.Test2 = true;
+                        Mirel.Test3 = true;
+                        Mirel.Test4 = true;
+                        Mirel.Test5 = true;
+                        Mirel.Test6 = true;
+                        Mirel.Test7 = true;
+                        Mirel.initTest = SubSystems.Mirel.InitTest.Passed;
+                        Mirel.BlueLight = true;
+                        Mirel.selectedDriveMode = SubSystems.Mirel.DriveMode.Normal;
+                        Mirel.driveMode = SubSystems.Mirel.DriveMode.Off;
+                        Mirel.MaxSelectedSpeed = Mirel.MirelMaximumSpeed = MpS.ToKpH(MaxSpeedMpS);
+                        // LS90
+                        Mirel.ls90tested = true;
+                        Mirel.Ls90power[LocoStation] = SubSystems.Mirel.LS90power.On;
 
-                    // ARR
-                    if (IsLeadLocomotive())
-                    {                                                
-                        PowerKeyPosition[LocoStation] = 2;
-                        PowerKey = true;
-                        StationIsActivated[LocoStation] = true;                                                
-                        
-                        if (TrainBrakeController.TrainBrakeControllerState == ControllerState.Lap 
-                            || TrainBrakeController.TrainBrakeControllerState == ControllerState.Neutral
-                            || LapActive[LocoStation])
-                            EngineBrakeValue[LocoStation] = 1.0f;
-                        
-                        prevEngineBrakeValue[LocoStation] = EngineBrakeValue[LocoStation];
+                        LocoStation = 1;
+                        if (UsingRearCab)
+                            LocoStation = 2;
 
-                        /*if (CruiseControl != null && CruiseControl.Equipped)
+                        // ARR
+                        if (IsLeadLocomotive())
                         {
-                            CruiseControl.SpeedRegMode[LocoStation] = SubSystems.CruiseControl.SpeedRegulatorMode.Auto;
-                            CruiseControl.SelectedSpeedMpS = MpS.FromKpH(40);
-                            CruiseControl.SpeedSelMode[LocoStation] = SubSystems.CruiseControl.SpeedSelectorMode.Parking;
-                            AripotControllerValue[LocoStation] = CruiseControl.SelectedSpeedMpS / MaxSpeedMpS;
-                        }*/
+                            PowerKeyPosition[LocoStation] = 2;
+                            PowerKey = true;
+                            StationIsActivated[LocoStation] = true;
+
+                            if (TrainBrakeController.TrainBrakeControllerState == ControllerState.Lap
+                                || TrainBrakeController.TrainBrakeControllerState == ControllerState.Neutral
+                                || LapActive[LocoStation])
+                                EngineBrakeValue[LocoStation] = 1.0f;
+
+                            prevEngineBrakeValue[LocoStation] = EngineBrakeValue[LocoStation];
+
+                            /*if (CruiseControl != null && CruiseControl.Equipped)
+                            {
+                                CruiseControl.SpeedRegMode[LocoStation] = SubSystems.CruiseControl.SpeedRegulatorMode.Auto;
+                                CruiseControl.SelectedSpeedMpS = MpS.FromKpH(40);
+                                CruiseControl.SpeedSelMode[LocoStation] = SubSystems.CruiseControl.SpeedSelectorMode.Parking;
+                                AripotControllerValue[LocoStation] = CruiseControl.SelectedSpeedMpS / MaxSpeedMpS;
+                            }*/
+                        }
                     }
                 }
             }
