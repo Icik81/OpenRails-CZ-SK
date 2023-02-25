@@ -582,7 +582,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
         public override void Initialize(bool handbrakeOn, float maxPressurePSI, float fullServPressurePSI, bool immediateRelease)
         {
             // Zjistí maximální pracovní tlak v systému
-            if (Car.Simulator.Settings.CorrectQuestionableBrakingParams)
+            if (maxPressurePSI == 0)
             {
                 Car.Train.EqualReservoirPressurePSIorInHg = maxPressurePSI = maxPressurePSI0 = 5.0f * 14.50377f;
             }
@@ -826,8 +826,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 }
 
                 // Definice limitů proměnných pro chod nenaladěných vozidel
-                if ((Car as MSTSWagon).Simulator.Settings.CorrectQuestionableBrakingParams)
-                {
+                //if ((Car as MSTSWagon).Simulator.Settings.CorrectQuestionableBrakingParams)
+                //{
                     if (loco != null) // Lokomotiva
                     {
                         MaxReleaseRatePSIpS = ReleaseRatePSIpS = MathHelper.Clamp(MaxReleaseRatePSIpS, 0.1f * 14.50377f, 0.5f * 14.50377f);
@@ -838,7 +838,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         MaxReleaseRatePSIpS = ReleaseRatePSIpS = MathHelper.Clamp(MaxReleaseRatePSIpS, 0.1f * 14.50377f, 0.5f * 14.50377f);
                         MaxApplicationRatePSIpS = MathHelper.Clamp(MaxApplicationRatePSIpS, 0.5f * 14.50377f, 1.0f * 14.50377f);
                     }
-                }
+                //}
                 MaxReleaseRatePSIpS0 = MaxReleaseRatePSIpS;
                 MaxApplicationRatePSIpS0 = MaxApplicationRatePSIpS;
 
@@ -900,8 +900,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             }
 
             // Definice limitů proměnných pro chod nenaladěných vozidel
-            if ((Car as MSTSWagon).Simulator.Settings.CorrectQuestionableBrakingParams)
-            {
+            //if ((Car as MSTSWagon).Simulator.Settings.CorrectQuestionableBrakingParams)
+            //{
                 if (loco != null) // Lokomotiva
                 {
                     MaxCylPressurePSI = AutoCylPressurePSI = MathHelper.Clamp(MaxCylPressurePSI, 0.0f * 14.50377f, 10.0f * 14.50377f);
@@ -923,7 +923,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     EmergResVolumeM3 = MathHelper.Clamp(EmergResVolumeM3, 0.050f, 0.100f);
                     BrakePipeVolumeM3 = MathHelper.Clamp(BrakePipeVolumeM3, 0.0f, 0.030f);
                 }
-            }
+            //}
 
             // Časy pro napouštění a vypouštění brzdového válce v sekundách režimy G, P, R
             float TimeApplyG = 22.0f;
@@ -1735,11 +1735,11 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             var brakePipeTimeFactorS = 0.003f; // Průrazná rychlost tlakové vlny 250m/s 0.003f
             var BrakePipeChargingRatePSIorInHgpS0 = lead == null ? 29 : lead.BrakePipeChargingRatePSIorInHgpS;
 
-            if (train.Simulator.Settings.CorrectQuestionableBrakingParams)
-            {
+            //if (train.Simulator.Settings.CorrectQuestionableBrakingParams)
+            //{
                 brakePipeTimeFactorS = MathHelper.Clamp(brakePipeTimeFactorS, 0.001f, 0.01f);
                 BrakePipeChargingRatePSIorInHgpS0 = MathHelper.Clamp(BrakePipeChargingRatePSIorInHgpS0, 21, 50);
-            }
+            //}
 
             // Výpočet z údaje vlaku dlouhého 330m (25 vozů) sníží tlak v hp z 5 na 3.4bar za 22s
             float brakePipeTimeFactorSToTrainLength = train.Length / (330 / (brakePipeTimeFactorS * 7.5f * 25) * train.Cars.Count);
@@ -1907,8 +1907,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             // Definice limitů pro základní proměnné vzduchařiny
             serviceTimeFactor = MathHelper.Clamp(serviceTimeFactor, 1.009f, 2.0f);
             // Ohlídá hodnotu v hlavní jímce, aby nepřekročila limity            
-            if (train.Simulator.Settings.CorrectQuestionableBrakingParams)
-            {
+            //if (train.Simulator.Settings.CorrectQuestionableBrakingParams)
+            //{
                 if (lead != null)
                 {
                     lead.TrainBrakeController.QuickReleaseRatePSIpS = MathHelper.Clamp(lead.TrainBrakeController.QuickReleaseRatePSIpS, 3.0f * 14.50377f, 7.0f * 14.50377f);
@@ -1918,7 +1918,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     lead.EngineBrakeController.ReleaseRatePSIpS = MathHelper.Clamp(lead.EngineBrakeController.ReleaseRatePSIpS, 1.0f * 14.50377f, 2.5f * 14.50377f);
                     lead.EngineBrakeController.ApplyRatePSIpS = MathHelper.Clamp(lead.EngineBrakeController.ApplyRatePSIpS, 1.0f * 14.50377f, 2.5f * 14.50377f);
                 }
-            }
+            //}
 
             for (int i = 0; i < nSteps; i++)
             {

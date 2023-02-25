@@ -183,7 +183,6 @@
             this.label13 = new System.Windows.Forms.Label();
             this.label12 = new System.Windows.Forms.Label();
             this.numericActRandomizationLevel = new System.Windows.Forms.NumericUpDown();
-            this.checkCorrectQuestionableBrakingParams = new System.Windows.Forms.CheckBox();
             this.label25 = new System.Windows.Forms.Label();
             this.precipitationBoxLength = new System.Windows.Forms.NumericUpDown();
             this.label24 = new System.Windows.Forms.Label();
@@ -2246,7 +2245,6 @@
             this.tabPageExperimental.Controls.Add(this.label13);
             this.tabPageExperimental.Controls.Add(this.label12);
             this.tabPageExperimental.Controls.Add(this.numericActRandomizationLevel);
-            this.tabPageExperimental.Controls.Add(this.checkCorrectQuestionableBrakingParams);
             this.tabPageExperimental.Controls.Add(this.label25);
             this.tabPageExperimental.Controls.Add(this.precipitationBoxLength);
             this.tabPageExperimental.Controls.Add(this.label24);
@@ -2359,17 +2357,6 @@
             this.numericActRandomizationLevel.Size = new System.Drawing.Size(72, 22);
             this.numericActRandomizationLevel.TabIndex = 46;
             this.toolTip1.SetToolTip(this.numericActRandomizationLevel, "0: no randomization, 1: moderate, 2: significant; 3: high (may be unrealistic)");
-            // 
-            // checkCorrectQuestionableBrakingParams
-            // 
-            this.checkCorrectQuestionableBrakingParams.AutoSize = true;
-            this.checkCorrectQuestionableBrakingParams.Location = new System.Drawing.Point(405, 91);
-            this.checkCorrectQuestionableBrakingParams.Margin = new System.Windows.Forms.Padding(4);
-            this.checkCorrectQuestionableBrakingParams.Name = "checkCorrectQuestionableBrakingParams";
-            this.checkCorrectQuestionableBrakingParams.Size = new System.Drawing.Size(299, 20);
-            this.checkCorrectQuestionableBrakingParams.TabIndex = 43;
-            this.checkCorrectQuestionableBrakingParams.Text = "Correct braking parameters for MSTS models";
-            this.checkCorrectQuestionableBrakingParams.UseVisualStyleBackColor = true;
             // 
             // label25
             // 
@@ -3104,7 +3091,6 @@
         private System.Windows.Forms.Label label24;
         private System.Windows.Forms.Label label25;
         private System.Windows.Forms.NumericUpDown precipitationBoxLength;
-        private System.Windows.Forms.CheckBox checkCorrectQuestionableBrakingParams;
         private System.Windows.Forms.NumericUpDown numericExternalSoundPassThruPercent;
         private System.Windows.Forms.Label label11;
         private System.Windows.Forms.CheckBox checkDoubleWire;
