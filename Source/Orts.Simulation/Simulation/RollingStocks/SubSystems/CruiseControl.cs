@@ -2141,7 +2141,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                         else
                         {
                             if (Locomotive.TractiveForceCurves == null)
-                                maxForceN = Locomotive.MaxForceN * (controllerVolts / 100);
+                                maxForceN = Locomotive.MaxForceN * (controllerVolts / 100) * (1 - Locomotive.PowerReduction);
                             else
                                 maxForceN = Locomotive.TractiveForceCurves.Get(controllerVolts / 100, wheelSpeedMpS) * (1 - Locomotive.PowerReduction);
                         }

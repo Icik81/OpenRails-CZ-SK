@@ -4552,6 +4552,7 @@ namespace Orts.Simulation.RollingStocks
                     Simulator.DataDynamicBrakeMaxCurrentA = DynamicBrakeMaxCurrentA;
                     Simulator.DataDynamicBrakeForceN = DynamicBrakeForceN;
                     Simulator.DataMaxDynamicBrakeForceN = MaxDynamicBrakeForceN;
+                    Simulator.DataDynamicBrakeAvailable = DynamicBrakeAvailable;
                     if (this as MSTSDieselLocomotive != null)
                     {
                         Simulator.DataFakeDieselWaterTemperatureDeg = (this as MSTSDieselLocomotive).DieselEngines[0].FakeDieselWaterTemperatureDeg;
@@ -4574,6 +4575,7 @@ namespace Orts.Simulation.RollingStocks
                 DynamicBrakeMaxCurrentA = Simulator.DataDynamicBrakeMaxCurrentA;
                 DynamicBrakeForceN = Simulator.DataDynamicBrakeForceN;
                 MaxDynamicBrakeForceN = Simulator.DataMaxDynamicBrakeForceN;
+                DynamicBrakeAvailable = Simulator.DataDynamicBrakeAvailable;
                 if (this as MSTSDieselLocomotive != null)
                 {
                     (this as MSTSDieselLocomotive).DieselEngines[0].FakeDieselWaterTemperatureDeg = Simulator.DataFakeDieselWaterTemperatureDeg;
@@ -4588,11 +4590,11 @@ namespace Orts.Simulation.RollingStocks
             {
                 DriveForceN = 0;
                 MaxCurrentA = 0;
-                MaxForceN = 0;
+                //MaxForceN = 0;
                 MaxPowerW = 0;
                 DynamicBrakeMaxCurrentA = 0;
                 DynamicBrakeForceN = 0;
-                MaxDynamicBrakeForceN = 0;
+                //MaxDynamicBrakeForceN = 0;
             }
         }
 
