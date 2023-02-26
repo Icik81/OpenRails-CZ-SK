@@ -931,11 +931,11 @@ namespace Orts.Simulation.RollingStocks
                             {
 
                                 // Shodí HV při poklesu napětí v troleji a nastaveném výkonu (podpěťová ochrana)
-                                if (PowerSupply.PantographVoltageV < PantographCriticalVoltage && LocalThrottlePercent > 0 && VoltageIndicateTestCompleted)
+                                if (PowerSupply.PantographVoltageV < PantographCriticalVoltage && LocalThrottlePercent > 0)
                                     HVOff = true;
                             }
 
-                            if (CruiseControl != null && VoltageIndicateTestCompleted)
+                            if (CruiseControl != null)
                                 if (PowerSupply.PantographVoltageV == 1
                                     && CruiseControl.ForceThrottleAndDynamicBrake != -1
                                     && CruiseControl.ForceThrottleAndDynamicBrake != 0
@@ -948,14 +948,14 @@ namespace Orts.Simulation.RollingStocks
                             // Shodí HV při poklesu napětí v troleji a nastaveném výkonu (podpěťová ochrana)
                             if (PowerSupply.PantographVoltageV > 1)
                             {
-                                if (PowerSupply.PantographVoltageV < PantographCriticalVoltage && LocalThrottlePercent > 0 && VoltageIndicateTestCompleted)
+                                if (PowerSupply.PantographVoltageV < PantographCriticalVoltage && LocalThrottlePercent > 0)
                                 {
                                     HVOff = true;
                                     Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Undervoltage protection!"));
                                     SignalEvent(Event.Failure);
                                 }
                                 if (CruiseControl != null)
-                                    if (PowerSupply.PantographVoltageV < PantographCriticalVoltage && CruiseControl.ForceThrottleAndDynamicBrake > 0 && VoltageIndicateTestCompleted && LocoType != LocoTypes.Vectron)
+                                    if (PowerSupply.PantographVoltageV < PantographCriticalVoltage && CruiseControl.ForceThrottleAndDynamicBrake > 0 && LocoType != LocoTypes.Vectron)
                                     {
                                         CruiseControl.ForceThrottleAndDynamicBrake = 0;
                                         CruiseControl.controllerVolts = 0;
@@ -978,12 +978,12 @@ namespace Orts.Simulation.RollingStocks
                             if (PowerSupply.PantographVoltageV == 1 && LocalThrottlePercent > 0 && PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closed)
                             {
                                 // Shodí HV při poklesu napětí v troleji a nastaveném výkonu (podpěťová ochrana)
-                                if (PowerSupply.PantographVoltageV < PantographCriticalVoltage && LocalThrottlePercent > 0 && VoltageIndicateTestCompleted)
+                                if (PowerSupply.PantographVoltageV < PantographCriticalVoltage && LocalThrottlePercent > 0)
                                     HVOff = true;
                             }
 
                             if (CruiseControl != null)
-                                if (PowerSupply.PantographVoltageV == 1 && VoltageIndicateTestCompleted
+                                if (PowerSupply.PantographVoltageV == 1
                                     && CruiseControl.ForceThrottleAndDynamicBrake != 0
                                     && CruiseControl.ForceThrottleAndDynamicBrake != 1
                                     && PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closed)
@@ -994,14 +994,14 @@ namespace Orts.Simulation.RollingStocks
                             // Shodí HV při poklesu napětí v troleji a nastaveném výkonu (podpěťová ochrana)
                             if (PowerSupply.PantographVoltageV > 1)
                             {
-                                if (PowerSupply.PantographVoltageV < PantographCriticalVoltage && LocalThrottlePercent > 0 && VoltageIndicateTestCompleted)
+                                if (PowerSupply.PantographVoltageV < PantographCriticalVoltage && LocalThrottlePercent > 0)
                                 {
                                     HVOff = true;
                                     Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Undervoltage protection!"));
                                     SignalEvent(Event.Failure);
                                 }
                                 if (CruiseControl != null)
-                                    if (PowerSupply.PantographVoltageV < PantographCriticalVoltage && CruiseControl.ForceThrottleAndDynamicBrake > 0 && VoltageIndicateTestCompleted)
+                                    if (PowerSupply.PantographVoltageV < PantographCriticalVoltage && CruiseControl.ForceThrottleAndDynamicBrake > 0)
                                     {
                                         CruiseControl.ForceThrottleAndDynamicBrake = 0;
                                         CruiseControl.controllerVolts = 0;
