@@ -3110,8 +3110,8 @@ namespace Orts.Simulation.RollingStocks
             if (ControlUnit)
             {
                 status.AppendFormat("{0}\t", Simulator.Catalog.GetString("Control"));
-                status.AppendFormat("{0}\t", Simulator.Catalog.GetString(TMTemperature + "°C"));
-                status.AppendFormat("{0}", Simulator.Catalog.GetString(MathHelper.Clamp(PantographVoltageV - 1, 0, RouteVoltageV * 1.2f) + "V"));
+                //status.AppendFormat("{0}\t", Simulator.Catalog.GetString(TMTemperature + "°C"));
+                //status.AppendFormat("{0}", Simulator.Catalog.GetString(MathHelper.Clamp(PantographVoltageV - 1, 0, RouteVoltageV * 1.2f) + "V"));
                 //status.AppendFormat("{0}", Simulator.Catalog.GetString("PSPantoVoltage: " + PowerSupply.PantographVoltageV));
             }            
 
