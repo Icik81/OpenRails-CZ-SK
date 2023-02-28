@@ -902,9 +902,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     loco.BrakeSystem.LocoAuxCylVolumeRatio = AuxCylVolumeRatio;
                     MaxAuxilaryChargingRatePSIpS = MathHelper.Clamp(MaxAuxilaryChargingRatePSIpS, 0.1f * 14.50377f, 0.5f * 14.50377f);
                     EmergResChargingRatePSIpS = MathHelper.Clamp(EmergResChargingRatePSIpS, 0.1f * 14.50377f, 0.5f * 14.50377f);
-                    EmergAuxVolumeRatio = MathHelper.Clamp(EmergAuxVolumeRatio, 5.0f, 7.0f);
-                    EmergResVolumeM3 = MathHelper.Clamp(EmergResVolumeM3, 0.20f, 0.30f);
-                    BrakePipeVolumeM3 = MathHelper.Clamp(BrakePipeVolumeM3, 0.0f, 0.020f);
+                    EmergAuxVolumeRatio = MathHelper.Clamp(EmergAuxVolumeRatio, 0.5f, 7.0f);
+                    EmergResVolumeM3 = MathHelper.Clamp(EmergResVolumeM3, 0.050f, 0.300f);
+                    BrakePipeVolumeM3 = MathHelper.Clamp(BrakePipeVolumeM3, 0.0f, 0.030f);
                 }
                 else // Vagón
                 {
@@ -912,8 +912,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     AuxCylVolumeRatio = MathHelper.Clamp(AuxCylVolumeRatio, 1.5f, 4.0f);
                     MaxAuxilaryChargingRatePSIpS = MathHelper.Clamp(MaxAuxilaryChargingRatePSIpS, 0.1f * 14.50377f, 0.5f * 14.50377f);
                     EmergResChargingRatePSIpS = MathHelper.Clamp(EmergResChargingRatePSIpS, 0.1f * 14.50377f, 0.5f * 14.50377f);
-                    EmergAuxVolumeRatio = MathHelper.Clamp(EmergAuxVolumeRatio, 0.5f, 1.5f);
-                    EmergResVolumeM3 = MathHelper.Clamp(EmergResVolumeM3, 0.050f, 0.100f);
+                    EmergAuxVolumeRatio = MathHelper.Clamp(EmergAuxVolumeRatio, 0.5f, 7.0f);
+                    EmergResVolumeM3 = MathHelper.Clamp(EmergResVolumeM3, 0.050f, 0.300f);
                     BrakePipeVolumeM3 = MathHelper.Clamp(BrakePipeVolumeM3, 0.0f, 0.030f);
                 }
             //}
@@ -2277,7 +2277,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         if (!LocoTwoPipesConnectionBreak)
                         {
                             // Použití všech hlavních jímek při propojení napájecího potrubí                             
-                            (train.Cars[i] as MSTSLocomotive).MainResPressurePSI = sumpv;                            
+                            (train.Cars[i] as MSTSLocomotive).MainResPressurePSI = sumpv;
                             train.Cars[i].BrakeSystem.TotalCapacityMainResBrakePipe = (train.Cars[i].BrakeSystem.BrakePipeVolumeM3 * train.Cars[i].BrakeSystem.BrakeLine1PressurePSI) + (loco.MainResVolumeM3 * loco.MainResPressurePSI);
 
                             // Logika chování vzduchu mezi pomocnými jímkami
@@ -2478,8 +2478,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         if (loco.AuxCompressorRestartPressurePSI != 0) AuxResRestart = true;
 
                         if ((loco.AuxResPressurePSI <= loco.AuxCompressorRestartPressurePSI && AuxResRestart || !AuxResRestart)
-                            && loco.Battery && loco.PowerKey
-                            && loco.AuxCompressorMode_OffOn && ((loco is MSTSElectricLocomotive && loco.StationIsActivated[loco.LocoStation]) || loco is MSTSDieselLocomotive || loco is MSTSSteamLocomotive)
+                            && loco.Battery && (loco.PowerKey || loco.AuxCompressorNoActiveStation)
+                            && loco.AuxCompressorMode_OffOn && ((loco is MSTSElectricLocomotive && loco.AuxCompressorNoActiveStation) || (loco is MSTSElectricLocomotive && loco.StationIsActivated[loco.LocoStation]) || loco is MSTSDieselLocomotive || loco is MSTSSteamLocomotive)
                             && loco.BrakeSystem.AuxCompressorOnDelay
                             && !loco.AuxCompressorIsOn)
                             loco.SignalEvent(Event.AuxCompressorOn);
@@ -2490,7 +2490,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                             genModeActive = loco.extendedPhysics.GeneratoricModeActive;
                         }
 
-                        if ((loco.MainResPressurePSI <= loco.CompressorRestartPressurePSI || (loco.Compressor_I_HandMode[loco.LocoStation] 
+                        if ((loco.MainResPressurePSI <= loco.CompressorRestartPressurePSI || (loco.Compressor_I_HandMode[loco.LocoStation]
                             && ((loco is MSTSElectricLocomotive && loco.StationIsActivated[loco.LocoStation]) || loco is MSTSDieselLocomotive || loco is MSTSSteamLocomotive)))
                             && (loco.AuxPowerOn || genModeActive)
                             && (loco.CompressorMode_OffAuto[loco.LocoStation] && ((loco is MSTSElectricLocomotive && loco.StationIsActivated[loco.LocoStation]) || loco is MSTSDieselLocomotive || loco is MSTSSteamLocomotive) || loco.Compressor_I_HandMode[loco.LocoStation] && loco.StationIsActivated[loco.LocoStation])
@@ -2508,8 +2508,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
 
 
                         if ((loco.AuxResPressurePSI >= loco.MaxAuxResPressurePSI && AuxResRestart
-                            || (!loco.Battery || !loco.PowerKey)
-                            || (!loco.AuxCompressorMode_OffOn && ((loco is MSTSElectricLocomotive && loco.StationIsActivated[loco.LocoStation]) || loco is MSTSDieselLocomotive || loco is MSTSSteamLocomotive)))
+                            || (!loco.Battery || (!loco.PowerKey && !loco.AuxCompressorNoActiveStation))
+                            || (!loco.AuxCompressorMode_OffOn && ((loco is MSTSElectricLocomotive && loco.AuxCompressorNoActiveStation) || (loco is MSTSElectricLocomotive && loco.StationIsActivated[loco.LocoStation]) || loco is MSTSDieselLocomotive || loco is MSTSSteamLocomotive)))
                             && loco.AuxCompressorIsOn)
                             loco.SignalEvent(Event.AuxCompressorOff);
 

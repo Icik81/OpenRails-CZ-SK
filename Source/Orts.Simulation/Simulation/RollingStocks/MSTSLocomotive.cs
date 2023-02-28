@@ -508,6 +508,7 @@ namespace Orts.Simulation.RollingStocks
         public bool QuickReleaseButtonEnable = false;
         public bool LowPressureReleaseButtonEnable = false;
         public bool AuxCompressor = false;
+        public bool AuxCompressorNoActiveStation = false;
         public bool CompressorCombined = false;
         public bool CompressorCombined2 = false;
         public bool Compressor_I = false;
@@ -14241,6 +14242,7 @@ namespace Orts.Simulation.RollingStocks
                 case CABViewControlTypes.AUXCOMPRESSOR_MODE_OFFON:
                     {
                         AuxCompressor = true;
+                        AuxCompressorNoActiveStation = true;
                         data = AuxCompressorMode_OffOn ? 1 : 0;
                         break;
                     }
