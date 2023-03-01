@@ -9141,12 +9141,12 @@ namespace Orts.Simulation.RollingStocks
         public bool MUCylPressureMirelOk;
         public void TrainAlerterLogic()
         {            
-            if (IsLeadLocomotive() && AcceptMUSignals)
+            if (IsLeadLocomotive() && AcceptCableSignals)
             {
                 MUCylPressureMirelOk = false;
                 foreach (TrainCar car in Train.Cars)
                 {
-                    if (car is MSTSLocomotive && AcceptMUSignals)
+                    if (car is MSTSLocomotive && AcceptCableSignals)
                     {
                         if (car.BrakeSystem.GetCylPressurePSI() > 1.5f * 14.50377f)
                             MUCylPressureMirelOk = true;
@@ -9165,23 +9165,23 @@ namespace Orts.Simulation.RollingStocks
             else
             {
                 // Přenos Mirelu do propojené lokomotivy
-                if (Simulator.TrainAlerterPassed && AcceptMUSignals)
+                if (!IsLeadLocomotive() && !LocoHelperOn && Simulator.TrainAlerterPassed && AcceptCableSignals)
                 {
-                    Mirel.Test1 = true;
-                    Mirel.Test2 = true;
-                    Mirel.Test3 = true;
-                    Mirel.Test4 = true;
-                    Mirel.Test5 = true;
-                    Mirel.Test6 = true;
-                    Mirel.Test7 = true;
-                    Mirel.initTest = SubSystems.Mirel.InitTest.Passed;
-                    Mirel.BlueLight = true;
-                    Mirel.selectedDriveMode = Simulator.selectedDriveMode;
-                    Mirel.driveMode = Simulator.driveMode;
-                    Mirel.MaxSelectedSpeed = Simulator.MaxSelectedSpeed;
-                    // LS90
-                    Mirel.ls90tested = false;
-                    Mirel.Ls90power[LocoStation] = SubSystems.Mirel.LS90power.Off;
+                    if (Battery)
+                    {
+                        Mirel.Test1 = true;
+                        Mirel.Test2 = true;
+                        Mirel.Test3 = true;
+                        Mirel.Test4 = true;
+                        Mirel.Test5 = true;
+                        Mirel.Test6 = true;
+                        Mirel.Test7 = true;
+                        Mirel.initTest = SubSystems.Mirel.InitTest.Passed;
+                        Mirel.BlueLight = true;
+                        Mirel.selectedDriveMode = Simulator.selectedDriveMode;
+                        Mirel.driveMode = Simulator.driveMode;
+                        Mirel.MaxSelectedSpeed = Simulator.MaxSelectedSpeed;
+                    }                    
                 }
             }
         }
