@@ -898,22 +898,22 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 if (loco != null) // Lokomotiva
                 {
                     MaxCylPressurePSI = AutoCylPressurePSI = MathHelper.Clamp(MaxCylPressurePSI, 0.0f * 14.50377f, 10.0f * 14.50377f);
-                    AuxCylVolumeRatio = MathHelper.Clamp(AuxCylVolumeRatio, 1.5f, 4.0f);
+                    AuxCylVolumeRatio = MathHelper.Clamp(AuxCylVolumeRatio, 0.0f, 4.0f);
                     loco.BrakeSystem.LocoAuxCylVolumeRatio = AuxCylVolumeRatio;
-                    MaxAuxilaryChargingRatePSIpS = MathHelper.Clamp(MaxAuxilaryChargingRatePSIpS, 0.1f * 14.50377f, 0.5f * 14.50377f);
-                    EmergResChargingRatePSIpS = MathHelper.Clamp(EmergResChargingRatePSIpS, 0.1f * 14.50377f, 0.5f * 14.50377f);
-                    EmergAuxVolumeRatio = MathHelper.Clamp(EmergAuxVolumeRatio, 0.5f, 7.0f);
-                    EmergResVolumeM3 = MathHelper.Clamp(EmergResVolumeM3, 0.050f, 0.300f);
+                    MaxAuxilaryChargingRatePSIpS = MathHelper.Clamp(MaxAuxilaryChargingRatePSIpS, 0.0f * 14.50377f, 0.5f * 14.50377f);
+                    EmergResChargingRatePSIpS = MathHelper.Clamp(EmergResChargingRatePSIpS, 0.0f * 14.50377f, 0.5f * 14.50377f);
+                    EmergAuxVolumeRatio = MathHelper.Clamp(EmergAuxVolumeRatio, 0.0f, 7.0f);
+                    EmergResVolumeM3 = MathHelper.Clamp(EmergResVolumeM3, 0.0f, 0.300f);
                     BrakePipeVolumeM3 = MathHelper.Clamp(BrakePipeVolumeM3, 0.0f, 0.030f);
                 }
                 else // Vagón
                 {
                     MaxCylPressurePSI = AutoCylPressurePSI = MathHelper.Clamp(MaxCylPressurePSI, 0.0f * 14.50377f, 10.0f * 14.50377f);
-                    AuxCylVolumeRatio = MathHelper.Clamp(AuxCylVolumeRatio, 1.5f, 4.0f);
-                    MaxAuxilaryChargingRatePSIpS = MathHelper.Clamp(MaxAuxilaryChargingRatePSIpS, 0.1f * 14.50377f, 0.5f * 14.50377f);
-                    EmergResChargingRatePSIpS = MathHelper.Clamp(EmergResChargingRatePSIpS, 0.1f * 14.50377f, 0.5f * 14.50377f);
-                    EmergAuxVolumeRatio = MathHelper.Clamp(EmergAuxVolumeRatio, 0.5f, 7.0f);
-                    EmergResVolumeM3 = MathHelper.Clamp(EmergResVolumeM3, 0.050f, 0.300f);
+                    AuxCylVolumeRatio = MathHelper.Clamp(AuxCylVolumeRatio, 0.0f, 4.0f);
+                    MaxAuxilaryChargingRatePSIpS = MathHelper.Clamp(MaxAuxilaryChargingRatePSIpS, 0.0f * 14.50377f, 0.5f * 14.50377f);
+                    EmergResChargingRatePSIpS = MathHelper.Clamp(EmergResChargingRatePSIpS, 0.0f * 14.50377f, 0.5f * 14.50377f);
+                    EmergAuxVolumeRatio = MathHelper.Clamp(EmergAuxVolumeRatio, 0.0f, 7.0f);
+                    EmergResVolumeM3 = MathHelper.Clamp(EmergResVolumeM3, 0.0f, 0.300f);
                     BrakePipeVolumeM3 = MathHelper.Clamp(BrakePipeVolumeM3, 0.0f, 0.030f);
                 }
             //}
@@ -1732,7 +1732,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             //if (train.Simulator.Settings.CorrectQuestionableBrakingParams)
             //{
                 brakePipeTimeFactorS = MathHelper.Clamp(brakePipeTimeFactorS, 0.001f, 0.01f);
-                BrakePipeChargingRatePSIorInHgpS0 = MathHelper.Clamp(BrakePipeChargingRatePSIorInHgpS0, 21, 50);
+                BrakePipeChargingRatePSIorInHgpS0 = MathHelper.Clamp(BrakePipeChargingRatePSIorInHgpS0, 21, 150);
             //}
 
             // Výpočet z údaje vlaku dlouhého 330m (25 vozů) sníží tlak v hp z 5 na 3.4bar za 22s
