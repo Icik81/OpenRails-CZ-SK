@@ -240,9 +240,9 @@ namespace Orts.Simulation
             }
             if (Simulator.OriginalPlayerTrain.TrainType == Train.TRAINTYPE.PLAYER || Simulator.OriginalPlayerTrain.TrainType == Train.TRAINTYPE.AI_PLAYERDRIVEN)
             {
-                if (Math.Abs(Simulator.OriginalPlayerTrain.SpeedMpS) < 0.2f)
+                if (Math.Abs(Simulator.OriginalPlayerTrain.SpeedMpS) < 1.0f)
                 {
-                    if (Math.Abs(prevTrainSpeed) >= 0.2f)
+                    if (Math.Abs(prevTrainSpeed) >= 1.0f)
                     {
                         prevTrainSpeed = 0;
                         Current.NotifyEvent(ActivityEventType.TrainStop);
@@ -254,7 +254,7 @@ namespace Orts.Simulation
                 }
                 else
                 {
-                    if (Math.Abs(prevTrainSpeed) < 0.2f && Math.Abs(Simulator.OriginalPlayerTrain.SpeedMpS) >= 1.0f)
+                    if (Math.Abs(prevTrainSpeed) < 1.0f && Math.Abs(Simulator.OriginalPlayerTrain.SpeedMpS) >= 1.0f)
                     {
                         prevTrainSpeed = Simulator.OriginalPlayerTrain.SpeedMpS;
                         Current.NotifyEvent(ActivityEventType.TrainStart);
@@ -1090,7 +1090,7 @@ namespace Orts.Simulation
                                 remaining / 60, remaining % 60);
 
                             //Debrief Eval
-                            if (Simulator.PlayerLocomotive.SpeedMpS > 0 && !ldbfevaldepartbeforeboarding)
+                            if (Math.Abs(Simulator.PlayerLocomotive.SpeedMpS) > 1.0f && !ldbfevaldepartbeforeboarding)
                             {
                                 var train = Simulator.PlayerLocomotive.Train;
                                 ldbfevaldepartbeforeboarding = true;
