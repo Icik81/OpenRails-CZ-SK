@@ -686,15 +686,13 @@ namespace Orts.Viewer3D
         }
 
         public override void Render(GraphicsDevice graphicsDevice, IEnumerable<RenderItem> renderItems, ref Matrix XNAViewMatrix, ref Matrix XNAProjectionMatrix)
-        {
-            var viewProj = XNAViewMatrix * XNAProjectionMatrix;
-
+        {            
             foreach (var pass in SceneryShader.CurrentTechnique.Passes)
             {
                 foreach (var item in renderItems)
                 {
                     SceneryShader.SignalLightIntensity = (item.ItemData as SignalLightState).GetIntensity();
-                    SceneryShader.SetMatrix(item.XNAMatrix, ref viewProj);
+                    SceneryShader.SetMatrix(item.XNAMatrix, ref XNAViewMatrix, ref XNAProjectionMatrix);
                     pass.Apply();
                     item.RenderPrimitive.Draw(graphicsDevice);
                 }
@@ -744,9 +742,7 @@ namespace Orts.Viewer3D
         }
 
         public override void Render(GraphicsDevice graphicsDevice, IEnumerable<RenderItem> renderItems, ref Matrix XNAViewMatrix, ref Matrix XNAProjectionMatrix)
-        {
-            var viewProj = XNAViewMatrix * XNAProjectionMatrix;
-
+        {            
             foreach (var pass in SceneryShader.CurrentTechnique.Passes)
             {
                 foreach (var item in renderItems)
@@ -754,7 +750,7 @@ namespace Orts.Viewer3D
                     var slp = item.RenderPrimitive as SignalLightPrimitive;
                     SceneryShader.ZBias = MathHelper.Lerp(slp.GlowIntensityDay, slp.GlowIntensityNight, NightEffect);
                     SceneryShader.SignalLightIntensity = (item.ItemData as SignalLightState).GetIntensity();
-                    SceneryShader.SetMatrix(item.XNAMatrix, ref viewProj);
+                    SceneryShader.SetMatrix(item.XNAMatrix, ref XNAViewMatrix, ref XNAProjectionMatrix);
                     pass.Apply();
                     item.RenderPrimitive.Draw(graphicsDevice);
                 }

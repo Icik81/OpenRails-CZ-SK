@@ -24,7 +24,8 @@
 ////////////////////    G L O B A L   V A L U E S    ///////////////////////////
 
 float4x4 World;         // model -> world
-float4x4 WorldViewProjection;  // model -> world -> view -> projection
+float4x4 View;          // world -> view
+float4x4 Projection;    // view -> projection
 float4x4 LightViewProjectionShadowProjection0;  // world -> light view -> light projection -> shadow map projection
 float4x4 LightViewProjectionShadowProjection1;
 float4x4 LightViewProjectionShadowProjection2;
@@ -163,7 +164,7 @@ struct VERTEX_OUTPUT
 void _VSNormalProjection(in VERTEX_INPUT In, inout VERTEX_OUTPUT Out)
 {
 	// Project position, normal and copy texture coords
-	Out.Position = mul(In.Position, WorldViewProjection);
+	Out.Position = mul(mul(mul(In.Position, World), View), Projection);
 	Out.RelPosition.xyz = mul(In.Position, World).xyz - ViewerPos;
 	Out.RelPosition.w = Out.Position.z;
 	Out.TexCoords.xy = In.TexCoords;
@@ -193,7 +194,7 @@ void _VSSignalProjection(uniform bool Glow, in VERTEX_INPUT_SIGNAL In, inout VER
 		
 		In.Position.xy *= log(1.6 + max(0, length(relPos) - GlowCutOffM) / GlowScalingFactor) * ZBias_Lighting.x * 0.4;	
 	}
-	Out.Position = mul(In.Position, WorldViewProjection);
+	Out.Position = mul(mul(mul(In.Position, World), View), Projection);
 	Out.RelPosition.xyz = relPos;
 	Out.RelPosition.w = Out.Position.z;
 	Out.TexCoords.xy = In.TexCoords;
@@ -203,7 +204,7 @@ void _VSSignalProjection(uniform bool Glow, in VERTEX_INPUT_SIGNAL In, inout VER
 void _VSTransferProjection(in VERTEX_INPUT_TRANSFER In, inout VERTEX_OUTPUT Out)
 {
 	// Project position, normal and copy texture coords
-	Out.Position = mul(In.Position, WorldViewProjection);
+	Out.Position = mul(mul(mul(In.Position, World), View), Projection);
 	Out.RelPosition.xyz = mul(In.Position, World).xyz - ViewerPos;
 	Out.RelPosition.w = Out.Position.z;
 	Out.TexCoords.xy = In.TexCoords;
@@ -299,7 +300,7 @@ VERTEX_OUTPUT VSForest(in VERTEX_INPUT_FOREST In)
 	In.Position = float4(newPosition, 1);
 
 	// Project vertex with fixed w=1 and normal=eye.
-	Out.Position = mul(In.Position, WorldViewProjection);
+	Out.Position = mul(mul(mul(In.Position, World), View), Projection);
 	Out.RelPosition.xyz = mul(In.Position, World).xyz - ViewerPos;
 	Out.RelPosition.w = Out.Position.z;
 	Out.TexCoords.xy = In.TexCoords;
