@@ -3782,7 +3782,7 @@ namespace Orts.Simulation.RollingStocks
                     foreach (var car in Train.Cars)
                     {
                         var mstsWagon = car as MSTSWagon;
-                        if (mstsWagon.AutomaticDoors && mstsWagon.BrakeSystem.AirOK_DoorCanManipulate && (DoorLeftOpen || DoorRightOpen))
+                        if (mstsWagon.AutomaticDoors && mstsWagon.BrakeSystem.AirOK_DoorCanManipulate && (mstsWagon.DoorLeftOpen || mstsWagon.DoorRightOpen))
                         {
                             mstsWagon.DoorRightOpen = false;
                             mstsWagon.DoorLeftOpen = false;
@@ -3875,7 +3875,7 @@ namespace Orts.Simulation.RollingStocks
                     foreach (var car in Train.Cars)
                     {
                         var mstsWagon = car as MSTSWagon;
-                        if (mstsWagon.AutomaticDoors && mstsWagon.BrakeSystem.AirOK_DoorCanManipulate && (DoorLeftOpen || DoorRightOpen))
+                        if (mstsWagon.AutomaticDoors && mstsWagon.BrakeSystem.AirOK_DoorCanManipulate && (mstsWagon.DoorLeftOpen || mstsWagon.DoorRightOpen))
                         {
                             mstsWagon.DoorRightOpen = false;
                             mstsWagon.DoorLeftOpen = false;
