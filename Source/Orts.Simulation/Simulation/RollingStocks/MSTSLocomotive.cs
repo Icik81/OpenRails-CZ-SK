@@ -14285,8 +14285,7 @@ namespace Orts.Simulation.RollingStocks
                         QuickReleaseButtonEnable = true;
                         if (QuickReleaseButton)
                             data = 1;
-                        else data = 0;
-                        if (!Battery) data = 0;
+                        else data = 0;                        
                         break;
                     }
                 case CABViewControlTypes.LOWPRESSURE_RELEASE_BUTTON:
@@ -14294,8 +14293,7 @@ namespace Orts.Simulation.RollingStocks
                         LowPressureReleaseButtonEnable = true;
                         if (LowPressureReleaseButton)
                             data = 1;
-                        else data = 0;
-                        if (!Battery) data = 0;
+                        else data = 0;                        
                         break;
                     }
                 case CABViewControlTypes.BRAKE_PIPE_FLOW:
