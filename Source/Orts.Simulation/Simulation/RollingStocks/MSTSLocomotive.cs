@@ -8294,14 +8294,6 @@ namespace Orts.Simulation.RollingStocks
                     }
                 }
 
-                if (DynamicBrakePercent < 99)
-                {
-                    if (Train.EqualReservoirPressurePSIorInHg < TrainBrakeController.MaxPressurePSI)
-                        Train.EqualReservoirPressurePSIorInHg += TrainBrakeController.ReleaseRatePSIpS * elapsedClockSeconds / 2;
-                    if (Train.EqualReservoirPressurePSIorInHg > TrainBrakeController.MaxPressurePSI)
-                        Train.EqualReservoirPressurePSIorInHg = TrainBrakeController.MaxPressurePSI;
-                }
-
                 if (AccelerationMpSS > RequiredDeceleration && DynamicBrakePercent == -1)
                 {
                     if (Train.EqualReservoirPressurePSIorInHg > 0)
