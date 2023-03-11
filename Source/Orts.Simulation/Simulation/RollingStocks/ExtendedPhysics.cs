@@ -846,20 +846,31 @@ namespace Orts.Simulation.RollingStocks
 
             if (Locomotive.CruiseControl != null)
             {
-                if (((Locomotive.CruiseControl.SpeedRegMode[Locomotive.LocoStation] == CruiseControl.SpeedRegulatorMode.Auto || Locomotive.CruiseControl.SpeedRegMode[Locomotive.LocoStation] == CruiseControl.SpeedRegulatorMode.AVV) && Locomotive.ThrottlePercent > 0 && ((Locomotive.CruiseControl.SelectedSpeedMpS - Locomotive.AbsSpeedMpS) > 0.05f) && Locomotive.SelectedMaxAccelerationStep[Locomotive.LocoStation] > 0 && Locomotive.CruiseControl.PreciseSpeedControl) || (ForceN < 0 && Locomotive.CruiseControl.PreciseSpeedControl) || Locomotive.LocoType == MSTSLocomotive.LocoTypes.Vectron)
+                if (((Locomotive.CruiseControl.SpeedRegMode[Locomotive.LocoStation] == CruiseControl.SpeedRegulatorMode.Auto || Locomotive.CruiseControl.SpeedRegMode[Locomotive.LocoStation] == CruiseControl.SpeedRegulatorMode.AVV)
+                    && Locomotive.ThrottlePercent > 0 && ((Locomotive.CruiseControl.SelectedSpeedMpS - Locomotive.AbsSpeedMpS) > 0.05f)
+                    && Locomotive.SelectedMaxAccelerationStep[Locomotive.LocoStation] > 0 && Locomotive.CruiseControl.PreciseSpeedControl)
+                    || (ForceN < 0 && Locomotive.CruiseControl.PreciseSpeedControl)
+                    || Locomotive.LocoType == MSTSLocomotive.LocoTypes.Vectron)
                 {
-                    float mMass = Mass;
-                    Mass *= 1000;
-                    float addMass = (Locomotive.MassKG / totalMotors) - Mass;
-                    Mass += addMass * 2;
-                    reducedForceN = -((WheelSpeedMpS - (Locomotive.AbsSpeedMpS + 0.1f)) * (Mass / 1000)) * 750;
-                    Mass = mMass;
+                    if (!Locomotive.BrakeSystem.EmerBrakeTriggerActive)
+                    {
+                        float mMass = Mass;
+                        Mass *= 1000;
+                        float addMass = (Locomotive.MassKG / totalMotors) - Mass;
+                        Mass += addMass * 2;
+                        reducedForceN = -((WheelSpeedMpS - (Locomotive.AbsSpeedMpS + 0.1f)) * (Mass / 1000)) * 750;
+                        Mass = mMass;
+                    }
+                    else
+                    {
+                        reducedForceN = 0;
+                    }
                 }
                 else
                     reducedForceN = 0;
             }            
 
-            if (usingControllerVolts)
+            if (usingControllerVolts && !Locomotive.BrakeSystem.EmerBrakeTriggerActive)
             {
                 ForceFilter.Add(ForceN);
                 if (ForceFilter.Count >= 60)

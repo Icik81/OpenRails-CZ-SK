@@ -12899,6 +12899,8 @@ namespace Orts.Simulation.RollingStocks
                         maxForce = (maxForce / MaxForceN) * 100;
                     }
                     data = cvc is Orts.Formats.Msts.CVCDigital ? ForceHandleValue : (maxForce < ForceHandleValue ? maxForce : ForceHandleValue);
+                    if (BrakeSystem.EmerBrakeTriggerActive)
+                        data = 0;
                     break;
                 case CABViewControlTypes.REQUESTED_MOTOR_FORCE:
                     data = 0.0f;
@@ -12926,6 +12928,8 @@ namespace Orts.Simulation.RollingStocks
                             }
                         }
                     }
+                    if (data > 0 && BrakeSystem.EmerBrakeTriggerActive)
+                        data = 0;
                     switch (cvc.Units)
                     {
                         case CABViewControlUnits.AMPS:
@@ -13003,6 +13007,8 @@ namespace Orts.Simulation.RollingStocks
                                         data = 0;
                                 }
                             }
+                            if (data > 0 && BrakeSystem.EmerBrakeTriggerActive)
+                                data = 0;
                         }
                         switch (cvc.Units)
                         {
