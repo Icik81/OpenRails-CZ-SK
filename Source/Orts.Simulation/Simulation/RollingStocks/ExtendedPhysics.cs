@@ -837,10 +837,35 @@ namespace Orts.Simulation.RollingStocks
                 Locomotive.extendedPhysics.GeneratoricModeActive = false;
             }
 
+            float prevForceN = ForceN;
+            if (Locomotive.LocoType == LocoTypes.Vectron && Locomotive.ControllerVolts > 0)
+            {
+                float axleKpH = MpS.ToKpH(WheelSpeedMpS);
+                float trainKpH = MpS.ToKpH(Locomotive.AbsSpeedMpS);
+                float speedDif = (axleKpH - trainKpH) * 2.25f;
+                float speedCoeff = trainKpH / 10;
+                if (speedCoeff > 1)
+                    speedCoeff = 1;
+                speedDif -= speedCoeff;
+                // Locomotive.Simulator.Confirmer.MSG(axleKpH.ToString() + " " + trainKpH.ToString() + " " + speedDif.ToString());
+                if (speedDif < 0)
+                    speedDif = 0;
+                if (speedDif > 0.99f)
+                    speedDif = 0.99f;
+                float reduceDiff = speedDif * ForceN;
+                ForceN = ForceN - reduceDiff;
+                if (ForceN < 0)
+                    ForceN = prevForceN;
+                if (ForceN > prevForceN)
+                    ForceN = prevForceN;
+            }
+
             LocomotiveAxle.AxleWeightN = 9.81f * Mass * 1000;   //will be computed each time considering the tilting
             LocomotiveAxle.DriveForceN = ForceN;  //Total force applied to wheels
             LocomotiveAxle.TrainSpeedMpS = Locomotive.SpeedMpS < 0 ? -Locomotive.SpeedMpS : Locomotive.SpeedMpS;
             LocomotiveAxle.AdhesionConditions = Locomotive.LocomotiveAxle.AdhesionConditions;//Set the train speed of the axle model
+            if (Locomotive.Sander)
+                LocomotiveAxle.AdhesionConditions *= 1.2f;
             LocomotiveAxle.Update(elapsedClockSeconds);         //Main updater of the axle model
             WheelSpeedMpS = LocomotiveAxle.AxleSpeedMpS;
 
