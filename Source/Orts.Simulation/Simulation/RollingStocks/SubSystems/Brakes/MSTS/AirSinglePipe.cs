@@ -1719,9 +1719,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
         {
             PropagateBrakeLinePressures(elapsedClockSeconds, Car, TwoPipesConnection);
         }
-
+        
         protected static void PropagateBrakeLinePressures(float elapsedClockSeconds, TrainCar trainCar, bool TwoPipesConnection)
-        {
+        {            
             // Brake pressures are calculated on the lead locomotive first, and then propogated along each wagon in the consist.
             var train = trainCar.Train;
             var lead = trainCar as MSTSLocomotive;
@@ -1975,8 +1975,11 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     }
                     else lead.BrakeSystem.BrakePipeFlow = false;
 
+                    if (lead.LocoType == MSTSLocomotive.LocoTypes.Vectron && lead.TrainBrakeController.TrainBrakeControllerState == ControllerState.EPApply)
+                        lead.BrakeSystem.OverChargeActivated = false;
+
                     // Vyrovnává maximální tlak s tlakem v potrubí    
-                    if (lead.BrakeSystem.BrakeControllerLap) lead.TrainBrakeController.MaxPressurePSI = lead.BrakeSystem.BrakeLine1PressurePSI;
+                    if (lead.BrakeSystem.BrakeControllerLap) lead.TrainBrakeController.MaxPressurePSI = lead.BrakeSystem.BrakeLine1PressurePSI;                    
 
                     // Změna rychlosti plnění vzduchojemu při švihu
                     if (lead.TrainBrakeController.TrainBrakeControllerState == ControllerState.FullQuickRelease
@@ -1991,18 +1994,21 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     else
                     if (lead.TrainBrakeController.TrainBrakeControllerState == ControllerState.OverchargeStart
                         || (lead.LowPressureReleaseButton && lead.LowPressureReleaseButtonEnable)
-                        || (lead.LocoType == MSTSLocomotive.LocoTypes.Vectron && lead.TrainBrakeController.TrainBrakeControllerState == ControllerState.Release && !lead.BrakeSystem.OverChargeRunning))
+                        || (lead.LocoType == MSTSLocomotive.LocoTypes.Vectron && lead.TrainBrakeController.TrainBrakeControllerState == ControllerState.Release && !lead.LowPressureReleaseButton && !lead.BrakeSystem.OverChargeActivated))
                     {
                         BrakePipeChargingRatePSIorInHgpS0 = brakePipeChargingQuickPSIpS;  // Rychlost plnění ve vysokotlakém švihu 
                         if (lead.TrainBrakeController.MaxPressurePSI > lead.BrakeSystem.TrainBrakesControllerMaxOverchargePressurePSI * 1.11f) lead.TrainBrakeController.MaxPressurePSI -= lead.TrainBrakeController.QuickReleaseRatePSIpS * elapsedClockSeconds / 12;
                         else if (lead.TrainBrakeController.MaxPressurePSI > lead.BrakeSystem.TrainBrakesControllerMaxOverchargePressurePSI) lead.TrainBrakeController.MaxPressurePSI -= lead.TrainBrakeController.QuickReleaseRatePSIpS / 20 * elapsedClockSeconds / 12; // Zpomalí 
 
                         // Vectron zavádí přebití 5.2bar při odbrždění
-                        if (lead.LocoType == MSTSLocomotive.LocoTypes.Vectron && lead.TrainBrakeController.TrainBrakeControllerState == ControllerState.Release && !lead.BrakeSystem.OverChargeRunning && !lead.LowPressureReleaseButton)
-                            lead.TrainBrakeController.MaxPressurePSI = 5.2f * 14.50377f;
+                        if (lead.LocoType == MSTSLocomotive.LocoTypes.Vectron && lead.TrainBrakeController.TrainBrakeControllerState == ControllerState.Release && !lead.LowPressureReleaseButton && !lead.BrakeSystem.OverChargeActivated)                        
+                            lead.TrainBrakeController.MaxPressurePSI = 5.2f * 14.50377f;                                                    
                         else
                         if (lead.TrainBrakeController.MaxPressurePSI < lead.BrakeSystem.TrainBrakesControllerMaxOverchargePressurePSI) lead.TrainBrakeController.MaxPressurePSI = lead.BrakeSystem.TrainBrakesControllerMaxOverchargePressurePSI;
-                        
+
+                        if (lead.BrakeSystem.BrakeLine1PressurePSI > lead.TrainBrakeController.MaxPressurePSI)
+                            lead.BrakeSystem.OverChargeActivated = true;
+
                         lead.BrakeSystem.OverChargeRunning = true;
                     }
 
