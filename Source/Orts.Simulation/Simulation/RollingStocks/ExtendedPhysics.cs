@@ -32,6 +32,7 @@ using Orts.Simulation.RollingStocks.SubSystems;
 using ORTS.Common;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Xml;
@@ -836,13 +837,12 @@ namespace Orts.Simulation.RollingStocks
             {
                 Locomotive.extendedPhysics.GeneratoricModeActive = false;
             }
-
             float prevForceN = ForceN;
             if (Locomotive.LocoType == LocoTypes.Vectron && Locomotive.ControllerVolts > 0)
             {
                 float axleKpH = MpS.ToKpH(WheelSpeedMpS);
-                float trainKpH = MpS.ToKpH(Locomotive.AbsSpeedMpS);
-                float speedDif = (axleKpH - trainKpH) * 2.25f;
+                float trainKpH = MpS.ToKpH(Locomotive.SpeedMpS);
+                float speedDif = (axleKpH - trainKpH) * 0.75f;
                 float speedCoeff = trainKpH / 10;
                 if (speedCoeff > 1)
                     speedCoeff = 1;
@@ -852,7 +852,13 @@ namespace Orts.Simulation.RollingStocks
                     speedDif = 0;
                 if (speedDif > 0.99f)
                     speedDif = 0.99f;
+                
                 float reduceDiff = speedDif * ForceN;
+                float test = ForceN - reduceDiff;
+                if (test < 0)
+                {
+                    bool c = false;
+                }
                 ForceN = ForceN - reduceDiff;
                 if (ForceN < 0)
                     ForceN = prevForceN;
@@ -864,8 +870,6 @@ namespace Orts.Simulation.RollingStocks
             LocomotiveAxle.DriveForceN = ForceN;  //Total force applied to wheels
             LocomotiveAxle.TrainSpeedMpS = Locomotive.SpeedMpS < 0 ? -Locomotive.SpeedMpS : Locomotive.SpeedMpS;
             LocomotiveAxle.AdhesionConditions = Locomotive.LocomotiveAxle.AdhesionConditions;//Set the train speed of the axle model
-            if (Locomotive.Sander)
-                LocomotiveAxle.AdhesionConditions *= 1.2f;
             LocomotiveAxle.Update(elapsedClockSeconds);         //Main updater of the axle model
             WheelSpeedMpS = LocomotiveAxle.AxleSpeedMpS;
 

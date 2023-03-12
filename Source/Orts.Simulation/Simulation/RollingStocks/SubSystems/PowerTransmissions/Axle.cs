@@ -15,6 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Open Rails.  If not, see <http://www.gnu.org/licenses/>.
 
+using Orts.Simulation.cz.aspone.lkpr;
 using ORTS.Common;
 using System;
 using System.IO;
@@ -670,6 +671,13 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerTransmissions
         /// <param name="timeSpan"></param>
         float BrakePulsTimer;
         int RunCycle;
+        bool isSiemens = false;
+        public virtual void Update(float timeSpan, bool vectron)
+        {
+            if (vectron)
+                isSiemens = true;
+            Update(timeSpan);
+        }
         public virtual void Update(float timeSpan)
         {
             //Update axle force ( = k * loadTorqueNm)
@@ -791,6 +799,12 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerTransmissions
 
                 slipDerivationPercentpS = (SlipSpeedPercent - previousSlipPercent) / timeSpan;
                 previousSlipPercent = SlipSpeedPercent;
+                if (isSiemens)
+                {
+                    slipDerivationMpSS = 0;
+                    slipDerivationPercentpS = 0;
+                }
+
             }
             //Stability Correction
             if (StabilityCorrection)
