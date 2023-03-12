@@ -1990,13 +1990,19 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
 
                     else
                     if (lead.TrainBrakeController.TrainBrakeControllerState == ControllerState.OverchargeStart
-                        || lead.LowPressureReleaseButton && lead.LowPressureReleaseButtonEnable)
+                        || (lead.LowPressureReleaseButton && lead.LowPressureReleaseButtonEnable)
+                        || (lead.LocoType == MSTSLocomotive.LocoTypes.Vectron && lead.TrainBrakeController.TrainBrakeControllerState == ControllerState.Release && !lead.BrakeSystem.OverChargeRunning))
                     {
                         BrakePipeChargingRatePSIorInHgpS0 = brakePipeChargingQuickPSIpS;  // Rychlost plnění ve vysokotlakém švihu 
                         if (lead.TrainBrakeController.MaxPressurePSI > lead.BrakeSystem.TrainBrakesControllerMaxOverchargePressurePSI * 1.11f) lead.TrainBrakeController.MaxPressurePSI -= lead.TrainBrakeController.QuickReleaseRatePSIpS * elapsedClockSeconds / 12;
                         else if (lead.TrainBrakeController.MaxPressurePSI > lead.BrakeSystem.TrainBrakesControllerMaxOverchargePressurePSI) lead.TrainBrakeController.MaxPressurePSI -= lead.TrainBrakeController.QuickReleaseRatePSIpS / 20 * elapsedClockSeconds / 12; // Zpomalí 
 
+                        // Vectron zavádí přebití 5.2bar při odbrždění
+                        if (lead.LocoType == MSTSLocomotive.LocoTypes.Vectron && lead.TrainBrakeController.TrainBrakeControllerState == ControllerState.Release && !lead.BrakeSystem.OverChargeRunning && !lead.LowPressureReleaseButton)
+                            lead.TrainBrakeController.MaxPressurePSI = 5.2f * 14.50377f;
+                        else
                         if (lead.TrainBrakeController.MaxPressurePSI < lead.BrakeSystem.TrainBrakesControllerMaxOverchargePressurePSI) lead.TrainBrakeController.MaxPressurePSI = lead.BrakeSystem.TrainBrakesControllerMaxOverchargePressurePSI;
+                        
                         lead.BrakeSystem.OverChargeRunning = true;
                     }
 
@@ -2004,7 +2010,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     if (!lead.BrakeSystem.BrakeControllerLap)
                     {
                         BrakePipeChargingRatePSIorInHgpS0 = brakePipeChargingNormalPSIpS;  // Standardní rychlost plnění 
-
+                        
                         // Zavádí automatické nízkotlaké přebití pokud je povoleno
                         if (lead.BrakeSystem.AutoOverchargePressure || lead.BrakeSystem.OverChargeRunning)
                         {
