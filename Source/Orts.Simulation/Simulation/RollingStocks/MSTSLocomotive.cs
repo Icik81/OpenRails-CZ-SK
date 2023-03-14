@@ -45,6 +45,7 @@
 //#define DEBUG_ADHESION
 
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
 using Orts.Common;
 using Orts.Formats.Msts;
 using Orts.Formats.OR;
@@ -706,6 +707,7 @@ namespace Orts.Simulation.RollingStocks
         public bool TramRailUnit;
         public int TwoPipesConnectionLocoCount;
         public float DriveForceN;
+        public bool[] CabRadio = new bool[3];
 
         // Jindrich
         public bool IsActive = false;
@@ -1966,6 +1968,9 @@ namespace Orts.Simulation.RollingStocks
             outf.Write(LightsFrameUpdate);
             outf.Write(BrakeSystem.PowerForWagon);
             outf.Write(TMTemperature);
+            outf.Write(CabRadio[1]);
+            outf.Write(CabRadio[2]);
+            outf.Write(CabRadioTriggerOn);
             #endregion
 
             base.Save(outf);
@@ -2160,6 +2165,9 @@ namespace Orts.Simulation.RollingStocks
             LightsFrameUpdate = inf.ReadInt32();
             BrakeSystem.PowerForWagon = inf.ReadBoolean();
             TMTemperature = inf.ReadSingle();
+            CabRadio[1] = inf.ReadBoolean();
+            CabRadio[2] = inf.ReadBoolean();
+            CabRadioTriggerOn = inf.ReadBoolean();
             #endregion
 
             base.Restore(inf);
@@ -4688,6 +4696,8 @@ namespace Orts.Simulation.RollingStocks
                     if (!LocoIsStatic)
                     {
                         Battery = true;
+                        CabRadio[LocoStation] = true;                        
+                        ToggleCabRadio(true);
                         ActiveStation = UsingRearCab ? DriverStation.Station2 : DriverStation.Station1;
                         if (Flipped)
                             ActiveStation = UsingRearCab ? DriverStation.Station1 : DriverStation.Station2;
@@ -5177,7 +5187,8 @@ namespace Orts.Simulation.RollingStocks
                 LightPositionHandle();
                 RainWindow(elapsedClockSeconds);
                 WipersWindow(elapsedClockSeconds);
-                BatterySetOn = false;
+                CabRadioOnOff();
+                BatterySetOn = false;                
                 if (LocoReadyToGo && this is MSTSSteamLocomotive)
                     LocoReadyToGo = false;                
             }
@@ -8869,17 +8880,31 @@ namespace Orts.Simulation.RollingStocks
             if (TogglePowerKeyCycle > 10)
                 TogglePowerKeyCycle = 10;
         }
+
+        // Icik
+        public bool CabRadioTriggerOn = false;
+        public void CabRadioOnOff()
+        {            
+            if (!CabRadio[LocoStation] || !Battery)
+            {
+                if (CabRadioTriggerOn)
+                    SignalEvent(Event.CabRadioOff);
+                CabRadioTriggerOn = false;
+                CabRadio[LocoStation] = false;
+            }
+            if (CabRadio[LocoStation] && Battery)
+            {
+                if (!CabRadioTriggerOn)
+                    SignalEvent(Event.CabRadioOn);
+                CabRadioTriggerOn = true;
+            }
+        }
+        
         public void ToggleCabRadio(bool newState)
         {
-            CabRadioOn = newState;
-            if (!OnLineCabRadio)
-            {
-                if (CabRadioOn) SignalEvent(Event.CabRadioOn); // hook for sound trigger
-                else SignalEvent(Event.CabRadioOff);
-            }
-            else if (OnLineCabRadioURL != "")
-            { }
-            if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.CabRadio, CabRadioOn ? CabSetting.On : CabSetting.Off);
+            //CabRadioOn = newState;
+            CabRadio[LocoStation] = !CabRadio[LocoStation];
+            if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.CabRadio, CabRadio[LocoStation] ? CabSetting.On : CabSetting.Off);
         }
 
         public void ToggleWipers(bool newState)
