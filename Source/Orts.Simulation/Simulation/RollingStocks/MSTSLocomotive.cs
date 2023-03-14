@@ -4695,8 +4695,7 @@ namespace Orts.Simulation.RollingStocks
                 {
                     if (!LocoIsStatic)
                     {
-                        Battery = true;
-                        CabRadio[LocoStation] = true;                        
+                        Battery = true;                                            
                         ToggleCabRadio(true);
                         ActiveStation = UsingRearCab ? DriverStation.Station2 : DriverStation.Station1;
                         if (Flipped)
@@ -8887,7 +8886,7 @@ namespace Orts.Simulation.RollingStocks
         {            
             if (!CabRadio[LocoStation] || !Battery)
             {
-                if (CabRadioTriggerOn)
+                //if (CabRadioTriggerOn)
                     SignalEvent(Event.CabRadioOff);
                 CabRadioTriggerOn = false;
                 CabRadio[LocoStation] = false;
@@ -8897,7 +8896,7 @@ namespace Orts.Simulation.RollingStocks
                 if (!CabRadioTriggerOn)
                     SignalEvent(Event.CabRadioOn);
                 CabRadioTriggerOn = true;
-            }
+            }            
         }
         
         public void ToggleCabRadio(bool newState)
