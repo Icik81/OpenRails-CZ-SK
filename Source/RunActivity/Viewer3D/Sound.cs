@@ -1852,9 +1852,7 @@ namespace Orts.Viewer3D
                     return;
                 if ((car as MSTSWagon) != null && !(car as MSTSWagon).BrakeSystem.PowerForWagon && !(car as MSTSWagon).BrakeSystem.ORCZSKSetUp)
                     return;
-                if ((car as MSTSLocomotive) != null && !(car as MSTSLocomotive).CarIsPlayerLoco && Program.Simulator.Settings.AirEmpty && !(car as MSTSLocomotive).BrakeSystem.ORCZSKSetUp)
-                    return;
-
+                
                 SoundStream.RepeatedTrigger = this == SoundStream.LastTriggered;
                 SoundCommand.Run();
                 SoundStream.LastTriggered = this;
@@ -1902,8 +1900,6 @@ namespace Orts.Viewer3D
             if ((car as MSTSLocomotive) != null && (car as MSTSLocomotive).LocoIsStatic)
                 return;
             if ((car as MSTSWagon) != null && !(car as MSTSWagon).BrakeSystem.PowerForWagon && !(car as MSTSWagon).BrakeSystem.ORCZSKSetUp)
-                return;
-            if ((car as MSTSLocomotive) != null && !(car as MSTSLocomotive).CarIsPlayerLoco && Program.Simulator.Settings.AirEmpty && !(car as MSTSLocomotive).BrakeSystem.ORCZSKSetUp)
                 return;
 
             if (Simulator.ClockTime > triggerAtSeconds)
