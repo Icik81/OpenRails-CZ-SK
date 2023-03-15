@@ -4252,7 +4252,7 @@ namespace Orts.Simulation.RollingStocks
         // AI akce pro definici světel
         public void SetAIAction()
         {
-            if (Simulator.GameTimeCyklus10 == 10)
+            if (Simulator.GameTimeCyklus10 != 10)
             {                
                 if ((Train as AITrain) != null)
                 {
