@@ -2258,7 +2258,7 @@ namespace Orts.Simulation.RollingStocks
         }
 
         public bool controlUpdated;
-        public bool notificationReceived;
+        public bool notificationReceived;        
         /// <summary>
         /// Called just after the InitializeFromWagFile
         /// </summary>
@@ -2271,7 +2271,12 @@ namespace Orts.Simulation.RollingStocks
             SetUpVoltageChangeMarkers();
 
             // Icik
-            if (BrakeSystem.StartOn && Simulator.Settings.AirEmpty)
+            if (BrakeSystem.StartOn && !Simulator.Settings.AirEmpty && Simulator.InitLocoCycleCount == 0)
+            {
+                BrakeSystem.PowerForWagon = true;
+                Simulator.InitLocoCycleCount++;
+            }
+            else
                 BrakeSystem.PowerForWagon = false;
 
             if (MaxPowerWAC != 0)
@@ -4252,7 +4257,7 @@ namespace Orts.Simulation.RollingStocks
         // AI akce pro definici světel
         public void SetAIAction()
         {
-            if (Simulator.GameTimeCyklus10 != 10)
+            if (Simulator.GameTimeCyklus10 == 10)
             {                
                 if ((Train as AITrain) != null)
                 {

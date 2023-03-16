@@ -226,7 +226,8 @@ namespace Orts.Simulation
         public int MUCableLocoCount;
         public bool TrainIsPassenger;
         public int WeatherAdv;
-        public bool RefreshCab;        
+        public bool RefreshCab;
+        public int InitLocoCycleCount = 0;
 
         public List<PowerSupplyStation> powerSupplyStations;
         public List<VoltageChangeMarker> voltageChangeMarkers;
