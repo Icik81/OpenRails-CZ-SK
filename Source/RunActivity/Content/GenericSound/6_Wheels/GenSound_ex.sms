@@ -227,25 +227,6 @@ Tr_SMS (
 					Granularity ( 0.05 )
 				)
 			)           
-
-			Stream (
-				Skip( **** Rozpojeni **** )			
-				Priority ( 6 )
-				Volume (1.0)
-				Triggers ( 6
-					Discrete_Trigger ( 61 PlayOneShot ( 1 	File ( "../4_Wheels/x_rozpojovani.wav" -1 ) SelectionMethod (SequentialSelection) ) ) 
-					Discrete_Trigger ( 62 PlayOneShot ( 1 	File ( "../4_Wheels/x_rozpojovani.wav" -1 ) SelectionMethod (SequentialSelection) ) ) 
-					Discrete_Trigger ( 63 PlayOneShot ( 1 	File ( "../4_Wheels/x_rozpojovani.wav" -1 ) SelectionMethod (SequentialSelection) ) ) 
-				)
-				FrequencyCurve(
-					SpeedControlled
-					CurvePoints ( 2
-						0.0		11025
-						1.0		11025
-					)
-					Granularity ( 100 )
-				)
-			)
 			
 			Stream (
 				Skip( **** Narazniky **** )
