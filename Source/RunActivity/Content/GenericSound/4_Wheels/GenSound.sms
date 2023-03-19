@@ -229,252 +229,58 @@ Tr_SMS (
 					Granularity ( 0.05 )
 				)								
 			)
-            
+ 
+			
 			Stream (
-				Skip(**** Okolky 40km/h ****)
-				Priority ( 6 )
-				Volume (0.6)
-				Triggers ( 4
-					Variable_Trigger ( CurveForce_Inc_Past 7 SetStreamVolume ( 1.00 ) )
-					Variable_Trigger ( CurveForce_Inc_Past 7 StartLoopRelease   ( 1 File ( "okolky_40a.wav" -1 )   SelectionMethod ( SequentialSelection ) ) )
-					Variable_Trigger ( CurveForce_Dec_Past 7 ReleaseLoopRelease () )
-					Variable_Trigger ( CurveForce_Dec_Past 7 SetStreamVolume ( 0.00 ) )					
-				)
-                FrequencyCurve(
-					SpeedControlled
-					CurvePoints ( 3
-						-35.0  44100
-						0.000  44100
-						35.0   44100
-					)
-					Granularity ( 0.05 )
-				)
-				VolumeCurve(
-					SpeedControlled
-					CurvePoints ( 4
-                        7.00			0.00
-                        10.8			0.70
-                        15.5			0.70
-                        18.5			0.00
-					)    
-					Granularity ( 0.05 )
-				)
-				VolumeCurve(
-					TrackFactorValueControlled
-					CurvePoints ( 5		
-                        0.00			0.00
-                        0.20			0.00
-                        0.60			0.30
-                        0.80			0.80
-                        1.00			0.80
-					)    
-					Granularity ( 0.05 )
-				)								
-			)
-            
-			Stream (
-				Skip(**** Okolky 40km/h dojazd  ****)
+				Skip( **** Rozpojeni **** )			
 				Priority ( 6 )
 				Volume (1.0)
-				Triggers ( 1
-					Variable_Trigger ( CurveForce_Dec_Past 7 PlayOneShot   ( 1 File ( "okolky_40b.wav" -1 )   SelectionMethod ( SequentialSelection ) ) )				
+				Triggers ( 6
+					Discrete_Trigger ( 61 PlayOneShot ( 1 	File ( "rozpojovani.wav" -1 ) SelectionMethod (SequentialSelection) ) ) 
+					Discrete_Trigger ( 62 PlayOneShot ( 1 	File ( "rozpojovani.wav" -1 ) SelectionMethod (SequentialSelection) ) ) 
+					Discrete_Trigger ( 63 PlayOneShot ( 1 	File ( "rozpojovani.wav" -1 ) SelectionMethod (SequentialSelection) ) ) 
 				)
-                FrequencyCurve(
+				FrequencyCurve(
 					SpeedControlled
-					CurvePoints ( 3
-						-35.0  44100
-						0.000  44100
-						35.0   44100
+					CurvePoints ( 2
+						0.0		11025
+						1.0		11025
 					)
-					Granularity ( 0.05 )
+					Granularity ( 100 )
 				)
-				VolumeCurve(
-					SpeedControlled
-					CurvePoints ( 4
-                        7.00			0.00
-                        10.8			1.35
-                        15.5			1.35
-                        18.5			0.00
-					)    
-					Granularity ( 0.05 )
-				)
-				VolumeCurve(
-					TrackFactorValueControlled
-					CurvePoints ( 5		
-                        0.00			0.00
-                        0.20			0.00
-                        0.60			0.30
-                        0.80			0.80
-                        1.00			0.80
-					)    
-					Granularity ( 0.05 )
-				)								
-			)
-            
-			Stream (
-				Skip(**** Okolky 60km/h  ****)
-				Priority ( 6 )
-				Volume (0.6)
-				Triggers ( 4
-					Variable_Trigger ( CurveForce_Inc_Past 7 SetStreamVolume ( 1.0 ) )
-					Variable_Trigger ( CurveForce_Inc_Past 7 StartLoopRelease   ( 1 File ( "okolky_60a.wav" -1 )   SelectionMethod ( SequentialSelection ) ) )
-					Variable_Trigger ( CurveForce_Dec_Past 7 ReleaseLoopRelease () )
-					Variable_Trigger ( CurveForce_Dec_Past 7 SetStreamVolume ( 0.00 ) )						
-			    )
-                FrequencyCurve(
-					SpeedControlled
-					CurvePoints ( 3
-						-35.0	        44100
-						0.000		44100
-						35.0	        44100
-					)
-					Granularity ( 0.05 )
-				)
-				VolumeCurve(
-					SpeedControlled
-					CurvePoints ( 4
-                        15.55		0.00
-                        18.50		0.80
-                        22.86		0.80
-                        26.00 		0.00
-					)    
-					Granularity ( 0.05 )
-				)	
-				VolumeCurve(
-					TrackFactorValueControlled
-					CurvePoints ( 5		
-                        0.00			0.00
-                        0.20			0.00
-                        0.60			0.30
-                        0.80			0.80
-                        1.00			0.80
-					)    
-					Granularity ( 0.05 )
-				)								
-			)
-            
-			Stream (
-				Skip(**** Okolky 60km/h dojazd  ****)
-				Priority ( 6 )
-				Volume (1.0)
-				Triggers ( 1
-					Variable_Trigger ( CurveForce_Dec_Past 7 PlayOneShot   ( 1 File ( "okolky_60b.wav" -1 )   SelectionMethod ( SequentialSelection ) ) )					
-				)
-                FrequencyCurve(
-					SpeedControlled
-					CurvePoints ( 3
-						-35.0	        44100
-						0.000		44100
-						35.0	        44100
-					)
-					Granularity ( 0.05 )
-				)
-				VolumeCurve(
-					SpeedControlled
-					CurvePoints ( 4
-                        15.55		0.00
-                        18.50		1.40
-                        22.86		1.40
-                        26.00 		0.00
-					)    
-					Granularity ( 0.05 )
-				)
-				VolumeCurve(
-					TrackFactorValueControlled
-					CurvePoints ( 5		
-                        0.00			0.00
-                        0.20			0.00
-                        0.60			0.30
-                        0.80			0.80
-                        1.00			0.80
-					)    
-					Granularity ( 0.05 )
-				)								
-			)
-            
-			Stream (
-				Skip(**** Okolky 90km/h ****)
-				Priority ( 6 )
-				Volume (0.3)
-				Triggers ( 4
-					Variable_Trigger ( CurveForce_Inc_Past 10 SetStreamVolume ( 1.0 ) )
-					Variable_Trigger ( CurveForce_Inc_Past 10 StartLoopRelease   ( 1 File ( "okolky_90a.wav" -1 )   SelectionMethod ( SequentialSelection ) ) )
-					Variable_Trigger ( CurveForce_Dec_Past 10 ReleaseLoopRelease () )	
-					Variable_Trigger ( CurveForce_Dec_Past 10 SetStreamVolume ( 0.00 ) )					
-			    )
-                FrequencyCurve(
-					SpeedControlled
-					CurvePoints ( 3
-						-35.0	        44100
-						0.000		44100
-						35.0	        44100
-					)
-					Granularity ( 0.05 )
-				)
-				VolumeCurve(
-					SpeedControlled
-					CurvePoints ( 4
-                        20.00		0.00
-                        25.71		0.70
-                        28.57		0.70
-                        32.50		0.00
-					)    
-					Granularity ( 0.05 )
-				)	
-				VolumeCurve(
-					TrackFactorValueControlled
-					CurvePoints ( 5		
-                        0.00			0.00
-                        0.20			0.00
-                        0.60			0.30
-                        0.80			0.80
-                        1.00			0.80
-					)    
-					Granularity ( 0.05 )
-				)								
-			)
-            
-			Stream (
-				Skip(**** Okolky 90km/h dojazd  ****)
-				Priority ( 6 )
-				Volume (0.5)
-				Triggers ( 1
-					Variable_Trigger ( CurveForce_Dec_Past 10 PlayOneShot   ( 1 File ( "okolky_90b.wav" -1 )   SelectionMethod ( SequentialSelection ) ) )				
-				)
-                FrequencyCurve(
-					SpeedControlled
-					CurvePoints ( 3
-						-35.0	        44100
-						0.000		44100
-						35.0	        44100
-					)
-					Granularity ( 0.05 )
-				)
-				VolumeCurve(
-					SpeedControlled
-					CurvePoints ( 4
-                        20.00		0.00
-                        25.71		1.35
-                        28.57		1.35
-                        32.50		0.00
-					)    
-					Granularity ( 0.05 )
-				)
-				VolumeCurve(
-					TrackFactorValueControlled
-					CurvePoints ( 5		
-                        0.00			0.00
-                        0.20			0.00
-                        0.60			0.30
-                        0.80			0.80
-                        1.00			0.80
-					)    
-					Granularity ( 0.05 )
-				)								
 			)
 			
 			Stream (
-				Skip (** Naraz narazniku **)
+				Skip( **** Narazniky **** )
+				Priority ( 6 )
+				Volume (1.5)
+				Triggers ( 6
+					Discrete_Trigger ( 58 PlayOneShot ( 1 	File ( "Naraz_narazniku.wav" -1 ) SelectionMethod (SequentialSelection) ) ) 
+					Discrete_Trigger ( 59 PlayOneShot ( 1 	File ( "Naraz_narazniku.wav" -1 ) SelectionMethod (SequentialSelection) ) ) 
+					Discrete_Trigger ( 60 PlayOneShot ( 1 	File ( "Naraz_narazniku.wav" -1 ) SelectionMethod (SequentialSelection) ) ) 
+				)
+				FrequencyCurve(
+					SpeedControlled
+					CurvePoints ( 2
+						0.0		 9000
+						1.0		 11025
+					)
+					Granularity ( 100 )
+				)
+				VolumeCurve(
+					SpeedControlled
+					CurvePoints ( 4				 
+					0.3			0.3
+					0.5			0.6
+					1.0			1.0
+					1.5			1.5	 	  
+					)
+					Granularity ( 0.05 )
+				)
+			)
+			
+			Stream (
+				Skip(** Odražení **)
 				Priority ( 6 )
 				Volume (1.0)
 				Triggers ( 1

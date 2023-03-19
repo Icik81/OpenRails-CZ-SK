@@ -1043,8 +1043,14 @@ namespace Orts.Simulation
                 SoundNotify = Event.Derail2;
             }
 
-            if (DifferenceSpeedMpS > CarCoupleSpeed / 3f)
-                drivenTrain.SignalEvent(Event.CoupleImpact);
+            if (Math.Abs(DifferenceSpeedMpS) > CarCoupleSpeed)
+            {
+                foreach (Train train in Trains)
+                {
+                    drivenTrain.SignalEvent(Event.CoupleImpact);
+                    train.SignalEvent(Event.CoupleImpact);
+                }
+            }
             DifferenceSpeedMpS = 0;
 
             //if (MPManager.IsMultiPlayer() && !MPManager.IsServer()) return; //in MultiPlayer mode, server will check coupling, client will get message and do things
