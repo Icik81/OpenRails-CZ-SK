@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: RunActivity\n"
-"POT-Creation-Date: 2023-02-18 11:27:43+0100\n"
-"PO-Revision-Date: 2023-02-18 11:32+0100\n"
+"POT-Creation-Date: 2023-03-19 12:40:03+0100\n"
+"PO-Revision-Date: 2023-03-19 12:47+0100\n"
 "Last-Translator: Altmann <altmann@bk.ru>\n"
 "Language-Team: Open Rails Dev Team\n"
 "Language: cs\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
-"X-Generator: Poedit 3.0.1\n"
+"X-Generator: Poedit 3.2.2\n"
 
 #: ../../RunActivity/Viewer3D/ALSoundHelper.cs:536
 #, csharp-format
@@ -2408,11 +2408,11 @@ msgstr "Žádné další stanice."
 
 #: ../../RunActivity/Viewer3D/Popups/NextStationWindow.cs:356
 msgid "Transfer units at next station with train "
-msgstr ""
+msgstr "Přestupní jednotky na další stanici s vlakem"
 
 #: ../../RunActivity/Viewer3D/Popups/NextStationWindow.cs:366
 msgid "Transfer units with train "
-msgstr ""
+msgstr "Přestupní jednotky s vlakem"
 
 #: ../../RunActivity/Viewer3D/Popups/NextStationWindow.cs:398
 #: ../../RunActivity/Viewer3D/Popups/NextStationWindow.cs:404
@@ -2433,7 +2433,7 @@ msgstr "Přivěsit vlak před sebou"
 
 #: ../../RunActivity/Viewer3D/Popups/NextStationWindow.cs:430
 msgid "Transfer units with train ahead"
-msgstr ""
+msgstr "Přestupní jednotky s vlakem vpředu"
 
 #: ../../RunActivity/Viewer3D/Popups/NextStationWindow.cs:668
 msgid "Activity completed."
@@ -3147,11 +3147,11 @@ msgstr "V režimu \"JŘ\" není povoleno rozvěšení příkazem z tohoto okna."
 
 #: ../../RunActivity/Viewer3D/Popups/TTDetachWindow.cs:42
 msgid "Timetable Detach Menu"
-msgstr ""
+msgstr "Odpojení jízdního řádu Menu"
 
 #: ../../RunActivity/Viewer3D/Popups/TTDetachWindow.cs:52
 msgid "This train is about to split."
-msgstr ""
+msgstr "Tento vlak se brzy rozdělí."
 
 #: ../../RunActivity/Viewer3D/Popups/TTDetachWindow.cs:61
 msgid "Use 'cab switch' command to select cab in required portion."
@@ -3180,13 +3180,13 @@ msgstr "Přední"
 #: ../../RunActivity/Viewer3D/Popups/TTDetachWindow.cs:115
 #, csharp-format
 msgid "This portion will continue as train : {0}"
-msgstr ""
+msgstr "Tato část bude pokračovat jako vlak : {0}"
 
 #: ../../RunActivity/Viewer3D/Popups/TTDetachWindow.cs:111
 #: ../../RunActivity/Viewer3D/Popups/TTDetachWindow.cs:116
 #, csharp-format
 msgid "{0} portion will form train : {1}"
-msgstr ""
+msgstr "{0} část bude tvořit vlak : {1}"
 
 #: ../../RunActivity/Viewer3D/Popups/WindowText.cs:152
 msgid ""
@@ -3259,11 +3259,11 @@ msgstr ""
 
 #: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1208
 msgid "Refill: Immediate refill process selected, refilling immediately."
-msgstr ""
+msgstr "Doplnit: Zvolen proces okamžitého doplnění, doplnění probíhá okamžitě."
 
 #: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1229
 msgid "Refill: Electric loco and no pickup. Command rejected"
-msgstr ""
+msgstr "Doplnit: Elektrická lokomotiva a bez sběrače. Příkaz odmítnut"
 
 #: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1345
 #: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1364

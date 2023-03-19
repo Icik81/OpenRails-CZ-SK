@@ -1971,6 +1971,7 @@ namespace Orts.Simulation.RollingStocks
             outf.Write(CabRadio[1]);
             outf.Write(CabRadio[2]);
             outf.Write(CabRadioTriggerOn);
+            outf.Write(LapButtonEnable);
             #endregion
 
             base.Save(outf);
@@ -2168,6 +2169,7 @@ namespace Orts.Simulation.RollingStocks
             CabRadio[1] = inf.ReadBoolean();
             CabRadio[2] = inf.ReadBoolean();
             CabRadioTriggerOn = inf.ReadBoolean();
+            LapButtonEnable = inf.ReadBoolean();
             #endregion
 
             base.Restore(inf);
