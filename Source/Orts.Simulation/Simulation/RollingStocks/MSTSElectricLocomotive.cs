@@ -1714,7 +1714,7 @@ namespace Orts.Simulation.RollingStocks
             if (IsPlayerTrain)
                 return;
 
-            if (Simulator.GameTimeCyklus10 == 10 && TrainHasFirstPantoMarker)
+            if (TrainHasFirstPantoMarker)
             {
                 if ((Train as AITrain) != null && (Train as AITrain).nextActionInfo != null)
                 {
@@ -1774,6 +1774,7 @@ namespace Orts.Simulation.RollingStocks
                 SignalEvent(PowerSupplyEvent.LowerPantograph);
                 if (PowerOn)
                     SignalEvent(Event.EnginePowerOff);
+
                 PowerOn = false;
                 //Simulator.Confirmer.Message(ConfirmLevel.Warning, "ID " + (Train as AITrain).GetTrainName(CarID) + "   změna směru ");
                 if (AIPantoChangeTime == 0)
@@ -1912,45 +1913,42 @@ namespace Orts.Simulation.RollingStocks
                 AIPantoDownStopSoundCyklus = false;
 
             // Pantografy AI
-            if (Simulator.GameTimeCyklus10 == 10)
+            for (int i = 1; i <= Pantographs.Count; i++)
             {
-                for (int i = 1; i <= Pantographs.Count; i++)
+                switch (Pantographs[i].State)
                 {
-                    switch (Pantographs[i].State)
-                    {
-                        case PantographState.Raising:
-                        case PantographState.Lowering:
-                        case PantographState.Down:
-                            if (RouteVoltageV != 1 && !AIPantoDown && !AIPantoDownStop && !AIPantoChange)
-                            {
-                                Pantographs[i].PantographsUpBlocked = false;
-                                SignalEvent(PowerSupplyEvent.RaisePantograph, TrainPantoMarker);
-                            }
-                            break;
-                        case PantographState.Up:
-                            if (AIPantoChangeTime == -1)
-                                return;
-                            else
-                            if (!PowerOn)
-                            {
-                                SignalEvent(Event.EnginePowerOn);
-                                PowerOn = true;
-                            }
+                    case PantographState.Raising:
+                    case PantographState.Lowering:
+                    case PantographState.Down:
+                        if (RouteVoltageV != 1 && !AIPantoDown && !AIPantoDownStop && !AIPantoChange)
+                        {
+                            Pantographs[i].PantographsUpBlocked = false;
+                            SignalEvent(PowerSupplyEvent.RaisePantograph, TrainPantoMarker);
+                        }
+                        break;
+                    case PantographState.Up:
+                        if (AIPantoChangeTime == -1)
+                            return;
+                        else
+                        if (!PowerOn)
+                        {
+                            SignalEvent(Event.EnginePowerOn);
+                            PowerOn = true;
+                        }
 
-                            if (RouteVoltageV == 1 || AIPantoDownStop)
-                            {
-                                Pantographs[i].PantographsUpBlocked = true;
-                                SignalEvent(PowerSupplyEvent.LowerPantograph);
-                                if (PowerOn)
-                                    SignalEvent(Event.EnginePowerOff);
-                                PowerOn = false;
-                                if (!AIPantoDownStop)
-                                    AIPantoDown = true;
-                            }
-                            break;
-                    }
+                        if (RouteVoltageV == 1 || AIPantoDownStop)
+                        {
+                            Pantographs[i].PantographsUpBlocked = true;
+                            SignalEvent(PowerSupplyEvent.LowerPantograph);
+                            if (PowerOn)
+                                SignalEvent(Event.EnginePowerOff);
+                            PowerOn = false;
+                            if (!AIPantoDownStop)
+                                AIPantoDown = true;
+                        }
+                        break;
                 }
-            }
+            }            
         }
 
         // Penalizace hráče
