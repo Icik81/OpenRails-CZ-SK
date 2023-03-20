@@ -5004,9 +5004,9 @@ namespace Orts.Simulation.RollingStocks
                             if (!IsLeadLocomotive())
                             {
                                 // Postrk
-                                if (LocoHelperOn)
+                                if (LocoHelperOn && !HelperLocoPush)
                                     ControllerVolts = Train.ControllerVolts;
-                                else
+                                if (!LocoHelperOn)
                                 // Dvojčlen
                                 {
                                     if (AcceptCableSignals)
