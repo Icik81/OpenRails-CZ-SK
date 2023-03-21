@@ -838,7 +838,7 @@ namespace Orts.Simulation.RollingStocks
                 Locomotive.extendedPhysics.GeneratoricModeActive = false;
             }
             float prevForceN = ForceN;
-            if (Locomotive.LocoType == LocoTypes.Vectron && Locomotive.ControllerVolts > 0)
+            if (Locomotive.LocoType == LocoTypes.Vectron)
             {
                 float axleKpH = MpS.ToKpH(WheelSpeedMpS);
                 float trainKpH = MpS.ToKpH(Locomotive.SpeedMpS);
@@ -848,21 +848,24 @@ namespace Orts.Simulation.RollingStocks
                     speedCoeff = 1;
                 speedDif -= speedCoeff;
                 // Locomotive.Simulator.Confirmer.MSG(axleKpH.ToString() + " " + trainKpH.ToString() + " " + speedDif.ToString());
-                if (speedDif < 0)
+                if (speedDif < 0 && Locomotive.ControllerVolts > 0)
                     speedDif = 0;
                 if (speedDif > 0.99f)
                     speedDif = 0.99f;
+                if (speedDif < -0.99f)
+                    speedDif = -0.99f;
                 
                 float reduceDiff = speedDif * ForceN;
-                float test = ForceN - reduceDiff;
-                if (test < 0)
-                {
-                    bool c = false;
-                }
+                float test = 0;
+                if (Locomotive.ControllerVolts > 0)
+                    test = ForceN - reduceDiff;
+                else
+                    test = ForceN + reduceDiff;
+
                 ForceN = ForceN - reduceDiff;
-                if (ForceN < 0)
+                if (ForceN < 0 && Locomotive.ControllerVolts > 0)
                     ForceN = prevForceN;
-                if (ForceN > prevForceN)
+                if (ForceN > prevForceN && Locomotive.ControllerVolts < 0)
                     ForceN = prevForceN;
             }
 
