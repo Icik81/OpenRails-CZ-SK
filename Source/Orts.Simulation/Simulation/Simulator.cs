@@ -228,6 +228,7 @@ namespace Orts.Simulation
         public int WeatherAdv;
         public bool RefreshCab;
         public int InitLocoCycleCount = 0;
+        public float LeadAuxResVolumeM3 = -1;
 
         public List<PowerSupplyStation> powerSupplyStations;
         public List<VoltageChangeMarker> voltageChangeMarkers;

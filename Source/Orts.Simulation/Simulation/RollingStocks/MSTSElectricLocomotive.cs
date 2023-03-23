@@ -1287,11 +1287,14 @@ namespace Orts.Simulation.RollingStocks
             {
                 HVOff = false;
                 SignalEvent(PowerSupplyEvent.OpenCircuitBreaker);
-                foreach (TrainCar car in Train.Cars)
+                if (AcceptMUSignals)
                 {
-                    if (car is MSTSElectricLocomotive && car.AcceptMUSignals && !LocoHelperOn)
+                    foreach (TrainCar car in Train.Cars)
                     {
-                        car.SignalEvent(PowerSupplyEvent.OpenCircuitBreaker);
+                        if (car is MSTSElectricLocomotive && car.AcceptMUSignals && !LocoHelperOn)
+                        {
+                            car.SignalEvent(PowerSupplyEvent.OpenCircuitBreaker);
+                        }
                     }
                 }
             }
@@ -1299,11 +1302,14 @@ namespace Orts.Simulation.RollingStocks
             {
                 HVOn = false;
                 SignalEvent(PowerSupplyEvent.CloseCircuitBreaker);
-                foreach (TrainCar car in Train.Cars)
+                if (AcceptMUSignals)
                 {
-                    if (car is MSTSElectricLocomotive && car.AcceptMUSignals && !LocoHelperOn)
+                    foreach (TrainCar car in Train.Cars)
                     {
-                        car.SignalEvent(PowerSupplyEvent.CloseCircuitBreaker);
+                        if (car is MSTSElectricLocomotive && car.AcceptMUSignals && !LocoHelperOn)
+                        {
+                            car.SignalEvent(PowerSupplyEvent.CloseCircuitBreaker);
+                        }
                     }
                 }
             }

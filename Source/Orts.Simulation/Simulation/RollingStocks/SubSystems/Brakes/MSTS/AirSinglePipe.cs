@@ -2293,20 +2293,20 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                             train.Cars[i].BrakeSystem.TotalCapacityMainResBrakePipe = (train.Cars[i].BrakeSystem.BrakePipeVolumeM3 * train.Cars[i].BrakeSystem.BrakeLine1PressurePSI) + (loco.MainResVolumeM3 * loco.MainResPressurePSI);
 
                             // Logika chování vzduchu mezi pomocnými jímkami
-                            if (train.Cars[i] is MSTSElectricLocomotive)
-                            {
-                                if ((train.Cars[i] as MSTSLocomotive).AuxResPressurePSI < lead.AuxResPressurePSI)
-                                {
-                                    (train.Cars[i] as MSTSLocomotive).AuxResPressurePSI += 10f * elapsedClockSeconds;
-                                    lead.AuxResPressurePSI -= 10f * elapsedClockSeconds;
-                                }
-                                else
-                                if ((train.Cars[i] as MSTSLocomotive).AuxResPressurePSI > lead.AuxResPressurePSI)
-                                {
-                                    (train.Cars[i] as MSTSLocomotive).AuxResPressurePSI -= 10f * elapsedClockSeconds;
-                                    lead.AuxResPressurePSI += 10f * elapsedClockSeconds;
-                                }
-                            }
+                            //if (train.Cars[i] is MSTSElectricLocomotive)
+                            //{
+                            //    if ((train.Cars[i] as MSTSLocomotive).AuxResPressurePSI < lead.AuxResPressurePSI)
+                            //    {
+                            //        (train.Cars[i] as MSTSLocomotive).AuxResPressurePSI += 10f * elapsedClockSeconds;
+                            //        lead.AuxResPressurePSI -= 10f * elapsedClockSeconds;
+                            //    }
+                            //    else
+                            //    if ((train.Cars[i] as MSTSLocomotive).AuxResPressurePSI > lead.AuxResPressurePSI)
+                            //    {
+                            //        (train.Cars[i] as MSTSLocomotive).AuxResPressurePSI -= 10f * elapsedClockSeconds;
+                            //        lead.AuxResPressurePSI += 10f * elapsedClockSeconds;
+                            //    }
+                            //}
                         }
                         else
                         {

@@ -9092,12 +9092,15 @@ namespace Orts.Simulation.RollingStocks
                         if (car.WagonType == WagonTypes.Freight)
                             Simulator.TrainIsPassenger = false;
                     }
-                    
-                    // Osobní vlak s elektrickou lokomotivou                    
+
+                    if (IsLeadLocomotive())
+                        Simulator.LeadAuxResVolumeM3 = AuxResVolumeM3;
+
+                    // Osobní vlak s elektrickou lokomotivou                                                            
                     if (Simulator.TrainIsPassenger)
                         foreach (TrainCar car in Train.Cars)
-                        {
-                            if (car is MSTSElectricLocomotive && !car.AcceptCableSignals)
+                        {                            
+                            if (car is MSTSElectricLocomotive && !car.AcceptCableSignals && (car as MSTSElectricLocomotive).AuxResVolumeM3 == Simulator.LeadAuxResVolumeM3)
                                 car.AcceptCableSignals = true;                            
                         }
                     
@@ -9121,7 +9124,7 @@ namespace Orts.Simulation.RollingStocks
  
                     // Elektrické lokomotivy nebo oddíly spojené za sebou
                     if (this.MUCable)
-                        if (this is MSTSElectricLocomotive && !AcceptCableSignals)
+                        if (this is MSTSElectricLocomotive && !AcceptCableSignals && (this as MSTSElectricLocomotive).AuxResVolumeM3 == Simulator.LeadAuxResVolumeM3) 
                             AcceptCableSignals = true;
                 }                
             }
@@ -11921,12 +11924,14 @@ namespace Orts.Simulation.RollingStocks
         public void MirerController()
         {
             if (!IsLeadLocomotive())
-                return;            
+                return;
+            
+            Simulator.StepControllerMinValue = MirerMinValue;
+            Simulator.StepControllerMaxValue = MirerMaxValue;            
+
             if (MirerControllerEnable)
             {
                 // Obecná proměnná pro StepController
-                Simulator.StepControllerMinValue = MirerMinValue;
-                Simulator.StepControllerMaxValue = MirerMaxValue;
                 Simulator.StepControllerValue = MirerControllerValue;
 
                 if (MirerControllerPosition != prevMirerControllerPosition)
