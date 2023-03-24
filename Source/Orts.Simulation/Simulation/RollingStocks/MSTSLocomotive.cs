@@ -4446,13 +4446,7 @@ namespace Orts.Simulation.RollingStocks
                     PowerReductionResult12 = 1;
                 else
                     PowerReductionResult12 = 0;
-                if (HelperLocoDontPush)
-                {
-                    LocalThrottlePercent = 0;
-                    Train.ControllerVolts = LocalThrottlePercent;
-                    if (ControllerVolts > 0)
-                        PowerReductionResult12 = 1;
-                }
+                
                 if (HelperLocoPush)
                 {                    
                     PowerReductionResult12 = 0;                    
@@ -4491,11 +4485,7 @@ namespace Orts.Simulation.RollingStocks
                                 LocalThrottlePercent++;                            
                         }
                     }
-                    LocalThrottlePercent = MathHelper.Clamp(LocalThrottlePercent, 0, 100);
-                    Train.ControllerVolts = LocalThrottlePercent / 10f;
-                    StepControllerValue = (int) (LocalThrottlePercent / 100f * Simulator.StepControllerMaxValue);
-                    ForceHandleValue = LocalThrottlePercent;
-
+                    
                     // Postrk zapíská
                     if (HelperStartOn && Train.IsFreight && !AcceptCableSignals)
                     {
@@ -4513,8 +4503,23 @@ namespace Orts.Simulation.RollingStocks
                 if (HelperLocoFollow)
                 {
                     if (Simulator.ThrottleLocoHelper != 0)
-                        PowerReductionResult12 = 0;                    
+                        PowerReductionResult12 = 0;                        
                 }
+
+                LocalThrottlePercent = MathHelper.Clamp(LocalThrottlePercent, 0, 100);
+                Train.ControllerVolts = LocalThrottlePercent / 10f;
+                StepControllerValue = (int)(LocalThrottlePercent / 100f * Simulator.StepControllerMaxValue);
+                ForceHandleValue = LocalThrottlePercent;
+
+                if (HelperLocoDontPush)
+                {
+                    LocalThrottlePercent = 0;
+                    Train.ControllerVolts = LocalThrottlePercent;
+                    StepControllerValue = LocalThrottlePercent;
+                    ForceHandleValue = LocalThrottlePercent;                    
+                    PowerReductionResult12 = 1;
+                }
+
                 if (extendedPhysics != null)
                     extendedPhysics.Update(elapsedClockSeconds);
             }
