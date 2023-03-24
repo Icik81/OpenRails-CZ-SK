@@ -655,6 +655,8 @@ namespace Orts.Simulation.RollingStocks
 
         public void Update(int totalMotors, float elapsedClockSeconds, float overridenControllerVolts, bool usingControllerVolts)
         {
+            if (Locomotive.LocoType == LocoTypes.Vectron && Locomotive.TractionBlocked && Locomotive.GetCombinedHandleValue(true) == 50)
+                Locomotive.TractionBlocked = false;
             if (Locomotive.AbsSpeedMpS == 0 && Locomotive.IsLeadLocomotive() && Locomotive.PowerOn)
             {
                 if (overridenControllerVolts > 0)
@@ -837,9 +839,14 @@ namespace Orts.Simulation.RollingStocks
             {
                 Locomotive.extendedPhysics.GeneratoricModeActive = false;
             }
+
             float prevForceN = ForceN;
             if (Locomotive.LocoType == LocoTypes.Vectron)
             {
+                if (Locomotive.TractionBlocked && ForceN > 0)
+                {
+                    ForceN = prevForceN = 0;
+                }
                 float axleKpH = MpS.ToKpH(WheelSpeedMpS);
                 float trainKpH = MpS.ToKpH(Locomotive.SpeedMpS);
                 float speedDif = (axleKpH - trainKpH) * 0.75f;

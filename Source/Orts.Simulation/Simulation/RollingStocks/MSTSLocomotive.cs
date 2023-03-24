@@ -7759,10 +7759,13 @@ namespace Orts.Simulation.RollingStocks
         #endregion
 
         #region TrainBrakeController
+        public bool TractionBlocked = false;
         public void StartTrainBrakeIncrease(float? target, int from) // from 0 = keyboard, 1 = CruiseControl
         {
             if (TrainBrakeController.BS2ControllerOnStation && !StationIsActivated[LocoStation])
                 return;
+
+            TractionBlocked = true;
 
             if (Mirel.Equipped && !Mirel.BlueLight && Mirel.initTest == Mirel.InitTest.Passed && SpeedMpS > 0) Mirel.AlerterPressed(true);
             if (MultiPositionControllers != null)
