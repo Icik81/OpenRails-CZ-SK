@@ -1343,9 +1343,14 @@ namespace Orts.Simulation.RollingStocks
             }
 
             // Initialise wheel bearing temperature to ambient temperature
-            WheelBearingTemperatureDegC = InitialCarOutsideTempC;
-            InitialWheelBearingRiseTemperatureDegC = InitialCarOutsideTempC;
-            InitialWheelBearingDeclineTemperatureDegC = InitialCarOutsideTempC;
+            if (WheelBearingTemperatureDegC == 0)
+                WheelBearingTemperatureDegC = InitialCarOutsideTempC;
+
+            if (InitialWheelBearingRiseTemperatureDegC == 0)
+                InitialWheelBearingRiseTemperatureDegC = InitialCarOutsideTempC;
+            
+            if (InitialWheelBearingDeclineTemperatureDegC == 0)
+                InitialWheelBearingDeclineTemperatureDegC = InitialCarOutsideTempC;
         }
 
         #region Calculate Brake Skid
@@ -2167,6 +2172,9 @@ namespace Orts.Simulation.RollingStocks
             outf.Write(LightFrontRPosition);
             outf.Write(LightRearLPosition);
             outf.Write(LightRearRPosition);
+            outf.Write(WheelBearingTemperatureDegC);
+            outf.Write(InitialWheelBearingRiseTemperatureDegC);
+            outf.Write(InitialWheelBearingDeclineTemperatureDegC);
 
             BrakeSystem.Save(outf);
         }
@@ -2214,6 +2222,9 @@ namespace Orts.Simulation.RollingStocks
             LightFrontRPosition = inf.ReadInt32();
             LightRearLPosition = inf.ReadInt32();
             LightRearRPosition = inf.ReadInt32();
+            WheelBearingTemperatureDegC = inf.ReadSingle();
+            InitialWheelBearingRiseTemperatureDegC = inf.ReadSingle();
+            InitialWheelBearingDeclineTemperatureDegC = inf.ReadSingle();
 
             BrakeSystem.Restore(inf);
         }
