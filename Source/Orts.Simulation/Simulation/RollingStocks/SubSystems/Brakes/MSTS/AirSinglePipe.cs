@@ -2971,6 +2971,19 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         car.BrakeSystem.RightDoorIsOpened = false;
                     }
                 }
+
+                // Ošetření zavření dveří, pokud veze hráč původně AI soupravu
+                if (!wagon.AutomaticDoors && !wagon.FreightDoors)
+                {
+                    if (lead.SpeedMpS > 5.0f / 3.6f && (wagon.DoorLeftOpen || wagon.DoorRightOpen))
+                    {
+                        wagon.DoorRightOpen = false;
+                        wagon.DoorLeftOpen = false;
+                        wagon.SignalEvent(Event.DoorClose);
+                        car.BrakeSystem.LeftDoorIsOpened = false;
+                        car.BrakeSystem.RightDoorIsOpened = false;
+                    }
+                }
             }
 
             // Levé dveře

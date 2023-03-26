@@ -3098,12 +3098,12 @@ namespace Orts.Simulation.RollingStocks
         {
             float AdhTime = 1;
             AdhCycle += elapsedTimeS;
-            if (Train.AllowedMaxSpeedMpS >= 140 / 3.6f) // Koridor
+            if (Train.AllowedMaxSpeedMpS >= 120 / 3.6f) // Koridor
             {
-                TrackFactorX = 0.5f;
-                TrackFactorY = 0.5f;
-                TrackFactorZ = 0.5f;
-                TrackFactorValue = 0.50f;
+                TrackFactorX = 0.3f;
+                TrackFactorY = 0.3f;
+                TrackFactorZ = 0.3f;
+                TrackFactorValue = 0.30f;
                 if ((AdhCycle > AdhTime && AbsSpeedMpS > 0.1f) || FirstFrame)
                 {
                     TrackFactor = Simulator.Random.Next(95, 101) / 100f;
@@ -3113,10 +3113,10 @@ namespace Orts.Simulation.RollingStocks
             else
             if (Train.AllowedMaxSpeedMpS >= 100 / 3.6f) // Běžná trať do 120km/h
             {
-                TrackFactorX = 0.8f;
-                TrackFactorY = 0.8f;
-                TrackFactorZ = 0.8f;
-                TrackFactorValue = 0.80f;
+                TrackFactorX = 0.6f;
+                TrackFactorY = 0.6f;
+                TrackFactorZ = 0.6f;
+                TrackFactorValue = 0.60f;
                 if ((AdhCycle > AdhTime && AbsSpeedMpS > 0.1f) || FirstFrame)
                 {
                     TrackFactor = Simulator.Random.Next(89, 95) / 100f;
@@ -3126,10 +3126,10 @@ namespace Orts.Simulation.RollingStocks
             else
             if (Train.AllowedMaxSpeedMpS > 50 / 3.6f) // Běžná trať do 100km/h
             {
-                TrackFactorX = 0.9f;
-                TrackFactorY = 0.9f;
-                TrackFactorZ = 0.9f;
-                TrackFactorValue = 0.90f;
+                TrackFactorX = 0.8f;
+                TrackFactorY = 0.8f;
+                TrackFactorZ = 0.8f;
+                TrackFactorValue = 0.80f;
                 if ((AdhCycle > AdhTime && AbsSpeedMpS > 0.1f) || FirstFrame)
                 {
                     TrackFactor = Simulator.Random.Next(83, 89) / 100f;
@@ -3151,10 +3151,10 @@ namespace Orts.Simulation.RollingStocks
             }
             else
             {
-                TrackFactorX = 0.9f;
-                TrackFactorY = 0.9f;
-                TrackFactorZ = 0.9f;
-                TrackFactorValue = 0.90f;
+                TrackFactorX = 0.8f;
+                TrackFactorY = 0.8f;
+                TrackFactorZ = 0.8f;
+                TrackFactorValue = 0.80f;
                 if ((AdhCycle > AdhTime && AbsSpeedMpS > 0.1f) || FirstFrame)
                 {
                     TrackFactor = Simulator.Random.Next(83, 89) / 100f;
