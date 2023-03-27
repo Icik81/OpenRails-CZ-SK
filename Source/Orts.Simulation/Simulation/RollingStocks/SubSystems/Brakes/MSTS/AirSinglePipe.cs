@@ -2975,7 +2975,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 // Ošetření zavření dveří, pokud veze hráč původně AI soupravu
                 if (!wagon.AutomaticDoors && !wagon.FreightDoors)
                 {
-                    if (lead.SpeedMpS > 5.0f / 3.6f && (wagon.DoorLeftOpen || wagon.DoorRightOpen))
+                    if (wagon.SpeedMpS > 5.0f / 3.6f && (wagon.DoorLeftOpen || wagon.DoorRightOpen))
                     {
                         wagon.DoorRightOpen = false;
                         wagon.DoorLeftOpen = false;
