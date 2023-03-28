@@ -145,6 +145,10 @@ namespace Orts.Simulation.RollingStocks
         public float Variable6;
         public float Variable7;
         public float Variable8;
+        public float Variable9;
+        public float Variable10;
+        public float Variable11;
+        public float Variable12;        
         public bool OpenedLeftDoor = false;
         public bool OpenedRightDoor = false;
         public float AirlossByHandlingDoorsPSIpS;

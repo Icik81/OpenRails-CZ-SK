@@ -1609,6 +1609,19 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 if (AutoCylPressurePSI < prevAutoCylPressurePSI)
                     CylinderChangeRateBar = GetCylPressurePSI() / GetMaxCylPressurePSI() * GetMaxReleaseRatePSIpS() / 14.50377f;
             }
+
+            // Triggery pro určení velikosti hlasitosti a frekvence při změnách tlaků
+            if (loco != null)
+            {
+                MainResPressurePSI = loco.MainResPressurePSI;
+                MaxMainResPressurePSI = loco.MaxMainResPressurePSI;                
+                (Car as MSTSWagon).Variable12 = loco.AuxResPressurePSI / loco.MaxAuxResPressurePSI;
+            }
+            (Car as MSTSWagon).Variable9 = Math.Abs(Car.Train.EqualReservoirPressurePSIorInHg - BrakeLine1PressurePSI) / maxPressurePSI0;
+            (Car as MSTSWagon).Variable10 = Math.Abs(MainResPressurePSI - BrakeLine1PressurePSI) / maxPressurePSI0;
+            (Car as MSTSWagon).Variable11 = MainResPressurePSI / MaxMainResPressurePSI;
+            
+
             //if (loco != null)
             //    loco.Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("CylinderChangeRateBar " + CylinderChangeRateBar));
 

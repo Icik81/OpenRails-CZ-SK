@@ -1522,6 +1522,10 @@ namespace Orts.Viewer3D
                 case Orts.Formats.Msts.VolumeCurve.Controls.Variable6Controlled: return car.Variable6;
                 case Orts.Formats.Msts.VolumeCurve.Controls.Variable7Controlled: return car.Variable7;
                 case Orts.Formats.Msts.VolumeCurve.Controls.Variable8Controlled: return car.Variable8;
+                case Orts.Formats.Msts.VolumeCurve.Controls.Variable9Controlled: return car.Variable9;
+                case Orts.Formats.Msts.VolumeCurve.Controls.Variable10Controlled: return car.Variable10;
+                case Orts.Formats.Msts.VolumeCurve.Controls.Variable11Controlled: return car.Variable11;
+                case Orts.Formats.Msts.VolumeCurve.Controls.Variable12Controlled: return car.Variable12;
                 case Orts.Formats.Msts.VolumeCurve.Controls.TrainBrakeControllerControlled: return car.TrainBrakeControllerValueForSound;
                 case Orts.Formats.Msts.VolumeCurve.Controls.EngineBrakeControllerControlled: return car.EngineBrakeControllerValueForSound;
                 case Orts.Formats.Msts.VolumeCurve.Controls.BrakePipeChangeRateControlled: return car.BrakeSystem.BrakePipeChangeRateBar;

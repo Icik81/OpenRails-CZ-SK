@@ -216,6 +216,10 @@ namespace Orts.Formats.Msts
             Variable6Controlled,
             Variable7Controlled,
             Variable8Controlled,
+            Variable9Controlled,
+            Variable10Controlled,
+            Variable11Controlled,
+            Variable12Controlled,
             TrainBrakeControllerControlled,
             EngineBrakeControllerControlled,
             BrakePipeChangeRateControlled,
@@ -227,7 +231,7 @@ namespace Orts.Formats.Msts
             WheelDamageValueControlled,
             PullPushValueControlled,
             TrackFactorValueControlled,
-            PricipitationIntensityControlled,
+            PricipitationIntensityControlled,            
         };
 
         public Controls Control = Controls.None;
@@ -262,6 +266,10 @@ namespace Orts.Formats.Msts
                 case "variable6controlled": Control = Controls.Variable6Controlled; break;
                 case "variable7controlled": Control = Controls.Variable7Controlled; break;
                 case "variable8controlled": Control = Controls.Variable8Controlled; break;
+                case "variable9controlled": Control = Controls.Variable9Controlled; break;
+                case "variable10controlled": Control = Controls.Variable10Controlled; break;
+                case "variable11controlled": Control = Controls.Variable11Controlled; break;
+                case "variable12controlled": Control = Controls.Variable12Controlled; break;
                 case "trainbrakecontrollercontrolled": Control = Controls.TrainBrakeControllerControlled; break;
                 case "enginebrakecontrollercontrolled": Control = Controls.EngineBrakeControllerControlled; break;
                 case "brakepipechangeratecontrolled": Control = Controls.BrakePipeChangeRateControlled; break;

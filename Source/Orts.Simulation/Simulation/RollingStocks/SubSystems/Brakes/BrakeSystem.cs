@@ -165,6 +165,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes
         public float ARRTrainBrakeCycle3 = 0;
         public bool FirstRunARRTrainBrake;
         public bool OverChargeActivated;
+        public float MainResPressurePSI;
+        public float MaxMainResPressurePSI;
 
         public bool BrakePipeDischargeRate = false;
         public bool BrakePipeChargeRate = false;
