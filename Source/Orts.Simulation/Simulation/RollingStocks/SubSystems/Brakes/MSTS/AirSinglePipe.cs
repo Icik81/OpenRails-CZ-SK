@@ -655,7 +655,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 if (loco.UsingRearCab)
                     loco.LocoStation = 2;
 
-                if (loco.TrainBrakeValueL_2 != 0)
+                if (loco.TrainBrakeValueL_2 != -1)
                     loco.TrainBrakeController.DefaultLapBrakeValue = loco.TrainBrakeValueL_2;
 
                 if (!loco.IsLeadLocomotive())
@@ -1619,14 +1619,14 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 MainResPressurePSI = loco.MainResPressurePSI;
                 MaxMainResPressurePSI = loco.MaxMainResPressurePSI;                
                 (Car as MSTSWagon).Variable12 = loco.AuxResPressurePSI / loco.MaxAuxResPressurePSI;
-            }
+            }            
             (Car as MSTSWagon).Variable9 = Math.Abs(Car.Train.EqualReservoirPressurePSIorInHg - BrakeLine1PressurePSI) / maxPressurePSI0;
             (Car as MSTSWagon).Variable10 = Math.Abs(MainResPressurePSI - BrakeLine1PressurePSI) / maxPressurePSI0;
             (Car as MSTSWagon).Variable11 = MainResPressurePSI / MaxMainResPressurePSI;
             
 
             //if (loco != null)
-            //    loco.Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("CylinderChangeRateBar " + CylinderChangeRateBar));
+            //    loco.Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("BrakePipeThreshold " + BrakePipeThreshold / 14.50377f));
 
 
             if (AutoCylPressurePSI < BrakeLine3PressurePSI) // Brake Cylinder pressure will be the greater of engine brake pressure or train brake pressure

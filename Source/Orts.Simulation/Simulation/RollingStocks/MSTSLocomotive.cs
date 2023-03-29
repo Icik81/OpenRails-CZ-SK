@@ -9402,8 +9402,8 @@ namespace Orts.Simulation.RollingStocks
                     Simulator.LocoStationChange = false;
                 }
                 #region TrainBrakeCheckPosition
-                TrainBrakeValueL = 0;
-                TrainBrakeValueL_2 = 0;
+                TrainBrakeValueL = -1;
+                TrainBrakeValueL_2 = -1;
                 foreach (MSTSNotch notch in TrainBrakeController.Notches)
                 {
                     switch (notch.Type)
@@ -9417,7 +9417,7 @@ namespace Orts.Simulation.RollingStocks
                             TrainBrakeValueO = notch.Value;
                             break;
                         case ControllerState.Lap:                            
-                            if (TrainBrakeValueL != 0)
+                            if (TrainBrakeValueL != -1)
                                 TrainBrakeValueL_2 = notch.Value;
                             else
                                 TrainBrakeValueL = notch.Value;
