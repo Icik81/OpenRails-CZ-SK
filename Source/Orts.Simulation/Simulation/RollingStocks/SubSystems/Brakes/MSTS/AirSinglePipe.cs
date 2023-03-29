@@ -249,7 +249,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 string.Empty, // Spacer because the state above needs 2 columns.                                     
                 string.Format("{0:F0} L", BrakePipeVolumeM3Base * 1000),
                 string.Format("{0:F0} L", CylVolumeM3 * 1000),
-                string.Format("{0:F0} L", TotalCapacityMainResBrakePipe * 1000 / 14.50377f),
+                string.Format("{0:F0} L", Car as MSTSLocomotive != null ? (Car as MSTSLocomotive).MainResVolumeM3 * (Car as MSTSLocomotive).MainResPressurePSI * 1000 / 14.50377f : 0),
                 CarHasProblemWithBrake ?  BrakeCarDeactivate ? Simulator.Catalog.GetString("Off") : Simulator.Catalog.GetString("Failure!") : BrakeCarModeText,
                 string.Format("{0}{1:F0} t", AutoLoadRegulatorEquipped ? "Auto " : "", (BrakeMassKG + BrakeMassKGRMg) / 1000),
                 string.Format("DebKoef {0:F1}", DebugKoef),
@@ -654,6 +654,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 loco.LocoStation = 1;
                 if (loco.UsingRearCab)
                     loco.LocoStation = 2;
+
+                if (loco.TrainBrakeValueL_2 != 0)
+                    loco.TrainBrakeController.DefaultLapBrakeValue = loco.TrainBrakeValueL_2;
 
                 if (!loco.IsLeadLocomotive())
                 {

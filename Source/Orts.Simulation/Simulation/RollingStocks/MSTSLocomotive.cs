@@ -9075,15 +9075,11 @@ namespace Orts.Simulation.RollingStocks
             // První průběh - inicializace hodnot
             if (this.CarFrameUpdateState == 1)
             {
-                // Vypne inicializační zvuk pohonu při vypnutém stroji
-                //if ((this as MSTSDieselLocomotive) != null && (this as MSTSDieselLocomotive).AIMotorStop)
-                //    SignalEvent(Event.EnginePowerOff);
-
-                //if ((this as MSTSElectricLocomotive) != null && (this as MSTSElectricLocomotive).AIPantoDownStop)
-                //    SignalEvent(Event.EnginePowerOff);
+                EngineBrakeValueLogic(elapsedClockSeconds);
+                TrainBrakeValueLogic();
                 
                 if (IsPlayerTrain)
-                {
+                {                    
                     TM_Temperature(elapsedClockSeconds);
                     Simulator.TrainIsPassenger = true;
                     foreach (TrainCar car in Train.Cars)
@@ -9139,8 +9135,7 @@ namespace Orts.Simulation.RollingStocks
 
             if (this.CarFrameUpdateState == 2)
             {
-                EngineBrakeValueLogic(elapsedClockSeconds);
-                TrainBrakeValueLogic();
+                
             }
 
             // Desátý průběh - nastaví hodnoty po nahrání uložené pozice
@@ -9383,6 +9378,7 @@ namespace Orts.Simulation.RollingStocks
         float TrainBrakeValueFQR;
         float TrainBrakeValueO;
         float TrainBrakeValueL;
+        public float TrainBrakeValueL_2;
         float TrainBrakeValueR;
         float TrainBrakeValueN;
         float TrainBrakeValueA;
@@ -9404,8 +9400,10 @@ namespace Orts.Simulation.RollingStocks
                 {
                     SetTrainBrakePercent(TrainBrakeValue[LocoStation] * 100f);
                     Simulator.LocoStationChange = false;
-                }                                
+                }
                 #region TrainBrakeCheckPosition
+                TrainBrakeValueL = 0;
+                TrainBrakeValueL_2 = 0;
                 foreach (MSTSNotch notch in TrainBrakeController.Notches)
                 {
                     switch (notch.Type)
@@ -9418,8 +9416,11 @@ namespace Orts.Simulation.RollingStocks
                         case ControllerState.OverchargeStart:
                             TrainBrakeValueO = notch.Value;
                             break;
-                        case ControllerState.Lap:
-                            TrainBrakeValueL = notch.Value;
+                        case ControllerState.Lap:                            
+                            if (TrainBrakeValueL != 0)
+                                TrainBrakeValueL_2 = notch.Value;
+                            else
+                                TrainBrakeValueL = notch.Value;
                             break;
                         case ControllerState.Release:
                             TrainBrakeValueR = notch.Value;
@@ -9449,7 +9450,11 @@ namespace Orts.Simulation.RollingStocks
                     }
                 }
 
-                if ((TrainBrakeValue[1] == TrainBrakeValueL && TrainBrakeValue[2] == TrainBrakeValueL) || (LapActive[1] && LapActive[2]))
+                if ((TrainBrakeValue[1] == TrainBrakeValueL && TrainBrakeValue[2] == TrainBrakeValueL) 
+                    || (LapActive[1] && LapActive[2])
+                    || (TrainBrakeValue[1] == TrainBrakeValueL_2 && TrainBrakeValue[2] == TrainBrakeValueL)
+                    || (TrainBrakeValue[1] == TrainBrakeValueL && TrainBrakeValue[2] == TrainBrakeValueL_2)
+                    || (TrainBrakeValue[1] == TrainBrakeValueL_2 && TrainBrakeValue[2] == TrainBrakeValueL_2))
                     BrakeSystem.BrakeControllerLap = true;
                 else
                     BrakeSystem.BrakeControllerLap = false;
