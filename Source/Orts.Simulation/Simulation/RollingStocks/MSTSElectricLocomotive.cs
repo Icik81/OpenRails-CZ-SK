@@ -439,7 +439,8 @@ namespace Orts.Simulation.RollingStocks
         public float Amps;
         public PowerSupplyStation myStation = null;
         protected int markerVoltage = 0;
-        public VoltageChangeMarker marker;        
+        public VoltageChangeMarker marker;
+        float PrevPantoVoltageV = 0;
 
         protected void UnderVoltageProtection(float elapsedClockSeconds)
         {
@@ -574,7 +575,8 @@ namespace Orts.Simulation.RollingStocks
             {
                 myStation = Simulator.powerSupplyStations[0];
                 powerSys = RouteVoltageV == 3000 ? 0 : 1;
-            }
+            }            
+
             if (powerSys == 0)
             {
                 RouteVoltageV = 3000;
@@ -685,13 +687,21 @@ namespace Orts.Simulation.RollingStocks
 
             if (IsPlayerTrain)
             {
-                // Pokud je loko AC tak napětí pantografu sleduje napětí v drátech
-                if ((SwitchingVoltageMode_OffAC || LocomotivePowerVoltage == 25000) && RouteVoltageV == 25000) // zohlednění indukce
+                // Pokud je loko AC tak napětí pantografu sleduje napětí v drátech                
+                if ((Pantographs[1].State == PantographState.Up || Pantographs[2].State == PantographState.Up) && RouteVoltageV > 1)
+                {
+                    if (PantographVoltageV > 4500) 
+                        PrevPantoVoltageV = 25000;
+                    else
+                        PrevPantoVoltageV = 3000;
+                }
+
+                if (((MultiSystemEngine && PrevPantoVoltageV == 25000) || LocomotivePowerVoltage == 25000) && RouteVoltageV == 25000) // zohlednění indukce
                 {
                     if (Pantographs[1].State == PantographState.Up || Pantographs[2].State == PantographState.Up)
                         PantographVoltageV = PowerSupply.PantographVoltageV;
                 }
-                if ((SwitchingVoltageMode_OffAC || LocomotivePowerVoltage == 25000) && RouteVoltageV == 1) // bez indukce
+                if (((MultiSystemEngine && PrevPantoVoltageV == 25000) || LocomotivePowerVoltage == 25000) && RouteVoltageV == 1) // bez indukce
                 {
                     if (PantographVoltageV > PowerSupply.PantographVoltageV && Induktion > 0) // pokud je indukce, klesne pozvolna než se dorovná
                         PantographVoltageV -= 100;
