@@ -4256,8 +4256,11 @@ namespace Orts.Simulation.RollingStocks
             }
         }
 
-        // AI akce pro definici světel
-        public void SetAIAction()
+        // AI akce pro definici světel a písknutí při posunu
+        float AIBellTimer;
+        bool AIStartOn;
+        bool AIBellStartOn;
+        public void SetAIAction(float elapsedClockSeconds)
         {
             if (Simulator.GameTimeCyklus10 == 10)
             {                
@@ -4316,8 +4319,30 @@ namespace Orts.Simulation.RollingStocks
                             {
                                 var AIActionPoint0 = ((Train as AITrain).AuxActionsContain.SpecAuxActions[0] as AIActionWPRef);
                                 if (AIActionPoint0.Delay > 40000 && AIActionPoint0.Delay < 60010)
+                                {
                                     CarIsShunting = true;
-                            }
+                                    AIStartOn = true;
+                                }
+                                else
+                                {
+                                    AIStartOn = false;
+                                    AIBellStartOn = false;
+                                }
+                            }                            
+                        }
+                    }                    
+
+                    // AI zapíská
+                    if (AIStartOn && !AIBellStartOn && AbsSpeedMpS > 0)
+                    {
+                        AIBellTimer += elapsedClockSeconds;                        
+                        if (AIBellTimer > 0.0f)
+                            SignalEvent(Event.BellOn);
+                        if (AIBellTimer > 0.1f)
+                        {
+                            SignalEvent(Event.BellOff);
+                            AIBellStartOn = true;
+                            AIBellTimer = 0;
                         }
                     }
                 }
@@ -5143,7 +5168,7 @@ namespace Orts.Simulation.RollingStocks
 
             if (!IsPlayerTrain && !Simulator.Paused)
             {
-                SetAIAction();
+                SetAIAction(elapsedClockSeconds);
                 AcceptMUSignals = true;
             }
 
