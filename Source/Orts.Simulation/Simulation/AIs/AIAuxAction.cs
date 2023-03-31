@@ -1012,7 +1012,9 @@ namespace Orts.Simulation.AIs
                             secndPartRangeM = (remainingRangeM - firstPartRangeM) * (2.0f * aiTrain.MaxDecelMpSS) / (aiTrain.MaxDecelMpSS + aiTrain.MaxAccelMpSS);
                         }
 
-                        triggerDistanceM = activateDistanceTravelledM - (firstPartRangeM + secndPartRangeM);
+                        // Icik
+                        //triggerDistanceM = activateDistanceTravelledM - (firstPartRangeM + secndPartRangeM);
+                        triggerDistanceM = activateDistanceTravelledM;
                     }
                     else
 
