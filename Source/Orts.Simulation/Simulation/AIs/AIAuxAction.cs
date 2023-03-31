@@ -1013,8 +1013,10 @@ namespace Orts.Simulation.AIs
                         }
 
                         // Icik
-                        //triggerDistanceM = activateDistanceTravelledM - (firstPartRangeM + secndPartRangeM);
-                        triggerDistanceM = activateDistanceTravelledM;
+                        if (thisTrain.MassKg == 100) // Servis jako například posunovač
+                            triggerDistanceM = activateDistanceTravelledM;
+                        else
+                            triggerDistanceM = activateDistanceTravelledM - (firstPartRangeM + secndPartRangeM);
                     }
                     else
 
