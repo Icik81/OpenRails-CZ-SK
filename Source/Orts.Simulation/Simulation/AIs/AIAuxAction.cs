@@ -34,6 +34,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using static Orts.Simulation.Physics.Train;
 
 namespace Orts.Simulation.AIs
 {
@@ -1012,8 +1013,8 @@ namespace Orts.Simulation.AIs
                             secndPartRangeM = (remainingRangeM - firstPartRangeM) * (2.0f * aiTrain.MaxDecelMpSS) / (aiTrain.MaxDecelMpSS + aiTrain.MaxAccelMpSS);
                         }
 
-                        // Icik
-                        if (thisTrain.MassKg == 100) // Servis jako například posunovač
+                        // Icik                        
+                        if (thisTrain.Name.ToLower().Contains("wp")) // Servis jako například posunovač
                             triggerDistanceM = activateDistanceTravelledM;
                         else
                             triggerDistanceM = activateDistanceTravelledM - (firstPartRangeM + secndPartRangeM);
