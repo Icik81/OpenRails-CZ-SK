@@ -3229,8 +3229,8 @@ namespace Orts.Simulation.RollingStocks
                 if (IsPlayerTrain && AbsSpeedMpS == 0)
                     CyklusCouplerImpact = 0;
 
-                // Vibrace při zrychlování a zpomalování
-                if (IsPlayerTrain && Math.Abs(AccelerationMpSS) > 0.5f && Math.Abs(SpeedMpS) < 0.1f && !WheelSlip)
+                // Vibrace při zastavení
+                if (IsPlayerTrain && AccelerationMpSS < -0.5f && Math.Abs(SpeedMpS) < 0.1f && !WheelSlip)
                 {
                     VibrationSpringConstantPrimepSpS = 50 / 0.2f;
                     VibratioDampingCoefficient = 0.3f;
@@ -3304,19 +3304,19 @@ namespace Orts.Simulation.RollingStocks
                     //Simulator.Confirmer.Information("VibrationRotationVelocityRadpS.Y " + VibrationRotationVelocityRadpS.Y);
                 }
 
-                float ActivateVibrationTime3 = AbsSpeedMpS == 0 ? 0 : ((1.0f / (AbsSpeedMpS * 3.6f)) * 10f);
+                float ActivateVibrationTime3 = AbsSpeedMpS == 0 ? 0 : ((1.0f / (AbsSpeedMpS * 3.6f)) * 30f);
                 //Simulator.Confirmer.Information("ActivateVibrationTime3 " + ActivateVibrationTime3);
                 
                 if (IsOverJunction())
                 {
                     Vibration3Timer += elapsedTimeS;
-                    if (Vibration3Timer > ActivateVibrationTime3 + 0.1f)
+                    if (Vibration3Timer > ActivateVibrationTime3 + 0.5f)
                         Vibration3Timer = 0;
                 }
                 else
                     Vibration3Timer = 0;
 
-                if (TypVibrace_3 && Vibration3Timer > ActivateVibrationTime3 && Vibration3Timer < ActivateVibrationTime3 + 0.1f)   //Vibrace na výhybce
+                if (TypVibrace_3 && Vibration3Timer > ActivateVibrationTime3 && Vibration3Timer < ActivateVibrationTime3 + 0.05f)   //Vibrace na výhybce
                 {
                     int y = 25, y1 = 31;
                     switch (WagonNumAxles)
@@ -3351,9 +3351,15 @@ namespace Orts.Simulation.RollingStocks
 
                     if (force > 3) force = 3;
                     if (direction1 == 0)
+                    {
                         VibrationRotationVelocityRadpS.X += (TrackFactorX * factor * Simulator.Settings.CarVibratingLevel * VibrationIntroductionStrength * force * 1.0f * VibrationMassKG) / x;
+                        VibrationRotationVelocityRadpS.Z += (TrackFactorX * factor * Simulator.Settings.CarVibratingLevel * VibrationIntroductionStrength * force * 1.0f * VibrationMassKG) / x;
+                    }
                     else
+                    {
                         VibrationRotationVelocityRadpS.X -= (TrackFactorX * factor * Simulator.Settings.CarVibratingLevel * VibrationIntroductionStrength * force * 1.0f * VibrationMassKG) / x;
+                        VibrationRotationVelocityRadpS.Z -= (TrackFactorX * factor * Simulator.Settings.CarVibratingLevel * VibrationIntroductionStrength * force * 1.0f * VibrationMassKG) / x;
+                    }
                 }
 
                 TypVibrace_1 = false;
