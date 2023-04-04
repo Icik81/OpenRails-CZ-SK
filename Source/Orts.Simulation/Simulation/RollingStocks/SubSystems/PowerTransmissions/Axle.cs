@@ -709,6 +709,15 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerTransmissions
                     break;
                 case AxleDriveType.ForceDriven:
                     float DriveMarker = driveForceN / Math.Abs(driveForceN);
+
+                    // Zabraňuje nekontrolovanému rozkmitání soustavy
+                    if (driveForceN == 0f && Math.Abs(TrainSpeedMpS) < 0.5f * Math.Abs(axleSpeedMpS))
+                    {                        
+                        axleSpeedMpS = TrainSpeedMpS;
+                        axleForceN = driveForceN;
+                        Reset();
+                    }
+
                     //Axle revolutions integration
                     if (TrainSpeedMpS > 0.0f)
                     {
