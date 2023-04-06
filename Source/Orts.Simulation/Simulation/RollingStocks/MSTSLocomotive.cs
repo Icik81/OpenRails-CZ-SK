@@ -2961,7 +2961,7 @@ namespace Orts.Simulation.RollingStocks
             if (LocoType == LocoTypes.Vectron)
                 return;
 
-            if (MaxCurrentA > 0 || !LocoHelperOn)  // Zohlední jen elektrické a dieselelektrické lokomotivy, lokomotiva nesmí být postrk 
+            if (MaxCurrentA > 0 && (this is MSTSElectricLocomotive || this is MSTSDieselLocomotive))  // Zohlední jen elektrické a dieselelektrické lokomotivy
             {
                 // Nadproudová ochrana                        
                 if (MaxCurrentPower == 0) MaxCurrentPower = MaxCurrentA / 1.2f;
@@ -4480,7 +4480,7 @@ namespace Orts.Simulation.RollingStocks
                         || MSTSBrakeSystem.BrakeLine1PressurePSI < BrakeSystem.maxPressurePSI0 - (0.5f * 14.50377f)
                         || Simulator.ControllerVoltsLocoHelper < -1.5f
                         || Direction == Direction.N
-                        || !CircuitBreakerOn
+                        || (this is MSTSElectricLocomotive && !CircuitBreakerOn)
                         || PowerCurrent1 > 0.95f * MaxCurrentPower)
                     {
                         HelperTimerDecrease += elapsedClockSeconds;
@@ -4529,7 +4529,7 @@ namespace Orts.Simulation.RollingStocks
                     if (Simulator.ThrottleLocoHelper != 0)
                         PowerReductionResult12 = 0;
                     HelperTimerDecrease += elapsedClockSeconds;
-                    if (HelperTimerDecrease > 0.1f || !CircuitBreakerOn || PowerCurrent1 > 0.95f * MaxCurrentPower)
+                    if (HelperTimerDecrease > 0.1f || (this is MSTSElectricLocomotive && !CircuitBreakerOn) || PowerCurrent1 > 0.95f * MaxCurrentPower)
                     {
                         HelperTimerDecrease = 0;
                         if (LocalThrottlePercent > 0)
@@ -4543,7 +4543,7 @@ namespace Orts.Simulation.RollingStocks
                         PowerReductionResult12 = 0;
 
                     if (ThrottlePercent > Simulator.ThrottleLocoHelper 
-                        || !CircuitBreakerOn 
+                        || (this is MSTSElectricLocomotive && !CircuitBreakerOn)
                         || PowerCurrent1 > 0.95f * MaxCurrentPower 
                         || WheelSlipWarning 
                         || WheelSlip)
