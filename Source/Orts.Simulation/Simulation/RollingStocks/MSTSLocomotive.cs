@@ -4445,9 +4445,7 @@ namespace Orts.Simulation.RollingStocks
             if (LocoHelperOn)
             {
                 CarPowerKey = true;
-
-                if (!HelperLocoPush)
-                    ThrottlePercent = Simulator.ThrottleLocoHelper;
+  
                 if (DynamicBrakeController != null)
                     DynamicBrakePercent = Simulator.DynamicBrakeLocoHelper;
                 
@@ -4480,8 +4478,10 @@ namespace Orts.Simulation.RollingStocks
                         || WheelSlipWarning
                         || WheelSlip
                         || MSTSBrakeSystem.BrakeLine1PressurePSI < BrakeSystem.maxPressurePSI0 - (0.5f * 14.50377f)
-                        || Simulator.ControllerVoltsLocoHelper < -0.1f
-                        || Direction == Direction.N)
+                        || Simulator.ControllerVoltsLocoHelper < -1.5f
+                        || Direction == Direction.N
+                        || !CircuitBreakerOn
+                        || PowerCurrent1 > 0.95f * MaxCurrentPower)
                     {
                         HelperTimerDecrease += elapsedClockSeconds;
                         if (HelperTimerDecrease > 0.1f)
@@ -4489,8 +4489,6 @@ namespace Orts.Simulation.RollingStocks
                             HelperTimerDecrease = 0;                            
                             if (LocalThrottlePercent > 0)
                                 LocalThrottlePercent--;
-                            //if (LocalThrottlePercent == 0 && MSTSBrakeSystem.BrakeLine1PressurePSI < BrakeSystem.maxPressurePSI0 - (0.5f * 14.50377f))
-                            //    HelperPushStart = false;
                         }
                     }
                     else
@@ -4524,26 +4522,56 @@ namespace Orts.Simulation.RollingStocks
                             HelperBellTimer = 0;
                         }
                     }                    
+                }                              
+
+                if (HelperLocoDontPush)
+                {
+                    if (Simulator.ThrottleLocoHelper != 0)
+                        PowerReductionResult12 = 0;
+                    HelperTimerDecrease += elapsedClockSeconds;
+                    if (HelperTimerDecrease > 0.1f || !CircuitBreakerOn || PowerCurrent1 > 0.95f * MaxCurrentPower)
+                    {
+                        HelperTimerDecrease = 0;
+                        if (LocalThrottlePercent > 0)
+                            LocalThrottlePercent--;
+                    }
                 }
+
                 if (HelperLocoFollow)
                 {
                     if (Simulator.ThrottleLocoHelper != 0)
-                        PowerReductionResult12 = 0;                        
+                        PowerReductionResult12 = 0;
+
+                    if (ThrottlePercent > Simulator.ThrottleLocoHelper 
+                        || !CircuitBreakerOn 
+                        || PowerCurrent1 > 0.95f * MaxCurrentPower 
+                        || WheelSlipWarning 
+                        || WheelSlip)
+                    {
+                        HelperTimerDecrease += elapsedClockSeconds;
+                        if (HelperTimerDecrease > 0.1f)
+                        {
+                            HelperTimerDecrease = 0;
+                            if (LocalThrottlePercent > 0)
+                                LocalThrottlePercent--;
+                        }                        
+                    }
+                    else
+                    {
+                        HelperTimerIncrease += elapsedClockSeconds;
+                        if (HelperTimerIncrease > (Simulator.Weather.PricipitationIntensityPPSPM2 + 0.5f))
+                        {
+                            HelperTimerIncrease = 0;
+                            if (LocalThrottlePercent < 100)
+                                LocalThrottlePercent++;
+                        }
+                    }
                 }
 
                 LocalThrottlePercent = MathHelper.Clamp(LocalThrottlePercent, 0, 100);
                 Train.ControllerVolts = LocalThrottlePercent / 10f;
                 StepControllerValue = (int)(LocalThrottlePercent / 100f * Simulator.StepControllerMaxValue);
                 ForceHandleValue = LocalThrottlePercent;
-
-                if (HelperLocoDontPush)
-                {
-                    LocalThrottlePercent = 0;
-                    Train.ControllerVolts = LocalThrottlePercent;
-                    StepControllerValue = LocalThrottlePercent;
-                    ForceHandleValue = LocalThrottlePercent;                    
-                    PowerReductionResult12 = 1;
-                }
 
                 if (extendedPhysics != null)
                     extendedPhysics.Update(elapsedClockSeconds);
