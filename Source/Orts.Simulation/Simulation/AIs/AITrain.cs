@@ -157,7 +157,7 @@ namespace Orts.Simulation.AIs
             }
 
             // Icik
-            Efficiency = MathHelper.Clamp(Efficiency, 0.3f, 1.0f);
+            Efficiency = MathHelper.Clamp(Efficiency, 0.0f, 1.0f);
 
             Name = String.Copy(name);
             TrafficService = trafficService;
