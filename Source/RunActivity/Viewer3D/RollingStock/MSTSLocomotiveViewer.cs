@@ -110,7 +110,7 @@ namespace Orts.Viewer3D.RollingStock
                     smsGenericFilePath = "..\\Content\\GenericSound\\6_Wheels\\GenSound.sms";
                     break;
             }
-            if (!MSTSWagon.GenSoundOff && Program.Simulator.Settings.GenSound)
+            if (!MSTSWagon.GenSoundOff && Program.Simulator.Settings.GenSound && MSTSWagon.CarLengthM > 1f)
                 LoadCarSound(Viewer.ContentPath, smsGenericFilePath);
 
             // Load TCS

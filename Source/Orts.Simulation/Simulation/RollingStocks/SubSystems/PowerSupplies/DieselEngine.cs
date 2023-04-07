@@ -1202,7 +1202,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
         public void Update(float elapsedClockSeconds)
         {
             // Inicializace AI
-            if (!locomotive.IsPlayerTrain && locomotive.BrakeSystem.StartOn && !locomotive.LocoIsStatic)
+            if ((!locomotive.IsPlayerTrain && locomotive.BrakeSystem.StartOn && !locomotive.LocoIsStatic) || locomotive.CarLengthM < 1f)
             {
                 RealRPM = IdleRPM;
                 EngineStatus = Status.Running;

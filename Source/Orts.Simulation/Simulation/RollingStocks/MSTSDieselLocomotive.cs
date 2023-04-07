@@ -1067,44 +1067,45 @@ namespace Orts.Simulation.RollingStocks
         float AITimeMotorRunning;
         public void DieselStartUpTime(float elapsedClockSeconds)
         {
+            // Vynechá servisy jako například posunovače
+            if (CarLengthM < 1f) return;
+
             // Startovní setup AI lokomotivy
             if (!IsPlayerTrain)
             {
-                if (Simulator.GameTimeCyklus10 == 10)
+                if ((Train as AITrain) != null && (Train as AITrain).nextActionInfo != null)
                 {
-                    if ((Train as AITrain) != null && (Train as AITrain).nextActionInfo != null)
+                    if ((Train as AITrain).nextActionInfo.GetType().IsSubclassOf(typeof(AuxActionItem)))
                     {
-                        if ((Train as AITrain).nextActionInfo.GetType().IsSubclassOf(typeof(AuxActionItem)))
+                        // Po zastavení AI vlaku vypne motor
+                        if ((Train as AITrain).AuxActionsContain[0] != null && ((AIAuxActionsRef)(Train as AITrain).AuxActionsContain[0]).NextAction == AuxActionRef.AUX_ACTION.WAITING_POINT)
                         {
-                            // Po zastavení AI vlaku vypne motor
-                            if ((Train as AITrain).AuxActionsContain[0] != null && ((AIAuxActionsRef)(Train as AITrain).AuxActionsContain[0]).NextAction == AuxActionRef.AUX_ACTION.WAITING_POINT)
+                            if (((AuxActionWPItem)(Train as AITrain).nextActionInfo).ActualDepart > 0)
                             {
-                                if (((AuxActionWPItem)(Train as AITrain).nextActionInfo).ActualDepart > 0)
-                                {
-                                    double AITimeToGo = ((AuxActionWPItem)(Train as AITrain).nextActionInfo).ActualDepart - Simulator.ClockTime;
-                                    if (AITimeToGo > 900) // Čekání 15min 
-                                        AIMotorStop = true;
-                                    else
-                                        AIMotorStop = false;
-                                    if (AITimeToGo < 120) // Čekání 2min pro nahození  
-                                        AIMotorStart = true;
-                                }
+                                double AITimeToGo = ((AuxActionWPItem)(Train as AITrain).nextActionInfo).ActualDepart - Simulator.ClockTime;
+                                if (AITimeToGo > 900) // Čekání 15min 
+                                    AIMotorStop = true;
+                                else
+                                    AIMotorStop = false;
+                                if (AITimeToGo < 120) // Čekání 2min pro nahození  
+                                    AIMotorStart = true;
                             }
                         }
                     }
-                    // AI se vypne cca po 20s při dlouhém stání
-                    if (AIMotorStop && DieselEngines[0].EngineStatus == DieselEngine.Status.Running && AITimeMotorRunning > 1f)
+                }
+                // AI se vypne cca po 20s při dlouhém stání
+                if (AIMotorStop && DieselEngines[0].EngineStatus == DieselEngine.Status.Running && AITimeMotorRunning > 1f)
+                {
+                    AITimeToMotorStop += elapsedClockSeconds;
+                    if (AITimeToMotorStop > 2f)
                     {
-                        AITimeToMotorStop += elapsedClockSeconds;
-                        if (AITimeToMotorStop > 2f)
-                        {
-                            AIMotorStop = true;
-                            AITimeToMotorStop = 0;
-                        }
-                        else
-                            AIMotorStop = false;
+                        AIMotorStop = true;
+                        AITimeToMotorStop = 0;
                     }
-                }                
+                    else
+                        AIMotorStop = false;
+                }
+
 
                 if (DieselEngines[0].EngineStatus == DieselEngine.Status.Running)
                     AITimeMotorRunning += elapsedClockSeconds;
