@@ -229,6 +229,8 @@ namespace Orts.Simulation
         public bool RefreshCab;
         public int InitLocoCycleCount = 0;
         public float LeadAuxResVolumeM3 = -1;
+        public int[] FailedSignalNr = new int[10];
+        public int FailedSignalsCount;
 
         public List<PowerSupplyStation> powerSupplyStations;
         public List<VoltageChangeMarker> voltageChangeMarkers;
@@ -459,6 +461,13 @@ namespace Orts.Simulation
             Season = (SeasonType)(Settings.Season);
 
             WeatherType = Activity.Tr_Activity.Tr_Activity_Header.Weather;
+
+            // Icik
+            if (Activity.Tr_Activity.Tr_Activity_File.ActivityFailedSignals != null)
+            {
+                ActivityRun.AddFailedSignals(Activity.Tr_Activity.Tr_Activity_File.ActivityFailedSignals);
+            }
+
             if (Activity.Tr_Activity.Tr_Activity_File.ActivityRestrictedSpeedZones != null)
             {
                 ActivityRun.AddRestrictZones(TRK.Tr_RouteFile, TSectionDat, TDB.TrackDB, Activity.Tr_Activity.Tr_Activity_File.ActivityRestrictedSpeedZones);

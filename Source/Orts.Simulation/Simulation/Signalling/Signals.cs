@@ -964,7 +964,19 @@ namespace Orts.Simulation.Signalling
                             sigItem.SigObj = foundSignals;
 
                             bool validSignal = true;
-                            lastSignal = AddSignal(index, i, sigItem, TDBRef, tsectiondat, tdbfile, ref validSignal);
+
+                            // Icik
+                            // Failed signal
+                            for (int fsignal = 0; fsignal < Simulator.FailedSignalsCount; fsignal++)
+                            {
+                                if (sigItem.TrItemId == Simulator.FailedSignalNr[fsignal])
+                                {
+                                    validSignal = false;
+                                    sigItem.ItemName = "FailedSignal";                                       
+                                }
+                            }
+                            
+                            lastSignal = AddSignal(index, i, sigItem, TDBRef, tsectiondat, tdbfile, ref validSignal);                        
 
                             if (validSignal)
                             {
@@ -973,7 +985,7 @@ namespace Orts.Simulation.Signalling
                             else
                             {
                                 sigItem.SigObj = -1;
-                            }
+                            }                        
                         }
 
                         // Track Item is speedpost - check if really limit
@@ -1080,7 +1092,8 @@ namespace Orts.Simulation.Signalling
 
         private int AddSignal(int trackNode, int nodeIndx, SignalItem sigItem, int TDBRef, TrackSectionsFile tsectiondat, TrackDatabaseFile tdbfile, ref bool validSignal)
         {
-            validSignal = true;
+            // Icik
+            //validSignal = true;
 
             signalObjects[foundSignals] = new SignalObject(ORTSSignalTypeCount);
             signalObjects[foundSignals].isSignal = true;
@@ -12779,7 +12792,7 @@ namespace Orts.Simulation.Signalling
             }
 
             var sigasp_values = Enum.GetValues(typeof(MstsSignalAspect));
-            speed_info = new ObjectSpeedInfo[sigasp_values.Length];
+            speed_info = new ObjectSpeedInfo[sigasp_values.Length];            
         }
 
         //================================================================================================//
@@ -12816,34 +12829,33 @@ namespace Orts.Simulation.Signalling
 
         public void SetSignalType(TrItem[] TrItems, SignalConfigurationFile sigCFG)
         {
-            SignalItem sigItem = (SignalItem)TrItems[TDBIndex];
+            SignalItem sigItem = (SignalItem)TrItems[TDBIndex];            
 
             // set signal type
             if (sigCFG.SignalTypes.ContainsKey(sigItem.SignalType))
             {
-                // set signal type
-                signalType = sigCFG.SignalTypes[sigItem.SignalType];
+                // set signal type               
+                signalType = sigCFG.SignalTypes[sigItem.SignalType];                                
 
                 // get related signalscript
                 Signals.scrfile.SignalScripts.Scripts.TryGetValue(signalType, out usedSigScript);
-
                 usedCsSignalScript = Signals.CsSignalScripts.LoadSignalScript(signalType.Script)
-                    ?? Signals.CsSignalScripts.LoadSignalScript(signalType.Name);
+                ?? Signals.CsSignalScripts.LoadSignalScript(signalType.Name);
+
                 usedCsSignalScript?.AttachToHead(this);
                 usedCsSignalScript?.Initialize();
 
                 // set signal speeds
                 foreach (SignalAspect thisAspect in signalType.Aspects)
                 {
-                    int arrindex = (int)thisAspect.Aspect;
-                    speed_info[arrindex] = new ObjectSpeedInfo(thisAspect.SpeedMpS, thisAspect.SpeedMpS, thisAspect.Asap, thisAspect.Reset, thisAspect.NoSpeedReduction ? 1 : 0);
+                    int arrindex = (int)thisAspect.Aspect;                    
+                    speed_info[arrindex] = new ObjectSpeedInfo(thisAspect.SpeedMpS, thisAspect.SpeedMpS, thisAspect.Asap, thisAspect.Reset, thisAspect.NoSpeedReduction ? 1 : 0);                    
                 }
-
+               
                 // set normal subtype
                 ORTSNormalSubtypeIndex = signalType.ORTSSubtypeIndex;
 
                 // update overall SignalNumClearAhead
-
                 if (sigFunction == MstsSignalFunction.NORMAL)
                 {
                     mainSignal.SignalNumClearAhead_MSTS = Math.Max(mainSignal.SignalNumClearAhead_MSTS, signalType.NumClearAhead_MSTS);
@@ -12852,7 +12864,6 @@ namespace Orts.Simulation.Signalling
                 }
 
                 // set approach control limits
-
                 if (signalType.ApproachControlDetails != null)
                 {
                     ApproachControlLimitPositionM = signalType.ApproachControlDetails.ApproachControlPositionM;

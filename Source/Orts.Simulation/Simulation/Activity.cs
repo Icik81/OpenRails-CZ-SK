@@ -27,6 +27,7 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
+using System.Security.Policy;
 using System.Text;
 using static Orts.Simulation.Physics.Train;
 using Event = Orts.Common.Event;
@@ -497,6 +498,18 @@ namespace Orts.Simulation
                     stoptask.LogStationLogFile = String.Copy(StationStopLogFile);
                     stoptask.LogStationStops = true;
                 }
+            }
+        }
+
+        // Icik
+        public void AddFailedSignals(ActivityFailedSignals signals)
+        {
+            if (signals.FailedSignalList.Count < 1) return;
+
+            Simulator.FailedSignalsCount = signals.FailedSignalList.Count;
+            for (int i = 0; i < signals.FailedSignalList.Count; i++)
+            {
+                Simulator.FailedSignalNr[i] = signals.FailedSignalList[i];
             }
         }
 
