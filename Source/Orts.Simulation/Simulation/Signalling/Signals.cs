@@ -971,7 +971,7 @@ namespace Orts.Simulation.Signalling
                             {
                                 if (sigItem.TrItemId == Simulator.FailedSignalNr[fsignal])
                                 {
-                                    validSignal = false;
+                                    //validSignal = false;
                                     sigItem.ItemName = "FailedSignal";                                       
                                 }
                             }

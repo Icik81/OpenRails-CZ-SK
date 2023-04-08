@@ -130,6 +130,11 @@ namespace Orts.Viewer3D
                     continue;
                 }
                 var mstsSignalItem = (SignalItem)(viewer.Simulator.TDB.TrackDB.TrItemTable[mstsSignal.SignalUnits.Units[i].TrItem]);
+                
+                // Icik
+                // Failed signal
+                if (mstsSignalItem.ItemName == "FailedSignal") { return; }
+                
                 try
                 {
                     // Go create the shape head.
@@ -436,7 +441,7 @@ namespace Orts.Viewer3D
             public bool AreSemaphoresReindexed;
 
             public SignalTypeData(Viewer viewer, Orts.Formats.Msts.SignalType mstsSignalType)
-            {
+            {                
                 if (!viewer.SIGCFG.LightTextures.ContainsKey(mstsSignalType.LightTextureName))
                 {
                     Trace.TraceWarning("Skipped invalid light texture {1} for signal type {0}", mstsSignalType.Name, mstsSignalType.LightTextureName);
