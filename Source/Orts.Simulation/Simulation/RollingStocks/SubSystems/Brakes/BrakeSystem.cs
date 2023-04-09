@@ -167,6 +167,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes
         public bool OverChargeActivated;
         public float MainResPressurePSI;
         public float MaxMainResPressurePSI;
+        public float EngineBrakeTresholdRate = 1.0f;
 
         public bool BrakePipeDischargeRate = false;
         public bool BrakePipeChargeRate = false;
