@@ -9431,7 +9431,7 @@ namespace Orts.Simulation.RollingStocks
         float TrainBrakeValueFQR;
         float TrainBrakeValueO;
         float TrainBrakeValueL;
-        public float TrainBrakeValueL_2;
+        public float TrainBrakeValueL_2 = -1;
         float TrainBrakeValueR;
         float TrainBrakeValueN;
         float TrainBrakeValueA;
