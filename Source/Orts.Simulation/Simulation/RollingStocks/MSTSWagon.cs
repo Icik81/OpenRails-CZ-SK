@@ -1112,21 +1112,24 @@ namespace Orts.Simulation.RollingStocks
             // Icik
             // Úprava spřáhel kvůli kompatibilitě v klasickém OR a MSTS
             CarLengthM0 = CarLengthM;
-            foreach (MSTSCoupling coupler in Couplers)
+            if (CarLengthM > 1)
             {
-                if (coupler.R0X != 0)
+                foreach (MSTSCoupling coupler in Couplers)
                 {
-                    CarLengthM0 = CarLengthM + coupler.R0X;                    
+                    if (coupler.R0X != 0)
+                    {
+                        CarLengthM0 = CarLengthM + coupler.R0X;
+                    }
+                    coupler.R0X = 0f;
+                    // Nákladní vozy
+                    if (WagonType == WagonTypes.Freight)
+                        coupler.R0Y = 0.07f;
+                    // Osobní vozy a ostatní
+                    else
+                        coupler.R0Y = 0.015f;
                 }
-                coupler.R0X = 0f;
-                // Nákladní vozy
-                if (WagonType == WagonTypes.Freight)
-                    coupler.R0Y = 0.07f;
-                // Osobní vozy a ostatní
-                else
-                    coupler.R0Y = 0.015f;
+                CarLengthM = CarLengthM0;
             }
-            CarLengthM = CarLengthM0;
 
             // Hack
             /*DavisAN = DavisBNSpM = DavisCNSSpMM = 0;
