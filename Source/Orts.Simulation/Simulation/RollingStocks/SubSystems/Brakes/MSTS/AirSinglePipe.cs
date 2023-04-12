@@ -712,7 +712,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     }
                 }
 
-                if (loco.LapButtonEnable)
+                if (loco.LapButtonEnable && !(loco is MSTSSteamLocomotive))
                 {
                     if (loco.IsLeadLocomotive())
                     {
@@ -2585,7 +2585,12 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         if (engine.TrainBrakeController.TrainBrakeControllerState == ControllerState.Release)
                         {
                             engine.BrakeSystem.NextLocoRelease = true;
-                            engine.BrakeSystem.NextLocoBrakeState = Simulator.Catalog.GetString("Release position");
+                            engine.BrakeSystem.NextLocoBrakeState = Simulator.Catalog.GetString("Release position");                            
+                            // Vyjímka pro BS2 ovladač
+                            if (engine.TrainBrakeController.BS2ControllerOnStation)
+                            {
+                                engine.BrakeSystem.NextLocoBrakeState = Simulator.Catalog.GetString("Driving position");
+                            }
                             engine.BrakeSystem.Release = true;
                             SumRe++;
                             lead.BrakeSystem.ReleaseTr = 1;

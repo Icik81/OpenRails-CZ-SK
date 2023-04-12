@@ -44,6 +44,7 @@
 // Debug for Advanced Adhesion Model
 //#define DEBUG_ADHESION
 
+using GNU.Gettext;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using Orts.Common;
@@ -7949,6 +7950,12 @@ namespace Orts.Simulation.RollingStocks
             var train = Simulator.PlayerLocomotive.Train;//Debrief Eval
             string s = TrainBrakeController.GetStatus();
 
+            // Icik
+            // Vyjímka pro BS2 ovladač
+            if (s == Simulator.Catalog.GetString("Release position") && TrainBrakeController.BS2ControllerOnStation)
+            {
+                s = Simulator.Catalog.GetString("Driving position");
+            }
 
             if (s == "Emergency" && train.LeadLocomotive != null && !ldbfevalfulltrainbrakeunder8kmh && train.LeadLocomotive.IsPlayerTrain && Math.Abs(train.SpeedMpS) < 2.22222)
             {
@@ -7971,6 +7978,14 @@ namespace Orts.Simulation.RollingStocks
         {
             var train = Simulator.PlayerLocomotive.Train;//Debrief Eval
             string s = TrainBrakeController.GetStatus();
+
+            // Icik
+            // Vyjímka pro BS2 ovladač
+            if (s == Simulator.Catalog.GetString("Release position") && TrainBrakeController.BS2ControllerOnStation)
+            {
+                s = Simulator.Catalog.GetString("Driving position");
+            }
+
             TrainCar lastCar = Train.Cars[Train.Cars.Count - 1];
             if (lastCar == this)
                 lastCar = Train.Cars[0];
@@ -9426,6 +9441,15 @@ namespace Orts.Simulation.RollingStocks
                 }
             }
             #endregion
+
+            // Páry mají jen jedno stanoviště
+            if (this is MSTSSteamLocomotive)
+            {
+                if (LocoStation == 1)
+                    EngineBrakeValue[2] = EngineBrakeValue[1];
+                else
+                    EngineBrakeValue[1] = EngineBrakeValue[2];
+            }
         }
 
         float TrainBrakeValueFQR;
@@ -9445,7 +9469,7 @@ namespace Orts.Simulation.RollingStocks
         {
             if (IsLeadLocomotive())
             {
-                //Simulator.Confirmer.MSG("TrainBrakeValue[0] = " + TrainBrakeValue[0] + "        TrainBrakeValue[1] = " + TrainBrakeValue[1] + "   TrainBrakeValue[2] = " + TrainBrakeValue[2]);
+                //Simulator.Confirmer.MSG("TrainBrakeValue[0] = " + TrainBrakeValue[0] + "        TrainBrakeValue[1] = " + TrainBrakeValue[1] + "   TrainBrakeValue[2] = " + TrainBrakeValue[2]);                            
                 LocoStation = 1;
                 if (UsingRearCab)
                     LocoStation = 2;
@@ -9477,7 +9501,7 @@ namespace Orts.Simulation.RollingStocks
                             break;
                         case ControllerState.Release:
                             TrainBrakeValueR = notch.Value;
-                            break;
+                             break;
                         case ControllerState.Neutral:
                             TrainBrakeValueN = notch.Value;
                             break;
@@ -9511,6 +9535,15 @@ namespace Orts.Simulation.RollingStocks
                     BrakeSystem.BrakeControllerLap = true;
                 else
                     BrakeSystem.BrakeControllerLap = false;
+
+                // Páry mají jen jedno stanoviště
+                if (this is MSTSSteamLocomotive)
+                {
+                    if (LocoStation == 1)
+                        LapActive[2] = LapActive[1];
+                    else
+                        LapActive[1] = LapActive[2];
+                }
 
                 if (LocoStation == 1)
                 {                    
@@ -9608,6 +9641,15 @@ namespace Orts.Simulation.RollingStocks
                 }
                 #endregion
                 TrainBrakeValue[LocoStation] = TrainBrakeController.CurrentValue;
+
+                // Páry mají jen jedno stanoviště
+                if (this is MSTSSteamLocomotive)
+                {
+                    if (LocoStation == 1)
+                        TrainBrakeValue[2] = TrainBrakeValue[1];
+                    else
+                        TrainBrakeValue[1] = TrainBrakeValue[2];
+                }
             }
         }
 
@@ -9662,7 +9704,15 @@ namespace Orts.Simulation.RollingStocks
                 }             
             }
             if (IsLeadLocomotive() && !AcceptMUSignals)            
-                Simulator.TrainPowerKey = true;            
+                Simulator.TrainPowerKey = true;
+
+            if (this is MSTSSteamLocomotive)
+            {
+                this.CarPowerKey = true;
+                Simulator.TrainPowerKey = true;
+                StationIsActivated[1] = true;
+                StationIsActivated[2] = true;
+            }
         }
 
         public void ToggleHV2SwitchUp()
