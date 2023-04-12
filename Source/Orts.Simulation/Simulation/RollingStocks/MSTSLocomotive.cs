@@ -3698,23 +3698,33 @@ namespace Orts.Simulation.RollingStocks
                                 }
                             }
 
-                            // Vozy nikdy nebudou startovat podchlazené pod 5°C
+                            // Vozy nikdy nebudou startovat podchlazené pod 5°C                                                        
                             if (car.CarOutsideTempC < 5 && !car.WagonHasTemperature)
                             {
                                 car.WagonTemperature = Simulator.Random.Next(5, 10);
                                 car.CarOutsideTempC0 = car.WagonTemperature;
+                                // Parní lokomotiva
+                                if (car is MSTSSteamLocomotive)
+                                {                                    
+                                    car.WagonTemperature += 20f;
+                                }
                             }
                             else
                             if (!car.WagonHasTemperature)
                             {
                                 car.WagonTemperature = Simulator.Random.Next((int)car.CarOutsideTempC - 2, (int)car.CarOutsideTempC + 2);
                                 car.CarOutsideTempC0 = car.WagonTemperature;
+                                // Parní lokomotiva
+                                if (car is MSTSSteamLocomotive)
+                                {                                    
+                                    car.WagonTemperature += 15f;
+                                }
                             }
                             else
                                 car.CarOutsideTempC0 = car.CarOutsideTempC;
 
-                            car.CarOutsideTempC0 = MathHelper.Clamp(car.CarOutsideTempC0, 5, 40);
-
+                            car.CarOutsideTempC0 = MathHelper.Clamp(car.CarOutsideTempC0, 5, 50);
+                            
                             // Natopené vozy, oživená loko
                             if (BrakeSystem.IsAirFull && !car.WagonHasTemperature)
                             {
@@ -3722,7 +3732,13 @@ namespace Orts.Simulation.RollingStocks
                                     car.WagonTemperature = Simulator.Random.Next(24, 29);
                                 else
                                     car.WagonTemperature = Simulator.Random.Next(18, 23);
-                            }
+                                // Parní lokomotiva
+                                if (car is MSTSSteamLocomotive && !car.WagonHasTemperature)
+                                {                                    
+                                    car.WagonTemperature += 10f;
+                                }
+                            }                            
+
                             car.WagonHasTemperature = true;
                             car.CarOutsideTempCLastStatus = car.CarOutsideTempC;
                         }
@@ -3888,7 +3904,13 @@ namespace Orts.Simulation.RollingStocks
                         if ((Train.CarSteamHeatOn && !car.WagonHasStove) && !car.LocomotiveCab)
                             car.WagonTemperature += car.CarCurrentCarriageHeatDeltaTempC + car.TempCDeltaAir;
                         else
-                            car.WagonTemperature += car.TempCDelta + car.TempCDeltaAir;                        
+                            car.WagonTemperature += car.TempCDelta + car.TempCDeltaAir;
+
+                        // Parní lokomotiva
+                        if (car is MSTSSteamLocomotive && car.WagonTemperature < car.CarOutsideTempC0 + 10f)
+                        {
+                            car.WagonTemperature = car.CarOutsideTempC0 + 10f;
+                        }
                     }
                     //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Teplota " + car.WagonTemperature));
                 }
@@ -9352,6 +9374,7 @@ namespace Orts.Simulation.RollingStocks
                             case ControllerState.Lap:
                                 EngineBrakeValueN = notch.Value;
                                 break;
+                            case ControllerState.FullServ:
                             case ControllerState.Apply:
                             case ControllerState.EPApply:
                             case ControllerState.ContServ:
