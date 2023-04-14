@@ -173,6 +173,7 @@ namespace Orts.Simulation.RollingStocks
         public float EngineBrakeControllerValueForSound;
         public float WheelSpeedMpS_Cab;
         public int MotorStartCyklus;
+        public bool StartOn = true;
 
         bool TenderWeightInitialize = true;
         float TenderWagonMaxCoalMassKG = 0;
@@ -931,21 +932,33 @@ namespace Orts.Simulation.RollingStocks
 
             if (BrakeSystem == null)
                 BrakeSystem = MSTSBrakeSystem.Create(CarBrakeSystemType, this);
+
+            StartOn = false;
         }
 
         // Dynamicky nastavuje Davisovi konstanty A, B, C pro různé podvozky v závislosti na aktuální váze vozu
+        public float preMassKG;
         private void ORTSDavisSetUp()
         {
             float G = MassKG / 1000 * 9.81f;
             float G0 = InitialMassKG / 1000 * 9.81f;
+            
+            float GCoef = 1;
+            if (this.StartOn || Math.Abs(preMassKG - MassKG) > 1f || G1 == -1)
+            {                
+                GCoef = MassKG / preMassKG;
+                
+                if (G1 == -1)
+                    GCoef = G / G0;
 
-            if (StandstillFrictionN0 == 0)
-                StandstillFrictionN = DavisAN0 * 1.3f;  // Definuje klidový jízdní odpor (odtrhový odpor) vozidla
-            if (MergeSpeedMpS == 0)
-                MergeSpeedMpS = 0.31f;
+                if (preMassKG == 0)
+                    GCoef = 1;
 
-            if (DavisBNSpM / G0 > 0.00002f) // Pokud jsou zadány nesprávné Davis hodnoty, tak je resetuje do 0            
-                DavisAN = DavisBNSpM = DavisCNSSpMM = 0;
+                preMassKG = MassKG;
+            }                                    
+
+            if (this.StartOn && DavisBNSpM / G0 > 0.00002f) // Pokud jsou zadány nesprávné Davis hodnoty, tak je resetuje do 0            
+                DavisAN = DavisBNSpM = DavisCNSSpMM = 0;            
 
             switch (WagonNumAxles) // Definice Davis-default hodnot, pokud nejsou přesně definovány uživatelem 
             {
@@ -955,20 +968,19 @@ namespace Orts.Simulation.RollingStocks
                             DavisAN = 0.9f * G0;
                         else
                             if (G1 != G)
-                            DavisAN *= G / G0;
+                            DavisAN *= GCoef;
 
                         if (DavisBNSpM == 0)
                             DavisBNSpM = 0.00001f * G0;
                         else
                             if (G1 != G)
-                            DavisBNSpM *= G / G0;
+                            DavisBNSpM *= GCoef;
 
                         if (DavisCNSSpMM == 0)
                             DavisCNSSpMM = 0.000148f * G0 / TrailLocoResistanceFactor;
                         else
                             if (G1 != G)
-                            DavisCNSSpMM *= G / G0;
-                        G1 = G;
+                            DavisCNSSpMM *= GCoef;                        
                         break;
                     }
                 case 3:
@@ -977,20 +989,19 @@ namespace Orts.Simulation.RollingStocks
                             DavisAN = 0.9f * G0;
                         else
                             if (G1 != G)
-                            DavisAN *= G / G0;
+                            DavisAN *= GCoef;
 
                         if (DavisBNSpM == 0)
                             DavisBNSpM = 0.00001f * G0;
                         else
                             if (G1 != G)
-                            DavisBNSpM *= G / G0;
+                            DavisBNSpM *= GCoef;
 
                         if (DavisCNSSpMM == 0)
                             DavisCNSSpMM = 0.00015f * G0 / TrailLocoResistanceFactor;
                         else
                             if (G1 != G)
-                            DavisCNSSpMM *= G / G0;
-                        G1 = G;
+                            DavisCNSSpMM *= GCoef;                        
                         break;
                     }
                 case 4:  // B'o-B'o
@@ -999,20 +1010,19 @@ namespace Orts.Simulation.RollingStocks
                             DavisAN = 1.4f * G0;
                         else
                             if (G1 != G)
-                            DavisAN *= G / G0;
+                            DavisAN *= GCoef;
 
                         if (DavisBNSpM == 0)
                             DavisBNSpM = 0.00001f * G0;
                         else
                             if (G1 != G)
-                            DavisBNSpM *= G / G0;
+                            DavisBNSpM *= GCoef;
 
                         if (DavisCNSSpMM == 0)
                             DavisCNSSpMM = 0.00015f * G0 / TrailLocoResistanceFactor;
                         else
                             if (G1 != G)
-                            DavisCNSSpMM *= G / G0;
-                        G1 = G;
+                            DavisCNSSpMM *= GCoef;                        
                         break;
                     }
                 case 6:
@@ -1021,20 +1031,19 @@ namespace Orts.Simulation.RollingStocks
                             DavisAN = 1.7f * G0;
                         else
                             if (G1 != G)
-                            DavisAN *= G / G0;
+                            DavisAN *= GCoef;
 
                         if (DavisBNSpM == 0)
                             DavisBNSpM = 0.00001f * G0;
                         else
                             if (G1 != G)
-                            DavisBNSpM *= G / G0;
+                            DavisBNSpM *= GCoef;
 
                         if (DavisCNSSpMM == 0)
                             DavisCNSSpMM = 0.000136f * G0 / TrailLocoResistanceFactor;
                         else
                             if (G1 != G)
-                            DavisCNSSpMM *= G / G0;
-                        G1 = G;
+                            DavisCNSSpMM *= GCoef;                   
                         break;
                     }
                 default:  // B'o-B'o
@@ -1043,26 +1052,45 @@ namespace Orts.Simulation.RollingStocks
                             DavisAN = 1.4f * G0;
                         else
                             if (G1 != G)
-                            DavisAN *= G / G0;
+                            DavisAN *= GCoef;
 
                         if (DavisBNSpM == 0)
                             DavisBNSpM = 0.00001f * G0;
                         else
                             if (G1 != G)
-                            DavisBNSpM *= G / G0;
+                            DavisBNSpM *= GCoef;
 
                         if (DavisCNSSpMM == 0)
                             DavisCNSSpMM = 0.00015f * G0 / TrailLocoResistanceFactor;
                         else
                             if (G1 != G)
-                            DavisCNSSpMM *= G / G0;
-                        G1 = G;
+                            DavisCNSSpMM *= GCoef;                        
                         break;
                     }
             }
             DavisAN0 = DavisAN;
             DavisBNSpM0 = DavisBNSpM;
             DavisCNSSpMM0 = DavisCNSSpMM;
+
+            if (StandstillFrictionN0 == 0)
+            {
+                StandstillFrictionN0 = DavisAN0 * 1.3f;  // Definuje klidový jízdní odpor (odtrhový odpor) vozidla
+                StandstillFrictionN = StandstillFrictionN0;
+            }
+            else
+            {                
+                StandstillFrictionN *= GCoef;
+                if (StandstillFrictionN < StandstillFrictionN0)
+                    StandstillFrictionN = StandstillFrictionN0;
+            }
+
+            if (MergeSpeedMpS == 0)
+                MergeSpeedMpS = 0.31f;
+
+            if (this.StartOn && InitialMassKG != MassKG)            
+                G1 = -1;  // Vozy mají příznak naloženého nákladu
+            else
+                G1 = G;
         }
 
         // Stanovuje korekci Davisových konstant pro nápravové zatížení definované uživatelem
@@ -1914,6 +1942,7 @@ namespace Orts.Simulation.RollingStocks
             outf.Write(BrakeSystem.HeatingMenu);
             outf.Write(DieselHeaterTankCapacity);
             outf.Write(CarLengthM);
+            outf.Write(StartOn);
 
             base.Save(outf);
         }
@@ -1965,6 +1994,7 @@ namespace Orts.Simulation.RollingStocks
             BrakeSystem.HeatingMenu = inf.ReadSingle();
             DieselHeaterTankCapacity = inf.ReadSingle();
             CarLengthM = inf.ReadSingle();
+            StartOn = inf.ReadBoolean();
 
             base.Restore(inf);
 
