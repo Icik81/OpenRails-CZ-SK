@@ -337,6 +337,7 @@ namespace Orts.Simulation.RollingStocks
         public float VibrationSpringConstantPrimepSpS = 0;
         public float VibratioDampingCoefficient = 0;
         public float WagonTemperature;
+        public float SteamLocoCabTemperatureBase;
         public float TempCDelta;
         public float TempCDeltaAir;
         public bool ThermostatOn = false;
@@ -2154,6 +2155,7 @@ namespace Orts.Simulation.RollingStocks
             outf.Write(WagonHasTemperature);
             outf.Write(CarOutsideTempC0);
             outf.Write(WagonTemperature);
+            outf.Write(SteamLocoCabTemperatureBase); 
             outf.Write(RDSTBreaker[1]);
             outf.Write(RDSTBreaker[2]);
             outf.Write(CabHeating_OffOn[1]);
@@ -2204,6 +2206,7 @@ namespace Orts.Simulation.RollingStocks
             WagonHasTemperature = inf.ReadBoolean();
             CarOutsideTempC0 = inf.ReadSingle();
             WagonTemperature = inf.ReadSingle();
+            SteamLocoCabTemperatureBase = inf.ReadSingle();
             RDSTBreaker[1] = inf.ReadBoolean();
             RDSTBreaker[2] = inf.ReadBoolean();
             CabHeating_OffOn[1] = inf.ReadBoolean();

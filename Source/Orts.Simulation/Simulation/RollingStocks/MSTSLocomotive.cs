@@ -3706,7 +3706,8 @@ namespace Orts.Simulation.RollingStocks
                                 // Parní lokomotiva
                                 if (car is MSTSSteamLocomotive)
                                 {                                    
-                                    car.WagonTemperature += 20f;
+                                    car.WagonTemperature += 15f;
+                                    car.SteamLocoCabTemperatureBase = car.WagonTemperature;
                                 }
                             }
                             else
@@ -3718,6 +3719,7 @@ namespace Orts.Simulation.RollingStocks
                                 if (car is MSTSSteamLocomotive)
                                 {                                    
                                     car.WagonTemperature += 15f;
+                                    car.SteamLocoCabTemperatureBase = car.WagonTemperature;
                                 }
                             }
                             else
@@ -3736,6 +3738,7 @@ namespace Orts.Simulation.RollingStocks
                                 if (car is MSTSSteamLocomotive && !car.WagonHasTemperature)
                                 {                                    
                                     car.WagonTemperature += 10f;
+                                    car.SteamLocoCabTemperatureBase = car.WagonTemperature;
                                 }
                             }                            
 
@@ -3849,9 +3852,9 @@ namespace Orts.Simulation.RollingStocks
                             }
 
                             MSGHeatingCycle++;
-                            if (MSGHeatingCycle > 1000 && car.WagonTemperature > 35)
+                            if (MSGHeatingCycle > 1000 && car.WagonTemperature > 30)
                             {
-                                if (car.WagonType == WagonTypes.Engine && !car.HasPassengerCapacity && WagonTemperature > 35)
+                                if (car.WagonType == WagonTypes.Engine && !car.HasPassengerCapacity && WagonTemperature > 30)
                                     Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("You're hot!"));
                                 else
                                     if (car.PassengerList.Count > 0)
@@ -3907,9 +3910,15 @@ namespace Orts.Simulation.RollingStocks
                             car.WagonTemperature += car.TempCDelta + car.TempCDeltaAir;
 
                         // Parní lokomotiva
-                        if (car is MSTSSteamLocomotive && car.WagonTemperature < car.CarOutsideTempC0 + 10f)
+                        if (car is MSTSSteamLocomotive && car.WagonTemperature < car.SteamLocoCabTemperatureBase)
                         {
-                            car.WagonTemperature = car.CarOutsideTempC0 + 10f;
+                            float BoilerPowerKW = 10;
+                            if (Simulator.Season == SeasonType.Winter)
+                                car.WagonTemperature += BoilerPowerKW * 1.5f * 1000 / TempStepUp / CarAirVolumeM3 * elapsedClockSeconds;
+                            else
+                                car.WagonTemperature += (BoilerPowerKW * 1.0f * 1000 / TempStepUp / CarAirVolumeM3 * elapsedClockSeconds) + car.TempCDeltaAir;
+                            
+                            //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Teplota " + car.WagonTemperature));
                         }
                     }
                     //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Teplota " + car.WagonTemperature));
