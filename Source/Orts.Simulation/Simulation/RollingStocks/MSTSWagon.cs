@@ -931,9 +931,7 @@ namespace Orts.Simulation.RollingStocks
             IsDavisFriction = DavisAN != 0 && DavisBNSpM != 0 && DavisCNSSpMM != 0;
 
             if (BrakeSystem == null)
-                BrakeSystem = MSTSBrakeSystem.Create(CarBrakeSystemType, this);
-
-            StartOn = false;
+                BrakeSystem = MSTSBrakeSystem.Create(CarBrakeSystemType, this);            
         }
 
         // Dynamicky nastavuje Davisovi konstanty A, B, C pro různé podvozky v závislosti na aktuální váze vozu
@@ -2408,6 +2406,8 @@ namespace Orts.Simulation.RollingStocks
             {
                 UpdateTrainBaseResistance_ORTS();
             }
+
+            this.StartOn = false;
         }
 
         /// <summary>
