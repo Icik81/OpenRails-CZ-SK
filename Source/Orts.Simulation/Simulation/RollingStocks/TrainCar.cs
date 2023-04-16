@@ -3169,6 +3169,13 @@ namespace Orts.Simulation.RollingStocks
                 SpeedFactor = MathHelper.Clamp(AbsSpeedMpS / (Train.AllowedMaxSpeedMpS / 2.0f), 0.5f, 1.0f);            
             else
                 SpeedFactor = MathHelper.Clamp(AbsSpeedMpS / Train.AllowedMaxSpeedMpS, 1.0f, 2.5f);
+
+            if (AbsSpeedMpS < 3f)
+                SpeedFactor = 0.3f;
+
+            if (AbsSpeedMpS < 1f)
+                SpeedFactor = 0;
+
             TrackFactorX *= SpeedFactor;
             TrackFactorY *= SpeedFactor * 1.5f;
             TrackFactorZ *= SpeedFactor * 0.5f;
