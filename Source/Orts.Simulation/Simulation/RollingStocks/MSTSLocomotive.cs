@@ -2927,7 +2927,15 @@ namespace Orts.Simulation.RollingStocks
             TractiveForceN = 0;
         }
 
-        public void PowerCurrentCalculation()
+        float prePowerCurrent1;
+        float FakePowerCurrent1;
+        float FakePowerCurrent1Timer;
+        bool SetFakePowerCurrent1Timer;
+        float prePowerCurrent2;
+        float FakePowerCurrent2;
+        float FakePowerCurrent2Timer;
+        bool SetFakePowerCurrent2Timer;
+        public void PowerCurrentCalculation(float elapsedClockSeconds)
         {
             if (CurrentForceStep2Curves != null)
                 PowerCurrent2 = CurrentForceStep2Curves.Get(StepControllerValue, Math.Abs(DriveForceN));
@@ -2940,6 +2948,54 @@ namespace Orts.Simulation.RollingStocks
             else
             // Default
             PowerCurrent1 = Math.Abs(DriveForceN) / MaxForceN * MaxCurrentA;
+
+
+            if (PowerCurrent1 > 1.02f * prePowerCurrent1)
+            {
+                FakePowerCurrent1 = PowerCurrent1 * 1.05f;
+                SetFakePowerCurrent1Timer = true;
+            }
+            if (PowerCurrent1 < 0.98f * prePowerCurrent1)
+            {
+                FakePowerCurrent1 = PowerCurrent1 * 0.95f;
+                SetFakePowerCurrent1Timer = true;
+            }
+            if (SetFakePowerCurrent1Timer)
+            {
+                FakePowerCurrent1Timer += elapsedClockSeconds;
+                if (FakePowerCurrent1Timer > 0.25f)
+                    SetFakePowerCurrent1Timer = false;
+            }
+            if (!SetFakePowerCurrent1Timer)
+            {
+                FakePowerCurrent1 = PowerCurrent1;
+                FakePowerCurrent1Timer = 0;
+            }
+
+            if (PowerCurrent2 > 1.02f * prePowerCurrent2)
+            {
+                FakePowerCurrent2 = PowerCurrent2 * 1.05f;
+                SetFakePowerCurrent2Timer = true;
+            }
+            if (PowerCurrent2 < 0.98f * prePowerCurrent2)
+            {
+                FakePowerCurrent2 = PowerCurrent2 * 0.95f;
+                SetFakePowerCurrent2Timer = true;
+            }
+            if (SetFakePowerCurrent2Timer)
+            {
+                FakePowerCurrent2Timer += elapsedClockSeconds;
+                if (FakePowerCurrent2Timer > 0.25f)
+                    SetFakePowerCurrent2Timer = false;
+            }
+            if (!SetFakePowerCurrent2Timer)
+            {
+                FakePowerCurrent2 = PowerCurrent2;
+                FakePowerCurrent2Timer = 0;
+            }
+
+            prePowerCurrent1 = PowerCurrent1;
+            prePowerCurrent2 = PowerCurrent2;
         }
 
         //Icik
@@ -5248,7 +5304,7 @@ namespace Orts.Simulation.RollingStocks
                 TrainBrakeValueLogic();
                 WipersLogic();
                 DirectionControllerLogic();
-                PowerCurrentCalculation();
+                PowerCurrentCalculation(elapsedClockSeconds);
                 BrakeCurrentCalculation();
                 Overcurrent_Protection();
                 AntiSlip_Protection();
@@ -12797,7 +12853,7 @@ namespace Orts.Simulation.RollingStocks
                 case CABViewControlTypes.AMMETER: // Current not modelled yet to ammeter shows tractive effort until then.
                 case CABViewControlTypes.AMMETER_ABS:
                     {
-                        if (cvc.MaxNeedleSpeedUp == 0 && cvc.MaxNeedleSpeedDown == 0 && cvc.MaxNeedleSpeed == 0) cvc.MaxNeedleSpeed = 5.0f;
+                        if (cvc.MaxNeedleSpeedUp == 0 && cvc.MaxNeedleSpeedDown == 0 && cvc.MaxNeedleSpeed == 0) cvc.MaxNeedleSpeed = 2.0f;
                         cvc.ElapsedTime += elapsedTime;
                         if (cvc.ElapsedTime > cvc.UpdateTime)
                         {
@@ -12843,7 +12899,7 @@ namespace Orts.Simulation.RollingStocks
 
                                 // Icik
                                 if (CurrentForceStep1Curves != null || CurrentForceCurves != null)
-                                    data = PowerCurrent1;
+                                    data = FakePowerCurrent1;
                                 if (CurrentBrakeForce1Curves != null && DynamicBrakeForceN != 0)
                                     data = BrakeCurrent1;
 
@@ -12854,7 +12910,7 @@ namespace Orts.Simulation.RollingStocks
 
                             // Icik
                             if (CurrentForceStep1Curves != null || CurrentForceCurves != null)
-                                data = PowerCurrent1;
+                                data = FakePowerCurrent1;
                             if (CurrentBrakeForce1Curves != null && DynamicBrakeForceN != 0)
                                 data = BrakeCurrent1;
 
@@ -12871,12 +12927,12 @@ namespace Orts.Simulation.RollingStocks
                 case CABViewControlTypes.AMMETER2:
                 case CABViewControlTypes.AMMETER2_ABS:
                     {
-                        if (cvc.MaxNeedleSpeedUp == 0 && cvc.MaxNeedleSpeedDown == 0 && cvc.MaxNeedleSpeed == 0) cvc.MaxNeedleSpeed = 5.0f;
+                        if (cvc.MaxNeedleSpeedUp == 0 && cvc.MaxNeedleSpeedDown == 0 && cvc.MaxNeedleSpeed == 0) cvc.MaxNeedleSpeed = 2.0f;
                         cvc.ElapsedTime += elapsedTime;
                         if (cvc.ElapsedTime > cvc.UpdateTime)
                         {                            
                             if (CurrentForceStep2Curves != null)
-                                data = PowerCurrent2;
+                                data = FakePowerCurrent2;
                             if (CurrentBrakeForce2Curves != null && DynamicBrakeForceN != 0)
                                 data = BrakeCurrent2;
 
