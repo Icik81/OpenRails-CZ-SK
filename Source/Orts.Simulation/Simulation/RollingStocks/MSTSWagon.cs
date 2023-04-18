@@ -923,12 +923,10 @@ namespace Orts.Simulation.RollingStocks
             }
 
             // Determine whether or not to use the Davis friction model. Must come after freight animations are initialized.
+            IsDavisFriction = DavisAN != 0 && DavisBNSpM != 0 && DavisCNSSpMM != 0;
 
             // Icik
-            ORTSDavisSetUp();
-            ORTSWagonResistanceTypes();
-
-            IsDavisFriction = DavisAN != 0 && DavisBNSpM != 0 && DavisCNSSpMM != 0;
+            IsDavisFriction = true;
 
             if (BrakeSystem == null)
                 BrakeSystem = MSTSBrakeSystem.Create(CarBrakeSystemType, this);            
@@ -942,7 +940,7 @@ namespace Orts.Simulation.RollingStocks
             float G0 = InitialMassKG / 1000 * 9.81f;
             
             float GCoef = 1;
-            if (this.StartOn || Math.Abs(preMassKG - MassKG) > 1f || G1 == -1)
+            if (StartOn || Math.Abs(preMassKG - MassKG) > 1f || G1 == -1)
             {                
                 GCoef = MassKG / preMassKG;
                 
@@ -955,7 +953,7 @@ namespace Orts.Simulation.RollingStocks
                 preMassKG = MassKG;
             }                                    
 
-            if (this.StartOn && DavisBNSpM / G0 > 0.00002f) // Pokud jsou zadány nesprávné Davis hodnoty, tak je resetuje do 0            
+            if (StartOn && DavisBNSpM / G0 > 0.00002f) // Pokud jsou zadány nesprávné Davis hodnoty, tak je resetuje do 0            
                 DavisAN = DavisBNSpM = DavisCNSSpMM = 0;            
 
             switch (WagonNumAxles) // Definice Davis-default hodnot, pokud nejsou přesně definovány uživatelem 
@@ -1085,7 +1083,7 @@ namespace Orts.Simulation.RollingStocks
             if (MergeSpeedMpS == 0)
                 MergeSpeedMpS = 0.31f;
 
-            if (this.StartOn && InitialMassKG != MassKG)            
+            if (StartOn && InitialMassKG != MassKG)            
                 G1 = -1;  // Vozy mají příznak naloženého nákladu
             else
                 G1 = G;
@@ -2407,7 +2405,7 @@ namespace Orts.Simulation.RollingStocks
                 UpdateTrainBaseResistance_ORTS();
             }
 
-            this.StartOn = false;
+            StartOn = false;
         }
 
         /// <summary>
