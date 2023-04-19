@@ -881,19 +881,27 @@ namespace Orts.Simulation.RollingStocks
                     }
 
                     // Test napětí v troleji pro jednosystémové lokomotivy
-                    if (VoltageIndicateTestCompleted && VoltageTestCycle == 0)
+                    if (!PantographDown && RouteVoltageV > 1 && (VoltageIndicateTestCompleted && VoltageTestCycle == 0 || LocomotivePowerVoltage != RouteVoltageV))
                     {
-                        VoltageTestCycle++;
-                        if (PantographVoltageV > 2.0f * LocomotivePowerVoltage)
+                        if (LocomotivePowerVoltage != RouteVoltageV)
                         {
                             HVOff = true;
                             PantographFaultByVoltageChange = true;
                         }
                         else
-                        if (PantographVoltageV < 0.5f * LocomotivePowerVoltage)
                         {
-                            HVOff = true;
-                            PantographFaultByVoltageChange = true;
+                            VoltageTestCycle++;
+                            if (PantographVoltageV > 2.0f * LocomotivePowerVoltage)
+                            {
+                                HVOff = true;
+                                PantographFaultByVoltageChange = true;
+                            }
+                            else
+                            if (PantographVoltageV < 0.5f * LocomotivePowerVoltage)
+                            {
+                                HVOff = true;
+                                PantographFaultByVoltageChange = true;
+                            }
                         }
                     }
 
@@ -1512,7 +1520,7 @@ namespace Orts.Simulation.RollingStocks
 
         // Icik
         // Zpoždění v testu indikaci napětí
-        int VoltageTestCycle;
+        int VoltageTestCycle;        
         float TimerVoltageIndicateTest;
         bool VoltageIndicateTestCompleted;
         public void VoltageIndicate(float elapsedSeconds)
@@ -1523,7 +1531,7 @@ namespace Orts.Simulation.RollingStocks
             if (Pantographs[1].State == PantographState.Down && Pantographs[2].State == PantographState.Down)
                 PantographDown = true;
 
-            if (!PantographDown && !VoltageIndicateTestCompleted)
+            if (!PantographDown && !VoltageIndicateTestCompleted && RouteVoltageV > 1)
                 TimerVoltageIndicateTest += elapsedSeconds;
             else
             if (PantographDown)

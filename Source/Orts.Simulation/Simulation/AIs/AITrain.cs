@@ -155,11 +155,14 @@ namespace Orts.Simulation.AIs
             {
                 RandomizeEfficiency(ref Efficiency);
             }
+            Name = String.Copy(name);
 
             // Icik
-            Efficiency = MathHelper.Clamp(Efficiency, 0.0f, 1.0f);
-
-            Name = String.Copy(name);
+            if (Name.ToLower().Contains("wp")) // Servis jako například posunovač
+                Efficiency = MathHelper.Clamp(Efficiency, 0.0f, 1.0f);
+            else
+                Efficiency = MathHelper.Clamp(Efficiency, 0.3f, 1.0f);
+            
             TrafficService = trafficService;
             MaxVelocityA = maxVelocityA;
             // <CSComment> TODO: as Cars.Count is always = 0 at this point, activityClearingDistanceM is set to the short distance also for long trains

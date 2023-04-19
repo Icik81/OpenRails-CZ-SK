@@ -3264,7 +3264,7 @@ namespace Orts.Simulation.RollingStocks
                         HVOff = true; // Vypnutí HV                        
                         HVOffStatusBrakeCyl = true;
                     }
-                    if (BrakeSystem.GetCylPressurePSI() < BrakeCutsPowerAtBrakeCylinderPressurePSI)
+                    if (BrakeSystem.GetCylPressurePSI() < BrakeCutsPowerAtBrakeCylinderPressurePSI || !PowerOn)
                         HVOffStatusBrakeCyl = false;
                 }
 
