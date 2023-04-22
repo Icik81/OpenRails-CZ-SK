@@ -1973,6 +1973,12 @@ namespace Orts.Simulation.RollingStocks
             outf.Write(CabRadio[2]);
             outf.Write(CabRadioTriggerOn);
             outf.Write(LapButtonEnable);
+            outf.Write(CommandCylinderPosition[1]);
+            outf.Write(CommandCylinderPosition[2]);
+            outf.Write(preCommandCylinderPosition[1]);
+            outf.Write(preCommandCylinderPosition[2]);
+            outf.Write(CommandCylinderThrottlePosition[1]);
+            outf.Write(CommandCylinderThrottlePosition[2]);
             #endregion
 
             base.Save(outf);
@@ -2171,6 +2177,12 @@ namespace Orts.Simulation.RollingStocks
             CabRadio[2] = inf.ReadBoolean();
             CabRadioTriggerOn = inf.ReadBoolean();
             LapButtonEnable = inf.ReadBoolean();
+            CommandCylinderPosition[1] = inf.ReadInt32();
+            CommandCylinderPosition[2] = inf.ReadInt32();
+            preCommandCylinderPosition[1] = inf.ReadInt32();
+            preCommandCylinderPosition[2] = inf.ReadInt32();
+            CommandCylinderThrottlePosition[1] = inf.ReadInt32();
+            CommandCylinderThrottlePosition[2] = inf.ReadInt32();
             #endregion
 
             base.Restore(inf);
@@ -5313,6 +5325,7 @@ namespace Orts.Simulation.RollingStocks
                 ToggleDieselDirectionController();
                 ToggleDieselDirectionController2();
                 MirerController();
+                CommandCylinder(elapsedClockSeconds);
                 TogglePantograph4Switch();
                 TogglePantograph3Switch();
                 ToggleHV2Switch();
@@ -7209,6 +7222,8 @@ namespace Orts.Simulation.RollingStocks
                 return;
             if (MirerControllerEnable)
                 return;
+            if (CommandCylinderEnable)                            
+                return;            
 
             if (LocoType != LocoTypes.Vectron) // vectron bdělost nevybaví (MichalM 2.10.2022)
                 Mirel.ResetVigilance();
@@ -7373,8 +7388,10 @@ namespace Orts.Simulation.RollingStocks
             if (AripotControllerEnable)
                 return;
             if (MirerControllerEnable)
-                return;            
-
+                return;
+            if (CommandCylinderEnable)
+                return;                
+  
             if (LocoType != LocoTypes.Vectron)
                 Mirel.ResetVigilance();
             if (CruiseControl != null)
@@ -7674,6 +7691,9 @@ namespace Orts.Simulation.RollingStocks
 
         public void ThrottleToZero()
         {
+            if (CommandCylinderEnable)
+                return;
+
             if (CombinedControlType == CombinedControl.ThrottleDynamic && ThrottleController.CurrentValue <= 0)
                 StartDynamicBrakeIncrease(null);
             else if (CombinedControlType == CombinedControl.ThrottleAir && ThrottleController.CurrentValue <= 0)
@@ -12289,7 +12309,141 @@ namespace Orts.Simulation.RollingStocks
             }            
         }
 
+        public bool CommandCylinderEnable;
+        public int CommandCylinderMaxPosition;
+        public int[] preCommandCylinderPosition = new int[3];
+        public int[] CommandCylinderPosition = new int[3];
+        public float CommandCylinderTimerIsDownKey;
+        public float CommandCylinderThrottleTimer;
+        public float CommandCylinderTimer2;
+        public float CommandCylinderTimer3;
+        public float CommandCylinderThrottleDelay;
+        public bool CommandCylinderToZero;
+        float CommandCylinderToZeroPeriod;
+        public float CommandCylinderPeriod;
+        public float CommandCylinderTimerIsDownKeyPeriod = 1f;
+        public bool CommandCylinderUp;
+        public bool CommandCylinderDown;
+        public bool CommandCylinderThrottleChangeUp;
+        public bool CommandCylinderThrottleChangeDown;
+        public int[] CommandCylinderThrottlePosition = new int[3];
+        public void CommandCylinder(float elapsedClockSeconds)
+        {
+            if (!IsLeadLocomotive())
+                return;
+
+            if (!CommandCylinderEnable)
+                return;
+
+            CommandCylinderThrottleDelay = 0.25f;
+            CommandCylinderToZeroPeriod = 0.1f;
+            CommandCylinderPeriod = 0.15f;
+
+            // Rychlé zkrokování do 0
+            if (CommandCylinderToZero)
+            {
+                CommandCylinderTimer2 += elapsedClockSeconds;
+                if (CommandCylinderTimer2 > CommandCylinderToZeroPeriod)
+                {
+                    if (CommandCylinderPosition[LocoStation] > 0)
+                        CommandCylinderPosition[LocoStation]--;
+                    CommandCylinderTimer2 = 0.0f;
+                    CommandCylinderThrottleChangeUp = false;
+                    CommandCylinderThrottleChangeDown = true;
+                }
+            }
+            if (CommandCylinderPosition[LocoStation] == 0)
+                CommandCylinderToZero = false;
+
+            // Krokování nahoru
+            if (CommandCylinderUp)
+            {
+                CommandCylinderTimerIsDownKey += elapsedClockSeconds;
+                if (CommandCylinderTimerIsDownKey > CommandCylinderTimerIsDownKeyPeriod)
+                {
+                    CommandCylinderTimer3 += elapsedClockSeconds;
+                    if (CommandCylinderTimer3 > CommandCylinderPeriod)
+                    {
+                        if (CommandCylinderPosition[LocoStation] < CommandCylinderMaxPosition)
+                            CommandCylinderPosition[LocoStation]++;
+                        CommandCylinderTimer3 = 0.0f;
+                    }
+                }
+            }
+            // Krokování dolu
+            if (CommandCylinderDown)
+            {
+                CommandCylinderTimerIsDownKey += elapsedClockSeconds;
+                if (CommandCylinderTimerIsDownKey > CommandCylinderTimerIsDownKeyPeriod)
+                {
+                    CommandCylinderTimer3 += elapsedClockSeconds;
+                    if (CommandCylinderTimer3 > CommandCylinderPeriod)
+                    {
+                        if (CommandCylinderPosition[LocoStation] > 0)
+                            CommandCylinderPosition[LocoStation]--;
+                        CommandCylinderTimer3 = 0.0f;
+                    }
+                }
+            }
+
+            if (CommandCylinderPosition[LocoStation] != preCommandCylinderPosition[LocoStation])
+            {
+                preCommandCylinderPosition[LocoStation] = CommandCylinderPosition[LocoStation];
+                
+                if (CommandCylinderUp && CommandCylinderThrottleTimer == 0)
+                    CommandCylinderThrottleChangeUp = true;
+                if (CommandCylinderDown && CommandCylinderThrottleTimer == 0)
+                    CommandCylinderThrottleChangeDown = true;
+                
+                if (CommandCylinderUp)
+                    SignalEvent(Event.CommandCylinderPositionChangeUp);
+                if (CommandCylinderDown)
+                    SignalEvent(Event.CommandCylinderPositionChangeDown);
+
+                Simulator.Confirmer.MSG(Simulator.Catalog.GetString("Controller") + ": " + CommandCylinderPosition[LocoStation]);
+            }
+
+            // Pozice throttle na válci
+            if (CommandCylinderThrottleChangeUp)
+            {
+                CommandCylinderThrottleTimer += elapsedClockSeconds;
+                if (CommandCylinderThrottleTimer > CommandCylinderThrottleDelay)
+                {
+                    ThrottleController.StartIncrease();
+                    ThrottleController.StopIncrease();                    
+                    CommandCylinderThrottleTimer = 0;
+                    CommandCylinderThrottlePosition[LocoStation]++;
+                    SignalEvent(Event.CommandCylinderThrottlePositionChangeUp);
+                }
+                if (CommandCylinderThrottlePosition[LocoStation] == CommandCylinderPosition[LocoStation])
+                {
+                    CommandCylinderThrottleChangeUp = false;
+                    CommandCylinderThrottleTimer = 0;
+                }
+            }
+
+            if (CommandCylinderThrottleChangeDown)
+            {
+                CommandCylinderThrottleTimer += elapsedClockSeconds;
+                if (CommandCylinderThrottleTimer > CommandCylinderThrottleDelay)
+                {
+                    ThrottleController.StartDecrease();
+                    ThrottleController.StopDecrease();
+                    CommandCylinderThrottleTimer = 0;
+                    CommandCylinderThrottlePosition[LocoStation]--;
+                    SignalEvent(Event.CommandCylinderThrottlePositionChangeDown);
+                }
+                if (CommandCylinderThrottlePosition[LocoStation] == CommandCylinderPosition[LocoStation])
+                {
+                    CommandCylinderThrottleChangeDown = false;
+                    CommandCylinderThrottleTimer = 0;
+                }
+            }
+            //Simulator.Confirmer.Warning("CommandCylinderThrottlePosition: " + CommandCylinderThrottlePosition[LocoStation]);
+        }
+
         #endregion
+
 
         // Zatím povoleno kvůli kompatibilitě
         int NumberChoice = 1;
@@ -14824,7 +14978,7 @@ namespace Orts.Simulation.RollingStocks
                                 break;
                         }
                         break;
-                    }
+                    }                
                 case CABViewControlTypes.MIRER_DISPLAY:
                     {
                         cvc.ElapsedTime += elapsedTime;
@@ -14860,7 +15014,15 @@ namespace Orts.Simulation.RollingStocks
                         data = LTS510Active;
                         break;
                     }
-
+                case CABViewControlTypes.COMMAND_CYLINDER:
+                    {
+                        CommandCylinderEnable = true;
+                        CVCWithFrames cVCWithFrames = (CVCWithFrames)cvc;
+                        //CommandCylinderMaxPosition = cVCWithFrames.FramesCount;
+                        CommandCylinderMaxPosition = ThrottleController.NotchCount();
+                        data = CommandCylinderPosition[LocoStation];
+                        break;
+                    }
                 case CABViewControlTypes.MOTOR_DISABLED:
                     {
                         if (extendedPhysics == null)

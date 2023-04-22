@@ -835,6 +835,51 @@ namespace Orts.Viewer3D.RollingStock
                 }
             }
 
+            // CommandCylinder ovladač
+            if (Locomotive.CommandCylinderEnable)
+            {
+                Locomotive.CommandCylinderUp = false;
+                Locomotive.CommandCylinderDown = false;
+                if (UserInput.IsPressed(UserCommand.ControlThrottleIncrease))
+                {
+                    if (Locomotive.CommandCylinderPosition[Locomotive.LocoStation] < Locomotive.CommandCylinderMaxPosition)
+                        Locomotive.CommandCylinderPosition[Locomotive.LocoStation]++;
+                    Locomotive.CommandCylinderToZero = false;
+                }
+                if (UserInput.IsPressed(UserCommand.ControlThrottleDecrease))
+                {
+                    if (Locomotive.CommandCylinderPosition[Locomotive.LocoStation] > 0)
+                        Locomotive.CommandCylinderPosition[Locomotive.LocoStation]--;
+                    Locomotive.CommandCylinderToZero = false;
+                }
+
+                if (UserInput.IsDown(UserCommand.ControlThrottleIncrease))
+                {                    
+                    Locomotive.CommandCylinderUp = true;
+                    Locomotive.CommandCylinderToZero = false;
+                }
+                if (UserInput.IsDown(UserCommand.ControlThrottleDecrease))
+                {                    
+                    Locomotive.CommandCylinderDown = true;
+                    Locomotive.CommandCylinderToZero = false;
+                }
+                if (UserInput.IsReleased(UserCommand.ControlThrottleIncrease))
+                {
+                    Locomotive.CommandCylinderUp = false;
+                    Locomotive.CommandCylinderTimerIsDownKey = 0;
+                }
+                if (UserInput.IsReleased(UserCommand.ControlThrottleDecrease))
+                {
+                    Locomotive.CommandCylinderDown = false;
+                    Locomotive.CommandCylinderTimerIsDownKey = 0;
+                }
+
+                if (UserInput.IsPressed(UserCommand.ControlThrottleZero))
+                {
+                    Locomotive.CommandCylinderToZero = true;
+                }
+            }
+
             // Přímočinná brzda                       
             float EngineBrakeSpeedMovement = 0.025f;
             if (Locomotive.EngineBrakeController.Notches.Count <= 1)
@@ -3126,6 +3171,7 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.AMMETER2_ABS:
                 case CABViewControlTypes.LTS410_DISPLAY:
                 case CABViewControlTypes.LTS510_DISPLAY:
+                case CABViewControlTypes.COMMAND_CYLINDER:
 
                 case CABViewControlTypes.MOTOR_DISABLED:
                 case CABViewControlTypes.INVERTER_TEST:
@@ -4217,6 +4263,23 @@ namespace Orts.Viewer3D.RollingStock
                         Locomotive.MirerControllerSmooth = false;
                     }
                     break;
+                case CABViewControlTypes.COMMAND_CYLINDER:
+                    // Ovladač COMMANDCYLINDER                    
+                    if (ChangedValue(0) > 0 && NormalizedMouseMovement() > 0.025f && UserInput.IsMouseLeftButtonDown) 
+                    {
+                        Locomotive.CommandCylinderUp = true;
+                        Locomotive.CommandCylinderTimerIsDownKeyPeriod = 0;
+                    }
+                    else
+                    if (ChangedValue(0) < 0 && NormalizedMouseMovement() < -0.025f && UserInput.IsMouseLeftButtonDown)
+                    {
+                        Locomotive.CommandCylinderDown = true;
+                        Locomotive.CommandCylinderTimerIsDownKeyPeriod = 0;
+                    }
+                    else
+                        Locomotive.CommandCylinderTimerIsDownKeyPeriod = 1f;
+                    break;
+
                 case CABViewControlTypes.ORTS_LS90_POWER:
                     if (Locomotive.Mirel.MirelType == Mirel.Type.LS90)
                     {

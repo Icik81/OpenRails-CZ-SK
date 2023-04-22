@@ -471,6 +471,7 @@ namespace Orts.Formats.Msts
         WIPERS_WINDOW,
         SEASON_SWITCH,
         MIRER_CONTROLLER,
+        COMMAND_CYLINDER,
         MIRER_DISPLAY,
         MIRER_DISPLAY2,
         AMMETER2,

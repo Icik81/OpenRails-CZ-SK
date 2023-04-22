@@ -344,7 +344,11 @@ namespace Orts.Common
         MirerPush,
         MirerLoosen,
         TMCoolingOn,
-        TMCoolingOff
+        TMCoolingOff,
+        CommandCylinderPositionChangeUp,
+        CommandCylinderPositionChangeDown,
+        CommandCylinderThrottlePositionChangeUp,
+        CommandCylinderThrottlePositionChangeDown
     }
 
     public static class Events
@@ -704,7 +708,10 @@ namespace Orts.Common
                         case 20098: return Event.MirerLoosen;
                         case 20099: return Event.TMCoolingOn;
                         case 20100: return Event.TMCoolingOff;
-
+                        case 20101: return Event.CommandCylinderPositionChangeUp;
+                        case 20102: return Event.CommandCylinderPositionChangeDown;
+                        case 20103: return Event.CommandCylinderThrottlePositionChangeUp;
+                        case 20104: return Event.CommandCylinderThrottlePositionChangeDown;
 
                         default: return 0;
                     }
