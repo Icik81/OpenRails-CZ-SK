@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2023-04-23 11:37:38+0200\n"
-"PO-Revision-Date: 2023-04-23 11:40+0200\n"
+"POT-Creation-Date: 2023-04-23 12:19:20+0200\n"
+"PO-Revision-Date: 2023-04-23 12:20+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: cs\n"
@@ -664,7 +664,7 @@ msgstr ""
 "{2: F0}° horizontální zorné pole na 16:9"
 
 #: ../../Menu/Options.cs:645 ../../Menu/Options.cs:983
-#: ../../Menu/Options.cs:998 ../../Menu/Options.cs:1017
+#: ../../Menu/Options.cs:1001 ../../Menu/Options.cs:1023
 #, csharp-format
 msgid "{0}%"
 msgstr "{0}%"
@@ -693,6 +693,10 @@ msgstr "Více detailů (+{0}%)"
 #, csharp-format
 msgid "All detail (+{0}%)"
 msgstr "Všechny detaily (+{0}%)"
+
+#: ../../Menu/Options.cs:999 ../../Menu/Options.cs:1021
+msgid "SigCFG defined"
+msgstr "SigCFG definované"
 
 #: ../../Menu/Options.Designer.cs:298
 #: ../../Menu/Properties/Options.Designer.cs:294

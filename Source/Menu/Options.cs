@@ -1004,7 +1004,10 @@ namespace ORTS
 
         private void DaySignalLightGlowTrackBar_Scroll(object sender, EventArgs e)
         {
-            labelDaySignalLightGlow.Text = catalog.GetStringFmt("{0}%", DaySignalLightGlowTrackBar.Value / 2f * 10f);
+            if (DaySignalLightGlowTrackBar.Value == 0)
+                labelDaySignalLightGlow.Text = catalog.GetStringFmt("SigCFG defined");
+            else
+                labelDaySignalLightGlow.Text = catalog.GetStringFmt("{0}%", DaySignalLightGlowTrackBar.Value / 2f * 10f);
         }
         private void labelSignalLightGlow_Click (object sender, EventArgs e)
         {
@@ -1023,7 +1026,10 @@ namespace ORTS
 
         private void NightSignalLightGlowTrackBar_Scroll(object sender, EventArgs e)
         {
-            labelNightSignalLightGlow.Text = catalog.GetStringFmt("{0}%", NightSignalLightGlowTrackBar.Value / 2f * 10f);
+            if (NightSignalLightGlowTrackBar.Value == 0)
+                labelNightSignalLightGlow.Text = catalog.GetStringFmt("SigCFG defined");
+            else
+                labelNightSignalLightGlow.Text = catalog.GetStringFmt("{0}%", NightSignalLightGlowTrackBar.Value / 2f * 10f);
         }
     }
 }

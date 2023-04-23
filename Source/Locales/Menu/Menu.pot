@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2023-04-23 11:37:38+0200\n"
-"PO-Revision-Date: 2023-04-23 11:37:38+0200\n"
+"POT-Creation-Date: 2023-04-23 12:19:20+0200\n"
+"PO-Revision-Date: 2023-04-23 12:19:20+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -655,8 +655,8 @@ msgstr ""
 
 #: ../../Menu/Options.cs:645
 #: ../../Menu/Options.cs:983
-#: ../../Menu/Options.cs:998
-#: ../../Menu/Options.cs:1017
+#: ../../Menu/Options.cs:1001
+#: ../../Menu/Options.cs:1023
 #, csharp-format
 msgid "{0}%"
 msgstr ""
@@ -684,6 +684,11 @@ msgstr ""
 #: ../../Menu/Options.cs:689
 #, csharp-format
 msgid "All detail (+{0}%)"
+msgstr ""
+
+#: ../../Menu/Options.cs:999
+#: ../../Menu/Options.cs:1021
+msgid "SigCFG defined"
 msgstr ""
 
 #: ../../Menu/Options.Designer.cs:298

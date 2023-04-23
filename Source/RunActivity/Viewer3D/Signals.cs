@@ -519,16 +519,16 @@ namespace Orts.Viewer3D
                                     glowDay = viewer.Simulator.Settings.DaySignalLightGlowSize / 2f; glowNight = viewer.Simulator.Settings.NightSignalLightGlowSize / 2f;
                                     break;
                             }
-
+                            
                             // use values from signal if defined
-                            //if (mstsSignalType.DayGlow.HasValue)
-                            //{
-                            //    glowDay = mstsSignalType.DayGlow.Value;
-                            //}
-                            //if (mstsSignalType.NightGlow.HasValue)
-                            //{
-                            //    glowNight = mstsSignalType.NightGlow.Value;
-                            //}
+                            if (mstsSignalType.DayGlow.HasValue && viewer.Simulator.Settings.DaySignalLightGlowSize == 0)
+                            {
+                                glowDay = mstsSignalType.DayGlow.Value;
+                            }
+                            if (mstsSignalType.NightGlow.HasValue && viewer.Simulator.Settings.NightSignalLightGlowSize == 0)
+                            {
+                                glowNight = mstsSignalType.NightGlow.Value;
+                            }
                         }
 
                         foreach (var mstsSignalLight in mstsSignalType.Lights)
