@@ -200,6 +200,10 @@ namespace ORTS
             CabView_MSTSOR.Checked = Settings.CabView_MSTSOR;
             NightBrightnessTrackBar.Value = Settings.NightBrightness;
             NightBrightnessTrackBar_Scroll(null, null);
+            DaySignalLightGlowTrackBar.Value = Settings.DaySignalLightGlowSize;
+            DaySignalLightGlowTrackBar_Scroll(null, null);
+            NightSignalLightGlowTrackBar.Value = Settings.NightSignalLightGlowSize;
+            NightSignalLightGlowTrackBar_Scroll(null, null);
 
             // Simulation tab
 
@@ -490,6 +494,8 @@ namespace ORTS
             // Icik
             Settings.CabView_MSTSOR = CabView_MSTSOR.Checked;
             Settings.NightBrightness = NightBrightnessTrackBar.Value;
+            Settings.DaySignalLightGlowSize = DaySignalLightGlowTrackBar.Value;
+            Settings.NightSignalLightGlowSize = NightSignalLightGlowTrackBar.Value;
 
             // Simulation tab
             //Settings.SimpleControlPhysics = checkSimpleControlsPhysics.Checked;
@@ -983,12 +989,41 @@ namespace ORTS
 
         private void NightBrightnessTrackBar_Scroll(object sender, EventArgs e)
         {
-            labelNightBrightness.Text = catalog.GetStringFmt("{0}%", NightBrightnessTrackBar.Value * 10);
+            labelNightBrightness.Text = catalog.GetStringFmt("{0}%", NightBrightnessTrackBar.Value * 10f);
         }
 
         private void GenSoundcheckBox_CheckedChanged(object sender, EventArgs e)
         {
 
+        }
+
+        private void labelNightBrightness_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void DaySignalLightGlowTrackBar_Scroll(object sender, EventArgs e)
+        {
+            labelDaySignalLightGlow.Text = catalog.GetStringFmt("{0}%", DaySignalLightGlowTrackBar.Value / 2f * 10f);
+        }
+        private void labelSignalLightGlow_Click (object sender, EventArgs e)
+        {
+
+        }
+
+        private void NightSignalLightGlow_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void labelNightSignalLightGlow_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void NightSignalLightGlowTrackBar_Scroll(object sender, EventArgs e)
+        {
+            labelNightSignalLightGlow.Text = catalog.GetStringFmt("{0}%", NightSignalLightGlowTrackBar.Value / 2f * 10f);
         }
     }
 }

@@ -229,7 +229,7 @@ namespace Orts.Simulation
         public bool RefreshCab;
         public int InitLocoCycleCount = 0;
         public float LeadAuxResVolumeM3 = -1;
-        public int[] FailedSignalNr = new int[10];
+        public int[] FailedSignalNr = new int[100];
         public int FailedSignalsCount;
 
         public List<PowerSupplyStation> powerSupplyStations;

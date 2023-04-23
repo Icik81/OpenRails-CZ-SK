@@ -73,15 +73,21 @@
             this.numericSoundDetailLevel = new System.Windows.Forms.NumericUpDown();
             this.checkMSTSBINSound = new System.Windows.Forms.CheckBox();
             this.tabPageVideo = new System.Windows.Forms.TabPage();
+            this.NightSignalLightGlow = new System.Windows.Forms.Label();
+            this.NightSignalLightGlowTrackBar = new System.Windows.Forms.TrackBar();
+            this.labelNightSignalLightGlow = new System.Windows.Forms.Label();
+            this.DaySignalLightGlow = new System.Windows.Forms.Label();
+            this.DaySignalLightGlowTrackBar = new System.Windows.Forms.TrackBar();
             this.CabView_MSTSOR = new System.Windows.Forms.CheckBox();
             this.labelAntiAliasingValue = new System.Windows.Forms.Label();
             this.labelAntiAliasing = new System.Windows.Forms.Label();
             this.trackAntiAliasing = new System.Windows.Forms.TrackBar();
             this.checkShadowAllShapes = new System.Windows.Forms.CheckBox();
             this.checkDoubleWire = new System.Windows.Forms.CheckBox();
-            this.label30 = new System.Windows.Forms.Label();
+            this.NightBrightness = new System.Windows.Forms.Label();
             this.label15 = new System.Windows.Forms.Label();
             this.labelDayAmbientLight = new System.Windows.Forms.Label();
+            this.labelDaySignalLightGlow = new System.Windows.Forms.Label();
             this.labelNightBrightness = new System.Windows.Forms.Label();
             this.checkModelInstancing = new System.Windows.Forms.CheckBox();
             this.NightBrightnessTrackBar = new System.Windows.Forms.TrackBar();
@@ -239,6 +245,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.numericSoundVolumePercent)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericSoundDetailLevel)).BeginInit();
             this.tabPageVideo.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.NightSignalLightGlowTrackBar)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.DaySignalLightGlowTrackBar)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackAntiAliasing)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.NightBrightnessTrackBar)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackDayAmbientLight)).BeginInit();
@@ -859,15 +867,21 @@
             // 
             // tabPageVideo
             // 
+            this.tabPageVideo.Controls.Add(this.NightSignalLightGlow);
+            this.tabPageVideo.Controls.Add(this.NightSignalLightGlowTrackBar);
+            this.tabPageVideo.Controls.Add(this.labelNightSignalLightGlow);
+            this.tabPageVideo.Controls.Add(this.DaySignalLightGlow);
+            this.tabPageVideo.Controls.Add(this.DaySignalLightGlowTrackBar);
             this.tabPageVideo.Controls.Add(this.CabView_MSTSOR);
             this.tabPageVideo.Controls.Add(this.labelAntiAliasingValue);
             this.tabPageVideo.Controls.Add(this.labelAntiAliasing);
             this.tabPageVideo.Controls.Add(this.trackAntiAliasing);
             this.tabPageVideo.Controls.Add(this.checkShadowAllShapes);
             this.tabPageVideo.Controls.Add(this.checkDoubleWire);
-            this.tabPageVideo.Controls.Add(this.label30);
+            this.tabPageVideo.Controls.Add(this.NightBrightness);
             this.tabPageVideo.Controls.Add(this.label15);
             this.tabPageVideo.Controls.Add(this.labelDayAmbientLight);
+            this.tabPageVideo.Controls.Add(this.labelDaySignalLightGlow);
             this.tabPageVideo.Controls.Add(this.labelNightBrightness);
             this.tabPageVideo.Controls.Add(this.checkModelInstancing);
             this.tabPageVideo.Controls.Add(this.NightBrightnessTrackBar);
@@ -899,6 +913,65 @@
             this.tabPageVideo.TabIndex = 4;
             this.tabPageVideo.Text = "Video";
             this.tabPageVideo.UseVisualStyleBackColor = true;
+            // 
+            // NightSignalLightGlow
+            // 
+            this.NightSignalLightGlow.AutoSize = true;
+            this.NightSignalLightGlow.Location = new System.Drawing.Point(402, 240);
+            this.NightSignalLightGlow.Margin = new System.Windows.Forms.Padding(4);
+            this.NightSignalLightGlow.Name = "NightSignalLightGlow";
+            this.NightSignalLightGlow.Size = new System.Drawing.Size(135, 16);
+            this.NightSignalLightGlow.TabIndex = 31;
+            this.NightSignalLightGlow.Text = "Night signal lightglow:";
+            this.NightSignalLightGlow.Click += new System.EventHandler(this.NightSignalLightGlow_Click);
+            // 
+            // NightSignalLightGlowTrackBar
+            // 
+            this.NightSignalLightGlowTrackBar.AutoSize = false;
+            this.NightSignalLightGlowTrackBar.BackColor = System.Drawing.SystemColors.Window;
+            this.NightSignalLightGlowTrackBar.Location = new System.Drawing.Point(404, 264);
+            this.NightSignalLightGlowTrackBar.Margin = new System.Windows.Forms.Padding(8, 4, 8, 4);
+            this.NightSignalLightGlowTrackBar.Maximum = 20;
+            this.NightSignalLightGlowTrackBar.Name = "NightSignalLightGlowTrackBar";
+            this.NightSignalLightGlowTrackBar.Size = new System.Drawing.Size(389, 32);
+            this.NightSignalLightGlowTrackBar.TabIndex = 30;
+            this.toolTip1.SetToolTip(this.NightSignalLightGlowTrackBar, "Default is 50%");
+            this.NightSignalLightGlowTrackBar.Value = 10;
+            this.NightSignalLightGlowTrackBar.Scroll += new System.EventHandler(this.NightSignalLightGlowTrackBar_Scroll);
+            // 
+            // labelNightSignalLightGlow
+            // 
+            this.labelNightSignalLightGlow.Location = new System.Drawing.Point(401, 240);
+            this.labelNightSignalLightGlow.Margin = new System.Windows.Forms.Padding(4);
+            this.labelNightSignalLightGlow.Name = "labelNightSignalLightGlow";
+            this.labelNightSignalLightGlow.Size = new System.Drawing.Size(389, 16);
+            this.labelNightSignalLightGlow.TabIndex = 29;
+            this.labelNightSignalLightGlow.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            this.labelNightSignalLightGlow.Click += new System.EventHandler(this.labelNightSignalLightGlow_Click);
+            // 
+            // DaySignalLightGlow
+            // 
+            this.DaySignalLightGlow.AutoSize = true;
+            this.DaySignalLightGlow.Location = new System.Drawing.Point(402, 170);
+            this.DaySignalLightGlow.Margin = new System.Windows.Forms.Padding(4);
+            this.DaySignalLightGlow.Name = "DaySignalLightGlow";
+            this.DaySignalLightGlow.Size = new System.Drawing.Size(129, 16);
+            this.DaySignalLightGlow.TabIndex = 28;
+            this.DaySignalLightGlow.Text = "Day signal lightglow:";
+            // 
+            // DaySignalLightGlowTrackBar
+            // 
+            this.DaySignalLightGlowTrackBar.AutoSize = false;
+            this.DaySignalLightGlowTrackBar.BackColor = System.Drawing.SystemColors.Window;
+            this.DaySignalLightGlowTrackBar.Location = new System.Drawing.Point(404, 194);
+            this.DaySignalLightGlowTrackBar.Margin = new System.Windows.Forms.Padding(8, 4, 8, 4);
+            this.DaySignalLightGlowTrackBar.Maximum = 20;
+            this.DaySignalLightGlowTrackBar.Name = "DaySignalLightGlowTrackBar";
+            this.DaySignalLightGlowTrackBar.Size = new System.Drawing.Size(389, 32);
+            this.DaySignalLightGlowTrackBar.TabIndex = 27;
+            this.toolTip1.SetToolTip(this.DaySignalLightGlowTrackBar, "Default is 25%");
+            this.DaySignalLightGlowTrackBar.Value = 5;
+            this.DaySignalLightGlowTrackBar.Scroll += new System.EventHandler(this.DaySignalLightGlowTrackBar_Scroll);
             // 
             // CabView_MSTSOR
             // 
@@ -972,15 +1045,15 @@
             this.checkDoubleWire.Text = "Double overhead wires";
             this.checkDoubleWire.UseVisualStyleBackColor = true;
             // 
-            // label30
+            // NightBrightness
             // 
-            this.label30.AutoSize = true;
-            this.label30.Location = new System.Drawing.Point(401, 126);
-            this.label30.Margin = new System.Windows.Forms.Padding(4);
-            this.label30.Name = "label30";
-            this.label30.Size = new System.Drawing.Size(107, 16);
-            this.label30.TabIndex = 26;
-            this.label30.Text = "Night Brightness:";
+            this.NightBrightness.AutoSize = true;
+            this.NightBrightness.Location = new System.Drawing.Point(402, 96);
+            this.NightBrightness.Margin = new System.Windows.Forms.Padding(4);
+            this.NightBrightness.Name = "NightBrightness";
+            this.NightBrightness.Size = new System.Drawing.Size(107, 16);
+            this.NightBrightness.TabIndex = 26;
+            this.NightBrightness.Text = "Night Brightness:";
             // 
             // label15
             // 
@@ -1001,14 +1074,25 @@
             this.labelDayAmbientLight.TabIndex = 22;
             this.labelDayAmbientLight.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
+            // labelDaySignalLightGlow
+            // 
+            this.labelDaySignalLightGlow.Location = new System.Drawing.Point(401, 170);
+            this.labelDaySignalLightGlow.Margin = new System.Windows.Forms.Padding(4);
+            this.labelDaySignalLightGlow.Name = "labelDaySignalLightGlow";
+            this.labelDaySignalLightGlow.Size = new System.Drawing.Size(389, 16);
+            this.labelDaySignalLightGlow.TabIndex = 22;
+            this.labelDaySignalLightGlow.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            this.labelDaySignalLightGlow.Click += new System.EventHandler(this.labelSignalLightGlow_Click);
+            // 
             // labelNightBrightness
             // 
-            this.labelNightBrightness.Location = new System.Drawing.Point(401, 126);
+            this.labelNightBrightness.Location = new System.Drawing.Point(401, 96);
             this.labelNightBrightness.Margin = new System.Windows.Forms.Padding(4);
             this.labelNightBrightness.Name = "labelNightBrightness";
             this.labelNightBrightness.Size = new System.Drawing.Size(389, 16);
             this.labelNightBrightness.TabIndex = 22;
             this.labelNightBrightness.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            this.labelNightBrightness.Click += new System.EventHandler(this.labelNightBrightness_Click);
             // 
             // checkModelInstancing
             // 
@@ -1026,7 +1110,7 @@
             this.NightBrightnessTrackBar.AutoSize = false;
             this.NightBrightnessTrackBar.BackColor = System.Drawing.SystemColors.Window;
             this.NightBrightnessTrackBar.LargeChange = 4;
-            this.NightBrightnessTrackBar.Location = new System.Drawing.Point(404, 149);
+            this.NightBrightnessTrackBar.Location = new System.Drawing.Point(404, 120);
             this.NightBrightnessTrackBar.Margin = new System.Windows.Forms.Padding(8, 4, 8, 4);
             this.NightBrightnessTrackBar.Name = "NightBrightnessTrackBar";
             this.NightBrightnessTrackBar.Size = new System.Drawing.Size(389, 32);
@@ -2905,6 +2989,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.numericSoundDetailLevel)).EndInit();
             this.tabPageVideo.ResumeLayout(false);
             this.tabPageVideo.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.NightSignalLightGlowTrackBar)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.DaySignalLightGlowTrackBar)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackAntiAliasing)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.NightBrightnessTrackBar)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackDayAmbientLight)).EndInit();
@@ -3142,10 +3228,16 @@
         private System.Windows.Forms.CheckBox CabView_MSTSOR;
         private System.Windows.Forms.CheckBox checkAirEmpty;
         private System.Windows.Forms.CheckBox checkRetainers;
-        private System.Windows.Forms.Label label30;
+        private System.Windows.Forms.Label NightBrightness;
         private System.Windows.Forms.TrackBar NightBrightnessTrackBar;
-        private System.Windows.Forms.Label labelNightBrightness;
         private System.Windows.Forms.CheckBox chkManualCoupling;
         private System.Windows.Forms.CheckBox GenSoundcheckBox;
+        private System.Windows.Forms.Label DaySignalLightGlow;
+        private System.Windows.Forms.TrackBar DaySignalLightGlowTrackBar;
+        private System.Windows.Forms.Label labelNightBrightness;
+        private System.Windows.Forms.Label labelDaySignalLightGlow;
+        private System.Windows.Forms.Label NightSignalLightGlow;
+        private System.Windows.Forms.TrackBar NightSignalLightGlowTrackBar;
+        private System.Windows.Forms.Label labelNightSignalLightGlow;
     }
 }

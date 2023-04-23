@@ -487,8 +487,8 @@ namespace Orts.Viewer3D
                                 case "Bohumín - Olomouc hl.n.": // cz_bohumin-olomouc                                    
                                 case "Trencin - Nitra": // TN_NR                                                                        
                                 case "Ztracena_old":
-                                    Material = viewer.MaterialManager.Load("SignalLight", System.IO.Path.Combine(viewer.ContentPath, "..\\Content\\SignalLight\\SignalLight64M.ace"));
-                                    glowDay = 2.5f; glowNight = 5;
+                                    Material = viewer.MaterialManager.Load("SignalLight", System.IO.Path.Combine(viewer.ContentPath, "..\\Content\\SignalLight\\SignalLight64M.ace"));                                    
+                                    glowDay = viewer.Simulator.Settings.DaySignalLightGlowSize / 2f; glowNight = viewer.Simulator.Settings.NightSignalLightGlowSize / 2f;
                                     break;
 
                                 // 128x128 
@@ -500,35 +500,35 @@ namespace Orts.Viewer3D
                                 case "Zvolen-Nove Zamky": // ZSR150
                                 case "CR_244":
                                     Material = viewer.MaterialManager.Load("SignalLight", System.IO.Path.Combine(viewer.ContentPath, "..\\Content\\SignalLight\\SignalLight128.ace"));
-                                    glowDay = 2.5f; glowNight = 5;
+                                    glowDay = viewer.Simulator.Settings.DaySignalLightGlowSize / 2f; glowNight = viewer.Simulator.Settings.NightSignalLightGlowSize / 2f;
                                     break;
 
                                 // 256x256 
                                 case "Trat_183":
                                     Material = viewer.MaterialManager.Load("SignalLight", System.IO.Path.Combine(viewer.ContentPath, "..\\Content\\SignalLight\\SignalLight256.ace"));
-                                    glowDay = 2.5f; glowNight = 5;
+                                    glowDay = viewer.Simulator.Settings.DaySignalLightGlowSize / 2f; glowNight = viewer.Simulator.Settings.NightSignalLightGlowSize / 2f;
                                     break;
 
                                 // 64x64 Velká 
                                 case "Trat ZSR 191-193":
                                     Material = viewer.MaterialManager.Load("SignalLight", System.IO.Path.Combine(viewer.ContentPath, "..\\Content\\SignalLight\\SignalLight64V.ace"));
-                                    glowDay = 5; glowNight = 10;
+                                    glowDay = viewer.Simulator.Settings.DaySignalLightGlowSize; glowNight = viewer.Simulator.Settings.NightSignalLightGlowSize;
                                     break;
 
                                 default:
-                                    glowDay = 2.5f; glowNight = 5;
+                                    glowDay = viewer.Simulator.Settings.DaySignalLightGlowSize / 2f; glowNight = viewer.Simulator.Settings.NightSignalLightGlowSize / 2f;
                                     break;
                             }
 
                             // use values from signal if defined
-                            if (mstsSignalType.DayGlow.HasValue)
-                            {
-                                glowDay = mstsSignalType.DayGlow.Value;
-                            }
-                            if (mstsSignalType.NightGlow.HasValue)
-                            {
-                                glowNight = mstsSignalType.NightGlow.Value;
-                            }
+                            //if (mstsSignalType.DayGlow.HasValue)
+                            //{
+                            //    glowDay = mstsSignalType.DayGlow.Value;
+                            //}
+                            //if (mstsSignalType.NightGlow.HasValue)
+                            //{
+                            //    glowNight = mstsSignalType.NightGlow.Value;
+                            //}
                         }
 
                         foreach (var mstsSignalLight in mstsSignalType.Lights)

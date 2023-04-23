@@ -257,7 +257,11 @@ namespace ORTS.Settings
         [Default(false)]
         public bool CabView_MSTSOR { get; set; }
         [Default(2)]
-        public int NightBrightness { get; set; }        
+        public int NightBrightness { get; set; }
+        [Default(5)]
+        public int DaySignalLightGlowSize { get; set; }
+        [Default(10)]
+        public int NightSignalLightGlowSize { get; set; }
 
         // Simulation settings:
 
