@@ -842,7 +842,7 @@ namespace Orts.Viewer3D.RollingStock
                 Locomotive.CommandCylinderDown = false;
                 if (UserInput.IsPressed(UserCommand.ControlThrottleIncrease))
                 {
-                    if (Locomotive.CommandCylinderPosition[Locomotive.LocoStation] < Locomotive.CommandCylinderMaxPosition)
+                    if (Locomotive.CommandCylinderPosition[Locomotive.LocoStation] < Locomotive.CommandCylinderMaxPosition - 1)
                         Locomotive.CommandCylinderPosition[Locomotive.LocoStation]++;
                     Locomotive.CommandCylinderToZero = false;
                 }

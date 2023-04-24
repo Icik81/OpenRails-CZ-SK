@@ -12515,7 +12515,7 @@ namespace Orts.Simulation.RollingStocks
                     CommandCylinderTimer3 += elapsedClockSeconds;
                     if (CommandCylinderTimer3 > CommandCylinderPeriod)
                     {
-                        if (CommandCylinderPosition[LocoStation] < CommandCylinderMaxPosition)
+                        if (CommandCylinderPosition[LocoStation] < CommandCylinderMaxPosition - 1)
                             CommandCylinderPosition[LocoStation]++;
                         CommandCylinderTimer3 = 0.0f;
                     }
