@@ -3172,6 +3172,8 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.LTS410_DISPLAY:
                 case CABViewControlTypes.LTS510_DISPLAY:
                 case CABViewControlTypes.COMMAND_CYLINDER:
+                case CABViewControlTypes.CIRCULAR_LIGHTSSWITCH_WHITE:
+                case CABViewControlTypes.CIRCULAR_LIGHTSSWITCH_RED:
 
                 case CABViewControlTypes.MOTOR_DISABLED:
                 case CABViewControlTypes.INVERTER_TEST:
@@ -4278,6 +4280,32 @@ namespace Orts.Viewer3D.RollingStock
                     }
                     else
                         Locomotive.CommandCylinderTimerIsDownKeyPeriod = 1f;
+                    break;
+                case CABViewControlTypes.CIRCULAR_LIGHTSSWITCH_WHITE:
+                    // Ovládání bílých světel                    
+                    if (ChangedValue(0) > 0 && !IsChanged)
+                    {
+                        new ToggleLightFrontLDownCommand(Viewer.Log);
+                        IsChanged = true;
+                    }
+                    if (ChangedValue(0) < 0 && !IsChanged)
+                    {
+                        new ToggleLightFrontLUpCommand(Viewer.Log);
+                        IsChanged = true;
+                    }
+                    break;
+                case CABViewControlTypes.CIRCULAR_LIGHTSSWITCH_RED:
+                    // Ovládání červených světel                    
+                    if (ChangedValue(0) > 0 && !IsChanged)
+                    {
+                        new ToggleLightFrontRDownCommand(Viewer.Log);
+                        IsChanged = true;
+                    }
+                    if (ChangedValue(0) < 0 && !IsChanged)
+                    {
+                        new ToggleLightFrontRUpCommand(Viewer.Log);
+                        IsChanged = true;
+                    }
                     break;
 
                 case CABViewControlTypes.ORTS_LS90_POWER:

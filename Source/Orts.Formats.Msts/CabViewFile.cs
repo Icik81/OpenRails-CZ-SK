@@ -478,6 +478,8 @@ namespace Orts.Formats.Msts
         AMMETER2_ABS,
         LTS410_DISPLAY,
         LTS510_DISPLAY,
+        CIRCULAR_LIGHTSSWITCH_WHITE,
+        CIRCULAR_LIGHTSSWITCH_RED,
 
         // ORTS
         ORTS_SCREEN_SELECT,
