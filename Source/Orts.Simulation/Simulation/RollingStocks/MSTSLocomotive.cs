@@ -11740,6 +11740,47 @@ namespace Orts.Simulation.RollingStocks
                     }
                 }
             }
+            // Nastavení světel pro postrk
+            if (!IsLeadLocomotive() && this is MSTSLocomotive)
+            {
+                LightFrontLW = false; LightFrontLR = false; LightFrontRW = false; LightFrontRR = false; LightRearLW = false; LightRearLR = false; LightRearRW = false; LightRearRR = false;
+                if (Flipped)
+                {
+                    if (this == Train.FirstCar)
+                    {
+                        if (Direction == Direction.Forward)
+                            { LightFrontLW = false; LightFrontLR = false; LightFrontRW = false; LightFrontRR = false; LightRearLW = true; LightRearLR = false; LightRearRW = true; LightRearRR = false; }
+                        if (Direction == Direction.Reverse)
+                            { LightFrontLW = false; LightFrontLR = false; LightFrontRW = false; LightFrontRR = false; LightRearLW = false; LightRearLR = true; LightRearRW = false; LightRearRR = true; }
+                    }
+                    else
+                    if (this == Train.LastCar)
+                    {
+                        if (Direction == Direction.Forward)
+                            { LightFrontLW = false; LightFrontLR = true; LightFrontRW = false; LightFrontRR = true; LightRearLW = false; LightRearLR = false; LightRearRW = false; LightRearRR = false; }
+                        if (Direction == Direction.Reverse)
+                            { LightFrontLW = true; LightFrontLR = false; LightFrontRW = true; LightFrontRR = false; LightRearLW = false; LightRearLR = false; LightRearRW = false; LightRearRR = false; }
+                    }
+                }
+                else
+                {
+                    if (this == Train.FirstCar)
+                    {
+                        if (Direction == Direction.Forward)
+                            { LightFrontLW = true; LightFrontLR = false; LightFrontRW = true; LightFrontRR = false; LightRearLW = false; LightRearLR = false; LightRearRW = false; LightRearRR = false; }
+                        if (Direction == Direction.Reverse)
+                            { LightFrontLW = false; LightFrontLR = true; LightFrontRW = false; LightFrontRR = true; LightRearLW = false; LightRearLR = false; LightRearRW = false; LightRearRR = false; }
+                    }
+                    else
+                    if (this == Train.LastCar)
+                    {
+                        if (Direction == Direction.Forward)
+                            { LightFrontLW = false; LightFrontLR = false; LightFrontRW = false; LightFrontRR = false; LightRearLW = false; LightRearLR = true; LightRearRW = false; LightRearRR = true; }
+                        if (Direction == Direction.Reverse)
+                            { LightFrontLW = false; LightFrontLR = false; LightFrontRW = false; LightFrontRR = false; LightRearLW = true; LightRearLR = false; LightRearRW = true; LightRearRR = false; }
+                    }                    
+                }
+            }
         }
         
         // Přední levé světlo
