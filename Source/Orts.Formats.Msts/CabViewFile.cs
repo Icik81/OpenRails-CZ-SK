@@ -1862,6 +1862,10 @@ namespace Orts.Formats.Msts
                     for (int i = Values.Count; i < FramesCount; i++)
                         Values.Add(-10000);
                 }),
+                // ORTS
+                new STFReader.TokenProcessor("ortsdisplay", ()=>{ParseDisplay(stf); }),
+                new STFReader.TokenProcessor("ortsscreenpage", () => {ParseScreen(stf); }),
+                new STFReader.TokenProcessor("ortscabviewpoint", ()=>{ParseCabViewpoint(stf); }),
             });
         }
         protected int ParseNumStyle(STFReader stf)
