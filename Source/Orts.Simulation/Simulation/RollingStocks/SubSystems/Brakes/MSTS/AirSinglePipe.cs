@@ -836,9 +836,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     }
                 //}
                 MaxReleaseRatePSIpS0 = MaxReleaseRatePSIpS;
-                MaxApplicationRatePSIpS0 = MaxApplicationRatePSIpS;
-
-                StartOn = false;
+                MaxApplicationRatePSIpS0 = MaxApplicationRatePSIpS;                
 
                 if (ForceWagonLoaded)
                 {
@@ -892,7 +890,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                             }
                             break;
                     }
-                }
+                }                
+                StartOn = false;
             }
 
             // Definice limitů proměnných pro chod nenaladěných vozidel
@@ -967,6 +966,20 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             // Zjednodušený model pro AI
             if (!Car.IsPlayerTrain)
             {
+                if (!Car.IsPlayerTrain && loco != null && loco.CarFrameUpdateState == 3)
+                {
+                    if (loco.BrakeSystem.PowerForWagon)
+                    {
+                        int MainResPressurePSI = Simulator.Random.Next(7, 10);
+                        loco.MainResPressurePSI = MainResPressurePSI * 14.50377f;
+                    }
+                    else                        
+                    {
+                        int MainResPressurePSI = Simulator.Random.Next(0, 10);
+                        loco.MainResPressurePSI = MainResPressurePSI * 14.50377f;
+                    }
+                }
+
                 UpdateTripleValveState(threshold);
                 // triple valve is set to charge the brake cylinder
                 if ((TripleValveState == ValveState.Apply || TripleValveState == ValveState.Emergency))

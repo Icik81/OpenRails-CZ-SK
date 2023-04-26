@@ -148,7 +148,7 @@ namespace Orts.Simulation.RollingStocks
 
                 // Detekuje JV ladění, ladění pro OR CZ/SK tento parametr nikdy nepoužívá        
                 case "engine(ortsmasterkey": JVSetUp = true; break;
-
+                case "wagon(ortslengthbogiecentre": JVSetUp = true; break;
 
                 default:
                     GearBox.Parse(lowercasetoken, stf);
