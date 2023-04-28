@@ -3562,9 +3562,7 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.STEAM_INJ2: if (((Locomotive as MSTSSteamLocomotive).Injector2IsOn ? 1 : 0) != ChangedValue((Locomotive as MSTSSteamLocomotive).Injector2IsOn ? 1 : 0)) new ToggleInjectorCommand(Viewer.Log, 2); break;
                 case CABViewControlTypes.SMALL_EJECTOR: (Locomotive as MSTSSteamLocomotive).SetSmallEjectorValue(ChangedValue((Locomotive as MSTSSteamLocomotive).SmallEjectorController.IntermediateValue)); break;
                 case CABViewControlTypes.ORTS_LARGE_EJECTOR: (Locomotive as MSTSSteamLocomotive).SetLargeEjectorValue(ChangedValue((Locomotive as MSTSSteamLocomotive).LargeEjectorController.IntermediateValue)); break;
-                //
-                case CABViewControlTypes.CAB_RADIO: new CabRadioCommand(Viewer.Log, ChangedValue(Locomotive.CabRadioOn ? 1 : 0) > 0); break;
-                case CABViewControlTypes.WIPERS: new WipersCommand(Viewer.Log, ChangedValue(Locomotive.Wiper ? 1 : 0) > 0); break;
+                //                
                 case CABViewControlTypes.ORTS_PLAYER_DIESEL_ENGINE:
                     var dieselLoco = Locomotive as MSTSDieselLocomotive;
                     if ((dieselLoco.DieselEngines[0].EngineStatus == Orts.Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Running ||
@@ -3895,74 +3893,97 @@ namespace Orts.Viewer3D.RollingStock
                     break;
 
                 case CABViewControlTypes.AUXCOMPRESSOR_MODE_OFFON:
-                    if (ChangedValue(Locomotive.AuxCompressorMode_OffOn ? 1 : 0) > 0)
-                    {
-                        Locomotive.AuxCompressorMode_OffOn = true;
-                        new ToggleAuxCompressorMode_OffOnCommand(Viewer.Log);
-                    }
-                    else
-                    if (ChangedValue(Locomotive.AuxCompressorMode_OffOn ? 1 : 0) < 0)
+                    if (ChangedValue(0) > 0 && Locomotive.AuxCompressorMode_OffOn)
                     {
                         Locomotive.AuxCompressorMode_OffOn = false;
-                        new ToggleAuxCompressorMode_OffOnCommand(Viewer.Log);
+                        Locomotive.SignalEvent(Event.AuxCompressorMode_OffOnOff);
+                    }
+                    else
+                    if (ChangedValue(0) < 0 && !Locomotive.AuxCompressorMode_OffOn)
+                    {
+                        Locomotive.AuxCompressorMode_OffOn = true;
+                        Locomotive.SignalEvent(Event.AuxCompressorMode_OffOnOn);
                     }
                     break;
 
                 case CABViewControlTypes.COMPRESSOR_MODE_OFFAUTO:
-                    if (ChangedValue(Locomotive.CompressorMode_OffAuto[Locomotive.LocoStation] ? 1 : 0) > 0)
+                    if (ChangedValue(0) > 0 && Locomotive.CompressorMode_OffAuto[Locomotive.LocoStation])
                     {
-                        Locomotive.CompressorMode_OffAuto[Locomotive.LocoStation] = true;
-                        new ToggleCompressorMode_OffAutoCommand(Viewer.Log);
+                        Locomotive.CompressorMode_OffAuto[Locomotive.LocoStation] = false;                        
+                        Locomotive.SignalEvent(Event.CompressorMode_OffAutoOff);
                     }
                     else
-                    if (ChangedValue(Locomotive.CompressorMode_OffAuto[Locomotive.LocoStation] ? 1 : 0) < 0)
+                    if (ChangedValue(0) < 0 && !Locomotive.CompressorMode_OffAuto[Locomotive.LocoStation])
                     {
-                        Locomotive.CompressorMode_OffAuto[Locomotive.LocoStation] = false;
-                        new ToggleCompressorMode_OffAutoCommand(Viewer.Log);
+                        Locomotive.CompressorMode_OffAuto[Locomotive.LocoStation] = true;                        
+                        Locomotive.SignalEvent(Event.CompressorMode_OffAutoOn);
                     }
                     break;
 
                 case CABViewControlTypes.COMPRESSOR_MODE2_OFFAUTO:
-                    if (ChangedValue(Locomotive.CompressorMode2_OffAuto[Locomotive.LocoStation] ? 1 : 0) > 0)
-                    {
-                        Locomotive.CompressorMode2_OffAuto[Locomotive.LocoStation] = true;
-                        new ToggleCompressorMode2_OffAutoCommand(Viewer.Log);
-                    }
-                    else
-                    if (ChangedValue(Locomotive.CompressorMode2_OffAuto[Locomotive.LocoStation] ? 1 : 0) < 0)
+                    if (ChangedValue(0) > 0 && Locomotive.CompressorMode2_OffAuto[Locomotive.LocoStation])
                     {
                         Locomotive.CompressorMode2_OffAuto[Locomotive.LocoStation] = false;
-                        new ToggleCompressorMode2_OffAutoCommand(Viewer.Log);
+                        Locomotive.SignalEvent(Event.CompressorMode_OffAutoOff);
+                    }
+                    else
+                    if (ChangedValue(0) < 0 && !Locomotive.CompressorMode2_OffAuto[Locomotive.LocoStation])
+                    {
+                        Locomotive.CompressorMode2_OffAuto[Locomotive.LocoStation] = true;
+                        Locomotive.SignalEvent(Event.CompressorMode_OffAutoOn);
                     }
                     break;
 
                 case CABViewControlTypes.HEATING_OFFON:
-                    if (ChangedValue(Locomotive.Heating_OffOn[Locomotive.LocoStation] ? 1 : 0) > 0)
-                    {
-                        Locomotive.Heating_OffOn[Locomotive.LocoStation] = true;
-                        new ToggleHeating_OffOnCommand(Viewer.Log);
-                    }
-                    else
-                    if (ChangedValue(Locomotive.Heating_OffOn[Locomotive.LocoStation] ? 1 : 0) < 0)
+                    if (ChangedValue(0) > 0 && Locomotive.Heating_OffOn[Locomotive.LocoStation])
                     {
                         Locomotive.Heating_OffOn[Locomotive.LocoStation] = false;
-                        new ToggleHeating_OffOnCommand(Viewer.Log);
+                        Locomotive.SignalEvent(Event.Heating_OffOnOff);                        
+                    }
+                    else
+                    if (ChangedValue(0) < 0 && !Locomotive.Heating_OffOn[Locomotive.LocoStation])
+                    {
+                        Locomotive.Heating_OffOn[Locomotive.LocoStation] = true;
+                        Locomotive.SignalEvent(Event.Heating_OffOnOn);                        
                     }
                     break;
 
                 case CABViewControlTypes.CABHEATING_OFFON:
-                    if (ChangedValue(Locomotive.CabHeating_OffOn[Locomotive.LocoStation] ? 1 : 0) > 0)
-                    {
-                        Locomotive.CabHeating_OffOn[Locomotive.LocoStation] = true;
-                        new ToggleCabHeating_OffOnCommand(Viewer.Log);
-                    }
-                    else
-                    if (ChangedValue(Locomotive.CabHeating_OffOn[Locomotive.LocoStation] ? 1 : 0) < 0)
+                    if (ChangedValue(0) > 0 && Locomotive.CabHeating_OffOn[Locomotive.LocoStation])
                     {
                         Locomotive.CabHeating_OffOn[Locomotive.LocoStation] = false;
-                        new ToggleCabHeating_OffOnCommand(Viewer.Log);
+                        Locomotive.SignalEvent(Event.CabHeating_OffOnOff);
+                    }
+                    else
+                    if (ChangedValue(0) < 0 && !Locomotive.CabHeating_OffOn[Locomotive.LocoStation])
+                    {
+                        Locomotive.CabHeating_OffOn[Locomotive.LocoStation] = true;
+                        Locomotive.SignalEvent(Event.CabHeating_OffOnOn);
                     }
                     break;
+
+                case CABViewControlTypes.CAB_RADIO:
+                    if (UserInput.IsMouseLeftButtonPressed)
+                    {
+                        Locomotive.CabRadio[Locomotive.LocoStation] = !Locomotive.CabRadio[Locomotive.LocoStation];
+                        Locomotive.SignalEvent(Event.PantographToggle);
+                    }                    
+                    break;                    
+
+                case CABViewControlTypes.WIPERS:
+                    if (ChangedValue(0) > 0 && Locomotive.LocoWiper[Locomotive.LocoStation])
+                    {
+                        Locomotive.LocoWiper[Locomotive.LocoStation] = false;
+                        Locomotive.SignalEvent(Event.PantographToggle);                        
+                    }
+                    else
+                    if (ChangedValue(0) < 0 && !Locomotive.LocoWiper[Locomotive.LocoStation])
+                    {
+                        Locomotive.LocoWiper[Locomotive.LocoStation] = true;
+                        Locomotive.SignalEvent(Event.PantographToggle);
+                    }
+                    break;
+
                 case CABViewControlTypes.QUICK_RELEASE_BUTTON:
                     if (UserInput.IsMouseLeftButtonDown)
                         Locomotive.ToggleQuickReleaseButton(true);

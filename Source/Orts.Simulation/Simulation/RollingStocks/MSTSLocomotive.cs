@@ -10712,6 +10712,7 @@ namespace Orts.Simulation.RollingStocks
 
         public void ToggleCompressorCombinedSwitchUp()
         {
+            if (!CompressorCombined) return;
             if (CompressorSwitch[LocoStation] < 4)
                 CompressorSwitch[LocoStation]++;
             if (CompressorSwitch[LocoStation] <= 3)
@@ -10723,6 +10724,7 @@ namespace Orts.Simulation.RollingStocks
         }
         public void ToggleCompressorCombinedSwitchDown()
         {
+            if (!CompressorCombined) return;
             if (CompressorSwitch[LocoStation] > -1)
                 CompressorSwitch[LocoStation]--;
             if (CompressorSwitch[LocoStation] >= 0)
@@ -10775,6 +10777,7 @@ namespace Orts.Simulation.RollingStocks
 
         public void ToggleCompressorCombinedSwitch2Up()
         {
+            if (!CompressorCombined2) return;
             if (CompressorSwitch2[LocoStation] < 3)
                 CompressorSwitch2[LocoStation]++;
             if (CompressorSwitch2[LocoStation] <= 2)
@@ -10786,6 +10789,7 @@ namespace Orts.Simulation.RollingStocks
         }
         public void ToggleCompressorCombinedSwitch2Down()
         {
+            if (!CompressorCombined2) return;
             if (CompressorSwitch2[LocoStation] > -1)
                 CompressorSwitch2[LocoStation]--;
             if (CompressorSwitch2[LocoStation] >= 0)
@@ -13832,7 +13836,9 @@ namespace Orts.Simulation.RollingStocks
                 case CABViewControlTypes.WIPERS:
                     {
                         if (LocoWiper[LocoStation])
-                            data = Wiper ? 1 : 0;
+                            data = 1;
+                        else 
+                            data = 0;
                         break;
                     }
                 case CABViewControlTypes.VACUUM_EXHAUSTER:
