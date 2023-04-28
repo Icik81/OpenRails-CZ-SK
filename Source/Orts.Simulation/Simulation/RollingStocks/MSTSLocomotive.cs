@@ -714,6 +714,7 @@ namespace Orts.Simulation.RollingStocks
         public bool CircularSwitchEnable;
         public int[] CircularSwitchWhitePosition = new int[3];
         public int[] CircularSwitchRedPosition = new int[3];
+        public bool FirstCabLoaded = true;
 
         // Jindrich
         public bool IsActive = false;
@@ -1988,6 +1989,7 @@ namespace Orts.Simulation.RollingStocks
             outf.Write(CircularSwitchWhitePosition[2]);
             outf.Write(CircularSwitchRedPosition[1]);
             outf.Write(CircularSwitchRedPosition[2]);
+            outf.Write(FirstCabLoaded);
             #endregion
 
             base.Save(outf);
@@ -2196,6 +2198,7 @@ namespace Orts.Simulation.RollingStocks
             CircularSwitchWhitePosition[2] = inf.ReadInt32();
             CircularSwitchRedPosition[1] = inf.ReadInt32();
             CircularSwitchRedPosition[2] = inf.ReadInt32();
+            FirstCabLoaded = inf.ReadBoolean();
             #endregion
 
             base.Restore(inf);
@@ -9322,7 +9325,7 @@ namespace Orts.Simulation.RollingStocks
             // Druhý průběh má všechny kabinové prvky načteny
             if (this.CarFrameUpdateState == 2)
             {
-                if (BrakeSystem.StartOn)
+                if (FirstCabLoaded)
                 {
                     if (CompressorCombined)
                         CompressorSwitch[1] = CompressorSwitch[2] = 1;
@@ -9334,7 +9337,7 @@ namespace Orts.Simulation.RollingStocks
                     if (CompressorOffAutoOn2)
                         CompressorSwitch2[1] = CompressorSwitch2[2] = 0;
                 }
-                BrakeSystem.StartOn = false;
+                FirstCabLoaded = false;
             }
 
             // Desátý průběh - nastaví hodnoty po nahrání uložené pozice
