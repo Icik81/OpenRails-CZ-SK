@@ -891,7 +891,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                             break;
                     }
                 }                
-                StartOn = false;
+                //StartOn = false;
             }
 
             // Definice limitů proměnných pro chod nenaladěných vozidel

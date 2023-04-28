@@ -2061,6 +2061,7 @@ namespace Orts.Common
         {
 
             Receiver.ToggleCompressorCombinedSwitchUp();
+            Receiver.ToggleCompressorOffAutoOnSwitchUp();
         }
     }
     [Serializable()]
@@ -2077,6 +2078,7 @@ namespace Orts.Common
         public override void Redo()
         {
             Receiver.ToggleCompressorCombinedSwitchDown();
+            Receiver.ToggleCompressorOffAutoOnSwitchDown();
         }
     }
     [Serializable()]
@@ -2094,6 +2096,7 @@ namespace Orts.Common
         {
 
             Receiver.ToggleCompressorCombinedSwitch2Up();
+            Receiver.ToggleCompressorOffAutoOnSwitch2Up();
         }
     }
     [Serializable()]
@@ -2110,6 +2113,7 @@ namespace Orts.Common
         public override void Redo()
         {
             Receiver.ToggleCompressorCombinedSwitch2Down();
+            Receiver.ToggleCompressorOffAutoOnSwitch2Down();
         }
     }
     [Serializable()]

@@ -1435,20 +1435,28 @@ namespace Orts.Simulation.RollingStocks
                 // Nastavení pro plně oživenou lokomotivu
                 if (LocoReadyToGo && BrakeSystem.IsAirFull && !LocoIsStatic)
                 {                    
-                    CompressorSwitch[LocoStation] = 2;
-                    CompressorSwitch2[LocoStation] = 1;
+                    if (CompressorCombined)
+                        CompressorSwitch[LocoStation] = 2;
+                    if (CompressorCombined2)
+                        CompressorSwitch2[LocoStation] = 1;
+
+                    if (CompressorOffAutoOn)
+                        CompressorSwitch[LocoStation] = 1;
+                    if (CompressorOffAutoOn2)
+                        CompressorSwitch2[LocoStation] = 1;
+
                     CompressorMode_OffAuto[LocoStation] = true;
                     CompressorMode2_OffAuto[LocoStation] = true;
-                    if (!CompressorCombined && !CompressorCombined2)
+                    if (!CompressorCombined && !CompressorCombined2 && !CompressorOffAutoOn && !CompressorOffAutoOn2)
                     {
                         CompressorMode_OffAuto[LocoStation] = true;
                         CompressorMode2_OffAuto[LocoStation] = true;
                     }
                     else
                     {
-                        if (!CompressorCombined)
+                        if (!CompressorCombined && !CompressorOffAutoOn)
                             CompressorMode_OffAuto[LocoStation] = false;
-                        if (!CompressorCombined2)
+                        if (!CompressorCombined2 && !CompressorOffAutoOn2)
                             CompressorMode2_OffAuto[LocoStation] = false;
                     }
                     HV4Switch[LocoStation] = 1;

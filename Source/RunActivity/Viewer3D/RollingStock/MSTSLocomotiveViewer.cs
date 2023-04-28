@@ -3109,6 +3109,8 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.COMPRESSOR_START:
                 case CABViewControlTypes.COMPRESSOR_COMBINED:
                 case CABViewControlTypes.COMPRESSOR_COMBINED2:
+                case CABViewControlTypes.COMPRESSOR_OFFAUTOON:
+                case CABViewControlTypes.COMPRESSOR_OFFAUTOON2:
                 case CABViewControlTypes.AUXCOMPRESSOR_MODE_OFFON:
                 case CABViewControlTypes.COMPRESSOR_MODE_OFFAUTO:
                 case CABViewControlTypes.COMPRESSOR_MODE2_OFFAUTO:
@@ -3892,6 +3894,32 @@ namespace Orts.Viewer3D.RollingStock
                     }
                     break;
 
+                case CABViewControlTypes.COMPRESSOR_OFFAUTOON:
+                    if (ChangedValue(0) < 0 && !IsChanged)
+                    {
+                        new ToggleCompressorCombinedSwitchUpCommand(Viewer.Log);
+                        IsChanged = true;
+                    }
+                    if (ChangedValue(0) > 0 && !IsChanged)
+                    {
+                        new ToggleCompressorCombinedSwitchDownCommand(Viewer.Log);
+                        IsChanged = true;
+                    }
+                    break;
+
+                case CABViewControlTypes.COMPRESSOR_OFFAUTOON2:
+                    if (ChangedValue(0) < 0 && !IsChanged)
+                    {
+                        new ToggleCompressorCombinedSwitch2UpCommand(Viewer.Log);
+                        IsChanged = true;
+                    }
+                    if (ChangedValue(0) > 0 && !IsChanged)
+                    {
+                        new ToggleCompressorCombinedSwitch2DownCommand(Viewer.Log);
+                        IsChanged = true;
+                    }
+                    break;
+
                 case CABViewControlTypes.AUXCOMPRESSOR_MODE_OFFON:
                     if (ChangedValue(0) > 0 && Locomotive.AuxCompressorMode_OffOn)
                     {
@@ -4300,7 +4328,7 @@ namespace Orts.Viewer3D.RollingStock
                         Locomotive.CommandCylinderTimerIsDownKeyPeriod = 0;
                     }
                     else
-                        Locomotive.CommandCylinderTimerIsDownKeyPeriod = 1f;
+                        Locomotive.CommandCylinderTimerIsDownKeyPeriod = 0.5f;
                     break;
                 case CABViewControlTypes.CIRCULAR_LIGHTSSWITCH_WHITE:
                     // Ovládání bílých světel                    
