@@ -9468,7 +9468,7 @@ namespace Orts.Simulation.RollingStocks
 
             // Druhý průběh má všechny kabinové prvky načteny
             if (this.CarFrameUpdateState == 2)
-            {
+            {                
                 if (FirstCabLoaded)
                 {
                     if (CompressorCombined)
@@ -9677,7 +9677,7 @@ namespace Orts.Simulation.RollingStocks
             }                        
             #region Výchozí nastavení přímočinky na vícestupňových ovladačích           
             // Nastaví pozici Neutral na vícestupňových ovladačích
-            if (CarFrameUpdateState == 2)
+            if (CarFrameUpdateState == 1 && FirstCabLoaded)
             {
                 if (EngineBrakeController.Notches.Count > 1 && !EngineBrakeHas1Notch)
                 {
@@ -9692,6 +9692,7 @@ namespace Orts.Simulation.RollingStocks
                             case ControllerState.Lap:
                                 EngineBrakeValueN = notch.Value;
                                 break;
+                            case ControllerState.FullServ:
                             case ControllerState.Apply:
                             case ControllerState.EPApply:
                             case ControllerState.ContServ:
