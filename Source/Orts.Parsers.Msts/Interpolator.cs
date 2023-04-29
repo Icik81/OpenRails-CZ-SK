@@ -287,19 +287,20 @@ namespace Orts.Parsers.Msts
                 }
                 int numOfColumns = stf.ReadInt(0);
                 string header = stf.ReadString().ToLower();
-                if (header == "throttle" || header == "force" || header == "step" || header == "forcestep")
+                if (header == "throttle" || header == "force" || header == "step" || header == "forcestep" || header == "typecoefstep")
                 {
                     // Icik
                     // header = "throttle"...x = Throttle, y = AbsWheelSpeed, Out = TractiveForce
                     // header = "force"...x = FilteredMotiveForce, y = AbsWheelSpeed, Out = Current                    
                     // header = "step"...x = StepControllerValue, y = AbsWheelSpeed, Out = TractiveForce
                     // header = "forcestep"...x = StepControllerValue, y = FilteredMotiveForce, Out = Current
+                    // header = "typecoefstep"...x = StepControllerValue, y = TypeCoef, Out = Coef
 
                     stf.MustMatch("(");
                     int numOfThrottleValues = 0;
                     while (!stf.EndOfBlock())
                     {
-                        if (header == "throttle" || header == "step" || header == "forcestep")
+                        if (header == "throttle" || header == "step" || header == "forcestep" || header == "typecoefstep")
                             xlist.Add(stf.ReadFloat(STFReader.UNITS.None, 0f));
                         
                         if (header == "force")
@@ -334,6 +335,9 @@ namespace Orts.Parsers.Msts
                             if (header == "forcestep")
                                 x = stf.ReadFloat(STFReader.UNITS.Force, 0f);
 
+                            if (header == "typecoefstep")
+                                x = stf.ReadFloat(STFReader.UNITS.None, 0f);
+
                             numofData++;
                             for (int j = 0; j < numOfColumns - 1; j++)
                             {
@@ -346,7 +350,10 @@ namespace Orts.Parsers.Msts
                                     ilist[j][x] = stf.ReadFloat(STFReader.UNITS.Force, 0f); // Výstup hodnoty síly
                                                                                             
                                 if (header == "force" || header == "forcestep")
-                                    ilist[j][x] = stf.ReadFloat(STFReader.UNITS.Current, 0f); // Výstup hodnoty proudu                                
+                                    ilist[j][x] = stf.ReadFloat(STFReader.UNITS.Current, 0f); // Výstup hodnoty proudu
+                                                                                              
+                                if (header == "typecoefstep")
+                                    ilist[j][x] = stf.ReadFloat(STFReader.UNITS.None, 0f); // Výstup hodnoty koeficientu
 
                                 numofData++;
                             }

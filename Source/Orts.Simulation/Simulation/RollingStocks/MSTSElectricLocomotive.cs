@@ -3129,6 +3129,7 @@ namespace Orts.Simulation.RollingStocks
             {
                 status.AppendFormat("{0}\t", Simulator.Catalog.GetString("Engine"));
                 status.AppendFormat("{0}\t", FormatStrings.FormatTemperature(TMTemperature, IsMetric, false));
+                status.AppendFormat("{0}\t", FormatStrings.FormatTemperature(DRTemperature, IsMetric, false));
                 status.AppendFormat("{0}", Simulator.Catalog.GetString(MathHelper.Clamp((int)(PantographVoltageV - 1), 0, (int)(RouteVoltageV * 1.2f)) + "V"));
                 //status.AppendFormat("{0}", Simulator.Catalog.GetString("PSPantoVoltage: " + PowerSupply.PantographVoltageV));
             }            
@@ -3136,6 +3137,7 @@ namespace Orts.Simulation.RollingStocks
             {
                 status.AppendFormat("{0}\t", Simulator.Catalog.GetString("Helper"));
                 status.AppendFormat("{0}\t", FormatStrings.FormatTemperature(TMTemperature, IsMetric, false));
+                status.AppendFormat("{0}\t", FormatStrings.FormatTemperature(DRTemperature, IsMetric, false));
                 status.AppendFormat("{0}", Simulator.Catalog.GetString(MathHelper.Clamp((int)(PantographVoltageV - 1), 0, (int)(RouteVoltageV * 1.2f)) + "V"));
                 //status.AppendFormat("{0}", Simulator.Catalog.GetString("PSPantoVoltage: " + PowerSupply.PantographVoltageV));
             }

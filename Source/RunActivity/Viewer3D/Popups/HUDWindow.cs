@@ -857,11 +857,11 @@ namespace Orts.Viewer3D.Popups
                             //15
                             car is MSTSSteamLocomotive ? Viewer.Catalog.GetString("") :
                             car is MSTSDieselLocomotive ? Viewer.Catalog.GetString("WaterTemp") :
-                            car is MSTSElectricLocomotive ? Viewer.Catalog.GetString("PantoVoltage") : Viewer.Catalog.GetString(""),
+                            car is MSTSElectricLocomotive ? Viewer.Catalog.GetString("DRTemp") : Viewer.Catalog.GetString(""),                            
                             //16
                             car is MSTSSteamLocomotive ? Viewer.Catalog.GetString("") :
-                            car is MSTSDieselLocomotive ? Viewer.Catalog.GetString("OilTemp") :                            
-                            car is MSTSElectricLocomotive ? Viewer.Catalog.GetString("") : Viewer.Catalog.GetString(""),
+                            car is MSTSDieselLocomotive ? Viewer.Catalog.GetString("OilTemp") :
+                            car is MSTSElectricLocomotive ? Viewer.Catalog.GetString("PantoVoltage") : Viewer.Catalog.GetString(""),                            
                             //17
                             car is MSTSSteamLocomotive ? Viewer.Catalog.GetString("") :
                             car is MSTSDieselLocomotive ? Viewer.Catalog.GetString("OilPress") :                            

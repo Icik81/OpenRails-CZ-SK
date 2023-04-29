@@ -3176,6 +3176,7 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.COMMAND_CYLINDER:
                 case CABViewControlTypes.CIRCULAR_LIGHTSSWITCH_WHITE:
                 case CABViewControlTypes.CIRCULAR_LIGHTSSWITCH_RED:
+                case CABViewControlTypes.DRIVERESISTANCE_TEMPERATURE:
 
                 case CABViewControlTypes.MOTOR_DISABLED:
                 case CABViewControlTypes.INVERTER_TEST:

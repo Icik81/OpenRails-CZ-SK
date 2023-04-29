@@ -715,6 +715,7 @@ namespace Orts.Simulation.RollingStocks
         public int[] CircularSwitchWhitePosition = new int[3];
         public int[] CircularSwitchRedPosition = new int[3];
         public bool FirstCabLoaded = true;
+        public InterpolatorDiesel2D CoefStepControllerCurves;        
 
         // Jindrich
         public bool IsActive = false;
@@ -1401,7 +1402,7 @@ namespace Orts.Simulation.RollingStocks
                 case "engine(mucableequipment": MUCableEquipment = stf.ReadBoolBlock(false); break;
                 case "engine(pantocanhvoff": PantoCanHVOffSpeedKpH = stf.ReadFloatBlock(STFReader.UNITS.Speed, 0); break;
                 case "engine(maxtrainbrakepressure": BrakeSystem.MCP_TrainBrake = stf.ReadFloatBlock(STFReader.UNITS.PressureDefaultPSI, null); break;
-                case "engine(ortscurrentcharacteristics": CurrentForceCurves = new InterpolatorDiesel2D(stf, true); break;                
+                case "engine(ortscurrentcharacteristics": CurrentForceCurves = new InterpolatorDiesel2D(stf, true); break;
                 case "engine(soundfront": CabFrontSoundFileName = stf.ReadStringBlock(null); break;
                 case "engine(soundrear": CabRearSoundFileName = stf.ReadStringBlock(null); break;
                 case "engine(cabstationforbatteryswitchon": CabStationForBatterySwitchOn = stf.ReadIntBlock(null); break;
@@ -1422,7 +1423,17 @@ namespace Orts.Simulation.RollingStocks
                 case "engine(tmparameters(idletmtemperature": IdleTMTemperatureDegC = stf.ReadFloatBlock(STFReader.UNITS.Temperature, null); break;
                 case "engine(tmparameters(airtmcoolingpower": AirTMCoolingPower = stf.ReadFloatBlock(STFReader.UNITS.None, null); break;
                 case "engine(tmparameters(tmtemptimeconstantsec": TMTempTimeConstantSec = stf.ReadFloatBlock(STFReader.UNITS.None, null); break;
-
+                case "engine(ortscoefcharacteristics": CoefStepControllerCurves = new InterpolatorDiesel2D(stf, true); break;
+                case "engine(drparameters(maxdrtemperature": MaxDRTemperatureDegC = stf.ReadFloatBlock(STFReader.UNITS.Temperature, null); break;
+                case "engine(drparameters(idledrtemperature": IdleDRTemperatureDegC = stf.ReadFloatBlock(STFReader.UNITS.Temperature, null); break;
+                case "engine(drparameters(airdrcoolingpower": AirDRCoolingPower = stf.ReadFloatBlock(STFReader.UNITS.None, null); break;
+                case "engine(drparameters(drtemptimeconstantsec": DRTempTimeConstantSec = stf.ReadFloatBlock(STFReader.UNITS.None, null); break;                
+                case "engine(stepcontrollersituation(hvoffrelaydelay_1": HVOffRelayDelay[1] = stf.ReadFloatBlock(STFReader.UNITS.Time, null); break;                    
+                case "engine(stepcontrollersituation(hvoffrelaydelay_2": HVOffRelayDelay[2] = stf.ReadFloatBlock(STFReader.UNITS.Time, null); break;
+                case "engine(stepcontrollersituation(hvoffrelaydelay_3": HVOffRelayDelay[3] = stf.ReadFloatBlock(STFReader.UNITS.Time, null); break;
+                case "engine(stepcontrollersituation(hvoffrelaydelay_4": HVOffRelayDelay[4] = stf.ReadFloatBlock(STFReader.UNITS.Time, null); break;
+                case "engine(stepcontrollersituation(hvoffrelaydelay_5": HVOffRelayDelay[5] = stf.ReadFloatBlock(STFReader.UNITS.Time, null); break;                
+                    
 
                 // Jindrich
                 case "engine(usingforcehandle": UsingForceHandle = stf.ReadBoolBlock(false); break;
@@ -1693,6 +1704,13 @@ namespace Orts.Simulation.RollingStocks
             IdleTMTemperatureDegC = locoCopy.IdleTMTemperatureDegC;
             AirTMCoolingPower = locoCopy.AirTMCoolingPower;
             TMTempTimeConstantSec = locoCopy.TMTempTimeConstantSec;
+            MaxDRTemperatureDegC = locoCopy.MaxDRTemperatureDegC;
+            IdleDRTemperatureDegC = locoCopy.IdleDRTemperatureDegC;
+            AirDRCoolingPower = locoCopy.AirDRCoolingPower;
+            DRTempTimeConstantSec = locoCopy.DRTempTimeConstantSec;
+            CoefStepControllerCurves = locoCopy.CoefStepControllerCurves;
+            for (int i = 0; i < 6; i++)            
+                HVOffRelayDelay[i] = locoCopy.HVOffRelayDelay[i];                            
 
             // Jindrich
             UsingForceHandle = locoCopy.UsingForceHandle;
@@ -1990,6 +2008,7 @@ namespace Orts.Simulation.RollingStocks
             outf.Write(CircularSwitchRedPosition[1]);
             outf.Write(CircularSwitchRedPosition[2]);
             outf.Write(FirstCabLoaded);
+            outf.Write(DRTemperature);
             #endregion
 
             base.Save(outf);
@@ -2199,6 +2218,7 @@ namespace Orts.Simulation.RollingStocks
             CircularSwitchRedPosition[1] = inf.ReadInt32();
             CircularSwitchRedPosition[2] = inf.ReadInt32();
             FirstCabLoaded = inf.ReadBoolean();
+            DRTemperature = inf.ReadSingle();
             #endregion
 
             base.Restore(inf);
@@ -3530,7 +3550,7 @@ namespace Orts.Simulation.RollingStocks
             if (AirTMCoolingPower == 0) AirTMCoolingPower = 80f;
             if (TMTempTimeConstantSec == 0) TMTempTimeConstantSec = 1500f;
 
-            if (BrakeSystem.StartOn || (RunCycle > 0 && TMTemperature == 0))
+            if (FirstCabLoaded || (RunCycle > 0 && TMTemperature == 0))
             {
                 RunCycle++;
                 if (Simulator.Settings.AirEmpty || BrakeSystem.IsAirEmpty)
@@ -3575,6 +3595,127 @@ namespace Orts.Simulation.RollingStocks
             //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Teplota TM: " + TMTemperatureData0 + " °C!"));
         }
 
+        public float DRTemperature;
+        public float DRTemperatureData;
+        public float DRTemperatureData0;
+        public float MaxDRTemperatureDegC;
+        public float IdleDRTemperatureDegC;
+        public float AirDRCoolingPower;
+        public bool DRCoolingIsOn;
+        public float DRTempTimeConstantSec;
+        float DRRunCycle;
+        public float DRTempCoef;        
+        public void DriveResistance_Temperature(float elapsedClockSeconds)
+        {
+            if (MaxDRTemperatureDegC == 0) return;
+
+            // Výpočet teploty jízdy na odporu
+            float CurrentLoadPercent = MathHelper.Clamp(Math.Max(PowerCurrent1, PowerCurrent2) / MaxCurrentA * 100f, 0, 100);
+
+            if (CoefStepControllerCurves != null)
+                DRTempCoef = CoefStepControllerCurves.Get(StepControllerValue, 0);
+
+            DRTempCoef = MathHelper.Clamp(DRTempCoef, 0.1f, 100f);
+
+            // Defaulty
+            //if (MaxDRTemperatureDegC == 0) MaxDRTemperatureDegC = 200f;
+            if (IdleDRTemperatureDegC == 0) IdleDRTemperatureDegC = 80f;
+            if (AirDRCoolingPower == 0) AirDRCoolingPower = 80f;
+            if (DRTempTimeConstantSec == 0) DRTempTimeConstantSec = 1500f;
+
+            if (FirstCabLoaded || (DRRunCycle > 0 && DRTemperature == 0))
+            {
+                DRRunCycle++;
+                if (Simulator.Settings.AirEmpty || BrakeSystem.IsAirEmpty)
+                    DRTemperature = CarOutsideTempC0;
+                else
+                    DRTemperature = IdleDRTemperatureDegC;
+                return;
+            }
+            DRRunCycle = 0;
+
+            // Fáze zahřívání vlivem zátěže DR
+            float DRTemperatureDelta = elapsedClockSeconds * (DRTempCoef * CurrentLoadPercent * 0.01f * (MaxDRTemperatureDegC - IdleDRTemperatureDegC) + IdleDRTemperatureDegC - DRTemperature) * (CurrentLoadPercent * 0.5f) / DRTempTimeConstantSec;
+            DRTemperature += MathHelper.Clamp(DRTemperatureDelta, 0, 1f);
+
+            // Přirozené chladnutí vlivem okolního prostředí
+            DRTemperature -= MathHelper.Clamp(elapsedClockSeconds * (DRTemperature - CarOutsideTempC0) / DRTempTimeConstantSec, 0, 1f);
+
+            // Ochlazení během aktivního chlazení
+            if (LocalThrottlePercent > 0 && PowerOn)
+            {
+                DRTemperature -= elapsedClockSeconds * (DRTemperature - (1.5f * CarOutsideTempCBase)) / DRTempTimeConstantSec * (AirDRCoolingPower / 500f);
+                if (!DRCoolingIsOn)
+                {
+                    DRCoolingIsOn = true;
+                    SignalEvent(Event.DRCoolingOn);
+                }
+            }
+            else
+            if (DRCoolingIsOn && (LocalThrottlePercent == 0 || !PowerOn))
+            {
+                DRCoolingIsOn = false;
+                SignalEvent(Event.DRCoolingOff);
+            }
+
+            if (DRTemperatureData > DRTemperature)
+                DRTemperatureData -= 20 * elapsedClockSeconds; // 20°C/s               
+            if (DRTemperatureData < DRTemperature)
+                DRTemperatureData += 10 * elapsedClockSeconds; // 10°C/s                                
+            DRTemperatureData = MathHelper.Clamp(DRTemperatureData, 0, 1000);
+            DRTemperatureData0 = (float)Math.Round(DRTemperatureData);
+
+            //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Teplota DR: " + DRTemperature + " °C!" + "    DRTempCoef: " + DRTempCoef));
+        }
+
+        int SituationCoef_1;
+        int SituationCoef_2;
+        float preSituationCoef_1;        
+        float[] HVOffRelayDelay = new float[6];
+        float SituationTimer_1;
+        float SituationTimer_2;
+        public void StepControllerSituation(float elapsedClockSeconds)
+        {
+            if (CoefStepControllerCurves != null)
+            {
+                SituationCoef_1 = (int)CoefStepControllerCurves.Get(StepControllerValue, 1);
+                SituationCoef_2 = (int)CoefStepControllerCurves.Get(StepControllerValue, 2);
+            }
+            else return;
+            
+            if (SituationCoef_1 != preSituationCoef_1) SituationTimer_1 = 0;
+            if (DRTemperature < MaxDRTemperatureDegC) SituationTimer_2 = 0;
+            
+            if (SituationCoef_1 == 1) // Relé přechodu ze série na paralel
+            {
+                if (PowerOn)
+                {
+                    SituationTimer_1 += elapsedClockSeconds;
+                    if (SituationTimer_1 > HVOffRelayDelay[1])
+                    {
+                        HVOff = true;
+                        SituationTimer_1 = 0;
+                        Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Odpadnutí relé hlídání přechodu série na paralel!"));
+                    }
+                }                
+            }
+            if (SituationCoef_2 == 1) // Relé přechodu ze série na paralel
+            {
+                if (PowerOn && DRTemperature > MaxDRTemperatureDegC)
+                {
+                    SituationTimer_2 += elapsedClockSeconds;
+                    if (SituationTimer_2 > HVOffRelayDelay[2])
+                    {
+                        HVOff = true;
+                        SituationTimer_2 = 0;
+                        Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Odpadnutí relé teplotní ochrany odporů!"));
+                    }
+                }
+            }
+
+            //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("SituationCoef_1: " + SituationCoef_1 + "    HVOffRelayDelay: " + HVOffRelayDelay[1]));                
+            preSituationCoef_1 = SituationCoef_1;            
+        }
 
         // Icik
         public float I_AuxConsumption = 0;
@@ -5352,6 +5493,8 @@ namespace Orts.Simulation.RollingStocks
                 PowerOn_Filter(elapsedClockSeconds);
                 SetAuxPower();
                 TM_Temperature(elapsedClockSeconds);
+                DriveResistance_Temperature(elapsedClockSeconds);
+                StepControllerSituation(elapsedClockSeconds);
                 AuxConsumptionOnLocomotive(elapsedClockSeconds); 
                 ElevatedConsumptionOnLocomotive(elapsedClockSeconds);
                 HVOffbyAirPressureE();
@@ -9270,6 +9413,7 @@ namespace Orts.Simulation.RollingStocks
                 if (IsPlayerTrain)
                 {                    
                     TM_Temperature(elapsedClockSeconds);
+                    DriveResistance_Temperature(elapsedClockSeconds);
                     Simulator.TrainIsPassenger = true;
                     foreach (TrainCar car in Train.Cars)
                     {
@@ -15380,6 +15524,12 @@ namespace Orts.Simulation.RollingStocks
                         data = CircularSwitchRedPosition[LocoStation];
                         break;
                     }
+                case CABViewControlTypes.DRIVERESISTANCE_TEMPERATURE:
+                    {                        
+                        data = DRTemperatureData0;
+                        break;
+                    }
+
                 case CABViewControlTypes.MOTOR_DISABLED:
                     {
                         if (extendedPhysics == null)
