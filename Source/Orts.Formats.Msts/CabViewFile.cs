@@ -832,6 +832,10 @@ namespace Orts.Formats.Msts
                 new STFReader.TokenProcessor("position", ()=>{ ParsePosition(stf);  }),
                 new STFReader.TokenProcessor("graphic", ()=>{ ParseGraphic(stf, basepath); }),
                 new STFReader.TokenProcessor("pivot", ()=>{ Center = stf.ReadFloatBlock(STFReader.UNITS.None, null); }),
+                // ORTS
+                new STFReader.TokenProcessor("ortsdisplay", ()=>{ParseDisplay(stf); }),
+                new STFReader.TokenProcessor("ortsscreenpage", () => {ParseScreen(stf); }),
+                new STFReader.TokenProcessor("ortscabviewpoint", ()=>{ParseCabViewpoint(stf); }),
                 });
             ControlType = dialtype;
             ControlStyle = CABViewControlStyles.NEEDLE;
