@@ -1428,11 +1428,11 @@ namespace Orts.Simulation.RollingStocks
                 case "engine(drparameters(idledrtemperature": IdleDRTemperatureDegC = stf.ReadFloatBlock(STFReader.UNITS.Temperature, null); break;
                 case "engine(drparameters(airdrcoolingpower": AirDRCoolingPower = stf.ReadFloatBlock(STFReader.UNITS.None, null); break;
                 case "engine(drparameters(drtemptimeconstantsec": DRTempTimeConstantSec = stf.ReadFloatBlock(STFReader.UNITS.None, null); break;                
-                case "engine(stepcontrollersituation(hvoffrelaydelay_1": HVOffRelayDelay[1] = stf.ReadFloatBlock(STFReader.UNITS.Time, null); break;                    
-                case "engine(stepcontrollersituation(hvoffrelaydelay_2": HVOffRelayDelay[2] = stf.ReadFloatBlock(STFReader.UNITS.Time, null); break;
-                case "engine(stepcontrollersituation(hvoffrelaydelay_3": HVOffRelayDelay[3] = stf.ReadFloatBlock(STFReader.UNITS.Time, null); break;
-                case "engine(stepcontrollersituation(hvoffrelaydelay_4": HVOffRelayDelay[4] = stf.ReadFloatBlock(STFReader.UNITS.Time, null); break;
-                case "engine(stepcontrollersituation(hvoffrelaydelay_5": HVOffRelayDelay[5] = stf.ReadFloatBlock(STFReader.UNITS.Time, null); break;                
+                case "engine(stepcontrollersituation(relaydelay_1": RelayDelay[1] = stf.ReadFloatBlock(STFReader.UNITS.Time, null); break;                    
+                case "engine(stepcontrollersituation(relaydelay_2": RelayDelay[2] = stf.ReadFloatBlock(STFReader.UNITS.Time, null); break;
+                case "engine(stepcontrollersituation(relaydelay_3": RelayDelay[3] = stf.ReadFloatBlock(STFReader.UNITS.Time, null); break;
+                case "engine(stepcontrollersituation(relaydelay_4": RelayDelay[4] = stf.ReadFloatBlock(STFReader.UNITS.Time, null); break;
+                case "engine(stepcontrollersituation(relaydelay_5": RelayDelay[5] = stf.ReadFloatBlock(STFReader.UNITS.Time, null); break;                
                     
 
                 // Jindrich
@@ -1710,7 +1710,7 @@ namespace Orts.Simulation.RollingStocks
             DRTempTimeConstantSec = locoCopy.DRTempTimeConstantSec;
             CoefStepControllerCurves = locoCopy.CoefStepControllerCurves;
             for (int i = 0; i < 6; i++)            
-                HVOffRelayDelay[i] = locoCopy.HVOffRelayDelay[i];                            
+                RelayDelay[i] = locoCopy.RelayDelay[i];                            
 
             // Jindrich
             UsingForceHandle = locoCopy.UsingForceHandle;
@@ -3633,13 +3633,14 @@ namespace Orts.Simulation.RollingStocks
                 return;
             }
             DRRunCycle = 0;
-
+            
             // Fáze zahřívání vlivem zátěže DR
             float DRTemperatureDelta = elapsedClockSeconds * (DRTempCoef * CurrentLoadPercent * 0.01f * (MaxDRTemperatureDegC - IdleDRTemperatureDegC) + IdleDRTemperatureDegC - DRTemperature) * (CurrentLoadPercent * 0.5f) / DRTempTimeConstantSec;
             DRTemperature += MathHelper.Clamp(DRTemperatureDelta, 0, 1f);
 
             // Přirozené chladnutí vlivem okolního prostředí
-            DRTemperature -= MathHelper.Clamp(elapsedClockSeconds * (DRTemperature - CarOutsideTempC0) / DRTempTimeConstantSec, 0, 1f);
+            DRTemperature -= MathHelper.Clamp(elapsedClockSeconds * (DRTemperature - CarOutsideTempC0) / (DRTempTimeConstantSec / 5f), 0, 10f);
+            //DRTemperature = 420;
 
             // Ochlazení během aktivního chlazení
             if (DRCoolingIsOn)            
@@ -3659,7 +3660,7 @@ namespace Orts.Simulation.RollingStocks
         int SituationCoef_2;
         int SituationCoef_3;
         float preSituationCoef_1;        
-        float[] HVOffRelayDelay = new float[6];
+        float[] RelayDelay = new float[6];
         float SituationTimer_1;
         float SituationTimer_2;
         float SituationTimer_3;
@@ -3682,7 +3683,7 @@ namespace Orts.Simulation.RollingStocks
                 if (PowerOn)
                 {
                     SituationTimer_1 += elapsedClockSeconds;
-                    if (SituationTimer_1 > HVOffRelayDelay[1])
+                    if (SituationTimer_1 > RelayDelay[1])
                     {
                         HVOff = true;
                         SituationTimer_1 = 0;
@@ -3698,7 +3699,7 @@ namespace Orts.Simulation.RollingStocks
                 if (PowerOn && DRTemperature > MaxDRTemperatureDegC)
                 {
                     SituationTimer_2 += elapsedClockSeconds;
-                    if (SituationTimer_2 > HVOffRelayDelay[2])
+                    if (SituationTimer_2 > RelayDelay[2])
                     {
                         HVOff = true;
                         SituationTimer_2 = 0;
@@ -3714,7 +3715,7 @@ namespace Orts.Simulation.RollingStocks
                 if (PowerOn)
                 {
                     SituationTimer_3 += elapsedClockSeconds;
-                    if (SituationTimer_3 > HVOffRelayDelay[3])
+                    if (SituationTimer_3 > RelayDelay[3])
                     {
                         if (!DRCoolingIsOn)
                         {
@@ -3746,7 +3747,7 @@ namespace Orts.Simulation.RollingStocks
             }
             #endregion Coef 3
 
-            //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("SituationCoef_1: " + SituationCoef_1 + "    HVOffRelayDelay: " + HVOffRelayDelay[1]));                
+            //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("SituationCoef_1: " + SituationCoef_1 + "    RelayDelay: " + RelayDelay[1]));                
             preSituationCoef_1 = SituationCoef_1;            
         }
 
