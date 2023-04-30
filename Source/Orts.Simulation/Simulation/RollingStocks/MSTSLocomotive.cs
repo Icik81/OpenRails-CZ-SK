@@ -3642,21 +3642,8 @@ namespace Orts.Simulation.RollingStocks
             DRTemperature -= MathHelper.Clamp(elapsedClockSeconds * (DRTemperature - CarOutsideTempC0) / DRTempTimeConstantSec, 0, 1f);
 
             // Ochlazení během aktivního chlazení
-            if (LocalThrottlePercent > 0 && PowerOn)
-            {
-                DRTemperature -= elapsedClockSeconds * (DRTemperature - (1.5f * CarOutsideTempCBase)) / DRTempTimeConstantSec * (AirDRCoolingPower / 500f);
-                if (!DRCoolingIsOn)
-                {
-                    DRCoolingIsOn = true;
-                    SignalEvent(Event.DRCoolingOn);
-                }
-            }
-            else
-            if (DRCoolingIsOn && (LocalThrottlePercent == 0 || !PowerOn))
-            {
-                DRCoolingIsOn = false;
-                SignalEvent(Event.DRCoolingOff);
-            }
+            if (DRCoolingIsOn)            
+                DRTemperature -= elapsedClockSeconds * (DRTemperature - (1.5f * CarOutsideTempCBase)) / DRTempTimeConstantSec * (AirDRCoolingPower / 500f);                                        
 
             if (DRTemperatureData > DRTemperature)
                 DRTemperatureData -= 20 * elapsedClockSeconds; // 20°C/s               
@@ -3670,22 +3657,26 @@ namespace Orts.Simulation.RollingStocks
 
         int SituationCoef_1;
         int SituationCoef_2;
+        int SituationCoef_3;
         float preSituationCoef_1;        
         float[] HVOffRelayDelay = new float[6];
         float SituationTimer_1;
         float SituationTimer_2;
+        float SituationTimer_3;
         public void StepControllerSituation(float elapsedClockSeconds)
         {
             if (CoefStepControllerCurves != null)
             {
                 SituationCoef_1 = (int)CoefStepControllerCurves.Get(StepControllerValue, 1);
                 SituationCoef_2 = (int)CoefStepControllerCurves.Get(StepControllerValue, 2);
+                SituationCoef_3 = (int)CoefStepControllerCurves.Get(StepControllerValue, 3);
             }
             else return;
             
             if (SituationCoef_1 != preSituationCoef_1) SituationTimer_1 = 0;
             if (DRTemperature < MaxDRTemperatureDegC) SituationTimer_2 = 0;
-            
+
+            #region Coef 1
             if (SituationCoef_1 == 1) // Relé přechodu ze série na paralel
             {
                 if (PowerOn)
@@ -3699,6 +3690,9 @@ namespace Orts.Simulation.RollingStocks
                     }
                 }                
             }
+            #endregion Coef 1
+
+            #region Coef 2
             if (SituationCoef_2 == 1) // Relé přechodu ze série na paralel
             {
                 if (PowerOn && DRTemperature > MaxDRTemperatureDegC)
@@ -3712,6 +3706,45 @@ namespace Orts.Simulation.RollingStocks
                     }
                 }
             }
+            #endregion Coef 2
+
+            #region Coef 3
+            if (SituationCoef_3 == 1) // Relé zapnutí chladících ventilátorů
+            {
+                if (PowerOn)
+                {
+                    SituationTimer_3 += elapsedClockSeconds;
+                    if (SituationTimer_3 > HVOffRelayDelay[3])
+                    {
+                        if (!DRCoolingIsOn)
+                        {
+                            DRCoolingIsOn = true;
+                            SignalEvent(Event.DRCoolingOn);
+                        }
+                        SituationTimer_3 = 0;
+                        //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Sepnutí relé chladících ventilátorů!"));
+                    }
+                }
+                else
+                {
+                    if (DRCoolingIsOn)
+                    {
+                        DRCoolingIsOn = false;
+                        SignalEvent(Event.DRCoolingOff);
+                    }
+                    SituationTimer_3 = 0;
+                }
+            }
+            else
+            {
+                if (DRCoolingIsOn)
+                {
+                    DRCoolingIsOn = false;
+                    SignalEvent(Event.DRCoolingOff);
+                }
+                SituationTimer_3 = 0;
+            }
+            #endregion Coef 3
 
             //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("SituationCoef_1: " + SituationCoef_1 + "    HVOffRelayDelay: " + HVOffRelayDelay[1]));                
             preSituationCoef_1 = SituationCoef_1;            
