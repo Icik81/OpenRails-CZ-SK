@@ -978,7 +978,7 @@ namespace Orts.Simulation.RollingStocks
             {
                 BrakeSystem.BrakeCarHasStatus = true;
                 switch (Simulator.Random.Next(0, 200))
-                {
+                {                    
                     case 150:
                         BrakeSystem.CarHasAirStuckBrake_1 = true; // Nejde odbrzdit
                         BrakeSystem.CarHasProblemWithBrake = true;
@@ -987,9 +987,11 @@ namespace Orts.Simulation.RollingStocks
                         BrakeSystem.CarHasAirStuckBrake_2 = true; // Nejde zabrzdit
                         BrakeSystem.CarHasProblemWithBrake = true;
                         break;
+                    case 52:
+                    case 122:
                     case 152:
                         BrakeSystem.CarHasAirStuckBrake_3 = true; // Netěsný vůz
-                        BrakeSystem.CarHasProblemWithBrake = true;
+                        //BrakeSystem.CarHasProblemWithBrake = true;
                         break;
                     case 153:
                         BrakeSystem.CarHasMechanicStuckBrake_1 = true; // Brzdí málo
@@ -999,8 +1001,8 @@ namespace Orts.Simulation.RollingStocks
                         BrakeSystem.CarHasMechanicStuckBrake_2 = true; // Je zaseklý 
                         BrakeSystem.CarHasProblemWithBrake = true;
                         break;
-                }
-            }
+                }                
+            }        
         }
 
         // called when it's time to update the MotiveForce and FrictionForce

@@ -165,6 +165,7 @@ namespace Orts.Simulation.RollingStocks
         public bool LeftDoorOpenOverride;
         public bool RightDoorOpenOverride;
         public float TrainPipeLeakRatePSIpSBase;
+        public float TrainPipeLeakRatePSIpSBase0;
         public float TrainPipeLeakRatePSIpS;
         public float TimeToCloseDoor;
         public float TimeToCloseDoorGenerate;
@@ -1616,7 +1617,7 @@ namespace Orts.Simulation.RollingStocks
                 case "wagon(airlossbyhandlingdoors": AirlossByHandlingDoorsPSIpS = stf.ReadFloatBlock(STFReader.UNITS.PressureRateDefaultPSIpS, null); break;
                 case "wagon(automaticdoors": AutomaticDoors = stf.ReadBoolBlock(false); break;
                 case "wagon(freightdoors": FreightDoors = stf.ReadBoolBlock(false); break;
-                case "wagon(trainpipeleakrate": TrainPipeLeakRatePSIpSBase = stf.ReadFloatBlock(STFReader.UNITS.PressureRateDefaultPSIpS, null); break;
+                case "wagon(trainpipeleakrate": TrainPipeLeakRatePSIpSBase0 = TrainPipeLeakRatePSIpSBase = stf.ReadFloatBlock(STFReader.UNITS.PressureRateDefaultPSIpS, null); break;
                 case "wagon(dieselheaterpower": DieselHeaterPower = stf.ReadFloatBlock(STFReader.UNITS.Power, null); break;
                 case "wagon(dieselheaterconsumptionperhour": DieselHeaterConsumptionPerHour = stf.ReadFloatBlock(STFReader.UNITS.Volume, null); break;
                 case "wagon(dieselheatertankcapacity": DieselHeaterTankCapacity = stf.ReadFloatBlock(STFReader.UNITS.Volume, null); break;
@@ -1808,6 +1809,7 @@ namespace Orts.Simulation.RollingStocks
             DoorLeftOpen = copy.DoorLeftOpen;
             DoorRightOpen = copy.DoorRightOpen;
             TrainPipeLeakRatePSIpSBase = copy.TrainPipeLeakRatePSIpSBase;
+            TrainPipeLeakRatePSIpSBase0 = copy.TrainPipeLeakRatePSIpSBase0;
             DieselHeaterPower = copy.DieselHeaterPower;
             DieselHeaterConsumptionPerHour = copy.DieselHeaterConsumptionPerHour;
             DieselHeaterTankCapacity = copy.DieselHeaterTankCapacity;

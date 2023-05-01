@@ -1865,7 +1865,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
 
                 if ((car as MSTSWagon).BrakeSystem.CarHasAirStuckBrake_3)
                 {
-                    (car as MSTSWagon).TrainPipeLeakRatePSIpSBase = 0.0500f * 14.50377f;
+                    (car as MSTSWagon).TrainPipeLeakRatePSIpSBase = (car as MSTSWagon).TrainPipeLeakRatePSIpSBase0 * 10f;
                     if ((car as MSTSWagon).BrakeSystem.BrakeCarDeactivate)
                     {
                         (car as MSTSWagon).TrainPipeLeakRatePSIpS = 0;
