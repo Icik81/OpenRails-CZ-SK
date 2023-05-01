@@ -201,6 +201,9 @@ namespace ORTS.Settings
         // Icik
         [Default(false)]
         public bool AirEmpty { get; set; }
+        // Jindřich
+        [Default(true)]
+        public bool GenerateRandomPaxCount { get; set; }
 
         // Audio settings:
         [Default(true)]

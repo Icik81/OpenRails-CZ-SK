@@ -221,6 +221,7 @@ namespace ORTS
             checkHotStart.Checked = Settings.HotStart;
             checkForcedRedAtStationStops.Checked = !Settings.NoForcedRedAtStationStops;
             checkDoorsAITrains.Checked = Settings.OpenDoorsInAITrains;
+            checkGenerateRandomPax.Checked = Settings.GenerateRandomPaxCount;
 
             // Keyboard tab
             InitializeKeyboardSettings();
@@ -510,6 +511,7 @@ namespace ORTS
             Settings.HotStart = checkHotStart.Checked;
             Settings.NoForcedRedAtStationStops = !checkForcedRedAtStationStops.Checked;
             Settings.OpenDoorsInAITrains = checkDoorsAITrains.Checked;
+            Settings.GenerateRandomPaxCount = checkGenerateRandomPax.Checked;
 
             // Keyboard tab
             // These are edited live.

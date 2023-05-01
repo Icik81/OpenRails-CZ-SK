@@ -16490,7 +16490,9 @@ namespace Orts.Simulation.Physics
             if (!namesFilled)
             {
                 if (Simulator.Activity != null &&
-                Simulator.Activity.Tr_Activity.Tr_Activity_File.PlatformNumPassengersWaiting == null)
+                Simulator.Activity.Tr_Activity.Tr_Activity_File.PlatformNumPassengersWaiting == null &&
+                Simulator.Settings.GenerateRandomPaxCount
+                )
                 {
                     // calculate maximum capacity
                     MaxPaxCapacity = 0;
