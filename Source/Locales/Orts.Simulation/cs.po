@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Orts.Simulation\n"
-"POT-Creation-Date: 2023-05-01 07:38:12+0200\n"
-"PO-Revision-Date: 2023-05-01 07:40+0200\n"
+"POT-Creation-Date: 2023-05-01 13:17:13+0200\n"
+"PO-Revision-Date: 2023-05-01 13:19+0200\n"
 "Last-Translator: Altmann <altmann@bk.ru>\n"
 "Language-Team: Open Rails Dev Team\n"
 "Language: cs\n"
@@ -1494,21 +1494,21 @@ msgstr "Je nutná změna směru - přední část vlaku je mimo původní trasu"
 msgid "Cannot clear signal behind train while in AUTO mode"
 msgstr "V AUTO režimu není možné žádat o volnou cestu za vlakem"
 
-#: ../../Orts.Simulation/Simulation/Physics/Train.cs:16763
+#: ../../Orts.Simulation/Simulation/Physics/Train.cs:16765
 msgid "Passenger got out of the train "
 msgstr "Vystoupil cestující "
 
-#: ../../Orts.Simulation/Simulation/Physics/Train.cs:16817
-#: ../../Orts.Simulation/Simulation/Physics/Train.cs:16840
+#: ../../Orts.Simulation/Simulation/Physics/Train.cs:16819
+#: ../../Orts.Simulation/Simulation/Physics/Train.cs:16842
 msgid "Passenger got in the train "
 msgstr "Nastoupil cestující "
 
-#: ../../Orts.Simulation/Simulation/Physics/Train.cs:16956
+#: ../../Orts.Simulation/Simulation/Physics/Train.cs:16958
 msgid "Car "
 msgstr "Vůz "
 
-#: ../../Orts.Simulation/Simulation/Physics/Train.cs:17030
-#: ../../Orts.Simulation/Simulation/Physics/Train.cs:17035
+#: ../../Orts.Simulation/Simulation/Physics/Train.cs:17032
+#: ../../Orts.Simulation/Simulation/Physics/Train.cs:17037
 msgid "Locomotive "
 msgstr "Lokomotiva "
 
@@ -1519,7 +1519,7 @@ msgstr "Vlak zastavil kvůli problémům s dalším vlakem: {0} , důvod: {1}"
 
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSDieselLocomotive.cs:843
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSElectricLocomotive.cs:3120
-#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/PowerSupplies/DieselEngine.cs:385
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/PowerSupplies/DieselEngine.cs:391
 msgid "Engine"
 msgstr "Lokomotiva"
 
@@ -1530,7 +1530,7 @@ msgstr "Převod"
 
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSDieselLocomotive.cs:852
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSElectricLocomotive.cs:3136
-#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/PowerSupplies/DieselEngine.cs:393
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/PowerSupplies/DieselEngine.cs:399
 msgid "Control"
 msgstr "Řídící vůz"
 
@@ -1677,7 +1677,7 @@ msgstr "NENÍ OK"
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSElectricLocomotive.cs:3128
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:7244
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:7258
-#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/PowerSupplies/DieselEngine.cs:389
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/PowerSupplies/DieselEngine.cs:395
 msgid "Helper"
 msgstr "Postrk"
 
@@ -3093,42 +3093,58 @@ msgstr ""
 msgid "Circuit breaker closing not authorized"
 msgstr "Sepnutí hlavního vypínače není povoleno!"
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/PowerSupplies/DieselEngine.cs:1882
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/PowerSupplies/DieselEngine.cs:356
+msgid "Starting"
+msgstr "Startuje"
+
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/PowerSupplies/DieselEngine.cs:357
+msgid "Stopping"
+msgstr "Zastavuje"
+
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/PowerSupplies/DieselEngine.cs:358
+msgid "Running"
+msgstr "Běží"
+
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/PowerSupplies/DieselEngine.cs:359
+msgid "Stopped"
+msgstr "Zastaven"
+
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/PowerSupplies/DieselEngine.cs:1888
 msgid "The engine's wrecked!"
 msgstr "Spalovací motor je zadřený!"
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/PowerSupplies/DieselEngine.cs:1888
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/PowerSupplies/DieselEngine.cs:1894
 msgid "The engine's damaged!"
 msgstr "Spalovací motor je poškozen!"
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/PowerSupplies/DieselEngine.cs:1896
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/PowerSupplies/DieselEngine.cs:1902
 msgid "The engine is overheating! Water temperature:"
 msgstr "Spalovací motor se přehřívá! Teplota vody:"
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/PowerSupplies/DieselEngine.cs:1898
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/PowerSupplies/DieselEngine.cs:1904
 msgid "The engine is overheating! Oil temperature:"
 msgstr "Spalovací motor se přehřívá! Teplota oleje:"
 
 #. Context: Engine
-#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/PowerSupplies/DieselEngine.cs:496
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/PowerSupplies/DieselEngine.cs:502
 msgctxt "Engine"
 msgid "Stopped"
 msgstr "Spalovací motor zastaven"
 
 #. Context: Engine
-#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/PowerSupplies/DieselEngine.cs:497
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/PowerSupplies/DieselEngine.cs:503
 msgctxt "Engine"
 msgid "Starting"
 msgstr "Spalovací motor startuje"
 
 #. Context: Engine
-#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/PowerSupplies/DieselEngine.cs:498
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/PowerSupplies/DieselEngine.cs:504
 msgctxt "Engine"
 msgid "Running"
 msgstr "Spalovací motor běží"
 
 #. Context: Engine
-#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/PowerSupplies/DieselEngine.cs:499
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/PowerSupplies/DieselEngine.cs:505
 msgctxt "Engine"
 msgid "Stopping"
 msgstr "Spalovací motor stopuje"
@@ -4205,9 +4221,6 @@ msgstr ""
 
 #~ msgid "End"
 #~ msgstr "Konec"
-
-#~ msgid "Running"
-#~ msgstr "Jízda"
 
 #~ msgid "GenericObjectViewerForm"
 #~ msgstr "Okno obecného objektu"

@@ -351,7 +351,13 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
 
             //result.AppendFormat(Simulator.Catalog.GetString("Status"));
             foreach (var eng in DEList)
-                result.AppendFormat("\t{0}", Simulator.Catalog.GetString(GetStringAttribute.GetPrettyName(eng.EngineStatus)));
+            switch (GetStringAttribute.GetPrettyName(eng.EngineStatus))
+                {
+                    case "Starting": result.AppendFormat("\t{0}", Simulator.Catalog.GetString("Starting")); break;
+                    case "Stopping": result.AppendFormat("\t{0}", Simulator.Catalog.GetString("Stopping")); break;
+                    case "Running": result.AppendFormat("\t{0}", Simulator.Catalog.GetString("Running")); break;
+                    case "Stopped": result.AppendFormat("\t{0}", Simulator.Catalog.GetString("Stopped")); break;
+                }                
 
             //result.AppendFormat("\t{0}\t{1}", Simulator.Catalog.GetParticularString("HUD", "Power"), FormatStrings.FormatPower(MaxOutputPowerW, Locomotive.IsMetric, false, false));
             foreach (var eng in DEList)
