@@ -12065,7 +12065,7 @@ namespace Orts.Simulation.RollingStocks
                 }
             }
             // Nastavení světel pro postrk
-            if (!IsLeadLocomotive() && this is MSTSLocomotive)
+            if (!IsLeadLocomotive() && this is MSTSLocomotive && this.LocoHelperOn)
             {
                 LightFrontLW = false; LightFrontLR = false; LightFrontRW = false; LightFrontRR = false; LightRearLW = false; LightRearLR = false; LightRearRW = false; LightRearRR = false;
                 if (Flipped)
