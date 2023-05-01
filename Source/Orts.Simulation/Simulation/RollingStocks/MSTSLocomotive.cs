@@ -3541,11 +3541,13 @@ namespace Orts.Simulation.RollingStocks
         float RunCycle;
         public void TM_Temperature(float elapsedClockSeconds)
         {
+            if (MaxTMTemperatureDegC == 0) return;
+
             // Výpočet teploty trakčních motorů
             float CurrentLoadPercent = MathHelper.Clamp(Math.Max(PowerCurrent1, PowerCurrent2) / MaxCurrentA * 100f, 0, 100);                        
 
             // Defaulty
-            if (MaxTMTemperatureDegC == 0) MaxTMTemperatureDegC = 200f;
+            //if (MaxTMTemperatureDegC == 0) MaxTMTemperatureDegC = 200f;
             if (IdleTMTemperatureDegC == 0) IdleTMTemperatureDegC = 80f;
             if (AirTMCoolingPower == 0) AirTMCoolingPower = 80f;
             if (TMTempTimeConstantSec == 0) TMTempTimeConstantSec = 1500f;
@@ -3584,7 +3586,14 @@ namespace Orts.Simulation.RollingStocks
                 TMCoolingIsOn = false;
                 SignalEvent(Event.TMCoolingOff);
             }
-            
+
+            // Ochrana proti přehřátí TM
+            if (TMTemperature > MaxTMTemperatureDegC && PowerOn)
+            {
+                Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Thermal protection of traction motors is in effect!"));
+                HVOff = true;
+            }
+
             if (TMTemperatureData > TMTemperature)
                 TMTemperatureData -= 20 * elapsedClockSeconds; // 20°C/s               
             if (TMTemperatureData < TMTemperature)
@@ -3687,14 +3696,14 @@ namespace Orts.Simulation.RollingStocks
                     {
                         HVOff = true;
                         SituationTimer_1 = 0;
-                        Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Odpadnutí relé hlídání přechodu série na paralel!"));
+                        Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Renegade relay policing the series transition to parallel!"));
                     }
                 }                
             }
             #endregion Coef 1
 
             #region Coef 2
-            if (SituationCoef_2 == 1) // Relé přechodu ze série na paralel
+            if (SituationCoef_2 == 1) // Relé teploty odporů
             {
                 if (PowerOn && DRTemperature > MaxDRTemperatureDegC)
                 {
@@ -3703,7 +3712,7 @@ namespace Orts.Simulation.RollingStocks
                     {
                         HVOff = true;
                         SituationTimer_2 = 0;
-                        Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Odpadnutí relé teplotní ochrany odporů!"));
+                        Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Renegade relay temperature protection resistors!"));
                     }
                 }
             }
@@ -15557,6 +15566,11 @@ namespace Orts.Simulation.RollingStocks
                     {
                         CircularSwitchEnable = true;
                         data = CircularSwitchRedPosition[LocoStation];
+                        break;
+                    }
+                case CABViewControlTypes.TRACTIONMOTORS_TEMPERATURE:
+                    {
+                        data = TMTemperatureData0;
                         break;
                     }
                 case CABViewControlTypes.DRIVERESISTANCE_TEMPERATURE:

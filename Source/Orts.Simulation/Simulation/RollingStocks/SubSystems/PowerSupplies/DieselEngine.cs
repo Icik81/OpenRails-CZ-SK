@@ -396,10 +396,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                 result.AppendFormat("\t{0:F0} {1}", Locomotive.Variable8, FormatStrings.rpm);
 
             foreach (var eng in DEList)
-                result.AppendFormat("\t{0:F1} {1}", eng.TurboPressureBar, FormatStrings.bar);
+                result.AppendFormat("\t {0:F1} {1}", eng.TurboPressureBar, FormatStrings.bar);
 
             foreach (var eng in DEList)
-                result.AppendFormat("\t{0:F1}%", Locomotive.Variable7);
+                result.AppendFormat("\t {0:F1}%", Locomotive.Variable7);
 
             return result.ToString();
         }
