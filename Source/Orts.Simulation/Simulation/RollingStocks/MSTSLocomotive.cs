@@ -9624,7 +9624,7 @@ namespace Orts.Simulation.RollingStocks
         float EngineBrakeValueR;
         float EngineBrakeValueN;
         float EngineBrakeValueA;
-        bool EngineBrakeHas1Notch;
+        public bool EngineBrakeHas1Notch;
         float prevAutoCylPressurePSI1;
         bool EngineBrakeSoundChange;
         public void EngineBrakeValueLogic(float elapsedClockSeconds)

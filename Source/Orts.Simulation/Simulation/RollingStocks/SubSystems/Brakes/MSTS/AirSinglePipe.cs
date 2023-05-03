@@ -3190,7 +3190,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 // Definice pro brzdič BP2
                 if (brakeSystem.BP2_EngineBrakeController && lead.EngineBrakeController.TrainBrakeControllerState != ControllerState.Neutral)
                 {
-                    train.BrakeLine3PressurePSI = lead.BrakeSystem.BrakeCylinderMaxSystemPressurePSI * EngineBrakeControllerRate;
+                    if (lead.EngineBrakeHas1Notch)
+                        train.BrakeLine3PressurePSI = lead.BrakeSystem.BrakeCylinderMaxSystemPressurePSI * EngineBrakeControllerRate;
                     // Apply
                     if (lead.BrakeSystem.AutoCylPressurePSI1 < train.BrakeLine3PressurePSI  
                         && lead.MainResPressurePSI > 0
