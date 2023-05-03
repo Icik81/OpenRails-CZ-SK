@@ -9634,6 +9634,7 @@ namespace Orts.Simulation.RollingStocks
                 //Simulator.Confirmer.MSG("EngineBrakeValue[0] = " + EngineBrakeValue[0] + "        EngineBrakeValue[1] = " + EngineBrakeValue[1] + "   EngineBrakeValue[2] = " + EngineBrakeValue[2]);
                 if (EngineBrakeController.Notches.Count <= 1 || EngineBrakeHas1Notch)
                 {
+                    EngineBrakeHas1Notch = true;
                     EngineBrakeValue[0] = Math.Max(EngineBrakeValue[1], EngineBrakeValue[2]);
                     SetEngineBrakePercent(EngineBrakeValue[0] * 100f);
                     if (BrakeSystem.AutoCylPressurePSI1 != prevAutoCylPressurePSI1 && EngineBrakeValue[LocoStation] != prevEngineBrakeValue[LocoStation])
