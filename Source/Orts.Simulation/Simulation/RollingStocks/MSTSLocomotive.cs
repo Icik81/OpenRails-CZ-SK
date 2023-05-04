@@ -2618,7 +2618,7 @@ namespace Orts.Simulation.RollingStocks
             if (RouteVoltageV == 3000)
                 if (distance > 14000)
                     distance = 14000;
-            if (RouteVoltageV == 25000)
+            if (RouteVoltageV > 3000)
                 if (distance > 28000)
                     distance = 28000;
             return (float)distance;
@@ -4474,7 +4474,7 @@ namespace Orts.Simulation.RollingStocks
                     if (MinAuxPressureHVPSI == 0)
                         MinAuxPressureHVPSI = 4.2f * 14.50377f; // 4.2 barů                    
                 }
-                if (LocomotivePowerVoltage == 25000)
+                if (LocomotivePowerVoltage > 3000)
                 {
                     // Maximální tlak v jímce pomocného kompresoru 
                     if (MaxAuxResPressurePSI == 0)
@@ -10132,6 +10132,7 @@ namespace Orts.Simulation.RollingStocks
                             SwitchingVoltageMode_OffDC = true;
                             SwitchingVoltageMode_OffAC = false;
                             break;
+                        case 15000:
                         case 25000:
                             SwitchingVoltageMode = 2;
                             SwitchingVoltageMode_OffDC = false;
@@ -10215,6 +10216,7 @@ namespace Orts.Simulation.RollingStocks
                         SwitchingVoltageMode_OffDC = true;
                         SwitchingVoltageMode_OffAC = false;
                         break;
+                    case 15000:
                     case 25000:
                         SwitchingVoltageMode = 2;
                         SwitchingVoltageMode_OffDC = false;
@@ -10803,11 +10805,18 @@ namespace Orts.Simulation.RollingStocks
             continuingTimeChangingSystem += elapsedSeconds;
 
             PantoBlocked = false;
-
+            if (SelectedPowerSystem == PowerSystem.AT15kV                
+                && (RouteVoltageV == 3000 || RouteVoltageV == 25000))
+            {
+                PantoBlocked = true;
+                HVOff = true;
+                SystemAnnunciator = 3;
+                return;
+            }
             if ((SelectedPowerSystem == PowerSystem.CZ25kV
                 || SelectedPowerSystem == PowerSystem.SK25kV
                 || SelectingPowerSystem == PowerSystem.DE25kV)
-                && RouteVoltageV == 3000)
+                && (RouteVoltageV == 3000 || RouteVoltageV == 15000))
             {
                 PantoBlocked = true;
                 HVOff = true;
@@ -10816,7 +10825,7 @@ namespace Orts.Simulation.RollingStocks
             }
             if ((SelectedPowerSystem == PowerSystem.CZ3kV
                 || SelectedPowerSystem == PowerSystem.SK3kV)
-                && RouteVoltageV == 25000)
+                && (RouteVoltageV == 25000 || RouteVoltageV == 15000))
             {
                 PantoBlocked = true;
                 HVOff = true;
@@ -12985,14 +12994,18 @@ namespace Orts.Simulation.RollingStocks
                     break;
                 case 2:
                     MultiSystemEngine = true;
-                    Simulator.Confirmer.Information(Simulator.Catalog.GetString("Power system changed to 3kV + 25kV."));
+                    Simulator.Confirmer.Information(Simulator.Catalog.GetString("Power system changed to 3kV + 15kV + 25kV."));
                     switch (RouteVoltageV)
                     {
                         case 3000:
                             SwitchingVoltageMode = 0;
                             LocomotivePowerVoltage = 3000;
                             SwitchingVoltageMode_OffDC = true;
-
+                            break;
+                        case 15000:
+                            SwitchingVoltageMode = 2;
+                            LocomotivePowerVoltage = 15000;
+                            SwitchingVoltageMode_OffAC = true;
                             break;
                         case 25000:
                             SwitchingVoltageMode = 2;

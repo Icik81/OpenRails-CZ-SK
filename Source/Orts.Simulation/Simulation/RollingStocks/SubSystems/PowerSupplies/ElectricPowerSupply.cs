@@ -258,8 +258,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                     // Icik
                     if (Locomotive.IsPlayerTrain && Locomotive.RouteVoltageV != 600)
                     {                        
-                        // Trakce na 25kV naměří napětí hned                                           
-                        if (Locomotive.RouteVoltageV == 25000)
+                        // Trakce na 15kV nebo 25kV naměří napětí hned                                           
+                        if (Locomotive.RouteVoltageV > 3000)
                             SetPantographVoltageV(PantographFilter.Filter((int)Locomotive.ActualLocoVoltage, elapsedClockSeconds));
 
                         // Trakce na 3kV po přepnutí na DC naběhne napětí, jednosystémová lokomotiva naměří napětí hned

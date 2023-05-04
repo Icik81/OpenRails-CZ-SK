@@ -824,7 +824,7 @@ namespace Orts.Simulation.RollingStocks
             else if (Locomotive.CruiseControl.controllerVolts == 0)
                 ForceN = maxForceN = 0;
 
-            if (!Locomotive.PowerOn && Locomotive.RouteVoltageV == 25000)
+            if (!Locomotive.PowerOn && Locomotive.RouteVoltageV > 3000)
             {
                 ForceN = maxForceN = Locomotive.DynamicBrakeForceN = 0;
                 Locomotive.SetDynamicBrakePercent(0);
@@ -1181,7 +1181,7 @@ namespace Orts.Simulation.RollingStocks
             {
                 MotiveForce = Locomotive.DynamicBrakeForceCurvesDC.Get(Percent / 100, Locomotive.extendedPhysics.AverageAxleSpeedMpS);
             }
-            if (Locomotive.RouteVoltageV == 25000)
+            if (Locomotive.RouteVoltageV > 3000)
             {
                 MotiveForce = Locomotive.DynamicBrakeForceCurvesAC.Get(Percent / 100, Locomotive.extendedPhysics.AverageAxleSpeedMpS);
             }
