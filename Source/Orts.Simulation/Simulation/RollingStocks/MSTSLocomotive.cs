@@ -4562,91 +4562,94 @@ namespace Orts.Simulation.RollingStocks
         bool AIBellStartOn;
         public void SetAIAction(float elapsedClockSeconds)
         {
-            if (Simulator.GameTimeCyklus10 == 10)
-            {                
-                if ((Train as AITrain) != null)
+            if ((Train as AITrain) != null)
+            {
+                CarIsWaiting = false;
+                if (((this as MSTSElectricLocomotive != null) && (this as MSTSElectricLocomotive).AIPantoDownStop)
+                    || ((this as MSTSDieselLocomotive != null) && (this as MSTSDieselLocomotive).AIMotorStop)
+                    || ((this as MSTSLocomotive != null) && (this as MSTSLocomotive).LocoIsStatic))
+                    foreach (TrainCar car in (Train as AITrain).Cars)
+                    {
+                        car.BrakeSystem.PowerForWagon = false;
+                        PowerOn = false;
+                    }
+                else
+                    foreach (TrainCar car in (Train as AITrain).Cars)
+                    {
+                        car.BrakeSystem.PowerForWagon = true;
+                        PowerOn = true;
+                    }
+
+                // Parní lokomotivy nevypínají motor :)
+                if (this as MSTSSteamLocomotive != null && !(this as MSTSLocomotive).LocoIsStatic)
                 {
-                    CarIsWaiting = false;
+                    this.BrakeSystem.PowerForWagon = true;
+                    PowerOn = true;
+                }
 
-                    if (((this as MSTSElectricLocomotive != null) && (this as MSTSElectricLocomotive).AIPantoDownStop)
-                        || ((this as MSTSDieselLocomotive != null) && (this as MSTSDieselLocomotive).AIMotorStop)
-                        || ((this as MSTSLocomotive != null) && (this as MSTSLocomotive).LocoIsStatic))
-                        foreach (TrainCar car in (Train as AITrain).Cars)
-                        {
-                            car.BrakeSystem.PowerForWagon = false;
-                            PowerOn = false;
-                        }
-                    else
-                        foreach (TrainCar car in (Train as AITrain).Cars)
-                        {
-                            car.BrakeSystem.PowerForWagon = true;
-                            PowerOn = true;
-                        }
+                // AI je ve stanici nebo stojí
+                if ((Train as AITrain).MovementState == AITrain.AI_MOVEMENT_STATE.STATION_STOP
+                    || (Train as AITrain).MovementState == AITrain.AI_MOVEMENT_STATE.STOPPED
+                    || (Train as AITrain).MovementState == AITrain.AI_MOVEMENT_STATE.SUSPENDED)
+                    CarIsWaiting = true;
 
-                    // AI je ve stanici nebo stojí
-                    if ((Train as AITrain).MovementState == AITrain.AI_MOVEMENT_STATE.STATION_STOP
-                        || (Train as AITrain).MovementState == AITrain.AI_MOVEMENT_STATE.STOPPED
-                        || (Train as AITrain).MovementState == AITrain.AI_MOVEMENT_STATE.SUSPENDED)
-                        CarIsWaiting = true;
-
-                    if ((Train as AITrain) != null && (Train as AITrain).nextActionInfo != null)
+                if ((Train as AITrain) != null && (Train as AITrain).nextActionInfo != null)
+                {
+                    if ((Train as AITrain).nextActionInfo.GetType().IsSubclassOf(typeof(AuxActionItem)))
                     {
-                        if ((Train as AITrain).nextActionInfo.GetType().IsSubclassOf(typeof(AuxActionItem)))
+                        if ((Train as AITrain).AuxActionsContain[0] != null && ((AIAuxActionsRef)(Train as AITrain).AuxActionsContain[0]).NextAction == AuxActionRef.AUX_ACTION.WAITING_POINT)
                         {
-                            if ((Train as AITrain).AuxActionsContain[0] != null && ((AIAuxActionsRef)(Train as AITrain).AuxActionsContain[0]).NextAction == AuxActionRef.AUX_ACTION.WAITING_POINT)
-                            {
-                                var AIActionPoint0 = ((Train as AITrain).AuxActionsContain.SpecAuxActions[0] as AIActionWPRef);
-                                if (AIActionPoint0.Delay < 40000 && CarIsShunting && Math.Abs((Train as AITrain).SpeedMpS) > 0)
-                                    CarIsRunning = true;
-                                if (AIActionPoint0.Delay < 40000 && CarIsRunning && (Train as AITrain).SpeedMpS == 0)
-                                    CarIsWaiting = true;
-                            }
-                        }
-                    }
-
-                    if (CarIsWaiting)
-                    {
-                        CarIsShunting = false;
-                        CarIsRunning = false;
-                    }
-
-                    // AI posunuje                     
-                    if ((Train as AITrain) != null && (Train as AITrain).nextActionInfo != null)
-                    {
-                        if ((Train as AITrain).nextActionInfo.GetType().IsSubclassOf(typeof(AuxActionItem)))
-                        {
-                            if ((Train as AITrain).AuxActionsContain[0] != null && ((AIAuxActionsRef)(Train as AITrain).AuxActionsContain[0]).NextAction == AuxActionRef.AUX_ACTION.WAITING_POINT)
-                            {
-                                var AIActionPoint0 = ((Train as AITrain).AuxActionsContain.SpecAuxActions[0] as AIActionWPRef);
-                                if (AIActionPoint0.Delay > 40000 && AIActionPoint0.Delay < 60010)
-                                {
-                                    CarIsShunting = true;
-                                    AIStartOn = true;
-                                }
-                                else
-                                {
-                                    AIStartOn = false;
-                                    AIBellStartOn = false;
-                                }
-                            }                            
-                        }
-                    }                    
-
-                    // AI zapíská
-                    if (AIStartOn && !AIBellStartOn && AbsSpeedMpS > 0)
-                    {
-                        AIBellTimer += elapsedClockSeconds;                        
-                        if (AIBellTimer > 0.0f)
-                            SignalEvent(Event.BellOn);
-                        if (AIBellTimer > 0.1f)
-                        {
-                            SignalEvent(Event.BellOff);
-                            AIBellStartOn = true;
-                            AIBellTimer = 0;
+                            var AIActionPoint0 = ((Train as AITrain).AuxActionsContain.SpecAuxActions[0] as AIActionWPRef);
+                            if (AIActionPoint0.Delay < 40000 && CarIsShunting && Math.Abs((Train as AITrain).SpeedMpS) > 0)
+                                CarIsRunning = true;
+                            if (AIActionPoint0.Delay < 40000 && CarIsRunning && (Train as AITrain).SpeedMpS == 0)
+                                CarIsWaiting = true;
                         }
                     }
                 }
-            }
+
+                if (CarIsWaiting)
+                {
+                    CarIsShunting = false;
+                    CarIsRunning = false;
+                }
+
+                // AI posunuje                     
+                if ((Train as AITrain) != null && (Train as AITrain).nextActionInfo != null)
+                {
+                    if ((Train as AITrain).nextActionInfo.GetType().IsSubclassOf(typeof(AuxActionItem)))
+                    {
+                        if ((Train as AITrain).AuxActionsContain[0] != null && ((AIAuxActionsRef)(Train as AITrain).AuxActionsContain[0]).NextAction == AuxActionRef.AUX_ACTION.WAITING_POINT)
+                        {
+                            var AIActionPoint0 = ((Train as AITrain).AuxActionsContain.SpecAuxActions[0] as AIActionWPRef);
+                            if (AIActionPoint0.Delay > 40000 && AIActionPoint0.Delay < 60010)
+                            {
+                                CarIsShunting = true;
+                                AIStartOn = true;
+                            }
+                            else
+                            {
+                                AIStartOn = false;
+                                AIBellStartOn = false;
+                            }
+                        }
+                    }
+                }
+
+                // AI zapíská
+                if (AIStartOn && !AIBellStartOn && AbsSpeedMpS > 0)
+                {
+                    AIBellTimer += elapsedClockSeconds;
+                    if (AIBellTimer > 0.0f)
+                        SignalEvent(Event.BellOn);
+                    if (AIBellTimer > 0.1f)
+                    {
+                        SignalEvent(Event.BellOff);
+                        AIBellStartOn = true;
+                        AIBellTimer = 0;
+                    }
+                }
+            }            
         }
 
         // Panto shodí HV po zadaném čase

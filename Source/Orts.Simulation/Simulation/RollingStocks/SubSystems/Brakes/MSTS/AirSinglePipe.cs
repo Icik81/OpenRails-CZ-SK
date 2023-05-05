@@ -970,7 +970,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 {
                     if (loco.BrakeSystem.PowerForWagon)
                     {
-                        int MainResPressurePSI = Simulator.Random.Next(7, 10);
+                        int MainResPressurePSI = Simulator.Random.Next(8, 10);
                         loco.MainResPressurePSI = MainResPressurePSI * 14.50377f;
                     }
                     else                        
