@@ -966,8 +966,12 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             // Zjednodušený model pro AI
             if (!Car.IsPlayerTrain)
             {
-                if (!Car.IsPlayerTrain && loco != null && loco.CarFrameUpdateState == 3)
+                if (loco != null && loco.CarFrameUpdateState < 3)                
+                    loco.MainResPressurePSI = 8f * 14.50377f;                 
+                
+                if (loco != null && loco.CarFrameUpdateState == 3)
                 {
+                    loco.MainResPressurePSI = 8f * 14.50377f;
                     if (loco.BrakeSystem.PowerForWagon)
                     {
                         int MainResPressurePSI = Simulator.Random.Next(8, 10);

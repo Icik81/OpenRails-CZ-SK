@@ -4560,6 +4560,7 @@ namespace Orts.Simulation.RollingStocks
         float AIBellTimer;
         bool AIStartOn;
         bool AIBellStartOn;
+        bool CarIsWaitingAtStation;
         public void SetAIAction(float elapsedClockSeconds)
         {
             if ((Train as AITrain) != null)
@@ -4592,6 +4593,10 @@ namespace Orts.Simulation.RollingStocks
                     || (Train as AITrain).MovementState == AITrain.AI_MOVEMENT_STATE.STOPPED
                     || (Train as AITrain).MovementState == AITrain.AI_MOVEMENT_STATE.SUSPENDED)
                     CarIsWaiting = true;
+
+                // AI je ve stanici
+                if ((Train as AITrain).MovementState == AITrain.AI_MOVEMENT_STATE.STATION_STOP)
+                    CarIsWaitingAtStation = true;
 
                 if ((Train as AITrain) != null && (Train as AITrain).nextActionInfo != null)
                 {
@@ -4649,7 +4654,15 @@ namespace Orts.Simulation.RollingStocks
                         AIBellTimer = 0;
                     }
                 }
-            }            
+
+                // Výpravčí pískne k odjezdu AI ze stanice
+                if (CarIsWaitingAtStation && this.AbsSpeedMpS > 0.1f)
+                {
+                    CarIsWaitingAtStation = false;
+                    SignalEvent(Event.PermissionToDepart);
+                }
+
+            }
         }
 
         // Panto shodí HV po zadaném čase
