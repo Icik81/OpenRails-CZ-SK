@@ -4564,23 +4564,33 @@ namespace Orts.Simulation.RollingStocks
         bool CarIsWaitingAtStation;
         public void SetAIAction(float elapsedClockSeconds)
         {
-            if ((Train as AITrain) != null)
+            if ((Train as AITrain) != null && (this as MSTSLocomotive) != null)
             {
                 CarIsWaiting = false;
-                if (((this as MSTSElectricLocomotive != null) && (this as MSTSElectricLocomotive).AIPantoDownStop)
-                    || ((this as MSTSDieselLocomotive != null) && (this as MSTSDieselLocomotive).AIMotorStop)
-                    || ((this as MSTSLocomotive != null) && (this as MSTSLocomotive).LocoIsStatic))
-                    foreach (TrainCar car in (Train as AITrain).Cars)
+                if (((this as MSTSElectricLocomotive) != null && (this as MSTSElectricLocomotive).AIPantoDownStop)
+                    || ((this as MSTSDieselLocomotive) != null && (this as MSTSDieselLocomotive).AIMotorStop)
+                    || (this as MSTSLocomotive).LocoIsStatic)
+                {
+                    if (this.BrakeSystem.PowerForWagon == true)
                     {
-                        car.BrakeSystem.PowerForWagon = false;
-                        PowerOn = false;
+                        foreach (TrainCar car in (Train as AITrain).Cars)
+                        {
+                            car.BrakeSystem.PowerForWagon = false;
+                            PowerOn = false;
+                        }
                     }
+                }
                 else
-                    foreach (TrainCar car in (Train as AITrain).Cars)
+                {
+                    if (this.BrakeSystem.PowerForWagon == false)
                     {
-                        car.BrakeSystem.PowerForWagon = true;
-                        PowerOn = true;
+                        foreach (TrainCar car in (Train as AITrain).Cars)
+                        {
+                            car.BrakeSystem.PowerForWagon = true;
+                            PowerOn = true;
+                        }
                     }
+                }
 
                 // Parní lokomotivy nevypínají motor :)
                 if (this as MSTSSteamLocomotive != null && !(this as MSTSLocomotive).LocoIsStatic)
@@ -4643,22 +4653,23 @@ namespace Orts.Simulation.RollingStocks
                 }
 
                 // AI zapíská
-                if (AIStartOn && !AIBellStartOn && AbsSpeedMpS > 0)
+                if (AIStartOn && !AIBellStartOn && this.ThrottlePercent > 0.0f)
                 {
                     AITimerStart += elapsedClockSeconds;
-                    AIBellTimer += elapsedClockSeconds;
-                    if (AIBellTimer > 0.0f)
+                    if (AIBellTimer == 0.0f)
                         SignalEvent(Event.BellOn);
-                    if (AIBellTimer > 0.1f)
+                    
+                    AIBellTimer += elapsedClockSeconds;                    
+                    if (AIBellTimer > 0.5f)
                     {
                         SignalEvent(Event.BellOff);
                         AIBellStartOn = true;
-                        AIBellTimer = 0;
+                        AIBellTimer = 0.0f;
                     }
                 }
 
                 // Výpravčí pískne k odjezdu AI ze stanice
-                if (CarIsWaitingAtStation && this.AbsSpeedMpS > 0)
+                if (CarIsWaitingAtStation && this.ThrottlePercent > 0.0f)
                 {
                     AITimerStart += elapsedClockSeconds;
                     CarIsWaitingAtStation = false;
@@ -4666,16 +4677,16 @@ namespace Orts.Simulation.RollingStocks
                 }
 
                 // Vyčkávací čas AI po písknutí nebo povolení odjezdu
-                if (AITimerStart > 0)
+                if (AITimerStart > 0.0f)
                 {
                     AITimerStart += elapsedClockSeconds;
-                    if (AITimerStart < 0.5f)
+                    if (AITimerStart < 3.0f)
                     {
-                        ThrottlePercent = 0;
-                        SpeedMpS = 0;
+                        ThrottlePercent = 0.0f;
+                        SpeedMpS = 0.0f;
                     }
                     else
-                        AITimerStart = 0;
+                        AITimerStart = 0.0f;
                 }
             }
         }
@@ -5523,7 +5534,7 @@ namespace Orts.Simulation.RollingStocks
                 }
             }
 
-            if (!IsPlayerTrain && !Simulator.Paused && CarLengthM > 1f && Simulator.GameTimeCyklus10 == 0)
+            if (!IsPlayerTrain && !Simulator.Paused && CarLengthM > 1f)
             {
                 SetAIAction(elapsedClockSeconds);
                 AcceptMUSignals = true;

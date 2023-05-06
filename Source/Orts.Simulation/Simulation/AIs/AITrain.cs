@@ -114,12 +114,12 @@ namespace Orts.Simulation.AIs
         public AI AI;
 
         //  SPA:    Add public in order to be able to get these infos in new AIActionItems
-        public static float keepDistanceStatTrainM_P = 10.0f;  // stay 10m behind stationary train (pass in station)
+        public static float keepDistanceStatTrainM_P = 8.5f;  // stay 10m behind stationary train (pass in station)
         public static float keepDistanceStatTrainM_F = 50.0f;  // stay 50m behind stationary train (freight or pass outside station)
         public static float followDistanceStatTrainM = 30.0f;  // min dist for starting to follow
         public static float keepDistanceMovingTrainM = 300.0f; // stay 300m behind moving train
         public static float creepSpeedMpS = 2.5f;              // speed for creeping up behind train or upto signal
-        public static float couplingSpeedMpS = 0.4f;           // speed for coupling to other train
+        public static float couplingSpeedMpS = 0.139f;           // speed for coupling to other train
         public static float maxFollowSpeedMpS = 15.0f;         // max. speed when following
         public static float movingtableSpeedMpS = 2.5f;        // speed for moving tables (approx. max 8 kph)
         public static float hysterisMpS = 0.5f;                // speed hysteris value to avoid instability
