@@ -742,6 +742,7 @@
     <Content Include="Content\GenericSound\2_Wheels\okolky_90a.wav" />
     <Content Include="Content\GenericSound\2_Wheels\okolky_90b.wav" />
     <Content Include="Content\GenericSound\2_Wheels\okolky_ex.wav" />
+    <Content Include="Content\GenericSound\2_Wheels\pistalka.wav" />
     <Content Include="Content\GenericSound\2_Wheels\prokluz.wav" />
     <Content Include="Content\GenericSound\2_Wheels\Rozjezd_30km.wav" />
     <Content Include="Content\GenericSound\2_Wheels\rozpojovani.wav" />
@@ -823,6 +824,7 @@
     <Content Include="Content\GenericSound\4_Wheels\okolky_90a.wav" />
     <Content Include="Content\GenericSound\4_Wheels\okolky_90b.wav" />
     <Content Include="Content\GenericSound\4_Wheels\okolky_ex.wav" />
+    <Content Include="Content\GenericSound\4_Wheels\pistalka.wav" />
     <Content Include="Content\GenericSound\4_Wheels\prokluz.wav" />
     <Content Include="Content\GenericSound\4_Wheels\rozpojovani.wav" />
     <Content Include="Content\GenericSound\4_Wheels\sprahlo-natazeni.wav" />

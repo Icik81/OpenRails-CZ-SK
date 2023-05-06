@@ -758,15 +758,20 @@ namespace Orts.Simulation.RollingStocks
             }
 
             // Hack pro start zvuku motoru JV ladění
-            if ((BrakeSystem.StartOn || !IsPlayerTrain) && MotorStartCyklus < 20 && JVSetUp)
+            if (JVSetUp)
             {
-                MotorStartCyklus++;
-                if (!Simulator.Settings.AirEmpty && IsPlayerTrain)
-                    SignalEvent(Event.EnginePowerOn);
-
-                if (!IsPlayerTrain && this.BrakeSystem.PowerForWagon)
-                    SignalEvent(Event.EnginePowerOn);
-            }                      
+                if (!IsLeadLocomotive() && this.CarFrameUpdateState == 20)
+                {
+                    MotorStartCyklus++;
+                    if (this.BrakeSystem.PowerForWagon)
+                        SignalEvent(Event.EnginePowerOn);
+                }
+                if (IsLeadLocomotive() && BrakeSystem.StartOn)
+                {
+                    if (!Simulator.Settings.AirEmpty)
+                        SignalEvent(Event.EnginePowerOn);
+                }
+            }
         }
 
         public override void ChangeGearUp()

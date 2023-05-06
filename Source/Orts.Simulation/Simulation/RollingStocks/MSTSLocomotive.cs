@@ -4558,6 +4558,7 @@ namespace Orts.Simulation.RollingStocks
 
         // AI akce pro definici světel a písknutí při posunu
         float AIBellTimer;
+        float AITimerStart;
         bool AIStartOn;
         bool AIBellStartOn;
         bool CarIsWaitingAtStation;
@@ -4644,6 +4645,7 @@ namespace Orts.Simulation.RollingStocks
                 // AI zapíská
                 if (AIStartOn && !AIBellStartOn && AbsSpeedMpS > 0)
                 {
+                    AITimerStart += elapsedClockSeconds;
                     AIBellTimer += elapsedClockSeconds;
                     if (AIBellTimer > 0.0f)
                         SignalEvent(Event.BellOn);
@@ -4656,12 +4658,25 @@ namespace Orts.Simulation.RollingStocks
                 }
 
                 // Výpravčí pískne k odjezdu AI ze stanice
-                if (CarIsWaitingAtStation && this.AbsSpeedMpS > 0.1f)
+                if (CarIsWaitingAtStation && this.AbsSpeedMpS > 0)
                 {
+                    AITimerStart += elapsedClockSeconds;
                     CarIsWaitingAtStation = false;
-                    SignalEvent(Event.PermissionToDepart);
+                    SignalEvent(Event.AIPermissionToDepart);
                 }
 
+                // Vyčkávací čas AI po písknutí nebo povolení odjezdu
+                if (AITimerStart > 0)
+                {
+                    AITimerStart += elapsedClockSeconds;
+                    if (AITimerStart < 0.5f)
+                    {
+                        ThrottlePercent = 0;
+                        SpeedMpS = 0;
+                    }
+                    else
+                        AITimerStart = 0;
+                }
             }
         }
 
@@ -5508,7 +5523,7 @@ namespace Orts.Simulation.RollingStocks
                 }
             }
 
-            if (!IsPlayerTrain && !Simulator.Paused && CarLengthM > 1f)
+            if (!IsPlayerTrain && !Simulator.Paused && CarLengthM > 1f && Simulator.GameTimeCyklus10 == 0)
             {
                 SetAIAction(elapsedClockSeconds);
                 AcceptMUSignals = true;
@@ -9460,8 +9475,8 @@ namespace Orts.Simulation.RollingStocks
         public void CarFrameUpdate(float elapsedClockSeconds)
         {
             this.CarFrameUpdateState++;
-            if (this.CarFrameUpdateState > 10)
-                this.CarFrameUpdateState = 10;
+            if (this.CarFrameUpdateState > 25)
+                this.CarFrameUpdateState = 25;
 
             // První průběh - inicializace hodnot
             if (this.CarFrameUpdateState == 1)

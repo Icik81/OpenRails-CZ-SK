@@ -350,7 +350,8 @@ namespace Orts.Common
         CommandCylinderThrottlePositionChangeUp,
         CommandCylinderThrottlePositionChangeDown,
         DRCoolingOn,
-        DRCoolingOff
+        DRCoolingOff,
+        AIPermissionToDepart
     }
 
     public static class Events
@@ -716,6 +717,7 @@ namespace Orts.Common
                         case 20104: return Event.CommandCylinderThrottlePositionChangeDown;
                         case 20105: return Event.DRCoolingOn;
                         case 20106: return Event.DRCoolingOff;
+                        case 20107: return Event.AIPermissionToDepart;
 
                         default: return 0;
                     }
