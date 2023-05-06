@@ -143,6 +143,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
 
         public void Update(float elapsedClockSeconds)
         {
+            // Icik
+            if (!Locomotive.IsLeadLocomotive()) return;
+
             if (!initialized[Locomotive.LocoStation])
             {
                 if (Locomotive.CruiseControl != null)
