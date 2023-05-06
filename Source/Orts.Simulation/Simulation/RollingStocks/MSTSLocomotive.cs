@@ -12916,12 +12916,19 @@ namespace Orts.Simulation.RollingStocks
                     if (CommandCylinderPosition[LocoStation] > 0)
                         CommandCylinderPosition[LocoStation]--;
                     CommandCylinderTimer2 = 0.0f;
-                    CommandCylinderThrottleChangeUp = false;
-                    CommandCylinderThrottleChangeDown = true;
+                    CommandCylinderDown = true;
+                    if (StationIsActivated[LocoStation])
+                    {
+                        CommandCylinderThrottleChangeUp = false;
+                        CommandCylinderThrottleChangeDown = true;
+                    }
                 }
             }
-            if (CommandCylinderPosition[LocoStation] == 0)
-                CommandCylinderToZero = false;
+            if (CommandCylinderPosition[LocoStation] == 0 && CommandCylinderToZero)
+            {
+                CommandCylinderToZero = false;                
+                CommandCylinderThrottleChangeDown = false;                
+            }
 
             // Krokování nahoru
             if (CommandCylinderUp)
@@ -12939,7 +12946,7 @@ namespace Orts.Simulation.RollingStocks
                 }
             }
             // Krokování dolu
-            if (CommandCylinderDown)
+            if (CommandCylinderDown && !CommandCylinderToZero)
             {
                 CommandCylinderTimerIsDownKey += elapsedClockSeconds;
                 if (CommandCylinderTimerIsDownKey > CommandCylinderTimerIsDownKeyPeriod)
@@ -12957,11 +12964,30 @@ namespace Orts.Simulation.RollingStocks
             if (CommandCylinderPosition[LocoStation] != preCommandCylinderPosition[LocoStation])
             {
                 preCommandCylinderPosition[LocoStation] = CommandCylinderPosition[LocoStation];
-                
-                if (CommandCylinderUp && CommandCylinderThrottleTimer == 0)
-                    CommandCylinderThrottleChangeUp = true;
-                if (CommandCylinderDown && CommandCylinderThrottleTimer == 0)
-                    CommandCylinderThrottleChangeDown = true;
+
+                if (StationIsActivated[LocoStation])
+                {
+                    if (CommandCylinderUp && CommandCylinderPosition[LocoStation] > CommandCylinderThrottlePosition[LocoStation])
+                    {
+                        CommandCylinderThrottleChangeUp = true;
+                        CommandCylinderThrottleChangeDown = false;
+                    }
+                    if (CommandCylinderDown && CommandCylinderPosition[LocoStation] < CommandCylinderThrottlePosition[LocoStation])
+                    {
+                        CommandCylinderThrottleChangeUp = false;
+                        CommandCylinderThrottleChangeDown = true;
+                    }
+                    if (CommandCylinderUp && CommandCylinderPosition[LocoStation] < CommandCylinderThrottlePosition[LocoStation])
+                    {
+                        CommandCylinderThrottleChangeUp = false;
+                        CommandCylinderThrottleChangeDown = true;
+                    }
+                    if (CommandCylinderDown && CommandCylinderPosition[LocoStation] > CommandCylinderThrottlePosition[LocoStation])
+                    {
+                        CommandCylinderThrottleChangeUp = true;
+                        CommandCylinderThrottleChangeDown = false;
+                    }
+                }
                 
                 if (CommandCylinderUp)
                     SignalEvent(Event.CommandCylinderPositionChangeUp);
