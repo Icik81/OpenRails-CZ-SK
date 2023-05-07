@@ -20,6 +20,7 @@ using Orts.Formats.Msts;
 using Orts.Simulation.AIs;
 using Orts.Simulation.Physics;
 using Orts.Simulation.RollingStocks;
+using Orts.Simulation.Timetables;
 using ORTS.Common;
 using System;
 using System.Collections.Generic;
@@ -1061,11 +1062,13 @@ namespace Orts.Simulation
                 if (IsAtStation(MyPlayerTrain))
                     MyPlayerTrain.ReverseAtStationStopTest(MyPlayerTrain);
 
+                if (MyPlayerTrain.StationStops.Count == 1) MyPlayerTrain.EndStation = true;
+
                 var loco = MyPlayerTrain.LeadLocomotive as MSTSLocomotive;
                 if (loco != null)
                 {
                     // Automatické centrální dveře
-                    if (!maydepart && arrived && loco.CentralHandlingDoors && !loco.OpenedLeftDoor && !loco.OpenedRightDoor && MyPlayerTrain.StationStops[0].PlatformItem.PassengerList.Count > 0)
+                    if (!maydepart && arrived && loco.CentralHandlingDoors && !loco.OpenedLeftDoor && !loco.OpenedRightDoor && (MyPlayerTrain.StationStops[0].PlatformItem.PassengerList.Count > 0 || MyPlayerTrain.EndStation))
                     {
                         BoardingEndS = Simulator.ClockTime + BoardingS;
                         double SchDepartS = SchDepart.Subtract(new DateTime()).TotalSeconds;
@@ -1081,9 +1084,9 @@ namespace Orts.Simulation
                         var remaining = (int)Math.Ceiling(BoardingEndS - Simulator.ClockTime);
                         if (remaining < 1) DisplayColor = Color.LightGreen;
                         else if (remaining < 11) DisplayColor = new Color(255, 255, 128);
-                        else DisplayColor = Color.White;
-
-                        if (!BoardingCompleted)
+                        else DisplayColor = Color.White;                        
+                        
+                        if (!BoardingCompleted || MyPlayerTrain.EndStation)
                             MyPlayerTrain.UpdatePassengerCountAndWeight(MyPlayerTrain, MyPlayerTrain.StationStops[0].PlatformItem.NumPassengersWaiting, clock);
 
                         if (remaining < 120 && (MyPlayerTrain.TrainType != Train.TRAINTYPE.AI_PLAYERHOSTING))

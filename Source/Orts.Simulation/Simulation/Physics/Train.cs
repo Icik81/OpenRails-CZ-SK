@@ -16468,6 +16468,8 @@ namespace Orts.Simulation.Physics
         public float MaxPaxCapacity = 0;
         public float CurrentPaxCapacity = 0;
         protected bool wasCarsChanged = false;
+        // Icik
+        public bool EndStation { get; set; }
         public void FillNames(Train train)
         {
             if (numCars == 0)
@@ -16601,7 +16603,7 @@ namespace Orts.Simulation.Physics
                         }
                     }
                     station++;
-                }
+                }                
                 namesFilled = true;
             }
         }
@@ -16624,7 +16626,7 @@ namespace Orts.Simulation.Physics
                     if (!loc.DoorLeftOpen && !loc.DoorRightOpen && loc.CentralHandlingDoors)
                         return;
                 }
-            }
+            }            
 
             MSTSWagon locoWag = null;
             MSTSLocomotive loco = null;
@@ -16807,77 +16809,80 @@ namespace Orts.Simulation.Physics
                 }
             }
         boarding:
-            currentWagIndex = 0;
-            foreach (Passenger pax in train.StationStops[0].PlatformItem.PassengerList)
+            currentWagIndex = 0;            
+            if (!EndStation)
             {
-                if (pax.TimeToStartBoarding < gameClock) // board him
+                foreach (Passenger pax in train.StationStops[0].PlatformItem.PassengerList)
                 {
-                    for (int i = 0; i < train.Cars.Count; i++)
+                    if (pax.TimeToStartBoarding < gameClock) // board him
                     {
-                        var wagon = (train.Cars[i] as MSTSWagon);
-                        if (wagon is MSTSLocomotive)
-                            locoWag = (MSTSLocomotive)wagon;
-
-                        if ((wagon.HasPassengerCapacity || wagon.WagonType == TrainCar.WagonTypes.Passenger) && !wagon.FreightDoors)
+                        for (int i = 0; i < train.Cars.Count; i++)
                         {
-                            if (wagon.UnboardingComplete)
+                            var wagon = (train.Cars[i] as MSTSWagon);
+                            if (wagon is MSTSLocomotive)
+                                locoWag = (MSTSLocomotive)wagon;
+
+                            if ((wagon.HasPassengerCapacity || wagon.WagonType == TrainCar.WagonTypes.Passenger) && !wagon.FreightDoors)
                             {
-                                if (pax.WagonIndex == currentWagIndex)
+                                if (wagon.UnboardingComplete)
                                 {
-                                    if (!platformSide && !loco.DoorLeftOpen && !loco.CentralHandlingDoors)
+                                    if (pax.WagonIndex == currentWagIndex)
                                     {
-                                        train.ToggleDoorsPeople(false, true, wagon);
+                                        if (!platformSide && !loco.DoorLeftOpen && !loco.CentralHandlingDoors)
+                                        {
+                                            train.ToggleDoorsPeople(false, true, wagon);
+                                        }
+                                        if (platformSide && !loco.DoorRightOpen && !loco.CentralHandlingDoors)
+                                        {
+                                            train.ToggleDoorsPeople(true, true, wagon);
+                                        }
+                                        if (!loco.DoorLeftOpen && !loco.DoorRightOpen && loco.CentralHandlingDoors)
+                                            continue;
+                                        wagon.PassengerList.Add(pax);
+                                        pax.Boarded = true;
+                                        train.StationStops[0].PlatformItem.PassengerList.Remove(pax);
+                                        wagon.MassKG += pax.Weight < 0 ? -pax.Weight : pax.Weight;
+                                        train.TotalOnBoard++;
+                                        string a = "";
+                                        if (pax.Gender == Passenger.Genders.Female)
+                                            a = "a";
+                                        //train.Simulator.Confirmer.Information(Simulator.Catalog.GetString("Nastoupil" + a + " cestujíci ") + pax.FirstName.Replace("\"", "") + " " + pax.Surname.Replace("\"", ""));
+                                        train.Simulator.Confirmer.Information(Simulator.Catalog.GetString("Passenger got in the train ") + pax.FirstName.Replace("\"", "") + " " + pax.Surname.Replace("\"", ""));
+                                        goto boarded;
                                     }
-                                    if (platformSide && !loco.DoorRightOpen && !loco.CentralHandlingDoors)
-                                    {
-                                        train.ToggleDoorsPeople(true, true, wagon);
-                                    }
-                                    if (!loco.DoorLeftOpen && !loco.DoorRightOpen && loco.CentralHandlingDoors)
-                                        continue;
-                                    wagon.PassengerList.Add(pax);
-                                    pax.Boarded = true;
-                                    train.StationStops[0].PlatformItem.PassengerList.Remove(pax);
-                                    wagon.MassKG += pax.Weight < 0 ? -pax.Weight : pax.Weight;
-                                    train.TotalOnBoard++;
-                                    string a = "";
-                                    if (pax.Gender == Passenger.Genders.Female)
-                                        a = "a";
-                                    //train.Simulator.Confirmer.Information(Simulator.Catalog.GetString("Nastoupil" + a + " cestujíci ") + pax.FirstName.Replace("\"", "") + " " + pax.Surname.Replace("\"", ""));
-                                    train.Simulator.Confirmer.Information(Simulator.Catalog.GetString("Passenger got in the train ") + pax.FirstName.Replace("\"", "") + " " + pax.Surname.Replace("\"", ""));
-                                    goto boarded;
                                 }
+                                else
+                                    enterTimesCalculated = false;
+                                currentWagIndex++;
                             }
-                            else
-                                enterTimesCalculated = false;
-                            currentWagIndex++;
                         }
                     }
-                }
-                if (pax.TimeToStartBoarding < gameClock && !pax.Boarded)
-                {
-                    try
+                    if (pax.TimeToStartBoarding < gameClock && !pax.Boarded)
                     {
-                        var wagon = train.Cars[1];
-                        wagon.PassengerList.Add(pax);
-                        train.StationStops[0].PlatformItem.PassengerList.Remove(pax);
-                        wagon.MassKG += pax.Weight < 0 ? -pax.Weight : pax.Weight;
-                        train.TotalOnBoard++;
-                        string a = "";
-                        if (pax.Gender == Passenger.Genders.Female)
-                            a = "a";
-                        //train.Simulator.Confirmer.Information(Simulator.Catalog.GetString("Nastoupil" + a + " cestujíci ") + pax.FirstName.Replace("\"", "") + " " + pax.Surname.Replace("\"", ""));
-                        train.Simulator.Confirmer.Information(Simulator.Catalog.GetString("Passenger got in the train ") + pax.FirstName.Replace("\"", "") + " " + pax.Surname.Replace("\"", ""));
-                        goto boarded;
-                    }
-                    catch
-                    {
-                        train.StationStops[0].PlatformItem.PassengerList.Remove(pax);
-                    }
+                        try
+                        {
+                            var wagon = train.Cars[1];
+                            wagon.PassengerList.Add(pax);
+                            train.StationStops[0].PlatformItem.PassengerList.Remove(pax);
+                            wagon.MassKG += pax.Weight < 0 ? -pax.Weight : pax.Weight;
+                            train.TotalOnBoard++;
+                            string a = "";
+                            if (pax.Gender == Passenger.Genders.Female)
+                                a = "a";
+                            //train.Simulator.Confirmer.Information(Simulator.Catalog.GetString("Nastoupil" + a + " cestujíci ") + pax.FirstName.Replace("\"", "") + " " + pax.Surname.Replace("\"", ""));
+                            train.Simulator.Confirmer.Information(Simulator.Catalog.GetString("Passenger got in the train ") + pax.FirstName.Replace("\"", "") + " " + pax.Surname.Replace("\"", ""));
+                            goto boarded;
+                        }
+                        catch
+                        {
+                            train.StationStops[0].PlatformItem.PassengerList.Remove(pax);
+                        }
 
+                    }
+                    else continue;
+                    boarded:
+                    break;
                 }
-                else continue;
-                boarded:
-                break;
             }
 
             //if (train.StationStops[0].PlatformItem.PassengerList.Count == 0 && !train.BoardingComplete && true == false)
