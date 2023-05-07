@@ -306,6 +306,7 @@
 
         [GetString("Set Power Supply Station Location")] ControlPowerStationLocation,
         [GetString("Set Voltage 25k")] ControlSetVoltage25k,
+        [GetString("Set Voltage 15k")] ControlSetVoltage15k,
         [GetString("Set Voltage 3k")] ControlSetVoltage3k,
         [GetString("Set Voltage 0")] ControlSetVoltage0,
         [GetString("Set Delete Voltage Marker")] ControlDeleteVoltageMarker,

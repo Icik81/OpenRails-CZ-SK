@@ -453,7 +453,6 @@ namespace Orts.Simulation.RollingStocks
         {
             if (Simulator.Paused)
                 return;
-
             TramRailUnit = LocomotivePowerVoltage == 600 ? true: false;            
             // Tramvaje 600V DC
             if (RouteVoltageV == 600 && LocomotivePowerVoltage == 600)
@@ -638,7 +637,13 @@ namespace Orts.Simulation.RollingStocks
             }
             else
                 myStation.Update();
-            float wireResistance = RouteVoltageV == 3000 ? dist / 50000 : dist / 5000;
+            float wireResistance = 0;
+            if (RouteVoltageV == 3000)
+                wireResistance = dist / 50000;
+            if (RouteVoltageV == 25000)
+                wireResistance = dist / 5000;
+            if (RouteVoltageV == 15000)
+                wireResistance = dist / 10000;
 
             float newVoltage = wireResistance * myStation.TotalAmps;
             float distDrop = RouteVoltageV == 3000 ? dist / 50 : dist / 20;
@@ -1057,6 +1062,8 @@ namespace Orts.Simulation.RollingStocks
                 // Blokování HV u vícesystémových lokomotiv při malém napětí                                                
                 if (MultiSystemEngine)
                 {
+                    if (LocoType == LocoTypes.Vectron && RouteVoltageV == 15000)
+                        Loco15kV = true;
                     // Pokud nebude žádný HV aktivní
                     if (!HV5Enable && !HV3Enable && !HV2Enable && !HV4Enable)
                     {

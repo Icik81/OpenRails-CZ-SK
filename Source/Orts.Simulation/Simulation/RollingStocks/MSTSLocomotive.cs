@@ -10773,7 +10773,7 @@ namespace Orts.Simulation.RollingStocks
             switch (SelectingPowerSystem)
             {
                 case PowerSystem.AT15kV:
-                    // TODO change system to 15kV
+                    SwitchingVoltageMode = 2;
                     break;
                 case PowerSystem.DE25kV:
                 case PowerSystem.CZ25kV:
@@ -13101,6 +13101,11 @@ namespace Orts.Simulation.RollingStocks
                 RouteVoltageChange = true;
                 RouteVoltageV = 3000;
             }
+            if (newVoltage == 15000)
+            {
+                RouteVoltageChange = true;
+                RouteVoltageV = 15000;
+            }
             else if (newVoltage == 25000)
             {
                 RouteVoltageChange = false;
@@ -13224,7 +13229,13 @@ namespace Orts.Simulation.RollingStocks
                     XmlNode node2 = powerStationXml.CreateElement("Latitude");
                     node2.InnerText = longitude.ToString().Replace(",", ".");
                     XmlNode node3 = powerStationXml.CreateElement("PowerSystem");
-                    node3.InnerText = RouteVoltageV == 3000 ? "0" : "1";
+                    if (RouteVoltageV == 3000)
+                        node3.InnerText = "0";
+                    if (RouteVoltageV == 25000)
+                        node3.InnerText = "1";
+                    if (RouteVoltageV == 15000)
+                        node3.InnerText = "2";
+
                     stationNode.AppendChild(node0);
                     stationNode.AppendChild(node1);
                     stationNode.AppendChild(node2);

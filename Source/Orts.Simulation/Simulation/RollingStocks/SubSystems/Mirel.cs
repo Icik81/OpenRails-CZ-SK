@@ -237,6 +237,13 @@ namespace Orts.Simulation.RollingStocks.SubSystems
         protected bool noAutoblock = false;
         public void Update(float elapsedClockSeconds, float AbsSpeedMpS, float AbsWheelSpeedMpS)
         {
+            if (Locomotive.RouteVoltageV == 15000)
+            {
+                UpdateSpeedNumbers(0, true);
+                driveMode = DriveMode.Trailing;
+                return;
+            }
+
             UpdateDisplay();
             if (Locomotive.Battery && initTest == InitTest.Off)
             {
