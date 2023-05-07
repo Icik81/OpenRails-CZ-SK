@@ -919,7 +919,7 @@ namespace Orts.Simulation
         }
 
         ElapsedTime et = new ElapsedTime();
-
+        
         public override void NotifyEvent(ActivityEventType EventType)
         {
             MyPlayerTrain = Simulator.OriginalPlayerTrain;
@@ -1064,11 +1064,14 @@ namespace Orts.Simulation
 
                 if (MyPlayerTrain.StationStops.Count == 1) MyPlayerTrain.EndStation = true;
 
+                ChanceToUnboarding();
+
                 var loco = MyPlayerTrain.LeadLocomotive as MSTSLocomotive;
                 if (loco != null)
                 {
                     // Automatické centrální dveře
-                    if (!maydepart && arrived && loco.CentralHandlingDoors && !loco.OpenedLeftDoor && !loco.OpenedRightDoor && (MyPlayerTrain.StationStops[0].PlatformItem.PassengerList.Count > 0 || MyPlayerTrain.EndStation))
+                    if (!maydepart && arrived && loco.CentralHandlingDoors && !loco.OpenedLeftDoor && !loco.OpenedRightDoor 
+                        && (MyPlayerTrain.StationStops[0].PlatformItem.PassengerList.Count > 0 || MyPlayerTrain.EndStation || MyPlayerTrain.PeopleWillJustUnboard))
                     {
                         BoardingEndS = Simulator.ClockTime + BoardingS;
                         double SchDepartS = SchDepart.Subtract(new DateTime()).TotalSeconds;
@@ -1086,7 +1089,7 @@ namespace Orts.Simulation
                         else if (remaining < 11) DisplayColor = new Color(255, 255, 128);
                         else DisplayColor = Color.White;                        
                         
-                        if (!BoardingCompleted || MyPlayerTrain.EndStation)
+                        if (!BoardingCompleted || MyPlayerTrain.EndStation || MyPlayerTrain.PeopleWillJustUnboard)
                             MyPlayerTrain.UpdatePassengerCountAndWeight(MyPlayerTrain, MyPlayerTrain.StationStops[0].PlatformItem.NumPassengersWaiting, clock);
 
                         if (remaining < 120 && (MyPlayerTrain.TrainType != Train.TRAINTYPE.AI_PLAYERHOSTING))
@@ -1234,6 +1237,36 @@ namespace Orts.Simulation
                         }
                     }
                 }
+            }
+        }
+
+        int ChanceToUnboard = 0;
+        float ChanceToUnboardTimer;
+        public void ChanceToUnboarding()
+        {
+            // Zvyšuje pravděpodobnost výstupu lidí z vlaku
+            MyPlayerTrain.MaxStationCount = Math.Max(MyPlayerTrain.MaxStationCount, MyPlayerTrain.StationStops.Count);
+
+            ChanceToUnboardTimer += Simulator.OneSecondLoop;
+            if (ChanceToUnboardTimer > 2f)
+            {
+                if (MyPlayerTrain.StationStops.Count < 0.6f * MyPlayerTrain.MaxStationCount)
+                    ChanceToUnboard = Simulator.Random.Next(0, 10);
+                else
+                    ChanceToUnboard = Simulator.Random.Next(0, 50);
+                ChanceToUnboardTimer = 0;
+                MyPlayerTrain.exitTimesCalculated = false;
+            }
+
+            MyPlayerTrain.PeopleWillJustUnboard = false;
+            switch (ChanceToUnboard)
+            {
+                case 0:
+                    MyPlayerTrain.PeopleWillJustUnboard = true;
+                    break;
+                case 1:
+                    MyPlayerTrain.PeopleWillJustUnboard = false;
+                    break;
             }
         }
 

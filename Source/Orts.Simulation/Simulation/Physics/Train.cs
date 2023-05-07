@@ -16458,7 +16458,7 @@ namespace Orts.Simulation.Physics
         private List<string> testSurNamesM;
         private List<string> testSurNamesF;
         public Random random = new Random();
-        private bool exitTimesCalculated = false;
+        public bool exitTimesCalculated = false;
         private bool enterTimesCalculated = false;
         private double nextTimeExitDoors1 = 0;
         private double nextTimeExitDoors2 = 0;
@@ -16470,6 +16470,8 @@ namespace Orts.Simulation.Physics
         protected bool wasCarsChanged = false;
         // Icik
         public bool EndStation { get; set; }
+        public bool PeopleWillJustUnboard { get; set; }
+        public int MaxStationCount;
         public void FillNames(Train train)
         {
             if (numCars == 0)
@@ -16810,7 +16812,7 @@ namespace Orts.Simulation.Physics
             }
         boarding:
             currentWagIndex = 0;            
-            if (!EndStation)
+            if (!EndStation && !PeopleWillJustUnboard)
             {
                 foreach (Passenger pax in train.StationStops[0].PlatformItem.PassengerList)
                 {
