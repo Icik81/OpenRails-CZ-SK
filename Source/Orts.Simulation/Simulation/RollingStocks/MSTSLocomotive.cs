@@ -4562,7 +4562,7 @@ namespace Orts.Simulation.RollingStocks
         float AITimerStart;
         bool AIStartOn;
         bool AIBellStartOn;
-        bool CarIsWaitingAtStation;
+        bool CarIsWaitingAtStation;        
         public void SetAIAction(float elapsedClockSeconds)
         {
             if ((Train as AITrain) != null && (this as MSTSLocomotive) != null)
@@ -4671,11 +4671,16 @@ namespace Orts.Simulation.RollingStocks
 
                 // Výpravčí pískne k odjezdu AI ze stanice
                 if (CarIsWaitingAtStation && this.ThrottlePercent > 0.0f)
-                {
+                {                    
                     AITimerStart += elapsedClockSeconds;
                     CarIsWaitingAtStation = false;
-                    SignalEvent(Event.AIPermissionToDepart);
+                    if ((Train as AITrain).Name != (Train as AITrain).AITrainName)
+                        SignalEvent(Event.AIPermissionToDepart);
+                    (Train as AITrain).AITrainName = (Train as AITrain).Name;
                 }
+                if (this.SpeedMpS != 0 && (Train as AITrain).Name == (Train as AITrain).AITrainName)
+                    (Train as AITrain).AITrainName = "NOP";
+
 
                 // Vyčkávací čas AI po písknutí nebo povolení odjezdu
                 if (AITimerStart > 0.0f)
