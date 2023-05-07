@@ -715,7 +715,8 @@ namespace Orts.Simulation.RollingStocks
         public int[] CircularSwitchWhitePosition = new int[3];
         public int[] CircularSwitchRedPosition = new int[3];
         public bool FirstCabLoaded = true;
-        public InterpolatorDiesel2D CoefStepControllerCurves;        
+        public InterpolatorDiesel2D CoefStepControllerCurves;
+        public bool Loco15kV;
 
         // Jindrich
         public bool IsActive = false;
@@ -10774,15 +10775,18 @@ namespace Orts.Simulation.RollingStocks
             {
                 case PowerSystem.AT15kV:
                     SwitchingVoltageMode = 2;
+                    Loco15kV = true;
                     break;
                 case PowerSystem.DE25kV:
                 case PowerSystem.CZ25kV:
                 case PowerSystem.SK25kV:
                     SwitchingVoltageMode = 2;
+                    Loco15kV = false;
                     break;
                 case PowerSystem.CZ3kV:
                 case PowerSystem.SK3kV:
                     SwitchingVoltageMode = 0;
+                    Loco15kV = false;
                     break;
             }
             SelectedPowerSystem = SelectingPowerSystem;

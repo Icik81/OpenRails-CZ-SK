@@ -112,8 +112,7 @@ namespace Orts.Simulation.RollingStocks
         float AIPantoDownGenerate;
         bool AIPantoDown;
         public bool AIPantoDownStop;
-        bool PowerOnTriggered;
-        public bool Loco15kV;
+        bool PowerOnTriggered;        
 
 
         public MSTSElectricLocomotive(Simulator simulator, string wagFile) :
@@ -1061,9 +1060,7 @@ namespace Orts.Simulation.RollingStocks
 
                 // Blokování HV u vícesystémových lokomotiv při malém napětí                                                
                 if (MultiSystemEngine)
-                {
-                    if (LocoType == LocoTypes.Vectron && RouteVoltageV == 15000)
-                        Loco15kV = true;
+                {                    
                     // Pokud nebude žádný HV aktivní
                     if (!HV5Enable && !HV3Enable && !HV2Enable && !HV4Enable)
                     {
@@ -1513,12 +1510,18 @@ namespace Orts.Simulation.RollingStocks
 
                     SplashScreen = false;
 
-                    if (RouteVoltageV == 25000)
-                        SelectedPowerSystem = SelectingPowerSystem = PowerSystem.CZ25kV;
-                    if (RouteVoltageV == 15000)
-                        SelectedPowerSystem = SelectingPowerSystem = PowerSystem.AT15kV;
-                    if (RouteVoltageV == 3000)
-                        SelectedPowerSystem = SelectingPowerSystem = PowerSystem.CZ3kV;
+                    if (LocoType == LocoTypes.Vectron)
+                    {
+                        if (RouteVoltageV == 25000)
+                            SelectedPowerSystem = SelectingPowerSystem = PowerSystem.CZ25kV;
+                        if (RouteVoltageV == 15000)
+                        {
+                            SelectedPowerSystem = SelectingPowerSystem = PowerSystem.AT15kV;
+                            Loco15kV = true;
+                        }
+                        if (RouteVoltageV == 3000)
+                            SelectedPowerSystem = SelectingPowerSystem = PowerSystem.CZ3kV;
+                    }
 
                     if (MultiSystemEngine && RouteVoltageV != 1)
                     {
