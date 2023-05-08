@@ -20,7 +20,7 @@ Tr_SMS (
 		    Stream (
 				Skip( **** Povolení odjezdu **** )
 				Priority ( 6 )
-				Volume (1.5)
+				Volume (1.0)
 				Triggers ( 1
 					Discrete_Trigger ( 20107 PlayOneShot ( 1 	File ( "../4_Wheels/pistalka.wav" -1 ) SelectionMethod (SequentialSelection) ) ) 					
 				)				
