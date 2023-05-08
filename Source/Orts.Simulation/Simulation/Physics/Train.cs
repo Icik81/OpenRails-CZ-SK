@@ -101,7 +101,8 @@ namespace Orts.Simulation.Physics
         public float NextRouteSpeedLimit;
         public bool SteamHeatingIsAvailable;
         public bool HasSpeedInCoupler;
-        public string AITrainName;
+        public string AITrainNameReadyToDepart;
+        public string AITrainNameShunting;
 
         public Traveller RearTDBTraveller;               // positioned at the back of the last car in the train
         public Traveller FrontTDBTraveller;              // positioned at the front of the train by CalculatePositionOfCars

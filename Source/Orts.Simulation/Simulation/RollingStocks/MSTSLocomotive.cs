@@ -4657,9 +4657,10 @@ namespace Orts.Simulation.RollingStocks
                 if (AIStartOn && !AIBellStartOn && this.ThrottlePercent > 0.0f)
                 {
                     AITimerStart += elapsedClockSeconds;
-                    if (AIBellTimer == 0.0f)
+                    if (AIBellTimer == 0.0f && (Train as AITrain).Name != (Train as AITrain).AITrainNameShunting) 
                         SignalEvent(Event.BellOn);
-                    
+                    (Train as AITrain).AITrainNameShunting = (Train as AITrain).Name;
+
                     AIBellTimer += elapsedClockSeconds;                    
                     if (AIBellTimer > 0.5f)
                     {
@@ -4668,18 +4669,20 @@ namespace Orts.Simulation.RollingStocks
                         AIBellTimer = 0.0f;
                     }
                 }
+                if (this.SpeedMpS != 0 && (Train as AITrain).Name == (Train as AITrain).AITrainNameShunting)
+                    (Train as AITrain).AITrainNameShunting = "NOP";
 
                 // Výpravčí pískne k odjezdu AI ze stanice
                 if (CarIsWaitingAtStation && this.ThrottlePercent > 0.0f)
                 {                    
                     AITimerStart += elapsedClockSeconds;
                     CarIsWaitingAtStation = false;
-                    if ((Train as AITrain).Name != (Train as AITrain).AITrainName)
+                    if ((Train as AITrain).Name != (Train as AITrain).AITrainNameReadyToDepart)
                         SignalEvent(Event.AIPermissionToDepart);
-                    (Train as AITrain).AITrainName = (Train as AITrain).Name;
+                    (Train as AITrain).AITrainNameReadyToDepart = (Train as AITrain).Name;
                 }
-                if (this.SpeedMpS != 0 && (Train as AITrain).Name == (Train as AITrain).AITrainName)
-                    (Train as AITrain).AITrainName = "NOP";
+                if (this.SpeedMpS != 0 && (Train as AITrain).Name == (Train as AITrain).AITrainNameReadyToDepart)
+                    (Train as AITrain).AITrainNameReadyToDepart = "NOP";
 
 
                 // Vyčkávací čas AI po písknutí nebo povolení odjezdu
