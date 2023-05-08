@@ -28,6 +28,7 @@
  */
 
 using Microsoft.Xna.Framework;
+using Orts.Common;
 using Orts.Formats.Msts;
 using Orts.Formats.OR;
 using Orts.MultiPlayer;
@@ -586,11 +587,11 @@ namespace Orts.Simulation.RollingStocks
             {
                 RouteVoltageV = 3000;
             }
-            else if (powerSys == 1)
+            else if (powerSys == 1 && markerVoltage == 25000)
             {
                 RouteVoltageV = 25000;
             }
-            else if (powerSys == 2)
+            else if (markerVoltage == 15000)
             {
                 RouteVoltageV = 15000;
             }
@@ -1512,15 +1513,27 @@ namespace Orts.Simulation.RollingStocks
 
                     if (LocoType == LocoTypes.Vectron)
                     {
+                        double lat = 0, lon = 0;
+                        new WorldLatLon().ConvertWTC(WorldPosition.TileX, WorldPosition.TileZ, WorldPosition.WorldLocation.Location, ref lat, ref lon);
+
                         if (RouteVoltageV == 25000)
                             SelectedPowerSystem = SelectingPowerSystem = PowerSystem.CZ25kV;
                         if (RouteVoltageV == 15000)
                         {
-                            SelectedPowerSystem = SelectingPowerSystem = PowerSystem.AT15kV;
+                            if (lon > 0.26)
+                                SelectedPowerSystem = SelectingPowerSystem = PowerSystem.AT15kV;
+                            else
+                                SelectedPowerSystem = SelectingPowerSystem = PowerSystem.DE15kV;
                             Loco15kV = true;
                         }
                         if (RouteVoltageV == 3000)
-                            SelectedPowerSystem = SelectingPowerSystem = PowerSystem.CZ3kV;
+                        {
+                            if (lon < 0.316)
+                                SelectedPowerSystem = SelectingPowerSystem = PowerSystem.CZ3kV;
+                            else
+                                SelectedPowerSystem = SelectingPowerSystem = PowerSystem.SK3kV;
+
+                        }
                     }
 
                     if (MultiSystemEngine && RouteVoltageV != 1)
@@ -2943,6 +2956,8 @@ namespace Orts.Simulation.RollingStocks
                     }
                     else
                         data = PreDataVoltageAC;
+                    if (RouteVoltageV == 15000)
+                        data += 13500;
                     if (cvc.Units == CABViewControlUnits.KILOVOLTS)
                         data /= 1000;
                     break;

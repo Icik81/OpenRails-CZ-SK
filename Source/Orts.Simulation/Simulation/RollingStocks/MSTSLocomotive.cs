@@ -790,7 +790,7 @@ namespace Orts.Simulation.RollingStocks
 
         public enum PowerSystem
         {
-            DE25kV,
+            DE15kV,
             AT15kV,
             AT25kV,
             CZ25kV,
@@ -10782,10 +10782,10 @@ namespace Orts.Simulation.RollingStocks
             switch (SelectingPowerSystem)
             {
                 case PowerSystem.AT15kV:
+                case PowerSystem.DE15kV:
                     SwitchingVoltageMode = 2;
                     Loco15kV = true;
                     break;
-                case PowerSystem.DE25kV:
                 case PowerSystem.CZ25kV:
                 case PowerSystem.SK25kV:
                     SwitchingVoltageMode = 2;
@@ -10811,12 +10811,17 @@ namespace Orts.Simulation.RollingStocks
             timeChangingPowerSystem += elapsedSeconds;
             if (timeChangingPowerSystem > 3)
             {
-                if (SelectedPowerSystem.ToString().ToLower().Contains("25kv") && RouteVoltageV == 3000)
+                if (SelectedPowerSystem.ToString().ToLower().Contains("25kv") && (RouteVoltageV == 3000 || RouteVoltageV == 15000))
                 {
                     SystemAnnunciator = 3;
                     return;
                 }
-                if (SelectedPowerSystem.ToString().ToLower().Contains("3kv") && RouteVoltageV == 25000)
+                if (SelectedPowerSystem.ToString().ToLower().Contains("15kv") && (RouteVoltageV == 3000 || RouteVoltageV == 25000))
+                {
+                    SystemAnnunciator = 3;
+                    return;
+                }
+                if (SelectedPowerSystem.ToString().ToLower().Contains("3kv") && (RouteVoltageV == 15000 || RouteVoltageV == 25000))
                 {
                     SystemAnnunciator = 3;
                     return;
@@ -10859,7 +10864,8 @@ namespace Orts.Simulation.RollingStocks
             continuingTimeChangingSystem += elapsedSeconds;
 
             PantoBlocked = false;
-            if (SelectedPowerSystem == PowerSystem.AT15kV                
+            if ((SelectedPowerSystem == PowerSystem.AT15kV                
+                || SelectedPowerSystem == PowerSystem.DE15kV)
                 && (RouteVoltageV == 3000 || RouteVoltageV == 25000))
             {
                 PantoBlocked = true;
@@ -10868,8 +10874,7 @@ namespace Orts.Simulation.RollingStocks
                 return;
             }
             if ((SelectedPowerSystem == PowerSystem.CZ25kV
-                || SelectedPowerSystem == PowerSystem.SK25kV
-                || SelectingPowerSystem == PowerSystem.DE25kV)
+                || SelectedPowerSystem == PowerSystem.SK25kV)
                 && (RouteVoltageV == 3000 || RouteVoltageV == 15000))
             {
                 PantoBlocked = true;

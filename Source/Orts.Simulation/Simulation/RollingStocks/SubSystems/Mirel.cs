@@ -235,13 +235,21 @@ namespace Orts.Simulation.RollingStocks.SubSystems
         protected RecieverState prevRecieverState = RecieverState.Signal50;
         protected int minimalSignalDistance = 0;
         protected bool noAutoblock = false;
+        protected bool was15kV = false;
         public void Update(float elapsedClockSeconds, float AbsSpeedMpS, float AbsWheelSpeedMpS)
         {
             if (Locomotive.RouteVoltageV == 15000)
             {
-                UpdateSpeedNumbers(0, true);
                 driveMode = DriveMode.Trailing;
-                return;
+                selectedDriveMode = DriveMode.Trailing;
+                UpdateSpeedNumbers((int)MpS.ToKpH(Locomotive.MaxSpeedMpS), true);
+                was15kV = true;
+            }
+            else if (was15kV)
+            {
+                driveMode = DriveMode.Normal;
+                selectedDriveMode = DriveMode.Normal;
+                was15kV = false;
             }
 
             UpdateDisplay();
