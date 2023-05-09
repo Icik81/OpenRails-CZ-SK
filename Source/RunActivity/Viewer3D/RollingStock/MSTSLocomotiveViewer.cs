@@ -3123,6 +3123,7 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.SWITCHINGVOLTAGEMODE_DC_OFF_AC:
                 case CABViewControlTypes.WARNING_NEUTRAL:
                 case CABViewControlTypes.ORTS_CIRCUIT_BREAKER_STATE_MULTISYSTEM:
+                case CABViewControlTypes.LINE_VOLTAGE15kV_AC:
                 case CABViewControlTypes.LINE_VOLTAGE_AC:
                 case CABViewControlTypes.LINE_VOLTAGE_DC:
                 case CABViewControlTypes.ORTS_CIRCUIT_BREAKER_CLOSED_AC:

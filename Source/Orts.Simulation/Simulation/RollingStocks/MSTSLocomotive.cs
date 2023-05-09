@@ -15562,22 +15562,34 @@ namespace Orts.Simulation.RollingStocks
                     }
                 case CABViewControlTypes.FRONT_LIGHT_L:
                     {
-                        data = LightFrontLPosition + 1;
+                        if (!UsingRearCab)
+                            data = LightFrontLPosition + 1;
+                        else
+                            data = LightRearRPosition + 1;
                         break;
                     }
                 case CABViewControlTypes.FRONT_LIGHT_R:
                     {
-                        data = LightFrontRPosition + 1;
+                        if (!UsingRearCab)
+                            data = LightFrontRPosition + 1;
+                        else
+                            data = LightRearLPosition + 1;
                         break;
                     }
                 case CABViewControlTypes.REAR_LIGHT_L:
                     {
-                        data = LightRearLPosition + 1;
+                        if (!UsingRearCab)
+                            data = LightRearLPosition + 1;
+                        else
+                            data = LightFrontRPosition + 1;
                         break;
                     }
                 case CABViewControlTypes.REAR_LIGHT_R:
                     {
-                        data = LightRearRPosition + 1;
+                        if (!UsingRearCab)
+                            data = LightRearRPosition + 1;
+                        else
+                            data = LightFrontLPosition + 1;
                         break;
                     }
                 case CABViewControlTypes.RAIN_WINDOW:

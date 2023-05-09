@@ -2944,6 +2944,22 @@ namespace Orts.Simulation.RollingStocks
                     LocoSwitchACDC = true;
                     break;
 
+                case CABViewControlTypes.LINE_VOLTAGE15kV_AC:
+                    if (cvc.UpdateTime != 0)
+                        UpdateTimeEnable = true;
+                    cvc.ElapsedTime += elapsedTime;
+                    if (cvc.ElapsedTime > cvc.UpdateTime)
+                    {
+                        data = VoltageAC;
+                        cvc.ElapsedTime = 0;
+                        PreDataVoltageAC = data;
+                    }
+                    else
+                        data = PreDataVoltageAC;
+                    if (cvc.Units == CABViewControlUnits.KILOVOLTS)
+                        data /= 1000;
+                    break;
+
                 case CABViewControlTypes.LINE_VOLTAGE_AC:
                     if (cvc.UpdateTime != 0)
                         UpdateTimeEnable = true;
@@ -2956,8 +2972,6 @@ namespace Orts.Simulation.RollingStocks
                     }
                     else
                         data = PreDataVoltageAC;
-                    if (RouteVoltageV == 15000)
-                        data += 13500;
                     if (cvc.Units == CABViewControlUnits.KILOVOLTS)
                         data /= 1000;
                     break;
