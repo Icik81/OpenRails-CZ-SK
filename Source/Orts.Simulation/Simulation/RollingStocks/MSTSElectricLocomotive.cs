@@ -2945,6 +2945,9 @@ namespace Orts.Simulation.RollingStocks
                     break;
 
                 case CABViewControlTypes.LINE_VOLTAGE15kV_AC:
+                    if (LocoType == LocoTypes.Vectron && !Loco15kV)
+                        break;
+
                     if (cvc.UpdateTime != 0)
                         UpdateTimeEnable = true;
                     cvc.ElapsedTime += elapsedTime;
@@ -2961,6 +2964,9 @@ namespace Orts.Simulation.RollingStocks
                     break;
 
                 case CABViewControlTypes.LINE_VOLTAGE_AC:
+                    if (LocoType == LocoTypes.Vectron && Loco15kV)
+                        break;
+
                     if (cvc.UpdateTime != 0)
                         UpdateTimeEnable = true;
                     cvc.ElapsedTime += elapsedTime;
