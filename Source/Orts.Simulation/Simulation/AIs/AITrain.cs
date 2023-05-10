@@ -119,7 +119,7 @@ namespace Orts.Simulation.AIs
         public static float followDistanceStatTrainM = 30.0f;  // min dist for starting to follow
         public static float keepDistanceMovingTrainM = 300.0f; // stay 300m behind moving train
         public static float creepSpeedMpS = 2.5f;              // speed for creeping up behind train or upto signal
-        public static float couplingSpeedMpS = 0.4f;           // speed for coupling to other train
+        public static float couplingSpeedMpS = 0.2f;           // speed for coupling to other train
         public static float maxFollowSpeedMpS = 15.0f;         // max. speed when following
         public static float movingtableSpeedMpS = 2.5f;        // speed for moving tables (approx. max 8 kph)
         public static float hysterisMpS = 0.5f;                // speed hysteris value to avoid instability
@@ -3033,6 +3033,7 @@ namespace Orts.Simulation.AIs
         /// Train is following
         /// </summary>
 
+        bool AICoupling;
         public virtual void UpdateFollowingState(float elapsedClockSeconds, int presentTime)
         {
             if (nextActionInfo != null && nextActionInfo.NextAction == AIActionItem.AI_ACTION_TYPE.TRAIN_AHEAD && nextActionInfo.ActivateDistanceM - PresentPosition[0].DistanceTravelledM < -5)
@@ -3229,12 +3230,17 @@ namespace Orts.Simulation.AIs
                                 bool thisTrainFront;
                                 bool otherTrainFront;
 
-                                if (attachToTrain && CheckCouplePosition(OtherTrain, out thisTrainFront, out otherTrainFront))
+                                // Icik
+                                if (OtherTrain.SpeedMpS != 0)
+                                    AICoupling = false;
+
+                                if (attachToTrain && CheckCouplePosition(OtherTrain, out thisTrainFront, out otherTrainFront) && !AICoupling)
                                 {
-                                    MovementState = AI_MOVEMENT_STATE.STOPPED;
+                                    MovementState = AI_MOVEMENT_STATE.STOPPED;                                    
                                     CoupleAI(OtherTrain, thisTrainFront, otherTrainFront);
                                     AI.aiListChanged = true;
                                     AttachTo = -1;
+                                    AICoupling = true;
                                 }
                                 else if ((SpeedMpS - reqMinSpeedMpS) > 0.1f)
                                 {
