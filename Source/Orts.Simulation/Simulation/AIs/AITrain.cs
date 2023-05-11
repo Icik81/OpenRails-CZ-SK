@@ -3034,6 +3034,7 @@ namespace Orts.Simulation.AIs
         /// </summary>
 
         bool AICoupling;
+        public bool AITrainWillAttach;
         public virtual void UpdateFollowingState(float elapsedClockSeconds, int presentTime)
         {
             if (nextActionInfo != null && nextActionInfo.NextAction == AIActionItem.AI_ACTION_TYPE.TRAIN_AHEAD && nextActionInfo.ActivateDistanceM - PresentPosition[0].DistanceTravelledM < -5)
@@ -3105,11 +3106,14 @@ namespace Orts.Simulation.AIs
                 }
 
                 // train is found
+                AITrainWillAttach = false;
                 if (trainInfo.Count > 0)  // found train
                 {
                     foreach (KeyValuePair<Train, float> trainAhead in trainInfo) // always just one
                     {
                         Train OtherTrain = trainAhead.Key;
+                        // Icik
+                        AITrainWillAttach = true;
 
                         float distanceToTrain = trainAhead.Value + addOffset;
 

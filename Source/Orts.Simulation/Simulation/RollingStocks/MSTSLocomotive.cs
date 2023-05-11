@@ -4639,7 +4639,7 @@ namespace Orts.Simulation.RollingStocks
                         if ((Train as AITrain).AuxActionsContain[0] != null && ((AIAuxActionsRef)(Train as AITrain).AuxActionsContain[0]).NextAction == AuxActionRef.AUX_ACTION.WAITING_POINT)
                         {
                             var AIActionPoint0 = ((Train as AITrain).AuxActionsContain.SpecAuxActions[0] as AIActionWPRef);
-                            if (AIActionPoint0.Delay > 40000 && AIActionPoint0.Delay < 60010)
+                            if ((AIActionPoint0.Delay > 40000 && AIActionPoint0.Delay < 60010) || (Train as AITrain).AITrainWillAttach)
                             {
                                 CarIsShunting = true;
                                 AIStartOn = true;
@@ -4656,7 +4656,8 @@ namespace Orts.Simulation.RollingStocks
                 // AI zapíská
                 if (AIStartOn && !AIBellStartOn && this.ThrottlePercent > 0.0f)
                 {
-                    AITimerStart += elapsedClockSeconds;
+                    if (!(Train as AITrain).AITrainWillAttach)
+                        AITimerStart += elapsedClockSeconds;
                     if (AIBellTimer == 0.0f && (Train as AITrain).Name != (Train as AITrain).AITrainNameShunting) 
                         SignalEvent(Event.BellOn);
                     (Train as AITrain).AITrainNameShunting = (Train as AITrain).Name;
