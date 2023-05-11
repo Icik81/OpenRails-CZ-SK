@@ -106,7 +106,7 @@ namespace Orts.Viewer3D
             float CameraDistanceZ = 0;
 
             NearPlane = PlayerCameraHeight / 30f;
-            NearPlane = MathHelper.Clamp(NearPlane, 0.25f, 10f);
+            NearPlane = MathHelper.Clamp(NearPlane, 0.25f, 1.0f);
 
             if (AttachedCar != null)
             {

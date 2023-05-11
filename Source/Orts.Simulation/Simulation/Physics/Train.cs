@@ -680,6 +680,7 @@ namespace Orts.Simulation.Physics
         {
             // Icik
             ReverseAtStation = inf.ReadBoolean();
+            MaxStationCount = inf.ReadInt32();
 
             Init(simulator);
             routedForward = new TrainRouted(this, 0);
@@ -1031,7 +1032,8 @@ namespace Orts.Simulation.Physics
         public virtual void Save(BinaryWriter outf)
         {
             // Icik
-            outf.Write(ReverseAtStation);
+            outf.Write(ReverseAtStation);            
+            outf.Write(MaxStationCount);
 
             SaveCars(outf);
             outf.Write(Number);

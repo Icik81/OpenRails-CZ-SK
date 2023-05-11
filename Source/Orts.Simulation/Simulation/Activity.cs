@@ -1250,10 +1250,16 @@ namespace Orts.Simulation
             ChanceToUnboardTimer += Simulator.OneSecondLoop;
             if (ChanceToUnboardTimer > 2f)
             {
-                if (MyPlayerTrain.StationStops.Count < 0.6f * MyPlayerTrain.MaxStationCount)
+                if (MyPlayerTrain.StationStops.Count < 0.3f * MyPlayerTrain.MaxStationCount)
                     ChanceToUnboard = Simulator.Random.Next(0, 10);
                 else
-                    ChanceToUnboard = Simulator.Random.Next(0, 50);
+                if (MyPlayerTrain.StationStops.Count < 0.6f * MyPlayerTrain.MaxStationCount)
+                    ChanceToUnboard = Simulator.Random.Next(0, 15);
+                else
+                if (MyPlayerTrain.StationStops.Count < 0.8f * MyPlayerTrain.MaxStationCount)
+                    ChanceToUnboard = Simulator.Random.Next(0, 20);
+                else
+                    ChanceToUnboard = Simulator.Random.Next(0, 30);
                 ChanceToUnboardTimer = 0;
                 MyPlayerTrain.exitTimesCalculated = false;
             }
@@ -1292,7 +1298,7 @@ namespace Orts.Simulation
 
             // Icik
             outf.Write(BoardingCompleted);
-            outf.Write(RestOfPax);
+            outf.Write(RestOfPax);            
         }
 
         public override void Restore(BinaryReader inf)
@@ -1318,7 +1324,7 @@ namespace Orts.Simulation
 
             // Icik
             BoardingCompleted = inf.ReadBoolean();
-            RestOfPax = inf.ReadInt32();
+            RestOfPax = inf.ReadInt32();            
         }
     }
 
