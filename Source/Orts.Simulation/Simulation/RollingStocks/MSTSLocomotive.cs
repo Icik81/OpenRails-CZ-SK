@@ -2320,16 +2320,7 @@ namespace Orts.Simulation.RollingStocks
             Simulator.powerSupplyStations = new List<PowerSupplyStation>();
             SetUpPowerSupplyStations();
             Simulator.voltageChangeMarkers = new List<VoltageChangeMarker>();
-            SetUpVoltageChangeMarkers();
-
-            // Icik
-            if (BrakeSystem.StartOn && !Simulator.Settings.AirEmpty && Simulator.InitLocoCycleCount == 0)
-            {
-                BrakeSystem.PowerForWagon = true;
-                Simulator.InitLocoCycleCount++;
-            }
-            else
-                BrakeSystem.PowerForWagon = false;
+            SetUpVoltageChangeMarkers();            
 
             if (MaxPowerWAC != 0)
                 MaxPowerWBase = MaxPowerWAC;
@@ -5110,7 +5101,7 @@ namespace Orts.Simulation.RollingStocks
                 {
                     if (!LocoIsStatic)
                     {
-                        Battery = true;                                            
+                        Battery = true;
                         ToggleCabRadio(true);
                         ActiveStation = UsingRearCab ? DriverStation.Station2 : DriverStation.Station1;
                         if (Flipped)
@@ -9496,8 +9487,8 @@ namespace Orts.Simulation.RollingStocks
         public void CarFrameUpdate(float elapsedClockSeconds)
         {
             this.CarFrameUpdateState++;
-            if (this.CarFrameUpdateState > 25)
-                this.CarFrameUpdateState = 25;
+            if (this.CarFrameUpdateState > 100)
+                this.CarFrameUpdateState = 100;
 
             // První průběh - inicializace hodnot
             if (this.CarFrameUpdateState == 1)
@@ -9535,12 +9526,20 @@ namespace Orts.Simulation.RollingStocks
                             if (car is MSTSElectricLocomotive && !car.AcceptCableSignals && (car as MSTSElectricLocomotive).AuxResVolumeM3 == Simulator.LeadAuxResVolumeM3)
                                 car.AcceptCableSignals = true;                            
                         }
+                                         
+                    // Elektrické lokomotivy nebo oddíly spojené za sebou
+                    if (this.MUCable)
+                        if (this is MSTSElectricLocomotive && !AcceptCableSignals && (this as MSTSElectricLocomotive).AuxResVolumeM3 == Simulator.LeadAuxResVolumeM3) 
+                            AcceptCableSignals = true;
                     
-                    // Řídící vůz v soupravě
-                    if (MaxPowerWBase > 10 * 1000 || (this as MSTSDieselLocomotive != null && (this as MSTSDieselLocomotive).MaximumDieselEnginePowerW > 10 * 1000))
-                        PowerUnit = true;
-                    else
-                        ControlUnit = true;
+                    // Řídící vůz v soupravě                    
+                    foreach (TrainCar car in Train.Cars)
+                    {
+                        if ((car as MSTSDieselLocomotive != null && ((car as MSTSDieselLocomotive).MaxPowerWBase > 10 * 1000 || (car as MSTSDieselLocomotive).MaximumDieselEnginePowerW > 10 * 1000)))
+                            car.PowerUnit = true;
+                        else
+                            car.ControlUnit = true;
+                    }
                     if (ControlUnit)
                     {
                         AcceptCableSignals = true;
@@ -9553,11 +9552,6 @@ namespace Orts.Simulation.RollingStocks
                             }
                         }
                     }
- 
-                    // Elektrické lokomotivy nebo oddíly spojené za sebou
-                    if (this.MUCable)
-                        if (this is MSTSElectricLocomotive && !AcceptCableSignals && (this as MSTSElectricLocomotive).AuxResVolumeM3 == Simulator.LeadAuxResVolumeM3) 
-                            AcceptCableSignals = true;
                 }                
             }
 
@@ -9582,6 +9576,7 @@ namespace Orts.Simulation.RollingStocks
             // Desátý průběh - nastaví hodnoty po nahrání uložené pozice
             if (this.CarFrameUpdateState == 10)
             {
+                
             }
 
             // EDB Hack

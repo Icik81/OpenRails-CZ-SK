@@ -580,9 +580,16 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
 
 
         public override void Initialize(bool handbrakeOn, float maxPressurePSI, float fullServPressurePSI, bool immediateRelease)
-        {            
-            Car.Train.EqualReservoirPressurePSIorInHg = maxPressurePSI = maxPressurePSI0 = 5.0f * 14.50377f;         
-            if (StartOn) maxPressurePSI0 = Car.Train.EqualReservoirPressurePSIorInHg;
+        {                        
+            Car.Train.EqualReservoirPressurePSIorInHg = maxPressurePSI = maxPressurePSI0 = 5.0f * 14.50377f;
+            if (StartOn)
+            {
+                maxPressurePSI0 = Car.Train.EqualReservoirPressurePSIorInHg;                
+                if (!Car.Train.Simulator.Settings.AirEmpty && Car.Train.IsPlayerDriven)                
+                    PowerForWagon = true;                                    
+                else
+                    PowerForWagon = false;
+            }
 
             BrakeLine1PressurePSI = maxPressurePSI0;
             BrakeLine2PressurePSI = Car.Train.BrakeLine2PressurePSI;

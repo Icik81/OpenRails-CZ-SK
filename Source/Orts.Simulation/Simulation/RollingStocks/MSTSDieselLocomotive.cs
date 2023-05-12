@@ -760,7 +760,7 @@ namespace Orts.Simulation.RollingStocks
             // Hack pro start zvuku motoru JV ladění
             if (JVSetUp)
             {
-                if (!IsLeadLocomotive() && this.CarFrameUpdateState == 20)
+                if (!IsLeadLocomotive() && this.CarFrameUpdateState == 50)
                 {
                     MotorStartCyklus++;
                     if (this.BrakeSystem.PowerForWagon)
