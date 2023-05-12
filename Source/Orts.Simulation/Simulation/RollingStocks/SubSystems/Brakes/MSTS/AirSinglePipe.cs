@@ -587,8 +587,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 maxPressurePSI0 = Car.Train.EqualReservoirPressurePSIorInHg;                
                 if (!Car.Train.Simulator.Settings.AirEmpty && Car.Train.IsPlayerDriven)                
                     PowerForWagon = true;                                    
-                else
-                    PowerForWagon = false;
+
+                if (!Car.Train.IsPlayerDriven && Car as MSTSLocomotive != null)
+                    (Car as MSTSLocomotive).SetAIAction(Car.Train.Simulator.OneSecondLoop);
             }
 
             BrakeLine1PressurePSI = maxPressurePSI0;
