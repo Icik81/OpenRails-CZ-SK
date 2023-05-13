@@ -38,34 +38,33 @@ namespace Orts.Viewer3D.Popups
         protected override ControlLayout Layout(ControlLayout layout)
         {
             var vbox = base.Layout(layout).AddLayoutVertical();
-            if (Owner.Viewer.Simulator.Activity != null || Owner.Viewer.Simulator.TimetableMode)
+            var line = vbox.AddLayoutHorizontalLineOfText();
+            colWidth = (vbox.RemainingWidth - vbox.TextHeight * 2) / 3;
             {
-                var line = vbox.AddLayoutHorizontalLineOfText();
-                colWidth = (vbox.RemainingWidth - vbox.TextHeight * 2) / 3;
-                {
-                    line.Add(new Label(colWidth, line.RemainingHeight, Viewer.Catalog.GetString("Name")));
-                    line.Add(new Label(colWidth, line.RemainingHeight, Viewer.Catalog.GetString("From"), LabelAlignment.Left));
-                    line.Add(new Label(colWidth, line.RemainingHeight, Viewer.Catalog.GetString("To"), LabelAlignment.Left));
-                }
-                vbox.AddHorizontalSeparator();
-                scrollbox = vbox.AddLayoutScrollboxVertical(vbox.RemainingWidth);
-                {
-                    var info = scrollbox.AddLayoutHorizontalLineOfText();
-                    info.Add(Name = new Label(colWidth, info.RemainingWidth, ""));
-                    info.Add(From = new Label(colWidth, info.RemainingWidth, ""));
-                    info.Add(To = new Label(colWidth, info.RemainingWidth, ""));
-                }
+                line.Add(new Label(colWidth, line.RemainingHeight, Viewer.Catalog.GetString("Name")));
+                line.Add(new Label(colWidth, line.RemainingHeight, Viewer.Catalog.GetString("From"), LabelAlignment.Left));
+                line.Add(new Label(colWidth, line.RemainingHeight, Viewer.Catalog.GetString("To"), LabelAlignment.Left));
+            }
+            vbox.AddHorizontalSeparator();
+            scrollbox = vbox.AddLayoutScrollboxVertical(vbox.RemainingWidth);
+            {
+                var info = scrollbox.AddLayoutHorizontalLineOfText();
+                info.Add(Name = new Label(colWidth, info.RemainingWidth, ""));
+                info.Add(From = new Label(colWidth, info.RemainingWidth, ""));
+                info.Add(To = new Label(colWidth, info.RemainingWidth, ""));
             }
             return vbox;
         }
 
         public override void PrepareFrame(ElapsedTime elapsedTime, bool updateFull)
         {
+            base.PrepareFrame(elapsedTime, true);
+            if (Name == null || From == null || To == null)
+                return;
             int top = 0;
             Name.Text = "";
             From.Text = "";
             To.Text = "";
-            base.PrepareFrame(elapsedTime, true);
             var train0 = Owner.Viewer.Simulator.Trains.Find(item => item.IsActualPlayerTrain);
             if (train0 != null)
             {
