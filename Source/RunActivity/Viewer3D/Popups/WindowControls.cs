@@ -384,6 +384,10 @@ namespace Orts.Viewer3D.Popups
             {
                 return 0;
             }
+            set
+            {
+
+            }
         }
 
         protected T InternalAdd<T>(T control) where T : Control
@@ -564,11 +568,19 @@ namespace Orts.Viewer3D.Popups
             }
         }
 
+        private int mCurrentTop = 0;
         public override int CurrentTop
         {
             get
             {
-                return controls.Count > 0 ? controls.Max(c => c.Position.Bottom) - Position.Top : 0;
+                if (mCurrentTop > 0)
+                    return mCurrentTop;
+                else
+                    return controls.Count > 0 ? controls.Max(c => c.Position.Bottom) - Position.Top : 0;
+            }
+            set
+            {
+                mCurrentTop = value;
             }
         }
     }

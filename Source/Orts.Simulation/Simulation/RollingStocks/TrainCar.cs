@@ -3675,6 +3675,10 @@ namespace Orts.Simulation.RollingStocks
         public double TimeToStartBoarding { get; set; }
         public int WagonIndex { get; set; }
 
+        public Passenger()
+        {
+
+        }
         public Passenger(List<string> MaleNames_, List<string> MaleSurnames_, List<string> FemaleNames_, List<string> FemaleSurnames_, Random random)
         {
             Random rnd = random;

@@ -1942,6 +1942,41 @@ namespace Orts.Simulation.RollingStocks
             outf.Write(CarLengthM);
             outf.Write(StartOn);
 
+            // Passengers
+            if (PassengerList != null)
+            {
+                if (PassengerList.Count > 0)
+                {
+                    outf.Write(PassengerList.Count);
+                    foreach (Passenger pax in PassengerList)
+                    {
+                        outf.Write(pax.Age);
+                        outf.Write(pax.ArrivalStation);
+                        outf.Write(pax.ArrivalStationName);
+                        outf.Write(pax.Boarded);
+                        outf.Write(pax.DepartureStation);
+                        outf.Write(pax.DepartureStationName);
+                        outf.Write(pax.DoorsToEnterAndExit);
+                        outf.Write(pax.FirstName);
+                        outf.Write((int)pax.Gender);
+                        outf.Write(pax.Surname);
+                        outf.Write(pax.TimeToEnterAndExit);
+                        outf.Write(pax.TimeToStartBoarding);
+                        outf.Write(pax.TimeToStartExiting);
+                        outf.Write(pax.WagonIndex);
+                        outf.Write(pax.Weight);
+                    }
+                }
+                else
+                {
+                    outf.Write(0);
+                }
+            }
+            else
+            {
+                outf.Write(0);
+            }
+
             base.Save(outf);
         }
 
@@ -1993,6 +2028,29 @@ namespace Orts.Simulation.RollingStocks
             DieselHeaterTankCapacity = inf.ReadSingle();
             CarLengthM = inf.ReadSingle();
             StartOn = inf.ReadBoolean();
+
+            int paxCount = inf.ReadInt32();
+            for (int x = 0; x < paxCount; x++)
+            {
+                Passenger pax = new Passenger();
+                pax.Age = inf.ReadInt32();
+                pax.ArrivalStation = inf.ReadInt32();
+                pax.ArrivalStationName = inf.ReadString();
+                pax.Boarded = inf.ReadBoolean();
+                pax.DepartureStation = inf.ReadInt32();
+                pax.DepartureStationName = inf.ReadString();
+                pax.DoorsToEnterAndExit = inf.ReadInt32();
+                pax.FirstName = inf.ReadString();
+                int gender = inf.ReadInt32();
+                pax.Gender = (Passenger.Genders)gender;
+                pax.Surname = inf.ReadString();
+                pax.TimeToEnterAndExit = inf.ReadSingle();
+                pax.TimeToStartBoarding = inf.ReadDouble();
+                pax.TimeToStartExiting = inf.ReadDouble();
+                pax.WagonIndex = inf.ReadInt32();
+                pax.Weight = inf.ReadSingle();
+                PassengerList.Add(pax);
+            }
 
             base.Restore(inf);
 

@@ -56,7 +56,7 @@ namespace Orts.Viewer3D.Popups
         Label PassengersWaiting;
         Label PassengersCurrentWaiting;
 
-        Label Message;
+        Label Message { get; set; }
 
         public NextStationWindow(WindowManager owner)
             : base(owner, Window.DecorationSize.X + owner.TextFontDefault.Height * 34, Window.DecorationSize.Y + owner.TextFontDefault.Height * 6 + ControlLayout.SeparatorSize * 2, Viewer.Catalog.GetString("Next Station"))
