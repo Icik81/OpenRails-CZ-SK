@@ -4948,42 +4948,41 @@ namespace Orts.Simulation.RollingStocks
             }            
         }
 
-        // Určí řídící vůz
+        // Určí řídící vůz        
         public void SetControlUnit()
-        {            
-            if (Simulator.GameTimeCyklus10 == 10)
+        {
+            PowerUnit = false;
+            ControlUnit = false;
+
+            if (MaxPowerWBase > 10 * 1000 || (this as MSTSDieselLocomotive != null && (this as MSTSDieselLocomotive).MaximumDieselEnginePowerW > 10 * 1000))
+                PowerUnit = true;
+            else
+                ControlUnit = true;
+
+            if (PowerUnit && AcceptCableSignals)
             {
-                PowerUnit = false;
-                ControlUnit = false;
-
-                if (MaxPowerWBase > 10 * 1000 || (this as MSTSDieselLocomotive != null && (this as MSTSDieselLocomotive).MaximumDieselEnginePowerW > 10 * 1000))
-                    PowerUnit = true;
-                else
-                    ControlUnit = true;                
-
-                if (PowerUnit && AcceptCableSignals)
+                Simulator.PowerUnitAvailable = true;
+                Simulator.DataDriveForceN = DriveForceN;
+                Simulator.DataMaxCurrentA = MaxCurrentA;
+                Simulator.DataMaxForceN = MaxForceN;
+                Simulator.DataDynamicBrakeMaxCurrentA = DynamicBrakeMaxCurrentA;
+                Simulator.DataDynamicBrakeForceN = DynamicBrakeForceN;
+                Simulator.DataMaxDynamicBrakeForceN = MaxDynamicBrakeForceN;
+                Simulator.DataDynamicBrakeAvailable = DynamicBrakeAvailable;
+                if (this as MSTSDieselLocomotive != null)
                 {
-                    Simulator.DataDriveForceN = DriveForceN;
-                    Simulator.DataMaxCurrentA = MaxCurrentA;
-                    Simulator.DataMaxForceN = MaxForceN;
-                    Simulator.DataDynamicBrakeMaxCurrentA = DynamicBrakeMaxCurrentA;
-                    Simulator.DataDynamicBrakeForceN = DynamicBrakeForceN;
-                    Simulator.DataMaxDynamicBrakeForceN = MaxDynamicBrakeForceN;
-                    Simulator.DataDynamicBrakeAvailable = DynamicBrakeAvailable;
-                    if (this as MSTSDieselLocomotive != null)
-                    {
-                        Simulator.DataFakeDieselWaterTemperatureDeg = (this as MSTSDieselLocomotive).DieselEngines[0].FakeDieselWaterTemperatureDeg;
-                        Simulator.DataFakeDieselOilTemperatureDeg = (this as MSTSDieselLocomotive).DieselEngines[0].FakeDieselOilTemperatureDeg;
-                        Simulator.DataRealRPM = (this as MSTSDieselLocomotive).DieselEngines[0].RealRPM;
-                    }
+                    Simulator.DataFakeDieselWaterTemperatureDeg = (this as MSTSDieselLocomotive).DieselEngines[0].FakeDieselWaterTemperatureDeg;
+                    Simulator.DataFakeDieselOilTemperatureDeg = (this as MSTSDieselLocomotive).DieselEngines[0].FakeDieselOilTemperatureDeg;
+                    Simulator.DataRealRPM = (this as MSTSDieselLocomotive).DieselEngines[0].RealRPM;
                 }
             }
+            SetControlUnitParameters();
         }
 
         // Nastaví parametry pro řídící vůz
         public void SetControlUnitParameters()
         {
-            if (ControlUnit && AcceptCableSignals)
+            if (ControlUnit && AcceptCableSignals && Simulator.PowerUnitAvailable)
             {
                 DriveForceN = Simulator.DataDriveForceN;
                 MaxCurrentA = Simulator.DataMaxCurrentA;
@@ -5003,7 +5002,7 @@ namespace Orts.Simulation.RollingStocks
         }
         public void ResetControlUnitParameters()
         {
-            if (ControlUnit)
+            if (ControlUnit && Simulator.PowerUnitAvailable)
             {
                 DriveForceN = 0;
                 MaxCurrentA = 0;
@@ -13507,10 +13506,7 @@ namespace Orts.Simulation.RollingStocks
         public bool PositiveMask = false;
         public bool NegativeMask = false;
         public virtual float GetDataOf(CabViewControl cvc)
-        {
-            // Icik
-            SetControlUnitParameters();                        
-
+        {                                    
             CheckBlankDisplay(cvc);
             float data = 0;
             switch (cvc.ControlType)
