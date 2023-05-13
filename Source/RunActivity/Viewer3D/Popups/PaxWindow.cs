@@ -20,6 +20,8 @@
 using Orts.Simulation.RollingStocks;
 using ORTS.Common;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Orts.Viewer3D.Popups
 {
@@ -73,12 +75,13 @@ namespace Orts.Viewer3D.Popups
                 {
                     if (tc.PassengerList.Count > 0)
                     {
+                        List<Passenger> sorted = tc.PassengerList.OrderBy(c => c.ArrivalStationName).ToList();
                         Name.Text += Viewer.Catalog.GetString("Vůz č. ") + carNum.ToString() + " (" + tc.PassengerList.Count + ", kapacita " + tc.PassengerCapacity.ToString() + ")" + Environment.NewLine;
                         From.Text += Environment.NewLine;
                         To.Text += Environment.NewLine;
                         top += scrollbox.TextHeight;
                         carNum++;
-                        foreach (Passenger pax in tc.PassengerList)
+                        foreach (Passenger pax in sorted)
                         {
                             Name.Text += pax.FirstName.Replace("\"", "") + " " + pax.Surname.Replace("\"", "") + Environment.NewLine;
                             From.Text += pax.DepartureStationName + Environment.NewLine;
