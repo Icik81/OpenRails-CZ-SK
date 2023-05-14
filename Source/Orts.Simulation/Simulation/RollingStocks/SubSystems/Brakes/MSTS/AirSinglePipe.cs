@@ -2262,13 +2262,13 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 // Testuje propojení MU kabelu a počet lokomotiv propojených vedle sebe napájecím potrubím
                 if (train.Cars[i] is MSTSLocomotive)
                 {
-                    (train.Cars[i] as MSTSLocomotive).MUCable = false;
+                    (train.Cars[i] as MSTSLocomotive).MUCableCanBeUsed = false;
                     if (/*(train.Cars[i] as MSTSLocomotive).MUCableEquipment &&*/ i >= first && i <= last && continuousFromInclusive <= i && i < continuousToExclusive)
                     {
                         var eng = train.Cars[i] as MSTSLocomotive;
                         if (eng != null)
                         {
-                            eng.MUCable = true;
+                            eng.MUCableCanBeUsed = true;
                             MUCableLocoCount++;
 
                             if (lead != null && brakeSystem.TwoPipesConnection && eng is MSTSElectricLocomotive)
@@ -3110,7 +3110,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 // Propojí přímočinné brzdy, pokud jsou lokomotivy propojené kabelem
                 foreach (TrainCar car in train.Cars)
                 {
-                    if ((car is MSTSLocomotive) && (car as MSTSLocomotive).MUCable && (car as MSTSLocomotive).MUCableEquipment)
+                    if ((car is MSTSLocomotive) && (car as MSTSLocomotive).MUCableCanBeUsed && (car as MSTSLocomotive).MUCableEquipment)
                     {
                         car.BrakeSystem.AutoCylPressurePSI1 = lead.BrakeSystem.AutoCylPressurePSI1;
                     }
