@@ -933,6 +933,11 @@ namespace Orts.Simulation.Physics
             InitialSpeed = inf.ReadSingle();
             IsPathless = inf.ReadBoolean();
 
+            foreach (StationStop stop in StationStops)
+            {
+                stop.PlatformItem.NumPassengersWaiting = inf.ReadInt32();
+            }
+
             if (TrainType != TRAINTYPE.REMOTE)
             {
                 // restore leadlocomotive
@@ -1032,7 +1037,7 @@ namespace Orts.Simulation.Physics
         public virtual void Save(BinaryWriter outf)
         {
             // Icik
-            outf.Write(ReverseAtStation);            
+            outf.Write(ReverseAtStation);
             outf.Write(MaxStationCount);
 
             SaveCars(outf);
@@ -1214,6 +1219,11 @@ namespace Orts.Simulation.Physics
             // Save initial speed
             outf.Write(InitialSpeed);
             outf.Write(IsPathless);
+
+            foreach (StationStop stop in StationStops)
+            {
+                outf.Write(stop.PlatformItem.NumPassengersWaiting);
+            }
         }
 
         private void SaveCars(BinaryWriter outf)
@@ -1728,7 +1738,7 @@ namespace Orts.Simulation.Physics
         float CyklusCouplerImpuls = 1;
         float CyklusCouplerUncouple = 6;
         public bool TMFailure;
-        
+
         public virtual void physicsUpdate(float elapsedClockSeconds)
         {
             //if out of track, will set it to stop
@@ -1794,7 +1804,7 @@ namespace Orts.Simulation.Physics
                 }
                 // Provede odraz vozů při prudkém najetí
                 if (!MPManager.IsMultiPlayer() && car.IsDriveable && car.Train.IsActualPlayerTrain)
-                {                    
+                {
                     if (Simulator.CarCoupleSpeedOvercome && !HasCarCoupleSpeed)
                     {
                         SpeedMpS0 = (car.Flipped ^ (car.IsDriveable && car.Train.IsActualPlayerTrain && ((MSTSLocomotive)car).UsingRearCab)) ? -Math.Abs(car.SpeedMpS) : Math.Abs(car.SpeedMpS);
@@ -1821,7 +1831,7 @@ namespace Orts.Simulation.Physics
                                 car.SpeedMpS = -(SpeedMpS0 / Math.Abs(SpeedMpS0) * Math.Abs(SpeedMpS2));
                             else
                                 car.SpeedMpS = (SpeedMpS0 / Math.Abs(SpeedMpS0) * Math.Abs(SpeedMpS2));
-                            HasCarCoupleSpeed = false;                            
+                            HasCarCoupleSpeed = false;
                             CyklusCouplerImpuls = 1;
                         }
                     }
@@ -1831,7 +1841,7 @@ namespace Orts.Simulation.Physics
                         car.SpeedMpS = 0;
                         return;
                     }
-                }                
+                }
 
                 // Vyhodnocení selhání TM
                 if (!MPManager.IsMultiPlayer() && car is MSTSDieselLocomotive && !(car as MSTSDieselLocomotive).DieselEngines[0].HasGearBox && (car as MSTSDieselLocomotive).PowerOn)
@@ -1887,7 +1897,7 @@ namespace Orts.Simulation.Physics
                 {
                     car.HUDBrakeSkid = false;
                 }
-                
+
                 if (car.CouplerExceedBreakLimit)
                     uncoupleBehindCar = car;
             }
@@ -2510,10 +2520,10 @@ namespace Orts.Simulation.Physics
                         //    IsSteamHeatLow = false;        // Reset temperature warning
                         //}                        
                     }
-                        #region Calculate Steam Pressure drop along train
+                    #region Calculate Steam Pressure drop along train
 
-                        // Initialise main steam pipe pressure to same as steam heat valve setting
-                        float ProgressivePressureAlongTrainPSI = mstsLocomotive.CurrentSteamHeatPressurePSI;
+                    // Initialise main steam pipe pressure to same as steam heat valve setting
+                    float ProgressivePressureAlongTrainPSI = mstsLocomotive.CurrentSteamHeatPressurePSI;
 
                     // Calculate pressure drop along whole train
                     for (int i = 0; i < Cars.Count; i++)
@@ -2567,7 +2577,7 @@ namespace Orts.Simulation.Physics
                             }
                         }
                     }
-                        #endregion                    
+                    #endregion
                 }
             }
         }
@@ -4563,7 +4573,7 @@ namespace Orts.Simulation.Physics
                 kg2 += car.MassKG;
             SpeedMpS = (((kg1 * SpeedMpS) + (kg2 * otherTrain.SpeedMpS)) * otherMult) / (kg1 + kg2);
             otherTrain.SpeedMpS = SpeedMpS;
-            
+
             // Icik
             TrainMassKG1 = kg1; // Napojující
             TrainMassKG2 = kg2; // Napojovaný
@@ -16565,12 +16575,33 @@ namespace Orts.Simulation.Physics
                     testSurNamesF = new List<string>();
                 }
                 Passenger pax = new Passenger(testNamesM, testSurNamesM, testNamesF, testSurNamesF, random);
+                pax.StationOrderIndex = 0;
                 testNamesM = pax.MaleNames;
                 testSurNamesM = pax.MaleSurnames;
                 testSurNamesF = pax.FemaleSurames;
                 testNamesF = pax.FemaleNames;
                 int station = 0;
-                int maxStation = train.StationStops.Count;
+                int maxStation = 0;
+                List<int> fullUnboardStations = new List<int>();
+                int unboardIndex = 0;
+                if (Simulator.Activity != null &&
+                    Simulator.Activity.Tr_Activity.Tr_Activity_File.PlatformNumPassengersWaiting == null)
+                {
+                    maxStation = StationStops.Count;
+                }
+                else
+                {
+                    foreach (StationStop stop in StationStops)
+                    {
+                        maxStation++;
+                        if (stop.PlatformItem.NumPassengersWaiting >= 10000)
+                        {
+                            stop.PlatformItem.NumPassengersWaiting = stop.PlatformItem.NumPassengersWaiting - 10000;
+                            fullUnboardStations.Add(maxStation - 1);
+                        }
+                    }
+                }
+
                 Random rndStation = new Random();
                 for (int i = 0; i < train.Cars.Count; i++)
                 {
@@ -16592,16 +16623,34 @@ namespace Orts.Simulation.Physics
                 }
                 foreach (StationStop ss in train.StationStops)
                 {
-                    if (station + 1 == maxStation)
+                    if (station + 1 == StationStops.Count)
                         break;
                     int numPax = ss.PlatformItem.NumPassengersWaiting;
                     {
                         for (int i = 0; i < numPax; i++)
                         {
                             pax = new Passenger(testNamesM, testSurNamesM, testNamesF, testSurNamesF, random);
+                            if (pax.Surname == "Nguyen")
+                                pax.Surname = "Janů";
                             pax.DepartureStation = ss.PlatformItem.PlatformFrontUiD; // departure is current iterated platform
                             pax.DepartureStationName = ss.PlatformItem.Name;
+                            if (fullUnboardStations.Count > 0 && unboardIndex < fullUnboardStations.Count)
+                            {
+                                if (station == fullUnboardStations[unboardIndex])
+                                {
+                                    unboardIndex++;
+                                }
+                                if (unboardIndex < fullUnboardStations.Count)
+                                    maxStation = fullUnboardStations[unboardIndex] + 1;
+                                else
+                                    maxStation = StationStops.Count;
+                            }
+                            else
+                            {
+                                maxStation = StationStops.Count;
+                            }
                             int arrivalStation = rndStation.Next(station + 1, maxStation);
+                            pax.StationOrderIndex = arrivalStation;
                             pax.ArrivalStation = train.StationStops[arrivalStation].PlatformItem.PlatformFrontUiD; // arrival is any station in front of this station
                             pax.ArrivalStationName = train.StationStops[arrivalStation].PlatformItem.Name;
                             pax.WagonIndex = rndStation.Next(0, numUsableWagons);
@@ -16609,7 +16658,7 @@ namespace Orts.Simulation.Physics
                         }
                     }
                     station++;
-                }                
+                }
                 namesFilled = true;
             }
         }
@@ -16632,7 +16681,7 @@ namespace Orts.Simulation.Physics
                     if (!loc.DoorLeftOpen && !loc.DoorRightOpen && loc.CentralHandlingDoors)
                         return;
                 }
-            }            
+            }
 
             MSTSWagon locoWag = null;
             MSTSLocomotive loco = null;
@@ -16815,7 +16864,7 @@ namespace Orts.Simulation.Physics
                 }
             }
         boarding:
-            currentWagIndex = 0;            
+            currentWagIndex = 0;
             if (!EndStation && !PeopleWillJustUnboard)
             {
                 foreach (Passenger pax in train.StationStops[0].PlatformItem.PassengerList)

@@ -3674,6 +3674,7 @@ namespace Orts.Simulation.RollingStocks
         public double TimeToStartExiting { get; set; }
         public double TimeToStartBoarding { get; set; }
         public int WagonIndex { get; set; }
+        public int StationOrderIndex { get; set; }
 
         public Passenger()
         {
@@ -3723,7 +3724,7 @@ namespace Orts.Simulation.RollingStocks
                 nameIndex = rnd.Next(0, FemaleSurames.Count - 1);
                 Surname = FemaleSurames[nameIndex];
             }
-            Age = rnd.Next(1, 100);
+            Age = rnd.Next(15, 90);
             if (Gender == Genders.Male)
             {
                 if (Age < 20)
@@ -3732,7 +3733,10 @@ namespace Orts.Simulation.RollingStocks
                     int fat = rnd.Next(0, 19);
                     if (fat == 0)
                         aduldWeight = rnd.Next(100, 200);
-                    Weight = (aduldWeight / 20 - Age) + 5;
+                    Weight = (aduldWeight / (21 - Age)) + 5;
+                    if (Weight < (Age * 2))
+                        Weight = Age * 3;
+
                 }
                 else
                 {
@@ -3751,7 +3755,9 @@ namespace Orts.Simulation.RollingStocks
                     int fat = rnd.Next(0, 17);
                     if (fat == 0)
                         aduldWeight = rnd.Next(100, 200);
-                    Weight = (aduldWeight / 20 - Age) + 4;
+                    Weight = (aduldWeight / (21 - Age)) + 4;
+                    if (Weight < (Age * 2))
+                        Weight = Age * 3;
                 }
                 else
                 {
@@ -3762,6 +3768,9 @@ namespace Orts.Simulation.RollingStocks
                     Weight = aduldWeight;
                 }
             }
+            if (Weight < 0)
+                Weight = Age * 3;
+            Weight = (float)Math.Round(Weight, 0);
         }
     }
 
