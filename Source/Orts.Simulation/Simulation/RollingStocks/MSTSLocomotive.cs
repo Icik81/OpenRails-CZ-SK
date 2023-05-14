@@ -632,7 +632,7 @@ namespace Orts.Simulation.RollingStocks
         public bool RDSTBreakerVZEnable;
         public bool RDSTBreakerPowerEnable;
         public float CurrentTrackSandBoxCapacityKG;
-        public bool MUCable;
+        public bool MUCableCanBeUsed;
         public bool MUCableEquipment;
         public float MaxPowerWBase;
         public bool DoorSwitchEnable;        
@@ -9499,55 +9499,64 @@ namespace Orts.Simulation.RollingStocks
                 {                    
                     TM_Temperature(elapsedClockSeconds);
                     DriveResistance_Temperature(elapsedClockSeconds);
-                    Simulator.TrainIsPassenger = true;
-                    foreach (TrainCar car in Train.Cars)
-                    {
-                        // Nastaví automaticky lokomotivu jako postrk, pokud se jedná o nákladní vlak
-                        if (car is MSTSWagon && car.WagonType == WagonTypes.Freight)
-                            LocoBecomeHelper = true;                        
-                        if (car is MSTSLocomotive && LocoBecomeHelper)
-                        {
-                            car.AcceptHelperSignals = true;
-                            Simulator.Confirmer.Information(Simulator.Catalog.GetString("Car ID") + " " + car.CarID + ": " + Simulator.Catalog.GetString("Helper connected"));
-                        }
 
-                        if (car.WagonType == WagonTypes.Freight)
-                            Simulator.TrainIsPassenger = false;
-                    }
-
-                    if (IsLeadLocomotive())
-                        Simulator.LeadAuxResVolumeM3 = AuxResVolumeM3;
-
-                    // Osobní vlak s elektrickou lokomotivou                                                            
-                    if (Simulator.TrainIsPassenger)
-                        foreach (TrainCar car in Train.Cars)
-                        {                            
-                            if (car is MSTSElectricLocomotive && !car.AcceptCableSignals && (car as MSTSElectricLocomotive).AuxResVolumeM3 == Simulator.LeadAuxResVolumeM3)
-                                car.AcceptCableSignals = true;                            
-                        }
-                                         
-                    // Elektrické lokomotivy nebo oddíly spojené za sebou
-                    if (this.MUCable)
-                        if (this is MSTSElectricLocomotive && !AcceptCableSignals && (this as MSTSElectricLocomotive).AuxResVolumeM3 == Simulator.LeadAuxResVolumeM3) 
-                            AcceptCableSignals = true;
-                    
-                    // Řídící vůz v soupravě                    
-                    foreach (TrainCar car in Train.Cars)
+                    if (BrakeSystem.StartOn && !Simulator.Settings.AirEmpty)
                     {
-                        if ((car as MSTSDieselLocomotive != null && ((car as MSTSDieselLocomotive).MaxPowerWBase > 10 * 1000 || (car as MSTSDieselLocomotive).MaximumDieselEnginePowerW > 10 * 1000)))
-                            car.PowerUnit = true;
-                        else
-                            car.ControlUnit = true;
-                    }
-                    if (ControlUnit)
-                    {
-                        AcceptCableSignals = true;
                         foreach (TrainCar car in Train.Cars)
                         {
-                            if (car is MSTSLocomotive && car.PowerUnit)
+                            // Nastaví automaticky lokomotivu jako postrk, pokud se jedná o nákladní vlak
+                            if (car is MSTSWagon && car.WagonType == WagonTypes.Freight)
                             {
-                                car.AcceptCableSignals = true;
-                                break;
+                                LocoBecomeHelper = true;
+                                Simulator.TrainIsPassenger = false;
+                            }
+                            if (car is MSTSLocomotive && LocoBecomeHelper)
+                            {
+                                car.AcceptHelperSignals = true;
+                                Simulator.Confirmer.Information(Simulator.Catalog.GetString("Car ID") + " " + car.CarID + ": " + Simulator.Catalog.GetString("Helper connected"));
+                            }
+
+                            if (car.WagonType == WagonTypes.Passenger || car.HasPassengerCapacity)
+                            {
+                                if (!LocoBecomeHelper)
+                                    Simulator.TrainIsPassenger = true;
+                            }
+                        }
+
+                        if (IsLeadLocomotive())
+                            Simulator.LeadAuxResVolumeM3 = AuxResVolumeM3;
+
+                        // Osobní vlak s elektrickou lokomotivou                                                            
+                        if (Simulator.TrainIsPassenger)
+                            foreach (TrainCar car in Train.Cars)
+                            {
+                                if (car is MSTSElectricLocomotive && !car.AcceptCableSignals && (car as MSTSElectricLocomotive).AuxResVolumeM3 == Simulator.LeadAuxResVolumeM3)
+                                    car.AcceptCableSignals = true;
+                            }
+
+                        // Elektrické lokomotivy nebo oddíly spojené za sebou
+                        if (this.MUCableCanBeUsed)
+                            if (this is MSTSElectricLocomotive && !AcceptCableSignals && (this as MSTSElectricLocomotive).AuxResVolumeM3 == Simulator.LeadAuxResVolumeM3)
+                                AcceptCableSignals = true;
+
+                        // Řídící vůz v soupravě                    
+                        foreach (TrainCar car in Train.Cars)
+                        {
+                            if ((car as MSTSLocomotive).MaxPowerWBase > 10 * 1000 || (car as MSTSDieselLocomotive != null && (car as MSTSDieselLocomotive).MaximumDieselEnginePowerW > 10 * 1000))
+                                car.PowerUnit = true;
+                            else
+                                car.ControlUnit = true;
+                        }
+                        if (ControlUnit)
+                        {
+                            AcceptCableSignals = true;
+                            foreach (TrainCar car in Train.Cars)
+                            {
+                                if (car is MSTSLocomotive && car.PowerUnit)
+                                {
+                                    car.AcceptCableSignals = true;
+                                    break;
+                                }
                             }
                         }
                     }
