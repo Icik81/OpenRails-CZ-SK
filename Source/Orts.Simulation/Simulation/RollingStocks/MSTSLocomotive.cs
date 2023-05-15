@@ -9542,10 +9542,13 @@ namespace Orts.Simulation.RollingStocks
                         // Řídící vůz v soupravě                    
                         foreach (TrainCar car in Train.Cars)
                         {
-                            if ((car as MSTSLocomotive).MaxPowerWBase > 10 * 1000 || (car as MSTSDieselLocomotive != null && (car as MSTSDieselLocomotive).MaximumDieselEnginePowerW > 10 * 1000))
-                                car.PowerUnit = true;
-                            else
-                                car.ControlUnit = true;
+                            if (car is MSTSLocomotive)
+                            {
+                                if ((car as MSTSLocomotive).MaxPowerWBase > 10 * 1000 || (car as MSTSDieselLocomotive != null && (car as MSTSDieselLocomotive).MaximumDieselEnginePowerW > 10 * 1000))
+                                    car.PowerUnit = true;
+                                else
+                                    car.ControlUnit = true;
+                            }
                         }
                         if (ControlUnit)
                         {
