@@ -103,6 +103,7 @@ namespace Orts.Simulation.Physics
         public bool HasSpeedInCoupler;
         public string AITrainNameReadyToDepart;
         public string AITrainNameShunting;
+        public bool TrainHasMUControl;
 
         public Traveller RearTDBTraveller;               // positioned at the back of the last car in the train
         public Traveller FrontTDBTraveller;              // positioned at the front of the train by CalculatePositionOfCars

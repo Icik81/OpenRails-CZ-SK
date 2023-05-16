@@ -351,7 +351,11 @@ namespace Orts.Common
         CommandCylinderThrottlePositionChangeDown,
         DRCoolingOn,
         DRCoolingOff,
-        AIPermissionToDepart
+        AIPermissionToDepart,
+        MUWheelSlipWarningOn,
+        MUWheelSlipWarningOff,
+        MUWheelSlipOn,
+        MUWheelSlipOff
     }
 
     public static class Events
@@ -718,6 +722,10 @@ namespace Orts.Common
                         case 20105: return Event.DRCoolingOn;
                         case 20106: return Event.DRCoolingOff;
                         case 20107: return Event.AIPermissionToDepart;
+                        case 20108: return Event.MUWheelSlipWarningOn;
+                        case 20109: return Event.MUWheelSlipWarningOff;
+                        case 20110: return Event.MUWheelSlipOn;
+                        case 20111: return Event.MUWheelSlipOff;
 
                         default: return 0;
                     }

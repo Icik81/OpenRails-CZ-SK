@@ -232,6 +232,12 @@ namespace Orts.Simulation
         public float LeadAuxResVolumeM3 = -1;
         public int[] FailedSignalNr = new int[100];
         public int FailedSignalsCount;
+        public bool WheelSlipWarning;
+        public bool WheelSlip;
+        public bool MU_WheelSlipWarningOn;
+        public bool MU_WheelSlipOn;
+        public bool IsWheelSlipWarning;
+        public bool IsWheelSlip;
 
         public List<PowerSupplyStation> powerSupplyStations;
         public List<VoltageChangeMarker> voltageChangeMarkers;

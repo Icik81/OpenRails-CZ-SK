@@ -5000,6 +5000,85 @@ namespace Orts.Simulation.RollingStocks
                 }
             }
         }
+
+        float WheelNoSlipWarningTimer;
+        float WheelNoSlipTimer;
+        public void CheckMUWheelSlip(float elapsedClockSeconds)
+        {
+            if (IsLeadLocomotive())
+            {
+                Simulator.WheelSlipWarning = false;
+                Simulator.WheelSlip = false;
+            }
+
+            if (Simulator.MUCableLocoCount > 1)
+            {
+                Train.TrainHasMUControl = true;
+                if (IsLeadLocomotive() && !AcceptCableSignals)
+                    Train.TrainHasMUControl = false;
+
+                if (Train.TrainHasMUControl)
+                {
+                    foreach (TrainCar car in Train.Cars)
+                    {
+                        if (car is MSTSLocomotive && !car.CarIsPlayerLoco)
+                        {
+                            if (car.WheelSlipWarning)
+                            {
+                                Simulator.WheelSlipWarning = true;
+                                Simulator.IsWheelSlipWarning = true;
+                            }
+                            if (car.WheelSlip)
+                            {
+                                Simulator.WheelSlip = true;
+                                Simulator.IsWheelSlip = true;
+                            }
+                        }                        
+                    }
+                    if (IsLeadLocomotive())
+                    {
+                        if (!Simulator.MU_WheelSlipWarningOn && Simulator.WheelSlipWarning)
+                        {
+                            Simulator.MU_WheelSlipWarningOn = true;
+                            SignalEvent(Event.MUWheelSlipWarningOn);
+                        }
+                        if (!Simulator.MU_WheelSlipOn && Simulator.WheelSlip)
+                        {
+                            Simulator.MU_WheelSlipOn = true;
+                            SignalEvent(Event.MUWheelSlipOn);
+                        }
+                    }
+                }
+            }
+            if (IsLeadLocomotive())
+            {
+                if (Simulator.IsWheelSlipWarning)
+                {
+                    if (!Simulator.WheelSlipWarning)
+                        WheelNoSlipWarningTimer += elapsedClockSeconds;
+                    if (WheelNoSlipWarningTimer > 1.0f)
+                    {
+                        Simulator.IsWheelSlipWarning = false;
+                        WheelNoSlipWarningTimer = 0.0f;
+                        Simulator.MU_WheelSlipWarningOn = false;
+                        SignalEvent(Event.MUWheelSlipWarningOff);
+                    }
+                }
+                if (Simulator.IsWheelSlip)
+                {
+                    if (!Simulator.WheelSlip)
+                        WheelNoSlipTimer += elapsedClockSeconds;
+                    if (WheelNoSlipTimer > 1.0f)
+                    {
+                        Simulator.IsWheelSlip = false;
+                        WheelNoSlipTimer = 0.0f;
+                        Simulator.MU_WheelSlipOn = false;
+                        SignalEvent(Event.MUWheelSlipOff);
+                    }
+                }
+            }
+        }
+
         public void ResetControlUnitParameters()
         {
             if (ControlUnit && Simulator.PowerUnitAvailable)
@@ -5595,6 +5674,7 @@ namespace Orts.Simulation.RollingStocks
                 RainWindow(elapsedClockSeconds);
                 WipersWindow(elapsedClockSeconds);
                 CabRadioOnOff();
+                CheckMUWheelSlip(elapsedClockSeconds);
                 BatterySetOn = false;                
                 if (LocoReadyToGo && this is MSTSSteamLocomotive)
                     LocoReadyToGo = false;                
@@ -15702,6 +15782,16 @@ namespace Orts.Simulation.RollingStocks
                 case CABViewControlTypes.DRIVERESISTANCE_TEMPERATURE:
                     {                        
                         data = DRTemperatureData0;
+                        break;
+                    }
+                case CABViewControlTypes.MU_WHEELSLIPWARNING:
+                    {
+                        data = Simulator.WheelSlipWarning ? 1 : 0;
+                        break;
+                    }
+                case CABViewControlTypes.MU_WHEELSLIP:
+                    {
+                        data = Simulator.WheelSlip ? 1 : 0;
                         break;
                     }
 
