@@ -3235,7 +3235,7 @@ namespace Orts.Simulation.AIs
                                 bool otherTrainFront;
 
                                 // Icik
-                                if (OtherTrain.SpeedMpS != 0)
+                                if (SpeedMpS != 0)
                                     AICoupling = false;
 
                                 if (attachToTrain && CheckCouplePosition(OtherTrain, out thisTrainFront, out otherTrainFront) && !AICoupling)
