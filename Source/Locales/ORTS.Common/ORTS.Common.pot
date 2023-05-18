@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2023-05-01 13:17:10+0200\n"
-"PO-Revision-Date: 2023-05-01 13:17:10+0200\n"
+"POT-Creation-Date: 2023-05-18 20:12:57+0200\n"
+"PO-Revision-Date: 2023-05-18 20:12:57+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -1330,22 +1330,26 @@ msgid "Set Voltage 25k"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:309
-msgid "Set Voltage 3k"
+msgid "Set Voltage 15k"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:310
-msgid "Set Voltage 0"
+msgid "Set Voltage 3k"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:311
+msgid "Set Voltage 0"
+msgstr ""
+
+#: ../../ORTS.Common/Input/UserCommand.cs:312
 msgid "Set Delete Voltage Marker"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:313
+#: ../../ORTS.Common/Input/UserCommand.cs:314
 msgid "Control_CZSK Reload World Object"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:314
+#: ../../ORTS.Common/Input/UserCommand.cs:315
 msgid "Control_CZSK Reload Cab Object"
 msgstr ""
 

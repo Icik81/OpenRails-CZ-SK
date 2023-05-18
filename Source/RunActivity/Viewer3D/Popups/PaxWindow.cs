@@ -28,7 +28,7 @@ namespace Orts.Viewer3D.Popups
     public class PaxWindow : Window
     {
         public PaxWindow(WindowManager owner)
-            : base(owner, Window.DecorationSize.X + owner.TextFontDefault.Height * 40, Window.DecorationSize.Y + owner.TextFontDefault.Height * 50, Viewer.Catalog.GetString("Passenger Info"))
+            : base(owner, Window.DecorationSize.X + owner.TextFontDefault.Height * 40, Window.DecorationSize.Y + owner.TextFontDefault.Height * 50, Viewer.Catalog.GetString("Passengers Info"))
         {
         }
 
@@ -43,9 +43,9 @@ namespace Orts.Viewer3D.Popups
             var line = vbox.AddLayoutHorizontalLineOfText();
             colWidth = (vbox.RemainingWidth - vbox.TextHeight * 2) / 3;
             {
-                line.Add(new Label(colWidth, line.RemainingHeight, Viewer.Catalog.GetString("Jméno (hmotnost/věk)")));
-                line.Add(new Label(colWidth, line.RemainingHeight, Viewer.Catalog.GetString("Ze stanice"), LabelAlignment.Left));
-                line.Add(new Label(colWidth, line.RemainingHeight, Viewer.Catalog.GetString("Do stanice"), LabelAlignment.Left));
+                line.Add(new Label(colWidth, line.RemainingHeight, Viewer.Catalog.GetString("Name (Weight / Age)")));
+                line.Add(new Label(colWidth, line.RemainingHeight, Viewer.Catalog.GetString("From Station"), LabelAlignment.Left));
+                line.Add(new Label(colWidth, line.RemainingHeight, Viewer.Catalog.GetString("To Station"), LabelAlignment.Left));
             }
             vbox.AddHorizontalSeparator();
             scrollbox = vbox.AddLayoutScrollboxVertical(vbox.RemainingWidth);
@@ -78,14 +78,14 @@ namespace Orts.Viewer3D.Popups
                     if (tc.PassengerList.Count > 0)
                     {
                         List<Passenger> sorted = tc.PassengerList.OrderBy(c => c.StationOrderIndex).ToList();
-                        Name.Text += Viewer.Catalog.GetString("Vůz č. ") + carNum.ToString() + " (cestujících: " + tc.PassengerList.Count + ", kapacita " + tc.PassengerCapacity.ToString() + ")" + Environment.NewLine;
+                        Name.Text += Viewer.Catalog.GetString("Car Nr. ") + carNum.ToString() + Viewer.Catalog.GetString(" (Passengers: ") + tc.PassengerList.Count + Viewer.Catalog.GetString(", Capacity ") + tc.PassengerCapacity.ToString() + ")" + Environment.NewLine;
                         From.Text += Environment.NewLine;
                         To.Text += Environment.NewLine;
                         top += scrollbox.TextHeight;
                         carNum++;
                         foreach (Passenger pax in sorted)
                         {
-                            Name.Text += pax.FirstName.Replace("\"", "") + " " + pax.Surname.Replace("\"", "") + " (" + pax.Weight.ToString() + "kg/" + pax.Age.ToString() + ")" + Environment.NewLine;
+                            Name.Text += pax.FirstName.Replace("\"", "") + " " + pax.Surname.Replace("\"", "") + " (" + ((int)pax.Weight).ToString() + "kg/" + ((int)pax.Age).ToString() + ")" + Environment.NewLine;
                             From.Text += pax.DepartureStationName + Environment.NewLine;
                             To.Text += pax.ArrivalStationName + Environment.NewLine;
                             totalPax++;
@@ -98,13 +98,13 @@ namespace Orts.Viewer3D.Popups
                     }
                 }
             }
-            Name.Text += "Celkem:";
+            Name.Text += Viewer.Catalog.GetString("Overall:");
             var separator = new System.Globalization.NumberFormatInfo()
             {
                 NumberDecimalDigits = 0,
                 NumberGroupSeparator = "."
             };
-            From.Text += "Hmotnost cestujících: " + totalWeight.ToString("N", separator) + "kg/počet cestujících: " + totalPax.ToString("N", separator);
+            From.Text += Viewer.Catalog.GetString("Passengers weight: ") + totalWeight.ToString("N", separator) + Viewer.Catalog.GetString("kg / Count of passengers: ") + totalPax.ToString("N", separator);
             scrollbox.CurrentTop = top + 100;
         }
     }

@@ -2033,7 +2033,7 @@ namespace Orts.Simulation.RollingStocks
             for (int x = 0; x < paxCount; x++)
             {
                 Passenger pax = new Passenger();
-                pax.Age = inf.ReadInt32();
+                pax.Age = inf.ReadSingle();
                 pax.ArrivalStation = inf.ReadInt32();
                 pax.ArrivalStationName = inf.ReadString();
                 pax.Boarded = inf.ReadBoolean();
