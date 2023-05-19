@@ -21,6 +21,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Orts.Simulation.Physics;
 using Orts.Simulation.RollingStocks;
+using Orts.Simulation.RollingStocks.SubSystems.Brakes;
 using ORTS.Common;
 using System;
 using System.Linq;
@@ -66,6 +67,7 @@ namespace Orts.Viewer3D.Popups
 
                     // Icik
                     //if (car.BrakesStuck || ((car is MSTSLocomotive) && (car as MSTSLocomotive).PowerReduction > 0)) carLabel.Color = Color.Red;
+                    car.BrakeCarStatus();
                     if (car.BrakesStuck || (car.BrakeSystem.CarHasProblemWithBrake)) carLabel.Color = Color.Red;
                     //if (car.SelectedCar) carLabel.Color = Color.Yellow;
                     Owner.Viewer.PlayerTrain.Simulator.ChangeCabActivated = false;

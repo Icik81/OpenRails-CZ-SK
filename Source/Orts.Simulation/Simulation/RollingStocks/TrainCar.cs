@@ -969,6 +969,10 @@ namespace Orts.Simulation.RollingStocks
             if (!IsPlayerTrain)
                 return;
 
+            if (BrakeSystem.CarHasAirStuckBrake_1 || BrakeSystem.CarHasAirStuckBrake_2 || BrakeSystem.CarHasAirStuckBrake_3
+                || BrakeSystem.CarHasMechanicStuckBrake_1 || BrakeSystem.CarHasMechanicStuckBrake_2)
+                BrakeSystem.CarHasProblemWithBrake = true;
+
             var car = this as MSTSWagon;
             if (!BrakeSystem.BrakeCarHasStatus 
                 && WagonType != WagonTypes.Engine 
@@ -980,26 +984,21 @@ namespace Orts.Simulation.RollingStocks
                 switch (Simulator.Random.Next(0, 200))
                 {                    
                     case 150:
-                        BrakeSystem.CarHasAirStuckBrake_1 = true; // Nejde odbrzdit
-                        BrakeSystem.CarHasProblemWithBrake = true;
+                        BrakeSystem.CarHasAirStuckBrake_1 = true; // Nejde odbrzdit                        
                         break;
                     case 151:
-                        BrakeSystem.CarHasAirStuckBrake_2 = true; // Nejde zabrzdit
-                        BrakeSystem.CarHasProblemWithBrake = true;
+                        BrakeSystem.CarHasAirStuckBrake_2 = true; // Nejde zabrzdit                        
                         break;
                     case 52:
                     case 122:
                     case 152:
-                        BrakeSystem.CarHasAirStuckBrake_3 = true; // Netěsný vůz
-                        //BrakeSystem.CarHasProblemWithBrake = true;
+                        BrakeSystem.CarHasAirStuckBrake_3 = true; // Netěsný vůz                        
                         break;
                     case 153:
-                        BrakeSystem.CarHasMechanicStuckBrake_1 = true; // Brzdí málo
-                        BrakeSystem.CarHasProblemWithBrake = true;
+                        BrakeSystem.CarHasMechanicStuckBrake_1 = true; // Brzdí málo                        
                         break;
                     case 154:
-                        BrakeSystem.CarHasMechanicStuckBrake_2 = true; // Je zaseklý 
-                        BrakeSystem.CarHasProblemWithBrake = true;
+                        BrakeSystem.CarHasMechanicStuckBrake_2 = true; // Je zaseklý                         
                         break;
                 }                
             }        
