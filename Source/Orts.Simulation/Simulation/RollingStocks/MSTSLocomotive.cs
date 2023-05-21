@@ -4660,9 +4660,7 @@ namespace Orts.Simulation.RollingStocks
                         AIBellStartOn = true;
                         AIBellTimer = 0.0f;
                     }
-                }
-                if (this.SpeedMpS != 0 && (Train as AITrain).Name == (Train as AITrain).AITrainNameShunting)
-                    (Train as AITrain).AITrainNameShunting = "NOP";
+                }                
 
                 // Výpravčí pískne k odjezdu AI ze stanice
                 if (CarIsWaitingAtStation && this.ThrottlePercent > 0.0f)
@@ -4673,9 +4671,6 @@ namespace Orts.Simulation.RollingStocks
                         SignalEvent(Event.AIPermissionToDepart);
                     (Train as AITrain).AITrainNameReadyToDepart = (Train as AITrain).Name;
                 }
-                if (this.SpeedMpS != 0 && (Train as AITrain).Name == (Train as AITrain).AITrainNameReadyToDepart)
-                    (Train as AITrain).AITrainNameReadyToDepart = "NOP";
-
 
                 // Vyčkávací čas AI po písknutí nebo povolení odjezdu
                 if (AITimerStart > 0.0f)
@@ -4689,6 +4684,11 @@ namespace Orts.Simulation.RollingStocks
                     else
                         AITimerStart = 0.0f;
                 }
+
+                if (this.AbsSpeedMpS > 0.5f && (Train as AITrain).Name == (Train as AITrain).AITrainNameShunting)
+                    (Train as AITrain).AITrainNameShunting = "NOP";
+                if (this.AbsSpeedMpS > 0.5f && (Train as AITrain).Name == (Train as AITrain).AITrainNameReadyToDepart)
+                    (Train as AITrain).AITrainNameReadyToDepart = "NOP";
             }
         }
 
