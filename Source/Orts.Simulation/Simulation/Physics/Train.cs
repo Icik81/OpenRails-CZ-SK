@@ -16730,7 +16730,7 @@ namespace Orts.Simulation.Physics
                         nextTimeExitDoors1 = gameClock + 0.25f;
                         foreach (Passenger pax in wagon.PassengerList)
                         {
-                            if (pax.ArrivalStation == train.StationStops[0].PlatformItem.PlatformFrontUiD && pax.DoorsToEnterAndExit == 0)
+                            if ((pax.ArrivalStation == train.StationStops[0].PlatformItem.PlatformFrontUiD || EndStation) && pax.DoorsToEnterAndExit == 0)
                             {
                                 pax.TimeToStartExiting = nextTimeExitDoors1;
                                 nextTimeExitDoors1 += pax.TimeToEnterAndExit;
@@ -16739,7 +16739,7 @@ namespace Orts.Simulation.Physics
                         nextTimeExitDoors2 = gameClock + 0.25f;
                         foreach (Passenger pax in wagon.PassengerList)
                         {
-                            if (pax.ArrivalStation == train.StationStops[0].PlatformItem.PlatformFrontUiD && pax.DoorsToEnterAndExit == 1)
+                            if ((pax.ArrivalStation == train.StationStops[0].PlatformItem.PlatformFrontUiD || EndStation) && pax.DoorsToEnterAndExit == 1)
                             {
                                 pax.TimeToStartExiting = nextTimeExitDoors2;
                                 nextTimeExitDoors2 += pax.TimeToEnterAndExit;
@@ -16790,7 +16790,7 @@ namespace Orts.Simulation.Physics
                 var wagon = (train.Cars[i] as MSTSWagon);
                 foreach (Passenger pax in wagon.PassengerList)
                 {
-                    if (pax.ArrivalStation == train.StationStops[0].PlatformItem.PlatformFrontUiD)
+                    if (pax.ArrivalStation == train.StationStops[0].PlatformItem.PlatformFrontUiD || EndStation)
                         exitPaxList.Add(pax);
                 }
             }
@@ -16818,7 +16818,7 @@ namespace Orts.Simulation.Physics
                         continue;
                     foreach (Passenger pax in exitPaxList)
                     {
-                        if (pax.WagonIndex == currentWagIndex && train.StationStops[0].PlatformItem.PlatformFrontUiD == pax.ArrivalStation && pax.TimeToStartExiting < gameClock)
+                        if (pax.WagonIndex == currentWagIndex && (train.StationStops[0].PlatformItem.PlatformFrontUiD == pax.ArrivalStation || EndStation) && pax.TimeToStartExiting < gameClock)
                         {
                             if (!platformSide && !wagon.DoorLeftOpen && !loco.CentralHandlingDoors)
                             {
