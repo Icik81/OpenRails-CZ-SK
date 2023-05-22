@@ -836,6 +836,83 @@ namespace Orts.Viewer3D.RollingStock
                 }
             }
 
+            // MirelRSController ovladač
+            if (Locomotive.MirelRSControllerEnable) 
+            {
+                if (UserInput.IsDown(UserCommand.ControlThrottleIncrease))
+                {
+                    Locomotive.MirelRSControllerPressUp = true;
+                }
+                else
+                if (UserInput.IsDown(UserCommand.ControlThrottleDecrease))
+                {
+                    Locomotive.MirelRSControllerPressDown = true;
+                }
+                else
+                {
+                    Locomotive.MirelRSControllerPressUp = false;
+                    Locomotive.MirelRSControllerPressDown = false;
+                    Locomotive.MirelRSControllerPressTimer = 0;
+                }
+
+                if (Locomotive.MirelRSControllerPosition[Locomotive.LocoStation] > 6)
+                {
+                    if (UserInput.IsReleased(UserCommand.ControlThrottleIncrease))
+                    {
+                        Locomotive.MirelRSControllerAutoPressDown = true;
+                    }
+                }
+                
+                if (Locomotive.MirelRSControllerPosition[Locomotive.LocoStation] == 2)
+                {
+                    if (UserInput.IsReleased(UserCommand.ControlThrottleIncrease))
+                    {
+                        Locomotive.MirelRSControllerPosition[Locomotive.LocoStation] = 1;
+                        Locomotive.SignalEvent(Event.MirerLoosen);
+                    }
+                    if (UserInput.IsReleased(UserCommand.ControlThrottleDecrease))
+                    {
+                        Locomotive.MirelRSControllerAutoPressDown = true;
+                    }
+                }
+
+                if (Locomotive.MirelRSControllerPosition[Locomotive.LocoStation] == 0)
+                {
+                    if (UserInput.IsReleased(UserCommand.ControlThrottleDecrease))
+                    {
+                        Locomotive.MirelRSControllerPosition[Locomotive.LocoStation] = 1;
+                        Locomotive.SignalEvent(Event.MirerLoosen);
+                    }
+                }
+
+                if (Locomotive.MirelRSControllerPosition[Locomotive.LocoStation] == 4)
+                {
+                    if (UserInput.IsReleased(UserCommand.ControlThrottleDecrease))
+                    {
+                        Locomotive.MirelRSControllerPosition[Locomotive.LocoStation] = 5;
+                        Locomotive.SignalEvent(Event.MirerLoosen);
+                    }
+                }
+
+                if (Locomotive.MirelRSControllerPosition[Locomotive.LocoStation] == 4)
+                {
+                    if (UserInput.IsReleased(UserCommand.ControlThrottleIncrease))
+                    {
+                        Locomotive.MirelRSControllerPosition[Locomotive.LocoStation] = 5;
+                        Locomotive.SignalEvent(Event.MirerLoosen);
+                    }
+                }
+
+                if (Locomotive.MirelRSControllerPosition[Locomotive.LocoStation] == 6)
+                {
+                    if (UserInput.IsReleased(UserCommand.ControlThrottleIncrease))
+                    {
+                        Locomotive.MirelRSControllerPosition[Locomotive.LocoStation] = 5;
+                        Locomotive.SignalEvent(Event.MirerLoosen);
+                    }
+                }
+            }
+
             // CommandCylinder ovladač
             if (Locomotive.CommandCylinderEnable)
             {

@@ -5164,6 +5164,7 @@ namespace Orts.Simulation.RollingStocks
                 DieselDirectionControllerPosition[1] = DieselDirectionController2Position[1] = DieselDirectionController4Position[1] = -1;
                 DieselDirectionControllerPosition[2] = DieselDirectionController2Position[2] = DieselDirectionController4Position[2] = -1;
                 Headlight[1] = Headlight[2] = 0;
+                MirelRSControllerPosition[1] = preMirelRSControllerPosition[1] = MirelRSControllerPosition[2] = preMirelRSControllerPosition[2] = 3;
 
                 if (CruiseControl != null)
                 {
@@ -5624,7 +5625,7 @@ namespace Orts.Simulation.RollingStocks
                 //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("WeatherAdv: " + Simulator.WeatherAdv));                                                                
                 StepControllerValue = Simulator.StepControllerValue;
                 // StepController odpovídá v defaultu throttle
-                if (IsLeadLocomotive() && !MirerControllerEnable)
+                if (IsLeadLocomotive() && !MirerControllerEnable && !MirelRSControllerEnable)
                     Simulator.StepControllerValue = LocalThrottlePercent / 100;
                 
                 TogglePowerKey();
@@ -5644,6 +5645,7 @@ namespace Orts.Simulation.RollingStocks
                 ToggleDieselDirectionController();
                 ToggleDieselDirectionController2();
                 MirerController();
+                MirelRSController(elapsedClockSeconds);
                 CommandCylinder(elapsedClockSeconds);
                 TogglePantograph4Switch();
                 TogglePantograph3Switch();
@@ -7544,6 +7546,8 @@ namespace Orts.Simulation.RollingStocks
                 return;
             if (MirerControllerEnable)
                 return;
+            if (MirelRSControllerEnable)
+                return;
             if (CommandCylinderEnable)                            
                 return;            
 
@@ -7710,6 +7714,8 @@ namespace Orts.Simulation.RollingStocks
             if (AripotControllerEnable)
                 return;
             if (MirerControllerEnable)
+                return;
+            if (MirelRSControllerEnable)
                 return;
             if (CommandCylinderEnable)
                 return;                
@@ -8697,6 +8703,9 @@ namespace Orts.Simulation.RollingStocks
         #region DynamicBrakeController
         public void StartDynamicBrakeIncrease(float? target)
         {
+            if (MirelRSControllerEnable)
+                return;
+
             if (DynamicBrakeController == null)
                 return;
             AlerterReset(TCSEvent.DynamicBrakeChanged);
@@ -8933,6 +8942,7 @@ namespace Orts.Simulation.RollingStocks
         {  // Need a better way to express brake as a single number.
             if (DynamicBrakeController == null)
                 return;
+
             if (increase)
             {
                 if (target > DynamicBrakeController.CurrentValue)
@@ -12980,6 +12990,137 @@ namespace Orts.Simulation.RollingStocks
                 }
             }            
         }
+
+        public bool MirelRSControllerEnable = false;
+        public int[] MirelRSControllerPosition = new int[3];
+        public int[] preMirelRSControllerPosition = new int[3];
+        public float MirelRSControllerPressTimer;
+        public float MirelRSControllerAutoPressTimer;
+        public bool MirelRSControllerPressUp;
+        public bool MirelRSControllerPressDown;
+        public bool MirelRSControllerAutoPressDown;
+        public string[] MirelRSControllerPositionName = new string[3];
+        public void MirelRSController(float elapsedClockSeconds)
+        {
+            if (!IsLeadLocomotive())
+                return;
+
+            if (!MirelRSControllerEnable)
+                return;
+
+            if (MirelRSControllerPressUp)
+            {
+                MirelRSControllerPressTimer += elapsedClockSeconds;
+
+                // Delší stisk
+                if (MirelRSControllerPressTimer > 0.5f)
+                {
+                    if (MirelRSControllerPosition[LocoStation] < 7)
+                    {
+                        MirelRSControllerPosition[LocoStation]++;
+                        SignalEvent(Event.MirerPush);
+                    }
+                    MirelRSControllerPressTimer = 0;                    
+                }
+                // Krátký stisk
+                else
+                {
+                    if (MirelRSControllerPosition[LocoStation] == 5)
+                    {
+                        MirelRSControllerPosition[LocoStation] = 6;
+                        SignalEvent(Event.MirerPush);
+                    }
+
+                    if (MirelRSControllerPosition[LocoStation] == 1)
+                    {
+                        MirelRSControllerPosition[LocoStation] = 2;
+                        SignalEvent(Event.MirerPush);
+                    }
+                }
+            }
+
+            if (MirelRSControllerPressDown)
+            {
+                MirelRSControllerPressTimer += elapsedClockSeconds;
+
+                // Delší stisk
+                if (MirelRSControllerPressTimer > 0.5f)
+                {
+                    if (MirelRSControllerPosition[LocoStation] > 0)
+                    {
+                        MirelRSControllerPosition[LocoStation]--;
+                        SignalEvent(Event.MirerPush);
+                    }
+                    MirelRSControllerPressTimer = 0;
+                }
+                // Krátký stisk
+                else
+                {
+                    if (MirelRSControllerPosition[LocoStation] == 5)
+                    {
+                        MirelRSControllerPosition[LocoStation] = 4;
+                        SignalEvent(Event.MirerPush);
+                    }
+
+                    if (MirelRSControllerPosition[LocoStation] == 1)
+                    {
+                        MirelRSControllerPosition[LocoStation] = 0;
+                        SignalEvent(Event.MirerPush);
+                    }
+                }
+            }
+
+            if (MirelRSControllerAutoPressDown)
+            {
+                MirelRSControllerAutoPressTimer += elapsedClockSeconds;
+
+                if (MirelRSControllerAutoPressTimer > 0.25f)
+                {
+                    if (MirelRSControllerPosition[LocoStation] > 5 || MirelRSControllerPosition[LocoStation] == 2)
+                    {
+                        MirelRSControllerPosition[LocoStation]--;
+                        SignalEvent(Event.MirerLoosen);
+                    }
+                    else
+                        MirelRSControllerAutoPressDown = false;
+                    MirelRSControllerAutoPressTimer = 0;
+                }                
+            }
+
+            if (MirelRSControllerPosition[LocoStation] != preMirelRSControllerPosition[LocoStation])
+            {
+                preMirelRSControllerPosition[LocoStation] = MirelRSControllerPosition[LocoStation];
+                switch (MirelRSControllerPosition[LocoStation])
+                {
+                    case 0:
+                        MirelRSControllerPositionName[LocoStation] = "+B"; // nearetovaná
+                        break;
+                    case 1:
+                        MirelRSControllerPositionName[LocoStation] = "B";
+                        break;
+                    case 2:
+                        MirelRSControllerPositionName[LocoStation] = "-B"; // nearetovaná
+                        break;
+                    case 3:
+                        MirelRSControllerPositionName[LocoStation] = "0";
+                        break;
+                    case 4:
+                        MirelRSControllerPositionName[LocoStation] = "-1"; // nearetovaná
+                        break;
+                    case 5:
+                        MirelRSControllerPositionName[LocoStation] = "J";
+                        break;
+                    case 6:
+                        MirelRSControllerPositionName[LocoStation] = "+1"; // nearetovaná
+                        break;
+                    case 7:
+                        MirelRSControllerPositionName[LocoStation] = "++";
+                        break;
+                }
+                Simulator.Confirmer.MSG(Simulator.Catalog.GetString("Controller") + ": " + MirelRSControllerPositionName[LocoStation]);
+            }            
+        }
+
 
         public bool CommandCylinderEnable;
         public int CommandCylinderMaxPosition;
