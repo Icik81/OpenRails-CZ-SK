@@ -13024,6 +13024,7 @@ namespace Orts.Simulation.RollingStocks
         bool MirelRSControllerShortPressUp;
         bool MirelRSControllerLongPressDown;
         bool MirelRSControllerShortPressDown;
+        public bool MirelRSEDBBreak;
         public void MirelRSController(float elapsedClockSeconds)
         {
             if (!IsLeadLocomotive())
@@ -13042,10 +13043,11 @@ namespace Orts.Simulation.RollingStocks
                 // Delší stisk
                 if (MirelRSControllerPressTimer > 0.5f)
                 {
-                    if (MirelRSControllerPosition[LocoStation] < 7)
+                    if (MirelRSControllerPosition[LocoStation] < 7 && (MirelRSControllerPosition[LocoStation] != 2 || (MirelRSEDBBreak && MirelRSControllerPosition[LocoStation] == 2)))
                     {
                         MirelRSControllerPosition[LocoStation]++;
                         SignalEvent(Event.MirerPush);
+                        MirelRSEDBBreak = false;
                     }
                     MirelRSControllerPressTimer = 0;
                     MirelRSControllerLongPressUp = true;
@@ -13126,19 +13128,18 @@ namespace Orts.Simulation.RollingStocks
                 {
                     case 0:
                         MirelRSControllerPositionName[LocoStation] = "+B"; // nearetovaná                        
-                        MirelRSControllerShortPressDown = false;
-                        if (MirelRSControllerEDBValueTimer == 0)
-                            MirelRSControllerCanEDBChangeValue_2 = true;
+                        MirelRSControllerShortPressDown = false;                        
+                        MirelRSControllerCanEDBChangeValue_2 = true;
                         break;
                     case 1:
                         MirelRSControllerPositionName[LocoStation] = "B";                        
                         MirelRSControllerLongPressDown = false;
+                        MirelRSControllerCanEDBChangeValue_0 = MirelRSControllerCanEDBChangeValue_1 = MirelRSControllerCanEDBChangeValue_2 = false;
                         break;
                     case 2:
                         MirelRSControllerPositionName[LocoStation] = "-B"; // nearetovaná
-                        MirelRSControllerShortPressUp = false;
-                        if (MirelRSControllerEDBValueTimer == 0)
-                            MirelRSControllerCanEDBChangeValue_1 = true;
+                        MirelRSControllerShortPressUp = false;                        
+                        MirelRSControllerCanEDBChangeValue_1 = true;
                         break;
                     case 3:
                         MirelRSControllerPositionName[LocoStation] = "0";
@@ -13210,30 +13211,32 @@ namespace Orts.Simulation.RollingStocks
             {
                 MirelRSControllerEDBValueTimer += elapsedClockSeconds;
 
-                if (MirelRSControllerEDBValueTimer > 0.25f)
+                if (MirelRSControllerEDBValueTimer > 0.05f)
                 {
                     // 0
                     if (MirelRSControllerCanEDBChangeValue_0)
+                    {
                         MirelRSControllerEDBValue = -1;
+                        MirelRSControllerCanEDBChangeValue_0 = MirelRSControllerCanEDBChangeValue_1 = MirelRSControllerCanEDBChangeValue_2 = false;
+                    }
 
                     // -B
-                    if (MirelRSControllerCanEDBChangeValue_1 && MirelRSControllerShortPressUp)
+                    if (MirelRSControllerCanEDBChangeValue_1)
                     {
                         if (MirelRSControllerEDBValue == -1) MirelRSControllerEDBValue = 0;
                         if (MirelRSControllerEDBValue > 0)
-                            MirelRSControllerEDBValue -= 10f;
+                            MirelRSControllerEDBValue--;
                     }
 
                     // +B
-                    if (MirelRSControllerCanEDBChangeValue_2 && MirelRSControllerShortPressDown)
+                    if (MirelRSControllerCanEDBChangeValue_2)
                     {
                         if (MirelRSControllerEDBValue == -1) MirelRSControllerEDBValue = 0;
                         if (MirelRSControllerEDBValue < 100f)
-                            MirelRSControllerEDBValue += 10f;
+                            MirelRSControllerEDBValue++;
                     }
                     
-                    MirelRSControllerEDBValueTimer = 0;
-                    MirelRSControllerCanEDBChangeValue_0 = MirelRSControllerCanEDBChangeValue_1 = MirelRSControllerCanEDBChangeValue_2 = false;
+                    MirelRSControllerEDBValueTimer = 0;                    
                 }
             }
             SetThrottlePercent(MirelRSControllerThrottleValue / MirelRSControllerMaxValue * 100f);

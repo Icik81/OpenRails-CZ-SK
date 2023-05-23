@@ -838,10 +838,20 @@ namespace Orts.Viewer3D.RollingStock
 
             // MirelRSController ovladač
             if (Locomotive.MirelRSControllerEnable) 
-            {
+            {                
+                if (UserInput.IsPressed(UserCommand.ControlThrottleIncrease))
+                {
+                    PressedCycleStart = true;
+                }
+
+                if (UserInput.IsPressed(UserCommand.ControlThrottleIncrease) && DoublePressedKeyTest())
+                {
+                    Locomotive.MirelRSEDBBreak = true;
+                }
+
                 if (UserInput.IsDown(UserCommand.ControlThrottleIncrease))
                 {
-                    Locomotive.MirelRSControllerPressUp = true;
+                    Locomotive.MirelRSControllerPressUp = true;                    
                 }
                 else
                 if (UserInput.IsDown(UserCommand.ControlThrottleDecrease))
