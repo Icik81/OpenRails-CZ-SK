@@ -3259,6 +3259,7 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.DRIVERESISTANCE_TEMPERATURE:
                 case CABViewControlTypes.MU_WHEELSLIPWARNING:
                 case CABViewControlTypes.MU_WHEELSLIP:
+                case CABViewControlTypes.MIRELRS_CONTROLLER:
 
                 case CABViewControlTypes.MOTOR_DISABLED:
                 case CABViewControlTypes.INVERTER_TEST:

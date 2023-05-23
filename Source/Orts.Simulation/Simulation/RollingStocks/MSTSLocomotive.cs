@@ -2010,6 +2010,10 @@ namespace Orts.Simulation.RollingStocks
             outf.Write(CircularSwitchRedPosition[2]);
             outf.Write(FirstCabLoaded);
             outf.Write(DRTemperature);
+            outf.Write(MirelRSControllerPosition[1]);
+            outf.Write(MirelRSControllerPosition[2]);
+            outf.Write(MirelRSControllerThrottleValue);
+            outf.Write(MirelRSControllerEDBValue);
             #endregion
 
             base.Save(outf);
@@ -2220,6 +2224,10 @@ namespace Orts.Simulation.RollingStocks
             CircularSwitchRedPosition[2] = inf.ReadInt32();
             FirstCabLoaded = inf.ReadBoolean();
             DRTemperature = inf.ReadSingle();
+            MirelRSControllerPosition[1] = inf.ReadInt32();
+            MirelRSControllerPosition[2] = inf.ReadInt32();
+            MirelRSControllerThrottleValue = inf.ReadSingle();
+            MirelRSControllerEDBValue = inf.ReadSingle();
             #endregion
 
             base.Restore(inf);
@@ -12991,7 +12999,7 @@ namespace Orts.Simulation.RollingStocks
             }            
         }
 
-        public bool MirelRSControllerEnable = false;
+        public bool MirelRSControllerEnable;
         public int[] MirelRSControllerPosition = new int[3];
         public int[] preMirelRSControllerPosition = new int[3];
         public float MirelRSControllerPressTimer;
@@ -13000,6 +13008,22 @@ namespace Orts.Simulation.RollingStocks
         public bool MirelRSControllerPressDown;
         public bool MirelRSControllerAutoPressDown;
         public string[] MirelRSControllerPositionName = new string[3];
+        public float MirelRSControllerThrottleValue;
+        public float MirelRSControllerEDBValue = -1;        
+        public float MirelRSControllerMaxValue = 56;
+        public float MirelRSControllerThrottleValueTimer;
+        public float MirelRSControllerEDBValueTimer;
+        bool MirelRSControllerCanThrottleChangeValue_0;
+        bool MirelRSControllerCanThrottleChangeValue_1;
+        bool MirelRSControllerCanThrottleChangeValue_2;
+        bool MirelRSControllerCanThrottleChangeValue_3;
+        bool MirelRSControllerCanEDBChangeValue_0;
+        bool MirelRSControllerCanEDBChangeValue_1;
+        bool MirelRSControllerCanEDBChangeValue_2;
+        bool MirelRSControllerLongPressUp;
+        bool MirelRSControllerShortPressUp;
+        bool MirelRSControllerLongPressDown;
+        bool MirelRSControllerShortPressDown;
         public void MirelRSController(float elapsedClockSeconds)
         {
             if (!IsLeadLocomotive())
@@ -13007,6 +13031,9 @@ namespace Orts.Simulation.RollingStocks
 
             if (!MirelRSControllerEnable)
                 return;
+
+            // Obecná proměnná pro StepController
+            Simulator.StepControllerValue = MirelRSControllerThrottleValue;
 
             if (MirelRSControllerPressUp)
             {
@@ -13020,7 +13047,8 @@ namespace Orts.Simulation.RollingStocks
                         MirelRSControllerPosition[LocoStation]++;
                         SignalEvent(Event.MirerPush);
                     }
-                    MirelRSControllerPressTimer = 0;                    
+                    MirelRSControllerPressTimer = 0;
+                    MirelRSControllerLongPressUp = true;
                 }
                 // Krátký stisk
                 else
@@ -13036,6 +13064,7 @@ namespace Orts.Simulation.RollingStocks
                         MirelRSControllerPosition[LocoStation] = 2;
                         SignalEvent(Event.MirerPush);
                     }
+                    MirelRSControllerShortPressUp = true;
                 }
             }
 
@@ -13052,6 +13081,7 @@ namespace Orts.Simulation.RollingStocks
                         SignalEvent(Event.MirerPush);
                     }
                     MirelRSControllerPressTimer = 0;
+                    MirelRSControllerLongPressDown = true;
                 }
                 // Krátký stisk
                 else
@@ -13067,6 +13097,7 @@ namespace Orts.Simulation.RollingStocks
                         MirelRSControllerPosition[LocoStation] = 0;
                         SignalEvent(Event.MirerPush);
                     }
+                    MirelRSControllerShortPressDown = true;
                 }
             }
 
@@ -13087,38 +13118,128 @@ namespace Orts.Simulation.RollingStocks
                 }                
             }
 
+            // Pozice MireluRS
             if (MirelRSControllerPosition[LocoStation] != preMirelRSControllerPosition[LocoStation])
             {
                 preMirelRSControllerPosition[LocoStation] = MirelRSControllerPosition[LocoStation];
                 switch (MirelRSControllerPosition[LocoStation])
                 {
                     case 0:
-                        MirelRSControllerPositionName[LocoStation] = "+B"; // nearetovaná
+                        MirelRSControllerPositionName[LocoStation] = "+B"; // nearetovaná                        
+                        MirelRSControllerShortPressDown = false;
+                        if (MirelRSControllerEDBValueTimer == 0)
+                            MirelRSControllerCanEDBChangeValue_2 = true;
                         break;
                     case 1:
-                        MirelRSControllerPositionName[LocoStation] = "B";
+                        MirelRSControllerPositionName[LocoStation] = "B";                        
+                        MirelRSControllerLongPressDown = false;
                         break;
                     case 2:
                         MirelRSControllerPositionName[LocoStation] = "-B"; // nearetovaná
+                        MirelRSControllerShortPressUp = false;
+                        if (MirelRSControllerEDBValueTimer == 0)
+                            MirelRSControllerCanEDBChangeValue_1 = true;
                         break;
                     case 3:
                         MirelRSControllerPositionName[LocoStation] = "0";
+                        MirelRSControllerLongPressUp = false;
+                        MirelRSControllerLongPressDown = false;                        
+                        MirelRSControllerCanThrottleChangeValue_0 = true;
+                        MirelRSControllerCanEDBChangeValue_0 = true;
                         break;
                     case 4:
                         MirelRSControllerPositionName[LocoStation] = "-1"; // nearetovaná
+                        MirelRSControllerShortPressDown = false;
+                        if (MirelRSControllerThrottleValueTimer == 0)                        
+                            MirelRSControllerCanThrottleChangeValue_1 = true;                        
                         break;
                     case 5:
                         MirelRSControllerPositionName[LocoStation] = "J";
+                        MirelRSControllerLongPressUp = false;
+                        MirelRSControllerLongPressDown = false;
                         break;
                     case 6:
                         MirelRSControllerPositionName[LocoStation] = "+1"; // nearetovaná
+                        MirelRSControllerShortPressUp = false;
+                        if (MirelRSControllerThrottleValueTimer == 0 && !MirelRSControllerLongPressUp)                        
+                            MirelRSControllerCanThrottleChangeValue_2 = true;                        
                         break;
                     case 7:
                         MirelRSControllerPositionName[LocoStation] = "++";
+                        MirelRSControllerLongPressUp = false;
+                        if (MirelRSControllerThrottleValueTimer == 0)                        
+                            MirelRSControllerCanThrottleChangeValue_3 = true;                                                    
                         break;
                 }
-                Simulator.Confirmer.MSG(Simulator.Catalog.GetString("Controller") + ": " + MirelRSControllerPositionName[LocoStation]);
-            }            
+                Simulator.Confirmer.Information(Simulator.Catalog.GetString("Controller") + ": " + MirelRSControllerPositionName[LocoStation]);                               
+            }
+
+            // Hodnoty pro StepController
+            if (MirelRSControllerCanThrottleChangeValue_0 || MirelRSControllerCanThrottleChangeValue_1 || MirelRSControllerCanThrottleChangeValue_2 || MirelRSControllerCanThrottleChangeValue_3) 
+            {                
+                MirelRSControllerThrottleValueTimer += elapsedClockSeconds;
+
+                if (MirelRSControllerThrottleValueTimer > 0.5f)
+                {
+                    // 0
+                    if (MirelRSControllerCanThrottleChangeValue_0)                    
+                        MirelRSControllerThrottleValue = 0;                                            
+
+                    // -1
+                    if (MirelRSControllerCanThrottleChangeValue_1 && MirelRSControllerShortPressDown)
+                        if (MirelRSControllerThrottleValue > 0)                        
+                            MirelRSControllerThrottleValue--;                                                    
+                    
+                    // +1
+                    if (MirelRSControllerCanThrottleChangeValue_2 && MirelRSControllerShortPressUp)
+                        if (MirelRSControllerThrottleValue < MirelRSControllerMaxValue)                        
+                            MirelRSControllerThrottleValue++;                                                    
+
+                    // ++
+                    if (MirelRSControllerCanThrottleChangeValue_3)
+                    {
+                        
+                    }
+
+                    MirelRSControllerThrottleValueTimer = 0;
+                    MirelRSControllerCanThrottleChangeValue_0 = MirelRSControllerCanThrottleChangeValue_1 = MirelRSControllerCanThrottleChangeValue_2 = MirelRSControllerCanThrottleChangeValue_3 = false;
+                }                
+            }
+            // Hodnoty pro EDB
+            if (MirelRSControllerCanEDBChangeValue_0 || MirelRSControllerCanEDBChangeValue_1 || MirelRSControllerCanEDBChangeValue_2)
+            {
+                MirelRSControllerEDBValueTimer += elapsedClockSeconds;
+
+                if (MirelRSControllerEDBValueTimer > 0.25f)
+                {
+                    // 0
+                    if (MirelRSControllerCanEDBChangeValue_0)
+                        MirelRSControllerEDBValue = -1;
+
+                    // -B
+                    if (MirelRSControllerCanEDBChangeValue_1 && MirelRSControllerShortPressUp)
+                    {
+                        if (MirelRSControllerEDBValue == -1) MirelRSControllerEDBValue = 0;
+                        if (MirelRSControllerEDBValue > 0)
+                            MirelRSControllerEDBValue -= 10f;
+                    }
+
+                    // +B
+                    if (MirelRSControllerCanEDBChangeValue_2 && MirelRSControllerShortPressDown)
+                    {
+                        if (MirelRSControllerEDBValue == -1) MirelRSControllerEDBValue = 0;
+                        if (MirelRSControllerEDBValue < 100f)
+                            MirelRSControllerEDBValue += 10f;
+                    }
+                    
+                    MirelRSControllerEDBValueTimer = 0;
+                    MirelRSControllerCanEDBChangeValue_0 = MirelRSControllerCanEDBChangeValue_1 = MirelRSControllerCanEDBChangeValue_2 = false;
+                }
+            }
+            SetThrottlePercent(MirelRSControllerThrottleValue / MirelRSControllerMaxValue * 100f);
+            SetDynamicBrakePercent(MirelRSControllerEDBValue);
+
+            Simulator.Confirmer.MSG(Simulator.Catalog.GetString("Controller") + ": " + MirelRSControllerThrottleValue);
         }
 
 
@@ -15892,6 +16013,12 @@ namespace Orts.Simulation.RollingStocks
                 case CABViewControlTypes.LTS510_DISPLAY:
                     {
                         data = LTS510Active;
+                        break;
+                    }
+                case CABViewControlTypes.MIRELRS_CONTROLLER:
+                    {
+                        MirelRSControllerEnable = true;
+                        data = MirelRSControllerPosition[LocoStation];
                         break;
                     }
                 case CABViewControlTypes.COMMAND_CYLINDER:
