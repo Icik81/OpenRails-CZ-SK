@@ -13310,7 +13310,7 @@ namespace Orts.Simulation.RollingStocks
                         if (MirelRSControllerThrottleValue > 27f)
                             MirelRSControllerThrottleValue--;                        
                         MirelRSControllerThrottleValueTimer = 0;
-                        if (MirelRSControllerThrottleValue == 27f)
+                        if (MirelRSControllerThrottleValue <= 27f)
                         {
                             Mode_To_27_Start1 = false;
                             ShModeActivated = false;                                                      
@@ -13327,7 +13327,7 @@ namespace Orts.Simulation.RollingStocks
                         if (MirelRSControllerThrottleValue > 27f + 1f)
                             MirelRSControllerThrottleValue--;
                         MirelRSControllerThrottleValueTimer = 0;
-                        if (MirelRSControllerThrottleValue == 27f + 1f)
+                        if (MirelRSControllerThrottleValue <= 27f + 1f)
                         {
                             Mode_To_27_Start2 = false;                            
                         }
@@ -13365,7 +13365,7 @@ namespace Orts.Simulation.RollingStocks
                     }
                 }
 
-                if (MirelRSControllerThrottleValueTimer > 0.5f)
+                if (MirelRSControllerThrottleValueTimer > 0.5f && !Mode_To_27_Start1 && !Mode_To_27_Start2 && !Mode_To_34_Start)
                 {
                     // -1
                     if (MirelRSControllerCanThrottleChangeValue_1 && MirelRSControllerShortPressDown)
