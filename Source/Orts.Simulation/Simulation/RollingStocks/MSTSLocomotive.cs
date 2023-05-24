@@ -2013,6 +2013,7 @@ namespace Orts.Simulation.RollingStocks
             outf.Write(MirelRSControllerPosition[1]);
             outf.Write(MirelRSControllerPosition[2]);
             outf.Write(MirelRSControllerThrottleValue);
+            outf.Write(preMirelRSControllerThrottleValue);
             outf.Write(MirelRSControllerEDBValue);
             outf.Write(DirectionControllerMirelRSPositionSh);
             outf.Write(MirelRSDirectionControllerPosition[1]);
@@ -2230,6 +2231,7 @@ namespace Orts.Simulation.RollingStocks
             MirelRSControllerPosition[1] = inf.ReadInt32();
             MirelRSControllerPosition[2] = inf.ReadInt32();
             MirelRSControllerThrottleValue = inf.ReadSingle();
+            preMirelRSControllerThrottleValue = inf.ReadSingle();
             MirelRSControllerEDBValue = inf.ReadSingle();
             DirectionControllerMirelRSPositionSh = inf.ReadBoolean();
             MirelRSDirectionControllerPosition[1] = inf.ReadInt32();
@@ -13016,6 +13018,7 @@ namespace Orts.Simulation.RollingStocks
         public bool MirelRSControllerAutoPressDown;
         public string[] MirelRSControllerPositionName = new string[3];
         public float MirelRSControllerThrottleValue;
+        public float preMirelRSControllerThrottleValue;
         public float MirelRSControllerEDBValue = -1;        
         public float MirelRSControllerMaxValue = 56;
         public float MirelRSControllerThrottleValueTimer;
@@ -13420,9 +13423,14 @@ namespace Orts.Simulation.RollingStocks
                     MirelRSControllerEDBValueTimer = 0;                    
                 }
             }
+            if (MirelRSControllerThrottleValue != preMirelRSControllerThrottleValue)
+            {
+                SignalEvent(Event.ThrottleChange);
+                preMirelRSControllerThrottleValue = MirelRSControllerThrottleValue;
+            }
             SetThrottlePercent(MirelRSControllerThrottleValue / 56f * 100f);
             SetDynamicBrakePercent(MirelRSControllerEDBValue);
-
+            
             Simulator.Confirmer.MSG(Simulator.Catalog.GetString("Controller") + ": " + MirelRSControllerThrottleValue);
         }
 
