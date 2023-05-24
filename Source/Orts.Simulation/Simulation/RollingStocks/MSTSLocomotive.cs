@@ -13036,8 +13036,11 @@ namespace Orts.Simulation.RollingStocks
         public float MirelRSControllerDisplay2Value;
         public bool ShModeActivated;
         public bool ShModeActivated2;
+        public bool NoShMode;
         public bool Mode_To_34_Ready;
-        public bool Mode_To_34_Start;
+        public bool Mode_To_34_Start;                
+        public bool Mode_To_27_Start1;
+        public bool Mode_To_27_Start2;
 
         public bool DirectionControllerMirelRSPositionSh;
         public bool MirelRSDirectionControllerPressUp;
@@ -13256,7 +13259,7 @@ namespace Orts.Simulation.RollingStocks
 
             // Hodnoty pro StepController
             if (MirelRSControllerCanThrottleChangeValue_0 || MirelRSControllerCanThrottleChangeValue_1 || MirelRSControllerCanThrottleChangeValue_2 || MirelRSControllerCanThrottleChangeValue_3
-                || ShModeActivated || Mode_To_34_Start || ShModeActivated2) 
+                || ShModeActivated || Mode_To_34_Start || ShModeActivated2 || Mode_To_27_Start1 || Mode_To_27_Start2) 
             {                
                 MirelRSControllerThrottleValueTimer += elapsedClockSeconds;
 
@@ -13266,7 +13269,12 @@ namespace Orts.Simulation.RollingStocks
                 else
                     MirelRSControllerMaxValue = 51f;
 
-                if (DirectionControllerMirelRSPositionSh && MirelRSControllerThrottleValue >= 51 )
+                if (DirectionControllerMirelRSPositionSh && (MirelRSControllerThrottleValue < 27 || (MirelRSControllerThrottleValue > 34 && MirelRSControllerThrottleValue < 51)))
+                    NoShMode = true;
+                else
+                    NoShMode = false;
+
+                if (DirectionControllerMirelRSPositionSh && MirelRSControllerThrottleValue >= 51)
                 {
                     MirelRSControllerMaxValue = 56f;
                     ShModeActivated2 = true;                    
@@ -13280,7 +13288,7 @@ namespace Orts.Simulation.RollingStocks
                         if (MirelRSControllerThrottleValue > 51f)
                             MirelRSControllerThrottleValue--;
                         MirelRSControllerThrottleValueTimer = 0;
-                        if (MirelRSControllerThrottleValue == 51f)
+                        if (MirelRSControllerThrottleValue <= 51f)
                         {
                             ShModeActivated2 = false;                            
                         }
@@ -13291,8 +13299,9 @@ namespace Orts.Simulation.RollingStocks
                     ShModeActivated = true;
 
                 // Auto skrokování do 27
-                if (ShModeActivated && !DirectionControllerMirelRSPositionSh)
+                if ((ShModeActivated && !DirectionControllerMirelRSPositionSh) || Mode_To_27_Start1)                    
                 {
+                    Mode_To_27_Start1 = true;
                     if (MirelRSControllerThrottleValueTimer > 0.25f)
                     {
                         if (MirelRSControllerThrottleValue > 27f)
@@ -13300,13 +13309,30 @@ namespace Orts.Simulation.RollingStocks
                         MirelRSControllerThrottleValueTimer = 0;
                         if (MirelRSControllerThrottleValue == 27f)
                         {
-                            ShModeActivated = false;
-                            Mode_To_34_Ready = true;
+                            Mode_To_27_Start1 = false;
+                            ShModeActivated = false;                                                      
                         }
                     }
                 }
+
+                // Auto skrokování do 27
+                if ((!DirectionControllerMirelRSPositionSh && MirelRSControllerThrottleValue > 27 && MirelRSControllerThrottleValue < 35 && MirelRSControllerPositionName[LocoStation] == "-1") || Mode_To_27_Start2)
+                {
+                    Mode_To_27_Start2 = true;
+                    if (MirelRSControllerThrottleValueTimer > 0.25f)
+                    {
+                        if (MirelRSControllerThrottleValue > 27f + 1f)
+                            MirelRSControllerThrottleValue--;
+                        MirelRSControllerThrottleValueTimer = 0;
+                        if (MirelRSControllerThrottleValue == 27f + 1f)
+                        {
+                            Mode_To_27_Start2 = false;                            
+                        }
+                    }
+                }
+
                 // Auto krokování do 34 
-                if (!DirectionControllerMirelRSPositionSh && ((Mode_To_34_Ready && MirelRSControllerCanThrottleChangeValue_2 && MirelRSControllerShortPressUp) || Mode_To_34_Start))
+                if ((!DirectionControllerMirelRSPositionSh && MirelRSControllerThrottleValue > 26 && MirelRSControllerThrottleValue < 34 && MirelRSControllerPositionName[LocoStation] == "+1") || Mode_To_34_Start)
                 {
                     Mode_To_34_Start = true;
                     if (MirelRSControllerThrottleValueTimer > 0.25f)
@@ -13317,14 +13343,9 @@ namespace Orts.Simulation.RollingStocks
                         if (MirelRSControllerThrottleValue == 34f - 1f)
                         {
                             Mode_To_34_Start = false;
-                            Mode_To_34_Ready = false;
                         }
                     }
                 }
-
-                if (DirectionControllerMirelRSPositionSh && MirelRSControllerThrottleValue == 28 && !ShModeActivated)
-                    Mode_To_34_Start = true;
-
 
                 if (MirelRSControllerThrottleValueTimer > 0.25f)
                 {
@@ -13336,7 +13357,7 @@ namespace Orts.Simulation.RollingStocks
                         //MirelRSControllerDisplayValue = 0;
                         //MirelRSControllerDisplay2Value = 0;
                         MirelRSControllerThrottleValueTimer = 0;
-                        if (MirelRSControllerThrottleValue == 0)
+                        if (MirelRSControllerThrottleValue == 0 || MirelRSControllerPositionName[LocoStation] == "+1" || MirelRSControllerPositionName[LocoStation] == "-1")
                             MirelRSControllerCanThrottleChangeValue_0 = false;
                     }
                 }
@@ -13349,7 +13370,7 @@ namespace Orts.Simulation.RollingStocks
                             MirelRSControllerThrottleValue--;                                                    
                     
                     // +1
-                    if (MirelRSControllerCanThrottleChangeValue_2 && MirelRSControllerShortPressUp)
+                    if (MirelRSControllerCanThrottleChangeValue_2 && MirelRSControllerShortPressUp && !NoShMode)
                         if (MirelRSControllerThrottleValue < MirelRSControllerMaxValue)                        
                             MirelRSControllerThrottleValue++;                                                    
 
