@@ -213,7 +213,7 @@ namespace Orts.Viewer3D.RollingStock
 
         protected virtual void ReverserControlForwards()
         {
-            if (Locomotive.DieselDirectionController || Locomotive.DieselDirectionController2 || Locomotive.DieselDirectionController3 || Locomotive.DieselDirectionController4) return;
+            if (Locomotive.DieselDirectionController || Locomotive.DieselDirectionController2 || Locomotive.DieselDirectionController3 || Locomotive.DieselDirectionController4 || Locomotive.MirelRSControllerEnable) return;
             if (Locomotive.PowerKey && !Locomotive.DirectionControllerBlocked)
             {
                 if (Locomotive.Direction != Direction.Forward
@@ -229,7 +229,7 @@ namespace Orts.Viewer3D.RollingStock
 
         protected virtual void ReverserControlBackwards()
         {
-            if (Locomotive.DieselDirectionController || Locomotive.DieselDirectionController2 || Locomotive.DieselDirectionController3 || Locomotive.DieselDirectionController4) return;
+            if (Locomotive.DieselDirectionController || Locomotive.DieselDirectionController2 || Locomotive.DieselDirectionController3 || Locomotive.DieselDirectionController4 || Locomotive.MirelRSControllerEnable) return;
             if (Locomotive.PowerKey && !Locomotive.DirectionControllerBlocked)
             {
                 if (Locomotive.Direction != Direction.Reverse
@@ -838,7 +838,22 @@ namespace Orts.Viewer3D.RollingStock
 
             // MirelRSController ovladač
             if (Locomotive.MirelRSControllerEnable) 
-            {                
+            {
+                if (UserInput.IsPressed(UserCommand.ControlForwards))
+                {
+                    Locomotive.MirelRSDirectionControllerPressUp = true;
+                }
+                else
+                if (UserInput.IsPressed(UserCommand.ControlBackwards))
+                {
+                    Locomotive.MirelRSDirectionControllerPressDown = true;
+                }
+                else
+                {
+                    Locomotive.MirelRSDirectionControllerPressUp = false;
+                    Locomotive.MirelRSDirectionControllerPressDown = false;
+                }
+
                 if (UserInput.IsPressed(UserCommand.ControlThrottleIncrease))
                 {
                     PressedCycleStart = true;
@@ -3270,6 +3285,9 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.MU_WHEELSLIPWARNING:
                 case CABViewControlTypes.MU_WHEELSLIP:
                 case CABViewControlTypes.MIRELRS_CONTROLLER:
+                case CABViewControlTypes.MIRELRS_DISPLAY:
+                case CABViewControlTypes.MIRELRS_DISPLAY2:
+                case CABViewControlTypes.MIRELRS_DIRECTION_CONTROLLER:
 
                 case CABViewControlTypes.MOTOR_DISABLED:
                 case CABViewControlTypes.INVERTER_TEST:
@@ -3544,7 +3562,7 @@ namespace Orts.Viewer3D.RollingStock
                     break;
                 case CABViewControlTypes.GEARS: Locomotive.SetGearBoxValue(ChangedValue(Locomotive.GearBoxController.IntermediateValue)); break;
                 case CABViewControlTypes.DIRECTION:
-                    if (!Locomotive.DirectionButton && !Locomotive.DieselDirectionController && !Locomotive.DieselDirectionController2 && !Locomotive.DieselDirectionController3 && !Locomotive.DieselDirectionController4)
+                    if (!Locomotive.DirectionButton && !Locomotive.DieselDirectionController && !Locomotive.DieselDirectionController2 && !Locomotive.DieselDirectionController3 && !Locomotive.DieselDirectionController4 && !Locomotive.MirelRSControllerEnable)
                     {
                         var dir = ChangedValue(0);
                         if (dir != 0)
