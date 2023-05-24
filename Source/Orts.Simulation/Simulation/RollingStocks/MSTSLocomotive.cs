@@ -13034,7 +13034,10 @@ namespace Orts.Simulation.RollingStocks
         public bool MirelRSEDBBreak;
         public float MirelRSControllerDisplayValue;
         public float MirelRSControllerDisplay2Value;
-        
+        public bool ShModeActivated;
+        public bool Mode_To_34_Ready;
+        public bool Mode_To_34_Start;
+
         public bool DirectionControllerMirelRSPositionSh;
         public bool MirelRSDirectionControllerPressUp;
         public bool MirelRSDirectionControllerPressDown;
@@ -13255,7 +13258,51 @@ namespace Orts.Simulation.RollingStocks
             {                
                 MirelRSControllerThrottleValueTimer += elapsedClockSeconds;
 
-                if (MirelRSControllerThrottleValueTimer > 0.1f)
+                // Šuntování a blokování
+                if (DirectionControllerMirelRSPositionSh)
+                    MirelRSControllerMaxValue = 32f;
+                else
+                    MirelRSControllerMaxValue = 56f;
+
+                if (DirectionControllerMirelRSPositionSh && MirelRSControllerMaxValue == 27 && !ShModeActivated)
+                    ShModeActivated = true;
+
+                // Auto skrokování do 27
+                if (ShModeActivated && !DirectionControllerMirelRSPositionSh)
+                {
+                    if (MirelRSControllerThrottleValueTimer > 0.25f)
+                    {
+                        if (MirelRSControllerThrottleValue > 27f)
+                            MirelRSControllerThrottleValue--;                        
+                        MirelRSControllerThrottleValueTimer = 0;
+                        if (MirelRSControllerThrottleValue == 27)
+                        {
+                            ShModeActivated = false;
+                            Mode_To_34_Ready = true;
+                        }
+                    }
+                }
+                // Auto krokování do 34 
+                if (!DirectionControllerMirelRSPositionSh && ((Mode_To_34_Ready && MirelRSControllerCanThrottleChangeValue_2 && MirelRSControllerShortPressUp) || Mode_To_34_Start))
+                {
+                    Mode_To_34_Start = true;
+                    if (MirelRSControllerThrottleValueTimer > 0.25f)
+                    {
+                        if (MirelRSControllerThrottleValue < 34f)
+                            MirelRSControllerThrottleValue++;
+                        MirelRSControllerThrottleValueTimer = 0;
+                        if (MirelRSControllerThrottleValue == 34)
+                        {                            
+                            Mode_To_34_Ready = false;
+                        }
+                    }
+                }
+
+                if (DirectionControllerMirelRSPositionSh && MirelRSControllerMaxValue == 28 && !ShModeActivated)
+                    Mode_To_34_Start = true;
+
+
+                if (MirelRSControllerThrottleValueTimer > 0.25f)
                 {
                     // 0
                     if (MirelRSControllerCanThrottleChangeValue_0)
@@ -16113,9 +16160,7 @@ namespace Orts.Simulation.RollingStocks
                         break;
                     }
                 case CABViewControlTypes.MIRELRS_DISPLAY:
-                    {
-                        if (!DirectionControllerMirelRSPositionSh)
-                            break;
+                    {                        
                         cvc.ElapsedTime += elapsedTime;
                         data = cvc.PreviousData;
                         if (cvc.ElapsedTime > cvc.UpdateTime)
@@ -16127,7 +16172,7 @@ namespace Orts.Simulation.RollingStocks
                     }
                 case CABViewControlTypes.MIRELRS_DISPLAY2:
                     {
-                        if (DirectionControllerMirelRSPositionSh)
+                        if (DirectionControllerMirelRSPositionSh && !Mode_To_34_Start)
                         {
                             cvc.ElapsedTime += elapsedTime;
                             data = cvc.PreviousData;
@@ -16137,6 +16182,8 @@ namespace Orts.Simulation.RollingStocks
                                 cvc.ElapsedTime = 0;
                             }
                         }
+                        else
+                            data = 0;
                         break;
                     }
                 case CABViewControlTypes.MIRELRS_DIRECTION_CONTROLLER:
