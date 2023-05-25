@@ -13019,6 +13019,7 @@ namespace Orts.Simulation.RollingStocks
         public string[] MirelRSControllerPositionName = new string[3];
         public float MirelRSControllerThrottleValue;
         public float preMirelRSControllerThrottleValue;
+        public float MirelRSControllerThrottleDummyValue;
         public float MirelRSControllerEDBValue = -1;        
         public float MirelRSControllerMaxValue = 56;
         public float MirelRSControllerThrottleValueTimer;
@@ -13115,10 +13116,7 @@ namespace Orts.Simulation.RollingStocks
                     }
                     Simulator.Confirmer.Information(Simulator.Catalog.GetString("DirectionController") + ": " + MirelRSDirectionControllerPositionName[LocoStation]);
                 }
-            }
-
-            // Obecná proměnná pro StepController
-            Simulator.StepControllerValue = MirelRSControllerThrottleValue;
+            }            
 
             if (MirelRSControllerPressUp)
             {
@@ -13391,6 +13389,17 @@ namespace Orts.Simulation.RollingStocks
                     MirelRSControllerCanThrottleChangeValue_1 = MirelRSControllerCanThrottleChangeValue_2 = MirelRSControllerCanThrottleChangeValue_3 = false;
                 }                
             }
+
+            // Obecná proměnná pro StepController
+            MirelRSControllerThrottleDummyValue = 0;
+            if (!DirectionControllerMirelRSPositionSh && MirelRSControllerThrottleValue > 27 && MirelRSControllerThrottleValue < 33)
+            {
+                MirelRSControllerThrottleDummyValue = 27;
+                Simulator.StepControllerValue = MirelRSControllerThrottleDummyValue;
+            }
+            if (MirelRSControllerThrottleDummyValue == 0)
+                Simulator.StepControllerValue = MirelRSControllerThrottleValue;
+
 
             // Hodnoty pro EDB
             if (MirelRSControllerCanEDBChangeValue_0 || MirelRSControllerCanEDBChangeValue_1 || MirelRSControllerCanEDBChangeValue_2)
