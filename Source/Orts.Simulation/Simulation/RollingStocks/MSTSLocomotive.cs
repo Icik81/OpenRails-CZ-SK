@@ -13070,8 +13070,13 @@ namespace Orts.Simulation.RollingStocks
                 {
                     if (MirelRSDirectionControllerPosition[LocoStation] < 3)
                     {
-                        MirelRSDirectionControllerPosition[LocoStation]++;
-                        SignalEvent(Event.ReverserChange);
+                        if (MirelRSDirectionControllerPosition[LocoStation] == 2)
+                            SignalEvent(Event.ReverserToShOn);
+                        if (MirelRSDirectionControllerPosition[LocoStation] == 1)
+                            SignalEvent(Event.ReverserToForwardBackward);
+                        if (MirelRSDirectionControllerPosition[LocoStation] == 0)
+                            SignalEvent(Event.ReverserToNeutral);                        
+                        MirelRSDirectionControllerPosition[LocoStation]++;                                                
                     }
                 }
             }
@@ -13082,8 +13087,13 @@ namespace Orts.Simulation.RollingStocks
                 {
                     if (MirelRSDirectionControllerPosition[LocoStation] > 0)
                     {
-                        MirelRSDirectionControllerPosition[LocoStation]--;
-                        SignalEvent(Event.ReverserChange);
+                        if (MirelRSDirectionControllerPosition[LocoStation] == 3)
+                            SignalEvent(Event.ReverserToShOff);
+                        if (MirelRSDirectionControllerPosition[LocoStation] == 2)
+                            SignalEvent(Event.ReverserToNeutral);
+                        if (MirelRSDirectionControllerPosition[LocoStation] == 1)
+                            SignalEvent(Event.ReverserToForwardBackward);
+                        MirelRSDirectionControllerPosition[LocoStation]--;                        
                     }
                 }
             }

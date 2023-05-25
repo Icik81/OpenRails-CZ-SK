@@ -355,7 +355,9 @@ namespace Orts.Common
         MUWheelSlipWarningOn,
         MUWheelSlipWarningOff,
         MUWheelSlipOn,
-        MUWheelSlipOff
+        MUWheelSlipOff,
+        ReverserToShOn,
+        ReverserToShOff
     }
 
     public static class Events
@@ -726,6 +728,8 @@ namespace Orts.Common
                         case 20109: return Event.MUWheelSlipWarningOff;
                         case 20110: return Event.MUWheelSlipOn;
                         case 20111: return Event.MUWheelSlipOff;
+                        case 20112: return Event.ReverserToShOn;
+                        case 20113: return Event.ReverserToShOff;
 
                         default: return 0;
                     }
