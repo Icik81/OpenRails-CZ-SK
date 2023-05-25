@@ -13048,6 +13048,7 @@ namespace Orts.Simulation.RollingStocks
         public bool Mode_To_27_Start2_Enable;
 
         public bool DirectionControllerMirelRSPositionSh;
+        public bool preDirectionControllerMirelRSPositionSh;
         public bool MirelRSDirectionControllerPressUp;
         public bool MirelRSDirectionControllerPressDown;
         public int[] MirelRSDirectionControllerPosition = new int[3];
@@ -13319,20 +13320,25 @@ namespace Orts.Simulation.RollingStocks
 
                 // Auto 2.skrokování do 27
                 if (MirelRSControllerThrottleValue >= 34)
+                {
                     Mode_To_27_Start2_Enable = true;
+                    preDirectionControllerMirelRSPositionSh = DirectionControllerMirelRSPositionSh;
+                }
                 if (MirelRSControllerThrottleValue <= 27)
                     Mode_To_27_Start2_Enable = false;
                 if ((NoShMode && MirelRSControllerThrottleValue > 27 && MirelRSControllerThrottleValue < 34 && !Mode_To_34_Start && Mode_To_27_Start2_Enable) || Mode_To_27_Start2)
                 {
                     Mode_To_27_Start2 = true;
+                    DirectionControllerMirelRSPositionSh = false;
                     if (MirelRSControllerThrottleValueTimer > 0.25f)
                     {
-                        if (MirelRSControllerThrottleValue > 27f + 0f)
+                        if (MirelRSControllerThrottleValue > 27f)
                             MirelRSControllerThrottleValue--;
                         MirelRSControllerThrottleValueTimer = 0;
-                        if (MirelRSControllerThrottleValue <= 27f + 0f)
+                        if (MirelRSControllerThrottleValue <= 27f)
                         {
                             Mode_To_27_Start2 = false;
+                            DirectionControllerMirelRSPositionSh = preDirectionControllerMirelRSPositionSh;
                         }
                     }
                 }
