@@ -13384,7 +13384,10 @@ namespace Orts.Simulation.RollingStocks
                     if (MirelRSControllerCanThrottleChangeValue_0)
                     {
                         if (PowerCurrent1 < 300f && MirelRSControllerThrottleValue <= 27f)
+                        {
                             MirelRSControllerThrottleValue = 0;
+                            SetThrottlePercent(0f);
+                        }
                         else
                         if (MirelRSControllerThrottleValue > 0f)
                             MirelRSControllerThrottleValue--;                        
