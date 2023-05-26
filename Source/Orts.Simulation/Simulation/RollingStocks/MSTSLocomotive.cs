@@ -13381,8 +13381,11 @@ namespace Orts.Simulation.RollingStocks
                     // 0
                     if (MirelRSControllerCanThrottleChangeValue_0)
                     {
+                        if (PowerCurrent1 < 300f && MirelRSControllerThrottleValue <= 27f)
+                            MirelRSControllerThrottleValue = 0;
+                        else
                         if (MirelRSControllerThrottleValue > 0f)
-                            MirelRSControllerThrottleValue--;
+                            MirelRSControllerThrottleValue--;                        
                         MirelRSControllerThrottleValueTimer = 0;
                         if (MirelRSControllerThrottleValue == 0 || MirelRSControllerPositionName[LocoStation] == "+1" || MirelRSControllerPositionName[LocoStation] == "-1")
                             MirelRSControllerCanThrottleChangeValue_0 = false;
@@ -13424,7 +13427,7 @@ namespace Orts.Simulation.RollingStocks
             }
 
             // Dioda pro přeskok stupňů
-            if (PowerCurrent1 > 100f && PowerCurrent1 < 300f)
+            if (PowerCurrent1 > 10f && PowerCurrent1 < 300f && MirelRSControllerThrottleValue < 27f)
             {
                 MirelRSCanSkip = true;
                 MirelRSSkipDiode = 1;
@@ -13498,6 +13501,19 @@ namespace Orts.Simulation.RollingStocks
             SetDynamicBrakePercent(MirelRSControllerEDBValue);
             
             Simulator.Confirmer.MSG(Simulator.Catalog.GetString("Controller") + ": " + MirelRSControllerThrottleValue);
+
+            // Ochrany
+            if (AbsSpeedMpS > 50f / 3.6f)
+            {
+                if (Pantographs[1].State == PantographState.Up && Pantographs[2].State == PantographState.Up)
+                {
+                    Simulator.StepControllerValue = 0;
+                }
+            }
+            if (DRTemperature > 100f && MirelRSControllerThrottleValue > 27 && MirelRSControllerThrottleValue <= 56)
+            {
+                Mode_To_27_Start1 = true;
+            }
         }
 
 
