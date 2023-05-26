@@ -478,6 +478,7 @@ namespace Orts.Formats.Msts
         MIRELRS_DISPLAY,
         MIRELRS_DISPLAY2,
         MIRELRS_DIRECTION_CONTROLLER,
+        MIRELRS_SKIPDIODE,
         COMMAND_CYLINDER,
         MIRER_DISPLAY,
         MIRER_DISPLAY2,

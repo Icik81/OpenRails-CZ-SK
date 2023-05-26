@@ -3288,6 +3288,7 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.MIRELRS_DISPLAY:
                 case CABViewControlTypes.MIRELRS_DISPLAY2:
                 case CABViewControlTypes.MIRELRS_DIRECTION_CONTROLLER:
+                case CABViewControlTypes.MIRELRS_SKIPDIODE:
 
                 case CABViewControlTypes.MOTOR_DISABLED:
                 case CABViewControlTypes.INVERTER_TEST:

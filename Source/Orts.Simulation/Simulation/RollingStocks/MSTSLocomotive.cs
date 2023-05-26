@@ -13046,6 +13046,10 @@ namespace Orts.Simulation.RollingStocks
         public bool Mode_To_27_Start1;
         public bool Mode_To_27_Start2;        
         public bool Mode_To_27_Start2_Enable;
+        public int MirelRSSkipDiode;
+        public bool MirelRSCanSkip;
+        public bool MirelRSSkip_Start;
+        public bool MirelRSPositionBlocked;
 
         public bool DirectionControllerMirelRSPositionSh;
         public bool preDirectionControllerMirelRSPositionSh;
@@ -13250,6 +13254,7 @@ namespace Orts.Simulation.RollingStocks
                         MirelRSControllerPositionName[LocoStation] = "J";
                         MirelRSControllerLongPressUp = false;
                         MirelRSControllerLongPressDown = false;
+                        MirelRSPositionBlocked = false;
                         break;
                     case 6:
                         MirelRSControllerPositionName[LocoStation] = "+1"; // nearetovaná
@@ -13266,11 +13271,12 @@ namespace Orts.Simulation.RollingStocks
             }
 
             MirelRSControllerDisplayValue = MirelRSControllerDisplay2Value = MirelRSControllerThrottleValue;
-
+            
             // Hodnoty pro StepController
             if (MirelRSControllerCanThrottleChangeValue_0 || MirelRSControllerCanThrottleChangeValue_1 || MirelRSControllerCanThrottleChangeValue_2 || MirelRSControllerCanThrottleChangeValue_3
                 || ShModeActivated || Mode_To_34_Start || ShModeActivated2 || Mode_To_27_Start1 || Mode_To_27_Start2
-                || (NoShMode && MirelRSControllerThrottleValue > 27 && MirelRSControllerThrottleValue < 34 && !Mode_To_34_Start)) 
+                || (NoShMode && MirelRSControllerThrottleValue > 27 && MirelRSControllerThrottleValue < 34 && !Mode_To_34_Start)
+                || MirelRSSkip_Start) 
             {                
                 MirelRSControllerThrottleValueTimer += elapsedClockSeconds;
 
@@ -13354,7 +13360,7 @@ namespace Orts.Simulation.RollingStocks
                 }
 
                 // Auto krokování do 34 
-                if ((!DirectionControllerMirelRSPositionSh && MirelRSControllerThrottleValue > 26 && MirelRSControllerThrottleValue < 34 && MirelRSControllerPositionName[LocoStation] == "+1") || Mode_To_34_Start)
+                if (((!DirectionControllerMirelRSPositionSh && MirelRSControllerThrottleValue > 26 && MirelRSControllerThrottleValue < 34 && MirelRSControllerPositionName[LocoStation] == "+1") || Mode_To_34_Start) && !MirelRSPositionBlocked)
                 {
                     MirelRSControllerCanThrottleChangeValue_2 = false;
                     Mode_To_34_Start = true;
@@ -13383,7 +13389,7 @@ namespace Orts.Simulation.RollingStocks
                     }
                 }
 
-                if (MirelRSControllerThrottleValueTimer > 0.5f && !Mode_To_27_Start1 && !Mode_To_27_Start2 && !Mode_To_34_Start)
+                if ((MirelRSControllerThrottleValueTimer > 0.5f && !Mode_To_27_Start1 && !Mode_To_27_Start2 && !Mode_To_34_Start) || MirelRSSkip_Start)
                 {
                     // -1
                     if (MirelRSControllerCanThrottleChangeValue_1 && MirelRSControllerShortPressDown)
@@ -13396,14 +13402,37 @@ namespace Orts.Simulation.RollingStocks
                             MirelRSControllerThrottleValue++;                                                    
 
                     // ++
-                    if (MirelRSControllerCanThrottleChangeValue_3)
+                    if (MirelRSControllerCanThrottleChangeValue_3 || MirelRSSkip_Start)
                     {
-                        
+                        if (MirelRSCanSkip || MirelRSSkip_Start)
+                        {
+                            MirelRSSkip_Start = true;
+                            if (PowerCurrent1 < 600f && Simulator.StepControllerValue <= 26)
+                                Simulator.StepControllerValue++;
+                            else
+                            {
+                                MirelRSControllerThrottleValue = Simulator.StepControllerValue;
+                                MirelRSSkip_Start = false;
+                                MirelRSPositionBlocked = true;
+                            }
+                        }
                     }
 
                     MirelRSControllerThrottleValueTimer = 0;
                     MirelRSControllerCanThrottleChangeValue_1 = MirelRSControllerCanThrottleChangeValue_2 = MirelRSControllerCanThrottleChangeValue_3 = false;
                 }                
+            }
+
+            // Dioda pro přeskok stupňů
+            if (PowerCurrent1 > 100f && PowerCurrent1 < 300f)
+            {
+                MirelRSCanSkip = true;
+                MirelRSSkipDiode = 1;
+            }
+            else
+            {
+                MirelRSCanSkip = false;
+                MirelRSSkipDiode = 0;
             }
 
             // Obecná proměnná pro StepController
@@ -13413,7 +13442,7 @@ namespace Orts.Simulation.RollingStocks
                 MirelRSControllerThrottleDummyValue = 27;
                 Simulator.StepControllerValue = MirelRSControllerThrottleDummyValue;
             }
-            if (MirelRSControllerThrottleDummyValue == 0)
+            if (MirelRSControllerThrottleDummyValue == 0 && !MirelRSSkip_Start)
                 Simulator.StepControllerValue = MirelRSControllerThrottleValue;
 
 
@@ -16282,6 +16311,14 @@ namespace Orts.Simulation.RollingStocks
                         if (MirelRSControllerEnable)
                         {
                             data = MirelRSDirectionControllerPosition[LocoStation]; 
+                        }
+                        break;
+                    }
+                case CABViewControlTypes.MIRELRS_SKIPDIODE:
+                    {
+                        if (MirelRSControllerEnable)
+                        {
+                            data = MirelRSSkipDiode;
                         }
                         break;
                     }
