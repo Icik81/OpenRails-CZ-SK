@@ -13050,6 +13050,7 @@ namespace Orts.Simulation.RollingStocks
         public bool MirelRSCanSkip;
         public bool MirelRSSkip_Start;
         public bool MirelRSPositionBlocked;
+        public float OverTemperatureTimer;
 
         public bool DirectionControllerMirelRSPositionSh;
         public bool preDirectionControllerMirelRSPositionSh;
@@ -13503,6 +13504,7 @@ namespace Orts.Simulation.RollingStocks
             Simulator.Confirmer.MSG(Simulator.Catalog.GetString("Controller") + ": " + MirelRSControllerThrottleValue);
 
             // Ochrany
+            // 2 sběrače nad 50km/h
             if (AbsSpeedMpS > 50f / 3.6f)
             {
                 if (Pantographs[1].State == PantographState.Up && Pantographs[2].State == PantographState.Up)
@@ -13510,10 +13512,30 @@ namespace Orts.Simulation.RollingStocks
                     Simulator.StepControllerValue = 0;
                 }
             }
-            if (DRTemperature > 100f && MirelRSControllerThrottleValue > 27 && MirelRSControllerThrottleValue <= 56)
+            // Tepelné ochrany
+            if (MirelRSControllerThrottleValue >= 22 && MirelRSControllerThrottleValue <= 26)
             {
-                Mode_To_27_Start1 = true;
+                OverTemperatureTimer += elapsedClockSeconds;
+                if (OverTemperatureTimer > 60f && MirelRSControllerThrottleValueTimer > 0.25f)
+                {
+                    if (MirelRSControllerThrottleValue > 21)
+                        MirelRSControllerThrottleValue--;
+                    MirelRSControllerThrottleValueTimer = 0;
+                }
             }
+            else
+            if (MirelRSControllerThrottleValue >= 47 && MirelRSControllerThrottleValue <= 50)
+            {
+                OverTemperatureTimer += elapsedClockSeconds;
+                if (OverTemperatureTimer > 60f && MirelRSControllerThrottleValueTimer > 0.25f)
+                {
+                    if (MirelRSControllerThrottleValue > 46)
+                        MirelRSControllerThrottleValue--;
+                    MirelRSControllerThrottleValueTimer = 0;
+                }
+            }
+            else
+                OverTemperatureTimer = 0;
         }
 
 
