@@ -13024,6 +13024,7 @@ namespace Orts.Simulation.RollingStocks
         public float MirelRSControllerMaxValue = 56;
         public float MirelRSControllerThrottleValueTimer;
         public float MirelRSControllerEDBValueTimer;
+        public float MirelRSControllerOverTemperatureValueTimer;
         bool MirelRSControllerCanThrottleChangeValue_0;
         bool MirelRSControllerCanThrottleChangeValue_1;
         bool MirelRSControllerCanThrottleChangeValue_2;
@@ -13509,33 +13510,35 @@ namespace Orts.Simulation.RollingStocks
             {
                 if (Pantographs[1].State == PantographState.Up && Pantographs[2].State == PantographState.Up)
                 {
-                    Simulator.StepControllerValue = 0;
+                    Simulator.StepControllerValue = 0f;
                 }
             }
             // Tepelné ochrany
-            if (MirelRSControllerThrottleValue >= 22 && MirelRSControllerThrottleValue <= 26)
+            if (MirelRSControllerThrottleValue >= 22f && MirelRSControllerThrottleValue <= 26f)
             {
+                MirelRSControllerOverTemperatureValueTimer += elapsedClockSeconds;
                 OverTemperatureTimer += elapsedClockSeconds;
-                if (OverTemperatureTimer > 60f && MirelRSControllerThrottleValueTimer > 0.25f)
+                if (OverTemperatureTimer > 60f && MirelRSControllerOverTemperatureValueTimer > 0.25f)
                 {
-                    if (MirelRSControllerThrottleValue > 21)
+                    if (MirelRSControllerThrottleValue > 21f)
                         MirelRSControllerThrottleValue--;
-                    MirelRSControllerThrottleValueTimer = 0;
+                    MirelRSControllerOverTemperatureValueTimer = 0f;
                 }
             }
             else
-            if (MirelRSControllerThrottleValue >= 47 && MirelRSControllerThrottleValue <= 50)
+            if (MirelRSControllerThrottleValue >= 47f && MirelRSControllerThrottleValue <= 50f)
             {
+                MirelRSControllerOverTemperatureValueTimer += elapsedClockSeconds;
                 OverTemperatureTimer += elapsedClockSeconds;
-                if (OverTemperatureTimer > 60f && MirelRSControllerThrottleValueTimer > 0.25f)
+                if (OverTemperatureTimer > 60f && MirelRSControllerOverTemperatureValueTimer > 0.25f)
                 {
-                    if (MirelRSControllerThrottleValue > 46)
+                    if (MirelRSControllerThrottleValue > 46f)
                         MirelRSControllerThrottleValue--;
-                    MirelRSControllerThrottleValueTimer = 0;
+                    MirelRSControllerOverTemperatureValueTimer = 0f;
                 }
             }
             else
-                OverTemperatureTimer = 0;
+                OverTemperatureTimer = 0f;
         }
 
 
