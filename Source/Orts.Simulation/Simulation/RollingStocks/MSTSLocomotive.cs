@@ -13415,7 +13415,7 @@ namespace Orts.Simulation.RollingStocks
                         if (MirelRSCanSkip || MirelRSSkip_Start)
                         {
                             MirelRSSkip_Start = true;
-                            if (PowerCurrent1 < 600f && Simulator.StepControllerValue <= 26)
+                            if (PowerCurrent1 <= 300f && Simulator.StepControllerValue <= 26)
                                 Simulator.StepControllerValue++;
                             else
                             {

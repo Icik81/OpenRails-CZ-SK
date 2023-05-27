@@ -882,7 +882,7 @@ namespace Orts.Viewer3D.RollingStock
 
                 if (Locomotive.MirelRSControllerPosition[Locomotive.LocoStation] > 6)
                 {
-                    if (UserInput.IsReleased(UserCommand.ControlThrottleIncrease))
+                    if (UserInput.IsPressed(UserCommand.ControlThrottleDecrease))
                     {
                         Locomotive.MirelRSControllerAutoPressDown = true;
                     }
