@@ -940,6 +940,15 @@ namespace Orts.Viewer3D.RollingStock
                 }
             }
 
+            // Přepínač ventilátorů
+            if (Locomotive.VentilationSwitchEnable) 
+            {
+                if (UserInput.IsReleased(UserCommand.ControlVentilationDown) && Locomotive.VentilationSwitchPosition[Locomotive.LocoStation] == 0)
+                {
+                    Locomotive.VentilationSwitchPosition[Locomotive.LocoStation] = 1;
+                }
+            }
+
             // CommandCylinder ovladač
             if (Locomotive.CommandCylinderEnable)
             {
@@ -4483,6 +4492,10 @@ namespace Orts.Viewer3D.RollingStock
                     {
                         new ToggleVentilationUpCommand(Viewer.Log);
                         IsChanged = true;
+                    }
+                    if (UserInput.IsMouseLeftButtonReleased && Locomotive.VentilationSwitchPosition[Locomotive.LocoStation] == 0)
+                    {
+                        new ToggleVentilationUpCommand(Viewer.Log);
                     }
                     break;
 

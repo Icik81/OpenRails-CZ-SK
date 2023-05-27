@@ -3590,8 +3590,10 @@ namespace Orts.Simulation.RollingStocks
             // Přirozené chladnutí vlivem okolního prostředí
             TMTemperature -= MathHelper.Clamp(elapsedClockSeconds * (TMTemperature - CarOutsideTempC0) / TMTempTimeConstantSec, 0, 1f);
 
-            if (!VentilationSwitchEnable && PowerOn)
+            if (!VentilationSwitchEnable && LocalThrottlePercent > 0 && PowerOn)
                 TMCoolingIsOn = true;
+            if (!VentilationSwitchEnable && LocalThrottlePercent == 0 && PowerOn)
+                TMCoolingIsOn = false;
             if (!VentilationSwitchEnable && !PowerOn)
                 TMCoolingIsOn = false;
 
@@ -13588,6 +13590,8 @@ namespace Orts.Simulation.RollingStocks
         {
             if (VentilationSwitchPosition[LocoStation] > 0)
                 VentilationSwitchPosition[LocoStation]--;
+            if (Simulator.StepControllerValue > 0 && VentilationSwitchPosition[LocoStation] == 0)
+                VentilationSwitchPosition[LocoStation] = 1;
         }
         public void VentilationSwitch(float elapsedClocSeconds)
         {
@@ -13606,7 +13610,7 @@ namespace Orts.Simulation.RollingStocks
                 switch (VentilationSwitchPosition[LocoStation])
                 {
                     case 0:
-                        VentilationSwitchPositionName[LocoStation] = Simulator.Catalog.GetString("Off");
+                        VentilationSwitchPositionName[LocoStation] = Simulator.Catalog.GetString("Off"); // nearetované
                         VentilationIsOn = false;
                         VentilationTimer = 0;
                         break;
