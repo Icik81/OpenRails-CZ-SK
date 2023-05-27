@@ -604,6 +604,8 @@ namespace ORTS.Settings
             Commands[(int)UserCommand.ControlMirerControllerDown] = new UserCommandKeyInput(0x1E);
             Commands[(int)UserCommand.ControlPowerKeyUp] = new UserCommandKeyInput(0x25, KeyModifiers.Control);
             Commands[(int)UserCommand.ControlPowerKeyDown] = new UserCommandKeyInput(0x25, KeyModifiers.Control | KeyModifiers.Alt);
+            Commands[(int)UserCommand.ControlVentilationUp] = new UserCommandKeyInput(0x21);
+            Commands[(int)UserCommand.ControlVentilationDown] = new UserCommandKeyInput(0x21, KeyModifiers.Shift);
             Commands[(int)UserCommand.ControlRefreshCab] = new UserCommandKeyInput(0x3C, KeyModifiers.Shift | KeyModifiers.Control | KeyModifiers.Alt);
         }
         #endregion

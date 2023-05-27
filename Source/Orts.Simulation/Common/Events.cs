@@ -357,7 +357,8 @@ namespace Orts.Common
         MUWheelSlipOn,
         MUWheelSlipOff,
         ReverserToShOn,
-        ReverserToShOff
+        ReverserToShOff,
+        VentilationSwitch
     }
 
     public static class Events
@@ -730,6 +731,7 @@ namespace Orts.Common
                         case 20111: return Event.MUWheelSlipOff;
                         case 20112: return Event.ReverserToShOn;
                         case 20113: return Event.ReverserToShOff;
+                        case 20114:return Event.VentilationSwitch;
 
                         default: return 0;
                     }

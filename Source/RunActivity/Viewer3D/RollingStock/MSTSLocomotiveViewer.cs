@@ -364,6 +364,8 @@ namespace Orts.Viewer3D.RollingStock
             UserInputCommands.Add(UserCommand.ControlPowerKeyUp, new Action[] { Noop, () => new TogglePowerKeyUpCommand(Viewer.Log) });
             UserInputCommands.Add(UserCommand.ControlPowerKeyDown, new Action[] { Noop, () => new TogglePowerKeyDownCommand(Viewer.Log) });
             UserInputCommands.Add(UserCommand.ControlRefreshCab, new Action[] { Noop, () => new ToggleRefreshCabCommand(Viewer.Log) });
+            UserInputCommands.Add(UserCommand.ControlVentilationUp, new Action[] { Noop, () => new ToggleVentilationUpCommand(Viewer.Log) });
+            UserInputCommands.Add(UserCommand.ControlVentilationDown, new Action[] { Noop, () => new ToggleVentilationDownCommand(Viewer.Log) });
 
             // Jindřich
             UserInputCommands.Add(UserCommand.ControlPowerStationLocation, new Action[] { Noop, () => Locomotive.SetPowerSupplyStationLocation() });
@@ -3289,6 +3291,7 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.MIRELRS_DISPLAY2:
                 case CABViewControlTypes.MIRELRS_DIRECTION_CONTROLLER:
                 case CABViewControlTypes.MIRELRS_SKIPDIODE:
+                case CABViewControlTypes.VENTILATION_SWITCH:
 
                 case CABViewControlTypes.MOTOR_DISABLED:
                 case CABViewControlTypes.INVERTER_TEST:
@@ -4466,6 +4469,19 @@ namespace Orts.Viewer3D.RollingStock
                     if (ChangedValue(0) < 0 && !IsChanged)
                     {
                         new ToggleLightFrontRUpCommand(Viewer.Log);
+                        IsChanged = true;
+                    }
+                    break;
+                case CABViewControlTypes.VENTILATION_SWITCH:
+                    if (ChangedValue(0) < 0 && !IsChanged)
+                    {
+                        new ToggleVentilationDownCommand(Viewer.Log);
+                        IsChanged = true;
+                    }
+                    else
+                    if (ChangedValue(0) > 0 && !IsChanged)
+                    {
+                        new ToggleVentilationUpCommand(Viewer.Log);
                         IsChanged = true;
                     }
                     break;

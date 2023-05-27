@@ -2641,4 +2641,39 @@ namespace Orts.Common
             // Report();
         }
     }
+
+    [Serializable()]
+    public sealed class ToggleVentilationUpCommand : Command
+    {
+        public static MSTSLocomotive Receiver { get; set; }
+
+        public ToggleVentilationUpCommand(CommandLog log)
+            : base(log)
+        {
+            Redo();
+        }
+
+        public override void Redo()
+        {
+            Receiver.ToggleVentilationUp();
+            // Report();
+        }
+    }
+    [Serializable()]
+    public sealed class ToggleVentilationDownCommand : Command
+    {
+        public static MSTSLocomotive Receiver { get; set; }
+
+        public ToggleVentilationDownCommand(CommandLog log)
+            : base(log)
+        {
+            Redo();
+        }
+
+        public override void Redo()
+        {
+            Receiver.ToggleVentilationDown();
+            // Report();
+        }
+    }
 }

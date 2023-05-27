@@ -303,6 +303,8 @@
         [GetString("Control_CZSK Mirer -")] ControlMirerControllerDown,        
         [GetString("Control_CZSK Powerkey +")] ControlPowerKeyUp,
         [GetString("Control_CZSK Powerkey -")] ControlPowerKeyDown,
+        [GetString("Control_CZSK Ventilation +")] ControlVentilationUp,
+        [GetString("Control_CZSK Ventilation -")] ControlVentilationDown,
 
         [GetString("Set Power Supply Station Location")] ControlPowerStationLocation,
         [GetString("Set Voltage 25k")] ControlSetVoltage25k,
