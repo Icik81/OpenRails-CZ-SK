@@ -13069,10 +13069,9 @@ namespace Orts.Simulation.RollingStocks
             if (!MirelRSControllerEnable)
                 return;
 
-
             if (MirelRSDirectionControllerPressUp)
             {
-                if (((MirelRSDirectionControllerPosition[LocoStation] == 0 || MirelRSDirectionControllerPosition[LocoStation] == 1) && AbsSpeedMpS < 0.1f) || MirelRSDirectionControllerPosition[LocoStation] == 2)
+                if (MirelRSDirectionControllerPosition[LocoStation] == 0 || (MirelRSDirectionControllerPosition[LocoStation] == 1 && SpeedMpS > -0.1f) || MirelRSDirectionControllerPosition[LocoStation] == 2)
                 {
                     if (MirelRSDirectionControllerPosition[LocoStation] < 3)
                     {
@@ -13089,7 +13088,7 @@ namespace Orts.Simulation.RollingStocks
 
             if (MirelRSDirectionControllerPressDown)
             {
-                if (((MirelRSDirectionControllerPosition[LocoStation] == 1 || MirelRSDirectionControllerPosition[LocoStation] == 2) && AbsSpeedMpS < 0.1f) || MirelRSDirectionControllerPosition[LocoStation] == 3)
+                if ((MirelRSDirectionControllerPosition[LocoStation] == 1 && SpeedMpS < 0.1f) || MirelRSDirectionControllerPosition[LocoStation] == 2 || MirelRSDirectionControllerPosition[LocoStation] == 3)
                 {
                     if (MirelRSDirectionControllerPosition[LocoStation] > 0)
                     {
@@ -13120,6 +13119,7 @@ namespace Orts.Simulation.RollingStocks
                         case 1:                            
                             MirelRSDirectionControllerPositionName[LocoStation] = "0";
                             Direction = Direction.N;
+                            MirelRSControllerCanThrottleChangeValue_0 = true;                            
                             break;
                         case 2:
                             MirelRSDirectionControllerPositionName[LocoStation] = "P"; // nearetovaná
@@ -13432,7 +13432,7 @@ namespace Orts.Simulation.RollingStocks
             }
 
             // Dioda pro přeskok stupňů
-            if (PowerCurrent1 > 10f && PowerCurrent1 < 300f && MirelRSControllerThrottleValue < 27f)
+            if (AbsSpeedMpS >= 40f / 3.6f  && PowerCurrent1 < 300f && MirelRSControllerThrottleValue < 27f)
             {
                 MirelRSCanSkip = true;
                 MirelRSSkipDiode = 1;
