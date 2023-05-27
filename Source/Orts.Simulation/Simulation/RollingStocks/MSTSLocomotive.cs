@@ -2021,6 +2021,7 @@ namespace Orts.Simulation.RollingStocks
             outf.Write(VentilationSwitchPosition[1]);
             outf.Write(VentilationSwitchPosition[2]);
             outf.Write(VentilationIsOn);
+            outf.Write(TMCoolingIsActivated);
             outf.Write(DRCoolingIsActivated);
 
             #endregion
@@ -2245,6 +2246,7 @@ namespace Orts.Simulation.RollingStocks
             VentilationSwitchPosition[2] = inf.ReadInt32();
             VentilationIsOn = inf.ReadBoolean();
             DRCoolingIsActivated = inf.ReadBoolean();
+            TMCoolingIsActivated = inf.ReadBoolean();
             #endregion
 
             base.Restore(inf);
@@ -3555,6 +3557,7 @@ namespace Orts.Simulation.RollingStocks
         public float AirTMCoolingPower;
         public bool TMCoolingIsOn;
         public float TMTempTimeConstantSec;
+        public bool TMCoolingIsActivated;
         float RunCycle;
         public void TM_Temperature(float elapsedClockSeconds)
         {
@@ -3587,20 +3590,23 @@ namespace Orts.Simulation.RollingStocks
             // Přirozené chladnutí vlivem okolního prostředí
             TMTemperature -= MathHelper.Clamp(elapsedClockSeconds * (TMTemperature - CarOutsideTempC0) / TMTempTimeConstantSec, 0, 1f);
 
-            // Ochlazení během aktivního chlazení
-            if (LocalThrottlePercent > 0 && PowerOn)
-            {
-                TMTemperature -= elapsedClockSeconds * (TMTemperature - (1.5f * CarOutsideTempCBase)) / TMTempTimeConstantSec * (AirTMCoolingPower / 500f);
-                if (!TMCoolingIsOn)
-                {
-                    TMCoolingIsOn = true;
-                    SignalEvent(Event.TMCoolingOn);
-                }
-            }
-            else
-            if (TMCoolingIsOn && (LocalThrottlePercent == 0 || !PowerOn))
-            {
+            if (!VentilationSwitchEnable && PowerOn)
+                TMCoolingIsOn = true;
+            if (!VentilationSwitchEnable && !PowerOn)
                 TMCoolingIsOn = false;
+
+            // Ochlazení během aktivního chlazení
+            if (TMCoolingIsOn )
+                TMTemperature -= elapsedClockSeconds * (TMTemperature - (1.5f * CarOutsideTempCBase)) / TMTempTimeConstantSec * (AirTMCoolingPower / 500f);
+
+            if (TMCoolingIsOn && !TMCoolingIsActivated)
+            {
+                TMCoolingIsActivated = true;
+                SignalEvent(Event.TMCoolingOn);
+            }
+            if (!TMCoolingIsOn && TMCoolingIsActivated)
+            {
+                TMCoolingIsActivated = false;
                 SignalEvent(Event.TMCoolingOff);
             }
 
@@ -13064,6 +13070,7 @@ namespace Orts.Simulation.RollingStocks
         public bool MirelRSSkip_Start;
         public bool MirelRSPositionBlocked;
         public float OverTemperatureTimer;
+        int MirelRSSkipCounter;
 
         public bool DirectionControllerMirelRSPositionSh;
         public bool preDirectionControllerMirelRSPositionSh;
@@ -13428,12 +13435,21 @@ namespace Orts.Simulation.RollingStocks
                         {
                             MirelRSSkip_Start = true;
                             if (PowerCurrent1 <= 300f && Simulator.StepControllerValue <= 26)
+                            {
                                 Simulator.StepControllerValue++;
+                                MirelRSSkipCounter++;
+                                if (MirelRSSkipCounter > 2f)
+                                { 
+                                    ThrottleController.StartIncrease();
+                                    ThrottleController.StopIncrease();
+                                }
+                            }
                             else
                             {
                                 MirelRSControllerThrottleValue = Simulator.StepControllerValue;
                                 MirelRSSkip_Start = false;
                                 MirelRSPositionBlocked = true;
+                                MirelRSSkipCounter = 0;
                             }
                         }
                     }
@@ -13581,7 +13597,7 @@ namespace Orts.Simulation.RollingStocks
             if (!VentilationSwitchEnable)
                 return;
 
-            DRCoolingIsOn = VentilationIsOn;            
+            TMCoolingIsOn = VentilationIsOn;            
 
             if (preVentilationSwitchPosition[LocoStation] != VentilationSwitchPosition[LocoStation])
             {
