@@ -1500,7 +1500,7 @@ namespace Orts.Simulation.RollingStocks
                 else
                     WagonBrakeAdhesiveForceN = MassKG * GravitationalAccelerationMpS2 * Train.WagonCoefficientFriction; // Adheze pro vozy
                            
-                float BrakeAdhesiveForceN = (LocoBrakeAdhesiveForceN + WagonBrakeAdhesiveForceN) * 0.85f;
+                float BrakeAdhesiveForceN = LocoBrakeAdhesiveForceN + WagonBrakeAdhesiveForceN;
 
                 // Test if wheel forces are high enough to induce a slip. Set slip flag if slip occuring 
                 if (!BrakeSkid && AbsSpeedMpS > 0.01)  // Train must be moving forward to experience skid

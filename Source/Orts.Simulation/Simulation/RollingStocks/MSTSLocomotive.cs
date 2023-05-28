@@ -6412,7 +6412,7 @@ namespace Orts.Simulation.RollingStocks
                 DynamicBrakeFullRangeIncreaseTimeSeconds = 4;
             if (DynamicBrakeFullRangeDecreaseTimeSeconds == 0)
                 DynamicBrakeFullRangeDecreaseTimeSeconds = 6;
-            if (PowerOn && Direction != Direction.N)
+            if (PowerOn && ((Direction != Direction.N && !MirelRSControllerEnable) || MirelRSControllerEnable))
             {
                 if (extendedPhysics == null || !IsPlayerTrain) // AI musí vždy počítat TractiveForceN kvůli zvukům
                 {
@@ -6436,7 +6436,7 @@ namespace Orts.Simulation.RollingStocks
                     }
                     else
                     {
-                        if (t > 0)
+                        if ((t > 0 && !MirelRSControllerEnable) || MirelRSControllerEnable)
                         {
                             // Icik
                             switch (SwitchingVoltageMode)
@@ -6572,7 +6572,8 @@ namespace Orts.Simulation.RollingStocks
                             break;
                         case Direction.N:
                         default:
-                            TractiveForceN *= 0;
+                            if (!MirelRSControllerEnable)
+                                TractiveForceN *= 0;
                             break;
                     }
                 }
@@ -13045,6 +13046,7 @@ namespace Orts.Simulation.RollingStocks
         public float MirelRSControllerThrottleValueTimer;
         public float MirelRSControllerEDBValueTimer;
         public float MirelRSControllerOverTemperatureValueTimer;
+        public float MirelRSControllerWhellSlipValueTimer;
         bool MirelRSControllerCanThrottleChangeValue_0;
         bool MirelRSControllerCanThrottleChangeValue_1;
         bool MirelRSControllerCanThrottleChangeValue_2;
@@ -13070,6 +13072,7 @@ namespace Orts.Simulation.RollingStocks
         public int MirelRSSkipDiode;
         public bool MirelRSCanSkip;
         public bool MirelRSSkip_Start;
+        public bool MirelRSSkip_Ready;
         public bool MirelRSPositionBlocked;
         public float OverTemperatureTimer;
         int MirelRSSkipCounter;
@@ -13139,8 +13142,7 @@ namespace Orts.Simulation.RollingStocks
                             break;
                         case 1:                            
                             MirelRSDirectionControllerPositionName[LocoStation] = "0";
-                            Direction = Direction.N;
-                            MirelRSControllerCanThrottleChangeValue_0 = true;                            
+                            Direction = Direction.N;                                                  
                             break;
                         case 2:
                             MirelRSDirectionControllerPositionName[LocoStation] = "P"; // nearetovaná
@@ -13154,7 +13156,10 @@ namespace Orts.Simulation.RollingStocks
                     }
                     Simulator.Confirmer.Information(Simulator.Catalog.GetString("DirectionController") + ": " + MirelRSDirectionControllerPositionName[LocoStation]);
                 }
-            }            
+            }
+            if (MirelRSDirectionControllerPosition[LocoStation] == 1)
+                MirelRSControllerCanThrottleChangeValue_0 = true;
+
 
             if (MirelRSControllerPressUp)
             {
@@ -13278,11 +13283,13 @@ namespace Orts.Simulation.RollingStocks
                         MirelRSControllerLongPressUp = false;
                         MirelRSControllerLongPressDown = false;
                         MirelRSPositionBlocked = false;
+                        MirelRSSkip_Ready = false;
                         break;
                     case 6:
                         MirelRSControllerPositionName[LocoStation] = "+1"; // nearetovaná
                         MirelRSControllerShortPressUp = false;                        
-                        MirelRSControllerCanThrottleChangeValue_2 = true;                        
+                        MirelRSControllerCanThrottleChangeValue_2 = true;
+                        MirelRSControllerCanThrottleChangeValue_3 = false;
                         break;
                     case 7:
                         MirelRSControllerPositionName[LocoStation] = "++";
@@ -13294,231 +13301,345 @@ namespace Orts.Simulation.RollingStocks
             }
 
             MirelRSControllerDisplayValue = MirelRSControllerDisplay2Value = MirelRSControllerThrottleValue;
-            
+
             // Hodnoty pro StepController
-            if (MirelRSControllerCanThrottleChangeValue_0 || MirelRSControllerCanThrottleChangeValue_1 || MirelRSControllerCanThrottleChangeValue_2 || MirelRSControllerCanThrottleChangeValue_3
-                || ShModeActivated || Mode_To_34_Start || ShModeActivated2 || Mode_To_27_Start1 || Mode_To_27_Start2
-                || (NoShMode && MirelRSControllerThrottleValue > 27 && MirelRSControllerThrottleValue < 34 && !Mode_To_34_Start)
-                || MirelRSSkip_Start) 
-            {                
-                MirelRSControllerThrottleValueTimer += elapsedClockSeconds;
-
-                // Šuntování a blokování
-                if (DirectionControllerMirelRSPositionSh && MirelRSControllerThrottleValue <= 32)
-                    MirelRSControllerMaxValue = 32f;
-                else
-                if (DirectionControllerMirelRSPositionSh && MirelRSControllerThrottleValue <= 56)
-                    MirelRSControllerMaxValue = 56f;
-                else
-                    MirelRSControllerMaxValue = 51f;
-
-                if ((MirelRSControllerThrottleValue < 27 || (MirelRSControllerThrottleValue > 32 && MirelRSControllerThrottleValue < 51)))
-                    NoShMode = true;
-                else
-                    NoShMode = false;
-
-                if (DirectionControllerMirelRSPositionSh && MirelRSControllerThrottleValue >= 51)
-                {                    
-                    ShModeActivated2 = true;                    
-                }
-                // Auto skrokování do 51
-                if (ShModeActivated2 && !DirectionControllerMirelRSPositionSh)
+            if (CircuitBreakerOn)
+            {
+                if (MirelRSControllerCanThrottleChangeValue_0 || MirelRSControllerCanThrottleChangeValue_1 || MirelRSControllerCanThrottleChangeValue_2 || MirelRSControllerCanThrottleChangeValue_3
+                    || ShModeActivated || Mode_To_34_Start || ShModeActivated2 || Mode_To_27_Start1 || Mode_To_27_Start2
+                    || (NoShMode && MirelRSControllerThrottleValue > 27 && MirelRSControllerThrottleValue < 34 && !Mode_To_34_Start)
+                    || MirelRSSkip_Start)
                 {
-                    MirelRSControllerMaxValue = 56f;
-                    if (MirelRSControllerThrottleValueTimer > 0.25f)
+                    MirelRSControllerThrottleValueTimer += elapsedClockSeconds;
+
+                    // Šuntování a blokování
+                    if (DirectionControllerMirelRSPositionSh && MirelRSControllerThrottleValue <= 32)
+                        MirelRSControllerMaxValue = 32f;
+                    else
+                    if (DirectionControllerMirelRSPositionSh && MirelRSControllerThrottleValue <= 56)
+                        MirelRSControllerMaxValue = 56f;
+                    else
+                        MirelRSControllerMaxValue = 51f;
+
+                    if ((MirelRSControllerThrottleValue < 27 || (MirelRSControllerThrottleValue > 32 && MirelRSControllerThrottleValue < 51)))
+                        NoShMode = true;
+                    else
+                        NoShMode = false;
+
+                    if (DirectionControllerMirelRSPositionSh && MirelRSControllerThrottleValue >= 51)
                     {
-                        if (MirelRSControllerThrottleValue > 51f)
-                            MirelRSControllerThrottleValue--;
-                        MirelRSControllerThrottleValueTimer = 0;
-                        if (MirelRSControllerThrottleValue <= 51f)
-                        {
-                            ShModeActivated2 = false;                            
-                        }
+                        ShModeActivated2 = true;
                     }
-                }
-
-                if (DirectionControllerMirelRSPositionSh && MirelRSControllerThrottleValue == 27 && !ShModeActivated)
-                    ShModeActivated = true;
-
-                // Auto 1.skrokování do 27
-                if ((ShModeActivated && !DirectionControllerMirelRSPositionSh) || Mode_To_27_Start1)                    
-                {
-                    Mode_To_27_Start1 = true;
-                    if (MirelRSControllerThrottleValueTimer > 0.25f)
+                    // Auto skrokování do 51
+                    if (ShModeActivated2 && !DirectionControllerMirelRSPositionSh)
                     {
-                        if (MirelRSControllerThrottleValue > 27f)
-                            MirelRSControllerThrottleValue--;                        
-                        MirelRSControllerThrottleValueTimer = 0;
-                        if (MirelRSControllerThrottleValue <= 27f)
+                        MirelRSControllerMaxValue = 56f;
+                        if (MirelRSControllerThrottleValueTimer > 0.25f)
                         {
-                            Mode_To_27_Start1 = false;
-                            ShModeActivated = false;                                                      
-                        }
-                    }
-                }
-
-                // Auto 2.skrokování do 27
-                if (MirelRSControllerThrottleValue >= 34)
-                {
-                    Mode_To_27_Start2_Enable = true;
-                    preDirectionControllerMirelRSPositionSh = DirectionControllerMirelRSPositionSh;
-                }
-                if (MirelRSControllerThrottleValue <= 27)
-                    Mode_To_27_Start2_Enable = false;
-                if ((NoShMode && MirelRSControllerThrottleValue > 27 && MirelRSControllerThrottleValue < 34 && !Mode_To_34_Start && Mode_To_27_Start2_Enable) || Mode_To_27_Start2)
-                {
-                    Mode_To_27_Start2 = true;
-                    DirectionControllerMirelRSPositionSh = false;
-                    if (MirelRSControllerThrottleValueTimer > 0.25f)
-                    {
-                        if (MirelRSControllerThrottleValue > 27f)
-                            MirelRSControllerThrottleValue--;
-                        MirelRSControllerThrottleValueTimer = 0;
-                        if (MirelRSControllerThrottleValue <= 27f)
-                        {
-                            Mode_To_27_Start2 = false;
-                            DirectionControllerMirelRSPositionSh = preDirectionControllerMirelRSPositionSh;
-                        }
-                    }
-                }
-
-                // Auto krokování do 34 
-                if (((!DirectionControllerMirelRSPositionSh && MirelRSControllerThrottleValue > 26 && MirelRSControllerThrottleValue < 34 && MirelRSControllerPositionName[LocoStation] == "+1") || Mode_To_34_Start) && !MirelRSPositionBlocked)
-                {
-                    MirelRSControllerCanThrottleChangeValue_2 = false;
-                    Mode_To_34_Start = true;
-                    if (MirelRSControllerThrottleValueTimer > 0.25f)
-                    {
-                        if (MirelRSControllerThrottleValue < 34f)
-                            MirelRSControllerThrottleValue++;
-                        MirelRSControllerThrottleValueTimer = 0;
-                        if (MirelRSControllerThrottleValue == 34f)
-                        {
-                            Mode_To_34_Start = false;                            
-                        }
-                    }
-                }                
-
-                if (MirelRSControllerThrottleValueTimer > 0.25f)
-                {
-                    // 0
-                    if (MirelRSControllerCanThrottleChangeValue_0)
-                    {
-                        if (PowerCurrent1 < 300f && MirelRSControllerThrottleValue <= 27f)
-                        {
-                            MirelRSControllerThrottleValue = 0;
-                            SetThrottlePercent(0f);
-                        }
-                        else
-                        if (MirelRSControllerThrottleValue > 0f)
-                            MirelRSControllerThrottleValue--;                        
-                        MirelRSControllerThrottleValueTimer = 0;
-                        if (MirelRSControllerThrottleValue == 0 || MirelRSControllerPositionName[LocoStation] == "+1" || MirelRSControllerPositionName[LocoStation] == "-1")
-                            MirelRSControllerCanThrottleChangeValue_0 = false;
-                    }
-                }
-
-                if ((MirelRSControllerThrottleValueTimer > 0.5f && !Mode_To_27_Start1 && !Mode_To_27_Start2 && !Mode_To_34_Start) || MirelRSSkip_Start)
-                {
-                    // -1
-                    if (MirelRSControllerCanThrottleChangeValue_1 && MirelRSControllerShortPressDown)
-                        if (MirelRSControllerThrottleValue > 0)                        
-                            MirelRSControllerThrottleValue--;                                                    
-                    
-                    // +1
-                    if (MirelRSControllerCanThrottleChangeValue_2 && MirelRSControllerShortPressUp)
-                        if (MirelRSControllerThrottleValue < MirelRSControllerMaxValue)                        
-                            MirelRSControllerThrottleValue++;                                                    
-
-                    // ++
-                    if (MirelRSControllerCanThrottleChangeValue_3 || MirelRSSkip_Start)
-                    {
-                        if (MirelRSCanSkip || MirelRSSkip_Start)
-                        {
-                            MirelRSSkip_Start = true;
-                            if (PowerCurrent1 <= 300f && Simulator.StepControllerValue <= 26)
+                            if (MirelRSControllerThrottleValue > 51f)
                             {
-                                Simulator.StepControllerValue++;
-                                MirelRSSkipCounter++;
-                                if (MirelRSSkipCounter > 2f)
-                                { 
-                                    ThrottleController.StartIncrease();
-                                    ThrottleController.StopIncrease();
+                                MirelRSControllerThrottleValue--;
+                                MirelRSControllerCheckThrottleChange();
+                            }
+                            MirelRSControllerThrottleValueTimer = 0;
+                            if (MirelRSControllerThrottleValue <= 51f)
+                            {
+                                ShModeActivated2 = false;
+                            }                            
+                        }
+                    }
+
+                    if (DirectionControllerMirelRSPositionSh && MirelRSControllerThrottleValue == 27 && !ShModeActivated)
+                        ShModeActivated = true;
+
+                    // Auto 1.skrokování do 27
+                    if ((ShModeActivated && !DirectionControllerMirelRSPositionSh) || Mode_To_27_Start1)
+                    {
+                        Mode_To_27_Start1 = true;
+                        if (MirelRSControllerThrottleValueTimer > 0.25f)
+                        {
+                            if (MirelRSControllerThrottleValue > 27f)
+                            {
+                                MirelRSControllerThrottleValue--;
+                                MirelRSControllerCheckThrottleChange();
+                            }
+                            MirelRSControllerThrottleValueTimer = 0;
+                            if (MirelRSControllerThrottleValue <= 27f)
+                            {
+                                Mode_To_27_Start1 = false;
+                                ShModeActivated = false;
+                            }                            
+                        }
+                    }
+
+                    // Auto 2.skrokování do 27
+                    if (MirelRSControllerThrottleValue >= 34)
+                    {
+                        Mode_To_27_Start2_Enable = true;
+                        preDirectionControllerMirelRSPositionSh = DirectionControllerMirelRSPositionSh;
+                    }
+                    if (MirelRSControllerThrottleValue <= 27)
+                        Mode_To_27_Start2_Enable = false;
+                    if ((NoShMode && MirelRSControllerThrottleValue > 27 && MirelRSControllerThrottleValue < 34 && !Mode_To_34_Start && Mode_To_27_Start2_Enable) || Mode_To_27_Start2)
+                    {
+                        Mode_To_27_Start2 = true;
+                        DirectionControllerMirelRSPositionSh = false;
+                        if (MirelRSControllerThrottleValueTimer > 0.25f)
+                        {
+                            if (MirelRSControllerThrottleValue > 27f)
+                            {
+                                MirelRSControllerThrottleValue--;
+                                MirelRSControllerCheckThrottleChange();
+                            }
+                            MirelRSControllerThrottleValueTimer = 0;
+                            if (MirelRSControllerThrottleValue <= 27f)
+                            {
+                                Mode_To_27_Start2 = false;
+                                DirectionControllerMirelRSPositionSh = preDirectionControllerMirelRSPositionSh;
+                            }                            
+                        }
+                    }
+
+                    // Auto krokování do 34 
+                    if (((!DirectionControllerMirelRSPositionSh && MirelRSControllerThrottleValue > 26 && MirelRSControllerThrottleValue < 34 && MirelRSControllerPositionName[LocoStation] == "+1") || Mode_To_34_Start) && !MirelRSPositionBlocked)
+                    {
+                        MirelRSControllerCanThrottleChangeValue_2 = false;
+                        Mode_To_34_Start = true;
+                        if (MirelRSControllerThrottleValueTimer > 0.25f)
+                        {
+                            if (MirelRSControllerThrottleValue < 34f)
+                            {
+                                MirelRSControllerThrottleValue++;
+                                MirelRSControllerCheckThrottleChange();
+                            }
+                            MirelRSControllerThrottleValueTimer = 0;
+                            if (MirelRSControllerThrottleValue == 34f)
+                            {
+                                Mode_To_34_Start = false;
+                            }                            
+                        }
+                    }
+
+                    // Skrokování do 0
+                    if (MirelRSControllerThrottleValueTimer > 0.25f)
+                    {
+                        // 0
+                        if (MirelRSControllerCanThrottleChangeValue_0)
+                        {
+                            // Směrová páka v 0
+                            if (MirelRSDirectionControllerPosition[LocoStation] == 1 && PowerCurrent1 < 300f && MirelRSControllerThrottleValue <= 27f)
+                            {
+                                MirelRSControllerThrottleValue = preMirelRSControllerThrottleValue = 0;
+                                SetThrottlePercent(0f);                                
+                            }
+                            else
+                            // Kontrolér v B
+                            if (MirelRSControllerPosition[LocoStation] == 1 && PowerCurrent1 < 300f && MirelRSControllerThrottleValue <= 27f)
+                            {
+                                MirelRSControllerThrottleValue = preMirelRSControllerThrottleValue = 0;
+                                SetThrottlePercent(0f);                                
+                            }
+                            else
+                            // Směrová páka v 0 nebo kontrolér v 0 nebo v B
+                            if ((MirelRSDirectionControllerPosition[LocoStation] == 1 || MirelRSControllerPosition[LocoStation] == 3 || MirelRSControllerPosition[LocoStation] == 1) && MirelRSControllerThrottleValue > 0f)
+                            {
+                                MirelRSControllerThrottleValue--;
+                                MirelRSControllerCheckThrottleChange();
+                            }
+                            
+                            MirelRSControllerThrottleValueTimer = 0;
+                            if (MirelRSControllerThrottleValue == 0 || MirelRSControllerPositionName[LocoStation] == "+1" || MirelRSControllerPositionName[LocoStation] == "-1")
+                                MirelRSControllerCanThrottleChangeValue_0 = false;                            
+                        }                        
+                    }
+
+                    if ((MirelRSControllerThrottleValueTimer > 0.5f && !Mode_To_27_Start1 && !Mode_To_27_Start2 && !Mode_To_34_Start) || MirelRSSkip_Start)
+                    {
+                        // -1
+                        if (MirelRSControllerCanThrottleChangeValue_1 && MirelRSControllerShortPressDown)
+                            if (MirelRSControllerThrottleValue > 0)
+                            {
+                                MirelRSControllerThrottleValue--;
+                                MirelRSControllerCheckThrottleChange();
+                            }
+
+                        // +1
+                        if (MirelRSControllerCanThrottleChangeValue_2 && MirelRSControllerShortPressUp)
+                            if (MirelRSControllerThrottleValue < MirelRSControllerMaxValue)
+                            {
+                                MirelRSControllerThrottleValue++;
+                                MirelRSControllerCheckThrottleChange();
+                            }
+
+                        // ++
+                        if (MirelRSControllerCanThrottleChangeValue_3 || MirelRSSkip_Start)
+                        {
+                            if (MirelRSCanSkip || MirelRSSkip_Start)
+                            {
+                                MirelRSSkip_Ready = true;
+                                MirelRSSkip_Start = true;
+                                if (PowerCurrent1 <= 300f && Simulator.StepControllerValue <= 26)
+                                {
+                                    Simulator.StepControllerValue++;
+                                    MirelRSSkipCounter++;
+                                    if (MirelRSSkipCounter > 1f)
+                                    {
+                                        ThrottleController.StartIncrease();
+                                        ThrottleController.StopIncrease();
+                                    }
+                                }
+                                else
+                                {
+                                    MirelRSControllerThrottleValue = preMirelRSControllerThrottleValue = Simulator.StepControllerValue;                                    
+                                    MirelRSSkip_Start = false;
+                                    MirelRSPositionBlocked = true;
+                                    MirelRSSkipCounter = 0;
                                 }
                             }
                             else
                             {
-                                MirelRSControllerThrottleValue = Simulator.StepControllerValue;
-                                MirelRSSkip_Start = false;
+                                // Autokrokování nahoru mimo shuntů
+                                if (!MirelRSSkip_Ready && MirelRSControllerThrottleValue < 27 || (MirelRSControllerThrottleValue >= 34 && MirelRSControllerThrottleValue < 51))
+                                {
+                                    MirelRSControllerThrottleValue++;
+                                    MirelRSControllerCheckThrottleChange();
+                                }
                                 MirelRSPositionBlocked = true;
-                                MirelRSSkipCounter = 0;
                             }
-                        }
+                        }                        
+                        MirelRSControllerThrottleValueTimer = 0;
+                        MirelRSControllerCanThrottleChangeValue_1 = MirelRSControllerCanThrottleChangeValue_2 = false;                        
                     }
-
-                    MirelRSControllerThrottleValueTimer = 0;
-                    MirelRSControllerCanThrottleChangeValue_1 = MirelRSControllerCanThrottleChangeValue_2 = MirelRSControllerCanThrottleChangeValue_3 = false;
-                }                
-            }
-
-            // Dioda pro přeskok stupňů
-            if (AbsSpeedMpS >= 40f / 3.6f  && PowerCurrent1 < 300f && MirelRSControllerThrottleValue < 27f)
-            {
-                MirelRSCanSkip = true;
-                MirelRSSkipDiode = 1;
-            }
-            else
-            {
-                MirelRSCanSkip = false;
-                MirelRSSkipDiode = 0;
-            }
-
-            // Obecná proměnná pro StepController
-            MirelRSControllerThrottleDummyValue = 0;
-            if (!DirectionControllerMirelRSPositionSh && MirelRSControllerThrottleValue > 27 && MirelRSControllerThrottleValue < 33)
-            {
-                MirelRSControllerThrottleDummyValue = 27;
-                Simulator.StepControllerValue = MirelRSControllerThrottleDummyValue;
-            }
-            if (MirelRSControllerThrottleDummyValue == 0 && !MirelRSSkip_Start)
-                Simulator.StepControllerValue = MirelRSControllerThrottleValue;
-
-
-            // Hodnoty pro EDB
-            if (MirelRSControllerCanEDBChangeValue_0 || MirelRSControllerCanEDBChangeValue_1 || MirelRSControllerCanEDBChangeValue_2)
-            {
-                MirelRSControllerEDBValueTimer += elapsedClockSeconds;
-
-                if (MirelRSControllerEDBValueTimer > 0.05f)
-                {
-                    // 0
-                    if (MirelRSControllerCanEDBChangeValue_0)
-                    {
-                        if (MirelRSControllerEDBValue > -1f)
-                            MirelRSControllerEDBValue--;
-                        if (MirelRSControllerEDBValue == -1)
-                            MirelRSControllerCanEDBChangeValue_0 = MirelRSControllerCanEDBChangeValue_1 = MirelRSControllerCanEDBChangeValue_2 = false;
-                    }
-
-                    // -B
-                    if (MirelRSControllerCanEDBChangeValue_1)
-                    {
-                        if (MirelRSControllerEDBValue == -1) MirelRSControllerEDBValue = 0;
-                        if (MirelRSControllerEDBValue > 0)
-                            MirelRSControllerEDBValue--;
-                    }
-
-                    // +B
-                    if (MirelRSControllerCanEDBChangeValue_2)
-                    {
-                        if (MirelRSControllerEDBValue == -1) MirelRSControllerEDBValue = 0;
-                        if (MirelRSControllerEDBValue < 100f)
-                            MirelRSControllerEDBValue++;
-                    }
-                    
-                    MirelRSControllerEDBValueTimer = 0;                    
                 }
+
+                // Dioda pro přeskok stupňů
+                if (AbsSpeedMpS >= 40f / 3.6f && PowerCurrent1 < 300f && MirelRSControllerThrottleValue < 27f && !MirelRSPositionBlocked)
+                {
+                    MirelRSCanSkip = true;
+                    MirelRSSkipDiode = 1;
+                }
+                else
+                {
+                    MirelRSCanSkip = false;
+                    MirelRSSkipDiode = 0;
+                }
+
+                // Obecná proměnná pro StepController
+                MirelRSControllerThrottleDummyValue = 0;
+                if (!DirectionControllerMirelRSPositionSh && MirelRSControllerThrottleValue > 27 && MirelRSControllerThrottleValue < 33)
+                {
+                    MirelRSControllerThrottleDummyValue = 27;
+                    Simulator.StepControllerValue = MirelRSControllerThrottleDummyValue;
+                }
+                if (MirelRSControllerThrottleDummyValue == 0 && !MirelRSSkip_Start)
+                    Simulator.StepControllerValue = MirelRSControllerThrottleValue;
+                                
+
+                // Hodnoty pro EDB
+                if (MirelRSControllerCanEDBChangeValue_0 || MirelRSControllerCanEDBChangeValue_1 || MirelRSControllerCanEDBChangeValue_2)
+                {
+                    MirelRSControllerEDBValueTimer += elapsedClockSeconds;
+
+                    if (MirelRSControllerEDBValueTimer > 0.05f)
+                    {
+                        // 0
+                        if (MirelRSControllerCanEDBChangeValue_0)
+                        {
+                            if (MirelRSControllerEDBValue > -1f)
+                                MirelRSControllerEDBValue--;
+                            if (MirelRSControllerEDBValue == -1)
+                                MirelRSControllerCanEDBChangeValue_0 = MirelRSControllerCanEDBChangeValue_1 = MirelRSControllerCanEDBChangeValue_2 = false;
+                        }
+
+                        // -B
+                        if (MirelRSControllerCanEDBChangeValue_1)
+                        {
+                            if (MirelRSControllerEDBValue == -1) MirelRSControllerEDBValue = 0;
+                            if (MirelRSControllerEDBValue > 0)
+                                MirelRSControllerEDBValue--;
+                        }
+
+                        // +B
+                        if (MirelRSControllerCanEDBChangeValue_2)
+                        {
+                            if (MirelRSControllerEDBValue == -1) MirelRSControllerEDBValue = 0;
+                            if (MirelRSControllerEDBValue < 100f)
+                                MirelRSControllerEDBValue++;
+                        }
+
+                        MirelRSControllerEDBValueTimer = 0;
+                    }
+                }
+                SetDynamicBrakePercent(MirelRSControllerEDBValue);
+
+                // Ochrany
+                // 2 sběrače nad 50km/h
+                if (AbsSpeedMpS > 50f / 3.6f)
+                {
+                    if (Pantographs[1].State == PantographState.Up && Pantographs[2].State == PantographState.Up)
+                    {
+                        Simulator.StepControllerValue = 0f;
+                    }
+                }
+                // Tepelné ochrany
+                if (MirelRSControllerThrottleValue >= 22f && MirelRSControllerThrottleValue <= 26f)
+                {
+                    MirelRSControllerOverTemperatureValueTimer += elapsedClockSeconds;
+                    OverTemperatureTimer += elapsedClockSeconds;
+                    if (OverTemperatureTimer > 60f && MirelRSControllerOverTemperatureValueTimer > 0.25f)
+                    {
+                        if (MirelRSControllerThrottleValue > 21f)
+                        {
+                            MirelRSControllerThrottleValue--;
+                            MirelRSControllerCheckThrottleChange();
+                        }
+                        MirelRSControllerOverTemperatureValueTimer = 0f;                        
+                    }
+                }
+                else
+                if (MirelRSControllerThrottleValue >= 47f && MirelRSControllerThrottleValue <= 50f)
+                {
+                    MirelRSControllerOverTemperatureValueTimer += elapsedClockSeconds;
+                    OverTemperatureTimer += elapsedClockSeconds;
+                    if (OverTemperatureTimer > 60f && MirelRSControllerOverTemperatureValueTimer > 0.25f)
+                    {
+                        if (MirelRSControllerThrottleValue > 46f)
+                        {
+                            MirelRSControllerThrottleValue--;
+                            MirelRSControllerCheckThrottleChange();
+                        }
+                        MirelRSControllerOverTemperatureValueTimer = 0f;                        
+                    }
+                }
+                else
+                    OverTemperatureTimer = 0f;
+                // Prokluz kol
+                if (WheelSlipWarning || WheelSlip)
+                {
+                    MirelRSControllerWhellSlipValueTimer += elapsedClockSeconds;
+                    if (MirelRSControllerWhellSlipValueTimer > 0.5f)
+                    {
+                        if (MirelRSControllerThrottleValue > 0f)
+                        {
+                            MirelRSControllerThrottleValue--;
+                            MirelRSControllerCheckThrottleChange();
+                        }
+                        MirelRSControllerWhellSlipValueTimer = 0f;                        
+                    }
+                }
+                else
+                    MirelRSControllerWhellSlipValueTimer = 0f;
+            }                        
+            // Bouchnutí HV
+            if (!CircuitBreakerOn)
+            {
+                MirelRSControllerThrottleValue = preMirelRSControllerThrottleValue = 0;
+                SetThrottlePercent(0f);                
             }
+        }
+
+        public void MirelRSControllerCheckThrottleChange()
+        {
             if (MirelRSControllerThrottleValue > preMirelRSControllerThrottleValue)
             {
                 ThrottleController.StartIncrease();
@@ -13534,44 +13655,7 @@ namespace Orts.Simulation.RollingStocks
                 SignalEvent(Event.ThrottleChange);
                 preMirelRSControllerThrottleValue = MirelRSControllerThrottleValue;
                 Simulator.Confirmer.MSG(Simulator.Catalog.GetString("Controller") + ": " + MirelRSControllerThrottleValue);
-            }            
-            SetDynamicBrakePercent(MirelRSControllerEDBValue);                        
-
-            // Ochrany
-            // 2 sběrače nad 50km/h
-            if (AbsSpeedMpS > 50f / 3.6f)
-            {
-                if (Pantographs[1].State == PantographState.Up && Pantographs[2].State == PantographState.Up)
-                {
-                    Simulator.StepControllerValue = 0f;
-                }
             }
-            // Tepelné ochrany
-            if (MirelRSControllerThrottleValue >= 22f && MirelRSControllerThrottleValue <= 26f)
-            {
-                MirelRSControllerOverTemperatureValueTimer += elapsedClockSeconds;
-                OverTemperatureTimer += elapsedClockSeconds;
-                if (OverTemperatureTimer > 60f && MirelRSControllerOverTemperatureValueTimer > 0.25f)
-                {
-                    if (MirelRSControllerThrottleValue > 21f)
-                        MirelRSControllerThrottleValue--;
-                    MirelRSControllerOverTemperatureValueTimer = 0f;
-                }
-            }
-            else
-            if (MirelRSControllerThrottleValue >= 47f && MirelRSControllerThrottleValue <= 50f)
-            {
-                MirelRSControllerOverTemperatureValueTimer += elapsedClockSeconds;
-                OverTemperatureTimer += elapsedClockSeconds;
-                if (OverTemperatureTimer > 60f && MirelRSControllerOverTemperatureValueTimer > 0.25f)
-                {
-                    if (MirelRSControllerThrottleValue > 46f)
-                        MirelRSControllerThrottleValue--;
-                    MirelRSControllerOverTemperatureValueTimer = 0f;
-                }
-            }
-            else
-                OverTemperatureTimer = 0f;
         }
 
         // Přepínač ventilace
@@ -13627,11 +13711,16 @@ namespace Orts.Simulation.RollingStocks
                 Simulator.Confirmer.Information(Simulator.Catalog.GetString("Ventilation") + ": " + VentilationSwitchPositionName[LocoStation]);
             }
 
+            //if (VentilationIsOn)
+            //    Simulator.Confirmer.Warning(Simulator.Catalog.GetString("Ventilátor jede!"));
+
             // Režim automatiky ventilátoru
             if (VentilationSwitchPosition[LocoStation] == 1)
             {
-                if (Simulator.StepControllerValue > 1)
-                    VentilationIsOn = true;
+                if (Simulator.StepControllerValue > 1 || LocalDynamicBrakePercent >= 0)
+                {
+                    VentilationIsOn = true;                    
+                }
                 else
                 {
                     if (VentilationIsOn)
