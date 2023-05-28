@@ -1496,7 +1496,7 @@ namespace Orts.Simulation.RollingStocks
                 LocoBrakeAdhesiveForceN = 0;
                 WagonBrakeAdhesiveForceN = 0;
                 if (this is MSTSDieselLocomotive || this is MSTSElectricLocomotive || this is MSTSSteamLocomotive)
-                    LocoBrakeAdhesiveForceN = MassKG * GravitationalAccelerationMpS2 * Train.LocomotiveCoefficientFriction; // Adheze pro lokomotivy
+                    LocoBrakeAdhesiveForceN = MassKG * GravitationalAccelerationMpS2 * Train.LocomotiveCoefficientFriction + Math.Abs(TractiveForceN); // Adheze pro lokomotivy
                 else
                     WagonBrakeAdhesiveForceN = MassKG * GravitationalAccelerationMpS2 * Train.WagonCoefficientFriction; // Adheze pro vozy
                            
