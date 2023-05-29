@@ -13513,7 +13513,7 @@ namespace Orts.Simulation.RollingStocks
                 }
 
                 // Dioda pro přeskok stupňů
-                if (AbsSpeedMpS >= 40f / 3.6f && PowerCurrent1 < 300f && MirelRSControllerThrottleValue < 27f && !MirelRSPositionBlocked)
+                if (AbsSpeedMpS >= 40f / 3.6f && PowerCurrent1 < 300f && MirelRSControllerPosition[LocoStation] > 3 && MirelRSControllerPosition[LocoStation] < 7 && MirelRSControllerThrottleValue > 1f && MirelRSControllerThrottleValue < 27f && !MirelRSPositionBlocked)
                 {
                     MirelRSCanSkip = true;
                     MirelRSSkipDiode = 1;
@@ -16559,10 +16559,8 @@ namespace Orts.Simulation.RollingStocks
                     }
                 case CABViewControlTypes.VENTILATION_SWITCH:
                     {
-                        if (VentilationSwitchEnable)
-                        {
-                            data = VentilationSwitchPosition[LocoStation];
-                        }
+                        VentilationSwitchEnable = true;                        
+                        data = VentilationSwitchPosition[LocoStation];                        
                         break;
                     }
                 case CABViewControlTypes.COMMAND_CYLINDER:
