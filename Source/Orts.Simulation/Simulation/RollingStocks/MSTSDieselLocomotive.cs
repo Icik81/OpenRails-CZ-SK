@@ -771,6 +771,10 @@ namespace Orts.Simulation.RollingStocks
                     if (!Simulator.Settings.AirEmpty)
                         SignalEvent(Event.EnginePowerOn);
                 }
+                if (IsLeadLocomotive() && this.BrakeSystem.PowerForWagon && this.CarFrameUpdateState == 1)
+                {
+                     SignalEvent(Event.EnginePowerOn);
+                }
             }
         }
 
