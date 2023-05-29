@@ -21,6 +21,7 @@
 using Microsoft.Xna.Framework;
 using Orts.Common;
 using Orts.Parsers.Msts;
+using Orts.Simulation.Properties;
 using ORTS.Common;
 using ORTS.Scripting.Api;
 using System;
@@ -584,7 +585,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             Car.Train.EqualReservoirPressurePSIorInHg = maxPressurePSI = maxPressurePSI0 = 5.0f * 14.50377f;
             if (StartOn)
             {
-                maxPressurePSI0 = Car.Train.EqualReservoirPressurePSIorInHg;                
+                maxPressurePSI0 = Car.Train.EqualReservoirPressurePSIorInHg;
+                if ((Car.Train.Simulator.conFileName.ToLower().Contains("airempty") || Car.Train.Simulator.conFileName.ToLower().Contains("aire")) && !Car.Train.Simulator.conFileName.Contains("aire")) Car.Train.Simulator.Settings.AirEmpty = true;
                 if (!Car.Train.Simulator.Settings.AirEmpty && Car.Train.IsPlayerDriven)                
                     PowerForWagon = true;                                    
 
