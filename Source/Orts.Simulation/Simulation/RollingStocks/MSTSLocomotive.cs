@@ -12882,11 +12882,11 @@ namespace Orts.Simulation.RollingStocks
                 {
                     if ((MirerControllerPosition < 0 && MirerControllerPosition < prevMirerControllerPosition)
                         || (MirerControllerPosition > 0 && MirerControllerPosition > prevMirerControllerPosition))                    
-                        SignalEvent(Event.MirerPush);
+                        SignalEvent(Event.ControllerPush);
                     else
                     if ((MirerControllerPosition == 0 && MirerControllerPosition > prevMirerControllerPosition)
                         || (MirerControllerPosition == 0 && MirerControllerPosition < prevMirerControllerPosition))
-                        SignalEvent(Event.MirerLoosen);
+                        SignalEvent(Event.ControllerPull);
 
                     prevMirerControllerPosition = MirerControllerPosition;                          
                     switch (MirerControllerPosition)
@@ -13154,7 +13154,7 @@ namespace Orts.Simulation.RollingStocks
                             Direction = Direction.Forward;
                             break;
                     }
-                    Simulator.Confirmer.Information(Simulator.Catalog.GetString("DirectionController") + ": " + MirelRSDirectionControllerPositionName[LocoStation]);
+                    Simulator.Confirmer.Information(Simulator.Catalog.GetString("Reverser") + ": " + MirelRSDirectionControllerPositionName[LocoStation]);
                 }
             }
             if (MirelRSDirectionControllerPosition[LocoStation] == 1)
@@ -13171,7 +13171,7 @@ namespace Orts.Simulation.RollingStocks
                     if (MirelRSControllerPosition[LocoStation] < 7 && (MirelRSControllerPosition[LocoStation] != 2 || (MirelRSEDBBreak && MirelRSControllerPosition[LocoStation] == 2)))
                     {
                         MirelRSControllerPosition[LocoStation]++;
-                        SignalEvent(Event.MirerPush);
+                        SignalEvent(Event.ControllerPush);
                         MirelRSEDBBreak = false;
                     }
                     MirelRSControllerPressTimer = 0;
@@ -13183,13 +13183,13 @@ namespace Orts.Simulation.RollingStocks
                     if (MirelRSControllerPosition[LocoStation] == 5)
                     {
                         MirelRSControllerPosition[LocoStation] = 6;
-                        SignalEvent(Event.MirerPush);
+                        SignalEvent(Event.ControllerPush);
                     }
 
                     if (MirelRSControllerPosition[LocoStation] == 1)
                     {
                         MirelRSControllerPosition[LocoStation] = 2;
-                        SignalEvent(Event.MirerPush);
+                        SignalEvent(Event.ControllerPush);
                     }
                     MirelRSControllerShortPressUp = true;
                 }
@@ -13205,7 +13205,7 @@ namespace Orts.Simulation.RollingStocks
                     if (MirelRSControllerPosition[LocoStation] > 0)
                     {
                         MirelRSControllerPosition[LocoStation]--;
-                        SignalEvent(Event.MirerPush);
+                        SignalEvent(Event.ControllerPush);
                     }
                     MirelRSControllerPressTimer = 0;
                     MirelRSControllerLongPressDown = true;
@@ -13216,13 +13216,13 @@ namespace Orts.Simulation.RollingStocks
                     if (MirelRSControllerPosition[LocoStation] == 5)
                     {
                         MirelRSControllerPosition[LocoStation] = 4;
-                        SignalEvent(Event.MirerPush);
+                        SignalEvent(Event.ControllerPush);
                     }
 
                     if (MirelRSControllerPosition[LocoStation] == 1)
                     {
                         MirelRSControllerPosition[LocoStation] = 0;
-                        SignalEvent(Event.MirerPush);
+                        SignalEvent(Event.ControllerPush);
                     }
                     MirelRSControllerShortPressDown = true;
                 }
@@ -13237,7 +13237,7 @@ namespace Orts.Simulation.RollingStocks
                     if (MirelRSControllerPosition[LocoStation] > 5 || MirelRSControllerPosition[LocoStation] == 2)
                     {
                         MirelRSControllerPosition[LocoStation]--;
-                        SignalEvent(Event.MirerLoosen);
+                        SignalEvent(Event.ControllerPull);
                     }
                     else
                         MirelRSControllerAutoPressDown = false;
@@ -13297,7 +13297,7 @@ namespace Orts.Simulation.RollingStocks
                         MirelRSControllerCanThrottleChangeValue_3 = true;                                                    
                         break;
                 }
-                Simulator.Confirmer.Information(Simulator.Catalog.GetString("Controller") + ": " + MirelRSControllerPositionName[LocoStation]);                               
+                Simulator.Confirmer.Information(Simulator.Catalog.GetString("MirelRS") + ": " + MirelRSControllerPositionName[LocoStation]);                               
             }
 
             MirelRSControllerDisplayValue = MirelRSControllerDisplay2Value = MirelRSControllerThrottleValue;
@@ -13708,7 +13708,7 @@ namespace Orts.Simulation.RollingStocks
                         VentilationTimer = 0;
                         break;
                 }
-                Simulator.Confirmer.Information(Simulator.Catalog.GetString("Ventilation") + ": " + VentilationSwitchPositionName[LocoStation]);
+                Simulator.Confirmer.Information(Simulator.Catalog.GetString("Ventilator") + ": " + VentilationSwitchPositionName[LocoStation]);
             }
 
             //if (VentilationIsOn)

@@ -341,8 +341,8 @@ namespace Orts.Common
         LTS510Off,
         PowerKeyIn,
         PowerKeyOut,
-        MirerPush,
-        MirerLoosen,
+        ControllerPush,
+        ControllerPull,
         TMCoolingOn,
         TMCoolingOff,        
         CommandCylinderPositionChangeUp,
@@ -714,8 +714,8 @@ namespace Orts.Common
                         case 20094: return Event.LTS510Off;
                         case 20095: return Event.PowerKeyIn;
                         case 20096: return Event.PowerKeyOut;
-                        case 20097: return Event.MirerPush;
-                        case 20098: return Event.MirerLoosen;
+                        case 20097: return Event.ControllerPush;
+                        case 20098: return Event.ControllerPull;
                         case 20099: return Event.TMCoolingOn;
                         case 20100: return Event.TMCoolingOff;
                         case 20101: return Event.CommandCylinderPositionChangeUp;

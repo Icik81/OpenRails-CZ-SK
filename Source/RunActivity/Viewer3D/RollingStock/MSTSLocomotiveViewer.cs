@@ -895,7 +895,7 @@ namespace Orts.Viewer3D.RollingStock
                     if (UserInput.IsReleased(UserCommand.ControlThrottleIncrease))
                     {
                         Locomotive.MirelRSControllerPosition[Locomotive.LocoStation] = 1;
-                        Locomotive.SignalEvent(Event.MirerLoosen);
+                        Locomotive.SignalEvent(Event.ControllerPull);
                     }
                     if (UserInput.IsReleased(UserCommand.ControlThrottleDecrease))
                     {
@@ -908,7 +908,7 @@ namespace Orts.Viewer3D.RollingStock
                     if (UserInput.IsReleased(UserCommand.ControlThrottleDecrease))
                     {
                         Locomotive.MirelRSControllerPosition[Locomotive.LocoStation] = 1;
-                        Locomotive.SignalEvent(Event.MirerLoosen);
+                        Locomotive.SignalEvent(Event.ControllerPull);
                     }
                 }
 
@@ -917,7 +917,7 @@ namespace Orts.Viewer3D.RollingStock
                     if (UserInput.IsReleased(UserCommand.ControlThrottleDecrease))
                     {
                         Locomotive.MirelRSControllerPosition[Locomotive.LocoStation] = 5;
-                        Locomotive.SignalEvent(Event.MirerLoosen);
+                        Locomotive.SignalEvent(Event.ControllerPull);
                     }
                 }
 
@@ -926,7 +926,7 @@ namespace Orts.Viewer3D.RollingStock
                     if (UserInput.IsReleased(UserCommand.ControlThrottleIncrease))
                     {
                         Locomotive.MirelRSControllerPosition[Locomotive.LocoStation] = 5;
-                        Locomotive.SignalEvent(Event.MirerLoosen);
+                        Locomotive.SignalEvent(Event.ControllerPull);
                     }
                 }
 
@@ -935,7 +935,7 @@ namespace Orts.Viewer3D.RollingStock
                     if (UserInput.IsReleased(UserCommand.ControlThrottleIncrease))
                     {
                         Locomotive.MirelRSControllerPosition[Locomotive.LocoStation] = 5;
-                        Locomotive.SignalEvent(Event.MirerLoosen);
+                        Locomotive.SignalEvent(Event.ControllerPull);
                     }
                 }
             }
