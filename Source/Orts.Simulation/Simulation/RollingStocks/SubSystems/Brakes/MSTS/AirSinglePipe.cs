@@ -586,10 +586,13 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             if (StartOn)
             {
                 maxPressurePSI0 = Car.Train.EqualReservoirPressurePSIorInHg;
-                if ((Car.Train.Simulator.conFileName.ToLower().Contains("airempty") || Car.Train.Simulator.conFileName.ToLower().Contains("aire")) && !Car.Train.Simulator.conFileName.Contains("aire")) Car.Train.Simulator.Settings.AirEmpty = true;
-                if (!Car.Train.Simulator.Settings.AirEmpty && Car.Train.IsPlayerDriven)                
-                    PowerForWagon = true;                                    
-
+                if (Car.Train.IsPlayerDriven)
+                {
+                    if (Car.Train.Simulator.conFileName != null)
+                        if ((Car.Train.Simulator.conFileName.ToLower().Contains("airempty") || Car.Train.Simulator.conFileName.ToLower().Contains("aire")) && !Car.Train.Simulator.conFileName.Contains("aire")) Car.Train.Simulator.Settings.AirEmpty = true;
+                    if (!Car.Train.Simulator.Settings.AirEmpty)
+                        PowerForWagon = true;
+                }
                 if (!Car.Train.IsPlayerDriven && Car as MSTSLocomotive != null)
                     (Car as MSTSLocomotive).SetAIAction(Car.Train.Simulator.OneSecondLoop);
             }
