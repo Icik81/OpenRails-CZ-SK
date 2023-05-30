@@ -13633,8 +13633,10 @@ namespace Orts.Simulation.RollingStocks
             // Bouchnutí HV
             if (!CircuitBreakerOn)
             {
-                MirelRSControllerThrottleValue = preMirelRSControllerThrottleValue = 0;
-                SetThrottlePercent(0f);                
+                MirelRSControllerThrottleValue = preMirelRSControllerThrottleValue = Simulator.StepControllerValue = 0;
+                SetThrottlePercent(0f);
+                MirelRSCanSkip = false;
+                MirelRSSkipDiode = 0;
             }
         }
 
