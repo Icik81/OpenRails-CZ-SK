@@ -13529,18 +13529,7 @@ namespace Orts.Simulation.RollingStocks
                     MirelRSCanSkip = false;
                     MirelRSSkipDiode = 0;
                 }
-
-                // Obecná proměnná pro StepController
-                MirelRSControllerThrottleDummyValue = 0;
-                if (!DirectionControllerMirelRSPositionSh && MirelRSControllerThrottleValue > 27 && MirelRSControllerThrottleValue < 33)
-                {
-                    MirelRSControllerThrottleDummyValue = 27;
-                    Simulator.StepControllerValue = MirelRSControllerThrottleDummyValue;
-                }
-                if (MirelRSControllerThrottleDummyValue == 0 && !MirelRSSkip_Start)
-                    Simulator.StepControllerValue = MirelRSControllerThrottleValue;
-                                
-
+                                                
                 // Hodnoty pro EDB
                 if (MirelRSControllerCanEDBChangeValue_0 || MirelRSControllerCanEDBChangeValue_1 || MirelRSControllerCanEDBChangeValue_2)
                 {
@@ -13579,7 +13568,9 @@ namespace Orts.Simulation.RollingStocks
                 SetDynamicBrakePercent(MirelRSControllerEDBValue);
 
             // Ochrany
-            MirelRSProtects:                
+            MirelRSProtects:
+
+                #region Ochrany
                 // 2 sběrače nad 50km/h
                 if (AbsSpeedMpS > 50f / 3.6f)
                 {
@@ -13640,6 +13631,17 @@ namespace Orts.Simulation.RollingStocks
                 }
                 else
                     MirelRSControllerWhellSlipValueTimer = 0f;
+                #endregion Ochrany
+
+                // Obecná proměnná pro StepController
+                MirelRSControllerThrottleDummyValue = 0;
+                if (!DirectionControllerMirelRSPositionSh && MirelRSControllerThrottleValue > 27 && MirelRSControllerThrottleValue < 33)
+                {
+                    MirelRSControllerThrottleDummyValue = 27;
+                    Simulator.StepControllerValue = MirelRSControllerThrottleDummyValue;
+                }
+                if (MirelRSControllerThrottleDummyValue == 0 && !MirelRSSkip_Start)
+                    Simulator.StepControllerValue = MirelRSControllerThrottleValue;
             }                        
             // Bouchnutí HV
             if (!CircuitBreakerOn)
