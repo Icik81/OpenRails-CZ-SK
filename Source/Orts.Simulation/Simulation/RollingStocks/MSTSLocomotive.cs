@@ -13031,22 +13031,23 @@ namespace Orts.Simulation.RollingStocks
 
         public bool MirelRSControllerEnable;
         public int[] MirelRSControllerPosition = new int[3];
-        public int[] preMirelRSControllerPosition = new int[3];
-        public float MirelRSControllerPressTimer;
-        public float MirelRSControllerAutoPressTimer;
+        public int[] preMirelRSControllerPosition = new int[3];        
         public bool MirelRSControllerPressUp;
         public bool MirelRSControllerPressDown;
         public bool MirelRSControllerAutoPressDown;
         public string[] MirelRSControllerPositionName = new string[3];
-        public float MirelRSControllerThrottleValue;
-        public float preMirelRSControllerThrottleValue;
-        public float MirelRSControllerThrottleDummyValue;
-        public float MirelRSControllerEDBValue = -1;        
-        public float MirelRSControllerMaxValue = 56;
-        public float MirelRSControllerThrottleValueTimer;
-        public float MirelRSControllerEDBValueTimer;
-        public float MirelRSControllerOverTemperatureValueTimer;
-        public float MirelRSControllerWhellSlipValueTimer;
+        float MirelRSControllerThrottleValue;
+        float preMirelRSControllerThrottleValue;
+        float MirelRSControllerThrottleDummyValue;
+        float MirelRSControllerEDBValue = -1;        
+        float MirelRSControllerMaxValue = 56;
+        public float MirelRSControllerPressTimer;
+        float MirelRSControllerAutoPressTimer;
+        float MirelRSControllerThrottleValueTimer;
+        float MirelRSControllerEDBValueTimer;
+        float MirelRSControllerOverTemperatureValueTimer;
+        float MirelRSControllerWhellSlipValueTimer;
+        float MirelRSOverTemperatureTimer;
         bool MirelRSControllerCanThrottleChangeValue_0;
         bool MirelRSControllerCanThrottleChangeValue_1;
         bool MirelRSControllerCanThrottleChangeValue_2;
@@ -13059,22 +13060,21 @@ namespace Orts.Simulation.RollingStocks
         bool MirelRSControllerLongPressDown;
         bool MirelRSControllerShortPressDown;
         public bool MirelRSEDBBreak;
-        public float MirelRSControllerDisplayValue;
-        public float MirelRSControllerDisplay2Value;
-        public bool ShModeActivated;
-        public bool ShModeActivated2;
-        public bool NoShMode;
-        public bool Mode_To_34_Ready;
-        public bool Mode_To_34_Start;                
-        public bool Mode_To_27_Start1;
-        public bool Mode_To_27_Start2;        
-        public bool Mode_To_27_Start2_Enable;
-        public int MirelRSSkipDiode;
-        public bool MirelRSCanSkip;
-        public bool MirelRSSkip_Start;
-        public bool MirelRSSkip_Ready;
-        public bool MirelRSPositionBlocked;
-        public float OverTemperatureTimer;
+        float MirelRSControllerDisplayValue;
+        float MirelRSControllerDisplay2Value;
+        bool ShModeActivated;
+        bool ShModeActivated2;
+        bool NoShMode;        
+        bool Mode_To_34_Start;                
+        bool Mode_To_27_Start1;
+        bool Mode_To_27_Start2;        
+        bool Mode_To_27_Start2_Enable;
+        int MirelRSSkipDiode;
+        bool MirelRSCanSkip;
+        bool MirelRSSkip_Start;
+        bool MirelRSSkip_Ready;
+        bool MirelRSPositionBlocked;        
+        bool MirelRSProtect;
         int MirelRSSkipCounter;
 
         public bool DirectionControllerMirelRSPositionSh;
@@ -13260,6 +13260,7 @@ namespace Orts.Simulation.RollingStocks
                         MirelRSControllerPositionName[LocoStation] = "B";                        
                         MirelRSControllerLongPressDown = false;
                         MirelRSControllerCanEDBChangeValue_0 = MirelRSControllerCanEDBChangeValue_1 = MirelRSControllerCanEDBChangeValue_2 = false;
+                        MirelRSProtect = false;
                         break;
                     case 2:
                         MirelRSControllerPositionName[LocoStation] = "-B"; // nearetovaná
@@ -13272,6 +13273,7 @@ namespace Orts.Simulation.RollingStocks
                         MirelRSControllerLongPressDown = false;                        
                         MirelRSControllerCanThrottleChangeValue_0 = true;
                         MirelRSControllerCanEDBChangeValue_0 = true;
+                        MirelRSProtect = false;
                         break;
                     case 4:
                         MirelRSControllerPositionName[LocoStation] = "-1"; // nearetovaná
@@ -13284,6 +13286,7 @@ namespace Orts.Simulation.RollingStocks
                         MirelRSControllerLongPressDown = false;
                         MirelRSPositionBlocked = false;
                         MirelRSSkip_Ready = false;
+                        MirelRSProtect = false;
                         break;
                     case 6:
                         MirelRSControllerPositionName[LocoStation] = "+1"; // nearetovaná
@@ -13305,6 +13308,9 @@ namespace Orts.Simulation.RollingStocks
             // Hodnoty pro StepController
             if (CircuitBreakerOn)
             {
+                if (WheelSlipWarning || WheelSlip)
+                    goto MirelRSProtects;
+
                 if (MirelRSControllerCanThrottleChangeValue_0 || MirelRSControllerCanThrottleChangeValue_1 || MirelRSControllerCanThrottleChangeValue_2 || MirelRSControllerCanThrottleChangeValue_3
                     || ShModeActivated || Mode_To_34_Start || ShModeActivated2 || Mode_To_27_Start1 || Mode_To_27_Start2
                     || (NoShMode && MirelRSControllerThrottleValue > 27 && MirelRSControllerThrottleValue < 34 && !Mode_To_34_Start)
@@ -13499,10 +13505,10 @@ namespace Orts.Simulation.RollingStocks
                             else
                             {
                                 // Autokrokování nahoru mimo shuntů
-                                if (!MirelRSSkip_Ready && MirelRSControllerThrottleValue < 27 || (MirelRSControllerThrottleValue >= 34 && MirelRSControllerThrottleValue < 51))
+                                if (!MirelRSProtect && !MirelRSSkip_Ready && (MirelRSControllerThrottleValue < 27 || (MirelRSControllerThrottleValue >= 34 && MirelRSControllerThrottleValue < 51)))
                                 {
                                     MirelRSControllerThrottleValue++;
-                                    MirelRSControllerCheckThrottleChange();
+                                    MirelRSControllerCheckThrottleChange();                                    
                                 }
                                 MirelRSPositionBlocked = true;
                             }
@@ -13513,12 +13519,12 @@ namespace Orts.Simulation.RollingStocks
                 }
 
                 // Dioda pro přeskok stupňů
-                if (AbsSpeedMpS >= 40f / 3.6f && PowerCurrent1 < 300f && MirelRSControllerPosition[LocoStation] > 3 && MirelRSControllerPosition[LocoStation] < 7 && MirelRSControllerThrottleValue > 1f && MirelRSControllerThrottleValue < 27f && !MirelRSPositionBlocked)
+                if (!MirelRSProtect && AbsSpeedMpS >= 40f / 3.6f && PowerCurrent1 < 300f && MirelRSControllerPosition[LocoStation] > 3 && MirelRSControllerPosition[LocoStation] <= 7 && MirelRSControllerThrottleValue > 1f && MirelRSControllerThrottleValue < 27f && !MirelRSPositionBlocked)
                 {
                     MirelRSCanSkip = true;
                     MirelRSSkipDiode = 1;
                 }
-                else
+                else                
                 {
                     MirelRSCanSkip = false;
                     MirelRSSkipDiode = 0;
@@ -13572,12 +13578,14 @@ namespace Orts.Simulation.RollingStocks
                 }
                 SetDynamicBrakePercent(MirelRSControllerEDBValue);
 
-                // Ochrany
+            // Ochrany
+            MirelRSProtects:                
                 // 2 sběrače nad 50km/h
                 if (AbsSpeedMpS > 50f / 3.6f)
                 {
                     if (Pantographs[1].State == PantographState.Up && Pantographs[2].State == PantographState.Up)
                     {
+                        MirelRSProtect = true;                        
                         Simulator.StepControllerValue = 0f;
                     }
                 }
@@ -13585,9 +13593,10 @@ namespace Orts.Simulation.RollingStocks
                 if (MirelRSControllerThrottleValue >= 22f && MirelRSControllerThrottleValue <= 26f)
                 {
                     MirelRSControllerOverTemperatureValueTimer += elapsedClockSeconds;
-                    OverTemperatureTimer += elapsedClockSeconds;
-                    if (OverTemperatureTimer > 60f && MirelRSControllerOverTemperatureValueTimer > 0.25f)
+                    MirelRSOverTemperatureTimer += elapsedClockSeconds;
+                    if (MirelRSOverTemperatureTimer > 60f && MirelRSControllerOverTemperatureValueTimer > 0.25f)
                     {
+                        MirelRSProtect = true;
                         if (MirelRSControllerThrottleValue > 21f)
                         {
                             MirelRSControllerThrottleValue--;
@@ -13600,9 +13609,10 @@ namespace Orts.Simulation.RollingStocks
                 if (MirelRSControllerThrottleValue >= 47f && MirelRSControllerThrottleValue <= 50f)
                 {
                     MirelRSControllerOverTemperatureValueTimer += elapsedClockSeconds;
-                    OverTemperatureTimer += elapsedClockSeconds;
-                    if (OverTemperatureTimer > 60f && MirelRSControllerOverTemperatureValueTimer > 0.25f)
+                    MirelRSOverTemperatureTimer += elapsedClockSeconds;
+                    if (MirelRSOverTemperatureTimer > 60f && MirelRSControllerOverTemperatureValueTimer > 0.25f)
                     {
+                        MirelRSProtect = true;
                         if (MirelRSControllerThrottleValue > 46f)
                         {
                             MirelRSControllerThrottleValue--;
@@ -13612,10 +13622,11 @@ namespace Orts.Simulation.RollingStocks
                     }
                 }
                 else
-                    OverTemperatureTimer = 0f;
+                    MirelRSOverTemperatureTimer = 0f;
                 // Prokluz kol
                 if (WheelSlipWarning || WheelSlip)
                 {
+                    MirelRSProtect = true;
                     MirelRSControllerWhellSlipValueTimer += elapsedClockSeconds;
                     if (MirelRSControllerWhellSlipValueTimer > 0.5f)
                     {
@@ -13635,6 +13646,7 @@ namespace Orts.Simulation.RollingStocks
             {
                 MirelRSControllerThrottleValue = preMirelRSControllerThrottleValue = Simulator.StepControllerValue = 0;
                 SetThrottlePercent(0f);
+                MirelRSProtect = true;
                 MirelRSCanSkip = false;
                 MirelRSSkipDiode = 0;
             }
