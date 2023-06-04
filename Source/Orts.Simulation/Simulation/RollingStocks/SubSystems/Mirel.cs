@@ -320,33 +320,28 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                 }
                 Physics.Train train = Locomotive.Train;                
                 Signalling.SignalObject[] signals = train.NextSignalObject;
-                float? distance = null;
-                int nextSignalTrId = 0;
-                int nextSignalId = 0;
                 if (signals[0] == null)
                 {
                     MirelCheck(elapsedClockSeconds);
+                    return;
                 }
-                else
-                { 
-                    if (nextSignalId != signals[0].trItem)
-                    {
-                        mirelUnsetSignlEventBeeped = false;
-                        Random rnd = new Random();
-                        int randomNum = rnd.Next(0, 3);
-                        if (randomNum == 1) RecievingRepeaterSignal = false;
-                    }
-                    nextSignalTrId = nextSignalId = signals[0].trItem;
+                if (nextSignalId != signals[0].trItem)
+                {
+                    mirelUnsetSignlEventBeeped = false;
+                    Random rnd = new Random();
+                    int randomNum = rnd.Next(0, 3);
+                    if (randomNum == 1) RecievingRepeaterSignal = false;
+                }
+                int nextSignalTrId = nextSignalId = signals[0].trItem;
 
-                    var validInfo = Locomotive.Train.GetTrainInfo();
-                    
-                    foreach (Physics.Train.TrainObjectItem thisItem in validInfo.ObjectInfoForward)
+                var validInfo = Locomotive.Train.GetTrainInfo();
+                float? distance = null;
+                foreach (Physics.Train.TrainObjectItem thisItem in validInfo.ObjectInfoForward)
+                {
+                    if (thisItem.ItemType == Physics.Train.TrainObjectItem.TRAINOBJECTTYPE.SIGNAL)
                     {
-                        if (thisItem.ItemType == Physics.Train.TrainObjectItem.TRAINOBJECTTYPE.SIGNAL)
-                        {
-                            distance = thisItem.DistanceToTrainM;
-                            break;
-                        }
+                        distance = thisItem.DistanceToTrainM;
+                        break;
                     }
                 }
                 if (distance == null)
