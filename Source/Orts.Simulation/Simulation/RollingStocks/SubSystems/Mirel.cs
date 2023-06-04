@@ -19,6 +19,7 @@ using ORTS.Common;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Net;
 using System.Xml;
 using static Orts.Simulation.RollingStocks.SubSystems.Mirel;
 
@@ -323,7 +324,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                 if (signals[0] == null)
                 {
                     MirelCheck(elapsedClockSeconds);
-                    return;
+                    goto continuecode;
                 }
                 if (nextSignalId != signals[0].trItem)
                 {
@@ -333,7 +334,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                     if (randomNum == 1) RecievingRepeaterSignal = false;
                 }
                 int nextSignalTrId = nextSignalId = signals[0].trItem;
-
+                
                 var validInfo = Locomotive.Train.GetTrainInfo();
                 float? distance = null;
                 foreach (Physics.Train.TrainObjectItem thisItem in validInfo.ObjectInfoForward)
@@ -418,6 +419,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                         prevNextSignalId = nextSignalTrId;
                     }
                 }
+
                 if (distance > minimalSignalDistance)
                 {
                     recieverState = RecieverState.Off;
@@ -426,6 +428,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                 {
                     recieverState = prevRecieverState;
                 }
+            continuecode:
                 if (noAutoblock)
                     recieverState = RecieverState.Off;
             }
