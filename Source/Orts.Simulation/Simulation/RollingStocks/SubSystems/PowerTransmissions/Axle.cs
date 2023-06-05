@@ -710,14 +710,6 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerTransmissions
                 case AxleDriveType.ForceDriven:
                     float DriveMarker = driveForceN / Math.Abs(driveForceN);
 
-                    // Zabraňuje nekontrolovanému rozkmitání soustavy
-                    if (driveForceN == 0f && Math.Abs(TrainSpeedMpS) < 0.5f * Math.Abs(axleSpeedMpS))
-                    {                        
-                        axleSpeedMpS = TrainSpeedMpS;
-                        axleForceN = driveForceN;
-                        Reset();
-                    }
-
                     //Axle revolutions integration
                     if (TrainSpeedMpS > 0.0f)
                     {
@@ -760,17 +752,20 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerTransmissions
                         }
                     }
                     else
-                    {                        
-                        axleSpeedMpS = AxleRevolutionsInt.Integrate(timeSpan,
-                            (
-                                driveForceN * transmissionEfficiency
-                                - (DriveMarker * brakeRetardForceN)
-                                - slipDerivationMpSS * dampingNs
-                                - (DriveMarker * Math.Abs(SlipSpeedMpS) * frictionN)
-                                - AxleForceN
-                            )
-                            / totalInertiaKgm2
-                        );
+                    {
+                        if (Math.Abs(driveForceN) > Math.Abs(axleForceN))
+                        {
+                            axleSpeedMpS = AxleRevolutionsInt.Integrate(timeSpan,
+                                (
+                                    driveForceN * transmissionEfficiency
+                                    - (DriveMarker * brakeRetardForceN)
+                                    - slipDerivationMpSS * dampingNs
+                                    - (DriveMarker * Math.Abs(SlipSpeedMpS) * frictionN)
+                                    - AxleForceN
+                                )
+                                / totalInertiaKgm2
+                            );
+                        }
 
                         if (brakeRetardForceN > Math.Abs(driveForceN) && AxleSpeedMpS != 0f)
                         {
@@ -790,12 +785,42 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerTransmissions
                             Reset();                            
                         }
                         else
-                        {
+                        {                            
                             axleForceN = driveForceN - (DriveMarker * brakeRetardForceN);
                             if (Math.Abs(axleSpeedMpS) < 0.01f)
                                 Reset();
                         }                       
-                    }                    
+                    }
+
+                    // Zabraňuje nekontrolovanému rozkmitání soustavy
+                    if ((Math.Abs(driveForceN) < Math.Abs(axleForceN))
+                        || Math.Abs(TrainSpeedMpS) == 0.0f)
+                    {
+                        if (Math.Abs(axleSpeedMpS) > Math.Abs(TrainSpeedMpS))
+                        {
+                            if (axleSpeedMpS > 0)
+                            {
+                                axleSpeedMpS -= 1f * timeSpan;
+                                if (axleSpeedMpS < 0f)
+                                {
+                                    axleSpeedMpS = 0.0f;
+                                    Reset();
+                                }
+                            }
+                            else
+                            if (axleSpeedMpS < 0)
+                            {
+                                axleSpeedMpS += 1f * timeSpan;
+                                if (axleSpeedMpS > 0f)
+                                {
+                                    axleSpeedMpS = 0.0f;
+                                    Reset();
+                                }
+                            }
+                        }
+
+                    }
+
                     break;
                 default:
                     totalInertiaKgm2 = inertiaKgm2;
