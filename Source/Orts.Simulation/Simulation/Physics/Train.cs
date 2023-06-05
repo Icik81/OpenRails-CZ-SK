@@ -16487,6 +16487,7 @@ namespace Orts.Simulation.Physics
         public bool EndStation { get; set; }
         public bool PeopleWillJustUnboard { get; set; }
         public int MaxStationCount;
+        public int PeopleWantToLeaveCount;
         public void FillNames(Train train)
         {
             if (numCars == 0)
@@ -16793,8 +16794,8 @@ namespace Orts.Simulation.Physics
                     if (pax.ArrivalStation == train.StationStops[0].PlatformItem.PlatformFrontUiD || EndStation)
                         exitPaxList.Add(pax);
                 }
-            }
-            int paxToExit = exitPaxList.Count;
+            }            
+            int paxToExit = PeopleWantToLeaveCount = exitPaxList.Count;
 
             int currentWagIndex = 0;
             for (int i = 0; i < train.Cars.Count; i++)
@@ -16828,7 +16829,7 @@ namespace Orts.Simulation.Physics
                             {
                                 train.ToggleDoorsPeople(true, true, wagon);
                             }
-                            if (!loco.DoorLeftOpen && !wagon.DoorRightOpen && loco.CentralHandlingDoors)
+                            if (!wagon.DoorLeftOpen && !wagon.DoorRightOpen && loco.CentralHandlingDoors)
                                 continue;
                             if (!wagon.DoorLeftOpen && !wagon.DoorRightOpen)
                                 continue;

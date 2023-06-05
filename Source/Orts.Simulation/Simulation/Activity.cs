@@ -1071,15 +1071,15 @@ namespace Orts.Simulation
                 {
                     // Automatické centrální dveře
                     if (!maydepart && arrived && loco.CentralHandlingDoors && !loco.OpenedLeftDoor && !loco.OpenedRightDoor 
-                        && (MyPlayerTrain.StationStops[0].PlatformItem.PassengerList.Count > 0 || MyPlayerTrain.EndStation || MyPlayerTrain.PeopleWillJustUnboard))
-                    {
-                        BoardingEndS = Simulator.ClockTime + BoardingS;
-                        double SchDepartS = SchDepart.Subtract(new DateTime()).TotalSeconds;
-                        BoardingEndS = CompareTimes.LatestTime((int)SchDepartS, (int)BoardingEndS);
+                        && (MyPlayerTrain.StationStops[0].PlatformItem.PassengerList.Count > 0 || MyPlayerTrain.PeopleWantToLeaveCount > 0))
+                    {                        
+                        //BoardingEndS = Simulator.ClockTime + BoardingS;
+                        //double SchDepartS = SchDepart.Subtract(new DateTime()).TotalSeconds;
+                        //BoardingEndS = CompareTimes.LatestTime((int)SchDepartS, (int)BoardingEndS);
                         DisplayColor = Color.Yellow;
                         DisplayMessage = Simulator.Catalog.GetString("People are waiting for the door to open…");
                         return;
-                    }
+                    } 
 
                     // Waiting at a station
                     if (arrived)
@@ -1089,7 +1089,7 @@ namespace Orts.Simulation
                         else if (remaining < 11) DisplayColor = new Color(255, 255, 128);
                         else DisplayColor = Color.White;                        
                         
-                        if (!BoardingCompleted || MyPlayerTrain.EndStation || MyPlayerTrain.PeopleWillJustUnboard)
+                        if (!BoardingCompleted || MyPlayerTrain.EndStation || MyPlayerTrain.PeopleWantToLeaveCount > 0)
                             MyPlayerTrain.UpdatePassengerCountAndWeight(MyPlayerTrain, MyPlayerTrain.StationStops[0].PlatformItem.NumPassengersWaiting, clock);
 
                         if (remaining < 120 && (MyPlayerTrain.TrainType != Train.TRAINTYPE.AI_PLAYERHOSTING))
@@ -1121,10 +1121,13 @@ namespace Orts.Simulation
                         else if (!maydepart)
                         {
                             // check if passenger on board - if not, do not allow depart
-                            if (MyPlayerTrain.StationStops[0].PlatformItem.PassengerList.Count > 0
+                            if (MyPlayerTrain.StationStops[0].PlatformItem.PassengerList.Count > 0 || MyPlayerTrain.PeopleWantToLeaveCount > 0
                                 || (MyPlayerTrain.StationStops[0].PlatformItem.PassengerList.Count == 0 && MyPlayerTrain.TrainDoorsOpen && !loco.CentralHandlingDoors))
                             {
-                                DisplayMessage = Simulator.Catalog.GetString("Waiting for passengers to board....");
+                                if (MyPlayerTrain.PeopleWantToLeaveCount > 0 && MyPlayerTrain.StationStops[0].PlatformItem.PassengerList.Count == 0)
+                                    DisplayMessage = Simulator.Catalog.GetString("Waiting for passengers to unboard....");
+                                else
+                                    DisplayMessage = Simulator.Catalog.GetString("Waiting for passengers to board....");
                                 MyPlayerTrain.UpdatePassengerCountAndWeight(MyPlayerTrain, MyPlayerTrain.StationStops[0].PlatformItem.NumPassengersWaiting, clock);
                             }
                             else
@@ -1248,7 +1251,7 @@ namespace Orts.Simulation
             MyPlayerTrain.MaxStationCount = Math.Max(MyPlayerTrain.MaxStationCount, MyPlayerTrain.StationStops.Count);
 
             ChanceToUnboardTimer += Simulator.OneSecondLoop;
-            if (ChanceToUnboardTimer > 2f)
+            if (ChanceToUnboardTimer > 1f)
             {
                 if (MyPlayerTrain.StationStops.Count < 0.3f * MyPlayerTrain.MaxStationCount)
                     ChanceToUnboard = Simulator.Random.Next(0, 10);
@@ -1265,14 +1268,18 @@ namespace Orts.Simulation
             }
 
             MyPlayerTrain.PeopleWillJustUnboard = false;
-            switch (ChanceToUnboard)
+
+            if (MyPlayerTrain.PeopleWantToLeaveCount > 0)
             {
-                case 0:
-                    MyPlayerTrain.PeopleWillJustUnboard = true;
-                    break;
-                case 1:
-                    MyPlayerTrain.PeopleWillJustUnboard = false;
-                    break;
+                switch (ChanceToUnboard)
+                {
+                    case 0:
+                        MyPlayerTrain.PeopleWillJustUnboard = true;
+                        break;
+                    case 1:
+                        MyPlayerTrain.PeopleWillJustUnboard = false;
+                        break;
+                }
             }
         }
 

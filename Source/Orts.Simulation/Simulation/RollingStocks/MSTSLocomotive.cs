@@ -7350,7 +7350,7 @@ namespace Orts.Simulation.RollingStocks
                 if (Time0 > RandomDelay0 || TimeToGenerate)
                 {
                     if (!TimeToGenerate)
-                        TreeLeavesLevel = Simulator.Random.Next(1, 50);
+                        TreeLeavesLevel = Simulator.Random.Next(1, 70);
                     Time1 += elapsedClockSeconds;
                     if (Time1 < 0.5f)
                         RandomDelay1 = Simulator.Random.Next(5, 10);
