@@ -4041,6 +4041,12 @@ namespace Orts.Simulation.AIs
                 int direction = thisRoute[routeIndex].Direction;
                 if (!IsActualPlayerTrain)
                 {
+                    // Icik
+                    if (waitingPoint[2] >= 49900 && waitingPoint[2] <= 49999)
+                    {
+                        NumberOfCarsToSteal = waitingPoint[2] - 49900;
+                    }
+                    else
                     if (waitingPoint[2] >= 60011 && waitingPoint[2] <= 60021)
                     {
                         var durationS = waitingPoint[2] - 60010;
@@ -4641,9 +4647,17 @@ namespace Orts.Simulation.AIs
         {
             // find set of cars between loco and attachtrain and pass them to train to attachtrain
             var passedLength = 0.0f;
+
+            // Icik
+            if (NumberOfCarsToSteal > Cars.Count - 1)
+                NumberOfCarsToSteal = Cars.Count - 1;
+
+            if (NumberOfCarsToSteal > 0)
+                NumberOfCarsToSteal = Cars.Count - 1 - NumberOfCarsToSteal;
+
             if (thisTrainFront)
-            {
-                while (0 < Cars.Count - 1)
+            {                
+                while (NumberOfCarsToSteal < Cars.Count - 1)
                 {
                     var car = Cars[0];
                     if (car is MSTSLocomotive)
@@ -4673,7 +4687,7 @@ namespace Orts.Simulation.AIs
             }
             else
             {
-                while (0 < Cars.Count - 1)
+                while (NumberOfCarsToSteal < Cars.Count - 1)
                 {
                     var car = Cars[Cars.Count - 1];
                     if (car is MSTSLocomotive)
@@ -4701,7 +4715,7 @@ namespace Orts.Simulation.AIs
                 }
                 Cars[Cars.Count - 1].SignalEvent(Event.Couple);
             }
-
+            NumberOfCarsToSteal = 0;
             TerminateCoupling(attachTrain, thisTrainFront, attachTrainFront, passedLength);
         }
 
@@ -4709,13 +4723,22 @@ namespace Orts.Simulation.AIs
         /// <summary>
         /// Coupling AI train steals cars to coupled AI train
         /// </summary>
-
+        // Icik
+        public int NumberOfCarsToSteal;
         public void StealCarsToLivingTrain(Train attachTrain, bool thisTrainFront, bool attachTrainFront)
         {
             var stealedLength = 0.0f;
+
+            // Icik
+            if (NumberOfCarsToSteal > attachTrain.Cars.Count - 1)
+                NumberOfCarsToSteal = attachTrain.Cars.Count - 1;
+
+            if (NumberOfCarsToSteal > 0)
+                NumberOfCarsToSteal = attachTrain.Cars.Count - 1 - NumberOfCarsToSteal;
+
             if (attachTrainFront)
             {
-                while (0 < attachTrain.Cars.Count - 1)
+                while (NumberOfCarsToSteal < attachTrain.Cars.Count - 1)
                 {
                     var car = attachTrain.Cars[0];
                     if (car is MSTSLocomotive)
@@ -4746,7 +4769,7 @@ namespace Orts.Simulation.AIs
             }
             else
             {
-                while (0 < attachTrain.Cars.Count - 1)
+                while (NumberOfCarsToSteal < attachTrain.Cars.Count - 1)
                 {
                     var car = attachTrain.Cars[attachTrain.Cars.Count - 1];
                     if (car is MSTSLocomotive)
@@ -4775,7 +4798,7 @@ namespace Orts.Simulation.AIs
                 }
                 attachTrain.Cars[attachTrain.Cars.Count - 1].SignalEvent(Event.Couple);
             }
-
+            NumberOfCarsToSteal = 0;
             TerminateCoupling(attachTrain, thisTrainFront, attachTrainFront, -stealedLength);
         }
 
