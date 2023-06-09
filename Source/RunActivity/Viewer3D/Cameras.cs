@@ -2107,6 +2107,7 @@ namespace Orts.Viewer3D
             return Viewer.PlayerTrain.Cars.Where(c => c.HeadOutViewpoints.Count > 0).ToList();
         }
 
+        float[] HeadOutZ = new float[3];
         protected override void SetCameraCar(TrainCar car)
         {
             base.SetCameraCar(car);
@@ -2116,24 +2117,29 @@ namespace Orts.Viewer3D
             if (!Forwards)
                 attachedLocation.X *= -1;
 
-            // Icik                
-            float HeadOutZ = attachedLocation.Z;
+            var loco = car as MSTSLocomotive;
 
-            if (car != null && (!Viewer.PlayerLocomotive.HasFront3DCab || !Viewer.PlayerLocomotive.HasRear3DCab))
+            // Icik                
+            if (loco != null)
             {
-                var loco = car as MSTSLocomotive;
-                var viewpoints = (loco.UsingRearCab)
-                ? loco.CabViewList[(int)CabViewType.Rear].ViewPointList
-                : loco.CabViewList[(int)CabViewType.Front].ViewPointList;
-                attachedLocation.Z = (viewpoints[sideLocation].Location.Z / Math.Abs(viewpoints[sideLocation].Location.Z) * (Math.Abs(HeadOutZ)));
-            }
-            else
-            {
-                if (car != null)
+                HeadOutZ[loco.LocoStation] = attachedLocation.Z;
+
+                if (!Viewer.PlayerLocomotive.HasFront3DCab || !Viewer.PlayerLocomotive.HasRear3DCab)
                 {
-                    var loco = car as MSTSLocomotive;
+                    var viewpoints = (loco.UsingRearCab)
+                    ? loco.CabViewList[(int)CabViewType.Rear].ViewPointList
+                    : loco.CabViewList[(int)CabViewType.Front].ViewPointList;
+                    attachedLocation.Z = (viewpoints[sideLocation].Location.Z / Math.Abs(viewpoints[sideLocation].Location.Z) * (Math.Abs(HeadOutZ[loco.LocoStation])));
+                }
+                else
+                {
                     if (loco.UsingRearCab)
-                        attachedLocation.Z = (attachedLocation.Z / -Math.Abs(attachedLocation.Z) * (Math.Abs(HeadOutZ)));
+                    {    
+                        if (HeadOutZ[1] < 0 && HeadOutZ[2] > 0)
+                            attachedLocation.Z = (attachedLocation.Z / Math.Abs(attachedLocation.Z) * HeadOutZ[loco.LocoStation]);
+                        else
+                            attachedLocation.Z = (attachedLocation.Z / -Math.Abs(attachedLocation.Z) * HeadOutZ[loco.LocoStation]);
+                    }
                 }
             }
         }
@@ -2146,6 +2152,20 @@ namespace Orts.Viewer3D
             CurrentViewpointIndex = mstsLocomotive.UsingRearCab ? 1 : 0;
             PrevCabWasRear = mstsLocomotive.UsingRearCab;
             SetCameraCar(newCar);
+        }
+
+        protected internal override void Save(BinaryWriter outf)
+        {
+            base.Save(outf);
+            outf.Write(HeadOutZ[1]);
+            outf.Write(HeadOutZ[2]);
+        }
+
+        protected internal override void Restore(BinaryReader inf)
+        {
+            base.Restore(inf);
+            HeadOutZ[1] = inf.ReadInt32();
+            HeadOutZ[2] = inf.ReadInt32();
         }
     }
 
