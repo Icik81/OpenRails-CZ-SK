@@ -913,7 +913,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 if (loco != null) // Lokomotiva
                 {
                     MaxCylPressurePSI = AutoCylPressurePSI = MathHelper.Clamp(MaxCylPressurePSI, 0.0f * 14.50377f, 10.0f * 14.50377f);
-                    AuxCylVolumeRatio = MathHelper.Clamp(AuxCylVolumeRatio, 0.0f, 4.0f);
+                    AuxCylVolumeRatio = MathHelper.Clamp(AuxCylVolumeRatio, 0.0f, 6.0f);
                     loco.BrakeSystem.LocoAuxCylVolumeRatio = AuxCylVolumeRatio;
                     MaxAuxilaryChargingRatePSIpS = MathHelper.Clamp(MaxAuxilaryChargingRatePSIpS, 0.0f * 14.50377f, 0.5f * 14.50377f);
                     EmergResChargingRatePSIpS = MathHelper.Clamp(EmergResChargingRatePSIpS, 0.0f * 14.50377f, 0.5f * 14.50377f);
@@ -924,7 +924,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 else // Vagón
                 {
                     MaxCylPressurePSI = AutoCylPressurePSI = MathHelper.Clamp(MaxCylPressurePSI, 0.0f * 14.50377f, 10.0f * 14.50377f);
-                    AuxCylVolumeRatio = MathHelper.Clamp(AuxCylVolumeRatio, 0.0f, 4.0f);
+                    AuxCylVolumeRatio = MathHelper.Clamp(AuxCylVolumeRatio, 0.0f, 6.0f);
                     MaxAuxilaryChargingRatePSIpS = MathHelper.Clamp(MaxAuxilaryChargingRatePSIpS, 0.0f * 14.50377f, 0.5f * 14.50377f);
                     EmergResChargingRatePSIpS = MathHelper.Clamp(EmergResChargingRatePSIpS, 0.0f * 14.50377f, 0.5f * 14.50377f);
                     EmergAuxVolumeRatio = MathHelper.Clamp(EmergAuxVolumeRatio, 0.0f, 7.0f);
@@ -977,6 +977,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             }
 
             // Zjednodušený model pro AI
+            #region AI
             if (!Car.IsPlayerTrain)
             {
                 if (loco != null && loco.CarFrameUpdateState < 3)                
@@ -1129,6 +1130,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     }
                 }
             }
+            #endregion AI
             // Ostatní
             else
             {
@@ -1210,7 +1212,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     {
                         AuxCylVolumeRatioLowPressureBraking = BrakeCylinderMaxPressureForLowState / MCP * AuxCylVolumeRatio;
                         if (AutoCylPressurePSI0 > BrakeCylinderMaxPressureForLowState)
-                            AutoCylPressurePSI0 -= elapsedClockSeconds * (1.0f * 14.50377f); // Rychlost odvětrání 1bar/s                        
+                            AutoCylPressurePSI0 -= elapsedClockSeconds * (2.0f * 14.50377f); // Rychlost odvětrání 2 bar/s                        
                     }                   
                 }
                 else
