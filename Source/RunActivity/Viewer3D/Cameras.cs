@@ -2122,6 +2122,10 @@ namespace Orts.Viewer3D
             // Icik                
             if (loco != null)
             {
+                if (loco.UsingRearCab)
+                    loco.LocoStation = 2;
+                else
+                    loco.LocoStation = 1;
                 HeadOutZ[loco.LocoStation] = attachedLocation.Z;
 
                 if (!Viewer.PlayerLocomotive.HasFront3DCab || !Viewer.PlayerLocomotive.HasRear3DCab)
@@ -2129,16 +2133,16 @@ namespace Orts.Viewer3D
                     var viewpoints = (loco.UsingRearCab)
                     ? loco.CabViewList[(int)CabViewType.Rear].ViewPointList
                     : loco.CabViewList[(int)CabViewType.Front].ViewPointList;
-                    attachedLocation.Z = (viewpoints[sideLocation].Location.Z / Math.Abs(viewpoints[sideLocation].Location.Z) * (Math.Abs(HeadOutZ[loco.LocoStation])));
+                    attachedLocation.Z = (viewpoints[sideLocation].Location.Z / Math.Abs(viewpoints[sideLocation].Location.Z) * Math.Abs(HeadOutZ[loco.LocoStation]));
                 }
                 else
                 {
                     if (loco.UsingRearCab)
                     {    
-                        if (HeadOutZ[1] < 0 && HeadOutZ[2] > 0)
-                            attachedLocation.Z = (attachedLocation.Z / Math.Abs(attachedLocation.Z) * HeadOutZ[loco.LocoStation]);
+                        if (HeadOutZ[1] > 0 && HeadOutZ[2] < 0)
+                            attachedLocation.Z = (attachedLocation.Z / Math.Abs(attachedLocation.Z) * Math.Abs(HeadOutZ[loco.LocoStation]));
                         else
-                            attachedLocation.Z = (attachedLocation.Z / -Math.Abs(attachedLocation.Z) * HeadOutZ[loco.LocoStation]);
+                            attachedLocation.Z = (attachedLocation.Z / -Math.Abs(attachedLocation.Z) * Math.Abs(HeadOutZ[loco.LocoStation]));
                     }
                 }
             }
