@@ -3075,7 +3075,8 @@ namespace Orts.Simulation.RollingStocks
                 BrakeCurrent1 = CurrentBrakeForce1Curves.Get(Math.Abs(DynamicBrakeForceN), AbsWheelSpeedMpS);
             else
                 // Default
-                BrakeCurrent1 = Math.Abs(DynamicBrakeForceN) / MaxForceN * MaxCurrentA;
+                //BrakeCurrent1 = Math.Abs(DynamicBrakeForceN) / MaxForceN * MaxCurrentA;
+                BrakeCurrent1 = Math.Abs(DynamicBrakeForceN) / MaxDynamicBrakeForceN * DynamicBrakeMaxCurrentA;
         }
 
         // Icik
@@ -13104,8 +13105,8 @@ namespace Orts.Simulation.RollingStocks
                         if (MirelRSDirectionControllerPosition[LocoStation] == 1)
                             SignalEvent(Event.ReverserToForwardBackward);
                         if (MirelRSDirectionControllerPosition[LocoStation] == 0)
-                            SignalEvent(Event.ReverserToNeutral);                        
-                        MirelRSDirectionControllerPosition[LocoStation]++;                                                
+                            SignalEvent(Event.ReverserToNeutral);
+                        MirelRSDirectionControllerPosition[LocoStation]++;
                     }
                 }
             }
@@ -13122,7 +13123,7 @@ namespace Orts.Simulation.RollingStocks
                             SignalEvent(Event.ReverserToNeutral);
                         if (MirelRSDirectionControllerPosition[LocoStation] == 1)
                             SignalEvent(Event.ReverserToForwardBackward);
-                        MirelRSDirectionControllerPosition[LocoStation]--;                        
+                        MirelRSDirectionControllerPosition[LocoStation]--;
                     }
                 }
             }
@@ -13140,9 +13141,9 @@ namespace Orts.Simulation.RollingStocks
                             MirelRSDirectionControllerPositionName[LocoStation] = "Z"; // nearetovaná                        
                             Direction = Direction.Reverse;
                             break;
-                        case 1:                            
+                        case 1:
                             MirelRSDirectionControllerPositionName[LocoStation] = "0";
-                            Direction = Direction.N;                                                  
+                            Direction = Direction.N;
                             break;
                         case 2:
                             MirelRSDirectionControllerPositionName[LocoStation] = "P"; // nearetovaná
@@ -13242,7 +13243,7 @@ namespace Orts.Simulation.RollingStocks
                     else
                         MirelRSControllerAutoPressDown = false;
                     MirelRSControllerAutoPressTimer = 0;
-                }                
+                }
             }
 
             // Pozice MireluRS
@@ -13253,32 +13254,32 @@ namespace Orts.Simulation.RollingStocks
                 {
                     case 0:
                         MirelRSControllerPositionName[LocoStation] = "+B"; // nearetovaná                        
-                        MirelRSControllerShortPressDown = false;                        
+                        MirelRSControllerShortPressDown = false;
                         MirelRSControllerCanEDBChangeValue_2 = true;
                         break;
                     case 1:
-                        MirelRSControllerPositionName[LocoStation] = "B";                        
+                        MirelRSControllerPositionName[LocoStation] = "B";
                         MirelRSControllerLongPressDown = false;
                         MirelRSControllerCanEDBChangeValue_0 = MirelRSControllerCanEDBChangeValue_1 = MirelRSControllerCanEDBChangeValue_2 = false;
                         MirelRSProtect = false;
                         break;
                     case 2:
                         MirelRSControllerPositionName[LocoStation] = "-B"; // nearetovaná
-                        MirelRSControllerShortPressUp = false;                        
+                        MirelRSControllerShortPressUp = false;
                         MirelRSControllerCanEDBChangeValue_1 = true;
                         break;
                     case 3:
                         MirelRSControllerPositionName[LocoStation] = "0";
                         MirelRSControllerLongPressUp = false;
-                        MirelRSControllerLongPressDown = false;                        
+                        MirelRSControllerLongPressDown = false;
                         MirelRSControllerCanThrottleChangeValue_0 = true;
                         MirelRSControllerCanEDBChangeValue_0 = true;
                         MirelRSProtect = false;
                         break;
                     case 4:
                         MirelRSControllerPositionName[LocoStation] = "-1"; // nearetovaná
-                        MirelRSControllerShortPressDown = false;                                             
-                        MirelRSControllerCanThrottleChangeValue_1 = true;                        
+                        MirelRSControllerShortPressDown = false;
+                        MirelRSControllerCanThrottleChangeValue_1 = true;
                         break;
                     case 5:
                         MirelRSControllerPositionName[LocoStation] = "J";
@@ -13290,17 +13291,17 @@ namespace Orts.Simulation.RollingStocks
                         break;
                     case 6:
                         MirelRSControllerPositionName[LocoStation] = "+1"; // nearetovaná
-                        MirelRSControllerShortPressUp = false;                        
+                        MirelRSControllerShortPressUp = false;
                         MirelRSControllerCanThrottleChangeValue_2 = true;
                         MirelRSControllerCanThrottleChangeValue_3 = false;
                         break;
                     case 7:
                         MirelRSControllerPositionName[LocoStation] = "++";
-                        MirelRSControllerLongPressUp = false;                       
-                        MirelRSControllerCanThrottleChangeValue_3 = true;                                                    
+                        MirelRSControllerLongPressUp = false;
+                        MirelRSControllerCanThrottleChangeValue_3 = true;
                         break;
                 }
-                Simulator.Confirmer.Information(Simulator.Catalog.GetString("MirelRS") + ": " + MirelRSControllerPositionName[LocoStation]);                               
+                Simulator.Confirmer.Information(Simulator.Catalog.GetString("MirelRS") + ": " + MirelRSControllerPositionName[LocoStation]);
             }
 
             MirelRSControllerDisplayValue = MirelRSControllerDisplay2Value = MirelRSControllerThrottleValue;
@@ -13351,7 +13352,7 @@ namespace Orts.Simulation.RollingStocks
                             if (MirelRSControllerThrottleValue <= 51f)
                             {
                                 ShModeActivated2 = false;
-                            }                            
+                            }
                         }
                     }
 
@@ -13374,7 +13375,7 @@ namespace Orts.Simulation.RollingStocks
                             {
                                 Mode_To_27_Start1 = false;
                                 ShModeActivated = false;
-                            }                            
+                            }
                         }
                     }
 
@@ -13402,7 +13403,7 @@ namespace Orts.Simulation.RollingStocks
                             {
                                 Mode_To_27_Start2 = false;
                                 DirectionControllerMirelRSPositionSh = preDirectionControllerMirelRSPositionSh;
-                            }                            
+                            }
                         }
                     }
 
@@ -13422,7 +13423,7 @@ namespace Orts.Simulation.RollingStocks
                             if (MirelRSControllerThrottleValue == 34f)
                             {
                                 Mode_To_34_Start = false;
-                            }                            
+                            }
                         }
                     }
 
@@ -13436,14 +13437,14 @@ namespace Orts.Simulation.RollingStocks
                             if (MirelRSDirectionControllerPosition[LocoStation] == 1 && PowerCurrent1 < 300f && MirelRSControllerThrottleValue <= 27f)
                             {
                                 MirelRSControllerThrottleValue = preMirelRSControllerThrottleValue = 0;
-                                SetThrottlePercent(0f);                                
+                                SetThrottlePercent(0f);
                             }
                             else
                             // Kontrolér v B
                             if (MirelRSControllerPosition[LocoStation] == 1 && PowerCurrent1 < 300f && MirelRSControllerThrottleValue <= 27f)
                             {
                                 MirelRSControllerThrottleValue = preMirelRSControllerThrottleValue = 0;
-                                SetThrottlePercent(0f);                                
+                                SetThrottlePercent(0f);
                             }
                             else
                             // Směrová páka v 0 nebo kontrolér v 0 nebo v B
@@ -13452,11 +13453,11 @@ namespace Orts.Simulation.RollingStocks
                                 MirelRSControllerThrottleValue--;
                                 MirelRSControllerCheckThrottleChange();
                             }
-                            
+
                             MirelRSControllerThrottleValueTimer = 0;
                             if (MirelRSControllerThrottleValue == 0 || MirelRSControllerPositionName[LocoStation] == "+1" || MirelRSControllerPositionName[LocoStation] == "-1")
-                                MirelRSControllerCanThrottleChangeValue_0 = false;                            
-                        }                        
+                                MirelRSControllerCanThrottleChangeValue_0 = false;
+                        }
                     }
 
                     if ((MirelRSControllerThrottleValueTimer > 0.5f && !Mode_To_27_Start1 && !Mode_To_27_Start2 && !Mode_To_34_Start) || MirelRSSkip_Start)
@@ -13496,7 +13497,7 @@ namespace Orts.Simulation.RollingStocks
                                 }
                                 else
                                 {
-                                    MirelRSControllerThrottleValue = preMirelRSControllerThrottleValue = Simulator.StepControllerValue;                                    
+                                    MirelRSControllerThrottleValue = preMirelRSControllerThrottleValue = Simulator.StepControllerValue;
                                     MirelRSSkip_Start = false;
                                     MirelRSPositionBlocked = true;
                                     MirelRSSkipCounter = 0;
@@ -13508,13 +13509,13 @@ namespace Orts.Simulation.RollingStocks
                                 if (!MirelRSProtect && !MirelRSSkip_Ready && (MirelRSControllerThrottleValue < 27 || (MirelRSControllerThrottleValue >= 34 && MirelRSControllerThrottleValue < 51)))
                                 {
                                     MirelRSControllerThrottleValue++;
-                                    MirelRSControllerCheckThrottleChange();                                    
+                                    MirelRSControllerCheckThrottleChange();
                                 }
                                 MirelRSPositionBlocked = true;
                             }
-                        }                        
+                        }
                         MirelRSControllerThrottleValueTimer = 0;
-                        MirelRSControllerCanThrottleChangeValue_1 = MirelRSControllerCanThrottleChangeValue_2 = false;                        
+                        MirelRSControllerCanThrottleChangeValue_1 = MirelRSControllerCanThrottleChangeValue_2 = false;
                     }
                 }
 
@@ -13524,12 +13525,12 @@ namespace Orts.Simulation.RollingStocks
                     MirelRSCanSkip = true;
                     MirelRSSkipDiode = 1;
                 }
-                else                
+                else
                 {
                     MirelRSCanSkip = false;
                     MirelRSSkipDiode = 0;
                 }
-                                                
+
                 // Hodnoty pro EDB
                 if (MirelRSControllerCanEDBChangeValue_0 || MirelRSControllerCanEDBChangeValue_1 || MirelRSControllerCanEDBChangeValue_2)
                 {
@@ -13576,7 +13577,7 @@ namespace Orts.Simulation.RollingStocks
                 {
                     if (Pantographs[1].State == PantographState.Up && Pantographs[2].State == PantographState.Up)
                     {
-                        MirelRSProtect = true;                        
+                        MirelRSProtect = true;
                         Simulator.StepControllerValue = 0f;
                     }
                 }
@@ -13593,7 +13594,7 @@ namespace Orts.Simulation.RollingStocks
                             MirelRSControllerThrottleValue--;
                             MirelRSControllerCheckThrottleChange();
                         }
-                        MirelRSControllerOverTemperatureValueTimer = 0f;                        
+                        MirelRSControllerOverTemperatureValueTimer = 0f;
                     }
                 }
                 else
@@ -13609,7 +13610,7 @@ namespace Orts.Simulation.RollingStocks
                             MirelRSControllerThrottleValue--;
                             MirelRSControllerCheckThrottleChange();
                         }
-                        MirelRSControllerOverTemperatureValueTimer = 0f;                        
+                        MirelRSControllerOverTemperatureValueTimer = 0f;
                     }
                 }
                 else
@@ -13626,7 +13627,7 @@ namespace Orts.Simulation.RollingStocks
                             MirelRSControllerThrottleValue--;
                             MirelRSControllerCheckThrottleChange();
                         }
-                        MirelRSControllerWhellSlipValueTimer = 0f;                        
+                        MirelRSControllerWhellSlipValueTimer = 0f;
                     }
                 }
                 else
@@ -13642,9 +13643,9 @@ namespace Orts.Simulation.RollingStocks
                 }
                 if (MirelRSControllerThrottleDummyValue == 0 && !MirelRSSkip_Start)
                     Simulator.StepControllerValue = MirelRSControllerThrottleValue;
-            }                        
-            // Bouchnutí HV
-            if (!CircuitBreakerOn)
+            }
+            // Bouchnutí HV nebo rychlobrzda
+            if (!CircuitBreakerOn || BrakeSystem.EmergencyBrakeForWagon)
             {
                 MirelRSControllerThrottleValue = preMirelRSControllerThrottleValue = Simulator.StepControllerValue = 0;
                 SetThrottlePercent(0f);
@@ -14533,9 +14534,9 @@ namespace Orts.Simulation.RollingStocks
                                     data = -data;
 
                                 // Icik
-                                if (CurrentForceStep1Curves != null || CurrentForceCurves != null)
+                                if (ThrottlePercent > 0 && (CurrentForceStep1Curves != null || CurrentForceCurves != null))
                                     data = FakePowerCurrent1;
-                                if (CurrentBrakeForce1Curves != null && DynamicBrakeForceN != 0)
+                                if (DynamicBrakeForceN != 0 && CurrentBrakeForce1Curves != null)
                                     data = BrakeCurrent1;
 
                                 if (cvc.ControlType == CABViewControlTypes.AMMETER_ABS) data = Math.Abs(data);
@@ -14544,9 +14545,9 @@ namespace Orts.Simulation.RollingStocks
                             data = this.DriveForceN / MaxForceN * MaxCurrentA;
 
                             // Icik
-                            if (CurrentForceStep1Curves != null || CurrentForceCurves != null)
+                            if (ThrottlePercent > 0 && (CurrentForceStep1Curves != null || CurrentForceCurves != null))
                                 data = FakePowerCurrent1;
-                            if (CurrentBrakeForce1Curves != null && DynamicBrakeForceN != 0)
+                            if (DynamicBrakeForceN != 0 && CurrentBrakeForce1Curves != null)
                                 data = BrakeCurrent1;
 
                             if (cvc.ControlType == CABViewControlTypes.AMMETER_ABS) data = Math.Abs(data);
@@ -14566,9 +14567,9 @@ namespace Orts.Simulation.RollingStocks
                         cvc.ElapsedTime += elapsedTime;
                         if (cvc.ElapsedTime > cvc.UpdateTime)
                         {                            
-                            if (CurrentForceStep2Curves != null)
+                            if (ThrottlePercent > 0 && CurrentForceStep2Curves != null)
                                 data = FakePowerCurrent2;
-                            if (CurrentBrakeForce2Curves != null && DynamicBrakeForceN != 0)
+                            if (DynamicBrakeForceN != 0 && CurrentBrakeForce2Curves != null)
                                 data = BrakeCurrent2;
 
                             if (cvc.ControlType == CABViewControlTypes.AMMETER2_ABS) data = Math.Abs(data);                                                                   
