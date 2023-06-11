@@ -242,9 +242,9 @@ namespace Orts.Simulation
             }
             if (Simulator.OriginalPlayerTrain.TrainType == Train.TRAINTYPE.PLAYER || Simulator.OriginalPlayerTrain.TrainType == Train.TRAINTYPE.AI_PLAYERDRIVEN)
             {
-                if (Math.Abs(Simulator.OriginalPlayerTrain.SpeedMpS) < 1.0f)
+                if (Math.Abs(Simulator.OriginalPlayerTrain.SpeedMpS) < 0.1f)
                 {
-                    if (Math.Abs(prevTrainSpeed) >= 1.0f)
+                    if (Math.Abs(prevTrainSpeed) >= 0.1f)
                     {
                         prevTrainSpeed = 0;
                         Current.NotifyEvent(ActivityEventType.TrainStop);
@@ -256,7 +256,7 @@ namespace Orts.Simulation
                 }
                 else
                 {
-                    if (Math.Abs(prevTrainSpeed) < 1.0f && Math.Abs(Simulator.OriginalPlayerTrain.SpeedMpS) >= 1.0f)
+                    if (Math.Abs(prevTrainSpeed) < 0.1f && Math.Abs(Simulator.OriginalPlayerTrain.SpeedMpS) >= 0.5f)
                     {
                         prevTrainSpeed = Simulator.OriginalPlayerTrain.SpeedMpS;
                         Current.NotifyEvent(ActivityEventType.TrainStart);
@@ -283,7 +283,7 @@ namespace Orts.Simulation
                 }
                 else
                 {
-                    if (prevTrainSpeed == 0 && Math.Abs(Simulator.OriginalPlayerTrain.SpeedMpS) > 1.0f)
+                    if (prevTrainSpeed == 0 && Math.Abs(Simulator.OriginalPlayerTrain.SpeedMpS) > 0.5f)
                     {
                         prevTrainSpeed = Simulator.OriginalPlayerTrain.SpeedMpS;
                         Current.NotifyEvent(ActivityEventType.TrainStart);
@@ -1145,7 +1145,7 @@ namespace Orts.Simulation
                                     Simulator.SoundNotify = Event.PermissionToDepart;
                                     BoardingCompleted = false;
                                     TimeToClearForDepart = 0;
-                                    ClearForDepartGenerate = 0;
+                                    ClearForDepartGenerate = 0;                                    
                                 }
                                 else
                                 {
