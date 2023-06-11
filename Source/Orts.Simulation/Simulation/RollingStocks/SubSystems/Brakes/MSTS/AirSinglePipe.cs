@@ -1351,9 +1351,17 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     // Pro loco typu Vectron nenapouští brzdový válec vzduchem při průběžném brždění
                     if (loco != null && (loco.LocoType == MSTSLocomotive.LocoTypes.Vectron && !loco.BreakEDBButton_Activated)
                         && (Math.Abs(loco.DynamicBrakeForceN) > AirWithEDBMotiveForceN || loco.AbsSpeedMpS > 11 / 3.6f))
-                    {
-                        BrakeCylApply = false;
-                        BrakeCylReleaseEDBOn = true;
+                    {                        
+                        if (loco.PowerOn || (loco.EDBIndependent && loco.PowerOnFilter > 0))
+                        {
+                            BrakeCylApply = false;
+                            BrakeCylReleaseEDBOn = true;
+                        }                        
+                        else                        
+                        {
+                            BrakeCylApply = true;
+                            BrakeCylReleaseEDBOn = false;
+                        }
                     }
 
                     // Plní pomocnou jímku stále stejnou rychlostí 0.1bar/s
