@@ -13691,8 +13691,6 @@ namespace Orts.Simulation.RollingStocks
         {
             if (VentilationSwitchPosition[LocoStation] > 0)
                 VentilationSwitchPosition[LocoStation]--;
-            if (Simulator.StepControllerValue > 0 && VentilationSwitchPosition[LocoStation] == 0)
-                VentilationSwitchPosition[LocoStation] = 1;
         }
         public void VentilationSwitch(float elapsedClocSeconds)
         {
@@ -13712,8 +13710,11 @@ namespace Orts.Simulation.RollingStocks
                 {
                     case 0:
                         VentilationSwitchPositionName[LocoStation] = Simulator.Catalog.GetString("Off"); // nearetované
-                        VentilationIsOn = false;
-                        VentilationTimer = 0;
+                        if (Simulator.StepControllerValue == 0)
+                        {
+                            VentilationIsOn = false;
+                            VentilationTimer = 0;
+                        }
                         break;
                     case 1:
                         VentilationSwitchPositionName[LocoStation] = Simulator.Catalog.GetString("Auto");
@@ -13750,6 +13751,11 @@ namespace Orts.Simulation.RollingStocks
                         }
                     }
                 }
+            }
+            if (VentilationIsOn && !PowerOn)
+            {
+                VentilationIsOn = false;
+                VentilationTimer = 0;
             }
         }
 

@@ -987,6 +987,15 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     break;
             }
 
+            // Výsledný tlak v brzdovém válci            
+            AutoCylPressurePSI = 0;
+            if (AutoCylPressurePSI < AutoCylPressurePSI0)
+                AutoCylPressurePSI = AutoCylPressurePSI0;
+            if (AutoCylPressurePSI < AutoCylPressurePSI1)
+                AutoCylPressurePSI = AutoCylPressurePSI1;
+            if (AutoCylPressurePSI < AutoCylPressurePSI2)
+                AutoCylPressurePSI = AutoCylPressurePSI2;
+
             // Zjednodušený model pro AI
             #region AI
             if (!Car.IsPlayerTrain)
@@ -1194,7 +1203,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         {
                             if (T_HighPressure < 12.0f)
                             {
-                                if (AutoCylPressurePSI0 > BrakeCylinderMaxPressureForLowState)
+                                if (AutoCylPressurePSI > BrakeCylinderMaxPressureForLowState)
                                     AutoCylPressurePSI0 -= elapsedClockSeconds * FromHighToLowPressureRate; // Rychlost odvětrání po dobu 12s                                                 
                             }
                             else
@@ -1205,7 +1214,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         }
                         else
                         {
-                            if (AutoCylPressurePSI0 > BrakeCylinderMaxPressureForLowState)
+                            if (AutoCylPressurePSI > BrakeCylinderMaxPressureForLowState)
                                 AutoCylPressurePSI0 -= elapsedClockSeconds * MaxReleaseRateAtHighState; // Rychlost odvětrání zadaná uživatelem                                                                            
                             else
                             {
@@ -1222,7 +1231,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     if (LowPressure)
                     {
                         AuxCylVolumeRatioLowPressureBraking = BrakeCylinderMaxPressureForLowState / MCP * AuxCylVolumeRatio;
-                        if (AutoCylPressurePSI0 > BrakeCylinderMaxPressureForLowState)
+                        if (AutoCylPressurePSI > BrakeCylinderMaxPressureForLowState)
                             AutoCylPressurePSI0 -= elapsedClockSeconds * MaxApplicationRatePSIpS * 1.5f; // Rychlost odvětrání                         
                     }                   
                 }
@@ -1267,8 +1276,6 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     AirForWagon = true;
                 else
                     AirForWagon = false;
-
-
 
                 // Tlak v BV nepřekročí maximální tlak pro BV nadefinovaný v eng lokomotivy
                 if (BrakeCylinderMaxSystemPressurePSI == 0) BrakeCylinderMaxSystemPressurePSI = MaxCylPressurePSI * 1.0f; // Výchozí hodnota pro maximální tlak přímočinné brzdy v BV 
@@ -1321,7 +1328,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     TRMg += elapsedClockSeconds;
                     if (TRMg < 1.0f)
                     {
-                        if (AutoCylPressurePSI0 > 0.5f * 14.50377f)
+                        if (AutoCylPressurePSI > 0.5f * 14.50377f)
                         {
                             AutoCylPressurePSI0 -= elapsedClockSeconds * (1.0f * 14.50377f); // Rychlost odvětrání 1 bar/s                            
                         }
@@ -1333,7 +1340,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 
 
                 // Zaznamená poslední stav pomocné jímky pro určení pracovního bodu pomocné jímky
-                if (AutoCylPressurePSI0 < 1 && !BrakeReadyToApply)
+                if (AutoCylPressurePSI < 1 && !BrakeReadyToApply)
                     PrevAuxResPressurePSI = AuxResPressurePSI;
 
                 // triple valve is set to charge the brake cylinder
@@ -1384,9 +1391,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
 
                     if (dp < 0) dp = 0;
 
-                    if (!TwoStateBrake)
+                    if (!TwoStateBrake && AutoCylPressurePSI0 > 0)
                     {
-                        if (AutoCylPressurePSI0 > threshold - 1)
+                        if (AutoCylPressurePSI > threshold - 1)
                             dp = 0;
                         if (TrainBrakeDelay > BrakeDelayToEngage + 0.25f)
                         {
@@ -1398,11 +1405,11 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         }
                     }
 
-                    if (TwoStateBrake)
+                    if (TwoStateBrake && AutoCylPressurePSI0 > 0)
                     {
                         if (LowPressure)
                         {
-                            if (AutoCylPressurePSI0 > BrakeCylinderMaxPressureForLowState - 1)
+                            if (AutoCylPressurePSI > BrakeCylinderMaxPressureForLowState - 1)
                                 dp = 0;
                             if (TrainBrakeDelay > BrakeDelayToEngage + 0.25f)
                             {
@@ -1416,7 +1423,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
 
                         if (!LowPressure)
                         {
-                            if (AutoCylPressurePSI0 > threshold - 1)
+                            if (AutoCylPressurePSI > threshold - 1)
                                 dp = 0;                            
                             if (TrainBrakeDelay > BrakeDelayToEngage + 0.25f)
                             {
@@ -1459,7 +1466,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         AutoCylPressurePSI0 = 0.1f * 14.50377f;
                     if (TrainBrakeDelay > BrakeDelayToEngage + 0.25f)
                     {
-                        if (AutoCylPressurePSI0 < threshold)
+                        if (AutoCylPressurePSI < threshold)
                         {
                             AutoCylPressurePSI0 += elapsedClockSeconds * MaxApplicationRatePSIpS;
                             if (AutoCylPressurePSI0 > threshold)
@@ -1472,7 +1479,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 // Vypouští brzdový válec
                 if (BrakeCylRelease && !CarHasAirStuckBrake_1)
                 {
-                    if (AutoCylPressurePSI0 > threshold)
+                    if (AutoCylPressurePSI > threshold)
                     {
                         AutoCylPressurePSI0 -= elapsedClockSeconds * ReleaseRatePSIpS;
                         if (AutoCylPressurePSI0 < threshold)
@@ -1586,14 +1593,14 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     AutoCylPressurePSI0 -= MaxReleaseRatePSIpS * elapsedClockSeconds;
                 }
                 
-                if (loco.LocoType != MSTSLocomotive.LocoTypes.Vectron && BailOffOn && AutoCylPressurePSI0 > 0 && BrakeCylReleaseEDBOn)
+                if (loco.LocoType != MSTSLocomotive.LocoTypes.Vectron && BailOffOn && AutoCylPressurePSI0 > 0 && !BrakeCylReleaseEDBOn)
                 {
                     ThresholdBailOffOn = (maxPressurePSI0 - BrakeLine1PressurePSI) * AuxCylVolumeRatio;
                     ThresholdBailOffOn = MathHelper.Clamp(ThresholdBailOffOn, 0, MCP_TrainBrake);
                     AutoCylPressurePSI0 -= elapsedClockSeconds * AutoBailOffOnRatePSIpS; // Rychlost odvětrání při EDB
                     AutoBailOffActivated = true;
                     if (AutoCylPressurePSI0 < 1.0f)
-                        BrakeCylReleaseEDBOn = false;                    
+                        BrakeCylReleaseEDBOn = true;                    
                 }
 
                 if (loco.LocoType == MSTSLocomotive.LocoTypes.Vectron && BailOffOn && BrakeCylReleaseEDBOn)
@@ -1602,11 +1609,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     ThresholdBailOffOn = MathHelper.Clamp(ThresholdBailOffOn, 0, MCP_TrainBrake);
                 }
 
-                if (AutoCylPressurePSI0 < 1)
+                if (AutoCylPressurePSI < 1)
                     BailOffOn = false;
-
-                if (AutoCylPressurePSI0 > threshold - 1)
-                    BrakeCylReleaseEDBOn = true;
 
                 // Automatické napuštění brzdového válce po uvadnutí EDB                
                 AirWithEDBMotiveForceN = loco.MaxDynamicBrakeForceN * 0.05f;
@@ -1614,8 +1618,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 {                    
                     ThresholdBailOffOn = (maxPressurePSI0 - BrakeLine1PressurePSI) * AuxCylVolumeRatio;
                     ThresholdBailOffOn = MathHelper.Clamp(ThresholdBailOffOn, 0, MCP_TrainBrake);
-                    if (AutoCylPressurePSI0 < ThresholdBailOffOn                        
-                        && AutoCylPressurePSI0 < loco.BrakeSystem.BrakeCylinderMaxSystemPressurePSI
+                    if (AutoCylPressurePSI < ThresholdBailOffOn                        
+                        && AutoCylPressurePSI < loco.BrakeSystem.BrakeCylinderMaxSystemPressurePSI
                         && loco.AuxResPressurePSI > 0)
                     {
                         if (!OL3active)
@@ -1625,7 +1629,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         }                        
                     }
                     else
-                    if (AutoCylPressurePSI0 >= ThresholdBailOffOn)
+                    if (AutoCylPressurePSI >= ThresholdBailOffOn)
                     {
                         threshold = ThresholdBailOffOn;
                         ThresholdBailOffOn = 0;
@@ -1643,7 +1647,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 if (ThresholdBailOffOn > 0)
                     threshold = ThresholdBailOffOn;
                 BailOffOn = false;
-                ThresholdBailOffOn = 0;                
+                ThresholdBailOffOn = 0;
+                BrakeCylReleaseEDBOn = false;
             }
 
             // Převodník brzdné síly                          
@@ -1668,18 +1673,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             if (Math.Round(PressureConverterBase) < Math.Round(PressureConverter))
                 PressureConverter -= elapsedClockSeconds * MaxReleaseRatePSIpS * 2.0f;            
 
-
             if (AutoCylPressurePSI0 < 0)
-                AutoCylPressurePSI0 = 0;
-
-            // Výsledný tlak v brzdovém válci            
-            AutoCylPressurePSI = 0;
-            if (AutoCylPressurePSI < AutoCylPressurePSI0)
-                AutoCylPressurePSI = AutoCylPressurePSI0;
-            if (AutoCylPressurePSI < AutoCylPressurePSI1)
-                AutoCylPressurePSI = AutoCylPressurePSI1;
-            if (AutoCylPressurePSI < AutoCylPressurePSI2)
-                AutoCylPressurePSI = AutoCylPressurePSI2;
+                AutoCylPressurePSI0 = 0;            
 
             // Zjistí rychlost změny tlaku v potrubí a v brzdovém válci
             if (T0 > 1) T0 = 0;
