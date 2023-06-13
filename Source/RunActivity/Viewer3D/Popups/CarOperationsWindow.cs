@@ -40,14 +40,14 @@ namespace Orts.Viewer3D.Popups
         public bool HelperOptionsOpened;
 
         public CarOperationsWindow(WindowManager owner)
-            : base(owner, Window.DecorationSize.X + owner.TextFontDefault.Height * 23, Window.DecorationSize.Y + (owner.TextFontDefault.Height + 2) * 19 + ControlLayout.SeparatorSize * 12, Viewer.Catalog.GetString("*** Car Operation Menu ***"))
+            : base(owner, Window.DecorationSize.X + owner.TextFontDefault.Height * 23, Window.DecorationSize.Y + (owner.TextFontDefault.Height + 2) * 20 + ControlLayout.SeparatorSize * 12, Viewer.Catalog.GetString("*** Car Operation Menu ***"))
         {
             Viewer = owner.Viewer;
         }
 
         protected override ControlLayout Layout(ControlLayout layout)
         {
-            Label ID, buttonHandbrake, buttonTogglePower, buttonToggleMUCable, buttonToggleMUPower, buttonToggleHelper, buttonToggleHelperOptions, buttonToggleBrakeHose, buttonToggleAngleCockA, buttonToggleAngleCockB, buttonToggleBleedOffValve, buttonBrakeCarMode, buttonBrakeCarModePL, buttonBrakeCarDeactivate, buttonTwoPipesConnection, buttonLeftDoor, buttonRightDoor, buttonHeating, buttonClose;
+            Label ID, buttonHandbrake, buttonTogglePower, buttonToggleMUCable, buttonToggleMUPower, buttonToggleHelper, buttonToggleHelperOptions, buttonToggleBrakeHose, buttonToggleAngleCockA, buttonToggleAngleCockB, buttonToggleBleedOffValve, buttonBrakeCarMode, buttonBrakeCarModePL, buttonBrakeCarDeactivate, buttonTwoPipesConnection, buttonLeftDoor, buttonRightDoor, buttonNoPaxsMode, buttonHeating, buttonClose;
 
             var vbox = base.Layout(layout).AddLayoutVertical();
 
@@ -154,6 +154,11 @@ namespace Orts.Viewer3D.Popups
                 buttonRightDoor.Color = Color.LightGreen;
 
             vbox.AddHorizontalSeparator();
+            vbox.Add(buttonNoPaxsMode = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("No Pax`s mode"), LabelAlignment.Center));
+            if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).NoPaxsMode)
+                buttonNoPaxsMode.Color = Color.LightGreen;
+
+            vbox.AddHorizontalSeparator();
 
             if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).WagonHasSteamHeating || (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon) is MSTSSteamLocomotive)
             {
@@ -198,6 +203,7 @@ namespace Orts.Viewer3D.Popups
             buttonTwoPipesConnection.Click += new Action<Control, Point>(buttonTwoPipesConnection_Click);
             buttonLeftDoor.Click += new Action<Control, Point>(buttonLeftDoor_Click);
             buttonRightDoor.Click += new Action<Control, Point>(buttonRightDoor_Click);
+            buttonNoPaxsMode.Click += new Action<Control, Point>(buttonNoPaxsMode_Click);
             buttonHeating.Click += new Action<Control, Point>(buttonHeating_Click);
             buttonClose.Click += new Action<Control, Point>(buttonClose_Click);
 
@@ -524,6 +530,19 @@ namespace Orts.Viewer3D.Popups
                 //(Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.RightDoorText = "otevřeno";
             }
             (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.RightDoorCycle = 0;
+        }
+
+        void buttonNoPaxsMode_Click(Control arg1, Point arg2)
+        {
+            (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).NoPaxsMode = !(Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).NoPaxsMode;
+            if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).NoPaxsMode)
+            {
+                Viewer.Simulator.Confirmer.Information(Viewer.Catalog.GetString("No Pax`s mode"));                
+            }
+            if (!(Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).NoPaxsMode)
+            {
+                Viewer.Simulator.Confirmer.Information(Viewer.Catalog.GetString("Pax`s mode"));                
+            }            
         }
 
         void buttonHeating_Click(Control arg1, Point arg2)

@@ -3100,13 +3100,12 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 }
             }
 
-            // Levé dveře
-            var loco0 = (train.Cars[0] as MSTSLocomotive);
-            if (loco0 != null)
+            // Levé dveře            
+            if (lead != null)
             {
-                if (loco0.DoorLeftOpen && !loco0.OpenedLeftDoor)
+                if (lead.DoorLeftOpen && !lead.OpenedLeftDoor)
                 {
-                    BrakeSystem brakeSystem = loco0.BrakeSystem;
+                    BrakeSystem brakeSystem = lead.BrakeSystem;
                     if (brakeSystem.T1AirLoss < 0.5f)
                     {
                         train.TotalAirLoss = TotalAirLoss0 / 2;
@@ -3114,13 +3113,13 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     }
                     else
                     {
-                        loco0.OpenedLeftDoor = true;
+                        lead.OpenedLeftDoor = true;
                         brakeSystem.T1AirLoss = 0;
                     }
                 }
-                if (!loco0.DoorLeftOpen && loco0.OpenedLeftDoor)
+                if (!lead.DoorLeftOpen && lead.OpenedLeftDoor)
                 {
-                    BrakeSystem brakeSystem = loco0.BrakeSystem;
+                    BrakeSystem brakeSystem = lead.BrakeSystem;
                     if (brakeSystem.T1AirLoss < 0.5f)
                     {
                         train.TotalAirLoss = TotalAirLoss0 / 2;
@@ -3128,15 +3127,15 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     }
                     else
                     {
-                        loco0.OpenedLeftDoor = false;
+                        lead.OpenedLeftDoor = false;
                         brakeSystem.T1AirLoss = 0;
                     }
                 }
 
                 // Pravé dveře
-                if (loco0.DoorRightOpen && !loco0.OpenedRightDoor)
+                if (lead.DoorRightOpen && !lead.OpenedRightDoor)
                 {
-                    BrakeSystem brakeSystem = loco0.BrakeSystem;
+                    BrakeSystem brakeSystem = lead.BrakeSystem;
                     if (brakeSystem.T2AirLoss < 0.5f)
                     {
                         train.TotalAirLoss = TotalAirLoss0 / 2;
@@ -3144,13 +3143,13 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     }
                     else
                     {
-                        loco0.OpenedRightDoor = true;
+                        lead.OpenedRightDoor = true;
                         brakeSystem.T2AirLoss = 0;
                     }
                 }
-                if (!loco0.DoorRightOpen && loco0.OpenedRightDoor)
+                if (!lead.DoorRightOpen && lead.OpenedRightDoor)
                 {
-                    BrakeSystem brakeSystem = loco0.BrakeSystem;
+                    BrakeSystem brakeSystem = lead.BrakeSystem;
                     if (brakeSystem.T2AirLoss < 0.5f)
                     {
                         train.TotalAirLoss = TotalAirLoss0 / 2;
@@ -3158,7 +3157,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     }
                     else
                     {
-                        loco0.OpenedRightDoor = false;
+                        lead.OpenedRightDoor = false;
                         brakeSystem.T2AirLoss = 0;
                     }
                 }

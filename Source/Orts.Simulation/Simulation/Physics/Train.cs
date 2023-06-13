@@ -16791,7 +16791,7 @@ namespace Orts.Simulation.Physics
                 var wagon = (train.Cars[i] as MSTSWagon);
                 foreach (Passenger pax in wagon.PassengerList)
                 {
-                    if (pax.ArrivalStation == train.StationStops[0].PlatformItem.PlatformFrontUiD || EndStation)
+                    if (pax.ArrivalStation == train.StationStops[0].PlatformItem.PlatformFrontUiD || EndStation || wagon.NoPaxsMode)
                         exitPaxList.Add(pax);
                 }
             }            
@@ -16819,7 +16819,7 @@ namespace Orts.Simulation.Physics
                         continue;
                     foreach (Passenger pax in exitPaxList)
                     {
-                        if (pax.WagonIndex == currentWagIndex && (train.StationStops[0].PlatformItem.PlatformFrontUiD == pax.ArrivalStation || EndStation) && pax.TimeToStartExiting < gameClock)
+                        if (pax.WagonIndex == currentWagIndex && (train.StationStops[0].PlatformItem.PlatformFrontUiD == pax.ArrivalStation || EndStation || wagon.NoPaxsMode) && pax.TimeToStartExiting < gameClock)
                         {
                             if (!platformSide && !wagon.DoorLeftOpen && !loco.CentralHandlingDoors)
                             {
@@ -16879,7 +16879,7 @@ namespace Orts.Simulation.Physics
                             if (wagon is MSTSLocomotive)
                                 locoWag = (MSTSLocomotive)wagon;
 
-                            if ((wagon.HasPassengerCapacity || wagon.WagonType == TrainCar.WagonTypes.Passenger) && !wagon.FreightDoors)
+                            if ((wagon.HasPassengerCapacity || wagon.WagonType == TrainCar.WagonTypes.Passenger) && !wagon.FreightDoors && !wagon.NoPaxsMode)
                             {
                                 if (wagon.UnboardingComplete)
                                 {

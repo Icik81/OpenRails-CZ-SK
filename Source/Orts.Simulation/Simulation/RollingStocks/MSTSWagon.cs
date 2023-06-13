@@ -175,6 +175,7 @@ namespace Orts.Simulation.RollingStocks
         public float WheelSpeedMpS_Cab;
         public int MotorStartCyklus;
         public bool StartOn = true;
+        public bool NoPaxsMode;
 
         bool TenderWeightInitialize = true;
         float TenderWagonMaxCoalMassKG = 0;
@@ -1941,6 +1942,7 @@ namespace Orts.Simulation.RollingStocks
             outf.Write(DieselHeaterTankCapacity);
             outf.Write(CarLengthM);
             outf.Write(StartOn);
+            outf.Write(NoPaxsMode);
 
             // Passengers
             if (PassengerList != null)
@@ -2028,6 +2030,7 @@ namespace Orts.Simulation.RollingStocks
             DieselHeaterTankCapacity = inf.ReadSingle();
             CarLengthM = inf.ReadSingle();
             StartOn = inf.ReadBoolean();
+            NoPaxsMode = inf.ReadBoolean();
 
             int paxCount = inf.ReadInt32();
             for (int x = 0; x < paxCount; x++)
