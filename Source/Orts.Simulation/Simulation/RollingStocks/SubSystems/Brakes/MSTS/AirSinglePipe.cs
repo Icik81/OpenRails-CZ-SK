@@ -1603,7 +1603,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         BrakeCylReleaseEDBOn = true;                    
                 }
 
-                if (loco.LocoType == MSTSLocomotive.LocoTypes.Vectron && BailOffOn && BrakeCylReleaseEDBOn)
+                if (loco.LocoType == MSTSLocomotive.LocoTypes.Vectron && BailOffOn)
                 {
                     ThresholdBailOffOn = (maxPressurePSI0 - BrakeLine1PressurePSI) * AuxCylVolumeRatio;
                     ThresholdBailOffOn = MathHelper.Clamp(ThresholdBailOffOn, 0, MCP_TrainBrake);
@@ -1631,8 +1631,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     else
                     if (AutoCylPressurePSI >= ThresholdBailOffOn)
                     {
-                        threshold = ThresholdBailOffOn;
-                        ThresholdBailOffOn = 0;
+                        threshold = ThresholdBailOffOn;                        
                         EDBEngineBrakeDelay = 0;
                     }
                 }
