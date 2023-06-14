@@ -16807,7 +16807,7 @@ namespace Orts.Simulation.Physics
                     locoWag = wagon;
                     loco = (MSTSLocomotive)wagon;
                 }
-                if ((wagon.HasPassengerCapacity || wagon.WagonType == TrainCar.WagonTypes.Passenger) && !wagon.FreightDoors)
+                if ((wagon.HasPassengerCapacity || wagon.WagonType == TrainCar.WagonTypes.Passenger || wagon.NoPaxsMode) && !wagon.FreightDoors)
                 {
                     if (exitPaxList.Count == 0)
                     {
@@ -16867,12 +16867,11 @@ namespace Orts.Simulation.Physics
                                     wagonEx.UnboardingComplete = true;
                                 }
                                 return;
-                            }
-
-                        }
-                    }
-                    currentWagIndex++;
+                            }                            
+                        }                        
+                    }                    
                 }
+                currentWagIndex++;
             }
         boarding:
             currentWagIndex = 0;
@@ -16892,10 +16891,14 @@ namespace Orts.Simulation.Physics
                             if (wagon.NoPaxsMode)
                             {
                                 pax.WagonIndex = -1;
-                                for (int j = 0; j < train.Cars.Count - 1; j++)
+                                for (int j = 0; j < train.Cars.Count; j++)
                                 {
                                     if (!(train.Cars[j] as MSTSWagon).NoPaxsMode && (train.Cars[j] as MSTSWagon).PassengerList.Count < (train.Cars[j] as MSTSWagon).PassengerCapacity)
+                                    {
                                         pax.WagonIndex = j;
+                                        if (Simulator.Random.Next(0, 2) == 0)
+                                            break;
+                                    }
                                 }    
                                 if (pax.WagonIndex == -1)
                                 {
@@ -16934,9 +16937,9 @@ namespace Orts.Simulation.Physics
                                     }
                                 }
                                 else
-                                    enterTimesCalculated = false;
-                                currentWagIndex++;
+                                    enterTimesCalculated = false;                                
                             }
+                            currentWagIndex++;
                         }
                     }
                     if (pax.TimeToStartBoarding < gameClock && !pax.Boarded)

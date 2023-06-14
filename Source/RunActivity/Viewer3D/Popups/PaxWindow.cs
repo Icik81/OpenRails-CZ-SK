@@ -72,14 +72,14 @@ namespace Orts.Viewer3D.Popups
             var train0 = Owner.Viewer.Simulator.Trains.Find(item => item.IsActualPlayerTrain);
             if (train0 != null)
             {
-                int carNum = 1;
+                int carNum = 0;
                 foreach (TrainCar tc in train0.Cars)
                 {
                     if (tc.PassengerList.Count >= 0)
                     {
                         List<Passenger> sorted = tc.PassengerList.OrderBy(c => c.StationOrderIndex).ToList();
                         //Name.Text += Viewer.Catalog.GetString("Car Nr. ") + carNum.ToString() + Viewer.Catalog.GetString(" (Passengers: ") + tc.PassengerList.Count + Viewer.Catalog.GetString(", Capacity ") + tc.PassengerCapacity.ToString() + ")" + Environment.NewLine;
-                        Name.Text += Viewer.Catalog.GetString("Car Nr. ") + train0.Cars[carNum - 1].CarID + Viewer.Catalog.GetString(" (Passengers: ") + tc.PassengerList.Count + Viewer.Catalog.GetString(", Capacity ") + tc.PassengerCapacity.ToString() + ")" + Environment.NewLine;
+                        Name.Text += Viewer.Catalog.GetString("Car Nr. ") + train0.Cars[carNum].CarID + Viewer.Catalog.GetString(" (Passengers: ") + tc.PassengerList.Count + Viewer.Catalog.GetString(", Capacity ") + tc.PassengerCapacity.ToString() + ")" + Environment.NewLine;
                         From.Text += Environment.NewLine;
                         To.Text += Environment.NewLine;
                         top += scrollbox.TextHeight;
