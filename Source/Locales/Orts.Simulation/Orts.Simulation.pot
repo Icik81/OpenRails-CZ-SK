@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2023-06-13 22:19:21+0200\n"
-"PO-Revision-Date: 2023-06-13 22:19:22+0200\n"
+"POT-Creation-Date: 2023-06-14 19:30:25+0200\n"
+"PO-Revision-Date: 2023-06-14 19:30:26+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -328,27 +328,27 @@ msgid_plural "Cannot decouple: train has {0} players, need to completely stop."
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../../Orts.Simulation/Simulation/Activity.cs:1080
+#: ../../Orts.Simulation/Simulation/Activity.cs:1088
 msgid "People are waiting for the door to open…"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Activity.cs:1128
+#: ../../Orts.Simulation/Simulation/Activity.cs:1136
 msgid "Waiting for passengers to unboard...."
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Activity.cs:1130
+#: ../../Orts.Simulation/Simulation/Activity.cs:1138
 msgid "Waiting for passengers to board...."
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Activity.cs:1144
+#: ../../Orts.Simulation/Simulation/Activity.cs:1152
 msgid "Clear to go!"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Activity.cs:1153
+#: ../../Orts.Simulation/Simulation/Activity.cs:1161
 msgid "Waiting for the permission...."
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Activity.cs:1108
+#: ../../Orts.Simulation/Simulation/Activity.cs:1116
 #, csharp-format
 msgid "Time to departure: {0:D2}:{1:D2}"
 msgstr ""
@@ -1488,21 +1488,25 @@ msgstr ""
 msgid "Cannot clear signal behind train while in AUTO mode"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Physics/Train.cs:16824
+#: ../../Orts.Simulation/Simulation/Physics/Train.cs:16825
 msgid "Passenger got out of the train "
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Physics/Train.cs:16880
-#: ../../Orts.Simulation/Simulation/Physics/Train.cs:16903
+#: ../../Orts.Simulation/Simulation/Physics/Train.cs:16875
+msgid "Passenger cannot board the train!!!"
+msgstr ""
+
+#: ../../Orts.Simulation/Simulation/Physics/Train.cs:16905
+#: ../../Orts.Simulation/Simulation/Physics/Train.cs:16930
 msgid "Passenger got in the train "
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Physics/Train.cs:17020
+#: ../../Orts.Simulation/Simulation/Physics/Train.cs:17048
 msgid "Car "
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Physics/Train.cs:17094
-#: ../../Orts.Simulation/Simulation/Physics/Train.cs:17099
+#: ../../Orts.Simulation/Simulation/Physics/Train.cs:17122
+#: ../../Orts.Simulation/Simulation/Physics/Train.cs:17127
 msgid "Locomotive "
 msgstr ""
 

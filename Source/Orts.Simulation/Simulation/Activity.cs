@@ -846,7 +846,7 @@ namespace Orts.Simulation
         public int CycleTimeOpen = 0;
         public int CycleTimeClosed = 0;
         public bool BoardingCompleted;
-        public int RestOfPax;
+        public int RestOfPax = -1;
         int ClearForDepartGenerate;
         int TimeToClearForDepart;
 
@@ -1054,8 +1054,16 @@ namespace Orts.Simulation
                 if (BoardingCompleted)
                     MyPlayerTrain.StationStops[0].PlatformItem.NumPassengersWaiting = 0;
 
-                if (RestOfPax != 0)
-                    MyPlayerTrain.StationStops[0].PlatformItem.NumPassengersWaiting = RestOfPax;
+                if (RestOfPax != -1)
+                {
+                    if (Simulator.GameTime > 0)
+                    {
+                        if (MyPlayerTrain.StationStops[0].PlatformItem.NumPassengersWaiting < RestOfPax)
+                            MyPlayerTrain.StationStops[0].PlatformItem.NumPassengersWaiting = RestOfPax;
+                    }
+                    else
+                        MyPlayerTrain.StationStops[0].PlatformItem.NumPassengersWaiting = RestOfPax;
+                }
 
                 MyPlayerTrain.FillNames(MyPlayerTrain);
 
