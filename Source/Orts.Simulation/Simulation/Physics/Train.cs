@@ -16892,7 +16892,7 @@ namespace Orts.Simulation.Physics
                             if (wagon.NoPaxsMode)
                             {
                                 pax.WagonIndex = -1;
-                                for (int j = 0; j < train.Cars.Count; j++)
+                                for (int j = 0; j < train.Cars.Count - 1; j++)
                                 {
                                     if (!(train.Cars[j] as MSTSWagon).NoPaxsMode && (train.Cars[j] as MSTSWagon).PassengerList.Count < (train.Cars[j] as MSTSWagon).PassengerCapacity)
                                         pax.WagonIndex = j;
