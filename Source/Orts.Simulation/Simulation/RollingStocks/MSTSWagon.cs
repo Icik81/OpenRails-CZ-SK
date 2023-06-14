@@ -1529,7 +1529,7 @@ namespace Orts.Simulation.RollingStocks
                     break;
                 case "wagon(intakepoint": IntakePointList.Add(new IntakePoint(stf)); break;
                 case "wagon(passengercapacity": HasPassengerCapacity = true; break;
-                case "wagon(maxpassengercapacity": PassengerCapacity = stf.ReadIntBlock(0); break;
+                case "wagon(maxpassengercapacity": PassengerCapacity = stf.ReadIntBlock(0); if (PassengerCapacity == 0) { HasPassengerCapacity = false; NoPaxsMode = true; } break;
 
                 case "wagon(ortsfreightanims":
                     FreightAnimations = new FreightAnimations(stf, this);
