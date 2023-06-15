@@ -256,6 +256,10 @@ namespace Orts.Simulation.AIs
             UncondAttach = inf.ReadBoolean();
             doorCloseAdvance = inf.ReadSingle();
             doorOpenDelay = inf.ReadSingle();
+
+            // Icik
+            NumberOfCarsToLeaveOrSteal = inf.ReadInt32();
+
             if (!Simulator.TimetableMode && doorOpenDelay <= 0 && doorCloseAdvance > 0 && Simulator.OpenDoorsInAITrains &&
                 MovementState == AI_MOVEMENT_STATE.STATION_STOP && StationStops.Count > 0)
             {
@@ -303,10 +307,7 @@ namespace Orts.Simulation.AIs
             }
             // associate location events
             if (Simulator.ActivityRun != null) Simulator.ActivityRun.AssociateEvents(this);
-            LastSpeedMpS = SpeedMpS;
-
-            // Icik
-            NumberOfCarsToLeaveOrSteal = inf.ReadInt32();
+            LastSpeedMpS = SpeedMpS;            
         }
 
         //================================================================================================//
@@ -352,6 +353,10 @@ namespace Orts.Simulation.AIs
             outf.Write(UncondAttach);
             outf.Write(doorCloseAdvance);
             outf.Write(doorOpenDelay);
+
+            // Icik
+            outf.Write(NumberOfCarsToLeaveOrSteal);
+
             if (LevelCrossingHornPattern != null)
             {
                 outf.Write(0);
@@ -359,10 +364,7 @@ namespace Orts.Simulation.AIs
             }
             else outf.Write(-1);
             if (ServiceDefinition != null) ServiceDefinition.Save(outf);
-            else outf.Write(-1);
-
-            // Icik
-            outf.Write(NumberOfCarsToLeaveOrSteal);
+            else outf.Write(-1);            
         }
 
         // call base save method only

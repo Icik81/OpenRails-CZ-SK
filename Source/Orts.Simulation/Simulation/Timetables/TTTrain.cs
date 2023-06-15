@@ -644,6 +644,10 @@ namespace Orts.Simulation.Timetables
             outf.Write(UncondAttach);
             outf.Write(doorCloseAdvance);
             outf.Write(doorOpenDelay);
+
+            // Icik
+            outf.Write(NumberOfCarsToLeaveOrSteal);
+
             // dummy for level crossing horn pattern
             outf.Write(-1);
 
