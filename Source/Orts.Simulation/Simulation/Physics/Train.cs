@@ -16694,7 +16694,7 @@ namespace Orts.Simulation.Physics
                 for (int i = 0; i < train.Cars.Count; i++)
                 {
                     var wagon = (train.Cars[i] as MSTSWagon);
-                    if ((wagon.HasPassengerCapacity || wagon.WagonType == TrainCar.WagonTypes.Passenger) && !wagon.FreightDoors && !wagon.NoPaxsMode)
+                    if ((wagon.HasPassengerCapacity || wagon.WagonType == TrainCar.WagonTypes.Passenger) && !wagon.FreightDoors)
                     {
                         wagon.BoardingComplete = false;
                         wagon.UnboardingComplete = false;
@@ -16708,7 +16708,7 @@ namespace Orts.Simulation.Physics
             for (int i = 0; i < train.Cars.Count; i++)
             {
                 var wagon = (train.Cars[i] as MSTSWagon);
-                if ((wagon.HasPassengerCapacity || wagon.WagonType == TrainCar.WagonTypes.Passenger) && !wagon.FreightDoors && !wagon.NoPaxsMode)
+                if ((wagon.HasPassengerCapacity || wagon.WagonType == TrainCar.WagonTypes.Passenger) && !wagon.FreightDoors)
                 {
                     if (wagon.PassengerCapacity == 0)
                         wagon.PassengerCapacity = 80;
@@ -16732,7 +16732,7 @@ namespace Orts.Simulation.Physics
                         nextTimeExitDoors1 = gameClock + 0.25f;
                         foreach (Passenger pax in wagon.PassengerList)
                         {
-                            if ((pax.ArrivalStation == train.StationStops[0].PlatformItem.PlatformFrontUiD || EndStation || wagon.NoPaxsMode) && pax.DoorsToEnterAndExit == 0)
+                            if ((pax.ArrivalStation == train.StationStops[0].PlatformItem.PlatformFrontUiD) && pax.DoorsToEnterAndExit == 0)
                             {
                                 pax.TimeToStartExiting = nextTimeExitDoors1;
                                 nextTimeExitDoors1 += pax.TimeToEnterAndExit;
@@ -16741,7 +16741,7 @@ namespace Orts.Simulation.Physics
                         nextTimeExitDoors2 = gameClock + 0.25f;
                         foreach (Passenger pax in wagon.PassengerList)
                         {
-                            if ((pax.ArrivalStation == train.StationStops[0].PlatformItem.PlatformFrontUiD || EndStation || wagon.NoPaxsMode) && pax.DoorsToEnterAndExit == 1)
+                            if ((pax.ArrivalStation == train.StationStops[0].PlatformItem.PlatformFrontUiD) && pax.DoorsToEnterAndExit == 1)
                             {
                                 pax.TimeToStartExiting = nextTimeExitDoors2;
                                 nextTimeExitDoors2 += pax.TimeToEnterAndExit;
@@ -16760,7 +16760,7 @@ namespace Orts.Simulation.Physics
                     var wagon = (train.Cars[i] as MSTSWagon);
                     if (wagon is MSTSLocomotive)
                         locoWag = wagon;
-                    if ((wagon.HasPassengerCapacity || wagon.WagonType == TrainCar.WagonTypes.Passenger) && !wagon.FreightDoors && !wagon.NoPaxsMode)
+                    if ((wagon.HasPassengerCapacity || wagon.WagonType == TrainCar.WagonTypes.Passenger) && !wagon.FreightDoors)
                     {
                         nextTimeExitDoors1 = gameClock + 0.25f;
                         foreach (Passenger pax in train.StationStops[0].PlatformItem.PassengerList)
@@ -16779,9 +16779,9 @@ namespace Orts.Simulation.Physics
                                 pax.TimeToStartBoarding = nextTimeExitDoors2 + wagon.FirstPaxActionDelay - 0.25f;
                                 nextTimeExitDoors2 += pax.TimeToEnterAndExit;
                             }
-                        }
-                        currentWagonIndex++;
+                        }                        
                     }
+                    currentWagonIndex++;
                 }
                 enterTimesCalculated = true;
             }
@@ -16820,7 +16820,7 @@ namespace Orts.Simulation.Physics
                         continue;
                     foreach (Passenger pax in exitPaxList)
                     {
-                        if (pax.WagonIndex == currentWagIndex && (train.StationStops[0].PlatformItem.PlatformFrontUiD == pax.ArrivalStation || EndStation || wagon.NoPaxsMode) && pax.TimeToStartExiting < gameClock)
+                        if ((pax.WagonIndex == currentWagIndex && (train.StationStops[0].PlatformItem.PlatformFrontUiD == pax.ArrivalStation || EndStation) && pax.TimeToStartExiting < gameClock) || wagon.NoPaxsMode)
                         {
                             if (!platformSide && !wagon.DoorLeftOpen && !loco.CentralHandlingDoors)
                             {
@@ -16896,7 +16896,7 @@ namespace Orts.Simulation.Physics
                                     if (!(train.Cars[j] as MSTSWagon).NoPaxsMode && (train.Cars[j] as MSTSWagon).PassengerList.Count < (train.Cars[j] as MSTSWagon).PassengerCapacity)
                                     {
                                         pax.WagonIndex = j;
-                                        if (Simulator.Random.Next(0, 2) == 0)
+                                        if (Simulator.Random.Next(0, 5) == 0)
                                             break;
                                     }
                                 }    
@@ -16947,19 +16947,34 @@ namespace Orts.Simulation.Physics
                         try
                         {
                             var wagon = (train.Cars[1] as MSTSWagon);
-                            if (!wagon.NoPaxsMode)
+                            if (wagon.NoPaxsMode)
                             {
-                                wagon.PassengerList.Add(pax);
-                                train.StationStops[0].PlatformItem.PassengerList.Remove(pax);
-                                wagon.MassKG += pax.Weight < 0 ? -pax.Weight : pax.Weight;
-                                train.TotalOnBoard++;
-                                string a = "";
-                                if (pax.Gender == Passenger.Genders.Female)
-                                    a = "a";
-                                //train.Simulator.Confirmer.Information(Simulator.Catalog.GetString("Nastoupil" + a + " cestujíci ") + pax.FirstName.Replace("\"", "") + " " + pax.Surname.Replace("\"", ""));
-                                train.Simulator.Confirmer.Information(Simulator.Catalog.GetString("Passenger got in the train ") + pax.FirstName.Replace("\"", "") + " " + pax.Surname.Replace("\"", ""));
-                                goto boarded;
+                                pax.WagonIndex = -1;
+                                for (int j = 0; j < train.Cars.Count; j++)
+                                {
+                                    if (!(train.Cars[j] as MSTSWagon).NoPaxsMode && (train.Cars[j] as MSTSWagon).PassengerList.Count < (train.Cars[j] as MSTSWagon).PassengerCapacity)
+                                    {
+                                        pax.WagonIndex = j;
+                                        if (Simulator.Random.Next(0, 5) == 0)
+                                            break;
+                                    }
+                                }
+                                if (pax.WagonIndex == -1)
+                                {
+                                    train.Simulator.Confirmer.Information(Simulator.Catalog.GetString("Passenger cannot board the train!!!"));
+                                    goto boarded;
+                                }
                             }
+                            wagon.PassengerList.Add(pax);
+                            train.StationStops[0].PlatformItem.PassengerList.Remove(pax);
+                            wagon.MassKG += pax.Weight < 0 ? -pax.Weight : pax.Weight;
+                            train.TotalOnBoard++;
+                            string a = "";
+                            if (pax.Gender == Passenger.Genders.Female)
+                                a = "a";
+                            //train.Simulator.Confirmer.Information(Simulator.Catalog.GetString("Nastoupil" + a + " cestujíci ") + pax.FirstName.Replace("\"", "") + " " + pax.Surname.Replace("\"", ""));
+                            train.Simulator.Confirmer.Information(Simulator.Catalog.GetString("Passenger got in the train ") + pax.FirstName.Replace("\"", "") + " " + pax.Surname.Replace("\"", ""));
+                            goto boarded;
                         }
                         catch
                         {
