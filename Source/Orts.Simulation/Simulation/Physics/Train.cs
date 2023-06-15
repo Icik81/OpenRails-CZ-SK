@@ -16615,7 +16615,7 @@ namespace Orts.Simulation.Physics
                         locoWag = wagon;
                     if ((wagon.HasPassengerCapacity || wagon.WagonType == TrainCar.WagonTypes.Passenger) && !wagon.FreightDoors)
                     {
-                        numUsableWagons++;
+                        //numUsableWagons++;
                         if (wagon.FirstPaxActionDelay == 0)
                         {
                             float delay = rndStation.Next(50, 250);
@@ -16624,6 +16624,8 @@ namespace Orts.Simulation.Physics
                         }
                     }
                 }
+                numUsableWagons = train.Cars.Count;
+
                 foreach (StationStop ss in train.StationStops)
                 {
                     if (station + 1 == StationStops.Count)
