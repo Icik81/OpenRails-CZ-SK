@@ -1110,6 +1110,8 @@ namespace Orts.Simulation
 
                         if (MyPlayerTrain.StationStops[0].PlatformItem.PassengerList.Count == 0 && !MyPlayerTrain.TrainDoorsOpen)
                             BoardingCompleted = true;
+                        else
+                            BoardingCompleted = false;
 
                         RestOfPax = MyPlayerTrain.StationStops[0].PlatformItem.PassengerList.Count;
 
