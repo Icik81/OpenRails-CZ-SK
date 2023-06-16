@@ -1157,6 +1157,18 @@ namespace Orts.Simulation.RollingStocks
                 CarLengthM = CarLengthM0;
             }
 
+            if (WagonType == WagonTypes.Passenger || HasPassengerCapacity)
+            {
+                if (PassengerCapacity == -1)
+                {
+                    HasPassengerCapacity = false;
+                    NoPaxsMode = true;
+                }
+                else
+                if (PassengerCapacity == 0)
+                    PassengerCapacity = 80;                
+            }
+
             // Hack
             /*DavisAN = DavisBNSpM = DavisCNSSpMM = 0;
             IsDavisFriction = true;*/
@@ -1529,8 +1541,7 @@ namespace Orts.Simulation.RollingStocks
                     break;
                 case "wagon(intakepoint": IntakePointList.Add(new IntakePoint(stf)); break;
                 case "wagon(passengercapacity": HasPassengerCapacity = true; break;
-                case "wagon(maxpassengercapacity": PassengerCapacity = stf.ReadIntBlock(0); if (PassengerCapacity == 0) { HasPassengerCapacity = false; NoPaxsMode = true; } break;
-
+                case "wagon(maxpassengercapacity": PassengerCapacity = stf.ReadIntBlock(0); break;
                 case "wagon(ortsfreightanims":
                     FreightAnimations = new FreightAnimations(stf, this);
                     break;

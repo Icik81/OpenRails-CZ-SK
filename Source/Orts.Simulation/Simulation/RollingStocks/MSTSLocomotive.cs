@@ -10300,14 +10300,56 @@ namespace Orts.Simulation.RollingStocks
                 HV3Switch[LocoStation] = MathHelper.Clamp(HV3Switch[LocoStation], 0, 2);
             }
         }
+
+        public bool LocoGroundBreaker;
+        float LocoGroundBreakerTimer;
+        public bool HS198ControllerEnable;
         public void ToggleHV3Switch()
         {
             if (!IsLeadLocomotive())
                 return;
             if (HV3Enable)
             {
-                if (HVCanOn && Battery && StationIsActivated[LocoStation])
-                    HVOn = true;
+                if (HS198ControllerEnable)
+                {
+                    if (!LocoGroundBreaker)
+                    {
+                        if (Battery && StationIsActivated[LocoStation] && HV3Switch[LocoStation] == 1)
+                        {
+                            LocoGroundBreakerTimer += Simulator.OneSecondLoop;
+
+                            if (LocoGroundBreakerTimer > 1.0f)
+                            {
+                                LocoGroundBreaker = true;
+                                LocoGroundBreakerTimer = 0.0f;
+                                SignalEvent(Event.LocoGroundBreakerOn);
+                            }
+                        }
+                        else
+                        if (HV3Switch[LocoStation] == 2)
+                        {
+                            LocoGroundBreakerTimer = 0.0f;
+                        }
+                    }
+                    else
+                    {
+                        if (!Battery || StationIsActivated[LocoStation] || HV3Switch[LocoStation] == 0)
+                        {
+                            LocoGroundBreaker = false;
+                            LocoGroundBreakerTimer = 0.0f;
+                            SignalEvent(Event.LocoGroundBreakerOff);
+                        }
+                    }
+
+                    if (LocoGroundBreaker && HVCanOn && Battery && StationIsActivated[LocoStation])
+                        HVOn = true;
+                }
+                else
+                {
+                    if (HVCanOn && Battery && StationIsActivated[LocoStation])
+                        HVOn = true;
+                }
+
                 // Výběr napájecího systému při HV3 (zde bude výběr dle obrazovky)
                 if (Battery && StationIsActivated[LocoStation])
                 {

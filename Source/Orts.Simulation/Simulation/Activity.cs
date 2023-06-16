@@ -1062,7 +1062,9 @@ namespace Orts.Simulation
                             MyPlayerTrain.StationStops[0].PlatformItem.NumPassengersWaiting = RestOfPax;
                     }
                     else
-                        MyPlayerTrain.StationStops[0].PlatformItem.NumPassengersWaiting = RestOfPax;
+                    {
+                        MyPlayerTrain.StationStops[0].PlatformItem.NumPassengersWaiting = RestOfPax;                        
+                    }
                 }
 
                 MyPlayerTrain.FillNames(MyPlayerTrain);
@@ -1073,6 +1075,7 @@ namespace Orts.Simulation
                 if (MyPlayerTrain.StationStops.Count == 1) MyPlayerTrain.EndStation = true;
 
                 ChanceToUnboarding();
+                MyPlayerTrain.CheckPaxtoLeaveCount(MyPlayerTrain);
 
                 var loco = MyPlayerTrain.LeadLocomotive as MSTSLocomotive;
                 if (loco != null)
