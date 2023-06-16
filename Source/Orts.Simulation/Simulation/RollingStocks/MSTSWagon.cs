@@ -1540,7 +1540,10 @@ namespace Orts.Simulation.RollingStocks
                     Pantographs.Parse(lowercasetoken, stf);
                     break;
                 case "wagon(intakepoint": IntakePointList.Add(new IntakePoint(stf)); break;
-                case "wagon(passengercapacity": HasPassengerCapacity = true; break;
+                case "wagon(passengercapacity":
+                    PassengerCapacity = stf.ReadIntBlock(0);
+                    HasPassengerCapacity = true; 
+                    break;
                 case "wagon(maxpassengercapacity": PassengerCapacity = stf.ReadIntBlock(0); break;
                 case "wagon(ortsfreightanims":
                     FreightAnimations = new FreightAnimations(stf, this);
