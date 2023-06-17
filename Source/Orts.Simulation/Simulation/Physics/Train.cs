@@ -16900,7 +16900,7 @@ namespace Orts.Simulation.Physics
                             var wagon = (train.Cars[i] as MSTSWagon);
 
                             // Pax hledá náhradní vůz, pokud chtěl původně do vyřazeného vozu
-                            if (wagon.NoPaxsMode)
+                            if (wagon.NoPaxsMode || !pax.Boarded)
                             {
                                 pax.WagonIndex = -1;
                                 for (int j = 0; j < train.Cars.Count; j++)
@@ -16956,45 +16956,7 @@ namespace Orts.Simulation.Physics
                             }
                             currentWagIndex++;
                         }
-                    }
-                    if (pax.TimeToStartBoarding < gameClock && !pax.Boarded)
-                    {
-                        for (int i = 0; i < train.Cars.Count; i++)
-                        {
-                            var wagon = (train.Cars[i] as MSTSWagon);
-                            if (wagon.NoPaxsMode)
-                            {
-                                pax.WagonIndex = -1;
-                                for (int j = 0; j < train.Cars.Count; j++)
-                                {
-                                    if (!(train.Cars[j] as MSTSWagon).NoPaxsMode && (train.Cars[j] as MSTSWagon).PassengerCapacity > 0)
-                                    {
-                                        pax.WagonIndex = j;
-                                        if (Simulator.Random.Next(0, 5) == 0)
-                                            break;
-                                    }
-                                }
-                                if (pax.WagonIndex == -1)
-                                {
-                                    train.Simulator.Confirmer.Information(Simulator.Catalog.GetString("Passenger cannot board the train!!!"));
-                                    goto boarded;
-                                }
-                            }
-                            wagon.PassengerList.Add(pax);
-                            train.StationStops[0].PlatformItem.PassengerList.Remove(pax);
-                            wagon.MassKG += pax.Weight < 0 ? -pax.Weight : pax.Weight;
-                            train.TotalOnBoard++;
-                            string a = "";
-                            if (pax.Gender == Passenger.Genders.Female)
-                                a = "a";
-                            wagon.TimeToCloseDoor = 0;
-                            wagon.TimeToCloseDoorGenerate = 0;
-                            //train.Simulator.Confirmer.Information(Simulator.Catalog.GetString("Nastoupil" + a + " cestujíci ") + pax.FirstName.Replace("\"", "") + " " + pax.Surname.Replace("\"", ""));
-                            if (wagon.PassengerCapacity > 0)
-                                train.Simulator.Confirmer.Information(Simulator.Catalog.GetString("Passenger got in the train ") + pax.FirstName.Replace("\"", "") + " " + pax.Surname.Replace("\"", ""));
-                            goto boarded;
-                        }
-                    }
+                    }                    
                     else continue;
                     boarded:
                     break;

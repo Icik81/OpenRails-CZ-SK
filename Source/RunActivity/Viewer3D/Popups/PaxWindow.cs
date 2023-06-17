@@ -106,7 +106,7 @@ namespace Orts.Viewer3D.Popups
                 NumberGroupSeparator = "."
             };
             From.Text += Viewer.Catalog.GetString("Passengers weight: ") + totalWeight.ToString("N", separator) + Viewer.Catalog.GetString("kg / Count of passengers: ") + totalPax.ToString("N", separator);
-            scrollbox.CurrentTop = top + 100;
+            scrollbox.CurrentTop = top + 1000;
         }
     }
 }
