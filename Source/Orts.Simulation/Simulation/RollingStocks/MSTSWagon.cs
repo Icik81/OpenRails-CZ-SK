@@ -1159,7 +1159,7 @@ namespace Orts.Simulation.RollingStocks
 
             if (WagonType == WagonTypes.Passenger || HasPassengerCapacity)
             {
-                if (PassengerCapacity == -1)
+                if (PassengerCapacity < 0)
                 {
                     HasPassengerCapacity = false;
                     NoPaxsMode = true;
