@@ -16855,6 +16855,8 @@ namespace Orts.Simulation.Physics
                             string a = "";
                             if (pax.Gender == Passenger.Genders.Female)
                                 a = "a";
+                            wagon.TimeToCloseDoor = 0;
+                            wagon.TimeToCloseDoorGenerate = 0;
                             //train.Simulator.Confirmer.Information(Simulator.Catalog.GetString("Vystoupil" + a + " cestujíci ") + pax.FirstName.Replace("\"", "") + " " + pax.Surname.Replace("\"", ""));
                             train.Simulator.Confirmer.Information(Simulator.Catalog.GetString("Passenger got out of the train ") + pax.FirstName.Replace("\"", "") + " " + pax.Surname.Replace("\"", ""));
 
@@ -16936,6 +16938,8 @@ namespace Orts.Simulation.Physics
                                         string a = "";
                                         if (pax.Gender == Passenger.Genders.Female)
                                             a = "a";
+                                        wagon.TimeToCloseDoor = 0;
+                                        wagon.TimeToCloseDoorGenerate = 0;
                                         //train.Simulator.Confirmer.Information(Simulator.Catalog.GetString("Nastoupil" + a + " cestujíci ") + pax.FirstName.Replace("\"", "") + " " + pax.Surname.Replace("\"", ""));
                                         train.Simulator.Confirmer.Information(Simulator.Catalog.GetString("Passenger got in the train ") + pax.FirstName.Replace("\"", "") + " " + pax.Surname.Replace("\"", ""));
                                         goto boarded;
@@ -16977,6 +16981,8 @@ namespace Orts.Simulation.Physics
                             string a = "";
                             if (pax.Gender == Passenger.Genders.Female)
                                 a = "a";
+                            wagon.TimeToCloseDoor = 0;
+                            wagon.TimeToCloseDoorGenerate = 0;
                             //train.Simulator.Confirmer.Information(Simulator.Catalog.GetString("Nastoupil" + a + " cestujíci ") + pax.FirstName.Replace("\"", "") + " " + pax.Surname.Replace("\"", ""));
                             train.Simulator.Confirmer.Information(Simulator.Catalog.GetString("Passenger got in the train ") + pax.FirstName.Replace("\"", "") + " " + pax.Surname.Replace("\"", ""));
                             goto boarded;

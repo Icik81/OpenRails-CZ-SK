@@ -1108,7 +1108,7 @@ namespace Orts.Simulation
                             MyPlayerTrain.ClearStation(PlatformEnd1.LinkedPlatformItemId, PlatformEnd2.LinkedPlatformItemId, false);
                         }
 
-                        if (MyPlayerTrain.StationStops[0].PlatformItem.PassengerList.Count == 0 && !MyPlayerTrain.TrainDoorsOpen)
+                        if (MyPlayerTrain.StationStops[0].PlatformItem.PassengerList.Count == 0 && !MyPlayerTrain.TrainDoorsOpen && MyPlayerTrain.PeopleWantToLeaveCount == 0)
                             BoardingCompleted = true;
                         else
                             BoardingCompleted = false;
@@ -1211,7 +1211,7 @@ namespace Orts.Simulation
                             }
                         }
                         // Zavření dveří průvodčím při odjezdu, pokud zůstanou některé otevřené nezbednými lidmi
-                        if (maydepart && !loco.CentralHandlingDoors)
+                        if (maydepart && !loco.CentralHandlingDoors && BoardingCompleted)
                         {
                             MyPlayerTrain.ToggleDoors(true, false);
                             MyPlayerTrain.ToggleDoors(false, false);
