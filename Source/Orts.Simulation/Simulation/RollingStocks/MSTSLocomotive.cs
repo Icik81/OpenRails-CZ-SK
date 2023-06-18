@@ -2018,6 +2018,14 @@ namespace Orts.Simulation.RollingStocks
             outf.Write(DirectionControllerMirelRSPositionSh);
             outf.Write(MirelRSDirectionControllerPosition[1]);
             outf.Write(MirelRSDirectionControllerPosition[2]);
+            outf.Write(HS198ControllerPosition[1]);
+            outf.Write(HS198ControllerPosition[2]);
+            outf.Write(HS198ControllerThrottleValue);
+            outf.Write(preHS198ControllerThrottleValue);
+            outf.Write(HS198ControllerEDBValue);
+            outf.Write(DirectionControllerHS198PositionSh);
+            outf.Write(HS198DirectionControllerPosition[1]);
+            outf.Write(HS198DirectionControllerPosition[2]);
             outf.Write(VentilationSwitchPosition[1]);
             outf.Write(VentilationSwitchPosition[2]);
             outf.Write(VentilationIsOn);
@@ -2242,6 +2250,14 @@ namespace Orts.Simulation.RollingStocks
             DirectionControllerMirelRSPositionSh = inf.ReadBoolean();
             MirelRSDirectionControllerPosition[1] = inf.ReadInt32();
             MirelRSDirectionControllerPosition[2] = inf.ReadInt32();
+            HS198ControllerPosition[1] = inf.ReadInt32();
+            HS198ControllerPosition[2] = inf.ReadInt32();
+            HS198ControllerThrottleValue = inf.ReadSingle();
+            preHS198ControllerThrottleValue = inf.ReadSingle();
+            HS198ControllerEDBValue = inf.ReadSingle();
+            DirectionControllerHS198PositionSh = inf.ReadBoolean();
+            HS198DirectionControllerPosition[1] = inf.ReadInt32();
+            HS198DirectionControllerPosition[2] = inf.ReadInt32();
             VentilationSwitchPosition[1] = inf.ReadInt32();
             VentilationSwitchPosition[2] = inf.ReadInt32();
             VentilationIsOn = inf.ReadBoolean();
@@ -5200,6 +5216,8 @@ namespace Orts.Simulation.RollingStocks
                 Headlight[1] = Headlight[2] = 0;
                 MirelRSDirectionControllerPosition[1] = preMirelRSDirectionControllerPosition[1] = MirelRSDirectionControllerPosition[2] = preMirelRSDirectionControllerPosition[2] = 1;
                 MirelRSControllerPosition[1] = preMirelRSControllerPosition[1] = MirelRSControllerPosition[2] = preMirelRSControllerPosition[2] = 3;
+                HS198DirectionControllerPosition[1] = preHS198DirectionControllerPosition[1] = HS198DirectionControllerPosition[2] = preHS198DirectionControllerPosition[2] = 1;
+                HS198ControllerPosition[1] = preHS198ControllerPosition[1] = HS198ControllerPosition[2] = preHS198ControllerPosition[2] = 3;
                 VentilationSwitchPosition[1] = VentilationSwitchPosition[2] = 1;
 
                 if (CruiseControl != null)
@@ -14449,6 +14467,7 @@ namespace Orts.Simulation.RollingStocks
             }
         }
 
+        #region CommandCylinder
         public bool CommandCylinderEnable;
         public int CommandCylinderMaxPosition;
         public int[] preCommandCylinderPosition = new int[3];
@@ -14607,6 +14626,7 @@ namespace Orts.Simulation.RollingStocks
             }
             //Simulator.Confirmer.Warning("CommandCylinderThrottlePosition: " + CommandCylinderThrottlePosition[LocoStation]);
         }
+        #endregion CommandCylinder
 
         #endregion
 
