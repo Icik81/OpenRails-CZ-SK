@@ -793,7 +793,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerTransmissions
                     }
 
                     // Zabraňuje nekontrolovanému rozkmitání soustavy
-                    if ((Math.Abs(driveForceN) < Math.Abs(axleForceN))
+                    if ((Math.Abs(driveForceN) < 0.5f * Math.Abs(axleForceN))
                         || Math.Abs(TrainSpeedMpS) == 0.0f)
                     {
                         if (Math.Abs(axleSpeedMpS) > Math.Abs(TrainSpeedMpS))
