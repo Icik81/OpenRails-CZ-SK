@@ -5661,7 +5661,7 @@ namespace Orts.Simulation.RollingStocks
                 //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("WeatherAdv: " + Simulator.WeatherAdv));                                                                
                 StepControllerValue = Simulator.StepControllerValue;
                 // StepController odpovídá v defaultu throttle
-                if (IsLeadLocomotive() && !MirerControllerEnable && !MirelRSControllerEnable)
+                if (IsLeadLocomotive() && !MirerControllerEnable && !MirelRSControllerEnable && !HS198ControllerEnable)
                     Simulator.StepControllerValue = LocalThrottlePercent / 100;
 
                 TogglePowerKey();
@@ -5682,6 +5682,7 @@ namespace Orts.Simulation.RollingStocks
                 ToggleDieselDirectionController2();
                 MirerController();
                 MirelRSController(elapsedClockSeconds);
+                HS198Controller(elapsedClockSeconds);
                 VentilationSwitch(elapsedClockSeconds);
                 CommandCylinder(elapsedClockSeconds);
                 TogglePantograph4Switch();
@@ -6413,7 +6414,7 @@ namespace Orts.Simulation.RollingStocks
                 DynamicBrakeFullRangeIncreaseTimeSeconds = 4;
             if (DynamicBrakeFullRangeDecreaseTimeSeconds == 0)
                 DynamicBrakeFullRangeDecreaseTimeSeconds = 6;
-            if (PowerOn && ((Direction != Direction.N && !MirelRSControllerEnable) || MirelRSControllerEnable))
+            if (PowerOn && ((Direction != Direction.N && !MirelRSControllerEnable && !HS198ControllerEnable) || MirelRSControllerEnable || HS198ControllerEnable))
             {
                 if (extendedPhysics == null || !IsPlayerTrain) // AI musí vždy počítat TractiveForceN kvůli zvukům
                 {
@@ -6437,7 +6438,7 @@ namespace Orts.Simulation.RollingStocks
                     }
                     else
                     {
-                        if ((t > 0 && !MirelRSControllerEnable) || MirelRSControllerEnable)
+                        if ((t > 0 && !MirelRSControllerEnable && !HS198ControllerEnable) || MirelRSControllerEnable || HS198ControllerEnable)
                         {
                             // Icik
                             switch (SwitchingVoltageMode)
@@ -6573,7 +6574,7 @@ namespace Orts.Simulation.RollingStocks
                             break;
                         case Direction.N:
                         default:
-                            if (!MirelRSControllerEnable)
+                            if (!MirelRSControllerEnable && !HS198ControllerEnable)
                                 TractiveForceN *= 0;
                             break;
                     }
@@ -7507,7 +7508,7 @@ namespace Orts.Simulation.RollingStocks
         public virtual void StartReverseIncrease(float? target)
         {
             // Icik
-            if (!DirectionButton && !DieselDirectionController && !DieselDirectionController2 && !DieselDirectionController3 && !DieselDirectionController4 && !MirelRSControllerEnable)
+            if (!DirectionButton && !DieselDirectionController && !DieselDirectionController2 && !DieselDirectionController3 && !DieselDirectionController4 && !MirelRSControllerEnable && !HS198ControllerEnable)
             {
                 if (DirectionPosition[LocoStation] < 1)
                 {
@@ -7540,7 +7541,7 @@ namespace Orts.Simulation.RollingStocks
         public virtual void StartReverseDecrease(float? target)
         {
             // Icik
-            if (!DirectionButton && !DieselDirectionController && !DieselDirectionController2 && !DieselDirectionController3 && !DieselDirectionController4 && !MirelRSControllerEnable)
+            if (!DirectionButton && !DieselDirectionController && !DieselDirectionController2 && !DieselDirectionController3 && !DieselDirectionController4 && !MirelRSControllerEnable && !HS198ControllerEnable)
             {
                 if (DirectionPosition[LocoStation] > -1)
                 {
@@ -7585,6 +7586,8 @@ namespace Orts.Simulation.RollingStocks
             if (MirerControllerEnable)
                 return;
             if (MirelRSControllerEnable)
+                return;
+            if (HS198ControllerEnable)
                 return;
             if (CommandCylinderEnable)
                 return;
@@ -7754,6 +7757,8 @@ namespace Orts.Simulation.RollingStocks
             if (MirerControllerEnable)
                 return;
             if (MirelRSControllerEnable)
+                return;
+            if (HS198ControllerEnable)
                 return;
             if (CommandCylinderEnable)
                 return;
@@ -8742,6 +8747,8 @@ namespace Orts.Simulation.RollingStocks
         public void StartDynamicBrakeIncrease(float? target)
         {
             if (MirelRSControllerEnable)
+                return;
+            if (HS198ControllerEnable)
                 return;
 
             if (DynamicBrakeController == null)
@@ -10302,8 +10309,7 @@ namespace Orts.Simulation.RollingStocks
         }
 
         public bool LocoGroundBreaker;
-        float LocoGroundBreakerTimer;
-        public bool HS198ControllerEnable;
+        float LocoGroundBreakerTimer;        
         public void ToggleHV3Switch()
         {
             if (!IsLeadLocomotive())
@@ -13072,6 +13078,7 @@ namespace Orts.Simulation.RollingStocks
             }            
         }
 
+        #region MirelRS
         public bool MirelRSControllerEnable;
         public int[] MirelRSControllerPosition = new int[3];
         public int[] preMirelRSControllerPosition = new int[3];        
@@ -13716,6 +13723,647 @@ namespace Orts.Simulation.RollingStocks
                 Simulator.Confirmer.MSG(Simulator.Catalog.GetString("Controller") + ": " + MirelRSControllerThrottleValue);
             }
         }
+        #endregion MirelRS
+
+        #region HS198
+        public bool HS198ControllerEnable;
+        public int[] HS198ControllerPosition = new int[3];
+        public int[] preHS198ControllerPosition = new int[3];
+        public bool HS198ControllerPressUp;
+        public bool HS198ControllerPressDown;
+        public bool HS198ControllerAutoPressDown;
+        public string[] HS198ControllerPositionName = new string[3];
+        float HS198ControllerThrottleValue;
+        float preHS198ControllerThrottleValue;
+        float HS198ControllerThrottleDummyValue;
+        float HS198ControllerEDBValue = -1;
+        float HS198ControllerMaxValue = 56;
+        public float HS198ControllerPressTimer;
+        float HS198ControllerAutoPressTimer;
+        float HS198ControllerThrottleValueTimer;
+        float HS198ControllerEDBValueTimer;
+        float HS198ControllerOverTemperatureValueTimer;
+        float HS198ControllerWhellSlipValueTimer;
+        float HS198OverTemperatureTimer;
+        bool HS198ControllerCanThrottleChangeValue_0;
+        bool HS198ControllerCanThrottleChangeValue_1;
+        bool HS198ControllerCanThrottleChangeValue_2;
+        bool HS198ControllerCanThrottleChangeValue_3;
+        bool HS198ControllerCanEDBChangeValue_0;
+        bool HS198ControllerCanEDBChangeValue_1;
+        bool HS198ControllerCanEDBChangeValue_2;
+        bool HS198ControllerLongPressUp;
+        bool HS198ControllerShortPressUp;
+        bool HS198ControllerLongPressDown;
+        bool HS198ControllerShortPressDown;
+        public bool HS198EDBBreak;
+        float HS198ControllerDisplayValue;
+        float HS198ControllerDisplay2Value;        
+        int HS198SkipDiode;
+        bool HS198CanSkip;
+        bool HS198Skip_Start;
+        bool HS198Skip_Ready;
+        bool HS198PositionBlocked;
+        bool HS198Protect;
+        int HS198SkipCounter;
+
+        public bool DirectionControllerHS198PositionSh;
+        public bool preDirectionControllerHS198PositionSh;
+        public bool HS198DirectionControllerPressUp;
+        public bool HS198DirectionControllerPressDown;
+        public int[] HS198DirectionControllerPosition = new int[3];
+        public int[] preHS198DirectionControllerPosition = new int[3];
+        public string[] HS198DirectionControllerPositionName = new string[3];
+
+        public void HS198Controller(float elapsedClockSeconds)
+        {
+            if (!IsLeadLocomotive())
+                return;
+
+            if (!HS198ControllerEnable)
+                return;
+
+            if (HS198DirectionControllerPressUp)
+            {
+                if (HS198DirectionControllerPosition[LocoStation] == 0 || (HS198DirectionControllerPosition[LocoStation] == 1 && SpeedMpS > -0.1f) || HS198DirectionControllerPosition[LocoStation] == 2)
+                {
+                    if (HS198DirectionControllerPosition[LocoStation] < 3)
+                    {
+                        if (HS198DirectionControllerPosition[LocoStation] == 2)
+                            SignalEvent(Event.ReverserToShOn);
+                        if (HS198DirectionControllerPosition[LocoStation] == 1)
+                            SignalEvent(Event.ReverserToForwardBackward);
+                        if (HS198DirectionControllerPosition[LocoStation] == 0)
+                            SignalEvent(Event.ReverserToNeutral);
+                        HS198DirectionControllerPosition[LocoStation]++;
+                    }
+                }
+            }
+
+            if (HS198DirectionControllerPressDown)
+            {
+                if ((HS198DirectionControllerPosition[LocoStation] == 1 && SpeedMpS < 0.1f) || HS198DirectionControllerPosition[LocoStation] == 2 || HS198DirectionControllerPosition[LocoStation] == 3)
+                {
+                    if (HS198DirectionControllerPosition[LocoStation] > 0)
+                    {
+                        if (HS198DirectionControllerPosition[LocoStation] == 3)
+                            SignalEvent(Event.ReverserToShOff);
+                        if (HS198DirectionControllerPosition[LocoStation] == 2)
+                            SignalEvent(Event.ReverserToNeutral);
+                        if (HS198DirectionControllerPosition[LocoStation] == 1)
+                            SignalEvent(Event.ReverserToForwardBackward);
+                        HS198DirectionControllerPosition[LocoStation]--;
+                    }
+                }
+            }
+
+            // Pozice HS198 směrpáky
+            if (StationIsActivated[LocoStation])
+            {
+                if (HS198DirectionControllerPosition[LocoStation] != preHS198DirectionControllerPosition[LocoStation])
+                {
+                    preHS198DirectionControllerPosition[LocoStation] = HS198DirectionControllerPosition[LocoStation];
+                    DirectionControllerHS198PositionSh = false;
+                    switch (HS198DirectionControllerPosition[LocoStation])
+                    {
+                        case 0:
+                            HS198DirectionControllerPositionName[LocoStation] = "Z"; // nearetovaná                        
+                            Direction = Direction.Reverse;
+                            break;
+                        case 1:
+                            HS198DirectionControllerPositionName[LocoStation] = "0";
+                            Direction = Direction.N;
+                            break;
+                        case 2:
+                            HS198DirectionControllerPositionName[LocoStation] = "P"; // nearetovaná
+                            Direction = Direction.Forward;
+                            break;
+                        case 3:
+                            HS198DirectionControllerPositionName[LocoStation] = "Sh";
+                            DirectionControllerHS198PositionSh = true;
+                            Direction = Direction.Forward;
+                            break;
+                    }
+                    Simulator.Confirmer.Information(Simulator.Catalog.GetString("Reverser") + ": " + HS198DirectionControllerPositionName[LocoStation]);
+                }
+            }
+            if (HS198DirectionControllerPosition[LocoStation] == 1)
+                HS198ControllerCanThrottleChangeValue_0 = true;
+
+
+            if (HS198ControllerPressUp)
+            {
+                HS198ControllerPressTimer += elapsedClockSeconds;
+
+                // Delší stisk
+                if (HS198ControllerPressTimer > 0.5f)
+                {
+                    if (HS198ControllerPosition[LocoStation] < 7 && (HS198ControllerPosition[LocoStation] != 2 || (HS198EDBBreak && HS198ControllerPosition[LocoStation] == 2)))
+                    {
+                        HS198ControllerPosition[LocoStation]++;
+                        SignalEvent(Event.ControllerPush);
+                        HS198EDBBreak = false;
+                    }
+                    HS198ControllerPressTimer = 0;
+                    HS198ControllerLongPressUp = true;
+                }
+                // Krátký stisk
+                else
+                {
+                    if (HS198ControllerPosition[LocoStation] == 5)
+                    {
+                        HS198ControllerPosition[LocoStation] = 6;
+                        SignalEvent(Event.ControllerPush);
+                    }
+
+                    if (HS198ControllerPosition[LocoStation] == 1)
+                    {
+                        HS198ControllerPosition[LocoStation] = 2;
+                        SignalEvent(Event.ControllerPush);
+                    }
+                    HS198ControllerShortPressUp = true;
+                }
+            }
+
+            if (HS198ControllerPressDown)
+            {
+                HS198ControllerPressTimer += elapsedClockSeconds;
+
+                // Delší stisk
+                if (HS198ControllerPressTimer > 0.5f)
+                {
+                    if (HS198ControllerPosition[LocoStation] > 0)
+                    {
+                        HS198ControllerPosition[LocoStation]--;
+                        SignalEvent(Event.ControllerPush);
+                    }
+                    HS198ControllerPressTimer = 0;
+                    HS198ControllerLongPressDown = true;
+                }
+                // Krátký stisk
+                else
+                {
+                    if (HS198ControllerPosition[LocoStation] == 5)
+                    {
+                        HS198ControllerPosition[LocoStation] = 4;
+                        SignalEvent(Event.ControllerPush);
+                    }
+
+                    if (HS198ControllerPosition[LocoStation] == 1)
+                    {
+                        HS198ControllerPosition[LocoStation] = 0;
+                        SignalEvent(Event.ControllerPush);
+                    }
+                    HS198ControllerShortPressDown = true;
+                }
+            }
+
+            if (HS198ControllerAutoPressDown)
+            {
+                HS198ControllerAutoPressTimer += elapsedClockSeconds;
+
+                if (HS198ControllerAutoPressTimer > 0.25f)
+                {
+                    if (HS198ControllerPosition[LocoStation] > 5 || HS198ControllerPosition[LocoStation] == 2)
+                    {
+                        HS198ControllerPosition[LocoStation]--;
+                        SignalEvent(Event.ControllerPull);
+                    }
+                    else
+                        HS198ControllerAutoPressDown = false;
+                    HS198ControllerAutoPressTimer = 0;
+                }
+            }
+
+            // Pozice MireluRS
+            if (HS198ControllerPosition[LocoStation] != preHS198ControllerPosition[LocoStation])
+            {
+                preHS198ControllerPosition[LocoStation] = HS198ControllerPosition[LocoStation];
+                switch (HS198ControllerPosition[LocoStation])
+                {
+                    case 0:
+                        HS198ControllerPositionName[LocoStation] = "+B"; // nearetovaná                        
+                        HS198ControllerShortPressDown = false;
+                        HS198ControllerCanEDBChangeValue_2 = true;
+                        break;
+                    case 1:
+                        HS198ControllerPositionName[LocoStation] = "B";
+                        HS198ControllerLongPressDown = false;
+                        HS198ControllerCanEDBChangeValue_0 = HS198ControllerCanEDBChangeValue_1 = HS198ControllerCanEDBChangeValue_2 = false;
+                        HS198Protect = false;
+                        break;
+                    case 2:
+                        HS198ControllerPositionName[LocoStation] = "-B"; // nearetovaná
+                        HS198ControllerShortPressUp = false;
+                        HS198ControllerCanEDBChangeValue_1 = true;
+                        break;
+                    case 3:
+                        HS198ControllerPositionName[LocoStation] = "0";
+                        HS198ControllerLongPressUp = false;
+                        HS198ControllerLongPressDown = false;
+                        HS198ControllerCanThrottleChangeValue_0 = true;
+                        HS198ControllerCanEDBChangeValue_0 = true;
+                        HS198Protect = false;
+                        break;
+                    case 4:
+                        HS198ControllerPositionName[LocoStation] = "-1"; // nearetovaná
+                        HS198ControllerShortPressDown = false;
+                        HS198ControllerCanThrottleChangeValue_1 = true;
+                        break;
+                    case 5:
+                        HS198ControllerPositionName[LocoStation] = "J";
+                        HS198ControllerLongPressUp = false;
+                        HS198ControllerLongPressDown = false;
+                        HS198PositionBlocked = false;
+                        HS198Skip_Ready = false;
+                        HS198Protect = false;
+                        break;
+                    case 6:
+                        HS198ControllerPositionName[LocoStation] = "+1"; // nearetovaná
+                        HS198ControllerShortPressUp = false;
+                        HS198ControllerCanThrottleChangeValue_2 = true;
+                        HS198ControllerCanThrottleChangeValue_3 = false;
+                        break;
+                    case 7:
+                        HS198ControllerPositionName[LocoStation] = "++";
+                        HS198ControllerLongPressUp = false;
+                        HS198ControllerCanThrottleChangeValue_3 = true;
+                        break;
+                }
+                Simulator.Confirmer.Information(Simulator.Catalog.GetString("HS198") + ": " + HS198ControllerPositionName[LocoStation]);
+            }
+
+            HS198ControllerDisplayValue = HS198ControllerDisplay2Value = HS198ControllerThrottleValue;
+
+            // Hodnoty pro StepController
+            if (CircuitBreakerOn)
+            {
+                if (WheelSlipWarning || WheelSlip)
+                    goto HS198Protects;
+
+                if (HS198ControllerCanThrottleChangeValue_0 || HS198ControllerCanThrottleChangeValue_1 || HS198ControllerCanThrottleChangeValue_2 || HS198ControllerCanThrottleChangeValue_3
+                    || ShModeActivated || Mode_To_34_Start || ShModeActivated2 || Mode_To_27_Start1 || Mode_To_27_Start2
+                    || (NoShMode && HS198ControllerThrottleValue > 27 && HS198ControllerThrottleValue < 34 && !Mode_To_34_Start)
+                    || HS198Skip_Start)
+                {
+                    HS198ControllerThrottleValueTimer += elapsedClockSeconds;
+
+                    // Šuntování a blokování
+                    if (DirectionControllerHS198PositionSh && HS198ControllerThrottleValue <= 32)
+                        HS198ControllerMaxValue = 32f;
+                    else
+                    if (DirectionControllerHS198PositionSh && HS198ControllerThrottleValue <= 56)
+                        HS198ControllerMaxValue = 56f;
+                    else
+                        HS198ControllerMaxValue = 51f;
+
+                    if ((HS198ControllerThrottleValue < 27 || (HS198ControllerThrottleValue > 32 && HS198ControllerThrottleValue < 51)))
+                        NoShMode = true;
+                    else
+                        NoShMode = false;
+
+                    if (DirectionControllerHS198PositionSh && HS198ControllerThrottleValue >= 51)
+                    {
+                        ShModeActivated2 = true;
+                    }
+                    // Auto skrokování do 51
+                    if (ShModeActivated2 && !DirectionControllerHS198PositionSh)
+                    {
+                        HS198ControllerMaxValue = 56f;
+                        if (HS198ControllerThrottleValueTimer > 0.25f)
+                        {
+                            if (HS198ControllerThrottleValue > 51f)
+                            {
+                                HS198ControllerThrottleValue--;
+                                HS198ControllerCheckThrottleChange();
+                            }
+                            HS198ControllerThrottleValueTimer = 0;
+                            if (HS198ControllerThrottleValue <= 51f)
+                            {
+                                ShModeActivated2 = false;
+                            }
+                        }
+                    }
+
+                    if (DirectionControllerHS198PositionSh && HS198ControllerThrottleValue == 27 && !ShModeActivated)
+                        ShModeActivated = true;
+
+                    // Auto 1.skrokování do 27
+                    if ((ShModeActivated && !DirectionControllerHS198PositionSh) || Mode_To_27_Start1)
+                    {
+                        Mode_To_27_Start1 = true;
+                        if (HS198ControllerThrottleValueTimer > 0.25f)
+                        {
+                            if (HS198ControllerThrottleValue > 27f)
+                            {
+                                HS198ControllerThrottleValue--;
+                                HS198ControllerCheckThrottleChange();
+                            }
+                            HS198ControllerThrottleValueTimer = 0;
+                            if (HS198ControllerThrottleValue <= 27f)
+                            {
+                                Mode_To_27_Start1 = false;
+                                ShModeActivated = false;
+                            }
+                        }
+                    }
+
+                    // Auto 2.skrokování do 27
+                    if (HS198ControllerThrottleValue >= 34)
+                    {
+                        Mode_To_27_Start2_Enable = true;
+                        preDirectionControllerHS198PositionSh = DirectionControllerHS198PositionSh;
+                    }
+                    if (HS198ControllerThrottleValue <= 27)
+                        Mode_To_27_Start2_Enable = false;
+                    if ((NoShMode && HS198ControllerThrottleValue > 27 && HS198ControllerThrottleValue < 34 && !Mode_To_34_Start && Mode_To_27_Start2_Enable) || Mode_To_27_Start2)
+                    {
+                        Mode_To_27_Start2 = true;
+                        DirectionControllerHS198PositionSh = false;
+                        if (HS198ControllerThrottleValueTimer > 0.25f)
+                        {
+                            if (HS198ControllerThrottleValue > 27f)
+                            {
+                                HS198ControllerThrottleValue--;
+                                HS198ControllerCheckThrottleChange();
+                            }
+                            HS198ControllerThrottleValueTimer = 0;
+                            if (HS198ControllerThrottleValue <= 27f)
+                            {
+                                Mode_To_27_Start2 = false;
+                                DirectionControllerHS198PositionSh = preDirectionControllerHS198PositionSh;
+                            }
+                        }
+                    }
+
+                    // Auto krokování do 34 
+                    if (((!DirectionControllerHS198PositionSh && HS198ControllerThrottleValue > 26 && HS198ControllerThrottleValue < 34 && HS198ControllerPositionName[LocoStation] == "+1") || Mode_To_34_Start) && !HS198PositionBlocked)
+                    {
+                        HS198ControllerCanThrottleChangeValue_2 = false;
+                        Mode_To_34_Start = true;
+                        if (HS198ControllerThrottleValueTimer > 0.25f)
+                        {
+                            if (HS198ControllerThrottleValue < 34f)
+                            {
+                                HS198ControllerThrottleValue++;
+                                HS198ControllerCheckThrottleChange();
+                            }
+                            HS198ControllerThrottleValueTimer = 0;
+                            if (HS198ControllerThrottleValue == 34f)
+                            {
+                                Mode_To_34_Start = false;
+                            }
+                        }
+                    }
+
+                    // Skrokování do 0
+                    if (HS198ControllerThrottleValueTimer > 0.25f)
+                    {
+                        // 0
+                        if (HS198ControllerCanThrottleChangeValue_0)
+                        {
+                            // Směrová páka v 0
+                            if (HS198DirectionControllerPosition[LocoStation] == 1 && PowerCurrent1 < 300f && HS198ControllerThrottleValue <= 27f)
+                            {
+                                HS198ControllerThrottleValue = preHS198ControllerThrottleValue = 0;
+                                SetThrottlePercent(0f);
+                            }
+                            else
+                            // Kontrolér v B
+                            if (HS198ControllerPosition[LocoStation] == 1 && PowerCurrent1 < 300f && HS198ControllerThrottleValue <= 27f)
+                            {
+                                HS198ControllerThrottleValue = preHS198ControllerThrottleValue = 0;
+                                SetThrottlePercent(0f);
+                            }
+                            else
+                            // Směrová páka v 0 nebo kontrolér v 0 nebo v B
+                            if ((HS198DirectionControllerPosition[LocoStation] == 1 || HS198ControllerPosition[LocoStation] == 3 || HS198ControllerPosition[LocoStation] == 1) && HS198ControllerThrottleValue > 0f)
+                            {
+                                HS198ControllerThrottleValue--;
+                                HS198ControllerCheckThrottleChange();
+                            }
+
+                            HS198ControllerThrottleValueTimer = 0;
+                            if (HS198ControllerThrottleValue == 0 || HS198ControllerPositionName[LocoStation] == "+1" || HS198ControllerPositionName[LocoStation] == "-1")
+                                HS198ControllerCanThrottleChangeValue_0 = false;
+                        }
+                    }
+
+                    if ((HS198ControllerThrottleValueTimer > 0.5f && !Mode_To_27_Start1 && !Mode_To_27_Start2 && !Mode_To_34_Start) || HS198Skip_Start)
+                    {
+                        // -1
+                        if (HS198ControllerCanThrottleChangeValue_1 && HS198ControllerShortPressDown)
+                            if (HS198ControllerThrottleValue > 0)
+                            {
+                                HS198ControllerThrottleValue--;
+                                HS198ControllerCheckThrottleChange();
+                            }
+
+                        // +1
+                        if (HS198ControllerCanThrottleChangeValue_2 && HS198ControllerShortPressUp)
+                            if (HS198ControllerThrottleValue < HS198ControllerMaxValue)
+                            {
+                                HS198ControllerThrottleValue++;
+                                HS198ControllerCheckThrottleChange();
+                            }
+
+                        // ++
+                        if (HS198ControllerCanThrottleChangeValue_3 || HS198Skip_Start)
+                        {
+                            if (HS198CanSkip || HS198Skip_Start)
+                            {
+                                HS198Skip_Ready = true;
+                                HS198Skip_Start = true;
+                                if (PowerCurrent1 <= 300f && Simulator.StepControllerValue <= 26)
+                                {
+                                    Simulator.StepControllerValue++;
+                                    HS198SkipCounter++;
+                                    if (HS198SkipCounter > 1f)
+                                    {
+                                        ThrottleController.StartIncrease();
+                                        ThrottleController.StopIncrease();
+                                    }
+                                }
+                                else
+                                {
+                                    HS198ControllerThrottleValue = preHS198ControllerThrottleValue = Simulator.StepControllerValue;
+                                    HS198Skip_Start = false;
+                                    HS198PositionBlocked = true;
+                                    HS198SkipCounter = 0;
+                                }
+                            }
+                            else
+                            {
+                                // Autokrokování nahoru mimo shuntů
+                                if (!HS198Protect && !HS198Skip_Ready && (HS198ControllerThrottleValue < 27 || (HS198ControllerThrottleValue >= 34 && HS198ControllerThrottleValue < 51)))
+                                {
+                                    HS198ControllerThrottleValue++;
+                                    HS198ControllerCheckThrottleChange();
+                                }
+                                HS198PositionBlocked = true;
+                            }
+                        }
+                        HS198ControllerThrottleValueTimer = 0;
+                        HS198ControllerCanThrottleChangeValue_1 = HS198ControllerCanThrottleChangeValue_2 = false;
+                    }
+                }
+
+                // Dioda pro přeskok stupňů
+                if (!HS198Protect && AbsSpeedMpS >= 40f / 3.6f && PowerCurrent1 < 300f && HS198ControllerPosition[LocoStation] > 3 && HS198ControllerPosition[LocoStation] <= 7 && HS198ControllerThrottleValue > 1f && HS198ControllerThrottleValue < 27f && !HS198PositionBlocked)
+                {
+                    HS198CanSkip = true;
+                    HS198SkipDiode = 1;
+                }
+                else
+                {
+                    HS198CanSkip = false;
+                    HS198SkipDiode = 0;
+                }
+
+                // Hodnoty pro EDB
+                if (HS198ControllerCanEDBChangeValue_0 || HS198ControllerCanEDBChangeValue_1 || HS198ControllerCanEDBChangeValue_2)
+                {
+                    HS198ControllerEDBValueTimer += elapsedClockSeconds;
+
+                    if (HS198ControllerEDBValueTimer > 0.05f)
+                    {
+                        // 0
+                        if (HS198ControllerCanEDBChangeValue_0)
+                        {
+                            if (HS198ControllerEDBValue > -1f)
+                                HS198ControllerEDBValue--;
+                            if (HS198ControllerEDBValue == -1)
+                                HS198ControllerCanEDBChangeValue_0 = HS198ControllerCanEDBChangeValue_1 = HS198ControllerCanEDBChangeValue_2 = false;
+                        }
+
+                        // -B
+                        if (HS198ControllerCanEDBChangeValue_1)
+                        {
+                            if (HS198ControllerEDBValue == -1) HS198ControllerEDBValue = 0;
+                            if (HS198ControllerEDBValue > 0)
+                                HS198ControllerEDBValue--;
+                        }
+
+                        // +B
+                        if (HS198ControllerCanEDBChangeValue_2)
+                        {
+                            if (HS198ControllerEDBValue == -1) HS198ControllerEDBValue = 0;
+                            if (HS198ControllerEDBValue < 100f)
+                                HS198ControllerEDBValue++;
+                        }
+
+                        HS198ControllerEDBValueTimer = 0;
+                    }
+                }
+                SetDynamicBrakePercent(HS198ControllerEDBValue);
+
+            // Ochrany
+            HS198Protects:
+
+                #region Ochrany
+                // 2 sběrače nad 50km/h
+                if (AbsSpeedMpS > 50f / 3.6f)
+                {
+                    if (Pantographs[1].State == PantographState.Up && Pantographs[2].State == PantographState.Up)
+                    {
+                        HS198Protect = true;
+                        Simulator.StepControllerValue = 0f;
+                    }
+                }
+                // Tepelné ochrany
+                if (HS198ControllerThrottleValue >= 22f && HS198ControllerThrottleValue <= 26f)
+                {
+                    HS198ControllerOverTemperatureValueTimer += elapsedClockSeconds;
+                    HS198OverTemperatureTimer += elapsedClockSeconds;
+                    if (HS198OverTemperatureTimer > 60f && HS198ControllerOverTemperatureValueTimer > 0.25f)
+                    {
+                        HS198Protect = true;
+                        if (HS198ControllerThrottleValue > 21f)
+                        {
+                            HS198ControllerThrottleValue--;
+                            HS198ControllerCheckThrottleChange();
+                        }
+                        HS198ControllerOverTemperatureValueTimer = 0f;
+                    }
+                }
+                else
+                if (HS198ControllerThrottleValue >= 47f && HS198ControllerThrottleValue <= 50f)
+                {
+                    HS198ControllerOverTemperatureValueTimer += elapsedClockSeconds;
+                    HS198OverTemperatureTimer += elapsedClockSeconds;
+                    if (HS198OverTemperatureTimer > 60f && HS198ControllerOverTemperatureValueTimer > 0.25f)
+                    {
+                        HS198Protect = true;
+                        if (HS198ControllerThrottleValue > 46f)
+                        {
+                            HS198ControllerThrottleValue--;
+                            HS198ControllerCheckThrottleChange();
+                        }
+                        HS198ControllerOverTemperatureValueTimer = 0f;
+                    }
+                }
+                else
+                    HS198OverTemperatureTimer = 0f;
+                // Prokluz kol
+                if (WheelSlipWarning || WheelSlip)
+                {
+                    HS198Protect = true;
+                    HS198ControllerWhellSlipValueTimer += elapsedClockSeconds;
+                    if (HS198ControllerWhellSlipValueTimer > 0.5f)
+                    {
+                        if (HS198ControllerThrottleValue > 0f)
+                        {
+                            HS198ControllerThrottleValue--;
+                            HS198ControllerCheckThrottleChange();
+                        }
+                        HS198ControllerWhellSlipValueTimer = 0f;
+                    }
+                }
+                else
+                    HS198ControllerWhellSlipValueTimer = 0f;
+                #endregion Ochrany
+
+                // Obecná proměnná pro StepController
+                HS198ControllerThrottleDummyValue = 0;
+                if (!DirectionControllerHS198PositionSh && HS198ControllerThrottleValue > 27 && HS198ControllerThrottleValue < 33)
+                {
+                    HS198ControllerThrottleDummyValue = 27;
+                    Simulator.StepControllerValue = HS198ControllerThrottleDummyValue;
+                }
+                if (HS198ControllerThrottleDummyValue == 0 && !HS198Skip_Start)
+                    Simulator.StepControllerValue = HS198ControllerThrottleValue;
+            }
+            // Bouchnutí HV nebo rychlobrzda
+            if (!CircuitBreakerOn || BrakeSystem.EmergencyBrakeForWagon)
+            {
+                HS198ControllerThrottleValue = preHS198ControllerThrottleValue = Simulator.StepControllerValue = 0;
+                SetThrottlePercent(0f);
+                HS198Protect = true;
+                HS198CanSkip = false;
+                HS198SkipDiode = 0;
+            }
+        }
+
+        public void HS198ControllerCheckThrottleChange()
+        {
+            if (HS198ControllerThrottleValue > preHS198ControllerThrottleValue)
+            {
+                ThrottleController.StartIncrease();
+                ThrottleController.StopIncrease();
+                SignalEvent(Event.ThrottleChange);
+                preHS198ControllerThrottleValue = HS198ControllerThrottleValue;
+                Simulator.Confirmer.MSG(Simulator.Catalog.GetString("Controller") + ": " + HS198ControllerThrottleValue);
+            }
+            if (HS198ControllerThrottleValue < preHS198ControllerThrottleValue)
+            {
+                ThrottleController.StartDecrease();
+                ThrottleController.StopDecrease();
+                SignalEvent(Event.ThrottleChange);
+                preHS198ControllerThrottleValue = HS198ControllerThrottleValue;
+                Simulator.Confirmer.MSG(Simulator.Catalog.GetString("Controller") + ": " + HS198ControllerThrottleValue);
+            }
+        }
+        #endregion HS198
 
         // Přepínač ventilace
         public int[] VentilationSwitchPosition = new int[3];
@@ -16619,6 +17267,55 @@ namespace Orts.Simulation.RollingStocks
                         if (MirelRSControllerEnable)
                         {
                             data = MirelRSSkipDiode;
+                        }
+                        break;
+                    }
+                case CABViewControlTypes.HS198_CONTROLLER:
+                    {
+                        HS198ControllerEnable = true;
+                        data = HS198ControllerPosition[LocoStation];
+                        break;
+                    }
+                case CABViewControlTypes.HS198_DISPLAY:
+                    {
+                        cvc.ElapsedTime += elapsedTime;
+                        data = cvc.PreviousData;
+                        if (cvc.ElapsedTime > cvc.UpdateTime)
+                        {
+                            cvc.PreviousData = HS198ControllerDisplayValue;
+                            cvc.ElapsedTime = 0;
+                        }
+                        break;
+                    }
+                case CABViewControlTypes.HS198_DISPLAY2:
+                    {
+                        if (DirectionControllerHS198PositionSh || ShModeActivated || ShModeActivated2)
+                        {
+                            cvc.ElapsedTime += elapsedTime;
+                            data = cvc.PreviousData;
+                            if (cvc.ElapsedTime > cvc.UpdateTime)
+                            {
+                                cvc.PreviousData = HS198ControllerDisplay2Value;
+                                cvc.ElapsedTime = 0;
+                            }
+                        }
+                        else
+                            data = 0;
+                        break;
+                    }
+                case CABViewControlTypes.HS198_DIRECTION_CONTROLLER:
+                    {
+                        if (HS198ControllerEnable)
+                        {
+                            data = HS198DirectionControllerPosition[LocoStation];
+                        }
+                        break;
+                    }
+                case CABViewControlTypes.HS198_SKIPDIODE:
+                    {
+                        if (HS198ControllerEnable)
+                        {
+                            data = HS198SkipDiode;
                         }
                         break;
                     }

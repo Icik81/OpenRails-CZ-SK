@@ -213,7 +213,7 @@ namespace Orts.Viewer3D.RollingStock
 
         protected virtual void ReverserControlForwards()
         {
-            if (Locomotive.DieselDirectionController || Locomotive.DieselDirectionController2 || Locomotive.DieselDirectionController3 || Locomotive.DieselDirectionController4 || Locomotive.MirelRSControllerEnable) return;
+            if (Locomotive.DieselDirectionController || Locomotive.DieselDirectionController2 || Locomotive.DieselDirectionController3 || Locomotive.DieselDirectionController4 || Locomotive.MirelRSControllerEnable || Locomotive.HS198ControllerEnable) return;
             if (Locomotive.PowerKey && !Locomotive.DirectionControllerBlocked)
             {
                 if (Locomotive.Direction != Direction.Forward
@@ -229,7 +229,7 @@ namespace Orts.Viewer3D.RollingStock
 
         protected virtual void ReverserControlBackwards()
         {
-            if (Locomotive.DieselDirectionController || Locomotive.DieselDirectionController2 || Locomotive.DieselDirectionController3 || Locomotive.DieselDirectionController4 || Locomotive.MirelRSControllerEnable) return;
+            if (Locomotive.DieselDirectionController || Locomotive.DieselDirectionController2 || Locomotive.DieselDirectionController3 || Locomotive.DieselDirectionController4 || Locomotive.MirelRSControllerEnable || Locomotive.HS198ControllerEnable) return;
             if (Locomotive.PowerKey && !Locomotive.DirectionControllerBlocked)
             {
                 if (Locomotive.Direction != Direction.Reverse
@@ -419,7 +419,7 @@ namespace Orts.Viewer3D.RollingStock
                 }
             }
             // Ovládání HV3 nearetované pozice
-            if (Locomotive.HV3Enable)
+            if (Locomotive.HV3Enable && !Locomotive.HS198ControllerEnable)
             {
                 if (Locomotive.HV3Switch[Locomotive.LocoStation] == 2)
                 {
@@ -430,16 +430,19 @@ namespace Orts.Viewer3D.RollingStock
                     Locomotive.HV3Switch[Locomotive.LocoStation] = 1;
                     Locomotive.HVOnPressedTest = false;
                 }
-                if (Locomotive.HV3Switch[Locomotive.LocoStation] == 0)
+                if (!Locomotive.HS198ControllerEnable)
                 {
-                    Locomotive.HVOffPressedTest = true;
+                    if (Locomotive.HV3Switch[Locomotive.LocoStation] == 0)
+                    {
+                        Locomotive.HVOffPressedTest = true;
+                    }
+                    if (Locomotive.HV3Switch[Locomotive.LocoStation] == 0 && UserInput.IsReleased(UserCommand.ControlHV3SwitchDown))
+                    {
+                        Locomotive.HV3Switch[Locomotive.LocoStation] = 1;
+                        Locomotive.HVOffPressedTest = false;
+                    }
                 }
-                if (Locomotive.HV3Switch[Locomotive.LocoStation] == 0 && UserInput.IsReleased(UserCommand.ControlHV3SwitchDown))
-                {
-                    Locomotive.HV3Switch[Locomotive.LocoStation] = 1;
-                    Locomotive.HVOffPressedTest = false;
-                }
-            }
+            }            
             // Ovládání HV4 nearetované pozice
             if (Locomotive.HV4Enable)
             {
@@ -935,6 +938,108 @@ namespace Orts.Viewer3D.RollingStock
                     if (UserInput.IsReleased(UserCommand.ControlThrottleIncrease))
                     {
                         Locomotive.MirelRSControllerPosition[Locomotive.LocoStation] = 5;
+                        Locomotive.SignalEvent(Event.ControllerPull);
+                    }
+                }
+            }
+
+            // HS198Controller ovladač
+            if (Locomotive.HS198ControllerEnable)
+            {
+                if (UserInput.IsPressed(UserCommand.ControlForwards))
+                {
+                    Locomotive.HS198DirectionControllerPressUp = true;
+                }
+                else
+                if (UserInput.IsPressed(UserCommand.ControlBackwards))
+                {
+                    Locomotive.HS198DirectionControllerPressDown = true;
+                }
+                else
+                {
+                    Locomotive.HS198DirectionControllerPressUp = false;
+                    Locomotive.HS198DirectionControllerPressDown = false;
+                }
+
+                if (UserInput.IsPressed(UserCommand.ControlThrottleIncrease))
+                {
+                    PressedCycleStart = true;
+                }
+
+                if (UserInput.IsPressed(UserCommand.ControlThrottleIncrease) && DoublePressedKeyTest())
+                {
+                    Locomotive.HS198EDBBreak = true;
+                }
+
+                if (UserInput.IsDown(UserCommand.ControlThrottleIncrease))
+                {
+                    Locomotive.HS198ControllerPressUp = true;
+                }
+                else
+                if (UserInput.IsDown(UserCommand.ControlThrottleDecrease))
+                {
+                    Locomotive.HS198ControllerPressDown = true;
+                }
+                else
+                {
+                    Locomotive.HS198ControllerPressUp = false;
+                    Locomotive.HS198ControllerPressDown = false;
+                    Locomotive.HS198ControllerPressTimer = 0;
+                }
+
+                if (Locomotive.HS198ControllerPosition[Locomotive.LocoStation] > 6)
+                {
+                    if (UserInput.IsPressed(UserCommand.ControlThrottleDecrease))
+                    {
+                        Locomotive.HS198ControllerAutoPressDown = true;
+                    }
+                }
+
+                if (Locomotive.HS198ControllerPosition[Locomotive.LocoStation] == 2)
+                {
+                    if (UserInput.IsReleased(UserCommand.ControlThrottleIncrease))
+                    {
+                        Locomotive.HS198ControllerPosition[Locomotive.LocoStation] = 1;
+                        Locomotive.SignalEvent(Event.ControllerPull);
+                    }
+                    if (UserInput.IsReleased(UserCommand.ControlThrottleDecrease))
+                    {
+                        Locomotive.HS198ControllerAutoPressDown = true;
+                    }
+                }
+
+                if (Locomotive.HS198ControllerPosition[Locomotive.LocoStation] == 0)
+                {
+                    if (UserInput.IsReleased(UserCommand.ControlThrottleDecrease))
+                    {
+                        Locomotive.HS198ControllerPosition[Locomotive.LocoStation] = 1;
+                        Locomotive.SignalEvent(Event.ControllerPull);
+                    }
+                }
+
+                if (Locomotive.HS198ControllerPosition[Locomotive.LocoStation] == 4)
+                {
+                    if (UserInput.IsReleased(UserCommand.ControlThrottleDecrease))
+                    {
+                        Locomotive.HS198ControllerPosition[Locomotive.LocoStation] = 5;
+                        Locomotive.SignalEvent(Event.ControllerPull);
+                    }
+                }
+
+                if (Locomotive.HS198ControllerPosition[Locomotive.LocoStation] == 4)
+                {
+                    if (UserInput.IsReleased(UserCommand.ControlThrottleIncrease))
+                    {
+                        Locomotive.HS198ControllerPosition[Locomotive.LocoStation] = 5;
+                        Locomotive.SignalEvent(Event.ControllerPull);
+                    }
+                }
+
+                if (Locomotive.HS198ControllerPosition[Locomotive.LocoStation] == 6)
+                {
+                    if (UserInput.IsReleased(UserCommand.ControlThrottleIncrease))
+                    {
+                        Locomotive.HS198ControllerPosition[Locomotive.LocoStation] = 5;
                         Locomotive.SignalEvent(Event.ControllerPull);
                     }
                 }
@@ -3301,6 +3406,11 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.MIRELRS_DIRECTION_CONTROLLER:
                 case CABViewControlTypes.MIRELRS_SKIPDIODE:
                 case CABViewControlTypes.VENTILATION_SWITCH:
+                case CABViewControlTypes.HS198_CONTROLLER:
+                case CABViewControlTypes.HS198_DISPLAY:
+                case CABViewControlTypes.HS198_DISPLAY2:
+                case CABViewControlTypes.HS198_DIRECTION_CONTROLLER:
+                case CABViewControlTypes.HS198_SKIPDIODE:
 
                 case CABViewControlTypes.MOTOR_DISABLED:
                 case CABViewControlTypes.INVERTER_TEST:
@@ -3575,7 +3685,7 @@ namespace Orts.Viewer3D.RollingStock
                     break;
                 case CABViewControlTypes.GEARS: Locomotive.SetGearBoxValue(ChangedValue(Locomotive.GearBoxController.IntermediateValue)); break;
                 case CABViewControlTypes.DIRECTION:
-                    if (!Locomotive.DirectionButton && !Locomotive.DieselDirectionController && !Locomotive.DieselDirectionController2 && !Locomotive.DieselDirectionController3 && !Locomotive.DieselDirectionController4 && !Locomotive.MirelRSControllerEnable)
+                    if (!Locomotive.DirectionButton && !Locomotive.DieselDirectionController && !Locomotive.DieselDirectionController2 && !Locomotive.DieselDirectionController3 && !Locomotive.DieselDirectionController4 && !Locomotive.MirelRSControllerEnable && !Locomotive.HS198ControllerEnable)
                     {
                         var dir = ChangedValue(0);
                         if (dir != 0)
@@ -3811,16 +3921,18 @@ namespace Orts.Viewer3D.RollingStock
                             Locomotive.HV3Switch[Locomotive.LocoStation] = 1;
                             Locomotive.HVOnPressedTest = false;
                         }
-                        if (Locomotive.HV3Switch[Locomotive.LocoStation] == 0)
+                        if (!Locomotive.HS198ControllerEnable)
                         {
-                            Locomotive.HVOffPressedTest = true;
+                            if (Locomotive.HV3Switch[Locomotive.LocoStation] == 0)
+                            {
+                                Locomotive.HVOffPressedTest = true;
+                            }
+                            if (Locomotive.HV3Switch[Locomotive.LocoStation] == 0 && UserInput.IsMouseLeftButtonReleased)
+                            {
+                                Locomotive.HV3Switch[Locomotive.LocoStation] = 1;
+                                Locomotive.HVOffPressedTest = false;
+                            }
                         }
-                        if (Locomotive.HV3Switch[Locomotive.LocoStation] == 0 && UserInput.IsMouseLeftButtonReleased)
-                        {
-                            Locomotive.HV3Switch[Locomotive.LocoStation] = 1;
-                            Locomotive.HVOffPressedTest = false;
-                        }
-
                         if (ChangedValue(0) < 0 && UserInput.IsMouseLeftButtonDown)
                         {
                             new ToggleHV3SwitchUpCommand(Viewer.Log);
