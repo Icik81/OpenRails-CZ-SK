@@ -2128,7 +2128,7 @@ namespace Orts.Simulation.RollingStocks
 
 
             // HV3
-            if (HV3Enable && !HVOffPressedTest && !HVOnPressedTest)
+            if (HV3Enable && ((!HVOffPressedTest && !HVOnPressedTest) || (HS198ControllerEnable && HV3Switch[LocoStation] != 2)))
             {
                 HVOnPressedTime = 0;
                 HVOffPressedTime = 0;
@@ -2148,7 +2148,7 @@ namespace Orts.Simulation.RollingStocks
             {
                 HVCanOn = true;
             }
-            if ((HV3Enable && HVOffPressedTime > 0.4f && HVOffPressedTime < 0.6f) || (HV3Enable && HS198ControllerEnable)) // 0.5s na podržení polohy pro vypnutí HV
+            if ((HV3Enable && ((HVOffPressedTime > 0.4f && HVOffPressedTime < 0.6f)) || (HS198ControllerEnable && HV3Switch[LocoStation] == 0))) // 0.5s na podržení polohy pro vypnutí HV
             {
                 HVOff = true;
                 HVCanOn = false;

@@ -10357,7 +10357,7 @@ namespace Orts.Simulation.RollingStocks
                     }
                     else
                     {
-                        if (!Battery || StationIsActivated[LocoStation] || HV3Switch[LocoStation] == 0)
+                        if (!Battery || !StationIsActivated[LocoStation] || HV3Switch[LocoStation] == 0)
                         {
                             LocoGroundBreaker = false;
                             LocoGroundBreakerTimer = 0.0f;

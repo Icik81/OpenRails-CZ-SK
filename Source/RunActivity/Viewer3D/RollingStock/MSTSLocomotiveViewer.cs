@@ -419,7 +419,7 @@ namespace Orts.Viewer3D.RollingStock
                 }
             }
             // Ovládání HV3 nearetované pozice
-            if (Locomotive.HV3Enable && !Locomotive.HS198ControllerEnable)
+            if (Locomotive.HV3Enable)
             {
                 if (Locomotive.HV3Switch[Locomotive.LocoStation] == 2)
                 {
