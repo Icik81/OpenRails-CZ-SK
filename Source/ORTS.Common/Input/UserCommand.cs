@@ -271,6 +271,8 @@
         [GetString("Control_CZSK Pantograph3 -")] ControlPantograph3SwitchDown,
         [GetString("Control_CZSK Pantograph4 +")] ControlPantograph4SwitchUp,
         [GetString("Control_CZSK Pantograph4 -")] ControlPantograph4SwitchDown,
+        [GetString("Control_CZSK Pantograph5 +")] ControlPantograph5SwitchUp,
+        [GetString("Control_CZSK Pantograph5 -")] ControlPantograph5SwitchDown,
         [GetString("Control_CZSK Compressor I Combined +")] ControlCompressorCombinedUp,
         [GetString("Control_CZSK Compressor I Combined -")] ControlCompressorCombinedDown,
         [GetString("Control_CZSK Compressor II Combined +")] ControlCompressorCombined2Up,

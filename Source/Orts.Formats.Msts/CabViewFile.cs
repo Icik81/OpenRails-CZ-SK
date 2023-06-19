@@ -408,6 +408,7 @@ namespace Orts.Formats.Msts
         HV5_DISPLAY,
         PANTOGRAPH_3_SWITCH,
         PANTOGRAPH_4_SWITCH,
+        PANTOGRAPH_5_SWITCH,
         COMPRESSOR_START,
         COMPRESSOR_COMBINED,
         COMPRESSOR_COMBINED2,

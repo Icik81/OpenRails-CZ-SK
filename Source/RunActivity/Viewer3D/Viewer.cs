@@ -626,6 +626,8 @@ namespace Orts.Viewer3D
             TogglePantograph3SwitchDownCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
             TogglePantograph4SwitchUpCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
             TogglePantograph4SwitchDownCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
+            TogglePantograph5SwitchUpCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
+            TogglePantograph5SwitchDownCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
             ToggleCompressorCombinedSwitchUpCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
             ToggleCompressorCombinedSwitchDownCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
             ToggleCompressorCombinedSwitch2UpCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;

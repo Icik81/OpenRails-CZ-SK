@@ -274,6 +274,9 @@ namespace Orts.Common
                 if (Receiver.Pantograph4Enable)
                     Receiver.TogglePantograph4Switch();
                 else
+                if (Receiver.Pantograph5Enable)
+                    Receiver.TogglePantograph5Switch();
+                else
                 {
                     Receiver.Train.SignalEvent(ToState ? PowerSupplyEvent.RaisePantograph : PowerSupplyEvent.LowerPantograph, item);
                     Receiver.PantoCommandDown = ToState;
@@ -2011,8 +2014,6 @@ namespace Orts.Common
             Receiver.TogglePantograph3SwitchDown();
         }
     }
-
-
     [Serializable()]
     public sealed class TogglePantograph4SwitchUpCommand : Command
     {
@@ -2044,6 +2045,39 @@ namespace Orts.Common
         public override void Redo()
         {
             Receiver.TogglePantograph4SwitchDown();
+        }
+    }
+    [Serializable()]
+    public sealed class TogglePantograph5SwitchUpCommand : Command
+    {
+        public static MSTSLocomotive Receiver { get; set; }
+
+        public TogglePantograph5SwitchUpCommand(CommandLog log)
+            : base(log)
+        {
+            Redo();
+        }
+
+        public override void Redo()
+        {
+
+            Receiver.TogglePantograph5SwitchUp();
+        }
+    }
+    [Serializable()]
+    public sealed class TogglePantograph5SwitchDownCommand : Command
+    {
+        public static MSTSLocomotive Receiver { get; set; }
+
+        public TogglePantograph5SwitchDownCommand(CommandLog log)
+            : base(log)
+        {
+            Redo();
+        }
+
+        public override void Redo()
+        {
+            Receiver.TogglePantograph5SwitchDown();
         }
     }
     [Serializable()]

@@ -571,6 +571,8 @@ namespace ORTS.Settings
             Commands[(int)UserCommand.ControlPantograph3SwitchDown] = new UserCommandKeyInput(0x19, KeyModifiers.Shift);
             Commands[(int)UserCommand.ControlPantograph4SwitchUp] = new UserCommandKeyInput(0x19);
             Commands[(int)UserCommand.ControlPantograph4SwitchDown] = new UserCommandKeyInput(0x19, KeyModifiers.Shift);
+            Commands[(int)UserCommand.ControlPantograph5SwitchUp] = new UserCommandKeyInput(0x19);
+            Commands[(int)UserCommand.ControlPantograph5SwitchDown] = new UserCommandKeyInput(0x19, KeyModifiers.Shift);
             Commands[(int)UserCommand.ControlCompressorCombinedUp] = new UserCommandKeyInput(0x2E);
             Commands[(int)UserCommand.ControlCompressorCombinedDown] = new UserCommandKeyInput(0x2E, KeyModifiers.Control);
             Commands[(int)UserCommand.ControlCompressorCombined2Up] = new UserCommandKeyInput(0x2E, KeyModifiers.Shift);

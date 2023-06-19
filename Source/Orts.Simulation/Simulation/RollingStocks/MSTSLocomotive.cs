@@ -583,6 +583,7 @@ namespace Orts.Simulation.RollingStocks
         float PreDataAmmeter2;
         float PreDataAmps;
         public bool AIPantoDown;
+        public bool Pantograph5Enable = false;
         public bool Pantograph4Enable = false;
         public bool Pantograph3Enable = false;
         public float LastStatePantograph3;
@@ -676,6 +677,7 @@ namespace Orts.Simulation.RollingStocks
         public bool LocoHasNoDynamicController = true;
         public bool[] StationIsActivated = new bool[3];
         public int[] PrePantoStatus = new int[3];
+        public int[] Pantograph5Switch = new int[3];
         public int[] Pantograph4Switch = new int[3];
         public int[] Pantograph3Switch = new int[3];
         public int[] CompressorSwitch = new int[3];
@@ -1934,6 +1936,8 @@ namespace Orts.Simulation.RollingStocks
             outf.Write(Pantograph3Switch[2]);
             outf.Write(Pantograph4Switch[1]);
             outf.Write(Pantograph4Switch[2]);
+            outf.Write(Pantograph5Switch[1]);
+            outf.Write(Pantograph5Switch[2]);
             outf.Write(HV3Switch[1]);
             outf.Write(HV3Switch[2]);
             outf.Write(HV4Switch[1]);
@@ -2166,6 +2170,8 @@ namespace Orts.Simulation.RollingStocks
             Pantograph3Switch[2] = inf.ReadInt32();
             Pantograph4Switch[1] = inf.ReadInt32();
             Pantograph4Switch[2] = inf.ReadInt32();
+            Pantograph5Switch[1] = inf.ReadInt32();
+            Pantograph5Switch[2] = inf.ReadInt32();
             HV3Switch[1] = inf.ReadInt32();
             HV3Switch[2] = inf.ReadInt32();
             HV4Switch[1] = inf.ReadInt32();
@@ -5207,9 +5213,10 @@ namespace Orts.Simulation.RollingStocks
                 HV4Switch[1] = HV4Switch[2] = -1;
                 LastStateHV4[1] = LastStateHV4[2] = 1;
                 HV3Switch[1] = HV3Switch[2] = 1;
-                LastStateHV3[1] = LastStateHV3[2] = 1;
-                Pantograph4Switch[1] = Pantograph4Switch[2] = 0;
+                LastStateHV3[1] = LastStateHV3[2] = 1;                
                 Pantograph3Switch[1] = Pantograph3Switch[2] = 0;
+                Pantograph4Switch[1] = Pantograph4Switch[2] = 0;
+                Pantograph5Switch[1] = Pantograph5Switch[2] = 0;
                 DoorSwitch[1] = DoorSwitch[2] = 1;
                 DieselDirectionControllerPosition[1] = DieselDirectionController2Position[1] = DieselDirectionController4Position[1] = -1;
                 DieselDirectionControllerPosition[2] = DieselDirectionController2Position[2] = DieselDirectionController4Position[2] = -1;
@@ -5702,9 +5709,10 @@ namespace Orts.Simulation.RollingStocks
                 MirelRSController(elapsedClockSeconds);
                 HS198Controller(elapsedClockSeconds);
                 VentilationSwitch(elapsedClockSeconds);
-                CommandCylinder(elapsedClockSeconds);
-                TogglePantograph4Switch();
+                CommandCylinder(elapsedClockSeconds);                
                 TogglePantograph3Switch();
+                TogglePantograph4Switch();
+                TogglePantograph5Switch();
                 ToggleHV2Switch();
                 ToggleHV3Switch();
                 ToggleHV4Switch();
@@ -10973,6 +10981,209 @@ namespace Orts.Simulation.RollingStocks
             }
         }
 
+        public void TogglePantograph5SwitchUp()
+        {
+            if (Pantograph5Enable)
+            {
+                if (Pantograph5Switch[LocoStation] < 2)
+                {
+                    Pantograph5Switch[LocoStation]++;
+                    SignalEvent(Event.PantographToggle);
+                }                
+            }
+        }
+        public void TogglePantograph5SwitchDown()
+        {
+            if (Pantograph5Enable)
+            {
+                if (Pantograph5Switch[LocoStation] > -2)
+                {
+                    Pantograph5Switch[LocoStation]--;
+                    SignalEvent(Event.PantographToggle);
+                }
+            }
+        }
+        public void TogglePantograph5Switch()
+        {
+            if (!MultiSystemEngine && !CircuitBreakerOn)
+                return;
+            if (Pantograph5Enable)
+            {
+                // Zabrání zvednutí pantografu po stlačení tlačítka přerušení napájení
+                if (BreakPowerButton)
+                    BreakPowerButton_Activated = true;
+                if (BreakPowerButton_Activated && Pantograph5Switch[LocoStation] == 0)
+                    BreakPowerButton_Activated = false;
+
+                if (Battery && StationIsActivated[LocoStation] && !BreakPowerButton_Activated && Simulator.GameTime > 1)
+                {
+                    PantoStatus = Pantograph5Switch[LocoStation];
+                    int p1 = 1; int p2 = 2;
+                    string ps1 = "PANTO1"; string ps2 = "PANTO2";
+                    if (UsingRearCab) { p1 = 2; p2 = 1; ps1 = "PANTO2"; ps2 = "PANTO1"; }
+                    if (PantoStatus != PrePantoStatus[LocoStation])
+                    {
+                        switch (Pantograph5Switch[LocoStation])
+                        {
+                            case -2:
+                                {
+                                    if (AirForPantograph && Pantographs[p1].State == PantographState.Down || AirForPantograph && Pantographs[p1].State == PantographState.Lowering) // Zadní panto
+                                    {
+                                        SignalEvent(PowerSupplyEvent.RaisePantograph, p1);
+                                        if (MPManager.IsMultiPlayer())
+                                            MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps1, 1).ToString());
+                                    }
+                                    if (AirForPantograph && Pantographs[p2].State == PantographState.Down || AirForPantograph && Pantographs[p2].State == PantographState.Lowering) // Přední panto
+                                    {
+                                        SignalEvent(PowerSupplyEvent.RaisePantograph, p2);
+                                        if (MPManager.IsMultiPlayer())
+                                            MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps2, 1).ToString());
+                                    }
+
+                                    if (AcceptMUSignals)
+                                        foreach (TrainCar car in Train.Cars)
+                                        {
+                                            if (car.AcceptMUSignals)
+                                            {
+                                                car.SignalEvent(PowerSupplyEvent.RaisePantograph);
+                                                if (MPManager.IsMultiPlayer())
+                                                {
+                                                    MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps1, 1).ToString());
+                                                    MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps2, 1).ToString());
+                                                }
+                                            }
+                                        }
+                                }
+                                break;
+                            case -1:
+                                {
+                                    if (Pantographs[p1].State == PantographState.Up || Pantographs[p1].State == PantographState.Raising) // Zadní panto                            
+                                    {
+                                        SignalEvent(PowerSupplyEvent.LowerPantograph, p1);
+                                        if (MPManager.IsMultiPlayer())
+                                            MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps1, 0).ToString());
+                                    }
+                                    if (AirForPantograph && Pantographs[p2].State == PantographState.Down || AirForPantograph && Pantographs[p2].State == PantographState.Lowering) // Přední panto
+                                    {
+                                        SignalEvent(PowerSupplyEvent.RaisePantograph, p2);
+                                        if (MPManager.IsMultiPlayer())
+                                            MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps2, 1).ToString());
+                                    }
+
+                                    if (AcceptMUSignals)
+                                        foreach (TrainCar car in Train.Cars)
+                                        {
+                                            if (car.AcceptMUSignals)
+                                            {
+                                                car.SignalEvent(PowerSupplyEvent.LowerPantograph, p1);
+                                                car.SignalEvent(PowerSupplyEvent.RaisePantograph, p2);
+                                                if (MPManager.IsMultiPlayer())
+                                                {
+                                                    MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps1, 0).ToString());
+                                                    MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps2, 1).ToString());
+                                                }
+                                            }
+                                        }
+                                }
+                                break;
+                            case 0:
+                                {
+                                    if (Pantographs[p1].State == PantographState.Up || Pantographs[p1].State == PantographState.Raising) // Zadní panto                            
+                                    {
+                                        SignalEvent(PowerSupplyEvent.LowerPantograph, p1);
+                                        if (MPManager.IsMultiPlayer())
+                                            MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps1, 0).ToString());
+                                    }
+                                    if (Pantographs[p2].State == PantographState.Up || Pantographs[p2].State == PantographState.Raising) // Přední panto
+                                    {
+                                        SignalEvent(PowerSupplyEvent.LowerPantograph, p2);
+                                        if (MPManager.IsMultiPlayer())
+                                            MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps2, 0).ToString());
+                                    }
+
+                                    if (AcceptMUSignals)
+                                        foreach (TrainCar car in Train.Cars)
+                                        {
+                                            if (car.AcceptMUSignals)
+                                            {
+                                                car.SignalEvent(PowerSupplyEvent.LowerPantograph);
+                                                if (MPManager.IsMultiPlayer())
+                                                {
+                                                    MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps1, 0).ToString());
+                                                    MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps2, 0).ToString());
+                                                }
+                                            }
+                                        }
+                                }
+                                break;
+                            case 1:
+                                {
+                                    if (AirForPantograph && Pantographs[p1].State == PantographState.Down || AirForPantograph && Pantographs[p1].State == PantographState.Lowering) // Zadní panto
+                                    {
+                                        SignalEvent(PowerSupplyEvent.RaisePantograph, p1);
+                                        if (MPManager.IsMultiPlayer())
+                                            MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps1, 1).ToString());
+                                    }
+                                    if (Pantographs[p2].State == PantographState.Up || Pantographs[p2].State == PantographState.Raising) // Přední panto
+                                    {
+                                        SignalEvent(PowerSupplyEvent.LowerPantograph, p2);
+                                        if (MPManager.IsMultiPlayer())
+                                            MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps2, 0).ToString());
+                                    }
+
+                                    if (AcceptMUSignals)
+                                        foreach (TrainCar car in Train.Cars)
+                                        {
+                                            if (car.AcceptMUSignals)
+                                            {
+                                                car.SignalEvent(PowerSupplyEvent.RaisePantograph, p1);
+                                                car.SignalEvent(PowerSupplyEvent.LowerPantograph, p2);
+                                                if (MPManager.IsMultiPlayer())
+                                                {
+                                                    MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps1, 1).ToString());
+                                                    MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps2, 0).ToString());
+                                                }
+                                            }
+                                        }
+                                }
+                                break;
+                            case 2:
+                                {
+                                    if (AirForPantograph && Pantographs[p1].State == PantographState.Down || AirForPantograph && Pantographs[p1].State == PantographState.Lowering) // Zadní panto
+                                    {
+                                        SignalEvent(PowerSupplyEvent.RaisePantograph, p1);
+                                        if (MPManager.IsMultiPlayer())
+                                            MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps1, 1).ToString());
+                                    }
+                                    if (AirForPantograph && Pantographs[p2].State == PantographState.Down || AirForPantograph && Pantographs[p2].State == PantographState.Lowering) // Přední panto
+                                    {
+                                        SignalEvent(PowerSupplyEvent.RaisePantograph, p2);
+                                        if (MPManager.IsMultiPlayer())
+                                            MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps2, 1).ToString());
+                                    }
+
+                                    if (AcceptMUSignals)
+                                        foreach (TrainCar car in Train.Cars)
+                                        {
+                                            if (car.AcceptMUSignals)
+                                            {
+                                                car.SignalEvent(PowerSupplyEvent.RaisePantograph);
+                                                if (MPManager.IsMultiPlayer())
+                                                {
+                                                    MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps1, 1).ToString());
+                                                    MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps2, 1).ToString());
+                                                }
+                                            }
+                                        }
+                                }
+                                break;                                                        
+                        }
+                    }
+                    PrePantoStatus[LocoStation] = Pantograph5Switch[LocoStation];
+                }
+            }
+        }
+
         public bool ChangingPowerSystem = false;
         public void ChangePowerSystem()
         {
@@ -13757,6 +13968,8 @@ namespace Orts.Simulation.RollingStocks
         float HS198ControllerEDBValue = -1;
         float HS198ControllerMaxValue = 56;
         public float HS198ControllerPressTimer;
+        public float HS198ControllerPressTimerLongPressUp;
+        public float HS198ControllerPressTimerLongPressDown;
         float HS198ControllerAutoPressTimer;
         float HS198ControllerThrottleValueTimer;
         float HS198ControllerEDBValueTimer;
@@ -13774,12 +13987,14 @@ namespace Orts.Simulation.RollingStocks
         bool HS198ControllerShortPressUp;
         bool HS198ControllerLongPressDown;
         bool HS198ControllerShortPressDown;
-        public bool HS198EDBBreak;
+        public bool HS198Break;        
         float HS198ControllerDisplayValue;
         float HS198ControllerDisplay2Value;        
         int HS198SkipDiode;
         bool HS198CanSkip;
+        bool HS198CanSkip2;
         bool HS198Skip_Start;
+        bool HS198Skip2_Start;
         bool HS198Skip_Ready;
         bool HS198PositionBlocked;
         bool HS198Protect;
@@ -13871,19 +14086,31 @@ namespace Orts.Simulation.RollingStocks
 
             if (HS198ControllerPressUp)
             {
-                HS198ControllerPressTimer += elapsedClockSeconds;
+                HS198ControllerPressTimer += elapsedClockSeconds;                
 
                 // Delší stisk
                 if (HS198ControllerPressTimer > 0.5f)
-                {
-                    if (HS198ControllerPosition[LocoStation] < 7 && (HS198ControllerPosition[LocoStation] != 2 || (HS198EDBBreak && HS198ControllerPosition[LocoStation] == 2)))
+                {                    
+                    if (HS198ControllerPosition[LocoStation] == 5)
+                    {
+                        HS198ControllerPosition[LocoStation] = 6;
+                        SignalEvent(Event.ControllerPush);                                                
+                    }
+                    else
+                    if (HS198Break && HS198ControllerPosition[LocoStation] < 7)
                     {
                         HS198ControllerPosition[LocoStation]++;
                         SignalEvent(Event.ControllerPush);
-                        HS198EDBBreak = false;
+                        HS198Break = false;
                     }
-                    HS198ControllerPressTimer = 0;
-                    HS198ControllerLongPressUp = true;
+                    else
+                    if (HS198ControllerPosition[LocoStation] == 3)
+                    {
+                        HS198ControllerPosition[LocoStation]++;
+                        SignalEvent(Event.ControllerPush);
+                        HS198Break = false;
+                    }
+                    HS198ControllerPressTimer = 0;                    
                 }
                 // Krátký stisk
                 else
@@ -13910,13 +14137,26 @@ namespace Orts.Simulation.RollingStocks
                 // Delší stisk
                 if (HS198ControllerPressTimer > 0.5f)
                 {
-                    if (HS198ControllerPosition[LocoStation] > 0)
+                    if (HS198ControllerPosition[LocoStation] == 5)
+                    {
+                        HS198ControllerPosition[LocoStation] = 4;
+                        SignalEvent(Event.ControllerPush);                        
+                    }
+                    else
+                    if (HS198Break && HS198ControllerPosition[LocoStation] > 0)
                     {
                         HS198ControllerPosition[LocoStation]--;
                         SignalEvent(Event.ControllerPush);
+                        HS198Break = false;                        
                     }
-                    HS198ControllerPressTimer = 0;
-                    HS198ControllerLongPressDown = true;
+                    else
+                    if (HS198ControllerPosition[LocoStation] == 3)
+                    {
+                        HS198ControllerPosition[LocoStation]--;
+                        SignalEvent(Event.ControllerPush);
+                        HS198Break = false;                        
+                    }
+                    HS198ControllerPressTimer = 0;                    
                 }
                 // Krátký stisk
                 else
@@ -13932,7 +14172,7 @@ namespace Orts.Simulation.RollingStocks
                         HS198ControllerPosition[LocoStation] = 0;
                         SignalEvent(Event.ControllerPush);
                     }
-                    HS198ControllerShortPressDown = true;
+                    HS198ControllerShortPressDown = true;                  
                 }
             }
 
@@ -13957,59 +14197,65 @@ namespace Orts.Simulation.RollingStocks
             if (HS198ControllerPosition[LocoStation] != preHS198ControllerPosition[LocoStation])
             {
                 preHS198ControllerPosition[LocoStation] = HS198ControllerPosition[LocoStation];
-                switch (HS198ControllerPosition[LocoStation])
-                {
-                    case 0:
-                        HS198ControllerPositionName[LocoStation] = "+B"; // nearetovaná                        
-                        HS198ControllerShortPressDown = false;
-                        HS198ControllerCanEDBChangeValue_2 = true;
-                        break;
-                    case 1:
-                        HS198ControllerPositionName[LocoStation] = "B";
-                        HS198ControllerLongPressDown = false;
-                        HS198ControllerCanEDBChangeValue_0 = HS198ControllerCanEDBChangeValue_1 = HS198ControllerCanEDBChangeValue_2 = false;
-                        HS198Protect = false;
-                        break;
-                    case 2:
-                        HS198ControllerPositionName[LocoStation] = "-B"; // nearetovaná
-                        HS198ControllerShortPressUp = false;
-                        HS198ControllerCanEDBChangeValue_1 = true;
-                        break;
-                    case 3:
-                        HS198ControllerPositionName[LocoStation] = "0";
-                        HS198ControllerLongPressUp = false;
-                        HS198ControllerLongPressDown = false;
-                        HS198ControllerCanThrottleChangeValue_0 = true;
-                        HS198ControllerCanEDBChangeValue_0 = true;
-                        HS198Protect = false;
-                        break;
-                    case 4:
-                        HS198ControllerPositionName[LocoStation] = "-1"; // nearetovaná
-                        HS198ControllerShortPressDown = false;
-                        HS198ControllerCanThrottleChangeValue_1 = true;
-                        break;
-                    case 5:
-                        HS198ControllerPositionName[LocoStation] = "J";
-                        HS198ControllerLongPressUp = false;
-                        HS198ControllerLongPressDown = false;
-                        HS198PositionBlocked = false;
-                        HS198Skip_Ready = false;
-                        HS198Protect = false;
-                        break;
-                    case 6:
-                        HS198ControllerPositionName[LocoStation] = "+1"; // nearetovaná
-                        HS198ControllerShortPressUp = false;
-                        HS198ControllerCanThrottleChangeValue_2 = true;
-                        HS198ControllerCanThrottleChangeValue_3 = false;
-                        break;
-                    case 7:
-                        HS198ControllerPositionName[LocoStation] = "++";
-                        HS198ControllerLongPressUp = false;
-                        HS198ControllerCanThrottleChangeValue_3 = true;
-                        break;
-                }
                 Simulator.Confirmer.Information(Simulator.Catalog.GetString("HS198") + ": " + HS198ControllerPositionName[LocoStation]);
             }
+            switch (HS198ControllerPosition[LocoStation])
+            {
+                case 0:
+                    HS198ControllerPositionName[LocoStation] = "+B"; // nearetovaná                        
+                    HS198ControllerShortPressDown = false;
+                    HS198ControllerCanEDBChangeValue_2 = true;
+                    break;
+                case 1:
+                    HS198ControllerPositionName[LocoStation] = "B";
+                    HS198ControllerLongPressDown = false;
+                    HS198ControllerCanEDBChangeValue_0 = HS198ControllerCanEDBChangeValue_1 = HS198ControllerCanEDBChangeValue_2 = false;
+                    HS198Protect = false;
+                    break;
+                case 2:
+                    HS198ControllerPositionName[LocoStation] = "-B"; // nearetovaná
+                    HS198ControllerShortPressUp = false;
+                    HS198ControllerCanEDBChangeValue_1 = true;
+                    break;
+                case 3:
+                    HS198ControllerPositionName[LocoStation] = "0";
+                    HS198ControllerLongPressUp = false;
+                    HS198ControllerLongPressDown = false;
+                    HS198ControllerCanThrottleChangeValue_0 = true;
+                    HS198ControllerCanEDBChangeValue_0 = true;
+                    HS198Protect = false;
+                    HS198ControllerPressTimerLongPressDown = 0;
+                    break;
+                case 4:
+                    HS198ControllerPositionName[LocoStation] = "-1"; // nearetovaná
+                    HS198ControllerShortPressDown = false;
+                    HS198ControllerCanThrottleChangeValue_1 = true;
+                    break;
+                case 5:
+                    HS198ControllerPositionName[LocoStation] = "J";
+                    HS198ControllerLongPressUp = false;
+                    HS198ControllerLongPressDown = false;
+                    if (HS198ControllerThrottleValueTimer == 0)
+                        HS198PositionBlocked = false;
+                    HS198Skip_Ready = false;
+                    HS198Protect = false;
+                    HS198ControllerPressTimerLongPressUp = 0;
+                    HS198ControllerPressTimerLongPressDown = 0;
+                    break;
+                case 6:
+                    HS198ControllerPositionName[LocoStation] = "+1"; // nearetovaná
+                    HS198ControllerShortPressUp = false;
+                    HS198ControllerCanThrottleChangeValue_2 = true;
+                    HS198ControllerCanThrottleChangeValue_3 = false;
+                    break;
+                case 7:
+                    HS198ControllerPositionName[LocoStation] = "+";
+                    HS198ControllerLongPressUp = false;
+                    HS198ControllerCanThrottleChangeValue_3 = true;
+                    HS198ControllerPressTimerLongPressUp = 0;
+                    break;
+            }
+                                            
 
             HS198ControllerDisplayValue = HS198ControllerDisplay2Value = HS198ControllerThrottleValue;
 
@@ -14022,9 +14268,10 @@ namespace Orts.Simulation.RollingStocks
                 if (HS198ControllerCanThrottleChangeValue_0 || HS198ControllerCanThrottleChangeValue_1 || HS198ControllerCanThrottleChangeValue_2 || HS198ControllerCanThrottleChangeValue_3
                     || ShModeActivated || Mode_To_34_Start || ShModeActivated2 || Mode_To_27_Start1 || Mode_To_27_Start2
                     || (NoShMode && HS198ControllerThrottleValue > 27 && HS198ControllerThrottleValue < 34 && !Mode_To_34_Start)
-                    || HS198Skip_Start)
+                    || HS198Skip_Start                    
+                    )
                 {
-                    HS198ControllerThrottleValueTimer += elapsedClockSeconds;
+                    HS198ControllerThrottleValueTimer += elapsedClockSeconds;                    
 
                     // Šuntování a blokování
                     if (DirectionControllerHS198PositionSh && HS198ControllerThrottleValue <= 32)
@@ -14147,6 +14394,13 @@ namespace Orts.Simulation.RollingStocks
                                 SetThrottlePercent(0f);
                             }
                             else
+                            // Kontrolér v 0
+                            if (HS198ControllerPosition[LocoStation] == 3 && PowerCurrent1 < 300f && HS198ControllerThrottleValue <= 27f)
+                            {
+                                HS198ControllerThrottleValue = preHS198ControllerThrottleValue = 0;
+                                SetThrottlePercent(0f);
+                            }
+                            else
                             // Kontrolér v B
                             if (HS198ControllerPosition[LocoStation] == 1 && PowerCurrent1 < 300f && HS198ControllerThrottleValue <= 27f)
                             {
@@ -14167,32 +14421,76 @@ namespace Orts.Simulation.RollingStocks
                         }
                     }
 
-                    if ((HS198ControllerThrottleValueTimer > 0.5f && !Mode_To_27_Start1 && !Mode_To_27_Start2 && !Mode_To_34_Start) || HS198Skip_Start)
+
+                    if (HS198ControllerCanThrottleChangeValue_2)
+                        HS198ControllerPressTimerLongPressUp += elapsedClockSeconds;
+
+                    if (HS198ControllerCanThrottleChangeValue_1)
+                        HS198ControllerPressTimerLongPressDown += elapsedClockSeconds;                    
+
+                    if ((HS198ControllerThrottleValueTimer > 0.5f && !Mode_To_27_Start1 && !Mode_To_27_Start2 && !Mode_To_34_Start) 
+                        || HS198Skip_Start || HS198Skip2_Start
+                        || (HS198ControllerThrottleValueTimer > 0.5f && HS198ControllerPressTimerLongPressUp > 2.5f) 
+                        || (HS198ControllerThrottleValueTimer > 0.5f && HS198ControllerPressTimerLongPressDown > 2.5f))
                     {
                         // -1
-                        if (HS198ControllerCanThrottleChangeValue_1 && HS198ControllerShortPressDown)
-                            if (HS198ControllerThrottleValue > 0)
+                        if (HS198ControllerCanThrottleChangeValue_1)
+                        {
+                            if (HS198ControllerPressTimerLongPressDown > 2.5f)
+                            {
+                                // Autokrokování nahoru mimo shuntů
+                                if (HS198ControllerThrottleValue > 0 && !HS198Protect && !HS198Skip_Ready)
+                                {
+                                    HS198ControllerThrottleValue--;
+                                    HS198ControllerCheckThrottleChange();
+                                }
+                                HS198PositionBlocked = true;
+                            }
+                            else
+                            if (HS198ControllerThrottleValue > 0 && !HS198PositionBlocked)
                             {
                                 HS198ControllerThrottleValue--;
                                 HS198ControllerCheckThrottleChange();
+                                HS198PositionBlocked = true;
                             }
+                        }
 
                         // +1
-                        if (HS198ControllerCanThrottleChangeValue_2 && HS198ControllerShortPressUp)
-                            if (HS198ControllerThrottleValue < HS198ControllerMaxValue)
+                        if (HS198ControllerCanThrottleChangeValue_2)
+                        {
+                            if (HS198ControllerPressTimerLongPressUp > 2.5f)
+                            { 
+                                // Autokrokování nahoru mimo shuntů
+                                if (!HS198Protect && !HS198Skip_Ready && (HS198ControllerThrottleValue < 26 || (HS198ControllerThrottleValue >= 34 && HS198ControllerThrottleValue < 51)))
+                                {
+                                    HS198ControllerThrottleValue++;
+                                    HS198ControllerCheckThrottleChange();
+                                }
+                                HS198PositionBlocked = true;
+                            }
+                            else
+                            if (HS198ControllerThrottleValue < HS198ControllerMaxValue && !HS198PositionBlocked)
                             {
                                 HS198ControllerThrottleValue++;
                                 HS198ControllerCheckThrottleChange();
+                                HS198PositionBlocked = true;
                             }
+                        }
 
-                        // ++
-                        if (HS198ControllerCanThrottleChangeValue_3 || HS198Skip_Start)
+                        // +
+                        if (HS198ControllerCanThrottleChangeValue_3 || HS198Skip_Start || HS198Skip2_Start)
                         {
-                            if (HS198CanSkip || HS198Skip_Start)
+                            if (HS198CanSkip || HS198CanSkip2 || HS198Skip_Start || HS198Skip2_Start)
                             {
+                                if (HS198CanSkip)
+                                    HS198Skip_Start = true;
+
+                                if (HS198CanSkip2)                                                                    
+                                    HS198Skip2_Start = true;
+                                
                                 HS198Skip_Ready = true;
-                                HS198Skip_Start = true;
-                                if (PowerCurrent1 <= 300f && Simulator.StepControllerValue <= 26)
+
+                                if (PowerCurrent1 <= 400f && ((HS198Skip_Start && Simulator.StepControllerValue <= 26) || (HS198Skip2_Start && Simulator.StepControllerValue <= 33)))
                                 {
                                     Simulator.StepControllerValue++;
                                     HS198SkipCounter++;
@@ -14206,20 +14504,21 @@ namespace Orts.Simulation.RollingStocks
                                 {
                                     HS198ControllerThrottleValue = preHS198ControllerThrottleValue = Simulator.StepControllerValue;
                                     HS198Skip_Start = false;
+                                    HS198Skip2_Start = false;
                                     HS198PositionBlocked = true;
                                     HS198SkipCounter = 0;
                                 }
                             }
-                            else
-                            {
-                                // Autokrokování nahoru mimo shuntů
-                                if (!HS198Protect && !HS198Skip_Ready && (HS198ControllerThrottleValue < 27 || (HS198ControllerThrottleValue >= 34 && HS198ControllerThrottleValue < 51)))
-                                {
-                                    HS198ControllerThrottleValue++;
-                                    HS198ControllerCheckThrottleChange();
-                                }
-                                HS198PositionBlocked = true;
-                            }
+                            //else
+                            //{
+                            //    // Autokrokování nahoru mimo shuntů
+                            //    if (!HS198Protect && !HS198Skip_Ready && (HS198ControllerThrottleValue < 27 || (HS198ControllerThrottleValue >= 34 && HS198ControllerThrottleValue < 51)))
+                            //    {
+                            //        HS198ControllerThrottleValue++;
+                            //        HS198ControllerCheckThrottleChange();
+                            //    }
+                            //    HS198PositionBlocked = true;
+                            //}
                         }
                         HS198ControllerThrottleValueTimer = 0;
                         HS198ControllerCanThrottleChangeValue_1 = HS198ControllerCanThrottleChangeValue_2 = false;
@@ -14227,13 +14526,29 @@ namespace Orts.Simulation.RollingStocks
                 }
 
                 // Dioda pro přeskok stupňů
-                if (!HS198Protect && AbsSpeedMpS >= 40f / 3.6f && PowerCurrent1 < 300f && HS198ControllerPosition[LocoStation] > 3 && HS198ControllerPosition[LocoStation] <= 7 && HS198ControllerThrottleValue > 1f && HS198ControllerThrottleValue < 27f && !HS198PositionBlocked)
+                // Skok v poloze P
+                if (!HS198Protect && AbsSpeedMpS >= 95f / 3.6f && PowerCurrent1 < 400f
+                    && HS198ControllerPosition[LocoStation] > 3 && HS198ControllerPosition[LocoStation] <= 7
+                    && HS198ControllerThrottleValue > 1f && HS198ControllerThrottleValue < 27f
+                    && !HS198PositionBlocked
+                    && HS198DirectionControllerPosition[LocoStation] == 2)
+                {
+                    HS198CanSkip2 = true;
+                    HS198SkipDiode = 1;
+                }
+                else
+                // Skok v poloze Sh
+                if (!HS198Protect && AbsSpeedMpS >= 40f / 3.6f && PowerCurrent1 < 400f 
+                    && HS198ControllerPosition[LocoStation] > 3 && HS198ControllerPosition[LocoStation] <= 7 
+                    && HS198ControllerThrottleValue > 1f && HS198ControllerThrottleValue < 27f 
+                    && !HS198PositionBlocked)
                 {
                     HS198CanSkip = true;
                     HS198SkipDiode = 1;
                 }
-                else
+                else                
                 {
+                    HS198CanSkip2 = false;
                     HS198CanSkip = false;
                     HS198SkipDiode = 0;
                 }

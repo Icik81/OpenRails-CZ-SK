@@ -1538,23 +1538,20 @@ namespace Orts.Simulation.RollingStocks
 
                     if (MultiSystemEngine && RouteVoltageV != 1)
                     {
-                        if (!Pantograph4Enable && !Pantograph3Enable)
+                        if (!Pantograph5Enable && !Pantograph4Enable && !Pantograph3Enable)
                         {
                             SignalEvent(PowerSupplyEvent.RaisePantograph, 1);
                             if (MPManager.IsMultiPlayer())
                                 MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO1", 1).ToString());
                         }
 
-                        //if (Pantograph4Enable)
-                        //{
-                            Pantograph4Switch[LocoStation] = 1;
-                            if (RouteVoltageV == 3000)
-                                HV5Switch[LocoStation] = 1;
-                            if (RouteVoltageV > 3000)
-                                HV5Switch[LocoStation] = 3;
-                        //}
-                        //if (Pantograph3Enable)
-                            Pantograph3Switch[LocoStation] = 2;
+                        Pantograph3Switch[LocoStation] = 2;
+                        Pantograph4Switch[LocoStation] = 1;
+                        Pantograph5Switch[LocoStation] = 1;
+                        if (RouteVoltageV == 3000)
+                            HV5Switch[LocoStation] = 1;
+                        if (RouteVoltageV > 3000)
+                            HV5Switch[LocoStation] = 3;
 
                         if (PantographVoltageV > PantographCriticalVoltage)
                             HVOn = true;
@@ -1570,22 +1567,23 @@ namespace Orts.Simulation.RollingStocks
                         HVOn = true;
                         if (PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closed)
                         {
-                            if (!Pantograph4Enable && !Pantograph3Enable)
+                            if (!Pantograph5Enable && !Pantograph4Enable && !Pantograph3Enable)
                             {
                                 SignalEvent(PowerSupplyEvent.RaisePantograph, 1);
                                 if (MPManager.IsMultiPlayer())
                                     MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO1", 1).ToString());
                             }
 
-                            if (Pantograph4Enable)
-                            {
-                                Pantograph4Switch[LocoStation] = 1;
-                            }
                             if (Pantograph3Enable)
                             {
                                 Pantograph3Switch[LocoStation] = 2;
                                 Pantograph3CanOn = true;
                             }
+                            if (Pantograph4Enable)                            
+                                Pantograph4Switch[LocoStation] = 1;
+                            if (Pantograph5Enable)
+                                Pantograph5Switch[LocoStation] = 1;
+                            
                             if (PowerOn)
                                 LocoReadyToGo = false;
                         }
@@ -1648,6 +1646,8 @@ namespace Orts.Simulation.RollingStocks
                     AuxPowerOff = true;
                 }
 
+                if (Pantograph3Enable)
+                    Pantograph3Switch[LocoStation] = 2;
                 if (Pantograph4Enable)
                 {
                     Pantograph4Switch[LocoStation] = 1;
@@ -1656,8 +1656,15 @@ namespace Orts.Simulation.RollingStocks
                     if (RouteVoltageV > 3000)
                         HV5Switch[LocoStation] = 3;
                 }
-                if (Pantograph3Enable)
-                    Pantograph3Switch[LocoStation] = 2;
+                if (Pantograph5Enable)
+                {
+                    Pantograph5Switch[LocoStation] = 1;
+                    HV3Switch[LocoStation] = 1;
+                    if (RouteVoltageV == 3000)
+                        HV5Switch[LocoStation] = 1;
+                    if (RouteVoltageV > 3000)
+                        HV5Switch[LocoStation] = 3;
+                }
 
                 switch (RouteVoltageV)
                 {
@@ -2803,14 +2810,12 @@ namespace Orts.Simulation.RollingStocks
                         data = SwitchingVoltageMode;
                         break;
                     }
-
                 case CABViewControlTypes.SWITCHINGVOLTAGEMODE_OFF_AC:
                     {
                         SwitchingVoltageMode = MathHelper.Clamp(SwitchingVoltageMode, 1, 2);
                         data = SwitchingVoltageMode;
                         break;
                     }
-
                 case CABViewControlTypes.SWITCHINGVOLTAGEMODE_DC_OFF_AC:
                     {
                         if (preVoltageDC > 500 && preVoltageDC < 4000)
@@ -2826,17 +2831,7 @@ namespace Orts.Simulation.RollingStocks
                         if (PantoCanHVOffon)
                             data = 1;
                         break;
-                    }
-
-                case CABViewControlTypes.PANTOGRAPHS_4:
-                case CABViewControlTypes.PANTOGRAPHS_4C:
-                case CABViewControlTypes.PANTOGRAPH_4_SWITCH:
-                    {
-                        Pantograph4Enable = true;
-                        data = Pantograph4Switch[LocoStation];
-                        break;
-                    }
-
+                    }                                
                 case CABViewControlTypes.PANTOGRAPH_3_SWITCH:
                     {
                         Pantograph3Enable = true;
@@ -2857,7 +2852,37 @@ namespace Orts.Simulation.RollingStocks
                         }
                         break;
                     }
-
+                case CABViewControlTypes.PANTOGRAPHS_4:
+                case CABViewControlTypes.PANTOGRAPHS_4C:
+                case CABViewControlTypes.PANTOGRAPH_4_SWITCH:
+                    {
+                        Pantograph4Enable = true;
+                        data = Pantograph4Switch[LocoStation];
+                        break;
+                    }
+                case CABViewControlTypes.PANTOGRAPH_5_SWITCH:
+                    {
+                        Pantograph5Enable = true;
+                        switch(Pantograph5Switch[LocoStation])
+                        {
+                            case -2:
+                                data = 0;
+                                break;
+                            case -1:
+                                data = 1;
+                                break;
+                            case 0:
+                                data = 2;
+                                break;
+                            case 1:
+                                data = 3;
+                                break;
+                            case 2:
+                                data = 4;
+                                break;
+                        }                                                
+                        break;
+                    }
                 case CABViewControlTypes.HV2:
                     {
                         HV2Enable = true;
@@ -2871,7 +2896,6 @@ namespace Orts.Simulation.RollingStocks
                         data = HV2Switch;
                         break;
                     }
-
                 case CABViewControlTypes.HV3:
                     {
                         HV3Enable = true;

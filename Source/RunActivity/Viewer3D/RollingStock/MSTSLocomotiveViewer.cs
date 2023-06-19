@@ -333,6 +333,8 @@ namespace Orts.Viewer3D.RollingStock
             UserInputCommands.Add(UserCommand.ControlPantograph3SwitchDown, new Action[] { Noop, () => new TogglePantograph3SwitchDownCommand(Viewer.Log) });
             UserInputCommands.Add(UserCommand.ControlPantograph4SwitchUp, new Action[] { Noop, () => new TogglePantograph4SwitchUpCommand(Viewer.Log) });
             UserInputCommands.Add(UserCommand.ControlPantograph4SwitchDown, new Action[] { Noop, () => new TogglePantograph4SwitchDownCommand(Viewer.Log) });
+            UserInputCommands.Add(UserCommand.ControlPantograph5SwitchUp, new Action[] { Noop, () => new TogglePantograph5SwitchUpCommand(Viewer.Log) });
+            UserInputCommands.Add(UserCommand.ControlPantograph5SwitchDown, new Action[] { Noop, () => new TogglePantograph5SwitchDownCommand(Viewer.Log) });
             UserInputCommands.Add(UserCommand.ControlCompressorCombinedUp, new Action[] { Noop, () => new ToggleCompressorCombinedSwitchUpCommand(Viewer.Log) });
             UserInputCommands.Add(UserCommand.ControlCompressorCombinedDown, new Action[] { Noop, () => new ToggleCompressorCombinedSwitchDownCommand(Viewer.Log) });
             UserInputCommands.Add(UserCommand.ControlCompressorCombined2Up, new Action[] { Noop, () => new ToggleCompressorCombinedSwitch2UpCommand(Viewer.Log) });
@@ -961,14 +963,21 @@ namespace Orts.Viewer3D.RollingStock
                     Locomotive.HS198DirectionControllerPressDown = false;
                 }
 
-                if (UserInput.IsPressed(UserCommand.ControlThrottleIncrease))
+                if (UserInput.IsPressed(UserCommand.ControlThrottleIncrease) || UserInput.IsPressed(UserCommand.ControlThrottleDecrease))
                 {
                     PressedCycleStart = true;
                 }
 
                 if (UserInput.IsPressed(UserCommand.ControlThrottleIncrease) && DoublePressedKeyTest())
                 {
-                    Locomotive.HS198EDBBreak = true;
+                    if (Locomotive.HS198ControllerPosition[Locomotive.LocoStation] < 3 || Locomotive.HS198ControllerPosition[Locomotive.LocoStation] == 5)                    
+                        Locomotive.HS198Break = true;                                            
+                }
+                
+                if (UserInput.IsPressed(UserCommand.ControlThrottleDecrease) && DoublePressedKeyTest())
+                {
+                    if (Locomotive.HS198ControllerPosition[Locomotive.LocoStation] > 3 || Locomotive.HS198ControllerPosition[Locomotive.LocoStation] == 5)
+                        Locomotive.HS198Break = true;
                 }
 
                 if (UserInput.IsDown(UserCommand.ControlThrottleIncrease))
@@ -3325,6 +3334,7 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.HV5_DISPLAY:
                 case CABViewControlTypes.PANTOGRAPH_3_SWITCH:
                 case CABViewControlTypes.PANTOGRAPH_4_SWITCH:
+                case CABViewControlTypes.PANTOGRAPH_5_SWITCH:
                 case CABViewControlTypes.COMPRESSOR_START:
                 case CABViewControlTypes.COMPRESSOR_COMBINED:
                 case CABViewControlTypes.COMPRESSOR_COMBINED2:
@@ -3730,38 +3740,7 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.ORTS_PANTOGRAPH4:
                     var p4 = Locomotive.UsingRearCab ? 3 : 4;
                     new PantographCommand(Viewer.Log, p4, ChangedValue(Locomotive.Pantographs[p4].CommandUp ? 1 : 0) > 0);
-                    break;
-                // Icik
-                // Nahrazeno za novější variantu
-                //case CABViewControlTypes.PANTOGRAPHS_4C:
-                //case CABViewControlTypes.PANTOGRAPHS_4:
-                //    var pantos = ChangedValue(0);
-                //    if (pantos != 0)
-                //    {
-                //        var pp1 = Locomotive.UsingRearCab && Locomotive.Pantographs.List.Count > 1 ? 2 : 1;
-                //        var pp2 = Locomotive.UsingRearCab ? 1 : 2;
-                //        if (Locomotive.Pantographs[pp1].State == PantographState.Down && Locomotive.Pantographs[pp2].State == PantographState.Down)
-                //        {
-                //            if (pantos > 0) new PantographCommand(Viewer.Log, pp1, true);
-                //            else if (Control.ControlType == CABViewControlTypes.PANTOGRAPHS_4C) new PantographCommand(Viewer.Log, pp2, true);
-                //        }
-                //        else if (Locomotive.Pantographs[pp1].State == PantographState.Up && Locomotive.Pantographs[pp2].State == PantographState.Down)
-                //        {
-                //            if (pantos > 0) new PantographCommand(Viewer.Log, pp2, true);
-                //            else new PantographCommand(Viewer.Log, pp1, false);
-                //        }
-                //        else if (Locomotive.Pantographs[pp1].State == PantographState.Up && Locomotive.Pantographs[pp2].State == PantographState.Up)
-                //        {
-                //            if (pantos > 0) new PantographCommand(Viewer.Log, pp1, false);
-                //            else new PantographCommand(Viewer.Log, pp2, false);
-                //        }
-                //        else if (Locomotive.Pantographs[pp1].State == PantographState.Down && Locomotive.Pantographs[pp2].State == PantographState.Up)
-                //        {
-                //            if (pantos < 0) new PantographCommand(Viewer.Log, pp1, true);
-                //            else if (Control.ControlType == CABViewControlTypes.PANTOGRAPHS_4C) new PantographCommand(Viewer.Log, pp2, false);
-                //        }
-                //    }
-                //    break;
+                    break;                
                 case CABViewControlTypes.STEAM_HEAT: Locomotive.SetSteamHeatValue(ChangedValue(Locomotive.SteamHeatController.IntermediateValue)); break;
                 case CABViewControlTypes.ORTS_WATER_SCOOP: if (((Locomotive as MSTSSteamLocomotive).WaterScoopDown ? 1 : 0) != ChangedValue(Locomotive.WaterScoopDown ? 1 : 0)) new ToggleWaterScoopCommand(Viewer.Log); break;
                 case CABViewControlTypes.ORTS_CIRCUIT_BREAKER_DRIVER_CLOSING_ORDER:
@@ -4060,7 +4039,7 @@ namespace Orts.Viewer3D.RollingStock
                             new TogglePantograph3SwitchDownCommand(Viewer.Log);
                         }
                         break;
-                    }
+                    }                
 
                 case CABViewControlTypes.PANTOGRAPHS_4C:
                 case CABViewControlTypes.PANTOGRAPHS_4:
@@ -4073,6 +4052,19 @@ namespace Orts.Viewer3D.RollingStock
                     if (ChangedValue(0) > 0 && !IsChanged)
                     {
                         new TogglePantograph4SwitchDownCommand(Viewer.Log);
+                        IsChanged = true;
+                    }
+                    break;
+
+                case CABViewControlTypes.PANTOGRAPH_5_SWITCH:
+                    if (ChangedValue(0) < 0 && !IsChanged)
+                    {
+                        new TogglePantograph5SwitchUpCommand(Viewer.Log);
+                        IsChanged = true;
+                    }
+                    if (ChangedValue(0) > 0 && !IsChanged)
+                    {
+                        new TogglePantograph5SwitchDownCommand(Viewer.Log);
                         IsChanged = true;
                     }
                     break;
