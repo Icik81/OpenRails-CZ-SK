@@ -14233,6 +14233,7 @@ namespace Orts.Simulation.RollingStocks
                     HS198ControllerPositionName[LocoStation] = "-1"; // nearetovaná
                     HS198ControllerShortPressDown = false;
                     HS198ControllerCanThrottleChangeValue_1 = true;
+                    HS198ControllerPressTimerLongPressUp = 0;
                     break;
                 case 5:
                     HS198ControllerPositionName[LocoStation] = "J";
@@ -14242,14 +14243,17 @@ namespace Orts.Simulation.RollingStocks
                         HS198PositionBlocked = false;
                     HS198Skip_Ready = false;
                     HS198Protect = false;
-                    HS198ControllerPressTimerLongPressUp = 0;
-                    HS198ControllerPressTimerLongPressDown = 0;
+                    if (HS198ControllerPressTimerLongPressUp < 2.5f)
+                        HS198ControllerPressTimerLongPressUp = 0;
+                    if (HS198ControllerPressTimerLongPressDown < 2.5f)
+                        HS198ControllerPressTimerLongPressDown = 0;
                     break;
                 case 6:
                     HS198ControllerPositionName[LocoStation] = "+1"; // nearetovaná
                     HS198ControllerShortPressUp = false;
                     HS198ControllerCanThrottleChangeValue_2 = true;
                     HS198ControllerCanThrottleChangeValue_3 = false;
+                    HS198ControllerPressTimerLongPressDown = 0;
                     break;
                 case 7:
                     HS198ControllerPositionName[LocoStation] = "+";
@@ -14271,7 +14275,10 @@ namespace Orts.Simulation.RollingStocks
                 if (HS198ControllerCanThrottleChangeValue_0 || HS198ControllerCanThrottleChangeValue_1 || HS198ControllerCanThrottleChangeValue_2 || HS198ControllerCanThrottleChangeValue_3
                     || ShModeActivated || Mode_To_34_Start || ShModeActivated2 || Mode_To_27_Start1 || Mode_To_27_Start2
                     || (NoShMode && HS198ControllerThrottleValue > 27 && HS198ControllerThrottleValue < 34 && !Mode_To_34_Start)
-                    || HS198Skip_Start                    
+                    || HS198Skip_Start  
+                    || HS198Skip2_Start
+                    || HS198ControllerPressTimerLongPressUp > 2.5f
+                    || HS198ControllerPressTimerLongPressDown > 2.5f
                     )
                 {
                     HS198ControllerThrottleValueTimer += elapsedClockSeconds;                    
@@ -14425,10 +14432,10 @@ namespace Orts.Simulation.RollingStocks
                     }
 
 
-                    if (HS198ControllerCanThrottleChangeValue_2)
+                    if (HS198ControllerCanThrottleChangeValue_2 || HS198ControllerPressTimerLongPressUp > 2.5f)
                         HS198ControllerPressTimerLongPressUp += elapsedClockSeconds;
 
-                    if (HS198ControllerCanThrottleChangeValue_1)
+                    if (HS198ControllerCanThrottleChangeValue_1 || HS198ControllerPressTimerLongPressDown > 2.5f)
                         HS198ControllerPressTimerLongPressDown += elapsedClockSeconds;                    
 
                     if ((HS198ControllerThrottleValueTimer > 0.5f && !Mode_To_27_Start1 && !Mode_To_27_Start2 && !Mode_To_34_Start) 
@@ -14437,7 +14444,7 @@ namespace Orts.Simulation.RollingStocks
                         || (HS198ControllerThrottleValueTimer > 0.5f && HS198ControllerPressTimerLongPressDown > 2.5f))
                     {
                         // -1
-                        if (HS198ControllerCanThrottleChangeValue_1)
+                        if (HS198ControllerCanThrottleChangeValue_1 || HS198ControllerPressTimerLongPressDown > 2.5f)
                         {
                             if (HS198ControllerPressTimerLongPressDown > 2.5f)
                             {
@@ -14447,6 +14454,8 @@ namespace Orts.Simulation.RollingStocks
                                     HS198ControllerThrottleValue--;
                                     HS198ControllerCheckThrottleChange();
                                 }
+                                else
+                                    HS198ControllerPressTimerLongPressDown = 0f;
                                 HS198PositionBlocked = true;
                             }
                             else
@@ -14459,16 +14468,18 @@ namespace Orts.Simulation.RollingStocks
                         }
 
                         // +1
-                        if (HS198ControllerCanThrottleChangeValue_2)
+                        if (HS198ControllerCanThrottleChangeValue_2 || HS198ControllerPressTimerLongPressUp > 2.5f)
                         {
                             if (HS198ControllerPressTimerLongPressUp > 2.5f)
-                            { 
+                            {
                                 // Autokrokování nahoru mimo shuntů
                                 if (!HS198Protect && !HS198Skip_Ready && (HS198ControllerThrottleValue < 27 || (HS198ControllerThrottleValue >= 34 && HS198ControllerThrottleValue < 51)))
                                 {
                                     HS198ControllerThrottleValue++;
                                     HS198ControllerCheckThrottleChange();
                                 }
+                                else
+                                    HS198ControllerPressTimerLongPressUp = 0f;
                                 HS198PositionBlocked = true;
                             }
                             else
@@ -14497,7 +14508,7 @@ namespace Orts.Simulation.RollingStocks
                                 {
                                     Simulator.StepControllerValue++;
                                     HS198SkipCounter++;
-                                    if (HS198SkipCounter > 1f)
+                                    if (HS198SkipCounter > 0f)
                                     {
                                         ThrottleController.StartIncrease();
                                         ThrottleController.StopIncrease();
@@ -14533,9 +14544,10 @@ namespace Orts.Simulation.RollingStocks
                 if (!HS198Protect && AbsSpeedMpS >= 95f / 3.6f && PowerCurrent1 < 400f
                     && HS198ControllerPosition[LocoStation] > 3 && HS198ControllerPosition[LocoStation] <= 7
                     && HS198ControllerThrottleValue > 1f && HS198ControllerThrottleValue < 27f
-                    && !HS198PositionBlocked
+                    //&& !HS198PositionBlocked
                     && HS198DirectionControllerPosition[LocoStation] == 2)
                 {
+                    HS198CanSkip = false;
                     HS198CanSkip2 = true;
                     HS198SkipDiode = 1;
                 }
@@ -14544,9 +14556,11 @@ namespace Orts.Simulation.RollingStocks
                 if (!HS198Protect && AbsSpeedMpS >= 40f / 3.6f && PowerCurrent1 < 400f 
                     && HS198ControllerPosition[LocoStation] > 3 && HS198ControllerPosition[LocoStation] <= 7 
                     && HS198ControllerThrottleValue > 1f && HS198ControllerThrottleValue < 27f 
-                    && !HS198PositionBlocked)
+                    //&& !HS198PositionBlocked
+                    )
                 {
                     HS198CanSkip = true;
+                    HS198CanSkip2 = false;
                     HS198SkipDiode = 1;
                 }
                 else                
@@ -14693,7 +14707,7 @@ namespace Orts.Simulation.RollingStocks
                     HS198ControllerThrottleDummyValue = 27;
                     Simulator.StepControllerValue = HS198ControllerThrottleDummyValue;
                 }
-                if (HS198ControllerThrottleDummyValue == 0 && !HS198Skip_Start)
+                if (HS198ControllerThrottleDummyValue == 0 && !HS198Skip_Start && !HS198Skip2_Start)
                     Simulator.StepControllerValue = HS198ControllerThrottleValue;
             }
             // Bouchnutí HV nebo rychlobrzda
