@@ -497,6 +497,7 @@ namespace Orts.Formats.Msts
         HS198_CONTROLLER,
         HS198_DISPLAY,
         HS198_DISPLAY2,
+        HS198_DISPLAY3,
         HS198_DIRECTION_CONTROLLER,
         HS198_SKIPDIODE,
 

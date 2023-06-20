@@ -13974,6 +13974,7 @@ namespace Orts.Simulation.RollingStocks
         float HS198ControllerThrottleValueTimer;
         float HS198ControllerEDBValueTimer;
         float HS198ControllerOverTemperatureValueTimer;
+        float HS198ControllerOverTemperatureValueBlinkTimer;
         float HS198ControllerWhellSlipValueTimer;
         float HS198OverTemperatureTimer;
         bool HS198ControllerCanThrottleChangeValue_0;
@@ -13989,7 +13990,8 @@ namespace Orts.Simulation.RollingStocks
         bool HS198ControllerShortPressDown;
         public bool HS198Break;        
         float HS198ControllerDisplayValue;
-        float HS198ControllerDisplay2Value;        
+        float HS198ControllerDisplay2Value;
+        float HS198ControllerDisplay3Value;
         int HS198SkipDiode;
         bool HS198CanSkip;
         bool HS198CanSkip2;
@@ -13999,6 +14001,7 @@ namespace Orts.Simulation.RollingStocks
         bool HS198PositionBlocked;
         bool HS198Protect;
         int HS198SkipCounter;
+        bool HS198ControllerDisplayBlink;
 
         public bool DirectionControllerHS198PositionSh;
         public bool preDirectionControllerHS198PositionSh;
@@ -14257,7 +14260,7 @@ namespace Orts.Simulation.RollingStocks
             }
                                             
 
-            HS198ControllerDisplayValue = HS198ControllerDisplay2Value = HS198ControllerThrottleValue;
+            HS198ControllerDisplayValue = HS198ControllerDisplay2Value = HS198ControllerDisplay3Value = HS198ControllerThrottleValue;
 
             // Hodnoty pro StepController
             if (CircuitBreakerOn)
@@ -14461,7 +14464,7 @@ namespace Orts.Simulation.RollingStocks
                             if (HS198ControllerPressTimerLongPressUp > 2.5f)
                             { 
                                 // Autokrokování nahoru mimo shuntů
-                                if (!HS198Protect && !HS198Skip_Ready && (HS198ControllerThrottleValue < 26 || (HS198ControllerThrottleValue >= 34 && HS198ControllerThrottleValue < 51)))
+                                if (!HS198Protect && !HS198Skip_Ready && (HS198ControllerThrottleValue < 27 || (HS198ControllerThrottleValue >= 34 && HS198ControllerThrottleValue < 51)))
                                 {
                                     HS198ControllerThrottleValue++;
                                     HS198ControllerCheckThrottleChange();
@@ -14608,6 +14611,18 @@ namespace Orts.Simulation.RollingStocks
                 {
                     HS198ControllerOverTemperatureValueTimer += elapsedClockSeconds;
                     HS198OverTemperatureTimer += elapsedClockSeconds;
+                    HS198ControllerOverTemperatureValueBlinkTimer += elapsedClockSeconds;
+
+                    // Blikání displaye
+                    if (HS198ControllerOverTemperatureValueBlinkTimer > 0 && HS198ControllerOverTemperatureValueBlinkTimer < 0.25f)
+                        HS198ControllerDisplayBlink = true;
+                    else
+                    if (HS198ControllerOverTemperatureValueBlinkTimer > 0.25f && HS198ControllerOverTemperatureValueBlinkTimer < 0.5f)
+                        HS198ControllerDisplayBlink = false;
+                    else
+                    if (HS198ControllerOverTemperatureValueBlinkTimer > 0.5f)
+                        HS198ControllerOverTemperatureValueBlinkTimer = 0;
+
                     if (HS198OverTemperatureTimer > 60f && HS198ControllerOverTemperatureValueTimer > 0.25f)
                     {
                         HS198Protect = true;
@@ -14624,6 +14639,18 @@ namespace Orts.Simulation.RollingStocks
                 {
                     HS198ControllerOverTemperatureValueTimer += elapsedClockSeconds;
                     HS198OverTemperatureTimer += elapsedClockSeconds;
+                    HS198ControllerOverTemperatureValueBlinkTimer += elapsedClockSeconds;
+
+                    // Blikání displaye
+                    if (HS198ControllerOverTemperatureValueBlinkTimer > 0 && HS198ControllerOverTemperatureValueBlinkTimer < 0.25f)
+                        HS198ControllerDisplayBlink = true;
+                    else
+                    if (HS198ControllerOverTemperatureValueBlinkTimer > 0.25f && HS198ControllerOverTemperatureValueBlinkTimer < 0.5f)
+                        HS198ControllerDisplayBlink = false;
+                    else
+                    if (HS198ControllerOverTemperatureValueBlinkTimer > 0.5f)
+                        HS198ControllerOverTemperatureValueBlinkTimer = 0;
+
                     if (HS198OverTemperatureTimer > 60f && HS198ControllerOverTemperatureValueTimer > 0.25f)
                     {
                         HS198Protect = true;
@@ -14636,7 +14663,10 @@ namespace Orts.Simulation.RollingStocks
                     }
                 }
                 else
+                {
                     HS198OverTemperatureTimer = 0f;
+                    HS198ControllerDisplayBlink = false;
+                }
                 // Prokluz kol
                 if (WheelSlipWarning || WheelSlip)
                 {
@@ -17575,6 +17605,7 @@ namespace Orts.Simulation.RollingStocks
                     }
                 case CABViewControlTypes.MIRELRS_DISPLAY2:
                     {
+                        // Shunty
                         if (DirectionControllerMirelRSPositionSh || ShModeActivated || ShModeActivated2)
                         {
                             cvc.ElapsedTime += elapsedTime;
@@ -17617,21 +17648,97 @@ namespace Orts.Simulation.RollingStocks
                         data = cvc.PreviousData;
                         if (cvc.ElapsedTime > cvc.UpdateTime)
                         {
-                            cvc.PreviousData = HS198ControllerDisplayValue;
                             cvc.ElapsedTime = 0;
+                            if (DynamicBrakePercent == 0)                                                            
+                               cvc.PreviousData = 1;
+                            else
+                            if (DynamicBrakePercent > 0)
+                                cvc.PreviousData = 0;
+                            else
+                            if (HS198ControllerDisplayBlink)
+                                cvc.PreviousData = 59;
+                            else
+                                cvc.PreviousData = HS198ControllerDisplayValue + 2;                            
                         }
                         break;
                     }
                 case CABViewControlTypes.HS198_DISPLAY2:
                     {
+                        // P1 - P3
+                        if (!DirectionControllerHS198PositionSh && !ShModeActivated && !ShModeActivated2)
+                        {
+                            cvc.ElapsedTime += elapsedTime;
+                            data = cvc.PreviousData;
+                            if (cvc.ElapsedTime > cvc.UpdateTime)
+                            {                                
+                                cvc.ElapsedTime = 0;
+                                cvc.PreviousData = 0;
+                                switch (HS198ControllerDisplay2Value)
+                                {                                    
+                                    case 28: cvc.PreviousData = 28 + 2; break;
+                                    case 29: cvc.PreviousData = 28 + 2; break;
+                                    case 30: cvc.PreviousData = 29 + 2; break;
+                                    case 31: cvc.PreviousData = 29 + 2; break;
+                                    case 32: cvc.PreviousData = 30 + 2; break;
+                                    case 33: cvc.PreviousData = 30 + 2; break;                                 
+                                }                                                                
+                            }
+                        }
+                        else
+                            data = 0;
+                        break;
+                    }
+                case CABViewControlTypes.HS198_DISPLAY3:
+                    {
+                        // U - podpětí
+                        if (CheckPowerLoss)
+                        {
+                            cvc.ElapsedTime += elapsedTime;
+                            data = cvc.PreviousData;
+                            if (cvc.ElapsedTime > cvc.UpdateTime)
+                            {
+                                cvc.ElapsedTime = 0;
+                                cvc.PreviousData = 3;
+                            }
+                        }
+                        else
+                        // P - mikroskluz
+                        if (WheelSlipWarning)
+                        {
+                            cvc.ElapsedTime += elapsedTime;
+                            data = cvc.PreviousData;
+                            if (cvc.ElapsedTime > cvc.UpdateTime)
+                            {
+                                cvc.ElapsedTime = 0;
+                                cvc.PreviousData = 2;
+                            }
+                        }
+                        else
+                        // Shunty
                         if (DirectionControllerHS198PositionSh || ShModeActivated || ShModeActivated2)
                         {
                             cvc.ElapsedTime += elapsedTime;
                             data = cvc.PreviousData;
                             if (cvc.ElapsedTime > cvc.UpdateTime)
                             {
-                                cvc.PreviousData = HS198ControllerDisplay2Value;
+                                cvc.PreviousData = HS198ControllerDisplay3Value + 2;
                                 cvc.ElapsedTime = 0;
+                            }
+                        }
+                        else
+                        // H
+                        if (!DirectionControllerHS198PositionSh && !ShModeActivated && !ShModeActivated2)
+                        {
+                            cvc.ElapsedTime += elapsedTime;
+                            data = cvc.PreviousData;
+                            if (cvc.ElapsedTime > cvc.UpdateTime)
+                            {
+                                cvc.ElapsedTime = 0;
+                                switch (HS198ControllerDisplay3Value)
+                                {
+                                    case 27: cvc.PreviousData = 1; break;                                    
+                                    case 51: cvc.PreviousData = 1; break;
+                                }
                             }
                         }
                         else

@@ -3419,6 +3419,7 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.HS198_CONTROLLER:
                 case CABViewControlTypes.HS198_DISPLAY:
                 case CABViewControlTypes.HS198_DISPLAY2:
+                case CABViewControlTypes.HS198_DISPLAY3:
                 case CABViewControlTypes.HS198_DIRECTION_CONTROLLER:
                 case CABViewControlTypes.HS198_SKIPDIODE:
 
