@@ -578,6 +578,7 @@ namespace Orts.Simulation.RollingStocks
         int PantoStatus = 1;
         public float HeatingMaxCurrentA;
         public bool CheckPowerLoss;
+        public bool VoltageIndicateTestCompleted;
         public bool DontRaisePanto;
         float PreDataAmmeter;
         float PreDataAmmeter2;
@@ -2035,6 +2036,7 @@ namespace Orts.Simulation.RollingStocks
             outf.Write(VentilationIsOn);
             outf.Write(TMCoolingIsActivated);
             outf.Write(DRCoolingIsActivated);
+            outf.Write(LocoGroundBreaker);
 
             #endregion
 
@@ -2269,6 +2271,7 @@ namespace Orts.Simulation.RollingStocks
             VentilationIsOn = inf.ReadBoolean();
             DRCoolingIsActivated = inf.ReadBoolean();
             TMCoolingIsActivated = inf.ReadBoolean();
+            LocoGroundBreaker = inf.ReadBoolean();
             #endregion
 
             base.Restore(inf);
@@ -13921,6 +13924,9 @@ namespace Orts.Simulation.RollingStocks
                 }
                 if (MirelRSControllerThrottleDummyValue == 0 && !MirelRSSkip_Start)
                     Simulator.StepControllerValue = MirelRSControllerThrottleValue;
+
+                if (ThrottlePercent == 0 && MirelRSControllerThrottleValue > 1)
+                    MirelRSControllerThrottleValue = preMirelRSControllerThrottleValue = Simulator.StepControllerValue = 0;
             }
             // Bouchnutí HV nebo rychlobrzda
             if (!CircuitBreakerOn || BrakeSystem.EmergencyBrakeForWagon)
@@ -13999,6 +14005,7 @@ namespace Orts.Simulation.RollingStocks
         bool HS198Skip2_Start;
         bool HS198Skip_Ready;
         bool HS198PositionBlocked;
+        bool HS198PositionBlocked2;
         bool HS198Protect;
         int HS198SkipCounter;
         bool HS198ControllerDisplayBlink;
@@ -14196,7 +14203,7 @@ namespace Orts.Simulation.RollingStocks
                 }
             }
 
-            // Pozice MireluRS
+            // Pozice HS198
             if (HS198ControllerPosition[LocoStation] != preHS198ControllerPosition[LocoStation])
             {
                 preHS198ControllerPosition[LocoStation] = HS198ControllerPosition[LocoStation];
@@ -14240,8 +14247,11 @@ namespace Orts.Simulation.RollingStocks
                     HS198ControllerLongPressUp = false;
                     HS198ControllerLongPressDown = false;
                     if (HS198ControllerThrottleValueTimer == 0)
+                    {
                         HS198PositionBlocked = false;
-                    HS198Skip_Ready = false;
+                        HS198PositionBlocked2 = false;
+                        HS198Skip_Ready = false;
+                    }
                     HS198Protect = false;
                     if (HS198ControllerPressTimerLongPressUp < 2.5f)
                         HS198ControllerPressTimerLongPressUp = 0;
@@ -14459,11 +14469,11 @@ namespace Orts.Simulation.RollingStocks
                                 HS198PositionBlocked = true;
                             }
                             else
-                            if (HS198ControllerThrottleValue > 0 && !HS198PositionBlocked)
+                            if (HS198ControllerThrottleValue > 0 && !HS198PositionBlocked2)
                             {
                                 HS198ControllerThrottleValue--;
                                 HS198ControllerCheckThrottleChange();
-                                HS198PositionBlocked = true;
+                                HS198PositionBlocked2 = true;
                             }
                         }
 
@@ -14483,11 +14493,11 @@ namespace Orts.Simulation.RollingStocks
                                 HS198PositionBlocked = true;
                             }
                             else
-                            if (HS198ControllerThrottleValue < HS198ControllerMaxValue && !HS198PositionBlocked)
+                            if (HS198ControllerThrottleValue < HS198ControllerMaxValue && !HS198Skip_Ready && !HS198PositionBlocked2)
                             {
                                 HS198ControllerThrottleValue++;
                                 HS198ControllerCheckThrottleChange();
-                                HS198PositionBlocked = true;
+                                HS198PositionBlocked2 = true;
                             }
                         }
 
@@ -14523,16 +14533,16 @@ namespace Orts.Simulation.RollingStocks
                                     HS198SkipCounter = 0;
                                 }
                             }
-                            //else
-                            //{
-                            //    // Autokrokování nahoru mimo shuntů
-                            //    if (!HS198Protect && !HS198Skip_Ready && (HS198ControllerThrottleValue < 27 || (HS198ControllerThrottleValue >= 34 && HS198ControllerThrottleValue < 51)))
-                            //    {
-                            //        HS198ControllerThrottleValue++;
-                            //        HS198ControllerCheckThrottleChange();
-                            //    }
-                            //    HS198PositionBlocked = true;
-                            //}
+                            else
+                            {
+                                // Autokrokování nahoru mimo shuntů
+                                if (!HS198Protect && !HS198Skip_Ready && (HS198ControllerThrottleValue < 27 || (HS198ControllerThrottleValue >= 34 && HS198ControllerThrottleValue < 51)))
+                                {
+                                    HS198ControllerThrottleValue++;
+                                    HS198ControllerCheckThrottleChange();
+                                }
+                                HS198PositionBlocked = true;
+                            }
                         }
                         HS198ControllerThrottleValueTimer = 0;
                         HS198ControllerCanThrottleChangeValue_1 = HS198ControllerCanThrottleChangeValue_2 = false;
@@ -14544,7 +14554,7 @@ namespace Orts.Simulation.RollingStocks
                 if (!HS198Protect && AbsSpeedMpS >= 95f / 3.6f && PowerCurrent1 < 400f
                     && HS198ControllerPosition[LocoStation] > 3 && HS198ControllerPosition[LocoStation] <= 7
                     && HS198ControllerThrottleValue > 1f && HS198ControllerThrottleValue < 27f
-                    //&& !HS198PositionBlocked
+                    && !HS198PositionBlocked
                     && HS198DirectionControllerPosition[LocoStation] == 2)
                 {
                     HS198CanSkip = false;
@@ -14556,7 +14566,7 @@ namespace Orts.Simulation.RollingStocks
                 if (!HS198Protect && AbsSpeedMpS >= 40f / 3.6f && PowerCurrent1 < 400f 
                     && HS198ControllerPosition[LocoStation] > 3 && HS198ControllerPosition[LocoStation] <= 7 
                     && HS198ControllerThrottleValue > 1f && HS198ControllerThrottleValue < 27f 
-                    //&& !HS198PositionBlocked
+                    && !HS198PositionBlocked
                     )
                 {
                     HS198CanSkip = true;
@@ -14568,7 +14578,7 @@ namespace Orts.Simulation.RollingStocks
                     HS198CanSkip2 = false;
                     HS198CanSkip = false;
                     HS198SkipDiode = 0;
-                }
+                }                
 
                 // Hodnoty pro EDB
                 if (HS198ControllerCanEDBChangeValue_0 || HS198ControllerCanEDBChangeValue_1 || HS198ControllerCanEDBChangeValue_2)
@@ -14709,6 +14719,9 @@ namespace Orts.Simulation.RollingStocks
                 }
                 if (HS198ControllerThrottleDummyValue == 0 && !HS198Skip_Start && !HS198Skip2_Start)
                     Simulator.StepControllerValue = HS198ControllerThrottleValue;
+                
+                if (ThrottlePercent == 0 && HS198ControllerThrottleValue > 1)
+                    HS198ControllerThrottleValue = preHS198ControllerThrottleValue = Simulator.StepControllerValue = 0;
             }
             // Bouchnutí HV nebo rychlobrzda
             if (!CircuitBreakerOn || BrakeSystem.EmergencyBrakeForWagon)
@@ -17705,7 +17718,7 @@ namespace Orts.Simulation.RollingStocks
                 case CABViewControlTypes.HS198_DISPLAY3:
                     {
                         // U - podpětí
-                        if (CheckPowerLoss)
+                        if (CheckPowerLoss && VoltageIndicateTestCompleted && Pantograph5Switch[LocoStation] != 0)
                         {
                             cvc.ElapsedTime += elapsedTime;
                             data = cvc.PreviousData;
@@ -17732,10 +17745,15 @@ namespace Orts.Simulation.RollingStocks
                         if (DirectionControllerHS198PositionSh || ShModeActivated || ShModeActivated2)
                         {
                             cvc.ElapsedTime += elapsedTime;
-                            data = cvc.PreviousData;
+                            data = cvc.PreviousData;                            
                             if (cvc.ElapsedTime > cvc.UpdateTime)
                             {
-                                cvc.PreviousData = HS198ControllerDisplay3Value + 2;
+                                if (HS198ControllerDisplay3Value >= 27 && HS198ControllerDisplay3Value <= 32 || HS198ControllerDisplay3Value >= 51 && HS198ControllerDisplay3Value <= 56)
+                                {
+                                    cvc.PreviousData = HS198ControllerDisplay3Value + 2;
+                                }
+                                else
+                                    cvc.PreviousData = 0;
                                 cvc.ElapsedTime = 0;
                             }
                         }
@@ -17748,6 +17766,7 @@ namespace Orts.Simulation.RollingStocks
                             if (cvc.ElapsedTime > cvc.UpdateTime)
                             {
                                 cvc.ElapsedTime = 0;
+                                cvc.PreviousData = 0;
                                 switch (HS198ControllerDisplay3Value)
                                 {
                                     case 27: cvc.PreviousData = 1; break;                                    

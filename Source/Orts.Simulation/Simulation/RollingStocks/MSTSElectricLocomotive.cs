@@ -1595,8 +1595,7 @@ namespace Orts.Simulation.RollingStocks
         // Icik
         // Zpoždění v testu indikaci napětí
         int VoltageTestCycle;        
-        float TimerVoltageIndicateTest;
-        bool VoltageIndicateTestCompleted;
+        float TimerVoltageIndicateTest;        
         public void VoltageIndicate(float elapsedSeconds)
         {
             if (Pantographs[1].State == PantographState.Up || Pantographs[2].State == PantographState.Up)                        
