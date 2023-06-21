@@ -674,6 +674,8 @@ namespace Orts.Simulation.RollingStocks
         public InterpolatorDiesel2D CurrentForceStep2Curves;
         public InterpolatorDiesel2D CurrentBrakeForce1Curves;
         public InterpolatorDiesel2D CurrentBrakeForce2Curves;
+        public InterpolatorDiesel2D CurrentSpeedStepACCurves;
+        public InterpolatorDiesel2D CurrentSpeedStepDCCurves;
         public int LocoStation = 1;
         public bool LocoHasNoDynamicController = true;
         public bool[] StationIsActivated = new bool[3];
@@ -1412,11 +1414,13 @@ namespace Orts.Simulation.RollingStocks
                 case "engine(cabstationforbatteryswitchon": CabStationForBatterySwitchOn = stf.ReadIntBlock(null); break;
                 case "engine(ortstractioncharacteristicsstepcontroller": TractiveForceStepControllerCurves = new InterpolatorDiesel2D(stf, true); break;
                 case "engine(ortstractioncharacteristicsstepcontrollerac": TractiveForceStepControllerCurvesAC = new InterpolatorDiesel2D(stf, true); break;
-                case "engine(ortstractioncharacteristicsstepcontrollerdc": TractiveForceStepControllerCurvesDC = new InterpolatorDiesel2D(stf, true); break;
+                case "engine(ortstractioncharacteristicsstepcontrollerdc": TractiveForceStepControllerCurvesDC = new InterpolatorDiesel2D(stf, true); break;                
                 case "engine(ortscurrentforcestep1characteristics": CurrentForceStep1Curves = new InterpolatorDiesel2D(stf, true); break;
                 case "engine(ortscurrentforcestep2characteristics": CurrentForceStep2Curves = new InterpolatorDiesel2D(stf, true); break;
                 case "engine(ortsbrakecurrent1characteristics": CurrentBrakeForce1Curves = new InterpolatorDiesel2D(stf, true); break;
                 case "engine(ortsbrakecurrent2characteristics": CurrentBrakeForce2Curves = new InterpolatorDiesel2D(stf, true); break;
+                case "engine(ortscurrentspeedstepcharacteristicsac": CurrentSpeedStepACCurves = new InterpolatorDiesel2D(stf, true); break;
+                case "engine(ortscurrentspeedstepcharacteristicsdc": CurrentSpeedStepDCCurves = new InterpolatorDiesel2D(stf, true); break;
                 case "engine(auxconsumptioncurrents(cabheating": Current_CabHeating = stf.ReadFloatBlock(STFReader.UNITS.Current, null); break;
                 case "engine(auxconsumptioncurrents(tmcoolings": Current_TMCoolings = stf.ReadFloatBlock(STFReader.UNITS.Current, null); break;
                 case "engine(auxconsumptioncurrents(otherscoolings": Current_OthersCoolings = stf.ReadFloatBlock(STFReader.UNITS.Current, null); break;
@@ -1436,7 +1440,7 @@ namespace Orts.Simulation.RollingStocks
                 case "engine(stepcontrollersituation(relaydelay_2": RelayDelay[2] = stf.ReadFloatBlock(STFReader.UNITS.Time, null); break;
                 case "engine(stepcontrollersituation(relaydelay_3": RelayDelay[3] = stf.ReadFloatBlock(STFReader.UNITS.Time, null); break;
                 case "engine(stepcontrollersituation(relaydelay_4": RelayDelay[4] = stf.ReadFloatBlock(STFReader.UNITS.Time, null); break;
-                case "engine(stepcontrollersituation(relaydelay_5": RelayDelay[5] = stf.ReadFloatBlock(STFReader.UNITS.Time, null); break;
+                case "engine(stepcontrollersituation(relaydelay_5": RelayDelay[5] = stf.ReadFloatBlock(STFReader.UNITS.Time, null); break;                
 
 
                 // Jindrich
@@ -1713,6 +1717,9 @@ namespace Orts.Simulation.RollingStocks
             AirDRCoolingPower = locoCopy.AirDRCoolingPower;
             DRTempTimeConstantSec = locoCopy.DRTempTimeConstantSec;
             CoefStepControllerCurves = locoCopy.CoefStepControllerCurves;
+            CurrentSpeedStepACCurves = locoCopy.CurrentSpeedStepACCurves;
+            CurrentSpeedStepDCCurves = locoCopy.CurrentSpeedStepDCCurves;
+
             for (int i = 0; i < 6; i++)
                 RelayDelay[i] = locoCopy.RelayDelay[i];
 
@@ -3028,10 +3035,16 @@ namespace Orts.Simulation.RollingStocks
         float FakePowerCurrent2Timer;
         bool SetFakePowerCurrent2Timer;
         public void PowerCurrentCalculation(float elapsedClockSeconds)
-        {
+        {            
             if (CurrentForceStep2Curves != null)
                 PowerCurrent2 = CurrentForceStep2Curves.Get(StepControllerValue, Math.Abs(DriveForceN));
 
+            if (CurrentSpeedStepACCurves != null && SwitchingVoltageMode_OffAC)
+                PowerCurrent1 = CurrentSpeedStepACCurves.Get(StepControllerValue, AbsWheelSpeedMpS);
+            else
+            if (CurrentSpeedStepDCCurves != null && SwitchingVoltageMode_OffDC)
+                PowerCurrent1 = CurrentSpeedStepDCCurves.Get(StepControllerValue, AbsWheelSpeedMpS);
+            else
             if (CurrentForceStep1Curves != null)
                 PowerCurrent1 = CurrentForceStep1Curves.Get(StepControllerValue, Math.Abs(DriveForceN));
             else
@@ -15622,7 +15635,7 @@ namespace Orts.Simulation.RollingStocks
                                     data = -data;
 
                                 // Icik
-                                if (ThrottlePercent > 0 && (CurrentForceStep1Curves != null || CurrentForceCurves != null))
+                                if (ThrottlePercent > 0 && (CurrentForceStep1Curves != null || CurrentForceCurves != null || CurrentSpeedStepACCurves != null || CurrentSpeedStepDCCurves != null))
                                     data = FakePowerCurrent1;
                                 if (DynamicBrakeForceN != 0 && CurrentBrakeForce1Curves != null)
                                     data = BrakeCurrent1;
@@ -15633,7 +15646,7 @@ namespace Orts.Simulation.RollingStocks
                             data = this.DriveForceN / MaxForceN * MaxCurrentA;
 
                             // Icik
-                            if (ThrottlePercent > 0 && (CurrentForceStep1Curves != null || CurrentForceCurves != null))
+                            if (ThrottlePercent > 0 && (CurrentForceStep1Curves != null || CurrentForceCurves != null || CurrentSpeedStepACCurves != null || CurrentSpeedStepDCCurves != null))
                                 data = FakePowerCurrent1;
                             if (DynamicBrakeForceN != 0 && CurrentBrakeForce1Curves != null)
                                 data = BrakeCurrent1;
