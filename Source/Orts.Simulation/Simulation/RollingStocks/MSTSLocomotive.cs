@@ -14264,7 +14264,9 @@ namespace Orts.Simulation.RollingStocks
                         HS198PositionBlocked = false;
                         HS198PositionBlocked2 = false;
                         HS198Skip_Ready = false;
-                    }
+                        HS198ControllerCanThrottleChangeValue_1 = false;
+                        HS198ControllerCanThrottleChangeValue_2 = false;
+                    }                    
                     HS198Protect = false;
                     if (HS198ControllerPressTimerLongPressUp < 2.5f)
                         HS198ControllerPressTimerLongPressUp = 0;
@@ -14375,7 +14377,7 @@ namespace Orts.Simulation.RollingStocks
                     if (HS198ControllerThrottleValue <= 27)
                         Mode_To_27_Start2_Enable = false;
                     if ((NoShMode && HS198ControllerThrottleValue > 27 && HS198ControllerThrottleValue < 34 && !Mode_To_34_Start && Mode_To_27_Start2_Enable) || Mode_To_27_Start2)
-                    {
+                    {                                                
                         Mode_To_27_Start2 = true;
                         DirectionControllerHS198PositionSh = false;
                         if (HS198ControllerThrottleValueTimer > 0.25f)
@@ -14395,8 +14397,8 @@ namespace Orts.Simulation.RollingStocks
                     }
 
                     // Auto krokování do 34 
-                    if (((!DirectionControllerHS198PositionSh && HS198ControllerThrottleValue > 26 && HS198ControllerThrottleValue < 34 && HS198ControllerPositionName[LocoStation] == "+1") || Mode_To_34_Start) && !HS198PositionBlocked)
-                    {
+                    if ((!DirectionControllerHS198PositionSh && HS198ControllerThrottleValue > 26 && HS198ControllerThrottleValue < 34 && HS198ControllerPositionName[LocoStation] == "+1") || Mode_To_34_Start)
+                    {                        
                         HS198ControllerCanThrottleChangeValue_2 = false;
                         Mode_To_34_Start = true;
                         if (HS198ControllerThrottleValueTimer > 0.25f)
@@ -14420,13 +14422,6 @@ namespace Orts.Simulation.RollingStocks
                         // 0
                         if (HS198ControllerCanThrottleChangeValue_0)
                         {
-                            // Směrová páka v 0
-                            if (HS198DirectionControllerPosition[LocoStation] == 1 && PowerCurrent1 < 300f && HS198ControllerThrottleValue <= 27f)
-                            {
-                                HS198ControllerThrottleValue = preHS198ControllerThrottleValue = 0;
-                                SetThrottlePercent(0f);
-                            }
-                            else
                             // Kontrolér v 0
                             if (HS198ControllerPosition[LocoStation] == 3 && PowerCurrent1 < 300f && HS198ControllerThrottleValue <= 27f)
                             {
@@ -14441,8 +14436,8 @@ namespace Orts.Simulation.RollingStocks
                                 SetThrottlePercent(0f);
                             }
                             else
-                            // Směrová páka v 0 nebo kontrolér v 0 nebo v B
-                            if ((HS198DirectionControllerPosition[LocoStation] == 1 || HS198ControllerPosition[LocoStation] == 3 || HS198ControllerPosition[LocoStation] == 1) && HS198ControllerThrottleValue > 0f)
+                            // Kontrolér v 0 nebo v B
+                            if ((HS198ControllerPosition[LocoStation] == 3 || HS198ControllerPosition[LocoStation] == 1) && HS198ControllerThrottleValue > 0f)
                             {
                                 HS198ControllerThrottleValue--;
                                 HS198ControllerCheckThrottleChange();
@@ -14539,6 +14534,7 @@ namespace Orts.Simulation.RollingStocks
                                 }
                                 else
                                 {
+                                    if (HS198Skip2_Start && Simulator.StepControllerValue > 27 && Simulator.StepControllerValue < 34) Mode_To_34_Start = true;
                                     HS198ControllerThrottleValue = preHS198ControllerThrottleValue = Simulator.StepControllerValue;
                                     HS198Skip_Start = false;
                                     HS198Skip2_Start = false;
