@@ -360,7 +360,9 @@ namespace Orts.Common
         ReverserToShOff,
         VentilationSwitch,
         LocoGroundBreakerOn,
-        LocoGroundBreakerOff
+        LocoGroundBreakerOff,
+        HandBrakeOn,
+        HandBrakeOff
     }
 
     public static class Events
@@ -736,6 +738,8 @@ namespace Orts.Common
                         case 20114:return Event.VentilationSwitch;                        
                         case 20115: return Event.LocoGroundBreakerOn;
                         case 20116: return Event.LocoGroundBreakerOff;
+                        case 20117: return Event.HandBrakeOn;
+                        case 20118: return Event.HandBrakeOff;
 
                         default: return 0;
                     }

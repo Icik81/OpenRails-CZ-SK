@@ -17807,6 +17807,11 @@ namespace Orts.Simulation.RollingStocks
                         }
                         break;
                     }
+                case CABViewControlTypes.HANDBRAKE:
+                    {
+                        data = BrakeSystem.HandBrakeActive ? 1 : 0;                                                    
+                        break;
+                    }
                 case CABViewControlTypes.VENTILATION_SWITCH:
                     {
                         VentilationSwitchEnable = true;                        

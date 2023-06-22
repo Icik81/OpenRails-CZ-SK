@@ -774,6 +774,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     threshold = MathHelper.Clamp(threshold, 0, MCP_TrainBrake);
             }
 
+            if (HandbrakePercent > 0) { HandBrakeActive = true; HandBrakeDeactive = false; }
+            else { HandBrakeActive = false; HandBrakeDeactive = true; }
+
             MSTSLocomotive loco = Car as MSTSLocomotive;
             if (StartOn)
             {
@@ -3097,6 +3100,23 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         car.BrakeSystem.LeftDoorIsOpened = false;
                         car.BrakeSystem.RightDoorIsOpened = false;
                     }
+                }
+            }
+
+            // Ruční brzda - akustická siréna při pohybu
+            if (lead != null)
+            {
+                BrakeSystem brakeSystem = lead.BrakeSystem;
+                if (lead.AbsWheelSpeedMpS > 0.1f && brakeSystem.HandBrakeActive && !brakeSystem.HBSignalActiv)
+                {
+                    brakeSystem.HBSignalActiv = true;
+                    lead.SignalEvent(Event.HandBrakeOn);                    
+                }
+                else
+                if ((lead.AbsWheelSpeedMpS < 0.1f || !brakeSystem.HandBrakeActive) && brakeSystem.HBSignalActiv)
+                {
+                    brakeSystem.HBSignalActiv = false;
+                    lead.SignalEvent(Event.HandBrakeOff);
                 }
             }
 

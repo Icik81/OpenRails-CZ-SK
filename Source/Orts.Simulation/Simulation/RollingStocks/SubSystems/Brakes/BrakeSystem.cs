@@ -210,7 +210,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes
         public bool MatrosovRelease = false;
         public bool WestingHouseRelease = false;
         public bool EPApply = false;
-        public bool BrakeControllerLap;        
+        public bool BrakeControllerLap;
+        public bool HBSignalActiv;
 
         public bool ORCZSKSetUp;
 

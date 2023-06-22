@@ -500,6 +500,7 @@ namespace Orts.Formats.Msts
         HS198_DISPLAY3,
         HS198_DIRECTION_CONTROLLER,
         HS198_SKIPDIODE,
+        HANDBRAKE,
 
         // ORTS
         ORTS_SCREEN_SELECT,

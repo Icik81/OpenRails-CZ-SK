@@ -889,7 +889,7 @@ namespace Orts.Viewer3D.RollingStock
 
                 if (Locomotive.MirelRSControllerPosition[Locomotive.LocoStation] > 6)
                 {
-                    if (UserInput.IsPressed(UserCommand.ControlThrottleDecrease))
+                    if (UserInput.IsReleased(UserCommand.ControlThrottleIncrease))
                     {
                         Locomotive.MirelRSControllerAutoPressDown = true;
                     }
@@ -998,7 +998,7 @@ namespace Orts.Viewer3D.RollingStock
 
                 if (Locomotive.HS198ControllerPosition[Locomotive.LocoStation] > 6)
                 {
-                    if (UserInput.IsPressed(UserCommand.ControlThrottleDecrease))
+                    if (UserInput.IsReleased(UserCommand.ControlThrottleIncrease))
                     {
                         Locomotive.HS198ControllerAutoPressDown = true;
                     }
@@ -3422,6 +3422,7 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.HS198_DISPLAY3:
                 case CABViewControlTypes.HS198_DIRECTION_CONTROLLER:
                 case CABViewControlTypes.HS198_SKIPDIODE:
+                case CABViewControlTypes.HANDBRAKE:
 
                 case CABViewControlTypes.MOTOR_DISABLED:
                 case CABViewControlTypes.INVERTER_TEST:
