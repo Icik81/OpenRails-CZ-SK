@@ -13530,7 +13530,7 @@ namespace Orts.Simulation.RollingStocks
             {
                 MirelRSControllerAutoPressTimer += elapsedClockSeconds;
 
-                if (MirelRSControllerAutoPressTimer > 0.25f)
+                if (MirelRSControllerAutoPressTimer > 0.01f)
                 {
                     if (MirelRSControllerPosition[LocoStation] > 5 || MirelRSControllerPosition[LocoStation] == 2)
                     {
@@ -14208,7 +14208,7 @@ namespace Orts.Simulation.RollingStocks
             {
                 HS198ControllerAutoPressTimer += elapsedClockSeconds;
 
-                if (HS198ControllerAutoPressTimer > 0.25f)
+                if (HS198ControllerAutoPressTimer > 0.01f)
                 {
                     if (HS198ControllerPosition[LocoStation] > 5 || HS198ControllerPosition[LocoStation] == 2)
                     {
@@ -14517,6 +14517,9 @@ namespace Orts.Simulation.RollingStocks
                         // +
                         if (HS198ControllerCanThrottleChangeValue_3 || HS198Skip_Start || HS198Skip2_Start)
                         {
+                            HS198PositionBlocked = false;
+                            HS198PositionBlocked2 = false;
+
                             if (HS198CanSkip || HS198CanSkip2 || HS198Skip_Start || HS198Skip2_Start)
                             {
                                 if (HS198CanSkip)
@@ -14569,8 +14572,7 @@ namespace Orts.Simulation.RollingStocks
                     && HS198ControllerPosition[LocoStation] > 3 && HS198ControllerPosition[LocoStation] <= 7
                     && HS198ControllerThrottleValue > 1f && HS198ControllerThrottleValue < 27f
                     && !HS198PositionBlocked
-                    && !HS198PositionBlocked2
-                    && !HS198PositionBlocked3
+                    && !HS198PositionBlocked2                    
                     && HS198DirectionControllerPosition[LocoStation] == 2)
                 {
                     HS198CanSkip = false;
@@ -14583,8 +14585,7 @@ namespace Orts.Simulation.RollingStocks
                     && HS198ControllerPosition[LocoStation] > 3 && HS198ControllerPosition[LocoStation] <= 7 
                     && HS198ControllerThrottleValue > 1f && HS198ControllerThrottleValue < 27f 
                     && !HS198PositionBlocked
-                    && !HS198PositionBlocked2
-                    && !HS198PositionBlocked3
+                    && !HS198PositionBlocked2                    
                     )
                 {
                     HS198CanSkip = true;
