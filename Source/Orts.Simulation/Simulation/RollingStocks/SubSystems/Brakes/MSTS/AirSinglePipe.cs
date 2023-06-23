@@ -1397,7 +1397,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
 
                     if (dp < 0) dp = 0;
 
-                    if (!TwoStateBrake && AutoCylPressurePSI0 > 0)
+                    if (!TwoStateBrake)
                     {
                         if (AutoCylPressurePSI > threshold - 1)
                             dp = 0;
@@ -1411,7 +1411,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         }
                     }
 
-                    if (TwoStateBrake && AutoCylPressurePSI0 > 0)
+                    if (TwoStateBrake)
                     {
                         if (LowPressure)
                         {

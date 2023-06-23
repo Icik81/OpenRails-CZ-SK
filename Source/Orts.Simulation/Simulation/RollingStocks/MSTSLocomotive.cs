@@ -13947,8 +13947,9 @@ namespace Orts.Simulation.RollingStocks
             // Bouchnutí HV nebo rychlobrzda
             if (!CircuitBreakerOn || BrakeSystem.EmergencyBrakeForWagon)
             {
-                MirelRSControllerThrottleValue = preMirelRSControllerThrottleValue = Simulator.StepControllerValue = 0;
+                MirelRSControllerThrottleValue = preMirelRSControllerThrottleValue = Simulator.StepControllerValue = MirelRSControllerEDBValue = 0;
                 SetThrottlePercent(0f);
+                SetDynamicBrakePercent(-1);
                 MirelRSProtect = true;
                 MirelRSCanSkip = false;
                 MirelRSSkipDiode = 0;
@@ -14022,6 +14023,7 @@ namespace Orts.Simulation.RollingStocks
         bool HS198Skip_Ready;
         bool HS198PositionBlocked;
         bool HS198PositionBlocked2;
+        bool HS198PositionBlocked3;
         bool HS198Protect;
         int HS198SkipCounter;
         bool HS198ControllerDisplayBlink;
@@ -14266,6 +14268,7 @@ namespace Orts.Simulation.RollingStocks
                     {
                         HS198PositionBlocked = false;
                         HS198PositionBlocked2 = false;
+                        HS198PositionBlocked3 = false;
                         HS198Skip_Ready = false;
                         HS198ControllerCanThrottleChangeValue_1 = false;
                         HS198ControllerCanThrottleChangeValue_2 = false;
@@ -14288,6 +14291,8 @@ namespace Orts.Simulation.RollingStocks
                     HS198ControllerLongPressUp = false;
                     HS198ControllerCanThrottleChangeValue_3 = true;
                     HS198ControllerPressTimerLongPressUp = 0;
+                    HS198ControllerCanThrottleChangeValue_1 = false;
+                    HS198ControllerCanThrottleChangeValue_2 = false;
                     break;
             }
                                             
@@ -14462,7 +14467,7 @@ namespace Orts.Simulation.RollingStocks
                         )
                     {
                         // -1
-                        if (HS198ControllerCanThrottleChangeValue_1)
+                        if (HS198ControllerCanThrottleChangeValue_1 && !HS198PositionBlocked3) 
                         {
                             if (HS198ControllerPressTimerLongPressDown > 2.5f)
                             {
@@ -14486,7 +14491,7 @@ namespace Orts.Simulation.RollingStocks
                         }
 
                         // +1
-                        if (HS198ControllerCanThrottleChangeValue_2)
+                        if (HS198ControllerCanThrottleChangeValue_2 && !HS198PositionBlocked3)
                         {
                             if (HS198ControllerPressTimerLongPressUp > 2.5f)
                             {
@@ -14538,7 +14543,7 @@ namespace Orts.Simulation.RollingStocks
                                     HS198ControllerThrottleValue = preHS198ControllerThrottleValue = Simulator.StepControllerValue;
                                     HS198Skip_Start = false;
                                     HS198Skip2_Start = false;
-                                    HS198PositionBlocked = true;
+                                    HS198PositionBlocked3 = true;
                                     HS198SkipCounter = 0;
                                 }
                             }
@@ -14550,7 +14555,7 @@ namespace Orts.Simulation.RollingStocks
                                     HS198ControllerThrottleValue++;
                                     HS198ControllerCheckThrottleChange();
                                 }
-                                HS198PositionBlocked = true;
+                                HS198PositionBlocked3 = true;
                             }
                         }
                         HS198ControllerThrottleValueTimer = 0;
@@ -14564,6 +14569,8 @@ namespace Orts.Simulation.RollingStocks
                     && HS198ControllerPosition[LocoStation] > 3 && HS198ControllerPosition[LocoStation] <= 7
                     && HS198ControllerThrottleValue > 1f && HS198ControllerThrottleValue < 27f
                     && !HS198PositionBlocked
+                    && !HS198PositionBlocked2
+                    && !HS198PositionBlocked3
                     && HS198DirectionControllerPosition[LocoStation] == 2)
                 {
                     HS198CanSkip = false;
@@ -14576,6 +14583,8 @@ namespace Orts.Simulation.RollingStocks
                     && HS198ControllerPosition[LocoStation] > 3 && HS198ControllerPosition[LocoStation] <= 7 
                     && HS198ControllerThrottleValue > 1f && HS198ControllerThrottleValue < 27f 
                     && !HS198PositionBlocked
+                    && !HS198PositionBlocked2
+                    && !HS198PositionBlocked3
                     )
                 {
                     HS198CanSkip = true;
@@ -14735,8 +14744,9 @@ namespace Orts.Simulation.RollingStocks
             // Bouchnutí HV nebo rychlobrzda
             if (!CircuitBreakerOn || BrakeSystem.EmergencyBrakeForWagon)
             {
-                HS198ControllerThrottleValue = preHS198ControllerThrottleValue = Simulator.StepControllerValue = 0;
+                HS198ControllerThrottleValue = preHS198ControllerThrottleValue = Simulator.StepControllerValue = HS198ControllerEDBValue = 0;
                 SetThrottlePercent(0f);
+                SetDynamicBrakePercent(-1);
                 HS198Protect = true;
                 HS198CanSkip = false;
                 HS198SkipDiode = 0;

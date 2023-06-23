@@ -960,8 +960,17 @@ namespace Orts.Simulation.RollingStocks
 
                     if (CircuitBreakerOn)
                     {
-                        Pantographs[1].PantographsBlocked = false;
-                        Pantographs[2].PantographsBlocked = false;
+                        if ((Pantograph4Enable && Pantograph4Switch[LocoStation] == 0) || (Pantograph5Enable && Pantograph5Switch[LocoStation] == 0) || Pantograph3Enable)
+                        {
+                            Pantographs[1].PantographsBlocked = false;
+                            Pantographs[2].PantographsBlocked = false;
+                        }
+                        else
+                        if (!Pantograph4Enable && !Pantograph5Enable && !Pantograph3Enable)
+                        {
+                            Pantographs[1].PantographsBlocked = false;
+                            Pantographs[2].PantographsBlocked = false;
+                        }
 
                         if (!EDBIndependent && Simulator.GameTimeCyklus10 == 10)
                         {
