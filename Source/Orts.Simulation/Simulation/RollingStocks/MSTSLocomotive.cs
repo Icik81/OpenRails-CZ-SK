@@ -5229,7 +5229,7 @@ namespace Orts.Simulation.RollingStocks
                 HV4Switch[1] = HV4Switch[2] = -1;
                 LastStateHV4[1] = LastStateHV4[2] = 1;
                 HV3Switch[1] = HV3Switch[2] = 1;
-                LastStateHV3[1] = LastStateHV3[2] = 1;                
+                LastStateHV3[1] = LastStateHV3[2] = 1;                               
                 Pantograph3Switch[1] = Pantograph3Switch[2] = 0;
                 Pantograph4Switch[1] = Pantograph4Switch[2] = 0;
                 Pantograph5Switch[1] = Pantograph5Switch[2] = 0;
@@ -5252,6 +5252,8 @@ namespace Orts.Simulation.RollingStocks
                 if (Simulator.Settings.AirEmpty)
                 {
                     PantoCommandDown = true;
+                    HV3Switch[1] = HV3Switch[2] = 0;
+                    LastStateHV3[1] = LastStateHV3[2] = 0;
                 }
                 else
                 {
@@ -11023,6 +11025,7 @@ namespace Orts.Simulation.RollingStocks
         {
             if (!MultiSystemEngine && !CircuitBreakerOn)
                 return;
+
             if (Pantograph5Enable)
             {
                 // Zabrání zvednutí pantografu po stlačení tlačítka přerušení napájení
@@ -14301,9 +14304,7 @@ namespace Orts.Simulation.RollingStocks
                     || ShModeActivated || Mode_To_34_Start || ShModeActivated2 || Mode_To_27_Start1 || Mode_To_27_Start2
                     || (NoShMode && HS198ControllerThrottleValue > 27 && HS198ControllerThrottleValue < 34 && !Mode_To_34_Start)
                     || HS198Skip_Start  
-                    || HS198Skip2_Start
-                    || HS198ControllerPressTimerLongPressUp > 2.5f
-                    || HS198ControllerPressTimerLongPressDown > 2.5f
+                    || HS198Skip2_Start                    
                     )
                 {
                     HS198ControllerThrottleValueTimer += elapsedClockSeconds;                    
@@ -14450,19 +14451,18 @@ namespace Orts.Simulation.RollingStocks
                     }
 
 
-                    if (HS198ControllerCanThrottleChangeValue_2 || HS198ControllerPressTimerLongPressUp > 2.5f)
+                    if (HS198ControllerCanThrottleChangeValue_2)
                         HS198ControllerPressTimerLongPressUp += elapsedClockSeconds;
 
-                    if (HS198ControllerCanThrottleChangeValue_1 || HS198ControllerPressTimerLongPressDown > 2.5f)
+                    if (HS198ControllerCanThrottleChangeValue_1)
                         HS198ControllerPressTimerLongPressDown += elapsedClockSeconds;                    
 
                     if ((HS198ControllerThrottleValueTimer > 0.5f && !Mode_To_27_Start1 && !Mode_To_27_Start2 && !Mode_To_34_Start) 
                         || HS198Skip_Start || HS198Skip2_Start
-                        || (HS198ControllerThrottleValueTimer > 0.5f && HS198ControllerPressTimerLongPressUp > 2.5f) 
-                        || (HS198ControllerThrottleValueTimer > 0.5f && HS198ControllerPressTimerLongPressDown > 2.5f))
+                        )
                     {
                         // -1
-                        if (HS198ControllerCanThrottleChangeValue_1 || HS198ControllerPressTimerLongPressDown > 2.5f)
+                        if (HS198ControllerCanThrottleChangeValue_1)
                         {
                             if (HS198ControllerPressTimerLongPressDown > 2.5f)
                             {
@@ -14486,7 +14486,7 @@ namespace Orts.Simulation.RollingStocks
                         }
 
                         // +1
-                        if (HS198ControllerCanThrottleChangeValue_2 || HS198ControllerPressTimerLongPressUp > 2.5f)
+                        if (HS198ControllerCanThrottleChangeValue_2)
                         {
                             if (HS198ControllerPressTimerLongPressUp > 2.5f)
                             {

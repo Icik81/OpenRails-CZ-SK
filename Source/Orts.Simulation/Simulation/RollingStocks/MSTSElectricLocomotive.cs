@@ -934,7 +934,7 @@ namespace Orts.Simulation.RollingStocks
                     }
                     if (!CircuitBreakerOn && Pantographs[1].PantographsBlocked == false && Pantographs[2].PantographsBlocked == false)
                     {
-                        if (Pantograph4Switch[LocoStation] != 0)
+                        if ((Pantograph4Enable && Pantograph4Switch[LocoStation] != 0) || (Pantograph5Enable && Pantograph5Switch[LocoStation] != 0))
                         {
                             SignalEvent(PowerSupplyEvent.LowerPantograph);
                             if (MPManager.IsMultiPlayer())
@@ -1534,6 +1534,8 @@ namespace Orts.Simulation.RollingStocks
                                 SelectedPowerSystem = SelectingPowerSystem = PowerSystem.SK3kV;
 
                         }
+                        HV3Switch[1] = HV3Switch[2] = 1;
+                        LastStateHV3[1] = LastStateHV3[2] = 1;
                     }
 
                     if (MultiSystemEngine && RouteVoltageV != 1)

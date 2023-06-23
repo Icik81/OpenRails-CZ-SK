@@ -774,8 +774,11 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     threshold = MathHelper.Clamp(threshold, 0, MCP_TrainBrake);
             }
 
-            if (HandbrakePercent > 0) { HandBrakeActive = true; HandBrakeDeactive = false; }
-            else { HandBrakeActive = false; HandBrakeDeactive = true; }
+            if (!StartOn)
+            {
+                if (HandbrakePercent > 0) { HandBrakeActive = true; HandBrakeDeactive = false; }
+                else { HandBrakeActive = false; HandBrakeDeactive = true; }
+            }
 
             MSTSLocomotive loco = Car as MSTSLocomotive;
             if (StartOn)
