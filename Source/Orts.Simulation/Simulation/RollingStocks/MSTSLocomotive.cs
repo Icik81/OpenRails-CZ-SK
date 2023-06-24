@@ -14840,8 +14840,7 @@ namespace Orts.Simulation.RollingStocks
                 if (!AutoDriveButton && AutoDriveButtonPressed)
                 {
                     SignalEvent(Event.AutoDriveButtonReleased);
-                    AutoDriveButtonPressed = false;
-                    AutoDriveEnable = false;
+                    AutoDriveButtonPressed = false;                    
                 }
                 //if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.AutoDriveButton, autoDriveButton ? CabSetting.On : CabSetting.Off);
             }
