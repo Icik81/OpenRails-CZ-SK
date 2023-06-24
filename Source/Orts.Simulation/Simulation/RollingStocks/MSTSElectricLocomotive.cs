@@ -196,6 +196,8 @@ namespace Orts.Simulation.RollingStocks
             outf.Write(AIPanto2Raise);
             outf.Write(PreAIDirection);
             outf.Write(AIPantoDownStop);
+            outf.Write(PantographVoltageV);
+            outf.Write(PowerSupply.PantographVoltageV);
 
             base.Save(outf);
         }
@@ -235,6 +237,8 @@ namespace Orts.Simulation.RollingStocks
             AIPanto2Raise = inf.ReadBoolean();
             PreAIDirection = inf.ReadBoolean();
             AIPantoDownStop = inf.ReadBoolean();
+            PantographVoltageV = inf.ReadSingle();
+            PowerSupply.PantographVoltageV = inf.ReadSingle();
 
             base.Restore(inf);
         }
@@ -1443,8 +1447,11 @@ namespace Orts.Simulation.RollingStocks
         // Icik            
         EndAIVoltageChoice:
             SetAIPantoDown(elapsedClockSeconds);
-            VoltageIndicate(elapsedClockSeconds);
-            UnderVoltageProtection(elapsedClockSeconds);
+            if (Simulator.GameTime > 1f)
+            {
+                VoltageIndicate(elapsedClockSeconds);
+                UnderVoltageProtection(elapsedClockSeconds);
+            }
 
             if (IsPlayerTrain)
             {

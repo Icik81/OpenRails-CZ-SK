@@ -2044,6 +2044,9 @@ namespace Orts.Simulation.RollingStocks
             outf.Write(TMCoolingIsActivated);
             outf.Write(DRCoolingIsActivated);
             outf.Write(LocoGroundBreaker);
+            outf.Write(AutoDriveEnable);
+            outf.Write(AutoDriveSpeedSelectorSwitchPosition[1]);
+            outf.Write(AutoDriveSpeedSelectorSwitchPosition[2]);
 
             #endregion
 
@@ -2279,6 +2282,9 @@ namespace Orts.Simulation.RollingStocks
             DRCoolingIsActivated = inf.ReadBoolean();
             TMCoolingIsActivated = inf.ReadBoolean();
             LocoGroundBreaker = inf.ReadBoolean();
+            AutoDriveEnable = inf.ReadBoolean();
+            AutoDriveSpeedSelectorSwitchPosition[1] = inf.ReadInt32();
+            AutoDriveSpeedSelectorSwitchPosition[2] = inf.ReadInt32();
             #endregion
 
             base.Restore(inf);
