@@ -2047,6 +2047,7 @@ namespace Orts.Simulation.RollingStocks
             outf.Write(AutoDriveEnable);
             outf.Write(AutoDriveSpeedSelectorSwitchPosition[1]);
             outf.Write(AutoDriveSpeedSelectorSwitchPosition[2]);
+            outf.Write(AutoDriveCurrent);
 
             #endregion
 
@@ -2285,6 +2286,7 @@ namespace Orts.Simulation.RollingStocks
             AutoDriveEnable = inf.ReadBoolean();
             AutoDriveSpeedSelectorSwitchPosition[1] = inf.ReadInt32();
             AutoDriveSpeedSelectorSwitchPosition[2] = inf.ReadInt32();
+            AutoDriveCurrent = inf.ReadSingle();
             #endregion
 
             base.Restore(inf);
@@ -14581,21 +14583,23 @@ namespace Orts.Simulation.RollingStocks
                         {
                             if (HS198DirectionControllerPositionName[LocoStation] == "P")
                             {
-                                if (AbsWheelSpeedMpS < AutoDriveSpeedMpS && PowerCurrent1 <= 600f && Simulator.StepControllerValue < 51)
+                                if ((AbsWheelSpeedMpS < AutoDriveSpeedMpS || AutoDriveSpeedMpS == 0) && PowerCurrent1 <= AutoDriveCurrent && HS198ControllerThrottleValue < 51)
                                 {
                                     HS198ControllerThrottleValue++;
                                     HS198ControllerCheckThrottleChange();
+                                    if (HS198ControllerThrottleValue > 27 && HS198ControllerThrottleValue < 34)
+                                        Mode_To_34_Start = true;
                                 }                                
                             }
                             if (HS198DirectionControllerPositionName[LocoStation] == "Sh")
                             {
-                                if (AbsWheelSpeedMpS < AutoDriveSpeedMpS && PowerCurrent1 <= 600f && (Simulator.StepControllerValue < 34 || (Simulator.StepControllerValue >= 34 && Simulator.StepControllerValue < 56)))
+                                if ((AbsWheelSpeedMpS < AutoDriveSpeedMpS || AutoDriveSpeedMpS == 0) && PowerCurrent1 <= AutoDriveCurrent && HS198ControllerThrottleValue < 27)
                                 {
                                     HS198ControllerThrottleValue++;
                                     HS198ControllerCheckThrottleChange();
                                 }                                
                             }
-                            if (AbsWheelSpeedMpS > AutoDriveSpeedMpS)
+                            if (AbsWheelSpeedMpS > AutoDriveSpeedMpS && AutoDriveSpeedMpS != 0)
                             {
                                 AutoDriveToZero = true;
                                 AutoDriveEnable = false;
@@ -14828,6 +14832,7 @@ namespace Orts.Simulation.RollingStocks
         public bool AutoDriveButtonPressed;
         public bool AutoDriveEnable;
         public bool AutoDriveToZero;
+        public float AutoDriveCurrent;
         public void ToggleAutoDriveButton(bool autoDriveButton)
         {
             if (AutoDriveButtonEnable)
@@ -14840,6 +14845,7 @@ namespace Orts.Simulation.RollingStocks
                     if (CircuitBreakerOn && HS198ControllerPositionName[LocoStation] == "J")
                     {
                         AutoDriveEnable = true;
+                        AutoDriveCurrent = PowerCurrent1;
                         Simulator.Confirmer.Information(Simulator.Catalog.GetString("Automatic start-up ") + Simulator.Catalog.GetString("on"));
                     }
                 }
@@ -14938,8 +14944,11 @@ namespace Orts.Simulation.RollingStocks
                 SignalEvent(Event.AutoDriveSpeedSelectorSwitch);
                 Simulator.Confirmer.Information(Simulator.Catalog.GetString("Automatic start-up SpeedSelector set to") + ": " + AutoDriveSpeedSelectorSwitchPositionName[LocoStation]);
             }
-            if (!AutoDriveEnable)            
-                AutoDriveSpeedMpS = 0;                            
+            if (!AutoDriveEnable)
+            {
+                AutoDriveCurrent = 0;
+                AutoDriveSpeedMpS = 0;
+            }
         }
 
 
