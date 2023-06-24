@@ -14931,7 +14931,7 @@ namespace Orts.Simulation.RollingStocks
             {
                 preAutoDriveSpeedSelectorSwitchPosition[LocoStation] = AutoDriveSpeedSelectorSwitchPosition[LocoStation];
                 SignalEvent(Event.AutoDriveSpeedSelectorSwitch);
-                Simulator.Confirmer.Information(Simulator.Catalog.GetString("SpeedSelector set to") + ": " + AutoDriveSpeedSelectorSwitchPositionName[LocoStation]);
+                Simulator.Confirmer.Information(Simulator.Catalog.GetString("Automatic start-up SpeedSelector set to") + ": " + AutoDriveSpeedSelectorSwitchPositionName[LocoStation]);
             }
             if (!AutoDriveButton)            
                 AutoDriveSpeedMpS = 0;                            

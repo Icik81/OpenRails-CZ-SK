@@ -334,7 +334,7 @@ namespace Orts.Simulation
                 , new string [] { GetString("Rearlight red left"), GetString("off"), null, GetString("on")}
                 , new string [] { GetString("Rearlight white right"), GetString("off"), null, GetString("on")}
                 , new string [] { GetString("Rearlight red right"), GetString("off"), null, GetString("on")}
-                , new string [] { GetString("AutoDrive Button"), GetString("off"), null, GetString("on")}
+                , new string [] { GetString("Automatic start-up button"), GetString("off"), null, GetString("on")}
 
             };
             Debug.Assert(ConfirmText.Length == Enum.GetNames(typeof(CabControl)).Length, "Number of entries indexer ConfirmText must match values in CabControl enum.");
