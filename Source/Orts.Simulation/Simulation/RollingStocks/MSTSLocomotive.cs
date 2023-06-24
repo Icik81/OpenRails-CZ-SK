@@ -16382,7 +16382,10 @@ namespace Orts.Simulation.RollingStocks
                     }
                 case CABViewControlTypes.FRICTION_BRAKING:
                     {
-                        data = (BrakeSystem == null) ? 0.0f : BrakeSystem.GetCylPressurePSI();
+                        if (BrakeSystem != null && BrakeSystem.GetCylPressurePSI() > 0.1f * 14.50377f)
+                            data = BrakeSystem.GetCylPressurePSI();
+                        else
+                            data = 0;
                         break;
                     }
                 case CABViewControlTypes.DYNAMIC_BRAKE:
