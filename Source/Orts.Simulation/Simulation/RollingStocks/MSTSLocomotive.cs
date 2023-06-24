@@ -14589,14 +14589,18 @@ namespace Orts.Simulation.RollingStocks
                                     HS198ControllerCheckThrottleChange();
                                     if (HS198ControllerThrottleValue > 27 && HS198ControllerThrottleValue < 34)
                                         Mode_To_34_Start = true;
+                                    if (HS198ControllerThrottleValue == 51)
+                                        AutoDriveEnable = false;
                                 }                                
                             }
                             if (HS198DirectionControllerPositionName[LocoStation] == "Sh")
                             {
-                                if ((AbsWheelSpeedMpS < AutoDriveSpeedMpS || AutoDriveSpeedMpS == 0) && PowerCurrent1 <= AutoDriveCurrent && HS198ControllerThrottleValue < 27)
+                                if ((AbsWheelSpeedMpS < AutoDriveSpeedMpS || AutoDriveSpeedMpS == 0) && PowerCurrent1 <= AutoDriveCurrent && (HS198ControllerThrottleValue < 32 || (HS198ControllerThrottleValue > 32 && HS198ControllerThrottleValue < 56)))
                                 {
                                     HS198ControllerThrottleValue++;
                                     HS198ControllerCheckThrottleChange();
+                                    if (HS198ControllerThrottleValue == 32)                                    
+                                        AutoDriveEnable = false;                                    
                                 }                                
                             }
                             if (AbsWheelSpeedMpS > AutoDriveSpeedMpS && AutoDriveSpeedMpS != 0)
