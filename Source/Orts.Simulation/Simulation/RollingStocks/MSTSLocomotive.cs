@@ -5726,6 +5726,7 @@ namespace Orts.Simulation.RollingStocks
                 MirerController();
                 MirelRSController(elapsedClockSeconds);
                 HS198Controller(elapsedClockSeconds);
+                HS198AutoDriveSpeedSelector();
                 VentilationSwitch(elapsedClockSeconds);
                 CommandCylinder(elapsedClockSeconds);                
                 TogglePantograph3Switch();
@@ -14253,12 +14254,16 @@ namespace Orts.Simulation.RollingStocks
                     HS198ControllerCanEDBChangeValue_0 = true;
                     HS198Protect = false;
                     HS198ControllerPressTimerLongPressDown = 0;
+                    AutoDriveEnable = false;
+                    AutoDriveToZero = false;
                     break;
                 case 4:
                     HS198ControllerPositionName[LocoStation] = "-1"; // nearetovaná
                     HS198ControllerShortPressDown = false;
                     HS198ControllerCanThrottleChangeValue_1 = true;
                     HS198ControllerPressTimerLongPressUp = 0;
+                    AutoDriveEnable = false;
+                    AutoDriveToZero = false;
                     break;
                 case 5:
                     HS198ControllerPositionName[LocoStation] = "J";
@@ -14273,11 +14278,9 @@ namespace Orts.Simulation.RollingStocks
                         HS198ControllerCanThrottleChangeValue_1 = false;
                         HS198ControllerCanThrottleChangeValue_2 = false;
                     }                    
-                    HS198Protect = false;
-                    if (HS198ControllerPressTimerLongPressUp < 2.5f)
-                        HS198ControllerPressTimerLongPressUp = 0;
-                    if (HS198ControllerPressTimerLongPressDown < 2.5f)
-                        HS198ControllerPressTimerLongPressDown = 0;
+                    HS198Protect = false;                    
+                    HS198ControllerPressTimerLongPressUp = 0;                    
+                    HS198ControllerPressTimerLongPressDown = 0;
                     break;
                 case 6:
                     HS198ControllerPositionName[LocoStation] = "+1"; // nearetovaná
@@ -14285,6 +14288,7 @@ namespace Orts.Simulation.RollingStocks
                     HS198ControllerCanThrottleChangeValue_2 = true;
                     HS198ControllerCanThrottleChangeValue_3 = false;
                     HS198ControllerPressTimerLongPressDown = 0;
+                    AutoDriveToZero = false;
                     break;
                 case 7:
                     HS198ControllerPositionName[LocoStation] = "+";
@@ -14293,6 +14297,7 @@ namespace Orts.Simulation.RollingStocks
                     HS198ControllerPressTimerLongPressUp = 0;
                     HS198ControllerCanThrottleChangeValue_1 = false;
                     HS198ControllerCanThrottleChangeValue_2 = false;
+                    AutoDriveToZero = false;
                     break;
             }
                                             
@@ -14309,7 +14314,9 @@ namespace Orts.Simulation.RollingStocks
                     || ShModeActivated || Mode_To_34_Start || ShModeActivated2 || Mode_To_27_Start1 || Mode_To_27_Start2
                     || (NoShMode && HS198ControllerThrottleValue > 27 && HS198ControllerThrottleValue < 34 && !Mode_To_34_Start)
                     || HS198Skip_Start  
-                    || HS198Skip2_Start                    
+                    || HS198Skip2_Start   
+                    || AutoDriveEnable
+                    || AutoDriveToZero
                     )
                 {
                     HS198ControllerThrottleValueTimer += elapsedClockSeconds;                    
@@ -14426,13 +14433,14 @@ namespace Orts.Simulation.RollingStocks
                     if (HS198ControllerThrottleValueTimer > 0.25f)
                     {
                         // 0
-                        if (HS198ControllerCanThrottleChangeValue_0)
+                        if (HS198ControllerCanThrottleChangeValue_0 || AutoDriveToZero)
                         {
                             // Kontrolér v 0
-                            if (HS198ControllerPosition[LocoStation] == 3 && PowerCurrent1 < 300f && HS198ControllerThrottleValue <= 27f)
+                            if ((HS198ControllerPosition[LocoStation] == 3 || AutoDriveToZero) && PowerCurrent1 < 300f && HS198ControllerThrottleValue <= 27f)
                             {
                                 HS198ControllerThrottleValue = preHS198ControllerThrottleValue = 0;
                                 SetThrottlePercent(0f);
+                                AutoDriveToZero = false;
                             }
                             else
                             // Kontrolér v B
@@ -14443,7 +14451,7 @@ namespace Orts.Simulation.RollingStocks
                             }
                             else
                             // Kontrolér v 0 nebo v B
-                            if ((HS198ControllerPosition[LocoStation] == 3 || HS198ControllerPosition[LocoStation] == 1) && HS198ControllerThrottleValue > 0f)
+                            if ((HS198ControllerPosition[LocoStation] == 3 || HS198ControllerPosition[LocoStation] == 1 || AutoDriveToZero) && HS198ControllerThrottleValue > 0f)
                             {
                                 HS198ControllerThrottleValue--;
                                 HS198ControllerCheckThrottleChange();
@@ -14464,7 +14472,7 @@ namespace Orts.Simulation.RollingStocks
 
                     if ((HS198ControllerThrottleValueTimer > 0.5f && !Mode_To_27_Start1 && !Mode_To_27_Start2 && !Mode_To_34_Start) 
                         || HS198Skip_Start || HS198Skip2_Start
-                        )
+                        || (HS198ControllerThrottleValueTimer > 0.5f && AutoDriveEnable))
                     {
                         // -1
                         if (HS198ControllerCanThrottleChangeValue_1 && !HS198PositionBlocked3) 
@@ -14561,6 +14569,33 @@ namespace Orts.Simulation.RollingStocks
                                 HS198PositionBlocked3 = true;
                             }
                         }
+
+                        // AutoDrive
+                        if (AutoDriveEnable && HS198ControllerPositionName[LocoStation] == "J")
+                        {
+                            if (HS198DirectionControllerPositionName[LocoStation] == "P")
+                            {
+                                if (AbsWheelSpeedMpS < AutoDriveSpeedMpS && PowerCurrent1 <= 600f && Simulator.StepControllerValue < 51)
+                                {
+                                    HS198ControllerThrottleValue++;
+                                    HS198ControllerCheckThrottleChange();
+                                }                                
+                            }
+                            if (HS198DirectionControllerPositionName[LocoStation] == "Sh")
+                            {
+                                if (AbsWheelSpeedMpS < AutoDriveSpeedMpS && PowerCurrent1 <= 600f && (Simulator.StepControllerValue < 34 || (Simulator.StepControllerValue >= 34 && Simulator.StepControllerValue < 56)))
+                                {
+                                    HS198ControllerThrottleValue++;
+                                    HS198ControllerCheckThrottleChange();
+                                }                                
+                            }
+                            if (AbsWheelSpeedMpS > AutoDriveSpeedMpS)
+                            {
+                                AutoDriveToZero = true;
+                                AutoDriveEnable = false;
+                            }
+                        }
+
                         HS198ControllerThrottleValueTimer = 0;
                         HS198ControllerCanThrottleChangeValue_1 = HS198ControllerCanThrottleChangeValue_2 = false;
                     }
@@ -14634,7 +14669,7 @@ namespace Orts.Simulation.RollingStocks
                         HS198ControllerEDBValueTimer = 0;
                     }
                 }
-                SetDynamicBrakePercent(HS198ControllerEDBValue);
+                SetDynamicBrakePercent(HS198ControllerEDBValue);            
 
             // Ochrany
             HS198Protects:
@@ -14738,9 +14773,14 @@ namespace Orts.Simulation.RollingStocks
                 }
                 if (HS198ControllerThrottleDummyValue == 0 && !HS198Skip_Start && !HS198Skip2_Start)
                     Simulator.StepControllerValue = HS198ControllerThrottleValue;
-                
+
                 if (ThrottlePercent == 0 && HS198ControllerThrottleValue > 1)
+                {
                     HS198ControllerThrottleValue = preHS198ControllerThrottleValue = Simulator.StepControllerValue = 0;
+                    AutoDriveEnable = false;
+                    AutoDriveButton = false;
+                    AutoDriveToZero = false;
+                }
             }
             // Bouchnutí HV nebo rychlobrzda
             if (!CircuitBreakerOn || BrakeSystem.EmergencyBrakeForWagon)
@@ -14751,6 +14791,9 @@ namespace Orts.Simulation.RollingStocks
                 HS198Protect = true;
                 HS198CanSkip = false;
                 HS198SkipDiode = 0;
+                AutoDriveEnable = false;
+                AutoDriveButton = false;
+                AutoDriveToZero = false;
             }
         }
 
@@ -14773,6 +14816,128 @@ namespace Orts.Simulation.RollingStocks
                 Simulator.Confirmer.MSG(Simulator.Catalog.GetString("Controller") + ": " + HS198ControllerThrottleValue);
             }
         }
+
+        public bool AutoDriveButtonEnable = true;
+        public bool AutoDriveButton;
+        public bool AutoDriveButtonPressed;
+        public bool AutoDriveEnable;
+        public bool AutoDriveToZero;
+        public void ToggleAutoDriveButton(bool autoDriveButton)
+        {
+            if (AutoDriveButtonEnable)
+            {
+                AutoDriveButton = autoDriveButton;                
+                if (AutoDriveButton && !AutoDriveButtonPressed)
+                {
+                    SignalEvent(Event.AutoDriveButtonPressed);
+                    AutoDriveButtonPressed = true;
+                    if (CircuitBreakerOn && HS198ControllerPositionName[LocoStation] == "J")
+                    {
+                        AutoDriveEnable = true;
+                        Simulator.Confirmer.Information(Simulator.Catalog.GetString("Automatic start-up ") + Simulator.Catalog.GetString("on"));
+                    }
+                }
+                if (!AutoDriveButton && AutoDriveButtonPressed)
+                {
+                    SignalEvent(Event.AutoDriveButtonReleased);
+                    AutoDriveButtonPressed = false;
+                    AutoDriveEnable = false;
+                }
+                //if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.AutoDriveButton, autoDriveButton ? CabSetting.On : CabSetting.Off);
+            }
+        }
+
+        public int[] AutoDriveSpeedSelectorSwitchPosition = new int[3];
+        public int[] preAutoDriveSpeedSelectorSwitchPosition = new int[3];
+        public string[] AutoDriveSpeedSelectorSwitchPositionName = new string[3];
+        public bool AutoDriveSpeedSelectorEnabled = true;
+        public float AutoDriveSpeedMpS;
+        public void ToggleAutoDriveSpeedSelectorUp()
+        {
+            if (AutoDriveSpeedSelectorSwitchPosition[LocoStation] < 11)
+                AutoDriveSpeedSelectorSwitchPosition[LocoStation]++;
+            else
+                AutoDriveSpeedSelectorSwitchPosition[LocoStation] = 0;
+        }
+
+        public void ToggleAutoDriveSpeedSelectorDown()
+        {
+            if (AutoDriveSpeedSelectorSwitchPosition[LocoStation] > 0)
+                AutoDriveSpeedSelectorSwitchPosition[LocoStation]--;
+            else
+                AutoDriveSpeedSelectorSwitchPosition[LocoStation] = 11;
+        }
+
+        public void HS198AutoDriveSpeedSelector()
+        {
+            if (!IsLeadLocomotive())
+                return;
+
+            if (!AutoDriveSpeedSelectorEnabled)
+                return;
+
+            switch (AutoDriveSpeedSelectorSwitchPosition[LocoStation])
+            {
+                case 0:
+                    AutoDriveSpeedMpS = 0;
+                    AutoDriveSpeedSelectorSwitchPositionName[LocoStation] = "0 km/h";
+                    break;
+                case 1:
+                    AutoDriveSpeedMpS = 40 / 3.6f;
+                    AutoDriveSpeedSelectorSwitchPositionName[LocoStation] = "40 km/h";
+                    break;
+                case 2:
+                    AutoDriveSpeedMpS = 50 / 3.6f;
+                    AutoDriveSpeedSelectorSwitchPositionName[LocoStation] = "50 km/h";
+                    break;
+                case 3:
+                    AutoDriveSpeedMpS = 60 / 3.6f;
+                    AutoDriveSpeedSelectorSwitchPositionName[LocoStation] = "60 km/h";
+                    break;
+                case 4:
+                    AutoDriveSpeedMpS = 70 / 3.6f;
+                    AutoDriveSpeedSelectorSwitchPositionName[LocoStation] = "70 km/h";
+                    break;
+                case 5:
+                    AutoDriveSpeedMpS = 80 / 3.6f;
+                    AutoDriveSpeedSelectorSwitchPositionName[LocoStation] = "80 km/h";
+                    break;
+                case 6:
+                    AutoDriveSpeedMpS = 90 / 3.6f;
+                    AutoDriveSpeedSelectorSwitchPositionName[LocoStation] = "90 km/h";
+                    break;
+                case 7:
+                    AutoDriveSpeedMpS = 100 / 3.6f;
+                    AutoDriveSpeedSelectorSwitchPositionName[LocoStation] = "100 km/h";
+                    break;
+                case 8:
+                    AutoDriveSpeedMpS = 110 / 3.6f;
+                    AutoDriveSpeedSelectorSwitchPositionName[LocoStation] = "110 km/h";
+                    break;
+                case 9:
+                    AutoDriveSpeedMpS = 120 / 3.6f;
+                    AutoDriveSpeedSelectorSwitchPositionName[LocoStation] = "120 km/h";
+                    break;
+                case 10:
+                    AutoDriveSpeedMpS = 130 / 3.6f;
+                    AutoDriveSpeedSelectorSwitchPositionName[LocoStation] = "130 km/h";
+                    break;
+                case 11:
+                    AutoDriveSpeedMpS = 140 / 3.6f;
+                    AutoDriveSpeedSelectorSwitchPositionName[LocoStation] = "140 km/h";
+                    break;
+            }
+            if (preAutoDriveSpeedSelectorSwitchPosition[LocoStation] != AutoDriveSpeedSelectorSwitchPosition[LocoStation])
+            {
+                preAutoDriveSpeedSelectorSwitchPosition[LocoStation] = AutoDriveSpeedSelectorSwitchPosition[LocoStation];
+                SignalEvent(Event.AutoDriveSpeedSelectorSwitch);
+                Simulator.Confirmer.Information(Simulator.Catalog.GetString("SpeedSelector set to") + ": " + AutoDriveSpeedSelectorSwitchPositionName[LocoStation]);
+            }
+            if (!AutoDriveButton)            
+                AutoDriveSpeedMpS = 0;                            
+        }
+
+
         #endregion HS198
 
         // Přepínač ventilace
@@ -17812,6 +17977,21 @@ namespace Orts.Simulation.RollingStocks
                         {
                             data = HS198SkipDiode;
                         }
+                        break;
+                    }
+                case CABViewControlTypes.HS198_AUTODRIVE_BUTTON:
+                    {
+                        AutoDriveButtonEnable = true;                                                                        
+                        if (AutoDriveEnable)
+                            data = AutoDriveButton ? 3 : 2;
+                        else
+                            data = AutoDriveButton ? 1 : 0;
+                        break;
+                    }
+                case CABViewControlTypes.HS198_AUTODRIVE_SPEEDSELECTOR:
+                    {
+                        AutoDriveSpeedSelectorEnabled = true;
+                        data = AutoDriveSpeedSelectorSwitchPosition[LocoStation];                        
                         break;
                     }
                 case CABViewControlTypes.HANDBRAKE:

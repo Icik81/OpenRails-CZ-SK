@@ -501,6 +501,9 @@ namespace Orts.Formats.Msts
         HS198_DIRECTION_CONTROLLER,
         HS198_SKIPDIODE,
         HANDBRAKE,
+        HS198_AUTODRIVE_BUTTON,
+        HS198_AUTODRIVE_SPEEDSELECTOR,
+
 
         // ORTS
         ORTS_SCREEN_SELECT,

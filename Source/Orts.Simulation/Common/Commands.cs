@@ -2710,4 +2710,55 @@ namespace Orts.Common
             // Report();
         }
     }
+    [Serializable()]
+    public sealed class ToggleAutoDriveButtonCommand : Command
+    {
+        public static MSTSLocomotive Receiver { get; set; }
+
+        public ToggleAutoDriveButtonCommand(CommandLog log)
+            : base(log)
+        {
+            Redo();
+        }
+
+        public override void Redo()
+        {
+            Receiver.ToggleAutoDriveButton(true);
+            // Report();
+        }
+    }
+    [Serializable()]
+    public sealed class ToggleAutoDriveSpeedSelectorUpCommand : Command
+    {
+        public static MSTSLocomotive Receiver { get; set; }
+
+        public ToggleAutoDriveSpeedSelectorUpCommand(CommandLog log)
+            : base(log)
+        {
+            Redo();
+        }
+
+        public override void Redo()
+        {
+            Receiver.ToggleAutoDriveSpeedSelectorUp();
+            // Report();
+        }
+    }
+    [Serializable()]
+    public sealed class ToggleAutoDriveSpeedSelectorDownCommand : Command
+    {
+        public static MSTSLocomotive Receiver { get; set; }
+
+        public ToggleAutoDriveSpeedSelectorDownCommand(CommandLog log)
+            : base(log)
+        {
+            Redo();
+        }
+
+        public override void Redo()
+        {
+            Receiver.ToggleAutoDriveSpeedSelectorDown();
+            // Report();
+        }
+    }
 }

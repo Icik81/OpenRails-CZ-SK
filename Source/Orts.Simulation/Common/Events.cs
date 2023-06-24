@@ -362,7 +362,10 @@ namespace Orts.Common
         LocoGroundBreakerOn,
         LocoGroundBreakerOff,
         HandBrakeOn,
-        HandBrakeOff
+        HandBrakeOff,
+        AutoDriveButtonPressed,
+        AutoDriveButtonReleased,
+        AutoDriveSpeedSelectorSwitch
     }
 
     public static class Events
@@ -740,6 +743,9 @@ namespace Orts.Common
                         case 20116: return Event.LocoGroundBreakerOff;
                         case 20117: return Event.HandBrakeOn;
                         case 20118: return Event.HandBrakeOff;
+                        case 20119: return Event.AutoDriveButtonPressed;
+                        case 20120: return Event.AutoDriveButtonReleased;
+                        case 20121: return Event.AutoDriveSpeedSelectorSwitch;
 
                         default: return 0;
                     }

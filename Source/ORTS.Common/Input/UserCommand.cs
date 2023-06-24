@@ -307,6 +307,9 @@
         [GetString("Control_CZSK Powerkey -")] ControlPowerKeyDown,
         [GetString("Control_CZSK Ventilation +")] ControlVentilationUp,
         [GetString("Control_CZSK Ventilation -")] ControlVentilationDown,
+        [GetString("Control_CZSK HS198 AutoDrive button")] ControlAutoDriveButton,
+        [GetString("Control_CZSK HS198 AutoDriveSpeedSelector +")] ControlAutoDriveSpeedSelectorUp,
+        [GetString("Control_CZSK HS198 AutoDriveSpeedSelector -")] ControlAutoDriveSpeedSelectorDown,
 
         [GetString("Set Power Supply Station Location")] ControlPowerStationLocation,
         [GetString("Set Voltage 25k")] ControlSetVoltage25k,

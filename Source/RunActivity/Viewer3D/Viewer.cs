@@ -667,6 +667,9 @@ namespace Orts.Viewer3D
             ToggleRefreshCabCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
             ToggleVentilationUpCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
             ToggleVentilationDownCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
+            ToggleAutoDriveButtonCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
+            ToggleAutoDriveSpeedSelectorUpCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
+            ToggleAutoDriveSpeedSelectorDownCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
         }
 
         public void ChangeToPreviousFreeRoamCamera()

@@ -609,6 +609,9 @@ namespace ORTS.Settings
             Commands[(int)UserCommand.ControlVentilationUp] = new UserCommandKeyInput(0x21);
             Commands[(int)UserCommand.ControlVentilationDown] = new UserCommandKeyInput(0x21, KeyModifiers.Shift);
             Commands[(int)UserCommand.ControlRefreshCab] = new UserCommandKeyInput(0x3C, KeyModifiers.Shift | KeyModifiers.Control | KeyModifiers.Alt);
+            Commands[(int)UserCommand.ControlAutoDriveButton] = new UserCommandKeyInput(0x20, KeyModifiers.Control);
+            Commands[(int)UserCommand.ControlAutoDriveSpeedSelectorUp] = new UserCommandKeyInput(0x20, KeyModifiers.Shift);
+            Commands[(int)UserCommand.ControlAutoDriveSpeedSelectorDown] = new UserCommandKeyInput(0x1E, KeyModifiers.Shift);
         }
         #endregion
 

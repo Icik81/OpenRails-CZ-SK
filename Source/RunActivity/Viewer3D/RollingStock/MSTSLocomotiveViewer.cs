@@ -367,7 +367,10 @@ namespace Orts.Viewer3D.RollingStock
             UserInputCommands.Add(UserCommand.ControlPowerKeyDown, new Action[] { Noop, () => new TogglePowerKeyDownCommand(Viewer.Log) });
             UserInputCommands.Add(UserCommand.ControlRefreshCab, new Action[] { Noop, () => new ToggleRefreshCabCommand(Viewer.Log) });
             UserInputCommands.Add(UserCommand.ControlVentilationUp, new Action[] { Noop, () => new ToggleVentilationUpCommand(Viewer.Log) });
-            UserInputCommands.Add(UserCommand.ControlVentilationDown, new Action[] { Noop, () => new ToggleVentilationDownCommand(Viewer.Log) });
+            UserInputCommands.Add(UserCommand.ControlVentilationDown, new Action[] { Noop, () => new ToggleVentilationDownCommand(Viewer.Log) });            
+            UserInputCommands.Add(UserCommand.ControlAutoDriveButton, new Action[] { Noop, () => new ToggleAutoDriveButtonCommand(Viewer.Log) });
+            UserInputCommands.Add(UserCommand.ControlAutoDriveSpeedSelectorUp, new Action[] { Noop, () => new ToggleAutoDriveSpeedSelectorUpCommand(Viewer.Log) });
+            UserInputCommands.Add(UserCommand.ControlAutoDriveSpeedSelectorDown, new Action[] { Noop, () => new ToggleAutoDriveSpeedSelectorDownCommand(Viewer.Log) });
 
             // Jindřich
             UserInputCommands.Add(UserCommand.ControlPowerStationLocation, new Action[] { Noop, () => Locomotive.SetPowerSupplyStationLocation() });
@@ -392,9 +395,9 @@ namespace Orts.Viewer3D.RollingStock
             bool Status2KeyPressed = false;
 
             if (PressedCycleStart) PressedCycle++;
-            if (PressedCycle > 1 && PressedCycle < 10) Status2KeyPressed = true;
+            if (PressedCycle > 1 && PressedCycle < 20) Status2KeyPressed = true;
 
-            if (PressedCycle > 10)
+            if (PressedCycle > 20)
             {
                 PressedCycle = 0;
                 PressedCycleStart = false;
@@ -1051,6 +1054,20 @@ namespace Orts.Viewer3D.RollingStock
                         Locomotive.HS198ControllerPosition[Locomotive.LocoStation] = 5;
                         Locomotive.SignalEvent(Event.ControllerPull);
                     }
+                }
+            }
+
+            // Ovládání tlačítka AutoDrive
+            if (Locomotive.AutoDriveButtonEnable)
+            {
+                if (UserInput.IsPressed(UserCommand.ControlAutoDriveButton))
+                {
+                    Locomotive.ToggleAutoDriveButton(true);
+                }
+                else
+                if (UserInput.IsReleased(UserCommand.ControlAutoDriveButton))
+                {
+                    Locomotive.ToggleAutoDriveButton(false);
                 }
             }
 
@@ -3423,6 +3440,8 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.HS198_DIRECTION_CONTROLLER:
                 case CABViewControlTypes.HS198_SKIPDIODE:
                 case CABViewControlTypes.HANDBRAKE:
+                case CABViewControlTypes.HS198_AUTODRIVE_BUTTON:
+                case CABViewControlTypes.HS198_AUTODRIVE_SPEEDSELECTOR:
 
                 case CABViewControlTypes.MOTOR_DISABLED:
                 case CABViewControlTypes.INVERTER_TEST:
@@ -4604,6 +4623,27 @@ namespace Orts.Viewer3D.RollingStock
                         new ToggleVentilationUpCommand(Viewer.Log);
                     }
                     break;
+                case CABViewControlTypes.HS198_AUTODRIVE_BUTTON:
+                    if (UserInput.IsMouseLeftButtonPressed)
+                        Locomotive.ToggleAutoDriveButton(true);
+                    else
+                    if (UserInput.IsMouseLeftButtonReleased)
+                        Locomotive.ToggleAutoDriveButton(false);
+                    break;
+                case CABViewControlTypes.HS198_AUTODRIVE_SPEEDSELECTOR:
+                    if (ChangedValue(0) < 0 && !IsChanged)
+                    {
+                        new ToggleAutoDriveSpeedSelectorDownCommand(Viewer.Log);
+                        IsChanged = true;
+                    }
+                    else
+                    if (ChangedValue(0) > 0 && !IsChanged)
+                    {
+                        new ToggleAutoDriveSpeedSelectorUpCommand(Viewer.Log);
+                        IsChanged = true;
+                    }                    
+                    break;
+
 
                 case CABViewControlTypes.ORTS_LS90_POWER:
                     if (Locomotive.Mirel.MirelType == Mirel.Type.LS90)
