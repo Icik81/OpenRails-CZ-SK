@@ -1104,9 +1104,11 @@ namespace Orts.Simulation.RollingStocks
                         AIMotorStop = false;
                 }
 
-
                 if (DieselEngines[0].EngineStatus == DieselEngine.Status.Running)
-                    AITimeMotorRunning += elapsedClockSeconds;
+                {
+                    AITimeMotorRunning += elapsedClockSeconds;                    
+                    SignalEvent(Event.InitMotorIdle);
+                }
 
                 if (AIMotorStop && DieselEngines[0].EngineStatus == DieselEngine.Status.Running)
                 {
