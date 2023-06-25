@@ -13970,7 +13970,8 @@ namespace Orts.Simulation.RollingStocks
             // Bouchnutí HV nebo rychlobrzda
             if (!CircuitBreakerOn || BrakeSystem.EmergencyBrakeForWagon)
             {
-                MirelRSControllerThrottleValue = preMirelRSControllerThrottleValue = Simulator.StepControllerValue = MirelRSControllerEDBValue = 0;
+                MirelRSControllerThrottleValue = preMirelRSControllerThrottleValue = Simulator.StepControllerValue = 0;
+                MirelRSControllerEDBValue = -1;
                 SetThrottlePercent(0f);
                 SetDynamicBrakePercent(-1);
                 MirelRSProtect = true;

@@ -1044,6 +1044,9 @@ namespace Orts.Simulation
             }
             else if (EventType == ActivityEventType.Timer)
             {
+                if (MyPlayerTrain.StationStops.Count == 0)
+                    return;
+
                 if (arrived && MyPlayerTrain.BoardingComplete)
                 {
                     MyPlayerTrain.BoardingComplete = false;

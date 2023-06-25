@@ -1139,8 +1139,8 @@ namespace Orts.Viewer3D
         protected override void OnActivate(bool sameCamera)
         {
             BrowseMode = BrowseForwards = BrowseBackwards = false;
-            if (attachedCar == null || attachedCar.Train != Viewer.SelectedTrain)
-            {
+            if (attachedCar == null || (attachedCar.Train != null && attachedCar.Train != Viewer.SelectedTrain))
+            {                
                 if (Front)
                 {
                     SetCameraCar(GetCameraCars().First());
