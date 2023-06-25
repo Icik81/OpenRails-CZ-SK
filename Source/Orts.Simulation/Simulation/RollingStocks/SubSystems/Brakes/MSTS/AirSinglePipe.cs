@@ -1654,7 +1654,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 BailOffOn = false;
                 ThresholdBailOffOn = 0;
                 BrakeCylReleaseEDBOn = false;
-            }
+            }            
 
             // Převodník brzdné síly                          
             if (loco != null && maxPressurePSI0 < loco.MainResPressurePSI)
@@ -1669,11 +1669,11 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             else
                 PressureConverterBase = 0;
 
-            if (loco != null && loco.Battery && Math.Round(PressureConverterBase) > Math.Round(PressureConverter))
-                PressureConverter += elapsedClockSeconds * MaxApplicationRatePSIpS * 1.5f;
-
-            if (loco != null && !loco.Battery)
+            if (loco != null && (!loco.Battery || loco.OverCurrent || (loco.DynamicBrakePercent == -1 && AutoCylPressurePSI0 < 0.1f * 14.50377f)))
                 PressureConverterBase = 0;
+
+            if (loco != null && loco.Battery && Math.Round(PressureConverterBase) > Math.Round(PressureConverter))
+                PressureConverter += elapsedClockSeconds * MaxApplicationRatePSIpS * 1.5f;            
 
             if (Math.Round(PressureConverterBase) < Math.Round(PressureConverter))
                 PressureConverter -= elapsedClockSeconds * MaxReleaseRatePSIpS * 2.0f;            

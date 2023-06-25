@@ -14697,8 +14697,8 @@ namespace Orts.Simulation.RollingStocks
                         HS198ControllerEDBValueTimer = 0;
                     }
                 }
-                SetDynamicBrakePercent(HS198ControllerEDBValue);            
-
+                SetDynamicBrakePercent(HS198ControllerEDBValue);
+                
             // Ochrany
             HS198Protects:
 
@@ -14813,7 +14813,8 @@ namespace Orts.Simulation.RollingStocks
             // Bouchnutí HV nebo rychlobrzda
             if (!CircuitBreakerOn || BrakeSystem.EmergencyBrakeForWagon)
             {
-                HS198ControllerThrottleValue = preHS198ControllerThrottleValue = Simulator.StepControllerValue = HS198ControllerEDBValue = 0;
+                HS198ControllerThrottleValue = preHS198ControllerThrottleValue = Simulator.StepControllerValue = 0;
+                HS198ControllerEDBValue = -1;
                 SetThrottlePercent(0f);
                 SetDynamicBrakePercent(-1);
                 HS198Protect = true;
@@ -14821,7 +14822,7 @@ namespace Orts.Simulation.RollingStocks
                 HS198SkipDiode = 0;
                 AutoDriveEnable = false;
                 AutoDriveButton = false;
-                AutoDriveToZero = false;
+                AutoDriveToZero = false;                
             }
         }
 
