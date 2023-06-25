@@ -503,6 +503,7 @@ namespace Orts.Formats.Msts
         HANDBRAKE,
         HS198_AUTODRIVE_BUTTON,
         HS198_AUTODRIVE_SPEEDSELECTOR,
+        HS198_AUTODRIVE_SPEEDSELECT,
 
 
         // ORTS

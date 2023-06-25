@@ -3442,6 +3442,7 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.HANDBRAKE:
                 case CABViewControlTypes.HS198_AUTODRIVE_BUTTON:
                 case CABViewControlTypes.HS198_AUTODRIVE_SPEEDSELECTOR:
+                case CABViewControlTypes.HS198_AUTODRIVE_SPEEDSELECT:
 
                 case CABViewControlTypes.MOTOR_DISABLED:
                 case CABViewControlTypes.INVERTER_TEST:

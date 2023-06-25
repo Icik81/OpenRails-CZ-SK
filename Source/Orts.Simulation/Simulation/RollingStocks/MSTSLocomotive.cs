@@ -5748,7 +5748,7 @@ namespace Orts.Simulation.RollingStocks
                 MirerController();
                 MirelRSController(elapsedClockSeconds);
                 HS198Controller(elapsedClockSeconds);
-                HS198AutoDriveSpeedSelector();
+                HS198AutoDriveSpeedSelector(elapsedClockSeconds);
                 VentilationSwitch(elapsedClockSeconds);
                 CommandCylinder(elapsedClockSeconds);                
                 TogglePantograph3Switch();
@@ -14881,6 +14881,7 @@ namespace Orts.Simulation.RollingStocks
         public string[] AutoDriveSpeedSelectorSwitchPositionName = new string[3];
         public bool AutoDriveSpeedSelectorEnabled = true;
         public float AutoDriveSpeedMpS;
+        public float FakeAutoDriveSpeedMpS;
         public void ToggleAutoDriveSpeedSelectorUp()
         {
             if (AutoDriveSpeedSelectorSwitchPosition[LocoStation] < 11)
@@ -14897,13 +14898,18 @@ namespace Orts.Simulation.RollingStocks
                 AutoDriveSpeedSelectorSwitchPosition[LocoStation] = 11;
         }
 
-        public void HS198AutoDriveSpeedSelector()
+        public void HS198AutoDriveSpeedSelector(float elapsedClocSeconds)
         {
             if (!IsLeadLocomotive())
                 return;
 
             if (!AutoDriveSpeedSelectorEnabled)
                 return;
+
+            if (AutoDriveSpeedMpS > FakeAutoDriveSpeedMpS)
+                FakeAutoDriveSpeedMpS += 10f * elapsedClocSeconds;
+            if (AutoDriveSpeedMpS < FakeAutoDriveSpeedMpS)
+                FakeAutoDriveSpeedMpS -= 10f * elapsedClocSeconds;
 
             switch (AutoDriveSpeedSelectorSwitchPosition[LocoStation])
             {
@@ -14965,7 +14971,7 @@ namespace Orts.Simulation.RollingStocks
             if (!AutoDriveEnable)
             {
                 AutoDriveCurrent = 0;
-                AutoDriveSpeedMpS = 0;
+                //AutoDriveSpeedMpS = 0;
             }
         }
 
@@ -18027,6 +18033,36 @@ namespace Orts.Simulation.RollingStocks
                     {
                         AutoDriveSpeedSelectorEnabled = true;
                         data = AutoDriveSpeedSelectorSwitchPosition[LocoStation];                        
+                        break;
+                    }
+                case CABViewControlTypes.HS198_AUTODRIVE_SPEEDSELECT:
+                    {                        
+                        cvc.ElapsedTime += elapsedTime;                        
+                        if (cvc.ElapsedTime < cvc.UpdateTime)
+                        {                            
+                            data = cvc.PreviousData;
+                            break;
+                        }
+                        cvc.ElapsedTime = 0;
+                        data = FakeAutoDriveSpeedMpS;
+
+                        if (cvc.Units == CABViewControlUnits.KM_PER_HOUR)
+                            data *= 3.6f;
+                        else // MPH
+                            data *= 2.2369f;
+                        data = Math.Abs(data);
+                        if (cvc.UpdateTime != 0 && cvc.Precision >= 0)
+                        {
+                            if (cvc.Precision == 0)
+                                data = (float)Math.Round(data, 0);
+                            else
+                            {
+                                data = data / cvc.Precision;
+                                data = (float)Math.Round(data, 0);
+                                data = data * cvc.Precision;
+                            }
+                        }                        
+                        cvc.PreviousData = data;
                         break;
                     }
                 case CABViewControlTypes.HANDBRAKE:
