@@ -4634,10 +4634,24 @@ namespace Orts.Simulation.RollingStocks
         bool AIStartOn;
         bool AIBellStartOn;
         bool CarIsWaitingAtStation;
+        public float AISeasonWaitTimeOff;
         public void SetAIAction(float elapsedClockSeconds)
         {
             if ((Train as AITrain) != null && (this as MSTSLocomotive) != null)
             {
+                // Čas v sekundách, kdy AI vypne napájení
+                if (AISeasonWaitTimeOff == 0)
+                {
+                    switch (Simulator.Season)
+                    {
+                        case SeasonType.Spring: AISeasonWaitTimeOff = Simulator.Random.Next(15, 21); break;
+                        case SeasonType.Summer: AISeasonWaitTimeOff = Simulator.Random.Next(10, 16); break;
+                        case SeasonType.Autumn: AISeasonWaitTimeOff = Simulator.Random.Next(15, 31); break;
+                        case SeasonType.Winter: AISeasonWaitTimeOff = Simulator.Random.Next(20, 61); break;
+                    }
+                    AISeasonWaitTimeOff *= 60f; 
+                }
+
                 CarIsWaiting = false;
                 if (((this as MSTSElectricLocomotive) != null && (this as MSTSElectricLocomotive).AIPantoDownStop)
                     || ((this as MSTSDieselLocomotive) != null && (this as MSTSDieselLocomotive).AIMotorStop)
@@ -5704,7 +5718,7 @@ namespace Orts.Simulation.RollingStocks
             if (!IsPlayerTrain && !Simulator.Paused && CarLengthM > 1f)
             {
                 SetAIAction(elapsedClockSeconds);
-                AcceptMUSignals = true;
+                AcceptMUSignals = true;                
             }
 
             if (IsPlayerTrain && !Simulator.Paused)
