@@ -1792,7 +1792,6 @@ namespace Orts.Simulation.Physics
                 massKg += car.MassKG;
                 //TODO: next code line has been modified to flip trainset physics in order to get viewing direction coincident with loco direction when using rear cab.
                 // To achieve the same result with other means, without flipping trainset physics, the line should be changed as follows:
-                //                 if (car.Flipped)
                 if (car.Flipped ^ (car.IsDriveable && car.Train.IsActualPlayerTrain && ((MSTSLocomotive)car).UsingRearCab))
                 {
                     car.TotalForceN = -car.TotalForceN;
@@ -4323,6 +4322,19 @@ namespace Orts.Simulation.Physics
         {
             if (LeadLocomotiveIndex >= 0)
             {
+                if (LeadLocomotiveIndex >= Cars.Count)
+                {
+                    int index = 0;
+                    foreach (TrainCar car in Cars)
+                    {
+                        if (car.IsDriveable)
+                        {
+                            LeadLocomotiveIndex = index; 
+                            break;
+                        }
+                        index++;
+                    }
+                }
                 MSTSLocomotive lead = (MSTSLocomotive)Cars[LeadLocomotiveIndex];
                 if (lead.TrainBrakeController != null)
                     lead.TrainBrakeController.UpdatePressure(ref EqualReservoirPressurePSIorInHg, elapsedClockSeconds, ref BrakeLine4);
