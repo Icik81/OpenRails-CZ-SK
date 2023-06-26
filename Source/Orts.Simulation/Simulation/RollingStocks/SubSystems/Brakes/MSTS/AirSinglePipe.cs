@@ -1001,11 +1001,13 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 AutoCylPressurePSI = AutoCylPressurePSI1;
             if (AutoCylPressurePSI < AutoCylPressurePSI2)
                 AutoCylPressurePSI = AutoCylPressurePSI2;
-
+            
             // Zjednodušený model pro AI
             #region AI
             if (!Car.IsPlayerTrain)
             {
+                AutoCylPressurePSI1 = AutoCylPressurePSI2 = 0f;
+
                 if (loco != null && loco.CarFrameUpdateState < 3)                
                     loco.MainResPressurePSI = 8f * 14.50377f;                 
                 
