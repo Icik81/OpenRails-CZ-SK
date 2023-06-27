@@ -3215,8 +3215,14 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
 
                 if (EngineBrakePresseDifference < 0.33f * lead.BrakeSystem.BrakeCylinderMaxSystemPressurePSI)
                 {
-                    if (lead.BrakeSystem.EngineBrakeTresholdRate > 0.2f)
-                        lead.BrakeSystem.EngineBrakeTresholdRate -= 2.0f * elapsedClockSeconds;
+                    if (lead.BrakeSystem.EngineBrakeTresholdRate > 0.8f)
+                        lead.BrakeSystem.EngineBrakeTresholdRate -= 0.8f * elapsedClockSeconds;
+                    else
+                    if (lead.BrakeSystem.EngineBrakeTresholdRate > 0.5f)
+                        lead.BrakeSystem.EngineBrakeTresholdRate -= 0.6f * elapsedClockSeconds;
+                    else
+                    if (lead.BrakeSystem.EngineBrakeTresholdRate > 0.3f)
+                        lead.BrakeSystem.EngineBrakeTresholdRate -= 0.4f * elapsedClockSeconds;
                 }
                 else
                     lead.BrakeSystem.EngineBrakeTresholdRate = 1.0f;

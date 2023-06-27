@@ -3043,7 +3043,7 @@ namespace Orts.Simulation.RollingStocks
         float FakePowerCurrent2Timer;
         bool SetFakePowerCurrent2Timer;
         public void PowerCurrentCalculation(float elapsedClockSeconds)
-        {            
+        {
             if (CurrentForceStep2Curves != null)
                 PowerCurrent2 = CurrentForceStep2Curves.Get(StepControllerValue, Math.Abs(DriveForceN));
 
@@ -3063,50 +3063,96 @@ namespace Orts.Simulation.RollingStocks
                 PowerCurrent1 = Math.Abs(DriveForceN) / MaxForceN * MaxCurrentA;
 
 
-            if (PowerCurrent1 > 1.02f * prePowerCurrent1)
+            if (MirerControllerEnable || MirelRSControllerEnable || HS198ControllerEnable)
             {
-                FakePowerCurrent1 = PowerCurrent1 * 1.05f;
-                SetFakePowerCurrent1Timer = true;
-            }
-            if (PowerCurrent1 < 0.98f * prePowerCurrent1)
-            {
-                FakePowerCurrent1 = PowerCurrent1 * 0.95f;
-                SetFakePowerCurrent1Timer = true;
-            }
-            if (SetFakePowerCurrent1Timer)
-            {
-                FakePowerCurrent1Timer += elapsedClockSeconds;
-                if (FakePowerCurrent1Timer > 0.25f)
-                    SetFakePowerCurrent1Timer = false;
-            }
-            if (!SetFakePowerCurrent1Timer)
-            {
-                FakePowerCurrent1 = PowerCurrent1;
-                FakePowerCurrent1Timer = 0;
-            }
+                if (PowerCurrent1 > FakePowerCurrent1)
+                {
+                    if (FakePowerCurrent1 > 0.9f * PowerCurrent1)
+                        FakePowerCurrent1 += 100f * elapsedClockSeconds;
+                    else
+                    if (FakePowerCurrent1 > 0.8f * PowerCurrent1)
+                        FakePowerCurrent1 += 200f * elapsedClockSeconds;
+                    else
+                    if (FakePowerCurrent1 > 0.7f * PowerCurrent1)
+                        FakePowerCurrent1 += 300f * elapsedClockSeconds;
+                    else
+                        FakePowerCurrent1 += 500f * elapsedClockSeconds;
+                }
+                if (PowerCurrent1 < FakePowerCurrent1)
+                {
+                    if (FakePowerCurrent1 < 1.1f * PowerCurrent1)
+                        FakePowerCurrent1 -= 100f * elapsedClockSeconds;
+                    else
+                    if (FakePowerCurrent1 < 1.2f * PowerCurrent1)
+                        FakePowerCurrent1 -= 200f * elapsedClockSeconds;
+                    else
+                    if (FakePowerCurrent1 < 1.3f * PowerCurrent1)
+                        FakePowerCurrent1 -= 300f * elapsedClockSeconds;
+                    else
+                        FakePowerCurrent1 -= 500f * elapsedClockSeconds;
+                }
 
-            if (PowerCurrent2 > 1.02f * prePowerCurrent2)
-            {
-                FakePowerCurrent2 = PowerCurrent2 * 1.05f;
-                SetFakePowerCurrent2Timer = true;
+                if (PowerCurrent2 > FakePowerCurrent2)
+                {
+                    if (FakePowerCurrent2 > 0.7f * PowerCurrent2)
+                        FakePowerCurrent2 += 100f * elapsedClockSeconds;
+                    else
+                        FakePowerCurrent2 += 500f * elapsedClockSeconds;
+                }
+                if (PowerCurrent2 < FakePowerCurrent2)
+                {
+                    if (FakePowerCurrent2 < 1.3f * PowerCurrent2)
+                        FakePowerCurrent2 -= 100f * elapsedClockSeconds;
+                    else
+                        FakePowerCurrent2 -= 500f * elapsedClockSeconds;
+                }
             }
-            if (PowerCurrent2 < 0.98f * prePowerCurrent2)
+            else
             {
-                FakePowerCurrent2 = PowerCurrent2 * 0.95f;
-                SetFakePowerCurrent2Timer = true;
-            }
-            if (SetFakePowerCurrent2Timer)
-            {
-                FakePowerCurrent2Timer += elapsedClockSeconds;
-                if (FakePowerCurrent2Timer > 0.25f)
-                    SetFakePowerCurrent2Timer = false;
-            }
-            if (!SetFakePowerCurrent2Timer)
-            {
-                FakePowerCurrent2 = PowerCurrent2;
-                FakePowerCurrent2Timer = 0;
-            }
+                if (PowerCurrent1 > 1.02f * prePowerCurrent1)
+                {
+                    FakePowerCurrent1 = PowerCurrent1 * 1.05f;
+                    SetFakePowerCurrent1Timer = true;
+                }
+                if (PowerCurrent1 < 0.98f * prePowerCurrent1)
+                {
+                    FakePowerCurrent1 = PowerCurrent1 * 0.95f;
+                    SetFakePowerCurrent1Timer = true;
+                }
+                if (SetFakePowerCurrent1Timer)
+                {
+                    FakePowerCurrent1Timer += elapsedClockSeconds;
+                    if (FakePowerCurrent1Timer > 0.25f)
+                        SetFakePowerCurrent1Timer = false;
+                }
+                if (!SetFakePowerCurrent1Timer)
+                {
+                    FakePowerCurrent1 = PowerCurrent1;
+                    FakePowerCurrent1Timer = 0;
+                }
 
+                if (PowerCurrent2 > 1.02f * prePowerCurrent2)
+                {
+                    FakePowerCurrent2 = PowerCurrent2 * 1.05f;
+                    SetFakePowerCurrent2Timer = true;
+                }
+                if (PowerCurrent2 < 0.98f * prePowerCurrent2)
+                {
+                    FakePowerCurrent2 = PowerCurrent2 * 0.95f;
+                    SetFakePowerCurrent2Timer = true;
+                }
+                if (SetFakePowerCurrent2Timer)
+                {
+                    FakePowerCurrent2Timer += elapsedClockSeconds;
+                    if (FakePowerCurrent2Timer > 0.25f)
+                        SetFakePowerCurrent2Timer = false;
+                }
+                if (!SetFakePowerCurrent2Timer)
+                {
+                    FakePowerCurrent2 = PowerCurrent2;
+                    FakePowerCurrent2Timer = 0;
+                }
+            }
             prePowerCurrent1 = PowerCurrent1;
             prePowerCurrent2 = PowerCurrent2;
         }
