@@ -1117,6 +1117,7 @@ namespace Orts.Simulation
                             BoardingCompleted = false;
 
                         RestOfPax = MyPlayerTrain.StationStops[0].PlatformItem.PassengerList.Count;
+                        MyPlayerTrain.StationStops[0].PlatformItem.NumPassengersWaiting = RestOfPax;
 
                         // Still have to wait
                         if (remaining > 0)
