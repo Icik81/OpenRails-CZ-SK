@@ -760,10 +760,15 @@ namespace Orts.Simulation.RollingStocks
             // Hack pro start zvuku motoru JV ladění
             if (JVSetUp)
             {                
-                if (this.BrakeSystem.PowerForWagon)
+                if (this.BrakeSystem.PowerForWagon && DieselEngines[0].EngineStatus == DieselEngine.Status.Running)
                 {
                     SignalEvent(Event.EnginePowerOn);
                 }
+                if (!this.BrakeSystem.PowerForWagon && AITimeMotorRunning > preAITimeMotorRunning)
+                {
+                    SignalEvent(Event.EnginePowerOff);
+                }
+                preAITimeMotorRunning = AITimeMotorRunning;
             }
         }
 
@@ -1063,6 +1068,7 @@ namespace Orts.Simulation.RollingStocks
         bool DERunningStatus;
         float AITimeToMotorStop;
         float AITimeMotorRunning;
+        float preAITimeMotorRunning;
         public void DieselStartUpTime(float elapsedClockSeconds)
         {
             // Vynechá servisy jako například posunovače
@@ -1081,12 +1087,17 @@ namespace Orts.Simulation.RollingStocks
                             if (((AuxActionWPItem)(Train as AITrain).nextActionInfo).ActualDepart > 0)
                             {
                                 double AITimeToGo = ((AuxActionWPItem)(Train as AITrain).nextActionInfo).ActualDepart - Simulator.ClockTime;
-                                if (AITimeToGo > AISeasonWaitTimeOff) // Čekání dle sezóny 
-                                    AIMotorStop = true;
-                                else
-                                    AIMotorStop = false;
                                 if (AITimeToGo < 120) // Čekání 2min pro nahození  
+                                {
                                     AIMotorStart = true;
+                                    AIMotorStop = false;
+                                }
+                                else
+                                if (AITimeToGo > AISeasonWaitTimeOff) // Čekání dle sezóny 
+                                {
+                                    AIMotorStop = true;
+                                    AIMotorStart = false;
+                                }
                             }
                         }
                     }

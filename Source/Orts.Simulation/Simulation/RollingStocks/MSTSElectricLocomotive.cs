@@ -1852,13 +1852,18 @@ namespace Orts.Simulation.RollingStocks
                         {
                             if (((AuxActionWPItem)(Train as AITrain).nextActionInfo).ActualDepart > 0)
                             {
-                                double AITimeToGo = ((AuxActionWPItem)(Train as AITrain).nextActionInfo).ActualDepart - Simulator.ClockTime;                                                                
-                                if (AITimeToGo > AISeasonWaitTimeOff) // Čekání dle sezóny pro zdvižení pantografu
-                                    AIPantoDownStop = true;
-                                else
-                                    AIPantoDownStop = false;
+                                double AITimeToGo = ((AuxActionWPItem)(Train as AITrain).nextActionInfo).ActualDepart - Simulator.ClockTime;
                                 if (AITimeToGo < 120) // Čekání 2min pro nahození 2.pantografu 
+                                {
                                     AIPanto2Raise = true;
+                                    AIPantoDownStop = false;
+                                }
+                                else
+                                if (AITimeToGo > AISeasonWaitTimeOff) // Čekání dle sezóny pro zdvižení pantografu
+                                {
+                                    AIPantoDownStop = true;
+                                    AIPanto2Raise = false;
+                                }                                                                
                             }
                         }
                     }
