@@ -5764,7 +5764,13 @@ namespace Orts.Simulation.RollingStocks
             if (!IsPlayerTrain && !Simulator.Paused && CarLengthM > 1f)
             {
                 SetAIAction(elapsedClockSeconds);
-                AcceptMUSignals = true;                
+                AcceptMUSignals = true;
+                
+                if (Flipped)
+                {
+                    if (Direction == Direction.Forward)
+                        Direction = Direction.Reverse;
+                }                
             }
 
             if (IsPlayerTrain && !Simulator.Paused)
