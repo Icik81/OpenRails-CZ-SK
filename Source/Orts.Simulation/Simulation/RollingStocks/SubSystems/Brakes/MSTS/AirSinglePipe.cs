@@ -1008,8 +1008,11 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             {
                 AutoCylPressurePSI1 = AutoCylPressurePSI2 = 0f;
                 if (AuxResPressurePSI > maxPressurePSI0) AuxResPressurePSI = maxPressurePSI0;
-                if (loco != null && loco.EmergencyButtonPressed) loco.EmergencyButtonPressed = false;
-
+                if (loco != null)
+                {
+                    loco.EmergencyButtonPressed = false;
+                    loco.SetEmergency(false);
+                }
                 UpdateTripleValveState(threshold);
 
                 if (loco != null && loco.CarFrameUpdateState < 3)                

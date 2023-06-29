@@ -4369,6 +4369,17 @@ namespace Orts.Simulation.Physics
                 car.BrakeSystem.BrakeLine1PressurePSI = car.BrakeSystem.InternalPressure(EqualReservoirPressurePSIorInHg);
                 car.BrakeSystem.BrakeLine2PressurePSI = BrakeLine2PressurePSI;
                 car.BrakeSystem.BrakeLine3PressurePSI = 0;
+                if (car.AbsSpeedMpS > 1f / 3.6f)
+                {
+                    if ((car as MSTSWagon).DoorRightOpen || (car as MSTSWagon).DoorLeftOpen)
+                    {
+                        (car as MSTSWagon).DoorRightOpen = false;
+                        (car as MSTSWagon).DoorLeftOpen = false;
+                        SignalEvent(Event.DoorClose);
+                        (car as MSTSWagon).BrakeSystem.RightDoorIsOpened = false;
+                        (car as MSTSWagon).BrakeSystem.LeftDoorIsOpened = false;                        
+                    }
+                }
             }
         }
 

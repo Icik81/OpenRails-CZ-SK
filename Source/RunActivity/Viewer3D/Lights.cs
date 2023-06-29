@@ -336,6 +336,8 @@ namespace Orts.Viewer3D
                 else
                 if (!newIsDay)
                     newTrainHeadlight = 2;
+                else
+                    newTrainHeadlight = 1;
             }
             
             if (

@@ -2545,7 +2545,7 @@ namespace Orts.Simulation.AIs
 
                 // check if stopped at station
 
-                if (nextActionInfo.NextAction == AIActionItem.AI_ACTION_TYPE.STATION_STOP)
+                if (nextActionInfo.NextAction == AIActionItem.AI_ACTION_TYPE.STATION_STOP && StationStops.Count > 0)
                 {
                     NextStopDistanceM = distanceToGoM;
                     if (distanceToGoM <= 0.1f)
