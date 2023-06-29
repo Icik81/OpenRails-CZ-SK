@@ -1007,6 +1007,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             if (!Car.IsPlayerTrain)
             {
                 AutoCylPressurePSI1 = AutoCylPressurePSI2 = 0f;
+                if (AuxResPressurePSI > maxPressurePSI0) AuxResPressurePSI = maxPressurePSI0;
+                if (loco != null && loco.EmergencyButtonPressed) loco.EmergencyButtonPressed = false;
+
+                UpdateTripleValveState(threshold);
 
                 if (loco != null && loco.CarFrameUpdateState < 3)                
                     loco.MainResPressurePSI = 8f * 14.50377f;                 
@@ -1024,9 +1028,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         int MainResPressurePSI = Simulator.Random.Next(0, 10);
                         loco.MainResPressurePSI = MainResPressurePSI * 14.50377f;
                     }
-                }
+                }                               
 
-                UpdateTripleValveState(threshold);
                 // triple valve is set to charge the brake cylinder
                 if ((TripleValveState == ValveState.Apply || TripleValveState == ValveState.Emergency))
                 {
