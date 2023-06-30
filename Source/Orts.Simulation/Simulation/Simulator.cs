@@ -2012,6 +2012,15 @@ namespace Orts.Simulation
                 var selectedAsPlayer = TrainSwitcher.SelectedAsPlayer;
                 var oldTrainReverseFormation = false;
                 var newTrainReverseFormation = false;
+
+                // Icik
+                // Lokomotiva přepne kabinu kvůli správnému směru AI
+                if ((PlayerLocomotive as MSTSLocomotive).UsingRearCab)
+                {
+                    PlayerLocomotive.Train.GetNextCab();
+                    (PlayerLocomotive as MSTSLocomotive).UsingRearCab = false;
+                }
+
                 if (PlayerLocomotive.Train is AITrain && !PlayerLocomotive.Train.IsPathless)
                 {
                     var playerTrain = PlayerLocomotive.Train as AITrain;

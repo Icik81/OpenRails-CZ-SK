@@ -1006,8 +1006,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             #region AI
             if (!Car.IsPlayerTrain)
             {
-                AutoCylPressurePSI1 = AutoCylPressurePSI2 = 0f;
-                if (AuxResPressurePSI > maxPressurePSI0) AuxResPressurePSI = maxPressurePSI0;
+                AutoCylPressurePSI1 = AutoCylPressurePSI2 = 0f;                
+                AuxResPressurePSI = MathHelper.Clamp(AuxResPressurePSI, 3.5f * 14.50377f, maxPressurePSI0);
+                BrakeLine1PressurePSI = MathHelper.Clamp(BrakeLine1PressurePSI, 3.5f * 14.50377f, maxPressurePSI0);
                 if (loco != null)
                 {
                     loco.EmergencyButtonPressed = false;
