@@ -8932,7 +8932,7 @@ namespace Orts.Simulation.RollingStocks
 
         public void TryKeepDeceleration(float elapsedClockSeconds)
         {
-            if ((!CruiseControl.doNotForceDynamicBrake || RequiredDecelerationPercent < DynamicBrakePercent || DynamicBrakePercent == -1) && AbsSpeedMpS > 0)
+            if ((CruiseControl != null && !CruiseControl.doNotForceDynamicBrake || RequiredDecelerationPercent < DynamicBrakePercent || DynamicBrakePercent == -1) && AbsSpeedMpS > 0)
             {
                 RequiredDecelerationPercentDisplay = RequiredDecelerationPercent;
             }
