@@ -938,6 +938,7 @@ namespace Orts.Simulation.Physics
             foreach (StationStop stop in StationStops)
             {
                 stop.PlatformItem.NumPassengersWaiting = inf.ReadInt32();
+                stop.PlatformItem.NumPassengersWaitingBase = inf.ReadInt32();
             }
 
             if (TrainType != TRAINTYPE.REMOTE)
@@ -1226,6 +1227,7 @@ namespace Orts.Simulation.Physics
             foreach (StationStop stop in StationStops)
             {
                 outf.Write(stop.PlatformItem.NumPassengersWaiting);
+                outf.Write(stop.PlatformItem.NumPassengersWaitingBase);
             }
         }
 
@@ -16514,8 +16516,18 @@ namespace Orts.Simulation.Physics
         public int MaxStationCount;
         public int PeopleWantToLeaveCount;
 
+        List<int> fullUnboardStations = new List<int>();
+         
         public void FillNames(Train train)
         {
+            // Icik
+            if (Simulator.GameTime == 0)
+            {
+                foreach (StationStop stop in StationStops)                
+                    if (stop.PlatformItem.NumPassengersWaiting >= 10000)
+                        stop.PlatformItem.NumPassengersWaitingBase = stop.PlatformItem.NumPassengersWaiting;                
+            }
+
             if (numCars == 0)
             {
                 numCars = train.Cars.Count;
@@ -16610,7 +16622,7 @@ namespace Orts.Simulation.Physics
                 testNamesF = pax.FemaleNames;
                 int station = 0;
                 int maxStation = 0;
-                List<int> fullUnboardStations = new List<int>();
+                //List<int> fullUnboardStations = new List<int>();
                 int unboardIndex = 0;
                 if (Simulator.Activity != null &&
                     Simulator.Activity.Tr_Activity.Tr_Activity_File.PlatformNumPassengersWaiting == null)
@@ -16622,9 +16634,10 @@ namespace Orts.Simulation.Physics
                     foreach (StationStop stop in StationStops)
                     {
                         maxStation++;
-                        if (stop.PlatformItem.NumPassengersWaiting >= 10000)
+                        if (stop.PlatformItem.NumPassengersWaitingBase >= 10000)
                         {
-                            stop.PlatformItem.NumPassengersWaiting = stop.PlatformItem.NumPassengersWaiting - 10000;
+                            if (stop.PlatformItem.NumPassengersWaiting >= 10000)
+                                stop.PlatformItem.NumPassengersWaiting = stop.PlatformItem.NumPassengersWaiting - 10000;
                             fullUnboardStations.Add(maxStation - 1);
                         }
                     }
@@ -16650,6 +16663,7 @@ namespace Orts.Simulation.Physics
                 }
                 numUsableWagons = train.Cars.Count;
 
+                station = 0;
                 foreach (StationStop ss in train.StationStops)
                 {
                     if (station + 1 == StationStops.Count)
@@ -16663,13 +16677,13 @@ namespace Orts.Simulation.Physics
                                 pax.Surname = "Janů";
                             pax.DepartureStation = ss.PlatformItem.PlatformFrontUiD; // departure is current iterated platform
                             pax.DepartureStationName = ss.PlatformItem.Name;
-                            if (fullUnboardStations.Count > 0 && unboardIndex < fullUnboardStations.Count)
+
+                            if (fullUnboardStations.Count > 0)
                             {
-                                if (station == fullUnboardStations[unboardIndex])
-                                {
+                                if (station > fullUnboardStations[unboardIndex] && unboardIndex + 1 < fullUnboardStations.Count)
                                     unboardIndex++;
-                                }
-                                if (unboardIndex < fullUnboardStations.Count)
+
+                                if (station < fullUnboardStations[unboardIndex])
                                     maxStation = fullUnboardStations[unboardIndex] + 1;
                                 else
                                     maxStation = StationStops.Count;
