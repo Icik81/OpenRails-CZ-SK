@@ -449,6 +449,10 @@ namespace Orts.Simulation.RollingStocks
             if (((Locomotive.BrakeSystem.BrakePipeChangeRateBar > 0.1f && Locomotive.BrakeSystem.BrakeCylApply) || Bar.FromPSI(Locomotive.BrakeSystem.BrakeLine1PressurePSI) < 4.5f)
                 && Locomotive.DynamicBrakePercent < 0.1f)
                 Locomotive.ControllerVolts = 0;
+            else
+            {
+                Locomotive.SetDynamicBrakePercent(-1);                
+            }
 
             if (Locomotive.ControllerVolts > 0)
             {
@@ -847,13 +851,21 @@ namespace Orts.Simulation.RollingStocks
                 {
                     ForceN = prevForceN = 0;
                 }
-                float axleKpH = MpS.ToKpH(WheelSpeedMpS);
+                float axleKpH = MpS.ToKpH(WheelSpeedMpS * (Locomotive.SpeedMpS != 0 ? (Locomotive.SpeedMpS / Math.Abs(Locomotive.SpeedMpS)) : 0));
                 float trainKpH = MpS.ToKpH(Locomotive.SpeedMpS);
                 float speedDif = (axleKpH - trainKpH) * 0.75f;
                 float speedCoeff = trainKpH / 10;
+                
                 if (speedCoeff > 1)
                     speedCoeff = 1;
-                speedDif -= speedCoeff;
+                if (speedCoeff < -1)
+                    speedCoeff = -1;
+                
+                if (speedCoeff > 0)
+                    speedDif -= speedCoeff;
+                if (speedCoeff < 0)
+                    speedDif += speedCoeff;
+
                 // Locomotive.Simulator.Confirmer.MSG(axleKpH.ToString() + " " + trainKpH.ToString() + " " + speedDif.ToString());
                 if (speedDif < 0 && Locomotive.ControllerVolts > 0)
                     speedDif = 0;
