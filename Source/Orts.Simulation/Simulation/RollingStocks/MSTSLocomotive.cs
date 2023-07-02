@@ -3962,13 +3962,38 @@ namespace Orts.Simulation.RollingStocks
 
                 if ((Heating_OffOn[LocoStation] && !HeatingOverCurrent && AuxPowerOn && StationIsActivated[LocoStation]) || Train.CarSteamHeatOn)
                     HeatingIsOn = true;
-                if ((!Heating_OffOn[LocoStation] || HeatingOverCurrent || !AuxPowerOn) && !Train.CarSteamHeatOn)
+                if (((!Heating_OffOn[LocoStation] && StationIsActivated[LocoStation]) || HeatingOverCurrent || !AuxPowerOn) && !Train.CarSteamHeatOn)
                 {
                     if (HeatingIsOn)
                         SignalEvent(Event.Heating_OffOnOff);
                     if (I_HeatingData > 0)
                         I_HeatingData -= 50 * elapsedClockSeconds; // 50A/s
                     HeatingIsOn = false;
+                }
+
+                // Zapíná - vypíná topení vlaku pro loko spojené kabelem (ovládání masterem)
+                foreach (TrainCar car in Train.Cars)
+                {
+                    if (car is MSTSLocomotive && AcceptCableSignals && !car.CarIsPlayerLoco)
+                    {
+                        if (HeatingIsOn && car.AcceptCableSignals)
+                            (car as MSTSLocomotive).HeatingIsOn = true;
+                        if (!HeatingIsOn && car.AcceptCableSignals)
+                            (car as MSTSLocomotive).HeatingIsOn = false;
+                        if (HeatingIsOn && !car.AcceptCableSignals)
+                            (car as MSTSLocomotive).HeatingIsOn = false;
+                    }
+                    else
+                    {
+                        if (car is MSTSLocomotive && !AcceptCableSignals)
+                        {
+                            if ((car as MSTSLocomotive).HeatingIsOn && !car.CarIsPlayerLoco)
+                                (car as MSTSLocomotive).HeatingIsOn = false;
+
+                            if ((car as MSTSLocomotive).Heating_OffOn[LocoStation] && (car as MSTSLocomotive).StationIsActivated[LocoStation] && !car.CarIsPlayerLoco)
+                                (car as MSTSLocomotive).HeatingIsOn = true;
+                        }
+                    }
                 }
 
                 if (HeatingOverCurrent)
