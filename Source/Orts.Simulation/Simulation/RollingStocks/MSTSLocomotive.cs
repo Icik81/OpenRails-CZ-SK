@@ -3499,7 +3499,8 @@ namespace Orts.Simulation.RollingStocks
                     + PowerReductionResult9
                     + PowerReductionResult10
                     + PowerReductionResult11
-                    + PowerReductionResult12)
+                    + PowerReductionResult12
+                    )
                     PowerReduction += 1 * elapsedClockSeconds;
 
                 if (PowerReduction >
@@ -3514,7 +3515,8 @@ namespace Orts.Simulation.RollingStocks
                     + PowerReductionResult9
                     + PowerReductionResult10
                     + PowerReductionResult11
-                    + PowerReductionResult12)
+                    + PowerReductionResult12
+                    )
                     PowerReduction -= 1 * elapsedClockSeconds;
 
                 PowerReduction = MathHelper.Clamp(PowerReduction, 0, 0.999f);
@@ -3527,6 +3529,7 @@ namespace Orts.Simulation.RollingStocks
                 else
                 if (PowerReductionResult11 == 1 && LocalThrottlePercent == 0)
                     PowerReductionResult11 = 0;
+                                
             }
             //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("PowerReduction " + PowerReduction));
             //Simulator.Confirmer.Message(ConfirmLevel.Information, Simulator.Catalog.GetString("Celková ztráta výkonu "+ PowerReduction * MaxPowerW/1000 + " kW!"));            

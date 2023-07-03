@@ -2218,15 +2218,16 @@ namespace Orts.Simulation.RollingStocks
                     // Icik
                     float MaxImpulseCouplerForceUN = 850000; // default 850kN                                        
                     float ImpulsForce = 0;
+                    float ImpulsForce2 = 0;
 
-                    //if (ImpulseCouplerForceUN < 0)
-                    //    ImpulsForce = Math.Abs(ImpulseCouplerForceUN) * 10;
-                    if (CouplerForceU < 0)
-                        ImpulsForce = Math.Abs(CouplerForceU) * 2;
+                    if (ImpulseCouplerForceUN < 0)
+                        ImpulsForce2 = Math.Abs(ImpulseCouplerForceUN);
+                    if (CouplerForceU < 0 && ImpulsForce2 > 1000f)
+                        ImpulsForce = Math.Abs(CouplerForceU) * 6f;
 
                     //if (ImpulsForce > 100000)
                     //{
-                    //    Simulator.Confirmer.Information("ImpulsForce = " + ImpulsForce);
+                    //    Simulator.Confirmer.MSG("ImpulsForce = " + ImpulsForce);
                     //}
 
                     if ((Math.Abs(CouplerForceU) > GetCouplerBreak2N() || (ImpulsForce > MaxImpulseCouplerForceUN)))  // break couplers if either static or impulse forces exceeded

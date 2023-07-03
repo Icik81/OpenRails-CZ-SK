@@ -414,7 +414,7 @@ namespace Orts.Simulation.RollingStocks
         public float PowerReductionResult9;  // Redukce výkonu při poškozeném motoru 
         public float PowerReductionResult10;  // Redukce výkonu při vypnutém proudu
         public float PowerReductionResult11;  // Redukce výkonu při vypnutém pultu řízení
-        public float PowerReductionResult12;  // Redukce výkonu pro postrk při Don`t push! 
+        public float PowerReductionResult12;  // Redukce výkonu pro postrk při Don`t push!         
 
         public float DieselHeaterPower;
         public float DieselHeaterPower0;
@@ -998,9 +998,13 @@ namespace Orts.Simulation.RollingStocks
                         BrakeSystem.CarHasMechanicStuckBrake_1 = true; // Brzdí málo                        
                         break;
                     case 154:
-                        BrakeSystem.CarHasMechanicStuckBrake_2 = true; // Je zaseklý                         
+                        BrakeSystem.CarHasMechanicStuckBrake_2 = true; // Je zaseklý
+                        WheelDamageValue = Simulator.Random.Next(5, 15);                                                                       
                         break;
-                }                
+                }
+                int ChanceToWheelDamageValue = Simulator.Random.Next(0, 20);
+                if (ChanceToWheelDamageValue == 10)
+                    WheelDamageValue = Simulator.Random.Next(0, 10);
             }        
         }
 

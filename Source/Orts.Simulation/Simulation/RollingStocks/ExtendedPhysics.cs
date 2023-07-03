@@ -448,11 +448,13 @@ namespace Orts.Simulation.RollingStocks
             //if (Bar.FromPSI(Locomotive.BrakeSystem.BrakeLine1PressurePSI) < 4.78 && Locomotive.DynamicBrakePercent < 0.1f)
             if (((Locomotive.BrakeSystem.BrakePipeChangeRateBar > 0.1f && Locomotive.BrakeSystem.BrakeCylApply) || Bar.FromPSI(Locomotive.BrakeSystem.BrakeLine1PressurePSI) < 4.5f)
                 && Locomotive.DynamicBrakePercent < 0.1f)
-                Locomotive.ControllerVolts = 0;
+            {
+                Locomotive.ControllerVolts = 0;                
+            }
             else
             {
-                Locomotive.SetDynamicBrakePercent(-1);                
-            }
+                Locomotive.SetDynamicBrakePercent(-1);
+            }            
 
             if (Locomotive.ControllerVolts > 0)
             {
@@ -480,10 +482,7 @@ namespace Orts.Simulation.RollingStocks
                 Locomotive.DynamicBrakePercent = 0;
                 Locomotive.ControllerVolts = 0;
             }
-            if (UseControllerVolts && Locomotive.ControllerVolts < 0)
-            {
-                Locomotive.SetDynamicBrakePercent(-Locomotive.ControllerVolts * 10);
-            }
+            
             TotalCurrent = 0;
             StarorsCurrent = 0;
             RotorsCurrent = 0;
@@ -508,7 +507,8 @@ namespace Orts.Simulation.RollingStocks
                     if (FastestAxleSpeedMpS < ea.WheelSpeedMpS)
                         FastestAxleSpeedMpS = ea.WheelSpeedMpS;
 
-                    speedDiff = (ea.WheelSpeedMpS - myAverageAxleSpeedMps) * 20; // Jirko když to budeš měnit, řekni pro kterou mašinu, jinak přestanou fungovat ostatní.
+                    float ForceToChangespeedDiffCoef = 100f * 1000f; // Dynamické počítání coefu kvůli oscilaci síly motorů
+                    speedDiff = (ea.WheelSpeedMpS - myAverageAxleSpeedMps) * (Math.Abs(TotalForceN) > ForceToChangespeedDiffCoef ? 20f : Math.Abs(TotalForceN / ForceToChangespeedDiffCoef * 20f)); // Jirko když to budeš měnit, řekni pro kterou mašinu, jinak přestanou fungovat ostatní.
                     if (speedDiff < 0)
                         speedDiff = 0;
                     if (OverridenControllerVolts - speedDiff < 0)

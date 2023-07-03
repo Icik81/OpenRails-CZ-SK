@@ -1052,7 +1052,9 @@ namespace Orts.Simulation
                 PlayerCoupling = true;
             else
                 PlayerCoupling = false;
-            
+
+            CouplingType_1 = CouplingType_2 = CouplingType_3 = CouplingType_4 = 0;
+
             CarCoupleSpeedOvercome = false;
 
             if (CarCoupleMaxSpeedOvercome)
