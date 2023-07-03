@@ -2761,4 +2761,72 @@ namespace Orts.Common
             // Report();
         }
     }
+    [Serializable()]
+    public sealed class ToggleAxleCounterUpCommand : Command
+    {
+        public static MSTSLocomotive Receiver { get; set; }
+
+        public ToggleAxleCounterUpCommand(CommandLog log)
+            : base(log)
+        {
+            Redo();
+        }
+
+        public override void Redo()
+        {
+            Receiver.ToggleAxleCounterUp();
+            // Report();
+        }
+    }
+    [Serializable()]
+    public sealed class ToggleAxleCounterDownCommand : Command
+    {
+        public static MSTSLocomotive Receiver { get; set; }
+
+        public ToggleAxleCounterDownCommand(CommandLog log)
+            : base(log)
+        {
+            Redo();
+        }
+
+        public override void Redo()
+        {
+            Receiver.ToggleAxleCounterDown();
+            // Report();
+        }
+    }
+    [Serializable()]
+    public sealed class ToggleAxleCounterConfirmerCommand : Command
+    {
+        public static MSTSLocomotive Receiver { get; set; }
+
+        public ToggleAxleCounterConfirmerCommand(CommandLog log)
+            : base(log)
+        {
+            Redo();
+        }
+
+        public override void Redo()
+        {
+            Receiver.ToggleAxleCounterConfirmer();
+            // Report();
+        }
+    }
+    [Serializable()]
+    public sealed class ToggleAxleCounterRestrictedSpeedZoneActiveCommand : Command
+    {
+        public static MSTSLocomotive Receiver { get; set; }
+
+        public ToggleAxleCounterRestrictedSpeedZoneActiveCommand(CommandLog log)
+            : base(log)
+        {
+            Redo();
+        }
+
+        public override void Redo()
+        {
+            Receiver.ToggleAxleCounterRestrictedSpeedZoneActive(true);
+            // Report();
+        }
+    }
 }

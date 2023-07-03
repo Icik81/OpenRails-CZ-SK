@@ -310,6 +310,10 @@
         [GetString("Control_CZSK Automatic start-up button")] ControlAutoDriveButton,
         [GetString("Control_CZSK Automatic start-up SpeedSelector +")] ControlAutoDriveSpeedSelectorUp,
         [GetString("Control_CZSK Automatic start-up SpeedSelector -")] ControlAutoDriveSpeedSelectorDown,
+        [GetString("Control_CZSK Axle Counter +")] ControlAxleCounterUp,
+        [GetString("Control_CZSK Axle Counter -")] ControlAxleCounterDown,
+        [GetString("Control_CZSK Axle Counter Confirmer")] ControlAxleCounterConfirmer,
+        [GetString("Control_CZSK Axle Counter Restricted speed zone active button")] ControlAxleCounterRestrictedSpeedZoneActive,
 
         [GetString("Set Power Supply Station Location")] ControlPowerStationLocation,
         [GetString("Set Voltage 25k")] ControlSetVoltage25k,

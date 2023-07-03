@@ -5842,6 +5842,7 @@ namespace Orts.Simulation.RollingStocks
                 MirelRSController(elapsedClockSeconds);
                 HS198Controller(elapsedClockSeconds);
                 HS198AutoDriveSpeedSelector(elapsedClockSeconds);
+                AxleCounterDisplay(elapsedClockSeconds);
                 VentilationSwitch(elapsedClockSeconds);
                 CommandCylinder(elapsedClockSeconds);                
                 TogglePantograph3Switch();
@@ -15069,9 +15070,146 @@ namespace Orts.Simulation.RollingStocks
                 //AutoDriveSpeedMpS = 0;
             }
         }
-
-
         #endregion HS198
+
+        public bool AxleCounterEnable = true;
+        public int AxleCount = 1;
+        public bool AxleCounterDisplayReady;
+        public bool AxleCounterConfirmed;        
+        public void ToggleAxleCounterUp()
+        {
+            if (!AxleCounterEnable)
+                return;
+
+            if (AxleCount < 100 && AxleCounterDisplayReady)
+            {
+                AxleCount++;                
+                SignalEvent(Event.AxleCounterButtonPressed);                
+                Simulator.Confirmer.Information(Simulator.Catalog.GetString("Axle count: " + AxleCount));
+            }            
+        }
+        public void ToggleAxleCounterDown()
+        {
+            if (!AxleCounterEnable)
+                return;
+
+            if (AxleCount > 0 && AxleCounterDisplayReady)
+            {
+                AxleCount--;                
+                SignalEvent(Event.AxleCounterButtonPressed);
+                Simulator.Confirmer.Information(Simulator.Catalog.GetString("Axle count: " + AxleCount));
+            }            
+        }
+        public void ToggleAxleCounterConfirmer()
+        {
+            if (!AxleCounterEnable)
+                return;
+
+            SignalEvent(Event.AxleCounterButtonPressed);
+            AxleCounterDisplayReady = !AxleCounterDisplayReady;           
+            if (AxleCounterDisplayReady)
+                Simulator.Confirmer.Information(Simulator.Catalog.GetString("Axle counter mode"));
+            else
+                Simulator.Confirmer.Information(Simulator.Catalog.GetString("Axle counter confirmed!"));
+        }
+
+        public float AxleCounterDisplayTimer;
+        public float AxleCounterDisplayTimer2;
+        public bool AxleCounterSetupOn;
+        public bool AxleCounterSetupOff;
+        public float AxleCounterTrainLengthM;
+        public float ActualDrivedLengthM;
+        public bool AxleCounterDriveMode;
+        public float ActualDrivedLengthMDisplay;
+        public void AxleCounterDisplay(float elapsedClocSeconds)
+        {
+            if (!IsLeadLocomotive())
+                return;
+
+            if (!AxleCounterEnable)
+                return;
+
+            // Režim nastavování displeje
+            if (AxleCounterDisplayReady || AxleCounterSetupOn)
+            {
+                AxleCounterSetupOn = true;
+                AxleCounterSetupOff = false;
+                AxleCounterRestrictedSpeedZoneActiveEnable = false;
+                AxleCounterDriveMode = false;
+                Simulator.Confirmer.MSG(Simulator.Catalog.GetString("Setup"));
+            }
+
+            // Ukončení režimu displeje, výpočet délky vlaku a potvrzení volby
+            if (!AxleCounterDisplayReady && (AxleCounterSetupOn || AxleCounterSetupOff))
+            {
+                AxleCounterSetupOn = false;
+                AxleCounterSetupOff = true;
+                AxleCounterDisplayTimer += elapsedClocSeconds;
+                if (AxleCounterDisplayTimer > 3.0f)
+                {
+                    AxleCounterSetupOff = false;
+                    AxleCounterDisplayTimer = 0;
+                }
+                AxleCounterTrainLengthM = AxleCount * 15.0f;
+                AxleCounterRestrictedSpeedZoneActiveEnable = false;
+                Simulator.Confirmer.MSG(Simulator.Catalog.GetString("Length of train: ") + AxleCounterTrainLengthM + " m");
+            }  
+            
+            // Výpočet ujeté vzdálenosti 
+            if (!AxleCounterDisplayReady && !AxleCounterSetupOn && !AxleCounterSetupOff && AxleCounterRestrictedSpeedZoneActiveEnable)
+            {
+                AxleCounterDriveMode = true;
+                ActualDrivedLengthM += AbsWheelSpeedMpS * elapsedClocSeconds;                
+
+                if (ActualDrivedLengthM > AxleCounterTrainLengthM)
+                {
+                    AxleCounterRestrictedSpeedZoneActiveEnable = false;
+                    AxleCounterDriveMode = false;
+                }
+
+                AxleCounterDisplayTimer2 += elapsedClocSeconds;
+                if (AxleCounterDisplayTimer2 > 1.0f)
+                {
+                    ActualDrivedLengthMDisplay = AxleCounterTrainLengthM - (int)ActualDrivedLengthM;
+                    AxleCounterDisplayTimer2 = 0f;
+                }
+
+                if (!AxleCounterRestrictedSpeedZoneActiveEnable)
+                {
+                    Simulator.Confirmer.MSG(Simulator.Catalog.GetString("-ok-"));
+                }
+                else
+                    Simulator.Confirmer.MSG(Simulator.Catalog.GetString("Remaining: ") + ActualDrivedLengthMDisplay + " m");
+            }
+        }
+
+        public bool AxleCounterRestrictedSpeedZoneActive;
+        public bool AxleCounterRestrictedSpeedZoneActiveEnable;
+        bool AxleCounterRestrictedSpeedZoneActiveButtonPressed;
+        public void ToggleAxleCounterRestrictedSpeedZoneActive(bool axleCounterRestrictedSpeedZoneActive)
+        {
+            if (!AxleCounterEnable)
+                return;
+
+            AxleCounterRestrictedSpeedZoneActive = axleCounterRestrictedSpeedZoneActive;
+            if (AxleCounterRestrictedSpeedZoneActive && !AxleCounterRestrictedSpeedZoneActiveButtonPressed)
+            {
+                SignalEvent(Event.AxleCounterRestrictedSpeedZoneActiveButtonPressed);
+                AxleCounterRestrictedSpeedZoneActiveButtonPressed = true;
+                if (CircuitBreakerOn)
+                {
+                    AxleCounterRestrictedSpeedZoneActiveEnable = true;
+                    ActualDrivedLengthM = 0;
+                    AxleCounterDisplayTimer2 = 0f;
+                    ActualDrivedLengthMDisplay = AxleCounterTrainLengthM;
+                }
+                if (!AxleCounterRestrictedSpeedZoneActive && AxleCounterRestrictedSpeedZoneActiveButtonPressed)
+                {
+                    SignalEvent(Event.AxleCounterRestrictedSpeedZoneActiveButtonReleased);
+                    AxleCounterRestrictedSpeedZoneActiveButtonPressed = false;
+                }
+            }
+        }        
 
         // Přepínač ventilace
         public int[] VentilationSwitchPosition = new int[3];
@@ -18190,6 +18328,31 @@ namespace Orts.Simulation.RollingStocks
                             }
                         }                        
                         cvc.PreviousData = data;
+                        break;
+                    }
+                case CABViewControlTypes.AXLECOUNTERSELECT_DISPLAY:
+                    {
+                        AxleCounterEnable = true;
+                        if (AxleCounterSetupOn)
+                            data = AxleCount;
+                        else
+                            data = 0;
+                        break;
+                    }
+                case CABViewControlTypes.AXLECOUNTER_DISPLAY:
+                    {
+                        if (AxleCounterDriveMode)
+                            data = ActualDrivedLengthMDisplay;
+                        else
+                            data = 0;
+                        break;
+                    }
+                case CABViewControlTypes.AXLECOUNTER_RESTRICTEDSPEEDZONE_BUTTON:
+                    {
+                        if (AxleCounterRestrictedSpeedZoneActiveEnable)
+                            data = AxleCounterRestrictedSpeedZoneActive ? 3 : 2;
+                        else
+                            data = AxleCounterRestrictedSpeedZoneActive ? 1 : 0;                    
                         break;
                     }
                 case CABViewControlTypes.HANDBRAKE:

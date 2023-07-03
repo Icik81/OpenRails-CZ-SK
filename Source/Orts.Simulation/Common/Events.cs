@@ -365,7 +365,10 @@ namespace Orts.Common
         HandBrakeOff,
         AutoDriveButtonPressed,
         AutoDriveButtonReleased,
-        AutoDriveSpeedSelectorSwitch
+        AutoDriveSpeedSelectorSwitch,
+        AxleCounterButtonPressed,
+        AxleCounterRestrictedSpeedZoneActiveButtonPressed,
+        AxleCounterRestrictedSpeedZoneActiveButtonReleased
     }
 
     public static class Events
@@ -746,6 +749,9 @@ namespace Orts.Common
                         case 20119: return Event.AutoDriveButtonPressed;
                         case 20120: return Event.AutoDriveButtonReleased;
                         case 20121: return Event.AutoDriveSpeedSelectorSwitch;
+                        case 20122: return Event.AxleCounterButtonPressed;
+                        case 20123: return Event.AxleCounterRestrictedSpeedZoneActiveButtonPressed;
+                        case 20124: return Event.AxleCounterRestrictedSpeedZoneActiveButtonReleased;
 
                         default: return 0;
                     }

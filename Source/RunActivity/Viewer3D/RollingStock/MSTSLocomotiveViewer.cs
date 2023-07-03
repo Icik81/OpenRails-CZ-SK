@@ -371,6 +371,10 @@ namespace Orts.Viewer3D.RollingStock
             UserInputCommands.Add(UserCommand.ControlAutoDriveButton, new Action[] { Noop, () => new ToggleAutoDriveButtonCommand(Viewer.Log) });
             UserInputCommands.Add(UserCommand.ControlAutoDriveSpeedSelectorUp, new Action[] { Noop, () => new ToggleAutoDriveSpeedSelectorUpCommand(Viewer.Log) });
             UserInputCommands.Add(UserCommand.ControlAutoDriveSpeedSelectorDown, new Action[] { Noop, () => new ToggleAutoDriveSpeedSelectorDownCommand(Viewer.Log) });
+            UserInputCommands.Add(UserCommand.ControlAxleCounterUp, new Action[] { Noop, () => new ToggleAxleCounterUpCommand(Viewer.Log) });
+            UserInputCommands.Add(UserCommand.ControlAxleCounterDown, new Action[] { Noop, () => new ToggleAxleCounterDownCommand(Viewer.Log) });
+            UserInputCommands.Add(UserCommand.ControlAxleCounterConfirmer, new Action[] { Noop, () => new ToggleAxleCounterConfirmerCommand(Viewer.Log) });
+            UserInputCommands.Add(UserCommand.ControlAxleCounterRestrictedSpeedZoneActive, new Action[] { Noop, () => new ToggleAxleCounterRestrictedSpeedZoneActiveCommand(Viewer.Log) });
 
             // Jindřich
             UserInputCommands.Add(UserCommand.ControlPowerStationLocation, new Action[] { Noop, () => Locomotive.SetPowerSupplyStationLocation() });
@@ -3465,6 +3469,13 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.HS198_AUTODRIVE_BUTTON:
                 case CABViewControlTypes.HS198_AUTODRIVE_SPEEDSELECTOR:
                 case CABViewControlTypes.HS198_AUTODRIVE_SPEEDSELECT:
+                case CABViewControlTypes.AXLECOUNTERSELECT_DISPLAY:
+                case CABViewControlTypes.AXLECOUNTER_DISPLAY:                
+                case CABViewControlTypes.AXLECOUNTER_DISPLAY_UP:
+                case CABViewControlTypes.AXLECOUNTER_DISPLAY_DOWN:
+                case CABViewControlTypes.AXLECOUNTER_DISPLAY_CONFIRM:
+                case CABViewControlTypes.AXLECOUNTER_RESTRICTEDSPEEDZONE_BUTTON:
+                    
 
                 case CABViewControlTypes.MOTOR_DISABLED:
                 case CABViewControlTypes.INVERTER_TEST:
@@ -4666,6 +4677,35 @@ namespace Orts.Viewer3D.RollingStock
                         IsChanged = true;
                     }                    
                     break;
+                case CABViewControlTypes.AXLECOUNTER_DISPLAY_UP:
+                    if (UserInput.IsMouseLeftButtonPressed && !IsChanged)
+                    {
+                        new ToggleAxleCounterUpCommand(Viewer.Log);
+                        IsChanged = true;
+                    }
+                    break;
+                case CABViewControlTypes.AXLECOUNTER_DISPLAY_DOWN:
+                    if (UserInput.IsMouseLeftButtonPressed && !IsChanged)
+                    {
+                        new ToggleAxleCounterDownCommand(Viewer.Log);
+                        IsChanged = true;
+                    }
+                    break;
+                case CABViewControlTypes.AXLECOUNTER_DISPLAY_CONFIRM:
+                    if (UserInput.IsMouseLeftButtonPressed && !IsChanged)
+                    {
+                        new ToggleAxleCounterConfirmerCommand(Viewer.Log);
+                        IsChanged = true;
+                    }
+                    break;
+                case CABViewControlTypes.AXLECOUNTER_RESTRICTEDSPEEDZONE_BUTTON:
+                    if (UserInput.IsMouseLeftButtonPressed)
+                        Locomotive.ToggleAxleCounterRestrictedSpeedZoneActive(true);
+                    else
+                    if (UserInput.IsMouseLeftButtonReleased)
+                        Locomotive.ToggleAxleCounterRestrictedSpeedZoneActive(false);                    
+                    break;
+
 
 
                 case CABViewControlTypes.ORTS_LS90_POWER:

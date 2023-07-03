@@ -612,6 +612,10 @@ namespace ORTS.Settings
             Commands[(int)UserCommand.ControlAutoDriveButton] = new UserCommandKeyInput(0x20, KeyModifiers.Control);
             Commands[(int)UserCommand.ControlAutoDriveSpeedSelectorUp] = new UserCommandKeyInput(0x20, KeyModifiers.Shift);
             Commands[(int)UserCommand.ControlAutoDriveSpeedSelectorDown] = new UserCommandKeyInput(0x1E, KeyModifiers.Shift);
+            Commands[(int)UserCommand.ControlAxleCounterUp] = new UserCommandKeyInput(0x48, KeyModifiers.Control | KeyModifiers.Shift);
+            Commands[(int)UserCommand.ControlAxleCounterDown] = new UserCommandKeyInput(0x50, KeyModifiers.Control | KeyModifiers.Shift);
+            Commands[(int)UserCommand.ControlAxleCounterConfirmer] = new UserCommandKeyInput(0x4D, KeyModifiers.Control | KeyModifiers.Shift);
+            Commands[(int)UserCommand.ControlAxleCounterRestrictedSpeedZoneActive] = new UserCommandKeyInput(0x13, KeyModifiers.Control | KeyModifiers.Shift);
         }
         #endregion
 
