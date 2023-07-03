@@ -88,13 +88,13 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <Compile Include="TrainInfo.cs" />
+    <Compile Include="TrainInfo.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="WizardForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ActivityDescr.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
+    <Compile Include="ActivityDescr.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\LibAE\LibAE.csproj">
