@@ -1010,7 +1010,7 @@ namespace Orts.Simulation
                 // Train has started, we have things to do if we arrived before
                 if (arrived)
                 {
-                    Simulator.ActualStationNumber++;
+                    MyPlayerTrain.ActualStationNumber++;
                     TimeForOpenDoors = 0;
                     ActDepart = new DateTime().Add(TimeSpan.FromSeconds(Simulator.ClockTime));
                     CompletedAt = ActDepart.Value;
@@ -1234,7 +1234,7 @@ namespace Orts.Simulation
                             {
                                 MyPlayerTrain.ClearStation(PlatformEnd1.LinkedPlatformItemId, PlatformEnd2.LinkedPlatformItemId, true);
                                 IsCompleted = false;
-                                Simulator.ActualStationNumber++;
+                                MyPlayerTrain.ActualStationNumber++;
 
                                 if (LogStationStops)
                                 {
