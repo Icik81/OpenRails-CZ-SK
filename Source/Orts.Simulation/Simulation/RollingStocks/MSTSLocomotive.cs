@@ -15120,7 +15120,7 @@ namespace Orts.Simulation.RollingStocks
             if (!AxleCounterEnable)
                 return;
 
-            if (AxleCount > 0 && AxleCounterDisplayReady)
+            if (AxleCount > 1 && AxleCounterDisplayReady)
             {
                 AxleCount--;                
                 SignalEvent(Event.AxleCounterButtonPressed);
@@ -15147,7 +15147,8 @@ namespace Orts.Simulation.RollingStocks
         public int AxleCounterTrainLengthM;
         public float ActualDrivedLengthM;
         public bool AxleCounterDriveMode;        
-        public int ActualDrivedLengthMDisplay;        
+        public int ActualDrivedLengthMDisplay;
+        public bool AxleCounterOKMode;
         public void AxleCounterDisplay(float elapsedClocSeconds)
         {
             if (!IsLeadLocomotive())
@@ -15197,16 +15198,18 @@ namespace Orts.Simulation.RollingStocks
 
                 if (ActualDrivedLengthM > AxleCounterTrainLengthM)
                 {
+                    AxleCounterDriveMode = false;                    
+                    AxleCounterOKMode = true;
                     AxleCounterDisplayTimer2 += elapsedClocSeconds;
                     if (AxleCounterDisplayTimer2 > 3.0f)
                     {
+                        AxleCounterOKMode = false;
                         AxleCounterRestrictedSpeedZoneActiveEnable = false;
-                        AxleCounterDriveMode = false;
                         AxleCounterDisplayTimer2 = 0;
                     }                    
                 }
 
-                if (!AxleCounterRestrictedSpeedZoneActiveEnable)
+                if (AxleCounterOKMode)
                 {
                     Simulator.Confirmer.MSG(Simulator.Catalog.GetString("-ok-"));
                 }
@@ -15234,12 +15237,12 @@ namespace Orts.Simulation.RollingStocks
                     ActualDrivedLengthM = 0;
                     AxleCounterDisplayTimer2 = 0f;
                     ActualDrivedLengthMDisplay = AxleCounterTrainLengthM;
-                }
-                if (!AxleCounterRestrictedSpeedZoneActive && AxleCounterRestrictedSpeedZoneActiveButtonPressed)
-                {
-                    SignalEvent(Event.AxleCounterRestrictedSpeedZoneActiveButtonReleased);
-                    AxleCounterRestrictedSpeedZoneActiveButtonPressed = false;
-                }
+                }                
+            }
+            if (!AxleCounterRestrictedSpeedZoneActive && AxleCounterRestrictedSpeedZoneActiveButtonPressed)
+            {
+                SignalEvent(Event.AxleCounterRestrictedSpeedZoneActiveButtonReleased);
+                AxleCounterRestrictedSpeedZoneActiveButtonPressed = false;
             }
         }        
 
@@ -18368,18 +18371,30 @@ namespace Orts.Simulation.RollingStocks
                         if (AxleCounterSetupOn)
                             data = AxleCount;                        
                         else
-                            data = 0;
-                        break;
-                    }
-                case CABViewControlTypes.AXLECOUNTER_DISPLAY:
-                    {                       
                         if (AxleCounterSetupOff)
-                            data = ActualDrivedLengthM;
+                            data = AxleCounterTrainLengthM;
                         else
                         if (AxleCounterDriveMode)
                             data = ActualDrivedLengthMDisplay;
                         else
                             data = 0;
+                        break;
+                    }
+                case CABViewControlTypes.AXLECOUNTER_DISPLAY:
+                    {
+                        if (AxleCounterSetupOn || AxleCounterSetupOff || AxleCounterDriveMode)
+                            data = 0;
+                        else
+                        if (AxleCounterOKMode)
+                            data = 1;
+                        else
+                        if (AxleCounterSetupOn)
+                            data = 2;
+                        else
+                        if (AxleCounterSetupOff)
+                            data = 3;
+                        else
+                            data = 4;
                         break;
                     }
                 case CABViewControlTypes.AXLECOUNTER_RESTRICTEDSPEEDZONE_BUTTON:

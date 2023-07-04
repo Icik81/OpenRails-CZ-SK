@@ -1075,6 +1075,20 @@ namespace Orts.Viewer3D.RollingStock
                 }
             }
 
+            // Ovládání tlačítka počítání pomalé jízdy
+            if (Locomotive.AxleCounterEnable)
+            {
+                if (UserInput.IsPressed(UserCommand.ControlAxleCounterRestrictedSpeedZoneActive))
+                {
+                    Locomotive.ToggleAxleCounterRestrictedSpeedZoneActive(true);
+                }
+                else
+                if (UserInput.IsReleased(UserCommand.ControlAxleCounterRestrictedSpeedZoneActive))
+                {
+                    Locomotive.ToggleAxleCounterRestrictedSpeedZoneActive(false);
+                }
+            }
+
             // Přepínač ventilátorů
             if (Locomotive.VentilationSwitchEnable) 
             {
