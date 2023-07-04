@@ -3944,14 +3944,15 @@ namespace Orts.Simulation.RollingStocks
         {
             Train.HeatingIsOn = false;
             HeatingIsOnLocoCount = 0;
+            
             foreach (TrainCar car in Train.Cars)
             {
                 if (car is MSTSLocomotive)
                 {
-                    if ((car.CabHeating_OffOn[LocoStation] || car.LocoHelperOn) && AuxPowerOn)
+                    if ((car.CabHeating_OffOn[(car as MSTSLocomotive).LocoStation] || car.LocoHelperOn) && AuxPowerOn)
                         car.CabHeatingIsOn = true;
                     else
-                    if (!car.CabHeating_OffOn[LocoStation] || !AuxPowerOn)
+                    if (!car.CabHeating_OffOn[(car as MSTSLocomotive).LocoStation] || !AuxPowerOn)
                         car.CabHeatingIsOn = false;
 
                     if ((car as MSTSLocomotive).HeatingIsOn)
@@ -4012,7 +4013,7 @@ namespace Orts.Simulation.RollingStocks
                             if ((car as MSTSLocomotive).HeatingIsOn && !car.CarIsPlayerLoco)
                                 (car as MSTSLocomotive).HeatingIsOn = false;
 
-                            if ((car as MSTSLocomotive).Heating_OffOn[LocoStation] && (car as MSTSLocomotive).StationIsActivated[LocoStation] && !car.CarIsPlayerLoco)
+                            if ((car as MSTSLocomotive).Heating_OffOn[(car as MSTSLocomotive).LocoStation] && (car as MSTSLocomotive).StationIsActivated[(car as MSTSLocomotive).LocoStation] && !car.CarIsPlayerLoco)
                                 (car as MSTSLocomotive).HeatingIsOn = true;
                         }
                     }
@@ -4161,7 +4162,7 @@ namespace Orts.Simulation.RollingStocks
                             car.CarOutsideTempC0 = MathHelper.Clamp(car.CarOutsideTempC0, 5, 50);
 
                             // Natopené vozy, oživená loko
-                            if (BrakeSystem.IsAirFull && !car.WagonHasTemperature)
+                            if (car.BrakeSystem.IsAirFull && !car.WagonHasTemperature)
                             {
                                 if (Simulator.Season == SeasonType.Summer)
                                     car.WagonTemperature = Simulator.Random.Next(24, 29);
@@ -4177,6 +4178,11 @@ namespace Orts.Simulation.RollingStocks
 
                             car.WagonHasTemperature = true;
                             car.CarOutsideTempCLastStatus = car.CarOutsideTempC;
+                        }
+
+                        if (float.IsNaN(car.WagonTemperature))
+                        {
+                            car.WagonHasTemperature = false;
                         }
 
                         //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Teplota " + car.CarOutsideTempC0));
@@ -4255,7 +4261,8 @@ namespace Orts.Simulation.RollingStocks
                             // Termostat vypnutý, topení aktivní
                             if (((!car.LocomotiveCab && Train.HeatingIsOn) || car.DieselHeaterPower > 0 || (car.LocomotiveCab && car.CabHeatingIsOn)) && car.WagonTemperature < car.SetTempCThreshold && !car.ThermostatOn)
                             {
-                                car.TempCDelta = +car.PowerReductionByHeating0 / TempStepUp / CarAirVolumeM3 * elapsedClockSeconds;
+                                car.TempCDelta = +car.PowerReductionByHeating0 / TempStepUp / CarAirVolumeM3 * elapsedClockSeconds;                                
+
                                 if (car.DieselHeaterPower > 0)
                                     car.TempCDelta = +car.DieselHeaterPower0 / TempStepUp / CarAirVolumeM3 * elapsedClockSeconds;
                                 if (car.WagonTemperature > car.SetTempCThreshold - 0.1f)
@@ -4431,7 +4438,7 @@ namespace Orts.Simulation.RollingStocks
                             // Kalorifer
                             if (mstsDieselLocomotive.DieselEngines[0].DieselIdleWaterTemperatureDegC != 0)
                                 mstsDieselLocomotive.DieselEngines[0].DieselIdleTemperatureDegC = mstsDieselLocomotive.DieselEngines[0].DieselIdleWaterTemperatureDegC;
-                            car.PowerReductionByHeating0 = 0.85f * car.PowerReductionByHeating * mstsDieselLocomotive.DieselEngines[0].RealDieselWaterTemperatureDeg / mstsDieselLocomotive.DieselEngines[0].DieselIdleTemperatureDegC;
+                            car.PowerReductionByHeating0 = 0.85f * car.PowerReductionByHeating * mstsDieselLocomotive.DieselEngines[0].RealDieselWaterTemperatureDeg / mstsDieselLocomotive.DieselEngines[0].DieselIdleTemperatureDegC;                            
                         }
                         else
                             car.PowerReductionByHeating0 = car.PowerReductionByHeating;
