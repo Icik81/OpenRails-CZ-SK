@@ -1010,6 +1010,7 @@ namespace Orts.Simulation
                 // Train has started, we have things to do if we arrived before
                 if (arrived)
                 {
+                    Simulator.ActualStationNumber++;
                     TimeForOpenDoors = 0;
                     ActDepart = new DateTime().Add(TimeSpan.FromSeconds(Simulator.ClockTime));
                     CompletedAt = ActDepart.Value;
@@ -1049,7 +1050,7 @@ namespace Orts.Simulation
 
                 if (arrived && MyPlayerTrain.BoardingComplete)
                 {
-                    MyPlayerTrain.BoardingComplete = false;
+                    MyPlayerTrain.BoardingComplete = false;                    
                 }
 
                 double clock = MyPlayerTrain.Simulator.GameTime;
@@ -1078,14 +1079,15 @@ namespace Orts.Simulation
                 if (MyPlayerTrain.StationStops.Count == 1) MyPlayerTrain.EndStation = true;
 
                 ChanceToUnboarding();
-                MyPlayerTrain.CheckPaxtoLeaveCount(MyPlayerTrain);
+                MyPlayerTrain.CheckPaxToLeaveCount(MyPlayerTrain);
+                MyPlayerTrain.CheckPaxToEntry(MyPlayerTrain);
 
                 var loco = MyPlayerTrain.LeadLocomotive as MSTSLocomotive;
                 if (loco != null)
                 {
                     // Automatické centrální dveře
                     if (!maydepart && arrived && loco.CentralHandlingDoors && !loco.OpenedLeftDoor && !loco.OpenedRightDoor 
-                        && (MyPlayerTrain.StationStops[0].PlatformItem.PassengerList.Count > 0 || MyPlayerTrain.PeopleWantToLeaveCount > 0))
+                        && (MyPlayerTrain.PeopleWantToEntry || MyPlayerTrain.PeopleWantToLeaveCount > 0))
                     {                        
                         //BoardingEndS = Simulator.ClockTime + BoardingS;
                         //double SchDepartS = SchDepart.Subtract(new DateTime()).TotalSeconds;
@@ -1111,7 +1113,7 @@ namespace Orts.Simulation
                             MyPlayerTrain.ClearStation(PlatformEnd1.LinkedPlatformItemId, PlatformEnd2.LinkedPlatformItemId, false);
                         }
 
-                        if (MyPlayerTrain.StationStops[0].PlatformItem.PassengerList.Count == 0 && !MyPlayerTrain.TrainDoorsOpen && MyPlayerTrain.PeopleWantToLeaveCount == 0)
+                        if (!MyPlayerTrain.PeopleWantToEntry && !MyPlayerTrain.TrainDoorsOpen && MyPlayerTrain.PeopleWantToLeaveCount == 0)
                             BoardingCompleted = true;
                         else
                             BoardingCompleted = false;
@@ -1138,24 +1140,24 @@ namespace Orts.Simulation
                         else if (!maydepart)
                         {
                             // check if passenger on board - if not, do not allow depart
-                            if (MyPlayerTrain.StationStops[0].PlatformItem.PassengerList.Count > 0 || MyPlayerTrain.PeopleWantToLeaveCount > 0
-                                || (MyPlayerTrain.StationStops[0].PlatformItem.PassengerList.Count == 0 && MyPlayerTrain.TrainDoorsOpen && !loco.CentralHandlingDoors))
+                            if (MyPlayerTrain.PeopleWantToEntry || MyPlayerTrain.PeopleWantToLeaveCount > 0
+                                || (!MyPlayerTrain.PeopleWantToEntry && MyPlayerTrain.TrainDoorsOpen && !loco.CentralHandlingDoors))
                             {
-                                if (MyPlayerTrain.PeopleWantToLeaveCount > 0 && MyPlayerTrain.StationStops[0].PlatformItem.PassengerList.Count == 0)
+                                if (MyPlayerTrain.PeopleWantToLeaveCount > 0 && !MyPlayerTrain.PeopleWantToEntry)
                                     DisplayMessage = Simulator.Catalog.GetString("Waiting for passengers to unboard....");
                                 else
                                     DisplayMessage = Simulator.Catalog.GetString("Waiting for passengers to board....");
                                 MyPlayerTrain.UpdatePassengerCountAndWeight(MyPlayerTrain, MyPlayerTrain.StationStops[0].PlatformItem.NumPassengersWaiting, clock);
                             }
                             else
-                            if ((MyPlayerTrain.StationStops[0].PlatformItem.PassengerList.Count == 0 && !MyPlayerTrain.TrainDoorsOpen && !loco.CentralHandlingDoors)
-                                || (MyPlayerTrain.StationStops[0].PlatformItem.PassengerList.Count == 0 && loco.CentralHandlingDoors))
+                            if ((!MyPlayerTrain.PeopleWantToEntry && !MyPlayerTrain.TrainDoorsOpen && !loco.CentralHandlingDoors)
+                                || (!MyPlayerTrain.PeopleWantToEntry && loco.CentralHandlingDoors))
                             {
                                 if (ClearForDepartGenerate == 0)
                                     ClearForDepartGenerate = Simulator.Random.Next(2, 6);
                                 TimeToClearForDepart++;
                                 if (TimeToClearForDepart == ClearForDepartGenerate * 30)
-                                {
+                                {                                    
                                     maydepart = true;
                                     DisplayColor = Color.LightGreen;
                                     DisplayMessage = Simulator.Catalog.GetString("Clear to go!");
@@ -1219,7 +1221,7 @@ namespace Orts.Simulation
                         {
                             MyPlayerTrain.ToggleDoors(true, false);
                             MyPlayerTrain.ToggleDoors(false, false);
-                        }
+                        }                                                    
                     }
 
                     else
@@ -1232,6 +1234,7 @@ namespace Orts.Simulation
                             {
                                 MyPlayerTrain.ClearStation(PlatformEnd1.LinkedPlatformItemId, PlatformEnd2.LinkedPlatformItemId, true);
                                 IsCompleted = false;
+                                Simulator.ActualStationNumber++;
 
                                 if (LogStationStops)
                                 {

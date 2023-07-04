@@ -2047,8 +2047,12 @@ namespace Orts.Simulation.RollingStocks
             outf.Write(AutoDriveEnable);
             outf.Write(AutoDriveSpeedSelectorSwitchPosition[1]);
             outf.Write(AutoDriveSpeedSelectorSwitchPosition[2]);
-            outf.Write(AutoDriveCurrent);
-
+            outf.Write(AutoDriveCurrent);           
+            outf.Write(AxleCounterSetupOn);
+            outf.Write(AxleCounterSetupOff);
+            outf.Write(AxleCounterDisplayReady);
+            outf.Write(AxleCounterDriveMode);
+            outf.Write(AxleCount);
             #endregion
 
             base.Save(outf);
@@ -2287,6 +2291,11 @@ namespace Orts.Simulation.RollingStocks
             AutoDriveSpeedSelectorSwitchPosition[1] = inf.ReadInt32();
             AutoDriveSpeedSelectorSwitchPosition[2] = inf.ReadInt32();
             AutoDriveCurrent = inf.ReadSingle();
+            AxleCounterSetupOn = inf.ReadBoolean();
+            AxleCounterSetupOff = inf.ReadBoolean();
+            AxleCounterDisplayReady = inf.ReadBoolean();
+            AxleCounterDriveMode = inf.ReadBoolean();
+            AxleCount = inf.ReadInt32();
             #endregion
 
             base.Restore(inf);
@@ -14575,11 +14584,22 @@ namespace Orts.Simulation.RollingStocks
                             }
 
                             HS198ControllerThrottleValueTimer = 0;
-                            if (HS198ControllerThrottleValue == 0 || HS198ControllerPositionName[LocoStation] == "+1" || HS198ControllerPositionName[LocoStation] == "-1")
-                                HS198ControllerCanThrottleChangeValue_0 = false;
+                            if (HS198ControllerThrottleValue == 0 || HS198ControllerPositionName[LocoStation] == "J")
+                            {                                
+                                if (HS198ControllerPositionName[LocoStation] == "J" && HS198ControllerThrottleValue > 27)
+                                {
+                                    Mode_To_27_Start2 = true;
+                                }
+                                else
+                                    HS198ControllerCanThrottleChangeValue_0 = false;
+                            }                            
                         }
                     }
-
+                    if (HS198ControllerPositionName[LocoStation] == "+1")
+                    {
+                        HS198ControllerCanThrottleChangeValue_0 = false;
+                        Mode_To_27_Start2 = false;
+                    }
 
                     if (HS198ControllerCanThrottleChangeValue_2)
                         HS198ControllerPressTimerLongPressUp += elapsedClockSeconds;
@@ -15117,10 +15137,10 @@ namespace Orts.Simulation.RollingStocks
         public float AxleCounterDisplayTimer2;
         public bool AxleCounterSetupOn;
         public bool AxleCounterSetupOff;
-        public float AxleCounterTrainLengthM;
+        public int AxleCounterTrainLengthM;
         public float ActualDrivedLengthM;
-        public bool AxleCounterDriveMode;
-        public float ActualDrivedLengthMDisplay;
+        public bool AxleCounterDriveMode;        
+        public int ActualDrivedLengthMDisplay;        
         public void AxleCounterDisplay(float elapsedClocSeconds)
         {
             if (!IsLeadLocomotive())
@@ -15150,7 +15170,7 @@ namespace Orts.Simulation.RollingStocks
                     AxleCounterSetupOff = false;
                     AxleCounterDisplayTimer = 0;
                 }
-                AxleCounterTrainLengthM = AxleCount * 15.0f;
+                AxleCounterTrainLengthM = (int)(AxleCount * 15.0f);
                 AxleCounterRestrictedSpeedZoneActiveEnable = false;
                 Simulator.Confirmer.MSG(Simulator.Catalog.GetString("Length of train: ") + AxleCounterTrainLengthM + " m");
             }  
@@ -15159,19 +15179,24 @@ namespace Orts.Simulation.RollingStocks
             if (!AxleCounterDisplayReady && !AxleCounterSetupOn && !AxleCounterSetupOff && AxleCounterRestrictedSpeedZoneActiveEnable)
             {
                 AxleCounterDriveMode = true;
-                ActualDrivedLengthM += AbsWheelSpeedMpS * elapsedClocSeconds;                
+                ActualDrivedLengthM += AbsWheelSpeedMpS * elapsedClocSeconds;                                
+
+                AxleCounterDisplayTimer += elapsedClocSeconds;
+                if (AxleCounterDisplayTimer > 1.0f)
+                {
+                    ActualDrivedLengthMDisplay = AxleCounterTrainLengthM - (int)ActualDrivedLengthM;                    
+                    AxleCounterDisplayTimer = 0f;
+                }
 
                 if (ActualDrivedLengthM > AxleCounterTrainLengthM)
                 {
-                    AxleCounterRestrictedSpeedZoneActiveEnable = false;
-                    AxleCounterDriveMode = false;
-                }
-
-                AxleCounterDisplayTimer2 += elapsedClocSeconds;
-                if (AxleCounterDisplayTimer2 > 1.0f)
-                {
-                    ActualDrivedLengthMDisplay = AxleCounterTrainLengthM - (int)ActualDrivedLengthM;
-                    AxleCounterDisplayTimer2 = 0f;
+                    AxleCounterDisplayTimer2 += elapsedClocSeconds;
+                    if (AxleCounterDisplayTimer2 > 3.0f)
+                    {
+                        AxleCounterRestrictedSpeedZoneActiveEnable = false;
+                        AxleCounterDriveMode = false;
+                        AxleCounterDisplayTimer2 = 0;
+                    }                    
                 }
 
                 if (!AxleCounterRestrictedSpeedZoneActiveEnable)
@@ -18334,13 +18359,16 @@ namespace Orts.Simulation.RollingStocks
                     {
                         AxleCounterEnable = true;
                         if (AxleCounterSetupOn)
-                            data = AxleCount;
+                            data = AxleCount;                        
                         else
                             data = 0;
                         break;
                     }
                 case CABViewControlTypes.AXLECOUNTER_DISPLAY:
-                    {
+                    {                       
+                        if (AxleCounterSetupOff)
+                            data = ActualDrivedLengthM;
+                        else
                         if (AxleCounterDriveMode)
                             data = ActualDrivedLengthMDisplay;
                         else
