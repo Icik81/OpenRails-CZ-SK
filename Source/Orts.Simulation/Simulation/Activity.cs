@@ -1010,7 +1010,7 @@ namespace Orts.Simulation
                 // Train has started, we have things to do if we arrived before
                 if (arrived)
                 {
-                    MyPlayerTrain.ActualStationNumber++;
+                    MyPlayerTrain.ActualStationNumber++;                    
                     TimeForOpenDoors = 0;
                     ActDepart = new DateTime().Add(TimeSpan.FromSeconds(Simulator.ClockTime));
                     CompletedAt = ActDepart.Value;
@@ -1048,6 +1048,8 @@ namespace Orts.Simulation
                 if (MyPlayerTrain.StationStops.Count == 0)
                     return;
 
+                MyPlayerTrain.FillNames(MyPlayerTrain);
+
                 if (arrived && MyPlayerTrain.BoardingComplete)
                 {
                     MyPlayerTrain.BoardingComplete = false;                    
@@ -1069,9 +1071,7 @@ namespace Orts.Simulation
                     {
                         MyPlayerTrain.StationStops[0].PlatformItem.NumPassengersWaiting = RestOfPax;                        
                     }
-                }
-
-                MyPlayerTrain.FillNames(MyPlayerTrain);
+                }                                                
 
                 if (IsAtStation(MyPlayerTrain))
                     MyPlayerTrain.ReverseAtStationStopTest(MyPlayerTrain);
@@ -1106,7 +1106,7 @@ namespace Orts.Simulation
                         else DisplayColor = Color.White;                        
                         
                         if (!BoardingCompleted || MyPlayerTrain.EndStation || MyPlayerTrain.PeopleWantToLeaveCount > 0)
-                            MyPlayerTrain.UpdatePassengerCountAndWeight(MyPlayerTrain, MyPlayerTrain.StationStops[0].PlatformItem.NumPassengersWaiting, clock);
+                            MyPlayerTrain.UpdatePassengerCountAndWeight(MyPlayerTrain, MyPlayerTrain.ActualPassengerCountAtStation, clock);
 
                         if (remaining < 120 && (MyPlayerTrain.TrainType != Train.TRAINTYPE.AI_PLAYERHOSTING))
                         {
@@ -1118,9 +1118,9 @@ namespace Orts.Simulation
                         else
                             BoardingCompleted = false;
 
-                        RestOfPax = MyPlayerTrain.StationStops[0].PlatformItem.PassengerList.Count;
                         MyPlayerTrain.StationStops[0].PlatformItem.NumPassengersWaiting = RestOfPax;
-
+                        RestOfPax = MyPlayerTrain.StationStops[0].PlatformItem.PassengerList.Count;
+                        
                         // Still have to wait
                         if (remaining > 0)
                         {
@@ -1147,7 +1147,7 @@ namespace Orts.Simulation
                                     DisplayMessage = Simulator.Catalog.GetString("Waiting for passengers to unboard....");
                                 else
                                     DisplayMessage = Simulator.Catalog.GetString("Waiting for passengers to board....");
-                                MyPlayerTrain.UpdatePassengerCountAndWeight(MyPlayerTrain, MyPlayerTrain.StationStops[0].PlatformItem.NumPassengersWaiting, clock);
+                                MyPlayerTrain.UpdatePassengerCountAndWeight(MyPlayerTrain, MyPlayerTrain.ActualPassengerCountAtStation, clock);
                             }
                             else
                             if ((!MyPlayerTrain.PeopleWantToEntry && !MyPlayerTrain.TrainDoorsOpen && !loco.CentralHandlingDoors)

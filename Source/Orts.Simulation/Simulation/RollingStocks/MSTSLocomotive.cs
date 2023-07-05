@@ -15213,7 +15213,7 @@ namespace Orts.Simulation.RollingStocks
                 {
                     Simulator.Confirmer.MSG(Simulator.Catalog.GetString("-ok-"));
                 }
-                else
+                if (AxleCounterDriveMode)
                     Simulator.Confirmer.MSG(Simulator.Catalog.GetString("Remaining: ") + ActualDrivedLengthMDisplay + " m");
             }
         }
