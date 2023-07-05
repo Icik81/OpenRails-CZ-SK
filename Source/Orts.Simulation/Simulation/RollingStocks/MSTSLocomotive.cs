@@ -15178,7 +15178,7 @@ namespace Orts.Simulation.RollingStocks
                     AxleCounterSetupOff = false;
                     AxleCounterDisplayTimer = 0;
                 }
-                AxleCounterTrainLengthM = (int)(AxleCount * 15.0f);
+                AxleCounterTrainLengthM = (int)(AxleCount * 24.0f);
                 AxleCounterRestrictedSpeedZoneActiveEnable = false;
                 Simulator.Confirmer.MSG(Simulator.Catalog.GetString("Length of train: ") + AxleCounterTrainLengthM + " m");
             }  
@@ -18369,7 +18369,7 @@ namespace Orts.Simulation.RollingStocks
                     {
                         AxleCounterEnable = true;
                         if (AxleCounterSetupOn)
-                            data = AxleCount;                        
+                            data = AxleCount * 4.0f;                        
                         else
                         if (AxleCounterSetupOff)
                             data = AxleCounterTrainLengthM;
