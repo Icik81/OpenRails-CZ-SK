@@ -16704,8 +16704,9 @@ namespace Orts.Simulation.Physics
                             pax.StationOrderIndex = arrivalStation;
                             pax.ArrivalStation = arrivalStation; // arrival is any station in front of this station
                             pax.ArrivalStationName = train.StationStops[arrivalStation - ActualStationNumber].PlatformItem.Name;
-                            pax.WagonIndex = rndStation.Next(0, numUsableWagons);                                                        
-                            ss.PlatformItem.PassengerList.Add(pax);
+                            pax.WagonIndex = rndStation.Next(0, numUsableWagons);                                                                                    
+                            if (ss.PlatformItem.PassengerList.Count < ss.PlatformItem.NumPassengersWaiting)
+                                ss.PlatformItem.PassengerList.Add(pax);
                         }
                     }
                     station++;
@@ -16977,6 +16978,10 @@ namespace Orts.Simulation.Physics
                                     train.Simulator.Confirmer.Information(Simulator.Catalog.GetString("Passenger cannot board the train!!!"));
                                     goto boarded;
                                 }
+                            }
+                            if (train.Cars.Count == 1 && pax.WagonIndex == -1 && !wagon.NoPaxsMode)
+                            {
+                                pax.WagonIndex = 0;
                             }
 
                             if ((wagon.HasPassengerCapacity || wagon.WagonType == TrainCar.WagonTypes.Passenger) && !wagon.FreightDoors && wagon.PassengerCapacity > 0)
