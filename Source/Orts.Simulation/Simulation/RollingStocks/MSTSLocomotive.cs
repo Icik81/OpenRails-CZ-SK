@@ -15099,7 +15099,7 @@ namespace Orts.Simulation.RollingStocks
         }
         #endregion HS198
 
-        public bool AxleCounterEnable = true;
+        public bool AxleCounterEnable;
         public int AxleCount = 1;
         public bool AxleCounterDisplayReady;
         public bool AxleCounterConfirmed;        

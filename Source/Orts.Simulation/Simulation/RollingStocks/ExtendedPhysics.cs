@@ -453,7 +453,8 @@ namespace Orts.Simulation.RollingStocks
             }
             else
             {
-                Locomotive.SetDynamicBrakePercent(-1);
+                if (Locomotive.LocoType == LocoTypes.Vectron)
+                    Locomotive.SetDynamicBrakePercent(-1);
             }            
 
             if (Locomotive.ControllerVolts > 0)
