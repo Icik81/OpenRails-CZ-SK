@@ -18392,9 +18392,9 @@ namespace Orts.Simulation.RollingStocks
                             data = 3;
                         else
                         if (AxleCounterDriveMode)
-                            data = 4;                        
+                            data = 3;                        
                         else
-                            data = 0;
+                            data = 4;
                         break;
                     }
                 case CABViewControlTypes.AXLECOUNTER_RESTRICTEDSPEEDZONE_BUTTON:
