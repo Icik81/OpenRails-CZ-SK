@@ -3357,7 +3357,7 @@ namespace Orts.Simulation.RollingStocks
                         DynamicBrakeIntervention = -1;
                     DynamicBrakePercent--;
                     if (DynamicBrakePercent < 0)
-                        DynamicBrakePercent = 0;
+                        DynamicBrakePercent = -1;
                     SetDynamicBrakePercent(DynamicBrakePercent);
                 }
                 //Trace.TraceWarning("Hodnota PowerOnFilter {0}, DynamicBrakePercent {1}, čas simulace {2}", PowerOnFilter, DynamicBrakePercent, Simulator.GameTime);
@@ -3376,7 +3376,7 @@ namespace Orts.Simulation.RollingStocks
                     DynamicBrakeIntervention = -1;
                 DynamicBrakePercent -= 1.0f;
                 if (DynamicBrakePercent < 0)
-                    DynamicBrakePercent = 0;
+                    DynamicBrakePercent = -1;
                 SetDynamicBrakePercent(DynamicBrakePercent);
             }
         }
@@ -3393,7 +3393,7 @@ namespace Orts.Simulation.RollingStocks
                     DynamicBrakeIntervention = -1;
                 DynamicBrakePercent -= 2.0f;
                 if (DynamicBrakePercent < 0)
-                    DynamicBrakePercent = 0;
+                    DynamicBrakePercent = -1;
                 SetDynamicBrakePercent(DynamicBrakePercent);
                 if (BrakeSystem.AutoCylPressurePSI1 < 1 && DynamicBrakePercent == 0)
                 {
@@ -3414,7 +3414,7 @@ namespace Orts.Simulation.RollingStocks
                     DynamicBrakeIntervention = -1;
                 DynamicBrakePercent -= 1.0f;
                 if (DynamicBrakePercent < 0)
-                    DynamicBrakePercent = 0;
+                    DynamicBrakePercent = -1;
                 SetDynamicBrakePercent(DynamicBrakePercent);
             }
         }
@@ -18381,10 +18381,7 @@ namespace Orts.Simulation.RollingStocks
                         break;
                     }
                 case CABViewControlTypes.AXLECOUNTER_DISPLAY:
-                    {
-                        if (AxleCounterSetupOn || AxleCounterSetupOff || AxleCounterDriveMode)
-                            data = 0;
-                        else
+                    {                        
                         if (AxleCounterOKMode)
                             data = 1;
                         else
@@ -18394,7 +18391,10 @@ namespace Orts.Simulation.RollingStocks
                         if (AxleCounterSetupOff)
                             data = 3;
                         else
-                            data = 4;
+                        if (AxleCounterDriveMode)
+                            data = 4;                        
+                        else
+                            data = 0;
                         break;
                     }
                 case CABViewControlTypes.AXLECOUNTER_RESTRICTEDSPEEDZONE_BUTTON:
