@@ -15108,11 +15108,11 @@ namespace Orts.Simulation.RollingStocks
             if (!AxleCounterEnable)
                 return;
 
-            if (AxleCount < 100 && AxleCounterDisplayReady)
+            if (AxleCount < 40 && AxleCounterDisplayReady)
             {
                 AxleCount++;                
                 SignalEvent(Event.AxleCounterButtonPressed);                
-                Simulator.Confirmer.Information(Simulator.Catalog.GetString("Axle count: " + AxleCount));
+                Simulator.Confirmer.Information(Simulator.Catalog.GetString("Axle count: " + AxleCount * 4.0f));
             }            
         }
         public void ToggleAxleCounterDown()
@@ -15124,7 +15124,7 @@ namespace Orts.Simulation.RollingStocks
             {
                 AxleCount--;                
                 SignalEvent(Event.AxleCounterButtonPressed);
-                Simulator.Confirmer.Information(Simulator.Catalog.GetString("Axle count: " + AxleCount));
+                Simulator.Confirmer.Information(Simulator.Catalog.GetString("Axle count: " + AxleCount * 4.0f));
             }            
         }
         public void ToggleAxleCounterConfirmer()
@@ -15190,7 +15190,7 @@ namespace Orts.Simulation.RollingStocks
                 ActualDrivedLengthM += AbsWheelSpeedMpS * elapsedClocSeconds;                                
 
                 AxleCounterDisplayTimer += elapsedClocSeconds;
-                if (AxleCounterDisplayTimer > 1.0f)
+                if (AxleCounterDisplayTimer > 0.5f)
                 {
                     ActualDrivedLengthMDisplay = AxleCounterTrainLengthM - (int)ActualDrivedLengthM;                    
                     AxleCounterDisplayTimer = 0f;
