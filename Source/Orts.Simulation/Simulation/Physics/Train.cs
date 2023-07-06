@@ -16705,7 +16705,7 @@ namespace Orts.Simulation.Physics
                             pax.ArrivalStation = arrivalStation; // arrival is any station in front of this station
                             pax.ArrivalStationName = train.StationStops[arrivalStation - ActualStationNumber].PlatformItem.Name;
                             pax.WagonIndex = rndStation.Next(0, numUsableWagons);                                                                                    
-                            if (ss.PlatformItem.PassengerList.Count < ss.PlatformItem.NumPassengersWaiting)
+                            if (ss.PlatformItem.PassengerList.Count < ss.PlatformItem.NumPassengersWaiting * 2f)
                                 ss.PlatformItem.PassengerList.Add(pax);
                         }
                     }

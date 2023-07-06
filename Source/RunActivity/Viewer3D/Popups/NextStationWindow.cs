@@ -69,8 +69,8 @@ namespace Orts.Viewer3D.Popups
             var boxWidth = vbox.RemainingWidth / 9;
             {
                 var hbox = vbox.AddLayoutHorizontalLineOfText();
-                hbox.Add(StationPlatform = new Label(boxWidth * 3, hbox.RemainingHeight, "", LabelAlignment.Left));
-                hbox.Add(CurrentDelay = new Label(boxWidth * 3, hbox.RemainingHeight, ""));
+                hbox.Add(StationPlatform = new Label(boxWidth * 4, hbox.RemainingHeight, "", LabelAlignment.Left));
+                hbox.Add(CurrentDelay = new Label(boxWidth * 4, hbox.RemainingHeight, ""));
                 hbox.Add(CurrentTime = new Label(boxWidth, hbox.RemainingHeight, "", LabelAlignment.Center));
             }
             vbox.AddHorizontalSeparator();
@@ -611,7 +611,7 @@ namespace Orts.Viewer3D.Popups
                         PassengersCurrentWaiting.Text = "";
                         if (playerTrain.StationStops.Count > 0)
                             if (playerTrain.StationStops[0].PlatformItem != null)
-                                PassengersCurrentWaiting.Text = playerTrain.ActualPassengerCountAtStation.ToString();
+                                PassengersCurrentWaiting.Text = playerTrain.StationStops[0].PlatformItem.PassengerList.Count.ToString();
                         if (playerTrain.ActualPassengerCountAtStation == 0)
                             PassengersCurrentWaiting.Text = "";
                         StationCurrentArriveScheduled.Text = at.SchArrive.ToString("HH:mm:ss");
@@ -650,8 +650,7 @@ namespace Orts.Viewer3D.Popups
                         if (playerTrain.StationStops.Count > 1)                        
                             if (playerTrain.StationStops[1].PlatformItem != null)
                                 PassengersWaiting.Text = playerTrain.StationStops[1].PlatformItem.PassengerList.Count.ToString();
-                        if (playerTrain.StationStops[1].PlatformItem.PassengerList.Count == 0)
-                            PassengersWaiting.Text = "";
+                        
                         StationNextDistance.Text = "";
                         if (playerTrain.StationStops.Count > 0 && playerTrain.StationStops[0].PlatformItem != null &&
                             String.Compare(playerTrain.StationStops[0].PlatformItem.Name, StationNextName.Text) == 0 &&

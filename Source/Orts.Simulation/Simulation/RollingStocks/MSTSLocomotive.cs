@@ -15112,7 +15112,7 @@ namespace Orts.Simulation.RollingStocks
             {
                 AxleCount++;                
                 SignalEvent(Event.AxleCounterButtonPressed);                
-                Simulator.Confirmer.Information(Simulator.Catalog.GetString("Axle count: " + AxleCount * 4.0f));
+                Simulator.Confirmer.Information(Simulator.Catalog.GetString("Axle count: ") + AxleCount * 4.0f);
             }            
         }
         public void ToggleAxleCounterDown()
@@ -15124,7 +15124,7 @@ namespace Orts.Simulation.RollingStocks
             {
                 AxleCount--;                
                 SignalEvent(Event.AxleCounterButtonPressed);
-                Simulator.Confirmer.Information(Simulator.Catalog.GetString("Axle count: " + AxleCount * 4.0f));
+                Simulator.Confirmer.Information(Simulator.Catalog.GetString("Axle count: ") + AxleCount * 4.0f);
             }            
         }
         public void ToggleAxleCounterConfirmer()
