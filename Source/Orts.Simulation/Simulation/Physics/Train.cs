@@ -16669,10 +16669,10 @@ namespace Orts.Simulation.Physics
                 }
                 numUsableWagons = train.Cars.Count;
                 
-                station = 0;
+                station = ActualStationNumber;
                 foreach (StationStop ss in train.StationStops)
                 {
-                    if (station + 1 == StationStops.Count)
+                    if (station - ActualStationNumber + 1 == StationStops.Count)
                         break;
                     //ss.PlatformItem.PassengerList.Clear();
                     int numPax = ss.PlatformItem.NumPassengersWaiting;
@@ -16688,22 +16688,22 @@ namespace Orts.Simulation.Physics
 
                             if (fullUnboardStations.Count > 0)
                             {
-                                if (station > fullUnboardStations[unboardIndex] && unboardIndex + 1 < fullUnboardStations.Count)
+                                if (station > fullUnboardStations[unboardIndex] + ActualStationNumber && unboardIndex + 1 < fullUnboardStations.Count)
                                     unboardIndex++;
 
-                                if (station < fullUnboardStations[unboardIndex])
-                                    maxStation = fullUnboardStations[unboardIndex] + 1;
+                                if (station < fullUnboardStations[unboardIndex] + ActualStationNumber)
+                                    maxStation = fullUnboardStations[unboardIndex] + 1 + ActualStationNumber;
                                 else
-                                    maxStation = StationStops.Count;
+                                    maxStation = StationStops.Count + ActualStationNumber;
                             }
                             else
                             {
-                                maxStation = StationStops.Count;
+                                maxStation = StationStops.Count + ActualStationNumber;
                             }
                             int arrivalStation = rndStation.Next(station + 1, maxStation);
                             pax.StationOrderIndex = arrivalStation;
                             pax.ArrivalStation = arrivalStation; // arrival is any station in front of this station
-                            pax.ArrivalStationName = train.StationStops[arrivalStation].PlatformItem.Name;
+                            pax.ArrivalStationName = train.StationStops[arrivalStation - ActualStationNumber].PlatformItem.Name;
                             pax.WagonIndex = rndStation.Next(0, numUsableWagons);                                                        
                             ss.PlatformItem.PassengerList.Add(pax);
                         }
