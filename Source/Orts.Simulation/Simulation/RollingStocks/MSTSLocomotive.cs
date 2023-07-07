@@ -13771,14 +13771,14 @@ namespace Orts.Simulation.RollingStocks
                 if (WheelSlipWarning || WheelSlip)
                     goto MirelRSProtects;
 
-                if (!DirectionControllerMirelRSPositionSh && MirelRSControllerThrottleValue > 27 && MirelRSControllerThrottleValue < 34 && !SPCroosingSoundOn)
+                if (!DirectionControllerMirelRSPositionSh && MirelRSControllerThrottleValue > 27 && MirelRSControllerThrottleValue < 34 && !SPCroosingSoundOn && !ShModeActivated)
                 {
                     SignalEvent(Event.SerialParalelCrossingOn);
                     SPCroosingSoundOn = true;
                 }
                 else
                 {
-                    if (SPCroosingSoundOn && (DirectionControllerMirelRSPositionSh || MirelRSControllerThrottleValue < 28 || MirelRSControllerThrottleValue > 33))
+                    if (SPCroosingSoundOn && (DirectionControllerMirelRSPositionSh || MirelRSControllerThrottleValue < 28 || MirelRSControllerThrottleValue > 33 || ShModeActivated))
                     {
                         SignalEvent(Event.SerialParalelCrossingOff);
                         SPCroosingSoundOn = false;
@@ -14488,14 +14488,14 @@ namespace Orts.Simulation.RollingStocks
                 if (WheelSlipWarning || WheelSlip)
                     goto HS198Protects;
 
-                if (!DirectionControllerHS198PositionSh && HS198ControllerThrottleValue > 27 && HS198ControllerThrottleValue < 34 && !SPCroosingSoundOn)
+                if (!DirectionControllerHS198PositionSh && HS198ControllerThrottleValue > 27 && HS198ControllerThrottleValue < 34 && !SPCroosingSoundOn && !ShModeActivated)
                 {
                     SignalEvent(Event.SerialParalelCrossingOn);
                     SPCroosingSoundOn = true;
                 }
                 else
                 {
-                    if (SPCroosingSoundOn && (DirectionControllerHS198PositionSh || HS198ControllerThrottleValue < 28 || HS198ControllerThrottleValue > 33))
+                    if (SPCroosingSoundOn && (DirectionControllerHS198PositionSh || HS198ControllerThrottleValue < 28 || HS198ControllerThrottleValue > 33 || ShModeActivated))
                     {
                         SignalEvent(Event.SerialParalelCrossingOff);
                         SPCroosingSoundOn = false;
