@@ -1406,10 +1406,11 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
 
                     if (dp < 0) dp = 0;
 
+                    if (AutoCylPressurePSI == prevAutoCylPressurePSI)
+                        dp = 0;
+
                     if (!TwoStateBrake)
-                    {
-                        if (AutoCylPressurePSI > threshold - 1)
-                            dp = 0;
+                    {                        
                         if (TrainBrakeDelay > BrakeDelayToEngage + 0.25f)
                         {
                             if ((loco != null && !loco.DynamicBrakeAutoBailOff) || loco == null)
@@ -1424,8 +1425,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     {
                         if (LowPressure)
                         {
-                            if (AutoCylPressurePSI > BrakeCylinderMaxPressureForLowState - 1)
-                                dp = 0;
+                            //if (AutoCylPressurePSI > BrakeCylinderMaxPressureForLowState - 1)
+                            //    dp = 0;
                             if (TrainBrakeDelay > BrakeDelayToEngage + 0.25f)
                             {
                                 if ((loco != null && !loco.DynamicBrakeAutoBailOff) || loco == null)
@@ -1437,9 +1438,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         }
 
                         if (!LowPressure)
-                        {
-                            if (AutoCylPressurePSI > threshold - 1)
-                                dp = 0;                            
+                        {                                                       
                             if (TrainBrakeDelay > BrakeDelayToEngage + 0.25f)
                             {
                                 if ((loco != null && !loco.DynamicBrakeAutoBailOff) || loco == null)
