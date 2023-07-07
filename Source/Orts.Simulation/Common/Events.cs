@@ -368,7 +368,9 @@ namespace Orts.Common
         AutoDriveSpeedSelectorSwitch,
         AxleCounterButtonPressed,
         AxleCounterRestrictedSpeedZoneActiveButtonPressed,
-        AxleCounterRestrictedSpeedZoneActiveButtonReleased
+        AxleCounterRestrictedSpeedZoneActiveButtonReleased,
+        SerialParalelCrossingOn,
+        SerialParalelCrossingOff
     }
 
     public static class Events
@@ -752,6 +754,8 @@ namespace Orts.Common
                         case 20122: return Event.AxleCounterButtonPressed;
                         case 20123: return Event.AxleCounterRestrictedSpeedZoneActiveButtonPressed;
                         case 20124: return Event.AxleCounterRestrictedSpeedZoneActiveButtonReleased;
+                        case 20125: return Event.SerialParalelCrossingOn;
+                        case 20126: return Event.SerialParalelCrossingOff;
 
                         default: return 0;
                     }

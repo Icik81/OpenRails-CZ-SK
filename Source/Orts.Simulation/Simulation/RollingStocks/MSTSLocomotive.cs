@@ -13771,6 +13771,20 @@ namespace Orts.Simulation.RollingStocks
                 if (WheelSlipWarning || WheelSlip)
                     goto MirelRSProtects;
 
+                if (!DirectionControllerMirelRSPositionSh && MirelRSControllerThrottleValue > 27 && MirelRSControllerThrottleValue < 34 && !SPCroosingSoundOn)
+                {
+                    SignalEvent(Event.SerialParalelCrossingOn);
+                    SPCroosingSoundOn = true;
+                }
+                else
+                {
+                    if (SPCroosingSoundOn)
+                    {
+                        SignalEvent(Event.SerialParalelCrossingOff);
+                        SPCroosingSoundOn = false;
+                    }
+                }
+
                 if (MirelRSControllerCanThrottleChangeValue_0 || MirelRSControllerCanThrottleChangeValue_1 || MirelRSControllerCanThrottleChangeValue_2 || MirelRSControllerCanThrottleChangeValue_3
                     || ShModeActivated || Mode_To_34_Start || ShModeActivated2 || Mode_To_27_Start1 || Mode_To_27_Start2
                     || (NoShMode && MirelRSControllerThrottleValue > 27 && MirelRSControllerThrottleValue < 34 && !Mode_To_34_Start)
@@ -14199,6 +14213,8 @@ namespace Orts.Simulation.RollingStocks
         public int[] preHS198DirectionControllerPosition = new int[3];
         public string[] HS198DirectionControllerPositionName = new string[3];
 
+        bool SPCroosingSoundOn;
+
         public void HS198Controller(float elapsedClockSeconds)
         {
             if (!IsLeadLocomotive())
@@ -14471,6 +14487,20 @@ namespace Orts.Simulation.RollingStocks
             {
                 if (WheelSlipWarning || WheelSlip)
                     goto HS198Protects;
+
+                if (!DirectionControllerHS198PositionSh && HS198ControllerThrottleValue > 27 && HS198ControllerThrottleValue < 34 && !SPCroosingSoundOn)
+                {
+                    SignalEvent(Event.SerialParalelCrossingOn);
+                    SPCroosingSoundOn = true;
+                }
+                else
+                {
+                    if (SPCroosingSoundOn)
+                    {
+                        SignalEvent(Event.SerialParalelCrossingOff);
+                        SPCroosingSoundOn = false;
+                    }
+                }
 
                 if (HS198ControllerCanThrottleChangeValue_0 || HS198ControllerCanThrottleChangeValue_1 || HS198ControllerCanThrottleChangeValue_2 || HS198ControllerCanThrottleChangeValue_3
                     || ShModeActivated || Mode_To_34_Start || ShModeActivated2 || Mode_To_27_Start1 || Mode_To_27_Start2
