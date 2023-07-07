@@ -13778,7 +13778,7 @@ namespace Orts.Simulation.RollingStocks
                 }
                 else
                 {
-                    if (SPCroosingSoundOn)
+                    if (SPCroosingSoundOn && (DirectionControllerMirelRSPositionSh || MirelRSControllerThrottleValue < 28 || MirelRSControllerThrottleValue > 33))
                     {
                         SignalEvent(Event.SerialParalelCrossingOff);
                         SPCroosingSoundOn = false;
@@ -14495,7 +14495,7 @@ namespace Orts.Simulation.RollingStocks
                 }
                 else
                 {
-                    if (SPCroosingSoundOn)
+                    if (SPCroosingSoundOn && (DirectionControllerHS198PositionSh || HS198ControllerThrottleValue < 28 || HS198ControllerThrottleValue > 33))
                     {
                         SignalEvent(Event.SerialParalelCrossingOff);
                         SPCroosingSoundOn = false;
