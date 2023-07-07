@@ -76,6 +76,8 @@ namespace Orts.Simulation.AIs
 
         public float PathLength;
 
+        // Icik
+        public bool DontStopABSWP;
 
         public enum AI_MOVEMENT_STATE
         {
@@ -3915,8 +3917,7 @@ namespace Orts.Simulation.AIs
         //================================================================================================//
         /// <summary>
         /// Create waiting point list
-        /// </summary>
-
+        /// </summary>        
         public void BuildWaitingPointList(float clearingDistanceM)
         {
             bool insertSigDelegate = true;
@@ -4049,7 +4050,7 @@ namespace Orts.Simulation.AIs
                 int direction = thisRoute[routeIndex].Direction;
                 if (!IsActualPlayerTrain)
                 {
-                    // Icik
+                    // Icik                                        
                     if (waitingPoint[2] >= 49900 && waitingPoint[2] <= 49999)
                     {
                         NumberOfCarsToLeaveOrSteal = waitingPoint[2] - 49900;

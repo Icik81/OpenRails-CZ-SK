@@ -1829,6 +1829,14 @@ namespace Orts.Simulation.AIs
             if (ActionRef.IsGeneric)
                 mvtState = currentMvmtState;
             int correctedTime = presentTime;
+            
+            // Icik
+            if ((thisTrain as AITrain).DontStopABSWP)
+            {
+                thisTrain.AuxActionsContain.Remove(this);                
+                (thisTrain as AITrain).DontStopABSWP = false;
+            }
+            
             switch (mvtState)
             {
                 case AITrain.AI_MOVEMENT_STATE.INIT_ACTION:

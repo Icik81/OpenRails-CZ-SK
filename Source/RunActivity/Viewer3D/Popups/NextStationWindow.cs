@@ -638,6 +638,7 @@ namespace Orts.Viewer3D.Popups
                         StationCurrentDepartScheduled.Text = "";
                         StationCurrentDistance.Text = "";
                         Message.Text = "";
+                        PassengersCurrentWaiting.Text = "";
                     }
 
                     at = Current != null ? Current.NextTask as ActivityTaskPassengerStopAt : null;
@@ -648,7 +649,7 @@ namespace Orts.Viewer3D.Popups
                         StationNextDepartScheduled.Text = at.SchDepart.ToString("HH:mm:ss");
                         PassengersWaiting.Text = "";
                         if (playerTrain.StationStops.Count > 1)                        
-                            if (playerTrain.StationStops[1].PlatformItem != null)
+                            if (playerTrain.StationStops[1].PlatformItem != null && playerTrain.StationStops[1].PlatformItem.PassengerList.Count != 0)
                                 PassengersWaiting.Text = playerTrain.StationStops[1].PlatformItem.PassengerList.Count.ToString();
                         
                         StationNextDistance.Text = "";
@@ -665,6 +666,7 @@ namespace Orts.Viewer3D.Popups
                         StationNextArriveScheduled.Text = "";
                         StationNextDepartScheduled.Text = "";
                         StationNextDistance.Text = "";
+                        PassengersWaiting.Text = "";
                     }
 
                     if (act != null && act.IsComplete)
