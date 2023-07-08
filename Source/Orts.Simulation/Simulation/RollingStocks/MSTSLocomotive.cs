@@ -4886,9 +4886,10 @@ namespace Orts.Simulation.RollingStocks
                     (Train as AITrain).AITrainNameShunting = "NOP";
                 if (this.AbsSpeedMpS > 0.5f && (Train as AITrain).Name == (Train as AITrain).AITrainNameReadyToDepart)
                     (Train as AITrain).AITrainNameReadyToDepart = "NOP";
-                
 
-                // AI nezastaví na ABS WP, pokud uběhl čas                     
+
+                // AI nezastaví na ABS WP, pokud uběhl čas
+                (Train as AITrain).DontStopABSWP = false;
                 if ((Train as AITrain) != null && (Train as AITrain).nextActionInfo != null)
                 {
                     if ((Train as AITrain).nextActionInfo.GetType().IsSubclassOf(typeof(AuxActionItem)))
@@ -4901,15 +4902,11 @@ namespace Orts.Simulation.RollingStocks
                             int GameClockHour = (int)(GameClock / 100);
                             int GameClockMinute = (int)(GameClock - (GameClockHour * 100));
                             float GameClockToWait = (GameClockHour * 60f * 60f) + (GameClockMinute * 60f);
-
+                                                        
                             if ((AIActionPoint0.Delay > 30000 && AIActionPoint0.Delay < 39999) && Simulator.ClockTime > GameClockToWait)
                             {
-                                (Train as AITrain).DontStopABSWP = true;                                
-                            }
-                            else
-                            {
-                                (Train as AITrain).DontStopABSWP = false;
-                            }
+                                (Train as AITrain).DontStopABSWP = true;
+                            }                            
                         }
                     }
                 }

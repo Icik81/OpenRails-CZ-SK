@@ -35,6 +35,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using static Orts.Simulation.Physics.Train;
+using static System.Collections.Specialized.BitVector32;
 
 namespace Orts.Simulation.AIs
 {
@@ -1828,14 +1829,7 @@ namespace Orts.Simulation.AIs
             AITrain.AI_MOVEMENT_STATE mvtState = movementState;
             if (ActionRef.IsGeneric)
                 mvtState = currentMvmtState;
-            int correctedTime = presentTime;
-            
-            // Icik
-            if ((thisTrain as AITrain).DontStopABSWP)
-            {
-                thisTrain.AuxActionsContain.Remove(this);                
-                (thisTrain as AITrain).DontStopABSWP = false;
-            }
+            int correctedTime = presentTime;                        
             
             switch (mvtState)
             {
@@ -1904,6 +1898,18 @@ namespace Orts.Simulation.AIs
             }
             if (ActionRef.IsGeneric)
                 currentMvmtState = movementState;
+
+            // Icik
+            if ((thisTrain as AITrain).DontStopABSWP)
+            {
+                if (thisTrain.AuxActionsContain.CountSpec() > 0)
+                {
+                    thisTrain.AuxActionsContain.Remove(this);
+                    movementState = AITrain.AI_MOVEMENT_STATE.INIT_ACTION;
+                }
+                (thisTrain as AITrain).DontStopABSWP = false;
+            }
+
             return movementState;
         }
 
