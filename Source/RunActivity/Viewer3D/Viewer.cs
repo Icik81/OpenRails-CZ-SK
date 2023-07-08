@@ -1750,7 +1750,7 @@ namespace Orts.Viewer3D
 
             //Simulator.CarCoupleMaxSpeedOvercome = true;
             // Icik
-            if (Simulator.CarCoupleMaxSpeedOvercome && !Simulator.Paused && !MPManager.IsMultiPlayer())
+            if ((Simulator.CarCoupleMaxSpeedOvercome || Simulator.CarDerailed) && !Simulator.Paused && !MPManager.IsMultiPlayer())
             {
                 SelectedTrain = PlayerTrain;
                 FrontCamera.Activate();
