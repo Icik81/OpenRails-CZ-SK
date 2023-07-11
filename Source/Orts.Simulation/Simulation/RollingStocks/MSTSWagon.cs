@@ -1094,6 +1094,8 @@ namespace Orts.Simulation.RollingStocks
         // Stanovuje korekci Davisových konstant pro nápravové zatížení definované uživatelem
         private void ORTSWagonResistanceTypes()
         {
+            if (DerailIsOn) return;
+
             float AxleLoadKg = MassKG / WagonNumAxles;
             float G = MassKG / 1000 * 9.81f;
 
