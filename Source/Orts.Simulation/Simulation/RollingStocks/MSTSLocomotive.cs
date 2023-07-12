@@ -14983,8 +14983,7 @@ namespace Orts.Simulation.RollingStocks
                 if (ThrottlePercent == 0 && HS198ControllerThrottleValue > 1)
                 {
                     HS198ControllerThrottleValue = preHS198ControllerThrottleValue = Simulator.StepControllerValue = 0;
-                    AutoDriveEnable = false;
-                    AutoDriveButton = false;
+                    AutoDriveEnable = false;                    
                     AutoDriveToZero = false;
                 }
             }
@@ -14998,8 +14997,7 @@ namespace Orts.Simulation.RollingStocks
                 HS198Protect = true;
                 HS198CanSkip = false;
                 HS198SkipDiode = 0;
-                AutoDriveEnable = false;
-                AutoDriveButton = false;
+                AutoDriveEnable = false;                
                 AutoDriveToZero = false;                
             }
         }
