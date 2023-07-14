@@ -1294,7 +1294,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
 
                 // Tlak v BV nepřekročí maximální tlak pro BV nadefinovaný v eng lokomotivy
                 if (BrakeCylinderMaxSystemPressurePSI == 0) BrakeCylinderMaxSystemPressurePSI = MaxCylPressurePSI * 1.0f; // Výchozí hodnota pro maximální tlak přímočinné brzdy v BV 
-                if (AutoCylPressurePSI > BrakeCylinderMaxSystemPressurePSI) AutoCylPressurePSI = BrakeCylinderMaxSystemPressurePSI;
+                // POZOR!!!
+                //if (AutoCylPressurePSI > BrakeCylinderMaxSystemPressurePSI) AutoCylPressurePSI = BrakeCylinderMaxSystemPressurePSI;                
 
                 // Snižuje tlak v potrubí kvůli netěsnosti
                 if (BrakeLine1PressurePSI - Car.Train.TotalTrainTrainPipeLeakRate > 0)
