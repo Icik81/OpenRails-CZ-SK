@@ -15366,7 +15366,7 @@ namespace Orts.Simulation.RollingStocks
                 }
                 else
                 {
-                    if (VentilationIsOn)
+                    if (VentilationIsOn && MirelRSControllerEnable)
                     {
                         VentilationTimer += elapsedClocSeconds;
                         if (VentilationTimer > 20f)
