@@ -1628,7 +1628,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
             //if (Locomotive.ControllerVolts > 0)
             //    Locomotive.ControllerVolts = 0;
             if (Brakes)
-            {
+            {                
                 Locomotive.EmergencyButtonPressed = true;
                 Locomotive.TrainBrakeController.EmergencyBrakingPushButton = true;
                 if (Locomotive.ControllerVolts > 0)
@@ -1648,8 +1648,17 @@ namespace Orts.Simulation.RollingStocks.SubSystems
             if (initTest != InitTest.Passed)
                 return;
             if (BlueLight)
-            {
+            {                
                 Locomotive.SignalEvent(Common.Event.MirelUnwantedVigilancy);
+                
+                if (MirelType == Type.LS90)
+                    Locomotive.SignalEvent(Common.Event.MirelOff);
+
+                if (MirelType == Type.LS90 && Locomotive.SpeedMpS == 0)
+                {
+                    Locomotive.TrainBrakeController.EmergencyBrakingPushButton = false;
+                    EmergencyBrakes(false);
+                }
                 return;
             }
             Locomotive.SignalEvent(Common.Event.MirelOff);
@@ -1663,10 +1672,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
             interventionTimer = 0;
             mirelBeeping = false;
             BlueLight = true;
-            vigilanceAfterZeroSpeedConfirmed = true;
-            if (MirelType == Type.LS90)
-                //Locomotive.TrainBrakeController.EmergencyBrakingPushButton = false;
-                EmergencyBrakes(false);
+            vigilanceAfterZeroSpeedConfirmed = true;            
         }
 
         protected float interventionTimer = 0;
