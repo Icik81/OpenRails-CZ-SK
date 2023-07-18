@@ -6223,7 +6223,8 @@ namespace Orts.Simulation.RollingStocks
                 }
             }
             else
-                DynamicBrakeForceN = 0; // Set dynamic brake force to zero if in Notch 0 position
+                if (LocoType != LocoTypes.Vectron)
+                    DynamicBrakeForceN = 0; // Set dynamic brake force to zero if in Notch 0 position
 
             UpdateFrictionCoefficient(elapsedClockSeconds); // Find the current coefficient of friction depending upon the weather
 
@@ -6557,7 +6558,8 @@ namespace Orts.Simulation.RollingStocks
                 //           {
                 EDBOn = false;
                 DynamicBrake = false; // Disengage
-                DynamicBrakeForceN = 0f; // Reset dynamic brake force
+                if (LocoType != LocoTypes.Vectron)
+                    DynamicBrakeForceN = 0f; // Reset dynamic brake force
                 if (IsLeadLocomotive() && LocoType != LocoTypes.Vectron)
                     Simulator.Confirmer.Confirm(CabControl.DynamicBrake, CabSetting.Off);
                 //           }
