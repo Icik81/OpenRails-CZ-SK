@@ -1763,78 +1763,79 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                                     if (brakePercent > 100)
                                         brakePercent = 100;
                                 }
-                                if (Locomotive.AbsWheelSpeedMpS > SelectedSpeedMpS)
-                                {
-                                    arrIsBraking = true;
-                                    // Icik
-                                    //arrIsBraking = !UsePressuredTrainBrake;
+                                // Jindřichu, tento kód se kříží s kódem, který je už napsaný v AirSinglePipe.cs
+                                //if (Locomotive.AbsWheelSpeedMpS > SelectedSpeedMpS)
+                                //{
+                                //    arrIsBraking = true;
+                                //    // Icik
+                                //    //arrIsBraking = !UsePressuredTrainBrake;
 
-                                    float minBraking = 0.3f;
-                                    String testb = Locomotive.TrainBrakeController.GetStatus().ToLower();
-                                    minBraking += (MpS.ToKpH(Locomotive.AbsWheelSpeedMpS) - MpS.ToKpH(SelectedSpeedMpS)) / 10;
-                                    if (Locomotive.DynamicBrakeController == null || Locomotive.DynamicBrakePercent > 95 || !Locomotive.PowerOn)
-                                    {
-                                        if (Locomotive.BrakeSystem.BrakeLine1PressurePSI > Bar.ToPSI(5 - minBraking))
-                                        {
-                                            if (Locomotive.Train.EqualReservoirPressurePSIorInHg > 0)
-                                                Locomotive.Train.EqualReservoirPressurePSIorInHg -= Locomotive.TrainBrakeController.ApplyRatePSIpS * elapsedClockSeconds;
-                                            if (Locomotive.Train.EqualReservoirPressurePSIorInHg < 0)
-                                                Locomotive.Train.EqualReservoirPressurePSIorInHg = 0;
-                                        }
-                                        else if (Locomotive.BrakeSystem.BrakeLine1PressurePSI < Bar.ToPSI(4.95f - minBraking))
-                                        {
-                                            if (Locomotive.Train.EqualReservoirPressurePSIorInHg < Locomotive.TrainBrakeController.MaxPressurePSI)
-                                                Locomotive.Train.EqualReservoirPressurePSIorInHg += Locomotive.TrainBrakeController.ReleaseRatePSIpS * elapsedClockSeconds;
-                                            if (Locomotive.Train.EqualReservoirPressurePSIorInHg > Locomotive.TrainBrakeController.MaxPressurePSI)
-                                                Locomotive.Train.EqualReservoirPressurePSIorInHg = Locomotive.TrainBrakeController.MaxPressurePSI;
-                                        }
+                                //    float minBraking = 0.3f;
+                                //    String testb = Locomotive.TrainBrakeController.GetStatus().ToLower();
+                                //    minBraking += (MpS.ToKpH(Locomotive.AbsWheelSpeedMpS) - MpS.ToKpH(SelectedSpeedMpS)) / 10;
+                                //    if (Locomotive.DynamicBrakeController == null || Locomotive.DynamicBrakePercent > 95 || !Locomotive.PowerOn)
+                                //    {
+                                //        if (Locomotive.BrakeSystem.BrakeLine1PressurePSI > Bar.ToPSI(5 - minBraking))
+                                //        {
+                                //            if (Locomotive.Train.EqualReservoirPressurePSIorInHg > 0)
+                                //                Locomotive.Train.EqualReservoirPressurePSIorInHg -= Locomotive.TrainBrakeController.ApplyRatePSIpS * elapsedClockSeconds;
+                                //            if (Locomotive.Train.EqualReservoirPressurePSIorInHg < 0)
+                                //                Locomotive.Train.EqualReservoirPressurePSIorInHg = 0;
+                                //        }
+                                //        else if (Locomotive.BrakeSystem.BrakeLine1PressurePSI < Bar.ToPSI(4.95f - minBraking))
+                                //        {
+                                //            if (Locomotive.Train.EqualReservoirPressurePSIorInHg < Locomotive.TrainBrakeController.MaxPressurePSI)
+                                //                Locomotive.Train.EqualReservoirPressurePSIorInHg += Locomotive.TrainBrakeController.ReleaseRatePSIpS * elapsedClockSeconds;
+                                //            if (Locomotive.Train.EqualReservoirPressurePSIorInHg > Locomotive.TrainBrakeController.MaxPressurePSI)
+                                //                Locomotive.Train.EqualReservoirPressurePSIorInHg = Locomotive.TrainBrakeController.MaxPressurePSI;
+                                //        }
 
-                                    }
-                                }
-                                else
-                                {
-                                    if (Locomotive.Train.EqualReservoirPressurePSIorInHg < Locomotive.TrainBrakeController.MaxPressurePSI)
-                                        Locomotive.Train.EqualReservoirPressurePSIorInHg += Locomotive.TrainBrakeController.ReleaseRatePSIpS * elapsedClockSeconds;
-                                    if (Locomotive.Train.EqualReservoirPressurePSIorInHg > Locomotive.TrainBrakeController.MaxPressurePSI)
-                                        Locomotive.Train.EqualReservoirPressurePSIorInHg = Locomotive.TrainBrakeController.MaxPressurePSI;
+                                //    }
+                                //}
+                                //else
+                                //{
+                                //    if (Locomotive.Train.EqualReservoirPressurePSIorInHg < Locomotive.TrainBrakeController.MaxPressurePSI)
+                                //        Locomotive.Train.EqualReservoirPressurePSIorInHg += Locomotive.TrainBrakeController.ReleaseRatePSIpS * elapsedClockSeconds;
+                                //    if (Locomotive.Train.EqualReservoirPressurePSIorInHg > Locomotive.TrainBrakeController.MaxPressurePSI)
+                                //        Locomotive.Train.EqualReservoirPressurePSIorInHg = Locomotive.TrainBrakeController.MaxPressurePSI;
 
-                                }
+                                //}
                             }
-                            if (Locomotive.LocoType == LocoTypes.Katr7507)
-                            {
-                                if (Locomotive.CruiseControl != null)
-                                {
-                                    if (Locomotive.CruiseControl.SpeedRegMode[Locomotive.LocoStation] == SpeedRegulatorMode.AVV && (MpS.ToKpH(Locomotive.AbsWheelSpeedMpS) - MpS.ToKpH(SelectedSpeedMpS)) > 5)
-                                    {
-                                        float minBraking = 0.3f;
-                                        minBraking += (MpS.ToKpH(Locomotive.AbsWheelSpeedMpS) - MpS.ToKpH(SelectedSpeedMpS)) / 20;
-                                        if (Locomotive.DynamicBrakeController == null || Locomotive.DynamicBrakePercent > 95 || !Locomotive.PowerOn)
-                                        {
-                                            if (Locomotive.BrakeSystem.BrakeLine1PressurePSI > Bar.ToPSI(5 - minBraking))
-                                            {
-                                                if (Locomotive.Train.EqualReservoirPressurePSIorInHg > 0)
-                                                    Locomotive.Train.EqualReservoirPressurePSIorInHg -= Locomotive.TrainBrakeController.ApplyRatePSIpS * elapsedClockSeconds / 10;
-                                                if (Locomotive.Train.EqualReservoirPressurePSIorInHg < 0)
-                                                    Locomotive.Train.EqualReservoirPressurePSIorInHg = 0;
-                                            }
-                                            else if (Locomotive.BrakeSystem.BrakeLine1PressurePSI < Bar.ToPSI(4.95f - minBraking) && !wasTrainBrakeUsed)
-                                            {
-                                                if (Locomotive.Train.EqualReservoirPressurePSIorInHg < Locomotive.TrainBrakeController.MaxPressurePSI)
-                                                    Locomotive.Train.EqualReservoirPressurePSIorInHg += Locomotive.TrainBrakeController.ReleaseRatePSIpS * elapsedClockSeconds * 5;
-                                                if (Locomotive.Train.EqualReservoirPressurePSIorInHg > Locomotive.TrainBrakeController.MaxPressurePSI)
-                                                    Locomotive.Train.EqualReservoirPressurePSIorInHg = Locomotive.TrainBrakeController.MaxPressurePSI;
-                                            }
-                                        }
-                                    }
-                                    else if (SpeedRegMode[Locomotive.LocoStation] == SpeedRegulatorMode.AVV && !wasTrainBrakeUsed)
-                                    {
-                                        if (Locomotive.Train.EqualReservoirPressurePSIorInHg < Locomotive.TrainBrakeController.MaxPressurePSI)
-                                            Locomotive.Train.EqualReservoirPressurePSIorInHg += Locomotive.TrainBrakeController.ReleaseRatePSIpS * elapsedClockSeconds * 5;
-                                        if (Locomotive.Train.EqualReservoirPressurePSIorInHg > Locomotive.TrainBrakeController.MaxPressurePSI)
-                                            Locomotive.Train.EqualReservoirPressurePSIorInHg = Locomotive.TrainBrakeController.MaxPressurePSI;
-                                    }
-                                }
-                            }
+                            //if (Locomotive.LocoType == LocoTypes.Katr7507)
+                            //{
+                            //    if (Locomotive.CruiseControl != null)
+                            //    {
+                            //        if (Locomotive.CruiseControl.SpeedRegMode[Locomotive.LocoStation] == SpeedRegulatorMode.AVV && (MpS.ToKpH(Locomotive.AbsWheelSpeedMpS) - MpS.ToKpH(SelectedSpeedMpS)) > 5)
+                            //        {
+                            //            float minBraking = 0.3f;
+                            //            minBraking += (MpS.ToKpH(Locomotive.AbsWheelSpeedMpS) - MpS.ToKpH(SelectedSpeedMpS)) / 20;
+                            //            if (Locomotive.DynamicBrakeController == null || Locomotive.DynamicBrakePercent > 95 || !Locomotive.PowerOn)
+                            //            {
+                            //                if (Locomotive.BrakeSystem.BrakeLine1PressurePSI > Bar.ToPSI(5 - minBraking))
+                            //                {
+                            //                    if (Locomotive.Train.EqualReservoirPressurePSIorInHg > 0)
+                            //                        Locomotive.Train.EqualReservoirPressurePSIorInHg -= Locomotive.TrainBrakeController.ApplyRatePSIpS * elapsedClockSeconds / 10;
+                            //                    if (Locomotive.Train.EqualReservoirPressurePSIorInHg < 0)
+                            //                        Locomotive.Train.EqualReservoirPressurePSIorInHg = 0;
+                            //                }
+                            //                else if (Locomotive.BrakeSystem.BrakeLine1PressurePSI < Bar.ToPSI(4.95f - minBraking) && !wasTrainBrakeUsed)
+                            //                {
+                            //                    if (Locomotive.Train.EqualReservoirPressurePSIorInHg < Locomotive.TrainBrakeController.MaxPressurePSI)
+                            //                        Locomotive.Train.EqualReservoirPressurePSIorInHg += Locomotive.TrainBrakeController.ReleaseRatePSIpS * elapsedClockSeconds * 5;
+                            //                    if (Locomotive.Train.EqualReservoirPressurePSIorInHg > Locomotive.TrainBrakeController.MaxPressurePSI)
+                            //                        Locomotive.Train.EqualReservoirPressurePSIorInHg = Locomotive.TrainBrakeController.MaxPressurePSI;
+                            //                }
+                            //            }
+                            //        }
+                            //        else if (SpeedRegMode[Locomotive.LocoStation] == SpeedRegulatorMode.AVV && !wasTrainBrakeUsed)
+                            //        {
+                            //            if (Locomotive.Train.EqualReservoirPressurePSIorInHg < Locomotive.TrainBrakeController.MaxPressurePSI)
+                            //                Locomotive.Train.EqualReservoirPressurePSIorInHg += Locomotive.TrainBrakeController.ReleaseRatePSIpS * elapsedClockSeconds * 5;
+                            //            if (Locomotive.Train.EqualReservoirPressurePSIorInHg > Locomotive.TrainBrakeController.MaxPressurePSI)
+                            //                Locomotive.Train.EqualReservoirPressurePSIorInHg = Locomotive.TrainBrakeController.MaxPressurePSI;
+                            //        }
+                            //    }
+                            //}
                         }
                     }
                     else
