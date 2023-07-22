@@ -2074,8 +2074,11 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     if (lead.TrainBrakeController.TrainBrakeControllerState == ControllerState.Release)
                     {
                         lead.BrakeSystem.BrakeCylReleaseFlow = true;
-                        lead.ARRTrainBrakeEngage = false;
-                        lead.BrakeSystem.ARRTrainBrakeCanEngage = false;
+                        if (lead.LocoType != MSTSLocomotive.LocoTypes.Katr7507)
+                        {
+                            lead.ARRTrainBrakeEngage = false;
+                            lead.BrakeSystem.ARRTrainBrakeCanEngage = false;
+                        }
                         lead.BrakeSystem.PressureConverterBaseEDB = 0;
                     }
                     if (lead.TrainBrakeController.TrainBrakeControllerState == ControllerState.Apply)
@@ -3434,13 +3437,13 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     }
                 }
 
-                if ((lead.AutomaticParkingBrakeEngaged || (lead.AVVBraking && lead.DynamicBrakePercent > 95)) && lead.ParkingBrakeTargetPressurePSI == 0)
+                if (lead.AutomaticParkingBrakeEngaged && lead.ParkingBrakeTargetPressurePSI == 0)
                 {
                     lead.ParkingBrakeTargetPressurePSI = 2 * 14.50377f;
                 }
 
                 // Automatická parkovací brzda
-                if ((lead.AutomaticParkingBrakeEngaged || (lead.AVVBraking && lead.DynamicBrakePercent > 95))
+                if ((lead.AutomaticParkingBrakeEngaged || lead.AVVBraking && Math.Abs(lead.DynamicBrakeForceN) < 50000f && lead.AbsWheelSpeedMpS < 10f / 3.6f)
                     && lead.MainResPressurePSI > 0
                     && AutoCylPressurePSI <= lead.BrakeSystem.BrakeCylinderMaxSystemPressurePSI
                     && AutoCylPressurePSI < lead.MainResPressurePSI
@@ -3468,8 +3471,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     }
                 }
                 else 
-                if ((!lead.AutomaticParkingBrakeEngaged 
-                    && (!lead.AVVBraking || lead.DynamicBrakePercent < 95) 
+                if ((!lead.AutomaticParkingBrakeEngaged                     
                     && lead.BrakeSystem.T4_ParkingkBrake == 1)
                     || !lead.PowerKey)
                 {
