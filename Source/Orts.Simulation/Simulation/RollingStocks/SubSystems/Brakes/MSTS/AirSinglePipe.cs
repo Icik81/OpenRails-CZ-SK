@@ -3560,8 +3560,12 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     lead.ARRAutoCylPressurePSI = lead.BrakeSystem.PressureConverter;
                     // Regulátor tlakové brzdy pro ARR
                     float ARRSpeedDeccelaration = (lead.AbsWheelSpeedMpS - lead.CruiseControl.SelectedSpeedMpS) / 10;
+                    float TimeToResponseARRTrainBrake = 1.0f;
+                    float TimeToResponseARRTrainBrake2 = 1.0f;
                     if (lead.CruiseControl.SpeedRegMode[lead.LocoStation] == CruiseControl.SpeedRegulatorMode.AVV)
-                    {                        
+                    {
+                        TimeToResponseARRTrainBrake = 0.5f;
+                        TimeToResponseARRTrainBrake2 = 0.5f;
                         if (train.IsFreight)
                             ARRSpeedDeccelaration = MathHelper.Clamp(ARRSpeedDeccelaration, 0.0f, 1.5f);                   
                         else
@@ -3577,8 +3581,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
 
                     //lead.Simulator.Confirmer.Information("ARRSpeedDeccelaration = " + ARRSpeedDeccelaration);                    
 
-                    // První náběh ARR brzdy dá náskok EDB před aktivací tlakové brzdy
-                    float TimeToResponseARRTrainBrake = 1.0f;
+                    // První náběh ARR brzdy dá náskok EDB před aktivací tlakové brzdy                    
                     if (lead.ARRTrainBrakeEngage && !lead.BrakeSystem.FirstRunARRTrainBrake)
                         lead.BrakeSystem.FirstRunARRTrainBrake = true;
                     
@@ -3614,7 +3617,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                             if (lead.BrakeSystem.ARRTrainBrakeCycle1 > TimeToResponseARRTrainBrake)
                             {
                                 lead.BrakeSystem.ARRTrainBrakeCycle2 += elapsedClockSeconds;                                                                                                
-                                if (lead.BrakeSystem.ARRTrainBrakeCycle2 < 1.0f)
+                                if (lead.BrakeSystem.ARRTrainBrakeCycle2 < TimeToResponseARRTrainBrake2)
                                 {
                                     if (lead.BrakeSystem.ARRTrainBrakeCycle3 == 0)
                                         DeltaPressure = 0.4f * 14.50377f;
