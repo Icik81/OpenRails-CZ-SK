@@ -3443,7 +3443,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 }
 
                 // Automatická parkovací brzda
-                if ((lead.AutomaticParkingBrakeEngaged || lead.AVVBraking && Math.Abs(lead.DynamicBrakeForceN) < 50000f && lead.AbsWheelSpeedMpS < 10f / 3.6f)
+                if ((lead.AutomaticParkingBrakeEngaged || lead.AVVBraking && Math.Abs(lead.DynamicBrakeForceN) < 50000f && lead.AbsWheelSpeedMpS < 20f / 3.6f)
                     && lead.MainResPressurePSI > 0
                     && AutoCylPressurePSI <= lead.BrakeSystem.BrakeCylinderMaxSystemPressurePSI
                     && AutoCylPressurePSI < lead.MainResPressurePSI
@@ -3560,7 +3560,21 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     lead.ARRAutoCylPressurePSI = lead.BrakeSystem.PressureConverter;
                     // Regulátor tlakové brzdy pro ARR
                     float ARRSpeedDeccelaration = (lead.AbsWheelSpeedMpS - lead.CruiseControl.SelectedSpeedMpS) / 10;
-                    ARRSpeedDeccelaration = MathHelper.Clamp(ARRSpeedDeccelaration, 0.0f, 0.5f);
+                    if (lead.CruiseControl.SpeedRegMode[lead.LocoStation] == CruiseControl.SpeedRegulatorMode.AVV)
+                    {                        
+                        if (train.IsFreight)
+                            ARRSpeedDeccelaration = MathHelper.Clamp(ARRSpeedDeccelaration, 0.0f, 1.5f);                   
+                        else
+                            ARRSpeedDeccelaration = MathHelper.Clamp(ARRSpeedDeccelaration, 0.0f, 1.0f);
+                    }
+                    else
+                    {                        
+                        if (train.IsFreight)
+                            ARRSpeedDeccelaration = MathHelper.Clamp(ARRSpeedDeccelaration, 0.0f, 1.0f);
+                        else
+                            ARRSpeedDeccelaration = MathHelper.Clamp(ARRSpeedDeccelaration, 0.0f, 0.5f);
+                    }
+
                     //lead.Simulator.Confirmer.Information("ARRSpeedDeccelaration = " + ARRSpeedDeccelaration);                    
 
                     // První náběh ARR brzdy dá náskok EDB před aktivací tlakové brzdy

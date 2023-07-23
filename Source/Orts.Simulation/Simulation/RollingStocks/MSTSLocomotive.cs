@@ -15024,7 +15024,7 @@ namespace Orts.Simulation.RollingStocks
             }
         }
 
-        public bool AutoDriveButtonEnable = true;
+        public bool AutoDriveButtonEnable;
         public bool AutoDriveButton;
         public bool AutoDriveButtonPressed;
         public bool AutoDriveEnable;
@@ -15058,7 +15058,7 @@ namespace Orts.Simulation.RollingStocks
         public int[] AutoDriveSpeedSelectorSwitchPosition = new int[3];
         public int[] preAutoDriveSpeedSelectorSwitchPosition = new int[3];
         public string[] AutoDriveSpeedSelectorSwitchPositionName = new string[3];
-        public bool AutoDriveSpeedSelectorEnabled = true;
+        public bool AutoDriveSpeedSelectorEnabled;
         public float AutoDriveSpeedMpS;
         public float FakeAutoDriveSpeedMpS;
         public void ToggleAutoDriveSpeedSelectorUp()
