@@ -16,7 +16,7 @@ Tr_SMS (
 		)
 		Stereo ()
 		Volume (0.6)
-		Streams (100
+		Streams (10
 		
 			Stream (
 				Skip (** Prokluz **)
