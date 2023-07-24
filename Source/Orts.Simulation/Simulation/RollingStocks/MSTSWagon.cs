@@ -2225,7 +2225,7 @@ namespace Orts.Simulation.RollingStocks
                     if (ImpulseCouplerForceUN < 0)
                         ImpulsForce2 = Math.Abs(ImpulseCouplerForceUN);
                     if (CouplerForceU < 0 && ImpulsForce2 > 1000f)
-                        ImpulsForce = Math.Abs(CouplerForceU) * 5f;
+                        ImpulsForce = Math.Abs(CouplerForceU) * 4f;
 
                     //if (ImpulsForce > 100000)
                     //{
