@@ -2224,12 +2224,16 @@ namespace Orts.Simulation.RollingStocks
 
                     if (ImpulseCouplerForceUN < 0)
                         ImpulsForce2 = Math.Abs(ImpulseCouplerForceUN);
-                    if (CouplerForceU < 0 && ImpulsForce2 > 1000f)
-                        ImpulsForce = Math.Abs(CouplerForceU) * 4f;
+                    if (CouplerForceU < 0 && ImpulsForce2 > 30000f)
+                        ImpulsForce = Math.Abs(CouplerForceU) * 6f;
 
                     //if (ImpulsForce > 100000)
                     //{
                     //    Simulator.Confirmer.MSG("ImpulsForce = " + ImpulsForce);
+                    //}
+                    //if (ImpulsForce2 > 30000)
+                    //{
+                    //    Simulator.Confirmer.Warning("ImpulsForce2 = " + ImpulsForce2);
                     //}
 
                     if (Math.Abs(CouplerForceU) > GetCouplerBreak2N() || ImpulsForce > MaxImpulseCouplerForceUN || DerailCouplerBreak)  // break couplers if either static or impulse forces exceeded
