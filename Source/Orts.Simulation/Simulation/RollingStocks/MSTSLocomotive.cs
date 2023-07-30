@@ -452,7 +452,7 @@ namespace Orts.Simulation.RollingStocks
 
         public float PowerReduction = 0;
 
-        // Icik        
+        // Icik                
         public ScriptedCircuitBreaker CircuitBreaker;
         public float AdhesionEfficiencyKoef;
         public bool OverCurrent = false;
@@ -834,7 +834,7 @@ namespace Orts.Simulation.RollingStocks
             LocomotiveAxle.StabilityCorrection = true;
             LocomotiveAxle.FilterMovingAverage.Size = Simulator.Settings.AdhesionMovingAverageFilterSize;
             CurrentFilter = new IIRFilter(IIRFilter.FilterTypes.Butterworth, 1, IIRFilter.HzToRad(0.5f), 0.001f);
-            AdhesionFilter = new IIRFilter(IIRFilter.FilterTypes.Butterworth, 1, IIRFilter.HzToRad(1f), 0.001f);
+            AdhesionFilter = new IIRFilter(IIRFilter.FilterTypes.Butterworth, 1, IIRFilter.HzToRad(1f), 0.001f);            
 
             TrainBrakeController = new ScriptedBrakeController(this);
             EngineBrakeController = new ScriptedBrakeController(this);
@@ -11944,35 +11944,40 @@ namespace Orts.Simulation.RollingStocks
 
         public void ToggleBreakEDBButton(bool breakEDBButton)
         {
-            BreakEDBButton = breakEDBButton;
-            // Stav a zvuk pro tlačítko
-            if (!BreakEDBSwitchEnable)
+            if (BreakEDBButtonEnable)
             {
-                if (BreakEDBButton && !BreakEDBButtonPressed)
+                BreakEDBButton = breakEDBButton;
+                // Stav a zvuk pro tlačítko
+                if (!BreakEDBSwitchEnable)
                 {
-                    SignalEvent(Event.BreakEDBButton);
-                    BreakEDBButtonPressed = true;
+                    if (BreakEDBButton && !BreakEDBButtonPressed)
+                    {
+                        SignalEvent(Event.BreakEDBButton);
+                        BreakEDBButtonPressed = true;
+                        BreakEDBButton_Activated = !BreakEDBButton_Activated;
+                    }
+                    if (!BreakEDBButton && BreakEDBButtonPressed)
+                    {
+                        SignalEvent(Event.BreakEDBButtonRelease);
+                        BreakEDBButtonPressed = false;
+                    }
+                }
+                // Stav a zvuk pro přepínač
+                if (BreakEDBSwitchEnable)
+                {
                     BreakEDBButton_Activated = !BreakEDBButton_Activated;
+                    SignalEvent(Event.BreakEDBButton);
                 }
-                if (!BreakEDBButton && BreakEDBButtonPressed)
+                if (Simulator.PlayerLocomotive == this)
                 {
-                    SignalEvent(Event.BreakEDBButtonRelease);
-                    BreakEDBButtonPressed = false;
+                    if (BreakEDBButton_Activated)
+                        Simulator.Confirmer.Information(Simulator.Catalog.GetString("Disabling EDB: ") + Simulator.Catalog.GetString("On"));
+                    else
+                        Simulator.Confirmer.Information(Simulator.Catalog.GetString("Disabling EDB: ") + Simulator.Catalog.GetString("Off"));
                 }
             }
-            // Stav a zvuk pro přepínač
-            if (BreakEDBSwitchEnable)
-            {
-                BreakEDBButton_Activated = !BreakEDBButton_Activated;
-                SignalEvent(Event.BreakEDBButton);
-            }
-            if (Simulator.PlayerLocomotive == this)
-            {
-                if (BreakEDBButton_Activated)
-                    Simulator.Confirmer.Information(Simulator.Catalog.GetString("Disabling EDB: ") + Simulator.Catalog.GetString("On"));
-                else
-                    Simulator.Confirmer.Information(Simulator.Catalog.GetString("Disabling EDB: ") + Simulator.Catalog.GetString("Off"));
-            }
+            else
+                BreakEDBButton_Activated = false;
         }
 
         public void SetLapButton()
