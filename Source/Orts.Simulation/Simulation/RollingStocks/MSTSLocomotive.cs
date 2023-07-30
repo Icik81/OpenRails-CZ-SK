@@ -642,9 +642,9 @@ namespace Orts.Simulation.RollingStocks
         public bool LocoIsStatic;
         public float PantoCanHVOffSpeedKpH;
         public bool DirectionButton;
-        public float DirectionButtonPosition = 2;
-        public float MemDirectionButtonPosition = -1;
-        public float DirectionButtonPositionOffset;
+        public int DirectionButtonPosition = 2;
+        public int MemDirectionButtonPosition = -1;
+        public int DirectionButtonPositionOffset;
         public bool CarIsPlayerLocoSet;
         public bool BatterySetOn;
         public bool BreakEDBButtonEnable = false;
@@ -12058,7 +12058,7 @@ namespace Orts.Simulation.RollingStocks
         }
         public void DirectionButtonSetup()
         {
-            if (!DirectionButton) return;
+            if (!DirectionButton) return;            
             if (!Battery)
             {
                 DirectionButtonPositionOffset = 6;
