@@ -1857,6 +1857,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                 RealDieselOilTemperatureDeg += elapsedClockSeconds * (LoadPercent * 0.01f * (120 - DieselIdleTemperatureDegC) + DieselIdleTemperatureDegC - RealDieselOilTemperatureDeg) * 2.5f / DieselOilTempTimeConstantSec;
                 RealDieselOilTemperatureDeg += elapsedClockSeconds * ((RealRPM - IdleRPM) / (MaxRPM - IdleRPM) * 120 + DieselIdleTemperatureDegC - RealDieselOilTemperatureDeg) * 1.5f * MathHelper.Clamp(DieselIdleTemperatureDegC / RealDieselOilTemperatureDeg, 1, 10) / DieselOilTempTimeConstantSec;
             }
+            if (float.IsNaN(RealDieselOilTemperatureDeg))
+            {
+                RealDieselOilTemperatureDeg = FakeDieselOilTemperatureDeg;
+            }
             // Teplota okolí koriguje teplotu motoru
             // Čerpadlo při vyšších otáčkách má vyšší průtok chladící kapaliny
             float RealDieselOilTemperatureDegDelta = MathHelper.Clamp(elapsedClockSeconds * (RealDieselOilTemperatureDeg - locomotive.CarOutsideTempC0) * CoolingFlow / (DieselOilTempTimeConstantSec * 2), 0, 100);

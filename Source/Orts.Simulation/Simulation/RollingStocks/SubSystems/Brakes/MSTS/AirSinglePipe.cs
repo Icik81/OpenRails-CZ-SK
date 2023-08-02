@@ -1630,6 +1630,12 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 if (AutoCylPressurePSI < 1)
                     BailOffOn = false;
 
+                if (loco.LocoType == MSTSLocomotive.LocoTypes.Katr7507)
+                {
+                    AutoBailOffActivated = false;
+                    ThresholdBailOffOn = 0;
+                }
+
                 // Automatické napuštění brzdového válce po uvadnutí EDB                
                 AirWithEDBMotiveForceN = loco.MaxDynamicBrakeForceN * 0.05f;
                 if (ThresholdBailOffOn > 0 && (Math.Abs(loco.DynamicBrakeForceN) <= AirWithEDBMotiveForceN || loco.AbsSpeedMpS < 11 / 3.6f)) // Napustí brzdový válec pod limit síly k EDB
@@ -3443,7 +3449,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 }
 
                 // Automatická parkovací brzda
-                if ((lead.AutomaticParkingBrakeEngaged || lead.AVVBraking && Math.Abs(lead.DynamicBrakeForceN) < 50000f && lead.AbsWheelSpeedMpS < 20f / 3.6f)
+                if ((lead.AutomaticParkingBrakeEngaged)
                     && lead.MainResPressurePSI > 0
                     && AutoCylPressurePSI <= lead.BrakeSystem.BrakeCylinderMaxSystemPressurePSI
                     && AutoCylPressurePSI < lead.MainResPressurePSI
