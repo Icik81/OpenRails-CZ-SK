@@ -5844,7 +5844,7 @@ namespace Orts.Simulation.RollingStocks
                 }
             }
 
-            if (!IsPlayerTrain && !Simulator.Paused && CarLengthM > 1f)
+            if (!IsPlayerTrain && !Simulator.Paused && CarLengthM > 1f && !WagonIsServis)
             {
                 SetAIAction(elapsedClockSeconds);
                 AcceptMUSignals = true;                

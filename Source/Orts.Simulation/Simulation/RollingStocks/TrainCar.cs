@@ -2969,7 +2969,7 @@ namespace Orts.Simulation.RollingStocks
             // NOTE: Traveller is at the FRONT of the TrainCar!
 
             // Don't add vibrations to train cars less than 2.5 meter in length; they're unsuitable for these calculations.
-            if (CarLengthM < 2.5f) return;
+            if (CarLengthM < 2.5f || (this as MSTSWagon).WagonIsServis) return;
             if (Simulator.Settings.CarVibratingLevel != 0)
             {
                 //var elapsedTimeS = Math.Abs(speedMpS) > 0.001f ? distanceM / speedMpS : 0;

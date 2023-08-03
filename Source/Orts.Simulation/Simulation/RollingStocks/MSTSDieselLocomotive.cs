@@ -1072,7 +1072,7 @@ namespace Orts.Simulation.RollingStocks
         public void DieselStartUpTime(float elapsedClockSeconds)
         {
             // Vynechá servisy jako například posunovače
-            if (CarLengthM < 1f) return;
+            if (CarLengthM < 1f || WagonIsServis) return;
 
             // Startovní setup AI lokomotivy
             if (!IsPlayerTrain)

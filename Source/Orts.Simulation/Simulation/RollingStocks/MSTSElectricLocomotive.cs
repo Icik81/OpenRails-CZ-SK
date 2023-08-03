@@ -1839,7 +1839,7 @@ namespace Orts.Simulation.RollingStocks
             if (IsPlayerTrain)
                 return;
             // Vynechá servisy jako například posunovače
-            if (CarLengthM < 1f) return;
+            if (CarLengthM < 1f || WagonIsServis) return;
 
             if (TrainHasFirstPantoMarker)
             {

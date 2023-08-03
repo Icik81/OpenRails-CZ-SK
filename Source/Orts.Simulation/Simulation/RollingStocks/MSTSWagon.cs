@@ -176,6 +176,7 @@ namespace Orts.Simulation.RollingStocks
         public int MotorStartCyklus;
         public bool StartOn = true;
         public bool NoPaxsMode;
+        public bool WagonIsServis;
 
         bool TenderWeightInitialize = true;
         float TenderWagonMaxCoalMassKG = 0;
@@ -938,6 +939,12 @@ namespace Orts.Simulation.RollingStocks
         public float preMassKG;
         private void ORTSDavisSetUp()
         {
+            if (MainShapeFileName.ToLower().Contains("servis"))
+            {
+                WagonIsServis = true;
+                InitialMassKG = MassKG = 1000;
+            }
+
             float G = MassKG / 1000 * 9.81f;
             float G0 = InitialMassKG / 1000 * 9.81f;
             
