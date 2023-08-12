@@ -542,7 +542,7 @@ namespace Orts.Simulation.RollingStocks
                     Locomotive.MotiveForceN = Locomotive.TractiveForceN = TotalMaxForceN;
                 }
             }
-
+            
             if (Locomotive.IsLeadLocomotive())
             {
                 if (Locomotive.CruiseControl != null)
@@ -805,7 +805,7 @@ namespace Orts.Simulation.RollingStocks
             if (Locomotive.AdhesionEfficiencyKoef == 0) Locomotive.AdhesionEfficiencyKoef = 1.00f;
             LocomotiveAxle.AdhesionEfficiencyKoef = Locomotive.AdhesionEfficiencyKoef;
 
-            LocomotiveAxle.BrakeRetardForceN = Locomotive.BrakeRetardForceN;
+            LocomotiveAxle.BrakeRetardForceN = Locomotive.BrakeRetardForceN;            
 
             if (!usingControllerVolts)
                 ForceN = maxForceN;
@@ -843,12 +843,12 @@ namespace Orts.Simulation.RollingStocks
             else
             {
                 Locomotive.extendedPhysics.GeneratoricModeActive = false;
-            }
-
+            }            
+            
             float prevForceN = ForceN;
             if (Locomotive.LocoType == LocoTypes.Vectron)
             {
-                if (Locomotive.TractionBlocked && ForceN > 0)
+                if ((Locomotive.TractionBlocked || Locomotive.EngineBrakeController.CurrentValue > 0) && ForceN > 0)
                 {
                     ForceN = prevForceN = 0;
                 }

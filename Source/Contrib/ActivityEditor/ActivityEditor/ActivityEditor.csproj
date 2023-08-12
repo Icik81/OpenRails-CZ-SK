@@ -198,7 +198,9 @@
     <Compile Include="Wizard\ActivityDescr.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Wizard\SelectRoute.cs" />
+    <Compile Include="Wizard\SelectRoute.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Wizard\SinglePage.cs">
       <SubType>UserControl</SubType>
     </Compile>

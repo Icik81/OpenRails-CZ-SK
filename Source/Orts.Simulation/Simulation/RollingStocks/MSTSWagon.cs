@@ -2000,7 +2000,7 @@ namespace Orts.Simulation.RollingStocks
             else
             {
                 outf.Write(0);
-            }
+            }            
 
             base.Save(outf);
         }
