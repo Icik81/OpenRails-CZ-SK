@@ -1364,6 +1364,11 @@ namespace Orts.Simulation.RollingStocks
             if (HVOff)
             {
                 HVOff = false;
+                LocalThrottlePercent = 0;
+                if (CruiseControl != null) 
+                {
+                    CruiseControl.ForceThrottleAndDynamicBrake = 0;
+                }
                 SignalEvent(PowerSupplyEvent.OpenCircuitBreaker);
                 if (AcceptMUSignals)
                 {
