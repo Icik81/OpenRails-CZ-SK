@@ -16719,6 +16719,8 @@ namespace Orts.Simulation.Physics
                                     else
                                         maxStation = MaxStationCountFromStart - ActualStationNumber;
                                 }
+                                else
+                                    maxStation = MaxStationCountFromStart - ActualStationNumber;
                             }
                             
                             int minStation = maxStation > station + 1 ? station + 1 : maxStation - 1;
