@@ -1121,7 +1121,7 @@ namespace Orts.Simulation
                         MyPlayerTrain.StationStops[0].PlatformItem.NumPassengersWaiting = RestOfPax;
                         RestOfPax = MyPlayerTrain.StationStops[0].PlatformItem.PassengerList.Count;
                         
-                        if (RestOfPax == 0)
+                        if (!MyPlayerTrain.PeopleWantToEntry)
                             MyPlayerTrain.PaxInStationGenerateCompleted[MyPlayerTrain.ActualStationNumber] = 1;
 
                         // Still have to wait

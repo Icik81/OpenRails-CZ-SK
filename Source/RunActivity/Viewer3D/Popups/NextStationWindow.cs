@@ -611,7 +611,7 @@ namespace Orts.Viewer3D.Popups
                         PassengersCurrentWaiting.Text = "";
                         if (playerTrain.StationStops.Count > 0)
                             if (playerTrain.StationStops[0].PlatformItem != null)
-                                PassengersCurrentWaiting.Text = playerTrain.StationStops[0].PlatformItem.PassengerList.Count.ToString();
+                                PassengersCurrentWaiting.Text = playerTrain.ActualPassengerCountAtStation.ToString();
                         if (playerTrain.ActualPassengerCountAtStation == 0)
                             PassengersCurrentWaiting.Text = "";
                         StationCurrentArriveScheduled.Text = at.SchArrive.ToString("HH:mm:ss");
