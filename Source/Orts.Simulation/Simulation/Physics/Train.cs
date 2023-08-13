@@ -692,6 +692,7 @@ namespace Orts.Simulation.Physics
             {
                 fullUnboardStations.Add(inf.ReadInt32());
                 UnboardStationsName.Add(inf.ReadString());
+                PaxInStationGenerateCompleted.Add(inf.ReadInt32());
             }            
 
             Init(simulator);
@@ -1062,6 +1063,7 @@ namespace Orts.Simulation.Physics
                 {
                     outf.Write(fullUnboardStations[i]);
                     outf.Write(UnboardStationsName[i]);
+                    outf.Write(PaxInStationGenerateCompleted[i]);
                 }
             }
             else
@@ -16542,8 +16544,9 @@ namespace Orts.Simulation.Physics
         public int ActualPassengerCountAtStation;
         public int MaxStationCountFromStart = -1;
 
-        List<int> fullUnboardStations = new List<int>();
-        List<string> UnboardStationsName = new List<string>();
+        public List<int> fullUnboardStations = new List<int>();
+        public List<string> UnboardStationsName = new List<string>();
+        public List<int> PaxInStationGenerateCompleted = new List<int>();
 
         public void FillNames(Train train)
         {
@@ -16564,7 +16567,8 @@ namespace Orts.Simulation.Physics
                     }
                     else
                         fullUnboardStations.Add(0);
-                   UnboardStationsName.Add(stop.PlatformItem.Name);
+                    UnboardStationsName.Add(stop.PlatformItem.Name);
+                    PaxInStationGenerateCompleted.Add(0);
                 }
                 MaxStationCountFromStart = StationStops.Count;
             }
@@ -16695,8 +16699,9 @@ namespace Orts.Simulation.Physics
                 {
                     if (station - ActualStationNumber + 1 == StationStops.Count)
                         break;
-                    //ss.PlatformItem.PassengerList.Clear();
+                                                            
                     int numPax = ss.PlatformItem.NumPassengersWaiting;
+                    if (PaxInStationGenerateCompleted[station] == 0)
                     {
                         for (int i = 0; i < numPax; i++)
                         {
@@ -16706,7 +16711,8 @@ namespace Orts.Simulation.Physics
                             //pax.DepartureStation = ss.PlatformItem.PlatformFrontUiD; // departure is current iterated platform
                             pax.DepartureStation = station;
                             pax.DepartureStationName = ss.PlatformItem.Name;
-
+                            
+                            maxStation = MaxStationCountFromStart - ActualStationNumber;
                             for (int j = ActualStationNumber; j < fullUnboardStations.Count; j++)
                             {
                                 if (fullUnboardStations[j] == 1)
@@ -16715,14 +16721,10 @@ namespace Orts.Simulation.Physics
                                     {
                                         maxStation = j + 1 - ActualStationNumber;                                        
                                         break;
-                                    }
-                                    else
-                                        maxStation = MaxStationCountFromStart - ActualStationNumber;
-                                }
-                                else
-                                    maxStation = MaxStationCountFromStart - ActualStationNumber;
-                            }
-                            
+                                    }                                    
+                                }                                    
+                            }                                                        
+
                             int minStation = maxStation > station + 1 ? station + 1 : maxStation - 1;
                             if (minStation == ActualStationNumber) minStation++;
                             int arrivalStation = rndStation.Next(minStation, maxStation);
