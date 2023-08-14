@@ -16536,8 +16536,7 @@ namespace Orts.Simulation.Physics
         public float CurrentPaxCapacity = 0;
         protected bool wasCarsChanged = false;
         // Icik
-        public bool EndStation { get; set; }
-        public bool PeopleWillJustUnboard { get; set; }
+        public bool EndStation { get; set; }        
         public int MaxStationCount;
         public int PeopleWantToLeaveCount;
         public bool PeopleWantToEntry;
@@ -16918,7 +16917,7 @@ namespace Orts.Simulation.Physics
                         continue;
                     foreach (Passenger pax in exitPaxList)
                     {
-                        if ((pax.WagonIndex == currentWagIndex && (train.StationStops[0].PlatformItem.Name == pax.ArrivalStationName || EndStation) && pax.TimeToStartExiting < gameClock) || wagon.NoPaxsMode)
+                        if ((/*pax.WagonIndex == currentWagIndex &&*/ (train.StationStops[0].PlatformItem.Name == pax.ArrivalStationName || EndStation) && pax.TimeToStartExiting < gameClock) || wagon.NoPaxsMode)
                         {
                             if (!platformSide && !wagon.DoorLeftOpen && !loco.CentralHandlingDoors && wagon.PassengerCapacity > 0)
                             {
@@ -16977,7 +16976,7 @@ namespace Orts.Simulation.Physics
             }
         boarding:
             currentWagIndex = 0;
-            if (!EndStation && !PeopleWillJustUnboard)
+            if (!EndStation)
             {
                 foreach (Passenger pax in train.StationStops[0].PlatformItem.PassengerList)
                 {

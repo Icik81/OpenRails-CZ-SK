@@ -1077,8 +1077,7 @@ namespace Orts.Simulation
                     MyPlayerTrain.ReverseAtStationStopTest(MyPlayerTrain);
 
                 if (MyPlayerTrain.StationStops.Count == 1) MyPlayerTrain.EndStation = true;
-
-                ChanceToUnboarding();
+                
                 MyPlayerTrain.CheckPaxToLeaveCount(MyPlayerTrain);
                 MyPlayerTrain.CheckPaxToEntry(MyPlayerTrain);
 
@@ -1264,47 +1263,7 @@ namespace Orts.Simulation
                     }
                 }
             }
-        }
-
-        int ChanceToUnboard = 0;
-        float ChanceToUnboardTimer;
-        public void ChanceToUnboarding()
-        {
-            // Zvyšuje pravděpodobnost výstupu lidí z vlaku
-            MyPlayerTrain.MaxStationCount = Math.Max(MyPlayerTrain.MaxStationCount, MyPlayerTrain.StationStops.Count);
-
-            ChanceToUnboardTimer += Simulator.OneSecondLoop;
-            if (ChanceToUnboardTimer > 1f)
-            {
-                if (MyPlayerTrain.StationStops.Count < 0.3f * MyPlayerTrain.MaxStationCount)
-                    ChanceToUnboard = Simulator.Random.Next(0, 10);
-                else
-                if (MyPlayerTrain.StationStops.Count < 0.6f * MyPlayerTrain.MaxStationCount)
-                    ChanceToUnboard = Simulator.Random.Next(0, 15);
-                else
-                if (MyPlayerTrain.StationStops.Count < 0.8f * MyPlayerTrain.MaxStationCount)
-                    ChanceToUnboard = Simulator.Random.Next(0, 20);
-                else
-                    ChanceToUnboard = Simulator.Random.Next(0, 30);
-                ChanceToUnboardTimer = 0;
-                MyPlayerTrain.exitTimesCalculated = false;
-            }
-
-            MyPlayerTrain.PeopleWillJustUnboard = false;
-
-            if (MyPlayerTrain.PeopleWantToLeaveCount > 0)
-            {
-                switch (ChanceToUnboard)
-                {
-                    case 0:
-                        MyPlayerTrain.PeopleWillJustUnboard = true;
-                        break;
-                    case 1:
-                        MyPlayerTrain.PeopleWillJustUnboard = false;
-                        break;
-                }
-            }
-        }
+        }        
 
         public override void Save(BinaryWriter outf)
         {
