@@ -16987,8 +16987,8 @@ namespace Orts.Simulation.Physics
                         {
                             var wagon = (train.Cars[i] as MSTSWagon);
 
-                            // Pax hledá náhradní vůz, pokud chtěl původně do vyřazeného vozu
-                            if (wagon.NoPaxsMode || !pax.Boarded)
+                            // Pax hledá náhradní vůz, pokud chtěl původně do vyřazeného vozu nebo už neexistujícího vozu
+                            if (wagon.NoPaxsMode || !pax.Boarded || pax.WagonIndex > train.Cars.Count - 1 || pax.WagonIndex < 0)
                             {
                                 pax.WagonIndex = -1;
                                 for (int j = 0; j < train.Cars.Count; j++)
