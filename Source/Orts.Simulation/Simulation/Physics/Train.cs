@@ -16711,14 +16711,14 @@ namespace Orts.Simulation.Physics
                             pax.DepartureStation = station;
                             pax.DepartureStationName = ss.PlatformItem.Name;
                             
-                            maxStation = MaxStationCountFromStart - ActualStationNumber;
+                            maxStation = MaxStationCountFromStart;
                             for (int j = ActualStationNumber; j < fullUnboardStations.Count; j++)
                             {
                                 if (fullUnboardStations[j] == 1)
                                 {
                                     if (station < j)
                                     {
-                                        maxStation = j + 1 - ActualStationNumber;                                        
+                                        maxStation = j + 1;                                        
                                         break;
                                     }                                    
                                 }                                    
@@ -16730,9 +16730,8 @@ namespace Orts.Simulation.Physics
                             pax.StationOrderIndex = arrivalStation;
                             pax.ArrivalStation = arrivalStation; // arrival is any station in front of this station
                             pax.ArrivalStationName = UnboardStationsName[arrivalStation];
-                            pax.WagonIndex = rndStation.Next(0, numUsableWagons);                                                                                    
-                            if (ss.PlatformItem.PassengerList.Count < ss.PlatformItem.NumPassengersWaiting * 2f)
-                                ss.PlatformItem.PassengerList.Add(pax);
+                            pax.WagonIndex = rndStation.Next(0, numUsableWagons);                                                                                                                
+                            ss.PlatformItem.PassengerList.Add(pax);
                         }
                     }
                     station++;
@@ -16762,7 +16761,7 @@ namespace Orts.Simulation.Physics
         }
 
         public void CheckPaxToEntry(Train train)
-        {
+        {            
             PeopleWantToEntry = false;
             ActualPassengerCountAtStation = 0;
             foreach (Passenger pax in train.StationStops[0].PlatformItem.PassengerList)
@@ -16825,6 +16824,7 @@ namespace Orts.Simulation.Physics
 
             if (!exitTimesCalculated)
             {
+                int currentWagonIndex = 0;
                 for (int i = 0; i < train.Cars.Count; i++)
                 {
                     var wagon = (train.Cars[i] as MSTSWagon);                    
@@ -16834,7 +16834,7 @@ namespace Orts.Simulation.Physics
                         nextTimeExitDoors1 = gameClock + 0.25f;
                         foreach (Passenger pax in wagon.PassengerList)
                         {
-                            if ((pax.ArrivalStationName == train.StationStops[0].PlatformItem.Name) && pax.DoorsToEnterAndExit == 0)
+                            if (/*(pax.ArrivalStationName == train.StationStops[0].PlatformItem.Name) &&*/ pax.DoorsToEnterAndExit == 0)
                             {
                                 pax.TimeToStartExiting = nextTimeExitDoors1;
                                 nextTimeExitDoors1 += pax.TimeToEnterAndExit;
@@ -16843,13 +16843,14 @@ namespace Orts.Simulation.Physics
                         nextTimeExitDoors2 = gameClock + 0.25f;
                         foreach (Passenger pax in wagon.PassengerList)
                         {
-                            if ((pax.ArrivalStationName == train.StationStops[0].PlatformItem.Name) && pax.DoorsToEnterAndExit == 1)
+                            if (/*(pax.ArrivalStationName == train.StationStops[0].PlatformItem.Name) &&*/ pax.DoorsToEnterAndExit == 1)
                             {
                                 pax.TimeToStartExiting = nextTimeExitDoors2;
                                 nextTimeExitDoors2 += pax.TimeToEnterAndExit;
                             }
                         }
                     }
+                    currentWagonIndex++;
                 }
                 exitTimesCalculated = true;
             }
@@ -16866,7 +16867,7 @@ namespace Orts.Simulation.Physics
                         nextTimeExitDoors1 = gameClock + 0.25f;
                         foreach (Passenger pax in train.StationStops[0].PlatformItem.PassengerList)
                         {
-                            if (pax.DepartureStation == ActualStationNumber && pax.DoorsToEnterAndExit == 0 && pax.WagonIndex == currentWagonIndex)
+                            if (pax.DepartureStation == ActualStationNumber && pax.DoorsToEnterAndExit == 0)
                             {
                                 pax.TimeToStartBoarding = nextTimeExitDoors1 + wagon.FirstPaxActionDelay;
                                 nextTimeExitDoors1 += pax.TimeToEnterAndExit;
@@ -16875,7 +16876,7 @@ namespace Orts.Simulation.Physics
                         nextTimeExitDoors2 = gameClock + 0.25f;
                         foreach (Passenger pax in train.StationStops[0].PlatformItem.PassengerList)
                         {
-                            if (pax.DepartureStation == ActualStationNumber && pax.DoorsToEnterAndExit == 1 && pax.WagonIndex == currentWagonIndex)
+                            if (pax.DepartureStation == ActualStationNumber && pax.DoorsToEnterAndExit == 1)
                             {
                                 pax.TimeToStartBoarding = nextTimeExitDoors2 + wagon.FirstPaxActionDelay - 0.25f;
                                 nextTimeExitDoors2 += pax.TimeToEnterAndExit;
@@ -16894,7 +16895,9 @@ namespace Orts.Simulation.Physics
                 foreach (Passenger pax in wagon.PassengerList)
                 {
                     if (pax.ArrivalStationName == train.StationStops[0].PlatformItem.Name || EndStation || wagon.NoPaxsMode)
+                    {
                         exitPaxList.Add(pax);
+                    }
                 }
             }            
             int paxToExit = PeopleWantToLeaveCount = exitPaxList.Count;
@@ -16917,7 +16920,7 @@ namespace Orts.Simulation.Physics
                         continue;
                     foreach (Passenger pax in exitPaxList)
                     {
-                        if ((/*pax.WagonIndex == currentWagIndex &&*/ (train.StationStops[0].PlatformItem.Name == pax.ArrivalStationName || EndStation) && pax.TimeToStartExiting < gameClock) || wagon.NoPaxsMode)
+                        if ((train.StationStops[0].PlatformItem.Name == pax.ArrivalStationName || EndStation || wagon.NoPaxsMode) && pax.TimeToStartExiting < gameClock)
                         {
                             if (!platformSide && !wagon.DoorLeftOpen && !loco.CentralHandlingDoors && wagon.PassengerCapacity > 0)
                             {
@@ -17043,7 +17046,11 @@ namespace Orts.Simulation.Physics
                                     }
                                 }
                                 else
-                                    enterTimesCalculated = false;                                
+                                {
+                                    exitTimesCalculated = false;
+                                    enterTimesCalculated = false;
+                                }
+
                             }
                             currentWagIndex++;
                         }
@@ -17082,7 +17089,7 @@ namespace Orts.Simulation.Physics
                         wagon.TimeToCloseDoorGenerate = 0;
                     }
                 }
-                train.BoardingComplete = true;
+                train.BoardingComplete = true;                
                 enterTimesCalculated = false;
             }
         }
