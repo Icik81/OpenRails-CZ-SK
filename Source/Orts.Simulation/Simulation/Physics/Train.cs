@@ -16916,6 +16916,7 @@ namespace Orts.Simulation.Physics
                     }
                     if (exitPaxList.Count > 0)
                         wagon.UnboardingComplete = false;
+ 
                     if (wagon.UnboardingComplete)
                         continue;
                     foreach (Passenger pax in exitPaxList)
@@ -17046,11 +17047,7 @@ namespace Orts.Simulation.Physics
                                     }
                                 }
                                 else
-                                {
-                                    exitTimesCalculated = false;
                                     enterTimesCalculated = false;
-                                }
-
                             }
                             currentWagIndex++;
                         }
