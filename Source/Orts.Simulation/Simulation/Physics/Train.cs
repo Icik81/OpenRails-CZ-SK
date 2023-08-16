@@ -16837,7 +16837,7 @@ namespace Orts.Simulation.Physics
                             if (/*(pax.ArrivalStationName == train.StationStops[0].PlatformItem.Name) &&*/ pax.DoorsToEnterAndExit == 0)
                             {
                                 pax.TimeToStartExiting = nextTimeExitDoors1;
-                                nextTimeExitDoors1 += pax.TimeToEnterAndExit;
+                                nextTimeExitDoors1 += pax.TimeToEnterAndExit / Cars.Count;
                             }
                         }
                         nextTimeExitDoors2 = gameClock + 0.25f;
@@ -16846,7 +16846,7 @@ namespace Orts.Simulation.Physics
                             if (/*(pax.ArrivalStationName == train.StationStops[0].PlatformItem.Name) &&*/ pax.DoorsToEnterAndExit == 1)
                             {
                                 pax.TimeToStartExiting = nextTimeExitDoors2;
-                                nextTimeExitDoors2 += pax.TimeToEnterAndExit;
+                                nextTimeExitDoors2 += pax.TimeToEnterAndExit / Cars.Count;
                             }
                         }
                     }
@@ -16870,7 +16870,7 @@ namespace Orts.Simulation.Physics
                             if (pax.DepartureStation == ActualStationNumber && pax.DoorsToEnterAndExit == 0)
                             {
                                 pax.TimeToStartBoarding = nextTimeExitDoors1 + wagon.FirstPaxActionDelay;
-                                nextTimeExitDoors1 += pax.TimeToEnterAndExit;
+                                nextTimeExitDoors1 += pax.TimeToEnterAndExit / Cars.Count;
                             }
                         }
                         nextTimeExitDoors2 = gameClock + 0.25f;
@@ -16879,7 +16879,7 @@ namespace Orts.Simulation.Physics
                             if (pax.DepartureStation == ActualStationNumber && pax.DoorsToEnterAndExit == 1)
                             {
                                 pax.TimeToStartBoarding = nextTimeExitDoors2 + wagon.FirstPaxActionDelay - 0.25f;
-                                nextTimeExitDoors2 += pax.TimeToEnterAndExit;
+                                nextTimeExitDoors2 += pax.TimeToEnterAndExit / Cars.Count;
                             }
                         }                        
                     }
