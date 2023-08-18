@@ -1990,6 +1990,7 @@ namespace Orts.Simulation.RollingStocks
                         outf.Write(pax.TimeToStartExiting);
                         outf.Write(pax.WagonIndex);
                         outf.Write(pax.Weight);
+                        outf.Write(pax.WagonName);
                     }
                 }
                 else
@@ -2075,6 +2076,7 @@ namespace Orts.Simulation.RollingStocks
                 pax.TimeToStartExiting = inf.ReadDouble();
                 pax.WagonIndex = inf.ReadInt32();
                 pax.Weight = inf.ReadSingle();
+                pax.WagonName = inf.ReadString();
                 PassengerList.Add(pax);
             }
 

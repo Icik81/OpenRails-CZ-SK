@@ -3920,6 +3920,8 @@ namespace Orts.Simulation.RollingStocks
         public int WagonIndex { get; set; }
         public int StationOrderIndex { get; set; }
 
+        public string WagonName { get; set; }
+
         public Passenger()
         {
 
