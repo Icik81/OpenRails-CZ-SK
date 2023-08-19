@@ -1015,7 +1015,7 @@ namespace Orts.Simulation.AIs
                         }
 
                         // Icik                        
-                        if (thisTrain.Name.ToLower().Contains("wp")) // Servis jako například posunovač
+                        if (thisTrain.Name.ToLower().Contains("wp") || thisTrain.Simulator.Settings.MSTSCompatibilityMode) // Servis jako například posunovač
                             triggerDistanceM = activateDistanceTravelledM;
                         else
                             triggerDistanceM = activateDistanceTravelledM - (firstPartRangeM + secndPartRangeM);

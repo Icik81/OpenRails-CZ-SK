@@ -1116,8 +1116,15 @@ namespace Orts.Simulation.AIs
 
                     distanceToReversalPoint = ComputeDistanceToReversalPoint();
                     // <CSComment: the AI train runs up to the reverse point no matter how far it is from the diverging point.
-
-                    CreateTrainAction(TrainMaxSpeedMpS, 0.0f, distanceToReversalPoint, null, AIActionItem.AI_ACTION_TYPE.REVERSAL);
+                    if (Simulator.Settings.MSTSCompatibilityMode)
+                    {
+                        if (distanceToReversalPoint < 0 && distanceToReversalPoint > -1.5f)
+                            CreateTrainAction(TrainMaxSpeedMpS, AllowedMaxSpeedMpS, distanceToReversalPoint, null, AIActionItem.AI_ACTION_TYPE.REVERSAL);
+                        else
+                            CreateTrainAction(TrainMaxSpeedMpS, 0.0f, distanceToReversalPoint, null, AIActionItem.AI_ACTION_TYPE.REVERSAL);
+                    }
+                    else
+                        CreateTrainAction(TrainMaxSpeedMpS, 0.0f, distanceToReversalPoint, null, AIActionItem.AI_ACTION_TYPE.REVERSAL);
                     TCRoute.ReversalInfo[TCRoute.activeSubpath].ReversalActionInserted = true;
 
                 }
