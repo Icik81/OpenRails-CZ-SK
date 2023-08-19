@@ -761,7 +761,7 @@ namespace Orts.Simulation
             GameTimeCyklus10++;
             if (GameTimeCyklus10 > 10)
                 GameTimeCyklus10 = 0;
-            OneSecondLoop = elapsedClockSeconds;
+            OneSecondLoop = elapsedClockSeconds;            
 
             // Check if there is a request to switch to another played train
 

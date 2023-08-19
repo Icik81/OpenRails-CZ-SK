@@ -53,6 +53,7 @@ using Microsoft.Xna.Framework;
 using Orts.Formats.Msts;
 using Orts.MultiPlayer;
 using Orts.Simulation.AIs;
+using Orts.Simulation.Properties;
 using Orts.Simulation.RollingStocks;
 using Orts.Simulation.RollingStocks.SubSystems.Brakes;
 using Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS;
@@ -1657,8 +1658,25 @@ namespace Orts.Simulation.Physics
         /// Update train 
         /// <\summary>
         public virtual void Update(float elapsedClockSeconds, bool auxiliaryUpdate = true)
-        {
-
+        {            
+            // MSTS kompatibility mód
+            if (Simulator.Settings.MSTSCompatibilityMode && IsActualPlayerTrain)
+            {
+                if (Simulator.GameTime == 0f)
+                {
+                    RequestToggleManualMode(); 
+                }
+                else
+                if (ControlMode == Train.TRAIN_CONTROL.MANUAL)
+                {
+                    RequestToggleManualMode();
+                }
+                else
+                if (EndAuthorityType[0] == END_AUTHORITY.RESERVED_SWITCH)
+                {
+                    RequestToggleManualMode();
+                }                
+            }
 
             if (!auxiliaryUpdate)
                 FormationReversed = false;
@@ -10320,7 +10338,8 @@ namespace Orts.Simulation.Physics
                     else
                     {
                         ToggleFromManualMode(routeIndex);
-                        Simulator.Confirmer.Confirm(CabControl.SignalMode, CabSetting.On);
+                        if (!Simulator.Settings.MSTSCompatibilityMode)
+                            Simulator.Confirmer.Confirm(CabControl.SignalMode, CabSetting.On);
                     }
                 }
 
@@ -10340,7 +10359,8 @@ namespace Orts.Simulation.Physics
             else
             {
                 ToggleToManualMode();
-                Simulator.Confirmer.Confirm(CabControl.SignalMode, CabSetting.Off);
+                if (!Simulator.Settings.MSTSCompatibilityMode)
+                    Simulator.Confirmer.Confirm(CabControl.SignalMode, CabSetting.Off);
             }
         }
 

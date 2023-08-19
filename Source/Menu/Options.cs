@@ -159,6 +159,7 @@ namespace ORTS
             checkReduceMemory.Checked = Settings.ReduceMemory;
 
             // Icik
+            checkBoxMSTSCompatibilityMode.Checked = Settings.MSTSCompatibilityMode;
             checkAirEmpty.Checked = Settings.AirEmpty;
 
             // Jindrich
@@ -456,6 +457,7 @@ namespace ORTS
             //Settings.RunAt32bit = checkRunAt32bit.Checked;
             Settings.SaveCommands = checkSaveCommands.Checked;
             Settings.ReduceMemory = checkReduceMemory.Checked;
+            Settings.MSTSCompatibilityMode = checkBoxMSTSCompatibilityMode.Checked;
 
             // Icik
             Settings.AirEmpty = checkAirEmpty.Checked;
@@ -1032,6 +1034,11 @@ namespace ORTS
                 labelNightSignalLightGlow.Text = catalog.GetStringFmt("SigCFG defined");
             else
                 labelNightSignalLightGlow.Text = catalog.GetStringFmt("{0}%", NightSignalLightGlowTrackBar.Value / 2f * 10f);
+        }
+
+        private void checkBoxMSTSCompatibilityMode_CheckedChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }

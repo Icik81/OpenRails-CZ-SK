@@ -943,6 +943,7 @@ namespace Orts.Simulation.RollingStocks
             {
                 WagonIsServis = true;
                 InitialMassKG = MassKG = 1000;
+                if (CarLengthM < 0.1f) CarLengthM = 0.1f;                
             }
 
             float G = MassKG / 1000 * 9.81f;
