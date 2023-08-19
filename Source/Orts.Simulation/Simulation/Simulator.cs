@@ -1097,7 +1097,7 @@ namespace Orts.Simulation
                             {
                                 DifferenceSpeedMpS = Math.Abs(Math.Abs(drivenTrain.SpeedMpS) - Math.Abs(train.SpeedMpS));
 
-                                if (Math.Abs(train.SpeedMpS) > 0)
+                                if (Math.Abs(train.SpeedMpS) > 0.01f)
                                     drivenTrain.HasSpeedInCoupler = true;
 
                                 if (DifferenceSpeedMpS > CarCoupleMaxSpeed)
@@ -1155,7 +1155,7 @@ namespace Orts.Simulation
                             {
                                 DifferenceSpeedMpS = Math.Abs(Math.Abs(drivenTrain.SpeedMpS) - Math.Abs(train.SpeedMpS));
 
-                                if (Math.Abs(train.SpeedMpS) > 0)
+                                if (Math.Abs(train.SpeedMpS) > 0.01f)
                                     drivenTrain.HasSpeedInCoupler = true;
 
                                 if (DifferenceSpeedMpS > CarCoupleMaxSpeed)
@@ -1228,7 +1228,7 @@ namespace Orts.Simulation
                             {
                                 DifferenceSpeedMpS = Math.Abs(Math.Abs(drivenTrain.SpeedMpS) - Math.Abs(train.SpeedMpS));
 
-                                if (Math.Abs(train.SpeedMpS) > 0)
+                                if (Math.Abs(train.SpeedMpS) > 0.01f)
                                     drivenTrain.HasSpeedInCoupler = true;
 
                                 if (DifferenceSpeedMpS > CarCoupleMaxSpeed)
@@ -1311,7 +1311,7 @@ namespace Orts.Simulation
                             {
                                 DifferenceSpeedMpS = Math.Abs(Math.Abs(drivenTrain.SpeedMpS) - Math.Abs(train.SpeedMpS));
 
-                                if (Math.Abs(train.SpeedMpS) > 0)
+                                if (Math.Abs(train.SpeedMpS) > 0.01f)
                                     drivenTrain.HasSpeedInCoupler = true;
 
                                 if (DifferenceSpeedMpS > CarCoupleMaxSpeed)
