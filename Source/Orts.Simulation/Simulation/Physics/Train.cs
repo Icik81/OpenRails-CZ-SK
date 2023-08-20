@@ -106,7 +106,7 @@ namespace Orts.Simulation.Physics
         public string AITrainNameShunting;
         public bool TrainHasMUControl;
         public bool HeatingIsOn;
-        public int ActualStationNumber;
+        public int ActualStationNumber;        
 
         public Traveller RearTDBTraveller;               // positioned at the back of the last car in the train
         public Traveller FrontTDBTraveller;              // positioned at the front of the train by CalculatePositionOfCars
@@ -1662,7 +1662,7 @@ namespace Orts.Simulation.Physics
             // MSTS kompatibility mód
             if (Simulator.Settings.MSTSCompatibilityMode && IsActualPlayerTrain)
             {
-                if (Simulator.GameTime == 0f)
+                if (Simulator.GameTime == 0f && !wasRestored)
                 {
                     RequestToggleManualMode(); 
                 }
