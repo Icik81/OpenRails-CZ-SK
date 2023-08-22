@@ -41,6 +41,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Net;
 using Event = Orts.Common.Event;
 
 namespace Orts.Simulation.AIs
@@ -785,6 +786,12 @@ namespace Orts.Simulation.AIs
                             {
                                 UpdateStoppedState(elapsedClockSeconds);
                             }
+                        }
+                        // Icik
+                        if (Simulator.Settings.MSTSCompatibilityMode)
+                        {
+                            if (MovementState == AI_MOVEMENT_STATE.STOPPED && ControlMode == TRAIN_CONTROL.AUTO_NODE && nextActionInfo.NextAction == AIActionItem.AI_ACTION_TYPE.END_OF_ROUTE)
+                                RemoveTrain();
                         }
                     }
                     break;
