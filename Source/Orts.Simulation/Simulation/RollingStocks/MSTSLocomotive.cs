@@ -8672,9 +8672,17 @@ namespace Orts.Simulation.RollingStocks
 
             // Icik
             // Vyjímka pro BS2 ovladač
-            if (s == Simulator.Catalog.GetString("Release position") && TrainBrakeController.BS2ControllerOnStation)
+            if (TrainBrakeController.BS2ControllerOnStation)
             {
-                s = Simulator.Catalog.GetString("Driving position");
+                if (s == Simulator.Catalog.GetString("Driving position"))
+                {
+                    s = Simulator.Catalog.GetString("Lap");
+                }
+                else
+                if (s == Simulator.Catalog.GetString("Release position"))
+                {
+                    s = Simulator.Catalog.GetString("Driving position");
+                }
             }
 
             TrainCar lastCar = Train.Cars[Train.Cars.Count - 1];

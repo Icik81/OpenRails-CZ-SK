@@ -2788,6 +2788,11 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         {
                             engine.BrakeSystem.NextLocoNeutral = true;
                             engine.BrakeSystem.NextLocoBrakeState = Simulator.Catalog.GetString("Driving position");
+                            // Vyjímka pro BS2 ovladač
+                            if (engine.TrainBrakeController.BS2ControllerOnStation)
+                            {
+                                engine.BrakeSystem.NextLocoBrakeState = Simulator.Catalog.GetString("Lap");
+                            }
                             engine.BrakeSystem.Neutral = true;
                         }
                         else
