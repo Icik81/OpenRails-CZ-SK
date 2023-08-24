@@ -790,8 +790,12 @@ namespace Orts.Simulation.AIs
                         // Icik
                         if (Simulator.Settings.MSTSCompatibilityMode)
                         {
-                            if (MovementState == AI_MOVEMENT_STATE.STOPPED && ControlMode == TRAIN_CONTROL.AUTO_NODE && nextActionInfo.NextAction == AIActionItem.AI_ACTION_TYPE.END_OF_ROUTE)
+                            if (MovementState == AI_MOVEMENT_STATE.STOPPED
+                                && ControlMode == TRAIN_CONTROL.AUTO_NODE
+                                && nextActionInfo.NextAction == AIActionItem.AI_ACTION_TYPE.END_OF_ROUTE)
+                            {
                                 RemoveTrain();
+                            }
                         }
                     }
                     break;
@@ -828,6 +832,18 @@ namespace Orts.Simulation.AIs
                     {
                         MovementState = nextActionInfo.ProcessAction(this, presentTime, elapsedClockSeconds, MovementState);
                     }
+
+                    // Icik
+                    if (Simulator.Settings.MSTSCompatibilityMode)
+                    {                     
+                        if (MovementState == AI_MOVEMENT_STATE.HANDLE_ACTION
+                            && ControlMode == TRAIN_CONTROL.AUTO_SIGNAL                            
+                            && WTSEnable)
+                        {
+                            Simulator.AIRequestSignal = true;
+                        }
+                    }
+
                     break;
 
             }
@@ -6192,10 +6208,12 @@ namespace Orts.Simulation.AIs
         /// 11  Train Name
         /// </summary>
 
+        public bool WTSEnable;        
         public virtual String[] AddMovementState(String[] stateString, bool metric)
         {
             String[] retString = new String[stateString.Length];
             stateString.CopyTo(retString, 0);
+            WTSEnable = false;
 
             string movString = "";
             switch (MovementState)
@@ -6298,6 +6316,7 @@ namespace Orts.Simulation.AIs
                     DateTime baseDT = new DateTime();
                     DateTime depTime = baseDT.AddSeconds((AuxActionsContain.specRequiredActions.First.Value as AuxActSigDelegate).ActualDepart);
                     abString = depTime.ToString("HH:mm:ss");
+                    WTSEnable = true;
                 }
 
             }

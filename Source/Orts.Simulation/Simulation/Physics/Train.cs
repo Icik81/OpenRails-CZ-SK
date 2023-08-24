@@ -1657,6 +1657,8 @@ namespace Orts.Simulation.Physics
         /// <summary>
         /// Update train 
         /// <\summary>
+        
+
         public virtual void Update(float elapsedClockSeconds, bool auxiliaryUpdate = true)
         {            
             // MSTS kompatibility mód
@@ -1667,9 +1669,10 @@ namespace Orts.Simulation.Physics
                     RequestToggleManualMode(); 
                 }
                 else
-                if (ControlMode == Train.TRAIN_CONTROL.MANUAL)
+                if (ControlMode == Train.TRAIN_CONTROL.MANUAL || Simulator.AIRequestSignal)
                 {
                     RequestToggleManualMode();
+                    Simulator.AIRequestSignal = false;
                 }
                 else
                 if (EndAuthorityType[0] == END_AUTHORITY.RESERVED_SWITCH)
