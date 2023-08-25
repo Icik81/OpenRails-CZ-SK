@@ -97,7 +97,7 @@ namespace Orts.Viewer3D.Popups
             if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.FrontBrakeHoseConnected)
                 buttonToggleBrakeHose.Color = Color.LightGreen;
 
-            vbox.AddHorizontalSeparator();
+            vbox.AddHorizontalSeparator();            
             vbox.Add(buttonToggleAngleCockA = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Open/Close Front Angle Cock"), LabelAlignment.Center));
             if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.AngleCockAOpen)
                 buttonToggleAngleCockA.Color = Color.LightGreen;

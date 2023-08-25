@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: RunActivity\n"
 "POT-Creation-Date: 2023-06-13 22:19:23+0200\n"
-"PO-Revision-Date: 2023-06-13 22:21+0200\n"
+"PO-Revision-Date: 2023-08-25 18:36+0200\n"
 "Last-Translator: Altmann <altmann@bk.ru>\n"
 "Language-Team: Open Rails Dev Team\n"
 "Language: cs\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
-"X-Generator: Poedit 3.2.2\n"
+"X-Generator: Poedit 3.3.2\n"
 
 #: ../../RunActivity/Viewer3D/ALSoundHelper.cs:536
 #, csharp-format
@@ -579,7 +579,7 @@ msgstr "ID vozu"
 
 #: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:61
 msgid "Toggle Handbrake"
-msgstr "Zatáhnout/povolit ruční brzdu"
+msgstr "Zatáhnout ruční brzdu"
 
 #: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:67
 #: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:130
@@ -588,19 +588,19 @@ msgstr "Neaktivní příkaz (N/A)"
 
 #: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:70
 msgid "Toggle Power"
-msgstr "Zapnout/vypnout napájení"
+msgstr "Zapnout napájení"
 
 #: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:76
 msgid "Toggle Cable MU"
-msgstr "Spojit/rozpojit MU kabel"
+msgstr "Zapojit MU kabel"
 
 #: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:81
 msgid "Toggle Power MU"
-msgstr "Zapnout/vypnout MU pohon"
+msgstr "Zapnout MU pohon"
 
 #: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:86
 msgid "Connect/Unmount Helper"
-msgstr "Připojit/Odpojit postrk"
+msgstr "Připojit postrk"
 
 #: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:91
 msgid "Helper Options"
@@ -608,19 +608,19 @@ msgstr "Volby postrku"
 
 #: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:96
 msgid "Toggle Brake Hose Connection"
-msgstr "Spojit/rozpojit hadice hlavního potrubí"
+msgstr "Zapojit hadice hlavního potrubí"
 
 #: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:101
 msgid "Open/Close Front Angle Cock"
-msgstr "Otevřít/zavřít přední vzd. kohout"
+msgstr "Přední vzduchový kohout"
 
 #: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:106
 msgid "Open/Close Rear Angle Cock"
-msgstr "Otevřít/zavřít zadní vzd. kohout"
+msgstr "Zadní vzduchový kohout"
 
 #: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:111
 msgid "Open/Close Bleed Off Valve"
-msgstr "Otevřít/zavřít odvzdušňovací ventil"
+msgstr "Odvzdušňovací ventil"
 
 #: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:116
 msgid "Brake Mode G/P/R/R+Mg"
@@ -641,7 +641,7 @@ msgstr "Brzda vozu"
 
 #: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:142
 msgid "Air Twin Pipe Hoses"
-msgstr "Hadice napájecího potrubí"
+msgstr "Zapojit hadice napájecího potrubí"
 
 #: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:147
 msgid "Left Door"
@@ -890,7 +890,7 @@ msgstr "Pravé dveře otevřeno"
 
 #: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:544
 msgid "Pax`s mode"
-msgstr "Povolení nástupu cestujících"
+msgstr "Zákaz nástupu cestujících"
 
 #: ../../RunActivity/Viewer3D/Popups/CompassWindow.cs:35
 msgid "Compass"
@@ -1564,7 +1564,7 @@ msgstr "Tepl int"
 
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:608
 msgid "H/AUnit"
-msgstr "TopZAP/VYP"
+msgstr "Top/Klima"
 
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:609
 msgid "HeatType"
