@@ -224,7 +224,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
             stf.MustMatch("(");
             MinimumValue = stf.ReadFloat(STFReader.UNITS.None, null);
             MaximumValue = stf.ReadFloat(STFReader.UNITS.None, null);
-            StepSize = stf.ReadFloat(STFReader.UNITS.None, null);
+            StepSize = stf.ReadFloat(STFReader.UNITS.None, null); StepSize = MathHelper.Clamp(StepSize, 0.01f, StepSize);
             IntermediateValue = CurrentValue = stf.ReadFloat(STFReader.UNITS.None, null);
             string token = stf.ReadItem(); // s/b numnotches
             if (string.Compare(token, "NumNotches", true) != 0) // handle error in gp38.eng where extra parameter provided before NumNotches statement 
