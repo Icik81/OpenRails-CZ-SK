@@ -1365,6 +1365,7 @@ namespace Orts.Simulation.RollingStocks
             {
                 HVOff = false;
                 LocalThrottlePercent = 0;
+                LocalDynamicBrakePercent= 0;
                 if (CruiseControl != null) 
                 {
                     CruiseControl.ForceThrottleAndDynamicBrake = 0;
