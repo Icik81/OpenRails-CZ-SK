@@ -3395,7 +3395,7 @@ namespace Orts.Simulation.RollingStocks
                 if (DynamicBrakePercent < 0)
                     DynamicBrakePercent = -1;
                 SetDynamicBrakePercent(DynamicBrakePercent);
-                if (BrakeSystem.AutoCylPressurePSI1 < 1 && DynamicBrakePercent == 0)
+                if (BrakeSystem.AutoCylPressurePSI1 < 10 && DynamicBrakePercent <= 0)
                 {
                     EngineBrakeEngageEDB = false;
                 }

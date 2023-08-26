@@ -3220,7 +3220,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 train.BrakeLine3PressurePSI = MathHelper.Clamp(train.BrakeLine3PressurePSI, 0, lead.BrakeSystem.BrakeCylinderMaxSystemPressurePSI);
 
                 // Při aktivní EDB a použití přímočinné brzdy zruší účinek EDB
-                if (lead.BrakeSystem.AutoCylPressurePSI1 > 0 && lead.DynamicBrakePercent > 0)
+                if (lead.BrakeSystem.AutoCylPressurePSI1 > 10 && lead.DynamicBrakePercent > 0)
                     lead.EngineBrakeEngageEDB = true;
 
                 // Propojí přímočinné brzdy, pokud jsou lokomotivy propojené kabelem
