@@ -29,6 +29,7 @@ using Orts.Simulation.Physics;
 using Orts.Simulation.RollingStocks;
 using Orts.Simulation.RollingStocks.SubSystems.Controllers;
 using Orts.Simulation.Signalling;
+using Orts.Simulation.Timetables;
 using ORTS.Common;
 using System;
 using System.Collections.Generic;
@@ -1902,10 +1903,10 @@ namespace Orts.Simulation.AIs
             // Icik
             if ((thisTrain as AITrain).DontStopABSWP)
             {
-                if (thisTrain.AuxActionsContain.CountSpec() > 0)
+                if ((thisTrain as AITrain).AuxActionsContain.CountSpec() > 0)
                 {
-                    thisTrain.AuxActionsContain.Remove(this);
-                    movementState = AITrain.AI_MOVEMENT_STATE.INIT_ACTION;
+                    (thisTrain as AITrain).AuxActionsContain.Remove(this);                    
+                    (thisTrain as AITrain).ResetActions(true);
                 }
                 (thisTrain as AITrain).DontStopABSWP = false;
             }
