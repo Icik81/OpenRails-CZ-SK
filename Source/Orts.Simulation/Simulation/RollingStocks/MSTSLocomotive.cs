@@ -10427,7 +10427,7 @@ namespace Orts.Simulation.RollingStocks
                 Simulator.TrainPowerKey = false;
                 foreach (TrainCar car in Train.Cars)
                 {
-                    if (car is MSTSLocomotive && AcceptMUSignals)
+                    if (car is MSTSLocomotive && car.AcceptMUSignals)
                     {
                         if (car.PowerKeyPosition[1] == 2 || car.PowerKeyPosition[2] == 2)
                         {
@@ -12223,6 +12223,19 @@ namespace Orts.Simulation.RollingStocks
                 return;
             if (DieselDirectionController || DieselDirectionController3)
             {
+                if (PowerKeyPosition[LocoStation] == 1)
+                {
+                    DieselDirectionControllerInOut = false;
+                    PowerKeyPosition[LocoStation] = 0;
+                    this.CarPowerKey = false;
+                }
+                if (PowerKeyPosition[LocoStation] == 2)
+                {
+                    DieselDirectionControllerInOut = true;
+                    DieselDirectionController_In = true;
+                    DieselDirectionController_Out = false;
+                }
+
                 if (DieselDirectionControllerPosition[LocoStation] == -1)
                 {
                     DieselDirectionControllerPosition[LocoStation] = 2;
@@ -12298,6 +12311,19 @@ namespace Orts.Simulation.RollingStocks
                 return;
             if (DieselDirectionController2)
             {
+                if (PowerKeyPosition[LocoStation] == 1)
+                {
+                    DieselDirectionControllerInOut = false;
+                    PowerKeyPosition[LocoStation] = 0;
+                    this.CarPowerKey = false;
+                }
+                if (PowerKeyPosition[LocoStation] == 2)
+                {
+                    DieselDirectionControllerInOut = true;
+                    DieselDirectionController_In = true;
+                    DieselDirectionController_Out = false;
+                }
+
                 if (DieselDirectionController2Position[LocoStation] == -1)
                 {
                     DieselDirectionController2Position[LocoStation] = 0;
@@ -12415,7 +12441,7 @@ namespace Orts.Simulation.RollingStocks
         {
             // Zasunutí a odebrání směrové páky u dieselu            
             if ((DieselDirectionController && DieselDirection_0) || (DieselDirectionController2 && DieselDirection_0))
-            {
+            {                
                 string DieselDirectionControllerInfo;
                 if (!DieselDirectionControllerInOut && !AcceptMUSignals)
                 {
