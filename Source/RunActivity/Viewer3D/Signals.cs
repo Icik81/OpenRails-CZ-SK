@@ -475,43 +475,43 @@ namespace Orts.Viewer3D
                             glowDay = glowNight = 0.0f;
 
                         // Icik                        
-                        if (mstsSignalType.LightTextureName == "ltex" || mstsSignalType.LightTextureName == "mtex")
+                        if (mstsSignalType.LightTextureName.ToLower() == "ltex" || mstsSignalType.LightTextureName.ToLower() == "mtex")
                         {
-                            switch (viewer.Simulator.RouteName)
+                            switch (viewer.Simulator.RouteName.ToLower())
                             {
                                 // 64x64 Malá   
-                                case "Breclav - Praha":
-                                case "Dvoukolejka":
-                                case "Caslav - Tremosnice":
-                                case "Valasske Mezirici - Ostrava":
-                                case "Bohumín - Olomouc hl.n.": // cz_bohumin-olomouc                                    
-                                case "Trencin - Nitra": // TN_NR                                                                        
-                                case "Ztracena_old":
+                                case "breclav - praha":
+                                case "dvoukolejka":
+                                case "caslav - tremosnice":
+                                case "valasske mezirici - ostrava":
+                                case "bohumín - olomouc hl.n.": // cz_bohumin-olomouc                                    
+                                case "trencin - nitra": // TN_NR                                                                        
+                                case "ztracena_old":
                                     Material = viewer.MaterialManager.Load("SignalLight", System.IO.Path.Combine(viewer.ContentPath, "..\\Content\\SignalLight\\SignalLight64M.ace"));                                    
                                     glowDay = viewer.Simulator.Settings.DaySignalLightGlowSize / 2f; glowNight = viewer.Simulator.Settings.NightSignalLightGlowSize / 2f;
                                     break;
 
                                 // 128x128 
-                                case "Trat 321":
-                                case "CR_310":
-                                case "CR_310_MP":
-                                case "Frydlant - Ostrava":
-                                case "Jihlava - Brno":
-                                case "Luhacovice":
-                                case "Zvolen-Nove Zamky": // ZSR150
-                                case "CR_244":
+                                case "trat 321":
+                                case "cr_310":
+                                case "cr_310_mp":
+                                case "frydlant - ostrava":
+                                case "jihlava - brno":
+                                case "luhacovice":
+                                case "zvolen-nove zamky": // ZSR150
+                                case "cr_244":
                                     Material = viewer.MaterialManager.Load("SignalLight", System.IO.Path.Combine(viewer.ContentPath, "..\\Content\\SignalLight\\SignalLight128.ace"));
                                     glowDay = viewer.Simulator.Settings.DaySignalLightGlowSize / 2f; glowNight = viewer.Simulator.Settings.NightSignalLightGlowSize / 2f;
                                     break;
 
                                 // 256x256 
-                                case "Trat_183":
+                                case "trat_183":
                                     Material = viewer.MaterialManager.Load("SignalLight", System.IO.Path.Combine(viewer.ContentPath, "..\\Content\\SignalLight\\SignalLight256.ace"));
                                     glowDay = viewer.Simulator.Settings.DaySignalLightGlowSize / 2f; glowNight = viewer.Simulator.Settings.NightSignalLightGlowSize / 2f;
                                     break;
 
                                 // 64x64 Velká 
-                                case "Trat ZSR 191-193":
+                                case "trat zsr 191-193":
                                     Material = viewer.MaterialManager.Load("SignalLight", System.IO.Path.Combine(viewer.ContentPath, "..\\Content\\SignalLight\\SignalLight64V.ace"));
                                     glowDay = viewer.Simulator.Settings.DaySignalLightGlowSize; glowNight = viewer.Simulator.Settings.NightSignalLightGlowSize;
                                     break;
