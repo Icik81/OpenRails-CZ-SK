@@ -17084,7 +17084,7 @@ namespace Orts.Simulation.Physics
             }
 
             //if (train.StationStops[0].PlatformItem.PassengerList.Count == 0 && !train.BoardingComplete && true == false)
-            if (!PeopleWantToEntry && !train.BoardingComplete)
+            if (!PeopleWantToEntry && !train.BoardingComplete && PeopleWantToLeaveCount == 0)
             {
                 bool closeDoor = false;
                 bool haveCentralDoors = false;

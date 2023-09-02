@@ -1150,6 +1150,7 @@ namespace Orts.Simulation
                                 else
                                     DisplayMessage = Simulator.Catalog.GetString("Waiting for passengers to board....");
                                 MyPlayerTrain.UpdatePassengerCountAndWeight(MyPlayerTrain, MyPlayerTrain.ActualPassengerCountAtStation, clock);
+                                return;
                             }
                             else
                             if ((!MyPlayerTrain.PeopleWantToEntry && !MyPlayerTrain.TrainDoorsOpen && !loco.CentralHandlingDoors)
