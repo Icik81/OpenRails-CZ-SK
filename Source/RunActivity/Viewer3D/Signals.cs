@@ -494,6 +494,7 @@ namespace Orts.Viewer3D
                                 // 128x128 
                                 case "Trat 321":
                                 case "CR_310":
+                                case "CR_310_MP":
                                 case "Frydlant - Ostrava":
                                 case "Jihlava - Brno":
                                 case "Luhacovice":
