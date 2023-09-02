@@ -4353,7 +4353,7 @@ namespace Orts.Simulation.RollingStocks
                         if (car is MSTSSteamLocomotive && car.WagonTemperature < car.SteamLocoCabTemperatureBase)
                         {
                             float BoilerPowerKW = 10;
-                            if (Simulator.Season == SeasonType.Winter)
+                            if (Simulator.Season == SeasonType.Spring || Simulator.Season == SeasonType.Autumn || Simulator.Season == SeasonType.Winter)
                                 car.WagonTemperature += BoilerPowerKW * 1.5f * 1000 / TempStepUp / CarAirVolumeM3 * elapsedClockSeconds;
                             else
                                 car.WagonTemperature += (BoilerPowerKW * 1.0f * 1000 / TempStepUp / CarAirVolumeM3 * elapsedClockSeconds) + car.TempCDeltaAir;
