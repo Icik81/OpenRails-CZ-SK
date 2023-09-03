@@ -12229,7 +12229,7 @@ namespace Orts.Simulation.RollingStocks
                     PowerKeyPosition[LocoStation] = 0;
                     this.CarPowerKey = false;
                 }
-                if (PowerKeyPosition[LocoStation] == 2)
+                if (PowerKeyPosition[LocoStation] == 2 && Simulator.GameTime > 1f)
                 {
                     DieselDirectionControllerInOut = true;
                     DieselDirectionController_In = true;
@@ -12317,7 +12317,7 @@ namespace Orts.Simulation.RollingStocks
                     PowerKeyPosition[LocoStation] = 0;
                     this.CarPowerKey = false;
                 }
-                if (PowerKeyPosition[LocoStation] == 2)
+                if (PowerKeyPosition[LocoStation] == 2 && Simulator.GameTime > 1f)
                 {
                     DieselDirectionControllerInOut = true;
                     DieselDirectionController_In = true;
