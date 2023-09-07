@@ -841,7 +841,7 @@ namespace Orts.Simulation.AIs
                             && WTSEnable)
                         {
                             Simulator.AIRequestSignal = true;
-                        }
+                        }                        
                     }
 
                     break;
@@ -3189,7 +3189,10 @@ namespace Orts.Simulation.AIs
                                 attachToTrain = true;
                                 AttachTo = OtherTrain.Number;
                             }
-
+                            
+                            // Icik
+                            if (Simulator.Settings.MSTSCompatibilityMode)
+                                attachToTrain = true;
                         }
                         if (Math.Abs(OtherTrain.SpeedMpS) >= 0.025f)
                         {
