@@ -3022,15 +3022,18 @@ namespace Orts.Simulation.RollingStocks
         // Icik
         public void PlayerSwitchToRearCab()
         {
-            Simulator.PlayerUsingRearCab = UsingRearCab;
+            if (IsLeadLocomotive())
+            {
+                Simulator.PlayerUsingRearCab = UsingRearCab;
 
-            if (UsingRearCab)
-            {
-                SignalEvent(Event.ActiveRearCab);
-            }
-            else
-            {
-                SignalEvent(Event.ActiveFrontCab);
+                if (UsingRearCab)
+                {
+                    SignalEvent(Event.ActiveRearCab);
+                }
+                else
+                {
+                    SignalEvent(Event.ActiveFrontCab);
+                }
             }
         }
 
