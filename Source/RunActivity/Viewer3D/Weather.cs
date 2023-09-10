@@ -212,7 +212,7 @@ namespace Orts.Viewer3D
             UpdateWeatherParameters();
 
             // add here randomized weather
-            if (Viewer.Settings.ActWeatherRandomizationLevel > 0 && Viewer.Simulator.ActivityRun != null && !Viewer.Simulator.ActivityRun.WeatherChangesPresent)
+            if (Viewer.Settings.ActWeatherRandomizationLevel > 0 /*&& Viewer.Simulator.ActivityRun != null && !Viewer.Simulator.ActivityRun.WeatherChangesPresent*/)
             {
                 RandomizedWeather = RandomizeInitialWeather();
                 dynamicWeather = new DynamicWeather();
@@ -780,7 +780,7 @@ namespace Orts.Viewer3D
             // Then check if we are in precipitation zone
             if (Weather.OvercastFactor > 0.5)
             {
-                randValue = Simulator.Random.Next(73);
+                randValue = Simulator.Random.Next(730);
                 if (randValue > 40)
                 {
                     Weather.PricipitationIntensityPPSPM2 = (float)(randValue - 40f) / 100f * 3;
@@ -800,13 +800,35 @@ namespace Orts.Viewer3D
                 else Weather.PricipitationIntensityPPSPM2 = 0;
             }
             else Weather.PricipitationIntensityPPSPM2 = 0;
-            // and now define visibility
-            randValue = Simulator.Random.Next(2000);
+            
+            // and now define visibility            
+            // Icik
+            int SeasonFogMin = 1000;
+            switch (Viewer.Simulator.Season)
+            {
+                case SeasonType.Spring:
+                    randValue = Simulator.Random.Next(2500);
+                    SeasonFogMin = 4000;
+                    break;
+                case SeasonType.Summer:
+                    randValue = Simulator.Random.Next(3000);
+                    SeasonFogMin = 8000;
+                    break;
+                case SeasonType.Autumn:
+                    randValue = Simulator.Random.Next(2000);
+                    SeasonFogMin = 100;
+                    break;
+                case SeasonType.Winter:
+                    randValue = Simulator.Random.Next(2500);
+                    SeasonFogMin = 2000;
+                    break;
+            }
             if (Weather.PricipitationIntensityPPSPM2 > 0 || Weather.OvercastFactor > 0.7f)
                 // use first digit to define power of ten and the other three to define the multiplying number
-                Weather.FogDistance = Math.Max(100, (float)Math.Pow(10, ((int)(randValue / 1000) + 2)) * (float)((randValue % 1000 + 1) / 100f));
+                Weather.FogDistance = Math.Max(SeasonFogMin / 2f, (float)Math.Pow(10, ((int)(randValue / 1000) + 2)) * (float)((randValue % 1000 + 1) / 100f));
             else
-                Weather.FogDistance = Math.Max(500, (float)Math.Pow(10, (int)((randValue / 1000) + 3)) * (float)((randValue % 1000 + 1) / 100f));
+                Weather.FogDistance = Math.Max(SeasonFogMin, (float)Math.Pow(10, (int)((randValue / 1000) + 3)) * (float)((randValue % 1000 + 1) / 100f));
+            Weather.FogDistance = MathHelper.Clamp(Weather.FogDistance, 10, 30500);
             return true;
         }
 
@@ -1329,7 +1351,7 @@ namespace Orts.Viewer3D
                 // Then check if we are in precipitation zone
                 if (ORTSOvercast > 0.5)
                 {
-                    randValue = Simulator.Random.Next(75);
+                    randValue = Simulator.Random.Next(750);
                     if (randValue > 40)
                     {
                         ORTSPrecipitationIntensity = (float)(randValue - 40f) / 1000f;
@@ -1374,16 +1396,37 @@ namespace Orts.Viewer3D
                             - weatherControl.Weather.PricipitationIntensityPPSPM2) / ORTSPrecipitationIntensityTransitionTimeS : 0;
                 }
 
-                // and now define visibility
-                randValue = Simulator.Random.Next(2000);
+                // and now define visibility                
+                // Icik
+                int SeasonFogMin = 1000;
+                switch (weatherControl.Viewer.Simulator.Season)
+                {
+                    case SeasonType.Spring:
+                        randValue = Simulator.Random.Next(2500);
+                        SeasonFogMin = 4000;
+                        break;
+                    case SeasonType.Summer:
+                        randValue = Simulator.Random.Next(3000);
+                        SeasonFogMin = 8000;
+                        break;
+                    case SeasonType.Autumn:
+                        randValue = Simulator.Random.Next(2000);
+                        SeasonFogMin = 100;
+                        break;
+                    case SeasonType.Winter:
+                        randValue = Simulator.Random.Next(2500);
+                        SeasonFogMin = 2000;
+                        break;
+                }
+
                 if (ORTSPrecipitationIntensity > 0 || ORTSOvercast > 0.7f)
                     // use first digit to define power of ten and the other three to define the multiplying number
-                    ORTSFog = Math.Max(100, (float)Math.Pow(10, ((int)(randValue / 1000) + 2)) * (float)((randValue % 1000 + 1) / 100f));
+                    ORTSFog = Math.Max(SeasonFogMin / 2f, (float)Math.Pow(10, ((int)(randValue / 1000) + 2)) * (float)((randValue % 1000 + 1) / 100f));
                 else
-                    ORTSFog = Math.Max(500, (float)Math.Pow(10, (int)((randValue / 1000) + 3)) * (float)((randValue % 1000 + 1) / 100f));
+                    ORTSFog = Math.Max(SeasonFogMin, (float)Math.Pow(10, (int)((randValue / 1000) + 3)) * (float)((randValue % 1000 + 1) / 100f));
                 ORTSFogTransitionTimeS = weatherChangeTimer;
                 fogTimer = (float)ORTSFogTransitionTimeS;
-                var fogFinalValue = MathHelper.Clamp(ORTSFog, 10, 100000);
+                var fogFinalValue = MathHelper.Clamp(ORTSFog, 10, 30500);
                 fogDistanceIncreasing = false;
                 fogChangeRate = fogTimer > 0 ? (fogFinalValue - weatherControl.Weather.FogDistance) / (ORTSFogTransitionTimeS * ORTSFogTransitionTimeS) : 0;
                 if (fogFinalValue > weatherControl.Weather.FogDistance)
