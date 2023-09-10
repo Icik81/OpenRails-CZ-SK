@@ -1423,9 +1423,9 @@ namespace Orts.Simulation
                 if (activity.triggeredEventWrapper == null) activity.triggeredEventWrapper = this;
             }
 
-            if (this.ParsedObject.Outcomes.ActivityFail != null)
+            if (this.ParsedObject.Outcomes.ActivityFail != null && !Simulator.Settings.MSTSCompatibilityMode)
             {
-                activity.IsSuccessful = false;
+                activity.IsSuccessful = false;                
                 return true;
             }
             if (this.ParsedObject.Outcomes.ActivitySuccess == true)
