@@ -1446,6 +1446,7 @@ namespace Orts.Viewer3D
                 {
                     ORTSFog = Math.Max(SeasonFogMin, (float)Math.Pow(10, (int)((randValue / 1000) + 3)) * (float)((randValue % 1000 + 1) / 100f));                    
                 }
+                ORTSFog = MathHelper.Clamp(ORTSFog, SeasonFogMin, SeasonFogMax);
                 ORTSFogTransitionTimeS = weatherChangeTimer;
                 fogTimer = (float)ORTSFogTransitionTimeS;
                 var fogFinalValue = MathHelper.Clamp(ORTSFog, SeasonFogMin, SeasonFogMax);
