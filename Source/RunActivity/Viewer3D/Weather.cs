@@ -518,6 +518,9 @@ namespace Orts.Viewer3D
                             break;
                     }
                     break;
+                case 7: // Náhodné
+                    Viewer.Simulator.Settings.ActWeatherRandomizationLevel = 2;
+                    break;
             }
         }
 

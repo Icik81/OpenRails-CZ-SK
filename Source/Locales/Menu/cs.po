@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2023-08-19 14:25:10+0200\n"
-"PO-Revision-Date: 2023-08-19 14:26+0200\n"
+"POT-Creation-Date: 2023-09-11 19:55:49+0200\n"
+"PO-Revision-Date: 2023-09-11 19:57+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: cs\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n>=2 && n<=4 ? 1 : 2);\n"
-"X-Generator: Poedit 3.2.2\n"
+"X-Generator: Poedit 3.3.2\n"
 
 #: ../../Menu/ImportExportSaveForm.cs:52
 msgid "Save Packs"
@@ -184,11 +184,15 @@ msgstr "Silný déšť/sníh"
 msgid "Storm"
 msgstr "Průtrž mračen"
 
-#: ../../Menu/MainForm.cs:349
+#: ../../Menu/MainForm.cs:194
+msgid "Random"
+msgstr "Náhodné"
+
+#: ../../Menu/MainForm.cs:350
 msgid "Update check failed"
 msgstr "Kontrola aktualizace selhala"
 
-#: ../../Menu/MainForm.cs:883
+#: ../../Menu/MainForm.cs:884
 msgid ""
 "User name must be 4-10 characters long, cannot contain space, ', \" or - and "
 "must not start with a digit."
@@ -196,16 +200,16 @@ msgstr ""
 "Uživatelské jméno musí mít 4-10 znaků, nesmí obsahovat mezeru, ', \" nebo - "
 "a nesmí začínat číslicí."
 
-#: ../../Menu/MainForm.cs:1556
+#: ../../Menu/MainForm.cs:1557
 msgid "Activity Briefing"
 msgstr "Informace k aktivitě"
 
-#: ../../Menu/MainForm.cs:351
+#: ../../Menu/MainForm.cs:352
 #, csharp-format
 msgid "Update to {0}"
 msgstr "Aktualizovat na {0}"
 
-#: ../../Menu/MainForm.cs:896
+#: ../../Menu/MainForm.cs:897
 #, csharp-format
 msgid ""
 "The update check failed due to an error:\n"
@@ -216,7 +220,7 @@ msgstr ""
 "\n"
 "{0}"
 
-#: ../../Menu/MainForm.cs:904
+#: ../../Menu/MainForm.cs:905
 #, csharp-format
 msgid ""
 "The update failed due to an error:\n"
@@ -227,52 +231,52 @@ msgstr ""
 "\n"
 "{0}"
 
-#: ../../Menu/MainForm.cs:1545
+#: ../../Menu/MainForm.cs:1546
 #, csharp-format
 msgid "Route: {0}"
 msgstr "Trať: {0}"
 
-#: ../../Menu/MainForm.cs:1551 ../../Menu/MainForm.cs:1583
+#: ../../Menu/MainForm.cs:1552 ../../Menu/MainForm.cs:1584
 #, csharp-format
 msgid "Locomotive: {0}"
 msgstr "Lokomotiva: {0}"
 
-#: ../../Menu/MainForm.cs:1555
+#: ../../Menu/MainForm.cs:1556
 #, csharp-format
 msgid "Activity: {0}"
 msgstr "Aktivita: {0}"
 
-#: ../../Menu/MainForm.cs:1560 ../../Menu/MainForm.cs:1586
+#: ../../Menu/MainForm.cs:1561 ../../Menu/MainForm.cs:1587
 #, csharp-format
 msgid "Path: {0}"
 msgstr "Vlaková cesta: {0}"
 
-#: ../../Menu/MainForm.cs:1561
+#: ../../Menu/MainForm.cs:1562
 #, csharp-format
 msgid "Starting at: {0}"
 msgstr "Začátek trasy: {0}"
 
-#: ../../Menu/MainForm.cs:1562
+#: ../../Menu/MainForm.cs:1563
 #, csharp-format
 msgid "Heading to: {0}"
 msgstr "Konec trasy: {0}"
 
-#: ../../Menu/MainForm.cs:1569
+#: ../../Menu/MainForm.cs:1570
 #, csharp-format
 msgid "Timetable set: {0}"
 msgstr "Nast. jízdního řádu: {0}"
 
-#: ../../Menu/MainForm.cs:1573
+#: ../../Menu/MainForm.cs:1574
 #, csharp-format
 msgid "Timetable: {0}"
 msgstr "Jízdní řád: {0}"
 
-#: ../../Menu/MainForm.cs:1577
+#: ../../Menu/MainForm.cs:1578
 #, csharp-format
 msgid "Train: {0}"
 msgstr "Vlak: {0}"
 
-#: ../../Menu/MainForm.cs:1581
+#: ../../Menu/MainForm.cs:1582
 #, csharp-format
 msgid "Consist: {0}"
 msgstr "Souprava: {0}"

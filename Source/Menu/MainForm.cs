@@ -191,6 +191,7 @@ namespace ORTS
                     new KeyedComboBoxItem(4, catalog.GetString("Rain/snowing day")),
                     new KeyedComboBoxItem(5, catalog.GetString("Heavy rain/snow")),
                     new KeyedComboBoxItem(6, catalog.GetString("Storm")),
+                    new KeyedComboBoxItem(7, catalog.GetString("Random")),
                 };
                 
                 comboBoxWeather.Items.AddRange(WeathersAdv);
