@@ -3189,10 +3189,18 @@ namespace Orts.Simulation.AIs
                                 attachToTrain = true;
                                 AttachTo = OtherTrain.Number;
                             }
-                            
+
                             // Icik
-                            if (Simulator.Settings.MSTSCompatibilityMode)
+                            if (Simulator.Settings.MSTSCompatibilityMode && OtherTrain.Number == 0) // Pouze s hráčem
+                            {
                                 attachToTrain = true;
+                                AttachTo = OtherTrain.Number;
+                            }
+                            if (Simulator.Settings.MSTSCompatibilityMode && OtherTrain.Number != 0) 
+                            {
+                                attachToTrain = false;
+                                return;
+                            }
                         }
                         if (Math.Abs(OtherTrain.SpeedMpS) >= 0.025f)
                         {
