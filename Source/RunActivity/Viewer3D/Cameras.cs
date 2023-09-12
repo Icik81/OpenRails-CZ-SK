@@ -2581,11 +2581,11 @@ namespace Orts.Viewer3D
             // TODO: What is this code trying to do?
             //if (train != Viewer.PlayerTrain && train.LeadLocomotive == null) train.ChangeToNextCab();
             trainForwards = true;
-            if (train.LeadLocomotive != null)
+            if (train != null && train.LeadLocomotive != null)
                 //TODO: next code line has been modified to flip trainset physics in order to get viewing direction coincident with loco direction when using rear cab.
                 // To achieve the same result with other means, without flipping trainset physics, maybe the line should be changed
                 trainForwards = (train.LeadLocomotive.SpeedMpS >= 0) ^ train.LeadLocomotive.Flipped ^ ((MSTSLocomotive)train.LeadLocomotive).UsingRearCab;
-            else if (Viewer.PlayerLocomotive != null && train.IsActualPlayerTrain)
+            else if (train != null && Viewer.PlayerLocomotive != null && train.IsActualPlayerTrain)
                 trainForwards = (Viewer.PlayerLocomotive.SpeedMpS >= 0) ^ Viewer.PlayerLocomotive.Flipped ^ ((MSTSLocomotive)Viewer.PlayerLocomotive).UsingRearCab;
 
             targetLocation = attachedCar.WorldPosition.WorldLocation;

@@ -792,7 +792,7 @@ namespace Orts.Simulation.AIs
                         {
                             if (MovementState == AI_MOVEMENT_STATE.STOPPED
                                 && ControlMode == TRAIN_CONTROL.AUTO_NODE
-                                && nextActionInfo.NextAction != null && nextActionInfo.NextAction == AIActionItem.AI_ACTION_TYPE.END_OF_ROUTE)
+                                && nextActionInfo != null && nextActionInfo.NextAction == AIActionItem.AI_ACTION_TYPE.END_OF_ROUTE)
                             {
                                 RemoveTrain();
                             }
