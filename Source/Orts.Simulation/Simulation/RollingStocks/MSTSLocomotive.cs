@@ -4769,6 +4769,7 @@ namespace Orts.Simulation.RollingStocks
                         {
                             car.BrakeSystem.PowerForWagon = false;
                             PowerOn = false;
+                            Battery = false;
                         }
                     }
                 }
@@ -4780,6 +4781,7 @@ namespace Orts.Simulation.RollingStocks
                         {
                             car.BrakeSystem.PowerForWagon = true;
                             PowerOn = true;
+                            Battery = true;
                         }
                     }
                 }
@@ -4943,23 +4945,10 @@ namespace Orts.Simulation.RollingStocks
         // Nastaví příznak zapnutých baterií a napájení pro zapnutí světel
         public void SetCarLightsPowerOn()
         {
-            //if (LocoReadyToGo)
-            //    Headlight = 0;
-
             if (Battery)
                 CarLightsPowerOn = true;
             else
-                CarLightsPowerOn = false;
-            if (this.Train.TrainType == Train.TRAINTYPE.AI || this.Train.TrainType == Train.TRAINTYPE.REMOTE)
-            {
-                if (PowerOn)
-                    CarLightsPowerOn = true;
-                else
-                    CarLightsPowerOn = false;
-                // AI nebude mít zhasnutá světla na stahovačkách
-                if (AbsSpeedMpS > 0)
-                    CarLightsPowerOn = true;
-            }
+                CarLightsPowerOn = false;            
         }
 
         // Nastaví výkon na postrku

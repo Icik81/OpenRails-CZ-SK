@@ -321,7 +321,7 @@ namespace Orts.Viewer3D
             }
 
             // Světla pro AI
-            if (Car.Train != null && (Car.Train.TrainType == Train.TRAINTYPE.AI))
+            if (Car.Train != null && (Car.Train.TrainType == Train.TRAINTYPE.AI || Car.Train.TrainType == Train.TRAINTYPE.AI_PLAYERDRIVEN) && (Car as MSTSLocomotive) != null)
             {
                 // AI posunuje
                 if (Car.CarIsShunting)
@@ -337,9 +337,9 @@ namespace Orts.Viewer3D
                 if (!newIsDay)
                     newTrainHeadlight = 2;
                 else
-                    newTrainHeadlight = 1;
+                    newTrainHeadlight = 1;                
             }
-            
+
             if (
                 (TrainHeadlight != newTrainHeadlight) ||
                 (CarIsReversed != newCarIsReversed) ||

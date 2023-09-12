@@ -208,8 +208,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                     Script.Update(elapsedSeconds, Locomotive.Battery);
                 }
             }
-            if (!Locomotive.IsPlayerTrain)
-                Locomotive.Battery = true;
+
             if (!Locomotive.Battery && State != CircuitBreakerState.Open)
             {
                 HandleEvent(PowerSupplyEvent.OpenCircuitBreaker);

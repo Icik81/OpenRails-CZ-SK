@@ -1974,7 +1974,7 @@ namespace Orts.Simulation.RollingStocks
                 if (Simulator.Season == SeasonType.Winter)
                     MassKoef = 250 * 1000;
 
-                if ((Train as AITrain).MassKg > TrainMassKg - MassKoef || (Pantographs[1].State == PantographState.Up && Pantographs[2].State == PantographState.Up))
+                if ((Train as AITrain) != null && (Train as AITrain).MassKg > TrainMassKg - MassKoef || (Pantographs[1].State == PantographState.Up && Pantographs[2].State == PantographState.Up))
                 {
                     if (!TrainHasBreakSpeedPanto2Down)
                     {
