@@ -1320,8 +1320,11 @@ namespace Orts.Viewer3D
                     var oldPricipitationIntensityPPSPM2 = weatherControl.Weather.PricipitationIntensityPPSPM2;
                     weatherControl.Weather.PricipitationIntensityPPSPM2 = ORTSPrecipitationIntensity - (precipitationIntensityTimer * precipitationIntensityChangeRate * precipitationIntensityChangeRate2);
 
+                    if (weatherControl.Weather.OvercastFactor < 0.3f)
+                        weatherControl.Weather.PricipitationIntensityPPSPM2 = MathHelper.Clamp(weatherControl.Weather.PricipitationIntensityPPSPM2, 0, 0);
+                    else
                     if (weatherControl.Weather.OvercastFactor < 0.5f)
-                        weatherControl.Weather.PricipitationIntensityPPSPM2 = MathHelper.Clamp(weatherControl.Weather.PricipitationIntensityPPSPM2, 0, Simulator.Random.Next(10, 50) / 100f);
+                        weatherControl.Weather.PricipitationIntensityPPSPM2 = MathHelper.Clamp(weatherControl.Weather.PricipitationIntensityPPSPM2, 0, Simulator.Random.Next(10, 50) / 1000f);
                     else
                     {
                      if (weatherControl.Weather.PricipitationIntensityPPSPM2 < 0)
