@@ -1252,6 +1252,7 @@ namespace Orts.Viewer3D
                 weatherControl.weatherChangeOn = wChangeOn;
             }
 
+            float precipitationIntensityChangeRate2 = 1;
             public void WeatherChange_Update(ElapsedTime elapsedTime, WeatherControl weatherControl)
             {
                 var wChangeOn = false;
@@ -1277,13 +1278,58 @@ namespace Orts.Viewer3D
                     }
                     if (fogTimer == 0) ORTSFog = -1;
                 }
+
+                // Icik
+                int ORTSPrecipitationIntensityChanceToChange = -1;
+                if (ORTSPrecipitationIntensity == -1)
+                {
+                    ORTSPrecipitationIntensityChanceToChange = Simulator.Random.Next(10);
+                    precipitationIntensityChangeRate2 = 1;
+                }
+
+                if (ORTSPrecipitationIntensityChanceToChange > 0 && ORTSPrecipitationIntensityChanceToChange < 2)
+                {
+                    ORTSPrecipitationIntensity = weatherControl.Weather.PricipitationIntensityPPSPM2;
+                    if (weatherControl.Weather.OvercastFactor < 0.3f)
+                    {
+                        precipitationIntensityTimer = 1f * Simulator.Random.Next(10, 20);
+                        precipitationIntensityChangeRate2 = 0;
+                    }
+                    else
+                    if (weatherControl.Weather.OvercastFactor < 0.5f)
+                    {
+                        precipitationIntensityTimer = 10f * Simulator.Random.Next(10, 20);
+                        precipitationIntensityChangeRate2 = 0.5f * Simulator.Random.Next(-10, 10);
+                    }
+                    else
+                    {
+                        precipitationIntensityTimer = Simulator.Random.Next(50, 100);                        
+                        precipitationIntensityChangeRate2 = 1f * Simulator.Random.Next(-10, 10);
+                    }
+                }
+
                 if (ORTSPrecipitationIntensity >= 0 && precipitationIntensityDelayTimer == -1)
                 {
-                    precipitationIntensityTimer -= elapsedTime.ClockSeconds;
+                    if (weatherControl.Weather.OvercastFactor < 0.5f)
+                        precipitationIntensityTimer -= elapsedTime.ClockSeconds * 1f;
+                    else
+                        precipitationIntensityTimer -= elapsedTime.ClockSeconds * 1f;
+
                     if (precipitationIntensityTimer <= 0) precipitationIntensityTimer = 0;
                     else if (weatherControl.RandomizedWeather == false) wChangeOn = true;
                     var oldPricipitationIntensityPPSPM2 = weatherControl.Weather.PricipitationIntensityPPSPM2;
-                    weatherControl.Weather.PricipitationIntensityPPSPM2 = ORTSPrecipitationIntensity - precipitationIntensityTimer * precipitationIntensityChangeRate;
+                    weatherControl.Weather.PricipitationIntensityPPSPM2 = ORTSPrecipitationIntensity - (precipitationIntensityTimer * precipitationIntensityChangeRate * precipitationIntensityChangeRate2);
+
+                    if (weatherControl.Weather.OvercastFactor < 0.5f)
+                        weatherControl.Weather.PricipitationIntensityPPSPM2 = MathHelper.Clamp(weatherControl.Weather.PricipitationIntensityPPSPM2, 0, Simulator.Random.Next(10, 50) / 100f);
+                    else
+                    {
+                     if (weatherControl.Weather.PricipitationIntensityPPSPM2 < 0)
+                        weatherControl.Weather.PricipitationIntensityPPSPM2 = MathHelper.Clamp(weatherControl.Weather.PricipitationIntensityPPSPM2, Simulator.Random.Next(10, 100) / 1000f, 1f);
+                     else
+                        weatherControl.Weather.PricipitationIntensityPPSPM2 = MathHelper.Clamp(weatherControl.Weather.PricipitationIntensityPPSPM2, 0, 1f);
+                    }
+
                     if (weatherControl.Weather.PricipitationIntensityPPSPM2 > 0)
                     {
                         if (oldPricipitationIntensityPPSPM2 == 0)
