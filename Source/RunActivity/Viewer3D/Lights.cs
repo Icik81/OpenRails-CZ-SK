@@ -321,7 +321,7 @@ namespace Orts.Viewer3D
             }
 
             // Světla pro AI
-            if (Car.Train != null && (Car.Train.TrainType == Train.TRAINTYPE.AI || Car.Train.TrainType == Train.TRAINTYPE.AI_PLAYERDRIVEN) && (Car as MSTSLocomotive) != null)
+            if (Car.Train != null && Car.Train.TrainType == Train.TRAINTYPE.AI)
             {
                 // AI posunuje
                 if (Car.CarIsShunting)
