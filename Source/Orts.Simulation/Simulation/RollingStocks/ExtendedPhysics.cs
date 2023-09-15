@@ -508,8 +508,8 @@ namespace Orts.Simulation.RollingStocks
                     if (FastestAxleSpeedMpS < ea.WheelSpeedMpS)
                         FastestAxleSpeedMpS = ea.WheelSpeedMpS;
 
-                    float ForceToChangespeedDiffCoef = 100f * 1000f; // Dynamické počítání coefu kvůli oscilaci síly motorů
-                    speedDiff = (ea.WheelSpeedMpS - myAverageAxleSpeedMps) * (Math.Abs(TotalForceN) > ForceToChangespeedDiffCoef ? 20f : Math.Abs(TotalForceN / ForceToChangespeedDiffCoef * 20f)); // Jirko když to budeš měnit, řekni pro kterou mašinu, jinak přestanou fungovat ostatní.
+                    float ForceToChangespeedDiffCoef = Locomotive.MaxForceN; // Dynamické počítání coefu kvůli oscilaci síly motorů
+                    speedDiff = (ea.WheelSpeedMpS - myAverageAxleSpeedMps) * Math.Abs(TotalForceN / ForceToChangespeedDiffCoef * 20f); // Jirko když to budeš měnit, řekni pro kterou mašinu, jinak přestanou fungovat ostatní.
                     if (speedDiff < 0)
                         speedDiff = 0;
                     if (OverridenControllerVolts - speedDiff < 0)
@@ -852,10 +852,10 @@ namespace Orts.Simulation.RollingStocks
                 {
                     ForceN = prevForceN = 0;
                 }
-                float axleKpH = MpS.ToKpH(WheelSpeedMpS * (Locomotive.SpeedMpS != 0 ? (Locomotive.SpeedMpS / Math.Abs(Locomotive.SpeedMpS)) : 0));
+                float axleKpH = MpS.ToKpH(WheelSpeedMpS * (Locomotive.AbsSpeedMpS > 0 ? (Locomotive.SpeedMpS / Math.Abs(Locomotive.SpeedMpS)) : 0));
                 float trainKpH = MpS.ToKpH(Locomotive.SpeedMpS);
-                float speedDif = (axleKpH - trainKpH) * 0.75f;
-                float speedCoeff = trainKpH / 10;
+                float speedDif = (axleKpH - trainKpH) * Locomotive.AbsSpeedMpS > 10f ? 0.75f : 0;
+                float speedCoeff = Locomotive.AbsSpeedMpS > 10f ? trainKpH / 10f : 0;
                 
                 if (speedCoeff > 1)
                     speedCoeff = 1;

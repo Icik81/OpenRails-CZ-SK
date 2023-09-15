@@ -16504,7 +16504,7 @@ namespace Orts.Simulation.RollingStocks
                     break;
                 case CABViewControlTypes.TOTAL_FORCE:
                     data = 0;
-                    if (SpeedMpS < 0)
+                    if (WheelSpeedMpS < 0)
                     {
                         foreach (Undercarriage uc in extendedPhysics.Undercarriages)
                         {
