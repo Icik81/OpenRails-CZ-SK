@@ -921,7 +921,7 @@ namespace Orts.Simulation.RollingStocks
                         if (Math.Abs(WheelSpeedMpS) < 0.95f * Locomotive.AbsSpeedMpS)
                             reducedForceN = 0;
                         else
-                            reducedForceN = MathHelper.Clamp(-((WheelSpeedMpS - (Locomotive.AbsSpeedMpS + 0.1f)) * (Mass / 1000)) * 750, 0, maxForceN);
+                            reducedForceN = -((WheelSpeedMpS - (Locomotive.AbsSpeedMpS + 0.1f)) * (Mass / 1000)) * 750;
                         Mass = mMass;
                     }
                     else
