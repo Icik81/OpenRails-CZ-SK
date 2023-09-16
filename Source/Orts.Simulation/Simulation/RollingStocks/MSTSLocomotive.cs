@@ -16584,6 +16584,7 @@ namespace Orts.Simulation.RollingStocks
                             if (data > 0 && BrakeSystem.EmerBrakeTriggerActive)
                                 data = 0;
                         }
+
                         switch (cvc.Units)
                         {
                             case CABViewControlUnits.AMPS:

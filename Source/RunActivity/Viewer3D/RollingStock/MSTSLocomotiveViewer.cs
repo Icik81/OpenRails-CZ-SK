@@ -3229,43 +3229,21 @@ namespace Orts.Viewer3D.RollingStock
                     index = PercentToIndex(Locomotive.GetCombinedHandleValue(false));
                     break;
                 case CABViewControlTypes.REQUESTED_FORCE:
-                    if (Locomotive.SpeedMpS < 0)
+                    if (Control.Feature == "NegativeMask")
                     {
-                        if (Control.Feature == "NegativeMask")
-                        {
-                            if (Locomotive.MotiveForceN > 200f && Locomotive.PositiveMask)
-                                index = 1;
-                            else
-                                index = 0;
-                            break;
-                        }
-                        if (Control.Feature == "PositiveMask")
-                        {
-                            if (Locomotive.MotiveForceN < -200 && Locomotive.NegativeMask)
-                                index = 1;
-                            else
-                                index = 0;
-                            break;
-                        }
+                        if (Locomotive.ControllerVolts < 0 && Locomotive.PositiveMask)
+                            index = 1;
+                        else
+                            index = 0;
+                        break;
                     }
-                    else
+                    if (Control.Feature == "PositiveMask")
                     {
-                        if (Control.Feature == "NegativeMask")
-                        {
-                            if (Locomotive.MotiveForceN < -200f && Locomotive.PositiveMask)
-                                index = 1;
-                            else
-                                index = 0;
-                            break;
-                        }
-                        if (Control.Feature == "PositiveMask")
-                        {
-                            if (Locomotive.MotiveForceN > 200 && Locomotive.NegativeMask)
-                                index = 1;
-                            else
-                                index = 0;
-                            break;
-                        }
+                        if (Locomotive.ControllerVolts > 0 && Locomotive.NegativeMask)
+                            index = 1;
+                        else
+                            index = 0;
+                        break;
                     }
                     index = PercentToIndex(Locomotive.GetCombinedHandleValue(false));
                     break;
