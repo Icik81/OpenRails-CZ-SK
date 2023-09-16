@@ -461,6 +461,11 @@ namespace Orts.Simulation.RollingStocks
                     else
                     if (Locomotive.ControllerVolts < 0)
                         Locomotive.SetDynamicBrakePercent(-Locomotive.ControllerVolts * 10f);
+
+                    if (Locomotive.DynamicBrakePercent > 1f)
+                    {
+                        Locomotive.ControllerVolts = -Locomotive.DynamicBrakePercent / 10f;
+                    }
                 }
             }            
 

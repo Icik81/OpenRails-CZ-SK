@@ -16514,7 +16514,8 @@ namespace Orts.Simulation.RollingStocks
                     if (data < 0)
                         data = (data / MaxDynamicBrakeForceN) * 100;
                     else
-                        data = (data / MaxForceN) * 100;
+                        data = (data / MaxForceN) * 100;                                            
+
                     if (cvc.Feature == "HideOnPositiveForce")
                     {
                         if (ControllerVolts >= 0)
