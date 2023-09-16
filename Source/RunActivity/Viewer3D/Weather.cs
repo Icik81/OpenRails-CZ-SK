@@ -1303,9 +1303,45 @@ namespace Orts.Viewer3D
                     }
                     else
                     {
-                        precipitationIntensityTimer = Simulator.Random.Next(50, 100);                        
-                        precipitationIntensityChangeRate2 = 1f * Simulator.Random.Next(-10, 10);
+                        precipitationIntensityTimer = Simulator.Random.Next(100, 300);                                                
+                        switch (weatherControl.Viewer.Simulator.Season)
+                        {
+                            case SeasonType.Spring:
+                                precipitationIntensityChangeRate2 = 1f * Simulator.Random.Next(-10, 10);
+                                break;
+                            case SeasonType.Summer:
+                                if (!weatherControl.NightTime)
+                                    precipitationIntensityChangeRate2 = 500f * Simulator.Random.Next(-10, 10);
+                                else
+                                    precipitationIntensityChangeRate2 = 100f * Simulator.Random.Next(-10, 10);
+                                break;
+                            case SeasonType.Autumn:
+                                precipitationIntensityChangeRate2 = 1f * Simulator.Random.Next(-10, 10);
+                                break;
+                            case SeasonType.Winter:
+                                if (!weatherControl.NightTime)
+                                    precipitationIntensityChangeRate2 = 100f * Simulator.Random.Next(-10, 10);
+                                else
+                                    precipitationIntensityChangeRate2 = 10f * Simulator.Random.Next(-10, 10);
+                                break;
+                        }
                     }
+                }
+
+                switch (weatherControl.Viewer.Simulator.Season)
+                {
+                    case SeasonType.Spring:
+                        precipitationIntensityTimer = MathHelper.Clamp(precipitationIntensityTimer, 0, 300);                        
+                        break;
+                    case SeasonType.Summer:
+                        precipitationIntensityTimer = MathHelper.Clamp(precipitationIntensityTimer, 0, 180);
+                        break;
+                    case SeasonType.Autumn:
+                        precipitationIntensityTimer = MathHelper.Clamp(precipitationIntensityTimer, 0, 300);
+                        break;
+                    case SeasonType.Winter:
+                        precipitationIntensityTimer = MathHelper.Clamp(precipitationIntensityTimer, 0, 300);
+                        break;
                 }
 
                 if (ORTSPrecipitationIntensity >= 0 && precipitationIntensityDelayTimer == -1)
@@ -1330,7 +1366,7 @@ namespace Orts.Viewer3D
                      if (weatherControl.Weather.PricipitationIntensityPPSPM2 < 0)
                         weatherControl.Weather.PricipitationIntensityPPSPM2 = MathHelper.Clamp(weatherControl.Weather.PricipitationIntensityPPSPM2, Simulator.Random.Next(10, 100) / 1000f, 1f);
                      else
-                        weatherControl.Weather.PricipitationIntensityPPSPM2 = MathHelper.Clamp(weatherControl.Weather.PricipitationIntensityPPSPM2, 0, 1f);
+                        weatherControl.Weather.PricipitationIntensityPPSPM2 = MathHelper.Clamp(weatherControl.Weather.PricipitationIntensityPPSPM2, 0, weatherControl.Weather.OvercastFactor > 0.7f ? 1f : weatherControl.Weather.OvercastFactor);
                     }
 
                     if (weatherControl.Weather.PricipitationIntensityPPSPM2 > 0)
@@ -1474,7 +1510,7 @@ namespace Orts.Viewer3D
                         break;
                     case SeasonType.Summer:
                         randValue = Simulator.Random.Next(2000);
-                        SeasonFogMin = 20000;
+                        SeasonFogMin = 15000;
                         SeasonFogMax = 30000;
                         break;
                     case SeasonType.Autumn:
