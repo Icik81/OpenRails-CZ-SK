@@ -16504,63 +16504,31 @@ namespace Orts.Simulation.RollingStocks
                     break;
                 case CABViewControlTypes.TOTAL_FORCE:
                     data = 0;
-                    if (WheelSpeedMpS < 0)
+                    foreach (Undercarriage uc in extendedPhysics.Undercarriages)
                     {
-                        foreach (Undercarriage uc in extendedPhysics.Undercarriages)
+                        foreach (ExtendedAxle ea in uc.Axles)
                         {
-                            foreach (ExtendedAxle ea in uc.Axles)
-                            {
-                                data -= ea.ForceNFiltered;
-                            }
+                            data += ea.ForceNFiltered;
                         }
-                        if (data > 0)
-                            data = (data / MaxDynamicBrakeForceN) * 100;
-                        else
-                            data = (data / MaxForceN) * 100;
-                        if (cvc.Feature == "HideOnPositiveForce")
-                        {
-                            if (ControllerVolts <= 0)
-                                cvc.IsVisible = PositiveMask = false;
-                            else
-                                cvc.IsVisible = PositiveMask = true;
-                        }
-                        if (cvc.Feature == "HideOnNegativeForce")
-                        {
-                            if (ControllerVolts >= 0)
-                                cvc.IsVisible = NegativeMask = false;
-                            else
-                                cvc.IsVisible = NegativeMask = true;
-                        }
-                        data *= -1f;
                     }
+                    if (data < 0)
+                        data = (data / MaxDynamicBrakeForceN) * 100;
                     else
+                        data = (data / MaxForceN) * 100;
+                    if (cvc.Feature == "HideOnPositiveForce")
                     {
-                        foreach (Undercarriage uc in extendedPhysics.Undercarriages)
-                        {
-                            foreach (ExtendedAxle ea in uc.Axles)
-                            {
-                                data += ea.ForceNFiltered;
-                            }
-                        }
-                        if (data < 0)
-                            data = (data / MaxDynamicBrakeForceN) * 100;
+                        if (ControllerVolts >= 0)
+                            cvc.IsVisible = PositiveMask = false;
                         else
-                            data = (data / MaxForceN) * 100;
-                        if (cvc.Feature == "HideOnPositiveForce")
-                        {
-                            if (ControllerVolts >= 0)
-                                cvc.IsVisible = PositiveMask = false;
-                            else
-                                cvc.IsVisible = PositiveMask = true;
-                        }
-                        if (cvc.Feature == "HideOnNegativeForce")
-                        {
-                            if (ControllerVolts <= 0)
-                                cvc.IsVisible = NegativeMask = false;
-                            else
-                                cvc.IsVisible = NegativeMask = true;
-                        }
+                            cvc.IsVisible = PositiveMask = true;
                     }
+                    if (cvc.Feature == "HideOnNegativeForce")
+                    {
+                        if (ControllerVolts <= 0)
+                            cvc.IsVisible = NegativeMask = false;
+                        else
+                            cvc.IsVisible = NegativeMask = true;
+                    }                    
                     break;
                 case CABViewControlTypes.MOTOR_FORCE:
                     {
