@@ -16519,14 +16519,14 @@ namespace Orts.Simulation.RollingStocks
                             data = (data / MaxForceN) * 100;
                         if (cvc.Feature == "HideOnPositiveForce")
                         {
-                            if (data <= 0)
+                            if (ControllerVolts <= 0)
                                 cvc.IsVisible = PositiveMask = false;
                             else
                                 cvc.IsVisible = PositiveMask = true;
                         }
                         if (cvc.Feature == "HideOnNegativeForce")
                         {
-                            if (data >= 0)
+                            if (ControllerVolts >= 0)
                                 cvc.IsVisible = NegativeMask = false;
                             else
                                 cvc.IsVisible = NegativeMask = true;
@@ -16548,14 +16548,14 @@ namespace Orts.Simulation.RollingStocks
                             data = (data / MaxForceN) * 100;
                         if (cvc.Feature == "HideOnPositiveForce")
                         {
-                            if (data >= 0)
+                            if (ControllerVolts >= 0)
                                 cvc.IsVisible = PositiveMask = false;
                             else
                                 cvc.IsVisible = PositiveMask = true;
                         }
                         if (cvc.Feature == "HideOnNegativeForce")
                         {
-                            if (data <= 0)
+                            if (ControllerVolts <= 0)
                                 cvc.IsVisible = NegativeMask = false;
                             else
                                 cvc.IsVisible = NegativeMask = true;

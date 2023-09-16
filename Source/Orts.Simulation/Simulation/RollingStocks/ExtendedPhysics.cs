@@ -28,6 +28,7 @@
  */
 
 
+using Microsoft.Xna.Framework;
 using Orts.Simulation.RollingStocks.SubSystems;
 using ORTS.Common;
 using System;
@@ -454,7 +455,13 @@ namespace Orts.Simulation.RollingStocks
             else
             {
                 if (Locomotive.LocoType == LocoTypes.Vectron)
-                    Locomotive.SetDynamicBrakePercent(-1);
+                {
+                    if (Bar.FromPSI(Locomotive.BrakeSystem.BrakeLine1PressurePSI) < 4.9f)
+                        Locomotive.SetDynamicBrakePercent(-1);
+                    else
+                    if (Locomotive.ControllerVolts < 0)
+                        Locomotive.SetDynamicBrakePercent(-Locomotive.ControllerVolts * 10f);
+                }
             }            
 
             if (Locomotive.ControllerVolts > 0)
@@ -848,7 +855,8 @@ namespace Orts.Simulation.RollingStocks
             float prevForceN = ForceN;
             if (Locomotive.LocoType == LocoTypes.Vectron)
             {
-                if (Locomotive.TractionBlocked && ForceN > 0 || Locomotive.IsLeadLocomotive() && Locomotive.EngineBrakeController.CurrentValue > 0)
+                if (Locomotive.TractionBlocked && ForceN > 0 
+                    || (Locomotive.IsLeadLocomotive() && Locomotive.EngineBrakeController.CurrentValue > 0))
                 {
                     ForceN = prevForceN = 0;
                 }
@@ -910,7 +918,10 @@ namespace Orts.Simulation.RollingStocks
                         Mass *= 1000;
                         float addMass = (Locomotive.MassKG / totalMotors) - Mass;
                         Mass += addMass * 2;
-                        reducedForceN = -((WheelSpeedMpS - (Locomotive.AbsSpeedMpS + 0.1f)) * (Mass / 1000)) * 750;
+                        if (Math.Abs(WheelSpeedMpS) < 0.95f * Locomotive.AbsSpeedMpS)
+                            reducedForceN = 0;
+                        else
+                            reducedForceN = MathHelper.Clamp(-((WheelSpeedMpS - (Locomotive.AbsSpeedMpS + 0.1f)) * (Mass / 1000)) * 750, 0, maxForceN);
                         Mass = mMass;
                     }
                     else
