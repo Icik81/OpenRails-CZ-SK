@@ -829,8 +829,8 @@ namespace Orts.Viewer3D
                     break;
                 case SeasonType.Winter:
                     randValue = Simulator.Random.Next(2000);
-                    SeasonFogMin = 8000;
-                    SeasonFogMax = 12000;
+                    SeasonFogMin = 500;
+                    SeasonFogMax = 6500;
                     break;
             }
             if (Weather.PricipitationIntensityPPSPM2 > 0 || Weather.OvercastFactor > 0.7f)
@@ -1520,8 +1520,8 @@ namespace Orts.Viewer3D
                         break;
                     case SeasonType.Winter:
                         randValue = Simulator.Random.Next(2000);
-                        SeasonFogMin = 8000;
-                        SeasonFogMax = 12000;
+                        SeasonFogMin = 500;
+                        SeasonFogMax = 6500;
                         break;
                 }
 

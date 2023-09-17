@@ -16991,7 +16991,7 @@ namespace Orts.Simulation.RollingStocks
                     }
                 case CABViewControlTypes.CAB_RADIO:
                     {
-                        data = CabRadioOn ? 1 : 0;
+                        data = CabRadio[LocoStation] ? 1 : 0;
                         break;
                     }
                 case CABViewControlTypes.ORTS_PLAYER_DIESEL_ENGINE:
