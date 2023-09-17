@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2023-09-11 19:55:56+0200\n"
-"PO-Revision-Date: 2023-09-11 19:55:57+0200\n"
+"POT-Creation-Date: 2023-09-17 21:13:18+0200\n"
+"PO-Revision-Date: 2023-09-17 21:13:19+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -187,7 +187,7 @@ msgid ""
 "contains user controlled weather"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Weather.cs:2265
+#: ../../RunActivity/Viewer3D/Weather.cs:2350
 msgid ""
 "Restoring wrong weather type : trying to restore user controlled weather but "
 "save contains dynamic weather"
@@ -2895,7 +2895,7 @@ msgid "ApplS"
 msgstr ""
 
 #: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:134
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1379
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1385
 #: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:118
 msgid "coal"
 msgstr ""
@@ -2982,7 +2982,7 @@ msgid "Slip"
 msgstr ""
 
 #: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:142
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1378
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1384
 #: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:126
 msgid "water"
 msgstr ""
@@ -3216,104 +3216,104 @@ msgid_plural "{0:F0} sound sources"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1374
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1380
 msgid "freight-grain"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1375
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1381
 msgid "freight-coal"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1376
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1382
 msgid "freight-gravel"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1377
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1383
 msgid "freight-sand"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1380
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1386
 msgid "diesel oil"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1381
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1387
 msgid "wood"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1382
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1388
 msgid "sand"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1383
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1389
 msgid "freight-general"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1384
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1390
 msgid "freight-livestock"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1385
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1391
 msgid "freight-fuel"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1386
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1392
 msgid "freight-milk"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1387
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1393
 msgid "mail"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1516
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1522
 msgid "Refill: Immediate refill process selected, refilling immediately."
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1537
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1543
 msgid "Refill: Electric loco and no pickup. Command rejected"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1653
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1672
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1659
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1678
 msgid "Incompatible pickup type"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1659
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1677
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1665
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1683
 msgid "Starting refill"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1544
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1550
 #, csharp-format
 msgid "Refill: Distance to {0} supply is {1}."
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1552
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1558
 #, csharp-format
 msgid "Refill: Loco must be stationary to refill {0}."
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1558
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1564
 #, csharp-format
 msgid "Refill: Loco speed must exceed {0}."
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1565
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1571
 #, csharp-format
 msgid "Refill: Loco speed must not exceed {0}."
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1583
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1604
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1589
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1610
 #, csharp-format
 msgid "Refill: {0} supply now replenished."
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1610
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1616
 #, csharp-format
 msgid "Unload: {0} fuel or freight now unloaded."
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1545
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1551
 #, csharp-format
 msgid "{0} meter"
 msgid_plural "{0} meters"

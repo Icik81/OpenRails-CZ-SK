@@ -1476,6 +1476,8 @@ namespace Orts.Simulation
         //Icik
         bool PickUpWagonsCorrect;
         float PickUpWagonsTimer;
+        float ChangeWagonIdListLengthM;
+        float ActualPositionM;
         override public Boolean Triggered(Activity activity)
         {
             Train OriginalPlayerTrain = Simulator.OriginalPlayerTrain;
@@ -1515,7 +1517,20 @@ namespace Orts.Simulation
                     {
                         consistTrain = matchesConsist(ChangeWagonIdList);
                         triggered = consistTrain != null;
+
+                        // Icik
+                        // Vlak po odpojení vozů musí být stále v zóně odpojení, jinak se nepodaří dokončit operaci úspěšného odpojení 
+                        ChangeWagonIdListLengthM = 0;
+                        for (int i = 0; i < ChangeWagonIdList.Count; i++)                        
+                            ChangeWagonIdListLengthM += ChangeWagonIdList[i].Length;
+                        
+                        ActualPositionM += Math.Abs(OriginalPlayerTrain.SpeedMpS) * Simulator.OneSecondLoop;
+
+                        if (ActualPositionM > ChangeWagonIdListLengthM)
+                            Simulator.Confirmer.Information(Simulator.Catalog.GetString("We're in position to detach the wagons!"));
                     }
+                    else
+                        ActualPositionM = 0;
                     break;
                 case EventType.DropOffWagonsAtLocation:
                     // Dropping off of wagons should only count once disconnected from player train.
