@@ -861,7 +861,7 @@ namespace Orts.Simulation.RollingStocks
             if (Locomotive.LocoType == LocoTypes.Vectron)
             {
                 if (Locomotive.TractionBlocked && ForceN > 0 
-                    || (Locomotive.IsLeadLocomotive() && Locomotive.EngineBrakeController.CurrentValue > 0))
+                    || (Locomotive.IsLeadLocomotive() && Locomotive.BrakeSystem.AutoCylPressurePSI1 > 1f))
                 {
                     ForceN = prevForceN = 0;
                 }
