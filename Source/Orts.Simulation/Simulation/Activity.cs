@@ -1736,6 +1736,7 @@ namespace Orts.Simulation
         {
         }
 
+        float CarLength;
         override public Boolean Triggered(Activity activity)
         {
             var triggered = false;
@@ -1753,9 +1754,15 @@ namespace Orts.Simulation
             {
                 var trainFrontPositionMSTS = new Traveller(train.RearTDBTraveller);
                 if (Simulator.PlayerLocomotive.Direction == Direction.Reverse)
+                {
                     trainFrontPositionMSTS = new Traveller(train.RearTDBTraveller);
+                    CarLength = Train.Cars[Train.Cars.Count - 1].CarLengthM;
+                }
                 else
+                {
                     trainFrontPositionMSTS = new Traveller(train.FrontTDBTraveller);
+                    CarLength = Train.Cars[0].CarLengthM;
+                }
 
                 var distanceMSTS = trainFrontPositionMSTS.DistanceTo(e.TileX, e.TileZ, e.X, trainFrontPositionMSTS.Y, e.Z, e.RadiusM);
 
@@ -1764,7 +1771,7 @@ namespace Orts.Simulation
                     triggered = true;
                 }
 
-                if (e.TriggerOnStop && distanceMSTS != -1 && distanceMSTS < e.RadiusM)
+                if (e.TriggerOnStop && distanceMSTS != -1 && distanceMSTS - (CarLength / 2f) < e.RadiusM)
                 {                    
                     Simulator.Confirmer.Information(Simulator.Catalog.GetString("We're here, we can stop!"));
                     if (Math.Abs(train.SpeedMpS) < 0.1f)
