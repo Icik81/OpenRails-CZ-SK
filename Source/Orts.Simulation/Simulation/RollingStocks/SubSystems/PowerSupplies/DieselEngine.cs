@@ -1547,7 +1547,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                         MSGWaterLowOn = false;
                         locomotive.SignalEvent(Event.DieselMotorWaterLowCoolingOff);
                     }
-
+                                       
                     if (WaterTempCoolingLowRunning)
                     {
                         RealDieselWaterTemperatureDeg -= elapsedClockSeconds * (RealDieselWaterTemperatureDeg - (2.5f * locomotive.CarOutsideTempCBase)) / DieselWaterTempTimeConstantSec * (WaterCoolingPower / 250);

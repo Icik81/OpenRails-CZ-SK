@@ -1553,7 +1553,7 @@ namespace Orts.Simulation
                         PickUpWagonsCorrect = true;
                         triggered = false;
                     }
-                    if (PickUpWagonsTimer > 3.0f)
+                    if (PickUpWagonsTimer > 2.0f)
                     {
                         triggered = true;
                         PickUpWagonsCorrect = false;
@@ -1747,6 +1747,36 @@ namespace Orts.Simulation
                 train = Train;
             }
             Train = train;
+
+            // Icik
+            if (Simulator.Settings.MSTSCompatibilityMode)
+            {
+                var trainFrontPositionMSTS = new Traveller(train.RearTDBTraveller);
+                if (Simulator.PlayerLocomotive.Direction == Direction.Reverse)
+                    trainFrontPositionMSTS = new Traveller(train.RearTDBTraveller);
+                else
+                    trainFrontPositionMSTS = new Traveller(train.FrontTDBTraveller);
+
+                var distanceMSTS = trainFrontPositionMSTS.DistanceTo(e.TileX, e.TileZ, e.X, trainFrontPositionMSTS.Y, e.Z, e.RadiusM);
+
+                if (!e.TriggerOnStop && distanceMSTS != -1 && distanceMSTS < e.RadiusM)
+                {
+                    triggered = true;
+                }
+
+                if (e.TriggerOnStop && distanceMSTS != -1 && distanceMSTS < e.RadiusM)
+                {                    
+                    Simulator.Confirmer.Information(Simulator.Catalog.GetString("We're here, we can stop!"));
+                    if (Math.Abs(train.SpeedMpS) < 0.1f)
+                    {
+                        return true;
+                    }
+                    return false;
+                }
+                else
+                    return triggered;
+            }
+
             if (e.TriggerOnStop)
             {
                 // Is train still moving?
@@ -1756,8 +1786,9 @@ namespace Orts.Simulation
                 }
             }
             var trainFrontPosition = new Traveller(train.nextRouteReady && train.TCRoute.activeSubpath > 0 && train.TCRoute.ReversalInfo[train.TCRoute.activeSubpath - 1].Valid ?
-                train.RearTDBTraveller : train.FrontTDBTraveller); // just after reversal the old train front position must be considered
+                train.RearTDBTraveller : train.FrontTDBTraveller); // just after reversal the old train front position must be considered                        
             var distance = trainFrontPosition.DistanceTo(e.TileX, e.TileZ, e.X, trainFrontPosition.Y, e.Z, e.RadiusM);
+                                    
             if (distance == -1)
             {
                 trainFrontPosition.ReverseDirection();

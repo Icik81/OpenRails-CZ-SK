@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Orts.Simulation\n"
-"POT-Creation-Date: 2023-09-17 21:13:16+0200\n"
-"PO-Revision-Date: 2023-09-17 21:14+0200\n"
+"POT-Creation-Date: 2023-09-18 17:43:17+0200\n"
+"PO-Revision-Date: 2023-09-18 17:44+0200\n"
 "Last-Translator: Altmann <altmann@bk.ru>\n"
 "Language-Team: Open Rails Dev Team\n"
 "Language: cs\n"
@@ -355,9 +355,13 @@ msgstr "Volno k odjezdu!"
 msgid "Waiting for the permission...."
 msgstr "Čeká se na povolení výpravčího...."
 
-#: ../../Orts.Simulation/Simulation/Activity.cs:1529
+#: ../../Orts.Simulation/Simulation/Activity.cs:1530
 msgid "We're in position to detach the wagons!"
 msgstr "Jsme na místě, můžeme odpojit vozy!"
+
+#: ../../Orts.Simulation/Simulation/Activity.cs:1769
+msgid "We're here, we can stop!"
+msgstr "Jsme na místě, můžeme zastavit!"
 
 #: ../../Orts.Simulation/Simulation/Activity.cs:1129
 #, csharp-format
