@@ -3196,7 +3196,8 @@ namespace Orts.Simulation.AIs
                                 attachToTrain = true;
                                 AttachTo = OtherTrain.Number;
                             }
-                            if (Simulator.Settings.MSTSCompatibilityMode && OtherTrain.Number != 0) 
+
+                            if (Simulator.Settings.MSTSCompatibilityMode && OtherTrain.Number != 0 && distanceToTrain < 1.0f)
                             {
                                 attachToTrain = false;
                                 return;
