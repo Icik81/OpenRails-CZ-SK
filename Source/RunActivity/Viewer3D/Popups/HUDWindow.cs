@@ -656,10 +656,10 @@ namespace Orts.Viewer3D.Popups
                 if (car.WagonHasTemperature && car is MSTSDieselLocomotive && car.DieselHeaterPower == 0 && car.LocomotiveCab)
                     TypeHeatText = Viewer.Catalog.GetString("Calorifer");
                 else
-                if (car.WagonHasTemperature && car is MSTSSteamLocomotive && car.Train.SteamHeatingIsAvailable && car.LocomotiveCab)
-                    TypeHeatText = Viewer.Catalog.GetString("SteamHeat");
-                else
-                if (car.WagonHasTemperature && car.DieselHeaterPower == 0 && car.LocomotiveCab)
+                //if (car.WagonHasTemperature && car is MSTSSteamLocomotive && car.Train.SteamHeatingIsAvailable && car.LocomotiveCab)
+                //    TypeHeatText = Viewer.Catalog.GetString("SteamHeat");
+                //else
+                if (car.WagonHasTemperature && car.DieselHeaterPower == 0 && car.LocomotiveCab && !(car is MSTSSteamLocomotive))
                     TypeHeatText = Viewer.Catalog.GetString("ElecHeat");
                 else
                     TypeHeatText = "";

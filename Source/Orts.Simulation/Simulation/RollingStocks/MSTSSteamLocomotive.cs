@@ -5791,7 +5791,7 @@ namespace Orts.Simulation.RollingStocks
         {
             // Update Steam Heating System
 
-            if (IsSteamHeatFitted && this.IsLeadLocomotive())  // Only Update steam heating if train and locomotive fitted with steam heating, and is a passenger train
+            if (IsSteamHeatFitted /*&& this.IsLeadLocomotive()*/)  // Only Update steam heating if train and locomotive fitted with steam heating, and is a passenger train
             {
                 CurrentSteamHeatPressurePSI = SteamHeatController.CurrentValue * MaxSteamHeatPressurePSI;
 
@@ -5804,18 +5804,17 @@ namespace Orts.Simulation.RollingStocks
 
                 if (CurrentSteamHeatPressurePSI > 0.1)  // Only Update steam heating if train and locomotive fitted with steam heating, and is a passenger train
                 {
-                    Train.CarSteamHeatOn = true; // turn on steam effects on wagons
+                    this.CarSteamHeatOn = true; 
 
                     // Calculate impact of steam heat usage on locomotive
                     BoilerMassLB -= elapsedClockSeconds * CalculatedCarHeaterSteamUsageLBpS;
                     BoilerHeatBTU -= elapsedClockSeconds * CalculatedCarHeaterSteamUsageLBpS * (BoilerSteamHeatBTUpLB - BoilerWaterHeatBTUpLB); // Heat loss due to steam heat usage
                     TotalSteamUsageLBpS += CalculatedCarHeaterSteamUsageLBpS;
-                    BoilerHeatOutBTUpS += CalculatedCarHeaterSteamUsageLBpS * (BoilerSteamHeatBTUpLB - BoilerWaterHeatBTUpLB); // Heat loss due to safety valve                
-
-                }
+                    BoilerHeatOutBTUpS += CalculatedCarHeaterSteamUsageLBpS * (BoilerSteamHeatBTUpLB - BoilerWaterHeatBTUpLB); // Heat loss due to safety valve                                   
+                }  
                 else
                 {
-                    Train.CarSteamHeatOn = false; // turn off steam effects on wagons
+                    this.CarSteamHeatOn = false;
                 }
             }
         }

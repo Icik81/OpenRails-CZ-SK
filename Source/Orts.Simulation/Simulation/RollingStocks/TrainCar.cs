@@ -401,6 +401,7 @@ namespace Orts.Simulation.RollingStocks
         public int LightRearRPosition;
         public bool FrontHeadLight;
         public bool RearHeadLight;
+        public bool CarSteamHeatOn;
 
 
         public float PowerReductionResult1;  // Redukce výkonu od topení, klimatizace, kompresoru

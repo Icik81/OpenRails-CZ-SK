@@ -3946,6 +3946,11 @@ namespace Orts.Simulation.RollingStocks
         public void ElevatedConsumptionOnLocomotive(float elapsedClockSeconds)
         {
             Train.HeatingIsOn = false;
+            Train.CarSteamHeatOn = false;
+            Train.HeatingBoilerCarAttached = false;
+            Train.HeatedCarAttached = false;
+            Train.CurrentSteamHeatPressurePSI = 0;
+            Train.SteamHeatControllerCurrentValue = 0;
             HeatingIsOnLocoCount = 0;
             
             foreach (TrainCar car in Train.Cars)
@@ -3963,8 +3968,29 @@ namespace Orts.Simulation.RollingStocks
                         Train.HeatingIsOn = true;
                         HeatingIsOnLocoCount++;
                     }
+
+                    if ((car as MSTSLocomotive).CarSteamHeatOn)
+                    {
+                        Train.CarSteamHeatOn = true;                       
+                        Train.CurrentSteamHeatPressurePSI += (car as MSTSSteamLocomotive).CurrentSteamHeatPressurePSI;
+                        Train.SteamHeatControllerCurrentValue = (car as MSTSSteamLocomotive).SteamHeatController.CurrentValue;
+                        foreach (TrainCar car1 in Train.Cars)
+                        {
+                            if (car1 is MSTSLocomotive)
+                                (car1 as MSTSLocomotive).IsSteamHeatFitted = true;
+                        }
+                    }
                 }
-            }                        
+                else
+                {
+                    if (WagonSpecialType == MSTSWagon.WagonSpecialTypes.HeatingBoiler && (car as MSTSWagon).CarSteamHeatOn)
+                    {
+                        Train.CarSteamHeatOn = true;
+                        Train.HeatingBoilerCarAttached = true;
+                        Train.HeatedCarAttached = true;
+                    }
+                }
+            }            
 
             // Spustí zvuk topení v kabině při inicializaci loko
             if (CabHeating_OffOn[LocoStation] && !CarCabHeatingIsSetOn)
@@ -3986,7 +4012,7 @@ namespace Orts.Simulation.RollingStocks
                 if (HeatingMaxCurrentA == 0)
                     HeatingMaxCurrentA = 130; // Default 130A
 
-                if ((Heating_OffOn[LocoStation] && !HeatingOverCurrent && AuxPowerOn && StationIsActivated[LocoStation]) || Train.CarSteamHeatOn)
+                if ((Heating_OffOn[LocoStation] && !HeatingOverCurrent && AuxPowerOn && StationIsActivated[LocoStation]) || (Train.CarSteamHeatOn && (this is MSTSSteamLocomotive)))
                     HeatingIsOn = true;
                 if (((!Heating_OffOn[LocoStation] && StationIsActivated[LocoStation]) || HeatingOverCurrent || !AuxPowerOn) && !Train.CarSteamHeatOn)
                 {

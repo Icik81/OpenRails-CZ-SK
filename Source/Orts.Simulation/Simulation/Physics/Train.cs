@@ -106,7 +106,9 @@ namespace Orts.Simulation.Physics
         public string AITrainNameShunting;
         public bool TrainHasMUControl;
         public bool HeatingIsOn;
-        public int ActualStationNumber;        
+        public int ActualStationNumber;
+        public float CurrentSteamHeatPressurePSI;
+        public float SteamHeatControllerCurrentValue;
 
         public Traveller RearTDBTraveller;               // positioned at the back of the last car in the train
         public Traveller FrontTDBTraveller;              // positioned at the front of the train by CalculatePositionOfCars
@@ -2229,7 +2231,7 @@ namespace Orts.Simulation.Physics
 
                 // Icik
                 // Hodnota setrvačnosti se při vypnutí topení příblíží k 0 
-                if (IsPlayerDriven && (PassengerCarsNumber > 0 || HeatedCarAttached || mstsLocomotive is MSTSSteamLocomotive) && (mstsLocomotive.IsSteamHeatFitted || HeatingBoilerCarAttached || mstsLocomotive is MSTSSteamLocomotive))
+                if (CarSteamHeatOn && IsPlayerDriven && (PassengerCarsNumber > 0 || HeatedCarAttached || mstsLocomotive is MSTSSteamLocomotive) && (mstsLocomotive.IsSteamHeatFitted || HeatingBoilerCarAttached || mstsLocomotive is MSTSSteamLocomotive))
                 {
                     SteamHeatingIsAvailable = true;
                     for (int i = 0; i < Cars.Count; i++)
@@ -2248,7 +2250,7 @@ namespace Orts.Simulation.Physics
                     SteamHeatingIsAvailable = false;
 
                 // Check to confirm that train is player driven and has passenger cars in the consist. Steam heating is OFF if steam heat valve is closed and no pressure is present
-                if (IsPlayerDriven && (PassengerCarsNumber > 0 || HeatedCarAttached) && (mstsLocomotive.IsSteamHeatFitted || HeatingBoilerCarAttached) && mstsLocomotive.CurrentSteamHeatPressurePSI > 0)
+                if (IsPlayerDriven && (PassengerCarsNumber > 0 || HeatedCarAttached) && (mstsLocomotive.IsSteamHeatFitted || HeatingBoilerCarAttached) && CurrentSteamHeatPressurePSI > 0)
                 {
                     // Set default values required
                     float SteamFlowRateLbpHr = 0;
@@ -2497,7 +2499,7 @@ namespace Orts.Simulation.Physics
                         }
 
                         // Calculate steam flow rates and steam used
-                        SteamFlowRateLbpHr = (ProgressiveHeatAlongTrainBTU / mstsLocomotive.SteamHeatPSItoBTUpLB[mstsLocomotive.CurrentSteamHeatPressurePSI]) + pS.TopH(car.CarHeatSteamTrapUsageLBpS) + pS.TopH(car.CarHeatConnectingSteamHoseLeakageLBpS);
+                        SteamFlowRateLbpHr = (ProgressiveHeatAlongTrainBTU / mstsLocomotive.SteamHeatPSItoBTUpLB[CurrentSteamHeatPressurePSI]) + pS.TopH(car.CarHeatSteamTrapUsageLBpS) + pS.TopH(car.CarHeatConnectingSteamHoseLeakageLBpS);
                         mstsLocomotive.CalculatedCarHeaterSteamUsageLBpS = pS.FrompH(SteamFlowRateLbpHr);
 
                         // Calculate Net steam heat loss or gain for each compartment in the car
@@ -2519,10 +2521,10 @@ namespace Orts.Simulation.Physics
 
                         // Icik
                         //car.CarCurrentCarriageHeatTempC = W.ToKW(car.CarHeatCurrentCompartmentHeatW) / (SpecificHeatCapcityAirKJpKgK * DensityAirKgpM3 * car.CarHeatVolumeM3) + TrainOutsideTempC;                                                 
-                        car.CarCurrentCarriageHeatDeltaTempC = W.ToKW(car.CarHeatCurrentCompartmentHeatW) / (SpecificHeatCapcityAirKJpKgK * DensityAirKgpM3 * car.CarHeatVolumeM3) / 500;
+                        car.CarCurrentCarriageHeatDeltaTempC = W.ToKW(car.CarHeatCurrentCompartmentHeatW) / (SpecificHeatCapcityAirKJpKgK * DensityAirKgpM3 * car.CarHeatVolumeM3) / 500f;
                         car.CarCurrentCarriageHeatTempC = car.WagonTemperature;
 
-                        car.CarHeatCurrentCompartmentHeatW = MathHelper.Clamp(car.CarHeatCurrentCompartmentHeatW, -1500000 * Simulator.GameSpeed, 2000000 * Simulator.GameSpeed * mstsLocomotive.SteamHeatController.CurrentValue);
+                        car.CarHeatCurrentCompartmentHeatW = MathHelper.Clamp(car.CarHeatCurrentCompartmentHeatW, -1500000 * Simulator.GameSpeed, 2000000 * Simulator.GameSpeed * SteamHeatControllerCurrentValue);
 
                         //Simulator.Confirmer.Message(ConfirmLevel.None, Simulator.Catalog.GetString("CarHeatCurrentCompartmentHeatW " + car.CarHeatCurrentCompartmentHeatW));
                         //Simulator.Confirmer.Message(ConfirmLevel.Information, Simulator.Catalog.GetString("CarCurrentCarriageHeatDeltaTempC " + car.CarCurrentCarriageHeatDeltaTempC));
@@ -2573,7 +2575,7 @@ namespace Orts.Simulation.Physics
                     #region Calculate Steam Pressure drop along train
 
                     // Initialise main steam pipe pressure to same as steam heat valve setting
-                    float ProgressivePressureAlongTrainPSI = mstsLocomotive.CurrentSteamHeatPressurePSI;
+                    float ProgressivePressureAlongTrainPSI = CurrentSteamHeatPressurePSI;
 
                     // Calculate pressure drop along whole train
                     for (int i = 0; i < Cars.Count; i++)
@@ -2585,8 +2587,8 @@ namespace Orts.Simulation.Physics
                         // where dp = pressure drop (psi), q = steam flow rate(lb/ hr), L = length of pipe(ft), d = pipe inside diameter(inches), ρ = steam density(lb / ft3)
                         // Use values for the specific volume corresponding to the average pressure if the pressure drop exceeds 10 - 15 % of the initial absolute pressure
 
-                        float HeatPipePressureDropPSI = (0.0001306f * SteamFlowRateLbpHr * SteamFlowRateLbpHr * Me.ToFt(car.CarLengthM) * (1 + 3.6f / 2.5f)) / (3600 * mstsLocomotive.SteamDensityPSItoLBpFT3[mstsLocomotive.CurrentSteamHeatPressurePSI] * (float)Math.Pow(Me.ToIn(car.MainSteamHeatPipeInnerDiaM), 5.0f));
-                        float ConnectHosePressureDropPSI = (0.0001306f * SteamFlowRateLbpHr * SteamFlowRateLbpHr * ConnectSteamHoseLengthFt * (1 + 3.6f / 2.5f)) / (3600 * mstsLocomotive.SteamDensityPSItoLBpFT3[mstsLocomotive.CurrentSteamHeatPressurePSI] * (float)Math.Pow(Me.ToIn(car.CarConnectSteamHoseInnerDiaM), 5.0f));
+                        float HeatPipePressureDropPSI = (0.0001306f * SteamFlowRateLbpHr * SteamFlowRateLbpHr * Me.ToFt(car.CarLengthM) * (1 + 3.6f / 2.5f)) / (3600 * mstsLocomotive.SteamDensityPSItoLBpFT3[CurrentSteamHeatPressurePSI] * (float)Math.Pow(Me.ToIn(car.MainSteamHeatPipeInnerDiaM), 5.0f));
+                        float ConnectHosePressureDropPSI = (0.0001306f * SteamFlowRateLbpHr * SteamFlowRateLbpHr * ConnectSteamHoseLengthFt * (1 + 3.6f / 2.5f)) / (3600 * mstsLocomotive.SteamDensityPSItoLBpFT3[CurrentSteamHeatPressurePSI] * (float)Math.Pow(Me.ToIn(car.CarConnectSteamHoseInnerDiaM), 5.0f));
 
                         float CarPressureDropPSI = HeatPipePressureDropPSI + ConnectHosePressureDropPSI;
 
@@ -2602,7 +2604,7 @@ namespace Orts.Simulation.Physics
                         {
 
                             // Don't process if water or fule capacities are low
-                            if (mstsLocomotive.CurrentSteamHeatPressurePSI > 0 && car.CurrentSteamHeatBoilerFuelCapacityL > 0 && car.CurrentCarSteamHeatBoilerWaterCapacityL > 0 && !car.IsSteamHeatBoilerLockedOut)
+                            if (CurrentSteamHeatPressurePSI > 0 && car.CurrentSteamHeatBoilerFuelCapacityL > 0 && car.CurrentCarSteamHeatBoilerWaterCapacityL > 0 && !car.IsSteamHeatBoilerLockedOut)
                             {
                                 // Test boiler steam capacity can deliever steam required for the system
                                 if (mstsLocomotive.CalculatedCarHeaterSteamUsageLBpS > car.MaximumSteamHeatingBoilerSteamUsageRateLbpS)

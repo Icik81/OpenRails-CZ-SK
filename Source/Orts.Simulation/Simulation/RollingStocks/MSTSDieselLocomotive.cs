@@ -1030,7 +1030,7 @@ namespace Orts.Simulation.RollingStocks
 
             // TO DO - Add test to see if cars are coupled, if Light Engine, disable steam heating.
 
-            if (IsSteamHeatFitted && this.IsLeadLocomotive())  // Only Update steam heating if train and locomotive fitted with steam heating
+            if (IsSteamHeatFitted /*&& this.IsLeadLocomotive()*/)  // Only Update steam heating if train and locomotive fitted with steam heating
             {
 
                 CurrentSteamHeatPressurePSI = SteamHeatController.CurrentValue * MaxSteamHeatPressurePSI;
@@ -1042,7 +1042,7 @@ namespace Orts.Simulation.RollingStocks
                     // Set values for visible exhaust based upon setting of steam controller
                     HeatingSteamBoilerVolumeM3pS = 1.5f * SteamHeatController.CurrentValue;
                     HeatingSteamBoilerDurationS = 1.0f * SteamHeatController.CurrentValue;
-                    Train.CarSteamHeatOn = true; // turn on steam effects on wagons
+                    this.CarSteamHeatOn = true; // turn on steam effects on wagons
 
                     // Calculate fuel usage for steam heat boiler
                     float FuelUsageLpS = L.FromGUK(pS.FrompH(TrainHeatBoilerFuelUsageGalukpH[pS.TopH(CalculatedCarHeaterSteamUsageLBpS)]));
@@ -1054,7 +1054,7 @@ namespace Orts.Simulation.RollingStocks
                 }
                 else
                 {
-                    Train.CarSteamHeatOn = false; // turn on steam effects on wagons
+                    this.CarSteamHeatOn = false; // turn on steam effects on wagons
                 }
 
 
