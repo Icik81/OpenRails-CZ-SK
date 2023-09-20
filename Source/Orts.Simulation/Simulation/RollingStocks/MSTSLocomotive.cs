@@ -5926,7 +5926,8 @@ namespace Orts.Simulation.RollingStocks
                 HVOffbyAirPressureD();
                 TMFailure(elapsedClockSeconds);
                 PowerReductionResult(elapsedClockSeconds);
-                SetControlUnit();
+                if (!(this is MSTSSteamLocomotive))
+                    SetControlUnit();
                 SetHelperLoco(elapsedClockSeconds);
                 PantoCanHVOff(elapsedClockSeconds);
                 DirectionButtonSetup();
@@ -9918,7 +9919,7 @@ namespace Orts.Simulation.RollingStocks
                         {
                             if (car is MSTSLocomotive)
                             {
-                                if ((car as MSTSLocomotive).MaxPowerWBase > 10 * 1000 || (car as MSTSDieselLocomotive != null && (car as MSTSDieselLocomotive).MaximumDieselEnginePowerW > 10 * 1000))
+                                if ((car as MSTSLocomotive).MaxPowerWBase > 10 * 1000 || (car as MSTSDieselLocomotive != null && (car as MSTSDieselLocomotive).MaximumDieselEnginePowerW > 10 * 1000) || (car is MSTSSteamLocomotive))
                                     car.PowerUnit = true;
                                 else
                                     car.ControlUnit = true;
