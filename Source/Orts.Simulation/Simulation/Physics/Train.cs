@@ -1662,13 +1662,13 @@ namespace Orts.Simulation.Physics
         
 
         public virtual void Update(float elapsedClockSeconds, bool auxiliaryUpdate = true)
-        {            
+        {
             // MSTS kompatibility mód
             if (Simulator.Settings.MSTSCompatibilityMode && IsActualPlayerTrain)
             {
                 if (Simulator.GameTime == 0f && !wasRestored)
                 {
-                    RequestToggleManualMode(); 
+                    RequestToggleManualMode();
                 }
                 else
                 if (ControlMode == Train.TRAIN_CONTROL.MANUAL || Simulator.AIRequestSignal)
@@ -1677,10 +1677,10 @@ namespace Orts.Simulation.Physics
                     Simulator.AIRequestSignal = false;
                 }
                 else
-                if (EndAuthorityType[0] == END_AUTHORITY.RESERVED_SWITCH)
+                if (EndAuthorityType[0] == END_AUTHORITY.RESERVED_SWITCH || (EndAuthorityType[0] == END_AUTHORITY.NO_PATH_RESERVED && ControlMode == Train.TRAIN_CONTROL.AUTO_NODE)) 
                 {
                     RequestToggleManualMode();
-                }                
+                }
             }
 
             if (!auxiliaryUpdate)
@@ -10329,7 +10329,8 @@ namespace Orts.Simulation.Physics
                 if (routeIndex < 0)
                 {
                     if (Simulator.Confirmer != null) // As Confirmer may not be created until after a restore.
-                        Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Train is not back on original route"));
+                        if (!Simulator.Settings.MSTSCompatibilityMode)
+                            Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Train is not back on original route"));
                 }
                 else
                 {
