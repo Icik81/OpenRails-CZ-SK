@@ -1757,7 +1757,7 @@ namespace Orts.Simulation
                 {
                     if (Simulator.PlayerLocomotive.Direction == Direction.Reverse)
                     {
-                        trainFrontPositionMSTS = new Traveller(train.FrontTDBTraveller);
+                        trainFrontPositionMSTS = new Traveller(train.RearTDBTraveller);
                         CarLength = Train.Cars[0].CarLengthM;
                     }
                     else
@@ -1781,6 +1781,11 @@ namespace Orts.Simulation
                 }
 
                 var distanceMSTS = trainFrontPositionMSTS.DistanceTo(e.TileX, e.TileZ, e.X, trainFrontPositionMSTS.Y, e.Z, e.RadiusM);
+                if (distanceMSTS == -1)
+                {
+                    trainFrontPositionMSTS.ReverseDirection();
+                    distanceMSTS = trainFrontPositionMSTS.DistanceTo(e.TileX, e.TileZ, e.X, trainFrontPositionMSTS.Y, e.Z, e.RadiusM);                    
+                }
 
                 if (!e.TriggerOnStop && distanceMSTS != -1 && distanceMSTS < e.RadiusM)
                 {
