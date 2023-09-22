@@ -5192,6 +5192,14 @@ namespace Orts.Simulation.RollingStocks
         // Určí řídící vůz        
         public void SetControlUnit()
         {
+            // Parní lokomotiva bude vždy PowerUnit
+            if (this is MSTSSteamLocomotive)
+            {
+                PowerUnit = true;
+                ControlUnit = false;
+                return;
+            }
+
             PowerUnit = false;
             ControlUnit = false;
 
@@ -5925,9 +5933,8 @@ namespace Orts.Simulation.RollingStocks
                 HVOffbyAirPressureE();
                 HVOffbyAirPressureD();
                 TMFailure(elapsedClockSeconds);
-                PowerReductionResult(elapsedClockSeconds);
-                if (!(this is MSTSSteamLocomotive))
-                    SetControlUnit();
+                PowerReductionResult(elapsedClockSeconds);                
+                SetControlUnit();
                 SetHelperLoco(elapsedClockSeconds);
                 PantoCanHVOff(elapsedClockSeconds);
                 DirectionButtonSetup();
