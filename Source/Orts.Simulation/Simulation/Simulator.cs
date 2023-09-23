@@ -239,7 +239,7 @@ namespace Orts.Simulation
         public bool MU_WheelSlipOn;
         public bool IsWheelSlipWarning;
         public bool IsWheelSlip;
-        public bool AIRequestSignal;
+        public bool AIRequestSignal;                
 
         public List<PowerSupplyStation> powerSupplyStations;
         public List<VoltageChangeMarker> voltageChangeMarkers;

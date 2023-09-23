@@ -109,6 +109,7 @@ namespace Orts.Simulation.Physics
         public int ActualStationNumber;
         public float CurrentSteamHeatPressurePSI;
         public float SteamHeatControllerCurrentValue;
+        public bool TrainRouteIsReversed;
 
         public Traveller RearTDBTraveller;               // positioned at the back of the last car in the train
         public Traveller FrontTDBTraveller;              // positioned at the front of the train by CalculatePositionOfCars
@@ -685,6 +686,7 @@ namespace Orts.Simulation.Physics
         public Train(Simulator simulator, BinaryReader inf)
         {
             // Icik
+            TrainRouteIsReversed = inf.ReadBoolean();
             ReverseAtStation = inf.ReadBoolean();
             MaxStationCount = inf.ReadInt32();
             PeopleWantToLeaveCount = inf.ReadInt32();
@@ -1054,6 +1056,7 @@ namespace Orts.Simulation.Physics
         public virtual void Save(BinaryWriter outf)
         {
             // Icik
+            outf.Write(TrainRouteIsReversed);
             outf.Write(ReverseAtStation);
             outf.Write(MaxStationCount);
             outf.Write(PeopleWantToLeaveCount);

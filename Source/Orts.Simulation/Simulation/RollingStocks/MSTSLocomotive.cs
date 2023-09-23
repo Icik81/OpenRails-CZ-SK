@@ -6254,7 +6254,8 @@ namespace Orts.Simulation.RollingStocks
 
             UpdateFrictionCoefficient(elapsedClockSeconds); // Find the current coefficient of friction depending upon the weather
 
-            UpdateWaterTroughRefill(elapsedClockSeconds, AbsSpeedMpS); // Update refill from trough
+            if (this is MSTSSteamLocomotive)
+                UpdateWaterTroughRefill(elapsedClockSeconds, AbsSpeedMpS); // Update refill from trough
 
             switch (this.Train.TrainType)
             {
@@ -8175,7 +8176,7 @@ namespace Orts.Simulation.RollingStocks
 
         public void ToggleWaterScoop()
         {
-            if (Simulator.PlayerLocomotive == this)
+            if (Simulator.PlayerLocomotive == this && this is MSTSSteamLocomotive)
             {
                 WaterScoopDown = !WaterScoopDown;
                 SignalEvent(Event.WaterScoopRaiseLower);

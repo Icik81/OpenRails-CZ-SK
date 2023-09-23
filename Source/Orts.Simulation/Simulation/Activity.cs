@@ -1527,7 +1527,7 @@ namespace Orts.Simulation
                         ActualPositionM += Math.Abs(OriginalPlayerTrain.SpeedMpS) * Simulator.OneSecondLoop;
 
                         //if (ActualPositionM > ChangeWagonIdListLengthM)
-                            Simulator.Confirmer.Information(Simulator.Catalog.GetString("We're in position to detach the wagons!"));
+                            Simulator.Confirmer.MSG2(Simulator.Catalog.GetString("We're in position to detach the wagons!"));
                     }
                     else
                         ActualPositionM = 0;
@@ -1737,6 +1737,8 @@ namespace Orts.Simulation
         }
 
         float CarLength;
+        bool ReverseIsSetOn;
+        float ReverserTimer;
         override public Boolean Triggered(Activity activity)
         {
             var triggered = false;
@@ -1753,56 +1755,76 @@ namespace Orts.Simulation
             if (Simulator.Settings.MSTSCompatibilityMode)
             {
                 var trainFrontPositionMSTS = new Traveller(train.RearTDBTraveller);
+
+                if (ReverseIsSetOn)
+                {
+                    ReverserTimer += Simulator.OneSecondLoop;
+                    if (ReverserTimer > 0.5f)
+                    {
+                        ReverseIsSetOn = false;
+                        ReverserTimer = 0;
+                    }
+                }
+
+                if (!ReverseIsSetOn && train.nextRouteReady && train.TCRoute.activeSubpath > 0 && train.TCRoute.ReversalInfo[train.TCRoute.activeSubpath - 1].Valid)
+                {
+                    train.TrainRouteIsReversed = !train.TrainRouteIsReversed;
+                    ReverseIsSetOn = true;
+                }
+                //Simulator.Confirmer.Information("TrainRouteIsReversed je na " + train.TrainRouteIsReversed);
+
                 if (Simulator.PlayerUsingRearCab)
                 {
                     if (Simulator.PlayerLocomotive.Direction == Direction.Reverse)
                     {
-                        trainFrontPositionMSTS = new Traveller(train.RearTDBTraveller);
-                        CarLength = Train.Cars[0].CarLengthM;
+                        trainFrontPositionMSTS = new Traveller(train.TrainRouteIsReversed ? train.RearTDBTraveller : train.FrontTDBTraveller);                        
+                        CarLength = Train.Cars[Train.Cars.Count - 1].CarLengthM;
                     }
                     else
                     {
-                        trainFrontPositionMSTS = new Traveller(train.RearTDBTraveller);                        
-                        CarLength = Train.Cars[Train.Cars.Count - 1].CarLengthM;
+                        trainFrontPositionMSTS = new Traveller(train.TrainRouteIsReversed ? train.FrontTDBTraveller : train.RearTDBTraveller);
+                        CarLength = Train.Cars[0].CarLengthM;
                     }
                 }
                 else
                 {
                     if (Simulator.PlayerLocomotive.Direction == Direction.Reverse)
                     {
-                        trainFrontPositionMSTS = new Traveller(train.RearTDBTraveller);
+                        trainFrontPositionMSTS = new Traveller(train.TrainRouteIsReversed ? train.FrontTDBTraveller : train.RearTDBTraveller);
                         CarLength = Train.Cars[Train.Cars.Count - 1].CarLengthM;
                     }
                     else
                     {
-                        trainFrontPositionMSTS = new Traveller(train.FrontTDBTraveller);
+                        trainFrontPositionMSTS = new Traveller(train.TrainRouteIsReversed ? train.RearTDBTraveller : train.FrontTDBTraveller);
                         CarLength = Train.Cars[0].CarLengthM;
                     }
                 }
 
                 var distanceMSTS = trainFrontPositionMSTS.DistanceTo(e.TileX, e.TileZ, e.X, trainFrontPositionMSTS.Y, e.Z, e.RadiusM);
-                if (distanceMSTS == -1)
-                {
-                    trainFrontPositionMSTS.ReverseDirection();
-                    distanceMSTS = trainFrontPositionMSTS.DistanceTo(e.TileX, e.TileZ, e.X, trainFrontPositionMSTS.Y, e.Z, e.RadiusM);                    
-                }
 
                 if (!e.TriggerOnStop && distanceMSTS != -1 && distanceMSTS < e.RadiusM)
                 {
-                    triggered = true;
+                    return true;
                 }
+
+                if (distanceMSTS == -1)
+                {
+                    trainFrontPositionMSTS.ReverseDirection();
+                    distanceMSTS = trainFrontPositionMSTS.DistanceTo(e.TileX, e.TileZ, e.X, trainFrontPositionMSTS.Y, e.Z, e.RadiusM);
+                    trainFrontPositionMSTS.ReverseDirection();
+                }                
 
                 if (e.TriggerOnStop && distanceMSTS != -1 && distanceMSTS - (CarLength / 2f) < e.RadiusM)
                 {                    
-                    Simulator.Confirmer.MSG(Simulator.Catalog.GetString("We're here, we can stop!"));
+                    //Simulator.Confirmer.MSG3(Simulator.Catalog.GetString("We're here, we can stop!") + " " + distanceMSTS + " m");
+                    Simulator.Confirmer.MSG3(Simulator.Catalog.GetString("We're here, we can stop!"));
                     if (Math.Abs(train.SpeedMpS) < 0.1f)
                     {
                         return true;
                     }
                     return false;
                 }
-                else
-                    return triggered;
+                return false;
             }
 
             if (e.TriggerOnStop)

@@ -28,6 +28,8 @@ namespace Orts.Simulation
         [GetString("Warning")] Warning,
         [GetString("Error")] Error,
         [GetString("MSG")] MSG,
+        [GetString("MSG")] MSG2,
+        [GetString("MSG")] MSG3,
     };
 
     // <CJComment> Some of these are not cab controls or even controls. However they all make good use of structured text. </CJComment>
@@ -422,6 +424,16 @@ namespace Orts.Simulation
             Message(CabControl.None, ConfirmLevel.MSG, message);
         }
 
+        // Icik
+        public void MSG2(string message)
+        {
+            Message(CabControl.None, ConfirmLevel.MSG2, message);
+        }
+        public void MSG3(string message)
+        {
+            Message(CabControl.None, ConfirmLevel.MSG3, message);
+        }
+
         public void Warning(string message)
         {
             Message(CabControl.None, ConfirmLevel.Warning, message);
@@ -459,6 +471,11 @@ namespace Orts.Simulation
             var duration = DefaultDurationS;
             if (level >= ConfirmLevel.Warning) duration *= 2;
             if (level >= ConfirmLevel.MSG) duration *= 5;
+            
+            // Icik
+            if (level >= ConfirmLevel.MSG2) duration *= 0;
+            if (level >= ConfirmLevel.MSG3) duration *= 0;
+
             if (DisplayMessage != null) DisplayMessage(this, new DisplayMessageEventArgs(String.Format("{0}/{1}", control, level), String.Format(format, ConfirmText[(int)control][0], Simulator.Catalog.GetString(GetStringAttribute.GetPrettyName(level)), message), duration));
         }
     }
