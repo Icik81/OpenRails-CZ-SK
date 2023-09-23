@@ -1302,7 +1302,12 @@ namespace Orts.Viewer3D
             if (UserInput.IsPressed(UserCommand.GameResetSignalForward)) PlayerTrain.RequestResetSignal(Direction.Forward);
             if (UserInput.IsPressed(UserCommand.GameResetSignalBackward)) PlayerTrain.RequestResetSignal(Direction.Reverse);
 
-            if (UserInput.IsPressed(UserCommand.GameSwitchManualMode)) PlayerTrain.RequestToggleManualMode();
+            // Icik
+            if (UserInput.IsPressed(UserCommand.GameSwitchManualMode))
+            {
+                Simulator.GameSwitchManualModeOverdrive = !Simulator.GameSwitchManualModeOverdrive;
+                PlayerTrain.RequestToggleManualMode();
+            }
 
             if (UserInput.IsPressed(UserCommand.GameMultiPlayerDispatcher)) { DebugViewerEnabled = !DebugViewerEnabled; return; }
             if (UserInput.IsPressed(UserCommand.DebugSoundForm)) { SoundDebugFormEnabled = !SoundDebugFormEnabled; return; }

@@ -1674,7 +1674,7 @@ namespace Orts.Simulation.Physics
                     RequestToggleManualMode();
                 }
                 else
-                if (ControlMode == Train.TRAIN_CONTROL.MANUAL || Simulator.AIRequestSignal)
+                if ((ControlMode == Train.TRAIN_CONTROL.MANUAL && !Simulator.GameSwitchManualModeOverdrive) || Simulator.AIRequestSignal)
                 {
                     RequestToggleManualMode();
                     Simulator.AIRequestSignal = false;
