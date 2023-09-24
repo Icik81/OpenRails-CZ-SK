@@ -794,7 +794,15 @@ namespace Orts.Simulation.AIs
                                 && ControlMode == TRAIN_CONTROL.AUTO_NODE
                                 && nextActionInfo != null && nextActionInfo.NextAction == AIActionItem.AI_ACTION_TYPE.END_OF_ROUTE)
                             {
-                                RemoveTrain();
+                                MovementState = AI_MOVEMENT_STATE.ACCELERATING;
+                                //RemoveTrain();
+                            }
+
+                            if (MovementState == AI_MOVEMENT_STATE.STOPPED
+                                && ControlMode == TRAIN_CONTROL.AUTO_SIGNAL
+                                && nextActionInfo != null && nextActionInfo.NextAction == AIActionItem.AI_ACTION_TYPE.SIGNAL_ASPECT_STOP)
+                            {                                
+                                MovementState = AI_MOVEMENT_STATE.ACCELERATING;
                             }
                         }
                     }
