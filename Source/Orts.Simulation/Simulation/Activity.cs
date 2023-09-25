@@ -1736,9 +1736,7 @@ namespace Orts.Simulation
         {
         }
 
-        float CarLength;
-        bool ReverseIsSetOn;
-        float ReverserTimer;
+        float CarLength;                
         override public Boolean Triggered(Activity activity)
         {
             var triggered = false;
@@ -1752,24 +1750,24 @@ namespace Orts.Simulation
             Train = train;
 
             // Icik
-            if (Simulator.Settings.MSTSCompatibilityMode)
+            if (Simulator.Settings.MSTSCompatibilityMode && Simulator.PlayerLocomotive.IsPlayerTrain)
             {
                 var trainFrontPositionMSTS = new Traveller(train.RearTDBTraveller);
 
-                if (ReverseIsSetOn)
+                if (train.TrainReverseIsSetOn)
                 {
-                    ReverserTimer += Simulator.OneSecondLoop;
-                    if (ReverserTimer > 0.5f)
+                    train.TrainReverserTimer += Simulator.OneSecondLoop;
+                    if (train.TrainReverserTimer > 0.5f)
                     {
-                        ReverseIsSetOn = false;
-                        ReverserTimer = 0;
+                        train.TrainReverseIsSetOn = false;
+                        train.TrainReverserTimer = 0;
                     }
                 }
 
-                if (!ReverseIsSetOn && train.nextRouteReady && train.TCRoute.activeSubpath > 0 && train.TCRoute.ReversalInfo[train.TCRoute.activeSubpath - 1].Valid)
+                if (!train.TrainReverseIsSetOn && train.nextRouteReady && train.TCRoute.activeSubpath > 0 && train.TCRoute.ReversalInfo[train.TCRoute.activeSubpath - 1].Valid)
                 {
                     train.TrainRouteIsReversed = !train.TrainRouteIsReversed;
-                    ReverseIsSetOn = true;
+                    train.TrainReverseIsSetOn = true;
                 }
                 //Simulator.Confirmer.Information("TrainRouteIsReversed je na " + train.TrainRouteIsReversed);
 
