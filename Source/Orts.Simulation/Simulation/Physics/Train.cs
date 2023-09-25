@@ -111,7 +111,6 @@ namespace Orts.Simulation.Physics
         public float SteamHeatControllerCurrentValue;
         public bool TrainRouteIsReversed;
         public bool TrainReverseIsSetOn;
-        public float TrainReverserTimer;
 
         public Traveller RearTDBTraveller;               // positioned at the back of the last car in the train
         public Traveller FrontTDBTraveller;              // positioned at the front of the train by CalculatePositionOfCars

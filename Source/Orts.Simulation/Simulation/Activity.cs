@@ -1750,18 +1750,13 @@ namespace Orts.Simulation
             Train = train;
 
             // Icik
-            if (Simulator.Settings.MSTSCompatibilityMode && Simulator.PlayerLocomotive.IsPlayerTrain)
+            if (Simulator.Settings.MSTSCompatibilityMode)
             {
                 var trainFrontPositionMSTS = new Traveller(train.RearTDBTraveller);
 
-                if (train.TrainReverseIsSetOn)
+                if (train.TrainReverseIsSetOn && !train.nextRouteReady)
                 {
-                    train.TrainReverserTimer += Simulator.OneSecondLoop;
-                    if (train.TrainReverserTimer > 0.5f)
-                    {
-                        train.TrainReverseIsSetOn = false;
-                        train.TrainReverserTimer = 0;
-                    }
+                    train.TrainReverseIsSetOn = false;
                 }
 
                 if (!train.TrainReverseIsSetOn && train.nextRouteReady && train.TCRoute.activeSubpath > 0 && train.TCRoute.ReversalInfo[train.TCRoute.activeSubpath - 1].Valid)
