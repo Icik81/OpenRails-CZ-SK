@@ -3080,6 +3080,7 @@ namespace Orts.Simulation.RollingStocks
 
             //if (Simulator.Settings.CarVibratingLevel != 0)
             //{
+            TrackFactorXYZ(elapsedTimeS);
             Derailment(elapsedTimeS, speedMpS);            
 
             var rotation = Matrix.CreateFromYawPitchRoll(VibrationRotationRad.Y + TiltingYRot, VibrationRotationRad.X + TiltingXRot, VibrationRotationRad.Z + TiltingZRot * 0.5f);
@@ -3129,8 +3130,7 @@ namespace Orts.Simulation.RollingStocks
                 TiltingYRot = 0f;
                 TiltingZRot = 0f;
             }
-
-            ActualTrackSpeedMpS = Train.AllowedMaxSpeedMpS;
+            
             if (IsOverJunction())
             {
                 if (AbsSpeedMpS > ActualTrackSpeedMpS + (20f / 3.6f) && CurrentCurveRadius < 200f * (AbsSpeedMpS / ActualTrackSpeedMpS) && !IsJunctionCase)
@@ -3341,12 +3341,15 @@ namespace Orts.Simulation.RollingStocks
         float TrackFactorZ = 1;
         float AdhCycle = 0;
         bool FirstFrame = true;
-        public float ActualTrackSpeedMpS;
+        public float ActualTrackSpeedMpS;        
         private void TrackFactorXYZ(float elapsedTimeS)
         {
             float AdhTime = 1;
             AdhCycle += elapsedTimeS;
-            if (Train.AllowedMaxSpeedMpS >= 120 / 3.6f) // Koridor
+
+            ActualTrackSpeedMpS = MathHelper.Clamp(ActualTrackSpeedMpS, 20 / 3.6f, Train.AllowedMaxSpeedMpS);
+
+            if (ActualTrackSpeedMpS >= 120 / 3.6f) // Koridor
             {
                 TrackFactorX = 0.3f;
                 TrackFactorY = 0.3f;
@@ -3359,7 +3362,7 @@ namespace Orts.Simulation.RollingStocks
                 }                
             }
             else
-            if (Train.AllowedMaxSpeedMpS >= 100 / 3.6f) // Běžná trať do 120km/h
+            if (ActualTrackSpeedMpS >= 100 / 3.6f) // Běžná trať do 120km/h
             {
                 TrackFactorX = 0.6f;
                 TrackFactorY = 0.6f;
@@ -3372,7 +3375,7 @@ namespace Orts.Simulation.RollingStocks
                 }                
             }
             else
-            if (Train.AllowedMaxSpeedMpS > 50 / 3.6f) // Běžná trať do 100km/h
+            if (ActualTrackSpeedMpS > 50 / 3.6f) // Běžná trať do 100km/h
             {
                 TrackFactorX = 0.8f;
                 TrackFactorY = 0.8f;
@@ -3385,7 +3388,7 @@ namespace Orts.Simulation.RollingStocks
                 }                
             }
             else
-            if (Train.AllowedMaxSpeedMpS <= 50 / 3.6f && Train.NextRouteSpeedLimit <= 50 / 3.6f) // Běžná trať do 50km/h
+            if (ActualTrackSpeedMpS <= 50 / 3.6f && Train.NextRouteSpeedLimit <= 50 / 3.6f) // Běžná trať do 50km/h
             {
                 TrackFactorX = 1.0f;
                 TrackFactorY = 1.0f;
@@ -3410,10 +3413,10 @@ namespace Orts.Simulation.RollingStocks
                 }                
             }
             float SpeedFactor;
-            if (AbsSpeedMpS < Train.AllowedMaxSpeedMpS)
-                SpeedFactor = MathHelper.Clamp(AbsSpeedMpS / (Train.AllowedMaxSpeedMpS / 2.0f), 0.5f, 1.0f);            
+            if (AbsSpeedMpS < ActualTrackSpeedMpS)
+                SpeedFactor = MathHelper.Clamp(AbsSpeedMpS / (ActualTrackSpeedMpS / 2.0f), 0.5f, 1.0f);            
             else
-                SpeedFactor = MathHelper.Clamp(AbsSpeedMpS / Train.AllowedMaxSpeedMpS, 1.0f, 2.5f);
+                SpeedFactor = MathHelper.Clamp(AbsSpeedMpS / ActualTrackSpeedMpS, 1.0f, 2.5f);
 
             if (AbsSpeedMpS < 3f)
                 SpeedFactor = 0.3f;
@@ -3443,8 +3446,7 @@ namespace Orts.Simulation.RollingStocks
 
             if (CarLengthM < 30.0f && !Simulator.Paused && Simulator.GameSpeed == 1)
             {
-                int force;
-                TrackFactorXYZ(elapsedTimeS);
+                int force;                
                 VibrationTimer += elapsedTimeS;
                 if (VibrationTimer > 45)
                 {
@@ -3539,7 +3541,7 @@ namespace Orts.Simulation.RollingStocks
 
                     if (force == 0) force = 1;
                     if (force < 4)                    
-                        VibrationRotationVelocityRadpS.Y += (TrackFactorY * factor * Simulator.Settings.CarVibratingLevel * VibrationIntroductionStrength * force * 0.25f * VibrationMassKG) / x;                                                
+                        VibrationRotationVelocityRadpS.Y += (TrackFactorY * factor * Simulator.Settings.CarVibratingLevel * VibrationIntroductionStrength * force * 0.35f * VibrationMassKG) / x;                                                
                 }
 
                 if (TypVibrace_2)   //Vibrace v oblouku
@@ -3550,12 +3552,12 @@ namespace Orts.Simulation.RollingStocks
                     VibratioDampingCoefficient = 0.05f;
                     if (CurrentCurveAngle > 0)
                     {
-                        VibrationRotationVelocityRadpS.Y -= (TrackFactorY * factor * Simulator.Settings.CarVibratingLevel * VibrationIntroductionStrength * force * 0.75f * VibrationMassKG) / x;
+                        VibrationRotationVelocityRadpS.Y -= (TrackFactorY * factor * Simulator.Settings.CarVibratingLevel * VibrationIntroductionStrength * force * 0.85f * VibrationMassKG) / x;
                         VibrationRotationVelocityRadpS.Z -= (TrackFactorY * factor * Simulator.Settings.CarVibratingLevel * VibrationIntroductionStrength * force * 0.75f * VibrationMassKG) / x;
                     }
                     else
                     {
-                        VibrationRotationVelocityRadpS.Y += (TrackFactorY * factor * Simulator.Settings.CarVibratingLevel * VibrationIntroductionStrength * force * 0.75f * VibrationMassKG) / x;
+                        VibrationRotationVelocityRadpS.Y += (TrackFactorY * factor * Simulator.Settings.CarVibratingLevel * VibrationIntroductionStrength * force * 0.85f * VibrationMassKG) / x;
                         VibrationRotationVelocityRadpS.Z += (TrackFactorY * factor * Simulator.Settings.CarVibratingLevel * VibrationIntroductionStrength * force * 0.75f * VibrationMassKG) / x;
                     }                    
                     //Simulator.Confirmer.Information("VibrationRotationVelocityRadpS.Y " + VibrationRotationVelocityRadpS.Y);
