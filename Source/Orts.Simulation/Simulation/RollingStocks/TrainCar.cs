@@ -3347,6 +3347,7 @@ namespace Orts.Simulation.RollingStocks
             float AdhTime = 1;
             AdhCycle += elapsedTimeS;
 
+            ActualTrackSpeedMpS = Train.AllowedMaxSpeedMpS;
             ActualTrackSpeedMpS = MathHelper.Clamp(ActualTrackSpeedMpS, 20 / 3.6f, Train.AllowedMaxSpeedMpS);
 
             if (ActualTrackSpeedMpS >= 120 / 3.6f) // Koridor
@@ -3541,7 +3542,7 @@ namespace Orts.Simulation.RollingStocks
 
                     if (force == 0) force = 1;
                     if (force < 4)                    
-                        VibrationRotationVelocityRadpS.Y += (TrackFactorY * factor * Simulator.Settings.CarVibratingLevel * VibrationIntroductionStrength * force * 0.35f * VibrationMassKG) / x;                                                
+                        VibrationRotationVelocityRadpS.Y += (TrackFactorY * factor * Simulator.Settings.CarVibratingLevel * VibrationIntroductionStrength * force * 0.25f * VibrationMassKG) / x;                                                
                 }
 
                 if (TypVibrace_2)   //Vibrace v oblouku
