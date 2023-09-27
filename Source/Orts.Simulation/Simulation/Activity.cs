@@ -1737,7 +1737,8 @@ namespace Orts.Simulation
         {
         }
 
-        float CarLength;                
+        float CarLength;
+        float RideLength;
         override public Boolean Triggered(Activity activity)
         {
             var triggered = false;
@@ -1851,28 +1852,33 @@ namespace Orts.Simulation
                                 
                 var distanceMSTS = trainFrontPositionMSTS.DistanceTo(e.TileX, e.TileZ, e.X, trainFrontPositionMSTS.Y, e.Z, e.RadiusM);
                 
-                if (!e.TriggerOnStop && distanceMSTS != -1 && distanceMSTS < e.RadiusM)
+                if (!e.TriggerOnStop && distanceMSTS != -1 && distanceMSTS + (CarLength / 2f) < e.RadiusM)
                 {
                     return true;
                 }
 
-                //if (distanceMSTS == -1)
-                //{   
-                //    trainFrontPositionMSTS.ReverseDirection();
-                //    distanceMSTS = trainFrontPositionMSTS.DistanceTo(e.TileX, e.TileZ, e.X, trainFrontPositionMSTS.Y, e.Z, e.RadiusM);
-                //    trainFrontPositionMSTS.ReverseDirection();
-                //}                
+                if (distanceMSTS == -1)
+                {
+                    trainFrontPositionMSTS.ReverseDirection();
+                    distanceMSTS = trainFrontPositionMSTS.DistanceTo(e.TileX, e.TileZ, e.X, trainFrontPositionMSTS.Y, e.Z, e.RadiusM);
+                    trainFrontPositionMSTS.ReverseDirection();
+                }
 
-                if (e.TriggerOnStop && distanceMSTS != -1 && distanceMSTS < e.RadiusM)
-                {                    
-                    //Simulator.Confirmer.MSG3(Simulator.Catalog.GetString("We're here, we can stop!") + " " + Math.Round(distanceMSTS, 2) + " m");
-                    Simulator.Confirmer.MSG3(Simulator.Catalog.GetString("We're here, we can stop!"));
+                if (e.TriggerOnStop && distanceMSTS != -1 && distanceMSTS + (CarLength / 2f) < e.RadiusM)
+                {
+                    RideLength += Math.Abs(train.SpeedMpS) * Simulator.OneSecondLoop;
+                    float RestPercent = (float)Math.Round(RideLength / (2f * e.RadiusM - CarLength) * 100f, 0);
+                    float RestLength = (float)Math.Round((2f * e.RadiusM - CarLength) - RideLength, 0);
+                    
+                    Simulator.Confirmer.MSG3(Simulator.Catalog.GetString("We're here, we can stop!") + "   " + RestLength + " m");
+                    //Simulator.Confirmer.MSG3(Simulator.Catalog.GetString("We're here, we can stop!"));
                     if (Math.Abs(train.SpeedMpS) < 0.05f)
                     {
                         return true;
                     }
                     return false;
                 }
+                RideLength = 0;
                 return false;
             }
 
