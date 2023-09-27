@@ -1771,25 +1771,31 @@ namespace Orts.Simulation
                 var CarCoupledFront = Train != null && (Train.Cars.Count > 1) && ((Simulator.PlayerLocomotive.Flipped ? Train.LastCar : Train.FirstCar) != Simulator.PlayerLocomotive);
                 var CarCoupledRear = Train != null && (Train.Cars.Count > 1) && ((Simulator.PlayerLocomotive.Flipped ? Train.FirstCar : Train.LastCar) != Simulator.PlayerLocomotive);
 
+                if (Simulator.PlayerUsingRearCab)
+                {
+                    CarCoupledRear = Train != null && (Train.Cars.Count > 1) && ((Simulator.PlayerLocomotive.Flipped ? Train.LastCar : Train.FirstCar) != Simulator.PlayerLocomotive);
+                    CarCoupledFront = Train != null && (Train.Cars.Count > 1) && ((Simulator.PlayerLocomotive.Flipped ? Train.FirstCar : Train.LastCar) != Simulator.PlayerLocomotive);
+                }
 
                 string Message = "";
                 if (Simulator.PlayerUsingRearCab)
                 {
                     if (Simulator.PlayerLocomotive.CarIsFlipped)
                     {
-                        if (Simulator.PlayerLocomotive.Direction == Direction.Reverse)
-                        {
-                            trainFrontPositionMSTS = new Traveller(train.PlayerCarIsFirstCar ? train.RearTDBTraveller : train.FrontTDBTraveller);
-                            CarLength = train.PlayerCarIsFirstCar ? Train.Cars[Train.Cars.Count - 1].CarLengthM : Train.Cars[0].CarLengthM;
-
-                            Message = train.PlayerCarIsFirstCar ? "Zadní vůz  " + Train.Cars[Train.Cars.Count - 1].CarID : "Přední vůz  " + Train.Cars[0].CarID;                            
-                        }
-                        else
+                        if (CarCoupledFront)
                         {
                             trainFrontPositionMSTS = new Traveller(train.PlayerCarIsFirstCar ? train.RearTDBTraveller : train.FrontTDBTraveller);
                             CarLength = train.PlayerCarIsFirstCar ? Train.Cars[Train.Cars.Count - 1].CarLengthM : Train.Cars[0].CarLengthM;
 
                             Message = train.PlayerCarIsFirstCar ? "Zadní vůz  " + Train.Cars[Train.Cars.Count - 1].CarID : "Přední vůz  " + Train.Cars[0].CarID;
+                        }
+                        else
+                        if (CarCoupledRear)
+                        {
+                            trainFrontPositionMSTS = new Traveller(train.PlayerCarIsFirstCar ? train.FrontTDBTraveller : train.RearTDBTraveller);
+                            CarLength = train.PlayerCarIsFirstCar ? Train.Cars[0].CarLengthM : Train.Cars[Train.Cars.Count - 1].CarLengthM;
+
+                            Message = train.PlayerCarIsFirstCar ? "Přední vůz  " + Train.Cars[0].CarID : "Zadní vůz  " + Train.Cars[Train.Cars.Count - 1].CarID;
                         }
                     }
                     else
@@ -1848,7 +1854,7 @@ namespace Orts.Simulation
                         }
                     }
                 }                
-                //Simulator.Confirmer.Information("Zabírá " + Message);
+                Simulator.Confirmer.Information("Zabírá " + Message);
                                 
                 var distanceMSTS = trainFrontPositionMSTS.DistanceTo(e.TileX, e.TileZ, e.X, trainFrontPositionMSTS.Y, e.Z, e.RadiusM);
                 
