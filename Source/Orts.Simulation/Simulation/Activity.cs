@@ -1864,11 +1864,13 @@ namespace Orts.Simulation
                     trainFrontPositionMSTS.ReverseDirection();
                 }
 
-                if (e.TriggerOnStop && distanceMSTS != -1 && distanceMSTS + (CarLength / 2f) < e.RadiusM)
+                float DistanceOffset = (CarLength / 2f) > e.RadiusM ? 0 : CarLength / 2f;
+
+                if (e.TriggerOnStop && distanceMSTS != -1 && distanceMSTS + DistanceOffset < e.RadiusM)
                 {
                     RideLength += Math.Abs(train.SpeedMpS) * Simulator.OneSecondLoop;
-                    float RestPercent = (float)Math.Round(RideLength / (2f * e.RadiusM - CarLength) * 100f, 0);
-                    float RestLength = (float)Math.Round((2f * e.RadiusM - CarLength) - RideLength, 0);
+                    float RestPercent = (float)Math.Round(RideLength / (2f * e.RadiusM + DistanceOffset) * 100f, 0);
+                    float RestLength = (float)Math.Round((2f * e.RadiusM + DistanceOffset) - RideLength, 0);
                     
                     Simulator.Confirmer.MSG3(Simulator.Catalog.GetString("We're here, we can stop!") + "   " + RestLength + " m");
                     //Simulator.Confirmer.MSG3(Simulator.Catalog.GetString("We're here, we can stop!"));
