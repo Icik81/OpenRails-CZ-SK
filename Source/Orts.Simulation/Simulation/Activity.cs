@@ -1854,7 +1854,7 @@ namespace Orts.Simulation
                         }
                     }
                 }                
-                Simulator.Confirmer.Information("Zabírá " + Message);
+                //Simulator.Confirmer.Information("Zabírá " + Message);
                                 
                 var distanceMSTS = trainFrontPositionMSTS.DistanceTo(e.TileX, e.TileZ, e.X, trainFrontPositionMSTS.Y, e.Z, e.RadiusM);
                 
