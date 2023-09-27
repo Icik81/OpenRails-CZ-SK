@@ -366,6 +366,7 @@ namespace Orts.Simulation.RollingStocks
         public bool UserPowerOff;
         public bool CarLightsPowerOn;
         public bool CarIsPlayerLoco;
+        public bool CarIsFlipped;
         public bool CarIsWaiting;
         public bool CarIsShunting;
         public bool CarIsRunning;
@@ -2143,6 +2144,7 @@ namespace Orts.Simulation.RollingStocks
             outf.Write(Flipped);
             outf.Write(UiD);
             outf.Write(CarID);
+            outf.Write(CarIsFlipped);
             
             outf.Write(MotiveForceN);
             outf.Write(FrictionForceN);
@@ -2193,7 +2195,8 @@ namespace Orts.Simulation.RollingStocks
             Flipped = inf.ReadBoolean();
             UiD = inf.ReadInt32();
             CarID = inf.ReadString();
-            
+            CarIsFlipped = inf.ReadBoolean();
+
             MotiveForceN = inf.ReadSingle();
             FrictionForceN = inf.ReadSingle();
             SpeedMpS = inf.ReadSingle();
