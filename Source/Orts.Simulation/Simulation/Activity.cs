@@ -1852,7 +1852,7 @@ namespace Orts.Simulation
                                 
                 var distanceMSTS = trainFrontPositionMSTS.DistanceTo(e.TileX, e.TileZ, e.X, trainFrontPositionMSTS.Y, e.Z, e.RadiusM);
                 
-                if (!e.TriggerOnStop && distanceMSTS != -1 && distanceMSTS + (CarLength / 2f) < e.RadiusM)
+                if (!e.TriggerOnStop && distanceMSTS != -1 && distanceMSTS < e.RadiusM)
                 {
                     return true;
                 }
