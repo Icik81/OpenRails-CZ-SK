@@ -1844,6 +1844,11 @@ namespace Orts.Simulation
                     }
                     return false;
                 }
+                else
+                if (e.TriggerOnStop && distanceMSTS != -1 && distanceMSTS < e.RadiusM)
+                {                    
+                    Simulator.Confirmer.MSG3(Simulator.Catalog.GetString("Precise stop required!"));                    
+                }
                 RideLength = 0;
                 return false;
             }

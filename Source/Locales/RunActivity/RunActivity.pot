@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2023-09-18 17:43:19+0200\n"
-"PO-Revision-Date: 2023-09-18 17:43:20+0200\n"
+"POT-Creation-Date: 2023-09-28 19:17:34+0200\n"
+"PO-Revision-Date: 2023-09-28 19:17:35+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -138,19 +138,19 @@ msgstr ""
 msgid "Confirmations visible"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Viewer.cs:1370
+#: ../../RunActivity/Viewer3D/Viewer.cs:1375
 msgid "Switched to player control"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Viewer.cs:1377
+#: ../../RunActivity/Viewer3D/Viewer.cs:1382
 msgid "You can't switch from manual to autopilot mode"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Viewer.cs:1383
+#: ../../RunActivity/Viewer3D/Viewer.cs:1388
 msgid "Switched to autopilot"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Viewer.cs:2061
+#: ../../RunActivity/Viewer3D/Viewer.cs:2066
 msgid "Game saved"
 msgstr ""
 
@@ -164,12 +164,12 @@ msgstr ""
 msgid "Vibrating at level {0}"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Viewer.cs:1401
+#: ../../RunActivity/Viewer3D/Viewer.cs:1406
 #, csharp-format
 msgid "Keyboard map list saved to '{0}'."
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Viewer.cs:1405
+#: ../../RunActivity/Viewer3D/Viewer.cs:1410
 #, csharp-format
 msgid "Keyboard map image saved to '{0}'."
 msgstr ""
@@ -1615,7 +1615,6 @@ msgid "ElecHeat"
 msgstr ""
 
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:648
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:660
 msgid "SteamHeat"
 msgstr ""
 
