@@ -1875,8 +1875,8 @@ namespace Orts.Simulation
                 if (e.TriggerOnStop && distanceMSTS != -1 && distanceMSTS + DistanceOffset < e.RadiusM)
                 {
                     RideLength += Math.Abs(train.SpeedMpS) * Simulator.OneSecondLoop;
-                    float RestPercent = (float)Math.Round(RideLength / (2f * e.RadiusM + DistanceOffset) * 100f, 0);
-                    float RestLength = (float)Math.Round((2f * e.RadiusM + DistanceOffset) - RideLength, 0);
+                    float RestPercent = (float)Math.Round(RideLength / (2f * e.RadiusM - (2f * DistanceOffset)) * 100f, 0);
+                    float RestLength = (float)Math.Round((2f * e.RadiusM - (2f * DistanceOffset)) - RideLength, 0);
                     
                     Simulator.Confirmer.MSG3(Simulator.Catalog.GetString("We're here, we can stop!") + "   " + RestLength + " m");
                     //Simulator.Confirmer.MSG3(Simulator.Catalog.GetString("We're here, we can stop!"));
