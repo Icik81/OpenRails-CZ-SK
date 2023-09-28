@@ -1682,7 +1682,9 @@ namespace Orts.Simulation.Physics
                     Simulator.AIRequestSignal = false;
                 }
                 else
-                if (EndAuthorityType[0] == END_AUTHORITY.RESERVED_SWITCH || (EndAuthorityType[0] == END_AUTHORITY.NO_PATH_RESERVED && ControlMode == Train.TRAIN_CONTROL.AUTO_NODE)) 
+                if (EndAuthorityType[0] == END_AUTHORITY.RESERVED_SWITCH 
+                    || (EndAuthorityType[0] == END_AUTHORITY.NO_PATH_RESERVED && ControlMode == Train.TRAIN_CONTROL.AUTO_NODE)
+                    || ControlMode == Train.TRAIN_CONTROL.OUT_OF_CONTROL) 
                 {
                     RequestToggleManualMode();
                 }
@@ -3169,7 +3171,6 @@ namespace Orts.Simulation.Physics
             IndexNextSpeedlimit = -1;
 
             //  set overall speed limits if these do not yet exist
-
             if (!existingSpeedLimits)
             {
                 if ((TrainMaxSpeedMpS <= 0f) && (this.LeadLocomotive != null))
@@ -3404,6 +3405,12 @@ namespace Orts.Simulation.Physics
             //
 
             updateSpeedInfo();
+
+            // Icik
+            if (AllowedMaxSpeedMpS == 0)
+            {
+                AllowedMaxSpeedMpS = 40f / 3.6f;
+            }
         }
 
         //================================================================================================//

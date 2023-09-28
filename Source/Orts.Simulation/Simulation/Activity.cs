@@ -1780,78 +1780,36 @@ namespace Orts.Simulation
                 string Message = "";
                 if (Simulator.PlayerUsingRearCab)
                 {
-                    if (Simulator.PlayerLocomotive.CarIsFlipped)
+                    if (CarCoupledFront)
                     {
-                        if (CarCoupledFront)
-                        {
-                            trainFrontPositionMSTS = new Traveller(train.PlayerCarIsFirstCar ? train.RearTDBTraveller : train.FrontTDBTraveller);
-                            CarLength = train.PlayerCarIsFirstCar ? Train.Cars[Train.Cars.Count - 1].CarLengthM : Train.Cars[0].CarLengthM;
+                        trainFrontPositionMSTS = new Traveller(train.PlayerCarIsFirstCar ? train.RearTDBTraveller : train.FrontTDBTraveller);
+                        CarLength = train.PlayerCarIsFirstCar ? Train.Cars[Train.Cars.Count - 1].CarLengthM : Train.Cars[0].CarLengthM;
 
-                            Message = train.PlayerCarIsFirstCar ? "Zadní vůz  " + Train.Cars[Train.Cars.Count - 1].CarID : "Přední vůz  " + Train.Cars[0].CarID;
-                        }
-                        else
-                        if (CarCoupledRear)
-                        {
-                            trainFrontPositionMSTS = new Traveller(train.PlayerCarIsFirstCar ? train.FrontTDBTraveller : train.RearTDBTraveller);
-                            CarLength = train.PlayerCarIsFirstCar ? Train.Cars[0].CarLengthM : Train.Cars[Train.Cars.Count - 1].CarLengthM;
-
-                            Message = train.PlayerCarIsFirstCar ? "Přední vůz  " + Train.Cars[0].CarID : "Zadní vůz  " + Train.Cars[Train.Cars.Count - 1].CarID;
-                        }
+                        Message = train.PlayerCarIsFirstCar ? "Zadní vůz  " + Train.Cars[Train.Cars.Count - 1].CarID : "Přední vůz  " + Train.Cars[0].CarID;
                     }
-                    else
+                    if (CarCoupledRear)
                     {
-                        if (Simulator.PlayerLocomotive.Direction == Direction.Reverse)
-                        {
-                            trainFrontPositionMSTS = new Traveller(train.PlayerCarIsFirstCar ? train.RearTDBTraveller : train.FrontTDBTraveller);
-                            CarLength = train.PlayerCarIsFirstCar ? Train.Cars[Train.Cars.Count - 1].CarLengthM : Train.Cars[0].CarLengthM;
+                        trainFrontPositionMSTS = new Traveller(train.PlayerCarIsFirstCar ? train.FrontTDBTraveller : train.RearTDBTraveller);
+                        CarLength = train.PlayerCarIsFirstCar ? Train.Cars[0].CarLengthM : Train.Cars[Train.Cars.Count - 1].CarLengthM;
 
-                            Message = train.PlayerCarIsFirstCar ? "Zadní vůz  " + Train.Cars[Train.Cars.Count - 1].CarID : "Přední vůz  " + Train.Cars[0].CarID;
-                        }
-                        else
-                        {
-                            trainFrontPositionMSTS = new Traveller(train.PlayerCarIsFirstCar ? train.FrontTDBTraveller : train.RearTDBTraveller);
-                            CarLength = train.PlayerCarIsFirstCar ? Train.Cars[0].CarLengthM : Train.Cars[Train.Cars.Count - 1].CarLengthM;
-
-                            Message = train.PlayerCarIsFirstCar ? "Přední vůz  " + Train.Cars[0].CarID : "Zadní vůz  " + Train.Cars[Train.Cars.Count - 1].CarID;
-                        }
+                        Message = train.PlayerCarIsFirstCar ? "Přední vůz  " + Train.Cars[0].CarID : "Zadní vůz  " + Train.Cars[Train.Cars.Count - 1].CarID;
                     }
                 }
                 else
                 {
-                    if (Simulator.PlayerLocomotive.CarIsFlipped)
+                    if (CarCoupledFront)
                     {
-                        if (CarCoupledFront)
-                        {
-                            trainFrontPositionMSTS = new Traveller(train.PlayerCarIsFirstCar ? train.RearTDBTraveller : train.FrontTDBTraveller);
-                            CarLength = train.PlayerCarIsFirstCar ? Train.Cars[Train.Cars.Count - 1].CarLengthM : Train.Cars[0].CarLengthM;
+                        trainFrontPositionMSTS = new Traveller(train.PlayerCarIsFirstCar ? train.RearTDBTraveller : train.FrontTDBTraveller);
+                        CarLength = train.PlayerCarIsFirstCar ? Train.Cars[Train.Cars.Count - 1].CarLengthM : Train.Cars[0].CarLengthM;
 
-                            Message = train.PlayerCarIsFirstCar ? "Zadní vůz  " + Train.Cars[Train.Cars.Count - 1].CarID : "Přední vůz  " + Train.Cars[0].CarID;
-                        }
-                        else
-                        if (CarCoupledRear)
-                        {
-                            trainFrontPositionMSTS = new Traveller(train.PlayerCarIsFirstCar ? train.FrontTDBTraveller : train.RearTDBTraveller);
-                            CarLength = train.PlayerCarIsFirstCar ? Train.Cars[0].CarLengthM : Train.Cars[Train.Cars.Count - 1].CarLengthM;
-
-                            Message = train.PlayerCarIsFirstCar ? "Přední vůz  " + Train.Cars[0].CarID : "Zadní vůz  " + Train.Cars[Train.Cars.Count - 1].CarID;
-                        }
+                        Message = train.PlayerCarIsFirstCar ? "Zadní vůz  " + Train.Cars[Train.Cars.Count - 1].CarID : "Přední vůz  " + Train.Cars[0].CarID;
                     }
-                    else
+                    if (CarCoupledRear)
                     {
-                        if (Simulator.PlayerLocomotive.Direction == Direction.Reverse)
-                        {
-                            trainFrontPositionMSTS = new Traveller(train.PlayerCarIsFirstCar ? train.FrontTDBTraveller : train.RearTDBTraveller);
-                            CarLength = train.PlayerCarIsFirstCar ? Train.Cars[0].CarLengthM : Train.Cars[Train.Cars.Count - 1].CarLengthM;
+                        trainFrontPositionMSTS = new Traveller(train.PlayerCarIsFirstCar ? train.FrontTDBTraveller : train.RearTDBTraveller);
+                        CarLength = train.PlayerCarIsFirstCar ? Train.Cars[0].CarLengthM : Train.Cars[Train.Cars.Count - 1].CarLengthM;
 
-                            Message = train.PlayerCarIsFirstCar ? "Přední vůz  " + Train.Cars[0].CarID : "Zadní vůz  " + Train.Cars[Train.Cars.Count - 1].CarID;
-                        }
-                        else
-                        {
-                            trainFrontPositionMSTS = new Traveller(train.PlayerCarIsFirstCar ? train.FrontTDBTraveller : train.RearTDBTraveller);
-                            CarLength = train.PlayerCarIsFirstCar ? Train.Cars[0].CarLengthM : Train.Cars[Train.Cars.Count - 1].CarLengthM;
-
-                            Message = train.PlayerCarIsFirstCar ? "Přední vůz  " + Train.Cars[0].CarID : "Zadní vůz  " + Train.Cars[Train.Cars.Count - 1].CarID;
-                        }
+                        Message = train.PlayerCarIsFirstCar ? "Přední vůz  " + Train.Cars[0].CarID : "Zadní vůz  " + Train.Cars[Train.Cars.Count - 1].CarID;
                     }
                 }                
                 //Simulator.Confirmer.Information("Zabírá " + Message);
