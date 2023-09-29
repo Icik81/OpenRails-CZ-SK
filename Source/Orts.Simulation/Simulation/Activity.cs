@@ -1594,6 +1594,24 @@ namespace Orts.Simulation
                             if (trainItem.Cars.ElementAt(i - 1).CarID != wagonIdList.ElementAt(trainItem.Cars.Count - i)) { listsMatch = false; break; }
                         }
                     }
+                    
+                    // Icik
+                    // Vozy nemusí být v daném pořadí
+                    if (!listsMatch)
+                    {
+                        int nCars = 0;//all cars other than WagonIdList.
+                        int nWagonListCars = 0;//individual wagon drop.
+                        foreach (var item in trainItem.Cars)
+                        {
+                            if (!wagonIdList.Contains(item.CarID)) nCars++;
+                            if (wagonIdList.Contains(item.CarID)) nWagonListCars++;
+                        }
+                        if (trainItem.Cars.Count - nCars == (wagonIdList.Count == nWagonListCars ? wagonIdList.Count : nWagonListCars))
+                        {
+                            listsMatch = true;
+                        }
+                    }
+                    
                     if (listsMatch) return trainItem;
                 }
             }
