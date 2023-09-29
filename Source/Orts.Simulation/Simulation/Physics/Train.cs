@@ -3171,7 +3171,7 @@ namespace Orts.Simulation.Physics
             IndexNextSpeedlimit = -1;
 
             // Icik
-            if (AllowedMaxSpeedMpS == 0) AllowedMaxSpeedMpS = (float)Simulator.TRK.Tr_RouteFile.SpeedLimit;
+            AllowedMaxSpeedMpS = (float)Simulator.TRK.Tr_RouteFile.SpeedLimit;
 
             //  set overall speed limits if these do not yet exist
             if (!existingSpeedLimits)
