@@ -530,7 +530,7 @@ namespace Orts.Viewer3D
         /// Used for Horns
         /// </summary>
         //public float HornRolloffFactor = 0.05f;
-        public float HornRolloffFactor = 0.25f;
+        public float HornRolloffFactor = 0.15f;
 
         /// <summary>
         /// Construct a SoundSource attached to a train car.
