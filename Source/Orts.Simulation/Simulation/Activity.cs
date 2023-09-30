@@ -1573,46 +1573,59 @@ namespace Orts.Simulation
         /// </summary>
         /// <param name="wagonIdList"></param>
         /// <returns>train or null</returns>
+        bool TrainCarsOk;
         private Train matchesConsist(List<string> wagonIdList)
         {
             foreach (var trainItem in Simulator.Trains)
             {
                 if (trainItem.Cars.Count == wagonIdList.Count)
                 {
-                    // Compare two lists to make sure wagons are in expected sequence.
-                    bool listsMatch = true;
-                    //both lists with the same order
-                    for (int i = 0; i < trainItem.Cars.Count; i++)
+                    // Určí správný vlak pro testování odpojených vozů
+                    TrainCarsOk = true;
+                    foreach (var item in trainItem.Cars)
                     {
-                        if (trainItem.Cars.ElementAt(i).CarID != wagonIdList.ElementAt(i)) { listsMatch = false; break; }
-                    }
-                    if (!listsMatch)
-                    {//different order list
-                        listsMatch = true;
-                        for (int i = trainItem.Cars.Count; i > 0; i--)
+                        if (!wagonIdList.Contains(item.CarID))
                         {
-                            if (trainItem.Cars.ElementAt(i - 1).CarID != wagonIdList.ElementAt(trainItem.Cars.Count - i)) { listsMatch = false; break; }
+                            TrainCarsOk = false;
+                            break;
                         }
                     }
-                    
-                    // Icik
-                    // Vozy nemusí být v daném pořadí
-                    if (!listsMatch)
+                    if (TrainCarsOk)
                     {
-                        int nCars = 0;//all cars other than WagonIdList.
-                        int nWagonListCars = 0;//individual wagon drop.
-                        foreach (var item in trainItem.Cars)
+                        // Compare two lists to make sure wagons are in expected sequence.
+                        bool listsMatch = true;
+                        //both lists with the same order
+                        for (int i = 0; i < trainItem.Cars.Count; i++)
                         {
-                            if (!wagonIdList.Contains(item.CarID)) nCars++;
-                            if (wagonIdList.Contains(item.CarID)) nWagonListCars++;
+                            if (trainItem.Cars.ElementAt(i).CarID != wagonIdList.ElementAt(i)) { listsMatch = false; break; }
                         }
-                        if (trainItem.Cars.Count - nCars == (wagonIdList.Count == nWagonListCars ? wagonIdList.Count : nWagonListCars))
-                        {
+                        if (!listsMatch)
+                        {//different order list
                             listsMatch = true;
+                            for (int i = trainItem.Cars.Count; i > 0; i--)
+                            {
+                                if (trainItem.Cars.ElementAt(i - 1).CarID != wagonIdList.ElementAt(trainItem.Cars.Count - i)) { listsMatch = false; break; }
+                            }
                         }
-                    }
-                    
-                    if (listsMatch) return trainItem;
+
+                        // Icik
+                        // Vozy nemusí být v daném pořadí
+                        if (!listsMatch)
+                        {
+                            int nCars = 0;//all cars other than WagonIdList.
+                            int nWagonListCars = 0;//individual wagon drop.
+                            foreach (var item in trainItem.Cars)
+                            {
+                                if (!wagonIdList.Contains(item.CarID)) nCars++;
+                                if (wagonIdList.Contains(item.CarID)) nWagonListCars++;
+                            }
+                            if (trainItem.Cars.Count - nCars == (wagonIdList.Count == nWagonListCars ? wagonIdList.Count : nWagonListCars))
+                            {
+                                listsMatch = true;
+                            }
+                        }
+                        if (listsMatch) return trainItem;
+                    }                    
                 }
             }
             return null;
