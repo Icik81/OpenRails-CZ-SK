@@ -175,7 +175,7 @@ namespace Orts.Viewer3D.Popups
                     {
                         foreach (var siding in worldFile.sidings)
                         {
-                            if (State == DisplayState.Auto && Sidings != null && (!Sidings.ContainsKey(siding.ItemName) || !Sidings[siding.ItemName]))
+                            if (State == DisplayState.Auto && Sidings != null && siding.ItemName != null && (!Sidings.ContainsKey(siding.ItemName) || !Sidings[siding.ItemName]))
                                 continue;
 
                             // Calculates distance between camera and siding label.
