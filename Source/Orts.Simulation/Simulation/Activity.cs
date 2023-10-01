@@ -21,6 +21,7 @@ using Orts.Formats.OR;
 using Orts.Simulation.AIs;
 using Orts.Simulation.Physics;
 using Orts.Simulation.RollingStocks;
+using Orts.Simulation.Signalling;
 using Orts.Simulation.Timetables;
 using ORTS.Common;
 using System;
@@ -997,8 +998,11 @@ namespace Orts.Simulation
                                                     - ActArrive).Value.TotalSeconds;
                             BoardingEndS -= sinceActArriveS;
                             double SchDepartS = SchDepart.Subtract(new DateTime()).TotalSeconds;
-                            BoardingEndS = CompareTimes.LatestTime((int)SchDepartS, (int)BoardingEndS);
-
+                            //BoardingEndS = CompareTimes.LatestTime((int)SchDepartS, (int)BoardingEndS);
+                            
+                            // Icik
+                            // Čas pro pobyt ve stanici je vždy ten plánovaný jízdním řádem
+                            BoardingEndS = SchDepartS;
                         }
                     }
                     if (MyPlayerTrain.NextSignalObject[0] != null)
@@ -1089,9 +1093,6 @@ namespace Orts.Simulation
                     if (!maydepart && arrived && loco.CentralHandlingDoors && !loco.OpenedLeftDoor && !loco.OpenedRightDoor 
                         && (MyPlayerTrain.PeopleWantToEntry || MyPlayerTrain.PeopleWantToLeaveCount > 0))
                     {                        
-                        //BoardingEndS = Simulator.ClockTime + BoardingS;
-                        //double SchDepartS = SchDepart.Subtract(new DateTime()).TotalSeconds;
-                        //BoardingEndS = CompareTimes.LatestTime((int)SchDepartS, (int)BoardingEndS);
                         DisplayColor = Color.Yellow;
                         DisplayMessage = Simulator.Catalog.GetString("People are waiting for the door to open…");
                         return;
@@ -1160,7 +1161,12 @@ namespace Orts.Simulation
                                 if (ClearForDepartGenerate == 0)
                                     ClearForDepartGenerate = Simulator.Random.Next(2, 6);
                                 TimeToClearForDepart++;
-                                if (TimeToClearForDepart == ClearForDepartGenerate * 30)
+                                if (TimeToClearForDepart > ClearForDepartGenerate * 30
+                                    && (distanceToNextSignal >= 0 && distanceToNextSignal <= 600 && MyPlayerTrain.NextSignalObject[0] != null
+                                    && (MyPlayerTrain.NextSignalObject[0].this_sig_lr(MstsSignalFunction.NORMAL) != MstsSignalAspect.STOP
+                                    || MyPlayerTrain.NextSignalObject[0].hasPermission == SignalObject.Permission.Granted)
+                                    || distanceToNextSignal > 600)                                                                        
+                                    )
                                 {                                    
                                     maydepart = true;
                                     DisplayColor = Color.LightGreen;
@@ -1173,7 +1179,14 @@ namespace Orts.Simulation
                                 else
                                 {
                                     DisplayColor = Color.Yellow;
-                                    DisplayMessage = Simulator.Catalog.GetString("Waiting for the permission....");
+                                    if (distanceToNextSignal >= 0 && distanceToNextSignal <= 600 && MyPlayerTrain.NextSignalObject[0] != null
+                                        && MyPlayerTrain.NextSignalObject[0].this_sig_lr(MstsSignalFunction.NORMAL) == MstsSignalAspect.STOP
+                                        && MyPlayerTrain.NextSignalObject[0].hasPermission != SignalObject.Permission.Granted)
+                                    {
+                                        DisplayMessage = Simulator.Catalog.GetString("Passenger boarding completed. Waiting for signal ahead to clear.");
+                                    }
+                                    else
+                                        DisplayMessage = Simulator.Catalog.GetString("Waiting for the permission....");
                                     return;
                                 }
                             }

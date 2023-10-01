@@ -16874,7 +16874,7 @@ namespace Orts.Simulation.Physics
                             if (/*(pax.ArrivalStationName == train.StationStops[0].PlatformItem.Name) &&*/ pax.DoorsToEnterAndExit == 0)
                             {
                                 pax.TimeToStartExiting = nextTimeExitDoors1;
-                                nextTimeExitDoors1 += pax.TimeToEnterAndExit / numOfWagons;
+                                nextTimeExitDoors1 += pax.TimeToEnterAndExit / numOfWagons / 10f;
                             }
                         }
                         nextTimeExitDoors2 = gameClock + 0.25f;
@@ -16883,7 +16883,7 @@ namespace Orts.Simulation.Physics
                             if (/*(pax.ArrivalStationName == train.StationStops[0].PlatformItem.Name) &&*/ pax.DoorsToEnterAndExit == 1)
                             {
                                 pax.TimeToStartExiting = nextTimeExitDoors2;
-                                nextTimeExitDoors2 += pax.TimeToEnterAndExit / numOfWagons;
+                                nextTimeExitDoors2 += pax.TimeToEnterAndExit / numOfWagons / 10f;
                             }
                         }
                     }                    
