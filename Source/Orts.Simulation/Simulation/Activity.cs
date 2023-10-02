@@ -1831,6 +1831,7 @@ namespace Orts.Simulation
                 }
 
                 string Message = "";
+                CarLength = Train.Cars[0].CarLengthM;
                 if (Simulator.PlayerUsingRearCab)
                 {
                     if (CarCoupledFront)
@@ -1864,30 +1865,29 @@ namespace Orts.Simulation
 
                         Message = !train.TrainRouteIsReversed ? "Přední vůz  " + Train.Cars[0].CarID : "Zadní vůz  " + Train.Cars[Train.Cars.Count - 1].CarID;
                     }
-                }                
-                //Simulator.Confirmer.Information("Zabírá: " + Message + "   Obrácené pořadí: " + train.TrainRouteIsReversed);
-                                
+                }                                                                
                 var distanceMSTS = trainFrontPositionMSTS.DistanceTo(e.TileX, e.TileZ, e.X, trainFrontPositionMSTS.Y, e.Z, e.RadiusM);
-
-                float DistanceOffset = (CarLength / 2f) > e.RadiusM ? 0 : CarLength / 2f;                
+                float DistanceOffset = (CarLength / 2f) /*> e.RadiusM ? 0 : CarLength / 2f*/;                
 
                 if (distanceMSTS == -1)
                 {
                     trainFrontPositionMSTS.ReverseDirection();
-                    distanceMSTS = trainFrontPositionMSTS.DistanceTo(e.TileX, e.TileZ, e.X, trainFrontPositionMSTS.Y, e.Z, e.RadiusM);
-                    trainFrontPositionMSTS.ReverseDirection();
+                    distanceMSTS = trainFrontPositionMSTS.DistanceTo(e.TileX, e.TileZ, e.X, trainFrontPositionMSTS.Y, e.Z, e.RadiusM);                    
+                    trainFrontPositionMSTS.ReverseDirection();                    
                 }
 
-                if (!e.TriggerOnStop && distanceMSTS != -1 && distanceMSTS < e.RadiusM)
+                //Simulator.Confirmer.Information("Zabírá: " + Message + "   Obrácené pořadí: " + train.TrainRouteIsReversed + "   DistanceOffset: " + DistanceOffset);
+
+                if (!e.TriggerOnStop && distanceMSTS != -1 && distanceMSTS - DistanceOffset < e.RadiusM)
                 {
                     return true;
                 }
 
-                if (e.TriggerOnStop && distanceMSTS != -1 && distanceMSTS < e.RadiusM)
+                if (e.TriggerOnStop && distanceMSTS != -1 && distanceMSTS - DistanceOffset < e.RadiusM)
                 {
                     RideLength += Math.Abs(train.SpeedMpS) * Simulator.OneSecondLoop;
-                    float RestPercent = (float)Math.Round(RideLength / (2f * e.RadiusM - (2f * DistanceOffset)) * 100f, 0);
-                    float RestLength = (float)Math.Round((2f * e.RadiusM - (2f * DistanceOffset)) - RideLength, 0);
+                    float RestPercent = (float)Math.Round(RideLength / (2f * e.RadiusM + (2f * DistanceOffset)) * 100f, 0);
+                    float RestLength = (float)Math.Round((2f * e.RadiusM + (2f * DistanceOffset)) - RideLength, 0);
                     
                     Simulator.Confirmer.MSG3(Simulator.Catalog.GetString("We're here, we can stop!") + "   " + RestLength + " m");
                     //Simulator.Confirmer.MSG3(Simulator.Catalog.GetString("We're here, we can stop!"));
@@ -1898,7 +1898,7 @@ namespace Orts.Simulation
                     return false;
                 }
                 else
-                if (e.TriggerOnStop && distanceMSTS != -1 && distanceMSTS - DistanceOffset < e.RadiusM)
+                if (e.TriggerOnStop && distanceMSTS != -1 && distanceMSTS - (2f * DistanceOffset) < e.RadiusM)
                 {                    
                     Simulator.Confirmer.MSG3(Simulator.Catalog.GetString("Precise stop required!"));                    
                 }
