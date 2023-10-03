@@ -1783,6 +1783,7 @@ namespace Orts.Simulation
 
         float CarLength;
         float RideLength;
+        int CarLengthMark;
         override public Boolean Triggered(Activity activity)
         {
             var triggered = false;
@@ -1799,15 +1800,6 @@ namespace Orts.Simulation
             if (Simulator.Settings.MSTSCompatibilityMode)
             {
                 var trainFrontPositionMSTS = new Traveller(train.FrontTDBTraveller);
-
-                //Train.PlayerCarIsFirstCar = false;
-                //for (var i = 0; i < Train.Cars.Count; i++)
-                //{
-                //    if (Train.Cars[0].CarIsPlayerLoco)
-                //        Train.PlayerCarIsFirstCar = true;
-                //    else
-                //        Train.PlayerCarIsFirstCar = false;
-                //}
 
                 if (!train.nextRouteReady) train.TrainReverseIsSetOn = false;
 
@@ -1832,42 +1824,25 @@ namespace Orts.Simulation
 
                 string Message = "";
                 CarLength = Train.Cars[0].CarLengthM;
-                if (Simulator.PlayerUsingRearCab)
+                CarLengthMark = -1;
+
+                if (CarCoupledFront)
                 {
-                    if (CarCoupledFront)
-                    {
-                        trainFrontPositionMSTS = new Traveller(!train.TrainRouteIsReversed ? train.RearTDBTraveller : train.FrontTDBTraveller);
-                        CarLength = !train.TrainRouteIsReversed ? Train.Cars[Train.Cars.Count - 1].CarLengthM : Train.Cars[0].CarLengthM;
-
-                        Message = !train.TrainRouteIsReversed ? "Zadní vůz  " + Train.Cars[Train.Cars.Count - 1].CarID : "Přední vůz  " + Train.Cars[0].CarID;
-                    }
-                    if (CarCoupledRear)
-                    {
-                        trainFrontPositionMSTS = new Traveller(!train.TrainRouteIsReversed ? train.FrontTDBTraveller : train.RearTDBTraveller);
-                        CarLength = !train.TrainRouteIsReversed ? Train.Cars[0].CarLengthM : Train.Cars[Train.Cars.Count - 1].CarLengthM;
-
-                        Message = !train.TrainRouteIsReversed ? "Přední vůz  " + Train.Cars[0].CarID : "Zadní vůz  " + Train.Cars[Train.Cars.Count - 1].CarID;
-                    }
+                    trainFrontPositionMSTS = new Traveller(!train.TrainRouteIsReversed ? train.RearTDBTraveller : train.FrontTDBTraveller);
+                    CarLength = !train.TrainRouteIsReversed ? Train.Cars[Train.Cars.Count - 1].CarLengthM : Train.Cars[0].CarLengthM;
+                    CarLengthMark = 1;
+                    Message = !train.TrainRouteIsReversed ? "Zadní vůz  " + Train.Cars[Train.Cars.Count - 1].CarID : "Přední vůz  " + Train.Cars[0].CarID;
                 }
-                else
+                if (CarCoupledRear)
                 {
-                    if (CarCoupledFront)
-                    {
-                        trainFrontPositionMSTS = new Traveller(!train.TrainRouteIsReversed ? train.RearTDBTraveller : train.FrontTDBTraveller);
-                        CarLength = !train.TrainRouteIsReversed ? Train.Cars[Train.Cars.Count - 1].CarLengthM : Train.Cars[0].CarLengthM;
-
-                        Message = !train.TrainRouteIsReversed ? "Zadní vůz  " + Train.Cars[Train.Cars.Count - 1].CarID : "Přední vůz  " + Train.Cars[0].CarID;
-                    }
-                    if (CarCoupledRear)
-                    {
-                        trainFrontPositionMSTS = new Traveller(!train.TrainRouteIsReversed ? train.FrontTDBTraveller : train.RearTDBTraveller);
-                        CarLength = !train.TrainRouteIsReversed ? Train.Cars[0].CarLengthM : Train.Cars[Train.Cars.Count - 1].CarLengthM;
-
-                        Message = !train.TrainRouteIsReversed ? "Přední vůz  " + Train.Cars[0].CarID : "Zadní vůz  " + Train.Cars[Train.Cars.Count - 1].CarID;
-                    }
-                }                                                                
+                    trainFrontPositionMSTS = new Traveller(!train.TrainRouteIsReversed ? train.FrontTDBTraveller : train.RearTDBTraveller);
+                    CarLength = !train.TrainRouteIsReversed ? Train.Cars[0].CarLengthM : Train.Cars[Train.Cars.Count - 1].CarLengthM;
+                    CarLengthMark = -1;
+                    Message = !train.TrainRouteIsReversed ? "Přední vůz  " + Train.Cars[0].CarID : "Zadní vůz  " + Train.Cars[Train.Cars.Count - 1].CarID;
+                }
+                                                                                
                 var distanceMSTS = trainFrontPositionMSTS.DistanceTo(e.TileX, e.TileZ, e.X, trainFrontPositionMSTS.Y, e.Z, e.RadiusM);
-                float DistanceOffset = (CarLength / 2f) /*> e.RadiusM ? 0 : CarLength / 2f*/;                
+                float DistanceOffset = (CarLength / 2f) < e.RadiusM ? (CarLength / 2f) * CarLengthMark : 0;
 
                 if (distanceMSTS == -1)
                 {
@@ -1878,27 +1853,26 @@ namespace Orts.Simulation
 
                 //Simulator.Confirmer.Information("Zabírá: " + Message + "   Obrácené pořadí: " + train.TrainRouteIsReversed + "   DistanceOffset: " + DistanceOffset);
 
-                if (!e.TriggerOnStop && distanceMSTS != -1 && distanceMSTS - DistanceOffset < e.RadiusM)
+                if (!e.TriggerOnStop && distanceMSTS != -1 && distanceMSTS < e.RadiusM + (CarLength / 2f))
                 {
                     return true;
                 }
 
-                if (e.TriggerOnStop && distanceMSTS != -1 && distanceMSTS - DistanceOffset < e.RadiusM)
+                if (e.TriggerOnStop && distanceMSTS != -1 && distanceMSTS + DistanceOffset < e.RadiusM)
                 {
                     RideLength += Math.Abs(train.SpeedMpS) * Simulator.OneSecondLoop;
-                    float RestPercent = (float)Math.Round(RideLength / (2f * e.RadiusM + (2f * DistanceOffset)) * 100f, 0);
-                    float RestLength = (float)Math.Round((2f * e.RadiusM + (2f * DistanceOffset)) - RideLength, 0);
+                    float RestPercent = (float)Math.Round(RideLength / (2f * e.RadiusM - (2f * DistanceOffset)) * 100f, 0);
+                    float RestLength = (float)Math.Round((2f * e.RadiusM - (2f * DistanceOffset)) - RideLength, 0);
                     
-                    Simulator.Confirmer.MSG3(Simulator.Catalog.GetString("We're here, we can stop!") + "   " + RestLength + " m");
-                    //Simulator.Confirmer.MSG3(Simulator.Catalog.GetString("We're here, we can stop!"));
-                    if (Math.Abs(train.SpeedMpS) < 0.05f)
+                    Simulator.Confirmer.MSG3(Simulator.Catalog.GetString("We're here, we can stop!") + "   " + RestLength + " m");                    
+                    if (Math.Abs(train.SpeedMpS) < 0.01f)
                     {
                         return true;
                     }
                     return false;
                 }
                 else
-                if (e.TriggerOnStop && distanceMSTS != -1 && distanceMSTS - (2f * DistanceOffset) < e.RadiusM)
+                if (e.TriggerOnStop && distanceMSTS != -1 && distanceMSTS - (2f * Math.Abs(DistanceOffset)) < e.RadiusM)
                 {                    
                     Simulator.Confirmer.MSG3(Simulator.Catalog.GetString("Precise stop required!"));                    
                 }
