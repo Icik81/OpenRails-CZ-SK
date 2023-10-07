@@ -113,6 +113,10 @@ namespace Orts.Viewer3D.RollingStock
             if (!MSTSWagon.GenSoundOff && Program.Simulator.Settings.GenSound && MSTSWagon.CarLengthM > 1f)
                 LoadCarSound(Viewer.ContentPath, smsGenericFilePath);
 
+            // Load ActivitySound
+            smsGenericFilePath = "..\\Content\\ActivitySound\\ActivitySound.sms";
+            LoadCarSound(Viewer.ContentPath, smsGenericFilePath);
+
             // Load TCS
             if (Locomotive.TrainControlSystem != null && Locomotive.TrainControlSystem.Sounds.Count > 0)
                 foreach (var script in Locomotive.TrainControlSystem.Sounds.Keys)

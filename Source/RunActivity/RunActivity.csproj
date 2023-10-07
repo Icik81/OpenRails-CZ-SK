@@ -230,6 +230,10 @@
       <Link>Native\X64\OpenAL32.dll</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Content\ActivitySound\PermissionToDepart_1.wav" />
+    <Content Include="Content\ActivitySound\PermissionToDepart_2.wav" />
+    <Content Include="Content\ActivitySound\PermissionToDepart_3.wav" />
+    <Content Include="Content\ActivitySound\PermissionToDepart_4.wav" />
     <Content Include="Content\AmbientSound\birdsong1.wav" />
     <Content Include="Content\AmbientSound\ColdWind.wav" />
     <Content Include="Content\AmbientSound\crow-1.wav" />
@@ -1079,6 +1083,7 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="app.config" />
+    <None Include="Content\ActivitySound\ActivitySound.sms" />
     <None Include="Content\AmbientSound\AutumnDay.sms" />
     <None Include="Content\AmbientSound\AutumnNight.sms" />
     <None Include="Content\AmbientSound\clear_ex.sms" />

@@ -1160,21 +1160,43 @@ namespace Orts.Simulation
                             {
                                 if (ClearForDepartGenerate == 0)
                                     ClearForDepartGenerate = Simulator.Random.Next(2, 6);
-                                TimeToClearForDepart++;
-                                if (TimeToClearForDepart > ClearForDepartGenerate * 30
-                                    && (distanceToNextSignal >= 0 && distanceToNextSignal <= 600 && MyPlayerTrain.NextSignalObject[0] != null
+                                
+                                if (distanceToNextSignal >= 0 && distanceToNextSignal <= 600 && MyPlayerTrain.NextSignalObject[0] != null
                                     && (MyPlayerTrain.NextSignalObject[0].this_sig_lr(MstsSignalFunction.NORMAL) != MstsSignalAspect.STOP
                                     || MyPlayerTrain.NextSignalObject[0].hasPermission == SignalObject.Permission.Granted)
-                                    || distanceToNextSignal > 600)                                                                        
+                                    || distanceToNextSignal > 600                                                                        
                                     )
-                                {                                    
-                                    maydepart = true;
-                                    DisplayColor = Color.LightGreen;
-                                    DisplayMessage = Simulator.Catalog.GetString("Clear to go!");
-                                    Simulator.SoundNotify = Event.PermissionToDepart;
-                                    BoardingCompleted = false;
-                                    TimeToClearForDepart = 0;
-                                    ClearForDepartGenerate = 0;                                    
+                                {
+                                    TimeToClearForDepart++;
+                                    if (TimeToClearForDepart > ClearForDepartGenerate * 30)
+                                    {
+                                        maydepart = true;
+                                        DisplayColor = Color.LightGreen;
+                                        DisplayMessage = Simulator.Catalog.GetString("Clear to go!");
+                                        BoardingCompleted = false;
+                                        TimeToClearForDepart = 0;
+                                        ClearForDepartGenerate = 0;
+                                        switch (MyPlayerTrain.TrainPermissionNumber)
+                                        {
+                                            case 1:
+                                                MyPlayerTrain.SignalEvent(Event.PermissionToDepart_1);
+                                                break;
+                                            case 2:
+                                                MyPlayerTrain.SignalEvent(Event.PermissionToDepart_2);
+                                                break;
+                                            case 3:
+                                                MyPlayerTrain.SignalEvent(Event.PermissionToDepart_3);
+                                                break;
+                                            case 4:
+                                                MyPlayerTrain.SignalEvent(Event.PermissionToDepart_4);
+                                                break;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        DisplayMessage = Simulator.Catalog.GetString("Waiting for the permission....");
+                                        return;
+                                    }
                                 }
                                 else
                                 {
