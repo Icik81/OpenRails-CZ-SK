@@ -1191,6 +1191,7 @@ namespace Orts.Simulation
                                                 MyPlayerTrain.SignalEvent(Event.PermissionToDepart_4);
                                                 break;
                                         }
+                                        MyPlayerTrain.SignalEvent(Event.AIPermissionToDepart);
                                     }
                                     else
                                     {
