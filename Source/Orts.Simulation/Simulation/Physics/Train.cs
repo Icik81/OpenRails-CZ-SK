@@ -2538,7 +2538,7 @@ namespace Orts.Simulation.Physics
 
                         // Icik
                         //car.CarCurrentCarriageHeatTempC = W.ToKW(car.CarHeatCurrentCompartmentHeatW) / (SpecificHeatCapcityAirKJpKgK * DensityAirKgpM3 * car.CarHeatVolumeM3) + TrainOutsideTempC;                                                 
-                        car.CarCurrentCarriageHeatDeltaTempC = W.ToKW(car.CarHeatCurrentCompartmentHeatW) / (SpecificHeatCapcityAirKJpKgK * DensityAirKgpM3 * car.CarHeatVolumeM3) / 500f;
+                        car.CarCurrentCarriageHeatDeltaTempC = W.ToKW(car.CarHeatCurrentCompartmentHeatW) / (SpecificHeatCapcityAirKJpKgK * DensityAirKgpM3 * car.CarHeatVolumeM3) / 250f;
                         car.CarCurrentCarriageHeatTempC = car.WagonTemperature;
 
                         car.CarHeatCurrentCompartmentHeatW = MathHelper.Clamp(car.CarHeatCurrentCompartmentHeatW, -1500000 * Simulator.GameSpeed, 2000000 * Simulator.GameSpeed * SteamHeatControllerCurrentValue);

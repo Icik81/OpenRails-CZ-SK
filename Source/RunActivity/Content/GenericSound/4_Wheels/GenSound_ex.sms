@@ -15,17 +15,8 @@ Tr_SMS (
 			Distance    	( 500 )
 		)
 		Volume ( 1.0 )
-		Streams ( 11
-		
-		   Stream (
-				Skip( **** Povolení odjezdu **** )
-				Priority ( 6 )
-				Volume (1.0)
-				Triggers ( 1
-					Discrete_Trigger ( 20107 PlayOneShot ( 1 	File ( "pistalka.wav" -1 ) SelectionMethod (SequentialSelection) ) ) 					
-				)				
-			)
-		
+		Streams ( 10
+				
 			Stream (
 				Skip (** Prokluz **)
 				Priority ( 6 )

@@ -1555,15 +1555,8 @@ namespace Orts.Simulation
                         consistTrain = matchesConsist(ChangeWagonIdList);
                         triggered = consistTrain != null;
 
-                        // Icik
-                        // Vlak po odpojení vozů musí být stále v zóně odpojení, jinak se nepodaří dokončit operaci úspěšného odpojení 
-                        ChangeWagonIdListLengthM = 0;
-                        for (int i = 0; i < ChangeWagonIdList.Count; i++)                        
-                            ChangeWagonIdListLengthM += ChangeWagonIdList[i].Length;
-                        
-                        ActualPositionM += Math.Abs(OriginalPlayerTrain.SpeedMpS) * Simulator.OneSecondLoop;
-
-                        //if (ActualPositionM > ChangeWagonIdListLengthM)
+                        // Icik                        
+                        if (Simulator.Settings.MSTSCompatibilityMode)
                             Simulator.Confirmer.MSG2(Simulator.Catalog.GetString("We're in position to detach the wagons!"));
                     }
                     else

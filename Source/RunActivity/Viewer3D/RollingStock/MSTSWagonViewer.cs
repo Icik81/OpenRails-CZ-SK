@@ -1111,25 +1111,7 @@ namespace Orts.Viewer3D.RollingStock
             if (filename == null)
                 return;
             string smsFilePath = wagonFolderSlash + @"sound\" + filename;
-
-            // Icik
-            string smsGenericFilePath = ""; // Default
-            switch (MSTSWagon.WagonNumAxles)
-            {
-                case 2:
-                    smsGenericFilePath = "..\\Content\\GenericSound\\2_Wheels\\GenSound_ex.sms";
-                    break;
-                case 3:
-                    smsGenericFilePath = "..\\Content\\GenericSound\\3_Wheels\\GenSound_ex.sms";
-                    break;
-                case 4:
-                    smsGenericFilePath = "..\\Content\\GenericSound\\4_Wheels\\GenSound_ex.sms";
-                    break;
-                case 6:
-                    smsGenericFilePath = "..\\Content\\GenericSound\\6_Wheels\\GenSound_ex.sms";
-                    break;
-            }
-
+            
             if (!File.Exists(smsFilePath))
                 smsFilePath = Viewer.Simulator.BasePath + @"\sound\" + filename;
             if (!File.Exists(smsFilePath))
@@ -1141,10 +1123,41 @@ namespace Orts.Viewer3D.RollingStock
             try
             {
                 Viewer.SoundProcess.AddSoundSource(this, new SoundSource(Viewer, MSTSWagon, smsFilePath));
+                
                 // Icik
-                if (MSTSWagon.CarSoundLoaded == false && !MSTSWagon.GenSoundOff && Program.Simulator.Settings.GenSound && MSTSWagon.CarLengthM > 1.0f && !MSTSWagon.WagonIsServis)
-                    Viewer.SoundProcess.AddSoundSource(this, new SoundSource(Viewer, MSTSWagon, System.IO.Path.Combine(Viewer.ContentPath, smsGenericFilePath)));
-                MSTSWagon.CarSoundLoaded = true;
+                if (MSTSWagon.CarSoundLoaded == false)
+                {
+                    string smsGenericFilePath = ""; // Default
+                    // GenSound
+                    if (!MSTSWagon.GenSoundOff && Program.Simulator.Settings.GenSound && MSTSWagon.CarLengthM > 1.0f && !MSTSWagon.WagonIsServis)
+                    {
+                        switch (MSTSWagon.WagonNumAxles)
+                        {
+                            case 2:
+                                smsGenericFilePath = "..\\Content\\GenericSound\\2_Wheels\\GenSound_ex.sms";
+                                break;
+                            case 3:
+                                smsGenericFilePath = "..\\Content\\GenericSound\\3_Wheels\\GenSound_ex.sms";
+                                break;
+                            case 4:
+                                smsGenericFilePath = "..\\Content\\GenericSound\\4_Wheels\\GenSound_ex.sms";
+                                break;
+                            case 6:
+                                smsGenericFilePath = "..\\Content\\GenericSound\\6_Wheels\\GenSound_ex.sms";
+                                break;
+                        }
+                        Viewer.SoundProcess.AddSoundSource(this, new SoundSource(Viewer, MSTSWagon, System.IO.Path.Combine(Viewer.ContentPath, smsGenericFilePath)));
+                    }
+                    
+                    // ActivitySound
+                    if (MSTSWagon is MSTSLocomotive && MSTSWagon.CarLengthM > 1.0f && !MSTSWagon.WagonIsServis)
+                    {
+                        smsGenericFilePath = "..\\Content\\ActivitySound\\ActivitySound_ex.sms";
+                        Viewer.SoundProcess.AddSoundSource(this, new SoundSource(Viewer, MSTSWagon, System.IO.Path.Combine(Viewer.ContentPath, smsGenericFilePath)));
+                    }
+
+                    MSTSWagon.CarSoundLoaded = true;
+                }
             }
             catch (Exception error)
             {
