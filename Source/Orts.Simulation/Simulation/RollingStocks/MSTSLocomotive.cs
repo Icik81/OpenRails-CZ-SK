@@ -4942,6 +4942,31 @@ namespace Orts.Simulation.RollingStocks
                     }
                 }
 
+                // Aktivuje parní topení pro AI, pokud je k dispozici
+                if ((this as MSTSLocomotive).CarOutsideTempC < 18f && !Train.CarSteamHeatOn)
+                {
+                    foreach (TrainCar car in Train.Cars)
+                    {
+                        if (car is MSTSLocomotive)
+                        {
+                            if (car is MSTSSteamLocomotive)
+                                Train.CarSteamHeatOn = true;
+
+                            if (IsSteamHeatFitted)
+                                Train.CarSteamHeatOn = true;
+                        }
+                        else
+                        {
+                            if (WagonSpecialType == MSTSWagon.WagonSpecialTypes.HeatingBoiler)
+                                Train.CarSteamHeatOn = true;
+                        }
+                    }
+                }
+                else
+                {
+                    if ((this as MSTSLocomotive).CarOutsideTempC > 18f)
+                        Train.CarSteamHeatOn = false;
+                }
 
             }
         }
@@ -5874,11 +5899,6 @@ namespace Orts.Simulation.RollingStocks
             {
                 SetAIAction(elapsedClockSeconds);
                 AcceptMUSignals = true;
-
-                if ((this as MSTSSteamLocomotive).CarOutsideTempC < 18f)
-                    Train.CarSteamHeatOn = true;
-                else
-                    Train.CarSteamHeatOn = false;
 
                 if (Flipped && !UsingRearCab)
                 {
