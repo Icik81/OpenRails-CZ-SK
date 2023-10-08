@@ -5873,7 +5873,12 @@ namespace Orts.Simulation.RollingStocks
             if (!IsPlayerTrain && !Simulator.Paused && CarLengthM > 1f && !WagonIsServis)
             {
                 SetAIAction(elapsedClockSeconds);
-                AcceptMUSignals = true;                
+                AcceptMUSignals = true;
+
+                if ((this as MSTSSteamLocomotive).CarOutsideTempC < 18f)
+                    Train.CarSteamHeatOn = true;
+                else
+                    Train.CarSteamHeatOn = false;
 
                 if (Flipped && !UsingRearCab)
                 {

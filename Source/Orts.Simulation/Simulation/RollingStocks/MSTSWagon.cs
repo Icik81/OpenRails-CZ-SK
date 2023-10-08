@@ -3479,11 +3479,19 @@ namespace Orts.Simulation.RollingStocks
             }
 
             // Turn on Heating steam boiler
-            if (Train.CarSteamHeatOn && LocomotiveParameters.SteamHeatController.CurrentValue > 0)
+            if ((Train.CarSteamHeatOn && LocomotiveParameters.SteamHeatController.CurrentValue > 0) || (Train.CarSteamHeatOn && !IsPlayerTrain))
             {
                 // Turn heating boiler on 
-                HeatingSteamBoilerDurationS = 1.0f * LocomotiveParameters.SteamHeatController.CurrentValue;
-                HeatingSteamBoilerVolumeM3pS = 1.5f * LocomotiveParameters.SteamHeatController.CurrentValue;
+                if (!IsPlayerTrain)
+                {
+                    HeatingSteamBoilerDurationS = 1.0f * 0.5f;
+                    HeatingSteamBoilerVolumeM3pS = 1.5f * 0.5f;
+                }
+                else
+                {
+                    HeatingSteamBoilerDurationS = 1.0f * LocomotiveParameters.SteamHeatController.CurrentValue;
+                    HeatingSteamBoilerVolumeM3pS = 1.5f * LocomotiveParameters.SteamHeatController.CurrentValue;
+                }
             }
             else
             {
@@ -3493,8 +3501,13 @@ namespace Orts.Simulation.RollingStocks
             }
 
             // Update Heating hose steam leaks Information
-            if (Train.CarSteamHeatOn && CarSteamHeatMainPipeSteamPressurePSI > 0)
+            if ((Train.CarSteamHeatOn && CarSteamHeatMainPipeSteamPressurePSI > 0) || (Train.CarSteamHeatOn && !IsPlayerTrain))
             {
+                if (!IsPlayerTrain)
+                {
+                    SteamHoseLeakRateRandom = (float)Simulator.Random.Next(100) / 100.0f; 
+                    SteamHoseLeakRateRandom = MathHelper.Clamp(SteamHoseLeakRateRandom, 0.5f, 1.0f); 
+                }
                 // Turn wagon steam leaks on 
                 HeatingHoseParticleDurationS = 0.75f;
                 HeatingHoseSteamVelocityMpS = 15.0f;
@@ -3509,7 +3522,7 @@ namespace Orts.Simulation.RollingStocks
             }
 
             // Update Heating main pipe steam trap leaks Information
-            if (Train.CarSteamHeatOn && CarSteamHeatMainPipeSteamPressurePSI > 0)
+            if ((Train.CarSteamHeatOn && CarSteamHeatMainPipeSteamPressurePSI > 0) || (Train.CarSteamHeatOn && !IsPlayerTrain))
             {
                 // Turn wagon steam leaks on 
                 HeatingMainPipeSteamTrapDurationS = 0.75f;
