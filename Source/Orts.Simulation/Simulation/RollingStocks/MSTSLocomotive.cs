@@ -4891,7 +4891,7 @@ namespace Orts.Simulation.RollingStocks
                 }
 
                 // Výpravčí pískne k odjezdu AI ze stanice
-                if (CarIsWaitingAtStation && this.ThrottlePercent > 0.0f)
+                if (Simulator.Settings.TrainDepartSound && CarIsWaitingAtStation && this.ThrottlePercent > 0.0f)
                 {
                     AITimerStart += elapsedClockSeconds;
                     CarIsWaitingAtStation = false;

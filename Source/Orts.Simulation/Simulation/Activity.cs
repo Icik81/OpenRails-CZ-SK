@@ -1175,23 +1175,9 @@ namespace Orts.Simulation
                                         DisplayMessage = Simulator.Catalog.GetString("Clear to go!");
                                         BoardingCompleted = false;
                                         TimeToClearForDepart = 0;
-                                        ClearForDepartGenerate = 0;
-                                        switch (MyPlayerTrain.TrainPermissionNumber)
-                                        {
-                                            case 1:
-                                                MyPlayerTrain.SignalEvent(Event.PermissionToDepart_1);
-                                                break;
-                                            case 2:
-                                                MyPlayerTrain.SignalEvent(Event.PermissionToDepart_2);
-                                                break;
-                                            case 3:
-                                                MyPlayerTrain.SignalEvent(Event.PermissionToDepart_3);
-                                                break;
-                                            case 4:
-                                                MyPlayerTrain.SignalEvent(Event.PermissionToDepart_4);
-                                                break;
-                                        }
-                                        MyPlayerTrain.SignalEvent(Event.AIPermissionToDepart);
+                                        ClearForDepartGenerate = 0;                                        
+                                        if (loco.IsLeadLocomotive() && Simulator.Settings.TrainDepartSound)
+                                            loco.SignalEvent(Event.AIPermissionToDepart);
                                     }
                                     else
                                     {

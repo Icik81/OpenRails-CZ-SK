@@ -110,8 +110,7 @@ namespace Orts.Simulation.Physics
         public float CurrentSteamHeatPressurePSI;
         public float SteamHeatControllerCurrentValue;
         public bool TrainRouteIsReversed;
-        public bool TrainReverseIsSetOn;
-        public int TrainPermissionNumber;
+        public bool TrainReverseIsSetOn;        
 
         public Traveller RearTDBTraveller;               // positioned at the back of the last car in the train
         public Traveller FrontTDBTraveller;              // positioned at the front of the train by CalculatePositionOfCars
@@ -687,8 +686,7 @@ namespace Orts.Simulation.Physics
 
         public Train(Simulator simulator, BinaryReader inf)
         {
-            // Icik
-            TrainPermissionNumber = inf.ReadInt32();
+            // Icik            
             TrainRouteIsReversed = inf.ReadBoolean();
             ReverseAtStation = inf.ReadBoolean();
             MaxStationCount = inf.ReadInt32();
@@ -1058,8 +1056,7 @@ namespace Orts.Simulation.Physics
 
         public virtual void Save(BinaryWriter outf)
         {
-            // Icik
-            outf.Write(TrainPermissionNumber);
+            // Icik            
             outf.Write(TrainRouteIsReversed);
             outf.Write(ReverseAtStation);
             outf.Write(MaxStationCount);
@@ -1691,14 +1688,7 @@ namespace Orts.Simulation.Physics
                 {
                     RequestToggleManualMode();
                 }
-            }
-
-            // Generování hlášení povolení odchodu vlaku
-            if (TrainPermissionNumber == 0)
-            {
-                int TrainPermissionNumberCount = 4;
-                TrainPermissionNumber = Simulator.Random.Next(1, TrainPermissionNumberCount + 1);
-            }
+            }            
 
             if (!auxiliaryUpdate)
                 FormationReversed = false;

@@ -173,6 +173,7 @@ namespace ORTS
 
             // Icik
             GenSoundcheckBox.Checked = Settings.GenSound;
+            PermissionToDepartcheckBox.Checked = Settings.TrainDepartSound;
 
             // Video tab
             checkDynamicShadows.Checked = Settings.DynamicShadows;
@@ -473,6 +474,7 @@ namespace ORTS
 
             // Icik
             Settings.GenSound = GenSoundcheckBox.Checked;
+            Settings.TrainDepartSound = PermissionToDepartcheckBox.Checked;
 
             // Video tab
             Settings.DynamicShadows = checkDynamicShadows.Checked;

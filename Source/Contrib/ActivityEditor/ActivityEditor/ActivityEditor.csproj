@@ -204,7 +204,9 @@
     <Compile Include="Wizard\SinglePage.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Wizard\TrainInfo.cs" />
+    <Compile Include="Wizard\TrainInfo.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Wizard\WizardForm.cs">
       <SubType>Form</SubType>
     </Compile>

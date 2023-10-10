@@ -370,11 +370,7 @@ namespace Orts.Common
         AxleCounterRestrictedSpeedZoneActiveButtonPressed,
         AxleCounterRestrictedSpeedZoneActiveButtonReleased,
         SerialParalelCrossingOn,
-        SerialParalelCrossingOff,
-        PermissionToDepart_1,
-        PermissionToDepart_2,
-        PermissionToDepart_3,
-        PermissionToDepart_4
+        SerialParalelCrossingOff
     }
 
     public static class Events
@@ -760,10 +756,6 @@ namespace Orts.Common
                         case 20124: return Event.AxleCounterRestrictedSpeedZoneActiveButtonReleased;
                         case 20125: return Event.SerialParalelCrossingOn;
                         case 20126: return Event.SerialParalelCrossingOff;
-                        case 20127: return Event.PermissionToDepart_1;
-                        case 20128: return Event.PermissionToDepart_2;
-                        case 20129: return Event.PermissionToDepart_3;
-                        case 20130: return Event.PermissionToDepart_4;
 
                         default: return 0;
                     }
