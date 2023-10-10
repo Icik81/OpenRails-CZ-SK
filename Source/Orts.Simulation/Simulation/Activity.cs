@@ -1176,13 +1176,13 @@ namespace Orts.Simulation
                                         BoardingCompleted = false;
                                         TimeToClearForDepart = 0;
                                         ClearForDepartGenerate = 0;
-                                        if (Simulator.Settings.TrainDepartSound)
+                                        if (Simulator.Settings.TrainDepartSound == 0)
+                                            Simulator.SoundNotify = Event.PermissionToDepart;
+                                        if (Simulator.Settings.TrainDepartSound == 1)
                                         {
                                             if (loco.IsLeadLocomotive())
                                                 loco.SignalEvent(Event.AIPermissionToDepart);
-                                        }
-                                        else
-                                            Simulator.SoundNotify = Event.PermissionToDepart;
+                                        }                                        
                                     }
                                     else
                                     {

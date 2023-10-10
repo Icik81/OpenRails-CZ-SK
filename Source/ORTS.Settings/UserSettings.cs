@@ -220,8 +220,8 @@ namespace ORTS.Settings
         // Icik
         [Default(true)]
         public bool GenSound { get; set; }
-        [Default(true)]
-        public bool TrainDepartSound { get; set; }
+        [Default(1)]
+        public int TrainDepartSound { get; set; }
 
         // Video settings:
         [Default(true)]

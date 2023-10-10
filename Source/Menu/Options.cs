@@ -172,8 +172,7 @@ namespace ORTS
             numericExternalSoundPassThruPercent.Value = Settings.ExternalSoundPassThruPercent;
 
             // Icik
-            GenSoundcheckBox.Checked = Settings.GenSound;
-            PermissionToDepartcheckBox.Checked = Settings.TrainDepartSound;
+            GenSoundcheckBox.Checked = Settings.GenSound;            
 
             // Video tab
             checkDynamicShadows.Checked = Settings.DynamicShadows;
@@ -206,7 +205,8 @@ namespace ORTS
             DaySignalLightGlowTrackBar_Scroll(null, null);
             NightSignalLightGlowTrackBar.Value = Settings.NightSignalLightGlowSize;
             NightSignalLightGlowTrackBar_Scroll(null, null);
-
+            trackBarSoundTrainDepart.Value = Settings.TrainDepartSound;
+            trackBarSoundTrainDepart_Scroll(null, null);
             // Simulation tab
 
             //checkSimpleControlsPhysics.Checked = Settings.SimpleControlPhysics;
@@ -474,7 +474,7 @@ namespace ORTS
 
             // Icik
             Settings.GenSound = GenSoundcheckBox.Checked;
-            Settings.TrainDepartSound = PermissionToDepartcheckBox.Checked;
+            Settings.TrainDepartSound = trackBarSoundTrainDepart.Value;
 
             // Video tab
             Settings.DynamicShadows = checkDynamicShadows.Checked;
@@ -500,7 +500,7 @@ namespace ORTS
             Settings.CabView_MSTSOR = CabView_MSTSOR.Checked;
             Settings.NightBrightness = NightBrightnessTrackBar.Value;
             Settings.DaySignalLightGlowSize = DaySignalLightGlowTrackBar.Value;
-            Settings.NightSignalLightGlowSize = NightSignalLightGlowTrackBar.Value;
+            Settings.NightSignalLightGlowSize = NightSignalLightGlowTrackBar.Value;            
 
             // Simulation tab
             //Settings.SimpleControlPhysics = checkSimpleControlsPhysics.Checked;
@@ -1036,6 +1036,16 @@ namespace ORTS
                 labelNightSignalLightGlow.Text = catalog.GetStringFmt("SigCFG defined");
             else
                 labelNightSignalLightGlow.Text = catalog.GetStringFmt("{0}%", NightSignalLightGlowTrackBar.Value / 2f * 10f);
+        }
+
+        private void trackBarSoundTrainDepart_Scroll(object sender, EventArgs e)
+        {
+            if (trackBarSoundTrainDepart.Value == 0)
+                labelSoundTrainDepart2.Text = catalog.GetStringFmt("Route defined");
+            if (trackBarSoundTrainDepart.Value == 1)
+                labelSoundTrainDepart2.Text = catalog.GetStringFmt("OR CZ/SK");
+            if (trackBarSoundTrainDepart.Value == 2)
+                labelSoundTrainDepart2.Text = catalog.GetStringFmt("No sound");
         }
 
         private void checkBoxMSTSCompatibilityMode_CheckedChanged(object sender, EventArgs e)

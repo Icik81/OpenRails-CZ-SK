@@ -29,8 +29,8 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle17 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle18 = new System.Windows.Forms.DataGridViewCellStyle();
             this.buttonOK = new System.Windows.Forms.Button();
             this.numericBrakePipeChargingRate = new System.Windows.Forms.NumericUpDown();
             this.lBrakePipeChargingRate = new System.Windows.Forms.Label();
@@ -40,8 +40,6 @@
             this.checkViewMapWindow = new System.Windows.Forms.CheckBox();
             this.tabOptions = new System.Windows.Forms.TabControl();
             this.tabPageGeneral = new System.Windows.Forms.TabPage();
-            this.checkBoxMSTSCompatibilityMode = new System.Windows.Forms.CheckBox();
-            this.checkReduceMemory = new System.Windows.Forms.CheckBox();
             this.checkSaveCommands = new System.Windows.Forms.CheckBox();
             this.pbEnableWebServer = new System.Windows.Forms.PictureBox();
             this.pbDisableTcsScripts = new System.Windows.Forms.PictureBox();
@@ -65,6 +63,9 @@
             this.comboLanguage = new System.Windows.Forms.ComboBox();
             this.checkAlerterExternal = new System.Windows.Forms.CheckBox();
             this.tabPageAudio = new System.Windows.Forms.TabPage();
+            this.labelSoundTrainDepart2 = new System.Windows.Forms.Label();
+            this.labelSoundTrainDepart1 = new System.Windows.Forms.Label();
+            this.trackBarSoundTrainDepart = new System.Windows.Forms.TrackBar();
             this.GenSoundcheckBox = new System.Windows.Forms.CheckBox();
             this.numericExternalSoundPassThruPercent = new System.Windows.Forms.NumericUpDown();
             this.label11 = new System.Windows.Forms.Label();
@@ -229,7 +230,8 @@
             this.checkPreferDDSTexture = new System.Windows.Forms.CheckBox();
             this.pbLAA = new System.Windows.Forms.PictureBox();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.PermissionToDepartcheckBox = new System.Windows.Forms.CheckBox();
+            this.checkBoxMSTSCompatibilityMode = new System.Windows.Forms.CheckBox();
+            this.checkReduceMemory = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.numericBrakePipeChargingRate)).BeginInit();
             this.tabOptions.SuspendLayout();
             this.tabPageGeneral.SuspendLayout();
@@ -244,6 +246,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.pbMapWindow)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericWebServerPort)).BeginInit();
             this.tabPageAudio.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBarSoundTrainDepart)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericExternalSoundPassThruPercent)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericSoundVolumePercent)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericSoundDetailLevel)).BeginInit();
@@ -413,7 +416,6 @@
             // 
             // tabPageGeneral
             // 
-            this.tabPageGeneral.Controls.Add(this.checkBoxMSTSCompatibilityMode);
             this.tabPageGeneral.Controls.Add(this.checkReduceMemory);
             this.tabPageGeneral.Controls.Add(this.checkSaveCommands);
             this.tabPageGeneral.Controls.Add(this.pbEnableWebServer);
@@ -451,35 +453,12 @@
             this.tabPageGeneral.Text = "General";
             this.tabPageGeneral.UseVisualStyleBackColor = true;
             // 
-            // checkBoxMSTSCompatibilityMode
-            // 
-            this.checkBoxMSTSCompatibilityMode.AutoSize = true;
-            this.checkBoxMSTSCompatibilityMode.Location = new System.Drawing.Point(43, 147);
-            this.checkBoxMSTSCompatibilityMode.Margin = new System.Windows.Forms.Padding(4);
-            this.checkBoxMSTSCompatibilityMode.Name = "checkBoxMSTSCompatibilityMode";
-            this.checkBoxMSTSCompatibilityMode.Size = new System.Drawing.Size(241, 20);
-            this.checkBoxMSTSCompatibilityMode.TabIndex = 30;
-            this.checkBoxMSTSCompatibilityMode.Text = "MSTS Activities Compatibility Mode";
-            this.checkBoxMSTSCompatibilityMode.UseVisualStyleBackColor = true;
-            this.checkBoxMSTSCompatibilityMode.CheckedChanged += new System.EventHandler(this.checkBoxMSTSCompatibilityMode_CheckedChanged);
-            // 
-            // checkReduceMemory
-            // 
-            this.checkReduceMemory.AutoSize = true;
-            this.checkReduceMemory.Location = new System.Drawing.Point(400, 103);
-            this.checkReduceMemory.Margin = new System.Windows.Forms.Padding(4);
-            this.checkReduceMemory.Name = "checkReduceMemory";
-            this.checkReduceMemory.Size = new System.Drawing.Size(170, 20);
-            this.checkReduceMemory.TabIndex = 19;
-            this.checkReduceMemory.Text = "Reduce memory usage";
-            this.checkReduceMemory.UseVisualStyleBackColor = true;
-            // 
             // checkSaveCommands
             // 
             this.checkSaveCommands.AutoSize = true;
             this.checkSaveCommands.Checked = true;
             this.checkSaveCommands.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkSaveCommands.Location = new System.Drawing.Point(400, 66);
+            this.checkSaveCommands.Location = new System.Drawing.Point(433, 37);
             this.checkSaveCommands.Margin = new System.Windows.Forms.Padding(4);
             this.checkSaveCommands.Name = "checkSaveCommands";
             this.checkSaveCommands.Size = new System.Drawing.Size(190, 20);
@@ -655,7 +634,7 @@
             this.checkEnableWatchdog.AutoSize = true;
             this.checkEnableWatchdog.Checked = true;
             this.checkEnableWatchdog.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkEnableWatchdog.Location = new System.Drawing.Point(400, 10);
+            this.checkEnableWatchdog.Location = new System.Drawing.Point(433, 9);
             this.checkEnableWatchdog.Margin = new System.Windows.Forms.Padding(4);
             this.checkEnableWatchdog.Name = "checkEnableWatchdog";
             this.checkEnableWatchdog.Size = new System.Drawing.Size(91, 20);
@@ -755,7 +734,9 @@
             // 
             // tabPageAudio
             // 
-            this.tabPageAudio.Controls.Add(this.PermissionToDepartcheckBox);
+            this.tabPageAudio.Controls.Add(this.labelSoundTrainDepart2);
+            this.tabPageAudio.Controls.Add(this.labelSoundTrainDepart1);
+            this.tabPageAudio.Controls.Add(this.trackBarSoundTrainDepart);
             this.tabPageAudio.Controls.Add(this.GenSoundcheckBox);
             this.tabPageAudio.Controls.Add(this.numericExternalSoundPassThruPercent);
             this.tabPageAudio.Controls.Add(this.label11);
@@ -772,6 +753,40 @@
             this.tabPageAudio.TabIndex = 5;
             this.tabPageAudio.Text = "Audio";
             this.tabPageAudio.UseVisualStyleBackColor = true;
+            // 
+            // labelSoundTrainDepart2
+            // 
+            this.labelSoundTrainDepart2.Location = new System.Drawing.Point(210, 181);
+            this.labelSoundTrainDepart2.Margin = new System.Windows.Forms.Padding(4);
+            this.labelSoundTrainDepart2.Name = "labelSoundTrainDepart2";
+            this.labelSoundTrainDepart2.Size = new System.Drawing.Size(126, 16);
+            this.labelSoundTrainDepart2.TabIndex = 30;
+            this.labelSoundTrainDepart2.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
+            // labelSoundTrainDepart1
+            // 
+            this.labelSoundTrainDepart1.AutoSize = true;
+            this.labelSoundTrainDepart1.Location = new System.Drawing.Point(18, 181);
+            this.labelSoundTrainDepart1.Margin = new System.Windows.Forms.Padding(4);
+            this.labelSoundTrainDepart1.Name = "labelSoundTrainDepart1";
+            this.labelSoundTrainDepart1.Size = new System.Drawing.Size(137, 16);
+            this.labelSoundTrainDepart1.TabIndex = 29;
+            this.labelSoundTrainDepart1.Text = "Sound for train depart:";
+            // 
+            // trackBarSoundTrainDepart
+            // 
+            this.trackBarSoundTrainDepart.AutoSize = false;
+            this.trackBarSoundTrainDepart.BackColor = System.Drawing.SystemColors.Window;
+            this.trackBarSoundTrainDepart.LargeChange = 1;
+            this.trackBarSoundTrainDepart.Location = new System.Drawing.Point(8, 205);
+            this.trackBarSoundTrainDepart.Margin = new System.Windows.Forms.Padding(8, 4, 8, 4);
+            this.trackBarSoundTrainDepart.Maximum = 2;
+            this.trackBarSoundTrainDepart.Name = "trackBarSoundTrainDepart";
+            this.trackBarSoundTrainDepart.Size = new System.Drawing.Size(328, 32);
+            this.trackBarSoundTrainDepart.TabIndex = 27;
+            this.toolTip1.SetToolTip(this.trackBarSoundTrainDepart, "Default is OR CZ/SK");
+            this.trackBarSoundTrainDepart.Value = 1;
+            this.trackBarSoundTrainDepart.Scroll += new System.EventHandler(this.trackBarSoundTrainDepart_Scroll);
             // 
             // GenSoundcheckBox
             // 
@@ -1483,16 +1498,17 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.checkBoxMSTSCompatibilityMode);
             this.groupBox1.Controls.Add(this.checkGenerateRandomPax);
             this.groupBox1.Controls.Add(this.checkUseLocationPassingPaths);
             this.groupBox1.Controls.Add(this.checkDoorsAITrains);
             this.groupBox1.Controls.Add(this.checkForcedRedAtStationStops);
-            this.groupBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupBox1.Location = new System.Drawing.Point(432, 7);
+            this.groupBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold);
+            this.groupBox1.Location = new System.Drawing.Point(417, 7);
             this.groupBox1.Margin = new System.Windows.Forms.Padding(4);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Padding = new System.Windows.Forms.Padding(4);
-            this.groupBox1.Size = new System.Drawing.Size(363, 207);
+            this.groupBox1.Size = new System.Drawing.Size(378, 207);
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Activity Options";
@@ -1500,13 +1516,11 @@
             // checkGenerateRandomPax
             // 
             this.checkGenerateRandomPax.AutoSize = true;
-            this.checkGenerateRandomPax.Checked = true;
-            this.checkGenerateRandomPax.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkGenerateRandomPax.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.checkGenerateRandomPax.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F);
             this.checkGenerateRandomPax.Location = new System.Drawing.Point(8, 116);
             this.checkGenerateRandomPax.Margin = new System.Windows.Forms.Padding(4);
             this.checkGenerateRandomPax.Name = "checkGenerateRandomPax";
-            this.checkGenerateRandomPax.Size = new System.Drawing.Size(207, 21);
+            this.checkGenerateRandomPax.Size = new System.Drawing.Size(194, 20);
             this.checkGenerateRandomPax.TabIndex = 47;
             this.checkGenerateRandomPax.Text = "Generate random pax count";
             this.checkGenerateRandomPax.UseVisualStyleBackColor = true;
@@ -1514,11 +1528,11 @@
             // checkUseLocationPassingPaths
             // 
             this.checkUseLocationPassingPaths.AutoSize = true;
-            this.checkUseLocationPassingPaths.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.checkUseLocationPassingPaths.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F);
             this.checkUseLocationPassingPaths.Location = new System.Drawing.Point(8, 87);
             this.checkUseLocationPassingPaths.Margin = new System.Windows.Forms.Padding(4);
             this.checkUseLocationPassingPaths.Name = "checkUseLocationPassingPaths";
-            this.checkUseLocationPassingPaths.Size = new System.Drawing.Size(284, 21);
+            this.checkUseLocationPassingPaths.Size = new System.Drawing.Size(270, 20);
             this.checkUseLocationPassingPaths.TabIndex = 46;
             this.checkUseLocationPassingPaths.Text = "Location-linked passing path processing";
             this.checkUseLocationPassingPaths.UseVisualStyleBackColor = true;
@@ -1526,11 +1540,11 @@
             // checkDoorsAITrains
             // 
             this.checkDoorsAITrains.AutoSize = true;
-            this.checkDoorsAITrains.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.checkDoorsAITrains.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F);
             this.checkDoorsAITrains.Location = new System.Drawing.Point(8, 58);
             this.checkDoorsAITrains.Margin = new System.Windows.Forms.Padding(4);
             this.checkDoorsAITrains.Name = "checkDoorsAITrains";
-            this.checkDoorsAITrains.Size = new System.Drawing.Size(212, 21);
+            this.checkDoorsAITrains.Size = new System.Drawing.Size(200, 20);
             this.checkDoorsAITrains.TabIndex = 45;
             this.checkDoorsAITrains.Text = "Open/close doors in AI trains";
             this.checkDoorsAITrains.UseVisualStyleBackColor = true;
@@ -1538,11 +1552,11 @@
             // checkForcedRedAtStationStops
             // 
             this.checkForcedRedAtStationStops.AutoSize = true;
-            this.checkForcedRedAtStationStops.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.checkForcedRedAtStationStops.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.checkForcedRedAtStationStops.Location = new System.Drawing.Point(8, 30);
             this.checkForcedRedAtStationStops.Margin = new System.Windows.Forms.Padding(4);
             this.checkForcedRedAtStationStops.Name = "checkForcedRedAtStationStops";
-            this.checkForcedRedAtStationStops.Size = new System.Drawing.Size(199, 21);
+            this.checkForcedRedAtStationStops.Size = new System.Drawing.Size(187, 20);
             this.checkForcedRedAtStationStops.TabIndex = 23;
             this.checkForcedRedAtStationStops.Text = "Forced red at station stops";
             this.checkForcedRedAtStationStops.UseVisualStyleBackColor = true;
@@ -2295,28 +2309,28 @@
             this.dataGridViewContent.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.dataGridViewContent.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None;
             this.dataGridViewContent.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None;
-            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dataGridViewContent.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle17.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle17.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle17.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle17.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle17.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle17.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle17.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dataGridViewContent.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle17;
             this.dataGridViewContent.ColumnHeadersHeight = 29;
             this.dataGridViewContent.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
             this.dataGridViewContent.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.nameDataGridViewTextBoxColumn,
             this.pathDataGridViewTextBoxColumn});
             this.dataGridViewContent.DataSource = this.bindingSourceContent;
-            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dataGridViewContent.DefaultCellStyle = dataGridViewCellStyle4;
+            dataGridViewCellStyle18.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle18.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle18.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle18.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle18.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle18.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle18.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dataGridViewContent.DefaultCellStyle = dataGridViewCellStyle18;
             this.dataGridViewContent.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dataGridViewContent.Location = new System.Drawing.Point(0, 0);
             this.dataGridViewContent.Margin = new System.Windows.Forms.Padding(4);
@@ -2982,17 +2996,28 @@
             this.pbLAA.TabIndex = 0;
             this.pbLAA.TabStop = false;
             // 
-            // PermissionToDepartcheckBox
+            // checkBoxMSTSCompatibilityMode
             // 
-            this.PermissionToDepartcheckBox.AutoSize = true;
-            this.PermissionToDepartcheckBox.Location = new System.Drawing.Point(8, 172);
-            this.PermissionToDepartcheckBox.Margin = new System.Windows.Forms.Padding(4);
-            this.PermissionToDepartcheckBox.Name = "PermissionToDepartcheckBox";
-            this.PermissionToDepartcheckBox.Size = new System.Drawing.Size(156, 20);
-            this.PermissionToDepartcheckBox.TabIndex = 7;
-            this.PermissionToDepartcheckBox.Text = "Sound for train depart";
-            this.PermissionToDepartcheckBox.UseVisualStyleBackColor = true;
-            this.PermissionToDepartcheckBox.CheckedChanged += new System.EventHandler(this.GenSoundcheckBox_CheckedChanged);
+            this.checkBoxMSTSCompatibilityMode.AutoSize = true;
+            this.checkBoxMSTSCompatibilityMode.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F);
+            this.checkBoxMSTSCompatibilityMode.Location = new System.Drawing.Point(8, 145);
+            this.checkBoxMSTSCompatibilityMode.Margin = new System.Windows.Forms.Padding(4);
+            this.checkBoxMSTSCompatibilityMode.Name = "checkBoxMSTSCompatibilityMode";
+            this.checkBoxMSTSCompatibilityMode.Size = new System.Drawing.Size(241, 20);
+            this.checkBoxMSTSCompatibilityMode.TabIndex = 48;
+            this.checkBoxMSTSCompatibilityMode.Text = "MSTS Activities Compatibility Mode";
+            this.checkBoxMSTSCompatibilityMode.UseVisualStyleBackColor = true;
+            // 
+            // checkReduceMemory
+            // 
+            this.checkReduceMemory.AutoSize = true;
+            this.checkReduceMemory.Location = new System.Drawing.Point(433, 69);
+            this.checkReduceMemory.Margin = new System.Windows.Forms.Padding(4);
+            this.checkReduceMemory.Name = "checkReduceMemory";
+            this.checkReduceMemory.Size = new System.Drawing.Size(170, 20);
+            this.checkReduceMemory.TabIndex = 19;
+            this.checkReduceMemory.Text = "Reduce memory usage";
+            this.checkReduceMemory.UseVisualStyleBackColor = true;
             // 
             // OptionsForm
             // 
@@ -3028,6 +3053,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.numericWebServerPort)).EndInit();
             this.tabPageAudio.ResumeLayout(false);
             this.tabPageAudio.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBarSoundTrainDepart)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericExternalSoundPassThruPercent)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericSoundVolumePercent)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericSoundDetailLevel)).EndInit();
@@ -3254,7 +3280,6 @@
         private System.Windows.Forms.Button btnRDSettingsExport;
         private System.Windows.Forms.CheckBox checkEnableWatchdog;
         private System.Windows.Forms.CheckBox checkSaveCommands;
-        private System.Windows.Forms.CheckBox checkReduceMemory;
         private System.Windows.Forms.CheckBox checkUseLocationPassingPaths;
         private System.Windows.Forms.PictureBox pbMapWindow;
         private System.Windows.Forms.PictureBox pbControlConfirmations;
@@ -3284,7 +3309,10 @@
         private System.Windows.Forms.TrackBar NightSignalLightGlowTrackBar;
         private System.Windows.Forms.Label labelNightSignalLightGlow;
         private System.Windows.Forms.CheckBox checkGenerateRandomPax;
+        private System.Windows.Forms.Label labelSoundTrainDepart1;
+        private System.Windows.Forms.TrackBar trackBarSoundTrainDepart;
+        private System.Windows.Forms.Label labelSoundTrainDepart2;
         private System.Windows.Forms.CheckBox checkBoxMSTSCompatibilityMode;
-        private System.Windows.Forms.CheckBox PermissionToDepartcheckBox;
+        private System.Windows.Forms.CheckBox checkReduceMemory;
     }
 }
