@@ -1175,9 +1175,14 @@ namespace Orts.Simulation
                                         DisplayMessage = Simulator.Catalog.GetString("Clear to go!");
                                         BoardingCompleted = false;
                                         TimeToClearForDepart = 0;
-                                        ClearForDepartGenerate = 0;                                        
-                                        if (loco.IsLeadLocomotive() && Simulator.Settings.TrainDepartSound)
-                                            loco.SignalEvent(Event.AIPermissionToDepart);
+                                        ClearForDepartGenerate = 0;
+                                        if (Simulator.Settings.TrainDepartSound)
+                                        {
+                                            if (loco.IsLeadLocomotive())
+                                                loco.SignalEvent(Event.AIPermissionToDepart);
+                                        }
+                                        else
+                                            Simulator.SoundNotify = Event.PermissionToDepart;
                                     }
                                     else
                                     {

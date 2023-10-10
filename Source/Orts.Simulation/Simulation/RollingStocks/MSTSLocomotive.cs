@@ -4967,7 +4967,15 @@ namespace Orts.Simulation.RollingStocks
                     if ((this as MSTSLocomotive).CarOutsideTempC > 18f)
                         Train.CarSteamHeatOn = false;
                 }
-
+                
+                foreach (TrainCar car in (Train as AITrain).Cars)
+                {
+                    if (!car.WagonHasTemperature)
+                    {
+                        car.WagonTemperature = Simulator.Random.Next(18, 25);
+                        car.WagonHasTemperature = true;
+                    }
+                }
             }
         }
 
