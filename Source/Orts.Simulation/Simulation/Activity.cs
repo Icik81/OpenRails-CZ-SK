@@ -1160,11 +1160,14 @@ namespace Orts.Simulation
                             {
                                 if (ClearForDepartGenerate == 0)
                                     ClearForDepartGenerate = Simulator.Random.Next(2, 6);
-                                
+
+                                if (MyPlayerTrain.NextSignalObject[0] != null)
+                                    distanceToNextSignal = MyPlayerTrain.NextSignalObject[0].DistanceTo(MyPlayerTrain.FrontTDBTraveller);
+
                                 if (distanceToNextSignal >= 0 && distanceToNextSignal <= 600 && MyPlayerTrain.NextSignalObject[0] != null
                                     && (MyPlayerTrain.NextSignalObject[0].this_sig_lr(MstsSignalFunction.NORMAL) != MstsSignalAspect.STOP
                                     || MyPlayerTrain.NextSignalObject[0].hasPermission == SignalObject.Permission.Granted)
-                                    || distanceToNextSignal > 600                                                                        
+                                    || distanceToNextSignal > 600                                    
                                     )
                                 {
                                     TimeToClearForDepart++;
