@@ -1168,7 +1168,7 @@ namespace Orts.Simulation
                                     )
                                 {
                                     TimeToClearForDepart++;
-                                    if (TimeToClearForDepart > ClearForDepartGenerate * 30)
+                                    if (TimeToClearForDepart > ClearForDepartGenerate * 30f)
                                     {
                                         maydepart = true;
                                         DisplayColor = Color.LightGreen;
@@ -1186,8 +1186,7 @@ namespace Orts.Simulation
                                     }
                                     else
                                     {
-                                        DisplayMessage = Simulator.Catalog.GetString("Waiting for the permission....");
-                                        return;
+                                        DisplayMessage = Simulator.Catalog.GetString("Waiting for the permission....");                                        
                                     }
                                 }
                                 else
@@ -1200,8 +1199,7 @@ namespace Orts.Simulation
                                         DisplayMessage = Simulator.Catalog.GetString("Passenger boarding completed. Waiting for signal ahead to clear.");
                                     }
                                     else
-                                        DisplayMessage = Simulator.Catalog.GetString("Waiting for the permission....");
-                                    return;
+                                        DisplayMessage = Simulator.Catalog.GetString("Waiting for the permission....");                                  
                                 }
                             }
 
