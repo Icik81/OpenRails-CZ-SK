@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: 2023-10-10 17:12:03+0200\n"
-"PO-Revision-Date: 2023-10-10 17:19+0200\n"
+"PO-Revision-Date: 2023-10-11 11:40+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: cs\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n>=2 && n<=4 ? 1 : 2);\n"
-"X-Generator: Poedit 3.3.2\n"
+"X-Generator: Poedit 3.4\n"
 
 #: ../../Menu/ImportExportSaveForm.cs:52
 msgid "Save Packs"
@@ -1356,10 +1356,8 @@ msgid "Path"
 msgstr "Vlaková cesta"
 
 #: ../../Menu/Options.Designer.cs:811
-#, fuzzy
-#| msgid "Default is 2x MSAA"
 msgid "Default is OR CZ/SK"
-msgstr "Výchozí je 2x MSAA"
+msgstr "Výchozí je OR CZ/SK"
 
 #: ../../Menu/Options.Designer.cs:839
 #: ../../Menu/Properties/Options.Designer.cs:804
