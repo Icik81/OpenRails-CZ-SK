@@ -130,7 +130,7 @@ namespace Orts.Viewer3D
                     new SoundSource(viewer, Events.Source.MSTSInGame, System.IO.Path.Combine(Viewer.ContentPath, "..\\Content\\AmbientSound\\SummerNight.sms"), false),
                     };
 
-                    if (Viewer.Simulator.ActivityRun != null)
+                    if (Viewer.Simulator.ActivityRun != null && Viewer.Simulator.WeatherAdv < 4)
                     {
                         RainSound = new List<SoundSourceBase>() {
                         new SoundSource(viewer, Events.Source.MSTSInGame, System.IO.Path.Combine(Viewer.ContentPath, "..\\Content\\AmbientSound\\Rain_in.sms"), false),
@@ -181,7 +181,7 @@ namespace Orts.Viewer3D
                     new SoundSource(viewer, Events.Source.MSTSInGame, System.IO.Path.Combine(Viewer.ContentPath, "..\\Content\\AmbientSound\\clear_ex.sms"), false),
                     new SoundSource(viewer, Events.Source.MSTSInGame, System.IO.Path.Combine(Viewer.ContentPath, "..\\Content\\AmbientSound\\WinterNight.sms"), false),
                     };
-                    if (Viewer.Simulator.ActivityRun != null)
+                    if (Viewer.Simulator.ActivityRun != null && Viewer.Simulator.WeatherAdv < 4)
                     {
                         RainSound = new List<SoundSourceBase>() {
                         new SoundSource(viewer, Events.Source.MSTSInGame, System.IO.Path.Combine(Viewer.ContentPath, "..\\Content\\AmbientSound\\Rain_in.sms"), false),
@@ -1280,6 +1280,14 @@ namespace Orts.Viewer3D
                 }
 
                 // Icik
+                if (weatherControl.Viewer.PlayerLocomotive.CarOutsideTempC > 2f)                
+                    ORTSPrecipitationLiquidity = 1.0f;
+                else
+                if (weatherControl.Viewer.PlayerLocomotive.CarOutsideTempC > 0f)
+                    ORTSPrecipitationLiquidity = 0.25f;
+                else                    
+                    ORTSPrecipitationLiquidity = 0.0f;
+
                 int ORTSPrecipitationIntensityChanceToChange = -1;
                 if (weatherControl.Viewer.Simulator.WeatherAdv == 7)
                 {
