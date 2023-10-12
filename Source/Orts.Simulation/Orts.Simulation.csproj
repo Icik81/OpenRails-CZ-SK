@@ -45,15 +45,6 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="DeviceId, Version=6.4.0.0, Culture=neutral, PublicKeyToken=f755c371b5c59c52, processorArchitecture=MSIL">
-      <HintPath>..\packages\DeviceId.6.4.0\lib\net40\DeviceId.dll</HintPath>
-    </Reference>
-    <Reference Include="DeviceId.Windows, Version=6.4.0.0, Culture=neutral, PublicKeyToken=f755c371b5c59c52, processorArchitecture=MSIL">
-      <HintPath>..\packages\DeviceId.Windows.6.4.0\lib\net40\DeviceId.Windows.dll</HintPath>
-    </Reference>
-    <Reference Include="DeviceId.Windows.Wmi, Version=6.5.0.0, Culture=neutral, PublicKeyToken=f755c371b5c59c52, processorArchitecture=MSIL">
-      <HintPath>..\packages\DeviceId.Windows.Wmi.6.5.0\lib\net40\DeviceId.Windows.Wmi.dll</HintPath>
-    </Reference>
     <Reference Include="GNU.Gettext">
       <HintPath>..\3rdPartyLibs\GNU.Gettext.dll</HintPath>
     </Reference>
@@ -72,7 +63,6 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Device" />
     <Reference Include="System.EnterpriseServices" />
-    <Reference Include="System.Management" />
     <Reference Include="System.Web.Services" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.ReaderWriter, Version=4.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">

@@ -1,21 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<wsdl:definitions xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:tns="http://tempuri.org/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" targetNamespace="http://tempuri.org/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+<wsdl:definitions xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="http://tempuri.org/" xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" targetNamespace="http://tempuri.org/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
   <wsdl:types>
     <s:schema elementFormDefault="qualified" targetNamespace="http://tempuri.org/">
-      <s:element name="CheckSuperUser">
-        <s:complexType>
-          <s:sequence>
-            <s:element minOccurs="0" maxOccurs="1" name="machineId" type="s:string" />
-          </s:sequence>
-        </s:complexType>
-      </s:element>
-      <s:element name="CheckSuperUserResponse">
-        <s:complexType>
-          <s:sequence>
-            <s:element minOccurs="1" maxOccurs="1" name="CheckSuperUserResult" type="s:boolean" />
-          </s:sequence>
-        </s:complexType>
-      </s:element>
       <s:element name="GetMirelSignals">
         <s:complexType>
           <s:sequence>
@@ -221,12 +207,6 @@
       </s:element>
     </s:schema>
   </wsdl:types>
-  <wsdl:message name="CheckSuperUserSoapIn">
-    <wsdl:part name="parameters" element="tns:CheckSuperUser" />
-  </wsdl:message>
-  <wsdl:message name="CheckSuperUserSoapOut">
-    <wsdl:part name="parameters" element="tns:CheckSuperUserResponse" />
-  </wsdl:message>
   <wsdl:message name="GetMirelSignalsSoapIn">
     <wsdl:part name="parameters" element="tns:GetMirelSignals" />
   </wsdl:message>
@@ -306,10 +286,6 @@
     <wsdl:part name="parameters" element="tns:UpdatePowerSupplyMarkerVersionResponse" />
   </wsdl:message>
   <wsdl:portType name="WebServiceSoap">
-    <wsdl:operation name="CheckSuperUser">
-      <wsdl:input message="tns:CheckSuperUserSoapIn" />
-      <wsdl:output message="tns:CheckSuperUserSoapOut" />
-    </wsdl:operation>
     <wsdl:operation name="GetMirelSignals">
       <wsdl:input message="tns:GetMirelSignalsSoapIn" />
       <wsdl:output message="tns:GetMirelSignalsSoapOut" />
@@ -365,15 +341,6 @@
   </wsdl:portType>
   <wsdl:binding name="WebServiceSoap" type="tns:WebServiceSoap">
     <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
-    <wsdl:operation name="CheckSuperUser">
-      <soap:operation soapAction="http://tempuri.org/CheckSuperUser" style="document" />
-      <wsdl:input>
-        <soap:body use="literal" />
-      </wsdl:input>
-      <wsdl:output>
-        <soap:body use="literal" />
-      </wsdl:output>
-    </wsdl:operation>
     <wsdl:operation name="GetMirelSignals">
       <soap:operation soapAction="http://tempuri.org/GetMirelSignals" style="document" />
       <wsdl:input>
@@ -494,15 +461,6 @@
   </wsdl:binding>
   <wsdl:binding name="WebServiceSoap12" type="tns:WebServiceSoap">
     <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
-    <wsdl:operation name="CheckSuperUser">
-      <soap12:operation soapAction="http://tempuri.org/CheckSuperUser" style="document" />
-      <wsdl:input>
-        <soap12:body use="literal" />
-      </wsdl:input>
-      <wsdl:output>
-        <soap12:body use="literal" />
-      </wsdl:output>
-    </wsdl:operation>
     <wsdl:operation name="GetMirelSignals">
       <soap12:operation soapAction="http://tempuri.org/GetMirelSignals" style="document" />
       <wsdl:input>
