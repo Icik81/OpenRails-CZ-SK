@@ -1698,8 +1698,7 @@ namespace Orts.Simulation.Physics
             if (IsActualPlayerTrain && Simulator.OriginalPlayerTrain != this && !CheckStations) // if player train is to check own stations
             {
                 CheckStationTask();
-            }
-
+            }            
 
             if (IsActualPlayerTrain && Simulator.Settings.ActRandomizationLevel > 0 && Simulator.ActivityRun != null) // defects might occur
             {
@@ -16587,7 +16586,7 @@ namespace Orts.Simulation.Physics
         public void FillNames(Train train)
         {
             // Icik
-            if (Simulator.GameTime == 0 && MaxStationCountFromStart == -1)
+            if (MaxStationCountFromStart == -1)
             {
                 foreach (StationStop stop in StationStops)
                     if (stop.PlatformItem.NumPassengersWaiting >= 10000)
@@ -16607,6 +16606,11 @@ namespace Orts.Simulation.Physics
                     PaxInStationGenerateCompleted.Add(0);
                 }
                 MaxStationCountFromStart = StationStops.Count;
+            }
+
+            if (MaxStationCountFromStart - StationStops.Count != ActualStationNumber)
+            {
+                ActualStationNumber = MaxStationCountFromStart - StationStops.Count;
             }
 
             if (numCars == 0)

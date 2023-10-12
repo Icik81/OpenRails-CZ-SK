@@ -527,8 +527,19 @@ namespace Orts.Viewer3D.Popups
                         }
                         else
                         {
-                            StationCurrentName.Text = playerTrain.StationStops[0].PlatformItem.Name;
-                            PassengersWaiting.Text = playerTrain.StationStops[0].PlatformItem.PassengerList.Count.ToString();
+                            PassengersCurrentWaiting.Text = "";
+                            if (playerTrain.StationStops.Count > 0)
+                                if (playerTrain.StationStops[0].PlatformItem != null)
+                                    PassengersCurrentWaiting.Text = playerTrain.ActualPassengerCountAtStation.ToString();
+                            if (playerTrain.ActualPassengerCountAtStation == 0)
+                                PassengersCurrentWaiting.Text = "";
+
+                            PassengersWaiting.Text = "";
+                            if (playerTrain.StationStops.Count > 1)
+                                if (playerTrain.StationStops[1].PlatformItem != null && playerTrain.StationStops[1].PlatformItem.PassengerList.Count != 0)
+                                    PassengersWaiting.Text = playerTrain.StationStops[1].PlatformItem.PassengerList.Count.ToString();
+
+                            StationCurrentName.Text = playerTrain.StationStops[0].PlatformItem.Name;                            
                             StationCurrentArriveScheduled.Text = playerTrain.StationStops[0].arrivalDT.ToString("HH:mm:ss");
                             if (playerTrain.StationStops[0].ActualArrival >= 0)
                             {
@@ -544,13 +555,13 @@ namespace Orts.Viewer3D.Popups
                             StationCurrentDepartScheduled.Text = playerTrain.StationStops[0].departureDT.ToString("HH:mm:ss");
                             StationCurrentDistance.Text = FormatStrings.FormatDistanceDisplay(playerTrain.StationStops[0].DistanceToTrainM, metric);
                             Message.Text = playerTrain.DisplayMessage;
-                            Message.Color = playerTrain.DisplayColor;
+                            Message.Color = playerTrain.DisplayColor;                            
 
                             if (playerTrain.StationStops.Count >= 2)
                             {
                                 StationNextName.Text = playerTrain.StationStops[1].PlatformItem.Name;
                                 StationNextArriveScheduled.Text = playerTrain.StationStops[1].arrivalDT.ToString("HH:mm:ss");
-                                StationNextDepartScheduled.Text = playerTrain.StationStops[1].departureDT.ToString("HH:mm:ss");
+                                StationNextDepartScheduled.Text = playerTrain.StationStops[1].departureDT.ToString("HH:mm:ss");                                
                                 StationNextDistance.Text = "";
                             }
                             else
@@ -558,7 +569,7 @@ namespace Orts.Viewer3D.Popups
                                 StationNextName.Text = "";
                                 StationNextArriveScheduled.Text = "";
                                 StationNextDepartScheduled.Text = "";
-                                StationNextDistance.Text = "";
+                                StationNextDistance.Text = "";                                
                             }
                         }
                     }
