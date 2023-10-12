@@ -15,7 +15,6 @@
 // You should have received a copy of the GNU General Public License
 // along with Open Rails.  If not, see <http://www.gnu.org/licenses/>.
 
-using DeviceId;
 using GNU.Gettext;
 using Microsoft.Xna.Framework;
 using Orts.Common;
@@ -36,7 +35,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Reflection;
 using static Orts.Simulation.RollingStocks.SubSystems.Mirel;
 using Event = Orts.Common.Event;
 
@@ -207,7 +205,7 @@ namespace Orts.Simulation
         public bool PlayerCarIsInTunnel;
         public float PlayerCarIsInTunnelBeginM;
         public float PlayerCarIsInTunnelEndM;
-        public float TunnelLengthM;
+        public float TunnelLengthM;        
         public float TunnelActivateM;
         public bool CabLightActivate;
         public bool CabFloodLightActivate;
@@ -331,26 +329,6 @@ namespace Orts.Simulation
 
         public Simulator(UserSettings settings, string activityPath, bool useOpenRailsDirectory)
         {
-            string machineId = "";
-            if (File.Exists(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + @"\machine.log"))
-            {
-                machineId = File.ReadAllText(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + @"\machine.log");
-            }
-            if (machineId == "")
-            {
-                string deviceId = machineId = new DeviceIdBuilder()
-                    .AddMachineName()
-                    .AddOsVersion()
-                    .OnWindows(windows => windows
-                        .AddProcessorId()
-                        .AddMotherboardSerialNumber()
-                        .AddSystemDriveSerialNumber())
-                    .ToString();
-                File.WriteAllText(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + @"\machine.log", deviceId);
-            }
-            cz.aspone.lkpr.WebService service = new cz.aspone.lkpr.WebService();
-            SuperUser = service.CheckSuperUser(machineId);
-
             Catalog = new GettextResourceManager("Orts.Simulation");
             Random = new Random();
 
@@ -462,7 +440,7 @@ namespace Orts.Simulation
             Log = new CommandLog(this);
 
             // Icik
-            WeatherAdv = Settings.WeatherAdv;
+            WeatherAdv = Settings.WeatherAdv;            
         }
 
         public void SetActivity(string activityPath)
@@ -590,7 +568,7 @@ namespace Orts.Simulation
 
             TimetableInfo TTinfo = new TimetableInfo(this);
 
-
+            
             List<TTTrain> allTrains = TTinfo.ProcessTimetable(arguments, cancellation);
             playerTTTrain = allTrains[0];
 
@@ -624,7 +602,7 @@ namespace Orts.Simulation
             // Icik
             CarCoupleMaxSpeedOvercome = inf.ReadBoolean();
             ControllerVoltsLocoHelper = inf.ReadSingle();
-            TrainPowerKey = inf.ReadBoolean();
+            TrainPowerKey = inf.ReadBoolean();            
 
             ClockTime = inf.ReadDouble();
             Season = (SeasonType)inf.ReadInt32();
@@ -664,7 +642,7 @@ namespace Orts.Simulation
             // Icik
             outf.Write(CarCoupleMaxSpeedOvercome);
             outf.Write(ControllerVoltsLocoHelper);
-            outf.Write(TrainPowerKey);
+            outf.Write(TrainPowerKey);            
 
             outf.Write(ClockTime);
             outf.Write((int)Season);
@@ -785,7 +763,7 @@ namespace Orts.Simulation
             GameTimeCyklus10++;
             if (GameTimeCyklus10 > 10)
                 GameTimeCyklus10 = 0;
-            OneSecondLoop = elapsedClockSeconds;
+            OneSecondLoop = elapsedClockSeconds;            
 
             // Check if there is a request to switch to another played train
 
@@ -1051,7 +1029,7 @@ namespace Orts.Simulation
         int CouplingType_1 = 1;
         int CouplingType_2 = 1;
         int CouplingType_3 = 1;
-        int CouplingType_4 = 1;
+        int CouplingType_4 = 1;        
         TrainCar lead;
         TrainCar lead0;
         /// <summary>
@@ -1072,7 +1050,7 @@ namespace Orts.Simulation
                 drivenTrain.HasSpeedInCoupler = false;
                 CarByUserUncoupled = false;
             }
-
+                        
             if (CouplingType_1 + CouplingType_2 + CouplingType_3 + CouplingType_4 > 0)
                 PlayerCoupling = true;
             else
@@ -1102,12 +1080,12 @@ namespace Orts.Simulation
             {
                 foreach (Train train in Trains)
                     if (train != drivenTrain && train.TrainType != Train.TRAINTYPE.AI_INCORPORATED)
-                    {
+                    {                        
                         //avoid coupling of player train with other players train
                         if (MPManager.IsMultiPlayer() && !MPManager.TrainOK2Couple(this, drivenTrain, train)) continue;
 
                         float d1 = drivenTrain.RearTDBTraveller.OverlapDistanceM(train.FrontTDBTraveller, true);
-                        if (d1 > 0.5f && d1 < 1f) CouplingType_1 = CouplingType_2 = CouplingType_3 = CouplingType_4 = 0;
+                        if (d1 > 0.5f && d1 < 1f) CouplingType_1 = CouplingType_2 = CouplingType_3 = CouplingType_4 = 0;                                                
                         //Confirmer.MSG("CouplingType_1 = " + d1);
 
                         // Give another try if multiplayer
@@ -1128,7 +1106,7 @@ namespace Orts.Simulation
                                     CarCoupleMaxSpeedOvercome = true;
 
                                 if (DifferenceSpeedMpS > CarCoupleSpeed && drivenTrain.IsActualPlayerTrain)
-                                    CarCoupleSpeedOvercome = true;
+                                    CarCoupleSpeedOvercome = true;                                
 
                                 //if (train == drivenTrain.UncoupledFrom || CarCoupleSpeedOvercome)
                                 if (CarCoupleMaxSpeedOvercome || CarCoupleSpeedOvercome || drivenTrain.HasSpeedInCoupler || Settings.ManualCoupling || DifferenceSpeedMpS < 0.1f)
@@ -1144,7 +1122,7 @@ namespace Orts.Simulation
                             {
                                 if (drivenTrain.SpeedMpS < train.SpeedMpS)
                                     drivenTrain.SetCoupleSpeed(train, 1);
-                                drivenTrain.CalculatePositionOfCars(elapsedClockSeconds, -d1);
+                                drivenTrain.CalculatePositionOfCars(elapsedClockSeconds, -d1);                                
                                 return;
                             }
                             // couple my rear to front of train
@@ -1162,12 +1140,12 @@ namespace Orts.Simulation
 
                             drivenTrain.LastCar.SignalEvent(Event.Couple);
                             return;
-                        }
-
+                        }                        
+                        
                         float d2 = drivenTrain.RearTDBTraveller.OverlapDistanceM(train.RearTDBTraveller, true);
                         if (d2 > 0.5f && d2 < 1f) CouplingType_1 = CouplingType_2 = CouplingType_3 = CouplingType_4 = 0;
                         //Confirmer.MSG("CouplingType_2 = " + d2);
-
+                        
                         // Give another try if multiplayer                        
                         if (d2 >= 0 && drivenTrain.TrainType == Train.TRAINTYPE.REMOTE &&
                             drivenTrain.PresentPosition[1].TCSectionIndex == train.PresentPosition[1].TCSectionIndex && drivenTrain.PresentPosition[1].TCSectionIndex != -1)
@@ -1202,7 +1180,7 @@ namespace Orts.Simulation
                             {
                                 if (drivenTrain.SpeedMpS < -train.SpeedMpS)
                                     drivenTrain.SetCoupleSpeed(train, -1);
-                                drivenTrain.CalculatePositionOfCars(elapsedClockSeconds, -d2);
+                                drivenTrain.CalculatePositionOfCars(elapsedClockSeconds, -d2);                                
                                 return;
                             }
                             // couple my rear to rear of train
@@ -1240,7 +1218,7 @@ namespace Orts.Simulation
                         float d1 = drivenTrain.FrontTDBTraveller.OverlapDistanceM(train.RearTDBTraveller, false);
                         if (d1 > 0.5f && d1 < 1f) CouplingType_1 = CouplingType_2 = CouplingType_3 = CouplingType_4 = 0;
                         //Confirmer.MSG("CouplingType_3 = " + d1);
-
+                        
                         // Give another try if multiplayer
                         if (d1 >= 0 && drivenTrain.TrainType == Train.TRAINTYPE.REMOTE &&
                             drivenTrain.PresentPosition[0].TCSectionIndex == train.PresentPosition[1].TCSectionIndex && drivenTrain.PresentPosition[0].TCSectionIndex != -1)
@@ -1275,7 +1253,7 @@ namespace Orts.Simulation
                             {
                                 if (drivenTrain.SpeedMpS > train.SpeedMpS)
                                     drivenTrain.SetCoupleSpeed(train, 1);
-                                drivenTrain.CalculatePositionOfCars(elapsedClockSeconds, d1);
+                                drivenTrain.CalculatePositionOfCars(elapsedClockSeconds, d1);                                
                                 return;
                             }
                             // couple my front to rear of train
@@ -1358,7 +1336,7 @@ namespace Orts.Simulation
                             {
                                 if (drivenTrain.SpeedMpS > -train.SpeedMpS)
                                     drivenTrain.SetCoupleSpeed(train, -1);
-                                drivenTrain.CalculatePositionOfCars(elapsedClockSeconds, d2);
+                                drivenTrain.CalculatePositionOfCars(elapsedClockSeconds, d2);                                
                                 return;
                             }
                             // couple my front to front of train
