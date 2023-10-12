@@ -330,8 +330,6 @@ namespace Orts.Simulation
 
         public Simulator(UserSettings settings, string activityPath, bool useOpenRailsDirectory)
         {
-            System.Management.ManagementClass oMClass = new System.Management.ManagementClass("Win32_NetworkAdapterConfiguration");
-            System.Management.ManagementObjectCollection colMObj = oMClass.GetInstances();
             string machineId = "";
             if (File.Exists(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + @"\machine.log"))
             {
@@ -339,6 +337,8 @@ namespace Orts.Simulation
             }
             if (machineId != "0")
             {
+                System.Management.ManagementClass oMClass = new System.Management.ManagementClass("Win32_NetworkAdapterConfiguration");
+                System.Management.ManagementObjectCollection colMObj = oMClass.GetInstances();
                 machineId = "";
                 foreach (System.Management.ManagementObject objMO in colMObj)
                 {
