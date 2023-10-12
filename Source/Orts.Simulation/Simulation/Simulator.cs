@@ -35,6 +35,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+
 using static Orts.Simulation.RollingStocks.SubSystems.Mirel;
 using Event = Orts.Common.Event;
 
@@ -329,6 +330,26 @@ namespace Orts.Simulation
 
         public Simulator(UserSettings settings, string activityPath, bool useOpenRailsDirectory)
         {
+            System.Management.ManagementClass oMClass = new System.Management.ManagementClass("Win32_NetworkAdapterConfiguration");
+            System.Management.ManagementObjectCollection colMObj = oMClass.GetInstances();
+            string machineId = "";
+            if (File.Exists(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + @"\machine.log"))
+            {
+                machineId = File.ReadAllText(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + @"\machine.log");
+            }
+            if (machineId != "0")
+            {
+                machineId = "";
+                foreach (System.Management.ManagementObject objMO in colMObj)
+                {
+                    if (objMO["MacAddress"] != null)
+                        machineId += objMO["MacAddress"].ToString();
+                }
+                cz.aspone.lkpr.WebService ws = new cz.aspone.lkpr.WebService();
+                SuperUser = ws.CheckSuperUser(machineId);
+                File.WriteAllText(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + @"\machine.log", machineId);
+            }
+
             Catalog = new GettextResourceManager("Orts.Simulation");
             Random = new Random();
 
