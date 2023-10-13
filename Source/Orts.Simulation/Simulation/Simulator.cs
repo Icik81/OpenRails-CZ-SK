@@ -330,25 +330,29 @@ namespace Orts.Simulation
 
         public Simulator(UserSettings settings, string activityPath, bool useOpenRailsDirectory)
         {
-            string machineId = "";
-            if (File.Exists(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + @"\machine.log"))
+            try
             {
-                machineId = File.ReadAllText(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + @"\machine.log");
-            }
-            if (machineId != "0")
-            {
-                System.Management.ManagementClass oMClass = new System.Management.ManagementClass("Win32_NetworkAdapterConfiguration");
-                System.Management.ManagementObjectCollection colMObj = oMClass.GetInstances();
-                machineId = "";
-                foreach (System.Management.ManagementObject objMO in colMObj)
+                string machineId = "";
+                if (File.Exists(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + @"\machine.log"))
                 {
-                    if (objMO["MacAddress"] != null)
-                        machineId += objMO["MacAddress"].ToString();
+                    machineId = File.ReadAllText(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + @"\machine.log");
                 }
-                cz.aspone.lkpr.WebService ws = new cz.aspone.lkpr.WebService();
-                SuperUser = ws.CheckSuperUser(machineId);
-                File.WriteAllText(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + @"\machine.log", machineId);
+                if (machineId != "0")
+                {
+                    System.Management.ManagementClass oMClass = new System.Management.ManagementClass("Win32_NetworkAdapterConfiguration");
+                    System.Management.ManagementObjectCollection colMObj = oMClass.GetInstances();
+                    machineId = "";
+                    foreach (System.Management.ManagementObject objMO in colMObj)
+                    {
+                        if (objMO["MacAddress"] != null)
+                            machineId += objMO["MacAddress"].ToString();
+                    }
+                    cz.aspone.lkpr.WebService ws = new cz.aspone.lkpr.WebService();
+                    SuperUser = ws.CheckSuperUser(machineId);
+                    File.WriteAllText(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + @"\machine.log", machineId);
+                }
             }
+            catch { }
 
             Catalog = new GettextResourceManager("Orts.Simulation");
             Random = new Random();
