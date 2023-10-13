@@ -2289,10 +2289,13 @@ namespace Orts.Viewer3D
             if (car != null)
             {
                 var loco = car as MSTSLocomotive;
-                var viewpoints = (loco.UsingRearCab)
-                ? loco.CabViewList[(int)CabViewType.Rear].ViewPointList
-                : loco.CabViewList[(int)CabViewType.Front].ViewPointList;
-                attachedLocation = viewpoints[sideLocation].Location;
+                if (loco.CabViewList.Count > 0)
+                {
+                    var viewpoints = (loco.UsingRearCab)
+                    ? loco.CabViewList[(int)CabViewType.Rear].ViewPointList
+                    : loco.CabViewList[(int)CabViewType.Front].ViewPointList;
+                    attachedLocation = viewpoints[sideLocation].Location;
+                }
             }
             InitialiseRotation(attachedCar);
         }
@@ -2304,23 +2307,25 @@ namespace Orts.Viewer3D
         void ShiftView(int index)
         {
             var loco = attachedCar as MSTSLocomotive;
-
-            var viewpointList = (loco.UsingRearCab)
+            if (loco.CabViewList.Count > 0)
+            {
+                var viewpointList = (loco.UsingRearCab)
             ? loco.CabViewList[(int)CabViewType.Rear].ViewPointList
             : loco.CabViewList[(int)CabViewType.Front].ViewPointList;
 
-            sideLocation += index;
+                sideLocation += index;
 
-            var count = (loco.UsingRearCab)
-                ? loco.CabViewList[(int)CabViewType.Rear].ViewPointList.Count
-                : loco.CabViewList[(int)CabViewType.Front].ViewPointList.Count;
-            // Wrap around
-            if (sideLocation < 0)
-                sideLocation = count - 1;
-            else if (sideLocation >= count)
-                sideLocation = 0;
+                var count = (loco.UsingRearCab)
+                    ? loco.CabViewList[(int)CabViewType.Rear].ViewPointList.Count
+                    : loco.CabViewList[(int)CabViewType.Front].ViewPointList.Count;
+                // Wrap around
+                if (sideLocation < 0)
+                    sideLocation = count - 1;
+                else if (sideLocation >= count)
+                    sideLocation = 0;
 
-            SetCameraCar(attachedCar);
+                SetCameraCar(attachedCar);
+            }
         }
 
         /// <summary>
@@ -2400,12 +2405,15 @@ namespace Orts.Viewer3D
             if (attachedCar == null) return;
 
             var loco = attachedCar as MSTSLocomotive;
-            var viewpoints = (loco.UsingRearCab)
-            ? loco.CabViewList[(int)CabViewType.Rear].ViewPointList
-            : loco.CabViewList[(int)CabViewType.Front].ViewPointList;
+            if (loco.CabViewList.Count > 0)
+            {
+                var viewpoints = (loco.UsingRearCab)
+                ? loco.CabViewList[(int)CabViewType.Rear].ViewPointList
+                : loco.CabViewList[(int)CabViewType.Front].ViewPointList;
 
-            RotationXRadians = MathHelper.ToRadians(viewpoints[sideLocation].StartDirection.X) - RotationRatio * (Viewer.CabYOffsetPixels + Viewer.CabExceedsDisplay / 2);
-            RotationYRadians = MathHelper.ToRadians(viewpoints[sideLocation].StartDirection.Y) - RotationRatioHorizontal * (-Viewer.CabXOffsetPixels + Viewer.CabExceedsDisplayHorizontally / 2); ;
+                RotationXRadians = MathHelper.ToRadians(viewpoints[sideLocation].StartDirection.X) - RotationRatio * (Viewer.CabYOffsetPixels + Viewer.CabExceedsDisplay / 2);
+                RotationYRadians = MathHelper.ToRadians(viewpoints[sideLocation].StartDirection.Y) - RotationRatioHorizontal * (-Viewer.CabXOffsetPixels + Viewer.CabExceedsDisplayHorizontally / 2); ;
+            }
         }
 
         public override void HandleUserInput(ElapsedTime elapsedTime)
