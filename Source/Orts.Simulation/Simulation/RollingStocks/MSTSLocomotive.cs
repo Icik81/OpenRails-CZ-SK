@@ -4933,39 +4933,39 @@ namespace Orts.Simulation.RollingStocks
                             int GameClockHour = (int)(GameClock / 100);
                             int GameClockMinute = (int)(GameClock - (GameClockHour * 100));
                             float GameClockToWait = (GameClockHour * 60f * 60f) + (GameClockMinute * 60f);
-                                                        
+
                             if ((AIActionPoint0.Delay > 30000 && AIActionPoint0.Delay < 39999) && Simulator.ClockTime > GameClockToWait)
                             {
                                 (Train as AITrain).DontStopABSWP = true;
-                            }                            
+                            }
                         }
                     }
                 }
 
                 // Aktivuje parní topení pro AI, pokud je k dispozici
-                if ((this as MSTSLocomotive).CarOutsideTempC < 18f && !Train.CarSteamHeatOn)
+                if ((this as MSTSLocomotive).CarOutsideTempC < 18f && !(Train as AITrain).CarSteamHeatOn)
                 {
-                    foreach (TrainCar car in Train.Cars)
+                    foreach (TrainCar car in (Train as AITrain).Cars)
                     {
                         if (car is MSTSLocomotive)
                         {
                             if (car is MSTSSteamLocomotive)
-                                Train.CarSteamHeatOn = true;
+                                (Train as AITrain).CarSteamHeatOn = true;
 
                             if (IsSteamHeatFitted)
-                                Train.CarSteamHeatOn = true;
+                                (Train as AITrain).CarSteamHeatOn = true;
                         }
                         else
                         {
                             if (WagonSpecialType == MSTSWagon.WagonSpecialTypes.HeatingBoiler)
-                                Train.CarSteamHeatOn = true;
+                                (Train as AITrain).CarSteamHeatOn = true;
                         }
                     }
                 }
                 else
                 {
                     if ((this as MSTSLocomotive).CarOutsideTempC > 18f)
-                        Train.CarSteamHeatOn = false;
+                        (Train as AITrain).CarSteamHeatOn = false;
                 }
                 
                 foreach (TrainCar car in (Train as AITrain).Cars)

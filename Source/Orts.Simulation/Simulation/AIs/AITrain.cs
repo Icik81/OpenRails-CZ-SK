@@ -6642,7 +6642,8 @@ namespace Orts.Simulation.AIs
         {
             // Icik
             //Simulator.Confirmer.MSG("Číslo stanice: " + ActualStationNumber);
-            
+            if (StationStops.Count == 0) return;
+
             double clock = Simulator.GameTime;
             FillNames(this);            
 

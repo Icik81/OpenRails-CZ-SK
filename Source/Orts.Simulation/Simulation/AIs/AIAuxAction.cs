@@ -1905,8 +1905,9 @@ namespace Orts.Simulation.AIs
             {
                 if ((thisTrain as AITrain).AuxActionsContain.CountSpec() > 0)
                 {
-                    (thisTrain as AITrain).AuxActionsContain.Remove(this);                    
-                    (thisTrain as AITrain).ResetActions(true);
+                    (thisTrain as AITrain).AuxActionsContain.Remove(this);
+                    //(thisTrain as AITrain).ResetActions(true);
+                    movementState = AITrain.AI_MOVEMENT_STATE.ACCELERATING;
                 }
                 (thisTrain as AITrain).DontStopABSWP = false;
             }
