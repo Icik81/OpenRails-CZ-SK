@@ -815,6 +815,14 @@ namespace Orts.Simulation.AIs
                 case AI_MOVEMENT_STATE.INIT:
                     stillExist = ProcessEndOfPath(presentTime);
                     if (stillExist[1]) UpdateStoppedState(elapsedClockSeconds);
+                    // Icik
+                    if (Simulator.Settings.MSTSCompatibilityMode)
+                    {
+                        if (MovementState == AI_MOVEMENT_STATE.INIT)
+                        {
+                            MovementState = AI_MOVEMENT_STATE.ACCELERATING;
+                        }
+                    }
                     break;
                 case AI_MOVEMENT_STATE.TURNTABLE:
                     UpdateTurntableState(elapsedClockSeconds, presentTime);
