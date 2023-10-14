@@ -4342,7 +4342,7 @@ namespace Orts.Simulation.AIs
             var distanceToNextSignal = DistanceToSignal.HasValue ? DistanceToSignal.Value : 0.1f;
 
             if (Simulator.TimetableMode) removeIt = true;
-            else if (TrainType == TRAINTYPE.AI_PLAYERHOSTING || /*Simulator.OriginalPlayerTrain == this*/ TrainType == TRAINTYPE.PLAYER) removeIt = false;
+            else if (TrainType == TRAINTYPE.AI_PLAYERHOSTING || Simulator.OriginalPlayerTrain == this /*TrainType == TRAINTYPE.PLAYER*/) removeIt = false;
             else if (TCRoute.TCRouteSubpaths.Count == 1 || TCRoute.activeSubpath != TCRoute.TCRouteSubpaths.Count - 1) removeIt = true;
             else if (NextSignalObject[0] != null && NextSignalObject[0].isSignal && distanceToNextSignal < 25 && distanceToNextSignal >= 0 && PresentPosition[1].DistanceTravelledM < distanceThreshold)
             {
