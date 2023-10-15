@@ -795,11 +795,21 @@ namespace Orts.Simulation.AIs
                         // Icik
                         if (Simulator.Settings.MSTSCompatibilityMode)
                         {
+                            bool TrainCanGoOn = true;
+                            for (int i = 0; i < NumbersOccupiedTrain.Length; i++)
+                            {
+                                if (NumbersOccupiedTrain[i] != this.Number && NumbersOccupiedTrain[i] != -1)
+                                {
+                                    TrainCanGoOn = false;
+                                }
+                            }
+
                             if (MovementState == AI_MOVEMENT_STATE.STOPPED
                                 && ControlMode == TRAIN_CONTROL.AUTO_NODE
                                 && nextActionInfo != null && (nextActionInfo.NextAction == AIActionItem.AI_ACTION_TYPE.END_OF_ROUTE || nextActionInfo.NextAction == AIActionItem.AI_ACTION_TYPE.END_OF_AUTHORITY))
                             {
-                                MovementState = AI_MOVEMENT_STATE.ACCELERATING;
+                                if (TrainCanGoOn)
+                                    MovementState = AI_MOVEMENT_STATE.ACCELERATING;
                                 //RemoveTrain();
                             }
 
@@ -807,15 +817,7 @@ namespace Orts.Simulation.AIs
                             if (MovementState == AI_MOVEMENT_STATE.STOPPED
                                 && ControlMode == TRAIN_CONTROL.AUTO_SIGNAL
                                 && nextActionInfo != null && nextActionInfo.NextAction == AIActionItem.AI_ACTION_TYPE.SIGNAL_ASPECT_STOP)
-                            {
-                                bool TrainCanGoOn = true;
-                                for (int i = 0; i < 10; i++)
-                                {
-                                    if (NumbersOccupiedTrain[i] != this.Number)
-                                    {
-                                        TrainCanGoOn = false;
-                                    }
-                                }
+                            {                                
                                 if (TrainCanGoOn)
                                     MovementState = AI_MOVEMENT_STATE.ACCELERATING;                                
                             }

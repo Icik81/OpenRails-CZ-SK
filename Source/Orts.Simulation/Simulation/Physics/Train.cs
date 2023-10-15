@@ -1671,9 +1671,15 @@ namespace Orts.Simulation.Physics
             // MSTS kompatibility mód
             if (Simulator.Settings.MSTSCompatibilityMode)
             {
-                if (Simulator.GameTimeCyklus10 == 10)
+                if (Simulator.GameTimeCyklus10 == 1)
                 {
-                    int i = 0;
+                    int i;
+                    for (i = 0; i < 100; i++)
+                    {
+                        NumbersOccupiedTrain[i] = -1;
+                    }
+
+                    i = 0;
                     for (int iIndex = PresentPosition[0].RouteListIndex; iIndex < ValidRoute[0].Count; iIndex++)
                     {
                         TCRouteElement thisElement = ValidRoute[0][iIndex];
