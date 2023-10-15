@@ -1663,32 +1663,51 @@ namespace Orts.Simulation.Physics
         /// <summary>
         /// Update train 
         /// <\summary>
-        
 
+        public int[] NumbersOccupiedTrain = new int[100];
         public virtual void Update(float elapsedClockSeconds, bool auxiliaryUpdate = true)
         {
             // Icik
             // MSTS kompatibility mód
-            if (Simulator.Settings.MSTSCompatibilityMode && IsActualPlayerTrain)
+            if (Simulator.Settings.MSTSCompatibilityMode)
             {
-                if (Simulator.GameTime == 0f && !wasRestored)
+                if (Simulator.GameTimeCyklus10 == 10)
                 {
-                    RequestToggleManualMode();
+                    int i = 0;
+                    for (int iIndex = PresentPosition[0].RouteListIndex; iIndex < ValidRoute[0].Count; iIndex++)
+                    {
+                        TCRouteElement thisElement = ValidRoute[0][iIndex];
+                        TrackCircuitSection thisSection = signalRef.TrackCircuitList[thisElement.TCSectionIndex];
+
+                        if (thisSection.CircuitState.TrainReserved != null)
+                        {
+                            NumbersOccupiedTrain[i] = thisSection.CircuitState.TrainReserved.Train.Number;
+                            i++;
+                        }
+                    }
                 }
-                else
-                if ((ControlMode == Train.TRAIN_CONTROL.MANUAL && !Simulator.GameSwitchManualModeOverdrive) || Simulator.AIRequestSignal)
+
+                if (IsActualPlayerTrain)
                 {
-                    RequestToggleManualMode();
-                    Simulator.AIRequestSignal = false;
+                    if (Simulator.GameTime == 0f && !wasRestored)
+                    {
+                        RequestToggleManualMode();
+                    }
+                    else
+                    if ((ControlMode == Train.TRAIN_CONTROL.MANUAL && !Simulator.GameSwitchManualModeOverdrive) || Simulator.AIRequestSignal)
+                    {
+                        RequestToggleManualMode();
+                        Simulator.AIRequestSignal = false;
+                    }
+                    else
+                    if (EndAuthorityType[0] == END_AUTHORITY.RESERVED_SWITCH
+                        || (EndAuthorityType[0] == END_AUTHORITY.NO_PATH_RESERVED && ControlMode == Train.TRAIN_CONTROL.AUTO_NODE)
+                        || ControlMode == Train.TRAIN_CONTROL.OUT_OF_CONTROL)
+                    {
+                        RequestToggleManualMode();
+                    }
                 }
-                else
-                if (EndAuthorityType[0] == END_AUTHORITY.RESERVED_SWITCH 
-                    || (EndAuthorityType[0] == END_AUTHORITY.NO_PATH_RESERVED && ControlMode == Train.TRAIN_CONTROL.AUTO_NODE)
-                    || ControlMode == Train.TRAIN_CONTROL.OUT_OF_CONTROL) 
-                {
-                    RequestToggleManualMode();
-                }
-            }            
+            }
 
             if (!auxiliaryUpdate)
                 FormationReversed = false;
@@ -14360,7 +14379,8 @@ namespace Orts.Simulation.Physics
         ///         )
         ///     If one or more train claim
         ///         #</c>
-        /// </summary>
+        /// </summary>                
+
         public string BuildSectionString(string thisString, TrackCircuitSection thisSection, int direction)
         {
 

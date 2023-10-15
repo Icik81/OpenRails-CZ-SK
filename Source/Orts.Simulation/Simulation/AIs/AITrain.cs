@@ -802,6 +802,23 @@ namespace Orts.Simulation.AIs
                                 MovementState = AI_MOVEMENT_STATE.ACCELERATING;
                                 //RemoveTrain();
                             }
+
+                            // Řeší patové situace, kdy AI a hráč mají oba signál stůj
+                            if (MovementState == AI_MOVEMENT_STATE.STOPPED
+                                && ControlMode == TRAIN_CONTROL.AUTO_SIGNAL
+                                && nextActionInfo != null && nextActionInfo.NextAction == AIActionItem.AI_ACTION_TYPE.SIGNAL_ASPECT_STOP)
+                            {
+                                bool TrainCanGoOn = true;
+                                for (int i = 0; i < 10; i++)
+                                {
+                                    if (NumbersOccupiedTrain[i] != this.Number)
+                                    {
+                                        TrainCanGoOn = false;
+                                    }
+                                }
+                                if (TrainCanGoOn)
+                                    MovementState = AI_MOVEMENT_STATE.ACCELERATING;                                
+                            }
                         }
                     }
                     break;
