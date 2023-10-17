@@ -1664,17 +1664,17 @@ namespace Orts.Simulation.Physics
         /// Update train 
         /// <\summary>
 
-        public int[] NumbersOccupiedTrain = new int[100];
+        public int[] NumbersOccupiedTrain = new int[20];
         public virtual void Update(float elapsedClockSeconds, bool auxiliaryUpdate = true)
         {
             // Icik
             // MSTS kompatibility mód
             if (Simulator.Settings.MSTSCompatibilityMode)
             {
-                if (Simulator.GameTimeCyklus10 == 1)
+                if (Simulator.GameTimeCyklus10 == 1 && !IsActualPlayerTrain)
                 {
                     int i;
-                    for (i = 0; i < 100; i++)
+                    for (i = 0; i < 20; i++)
                     {
                         NumbersOccupiedTrain[i] = -1;
                     }
@@ -1689,6 +1689,7 @@ namespace Orts.Simulation.Physics
                         {
                             NumbersOccupiedTrain[i] = thisSection.CircuitState.TrainReserved.Train.Number;
                             i++;
+                            if (i > 19) break;
                         }
                     }
                 }
