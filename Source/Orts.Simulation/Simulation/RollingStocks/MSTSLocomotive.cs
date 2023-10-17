@@ -5907,6 +5907,7 @@ namespace Orts.Simulation.RollingStocks
             {
                 SetAIAction(elapsedClockSeconds);
                 AcceptMUSignals = true;
+                PowerReduction = 0;
 
                 if (Flipped && !UsingRearCab)
                 {
