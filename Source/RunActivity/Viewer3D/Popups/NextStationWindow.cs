@@ -131,7 +131,7 @@ namespace Orts.Viewer3D.Popups
                 CurrentTime.Text = FormatStrings.FormatTime(Owner.Viewer.Simulator.ClockTime);
                 Activity act = Owner.Viewer.Simulator.ActivityRun;
                 Train playerTrain = Owner.Viewer.Simulator.PlayerLocomotive.Train;
-                if (playerTrain.Delay.HasValue)
+                if (playerTrain.Delay.HasValue && (long)playerTrain.Delay.Value.TotalMinutes > 0)
                 {
                     CurrentDelay.Text = Viewer.Catalog.GetPluralStringFmt("Current Delay: {0} minute", "Current Delay: {0} minutes", (long)playerTrain.Delay.Value.TotalMinutes);
                 }
