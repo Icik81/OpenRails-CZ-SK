@@ -6707,7 +6707,7 @@ namespace Orts.Simulation.AIs
                     int sixteenHundredHours = 16 * 3600;
 
                     // if moving, set departed
-                    if (Math.Abs(SpeedMpS) > 0)
+                    if (Math.Abs(SpeedMpS) > 1.5f)
                     {
                         if (TrainType != TRAINTYPE.AI_PLAYERHOSTING)
                         {

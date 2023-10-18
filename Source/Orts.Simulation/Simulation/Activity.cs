@@ -265,7 +265,7 @@ namespace Orts.Simulation
                         if (Current.IsCompleted != null)
                         {
                             Current = Current.NextTask;
-                        }
+                        }                        
                     }
                 }
             }
@@ -925,6 +925,8 @@ namespace Orts.Simulation
         public override void NotifyEvent(ActivityEventType EventType)
         {
             MyPlayerTrain = Simulator.OriginalPlayerTrain;
+            if (Math.Abs(MyPlayerTrain.SpeedMpS) > 1.5f)
+                MyPlayerTrain.Delay = TimeSpan.FromSeconds((Simulator.ClockTime - MyPlayerTrain.StationStops[0].DepartTime) % (24 * 3600));
             // The train is stopped.
             if (EventType == ActivityEventType.TrainStop)
             {
@@ -1002,7 +1004,7 @@ namespace Orts.Simulation
                             
                             // Icik
                             // Čas pro pobyt ve stanici je vždy ten plánovaný jízdním řádem
-                            BoardingEndS = SchDepartS;
+                            BoardingEndS = SchDepartS;                            
                         }
                     }
                     if (MyPlayerTrain.NextSignalObject[0] != null)
