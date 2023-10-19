@@ -3193,10 +3193,7 @@ namespace Orts.Simulation.Physics
 
             SignalObjectItems.Clear();
             IndexNextSignal = -1;
-            IndexNextSpeedlimit = -1;
-
-            // Icik
-            AllowedMaxSpeedMpS = (float)Simulator.TRK.Tr_RouteFile.SpeedLimit;
+            IndexNextSpeedlimit = -1;            
 
             //  set overall speed limits if these do not yet exist
             if (!existingSpeedLimits)
@@ -3282,7 +3279,10 @@ namespace Orts.Simulation.Physics
                 }
 
                 allowedMaxSpeedLimitMpS = AllowedMaxSpeedMpS;   // set default
-            }            
+            }
+
+            // Icik
+            AllowedMaxSpeedMpS = AllowedMaxSpeedMpS == 0 ? (float)Simulator.TRK.Tr_RouteFile.SpeedLimit : AllowedMaxSpeedMpS;
 
             //  get first item from train (irrespective of distance)
 

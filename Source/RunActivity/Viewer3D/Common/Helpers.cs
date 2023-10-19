@@ -125,7 +125,7 @@ namespace Orts.Viewer3D.Common
             // MSTS shows snow textures:
             //   - In winter, no matter what the weather is.
             //   - In spring and autumn, if the weather is snow.
-            return (simulator.Season == SeasonType.Winter) || ((simulator.Season != SeasonType.Summer) && (simulator.WeatherType == WeatherType.Snow));
+            return (simulator.Season == SeasonType.Winter) /*|| ((simulator.Season != SeasonType.Summer) && (simulator.WeatherType == WeatherType.Snow))*/;
         }
 
         public static bool IsRain(Simulator simulator)

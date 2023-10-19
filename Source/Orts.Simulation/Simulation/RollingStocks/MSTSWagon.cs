@@ -941,9 +941,14 @@ namespace Orts.Simulation.RollingStocks
         {
             if (MainShapeFileName.ToLower().Contains("servis"))
             {
+                var loco = this as MSTSLocomotive;
                 WagonIsServis = true;
-                InitialMassKG = MassKG = 1000;
-                if (CarLengthM < 0.1f) CarLengthM = 0.1f;                
+                InitialMassKG = MassKG = 100f;
+                if (CarLengthM < 0.1f) CarLengthM = 0.1f;
+                if (loco != null)
+                {                    
+                    loco.PowerReduction = 0;                    
+                }                
             }
 
             float G = MassKG / 1000 * 9.81f;
