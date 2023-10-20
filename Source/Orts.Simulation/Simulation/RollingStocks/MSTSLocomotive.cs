@@ -14352,31 +14352,31 @@ namespace Orts.Simulation.RollingStocks
 
             // Pozice HS198 směrpáky
             if (StationIsActivated[LocoStation])
-            {
+            {                
+                DirectionControllerHS198PositionSh = false;
+                switch (HS198DirectionControllerPosition[LocoStation])
+                {
+                    case 0:
+                        HS198DirectionControllerPositionName[LocoStation] = "Z"; // nearetovaná                        
+                        Direction = Direction.Reverse;
+                        break;
+                    case 1:
+                        HS198DirectionControllerPositionName[LocoStation] = "0";
+                        Direction = Direction.N;
+                        break;
+                    case 2:
+                        HS198DirectionControllerPositionName[LocoStation] = "P"; // nearetovaná
+                        Direction = Direction.Forward;
+                        break;
+                    case 3:
+                        HS198DirectionControllerPositionName[LocoStation] = "Sh";
+                        DirectionControllerHS198PositionSh = true;
+                        Direction = Direction.Forward;
+                        break;
+                }
                 if (HS198DirectionControllerPosition[LocoStation] != preHS198DirectionControllerPosition[LocoStation])
                 {
                     preHS198DirectionControllerPosition[LocoStation] = HS198DirectionControllerPosition[LocoStation];
-                    DirectionControllerHS198PositionSh = false;
-                    switch (HS198DirectionControllerPosition[LocoStation])
-                    {
-                        case 0:
-                            HS198DirectionControllerPositionName[LocoStation] = "Z"; // nearetovaná                        
-                            Direction = Direction.Reverse;
-                            break;
-                        case 1:
-                            HS198DirectionControllerPositionName[LocoStation] = "0";
-                            Direction = Direction.N;
-                            break;
-                        case 2:
-                            HS198DirectionControllerPositionName[LocoStation] = "P"; // nearetovaná
-                            Direction = Direction.Forward;
-                            break;
-                        case 3:
-                            HS198DirectionControllerPositionName[LocoStation] = "Sh";
-                            DirectionControllerHS198PositionSh = true;
-                            Direction = Direction.Forward;
-                            break;
-                    }
                     Simulator.Confirmer.Information(Simulator.Catalog.GetString("Reverser") + ": " + HS198DirectionControllerPositionName[LocoStation]);
                 }
             }
