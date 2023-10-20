@@ -5861,7 +5861,6 @@ namespace Orts.Simulation.RollingStocks
 
             // Icik            
             SetCarLightsPowerOn();
-            SetLapButton();
             CarFrameUpdate(elapsedClockSeconds);
 
             if (IsLeadLocomotive())
@@ -12057,19 +12056,6 @@ namespace Orts.Simulation.RollingStocks
                 BreakEDBButton_Activated = false;
         }
 
-        public void SetLapButton()
-        {
-            if (!IsPlayerTrain)
-                return;
-            if (BrakeSystem.StartOn && Simulator.Settings.AirEmpty)
-                SetLapButtonStart = true;
-            if (SetLapButtonStart && LapButtonEnable && Battery)
-            {
-                SetLapButtonStart = false;
-                LapActive[LocoStation] = true;
-            }
-        }
-
         public void ToggleDirectionButtonDown()
         {
             if (DirectionButton)
@@ -14848,6 +14834,17 @@ namespace Orts.Simulation.RollingStocks
                                 
                                 HS198Skip_Ready = true;
 
+                                if (PowerCurrent1 <= 400f && (HS198Skip_Start || HS198Skip2_Start) && Simulator.StepControllerValue >= 34 && Simulator.StepControllerValue < 51)
+                                {
+                                    Simulator.StepControllerValue++;
+                                    HS198SkipCounter++;
+                                    if (HS198SkipCounter > 0f)
+                                    {
+                                        ThrottleController.StartIncrease();
+                                        ThrottleController.StopIncrease();
+                                    }
+                                }
+                                else
                                 if (PowerCurrent1 <= 400f && ((HS198Skip_Start && Simulator.StepControllerValue <= 26) || (HS198Skip2_Start && Simulator.StepControllerValue <= 33)))
                                 {
                                     Simulator.StepControllerValue++;
@@ -14921,7 +14918,7 @@ namespace Orts.Simulation.RollingStocks
                 // Skok v poloze P
                 if (!HS198Protect && AbsSpeedMpS >= 95f / 3.6f && PowerCurrent1 < 400f
                     && HS198ControllerPosition[LocoStation] > 3 && HS198ControllerPosition[LocoStation] <= 7
-                    && HS198ControllerThrottleValue > 1f && HS198ControllerThrottleValue < 27f
+                    && ((HS198ControllerThrottleValue > 1f && HS198ControllerThrottleValue < 27f) || (HS198ControllerThrottleValue >= 34f && HS198ControllerThrottleValue < 51f))
                     && !HS198PositionBlocked
                     && !HS198PositionBlocked2                    
                     && HS198DirectionControllerPosition[LocoStation] == 2)
@@ -14933,8 +14930,8 @@ namespace Orts.Simulation.RollingStocks
                 else
                 // Skok v poloze Sh
                 if (!HS198Protect && AbsSpeedMpS >= 40f / 3.6f && PowerCurrent1 < 400f 
-                    && HS198ControllerPosition[LocoStation] > 3 && HS198ControllerPosition[LocoStation] <= 7 
-                    && HS198ControllerThrottleValue > 1f && HS198ControllerThrottleValue < 27f 
+                    && HS198ControllerPosition[LocoStation] > 3 && HS198ControllerPosition[LocoStation] <= 7
+                    && ((HS198ControllerThrottleValue > 1f && HS198ControllerThrottleValue < 27f) || (HS198ControllerThrottleValue >= 34f && HS198ControllerThrottleValue < 51f))
                     && !HS198PositionBlocked
                     && !HS198PositionBlocked2                    
                     )

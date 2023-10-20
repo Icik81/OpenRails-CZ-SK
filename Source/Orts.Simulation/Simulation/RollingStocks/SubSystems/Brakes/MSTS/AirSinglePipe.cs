@@ -727,7 +727,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     }
                 }
 
-                if (loco.LapButtonEnable && !(loco is MSTSSteamLocomotive))
+                if (loco.Battery && loco.LapButtonEnable && !(loco is MSTSSteamLocomotive))
                 {
                     if (loco.IsLeadLocomotive())
                     {
