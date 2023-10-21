@@ -947,8 +947,9 @@ namespace Orts.Simulation.RollingStocks
                 if (CarLengthM < 0.1f) CarLengthM = 0.1f;
                 if (loco != null)
                 {                    
-                    loco.PowerReduction = 0; 
-                    loco.SpeedMpS = Train.AITrainThrottlePercent > 1f && loco.SpeedMpS != 0 && loco.AbsSpeedMpS < Train.AllowedMaxSpeedMpS ? loco.SpeedMpS *= 1.01f : loco.SpeedMpS;
+                    loco.PowerReduction = 0;
+                    float SpeedCoef = Train.AllowedMaxSpeedMpS / loco.AbsSpeedMpS;
+                    loco.SpeedMpS = Train.AITrainThrottlePercent > 1f && loco.SpeedMpS != 0 && loco.AbsSpeedMpS < Train.AllowedMaxSpeedMpS ? loco.SpeedMpS *= SpeedCoef : loco.SpeedMpS;
                 }
                 return;
             }
