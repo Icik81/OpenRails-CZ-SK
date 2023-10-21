@@ -1680,16 +1680,19 @@ namespace Orts.Simulation.Physics
                     }
 
                     i = 0;
-                    for (int iIndex = PresentPosition[0].RouteListIndex; iIndex < ValidRoute[0].Count; iIndex++)
+                    if (PresentPosition[0].RouteListIndex != -1)
                     {
-                        TCRouteElement thisElement = ValidRoute[0][iIndex];
-                        TrackCircuitSection thisSection = signalRef.TrackCircuitList[thisElement.TCSectionIndex];
-
-                        if (thisSection.CircuitState.TrainReserved != null)
+                        for (int iIndex = PresentPosition[0].RouteListIndex; iIndex < ValidRoute[0].Count; iIndex++)
                         {
-                            NumbersOccupiedTrain[i] = thisSection.CircuitState.TrainReserved.Train.Number;
-                            i++;
-                            if (i > 19) break;
+                            TCRouteElement thisElement = ValidRoute[0][iIndex];
+                            TrackCircuitSection thisSection = signalRef.TrackCircuitList[thisElement.TCSectionIndex];
+
+                            if (thisSection.CircuitState.TrainReserved != null)
+                            {
+                                NumbersOccupiedTrain[i] = thisSection.CircuitState.TrainReserved.Train.Number;
+                                i++;
+                                if (i > 19) break;
+                            }
                         }
                     }
                 }
