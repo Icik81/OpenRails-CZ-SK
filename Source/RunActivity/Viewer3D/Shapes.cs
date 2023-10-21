@@ -397,7 +397,7 @@ namespace Orts.Viewer3D
     /// </summary>
     public class AnimatedShape : PoseableShape
     {
-        protected float AnimationKey;  // advances with time
+        protected float[] AnimationKey = new float[10];  // advances with time
         protected float FrameRateMultiplier = 1; // e.g. in passenger view shapes MSTS divides by 30 the frame rate; this is the inverse
 
         /// <summary>
@@ -419,15 +419,48 @@ namespace Orts.Viewer3D
             // if the shape has animations
             if (SharedShape.Animations?.Count > 0 && SharedShape.Animations[0].FrameCount > 0)
             {
-                AnimationKey += SharedShape.Animations[0].FrameRate * elapsedTime.ClockSeconds * FrameRateMultiplier;
-                while (AnimationKey > SharedShape.Animations[0].FrameCount) AnimationKey -= SharedShape.Animations[0].FrameCount;
-                while (AnimationKey < 0) AnimationKey += SharedShape.Animations[0].FrameCount;
+                //AnimationKey += SharedShape.Animations[0].FrameRate * elapsedTime.ClockSeconds * FrameRateMultiplier;
+                //while (AnimationKey > SharedShape.Animations[0].FrameCount) AnimationKey -= SharedShape.Animations[0].FrameCount;
+                //while (AnimationKey < 0) AnimationKey += SharedShape.Animations[0].FrameCount;
 
-                // Update the pose for each matrix
+                // Icik
                 for (var matrix = 0; matrix < SharedShape.Matrices.Length; ++matrix)
-                    AnimateMatrix(matrix, AnimationKey);
-            }
-            SharedShape.PrepareFrame(frame, Location, XNAMatrices, Flags);
+                {
+                    if (SharedShape.Animations[0].anim_nodes[matrix].Name.Contains("LAMELA_W"))
+                    {
+                        if ((Viewer.PlayerLocomotive as MSTSWagon).DoorLeftOpen || (Viewer.PlayerLocomotive as MSTSDieselLocomotive).DieselEngines[0].WaterTempCoolingRunning)
+                        {
+                            if (AnimationKey[0] < SharedShape.Animations[0].FrameCount)
+                                AnimationKey[0] += SharedShape.Animations[0].FrameRate * elapsedTime.ClockSeconds * FrameRateMultiplier * 0.003f;
+                        }
+
+                        if (!(Viewer.PlayerLocomotive as MSTSWagon).DoorLeftOpen && !(Viewer.PlayerLocomotive as MSTSDieselLocomotive).DieselEngines[0].WaterTempCoolingRunning)
+                        {
+                            if (AnimationKey[0] > 0)
+                                AnimationKey[0] -= SharedShape.Animations[0].FrameRate * elapsedTime.ClockSeconds * FrameRateMultiplier * 0.003f;
+                        }
+                        AnimateMatrix(matrix, AnimationKey[0]);                        
+                    }
+
+                    if (SharedShape.Animations[0].anim_nodes[matrix].Name.Contains("LAMELA_O"))
+                    {
+                        if ((Viewer.PlayerLocomotive as MSTSWagon).DoorRightOpen || (Viewer.PlayerLocomotive as MSTSDieselLocomotive).DieselEngines[0].OilTempCoolingRunning)
+                        {
+                            if (AnimationKey[1] < SharedShape.Animations[0].FrameCount)
+                                AnimationKey[1] += SharedShape.Animations[0].FrameRate * elapsedTime.ClockSeconds * FrameRateMultiplier * 0.003f;
+                        }
+
+                        if (!(Viewer.PlayerLocomotive as MSTSWagon).DoorRightOpen && !(Viewer.PlayerLocomotive as MSTSDieselLocomotive).DieselEngines[0].OilTempCoolingRunning)
+                        {
+                            if (AnimationKey[1] > 0)
+                                AnimationKey[1] -= SharedShape.Animations[0].FrameRate * elapsedTime.ClockSeconds * FrameRateMultiplier * 0.003f;
+                        }
+                        AnimateMatrix(matrix, AnimationKey[1]);                    
+                    }
+                    
+                    SharedShape.PrepareFrame(frame, Location, XNAMatrices, Flags);
+                }             
+            }            
         }
     }
     //Class AnalogClockShape to animate analog OR-Clocks as child of AnimatedShape <- PoseableShape <- StaticShape

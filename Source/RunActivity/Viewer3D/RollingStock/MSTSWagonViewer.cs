@@ -67,6 +67,10 @@ namespace Orts.Viewer3D.RollingStock
         protected AnimatedPart Bell;
         AnimatedPart UnloadingParts;
 
+        // Icik
+        AnimatedPart Lamels_W;
+        AnimatedPart Lamels_O;
+
         public Dictionary<string, List<ParticleEmitterViewer>> ParticleDrawers = new Dictionary<string, List<ParticleEmitterViewer>>();
 
         protected MSTSWagon MSTSWagon { get { return (MSTSWagon)Car; } }
@@ -296,6 +300,10 @@ namespace Orts.Viewer3D.RollingStock
             UnloadingParts = new AnimatedPart(TrainCarShape);
             Bell = new AnimatedPart(TrainCarShape);
 
+            // Icik
+            Lamels_W = new AnimatedPart(TrainCarShape);
+            Lamels_O = new AnimatedPart(TrainCarShape);
+
             if (car.FreightAnimations != null)
                 FreightAnimations = new FreightAnimationsViewer(viewer, car, wagonFolderSlash);
 
@@ -380,6 +388,10 @@ namespace Orts.Viewer3D.RollingStock
             RightDoor.SetState(MSTSWagon.DoorRightOpen);
             Mirrors.SetState(MSTSWagon.MirrorOpen);
             UnloadingParts.SetState(MSTSWagon.UnloadingPartsOpen);
+
+            // Icik
+            Lamels_W.SetState(MSTSWagon.DoorLeftOpen || (Viewer.PlayerLocomotive as MSTSDieselLocomotive).DieselEngines[0].WaterTempCoolingRunning);
+            Lamels_O.SetState(MSTSWagon.DoorRightOpen || (Viewer.PlayerLocomotive as MSTSDieselLocomotive).DieselEngines[0].OilTempCoolingRunning);
 
             InitializeUserInputCommands();
         }
@@ -524,6 +536,15 @@ namespace Orts.Viewer3D.RollingStock
             {
                 Bell.AddMatrix(matrix);
             }
+            // Icik
+            else if (matrixName.StartsWith("LAMELA_W")) // Lamely na chlazení vody
+            {
+                Lamels_W.AddMatrix(matrix);
+            }
+            else if (matrixName.StartsWith("LAMELA_O")) // Lamely na chlazení oleje
+            {
+                Lamels_O.AddMatrix(matrix);
+            }
             else
             {
                 if (matrixAnimated && matrix != 0)
@@ -574,6 +595,11 @@ namespace Orts.Viewer3D.RollingStock
             RightDoor.UpdateState(MSTSWagon.DoorRightOpen, elapsedTime);
             Mirrors.UpdateState(MSTSWagon.MirrorOpen, elapsedTime);
             UnloadingParts.UpdateState(MSTSWagon.UnloadingPartsOpen, elapsedTime);
+
+            // Icik
+            Lamels_W.UpdateState(MSTSWagon.DoorLeftOpen || (Viewer.PlayerLocomotive as MSTSDieselLocomotive).DieselEngines[0].WaterTempCoolingRunning, elapsedTime);
+            Lamels_O.UpdateState(MSTSWagon.DoorRightOpen || (Viewer.PlayerLocomotive as MSTSDieselLocomotive).DieselEngines[0].OilTempCoolingRunning, elapsedTime);
+
             UpdateAnimation(frame, elapsedTime);
 
             var car = Car as MSTSWagon;
@@ -1039,7 +1065,7 @@ namespace Orts.Viewer3D.RollingStock
                                 freightAnim.FreightShape.XNAMatrices[0].M43 = staticFreightAnim.ZOffset;
                             }
 
-                        }
+                        }                        
                         // Forcing rotation of freight shape
                         freightAnim.FreightShape.PrepareFrame(frame, elapsedTime);
                     }
@@ -1069,8 +1095,7 @@ namespace Orts.Viewer3D.RollingStock
 
                 // We are outside the passenger cabin
                 TrainCarShape.PrepareFrame(frame, elapsedTime);
-            }
-
+            }            
         }
 
 
