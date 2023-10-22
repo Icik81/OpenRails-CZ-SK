@@ -439,9 +439,9 @@ namespace Orts.Viewer3D
                             if (AnimationKey[0] > 0)
                                 AnimationKey[0] -= SharedShape.Animations[0].FrameRate * elapsedTime.ClockSeconds * FrameRateMultiplier * 0.003f;
                         }
-                        AnimateMatrix(matrix, AnimationKey[0]);                        
+                        AnimateMatrix(matrix, AnimationKey[0]);
                     }
-
+                    else
                     if (SharedShape.Animations[0].anim_nodes[matrix].Name.Contains("LAMELA_O"))
                     {
                         if ((Viewer.PlayerLocomotive as MSTSWagon).DoorRightOpen || (Viewer.PlayerLocomotive as MSTSDieselLocomotive).DieselEngines[0].OilTempCoolingRunning)
@@ -455,12 +455,16 @@ namespace Orts.Viewer3D
                             if (AnimationKey[1] > 0)
                                 AnimationKey[1] -= SharedShape.Animations[0].FrameRate * elapsedTime.ClockSeconds * FrameRateMultiplier * 0.003f;
                         }
-                        AnimateMatrix(matrix, AnimationKey[1]);                    
+                        AnimateMatrix(matrix, AnimationKey[1]);
                     }
-                    
+
                     SharedShape.PrepareFrame(frame, Location, XNAMatrices, Flags);
-                }             
-            }            
+                }
+            }
+            for (var matrix = 0; matrix < SharedShape.Matrices.Length; ++matrix)
+            {
+                SharedShape.PrepareFrame(frame, Location, XNAMatrices, Flags);
+            }
         }
     }
     //Class AnalogClockShape to animate analog OR-Clocks as child of AnimatedShape <- PoseableShape <- StaticShape
