@@ -390,8 +390,11 @@ namespace Orts.Viewer3D.RollingStock
             UnloadingParts.SetState(MSTSWagon.UnloadingPartsOpen);
 
             // Icik
-            Lamels_W.SetState(MSTSWagon.DoorLeftOpen || (Viewer.PlayerLocomotive as MSTSDieselLocomotive).DieselEngines[0].WaterTempCoolingRunning);
-            Lamels_O.SetState(MSTSWagon.DoorRightOpen || (Viewer.PlayerLocomotive as MSTSDieselLocomotive).DieselEngines[0].OilTempCoolingRunning);
+            if (Viewer.PlayerLocomotive as MSTSDieselLocomotive != null)
+            {
+                Lamels_W.SetState(MSTSWagon.DoorLeftOpen || (Viewer.PlayerLocomotive as MSTSDieselLocomotive).DieselEngines[0].WaterTempCoolingRunning);
+                Lamels_O.SetState(MSTSWagon.DoorRightOpen || (Viewer.PlayerLocomotive as MSTSDieselLocomotive).DieselEngines[0].OilTempCoolingRunning);
+            }
 
             InitializeUserInputCommands();
         }
@@ -597,8 +600,11 @@ namespace Orts.Viewer3D.RollingStock
             UnloadingParts.UpdateState(MSTSWagon.UnloadingPartsOpen, elapsedTime);
 
             // Icik
-            Lamels_W.UpdateState(MSTSWagon.DoorLeftOpen || (Viewer.PlayerLocomotive as MSTSDieselLocomotive).DieselEngines[0].WaterTempCoolingRunning, elapsedTime);
-            Lamels_O.UpdateState(MSTSWagon.DoorRightOpen || (Viewer.PlayerLocomotive as MSTSDieselLocomotive).DieselEngines[0].OilTempCoolingRunning, elapsedTime);
+            if (Viewer.PlayerLocomotive as MSTSDieselLocomotive != null)
+            {
+                Lamels_W.UpdateState(MSTSWagon.DoorLeftOpen || (Viewer.PlayerLocomotive as MSTSDieselLocomotive).DieselEngines[0].WaterTempCoolingRunning, elapsedTime);
+                Lamels_O.UpdateState(MSTSWagon.DoorRightOpen || (Viewer.PlayerLocomotive as MSTSDieselLocomotive).DieselEngines[0].OilTempCoolingRunning, elapsedTime);
+            }
 
             UpdateAnimation(frame, elapsedTime);
 
