@@ -5836,7 +5836,20 @@ namespace Orts.Simulation.RollingStocks
                             ControllerVolts = ThrottlePercent / 10;
                         }
                     }
-
+                    float i = GetCombinedHandleValue(true);
+                    if (LocoType == LocoTypes.Vectron)
+                    {
+                        if (ControllerVolts < 0 && i >= 0.5)
+                        {
+                            ControllerVolts = 0;
+                        }
+                    }
+                    if (LocoType == LocoTypes.Vectron && ControllerVolts > 0 && BrakeSystem.BrakeLine1PressurePSI > 72)
+                        DynamicBrakePercent = 0;
+                    if (LocoType == LocoTypes.Vectron && ControllerVolts < 0)
+                    {
+                        DynamicBrakePercent = -(ControllerVolts * 10);
+                    }
                     if (DynamicBrakePercent > 0)
                     {
                         if (PowerOn)
@@ -6198,6 +6211,7 @@ namespace Orts.Simulation.RollingStocks
             // Jindrich
             //UpdateMotiveForce(elapsedClockSeconds, t, AbsSpeedMpS, AbsWheelSpeedMpS);
             CheckAccelerationBits(elapsedClockSeconds, AbsWheelSpeedMpS);
+
 
             if (CruiseControl != null && !TrainBrakeController.TCSEmergencyBraking)
             {
@@ -6582,6 +6596,8 @@ namespace Orts.Simulation.RollingStocks
                             DynamicBrakeController.CurrentValue = 0;
 
                         DynamicBrakeController.Update(elapsedClockSeconds);
+                        if (LocoType == LocoTypes.Vectron && ControllerVolts > 0)
+                            DynamicBrakeController.CurrentValue = 0;
                         DynamicBrakePercent = (DynamicBrakeIntervention < 0.1f ? DynamicBrakeController.CurrentValue : DynamicBrakeIntervention) * 100f;
                         LocalDynamicBrakePercent = (DynamicBrakeIntervention < 0.1f ? DynamicBrakeController.CurrentValue : DynamicBrakeIntervention) * 100f;
 

@@ -29,7 +29,9 @@
 
 
 using Microsoft.Xna.Framework;
+using Newtonsoft.Json.Serialization;
 using Orts.Simulation.RollingStocks.SubSystems;
+using Orts.Simulation.RollingStocks.SubSystems.Brakes;
 using ORTS.Common;
 using System;
 using System.Collections.Generic;
@@ -456,7 +458,7 @@ namespace Orts.Simulation.RollingStocks
             {
                 if (Locomotive.LocoType == LocoTypes.Vectron)
                 {
-                    if (Bar.FromPSI(Locomotive.BrakeSystem.BrakeLine1PressurePSI) < 4.9f)
+                    /*if (Bar.FromPSI(Locomotive.BrakeSystem.BrakeLine1PressurePSI) < 4.9f)
                         Locomotive.SetDynamicBrakePercent(-1);
                     else
                     if (Locomotive.ControllerVolts < 0)
@@ -464,8 +466,8 @@ namespace Orts.Simulation.RollingStocks
 
                     if (Locomotive.DynamicBrakePercent > 1f)
                     {
-                        Locomotive.ControllerVolts = -Locomotive.DynamicBrakePercent / 10f;
-                    }
+                        //Locomotive.ControllerVolts = -Locomotive.DynamicBrakePercent / 10f;
+                    }*/
                 }
             }            
 
@@ -479,7 +481,7 @@ namespace Orts.Simulation.RollingStocks
             }
             if (Locomotive.ControllerVolts == 0)
             {
-                if (Locomotive.DynamicBrakePercent > 0)
+                if (Locomotive.DynamicBrakePercent > 0 && Locomotive.LocoType != LocoTypes.Vectron)
                     Locomotive.ControllerVolts = -Locomotive.DynamicBrakePercent / 10;
                 Locomotive.SetThrottlePercent(0);
                 foreach (Undercarriage uc in Undercarriages)
@@ -828,10 +830,25 @@ namespace Orts.Simulation.RollingStocks
                 if (ForceN > maxForceN)
                     ForceN = maxForceN;
             }
-            else if (Locomotive.CruiseControl.controllerVolts < 0)
+            else if (Locomotive.CruiseControl.controllerVolts < 0 && Locomotive.CruiseControl.SpeedRegMode[Locomotive.LocoStation]== CruiseControl.SpeedRegulatorMode.Auto)
             {
                 ForceN = -Locomotive.DynamicBrakeForceN / 4;
                 ForceN += (reducedForceN * 2);
+            }
+
+            if (Locomotive.LocoType == LocoTypes.Vectron)
+            {
+                if (Locomotive.ControllerVolts > 0 && Locomotive.CruiseControl.controllerVolts > 0)
+                {
+                    if (Locomotive.DynamicBrakeForceN > 0)
+                        Locomotive.DynamicBrakeForceN = 0;
+                }
+            }
+
+            if (Locomotive.LocoType == LocoTypes.Vectron && Locomotive.ControllerVolts < 0 && Locomotive.BrakeSystem.BrakeLine1PressurePSI > 72)
+            {
+                if (Locomotive.CruiseControl.SpeedRegMode[Locomotive.LocoStation] == CruiseControl.SpeedRegulatorMode.Manual)
+                    Locomotive.DynamicBrakePercent = -Locomotive.ControllerVolts;
             }
             else if (Locomotive.DynamicBrakeForceN > 0 && (Locomotive.PowerOn || Locomotive.RouteVoltageV == 3000))
             {
@@ -846,7 +863,10 @@ namespace Orts.Simulation.RollingStocks
                 ForceN = maxForceN = Locomotive.DynamicBrakeForceN = 0;
                 Locomotive.SetDynamicBrakePercent(0);
             }
-
+            if (Locomotive.LocoType == LocoTypes.Vectron && Locomotive.ControllerVolts < 0)
+            {
+                ForceN = maxForceN;
+            }
             if (Locomotive.LocoType == MSTSLocomotive.LocoTypes.Vectron && !Locomotive.PowerOn && (-Locomotive.DynamicBrakeForceN / totalMotors) > ((Locomotive.extendedPhysics.GeneratorConsumptionKn * 1000) / totalMotors))
             {
                 if (!Locomotive.extendedPhysics.GeneratoricModeDisabled) maxForceN = ForceN = (Locomotive.extendedPhysics.GeneratorConsumptionKn * 1000) / totalMotors;
@@ -925,8 +945,10 @@ namespace Orts.Simulation.RollingStocks
                         Mass += addMass * 2;
                         if (Math.Abs(WheelSpeedMpS) < 0.95f * Locomotive.AbsSpeedMpS)
                             reducedForceN = 0;
-                        else
+                        else if (Locomotive.ControllerVolts != 0)
                             reducedForceN = -((WheelSpeedMpS - (Locomotive.AbsSpeedMpS + 0.1f)) * (Mass / 1000)) * 750;
+                        else
+                            reducedForceN = 0;
                         Mass = mMass;
                     }
                     else
@@ -1180,6 +1202,12 @@ namespace Orts.Simulation.RollingStocks
         public void Update(float elapsedClockSeconds)
         {
             return;
+            if (Locomotive.LocoType == LocoTypes.Vectron && Locomotive.ControllerVolts < 0)
+                Percent = -Locomotive.ControllerVolts * 100;
+            else
+                return;
+
+            //return;
             if (Increasing)
             {
                 if (Percent == 0 && TimeToEngage > 0)
@@ -1208,11 +1236,11 @@ namespace Orts.Simulation.RollingStocks
             // compute EDB force
             if (Locomotive.RouteVoltageV == 3000)
             {
-                MotiveForce = Locomotive.DynamicBrakeForceCurvesDC.Get(Percent / 100, Locomotive.extendedPhysics.AverageAxleSpeedMpS);
+                MotiveForce = -Locomotive.DynamicBrakeForceCurvesDC.Get(Percent / 100, Locomotive.extendedPhysics.AverageAxleSpeedMpS);
             }
             if (Locomotive.RouteVoltageV > 3000)
             {
-                MotiveForce = Locomotive.DynamicBrakeForceCurvesAC.Get(Percent / 100, Locomotive.extendedPhysics.AverageAxleSpeedMpS);
+                MotiveForce = -Locomotive.DynamicBrakeForceCurvesAC.Get(Percent / 100, Locomotive.extendedPhysics.AverageAxleSpeedMpS);
             }
 
             if (Locomotive.ThrottlePercent == 0)
