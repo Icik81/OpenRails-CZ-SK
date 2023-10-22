@@ -431,13 +431,13 @@ namespace Orts.Viewer3D
                         if ((Viewer.PlayerLocomotive as MSTSWagon).DoorLeftOpen || (Viewer.PlayerLocomotive as MSTSDieselLocomotive).DieselEngines[0].WaterTempCoolingRunning)
                         {
                             if (AnimationKey[0] < SharedShape.Animations[0].FrameCount)
-                                AnimationKey[0] += SharedShape.Animations[0].FrameRate * elapsedTime.ClockSeconds * FrameRateMultiplier * 0.003f;
+                                AnimationKey[0] += SharedShape.Animations[0].FrameRate * elapsedTime.ClockSeconds * FrameRateMultiplier * 0.006f;
                         }
 
                         if (!(Viewer.PlayerLocomotive as MSTSWagon).DoorLeftOpen && !(Viewer.PlayerLocomotive as MSTSDieselLocomotive).DieselEngines[0].WaterTempCoolingRunning)
                         {
                             if (AnimationKey[0] > 0)
-                                AnimationKey[0] -= SharedShape.Animations[0].FrameRate * elapsedTime.ClockSeconds * FrameRateMultiplier * 0.003f;
+                                AnimationKey[0] -= SharedShape.Animations[0].FrameRate * elapsedTime.ClockSeconds * FrameRateMultiplier * 0.006f;
                         }
                         AnimateMatrix(matrix, AnimationKey[0]);
                     }
@@ -447,13 +447,13 @@ namespace Orts.Viewer3D
                         if ((Viewer.PlayerLocomotive as MSTSWagon).DoorRightOpen || (Viewer.PlayerLocomotive as MSTSDieselLocomotive).DieselEngines[0].OilTempCoolingRunning)
                         {
                             if (AnimationKey[1] < SharedShape.Animations[0].FrameCount)
-                                AnimationKey[1] += SharedShape.Animations[0].FrameRate * elapsedTime.ClockSeconds * FrameRateMultiplier * 0.003f;
+                                AnimationKey[1] += SharedShape.Animations[0].FrameRate * elapsedTime.ClockSeconds * FrameRateMultiplier * 0.006f;
                         }
 
                         if (!(Viewer.PlayerLocomotive as MSTSWagon).DoorRightOpen && !(Viewer.PlayerLocomotive as MSTSDieselLocomotive).DieselEngines[0].OilTempCoolingRunning)
                         {
                             if (AnimationKey[1] > 0)
-                                AnimationKey[1] -= SharedShape.Animations[0].FrameRate * elapsedTime.ClockSeconds * FrameRateMultiplier * 0.003f;
+                                AnimationKey[1] -= SharedShape.Animations[0].FrameRate * elapsedTime.ClockSeconds * FrameRateMultiplier * 0.006f;
                         }
                         AnimateMatrix(matrix, AnimationKey[1]);
                     }
