@@ -414,6 +414,8 @@ namespace Orts.Viewer3D
         {
         }
 
+        float TimeAction;        
+        float TCoef;
         public override void PrepareFrame(RenderFrame frame, ElapsedTime elapsedTime)
         {
             // if the shape has animations
@@ -421,41 +423,55 @@ namespace Orts.Viewer3D
             {
                 //AnimationKey += SharedShape.Animations[0].FrameRate * elapsedTime.ClockSeconds * FrameRateMultiplier;
                 //while (AnimationKey > SharedShape.Animations[0].FrameCount) AnimationKey -= SharedShape.Animations[0].FrameCount;
-                //while (AnimationKey < 0) AnimationKey += SharedShape.Animations[0].FrameCount;
+                //while (AnimationKey < 0) AnimationKey += SharedShape.Animations[0].FrameCount;                
 
                 // Icik
                 for (var matrix = 0; matrix < SharedShape.Matrices.Length; ++matrix)
                 {
                     if (SharedShape.Animations[0].anim_nodes[matrix].Name.Contains("LAMELA_W"))
                     {
-                        if ((Viewer.PlayerLocomotive as MSTSWagon).DoorLeftOpen || (Viewer.PlayerLocomotive as MSTSDieselLocomotive).DieselEngines[0].WaterTempCoolingRunning)
+                        if (Viewer.PlayerLocomotive as MSTSDieselLocomotive != null)
                         {
-                            if (AnimationKey[0] < SharedShape.Animations[0].FrameCount)
-                                AnimationKey[0] += SharedShape.Animations[0].FrameRate * elapsedTime.ClockSeconds * FrameRateMultiplier * 0.006f;
-                        }
+                            if ((Viewer.PlayerLocomotive as MSTSWagon).DoorLeftOpen || (Viewer.PlayerLocomotive as MSTSDieselLocomotive).DieselEngines[0].WaterTempCoolingRunning)
+                            {
+                                TimeAction = (Viewer.PlayerLocomotive as MSTSDieselLocomotive).DieselEngines[0].WaterCoolingPlatesUpS;
+                                TCoef = 0.015f / (8.0f / SharedShape.Animations[0].FrameCount * TimeAction == 0 ? 3.0f : TimeAction);
+                                if (AnimationKey[0] < SharedShape.Animations[0].FrameCount)
+                                    AnimationKey[0] += SharedShape.Animations[0].FrameRate * elapsedTime.ClockSeconds * FrameRateMultiplier * TCoef;
+                            }
 
-                        if (!(Viewer.PlayerLocomotive as MSTSWagon).DoorLeftOpen && !(Viewer.PlayerLocomotive as MSTSDieselLocomotive).DieselEngines[0].WaterTempCoolingRunning)
-                        {
-                            if (AnimationKey[0] > 0)
-                                AnimationKey[0] -= SharedShape.Animations[0].FrameRate * elapsedTime.ClockSeconds * FrameRateMultiplier * 0.006f;
+                            if (!(Viewer.PlayerLocomotive as MSTSWagon).DoorLeftOpen && !(Viewer.PlayerLocomotive as MSTSDieselLocomotive).DieselEngines[0].WaterTempCoolingRunning)
+                            {
+                                TimeAction = (Viewer.PlayerLocomotive as MSTSDieselLocomotive).DieselEngines[0].WaterCoolingPlatesDownS;
+                                TCoef = 0.015f / (8.0f / SharedShape.Animations[0].FrameCount * TimeAction == 0 ? 3.0f : TimeAction);
+                                if (AnimationKey[0] > 0)
+                                    AnimationKey[0] -= SharedShape.Animations[0].FrameRate * elapsedTime.ClockSeconds * FrameRateMultiplier * TCoef;
+                            }
+                            AnimateMatrix(matrix, AnimationKey[0]);
                         }
-                        AnimateMatrix(matrix, AnimationKey[0]);
                     }
                     else
                     if (SharedShape.Animations[0].anim_nodes[matrix].Name.Contains("LAMELA_O"))
                     {
-                        if ((Viewer.PlayerLocomotive as MSTSWagon).DoorRightOpen || (Viewer.PlayerLocomotive as MSTSDieselLocomotive).DieselEngines[0].OilTempCoolingRunning)
+                        if (Viewer.PlayerLocomotive as MSTSDieselLocomotive != null)
                         {
-                            if (AnimationKey[1] < SharedShape.Animations[0].FrameCount)
-                                AnimationKey[1] += SharedShape.Animations[0].FrameRate * elapsedTime.ClockSeconds * FrameRateMultiplier * 0.006f;
-                        }
+                            if ((Viewer.PlayerLocomotive as MSTSWagon).DoorRightOpen || (Viewer.PlayerLocomotive as MSTSDieselLocomotive).DieselEngines[0].OilTempCoolingRunning)
+                            {
+                                TimeAction = (Viewer.PlayerLocomotive as MSTSDieselLocomotive).DieselEngines[0].OilCoolingPlatesUpS;
+                                TCoef = 0.015f / (8.0f / SharedShape.Animations[0].FrameCount * TimeAction == 0 ? 3.0f : TimeAction);
+                                if (AnimationKey[1] < SharedShape.Animations[0].FrameCount)
+                                    AnimationKey[1] += SharedShape.Animations[0].FrameRate * elapsedTime.ClockSeconds * FrameRateMultiplier * TCoef;
+                            }
 
-                        if (!(Viewer.PlayerLocomotive as MSTSWagon).DoorRightOpen && !(Viewer.PlayerLocomotive as MSTSDieselLocomotive).DieselEngines[0].OilTempCoolingRunning)
-                        {
-                            if (AnimationKey[1] > 0)
-                                AnimationKey[1] -= SharedShape.Animations[0].FrameRate * elapsedTime.ClockSeconds * FrameRateMultiplier * 0.006f;
+                            if (!(Viewer.PlayerLocomotive as MSTSWagon).DoorRightOpen && !(Viewer.PlayerLocomotive as MSTSDieselLocomotive).DieselEngines[0].OilTempCoolingRunning)
+                            {
+                                TimeAction = (Viewer.PlayerLocomotive as MSTSDieselLocomotive).DieselEngines[0].OilCoolingPlatesDownS;
+                                TCoef = 0.015f / (8.0f / SharedShape.Animations[0].FrameCount * TimeAction == 0 ? 3.0f : TimeAction);
+                                if (AnimationKey[1] > 0)
+                                    AnimationKey[1] -= SharedShape.Animations[0].FrameRate * elapsedTime.ClockSeconds * FrameRateMultiplier * TCoef;
+                            }
+                            AnimateMatrix(matrix, AnimationKey[1]);
                         }
-                        AnimateMatrix(matrix, AnimationKey[1]);
                     }
 
                     SharedShape.PrepareFrame(frame, Location, XNAMatrices, Flags);

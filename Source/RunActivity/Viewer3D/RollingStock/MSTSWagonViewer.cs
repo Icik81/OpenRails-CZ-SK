@@ -68,8 +68,8 @@ namespace Orts.Viewer3D.RollingStock
         AnimatedPart UnloadingParts;
 
         // Icik
-        AnimatedPart Lamels_W;
-        AnimatedPart Lamels_O;
+        AnimatedPart CoolingPlates_W;
+        AnimatedPart CoolingPlates_O;
 
         public Dictionary<string, List<ParticleEmitterViewer>> ParticleDrawers = new Dictionary<string, List<ParticleEmitterViewer>>();
 
@@ -301,8 +301,8 @@ namespace Orts.Viewer3D.RollingStock
             Bell = new AnimatedPart(TrainCarShape);
 
             // Icik
-            Lamels_W = new AnimatedPart(TrainCarShape);
-            Lamels_O = new AnimatedPart(TrainCarShape);
+            CoolingPlates_W = new AnimatedPart(TrainCarShape);
+            CoolingPlates_O = new AnimatedPart(TrainCarShape);
 
             if (car.FreightAnimations != null)
                 FreightAnimations = new FreightAnimationsViewer(viewer, car, wagonFolderSlash);
@@ -392,8 +392,8 @@ namespace Orts.Viewer3D.RollingStock
             // Icik
             if (Viewer.PlayerLocomotive as MSTSDieselLocomotive != null)
             {
-                Lamels_W.SetState(MSTSWagon.DoorLeftOpen || (Viewer.PlayerLocomotive as MSTSDieselLocomotive).DieselEngines[0].WaterTempCoolingRunning);
-                Lamels_O.SetState(MSTSWagon.DoorRightOpen || (Viewer.PlayerLocomotive as MSTSDieselLocomotive).DieselEngines[0].OilTempCoolingRunning);
+                CoolingPlates_W.SetState(MSTSWagon.DoorLeftOpen || (Viewer.PlayerLocomotive as MSTSDieselLocomotive).DieselEngines[0].WaterTempCoolingRunning);
+                CoolingPlates_O.SetState(MSTSWagon.DoorRightOpen || (Viewer.PlayerLocomotive as MSTSDieselLocomotive).DieselEngines[0].OilTempCoolingRunning);
             }
 
             InitializeUserInputCommands();
@@ -542,11 +542,11 @@ namespace Orts.Viewer3D.RollingStock
             // Icik
             else if (matrixName.StartsWith("LAMELA_W")) // Lamely na chlazení vody
             {
-                Lamels_W.AddMatrix(matrix);
+                CoolingPlates_W.AddMatrix(matrix);
             }
             else if (matrixName.StartsWith("LAMELA_O")) // Lamely na chlazení oleje
             {
-                Lamels_O.AddMatrix(matrix);
+                CoolingPlates_O.AddMatrix(matrix);
             }
             else
             {
@@ -602,8 +602,8 @@ namespace Orts.Viewer3D.RollingStock
             // Icik
             if (Viewer.PlayerLocomotive as MSTSDieselLocomotive != null)
             {
-                Lamels_W.UpdateState(MSTSWagon.DoorLeftOpen || (Viewer.PlayerLocomotive as MSTSDieselLocomotive).DieselEngines[0].WaterTempCoolingRunning, elapsedTime);
-                Lamels_O.UpdateState(MSTSWagon.DoorRightOpen || (Viewer.PlayerLocomotive as MSTSDieselLocomotive).DieselEngines[0].OilTempCoolingRunning, elapsedTime);
+                CoolingPlates_W.UpdateState(MSTSWagon.DoorLeftOpen || (Viewer.PlayerLocomotive as MSTSDieselLocomotive).DieselEngines[0].WaterTempCoolingRunning, elapsedTime);
+                CoolingPlates_O.UpdateState(MSTSWagon.DoorRightOpen || (Viewer.PlayerLocomotive as MSTSDieselLocomotive).DieselEngines[0].OilTempCoolingRunning, elapsedTime);
             }
 
             UpdateAnimation(frame, elapsedTime);

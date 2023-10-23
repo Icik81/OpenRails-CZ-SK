@@ -610,6 +610,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
             ElevatedConsumptionIdleRPMCompressor = copy.ElevatedConsumptionIdleRPMCompressor;
             ElevatedConsumptionIdleRPMHeatingSummer = copy.ElevatedConsumptionIdleRPMHeatingSummer;
             ElevatedConsumptionIdleRPMHeatingWinter = copy.ElevatedConsumptionIdleRPMHeatingWinter;
+            WaterCoolingPlatesUpS = copy.WaterCoolingPlatesUpS; 
+            WaterCoolingPlatesDownS = copy.WaterCoolingPlatesDownS;
+            OilCoolingPlatesUpS = copy.OilCoolingPlatesUpS;
+            OilCoolingPlatesDownS = copy.OilCoolingPlatesDownS;
 
             if (copy.GearBox != null)
             {
@@ -971,6 +975,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
         public float ElevatedConsumptionIdleRPMCompressor;
         public float ElevatedConsumptionIdleRPMHeatingSummer;
         public float ElevatedConsumptionIdleRPMHeatingWinter;
+        public float WaterCoolingPlatesUpS;
+        public float WaterCoolingPlatesDownS;
+        public float OilCoolingPlatesUpS;
+        public float OilCoolingPlatesDownS;
 
         /// <summary>
         /// Load of the engine
@@ -1112,7 +1120,11 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                     case "onepushstop": OnePushStop = stf.ReadBoolBlock(false); break;
                     case "elevatedconsumptionidlerpmcompressor": ElevatedConsumptionIdleRPMCompressor = stf.ReadFloatBlock(STFReader.UNITS.None, 0); break;
                     case "elevatedconsumptionidlerpmheatingsummer": ElevatedConsumptionIdleRPMHeatingSummer = stf.ReadFloatBlock(STFReader.UNITS.None, 0); break;
-                    case "elevatedconsumptionidlerpmheatingwinter": ElevatedConsumptionIdleRPMHeatingWinter = stf.ReadFloatBlock(STFReader.UNITS.None, 0); break;
+                    case "elevatedconsumptionidlerpmheatingwinter": ElevatedConsumptionIdleRPMHeatingWinter = stf.ReadFloatBlock(STFReader.UNITS.None, 0); break;                    
+                    case "watercoolingplatesup": WaterCoolingPlatesUpS = stf.ReadFloatBlock(STFReader.UNITS.Time, 2f); break;
+                    case "watercoolingplatesdown": WaterCoolingPlatesDownS = stf.ReadFloatBlock(STFReader.UNITS.Time, 2f); break;
+                    case "oilcoolingplatesup": OilCoolingPlatesUpS = stf.ReadFloatBlock(STFReader.UNITS.Time, 2f); break;
+                    case "oilcoolingplatesdown": OilCoolingPlatesDownS = stf.ReadFloatBlock(STFReader.UNITS.Time, 2f); break;
 
                     default:
                         end = true;
