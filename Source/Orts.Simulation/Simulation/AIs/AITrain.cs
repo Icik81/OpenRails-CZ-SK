@@ -874,7 +874,18 @@ namespace Orts.Simulation.AIs
                             && WTSEnable)
                         {
                             Simulator.AIRequestSignal = true;
-                        }                        
+                        }
+
+                        if (ControlMode == TRAIN_CONTROL.AUTO_SIGNAL)                            
+                        {
+                            for (int i = 0; i < NumbersOccupiedTrain.Length; i++)
+                            {
+                                if (NumbersOccupiedTrain[i] == 0 && NumbersOccupiedTrain[i] != -1)
+                                {
+                                    Simulator.AIRequestSignal = true;
+                                }
+                            }
+                        }
                     }
 
                     break;
