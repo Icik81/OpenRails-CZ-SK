@@ -16583,7 +16583,7 @@ namespace Orts.Simulation.Physics
 
         public bool BoardingComplete;
         public int TotalOnBoard = 0;
-        private bool namesFilled = false;
+        public bool namesFilled = false;
         private List<string> testNamesM;
         private List<string> testNamesF;
         private List<string> testSurNamesM;

@@ -10258,6 +10258,10 @@ namespace Orts.Simulation.Timetables
             // check if initial at station
             if (StationStops.Count > 0)
             {
+                // Icik
+                MaxStationCountFromStart = -1;
+                namesFilled = false;
+
                 int frontIndex = PresentPosition[0].RouteListIndex;
                 int rearIndex = PresentPosition[1].RouteListIndex;
                 List<int> occupiedSections = new List<int>();

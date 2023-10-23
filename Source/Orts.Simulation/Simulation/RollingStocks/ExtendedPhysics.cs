@@ -855,7 +855,7 @@ namespace Orts.Simulation.RollingStocks
                 ForceN = -Locomotive.DynamicBrakeForceN / 4;
                 ForceN += (reducedForceN * 2);
             }
-            else if (Locomotive.CruiseControl.controllerVolts == 0)
+            else if (Locomotive.CruiseControl != null && Locomotive.CruiseControl.controllerVolts == 0)
                 ForceN = maxForceN = 0;
 
             if (!Locomotive.PowerOn && Locomotive.RouteVoltageV > 3000)
