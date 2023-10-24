@@ -110,7 +110,8 @@ namespace Orts.Simulation.Physics
         public float CurrentSteamHeatPressurePSI;
         public float SteamHeatControllerCurrentValue;
         public bool TrainRouteIsReversed;
-        public bool TrainReverseIsSetOn;        
+        public bool TrainReverseIsSetOn;
+        public bool AIRequestSignal;        
 
         public Traveller RearTDBTraveller;               // positioned at the back of the last car in the train
         public Traveller FrontTDBTraveller;              // positioned at the front of the train by CalculatePositionOfCars
@@ -1665,51 +1666,95 @@ namespace Orts.Simulation.Physics
         /// <\summary>
 
         public int[] NumbersOccupiedTrain = new int[20];
+        float TimeToRequestSignal;
         public virtual void Update(float elapsedClockSeconds, bool auxiliaryUpdate = true)
         {
             // Icik
             // MSTS kompatibility mód
             if (Simulator.Settings.MSTSCompatibilityMode)
             {
-                if (Simulator.GameTimeCyklus10 == 1 && !IsActualPlayerTrain)
+                int i;
+                for (i = 0; i < 20; i++)
                 {
-                    int i;
-                    for (i = 0; i < 20; i++)
-                    {
-                        NumbersOccupiedTrain[i] = -1;
-                    }
+                    NumbersOccupiedTrain[i] = -1;
+                }
 
-                    i = 0;
-                    if (PresentPosition[0].RouteListIndex != -1)
+                i = 0;
+                if (PresentPosition[0].RouteListIndex != -1)
+                {
+                    for (int iIndex = PresentPosition[0].RouteListIndex; iIndex < ValidRoute[0].Count; iIndex++)
                     {
-                        for (int iIndex = PresentPosition[0].RouteListIndex; iIndex < ValidRoute[0].Count; iIndex++)
+                        TCRouteElement thisElement = ValidRoute[0][iIndex];
+                        TrackCircuitSection thisSection = signalRef.TrackCircuitList[thisElement.TCSectionIndex];
+
+                        if (thisSection.CircuitState.TrainReserved != null)
                         {
-                            TCRouteElement thisElement = ValidRoute[0][iIndex];
-                            TrackCircuitSection thisSection = signalRef.TrackCircuitList[thisElement.TCSectionIndex];
-
-                            if (thisSection.CircuitState.TrainReserved != null)
-                            {
-                                NumbersOccupiedTrain[i] = thisSection.CircuitState.TrainReserved.Train.Number;
-                                i++;
-                                if (i > 19) break;
-                            }
+                            NumbersOccupiedTrain[i] = thisSection.CircuitState.TrainReserved.Train.Number;
+                            i++;
+                            if (i > 19) break;
                         }
                     }
                 }
 
                 if (IsActualPlayerTrain)
                 {
+                    bool[] AIRequestSignal2 = new bool[50];
+                    int AITrainsCount = 0;
+                    if (ControlMode != Train.TRAIN_CONTROL.MANUAL)
+                    {
+                        foreach (var thisTrain in Simulator.AI.AITrains)
+                        {
+                            if (thisTrain.MovementState != AITrain.AI_MOVEMENT_STATE.AI_STATIC && thisTrain.TrainType != Train.TRAINTYPE.AI_INCORPORATED)
+                            {
+                                AITrainsCount++;
+                                for (i = 0; i < thisTrain.NumbersOccupiedTrain.Length; i++)
+                                {
+                                    AIRequestSignal2[AITrainsCount] = false;
+                                    if (thisTrain.NumbersOccupiedTrain[i] == 0 && thisTrain.NumbersOccupiedTrain[i] != -1)
+                                    {
+                                        AIRequestSignal2[AITrainsCount] = true;
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+
+                        for (i = 1; i < AITrainsCount + 1; i++)
+                        {
+                            if (AIRequestSignal2[i])
+                            {
+                                Simulator.AIRequestSignal2 = true;
+                                break;
+                            }
+                        }
+                    }
+
+                    if (ControlMode == Train.TRAIN_CONTROL.MANUAL && Simulator.AIRequestSignal2)
+                    {
+                        TimeToRequestSignal += Simulator.OneSecondLoop;
+                        if (TimeToRequestSignal > 1.0f)
+                        {
+                            Simulator.AIRequestSignal2 = false;
+                            TimeToRequestSignal = 0.0f;
+                        }
+                    }
+
                     if (Simulator.GameTime == 0f && !wasRestored)
                     {
                         RequestToggleManualMode();
                     }
                     else
-                    if ((ControlMode == Train.TRAIN_CONTROL.MANUAL && !Simulator.GameSwitchManualModeOverdrive) || Simulator.AIRequestSignal)
+                    if (ControlMode != Train.TRAIN_CONTROL.MANUAL && !Simulator.GameSwitchManualModeOverdrive && Simulator.AIRequestSignal2)
                     {
-                        RequestToggleManualMode();
-                        Simulator.AIRequestSignal = false;
+                        RequestToggleManualMode();                        
                     }
                     else
+                    if ((ControlMode == Train.TRAIN_CONTROL.MANUAL && !Simulator.GameSwitchManualModeOverdrive && !Simulator.AIRequestSignal2) || Simulator.AIRequestSignal)
+                    {
+                        RequestToggleManualMode(); 
+                        Simulator.AIRequestSignal = false;                        
+                    }
+                    else                    
                     if (EndAuthorityType[0] == END_AUTHORITY.RESERVED_SWITCH
                         || (EndAuthorityType[0] == END_AUTHORITY.NO_PATH_RESERVED && ControlMode == Train.TRAIN_CONTROL.AUTO_NODE)
                         || ControlMode == Train.TRAIN_CONTROL.OUT_OF_CONTROL)

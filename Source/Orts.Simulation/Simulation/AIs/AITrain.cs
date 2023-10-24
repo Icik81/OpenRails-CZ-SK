@@ -766,7 +766,7 @@ namespace Orts.Simulation.AIs
             if (CheckTrain)
             {
                 File.AppendAllText(@"C:\temp\checktrain.txt", "Switch MovementState : " + MovementState + "\n");
-            }
+            }            
 
             switch (MovementState)
             {
@@ -868,24 +868,13 @@ namespace Orts.Simulation.AIs
 
                     // Icik
                     if (Simulator.Settings.MSTSCompatibilityMode)
-                    {                     
+                    {
                         if (MovementState == AI_MOVEMENT_STATE.HANDLE_ACTION
                             && ControlMode == TRAIN_CONTROL.AUTO_SIGNAL                            
                             && WTSEnable)
                         {
                             Simulator.AIRequestSignal = true;
-                        }
-
-                        if (ControlMode == TRAIN_CONTROL.AUTO_SIGNAL)                            
-                        {
-                            for (int i = 0; i < NumbersOccupiedTrain.Length; i++)
-                            {
-                                if (NumbersOccupiedTrain[i] == 0 && NumbersOccupiedTrain[i] != -1)
-                                {
-                                    Simulator.AIRequestSignal = true;
-                                }
-                            }
-                        }
+                        }                        
                     }
 
                     break;

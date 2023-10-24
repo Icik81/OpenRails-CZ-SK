@@ -241,6 +241,7 @@ namespace Orts.Simulation
         public bool IsWheelSlipWarning;
         public bool IsWheelSlip;
         public bool AIRequestSignal;
+        public bool AIRequestSignal2;
         public bool GameSwitchManualModeOverdrive;
 
         public List<PowerSupplyStation> powerSupplyStations;
