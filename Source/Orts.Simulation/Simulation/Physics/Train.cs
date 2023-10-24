@@ -1736,7 +1736,12 @@ namespace Orts.Simulation.Physics
                         {
                             Simulator.AIRequestSignal2 = false;
                             TimeToRequestSignal = 0.0f;
-                        }
+                        }                                                
+                    }
+                    if (ControlMode == Train.TRAIN_CONTROL.MANUAL)
+                    {                        
+                        NextSignalObject[0] = null;
+                        NextSignalObject[1] = null;
                     }
 
                     if (Simulator.GameTime == 0f && !wasRestored)
