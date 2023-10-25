@@ -478,15 +478,15 @@ namespace Orts.Viewer3D
                         {
                             if ((Viewer.PlayerLocomotive as MSTSWagon).DoorLeftOpen || (Viewer.PlayerLocomotive as MSTSDieselLocomotive).DieselEngines[0].WaterTempCoolingRunning)
                             {
-                                TimeAction[2] -= 0.5f * elapsedTime.ClockSeconds;
-                                if (TimeAction[2] < 0.01f)
-                                    TimeAction[2] = 0.01f;
-                                if (TimeAction[2] > 1.0f)
-                                    TimeAction[2] = 1.0f;
+                                TimeAction[2] -= 0.01f * elapsedTime.ClockSeconds;
+                                if (TimeAction[2] < 0.05f)
+                                    TimeAction[2] = 0.05f;
+                                if (TimeAction[2] > 0.1f)
+                                    TimeAction[2] = 0.1f;
                             }
                             if (!(Viewer.PlayerLocomotive as MSTSWagon).DoorLeftOpen && !(Viewer.PlayerLocomotive as MSTSDieselLocomotive).DieselEngines[0].WaterTempCoolingRunning)
                             {
-                                TimeAction[2] += 0.1f * elapsedTime.ClockSeconds;
+                                TimeAction[2] += 0.05f * elapsedTime.ClockSeconds;
                                 if (TimeAction[2] > 10f)
                                     TimeAction[2] = 10f;
                             }
@@ -504,15 +504,15 @@ namespace Orts.Viewer3D
                         {
                             if ((Viewer.PlayerLocomotive as MSTSWagon).DoorRightOpen || (Viewer.PlayerLocomotive as MSTSDieselLocomotive).DieselEngines[0].OilTempCoolingRunning)
                             {
-                                TimeAction[3] -= 0.5f * elapsedTime.ClockSeconds;
-                                if (TimeAction[3] < 0.01f)
-                                    TimeAction[3] = 0.01f;
-                                if (TimeAction[3] > 1.0f)
-                                    TimeAction[3] = 1.0f;
+                                TimeAction[3] -= 0.01f * elapsedTime.ClockSeconds;
+                                if (TimeAction[3] < 0.05f)
+                                    TimeAction[3] = 0.05f;
+                                if (TimeAction[3] > 0.1f)
+                                    TimeAction[3] = 0.1f;
                             }
                             if (!(Viewer.PlayerLocomotive as MSTSWagon).DoorRightOpen && !(Viewer.PlayerLocomotive as MSTSDieselLocomotive).DieselEngines[0].OilTempCoolingRunning)
                             {
-                                TimeAction[3] += 0.1f * elapsedTime.ClockSeconds;
+                                TimeAction[3] += 0.05f * elapsedTime.ClockSeconds;
                                 if (TimeAction[3] > 10f)
                                     TimeAction[3] = 10f;
                             }

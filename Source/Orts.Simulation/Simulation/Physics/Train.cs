@@ -1704,7 +1704,8 @@ namespace Orts.Simulation.Physics
                     {
                         foreach (var thisTrain in Simulator.AI.AITrains)
                         {
-                            if (thisTrain.MovementState != AITrain.AI_MOVEMENT_STATE.AI_STATIC && thisTrain.TrainType != Train.TRAINTYPE.AI_INCORPORATED)
+                            if (thisTrain.MovementState != AITrain.AI_MOVEMENT_STATE.AI_STATIC && thisTrain.TrainType != Train.TRAINTYPE.AI_INCORPORATED
+                                && thisTrain.MovementState != AITrain.AI_MOVEMENT_STATE.STOPPED)
                             {
                                 AITrainsCount++;
                                 for (i = 0; i < thisTrain.NumbersOccupiedTrain.Length; i++)
