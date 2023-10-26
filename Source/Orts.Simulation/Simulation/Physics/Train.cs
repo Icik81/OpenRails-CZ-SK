@@ -1704,15 +1704,15 @@ namespace Orts.Simulation.Physics
                     {
                         foreach (var thisTrain in Simulator.AI.AITrains)
                         {
-                            if (thisTrain.MovementState != AITrain.AI_MOVEMENT_STATE.AI_STATIC && thisTrain.TrainType != Train.TRAINTYPE.AI_INCORPORATED
-                                && thisTrain.MovementState != AITrain.AI_MOVEMENT_STATE.STOPPED
-                                && thisTrain.MovementState != AITrain.AI_MOVEMENT_STATE.STATION_STOP)
+                            if (thisTrain.MovementState != AITrain.AI_MOVEMENT_STATE.AI_STATIC && thisTrain.TrainType != Train.TRAINTYPE.AI_INCORPORATED)
                             {
                                 AITrainsCount++;
                                 for (i = 0; i < thisTrain.NumbersOccupiedTrain.Length; i++)
                                 {
                                     AIRequestSignal2[AITrainsCount] = false;
-                                    if (thisTrain.NumbersOccupiedTrain[i] == 0 && thisTrain.NumbersOccupiedTrain[i] != -1)
+                                    if (thisTrain.NumbersOccupiedTrain[i] == 0 && thisTrain.NumbersOccupiedTrain[i] != -1
+                                        && thisTrain.MovementState != AITrain.AI_MOVEMENT_STATE.STOPPED
+                                        && thisTrain.MovementState != AITrain.AI_MOVEMENT_STATE.STATION_STOP)
                                     {
                                         AIRequestSignal2[AITrainsCount] = true;
                                         break;

@@ -414,7 +414,7 @@ namespace Orts.Viewer3D
         {
         }
 
-        float[] TimeAction = new float[10] {0, 0, 10, 10, 0, 0, 0, 0, 0, 0};        
+        float[] TimeAction = new float[10] {0, 0, 1, 1, 0, 0, 0, 0, 0, 0};        
         float TCoef;
         public override void PrepareFrame(RenderFrame frame, ElapsedTime elapsedTime)
         {
@@ -478,17 +478,17 @@ namespace Orts.Viewer3D
                         {
                             if ((Viewer.PlayerLocomotive as MSTSWagon).DoorLeftOpen || (Viewer.PlayerLocomotive as MSTSDieselLocomotive).DieselEngines[0].WaterTempCoolingRunning)
                             {
-                                TimeAction[2] -= 0.01f * elapsedTime.ClockSeconds;
+                                TimeAction[2] -= 0.1f * elapsedTime.ClockSeconds;
                                 if (TimeAction[2] < 0.05f)
                                     TimeAction[2] = 0.05f;
-                                if (TimeAction[2] > 0.1f)
-                                    TimeAction[2] = 0.1f;
+                                if (TimeAction[2] > 1.0f)
+                                    TimeAction[2] = 1.0f;
                             }
                             if (!(Viewer.PlayerLocomotive as MSTSWagon).DoorLeftOpen && !(Viewer.PlayerLocomotive as MSTSDieselLocomotive).DieselEngines[0].WaterTempCoolingRunning)
                             {
                                 TimeAction[2] += 0.05f * elapsedTime.ClockSeconds;
-                                if (TimeAction[2] > 10f)
-                                    TimeAction[2] = 10f;
+                                if (TimeAction[2] > 1f)
+                                    TimeAction[2] = 1f;
                             }
                             TCoef = 0.015f / (8.0f / SharedShape.Animations[0].FrameCount * TimeAction[2]);
                             AnimationKey[2] += SharedShape.Animations[0].FrameRate * elapsedTime.ClockSeconds * FrameRateMultiplier * TCoef;
@@ -504,17 +504,17 @@ namespace Orts.Viewer3D
                         {
                             if ((Viewer.PlayerLocomotive as MSTSWagon).DoorRightOpen || (Viewer.PlayerLocomotive as MSTSDieselLocomotive).DieselEngines[0].OilTempCoolingRunning)
                             {
-                                TimeAction[3] -= 0.01f * elapsedTime.ClockSeconds;
+                                TimeAction[3] -= 0.1f * elapsedTime.ClockSeconds;
                                 if (TimeAction[3] < 0.05f)
                                     TimeAction[3] = 0.05f;
-                                if (TimeAction[3] > 0.1f)
-                                    TimeAction[3] = 0.1f;
+                                if (TimeAction[3] > 1.0f)
+                                    TimeAction[3] = 1.0f;
                             }
                             if (!(Viewer.PlayerLocomotive as MSTSWagon).DoorRightOpen && !(Viewer.PlayerLocomotive as MSTSDieselLocomotive).DieselEngines[0].OilTempCoolingRunning)
                             {
                                 TimeAction[3] += 0.05f * elapsedTime.ClockSeconds;
-                                if (TimeAction[3] > 10f)
-                                    TimeAction[3] = 10f;
+                                if (TimeAction[3] > 1f)
+                                    TimeAction[3] = 1f;
                             }
                             TCoef = 0.015f / (8.0f / SharedShape.Animations[0].FrameCount * TimeAction[3]);
                             AnimationKey[3] += SharedShape.Animations[0].FrameRate * elapsedTime.ClockSeconds * FrameRateMultiplier * TCoef;
