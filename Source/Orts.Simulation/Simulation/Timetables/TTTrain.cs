@@ -10258,9 +10258,9 @@ namespace Orts.Simulation.Timetables
             // check if initial at station
             if (StationStops.Count > 0)
             {
-                // Icik
+                // Icik                                                
                 MaxStationCountFromStart = -1;
-                namesFilled = false;
+                numCars = -1;
 
                 int frontIndex = PresentPosition[0].RouteListIndex;
                 int rearIndex = PresentPosition[1].RouteListIndex;
@@ -10277,7 +10277,7 @@ namespace Orts.Simulation.Timetables
                 foreach (int sectionIndex in StationStops[0].PlatformItem.TCSectionIndex)
                 {
                     if (occupiedSections.Contains(sectionIndex))
-                    {
+                    {                        
                         AtStation = true;
                         int presentTime = Convert.ToInt32(Math.Floor(Simulator.ClockTime));
                         if (StationStops[0].ActualArrival < 0)
@@ -10331,10 +10331,15 @@ namespace Orts.Simulation.Timetables
                 }
             }
 
+            if (StationStops.Count == 1)
+                EndStationTT = true;
+            else
+                EndStationTT = false;
+
             if (AtStation)
                 ReverseAtStationStopTest(this);
 
-            if (StationStops.Count == 1) EndStation = true;
+            if (StationStops.Count == 1) EndStation = true;            
 
             CheckPaxToLeaveCount(this);
             CheckPaxToEntry(this);
@@ -10395,7 +10400,7 @@ namespace Orts.Simulation.Timetables
                         else if (remaining < 11) DisplayColor = new Color(255, 255, 128);
                         else DisplayColor = Color.White;
 
-                        if (!BoardingCompleted || EndStation || PeopleWantToLeaveCount > 0)
+                        if (!BoardingCompleted || EndStation || EndStationTT || PeopleWantToLeaveCount > 0)
                             UpdatePassengerCountAndWeight(this, ActualPassengerCountAtStation, clock);
 
                         if (!PeopleWantToEntry && !TrainDoorsOpen && PeopleWantToLeaveCount == 0)

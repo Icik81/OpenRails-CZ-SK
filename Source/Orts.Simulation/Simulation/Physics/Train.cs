@@ -16647,12 +16647,13 @@ namespace Orts.Simulation.Physics
         private double nextTimeExitDoors2 = 0;
         private int numUsableWagons = 0;
         private bool firtWagonActionComputed = false;
-        private int numCars = 0;
+        public int numCars = 0;
         public float MaxPaxCapacity = 0;
         public float CurrentPaxCapacity = 0;
         protected bool wasCarsChanged = false;
         // Icik
-        public bool EndStation { get; set; }        
+        public bool EndStation { get; set; }
+        public bool EndStationTT { get; set; }
         public int MaxStationCount;
         public int PeopleWantToLeaveCount;
         public bool PeopleWantToEntry;
@@ -17014,7 +17015,7 @@ namespace Orts.Simulation.Physics
                 var wagon = (train.Cars[i] as MSTSWagon);             
                 foreach (Passenger pax in wagon.PassengerList)
                 {
-                    if (pax.ArrivalStationName == train.StationStops[0].PlatformItem.Name || EndStation || wagon.NoPaxsMode)
+                    if (pax.ArrivalStationName == train.StationStops[0].PlatformItem.Name || EndStation || EndStationTT || wagon.NoPaxsMode)
                     {
                         exitPaxList.Add(pax);
                     }
@@ -17040,7 +17041,7 @@ namespace Orts.Simulation.Physics
                         continue;
                     foreach (Passenger pax in exitPaxList)
                     {
-                        if ((train.StationStops[0].PlatformItem.Name == pax.ArrivalStationName || EndStation || wagon.NoPaxsMode) && pax.TimeToStartExiting < gameClock)
+                        if (((train.StationStops[0].PlatformItem.Name == pax.ArrivalStationName || EndStation || wagon.NoPaxsMode) && pax.TimeToStartExiting < gameClock) || EndStationTT)
                         {
                             if (pax.WagonName == Cars[i].CarID)
                             {
