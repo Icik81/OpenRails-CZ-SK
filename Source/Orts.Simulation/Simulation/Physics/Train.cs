@@ -1697,66 +1697,13 @@ namespace Orts.Simulation.Physics
                 }
 
                 if (IsActualPlayerTrain)
-                {
-                    bool[] AIRequestSignal2 = new bool[50];
-                    int AITrainsCount = 0;
-                    if (ControlMode != Train.TRAIN_CONTROL.MANUAL)
-                    {
-                        foreach (var thisTrain in Simulator.AI.AITrains)
-                        {
-                            if (thisTrain.MovementState != AITrain.AI_MOVEMENT_STATE.AI_STATIC && thisTrain.TrainType != Train.TRAINTYPE.AI_INCORPORATED)
-                            {
-                                AITrainsCount++;
-                                for (i = 0; i < thisTrain.NumbersOccupiedTrain.Length; i++)
-                                {
-                                    AIRequestSignal2[AITrainsCount] = false;
-                                    if (thisTrain.NumbersOccupiedTrain[i] == 0 && thisTrain.NumbersOccupiedTrain[i] != -1
-                                        && thisTrain.MovementState != AITrain.AI_MOVEMENT_STATE.STOPPED
-                                        && thisTrain.MovementState != AITrain.AI_MOVEMENT_STATE.STATION_STOP)
-                                    {
-                                        AIRequestSignal2[AITrainsCount] = true;
-                                        break;
-                                    }
-                                }
-                            }
-                        }
-
-                        for (i = 1; i < AITrainsCount + 1; i++)
-                        {
-                            if (AIRequestSignal2[i])
-                            {
-                                Simulator.AIRequestSignal2 = true;
-                                break;
-                            }
-                        }
-                    }
-
-                    if (ControlMode == Train.TRAIN_CONTROL.MANUAL && Simulator.AIRequestSignal2)
-                    {
-                        TimeToRequestSignal += Simulator.OneSecondLoop;
-                        if (TimeToRequestSignal > 1.0f)
-                        {
-                            Simulator.AIRequestSignal2 = false;
-                            TimeToRequestSignal = 0.0f;
-                        }                                                
-                    }
-                    if (ControlMode == Train.TRAIN_CONTROL.MANUAL)
-                    {                        
-                        NextSignalObject[0] = null;
-                        NextSignalObject[1] = null;
-                    }
-
+                {                    
                     if (Simulator.GameTime == 0f && !wasRestored)
                     {
                         RequestToggleManualMode();
                     }
-                    else
-                    if (ControlMode != Train.TRAIN_CONTROL.MANUAL && !Simulator.GameSwitchManualModeOverdrive && Simulator.AIRequestSignal2)
-                    {
-                        RequestToggleManualMode();                        
-                    }
-                    else
-                    if ((ControlMode == Train.TRAIN_CONTROL.MANUAL && !Simulator.GameSwitchManualModeOverdrive && !Simulator.AIRequestSignal2) || Simulator.AIRequestSignal)
+                    else                    
+                    if ((ControlMode == Train.TRAIN_CONTROL.MANUAL && !Simulator.GameSwitchManualModeOverdrive) || Simulator.AIRequestSignal)
                     {
                         RequestToggleManualMode(); 
                         Simulator.AIRequestSignal = false;                        
