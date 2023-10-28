@@ -523,6 +523,51 @@ namespace Orts.Viewer3D
                             AnimateMatrix(matrix, AnimationKey[3]);
                         }
                     }
+                    if (SharedShape.Animations[0].anim_nodes[matrix].Name.Contains("LAMELA_TW"))
+                    {
+                        if (Viewer.PlayerLocomotive as MSTSDieselLocomotive != null)
+                        {
+                            if ((Viewer.PlayerLocomotive as MSTSWagon).DoorLeftOpen || (Viewer.PlayerLocomotive as MSTSDieselLocomotive).DieselEngines[0].WaterTempCoolingRunning)
+                            {
+                                TimeAction[4] = (Viewer.PlayerLocomotive as MSTSDieselLocomotive).DieselEngines[0].WaterCoolingPlatesUpS;
+                                TCoef = 0.015f / (8.0f / SharedShape.Animations[0].FrameCount * TimeAction[4] == 0 ? 3.0f / 2.0f : TimeAction[4] / 2.0f);
+                                if (AnimationKey[4] < SharedShape.Animations[0].FrameCount)
+                                    AnimationKey[4] += SharedShape.Animations[0].FrameRate * elapsedTime.ClockSeconds * FrameRateMultiplier * TCoef;
+                            }
+
+                            if (!(Viewer.PlayerLocomotive as MSTSWagon).DoorLeftOpen && !(Viewer.PlayerLocomotive as MSTSDieselLocomotive).DieselEngines[0].WaterTempCoolingRunning)
+                            {
+                                TimeAction[4] = (Viewer.PlayerLocomotive as MSTSDieselLocomotive).DieselEngines[0].WaterCoolingPlatesDownS;
+                                TCoef = 0.015f / (8.0f / SharedShape.Animations[0].FrameCount * TimeAction[4] == 0 ? 3.0f / 2.0f : TimeAction[4] / 2.0f);
+                                if (AnimationKey[4] > 0)
+                                    AnimationKey[4] -= SharedShape.Animations[0].FrameRate * elapsedTime.ClockSeconds * FrameRateMultiplier * TCoef;
+                            }
+                            AnimateMatrix(matrix, AnimationKey[4]);
+                        }
+                    }
+                    else
+                    if (SharedShape.Animations[0].anim_nodes[matrix].Name.Contains("LAMELA_TO"))
+                    {
+                        if (Viewer.PlayerLocomotive as MSTSDieselLocomotive != null)
+                        {
+                            if ((Viewer.PlayerLocomotive as MSTSWagon).DoorRightOpen || (Viewer.PlayerLocomotive as MSTSDieselLocomotive).DieselEngines[0].OilTempCoolingRunning)
+                            {
+                                TimeAction[5] = (Viewer.PlayerLocomotive as MSTSDieselLocomotive).DieselEngines[0].OilCoolingPlatesUpS;
+                                TCoef = 0.015f / (8.0f / SharedShape.Animations[0].FrameCount * TimeAction[5] == 0 ? 3.0f / 2.0f: TimeAction[5] / 2.0f);
+                                if (AnimationKey[5] < SharedShape.Animations[0].FrameCount)
+                                    AnimationKey[5] += SharedShape.Animations[0].FrameRate * elapsedTime.ClockSeconds * FrameRateMultiplier * TCoef;
+                            }
+
+                            if (!(Viewer.PlayerLocomotive as MSTSWagon).DoorRightOpen && !(Viewer.PlayerLocomotive as MSTSDieselLocomotive).DieselEngines[0].OilTempCoolingRunning)
+                            {
+                                TimeAction[5] = (Viewer.PlayerLocomotive as MSTSDieselLocomotive).DieselEngines[0].OilCoolingPlatesDownS;
+                                TCoef = 0.015f / (8.0f / SharedShape.Animations[0].FrameCount * TimeAction[5] == 0 ? 3.0f / 2.0f : TimeAction[5] / 2.0f);
+                                if (AnimationKey[5] > 0)
+                                    AnimationKey[5] -= SharedShape.Animations[0].FrameRate * elapsedTime.ClockSeconds * FrameRateMultiplier * TCoef;
+                            }
+                            AnimateMatrix(matrix, AnimationKey[5]);
+                        }
+                    }
 
                     else
                     {
@@ -531,6 +576,7 @@ namespace Orts.Viewer3D
                         {
                             if (SharedShape.MatrixNames[i].Contains("LAMELA_W") || SharedShape.MatrixNames[i].Contains("LAMELA_O")) goto AnimationSkip;
                             if (SharedShape.MatrixNames[i].Contains("FAN_W") || SharedShape.MatrixNames[i].Contains("FAN_O")) goto AnimationSkip;
+                            if (SharedShape.MatrixNames[i].Contains("LAMELA_TW") || SharedShape.MatrixNames[i].Contains("LAMELA_TO")) goto AnimationSkip;
                         }
 
                         // Smyčka pro obecné animace světa

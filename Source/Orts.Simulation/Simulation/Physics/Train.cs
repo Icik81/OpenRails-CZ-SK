@@ -16627,7 +16627,8 @@ namespace Orts.Simulation.Physics
 
             if (TCRoute.ReversalInfo[TCRoute.activeSubpath] != null && TCRoute.ReversalInfo[TCRoute.activeSubpath].Valid)
                 distanceToReversalPoint = ComputeDistanceToReversalPoint();
-
+            
+            ReverseAtStation = false;
             if (distanceToReversalPoint < 50)
                 ReverseAtStation = true;
         }
