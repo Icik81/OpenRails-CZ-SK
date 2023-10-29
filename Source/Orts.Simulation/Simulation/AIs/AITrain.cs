@@ -166,7 +166,10 @@ namespace Orts.Simulation.AIs
                 Efficiency = MathHelper.Clamp(Efficiency, 0.0f, 1.0f);
             else
                 Efficiency = MathHelper.Clamp(Efficiency, 0.3f, 1.0f);
-            
+
+            if (Name.ToLower().Contains("pulnoc")) // Půlnoční vlak startující po půlnoci
+                StartTime = (int)(ServiceDefinition.Time + 86400);
+
             TrafficService = trafficService;
             MaxVelocityA = maxVelocityA;
             // <CSComment> TODO: as Cars.Count is always = 0 at this point, activityClearingDistanceM is set to the short distance also for long trains
