@@ -466,12 +466,12 @@ namespace Orts.Viewer3D
 #endif
         }
 
-        int LightCycle = 0;
+        int LightCycle = 1;
         internal void UpdateState(LightViewer lightViewer)
         {
             var oldEnabled = Enabled;
 
-            if (LightCycle == 0)
+            if (LightCycle == 0 && (Program.Viewer.PlayerLocomotive as MSTSLocomotive) == Program.Viewer.PlayerLocomotive.Train.LeadLocomotive)
             {
                 LightCycle++;
                 Enabled = false;
