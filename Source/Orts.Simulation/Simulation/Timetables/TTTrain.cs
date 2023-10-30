@@ -10860,7 +10860,7 @@ namespace Orts.Simulation.Timetables
                                     MayDepart = true;
                                     if (!StationStops[0].EndStop)
                                     {
-                                        if (!DriverOnlyOperation) Simulator.SoundNotify = Event.PermissionToDepart;  // sound departure if not doo
+                                        //if (!DriverOnlyOperation) Simulator.SoundNotify = Event.PermissionToDepart;  // sound departure if not doo
                                         DisplayMessage = Simulator.Catalog.GetString("Passenger boarding completed. You may depart now.");
                                     }
                                 }

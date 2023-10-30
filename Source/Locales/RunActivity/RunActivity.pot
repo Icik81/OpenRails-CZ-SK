@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2023-10-10 17:12:09+0200\n"
-"PO-Revision-Date: 2023-10-10 17:12:09+0200\n"
+"POT-Creation-Date: 2023-10-30 19:34:06+0100\n"
+"PO-Revision-Date: 2023-10-30 19:34:06+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -53,11 +53,11 @@ msgstr ""
 msgid "Head out"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Cameras.cs:2185
+#: ../../RunActivity/Viewer3D/Cameras.cs:2188
 msgid "Cab"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Cameras.cs:2449
+#: ../../RunActivity/Viewer3D/Cameras.cs:2460
 msgid "Trackside"
 msgstr ""
 
@@ -187,7 +187,7 @@ msgid ""
 "contains user controlled weather"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Weather.cs:2350
+#: ../../RunActivity/Viewer3D/Weather.cs:2368
 msgid ""
 "Restoring wrong weather type : trying to restore user controlled weather but "
 "save contains dynamic weather"
@@ -1008,10 +1008,10 @@ msgstr ""
 #: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:143
 #: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:401
 #: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:414
-#: ../../RunActivity/Viewer3D/Popups/NextStationWindow.cs:284
-#: ../../RunActivity/Viewer3D/Popups/NextStationWindow.cs:504
-#: ../../RunActivity/Viewer3D/Popups/NextStationWindow.cs:582
-#: ../../RunActivity/Viewer3D/Popups/NextStationWindow.cs:585
+#: ../../RunActivity/Viewer3D/Popups/NextStationWindow.cs:285
+#: ../../RunActivity/Viewer3D/Popups/NextStationWindow.cs:517
+#: ../../RunActivity/Viewer3D/Popups/NextStationWindow.cs:606
+#: ../../RunActivity/Viewer3D/Popups/NextStationWindow.cs:609
 msgid "(missed)"
 msgstr ""
 
@@ -2370,7 +2370,7 @@ msgid "Train static."
 msgstr ""
 
 #: ../../RunActivity/Viewer3D/Popups/NextStationWindow.cs:238
-#: ../../RunActivity/Viewer3D/Popups/NextStationWindow.cs:464
+#: ../../RunActivity/Viewer3D/Popups/NextStationWindow.cs:477
 msgid "Train not active."
 msgstr ""
 
@@ -2379,7 +2379,7 @@ msgid " Activated by other train."
 msgstr ""
 
 #: ../../RunActivity/Viewer3D/Popups/NextStationWindow.cs:248
-#: ../../RunActivity/Viewer3D/Popups/NextStationWindow.cs:473
+#: ../../RunActivity/Viewer3D/Popups/NextStationWindow.cs:486
 msgid " Activation time : "
 msgstr ""
 
@@ -2387,41 +2387,41 @@ msgstr ""
 msgid "Train has terminated."
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/NextStationWindow.cs:306
-#: ../../RunActivity/Viewer3D/Popups/NextStationWindow.cs:526
+#: ../../RunActivity/Viewer3D/Popups/NextStationWindow.cs:313
+#: ../../RunActivity/Viewer3D/Popups/NextStationWindow.cs:539
 msgid "No more stations."
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/NextStationWindow.cs:356
+#: ../../RunActivity/Viewer3D/Popups/NextStationWindow.cs:369
 msgid "Transfer units at next station with train "
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/NextStationWindow.cs:366
+#: ../../RunActivity/Viewer3D/Popups/NextStationWindow.cs:379
 msgid "Transfer units with train "
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/NextStationWindow.cs:398
-#: ../../RunActivity/Viewer3D/Popups/NextStationWindow.cs:404
+#: ../../RunActivity/Viewer3D/Popups/NextStationWindow.cs:411
+#: ../../RunActivity/Viewer3D/Popups/NextStationWindow.cs:417
 msgid "Train is to attach to : "
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/NextStationWindow.cs:406
+#: ../../RunActivity/Viewer3D/Popups/NextStationWindow.cs:419
 msgid " ; other train not yet ready"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/NextStationWindow.cs:415
+#: ../../RunActivity/Viewer3D/Popups/NextStationWindow.cs:428
 msgid "Train is to pickup train at end of path"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/NextStationWindow.cs:420
+#: ../../RunActivity/Viewer3D/Popups/NextStationWindow.cs:433
 msgid "Pick up train ahead"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/NextStationWindow.cs:430
+#: ../../RunActivity/Viewer3D/Popups/NextStationWindow.cs:443
 msgid "Transfer units with train ahead"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/NextStationWindow.cs:674
+#: ../../RunActivity/Viewer3D/Popups/NextStationWindow.cs:698
 msgid "Activity completed."
 msgstr ""
 
