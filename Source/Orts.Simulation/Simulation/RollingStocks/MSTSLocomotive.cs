@@ -5064,12 +5064,11 @@ namespace Orts.Simulation.RollingStocks
                 CarPowerKey = true;
 
                 if (DynamicBrakeController != null)
-                    DynamicBrakePercent = Simulator.DynamicBrakeLocoHelper;
+                    DynamicBrakePercent = Simulator.DynamicBrakeLocoHelper;                
 
                 if (WheelSlipWarning || WheelSlip)
                 {
-                    AntiSlip = true;
-                    SimpleAdhesion();
+                    AntiSlip = true;                    
                     Sander = true;
                 }
                 else
@@ -5101,12 +5100,27 @@ namespace Orts.Simulation.RollingStocks
                         || PowerCurrent1 > 0.95f * MaxCurrentPower)
                     {
                         HelperTimerDecrease += elapsedClockSeconds;
-                        if (HelperTimerDecrease > 0.1f)
-                        {
-                            HelperTimerDecrease = 0;
-                            if (LocalThrottlePercent > 0)
-                                LocalThrottlePercent--;
-                        }
+                        if (HelperTimerDecrease > 0.05f)
+                        {                            
+                            if (ThrottleController.NotchCount() > 0)
+                            {
+                                if (HelperTimerDecrease > 1.0f)
+                                {
+                                    ThrottleController.StartDecrease();
+                                    ThrottleController.StopIncrease();
+                                    LocalThrottlePercent = ThrottleController.CurrentValue * 100f;
+                                    HelperTimerDecrease = 0;
+                                }
+                            }
+                            else
+                            {
+                                if (LocalThrottlePercent > 0)
+                                    LocalThrottlePercent--;
+                                HelperTimerDecrease = 0;
+                            }
+                            if (LocalThrottlePercent == 0)
+                                WheelSpeedMpS = SpeedMpS;
+                        }                        
                     }
                     else
                     if (AbsSpeedMpS * 3.6 < HelperSpeedPush - 1
@@ -5116,16 +5130,30 @@ namespace Orts.Simulation.RollingStocks
                         && MSTSBrakeSystem.BrakeLine1PressurePSI > BrakeSystem.maxPressurePSI0 - (0.5f * 14.50377f))
                     {
                         HelperTimerIncrease += elapsedClockSeconds;
-                        if (HelperTimerIncrease > (Simulator.Weather.PricipitationIntensityPPSPM2 + 0.5f))
+                        if (HelperTimerIncrease > ((Simulator.Weather.PricipitationIntensityPPSPM2 / 2.0f) + 0.25f))
                         {
                             if (LocalThrottlePercent == 0 && SpeedMpS == 0)
                                 HelperStartOn = true;
-                            HelperTimerIncrease = 0;
-                            if (LocalThrottlePercent < 100)
-                                LocalThrottlePercent++;
-                        }
+                            
+                            if (ThrottleController.NotchCount() > 0)
+                            {
+                                if (HelperTimerIncrease > Simulator.Weather.PricipitationIntensityPPSPM2 + 3.0f)
+                                {
+                                    ThrottleController.StartIncrease();
+                                    ThrottleController.StopIncrease();
+                                    LocalThrottlePercent = ThrottleController.CurrentValue * 100f;
+                                    HelperTimerIncrease = 0;
+                                }
+                            }
+                            else                            
+                            {                                
+                                if (LocalThrottlePercent < 100)
+                                    LocalThrottlePercent++;
+                                HelperTimerIncrease = 0;
+                            }
+                        }                        
                     }
-
+                   
                     // Postrk zapíská
                     if (HelperStartOn && Train.IsFreight && !AcceptCableSignals)
                     {
@@ -5147,10 +5175,25 @@ namespace Orts.Simulation.RollingStocks
                         PowerReductionResult12 = 0;
                     HelperTimerDecrease += elapsedClockSeconds;
                     if (HelperTimerDecrease > 0.1f || (this is MSTSElectricLocomotive && !CircuitBreakerOn) || PowerCurrent1 > 0.95f * MaxCurrentPower)
-                    {
-                        HelperTimerDecrease = 0;
-                        if (LocalThrottlePercent > 0)
-                            LocalThrottlePercent--;
+                    {                        
+                        if (ThrottleController.NotchCount() > 0)
+                        {
+                            if (HelperTimerDecrease > 1.0f)
+                            {
+                                ThrottleController.StartDecrease();
+                                ThrottleController.StopIncrease();
+                                LocalThrottlePercent = ThrottleController.CurrentValue * 100f;
+                                HelperTimerDecrease = 0;
+                            }
+                        }
+                        else
+                        {
+                            if (LocalThrottlePercent > 0)
+                                LocalThrottlePercent--;
+                            HelperTimerDecrease = 0;
+                        }
+                        if (LocalThrottlePercent == 0)
+                            WheelSpeedMpS = SpeedMpS;
                     }
                 }
 
@@ -5168,19 +5211,47 @@ namespace Orts.Simulation.RollingStocks
                         HelperTimerDecrease += elapsedClockSeconds;
                         if (HelperTimerDecrease > 0.1f)
                         {
-                            HelperTimerDecrease = 0;
-                            if (LocalThrottlePercent > 0)
-                                LocalThrottlePercent--;
+                            if (ThrottleController.NotchCount() > 0)
+                            {
+                                if (HelperTimerDecrease > 1.0f)
+                                {
+                                    ThrottleController.StartDecrease();
+                                    ThrottleController.StopIncrease();
+                                    LocalThrottlePercent = ThrottleController.CurrentValue * 100f;
+                                    HelperTimerDecrease = 0;
+                                }
+                            }
+                            else
+                            {
+                                if (LocalThrottlePercent > 0)
+                                    LocalThrottlePercent--;
+                                HelperTimerDecrease = 0;
+                            }
+                            if (LocalThrottlePercent == 0)
+                                WheelSpeedMpS = SpeedMpS;
                         }
                     }
                     else
                     {
                         HelperTimerIncrease += elapsedClockSeconds;
-                        if (HelperTimerIncrease > (Simulator.Weather.PricipitationIntensityPPSPM2 + 0.5f))
+                        if (HelperTimerIncrease > ((Simulator.Weather.PricipitationIntensityPPSPM2 / 2.0f) + 0.25f))
                         {
-                            HelperTimerIncrease = 0;
-                            if (LocalThrottlePercent < 100)
-                                LocalThrottlePercent++;
+                            if (ThrottleController.NotchCount() > 0)
+                            {
+                                if (HelperTimerIncrease > Simulator.Weather.PricipitationIntensityPPSPM2 + 3.0f)
+                                {
+                                    ThrottleController.StartIncrease();
+                                    ThrottleController.StopIncrease();
+                                    LocalThrottlePercent = ThrottleController.CurrentValue * 100f;
+                                    HelperTimerIncrease = 0;
+                                }
+                            }
+                            else
+                            {
+                                if (LocalThrottlePercent < 100)
+                                    LocalThrottlePercent++;
+                                HelperTimerIncrease = 0;
+                            }
                         }
                     }
                 }
@@ -7625,7 +7696,8 @@ namespace Orts.Simulation.RollingStocks
             }
 
             // Podzim
-            if (Simulator.Season == SeasonType.Autumn && AbsSpeedMpS > 0.1f)
+            // Jen první hnací vozidlo bude náchylné na listí na kolejích
+            if (this == Train.FirstCar && Simulator.Season == SeasonType.Autumn && AbsSpeedMpS > 0.1f)
             {
                 Time0 += elapsedClockSeconds;
                 if (Time0 < 0.5f)
@@ -7633,7 +7705,7 @@ namespace Orts.Simulation.RollingStocks
                 if (Time0 > RandomDelay0 || TimeToGenerate)
                 {
                     if (!TimeToGenerate)
-                        TreeLeavesLevel = Simulator.Random.Next(1, 70);
+                        TreeLeavesLevel = Simulator.Random.Next(1, 50);
                     Time1 += elapsedClockSeconds;
                     if (Time1 < 0.5f)
                         RandomDelay1 = Simulator.Random.Next(5, 10);
@@ -7649,7 +7721,12 @@ namespace Orts.Simulation.RollingStocks
                 BaseFrictionCoefficientFactor *= (1 - (TreeLeavesLevel / 100f));
             }
 
-            BaseFrictionCoefficientFactor *= TrackFactor;
+            // Ostatní hnací vozidla za prvním budou mít zvýšenou adhezi o 10%
+            if (this != Train.FirstCar)
+                BaseFrictionCoefficientFactor *= 1.1f;
+
+            // Adheze ovlivněna kvalitou tratě
+            BaseFrictionCoefficientFactor *= TrackFactor;            
 
             // For wagons use base Curtius-Kniffler adhesion factor - u = 0.33
             float WagonCurtius_KnifflerA = 7.5f;
