@@ -5232,6 +5232,7 @@ namespace Orts.Simulation.RollingStocks
                         }
                     }
                     else
+                    if (ThrottlePercent < Simulator.ThrottleLocoHelper)
                     {
                         HelperTimerIncrease += elapsedClockSeconds;
                         if (HelperTimerIncrease > ((Simulator.Weather.PricipitationIntensityPPSPM2 / 2.0f) + 0.25f))

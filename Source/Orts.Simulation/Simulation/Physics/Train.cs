@@ -16663,8 +16663,8 @@ namespace Orts.Simulation.Physics
             MSTSWagon locoWag = null;
             if (!namesFilled)
             {
-                if (Simulator.Activity != null &&
-                Simulator.Activity.Tr_Activity.Tr_Activity_File.PlatformNumPassengersWaiting == null &&
+                if (/*Simulator.Activity != null &&
+                Simulator.Activity.Tr_Activity.Tr_Activity_File.PlatformNumPassengersWaiting == null &&*/
                 Simulator.Settings.GenerateRandomPaxCount
                 )
                 {
@@ -16686,37 +16686,20 @@ namespace Orts.Simulation.Physics
                     int index = 0;
                     foreach (StationStop ss in train.StationStops)
                     {
-                        if (index == 0 && !wasRestored)
+                        int remainingPax = (((int)MaxPaxCapacity - (int)CurrentPaxCapacity) / train.StationStops.Count) + ss.PlatformItem.NumPassengersWaiting;
+                        float byPlatform = ss.PlatformItem.Length / 25;
+                        remainingPax += (int)Math.Round(byPlatform, 0);
+                        float length = ss.PlatformItem.Length;
+                        if (length < 150)
                         {
-                            if (!wasCarsChanged)
-                            {
-                                if (ss.PlatformItem.NumPassengersWaiting < (int)CurrentPaxCapacity)
-                                    ss.PlatformItem.NumPassengersWaiting = (int)CurrentPaxCapacity;
-                            }
+                            length = (int)Math.Round(ss.PlatformItem.Length / 5, 0);
+                            if (remainingPax > (int)length)
+                                remainingPax = (int)length;
                         }
-                        if (index > 0)
-                        {
-                            if (index == 1 && (wasRestored || wasCarsChanged))
-                            {
 
-                            }
-                            else
-                            {
-                                int remainingPax = (((int)MaxPaxCapacity - (int)CurrentPaxCapacity) / train.StationStops.Count) + ss.PlatformItem.NumPassengersWaiting;
-                                float byPlatform = ss.PlatformItem.Length / 25;
-                                remainingPax += (int)Math.Round(byPlatform, 0);
-                                float length = ss.PlatformItem.Length;
-                                if (length < 150)
-                                {
-                                    length = (int)Math.Round(ss.PlatformItem.Length / 5, 0);
-                                    if (remainingPax > (int)length)
-                                        remainingPax = (int)length;
-                                }
+                        if (ss.PlatformItem.NumPassengersWaiting < remainingPax && ss.PlatformItem.NumPassengersWaiting > 0)
+                            ss.PlatformItem.NumPassengersWaiting = remainingPax;
 
-                                if (ss.PlatformItem.NumPassengersWaiting < remainingPax && ss.PlatformItem.NumPassengersWaiting > 0)
-                                    ss.PlatformItem.NumPassengersWaiting = remainingPax;
-                            }
-                        }
                         index++;
                     }
                 }
