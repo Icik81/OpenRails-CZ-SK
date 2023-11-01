@@ -16663,10 +16663,7 @@ namespace Orts.Simulation.Physics
             MSTSWagon locoWag = null;
             if (!namesFilled)
             {
-                if (/*Simulator.Activity != null &&
-                Simulator.Activity.Tr_Activity.Tr_Activity_File.PlatformNumPassengersWaiting == null &&*/
-                Simulator.Settings.GenerateRandomPaxCount
-                )
+                if (Simulator.Settings.GenerateRandomPaxCount)
                 {
                     // calculate maximum capacity
                     MaxPaxCapacity = 0;
@@ -16686,7 +16683,7 @@ namespace Orts.Simulation.Physics
                     int index = 0;
                     foreach (StationStop ss in train.StationStops)
                     {
-                        int remainingPax = (((int)MaxPaxCapacity - (int)CurrentPaxCapacity) / train.StationStops.Count) + ss.PlatformItem.NumPassengersWaiting;
+                        float remainingPax = (((int)MaxPaxCapacity - (int)CurrentPaxCapacity) / train.StationStops.Count) + ss.PlatformItem.NumPassengersWaiting;
                         float byPlatform = ss.PlatformItem.Length / 25;
                         remainingPax += (int)Math.Round(byPlatform, 0);
                         float length = ss.PlatformItem.Length;
@@ -16696,9 +16693,34 @@ namespace Orts.Simulation.Physics
                             if (remainingPax > (int)length)
                                 remainingPax = (int)length;
                         }
+                                                                                                                                                                                                                                                
+                        if (Simulator.ClockTime / 3600f > 22.0f)
+                            remainingPax *= 0.25f;                        
+                        else
+                        if (Simulator.ClockTime / 3600f > 20.0f)
+                            remainingPax *= 0.5f;
+                        else
+                        if (Simulator.ClockTime / 3600f > 18.0f)
+                            remainingPax *= 0.8f;
+                        else
+                        if (Simulator.ClockTime / 3600f > 16.0f)
+                            remainingPax *= 1.0f;
+                        else
+                        if (Simulator.ClockTime / 3600f > 14.0f)
+                            remainingPax *= 2.0f;
+                        else
+                        if (Simulator.ClockTime / 3600f > 8.0f)
+                            remainingPax *= 0.5f;
+                        else
+                        if (Simulator.ClockTime / 3600f > 5.0f)
+                            remainingPax *= 2.0f;
+                        else
+                        if (Simulator.ClockTime / 3600f > 0.0f)
+                            remainingPax *= 0.25f;
 
-                        if (ss.PlatformItem.NumPassengersWaiting < remainingPax && ss.PlatformItem.NumPassengersWaiting > 0)
-                            ss.PlatformItem.NumPassengersWaiting = remainingPax;
+                        remainingPax = (int)Math.Round((double)remainingPax, 0);
+                        
+                        ss.PlatformItem.NumPassengersWaiting = (int)remainingPax;
 
                         index++;
                     }

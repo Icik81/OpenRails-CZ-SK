@@ -5213,7 +5213,7 @@ namespace Orts.Simulation.RollingStocks
                         {
                             if (ThrottleController.NotchCount() > 0)
                             {
-                                if (HelperTimerDecrease > 1.0f)
+                                if (ThrottlePercent > 1.5f * Simulator.ThrottleLocoHelper && HelperTimerDecrease > 1.0f)
                                 {
                                     ThrottleController.StartDecrease();
                                     ThrottleController.StopIncrease();
@@ -5239,7 +5239,7 @@ namespace Orts.Simulation.RollingStocks
                         {
                             if (ThrottleController.NotchCount() > 0)
                             {
-                                if (HelperTimerIncrease > Simulator.Weather.PricipitationIntensityPPSPM2 + 3.0f)
+                                if (ThrottlePercent < 0.8f * Simulator.ThrottleLocoHelper && HelperTimerIncrease > Simulator.Weather.PricipitationIntensityPPSPM2 + 3.0f)
                                 {
                                     ThrottleController.StartIncrease();
                                     ThrottleController.StopIncrease();
