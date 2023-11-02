@@ -10795,36 +10795,7 @@ namespace Orts.Simulation.Timetables
                         remaining = 999;
                     }
                     else
-                    {
-                        int actualDepart = StationStops[0].ActualDepart;
-                        if (helddepart >= 0)
-                        {
-                            actualDepart = CompareTimes.LatestTime(helddepart, actualDepart);
-                            StationStops[0].ActualDepart = actualDepart;
-                        }
-
-                        int correctedTime = presentTime;
-                        if (presentTime > sixteenHundredHours && StationStops[0].DepartTime < eightHundredHours)
-                        {
-                            correctedTime = presentTime - 24 * 3600;  // correct to time before midnight (negative value!)
-                        }
-
-                        remaining = actualDepart - correctedTime;
-
-                        // set display text color
-                        if (remaining < 1)
-                        {
-                            DisplayColor = Color.LightGreen;
-                        }
-                        else if (remaining < 11)
-                        {
-                            DisplayColor = new Color(255, 255, 128);
-                        }
-                        else
-                        {
-                            DisplayColor = Color.White;
-                        }
-
+                    {                        
                         // clear holding signal
                         if (remaining < 120 && StationStops[0].ExitSignal >= 0 && HoldingSignals.Contains(StationStops[0].ExitSignal)) // within two minutes of departure and hold signal?
                         {
@@ -10845,32 +10816,8 @@ namespace Orts.Simulation.Timetables
                             {
                                 MayDepart = true;
                                 DisplayMessage = Simulator.Catalog.GetString("Passenger detraining completed. Train terminated.");
-                            }
-                            else if (!MayDepart)
-                            {
-                                // check if signal ahead is cleared - if not, and signal is station exit signal, do not allow depart
-                                if (NextSignalObject[0] != null && NextSignalObject[0].this_sig_lr(MstsSignalFunction.NORMAL) == MstsSignalAspect.STOP
-                                    && NextSignalObject[0].hasPermission != SignalObject.Permission.Granted && !StationStops[0].NoWaitSignal
-                                    && NextSignalObject[0].thisRef == StationStops[0].ExitSignal)
-                                {
-                                    DisplayMessage = Simulator.Catalog.GetString("Passenger boarding completed. Waiting for signal ahead to clear.");
-                                }
-                                else
-                                {
-                                    MayDepart = true;
-                                    if (!StationStops[0].EndStop)
-                                    {
-                                        //if (!DriverOnlyOperation) Simulator.SoundNotify = Event.PermissionToDepart;  // sound departure if not doo
-                                        DisplayMessage = Simulator.Catalog.GetString("Passenger boarding completed. You may depart now.");
-                                    }
-                                }
-                            }
-                        }
-                        else
-                        {
-                            DisplayMessage = Simulator.Catalog.GetStringFmt("Passenger boarding completes in {0:D2}:{1:D2}",
-                                remaining / 60, remaining % 60);
-                        }
+                            }                            
+                        }                        
                     }
                 }
             }

@@ -5102,7 +5102,7 @@ namespace Orts.Simulation.RollingStocks
                         HelperTimerDecrease += elapsedClockSeconds;
                         if (HelperTimerDecrease > 0.05f)
                         {                            
-                            if (ThrottleController.NotchCount() > 0)
+                            if (ThrottleController.NotchCount() > 0 && this is MSTSDieselLocomotive)
                             {
                                 if (HelperTimerDecrease > 1.0f)
                                 {
@@ -5135,7 +5135,7 @@ namespace Orts.Simulation.RollingStocks
                             if (LocalThrottlePercent == 0 && SpeedMpS == 0)
                                 HelperStartOn = true;
                             
-                            if (ThrottleController.NotchCount() > 0)
+                            if (ThrottleController.NotchCount() > 0 && this is MSTSDieselLocomotive)
                             {
                                 if (HelperTimerIncrease > Simulator.Weather.PricipitationIntensityPPSPM2 + 3.0f)
                                 {
@@ -5176,7 +5176,7 @@ namespace Orts.Simulation.RollingStocks
                     HelperTimerDecrease += elapsedClockSeconds;
                     if (HelperTimerDecrease > 0.1f || (this is MSTSElectricLocomotive && !CircuitBreakerOn) || PowerCurrent1 > 0.95f * MaxCurrentPower)
                     {                        
-                        if (ThrottleController.NotchCount() > 0)
+                        if (ThrottleController.NotchCount() > 0 && this is MSTSDieselLocomotive)
                         {
                             if (HelperTimerDecrease > 1.0f)
                             {
@@ -5211,7 +5211,7 @@ namespace Orts.Simulation.RollingStocks
                         HelperTimerDecrease += elapsedClockSeconds;
                         if (HelperTimerDecrease > 0.1f)
                         {
-                            if (ThrottleController.NotchCount() > 0)
+                            if (ThrottleController.NotchCount() > 0 && this is MSTSDieselLocomotive)
                             {
                                 if (ThrottlePercent > 1.5f * Simulator.ThrottleLocoHelper && HelperTimerDecrease > 1.0f)
                                 {
@@ -5237,7 +5237,7 @@ namespace Orts.Simulation.RollingStocks
                         HelperTimerIncrease += elapsedClockSeconds;
                         if (HelperTimerIncrease > ((Simulator.Weather.PricipitationIntensityPPSPM2 / 2.0f) + 0.25f))
                         {
-                            if (ThrottleController.NotchCount() > 0)
+                            if (ThrottleController.NotchCount() > 0 && this is MSTSDieselLocomotive)
                             {
                                 if (ThrottlePercent < 0.8f * Simulator.ThrottleLocoHelper && HelperTimerIncrease > Simulator.Weather.PricipitationIntensityPPSPM2 + 3.0f)
                                 {
@@ -5259,7 +5259,7 @@ namespace Orts.Simulation.RollingStocks
 
                 LocalThrottlePercent = MathHelper.Clamp(LocalThrottlePercent, 0, 100);
                 Train.ControllerVolts = LocalThrottlePercent / 10f;
-                StepControllerValue = (int)(LocalThrottlePercent / 100f * Simulator.StepControllerMaxValue);
+                StepControllerValue = (int)(LocalThrottlePercent / 100f * Simulator.StepControllerMaxValue);                
                 ForceHandleValue = LocalThrottlePercent;
 
                 if (extendedPhysics != null)
@@ -13612,7 +13612,7 @@ namespace Orts.Simulation.RollingStocks
 
                 if (MirerControllerValue != prevMirerControllerValue)
                 {
-                    prevMirerControllerValue = MirerControllerValue;                                                                                ;
+                    prevMirerControllerValue = MirerControllerValue;                                                                                
                     switch (MirerControllerValue)
                     {
                         // 0
