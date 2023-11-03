@@ -10795,7 +10795,33 @@ namespace Orts.Simulation.Timetables
                         remaining = 999;
                     }
                     else
-                    {                        
+                    {
+                        int actualDepart = StationStops[0].ActualDepart;
+                        if (helddepart >= 0)
+                        {
+                            actualDepart = CompareTimes.LatestTime(helddepart, actualDepart);
+                            StationStops[0].ActualDepart = actualDepart;
+                        }
+                        int correctedTime = presentTime;
+                        if (presentTime > sixteenHundredHours && StationStops[0].DepartTime < eightHundredHours)
+                        {
+                            correctedTime = presentTime - 24 * 3600;  // correct to time before midnight (negative value!)
+                        }
+                        remaining = actualDepart - correctedTime;
+                        // set display text color
+                        if (remaining < 1)
+                        {
+                            DisplayColor = Color.LightGreen;
+                        }
+                        else if (remaining < 11)
+                        {
+                            DisplayColor = new Color(255, 255, 128);
+                        }
+                        else
+                        {
+                            DisplayColor = Color.White;
+                        }
+
                         // clear holding signal
                         if (remaining < 120 && StationStops[0].ExitSignal >= 0 && HoldingSignals.Contains(StationStops[0].ExitSignal)) // within two minutes of departure and hold signal?
                         {
