@@ -5016,6 +5016,8 @@ namespace Orts.Simulation.RollingStocks
         bool LocoBecomeHelper;
         bool HelperStartOn;
         float HelperBellTimer;
+        bool HelperOverheated;
+        bool HelperCoolDown = true;
         public void SetHelperLoco(float elapsedClockSeconds)
         {
             if (IsLeadLocomotive() && (AcceptHelperSignals || PowerReductionResult12 > 0))
@@ -5086,6 +5088,20 @@ namespace Orts.Simulation.RollingStocks
                 else
                     PowerReductionResult12 = 0;
 
+                if (!HelperOverheated)
+                {
+                    HelperOverheated = (this is MSTSDieselLocomotive && (this as MSTSDieselLocomotive).DieselEngines[0].RealDieselOilTemperatureDeg > 0.99f * (this as MSTSDieselLocomotive).DieselEngines[0].DieselMaxTemperatureDeg)
+                    || (this is MSTSDieselLocomotive && (this as MSTSDieselLocomotive).DieselEngines[0].RealDieselWaterTemperatureDeg > 0.99f * (this as MSTSDieselLocomotive).DieselEngines[0].DieselMaxTemperatureDeg);
+                }
+
+                if (HelperOverheated)
+                {
+                    HelperCoolDown = (this is MSTSDieselLocomotive && (this as MSTSDieselLocomotive).DieselEngines[0].RealDieselOilTemperatureDeg < 0.95f * (this as MSTSDieselLocomotive).DieselEngines[0].DieselMaxTemperatureDeg);
+                    HelperCoolDown &= (this is MSTSDieselLocomotive && (this as MSTSDieselLocomotive).DieselEngines[0].RealDieselWaterTemperatureDeg < 0.95f * (this as MSTSDieselLocomotive).DieselEngines[0].DieselMaxTemperatureDeg);
+                    if (HelperCoolDown)
+                        HelperOverheated = false;
+                }                                
+
                 if (HelperLocoPush)
                 {
                     PowerReductionResult12 = 0;
@@ -5097,19 +5113,45 @@ namespace Orts.Simulation.RollingStocks
                         || Simulator.ControllerVoltsLocoHelper < -1.5f
                         || Direction == Direction.N
                         || (this is MSTSElectricLocomotive && !CircuitBreakerOn)
-                        || PowerCurrent1 > 0.95f * MaxCurrentPower)
+                        || PowerCurrent1 > 0.95f * MaxCurrentPower
+                        || HelperOverheated)                        
                     {
                         HelperTimerDecrease += elapsedClockSeconds;
                         if (HelperTimerDecrease > 0.05f)
                         {                            
                             if (ThrottleController.NotchCount() > 0 && this is MSTSDieselLocomotive)
                             {
-                                if (HelperTimerDecrease > 1.0f)
+                                if (WheelSlipWarning
+                                    || WheelSlip)
                                 {
-                                    ThrottleController.StartDecrease();
-                                    ThrottleController.StopIncrease();
-                                    LocalThrottlePercent = ThrottleController.CurrentValue * 100f;
-                                    HelperTimerDecrease = 0;
+                                    if (HelperTimerDecrease > 1.0f)
+                                    {
+                                        ThrottleController.StartDecrease();
+                                        ThrottleController.StopIncrease();
+                                        LocalThrottlePercent = ThrottleController.CurrentValue * 100f;
+                                        HelperTimerDecrease = 0;
+                                    }
+                                }
+                                else
+                                if (HelperOverheated)
+                                {
+                                    if (ThrottlePercent > 80f && HelperTimerDecrease > 1.0f)
+                                    {
+                                        ThrottleController.StartDecrease();
+                                        ThrottleController.StopIncrease();
+                                        LocalThrottlePercent = ThrottleController.CurrentValue * 100f;
+                                        HelperTimerDecrease = 0;
+                                    }
+                                }   
+                                else
+                                {
+                                    if (HelperTimerDecrease > 1.0f)
+                                    {
+                                        ThrottleController.StartDecrease();
+                                        ThrottleController.StopIncrease();
+                                        LocalThrottlePercent = ThrottleController.CurrentValue * 100f;
+                                        HelperTimerDecrease = 0;
+                                    }
                                 }
                             }
                             else
@@ -5134,11 +5176,10 @@ namespace Orts.Simulation.RollingStocks
                         {
                             if (LocalThrottlePercent == 0 && SpeedMpS == 0)
                                 HelperStartOn = true;
-                            
                             if (ThrottleController.NotchCount() > 0 && this is MSTSDieselLocomotive)
                             {
                                 if (HelperTimerIncrease > Simulator.Weather.PricipitationIntensityPPSPM2 + 3.0f)
-                                {
+                                {                                    
                                     ThrottleController.StartIncrease();
                                     ThrottleController.StopIncrease();
                                     LocalThrottlePercent = ThrottleController.CurrentValue * 100f;
@@ -5153,20 +5194,20 @@ namespace Orts.Simulation.RollingStocks
                             }
                         }                        
                     }
-                   
+                                        
                     // Postrk zapíská
                     if (HelperStartOn && Train.IsFreight && !AcceptCableSignals)
                     {
                         HelperBellTimer += elapsedClockSeconds;
-                        if (HelperBellTimer > 1.0f)
-                            SignalEvent(Event.BellOn);
+                        if (HelperBellTimer > 1.0f)                        
+                            SignalEvent(Event.BellOn);                                                    
                         if (HelperBellTimer > 1.5f)
                         {
                             SignalEvent(Event.BellOff);
-                            HelperStartOn = false;
                             HelperBellTimer = 0;
-                        }
-                    }
+                            HelperStartOn = false;
+                        }                        
+                    }                    
                 }
 
                 if (HelperLocoDontPush)
@@ -5206,14 +5247,38 @@ namespace Orts.Simulation.RollingStocks
                         || (this is MSTSElectricLocomotive && !CircuitBreakerOn)
                         || PowerCurrent1 > 0.95f * MaxCurrentPower
                         || WheelSlipWarning
-                        || WheelSlip)
+                        || WheelSlip
+                        || HelperOverheated)
                     {
                         HelperTimerDecrease += elapsedClockSeconds;
                         if (HelperTimerDecrease > 0.1f)
                         {
                             if (ThrottleController.NotchCount() > 0 && this is MSTSDieselLocomotive)
                             {
-                                if (ThrottlePercent > 1.5f * Simulator.ThrottleLocoHelper && HelperTimerDecrease > 1.0f)
+                                if (WheelSlipWarning
+                                    || WheelSlip)
+                                {
+                                    if (HelperTimerDecrease > 1.0f)
+                                    {
+                                        ThrottleController.StartDecrease();
+                                        ThrottleController.StopIncrease();
+                                        LocalThrottlePercent = ThrottleController.CurrentValue * 100f;
+                                        HelperTimerDecrease = 0;
+                                    }
+                                }
+                                else
+                                if (HelperOverheated)
+                                {
+                                    if (ThrottlePercent > 80f && HelperTimerDecrease > 1.0f)
+                                    {
+                                        ThrottleController.StartDecrease();
+                                        ThrottleController.StopIncrease();
+                                        LocalThrottlePercent = ThrottleController.CurrentValue * 100f;
+                                        HelperTimerDecrease = 0;
+                                    }
+                                }
+                                else
+                                if (ThrottlePercent > 1.2f * Simulator.ThrottleLocoHelper && HelperTimerDecrease > 1.0f)
                                 {
                                     ThrottleController.StartDecrease();
                                     ThrottleController.StopIncrease();
@@ -5239,7 +5304,7 @@ namespace Orts.Simulation.RollingStocks
                         {
                             if (ThrottleController.NotchCount() > 0 && this is MSTSDieselLocomotive)
                             {
-                                if (ThrottlePercent < 0.8f * Simulator.ThrottleLocoHelper && HelperTimerIncrease > Simulator.Weather.PricipitationIntensityPPSPM2 + 3.0f)
+                                if (ThrottlePercent < 0.9f * Simulator.ThrottleLocoHelper && HelperTimerIncrease > Simulator.Weather.PricipitationIntensityPPSPM2 + 3.0f)
                                 {
                                     ThrottleController.StartIncrease();
                                     ThrottleController.StopIncrease();
