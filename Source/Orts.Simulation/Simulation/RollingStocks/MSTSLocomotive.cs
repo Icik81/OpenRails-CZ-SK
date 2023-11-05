@@ -10502,10 +10502,17 @@ namespace Orts.Simulation.RollingStocks
                         LapActive[1] = LapActive[2];
                 }
 
-                if (LocoType == LocoTypes.Vectron && !Battery)
+                if (LocoType == LocoTypes.Vectron)
                 {
-                    LapActive[1] = true;
-                    LapActive[2] = true;
+                    if (!Battery)
+                    {
+                        LapActive[1] = true;
+                        LapActive[2] = true;
+                    }
+                    if (!StationIsActivated[1])
+                        LapActive[1] = true;
+                    if (!StationIsActivated[2])
+                        LapActive[2] = true;
                 }
 
                 if (LocoStation == 1)
