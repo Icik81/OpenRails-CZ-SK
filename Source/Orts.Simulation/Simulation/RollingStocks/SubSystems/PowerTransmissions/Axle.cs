@@ -708,7 +708,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerTransmissions
                     motor.Update(timeSpan);
                     break;
                 case AxleDriveType.ForceDriven:
-                    float DriveMarker = driveForceN / Math.Abs(driveForceN);
+                    float DriveMarker = driveForceN == 0 ? 1 : driveForceN / Math.Abs(driveForceN);
 
                     //Axle revolutions integration
                     if (TrainSpeedMpS > 0.0f)
@@ -752,21 +752,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerTransmissions
                         }
                     }
                     else
-                    {
-                        if (Math.Abs(driveForceN) > Math.Abs(axleForceN))
-                        {
-                            axleSpeedMpS = AxleRevolutionsInt.Integrate(timeSpan,
-                                (
-                                    driveForceN * transmissionEfficiency
-                                    - (DriveMarker * brakeRetardForceN)
-                                    - slipDerivationMpSS * dampingNs
-                                    - (DriveMarker * Math.Abs(SlipSpeedMpS) * frictionN)
-                                    - AxleForceN
-                                )
-                                / totalInertiaKgm2
-                            );
-                        }
-
+                    {                        
                         if (brakeRetardForceN > Math.Abs(driveForceN) && AxleSpeedMpS != 0f)
                         {
                             BrakePulsTimer += timeSpan;
