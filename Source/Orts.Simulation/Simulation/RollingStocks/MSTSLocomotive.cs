@@ -10502,6 +10502,12 @@ namespace Orts.Simulation.RollingStocks
                         LapActive[1] = LapActive[2];
                 }
 
+                if (LocoType == LocoTypes.Vectron && !Battery)
+                {
+                    LapActive[1] = true;
+                    LapActive[2] = true;
+                }
+
                 if (LocoStation == 1)
                 {
                     if (TrainBrakeValue[2] == TrainBrakeValueFQR && !LapActive[2])
