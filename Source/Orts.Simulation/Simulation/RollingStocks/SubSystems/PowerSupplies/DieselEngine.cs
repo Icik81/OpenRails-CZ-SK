@@ -1219,6 +1219,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
 
         public void Update(float elapsedClockSeconds)
         {
+            locomotive.DieselOilPressurePSI = DieselOilPressurePSI;
+
             // Inicializace AI
             if ((!locomotive.IsPlayerTrain && locomotive.BrakeSystem.StartOn && !locomotive.LocoIsStatic) || locomotive.CarLengthM < 1f)
             {
