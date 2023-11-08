@@ -16955,15 +16955,30 @@ namespace Orts.Simulation.RollingStocks
                             FakeOilPressureBase = mstsDieselLocomotive.DieselEngines[0].DieselOilPressurePSI;
                             VibrationTimer += Simulator.OneSecondLoop;
 
-                            if (VibrationTimer < 0.10f)                             
-                                FakeOilPressure += 100f * Simulator.OneSecondLoop;                            
-                            if (FakeOilPressure > 1.02f * FakeOilPressureBase)
-                                FakeOilPressure = 1.02f * FakeOilPressureBase;
+                            if (FakeOilPressure > 2.0f / 3.0f * mstsDieselLocomotive.DieselEngines[0].DieselMaxOilPressurePSI)
+                            {
+                                if (VibrationTimer < 0.10f)
+                                    FakeOilPressure += 100f * Simulator.OneSecondLoop;
+                                if (FakeOilPressure > 1.01f * FakeOilPressureBase)
+                                    FakeOilPressure = 1.01f * FakeOilPressureBase;
 
-                            if (VibrationTimer > 0.10f)                            
-                                FakeOilPressure -= 100f * Simulator.OneSecondLoop;                                                            
-                            if (FakeOilPressure < 0.98f * FakeOilPressureBase)
-                                FakeOilPressure = 0.98f * FakeOilPressureBase;
+                                if (VibrationTimer > 0.10f)
+                                    FakeOilPressure -= 100f * Simulator.OneSecondLoop;
+                                if (FakeOilPressure < 0.99f * FakeOilPressureBase)
+                                    FakeOilPressure = 0.99f * FakeOilPressureBase;                                
+                            }
+                            else
+                            {
+                                if (VibrationTimer < 0.10f)
+                                    FakeOilPressure += 100f * Simulator.OneSecondLoop;
+                                if (FakeOilPressure > 1.005f * FakeOilPressureBase)
+                                    FakeOilPressure = 1.005f * FakeOilPressureBase;
+
+                                if (VibrationTimer > 0.10f)
+                                    FakeOilPressure -= 100f * Simulator.OneSecondLoop;
+                                if (FakeOilPressure < 0.995f * FakeOilPressureBase)
+                                    FakeOilPressure = 0.995f * FakeOilPressureBase;
+                            }
 
                             if (VibrationTimer > 0.2f)
                                 VibrationTimer = 0;

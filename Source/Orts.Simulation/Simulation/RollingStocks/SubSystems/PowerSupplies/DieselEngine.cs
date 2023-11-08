@@ -18,6 +18,7 @@
 using Microsoft.Xna.Framework;
 using Orts.Common;
 using Orts.Parsers.Msts;
+using Orts.Simulation.RollingStocks.SubSystems.Controllers;
 using Orts.Simulation.RollingStocks.SubSystems.PowerTransmissions;
 using ORTS.Common;
 using System;
@@ -1217,6 +1218,12 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
             //locomotive.Simulator.Confirmer.Message(ConfirmLevel.MSG, "LoadSMCoef = " + LoadSMCoef);
         }
 
+        float RegulatorRecoveryTimer;
+        float NotchChangeTimeOK;
+        int PreNotch;
+        float RegulatorDeltaRPM = 0;
+        float CurrentRPM;
+        public bool RPMOverkill;
         public void Update(float elapsedClockSeconds)
         {
             locomotive.DieselOilPressurePSI = DieselOilPressurePSI;
@@ -1432,7 +1439,64 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                 }
                 else
                     RealRPM = Math.Max(RealRPM + (dRPM * elapsedClockSeconds), 0);
-            }            
+            }
+
+            // Icik
+            // Zvýšení otáček motoru při prudkém snížení stupňů regulátorem
+            if (locomotive.ThrottleController.NotchCount() > 0)
+            {
+                int CurrentNotch = locomotive.ThrottleController.CurrentNotch;
+                if (CurrentNotch > PreNotch)
+                {
+                    PreNotch = CurrentNotch;
+                }
+
+                if (CurrentNotch < PreNotch)
+                {
+                    PreNotch = CurrentNotch;
+                    CurrentRPM = RealRPM;
+
+                    if (RealRPM > 1.09f * ThrottleRPMTab[locomotive.ThrottlePercent])
+                    {
+                        RegulatorDeltaRPM = 100.0f * RealRPM / ThrottleRPMTab[locomotive.ThrottlePercent];
+                        //locomotive.Simulator.Confirmer.MSG("RegulatorDeltaRPM = " + RegulatorDeltaRPM);
+                    }
+                }
+
+                if (RegulatorDeltaRPM > 0)
+                {
+                    if (RealRPM < CurrentRPM + RegulatorDeltaRPM)
+                    {
+                        RealRPM += 3.0f * ChangeUpRPMpS * elapsedClockSeconds;
+                    }
+                    if (RealRPM > 0.999f * CurrentRPM + RegulatorDeltaRPM)
+                    {
+                        RegulatorRecoveryTimer += elapsedClockSeconds;
+                        RealRPM = CurrentRPM + RegulatorDeltaRPM;
+                        if (RealRPM > MaxRPM)
+                            RPMOverkill = true;
+                    }
+                }
+
+                // 2s pro vzpamatování regulátoru
+                if (RegulatorRecoveryTimer > 2.0f)
+                {
+                    RegulatorRecoveryTimer = 0;
+                    RegulatorDeltaRPM = 0;
+                    CurrentRPM = 0;
+                }
+
+                // Vypnutí motoru při přetočení
+                if (RPMOverkill)
+                {
+                    locomotive.DieselEngines[0].Stop();                                                            
+                    if (RealRPM < IdleRPM)
+                    {
+                        locomotive.SignalEvent(Event.EnginePowerOff);
+                        RPMOverkill = false;
+                    }
+                } 
+            }
 
             // Icik
             // Při vyšších otáčkách fouká kompresor rychleji
@@ -1955,10 +2019,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                 case Status.Stopped:
                 case Status.Stopping:
                     // Icik
-                    if (locomotive.DieselMotorDefected) 
+                    if (locomotive.DieselMotorDefected || RPMOverkill) 
                     {
                         DemandedRPM = 0;
-                        EngineStatus = Status.Stopped;                        
+                        EngineStatus = Status.Stopped;                                                   
                     }
                     else
                     if (locomotive.StopButtonReleased) // Přerušený stop motoru
@@ -1996,7 +2060,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                 DemandedRPM = 0;
                 EngineStatus = Status.Stopping;
                 if (RealRPM <= 0)
-                    EngineStatus = Status.Stopped;
+                    EngineStatus = Status.Stopped;                
                 locomotive.SignalEvent(Event.EnginePowerOff); // power off sound hook
             }
             return EngineStatus;
