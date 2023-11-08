@@ -1459,11 +1459,11 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                     if (RealRPM > 1.09f * ThrottleRPMTab[locomotive.ThrottlePercent])
                     {
                         RegulatorDeltaRPM = 100.0f * RealRPM / ThrottleRPMTab[locomotive.ThrottlePercent];
-                        //locomotive.Simulator.Confirmer.MSG("RegulatorDeltaRPM = " + RegulatorDeltaRPM);
+                        locomotive.Simulator.Confirmer.MSG("RegulatorDeltaRPM = " + RegulatorDeltaRPM);
                     }
                 }
 
-                if (RegulatorDeltaRPM > 0)
+                if (CurrentNotch == 0 && RegulatorDeltaRPM > 0)
                 {
                     if (RealRPM < CurrentRPM + RegulatorDeltaRPM)
                     {
