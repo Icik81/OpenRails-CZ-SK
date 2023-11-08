@@ -1443,7 +1443,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
 
             // Icik
             // Zvýšení otáček motoru při prudkém snížení stupňů regulátorem
-            if (locomotive.ThrottleController.NotchCount() > 0)
+            if (locomotive.IsLeadLocomotive() && locomotive.ThrottleController.NotchCount() > 0)
             {
                 int CurrentNotch = locomotive.ThrottleController.CurrentNotch;
                 if (CurrentNotch > PreNotch)
