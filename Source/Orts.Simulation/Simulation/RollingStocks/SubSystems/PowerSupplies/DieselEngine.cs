@@ -1219,7 +1219,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
         }
 
         float RegulatorRecoveryTimer;
-        float NotchChangeTimeOK;
+        float RegulatorRecoveryTimer2;
         int preThrottlePercent;
         float RegulatorDeltaRPM = 0;
         float CurrentRPM;
@@ -1491,6 +1491,16 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                             RealRPM = CurrentRPM + RegulatorDeltaRPM;
                             if (RealRPM > MaxRPM)
                                 RPMOverkill = true;
+                        }
+                    }
+
+                    if (RegulatorRecoveryTimer == 0 && RegulatorDeltaRPM > 0 && !RPMgrowth)
+                    {
+                        RegulatorRecoveryTimer2 += elapsedClockSeconds;
+                        if (RegulatorRecoveryTimer2 > 1.0f)
+                        {
+                            RegulatorRecoveryTimer2 = 0;
+                            RegulatorDeltaRPM = 0;
                         }
                     }
 
