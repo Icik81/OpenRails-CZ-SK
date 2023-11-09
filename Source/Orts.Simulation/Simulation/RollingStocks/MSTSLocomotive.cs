@@ -722,6 +722,8 @@ namespace Orts.Simulation.RollingStocks
         public bool FirstCabLoaded = true;
         public InterpolatorDiesel2D CoefStepControllerCurves;
         public bool Loco15kV;
+        public int LocomotiveTypeNumber = 0;
+        public int LocomotiveTypeLongNumber = 0;
 
         // Jindrich
         public bool IsActive = false;
@@ -6073,6 +6075,7 @@ namespace Orts.Simulation.RollingStocks
                 if (IsLeadLocomotive() && !MirerControllerEnable && !MirelRSControllerEnable && !HS198ControllerEnable)
                     Simulator.StepControllerValue = LocalThrottlePercent / 100;
 
+                LocomotiveTypeDefinition();
                 TogglePowerKey();
                 PowerKeyLogic();
                 MUCableLogic();
@@ -6126,10 +6129,11 @@ namespace Orts.Simulation.RollingStocks
                 RainWindow(elapsedClockSeconds);
                 WipersWindow(elapsedClockSeconds);
                 CabRadioOnOff();
-                CheckMUWheelSlip(elapsedClockSeconds);
+                CheckMUWheelSlip(elapsedClockSeconds);               
+
                 BatterySetOn = false;
                 if (LocoReadyToGo && this is MSTSSteamLocomotive)
-                    LocoReadyToGo = false;
+                    LocoReadyToGo = false;                
             }
 
             // Hodnoty pro výpočet zvukových proměnných
@@ -9665,6 +9669,34 @@ namespace Orts.Simulation.RollingStocks
             if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.Battery, Battery ? CabSetting.On : CabSetting.Off);
         }
 
+        public void LocomotiveTypeDefinition()
+        {
+            // Určení řady lokomotivy 
+            if (LocomotiveTypeNumber == 0)
+            {
+                string LocoName = "";
+                foreach (var Number in LocomotiveName)
+                {
+                    if (Number >= '0' && Number <= '9')
+                        LocoName = string.Concat(LocoName, Number);
+                    if (LocoName.Length == 3)
+                        break;
+                }
+                if (LocoName != "")
+                    LocomotiveTypeNumber = Int32.Parse(LocoName);
+
+                LocoName = "";
+                foreach (var Number in LocomotiveName)
+                {
+                    if (Number >= '0' && Number <= '9')
+                        LocoName = string.Concat(LocoName, Number);
+                    if (LocoName.Length == 4)
+                        break;
+                }
+                if (LocoName != "")
+                    LocomotiveTypeLongNumber = Int32.Parse(LocoName);
+            }
+        }
 
         public void TogglePowerKeyUp()
         {
