@@ -1421,7 +1421,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
 
             // Icik
             // Sníží otáčky motoru kvůli ochraně TM 
-            if (locomotive.OverVoltage || locomotive.OverCurrent || locomotive.HeatingOverCurrent)
+            if (!RPMgrowth && (locomotive.OverVoltage || locomotive.OverCurrent || locomotive.HeatingOverCurrent))
             {
                 if (RealRPM > IdleRPM)
                     RealRPM -= ChangeDownRPMpS * elapsedClockSeconds;
@@ -1444,9 +1444,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
 
             // Icik
             // Zvýšení otáček motoru při prudkém snížení stupňů regulátorem                                  
-            if (locomotive.IsLeadLocomotive() && EngineStatus == Status.Running && !locomotive.OverVoltage && !locomotive.OverCurrent && !locomotive.HeatingOverCurrent)
+            if (locomotive.IsLeadLocomotive() && EngineStatus == Status.Running)
             {
-                if (locomotive.CruiseControl != null && locomotive.CruiseControl.SpeedRegMode[locomotive.LocoStation] != CruiseControl.SpeedRegulatorMode.Manual)
+                if (!RPMgrowth && locomotive.CruiseControl != null && locomotive.CruiseControl.SpeedRegMode[locomotive.LocoStation] != CruiseControl.SpeedRegulatorMode.Manual)
                 { }
                 else
                 {

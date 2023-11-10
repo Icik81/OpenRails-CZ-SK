@@ -616,8 +616,7 @@ namespace ORTS.Settings
             Commands[(int)UserCommand.ControlAxleCounterDown] = new UserCommandKeyInput(0x50, KeyModifiers.Control | KeyModifiers.Shift);
             Commands[(int)UserCommand.ControlAxleCounterConfirmer] = new UserCommandKeyInput(0x4D, KeyModifiers.Control | KeyModifiers.Shift);
             Commands[(int)UserCommand.ControlAxleCounterRestrictedSpeedZoneActive] = new UserCommandKeyInput(0x13, KeyModifiers.Control | KeyModifiers.Shift);
-
-            Commands[(int)UserCommand.ControlHorn2] = new UserCommandKeyInput(0x39, KeyModifiers.Alt);
+            Commands[(int)UserCommand.ControlHorn2] = new UserCommandKeyInput(0x31);
             Commands[(int)UserCommand.ControlHorn12] = new UserCommandKeyInput(0x39, KeyModifiers.Control | KeyModifiers.Alt);
         }
         #endregion

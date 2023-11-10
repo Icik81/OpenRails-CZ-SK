@@ -7233,12 +7233,14 @@ namespace Orts.Simulation.RollingStocks
 
             if (Horn12 && !PreviousHorn12)
             {
-                SignalEvent(Event.Horn12On);
+                SignalEvent(Event.HornOn);
+                SignalEvent(Event.Horn2On);
                 if (MPManager.IsMultiPlayer()) MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "HORN", 1)).ToString());
             }
             else if (!Horn12 && PreviousHorn12)
             {
-                SignalEvent(Event.Horn12Off);
+                SignalEvent(Event.HornOff);
+                SignalEvent(Event.Horn2Off);
                 if (MPManager.IsMultiPlayer()) MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "HORN", 0)).ToString());
             }
 
@@ -16326,11 +16328,6 @@ namespace Orts.Simulation.RollingStocks
                 case Event.Horn2Off:
                     if (this == Simulator.PlayerLocomotive && Simulator.Confirmer != null)
                         Simulator.Confirmer.Confirm(this is MSTSSteamLocomotive ? CabControl.Whistle : CabControl.Horn2, Horn2 ? CabSetting.On : CabSetting.Off);
-                    break;
-                case Event.Horn12On:
-                case Event.Horn12Off:
-                    if (this == Simulator.PlayerLocomotive && Simulator.Confirmer != null)
-                        Simulator.Confirmer.Confirm(this is MSTSSteamLocomotive ? CabControl.Whistle : CabControl.Horn12, Horn12 ? CabSetting.On : CabSetting.Off);
                     break;
             }
 

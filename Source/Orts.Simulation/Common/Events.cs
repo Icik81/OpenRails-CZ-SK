@@ -372,9 +372,7 @@ namespace Orts.Common
         SerialParalelCrossingOn,
         SerialParalelCrossingOff,
         Horn2On,
-        Horn2Off,
-        Horn12On,
-        Horn12Off
+        Horn2Off
     }
 
     public static class Events
@@ -761,9 +759,7 @@ namespace Orts.Common
                         case 20125: return Event.SerialParalelCrossingOn;
                         case 20126: return Event.SerialParalelCrossingOff;
                         case 20127: return Event.Horn2On;
-                        case 20128: return Event.Horn2Off;
-                        case 20129: return Event.Horn12On;
-                        case 20130: return Event.Horn12Off;
+                        case 20128: return Event.Horn2Off;                        
 
                         default: return 0;
                     }
