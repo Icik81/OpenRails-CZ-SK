@@ -1444,7 +1444,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
 
             // Icik
             // Zvýšení otáček motoru při prudkém snížení stupňů regulátorem                                  
-            if (locomotive.IsLeadLocomotive())
+            if (locomotive.IsLeadLocomotive() && EngineStatus == Status.Running && !locomotive.OverVoltage && !locomotive.OverCurrent && !locomotive.HeatingOverCurrent)
             {
                 if (locomotive.CruiseControl != null && locomotive.CruiseControl.SpeedRegMode[locomotive.LocoStation] != CruiseControl.SpeedRegulatorMode.Manual)
                 { }
