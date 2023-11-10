@@ -1445,94 +1445,99 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
             // Icik
             // Zvýšení otáček motoru při prudkém snížení stupňů regulátorem                                  
             if (locomotive.IsLeadLocomotive())
-            {                
-                bool CheckRPMOverkill = true;
-                switch (locomotive.LocomotiveTypeNumber)
+            {
+                if (locomotive.CruiseControl != null && locomotive.CruiseControl.SpeedRegMode[locomotive.LocoStation] != CruiseControl.SpeedRegulatorMode.Manual)
+                { }
+                else
                 {
-                    case 750: { if (locomotive.LocomotiveTypeLongNumber == 7507) CheckRPMOverkill = false; else CheckRPMOverkill = true; break; }
-                    case 753: { if (locomotive.LocomotiveTypeLongNumber == 7537) CheckRPMOverkill = false; else CheckRPMOverkill = true; break; }
-                    case 152:
-                    case 809:
-                    case 810:                    
-                        CheckRPMOverkill = false;
-                        break;
-                }
-
-                if (CheckRPMOverkill)
-                {
-                    int CurrentThrottlePercent = (int)locomotive.LocalThrottlePercent;
-                    if (CurrentThrottlePercent > preThrottlePercent)
+                    bool CheckRPMOverkill = true;
+                    switch (locomotive.LocomotiveTypeNumber)
                     {
-                        preThrottlePercent = CurrentThrottlePercent;
+                        case 750: { if (locomotive.LocomotiveTypeLongNumber == 7507) CheckRPMOverkill = false; else CheckRPMOverkill = true; break; }
+                        case 753: { if (locomotive.LocomotiveTypeLongNumber == 7537) CheckRPMOverkill = false; else CheckRPMOverkill = true; break; }
+                        case 152:
+                        case 809:
+                        case 810:
+                            CheckRPMOverkill = false;
+                            break;
                     }
 
-                    if (CurrentThrottlePercent < preThrottlePercent)
+                    if (CheckRPMOverkill)
                     {
-                        preThrottlePercent = CurrentThrottlePercent;
-                        CurrentRPM = RealRPM;
+                        int CurrentThrottlePercent = (int)locomotive.LocalThrottlePercent;
+                        if (CurrentThrottlePercent > preThrottlePercent)
+                        {
+                            preThrottlePercent = CurrentThrottlePercent;
+                        }
 
-                        if (ElevatedConsumptionMode)
-                        {                            
-                            float ElevatedConsumptionModeDelta = ElevatedConsumptionIdleRPMBase - ThrottleRPMTab[0];
-                            if (RealRPM > 1.09f * (ThrottleRPMTab[locomotive.ThrottlePercent] + ElevatedConsumptionModeDelta))
+                        if (CurrentThrottlePercent < preThrottlePercent)
+                        {
+                            preThrottlePercent = CurrentThrottlePercent;
+                            CurrentRPM = RealRPM;
+
+                            if (ElevatedConsumptionMode)
                             {
-                                RegulatorDeltaRPM = 100.0f * RealRPM / ThrottleRPMTab[locomotive.ThrottlePercent];
-                                //locomotive.Simulator.Confirmer.MSG("RegulatorDeltaRPM = " + RegulatorDeltaRPM);
+                                float ElevatedConsumptionModeDelta = ElevatedConsumptionIdleRPMBase - ThrottleRPMTab[0];
+                                if (RealRPM > 1.09f * (ThrottleRPMTab[locomotive.ThrottlePercent] + ElevatedConsumptionModeDelta))
+                                {
+                                    RegulatorDeltaRPM = 100.0f * RealRPM / ThrottleRPMTab[locomotive.ThrottlePercent];
+                                    //locomotive.Simulator.Confirmer.MSG("RegulatorDeltaRPM = " + RegulatorDeltaRPM);
+                                }
+                            }
+                            else
+                            {
+                                if (RealRPM > 1.09f * ThrottleRPMTab[locomotive.ThrottlePercent])
+                                {
+                                    RegulatorDeltaRPM = 100.0f * RealRPM / ThrottleRPMTab[locomotive.ThrottlePercent];
+                                    //locomotive.Simulator.Confirmer.MSG("RegulatorDeltaRPM = " + RegulatorDeltaRPM);
+                                }
                             }
                         }
-                        else
+
+                        if ((CurrentThrottlePercent == 0 && RegulatorDeltaRPM > 0) || RPMgrowth)
                         {
-                            if (RealRPM > 1.09f * ThrottleRPMTab[locomotive.ThrottlePercent])
+                            if (RealRPM < CurrentRPM + RegulatorDeltaRPM)
                             {
-                                RegulatorDeltaRPM = 100.0f * RealRPM / ThrottleRPMTab[locomotive.ThrottlePercent];
-                                //locomotive.Simulator.Confirmer.MSG("RegulatorDeltaRPM = " + RegulatorDeltaRPM);
+                                RealRPM += 2.0f * ChangeDownRPMpS * elapsedClockSeconds;
+                                RPMgrowth = true;
+                            }
+                            if (RealRPM > 0.999f * CurrentRPM + RegulatorDeltaRPM)
+                            {
+                                RegulatorRecoveryTimer += elapsedClockSeconds;
+                                RealRPM = CurrentRPM + RegulatorDeltaRPM;
+                                if (RealRPM > MaxRPM)
+                                    RPMOverkill = true;
                             }
                         }
-                    }
 
-                    if ((CurrentThrottlePercent == 0 && RegulatorDeltaRPM > 0) || RPMgrowth)
-                    {
-                        if (RealRPM < CurrentRPM + RegulatorDeltaRPM)
+                        if (RegulatorRecoveryTimer == 0 && RegulatorDeltaRPM > 0 && !RPMgrowth)
                         {
-                            RealRPM += 2.0f * ChangeDownRPMpS * elapsedClockSeconds;
-                            RPMgrowth = true;
+                            RegulatorRecoveryTimer2 += elapsedClockSeconds;
+                            if (RegulatorRecoveryTimer2 > 1.0f)
+                            {
+                                RegulatorRecoveryTimer2 = 0;
+                                RegulatorDeltaRPM = 0;
+                            }
                         }
-                        if (RealRPM > 0.999f * CurrentRPM + RegulatorDeltaRPM)
-                        {
-                            RegulatorRecoveryTimer += elapsedClockSeconds;
-                            RealRPM = CurrentRPM + RegulatorDeltaRPM;
-                            if (RealRPM > MaxRPM)
-                                RPMOverkill = true;
-                        }
-                    }
 
-                    if (RegulatorRecoveryTimer == 0 && RegulatorDeltaRPM > 0 && !RPMgrowth)
-                    {
-                        RegulatorRecoveryTimer2 += elapsedClockSeconds;
-                        if (RegulatorRecoveryTimer2 > 1.0f)
+                        // 2s pro vzpamatování regulátoru
+                        if (RegulatorRecoveryTimer > 2.0f)
                         {
-                            RegulatorRecoveryTimer2 = 0;
+                            RegulatorRecoveryTimer = 0;
                             RegulatorDeltaRPM = 0;
+                            CurrentRPM = 0;
+                            RPMgrowth = false;
                         }
-                    }
 
-                    // 2s pro vzpamatování regulátoru
-                    if (RegulatorRecoveryTimer > 2.0f)
-                    {
-                        RegulatorRecoveryTimer = 0;
-                        RegulatorDeltaRPM = 0;
-                        CurrentRPM = 0;
-                        RPMgrowth = false;
-                    }
-
-                    // Vypnutí motoru při přetočení
-                    if (RPMOverkill)
-                    {
-                        locomotive.DieselEngines[0].Stop();
-                        if (RealRPM < IdleRPM)
+                        // Vypnutí motoru při přetočení
+                        if (RPMOverkill)
                         {
-                            locomotive.SignalEvent(Event.EnginePowerOff);
-                            RPMOverkill = false;
+                            locomotive.DieselEngines[0].Stop();
+                            if (RealRPM < IdleRPM)
+                            {
+                                locomotive.SignalEvent(Event.EnginePowerOff);
+                                RPMOverkill = false;
+                            }
                         }
                     }
                 }
