@@ -314,6 +314,8 @@
         [GetString("Control_CZSK Axle Counter -")] ControlAxleCounterDown,
         [GetString("Control_CZSK Axle Counter Confirmer")] ControlAxleCounterConfirmer,
         [GetString("Control_CZSK Axle Counter Restricted speed zone active button")] ControlAxleCounterRestrictedSpeedZoneActive,
+        [GetString("Control_CZSK Horn 2")] ControlHorn2,
+        [GetString("Control_CZSK Horn 1 + 2")] ControlHorn12,
 
         [GetString("Set Power Supply Station Location")] ControlPowerStationLocation,
         [GetString("Set Voltage 25k")] ControlSetVoltage25k,

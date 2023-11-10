@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ORTS.Common\n"
-"POT-Creation-Date: 2023-07-06 17:36:14+0200\n"
-"PO-Revision-Date: 2023-07-06 17:42+0200\n"
+"POT-Creation-Date: 2023-11-10 17:18:25+0100\n"
+"PO-Revision-Date: 2023-11-10 17:20+0100\n"
 "Last-Translator: Altmann <altmann@bk.ru>\n"
 "Language-Team: \n"
 "Language: cs\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
-"X-Generator: Poedit 3.2.2\n"
+"X-Generator: Poedit 3.4\n"
 "X-Poedit-KeywordsList: Control_Classic\n"
 
 #: ../../ORTS.Common/Conversions.cs:522
@@ -1375,35 +1375,43 @@ msgstr "Ovládání_CZSK Počítadlo náprav potvrzení"
 msgid "Control_CZSK Axle Counter Restricted speed zone active button"
 msgstr "Ovládání_CZSK Tlačítko odpočtu pomalé jízdy"
 
+#: ../../ORTS.Common/Input/UserCommand.cs:317
+msgid "Control_CZSK Horn 2"
+msgstr "Ovládání_CZSK Houkačka 2"
+
 #: ../../ORTS.Common/Input/UserCommand.cs:318
+msgid "Control_CZSK Horn 1 + 2"
+msgstr "Ovládání_CZSK Houkačka 1 + 2"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:320
 msgid "Set Power Supply Station Location"
 msgstr "Nastavit lokaci napájecí stanice (pouze vývojáři)"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:319
+#: ../../ORTS.Common/Input/UserCommand.cs:321
 msgid "Set Voltage 25k"
 msgstr "Nastavit napětí 25kV (pouze vývojáři)"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:320
+#: ../../ORTS.Common/Input/UserCommand.cs:322
 msgid "Set Voltage 15k"
 msgstr "Nastavit napětí 15kV (pouze vývojáři)"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:321
+#: ../../ORTS.Common/Input/UserCommand.cs:323
 msgid "Set Voltage 3k"
 msgstr "Nastavit napětí 3kV (pouze vývojáři)"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:322
+#: ../../ORTS.Common/Input/UserCommand.cs:324
 msgid "Set Voltage 0"
 msgstr "Nastavit napětí 0kV (pouze vývojáři)"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:323
+#: ../../ORTS.Common/Input/UserCommand.cs:325
 msgid "Set Delete Voltage Marker"
 msgstr "Smazat napěťový marker (pouze vývojáři)"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:325
+#: ../../ORTS.Common/Input/UserCommand.cs:327
 msgid "Control_CZSK Reload World Object"
 msgstr "Ovládání_CZSK Znovunačtení objektů světa"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:326
+#: ../../ORTS.Common/Input/UserCommand.cs:328
 msgid "Control_CZSK Reload Cab Object"
 msgstr "Ovládání_CZSK Znovunačtení objektů kabiny"
 

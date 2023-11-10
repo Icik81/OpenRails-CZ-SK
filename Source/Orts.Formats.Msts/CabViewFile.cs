@@ -510,7 +510,8 @@ namespace Orts.Formats.Msts
         AXLECOUNTER_DISPLAY_DOWN,
         AXLECOUNTER_DISPLAY_CONFIRM,
         AXLECOUNTER_RESTRICTEDSPEEDZONE_BUTTON,
-
+        HORN2,
+        HORN12,
 
         // ORTS
         ORTS_SCREEN_SELECT,
@@ -1769,7 +1770,7 @@ namespace Orts.Formats.Msts
                 if (ControlType == CABViewControlTypes.PANTOGRAPH || ControlType == CABViewControlTypes.PANTOGRAPH2 ||
                     ControlType == CABViewControlTypes.ORTS_PANTOGRAPH3 || ControlType == CABViewControlTypes.ORTS_PANTOGRAPH4)
                     ControlStyle = CABViewControlStyles.ONOFF;
-                if (ControlType == CABViewControlTypes.HORN || ControlType == CABViewControlTypes.SANDERS || ControlType == CABViewControlTypes.BELL
+                if (ControlType == CABViewControlTypes.HORN || ControlType == CABViewControlTypes.HORN2 || ControlType == CABViewControlTypes.HORN12 || ControlType == CABViewControlTypes.SANDERS || ControlType == CABViewControlTypes.BELL
                     || ControlType == CABViewControlTypes.RESET || ControlType == CABViewControlTypes.VACUUM_EXHAUSTER)
                     ControlStyle = CABViewControlStyles.WHILE_PRESSED;
                 if (ControlType == CABViewControlTypes.DIRECTION && Orientation == 0)

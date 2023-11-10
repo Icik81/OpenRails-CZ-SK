@@ -153,7 +153,9 @@ namespace Orts.Simulation
     , LightRearLR
     , LightRearRW
     , LightRearRR  
-    , AutoDriveButton            
+    , AutoDriveButton
+    , Horn2
+    , Horn12
 
     }
 
@@ -337,6 +339,8 @@ namespace Orts.Simulation
                 , new string [] { GetString("Rearlight white right"), GetString("off"), null, GetString("on")}
                 , new string [] { GetString("Rearlight red right"), GetString("off"), null, GetString("on")}
                 , new string [] { GetString("Automatic start-up button"), GetString("off"), null, GetString("on")}
+                , new string [] { GetString("Horn 2"), GetString("off"), null, GetParticularString("Horn 2", "sound") }
+                , new string [] { GetString("Horn 1+2"), GetString("off"), null, GetParticularString("Horn 1+2", "sound") }
 
             };
             Debug.Assert(ConfirmText.Length == Enum.GetNames(typeof(CabControl)).Length, "Number of entries indexer ConfirmText must match values in CabControl enum.");

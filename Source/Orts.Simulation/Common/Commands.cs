@@ -2829,4 +2829,58 @@ namespace Orts.Common
             // Report();
         }
     }
+    [Serializable()]
+    public sealed class Horn2Command : BooleanCommand
+    {
+        public static MSTSLocomotive Receiver { get; set; }
+
+        public Horn2Command(CommandLog log, bool toState)
+            : base(log, toState)
+        {
+            Redo();
+        }
+
+        public override void Redo()
+        {
+            Receiver.ManualHorn2 = ToState;
+            Receiver.Mirel.ResetVigilance();
+            if (ToState)
+            {
+                Receiver.AlerterReset(TCSEvent.HornActivated);
+                Receiver.Simulator.HazzardManager.Horn();
+            }
+        }
+
+        public override string ToString()
+        {
+            return base.ToString() + " " + (ToState ? "sound" : "off");
+        }
+    }
+    [Serializable()]
+    public sealed class Horn12Command : BooleanCommand
+    {
+        public static MSTSLocomotive Receiver { get; set; }
+
+        public Horn12Command(CommandLog log, bool toState)
+            : base(log, toState)
+        {
+            Redo();
+        }
+
+        public override void Redo()
+        {
+            Receiver.ManualHorn12 = ToState;
+            Receiver.Mirel.ResetVigilance();
+            if (ToState)
+            {
+                Receiver.AlerterReset(TCSEvent.HornActivated);
+                Receiver.Simulator.HazzardManager.Horn();
+            }
+        }
+
+        public override string ToString()
+        {
+            return base.ToString() + " " + (ToState ? "sound" : "off");
+        }
+    }
 }

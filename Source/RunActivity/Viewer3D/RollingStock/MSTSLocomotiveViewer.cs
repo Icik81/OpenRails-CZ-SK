@@ -385,6 +385,8 @@ namespace Orts.Viewer3D.RollingStock
             UserInputCommands.Add(UserCommand.ControlAxleCounterDown, new Action[] { Noop, () => new ToggleAxleCounterDownCommand(Viewer.Log) });
             UserInputCommands.Add(UserCommand.ControlAxleCounterConfirmer, new Action[] { Noop, () => new ToggleAxleCounterConfirmerCommand(Viewer.Log) });
             UserInputCommands.Add(UserCommand.ControlAxleCounterRestrictedSpeedZoneActive, new Action[] { Noop, () => new ToggleAxleCounterRestrictedSpeedZoneActiveCommand(Viewer.Log) });
+            UserInputCommands.Add(UserCommand.ControlHorn2, new Action[] { () => new Horn2Command(Viewer.Log, false), () => new Horn2Command(Viewer.Log, true) });
+            UserInputCommands.Add(UserCommand.ControlHorn12, new Action[] { () => new Horn12Command(Viewer.Log, false), () => new Horn12Command(Viewer.Log, true) });
 
             // Jindřich
             UserInputCommands.Add(UserCommand.ControlPowerStationLocation, new Action[] { Noop, () => Locomotive.SetPowerSupplyStationLocation() });
@@ -3319,7 +3321,7 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.LEFTDOOR:
                 case CABViewControlTypes.RIGHTDOOR:
                 case CABViewControlTypes.MIRRORS:
-                case CABViewControlTypes.HORN:
+                case CABViewControlTypes.HORN:                
                 case CABViewControlTypes.VACUUM_EXHAUSTER:
                 case CABViewControlTypes.WHISTLE:
                 case CABViewControlTypes.BELL:
@@ -3477,7 +3479,8 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.AXLECOUNTER_DISPLAY_DOWN:
                 case CABViewControlTypes.AXLECOUNTER_DISPLAY_CONFIRM:
                 case CABViewControlTypes.AXLECOUNTER_RESTRICTEDSPEEDZONE_BUTTON:
-                    
+                case CABViewControlTypes.HORN2:
+                case CABViewControlTypes.HORN12:
 
                 case CABViewControlTypes.MOTOR_DISABLED:
                 case CABViewControlTypes.INVERTER_TEST:
@@ -3775,7 +3778,7 @@ namespace Orts.Viewer3D.RollingStock
                     }
                     break;
                 case CABViewControlTypes.WHISTLE:
-                case CABViewControlTypes.HORN: new HornCommand(Viewer.Log, ChangedValue(Locomotive.Horn ? 1 : 0) > 0); break;
+                case CABViewControlTypes.HORN: new HornCommand(Viewer.Log, ChangedValue(Locomotive.Horn ? 1 : 0) > 0); break;                
                 case CABViewControlTypes.VACUUM_EXHAUSTER: new VacuumExhausterCommand(Viewer.Log, ChangedValue(Locomotive.VacuumExhausterPressed ? 1 : 0) > 0); break;
                 case CABViewControlTypes.BELL: new BellCommand(Viewer.Log, ChangedValue(Locomotive.Bell ? 1 : 0) > 0); break;
                 case CABViewControlTypes.SANDERS:
@@ -3901,6 +3904,8 @@ namespace Orts.Viewer3D.RollingStock
 
 
                 // Icik
+                case CABViewControlTypes.HORN2: new HornCommand(Viewer.Log, ChangedValue(Locomotive.Horn2 ? 1 : 0) > 0); break;
+                case CABViewControlTypes.HORN12: new HornCommand(Viewer.Log, ChangedValue(Locomotive.Horn12 ? 1 : 0) > 0); break;
                 case CABViewControlTypes.HV2:
                     {
                         // Ovládání HV nearetované pozice

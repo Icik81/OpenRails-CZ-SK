@@ -724,6 +724,12 @@ namespace Orts.Simulation.RollingStocks
         public bool Loco15kV;
         public int LocomotiveTypeNumber = 0;
         public int LocomotiveTypeLongNumber = 0;
+        public bool ManualHorn2 = false;
+        public bool ManualHorn12 = false;
+        public bool Horn2 = false;
+        protected bool PreviousHorn2 = false;
+        public bool Horn12 = false;
+        protected bool PreviousHorn12 = false;
 
         // Jindrich
         public bool IsActive = false;
@@ -7200,6 +7206,9 @@ namespace Orts.Simulation.RollingStocks
         protected virtual void UpdateHornAndBell(float elapsedClockSeconds)
         {
             Horn = ManualHorn || TCSHorn;
+            Horn2 = ManualHorn2;
+            Horn12 = ManualHorn12;
+
             if (Horn && !PreviousHorn)
             {
                 SignalEvent(Event.HornOn);
@@ -7208,6 +7217,28 @@ namespace Orts.Simulation.RollingStocks
             else if (!Horn && PreviousHorn)
             {
                 SignalEvent(Event.HornOff);
+                if (MPManager.IsMultiPlayer()) MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "HORN", 0)).ToString());
+            }
+
+            if (Horn2 && !PreviousHorn2)
+            {
+                SignalEvent(Event.Horn2On);
+                if (MPManager.IsMultiPlayer()) MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "HORN", 1)).ToString());
+            }
+            else if (!Horn2 && PreviousHorn2)
+            {
+                SignalEvent(Event.Horn2Off);
+                if (MPManager.IsMultiPlayer()) MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "HORN", 0)).ToString());
+            }
+
+            if (Horn12 && !PreviousHorn12)
+            {
+                SignalEvent(Event.Horn12On);
+                if (MPManager.IsMultiPlayer()) MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "HORN", 1)).ToString());
+            }
+            else if (!Horn12 && PreviousHorn12)
+            {
+                SignalEvent(Event.Horn12Off);
                 if (MPManager.IsMultiPlayer()) MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "HORN", 0)).ToString());
             }
 
@@ -7237,6 +7268,8 @@ namespace Orts.Simulation.RollingStocks
             }
 
             PreviousHorn = Horn;
+            PreviousHorn2 = Horn2;
+            PreviousHorn12 = Horn12;
             PreviousBell = Bell;
         }
 
@@ -16289,6 +16322,16 @@ namespace Orts.Simulation.RollingStocks
                 case Event.Compressor2Off: { Compressor2IsOn = false; break; }
                 case Event.AuxCompressorOn: { AuxCompressorIsOn = true; break; }
                 case Event.AuxCompressorOff: { AuxCompressorIsOn = false; break; }
+                case Event.Horn2On:
+                case Event.Horn2Off:
+                    if (this == Simulator.PlayerLocomotive && Simulator.Confirmer != null)
+                        Simulator.Confirmer.Confirm(this is MSTSSteamLocomotive ? CabControl.Whistle : CabControl.Horn2, Horn2 ? CabSetting.On : CabSetting.Off);
+                    break;
+                case Event.Horn12On:
+                case Event.Horn12Off:
+                    if (this == Simulator.PlayerLocomotive && Simulator.Confirmer != null)
+                        Simulator.Confirmer.Confirm(this is MSTSSteamLocomotive ? CabControl.Whistle : CabControl.Horn12, Horn12 ? CabSetting.On : CabSetting.Off);
+                    break;
             }
 
             base.SignalEvent(evt);
@@ -17129,7 +17172,7 @@ namespace Orts.Simulation.RollingStocks
                     {
                         data = Horn ? 1 : 0;
                         break;
-                    }
+                    }                
                 case CABViewControlTypes.BELL:
                     {
                         data = Bell ? 1 : 0;
@@ -18054,6 +18097,16 @@ namespace Orts.Simulation.RollingStocks
                     break;
 
                 // Icik                                                
+                case CABViewControlTypes.HORN2:
+                    {
+                        data = Horn2 ? 1 : 0;
+                        break;
+                    }
+                case CABViewControlTypes.HORN12:
+                    {
+                        data = Horn12 ? 1 : 0;
+                        break;
+                    }
                 case CABViewControlTypes.COMPRESSOR_START:
                     {
                         data = 1;
