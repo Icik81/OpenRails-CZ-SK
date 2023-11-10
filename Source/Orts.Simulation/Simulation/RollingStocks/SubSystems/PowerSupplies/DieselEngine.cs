@@ -1471,10 +1471,22 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                         preThrottlePercent = CurrentThrottlePercent;
                         CurrentRPM = RealRPM;
 
-                        if (RealRPM > 1.09f * ThrottleRPMTab[locomotive.ThrottlePercent])
+                        if (ElevatedConsumptionMode)
+                        {                            
+                            float ElevatedConsumptionModeDelta = ElevatedConsumptionIdleRPMBase - ThrottleRPMTab[0];
+                            if (RealRPM > 1.09f * (ThrottleRPMTab[locomotive.ThrottlePercent] + ElevatedConsumptionModeDelta))
+                            {
+                                RegulatorDeltaRPM = 100.0f * RealRPM / ThrottleRPMTab[locomotive.ThrottlePercent];
+                                //locomotive.Simulator.Confirmer.MSG("RegulatorDeltaRPM = " + RegulatorDeltaRPM);
+                            }
+                        }
+                        else
                         {
-                            RegulatorDeltaRPM = 100.0f * RealRPM / ThrottleRPMTab[locomotive.ThrottlePercent];
-                            //locomotive.Simulator.Confirmer.MSG("RegulatorDeltaRPM = " + RegulatorDeltaRPM);
+                            if (RealRPM > 1.09f * ThrottleRPMTab[locomotive.ThrottlePercent])
+                            {
+                                RegulatorDeltaRPM = 100.0f * RealRPM / ThrottleRPMTab[locomotive.ThrottlePercent];
+                                //locomotive.Simulator.Confirmer.MSG("RegulatorDeltaRPM = " + RegulatorDeltaRPM);
+                            }
                         }
                     }
 
