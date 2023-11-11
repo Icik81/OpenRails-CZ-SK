@@ -3481,8 +3481,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
 
                         lead.MainResPressurePSI -= dp * brakeSystem.GetCylVolumeM3() / lead.MainResVolumeM3;
                         if (lead.BrakeSystem.AutoCylPressurePSI2 >= lead.ParkingBrakeTargetPressurePSI)
-                            lead.SignalEvent(Event.EngineBrakePressureStoppedChanging);
-                        else lead.EngineBrakeState = ValveState.Apply;
+                            lead.SignalEvent(Event.TrainBrakePressureStoppedChanging);
+                        else lead.SignalEvent(Event.TrainBrakePressureIncrease);
                         lead.BrakeSystem.T4_ParkingkBrake = 1;
                         lead.BrakeSystem.AutoCylPressurePSI2 = MathHelper.Clamp(lead.BrakeSystem.AutoCylPressurePSI2, 0, lead.ParkingBrakeTargetPressurePSI);
                     }
@@ -3497,8 +3497,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         float dp = elapsedClockSeconds * lead.EngineBrakeReleaseRatePSIpS;
                         lead.BrakeSystem.AutoCylPressurePSI2 -= dp;
                         if (lead.BrakeSystem.AutoCylPressurePSI2 <= 0)
-                            lead.SignalEvent(Event.EngineBrakePressureStoppedChanging);
-                        else lead.EngineBrakeState = ValveState.Release;
+                            lead.SignalEvent(Event.TrainBrakePressureStoppedChanging);
+                        else lead.SignalEvent(Event.TrainBrakePressureDecrease);
                         lead.BrakeSystem.AutoCylPressurePSI2 = MathHelper.Clamp(lead.BrakeSystem.AutoCylPressurePSI2, 0, lead.ParkingBrakeTargetPressurePSI);
                         if (lead.BrakeSystem.AutoCylPressurePSI2 < 1) brakeSystem.AutoEngineBrakeDelay = 0;
                     }
