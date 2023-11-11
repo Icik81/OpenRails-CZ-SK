@@ -6505,11 +6505,8 @@ namespace Orts.Simulation.RollingStocks
                             CabControl.DynamicBrake,
                             DynamicBrakeController.UpdateValue > 0 ? CabSetting.Increase : CabSetting.Decrease,
                             DynamicBrakeController.CurrentValue * 100);
-                    }
-
-                    // Icik
-                    //if (Simulator.UseAdvancedAdhesion && !Simulator.Paused) 
-                    if (Simulator.UseAdvancedAdhesion && Simulator.GameSpeed == 1)
+                    }                    
+                    if (Simulator.UseAdvancedAdhesion && !Simulator.Paused && Simulator.GameSpeed == 1)                     
                     {
                         AdvancedAdhesion(elapsedClockSeconds); // Use advanced adhesion model
                         AdvancedAdhesionModel = true;  // Set flag to advise advanced adhesion model is in use
@@ -7668,9 +7665,6 @@ namespace Orts.Simulation.RollingStocks
         float RandomDelay1;
         public virtual void UpdateFrictionCoefficient(float elapsedClockSeconds)
         {
-            // Icik
-            if (Simulator.GameSpeed > 1)
-                return;
             SanderSpeedOfMpS = 1000;
 
             //float BaseuMax = AdhesionEfficiencyKoef * (Curtius_KnifflerA / (MpS.ToKpH(AbsSpeedMpS) + Curtius_KnifflerB) + Curtius_KnifflerC); // Base Curtius - Kniffler equation - u = 0.33, all other values are scaled off this formula
@@ -7800,38 +7794,43 @@ namespace Orts.Simulation.RollingStocks
                 BaseFrictionCoefficientFactor0 = BaseFrictionCoefficientFactor;
             }
 
-            // Podzim
-            // Jen první hnací vozidlo bude náchylné na listí na kolejích
-            if (this == Train.FirstCar && Simulator.Season == SeasonType.Autumn && AbsSpeedMpS > 0.1f)
+            if (IsPlayerTrain)
             {
-                Time0 += elapsedClockSeconds;
-                if (Time0 < 0.5f)
-                    RandomDelay0 = Simulator.Random.Next(50, 90);
-                if (Time0 > RandomDelay0 || TimeToGenerate)
+                // Podzim
+                // Jen první hnací vozidlo bude náchylné na listí na kolejích
+                if (this == Train.FirstCar && Simulator.Season == SeasonType.Autumn && AbsSpeedMpS > 0.1f)
                 {
-                    if (!TimeToGenerate)
-                        TreeLeavesLevel = Simulator.Random.Next(1, 50);
-                    Time1 += elapsedClockSeconds;
-                    if (Time1 < 0.5f)
-                        RandomDelay1 = Simulator.Random.Next(5, 10);
-                    TimeToGenerate = true;
-                    if (Time1 > RandomDelay1)
+                    Time0 += elapsedClockSeconds;
+                    if (Time0 < 0.5f)
+                        RandomDelay0 = Simulator.Random.Next(50, 90);
+                    if (Time0 > RandomDelay0 || TimeToGenerate)
                     {
-                        Time1 = 0;
-                        TimeToGenerate = false;
-                        TreeLeavesLevel = 0;
+                        if (!TimeToGenerate)
+                            TreeLeavesLevel = Simulator.Random.Next(1, 50);
+                        Time1 += elapsedClockSeconds;
+                        if (Time1 < 0.5f)
+                            RandomDelay1 = Simulator.Random.Next(5, 10);
+                        TimeToGenerate = true;
+                        if (Time1 > RandomDelay1)
+                        {
+                            Time1 = 0;
+                            TimeToGenerate = false;
+                            TreeLeavesLevel = 0;
+                        }
+                        Time0 = 0;
                     }
-                    Time0 = 0;
+                    BaseFrictionCoefficientFactor *= (1 - (TreeLeavesLevel / 100f));
                 }
-                BaseFrictionCoefficientFactor *= (1 - (TreeLeavesLevel / 100f));
+
+                // Ostatní hnací vozidla za prvním budou mít zvýšenou adhezi o 10%
+                if (this != Train.FirstCar)
+                    BaseFrictionCoefficientFactor *= 1.1f;
+
+                // Adheze ovlivněna kvalitou tratě
+                BaseFrictionCoefficientFactor *= TrackFactor;
             }
-
-            // Ostatní hnací vozidla za prvním budou mít zvýšenou adhezi o 10%
-            if (this != Train.FirstCar)
-                BaseFrictionCoefficientFactor *= 1.1f;
-
-            // Adheze ovlivněna kvalitou tratě
-            BaseFrictionCoefficientFactor *= TrackFactor;            
+            else
+                BaseFrictionCoefficientFactor = 1;
 
             // For wagons use base Curtius-Kniffler adhesion factor - u = 0.33
             float WagonCurtius_KnifflerA = 7.5f;
