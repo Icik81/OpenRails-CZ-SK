@@ -17064,14 +17064,14 @@ namespace Orts.Simulation.Physics
                         for (int i = 0; i < train.Cars.Count; i++)
                         {
                             var wagon = (train.Cars[i] as MSTSWagon);
-
+                            
                             // Pax hledá náhradní vůz, pokud chtěl původně do vyřazeného vozu nebo už neexistujícího vozu
-                            if (wagon.NoPaxsMode || !pax.Boarded || pax.WagonIndex > train.Cars.Count - 1 || pax.WagonIndex < 0)
-                            {
+                            if (wagon.NoPaxsMode || !pax.Boarded || pax.WagonIndex > train.Cars.Count - 1 || pax.WagonIndex < 0 || wagon.PassengerList.Count >= 1.5f * wagon.PassengerCapacity)
+                            {                                
                                 pax.WagonIndex = -1;
                                 for (int j = 0; j < train.Cars.Count; j++)
                                 {
-                                    if (!(train.Cars[j] as MSTSWagon).NoPaxsMode && (train.Cars[j] as MSTSWagon).PassengerCapacity > 0)
+                                    if (!(train.Cars[j] as MSTSWagon).NoPaxsMode && (train.Cars[j] as MSTSWagon).PassengerCapacity > 0 && (train.Cars[j] as MSTSWagon).PassengerList.Count < 1.5f * (train.Cars[j] as MSTSWagon).PassengerCapacity)
                                     {
                                         pax.WagonIndex = j;
                                         pax.WagonName = Cars[j].CarID;
@@ -17081,7 +17081,19 @@ namespace Orts.Simulation.Physics
                                 }    
                                 if (pax.WagonIndex == -1)
                                 {
-                                    train.Simulator.Confirmer.Information(Simulator.Catalog.GetString("Passenger cannot board the train!!!"));
+                                    bool TrainIsPaxFull = true;
+                                    for (int j = 0; j < train.Cars.Count; j++)
+                                    {
+                                        if ((train.Cars[j] as MSTSWagon).PassengerCapacity > 0 && (train.Cars[j] as MSTSWagon).PassengerList.Count < 1.5f * (train.Cars[j] as MSTSWagon).PassengerCapacity)
+                                        {                                            
+                                            TrainIsPaxFull = false;
+                                            break;
+                                        }
+                                    }
+                                    if (TrainIsPaxFull)
+                                        train.Simulator.Confirmer.Information(Simulator.Catalog.GetString("Passenger cannot board the train!!! All the cars on the train are occupied!"));
+                                    else
+                                        train.Simulator.Confirmer.Information(Simulator.Catalog.GetString("Passenger cannot board the train!!!"));
                                     goto boarded;
                                 }
                             }
