@@ -9705,6 +9705,7 @@ namespace Orts.Simulation.RollingStocks
 
         public void LocomotiveTypeDefinition()
         {
+            if (LocomotiveName == null) LocomotiveName = "";
             // Určení řady lokomotivy 
             if (LocomotiveTypeNumber == 0)
             {

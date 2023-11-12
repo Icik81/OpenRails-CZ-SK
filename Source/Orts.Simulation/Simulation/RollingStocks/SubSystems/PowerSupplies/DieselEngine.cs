@@ -1450,15 +1450,23 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                 { }
                 else
                 {
-                    bool CheckRPMOverkill = true;
+                    bool CheckRPMOverkill = false;
                     switch (locomotive.LocomotiveTypeNumber)
                     {
                         case 750: { if (locomotive.LocomotiveTypeLongNumber == 7507) CheckRPMOverkill = false; else CheckRPMOverkill = true; break; }
                         case 753: { if (locomotive.LocomotiveTypeLongNumber == 7537) CheckRPMOverkill = false; else CheckRPMOverkill = true; break; }
-                        case 152:
-                        case 809:
-                        case 810:
-                            CheckRPMOverkill = false;
+
+                        case 466:
+                        case 720:
+                        case 721:
+                        case 725:
+                        case 742:
+                        case 743:
+                        case 749:
+                        case 754:
+                        case 770:
+                        case 771:
+                            CheckRPMOverkill = true;
                             break;
                     }
 
