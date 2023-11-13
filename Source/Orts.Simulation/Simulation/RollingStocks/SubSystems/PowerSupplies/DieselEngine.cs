@@ -1478,7 +1478,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                             preThrottlePercent = CurrentThrottlePercent;
                         }
 
-                        if (CurrentThrottlePercent < preThrottlePercent)
+                        if (locomotive.PowerCurrent1 > 0 && CurrentThrottlePercent < preThrottlePercent)
                         {
                             preThrottlePercent = CurrentThrottlePercent;
                             CurrentRPM = RealRPM;
@@ -1502,7 +1502,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                             }
                         }
 
-                        if ((CurrentThrottlePercent == 0 && RegulatorDeltaRPM > 0) || RPMgrowth)
+                        if ((locomotive.PowerCurrent1 == 0 && RegulatorDeltaRPM > 0) || RPMgrowth)
                         {
                             if (RealRPM < CurrentRPM + RegulatorDeltaRPM)
                             {
@@ -1521,7 +1521,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                         if (RegulatorRecoveryTimer == 0 && RegulatorDeltaRPM > 0 && !RPMgrowth)
                         {
                             RegulatorRecoveryTimer2 += elapsedClockSeconds;
-                            if (RegulatorRecoveryTimer2 > 1.0f)
+                            if (RegulatorRecoveryTimer2 > 0.5f)
                             {
                                 RegulatorRecoveryTimer2 = 0;
                                 RegulatorDeltaRPM = 0;
@@ -1529,7 +1529,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                         }
 
                         // 2s pro vzpamatování regulátoru
-                        if (RegulatorRecoveryTimer > 2.0f)
+                        if (RegulatorRecoveryTimer > 0.5f)
                         {
                             RegulatorRecoveryTimer = 0;
                             RegulatorDeltaRPM = 0;

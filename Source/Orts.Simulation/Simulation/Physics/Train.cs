@@ -17066,12 +17066,12 @@ namespace Orts.Simulation.Physics
                             var wagon = (train.Cars[i] as MSTSWagon);
                             
                             // Pax hledá náhradní vůz, pokud chtěl původně do vyřazeného vozu nebo už neexistujícího vozu
-                            if (wagon.NoPaxsMode || !pax.Boarded || pax.WagonIndex > train.Cars.Count - 1 || pax.WagonIndex < 0 || wagon.PassengerList.Count >= 1.5f * wagon.PassengerCapacity)
+                            if (wagon.NoPaxsMode || !pax.Boarded || pax.WagonIndex > train.Cars.Count - 1 || pax.WagonIndex < 0 || wagon.PassengerList.Count >= 1.2f * wagon.PassengerCapacity)
                             {                                
                                 pax.WagonIndex = -1;
                                 for (int j = 0; j < train.Cars.Count; j++)
                                 {
-                                    if (!(train.Cars[j] as MSTSWagon).NoPaxsMode && (train.Cars[j] as MSTSWagon).PassengerCapacity > 0 && (train.Cars[j] as MSTSWagon).PassengerList.Count < 1.5f * (train.Cars[j] as MSTSWagon).PassengerCapacity)
+                                    if (!(train.Cars[j] as MSTSWagon).NoPaxsMode && (train.Cars[j] as MSTSWagon).PassengerCapacity > 0 && (train.Cars[j] as MSTSWagon).PassengerList.Count < 1.2f * (train.Cars[j] as MSTSWagon).PassengerCapacity)
                                     {
                                         pax.WagonIndex = j;
                                         pax.WagonName = Cars[j].CarID;
@@ -17084,7 +17084,7 @@ namespace Orts.Simulation.Physics
                                     bool TrainIsPaxFull = true;
                                     for (int j = 0; j < train.Cars.Count; j++)
                                     {
-                                        if ((train.Cars[j] as MSTSWagon).PassengerCapacity > 0 && (train.Cars[j] as MSTSWagon).PassengerList.Count < 1.5f * (train.Cars[j] as MSTSWagon).PassengerCapacity)
+                                        if ((train.Cars[j] as MSTSWagon).PassengerCapacity > 0 && (train.Cars[j] as MSTSWagon).PassengerList.Count < 1.2f * (train.Cars[j] as MSTSWagon).PassengerCapacity)
                                         {                                            
                                             TrainIsPaxFull = false;
                                             break;
