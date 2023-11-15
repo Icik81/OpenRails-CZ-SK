@@ -1674,9 +1674,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                     if (RealDieselWaterTemperatureDeg < DieselOptimalTemperatureDegC
                         || EngineStatus != Status.Running)
                     {
+                        if (WaterTempCoolingLowRunning)
+                            locomotive.SignalEvent(Event.DieselMotorWaterLowCoolingOff);
                         WaterTempCoolingLowRunning = false;
-                        MSGWaterLowOn = false;
-                        locomotive.SignalEvent(Event.DieselMotorWaterLowCoolingOff);
+                        MSGWaterLowOn = false;                        
                     }
                                        
                     if (WaterTempCoolingLowRunning)
@@ -1698,9 +1699,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                     if (RealDieselOilTemperatureDeg < DieselOptimalTemperatureDegC
                         || EngineStatus != Status.Running)
                     {
+                        if (OilTempCoolingLowRunning)
+                            locomotive.SignalEvent(Event.DieselMotorOilLowCoolingOff);
                         OilTempCoolingLowRunning = false;
-                        MSGOilLowOn = false;
-                        locomotive.SignalEvent(Event.DieselMotorOilLowCoolingOff);
+                        MSGOilLowOn = false;                        
                     }
 
                     if (OilTempCoolingLowRunning)
@@ -1730,9 +1732,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                         || (CoolingEnableRPM > 0 && locomotive.EngineRPM < CoolingEnableRPM)
                         || EngineStatus != Status.Running)
                     {
+                        if (WaterTempCoolingRunning)
+                            locomotive.SignalEvent(Event.DieselMotorWaterCoolingOff);
                         WaterTempCoolingRunning = false;
-                        MSGWaterOn = false;
-                        locomotive.SignalEvent(Event.DieselMotorWaterCoolingOff);
+                        MSGWaterOn = false;                        
                     }
 
                     if (WaterTempCoolingRunning)
@@ -1757,9 +1760,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                     if (RealDieselOilTemperatureDeg < DieselOptimalTemperatureDegC
                         || EngineStatus != Status.Running)
                     {
+                        if (OilTempCoolingRunning)
+                            locomotive.SignalEvent(Event.DieselMotorOilCoolingOff);
                         OilTempCoolingRunning = false;
-                        MSGOilOn = false;
-                        locomotive.SignalEvent(Event.DieselMotorOilCoolingOff);
+                        MSGOilOn = false;                        
                     }
 
                     if (OilTempCoolingRunning)
