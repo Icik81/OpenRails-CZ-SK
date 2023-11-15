@@ -1281,12 +1281,15 @@ namespace Orts.Viewer3D
                 }
 
                 // Icik
-                if (weatherControl.Viewer.PlayerLocomotive.CarOutsideTempC > 2f)                
+                if (weatherControl.Viewer.PlayerLocomotive.CarOutsideTempC > 2f)
                     ORTSPrecipitationLiquidity = 1.0f;
                 else
                 if (weatherControl.Viewer.PlayerLocomotive.CarOutsideTempC > 0f)
+                {
                     ORTSPrecipitationLiquidity = 0.25f;
-                else                    
+                    FinishPrecipitationIntensity = MathHelper.Clamp(FinishPrecipitationIntensity, 0, 0.3f);
+                }
+                else
                     ORTSPrecipitationLiquidity = 0.0f;
 
                 int ORTSPrecipitationIntensityChanceToChange = -1;

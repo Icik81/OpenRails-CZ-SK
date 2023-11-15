@@ -13563,6 +13563,7 @@ namespace Orts.Simulation.RollingStocks
             PreSeasonSwitchPosition = SeasonSwitchPosition[LocoStation];
         }
 
+        #region Mirer ovladač
         // Mirer ovladač        
         public void ToggleMirerControllerUp()
         {
@@ -13819,6 +13820,7 @@ namespace Orts.Simulation.RollingStocks
                 }
             }            
         }
+        #endregion
 
         #region MirelRS
         public bool MirelRSControllerEnable;
@@ -13868,6 +13870,7 @@ namespace Orts.Simulation.RollingStocks
         bool MirelRSPositionBlocked;        
         bool MirelRSProtect;
         int MirelRSSkipCounter;
+        bool MirelRSNoVentilation;
 
         public bool DirectionControllerMirelRSPositionSh;
         public bool preDirectionControllerMirelRSPositionSh;
@@ -13921,33 +13924,33 @@ namespace Orts.Simulation.RollingStocks
 
             // Pozice MireluRS směrpáky
             if (StationIsActivated[LocoStation])
-            {
+            {                
+                DirectionControllerMirelRSPositionSh = false;
+                switch (MirelRSDirectionControllerPosition[LocoStation])
+                {
+                    case 0:
+                        MirelRSDirectionControllerPositionName[LocoStation] = "Z"; // nearetovaná                        
+                        Direction = Direction.Reverse;
+                        break;
+                    case 1:
+                        MirelRSDirectionControllerPositionName[LocoStation] = "0";
+                        Direction = Direction.N;
+                        break;
+                    case 2:
+                        MirelRSDirectionControllerPositionName[LocoStation] = "P"; // nearetovaná
+                        Direction = Direction.Forward;
+                        break;
+                    case 3:
+                        MirelRSDirectionControllerPositionName[LocoStation] = "Sh";
+                        DirectionControllerMirelRSPositionSh = true;
+                        Direction = Direction.Forward;
+                        break;
+                }
                 if (MirelRSDirectionControllerPosition[LocoStation] != preMirelRSDirectionControllerPosition[LocoStation])
                 {
                     preMirelRSDirectionControllerPosition[LocoStation] = MirelRSDirectionControllerPosition[LocoStation];
-                    DirectionControllerMirelRSPositionSh = false;
-                    switch (MirelRSDirectionControllerPosition[LocoStation])
-                    {
-                        case 0:
-                            MirelRSDirectionControllerPositionName[LocoStation] = "Z"; // nearetovaná                        
-                            Direction = Direction.Reverse;
-                            break;
-                        case 1:
-                            MirelRSDirectionControllerPositionName[LocoStation] = "0";
-                            Direction = Direction.N;
-                            break;
-                        case 2:
-                            MirelRSDirectionControllerPositionName[LocoStation] = "P"; // nearetovaná
-                            Direction = Direction.Forward;
-                            break;
-                        case 3:
-                            MirelRSDirectionControllerPositionName[LocoStation] = "Sh";
-                            DirectionControllerMirelRSPositionSh = true;
-                            Direction = Direction.Forward;
-                            break;
-                    }
                     Simulator.Confirmer.Information(Simulator.Catalog.GetString("Reverser") + ": " + MirelRSDirectionControllerPositionName[LocoStation]);
-                }
+                }            
             }
             if (MirelRSDirectionControllerPosition[LocoStation] == 1)
                 MirelRSControllerCanThrottleChangeValue_0 = true;
@@ -14117,9 +14120,25 @@ namespace Orts.Simulation.RollingStocks
                     }
                 }
 
+                if (DirectionControllerMirelRSPositionSh && MirelRSControllerThrottleValue == 27 && !ShModeActivated)
+                {
+                    ShModeActivated = true;
+                }
+                if (DirectionControllerMirelRSPositionSh && MirelRSControllerThrottleValue >= 51 && !ShModeActivated2)
+                {
+                    ShModeActivated2 = true;
+                }
+
+                if (ShModeActivated || ShModeActivated2 || MirelRSControllerThrottleValue == 27 || MirelRSControllerThrottleValue == 51)
+                {
+                    MirelRSNoVentilation = true;
+                }
+                else
+                    MirelRSNoVentilation = false;
+
                 if (MirelRSControllerCanThrottleChangeValue_0 || MirelRSControllerCanThrottleChangeValue_1 || MirelRSControllerCanThrottleChangeValue_2 || MirelRSControllerCanThrottleChangeValue_3
                     || ShModeActivated || Mode_To_34_Start || ShModeActivated2 || Mode_To_27_Start1 || Mode_To_27_Start2
-                    || (NoShMode && MirelRSControllerThrottleValue > 27 && MirelRSControllerThrottleValue < 34 && !Mode_To_34_Start)
+                    || (NoShMode && MirelRSControllerThrottleValue > 27 && MirelRSControllerThrottleValue < 34 && !Mode_To_34_Start)                    
                     || MirelRSSkip_Start)
                 {
                     MirelRSControllerThrottleValueTimer += elapsedClockSeconds;
@@ -14137,11 +14156,7 @@ namespace Orts.Simulation.RollingStocks
                         NoShMode = true;
                     else
                         NoShMode = false;
-
-                    if (DirectionControllerMirelRSPositionSh && MirelRSControllerThrottleValue >= 51)
-                    {
-                        ShModeActivated2 = true;
-                    }
+                    
                     // Auto skrokování do 51
                     if (ShModeActivated2 && !DirectionControllerMirelRSPositionSh)
                     {
@@ -14159,10 +14174,7 @@ namespace Orts.Simulation.RollingStocks
                                 ShModeActivated2 = false;
                             }
                         }
-                    }
-
-                    if (DirectionControllerMirelRSPositionSh && MirelRSControllerThrottleValue == 27 && !ShModeActivated)
-                        ShModeActivated = true;
+                    }                    
 
                     // Auto 1.skrokování do 27
                     if ((ShModeActivated && !DirectionControllerMirelRSPositionSh) || Mode_To_27_Start1)
@@ -14536,6 +14548,7 @@ namespace Orts.Simulation.RollingStocks
         bool HS198Protect;
         int HS198SkipCounter;
         bool HS198ControllerDisplayBlink;
+        bool HS198NoVentilation;
 
         public bool DirectionControllerHS198PositionSh;
         public bool preDirectionControllerHS198PositionSh;
@@ -14834,6 +14847,23 @@ namespace Orts.Simulation.RollingStocks
                     }
                 }
 
+                if (DirectionControllerHS198PositionSh && HS198ControllerThrottleValue == 27 && !ShModeActivated)
+                {
+                    ShModeActivated = true;
+                }
+
+                if (DirectionControllerHS198PositionSh && HS198ControllerThrottleValue >= 51 && !ShModeActivated2)
+                {
+                    ShModeActivated2 = true;
+                }
+
+                if (ShModeActivated || ShModeActivated2 || HS198ControllerThrottleValue == 27 || HS198ControllerThrottleValue == 51)
+                {
+                    HS198NoVentilation = true;
+                }
+                else
+                    HS198NoVentilation = false;
+
                 if (HS198ControllerCanThrottleChangeValue_0 || HS198ControllerCanThrottleChangeValue_1 || HS198ControllerCanThrottleChangeValue_2 || HS198ControllerCanThrottleChangeValue_3
                     || ShModeActivated || Mode_To_34_Start || ShModeActivated2 || Mode_To_27_Start1 || Mode_To_27_Start2
                     || (NoShMode && HS198ControllerThrottleValue > 27 && HS198ControllerThrottleValue < 34 && !Mode_To_34_Start)
@@ -14858,11 +14888,7 @@ namespace Orts.Simulation.RollingStocks
                         NoShMode = true;
                     else
                         NoShMode = false;
-
-                    if (DirectionControllerHS198PositionSh && HS198ControllerThrottleValue >= 51)
-                    {
-                        ShModeActivated2 = true;
-                    }
+                    
                     // Auto skrokování do 51
                     if (ShModeActivated2 && !DirectionControllerHS198PositionSh)
                     {
@@ -14880,10 +14906,7 @@ namespace Orts.Simulation.RollingStocks
                                 ShModeActivated2 = false;
                             }
                         }
-                    }
-
-                    if (DirectionControllerHS198PositionSh && HS198ControllerThrottleValue == 27 && !ShModeActivated)
-                        ShModeActivated = true;
+                    }                    
 
                     // Auto 1.skrokování do 27
                     if ((ShModeActivated && !DirectionControllerHS198PositionSh) || Mode_To_27_Start1)
@@ -15499,6 +15522,7 @@ namespace Orts.Simulation.RollingStocks
         }
         #endregion HS198
 
+        #region Axlecounter
         public bool AxleCounterEnable;
         public int AxleCount = 1;
         public bool AxleCounterDisplayReady;
@@ -15644,8 +15668,10 @@ namespace Orts.Simulation.RollingStocks
                 SignalEvent(Event.AxleCounterRestrictedSpeedZoneActiveButtonReleased);
                 AxleCounterRestrictedSpeedZoneActiveButtonPressed = false;
             }
-        }        
+        }
+        #endregion
 
+        #region Ventilátory
         // Přepínač ventilace
         public int[] VentilationSwitchPosition = new int[3];
         public int[] preVentilationSwitchPosition = new int[3];
@@ -15671,32 +15697,31 @@ namespace Orts.Simulation.RollingStocks
             if (!VentilationSwitchEnable)
                 return;
 
-            TMCoolingIsOn = VentilationIsOn;            
-
+            TMCoolingIsOn = VentilationIsOn;
+            switch (VentilationSwitchPosition[LocoStation])
+            {
+                case 0:
+                    VentilationSwitchPositionName[LocoStation] = Simulator.Catalog.GetString("Off"); // nearetované
+                    if (Simulator.StepControllerValue == 0)
+                    {
+                        VentilationIsOn = false;
+                        VentilationTimer = 0;
+                    }
+                    break;
+                case 1:
+                    VentilationSwitchPositionName[LocoStation] = Simulator.Catalog.GetString("Auto");
+                    break;
+                case 2:
+                    VentilationSwitchPositionName[LocoStation] = Simulator.Catalog.GetString("On");
+                    if (StationIsActivated[LocoStation])
+                        VentilationIsOn = true;
+                    VentilationTimer = 0;
+                    break;
+            }
             if (preVentilationSwitchPosition[LocoStation] != VentilationSwitchPosition[LocoStation])
             {
                 preVentilationSwitchPosition[LocoStation] = VentilationSwitchPosition[LocoStation];
                 SignalEvent(Event.VentilationSwitch);
-                switch (VentilationSwitchPosition[LocoStation])
-                {
-                    case 0:
-                        VentilationSwitchPositionName[LocoStation] = Simulator.Catalog.GetString("Off"); // nearetované
-                        if (Simulator.StepControllerValue == 0)
-                        {
-                            VentilationIsOn = false;
-                            VentilationTimer = 0;
-                        }
-                        break;
-                    case 1:
-                        VentilationSwitchPositionName[LocoStation] = Simulator.Catalog.GetString("Auto");
-                        break;
-                    case 2:
-                        VentilationSwitchPositionName[LocoStation] = Simulator.Catalog.GetString("On");
-                        if (StationIsActivated[LocoStation])
-                            VentilationIsOn = true;
-                        VentilationTimer = 0;
-                        break;
-                }
                 Simulator.Confirmer.Information(Simulator.Catalog.GetString("Ventilator") + ": " + VentilationSwitchPositionName[LocoStation]);
             }
 
@@ -15706,7 +15731,7 @@ namespace Orts.Simulation.RollingStocks
             // Režim automatiky ventilátoru
             if (VentilationSwitchPosition[LocoStation] == 1)
             {
-                if ((Simulator.StepControllerValue > 1 && MirelRSControllerEnable) || (Simulator.StepControllerValue > 0 && HS198ControllerEnable) || BrakeCurrent1 > 0)
+                if ((PowerCurrent1 > 0 && MirelRSControllerEnable) || (PowerCurrent1 > 0 && HS198ControllerEnable) || BrakeCurrent1 > 0)
                 {
                     VentilationIsOn = true;                    
                 }
@@ -15722,6 +15747,11 @@ namespace Orts.Simulation.RollingStocks
                         }
                     }
                 }
+                if (VentilationIsOn && (MirelRSNoVentilation || HS198NoVentilation))
+                {
+                    VentilationIsOn = false;
+                    VentilationTimer = 0;
+                }
             }
             if (VentilationIsOn && !PowerOn)
             {
@@ -15729,6 +15759,7 @@ namespace Orts.Simulation.RollingStocks
                 VentilationTimer = 0;
             }
         }
+        #endregion
 
         #region CommandCylinder
         public bool CommandCylinderEnable;
