@@ -414,7 +414,7 @@ namespace Orts.Viewer3D
         {
         }
 
-        float[] TimeAction = new float[10] {0, 0, 0.5f, 0.8f, 0, 0, 0, 0, 0, 0};        
+        float[] TimeAction = new float[10] {0, 0, Simulator.Random.Next(1, 11) / 10f, Simulator.Random.Next(1, 11) / 10f, 0, 0, 0, 0, 0, 0};        
         float TCoef;
         public override void PrepareFrame(RenderFrame frame, ElapsedTime elapsedTime)
         {
@@ -489,7 +489,10 @@ namespace Orts.Viewer3D
                                 TimeAction[2] += 0.01f * elapsedTime.ClockSeconds;
                                 if (TimeAction[2] > 0.5f / ((Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive).DieselEngines[0].RealRPM / (Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive).DieselEngines[0].RealRPM0))
                                     TimeAction[2] = 0.5f / ((Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive).DieselEngines[0].RealRPM / (Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive).DieselEngines[0].RealRPM0);
-            }
+                            }
+                            if (TimeAction[2] == 0f)
+                                TimeAction[2] = Simulator.Random.Next(1, 11) / 10f;
+
                             TCoef = 0.015f / (8.0f / SharedShape.Animations[0].FrameCount * TimeAction[2]);
                             AnimationKey[2] += SharedShape.Animations[0].FrameRate * elapsedTime.ClockSeconds * FrameRateMultiplier * TCoef;
                             while (AnimationKey[2] > SharedShape.Animations[0].FrameCount) AnimationKey[2] -= SharedShape.Animations[0].FrameCount;
@@ -516,6 +519,9 @@ namespace Orts.Viewer3D
                                 if (TimeAction[3] > 0.8f / ((Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive).DieselEngines[0].RealRPM / (Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive).DieselEngines[0].RealRPM0))
                                     TimeAction[3] = 0.8f / ((Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive).DieselEngines[0].RealRPM / (Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive).DieselEngines[0].RealRPM0);
                             }
+                            if (TimeAction[3] == 0f)
+                                TimeAction[3] = Simulator.Random.Next(1, 11) / 10f;
+
                             TCoef = 0.015f / (8.0f / SharedShape.Animations[0].FrameCount * TimeAction[3]);
                             AnimationKey[3] += SharedShape.Animations[0].FrameRate * elapsedTime.ClockSeconds * FrameRateMultiplier * TCoef;
                             while (AnimationKey[3] > SharedShape.Animations[0].FrameCount) AnimationKey[3] -= SharedShape.Animations[0].FrameCount;
