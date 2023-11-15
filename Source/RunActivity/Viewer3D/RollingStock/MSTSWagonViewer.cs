@@ -22,6 +22,7 @@
 
 using Microsoft.Xna.Framework;
 using Orts.Common;
+using Orts.Simulation;
 using Orts.Simulation.RollingStocks;
 using Orts.Simulation.RollingStocks.SubSystems;
 using Orts.Viewer3D.RollingStock.SubSystems;
@@ -1038,6 +1039,7 @@ namespace Orts.Viewer3D.RollingStock
 
             if (FreightAnimations != null)
             {
+                Viewer.Simulator.MSTSWagon = Car;
                 foreach (var freightAnim in FreightAnimations.Animations)
                 {
                     if (freightAnim.Animation is FreightAnimationStatic)

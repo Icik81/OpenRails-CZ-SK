@@ -242,6 +242,7 @@ namespace Orts.Simulation
         public bool IsWheelSlip;
         public bool AIRequestSignal;        
         public bool GameSwitchManualModeOverdrive;
+        public TrainCar MSTSWagon;
 
         public List<PowerSupplyStation> powerSupplyStations;
         public List<VoltageChangeMarker> voltageChangeMarkers;

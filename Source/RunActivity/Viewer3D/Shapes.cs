@@ -428,19 +428,19 @@ namespace Orts.Viewer3D
                 {
                     if (SharedShape.Animations[0].anim_nodes[matrix].Name.Contains("LAMELA_W"))
                     {
-                        if (Viewer.PlayerLocomotive as MSTSDieselLocomotive != null)
+                        if (Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive != null)
                         {
-                            if ((Viewer.PlayerLocomotive as MSTSWagon).DoorLeftOpen || (Viewer.PlayerLocomotive as MSTSDieselLocomotive).DieselEngines[0].WaterTempCoolingRunning)
+                            if ((Viewer.Simulator.MSTSWagon as MSTSWagon).DoorLeftOpen || (Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive).DieselEngines[0].WaterTempCoolingRunning)
                             {
-                                TimeAction[0] = (Viewer.PlayerLocomotive as MSTSDieselLocomotive).DieselEngines[0].WaterCoolingPlatesUpS;
+                                TimeAction[0] = (Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive).DieselEngines[0].WaterCoolingPlatesUpS;
                                 TCoef = 0.015f / (8.0f / SharedShape.Animations[0].FrameCount * TimeAction[0] == 0 ? 3.0f : TimeAction[0]);
                                 if (AnimationKey[0] < SharedShape.Animations[0].FrameCount)
                                     AnimationKey[0] += SharedShape.Animations[0].FrameRate * elapsedTime.ClockSeconds * FrameRateMultiplier * TCoef;
                             }
 
-                            if (!(Viewer.PlayerLocomotive as MSTSWagon).DoorLeftOpen && !(Viewer.PlayerLocomotive as MSTSDieselLocomotive).DieselEngines[0].WaterTempCoolingRunning)
+                            if (!(Viewer.Simulator.MSTSWagon as MSTSWagon).DoorLeftOpen && !(Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive).DieselEngines[0].WaterTempCoolingRunning)
                             {
-                                TimeAction[0] = (Viewer.PlayerLocomotive as MSTSDieselLocomotive).DieselEngines[0].WaterCoolingPlatesDownS;
+                                TimeAction[0] = (Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive).DieselEngines[0].WaterCoolingPlatesDownS;
                                 TCoef = 0.015f / (8.0f / SharedShape.Animations[0].FrameCount * TimeAction[0] == 0 ? 3.0f : TimeAction[0]);
                                 if (AnimationKey[0] > 0)
                                     AnimationKey[0] -= SharedShape.Animations[0].FrameRate * elapsedTime.ClockSeconds * FrameRateMultiplier * TCoef;
@@ -451,19 +451,19 @@ namespace Orts.Viewer3D
                     else
                     if (SharedShape.Animations[0].anim_nodes[matrix].Name.Contains("LAMELA_O"))
                     {
-                        if (Viewer.PlayerLocomotive as MSTSDieselLocomotive != null)
+                        if (Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive != null)
                         {
-                            if ((Viewer.PlayerLocomotive as MSTSWagon).DoorRightOpen || (Viewer.PlayerLocomotive as MSTSDieselLocomotive).DieselEngines[0].OilTempCoolingRunning)
+                            if ((Viewer.Simulator.MSTSWagon as MSTSWagon).DoorRightOpen || (Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive).DieselEngines[0].OilTempCoolingRunning)
                             {
-                                TimeAction[1] = (Viewer.PlayerLocomotive as MSTSDieselLocomotive).DieselEngines[0].OilCoolingPlatesUpS;
+                                TimeAction[1] = (Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive).DieselEngines[0].OilCoolingPlatesUpS;
                                 TCoef = 0.015f / (8.0f / SharedShape.Animations[0].FrameCount * TimeAction[1] == 0 ? 3.0f : TimeAction[1]);
                                 if (AnimationKey[1] < SharedShape.Animations[0].FrameCount)
                                     AnimationKey[1] += SharedShape.Animations[0].FrameRate * elapsedTime.ClockSeconds * FrameRateMultiplier * TCoef;
                             }
 
-                            if (!(Viewer.PlayerLocomotive as MSTSWagon).DoorRightOpen && !(Viewer.PlayerLocomotive as MSTSDieselLocomotive).DieselEngines[0].OilTempCoolingRunning)
+                            if (!(Viewer.Simulator.MSTSWagon as MSTSWagon).DoorRightOpen && !(Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive).DieselEngines[0].OilTempCoolingRunning)
                             {
-                                TimeAction[1] = (Viewer.PlayerLocomotive as MSTSDieselLocomotive).DieselEngines[0].OilCoolingPlatesDownS;
+                                TimeAction[1] = (Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive).DieselEngines[0].OilCoolingPlatesDownS;
                                 TCoef = 0.015f / (8.0f / SharedShape.Animations[0].FrameCount * TimeAction[1] == 0 ? 3.0f : TimeAction[1]);
                                 if (AnimationKey[1] > 0)
                                     AnimationKey[1] -= SharedShape.Animations[0].FrameRate * elapsedTime.ClockSeconds * FrameRateMultiplier * TCoef;
@@ -474,21 +474,21 @@ namespace Orts.Viewer3D
                     else
                     if (SharedShape.Animations[0].anim_nodes[matrix].Name.Contains("FAN_W"))
                     {
-                        if (Viewer.PlayerLocomotive as MSTSDieselLocomotive != null)
+                        if (Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive != null)
                         {
-                            if ((Viewer.PlayerLocomotive as MSTSWagon).DoorLeftOpen || (Viewer.PlayerLocomotive as MSTSDieselLocomotive).DieselEngines[0].WaterTempCoolingRunning)
+                            if ((Viewer.Simulator.MSTSWagon as MSTSWagon).DoorLeftOpen || (Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive).DieselEngines[0].WaterTempCoolingRunning)
                             {
                                 TimeAction[2] -= 0.1f * elapsedTime.ClockSeconds;
                                 if (TimeAction[2] < 0.05f)
                                     TimeAction[2] = 0.05f;
-                                if (TimeAction[2] > 0.15f / ((Viewer.PlayerLocomotive as MSTSDieselLocomotive).DieselEngines[0].RealRPM / (Viewer.PlayerLocomotive as MSTSDieselLocomotive).DieselEngines[0].RealRPM0))
-                                    TimeAction[2] = 0.15f / ((Viewer.PlayerLocomotive as MSTSDieselLocomotive).DieselEngines[0].RealRPM / (Viewer.PlayerLocomotive as MSTSDieselLocomotive).DieselEngines[0].RealRPM0);
+                                if (TimeAction[2] > 0.15f / ((Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive).DieselEngines[0].RealRPM / (Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive).DieselEngines[0].RealRPM0))
+                                    TimeAction[2] = 0.15f / ((Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive).DieselEngines[0].RealRPM / (Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive).DieselEngines[0].RealRPM0);
                             }
-                            if (!(Viewer.PlayerLocomotive as MSTSWagon).DoorLeftOpen && !(Viewer.PlayerLocomotive as MSTSDieselLocomotive).DieselEngines[0].WaterTempCoolingRunning)
+                            if (!(Viewer.Simulator.MSTSWagon as MSTSWagon).DoorLeftOpen && !(Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive).DieselEngines[0].WaterTempCoolingRunning)
                             {
                                 TimeAction[2] += 0.01f * elapsedTime.ClockSeconds;
-                                if (TimeAction[2] > 0.5f / ((Viewer.PlayerLocomotive as MSTSDieselLocomotive).DieselEngines[0].RealRPM / (Viewer.PlayerLocomotive as MSTSDieselLocomotive).DieselEngines[0].RealRPM0))
-                                    TimeAction[2] = 0.5f / ((Viewer.PlayerLocomotive as MSTSDieselLocomotive).DieselEngines[0].RealRPM / (Viewer.PlayerLocomotive as MSTSDieselLocomotive).DieselEngines[0].RealRPM0);
+                                if (TimeAction[2] > 0.5f / ((Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive).DieselEngines[0].RealRPM / (Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive).DieselEngines[0].RealRPM0))
+                                    TimeAction[2] = 0.5f / ((Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive).DieselEngines[0].RealRPM / (Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive).DieselEngines[0].RealRPM0);
             }
                             TCoef = 0.015f / (8.0f / SharedShape.Animations[0].FrameCount * TimeAction[2]);
                             AnimationKey[2] += SharedShape.Animations[0].FrameRate * elapsedTime.ClockSeconds * FrameRateMultiplier * TCoef;
@@ -500,21 +500,21 @@ namespace Orts.Viewer3D
                     else
                     if (SharedShape.Animations[0].anim_nodes[matrix].Name.Contains("FAN_O"))
                     {
-                        if (Viewer.PlayerLocomotive as MSTSDieselLocomotive != null)
+                        if (Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive != null)
                         {
-                            if ((Viewer.PlayerLocomotive as MSTSWagon).DoorRightOpen || (Viewer.PlayerLocomotive as MSTSDieselLocomotive).DieselEngines[0].OilTempCoolingRunning)
+                            if ((Viewer.Simulator.MSTSWagon as MSTSWagon).DoorRightOpen || (Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive).DieselEngines[0].OilTempCoolingRunning)
                             {
                                 TimeAction[3] -= 0.1f * elapsedTime.ClockSeconds;
                                 if (TimeAction[3] < 0.05f)
                                     TimeAction[3] = 0.05f;
-                                if (TimeAction[3] > 0.2f / ((Viewer.PlayerLocomotive as MSTSDieselLocomotive).DieselEngines[0].RealRPM / (Viewer.PlayerLocomotive as MSTSDieselLocomotive).DieselEngines[0].RealRPM0))
-                                    TimeAction[3] = 0.2f / ((Viewer.PlayerLocomotive as MSTSDieselLocomotive).DieselEngines[0].RealRPM / (Viewer.PlayerLocomotive as MSTSDieselLocomotive).DieselEngines[0].RealRPM0);
+                                if (TimeAction[3] > 0.2f / ((Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive).DieselEngines[0].RealRPM / (Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive).DieselEngines[0].RealRPM0))
+                                    TimeAction[3] = 0.2f / ((Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive).DieselEngines[0].RealRPM / (Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive).DieselEngines[0].RealRPM0);
                             }
-                            if (!(Viewer.PlayerLocomotive as MSTSWagon).DoorRightOpen && !(Viewer.PlayerLocomotive as MSTSDieselLocomotive).DieselEngines[0].OilTempCoolingRunning)
+                            if (!(Viewer.Simulator.MSTSWagon as MSTSWagon).DoorRightOpen && !(Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive).DieselEngines[0].OilTempCoolingRunning)
                             {
                                 TimeAction[3] += 0.01f * elapsedTime.ClockSeconds;
-                                if (TimeAction[3] > 0.8f / ((Viewer.PlayerLocomotive as MSTSDieselLocomotive).DieselEngines[0].RealRPM / (Viewer.PlayerLocomotive as MSTSDieselLocomotive).DieselEngines[0].RealRPM0))
-                                    TimeAction[3] = 0.8f / ((Viewer.PlayerLocomotive as MSTSDieselLocomotive).DieselEngines[0].RealRPM / (Viewer.PlayerLocomotive as MSTSDieselLocomotive).DieselEngines[0].RealRPM0);
+                                if (TimeAction[3] > 0.8f / ((Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive).DieselEngines[0].RealRPM / (Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive).DieselEngines[0].RealRPM0))
+                                    TimeAction[3] = 0.8f / ((Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive).DieselEngines[0].RealRPM / (Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive).DieselEngines[0].RealRPM0);
                             }
                             TCoef = 0.015f / (8.0f / SharedShape.Animations[0].FrameCount * TimeAction[3]);
                             AnimationKey[3] += SharedShape.Animations[0].FrameRate * elapsedTime.ClockSeconds * FrameRateMultiplier * TCoef;
@@ -525,19 +525,19 @@ namespace Orts.Viewer3D
                     }
                     if (SharedShape.Animations[0].anim_nodes[matrix].Name.Contains("LAMELA_TW"))
                     {
-                        if (Viewer.PlayerLocomotive as MSTSDieselLocomotive != null)
+                        if (Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive != null)
                         {
-                            if ((Viewer.PlayerLocomotive as MSTSWagon).DoorLeftOpen || (Viewer.PlayerLocomotive as MSTSDieselLocomotive).DieselEngines[0].WaterTempCoolingRunning)
+                            if ((Viewer.Simulator.MSTSWagon as MSTSWagon).DoorLeftOpen || (Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive).DieselEngines[0].WaterTempCoolingRunning)
                             {
-                                TimeAction[4] = (Viewer.PlayerLocomotive as MSTSDieselLocomotive).DieselEngines[0].WaterCoolingPlatesUpS;
+                                TimeAction[4] = (Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive).DieselEngines[0].WaterCoolingPlatesUpS;
                                 TCoef = 0.015f / (8.0f / SharedShape.Animations[0].FrameCount * TimeAction[4] == 0 ? 3.0f / 2.0f : TimeAction[4] / 2.0f);
                                 if (AnimationKey[4] < SharedShape.Animations[0].FrameCount)
                                     AnimationKey[4] += SharedShape.Animations[0].FrameRate * elapsedTime.ClockSeconds * FrameRateMultiplier * TCoef;
                             }
 
-                            if (!(Viewer.PlayerLocomotive as MSTSWagon).DoorLeftOpen && !(Viewer.PlayerLocomotive as MSTSDieselLocomotive).DieselEngines[0].WaterTempCoolingRunning)
+                            if (!(Viewer.Simulator.MSTSWagon as MSTSWagon).DoorLeftOpen && !(Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive).DieselEngines[0].WaterTempCoolingRunning)
                             {
-                                TimeAction[4] = (Viewer.PlayerLocomotive as MSTSDieselLocomotive).DieselEngines[0].WaterCoolingPlatesDownS;
+                                TimeAction[4] = (Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive).DieselEngines[0].WaterCoolingPlatesDownS;
                                 TCoef = 0.015f / (8.0f / SharedShape.Animations[0].FrameCount * TimeAction[4] == 0 ? 3.0f / 2.0f : TimeAction[4] / 2.0f);
                                 if (AnimationKey[4] > 0)
                                     AnimationKey[4] -= SharedShape.Animations[0].FrameRate * elapsedTime.ClockSeconds * FrameRateMultiplier * TCoef;
@@ -548,19 +548,19 @@ namespace Orts.Viewer3D
                     else
                     if (SharedShape.Animations[0].anim_nodes[matrix].Name.Contains("LAMELA_TO"))
                     {
-                        if (Viewer.PlayerLocomotive as MSTSDieselLocomotive != null)
+                        if (Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive != null)
                         {
-                            if ((Viewer.PlayerLocomotive as MSTSWagon).DoorRightOpen || (Viewer.PlayerLocomotive as MSTSDieselLocomotive).DieselEngines[0].OilTempCoolingRunning)
+                            if ((Viewer.Simulator.MSTSWagon as MSTSWagon).DoorRightOpen || (Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive).DieselEngines[0].OilTempCoolingRunning)
                             {
-                                TimeAction[5] = (Viewer.PlayerLocomotive as MSTSDieselLocomotive).DieselEngines[0].OilCoolingPlatesUpS;
+                                TimeAction[5] = (Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive).DieselEngines[0].OilCoolingPlatesUpS;
                                 TCoef = 0.015f / (8.0f / SharedShape.Animations[0].FrameCount * TimeAction[5] == 0 ? 3.0f / 2.0f: TimeAction[5] / 2.0f);
                                 if (AnimationKey[5] < SharedShape.Animations[0].FrameCount)
                                     AnimationKey[5] += SharedShape.Animations[0].FrameRate * elapsedTime.ClockSeconds * FrameRateMultiplier * TCoef;
                             }
 
-                            if (!(Viewer.PlayerLocomotive as MSTSWagon).DoorRightOpen && !(Viewer.PlayerLocomotive as MSTSDieselLocomotive).DieselEngines[0].OilTempCoolingRunning)
+                            if (!(Viewer.Simulator.MSTSWagon as MSTSWagon).DoorRightOpen && !(Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive).DieselEngines[0].OilTempCoolingRunning)
                             {
-                                TimeAction[5] = (Viewer.PlayerLocomotive as MSTSDieselLocomotive).DieselEngines[0].OilCoolingPlatesDownS;
+                                TimeAction[5] = (Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive).DieselEngines[0].OilCoolingPlatesDownS;
                                 TCoef = 0.015f / (8.0f / SharedShape.Animations[0].FrameCount * TimeAction[5] == 0 ? 3.0f / 2.0f : TimeAction[5] / 2.0f);
                                 if (AnimationKey[5] > 0)
                                     AnimationKey[5] -= SharedShape.Animations[0].FrameRate * elapsedTime.ClockSeconds * FrameRateMultiplier * TCoef;
