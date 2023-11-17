@@ -972,8 +972,8 @@ namespace Orts.Simulation.RollingStocks
             }                                    
 
             if (StartOn && DavisBNSpM / G0 > 0.00002f) // Pokud jsou zadány nesprávné Davis hodnoty, tak je resetuje do 0            
-                DavisAN = DavisBNSpM = DavisCNSSpMM = 0;            
-
+                DavisAN = DavisBNSpM = DavisCNSSpMM = 0;
+            
             switch (WagonNumAxles) // Definice Davis-default hodnot, pokud nejsou přesně definovány uživatelem 
             {
                 case 2:
@@ -991,7 +991,7 @@ namespace Orts.Simulation.RollingStocks
                             DavisBNSpM *= GCoef;
 
                         if (DavisCNSSpMM == 0)
-                            DavisCNSSpMM = 0.000148f * G0 / TrailLocoResistanceFactor;
+                            DavisCNSSpMM = 0.000148f * G0;
                         else
                             if (G1 != G)
                             DavisCNSSpMM *= GCoef;                        
@@ -1012,7 +1012,7 @@ namespace Orts.Simulation.RollingStocks
                             DavisBNSpM *= GCoef;
 
                         if (DavisCNSSpMM == 0)
-                            DavisCNSSpMM = 0.00015f * G0 / TrailLocoResistanceFactor;
+                            DavisCNSSpMM = 0.00015f * G0;
                         else
                             if (G1 != G)
                             DavisCNSSpMM *= GCoef;                        
@@ -1033,7 +1033,7 @@ namespace Orts.Simulation.RollingStocks
                             DavisBNSpM *= GCoef;
 
                         if (DavisCNSSpMM == 0)
-                            DavisCNSSpMM = 0.00015f * G0 / TrailLocoResistanceFactor;
+                            DavisCNSSpMM = 0.00015f * G0;
                         else
                             if (G1 != G)
                             DavisCNSSpMM *= GCoef;                        
@@ -1054,7 +1054,7 @@ namespace Orts.Simulation.RollingStocks
                             DavisBNSpM *= GCoef;
 
                         if (DavisCNSSpMM == 0)
-                            DavisCNSSpMM = 0.000136f * G0 / TrailLocoResistanceFactor;
+                            DavisCNSSpMM = 0.000136f * G0;
                         else
                             if (G1 != G)
                             DavisCNSSpMM *= GCoef;                   
@@ -1075,7 +1075,7 @@ namespace Orts.Simulation.RollingStocks
                             DavisBNSpM *= GCoef;
 
                         if (DavisCNSSpMM == 0)
-                            DavisCNSSpMM = 0.00015f * G0 / TrailLocoResistanceFactor;
+                            DavisCNSSpMM = 0.00015f * G0;
                         else
                             if (G1 != G)
                             DavisCNSSpMM *= GCoef;                        
@@ -2140,7 +2140,8 @@ namespace Orts.Simulation.RollingStocks
         {
             base.Update(elapsedClockSeconds);
 
-            // Icik                        
+            // Icik
+            DetermineFirstCarHeadOfTrain();
             ToggleHeatingCarOperationsWindow();
             ToggleBrakeCarDeactivateCarOperationsWindow();
             ToggleDoorsCarOperationsWindow();
@@ -2986,48 +2987,17 @@ namespace Orts.Simulation.RollingStocks
                 WheelBearingTemperatureResistanceFactor = 2.0f;
             }
 
-            //FrictionForceN = DavisAN * WheelBearingTemperatureResistanceFactor + AbsSpeedMpS * (DavisBNSpM + AbsSpeedMpS * DavisCNSSpMM); // for normal speed operation
-            FrictionForceN = DavisAN0 * WheelBearingTemperatureResistanceFactor + MpS.ToKpH(AbsSpeedMpS) * (DavisBNSpM0 + MpS.ToKpH(AbsSpeedMpS) * DavisCNSSpMM0); // for normal speed operation
-
-            // if this car is a locomotive, but not the lead one then recalculate the resistance with lower value as drag will not be as high on trailing locomotives
-            // Only the drag (C) factor changes if a trailing locomotive, so only running resistance, and not starting resistance needs to be corrected
-            if (WagonType == WagonTypes.Engine && Train.LeadLocomotive != this)
+            // Icik
+            // Vůz nebo loko v čele vlaku nemá snížený odpor 
+            TrailLocoResistanceFactor = 0.2083f;
+            if (this == FirstCarHeadOfTrain)
             {
-                //FrictionForceN = DavisAN * WheelBearingTemperatureResistanceFactor + AbsSpeedMpS * (DavisBNSpM + AbsSpeedMpS * (TrailLocoResistanceFactor * DavisCNSSpMM));
-                FrictionForceN = DavisAN0 * WheelBearingTemperatureResistanceFactor + MpS.ToKpH(AbsSpeedMpS) * (DavisBNSpM0 + MpS.ToKpH(AbsSpeedMpS) * (TrailLocoResistanceFactor * DavisCNSSpMM0));
+                FrictionForceN = DavisAN0 * WheelBearingTemperatureResistanceFactor + MpS.ToKpH(AbsSpeedMpS) * (DavisBNSpM0 + MpS.ToKpH(AbsSpeedMpS) * DavisCNSSpMM0);                
             }
-
-            // Test to identify whether a tender is attached to the leading engine, if not then the resistance should also be derated as for the locomotive
-            bool IsLeadTender = false;
-            if (WagonType == WagonTypes.Tender)
+            else
             {
-                bool PrevCarLead = false;
-                foreach (var car in Train.Cars)
-                {
-                    // If this car is a tender and the previous car is the lead locomotive then set the flag so that resistance will be reduced
-                    if (car == this && PrevCarLead)
-                    {
-                        IsLeadTender = true;
-                        break;  // If the tender has been identified then break out of the loop, otherwise keep going until whole train is done.
-                    }
-                    // Identify whether car is a lead locomotive or not. This is kept for when the next iteration (next car) is checked.
-                    if (Train.LeadLocomotive == car)
-                    {
-                        PrevCarLead = true;
-                    }
-                    else
-                    {
-                        PrevCarLead = false;
-                    }
-
-                }
-
-                // If tender is coupled to a trailing locomotive then reduce resistance
-                if (!IsLeadTender)
-                {
-                    //FrictionForceN = DavisAN * WheelBearingTemperatureResistanceFactor + AbsSpeedMpS * (DavisBNSpM + AbsSpeedMpS * (TrailLocoResistanceFactor * DavisCNSSpMM));
-                    FrictionForceN = DavisAN0 * WheelBearingTemperatureResistanceFactor + MpS.ToKpH(AbsSpeedMpS) * (DavisBNSpM0 + MpS.ToKpH(AbsSpeedMpS) * (TrailLocoResistanceFactor * DavisCNSSpMM0));
-                }
+                // Ostatní vozy mají snížený jízdní odpor (bez náporu vzduchu)
+                FrictionForceN = DavisAN0 * WheelBearingTemperatureResistanceFactor + MpS.ToKpH(AbsSpeedMpS) * (DavisBNSpM0 + MpS.ToKpH(AbsSpeedMpS) * (DavisCNSSpMM0 * TrailLocoResistanceFactor));
             }
         }
 
@@ -3318,49 +3288,17 @@ namespace Orts.Simulation.RollingStocks
 
                 LateralWindForceN = N.FromLbf(WindConstant * A * (float)Math.Sin(ResultantWindComponentRad) * DavisDragConstant * WagonFrontalAreaFt2 * TrainSpeedMpH * TrainSpeedMpH * C);
 
-                float LateralWindResistanceForceN = N.FromLbf(WindConstant * A * (float)Math.Sin(ResultantWindComponentRad) * DavisDragConstant * WagonFrontalAreaFt2 * TrainSpeedMpH * TrainSpeedMpH * C * Train.WagonCoefficientFriction);
+                float LateralWindResistanceForceN = N.FromLbf(WindConstant * A * (float)Math.Sin(ResultantWindComponentRad) * DavisDragConstant * WagonFrontalAreaFt2 * TrainSpeedMpH * TrainSpeedMpH * C * Train.WagonCoefficientFriction);                                
 
-                // if this car is a locomotive, but not the lead one then recalculate the resistance with lower C value as drag will not be as high on trailing locomotives
-                if (WagonType == WagonTypes.Engine && Train.LeadLocomotive != this)
+                // Icik
+                if (this == FirstCarHeadOfTrain)
                 {
-                    LateralWindResistanceForceN *= TrailLocoResistanceFactor;
+                    WindForceN = LateralWindResistanceForceN + WindDragResistanceForceN;
                 }
-
-                // Test to identify whether a tender is attached to the leading engine, if not then the resistance should also be derated as for the locomotive
-                bool IsLeadTender = false;
-                if (WagonType == WagonTypes.Tender)
+                else
                 {
-                    bool PrevCarLead = false;
-                    foreach (var car in Train.Cars)
-                    {
-                        // If this car is a tender and the previous car is the lead locomotive then set the flag so that resistance will be reduced
-                        if (car == this && PrevCarLead)
-                        {
-                            IsLeadTender = true;
-                            break;  // If the tender has been identified then break out of the loop, otherwise keep going until whole train is done.
-                        }
-                        // Identify whether car is a lead locomotive or not. This is kept for when the next iteration (next car) is checked.
-                        if (Train.LeadLocomotive == car)
-                        {
-                            PrevCarLead = true;
-                        }
-                        else
-                        {
-                            PrevCarLead = false;
-                        }
-
-                    }
-
-                    // If tender is coupled to a trailing locomotive then reduce resistance
-                    if (!IsLeadTender)
-                    {
-                        LateralWindResistanceForceN *= TrailLocoResistanceFactor;
-                    }
-
-                }
-
-                WindForceN = LateralWindResistanceForceN + WindDragResistanceForceN;
-
+                    WindForceN = (LateralWindResistanceForceN * TrailLocoResistanceFactor) + WindDragResistanceForceN;
+                }                
             }
             else
             {
@@ -3796,6 +3734,24 @@ namespace Orts.Simulation.RollingStocks
         }
 
         // Icik
+        public TrainCar FirstCarHeadOfTrain;
+        public void DetermineFirstCarHeadOfTrain()
+        {
+            FirstCarHeadOfTrain = null;
+            if (this == Train.FirstCar && Train.SpeedMpS > 0)
+            {
+                FirstCarHeadOfTrain = this;
+            }
+            if (this == Train.LastCar && Train.SpeedMpS < 0)
+            {
+                FirstCarHeadOfTrain = this;
+            }
+            if (FirstCarHeadOfTrain != null)
+            {
+                FirstCarHeadOfTrain = this;
+            }
+        }
+
         public void ToggleHeatingCarOperationsWindow()
         {
             foreach (var car in Train.Cars)

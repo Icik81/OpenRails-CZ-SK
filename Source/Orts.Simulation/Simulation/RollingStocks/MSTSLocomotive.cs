@@ -7801,20 +7801,20 @@ namespace Orts.Simulation.RollingStocks
                 var CarIsFirst = Flipped ^ UsingRearCab ? Train.LastCar : Train.FirstCar;
                 var CarIsLast = Flipped ^ UsingRearCab ? Train.FirstCar : Train.LastCar;
 
-                if (this == CarIsFirst && Flipped ^ UsingRearCab ? Direction == Direction.Forward : Direction == Direction.Reverse)
+                if (this == CarIsFirst && Train.SpeedMpS < 0)
                 {
                     goto TreeLeavesSkip;
                 }
-                if (this == CarIsFirst && Flipped ^ UsingRearCab ? Direction == Direction.Reverse : Direction == Direction.Forward)
+                if (this == CarIsFirst && Train.SpeedMpS > 0)
                 {
                     goto TreeLeaves;
                 }
 
-                if (this == CarIsLast && Flipped ^ UsingRearCab ? Direction == Direction.Reverse : Direction == Direction.Forward)
+                if (this == CarIsLast && Train.SpeedMpS < 0)
                 {
                     goto TreeLeavesSkip;
                 }
-                if (this == CarIsLast && Flipped ^ UsingRearCab ? Direction == Direction.Forward : Direction == Direction.Reverse)
+                if (this == CarIsLast && Train.SpeedMpS > 0)
                 {
                     goto TreeLeaves;
                 }
@@ -7823,7 +7823,7 @@ namespace Orts.Simulation.RollingStocks
                 BaseFrictionCoefficientFactor *= 1.1f;
                 goto TreeLeavesSkip;
 
-            TreeLeaves:
+            TreeLeaves: 
                 if (Simulator.Season == SeasonType.Autumn && AbsSpeedMpS > 0.1f)
                 {
                     Time0 += elapsedClockSeconds;
