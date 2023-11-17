@@ -15754,13 +15754,13 @@ namespace Orts.Simulation.RollingStocks
             // Režim automatiky ventilátoru
             if (VentilationSwitchPosition[LocoStation] == 1)
             {
-                if ((PowerCurrent1 > 0 && MirelRSControllerEnable) || (PowerCurrent1 > 0 && HS198ControllerEnable) || BrakeCurrent1 > 0)
+                if ((PowerOn && MirelRSControllerThrottleValue > 1 && MirelRSControllerEnable) || (PowerOn && HS198ControllerThrottleValue > 0 && HS198ControllerEnable) || BrakeCurrent1 > 0)
                 {
                     VentilationIsOn = true;                    
                 }
                 else
                 {
-                    if (VentilationIsOn && MirelRSControllerEnable)
+                    if (VentilationIsOn && MirelRSControllerEnable && !HS198ControllerEnable)
                     {
                         VentilationTimer += elapsedClocSeconds;
                         if (VentilationTimer > 20f)
