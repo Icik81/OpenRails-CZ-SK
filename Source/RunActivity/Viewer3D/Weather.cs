@@ -1101,6 +1101,19 @@ namespace Orts.Viewer3D
                 dynamicWeather.WeatherChange_Init(weatherChange, this);
                 Program.Simulator.ActivityRun.triggeredEventWrapper = null;
             }
+
+            // Icik
+            if (Viewer.PlayerLocomotive.CarOutsideTempC > 2f)
+                Weather.PrecipitationLiquidity = 1.0f;
+            else
+            if (Viewer.PlayerLocomotive.CarOutsideTempC > 0f)
+            {
+                Weather.PrecipitationLiquidity = 0.2f;
+                Weather.PricipitationIntensityPPSPM2 = MathHelper.Clamp(Weather.PricipitationIntensityPPSPM2, 0, 0.05f);
+            }
+            else
+                Weather.PrecipitationLiquidity = 0.0f;
+
             if (weatherChangeOn)
             // manage the weather change sequence
             {
@@ -1279,19 +1292,8 @@ namespace Orts.Viewer3D
                     }
                     if (fogTimer == 0) ORTSFog = -1;
                 }
-
+                
                 // Icik
-                if (weatherControl.Viewer.PlayerLocomotive.CarOutsideTempC > 2f)
-                    ORTSPrecipitationLiquidity = 1.0f;
-                else
-                if (weatherControl.Viewer.PlayerLocomotive.CarOutsideTempC > 0f)
-                {
-                    ORTSPrecipitationLiquidity = 0.25f;
-                    FinishPrecipitationIntensity = MathHelper.Clamp(FinishPrecipitationIntensity, 0, 0.1f);
-                }
-                else
-                    ORTSPrecipitationLiquidity = 0.0f;
-
                 int ORTSPrecipitationIntensityChanceToChange = -1;
                 if (weatherControl.Viewer.Simulator.WeatherAdv == 7)
                 {

@@ -7797,8 +7797,34 @@ namespace Orts.Simulation.RollingStocks
             if (IsPlayerTrain)
             {
                 // Podzim
-                // Jen první hnací vozidlo bude náchylné na listí na kolejích
-                if (this == Train.FirstCar && Simulator.Season == SeasonType.Autumn && AbsSpeedMpS > 0.1f)
+                // Jen první hnací vozidlo na čele vlaku bude náchylné na listí na kolejích
+                var CarIsFirst = Flipped ^ UsingRearCab ? Train.LastCar : Train.FirstCar;
+                var CarIsLast = Flipped ^ UsingRearCab ? Train.FirstCar : Train.LastCar;
+
+                if (this == CarIsFirst && Flipped ^ UsingRearCab ? Direction == Direction.Forward : Direction == Direction.Reverse)
+                {
+                    goto TreeLeavesSkip;
+                }
+                if (this == CarIsFirst && Flipped ^ UsingRearCab ? Direction == Direction.Reverse : Direction == Direction.Forward)
+                {
+                    goto TreeLeaves;
+                }
+
+                if (this == CarIsLast && Flipped ^ UsingRearCab ? Direction == Direction.Reverse : Direction == Direction.Forward)
+                {
+                    goto TreeLeavesSkip;
+                }
+                if (this == CarIsLast && Flipped ^ UsingRearCab ? Direction == Direction.Forward : Direction == Direction.Reverse)
+                {
+                    goto TreeLeaves;
+                }
+
+                // Ostatní hnací vozidla za prvním budou mít zvýšenou adhezi o 10%
+                BaseFrictionCoefficientFactor *= 1.1f;
+                goto TreeLeavesSkip;
+
+            TreeLeaves:
+                if (Simulator.Season == SeasonType.Autumn && AbsSpeedMpS > 0.1f)
                 {
                     Time0 += elapsedClockSeconds;
                     if (Time0 < 0.5f)
@@ -7806,7 +7832,7 @@ namespace Orts.Simulation.RollingStocks
                     if (Time0 > RandomDelay0 || TimeToGenerate)
                     {
                         if (!TimeToGenerate)
-                            TreeLeavesLevel = Simulator.Random.Next(1, 50);
+                            TreeLeavesLevel = Simulator.Random.Next(10, 50);
                         Time1 += elapsedClockSeconds;
                         if (Time1 < 0.5f)
                             RandomDelay1 = Simulator.Random.Next(5, 10);
@@ -7819,18 +7845,15 @@ namespace Orts.Simulation.RollingStocks
                         }
                         Time0 = 0;
                     }
-                    BaseFrictionCoefficientFactor *= (1 - (TreeLeavesLevel / 100f));
+                    BaseFrictionCoefficientFactor *= (1.0f - (TreeLeavesLevel / 100f));
                 }
-
-                // Ostatní hnací vozidla za prvním budou mít zvýšenou adhezi o 10%
-                if (this != Train.FirstCar)
-                    BaseFrictionCoefficientFactor *= 1.1f;
+             TreeLeavesSkip:
 
                 // Adheze ovlivněna kvalitou tratě
                 BaseFrictionCoefficientFactor *= TrackFactor;
             }
             else
-                BaseFrictionCoefficientFactor = 1;
+                BaseFrictionCoefficientFactor = 1.0f;
 
             // For wagons use base Curtius-Kniffler adhesion factor - u = 0.33
             float WagonCurtius_KnifflerA = 7.5f;
