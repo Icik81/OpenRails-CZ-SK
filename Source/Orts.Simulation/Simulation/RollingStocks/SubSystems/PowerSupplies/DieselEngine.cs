@@ -1104,8 +1104,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                     case "watertempcoolinghyst": DieselTempWaterCoolingHyst = stf.ReadFloatBlock(STFReader.UNITS.Temperature, 5f); break;
                     case "oiltempcoolinghyst": DieselTempOilCoolingHyst = stf.ReadFloatBlock(STFReader.UNITS.Temperature, 5f); break;
                     case "coolingenablerpm": CoolingEnableRPM = stf.ReadFloatBlock(STFReader.UNITS.None, 0f); break;
-                    case "watercoolingpower": WaterCoolingPower = stf.ReadFloatBlock(STFReader.UNITS.None, 75f); WaterCoolingPower = MathHelper.Clamp(WaterCoolingPower, 30, 500); break;
-                    case "oilcoolingpower": OilCoolingPower = stf.ReadFloatBlock(STFReader.UNITS.None, 75f); OilCoolingPower = MathHelper.Clamp(OilCoolingPower, 30, 500); break;
+                    case "watercoolingpower": WaterCoolingPower = stf.ReadFloatBlock(STFReader.UNITS.None, 75f); WaterCoolingPower = MathHelper.Clamp(WaterCoolingPower, 30, 1000); break;
+                    case "oilcoolingpower": OilCoolingPower = stf.ReadFloatBlock(STFReader.UNITS.None, 75f); OilCoolingPower = MathHelper.Clamp(OilCoolingPower, 30, 1000); break;
                     case "elevatedconsumptionidlerpm": ElevatedConsumptionIdleRPM = stf.ReadFloatBlock(STFReader.UNITS.None, 0); break;
                     case "turbodelayup": TurboDelayUpS = stf.ReadFloatBlock(STFReader.UNITS.Time, 2f); break;
                     case "turbodelaydown": TurboDelayDownS = stf.ReadFloatBlock(STFReader.UNITS.Time, 4f); break;

@@ -1287,7 +1287,7 @@ namespace Orts.Viewer3D
                 if (weatherControl.Viewer.PlayerLocomotive.CarOutsideTempC > 0f)
                 {
                     ORTSPrecipitationLiquidity = 0.25f;
-                    FinishPrecipitationIntensity = MathHelper.Clamp(FinishPrecipitationIntensity, 0, 0.3f);
+                    FinishPrecipitationIntensity = MathHelper.Clamp(FinishPrecipitationIntensity, 0, 0.1f);
                 }
                 else
                     ORTSPrecipitationLiquidity = 0.0f;
