@@ -842,7 +842,7 @@ namespace Orts.Viewer3D
             {
                 Weather.FogDistance = Math.Max(SeasonFogMin, (float)Math.Pow(10, (int)((randValue / 1000) + 3)) * (float)((randValue % 1000 + 1) / 100f));                
             }
-            Weather.FogDistance = MathHelper.Clamp(Weather.FogDistance, SeasonFogMin, SeasonFogMax);
+            Weather.FogDistance = MathHelper.Clamp(Weather.FogDistance, SeasonFogMin, SeasonFogMax);            
             return true;
         }
 
@@ -1100,19 +1100,7 @@ namespace Orts.Viewer3D
                     Program.Simulator.ActivityRun.triggeredEventWrapper.ParsedObject.Outcomes.ORTSWeatherChange : Program.Simulator.ActivityRun.triggeredEventWrapper.ParsedObject.ORTSWeatherChange;
                 dynamicWeather.WeatherChange_Init(weatherChange, this);
                 Program.Simulator.ActivityRun.triggeredEventWrapper = null;
-            }
-
-            // Icik
-            if (Viewer.PlayerLocomotive.CarOutsideTempC > 2f)
-                Weather.PrecipitationLiquidity = 1.0f;
-            else
-            if (Viewer.PlayerLocomotive.CarOutsideTempC > 0f)
-            {
-                Weather.PrecipitationLiquidity = 0.2f;
-                Weather.PricipitationIntensityPPSPM2 = MathHelper.Clamp(Weather.PricipitationIntensityPPSPM2, 0, 0.05f);
-            }
-            else
-                Weather.PrecipitationLiquidity = 0.0f;
+            }            
 
             if (weatherChangeOn)
             // manage the weather change sequence
@@ -1122,7 +1110,38 @@ namespace Orts.Viewer3D
             if (RandomizedWeather && !weatherChangeOn) // time to prepare a new weather change
                 dynamicWeather.WeatherChange_NextRandomization(elapsedTime, this);
 
-            // Icik
+            // Icik            
+            if (Viewer.Simulator.GameTime < 0.5f)
+            {
+                if (Viewer.PlayerLocomotive.CarOutsideTempC > 2f)
+                {
+                    Viewer.Simulator.WeatherType = WeatherType.Rain;
+                }
+                else
+                if (Viewer.PlayerLocomotive.CarOutsideTempC > 0f)
+                {
+                    Viewer.Simulator.WeatherType = WeatherType.Rain;
+                }
+                else
+                {
+                    Viewer.Simulator.WeatherType = WeatherType.Snow;
+                }
+            }
+            if (Viewer.PlayerLocomotive.CarOutsideTempC > 2f)
+            {
+                Weather.PrecipitationLiquidity = 1.0f;                
+            }
+            else
+            if (Viewer.PlayerLocomotive.CarOutsideTempC > 0f)
+            {
+                Weather.PrecipitationLiquidity = 0.2f;
+                Weather.PricipitationIntensityPPSPM2 = MathHelper.Clamp(Weather.PricipitationIntensityPPSPM2, 0, 0.05f);                
+            }
+            else
+            {
+                Weather.PrecipitationLiquidity = 0.0f;                
+            }
+
             if (Weather.PricipitationIntensityPPSPM2 < 0.25f && Viewer.Simulator.WeatherType != WeatherType.Clear)
             {
                 Viewer.Simulator.WeatherType = Orts.Formats.Msts.WeatherType.Clear;
@@ -1130,7 +1149,21 @@ namespace Orts.Viewer3D
             }
             else if (Weather.PricipitationIntensityPPSPM2 >= 0.25f && Viewer.Simulator.WeatherType == WeatherType.Clear)
             {
-                Viewer.Simulator.WeatherType = Weather.PrecipitationLiquidity > DynamicWeather.RainSnowLiquidityThreshold ? WeatherType.Rain : WeatherType.Snow;
+                //Viewer.Simulator.WeatherType = Weather.PrecipitationLiquidity > DynamicWeather.RainSnowLiquidityThreshold ? WeatherType.Rain : WeatherType.Snow;
+                // Icik
+                if (Viewer.PlayerLocomotive.CarOutsideTempC > 2f)
+                {                    
+                    Viewer.Simulator.WeatherType = WeatherType.Rain;
+                }
+                else
+                if (Viewer.PlayerLocomotive.CarOutsideTempC > 0f)
+                {
+                    Viewer.Simulator.WeatherType = WeatherType.Rain;
+                }
+                else
+                {                 
+                    Viewer.Simulator.WeatherType = WeatherType.Snow;
+                }
                 UpdateWeatherParameters();
             }
         }

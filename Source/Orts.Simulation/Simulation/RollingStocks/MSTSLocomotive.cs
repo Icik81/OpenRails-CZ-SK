@@ -14152,7 +14152,9 @@ namespace Orts.Simulation.RollingStocks
                     ShModeActivated2 = true;
                 }
 
-                if (ShModeActivated || ShModeActivated2 || MirelRSControllerThrottleValue == 27 || MirelRSControllerThrottleValue == 51)
+                if (MirelRSControllerThrottleValue == 27 || MirelRSControllerThrottleValue == 51
+                    || (DirectionControllerMirelRSPositionSh && MirelRSControllerThrottleValue >= 27 && MirelRSControllerThrottleValue <= 32)
+                    || (DirectionControllerMirelRSPositionSh && MirelRSControllerThrottleValue >= 51))
                 {
                     MirelRSNoVentilation = true;
                 }
@@ -14869,18 +14871,20 @@ namespace Orts.Simulation.RollingStocks
                         SPCroosingSoundOn = false;
                     }
                 }
-
+                                
                 if (DirectionControllerHS198PositionSh && HS198ControllerThrottleValue == 27 && !ShModeActivated)
                 {
                     ShModeActivated = true;
                 }
-
+                
                 if (DirectionControllerHS198PositionSh && HS198ControllerThrottleValue >= 51 && !ShModeActivated2)
                 {
                     ShModeActivated2 = true;
                 }
 
-                if (ShModeActivated || ShModeActivated2 || HS198ControllerThrottleValue == 27 || HS198ControllerThrottleValue == 51)
+                if (HS198ControllerThrottleValue == 27 || HS198ControllerThrottleValue == 51
+                    || (DirectionControllerHS198PositionSh && HS198ControllerThrottleValue >= 27 && HS198ControllerThrottleValue <= 32)
+                    || (DirectionControllerHS198PositionSh && HS198ControllerThrottleValue >= 51))
                 {
                     HS198NoVentilation = true;
                 }
