@@ -1127,6 +1127,17 @@ namespace Orts.Viewer3D
                     Viewer.Simulator.WeatherType = WeatherType.Snow;
                 }
             }
+
+            if (Viewer.PlayerLocomotive.CarOutsideTempC > 15f || Viewer.PlayerLocomotive.CarOutsideTempC < 0f)
+            {
+                Weather.PricipitationIntensityPPSPM2 = MathHelper.Clamp(Weather.PricipitationIntensityPPSPM2, 0, 1.0f);
+            }
+            else
+            if (Viewer.PlayerLocomotive.CarOutsideTempC > 0f)
+            {
+                Weather.PricipitationIntensityPPSPM2 = MathHelper.Clamp(Weather.PricipitationIntensityPPSPM2, 0, 0.3f);
+            }
+
             if (Viewer.PlayerLocomotive.CarOutsideTempC > 2f)
             {
                 Weather.PrecipitationLiquidity = 1.0f;                
@@ -1337,8 +1348,23 @@ namespace Orts.Viewer3D
                     }
 
                     if (ORTSPrecipitationIntensityChanceToChange > 0 && ORTSPrecipitationIntensityChanceToChange < 2)
-                    {
-                        ORTSPrecipitationIntensity = 0.1f * Simulator.Random.Next(1, 11);
+                    {                        
+                        switch (weatherControl.Viewer.Simulator.Season)
+                        {
+                            case SeasonType.Spring:
+                                ORTSPrecipitationIntensity = 0.1f * Simulator.Random.Next(0, 3);
+                                break;
+                            case SeasonType.Summer:
+                                ORTSPrecipitationIntensity = 0.1f * Simulator.Random.Next(0, 11);
+                                break;
+                            case SeasonType.Autumn:
+                                ORTSPrecipitationIntensity = 0.1f * Simulator.Random.Next(0, 5);
+                                break;
+                            case SeasonType.Winter:
+                                ORTSPrecipitationIntensity = 0.1f * Simulator.Random.Next(0, 11);
+                                break;
+                        }
+
                         if (weatherControl.Weather.OvercastFactor < 0.3f)
                         {
                             precipitationIntensityTimer = 1f * Simulator.Random.Next(10, 20);
@@ -1380,16 +1406,16 @@ namespace Orts.Viewer3D
                     switch (weatherControl.Viewer.Simulator.Season)
                     {
                         case SeasonType.Spring:
-                            precipitationIntensityTimer = MathHelper.Clamp(precipitationIntensityTimer, 0, 300);
+                            precipitationIntensityTimer = MathHelper.Clamp(precipitationIntensityTimer, 0, 120);
                             break;
                         case SeasonType.Summer:
                             precipitationIntensityTimer = MathHelper.Clamp(precipitationIntensityTimer, 0, 180);
                             break;
                         case SeasonType.Autumn:
-                            precipitationIntensityTimer = MathHelper.Clamp(precipitationIntensityTimer, 0, 300);
+                            precipitationIntensityTimer = MathHelper.Clamp(precipitationIntensityTimer, 0, 120);
                             break;
                         case SeasonType.Winter:
-                            precipitationIntensityTimer = MathHelper.Clamp(precipitationIntensityTimer, 0, 300);
+                            precipitationIntensityTimer = MathHelper.Clamp(precipitationIntensityTimer, 0, 180);
                             break;
                     }
                 }
