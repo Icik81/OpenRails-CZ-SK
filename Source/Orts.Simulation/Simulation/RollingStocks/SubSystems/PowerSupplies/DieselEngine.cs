@@ -1444,7 +1444,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
 
             // Icik
             // Zvýšení otáček motoru při prudkém snížení stupňů regulátorem                                  
-            if (locomotive.IsLeadLocomotive() && EngineStatus == Status.Running)
+            if (locomotive.IsLeadLocomotive() && (EngineStatus == Status.Running || RPMOverkill))
             {
                 if (!RPMgrowth && locomotive.CruiseControl != null && locomotive.CruiseControl.SpeedRegMode[locomotive.LocoStation] != CruiseControl.SpeedRegulatorMode.Manual)
                 { }
@@ -1460,6 +1460,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                         case 720:
                         case 721:
                         case 725:
+                        case 740:
+                        case 741:
                         case 742:
                         case 743:
                         case 749:
@@ -1529,7 +1531,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                         }
 
                         // 2s pro vzpamatování regulátoru
-                        if (RegulatorRecoveryTimer > 0.5f)
+                        if (RegulatorRecoveryTimer > 2.0f)
                         {
                             RegulatorRecoveryTimer = 0;
                             RegulatorDeltaRPM = 0;
