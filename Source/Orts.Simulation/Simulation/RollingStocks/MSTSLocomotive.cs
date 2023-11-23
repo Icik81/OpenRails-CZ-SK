@@ -14154,7 +14154,9 @@ namespace Orts.Simulation.RollingStocks
 
                 if (MirelRSControllerThrottleValue == 27 || MirelRSControllerThrottleValue == 51
                     || (DirectionControllerMirelRSPositionSh && MirelRSControllerThrottleValue >= 27 && MirelRSControllerThrottleValue <= 32)
-                    || (DirectionControllerMirelRSPositionSh && MirelRSControllerThrottleValue >= 51))
+                    || (DirectionControllerMirelRSPositionSh && MirelRSControllerThrottleValue >= 51)
+                    || Mode_To_27_Start1
+                    || Mode_To_27_Start2)
                 {
                     MirelRSNoVentilation = true;
                 }
@@ -14884,7 +14886,9 @@ namespace Orts.Simulation.RollingStocks
 
                 if (HS198ControllerThrottleValue == 27 || HS198ControllerThrottleValue == 51
                     || (DirectionControllerHS198PositionSh && HS198ControllerThrottleValue >= 27 && HS198ControllerThrottleValue <= 32)
-                    || (DirectionControllerHS198PositionSh && HS198ControllerThrottleValue >= 51))
+                    || (DirectionControllerHS198PositionSh && HS198ControllerThrottleValue >= 51)
+                    || Mode_To_27_Start1
+                    || Mode_To_27_Start2)
                 {
                     HS198NoVentilation = true;
                 }
@@ -15706,6 +15710,8 @@ namespace Orts.Simulation.RollingStocks
         public bool VentilationSwitchEnable;
         public bool VentilationIsOn;
         public float VentilationTimer;
+        public float VentilationIsOnTimer;
+        public float VentilationIsOffTimer;
         public void ToggleVentilationUp()
         {
             if (VentilationSwitchPosition[LocoStation] < 2)
@@ -15724,7 +15730,21 @@ namespace Orts.Simulation.RollingStocks
             if (!VentilationSwitchEnable)
                 return;
 
-            TMCoolingIsOn = VentilationIsOn;
+            if (VentilationIsOn)
+            {
+                VentilationIsOffTimer = 0;
+                VentilationIsOnTimer += elapsedClocSeconds;
+                if (VentilationIsOnTimer > 0.5f)
+                    TMCoolingIsOn = VentilationIsOn;
+            }
+            if (!VentilationIsOn)
+            {
+                VentilationIsOnTimer = 0;
+                VentilationIsOffTimer += elapsedClocSeconds;
+                if (VentilationIsOffTimer > 0.5f)
+                    TMCoolingIsOn = VentilationIsOn;
+            }
+
             switch (VentilationSwitchPosition[LocoStation])
             {
                 case 0:
