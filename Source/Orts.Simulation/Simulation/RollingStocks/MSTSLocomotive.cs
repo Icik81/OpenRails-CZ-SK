@@ -6104,6 +6104,7 @@ namespace Orts.Simulation.RollingStocks
                 HS198AutoDriveSpeedSelector(elapsedClockSeconds);
                 AxleCounterDisplay(elapsedClockSeconds);
                 VentilationSwitch(elapsedClockSeconds);
+                VentilationDR(elapsedClockSeconds);
                 CommandCylinder(elapsedClockSeconds);                
                 TogglePantograph3Switch();
                 TogglePantograph4Switch();
@@ -13893,7 +13894,7 @@ namespace Orts.Simulation.RollingStocks
         bool MirelRSPositionBlocked;        
         bool MirelRSProtect;
         int MirelRSSkipCounter;
-        bool MirelRSNoVentilation;
+        bool MirelRSNoVentilationDR;
 
         public bool DirectionControllerMirelRSPositionSh;
         public bool preDirectionControllerMirelRSPositionSh;
@@ -14152,16 +14153,15 @@ namespace Orts.Simulation.RollingStocks
                     ShModeActivated2 = true;
                 }
 
-                if (MirelRSControllerThrottleValue == 27 || MirelRSControllerThrottleValue == 51
-                    || (DirectionControllerMirelRSPositionSh && MirelRSControllerThrottleValue >= 27 && MirelRSControllerThrottleValue <= 32)
-                    || (DirectionControllerMirelRSPositionSh && MirelRSControllerThrottleValue >= 51)
+                if (MirelRSControllerThrottleValue >= 27 && MirelRSControllerThrottleValue <= 32                    
+                    || MirelRSControllerThrottleValue >= 51
                     || Mode_To_27_Start1
                     || Mode_To_27_Start2)
                 {
-                    MirelRSNoVentilation = true;
+                    MirelRSNoVentilationDR = true;
                 }
                 else
-                    MirelRSNoVentilation = false;
+                    MirelRSNoVentilationDR = false;
 
                 if (MirelRSControllerCanThrottleChangeValue_0 || MirelRSControllerCanThrottleChangeValue_1 || MirelRSControllerCanThrottleChangeValue_2 || MirelRSControllerCanThrottleChangeValue_3
                     || ShModeActivated || Mode_To_34_Start || ShModeActivated2 || Mode_To_27_Start1 || Mode_To_27_Start2
@@ -14575,7 +14575,7 @@ namespace Orts.Simulation.RollingStocks
         bool HS198Protect;
         int HS198SkipCounter;
         bool HS198ControllerDisplayBlink;
-        bool HS198NoVentilation;
+        bool HS198NoVentilationDR;
 
         public bool DirectionControllerHS198PositionSh;
         public bool preDirectionControllerHS198PositionSh;
@@ -14884,16 +14884,15 @@ namespace Orts.Simulation.RollingStocks
                     ShModeActivated2 = true;
                 }
 
-                if (HS198ControllerThrottleValue == 27 || HS198ControllerThrottleValue == 51
-                    || (DirectionControllerHS198PositionSh && HS198ControllerThrottleValue >= 27 && HS198ControllerThrottleValue <= 32)
-                    || (DirectionControllerHS198PositionSh && HS198ControllerThrottleValue >= 51)
+                if ((HS198ControllerThrottleValue >= 27 && HS198ControllerThrottleValue <= 32)
+                    || HS198ControllerThrottleValue >= 51                    
                     || Mode_To_27_Start1
                     || Mode_To_27_Start2)
                 {
-                    HS198NoVentilation = true;
+                    HS198NoVentilationDR = true;
                 }
                 else
-                    HS198NoVentilation = false;
+                    HS198NoVentilationDR = false;
 
                 if (HS198ControllerCanThrottleChangeValue_0 || HS198ControllerCanThrottleChangeValue_1 || HS198ControllerCanThrottleChangeValue_2 || HS198ControllerCanThrottleChangeValue_3
                     || ShModeActivated || Mode_To_34_Start || ShModeActivated2 || Mode_To_27_Start1 || Mode_To_27_Start2
@@ -15702,8 +15701,8 @@ namespace Orts.Simulation.RollingStocks
         }
         #endregion
 
-        #region Ventilátory
-        // Přepínač ventilace
+        #region Ventilátory motorových skupin
+        // Přepínač ventilace motorových skupin
         public int[] VentilationSwitchPosition = new int[3];
         public int[] preVentilationSwitchPosition = new int[3];
         public string[] VentilationSwitchPositionName = new string[3];
@@ -15794,16 +15793,63 @@ namespace Orts.Simulation.RollingStocks
                         }
                     }
                 }
-                if (VentilationIsOn && (MirelRSNoVentilation || HS198NoVentilation))
-                {
-                    VentilationIsOn = false;
-                    VentilationTimer = 0;
-                }
             }
             if (VentilationIsOn && !PowerOn)
             {
                 VentilationIsOn = false;
                 VentilationTimer = 0;
+            }
+        }
+        #endregion
+
+        #region Ventilátory odporů jízdních stupňů
+        // Přepínač ventilace odporů jízdních stupňů        
+        public bool VentilationDRIsOn;
+        public float VentilationDRTimer;
+        public float VentilationDRIsOnTimer;
+        public float VentilationDRIsOffTimer;
+        public void VentilationDR(float elapsedClocSeconds)
+        {
+            if (!IsLeadLocomotive())
+                return;
+
+            if (!MirelRSControllerEnable && !HS198ControllerEnable)
+                return;
+
+            if (VentilationDRIsOn)
+            {
+                VentilationDRIsOffTimer = 0;
+                VentilationDRIsOnTimer += elapsedClocSeconds;
+                if (VentilationDRIsOnTimer > 0.5f)
+                    DRCoolingIsOn = VentilationDRIsOn;
+            }
+            if (!VentilationDRIsOn)
+            {
+                VentilationDRIsOnTimer = 0;
+                VentilationDRIsOffTimer += elapsedClocSeconds;
+                if (VentilationDRIsOffTimer > 0.5f)
+                    DRCoolingIsOn = VentilationDRIsOn;
+            }            
+
+            //if (VentilationDRIsOn)
+            //    Simulator.Confirmer.Warning(Simulator.Catalog.GetString("Ventilátor DR jede!"));
+
+            if (PowerCurrent1 > 0 || BrakeCurrent1 > 0)
+            {
+                VentilationDRIsOn = true;
+            }
+            else
+                VentilationDRIsOn = false;
+
+            if (VentilationDRIsOn && (MirelRSNoVentilationDR || HS198NoVentilationDR))
+            {
+                VentilationDRIsOn = false;
+            }
+                
+            if (VentilationDRIsOn && !PowerOn)
+            {
+                VentilationDRIsOn = false;
+                VentilationDRTimer = 0;
             }
         }
         #endregion
