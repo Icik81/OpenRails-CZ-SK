@@ -1220,11 +1220,18 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
 
         float RegulatorRecoveryTimer;
         float RegulatorRecoveryTimer2;
+        float RegulatorRecoveryTimer3;
+        float RegulatorRecoveryTime;
+        int preThrottlePercentPlus;
+        int preThrottlePercentMinus;
         int preThrottlePercent;
         float RegulatorDeltaRPM = 0;
+        float CurrentRPM0;
         float CurrentRPM;
         public bool RPMOverkill;
         bool RPMgrowth;
+        float DeltaUpRPMpS;
+        bool RegulatorStandChange;
         public void Update(float elapsedClockSeconds)
         {
             locomotive.DieselOilPressurePSI = DieselOilPressurePSI;
@@ -1432,7 +1439,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                 {
                     if (RealRPM < ElevatedConsumptionIdleRPMBase)
                     {
-                        float DeltaUpRPMpS = MathHelper.Clamp(ChangeUpRPMpS, 0, 100);
+                        DeltaUpRPMpS = MathHelper.Clamp(ChangeUpRPMpS, 0, 100);
                         RealRPM += DeltaUpRPMpS * elapsedClockSeconds;
                     }
                     else
@@ -1477,9 +1484,64 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                         int CurrentThrottlePercent = (int)locomotive.LocalThrottlePercent;
                         if (CurrentThrottlePercent > preThrottlePercent)
                         {
-                            preThrottlePercent = CurrentThrottlePercent;
+                            preThrottlePercent = CurrentThrottlePercent;                            
                         }
 
+                        // Zpoždění reakce regulátoru na změnu dávky paliva                        
+                        RegulatorRecoveryTime = 1.0f;
+                        if (Math.Abs(dRPM) == 0)
+                        {
+                            RegulatorStandChange = false;
+                        }                        
+
+                        if (CurrentThrottlePercent > preThrottlePercentMinus)
+                        {
+                            preThrottlePercentMinus = CurrentThrottlePercent;
+                        }
+                        else
+                        if (CurrentThrottlePercent < preThrottlePercentPlus)
+                        {
+                            preThrottlePercentPlus = CurrentThrottlePercent;
+                        }
+                        if ((CurrentThrottlePercent < preThrottlePercentMinus && !RPMgrowth && !RPMOverkill)
+                            || RegulatorRecoveryTimer3 > 0)
+                        {
+                            preThrottlePercentMinus = CurrentThrottlePercent;
+                            preThrottlePercentPlus = CurrentThrottlePercent;
+                            if (RegulatorRecoveryTimer3 == 0)
+                            {
+                                CurrentRPM0 = RealRPM + ((Math.Abs(dRPM) + Math.Abs(DeltaUpRPMpS)) * elapsedClockSeconds);
+                            }
+                            RegulatorRecoveryTimer3 += elapsedClockSeconds;
+                            if (RegulatorRecoveryTimer3 > RegulatorRecoveryTime)
+                            {
+                                RegulatorRecoveryTimer3 = 0;
+                                RegulatorStandChange = true;
+                            }
+                            if (!RegulatorStandChange)
+                                RealRPM = CurrentRPM0;
+                        }
+                        else
+                        if ((CurrentThrottlePercent > preThrottlePercentPlus && !RPMgrowth && !RPMOverkill)
+                            || RegulatorRecoveryTimer3 > 0)
+                        {
+                            preThrottlePercentPlus = CurrentThrottlePercent;
+                            preThrottlePercentMinus = CurrentThrottlePercent;
+                            if (RegulatorRecoveryTimer3 == 0)
+                            {
+                                CurrentRPM0 = RealRPM - ((Math.Abs(dRPM) + Math.Abs(DeltaUpRPMpS)) * elapsedClockSeconds);
+                            }
+                            RegulatorRecoveryTimer3 += elapsedClockSeconds;
+                            if (RegulatorRecoveryTimer3 > RegulatorRecoveryTime)
+                            {
+                                RegulatorRecoveryTimer3 = 0;
+                                RegulatorStandChange = true;
+                            }
+                            if (!RegulatorStandChange)
+                                RealRPM = CurrentRPM0;
+                        }
+                        
+                        // Výpočet nárůstu otáček 
                         if (locomotive.PowerCurrent1 > 0 && CurrentThrottlePercent < preThrottlePercent)
                         {
                             preThrottlePercent = CurrentThrottlePercent;
@@ -1502,13 +1564,14 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                                     //locomotive.Simulator.Confirmer.MSG("RegulatorDeltaRPM = " + RegulatorDeltaRPM);
                                 }
                             }
-                        }
+                        }                         
 
+                        // Strmost nárůstu otáček
                         if ((locomotive.PowerCurrent1 == 0 && RegulatorDeltaRPM > 0) || RPMgrowth)
                         {
                             if (RealRPM < CurrentRPM + RegulatorDeltaRPM)
                             {
-                                RealRPM += 2.0f * ChangeDownRPMpS * elapsedClockSeconds;
+                                RealRPM += 200.0f * CurrentRPM / MaxRPM * elapsedClockSeconds;
                                 RPMgrowth = true;
                             }
                             if (RealRPM > 0.999f * CurrentRPM + RegulatorDeltaRPM)
@@ -1531,7 +1594,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                         }
 
                         // 2s pro vzpamatování regulátoru
-                        if (RegulatorRecoveryTimer > 2.0f)
+                        if (RegulatorRecoveryTimer > 1.5f)
                         {
                             RegulatorRecoveryTimer = 0;
                             RegulatorDeltaRPM = 0;

@@ -414,7 +414,7 @@ namespace Orts.Viewer3D
         {
         }
 
-        float[] TimeAction = new float[10] {0, 0, Simulator.Random.Next(1, 11) / 10f, Simulator.Random.Next(1, 11) / 10f, 0, 0, 0, 0, 0, 0};        
+        float[] TimeAction = new float[10] {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};        
         float TCoef;
         public override void PrepareFrame(RenderFrame frame, ElapsedTime elapsedTime)
         {
@@ -476,22 +476,27 @@ namespace Orts.Viewer3D
                     {
                         if (Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive != null)
                         {
+                            
                             if ((Viewer.Simulator.MSTSWagon as MSTSWagon).DoorLeftOpen || (Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive).DieselEngines[0].WaterTempCoolingRunning)
                             {
                                 TimeAction[2] -= 0.1f * elapsedTime.ClockSeconds;
                                 if (TimeAction[2] < 0.05f)
                                     TimeAction[2] = 0.05f;
-                                if (TimeAction[2] > 0.15f / ((Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive).DieselEngines[0].RealRPM / (Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive).DieselEngines[0].RealRPM0))
-                                    TimeAction[2] = 0.15f / ((Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive).DieselEngines[0].RealRPM / (Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive).DieselEngines[0].RealRPM0);
+                                if (TimeAction[2] > (Viewer.Simulator.MSTSWagon as MSTSWagon).FanWSpeedHigh / ((Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive).DieselEngines[0].RealRPM / (Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive).DieselEngines[0].RealRPM0))
+                                    TimeAction[2] = (Viewer.Simulator.MSTSWagon as MSTSWagon).FanWSpeedHigh / ((Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive).DieselEngines[0].RealRPM / (Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive).DieselEngines[0].RealRPM0);
                             }
                             if (!(Viewer.Simulator.MSTSWagon as MSTSWagon).DoorLeftOpen && !(Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive).DieselEngines[0].WaterTempCoolingRunning)
                             {
                                 TimeAction[2] += 0.01f * elapsedTime.ClockSeconds;
-                                if (TimeAction[2] > 0.5f / ((Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive).DieselEngines[0].RealRPM / (Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive).DieselEngines[0].RealRPM0))
-                                    TimeAction[2] = 0.5f / ((Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive).DieselEngines[0].RealRPM / (Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive).DieselEngines[0].RealRPM0);
+                                if (TimeAction[2] > (Viewer.Simulator.MSTSWagon as MSTSWagon).FanWSpeedLow / ((Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive).DieselEngines[0].RealRPM / (Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive).DieselEngines[0].RealRPM0))
+                                    TimeAction[2] = (Viewer.Simulator.MSTSWagon as MSTSWagon).FanWSpeedLow / ((Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive).DieselEngines[0].RealRPM / (Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive).DieselEngines[0].RealRPM0);
                             }
                             if (TimeAction[2] == 0f)
-                                TimeAction[2] = Simulator.Random.Next(1, 11) / 10f;
+                            {
+                                (Viewer.Simulator.MSTSWagon as MSTSWagon).FanWSpeedLow = Simulator.Random.Next(3, 11) / 10f;
+                                (Viewer.Simulator.MSTSWagon as MSTSWagon).FanWSpeedHigh = Simulator.Random.Next(10, 25) / 100f;
+                                TimeAction[2] = (Viewer.Simulator.MSTSWagon as MSTSWagon).FanWSpeedLow;
+                            }
 
                             TCoef = 0.015f / (8.0f / SharedShape.Animations[0].FrameCount * TimeAction[2]);
                             AnimationKey[2] += SharedShape.Animations[0].FrameRate * elapsedTime.ClockSeconds * FrameRateMultiplier * TCoef;
@@ -504,23 +509,27 @@ namespace Orts.Viewer3D
                     if (SharedShape.Animations[0].anim_nodes[matrix].Name.Contains("FAN_O"))
                     {
                         if (Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive != null)
-                        {
+                        {                            
                             if ((Viewer.Simulator.MSTSWagon as MSTSWagon).DoorRightOpen || (Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive).DieselEngines[0].OilTempCoolingRunning)
                             {
                                 TimeAction[3] -= 0.1f * elapsedTime.ClockSeconds;
                                 if (TimeAction[3] < 0.05f)
                                     TimeAction[3] = 0.05f;
-                                if (TimeAction[3] > 0.2f / ((Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive).DieselEngines[0].RealRPM / (Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive).DieselEngines[0].RealRPM0))
-                                    TimeAction[3] = 0.2f / ((Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive).DieselEngines[0].RealRPM / (Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive).DieselEngines[0].RealRPM0);
+                                if (TimeAction[3] > (Viewer.Simulator.MSTSWagon as MSTSWagon).FanOSpeedHigh / ((Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive).DieselEngines[0].RealRPM / (Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive).DieselEngines[0].RealRPM0))
+                                    TimeAction[3] = (Viewer.Simulator.MSTSWagon as MSTSWagon).FanOSpeedHigh / ((Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive).DieselEngines[0].RealRPM / (Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive).DieselEngines[0].RealRPM0);
                             }
                             if (!(Viewer.Simulator.MSTSWagon as MSTSWagon).DoorRightOpen && !(Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive).DieselEngines[0].OilTempCoolingRunning)
                             {
                                 TimeAction[3] += 0.01f * elapsedTime.ClockSeconds;
-                                if (TimeAction[3] > 0.8f / ((Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive).DieselEngines[0].RealRPM / (Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive).DieselEngines[0].RealRPM0))
-                                    TimeAction[3] = 0.8f / ((Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive).DieselEngines[0].RealRPM / (Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive).DieselEngines[0].RealRPM0);
+                                if (TimeAction[3] > (Viewer.Simulator.MSTSWagon as MSTSWagon).FanOSpeedLow / ((Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive).DieselEngines[0].RealRPM / (Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive).DieselEngines[0].RealRPM0))
+                                    TimeAction[3] = (Viewer.Simulator.MSTSWagon as MSTSWagon).FanOSpeedLow / ((Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive).DieselEngines[0].RealRPM / (Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive).DieselEngines[0].RealRPM0);
                             }
                             if (TimeAction[3] == 0f)
-                                TimeAction[3] = Simulator.Random.Next(1, 11) / 10f;
+                            {
+                                (Viewer.Simulator.MSTSWagon as MSTSWagon).FanOSpeedLow = Simulator.Random.Next(3, 11) / 10f;
+                                (Viewer.Simulator.MSTSWagon as MSTSWagon).FanOSpeedHigh = Simulator.Random.Next(10, 25) / 100f;
+                                TimeAction[3] = (Viewer.Simulator.MSTSWagon as MSTSWagon).FanOSpeedLow;
+                            }
 
                             TCoef = 0.015f / (8.0f / SharedShape.Animations[0].FrameCount * TimeAction[3]);
                             AnimationKey[3] += SharedShape.Animations[0].FrameRate * elapsedTime.ClockSeconds * FrameRateMultiplier * TCoef;

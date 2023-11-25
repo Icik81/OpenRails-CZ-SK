@@ -177,6 +177,10 @@ namespace Orts.Simulation.RollingStocks
         public bool StartOn = true;
         public bool NoPaxsMode;
         public bool WagonIsServis;
+        public float FanOSpeedLow;
+        public float FanWSpeedLow;
+        public float FanOSpeedHigh;
+        public float FanWSpeedHigh;
 
         bool TenderWeightInitialize = true;
         float TenderWagonMaxCoalMassKG = 0;
