@@ -13882,7 +13882,8 @@ namespace Orts.Simulation.RollingStocks
         float MirelRSControllerDisplay2Value;
         bool ShModeActivated;
         bool ShModeActivated2;
-        bool NoShMode;        
+        bool NoShMode;
+        bool Mode_To_51_Start;
         bool Mode_To_34_Start;                
         bool Mode_To_27_Start1;
         bool Mode_To_27_Start2;        
@@ -14156,7 +14157,8 @@ namespace Orts.Simulation.RollingStocks
                 if (MirelRSControllerThrottleValue >= 27 && MirelRSControllerThrottleValue <= 32                    
                     || MirelRSControllerThrottleValue >= 51
                     || Mode_To_27_Start1
-                    || Mode_To_27_Start2)
+                    || Mode_To_27_Start2
+                    || Mode_To_51_Start)
                 {
                     MirelRSNoVentilationDR = true;
                 }
@@ -14164,7 +14166,7 @@ namespace Orts.Simulation.RollingStocks
                     MirelRSNoVentilationDR = false;
 
                 if (MirelRSControllerCanThrottleChangeValue_0 || MirelRSControllerCanThrottleChangeValue_1 || MirelRSControllerCanThrottleChangeValue_2 || MirelRSControllerCanThrottleChangeValue_3
-                    || ShModeActivated || Mode_To_34_Start || ShModeActivated2 || Mode_To_27_Start1 || Mode_To_27_Start2
+                    || ShModeActivated || Mode_To_34_Start || ShModeActivated2 || Mode_To_27_Start1 || Mode_To_27_Start2 || Mode_To_51_Start
                     || (NoShMode && MirelRSControllerThrottleValue > 27 && MirelRSControllerThrottleValue < 34 && !Mode_To_34_Start)                    
                     || MirelRSSkip_Start)
                 {
@@ -14185,8 +14187,9 @@ namespace Orts.Simulation.RollingStocks
                         NoShMode = false;
                     
                     // Auto skrokování do 51
-                    if (ShModeActivated2 && !DirectionControllerMirelRSPositionSh)
+                    if ((ShModeActivated2 && !DirectionControllerMirelRSPositionSh) || Mode_To_51_Start)
                     {
+                        Mode_To_51_Start = true;
                         MirelRSControllerMaxValue = 56f;
                         if (MirelRSControllerThrottleValueTimer > 0.25f)
                         {
@@ -14198,6 +14201,7 @@ namespace Orts.Simulation.RollingStocks
                             MirelRSControllerThrottleValueTimer = 0;
                             if (MirelRSControllerThrottleValue <= 51f)
                             {
+                                Mode_To_51_Start = false;
                                 ShModeActivated2 = false;
                             }
                         }
@@ -14304,7 +14308,7 @@ namespace Orts.Simulation.RollingStocks
                         }
                     }
 
-                    if ((MirelRSControllerThrottleValueTimer > 0.5f && !Mode_To_27_Start1 && !Mode_To_27_Start2 && !Mode_To_34_Start) || MirelRSSkip_Start)
+                    if ((MirelRSControllerThrottleValueTimer > 0.5f && !Mode_To_27_Start1 && !Mode_To_27_Start2 && !Mode_To_34_Start && !Mode_To_51_Start) || MirelRSSkip_Start)
                     {
                         // -1
                         if (MirelRSControllerCanThrottleChangeValue_1 && MirelRSControllerShortPressDown)
@@ -14939,9 +14943,9 @@ namespace Orts.Simulation.RollingStocks
                     }                    
 
                     // Auto 1.skrokování do 27
-                    if ((ShModeActivated && !DirectionControllerHS198PositionSh) || Mode_To_27_Start1)
+                    if ((ShModeActivated && !DirectionControllerHS198PositionSh) /*|| Mode_To_27_Start1*/)
                     {
-                        Mode_To_27_Start1 = true;
+                        //Mode_To_27_Start1 = true;
                         if (HS198ControllerThrottleValueTimer > 0.25f)
                         {
                             if (HS198ControllerThrottleValue > 27f)
