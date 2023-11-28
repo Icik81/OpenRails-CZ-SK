@@ -6409,6 +6409,22 @@ namespace Orts.Simulation.RollingStocks
 
             MotiveForceN = TractiveForceN;
 
+            if (LocoType == LocoTypes.Vectron)
+            {
+                if (ForceHandleValue < 0)
+                {
+                    DynamicBrakePercent = -ForceHandleValue;                    
+                }
+                if (DynamicBrakePercent > 0)
+                {
+                    ControllerVolts = -DynamicBrakePercent / 10f;
+                }
+                if (DynamicBrakePercent == -1)
+                {
+                    DynamicBrakeForceN = 0;
+                }
+            }
+
             if (DynamicBrakePercent > 0 && (DynamicBrakeForceCurves != null || DynamicBrakeForceCurvesAC != null || DynamicBrakeForceCurvesDC != null) && AbsSpeedMpS > 0)
             {
                 float f = 0;
@@ -6454,7 +6470,7 @@ namespace Orts.Simulation.RollingStocks
             }
             else
                 if (LocoType != LocoTypes.Vectron)
-                    DynamicBrakeForceN = 0; // Set dynamic brake force to zero if in Notch 0 position
+                    DynamicBrakeForceN = 0; // Set dynamic brake force to zero if in Notch 0 position            
 
             UpdateFrictionCoefficient(elapsedClockSeconds); // Find the current coefficient of friction depending upon the weather
 
@@ -16634,7 +16650,8 @@ namespace Orts.Simulation.RollingStocks
                                     else
                                         data = this.LocomotiveAxle.AxleForceN / MaxForceN * rangeFactor;
                                     data = Math.Abs(data);
-                                }
+                                }                                                                
+
                                 if (DynamicBrakePercent > 0 && MaxDynamicBrakeForceN > 0)
                                 {
                                     float rangeFactor;
@@ -16964,22 +16981,25 @@ namespace Orts.Simulation.RollingStocks
                     if (data < 0)
                         data = (data / MaxDynamicBrakeForceN) * 100;
                     else
-                        data = (data / MaxForceN) * 100;                                            
+                        data = (data / MaxForceN) * 100;
 
-                    if (cvc.Feature == "HideOnPositiveForce")
+                    if (Math.Abs(ControllerVolts) > 1.0f)
                     {
-                        if (ControllerVolts >= 0)
-                            cvc.IsVisible = PositiveMask = false;
-                        else
-                            cvc.IsVisible = PositiveMask = true;
+                        if (cvc.Feature == "HideOnPositiveForce")
+                        {
+                            if (ControllerVolts >= 0)
+                                cvc.IsVisible = PositiveMask = false;
+                            else
+                                cvc.IsVisible = PositiveMask = true;
+                        }
+                        if (cvc.Feature == "HideOnNegativeForce")
+                        {
+                            if (ControllerVolts <= 0)
+                                cvc.IsVisible = NegativeMask = false;
+                            else
+                                cvc.IsVisible = NegativeMask = true;
+                        }
                     }
-                    if (cvc.Feature == "HideOnNegativeForce")
-                    {
-                        if (ControllerVolts <= 0)
-                            cvc.IsVisible = NegativeMask = false;
-                        else
-                            cvc.IsVisible = NegativeMask = true;
-                    }                    
                     break;
                 case CABViewControlTypes.MOTOR_FORCE:
                     {
