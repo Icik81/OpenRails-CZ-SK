@@ -4833,9 +4833,18 @@ namespace Orts.Simulation.RollingStocks
                     || (Train as AITrain).MovementState == AITrain.AI_MOVEMENT_STATE.SUSPENDED)
                     CarIsWaiting = true;
 
-                // AI je ve stanici
-                if ((Train as AITrain).MovementState == AITrain.AI_MOVEMENT_STATE.STATION_STOP)
-                    CarIsWaitingAtStation = true;
+                // AI je ve stanici a jedná se o osobní vlak
+                (Train as AITrain).TrainIsPassengerTrain = false;
+                foreach (TrainCar car in (Train as AITrain).Cars)
+                {
+                    if (car.HasPassengerCapacity)
+                    {
+                        (Train as AITrain).TrainIsPassengerTrain = true;
+                        if ((Train as AITrain).MovementState == AITrain.AI_MOVEMENT_STATE.STATION_STOP)
+                            CarIsWaitingAtStation = true;
+                        break;
+                    }
+                }                
 
                 if ((Train as AITrain) != null && (Train as AITrain).nextActionInfo != null)
                 {
@@ -4878,7 +4887,7 @@ namespace Orts.Simulation.RollingStocks
                             }
                         }
                     }
-                }
+                }                
 
                 // AI zapíská
                 if (AIStartOn && !AIBellStartOn && this.ThrottlePercent > 0.0f)
