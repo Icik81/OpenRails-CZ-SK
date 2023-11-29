@@ -16509,6 +16509,8 @@ namespace Orts.Simulation.RollingStocks
         public float VibrationTimer;
         public float FakeOilPressureBase;
         public float FakeOilPressure;
+        float preControllerVolts;
+        float ControllerVoltsDetectorTimer;
         public virtual float GetDataOf(CabViewControl cvc)
         {                                    
             CheckBlankDisplay(cvc);
@@ -16983,22 +16985,45 @@ namespace Orts.Simulation.RollingStocks
                     else
                         data = (data / MaxForceN) * 100;
 
-                    if (Math.Abs(ControllerVolts) > 1.0f)
+                    float ControllerVoltsDetectTime = 0.5f;
+                    if (CruiseControl != null && CruiseControl.SpeedRegMode[LocoStation] == SpeedRegulatorMode.Auto)
                     {
-                        if (cvc.Feature == "HideOnPositiveForce")
+                        ControllerVoltsDetectTime = 1.0f;
+                    }
+
+                    if (preControllerVolts != ControllerVolts)
+                    {
+                        ControllerVoltsDetectorTimer += Simulator.OneSecondLoop;
+                        if (ControllerVoltsDetectorTimer > ControllerVoltsDetectTime)
                         {
-                            if (ControllerVolts >= 0)
-                                cvc.IsVisible = PositiveMask = false;
-                            else
-                                cvc.IsVisible = PositiveMask = true;
+                            preControllerVolts = ControllerVolts;                            
                         }
-                        if (cvc.Feature == "HideOnNegativeForce")
+                        else
                         {
-                            if (ControllerVolts <= 0)
-                                cvc.IsVisible = NegativeMask = false;
+                            if (ControllerVolts > 0)
+                                data = -100;
                             else
-                                cvc.IsVisible = NegativeMask = true;
+                                data = 100;
                         }
+                    }
+                    if (ControllerVolts > -0.1f && ControllerVolts < 0.1f)
+                    {
+                        ControllerVoltsDetectorTimer = 0;                        
+                    }
+
+                    if (cvc.Feature == "HideOnPositiveForce")
+                    {
+                        if (ControllerVolts >= 0)
+                            cvc.IsVisible = PositiveMask = false;
+                        else
+                            cvc.IsVisible = PositiveMask = true;
+                    }
+                    if (cvc.Feature == "HideOnNegativeForce")
+                    {
+                        if (ControllerVolts < 0)
+                            cvc.IsVisible = NegativeMask = false;
+                        else
+                            cvc.IsVisible = NegativeMask = true;
                     }
                     break;
                 case CABViewControlTypes.MOTOR_FORCE:
