@@ -844,13 +844,8 @@ namespace Orts.Simulation.RollingStocks
                         Locomotive.DynamicBrakeForceN = 0;
                 }
             }
-
-            if (Locomotive.LocoType == LocoTypes.Vectron && Locomotive.ControllerVolts < 0 && Locomotive.BrakeSystem.BrakeLine1PressurePSI > 72)
-            {
-                if (Locomotive.CruiseControl.SpeedRegMode[Locomotive.LocoStation] == CruiseControl.SpeedRegulatorMode.Manual)
-                    Locomotive.DynamicBrakePercent = -Locomotive.ControllerVolts;
-            }
-            else if (Locomotive.DynamicBrakeForceN > 0 && (Locomotive.PowerOn || Locomotive.RouteVoltageV == 3000))
+            
+            if (Locomotive.DynamicBrakeForceN > 0 && (Locomotive.PowerOn || Locomotive.RouteVoltageV == 3000))
             {
                 ForceN = -Locomotive.DynamicBrakeForceN / 4;
                 ForceN += (reducedForceN * 2);

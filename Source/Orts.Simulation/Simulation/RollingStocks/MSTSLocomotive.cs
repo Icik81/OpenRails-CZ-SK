@@ -6000,10 +6000,7 @@ namespace Orts.Simulation.RollingStocks
                     }
                     if (LocoType == LocoTypes.Vectron && ControllerVolts > 0 && BrakeSystem.BrakeLine1PressurePSI > 72)
                         DynamicBrakePercent = 0;
-                    if (LocoType == LocoTypes.Vectron && ControllerVolts < 0)
-                    {
-                        DynamicBrakePercent = -(ControllerVolts * 10);
-                    }
+                    
                     if (DynamicBrakePercent > 0)
                     {
                         if (PowerOn)
@@ -6407,23 +6404,7 @@ namespace Orts.Simulation.RollingStocks
             if (!PowerOn || (!AcceptPowerSignals && AcceptCableSignals))
                 TractiveForceN = 0;
 
-            MotiveForceN = TractiveForceN;
-
-            if (LocoType == LocoTypes.Vectron)
-            {
-                if (ForceHandleValue < 0)
-                {
-                    DynamicBrakePercent = -ForceHandleValue;                    
-                }
-                if (DynamicBrakePercent > 0)
-                {
-                    ControllerVolts = -DynamicBrakePercent / 10f;
-                }
-                if (DynamicBrakePercent == -1)
-                {
-                    DynamicBrakeForceN = 0;
-                }
-            }
+            MotiveForceN = TractiveForceN;            
 
             if (DynamicBrakePercent > 0 && (DynamicBrakeForceCurves != null || DynamicBrakeForceCurvesAC != null || DynamicBrakeForceCurvesDC != null) && AbsSpeedMpS > 0)
             {
@@ -6766,19 +6747,27 @@ namespace Orts.Simulation.RollingStocks
                             DynamicBrakeController.CurrentValue = 0;
 
                         DynamicBrakeController.Update(elapsedClockSeconds);
-                        if (LocoType == LocoTypes.Vectron && ControllerVolts > 0)
-                            DynamicBrakeController.CurrentValue = 0;
-                        DynamicBrakePercent = (DynamicBrakeIntervention < 0.1f ? DynamicBrakeController.CurrentValue : DynamicBrakeIntervention) * 100f;
-                        LocalDynamicBrakePercent = (DynamicBrakeIntervention < 0.1f ? DynamicBrakeController.CurrentValue : DynamicBrakeIntervention) * 100f;
 
-                        // Icik
-                        if (DynamicBrakeController.CurrentValue > 0 || DynamicBrakePercent > 0)
-                            EDBOn = true;
-                        if (DynamicBrakeIntervention == -1 && EDBOn && DynamicBrakeController.CurrentValue == 0)
+                        if (LocoType == LocoTypes.Vectron && ControllerVolts >= 0)
                         {
-                            DynamicBrakePercent = -1;
-                            LocalDynamicBrakePercent = -1;
-                            EDBOn = false;
+                            DynamicBrakeController.CurrentValue = 0;
+                            DynamicBrakeForceN = 0;
+                        }
+
+                        if (LocoType != LocoTypes.Vectron || DynamicBrakeIntervention > 0)
+                        {
+                            DynamicBrakePercent = (DynamicBrakeIntervention < 0.1f ? DynamicBrakeController.CurrentValue : DynamicBrakeIntervention) * 100f;
+                            LocalDynamicBrakePercent = (DynamicBrakeIntervention < 0.1f ? DynamicBrakeController.CurrentValue : DynamicBrakeIntervention) * 100f;
+
+                            // Icik
+                            if (DynamicBrakeController.CurrentValue > 0 || DynamicBrakePercent > 0)
+                                EDBOn = true;
+                            if (DynamicBrakeIntervention == -1 && EDBOn && DynamicBrakeController.CurrentValue == 0)
+                            {
+                                DynamicBrakePercent = -1;
+                                LocalDynamicBrakePercent = -1;
+                                EDBOn = false;
+                            }
                         }
                     }
                     else
