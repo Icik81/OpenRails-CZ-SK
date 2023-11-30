@@ -452,11 +452,14 @@ namespace Orts.Simulation.RollingStocks
                 && Locomotive.DynamicBrakePercent < 0.1f)
             {
                 Locomotive.ControllerVolts = 0;                
-            }            
+            }
 
-            if (Locomotive.BrakeSystem.EmerBrakeTriggerActive)
+            if (Locomotive.LocoType == LocoTypes.Vectron)
             {
-                Locomotive.ControllerVolts = -Locomotive.DynamicBrakePercent / 10;
+                if (Locomotive.BrakeSystem.EmerBrakeTriggerActive || Locomotive.DynamicBrakePercent > 0)
+                {
+                    Locomotive.ControllerVolts = -Locomotive.DynamicBrakePercent / 10;
+                }                
             }
 
             if (Locomotive.ControllerVolts > 0)
