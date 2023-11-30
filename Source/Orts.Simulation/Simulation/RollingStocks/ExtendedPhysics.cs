@@ -447,29 +447,17 @@ namespace Orts.Simulation.RollingStocks
                     Locomotive.ControllerVolts = OverridenControllerVolts = Locomotive.ThrottlePercent / 10;
                 }
             }
-
-            //if (Bar.FromPSI(Locomotive.BrakeSystem.BrakeLine1PressurePSI) < 4.78 && Locomotive.DynamicBrakePercent < 0.1f)
+            
             if (((Locomotive.BrakeSystem.BrakePipeChangeRateBar > 0.1f && Locomotive.BrakeSystem.BrakeCylApply) || Bar.FromPSI(Locomotive.BrakeSystem.BrakeLine1PressurePSI) < 4.5f)
                 && Locomotive.DynamicBrakePercent < 0.1f)
             {
                 Locomotive.ControllerVolts = 0;                
-            }
-            else
-            {
-                if (Locomotive.LocoType == LocoTypes.Vectron)
-                {
-                    /*if (Bar.FromPSI(Locomotive.BrakeSystem.BrakeLine1PressurePSI) < 4.9f)
-                        Locomotive.SetDynamicBrakePercent(-1);
-                    else
-                    if (Locomotive.ControllerVolts < 0)
-                        Locomotive.SetDynamicBrakePercent(-Locomotive.ControllerVolts * 10f);
-
-                    if (Locomotive.DynamicBrakePercent > 1f)
-                    {
-                        //Locomotive.ControllerVolts = -Locomotive.DynamicBrakePercent / 10f;
-                    }*/
-                }
             }            
+
+            if (Locomotive.BrakeSystem.EmerBrakeTriggerActive)
+            {
+                Locomotive.ControllerVolts = -Locomotive.DynamicBrakePercent / 10;
+            }
 
             if (Locomotive.ControllerVolts > 0)
             {
@@ -955,7 +943,7 @@ namespace Orts.Simulation.RollingStocks
                     reducedForceN = 0;
             }            
 
-            if (usingControllerVolts && !Locomotive.BrakeSystem.EmerBrakeTriggerActive)
+            if (usingControllerVolts)
             {
                 ForceFilter.Add(ForceN);
                 if (ForceFilter.Count >= 60)
@@ -969,11 +957,6 @@ namespace Orts.Simulation.RollingStocks
                     ForceFilterMotor.RemoveAt(0);
                     ForceNFilteredMotor = ForceFilterMotor.Average();
                 }
-            }
-            else
-            {
-                ForceNFiltered = maxForceN;
-                ForceNFilteredMotor = maxForceN;
             }
 
             //if (WheelSpeedMpS == 0 && Locomotive.WheelSpeedMpS > 0)
