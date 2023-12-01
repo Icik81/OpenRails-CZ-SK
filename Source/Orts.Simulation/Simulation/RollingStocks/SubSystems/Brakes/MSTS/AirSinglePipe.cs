@@ -1392,7 +1392,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     if (loco != null && (loco.LocoType == MSTSLocomotive.LocoTypes.Vectron && !loco.BreakEDBButton_Activated)
                         && (Math.Abs(loco.DynamicBrakeForceN) > AirWithEDBMotiveForceN || loco.AbsSpeedMpS > 11f / 3.6f))
                     {                        
-                        if (loco.PowerOn || (loco.EDBIndependent && loco.PowerOnFilter > 0))
+                        if (loco.PowerOn /*|| (loco.EDBIndependent && loco.PowerOnFilter > 0)*/)
                         {
                             BrakeCylApply = false;
                             BrakeCylReleaseEDBOn = true;
@@ -1608,8 +1608,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     {
                         BailOffOn = true;                        
                     }
-                }
-                
+                }                
+
                 if (BailOffOnAntiSkid)
                 {
                     AutoCylPressurePSI0 -= MaxReleaseRatePSIpS * elapsedClockSeconds;
@@ -1623,6 +1623,11 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     AutoBailOffActivated = true;
                     if (AutoCylPressurePSI0 < 1.0f)
                         BrakeCylReleaseEDBOn = true;                    
+                }
+
+                if (loco.LocoType == MSTSLocomotive.LocoTypes.Vectron && !loco.PowerOn)
+                {
+                    BailOffOn = false;
                 }
 
                 if (loco.LocoType == MSTSLocomotive.LocoTypes.Vectron && BailOffOn)

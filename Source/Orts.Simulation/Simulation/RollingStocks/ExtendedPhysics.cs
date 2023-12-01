@@ -468,7 +468,7 @@ namespace Orts.Simulation.RollingStocks
                 {
                     Locomotive.DynamicBrakePercent = 1f;
                     Locomotive.TractionBlocked = true;
-                }
+                }                
             }
 
             if (Locomotive.ControllerVolts > 0)
@@ -862,9 +862,9 @@ namespace Orts.Simulation.RollingStocks
             {
                 ForceN = maxForceN;
             }
-            if (Locomotive.LocoType == MSTSLocomotive.LocoTypes.Vectron && !Locomotive.PowerOn && (-Locomotive.DynamicBrakeForceN / totalMotors) > ((Locomotive.extendedPhysics.GeneratorConsumptionKn * 1000) / totalMotors))
+            if (Locomotive.LocoType == MSTSLocomotive.LocoTypes.Vectron && !Locomotive.PowerOn && (Locomotive.DynamicBrakeForceN / totalMotors) > ((Locomotive.extendedPhysics.GeneratorConsumptionKn * 1000) / totalMotors))
             {
-                if (!Locomotive.extendedPhysics.GeneratoricModeDisabled) maxForceN = ForceN = (Locomotive.extendedPhysics.GeneratorConsumptionKn * 1000) / totalMotors;
+                if (!Locomotive.extendedPhysics.GeneratoricModeDisabled) maxForceN = ForceN = (Locomotive.extendedPhysics.GeneratorConsumptionKn * 1000) / totalMotors;                
                 Locomotive.extendedPhysics.GeneratoricModeActive = true;
             }
             else
@@ -970,7 +970,7 @@ namespace Orts.Simulation.RollingStocks
                     ForceNFilteredMotor = ForceFilterMotor.Average();
                 }
             }
-
+            
             //if (WheelSpeedMpS == 0 && Locomotive.WheelSpeedMpS > 0)
             //    WheelSpeedMpS = Locomotive.WheelSpeedMpS;
         }

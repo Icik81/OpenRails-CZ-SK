@@ -6019,7 +6019,7 @@ namespace Orts.Simulation.RollingStocks
                         ControllerVolts = 0;
 
                     if (ControllerVolts == 0)
-                        SetDynamicBrakeValue(-1);
+                        SetDynamicBrakeValue(-1);                    
                 }
             }
 
@@ -6404,7 +6404,22 @@ namespace Orts.Simulation.RollingStocks
             if (!PowerOn || (!AcceptPowerSignals && AcceptCableSignals))
                 TractiveForceN = 0;
 
-            MotiveForceN = TractiveForceN;            
+            MotiveForceN = TractiveForceN;
+
+            // Funkce EDB při blokování generátorického režimu Vectrona při staženém sběrači
+            if (LocoType == LocoTypes.Vectron && extendedPhysics != null)
+            {
+                if (!PowerOn)
+                {
+                    DynamicBrakePercent = 0;
+                    DynamicBrakeForceN = 0;
+                }
+                if (extendedPhysics.GeneratoricModeBlocked)
+                {
+                    DynamicBrakePercent = 0;
+                    DynamicBrakeForceN = 0;
+                }                              
+            }
 
             if (DynamicBrakePercent > 0 && (DynamicBrakeForceCurves != null || DynamicBrakeForceCurvesAC != null || DynamicBrakeForceCurvesDC != null) && AbsSpeedMpS > 0)
             {
@@ -6451,7 +6466,20 @@ namespace Orts.Simulation.RollingStocks
             }
             else
                 if (LocoType != LocoTypes.Vectron)
-                    DynamicBrakeForceN = 0; // Set dynamic brake force to zero if in Notch 0 position            
+                    DynamicBrakeForceN = 0; // Set dynamic brake force to zero if in Notch 0 position                                    
+
+            // Funkce EDB při generátorickém režimu Vectrona
+            if (LocoType == LocoTypes.Vectron && extendedPhysics != null)
+            {                
+                if (extendedPhysics.GeneratoricModeActive && !extendedPhysics.GeneratoricModeDisabled)
+                {
+                    if (AbsSpeedMpS >= 30f / 3.6f)
+                    {
+                        DynamicBrakePercent = 4;
+                        DynamicBrakeForceN = 4000;
+                    }
+                }
+            }
 
             UpdateFrictionCoefficient(elapsedClockSeconds); // Find the current coefficient of friction depending upon the weather
 

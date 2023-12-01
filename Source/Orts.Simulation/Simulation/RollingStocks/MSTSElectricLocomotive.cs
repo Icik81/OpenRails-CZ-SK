@@ -1363,9 +1363,12 @@ namespace Orts.Simulation.RollingStocks
             // Icik                      
             if (HVOff)
             {
-                HVOff = false;
+                HVOff = false;                
                 LocalThrottlePercent = 0;
-                LocalDynamicBrakePercent= 0;
+                if (!EDBIndependent)
+                {
+                    LocalDynamicBrakePercent = 0;
+                }                
                 if (CruiseControl != null) 
                 {
                     CruiseControl.ForceThrottleAndDynamicBrake = 0;
@@ -1412,7 +1415,7 @@ namespace Orts.Simulation.RollingStocks
             
             PowerSupply.Update(elapsedClockSeconds);
 
-            if (PowerSupply.CircuitBreaker != null && IsPlayerTrain)
+            if (PowerSupply.CircuitBreaker != null && IsPlayerTrain && LocoType != LocoTypes.Vectron)
             {
                 if (PowerSupply.CircuitBreaker.State == CircuitBreakerState.Open && (DoesPowerLossResetControls || DoesPowerLossResetControls2))
                 {
@@ -1423,7 +1426,7 @@ namespace Orts.Simulation.RollingStocks
                         DynamicBrakeChangeActiveState(false);
                     }
                 }
-            }
+            }            
 
             // AI si vybere napěťový systém dle napětí tratě (nutné pro správné zvukové triggery)
             if (!IsPlayerTrain)
