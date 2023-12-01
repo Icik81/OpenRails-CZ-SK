@@ -456,15 +456,24 @@ namespace Orts.Simulation.RollingStocks
 
             if (Locomotive.LocoType == LocoTypes.Vectron)
             {
-                if (Locomotive.BrakeSystem.EmerBrakeTriggerActive || Locomotive.DynamicBrakePercent > 0)
+                if (Locomotive.ForceHandleValue == 0)
                 {
-                    Locomotive.ControllerVolts = -Locomotive.DynamicBrakePercent / 10;
-                }                
+                    Locomotive.DynamicBrakeForceN = 0;
+                }
+                if (Locomotive.DynamicBrakePercent > 0)
+                {
+                    Locomotive.ControllerVolts = -Locomotive.DynamicBrakePercent / 10.0f;
+                }
+                if (Locomotive.BrakeSystem.EmerBrakeTriggerActive)
+                {
+                    Locomotive.DynamicBrakePercent = 1f;
+                    Locomotive.TractionBlocked = true;
+                }
             }
 
             if (Locomotive.ControllerVolts > 0)
             {
-                Locomotive.SetThrottlePercent(Locomotive.ControllerVolts * 10);
+                Locomotive.SetThrottlePercent(Locomotive.ControllerVolts * 10.0f);
             }
             else if (Locomotive.ControllerVolts < 0)
             {
@@ -473,7 +482,7 @@ namespace Orts.Simulation.RollingStocks
             if (Locomotive.ControllerVolts == 0)
             {
                 if (Locomotive.DynamicBrakePercent > 0 && Locomotive.LocoType != LocoTypes.Vectron)
-                    Locomotive.ControllerVolts = -Locomotive.DynamicBrakePercent / 10;
+                    Locomotive.ControllerVolts = -Locomotive.DynamicBrakePercent / 10.0f;
                 Locomotive.SetThrottlePercent(0);
                 foreach (Undercarriage uc in Undercarriages)
                 {
