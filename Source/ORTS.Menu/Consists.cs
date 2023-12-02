@@ -157,12 +157,20 @@ namespace ORTS.Menu
                 // Načte eng ve složce OpenRails CZ/SK
                 var filePathCZSK = System.IO.Path.Combine(System.IO.Path.Combine(System.IO.Path.Combine(System.IO.Path.Combine(folder.Path, "TRAINS"), "TRAINSET"), wagon.Folder + "\\OPENRAILSCZSK"), wagon.Name + ".eng");
                 if (File.Exists(filePathCZSK))
-                    return new Locomotive(filePathCZSK);
+                    try
+                    {
+                        return new Locomotive(filePathCZSK);
+                    }
+                    catch { }
 
-                //// Načte eng ve složce OpenRails
-                //var filePathOR = System.IO.Path.Combine(System.IO.Path.Combine(System.IO.Path.Combine(System.IO.Path.Combine(folder.Path, "TRAINS"), "TRAINSET"), wagon.Folder + "\\OPENRAILS"), wagon.Name + ".eng");
-                //if (File.Exists(filePathOR))
-                //    return new Locomotive(filePathOR);
+                // Načte eng ve složce OpenRails
+                var filePathOR = System.IO.Path.Combine(System.IO.Path.Combine(System.IO.Path.Combine(System.IO.Path.Combine(folder.Path, "TRAINS"), "TRAINSET"), wagon.Folder + "\\OPENRAILS"), wagon.Name + ".eng");
+                if (File.Exists(filePathOR))
+                    try
+                    {
+                        return new Locomotive(filePathOR);
+                    }
+                    catch { }
 
                 // Načte eng v základní složce
                 var filePath = System.IO.Path.Combine(System.IO.Path.Combine(System.IO.Path.Combine(System.IO.Path.Combine(folder.Path, "TRAINS"), "TRAINSET"), wagon.Folder), wagon.Name + ".eng");
@@ -185,12 +193,20 @@ namespace ORTS.Menu
                 // Načte eng ve složce OpenRails CZ/SK
                 var filePathCZSK = System.IO.Path.Combine(System.IO.Path.Combine(System.IO.Path.Combine(System.IO.Path.Combine(folder.Path, "TRAINS"), "TRAINSET"), wagon.Folder + "\\OPENRAILSCZSK"), wagon.Name + ".eng");
                 if (File.Exists(filePathCZSK))
-                    return newLocomotive = new Locomotive(filePathCZSK);
+                    try
+                    {
+                        newLocomotive = new Locomotive(filePathCZSK);
+                    }
+                    catch { }
 
-                //// Načte eng ve složce OpenRails
-                //var filePathOR = System.IO.Path.Combine(System.IO.Path.Combine(System.IO.Path.Combine(System.IO.Path.Combine(folder.Path, "TRAINS"), "TRAINSET"), wagon.Folder + "\\OPENRAILS"), wagon.Name + ".eng");
-                //if (File.Exists(filePathOR))
-                //    return newLocomotive = new Locomotive(filePathOR);
+                // Načte eng ve složce OpenRails
+                var filePathOR = System.IO.Path.Combine(System.IO.Path.Combine(System.IO.Path.Combine(System.IO.Path.Combine(folder.Path, "TRAINS"), "TRAINSET"), wagon.Folder + "\\OPENRAILS"), wagon.Name + ".eng");
+                if (File.Exists(filePathOR))
+                    try
+                    {
+                        newLocomotive = new Locomotive(filePathOR);
+                    }
+                    catch { }
 
                 // Načte eng v základní složce
                 var filePath = System.IO.Path.Combine(System.IO.Path.Combine(System.IO.Path.Combine(System.IO.Path.Combine(folder.Path, "TRAINS"), "TRAINSET"), wagon.Folder), wagon.Name + ".eng");
