@@ -468,7 +468,29 @@ namespace Orts.Simulation.RollingStocks
                 {
                     Locomotive.DynamicBrakePercent = 1f;
                     Locomotive.TractionBlocked = true;
-                }                
+                }
+
+                // Funkce EDB při blokování generátorického režimu Vectrona při staženém sběrači                
+                if (!Locomotive.PowerOn)
+                {
+                    Locomotive.DynamicBrakePercent = 0;
+                    Locomotive.DynamicBrakeForceN = 0;
+                    Locomotive.DynamicBrakeIntervention = -1;                    
+                    Locomotive.ControllerVolts = 0;
+                    Locomotive.TractionBlocked = true;
+                }
+                if (GeneratoricModeBlocked)
+                {                    
+                    Locomotive.DynamicBrakeForceN = 0;
+                }
+                // Funkce EDB při generátorickém režimu Vectrona
+                if (GeneratoricModeActive && !GeneratoricModeDisabled)
+                {
+                    if (Locomotive.AbsSpeedMpS >= 30f / 3.6f)
+                    {
+                        Locomotive.DynamicBrakeForceN = 4000;
+                    }
+                }
             }
 
             if (Locomotive.ControllerVolts > 0)

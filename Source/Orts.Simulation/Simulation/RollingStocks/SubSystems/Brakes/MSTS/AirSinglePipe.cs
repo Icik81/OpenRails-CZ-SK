@@ -934,7 +934,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             //if ((Car as MSTSWagon).Simulator.Settings.CorrectQuestionableBrakingParams)
             //{
                 if (loco != null) // Lokomotiva
-                {
+                {                    
                     MaxCylPressurePSI = AutoCylPressurePSI = MathHelper.Clamp(MaxCylPressurePSI, 0.0f * 14.50377f, 10.0f * 14.50377f);
                     AuxCylVolumeRatio = MathHelper.Clamp(AuxCylVolumeRatio, 0.0f, 6.0f);
                     loco.BrakeSystem.LocoAuxCylVolumeRatio = AuxCylVolumeRatio;
@@ -1655,7 +1655,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     ThresholdBailOffOn = MathHelper.Clamp(ThresholdBailOffOn, 0, MCP_TrainBrake);
                     if (AutoCylPressurePSI0 < ThresholdBailOffOn                        
                         && AutoCylPressurePSI0 < loco.BrakeSystem.BrakeCylinderMaxSystemPressurePSI
-                        && loco.AuxResPressurePSI > 0)
+                        && AuxResPressurePSI > 0)
                     {
                         if (!OL3active)
                         {

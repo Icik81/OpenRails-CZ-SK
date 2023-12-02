@@ -1676,6 +1676,7 @@ namespace Orts.Simulation.RollingStocks
             DynamicBrakeForceCurvesDC = locoCopy.DynamicBrakeForceCurvesDC;
             MainResChargingRatePSIpS_2 = locoCopy.MainResChargingRatePSIpS_2;
             AuxResChargingRatePSIpS = locoCopy.AuxResChargingRatePSIpS;
+            AuxResPressurePSI = locoCopy.AuxResPressurePSI;
             MaxAuxResPressurePSI = locoCopy.MaxAuxResPressurePSI;
             AuxResVolumeM3 = locoCopy.AuxResVolumeM3;
             AuxCompressorRestartPressurePSI = locoCopy.AuxCompressorRestartPressurePSI;
@@ -6404,22 +6405,7 @@ namespace Orts.Simulation.RollingStocks
             if (!PowerOn || (!AcceptPowerSignals && AcceptCableSignals))
                 TractiveForceN = 0;
 
-            MotiveForceN = TractiveForceN;
-
-            // Funkce EDB při blokování generátorického režimu Vectrona při staženém sběrači
-            if (LocoType == LocoTypes.Vectron && extendedPhysics != null)
-            {
-                if (!PowerOn)
-                {
-                    DynamicBrakePercent = 0;
-                    DynamicBrakeForceN = 0;
-                }
-                if (extendedPhysics.GeneratoricModeBlocked)
-                {
-                    DynamicBrakePercent = 0;
-                    DynamicBrakeForceN = 0;
-                }                              
-            }
+            MotiveForceN = TractiveForceN;            
 
             if (DynamicBrakePercent > 0 && (DynamicBrakeForceCurves != null || DynamicBrakeForceCurvesAC != null || DynamicBrakeForceCurvesDC != null) && AbsSpeedMpS > 0)
             {
@@ -6466,20 +6452,7 @@ namespace Orts.Simulation.RollingStocks
             }
             else
                 if (LocoType != LocoTypes.Vectron)
-                    DynamicBrakeForceN = 0; // Set dynamic brake force to zero if in Notch 0 position                                    
-
-            // Funkce EDB při generátorickém režimu Vectrona
-            if (LocoType == LocoTypes.Vectron && extendedPhysics != null)
-            {                
-                if (extendedPhysics.GeneratoricModeActive && !extendedPhysics.GeneratoricModeDisabled)
-                {
-                    if (AbsSpeedMpS >= 30f / 3.6f)
-                    {
-                        DynamicBrakePercent = 4;
-                        DynamicBrakeForceN = 4000;
-                    }
-                }
-            }
+                    DynamicBrakeForceN = 0; // Set dynamic brake force to zero if in Notch 0 position                                                
 
             UpdateFrictionCoefficient(elapsedClockSeconds); // Find the current coefficient of friction depending upon the weather
 
@@ -6774,15 +6747,9 @@ namespace Orts.Simulation.RollingStocks
                         if (LocoHelperOn && DynamicBrakeIntervention == -1)
                             DynamicBrakeController.CurrentValue = 0;
 
-                        DynamicBrakeController.Update(elapsedClockSeconds);
+                        DynamicBrakeController.Update(elapsedClockSeconds);                        
 
-                        if (LocoType == LocoTypes.Vectron && ControllerVolts >= 0)
-                        {
-                            DynamicBrakeController.CurrentValue = 0;
-                            DynamicBrakeForceN = 0;
-                        }
-
-                        if (LocoType != LocoTypes.Vectron || DynamicBrakeIntervention > 0)
+                        if (DynamicBrakeIntervention > 0)
                         {
                             DynamicBrakePercent = (DynamicBrakeIntervention < 0.1f ? DynamicBrakeController.CurrentValue : DynamicBrakeIntervention) * 100f;
                             LocalDynamicBrakePercent = (DynamicBrakeIntervention < 0.1f ? DynamicBrakeController.CurrentValue : DynamicBrakeIntervention) * 100f;
@@ -16926,7 +16893,8 @@ namespace Orts.Simulation.RollingStocks
                         }
                         maxForce = (maxForce / MaxForceN) * 100;
                     }
-                    data = cvc is Orts.Formats.Msts.CVCDigital ? ForceHandleValue : (maxForce < ForceHandleValue ? maxForce : ForceHandleValue);                    
+                    data = cvc is Orts.Formats.Msts.CVCDigital ? ForceHandleValue : (maxForce < ForceHandleValue ? maxForce : ForceHandleValue);
+                    if (!PowerOn) data = 0;
                     break;
                 case CABViewControlTypes.REQUESTED_MOTOR_FORCE:
                     data = 0.0f;
