@@ -372,6 +372,7 @@ namespace Orts.Simulation.RollingStocks
             }
         }
 
+        float FakeDynamicBrakePercent;
         public void Update(float elapsedClockSeconds)
         {
             if (Locomotive.Pantograph3Switch[Locomotive.LocoStation] == -1)
@@ -487,8 +488,16 @@ namespace Orts.Simulation.RollingStocks
                 if (GeneratoricModeActive && !GeneratoricModeDisabled)
                 {
                     if (Locomotive.AbsSpeedMpS >= 30f / 3.6f)
-                    {
-                        Locomotive.DynamicBrakeForceN = 4000;
+                    {                        
+                        if (Math.Abs(Locomotive.DriveForceN) > 1.05f * 4000f)
+                        {
+                            FakeDynamicBrakePercent -= 0.1f;
+                        }
+                        if (Math.Abs(Locomotive.DriveForceN) < 0.95f * 4000f)
+                        {
+                            FakeDynamicBrakePercent += 0.1f;
+                        }                                                
+                        Locomotive.DynamicBrakePercent = FakeDynamicBrakePercent;                        
                     }
                 }
             }
