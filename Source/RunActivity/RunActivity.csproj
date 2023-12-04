@@ -727,6 +727,7 @@
     <Content Include="Content\GenericSound\2_Wheels\buch8_ex.wav" />
     <Content Include="Content\GenericSound\2_Wheels\buch9.wav" />
     <Content Include="Content\GenericSound\2_Wheels\buch9_ex.wav" />
+    <Content Include="Content\GenericSound\2_Wheels\Coupling.wav" />
     <Content Include="Content\GenericSound\2_Wheels\Naraz_narazniku.wav" />
     <Content Include="Content\GenericSound\2_Wheels\Naraz_narazniku_ex.WAV" />
     <Content Include="Content\GenericSound\2_Wheels\obuti.wav" />
@@ -807,6 +808,7 @@
     <Content Include="Content\GenericSound\4_Wheels\buch2_ex.wav" />
     <Content Include="Content\GenericSound\4_Wheels\buch3.wav" />
     <Content Include="Content\GenericSound\4_Wheels\buch3_ex.wav" />
+    <Content Include="Content\GenericSound\4_Wheels\Coupling.wav" />
     <Content Include="Content\GenericSound\4_Wheels\jizda.wav" />
     <Content Include="Content\GenericSound\4_Wheels\jizda_ex.wav" />
     <Content Include="Content\GenericSound\4_Wheels\Naraz_narazniku.WAV" />

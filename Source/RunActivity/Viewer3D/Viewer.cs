@@ -1491,8 +1491,9 @@ namespace Orts.Viewer3D
             }
             else if (!Simulator.Paused && UserInput.IsDown(UserCommand.GameUncoupleWithMouse))
             {
-                ForceMouseVisible = true;
-                if (UserInput.IsMouseLeftButtonPressed)
+                ForceMouseVisible = true;               
+                ActualCursor = Cursors.Hand;
+                if (UserInput.IsMouseLeftButtonPressed && !Simulator.CouplingAction)
                 {
                     TryUncoupleAt();
                 }
@@ -1502,9 +1503,24 @@ namespace Orts.Viewer3D
                 ForceMouseVisible = false;
             }
 
+            if (Simulator.CouplingAction)
+            {
+                ForceMouseVisible = true;
+                ActualCursor = Cursors.WaitCursor;
+                CouplingActionTimer += Simulator.OneSecondLoop;
+                if (CouplingActionTimer > 3.0f)
+                {
+                    Simulator.CouplingAction = false;
+                    CouplingActionTimer = 0;
+                }
+            }
+
             // reset cursor type when needed
 
-            if (!(Camera is CabCamera) && !(Camera is ThreeDimCabCamera) && ActualCursor != Cursors.Default) ActualCursor = Cursors.Default;
+            if (!Simulator.CouplingAction && !UserInput.IsDown(UserCommand.GameUncoupleWithMouse) && !(Camera is CabCamera) && !(Camera is ThreeDimCabCamera) && ActualCursor != Cursors.Default)
+            {
+                ActualCursor = Cursors.Default;
+            }
 
             // Mouse control for 2D cab
 
@@ -1933,7 +1949,8 @@ namespace Orts.Viewer3D
         /// <summary>
         /// The user has left-clicked with U pressed.
         /// If the mouse was over a coupler, then uncouple the car.
-        /// </summary>
+        /// </summary>        
+        public float CouplingActionTimer;
         void TryUncoupleAt()
         {
             // Create a ray from the near clip plane to the far clip plane.
@@ -1941,7 +1958,11 @@ namespace Orts.Viewer3D
             direction.Normalize();
             Ray pickRay = new Ray(NearPoint, direction);
 
-            // check each car
+            Simulator.TryToCoupleBehind = false;
+            Simulator.TryToCoupleFront = false;
+            Simulator.DontCouple = false;
+
+            // check each car            
             Traveller traveller = new Traveller(PlayerTrain.FrontTDBTraveller, Traveller.TravellerDirection.Backward);
             int carNo = 0;
             foreach (TrainCar car in PlayerTrain.Cars)
@@ -1954,13 +1975,44 @@ namespace Orts.Viewer3D
                 BoundingSphere boundingSphere = new BoundingSphere(xnaCenter, radius);
 
                 if (null != pickRay.Intersects(boundingSphere))
-                {
+                {                    
                     new UncoupleCommand(Log, carNo);
+                    Simulator.CouplingAction = true;
+                    // Icik
+                    if (Simulator.TryToCouple)
+                        Simulator.TryToCoupleBehind = true;
+                    else
+                        Simulator.DontCouple = true;
                     break;
                 }
                 traveller.Move(d);
                 carNo++;
             }
+
+            // Icik
+            traveller = new Traveller(PlayerTrain.RearTDBTraveller, Traveller.TravellerDirection.Forward);
+            carNo = 0;
+            foreach (TrainCar car in PlayerTrain.Cars)
+            {
+                float d = (car.CouplerSlackM + car.GetCouplerZeroLengthM()) / 2;
+                traveller.Move(car.CarLengthM + d);
+
+                Vector3 xnaCenter = Camera.XnaLocation(traveller.WorldLocation);
+                float radius = 2f;  // 2 meter click range
+                BoundingSphere boundingSphere = new BoundingSphere(xnaCenter, radius);
+
+                if (null != pickRay.Intersects(boundingSphere))
+                {                    
+                    if (!Simulator.DontCouple)
+                    {                        
+                        Simulator.TryToCoupleFront = true;
+                        Simulator.TryToCouple = true;
+                    }
+                    break;
+                }
+                traveller.Move(d);
+                carNo++;                
+            }                        
         }
 
         /// <summary>

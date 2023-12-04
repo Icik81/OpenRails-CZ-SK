@@ -557,7 +557,7 @@ namespace ORTS.Settings
             Commands[(int)UserCommand.GameSwitchPicked] = new UserCommandKeyInput(0x22, KeyModifiers.Alt);
             Commands[(int)UserCommand.GameTrailingSwitchAhead] = new UserCommandKeyInput(0x22, KeyModifiers.Control);
             Commands[(int)UserCommand.GameTrailingSwitchBehind] = new UserCommandKeyInput(0x22, KeyModifiers.Shift | KeyModifiers.Control);
-            Commands[(int)UserCommand.GameUncoupleWithMouse] = new UserCommandKeyInput(0x16);
+            Commands[(int)UserCommand.GameUncoupleWithMouse] = new UserCommandModifierInput(KeyModifiers.Control);
 
             // Icik
             Commands[(int)UserCommand.ControlHV2SwitchUp] = new UserCommandKeyInput(0x18);

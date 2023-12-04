@@ -233,11 +233,9 @@ Tr_SMS (
 			Stream (
 				Skip( **** Narazniky **** )
 				Priority ( 6 )
-				Volume (1.5)
-				Triggers ( 6
-					Discrete_Trigger ( 58 PlayOneShot ( 1 	File ( "Naraz_narazniku.wav" -1 ) SelectionMethod (SequentialSelection) ) ) 
-					Discrete_Trigger ( 59 PlayOneShot ( 1 	File ( "Naraz_narazniku.wav" -1 ) SelectionMethod (SequentialSelection) ) ) 
-					Discrete_Trigger ( 60 PlayOneShot ( 1 	File ( "Naraz_narazniku.wav" -1 ) SelectionMethod (SequentialSelection) ) ) 
+				Volume (1.0)
+				Triggers ( 1
+					Discrete_Trigger ( 20067 PlayOneShot ( 1 	File ( "Naraz_narazniku.wav" -1 ) SelectionMethod (SequentialSelection) ) ) 					
 				)
 				FrequencyCurve(
 					SpeedControlled
@@ -264,7 +262,7 @@ Tr_SMS (
 				Priority ( 6 )
 				Volume (1.0)
 				Triggers ( 1
-					Discrete_Trigger ( 20067 PlayOneShot ( 1 	File ( "odrazeni.wav" -1 ) SelectionMethod (SequentialSelection) ) )
+					Discrete_Trigger ( 20130 PlayOneShot ( 1 	File ( "odrazeni.wav" -1 ) SelectionMethod (SequentialSelection) ) )
 				)
 				VolumeCurve(
 					SpeedControlled
@@ -276,7 +274,7 @@ Tr_SMS (
 					)
 					Granularity ( 0.05 )
 				)
-			)
+			)			
 			
 			Stream (
 				Skip(** Bouchani - "dupot" v dusledku "obuti" kol. 1. otacka kola **)
