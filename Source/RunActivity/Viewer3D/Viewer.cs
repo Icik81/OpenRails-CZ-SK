@@ -1491,11 +1491,14 @@ namespace Orts.Viewer3D
             }
             else if (!Simulator.Paused && UserInput.IsDown(UserCommand.GameUncoupleWithMouse))
             {
-                ForceMouseVisible = true;               
-                ActualCursor = Cursors.Hand;
-                if (UserInput.IsMouseLeftButtonPressed && !Simulator.CouplingAction)
+                if (!Simulator.TimetableMode)
                 {
-                    TryUncoupleAt();
+                    ForceMouseVisible = true;
+                    ActualCursor = Cursors.Hand;
+                    if (UserInput.IsMouseLeftButtonPressed && !Simulator.CouplingAction)
+                    {
+                        TryUncoupleAt();
+                    }
                 }
             }
             else
