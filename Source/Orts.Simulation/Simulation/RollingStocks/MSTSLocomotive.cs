@@ -6747,9 +6747,9 @@ namespace Orts.Simulation.RollingStocks
                         if (LocoHelperOn && DynamicBrakeIntervention == -1)
                             DynamicBrakeController.CurrentValue = 0;
 
-                        DynamicBrakeController.Update(elapsedClockSeconds);                        
+                        DynamicBrakeController.Update(elapsedClockSeconds);
 
-                        if (DynamicBrakeIntervention > 0)
+                        if (LocoType != LocoTypes.Vectron || DynamicBrakeIntervention > 0)
                         {
                             DynamicBrakePercent = (DynamicBrakeIntervention < 0.1f ? DynamicBrakeController.CurrentValue : DynamicBrakeIntervention) * 100f;
                             LocalDynamicBrakePercent = (DynamicBrakeIntervention < 0.1f ? DynamicBrakeController.CurrentValue : DynamicBrakeIntervention) * 100f;
