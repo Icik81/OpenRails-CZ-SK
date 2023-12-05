@@ -1062,7 +1062,7 @@ namespace Orts.Simulation
         public bool TryToCoupleBehind;
         public bool TryToCoupleFront;
         public bool DontCouple;
-        float MinimalDistanceToCouple = 0.0f;
+        float MinimalDistanceToCouple = 0.05f;
         /// <summary>
         /// Scan other trains
         /// </summary>
@@ -1986,6 +1986,7 @@ namespace Orts.Simulation
                 TryToCouple = true;
                 return;  // can't uncouple behind last car
             }
+            CouplingAction = true;
             ++i;
 
             TrainCar lead = train.LeadLocomotive;

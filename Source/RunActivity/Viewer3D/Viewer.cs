@@ -1489,7 +1489,7 @@ namespace Orts.Viewer3D
                     TryThrowSwitchAt();
                 }
             }
-            else if (!Simulator.Paused && UserInput.IsDown(UserCommand.GameUncoupleWithMouse))
+            else if (!Simulator.Paused && UserInput.IsDown(UserCommand.GameUncoupleWithMouse) && !(Camera is CabCamera) && !(Camera is ThreeDimCabCamera))
             {
                 if (!Simulator.TimetableMode)
                 {
@@ -1979,8 +1979,7 @@ namespace Orts.Viewer3D
 
                 if (null != pickRay.Intersects(boundingSphere))
                 {                    
-                    new UncoupleCommand(Log, carNo);
-                    Simulator.CouplingAction = true;
+                    new UncoupleCommand(Log, carNo);                    
                     // Icik
                     if (Simulator.TryToCouple)
                         Simulator.TryToCoupleBehind = true;
