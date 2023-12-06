@@ -1778,9 +1778,15 @@ namespace Orts.Viewer3D
             // Icik
             if ((Simulator.CarCoupleMaxSpeedOvercome || Simulator.CarDerailed) && !Simulator.Paused && !MPManager.IsMultiPlayer())
             {
-                SelectedTrain = PlayerTrain;
+                SelectedTrain = PlayerTrain;                
                 FrontCamera.Activate();
+                if (FreeRoamCameraList.Count == 0)
+                {
+                    new UseFreeRoamCameraCommand(Log);
+                }
+                FreeRoamCamera.Activate();
                 DerailWindow.Visible = true;
+                (PlayerLocomotive as MSTSLocomotive).PowerOn = false;
             }
 
             MouseState currentMouseState = Mouse.GetState();
