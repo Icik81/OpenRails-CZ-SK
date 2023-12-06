@@ -416,12 +416,17 @@ namespace Orts.Viewer3D
 
         float[] TimeAction = new float[10] {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};        
         float TCoef;
+        bool TestCondition1;
+        bool TestCondition2;
         public override void PrepareFrame(RenderFrame frame, ElapsedTime elapsedTime)
         {
             //Viewer.PlayerLocomotive.Simulator.Confirmer.MSG("TimeAction[3]  " + TimeAction[3]);
 
-            bool TestCondition1 = (Viewer.Simulator.MSTSWagon as MSTSWagon).DoorLeftOpen = false;
-            bool TestCondition2 = (Viewer.Simulator.MSTSWagon as MSTSWagon).DoorRightOpen = false;
+            if (Viewer.Simulator.MSTSWagon as MSTSWagon != null)
+            {
+                TestCondition1 = (Viewer.Simulator.MSTSWagon as MSTSWagon).DoorLeftOpen = false;
+                TestCondition2 = (Viewer.Simulator.MSTSWagon as MSTSWagon).DoorRightOpen = false;
+            }
 
             // if the shape has animations
             if (SharedShape.Animations?.Count > 0 && SharedShape.Animations[0].FrameCount > 0)
