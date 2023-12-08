@@ -1499,7 +1499,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 }
 
                 // Vypouští brzdový válec
-                if (BrakeCylRelease && !CarHasAirStuckBrake_1)
+                if ((BrakeCylRelease || PressureConverterBase < AutoCylPressurePSI0) && !CarHasAirStuckBrake_1)
                 {
                     if (AutoCylPressurePSI0 > threshold)
                     {
@@ -1698,7 +1698,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             else
                 PressureConverterBase = 0;
 
-            if (loco != null && (!loco.Battery || loco.OverCurrent || (loco.DynamicBrake && loco.DynamicBrakePercent == -1 && AutoCylPressurePSI0 < 0.1f * 14.50377f)))
+            if (loco != null && (!loco.Battery || loco.OverCurrent || (loco.DynamicBrake && loco.DynamicBrakePercent <= 0 && AutoCylPressurePSI0 < 0.1f * 14.50377f)))
                 PressureConverterBase = 0;
 
             if (loco != null && loco.Battery && Math.Round(PressureConverterBase) > Math.Round(PressureConverter))
