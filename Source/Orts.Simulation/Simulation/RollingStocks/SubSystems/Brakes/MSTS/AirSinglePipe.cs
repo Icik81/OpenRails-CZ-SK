@@ -2320,7 +2320,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             bool LocoTwoPipesConnectionBreak = false;
             bool TrainTwoPipesConnectionBreak = false;
             int MUCableLocoCount = 0;
-            
+
             if (lead != null)
                 lead.TwoPipesConnectionLocoCount = 0;
 
@@ -2345,7 +2345,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     if (continuousToExclusive > i)
                         continuousToExclusive = i;
                     continue;
-                }
+                }                
+
                 // Sčítá hlavní jímky pro napojení na napájecí potrubí                
                 if (i >= first && i <= last || TwoPipesConnection && continuousFromInclusive <= i && i < continuousToExclusive)
                 {
@@ -2355,9 +2356,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     if (eng != null)
                     {
                         sumv += eng.MainResVolumeM3;
-                        sumpv += eng.MainResVolumeM3 * eng.MainResPressurePSI;
-                    }
+                        sumpv += eng.MainResVolumeM3 * eng.MainResPressurePSI;                        
+                    }                    
                 }
+
                 // Testuje propojení napájecích hadic mezi vozy s tlakovými jímkami
                 if (i >= first && i <= last)
                 {
@@ -2380,7 +2382,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                             if (lead != null && brakeSystem.TwoPipesConnection && eng is MSTSElectricLocomotive)
                                 lead.TwoPipesConnectionLocoCount++;
                         }
-                    }
+                    }                    
                 }
             }
             if (sumv > 0)
@@ -2420,24 +2422,31 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             // Počítání hlavních jímek
             // Úbytky vzduchu při manipulaci s dveřmi
             // Spouštění kompresoru na obsazených nebo propojených lokomotivách
-            train.BrakeLine2PressurePSI = sumpv;
             for (int i = 0; i < train.Cars.Count; i++)
             {
                 var loco = (train.Cars[i] as MSTSLocomotive);
                 train.Cars[i].BrakeSystem.TotalCapacityMainResBrakePipe = 0;
-
-                if (i >= first && i <= last || TwoPipesConnection && continuousFromInclusive <= i && i < continuousToExclusive)
+                
+                if (loco != null)
                 {
-                    if (!LocoTwoPipesConnectionBreak)
-                        train.Cars[i].BrakeSystem.BrakeLine2PressurePSI = sumpv;
-
-                    if (loco != null && lead != null)
+                    if (i >= first && i <= last || TwoPipesConnection && continuousFromInclusive <= i && i < continuousToExclusive)
                     {
                         if (!LocoTwoPipesConnectionBreak)
                         {
-                            // Použití všech hlavních jímek při propojení napájecího potrubí                             
-                            (train.Cars[i] as MSTSLocomotive).MainResPressurePSI = sumpv;
+                            // Použití všech hlavních jímek při propojení napájecího potrubí                                                        
                             train.Cars[i].BrakeSystem.TotalCapacityMainResBrakePipe = (train.Cars[i].BrakeSystem.BrakePipeVolumeM3 * train.Cars[i].BrakeSystem.BrakeLine1PressurePSI) + (loco.MainResVolumeM3 * loco.MainResPressurePSI);
+
+                            if ((train.Cars[i] as MSTSLocomotive).MainResPressurePSI < lead.MainResPressurePSI)
+                            {
+                                (train.Cars[i] as MSTSLocomotive).MainResPressurePSI += 5f * elapsedClockSeconds;
+                                lead.MainResPressurePSI -= 5f * elapsedClockSeconds;
+                            }
+                            else
+                            if ((train.Cars[i] as MSTSLocomotive).MainResPressurePSI > lead.MainResPressurePSI)
+                            {
+                                (train.Cars[i] as MSTSLocomotive).MainResPressurePSI -= 5f * elapsedClockSeconds;
+                                lead.MainResPressurePSI += 5f * elapsedClockSeconds;
+                            }
 
                             // Logika chování vzduchu mezi pomocnými jímkami
                             //if (train.Cars[i] is MSTSElectricLocomotive)
@@ -2460,233 +2469,233 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                             // Výpočet kapacity hlavní jímky a přilehlého potrubí                            
                             lead.BrakeSystem.TotalCapacityMainResBrakePipe = (lead.BrakeSystem.BrakePipeVolumeM3 * lead.BrakeSystem.BrakeLine1PressurePSI) + (lead.MainResVolumeM3 * lead.MainResPressurePSI);
                         }
-
-                        // *** Manipulace s dveřmi ***
-                        if (loco.CentralHandlingDoors && !loco.TramRailUnit)
-                        {
-                            BrakeSystem MSTSWagon = train.Cars[i].BrakeSystem;
-                            // Snižuje tlak v hlavní jímce kvůli spotřebě vzduchu při otevírání/zavírání dveří
-                            if (MSTSWagon.AirOK_DoorCanManipulate)
-                            {
-                                if (sumv > 0)
-                                    lead.MainResPressurePSI -= train.TotalAirLoss / sumv * elapsedClockSeconds;
-                                else
-                                    lead.MainResPressurePSI -= train.TotalAirLoss * elapsedClockSeconds;
-                            }
-                        }
-
-
-                        // *** Kompresory ***
-
-                        // Propojení hlavní jímky s pomocnou jímkou pomocného kompresoru
-                        if (loco.AuxCompressor && loco.MainResPressurePSI > loco.AuxResPressurePSI && loco.AuxResPressurePSI < loco.MaxAuxResPressurePSI)
-                        {
-                            loco.MainResPressurePSI -= (loco.AuxResVolumeM3 * loco.MaxAuxResPressurePSI / (loco.MainResVolumeM3 * loco.MaxMainResPressurePSI)) * 5 * elapsedClockSeconds;
-                            loco.AuxResPressurePSI += 5 * elapsedClockSeconds;
-                        }
-
-                        // Netěsnosti jímky pomocného kompresoru
-                        if (loco.AuxResPressurePSI > 0)
-                            loco.AuxResPressurePSI -= loco.AuxResPipeLeak * elapsedClockSeconds * 1;
-
-                        // Minimální mez pro dostatek vzduchu pro pantografy
-                        if (loco.AuxResPressurePSI >= loco.MinAuxPressurePantoPSI || !loco.AuxCompressor)
-                            loco.AirForPantograph = true;
-                        else loco.AirForPantograph = false;
-
-                        // Minimální mez pro dostatek vzduchu pro HV
-                        if (loco.AuxResPressurePSI >= loco.MinAuxPressureHVPSI || !loco.AuxCompressor)
-                            loco.AirForHV = true;
-                        else loco.AirForHV = false;
-
-                        // Automatický náběh kompresoru u dieselelektrické trakce
-                        if (loco is MSTSDieselLocomotive || loco is MSTSSteamLocomotive)
-                        {
-                            if (loco.BrakeSystem.AuxPowerOnDelayS == 0) loco.BrakeSystem.AuxPowerOnDelayS = 10; // Default 10s
-                            if (loco.Compressor_I || !loco.Compressor_II)
-                            {
-                                loco.CompressorMode_OffAuto[loco.LocoStation] = true;
-                                if (!loco.PowerOn)
-                                    loco.BrakeSystem.CompressorT0 = 0;
-                                // Zpoždění náběhu kompresoru
-                                if (loco.CompressorMode_OffAuto[loco.LocoStation] && !loco.CompressorIsOn)
-                                {
-                                    loco.BrakeSystem.CompressorT0 += elapsedClockSeconds;
-                                    if (loco.BrakeSystem.CompressorT0 > loco.BrakeSystem.AuxPowerOnDelayS)
-                                    {
-                                        loco.BrakeSystem.CompressorOnDelay = true;
-                                    }
-                                    else loco.BrakeSystem.CompressorOnDelay = false;
-                                }
-                            }
-                            if (loco.Compressor_II)
-                            {
-                                loco.CompressorMode2_OffAuto[loco.LocoStation] = true;
-                                if (!loco.PowerOn)
-                                    loco.BrakeSystem.Compressor2T0 = 0;
-                                // Zpoždění náběhu kompresoru
-                                if (loco.CompressorMode2_OffAuto[loco.LocoStation] && !loco.Compressor2IsOn)
-                                {
-                                    loco.BrakeSystem.Compressor2T0 += elapsedClockSeconds;
-                                    if (loco.BrakeSystem.Compressor2T0 > loco.BrakeSystem.AuxPowerOnDelayS)
-                                    {
-                                        loco.BrakeSystem.Compressor2OnDelay = true;
-                                    }
-                                    else loco.BrakeSystem.Compressor2OnDelay = false;
-                                }
-                            }
-                            if (loco.AuxCompressor)
-                            {
-                                //loco.AuxCompressorMode_OffOn = true;  // Vždy ruční spuštění
-                                // Zpoždění náběhu kompresoru
-                                if (loco.AuxCompressorMode_OffOn && !loco.AuxCompressorIsOn)
-                                {
-                                    loco.BrakeSystem.AuxCompressorT0 += elapsedClockSeconds;
-                                    if (loco.BrakeSystem.AuxCompressorT0 > 1)
-                                    {
-                                        loco.BrakeSystem.AuxCompressorOnDelay = true;
-                                        loco.BrakeSystem.AuxCompressorT0 = 0;
-                                    }
-                                    else loco.BrakeSystem.AuxCompressorOnDelay = false;
-                                }
-                            }
-                        }
-
-                        if (loco is MSTSElectricLocomotive)
-                        {
-                            // Zpoždění náběhu kompresoru
-                            if (loco.Compressor_I || !loco.Compressor_II)
-                            {
-                                if ((loco.CompressorMode_OffAuto[loco.LocoStation] || loco.Compressor_I_HandMode[loco.LocoStation]) && !loco.CompressorIsOn)
-                                {
-                                    loco.BrakeSystem.CompressorT0 += elapsedClockSeconds;
-                                    if (loco.BrakeSystem.CompressorT0 > 1) // 1s
-                                    {
-                                        loco.BrakeSystem.CompressorOnDelay = true;
-                                        loco.BrakeSystem.CompressorT0 = 0;
-                                    }
-                                    else loco.BrakeSystem.CompressorOnDelay = false;
-                                }
-                            }
-                            if (loco.Compressor_II)
-                            {
-                                if ((loco.CompressorMode2_OffAuto[loco.LocoStation] || loco.Compressor_II_HandMode[loco.LocoStation]) && !loco.Compressor2IsOn)
-                                {
-                                    loco.BrakeSystem.Compressor2T0 += elapsedClockSeconds;
-                                    if (loco.BrakeSystem.Compressor2T0 > 1) // 1s
-                                    {
-                                        loco.BrakeSystem.Compressor2OnDelay = true;
-                                        loco.BrakeSystem.Compressor2T0 = 0;
-                                    }
-                                    else loco.BrakeSystem.Compressor2OnDelay = false;
-                                }
-                            }
-                            if (loco.AuxCompressor)
-                            {
-                                if (loco.AuxCompressorMode_OffOn && !loco.AuxCompressorIsOn)
-                                {
-                                    loco.BrakeSystem.AuxCompressorT0 += elapsedClockSeconds;
-                                    if (loco.BrakeSystem.AuxCompressorT0 > 1) // 1s
-                                    {
-                                        loco.BrakeSystem.AuxCompressorOnDelay = true;
-                                        loco.BrakeSystem.AuxCompressorT0 = 0;
-                                    }
-                                    else loco.BrakeSystem.AuxCompressorOnDelay = false;
-                                }
-                            }
-                        }
-
-                        // Tlakový ventil při ručním provozu kompresorů
-                        if (loco.MaxMainResOverPressurePSI == 0)
-                            loco.MaxMainResOverPressurePSI = loco.MaxMainResPressurePSI + (0.60f * 14.50377f);
-
-                        if (loco.MainResPressurePSI > loco.MaxMainResOverPressurePSI)
-                            loco.MainResOverPressure = true;
-
-                        if (loco.MainResPressurePSI > loco.MaxMainResPressurePSI && loco.MainResOverPressure)
-                        {
-                            loco.MainResPressurePSI -= 0.25f * 14.50377f * elapsedClockSeconds;
-                            loco.SignalEvent(Event.MaxMainResOverPressureValveOpen);
-                        }
-                        else
-                        {
-                            loco.MainResOverPressure = false;
-                            loco.SignalEvent(Event.MaxMainResOverPressureValveClosed);
-                        }
-
-                        // Tlakový ventil při provozu pomocného kompresoru  
-                        if (loco.MaxAuxResOverPressurePSI == 0)
-                            loco.MaxAuxResOverPressurePSI = loco.MaxAuxResPressurePSI + (0.50f * 14.50377f);
-
-                        if (loco.AuxResPressurePSI > loco.MaxAuxResOverPressurePSI)
-                            loco.AuxResOverPressure = true;
-
-                        if (loco.AuxResPressurePSI > loco.MaxAuxResPressurePSI && loco.AuxResOverPressure)
-                        {
-                            loco.AuxResPressurePSI -= 0.25f * 14.50377f * elapsedClockSeconds;
-                            loco.SignalEvent(Event.MaxAuxResOverPressureValveOpen);
-                        }
-                        else
-                        {
-                            loco.AuxResOverPressure = false;
-                            loco.SignalEvent(Event.MaxAuxResOverPressureValveClosed);
-                        }
-
-                        // Automatický restart pomocného kompresoru, pokud je zadáno
-                        bool AuxResRestart = false;
-                        if (loco.AuxCompressorRestartPressurePSI != 0) AuxResRestart = true;
-
-                        if ((loco.AuxResPressurePSI <= loco.AuxCompressorRestartPressurePSI && AuxResRestart || !AuxResRestart)
-                            && loco.Battery && (loco.PowerKey || loco.AuxCompressorNoActiveStation)
-                            && loco.AuxCompressorMode_OffOn && ((loco is MSTSElectricLocomotive && loco.AuxCompressorNoActiveStation) || (loco is MSTSElectricLocomotive && loco.StationIsActivated[loco.LocoStation]) || loco is MSTSDieselLocomotive || loco is MSTSSteamLocomotive)
-                            && loco.BrakeSystem.AuxCompressorOnDelay
-                            && !loco.AuxCompressorIsOn)
-                            loco.SignalEvent(Event.AuxCompressorOn);
-
-                        bool genModeActive = false;
-                        if (loco.extendedPhysics != null)
-                        {
-                            genModeActive = loco.extendedPhysics.GeneratoricModeActive;
-                        }
-
-                        if ((loco.MainResPressurePSI <= loco.CompressorRestartPressurePSI || (loco.Compressor_I_HandMode[loco.LocoStation]
-                            && ((loco is MSTSElectricLocomotive && loco.StationIsActivated[loco.LocoStation]) || loco is MSTSDieselLocomotive || loco is MSTSSteamLocomotive)))
-                            && (loco.AuxPowerOn || genModeActive)
-                            && (loco.CompressorMode_OffAuto[loco.LocoStation] && ((loco is MSTSElectricLocomotive && loco.StationIsActivated[loco.LocoStation]) || loco is MSTSDieselLocomotive || loco is MSTSSteamLocomotive) || loco.Compressor_I_HandMode[loco.LocoStation] && loco.StationIsActivated[loco.LocoStation])
-                            && loco.BrakeSystem.CompressorOnDelay
-                            && !loco.CompressorIsOn)
-                            loco.SignalEvent(Event.CompressorOn);
-
-                        if ((loco.MainResPressurePSI <= loco.CompressorRestartPressurePSI || (loco.Compressor_II_HandMode[loco.LocoStation]
-                            && ((loco is MSTSElectricLocomotive && loco.StationIsActivated[loco.LocoStation]) || loco is MSTSDieselLocomotive || loco is MSTSSteamLocomotive)))
-                            && (loco.AuxPowerOn || genModeActive)
-                            && (loco.CompressorMode2_OffAuto[loco.LocoStation] && ((loco is MSTSElectricLocomotive && loco.StationIsActivated[loco.LocoStation]) || loco is MSTSDieselLocomotive || loco is MSTSSteamLocomotive) || loco.Compressor_II_HandMode[loco.LocoStation] && loco.StationIsActivated[loco.LocoStation])
-                            && loco.BrakeSystem.Compressor2OnDelay
-                            && !loco.Compressor2IsOn)
-                            loco.SignalEvent(Event.Compressor2On);
-
-
-                        if ((loco.AuxResPressurePSI >= loco.MaxAuxResPressurePSI && AuxResRestart
-                            || (!loco.Battery || (!loco.PowerKey && !loco.AuxCompressorNoActiveStation))
-                            || (!loco.AuxCompressorMode_OffOn && ((loco is MSTSElectricLocomotive && loco.AuxCompressorNoActiveStation) || (loco is MSTSElectricLocomotive && loco.StationIsActivated[loco.LocoStation]) || loco is MSTSDieselLocomotive || loco is MSTSSteamLocomotive)))
-                            && loco.AuxCompressorIsOn)
-                            loco.SignalEvent(Event.AuxCompressorOff);
-
-                        if (((loco.MainResPressurePSI >= loco.MaxMainResPressurePSI && !loco.Compressor_I_HandMode[loco.LocoStation] && ((loco is MSTSElectricLocomotive && loco.StationIsActivated[loco.LocoStation]) || loco is MSTSDieselLocomotive || loco is MSTSSteamLocomotive))
-                            //|| (loco.MainResPressurePSI >= loco.MaxMainResOverPressurePSI && loco.Compressor_I_HandMode)
-                            || (!loco.AuxPowerOn && !genModeActive)
-                            || (!loco.CompressorMode_OffAuto[loco.LocoStation] && !loco.Compressor_I_HandMode[loco.LocoStation] && ((loco is MSTSElectricLocomotive && loco.StationIsActivated[loco.LocoStation]) || loco is MSTSDieselLocomotive || loco is MSTSSteamLocomotive)))                            
-                            && loco.CompressorIsOn)
-                            loco.SignalEvent(Event.CompressorOff);
-
-
-                        if (((loco.MainResPressurePSI >= loco.MaxMainResPressurePSI && !loco.Compressor_II_HandMode[loco.LocoStation] && ((loco is MSTSElectricLocomotive && loco.StationIsActivated[loco.LocoStation]) || loco is MSTSDieselLocomotive || loco is MSTSSteamLocomotive))
-                            //|| (loco.MainResPressurePSI >= loco.MaxMainResOverPressurePSI && loco.Compressor_II_HandMode)
-                            || (!loco.AuxPowerOn && !genModeActive)
-                            || (!loco.CompressorMode2_OffAuto[loco.LocoStation] && !loco.Compressor_II_HandMode[loco.LocoStation] && ((loco is MSTSElectricLocomotive && loco.StationIsActivated[loco.LocoStation]) || loco is MSTSDieselLocomotive || loco is MSTSSteamLocomotive)))                             
-                            && loco.Compressor2IsOn)
-                            loco.SignalEvent(Event.Compressor2Off);
                     }
+
+                    // *** Manipulace s dveřmi ***
+                    if (loco.CentralHandlingDoors && !loco.TramRailUnit)
+                    {
+                        BrakeSystem MSTSWagon = train.Cars[i].BrakeSystem;
+                        // Snižuje tlak v hlavní jímce kvůli spotřebě vzduchu při otevírání/zavírání dveří
+                        if (MSTSWagon.AirOK_DoorCanManipulate)
+                        {
+                            if (sumv > 0)
+                                lead.MainResPressurePSI -= train.TotalAirLoss / sumv * elapsedClockSeconds;
+                            else
+                                lead.MainResPressurePSI -= train.TotalAirLoss * elapsedClockSeconds;
+                        }
+                    }
+
+
+                    // *** Kompresory ***
+
+                    // Propojení hlavní jímky s pomocnou jímkou pomocného kompresoru
+                    if (loco.AuxCompressor && loco.MainResPressurePSI > loco.AuxResPressurePSI && loco.AuxResPressurePSI < loco.MaxAuxResPressurePSI)
+                    {
+                        loco.MainResPressurePSI -= (loco.AuxResVolumeM3 * loco.MaxAuxResPressurePSI / (loco.MainResVolumeM3 * loco.MaxMainResPressurePSI)) * 5 * elapsedClockSeconds;
+                        loco.AuxResPressurePSI += 5 * elapsedClockSeconds;
+                    }
+
+                    // Netěsnosti jímky pomocného kompresoru
+                    if (loco.AuxResPressurePSI > 0)
+                        loco.AuxResPressurePSI -= loco.AuxResPipeLeak * elapsedClockSeconds * 1;
+
+                    // Minimální mez pro dostatek vzduchu pro pantografy
+                    if (loco.AuxResPressurePSI >= loco.MinAuxPressurePantoPSI || !loco.AuxCompressor)
+                        loco.AirForPantograph = true;
+                    else loco.AirForPantograph = false;
+
+                    // Minimální mez pro dostatek vzduchu pro HV
+                    if (loco.AuxResPressurePSI >= loco.MinAuxPressureHVPSI || !loco.AuxCompressor)
+                        loco.AirForHV = true;
+                    else loco.AirForHV = false;
+
+                    // Automatický náběh kompresoru u dieselelektrické trakce
+                    if (loco is MSTSDieselLocomotive || loco is MSTSSteamLocomotive)
+                    {
+                        if (loco.BrakeSystem.AuxPowerOnDelayS == 0) loco.BrakeSystem.AuxPowerOnDelayS = 10; // Default 10s
+                        if (loco.Compressor_I || !loco.Compressor_II)
+                        {
+                            loco.CompressorMode_OffAuto[loco.LocoStation] = true;
+                            if (!loco.PowerOn)
+                                loco.BrakeSystem.CompressorT0 = 0;
+                            // Zpoždění náběhu kompresoru
+                            if (loco.CompressorMode_OffAuto[loco.LocoStation] && !loco.CompressorIsOn)
+                            {
+                                loco.BrakeSystem.CompressorT0 += elapsedClockSeconds;
+                                if (loco.BrakeSystem.CompressorT0 > loco.BrakeSystem.AuxPowerOnDelayS)
+                                {
+                                    loco.BrakeSystem.CompressorOnDelay = true;
+                                }
+                                else loco.BrakeSystem.CompressorOnDelay = false;
+                            }
+                        }
+                        if (loco.Compressor_II)
+                        {
+                            loco.CompressorMode2_OffAuto[loco.LocoStation] = true;
+                            if (!loco.PowerOn)
+                                loco.BrakeSystem.Compressor2T0 = 0;
+                            // Zpoždění náběhu kompresoru
+                            if (loco.CompressorMode2_OffAuto[loco.LocoStation] && !loco.Compressor2IsOn)
+                            {
+                                loco.BrakeSystem.Compressor2T0 += elapsedClockSeconds;
+                                if (loco.BrakeSystem.Compressor2T0 > loco.BrakeSystem.AuxPowerOnDelayS)
+                                {
+                                    loco.BrakeSystem.Compressor2OnDelay = true;
+                                }
+                                else loco.BrakeSystem.Compressor2OnDelay = false;
+                            }
+                        }
+                        if (loco.AuxCompressor)
+                        {
+                            //loco.AuxCompressorMode_OffOn = true;  // Vždy ruční spuštění
+                            // Zpoždění náběhu kompresoru
+                            if (loco.AuxCompressorMode_OffOn && !loco.AuxCompressorIsOn)
+                            {
+                                loco.BrakeSystem.AuxCompressorT0 += elapsedClockSeconds;
+                                if (loco.BrakeSystem.AuxCompressorT0 > 1)
+                                {
+                                    loco.BrakeSystem.AuxCompressorOnDelay = true;
+                                    loco.BrakeSystem.AuxCompressorT0 = 0;
+                                }
+                                else loco.BrakeSystem.AuxCompressorOnDelay = false;
+                            }
+                        }
+                    }
+
+                    if (loco is MSTSElectricLocomotive)
+                    {
+                        // Zpoždění náběhu kompresoru
+                        if (loco.Compressor_I || !loco.Compressor_II)
+                        {
+                            if ((loco.CompressorMode_OffAuto[loco.LocoStation] || loco.Compressor_I_HandMode[loco.LocoStation]) && !loco.CompressorIsOn)
+                            {
+                                loco.BrakeSystem.CompressorT0 += elapsedClockSeconds;
+                                if (loco.BrakeSystem.CompressorT0 > 1) // 1s
+                                {
+                                    loco.BrakeSystem.CompressorOnDelay = true;
+                                    loco.BrakeSystem.CompressorT0 = 0;
+                                }
+                                else loco.BrakeSystem.CompressorOnDelay = false;
+                            }
+                        }
+                        if (loco.Compressor_II)
+                        {
+                            if ((loco.CompressorMode2_OffAuto[loco.LocoStation] || loco.Compressor_II_HandMode[loco.LocoStation]) && !loco.Compressor2IsOn)
+                            {
+                                loco.BrakeSystem.Compressor2T0 += elapsedClockSeconds;
+                                if (loco.BrakeSystem.Compressor2T0 > 1) // 1s
+                                {
+                                    loco.BrakeSystem.Compressor2OnDelay = true;
+                                    loco.BrakeSystem.Compressor2T0 = 0;
+                                }
+                                else loco.BrakeSystem.Compressor2OnDelay = false;
+                            }
+                        }
+                        if (loco.AuxCompressor)
+                        {
+                            if (loco.AuxCompressorMode_OffOn && !loco.AuxCompressorIsOn)
+                            {
+                                loco.BrakeSystem.AuxCompressorT0 += elapsedClockSeconds;
+                                if (loco.BrakeSystem.AuxCompressorT0 > 1) // 1s
+                                {
+                                    loco.BrakeSystem.AuxCompressorOnDelay = true;
+                                    loco.BrakeSystem.AuxCompressorT0 = 0;
+                                }
+                                else loco.BrakeSystem.AuxCompressorOnDelay = false;
+                            }
+                        }
+                    }
+
+                    // Tlakový ventil při ručním provozu kompresorů
+                    if (loco.MaxMainResOverPressurePSI == 0)
+                        loco.MaxMainResOverPressurePSI = loco.MaxMainResPressurePSI + (0.60f * 14.50377f);
+
+                    if (loco.MainResPressurePSI > loco.MaxMainResOverPressurePSI)
+                        loco.MainResOverPressure = true;
+
+                    if (loco.MainResPressurePSI > loco.MaxMainResPressurePSI && loco.MainResOverPressure)
+                    {
+                        loco.MainResPressurePSI -= 0.25f * 14.50377f * elapsedClockSeconds;
+                        loco.SignalEvent(Event.MaxMainResOverPressureValveOpen);
+                    }
+                    else
+                    {
+                        loco.MainResOverPressure = false;
+                        loco.SignalEvent(Event.MaxMainResOverPressureValveClosed);
+                    }
+
+                    // Tlakový ventil při provozu pomocného kompresoru  
+                    if (loco.MaxAuxResOverPressurePSI == 0)
+                        loco.MaxAuxResOverPressurePSI = loco.MaxAuxResPressurePSI + (0.50f * 14.50377f);
+
+                    if (loco.AuxResPressurePSI > loco.MaxAuxResOverPressurePSI)
+                        loco.AuxResOverPressure = true;
+
+                    if (loco.AuxResPressurePSI > loco.MaxAuxResPressurePSI && loco.AuxResOverPressure)
+                    {
+                        loco.AuxResPressurePSI -= 0.25f * 14.50377f * elapsedClockSeconds;
+                        loco.SignalEvent(Event.MaxAuxResOverPressureValveOpen);
+                    }
+                    else
+                    {
+                        loco.AuxResOverPressure = false;
+                        loco.SignalEvent(Event.MaxAuxResOverPressureValveClosed);
+                    }
+
+                    // Automatický restart pomocného kompresoru, pokud je zadáno
+                    bool AuxResRestart = false;
+                    if (loco.AuxCompressorRestartPressurePSI != 0) AuxResRestart = true;
+
+                    if ((loco.AuxResPressurePSI <= loco.AuxCompressorRestartPressurePSI && AuxResRestart || !AuxResRestart)
+                        && loco.Battery && (loco.PowerKey || loco.AuxCompressorNoActiveStation)
+                        && loco.AuxCompressorMode_OffOn && ((loco is MSTSElectricLocomotive && loco.AuxCompressorNoActiveStation) || (loco is MSTSElectricLocomotive && loco.StationIsActivated[loco.LocoStation]) || loco is MSTSDieselLocomotive || loco is MSTSSteamLocomotive)
+                        && loco.BrakeSystem.AuxCompressorOnDelay
+                        && !loco.AuxCompressorIsOn)
+                        loco.SignalEvent(Event.AuxCompressorOn);
+
+                    bool genModeActive = false;
+                    if (loco.extendedPhysics != null)
+                    {
+                        genModeActive = loco.extendedPhysics.GeneratoricModeActive;
+                    }
+
+                    if ((loco.MainResPressurePSI <= loco.CompressorRestartPressurePSI || (loco.Compressor_I_HandMode[loco.LocoStation]
+                        && ((loco is MSTSElectricLocomotive && loco.StationIsActivated[loco.LocoStation]) || loco is MSTSDieselLocomotive || loco is MSTSSteamLocomotive)))
+                        && (loco.AuxPowerOn || genModeActive)
+                        && (loco.CompressorMode_OffAuto[loco.LocoStation] && ((loco is MSTSElectricLocomotive && loco.StationIsActivated[loco.LocoStation]) || loco is MSTSDieselLocomotive || loco is MSTSSteamLocomotive) || loco.Compressor_I_HandMode[loco.LocoStation] && loco.StationIsActivated[loco.LocoStation])
+                        && loco.BrakeSystem.CompressorOnDelay
+                        && !loco.CompressorIsOn)
+                        loco.SignalEvent(Event.CompressorOn);
+
+                    if ((loco.MainResPressurePSI <= loco.CompressorRestartPressurePSI || (loco.Compressor_II_HandMode[loco.LocoStation]
+                        && ((loco is MSTSElectricLocomotive && loco.StationIsActivated[loco.LocoStation]) || loco is MSTSDieselLocomotive || loco is MSTSSteamLocomotive)))
+                        && (loco.AuxPowerOn || genModeActive)
+                        && (loco.CompressorMode2_OffAuto[loco.LocoStation] && ((loco is MSTSElectricLocomotive && loco.StationIsActivated[loco.LocoStation]) || loco is MSTSDieselLocomotive || loco is MSTSSteamLocomotive) || loco.Compressor_II_HandMode[loco.LocoStation] && loco.StationIsActivated[loco.LocoStation])
+                        && loco.BrakeSystem.Compressor2OnDelay
+                        && !loco.Compressor2IsOn)
+                        loco.SignalEvent(Event.Compressor2On);
+
+
+                    if ((loco.AuxResPressurePSI >= loco.MaxAuxResPressurePSI && AuxResRestart
+                        || (!loco.Battery || (!loco.PowerKey && !loco.AuxCompressorNoActiveStation))
+                        || (!loco.AuxCompressorMode_OffOn && ((loco is MSTSElectricLocomotive && loco.AuxCompressorNoActiveStation) || (loco is MSTSElectricLocomotive && loco.StationIsActivated[loco.LocoStation]) || loco is MSTSDieselLocomotive || loco is MSTSSteamLocomotive)))
+                        && loco.AuxCompressorIsOn)
+                        loco.SignalEvent(Event.AuxCompressorOff);
+
+                    if (((loco.MainResPressurePSI >= loco.MaxMainResPressurePSI && !loco.Compressor_I_HandMode[loco.LocoStation] && ((loco is MSTSElectricLocomotive && loco.StationIsActivated[loco.LocoStation]) || loco is MSTSDieselLocomotive || loco is MSTSSteamLocomotive))
+                        //|| (loco.MainResPressurePSI >= loco.MaxMainResOverPressurePSI && loco.Compressor_I_HandMode)
+                        || (!loco.AuxPowerOn && !genModeActive)
+                        || (!loco.CompressorMode_OffAuto[loco.LocoStation] && !loco.Compressor_I_HandMode[loco.LocoStation] && ((loco is MSTSElectricLocomotive && loco.StationIsActivated[loco.LocoStation]) || loco is MSTSDieselLocomotive || loco is MSTSSteamLocomotive)))
+                        && loco.CompressorIsOn)
+                        loco.SignalEvent(Event.CompressorOff);
+
+
+                    if (((loco.MainResPressurePSI >= loco.MaxMainResPressurePSI && !loco.Compressor_II_HandMode[loco.LocoStation] && ((loco is MSTSElectricLocomotive && loco.StationIsActivated[loco.LocoStation]) || loco is MSTSDieselLocomotive || loco is MSTSSteamLocomotive))
+                        //|| (loco.MainResPressurePSI >= loco.MaxMainResOverPressurePSI && loco.Compressor_II_HandMode)
+                        || (!loco.AuxPowerOn && !genModeActive)
+                        || (!loco.CompressorMode2_OffAuto[loco.LocoStation] && !loco.Compressor_II_HandMode[loco.LocoStation] && ((loco is MSTSElectricLocomotive && loco.StationIsActivated[loco.LocoStation]) || loco is MSTSDieselLocomotive || loco is MSTSSteamLocomotive)))
+                        && loco.Compressor2IsOn)
+                        loco.SignalEvent(Event.Compressor2Off);
                 }
             }
 
