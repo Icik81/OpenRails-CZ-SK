@@ -13920,8 +13920,10 @@ namespace Orts.Simulation.RollingStocks
         bool MirelRSSkip_Ready;
         bool MirelRSPositionBlocked;        
         bool MirelRSProtect;
+        bool MirelRSProtectPanto;
         int MirelRSSkipCounter;
         bool MirelRSNoVentilationDR;
+        float preAbsSpeed;
 
         public bool DirectionControllerMirelRSPositionSh;
         public bool preDirectionControllerMirelRSPositionSh;
@@ -14446,15 +14448,25 @@ namespace Orts.Simulation.RollingStocks
             MirelRSProtects:
 
                 #region Ochrany
-                // 2 sběrače nad 50km/h
-                if (AbsSpeedMpS > 50f / 3.6f)
+                // 2 sběrače nad 50km/h                
+                if (AbsSpeedMpS > 50f / 3.6f && !MirelRSProtectPanto)
                 {
-                    if (Pantographs[1].State == PantographState.Up && Pantographs[2].State == PantographState.Up)
+                    if (preAbsSpeed < 50f / 3.6f && Pantographs[1].State == PantographState.Up && Pantographs[2].State == PantographState.Up)
                     {
                         MirelRSProtect = true;
+                        MirelRSProtectPanto = true;
+                        Simulator.StepControllerValue = 0f;
+                        HVOff = true;
+                    }
+                    if (preAbsSpeed > 50f / 3.6f && Pantographs[1].State == PantographState.Up && Pantographs[2].State == PantographState.Up)
+                    {
+                        MirelRSProtect = true;
+                        MirelRSProtectPanto = true;
                         Simulator.StepControllerValue = 0f;
                     }
                 }
+                preAbsSpeed = AbsSpeedMpS;
+
                 // Tepelné ochrany
                 if (MirelRSControllerThrottleValue >= 22f && MirelRSControllerThrottleValue <= 26f)
                 {
@@ -14510,12 +14522,12 @@ namespace Orts.Simulation.RollingStocks
 
                 // Obecná proměnná pro StepController
                 MirelRSControllerThrottleDummyValue = 0;
-                if (!DirectionControllerMirelRSPositionSh && MirelRSControllerThrottleValue > 27 && MirelRSControllerThrottleValue < 33)
+                if (!MirelRSProtect && !MirelRSProtectPanto && !DirectionControllerMirelRSPositionSh && MirelRSControllerThrottleValue > 27 && MirelRSControllerThrottleValue < 33)
                 {
                     MirelRSControllerThrottleDummyValue = 27;
                     Simulator.StepControllerValue = MirelRSControllerThrottleDummyValue;
                 }
-                if (MirelRSControllerThrottleDummyValue == 0 && !MirelRSSkip_Start)
+                if (!MirelRSProtect && !MirelRSProtectPanto && MirelRSControllerThrottleDummyValue == 0 && !MirelRSSkip_Start)
                     Simulator.StepControllerValue = MirelRSControllerThrottleValue;
 
                 if (ThrottlePercent == 0 && MirelRSControllerThrottleValue > 1)
@@ -14531,6 +14543,10 @@ namespace Orts.Simulation.RollingStocks
                 MirelRSProtect = true;
                 MirelRSCanSkip = false;
                 MirelRSSkipDiode = 0;
+            }
+            if (Pantographs[1].State != PantographState.Up && Pantographs[2].State != PantographState.Up)
+            {
+                MirelRSProtectPanto = false;
             }
         }
 
