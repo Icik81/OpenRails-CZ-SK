@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: RunActivity\n"
 "POT-Creation-Date: 2023-12-10 14:50:43+0100\n"
-"PO-Revision-Date: 2023-12-10 14:51+0100\n"
+"PO-Revision-Date: 2023-12-10 14:55+0100\n"
 "Last-Translator: Altmann <altmann@bk.ru>\n"
 "Language-Team: Open Rails Dev Team\n"
 "Language: cs\n"
@@ -589,7 +589,7 @@ msgstr "Neaktivní příkaz (N/A)"
 
 #: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:64
 msgid "Togle Locomotive Station"
-msgstr ""
+msgstr "Přejít na stanoviště lokomotivy"
 
 #: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:69
 msgid "Toggle Handbrake"
