@@ -1857,7 +1857,7 @@ namespace Orts.Viewer3D
             if (!Simulator.PlayerLocomotiveChange)
                 Simulator.Confirmer.Confirm(CabControl.ChangeCab, CabSetting.On);
             else
-                Simulator.Confirmer.Information(Simulator.Catalog.GetString("You are in the locomotive station ") + PlayerTrain.Cars[Simulator.LeadLocomotiveIndex].CarID);
+                Simulator.Confirmer.Information(Catalog.GetString("You are in the locomotive station ") + PlayerTrain.Cars[Simulator.LeadLocomotiveIndex].CarID);
 
             // Icik
             Simulator.ChangeCabActivated = true;
