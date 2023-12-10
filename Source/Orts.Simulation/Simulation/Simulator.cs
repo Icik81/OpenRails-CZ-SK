@@ -246,6 +246,8 @@ namespace Orts.Simulation
         public bool TryToCouple;
         public bool CouplingAction;
         public bool SanderIsOn;
+        public bool PlayerLocomotiveChange;
+        public int LeadLocomotiveIndex;
 
         public List<PowerSupplyStation> powerSupplyStations;
         public List<VoltageChangeMarker> voltageChangeMarkers;

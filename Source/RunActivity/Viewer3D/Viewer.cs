@@ -1853,11 +1853,16 @@ namespace Orts.Viewer3D
             HeadOutBackCamera.ChangeCab(Simulator.PlayerLocomotive);
             if (MPManager.IsMultiPlayer())
                 MPManager.LocoChange(Simulator.PlayerLocomotive.Train, Simulator.PlayerLocomotive);
-            Simulator.Confirmer.Confirm(CabControl.ChangeCab, CabSetting.On);
+            
+            if (!Simulator.PlayerLocomotiveChange)
+                Simulator.Confirmer.Confirm(CabControl.ChangeCab, CabSetting.On);
+            else
+                Simulator.Confirmer.Information(Simulator.Catalog.GetString("You are in the locomotive station ") + PlayerTrain.Cars[Simulator.LeadLocomotiveIndex].CarID);
 
             // Icik
             Simulator.ChangeCabActivated = true;
             Simulator.LocoStationChange = true;
+            Simulator.PlayerLocomotiveChange = false;
         }
 
         /// <summary>

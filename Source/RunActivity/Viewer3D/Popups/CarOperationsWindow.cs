@@ -40,14 +40,14 @@ namespace Orts.Viewer3D.Popups
         public bool HelperOptionsOpened;
 
         public CarOperationsWindow(WindowManager owner)
-            : base(owner, Window.DecorationSize.X + owner.TextFontDefault.Height * 23, Window.DecorationSize.Y + (owner.TextFontDefault.Height + 2) * 20 + ControlLayout.SeparatorSize * 12, Viewer.Catalog.GetString("*** Car Operation Menu ***"))
+            : base(owner, Window.DecorationSize.X + owner.TextFontDefault.Height * 23, Window.DecorationSize.Y + (owner.TextFontDefault.Height + 2) * 21 + ControlLayout.SeparatorSize * 12, Viewer.Catalog.GetString("*** Car Operation Menu ***"))
         {
             Viewer = owner.Viewer;
         }
 
         protected override ControlLayout Layout(ControlLayout layout)
         {
-            Label ID, buttonHandbrake, buttonTogglePower, buttonToggleMUCable, buttonToggleMUPower, buttonToggleHelper, buttonToggleHelperOptions, buttonToggleBrakeHose, buttonToggleAngleCockA, buttonToggleAngleCockB, buttonToggleBleedOffValve, buttonBrakeCarMode, buttonBrakeCarModePL, buttonBrakeCarDeactivate, buttonTwoPipesConnection, buttonLeftDoor, buttonRightDoor, buttonNoPaxsMode, buttonHeating, buttonClose;
+            Label ID, buttonLocoChange, buttonHandbrake, buttonTogglePower, buttonToggleMUCable, buttonToggleMUPower, buttonToggleHelper, buttonToggleHelperOptions, buttonToggleBrakeHose, buttonToggleAngleCockA, buttonToggleAngleCockB, buttonToggleBleedOffValve, buttonBrakeCarMode, buttonBrakeCarModePL, buttonBrakeCarDeactivate, buttonTwoPipesConnection, buttonLeftDoor, buttonRightDoor, buttonNoPaxsMode, buttonHeating, buttonClose;
 
             var vbox = base.Layout(layout).AddLayoutVertical();
 
@@ -56,7 +56,15 @@ namespace Orts.Viewer3D.Popups
 
             vbox.Add(ID = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Car ID") + "  " + (CarPosition >= Viewer.PlayerTrain.Cars.Count ? " " : Viewer.PlayerTrain.Cars[CarPosition].CarID), LabelAlignment.Center));
             ID.Color = Color.Yellow;
-            
+
+            vbox.AddHorizontalSeparator();
+            if (!(Viewer.PlayerTrain.Cars[CarPosition] is MSTSLocomotive))
+                vbox.Add(buttonLocoChange = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("N/A"), LabelAlignment.Center));
+            else
+                vbox.Add(buttonLocoChange = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Togle Locomotive Station"), LabelAlignment.Center));
+            if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).CarIsPlayerLoco)
+                buttonLocoChange.Color = Color.Yellow;
+
             vbox.AddHorizontalSeparator();
             vbox.Add(buttonHandbrake = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Toggle Handbrake"), LabelAlignment.Center));
             if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).GetTrainHandbrakeStatus())
@@ -188,6 +196,7 @@ namespace Orts.Viewer3D.Popups
             
             vbox.AddHorizontalSeparator();
             vbox.Add(buttonClose = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Close window"), LabelAlignment.Center));
+            buttonLocoChange.Click += new Action<Control, Point>(buttonLocoChange_Click);
             buttonHandbrake.Click += new Action<Control, Point>(buttonHandbrake_Click);
             buttonTogglePower.Click += new Action<Control, Point>(buttonTogglePower_Click);
             buttonToggleMUCable.Click += new Action<Control, Point>(buttonToggleMUCable_Click);
@@ -227,6 +236,15 @@ namespace Orts.Viewer3D.Popups
                 Layout();
             }
             base.PrepareFrame(elapsedTime, updateFull);
+        }
+
+        void buttonLocoChange_Click(Control arg1, Point arg2)
+        {
+            if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive) == null || (Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive).CarIsPlayerLoco)
+                return;
+            Viewer.Simulator.PlayerLocomotiveChange = true;
+            Viewer.Simulator.LeadLocomotiveIndex = CarPosition;            
+            Viewer.ChangeCab();
         }
 
         void buttonHandbrake_Click(Control arg1, Point arg2)

@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2023-11-12 10:44:24+0100\n"
-"PO-Revision-Date: 2023-11-12 10:44:25+0100\n"
+"POT-Creation-Date: 2023-12-10 14:50:43+0100\n"
+"PO-Revision-Date: 2023-12-10 14:50:43+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -150,7 +150,11 @@ msgstr ""
 msgid "Switched to autopilot"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Viewer.cs:2068
+#: ../../RunActivity/Viewer3D/Viewer.cs:1847
+msgid "You are in the locomotive station "
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Viewer.cs:2133
 msgid "Game saved"
 msgstr ""
 
@@ -187,7 +191,7 @@ msgid ""
 "contains user controlled weather"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Weather.cs:2368
+#: ../../RunActivity/Viewer3D/Weather.cs:2432
 msgid ""
 "Restoring wrong weather type : trying to restore user controlled weather but "
 "save contains dynamic weather"
@@ -564,252 +568,257 @@ msgstr ""
 msgid "Car ID"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:61
-msgid "Toggle Handbrake"
-msgstr ""
-
-#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:67
-#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:130
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:62
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:75
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:138
 msgid "N/A"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:70
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:64
+msgid "Togle Locomotive Station"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:69
+msgid "Toggle Handbrake"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:78
 msgid "Toggle Power"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:76
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:84
 msgid "Toggle Cable MU"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:81
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:89
 msgid "Toggle Power MU"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:86
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:94
 msgid "Connect/Unmount Helper"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:91
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:99
 msgid "Helper Options"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:96
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:104
 msgid "Toggle Brake Hose Connection"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:101
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:109
 msgid "Open/Close Front Angle Cock"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:106
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:114
 msgid "Open/Close Rear Angle Cock"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:111
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:119
 msgid "Open/Close Bleed Off Valve"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:116
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:124
 msgid "Brake Mode G/P/R/R+Mg"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:116
-#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:122
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:124
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:130
 msgid "Set"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:122
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:130
 msgid "Car Mode Empty/Loaded"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:137
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:145
 msgid "Car Brake"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:142
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:150
 msgid "Air Twin Pipe Hoses"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:147
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:155
 msgid "Left Door"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:152
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:160
 msgid "Right Door"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:157
-#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:540
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:165
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:558
 msgid "No Pax`s mode"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:167
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:175
 msgid "Stove Heating"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:172
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:180
 msgid "Steam Heating"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:177
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:185
 msgid "Diesel Heating"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:182
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:190
 msgid "Calorifer Heating"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:184
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:192
 msgid "Electric Heating/Air"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:190
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:198
 #: ../../RunActivity/Viewer3D/Popups/HelperOptionsWindow.cs:106
 #: ../../RunActivity/Viewer3D/Popups/HelperSpeedSelectWindow.cs:67
 msgid "Close window"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:236
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:254
 msgid "Handbrake set"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:238
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:256
 msgid "Handbrake off"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:257
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:275
 msgid "Power OFF command sent"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:267
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:285
 msgid "Power ON command sent"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:279
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:297
 msgid "No power command for this type of car!"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:295
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:313
 msgid "Cable MU disconnected"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:299
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:317
 msgid "Cable MU connected"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:302
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:320
 msgid "No Cable MU command for this type of car!"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:317
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:335
 msgid "Power MU disconnected"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:320
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:338
 msgid "Power MU connected"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:323
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:341
 msgid "No Power MU command for this type of car!"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:340
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:358
 msgid "Helper disconnected"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:342
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:360
 msgid "Helper connected"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:345
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:363
 msgid "No Helper command for this type of car!"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:369
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:387
 msgid "Front brake hose connected"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:371
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:389
 msgid "Front brake hose disconnected"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:378
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:396
 msgid "Front angle cock opened"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:380
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:398
 msgid "Front angle cock closed"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:387
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:405
 msgid "Rear angle cock opened"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:389
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:407
 msgid "Rear angle cock closed"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:399
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:417
 msgid "Bleed off valve opened"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:401
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:419
 msgid "Bleed off valve closed"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:416
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:434
 msgid "Car Mode G"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:421
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:439
 msgid "Car Mode P"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:426
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:444
 msgid "Car Mode R"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:431
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:449
 msgid "Car Mode R+Mg"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:446
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:464
 msgid "Empty Car"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:447
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:465
 msgid "Empty"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:451
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:469
 msgid "Loaded Car"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:452
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:470
 msgid "Loaded"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:467
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:485
 msgid "Air Twin Pipe Hoses disconnected"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:468
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:486
 msgid "disconnect"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:472
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:490
 msgid "Air Twin Pipe Hoses connected"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:473
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:491
 msgid "connect"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:485
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:503
 msgid "Car Brake On"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:486
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:504
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1047
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1056
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1058
@@ -827,11 +836,11 @@ msgstr ""
 msgid "on"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:491
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:509
 msgid "Car Brake Off"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:492
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:510
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:787
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1047
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1056
@@ -850,32 +859,32 @@ msgstr ""
 msgid "off"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:505
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:523
 msgid "Left Door Closed"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:506
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:524
 msgid "closed"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:510
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:528
 msgid "Left Door Opened"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:511
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:529
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:675
 msgid "opened"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:524
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:542
 msgid "Right Door Closed"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:529
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:547
 msgid "Right Door Opened"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:544
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:562
 msgid "Pax`s mode"
 msgstr ""
 

@@ -1330,12 +1330,21 @@ namespace Orts.Simulation.Physics
         {
             // negative numbers used if rear cab selected
             // because '0' has no negative, all indices are shifted by 1!!!!
+            int presentIndex;
 
-            int presentIndex = LeadLocomotiveIndex + 1;
-            if (((MSTSLocomotive)LeadLocomotive).UsingRearCab) presentIndex = -presentIndex;
+            // Icik
+            if (Simulator.PlayerLocomotiveChange)
+            {
+                LeadLocomotiveIndex = Simulator.LeadLocomotiveIndex;
+                presentIndex = LeadLocomotiveIndex - 1;                
+            }
+            else
+            {
+                presentIndex = LeadLocomotiveIndex + 1;                
+                if (((MSTSLocomotive)LeadLocomotive).UsingRearCab) presentIndex = -presentIndex;
+            }            
 
             List<int> cabList = new List<int>();
-
             for (int i = 0; i < Cars.Count; i++)
             {
                 if (SkipOtherUsersCar(i)) continue;
@@ -1356,11 +1365,10 @@ namespace Orts.Simulation.Physics
 
             int lastIndex = cabList.IndexOf(presentIndex);
             if (lastIndex >= cabList.Count - 1) lastIndex = -1;
-
+            
             int nextCabIndex = cabList[lastIndex + 1];
-
-            TrainCar oldLead = LeadLocomotive;
-            LeadLocomotiveIndex = Math.Abs(nextCabIndex) - 1;
+            
+            TrainCar oldLead = LeadLocomotive;            
             Trace.Assert(LeadLocomotive != null, "Tried to switch to non-existent loco");
             TrainCar newLead = LeadLocomotive;  // Changing LeadLocomotiveIndex also changed LeadLocomotive
             ((MSTSLocomotive)newLead).UsingRearCab = nextCabIndex < 0;
