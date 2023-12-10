@@ -1659,7 +1659,7 @@ namespace Orts.Simulation.RollingStocks
                 case "wagon(dieselheaterconsumptionperhour": DieselHeaterConsumptionPerHour = stf.ReadFloatBlock(STFReader.UNITS.Volume, null); break;
                 case "wagon(dieselheatertankcapacity": DieselHeaterTankCapacity = stf.ReadFloatBlock(STFReader.UNITS.Volume, null); break;
                 case "wagon(gensoundoff": GenSoundOff = stf.ReadBoolBlock(false); break;
-
+                case "wagon(name": stf.MustMatch("("); WagonName = stf.ReadString(); break;
             }
         }
 
