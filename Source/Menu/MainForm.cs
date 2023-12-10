@@ -577,11 +577,10 @@ namespace ORTS
                             DataTable dt = ws.GetPowerSupplyStations(comboBoxRoute.Text, version);
                             int currentRow = 0;
 
-                            if (!File.Exists(SelectedRoute.Path + "\\PowerSupplyStations.xml"))
-                            {
-                                WebClient webClient = new WebClient();
-                                webClient.DownloadFile("http://lkpr.aspone.cz/or/PowerSupplyStations.xml", SelectedRoute.Path + "\\PowerSupplyStations.xml");
-                            }
+                            File.Delete(SelectedRoute.Path + "\\PowerSupplyStations.xml");
+                            WebClient webClient = new WebClient();
+                            webClient.DownloadFile("http://lkpr.aspone.cz/or/PowerSupplyStations.xml", SelectedRoute.Path + "\\PowerSupplyStations.xml");
+
                             XmlDocument doc = new XmlDocument();
                             doc.Load(SelectedRoute.Path + "\\PowerSupplyStations.xml");
 
