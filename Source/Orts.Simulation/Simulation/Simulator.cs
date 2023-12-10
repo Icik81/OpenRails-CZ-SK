@@ -245,6 +245,7 @@ namespace Orts.Simulation
         public TrainCar MSTSWagon;
         public bool TryToCouple;
         public bool CouplingAction;
+        public bool SanderIsOn;
 
         public List<PowerSupplyStation> powerSupplyStations;
         public List<VoltageChangeMarker> voltageChangeMarkers;

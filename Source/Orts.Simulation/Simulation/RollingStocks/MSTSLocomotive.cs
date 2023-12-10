@@ -7733,7 +7733,7 @@ namespace Orts.Simulation.RollingStocks
                     if (BaseFrictionCoefficientFactor < 0.72f) BaseFrictionCoefficientFactor = 0.72f;
                 }
 
-                //add sander - more effective in wet weather, so increases adhesion by more
+                //add sander - more effective in wet weather, so increases adhesion by more                
                 if (AbsSpeedMpS < SanderSpeedOfMpS && CurrentTrackSandBoxCapacityL > 0.0 && MainResPressurePSI > 80.0 && (AbsSpeedMpS > 0.1f))
                 {
                     // Icik
@@ -7955,7 +7955,7 @@ namespace Orts.Simulation.RollingStocks
                     Simulator.Confirmer.Message(ConfirmLevel.Information, CurrentTrackSandBoxCapacityKG + " Kg");
                 else
                 if (LocoHelperOn)
-                    Simulator.Confirmer.Message(ConfirmLevel.Information, Simulator.Catalog.GetString("Helper") + " " + CurrentTrackSandBoxCapacityKG + " Kg");
+                    Simulator.Confirmer.Message(ConfirmLevel.MSG3, Simulator.Catalog.GetString("Helper") + " " + CurrentTrackSandBoxCapacityKG + " Kg");
             }
             //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("CurrentTrackSandBoxCapacityL: " + CurrentTrackSandBoxCapacityL));
         }
@@ -10275,12 +10275,29 @@ namespace Orts.Simulation.RollingStocks
             {
                 Simulator.LocoCount = 0;
                 Simulator.MUCableLocoCount = 0;
+                
+                if (AcceptCableSignals && Sander)
+                    Simulator.SanderIsOn = true;
+                else
+                    Simulator.SanderIsOn = false;
+
                 foreach (TrainCar car in Train.Cars)
                 {
                     if (car is MSTSLocomotive)
+                    {
                         Simulator.LocoCount++;
+                        if (!car.CarIsPlayerLoco)
+                            (car as MSTSLocomotive).Sander = false;
+                    }
                     if (car is MSTSLocomotive && car.AcceptCableSignals)
+                    {
                         Simulator.MUCableLocoCount++;
+                        if (!car.CarIsPlayerLoco && Simulator.SanderIsOn)
+                        {
+                            (car as MSTSLocomotive).Sander = true;
+                            Simulator.Confirmer.MSG2(Simulator.Catalog.GetString("MU") + " " + (car as MSTSLocomotive).CurrentTrackSandBoxCapacityKG + " Kg");
+                        }
+                    }
                 }
                 if (Simulator.LocoCount == 1 || Simulator.MUCableLocoCount < 1)
                     AcceptCableSignals = false;
