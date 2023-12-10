@@ -55,11 +55,11 @@ namespace Orts.Viewer3D.Popups
                 CarPosition = Viewer.PlayerTrain.Cars.Count - 1;
 
             if (Viewer.PlayerTrain.Cars[CarPosition] is MSTSLocomotive)
-                vbox.Add(ID = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Car ID ") + "  " + (CarPosition >= Viewer.PlayerTrain.Cars.Count ? " " : Viewer.PlayerTrain.Cars[CarPosition].CarID)
-                + "    " + (Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive).LocomotiveName, LabelAlignment.Center));
+                vbox.Add(ID = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Car ID") + "  " + (CarPosition >= Viewer.PlayerTrain.Cars.Count ? " " : Viewer.PlayerTrain.Cars[CarPosition].CarID)
+                + "     " + (Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive).LocomotiveName, LabelAlignment.Center));
             else            
-                vbox.Add(ID = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Car ID ") + "  " + (CarPosition >= Viewer.PlayerTrain.Cars.Count ? " " : Viewer.PlayerTrain.Cars[CarPosition].CarID)
-                + "    " + (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).WagonName, LabelAlignment.Center));
+                vbox.Add(ID = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Car ID") + "  " + (CarPosition >= Viewer.PlayerTrain.Cars.Count ? " " : Viewer.PlayerTrain.Cars[CarPosition].CarID)
+                + "     " + (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).WagonName, LabelAlignment.Center));
             ID.Color = Color.Yellow;
 
             vbox.AddHorizontalSeparator();
