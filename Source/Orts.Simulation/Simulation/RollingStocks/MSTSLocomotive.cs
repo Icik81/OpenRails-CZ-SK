@@ -7734,25 +7734,25 @@ namespace Orts.Simulation.RollingStocks
                 }
 
                 //add sander - more effective in wet weather, so increases adhesion by more                
-                if (AbsSpeedMpS < SanderSpeedOfMpS && CurrentTrackSandBoxCapacityL > 0.0 && MainResPressurePSI > 80.0 && (AbsSpeedMpS > 0.1f))
+                if (AbsSpeedMpS < SanderSpeedOfMpS && CurrentTrackSandBoxCapacityL > 0.0f && MainResPressurePSI > 80.0f && AbsSpeedMpS > 0.0f)
                 {
                     // Icik
-                    if (SanderSpeedEffectUpToMpS == 0) SanderSpeedEffectUpToMpS = 112 / 3.6f; // 112km/h
+                    if (SanderSpeedEffectUpToMpS == 0) SanderSpeedEffectUpToMpS = 112f / 3.6f; // 112km/h
                     if (SanderSpeedEffectUpToMpS > 0.0f)
                     {
                         if ((Sander) && (AbsSpeedMpS < SanderSpeedEffectUpToMpS))
                         {
                             // Icik
-                            SandingFrictionCoefficientFactor = 1 + (0.75f * ((SanderSpeedEffectUpToMpS - AbsSpeedMpS) / SanderSpeedEffectUpToMpS));
-                            BaseFrictionCoefficientFactor *= SandingFrictionCoefficientFactor - MathHelper.Clamp((50f - LocomotiveAxle.SlipSpeedPercent) / 50f, 0, SandingFrictionCoefficientFactor - 1);
+                            SandingFrictionCoefficientFactor = 1.0f + (0.5f * ((SanderSpeedEffectUpToMpS - AbsSpeedMpS) / SanderSpeedEffectUpToMpS));                            
+                            BaseFrictionCoefficientFactor *= SandingFrictionCoefficientFactor;
                         }
                     }
                     else
                     {
                         if (Sander)  // If sander is on, and train speed is greater then zero, then put sand on the track
                         {
-                            SandingFrictionCoefficientFactor = 1.75f;
-                            BaseFrictionCoefficientFactor *= SandingFrictionCoefficientFactor; // Sanding track adds approx 175% adhesion (best case)
+                            SandingFrictionCoefficientFactor = 1.5f;
+                            BaseFrictionCoefficientFactor *= SandingFrictionCoefficientFactor; // Sanding track adds approx 150% adhesion (best case)
                         }
                     }
                 }
@@ -7779,16 +7779,16 @@ namespace Orts.Simulation.RollingStocks
                 }
 
                 //add sander - not as effective in dry weather
-                if (AbsSpeedMpS < SanderSpeedOfMpS && CurrentTrackSandBoxCapacityL > 0.0 && MainResPressurePSI > 80.0 && (AbsSpeedMpS > 0))
+                if (AbsSpeedMpS < SanderSpeedOfMpS && CurrentTrackSandBoxCapacityL > 0.0f && MainResPressurePSI > 80.0f && AbsSpeedMpS > 0.0f)
                 {
                     // Icik
-                    if (SanderSpeedEffectUpToMpS == 0) SanderSpeedEffectUpToMpS = 112 / 3.6f; // 112km/h
+                    if (SanderSpeedEffectUpToMpS == 0) SanderSpeedEffectUpToMpS = 112f / 3.6f; // 112km/h
                     if (SanderSpeedEffectUpToMpS > 0.0f)
                     {
                         if ((Sander) && (AbsSpeedMpS < SanderSpeedEffectUpToMpS))
                         {
                             // Icik
-                            SandingFrictionCoefficientFactor = 1 + (0.25f * ((SanderSpeedEffectUpToMpS - AbsSpeedMpS) / SanderSpeedEffectUpToMpS));
+                            SandingFrictionCoefficientFactor = 1.0f + (0.25f * ((SanderSpeedEffectUpToMpS - AbsSpeedMpS) / SanderSpeedEffectUpToMpS));
                             BaseFrictionCoefficientFactor *= SandingFrictionCoefficientFactor;
                         }
                     }
@@ -7803,6 +7803,11 @@ namespace Orts.Simulation.RollingStocks
                 }
                 BaseFrictionCoefficientFactor0 = BaseFrictionCoefficientFactor;
             }
+
+            //if (!IsLeadLocomotive() && AcceptCableSignals)
+            //    Simulator.Confirmer.MSG3("BaseFrictionCoefficientFactor: " + BaseFrictionCoefficientFactor);
+            //if (IsLeadLocomotive())
+            //    Simulator.Confirmer.MSG2("BaseFrictionCoefficientFactor Lead: " + BaseFrictionCoefficientFactor);
 
             if (IsPlayerTrain)
             {
