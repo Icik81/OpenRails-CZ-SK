@@ -9741,6 +9741,8 @@ namespace Orts.Simulation.RollingStocks
             if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.Battery, Battery ? CabSetting.On : CabSetting.Off);
         }
 
+        public bool OneCab;
+        public bool TwoCab;
         public void LocomotiveTypeDefinition()
         {
             if (LocomotiveName == null) LocomotiveName = "";
@@ -9768,6 +9770,26 @@ namespace Orts.Simulation.RollingStocks
                 }
                 if (LocoName != "")
                     LocomotiveTypeLongNumber = Int32.Parse(LocoName);
+            }
+            OneCab = false;
+            TwoCab = true;
+            switch (LocomotiveTypeNumber)
+            {                
+                case 466:
+                case 720:
+                case 721:
+                case 725:
+                case 740:
+                case 741:
+                case 742:
+                case 743:
+                case 749:
+                case 754:
+                case 770:
+                case 771:
+                    OneCab = true;
+                    TwoCab = false;
+                    break;
             }
         }
 
@@ -12230,6 +12252,11 @@ namespace Orts.Simulation.RollingStocks
             if (CabHeatingEnable && BrakeSystem.HeatingIsOn)
             {
                 CabHeating_OffOn[LocoStation] = !CabHeating_OffOn[LocoStation];
+                if (OneCab)
+                {
+                    CabHeating_OffOn[1] = CabHeating_OffOn[LocoStation];
+                    CabHeating_OffOn[2] = CabHeating_OffOn[LocoStation];
+                }
                 if (CabHeating_OffOn[LocoStation]) SignalEvent(Event.CabHeating_OffOnOn);
                 else SignalEvent(Event.CabHeating_OffOnOff);
                 if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.CabHeating_OffOn, CabHeating_OffOn[LocoStation] ? CabSetting.On : CabSetting.Off);

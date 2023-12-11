@@ -1127,16 +1127,12 @@ namespace Orts.Viewer3D
                 if ((PlayerLocomotive as MSTSLocomotive).LocoReadyToGo)
                     return;
 
-                if (PlayerLocomotive.ThrottlePercent >= 1
-                    || Math.Abs(PlayerLocomotive.SpeedMpS) > 1
-                    || !IsReverserInNeutral(PlayerLocomotive)
-                    //|| (PlayerLocomotive as MSTSLocomotive).PowerKey
+                if ((PlayerLocomotive as MSTSLocomotive).TwoCab                      
+                    && (Math.Abs(PlayerLocomotive.SpeedMpS) > 1.0f / 3.6f // 1 km/h
+                    || (PlayerLocomotive is MSTSElectricLocomotive && (PlayerLocomotive as MSTSLocomotive).PowerOn))
                     )
                 {
-                    //if ((PlayerLocomotive as MSTSLocomotive).PowerKey)
-                    //    Simulator.Confirmer.Information(Viewer.Catalog.GetString("To change stations, remove the powerkey first."));
-                    //else
-                        Simulator.Confirmer.Warning(CabControl.ChangeCab, CabSetting.Warn2);
+                    Simulator.Confirmer.Information(Viewer.Catalog.GetString("To change stations, secure the engine room without voltage."));
                 }
                 else
                 {
