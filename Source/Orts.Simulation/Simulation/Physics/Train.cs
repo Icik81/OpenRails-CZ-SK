@@ -1336,12 +1336,14 @@ namespace Orts.Simulation.Physics
             if (Simulator.PlayerLocomotiveChange)
             {
                 LeadLocomotiveIndex = Simulator.LeadLocomotiveIndex;
-                presentIndex = LeadLocomotiveIndex - 1;                
+                presentIndex = 0;                
             }
             else
-            {
-                presentIndex = LeadLocomotiveIndex + 1;                
-                if (((MSTSLocomotive)LeadLocomotive).UsingRearCab) presentIndex = -presentIndex;
+            {                                
+                if (((MSTSLocomotive)LeadLocomotive).UsingRearCab)
+                    presentIndex = 0;
+                else
+                    presentIndex = 1;
             }            
 
             List<int> cabList = new List<int>();
