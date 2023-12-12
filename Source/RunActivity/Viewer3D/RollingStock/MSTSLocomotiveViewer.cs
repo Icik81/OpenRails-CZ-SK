@@ -3142,12 +3142,16 @@ namespace Orts.Viewer3D.RollingStock
                     break;
                 case CABViewControlTypes.THROTTLE:
                 case CABViewControlTypes.THROTTLE_DISPLAY:
+                    if (!Locomotive.StationIsActivated[Locomotive.LocoStation])
+                        break;
                     index = PercentToIndex(data);
                     break;
                 case CABViewControlTypes.FRICTION_BRAKING:
                     index = data > 0.001 ? 1 : 0;
                     break;
                 case CABViewControlTypes.DYNAMIC_BRAKE:
+                    if (!Locomotive.StationIsActivated[Locomotive.LocoStation])
+                        break;
                     if (Locomotive.DynamicBrakeIntervention != -1)
                     {
                         index = 0;
@@ -3714,7 +3718,9 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.REGULATOR:
                 case CABViewControlTypes.THROTTLE:
                     if ((Locomotive.DieselDirectionController || Locomotive.DieselDirectionController2 || Locomotive.DieselDirectionController3 || Locomotive.DieselDirectionController4) && Locomotive.DieselDirection_0)
-                        return;                    
+                        return;
+                    if (!Locomotive.StationIsActivated[Locomotive.LocoStation])
+                        break;
                     if (ChangedValue(0) != 0)
                     {
                         Locomotive.ThrottleController.CurrentValue += MathHelper.Clamp(NormalizedMouseMovement(), -0.25f, 0.25f);
@@ -3734,6 +3740,11 @@ namespace Orts.Viewer3D.RollingStock
                     break;
                 case CABViewControlTypes.BRAKEMAN_BRAKE: Locomotive.SetBrakemanBrakeValue(ChangedValue(Locomotive.BrakemanBrakeController.IntermediateValue)); break;
                 case CABViewControlTypes.TRAIN_BRAKE:
+                    if (Locomotive.TrainBrakeController.BS2ControllerOnStation)
+                    {
+                        if (!Locomotive.StationIsActivated[Locomotive.LocoStation])
+                            break;
+                    }
                     if (ChangedValue(0) != 0)
                     {
                         Locomotive.TrainBrakeController.CurrentValue += MathHelper.Clamp(NormalizedMouseMovement(), -0.025f, 0.025f);
@@ -3744,6 +3755,8 @@ namespace Orts.Viewer3D.RollingStock
                     //Locomotive.SetTrainBrakeValue(ChangedValue(Locomotive.TrainBrakeController.IntermediateValue), 0); break;
                     break;
                 case CABViewControlTypes.DYNAMIC_BRAKE:
+                    if (!Locomotive.StationIsActivated[Locomotive.LocoStation])
+                        break;
                     if (ChangedValue(0) != 0)
                     {
                         Locomotive.DynamicBrakeController.CurrentValue += MathHelper.Clamp(NormalizedMouseMovement(), -0.25f, 0.25f);

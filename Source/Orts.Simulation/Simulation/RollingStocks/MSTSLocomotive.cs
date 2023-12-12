@@ -8091,6 +8091,8 @@ namespace Orts.Simulation.RollingStocks
                 return;
             if (CommandCylinderEnable)
                 return;
+            if (!StationIsActivated[LocoStation])
+                return;
 
             if (LocoType != LocoTypes.Vectron) // vectron bdělost nevybaví (MichalM 2.10.2022)
                 Mirel.ResetVigilance();
@@ -8261,6 +8263,8 @@ namespace Orts.Simulation.RollingStocks
             if (HS198ControllerEnable)
                 return;
             if (CommandCylinderEnable)
+                return;
+            if (!StationIsActivated[LocoStation])
                 return;
 
             if (LocoType != LocoTypes.Vectron)
@@ -9266,6 +9270,8 @@ namespace Orts.Simulation.RollingStocks
                 return;
             if (HS198ControllerEnable)
                 return;
+            if (!StationIsActivated[LocoStation])
+                return;
 
             if (DynamicBrakeController == null)
                 return;
@@ -9429,6 +9435,8 @@ namespace Orts.Simulation.RollingStocks
         public void StartDynamicBrakeDecrease(float? target)
         {
             if (DynamicBrakeController == null)
+                return;
+            if (!StationIsActivated[LocoStation])
                 return;
             AlerterReset(TCSEvent.DynamicBrakeChanged);
 
