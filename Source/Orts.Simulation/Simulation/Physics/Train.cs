@@ -1333,28 +1333,12 @@ namespace Orts.Simulation.Physics
             int presentIndex;
 
             // Icik
-            if (Simulator.PlayerLocomotiveChange)
-            {
-                LeadLocomotiveIndex = Simulator.LeadLocomotiveIndex;
-                presentIndex = ((MSTSLocomotive)LeadLocomotive).Flipped ? 1 : 0;                
-            }
-            else
-            {
-                if (((MSTSLocomotive)LeadLocomotive).Flipped)
-                {
-                    if (((MSTSLocomotive)LeadLocomotive).UsingRearCab)
-                        presentIndex = 1;
-                    else
-                        presentIndex = 0;
-                }
-                else
-                {
-                    if (((MSTSLocomotive)LeadLocomotive).UsingRearCab)
-                        presentIndex = 0;
-                    else
-                        presentIndex = 1;
-                }
-            }            
+            if (Simulator.PlayerLocomotiveChange)            
+                LeadLocomotiveIndex = Simulator.LeadLocomotiveIndex;                            
+            else            
+                ((MSTSLocomotive)LeadLocomotive).LocoLastCabSelect = !((MSTSLocomotive)LeadLocomotive).LocoLastCabSelect;                
+            
+            presentIndex = ((MSTSLocomotive)LeadLocomotive).LocoLastCabSelect ? 1 : 0;
 
             List<int> cabList = new List<int>();
             for (int i = 0; i < Cars.Count; i++)

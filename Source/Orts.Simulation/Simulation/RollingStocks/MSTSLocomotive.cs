@@ -730,6 +730,7 @@ namespace Orts.Simulation.RollingStocks
         protected bool PreviousHorn2 = false;
         public bool Horn12 = false;
         protected bool PreviousHorn12 = false;
+        public bool LocoLastCabSelect;
 
         // Jindrich
         public bool IsActive = false;
@@ -2062,6 +2063,7 @@ namespace Orts.Simulation.RollingStocks
             outf.Write(AxleCounterDisplayReady);
             outf.Write(AxleCounterDriveMode);
             outf.Write(AxleCount);
+            outf.Write(LocoLastCabSelect);
             #endregion
 
             base.Save(outf);
@@ -2305,6 +2307,7 @@ namespace Orts.Simulation.RollingStocks
             AxleCounterDisplayReady = inf.ReadBoolean();
             AxleCounterDriveMode = inf.ReadBoolean();
             AxleCount = inf.ReadInt32();
+            LocoLastCabSelect = inf.ReadBoolean();
             #endregion
 
             base.Restore(inf);
@@ -5607,6 +5610,7 @@ namespace Orts.Simulation.RollingStocks
                 HS198DirectionControllerPosition[1] = preHS198DirectionControllerPosition[1] = HS198DirectionControllerPosition[2] = preHS198DirectionControllerPosition[2] = 1;
                 HS198ControllerPosition[1] = preHS198ControllerPosition[1] = HS198ControllerPosition[2] = preHS198ControllerPosition[2] = 3;
                 VentilationSwitchPosition[1] = VentilationSwitchPosition[2] = 1;
+                LocoLastCabSelect = Flipped ? true : false;
 
                 if (CruiseControl != null)
                 {
