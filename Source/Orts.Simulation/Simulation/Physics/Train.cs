@@ -1365,11 +1365,12 @@ namespace Orts.Simulation.Physics
                 }
             }
 
-            int lastIndex = cabList.IndexOf(presentIndex);
-            if (lastIndex >= cabList.Count - 1) lastIndex = -1;
+            //int lastIndex = cabList.IndexOf(presentIndex);
+            //if (lastIndex >= cabList.Count - 1) lastIndex = -1;
             
-            int nextCabIndex = cabList[lastIndex + 1];
-            
+            //int nextCabIndex = cabList[lastIndex + 1];
+            int nextCabIndex = cabList[presentIndex];
+
             TrainCar oldLead = LeadLocomotive;            
             Trace.Assert(LeadLocomotive != null, "Tried to switch to non-existent loco");
             TrainCar newLead = LeadLocomotive;  // Changing LeadLocomotiveIndex also changed LeadLocomotive
