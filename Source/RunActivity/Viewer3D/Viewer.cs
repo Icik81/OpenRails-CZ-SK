@@ -990,6 +990,7 @@ namespace Orts.Viewer3D
             }
         }
 
+        bool LocoSwitchToPowerOn;
         [CallOnThread("Updater")]
         void HandleUserInput(ElapsedTime elapsedTime)
         {
@@ -1125,18 +1126,47 @@ namespace Orts.Viewer3D
             if (UserInput.IsPressed(UserCommand.GameChangeCab))
             {
                 if ((PlayerLocomotive as MSTSLocomotive).LocoReadyToGo)
+                    LocoSwitchToPowerOn = true;
+
+                if (LocoSwitchToPowerOn && (PlayerLocomotive as MSTSLocomotive).PowerOn)
+                    LocoSwitchToPowerOn = false;
+
+                if (LocoSwitchToPowerOn)                    
                     return;
 
-                if ((PlayerLocomotive as MSTSLocomotive).TwoCab                      
-                    && (Math.Abs(PlayerLocomotive.SpeedMpS) > 1.0f / 3.6f // 1 km/h
-                    || (PlayerLocomotive is MSTSElectricLocomotive && (PlayerLocomotive as MSTSLocomotive).PowerOn))
-                    )
+                if ((PlayerLocomotive as MSTSLocomotive).TwoCab)
                 {
-                    Simulator.Confirmer.Information(Viewer.Catalog.GetString("To change stations, secure the engine room without voltage."));
+                    if (Math.Abs(PlayerLocomotive.SpeedMpS) == 0.0f)  // Pokud bude lokomotiva stát 
+                    {
+                        new ChangeCabCommand(Log);
+                        return;
+                    }
+
+                    if (PlayerLocomotive is MSTSElectricLocomotive)
+                    {
+                        if ((PlayerLocomotive as MSTSLocomotive).PowerOn)  // Elektriky pod napětím neumožní přejít mezi stanovišti, pokud jedou
+                        {
+                            Simulator.Confirmer.Information(Viewer.Catalog.GetString("To change stations, secure the engine room without voltage."));
+                            return;
+                        }
+                        else
+                        if (Math.Abs(PlayerLocomotive.SpeedMpS) < 1.0f / 3.6f)  // Pod 1 km/h lze přejít mezi stanovišti
+                        {
+                            new ChangeCabCommand(Log);
+                            return;
+                        }
+                    }
+                    else
+                    if (Math.Abs(PlayerLocomotive.SpeedMpS) < 1.0f / 3.6f)  // Pod 1 km/h lze přejít mezi stanovišti
+                    {
+                        new ChangeCabCommand(Log);
+                        return;
+                    }
                 }
                 else
                 {
                     new ChangeCabCommand(Log);
+                    return;
                 }
             }
 
