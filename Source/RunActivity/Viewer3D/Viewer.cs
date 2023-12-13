@@ -1136,7 +1136,7 @@ namespace Orts.Viewer3D
 
                 if ((PlayerLocomotive as MSTSLocomotive).TwoCab)
                 {
-                    if (Math.Abs(PlayerLocomotive.SpeedMpS) == 0.0f)  // Pokud bude lokomotiva stát 
+                    if (Math.Abs(PlayerLocomotive.SpeedMpS) == 0.0f && FreeRoamCameraList.Count > 0 && Camera == FreeRoamCamera)  // Pokud bude lokomotiva stát a hráč z loko vystoupí
                     {
                         new ChangeCabCommand(Log);
                         return;
