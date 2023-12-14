@@ -5925,6 +5925,17 @@ namespace Orts.Simulation.RollingStocks
                             {
                                 ControllerVolts = extendedPhysics.OverridenControllerVolts;
                             }
+
+                            // Extended Physics pro diesel lokomotivy
+                            if (this is MSTSDieselLocomotive)
+                            {
+                                if (CruiseControl == null)
+                                {
+                                    SetUpCruiseControl();
+                                }
+                                ControllerVolts = ThrottleController.CurrentValue * 10f;
+                            }
+
                             if (IsLeadLocomotive())
                                 extendedPhysics.OverridenControllerVolts = ControllerVolts;
                             if (!IsLeadLocomotive())
