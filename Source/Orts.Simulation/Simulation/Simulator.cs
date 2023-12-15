@@ -248,6 +248,7 @@ namespace Orts.Simulation
         public bool SanderIsOn;
         public bool PlayerLocomotiveChange;
         public int LeadLocomotiveIndex;
+        public Direction Direction;
 
         public List<PowerSupplyStation> powerSupplyStations;
         public List<VoltageChangeMarker> voltageChangeMarkers;

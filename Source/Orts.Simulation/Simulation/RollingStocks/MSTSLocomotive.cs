@@ -6046,7 +6046,7 @@ namespace Orts.Simulation.RollingStocks
             if (IsLeadLocomotive())
             {
                 CarIsPlayerLoco = true;
-                LocoIsStatic = false;
+                LocoIsStatic = false;                
             }
             else
                 CarIsPlayerLoco = false;
@@ -7014,19 +7014,52 @@ namespace Orts.Simulation.RollingStocks
             {
                 if (Train.IsPlayerDriven)
                 {
-                    switch (Direction)
+                    if (IsLeadLocomotive() && !OneCabDummyStation)
                     {
-                        case Direction.Forward:
-                            //MotiveForceN *= 1;     //Not necessary
-                            break;
-                        case Direction.Reverse:
+                        switch (Direction)
+                        {
+                            case Direction.Forward:
+                                //MotiveForceN *= 1;     //Not necessary
+                                break;
+                            case Direction.Reverse:
+                                TractiveForceN *= -1;
+                                break;
+                            case Direction.N:
+                            default:
+                                if (!MirelRSControllerEnable && !HS198ControllerEnable)
+                                    TractiveForceN *= 0;
+                                break;
+                        }
+                        Simulator.Direction = Direction;
+                    }
+                    if (IsLeadLocomotive() && OneCabDummyStation)
+                    {
+                        if (Simulator.Direction == Direction.Forward)
+                            Direction = Direction.Forward;
+                        else
+                        if (Simulator.Direction == Direction.Reverse)
+                        {
+                            Direction = Direction.Reverse;
                             TractiveForceN *= -1;
-                            break;
-                        case Direction.N:
-                        default:
-                            if (!MirelRSControllerEnable && !HS198ControllerEnable)
-                                TractiveForceN *= 0;
-                            break;
+                        }
+                    }
+
+                    if (!IsLeadLocomotive())
+                    {
+                        switch (Direction)
+                        {
+                            case Direction.Forward:
+                                //MotiveForceN *= 1;     //Not necessary
+                                break;
+                            case Direction.Reverse:
+                                TractiveForceN *= -1;
+                                break;
+                            case Direction.N:
+                            default:
+                                if (!MirelRSControllerEnable && !HS198ControllerEnable)
+                                    TractiveForceN *= 0;
+                                break;
+                        }                        
                     }
                 }
                 else // for AI locomotives
@@ -9764,6 +9797,7 @@ namespace Orts.Simulation.RollingStocks
             if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.Battery, Battery ? CabSetting.On : CabSetting.Off);
         }
 
+        #region LocomotiveTypeDefinition
         public bool OneCab;
         public bool TwoCab;
         public void LocomotiveTypeDefinition()
@@ -9797,17 +9831,42 @@ namespace Orts.Simulation.RollingStocks
             OneCab = false;
             TwoCab = true;
             switch (LocomotiveTypeNumber)
-            {                
+            {
+                case 110:
+                case 111:
+                case 113:
+                case 114:
+                case 209:
+                case 210:
+                case 211:
+                case 422:
+                case 426:
+                case 458:
                 case 466:
+                case 700:
+                case 701:
+                case 702:
+                case 703:
+                case 704:
+                case 708:
+                case 709:
+                case 710:
+                case 714:
+                case 715:
+                case 718:
                 case 720:
                 case 721:
+                case 724:
                 case 725:
+                case 726:
+                case 730:
+                case 731:
+                case 735:
+                case 736:
                 case 740:
                 case 741:
                 case 742:
-                case 743:
-                case 749:
-                case 754:
+                case 743:                
                 case 770:
                 case 771:
                     OneCab = true;
@@ -9815,6 +9874,7 @@ namespace Orts.Simulation.RollingStocks
                     break;
             }
         }
+        #endregion LocomotiveTypeDefinition
 
         public void TogglePowerKeyUp()
         {
@@ -9909,8 +9969,12 @@ namespace Orts.Simulation.RollingStocks
 
         bool SetPowerKeySound;
         int TogglePowerKeyCycle = 0;
+        public bool OneCabDummyStation;
         public void TogglePowerKey()
         {
+            if (OneCabDummyStation)
+                return;
+
             LocoStation = 1;
             if (UsingRearCab)
                 LocoStation = 2;
@@ -9918,7 +9982,7 @@ namespace Orts.Simulation.RollingStocks
             if (PowerKeyPosition[LocoStation] == 2)
                 StationIsActivated[LocoStation] = true;
             else
-                StationIsActivated[LocoStation] = false;
+                StationIsActivated[LocoStation] = false;            
 
             if ((DieselDirectionController && DieselDirectionControllerPosition[LocoStation] != 2)
                 || (DieselDirectionController2 && DieselDirectionController2Position[LocoStation] != 0)
@@ -10034,7 +10098,7 @@ namespace Orts.Simulation.RollingStocks
             }
             TogglePowerKeyCycle++;
             if (TogglePowerKeyCycle > 10)
-                TogglePowerKeyCycle = 10;
+                TogglePowerKeyCycle = 10;            
         }
 
         // Icik
@@ -10593,6 +10657,9 @@ namespace Orts.Simulation.RollingStocks
         {
             if (IsLeadLocomotive())
             {
+                if (OneCabDummyStation && TrainBrakeController.BS2ControllerOnStation)
+                    return;
+
                 //Simulator.Confirmer.MSG("TrainBrakeValue[0] = " + TrainBrakeValue[0] + "        TrainBrakeValue[1] = " + TrainBrakeValue[1] + "   TrainBrakeValue[2] = " + TrainBrakeValue[2]);                            
                 LocoStation = 1;
                 if (UsingRearCab)
