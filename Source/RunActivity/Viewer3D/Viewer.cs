@@ -749,7 +749,7 @@ namespace Orts.Viewer3D
             // the screen
             if (CabCamera.IsAvailable)
             {
-                var i = ((PlayerLocomotive as MSTSLocomotive).UsingRearCab) ? 1 : 0;
+                var i = ((PlayerLocomotive as MSTSLocomotive).UsingRearCab) ? 1 : 0;                
                 var cabTextureFileName = (PlayerLocomotive as MSTSLocomotive).CabViewList[i].CVFFile.TwoDViews[0];
                 var cabTextureInverseRatio = ComputeCabTextureInverseRatio(cabTextureFileName);
                 if (cabTextureInverseRatio != -1) CabTextureInverseRatio = cabTextureInverseRatio;
@@ -1138,6 +1138,12 @@ namespace Orts.Viewer3D
 
             if (UserInput.IsPressed(UserCommand.GameChangeCab))
             {
+                if ((PlayerLocomotive as MSTSLocomotive).CabViewList.Count < 2)
+                {                    
+                    (PlayerLocomotive as MSTSLocomotive).UsingRearCab = false;
+                    return;
+                }
+
                 if ((PlayerLocomotive as MSTSLocomotive).LocoReadyToGo)
                     LocoSwitchToPowerOn = true;
 
