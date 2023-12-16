@@ -80,6 +80,7 @@ namespace ORTS
             this.label11 = new System.Windows.Forms.Label();
             this.label9 = new System.Windows.Forms.Label();
             this.comboBoxDuration = new System.Windows.Forms.ComboBox();
+            this.comboBoxStartWeather = new System.Windows.Forms.ComboBox();
             this.comboBoxStartSeason = new System.Windows.Forms.ComboBox();
             this.label10 = new System.Windows.Forms.Label();
             this.comboBoxDifficulty = new System.Windows.Forms.ComboBox();
@@ -104,7 +105,6 @@ namespace ORTS
             this.contextMenuStripTools = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.linkLabelChangeLog = new System.Windows.Forms.LinkLabel();
             this.contextMenuStripDocuments = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.comboBoxStartWeather = new System.Windows.Forms.ComboBox();
             this.groupBox1.SuspendLayout();
             this.groupBox3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxLogo)).BeginInit();
@@ -519,6 +519,7 @@ namespace ORTS
             this.lblConsists.TabIndex = 21;
             this.lblConsists.Text = "načítám...";
             this.lblConsists.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.lblConsists.Visible = false;
             // 
             // checkDebriefActivityEval
             // 
@@ -702,6 +703,20 @@ namespace ORTS
             this.comboBoxDuration.Name = "comboBoxDuration";
             this.comboBoxDuration.Size = new System.Drawing.Size(96, 24);
             this.comboBoxDuration.TabIndex = 17;
+            // 
+            // comboBoxStartWeather
+            // 
+            this.comboBoxStartWeather.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest;
+            this.comboBoxStartWeather.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
+            this.comboBoxStartWeather.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxStartWeather.Enabled = false;
+            this.comboBoxStartWeather.FormattingEnabled = true;
+            this.comboBoxStartWeather.Location = new System.Drawing.Point(160, 352);
+            this.comboBoxStartWeather.Margin = new System.Windows.Forms.Padding(4);
+            this.comboBoxStartWeather.Name = "comboBoxStartWeather";
+            this.comboBoxStartWeather.Size = new System.Drawing.Size(28, 24);
+            this.comboBoxStartWeather.TabIndex = 15;
+            this.comboBoxStartWeather.SelectedIndexChanged += new System.EventHandler(this.comboBoxStartWeather_SelectedIndexChanged);
             // 
             // comboBoxStartSeason
             // 
@@ -982,20 +997,6 @@ namespace ORTS
             this.contextMenuStripDocuments.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.contextMenuStripDocuments.Name = "contextMenuStripDocuments";
             this.contextMenuStripDocuments.Size = new System.Drawing.Size(61, 4);
-            // 
-            // comboBoxStartWeather
-            // 
-            this.comboBoxStartWeather.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest;
-            this.comboBoxStartWeather.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
-            this.comboBoxStartWeather.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBoxStartWeather.Enabled = false;
-            this.comboBoxStartWeather.FormattingEnabled = true;
-            this.comboBoxStartWeather.Location = new System.Drawing.Point(160, 352);
-            this.comboBoxStartWeather.Margin = new System.Windows.Forms.Padding(4);
-            this.comboBoxStartWeather.Name = "comboBoxStartWeather";
-            this.comboBoxStartWeather.Size = new System.Drawing.Size(28, 24);
-            this.comboBoxStartWeather.TabIndex = 15;
-            this.comboBoxStartWeather.SelectedIndexChanged += new System.EventHandler(this.comboBoxStartWeather_SelectedIndexChanged);
             // 
             // MainForm
             // 

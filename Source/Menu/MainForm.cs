@@ -1253,10 +1253,18 @@ namespace ORTS
             ShowConsistList();
 
             var selectedFolder = SelectedFolder;
-            List<Consist> cl = GetConsists(selectedFolder);
-            Consists = cl;
-            if (SelectedActivity == null || SelectedActivity is ExploreActivity)
-                ShowLocomotiveList();
+            //List<Consist> cl = GetConsists(selectedFolder);
+            //Consists = cl;
+            //if (SelectedActivity == null || SelectedActivity is ExploreActivity)
+            //    ShowLocomotiveList();
+
+            // Icik
+            ConsistLoader = new Task<List<Consist>>(this, () => Consist.GetConsists(selectedFolder).OrderBy(a => a.ToString()).ToList(), (consists) =>
+            {
+                Consists = consists;
+                if (SelectedActivity == null || SelectedActivity is ExploreActivity)
+                    ShowLocomotiveList();
+            });
         }
 
         public List<Consist> GetConsists(Folder folder)
