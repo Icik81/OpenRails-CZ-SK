@@ -1138,7 +1138,7 @@ namespace Orts.Viewer3D
 
             if (UserInput.IsPressed(UserCommand.GameChangeCab))
             {
-                if ((PlayerLocomotive as MSTSLocomotive).CabViewList.Count < 2)
+                if ((PlayerLocomotive as MSTSLocomotive).CabViewList.Count < 2 && Camera != ThreeDimCabCamera)
                 {                    
                     (PlayerLocomotive as MSTSLocomotive).UsingRearCab = false;
                     return;
