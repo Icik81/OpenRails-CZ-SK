@@ -16681,22 +16681,28 @@ namespace Orts.Simulation.Physics
                                 continue;
                         MaxPaxCapacity += tc.PassengerCapacity;
                         if (tc.PassengerCapacity == 0)
-                            MaxPaxCapacity += 25;
+                            MaxPaxCapacity += 25f;
                     }
+                    
                     Random paxRand = new Random();
+                    if (MaxPaxCapacity > train.Cars.Count * 100f)
+                    {
+                        MaxPaxCapacity = paxRand.Next((int)(train.Cars.Count * 40f), (int)(train.Cars.Count * 100f));
+                    }
+                    
                     float trainOccupancyPercent = paxRand.Next(25, 100);
-                    CurrentPaxCapacity = MaxPaxCapacity * (trainOccupancyPercent / 100);
+                    CurrentPaxCapacity = MaxPaxCapacity * (trainOccupancyPercent / 100.0f);
                     CurrentPaxCapacity = (float)Math.Round(CurrentPaxCapacity, 0);
                     int index = 0;
                     foreach (StationStop ss in train.StationStops)
                     {
                         float remainingPax = (((int)MaxPaxCapacity - (int)CurrentPaxCapacity) / train.StationStops.Count) + ss.PlatformItem.NumPassengersWaiting;
-                        float byPlatform = ss.PlatformItem.Length / 25;
+                        float byPlatform = ss.PlatformItem.Length / 25.0f;
                         remainingPax += (int)Math.Round(byPlatform, 0);
                         float length = ss.PlatformItem.Length;
-                        if (length < 150)
+                        if (length < 150f)
                         {
-                            length = (int)Math.Round(ss.PlatformItem.Length / 5, 0);
+                            length = (int)Math.Round(ss.PlatformItem.Length / 5.0f, 0);
                             if (remainingPax > (int)length)
                                 remainingPax = (int)length;
                         }
@@ -16714,13 +16720,13 @@ namespace Orts.Simulation.Physics
                             remainingPax *= 1.0f;
                         else
                         if (Simulator.ClockTime / 3600f > 14.0f)
-                            remainingPax *= 2.0f;
+                            remainingPax *= 1.5f;
                         else
                         if (Simulator.ClockTime / 3600f > 8.0f)
                             remainingPax *= 0.5f;
                         else
                         if (Simulator.ClockTime / 3600f > 5.0f)
-                            remainingPax *= 2.0f;
+                            remainingPax *= 1.5f;
                         else
                         if (Simulator.ClockTime / 3600f > 0.0f)
                             remainingPax *= 0.25f;
