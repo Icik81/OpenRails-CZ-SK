@@ -834,8 +834,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
         bool MSGWaterLowOn;
         bool MSGOilLowOn;
         public float CoolingEnableRPM;
-        public float WaterCoolingPower = 95;
-        public float OilCoolingPower = 95;
+        public float WaterCoolingPower = 200f;
+        public float OilCoolingPower = 200f;
         float CoolingFlow;
         public float AIStartTimeToGo;
         public bool InitTriggerSetOff;

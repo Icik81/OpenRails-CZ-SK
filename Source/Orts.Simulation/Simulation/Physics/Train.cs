@@ -16613,6 +16613,7 @@ namespace Orts.Simulation.Physics
         public bool PeopleWantToEntry;
         public int ActualPassengerCountAtStation;
         public int MaxStationCountFromStart = -1;
+        public bool TrainIsPaxFull;
 
         public List<Passenger> exitPaxList = new List<Passenger>();
 
@@ -17087,7 +17088,7 @@ namespace Orts.Simulation.Physics
                                 }    
                                 if (pax.WagonIndex == -1)
                                 {
-                                    bool TrainIsPaxFull = true;
+                                    TrainIsPaxFull = true;
                                     for (int j = 0; j < train.Cars.Count; j++)
                                     {
                                         if ((train.Cars[j] as MSTSWagon).PassengerCapacity > 0 && (train.Cars[j] as MSTSWagon).PassengerList.Count < 1.2f * (train.Cars[j] as MSTSWagon).PassengerCapacity)
@@ -17154,8 +17155,13 @@ namespace Orts.Simulation.Physics
             }
 
             //if (train.StationStops[0].PlatformItem.PassengerList.Count == 0 && !train.BoardingComplete && true == false)
-            if (!PeopleWantToEntry && !train.BoardingComplete && PeopleWantToLeaveCount == 0)
+            if ((!PeopleWantToEntry || TrainIsPaxFull) && !train.BoardingComplete && PeopleWantToLeaveCount == 0)
             {
+                if (TrainIsPaxFull) 
+                {
+                    PeopleWantToEntry = false;
+                }
+
                 bool closeDoor = false;
                 bool haveCentralDoors = false;
                 foreach (TrainCar tc in train.Cars)
