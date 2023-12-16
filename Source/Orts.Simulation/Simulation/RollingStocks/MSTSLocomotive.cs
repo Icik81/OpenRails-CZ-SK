@@ -3335,7 +3335,9 @@ namespace Orts.Simulation.RollingStocks
                 }
 
                 // Resetování nadproudové ochrany u dieselelektrických lokomotiv
-                if (this is MSTSDieselLocomotive && OverVoltage && LocalThrottlePercent == 0 && LocalDynamicBrakePercent == 0)
+                if (this is MSTSDieselLocomotive && OverVoltage 
+                    && (this as MSTSDieselLocomotive).DieselEngines[0].RealRPM < 1.01f * (this as MSTSDieselLocomotive).DieselEngines[0].IdleRPM 
+                    && LocalDynamicBrakePercent == 0)
                 {
                     OverVoltage = false;
                     PowerReductionResult4 = 0;
