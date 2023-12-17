@@ -358,6 +358,7 @@ namespace Orts.Simulation.RollingStocks
         public bool AIStart;
         public bool PowerUnit;
         public bool ControlUnit;
+        public bool PowerUnitWithControl;
         public float RouteVoltageVInfo;
         public bool SelectedCar;
         public bool StartLooseCon;
@@ -735,6 +736,7 @@ namespace Orts.Simulation.RollingStocks
             Steam,
             Diesel,
             Electric,
+            Control,
         }
         public EngineTypes EngineType;
 
@@ -2117,9 +2119,9 @@ namespace Orts.Simulation.RollingStocks
                 AcceptMUSignals ? Simulator.Catalog.GetString("Yes") : Simulator.Catalog.GetString("No"),
                 ThrottlePercent,
                 String.Format("{0}", FormatStrings.FormatSpeedDisplay(SpeedMpS, IsMetric)),
-                // For Locomotive HUD display shows "forward" motive power (& force) as a positive value, braking power (& force) will be shown as negative values.
-                FormatStrings.FormatPower((MotiveForceN) * SpeedMpS, IsMetric, false, false),
-                String.Format("{0}{1}", FormatStrings.FormatForce(MotiveForceN, IsMetric), WheelSlip ? "!!!" : WheelSlipWarning ? "???" : ""));
+                // For Locomotive HUD display shows "forward" motive power (& force) as a positive value, braking power (& force) will be shown as negative values.                
+                ControlUnit ? Simulator.Catalog.GetString("Control") : FormatStrings.FormatPower((MotiveForceN) * SpeedMpS, IsMetric, false, false),
+                ControlUnit ? "" : String.Format("{0}{1}", FormatStrings.FormatForce(MotiveForceN, IsMetric), WheelSlip ? "!!!" : WheelSlipWarning ? "???" : ""));
         }
         public virtual string GetTrainBrakeStatus() { return null; }
         public virtual string GetEngineBrakeStatus() { return null; }

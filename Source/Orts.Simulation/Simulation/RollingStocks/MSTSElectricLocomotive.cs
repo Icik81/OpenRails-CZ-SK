@@ -101,10 +101,10 @@ namespace Orts.Simulation.RollingStocks
         float T_HVClosed = 0;
         float[] T_PantoUp = new float[4];
 
-        float PreDataVoltageAC;
-        float PreDataVoltageDC;
-        float PreDataVoltage;
-        bool UpdateTimeEnable;
+        public float PreDataVoltageAC;
+        public float PreDataVoltageDC;
+        public float PreDataVoltage;
+        public bool UpdateTimeEnable;
 
         public bool PantographFaultByVoltageChange;
         float FaultByPlayerPenaltyTime;
@@ -487,7 +487,7 @@ namespace Orts.Simulation.RollingStocks
                     if (LocoHelperOn)
                         PowerSupply.PantographVoltageV = MathHelper.Clamp(PowerSupply.PantographVoltageV, 0, (float)MaxLineVoltage0);
 
-                    if (!UpdateTimeEnable && IsLeadLocomotive())
+                    if (!UpdateTimeEnable && (IsLeadLocomotive() || PowerUnit))
                     {
                         // Zákmit na voltmetru            
                         if (PowerSupply.PantographVoltageV < 2)
@@ -814,8 +814,7 @@ namespace Orts.Simulation.RollingStocks
                 if (RouteVoltageV < 15000)
                     TInduktion = 0;
 
-
-                if (!UpdateTimeEnable && IsLeadLocomotive())
+                if (!UpdateTimeEnable && (IsLeadLocomotive() || PowerUnitWithControl))
                 {
                     // Zákmit na voltmetru            
                     if (PowerSupply.PantographVoltageV < 2)
@@ -873,7 +872,7 @@ namespace Orts.Simulation.RollingStocks
                     DontRaisePanto = false;
 
                 // Blokování pantografu u jednosystémových lokomotiv při vypnutém HV
-                if (!MultiSystemEngine && (IsLeadLocomotive() || Simulator.GameTime > 1))
+                if (!MultiSystemEngine && ((IsLeadLocomotive() || PowerUnitWithControl) || Simulator.GameTime > 1))
                 {
                     // Definice default provozního napájení lokomotivy
                     if (LocomotivePowerVoltage == 0) LocomotivePowerVoltage = RouteVoltageV; //Default pro lokomotivy bez udání napětí
@@ -1465,9 +1464,7 @@ namespace Orts.Simulation.RollingStocks
             if (IsPlayerTrain)
             {
                 if (MultiSystemEngine && LocomotivePowerVoltage == 15000) Loco15kV = true;
-                RouteVoltageVInfo = RouteVoltageV;
-                PantographPressedTesting(elapsedClockSeconds);
-                HVPressedTesting(elapsedClockSeconds);
+                RouteVoltageVInfo = RouteVoltageV;                
                 AuxAirConsumption(elapsedClockSeconds);
                 FaultByPlayer(elapsedClockSeconds);
                 MUCableCommunication();
@@ -1779,19 +1776,14 @@ namespace Orts.Simulation.RollingStocks
         // Komunikace po kabelu mezi spojenými jednotkami
         public void MUCableCommunication()
         {
-            if (PowerUnit)
-            {
-                Simulator.DataPantographVoltageV = PantographVoltageV;
-                Simulator.DataPSPantographVoltageV = PowerSupply.PantographVoltageV;
-            }
-            if (IsLeadLocomotive())
+            if ((IsLeadLocomotive() || PowerUnitWithControl))
             {
                 Simulator.DataSwitchingVoltageMode = SwitchingVoltageMode;
                 Simulator.DataBreakPowerButton = BreakPowerButton;
                 if (!MultiSystemEngine)
                     Simulator.DataLocomotivePowerVoltage = LocomotivePowerVoltage;
             }
-            if (AcceptMUSignals && !IsLeadLocomotive())
+            if (AcceptMUSignals && (!IsLeadLocomotive() && !PowerUnitWithControl))
             {
                 SwitchingVoltageMode = Simulator.DataSwitchingVoltageMode;
                 BreakPowerButton = Simulator.DataBreakPowerButton;
@@ -1812,21 +1804,7 @@ namespace Orts.Simulation.RollingStocks
                         SwitchingVoltageMode_OffAC = true;
                         break;
                 }
-            }
-            if (ControlUnit)
-            {
-                PantographVoltageV = Simulator.DataPantographVoltageV;
-                PowerSupply.PantographVoltageV = Simulator.DataPSPantographVoltageV;
-                switch (SwitchingVoltageMode)
-                {
-                    case 0:
-                        VoltageDC = PantographVoltageV;
-                        break;
-                    case 2:
-                        VoltageAC = PantographVoltageV;
-                        break;
-                }
-            }
+            }            
         }
 
         // Icik
@@ -2095,7 +2073,7 @@ namespace Orts.Simulation.RollingStocks
         // Penalizace hráče
         protected void FaultByPlayer(float elapsedClockSeconds)
         {
-            if (IsLeadLocomotive())
+            if ((IsLeadLocomotive() || PowerUnit))
             {
                 // Sestřelení HV při těžkém rozjezdu na jeden sběrač
                 float I_PantographCurrent = PowerCurrent1;
@@ -2137,88 +2115,7 @@ namespace Orts.Simulation.RollingStocks
                     }
                 }
             }
-        }
-
-
-        // Testování času stiknutého HV
-        protected void HVPressedTesting(float elapsedClockSeconds)
-        {
-            HVCanOn = false;
-
-            // HV2
-            if (HV2Enable && !HVPressedTest)
-                HVPressedTime = 0;
-            if (HVPressedTest)
-                HVPressedTime += elapsedClockSeconds;
-
-            // HV5
-            if (HV5Enable && (!HVPressedTestDC && !HVPressedTestAC || HV5Switch[LocoStation] != 0 && HV5Switch[LocoStation] != 4))
-                HVPressedTime = 0;
-
-            if (HVPressedTestDC)
-                HVPressedTime += elapsedClockSeconds;
-            if (HVPressedTestAC)
-                HVPressedTime += elapsedClockSeconds;
-
-            // HV2 + HV5
-            if (HVPressedTime > 0.9f && HVPressedTime < 1.1f) // 1s na podržení polohy pro zapnutí HV
-                HVCanOn = true;
-
-
-            // HV3
-            if (HV3Enable && ((!HVOffPressedTest && !HVOnPressedTest) || (HS198ControllerEnable && HV3Switch[LocoStation] != 2)))
-            {
-                HVOnPressedTime = 0;
-                HVOffPressedTime = 0;
-            }
-            // HV4
-            if (HV4Enable && !HVOffPressedTest && !HVOnPressedTest)
-            {
-                HVOnPressedTime = 0;
-                HVOffPressedTime = 0;
-            }
-            if (HVOnPressedTest)
-                HVOnPressedTime += elapsedClockSeconds;
-            if (HVOffPressedTest)
-                HVOffPressedTime += elapsedClockSeconds;
-
-            if (HVOnPressedTime > 0.9f && HVOnPressedTime < 1.1f) // 1s na podržení polohy pro zapnutí HV
-            {
-                HVCanOn = true;
-            }
-            if ((HV3Enable && ((HVOffPressedTime > 0.4f && HVOffPressedTime < 0.6f)) || (HS198ControllerEnable && StationIsActivated[LocoStation] && HV3Switch[LocoStation] == 0))) // 0.5s na podržení polohy pro vypnutí HV
-            {
-                HVOff = true;
-                HVCanOn = false;
-            }
-        }
-
-        // Testování času stiknutého panto
-        protected void PantographPressedTesting(float elapsedClockSeconds)
-        {
-            Pantograph3CanOn = false;
-
-            if (Pantograph3Enable && !PantographOffPressedTest && !PantographOnPressedTest)
-            {
-                PantographOnPressedTime = 0;
-                PantographOffPressedTime = 0;
-            }
-
-            if (PantographOnPressedTime > 1.5f)
-                PantographOnPressedTest = false;
-            if (PantographOffPressedTime > 1.5f)
-                PantographOffPressedTest = false;
-
-            if (PantographOnPressedTest)
-                PantographOnPressedTime += elapsedClockSeconds;
-            if (PantographOffPressedTest)
-                PantographOffPressedTime += elapsedClockSeconds;
-
-            if (PantographOnPressedTime > 0.9f && PantographOnPressedTime < 1.1f) // 1s na podržení polohy pro zvednutí panto
-                Pantograph3CanOn = true;
-            if (PantographOffPressedTime > 0.4f && PantographOffPressedTime < 0.6f) // 0.5s na podržení polohy pro složení panto
-                Pantograph3CanOn = true;
-        }
+        }        
 
         // Výpočet spotřeby vzduchu, jímka pomocného kompresoru
         protected void AuxAirConsumption(float elapsedClockSeconds)
@@ -2712,6 +2609,8 @@ namespace Orts.Simulation.RollingStocks
                 case CABViewControlTypes.LINE_VOLTAGE:
                     if (cvc.UpdateTime != 0)
                         UpdateTimeEnable = true;
+                    else
+                        UpdateTimeEnable = false;
                     cvc.ElapsedTime += elapsedTime;
                     if (cvc.ElapsedTime > cvc.UpdateTime)
                     {
@@ -3005,6 +2904,8 @@ namespace Orts.Simulation.RollingStocks
 
                     if (cvc.UpdateTime != 0)
                         UpdateTimeEnable = true;
+                    else
+                        UpdateTimeEnable = false;
                     cvc.ElapsedTime += elapsedTime;
                     if (cvc.ElapsedTime > cvc.UpdateTime)
                     {
@@ -3024,6 +2925,8 @@ namespace Orts.Simulation.RollingStocks
 
                     if (cvc.UpdateTime != 0)
                         UpdateTimeEnable = true;
+                    else
+                        UpdateTimeEnable = false;
                     cvc.ElapsedTime += elapsedTime;
                     if (cvc.ElapsedTime > cvc.UpdateTime)
                     {
@@ -3040,6 +2943,8 @@ namespace Orts.Simulation.RollingStocks
                 case CABViewControlTypes.LINE_VOLTAGE_DC:
                     if (cvc.UpdateTime != 0)
                         UpdateTimeEnable = true;
+                    else
+                        UpdateTimeEnable = false;
                     cvc.ElapsedTime += elapsedTime;
                     if (cvc.ElapsedTime > cvc.UpdateTime)
                     {
@@ -3272,7 +3177,7 @@ namespace Orts.Simulation.RollingStocks
                 status.AppendFormat("{0}\t\t", Simulator.Catalog.GetParticularString("PowerSupply", Simulator.Catalog.GetString("Off")));            
 
             // Icik
-            if (PowerUnit && !LocoHelperOn && !ControlUnit)
+            if (PowerUnit && !LocoHelperOn)
             {
                 status.AppendFormat("{0}\t", Simulator.Catalog.GetString("Engine"));
                 status.AppendFormat("{0}\t", FormatStrings.FormatTemperature(TMTemperature, IsMetric, false));
@@ -3286,13 +3191,6 @@ namespace Orts.Simulation.RollingStocks
                 status.AppendFormat("{0}\t", FormatStrings.FormatTemperature(TMTemperature, IsMetric, false));
                 status.AppendFormat("{0}\t", FormatStrings.FormatTemperature(DRTemperature, IsMetric, false));
                 status.AppendFormat("{0}", Simulator.Catalog.GetString(MathHelper.Clamp((int)(PantographVoltageV - 1), 0, (int)(RouteVoltageV * 1.2f)) + "V"));
-                //status.AppendFormat("{0}", Simulator.Catalog.GetString("PSPantoVoltage: " + PowerSupply.PantographVoltageV));
-            }
-            if (ControlUnit)
-            {
-                status.AppendFormat("{0}\t", Simulator.Catalog.GetString("Control"));
-                //status.AppendFormat("{0}\t", Simulator.Catalog.GetString(TMTemperature + "°C"));
-                //status.AppendFormat("{0}", Simulator.Catalog.GetString(MathHelper.Clamp((int)(PantographVoltageV - 1), 0, (int)(RouteVoltageV * 1.2f)) + "V"));
                 //status.AppendFormat("{0}", Simulator.Catalog.GetString("PSPantoVoltage: " + PowerSupply.PantographVoltageV));
             }
 

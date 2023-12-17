@@ -1587,7 +1587,7 @@ namespace Orts.Viewer3D
 
             // reset cursor type when needed
 
-            if (!Simulator.CouplingAction && !UserInput.IsDown(UserCommand.GameUncoupleWithMouse) && !(Camera is CabCamera) && !(Camera is ThreeDimCabCamera) && ActualCursor != Cursors.Default)
+            if (!Simulator.CouplingAction && !UserInput.IsDown(UserCommand.GameUncoupleWithMouse) && ActualCursor != Cursors.Default)
             {
                 ActualCursor = Cursors.Default;
             }
@@ -1595,7 +1595,7 @@ namespace Orts.Viewer3D
             // Mouse control for 2D cab
 
             if (Camera is CabCamera && (PlayerLocomotiveViewer as MSTSLocomotiveViewer)._hasCabRenderer)
-            {
+            {                
                 if (UserInput.IsMouseLeftButtonPressed)
                 {
                     var cabRenderer = (PlayerLocomotiveViewer as MSTSLocomotiveViewer)._CabRenderer;

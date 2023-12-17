@@ -730,7 +730,8 @@ namespace Orts.Simulation.RollingStocks
         protected bool PreviousHorn2 = false;
         public bool Horn12 = false;
         protected bool PreviousHorn12 = false;
-        public bool LocoLastCabSelect;
+        public bool LocoLastCabSelect;        
+
 
         // Jindrich
         public bool IsActive = false;
@@ -3059,11 +3060,11 @@ namespace Orts.Simulation.RollingStocks
         }
 
         float prePowerCurrent1;
-        float FakePowerCurrent1;
+        public float FakePowerCurrent1;
         float FakePowerCurrent1Timer;
         bool SetFakePowerCurrent1Timer;
         float prePowerCurrent2;
-        float FakePowerCurrent2;
+        public float FakePowerCurrent2;
         float FakePowerCurrent2Timer;
         bool SetFakePowerCurrent2Timer;
         public void PowerCurrentCalculation(float elapsedClockSeconds)
@@ -5381,68 +5382,7 @@ namespace Orts.Simulation.RollingStocks
                 //}
             }
         }
-
-        // Určí řídící vůz        
-        public void SetControlUnit()
-        {
-            // Parní lokomotiva bude vždy PowerUnit
-            if (this is MSTSSteamLocomotive)
-            {
-                PowerUnit = true;
-                ControlUnit = false;
-                return;
-            }
-
-            PowerUnit = false;
-            ControlUnit = false;
-
-            if (MaxPowerWBase > 10 * 1000 || (this as MSTSDieselLocomotive != null && (this as MSTSDieselLocomotive).MaximumDieselEnginePowerW > 10 * 1000))
-                PowerUnit = true;
-            else
-                ControlUnit = true;
-
-            if (PowerUnit && AcceptCableSignals)
-            {
-                Simulator.PowerUnitAvailable = true;
-                Simulator.DataDriveForceN = DriveForceN;
-                Simulator.DataMaxCurrentA = MaxCurrentA;
-                Simulator.DataMaxForceN = MaxForceN;
-                Simulator.DataDynamicBrakeMaxCurrentA = DynamicBrakeMaxCurrentA;
-                Simulator.DataDynamicBrakeForceN = DynamicBrakeForceN;
-                Simulator.DataMaxDynamicBrakeForceN = MaxDynamicBrakeForceN;
-                Simulator.DataDynamicBrakeAvailable = DynamicBrakeAvailable;
-                if (this as MSTSDieselLocomotive != null)
-                {
-                    Simulator.DataFakeDieselWaterTemperatureDeg = (this as MSTSDieselLocomotive).DieselEngines[0].FakeDieselWaterTemperatureDeg;
-                    Simulator.DataFakeDieselOilTemperatureDeg = (this as MSTSDieselLocomotive).DieselEngines[0].FakeDieselOilTemperatureDeg;
-                    Simulator.DataRealRPM = (this as MSTSDieselLocomotive).DieselEngines[0].RealRPM;
-                }
-            }
-            SetControlUnitParameters();
-        }
-
-        // Nastaví parametry pro řídící vůz
-        public void SetControlUnitParameters()
-        {
-            if (ControlUnit && AcceptCableSignals && Simulator.PowerUnitAvailable)
-            {
-                DriveForceN = Simulator.DataDriveForceN;
-                MaxCurrentA = Simulator.DataMaxCurrentA;
-                MaxForceN = Simulator.DataMaxForceN;
-                MaxPowerW = 0;
-                DynamicBrakeMaxCurrentA = Simulator.DataDynamicBrakeMaxCurrentA;
-                DynamicBrakeForceN = Simulator.DataDynamicBrakeForceN;
-                MaxDynamicBrakeForceN = Simulator.DataMaxDynamicBrakeForceN;
-                DynamicBrakeAvailable = Simulator.DataDynamicBrakeAvailable;
-                if (this as MSTSDieselLocomotive != null)
-                {
-                    (this as MSTSDieselLocomotive).DieselEngines[0].FakeDieselWaterTemperatureDeg = Simulator.DataFakeDieselWaterTemperatureDeg;
-                    (this as MSTSDieselLocomotive).DieselEngines[0].FakeDieselOilTemperatureDeg = Simulator.DataFakeDieselOilTemperatureDeg;
-                    (this as MSTSDieselLocomotive).DieselEngines[0].RealRPM = Simulator.DataRealRPM;
-                }
-            }
-        }
-
+        
         float WheelNoSlipWarningTimer;
         float WheelNoSlipTimer;
         public void CheckMUWheelSlip(float elapsedClockSeconds)
@@ -5519,22 +5459,8 @@ namespace Orts.Simulation.RollingStocks
                     }
                 }
             }
-        }
-
-        public void ResetControlUnitParameters()
-        {
-            if (ControlUnit && Simulator.PowerUnitAvailable)
-            {
-                DriveForceN = 0;
-                MaxCurrentA = 0;
-                //MaxForceN = 0;
-                MaxPowerW = 0;
-                DynamicBrakeMaxCurrentA = 0;
-                DynamicBrakeForceN = 0;
-                //MaxDynamicBrakeForceN = 0;
-            }
-        }
-
+        }        
+        
         public void CheckPantos()
         {
             switch (PantoMode)
@@ -5651,6 +5577,7 @@ namespace Orts.Simulation.RollingStocks
                         // LS90
                         Mirel.ls90tested = true;
                         Mirel.Ls90power[LocoStation] = SubSystems.Mirel.LS90power.On;
+                        HV4Switch[LocoStation] = 1;
 
                         LocoStation = 1;
                         if (UsingRearCab)
@@ -6137,6 +6064,8 @@ namespace Orts.Simulation.RollingStocks
                 ToggleHV3Switch();
                 ToggleHV4Switch();
                 ToggleHV5Switch();
+                PantographPressedTesting(elapsedClockSeconds);
+                HVPressedTesting(elapsedClockSeconds);
                 EDBCancelByBreakEDBButton();
                 EDBCancelByEngineBrake();
                 EDBCancelByOL3BailOff();
@@ -6151,7 +6080,6 @@ namespace Orts.Simulation.RollingStocks
                 HVOffbyAirPressureD();
                 TMFailure(elapsedClockSeconds);
                 PowerReductionResult(elapsedClockSeconds);                
-                SetControlUnit();
                 SetHelperLoco(elapsedClockSeconds);
                 PantoCanHVOff(elapsedClockSeconds);
                 DirectionButtonSetup();
@@ -6160,11 +6088,11 @@ namespace Orts.Simulation.RollingStocks
                 RainWindow(elapsedClockSeconds);
                 WipersWindow(elapsedClockSeconds);
                 CabRadioOnOff();
-                CheckMUWheelSlip(elapsedClockSeconds);               
-
+                CheckMUWheelSlip(elapsedClockSeconds);                
+                
                 BatterySetOn = false;
                 if (LocoReadyToGo && this is MSTSSteamLocomotive)
-                    LocoReadyToGo = false;                
+                    LocoReadyToGo = false;                                               
             }
 
             // Hodnoty pro výpočet zvukových proměnných
@@ -9804,6 +9732,42 @@ namespace Orts.Simulation.RollingStocks
         public bool TwoCab;
         public void LocomotiveTypeDefinition()
         {
+            switch (EngineType)
+            {
+                case EngineTypes.Electric:
+                case EngineTypes.Diesel:
+                case EngineTypes.Steam:
+                    PowerUnit = true;
+                    ControlUnit = false;
+                    break;
+                case EngineTypes.Control:
+                    PowerUnit = false;
+                    ControlUnit = true;
+                    break;
+            }
+
+            Simulator.ControlUnitInTrain = false;            
+            foreach (var car in Train.Cars.Where(car => car is MSTSLocomotive))
+            {
+                if (car.EngineType == EngineTypes.Control)
+                {
+                    Simulator.ControlUnitInTrain = true;
+                    break;
+                }            
+            }
+            PowerUnitWithControl = false;
+            if (Simulator.ControlUnitInTrain)
+            {
+                switch (EngineType)
+                {
+                    case EngineTypes.Electric:
+                    case EngineTypes.Diesel:
+                    case EngineTypes.Steam:
+                        PowerUnitWithControl = true;                        
+                        break;                    
+                }
+            }
+
             if (LocomotiveName == null) LocomotiveName = "";
             // Určení řady lokomotivy 
             if (LocomotiveTypeNumber == 0)
@@ -10319,7 +10283,7 @@ namespace Orts.Simulation.RollingStocks
 
                         // Osobní vlak s elektrickou lokomotivou                                                            
                         if (Simulator.TrainIsPassenger)
-                            foreach (TrainCar car in Train.Cars)
+                            foreach (var car in Train.Cars.Where(car => car is MSTSLocomotive))
                             {
                                 if (car is MSTSElectricLocomotive && !car.AcceptCableSignals && (car as MSTSElectricLocomotive).AuxResVolumeM3 == Simulator.LeadAuxResVolumeM3)
                                     car.AcceptCableSignals = true;
@@ -10331,20 +10295,42 @@ namespace Orts.Simulation.RollingStocks
                                 AcceptCableSignals = true;
 
                         // Řídící vůz v soupravě                    
-                        foreach (TrainCar car in Train.Cars)
+                        foreach (var car in Train.Cars.Where(car => car is MSTSLocomotive))
                         {
                             if (car is MSTSLocomotive)
                             {
-                                if ((car as MSTSLocomotive).MaxPowerWBase > 10 * 1000 || (car as MSTSDieselLocomotive != null && (car as MSTSDieselLocomotive).MaximumDieselEnginePowerW > 10 * 1000) || (car is MSTSSteamLocomotive))
-                                    car.PowerUnit = true;
-                                else
-                                    car.ControlUnit = true;
+                                if (car.EngineType == EngineTypes.Control)
+                                {
+                                    Simulator.ControlUnitInTrain = true;
+                                    break;
+                                }                                
                             }
                         }
+                        if (Simulator.ControlUnitInTrain)
+                        {
+                            foreach (var car in Train.Cars.Where(car => car is MSTSLocomotive))
+                            {
+                                if (car is MSTSLocomotive)
+                                {
+                                    if (car.EngineType == EngineTypes.Control)
+                                    {
+                                        car.PowerUnit = false;
+                                        car.ControlUnit = true;
+                                    }
+                                    else
+                                    {
+                                        car.PowerUnitWithControl = true;
+                                        car.ControlUnit = false;
+                                        car.PowerUnit = true;
+                                    }
+                                }
+                            }
+                        }
+                        
                         if (ControlUnit)
                         {
                             AcceptCableSignals = true;
-                            foreach (TrainCar car in Train.Cars)
+                            foreach (var car in Train.Cars.Where(car => car is MSTSLocomotive))
                             {
                                 if (car is MSTSLocomotive && car.PowerUnit)
                                 {
@@ -11251,6 +11237,85 @@ namespace Orts.Simulation.RollingStocks
             }
         }
 
+        // Testování času stiknutého HV
+        protected void HVPressedTesting(float elapsedClockSeconds)
+        {
+            HVCanOn = false;
+
+            // HV2
+            if (HV2Enable && !HVPressedTest)
+                HVPressedTime = 0;
+            if (HVPressedTest)
+                HVPressedTime += elapsedClockSeconds;
+
+            // HV5
+            if (HV5Enable && (!HVPressedTestDC && !HVPressedTestAC || HV5Switch[LocoStation] != 0 && HV5Switch[LocoStation] != 4))
+                HVPressedTime = 0;
+
+            if (HVPressedTestDC)
+                HVPressedTime += elapsedClockSeconds;
+            if (HVPressedTestAC)
+                HVPressedTime += elapsedClockSeconds;
+
+            // HV2 + HV5
+            if (HVPressedTime > 0.9f && HVPressedTime < 1.1f) // 1s na podržení polohy pro zapnutí HV
+                HVCanOn = true;
+
+
+            // HV3
+            if (HV3Enable && ((!HVOffPressedTest && !HVOnPressedTest) || (HS198ControllerEnable && HV3Switch[LocoStation] != 2)))
+            {
+                HVOnPressedTime = 0;
+                HVOffPressedTime = 0;
+            }
+            // HV4
+            if (HV4Enable && !HVOffPressedTest && !HVOnPressedTest)
+            {
+                HVOnPressedTime = 0;
+                HVOffPressedTime = 0;
+            }
+            if (HVOnPressedTest)
+                HVOnPressedTime += elapsedClockSeconds;
+            if (HVOffPressedTest)
+                HVOffPressedTime += elapsedClockSeconds;
+
+            if (HVOnPressedTime > 0.9f && HVOnPressedTime < 1.1f) // 1s na podržení polohy pro zapnutí HV
+            {
+                HVCanOn = true;
+            }
+            if ((HV3Enable && ((HVOffPressedTime > 0.4f && HVOffPressedTime < 0.6f)) || (HS198ControllerEnable && StationIsActivated[LocoStation] && HV3Switch[LocoStation] == 0))) // 0.5s na podržení polohy pro vypnutí HV
+            {
+                HVOff = true;
+                HVCanOn = false;
+            }
+        }
+
+        // Testování času stiknutého panto
+        protected void PantographPressedTesting(float elapsedClockSeconds)
+        {
+            Pantograph3CanOn = false;
+
+            if (Pantograph3Enable && !PantographOffPressedTest && !PantographOnPressedTest)
+            {
+                PantographOnPressedTime = 0;
+                PantographOffPressedTime = 0;
+            }
+
+            if (PantographOnPressedTime > 1.5f)
+                PantographOnPressedTest = false;
+            if (PantographOffPressedTime > 1.5f)
+                PantographOffPressedTest = false;
+
+            if (PantographOnPressedTest)
+                PantographOnPressedTime += elapsedClockSeconds;
+            if (PantographOffPressedTest)
+                PantographOffPressedTime += elapsedClockSeconds;
+
+            if (PantographOnPressedTime > 0.9f && PantographOnPressedTime < 1.1f) // 1s na podržení polohy pro zvednutí panto
+                Pantograph3CanOn = true;
+            if (PantographOffPressedTime > 0.4f && PantographOffPressedTime < 0.6f) // 0.5s na podržení polohy pro složení panto
+                Pantograph3CanOn = true;
+        }
 
         public void TogglePantograph3SwitchUp()
         {
@@ -17329,6 +17394,11 @@ namespace Orts.Simulation.RollingStocks
                         var mstsDieselLocomotive = this as MSTSDieselLocomotive;
                         if (mstsDieselLocomotive.DieselEngines[0] != null)
                             data = mstsDieselLocomotive.DieselEngines[0].RealRPM;
+
+                        var mstsControlUnit = this as MSTSControlUnit;
+                        if (mstsControlUnit != null)
+                            data = mstsControlUnit.RealRPM;
+
                         break;
                     }
                 case CABViewControlTypes.ORTS_DIESEL_TEMPERATURE:
@@ -17336,6 +17406,11 @@ namespace Orts.Simulation.RollingStocks
                         var mstsDieselLocomotive = this as MSTSDieselLocomotive;
                         if (mstsDieselLocomotive.DieselEngines[0] != null)
                             data = mstsDieselLocomotive.DieselEngines[0].FakeDieselWaterTemperatureDeg;
+
+                        var mstsControlUnit = this as MSTSControlUnit;
+                        if (mstsControlUnit != null)
+                            data = mstsControlUnit.FakeDieselWaterTemperatureDeg;
+
                         break;
                     }
                 case CABViewControlTypes.ORTS_OIL_PRESSURE:
@@ -18640,6 +18715,11 @@ namespace Orts.Simulation.RollingStocks
                         var mstsDieselLocomotive = this as MSTSDieselLocomotive;
                         if (mstsDieselLocomotive.DieselEngines[0] != null)
                             data = mstsDieselLocomotive.DieselEngines[0].FakeDieselWaterTemperatureDeg;
+
+                        var mstsControlUnit = this as MSTSControlUnit;
+                        if (mstsControlUnit != null)
+                            data = mstsControlUnit.FakeDieselWaterTemperatureDeg;
+
                         break;
                     }
                 case CABViewControlTypes.DIESEL_MOTOR_OIL_TEMP:
@@ -18647,6 +18727,11 @@ namespace Orts.Simulation.RollingStocks
                         var mstsDieselLocomotive = this as MSTSDieselLocomotive;
                         if (mstsDieselLocomotive.DieselEngines[0] != null)
                             data = mstsDieselLocomotive.DieselEngines[0].FakeDieselOilTemperatureDeg;
+
+                        var mstsControlUnit = this as MSTSControlUnit;
+                        if (mstsControlUnit != null)
+                            data = mstsControlUnit.FakeDieselOilTemperatureDeg;
+
                         break;
                     }
                 case CABViewControlTypes.DIESEL_MOTOR_TEMP_WARNING:
@@ -19276,10 +19361,7 @@ namespace Orts.Simulation.RollingStocks
                     }
                     cvc.PreviousData = data;
                 }
-            }
-
-            // Icik
-            ResetControlUnitParameters();
+            }            
             return data;
         }
 

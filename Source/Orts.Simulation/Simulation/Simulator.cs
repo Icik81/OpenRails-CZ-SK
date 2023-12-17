@@ -180,23 +180,10 @@ namespace Orts.Simulation
         public float OneSecondLoop;
         public bool CarCoupleSpeedOvercome;
         public bool CarCoupleMaxSpeedOvercome;
-        public bool CarDerailed;
-        public bool PowerUnitAvailable;
-        public float DataDriveForceN;
-        public float DataMaxCurrentA;
-        public float DataMaxForceN;
-        public float DataDynamicBrakeMaxCurrentA;
-        public float DataPantographVoltageV;
-        public float DataPSPantographVoltageV;
+        public bool CarDerailed;     
         public int DataSwitchingVoltageMode;
-        public float DataDynamicBrakeForceN;
-        public float DataMaxDynamicBrakeForceN;
-        public bool DataDynamicBrakeAvailable;
         public bool DataBreakPowerButton;
-        public float DataLocomotivePowerVoltage;
-        public float DataFakeDieselWaterTemperatureDeg;
-        public float DataFakeDieselOilTemperatureDeg;
-        public float DataRealRPM;
+        public float DataLocomotivePowerVoltage;        
         public bool ChangeCabActivated;
         public bool AuxPowerCanStart;
         public float ControllerVoltsLocoHelper;
@@ -249,6 +236,7 @@ namespace Orts.Simulation
         public bool PlayerLocomotiveChange;
         public int LeadLocomotiveIndex;
         public Direction Direction;
+        public bool ControlUnitInTrain;
 
         public List<PowerSupplyStation> powerSupplyStations;
         public List<VoltageChangeMarker> voltageChangeMarkers;

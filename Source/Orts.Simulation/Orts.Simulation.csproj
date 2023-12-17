@@ -113,6 +113,7 @@
     <Compile Include="Simulation\Hazzard.cs" />
     <Compile Include="Simulation\LevelCrossing.cs" />
     <Compile Include="Simulation\Physics\Train.cs" />
+    <Compile Include="Simulation\RollingStocks\MSTSControlUnit.cs" />
     <Compile Include="Simulation\RollingStocks\LocomotiveAttributes.cs" />
     <Compile Include="Simulation\RollingStocks\MSTSDieselLocomotive.cs" />
     <Compile Include="Simulation\RollingStocks\MSTSElectricLocomotive.cs" />

@@ -70,6 +70,7 @@ namespace Orts.Simulation.RollingStocks
                     case "electric": car = new MSTSElectricLocomotive(simulator, wagFilePath); break;
                     case "steam": car = new MSTSSteamLocomotive(simulator, wagFilePath); break;
                     case "diesel": car = new MSTSDieselLocomotive(simulator, wagFilePath); break;
+                    case "control": car = new MSTSControlUnit(simulator, wagFilePath); break;
                     default: throw new InvalidDataException(wagFilePath + "\r\n\r\nUnknown engine type: " + wagFile.Engine.Type);
                 }
             }

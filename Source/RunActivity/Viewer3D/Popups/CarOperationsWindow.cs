@@ -304,13 +304,18 @@ namespace Orts.Viewer3D.Popups
 
         void buttonToggleMUCable_Click(Control arg1, Point arg2)
         {
+            if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive) != null && (Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive).LocoReadyToGo)
+                return;
+
             if ((Viewer.PlayerTrain.Cars[CarPosition].GetType() == typeof(MSTSLocomotive))
                 ||
               (Viewer.PlayerTrain.Cars[CarPosition].GetType() == typeof(MSTSElectricLocomotive))
                 ||
               (Viewer.PlayerTrain.Cars[CarPosition].GetType() == typeof(MSTSDieselLocomotive))
                 ||
-              (Viewer.PlayerTrain.Cars[CarPosition].GetType() == typeof(MSTSSteamLocomotive)))
+              (Viewer.PlayerTrain.Cars[CarPosition].GetType() == typeof(MSTSSteamLocomotive))
+              ||
+              (Viewer.PlayerTrain.Cars[CarPosition].GetType() == typeof(MSTSControlUnit)))
             {
                 new ToggleMUCommand(Viewer.Log, (Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive), !(Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive).AcceptCableSignals);
                 if (!(Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive).AcceptCableSignals)
@@ -327,13 +332,18 @@ namespace Orts.Viewer3D.Popups
 
         void buttonToggleMUPower_Click(Control arg1, Point arg2)
         {
+            if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive) != null && (Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive).LocoReadyToGo)
+                return;
+
             if ((Viewer.PlayerTrain.Cars[CarPosition].GetType() == typeof(MSTSLocomotive))
                 ||
               (Viewer.PlayerTrain.Cars[CarPosition].GetType() == typeof(MSTSElectricLocomotive))
                 ||
               (Viewer.PlayerTrain.Cars[CarPosition].GetType() == typeof(MSTSDieselLocomotive))
                 ||
-              (Viewer.PlayerTrain.Cars[CarPosition].GetType() == typeof(MSTSSteamLocomotive)))
+              (Viewer.PlayerTrain.Cars[CarPosition].GetType() == typeof(MSTSSteamLocomotive))
+              ||
+              (Viewer.PlayerTrain.Cars[CarPosition].GetType() == typeof(MSTSControlUnit)))
             {
                 ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive).AcceptPowerSignals) = !((Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive).AcceptPowerSignals);
                 if (!(Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive).AcceptPowerSignals)

@@ -82,7 +82,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                 {
                     auxiliaryState = value;
 
-                    if (Locomotive.Train != null && Locomotive.IsLeadLocomotive())
+                    if (Locomotive.Train != null && (Locomotive.IsLeadLocomotive() || Locomotive.PowerUnit))
                     {
                         foreach (TrainCar car in Locomotive.Train.Cars)
                         {
