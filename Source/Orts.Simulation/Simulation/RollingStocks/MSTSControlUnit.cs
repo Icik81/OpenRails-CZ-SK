@@ -125,7 +125,7 @@ namespace Orts.Simulation.RollingStocks
                     {
                         ControlUnitType = ControlUnitTypes.Electric;
                         var PU = car as MSTSElectricLocomotive;
-
+                        
                         PowerSupply.CircuitBreaker = PU.PowerSupply.CircuitBreaker;
                         DriveForceN = PU.DriveForceN;
                         MaxCurrentA = PU.MaxCurrentA;
@@ -133,10 +133,7 @@ namespace Orts.Simulation.RollingStocks
                         DynamicBrakeMaxCurrentA = PU.DynamicBrakeMaxCurrentA;
                         DynamicBrakeForceN = PU.DynamicBrakeForceN;
                         MaxDynamicBrakeForceN = PU.MaxDynamicBrakeForceN;
-                        DynamicBrakeAvailable = PU.DynamicBrakeAvailable;                                               
-                        DynamicBrakeForceCurves = PU.DynamicBrakeForceCurves;
-                        DynamicBrakeForceCurvesAC = PU.DynamicBrakeForceCurvesAC;
-                        DynamicBrakeForceCurvesDC = PU.DynamicBrakeForceCurvesDC;
+                        DynamicBrakeAvailable = PU.DynamicBrakeAvailable;                                                                       
                         FakePowerCurrent1 = PU.FakePowerCurrent1;
                         BrakeCurrent1 = PU.BrakeCurrent1;
                         FakePowerCurrent2 = PU.FakePowerCurrent2;
@@ -200,14 +197,13 @@ namespace Orts.Simulation.RollingStocks
         }        
 
         public void ResetControlUnitParameters()
-        {
+        {            
             DriveForceN = 0;
-            MaxCurrentA = 0;
-            //MaxForceN = 0;
-            MaxPowerW = 0;
-            DynamicBrakeMaxCurrentA = 0;
-            DynamicBrakeForceN = 0;
-            //MaxDynamicBrakeForceN = 0;
+            DynamicBrakeForceN = 0;            
+            FakePowerCurrent1 = 0;
+            BrakeCurrent1 = 0;
+            FakePowerCurrent2 = 0;
+            BrakeCurrent2 = 0;
             PantographVoltageV = 0;
             PowerSupply.PantographVoltageV = 0;
             VoltageAC = 0;

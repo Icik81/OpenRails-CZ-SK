@@ -6396,7 +6396,7 @@ namespace Orts.Simulation.RollingStocks
                 }
             }
             else
-                if (LocoType != LocoTypes.Vectron)
+                if (LocoType != LocoTypes.Vectron && !ControlUnit)
                     DynamicBrakeForceN = 0; // Set dynamic brake force to zero if in Notch 0 position                                                
 
             UpdateFrictionCoefficient(elapsedClockSeconds); // Find the current coefficient of friction depending upon the weather
@@ -7331,7 +7331,8 @@ namespace Orts.Simulation.RollingStocks
 
                 //Set axle model parameters
                 // Icik                
-                DriveForceN = LocomotiveAxle.DriveForceN;
+                if (PowerUnit)
+                    DriveForceN = LocomotiveAxle.DriveForceN;
                 if (AdhesionEfficiencyKoef == 0) AdhesionEfficiencyKoef = 1.0f;
                 LocomotiveAxle.AdhesionEfficiencyKoef = AdhesionEfficiencyKoef;
                 LocomotiveAxle.BrakeRetardForceN = BrakeRetardForceN / (MassKG / DrvWheelWeightKg); // Upravuje chybu v adhezi pokud vůz brzdí (brzdí plnou vahou tzn. všemi koly)
@@ -16876,7 +16877,7 @@ namespace Orts.Simulation.RollingStocks
                                             rangeFactor = direction == 0 ? (float)cvc.MinValue : (float)cvc.MaxValue;
                                         else
                                             rangeFactor = direction == 0 ? -DynamicBrakeMaxCurrentA : (float)cvc.MaxValue;
-                                    }
+                                    }                                    
                                     data = DynamicBrakeForceN / MaxDynamicBrakeForceN * rangeFactor;
                                 }
                                 if (direction == 1)
