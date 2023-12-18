@@ -237,6 +237,8 @@ namespace Orts.Simulation
         public int LeadLocomotiveIndex;
         public Direction Direction;
         public bool ControlUnitInTrain;
+        public bool ControlUnitIsLead;
+        public bool MainResZero;
 
         public List<PowerSupplyStation> powerSupplyStations;
         public List<VoltageChangeMarker> voltageChangeMarkers;

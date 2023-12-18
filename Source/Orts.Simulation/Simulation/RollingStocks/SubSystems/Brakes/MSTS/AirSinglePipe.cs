@@ -2321,6 +2321,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             bool TrainTwoPipesConnectionBreak = false;
             int MUCableLocoCount = 0;
 
+            train.Simulator.MainResZero = false;
+
             if (lead != null)
                 lead.TwoPipesConnectionLocoCount = 0;
 
@@ -2356,7 +2358,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     if (eng != null)
                     {
                         sumv += eng.MainResVolumeM3;
-                        sumpv += eng.MainResVolumeM3 * eng.MainResPressurePSI;                        
+                        sumpv += eng.MainResVolumeM3 * eng.MainResPressurePSI;
+                        if (eng.MainResVolumeM3 == 0) eng.Simulator.MainResZero = true;
                     }                    
                 }
 
@@ -2380,7 +2383,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                             MUCableLocoCount++;
 
                             if (lead != null && brakeSystem.TwoPipesConnection && eng is MSTSElectricLocomotive)
-                                lead.TwoPipesConnectionLocoCount++;
+                                lead.TwoPipesConnectionLocoCount++;                                                        
                         }
                     }                    
                 }
@@ -2395,7 +2398,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             {
                 if (!TrainTwoPipesConnectionBreak) lead.TwoPipesConnectionLocoCount = 0;
                 for (int i = 0; i < train.Cars.Count; i++)
-                {
+                {                    
                     if (!TrainTwoPipesConnectionBreak && train.Cars[i] is MSTSElectricLocomotive)
                         lead.TwoPipesConnectionLocoCount++;
 
@@ -2431,11 +2434,11 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 {
                     if (i >= first && i <= last || TwoPipesConnection && continuousFromInclusive <= i && i < continuousToExclusive)
                     {
-                        if (!LocoTwoPipesConnectionBreak)
-                        {
-                            // Použití všech hlavních jímek při propojení napájecího potrubí                                                        
-                            train.Cars[i].BrakeSystem.TotalCapacityMainResBrakePipe = (train.Cars[i].BrakeSystem.BrakePipeVolumeM3 * train.Cars[i].BrakeSystem.BrakeLine1PressurePSI) + (loco.MainResVolumeM3 * loco.MainResPressurePSI);
+                        // Použití všech hlavních jímek při propojení napájecího potrubí                                                        
+                        train.Cars[i].BrakeSystem.TotalCapacityMainResBrakePipe = (train.Cars[i].BrakeSystem.BrakePipeVolumeM3 * train.Cars[i].BrakeSystem.BrakeLine1PressurePSI) + (loco.MainResVolumeM3 * loco.MainResPressurePSI);
 
+                        if (!LocoTwoPipesConnectionBreak && !loco.Simulator.MainResZero)
+                        {                            
                             if ((train.Cars[i] as MSTSLocomotive).MainResPressurePSI < lead.MainResPressurePSI)
                             {
                                 (train.Cars[i] as MSTSLocomotive).MainResPressurePSI += 5f * elapsedClockSeconds;
@@ -2463,12 +2466,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                             //        lead.AuxResPressurePSI += 10f * elapsedClockSeconds;
                             //    }
                             //}
-                        }
-                        else
-                        {
-                            // Výpočet kapacity hlavní jímky a přilehlého potrubí                            
-                            lead.BrakeSystem.TotalCapacityMainResBrakePipe = (lead.BrakeSystem.BrakePipeVolumeM3 * lead.BrakeSystem.BrakeLine1PressurePSI) + (lead.MainResVolumeM3 * lead.MainResPressurePSI);
-                        }
+                        }                        
                     }
 
                     // *** Manipulace s dveřmi ***

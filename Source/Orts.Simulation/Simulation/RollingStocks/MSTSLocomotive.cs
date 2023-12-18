@@ -9712,6 +9712,7 @@ namespace Orts.Simulation.RollingStocks
             if (CabStationForBatterySwitchOn == 1 && UsingRearCab) return;
             if (CabStationForBatterySwitchOn == 2 && !UsingRearCab) return;
             if (CabStationForBatterySwitchOn > 2) return;
+            if (ControlUnit) return;
 
             Battery = !Battery;
             if (Battery)
@@ -9946,10 +9947,13 @@ namespace Orts.Simulation.RollingStocks
             if (UsingRearCab)
                 LocoStation = 2;
 
-            if (PowerKeyPosition[LocoStation] == 2)
-                StationIsActivated[LocoStation] = true;
-            else
-                StationIsActivated[LocoStation] = false;            
+            if (!Simulator.ControlUnitIsLead)
+            {
+                if (PowerKeyPosition[LocoStation] == 2)
+                    StationIsActivated[LocoStation] = true;
+                else
+                    StationIsActivated[LocoStation] = false;
+            }            
 
             if ((DieselDirectionController && DieselDirectionControllerPosition[LocoStation] != 2)
                 || (DieselDirectionController2 && DieselDirectionController2Position[LocoStation] != 0)
@@ -10417,7 +10421,7 @@ namespace Orts.Simulation.RollingStocks
                 MUCylPressureMirelOk = false;
                 foreach (TrainCar car in Train.Cars)
                 {
-                    if (car is MSTSLocomotive && AcceptCableSignals)
+                    if (car is MSTSLocomotive && car.AcceptCableSignals)
                     {
                         if (car.BrakeSystem.GetCylPressurePSI() > 1.5f * 14.50377f)
                             MUCylPressureMirelOk = true;

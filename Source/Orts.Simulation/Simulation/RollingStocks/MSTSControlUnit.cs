@@ -119,17 +119,25 @@ namespace Orts.Simulation.RollingStocks
         {            
             ResetControlUnitParameters();
             MUCableOk = true;
+            Simulator.ControlUnitIsLead = false;
 
-            foreach (var car in Train.Cars.Where(car => car is MSTSLocomotive))
-            {                
+            foreach (var car in Train.Cars/*.Where(car => car is MSTSLocomotive)*/)
+            {       
+                // Kontrola zapojeného kabelu MU
                 if ((car.PowerUnitWithControl && !car.AcceptCableSignals) || !AcceptCableSignals)
                 {
                     MUCableOk = false;
                 }
-
-                if (AcceptCableSignals)
+                
+                // Hnací vozidlo je obsazené
+                if (car.PowerUnitWithControl && !(car as MSTSLocomotive).LocoReadyToGo)
                 {
-                    if (car.PowerUnitWithControl && car is MSTSElectricLocomotive && car.AcceptCableSignals)
+                    Battery = MUCableOk && (car as MSTSLocomotive).Battery ? true : false;
+                }
+
+                if (MUCableOk)
+                {
+                    if (car.PowerUnitWithControl && car is MSTSElectricLocomotive)
                     {
                         ControlUnitType = ControlUnitTypes.Electric;
                         var PU = car as MSTSElectricLocomotive;
@@ -158,7 +166,7 @@ namespace Orts.Simulation.RollingStocks
                         PantoCanHVOffon = PU.PantoCanHVOffon;
                         SwitchingVoltageMode_OffAC = PU.SwitchingVoltageMode_OffAC;
                         SwitchingVoltageMode_OffDC = PU.SwitchingVoltageMode_OffDC;
-                        AuxResPressurePSI = PU.AuxResPressurePSI;
+                        AuxResPressurePSI = PU.AuxResPressurePSI;                        
 
                         switch (SwitchingVoltageMode)
                         {
@@ -170,12 +178,18 @@ namespace Orts.Simulation.RollingStocks
                                 break;
                         }
 
+                        // Řídící jednotka je obsazená
                         if (IsLeadLocomotive() && !PU.LocoReadyToGo)
-                        {
-                            LocoReadyToGo = false;
+                        {                           
+                            LocoReadyToGo = false;                            
+                            if (StationIsActivated[LocoStation])
+                                Simulator.ControlUnitIsLead = true;
+
+                            PU.StationIsActivated[PU.LocoStation] = StationIsActivated[LocoStation];
+                            PU.PowerKey = PowerKey;
+
                             PU.HVOn = HVOn; PU.HVOff = HVOff;
-                            HVOn = false; HVOff = false;
-                            PU.Battery = Battery;
+                            HVOn = false; HVOff = false;                            
                             PU.BreakPowerButton = BreakPowerButton;
                             PU.CompressorMode_OffAuto = CompressorMode_OffAuto;
                             PU.CompressorMode2_OffAuto = CompressorMode2_OffAuto;
@@ -183,13 +197,13 @@ namespace Orts.Simulation.RollingStocks
                             PU.CompressorOffAutoOn2 = CompressorOffAutoOn2;
                             PU.AuxCompressor = AuxCompressor;
                             PU.AuxCompressorMode_OffOn = AuxCompressorMode_OffOn;                            
-                        }
+                        }                        
 
                         break;
                     }
                     
 
-                    if (car.PowerUnitWithControl && car is MSTSDieselLocomotive && car.AcceptCableSignals)
+                    if (car.PowerUnitWithControl && car is MSTSDieselLocomotive)
                     {
                         ControlUnitType = ControlUnitTypes.Diesel;
                         var PU = car as MSTSDieselLocomotive;
@@ -209,8 +223,7 @@ namespace Orts.Simulation.RollingStocks
         }        
 
         public void ResetControlUnitParameters()
-        {            
-            Battery = MUCableOk && Battery ? true : false;
+        {                        
             DriveForceN = 0;
             DynamicBrakeForceN = 0;            
             FakePowerCurrent1 = 0;

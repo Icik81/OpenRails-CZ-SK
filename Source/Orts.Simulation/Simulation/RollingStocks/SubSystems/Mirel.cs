@@ -669,9 +669,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                 }
                 if (initTest == InitTest.Running && !Test5 && Locomotive.ActiveStation != MSTSLocomotive.DriverStation.None)
                 {
-                    if (Locomotive.EngineBrakeController.IntermediateValue == 1)
+                    if (Locomotive.EngineBrakeController.CurrentValue > 0.95f)
                         engineBrakeApplied = true;
-                    if (Locomotive.EngineBrakeController.IntermediateValue == 0)
+                    if (Locomotive.EngineBrakeController.CurrentValue < 0.05f)
                         engineBrakeReleased = true;
                     if (Bar.FromPSI(Locomotive.BrakeSystem.GetCylPressurePSI()) > PressureForTestPassBar && Locomotive.LocoType == MSTSLocomotive.LocoTypes.Vectron)
                         Test5 = true;

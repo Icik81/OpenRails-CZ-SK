@@ -1104,18 +1104,21 @@ namespace Orts.Viewer3D.Popups
                     float AuxResVolumeL = (Viewer.PlayerLocomotive as MSTSLocomotive).AuxResPressurePSI / 14.50377f * (Viewer.PlayerLocomotive as MSTSLocomotive).AuxResVolumeM3 * 1000;
                     AuxResVolumeL = (float)Math.Round(AuxResVolumeL, 0);
 
-                    TableAddLines(table, String.Format("{0}\t\t{1}\t\t{2}\t{3}\t\t{4}\t{5}\t\t{6}\t{7}\t\t{8}\t{9}\t{10}",
-                    Viewer.Catalog.GetString("PlayerLoco"),
-                    Viewer.Catalog.GetString("Main reservoir"),
-                    FormatStrings.FormatPressure((Viewer.PlayerLocomotive as MSTSLocomotive).MainResPressurePSI, PressureUnit.PSI, (Viewer.PlayerLocomotive as MSTSLocomotive).BrakeSystemPressureUnits[BrakeSystemComponent.MainReservoir], true),
-                    Viewer.Catalog.GetString("Compressor I"),
-                    (Viewer.PlayerLocomotive as MSTSLocomotive).CompressorIsOn ? Viewer.Catalog.GetString("on") : Viewer.Catalog.GetString("off"),
-                    Viewer.Catalog.GetString("Compressor II"),
-                    (Viewer.PlayerLocomotive as MSTSLocomotive).Compressor2IsOn ? Viewer.Catalog.GetString("on") : Viewer.Catalog.GetString("off"),
-                    Viewer.Catalog.GetString("AuxCompressor"),
-                    (Viewer.PlayerLocomotive as MSTSLocomotive).NoAuxCompressor ? "" : (Viewer.PlayerLocomotive as MSTSLocomotive).AuxCompressorIsOn ? Viewer.Catalog.GetString("on") : Viewer.Catalog.GetString("off"),
-                    (Viewer.PlayerLocomotive as MSTSLocomotive).NoAuxCompressor ? "" : FormatStrings.FormatPressure((Viewer.PlayerLocomotive as MSTSLocomotive).AuxResPressurePSI, PressureUnit.PSI, (Viewer.PlayerLocomotive as MSTSLocomotive).BrakeSystemPressureUnits[BrakeSystemComponent.MainReservoir], true),
-                    (Viewer.PlayerLocomotive as MSTSLocomotive).NoAuxCompressor ? "" : AuxResVolumeL + " L"));
+                    if (!(Viewer.PlayerLocomotive as MSTSLocomotive).ControlUnit)
+                    {
+                        TableAddLines(table, String.Format("{0}\t\t{1}\t\t{2}\t{3}\t\t{4}\t{5}\t\t{6}\t{7}\t\t{8}\t{9}\t{10}",
+                        Viewer.Catalog.GetString("PlayerLoco"),
+                        Viewer.Catalog.GetString("Main reservoir"),
+                        FormatStrings.FormatPressure((Viewer.PlayerLocomotive as MSTSLocomotive).MainResPressurePSI, PressureUnit.PSI, (Viewer.PlayerLocomotive as MSTSLocomotive).BrakeSystemPressureUnits[BrakeSystemComponent.MainReservoir], true),
+                        Viewer.Catalog.GetString("Compressor I"),
+                        (Viewer.PlayerLocomotive as MSTSLocomotive).CompressorIsOn ? Viewer.Catalog.GetString("on") : Viewer.Catalog.GetString("off"),
+                        Viewer.Catalog.GetString("Compressor II"),
+                        (Viewer.PlayerLocomotive as MSTSLocomotive).Compressor2IsOn ? Viewer.Catalog.GetString("on") : Viewer.Catalog.GetString("off"),
+                        Viewer.Catalog.GetString("AuxCompressor"),
+                        (Viewer.PlayerLocomotive as MSTSLocomotive).NoAuxCompressor ? "" : (Viewer.PlayerLocomotive as MSTSLocomotive).AuxCompressorIsOn ? Viewer.Catalog.GetString("on") : Viewer.Catalog.GetString("off"),
+                        (Viewer.PlayerLocomotive as MSTSLocomotive).NoAuxCompressor ? "" : FormatStrings.FormatPressure((Viewer.PlayerLocomotive as MSTSLocomotive).AuxResPressurePSI, PressureUnit.PSI, (Viewer.PlayerLocomotive as MSTSLocomotive).BrakeSystemPressureUnits[BrakeSystemComponent.MainReservoir], true),
+                        (Viewer.PlayerLocomotive as MSTSLocomotive).NoAuxCompressor ? "" : AuxResVolumeL + " L"));
+                    }
                 }
 
                 // Display data for other locomotives
@@ -1128,7 +1131,9 @@ namespace Orts.Viewer3D.Popups
                         float AuxResVolumeL = (car as MSTSLocomotive).AuxResPressurePSI / 14.50377f * (car as MSTSLocomotive).AuxResVolumeM3 * 1000;
                         AuxResVolumeL = (float)Math.Round(AuxResVolumeL, 0);
 
-                        TableAddLines(table, String.Format("{0}\t{1}\t{2}\t\t{3}\t{4}\t\t{5}\t{6}\t\t{7}\t{8}\t\t{9}\t{10}\t{11}",
+                        if (!(car as MSTSLocomotive).ControlUnit)
+                        {
+                            TableAddLines(table, String.Format("{0}\t{1}\t{2}\t\t{3}\t{4}\t\t{5}\t{6}\t\t{7}\t{8}\t\t{9}\t{10}\t{11}",
                             Viewer.Catalog.GetString("Loco"),
                             car.CarID,
                             Viewer.Catalog.GetString("Main reservoir"),
@@ -1141,6 +1146,7 @@ namespace Orts.Viewer3D.Popups
                             (car as MSTSLocomotive).NoAuxCompressor ? "" : (car as MSTSLocomotive).AuxCompressorIsOn ? Viewer.Catalog.GetString("on") : Viewer.Catalog.GetString("off"),
                             (car as MSTSLocomotive).NoAuxCompressor ? "" : FormatStrings.FormatPressure((car as MSTSLocomotive).AuxResPressurePSI, PressureUnit.PSI, (car as MSTSLocomotive).BrakeSystemPressureUnits[BrakeSystemComponent.MainReservoir], true),
                             (car as MSTSLocomotive).NoAuxCompressor ? "" : AuxResVolumeL + " L"));
+                        }
                     }
                 }
                 TableAddLine(table);
