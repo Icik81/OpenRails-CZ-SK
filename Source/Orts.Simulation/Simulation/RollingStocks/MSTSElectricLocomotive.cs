@@ -1776,14 +1776,14 @@ namespace Orts.Simulation.RollingStocks
         // Komunikace po kabelu mezi spojenými jednotkami
         public void MUCableCommunication()
         {
-            if ((IsLeadLocomotive() || PowerUnitWithControl))
+            if (IsLeadLocomotive())
             {
                 Simulator.DataSwitchingVoltageMode = SwitchingVoltageMode;
                 Simulator.DataBreakPowerButton = BreakPowerButton;
                 if (!MultiSystemEngine)
                     Simulator.DataLocomotivePowerVoltage = LocomotivePowerVoltage;
             }
-            if (AcceptMUSignals && (!IsLeadLocomotive() && !PowerUnitWithControl))
+            if (AcceptMUSignals && !IsLeadLocomotive())
             {
                 SwitchingVoltageMode = Simulator.DataSwitchingVoltageMode;
                 BreakPowerButton = Simulator.DataBreakPowerButton;

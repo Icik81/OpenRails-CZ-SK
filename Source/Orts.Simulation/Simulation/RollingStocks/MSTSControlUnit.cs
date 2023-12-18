@@ -112,20 +112,28 @@ namespace Orts.Simulation.RollingStocks
         {            
 
             base.Initialize();
-        }        
+        }
 
+        bool MUCableOk;
         public override void Update(float elapsedClockSeconds)
-        {
+        {            
             ResetControlUnitParameters();
+            MUCableOk = true;
+
             foreach (var car in Train.Cars.Where(car => car is MSTSLocomotive))
-            {
+            {                
+                if ((car.PowerUnitWithControl && !car.AcceptCableSignals) || !AcceptCableSignals)
+                {
+                    MUCableOk = false;
+                }
+
                 if (AcceptCableSignals)
                 {
                     if (car.PowerUnitWithControl && car is MSTSElectricLocomotive && car.AcceptCableSignals)
                     {
                         ControlUnitType = ControlUnitTypes.Electric;
                         var PU = car as MSTSElectricLocomotive;
-                        
+
                         PowerSupply.CircuitBreaker = PU.PowerSupply.CircuitBreaker;
                         DriveForceN = PU.DriveForceN;
                         MaxCurrentA = PU.MaxCurrentA;
@@ -133,23 +141,24 @@ namespace Orts.Simulation.RollingStocks
                         DynamicBrakeMaxCurrentA = PU.DynamicBrakeMaxCurrentA;
                         DynamicBrakeForceN = PU.DynamicBrakeForceN;
                         MaxDynamicBrakeForceN = PU.MaxDynamicBrakeForceN;
-                        DynamicBrakeAvailable = PU.DynamicBrakeAvailable;                                                                       
+                        DynamicBrakeAvailable = PU.DynamicBrakeAvailable;
                         FakePowerCurrent1 = PU.FakePowerCurrent1;
                         BrakeCurrent1 = PU.BrakeCurrent1;
                         FakePowerCurrent2 = PU.FakePowerCurrent2;
                         BrakeCurrent2 = PU.BrakeCurrent2;
                         PantographVoltageV = PU.PantographVoltageV;
-                        PowerSupply.PantographVoltageV = PU.PowerSupply.PantographVoltageV;                        
+                        PowerSupply.PantographVoltageV = PU.PowerSupply.PantographVoltageV;
                         VoltageAC = PU.VoltageAC;
                         VoltageDC = PU.VoltageDC;
                         preVoltageDC = PU.preVoltageDC;
-                        LocoSwitchACDC = PU.LocoSwitchACDC;                      
+                        LocoSwitchACDC = PU.LocoSwitchACDC;
                         SwitchingVoltageMode = PU.SwitchingVoltageMode;
                         PowerOn = PU.PowerOn;
                         AuxPowerOn = PU.AuxPowerOn;
                         PantoCanHVOffon = PU.PantoCanHVOffon;
                         SwitchingVoltageMode_OffAC = PU.SwitchingVoltageMode_OffAC;
-                        SwitchingVoltageMode_OffDC = PU.SwitchingVoltageMode_OffDC;       
+                        SwitchingVoltageMode_OffDC = PU.SwitchingVoltageMode_OffDC;
+                        AuxResPressurePSI = PU.AuxResPressurePSI;
 
                         switch (SwitchingVoltageMode)
                         {
@@ -161,21 +170,24 @@ namespace Orts.Simulation.RollingStocks
                                 break;
                         }
 
-                        if (!PU.LocoReadyToGo)
+                        if (IsLeadLocomotive() && !PU.LocoReadyToGo)
                         {
+                            LocoReadyToGo = false;
                             PU.HVOn = HVOn; PU.HVOff = HVOff;
                             HVOn = false; HVOff = false;
-                            LocoReadyToGo = false;
-                        }
-
-                        if (IsLeadLocomotive())
-                        {
                             PU.Battery = Battery;
                             PU.BreakPowerButton = BreakPowerButton;
+                            PU.CompressorMode_OffAuto = CompressorMode_OffAuto;
+                            PU.CompressorMode2_OffAuto = CompressorMode2_OffAuto;
+                            PU.CompressorOffAutoOn = CompressorOffAutoOn;
+                            PU.CompressorOffAutoOn2 = CompressorOffAutoOn2;
+                            PU.AuxCompressor = AuxCompressor;
+                            PU.AuxCompressorMode_OffOn = AuxCompressorMode_OffOn;                            
                         }
 
                         break;
                     }
+                    
 
                     if (car.PowerUnitWithControl && car is MSTSDieselLocomotive && car.AcceptCableSignals)
                     {
@@ -188,16 +200,17 @@ namespace Orts.Simulation.RollingStocks
 
                         break;
                     }
-                }
+                                        
+                }                
             }
-
-
+            
 
             base.Update(elapsedClockSeconds);
         }        
 
         public void ResetControlUnitParameters()
-        {            
+        {
+            Battery = MUCableOk ? true : false;
             DriveForceN = 0;
             DynamicBrakeForceN = 0;            
             FakePowerCurrent1 = 0;
