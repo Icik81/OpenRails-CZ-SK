@@ -209,8 +209,8 @@ namespace Orts.Simulation.RollingStocks
         }        
 
         public void ResetControlUnitParameters()
-        {
-            Battery = MUCableOk ? true : false;
+        {            
+            Battery = MUCableOk && Battery ? true : false;
             DriveForceN = 0;
             DynamicBrakeForceN = 0;            
             FakePowerCurrent1 = 0;
