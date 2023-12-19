@@ -3931,7 +3931,7 @@ namespace Orts.Simulation.RollingStocks
                 foreach (var car in Train.Cars)
                 {
                     var mstsWagon = car as MSTSWagon;
-                    if (mstsWagon.BrakeSystem.AirOK_DoorCanManipulate && mstsWagon.AutomaticDoors || mstsWagon.FreightDoors)
+                    if (mstsWagon.BrakeSystem.AirOK_DoorCanManipulate && (mstsWagon.AutomaticDoors || mstsWagon.FreightDoors))
                     {
                         if (DoorsCycle == 0)
                             DoorLeftOpen = !DoorLeftOpen;
@@ -3967,7 +3967,7 @@ namespace Orts.Simulation.RollingStocks
         public void ToggleDoorsRight()
         {
             // Icik
-            var loco = this as MSTSLocomotive;
+            var loco = this as MSTSLocomotive;            
             if (loco.DoorSwitchEnable)
             {
                 loco.DoorSwitch[loco.LocoStation]++;
@@ -3983,15 +3983,15 @@ namespace Orts.Simulation.RollingStocks
                 if (loco.DoorSwitch[loco.LocoStation] == 1)
                 {
                     foreach (var car in Train.Cars)
-                    {
-                        var mstsWagon = car as MSTSWagon;
+                    {                        
+                        var mstsWagon = car as MSTSWagon;                        
                         if (mstsWagon.AutomaticDoors && mstsWagon.BrakeSystem.AirOK_DoorCanManipulate && (mstsWagon.DoorLeftOpen || mstsWagon.DoorRightOpen))
                         {
                             mstsWagon.DoorRightOpen = false;
                             mstsWagon.DoorLeftOpen = false;
                             SignalEvent(Event.DoorClose);
                             car.BrakeSystem.RightDoorIsOpened = false;
-                            car.BrakeSystem.LeftDoorIsOpened = false;
+                            car.BrakeSystem.LeftDoorIsOpened = false; 
                         }
                     }
                     return;
@@ -4024,7 +4024,7 @@ namespace Orts.Simulation.RollingStocks
                 foreach (TrainCar car in Train.Cars)
                 {
                     var mstsWagon = car as MSTSWagon;
-                    if (mstsWagon.BrakeSystem.AirOK_DoorCanManipulate && mstsWagon.AutomaticDoors || mstsWagon.FreightDoors)
+                    if (mstsWagon.BrakeSystem.AirOK_DoorCanManipulate && (mstsWagon.AutomaticDoors || mstsWagon.FreightDoors))
                     {
                         if (DoorsCycle == 0)
                             DoorRightOpen = !DoorRightOpen;

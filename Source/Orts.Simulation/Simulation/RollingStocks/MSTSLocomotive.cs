@@ -6663,7 +6663,7 @@ namespace Orts.Simulation.RollingStocks
                 {
                     Simulator.Confirmer.Update(CabControl.BrakemanBrake, CabSetting.Decrease, GetBrakemanBrakeStatus());
                 }
-            }
+            }            
 
             DynamicBrakeBlending(elapsedClockSeconds);
             if (DynamicBrakeController != null && DynamicBrakeController.CommandStartTime > DynamicBrakeCommandStartTime) // use the latest command time
@@ -6788,6 +6788,10 @@ namespace Orts.Simulation.RollingStocks
         {
             // Method to set force and power info
             // An alternative method in the steam locomotive will override this and input force and power info for it.
+
+            if (ControlUnit)
+                return;
+            
             if (ThrottleOverriden != 0)
                 t = ThrottleOverriden;
             if (DynamicBrakeFullRangeIncreaseTimeSeconds == 0)
@@ -7332,12 +7336,14 @@ namespace Orts.Simulation.RollingStocks
                 //Set axle model parameters
                 // Icik                
                 if (PowerUnit)
+                {
                     DriveForceN = LocomotiveAxle.DriveForceN;
+                    LocomotiveAxle.DriveForceN = MotiveForceN * (1 - PowerReduction);  //Total force applied to wheels
+                }
                 if (AdhesionEfficiencyKoef == 0) AdhesionEfficiencyKoef = 1.0f;
                 LocomotiveAxle.AdhesionEfficiencyKoef = AdhesionEfficiencyKoef;
                 LocomotiveAxle.BrakeRetardForceN = BrakeRetardForceN / (MassKG / DrvWheelWeightKg); // Upravuje chybu v adhezi pokud vůz brzdí (brzdí plnou vahou tzn. všemi koly)
-                LocomotiveAxle.AxleWeightN = 9.81f * DrvWheelWeightKg;   //will be computed each time considering the tilting
-                LocomotiveAxle.DriveForceN = MotiveForceN * (1 - PowerReduction);  //Total force applied to wheels
+                LocomotiveAxle.AxleWeightN = 9.81f * DrvWheelWeightKg;   //will be computed each time considering the tilting                
                 LocomotiveAxle.TrainSpeedMpS = SpeedMpS;            //Set the train speed of the axle model
                 LocomotiveAxle.Update(elapsedClockSeconds);         //Main updater of the axle model               
 
@@ -18777,7 +18783,7 @@ namespace Orts.Simulation.RollingStocks
                 case CABViewControlTypes.DOORSWITCH:
                     {
                         DoorSwitchEnable = true;
-                        data = DoorSwitch[LocoStation];
+                        data = DoorSwitch[LocoStation];                        
                         break;
                     }
                 case CABViewControlTypes.LAP_BUTTON:

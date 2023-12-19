@@ -424,8 +424,8 @@ namespace Orts.Viewer3D
 
             if (Viewer.Simulator.MSTSWagon as MSTSWagon != null)
             {
-                TestCondition1 = (Viewer.Simulator.MSTSWagon as MSTSWagon).DoorLeftOpen = false;
-                TestCondition2 = (Viewer.Simulator.MSTSWagon as MSTSWagon).DoorRightOpen = false;
+                TestCondition1 = /*(Viewer.Simulator.MSTSWagon as MSTSWagon).DoorLeftOpen =*/ false;
+                TestCondition2 = /*(Viewer.Simulator.MSTSWagon as MSTSWagon).DoorRightOpen =*/ false;
             }
 
             // if the shape has animations

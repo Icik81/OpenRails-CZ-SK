@@ -199,7 +199,7 @@ namespace Orts.Simulation.RollingStocks
                         PantoCanHVOffon = PU.PantoCanHVOffon;
                         SwitchingVoltageMode_OffAC = PU.SwitchingVoltageMode_OffAC;
                         SwitchingVoltageMode_OffDC = PU.SwitchingVoltageMode_OffDC;
-                        AuxResPressurePSI = PU.AuxResPressurePSI;                        
+                        AuxResPressurePSI = PU.AuxResPressurePSI;
 
                         switch (SwitchingVoltageMode)
                         {
@@ -224,12 +224,12 @@ namespace Orts.Simulation.RollingStocks
                             PU.HVOn = HVOn; PU.HVOff = HVOff;
                             HVOn = false; HVOff = false;                            
                             PU.BreakPowerButton = BreakPowerButton;
-                            PU.CompressorMode_OffAuto = CompressorMode_OffAuto;
-                            PU.CompressorMode2_OffAuto = CompressorMode2_OffAuto;
-                            PU.CompressorOffAutoOn = CompressorOffAutoOn;
-                            PU.CompressorOffAutoOn2 = CompressorOffAutoOn2;
-                            PU.AuxCompressor = AuxCompressor;
-                            PU.AuxCompressorMode_OffOn = AuxCompressorMode_OffOn;                            
+
+                            PU.AuxCompressorMode_OffOn = AuxCompressorMode_OffOn;
+                            PU.CompressorMode_OffAuto[LocoStation] = CompressorMode_OffAuto[LocoStation];
+                            PU.Compressor_I_HandMode[LocoStation] = Compressor_I_HandMode[LocoStation];                            
+                            PU.CompressorMode2_OffAuto[LocoStation] = CompressorMode2_OffAuto[LocoStation];
+                            PU.Compressor_II_HandMode[LocoStation] = Compressor_II_HandMode[LocoStation];                            
                         }                        
 
                         break;
