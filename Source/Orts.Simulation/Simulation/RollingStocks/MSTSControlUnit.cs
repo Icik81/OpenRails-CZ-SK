@@ -120,7 +120,7 @@ namespace Orts.Simulation.RollingStocks
             ResetControlUnitParameters();
             MUCableOk = true;
             Battery = false;
-            Simulator.ControlUnitIsLead = false;
+            Simulator.ControlUnitIsLead = false;            
 
             foreach (var car in Train.Cars.Where(car => car is MSTSLocomotive))
             {       
@@ -134,7 +134,39 @@ namespace Orts.Simulation.RollingStocks
                 if (car.PowerUnitWithControl && !(car as MSTSLocomotive).LocoReadyToGo)
                 {
                     Battery = MUCableOk && (car as MSTSLocomotive).Battery ? true : false;
-                }                                    
+                }
+
+                #region LocoReadyToGo
+                if (LocoReadyToGo && BrakeSystem.IsAirFull)
+                {
+                    if (CompressorCombined)
+                        CompressorSwitch[LocoStation] = 2;
+                    if (CompressorCombined2)
+                        CompressorSwitch2[LocoStation] = 1;
+
+                    if (CompressorOffAutoOn)
+                        CompressorSwitch[LocoStation] = 1;
+                    if (CompressorOffAutoOn2)
+                        CompressorSwitch2[LocoStation] = 1;
+
+                    CompressorMode_OffAuto[LocoStation] = true;
+                    CompressorMode2_OffAuto[LocoStation] = true;
+                    if (!CompressorCombined && !CompressorCombined2 && !CompressorOffAutoOn && !CompressorOffAutoOn2)
+                    {
+                        CompressorMode_OffAuto[LocoStation] = true;
+                        CompressorMode2_OffAuto[LocoStation] = true;
+                    }
+                    else
+                    {
+                        if (!CompressorCombined && !CompressorOffAutoOn)
+                            CompressorMode_OffAuto[LocoStation] = false;
+                        if (!CompressorCombined2 && !CompressorOffAutoOn2)
+                            CompressorMode2_OffAuto[LocoStation] = false;
+                    }
+                    HV4Switch[LocoStation] = 1;
+                    Battery = true;
+                }
+                #endregion LocoReadyToGo
 
                 if (MUCableOk)
                 {
@@ -241,7 +273,7 @@ namespace Orts.Simulation.RollingStocks
             AuxPowerOn = false;
             PantoCanHVOffon = false;
             SwitchingVoltageMode_OffAC = false;
-            SwitchingVoltageMode_OffDC = false;
+            SwitchingVoltageMode_OffDC = false;            
         }
 
         public override float GetDataOf(CabViewControl cvc)

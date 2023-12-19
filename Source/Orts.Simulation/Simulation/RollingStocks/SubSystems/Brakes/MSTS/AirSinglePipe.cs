@@ -2091,7 +2091,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     if (lead.TrainBrakeController.TrainBrakeControllerState == ControllerState.Release)
                     {
                         lead.BrakeSystem.BrakeCylReleaseFlow = true;
-                        if (lead.LocoType != MSTSLocomotive.LocoTypes.Katr7507)
+                        if (lead.LocoType != MSTSLocomotive.LocoTypes.Katr7507 && !lead.ControlUnit)
                         {
                             lead.ARRTrainBrakeEngage = false;
                             lead.BrakeSystem.ARRTrainBrakeCanEngage = false;

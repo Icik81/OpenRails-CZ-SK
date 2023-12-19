@@ -191,7 +191,8 @@ namespace Orts.Viewer3D.Popups
                 else
                 if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).DieselHeaterPower == 0 
                     && (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).WagonType == TrainCar.WagonTypes.Engine 
-                    && (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).EngineType != TrainCar.EngineTypes.Electric)
+                    && (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).EngineType != TrainCar.EngineTypes.Electric
+                    && (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).EngineType != TrainCar.EngineTypes.Control)
                     vbox.Add(buttonHeating = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Calorifer Heating"), LabelAlignment.Center));
                 else
                     vbox.Add(buttonHeating = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Electric Heating/Air"), LabelAlignment.Center));

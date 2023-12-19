@@ -5538,7 +5538,7 @@ namespace Orts.Simulation.RollingStocks
                 HS198DirectionControllerPosition[1] = preHS198DirectionControllerPosition[1] = HS198DirectionControllerPosition[2] = preHS198DirectionControllerPosition[2] = 1;
                 HS198ControllerPosition[1] = preHS198ControllerPosition[1] = HS198ControllerPosition[2] = preHS198ControllerPosition[2] = 3;
                 VentilationSwitchPosition[1] = VentilationSwitchPosition[2] = 1;
-                LocoLastCabSelect = Flipped ? true : false;
+                LocoLastCabSelect = Flipped ? true : false;                
 
                 if (CruiseControl != null)
                 {
@@ -5555,7 +5555,7 @@ namespace Orts.Simulation.RollingStocks
                 else
                 {
                     if (!LocoIsStatic)
-                    {
+                    {                        
                         Battery = true;
                         ToggleCabRadio(true);
                         ActiveStation = UsingRearCab ? DriverStation.Station2 : DriverStation.Station1;
