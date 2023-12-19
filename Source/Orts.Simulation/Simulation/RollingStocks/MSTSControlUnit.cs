@@ -119,9 +119,10 @@ namespace Orts.Simulation.RollingStocks
         {            
             ResetControlUnitParameters();
             MUCableOk = true;
+            Battery = false;
             Simulator.ControlUnitIsLead = false;
 
-            foreach (var car in Train.Cars/*.Where(car => car is MSTSLocomotive)*/)
+            foreach (var car in Train.Cars.Where(car => car is MSTSLocomotive))
             {       
                 // Kontrola zapojeného kabelu MU
                 if ((car.PowerUnitWithControl && !car.AcceptCableSignals) || !AcceptCableSignals)
@@ -133,7 +134,7 @@ namespace Orts.Simulation.RollingStocks
                 if (car.PowerUnitWithControl && !(car as MSTSLocomotive).LocoReadyToGo)
                 {
                     Battery = MUCableOk && (car as MSTSLocomotive).Battery ? true : false;
-                }
+                }                                    
 
                 if (MUCableOk)
                 {
