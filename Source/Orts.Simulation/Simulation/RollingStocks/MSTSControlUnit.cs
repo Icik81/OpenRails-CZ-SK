@@ -123,13 +123,14 @@ namespace Orts.Simulation.RollingStocks
             Simulator.ControlUnitIsLead = false;            
 
             foreach (var car in Train.Cars.Where(car => car is MSTSLocomotive))
-            {       
+            {
                 // Kontrola zapojeného kabelu MU
                 if ((car.PowerUnitWithControl && !car.AcceptCableSignals) || !AcceptCableSignals)
                 {
-                    MUCableOk = false;
-                }
-                
+                    if (Simulator.GameTime > 0.1f)
+                        MUCableOk = false;
+                }                
+
                 // Hnací vozidlo je obsazené
                 if (car.PowerUnitWithControl && !(car as MSTSLocomotive).LocoReadyToGo)
                 {
@@ -164,7 +165,7 @@ namespace Orts.Simulation.RollingStocks
                             CompressorMode2_OffAuto[LocoStation] = false;
                     }
                     HV4Switch[LocoStation] = 1;
-                    Battery = true;
+                    Battery = true;                    
                 }
                 #endregion LocoReadyToGo
 
