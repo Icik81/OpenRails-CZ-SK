@@ -451,8 +451,8 @@ namespace Orts.Simulation.RollingStocks
             
             if (((Locomotive.BrakeSystem.BrakePipeChangeRateBar > 0.1f && Locomotive.BrakeSystem.BrakeCylApply) || Bar.FromPSI(Locomotive.BrakeSystem.BrakeLine1PressurePSI) < 4.5f)
                 && Locomotive.DynamicBrakePercent < 0.1f)
-            {
-                Locomotive.ControllerVolts = 0;                
+            {                
+                Locomotive.ControllerVolts = (Locomotive is MSTSDieselLocomotive) ? Locomotive.ControllerVolts : 0;                
             }
 
             if (Locomotive.LocoType == LocoTypes.Vectron)

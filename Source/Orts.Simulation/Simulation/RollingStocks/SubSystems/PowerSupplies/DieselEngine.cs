@@ -1440,13 +1440,35 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                     if (RealRPM < ElevatedConsumptionIdleRPMBase)
                     {
                         DeltaUpRPMpS = MathHelper.Clamp(ChangeUpRPMpS, 0, 100);
+
+                        if (RealRPM > 0.99f * ElevatedConsumptionIdleRPMBase)
+                            DeltaUpRPMpS = MathHelper.Clamp(ChangeUpRPMpS, -5, 5);
+
                         RealRPM += DeltaUpRPMpS * elapsedClockSeconds;
                     }
                     else
+                    {
+                        if (RealRPM < 1.01f * ElevatedConsumptionIdleRPMBase)
+                            dRPM = MathHelper.Clamp(dRPM, -5, 5);
+
                         RealRPM = Math.Max(RealRPM + (dRPM * elapsedClockSeconds), 0);
+                    }
                 }
                 else
+                {
+                    if (dRPM < 0)
+                    {
+                        if (RealRPM < 1.01f * DemandedRPM)
+                            dRPM = MathHelper.Clamp(dRPM, -5, 5);
+                    }
+                    if (dRPM > 0)
+                    {
+                        if (RealRPM > 0.99f * DemandedRPM)
+                            dRPM = MathHelper.Clamp(dRPM, -5, 5);
+                    }
+
                     RealRPM = Math.Max(RealRPM + (dRPM * elapsedClockSeconds), 0);
+                }
             }
 
             // Icik
