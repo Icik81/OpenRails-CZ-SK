@@ -392,7 +392,7 @@ namespace Orts.Simulation.RollingStocks
         public bool WagonHasStove;
         public bool WagonHasSteamHeating;
         public bool CarPowerKey;
-        public int CarFrameUpdateState;
+        public int CarFrameUpdateState = 1;
         public bool DirectionControllerBlocked;
         public int[] PowerKeyPosition = new int[3];
         public int[] prevPowerKeyPosition = new int[3];

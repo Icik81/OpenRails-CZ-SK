@@ -10249,9 +10249,11 @@ namespace Orts.Simulation.RollingStocks
             }
         }
 
+        bool AllCabItemReaded;
         public void CarFrameUpdate(float elapsedClockSeconds)
-        {
-            this.CarFrameUpdateState++;
+        {           
+            if (AllCabItemReaded)
+                this.CarFrameUpdateState++;
             if (this.CarFrameUpdateState > 100)
                 this.CarFrameUpdateState = 100;
 
@@ -10308,32 +10310,26 @@ namespace Orts.Simulation.RollingStocks
                         // Řídící vůz v soupravě                    
                         foreach (var car in Train.Cars.Where(car => car is MSTSLocomotive))
                         {
-                            if (car is MSTSLocomotive)
+                            if (car.EngineType == EngineTypes.Control)
                             {
-                                if (car.EngineType == EngineTypes.Control)
-                                {
-                                    Simulator.ControlUnitInTrain = true;
-                                    break;
-                                }                                
+                                Simulator.ControlUnitInTrain = true;
+                                break;
                             }
                         }
                         if (Simulator.ControlUnitInTrain)
                         {
                             foreach (var car in Train.Cars.Where(car => car is MSTSLocomotive))
                             {
-                                if (car is MSTSLocomotive)
+                                if (car.EngineType == EngineTypes.Control)
                                 {
-                                    if (car.EngineType == EngineTypes.Control)
-                                    {
-                                        car.PowerUnit = false;
-                                        car.ControlUnit = true;
-                                    }
-                                    else
-                                    {
-                                        car.PowerUnitWithControl = true;
-                                        car.ControlUnit = false;
-                                        car.PowerUnit = true;
-                                    }
+                                    car.PowerUnit = false;
+                                    car.ControlUnit = true;
+                                }
+                                else
+                                {
+                                    car.PowerUnitWithControl = true;
+                                    car.ControlUnit = false;
+                                    car.PowerUnit = true;
                                 }
                             }
                         }
@@ -10343,7 +10339,7 @@ namespace Orts.Simulation.RollingStocks
                             AcceptCableSignals = true;
                             foreach (var car in Train.Cars.Where(car => car is MSTSLocomotive))
                             {
-                                if (car is MSTSLocomotive && car.PowerUnit)
+                                if (car.PowerUnit)
                                 {
                                     car.AcceptCableSignals = true;
                                     break;
@@ -10353,7 +10349,7 @@ namespace Orts.Simulation.RollingStocks
                     }
                 }
             }
-
+            
             // Druhý průběh má všechny kabinové prvky načteny
             if (this.CarFrameUpdateState == 2)
             {
@@ -19372,7 +19368,8 @@ namespace Orts.Simulation.RollingStocks
                     }
                     cvc.PreviousData = data;
                 }
-            }            
+            }
+            AllCabItemReaded = true;
             return data;
         }
 
