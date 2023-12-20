@@ -7355,6 +7355,8 @@ namespace Orts.Simulation.RollingStocks
                         WheelSlip = LocomotiveAxle.IsWheelSlip;
                         WheelSlipWarning = LocomotiveAxle.IsWheelSlipWarning;
                     }
+                    WheelSpeedMpS = LocomotiveAxle.AxleSpeedMpS;
+                    SlipSpeedDiference = WheelSlipWarning ? Math.Abs(WheelSpeedMpS - LocomotiveAxle.WheelSlipThresholdMpS) - Math.Abs(SpeedMpS) : 0;
                 }
                 else
                 if (!extendedPhysics.UseControllerVolts)
@@ -7365,6 +7367,8 @@ namespace Orts.Simulation.RollingStocks
                         WheelSlip = extendedPhysics.IsWheelSlip;
                         WheelSlipWarning = extendedPhysics.IsWheelSlipWarning;
                     }
+                    WheelSpeedMpS = extendedPhysics.FastestAxleSpeedMpS;
+                    SlipSpeedDiference = WheelSlipWarning ? Math.Abs(WheelSpeedMpS - extendedPhysics.WheelSlipThresholdMpS) - Math.Abs(SpeedMpS) : 0;
                 }
                 else
                 {
@@ -7374,8 +7378,9 @@ namespace Orts.Simulation.RollingStocks
                         WheelSlip = extendedPhysics.IsWheelSlip;
                         WheelSlipWarning = extendedPhysics.IsWheelSlipWarning;
                     }
-                }
-                WheelSpeedMpS = LocomotiveAxle.AxleSpeedMpS;
+                    WheelSpeedMpS = extendedPhysics.FastestAxleSpeedMpS;
+                    SlipSpeedDiference = WheelSlipWarning ? Math.Abs(WheelSpeedMpS - extendedPhysics.WheelSlipThresholdMpS) - Math.Abs(SpeedMpS) : 0;
+                }                
             }
         }
 
@@ -17647,9 +17652,9 @@ namespace Orts.Simulation.RollingStocks
                 case CABViewControlTypes.WHEELSLIP:
                     {
                         if (AdvancedAdhesionModel && Train.TrainType != Train.TRAINTYPE.AI_PLAYERHOSTING)
-                            data = LocomotiveAxle.IsWheelSlipWarning ? 1 : 0;
-                        else
-                            data = WheelSlip ? 1 : 0;
+                        {
+                            data = WheelSlip ? 1 : WheelSlipWarning ? 1 : 0;                            
+                        }
                         break;
                     }
 

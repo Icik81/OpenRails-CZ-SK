@@ -405,6 +405,7 @@ namespace Orts.Simulation.RollingStocks
         public bool RearHeadLight;
         public bool CarSteamHeatOn;
         public string WagonName;
+        public float SlipSpeedDiference;
 
 
         public float PowerReductionResult1;  // Redukce výkonu od topení, klimatizace, kompresoru

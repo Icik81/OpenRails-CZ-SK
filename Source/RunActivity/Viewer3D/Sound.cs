@@ -1506,7 +1506,7 @@ namespace Orts.Viewer3D
                 case Orts.Formats.Msts.VolumeCurve.Controls.WheelSpeedControlled: return car.AbsWheelSpeedMpS;
                 case Orts.Formats.Msts.VolumeCurve.Controls.WheelSpeedACControlled: return car.AbsWheelSpeedMpSAC;
                 case Orts.Formats.Msts.VolumeCurve.Controls.WheelSpeedDCControlled: return car.AbsWheelSpeedMpSDC;
-                case Orts.Formats.Msts.VolumeCurve.Controls.SlipSpeedControlled: return car.AbsWheelSpeedMpS - car.AbsSpeedMpS;
+                case Orts.Formats.Msts.VolumeCurve.Controls.SlipSpeedControlled: return car.SlipSpeedDiference;
                 case Orts.Formats.Msts.VolumeCurve.Controls.VibrationControlled: return car.Factor_vibration;
                 case Orts.Formats.Msts.VolumeCurve.Controls.Variable1Controlled: return car.Variable1;
                 case Orts.Formats.Msts.VolumeCurve.Controls.Variable1ACControlled: return car.Variable1AC;
