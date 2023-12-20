@@ -10401,7 +10401,7 @@ namespace Orts.Simulation.RollingStocks
                     if (car is MSTSLocomotive && car.AcceptCableSignals)
                     {
                         Simulator.MUCableLocoCount++;
-                        if (!car.CarIsPlayerLoco && Simulator.SanderIsOn && !ControlUnit)
+                        if (!car.CarIsPlayerLoco && Simulator.SanderIsOn && !ControlUnit && !PowerUnitWithControl)
                         {
                             (car as MSTSLocomotive).Sander = true;
                             Simulator.Confirmer.MSG2(Simulator.Catalog.GetString("MU") + " " + (car as MSTSLocomotive).CurrentTrackSandBoxCapacityKG + " Kg");

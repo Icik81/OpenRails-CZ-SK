@@ -1653,7 +1653,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 {                    
                     ThresholdBailOffOn = (maxPressurePSI0 - BrakeLine1PressurePSI) * AuxCylVolumeRatio;
                     ThresholdBailOffOn = MathHelper.Clamp(ThresholdBailOffOn, 0, MCP_TrainBrake);
-                    if (AutoCylPressurePSI0 < ThresholdBailOffOn                        
+                    if (AutoCylPressurePSI0 < 0.99f * ThresholdBailOffOn && ThresholdBailOffOn > 1.0f
                         && AutoCylPressurePSI0 < loco.BrakeSystem.BrakeCylinderMaxSystemPressurePSI
                         && AuxResPressurePSI > 0)
                     {
