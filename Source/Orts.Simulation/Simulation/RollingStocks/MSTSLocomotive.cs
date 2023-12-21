@@ -5857,11 +5857,7 @@ namespace Orts.Simulation.RollingStocks
 
                             // Extended Physics pro diesel lokomotivy
                             if (this is MSTSDieselLocomotive)
-                            {
-                                if (CruiseControl == null)
-                                {
-                                    SetUpCruiseControl();
-                                }
+                            {                                
                                 ControllerVolts = ThrottleController.CurrentValue * 10f;
                             }
 

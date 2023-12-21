@@ -749,7 +749,7 @@ namespace Orts.Simulation.RollingStocks
                 axleCurrent = axleCurrent + em.RotorCurrent;
                 maxCurrent = maxCurrent + em.MaxRotorCurrent;
             }
-            if ((Locomotive.TractiveForceCurves != null || Locomotive.TractiveForceCurvesAC != null || Locomotive.TractiveForceCurvesDC != null) && overridenControllerVolts > 0 && Locomotive.ControllerVolts > 0)
+            if (Locomotive.CruiseControl != null && (Locomotive.TractiveForceCurves != null || Locomotive.TractiveForceCurvesAC != null || Locomotive.TractiveForceCurvesDC != null) && overridenControllerVolts > 0 && Locomotive.ControllerVolts > 0)
             {
                 // Icik
                 switch (Locomotive.SwitchingVoltageMode)
