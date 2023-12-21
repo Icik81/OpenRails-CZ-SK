@@ -356,7 +356,7 @@ namespace Orts.Simulation.RollingStocks
                 }
                 else
                 {
-                    float SlipSpeedMpS = ((FastestAxleSpeedMpS / Math.Abs(FastestAxleSpeedMpS) * FastestAxleSpeedMpS) - Locomotive.LocomotiveAxle.TrainSpeedMpS);
+                    float SlipSpeedMpS = (((FastestAxleSpeedMpS < Math.Abs(Locomotive.LocomotiveAxle.TrainSpeedMpS) || Locomotive.BrakeRetardForceN > 0) ? Math.Abs(Locomotive.LocomotiveAxle.AxleSpeedMpS) : FastestAxleSpeedMpS) * Locomotive.WheelSpeedDirectionMarker) - Locomotive.LocomotiveAxle.TrainSpeedMpS;
                     return SlipSpeedMpS;
                 }
             }

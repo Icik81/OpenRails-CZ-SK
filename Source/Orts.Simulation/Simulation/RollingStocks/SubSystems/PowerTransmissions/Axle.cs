@@ -678,6 +678,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerTransmissions
                 isSiemens = true;
             Update(timeSpan);
         }
+
+        public float DriveDirectionMarker;
         public virtual void Update(float timeSpan)
         {
             //Update axle force ( = k * loadTorqueNm)
@@ -708,7 +710,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerTransmissions
                     motor.Update(timeSpan);
                     break;
                 case AxleDriveType.ForceDriven:
-                    float DriveMarker = driveForceN == 0 ? 1 : driveForceN / Math.Abs(driveForceN);
+                    float DriveDirectionMarker = driveForceN == 0 ? 1 : driveForceN / Math.Abs(driveForceN);
 
                     //Axle revolutions integration
                     if (TrainSpeedMpS > 0.0f)
@@ -772,7 +774,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerTransmissions
                         }
                         else
                         {                            
-                            axleForceN = driveForceN - (DriveMarker * brakeRetardForceN);
+                            axleForceN = driveForceN - (DriveDirectionMarker * brakeRetardForceN);
                             if (Math.Abs(axleSpeedMpS) < 0.01f)
                                 Reset();
                         }                       
