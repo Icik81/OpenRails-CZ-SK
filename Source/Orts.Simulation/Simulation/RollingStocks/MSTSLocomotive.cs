@@ -3295,12 +3295,6 @@ namespace Orts.Simulation.RollingStocks
 
                 if (OverVoltage)
                 {
-                    if (extendedPhysics != null)
-                    {
-                        DriveForceN = 0;
-                        extendedPhysics.FastestAxleSpeedMpS = extendedPhysics.AverageAxleSpeedMpS = WheelSpeedMpS = SpeedMpS;
-                    }
-
                     if (DoesPowerLossResetControls || DoesPowerLossResetControls2)
                     {
                         SetThrottlePercent(0);
