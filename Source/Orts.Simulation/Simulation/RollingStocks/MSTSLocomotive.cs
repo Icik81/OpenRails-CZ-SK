@@ -7357,8 +7357,9 @@ namespace Orts.Simulation.RollingStocks
                 }
                 else
                 if (!extendedPhysics.UseControllerVolts)
-                {                    
-                    MotiveForceN = LocomotiveAxle.AxleForceN;
+                {     
+                    if (!(this is MSTSDieselLocomotive))
+                        MotiveForceN = LocomotiveAxle.AxleForceN;
                     if (elapsedClockSeconds > 0)
                     {
                         WheelSlip = extendedPhysics.IsWheelSlip;
