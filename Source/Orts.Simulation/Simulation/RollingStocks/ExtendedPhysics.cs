@@ -301,7 +301,7 @@ namespace Orts.Simulation.RollingStocks
         {
             get
             {
-                var temp = SlipSpeedMpS / WheelSlipThresholdMpS * 100.0f * NumMotors;
+                var temp = SlipSpeedMpS / WheelSlipThresholdMpS * 100.0f;
                 if (float.IsNaN(temp)) temp = 0;
                 return temp;
             }
