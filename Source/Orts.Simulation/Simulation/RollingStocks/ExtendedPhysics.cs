@@ -953,6 +953,12 @@ namespace Orts.Simulation.RollingStocks
                     ForceN = prevForceN;
             }
 
+            // Trakční síla se pro EP u dieselů počítá v MSTSLocomotive 
+            if (Locomotive is MSTSDieselLocomotive)
+            {
+                ForceN = Locomotive.DriveForceN / totalMotors;
+            }
+
             LocomotiveAxle.AxleWeightN = 9.81f * Mass * 1000;   //will be computed each time considering the tilting
             LocomotiveAxle.DriveForceN = ForceN;  //Total force applied to wheels
             LocomotiveAxle.TrainSpeedMpS = Locomotive.SpeedMpS < 0 ? -Locomotive.SpeedMpS : Locomotive.SpeedMpS;

@@ -3337,7 +3337,8 @@ namespace Orts.Simulation.RollingStocks
 
                 // Resetování nadproudové ochrany u dieselelektrických lokomotiv
                 if (this is MSTSDieselLocomotive && OverVoltage 
-                    && (this as MSTSDieselLocomotive).DieselEngines[0].RealRPM < 1.01f * (this as MSTSDieselLocomotive).DieselEngines[0].IdleRPM 
+                    && (this as MSTSDieselLocomotive).DieselEngines[0].RealRPM < 1.01f * (this as MSTSDieselLocomotive).DieselEngines[0].IdleRPM
+                    && LocalThrottlePercent == 0
                     && LocalDynamicBrakePercent == 0)
                 {
                     OverVoltage = false;
@@ -7281,7 +7282,7 @@ namespace Orts.Simulation.RollingStocks
         /// If UseAdvancedAdhesion is true, dynamic adhesion model is computed
         /// If UseAdvancedAdhesion is false, the basic force limits are calculated the same way MSTS calculates them, but
         /// the weather handleing is different and Curtius-Kniffler curves are considered as a static limit
-        /// </summary>
+        /// </summary>        
         public void AdvancedAdhesion(float elapsedClockSeconds)
         {
 
@@ -7334,7 +7335,7 @@ namespace Orts.Simulation.RollingStocks
                 if (PowerUnit)
                 {
                     DriveForceN = LocomotiveAxle.DriveForceN;
-                    LocomotiveAxle.DriveForceN = MotiveForceN * (1 - PowerReduction);  //Total force applied to wheels
+                    LocomotiveAxle.DriveForceN = MotiveForceN * (1 - PowerReduction);  //Total force applied to wheels                    
                 }
                 if (AdhesionEfficiencyKoef == 0) AdhesionEfficiencyKoef = 1.0f;
                 LocomotiveAxle.AdhesionEfficiencyKoef = AdhesionEfficiencyKoef;
@@ -7356,7 +7357,7 @@ namespace Orts.Simulation.RollingStocks
                 }
                 else
                 if (!extendedPhysics.UseControllerVolts)
-                {
+                {                    
                     MotiveForceN = LocomotiveAxle.AxleForceN;
                     if (elapsedClockSeconds > 0)
                     {
