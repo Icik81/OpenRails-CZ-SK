@@ -961,10 +961,10 @@ namespace Orts.Simulation.RollingStocks
 
             LocomotiveAxle.AxleWeightN = 9.81f * Mass * 1000;   //will be computed each time considering the tilting
             LocomotiveAxle.DriveForceN = ForceN;  //Total force applied to wheels
-            LocomotiveAxle.TrainSpeedMpS = Locomotive.SpeedMpS < 0 ? -Locomotive.SpeedMpS : Locomotive.SpeedMpS;
+            LocomotiveAxle.TrainSpeedMpS = Locomotive.SpeedMpS;
             LocomotiveAxle.AdhesionConditions = Locomotive.LocomotiveAxle.AdhesionConditions;//Set the train speed of the axle model
             LocomotiveAxle.Update(elapsedClockSeconds);         //Main updater of the axle model
-            WheelSpeedMpS = LocomotiveAxle.AxleSpeedMpS;
+            WheelSpeedMpS = LocomotiveAxle.AxleSpeedMpS;            
 
             if (Locomotive.CruiseControl != null)
             {

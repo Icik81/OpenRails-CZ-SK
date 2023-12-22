@@ -3561,7 +3561,7 @@ namespace Orts.Simulation.RollingStocks
         bool TMFailureMSG;
         public void TMFailure(float elapsedClockSeconds)
         {
-            return;
+            //return;
             if (Train.TMFailure)
             {
                 if (!TMFailureMSG)
@@ -7337,9 +7337,9 @@ namespace Orts.Simulation.RollingStocks
                 LocomotiveAxle.BrakeRetardForceN = BrakeRetardForceN / (MassKG / DrvWheelWeightKg); // Upravuje chybu v adhezi pokud vůz brzdí (brzdí plnou vahou tzn. všemi koly)
                 LocomotiveAxle.AxleWeightN = 9.81f * DrvWheelWeightKg;   //will be computed each time considering the tilting                
                 LocomotiveAxle.TrainSpeedMpS = SpeedMpS;            //Set the train speed of the axle model
-                LocomotiveAxle.Update(elapsedClockSeconds);         //Main updater of the axle model               
+                LocomotiveAxle.Update(elapsedClockSeconds);         //Main updater of the axle model                               
                 WheelSpeedDirectionMarker = LocomotiveAxle.AxleSpeedMpS == 0 ? 1.0f : LocomotiveAxle.AxleSpeedMpS / Math.Abs(LocomotiveAxle.AxleSpeedMpS);
-                
+
                 if (extendedPhysics == null)
                 {
                     MotiveForceN = LocomotiveAxle.AxleForceN;
