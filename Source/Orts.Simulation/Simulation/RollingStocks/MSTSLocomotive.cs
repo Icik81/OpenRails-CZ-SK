@@ -7913,6 +7913,7 @@ namespace Orts.Simulation.RollingStocks
 
         #endregion
 
+        bool LocoSanderOn;
         public void UpdateTrackSander(float elapsedClockSeconds)
         {
             // updates track sander in terms of sand usage and impact on air compressor
@@ -7922,6 +7923,7 @@ namespace Orts.Simulation.RollingStocks
             TrackSanderSandConsumptionLpS = MathHelper.Clamp(TrackSanderSandConsumptionLpS, 0.025f, 0.05f);
             if (Sander)  // If sander is on adjust parameters
             {
+                LocoSanderOn = true;
                 SignalEvent(Event.SanderOn);
                 if (CurrentTrackSandBoxCapacityL > 0.0) // if sand still in sandbox then sanding is available
                 {
@@ -7953,7 +7955,13 @@ namespace Orts.Simulation.RollingStocks
                     Simulator.Confirmer.Message(ConfirmLevel.MSG3, Simulator.Catalog.GetString("Helper") + " " + CurrentTrackSandBoxCapacityKG + " Kg");
             }
             else
-                SignalEvent(Event.SanderOff);
+            {
+                if (LocoSanderOn)
+                {
+                    SignalEvent(Event.SanderOff);
+                    LocoSanderOn = false;
+                }
+            }
             //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("CurrentTrackSandBoxCapacityL: " + CurrentTrackSandBoxCapacityL));
         }
 
