@@ -897,11 +897,11 @@ namespace Orts.Common
             if (ToState)
             {
                 if (!Receiver.Sander)
-                    Receiver.Train.SignalEvent(Event.SanderOn);
+                    Receiver.SignalEvent(Event.SanderOn);
             }
             else
             {
-                Receiver.Train.SignalEvent(Event.SanderOff);
+                Receiver.SignalEvent(Event.SanderOff);
             }
             // Report();
         }
