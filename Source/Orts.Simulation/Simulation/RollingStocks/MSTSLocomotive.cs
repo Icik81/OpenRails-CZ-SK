@@ -5077,7 +5077,7 @@ namespace Orts.Simulation.RollingStocks
                     PowerReductionResult12 = 1;
                 else
                     PowerReductionResult12 = 0;
-            }
+            }            
 
             // Postrk aktivován
             if (LocoHelperOn)
@@ -5085,12 +5085,15 @@ namespace Orts.Simulation.RollingStocks
                 CarPowerKey = true;
 
                 if (DynamicBrakeController != null)
-                    DynamicBrakePercent = Simulator.DynamicBrakeLocoHelper;                
+                    DynamicBrakePercent = Simulator.DynamicBrakeLocoHelper;
+                
+                float LocoHelperSlipSpeedPercent = AbsSpeedMpS > 0.01f ? (Math.Abs(WheelSpeedMpS) / AbsSpeedMpS * 100f) : 0;                                                
+                bool LocoHelperSlipSpeedPercentCritical = LocoHelperSlipSpeedPercent > 115.0f ? true : false;                                
 
-                if (WheelSlipWarning || WheelSlip)
+                if (LocoHelperSlipSpeedPercent > 110.0f)
                 {
                     AntiSlip = true;                    
-                    Sander = true;
+                    Sander = true;                    
                 }
                 else
                     Sander = false;
@@ -5188,6 +5191,7 @@ namespace Orts.Simulation.RollingStocks
                         && HelperPushStart
                         && !WheelSlipWarning
                         && !WheelSlip
+                        && !LocoHelperSlipSpeedPercentCritical
                         && MSTSBrakeSystem.BrakeLine1PressurePSI > BrakeSystem.maxPressurePSI0 - (0.5f * 14.50377f))
                     {
                         HelperTimerIncrease += elapsedClockSeconds;
@@ -5316,7 +5320,8 @@ namespace Orts.Simulation.RollingStocks
                         }
                     }
                     else
-                    if (ThrottlePercent < Simulator.ThrottleLocoHelper)
+                    if (ThrottlePercent < Simulator.ThrottleLocoHelper
+                        && !LocoHelperSlipSpeedPercentCritical)
                     {
                         HelperTimerIncrease += elapsedClockSeconds;
                         if (HelperTimerIncrease > ((Simulator.Weather.PricipitationIntensityPPSPM2 / 2.0f) + 0.25f))
