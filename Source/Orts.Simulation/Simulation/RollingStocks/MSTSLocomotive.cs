@@ -15267,7 +15267,7 @@ namespace Orts.Simulation.RollingStocks
                         if (HS198ControllerCanThrottleChangeValue_0 || AutoDriveToZero)
                         {
                             // Kontrolér v 0
-                            if ((HS198ControllerPosition[LocoStation] == 3 || AutoDriveToZero) && PowerCurrent1 < 300f && HS198ControllerThrottleValue <= 27f)
+                            if ((HS198ControllerPosition[LocoStation] == 3 || AutoDriveToZero) && PowerCurrent1 < 300f /*&& HS198ControllerThrottleValue <= 27f*/)
                             {
                                 HS198ControllerThrottleValue = preHS198ControllerThrottleValue = 0;
                                 SetThrottlePercent(0f);
@@ -15275,7 +15275,7 @@ namespace Orts.Simulation.RollingStocks
                             }
                             else
                             // Kontrolér v B
-                            if (HS198ControllerPosition[LocoStation] == 1 && PowerCurrent1 < 300f && HS198ControllerThrottleValue <= 27f)
+                            if (HS198ControllerPosition[LocoStation] == 1 && PowerCurrent1 < 300f /*&& HS198ControllerThrottleValue <= 27f*/)
                             {
                                 HS198ControllerThrottleValue = preHS198ControllerThrottleValue = 0;
                                 SetThrottlePercent(0f);
