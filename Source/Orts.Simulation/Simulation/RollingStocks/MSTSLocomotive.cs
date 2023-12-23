@@ -7922,6 +7922,7 @@ namespace Orts.Simulation.RollingStocks
             TrackSanderSandConsumptionLpS = MathHelper.Clamp(TrackSanderSandConsumptionLpS, 0.025f, 0.05f);
             if (Sander)  // If sander is on adjust parameters
             {
+                SignalEvent(Event.SanderOn);
                 if (CurrentTrackSandBoxCapacityL > 0.0) // if sand still in sandbox then sanding is available
                 {
                     // Calculate consumption of sand, and drop in sand box level
@@ -7951,6 +7952,8 @@ namespace Orts.Simulation.RollingStocks
                 if (LocoHelperOn)
                     Simulator.Confirmer.Message(ConfirmLevel.MSG3, Simulator.Catalog.GetString("Helper") + " " + CurrentTrackSandBoxCapacityKG + " Kg");
             }
+            else
+                SignalEvent(Event.SanderOff);
             //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("CurrentTrackSandBoxCapacityL: " + CurrentTrackSandBoxCapacityL));
         }
 
