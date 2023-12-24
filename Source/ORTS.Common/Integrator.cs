@@ -221,7 +221,7 @@ namespace ORTS.Common
                 count = ++numOfSubstepsPS;
                 if (count > MaxSubsteps)
                     count = MaxSubsteps;
-                waitBeforeSpeedingUp = 100;
+                waitBeforeSpeedingUp = 1000;
                 //if (numOfSubstepsPS > (MaxSubsteps / 2))
                 //    Method = IntegratorMethods.EulerBackMod;
                 //else
@@ -235,7 +235,7 @@ namespace ORTS.Common
                     if (count < 1)
                         count = 1;
 
-                    waitBeforeSpeedingUp = 10;      //not so fast ;)
+                    waitBeforeSpeedingUp = 1000;      //not so fast ;)
                 }
                 else
                     count = numOfSubstepsPS;

@@ -271,6 +271,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerTransmissions
         /// </summary>
         public float AdhesionEfficiencyKoef { set; get; }
 
+        public bool Sander { set;  get; }
+
         /// <summary>
         /// Read/Write adhesion conditions parameter
         /// Should be set within the range of 0.3 to 1.2 but there is no restriction
@@ -781,32 +783,23 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerTransmissions
                     }
 
                     // Zabraňuje nekontrolovanému rozkmitání soustavy
-                    if ((Math.Abs(driveForceN) < 0.5f * Math.Abs(axleForceN))
+                    if ((Math.Abs(driveForceN) < 0.95f * Math.Abs(axleForceN))
                         || Math.Abs(TrainSpeedMpS) == 0.0f)
                     {
                         if (Math.Abs(axleSpeedMpS) > Math.Abs(TrainSpeedMpS))
                         {
                             if (axleSpeedMpS > 0)
                             {
-                                axleSpeedMpS -= 1f * timeSpan;
-                                if (axleSpeedMpS < 0f)
-                                {
-                                    axleSpeedMpS = 0.0f;
-                                    Reset();
-                                }
+                                axleSpeedMpS -= Sander ? (10f * timeSpan) : (5f * timeSpan);
                             }
                             else
                             if (axleSpeedMpS < 0)
                             {
-                                axleSpeedMpS += 1f * timeSpan;
-                                if (axleSpeedMpS > 0f)
-                                {
-                                    axleSpeedMpS = 0.0f;
-                                    Reset();
-                                }
+                                axleSpeedMpS += Sander ? (10f * timeSpan) : (5f * timeSpan);
                             }
                         }
-
+                        else
+                            axleSpeedMpS = TrainSpeedMpS;
                     }
 
                     break;

@@ -7339,6 +7339,7 @@ namespace Orts.Simulation.RollingStocks
                 }
                 if (AdhesionEfficiencyKoef == 0) AdhesionEfficiencyKoef = 1.0f;
                 LocomotiveAxle.AdhesionEfficiencyKoef = AdhesionEfficiencyKoef;
+                LocomotiveAxle.Sander = Sander;
                 LocomotiveAxle.BrakeRetardForceN = BrakeRetardForceN / (MassKG / DrvWheelWeightKg); // Upravuje chybu v adhezi pokud vůz brzdí (brzdí plnou vahou tzn. všemi koly)
                 LocomotiveAxle.AxleWeightN = 9.81f * DrvWheelWeightKg;   //will be computed each time considering the tilting                
                 LocomotiveAxle.TrainSpeedMpS = SpeedMpS;            //Set the train speed of the axle model
@@ -7836,7 +7837,7 @@ namespace Orts.Simulation.RollingStocks
                     if (Time0 > RandomDelay0 || TimeToGenerate)
                     {
                         if (!TimeToGenerate)
-                            TreeLeavesLevel = Simulator.Random.Next(10, 50);
+                            TreeLeavesLevel = Simulator.Random.Next(10, 40);
                         Time1 += elapsedClockSeconds;
                         if (Time1 < 0.5f)
                             RandomDelay1 = Simulator.Random.Next(5, 10);
