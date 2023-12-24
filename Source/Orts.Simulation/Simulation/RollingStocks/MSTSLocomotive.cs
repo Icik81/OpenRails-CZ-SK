@@ -7339,6 +7339,8 @@ namespace Orts.Simulation.RollingStocks
                 }
                 if (AdhesionEfficiencyKoef == 0) AdhesionEfficiencyKoef = 1.0f;
                 LocomotiveAxle.AdhesionEfficiencyKoef = AdhesionEfficiencyKoef;
+                LocomotiveAxle.DampingNs = MassKG / 1000.0f;
+                LocomotiveAxle.FrictionN = DrvWheelWeightKg / LocoNumDrvAxles;
                 LocomotiveAxle.Sander = Sander;
                 LocomotiveAxle.BrakeRetardForceN = BrakeRetardForceN / (MassKG / DrvWheelWeightKg); // Upravuje chybu v adhezi pokud vůz brzdí (brzdí plnou vahou tzn. všemi koly)
                 LocomotiveAxle.AxleWeightN = 9.81f * DrvWheelWeightKg;   //will be computed each time considering the tilting                

@@ -712,8 +712,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerTransmissions
                     motor.Update(timeSpan);
                     break;
                 case AxleDriveType.ForceDriven:
-                    float DriveDirectionMarker = driveForceN == 0 ? 1 : driveForceN / Math.Abs(driveForceN);
-
+                    float DriveDirectionMarker = driveForceN == 0 ? 1 : driveForceN / Math.Abs(driveForceN);                    
+                                                           
                     //Axle revolutions integration
                     if (TrainSpeedMpS > 0.0f)
                     {
@@ -780,27 +780,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerTransmissions
                             if (Math.Abs(axleSpeedMpS) < 0.01f)
                                 Reset();
                         }                       
-                    }
-
-                    // Zabraňuje nekontrolovanému rozkmitání soustavy
-                    if ((Math.Abs(driveForceN) < 0.95f * Math.Abs(axleForceN))
-                        || Math.Abs(TrainSpeedMpS) == 0.0f)
-                    {
-                        if (Math.Abs(axleSpeedMpS) > Math.Abs(TrainSpeedMpS))
-                        {
-                            if (axleSpeedMpS > 0)
-                            {
-                                axleSpeedMpS -= Sander ? (10f * timeSpan) : (5f * timeSpan);
-                            }
-                            else
-                            if (axleSpeedMpS < 0)
-                            {
-                                axleSpeedMpS += Sander ? (10f * timeSpan) : (5f * timeSpan);
-                            }
-                        }
-                        else
-                            axleSpeedMpS = TrainSpeedMpS;
-                    }
+                    }                    
 
                     break;
                 default:

@@ -1086,7 +1086,7 @@ namespace Orts.Simulation.RollingStocks
                         switch (BrakeSystem.BrakeCarModePL)
                         {
                             case 0: // Režim Prázdný                     
-                                BrakeSystem.CoefMode = 0.36f;
+                                BrakeSystem.CoefMode = 1.00f;
                                 BrakeMassKG();
                                 break;
                             case 1: // Režim Ložený                    
