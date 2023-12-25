@@ -10270,7 +10270,7 @@ namespace Orts.Simulation.RollingStocks
         bool AllCabItemReaded;
         public void CarFrameUpdate(float elapsedClockSeconds)
         {           
-            if (AllCabItemReaded)
+            if (AllCabItemReaded || !IsLeadLocomotive())
                 this.CarFrameUpdateState++;
             if (this.CarFrameUpdateState > 100)
                 this.CarFrameUpdateState = 100;
